@@ -12,6 +12,32 @@ import (
 	"uuid"
 )
 
+const countSavedViewsIn = `-- name: CountSavedViewsIn :one
+SELECT count(*) FROM saved_views
+WHERE workspace_id = $1 AND visibility = $2
+  AND owner_member_id IS NOT DISTINCT FROM $3::uuid
+  AND team_id IS NOT DISTINCT FROM $4::uuid
+`
+
+type CountSavedViewsInParams struct {
+	WorkspaceID   uuid.UUID
+	Visibility    string
+	OwnerMemberID *uuid.UUID
+	TeamID        *uuid.UUID
+}
+
+func (q *Queries) CountSavedViewsIn(ctx context.Context, arg CountSavedViewsInParams) (int64, error) {
+	row := q.db.QueryRow(ctx, countSavedViewsIn,
+		arg.WorkspaceID,
+		arg.Visibility,
+		arg.OwnerMemberID,
+		arg.TeamID,
+	)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
 const createSavedView = `-- name: CreateSavedView :one
 INSERT INTO saved_views (id, workspace_id, visibility, owner_member_id, team_id, name, filters, position, created_at, updated_at)
 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $9)
@@ -80,32 +106,21 @@ SELECT v.id, v.workspace_id, v.visibility, v.owner_member_id, v.team_id, v.name,
 WHERE v.workspace_id = $1
   AND (v.visibility = 'workspace'
        OR (v.visibility = 'personal' AND v.owner_member_id = $2::uuid)
-       OR (v.visibility = 'team' AND ($3::bool OR EXISTS (
+       OR (v.visibility = 'team' AND EXISTS (
            SELECT 1 FROM team_members tm
-           WHERE tm.workspace_id = v.workspace_id AND tm.team_id = v.team_id AND tm.member_id = $2::uuid))))
-  AND ($4::uuid IS NULL OR v.id = $4::uuid)
+           WHERE tm.workspace_id = v.workspace_id AND tm.team_id = v.team_id AND tm.member_id = $2::uuid)))
 ORDER BY CASE v.visibility WHEN 'personal' THEN 0 WHEN 'team' THEN 1 ELSE 2 END, v.position, v.name, v.id
-LIMIT $5
 `
 
 type ListSavedViewsForParams struct {
 	WorkspaceID uuid.UUID
 	MemberID    *uuid.UUID
-	AllTeams    bool
-	ID          *uuid.UUID
-	Lim         int32
 }
 
-// Personal views to their owner, workspace views to everyone, team views to the team's members and,
-// with all_teams, to owners, admins and keys.
+// The rail: the caller's personal views, the workspace's, and those of the teams the caller is a
+// member of.
 func (q *Queries) ListSavedViewsFor(ctx context.Context, arg ListSavedViewsForParams) ([]SavedView, error) {
-	rows, err := q.db.Query(ctx, listSavedViewsFor,
-		arg.WorkspaceID,
-		arg.MemberID,
-		arg.AllTeams,
-		arg.ID,
-		arg.Lim,
-	)
+	rows, err := q.db.Query(ctx, listSavedViewsFor, arg.WorkspaceID, arg.MemberID)
 	if err != nil {
 		return nil, err
 	}
@@ -133,6 +148,75 @@ func (q *Queries) ListSavedViewsFor(ctx context.Context, arg ListSavedViewsForPa
 		return nil, err
 	}
 	return items, nil
+}
+
+const listTeamSavedViews = `-- name: ListTeamSavedViews :many
+SELECT id, workspace_id, visibility, owner_member_id, team_id, name, filters, position, created_at, updated_at FROM saved_views
+WHERE workspace_id = $1 AND visibility = 'team' AND team_id = $2
+ORDER BY position, name, id
+`
+
+type ListTeamSavedViewsParams struct {
+	WorkspaceID uuid.UUID
+	TeamID      *uuid.UUID
+}
+
+func (q *Queries) ListTeamSavedViews(ctx context.Context, arg ListTeamSavedViewsParams) ([]SavedView, error) {
+	rows, err := q.db.Query(ctx, listTeamSavedViews, arg.WorkspaceID, arg.TeamID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []SavedView
+	for rows.Next() {
+		var i SavedView
+		if err := rows.Scan(
+			&i.ID,
+			&i.WorkspaceID,
+			&i.Visibility,
+			&i.OwnerMemberID,
+			&i.TeamID,
+			&i.Name,
+			&i.Filters,
+			&i.Position,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const lockSavedView = `-- name: LockSavedView :one
+SELECT id, workspace_id, visibility, owner_member_id, team_id, name, filters, position, created_at, updated_at FROM saved_views WHERE workspace_id = $1 AND id = $2 FOR UPDATE
+`
+
+type LockSavedViewParams struct {
+	WorkspaceID uuid.UUID
+	ID          uuid.UUID
+}
+
+func (q *Queries) LockSavedView(ctx context.Context, arg LockSavedViewParams) (SavedView, error) {
+	row := q.db.QueryRow(ctx, lockSavedView, arg.WorkspaceID, arg.ID)
+	var i SavedView
+	err := row.Scan(
+		&i.ID,
+		&i.WorkspaceID,
+		&i.Visibility,
+		&i.OwnerMemberID,
+		&i.TeamID,
+		&i.Name,
+		&i.Filters,
+		&i.Position,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
 }
 
 const lockSavedViews = `-- name: LockSavedViews :exec
@@ -239,15 +323,16 @@ func (q *Queries) StripTeamFromSavedViews(ctx context.Context, arg StripTeamFrom
 }
 
 const updateSavedView = `-- name: UpdateSavedView :one
-UPDATE saved_views SET name = $1, filters = $2, position = $3, updated_at = $4
+UPDATE saved_views SET name = COALESCE($1::text, name), filters = COALESCE($2::jsonb, filters),
+    position = COALESCE($3::int, position), updated_at = $4
 WHERE workspace_id = $5 AND id = $6
 RETURNING id, workspace_id, visibility, owner_member_id, team_id, name, filters, position, created_at, updated_at
 `
 
 type UpdateSavedViewParams struct {
-	Name        string
+	Name        *string
 	Filters     []byte
-	Position    int32
+	Position    *int32
 	Now         time.Time
 	WorkspaceID uuid.UUID
 	ID          uuid.UUID
@@ -276,4 +361,59 @@ func (q *Queries) UpdateSavedView(ctx context.Context, arg UpdateSavedViewParams
 		&i.UpdatedAt,
 	)
 	return i, err
+}
+
+const visibleSavedViews = `-- name: VisibleSavedViews :many
+SELECT v.id, v.workspace_id, v.visibility, v.owner_member_id, v.team_id, v.name, v.filters, v.position, v.created_at, v.updated_at FROM saved_views v
+WHERE v.workspace_id = $1 AND v.id = ANY($2::uuid[])
+  AND (v.visibility = 'workspace'
+       OR (v.visibility = 'personal' AND v.owner_member_id = $3::uuid)
+       OR (v.visibility = 'team' AND ($4::bool OR EXISTS (
+           SELECT 1 FROM team_members tm
+           WHERE tm.workspace_id = v.workspace_id AND tm.team_id = v.team_id AND tm.member_id = $3::uuid))))
+`
+
+type VisibleSavedViewsParams struct {
+	WorkspaceID uuid.UUID
+	Ids         []uuid.UUID
+	MemberID    *uuid.UUID
+	AllTeams    bool
+}
+
+// Views by id that the caller may see: personal to their owner, workspace views to everyone, team
+// views to the team's members and, with all_teams, to owners, admins and unlimited keys.
+func (q *Queries) VisibleSavedViews(ctx context.Context, arg VisibleSavedViewsParams) ([]SavedView, error) {
+	rows, err := q.db.Query(ctx, visibleSavedViews,
+		arg.WorkspaceID,
+		arg.Ids,
+		arg.MemberID,
+		arg.AllTeams,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []SavedView
+	for rows.Next() {
+		var i SavedView
+		if err := rows.Scan(
+			&i.ID,
+			&i.WorkspaceID,
+			&i.Visibility,
+			&i.OwnerMemberID,
+			&i.TeamID,
+			&i.Name,
+			&i.Filters,
+			&i.Position,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }

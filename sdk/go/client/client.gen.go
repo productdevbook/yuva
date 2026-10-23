@@ -9258,8 +9258,9 @@ type ApiKeyList struct {
 //	  - `issues:write`: create, link and unlink GitHub and Linear issues on feedback and ideas,
 //	    together with `conversations:read`.
 //
-//	  - `views:write`: save, change, reorder and delete saved views: personal ones for OAuth
-//	    tokens, workspace and team ones for owners' and admins' tokens and for API keys.
+//	  - `views:write`: save, change, reorder and delete saved views, together with
+//	    `conversations:read`: personal ones for OAuth tokens, workspace and team ones for owners'
+//	    and admins' tokens and for API keys (team ones only without an inbox limit).
 //
 //	  - `fields:manage`: create, change and delete custom field definitions. Owners and admins
 //	    only; never offered to agents' tokens, refused for keys limited to inboxes. Never
@@ -19931,8 +19932,11 @@ type SavedView struct {
 	Count *int32 `json:"count,omitempty"`
 
 	// CountCapped `true` when more than 1000 conversations match; `count` is then 1000.
-	CountCapped *bool     `json:"count_capped,omitempty"`
-	CreatedAt   time.Time `json:"created_at"`
+	CountCapped *bool `json:"count_capped,omitempty"`
+
+	// CountUnavailable `true` when counting took longer than a second; `count` is then absent.
+	CountUnavailable *bool     `json:"count_unavailable,omitempty"`
+	CreatedAt        time.Time `json:"created_at"`
 
 	// Filters Query parameters of `GET /v1/conversations`, by name, each with its value as it would
 	// appear in the query string (lists comma-separated), e.g.
@@ -26466,6 +26470,9 @@ type GetUsageParams struct {
 
 // ListViewsParams defines parameters for ListViews.
 type ListViewsParams struct {
+	// TeamId Only this team's views.
+	TeamId *uuid.UUID `form:"team_id,omitempty" json:"team_id,omitempty"`
+
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
@@ -41477,15 +41484,19 @@ type ClientInterface interface {
 
 	// ListViews List saved views
 	//
-	// The saved views of the conversation list the caller sees: their own personal views, the
-	// workspace's views and the views of their teams (owners, admins and API keys see every
-	// team's views; API keys have no personal views). Personal first, then team, then
-	// workspace, each by `position` and name; at most 50.
+	// The rail: the caller's own personal views, the workspace's views and the views of the
+	// teams the caller is a member of, all of them. Personal first, then team, then workspace,
+	// each by `position` and name. API keys have no personal views and belong to no team.
+	//
+	// With `team_id`, only that team's views instead: for its members, owners, admins and API
+	// keys not limited to inboxes (others `404`), so owners can manage the views of teams they
+	// are not in without every team's views in their rail.
 	//
 	// Each view carries `count`: its open conversations, counted with the view's filters under
 	// the caller's own inbox access, so a shared view never counts what the caller cannot see.
-	// `count` stops at 1000 (`count_capped`), and is absent when the filters do not apply to the
-	// caller, for example `assignee=me` for an API key or an inbox the caller cannot see.
+	// `count` stops at 1000 (`count_capped`). It is absent when the filters do not apply to the
+	// caller, for example `assignee=me` for an API key or an inbox the caller cannot see, and
+	// when counting took longer than a second (`count_unavailable`).
 	//
 	// Scope: `conversations:read`.
 	//
@@ -41497,14 +41508,17 @@ type ClientInterface interface {
 	// A `personal` view belongs to the calling member: any member with a session, or an OAuth
 	// token with `views:write`; API keys are refused with `403 member_session_required`.
 	// `workspace` and `team` views are created by owners and admins (with `views:write` on an
-	// OAuth token) and API keys with `views:write`; agents get `403 forbidden`. A `team` view
-	// names its `team_id` and is listed to that team's members, owners and admins; deleting the
-	// team deletes its views.
+	// OAuth token) and API keys with `views:write`; agents get `403 forbidden`, and keys limited
+	// to inboxes get it for `team` views. A `team` view names its `team_id` and is seen by that
+	// team's members, owners, admins and keys not limited to inboxes; deleting the team deletes
+	// its views. Writing a view of any kind also needs `conversations:read`, since the answer
+	// carries its count.
 	//
 	// `filters` are checked as `GET /v1/conversations` checks its query parameters, for the
 	// caller: an unknown parameter, `cursor`, `limit`, or a value the list refuses answers
-	// `400 validation_failed` with `field` naming the parameter. A view counts towards the
-	// limit of 50 views the caller sees (`403 view_limit`).
+	// `400 validation_failed` with `field` naming the parameter. A member keeps at most 50
+	// personal views, a workspace 50 workspace views and each team 50 team views
+	// (`403 view_limit`).
 	//
 	// Takes any type of body and a specified content type.
 	//
@@ -41516,14 +41530,17 @@ type ClientInterface interface {
 	// A `personal` view belongs to the calling member: any member with a session, or an OAuth
 	// token with `views:write`; API keys are refused with `403 member_session_required`.
 	// `workspace` and `team` views are created by owners and admins (with `views:write` on an
-	// OAuth token) and API keys with `views:write`; agents get `403 forbidden`. A `team` view
-	// names its `team_id` and is listed to that team's members, owners and admins; deleting the
-	// team deletes its views.
+	// OAuth token) and API keys with `views:write`; agents get `403 forbidden`, and keys limited
+	// to inboxes get it for `team` views. A `team` view names its `team_id` and is seen by that
+	// team's members, owners, admins and keys not limited to inboxes; deleting the team deletes
+	// its views. Writing a view of any kind also needs `conversations:read`, since the answer
+	// carries its count.
 	//
 	// `filters` are checked as `GET /v1/conversations` checks its query parameters, for the
 	// caller: an unknown parameter, `cursor`, `limit`, or a value the list refuses answers
-	// `400 validation_failed` with `field` naming the parameter. A view counts towards the
-	// limit of 50 views the caller sees (`403 view_limit`).
+	// `400 validation_failed` with `field` naming the parameter. A member keeps at most 50
+	// personal views, a workspace 50 workspace views and each team 50 team views
+	// (`403 view_limit`).
 	//
 	// Takes a body of the `application/json` content type.
 	//
@@ -57796,15 +57813,19 @@ func (c *Client) GetVersion(ctx context.Context, reqEditors ...RequestEditorFn) 
 
 // ListViews List saved views
 //
-// The saved views of the conversation list the caller sees: their own personal views, the
-// workspace's views and the views of their teams (owners, admins and API keys see every
-// team's views; API keys have no personal views). Personal first, then team, then
-// workspace, each by `position` and name; at most 50.
+// The rail: the caller's own personal views, the workspace's views and the views of the
+// teams the caller is a member of, all of them. Personal first, then team, then workspace,
+// each by `position` and name. API keys have no personal views and belong to no team.
+//
+// With `team_id`, only that team's views instead: for its members, owners, admins and API
+// keys not limited to inboxes (others `404`), so owners can manage the views of teams they
+// are not in without every team's views in their rail.
 //
 // Each view carries `count`: its open conversations, counted with the view's filters under
 // the caller's own inbox access, so a shared view never counts what the caller cannot see.
-// `count` stops at 1000 (`count_capped`), and is absent when the filters do not apply to the
-// caller, for example `assignee=me` for an API key or an inbox the caller cannot see.
+// `count` stops at 1000 (`count_capped`). It is absent when the filters do not apply to the
+// caller, for example `assignee=me` for an API key or an inbox the caller cannot see, and
+// when counting took longer than a second (`count_unavailable`).
 //
 // Scope: `conversations:read`.
 //
@@ -57826,14 +57847,17 @@ func (c *Client) ListViews(ctx context.Context, params *ListViewsParams, reqEdit
 // A `personal` view belongs to the calling member: any member with a session, or an OAuth
 // token with `views:write`; API keys are refused with `403 member_session_required`.
 // `workspace` and `team` views are created by owners and admins (with `views:write` on an
-// OAuth token) and API keys with `views:write`; agents get `403 forbidden`. A `team` view
-// names its `team_id` and is listed to that team's members, owners and admins; deleting the
-// team deletes its views.
+// OAuth token) and API keys with `views:write`; agents get `403 forbidden`, and keys limited
+// to inboxes get it for `team` views. A `team` view names its `team_id` and is seen by that
+// team's members, owners, admins and keys not limited to inboxes; deleting the team deletes
+// its views. Writing a view of any kind also needs `conversations:read`, since the answer
+// carries its count.
 //
 // `filters` are checked as `GET /v1/conversations` checks its query parameters, for the
 // caller: an unknown parameter, `cursor`, `limit`, or a value the list refuses answers
-// `400 validation_failed` with `field` naming the parameter. A view counts towards the
-// limit of 50 views the caller sees (`403 view_limit`).
+// `400 validation_failed` with `field` naming the parameter. A member keeps at most 50
+// personal views, a workspace 50 workspace views and each team 50 team views
+// (`403 view_limit`).
 //
 // Takes any type of body and a specified content type.
 //
@@ -57855,14 +57879,17 @@ func (c *Client) CreateViewWithBody(ctx context.Context, params *CreateViewParam
 // A `personal` view belongs to the calling member: any member with a session, or an OAuth
 // token with `views:write`; API keys are refused with `403 member_session_required`.
 // `workspace` and `team` views are created by owners and admins (with `views:write` on an
-// OAuth token) and API keys with `views:write`; agents get `403 forbidden`. A `team` view
-// names its `team_id` and is listed to that team's members, owners and admins; deleting the
-// team deletes its views.
+// OAuth token) and API keys with `views:write`; agents get `403 forbidden`, and keys limited
+// to inboxes get it for `team` views. A `team` view names its `team_id` and is seen by that
+// team's members, owners, admins and keys not limited to inboxes; deleting the team deletes
+// its views. Writing a view of any kind also needs `conversations:read`, since the answer
+// carries its count.
 //
 // `filters` are checked as `GET /v1/conversations` checks its query parameters, for the
 // caller: an unknown parameter, `cursor`, `limit`, or a value the list refuses answers
-// `400 validation_failed` with `field` naming the parameter. A view counts towards the
-// limit of 50 views the caller sees (`403 view_limit`).
+// `400 validation_failed` with `field` naming the parameter. A member keeps at most 50
+// personal views, a workspace 50 workspace views and each team 50 team views
+// (`403 view_limit`).
 //
 // Takes a body of the `application/json` content type.
 //
@@ -88373,6 +88400,33 @@ func NewListViewsRequest(server string, params *ListViewsParams) (*http.Request,
 		return nil, err
 	}
 
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if params.TeamId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "team_id", *params.TeamId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "uuid"}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
 	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
 	if err != nil {
 		return nil, err
@@ -99628,15 +99682,19 @@ type ClientWithResponsesInterface interface {
 
 	// ListViewsWithResponse List saved views
 	//
-	// The saved views of the conversation list the caller sees: their own personal views, the
-	// workspace's views and the views of their teams (owners, admins and API keys see every
-	// team's views; API keys have no personal views). Personal first, then team, then
-	// workspace, each by `position` and name; at most 50.
+	// The rail: the caller's own personal views, the workspace's views and the views of the
+	// teams the caller is a member of, all of them. Personal first, then team, then workspace,
+	// each by `position` and name. API keys have no personal views and belong to no team.
+	//
+	// With `team_id`, only that team's views instead: for its members, owners, admins and API
+	// keys not limited to inboxes (others `404`), so owners can manage the views of teams they
+	// are not in without every team's views in their rail.
 	//
 	// Each view carries `count`: its open conversations, counted with the view's filters under
 	// the caller's own inbox access, so a shared view never counts what the caller cannot see.
-	// `count` stops at 1000 (`count_capped`), and is absent when the filters do not apply to the
-	// caller, for example `assignee=me` for an API key or an inbox the caller cannot see.
+	// `count` stops at 1000 (`count_capped`). It is absent when the filters do not apply to the
+	// caller, for example `assignee=me` for an API key or an inbox the caller cannot see, and
+	// when counting took longer than a second (`count_unavailable`).
 	//
 	// Scope: `conversations:read`.
 	//
@@ -99650,14 +99708,17 @@ type ClientWithResponsesInterface interface {
 	// A `personal` view belongs to the calling member: any member with a session, or an OAuth
 	// token with `views:write`; API keys are refused with `403 member_session_required`.
 	// `workspace` and `team` views are created by owners and admins (with `views:write` on an
-	// OAuth token) and API keys with `views:write`; agents get `403 forbidden`. A `team` view
-	// names its `team_id` and is listed to that team's members, owners and admins; deleting the
-	// team deletes its views.
+	// OAuth token) and API keys with `views:write`; agents get `403 forbidden`, and keys limited
+	// to inboxes get it for `team` views. A `team` view names its `team_id` and is seen by that
+	// team's members, owners, admins and keys not limited to inboxes; deleting the team deletes
+	// its views. Writing a view of any kind also needs `conversations:read`, since the answer
+	// carries its count.
 	//
 	// `filters` are checked as `GET /v1/conversations` checks its query parameters, for the
 	// caller: an unknown parameter, `cursor`, `limit`, or a value the list refuses answers
-	// `400 validation_failed` with `field` naming the parameter. A view counts towards the
-	// limit of 50 views the caller sees (`403 view_limit`).
+	// `400 validation_failed` with `field` naming the parameter. A member keeps at most 50
+	// personal views, a workspace 50 workspace views and each team 50 team views
+	// (`403 view_limit`).
 	//
 	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
 	//
@@ -99669,14 +99730,17 @@ type ClientWithResponsesInterface interface {
 	// A `personal` view belongs to the calling member: any member with a session, or an OAuth
 	// token with `views:write`; API keys are refused with `403 member_session_required`.
 	// `workspace` and `team` views are created by owners and admins (with `views:write` on an
-	// OAuth token) and API keys with `views:write`; agents get `403 forbidden`. A `team` view
-	// names its `team_id` and is listed to that team's members, owners and admins; deleting the
-	// team deletes its views.
+	// OAuth token) and API keys with `views:write`; agents get `403 forbidden`, and keys limited
+	// to inboxes get it for `team` views. A `team` view names its `team_id` and is seen by that
+	// team's members, owners, admins and keys not limited to inboxes; deleting the team deletes
+	// its views. Writing a view of any kind also needs `conversations:read`, since the answer
+	// carries its count.
 	//
 	// `filters` are checked as `GET /v1/conversations` checks its query parameters, for the
 	// caller: an unknown parameter, `cursor`, `limit`, or a value the list refuses answers
-	// `400 validation_failed` with `field` naming the parameter. A view counts towards the
-	// limit of 50 views the caller sees (`403 view_limit`).
+	// `400 validation_failed` with `field` naming the parameter. A member keeps at most 50
+	// personal views, a workspace 50 workspace views and each team 50 team views
+	// (`403 view_limit`).
 	//
 	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
 	//
@@ -147421,15 +147485,19 @@ func (c *ClientWithResponses) GetVersionWithResponse(ctx context.Context, reqEdi
 
 // ListViewsWithResponse List saved views
 //
-// The saved views of the conversation list the caller sees: their own personal views, the
-// workspace's views and the views of their teams (owners, admins and API keys see every
-// team's views; API keys have no personal views). Personal first, then team, then
-// workspace, each by `position` and name; at most 50.
+// The rail: the caller's own personal views, the workspace's views and the views of the
+// teams the caller is a member of, all of them. Personal first, then team, then workspace,
+// each by `position` and name. API keys have no personal views and belong to no team.
+//
+// With `team_id`, only that team's views instead: for its members, owners, admins and API
+// keys not limited to inboxes (others `404`), so owners can manage the views of teams they
+// are not in without every team's views in their rail.
 //
 // Each view carries `count`: its open conversations, counted with the view's filters under
 // the caller's own inbox access, so a shared view never counts what the caller cannot see.
-// `count` stops at 1000 (`count_capped`), and is absent when the filters do not apply to the
-// caller, for example `assignee=me` for an API key or an inbox the caller cannot see.
+// `count` stops at 1000 (`count_capped`). It is absent when the filters do not apply to the
+// caller, for example `assignee=me` for an API key or an inbox the caller cannot see, and
+// when counting took longer than a second (`count_unavailable`).
 //
 // Scope: `conversations:read`.
 //
@@ -147449,14 +147517,17 @@ func (c *ClientWithResponses) ListViewsWithResponse(ctx context.Context, params 
 // A `personal` view belongs to the calling member: any member with a session, or an OAuth
 // token with `views:write`; API keys are refused with `403 member_session_required`.
 // `workspace` and `team` views are created by owners and admins (with `views:write` on an
-// OAuth token) and API keys with `views:write`; agents get `403 forbidden`. A `team` view
-// names its `team_id` and is listed to that team's members, owners and admins; deleting the
-// team deletes its views.
+// OAuth token) and API keys with `views:write`; agents get `403 forbidden`, and keys limited
+// to inboxes get it for `team` views. A `team` view names its `team_id` and is seen by that
+// team's members, owners, admins and keys not limited to inboxes; deleting the team deletes
+// its views. Writing a view of any kind also needs `conversations:read`, since the answer
+// carries its count.
 //
 // `filters` are checked as `GET /v1/conversations` checks its query parameters, for the
 // caller: an unknown parameter, `cursor`, `limit`, or a value the list refuses answers
-// `400 validation_failed` with `field` naming the parameter. A view counts towards the
-// limit of 50 views the caller sees (`403 view_limit`).
+// `400 validation_failed` with `field` naming the parameter. A member keeps at most 50
+// personal views, a workspace 50 workspace views and each team 50 team views
+// (`403 view_limit`).
 //
 // Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
 //
@@ -147474,14 +147545,17 @@ func (c *ClientWithResponses) CreateViewWithBodyWithResponse(ctx context.Context
 // A `personal` view belongs to the calling member: any member with a session, or an OAuth
 // token with `views:write`; API keys are refused with `403 member_session_required`.
 // `workspace` and `team` views are created by owners and admins (with `views:write` on an
-// OAuth token) and API keys with `views:write`; agents get `403 forbidden`. A `team` view
-// names its `team_id` and is listed to that team's members, owners and admins; deleting the
-// team deletes its views.
+// OAuth token) and API keys with `views:write`; agents get `403 forbidden`, and keys limited
+// to inboxes get it for `team` views. A `team` view names its `team_id` and is seen by that
+// team's members, owners, admins and keys not limited to inboxes; deleting the team deletes
+// its views. Writing a view of any kind also needs `conversations:read`, since the answer
+// carries its count.
 //
 // `filters` are checked as `GET /v1/conversations` checks its query parameters, for the
 // caller: an unknown parameter, `cursor`, `limit`, or a value the list refuses answers
-// `400 validation_failed` with `field` naming the parameter. A view counts towards the
-// limit of 50 views the caller sees (`403 view_limit`).
+// `400 validation_failed` with `field` naming the parameter. A member keeps at most 50
+// personal views, a workspace 50 workspace views and each team 50 team views
+// (`403 view_limit`).
 //
 // Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
 //

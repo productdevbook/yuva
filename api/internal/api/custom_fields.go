@@ -229,7 +229,7 @@ func fieldFilter(ctx context.Context, q *store.Queries, workspaceID uuid.UUID, p
 	if len(pairs) == 0 {
 		return nil, nil
 	}
-	defs, err := conversationFieldDefs(ctx, q, workspaceID)
+	defs, err := filterFieldDefs(ctx, q, workspaceID)
 	if err != nil {
 		return nil, err
 	}

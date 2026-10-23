@@ -1,7 +1,9 @@
 package api_test
 
 import (
+	"fmt"
 	"net/http"
+	"sync"
 	"slices"
 	"strings"
 	"testing"
@@ -125,9 +127,34 @@ func TestSavedViewPermissions(t *testing.T) {
 	key := tm.scopedKey(h, "conversations:read", "views:write")
 	key.expectProblem(http.StatusForbidden, "member_session_required", "POST", "/v1/views", map[string]any{"visibility": "personal", "name": "x", "filters": open})
 	keyView := tm.newView(key, map[string]any{"visibility": "workspace", "name": "From the backend", "filters": open}).str("id")
-	if v := viewsOf(key); len(v) != 3 || v[personal] != nil {
+	if v := viewsOf(key); len(v) != 2 || v[personal] != nil || v[teamView] != nil {
 		t.Fatalf("key lists %v", v)
 	}
+	if r := key.expect(http.StatusOK, "GET", "/v1/views?team_id="+squad, nil); len(r.body["items"].([]any)) != 1 {
+		t.Fatalf("key lists the team's views: %s", r.raw)
+	}
+	writeOnly := tm.scopedKey(h, "views:write")
+	writeOnly.expectProblem(http.StatusForbidden, "insufficient_scope", "POST", "/v1/views", map[string]any{"visibility": "workspace", "name": "oracle", "filters": map[string]string{"q": "secret"}})
+	writeOnly.expectProblem(http.StatusForbidden, "insufficient_scope", "PATCH", "/v1/views/"+keyView, map[string]any{"filters": map[string]string{"contact_id": tm.contact}})
+	writeOnly.expectProblem(http.StatusForbidden, "insufficient_scope", "GET", "/v1/views", nil)
+	writeOnly.expectProblem(http.StatusForbidden, "insufficient_scope", "GET", "/v1/views/"+keyView, nil)
+	limited := h.client()
+	limited.bearer = tm.owner.expect(http.StatusCreated, "POST", "/v1/api-keys", map[string]any{"name": "limited", "inbox_ids": []string{tm.inbox}, "scopes": []string{"conversations:read", "views:write"}}).str("secret")
+	limited.expectProblem(http.StatusNotFound, "not_found", "GET", "/v1/views/"+teamView, nil)
+	limited.expectProblem(http.StatusNotFound, "not_found", "GET", "/v1/views?team_id="+squad, nil)
+	limited.expectProblem(http.StatusForbidden, "forbidden", "POST", "/v1/views", map[string]any{"visibility": "team", "team_id": squad, "name": "x", "filters": open})
+	if v := viewsOf(limited); v[teamView] != nil {
+		t.Fatal("team view listed to a key limited to inboxes")
+	}
+	elsewhere := tm.newTeamOf("Elsewhere", nil, nil)
+	foreign := tm.newView(tm.owner, map[string]any{"visibility": "team", "team_id": elsewhere, "name": "Not my team", "filters": open}).str("id")
+	if _, ok := viewsOf(tm.owner)[foreign]; ok {
+		t.Fatal("owner's rail lists a team the owner is not in")
+	}
+	if r := tm.owner.expect(http.StatusOK, "GET", "/v1/views?team_id="+elsewhere, nil); len(r.body["items"].([]any)) != 1 {
+		t.Fatalf("owner lists another team's views: %s", r.raw)
+	}
+	tm.agent.expectProblem(http.StatusNotFound, "not_found", "GET", "/v1/views?team_id="+elsewhere, nil)
 	readOnly := tm.scopedKey(h, "conversations:read")
 	readOnly.expectProblem(http.StatusForbidden, "insufficient_scope", "POST", "/v1/views", map[string]any{"visibility": "workspace", "name": "x", "filters": open})
 	readOnly.expectProblem(http.StatusForbidden, "insufficient_scope", "DELETE", "/v1/views/"+keyView, nil)
@@ -161,17 +188,24 @@ func TestSavedViewPermissions(t *testing.T) {
 	tm.agent.expectProblem(http.StatusNotFound, "not_found", "GET", "/v1/views/"+shared, nil)
 }
 
-func TestSavedViewLimit(t *testing.T) {
+func TestSavedViewLimitPerOwner(t *testing.T) {
 	t.Parallel()
 	h := newHarness(t)
 	tm := newTeam(t, h)
-	for i := range 49 {
-		tm.newView(tm.agent, map[string]any{"visibility": "personal", "name": "v" + string(rune('a'+i%26)), "filters": map[string]string{}})
+	empty := map[string]string{}
+	for i := range 50 {
+		tm.newView(tm.agent, map[string]any{"visibility": "personal", "name": fmt.Sprintf("v%d", i), "filters": empty})
 	}
-	tm.newView(tm.owner, map[string]any{"visibility": "workspace", "name": "shared", "filters": map[string]string{}})
-	tm.agent.expectProblem(http.StatusForbidden, "view_limit", "POST", "/v1/views", map[string]any{"visibility": "personal", "name": "one more", "filters": map[string]string{}})
-	if n := len(viewsOf(tm.agent)); n != 50 {
-		t.Fatalf("agent lists %d views", n)
+	tm.agent.expectProblem(http.StatusForbidden, "view_limit", "POST", "/v1/views", map[string]any{"visibility": "personal", "name": "one more", "filters": empty})
+	tm.newView(tm.owner, map[string]any{"visibility": "personal", "name": "owner's", "filters": empty})
+	for i := range 50 {
+		tm.newView(tm.owner, map[string]any{"visibility": "workspace", "name": fmt.Sprintf("w%d", i), "filters": empty})
+	}
+	tm.owner.expectProblem(http.StatusForbidden, "view_limit", "POST", "/v1/views", map[string]any{"visibility": "workspace", "name": "one more", "filters": empty})
+	squad := tm.newTeamOf("Billing", []string{tm.agentID}, nil)
+	tm.newView(tm.owner, map[string]any{"visibility": "team", "team_id": squad, "name": "team", "filters": empty})
+	if n := len(viewsOf(tm.agent)); n != 101 {
+		t.Fatalf("agent lists %d views, want all 101", n)
 	}
 }
 
@@ -270,5 +304,32 @@ func TestSavedViewFiltersDropDeletedReferences(t *testing.T) {
 	tm.owner.expect(http.StatusNoContent, "DELETE", "/v1/custom-fields/"+field, nil)
 	if k := keys(); len(k) != 1 || k[0] != "status" {
 		t.Fatalf("after field delete: %v", k)
+	}
+}
+
+func TestSavedViewUpdateKeepsAConcurrentStrip(t *testing.T) {
+	t.Parallel()
+	h := newHarness(t)
+	tm := newTeam(t, h)
+	for round := range 5 {
+		label := tm.owner.expect(http.StatusCreated, "POST", "/v1/labels", map[string]any{"name": fmt.Sprintf("l%d", round)}).str("id")
+		view := tm.newView(tm.owner, map[string]any{"visibility": "workspace", "name": "v", "filters": map[string]string{"label_id": label, "status": "open"}}).str("id")
+		var wg sync.WaitGroup
+		statuses := make(chan int, 21)
+		for i := range 20 {
+			wg.Go(func() { statuses <- tm.owner.do("PATCH", "/v1/views/"+view, map[string]any{"name": fmt.Sprintf("n%d", i)}).status })
+		}
+		wg.Go(func() { statuses <- tm.owner.do("DELETE", "/v1/labels/"+label, nil).status })
+		wg.Wait()
+		close(statuses)
+		for st := range statuses {
+			if st != http.StatusOK && st != http.StatusNoContent {
+				t.Fatalf("status %d", st)
+			}
+		}
+		f := tm.owner.expect(http.StatusOK, "GET", "/v1/views/"+view, nil).body["filters"].(map[string]any)
+		if _, ok := f["label_id"]; ok || f["status"] != "open" {
+			t.Fatalf("round %d: a rename undid the strip: %v", round, f)
+		}
 	}
 }

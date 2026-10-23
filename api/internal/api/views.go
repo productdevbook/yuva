@@ -11,6 +11,7 @@ import (
 	"slices"
 	"strings"
 	"sync"
+	"time"
 	"uuid"
 
 	"github.com/productdevbook/yuva/api/internal/oas"
@@ -22,7 +23,8 @@ const (
 	maxViewFilters   = 30
 	maxViewValue     = 2000
 	viewCountCap     = 1000
-	viewLookupBound  = 1000
+	viewCountWorkers = 4
+	viewCountTimeout = time.Second
 	viewPersonal     = string(oas.SavedViewPersonal)
 	viewTeam         = string(oas.SavedViewTeam)
 	viewStatusOpen   = string(oas.ConversationStatusOpen)
@@ -33,7 +35,7 @@ const (
 var (
 	errViewGone        = problem(http.StatusNotFound, "not_found", "no such view")
 	errViewNeedsMember = problem(http.StatusForbidden, "member_session_required", "a personal view belongs to a member; an API key manages workspace and team views only")
-	errViewLimit       = problem(http.StatusForbidden, "view_limit", "a caller sees at most 50 views")
+	errViewLimit       = problem(http.StatusForbidden, "view_limit", "at most 50 personal views per member, 50 workspace views and 50 views per team")
 )
 
 func errViewFilter(param, detail string) *apiError {
@@ -195,42 +197,102 @@ func savedViewBody(v store.SavedView) oas.SavedView {
 	}
 }
 
-// withViewCount counts the view's open conversations under p's own access; filters that do not
-// apply to p (assignee=me for a key, an inbox p cannot see) leave the count out.
-func (s *Server) withViewCount(ctx context.Context, p principal, v store.SavedView) (oas.SavedView, error) {
-	out := savedViewBody(v)
-	arg, err := s.viewFilter(ctx, s.st.Queries, p, out.Filters)
+type fieldDefsKey struct{}
+
+// filterFieldDefs are the conversation field definitions for field filters, loaded once for all the
+// views of a request when it put them in ctx.
+func filterFieldDefs(ctx context.Context, q *store.Queries, workspaceID uuid.UUID) ([]store.CustomField, error) {
+	if defs, ok := ctx.Value(fieldDefsKey{}).([]store.CustomField); ok {
+		return defs, nil
+	}
+	return conversationFieldDefs(ctx, q, workspaceID)
+}
+
+func hasFieldFilter(v oas.SavedView) bool {
+	return slices.ContainsFunc(slices.Collect(maps.Keys(v.Filters)), func(k string) bool { return strings.HasPrefix(k, fieldFilterPrefix) })
+}
+
+// withViewCounts counts each view's open conversations under p's own access, a few at a time, each
+// count stopped after viewCountTimeout (count_unavailable). Filters that do not apply to p (an inbox
+// p cannot see, assignee=me for a key) leave the count out.
+func (s *Server) withViewCounts(ctx context.Context, p principal, rows []store.SavedView) ([]oas.SavedView, error) {
+	out := make([]oas.SavedView, len(rows))
+	for i, r := range rows {
+		out[i] = savedViewBody(r)
+	}
+	if slices.ContainsFunc(out, hasFieldFilter) {
+		defs, err := conversationFieldDefs(ctx, s.st.Queries, p.workspaceID)
+		if err != nil {
+			return nil, err
+		}
+		ctx = context.WithValue(ctx, fieldDefsKey{}, defs)
+	}
+	errs := make([]error, len(out))
+	sem := make(chan struct{}, viewCountWorkers)
+	var wg sync.WaitGroup
+	for i := range out {
+		wg.Go(func() {
+			sem <- struct{}{}
+			defer func() { <-sem }()
+			errs[i] = s.countView(ctx, p, &out[i])
+		})
+	}
+	wg.Wait()
+	if err := errors.Join(errs...); err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (s *Server) countView(ctx context.Context, p principal, v *oas.SavedView) error {
+	arg, err := s.viewFilter(ctx, s.st.Queries, p, v.Filters)
 	if err != nil {
 		var e *apiError
 		if errors.As(err, &e) {
-			return out, nil
+			return nil
 		}
-		return out, err
+		return err
 	}
 	var n int64
 	if arg.Statuses == nil || slices.Contains(arg.Statuses, viewStatusOpen) {
 		arg.Statuses, arg.Lim = []string{viewStatusOpen}, viewCountCap+1
-		if n, err = s.st.CountListConversations(ctx, arg); err != nil {
-			return out, err
+		var timedOut bool
+		if n, timedOut, err = s.st.CountListConversationsWithin(ctx, arg, viewCountTimeout); err != nil {
+			return err
+		}
+		if timedOut {
+			v.CountUnavailable = new(true)
+			return nil
 		}
 	}
-	out.Count = new(int32(min(n, viewCountCap)))
-	out.CountCapped = new(n > viewCountCap)
-	return out, nil
+	v.Count = new(int32(min(n, viewCountCap)))
+	v.CountCapped = new(n > viewCountCap)
+	return nil
 }
 
+func (s *Server) withViewCount(ctx context.Context, p principal, v store.SavedView) (oas.SavedView, error) {
+	out, err := s.withViewCounts(ctx, p, []store.SavedView{v})
+	if err != nil {
+		return oas.SavedView{}, err
+	}
+	return out[0], nil
+}
+
+// seesAllTeamViews: owners, admins and keys not limited to inboxes see and manage the views of
+// every team; others only those of their teams.
 func seesAllTeamViews(p principal) bool {
-	return p.isKey() || p.role == roleOwner || p.role == roleAdmin
+	if p.isKey() {
+		return !p.limited
+	}
+	return p.role == roleOwner || p.role == roleAdmin
 }
 
-func viewsFor(ctx context.Context, q *store.Queries, p principal, id *uuid.UUID, lim int32) ([]store.SavedView, error) {
-	return q.ListSavedViewsFor(ctx, store.ListSavedViewsForParams{
-		WorkspaceID: p.workspaceID, MemberID: p.memberRef(), AllTeams: seesAllTeamViews(p), ID: id, Lim: lim,
-	})
+func visibleViews(ctx context.Context, q *store.Queries, p principal, ids []uuid.UUID) ([]store.SavedView, error) {
+	return q.VisibleSavedViews(ctx, store.VisibleSavedViewsParams{WorkspaceID: p.workspaceID, Ids: ids, MemberID: p.memberRef(), AllTeams: seesAllTeamViews(p)})
 }
 
 func visibleView(ctx context.Context, q *store.Queries, p principal, id uuid.UUID) (store.SavedView, error) {
-	rows, err := viewsFor(ctx, q, p, &id, 1)
+	rows, err := visibleViews(ctx, q, p, []uuid.UUID{id})
 	if err != nil {
 		return store.SavedView{}, err
 	}
@@ -240,6 +302,8 @@ func visibleView(ctx context.Context, q *store.Queries, p principal, id uuid.UUI
 	return rows[0], nil
 }
 
+// mayWriteView also asks for conversations:read: a written view answers with its count, which
+// searches the conversations.
 func mayWriteView(p principal, visibility string) error {
 	if visibility == viewPersonal {
 		if p.isKey() {
@@ -248,12 +312,18 @@ func mayWriteView(p principal, visibility string) error {
 		if p.memberID == uuid.Nil() {
 			return errForbidden
 		}
-		return requireScope(p, oas.ViewsWrite)
+	} else {
+		if err := requireManagerOrKey(p); err != nil {
+			return err
+		}
+		if visibility == viewTeam && !seesAllTeamViews(p) {
+			return errForbidden
+		}
 	}
 	if err := requireScope(p, oas.ViewsWrite); err != nil {
 		return err
 	}
-	return requireManagerOrKey(p)
+	return requireScope(p, oas.ConversationsRead)
 }
 
 func validViewPosition(pos *int32) error {
@@ -263,19 +333,32 @@ func validViewPosition(pos *int32) error {
 	return nil
 }
 
-func (s *Server) ListViews(ctx context.Context, _ oas.ListViewsRequestObject) (oas.ListViewsResponseObject, error) {
+func (s *Server) ListViews(ctx context.Context, req oas.ListViewsRequestObject) (oas.ListViewsResponseObject, error) {
 	p := principalFrom(ctx)
-	rows, err := viewsFor(ctx, s.st.Queries, p, nil, maxViews)
+	var rows []store.SavedView
+	var err error
+	if t := req.Params.TeamId; t != nil {
+		if !seesAllTeamViews(p) {
+			mine, err := s.st.ListMemberTeamIDs(ctx, store.ListMemberTeamIDsParams{WorkspaceID: p.workspaceID, MemberID: p.memberID})
+			if err != nil {
+				return nil, err
+			}
+			if p.isKey() || !slices.Contains(mine, *t) {
+				return nil, errTeamGone
+			}
+		}
+		rows, err = s.st.ListTeamSavedViews(ctx, store.ListTeamSavedViewsParams{WorkspaceID: p.workspaceID, TeamID: t})
+	} else {
+		rows, err = s.st.ListSavedViewsFor(ctx, store.ListSavedViewsForParams{WorkspaceID: p.workspaceID, MemberID: p.memberRef()})
+	}
 	if err != nil {
 		return nil, err
 	}
-	out := oas.ListViews200JSONResponse{Items: make([]oas.SavedView, len(rows))}
-	for i, r := range rows {
-		if out.Items[i], err = s.withViewCount(ctx, p, r); err != nil {
-			return nil, err
-		}
+	items, err := s.withViewCounts(ctx, p, rows)
+	if err != nil {
+		return nil, err
 	}
-	return out, nil
+	return oas.ListViews200JSONResponse{Items: items}, nil
 }
 
 func (s *Server) GetView(ctx context.Context, req oas.GetViewRequestObject) (oas.GetViewResponseObject, error) {
@@ -332,11 +415,11 @@ func (s *Server) CreateView(ctx context.Context, req oas.CreateViewRequestObject
 				return errValidation("team_id must be a team of the workspace")
 			}
 		}
-		seen, err := viewsFor(ctx, q, p, nil, maxViews)
+		n, err := q.CountSavedViewsIn(ctx, store.CountSavedViewsInParams{WorkspaceID: p.workspaceID, Visibility: visibility, OwnerMemberID: arg.OwnerMemberID, TeamID: arg.TeamID})
 		if err != nil {
 			return err
 		}
-		if len(seen) >= maxViews {
+		if n >= maxViews {
 			return errViewLimit
 		}
 		if arg.Filters, err = s.checkViewFilters(ctx, q, p, b.Filters); err != nil {
@@ -361,6 +444,14 @@ func (s *Server) UpdateView(ctx context.Context, req oas.UpdateViewRequestObject
 	if err := validViewPosition(b.Position); err != nil {
 		return nil, err
 	}
+	arg := store.UpdateSavedViewParams{WorkspaceID: p.workspaceID, ID: req.ViewId, Position: b.Position, Now: s.now()}
+	if b.Name != nil {
+		name, err := trimmed(*b.Name, 1, 100, "name")
+		if err != nil {
+			return nil, err
+		}
+		arg.Name = &name
+	}
 	var out store.SavedView
 	err := s.st.InTx(ctx, func(q *store.Queries) error {
 		v, err := visibleView(ctx, q, p, req.ViewId)
@@ -370,14 +461,10 @@ func (s *Server) UpdateView(ctx context.Context, req oas.UpdateViewRequestObject
 		if err := mayWriteView(p, v.Visibility); err != nil {
 			return err
 		}
-		arg := store.UpdateSavedViewParams{WorkspaceID: p.workspaceID, ID: v.ID, Name: v.Name, Filters: v.Filters, Position: v.Position, Now: s.now()}
-		if b.Name != nil {
-			if arg.Name, err = trimmed(*b.Name, 1, 100, "name"); err != nil {
-				return err
-			}
-		}
-		if b.Position != nil {
-			arg.Position = *b.Position
+		if _, err := q.LockSavedView(ctx, store.LockSavedViewParams{WorkspaceID: p.workspaceID, ID: v.ID}); store.IsNotFound(err) {
+			return errViewGone
+		} else if err != nil {
+			return err
 		}
 		if b.Filters != nil {
 			if arg.Filters, err = s.checkViewFilters(ctx, q, p, *b.Filters); err != nil {
@@ -432,19 +519,14 @@ func (s *Server) ReorderViews(ctx context.Context, req oas.ReorderViewsRequestOb
 		if err := q.LockSavedViews(ctx, p.workspaceID); err != nil {
 			return err
 		}
-		seen, err := viewsFor(ctx, q, p, nil, viewLookupBound)
+		seen, err := visibleViews(ctx, q, p, ids)
 		if err != nil {
 			return err
 		}
-		byID := map[uuid.UUID]store.SavedView{}
-		for _, v := range seen {
-			byID[v.ID] = v
+		if len(seen) != len(ids) {
+			return errViewGone
 		}
-		for _, id := range ids {
-			v, ok := byID[id]
-			if !ok {
-				return errViewGone
-			}
+		for _, v := range seen {
 			if err := mayWriteView(p, v.Visibility); err != nil {
 				return err
 			}

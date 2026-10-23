@@ -3,6 +3,8 @@ package store
 import (
 	"context"
 	"errors"
+	"strconv"
+	"time"
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"
@@ -37,4 +39,22 @@ func (q *Queries) CountListConversations(ctx context.Context, arg ListConversati
 	var n int64
 	err := q.db.QueryRow(ctx, "SELECT count(*) FROM (\n"+c.sql+"\n) listed", c.args...).Scan(&n)
 	return n, err
+}
+
+// CountListConversationsWithin is CountListConversations in a read-only transaction whose statements
+// stop after timeout; timedOut reports a count the database gave up on.
+func (s *Store) CountListConversationsWithin(ctx context.Context, arg ListConversationsParams, timeout time.Duration) (n int64, timedOut bool, err error) {
+	err = pgx.BeginTxFunc(ctx, s.Pool, pgx.TxOptions{AccessMode: pgx.ReadOnly}, func(tx pgx.Tx) error {
+		if _, err := tx.Exec(ctx, "SELECT set_config('statement_timeout', $1, true)", strconv.FormatInt(timeout.Milliseconds(), 10)); err != nil {
+			return err
+		}
+		var err error
+		n, err = New(tx).CountListConversations(ctx, arg)
+		return err
+	})
+	var pe *pgconn.PgError
+	if errors.As(err, &pe) && pe.Code == "57014" {
+		return 0, true, nil
+	}
+	return n, false, err
 }

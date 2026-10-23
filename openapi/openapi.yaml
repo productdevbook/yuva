@@ -5550,20 +5550,30 @@ paths:
       operationId: listViews
       summary: List saved views
       description: |
-        The saved views of the conversation list the caller sees: their own personal views, the
-        workspace's views and the views of their teams (owners, admins and API keys see every
-        team's views; API keys have no personal views). Personal first, then team, then
-        workspace, each by `position` and name; at most 50.
+        The rail: the caller's own personal views, the workspace's views and the views of the
+        teams the caller is a member of, all of them. Personal first, then team, then workspace,
+        each by `position` and name. API keys have no personal views and belong to no team.
+
+        With `team_id`, only that team's views instead: for its members, owners, admins and API
+        keys not limited to inboxes (others `404`), so owners can manage the views of teams they
+        are not in without every team's views in their rail.
 
         Each view carries `count`: its open conversations, counted with the view's filters under
         the caller's own inbox access, so a shared view never counts what the caller cannot see.
-        `count` stops at 1000 (`count_capped`), and is absent when the filters do not apply to the
-        caller, for example `assignee=me` for an API key or an inbox the caller cannot see.
+        `count` stops at 1000 (`count_capped`). It is absent when the filters do not apply to the
+        caller, for example `assignee=me` for an API key or an inbox the caller cannot see, and
+        when counting took longer than a second (`count_unavailable`).
 
         Scope: `conversations:read`.
       tags: [views]
       parameters:
         - $ref: "#/components/parameters/WorkspaceHeader"
+        - name: team_id
+          in: query
+          description: Only this team's views.
+          schema:
+            type: string
+            format: uuid
       responses:
         "200":
           description: The views.
@@ -5582,14 +5592,17 @@ paths:
         A `personal` view belongs to the calling member: any member with a session, or an OAuth
         token with `views:write`; API keys are refused with `403 member_session_required`.
         `workspace` and `team` views are created by owners and admins (with `views:write` on an
-        OAuth token) and API keys with `views:write`; agents get `403 forbidden`. A `team` view
-        names its `team_id` and is listed to that team's members, owners and admins; deleting the
-        team deletes its views.
+        OAuth token) and API keys with `views:write`; agents get `403 forbidden`, and keys limited
+        to inboxes get it for `team` views. A `team` view names its `team_id` and is seen by that
+        team's members, owners, admins and keys not limited to inboxes; deleting the team deletes
+        its views. Writing a view of any kind also needs `conversations:read`, since the answer
+        carries its count.
 
         `filters` are checked as `GET /v1/conversations` checks its query parameters, for the
         caller: an unknown parameter, `cursor`, `limit`, or a value the list refuses answers
-        `400 validation_failed` with `field` naming the parameter. A view counts towards the
-        limit of 50 views the caller sees (`403 view_limit`).
+        `400 validation_failed` with `field` naming the parameter. A member keeps at most 50
+        personal views, a workspace 50 workspace views and each team 50 team views
+        (`403 view_limit`).
       tags: [views]
       parameters:
         - $ref: "#/components/parameters/IdempotencyKey"
@@ -20693,8 +20706,9 @@ components:
         - `issues:write`: create, link and unlink GitHub and Linear issues on feedback and ideas,
           together with `conversations:read`.
 
-        - `views:write`: save, change, reorder and delete saved views: personal ones for OAuth
-          tokens, workspace and team ones for owners' and admins' tokens and for API keys.
+        - `views:write`: save, change, reorder and delete saved views, together with
+          `conversations:read`: personal ones for OAuth tokens, workspace and team ones for owners'
+          and admins' tokens and for API keys (team ones only without an inbox limit).
 
         - `fields:manage`: create, change and delete custom field definitions. Owners and admins
           only; never offered to agents' tokens, refused for keys limited to inboxes. Never
@@ -24637,6 +24651,9 @@ components:
         count_capped:
           type: boolean
           description: "`true` when more than 1000 conversations match; `count` is then 1000."
+        count_unavailable:
+          type: boolean
+          description: "`true` when counting took longer than a second; `count` is then absent."
         created_at:
           type: string
           format: date-time
@@ -24685,7 +24702,6 @@ components:
       properties:
         items:
           type: array
-          maxItems: 50
           items:
             $ref: "#/components/schemas/SavedView"
     SavedViewOrder:

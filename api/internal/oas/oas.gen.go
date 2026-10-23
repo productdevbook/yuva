@@ -9212,8 +9212,9 @@ type ApiKeyList struct {
 //	  - `issues:write`: create, link and unlink GitHub and Linear issues on feedback and ideas,
 //	    together with `conversations:read`.
 //
-//	  - `views:write`: save, change, reorder and delete saved views: personal ones for OAuth
-//	    tokens, workspace and team ones for owners' and admins' tokens and for API keys.
+//	  - `views:write`: save, change, reorder and delete saved views, together with
+//	    `conversations:read`: personal ones for OAuth tokens, workspace and team ones for owners'
+//	    and admins' tokens and for API keys (team ones only without an inbox limit).
 //
 //	  - `fields:manage`: create, change and delete custom field definitions. Owners and admins
 //	    only; never offered to agents' tokens, refused for keys limited to inboxes. Never
@@ -19885,8 +19886,11 @@ type SavedView struct {
 	Count *int32 `json:"count,omitempty"`
 
 	// CountCapped `true` when more than 1000 conversations match; `count` is then 1000.
-	CountCapped *bool     `json:"count_capped,omitempty"`
-	CreatedAt   time.Time `json:"created_at"`
+	CountCapped *bool `json:"count_capped,omitempty"`
+
+	// CountUnavailable `true` when counting took longer than a second; `count` is then absent.
+	CountUnavailable *bool     `json:"count_unavailable,omitempty"`
+	CreatedAt        time.Time `json:"created_at"`
 
 	// Filters Query parameters of `GET /v1/conversations`, by name, each with its value as it would
 	// appear in the query string (lists comma-separated), e.g.
@@ -26366,6 +26370,9 @@ type GetUsageParams struct {
 
 // ListViewsParams defines parameters for ListViews.
 type ListViewsParams struct {
+	// TeamId Only this team's views.
+	TeamId *uuid.UUID `form:"team_id,omitempty" json:"team_id,omitempty"`
+
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
@@ -60115,6 +60122,19 @@ func (siw *ServerInterfaceWrapper) ListViews(w http.ResponseWriter, r *http.Requ
 
 	// Parameter object where we will unmarshal all parameters from the context
 	var params ListViewsParams
+
+	// ------------- Optional query parameter "team_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "team_id", r.URL.Query(), &params.TeamId, runtime.BindQueryParameterOptions{Type: "string", Format: "uuid"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "team_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "team_id", Err: err})
+		}
+		return
+	}
 
 	headers := r.Header
 
