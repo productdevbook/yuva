@@ -38,7 +38,7 @@ DELETE FROM inboxes WHERE workspace_id = $1 AND id = $2;
 
 -- name: HasInboxAccess :one
 SELECT EXISTS (
-    SELECT 1 FROM inbox_members WHERE workspace_id = $1 AND inbox_id = $2 AND member_id = $3
+    SELECT 1 FROM member_inbox_access WHERE workspace_id = $1 AND inbox_id = $2 AND member_id = $3
 ) AS access;
 
 -- name: GrantInboxAccess :execrows
@@ -50,11 +50,14 @@ ON CONFLICT DO NOTHING;
 DELETE FROM inbox_members WHERE workspace_id = $1 AND inbox_id = $2 AND member_id = $3;
 
 -- name: ListInboxMembers :many
-SELECT m.id, m.workspace_id, m.person_id, m.role, m.created_at, p.email, p.name
-FROM inbox_members im
-JOIN members m ON m.workspace_id = im.workspace_id AND m.id = im.member_id
+SELECT m.id, m.workspace_id, m.person_id, m.role, m.created_at, p.email, p.name,
+       bool_or(a.team_id IS NULL)::bool AS direct,
+       coalesce(array_agg(DISTINCT a.team_id ORDER BY a.team_id) FILTER (WHERE a.team_id IS NOT NULL), '{}')::uuid[] AS team_ids
+FROM member_inbox_access a
+JOIN members m ON m.workspace_id = a.workspace_id AND m.id = a.member_id
 JOIN people p ON p.id = m.person_id
-WHERE im.workspace_id = $1 AND im.inbox_id = $2
+WHERE a.workspace_id = @workspace_id AND a.inbox_id = @inbox_id
+GROUP BY m.id, m.workspace_id, m.person_id, m.role, m.created_at, p.email, p.name
 ORDER BY m.created_at, m.id;
 
 -- name: ListInboxStorageKeys :many
@@ -63,7 +66,7 @@ JOIN conversations c ON c.workspace_id = a.workspace_id AND c.id = a.conversatio
 WHERE a.workspace_id = $1 AND c.inbox_id = $2;
 
 -- name: ListViewerInboxIDs :many
-SELECT inbox_id FROM inbox_viewers WHERE workspace_id = @workspace_id AND viewer_id = @viewer_id;
+SELECT DISTINCT inbox_id FROM inbox_viewers WHERE workspace_id = @workspace_id AND viewer_id = @viewer_id;
 
 -- name: ViewerHasInbox :one
 SELECT EXISTS (

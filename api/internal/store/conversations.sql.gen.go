@@ -29,14 +29,14 @@ func (q *Queries) AddConversationLabel(ctx context.Context, arg AddConversationL
 }
 
 const countOpenConversations = `-- name: CountOpenConversations :many
-SELECT c.inbox_id, c.assignee_id, c.spam, count(*) AS n
+SELECT c.inbox_id, c.assignee_id, c.team_id, c.spam, count(*) AS n
 FROM conversations c
 WHERE c.workspace_id = $1 AND c.status = 'open' AND c.trashed_at IS NULL
   AND ($2::bool OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = $3::uuid))
   AND ($4::text[] IS NULL OR c.kind = ANY($4::text[]))
-GROUP BY 1, 2, 3
+GROUP BY 1, 2, 3, 4
 `
 
 type CountOpenConversationsParams struct {
@@ -49,6 +49,7 @@ type CountOpenConversationsParams struct {
 type CountOpenConversationsRow struct {
 	InboxID    uuid.UUID
 	AssigneeID *uuid.UUID
+	TeamID     *uuid.UUID
 	Spam       bool
 	N          int64
 }
@@ -70,6 +71,7 @@ func (q *Queries) CountOpenConversations(ctx context.Context, arg CountOpenConve
 		if err := rows.Scan(
 			&i.InboxID,
 			&i.AssigneeID,
+			&i.TeamID,
 			&i.Spam,
 			&i.N,
 		); err != nil {
@@ -192,7 +194,7 @@ VALUES ($1, $2, $3, $4, $5, $6, $7,
         $15, $16, $17,
         (SELECT ch.kind FROM channels ch WHERE ch.workspace_id = $2 AND ch.id = $5),
         $18, $18, $18)
-RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id, trashed_at, trashed_by_member_id, trashed_by_api_key_id, push_through, push_sent_at
+RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id, trashed_at, trashed_by_member_id, trashed_by_api_key_id, push_through, push_sent_at, team_id
 `
 
 type CreateConversationParams struct {
@@ -280,6 +282,7 @@ func (q *Queries) CreateConversation(ctx context.Context, arg CreateConversation
 		&i.TrashedByApiKeyID,
 		&i.PushThrough,
 		&i.PushSentAt,
+		&i.TeamID,
 	)
 	return i, err
 }
@@ -302,7 +305,7 @@ func (q *Queries) DeleteConversations(ctx context.Context, arg DeleteConversatio
 }
 
 const getConversation = `-- name: GetConversation :one
-SELECT id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id, trashed_at, trashed_by_member_id, trashed_by_api_key_id, push_through, push_sent_at FROM conversations WHERE workspace_id = $1 AND id = $2
+SELECT id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id, trashed_at, trashed_by_member_id, trashed_by_api_key_id, push_through, push_sent_at, team_id FROM conversations WHERE workspace_id = $1 AND id = $2
 `
 
 type GetConversationParams struct {
@@ -355,6 +358,7 @@ func (q *Queries) GetConversation(ctx context.Context, arg GetConversationParams
 		&i.TrashedByApiKeyID,
 		&i.PushThrough,
 		&i.PushSentAt,
+		&i.TeamID,
 	)
 	return i, err
 }
@@ -525,7 +529,7 @@ func (q *Queries) ListConversationPreviews(ctx context.Context, arg ListConversa
 }
 
 const listConversations = `-- name: ListConversations :many
-SELECT c.id, c.workspace_id, c.inbox_id, c.contact_id, c.channel_id, c.subject, c.status, c.snooze_until, c.priority, c.assignee_id, c.last_message_at, c.last_activity_at, c.created_at, c.updated_at, c.spam, c.email_token, c.related_conversation_id, c.continuity_through, c.continuity_sent_at, c.kind, c.feedback, c.email_address, c.closed_at, c.rating, c.rating_comment, c.rated_at, c.rating_requested_at, c.last_read_by_contact_at, c.page_url, c.page_title, c.channel_kind, c.broadcast_id, c.migration_id, c.imported_at, c.feedback_progress, c.help_article_id, c.trashed_at, c.trashed_by_member_id, c.trashed_by_api_key_id, c.push_through, c.push_sent_at FROM conversations c
+SELECT c.id, c.workspace_id, c.inbox_id, c.contact_id, c.channel_id, c.subject, c.status, c.snooze_until, c.priority, c.assignee_id, c.last_message_at, c.last_activity_at, c.created_at, c.updated_at, c.spam, c.email_token, c.related_conversation_id, c.continuity_through, c.continuity_sent_at, c.kind, c.feedback, c.email_address, c.closed_at, c.rating, c.rating_comment, c.rated_at, c.rating_requested_at, c.last_read_by_contact_at, c.page_url, c.page_title, c.channel_kind, c.broadcast_id, c.migration_id, c.imported_at, c.feedback_progress, c.help_article_id, c.trashed_at, c.trashed_by_member_id, c.trashed_by_api_key_id, c.push_through, c.push_sent_at, c.team_id FROM conversations c
 WHERE c.workspace_id = $1
   AND ($2::bool OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
@@ -549,37 +553,41 @@ WHERE c.workspace_id = $1
       WHERE ri.workspace_id = c.workspace_id AND ri.conversation_id = c.id)))
   AND (NOT $17::bool OR c.assignee_id IS NULL)
   AND ($18::uuid IS NULL OR c.assignee_id = $18::uuid)
-  AND ($19::uuid IS NULL OR EXISTS (
+  AND ($19::uuid IS NULL OR c.team_id = $19::uuid)
+  AND ($20::uuid IS NULL OR c.team_id IN (
+      SELECT tm.team_id FROM team_members tm
+      WHERE tm.workspace_id = c.workspace_id AND tm.member_id = $20::uuid))
+  AND ($21::uuid IS NULL OR EXISTS (
       SELECT 1 FROM conversation_labels cl
-      WHERE cl.workspace_id = c.workspace_id AND cl.conversation_id = c.id AND cl.label_id = $19::uuid))
-  AND ($20::bool IS NULL OR $20::bool = EXISTS (
+      WHERE cl.workspace_id = c.workspace_id AND cl.conversation_id = c.id AND cl.label_id = $21::uuid))
+  AND ($22::bool IS NULL OR $22::bool = EXISTS (
       SELECT 1 FROM conversation_member_states s
       WHERE s.workspace_id = c.workspace_id AND s.conversation_id = c.id
-        AND s.member_id = $21::uuid AND s.pinned_at IS NOT NULL))
-  AND ($22::text IS NULL OR (
-      to_tsvector('simple', translate(c.subject, 'İı', 'ii')) @@ websearch_to_tsquery('simple', translate($22::text, 'İı', 'ii'))
+        AND s.member_id = $23::uuid AND s.pinned_at IS NOT NULL))
+  AND ($24::text IS NULL OR (
+      to_tsvector('simple', translate(c.subject, 'İı', 'ii')) @@ websearch_to_tsquery('simple', translate($24::text, 'İı', 'ii'))
       OR EXISTS (
           SELECT 1 FROM messages m
           WHERE m.workspace_id = c.workspace_id AND m.conversation_id = c.id AND NOT m.draft
-            AND m.search @@ websearch_to_tsquery('simple', translate($22::text, 'İı', 'ii')))
+            AND m.search @@ websearch_to_tsquery('simple', translate($24::text, 'İı', 'ii')))
       OR EXISTS (
           SELECT 1 FROM contacts ct
           WHERE ct.workspace_id = c.workspace_id AND ct.id = c.contact_id
-            AND ct.search @@ websearch_to_tsquery('simple', translate($22::text, 'İı', 'ii')))))
-  AND ($23::text IS NULL OR NOT (
-      to_tsvector('simple', translate(c.subject, 'İı', 'ii')) @@ websearch_to_tsquery('simple', translate($23::text, 'İı', 'ii'))
+            AND ct.search @@ websearch_to_tsquery('simple', translate($24::text, 'İı', 'ii')))))
+  AND ($25::text IS NULL OR NOT (
+      to_tsvector('simple', translate(c.subject, 'İı', 'ii')) @@ websearch_to_tsquery('simple', translate($25::text, 'İı', 'ii'))
       OR EXISTS (
           SELECT 1 FROM messages m
           WHERE m.workspace_id = c.workspace_id AND m.conversation_id = c.id AND NOT m.draft
-            AND m.search @@ websearch_to_tsquery('simple', translate($23::text, 'İı', 'ii')))
+            AND m.search @@ websearch_to_tsquery('simple', translate($25::text, 'İı', 'ii')))
       OR EXISTS (
           SELECT 1 FROM contacts ct
           WHERE ct.workspace_id = c.workspace_id AND ct.id = c.contact_id
-            AND ct.search @@ websearch_to_tsquery('simple', translate($23::text, 'İı', 'ii')))))
-  AND ($24::timestamptz IS NULL
-       OR (c.last_activity_at, c.id) < ($24::timestamptz, $25::uuid))
+            AND ct.search @@ websearch_to_tsquery('simple', translate($25::text, 'İı', 'ii')))))
+  AND ($26::timestamptz IS NULL
+       OR (c.last_activity_at, c.id) < ($26::timestamptz, $27::uuid))
 ORDER BY c.last_activity_at DESC, c.id DESC
-LIMIT $26
+LIMIT $28
 `
 
 type ListConversationsParams struct {
@@ -601,6 +609,8 @@ type ListConversationsParams struct {
 	NoIdea       bool
 	Unassigned   bool
 	AssigneeID   *uuid.UUID
+	TeamID       *uuid.UUID
+	TeamsOf      *uuid.UUID
 	LabelID      *uuid.UUID
 	Pinned       *bool
 	PinnedBy     *uuid.UUID
@@ -631,6 +641,8 @@ func (q *Queries) ListConversations(ctx context.Context, arg ListConversationsPa
 		arg.NoIdea,
 		arg.Unassigned,
 		arg.AssigneeID,
+		arg.TeamID,
+		arg.TeamsOf,
 		arg.LabelID,
 		arg.Pinned,
 		arg.PinnedBy,
@@ -689,6 +701,7 @@ func (q *Queries) ListConversations(ctx context.Context, arg ListConversationsPa
 			&i.TrashedByApiKeyID,
 			&i.PushThrough,
 			&i.PushSentAt,
+			&i.TeamID,
 		); err != nil {
 			return nil, err
 		}
@@ -832,7 +845,7 @@ func (q *Queries) ListWorkspacesWithExpiredTrash(ctx context.Context, at *time.T
 }
 
 const lockConversation = `-- name: LockConversation :one
-SELECT id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id, trashed_at, trashed_by_member_id, trashed_by_api_key_id, push_through, push_sent_at FROM conversations WHERE workspace_id = $1 AND id = $2 FOR UPDATE
+SELECT id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id, trashed_at, trashed_by_member_id, trashed_by_api_key_id, push_through, push_sent_at, team_id FROM conversations WHERE workspace_id = $1 AND id = $2 FOR UPDATE
 `
 
 type LockConversationParams struct {
@@ -885,20 +898,23 @@ func (q *Queries) LockConversation(ctx context.Context, arg LockConversationPara
 		&i.TrashedByApiKeyID,
 		&i.PushThrough,
 		&i.PushSentAt,
+		&i.TeamID,
 	)
 	return i, err
 }
 
 const moveConversation = `-- name: MoveConversation :one
-UPDATE conversations SET inbox_id = $1, channel_id = $2, assignee_id = $3, updated_at = $4
-WHERE workspace_id = $5 AND id = $6
-RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id, trashed_at, trashed_by_member_id, trashed_by_api_key_id, push_through, push_sent_at
+UPDATE conversations SET inbox_id = $1, channel_id = $2, assignee_id = $3,
+    team_id = $4, updated_at = $5
+WHERE workspace_id = $6 AND id = $7
+RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id, trashed_at, trashed_by_member_id, trashed_by_api_key_id, push_through, push_sent_at, team_id
 `
 
 type MoveConversationParams struct {
 	InboxID     uuid.UUID
 	ChannelID   *uuid.UUID
 	AssigneeID  *uuid.UUID
+	TeamID      *uuid.UUID
 	Now         time.Time
 	WorkspaceID uuid.UUID
 	ID          uuid.UUID
@@ -909,6 +925,7 @@ func (q *Queries) MoveConversation(ctx context.Context, arg MoveConversationPara
 		arg.InboxID,
 		arg.ChannelID,
 		arg.AssigneeID,
+		arg.TeamID,
 		arg.Now,
 		arg.WorkspaceID,
 		arg.ID,
@@ -956,6 +973,7 @@ func (q *Queries) MoveConversation(ctx context.Context, arg MoveConversationPara
 		&i.TrashedByApiKeyID,
 		&i.PushThrough,
 		&i.PushSentAt,
+		&i.TeamID,
 	)
 	return i, err
 }
@@ -978,7 +996,7 @@ func (q *Queries) RemoveConversationLabel(ctx context.Context, arg RemoveConvers
 const restoreConversation = `-- name: RestoreConversation :one
 UPDATE conversations SET trashed_at = NULL, trashed_by_member_id = NULL, trashed_by_api_key_id = NULL, updated_at = $1
 WHERE workspace_id = $2 AND id = $3 AND trashed_at > coalesce($4::timestamptz, clock_timestamp()) - interval '720 hours'
-RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id, trashed_at, trashed_by_member_id, trashed_by_api_key_id, push_through, push_sent_at
+RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id, trashed_at, trashed_by_member_id, trashed_by_api_key_id, push_through, push_sent_at, team_id
 `
 
 type RestoreConversationParams struct {
@@ -1038,6 +1056,75 @@ func (q *Queries) RestoreConversation(ctx context.Context, arg RestoreConversati
 		&i.TrashedByApiKeyID,
 		&i.PushThrough,
 		&i.PushSentAt,
+		&i.TeamID,
+	)
+	return i, err
+}
+
+const setConversationTeam = `-- name: SetConversationTeam :one
+UPDATE conversations SET team_id = $1, updated_at = $2
+WHERE workspace_id = $3 AND id = $4
+RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id, trashed_at, trashed_by_member_id, trashed_by_api_key_id, push_through, push_sent_at, team_id
+`
+
+type SetConversationTeamParams struct {
+	TeamID      *uuid.UUID
+	Now         time.Time
+	WorkspaceID uuid.UUID
+	ID          uuid.UUID
+}
+
+func (q *Queries) SetConversationTeam(ctx context.Context, arg SetConversationTeamParams) (Conversation, error) {
+	row := q.db.QueryRow(ctx, setConversationTeam,
+		arg.TeamID,
+		arg.Now,
+		arg.WorkspaceID,
+		arg.ID,
+	)
+	var i Conversation
+	err := row.Scan(
+		&i.ID,
+		&i.WorkspaceID,
+		&i.InboxID,
+		&i.ContactID,
+		&i.ChannelID,
+		&i.Subject,
+		&i.Status,
+		&i.SnoozeUntil,
+		&i.Priority,
+		&i.AssigneeID,
+		&i.LastMessageAt,
+		&i.LastActivityAt,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.Spam,
+		&i.EmailToken,
+		&i.RelatedConversationID,
+		&i.ContinuityThrough,
+		&i.ContinuitySentAt,
+		&i.Kind,
+		&i.Feedback,
+		&i.EmailAddress,
+		&i.ClosedAt,
+		&i.Rating,
+		&i.RatingComment,
+		&i.RatedAt,
+		&i.RatingRequestedAt,
+		&i.LastReadByContactAt,
+		&i.PageUrl,
+		&i.PageTitle,
+		&i.ChannelKind,
+		&i.BroadcastID,
+		&i.MigrationID,
+		&i.ImportedAt,
+		&i.FeedbackProgress,
+		&i.HelpArticleID,
+		&i.TrashedAt,
+		&i.TrashedByMemberID,
+		&i.TrashedByApiKeyID,
+		&i.PushThrough,
+		&i.PushSentAt,
+		&i.TeamID,
 	)
 	return i, err
 }
@@ -1047,7 +1134,7 @@ UPDATE conversations c SET feedback = c.feedback || jsonb_build_object(
     'text', $1::text,
     'attachment_count', (SELECT count(*) FROM attachments a WHERE a.workspace_id = c.workspace_id AND a.message_id = $2::uuid))
 WHERE c.workspace_id = $3 AND c.id = $4 AND c.kind = 'feedback'
-RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id, trashed_at, trashed_by_member_id, trashed_by_api_key_id, push_through, push_sent_at
+RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id, trashed_at, trashed_by_member_id, trashed_by_api_key_id, push_through, push_sent_at, team_id
 `
 
 type SetFeedbackFirstMessageParams struct {
@@ -1107,6 +1194,7 @@ func (q *Queries) SetFeedbackFirstMessage(ctx context.Context, arg SetFeedbackFi
 		&i.TrashedByApiKeyID,
 		&i.PushThrough,
 		&i.PushSentAt,
+		&i.TeamID,
 	)
 	return i, err
 }
@@ -1139,7 +1227,7 @@ func (q *Queries) TouchConversation(ctx context.Context, arg TouchConversationPa
 const trashConversation = `-- name: TrashConversation :one
 UPDATE conversations SET trashed_at = coalesce($1::timestamptz, clock_timestamp()), trashed_by_member_id = $2, trashed_by_api_key_id = $3, updated_at = $4::timestamptz
 WHERE workspace_id = $5 AND id = $6 AND trashed_at IS NULL
-RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id, trashed_at, trashed_by_member_id, trashed_by_api_key_id, push_through, push_sent_at
+RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id, trashed_at, trashed_by_member_id, trashed_by_api_key_id, push_through, push_sent_at, team_id
 `
 
 type TrashConversationParams struct {
@@ -1204,6 +1292,7 @@ func (q *Queries) TrashConversation(ctx context.Context, arg TrashConversationPa
 		&i.TrashedByApiKeyID,
 		&i.PushThrough,
 		&i.PushSentAt,
+		&i.TeamID,
 	)
 	return i, err
 }
@@ -1213,7 +1302,7 @@ UPDATE conversations SET subject = $1, status = $2, snooze_until = $3,
     priority = $4, assignee_id = $5, spam = $6, feedback_progress = $7, updated_at = $8,
     closed_at = CASE WHEN $2 = 'closed' AND status <> 'closed' THEN $8 ELSE closed_at END
 WHERE workspace_id = $9 AND id = $10
-RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id, trashed_at, trashed_by_member_id, trashed_by_api_key_id, push_through, push_sent_at
+RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id, trashed_at, trashed_by_member_id, trashed_by_api_key_id, push_through, push_sent_at, team_id
 `
 
 type UpdateConversationParams struct {
@@ -1285,6 +1374,7 @@ func (q *Queries) UpdateConversation(ctx context.Context, arg UpdateConversation
 		&i.TrashedByApiKeyID,
 		&i.PushThrough,
 		&i.PushSentAt,
+		&i.TeamID,
 	)
 	return i, err
 }

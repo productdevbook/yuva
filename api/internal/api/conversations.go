@@ -181,7 +181,7 @@ func (s *Server) listItems(ctx context.Context, p principal, rows []store.Conver
 		c := bodies[i]
 		out[i] = oas.ConversationListItem{
 			Id: c.Id, InboxId: c.InboxId, ContactId: c.ContactId, ChannelId: c.ChannelId, ChannelKind: c.ChannelKind, Kind: c.Kind, Feedback: c.Feedback, Page: c.Page, Subject: c.Subject,
-			Status: c.Status, SnoozeUntil: c.SnoozeUntil, Priority: c.Priority, Spam: c.Spam, AssigneeId: c.AssigneeId, Labels: c.Labels,
+			Status: c.Status, SnoozeUntil: c.SnoozeUntil, Priority: c.Priority, Spam: c.Spam, AssigneeId: c.AssigneeId, TeamId: c.TeamId, Labels: c.Labels,
 			LastMessageAt: c.LastMessageAt, LastActivityAt: c.LastActivityAt, CreatedAt: c.CreatedAt, UpdatedAt: c.UpdatedAt,
 			RelatedConversationId: c.RelatedConversationId, ClosedAt: c.ClosedAt, Rating: c.Rating, LastReadByContactAt: c.LastReadByContactAt, BroadcastId: c.BroadcastId,
 			Imported: c.Imported, HelpArticleId: c.HelpArticleId, Idea: c.Idea, Contact: contacts[r.ContactID], LastMessage: previews[r.ID], Unread: unread[r.ID], PinnedAt: pinned[r.ID],
@@ -198,7 +198,7 @@ func conversationBody(c store.Conversation, labels []uuid.UUID) oas.Conversation
 	out := oas.Conversation{
 		Id: c.ID, InboxId: c.InboxID, ContactId: c.ContactID, ChannelId: c.ChannelID, ChannelKind: (*oas.ChannelKind)(c.ChannelKind), Subject: c.Subject,
 		Kind: oas.ConversationKind(c.Kind), Feedback: conversationFeedback(c), Page: conversationPage(c), Status: oas.ConversationStatus(c.Status), SnoozeUntil: c.SnoozeUntil, Priority: oas.Priority(c.Priority), Spam: c.Spam,
-		AssigneeId: c.AssigneeID, Labels: labels, LastMessageAt: c.LastMessageAt, LastActivityAt: c.LastActivityAt,
+		AssigneeId: c.AssigneeID, TeamId: c.TeamID, Labels: labels, LastMessageAt: c.LastMessageAt, LastActivityAt: c.LastActivityAt,
 		CreatedAt: c.CreatedAt, UpdatedAt: c.UpdatedAt, RelatedConversationId: c.RelatedConversationID, BroadcastId: c.BroadcastID,
 		ClosedAt: c.ClosedAt, Rating: conversationRating(c), LastReadByContactAt: c.LastReadByContactAt, Imported: conversationImport(c),
 		HelpArticleId: c.HelpArticleID, TrashedAt: c.TrashedAt,
@@ -356,7 +356,7 @@ func (s *Server) recordChanges(ctx context.Context, q *store.Queries, events *ev
 
 func conversationChanged(a, b store.Conversation) bool {
 	return a.Subject != b.Subject || a.Status != b.Status || a.Priority != b.Priority || a.Spam != b.Spam ||
-		!sameID(a.AssigneeID, b.AssigneeID) || !sameTime(a.SnoozeUntil, b.SnoozeUntil) || !sameString(a.FeedbackProgress, b.FeedbackProgress)
+		!sameID(a.AssigneeID, b.AssigneeID) || !sameID(a.TeamID, b.TeamID) || !sameTime(a.SnoozeUntil, b.SnoozeUntil) || !sameString(a.FeedbackProgress, b.FeedbackProgress)
 }
 
 func sameString(a, b *string) bool {
@@ -490,6 +490,16 @@ func (s *Server) ListConversations(ctx context.Context, req oas.ListConversation
 			arg.AssigneeID = &id
 		}
 	}
+	arg.TeamID = prm.TeamId
+	if prm.Team != nil {
+		if *prm.Team != oas.ListConversationsTeamMine {
+			return nil, errValidation("team must be mine")
+		}
+		if p.isKey() {
+			return nil, errValidation("team=mine needs a member session")
+		}
+		arg.TeamsOf = &p.memberID
+	}
 	rows, err := s.st.ListConversations(ctx, arg)
 	if err != nil {
 		return nil, err
@@ -529,14 +539,20 @@ func (s *Server) GetConversationCounts(ctx context.Context, req oas.GetConversat
 	if err != nil {
 		return nil, err
 	}
+	var myTeams []uuid.UUID
+	if member != nil {
+		if myTeams, err = s.st.ListMemberTeamIDs(ctx, store.ListMemberTeamIDsParams{WorkspaceID: p.workspaceID, MemberID: *member}); err != nil {
+			return nil, err
+		}
+	}
 	out := oas.GetConversationCounts200JSONResponse{
-		Inboxes: []oas.CountByID{}, Assignees: []oas.CountByID{}, Labels: make([]oas.CountByID, 0, len(byLabel)), FeedbackCategories: make([]oas.FeedbackCount, 0, len(feedback)),
+		Inboxes: []oas.CountByID{}, Assignees: []oas.CountByID{}, Teams: []oas.CountByID{}, Labels: make([]oas.CountByID, 0, len(byLabel)), FeedbackCategories: make([]oas.FeedbackCount, 0, len(feedback)),
 	}
 	for _, r := range feedback {
 		out.Feedback += r.N
 		out.FeedbackCategories = append(out.FeedbackCategories, oas.FeedbackCount{Category: oas.FeedbackCategory(r.Category), Count: r.N})
 	}
-	perInbox, perAssignee := map[uuid.UUID]int64{}, map[uuid.UUID]int64{}
+	perInbox, perAssignee, perTeam := map[uuid.UUID]int64{}, map[uuid.UUID]int64{}, map[uuid.UUID]int64{}
 	for _, r := range rows {
 		if r.Spam {
 			out.Spam += r.N
@@ -552,9 +568,15 @@ func (s *Server) GetConversationCounts(ctx context.Context, req oas.GetConversat
 				out.Mine += r.N
 			}
 		}
+		if r.TeamID != nil {
+			perTeam[*r.TeamID] += r.N
+			if slices.Contains(myTeams, *r.TeamID) {
+				out.MineTeams += r.N
+			}
+		}
 		perInbox[r.InboxID] += r.N
 	}
-	out.Inboxes, out.Assignees = sortedCounts(perInbox), sortedCounts(perAssignee)
+	out.Inboxes, out.Assignees, out.Teams = sortedCounts(perInbox), sortedCounts(perAssignee), sortedCounts(perTeam)
 	for _, r := range byLabel {
 		out.Labels = append(out.Labels, oas.CountByID{Id: r.LabelID, Count: r.N})
 	}
@@ -683,6 +705,11 @@ func (s *Server) UpdateConversation(ctx context.Context, req oas.UpdateConversat
 // change the labels when b.Labels does not replace them.
 func (s *Server) changeConversation(ctx context.Context, q *store.Queries, events *eventBatch, p principal, id uuid.UUID, b oas.ConversationUpdate, addLabels, removeLabels []uuid.UUID) (oas.Conversation, error) {
 	var out oas.Conversation
+	if b.TeamId.IsSpecified() && !b.TeamId.IsNull() {
+		if err := shareLockTeam(ctx, q, p.workspaceID, b.TeamId.MustGet()); err != nil {
+			return out, err
+		}
+	}
 	cur, err := visibleConversation(ctx, q, p, id, true)
 	if err != nil {
 		return out, err
@@ -737,6 +764,20 @@ func (s *Server) changeConversation(ctx context.Context, q *store.Queries, event
 			next.AssigneeID = &id
 		}
 	}
+	if b.TeamId.IsSpecified() {
+		next.TeamID = nil
+		if !b.TeamId.IsNull() {
+			id := b.TeamId.MustGet()
+			ok, err := q.TeamHasInbox(ctx, store.TeamHasInboxParams{WorkspaceID: p.workspaceID, TeamID: id, InboxID: cur.InboxID})
+			if err != nil {
+				return out, err
+			}
+			if !ok {
+				return out, errTeamAccess
+			}
+			next.TeamID = &id
+		}
+	}
 	if b.FeedbackProgress.IsSpecified() {
 		if cur.Kind != string(oas.ConversationKindFeedback) && !b.FeedbackProgress.IsNull() {
 			return out, errNotFeedback
@@ -788,6 +829,11 @@ func (s *Server) changeConversation(ctx context.Context, q *store.Queries, event
 	}
 	for _, l := range removed {
 		if err := q.RemoveConversationLabel(ctx, store.RemoveConversationLabelParams{WorkspaceID: p.workspaceID, ConversationID: cur.ID, LabelID: l}); err != nil {
+			return out, err
+		}
+	}
+	if !sameID(cur.TeamID, next.TeamID) {
+		if _, err := q.SetConversationTeam(ctx, store.SetConversationTeamParams{WorkspaceID: p.workspaceID, ID: cur.ID, TeamID: next.TeamID, Now: now}); err != nil {
 			return out, err
 		}
 	}

@@ -161,7 +161,7 @@ func (q *Queries) GrantInboxAccess(ctx context.Context, arg GrantInboxAccessPara
 
 const hasInboxAccess = `-- name: HasInboxAccess :one
 SELECT EXISTS (
-    SELECT 1 FROM inbox_members WHERE workspace_id = $1 AND inbox_id = $2 AND member_id = $3
+    SELECT 1 FROM member_inbox_access WHERE workspace_id = $1 AND inbox_id = $2 AND member_id = $3
 ) AS access
 `
 
@@ -179,11 +179,14 @@ func (q *Queries) HasInboxAccess(ctx context.Context, arg HasInboxAccessParams) 
 }
 
 const listInboxMembers = `-- name: ListInboxMembers :many
-SELECT m.id, m.workspace_id, m.person_id, m.role, m.created_at, p.email, p.name
-FROM inbox_members im
-JOIN members m ON m.workspace_id = im.workspace_id AND m.id = im.member_id
+SELECT m.id, m.workspace_id, m.person_id, m.role, m.created_at, p.email, p.name,
+       bool_or(a.team_id IS NULL)::bool AS direct,
+       coalesce(array_agg(DISTINCT a.team_id ORDER BY a.team_id) FILTER (WHERE a.team_id IS NOT NULL), '{}')::uuid[] AS team_ids
+FROM member_inbox_access a
+JOIN members m ON m.workspace_id = a.workspace_id AND m.id = a.member_id
 JOIN people p ON p.id = m.person_id
-WHERE im.workspace_id = $1 AND im.inbox_id = $2
+WHERE a.workspace_id = $1 AND a.inbox_id = $2
+GROUP BY m.id, m.workspace_id, m.person_id, m.role, m.created_at, p.email, p.name
 ORDER BY m.created_at, m.id
 `
 
@@ -200,6 +203,8 @@ type ListInboxMembersRow struct {
 	CreatedAt   time.Time
 	Email       string
 	Name        string
+	Direct      bool
+	TeamIds     []uuid.UUID
 }
 
 func (q *Queries) ListInboxMembers(ctx context.Context, arg ListInboxMembersParams) ([]ListInboxMembersRow, error) {
@@ -219,6 +224,8 @@ func (q *Queries) ListInboxMembers(ctx context.Context, arg ListInboxMembersPara
 			&i.CreatedAt,
 			&i.Email,
 			&i.Name,
+			&i.Direct,
+			&i.TeamIds,
 		); err != nil {
 			return nil, err
 		}
@@ -318,7 +325,7 @@ func (q *Queries) ListInboxes(ctx context.Context, arg ListInboxesParams) ([]Inb
 }
 
 const listViewerInboxIDs = `-- name: ListViewerInboxIDs :many
-SELECT inbox_id FROM inbox_viewers WHERE workspace_id = $1 AND viewer_id = $2
+SELECT DISTINCT inbox_id FROM inbox_viewers WHERE workspace_id = $1 AND viewer_id = $2
 `
 
 type ListViewerInboxIDsParams struct {

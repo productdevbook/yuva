@@ -838,6 +838,7 @@ type Conversation struct {
 	TrashedByApiKeyID     *uuid.UUID
 	PushThrough           *time.Time
 	PushSentAt            *time.Time
+	TeamID                *uuid.UUID
 }
 
 type ConversationLabel struct {
@@ -1500,6 +1501,13 @@ type Member struct {
 	CreatedAt              time.Time
 	NotificationEvents     []byte
 	NotificationEmailDelay *int32
+}
+
+type MemberInboxAccess struct {
+	WorkspaceID uuid.UUID
+	InboxID     uuid.UUID
+	MemberID    uuid.UUID
+	TeamID      *uuid.UUID
 }
 
 type MemberMention struct {
@@ -2286,6 +2294,31 @@ type StatusSubscriberComponent struct {
 	WorkspaceID    uuid.UUID
 	SubscriptionID uuid.UUID
 	ComponentID    uuid.UUID
+}
+
+type Team struct {
+	ID             uuid.UUID
+	WorkspaceID    uuid.UUID
+	Name           string
+	Description    string
+	AssignmentMode string
+	AssignmentCap  *int32
+	CreatedAt      time.Time
+	UpdatedAt      time.Time
+}
+
+type TeamInbox struct {
+	WorkspaceID uuid.UUID
+	TeamID      uuid.UUID
+	InboxID     uuid.UUID
+	CreatedAt   time.Time
+}
+
+type TeamMember struct {
+	WorkspaceID uuid.UUID
+	TeamID      uuid.UUID
+	MemberID    uuid.UUID
+	CreatedAt   time.Time
 }
 
 type UsageCounter struct {

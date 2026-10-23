@@ -1096,6 +1096,12 @@ const (
 	AuditMessageRedacted                     AuditAction = "message.redacted"
 	AuditOAuthGrantCreated                   AuditAction = "oauth_grant.created"
 	AuditOAuthGrantRevoked                   AuditAction = "oauth_grant.revoked"
+	AuditTeamCreated                         AuditAction = "team.created"
+	AuditTeamDeleted                         AuditAction = "team.deleted"
+	AuditTeamInboxAccessGranted              AuditAction = "team.inbox_access_granted"
+	AuditTeamInboxAccessRevoked              AuditAction = "team.inbox_access_revoked"
+	AuditTeamMemberAdded                     AuditAction = "team.member_added"
+	AuditTeamMemberRemoved                   AuditAction = "team.member_removed"
 	AuditWebhookCreated                      AuditAction = "webhook.created"
 	AuditWebhookDeleted                      AuditAction = "webhook.deleted"
 	AuditWebhookSecretRotated                AuditAction = "webhook.secret_rotated"
@@ -1163,6 +1169,18 @@ func (e AuditAction) Valid() bool {
 		return true
 	case AuditOAuthGrantRevoked:
 		return true
+	case AuditTeamCreated:
+		return true
+	case AuditTeamDeleted:
+		return true
+	case AuditTeamInboxAccessGranted:
+		return true
+	case AuditTeamInboxAccessRevoked:
+		return true
+	case AuditTeamMemberAdded:
+		return true
+	case AuditTeamMemberRemoved:
+		return true
 	case AuditWebhookCreated:
 		return true
 	case AuditWebhookDeleted:
@@ -1228,6 +1246,7 @@ const (
 	AuditTargetMember          AuditTargetType = "member"
 	AuditTargetMessage         AuditTargetType = "message"
 	AuditTargetOAuthGrant      AuditTargetType = "oauth_grant"
+	AuditTargetTeam            AuditTargetType = "team"
 	AuditTargetWebhook         AuditTargetType = "webhook"
 	AuditTargetWorkspace       AuditTargetType = "workspace"
 )
@@ -1256,6 +1275,8 @@ func (e AuditTargetType) Valid() bool {
 	case AuditTargetMessage:
 		return true
 	case AuditTargetOAuthGrant:
+		return true
+	case AuditTargetTeam:
 		return true
 	case AuditTargetWebhook:
 		return true
@@ -3546,6 +3567,24 @@ const (
 func (e InboxAccessChangedEventType) Valid() bool {
 	switch e {
 	case InboxAccessChanged:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for InboxAccessVia.
+const (
+	InboxAccessDirect InboxAccessVia = "direct"
+	InboxAccessTeam   InboxAccessVia = "team"
+)
+
+// Valid indicates whether the value is a known member of the InboxAccessVia enum.
+func (e InboxAccessVia) Valid() bool {
+	switch e {
+	case InboxAccessDirect:
+		return true
+	case InboxAccessTeam:
 		return true
 	default:
 		return false
@@ -6213,6 +6252,27 @@ func (e SubscriptionState) Valid() bool {
 	}
 }
 
+// Defines values for TeamEventType.
+const (
+	TeamCreatedEvent TeamEventType = "team.created"
+	TeamDeletedEvent TeamEventType = "team.deleted"
+	TeamUpdatedEvent TeamEventType = "team.updated"
+)
+
+// Valid indicates whether the value is a known member of the TeamEventType enum.
+func (e TeamEventType) Valid() bool {
+	switch e {
+	case TeamCreatedEvent:
+		return true
+	case TeamDeletedEvent:
+		return true
+	case TeamUpdatedEvent:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for TypingAuthorType.
 const (
 	TypingAuthorTypeContact TypingAuthorType = "contact"
@@ -6391,6 +6451,9 @@ const (
 	WebhookEventTypeStatusMonitorUp           WebhookEventType = "status.monitor.up"
 	WebhookEventTypeSubscriptionCreated       WebhookEventType = "subscription.created"
 	WebhookEventTypeSubscriptionUpdated       WebhookEventType = "subscription.updated"
+	WebhookEventTypeTeamCreated               WebhookEventType = "team.created"
+	WebhookEventTypeTeamDeleted               WebhookEventType = "team.deleted"
+	WebhookEventTypeTeamUpdated               WebhookEventType = "team.updated"
 )
 
 // Valid indicates whether the value is a known member of the WebhookEventType enum.
@@ -6465,6 +6528,12 @@ func (e WebhookEventType) Valid() bool {
 	case WebhookEventTypeSubscriptionCreated:
 		return true
 	case WebhookEventTypeSubscriptionUpdated:
+		return true
+	case WebhookEventTypeTeamCreated:
+		return true
+	case WebhookEventTypeTeamDeleted:
+		return true
+	case WebhookEventTypeTeamUpdated:
 		return true
 	default:
 		return false
@@ -6798,6 +6867,21 @@ func (e ExportContactConsentParamsFormat) Valid() bool {
 	case ExportContactConsentParamsFormatCsv:
 		return true
 	case ExportContactConsentParamsFormatJson:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ListConversationsParamsTeam.
+const (
+	ListConversationsTeamMine ListConversationsParamsTeam = "mine"
+)
+
+// Valid indicates whether the value is a known member of the ListConversationsParamsTeam enum.
+func (e ListConversationsParamsTeam) Valid() bool {
+	switch e {
+	case ListConversationsTeamMine:
 		return true
 	default:
 		return false
@@ -8697,9 +8781,9 @@ type ApiKeyList struct {
 //	  - `notes:write`: notes.
 //	  - `contacts:read`: list, look up and get contacts, presence.
 //	  - `contacts:write`: create, update, delete and merge contacts.
-//	  - `inboxes:read`: workspace, members, inboxes, inbox members, channels.
-//	  - `inboxes:manage`: create, update and delete inboxes and channels, inbox access, secret
-//	    and key rotation.
+//	  - `inboxes:read`: workspace, members, inboxes, inbox members, channels, teams.
+//	  - `inboxes:manage`: create, update and delete inboxes and channels, inbox access, teams,
+//	    their members and inboxes, secret and key rotation.
 //	  - `labels:write`: create, update and delete labels.
 //	  - `canned_replies:write`: create, update and delete canned replies.
 //	  - `webhooks:manage`: webhooks, their deliveries and attempts.
@@ -8928,6 +9012,9 @@ type Attributes map[string]interface{}
 //   - `channel.key_rotated`, `channel.forwarding_address_rotated`, `channel.dkim_key_deleted`:
 //     none. `channel.dkim_key_created`: `selector`.
 //   - `inbox.identity_secret_rotated`: none. `inbox.deleted`: `name`.
+//   - `team.created`, `team.deleted`: `name`. `team.member_added`, `team.member_removed`:
+//     `member_id`. `team.inbox_access_granted`, `team.inbox_access_revoked`: `inbox_id`,
+//     `inbox_name`.
 //   - `conversation.trashed`, `conversation.restored`: `inbox_id`. `conversation.deleted`:
 //     `inbox_id`, by `system` (never the subject or content).
 //   - `message.redacted`: `conversation_id`, `inbox_id`, `kind` (`message` or `note`),
@@ -9002,6 +9089,9 @@ type AuditEntry struct {
 	// - `channel.key_rotated`, `channel.forwarding_address_rotated`, `channel.dkim_key_deleted`:
 	//   none. `channel.dkim_key_created`: `selector`.
 	// - `inbox.identity_secret_rotated`: none. `inbox.deleted`: `name`.
+	// - `team.created`, `team.deleted`: `name`. `team.member_added`, `team.member_removed`:
+	//   `member_id`. `team.inbox_access_granted`, `team.inbox_access_revoked`: `inbox_id`,
+	//   `inbox_name`.
 	// - `conversation.trashed`, `conversation.restored`: `inbox_id`. `conversation.deleted`:
 	//   `inbox_id`, by `system` (never the subject or content).
 	// - `message.redacted`: `conversation_id`, `inbox_id`, `kind` (`message` or `note`),
@@ -11892,6 +11982,9 @@ type Conversation struct {
 	Status  ConversationStatus `json:"status"`
 	Subject string             `json:"subject"`
 
+	// TeamId The assigned team; absent when none. Independent of `assignee_id`.
+	TeamId *uuid.UUID `json:"team_id,omitempty"`
+
 	// TrashedAt When it went to the trash; absent when it is not in the trash.
 	TrashedAt *time.Time `json:"trashed_at,omitempty"`
 
@@ -11967,9 +12060,15 @@ type ConversationCounts struct {
 	Labels []CountByID `json:"labels"`
 	Mine   int64       `json:"mine"`
 
+	// MineTeams Assigned to any team of the calling member (`0` for API keys).
+	MineTeams int64 `json:"mine_teams"`
+
 	// Spam Open conversations flagged as spam (not included in the other counts).
-	Spam       int64 `json:"spam"`
-	Unassigned int64 `json:"unassigned"`
+	Spam int64 `json:"spam"`
+
+	// Teams Per assigned team id.
+	Teams      []CountByID `json:"teams"`
+	Unassigned int64       `json:"unassigned"`
 }
 
 // ConversationCreate defines model for ConversationCreate.
@@ -12158,6 +12257,9 @@ type ConversationListItem struct {
 	Status  ConversationStatus `json:"status"`
 	Subject string             `json:"subject"`
 
+	// TeamId The assigned team; absent when none. Independent of `assignee_id`.
+	TeamId *uuid.UUID `json:"team_id,omitempty"`
+
 	// TrashedAt When it went to the trash; absent when it is not in the trash.
 	TrashedAt *time.Time `json:"trashed_at,omitempty"`
 
@@ -12314,6 +12416,10 @@ type ConversationUpdate struct {
 	Spam    *bool               `json:"spam,omitempty"`
 	Status  *ConversationStatus `json:"status,omitempty"`
 	Subject *string             `json:"subject,omitempty"`
+
+	// TeamId A team granted the conversation's inbox (`422 team_access` otherwise); `null` removes the
+	// team. The member assignee is not changed.
+	TeamId nullable.Nullable[uuid.UUID] `json:"team_id,omitempty"`
 }
 
 // CountByID defines model for CountByID.
@@ -15379,7 +15485,9 @@ type InboxAccessChange struct {
 	MemberId uuid.UUID `json:"member_id"`
 }
 
-// InboxAccessChangedEvent A member was given or lost access to an inbox. Reload the inboxes and conversations when it is about you.
+// InboxAccessChangedEvent A member's effective access to an inbox flipped: through their own grant, a team they joined
+// or left, or a team that was granted the inbox, lost it or was deleted. Reload the inboxes,
+// conversations and teams when it is about you.
 type InboxAccessChangedEvent struct {
 	CreatedAt   time.Time                   `json:"created_at"`
 	Data        InboxAccessChange           `json:"data"`
@@ -15391,6 +15499,9 @@ type InboxAccessChangedEvent struct {
 
 // InboxAccessChangedEventType defines model for InboxAccessChangedEvent.Type.
 type InboxAccessChangedEventType string
+
+// InboxAccessVia `direct`: the member has their own grant (and may have teams' too); `team`: only through teams.
+type InboxAccessVia string
 
 // InboxBranding defines model for InboxBranding.
 type InboxBranding struct {
@@ -15512,6 +15623,36 @@ type InboxImportState string
 // InboxList defines model for InboxList.
 type InboxList struct {
 	Items []Inbox `json:"items"`
+}
+
+// InboxMember defines model for InboxMember.
+type InboxMember struct {
+	// Availability `auto`: available in `live` inboxes while connected to `/v1/realtime` within business
+	// hours. `away`: never shown as available.
+	Availability Availability `json:"availability"`
+	CreatedAt    time.Time    `json:"created_at"`
+
+	// Email Examples: owner@example.com
+	Email Email     `json:"email"`
+	Id    uuid.UUID `json:"id"`
+	Name  string    `json:"name"`
+
+	// Online The member has a `/v1/realtime` connection seen in the last 75 seconds (any panel tab
+	// or device). `member.presence` events on `/v1/realtime` report changes.
+	Online   bool      `json:"online"`
+	PersonId uuid.UUID `json:"person_id"`
+	Role     Role      `json:"role"`
+
+	// TeamIds The teams that give the member this inbox.
+	TeamIds []uuid.UUID `json:"team_ids"`
+
+	// Via `direct`: the member has their own grant (and may have teams' too); `team`: only through teams.
+	Via InboxAccessVia `json:"via"`
+}
+
+// InboxMemberList defines model for InboxMemberList.
+type InboxMemberList struct {
+	Items []InboxMember `json:"items"`
 }
 
 // InboxMode `live` shows who is available, typing and read receipts; `async` shows the expected reply
@@ -19377,6 +19518,9 @@ type StatusIncidentConversation struct {
 	Status  ConversationStatus `json:"status"`
 	Subject string             `json:"subject"`
 
+	// TeamId The assigned team; absent when none. Independent of `assignee_id`.
+	TeamId *uuid.UUID `json:"team_id,omitempty"`
+
 	// TrashedAt When it went to the trash; absent when it is not in the trash.
 	TrashedAt *time.Time `json:"trashed_at,omitempty"`
 
@@ -20338,6 +20482,78 @@ type SubscriptionUpdate struct {
 	State SubscriptionState `json:"state"`
 }
 
+// Team defines model for Team.
+type Team struct {
+	CreatedAt   time.Time `json:"created_at"`
+	Description string    `json:"description"`
+	Id          uuid.UUID `json:"id"`
+
+	// InboxIds The inboxes the team is granted, in the order they were granted; for agents and keys
+	// limited to inboxes, only those they see.
+	InboxIds []uuid.UUID `json:"inbox_ids"`
+
+	// MemberIds The team's members, in the order they were added.
+	MemberIds []uuid.UUID `json:"member_ids"`
+	Name      string      `json:"name"`
+	UpdatedAt time.Time   `json:"updated_at"`
+}
+
+// TeamCreate defines model for TeamCreate.
+type TeamCreate struct {
+	Description *string `json:"description,omitempty"`
+
+	// Name Unique in the workspace (`409 team_taken`).
+	Name string `json:"name"`
+}
+
+// TeamEvent `team.created`, `team.updated`, `team.deleted`: a team was created, changed (name,
+// description, members, inboxes) or deleted; `data` is the team after the change, or as it
+// was for `team.deleted`. Delivered to callers with `inboxes:read` who see every inbox, who
+// are among its `member_ids` or `removed_member_ids`, or who see one of its `inbox_ids`;
+// `inbox_ids` lists only the inboxes the receiver sees.
+type TeamEvent struct {
+	CreatedAt   time.Time     `json:"created_at"`
+	Data        TeamEventData `json:"data"`
+	Id          int64         `json:"id"`
+	Type        TeamEventType `json:"type"`
+	WorkspaceId uuid.UUID     `json:"workspace_id"`
+}
+
+// TeamEventType defines model for TeamEvent.Type.
+type TeamEventType string
+
+// TeamEventData defines model for TeamEventData.
+type TeamEventData struct {
+	CreatedAt   time.Time `json:"created_at"`
+	Description string    `json:"description"`
+	Id          uuid.UUID `json:"id"`
+
+	// InboxIds The inboxes the team is granted, in the order they were granted; for agents and keys
+	// limited to inboxes, only those they see.
+	InboxIds []uuid.UUID `json:"inbox_ids"`
+
+	// MemberIds The team's members, in the order they were added.
+	MemberIds []uuid.UUID `json:"member_ids"`
+	Name      string      `json:"name"`
+
+	// RemovedMemberIds `team.updated` only: members this change removed from the team.
+	RemovedMemberIds *[]uuid.UUID `json:"removed_member_ids,omitempty"`
+	UpdatedAt        time.Time    `json:"updated_at"`
+}
+
+// TeamList defines model for TeamList.
+type TeamList struct {
+	Items []Team `json:"items"`
+}
+
+// TeamUpdate defines model for TeamUpdate.
+type TeamUpdate struct {
+	Description *string `json:"description,omitempty"`
+
+	// Name Unique in the workspace (`409 team_taken`).
+	Name *string `json:"name,omitempty"`
+}
+
 // Typing defines model for Typing.
 type Typing struct {
 	Author         TypingAuthor `json:"author"`
@@ -20931,6 +21147,20 @@ type WebhookSubscriptionPayload struct {
 	WorkspaceId uuid.UUID        `json:"workspace_id"`
 }
 
+// WebhookTeamPayload Sent to endpoints of the whole workspace, and to endpoints limited to one of the team's
+// inboxes; for those, `inbox_ids` lists only that inbox.
+type WebhookTeamPayload struct {
+	Data TeamEventData `json:"data"`
+
+	// InboxId The conversation's inbox; absent for contact events.
+	InboxId *uuid.UUID `json:"inbox_id,omitempty"`
+
+	// Timestamp When the event happened (not when it was sent).
+	Timestamp   time.Time        `json:"timestamp"`
+	Type        WebhookEventType `json:"type"`
+	WorkspaceId uuid.UUID        `json:"workspace_id"`
+}
+
 // Weekday defines model for Weekday.
 type Weekday string
 
@@ -21214,6 +21444,9 @@ type StatusUpdateId = uuid.UUID
 
 // SubscriptionId defines model for SubscriptionId.
 type SubscriptionId = uuid.UUID
+
+// TeamId defines model for TeamId.
+type TeamId = uuid.UUID
 
 // TemplateLocale defines model for TemplateLocale.
 type TemplateLocale = EmailTemplateLocale
@@ -22385,9 +22618,15 @@ type ListConversationsParams struct {
 	// listed, snoozed included.
 	Status *[]ConversationStatus `form:"status,omitempty" json:"status,omitempty"`
 
-	// Assignee A member id, `me` (member sessions only) or `unassigned`.
-	Assignee *string    `form:"assignee,omitempty" json:"assignee,omitempty"`
-	LabelId  *uuid.UUID `form:"label_id,omitempty" json:"label_id,omitempty"`
+	// Assignee A member id, `me` (member sessions only) or `unassigned` (no member, whatever the team).
+	Assignee *string `form:"assignee,omitempty" json:"assignee,omitempty"`
+
+	// TeamId Only conversations assigned to this team.
+	TeamId *uuid.UUID `form:"team_id,omitempty" json:"team_id,omitempty"`
+
+	// Team `mine` lists only conversations assigned to a team of the calling member (member sessions only).
+	Team    *ListConversationsParamsTeam `form:"team,omitempty" json:"team,omitempty"`
+	LabelId *uuid.UUID                   `form:"label_id,omitempty" json:"label_id,omitempty"`
 
 	// Spam `true` lists only conversations flagged as spam (the spam view); `false` leaves spam
 	// out. Without it spam is left out, except with `trashed=true`, which lists both.
@@ -22447,6 +22686,9 @@ type ListConversationsParams struct {
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
+
+// ListConversationsParamsTeam defines parameters for ListConversations.
+type ListConversationsParamsTeam string
 
 // ListConversationsParamsIdea defines parameters for ListConversations.
 type ListConversationsParamsIdea string
@@ -24327,6 +24569,63 @@ type PreviewStatusPageParams struct {
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
 
+// ListTeamsParams defines parameters for ListTeams.
+type ListTeamsParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// CreateTeamParams defines parameters for CreateTeam.
+type CreateTeamParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// DeleteTeamParams defines parameters for DeleteTeam.
+type DeleteTeamParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// GetTeamParams defines parameters for GetTeam.
+type GetTeamParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// UpdateTeamParams defines parameters for UpdateTeam.
+type UpdateTeamParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// RevokeTeamInboxAccessParams defines parameters for RevokeTeamInboxAccess.
+type RevokeTeamInboxAccessParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// GrantTeamInboxAccessParams defines parameters for GrantTeamInboxAccess.
+type GrantTeamInboxAccessParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// RemoveTeamMemberParams defines parameters for RemoveTeamMember.
+type RemoveTeamMemberParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// AddTeamMemberParams defines parameters for AddTeamMember.
+type AddTeamMemberParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
 // GetUsageParams defines parameters for GetUsage.
 type GetUsageParams struct {
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
@@ -24932,6 +25231,48 @@ type WebhookSubscriptionUpdatedParams struct {
 	WebhookSignature WebhookSignatureHeader `json:"webhook-signature"`
 }
 
+// WebhookTeamCreatedParams defines parameters for WebhookTeamCreated.
+type WebhookTeamCreatedParams struct {
+	// WebhookId The delivery's id, the same on every retry; use it to ignore duplicates.
+	WebhookId WebhookIdHeader `json:"webhook-id"`
+
+	// WebhookTimestamp Unix seconds of this attempt. Refuse values far from your clock.
+	WebhookTimestamp WebhookTimestampHeader `json:"webhook-timestamp"`
+
+	// WebhookSignature Space-separated `v1,<base64>` signatures: HMAC-SHA256 over
+	// `<webhook-id>.<webhook-timestamp>.<body>` with the base64-decoded part of the
+	// `whsec_` secret (Standard Webhooks). Two during a secret rotation.
+	WebhookSignature WebhookSignatureHeader `json:"webhook-signature"`
+}
+
+// WebhookTeamDeletedParams defines parameters for WebhookTeamDeleted.
+type WebhookTeamDeletedParams struct {
+	// WebhookId The delivery's id, the same on every retry; use it to ignore duplicates.
+	WebhookId WebhookIdHeader `json:"webhook-id"`
+
+	// WebhookTimestamp Unix seconds of this attempt. Refuse values far from your clock.
+	WebhookTimestamp WebhookTimestampHeader `json:"webhook-timestamp"`
+
+	// WebhookSignature Space-separated `v1,<base64>` signatures: HMAC-SHA256 over
+	// `<webhook-id>.<webhook-timestamp>.<body>` with the base64-decoded part of the
+	// `whsec_` secret (Standard Webhooks). Two during a secret rotation.
+	WebhookSignature WebhookSignatureHeader `json:"webhook-signature"`
+}
+
+// WebhookTeamUpdatedParams defines parameters for WebhookTeamUpdated.
+type WebhookTeamUpdatedParams struct {
+	// WebhookId The delivery's id, the same on every retry; use it to ignore duplicates.
+	WebhookId WebhookIdHeader `json:"webhook-id"`
+
+	// WebhookTimestamp Unix seconds of this attempt. Refuse values far from your clock.
+	WebhookTimestamp WebhookTimestampHeader `json:"webhook-timestamp"`
+
+	// WebhookSignature Space-separated `v1,<base64>` signatures: HMAC-SHA256 over
+	// `<webhook-id>.<webhook-timestamp>.<body>` with the base64-decoded part of the
+	// `whsec_` secret (Standard Webhooks). Two during a secret rotation.
+	WebhookSignature WebhookSignatureHeader `json:"webhook-signature"`
+}
+
 // UnlockSharedAnalyticsJSONRequestBody defines body for UnlockSharedAnalytics for application/json ContentType.
 type UnlockSharedAnalyticsJSONRequestBody = AnalyticsShareUnlock
 
@@ -25406,6 +25747,12 @@ type CreateStatusMonitorJSONRequestBody = StatusMonitorCreate
 // UpdateStatusMonitorJSONRequestBody defines body for UpdateStatusMonitor for application/json ContentType.
 type UpdateStatusMonitorJSONRequestBody = StatusMonitorUpdate
 
+// CreateTeamJSONRequestBody defines body for CreateTeam for application/json ContentType.
+type CreateTeamJSONRequestBody = TeamCreate
+
+// UpdateTeamJSONRequestBody defines body for UpdateTeam for application/json ContentType.
+type UpdateTeamJSONRequestBody = TeamUpdate
+
 // CreateWebhookJSONRequestBody defines body for CreateWebhook for application/json ContentType.
 type CreateWebhookJSONRequestBody = WebhookEndpointCreate
 
@@ -25528,6 +25875,15 @@ type WebhookSubscriptionCreatedJSONRequestBody = WebhookSubscriptionPayload
 
 // WebhookSubscriptionUpdatedJSONRequestBody defines body for WebhookSubscriptionUpdated for application/json ContentType.
 type WebhookSubscriptionUpdatedJSONRequestBody = WebhookSubscriptionPayload
+
+// WebhookTeamCreatedJSONRequestBody defines body for WebhookTeamCreated for application/json ContentType.
+type WebhookTeamCreatedJSONRequestBody = WebhookTeamPayload
+
+// WebhookTeamDeletedJSONRequestBody defines body for WebhookTeamDeleted for application/json ContentType.
+type WebhookTeamDeletedJSONRequestBody = WebhookTeamPayload
+
+// WebhookTeamUpdatedJSONRequestBody defines body for WebhookTeamUpdated for application/json ContentType.
+type WebhookTeamUpdatedJSONRequestBody = WebhookTeamPayload
 
 // AsAnalyticsEvent returns the union data inside the AnalyticsBatch as a AnalyticsEvent
 func (t AnalyticsBatch) AsAnalyticsEvent() (AnalyticsEvent, error) {
@@ -27541,6 +27897,32 @@ func (t *RealtimeMessage) MergeInboxAccessChangedEvent(v InboxAccessChangedEvent
 	return err
 }
 
+// AsTeamEvent returns the union data inside the RealtimeMessage as a TeamEvent
+func (t RealtimeMessage) AsTeamEvent() (TeamEvent, error) {
+	var body TeamEvent
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromTeamEvent overwrites any union data inside the RealtimeMessage as the provided TeamEvent
+func (t *RealtimeMessage) FromTeamEvent(v TeamEvent) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeTeamEvent performs a merge with any union data inside the RealtimeMessage, using the provided TeamEvent
+func (t *RealtimeMessage) MergeTeamEvent(v TeamEvent) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
 // AsConversationReadEvent returns the union data inside the RealtimeMessage as a ConversationReadEvent
 func (t RealtimeMessage) AsConversationReadEvent() (ConversationReadEvent, error) {
 	var body ConversationReadEvent
@@ -28561,6 +28943,12 @@ func (t RealtimeMessage) ValueByDiscriminator() (interface{}, error) {
 		return t.AsSubscriptionEvent()
 	case "subscription.updated":
 		return t.AsSubscriptionEvent()
+	case "team.created":
+		return t.AsTeamEvent()
+	case "team.deleted":
+		return t.AsTeamEvent()
+	case "team.updated":
+		return t.AsTeamEvent()
 	case "typing":
 		return t.AsTypingEvent()
 	case "viewing":
@@ -28882,6 +29270,32 @@ func (t *StoredEvent) FromInboxAccessChangedEvent(v InboxAccessChangedEvent) err
 
 // MergeInboxAccessChangedEvent performs a merge with any union data inside the StoredEvent, using the provided InboxAccessChangedEvent
 func (t *StoredEvent) MergeInboxAccessChangedEvent(v InboxAccessChangedEvent) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsTeamEvent returns the union data inside the StoredEvent as a TeamEvent
+func (t StoredEvent) AsTeamEvent() (TeamEvent, error) {
+	var body TeamEvent
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromTeamEvent overwrites any union data inside the StoredEvent as the provided TeamEvent
+func (t *StoredEvent) FromTeamEvent(v TeamEvent) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeTeamEvent performs a merge with any union data inside the StoredEvent, using the provided TeamEvent
+func (t *StoredEvent) MergeTeamEvent(v TeamEvent) error {
 	b, err := json.Marshal(v)
 	if err != nil {
 		return err
@@ -29356,6 +29770,12 @@ func (t StoredEvent) ValueByDiscriminator() (interface{}, error) {
 		return t.AsSubscriptionEvent()
 	case "subscription.updated":
 		return t.AsSubscriptionEvent()
+	case "team.created":
+		return t.AsTeamEvent()
+	case "team.deleted":
+		return t.AsTeamEvent()
+	case "team.updated":
+		return t.AsTeamEvent()
 	default:
 		return nil, errors.New("unknown discriminator value: " + discriminator)
 	}
@@ -33201,8 +33621,8 @@ type ClientInterface interface {
 	// GetConversationCounts Count open conversations
 	//
 	// Open conversations in the inboxes the caller can see: all of them, those assigned to the
-	// calling member (`0` for API keys), unassigned ones, and per inbox, per assignee and per
-	// label. Inboxes, assignees and labels without open conversations are left out of their lists. Conversations flagged as
+	// calling member (`0` for API keys), unassigned ones, those assigned to a team of the
+	// calling member, and per inbox, per assignee, per team and per label. Inboxes, assignees and labels without open conversations are left out of their lists. Conversations flagged as
 	// spam are counted only in `spam`.
 	//
 	// `kind` limits every count to conversations of those kinds, as on `GET /v1/conversations`:
@@ -35188,8 +35608,8 @@ type ClientInterface interface {
 
 	// ListInboxMembers List members with access
 	//
-	// Members granted access to this inbox. Owners and admins see every inbox without a grant and
-	// are not listed unless granted.
+	// Members with access to this inbox, granted directly or through a team (`via`, `team_ids`).
+	// Owners and admins see every inbox without a grant and are not listed unless granted.
 	//
 	// Scope: `inboxes:read`.
 	//
@@ -35198,7 +35618,8 @@ type ClientInterface interface {
 
 	// RevokeInboxAccess Take a member's access away
 	//
-	// Owners, admins and API keys.
+	// Owners, admins and API keys. Removes the direct grant only: access through a team stays.
+	// Sends `inbox_access.changed` when the member's access flips.
 	//
 	// Scope: `inboxes:manage`.
 	//
@@ -35207,7 +35628,8 @@ type ClientInterface interface {
 
 	// GrantInboxAccess Give a member access
 	//
-	// Owners, admins and API keys. Granting twice is a no-op.
+	// Owners, admins and API keys. Granting twice is a no-op. Sends `inbox_access.changed` when
+	// the member's access flips (not when a team already gave it).
 	//
 	// Scope: `inboxes:manage`.
 	//
@@ -37782,6 +38204,127 @@ type ClientInterface interface {
 	//
 	// Corresponds with GET /v1/status-pages/{pageId}/preview (the `PreviewStatusPage` operationId).
 	PreviewStatusPage(ctx context.Context, pageId StatusPageId, params *PreviewStatusPageParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListTeams List teams
+	//
+	// Owners, admins and API keys not limited to inboxes see every team. Agents see the teams
+	// they belong to and the teams granted an inbox they see; keys limited to inboxes the teams
+	// granted one of their inboxes. By name.
+	//
+	// Scope: `inboxes:read`.
+	//
+	// Corresponds with GET /v1/teams (the `ListTeams` operationId).
+	ListTeams(ctx context.Context, params *ListTeamsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateTeamWithBody Create a team
+	//
+	// Owners, admins and API keys not limited to inboxes. Sends `team.created`.
+	//
+	// Scope: `inboxes:manage`.
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /v1/teams (the `CreateTeam` operationId).
+	CreateTeamWithBody(ctx context.Context, params *CreateTeamParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateTeam Create a team
+	//
+	// Owners, admins and API keys not limited to inboxes. Sends `team.created`.
+	//
+	// Scope: `inboxes:manage`.
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /v1/teams (the `CreateTeam` operationId).
+	CreateTeam(ctx context.Context, params *CreateTeamParams, body CreateTeamJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteTeam Delete a team
+	//
+	// Owners, admins and API keys not limited to inboxes. Its members lose the access it gave
+	// them at once (`inbox_access.changed` for each member and inbox whose access flips), and
+	// conversations assigned to it keep their member but lose the team (one
+	// `conversation.updated` each, no timeline entry). Sends `team.deleted`.
+	//
+	// Scope: `inboxes:manage`.
+	//
+	// Corresponds with DELETE /v1/teams/{teamId} (the `DeleteTeam` operationId).
+	DeleteTeam(ctx context.Context, teamId TeamId, params *DeleteTeamParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetTeam Get a team
+	//
+	// A team the caller does not see (see `GET /v1/teams`) answers `404`.
+	//
+	// Scope: `inboxes:read`.
+	//
+	// Corresponds with GET /v1/teams/{teamId} (the `GetTeam` operationId).
+	GetTeam(ctx context.Context, teamId TeamId, params *GetTeamParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateTeamWithBody Update a team
+	//
+	// Owners, admins and API keys not limited to inboxes. Sends `team.updated`.
+	//
+	// Scope: `inboxes:manage`.
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with PATCH /v1/teams/{teamId} (the `UpdateTeam` operationId).
+	UpdateTeamWithBody(ctx context.Context, teamId TeamId, params *UpdateTeamParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateTeam Update a team
+	//
+	// Owners, admins and API keys not limited to inboxes. Sends `team.updated`.
+	//
+	// Scope: `inboxes:manage`.
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with PATCH /v1/teams/{teamId} (the `UpdateTeam` operationId).
+	UpdateTeam(ctx context.Context, teamId TeamId, params *UpdateTeamParams, body UpdateTeamJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// RevokeTeamInboxAccess Take a team's access to an inbox away
+	//
+	// Owners, admins and API keys not limited to inboxes. Members who had the inbox only through
+	// this team lose it at once (`inbox_access.changed`); conversations of the inbox assigned to
+	// the team lose the team (one `conversation.updated` each, no timeline entry). Sends
+	// `team.updated`.
+	//
+	// Scope: `inboxes:manage`.
+	//
+	// Corresponds with DELETE /v1/teams/{teamId}/inboxes/{inboxId} (the `RevokeTeamInboxAccess` operationId).
+	RevokeTeamInboxAccess(ctx context.Context, teamId TeamId, inboxId InboxId, params *RevokeTeamInboxAccessParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GrantTeamInboxAccess Give a team access to an inbox
+	//
+	// Owners, admins and API keys not limited to inboxes. Every member of the team gains the
+	// inbox at once (`inbox_access.changed` for each whose access flips) and `team.updated` is
+	// sent. Granting twice is a no-op. A team holds at most 100 inboxes (`403 team_limit`).
+	//
+	// Scope: `inboxes:manage`.
+	//
+	// Corresponds with PUT /v1/teams/{teamId}/inboxes/{inboxId} (the `GrantTeamInboxAccess` operationId).
+	GrantTeamInboxAccess(ctx context.Context, teamId TeamId, inboxId InboxId, params *GrantTeamInboxAccessParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// RemoveTeamMember Remove a member from a team
+	//
+	// Owners, admins and API keys not limited to inboxes. The member loses the inboxes only the
+	// team gave them at once (`inbox_access.changed`), and `team.updated` is sent, to the removed
+	// member too (`removed_member_ids`). Removing a member who is not in the team is a no-op.
+	//
+	// Scope: `inboxes:manage`.
+	//
+	// Corresponds with DELETE /v1/teams/{teamId}/members/{memberId} (the `RemoveTeamMember` operationId).
+	RemoveTeamMember(ctx context.Context, teamId TeamId, memberId MemberId, params *RemoveTeamMemberParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// AddTeamMember Add a member to a team
+	//
+	// Owners, admins and API keys not limited to inboxes. Adding twice is a no-op. The member
+	// gains the team's inboxes at once (`inbox_access.changed` for each inbox whose access flips)
+	// and `team.updated` is sent. A team holds at most 500 members (`403 team_limit`).
+	//
+	// Scope: `inboxes:manage`.
+	//
+	// Corresponds with PUT /v1/teams/{teamId}/members/{memberId} (the `AddTeamMember` operationId).
+	AddTeamMember(ctx context.Context, teamId TeamId, memberId MemberId, params *AddTeamMemberParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetUsage Usage per month
 	//
@@ -44331,8 +44874,8 @@ func (c *Client) BulkUpdateConversations(ctx context.Context, params *BulkUpdate
 // GetConversationCounts Count open conversations
 //
 // Open conversations in the inboxes the caller can see: all of them, those assigned to the
-// calling member (`0` for API keys), unassigned ones, and per inbox, per assignee and per
-// label. Inboxes, assignees and labels without open conversations are left out of their lists. Conversations flagged as
+// calling member (`0` for API keys), unassigned ones, those assigned to a team of the
+// calling member, and per inbox, per assignee, per team and per label. Inboxes, assignees and labels without open conversations are left out of their lists. Conversations flagged as
 // spam are counted only in `spam`.
 //
 // `kind` limits every count to conversations of those kinds, as on `GET /v1/conversations`:
@@ -47618,8 +48161,8 @@ func (c *Client) RotateInboxIdentitySecret(ctx context.Context, inboxId InboxId,
 
 // ListInboxMembers List members with access
 //
-// Members granted access to this inbox. Owners and admins see every inbox without a grant and
-// are not listed unless granted.
+// Members with access to this inbox, granted directly or through a team (`via`, `team_ids`).
+// Owners and admins see every inbox without a grant and are not listed unless granted.
 //
 // Scope: `inboxes:read`.
 //
@@ -47638,7 +48181,8 @@ func (c *Client) ListInboxMembers(ctx context.Context, inboxId InboxId, params *
 
 // RevokeInboxAccess Take a member's access away
 //
-// Owners, admins and API keys.
+// Owners, admins and API keys. Removes the direct grant only: access through a team stays.
+// Sends `inbox_access.changed` when the member's access flips.
 //
 // Scope: `inboxes:manage`.
 //
@@ -47657,7 +48201,8 @@ func (c *Client) RevokeInboxAccess(ctx context.Context, inboxId InboxId, memberI
 
 // GrantInboxAccess Give a member access
 //
-// Owners, admins and API keys. Granting twice is a no-op.
+// Owners, admins and API keys. Granting twice is a no-op. Sends `inbox_access.changed` when
+// the member's access flips (not when a team already gave it).
 //
 // Scope: `inboxes:manage`.
 //
@@ -52073,6 +52618,237 @@ func (c *Client) CancelStatusNotice(ctx context.Context, pageId StatusPageId, no
 // Corresponds with GET /v1/status-pages/{pageId}/preview (the `PreviewStatusPage` operationId).
 func (c *Client) PreviewStatusPage(ctx context.Context, pageId StatusPageId, params *PreviewStatusPageParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewPreviewStatusPageRequest(c.Server, pageId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// ListTeams List teams
+//
+// Owners, admins and API keys not limited to inboxes see every team. Agents see the teams
+// they belong to and the teams granted an inbox they see; keys limited to inboxes the teams
+// granted one of their inboxes. By name.
+//
+// Scope: `inboxes:read`.
+//
+// Corresponds with GET /v1/teams (the `ListTeams` operationId).
+func (c *Client) ListTeams(ctx context.Context, params *ListTeamsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListTeamsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// CreateTeamWithBody Create a team
+//
+// Owners, admins and API keys not limited to inboxes. Sends `team.created`.
+//
+// Scope: `inboxes:manage`.
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /v1/teams (the `CreateTeam` operationId).
+func (c *Client) CreateTeamWithBody(ctx context.Context, params *CreateTeamParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateTeamRequestWithBody(c.Server, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// CreateTeam Create a team
+//
+// Owners, admins and API keys not limited to inboxes. Sends `team.created`.
+//
+// Scope: `inboxes:manage`.
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /v1/teams (the `CreateTeam` operationId).
+func (c *Client) CreateTeam(ctx context.Context, params *CreateTeamParams, body CreateTeamJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateTeamRequest(c.Server, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// DeleteTeam Delete a team
+//
+// Owners, admins and API keys not limited to inboxes. Its members lose the access it gave
+// them at once (`inbox_access.changed` for each member and inbox whose access flips), and
+// conversations assigned to it keep their member but lose the team (one
+// `conversation.updated` each, no timeline entry). Sends `team.deleted`.
+//
+// Scope: `inboxes:manage`.
+//
+// Corresponds with DELETE /v1/teams/{teamId} (the `DeleteTeam` operationId).
+func (c *Client) DeleteTeam(ctx context.Context, teamId TeamId, params *DeleteTeamParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteTeamRequest(c.Server, teamId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetTeam Get a team
+//
+// A team the caller does not see (see `GET /v1/teams`) answers `404`.
+//
+// Scope: `inboxes:read`.
+//
+// Corresponds with GET /v1/teams/{teamId} (the `GetTeam` operationId).
+func (c *Client) GetTeam(ctx context.Context, teamId TeamId, params *GetTeamParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetTeamRequest(c.Server, teamId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// UpdateTeamWithBody Update a team
+//
+// Owners, admins and API keys not limited to inboxes. Sends `team.updated`.
+//
+// Scope: `inboxes:manage`.
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with PATCH /v1/teams/{teamId} (the `UpdateTeam` operationId).
+func (c *Client) UpdateTeamWithBody(ctx context.Context, teamId TeamId, params *UpdateTeamParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateTeamRequestWithBody(c.Server, teamId, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// UpdateTeam Update a team
+//
+// Owners, admins and API keys not limited to inboxes. Sends `team.updated`.
+//
+// Scope: `inboxes:manage`.
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with PATCH /v1/teams/{teamId} (the `UpdateTeam` operationId).
+func (c *Client) UpdateTeam(ctx context.Context, teamId TeamId, params *UpdateTeamParams, body UpdateTeamJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateTeamRequest(c.Server, teamId, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// RevokeTeamInboxAccess Take a team's access to an inbox away
+//
+// Owners, admins and API keys not limited to inboxes. Members who had the inbox only through
+// this team lose it at once (`inbox_access.changed`); conversations of the inbox assigned to
+// the team lose the team (one `conversation.updated` each, no timeline entry). Sends
+// `team.updated`.
+//
+// Scope: `inboxes:manage`.
+//
+// Corresponds with DELETE /v1/teams/{teamId}/inboxes/{inboxId} (the `RevokeTeamInboxAccess` operationId).
+func (c *Client) RevokeTeamInboxAccess(ctx context.Context, teamId TeamId, inboxId InboxId, params *RevokeTeamInboxAccessParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRevokeTeamInboxAccessRequest(c.Server, teamId, inboxId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GrantTeamInboxAccess Give a team access to an inbox
+//
+// Owners, admins and API keys not limited to inboxes. Every member of the team gains the
+// inbox at once (`inbox_access.changed` for each whose access flips) and `team.updated` is
+// sent. Granting twice is a no-op. A team holds at most 100 inboxes (`403 team_limit`).
+//
+// Scope: `inboxes:manage`.
+//
+// Corresponds with PUT /v1/teams/{teamId}/inboxes/{inboxId} (the `GrantTeamInboxAccess` operationId).
+func (c *Client) GrantTeamInboxAccess(ctx context.Context, teamId TeamId, inboxId InboxId, params *GrantTeamInboxAccessParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGrantTeamInboxAccessRequest(c.Server, teamId, inboxId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// RemoveTeamMember Remove a member from a team
+//
+// Owners, admins and API keys not limited to inboxes. The member loses the inboxes only the
+// team gave them at once (`inbox_access.changed`), and `team.updated` is sent, to the removed
+// member too (`removed_member_ids`). Removing a member who is not in the team is a no-op.
+//
+// Scope: `inboxes:manage`.
+//
+// Corresponds with DELETE /v1/teams/{teamId}/members/{memberId} (the `RemoveTeamMember` operationId).
+func (c *Client) RemoveTeamMember(ctx context.Context, teamId TeamId, memberId MemberId, params *RemoveTeamMemberParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRemoveTeamMemberRequest(c.Server, teamId, memberId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// AddTeamMember Add a member to a team
+//
+// Owners, admins and API keys not limited to inboxes. Adding twice is a no-op. The member
+// gains the team's inboxes at once (`inbox_access.changed` for each inbox whose access flips)
+// and `team.updated` is sent. A team holds at most 500 members (`403 team_limit`).
+//
+// Scope: `inboxes:manage`.
+//
+// Corresponds with PUT /v1/teams/{teamId}/members/{memberId} (the `AddTeamMember` operationId).
+func (c *Client) AddTeamMember(ctx context.Context, teamId TeamId, memberId MemberId, params *AddTeamMemberParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAddTeamMemberRequest(c.Server, teamId, memberId, params)
 	if err != nil {
 		return nil, err
 	}
@@ -63551,6 +64327,30 @@ func NewListConversationsRequest(server string, params *ListConversationsParams)
 		if params.Assignee != nil {
 
 			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "assignee", *params.Assignee, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.TeamId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "team_id", *params.TeamId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "uuid"}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Team != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "team", *params.Team, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
 				return nil, err
 			} else {
 				for _, qp := range strings.Split(queryFrag, "&") {
@@ -79319,6 +80119,498 @@ func NewPreviewStatusPageRequest(server string, pageId StatusPageId, params *Pre
 	return req, nil
 }
 
+// NewListTeamsRequest constructs an http.Request for the ListTeams method
+func NewListTeamsRequest(server string, params *ListTeamsParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/teams")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewCreateTeamRequest calls the generic CreateTeam builder with application/json body
+func NewCreateTeamRequest(server string, params *CreateTeamParams, body CreateTeamJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateTeamRequestWithBody(server, params, "application/json", bodyReader)
+}
+
+// NewCreateTeamRequestWithBody constructs an http.Request for the CreateTeam method, with any body, and a specified content type
+func NewCreateTeamRequestWithBody(server string, params *CreateTeamParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/teams")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.IdempotencyKey != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Idempotency-Key", *params.IdempotencyKey, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Idempotency-Key", headerParam0)
+		}
+
+		if params.YuvaWorkspace != nil {
+			var headerParam1 string
+
+			headerParam1, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam1)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewDeleteTeamRequest constructs an http.Request for the DeleteTeam method
+func NewDeleteTeamRequest(server string, teamId TeamId, params *DeleteTeamParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "teamId", teamId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/teams/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodDelete, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewGetTeamRequest constructs an http.Request for the GetTeam method
+func NewGetTeamRequest(server string, teamId TeamId, params *GetTeamParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "teamId", teamId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/teams/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewUpdateTeamRequest calls the generic UpdateTeam builder with application/json body
+func NewUpdateTeamRequest(server string, teamId TeamId, params *UpdateTeamParams, body UpdateTeamJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateTeamRequestWithBody(server, teamId, params, "application/json", bodyReader)
+}
+
+// NewUpdateTeamRequestWithBody constructs an http.Request for the UpdateTeam method, with any body, and a specified content type
+func NewUpdateTeamRequestWithBody(server string, teamId TeamId, params *UpdateTeamParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "teamId", teamId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/teams/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPatch, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewRevokeTeamInboxAccessRequest constructs an http.Request for the RevokeTeamInboxAccess method
+func NewRevokeTeamInboxAccessRequest(server string, teamId TeamId, inboxId InboxId, params *RevokeTeamInboxAccessParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "teamId", teamId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "inboxId", inboxId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/teams/%s/inboxes/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodDelete, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewGrantTeamInboxAccessRequest constructs an http.Request for the GrantTeamInboxAccess method
+func NewGrantTeamInboxAccessRequest(server string, teamId TeamId, inboxId InboxId, params *GrantTeamInboxAccessParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "teamId", teamId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "inboxId", inboxId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/teams/%s/inboxes/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPut, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewRemoveTeamMemberRequest constructs an http.Request for the RemoveTeamMember method
+func NewRemoveTeamMemberRequest(server string, teamId TeamId, memberId MemberId, params *RemoveTeamMemberParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "teamId", teamId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "memberId", memberId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/teams/%s/members/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodDelete, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewAddTeamMemberRequest constructs an http.Request for the AddTeamMember method
+func NewAddTeamMemberRequest(server string, teamId TeamId, memberId MemberId, params *AddTeamMemberParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "teamId", teamId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "memberId", memberId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/teams/%s/members/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPut, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
 // NewGetUsageRequest constructs an http.Request for the GetUsage method
 func NewGetUsageRequest(server string, params *GetUsageParams) (*http.Request, error) {
 	var err error
@@ -84246,8 +85538,8 @@ type ClientWithResponsesInterface interface {
 	// GetConversationCountsWithResponse Count open conversations
 	//
 	// Open conversations in the inboxes the caller can see: all of them, those assigned to the
-	// calling member (`0` for API keys), unassigned ones, and per inbox, per assignee and per
-	// label. Inboxes, assignees and labels without open conversations are left out of their lists. Conversations flagged as
+	// calling member (`0` for API keys), unassigned ones, those assigned to a team of the
+	// calling member, and per inbox, per assignee, per team and per label. Inboxes, assignees and labels without open conversations are left out of their lists. Conversations flagged as
 	// spam are counted only in `spam`.
 	//
 	// `kind` limits every count to conversations of those kinds, as on `GET /v1/conversations`:
@@ -86357,8 +87649,8 @@ type ClientWithResponsesInterface interface {
 
 	// ListInboxMembersWithResponse List members with access
 	//
-	// Members granted access to this inbox. Owners and admins see every inbox without a grant and
-	// are not listed unless granted.
+	// Members with access to this inbox, granted directly or through a team (`via`, `team_ids`).
+	// Owners and admins see every inbox without a grant and are not listed unless granted.
 	//
 	// Scope: `inboxes:read`.
 	//
@@ -86369,7 +87661,8 @@ type ClientWithResponsesInterface interface {
 
 	// RevokeInboxAccessWithResponse Take a member's access away
 	//
-	// Owners, admins and API keys.
+	// Owners, admins and API keys. Removes the direct grant only: access through a team stays.
+	// Sends `inbox_access.changed` when the member's access flips.
 	//
 	// Scope: `inboxes:manage`.
 	//
@@ -86380,7 +87673,8 @@ type ClientWithResponsesInterface interface {
 
 	// GrantInboxAccessWithResponse Give a member access
 	//
-	// Owners, admins and API keys. Granting twice is a no-op.
+	// Owners, admins and API keys. Granting twice is a no-op. Sends `inbox_access.changed` when
+	// the member's access flips (not when a team already gave it).
 	//
 	// Scope: `inboxes:manage`.
 	//
@@ -89141,6 +90435,141 @@ type ClientWithResponsesInterface interface {
 	//
 	// Corresponds with GET /v1/status-pages/{pageId}/preview (the `PreviewStatusPage` operationId).
 	PreviewStatusPageWithResponse(ctx context.Context, pageId StatusPageId, params *PreviewStatusPageParams, reqEditors ...RequestEditorFn) (*PreviewStatusPageResponse, error)
+
+	// ListTeamsWithResponse List teams
+	//
+	// Owners, admins and API keys not limited to inboxes see every team. Agents see the teams
+	// they belong to and the teams granted an inbox they see; keys limited to inboxes the teams
+	// granted one of their inboxes. By name.
+	//
+	// Scope: `inboxes:read`.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /v1/teams (the `ListTeams` operationId).
+	ListTeamsWithResponse(ctx context.Context, params *ListTeamsParams, reqEditors ...RequestEditorFn) (*ListTeamsResponse, error)
+
+	// CreateTeamWithBodyWithResponse Create a team
+	//
+	// Owners, admins and API keys not limited to inboxes. Sends `team.created`.
+	//
+	// Scope: `inboxes:manage`.
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /v1/teams (the `CreateTeam` operationId).
+	CreateTeamWithBodyWithResponse(ctx context.Context, params *CreateTeamParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateTeamResponse, error)
+
+	// CreateTeamWithResponse Create a team
+	//
+	// Owners, admins and API keys not limited to inboxes. Sends `team.created`.
+	//
+	// Scope: `inboxes:manage`.
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /v1/teams (the `CreateTeam` operationId).
+	CreateTeamWithResponse(ctx context.Context, params *CreateTeamParams, body CreateTeamJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateTeamResponse, error)
+
+	// DeleteTeamWithResponse Delete a team
+	//
+	// Owners, admins and API keys not limited to inboxes. Its members lose the access it gave
+	// them at once (`inbox_access.changed` for each member and inbox whose access flips), and
+	// conversations assigned to it keep their member but lose the team (one
+	// `conversation.updated` each, no timeline entry). Sends `team.deleted`.
+	//
+	// Scope: `inboxes:manage`.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with DELETE /v1/teams/{teamId} (the `DeleteTeam` operationId).
+	DeleteTeamWithResponse(ctx context.Context, teamId TeamId, params *DeleteTeamParams, reqEditors ...RequestEditorFn) (*DeleteTeamResponse, error)
+
+	// GetTeamWithResponse Get a team
+	//
+	// A team the caller does not see (see `GET /v1/teams`) answers `404`.
+	//
+	// Scope: `inboxes:read`.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /v1/teams/{teamId} (the `GetTeam` operationId).
+	GetTeamWithResponse(ctx context.Context, teamId TeamId, params *GetTeamParams, reqEditors ...RequestEditorFn) (*GetTeamResponse, error)
+
+	// UpdateTeamWithBodyWithResponse Update a team
+	//
+	// Owners, admins and API keys not limited to inboxes. Sends `team.updated`.
+	//
+	// Scope: `inboxes:manage`.
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PATCH /v1/teams/{teamId} (the `UpdateTeam` operationId).
+	UpdateTeamWithBodyWithResponse(ctx context.Context, teamId TeamId, params *UpdateTeamParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateTeamResponse, error)
+
+	// UpdateTeamWithResponse Update a team
+	//
+	// Owners, admins and API keys not limited to inboxes. Sends `team.updated`.
+	//
+	// Scope: `inboxes:manage`.
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PATCH /v1/teams/{teamId} (the `UpdateTeam` operationId).
+	UpdateTeamWithResponse(ctx context.Context, teamId TeamId, params *UpdateTeamParams, body UpdateTeamJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateTeamResponse, error)
+
+	// RevokeTeamInboxAccessWithResponse Take a team's access to an inbox away
+	//
+	// Owners, admins and API keys not limited to inboxes. Members who had the inbox only through
+	// this team lose it at once (`inbox_access.changed`); conversations of the inbox assigned to
+	// the team lose the team (one `conversation.updated` each, no timeline entry). Sends
+	// `team.updated`.
+	//
+	// Scope: `inboxes:manage`.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with DELETE /v1/teams/{teamId}/inboxes/{inboxId} (the `RevokeTeamInboxAccess` operationId).
+	RevokeTeamInboxAccessWithResponse(ctx context.Context, teamId TeamId, inboxId InboxId, params *RevokeTeamInboxAccessParams, reqEditors ...RequestEditorFn) (*RevokeTeamInboxAccessResponse, error)
+
+	// GrantTeamInboxAccessWithResponse Give a team access to an inbox
+	//
+	// Owners, admins and API keys not limited to inboxes. Every member of the team gains the
+	// inbox at once (`inbox_access.changed` for each whose access flips) and `team.updated` is
+	// sent. Granting twice is a no-op. A team holds at most 100 inboxes (`403 team_limit`).
+	//
+	// Scope: `inboxes:manage`.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PUT /v1/teams/{teamId}/inboxes/{inboxId} (the `GrantTeamInboxAccess` operationId).
+	GrantTeamInboxAccessWithResponse(ctx context.Context, teamId TeamId, inboxId InboxId, params *GrantTeamInboxAccessParams, reqEditors ...RequestEditorFn) (*GrantTeamInboxAccessResponse, error)
+
+	// RemoveTeamMemberWithResponse Remove a member from a team
+	//
+	// Owners, admins and API keys not limited to inboxes. The member loses the inboxes only the
+	// team gave them at once (`inbox_access.changed`), and `team.updated` is sent, to the removed
+	// member too (`removed_member_ids`). Removing a member who is not in the team is a no-op.
+	//
+	// Scope: `inboxes:manage`.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with DELETE /v1/teams/{teamId}/members/{memberId} (the `RemoveTeamMember` operationId).
+	RemoveTeamMemberWithResponse(ctx context.Context, teamId TeamId, memberId MemberId, params *RemoveTeamMemberParams, reqEditors ...RequestEditorFn) (*RemoveTeamMemberResponse, error)
+
+	// AddTeamMemberWithResponse Add a member to a team
+	//
+	// Owners, admins and API keys not limited to inboxes. Adding twice is a no-op. The member
+	// gains the team's inboxes at once (`inbox_access.changed` for each inbox whose access flips)
+	// and `team.updated` is sent. A team holds at most 500 members (`403 team_limit`).
+	//
+	// Scope: `inboxes:manage`.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PUT /v1/teams/{teamId}/members/{memberId} (the `AddTeamMember` operationId).
+	AddTeamMemberWithResponse(ctx context.Context, teamId TeamId, memberId MemberId, params *AddTeamMemberParams, reqEditors ...RequestEditorFn) (*AddTeamMemberResponse, error)
 
 	// GetUsageWithResponse Usage per month
 	//
@@ -108614,7 +110043,7 @@ type ListInboxMembersResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	// JSON200 the response for an HTTP 200 `application/json` response
-	JSON200 *MemberList
+	JSON200 *InboxMemberList
 	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
 	ApplicationproblemJSON401 *Problem
 	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
@@ -108624,7 +110053,7 @@ type ListInboxMembersResponse struct {
 }
 
 // GetJSON200 returns the response for an HTTP 200 `application/json` response
-func (r ListInboxMembersResponse) GetJSON200() *MemberList {
+func (r ListInboxMembersResponse) GetJSON200() *InboxMemberList {
 	return r.JSON200
 }
 
@@ -117954,6 +119383,543 @@ func (r PreviewStatusPageResponse) ContentType() string {
 	return ""
 }
 
+type ListTeamsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *TeamList
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r ListTeamsResponse) GetJSON200() *TeamList {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r ListTeamsResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r ListTeamsResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetBody returns the raw response body bytes
+func (r ListTeamsResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r ListTeamsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListTeamsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ListTeamsResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type CreateTeamResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON201 the response for an HTTP 201 `application/json` response
+	JSON201 *Team
+	// ApplicationproblemJSON400 the response for an HTTP 400 `application/problem+json` response
+	ApplicationproblemJSON400 *Problem
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON409 the response for an HTTP 409 `application/problem+json` response
+	ApplicationproblemJSON409 *Problem
+}
+
+// GetJSON201 returns the response for an HTTP 201 `application/json` response
+func (r CreateTeamResponse) GetJSON201() *Team {
+	return r.JSON201
+}
+
+// GetApplicationproblemJSON400 returns the response for an HTTP 400 `application/problem+json` response
+func (r CreateTeamResponse) GetApplicationproblemJSON400() *Problem {
+	return r.ApplicationproblemJSON400
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r CreateTeamResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r CreateTeamResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON409 returns the response for an HTTP 409 `application/problem+json` response
+func (r CreateTeamResponse) GetApplicationproblemJSON409() *Problem {
+	return r.ApplicationproblemJSON409
+}
+
+// GetBody returns the raw response body bytes
+func (r CreateTeamResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r CreateTeamResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateTeamResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r CreateTeamResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type DeleteTeamResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r DeleteTeamResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r DeleteTeamResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r DeleteTeamResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetBody returns the raw response body bytes
+func (r DeleteTeamResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteTeamResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteTeamResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r DeleteTeamResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetTeamResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *Team
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetTeamResponse) GetJSON200() *Team {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r GetTeamResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r GetTeamResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r GetTeamResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetBody returns the raw response body bytes
+func (r GetTeamResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetTeamResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetTeamResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetTeamResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type UpdateTeamResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *Team
+	// ApplicationproblemJSON400 the response for an HTTP 400 `application/problem+json` response
+	ApplicationproblemJSON400 *Problem
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+	// ApplicationproblemJSON409 the response for an HTTP 409 `application/problem+json` response
+	ApplicationproblemJSON409 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r UpdateTeamResponse) GetJSON200() *Team {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON400 returns the response for an HTTP 400 `application/problem+json` response
+func (r UpdateTeamResponse) GetApplicationproblemJSON400() *Problem {
+	return r.ApplicationproblemJSON400
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r UpdateTeamResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r UpdateTeamResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r UpdateTeamResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetApplicationproblemJSON409 returns the response for an HTTP 409 `application/problem+json` response
+func (r UpdateTeamResponse) GetApplicationproblemJSON409() *Problem {
+	return r.ApplicationproblemJSON409
+}
+
+// GetBody returns the raw response body bytes
+func (r UpdateTeamResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateTeamResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateTeamResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r UpdateTeamResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type RevokeTeamInboxAccessResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r RevokeTeamInboxAccessResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r RevokeTeamInboxAccessResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r RevokeTeamInboxAccessResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetBody returns the raw response body bytes
+func (r RevokeTeamInboxAccessResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r RevokeTeamInboxAccessResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r RevokeTeamInboxAccessResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r RevokeTeamInboxAccessResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GrantTeamInboxAccessResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r GrantTeamInboxAccessResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r GrantTeamInboxAccessResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r GrantTeamInboxAccessResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetBody returns the raw response body bytes
+func (r GrantTeamInboxAccessResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GrantTeamInboxAccessResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GrantTeamInboxAccessResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GrantTeamInboxAccessResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type RemoveTeamMemberResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r RemoveTeamMemberResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r RemoveTeamMemberResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r RemoveTeamMemberResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetBody returns the raw response body bytes
+func (r RemoveTeamMemberResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r RemoveTeamMemberResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r RemoveTeamMemberResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r RemoveTeamMemberResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type AddTeamMemberResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r AddTeamMemberResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r AddTeamMemberResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r AddTeamMemberResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetBody returns the raw response body bytes
+func (r AddTeamMemberResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r AddTeamMemberResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r AddTeamMemberResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r AddTeamMemberResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type GetUsageResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -124464,8 +126430,8 @@ func (c *ClientWithResponses) BulkUpdateConversationsWithResponse(ctx context.Co
 // GetConversationCountsWithResponse Count open conversations
 //
 // Open conversations in the inboxes the caller can see: all of them, those assigned to the
-// calling member (`0` for API keys), unassigned ones, and per inbox, per assignee and per
-// label. Inboxes, assignees and labels without open conversations are left out of their lists. Conversations flagged as
+// calling member (`0` for API keys), unassigned ones, those assigned to a team of the
+// calling member, and per inbox, per assignee, per team and per label. Inboxes, assignees and labels without open conversations are left out of their lists. Conversations flagged as
 // spam are counted only in `spam`.
 //
 // `kind` limits every count to conversations of those kinds, as on `GET /v1/conversations`:
@@ -127355,8 +129321,8 @@ func (c *ClientWithResponses) RotateInboxIdentitySecretWithResponse(ctx context.
 
 // ListInboxMembersWithResponse List members with access
 //
-// Members granted access to this inbox. Owners and admins see every inbox without a grant and
-// are not listed unless granted.
+// Members with access to this inbox, granted directly or through a team (`via`, `team_ids`).
+// Owners and admins see every inbox without a grant and are not listed unless granted.
 //
 // Scope: `inboxes:read`.
 //
@@ -127373,7 +129339,8 @@ func (c *ClientWithResponses) ListInboxMembersWithResponse(ctx context.Context, 
 
 // RevokeInboxAccessWithResponse Take a member's access away
 //
-// Owners, admins and API keys.
+// Owners, admins and API keys. Removes the direct grant only: access through a team stays.
+// Sends `inbox_access.changed` when the member's access flips.
 //
 // Scope: `inboxes:manage`.
 //
@@ -127390,7 +129357,8 @@ func (c *ClientWithResponses) RevokeInboxAccessWithResponse(ctx context.Context,
 
 // GrantInboxAccessWithResponse Give a member access
 //
-// Owners, admins and API keys. Granting twice is a no-op.
+// Owners, admins and API keys. Granting twice is a no-op. Sends `inbox_access.changed` when
+// the member's access flips (not when a team already gave it).
 //
 // Scope: `inboxes:manage`.
 //
@@ -131260,6 +133228,207 @@ func (c *ClientWithResponses) PreviewStatusPageWithResponse(ctx context.Context,
 		return nil, err
 	}
 	return ParsePreviewStatusPageResponse(rsp)
+}
+
+// ListTeamsWithResponse List teams
+//
+// Owners, admins and API keys not limited to inboxes see every team. Agents see the teams
+// they belong to and the teams granted an inbox they see; keys limited to inboxes the teams
+// granted one of their inboxes. By name.
+//
+// Scope: `inboxes:read`.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /v1/teams (the `ListTeams` operationId).
+func (c *ClientWithResponses) ListTeamsWithResponse(ctx context.Context, params *ListTeamsParams, reqEditors ...RequestEditorFn) (*ListTeamsResponse, error) {
+	rsp, err := c.ListTeams(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListTeamsResponse(rsp)
+}
+
+// CreateTeamWithBodyWithResponse Create a team
+//
+// Owners, admins and API keys not limited to inboxes. Sends `team.created`.
+//
+// Scope: `inboxes:manage`.
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /v1/teams (the `CreateTeam` operationId).
+func (c *ClientWithResponses) CreateTeamWithBodyWithResponse(ctx context.Context, params *CreateTeamParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateTeamResponse, error) {
+	rsp, err := c.CreateTeamWithBody(ctx, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateTeamResponse(rsp)
+}
+
+// CreateTeamWithResponse Create a team
+//
+// Owners, admins and API keys not limited to inboxes. Sends `team.created`.
+//
+// Scope: `inboxes:manage`.
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /v1/teams (the `CreateTeam` operationId).
+func (c *ClientWithResponses) CreateTeamWithResponse(ctx context.Context, params *CreateTeamParams, body CreateTeamJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateTeamResponse, error) {
+	rsp, err := c.CreateTeam(ctx, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateTeamResponse(rsp)
+}
+
+// DeleteTeamWithResponse Delete a team
+//
+// Owners, admins and API keys not limited to inboxes. Its members lose the access it gave
+// them at once (`inbox_access.changed` for each member and inbox whose access flips), and
+// conversations assigned to it keep their member but lose the team (one
+// `conversation.updated` each, no timeline entry). Sends `team.deleted`.
+//
+// Scope: `inboxes:manage`.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with DELETE /v1/teams/{teamId} (the `DeleteTeam` operationId).
+func (c *ClientWithResponses) DeleteTeamWithResponse(ctx context.Context, teamId TeamId, params *DeleteTeamParams, reqEditors ...RequestEditorFn) (*DeleteTeamResponse, error) {
+	rsp, err := c.DeleteTeam(ctx, teamId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteTeamResponse(rsp)
+}
+
+// GetTeamWithResponse Get a team
+//
+// A team the caller does not see (see `GET /v1/teams`) answers `404`.
+//
+// Scope: `inboxes:read`.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /v1/teams/{teamId} (the `GetTeam` operationId).
+func (c *ClientWithResponses) GetTeamWithResponse(ctx context.Context, teamId TeamId, params *GetTeamParams, reqEditors ...RequestEditorFn) (*GetTeamResponse, error) {
+	rsp, err := c.GetTeam(ctx, teamId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetTeamResponse(rsp)
+}
+
+// UpdateTeamWithBodyWithResponse Update a team
+//
+// Owners, admins and API keys not limited to inboxes. Sends `team.updated`.
+//
+// Scope: `inboxes:manage`.
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PATCH /v1/teams/{teamId} (the `UpdateTeam` operationId).
+func (c *ClientWithResponses) UpdateTeamWithBodyWithResponse(ctx context.Context, teamId TeamId, params *UpdateTeamParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateTeamResponse, error) {
+	rsp, err := c.UpdateTeamWithBody(ctx, teamId, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateTeamResponse(rsp)
+}
+
+// UpdateTeamWithResponse Update a team
+//
+// Owners, admins and API keys not limited to inboxes. Sends `team.updated`.
+//
+// Scope: `inboxes:manage`.
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PATCH /v1/teams/{teamId} (the `UpdateTeam` operationId).
+func (c *ClientWithResponses) UpdateTeamWithResponse(ctx context.Context, teamId TeamId, params *UpdateTeamParams, body UpdateTeamJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateTeamResponse, error) {
+	rsp, err := c.UpdateTeam(ctx, teamId, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateTeamResponse(rsp)
+}
+
+// RevokeTeamInboxAccessWithResponse Take a team's access to an inbox away
+//
+// Owners, admins and API keys not limited to inboxes. Members who had the inbox only through
+// this team lose it at once (`inbox_access.changed`); conversations of the inbox assigned to
+// the team lose the team (one `conversation.updated` each, no timeline entry). Sends
+// `team.updated`.
+//
+// Scope: `inboxes:manage`.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with DELETE /v1/teams/{teamId}/inboxes/{inboxId} (the `RevokeTeamInboxAccess` operationId).
+func (c *ClientWithResponses) RevokeTeamInboxAccessWithResponse(ctx context.Context, teamId TeamId, inboxId InboxId, params *RevokeTeamInboxAccessParams, reqEditors ...RequestEditorFn) (*RevokeTeamInboxAccessResponse, error) {
+	rsp, err := c.RevokeTeamInboxAccess(ctx, teamId, inboxId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRevokeTeamInboxAccessResponse(rsp)
+}
+
+// GrantTeamInboxAccessWithResponse Give a team access to an inbox
+//
+// Owners, admins and API keys not limited to inboxes. Every member of the team gains the
+// inbox at once (`inbox_access.changed` for each whose access flips) and `team.updated` is
+// sent. Granting twice is a no-op. A team holds at most 100 inboxes (`403 team_limit`).
+//
+// Scope: `inboxes:manage`.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PUT /v1/teams/{teamId}/inboxes/{inboxId} (the `GrantTeamInboxAccess` operationId).
+func (c *ClientWithResponses) GrantTeamInboxAccessWithResponse(ctx context.Context, teamId TeamId, inboxId InboxId, params *GrantTeamInboxAccessParams, reqEditors ...RequestEditorFn) (*GrantTeamInboxAccessResponse, error) {
+	rsp, err := c.GrantTeamInboxAccess(ctx, teamId, inboxId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGrantTeamInboxAccessResponse(rsp)
+}
+
+// RemoveTeamMemberWithResponse Remove a member from a team
+//
+// Owners, admins and API keys not limited to inboxes. The member loses the inboxes only the
+// team gave them at once (`inbox_access.changed`), and `team.updated` is sent, to the removed
+// member too (`removed_member_ids`). Removing a member who is not in the team is a no-op.
+//
+// Scope: `inboxes:manage`.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with DELETE /v1/teams/{teamId}/members/{memberId} (the `RemoveTeamMember` operationId).
+func (c *ClientWithResponses) RemoveTeamMemberWithResponse(ctx context.Context, teamId TeamId, memberId MemberId, params *RemoveTeamMemberParams, reqEditors ...RequestEditorFn) (*RemoveTeamMemberResponse, error) {
+	rsp, err := c.RemoveTeamMember(ctx, teamId, memberId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRemoveTeamMemberResponse(rsp)
+}
+
+// AddTeamMemberWithResponse Add a member to a team
+//
+// Owners, admins and API keys not limited to inboxes. Adding twice is a no-op. The member
+// gains the team's inboxes at once (`inbox_access.changed` for each inbox whose access flips)
+// and `team.updated` is sent. A team holds at most 500 members (`403 team_limit`).
+//
+// Scope: `inboxes:manage`.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PUT /v1/teams/{teamId}/members/{memberId} (the `AddTeamMember` operationId).
+func (c *ClientWithResponses) AddTeamMemberWithResponse(ctx context.Context, teamId TeamId, memberId MemberId, params *AddTeamMemberParams, reqEditors ...RequestEditorFn) (*AddTeamMemberResponse, error) {
+	rsp, err := c.AddTeamMember(ctx, teamId, memberId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAddTeamMemberResponse(rsp)
 }
 
 // GetUsageWithResponse Usage per month
@@ -146859,7 +149028,7 @@ func ParseListInboxMembersResponse(rsp *http.Response) (*ListInboxMembersRespons
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest MemberList
+		var dest InboxMemberList
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -154169,6 +156338,423 @@ func ParsePreviewStatusPageResponse(rsp *http.Response) (*PreviewStatusPageRespo
 	return response, nil
 }
 
+// ParseListTeamsResponse parses an HTTP response from a ListTeamsWithResponse call
+func ParseListTeamsResponse(rsp *http.Response) (*ListTeamsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListTeamsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest TeamList
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreateTeamResponse parses an HTTP response from a CreateTeamWithResponse call
+func ParseCreateTeamResponse(rsp *http.Response) (*CreateTeamResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateTeamResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
+		var dest Team
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON201 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON409 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteTeamResponse parses an HTTP response from a DeleteTeamWithResponse call
+func ParseDeleteTeamResponse(rsp *http.Response) (*DeleteTeamResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteTeamResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case rsp.StatusCode == 204:
+		break // No content-type
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetTeamResponse parses an HTTP response from a GetTeamWithResponse call
+func ParseGetTeamResponse(rsp *http.Response) (*GetTeamResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetTeamResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest Team
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateTeamResponse parses an HTTP response from a UpdateTeamWithResponse call
+func ParseUpdateTeamResponse(rsp *http.Response) (*UpdateTeamResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateTeamResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest Team
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON409 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseRevokeTeamInboxAccessResponse parses an HTTP response from a RevokeTeamInboxAccessWithResponse call
+func ParseRevokeTeamInboxAccessResponse(rsp *http.Response) (*RevokeTeamInboxAccessResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &RevokeTeamInboxAccessResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case rsp.StatusCode == 204:
+		break // No content-type
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGrantTeamInboxAccessResponse parses an HTTP response from a GrantTeamInboxAccessWithResponse call
+func ParseGrantTeamInboxAccessResponse(rsp *http.Response) (*GrantTeamInboxAccessResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GrantTeamInboxAccessResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case rsp.StatusCode == 204:
+		break // No content-type
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseRemoveTeamMemberResponse parses an HTTP response from a RemoveTeamMemberWithResponse call
+func ParseRemoveTeamMemberResponse(rsp *http.Response) (*RemoveTeamMemberResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &RemoveTeamMemberResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case rsp.StatusCode == 204:
+		break // No content-type
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseAddTeamMemberResponse parses an HTTP response from a AddTeamMemberWithResponse call
+func ParseAddTeamMemberResponse(rsp *http.Response) (*AddTeamMemberResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &AddTeamMemberResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case rsp.StatusCode == 204:
+		break // No content-type
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseGetUsageResponse parses an HTTP response from a GetUsageWithResponse call
 func ParseGetUsageResponse(rsp *http.Response) (*GetUsageResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -155214,6 +157800,21 @@ type WebhookInitiatorInterface interface {
 	WebhookSubscriptionUpdatedWithBody(ctx context.Context, targetURL string, params *WebhookSubscriptionUpdatedParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	WebhookSubscriptionUpdated(ctx context.Context, targetURL string, params *WebhookSubscriptionUpdatedParams, body WebhookSubscriptionUpdatedJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// WebhookTeamCreatedWithBody fires the team.created webhook with any body
+	WebhookTeamCreatedWithBody(ctx context.Context, targetURL string, params *WebhookTeamCreatedParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	WebhookTeamCreated(ctx context.Context, targetURL string, params *WebhookTeamCreatedParams, body WebhookTeamCreatedJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// WebhookTeamDeletedWithBody fires the team.deleted webhook with any body
+	WebhookTeamDeletedWithBody(ctx context.Context, targetURL string, params *WebhookTeamDeletedParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	WebhookTeamDeleted(ctx context.Context, targetURL string, params *WebhookTeamDeletedParams, body WebhookTeamDeletedJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// WebhookTeamUpdatedWithBody fires the team.updated webhook with any body
+	WebhookTeamUpdatedWithBody(ctx context.Context, targetURL string, params *WebhookTeamUpdatedParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	WebhookTeamUpdated(ctx context.Context, targetURL string, params *WebhookTeamUpdatedParams, body WebhookTeamUpdatedJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 }
 
 func (p *WebhookInitiator) WebhookAnalyticsAlertWithBody(ctx context.Context, targetURL string, params *WebhookAnalyticsAlertParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
@@ -156046,6 +158647,78 @@ func (p *WebhookInitiator) WebhookSubscriptionUpdatedWithBody(ctx context.Contex
 
 func (p *WebhookInitiator) WebhookSubscriptionUpdated(ctx context.Context, targetURL string, params *WebhookSubscriptionUpdatedParams, body WebhookSubscriptionUpdatedJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewWebhookSubscriptionUpdatedWebhookRequest(targetURL, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := p.applyWebhookEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return p.Client.Do(req)
+}
+
+func (p *WebhookInitiator) WebhookTeamCreatedWithBody(ctx context.Context, targetURL string, params *WebhookTeamCreatedParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewWebhookTeamCreatedWebhookRequestWithBody(targetURL, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := p.applyWebhookEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return p.Client.Do(req)
+}
+
+func (p *WebhookInitiator) WebhookTeamCreated(ctx context.Context, targetURL string, params *WebhookTeamCreatedParams, body WebhookTeamCreatedJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewWebhookTeamCreatedWebhookRequest(targetURL, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := p.applyWebhookEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return p.Client.Do(req)
+}
+
+func (p *WebhookInitiator) WebhookTeamDeletedWithBody(ctx context.Context, targetURL string, params *WebhookTeamDeletedParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewWebhookTeamDeletedWebhookRequestWithBody(targetURL, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := p.applyWebhookEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return p.Client.Do(req)
+}
+
+func (p *WebhookInitiator) WebhookTeamDeleted(ctx context.Context, targetURL string, params *WebhookTeamDeletedParams, body WebhookTeamDeletedJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewWebhookTeamDeletedWebhookRequest(targetURL, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := p.applyWebhookEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return p.Client.Do(req)
+}
+
+func (p *WebhookInitiator) WebhookTeamUpdatedWithBody(ctx context.Context, targetURL string, params *WebhookTeamUpdatedParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewWebhookTeamUpdatedWebhookRequestWithBody(targetURL, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := p.applyWebhookEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return p.Client.Do(req)
+}
+
+func (p *WebhookInitiator) WebhookTeamUpdated(ctx context.Context, targetURL string, params *WebhookTeamUpdatedParams, body WebhookTeamUpdatedJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewWebhookTeamUpdatedWebhookRequest(targetURL, params, body)
 	if err != nil {
 		return nil, err
 	}
@@ -158143,6 +160816,189 @@ func NewWebhookSubscriptionUpdatedWebhookRequest(targetURL string, params *Webho
 
 // NewWebhookSubscriptionUpdatedWebhookRequestWithBody builds a POST request for the subscription.updated webhook with any body
 func NewWebhookSubscriptionUpdatedWebhookRequestWithBody(targetURL string, params *WebhookSubscriptionUpdatedParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+	_ = err
+
+	reqURL, err := url.Parse(targetURL)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, reqURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		var headerParam0 string
+
+		headerParam0, err = runtime.StyleParamWithOptions("simple", false, "webhook-id", params.WebhookId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+		if err != nil {
+			return nil, err
+		}
+
+		req.Header.Set("webhook-id", headerParam0)
+
+		var headerParam1 string
+
+		headerParam1, err = runtime.StyleParamWithOptions("simple", false, "webhook-timestamp", params.WebhookTimestamp, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+		if err != nil {
+			return nil, err
+		}
+
+		req.Header.Set("webhook-timestamp", headerParam1)
+
+		var headerParam2 string
+
+		headerParam2, err = runtime.StyleParamWithOptions("simple", false, "webhook-signature", params.WebhookSignature, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+		if err != nil {
+			return nil, err
+		}
+
+		req.Header.Set("webhook-signature", headerParam2)
+
+	}
+	return req, nil
+}
+
+// NewWebhookTeamCreatedWebhookRequest builds a application/json POST request for the team.created webhook
+func NewWebhookTeamCreatedWebhookRequest(targetURL string, params *WebhookTeamCreatedParams, body WebhookTeamCreatedJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewWebhookTeamCreatedWebhookRequestWithBody(targetURL, params, "application/json", bodyReader)
+}
+
+// NewWebhookTeamCreatedWebhookRequestWithBody builds a POST request for the team.created webhook with any body
+func NewWebhookTeamCreatedWebhookRequestWithBody(targetURL string, params *WebhookTeamCreatedParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+	_ = err
+
+	reqURL, err := url.Parse(targetURL)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, reqURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		var headerParam0 string
+
+		headerParam0, err = runtime.StyleParamWithOptions("simple", false, "webhook-id", params.WebhookId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+		if err != nil {
+			return nil, err
+		}
+
+		req.Header.Set("webhook-id", headerParam0)
+
+		var headerParam1 string
+
+		headerParam1, err = runtime.StyleParamWithOptions("simple", false, "webhook-timestamp", params.WebhookTimestamp, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+		if err != nil {
+			return nil, err
+		}
+
+		req.Header.Set("webhook-timestamp", headerParam1)
+
+		var headerParam2 string
+
+		headerParam2, err = runtime.StyleParamWithOptions("simple", false, "webhook-signature", params.WebhookSignature, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+		if err != nil {
+			return nil, err
+		}
+
+		req.Header.Set("webhook-signature", headerParam2)
+
+	}
+	return req, nil
+}
+
+// NewWebhookTeamDeletedWebhookRequest builds a application/json POST request for the team.deleted webhook
+func NewWebhookTeamDeletedWebhookRequest(targetURL string, params *WebhookTeamDeletedParams, body WebhookTeamDeletedJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewWebhookTeamDeletedWebhookRequestWithBody(targetURL, params, "application/json", bodyReader)
+}
+
+// NewWebhookTeamDeletedWebhookRequestWithBody builds a POST request for the team.deleted webhook with any body
+func NewWebhookTeamDeletedWebhookRequestWithBody(targetURL string, params *WebhookTeamDeletedParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+	_ = err
+
+	reqURL, err := url.Parse(targetURL)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, reqURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		var headerParam0 string
+
+		headerParam0, err = runtime.StyleParamWithOptions("simple", false, "webhook-id", params.WebhookId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+		if err != nil {
+			return nil, err
+		}
+
+		req.Header.Set("webhook-id", headerParam0)
+
+		var headerParam1 string
+
+		headerParam1, err = runtime.StyleParamWithOptions("simple", false, "webhook-timestamp", params.WebhookTimestamp, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+		if err != nil {
+			return nil, err
+		}
+
+		req.Header.Set("webhook-timestamp", headerParam1)
+
+		var headerParam2 string
+
+		headerParam2, err = runtime.StyleParamWithOptions("simple", false, "webhook-signature", params.WebhookSignature, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+		if err != nil {
+			return nil, err
+		}
+
+		req.Header.Set("webhook-signature", headerParam2)
+
+	}
+	return req, nil
+}
+
+// NewWebhookTeamUpdatedWebhookRequest builds a application/json POST request for the team.updated webhook
+func NewWebhookTeamUpdatedWebhookRequest(targetURL string, params *WebhookTeamUpdatedParams, body WebhookTeamUpdatedJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewWebhookTeamUpdatedWebhookRequestWithBody(targetURL, params, "application/json", bodyReader)
+}
+
+// NewWebhookTeamUpdatedWebhookRequestWithBody builds a POST request for the team.updated webhook with any body
+func NewWebhookTeamUpdatedWebhookRequestWithBody(targetURL string, params *WebhookTeamUpdatedParams, contentType string, body io.Reader) (*http.Request, error) {
 	var err error
 	_ = err
 

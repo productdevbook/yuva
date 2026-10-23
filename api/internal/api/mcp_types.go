@@ -23,6 +23,7 @@ type mcpConversation struct {
 	Status           string                 `json:"status" jsonschema:"open, pending, snoozed or closed"`
 	Priority         string                 `json:"priority" jsonschema:"low, normal, high or urgent"`
 	AssigneeID       *uuid.UUID             `json:"assignee_id,omitempty" jsonschema:"the assigned member, absent when unassigned"`
+	TeamID           *uuid.UUID             `json:"team_id,omitempty" jsonschema:"the assigned team, absent when none; names come from list_teams"`
 	Labels           []uuid.UUID            `json:"labels" jsonschema:"label ids; names come from list_labels"`
 	Spam             bool                   `json:"spam"`
 	Unread           *bool                  `json:"unread,omitempty" jsonschema:"whether the calling member has unread messages here"`
@@ -72,7 +73,7 @@ func conversationOut(c oas.Conversation) mcpConversation {
 	}
 	return mcpConversation{
 		IdeaID: idea, ID: c.Id, InboxID: c.InboxId, ContactID: c.ContactId, Kind: string(c.Kind), Status: string(c.Status),
-		Priority: string(c.Priority), AssigneeID: c.AssigneeId, Labels: labels, Spam: c.Spam, SnoozeUntil: c.SnoozeUntil,
+		Priority: string(c.Priority), AssigneeID: c.AssigneeId, TeamID: c.TeamId, Labels: labels, Spam: c.Spam, SnoozeUntil: c.SnoozeUntil,
 		FeedbackCategory: cat, FeedbackScore: score, FeedbackProgress: progress, CreatedAt: c.CreatedAt, LastActivityAt: c.LastActivityAt,
 		CustomerContent: mcpConversationContent{Subject: c.Subject, Feedback: fb},
 	}

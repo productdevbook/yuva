@@ -384,7 +384,7 @@ JOIN analytics_properties p ON p.workspace_id = s.workspace_id AND p.id = s.prop
 WHERE s.workspace_id = $1 AND s.property_id = $2
   AND ($3::text = '' OR $3::text = ANY(s.alerts))
   AND (m.role IN ('owner', 'admin') OR EXISTS (
-      SELECT 1 FROM inbox_members im WHERE im.workspace_id = m.workspace_id AND im.inbox_id = p.inbox_id AND im.member_id = m.id))
+      SELECT 1 FROM member_inbox_access im WHERE im.workspace_id = m.workspace_id AND im.inbox_id = p.inbox_id AND im.member_id = m.id))
 ORDER BY m.id
 `
 

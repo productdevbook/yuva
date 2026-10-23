@@ -346,6 +346,8 @@ func (f *eventFilter) allows(ctx context.Context, q *store.Queries, e realtime.E
 		if e.InboxID == nil {
 			return f.p.seesAllInboxes(), nil
 		}
+	case eventTeamCreated, eventTeamUpdated, eventTeamDeleted:
+		return f.teamEventVisible(e)
 	case eventMigrationUpdated, eventMigrationProgress, eventMigrationForwardingConfirmation:
 		return requireMigrationManager(f.p) == nil && requireScope(f.p, oas.MigrationsManage) == nil, nil
 	case realtime.Typing:
@@ -396,6 +398,10 @@ func (f *eventFilter) allows(ctx context.Context, q *store.Queries, e realtime.E
 }
 
 func (f *eventFilter) view(e realtime.Event) (realtime.Event, bool) {
+	switch e.Type {
+	case eventTeamCreated, eventTeamUpdated, eventTeamDeleted:
+		return f.teamView(e)
+	}
 	if e.Type != realtime.ContactUpdated || f.p.seesAllInboxes() {
 		return e, true
 	}

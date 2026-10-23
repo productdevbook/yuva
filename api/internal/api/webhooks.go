@@ -57,6 +57,7 @@ var webhookEventTypes = []oas.WebhookEventType{
 	oas.WebhookEventTypeHelpArticlePublished, oas.WebhookEventTypeHelpArticleUnpublished, oas.WebhookEventTypeHelpArticleDeleted,
 	oas.WebhookEventTypeDiscussionStageChanged,
 	oas.WebhookEventTypeChangelogEntryPublished, oas.WebhookEventTypeChangelogEntryUnpublished, oas.WebhookEventTypeChangelogEntryDeleted,
+	oas.WebhookEventTypeTeamCreated, oas.WebhookEventTypeTeamUpdated, oas.WebhookEventTypeTeamDeleted,
 }
 
 func webhookSecretContext(workspaceID, endpointID uuid.UUID) []byte {
@@ -504,7 +505,8 @@ func webhookSource(e pendingEvent) bool {
 		eventSubscriptionCreated, eventSubscriptionUpdated, eventBroadcastUpdated, eventAnalyticsAlert,
 		statusEventComponent, statusEventCreated, statusEventUpdated, statusEventResolved, statusEventMonitorDown, statusEventMonitorUp,
 		helpEventPublished, helpEventUnpublish, helpEventDeleted,
-		changelogEventPublished, changelogEventUnpublished, changelogEventDeleted:
+		changelogEventPublished, changelogEventUnpublished, changelogEventDeleted,
+		eventTeamCreated, eventTeamUpdated, eventTeamDeleted:
 		return true
 	case realtime.ContactDeleted:
 		return e.deleted != nil
@@ -606,6 +608,8 @@ type webhookOut struct {
 	typ  string
 	note bool
 	body []byte
+	// forInbox is the body for an endpoint limited to that inbox, when it differs.
+	forInbox func(inbox uuid.UUID) []byte
 }
 
 // contactPresence tells whether the contact has a live client connection and when they were last
@@ -791,6 +795,17 @@ func (s *Server) webhookPayloads(ctx context.Context, q *store.Queries, ev store
 			inboxes = []uuid.UUID{*ev.InboxID}
 		}
 		return []webhookOut{{typ: ev.Type, body: payload(ev.Type, ev.InboxID, json.RawMessage(ev.Payload))}}, inboxes, nil
+	case eventTeamCreated, eventTeamUpdated, eventTeamDeleted:
+		var t oas.TeamEventData
+		if err := json.Unmarshal(ev.Payload, &t); err != nil {
+			return nil, nil, err
+		}
+		forInbox := func(inbox uuid.UUID) []byte {
+			one := t
+			one.InboxIds = []uuid.UUID{inbox}
+			return payload(ev.Type, nil, one)
+		}
+		return []webhookOut{{typ: ev.Type, body: payload(ev.Type, nil, t), forInbox: forInbox}}, t.InboxIds, nil
 	case realtime.ContactDeleted:
 		if deleted == nil {
 			return nil, nil, nil
@@ -829,10 +844,14 @@ func (s *Server) FanOutWebhooks(ctx context.Context, a WebhookFanoutArgs) error 
 				if !slices.Contains(e.Events, h.typ) || (h.note && !e.IncludeNotes) {
 					continue
 				}
+				body := h.body
+				if h.forInbox != nil && e.InboxID != nil {
+					body = h.forInbox(*e.InboxID)
+				}
 				id := newID()
 				d, err := q.CreateWebhookDelivery(ctx, store.CreateWebhookDeliveryParams{
 					ID: id, WorkspaceID: a.WorkspaceID, EndpointID: e.ID, MessageID: "msg_" + strings.ReplaceAll(id.String(), "-", ""),
-					EventType: h.typ, Payload: string(h.body), Now: now,
+					EventType: h.typ, Payload: string(body), Now: now,
 				})
 				if err != nil {
 					return err

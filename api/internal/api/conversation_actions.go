@@ -119,6 +119,11 @@ func (s *Server) MoveConversation(ctx context.Context, req oas.MoveConversationR
 	p := principalFrom(ctx)
 	var out oas.Conversation
 	err := s.inTx(ctx, p.workspaceID, func(q *store.Queries, events *eventBatch) error {
+		if before, err := q.GetConversation(ctx, store.GetConversationParams{WorkspaceID: p.workspaceID, ID: req.ConversationId}); err == nil && before.TeamID != nil {
+			if err := shareLockTeam(ctx, q, p.workspaceID, *before.TeamID); err != nil && err != errTeamAccess {
+				return err
+			}
+		}
 		cur, err := visibleConversation(ctx, q, p, req.ConversationId, true)
 		if err != nil {
 			return err
@@ -169,9 +174,18 @@ func (s *Server) MoveConversation(ctx context.Context, req oas.MoveConversationR
 				next.AssigneeID = nil
 			}
 		}
+		if cur.TeamID != nil {
+			ok, err := q.TeamHasInbox(ctx, store.TeamHasInboxParams{WorkspaceID: p.workspaceID, TeamID: *cur.TeamID, InboxID: target.ID})
+			if err != nil {
+				return err
+			}
+			if !ok {
+				next.TeamID = nil
+			}
+		}
 		now := s.now()
 		moved, err := q.MoveConversation(ctx, store.MoveConversationParams{
-			WorkspaceID: p.workspaceID, ID: cur.ID, InboxID: target.ID, ChannelID: next.ChannelID, AssigneeID: next.AssigneeID, Now: now,
+			WorkspaceID: p.workspaceID, ID: cur.ID, InboxID: target.ID, ChannelID: next.ChannelID, AssigneeID: next.AssigneeID, TeamID: next.TeamID, Now: now,
 		})
 		if err != nil {
 			return err

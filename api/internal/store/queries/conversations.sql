@@ -55,6 +55,10 @@ WHERE c.workspace_id = @workspace_id
       WHERE ri.workspace_id = c.workspace_id AND ri.conversation_id = c.id)))
   AND (NOT @unassigned::bool OR c.assignee_id IS NULL)
   AND (sqlc.narg(assignee_id)::uuid IS NULL OR c.assignee_id = sqlc.narg(assignee_id)::uuid)
+  AND (sqlc.narg(team_id)::uuid IS NULL OR c.team_id = sqlc.narg(team_id)::uuid)
+  AND (sqlc.narg(teams_of)::uuid IS NULL OR c.team_id IN (
+      SELECT tm.team_id FROM team_members tm
+      WHERE tm.workspace_id = c.workspace_id AND tm.member_id = sqlc.narg(teams_of)::uuid))
   AND (sqlc.narg(label_id)::uuid IS NULL OR EXISTS (
       SELECT 1 FROM conversation_labels cl
       WHERE cl.workspace_id = c.workspace_id AND cl.conversation_id = c.id AND cl.label_id = sqlc.narg(label_id)::uuid))
@@ -111,14 +115,14 @@ CROSS JOIN LATERAL (
 WHERE c.workspace_id = @workspace_id AND c.id = ANY(@conversation_ids::uuid[]);
 
 -- name: CountOpenConversations :many
-SELECT c.inbox_id, c.assignee_id, c.spam, count(*) AS n
+SELECT c.inbox_id, c.assignee_id, c.team_id, c.spam, count(*) AS n
 FROM conversations c
 WHERE c.workspace_id = @workspace_id AND c.status = 'open' AND c.trashed_at IS NULL
   AND (@all_inboxes::bool OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = @viewer_id::uuid))
   AND (sqlc.narg(kinds)::text[] IS NULL OR c.kind = ANY(sqlc.narg(kinds)::text[]))
-GROUP BY 1, 2, 3;
+GROUP BY 1, 2, 3, 4;
 
 -- name: CountOpenConversationsByLabel :many
 SELECT cl.label_id, count(*) AS n
@@ -166,7 +170,8 @@ SELECT storage_key FROM attachments WHERE workspace_id = @workspace_id AND conve
 DELETE FROM conversations WHERE workspace_id = @workspace_id AND id = ANY(@ids::uuid[]);
 
 -- name: MoveConversation :one
-UPDATE conversations SET inbox_id = @inbox_id, channel_id = sqlc.narg(channel_id), assignee_id = sqlc.narg(assignee_id), updated_at = @now
+UPDATE conversations SET inbox_id = @inbox_id, channel_id = sqlc.narg(channel_id), assignee_id = sqlc.narg(assignee_id),
+    team_id = sqlc.narg(team_id), updated_at = @now
 WHERE workspace_id = @workspace_id AND id = @id
 RETURNING *;
 
@@ -204,3 +209,8 @@ SELECT w.id FROM workspaces w
 WHERE w.deleted_at IS NULL
   AND EXISTS (SELECT 1 FROM conversations c WHERE c.workspace_id = w.id AND c.trashed_at <= coalesce(sqlc.narg(at)::timestamptz, clock_timestamp()) - interval '720 hours')
 ORDER BY w.id;
+
+-- name: SetConversationTeam :one
+UPDATE conversations SET team_id = sqlc.narg(team_id), updated_at = @now
+WHERE workspace_id = @workspace_id AND id = @id
+RETURNING *;

@@ -445,12 +445,23 @@ func (s *Server) ListInboxMembers(ctx context.Context, req oas.ListInboxMembersR
 	if err != nil {
 		return nil, err
 	}
-	out := oas.ListInboxMembers200JSONResponse{Items: make([]oas.Member, 0, len(rows))}
-	for _, r := range rows {
-		out.Items = append(out.Items, memberBody(store.GetMemberRow(r)))
+	members := make([]oas.Member, len(rows))
+	for i, r := range rows {
+		members[i] = memberBody(store.GetMemberRow{ID: r.ID, WorkspaceID: r.WorkspaceID, PersonID: r.PersonID, Role: r.Role, CreatedAt: r.CreatedAt, Email: r.Email, Name: r.Name})
 	}
-	if err := s.withPresence(ctx, s.st.Queries, p.workspaceID, out.Items); err != nil {
+	if err := s.withPresence(ctx, s.st.Queries, p.workspaceID, members); err != nil {
 		return nil, err
+	}
+	out := oas.ListInboxMembers200JSONResponse{Items: make([]oas.InboxMember, len(rows))}
+	for i, m := range members {
+		via := oas.InboxAccessTeam
+		if rows[i].Direct {
+			via = oas.InboxAccessDirect
+		}
+		out.Items[i] = oas.InboxMember{
+			Id: m.Id, PersonId: m.PersonId, Email: m.Email, Name: m.Name, Role: m.Role, Availability: m.Availability, Online: m.Online,
+			CreatedAt: m.CreatedAt, Via: via, TeamIds: rows[i].TeamIds,
+		}
 	}
 	return out, nil
 }
@@ -480,11 +491,16 @@ func (s *Server) GrantInboxAccess(ctx context.Context, req oas.GrantInboxAccessR
 		return nil, err
 	}
 	err = s.inTx(ctx, p.workspaceID, func(q *store.Queries, events *eventBatch) error {
-		n, err := q.GrantInboxAccess(ctx, store.GrantInboxAccessParams{WorkspaceID: p.workspaceID, InboxID: req.InboxId, MemberID: req.MemberId, Now: s.now()})
-		if err != nil || n == 0 {
+		if err := q.LockInboxAccess(ctx, p.workspaceID); err != nil {
 			return err
 		}
-		accessChanged(events, req.InboxId, req.MemberId, true)
+		changed, err := changeAccess(ctx, q, events, p.workspaceID, []uuid.UUID{req.MemberId}, func() (bool, error) {
+			n, err := q.GrantInboxAccess(ctx, store.GrantInboxAccessParams{WorkspaceID: p.workspaceID, InboxID: req.InboxId, MemberID: req.MemberId, Now: s.now()})
+			return n > 0, err
+		})
+		if err != nil || !changed {
+			return err
+		}
 		return s.audit(ctx, q, p, oas.AuditMemberInboxAccessGranted, oas.AuditTargetMember, req.MemberId, auditDetails{"inbox_id": in.ID, "inbox_name": in.Name})
 	})
 	if store.IsForeignKeyViolation(err) {
@@ -506,11 +522,16 @@ func (s *Server) RevokeInboxAccess(ctx context.Context, req oas.RevokeInboxAcces
 		return nil, err
 	}
 	err = s.inTx(ctx, p.workspaceID, func(q *store.Queries, events *eventBatch) error {
-		n, err := q.RevokeInboxAccess(ctx, store.RevokeInboxAccessParams{WorkspaceID: p.workspaceID, InboxID: req.InboxId, MemberID: req.MemberId})
-		if err != nil || n == 0 {
+		if err := q.LockInboxAccess(ctx, p.workspaceID); err != nil {
 			return err
 		}
-		accessChanged(events, req.InboxId, req.MemberId, false)
+		changed, err := changeAccess(ctx, q, events, p.workspaceID, []uuid.UUID{req.MemberId}, func() (bool, error) {
+			n, err := q.RevokeInboxAccess(ctx, store.RevokeInboxAccessParams{WorkspaceID: p.workspaceID, InboxID: req.InboxId, MemberID: req.MemberId})
+			return n > 0, err
+		})
+		if err != nil || !changed {
+			return err
+		}
 		return s.audit(ctx, q, p, oas.AuditMemberInboxAccessRevoked, oas.AuditTargetMember, req.MemberId, auditDetails{"inbox_id": in.ID, "inbox_name": in.Name})
 	})
 	if err != nil {

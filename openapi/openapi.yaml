@@ -79,6 +79,11 @@ tags:
       outgoing e-mail.
   - name: inboxes
     description: Inboxes (one per product or brand) and who may see them.
+  - name: teams
+    description: |
+      Groups of members. A team granted an inbox gives each of its members access to it, so a
+      member sees the union of their own grants and their teams'. Conversations can be assigned to
+      a team as well as, or instead of, a member.
   - name: channels
     description: |
       How messages reach an inbox. E-mail channels receive mail through `/ingress/email` and send
@@ -2041,8 +2046,8 @@ paths:
       operationId: listInboxMembers
       summary: List members with access
       description: |
-        Members granted access to this inbox. Owners and admins see every inbox without a grant and
-        are not listed unless granted.
+        Members with access to this inbox, granted directly or through a team (`via`, `team_ids`).
+        Owners and admins see every inbox without a grant and are not listed unless granted.
 
         Scope: `inboxes:read`.
       tags: [inboxes]
@@ -2055,7 +2060,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/MemberList"
+                $ref: "#/components/schemas/InboxMemberList"
         "401":
           $ref: "#/components/responses/Problem"
         "403":
@@ -2067,7 +2072,8 @@ paths:
       operationId: grantInboxAccess
       summary: Give a member access
       description: |
-        Owners, admins and API keys. Granting twice is a no-op.
+        Owners, admins and API keys. Granting twice is a no-op. Sends `inbox_access.changed` when
+        the member's access flips (not when a team already gave it).
 
         Scope: `inboxes:manage`.
       tags: [inboxes]
@@ -2088,7 +2094,8 @@ paths:
       operationId: revokeInboxAccess
       summary: Take a member's access away
       description: |
-        Owners, admins and API keys.
+        Owners, admins and API keys. Removes the direct grant only: access through a team stays.
+        Sends `inbox_access.changed` when the member's access flips.
 
         Scope: `inboxes:manage`.
       tags: [inboxes]
@@ -2099,6 +2106,239 @@ paths:
       responses:
         "204":
           description: The access is gone.
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+  /v1/teams:
+    get:
+      operationId: listTeams
+      summary: List teams
+      description: |
+        Owners, admins and API keys not limited to inboxes see every team. Agents see the teams
+        they belong to and the teams granted an inbox they see; keys limited to inboxes the teams
+        granted one of their inboxes. By name.
+
+        Scope: `inboxes:read`.
+      tags: [teams]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+      responses:
+        "200":
+          description: The teams.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TeamList"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+    post:
+      operationId: createTeam
+      summary: Create a team
+      description: |
+        Owners, admins and API keys not limited to inboxes. Sends `team.created`.
+
+        Scope: `inboxes:manage`.
+      tags: [teams]
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/WorkspaceHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TeamCreate"
+      responses:
+        "201":
+          description: The team.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Team"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "409":
+          $ref: "#/components/responses/Problem"
+  /v1/teams/{teamId}:
+    get:
+      operationId: getTeam
+      summary: Get a team
+      description: |
+        A team the caller does not see (see `GET /v1/teams`) answers `404`.
+
+        Scope: `inboxes:read`.
+      tags: [teams]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/TeamId"
+      responses:
+        "200":
+          description: The team.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Team"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+    patch:
+      operationId: updateTeam
+      summary: Update a team
+      description: |
+        Owners, admins and API keys not limited to inboxes. Sends `team.updated`.
+
+        Scope: `inboxes:manage`.
+      tags: [teams]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/TeamId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TeamUpdate"
+      responses:
+        "200":
+          description: The updated team.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Team"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+        "409":
+          $ref: "#/components/responses/Problem"
+    delete:
+      operationId: deleteTeam
+      summary: Delete a team
+      description: |
+        Owners, admins and API keys not limited to inboxes. Its members lose the access it gave
+        them at once (`inbox_access.changed` for each member and inbox whose access flips), and
+        conversations assigned to it keep their member but lose the team (one
+        `conversation.updated` each, no timeline entry). Sends `team.deleted`.
+
+        Scope: `inboxes:manage`.
+      tags: [teams]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/TeamId"
+      responses:
+        "204":
+          description: Deleted.
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+  /v1/teams/{teamId}/members/{memberId}:
+    put:
+      operationId: addTeamMember
+      summary: Add a member to a team
+      description: |
+        Owners, admins and API keys not limited to inboxes. Adding twice is a no-op. The member
+        gains the team's inboxes at once (`inbox_access.changed` for each inbox whose access flips)
+        and `team.updated` is sent. A team holds at most 500 members (`403 team_limit`).
+
+        Scope: `inboxes:manage`.
+      tags: [teams]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/TeamId"
+        - $ref: "#/components/parameters/MemberId"
+      responses:
+        "204":
+          description: The member is in the team.
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+    delete:
+      operationId: removeTeamMember
+      summary: Remove a member from a team
+      description: |
+        Owners, admins and API keys not limited to inboxes. The member loses the inboxes only the
+        team gave them at once (`inbox_access.changed`), and `team.updated` is sent, to the removed
+        member too (`removed_member_ids`). Removing a member who is not in the team is a no-op.
+
+        Scope: `inboxes:manage`.
+      tags: [teams]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/TeamId"
+        - $ref: "#/components/parameters/MemberId"
+      responses:
+        "204":
+          description: The member is not in the team.
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+  /v1/teams/{teamId}/inboxes/{inboxId}:
+    put:
+      operationId: grantTeamInboxAccess
+      summary: Give a team access to an inbox
+      description: |
+        Owners, admins and API keys not limited to inboxes. Every member of the team gains the
+        inbox at once (`inbox_access.changed` for each whose access flips) and `team.updated` is
+        sent. Granting twice is a no-op. A team holds at most 100 inboxes (`403 team_limit`).
+
+        Scope: `inboxes:manage`.
+      tags: [teams]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/TeamId"
+        - $ref: "#/components/parameters/InboxId"
+      responses:
+        "204":
+          description: The team has access.
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+    delete:
+      operationId: revokeTeamInboxAccess
+      summary: Take a team's access to an inbox away
+      description: |
+        Owners, admins and API keys not limited to inboxes. Members who had the inbox only through
+        this team lose it at once (`inbox_access.changed`); conversations of the inbox assigned to
+        the team lose the team (one `conversation.updated` each, no timeline entry). Sends
+        `team.updated`.
+
+        Scope: `inboxes:manage`.
+      tags: [teams]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/TeamId"
+        - $ref: "#/components/parameters/InboxId"
+      responses:
+        "204":
+          description: The team has no access.
         "401":
           $ref: "#/components/responses/Problem"
         "403":
@@ -3026,10 +3266,23 @@ paths:
               $ref: "#/components/schemas/ConversationStatus"
         - name: assignee
           in: query
-          description: A member id, `me` (member sessions only) or `unassigned`.
+          description: A member id, `me` (member sessions only) or `unassigned` (no member, whatever the team).
           schema:
             type: string
             examples: [me]
+        - name: team_id
+          in: query
+          description: Only conversations assigned to this team.
+          schema:
+            type: string
+            format: uuid
+        - name: team
+          in: query
+          description: "`mine` lists only conversations assigned to a team of the calling member (member sessions only)."
+          schema:
+            type: string
+            enum: [mine]
+            x-enum-varnames: [ListConversationsTeamMine]
         - name: label_id
           in: query
           schema:
@@ -3167,8 +3420,8 @@ paths:
       summary: Count open conversations
       description: |
         Open conversations in the inboxes the caller can see: all of them, those assigned to the
-        calling member (`0` for API keys), unassigned ones, and per inbox, per assignee and per
-        label. Inboxes, assignees and labels without open conversations are left out of their lists. Conversations flagged as
+        calling member (`0` for API keys), unassigned ones, those assigned to a team of the
+        calling member, and per inbox, per assignee, per team and per label. Inboxes, assignees and labels without open conversations are left out of their lists. Conversations flagged as
         spam are counted only in `spam`.
 
         `kind` limits every count to conversations of those kinds, as on `GET /v1/conversations`:
@@ -16884,6 +17137,65 @@ webhooks:
       responses:
         "200":
           description: Any 2xx answer counts as delivered.
+  team.created:
+    post:
+      operationId: webhookTeamCreated
+      summary: A team was created
+      tags: [webhooks]
+      security: []
+      parameters:
+        - $ref: "#/components/parameters/WebhookIdHeader"
+        - $ref: "#/components/parameters/WebhookTimestampHeader"
+        - $ref: "#/components/parameters/WebhookSignatureHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WebhookTeamPayload"
+      responses:
+        "200":
+          description: Any 2xx answer counts as delivered.
+  team.updated:
+    post:
+      operationId: webhookTeamUpdated
+      summary: A team changed
+      description: Its name or description, its members or its inboxes.
+      tags: [webhooks]
+      security: []
+      parameters:
+        - $ref: "#/components/parameters/WebhookIdHeader"
+        - $ref: "#/components/parameters/WebhookTimestampHeader"
+        - $ref: "#/components/parameters/WebhookSignatureHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WebhookTeamPayload"
+      responses:
+        "200":
+          description: Any 2xx answer counts as delivered.
+  team.deleted:
+    post:
+      operationId: webhookTeamDeleted
+      summary: A team was deleted
+      description: Its members lost the access it gave them; conversations assigned to it lost the team.
+      tags: [webhooks]
+      security: []
+      parameters:
+        - $ref: "#/components/parameters/WebhookIdHeader"
+        - $ref: "#/components/parameters/WebhookTimestampHeader"
+        - $ref: "#/components/parameters/WebhookSignatureHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WebhookTeamPayload"
+      responses:
+        "200":
+          description: Any 2xx answer counts as delivered.
 components:
   securitySchemes:
     session:
@@ -17081,6 +17393,13 @@ components:
         format: uuid
     MessageId:
       name: messageId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    TeamId:
+      name: teamId
       in: path
       required: true
       schema:
@@ -17710,6 +18029,9 @@ components:
         - `channel.key_rotated`, `channel.forwarding_address_rotated`, `channel.dkim_key_deleted`:
           none. `channel.dkim_key_created`: `selector`.
         - `inbox.identity_secret_rotated`: none. `inbox.deleted`: `name`.
+        - `team.created`, `team.deleted`: `name`. `team.member_added`, `team.member_removed`:
+          `member_id`. `team.inbox_access_granted`, `team.inbox_access_revoked`: `inbox_id`,
+          `inbox_name`.
         - `conversation.trashed`, `conversation.restored`: `inbox_id`. `conversation.deleted`:
           `inbox_id`, by `system` (never the subject or content).
         - `message.redacted`: `conversation_id`, `inbox_id`, `kind` (`message` or `note`),
@@ -17767,11 +18089,17 @@ components:
         - workspace.broadcasts_denied
         - workspace.broadcasts_suspended
         - workspace.broadcast_limit_changed
-      x-enum-varnames: [AuditMemberJoined, AuditMemberRoleChanged, AuditMemberRemoved, AuditMemberInboxAccessGranted, AuditMemberInboxAccessRevoked, AuditInviteCreated, AuditInviteDeleted, AuditApiKeyCreated, AuditApiKeyRevoked, AuditOAuthGrantCreated, AuditOAuthGrantRevoked, AuditWebhookCreated, AuditWebhookUpdated, AuditWebhookDeleted, AuditWebhookSecretRotated, AuditChannelCredentialsChanged, AuditChannelKeyRotated, AuditChannelForwardingAddressRotated, AuditChannelDkimKeyCreated, AuditChannelDkimKeyDeleted, AuditInboxIdentitySecretRotated, AuditInboxDeleted, AuditConversationTrashed, AuditConversationRestored, AuditConversationDeleted, AuditMessageRedacted, AuditContactDeleted, AuditContactConsentExported, AuditListConsentExported, AuditAnalyticsExportCreated, AuditWorkspaceRetentionChanged, AuditWorkspaceBroadcastApprovalRequested, AuditWorkspaceBroadcastsApproved, AuditWorkspaceBroadcastsDenied, AuditWorkspaceBroadcastsSuspended, AuditWorkspaceBroadcastLimitChanged]
+        - team.created
+        - team.deleted
+        - team.member_added
+        - team.member_removed
+        - team.inbox_access_granted
+        - team.inbox_access_revoked
+      x-enum-varnames: [AuditMemberJoined, AuditMemberRoleChanged, AuditMemberRemoved, AuditMemberInboxAccessGranted, AuditMemberInboxAccessRevoked, AuditInviteCreated, AuditInviteDeleted, AuditApiKeyCreated, AuditApiKeyRevoked, AuditOAuthGrantCreated, AuditOAuthGrantRevoked, AuditWebhookCreated, AuditWebhookUpdated, AuditWebhookDeleted, AuditWebhookSecretRotated, AuditChannelCredentialsChanged, AuditChannelKeyRotated, AuditChannelForwardingAddressRotated, AuditChannelDkimKeyCreated, AuditChannelDkimKeyDeleted, AuditInboxIdentitySecretRotated, AuditInboxDeleted, AuditConversationTrashed, AuditConversationRestored, AuditConversationDeleted, AuditMessageRedacted, AuditContactDeleted, AuditContactConsentExported, AuditListConsentExported, AuditAnalyticsExportCreated, AuditWorkspaceRetentionChanged, AuditWorkspaceBroadcastApprovalRequested, AuditWorkspaceBroadcastsApproved, AuditWorkspaceBroadcastsDenied, AuditWorkspaceBroadcastsSuspended, AuditWorkspaceBroadcastLimitChanged, AuditTeamCreated, AuditTeamDeleted, AuditTeamMemberAdded, AuditTeamMemberRemoved, AuditTeamInboxAccessGranted, AuditTeamInboxAccessRevoked]
     AuditTargetType:
       type: string
-      enum: [workspace, member, invite, inbox, channel, api_key, oauth_grant, webhook, contact, list, analytics_export, conversation, message]
-      x-enum-varnames: [AuditTargetWorkspace, AuditTargetMember, AuditTargetInvite, AuditTargetInbox, AuditTargetChannel, AuditTargetApiKey, AuditTargetOAuthGrant, AuditTargetWebhook, AuditTargetContact, AuditTargetList, AuditTargetAnalyticsExport, AuditTargetConversation, AuditTargetMessage]
+      enum: [workspace, member, invite, inbox, channel, api_key, oauth_grant, webhook, contact, list, analytics_export, conversation, message, team]
+      x-enum-varnames: [AuditTargetWorkspace, AuditTargetMember, AuditTargetInvite, AuditTargetInbox, AuditTargetChannel, AuditTargetApiKey, AuditTargetOAuthGrant, AuditTargetWebhook, AuditTargetContact, AuditTargetList, AuditTargetAnalyticsExport, AuditTargetConversation, AuditTargetMessage, AuditTargetTeam]
     AuditTarget:
       type: object
       required: [type, id]
@@ -18054,9 +18382,9 @@ components:
         - `notes:write`: notes.
         - `contacts:read`: list, look up and get contacts, presence.
         - `contacts:write`: create, update, delete and merge contacts.
-        - `inboxes:read`: workspace, members, inboxes, inbox members, channels.
-        - `inboxes:manage`: create, update and delete inboxes and channels, inbox access, secret
-          and key rotation.
+        - `inboxes:read`: workspace, members, inboxes, inbox members, channels, teams.
+        - `inboxes:manage`: create, update and delete inboxes and channels, inbox access, teams,
+          their members and inboxes, secret and key rotation.
         - `labels:write`: create, update and delete labels.
         - `canned_replies:write`: create, update and delete canned replies.
         - `webhooks:manage`: webhooks, their deliveries and attempts.
@@ -19576,7 +19904,7 @@ components:
           format: int64
     WebhookEventType:
       type: string
-      enum: [conversation.created, conversation.updated, conversation.rated, conversation.trashed, conversation.restored, conversation.deleted, message.created, message.redacted, feedback.created, contact.updated, contact.deleted, draft.created, draft.updated, draft.deleted, discussion.created, discussion.post_created, discussion.answered, discussion.updated, subscription.created, subscription.updated, broadcast.updated, analytics.alert, status.component.updated, status.incident.created, status.incident.updated, status.incident.resolved, status.monitor.down, status.monitor.up, help.article.published, help.article.unpublished, help.article.deleted, discussion.stage_changed, changelog.entry.published, changelog.entry.unpublished, changelog.entry.deleted]
+      enum: [conversation.created, conversation.updated, conversation.rated, conversation.trashed, conversation.restored, conversation.deleted, message.created, message.redacted, feedback.created, contact.updated, contact.deleted, draft.created, draft.updated, draft.deleted, discussion.created, discussion.post_created, discussion.answered, discussion.updated, subscription.created, subscription.updated, broadcast.updated, analytics.alert, status.component.updated, status.incident.created, status.incident.updated, status.incident.resolved, status.monitor.down, status.monitor.up, help.article.published, help.article.unpublished, help.article.deleted, discussion.stage_changed, changelog.entry.published, changelog.entry.unpublished, changelog.entry.deleted, team.created, team.updated, team.deleted]
     WebhookEndpoint:
       type: object
       required: [id, url, description, events, include_notes, enabled, created_at, updated_at]
@@ -20082,6 +20410,10 @@ components:
           type: string
           format: uuid
           description: The assigned member; absent when unassigned.
+        team_id:
+          type: string
+          format: uuid
+          description: The assigned team; absent when none. Independent of `assignee_id`.
         labels:
           type: array
           description: Label ids.
@@ -20222,6 +20554,12 @@ components:
           type: [string, "null"]
           format: uuid
           description: A member with access to the inbox; `null` unassigns.
+        team_id:
+          type: [string, "null"]
+          format: uuid
+          description: |
+            A team granted the conversation's inbox (`422 team_access` otherwise); `null` removes the
+            team. The member assignee is not changed.
         labels:
           type: array
           maxItems: 50
@@ -20571,7 +20909,7 @@ components:
     ConversationCounts:
       type: object
       description: Open conversations in the inboxes the caller can see.
-      required: [all, mine, unassigned, spam, inboxes, labels, assignees, feedback, feedback_categories]
+      required: [all, mine, unassigned, spam, inboxes, labels, assignees, feedback, feedback_categories, teams, mine_teams]
       properties:
         feedback:
           type: integer
@@ -20612,6 +20950,15 @@ components:
           description: Per label id.
           items:
             $ref: "#/components/schemas/CountByID"
+        teams:
+          type: array
+          description: Per assigned team id.
+          items:
+            $ref: "#/components/schemas/CountByID"
+        mine_teams:
+          type: integer
+          format: int64
+          description: Assigned to any team of the calling member (`0` for API keys).
     Home:
       type: object
       description: The Home blocks; a block the member may not see is absent.
@@ -23805,9 +24152,152 @@ components:
           format: date-time
         data:
           $ref: "#/components/schemas/ConversationPin"
+    Team:
+      type: object
+      required: [id, name, description, member_ids, inbox_ids, created_at, updated_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          minLength: 1
+          maxLength: 64
+        description:
+          type: string
+          maxLength: 500
+        member_ids:
+          type: array
+          description: The team's members, in the order they were added.
+          items:
+            type: string
+            format: uuid
+        inbox_ids:
+          type: array
+          description: |
+            The inboxes the team is granted, in the order they were granted; for agents and keys
+            limited to inboxes, only those they see.
+          items:
+            type: string
+            format: uuid
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    TeamCreate:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 64
+          description: Unique in the workspace (`409 team_taken`).
+        description:
+          type: string
+          maxLength: 500
+    TeamUpdate:
+      type: object
+      minProperties: 1
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 64
+          description: Unique in the workspace (`409 team_taken`).
+        description:
+          type: string
+          maxLength: 500
+    TeamList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Team"
+    TeamEvent:
+      type: object
+      description: |
+        `team.created`, `team.updated`, `team.deleted`: a team was created, changed (name,
+        description, members, inboxes) or deleted; `data` is the team after the change, or as it
+        was for `team.deleted`. Delivered to callers with `inboxes:read` who see every inbox, who
+        are among its `member_ids` or `removed_member_ids`, or who see one of its `inbox_ids`;
+        `inbox_ids` lists only the inboxes the receiver sees.
+      required: [id, type, workspace_id, created_at, data]
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+          enum: [team.created, team.updated, team.deleted]
+          x-enum-varnames: [TeamCreatedEvent, TeamUpdatedEvent, TeamDeletedEvent]
+        workspace_id:
+          type: string
+          format: uuid
+        created_at:
+          type: string
+          format: date-time
+        data:
+          $ref: "#/components/schemas/TeamEventData"
+    TeamEventData:
+      allOf:
+        - $ref: "#/components/schemas/Team"
+        - type: object
+          properties:
+            removed_member_ids:
+              type: array
+              description: "`team.updated` only: members this change removed from the team."
+              items:
+                type: string
+                format: uuid
+    WebhookTeamPayload:
+      description: |
+        Sent to endpoints of the whole workspace, and to endpoints limited to one of the team's
+        inboxes; for those, `inbox_ids` lists only that inbox.
+      allOf:
+        - $ref: "#/components/schemas/WebhookPayloadBase"
+        - type: object
+          required: [data]
+          properties:
+            data:
+              $ref: "#/components/schemas/TeamEventData"
+    InboxAccessVia:
+      type: string
+      description: "`direct`: the member has their own grant (and may have teams' too); `team`: only through teams."
+      enum: [direct, team]
+      x-enum-varnames: [InboxAccessDirect, InboxAccessTeam]
+    InboxMember:
+      allOf:
+        - $ref: "#/components/schemas/Member"
+        - type: object
+          required: [via, team_ids]
+          properties:
+            via:
+              $ref: "#/components/schemas/InboxAccessVia"
+            team_ids:
+              type: array
+              description: The teams that give the member this inbox.
+              items:
+                type: string
+                format: uuid
+    InboxMemberList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/InboxMember"
     InboxAccessChangedEvent:
       type: object
-      description: A member was given or lost access to an inbox. Reload the inboxes and conversations when it is about you.
+      description: |
+        A member's effective access to an inbox flipped: through their own grant, a team they joined
+        or left, or a team that was granted the inbox, lost it or was deleted. Reload the inboxes,
+        conversations and teams when it is about you.
       required: [id, type, workspace_id, inbox_id, created_at, data]
       properties:
         id:
@@ -23891,6 +24381,7 @@ components:
         - $ref: "#/components/schemas/InboxUpdatedEvent"
         - $ref: "#/components/schemas/InboxDeletedEvent"
         - $ref: "#/components/schemas/InboxAccessChangedEvent"
+        - $ref: "#/components/schemas/TeamEvent"
         - $ref: "#/components/schemas/ConversationReadEvent"
         - $ref: "#/components/schemas/ContactReadEvent"
         - $ref: "#/components/schemas/ConversationPinEvent"
@@ -23926,6 +24417,9 @@ components:
           inbox.updated: "#/components/schemas/InboxUpdatedEvent"
           inbox.deleted: "#/components/schemas/InboxDeletedEvent"
           inbox_access.changed: "#/components/schemas/InboxAccessChangedEvent"
+          team.created: "#/components/schemas/TeamEvent"
+          team.updated: "#/components/schemas/TeamEvent"
+          team.deleted: "#/components/schemas/TeamEvent"
           conversation.read: "#/components/schemas/ConversationReadEvent"
           contact.read: "#/components/schemas/ContactReadEvent"
           conversation.pin: "#/components/schemas/ConversationPinEvent"
@@ -23989,6 +24483,7 @@ components:
         - $ref: "#/components/schemas/InboxUpdatedEvent"
         - $ref: "#/components/schemas/InboxDeletedEvent"
         - $ref: "#/components/schemas/InboxAccessChangedEvent"
+        - $ref: "#/components/schemas/TeamEvent"
         - $ref: "#/components/schemas/ConversationReadEvent"
         - $ref: "#/components/schemas/ContactReadEvent"
         - $ref: "#/components/schemas/ConversationPinEvent"
@@ -24044,6 +24539,9 @@ components:
           inbox.updated: "#/components/schemas/InboxUpdatedEvent"
           inbox.deleted: "#/components/schemas/InboxDeletedEvent"
           inbox_access.changed: "#/components/schemas/InboxAccessChangedEvent"
+          team.created: "#/components/schemas/TeamEvent"
+          team.updated: "#/components/schemas/TeamEvent"
+          team.deleted: "#/components/schemas/TeamEvent"
           conversation.read: "#/components/schemas/ConversationReadEvent"
           contact.read: "#/components/schemas/ContactReadEvent"
           conversation.pin: "#/components/schemas/ConversationPinEvent"

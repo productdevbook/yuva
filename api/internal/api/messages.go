@@ -536,6 +536,11 @@ func (s *Server) CreateMessage(ctx context.Context, req oas.CreateMessageRequest
 		created = true
 	)
 	err = s.inTx(ctx, p.workspaceID, func(q *store.Queries, events *eventBatch) error {
+		if in.then != nil && in.then.TeamId.IsSpecified() && !in.then.TeamId.IsNull() {
+			if err := shareLockTeam(ctx, q, p.workspaceID, in.then.TeamId.MustGet()); err != nil {
+				return err
+			}
+		}
 		c, err := visibleConversation(ctx, q, p, req.ConversationId, true)
 		if err != nil {
 			return err

@@ -131,6 +131,7 @@ type searchConversationsIn struct {
 	InboxID   *uuid.UUID `json:"inbox_id,omitempty"`
 	Status    string     `json:"status,omitempty"`
 	Assignee  string     `json:"assignee,omitempty" jsonschema:"a member id, me or unassigned"`
+	TeamID    *uuid.UUID `json:"team_id,omitempty" jsonschema:"only conversations assigned to this team, from list_teams"`
 	LabelID   *uuid.UUID `json:"label_id,omitempty"`
 	ContactID *uuid.UUID `json:"contact_id,omitempty"`
 	Spam      bool       `json:"spam,omitempty" jsonschema:"true lists only conversations flagged as spam"`
@@ -371,7 +372,9 @@ type sendDraftIn struct {
 
 type assignIn struct {
 	ConversationID uuid.UUID  `json:"conversation_id"`
-	AssigneeID     *uuid.UUID `json:"assignee_id,omitempty" jsonschema:"a member id; omit to unassign"`
+	AssigneeID     *uuid.UUID `json:"assignee_id,omitempty" jsonschema:"a member id; omit to unassign, unless only team_id or remove_team is sent"`
+	TeamID         *uuid.UUID `json:"team_id,omitempty" jsonschema:"a team from list_teams that is granted the conversation's inbox"`
+	RemoveTeam     bool       `json:"remove_team,omitempty" jsonschema:"true removes the team"`
 }
 
 type setStatusIn struct {
@@ -521,7 +524,7 @@ var mcpTools = append([]mcpTool{
 		func(ctx context.Context, c *mcpCall, in searchConversationsIn) (mcpPage[mcpConversation], error) {
 			params := oas.ListConversationsParams{
 				InboxId: in.InboxID, ContactId: in.ContactID, LabelId: in.LabelID, Status: optList(optString[oas.ConversationStatus](in.Status)),
-				Assignee: optString[string](in.Assignee), Q: optString[string](in.Query), Cursor: optString[string](in.Cursor), Limit: optLimit(in.Limit),
+				Assignee: optString[string](in.Assignee), TeamId: in.TeamID, Q: optString[string](in.Query), Cursor: optString[string](in.Cursor), Limit: optLimit(in.Limit),
 			}
 			if in.Spam {
 				params.Spam = &in.Spam
@@ -705,12 +708,22 @@ var mcpTools = append([]mcpTool{
 			return c.createMessage(ctx, in.ConversationID, oas.MessageCreate{Kind: oas.MessageCreateKindNote, Body: &in.Body})
 		}),
 	defineTool("assign", "Assign a conversation",
-		"Assigns a conversation to a member from list_members, or unassigns it. Maps to PATCH /v1/conversations/{id}.",
+		"Assigns a conversation to a member from list_members, a team from list_teams, or both; or unassigns the member. Maps to PATCH /v1/conversations/{id}.",
 		idempotent, nil, mcpTool{ops: []string{"UpdateConversation"}},
 		func(ctx context.Context, c *mcpCall, in assignIn) (mcpConversation, error) {
-			b := oas.ConversationUpdate{AssigneeId: nullable.NewNullNullable[uuid.UUID]()}
+			var b oas.ConversationUpdate
+			switch {
+			case in.TeamID != nil && in.RemoveTeam:
+				return mcpConversation{}, errValidation("send team_id or remove_team, not both")
+			case in.TeamID != nil:
+				b.TeamId = nullable.NewNullableWithValue(*in.TeamID)
+			case in.RemoveTeam:
+				b.TeamId = nullable.NewNullNullable[uuid.UUID]()
+			}
 			if in.AssigneeID != nil {
 				b.AssigneeId = nullable.NewNullableWithValue(*in.AssigneeID)
+			} else if !b.TeamId.IsSpecified() {
+				b.AssigneeId = nullable.NewNullNullable[uuid.UUID]()
 			}
 			return c.updateConversation(ctx, in.ConversationID, b)
 		}),
@@ -796,4 +809,4 @@ var mcpTools = append([]mcpTool{
 			}
 			return contactOut(oas.Contact(res.(oas.MergeContact200JSONResponse))), nil
 		}),
-}, slices.Concat(mcpSetupTools, mcpContactTools, mcpListTools, mcpBroadcastTools, mcpDesignTools, mcpMigrationTools, mcpAnalyticsTools, mcpStatusTools, mcpHelpTools, mcpRoadmapTools, mcpChangelogTools, mcpInitTools)...)
+}, slices.Concat(mcpSetupTools, mcpContactTools, mcpListTools, mcpBroadcastTools, mcpDesignTools, mcpMigrationTools, mcpAnalyticsTools, mcpStatusTools, mcpHelpTools, mcpRoadmapTools, mcpChangelogTools, mcpInitTools, mcpTeamTools)...)
