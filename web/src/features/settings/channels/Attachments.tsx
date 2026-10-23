@@ -12,8 +12,16 @@ const MIB = 1024 * 1024
 const MAX_TYPES = 100
 const TYPE = /^[a-z0-9][a-z0-9!#$&^_.+-]*\/(\*|[a-z0-9][a-z0-9!#$&^_.+-]*)$/
 
-function mibText(bytes?: number) {
-  return bytes === undefined ? "" : String(Math.round((bytes / MIB) * 100) / 100)
+function mibText(bytes: number | undefined, locale: string) {
+  return bytes === undefined
+    ? ""
+    : new Intl.NumberFormat(locale, { maximumFractionDigits: 2, useGrouping: false }).format(bytes / MIB)
+}
+
+function parseMib(raw: string) {
+  const text = raw.trim()
+  if (!/^\d+(?:[.,]\d+)?$/.test(text)) return Number.NaN
+  return Math.round(Number(text.replace(",", ".")) * MIB)
 }
 
 function parseTypes(raw: string) {
@@ -31,12 +39,12 @@ export function AttachmentsSection({ channel }: { channel: Channel }) {
   const patch = usePatchChannel(channel)
   const own = channel.attachments
   const [draft, setDraft] = useState<{ size?: string; types?: string }>({})
-  const baseSize = mibText(own.max_bytes)
+  const baseSize = mibText(own.max_bytes, i18n.locale)
   const baseTypes = (own.types ?? []).join("\n")
   const size = draft.size ?? baseSize
   const typesRaw = draft.types ?? baseTypes
   const types = parseTypes(typesRaw)
-  const bytes = size.trim() === "" ? null : Math.round(Number(size) * MIB)
+  const bytes = size.trim() === "" ? null : parseMib(size)
   const sizeBad = bytes !== null && !(Number.isFinite(bytes) && bytes >= 1)
   const badTypes = types.filter((x) => !TYPE.test(x))
   const tooMany = types.length > MAX_TYPES
@@ -97,7 +105,7 @@ export function AttachmentsSection({ channel }: { channel: Channel }) {
             id="attachments-max"
             inputMode="decimal"
             value={size}
-            placeholder={mibText(own.effective_max_bytes)}
+            placeholder={mibText(own.effective_max_bytes, i18n.locale)}
             onChange={(e) => set({ size: e.target.value })}
             aria-invalid={sizeBad || undefined}
             className="max-w-40"

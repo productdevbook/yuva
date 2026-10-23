@@ -39,8 +39,14 @@ export function useBulkUpdateConversations() {
   const live = useLiveContext()
   return useMutation({
     mutationFn: (body: ConversationBulkUpdate) => unwrap(api.POST("/v1/conversations/bulk", { body })),
-    onSuccess: (data) => {
-      for (const c of data.updated) applyEvent(qc, live, { type: "conversation.updated", data: c })
+    onSuccess: (data, body) => {
+      const type =
+        body.trashed === undefined
+          ? "conversation.updated"
+          : body.trashed
+            ? "conversation.trashed"
+            : "conversation.restored"
+      for (const c of data.updated) applyEvent(qc, live, { type, data: c })
       if (!isLive(live.ws)) {
         for (const c of data.updated) void qc.invalidateQueries({ queryKey: keys.messages(live.ws, c.id) })
       }

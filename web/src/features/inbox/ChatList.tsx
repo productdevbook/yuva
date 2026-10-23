@@ -113,8 +113,9 @@ export function isWaiting(c: ConversationListItem) {
 let remembered: Chip = "waiting"
 let focused = 0
 
-export function rememberedChip() {
-  return remembered
+export function useRememberedChip(): Chip {
+  const offered = useChips()
+  return offered.includes(remembered) ? remembered : "waiting"
 }
 
 export function rememberChip(c: Chip) {
@@ -658,6 +659,7 @@ export function ChatList({
   const { canManage } = useSession()
   const [confirm, confirmDialog] = useConfirm()
   const tabs = useChips()
+  const initialChip = useRememberedChip()
   const { query, focus, select } = useListSearch()
   const q = useDebounced(query.trim(), 250)
   const [sidebarInbox] = useInboxFilter()
@@ -665,7 +667,7 @@ export function ChatList({
   const chipInbox = controlledInbox ?? ownInbox
   const locked = !!sidebarInbox
   const inboxId = sidebarInbox || chipInbox
-  const [ownChip, setOwnChip] = useState<Chip>(remembered)
+  const [ownChip, setOwnChip] = useState<Chip>(initialChip)
   const chip = controlledChip ?? ownChip
   const [order, setOrder] = useState<Order | null>(null)
   const [unreadOnly, setUnreadOnly] = useState(false)
@@ -880,8 +882,20 @@ export function ChatList({
   }
   const allLabels = useLabels().data ?? []
   const inTrash = chip === "trash"
+  const setTrashed = async (ids: string[], trashed: boolean) => {
+    const done: string[] = []
+    try {
+      for (let at = 0; at < ids.length; at += 100) {
+        const r = await bulk.mutateAsync({ conversation_ids: ids.slice(at, at + 100), trashed })
+        done.push(...r.updated.map((c) => c.id))
+      }
+    } catch (e) {
+      failed(e)
+    }
+    return done
+  }
   const trashChosen = () => {
-    const ids = chosen.slice(0, 100)
+    const ids = [...chosen]
     if (ids.length === 0) return
     confirm({
       title: <Trans>Move {ids.length} to the Trash?</Trans>,
@@ -893,37 +907,21 @@ export function ChatList({
       ),
       confirm: <Trans>Move to the Trash</Trans>,
       run: () =>
-        bulk.mutate(
-          { conversation_ids: ids, trashed: true },
-          {
-            onSuccess: (r) => {
-              const done = r.updated.map((c) => c.id)
-              toast(t`${done.length} moved to the Trash`, () =>
-                bulk.mutate({ conversation_ids: done, trashed: false }, { onError: failed })
-              )
-              stopSelecting()
-            },
-            onError: failed,
-          }
-        ),
+        void setTrashed(ids, true).then((done) => {
+          if (done.length === 0) return
+          toast(t`${done.length} moved to the Trash`, () => void setTrashed(done, false))
+          stopSelecting()
+        }),
     })
   }
   const restoreChosen = () => {
-    const ids = chosen.slice(0, 100)
+    const ids = [...chosen]
     if (ids.length === 0) return
-    bulk.mutate(
-      { conversation_ids: ids, trashed: false },
-      {
-        onSuccess: (r) => {
-          const done = r.updated.map((c) => c.id)
-          toast(t`${done.length} restored`, () =>
-            bulk.mutate({ conversation_ids: done, trashed: true }, { onError: failed })
-          )
-          stopSelecting()
-        },
-        onError: failed,
-      }
-    )
+    void setTrashed(ids, false).then((done) => {
+      if (done.length === 0) return
+      toast(t`${done.length} restored`, () => void setTrashed(done, true))
+      stopSelecting()
+    })
   }
   useHotkeys(
     selecting && canManage && chosen.length > 0

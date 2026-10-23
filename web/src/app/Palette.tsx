@@ -19,6 +19,7 @@ import {
 import { hasCommands, runCommand, type CommandName } from "@/features/conversation/commands"
 import { useInboxFilter } from "@/features/inbox/inboxFilter"
 import { focusListSearch, setListQuery } from "@/features/inbox/listSearch"
+import { useConversation } from "@/features/conversation/queries"
 import { useConversations } from "@/features/inbox/queries"
 import { useAnalyticsVisible } from "@/features/analytics/properties"
 import { useSession } from "@/lib/session"
@@ -39,6 +40,8 @@ function useItems(open: boolean): Item[] {
   const channels = useChannelMap()
   const [inboxId, setFilter] = useInboxFilter()
   const recent = useConversations({ status: ["open"], inbox_id: inboxId || undefined }, open)
+  const conversationId = /^\/(?:conversations|feedback)\/([^/]+)/.exec(pathname)?.[1]
+  const current = useConversation(open ? conversationId : undefined).data
   const commands =
     open && hasCommands() && (pathname.startsWith("/conversations/") || pathname.startsWith("/feedback/"))
   return useMemo(() => {
@@ -80,9 +83,9 @@ function useItems(open: boolean): Item[] {
       act("incident", t`Link to a status incident`, SHORTCUTS.incident)
       act("article", t`Send a help article`, SHORTCUTS.article)
       act("idea", t`Link to a roadmap idea`, SHORTCUTS.idea)
-      if (canManage) {
-        act("trash", t`Move to the Trash`, SHORTCUTS.trash)
-        act("restore", t`Restore from the Trash`, SHORTCUTS.restore)
+      if (canManage && current) {
+        if (current.trashed_at) act("restore", t`Restore from the Trash`, SHORTCUTS.restore)
+        else act("trash", t`Move to the Trash`, SHORTCUTS.trash)
       }
     }
     if (inboxes.length > 1) {
@@ -152,6 +155,7 @@ function useItems(open: boolean): Item[] {
     isOwner,
     analytics,
     pathname,
+    current,
   ])
 }
 

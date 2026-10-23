@@ -15,7 +15,7 @@ import {
   ChatList,
   isWaiting,
   rememberChip,
-  rememberedChip,
+  useRememberedChip,
   StartConversation,
   useChipLabels,
   useChips,
@@ -143,7 +143,8 @@ function InboxPage({ id }: { id: string | null }) {
   const navigate = useNavigate()
   const roomy = useMediaQuery("(min-width: 1200px)")
   const [panel, setPanel] = usePanel()
-  const [chip, setChip] = useState<Chip>(rememberedChip)
+  const initialChip = useRememberedChip()
+  const [chip, setChip] = useState<Chip>(initialChip)
   const [starting, setStarting] = useState(false)
   const [sidebarInbox] = useInboxFilter()
   const [chipInbox, setChipInbox] = useState("")

@@ -1,5 +1,6 @@
 import type { InfiniteData, QueryClient, QueryKey } from "@tanstack/react-query"
 
+import { ApiError } from "@/lib/api"
 import type {
   Broadcast,
   BroadcastProgress,
@@ -126,6 +127,11 @@ function updateLists(qc: QueryClient, ctx: LiveContext, c: Conversation, patch: 
     }
     if (!base) continue
     const item: ConversationListItem = { ...base, ...c, ...patch }
+    if (!c.trashed_at) {
+      delete item.trashed_at
+      delete item.trashed_by
+      delete item.deletes_at
+    }
     qc.setQueryData<Lists>(key, (old) => (old ? placeInList(old, item, matches(item, f, ctx.memberId)) : old))
   }
 }
@@ -478,8 +484,14 @@ export function applyEvent(qc: QueryClient, ctx: LiveContext, event: LiveEvent) 
           old ? { ...old, pages: old.pages.map((p) => ({ ...p, items: p.items.filter((x) => x.id !== id) })) } : old
         )
       }
-      qc.removeQueries({ queryKey: keys.conversation(ctx.ws, id), exact: true })
-      qc.removeQueries({ queryKey: keys.messages(ctx.ws, id), exact: true })
+      for (const key of [keys.conversation(ctx.ws, id), keys.messages(ctx.ws, id)]) {
+        void qc.cancelQueries({ queryKey: key, exact: true })
+        qc.getQueryCache()
+          .find({ queryKey: key, exact: true })
+          ?.setState({ data: undefined, error: new ApiError(404), status: "error", fetchStatus: "idle" })
+      }
+      void qc.invalidateQueries({ queryKey: keys.contactSummary(ctx.ws, event.data.contact_id) })
+      void qc.invalidateQueries({ queryKey: keys.contact(ctx.ws, event.data.contact_id), refetchType: "active" })
       refreshCounts(qc, ctx.ws)
       refreshMentions(qc, ctx.ws)
       refreshDrafts(qc, ctx.ws)
