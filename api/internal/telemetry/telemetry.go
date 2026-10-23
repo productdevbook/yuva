@@ -6,6 +6,7 @@ package telemetry
 
 import (
 	"context"
+	"fmt"
 	"log/slog"
 	"net/http"
 	"os"
@@ -50,29 +51,39 @@ func Setup(ctx context.Context, version string) (func(context.Context) error, er
 		return func(context.Context) error { return nil }, nil
 	}
 	var client otlptrace.Client
-	proto := firstEnv("OTEL_EXPORTER_OTLP_TRACES_PROTOCOL", "OTEL_EXPORTER_OTLP_PROTOCOL")
-	if strings.HasPrefix(proto, "http") {
+	switch proto := firstEnv("OTEL_EXPORTER_OTLP_TRACES_PROTOCOL", "OTEL_EXPORTER_OTLP_PROTOCOL"); proto {
+	case "", "http/protobuf":
 		client = otlptracehttp.NewClient()
-	} else {
+	case "grpc":
 		client = otlptracegrpc.NewClient()
+	default:
+		return nil, fmt.Errorf("OTEL_EXPORTER_OTLP_PROTOCOL: %q is not supported; use http/protobuf or grpc", proto)
 	}
 	exp, err := otlptrace.New(ctx, client)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("OTLP trace exporter: %w", err)
 	}
 	res, err := resource.New(ctx,
 		resource.WithAttributes(semconv.ServiceName("yuva"), semconv.ServiceVersion(version)),
 		resource.WithFromEnv(),
 	)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("OTEL_RESOURCE_ATTRIBUTES: %w", err)
 	}
-	tp := sdktrace.NewTracerProvider(
-		sdktrace.WithBatcher(Filter(exp)),
-		sdktrace.WithResource(res),
-	)
+	tp := NewProvider(Filter(exp), res)
 	Install(tp)
 	return tp.Shutdown, nil
+}
+
+// NewProvider decides sampling itself: every request is traced, whatever sampled flag an
+// unauthenticated client put in its traceparent. An operator who sets OTEL_TRACES_SAMPLER
+// (for example parentbased_traceidratio) gets that sampler instead.
+func NewProvider(exp sdktrace.SpanExporter, res *resource.Resource) *sdktrace.TracerProvider {
+	opts := []sdktrace.TracerProviderOption{sdktrace.WithBatcher(exp), sdktrace.WithResource(res)}
+	if os.Getenv("OTEL_TRACES_SAMPLER") == "" {
+		opts = append(opts, sdktrace.WithSampler(sdktrace.AlwaysSample()))
+	}
+	return sdktrace.NewTracerProvider(opts...)
 }
 
 func firstEnv(names ...string) string {
@@ -119,12 +130,6 @@ func End(span trace.Span, err error) {
 func Workspace(ctx context.Context, id string) {
 	if Enabled() {
 		trace.SpanFromContext(ctx).SetAttributes(WorkspaceKey.String(id))
-	}
-}
-
-func Inbox(ctx context.Context, workspaceID, inboxID string) {
-	if Enabled() {
-		trace.SpanFromContext(ctx).SetAttributes(WorkspaceKey.String(workspaceID), InboxKey.String(inboxID))
 	}
 }
 
@@ -209,5 +214,7 @@ func (s *statusWriter) Write(b []byte) (int, error) {
 	s.wrote = true
 	return s.ResponseWriter.Write(b)
 }
+
+func (s *statusWriter) Flush() { _ = http.NewResponseController(s.ResponseWriter).Flush() }
 
 func (s *statusWriter) Unwrap() http.ResponseWriter { return s.ResponseWriter }

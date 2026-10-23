@@ -12,9 +12,6 @@ import (
 	"regexp"
 	"strings"
 
-	"go.opentelemetry.io/otel/attribute"
-
-	"github.com/productdevbook/yuva/api/internal/telemetry"
 	"github.com/productdevbook/yuva/api/internal/webhook"
 )
 
@@ -38,16 +35,10 @@ type RelaySender interface {
 
 // SendRelayed sends msg and returns the Message-ID the relay put on it in place of ours, or "".
 func SendRelayed(ctx context.Context, s Sender, cfg SMTPConfig, from string, to []string, msg []byte) (string, error) {
-	ctx, span := telemetry.Start(ctx, "smtp.send", attribute.Int("yuva.recipients", len(to)), attribute.Int("yuva.message_bytes", len(msg)))
-	var id string
-	var err error
 	if r, ok := s.(RelaySender); ok {
-		id, err = r.SendRelayed(ctx, cfg, from, to, msg)
-	} else {
-		err = s.Send(ctx, cfg, from, to, msg)
+		return r.SendRelayed(ctx, cfg, from, to, msg)
 	}
-	telemetry.End(span, err)
-	return id, err
+	return "", s.Send(ctx, cfg, from, to, msg)
 }
 
 // PermanentError is a refusal that retrying will not change (an SMTP 5xx reply).

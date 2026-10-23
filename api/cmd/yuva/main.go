@@ -196,7 +196,7 @@ func serve(ctx context.Context, cfg config.Config, log *slog.Logger, args []stri
 	}
 	stopTelemetry, err := telemetry.Setup(ctx, cfg.Version)
 	if err != nil {
-		return fmt.Errorf("OTEL_EXPORTER_OTLP_ENDPOINT: %w", err)
+		return fmt.Errorf("OpenTelemetry: %w", err)
 	}
 	defer func() {
 		flushCtx, cancel := context.WithTimeout(context.Background(), 10*time.Second)

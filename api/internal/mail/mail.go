@@ -240,7 +240,7 @@ func (a Async) Send(ctx context.Context, m Message) error {
 type SMTP struct{ Config config.SMTP }
 
 func (s SMTP) Send(ctx context.Context, m Message) (err error) {
-	ctx, span := telemetry.Start(ctx, "smtp.send", attribute.Int("yuva.recipients", 1), attribute.Int("yuva.message_bytes", len(m.Text)+len(m.HTML)))
+	ctx, span := telemetry.Start(ctx, "smtp.send", attribute.Int("yuva.recipients", 1))
 	defer func() { telemetry.End(span, err) }()
 	if err := checkHeaders(m); err != nil {
 		return err
@@ -284,7 +284,9 @@ func (s SMTP) Send(ctx context.Context, m Message) (err error) {
 	if err := c.Rcpt(m.To); err != nil {
 		return err
 	}
-	reply, err := email.Data(c, compose(from, m))
+	raw := compose(from, m)
+	span.SetAttributes(attribute.Int("yuva.message_bytes", len(raw)))
+	reply, err := email.Data(c, raw)
 	if err != nil {
 		return err
 	}

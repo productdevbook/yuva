@@ -14,6 +14,7 @@ import (
 	"uuid"
 
 	"github.com/riverqueue/river"
+	"go.opentelemetry.io/otel/attribute"
 
 	"github.com/productdevbook/yuva/api/internal/email"
 	"github.com/productdevbook/yuva/api/internal/oas"
@@ -468,7 +469,8 @@ func (s *Server) sendQueued(ctx context.Context, workspaceID uuid.UUID, msgs []m
 	}
 	sendCtx, cancel := context.WithTimeout(ctx, time.Minute)
 	defer cancel()
-	sendCtx, span := telemetry.Start(sendCtx, "mail.send", telemetry.WorkspaceKey.String(workspaceID.String()), telemetry.InboxKey.String(conv.InboxID.String()))
+	sendCtx, span := telemetry.Start(sendCtx, "mail.send", telemetry.WorkspaceKey.String(workspaceID.String()), telemetry.InboxKey.String(conv.InboxID.String()),
+		attribute.Int("yuva.recipients", 1), attribute.Int("yuva.message_bytes", len(raw)))
 	relayID, err := email.SendRelayed(sendCtx, s.sender, cfg, me.FromAddress, []string{to}, raw)
 	telemetry.End(span, err)
 	return relayID, err

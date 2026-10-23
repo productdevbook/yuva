@@ -11,6 +11,7 @@ import (
 
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
+	"go.opentelemetry.io/otel/sdk/resource"
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 	"go.opentelemetry.io/otel/sdk/trace/tracetest"
 	"go.opentelemetry.io/otel/trace"
@@ -184,4 +185,61 @@ func TestSetupOnWithEndpoint(t *testing.T) {
 	}
 	t.Cleanup(telemetry.Uninstall)
 	_ = stop
+}
+
+func exportedFor(t *testing.T, traceparent string) int {
+	t.Helper()
+	mem := tracetest.NewInMemoryExporter()
+	tp := telemetry.NewProvider(mem, resource.Empty())
+	telemetry.Install(tp)
+	t.Cleanup(telemetry.Uninstall)
+	h := telemetry.Middleware(http.HandlerFunc(func(http.ResponseWriter, *http.Request) {}))
+	req := httptest.NewRequest("GET", "/", nil)
+	req.Header.Set("traceparent", traceparent)
+	h.ServeHTTP(httptest.NewRecorder(), req)
+	_ = tp.ForceFlush(context.Background())
+	return len(mem.GetSpans())
+}
+
+func TestRemoteSampledFlagDoesNotDecideSampling(t *testing.T) {
+	t.Setenv("OTEL_TRACES_SAMPLER", "")
+	unsampled := "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-00"
+	if n := exportedFor(t, unsampled); n != 1 {
+		t.Fatalf("default sampler exported %d spans for an unsampled parent, want 1", n)
+	}
+}
+
+func TestOperatorSamplerIsHonoured(t *testing.T) {
+	t.Setenv("OTEL_TRACES_SAMPLER", "parentbased_always_on")
+	unsampled := "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-00"
+	if n := exportedFor(t, unsampled); n != 0 {
+		t.Fatalf("parentbased_always_on exported %d spans for an unsampled parent, want 0", n)
+	}
+}
+
+func TestSetupRefusesUnknownProtocol(t *testing.T) {
+	t.Setenv("OTEL_EXPORTER_OTLP_ENDPOINT", "http://127.0.0.1:1")
+	t.Setenv("OTEL_EXPORTER_OTLP_PROTOCOL", "carrier-pigeon")
+	_, err := telemetry.Setup(context.Background(), "test")
+	if err == nil || !strings.Contains(err.Error(), "OTEL_EXPORTER_OTLP_PROTOCOL") || telemetry.Enabled() {
+		t.Fatalf("err = %v enabled = %v", err, telemetry.Enabled())
+	}
+}
+
+func TestMiddlewareKeepsFlusher(t *testing.T) {
+	install(t)
+	flushed := false
+	h := telemetry.Middleware(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		f, ok := w.(http.Flusher)
+		if !ok {
+			t.Error("response writer is not a Flusher")
+			return
+		}
+		f.Flush()
+		flushed = true
+	}))
+	h.ServeHTTP(httptest.NewRecorder(), httptest.NewRequest("GET", "/", nil))
+	if !flushed {
+		t.Fatal("not flushed")
+	}
 }

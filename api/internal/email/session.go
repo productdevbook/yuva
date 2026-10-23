@@ -42,7 +42,9 @@ type oneShot struct {
 	cfg SMTPConfig
 }
 
-func (o *oneShot) Send(ctx context.Context, from string, to []string, msg []byte) (string, error) {
+func (o *oneShot) Send(ctx context.Context, from string, to []string, msg []byte) (id string, err error) {
+	ctx, span := telemetry.Start(ctx, "smtp.send", attribute.Int("yuva.recipients", len(to)), attribute.Int("yuva.message_bytes", len(msg)))
+	defer func() { telemetry.End(span, err) }()
 	return SendRelayed(ctx, o.s, o.cfg, from, to, msg)
 }
 
