@@ -40359,7 +40359,9 @@ type ClientInterface interface {
 	// `EntityDescriptor` with an `IDPSSODescriptor` that has a `SingleSignOnService` with the
 	// HTTP-Redirect binding and at least one signing certificate valid now; DTDs are refused.
 	// `400 sso_metadata_failed` with the reason otherwise. Expired certificates are left out
-	// and named in `warnings`. Leave both out to keep the stored
+	// and named in `warnings`. `400 saml_requires_https` when the server's public URL is plain
+	// http on a host other than localhost: browsers drop the Secure cookie the sign-in needs
+	// there. Leave both out to keep the stored
 	// metadata (fetched again when it came from a URL); one is required the first time. A
 	// workspace has one provider: saving SAML replaces an OpenID Connect provider (and the
 	// other way round). Register `saml_sp` from `GET /v1/sso` at the provider: entity id,
@@ -40382,7 +40384,9 @@ type ClientInterface interface {
 	// `EntityDescriptor` with an `IDPSSODescriptor` that has a `SingleSignOnService` with the
 	// HTTP-Redirect binding and at least one signing certificate valid now; DTDs are refused.
 	// `400 sso_metadata_failed` with the reason otherwise. Expired certificates are left out
-	// and named in `warnings`. Leave both out to keep the stored
+	// and named in `warnings`. `400 saml_requires_https` when the server's public URL is plain
+	// http on a host other than localhost: browsers drop the Secure cookie the sign-in needs
+	// there. Leave both out to keep the stored
 	// metadata (fetched again when it came from a URL); one is required the first time. A
 	// workspace has one provider: saving SAML replaces an OpenID Connect provider (and the
 	// other way round). Register `saml_sp` from `GET /v1/sso` at the provider: entity id,
@@ -55849,7 +55853,9 @@ func (c *Client) DeleteSsoSamlProvider(ctx context.Context, params *DeleteSsoSam
 // `EntityDescriptor` with an `IDPSSODescriptor` that has a `SingleSignOnService` with the
 // HTTP-Redirect binding and at least one signing certificate valid now; DTDs are refused.
 // `400 sso_metadata_failed` with the reason otherwise. Expired certificates are left out
-// and named in `warnings`. Leave both out to keep the stored
+// and named in `warnings`. `400 saml_requires_https` when the server's public URL is plain
+// http on a host other than localhost: browsers drop the Secure cookie the sign-in needs
+// there. Leave both out to keep the stored
 // metadata (fetched again when it came from a URL); one is required the first time. A
 // workspace has one provider: saving SAML replaces an OpenID Connect provider (and the
 // other way round). Register `saml_sp` from `GET /v1/sso` at the provider: entity id,
@@ -55882,7 +55888,9 @@ func (c *Client) SetSsoSamlProviderWithBody(ctx context.Context, params *SetSsoS
 // `EntityDescriptor` with an `IDPSSODescriptor` that has a `SingleSignOnService` with the
 // HTTP-Redirect binding and at least one signing certificate valid now; DTDs are refused.
 // `400 sso_metadata_failed` with the reason otherwise. Expired certificates are left out
-// and named in `warnings`. Leave both out to keep the stored
+// and named in `warnings`. `400 saml_requires_https` when the server's public URL is plain
+// http on a host other than localhost: browsers drop the Secure cookie the sign-in needs
+// there. Leave both out to keep the stored
 // metadata (fetched again when it came from a URL); one is required the first time. A
 // workspace has one provider: saving SAML replaces an OpenID Connect provider (and the
 // other way round). Register `saml_sp` from `GET /v1/sso` at the provider: entity id,
@@ -97789,7 +97797,9 @@ type ClientWithResponsesInterface interface {
 	// `EntityDescriptor` with an `IDPSSODescriptor` that has a `SingleSignOnService` with the
 	// HTTP-Redirect binding and at least one signing certificate valid now; DTDs are refused.
 	// `400 sso_metadata_failed` with the reason otherwise. Expired certificates are left out
-	// and named in `warnings`. Leave both out to keep the stored
+	// and named in `warnings`. `400 saml_requires_https` when the server's public URL is plain
+	// http on a host other than localhost: browsers drop the Secure cookie the sign-in needs
+	// there. Leave both out to keep the stored
 	// metadata (fetched again when it came from a URL); one is required the first time. A
 	// workspace has one provider: saving SAML replaces an OpenID Connect provider (and the
 	// other way round). Register `saml_sp` from `GET /v1/sso` at the provider: entity id,
@@ -97812,7 +97822,9 @@ type ClientWithResponsesInterface interface {
 	// `EntityDescriptor` with an `IDPSSODescriptor` that has a `SingleSignOnService` with the
 	// HTTP-Redirect binding and at least one signing certificate valid now; DTDs are refused.
 	// `400 sso_metadata_failed` with the reason otherwise. Expired certificates are left out
-	// and named in `warnings`. Leave both out to keep the stored
+	// and named in `warnings`. `400 saml_requires_https` when the server's public URL is plain
+	// http on a host other than localhost: browsers drop the Secure cookie the sign-in needs
+	// there. Leave both out to keep the stored
 	// metadata (fetched again when it came from a URL); one is required the first time. A
 	// workspace has one provider: saving SAML replaces an OpenID Connect provider (and the
 	// other way round). Register `saml_sp` from `GET /v1/sso` at the provider: entity id,
@@ -144666,7 +144678,9 @@ func (c *ClientWithResponses) DeleteSsoSamlProviderWithResponse(ctx context.Cont
 // `EntityDescriptor` with an `IDPSSODescriptor` that has a `SingleSignOnService` with the
 // HTTP-Redirect binding and at least one signing certificate valid now; DTDs are refused.
 // `400 sso_metadata_failed` with the reason otherwise. Expired certificates are left out
-// and named in `warnings`. Leave both out to keep the stored
+// and named in `warnings`. `400 saml_requires_https` when the server's public URL is plain
+// http on a host other than localhost: browsers drop the Secure cookie the sign-in needs
+// there. Leave both out to keep the stored
 // metadata (fetched again when it came from a URL); one is required the first time. A
 // workspace has one provider: saving SAML replaces an OpenID Connect provider (and the
 // other way round). Register `saml_sp` from `GET /v1/sso` at the provider: entity id,
@@ -144695,7 +144709,9 @@ func (c *ClientWithResponses) SetSsoSamlProviderWithBodyWithResponse(ctx context
 // `EntityDescriptor` with an `IDPSSODescriptor` that has a `SingleSignOnService` with the
 // HTTP-Redirect binding and at least one signing certificate valid now; DTDs are refused.
 // `400 sso_metadata_failed` with the reason otherwise. Expired certificates are left out
-// and named in `warnings`. Leave both out to keep the stored
+// and named in `warnings`. `400 saml_requires_https` when the server's public URL is plain
+// http on a host other than localhost: browsers drop the Secure cookie the sign-in needs
+// there. Leave both out to keep the stored
 // metadata (fetched again when it came from a URL); one is required the first time. A
 // workspace has one provider: saving SAML replaces an OpenID Connect provider (and the
 // other way round). Register `saml_sp` from `GET /v1/sso` at the provider: entity id,

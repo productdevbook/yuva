@@ -99,6 +99,11 @@ Sağlayıcınız yalnızca SAML sunuyorsa ya da onu tercih ediyorsanız 1. ve 2.
 yapın. Bir SAML sağlayıcısını kaydetmek OpenID Connect sağlayıcısının yerini alır, tersi de geçerlidir;
 alan adları ve kurallar kalır.
 
+SAML için Yuva'nın `https` üzerinde olması gerekir (`YUVA_PUBLIC_URL`): sağlayıcı yanıtını kendi
+sitesinden Yuva'ya gönderir ve tarayıcılar bu yanıtı girişe bağlayan çerezi yalnızca Secure bir çerez
+olarak gönderir. Düz http'de bu yalnızca `localhost`'ta çalışır; başka yerde SAML sağlayıcısını
+kaydetmek `saml_requires_https` yanıtını verir.
+
 Giriş her zaman Yuva'nın giriş sayfasında başlar (hizmet sağlayıcı başlatır). Sağlayıcının Yuva
 istemeden gönderdiği bir yanıt, örneğin sağlayıcının uygulama panosundaki bir kutucuktan gelen,
 reddedilir: uygulamayı panodan gizleyin ya da kutucuğu Yuva'nın giriş sayfasına yönlendirin.

@@ -96,6 +96,11 @@ Keycloak on the same network; link-local and cloud metadata addresses are always
 If your provider offers only SAML, or you prefer it, do this instead of steps 1 and 2. Saving a SAML
 provider replaces an OpenID Connect one, and the other way round; domains and rules stay.
 
+SAML needs Yuva on `https` (`YUVA_PUBLIC_URL`): the provider posts its answer to Yuva from its own
+site, and browsers send the cookie that ties that answer to the sign-in only as a Secure cookie. On
+plain http this works only on `localhost`; elsewhere saving a SAML provider answers
+`saml_requires_https`.
+
 Sign-in always starts on Yuva's sign-in page (service-provider initiated). A response the provider
 sends without Yuva asking, for example from a tile on the provider's app dashboard, is refused: hide
 the app from the dashboard or point the tile at Yuva's sign-in page.

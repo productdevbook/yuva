@@ -12,6 +12,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/netip"
 	"net/url"
 	"slices"
 	"strings"
@@ -40,6 +41,9 @@ const (
 	samlNSProtocol      = "urn:oasis:names:tc:SAML:2.0:protocol"
 	samlBearer          = "urn:oasis:names:tc:SAML:2.0:cm:bearer"
 )
+
+var errSAMLNeedsHTTPS = problem(http.StatusBadRequest, "saml_requires_https",
+	"SAML needs the server on https (YUVA_PUBLIC_URL): the identity provider's cross-site POST carries the sign-in cookie only when it is SameSite=None and Secure, which browsers keep on plain http only for localhost")
 
 func errSSOMetadata(detail string) *apiError {
 	return problem(http.StatusBadRequest, "sso_metadata_failed", "the identity provider's metadata could not be used: "+truncateRunes(detail, 300))
@@ -285,12 +289,27 @@ func (s *Server) samlRefresh(ctx context.Context, set store.SsoSetting) store.Ss
 	return next
 }
 
+// samlCookie must reach the identity provider's cross-site form POST, so it is SameSite=None,
+// which browsers accept only with Secure: https, or http on localhost.
 func (s *Server) samlCookie(value string, maxAge int) string {
-	c := http.Cookie{Name: samlCookie, Value: value, Path: strings.TrimSuffix(samlPathPrefix, "/"), MaxAge: maxAge, HttpOnly: true, Secure: s.auth.CookieSecure, SameSite: http.SameSiteLaxMode}
-	if s.auth.CookieSecure {
-		c.SameSite = http.SameSiteNoneMode
-	}
+	c := http.Cookie{Name: samlCookie, Value: value, Path: samlACSPath, MaxAge: maxAge, HttpOnly: true, Secure: true, SameSite: http.SameSiteNoneMode}
 	return c.String()
+}
+
+func (s *Server) samlCookieWorks() bool {
+	u, err := url.Parse(s.auth.PublicURL)
+	if err != nil {
+		return false
+	}
+	if u.Scheme == "https" {
+		return true
+	}
+	h := strings.ToLower(strings.TrimSuffix(u.Hostname(), "."))
+	if h == "localhost" || strings.HasSuffix(h, ".localhost") {
+		return true
+	}
+	ip, err := netip.ParseAddr(h)
+	return err == nil && ip.IsLoopback()
 }
 
 func (s *Server) startSAML(ctx context.Context, set store.SsoSetting, returnTo string) (string, string, error) {

@@ -248,6 +248,9 @@ func (s *Server) SetSsoSamlProvider(ctx context.Context, req oas.SetSsoSamlProvi
 	if err := requireOwner(p); err != nil {
 		return nil, err
 	}
+	if !s.samlCookieWorks() {
+		return nil, errSAMLNeedsHTTPS
+	}
 	b := req.Body
 	if b.MetadataUrl != nil && b.MetadataXml != nil {
 		return nil, errValidation("give metadata_url or metadata_xml, not both")

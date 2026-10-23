@@ -99,6 +99,11 @@ Bietet Ihr Anbieter nur SAML an oder ziehen Sie es vor, gehen Sie so vor statt d
 Ein gespeicherter SAML-Anbieter ersetzt einen OpenID-Connect-Anbieter und umgekehrt; Domains und
 Regeln bleiben.
 
+SAML braucht Yuva unter `https` (`YUVA_PUBLIC_URL`): Der Anbieter schickt seine Antwort von seiner
+eigenen Website an Yuva, und Browser senden das Cookie, das diese Antwort mit der Anmeldung verbindet,
+nur als Secure-Cookie. Über reines http klappt das nur auf `localhost`; anderswo antwortet das
+Speichern eines SAML-Anbieters mit `saml_requires_https`.
+
 Die Anmeldung beginnt immer auf Yuvas Anmeldeseite (vom Service Provider ausgelöst). Eine Antwort,
 die der Anbieter schickt, ohne dass Yuva gefragt hat, etwa von einer Kachel im App-Dashboard des
 Anbieters, wird abgelehnt: Blenden Sie die App im Dashboard aus oder lassen Sie die Kachel auf Yuvas

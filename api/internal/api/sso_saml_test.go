@@ -23,6 +23,8 @@ import (
 	"github.com/beevik/etree"
 	"github.com/crewjam/saml"
 	dsig "github.com/russellhaering/goxmldsig"
+
+	"github.com/productdevbook/yuva/api/internal/api"
 )
 
 const (
@@ -56,8 +58,8 @@ func newSAMLKeyValid(t *testing.T, notBefore, notAfter time.Time) samlKey {
 // fakeSAMLIdP serves its metadata and signs responses with its own key, the way an identity
 // provider would after the person signed in.
 type fakeSAMLIdP struct {
-	t   *testing.T
-	srv *httptest.Server
+	t       *testing.T
+	srv     *httptest.Server
 	mu      sync.Mutex
 	key     samlKey
 	expired []samlKey
@@ -248,6 +250,12 @@ func (e *samlEnv) start(c *client, email string) string {
 	start := c.expect(http.StatusOK, "POST", "/v1/auth/sso", map[string]any{"email": email, "return_to": "/conversations"})
 	if start.body["sso"] != true {
 		t.Fatalf("start: %s", start.raw)
+	}
+	cookie := start.header.Get("Set-Cookie")
+	for _, want := range []string{"yuva_saml=", "Path=/auth/saml/acs", "HttpOnly", "Secure", "SameSite=None", "Max-Age=600"} {
+		if !strings.Contains(cookie, want) {
+			t.Fatalf("saml cookie %q lacks %s", cookie, want)
+		}
 	}
 	u, err := url.Parse(start.str("authorization_url"))
 	if err != nil || !strings.HasPrefix(u.String(), e.saml.srv.URL+"/sso?tenant=1&SAMLRequest=") {
@@ -570,5 +578,21 @@ func TestSAMLExpiredCertificatesAndRefreshBackoff(t *testing.T) {
 	wantLocation(t, e.signIn(e.h.client(), email, nil), "/conversations")
 	if fetches() != before+2 {
 		t.Fatalf("fetched again within an hour of a success: %d fetches", fetches())
+	}
+}
+
+func TestSAMLRefusedOnPlainHTTP(t *testing.T) {
+	h := newHarnessWith(t, func(d *api.Deps) {
+		d.Webhooks.AllowPrivate = true
+		d.Auth.PublicURL = "http://yuva.example"
+	})
+	idp := newFakeSAMLIdP(t)
+	email := unique("owner") + "@example.com"
+	h.bootstrap(email, unique("ws"))
+	owner := h.client()
+	owner.signIn(email)
+	owner.expectProblem(http.StatusBadRequest, "saml_requires_https", "PUT", "/v1/sso/saml", map[string]any{"metadata_url": idp.srv.URL + "/metadata"})
+	if got := owner.expect(http.StatusOK, "GET", "/v1/sso", nil); got.body["protocol"] != nil {
+		t.Fatalf("saved anyway: %s", got.raw)
 	}
 }

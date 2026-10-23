@@ -3730,8 +3730,10 @@ and audit; `sso_settings.protocol` (`oidc` or `saml`) says which one, so a works
   which serves the SP metadata (ACS with HTTP-POST only, NameID format `emailAddress`, no keys: Yuva
   neither signs requests nor takes encrypted assertions); the ACS is `POST /auth/saml/acs` for every
   workspace. `POST /v1/auth/sso` answers the `AuthnRequest` redirect URL and sets `yuva_saml` (the
-  request id, HttpOnly, path `/auth/saml`, SameSite=None and Secure on https because the identity
-  provider's form POST is cross-site, Lax otherwise); the `sso_logins` row is keyed by the request
+  request id, HttpOnly, Secure, SameSite=None, path `/auth/saml/acs`, 10 minutes: the identity
+  provider's form POST is cross-site, so a Lax cookie never arrives). Browsers keep a Secure cookie
+  on plain http only for localhost, so `PUT /v1/sso/saml` answers `400 saml_requires_https` when
+  `YUVA_PUBLIC_URL` is http on any other host. The `sso_logins` row is keyed by the request
   id's hash (nonce and verifier empty). The ACS reads at most 256 KiB, refuses directives, needs a
   non-empty `InResponseTo` equal to the cookie (unsolicited and identity-provider-initiated
   responses fail as `expired`, unaudited, since nothing ties them to a workspace yet), takes the
