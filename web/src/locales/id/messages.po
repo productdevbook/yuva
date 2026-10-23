@@ -1437,6 +1437,10 @@ msgstr "Tambah"
 msgid "Add a block"
 msgstr "Tambah blok"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Add a category"
+msgstr "Tambah kategori"
+
 #: src/features/settings/channels/AddChannelDialog.tsx
 msgid "Add a channel"
 msgstr "Tambah saluran"
@@ -1452,6 +1456,10 @@ msgstr "Tambah kondisi"
 #: src/features/status/MonitorToken.tsx
 msgid "Add a contact point of type Webhook, paste the address above, keep the method POST and use the contact point in a notification policy. Firing alerts fail the monitor, resolved ones recover it."
 msgstr "Tambahkan titik kontak bertipe Webhook, tempel alamat di atas, biarkan metode POST, dan gunakan titik kontak itu dalam kebijakan notifikasi. Peringatan yang aktif menjatuhkan monitor, yang sudah selesai memulihkannya."
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Add a language"
+msgstr "Tambah bahasa"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Add a link"
@@ -2867,11 +2875,6 @@ msgstr "Siaran massal dari saluran ini keluar lewat akun SMTP-nya untuk balasan,
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Browser"
 msgstr "Browser"
-
-#: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Bug"
-msgstr "Bug"
 
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -5486,9 +5489,17 @@ msgstr "masukan"
 msgid "Feedback"
 msgstr "Masukan"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Feedback already sent as {name} moves to Other when you save."
+msgstr "Masukan yang sudah dikirim sebagai {name} dipindahkan ke Lainnya saat Anda menyimpan."
+
 #: src/components/common/text.ts
 msgid "Feedback arrived"
 msgstr "Masukan tiba"
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Feedback categories"
+msgstr "Kategori masukan"
 
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Feedback details"
@@ -6386,10 +6397,9 @@ msgstr "Saya yang balas"
 msgid "I'm back"
 msgstr "Saya kembali"
 
-#: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Idea"
-msgstr "Ide"
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Icon"
+msgstr "Ikon"
 
 #: src/components/common/text.ts
 msgid "Ideas"
@@ -8056,6 +8066,7 @@ msgstr "Penilaian terbanyak, masukan terbuka, diskusi terbuka, dan kiriman menun
 msgid "Most votes"
 msgstr "Suara terbanyak"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move down"
 msgstr "Pindah ke bawah"
@@ -8137,6 +8148,7 @@ msgstr "Pindahkan ke tahap sebelumnya atau berikutnya"
 msgid "Move to Yuva"
 msgstr "Pindah ke Yuva"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move up"
 msgstr "Pindah ke atas"
@@ -10204,11 +10216,6 @@ msgstr "Urutan dan tampilan"
 msgid "Original"
 msgstr "Asli"
 
-#: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Other"
-msgstr "Lainnya"
-
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 msgid "Other conversations"
@@ -10221,6 +10228,10 @@ msgstr "Server IMAP lain"
 #: src/features/settings/connected-apps/assistants.ts
 msgid "Other MCP client"
 msgstr "Klien MCP lain"
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Other stays: removed categories move here"
+msgstr "Lainnya tetap ada: kategori yang dihapus dipindahkan ke sini"
 
 #: src/features/status/MonitorsPage.tsx
 msgid "Our monitor {monitor} has seen a problem since {at}. We are looking into it."
@@ -10861,11 +10872,6 @@ msgid "Posted by you and marked as the accepted answer."
 msgstr "Ditulis oleh Anda dan ditandai sebagai jawaban yang diterima."
 
 #: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Praise"
-msgstr "Pujian"
-
-#: src/components/common/text.ts
 msgid "Preference page"
 msgstr "Halaman preferensi"
 
@@ -11471,6 +11477,7 @@ msgstr "Gambar jarak jauh dapat memberi tahu pengirim bahwa Anda membuka email."
 
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/Passkeys.tsx
@@ -11502,6 +11509,7 @@ msgstr "Hapus {lang}"
 msgid "Remove {name}"
 msgstr "Hapus {name}"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Remove {name}?"
 msgstr "Hapus {name}?"
@@ -16306,6 +16314,10 @@ msgstr "Untuk apa kunci ini?"
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "What may it do?"
 msgstr "Apa yang boleh dilakukannya?"
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "What people can pick when they send feedback from your apps and pages"
+msgstr "Yang dapat dipilih orang saat mengirim masukan dari aplikasi dan halaman Anda"
 
 #: src/features/reports/ReportPages.tsx
 msgid "What people wrote"

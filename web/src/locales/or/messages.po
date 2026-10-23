@@ -1437,6 +1437,10 @@ msgstr "ଯୋଡ଼ନ୍ତୁ"
 msgid "Add a block"
 msgstr "ବ୍ଲକ୍ ଯୋଡ଼ନ୍ତୁ"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Add a category"
+msgstr "ବର୍ଗ ଯୋଗ କରନ୍ତୁ"
+
 #: src/features/settings/channels/AddChannelDialog.tsx
 msgid "Add a channel"
 msgstr "ଚ୍ୟାନେଲ୍ ଯୋଡ଼ନ୍ତୁ"
@@ -1452,6 +1456,10 @@ msgstr "ସର୍ତ୍ତ ଯୋଡ଼ନ୍ତୁ"
 #: src/features/status/MonitorToken.tsx
 msgid "Add a contact point of type Webhook, paste the address above, keep the method POST and use the contact point in a notification policy. Firing alerts fail the monitor, resolved ones recover it."
 msgstr "Webhook ପ୍ରକାରର ଏକ ଯୋଗାଯୋଗ ବିନ୍ଦୁ ଯୋଡ଼ନ୍ତୁ, ଉପରର ଠିକଣା ପେଷ୍ଟ କରନ୍ତୁ, ପଦ୍ଧତି POST ରଖନ୍ତୁ ଏବଂ ବିଜ୍ଞପ୍ତି ନୀତିରେ ଯୋଗାଯୋଗ ବିନ୍ଦୁ ବ୍ୟବହାର କରନ୍ତୁ। ସକ୍ରିୟ ଆଲର୍ଟ ମନିଟରକୁ ବିଫଳ କରେ, ସମାଧାନ ହୋଇଥିବା ଆଲର୍ଟ ଏହାକୁ ପୁନଃସ୍ଥାପନ କରେ।"
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Add a language"
+msgstr "ଭାଷା ଯୋଗ କରନ୍ତୁ"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Add a link"
@@ -2867,11 +2875,6 @@ msgstr "ଏହି ଚ୍ୟାନେଲର ବ୍ରଡକାଷ୍ଟ ଉତ୍
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Browser"
 msgstr "ବ୍ରାଉଜର"
-
-#: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Bug"
-msgstr "ବଗ୍"
 
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -5486,9 +5489,17 @@ msgstr "ମତାମତ"
 msgid "Feedback"
 msgstr "ମତାମତ"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Feedback already sent as {name} moves to Other when you save."
+msgstr "{name} ଭାବେ ପଠାଯାଇଥିବା ମତାମତ ସାଇଭ୍ କଲେ «ଅନ୍ୟାନ୍ୟ»କୁ ଯାଏ।"
+
 #: src/components/common/text.ts
 msgid "Feedback arrived"
 msgstr "ମତାମତ ଆସିଲା"
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Feedback categories"
+msgstr "ମତାମତ ବର୍ଗ"
 
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Feedback details"
@@ -6386,10 +6397,9 @@ msgstr "ମୁଁ ଉତ୍ତର ଦେବି"
 msgid "I'm back"
 msgstr "ମୁଁ ଫେରିଆସିଛି"
 
-#: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Idea"
-msgstr "ଧାରଣା"
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Icon"
+msgstr "ଆଇକନ୍"
 
 #: src/components/common/text.ts
 msgid "Ideas"
@@ -8056,6 +8066,7 @@ msgstr "ସର୍ବାଧିକ ରେଟିଂ, ଖୋଲା ମତାମତ, 
 msgid "Most votes"
 msgstr "ସର୍ବାଧିକ ଭୋଟ୍"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move down"
 msgstr "ତଳକୁ ନିଅନ୍ତୁ"
@@ -8137,6 +8148,7 @@ msgstr "ପୂର୍ବ କିମ୍ବା ପରବର୍ତ୍ତୀ ପର୍
 msgid "Move to Yuva"
 msgstr "Yuva କୁ ଘୁଞ୍ଚାନ୍ତୁ"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move up"
 msgstr "ଉପରକୁ ନିଅନ୍ତୁ"
@@ -10204,11 +10216,6 @@ msgstr "କ୍ରମ ଓ ଦୃଶ୍ୟ"
 msgid "Original"
 msgstr "ମୂଳ"
 
-#: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Other"
-msgstr "ଅନ୍ୟ"
-
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 msgid "Other conversations"
@@ -10221,6 +10228,10 @@ msgstr "ଅନ୍ୟ IMAP ସର୍ଭର"
 #: src/features/settings/connected-apps/assistants.ts
 msgid "Other MCP client"
 msgstr "ଅନ୍ୟ MCP କ୍ଲାଏଣ୍ଟ"
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Other stays: removed categories move here"
+msgstr "«ଅନ୍ୟାନ୍ୟ» ରହେ: ହଟାଯାଇଥିବା ବର୍ଗ ଏଠାକୁ ଆସେ"
 
 #: src/features/status/MonitorsPage.tsx
 msgid "Our monitor {monitor} has seen a problem since {at}. We are looking into it."
@@ -10861,11 +10872,6 @@ msgid "Posted by you and marked as the accepted answer."
 msgstr "ଆପଣ ପୋଷ୍ଟ କରି ଗୃହୀତ ଉତ୍ତର ଭାବେ ଚିହ୍ନିତ କଲେ।"
 
 #: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Praise"
-msgstr "ପ୍ରଶଂସା"
-
-#: src/components/common/text.ts
 msgid "Preference page"
 msgstr "ପସନ୍ଦ ପୃଷ୍ଠା"
 
@@ -11471,6 +11477,7 @@ msgstr "ରିମୋଟ୍ ଇମେଜ୍ ପ୍ରେରକଙ୍କୁ ଜଣ
 
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/Passkeys.tsx
@@ -11502,6 +11509,7 @@ msgstr "{lang} ହଟାନ୍ତୁ"
 msgid "Remove {name}"
 msgstr "{name} ହଟାନ୍ତୁ"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Remove {name}?"
 msgstr "{name}ଙ୍କୁ ହଟାଇବେ?"
@@ -16306,6 +16314,10 @@ msgstr "ଏହି କୀ କାହା ପାଇଁ?"
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "What may it do?"
 msgstr "ଏହା କ'ଣ କରିପାରିବ?"
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "What people can pick when they send feedback from your apps and pages"
+msgstr "ଆପଣଙ୍କ ଆପ୍ ଓ ପୃଷ୍ଠାରୁ ମତାମତ ପଠାଇବା ସମୟରେ ଲୋକ କ'ଣ ବାଛିପାରିବେ"
 
 #: src/features/reports/ReportPages.tsx
 msgid "What people wrote"

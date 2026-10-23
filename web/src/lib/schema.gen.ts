@@ -4763,6 +4763,8 @@ export interface paths {
          *     `allow_email: true` members' replies are e-mailed to the contact through the inbox's
          *     e-mail channel. `client_id` makes the request idempotent: the same `client_id` for the
          *     same contact answers `200` with the first conversation.
+         *
+         *     `category` must be a key of the inbox's `feedback_categories` (`400` otherwise).
          */
         post: operations["createFeedback"];
         delete?: never;
@@ -8556,7 +8558,8 @@ export interface paths {
         /**
          * Send feedback
          * @description Starts a `feedback` conversation on the session's channel with its first message: a
-         *     category, the text and what the app knows about where it was sent from (app version,
+         *     category (one of the inbox's `feedback_categories`, `400` otherwise), the text and what the
+         *     app knows about where it was sent from (app version,
          *     build, OS, device, locale, screen, installation id). It is answered like any other
          *     conversation and listed with the contact's conversations (`kind: feedback`).
          *
@@ -10533,6 +10536,7 @@ export interface components {
              */
             expected_reply_minutes?: number;
             business_hours: components["schemas"]["BusinessHours"];
+            feedback_categories: components["schemas"]["InboxFeedbackCategoryList"];
             /**
              * @description Contacts may rate a closed conversation (`good` or `bad`, with an optional comment):
              *     the widget and the mobile SDKs offer it, and e-mail contacts get a request with two
@@ -10603,6 +10607,13 @@ export interface components {
              */
             expected_reply_minutes?: number | null;
             business_hours?: components["schemas"]["BusinessHours"];
+            /**
+             * @description Replaces the list. Feedback of a category that is no longer listed is moved to `other`
+             *     in the same request (its `feedback.category` changes; no per-conversation events are
+             *     sent, the `inbox.updated` event tells clients to reload). Owners, admins and keys with
+             *     `inboxes:manage`.
+             */
+            feedback_categories?: components["schemas"]["InboxFeedbackCategoryList"];
             ask_for_rating?: boolean;
             /** @description Owners, admins and keys with `inboxes:manage`. */
             sender?: components["schemas"]["InboxSenderUpdate"];
@@ -14040,8 +14051,46 @@ export interface components {
          * @enum {string}
          */
         ConversationKind: "conversation" | "feedback";
-        /** @enum {string} */
-        FeedbackCategory: "bug" | "idea" | "praise" | "other";
+        /**
+         * @description The key of one of the inbox's feedback categories (`InboxFeedbackCategory`). Every inbox
+         *     starts with `bug`, `idea`, `praise` and `other`; owners and admins change the list.
+         * @example bug
+         */
+        FeedbackCategory: string;
+        /**
+         * @description One feedback category of an inbox. `names` maps language tags to the name shown in that
+         *     language; a category with no name in the reader's language shows the one in the inbox's
+         *     `default_locale`, then `en`, then the first one.
+         */
+        InboxFeedbackCategory: {
+            key: components["schemas"]["FeedbackCategory"];
+            /**
+             * @example {
+             *       "en": "Bug",
+             *       "tr": "Hata"
+             *     }
+             */
+            names: {
+                [key: string]: string;
+            };
+            /**
+             * @description An icon name for the panel and the SDKs to draw (lowercase Lucide names such as `bug`,
+             *     `lightbulb`, `heart`, `message-circle`); a client that does not know it shows a generic
+             *     tag.
+             */
+            icon: string;
+        };
+        /**
+         * @description The inbox's categories in display order. 1 to 20 entries with unique keys, and `other`
+         *     always among them: it is where feedback of a removed category goes.
+         */
+        InboxFeedbackCategoryList: components["schemas"]["InboxFeedbackCategory"][];
+        /** @description An inbox feedback category with its name in the request's language. */
+        ClientFeedbackCategory: {
+            key: components["schemas"]["FeedbackCategory"];
+            name: string;
+            icon: string;
+        };
         /**
          * @description Where a feedback stands, set by members and shown to the contact: Planned, In progress,
          *     Done, Won't do. Separate from the status: a feedback can be `done` and still open.
@@ -14050,7 +14099,19 @@ export interface components {
         FeedbackProgress: "planned" | "in_progress" | "done" | "wont_do";
         /** @description What a `feedback` conversation was sent with. Absent fields were not sent. */
         Feedback: {
+            /**
+             * @description The inbox category key. On `/client/v1` it is the key when it is one of `bug`, `idea`,
+             *     `praise` and `other`, else `other`, so clients built before custom categories keep
+             *     decoding; read `category_key` there.
+             */
             category: components["schemas"]["FeedbackCategory"];
+            /** @description `/client/v1` only: the real category key, whatever it is. */
+            category_key?: components["schemas"]["FeedbackCategory"];
+            /**
+             * @description `/client/v1` only: the category's name in the request's language (`Accept-Language`,
+             *     else the inbox's `default_locale`); absent when the inbox no longer lists the key.
+             */
+            category_name?: string;
             /** @description Set by a member with `PATCH /v1/conversations/{id}`; absent when nobody set it. */
             progress?: components["schemas"]["FeedbackProgress"];
             /**
@@ -14099,7 +14160,7 @@ export interface components {
             installation_id?: string;
         };
         ClientFeedbackCreate: components["schemas"]["FeedbackFields"] & {
-            /** @description `other` when absent. */
+            /** @description `other` when absent. Must be a key of the inbox's feedback categories (`400` otherwise). */
             category?: components["schemas"]["FeedbackCategory"];
             /**
              * @description `chat` channels only: the documentation page the feedback is about, an absolute URL
@@ -16186,8 +16247,17 @@ export interface components {
             expected_reply_minutes?: number;
             presence?: components["schemas"]["ClientPresence"];
             chat: components["schemas"]["ClientChatSettings"];
-            /** @description The categories `POST /client/v1/feedback` accepts, in display order. */
+            /**
+             * @description Only the keys among `bug`, `idea`, `praise` and `other`, in display order, for clients
+             *     built before custom categories. New clients read `feedback_category_items`, which lists
+             *     every category `POST /client/v1/feedback` accepts (`400` for any other).
+             */
             feedback_categories: components["schemas"]["FeedbackCategory"][];
+            /**
+             * @description Every category of the inbox with its name in the request's language (`Accept-Language`, else
+             *     the inbox's `default_locale`) and icon. Render these instead of hard-coded names.
+             */
+            feedback_category_items: components["schemas"]["ClientFeedbackCategory"][];
             /**
              * @description The inbox asks contacts to rate closed conversations; offer it where `can_rate` is true
              *     on a conversation.
@@ -24074,8 +24144,8 @@ export interface operations {
                  */
                 site?: string;
                 /**
-                 * @description Only feedback of this category (implies `kind=feedback`; with a `kind` list that lacks
-                 *     `feedback`, `400`).
+                 * @description Only feedback of this category key (implies `kind=feedback`; with a `kind` list that lacks
+                 *     `feedback`, `400`). Any key of the pattern is accepted: a key no inbox lists matches nothing.
                  */
                 category?: components["schemas"]["FeedbackCategory"];
                 /**

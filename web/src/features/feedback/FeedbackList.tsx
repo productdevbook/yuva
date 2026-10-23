@@ -3,6 +3,7 @@ import { CheckIcon, MessageSquareHeartIcon, PaperclipIcon, SearchIcon, XIcon } f
 import { useEffect, useMemo, useRef, useState } from "react"
 
 import { ErrorLine, hostPath, Kbd, useContactName } from "@/components/common"
+import { categoryTone, useFeedbackCategories } from "@/components/common/feedbackCategories"
 import { useEnumText } from "@/components/common/text"
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "@/components/ui/input-group"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -23,8 +24,6 @@ import { useChannelMap } from "@/lib/workspace"
 type Tab = "open" | "resolved"
 type Category = FeedbackCategory | "all"
 
-const CATEGORIES: Category[] = ["all", "bug", "idea", "praise", "other"]
-
 let rememberedTab: Tab = "open"
 let rememberedCategory: Category = "all"
 let focused = 0
@@ -43,13 +42,6 @@ function useDebounced(value: string, ms: number) {
   return v
 }
 
-export const categoryTone: Record<FeedbackCategory, string> = {
-  bug: "border-destructive/35 text-destructive",
-  idea: "border-blue-600/35 text-blue-600 dark:border-blue-400/35 dark:text-blue-400",
-  praise: "border-success/35 text-success",
-  other: "border-faint/35 text-faint",
-}
-
 export const progressTone: Record<FeedbackProgress, string> = {
   planned: "border-blue-600/35 text-blue-600 dark:border-blue-400/35 dark:text-blue-400",
   in_progress: "border-warning/35 text-warning",
@@ -57,19 +49,27 @@ export const progressTone: Record<FeedbackProgress, string> = {
   wont_do: "border-faint/35 text-faint",
 }
 
-export function CategoryPill({ category, className }: { category: FeedbackCategory; className?: string }) {
-  const text = useEnumText()
+export function CategoryPill({
+  category,
+  inboxId,
+  className,
+}: {
+  category: FeedbackCategory
+  inboxId?: string
+  className?: string
+}) {
+  const { find } = useFeedbackCategories()
   return (
     <span
       className={cn(
-        "inline-flex w-[52px] shrink-0 justify-center rounded-full border py-px text-caption font-medium",
-        categoryTone[category],
+        "inline-flex min-w-[52px] max-w-32 shrink-0 justify-center rounded-full border px-1 py-px text-caption font-medium",
+        categoryTone(category).pill,
         className
       )}
       data-testid="category-chip"
       data-category={category}
     >
-      {text.category[category]}
+      <span className="truncate">{find(category, inboxId).name}</span>
     </span>
   )
 }
@@ -123,7 +123,7 @@ function Row({
       data-conversation-id={c.id}
       data-unread={c.unread || undefined}
     >
-      {f && <CategoryPill category={f.category} />}
+      {f && <CategoryPill category={f.category} inboxId={c.inbox_id} />}
       <span className="flex min-w-0 flex-1 flex-col gap-[3px]">
         <span className={cn("truncate", c.unread ? "font-semibold" : "font-medium")}>{f?.text || c.subject}</span>
         <span className="flex min-w-0 items-center gap-2 text-caption text-faint">
@@ -254,17 +254,20 @@ export function FeedbackList({
   }
 
   const fmt = new Intl.NumberFormat(i18n.locale)
-  const categoryLabels: Record<Category, string> = {
-    all: t`All`,
-    bug: t`Bug`,
-    idea: t`Idea`,
-    praise: t`Praise`,
-    other: t`Other`,
-  }
+  const known = useFeedbackCategories(inboxId || undefined).list
   const open = (k: Category) =>
     k === "all" ? (counts?.feedback ?? 0) : (counts?.feedback_categories.find((x) => x.category === k)?.count ?? 0)
   const showCount = !inboxId && tab === "open"
-  const shownCategories = CATEGORIES.filter((k) => k !== "other" || category === "other" || open("other") > 0)
+  const keys = [
+    ...known.map((c) => c.key),
+    ...(counts?.feedback_categories ?? []).map((x) => x.category).filter((k) => !known.some((c) => c.key === k)),
+  ]
+  const shownCategories: { key: Category; name: string; icon?: string }[] = [
+    { key: "all", name: t`All` },
+    ...keys
+      .filter((k) => k !== "other" || category === "other" || open("other") > 0)
+      .map((k) => known.find((c) => c.key === k) ?? { key: k, name: k, icon: "tag" }),
+  ]
 
   const searchBox = (
     <InputGroup className="h-8 min-w-0 flex-1 rounded-lg border-transparent bg-muted shadow-none focus-within:border-border focus-within:bg-card dark:bg-muted">
@@ -313,7 +316,7 @@ export function FeedbackList({
       aria-label={t`Category`}
       data-testid="feedback-categories"
     >
-      {shownCategories.map((k) => (
+      {shownCategories.map(({ key: k, name }) => (
         <button
           key={k}
           type="button"
@@ -327,7 +330,7 @@ export function FeedbackList({
           )}
           data-testid={`feedback-category-${k}`}
         >
-          {categoryLabels[k]}
+          {name}
           {showCount && <span className="tabular-nums opacity-60">{fmt.format(open(k))}</span>}
         </button>
       ))}

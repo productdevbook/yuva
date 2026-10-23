@@ -15,6 +15,11 @@ import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
 import { Toggle } from "@/components/ui/toggle"
 import { channelDomain, channelTabLink } from "@/features/settings/channels/ChannelState"
+import {
+  categoriesInvalid,
+  cleanCategories,
+  FeedbackCategoriesBlock,
+} from "@/features/settings/inboxes/FeedbackCategories"
 import { ColorPicker } from "@/features/settings/inboxes/colors"
 import { DeleteProduct, IdentitySecretRow } from "@/features/settings/inboxes/InboxSecurity"
 import { useInbox, useSaveInbox } from "@/features/settings/inboxes/queries"
@@ -25,6 +30,7 @@ import {
   unwrap,
   type BusinessHours,
   type Inbox,
+  type InboxFeedbackCategory,
   type InboxSender,
   type InboxUpdate,
   type Weekday,
@@ -67,6 +73,7 @@ type Draft = {
   zone: string
   slug: string
   sender: Record<SenderKey, string>
+  categories: InboxFeedbackCategory[]
 }
 
 function uniform(h: BusinessHours) {
@@ -103,6 +110,7 @@ function draftOf(inbox: Inbox): Draft {
       registration: sender.registration ?? "",
       contact: sender.contact ?? "",
     },
+    categories: inbox.feedback_categories,
   }
 }
 
@@ -111,6 +119,7 @@ function problems(d: Draft) {
     name: !d.name.trim(),
     slug: !SLUG.test(d.slug),
     zone: !timeZones().includes(d.zone),
+    categories: categoriesInvalid(d.categories, d.locale),
   }
 }
 
@@ -135,6 +144,9 @@ function changes(inbox: Inbox, d: Draft): InboxUpdate {
   for (const k of Object.keys(d.sender) as SenderKey[])
     if (d.sender[k].trim() !== base.sender[k]) sender[k] = d.sender[k].trim() || null
   if (Object.keys(sender).length) body.sender = sender
+  const categories = cleanCategories(d.categories)
+  if (JSON.stringify(categories) !== JSON.stringify(cleanCategories(base.categories)))
+    body.feedback_categories = categories
   return body
 }
 
@@ -297,6 +309,14 @@ function ChatTab({ d, set, inbox, locked }: Form) {
             />
           </BlockRow>
         </Block>
+        <FeedbackCategoriesBlock
+          list={d.categories}
+          saved={inbox.feedback_categories}
+          locale={d.locale}
+          langs={LANGS}
+          locked={locked}
+          onChange={(categories) => set({ categories })}
+        />
       </div>
       <div className="flex flex-col gap-2 lg:sticky lg:top-28">
         <div className="mx-1 flex flex-col">
@@ -721,7 +741,7 @@ function Editor({ inbox }: { inbox: Inbox }) {
   const body = changes(inbox, d)
   const dirty = Object.keys(body).length > 0
   const bad = problems(d)
-  const invalid = bad.name || bad.slug || bad.zone
+  const invalid = bad.name || bad.slug || bad.zone || bad.categories
   const form: Form = { d, set: (p) => setD((x) => ({ ...x, ...p })), inbox, locked: !canManage }
   const domain = channelDomain(channels.data)
   const tabs = [

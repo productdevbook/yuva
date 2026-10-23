@@ -1,18 +1,8 @@
 import { Trans, useLingui } from "@lingui/react/macro"
-import {
-  BugIcon,
-  CheckIcon,
-  CircleCheckIcon,
-  CircleDashedIcon,
-  CircleDotIcon,
-  CircleSlashIcon,
-  CopyIcon,
-  HeartIcon,
-  LightbulbIcon,
-  MessageSquareMoreIcon,
-} from "lucide-react"
+import { CheckIcon, CircleCheckIcon, CircleDashedIcon, CircleDotIcon, CircleSlashIcon, CopyIcon } from "lucide-react"
 
 import { Segmented, useCopy } from "@/components/common"
+import { CategoryIcon, categoryTone, useFeedbackCategories } from "@/components/common/feedbackCategories"
 import { SHORTCUTS } from "@/components/common/ShortcutSheet"
 import { useEnumText } from "@/components/common/text"
 import { Button } from "@/components/ui/button"
@@ -20,31 +10,25 @@ import { useHotkeys } from "@/hooks/use-hotkeys"
 import type { ConversationUpdate, Feedback, FeedbackCategory, FeedbackProgress } from "@/lib/api"
 import { cn } from "@/lib/utils"
 
-const categoryIcons: Record<FeedbackCategory, React.ComponentType<{ className?: string }>> = {
-  bug: BugIcon,
-  idea: LightbulbIcon,
-  praise: HeartIcon,
-  other: MessageSquareMoreIcon,
-}
-
-const categoryClass: Record<FeedbackCategory, string> = {
-  bug: "text-destructive",
-  idea: "text-warning",
-  praise: "text-brand",
-  other: "text-faint",
-}
-
-export function CategoryChip({ category, className }: { category: FeedbackCategory; className?: string }) {
-  const text = useEnumText()
-  const Icon = categoryIcons[category]
+export function CategoryChip({
+  category,
+  inboxId,
+  className,
+}: {
+  category: FeedbackCategory
+  inboxId?: string
+  className?: string
+}) {
+  const { find } = useFeedbackCategories()
+  const option = find(category, inboxId)
   return (
     <span
       className={cn("inline-flex shrink-0 items-center gap-1 text-caption text-muted-foreground", className)}
       data-testid="category-chip"
       data-category={category}
     >
-      <Icon className={cn("size-3.5", categoryClass[category])} />
-      {text.category[category]}
+      <CategoryIcon name={option.icon} className={categoryTone(category).icon} />
+      {option.name}
     </span>
   )
 }
@@ -129,13 +113,13 @@ export function useFeedbackRows(f: Feedback): [string, string, boolean?][] {
   return rows
 }
 
-export function FeedbackDetails({ feedback }: { feedback: Feedback }) {
+export function FeedbackDetails({ feedback, inboxId }: { feedback: Feedback; inboxId?: string }) {
   const { t } = useLingui()
-  const text = useEnumText()
+  const { find } = useFeedbackCategories()
   const rows = useFeedbackRows(feedback)
   const [copied, copy] = useCopy()
   const copyAll = () =>
-    copy([`${t`Category`}: ${text.category[feedback.category]}`, ...rows.map(([k, v]) => `${k}: ${v}`)].join("\n"))
+    copy([`${t`Category`}: ${find(feedback.category, inboxId).name}`, ...rows.map(([k, v]) => `${k}: ${v}`)].join("\n"))
   useHotkeys({ [SHORTCUTS.copyDetails]: () => void copyAll() })
   return (
     <div className="flex items-start gap-2 rounded-xl px-2.5 py-1.5" data-testid="feedback-details">

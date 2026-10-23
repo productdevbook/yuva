@@ -1437,6 +1437,10 @@ msgstr "إضافة"
 msgid "Add a block"
 msgstr "إضافة كتلة"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Add a category"
+msgstr "إضافة فئة"
+
 #: src/features/settings/channels/AddChannelDialog.tsx
 msgid "Add a channel"
 msgstr "إضافة قناة"
@@ -1452,6 +1456,10 @@ msgstr "إضافة شرط"
 #: src/features/status/MonitorToken.tsx
 msgid "Add a contact point of type Webhook, paste the address above, keep the method POST and use the contact point in a notification policy. Firing alerts fail the monitor, resolved ones recover it."
 msgstr "أضف نقطة اتصال من نوع Webhook، والصق العنوان أعلاه، وأبقِ الطريقة POST، واستخدم نقطة الاتصال في سياسة إشعارات. التنبيهات المُفعّلة تُسقط المراقب، والمحلولة تعيده."
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Add a language"
+msgstr "إضافة لغة"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Add a link"
@@ -2867,11 +2875,6 @@ msgstr "تخرج الرسائل الجماعية من هذه القناة عبر
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Browser"
 msgstr "المتصفح"
-
-#: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Bug"
-msgstr "خطأ برمجي"
 
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -5486,9 +5489,17 @@ msgstr "ملاحظات"
 msgid "Feedback"
 msgstr "الملاحظات"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Feedback already sent as {name} moves to Other when you save."
+msgstr "الملاحظات المرسلة سابقًا ضمن {name} تنتقل إلى «أخرى» عند الحفظ."
+
 #: src/components/common/text.ts
 msgid "Feedback arrived"
 msgstr "وصلت ملاحظات"
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Feedback categories"
+msgstr "فئات الملاحظات"
 
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Feedback details"
@@ -6386,10 +6397,9 @@ msgstr "سأرد"
 msgid "I'm back"
 msgstr "عدت"
 
-#: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Idea"
-msgstr "فكرة"
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Icon"
+msgstr "أيقونة"
 
 #: src/components/common/text.ts
 msgid "Ideas"
@@ -8056,6 +8066,7 @@ msgstr "الأكثر تقييمًا ثم الملاحظات المفتوحة ث�
 msgid "Most votes"
 msgstr "الأكثر تصويتًا"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move down"
 msgstr "نقل لأسفل"
@@ -8137,6 +8148,7 @@ msgstr "النقل إلى المرحلة السابقة أو التالية"
 msgid "Move to Yuva"
 msgstr "الانتقال إلى Yuva"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move up"
 msgstr "نقل لأعلى"
@@ -10204,11 +10216,6 @@ msgstr "الترتيب والعرض"
 msgid "Original"
 msgstr "الأصلي"
 
-#: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Other"
-msgstr "أخرى"
-
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 msgid "Other conversations"
@@ -10221,6 +10228,10 @@ msgstr "خادم IMAP آخر"
 #: src/features/settings/connected-apps/assistants.ts
 msgid "Other MCP client"
 msgstr "عميل MCP آخر"
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Other stays: removed categories move here"
+msgstr "تبقى «أخرى»: تنتقل إليها الفئات المحذوفة"
 
 #: src/features/status/MonitorsPage.tsx
 msgid "Our monitor {monitor} has seen a problem since {at}. We are looking into it."
@@ -10861,11 +10872,6 @@ msgid "Posted by you and marked as the accepted answer."
 msgstr "نشرتها أنت ومميّزة كإجابة مقبولة."
 
 #: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Praise"
-msgstr "إشادة"
-
-#: src/components/common/text.ts
 msgid "Preference page"
 msgstr "صفحة التفضيلات"
 
@@ -11471,6 +11477,7 @@ msgstr "يمكن للصور البعيدة إخبار المرسِل بأنك ف
 
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/Passkeys.tsx
@@ -11502,6 +11509,7 @@ msgstr "إزالة {lang}"
 msgid "Remove {name}"
 msgstr "إزالة {name}"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Remove {name}?"
 msgstr "إزالة {name}؟"
@@ -16306,6 +16314,10 @@ msgstr "لماذا هذا المفتاح؟"
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "What may it do?"
 msgstr "ماذا يستطيع أن يفعل؟"
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "What people can pick when they send feedback from your apps and pages"
+msgstr "ما يمكن للناس اختياره عند إرسال ملاحظات من تطبيقاتك وصفحاتك"
 
 #: src/features/reports/ReportPages.tsx
 msgid "What people wrote"

@@ -37,7 +37,7 @@ function FeedbackRow({ c, action }: { c: LinkedConversation; action: React.React
       data-testid="linked-conversation"
       data-conversation-id={c.id}
     >
-      {f && <CategoryPill category={f.category} />}
+      {f && <CategoryPill category={f.category} inboxId={c.inbox_id} />}
       <span className="flex min-w-0 flex-1 basis-40 flex-col leading-[1.3]">
         <span className="truncate font-medium" dir="auto">
           {line}

@@ -1437,6 +1437,10 @@ msgstr "הוספה"
 msgid "Add a block"
 msgstr "הוספת בלוק"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Add a category"
+msgstr "הוספת קטגוריה"
+
 #: src/features/settings/channels/AddChannelDialog.tsx
 msgid "Add a channel"
 msgstr "הוספת ערוץ"
@@ -1452,6 +1456,10 @@ msgstr "הוספת תנאי"
 #: src/features/status/MonitorToken.tsx
 msgid "Add a contact point of type Webhook, paste the address above, keep the method POST and use the contact point in a notification policy. Firing alerts fail the monitor, resolved ones recover it."
 msgstr "הוסיפו נקודת קשר מסוג Webhook, הדביקו את הכתובת שלמעלה, השאירו את השיטה POST והשתמשו בנקודת הקשר במדיניות התראות. התראות שהופעלו מפילות את המוניטור, ואלה שנפתרו משחזרות אותו."
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Add a language"
+msgstr "הוספת שפה"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Add a link"
@@ -2867,11 +2875,6 @@ msgstr "שליחות המוניות מהערוץ הזה יוצאות דרך חש
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Browser"
 msgstr "דפדפן"
-
-#: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Bug"
-msgstr "באג"
 
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -5486,9 +5489,17 @@ msgstr "משוב"
 msgid "Feedback"
 msgstr "משוב"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Feedback already sent as {name} moves to Other when you save."
+msgstr "משוב שנשלח כ-{name} יועבר ל״אחר״ בעת השמירה."
+
 #: src/components/common/text.ts
 msgid "Feedback arrived"
 msgstr "משוב הגיע"
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Feedback categories"
+msgstr "קטגוריות משוב"
 
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Feedback details"
@@ -6386,10 +6397,9 @@ msgstr "אני אענה"
 msgid "I'm back"
 msgstr "חזרתי"
 
-#: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Idea"
-msgstr "רעיון"
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Icon"
+msgstr "סמל"
 
 #: src/components/common/text.ts
 msgid "Ideas"
@@ -8056,6 +8066,7 @@ msgstr "הכי הרבה דירוגים, משוב פתוח, דיונים פתוח
 msgid "Most votes"
 msgstr "הכי הרבה הצבעות"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move down"
 msgstr "הזזה למטה"
@@ -8137,6 +8148,7 @@ msgstr "העברה לשלב הקודם או הבא"
 msgid "Move to Yuva"
 msgstr "מעבר ל-Yuva"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move up"
 msgstr "הזזה למעלה"
@@ -10204,11 +10216,6 @@ msgstr "סדר ותצוגה"
 msgid "Original"
 msgstr "מקורי"
 
-#: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Other"
-msgstr "אחר"
-
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 msgid "Other conversations"
@@ -10221,6 +10228,10 @@ msgstr "שרת IMAP אחר"
 #: src/features/settings/connected-apps/assistants.ts
 msgid "Other MCP client"
 msgstr "לקוח MCP אחר"
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Other stays: removed categories move here"
+msgstr "״אחר״ נשארת: קטגוריות שהוסרו עוברות אליה"
 
 #: src/features/status/MonitorsPage.tsx
 msgid "Our monitor {monitor} has seen a problem since {at}. We are looking into it."
@@ -10861,11 +10872,6 @@ msgid "Posted by you and marked as the accepted answer."
 msgstr "פורסם על ידך וסומן כתשובה מאושרת."
 
 #: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Praise"
-msgstr "שבח"
-
-#: src/components/common/text.ts
 msgid "Preference page"
 msgstr "דף העדפות"
 
@@ -11471,6 +11477,7 @@ msgstr "תמונות מרוחקות יכולות לומר לשולח שפתחת 
 
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/Passkeys.tsx
@@ -11502,6 +11509,7 @@ msgstr "הסרת {lang}"
 msgid "Remove {name}"
 msgstr "הסרת {name}"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Remove {name}?"
 msgstr "להסיר את {name}?"
@@ -16306,6 +16314,10 @@ msgstr "בשביל מה המפתח הזה?"
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "What may it do?"
 msgstr "מה מותר לו לעשות?"
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "What people can pick when they send feedback from your apps and pages"
+msgstr "מה אנשים יכולים לבחור כששולחים משוב מהאפליקציות והדפים שלכם"
 
 #: src/features/reports/ReportPages.tsx
 msgid "What people wrote"

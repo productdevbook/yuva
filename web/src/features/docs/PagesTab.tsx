@@ -222,7 +222,9 @@ function ConversationRow({ c }: { c: ConversationListItem }) {
           <span className="flex items-center gap-2 text-small">
             <span className="min-w-0 flex-1 truncate text-muted-foreground">{c.last_message?.text || c.subject}</span>
             {c.feedback?.rating && <PageRatingMark rating={c.feedback.rating} />}
-            {c.feedback?.category && c.feedback.category !== "other" && <CategoryChip category={c.feedback.category} />}
+            {c.feedback?.category && c.feedback.category !== "other" && (
+              <CategoryChip category={c.feedback.category} inboxId={c.inbox_id} />
+            )}
             <span className={cn("shrink-0 text-caption", c.status === "open" ? "text-brand" : "text-faint")}>
               {text.statusOf(c.status, c.kind)}
             </span>

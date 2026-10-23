@@ -1437,6 +1437,10 @@ msgstr "Pridať"
 msgid "Add a block"
 msgstr "Pridať blok"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Add a category"
+msgstr "Pridať kategóriu"
+
 #: src/features/settings/channels/AddChannelDialog.tsx
 msgid "Add a channel"
 msgstr "Pridať kanál"
@@ -1452,6 +1456,10 @@ msgstr "Pridať podmienku"
 #: src/features/status/MonitorToken.tsx
 msgid "Add a contact point of type Webhook, paste the address above, keep the method POST and use the contact point in a notification policy. Firing alerts fail the monitor, resolved ones recover it."
 msgstr "Pridajte kontaktný bod typu Webhook, vložte vyššie uvedenú adresu, ponechajte metódu POST a použite kontaktný bod v oznamovacích pravidlách. Spustené upozornenia monitor vyradia, vyriešené ho obnovia."
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Add a language"
+msgstr "Pridať jazyk"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Add a link"
@@ -2867,11 +2875,6 @@ msgstr "Hromadné správy z tohto kanála odchádzajú cez jeho účet SMTP pre 
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Browser"
 msgstr "Prehliadač"
-
-#: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Bug"
-msgstr "Chyba"
 
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -5486,9 +5489,17 @@ msgstr "spätná väzba"
 msgid "Feedback"
 msgstr "Spätná väzba"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Feedback already sent as {name} moves to Other when you save."
+msgstr "Spätná väzba odoslaná ako {name} sa po uložení presunie do Ostatné."
+
 #: src/components/common/text.ts
 msgid "Feedback arrived"
 msgstr "Dorazila spätná väzba"
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Feedback categories"
+msgstr "Kategórie spätnej väzby"
 
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Feedback details"
@@ -6386,10 +6397,9 @@ msgstr "Odpoviem"
 msgid "I'm back"
 msgstr "Som späť"
 
-#: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Idea"
-msgstr "Nápad"
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Icon"
+msgstr "Ikona"
 
 #: src/components/common/text.ts
 msgid "Ideas"
@@ -8056,6 +8066,7 @@ msgstr "Najprv najviac hodnotení, otvorená spätná väzba, otvorené diskusie
 msgid "Most votes"
 msgstr "Najviac hlasov"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move down"
 msgstr "Posunúť nadol"
@@ -8137,6 +8148,7 @@ msgstr "Presunúť do predchádzajúcej alebo ďalšej fázy"
 msgid "Move to Yuva"
 msgstr "Prejsť na Yuvu"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move up"
 msgstr "Posunúť nahor"
@@ -10204,11 +10216,6 @@ msgstr "Poradie a zobrazenie"
 msgid "Original"
 msgstr "Originál"
 
-#: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Other"
-msgstr "Iné"
-
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 msgid "Other conversations"
@@ -10221,6 +10228,10 @@ msgstr "Iný server IMAP"
 #: src/features/settings/connected-apps/assistants.ts
 msgid "Other MCP client"
 msgstr "Iný klient MCP"
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Other stays: removed categories move here"
+msgstr "Ostatné zostáva: odstránené kategórie sa presunú sem"
 
 #: src/features/status/MonitorsPage.tsx
 msgid "Our monitor {monitor} has seen a problem since {at}. We are looking into it."
@@ -10861,11 +10872,6 @@ msgid "Posted by you and marked as the accepted answer."
 msgstr "Odoslané vami a označené ako prijatá odpoveď."
 
 #: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Praise"
-msgstr "Pochvala"
-
-#: src/components/common/text.ts
 msgid "Preference page"
 msgstr "Stránka predvolieb"
 
@@ -11471,6 +11477,7 @@ msgstr "Vzdialené obrázky môžu odosielateľovi prezradiť, že ste správu o
 
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/Passkeys.tsx
@@ -11502,6 +11509,7 @@ msgstr "Odstrániť {lang}"
 msgid "Remove {name}"
 msgstr "Odstrániť {name}"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Remove {name}?"
 msgstr "Odstrániť používateľa {name}?"
@@ -16306,6 +16314,10 @@ msgstr "Na čo tento kľúč je?"
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "What may it do?"
 msgstr "Čo smie robiť?"
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "What people can pick when they send feedback from your apps and pages"
+msgstr "Čo môžu ľudia vybrať, keď posielajú spätnú väzbu z vašich aplikácií a stránok"
 
 #: src/features/reports/ReportPages.tsx
 msgid "What people wrote"

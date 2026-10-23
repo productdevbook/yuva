@@ -1437,6 +1437,10 @@ msgstr "Hozzáadás"
 msgid "Add a block"
 msgstr "Blokk hozzáadása"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Add a category"
+msgstr "Kategória hozzáadása"
+
 #: src/features/settings/channels/AddChannelDialog.tsx
 msgid "Add a channel"
 msgstr "Csatorna hozzáadása"
@@ -1452,6 +1456,10 @@ msgstr "Feltétel hozzáadása"
 #: src/features/status/MonitorToken.tsx
 msgid "Add a contact point of type Webhook, paste the address above, keep the method POST and use the contact point in a notification policy. Firing alerts fail the monitor, resolved ones recover it."
 msgstr "Adjon hozzá egy Webhook típusú kapcsolattartási pontot, illessze be a fenti címet, hagyja a POST módszert, és használja a kapcsolattartási pontot egy értesítési szabályban. A kiváltott riasztások leállítják a figyelőt, a megoldottak helyreállítják."
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Add a language"
+msgstr "Nyelv hozzáadása"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Add a link"
@@ -2867,11 +2875,6 @@ msgstr "Ennek a csatornának a tömeges levelei az SMTP-fiókján mennek ki a v�
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Browser"
 msgstr "Böngésző"
-
-#: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Bug"
-msgstr "Hiba"
 
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -5486,9 +5489,17 @@ msgstr "visszajelzés"
 msgid "Feedback"
 msgstr "Visszajelzések"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Feedback already sent as {name} moves to Other when you save."
+msgstr "A már {name} kategóriában elküldött visszajelzések mentéskor az Egyéb kategóriába kerülnek."
+
 #: src/components/common/text.ts
 msgid "Feedback arrived"
 msgstr "Visszajelzés érkezett"
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Feedback categories"
+msgstr "Visszajelzés-kategóriák"
 
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Feedback details"
@@ -6386,10 +6397,9 @@ msgstr "Válaszolok"
 msgid "I'm back"
 msgstr "Visszatértem"
 
-#: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Idea"
-msgstr "Ötlet"
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Icon"
+msgstr "Ikon"
 
 #: src/components/common/text.ts
 msgid "Ideas"
@@ -8056,6 +8066,7 @@ msgstr "Először a legtöbb értékelés, nyitott visszajelzés, nyitott vita �
 msgid "Most votes"
 msgstr "Legtöbb szavazat"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move down"
 msgstr "Mozgatás lefelé"
@@ -8137,6 +8148,7 @@ msgstr "Áthelyezés az előző vagy a következő szakaszba"
 msgid "Move to Yuva"
 msgstr "Költözés a Yuvába"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move up"
 msgstr "Mozgatás felfelé"
@@ -10204,11 +10216,6 @@ msgstr "Sorrend és nézet"
 msgid "Original"
 msgstr "Eredeti"
 
-#: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Other"
-msgstr "Egyéb"
-
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 msgid "Other conversations"
@@ -10221,6 +10228,10 @@ msgstr "Másik IMAP-szerver"
 #: src/features/settings/connected-apps/assistants.ts
 msgid "Other MCP client"
 msgstr "Másik MCP-kliens"
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Other stays: removed categories move here"
+msgstr "Az Egyéb marad: az eltávolított kategóriák ide kerülnek"
 
 #: src/features/status/MonitorsPage.tsx
 msgid "Our monitor {monitor} has seen a problem since {at}. We are looking into it."
@@ -10861,11 +10872,6 @@ msgid "Posted by you and marked as the accepted answer."
 msgstr "Te tetted közzé, és elfogadott válaszként jelölted meg."
 
 #: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Praise"
-msgstr "Dicséret"
-
-#: src/components/common/text.ts
 msgid "Preference page"
 msgstr "Beállítások oldal"
 
@@ -11471,6 +11477,7 @@ msgstr "A távoli képek elárulhatják a feladónak, hogy megnyitottad a levele
 
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/Passkeys.tsx
@@ -11502,6 +11509,7 @@ msgstr "{lang} eltávolítása"
 msgid "Remove {name}"
 msgstr "{name} eltávolítása"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Remove {name}?"
 msgstr "Eltávolítod: {name}?"
@@ -16306,6 +16314,10 @@ msgstr "Mire való ez a kulcs?"
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "What may it do?"
 msgstr "Mit tehet?"
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "What people can pick when they send feedback from your apps and pages"
+msgstr "Mit választhatnak az emberek, amikor visszajelzést küldenek az alkalmazásaidból és oldalaidról"
 
 #: src/features/reports/ReportPages.tsx
 msgid "What people wrote"

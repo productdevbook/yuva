@@ -1437,6 +1437,10 @@ msgstr "జోడించండి"
 msgid "Add a block"
 msgstr "బ్లాక్‌ను జోడించండి"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Add a category"
+msgstr "వర్గాన్ని జోడించండి"
+
 #: src/features/settings/channels/AddChannelDialog.tsx
 msgid "Add a channel"
 msgstr "ఛానెల్‌ను జోడించండి"
@@ -1452,6 +1456,10 @@ msgstr "షరతును జోడించండి"
 #: src/features/status/MonitorToken.tsx
 msgid "Add a contact point of type Webhook, paste the address above, keep the method POST and use the contact point in a notification policy. Firing alerts fail the monitor, resolved ones recover it."
 msgstr "Webhook రకం సంప్రదింపు బిందువును జోడించండి, పై చిరునామాను అతికించండి, పద్ధతిని POST గా ఉంచండి, నోటిఫికేషన్ విధానంలో ఆ సంప్రదింపు బిందువును ఉపయోగించండి. క్రియాశీల హెచ్చరికలు మానిటర్‌ను విఫలం చేస్తాయి, పరిష్కరించినవి దానిని పునరుద్ధరిస్తాయి."
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Add a language"
+msgstr "భాషను జోడించండి"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Add a link"
@@ -2867,11 +2875,6 @@ msgstr "ఈ ఛానెల్ బ్రాడ్‌కాస్ట్‌లు 
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Browser"
 msgstr "బ్రౌజర్"
-
-#: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Bug"
-msgstr "బగ్"
 
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -5486,9 +5489,17 @@ msgstr "అభిప్రాయం"
 msgid "Feedback"
 msgstr "అభిప్రాయం"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Feedback already sent as {name} moves to Other when you save."
+msgstr "{name} గా ఇప్పటికే పంపిన అభిప్రాయం సేవ్ చేసినప్పుడు «ఇతర»కు మారుతుంది."
+
 #: src/components/common/text.ts
 msgid "Feedback arrived"
 msgstr "అభిప్రాయం వచ్చింది"
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Feedback categories"
+msgstr "అభిప్రాయ వర్గాలు"
 
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Feedback details"
@@ -6386,10 +6397,9 @@ msgstr "నేను జవాబు ఇస్తాను"
 msgid "I'm back"
 msgstr "నేను తిరిగి వచ్చాను"
 
-#: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Idea"
-msgstr "ఆలోచన"
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Icon"
+msgstr "చిహ్నం"
 
 #: src/components/common/text.ts
 msgid "Ideas"
@@ -8056,6 +8066,7 @@ msgstr "అత్యధిక రేటింగ్‌లు, తెరిచి
 msgid "Most votes"
 msgstr "అత్యధిక ఓట్లు"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move down"
 msgstr "కిందికి జరపండి"
@@ -8137,6 +8148,7 @@ msgstr "మునుపటి లేదా తదుపరి దశకు త�
 msgid "Move to Yuva"
 msgstr "Yuva కు తరలించండి"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move up"
 msgstr "పైకి జరపండి"
@@ -10204,11 +10216,6 @@ msgstr "క్రమం మరియు వీక్షణ"
 msgid "Original"
 msgstr "అసలు"
 
-#: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Other"
-msgstr "ఇతర"
-
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 msgid "Other conversations"
@@ -10221,6 +10228,10 @@ msgstr "ఇతర IMAP సర్వర్"
 #: src/features/settings/connected-apps/assistants.ts
 msgid "Other MCP client"
 msgstr "ఇతర MCP క్లయింట్"
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Other stays: removed categories move here"
+msgstr "«ఇతర» ఉంటుంది: తొలగించిన వర్గాలు ఇక్కడికి వస్తాయి"
 
 #: src/features/status/MonitorsPage.tsx
 msgid "Our monitor {monitor} has seen a problem since {at}. We are looking into it."
@@ -10861,11 +10872,6 @@ msgid "Posted by you and marked as the accepted answer."
 msgstr "మీరు పోస్ట్ చేసి ఆమోదించిన జవాబుగా గుర్తించారు."
 
 #: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Praise"
-msgstr "ప్రశంస"
-
-#: src/components/common/text.ts
 msgid "Preference page"
 msgstr "ప్రాధాన్యత పేజీ"
 
@@ -11471,6 +11477,7 @@ msgstr "రిమోట్ చిత్రాలు మీరు మెయిల
 
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/Passkeys.tsx
@@ -11502,6 +11509,7 @@ msgstr "{lang} ను తొలగించండి"
 msgid "Remove {name}"
 msgstr "{name} ను తొలగించండి"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Remove {name}?"
 msgstr "{name} ను తొలగించాలా?"
@@ -16306,6 +16314,10 @@ msgstr "ఈ కీ దేనికి?"
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "What may it do?"
 msgstr "అది ఏమి చేయవచ్చు?"
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "What people can pick when they send feedback from your apps and pages"
+msgstr "మీ యాప్‌లు మరియు పేజీల నుండి అభిప్రాయం పంపేటప్పుడు ప్రజలు ఎంచుకోగలవి"
 
 #: src/features/reports/ReportPages.tsx
 msgid "What people wrote"

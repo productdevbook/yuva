@@ -1437,6 +1437,10 @@ msgstr "Aggiungi"
 msgid "Add a block"
 msgstr "Aggiungi un blocco"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Add a category"
+msgstr "Aggiungi una categoria"
+
 #: src/features/settings/channels/AddChannelDialog.tsx
 msgid "Add a channel"
 msgstr "Aggiungi canale"
@@ -1452,6 +1456,10 @@ msgstr "Aggiungi una condizione"
 #: src/features/status/MonitorToken.tsx
 msgid "Add a contact point of type Webhook, paste the address above, keep the method POST and use the contact point in a notification policy. Firing alerts fail the monitor, resolved ones recover it."
 msgstr "Aggiungi un punto di contatto di tipo Webhook, incolla l'indirizzo qui sopra, lascia il metodo POST e usa il punto di contatto in una policy di notifica. Gli avvisi attivi fanno cadere il monitor, quelli risolti lo ripristinano."
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Add a language"
+msgstr "Aggiungi una lingua"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Add a link"
@@ -2867,11 +2875,6 @@ msgstr "Gli invii di questo canale partono dal suo account SMTP per le risposte,
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Browser"
 msgstr "Browser"
-
-#: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Bug"
-msgstr "Bug"
 
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -5486,9 +5489,17 @@ msgstr "feedback"
 msgid "Feedback"
 msgstr "Feedback"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Feedback already sent as {name} moves to Other when you save."
+msgstr "I feedback già inviati come {name} passano a Altro al salvataggio."
+
 #: src/components/common/text.ts
 msgid "Feedback arrived"
 msgstr "È arrivato un feedback"
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Feedback categories"
+msgstr "Categorie di feedback"
 
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Feedback details"
@@ -6386,10 +6397,9 @@ msgstr "Rispondo io"
 msgid "I'm back"
 msgstr "Sono tornato"
 
-#: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Idea"
-msgstr "Idea"
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Icon"
+msgstr "Icona"
 
 #: src/components/common/text.ts
 msgid "Ideas"
@@ -8056,6 +8066,7 @@ msgstr "Prima più valutazioni, feedback aperti, discussioni aperte e post in at
 msgid "Most votes"
 msgstr "Più voti"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move down"
 msgstr "Sposta giù"
@@ -8137,6 +8148,7 @@ msgstr "Sposta alla fase precedente o successiva"
 msgid "Move to Yuva"
 msgstr "Passa a Yuva"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move up"
 msgstr "Sposta su"
@@ -10204,11 +10216,6 @@ msgstr "Ordine e vista"
 msgid "Original"
 msgstr "Originale"
 
-#: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Other"
-msgstr "Altro"
-
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 msgid "Other conversations"
@@ -10221,6 +10228,10 @@ msgstr "Altro server IMAP"
 #: src/features/settings/connected-apps/assistants.ts
 msgid "Other MCP client"
 msgstr "Altro client MCP"
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Other stays: removed categories move here"
+msgstr "Altro resta: le categorie rimosse passano qui"
 
 #: src/features/status/MonitorsPage.tsx
 msgid "Our monitor {monitor} has seen a problem since {at}. We are looking into it."
@@ -10861,11 +10872,6 @@ msgid "Posted by you and marked as the accepted answer."
 msgstr "Pubblicata da te e segnata come risposta accettata."
 
 #: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Praise"
-msgstr "Elogio"
-
-#: src/components/common/text.ts
 msgid "Preference page"
 msgstr "Pagina delle preferenze"
 
@@ -11471,6 +11477,7 @@ msgstr "Le immagini remote possono dire al mittente che hai aperto l’e-mail."
 
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/Passkeys.tsx
@@ -11502,6 +11509,7 @@ msgstr "Rimuovi {lang}"
 msgid "Remove {name}"
 msgstr "Rimuovi {name}"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Remove {name}?"
 msgstr "Rimuovere {name}?"
@@ -16306,6 +16314,10 @@ msgstr "A cosa serve questa chiave?"
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "What may it do?"
 msgstr "Cosa può fare?"
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "What people can pick when they send feedback from your apps and pages"
+msgstr "Cosa possono scegliere le persone quando inviano un feedback dalle tue app e pagine"
 
 #: src/features/reports/ReportPages.tsx
 msgid "What people wrote"

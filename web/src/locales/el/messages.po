@@ -1437,6 +1437,10 @@ msgstr "Προσθήκη"
 msgid "Add a block"
 msgstr "Προσθήκη μπλοκ"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Add a category"
+msgstr "Προσθήκη κατηγορίας"
+
 #: src/features/settings/channels/AddChannelDialog.tsx
 msgid "Add a channel"
 msgstr "Προσθήκη καναλιού"
@@ -1452,6 +1456,10 @@ msgstr "Προσθήκη συνθήκης"
 #: src/features/status/MonitorToken.tsx
 msgid "Add a contact point of type Webhook, paste the address above, keep the method POST and use the contact point in a notification policy. Firing alerts fail the monitor, resolved ones recover it."
 msgstr "Προσθέστε ένα σημείο επαφής τύπου Webhook, επικολλήστε την παραπάνω διεύθυνση, κρατήστε τη μέθοδο POST και χρησιμοποιήστε το σημείο επαφής σε μια πολιτική ειδοποιήσεων. Οι ενεργοποιημένες ειδοποιήσεις ρίχνουν την παρακολούθηση, οι επιλυμένες την αποκαθιστούν."
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Add a language"
+msgstr "Προσθήκη γλώσσας"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Add a link"
@@ -2867,11 +2875,6 @@ msgstr "Οι μαζικές αποστολές από αυτό το κανάλι
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Browser"
 msgstr "Πρόγραμμα περιήγησης"
-
-#: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Bug"
-msgstr "Σφάλμα"
 
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -5486,9 +5489,17 @@ msgstr "σχόλια"
 msgid "Feedback"
 msgstr "Σχόλια"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Feedback already sent as {name} moves to Other when you save."
+msgstr "Τα σχόλια που έχουν σταλεί ως {name} μετακινούνται στο Άλλο όταν αποθηκεύσετε."
+
 #: src/components/common/text.ts
 msgid "Feedback arrived"
 msgstr "Έφτασε σχόλιο"
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Feedback categories"
+msgstr "Κατηγορίες σχολίων"
 
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Feedback details"
@@ -6386,10 +6397,9 @@ msgstr "Θα απαντήσω εγώ"
 msgid "I'm back"
 msgstr "Επέστρεψα"
 
-#: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Idea"
-msgstr "Ιδέα"
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Icon"
+msgstr "Εικονίδιο"
 
 #: src/components/common/text.ts
 msgid "Ideas"
@@ -8056,6 +8066,7 @@ msgstr "Πρώτα οι περισσότερες βαθμολογίες, ανο�
 msgid "Most votes"
 msgstr "Περισσότερες ψήφοι"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move down"
 msgstr "Μετακίνηση κάτω"
@@ -8137,6 +8148,7 @@ msgstr "Μετακίνηση στο προηγούμενο ή στο επόμε�
 msgid "Move to Yuva"
 msgstr "Μετακίνηση στο Yuva"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move up"
 msgstr "Μετακίνηση πάνω"
@@ -10204,11 +10216,6 @@ msgstr "Σειρά και προβολή"
 msgid "Original"
 msgstr "Πρωτότυπο"
 
-#: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Other"
-msgstr "Άλλο"
-
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 msgid "Other conversations"
@@ -10221,6 +10228,10 @@ msgstr "Άλλος διακομιστής IMAP"
 #: src/features/settings/connected-apps/assistants.ts
 msgid "Other MCP client"
 msgstr "Άλλος πελάτης MCP"
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Other stays: removed categories move here"
+msgstr "Το Άλλο παραμένει: οι κατηγορίες που αφαιρούνται μετακινούνται εδώ"
 
 #: src/features/status/MonitorsPage.tsx
 msgid "Our monitor {monitor} has seen a problem since {at}. We are looking into it."
@@ -10861,11 +10872,6 @@ msgid "Posted by you and marked as the accepted answer."
 msgstr "Αναρτήθηκε από εσάς και σημάνθηκε ως η αποδεκτή απάντηση."
 
 #: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Praise"
-msgstr "Έπαινος"
-
-#: src/components/common/text.ts
 msgid "Preference page"
 msgstr "Σελίδα προτιμήσεων"
 
@@ -11471,6 +11477,7 @@ msgstr "Οι απομακρυσμένες εικόνες μπορούν να π�
 
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/Passkeys.tsx
@@ -11502,6 +11509,7 @@ msgstr "Αφαίρεση {lang}"
 msgid "Remove {name}"
 msgstr "Αφαίρεση του/της {name}"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Remove {name}?"
 msgstr "Αφαίρεση του {name};"
@@ -16306,6 +16314,10 @@ msgstr "Για τι είναι αυτό το κλειδί;"
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "What may it do?"
 msgstr "Τι επιτρέπεται να κάνει;"
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "What people can pick when they send feedback from your apps and pages"
+msgstr "Τι μπορούν να επιλέξουν οι χρήστες όταν στέλνουν σχόλια από τις εφαρμογές και τις σελίδες σας"
 
 #: src/features/reports/ReportPages.tsx
 msgid "What people wrote"

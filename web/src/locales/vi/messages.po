@@ -1437,6 +1437,10 @@ msgstr "Thêm"
 msgid "Add a block"
 msgstr "Thêm một khối"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Add a category"
+msgstr "Thêm danh mục"
+
 #: src/features/settings/channels/AddChannelDialog.tsx
 msgid "Add a channel"
 msgstr "Thêm kênh"
@@ -1452,6 +1456,10 @@ msgstr "Thêm điều kiện"
 #: src/features/status/MonitorToken.tsx
 msgid "Add a contact point of type Webhook, paste the address above, keep the method POST and use the contact point in a notification policy. Firing alerts fail the monitor, resolved ones recover it."
 msgstr "Thêm một điểm liên hệ loại Webhook, dán địa chỉ ở trên, giữ phương thức POST và dùng điểm liên hệ đó trong chính sách thông báo. Cảnh báo đang kích hoạt làm trình giám sát ngừng, cảnh báo đã giải quyết khôi phục nó."
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Add a language"
+msgstr "Thêm ngôn ngữ"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Add a link"
@@ -2867,11 +2875,6 @@ msgstr "Thư hàng loạt từ kênh này được gửi qua tài khoản SMTP d
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Browser"
 msgstr "Trình duyệt"
-
-#: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Bug"
-msgstr "Lỗi"
 
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -5486,9 +5489,17 @@ msgstr "phản hồi"
 msgid "Feedback"
 msgstr "Phản hồi"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Feedback already sent as {name} moves to Other when you save."
+msgstr "Phản hồi đã gửi dưới dạng {name} sẽ chuyển sang Khác khi bạn lưu."
+
 #: src/components/common/text.ts
 msgid "Feedback arrived"
 msgstr "Đã nhận phản hồi"
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Feedback categories"
+msgstr "Danh mục phản hồi"
 
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Feedback details"
@@ -6386,10 +6397,9 @@ msgstr "Tôi sẽ trả lời"
 msgid "I'm back"
 msgstr "Tôi đã quay lại"
 
-#: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Idea"
-msgstr "Ý tưởng"
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Icon"
+msgstr "Biểu tượng"
 
 #: src/components/common/text.ts
 msgid "Ideas"
@@ -8056,6 +8066,7 @@ msgstr "Nhiều đánh giá nhất, phản hồi đang mở, thảo luận đang
 msgid "Most votes"
 msgstr "Nhiều phiếu nhất"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move down"
 msgstr "Chuyển xuống"
@@ -8137,6 +8148,7 @@ msgstr "Chuyển sang giai đoạn trước hoặc sau"
 msgid "Move to Yuva"
 msgstr "Chuyển sang Yuva"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move up"
 msgstr "Chuyển lên"
@@ -10204,11 +10216,6 @@ msgstr "Thứ tự và chế độ xem"
 msgid "Original"
 msgstr "Bản gốc"
 
-#: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Other"
-msgstr "Khác"
-
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 msgid "Other conversations"
@@ -10221,6 +10228,10 @@ msgstr "Máy chủ IMAP khác"
 #: src/features/settings/connected-apps/assistants.ts
 msgid "Other MCP client"
 msgstr "Client MCP khác"
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Other stays: removed categories move here"
+msgstr "Khác được giữ lại: các danh mục bị xóa sẽ chuyển vào đây"
 
 #: src/features/status/MonitorsPage.tsx
 msgid "Our monitor {monitor} has seen a problem since {at}. We are looking into it."
@@ -10861,11 +10872,6 @@ msgid "Posted by you and marked as the accepted answer."
 msgstr "Do bạn đăng và được đánh dấu là câu trả lời được chấp nhận."
 
 #: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Praise"
-msgstr "Khen ngợi"
-
-#: src/components/common/text.ts
 msgid "Preference page"
 msgstr "Trang tùy chọn"
 
@@ -11471,6 +11477,7 @@ msgstr "Hình ảnh từ xa có thể cho người gửi biết bạn đã mở 
 
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/Passkeys.tsx
@@ -11502,6 +11509,7 @@ msgstr "Gỡ {lang}"
 msgid "Remove {name}"
 msgstr "Gỡ {name}"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Remove {name}?"
 msgstr "Xóa {name}?"
@@ -16306,6 +16314,10 @@ msgstr "Khóa này dùng để làm gì?"
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "What may it do?"
 msgstr "Nó được làm gì?"
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "What people can pick when they send feedback from your apps and pages"
+msgstr "Những gì mọi người có thể chọn khi gửi phản hồi từ ứng dụng và trang của bạn"
 
 #: src/features/reports/ReportPages.tsx
 msgid "What people wrote"

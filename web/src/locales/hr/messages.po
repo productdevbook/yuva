@@ -1437,6 +1437,10 @@ msgstr "Dodaj"
 msgid "Add a block"
 msgstr "Dodaj blok"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Add a category"
+msgstr "Dodaj kategoriju"
+
 #: src/features/settings/channels/AddChannelDialog.tsx
 msgid "Add a channel"
 msgstr "Dodaj kanal"
@@ -1452,6 +1456,10 @@ msgstr "Dodaj uvjet"
 #: src/features/status/MonitorToken.tsx
 msgid "Add a contact point of type Webhook, paste the address above, keep the method POST and use the contact point in a notification policy. Firing alerts fail the monitor, resolved ones recover it."
 msgstr "Dodajte kontaktnu točku vrste Webhook, zalijepite gornju adresu, ostavite metodu POST i upotrijebite kontaktnu točku u pravilima obavijesti. Aktivirana upozorenja zaustavljaju monitor, riješena ga vraćaju."
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Add a language"
+msgstr "Dodaj jezik"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Add a link"
@@ -2867,11 +2875,6 @@ msgstr "Masovne poruke iz ovog kanala odlaze preko njegova SMTP računa za odgov
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Browser"
 msgstr "Preglednik"
-
-#: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Bug"
-msgstr "Greška"
 
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -5486,9 +5489,17 @@ msgstr "povratne informacije"
 msgid "Feedback"
 msgstr "Povratne informacije"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Feedback already sent as {name} moves to Other when you save."
+msgstr "Povratne informacije već poslane kao {name} pri spremanju prelaze u Ostalo."
+
 #: src/components/common/text.ts
 msgid "Feedback arrived"
 msgstr "Povratna informacija je stigla"
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Feedback categories"
+msgstr "Kategorije povratnih informacija"
 
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Feedback details"
@@ -6386,10 +6397,9 @@ msgstr "Odgovorit ću"
 msgid "I'm back"
 msgstr "Vratio/la sam se"
 
-#: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Idea"
-msgstr "Ideja"
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Icon"
+msgstr "Ikona"
 
 #: src/components/common/text.ts
 msgid "Ideas"
@@ -8056,6 +8066,7 @@ msgstr "Prvo najviše ocjena, otvorene povratne informacije, otvorene rasprave i
 msgid "Most votes"
 msgstr "Najviše glasova"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move down"
 msgstr "Pomakni dolje"
@@ -8137,6 +8148,7 @@ msgstr "Premjesti u prethodnu ili sljedeću fazu"
 msgid "Move to Yuva"
 msgstr "Prijeđite na Yuvu"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move up"
 msgstr "Pomakni gore"
@@ -10204,11 +10216,6 @@ msgstr "Redoslijed i prikaz"
 msgid "Original"
 msgstr "Original"
 
-#: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Other"
-msgstr "Ostalo"
-
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 msgid "Other conversations"
@@ -10221,6 +10228,10 @@ msgstr "Drugi IMAP poslužitelj"
 #: src/features/settings/connected-apps/assistants.ts
 msgid "Other MCP client"
 msgstr "Drugi MCP klijent"
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Other stays: removed categories move here"
+msgstr "Ostalo ostaje: uklonjene kategorije prelaze ovamo"
 
 #: src/features/status/MonitorsPage.tsx
 msgid "Our monitor {monitor} has seen a problem since {at}. We are looking into it."
@@ -10861,11 +10872,6 @@ msgid "Posted by you and marked as the accepted answer."
 msgstr "Objavili ste i označeno kao prihvaćen odgovor."
 
 #: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Praise"
-msgstr "Pohvala"
-
-#: src/components/common/text.ts
 msgid "Preference page"
 msgstr "Stranica postavki"
 
@@ -11471,6 +11477,7 @@ msgstr "Udaljene slike mogu pošiljatelju reći da ste otvorili poruku."
 
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/Passkeys.tsx
@@ -11502,6 +11509,7 @@ msgstr "Ukloni {lang}"
 msgid "Remove {name}"
 msgstr "Ukloni {name}"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Remove {name}?"
 msgstr "Ukloniti korisnika {name}?"
@@ -16306,6 +16314,10 @@ msgstr "Čemu služi ovaj ključ?"
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "What may it do?"
 msgstr "Što smije raditi?"
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "What people can pick when they send feedback from your apps and pages"
+msgstr "Što ljudi mogu odabrati kad šalju povratne informacije iz vaših aplikacija i stranica"
 
 #: src/features/reports/ReportPages.tsx
 msgid "What people wrote"

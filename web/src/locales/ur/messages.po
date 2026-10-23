@@ -1437,6 +1437,10 @@ msgstr "شامل کریں"
 msgid "Add a block"
 msgstr "بلاک شامل کریں"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Add a category"
+msgstr "زمرہ شامل کریں"
+
 #: src/features/settings/channels/AddChannelDialog.tsx
 msgid "Add a channel"
 msgstr "چینل شامل کریں"
@@ -1452,6 +1456,10 @@ msgstr "شرط شامل کریں"
 #: src/features/status/MonitorToken.tsx
 msgid "Add a contact point of type Webhook, paste the address above, keep the method POST and use the contact point in a notification policy. Firing alerts fail the monitor, resolved ones recover it."
 msgstr "Webhook قسم کا رابطہ پوائنٹ شامل کریں، اوپر والا پتہ چسپاں کریں، طریقہ POST رہنے دیں اور رابطہ پوائنٹ کو نوٹیفکیشن پالیسی میں استعمال کریں۔ فعال الرٹس مانیٹر کو ناکام کرتے ہیں، حل شدہ اسے بحال کرتے ہیں۔"
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Add a language"
+msgstr "زبان شامل کریں"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Add a link"
@@ -2867,11 +2875,6 @@ msgstr "اس چینل کے براڈکاسٹس جوابات کے SMTP اکاؤن�
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Browser"
 msgstr "براؤزر"
-
-#: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Bug"
-msgstr "بگ"
 
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -5486,9 +5489,17 @@ msgstr "رائے"
 msgid "Feedback"
 msgstr "رائے"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Feedback already sent as {name} moves to Other when you save."
+msgstr "{name} کے طور پر پہلے بھیجی گئی رائے محفوظ کرنے پر «دیگر» میں منتقل ہو جاتی ہے۔"
+
 #: src/components/common/text.ts
 msgid "Feedback arrived"
 msgstr "رائے پہنچی"
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Feedback categories"
+msgstr "رائے کے زمرے"
 
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Feedback details"
@@ -6386,10 +6397,9 @@ msgstr "میں جواب دوں گا"
 msgid "I'm back"
 msgstr "میں واپس آ گیا"
 
-#: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Idea"
-msgstr "خیال"
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Icon"
+msgstr "آئیکن"
 
 #: src/components/common/text.ts
 msgid "Ideas"
@@ -8056,6 +8066,7 @@ msgstr "سب سے زیادہ ریٹنگز، کھلی رائے، کھلی بحث�
 msgid "Most votes"
 msgstr "سب سے زیادہ ووٹ"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move down"
 msgstr "نیچے لے جائیں"
@@ -8137,6 +8148,7 @@ msgstr "پچھلے یا اگلے مرحلے میں منتقل کریں"
 msgid "Move to Yuva"
 msgstr "Yuva پر منتقل ہوں"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move up"
 msgstr "اوپر لے جائیں"
@@ -10204,11 +10216,6 @@ msgstr "ترتیب اور منظر"
 msgid "Original"
 msgstr "اصل"
 
-#: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Other"
-msgstr "دیگر"
-
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 msgid "Other conversations"
@@ -10221,6 +10228,10 @@ msgstr "دوسرا IMAP سرور"
 #: src/features/settings/connected-apps/assistants.ts
 msgid "Other MCP client"
 msgstr "دوسرا MCP کلائنٹ"
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Other stays: removed categories move here"
+msgstr "«دیگر» برقرار رہتا ہے: ہٹائے گئے زمرے یہاں منتقل ہوتے ہیں"
 
 #: src/features/status/MonitorsPage.tsx
 msgid "Our monitor {monitor} has seen a problem since {at}. We are looking into it."
@@ -10861,11 +10872,6 @@ msgid "Posted by you and marked as the accepted answer."
 msgstr "آپ نے پوسٹ کیا اور قبول شدہ جواب کے طور پر نشان زد۔"
 
 #: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Praise"
-msgstr "تعریف"
-
-#: src/components/common/text.ts
 msgid "Preference page"
 msgstr "ترجیحات کا صفحہ"
 
@@ -11471,6 +11477,7 @@ msgstr "ریموٹ تصاویر بھیجنے والے کو بتا سکتی ہی�
 
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/Passkeys.tsx
@@ -11502,6 +11509,7 @@ msgstr "{lang} ہٹائیں"
 msgid "Remove {name}"
 msgstr "{name} ہٹائیں"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Remove {name}?"
 msgstr "{name} کو ہٹائیں؟"
@@ -16306,6 +16314,10 @@ msgstr "یہ کلید کس لیے ہے؟"
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "What may it do?"
 msgstr "یہ کیا کر سکتی ہے؟"
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "What people can pick when they send feedback from your apps and pages"
+msgstr "آپ کی ایپس اور صفحات سے رائے بھیجتے وقت لوگ کیا منتخب کر سکتے ہیں"
 
 #: src/features/reports/ReportPages.tsx
 msgid "What people wrote"

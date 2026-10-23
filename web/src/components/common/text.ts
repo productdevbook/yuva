@@ -11,7 +11,6 @@ import {
   type ChannelKind,
   type ConsentEventKind,
   type ConversationStatus,
-  type FeedbackCategory,
   type FeedbackProgress,
   type IdeaStage,
   type InboxMode,
@@ -33,7 +32,6 @@ export const CHANNEL_KINDS: ChannelKind[] = ["email", "chat", "app", "api"]
 export const MODES: InboxMode[] = ["async", "live"]
 export const WEEKDAYS: Weekday[] = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
 export const IDEA_STAGES: IdeaStage[] = ["ideas", "planned", "in_progress", "shipped", "closed"]
-export const FEEDBACK_CATEGORIES: FeedbackCategory[] = ["bug", "idea", "praise", "other"]
 export const PLATFORMS: AppPlatform[] = ["ios", "android"]
 export const WEBHOOK_EVENTS: WebhookEventType[] = [
   "conversation.created",
@@ -171,10 +169,6 @@ export function useEnumText() {
       string
     >,
     mode: { live: t`Live`, async: t`Async` } satisfies Record<InboxMode, string>,
-    category: { bug: t`Bug`, idea: t`Idea`, praise: t`Praise`, other: t`Other` } satisfies Record<
-      FeedbackCategory,
-      string
-    >,
     progress: {
       planned: t`Planned`,
       in_progress: t`In progress`,

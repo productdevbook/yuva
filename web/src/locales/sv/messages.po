@@ -1437,6 +1437,10 @@ msgstr "Lägg till"
 msgid "Add a block"
 msgstr "Lägg till ett block"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Add a category"
+msgstr "Lägg till en kategori"
+
 #: src/features/settings/channels/AddChannelDialog.tsx
 msgid "Add a channel"
 msgstr "Lägg till kanal"
@@ -1452,6 +1456,10 @@ msgstr "Lägg till ett villkor"
 #: src/features/status/MonitorToken.tsx
 msgid "Add a contact point of type Webhook, paste the address above, keep the method POST and use the contact point in a notification policy. Firing alerts fail the monitor, resolved ones recover it."
 msgstr "Lägg till en kontaktpunkt av typen Webhook, klistra in adressen ovan, behåll metoden POST och använd kontaktpunkten i en aviseringspolicy. Utlösta larm fäller monitorn, lösta återställer den."
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Add a language"
+msgstr "Lägg till ett språk"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Add a link"
@@ -2867,11 +2875,6 @@ msgstr "Utskick från den här kanalen går via dess SMTP-konto för svar, eller
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Browser"
 msgstr "Webbläsare"
-
-#: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Bug"
-msgstr "Bugg"
 
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -5486,9 +5489,17 @@ msgstr "feedback"
 msgid "Feedback"
 msgstr "Feedback"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Feedback already sent as {name} moves to Other when you save."
+msgstr "Feedback som redan skickats som {name} flyttas till Övrigt när du sparar."
+
 #: src/components/common/text.ts
 msgid "Feedback arrived"
 msgstr "Feedback kom in"
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Feedback categories"
+msgstr "Feedbackkategorier"
 
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Feedback details"
@@ -6386,10 +6397,9 @@ msgstr "Jag svarar"
 msgid "I'm back"
 msgstr "Jag är tillbaka"
 
-#: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Idea"
-msgstr "Idé"
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Icon"
+msgstr "Ikon"
 
 #: src/components/common/text.ts
 msgid "Ideas"
@@ -8056,6 +8066,7 @@ msgstr "Flest betyg, öppen feedback, öppna diskussioner och väntande inlägg 
 msgid "Most votes"
 msgstr "Flest röster"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move down"
 msgstr "Flytta ned"
@@ -8137,6 +8148,7 @@ msgstr "Flytta till föregående eller nästa fas"
 msgid "Move to Yuva"
 msgstr "Flytta till Yuva"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move up"
 msgstr "Flytta upp"
@@ -10204,11 +10216,6 @@ msgstr "Ordning och vy"
 msgid "Original"
 msgstr "Original"
 
-#: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Other"
-msgstr "Annat"
-
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 msgid "Other conversations"
@@ -10221,6 +10228,10 @@ msgstr "Annan IMAP-server"
 #: src/features/settings/connected-apps/assistants.ts
 msgid "Other MCP client"
 msgstr "Annan MCP-klient"
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Other stays: removed categories move here"
+msgstr "Övrigt blir kvar: borttagna kategorier flyttas hit"
 
 #: src/features/status/MonitorsPage.tsx
 msgid "Our monitor {monitor} has seen a problem since {at}. We are looking into it."
@@ -10861,11 +10872,6 @@ msgid "Posted by you and marked as the accepted answer."
 msgstr "Postat av dig och markerat som godkänt svar."
 
 #: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Praise"
-msgstr "Beröm"
-
-#: src/components/common/text.ts
 msgid "Preference page"
 msgstr "Inställningssida"
 
@@ -11471,6 +11477,7 @@ msgstr "Fjärrbilder kan tala om för avsändaren att du öppnade mejlet."
 
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/Passkeys.tsx
@@ -11502,6 +11509,7 @@ msgstr "Ta bort {lang}"
 msgid "Remove {name}"
 msgstr "Ta bort {name}"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Remove {name}?"
 msgstr "Ta bort {name}?"
@@ -16306,6 +16314,10 @@ msgstr "Vad är den här nyckeln till för?"
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "What may it do?"
 msgstr "Vad får den göra?"
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "What people can pick when they send feedback from your apps and pages"
+msgstr "Vad folk kan välja när de skickar feedback från dina appar och sidor"
 
 #: src/features/reports/ReportPages.tsx
 msgid "What people wrote"

@@ -4,6 +4,7 @@ import { lazy, Suspense, useCallback, useMemo, useRef, useState } from "react"
 import { Link, useNavigate, useSearchParams } from "react-router"
 
 import { ContactAvatar, ErrorLine, toast, useCopy, VisitorAvatar, isVisitor } from "@/components/common"
+import { useFeedbackCategories } from "@/components/common/feedbackCategories"
 import { SHORTCUTS } from "@/components/common/ShortcutSheet"
 import { useEnumText, useErrorText } from "@/components/common/text"
 import { Button } from "@/components/ui/button"
@@ -141,7 +142,7 @@ function Detail({ id, onReply }: { id: string; onReply: () => void }) {
     <div className="flex min-h-0 flex-col" data-testid="feedback-detail" data-conversation-id={c.id}>
       <section className="flex flex-col gap-3 border-b p-5">
         <div className="flex items-center gap-2">
-          {f && <CategoryPill category={f.category} />}
+          {f && <CategoryPill category={f.category} inboxId={c.inbox_id} />}
           <ProductTag id={c.inbox_id} />
           <span className="flex-1" />
           <Ago iso={c.created_at} className={look.faint} />
@@ -201,11 +202,15 @@ function Detail({ id, onReply }: { id: string; onReply: () => void }) {
 
 function Meta({ c }: { c: Conversation }) {
   const { t } = useLingui()
-  const text = useEnumText()
+  const { find } = useFeedbackCategories()
   const rows = useFeedbackRows(c.feedback!)
   const [copied, copy] = useCopy()
   const copyAll = () =>
-    copy([`${t`Category`}: ${text.category[c.feedback!.category]}`, ...rows.map(([k, v]) => `${k}: ${v}`)].join("\n"))
+    copy(
+      [`${t`Category`}: ${find(c.feedback!.category, c.inbox_id).name}`, ...rows.map(([k, v]) => `${k}: ${v}`)].join(
+        "\n"
+      )
+    )
   useHotkeys({ [SHORTCUTS.copyDetails]: () => void copyAll() })
   return (
     <section className="relative border-b px-5 py-4" data-testid="feedback-details">

@@ -1437,6 +1437,10 @@ msgstr "추가"
 msgid "Add a block"
 msgstr "블록 추가"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Add a category"
+msgstr "카테고리 추가"
+
 #: src/features/settings/channels/AddChannelDialog.tsx
 msgid "Add a channel"
 msgstr "채널 추가"
@@ -1452,6 +1456,10 @@ msgstr "조건 추가"
 #: src/features/status/MonitorToken.tsx
 msgid "Add a contact point of type Webhook, paste the address above, keep the method POST and use the contact point in a notification policy. Firing alerts fail the monitor, resolved ones recover it."
 msgstr "Webhook 유형의 연락 지점을 추가하고 위 주소를 붙여 넣은 다음, 메서드는 POST로 두고 알림 정책에서 해당 연락 지점을 사용하세요. 발생한 알림은 모니터를 다운시키고 해결된 알림은 복구합니다."
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Add a language"
+msgstr "언어 추가"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Add a link"
@@ -2867,11 +2875,6 @@ msgstr "이 채널의 일괄 발송은 답장용 SMTP 계정 또는 별도 계�
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Browser"
 msgstr "브라우저"
-
-#: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Bug"
-msgstr "버그"
 
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -5486,9 +5489,17 @@ msgstr "의견"
 msgid "Feedback"
 msgstr "의견"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Feedback already sent as {name} moves to Other when you save."
+msgstr "{name}(으)로 이미 보낸 피드백은 저장하면 기타로 옮겨집니다."
+
 #: src/components/common/text.ts
 msgid "Feedback arrived"
 msgstr "의견이 도착했습니다"
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Feedback categories"
+msgstr "피드백 카테고리"
 
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Feedback details"
@@ -6386,10 +6397,9 @@ msgstr "제가 답하겠습니다"
 msgid "I'm back"
 msgstr "돌아왔어요"
 
-#: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Idea"
-msgstr "아이디어"
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Icon"
+msgstr "아이콘"
 
 #: src/components/common/text.ts
 msgid "Ideas"
@@ -8056,6 +8066,7 @@ msgstr "평가가 많은 순, 그다음 열린 의견, 열린 토론, 대기 중
 msgid "Most votes"
 msgstr "투표가 많은 순"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move down"
 msgstr "아래로 이동"
@@ -8137,6 +8148,7 @@ msgstr "이전 또는 다음 단계로 이동"
 msgid "Move to Yuva"
 msgstr "Yuva로 옮기기"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move up"
 msgstr "위로 이동"
@@ -10204,11 +10216,6 @@ msgstr "순서 및 보기"
 msgid "Original"
 msgstr "원본"
 
-#: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Other"
-msgstr "기타"
-
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 msgid "Other conversations"
@@ -10221,6 +10228,10 @@ msgstr "다른 IMAP 서버"
 #: src/features/settings/connected-apps/assistants.ts
 msgid "Other MCP client"
 msgstr "다른 MCP 클라이언트"
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Other stays: removed categories move here"
+msgstr "기타는 유지됩니다. 삭제한 카테고리는 여기로 옮겨집니다"
 
 #: src/features/status/MonitorsPage.tsx
 msgid "Our monitor {monitor} has seen a problem since {at}. We are looking into it."
@@ -10861,11 +10872,6 @@ msgid "Posted by you and marked as the accepted answer."
 msgstr "내가 게시했으며 채택된 답변으로 표시되었습니다."
 
 #: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Praise"
-msgstr "칭찬"
-
-#: src/components/common/text.ts
 msgid "Preference page"
 msgstr "수신 설정 페이지"
 
@@ -11471,6 +11477,7 @@ msgstr "원격 이미지는 보낸 사람에게 메일을 열었음을 알릴 �
 
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/Passkeys.tsx
@@ -11502,6 +11509,7 @@ msgstr "{lang} 제거"
 msgid "Remove {name}"
 msgstr "{name} 제거"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Remove {name}?"
 msgstr "{name}님을 제거할까요?"
@@ -16306,6 +16314,10 @@ msgstr "이 키는 무엇에 쓰나요?"
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "What may it do?"
 msgstr "무엇을 할 수 있나요?"
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "What people can pick when they send feedback from your apps and pages"
+msgstr "앱과 페이지에서 피드백을 보낼 때 사람들이 고를 수 있는 항목"
 
 #: src/features/reports/ReportPages.tsx
 msgid "What people wrote"

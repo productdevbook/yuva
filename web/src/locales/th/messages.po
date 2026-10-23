@@ -1437,6 +1437,10 @@ msgstr "เพิ่ม"
 msgid "Add a block"
 msgstr "เพิ่มบล็อก"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Add a category"
+msgstr "เพิ่มหมวดหมู่"
+
 #: src/features/settings/channels/AddChannelDialog.tsx
 msgid "Add a channel"
 msgstr "เพิ่มช่องทาง"
@@ -1452,6 +1456,10 @@ msgstr "เพิ่มเงื่อนไข"
 #: src/features/status/MonitorToken.tsx
 msgid "Add a contact point of type Webhook, paste the address above, keep the method POST and use the contact point in a notification policy. Firing alerts fail the monitor, resolved ones recover it."
 msgstr "เพิ่มจุดติดต่อประเภท Webhook วางที่อยู่ด้านบน คงเมธอด POST ไว้ แล้วใช้จุดติดต่อนั้นในนโยบายการแจ้งเตือน การแจ้งเตือนที่ถูกกระตุ้นจะทำให้มอนิเตอร์ล้มเหลว ส่วนที่แก้ไขแล้วจะทำให้กลับมาปกติ"
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Add a language"
+msgstr "เพิ่มภาษา"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Add a link"
@@ -2867,11 +2875,6 @@ msgstr "บรอดคาสต์จากช่องทางนี้ส่
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Browser"
 msgstr "เบราว์เซอร์"
-
-#: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Bug"
-msgstr "บั๊ก"
 
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -5486,9 +5489,17 @@ msgstr "ความคิดเห็น"
 msgid "Feedback"
 msgstr "ความคิดเห็น"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Feedback already sent as {name} moves to Other when you save."
+msgstr "ความคิดเห็นที่ส่งมาแล้วในชื่อ {name} จะย้ายไปที่อื่น ๆ เมื่อคุณบันทึก"
+
 #: src/components/common/text.ts
 msgid "Feedback arrived"
 msgstr "ได้รับความคิดเห็น"
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Feedback categories"
+msgstr "หมวดหมู่ความคิดเห็น"
 
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Feedback details"
@@ -6386,10 +6397,9 @@ msgstr "ฉันจะตอบเอง"
 msgid "I'm back"
 msgstr "ฉันกลับมาแล้ว"
 
-#: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Idea"
-msgstr "ไอเดีย"
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Icon"
+msgstr "ไอคอน"
 
 #: src/components/common/text.ts
 msgid "Ideas"
@@ -8056,6 +8066,7 @@ msgstr "คะแนนมากที่สุด ความคิดเห�
 msgid "Most votes"
 msgstr "โหวตมากที่สุด"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move down"
 msgstr "เลื่อนลง"
@@ -8137,6 +8148,7 @@ msgstr "ย้ายไปยังขั้นก่อนหน้าหรื
 msgid "Move to Yuva"
 msgstr "ย้ายมา Yuva"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move up"
 msgstr "เลื่อนขึ้น"
@@ -10204,11 +10216,6 @@ msgstr "ลำดับและมุมมอง"
 msgid "Original"
 msgstr "ต้นฉบับ"
 
-#: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Other"
-msgstr "อื่น ๆ"
-
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 msgid "Other conversations"
@@ -10221,6 +10228,10 @@ msgstr "เซิร์ฟเวอร์ IMAP อื่น"
 #: src/features/settings/connected-apps/assistants.ts
 msgid "Other MCP client"
 msgstr "ไคลเอนต์ MCP อื่น"
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Other stays: removed categories move here"
+msgstr "อื่น ๆ จะยังอยู่: หมวดหมู่ที่ลบจะย้ายมาที่นี่"
 
 #: src/features/status/MonitorsPage.tsx
 msgid "Our monitor {monitor} has seen a problem since {at}. We are looking into it."
@@ -10861,11 +10872,6 @@ msgid "Posted by you and marked as the accepted answer."
 msgstr "โพสต์โดยคุณและทำเครื่องหมายเป็นคำตอบที่ยอมรับ"
 
 #: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Praise"
-msgstr "คำชม"
-
-#: src/components/common/text.ts
 msgid "Preference page"
 msgstr "หน้าการตั้งค่า"
 
@@ -11471,6 +11477,7 @@ msgstr "รูปภาพระยะไกลอาจบอกผู้ส่
 
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/Passkeys.tsx
@@ -11502,6 +11509,7 @@ msgstr "นำ {lang} ออก"
 msgid "Remove {name}"
 msgstr "นำ {name} ออก"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Remove {name}?"
 msgstr "ลบ {name} หรือไม่"
@@ -16306,6 +16314,10 @@ msgstr "คีย์นี้ใช้ทำอะไร"
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "What may it do?"
 msgstr "ทำอะไรได้บ้าง"
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "What people can pick when they send feedback from your apps and pages"
+msgstr "สิ่งที่ผู้คนเลือกได้เมื่อส่งความคิดเห็นจากแอปและหน้าเว็บของคุณ"
 
 #: src/features/reports/ReportPages.tsx
 msgid "What people wrote"

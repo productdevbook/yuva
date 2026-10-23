@@ -1437,6 +1437,10 @@ msgstr "Додати"
 msgid "Add a block"
 msgstr "Додати блок"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Add a category"
+msgstr "Додати категорію"
+
 #: src/features/settings/channels/AddChannelDialog.tsx
 msgid "Add a channel"
 msgstr "Додати канал"
@@ -1452,6 +1456,10 @@ msgstr "Додати умову"
 #: src/features/status/MonitorToken.tsx
 msgid "Add a contact point of type Webhook, paste the address above, keep the method POST and use the contact point in a notification policy. Firing alerts fail the monitor, resolved ones recover it."
 msgstr "Додайте контактну точку типу Webhook, вставте адресу вище, залиште метод POST і використайте контактну точку в політиці сповіщень. Спрацьовані сповіщення переводять монітор у збій, розв'язані відновлюють його."
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Add a language"
+msgstr "Додати мову"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Add a link"
@@ -2867,11 +2875,6 @@ msgstr "Розсилки з цього каналу йдуть через йог
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Browser"
 msgstr "Браузер"
-
-#: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Bug"
-msgstr "Помилка"
 
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -5486,9 +5489,17 @@ msgstr "відгуки"
 msgid "Feedback"
 msgstr "Відгуки"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Feedback already sent as {name} moves to Other when you save."
+msgstr "Відгуки, уже надіслані як «{name}», після збереження перейдуть до «Інше»."
+
 #: src/components/common/text.ts
 msgid "Feedback arrived"
 msgstr "Надійшов відгук"
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Feedback categories"
+msgstr "Категорії відгуків"
 
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Feedback details"
@@ -6386,10 +6397,9 @@ msgstr "Відповім я"
 msgid "I'm back"
 msgstr "Я повернувся"
 
-#: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Idea"
-msgstr "Ідея"
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Icon"
+msgstr "Значок"
 
 #: src/components/common/text.ts
 msgid "Ideas"
@@ -8056,6 +8066,7 @@ msgstr "Спершу найбільше оцінок, відкритих від�
 msgid "Most votes"
 msgstr "Найбільше голосів"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move down"
 msgstr "Перемістити вниз"
@@ -8137,6 +8148,7 @@ msgstr "Перенести на попередній або наступний �
 msgid "Move to Yuva"
 msgstr "Перейти до Yuva"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move up"
 msgstr "Перемістити вгору"
@@ -10204,11 +10216,6 @@ msgstr "Порядок і вигляд"
 msgid "Original"
 msgstr "Оригінал"
 
-#: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Other"
-msgstr "Інше"
-
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 msgid "Other conversations"
@@ -10221,6 +10228,10 @@ msgstr "Інший сервер IMAP"
 #: src/features/settings/connected-apps/assistants.ts
 msgid "Other MCP client"
 msgstr "Інший клієнт MCP"
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Other stays: removed categories move here"
+msgstr "«Інше» залишається: видалені категорії переносяться сюди"
 
 #: src/features/status/MonitorsPage.tsx
 msgid "Our monitor {monitor} has seen a problem since {at}. We are looking into it."
@@ -10861,11 +10872,6 @@ msgid "Posted by you and marked as the accepted answer."
 msgstr "Опубліковано вами й позначено як прийняте рішення."
 
 #: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Praise"
-msgstr "Похвала"
-
-#: src/components/common/text.ts
 msgid "Preference page"
 msgstr "Сторінка вподобань"
 
@@ -11471,6 +11477,7 @@ msgstr "Віддалені зображення можуть повідомит�
 
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/Passkeys.tsx
@@ -11502,6 +11509,7 @@ msgstr "Видалити {lang}"
 msgid "Remove {name}"
 msgstr "Видалити {name}"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Remove {name}?"
 msgstr "Видалити {name}?"
@@ -16306,6 +16314,10 @@ msgstr "Для чого цей ключ?"
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "What may it do?"
 msgstr "Що йому дозволено?"
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "What people can pick when they send feedback from your apps and pages"
+msgstr "Що можуть вибрати люди, надсилаючи відгук із ваших застосунків і сторінок"
 
 #: src/features/reports/ReportPages.tsx
 msgid "What people wrote"

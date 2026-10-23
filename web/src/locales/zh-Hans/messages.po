@@ -1437,6 +1437,10 @@ msgstr "添加"
 msgid "Add a block"
 msgstr "添加区块"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Add a category"
+msgstr "添加分类"
+
 #: src/features/settings/channels/AddChannelDialog.tsx
 msgid "Add a channel"
 msgstr "添加渠道"
@@ -1452,6 +1456,10 @@ msgstr "添加条件"
 #: src/features/status/MonitorToken.tsx
 msgid "Add a contact point of type Webhook, paste the address above, keep the method POST and use the contact point in a notification policy. Firing alerts fail the monitor, resolved ones recover it."
 msgstr "添加一个 Webhook 类型的联系点，粘贴上面的地址，保持 POST 方法，并在通知策略中使用该联系点。触发的告警会让监控失败，已解决的告警会让它恢复。"
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Add a language"
+msgstr "添加语言"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Add a link"
@@ -2867,11 +2875,6 @@ msgstr "此渠道的群发通过用于回复的 SMTP 账号发出,或通过单�
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Browser"
 msgstr "浏览器"
-
-#: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Bug"
-msgstr "缺陷"
 
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -5486,9 +5489,17 @@ msgstr "反馈"
 msgid "Feedback"
 msgstr "反馈"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Feedback already sent as {name} moves to Other when you save."
+msgstr "已以“{name}”提交的反馈在保存后会移到“其他”。"
+
 #: src/components/common/text.ts
 msgid "Feedback arrived"
 msgstr "收到反馈"
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Feedback categories"
+msgstr "反馈分类"
 
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Feedback details"
@@ -6386,10 +6397,9 @@ msgstr "我来回复"
 msgid "I'm back"
 msgstr "我回来了"
 
-#: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Idea"
-msgstr "想法"
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Icon"
+msgstr "图标"
 
 #: src/components/common/text.ts
 msgid "Ideas"
@@ -8056,6 +8066,7 @@ msgstr "评分最多、待处理反馈、未关闭讨论和等待审核的帖子
 msgid "Most votes"
 msgstr "票数最多"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move down"
 msgstr "下移"
@@ -8137,6 +8148,7 @@ msgstr "移到上一个或下一个阶段"
 msgid "Move to Yuva"
 msgstr "迁移到 Yuva"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move up"
 msgstr "上移"
@@ -10204,11 +10216,6 @@ msgstr "排序与视图"
 msgid "Original"
 msgstr "原件"
 
-#: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Other"
-msgstr "其他"
-
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 msgid "Other conversations"
@@ -10221,6 +10228,10 @@ msgstr "其他 IMAP 服务器"
 #: src/features/settings/connected-apps/assistants.ts
 msgid "Other MCP client"
 msgstr "其他 MCP 客户端"
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Other stays: removed categories move here"
+msgstr "“其他”会保留：删除的分类会移到这里"
 
 #: src/features/status/MonitorsPage.tsx
 msgid "Our monitor {monitor} has seen a problem since {at}. We are looking into it."
@@ -10861,11 +10872,6 @@ msgid "Posted by you and marked as the accepted answer."
 msgstr "由你发布,并已标为被采纳的回答。"
 
 #: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Praise"
-msgstr "表扬"
-
-#: src/components/common/text.ts
 msgid "Preference page"
 msgstr "偏好设置页面"
 
@@ -11471,6 +11477,7 @@ msgstr "远程图片可能会让发件人知道你已打开邮件。"
 
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/Passkeys.tsx
@@ -11502,6 +11509,7 @@ msgstr "移除 {lang}"
 msgid "Remove {name}"
 msgstr "移除 {name}"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Remove {name}?"
 msgstr "移除 {name}？"
@@ -16306,6 +16314,10 @@ msgstr "这个密钥用来做什么?"
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "What may it do?"
 msgstr "它可以做什么?"
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "What people can pick when they send feedback from your apps and pages"
+msgstr "用户从你的应用和页面发送反馈时可以选择的分类"
 
 #: src/features/reports/ReportPages.tsx
 msgid "What people wrote"

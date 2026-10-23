@@ -3,7 +3,8 @@ import { FileDownIcon, HistoryIcon, LockIcon } from "lucide-react"
 import { useEffect, useMemo, useRef, useState } from "react"
 
 import { BotAvatar, ContactAvatar, ErrorLine, Kbd, PersonAvatar, TypingDots } from "@/components/common"
-import { formatDateTime, useEnumText } from "@/components/common/text"
+import { categoryTone, useFeedbackCategories } from "@/components/common/feedbackCategories"
+import { formatDateTime } from "@/components/common/text"
 import { Badge } from "@/components/ui/badge"
 import { Bubble, BubbleContent } from "@/components/ui/bubble"
 import { Button } from "@/components/ui/button"
@@ -40,7 +41,7 @@ import { EventLine } from "@/features/conversation/messages/EventLine"
 import { Highlight, MessageActions, Ticks } from "@/features/conversation/messages/MessageActions"
 import { useDraftActions } from "@/features/conversation/queries"
 import { useLatest } from "@/hooks/use-latest"
-import { rawMessageUrl, type Conversation, type Feedback, type FeedbackCategory, type Message } from "@/lib/api"
+import { rawMessageUrl, type Conversation, type Feedback, type Message } from "@/lib/api"
 import { useSession } from "@/lib/session"
 import { cn } from "@/lib/utils"
 
@@ -374,13 +375,6 @@ function Mail({
   )
 }
 
-const categoryTag: Record<FeedbackCategory, string> = {
-  bug: "bg-destructive/10 text-destructive",
-  idea: "bg-warning/12 text-warning",
-  praise: "bg-success/12 text-success",
-  other: "bg-muted text-muted-foreground",
-}
-
 function FeedbackMessage({
   m,
   ctx,
@@ -393,7 +387,7 @@ function FeedbackMessage({
   feedback: Feedback
 }) {
   const category = feedback.category
-  const text = useEnumText()
+  const { find } = useFeedbackCategories()
   return (
     <MessageFrame tabIndex={-1} className="pb-2 outline-none" data-testid="feedback-card" data-message-id={m.id}>
       <MessageAvatar className={avatarSlot}>
@@ -401,7 +395,9 @@ function FeedbackMessage({
       </MessageAvatar>
       <MessageContent className="max-w-[88%] gap-1 phone:max-w-[94%]">
         <MessageHeader className={headerClass}>
-          <Badge className={cn(tagClass, "rounded-md", categoryTag[category])}>{text.category[category]}</Badge>
+          <Badge className={cn(tagClass, "rounded-md", categoryTone(category).tag)}>
+            {find(category, ctx.inboxId).name}
+          </Badge>
           <ScoreMark score={feedback.score} className="me-2" />
           {feedback.page_url ? (
             <Trans>Feedback sent from a documentation page</Trans>
@@ -417,7 +413,7 @@ function FeedbackMessage({
               </div>
             )}
             <div className={cn("px-0.5 py-0.5", m.body && "border-t")}>
-              <FeedbackDetails feedback={feedback} />
+              <FeedbackDetails feedback={feedback} inboxId={ctx.inboxId} />
             </div>
           </BubbleContent>
         </Bubble>

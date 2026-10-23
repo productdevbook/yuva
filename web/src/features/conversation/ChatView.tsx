@@ -605,7 +605,7 @@ function Loaded({
           {c.imported && <ImportedChip at={c.imported.at} />}
           {c.broadcast_id && <BroadcastLine id={c.broadcast_id} />}
           {c.broadcast_id && (chipLabels.length > 0 || (c.kind === "feedback" && c.feedback) || pageLine) && sep}
-          {c.kind === "feedback" && c.feedback && <CategoryChip category={c.feedback.category} />}
+          {c.kind === "feedback" && c.feedback && <CategoryChip category={c.feedback.category} inboxId={c.inbox_id} />}
           {c.kind === "feedback" && c.feedback && pageLine && sep}
           <PageLine c={c} />
           {pageLine && chipLabels.length > 0 && sep}

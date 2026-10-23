@@ -1437,6 +1437,10 @@ msgstr "ചേർക്കുക"
 msgid "Add a block"
 msgstr "ഒരു ബ്ലോക്ക് ചേർക്കുക"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Add a category"
+msgstr "വിഭാഗം ചേർക്കുക"
+
 #: src/features/settings/channels/AddChannelDialog.tsx
 msgid "Add a channel"
 msgstr "ചാനൽ ചേർക്കുക"
@@ -1452,6 +1456,10 @@ msgstr "ഒരു നിബന്ധന ചേർക്കുക"
 #: src/features/status/MonitorToken.tsx
 msgid "Add a contact point of type Webhook, paste the address above, keep the method POST and use the contact point in a notification policy. Firing alerts fail the monitor, resolved ones recover it."
 msgstr "Webhook തരത്തിലുള്ള ഒരു കോൺടാക്റ്റ് പോയിന്റ് ചേർക്കുക, മുകളിലെ വിലാസം ഒട്ടിക്കുക, മെത്തേഡ് POST ആയി നിലനിർത്തുക, അറിയിപ്പ് നയത്തിൽ ആ കോൺടാക്റ്റ് പോയിന്റ് ഉപയോഗിക്കുക. സജീവമായ അലേർട്ടുകൾ മോണിറ്ററിനെ പരാജയപ്പെടുത്തും, പരിഹരിച്ചവ അതിനെ വീണ്ടെടുക്കും."
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Add a language"
+msgstr "ഭാഷ ചേർക്കുക"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Add a link"
@@ -2867,11 +2875,6 @@ msgstr "ഈ ചാനലിൽ നിന്നുള്ള ബ്രോഡ്ക
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Browser"
 msgstr "ബ്രൗസർ"
-
-#: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Bug"
-msgstr "ബഗ്"
 
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -5486,9 +5489,17 @@ msgstr "ഫീഡ്ബാക്ക്"
 msgid "Feedback"
 msgstr "ഫീഡ്ബാക്ക്"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Feedback already sent as {name} moves to Other when you save."
+msgstr "{name} ആയി അയച്ച ഫീഡ്‌ബാക്ക് സേവ് ചെയ്യുമ്പോൾ «മറ്റുള്ളവ»യിലേക്ക് മാറും."
+
 #: src/components/common/text.ts
 msgid "Feedback arrived"
 msgstr "ഫീഡ്ബാക്ക് എത്തി"
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Feedback categories"
+msgstr "ഫീഡ്‌ബാക്ക് വിഭാഗങ്ങൾ"
 
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Feedback details"
@@ -6386,10 +6397,9 @@ msgstr "ഞാൻ മറുപടി നൽകാം"
 msgid "I'm back"
 msgstr "ഞാൻ തിരിച്ചെത്തി"
 
-#: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Idea"
-msgstr "ആശയം"
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Icon"
+msgstr "ഐക്കൺ"
 
 #: src/components/common/text.ts
 msgid "Ideas"
@@ -8056,6 +8066,7 @@ msgstr "ഏറ്റവും കൂടുതൽ റേറ്റിംഗുക�
 msgid "Most votes"
 msgstr "ഏറ്റവും കൂടുതൽ വോട്ടുകൾ"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move down"
 msgstr "താഴേക്ക് നീക്കുക"
@@ -8137,6 +8148,7 @@ msgstr "മുമ്പത്തെ അല്ലെങ്കിൽ അടുത�
 msgid "Move to Yuva"
 msgstr "Yuva-യിലേക്ക് മാറുക"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move up"
 msgstr "മുകളിലേക്ക് നീക്കുക"
@@ -10204,11 +10216,6 @@ msgstr "ക്രമവും കാഴ്ചയും"
 msgid "Original"
 msgstr "ഒറിജിനൽ"
 
-#: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Other"
-msgstr "മറ്റുള്ളവ"
-
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 msgid "Other conversations"
@@ -10221,6 +10228,10 @@ msgstr "മറ്റൊരു IMAP സെർവർ"
 #: src/features/settings/connected-apps/assistants.ts
 msgid "Other MCP client"
 msgstr "മറ്റൊരു MCP ക്ലയന്റ്"
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Other stays: removed categories move here"
+msgstr "«മറ്റുള്ളവ» നിലനിൽക്കും: നീക്കിയ വിഭാഗങ്ങൾ ഇവിടേക്ക് മാറും"
 
 #: src/features/status/MonitorsPage.tsx
 msgid "Our monitor {monitor} has seen a problem since {at}. We are looking into it."
@@ -10861,11 +10872,6 @@ msgid "Posted by you and marked as the accepted answer."
 msgstr "നിങ്ങൾ പോസ്റ്റ് ചെയ്തതും അംഗീകരിച്ച ഉത്തരമായി അടയാളപ്പെടുത്തിയതും."
 
 #: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Praise"
-msgstr "പ്രശംസ"
-
-#: src/components/common/text.ts
 msgid "Preference page"
 msgstr "മുൻഗണനാ പേജ്"
 
@@ -11471,6 +11477,7 @@ msgstr "റിമോട്ട് ചിത്രങ്ങൾക്ക് നി�
 
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/Passkeys.tsx
@@ -11502,6 +11509,7 @@ msgstr "{lang} നീക്കം ചെയ്യുക"
 msgid "Remove {name}"
 msgstr "{name} നീക്കം ചെയ്യുക"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Remove {name}?"
 msgstr "{name} എന്നയാളെ നീക്കം ചെയ്യണോ?"
@@ -16306,6 +16314,10 @@ msgstr "ഈ കീ എന്തിനുള്ളതാണ്?"
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "What may it do?"
 msgstr "ഇതിന് എന്തൊക്കെ ചെയ്യാം?"
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "What people can pick when they send feedback from your apps and pages"
+msgstr "നിങ്ങളുടെ ആപ്പുകളിൽ നിന്നും പേജുകളിൽ നിന്നും ഫീഡ്‌ബാക്ക് അയയ്ക്കുമ്പോൾ ആളുകൾക്ക് തിരഞ്ഞെടുക്കാവുന്നവ"
 
 #: src/features/reports/ReportPages.tsx
 msgid "What people wrote"

@@ -1437,6 +1437,10 @@ msgstr "Ekle"
 msgid "Add a block"
 msgstr "Blok ekle"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Add a category"
+msgstr "Kategori ekle"
+
 #: src/features/settings/channels/AddChannelDialog.tsx
 msgid "Add a channel"
 msgstr "Kanal ekle"
@@ -1452,6 +1456,10 @@ msgstr "Koşul ekle"
 #: src/features/status/MonitorToken.tsx
 msgid "Add a contact point of type Webhook, paste the address above, keep the method POST and use the contact point in a notification policy. Firing alerts fail the monitor, resolved ones recover it."
 msgstr "Webhook türünde bir iletişim noktası ekleyin, yukarıdaki adresi yapıştırın, yöntemi POST olarak bırakın ve iletişim noktasını bir bildirim politikasında kullanın. Tetiklenen uyarılar monitörü düşürür, çözülenler düzeltir."
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Add a language"
+msgstr "Dil ekle"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Add a link"
@@ -2867,11 +2875,6 @@ msgstr "Bu kanalın toplu postaları, yanıtlar için kullandığı SMTP hesabı
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Browser"
 msgstr "Tarayıcı"
-
-#: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Bug"
-msgstr "Hata"
 
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -5486,9 +5489,17 @@ msgstr "geri bildirim"
 msgid "Feedback"
 msgstr "Geri bildirim"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Feedback already sent as {name} moves to Other when you save."
+msgstr "{name} olarak gönderilmiş geri bildirimler, kaydettiğinizde Diğer'e taşınır."
+
 #: src/components/common/text.ts
 msgid "Feedback arrived"
 msgstr "Geri bildirim geldi"
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Feedback categories"
+msgstr "Geri bildirim kategorileri"
 
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Feedback details"
@@ -6386,10 +6397,9 @@ msgstr "Ben yanıtlarım"
 msgid "I'm back"
 msgstr "Geri döndüm"
 
-#: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Idea"
-msgstr "Fikir"
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Icon"
+msgstr "Simge"
 
 #: src/components/common/text.ts
 msgid "Ideas"
@@ -8056,6 +8066,7 @@ msgstr "En çok puan, açık geri bildirim, açık tartışma ve bekleyen gönde
 msgid "Most votes"
 msgstr "En çok oy"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move down"
 msgstr "Aşağı taşı"
@@ -8137,6 +8148,7 @@ msgstr "Önceki veya sonraki aşamaya taşı"
 msgid "Move to Yuva"
 msgstr "Yuva'ya taşı"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move up"
 msgstr "Yukarı taşı"
@@ -10204,11 +10216,6 @@ msgstr "Sıralama ve görünüm"
 msgid "Original"
 msgstr "Orijinal"
 
-#: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Other"
-msgstr "Diğer"
-
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 msgid "Other conversations"
@@ -10221,6 +10228,10 @@ msgstr "Diğer IMAP sunucusu"
 #: src/features/settings/connected-apps/assistants.ts
 msgid "Other MCP client"
 msgstr "Başka bir MCP istemcisi"
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Other stays: removed categories move here"
+msgstr "Diğer kalır: kaldırılan kategoriler buraya taşınır"
 
 #: src/features/status/MonitorsPage.tsx
 msgid "Our monitor {monitor} has seen a problem since {at}. We are looking into it."
@@ -10861,11 +10872,6 @@ msgid "Posted by you and marked as the accepted answer."
 msgstr "Sizin adınıza gönderilir ve kabul edilen yanıt olarak işaretlenir."
 
 #: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Praise"
-msgstr "Övgü"
-
-#: src/components/common/text.ts
 msgid "Preference page"
 msgstr "Tercih sayfası"
 
@@ -11471,6 +11477,7 @@ msgstr "Uzak görseller, postayı açtığınızı gönderene bildirebilir."
 
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/Passkeys.tsx
@@ -11502,6 +11509,7 @@ msgstr "{lang} dilini kaldır"
 msgid "Remove {name}"
 msgstr "{name} adlı üyeyi çıkar"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Remove {name}?"
 msgstr "{name} kaldırılsın mı?"
@@ -16306,6 +16314,10 @@ msgstr "Bu anahtar ne için?"
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "What may it do?"
 msgstr "Neler yapabilir?"
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "What people can pick when they send feedback from your apps and pages"
+msgstr "Uygulamalarınızdan ve sayfalarınızdan geri bildirim gönderirken kişilerin seçebileceği kategoriler"
 
 #: src/features/reports/ReportPages.tsx
 msgid "What people wrote"

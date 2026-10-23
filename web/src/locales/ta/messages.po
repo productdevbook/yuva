@@ -1437,6 +1437,10 @@ msgstr "சேர்"
 msgid "Add a block"
 msgstr "தொகுதியைச் சேர்"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Add a category"
+msgstr "வகையைச் சேர்"
+
 #: src/features/settings/channels/AddChannelDialog.tsx
 msgid "Add a channel"
 msgstr "சேனலைச் சேர்"
@@ -1452,6 +1456,10 @@ msgstr "நிபந்தனையைச் சேர்"
 #: src/features/status/MonitorToken.tsx
 msgid "Add a contact point of type Webhook, paste the address above, keep the method POST and use the contact point in a notification policy. Firing alerts fail the monitor, resolved ones recover it."
 msgstr "Webhook வகை தொடர்பு புள்ளியைச் சேர்த்து, மேலுள்ள முகவரியை ஒட்டி, முறையை POST ஆக வைத்து, அறிவிப்புக் கொள்கையில் அந்தத் தொடர்பு புள்ளியைப் பயன்படுத்துங்கள். செயல்படும் எச்சரிக்கைகள் கண்காணிப்பை தோல்வியடையச் செய்யும், தீர்ந்தவை அதை மீட்டெடுக்கும்."
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Add a language"
+msgstr "மொழியைச் சேர்"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Add a link"
@@ -2867,11 +2875,6 @@ msgstr "இந்தச் சேனலின் ஒளிபரப்புக�
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Browser"
 msgstr "உலாவி"
-
-#: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Bug"
-msgstr "பிழை"
 
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -5486,9 +5489,17 @@ msgstr "கருத்து"
 msgid "Feedback"
 msgstr "கருத்து"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Feedback already sent as {name} moves to Other when you save."
+msgstr "{name} எனக் கருத்து ஏற்கனவே அனுப்பப்பட்டிருந்தால், சேமிக்கும்போது அது «மற்றவை»க்கு மாறும்."
+
 #: src/components/common/text.ts
 msgid "Feedback arrived"
 msgstr "கருத்து வந்தது"
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Feedback categories"
+msgstr "கருத்து வகைகள்"
 
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Feedback details"
@@ -6386,10 +6397,9 @@ msgstr "நான் பதிலளிக்கிறேன்"
 msgid "I'm back"
 msgstr "நான் திரும்பிவிட்டேன்"
 
-#: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Idea"
-msgstr "யோசனை"
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Icon"
+msgstr "ஐகான்"
 
 #: src/components/common/text.ts
 msgid "Ideas"
@@ -8056,6 +8066,7 @@ msgstr "அதிக மதிப்பீடுகள், திறந்த �
 msgid "Most votes"
 msgstr "அதிக வாக்குகள்"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move down"
 msgstr "கீழே நகர்த்து"
@@ -8137,6 +8148,7 @@ msgstr "முந்தைய அல்லது அடுத்த கட்ட
 msgid "Move to Yuva"
 msgstr "Yuva-வுக்கு மாறு"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move up"
 msgstr "மேலே நகர்த்து"
@@ -10204,11 +10216,6 @@ msgstr "வரிசை மற்றும் காட்சி"
 msgid "Original"
 msgstr "அசல்"
 
-#: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Other"
-msgstr "பிற"
-
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 msgid "Other conversations"
@@ -10221,6 +10228,10 @@ msgstr "பிற IMAP சேவையகம்"
 #: src/features/settings/connected-apps/assistants.ts
 msgid "Other MCP client"
 msgstr "பிற MCP கிளையன்ட்"
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Other stays: removed categories move here"
+msgstr "«மற்றவை» இருக்கும்: நீக்கிய வகைகள் இங்கு வரும்"
 
 #: src/features/status/MonitorsPage.tsx
 msgid "Our monitor {monitor} has seen a problem since {at}. We are looking into it."
@@ -10861,11 +10872,6 @@ msgid "Posted by you and marked as the accepted answer."
 msgstr "நீங்கள் இடுகையிட்டு ஏற்கப்பட்ட பதில் எனக் குறித்தது."
 
 #: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Praise"
-msgstr "பாராட்டு"
-
-#: src/components/common/text.ts
 msgid "Preference page"
 msgstr "விருப்பப் பக்கம்"
 
@@ -11471,6 +11477,7 @@ msgstr "தொலைநிலைப் படங்கள் நீங்கள�
 
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/Passkeys.tsx
@@ -11502,6 +11509,7 @@ msgstr "{lang}-ஐ அகற்று"
 msgid "Remove {name}"
 msgstr "{name}-ஐ அகற்று"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Remove {name}?"
 msgstr "{name} ஐ நீக்கவா?"
@@ -16306,6 +16314,10 @@ msgstr "இந்த விசை எதற்கு?"
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "What may it do?"
 msgstr "அது என்ன செய்யலாம்?"
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "What people can pick when they send feedback from your apps and pages"
+msgstr "உங்கள் ஆப்ஸ் மற்றும் பக்கங்களிலிருந்து கருத்து அனுப்பும்போது மக்கள் தேர்ந்தெடுக்கக்கூடியவை"
 
 #: src/features/reports/ReportPages.tsx
 msgid "What people wrote"

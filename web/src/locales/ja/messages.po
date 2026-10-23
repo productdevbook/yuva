@@ -1437,6 +1437,10 @@ msgstr "追加"
 msgid "Add a block"
 msgstr "ブロックを追加"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Add a category"
+msgstr "カテゴリを追加"
+
 #: src/features/settings/channels/AddChannelDialog.tsx
 msgid "Add a channel"
 msgstr "チャネルを追加"
@@ -1452,6 +1456,10 @@ msgstr "条件を追加"
 #: src/features/status/MonitorToken.tsx
 msgid "Add a contact point of type Webhook, paste the address above, keep the method POST and use the contact point in a notification policy. Firing alerts fail the monitor, resolved ones recover it."
 msgstr "Webhook タイプのコンタクトポイントを追加し、上のアドレスを貼り付け、メソッドは POST のままにして、通知ポリシーでそのコンタクトポイントを使います。発生したアラートはモニターをダウンさせ、解決したアラートは復旧させます。"
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Add a language"
+msgstr "言語を追加"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Add a link"
@@ -2867,11 +2875,6 @@ msgstr "このチャネルからの一斉配信は、返信用の SMTP アカウ
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Browser"
 msgstr "ブラウザー"
-
-#: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Bug"
-msgstr "バグ"
 
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -5486,9 +5489,17 @@ msgstr "フィードバック"
 msgid "Feedback"
 msgstr "フィードバック"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Feedback already sent as {name} moves to Other when you save."
+msgstr "{name} として送信済みのフィードバックは、保存すると「その他」に移ります。"
+
 #: src/components/common/text.ts
 msgid "Feedback arrived"
 msgstr "フィードバックが届きました"
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Feedback categories"
+msgstr "フィードバックのカテゴリ"
 
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Feedback details"
@@ -6386,10 +6397,9 @@ msgstr "私が返信します"
 msgid "I'm back"
 msgstr "戻りました"
 
-#: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Idea"
-msgstr "アイデア"
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Icon"
+msgstr "アイコン"
 
 #: src/components/common/text.ts
 msgid "Ideas"
@@ -8056,6 +8066,7 @@ msgstr "評価が多い順、次に未対応のフィードバック、未完了
 msgid "Most votes"
 msgstr "投票が多い順"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move down"
 msgstr "下へ移動"
@@ -8137,6 +8148,7 @@ msgstr "前または次のステージに移動"
 msgid "Move to Yuva"
 msgstr "Yuva に移行"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move up"
 msgstr "上へ移動"
@@ -10204,11 +10216,6 @@ msgstr "並び順と表示"
 msgid "Original"
 msgstr "元のメール"
 
-#: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Other"
-msgstr "その他"
-
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 msgid "Other conversations"
@@ -10221,6 +10228,10 @@ msgstr "その他の IMAP サーバー"
 #: src/features/settings/connected-apps/assistants.ts
 msgid "Other MCP client"
 msgstr "その他の MCP クライアント"
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "Other stays: removed categories move here"
+msgstr "「その他」は残ります。削除したカテゴリはここに移ります"
 
 #: src/features/status/MonitorsPage.tsx
 msgid "Our monitor {monitor} has seen a problem since {at}. We are looking into it."
@@ -10861,11 +10872,6 @@ msgid "Posted by you and marked as the accepted answer."
 msgstr "あなたが投稿し、承認済みの回答としてマークされました。"
 
 #: src/components/common/text.ts
-#: src/features/feedback/FeedbackList.tsx
-msgid "Praise"
-msgstr "称賛"
-
-#: src/components/common/text.ts
 msgid "Preference page"
 msgstr "配信設定ページ"
 
@@ -11471,6 +11477,7 @@ msgstr "リモート画像により、メールを開いたことが送信者に
 
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/Passkeys.tsx
@@ -11502,6 +11509,7 @@ msgstr "{lang} を削除"
 msgid "Remove {name}"
 msgstr "{name} を削除"
 
+#: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Remove {name}?"
 msgstr "{name} を削除しますか?"
@@ -16306,6 +16314,10 @@ msgstr "このキーは何に使いますか?"
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "What may it do?"
 msgstr "何を許可しますか?"
+
+#: src/features/settings/inboxes/FeedbackCategories.tsx
+msgid "What people can pick when they send feedback from your apps and pages"
+msgstr "アプリやページからフィードバックを送るときに選べる項目"
 
 #: src/features/reports/ReportPages.tsx
 msgid "What people wrote"
