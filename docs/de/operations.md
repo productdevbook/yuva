@@ -275,7 +275,7 @@ Workspace löschen.
 Das Audit-Log hält fest, wer Zugriff, Zugangsdaten und Daten eines Workspace geändert hat: wer beigetreten
 ist, gegangen ist oder die Rolle gewechselt hat; Einladungen; erstellte oder widerrufene API-Schlüssel und
 verbundene Apps; Webhooks und ihre Geheimnisse; Zugangsdaten und Schlüssel von E-Mail-Kanälen;
-Postfachzugriff und Löschungen; gelöschte Kontakte; Exporte von Einwilligungs- und Analytics-Daten;
+Postfachzugriff und Löschungen; in den Papierkorb gelegte, wiederhergestellte oder gelöschte Unterhaltungen; gelöschte Kontakte; Exporte von Einwilligungs- und Analytics-Daten;
 Änderungen der Aufbewahrung; und die Antworten des Betreibers zu Broadcasts. Jeder Eintrag hat den Akteur
 (ein Mitglied, einen API-Schlüssel, ein Mitglied über eine verbundene App oder die Befehlszeile des
 Servers), die Aktion wie `api_key.created`, ihr Ziel, einige Details und die Zeit. Ein Eintrag wird im
@@ -321,6 +321,7 @@ Yuva räumt einmal pro Stunde auf:
 | Kontaktsitzungen | bis sie ablaufen, 7 Tage nach der letzten Nutzung |
 | Abgeschlossene Webhook-Zustellungen | 7 Tage; die neuesten 100 pro Endpunkt bleiben |
 | Veraltete Einträge von Realtime-Verbindungen | 1 Stunde |
+| Unterhaltungen im [Papierkorb](headless.md#unterhaltungen-löschen) mit Nachrichten und Dateien | 30 Tage |
 | Geschlossene Unterhaltungen mit Nachrichten und Dateien (wenn `retention_days` gesetzt ist) | so viele Tage seit ihrer letzten Änderung |
 | Empfänger eines beendeten Broadcasts (seine Zahlen bleiben) | 400 Tage nach seinem Ende |
 | Tägliche Versandsummen hinter den Limits | 90 Tage |

@@ -267,7 +267,7 @@ siler. Çalışma alanı hemen kullanılamaz hâle gelir; ardından bir arka pla
 Denetim günlüğü, bir çalışma alanının erişimini, kimlik bilgilerini ve verilerini kimin değiştirdiğini
 kaydeder: kimin katıldığı, ayrıldığı veya rol değiştirdiği; davetler; oluşturulan veya iptal edilen API
 anahtarları ve bağlı uygulamalar; webhook'lar ve gizli anahtarları; e-posta kanalı kimlik bilgileri ve
-anahtarları; gelen kutusu erişimi ve silinmeleri; kişi silmeleri; onay ve analitik verisi dışa
+anahtarları; gelen kutusu erişimi ve silinmeleri; Çöp kutusuna taşınan, geri alınan veya silinen konuşmalar; kişi silmeleri; onay ve analitik verisi dışa
 aktarmaları; saklama değişiklikleri; ve operatörün bültenlerle ilgili yanıtları. Her kayıtta işlemi yapan
 (bir üye, bir API anahtarı, bağlı bir uygulama üzerinden bir üye veya sunucunun komut satırı),
 `api_key.created` gibi eylem, hedefi, birkaç ayrıntı ve zaman bulunur. Kayıt, değişiklikle aynı adımda
@@ -313,6 +313,7 @@ Yuva saatte bir temizlik yapar:
 | Kişi oturumları | süreleri dolana kadar, son kullanımdan 7 gün sonra |
 | Tamamlanmış webhook teslimatları | 7 gün; uç nokta başına en yeni 100 tanesi kalır |
 | Bayat gerçek zamanlı bağlantı kayıtları | 1 saat |
+| [Çöp kutusundaki](headless.md#konuşmaları-silme) konuşmalar, mesajları ve dosyalarıyla | 30 gün |
 | Kapalı konuşmalar, mesajları ve dosyalarıyla (`retention_days` atanmışsa) | son değişiklikten itibaren o kadar gün |
 | Biten bir bültenin alıcıları (sayıları kalır) | bittikten 400 gün sonra |
 | Sınırların dayandığı günlük gönderim toplamları | 90 gün |

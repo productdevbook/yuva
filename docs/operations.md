@@ -267,7 +267,7 @@ author. A workspace's only owner must hand over ownership or delete the workspac
 
 The audit log records who changed a workspace's access, credentials and data: who joined, left or
 changed role; invites; API keys and connected apps created or revoked; webhooks and their secrets;
-e-mail channel credentials and keys; inbox access and deletions; contact deletions; exports of
+e-mail channel credentials and keys; inbox access and deletions; conversations moved to the Trash, restored or deleted; contact deletions; exports of
 consent data and analytics; retention changes; and the operator's answers about broadcasts. Each
 entry has the actor (a member, an API key, a member through a connected app, or the server's command
 line), the action such as `api_key.created`, its target and a few details, and the time. An entry is
@@ -312,6 +312,7 @@ Yuva cleans up once an hour:
 | Contact sessions | until they expire, 7 days after last use |
 | Finished webhook deliveries | 7 days; the newest 100 per endpoint stay |
 | Stale realtime connection records | 1 hour |
+| Conversations in the [Trash](headless.md#deleting-conversations), with messages and files | 30 days |
 | Closed conversations, with messages and files (when `retention_days` is set) | that many days since their last change |
 | Recipients of a finished broadcast (its counts stay) | 400 days after it finished |
 | Daily sending totals behind the limits | 90 days |

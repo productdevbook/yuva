@@ -59,6 +59,11 @@ await yuva.connect();
 const { conversation } = await yuva.startConversation({ body: "Hello" });
 ```
 
+Bir üyenin sildiği konuşma `/client/v1` içinde görünmez olur ve gerçek zamanlı akış bir `conversation.removed`
+çerçevesi (`data: { id }`) gönderir: konuşmayı listenizden çıkarın, açıksa kapatın. Bu kimliğe gönderilen
+mesaj yeni bir konuşma başlatır; yanıttaki `conversation_id` onu belirtir. Konuşma geri alınırsa yeniden
+`conversation.created` olarak gelir. `useyuva` istemcisi ve mobil SDK'lar bu çerçeveyi henüz işlemez.
+
 Tarayıcı dışında bir `app` kanalının anahtarını kullanın; `chat` kanalları yalnızca izin verilen
 origin'leri kabul eder. React hook'ları `useyuva/react` içinde; tüm seçenekler
 [SDK README](../../sdk/js/README.md)'sinde.
@@ -99,6 +104,7 @@ Gereken yetki olmadan yapılan çağrı `403 insufficient_scope` döner.
 |---|---|
 | `conversations:read` | Konuşmalar, mesajlar, ekler, etiketler, hazır yanıtlar, olay akışı ve gerçek zamanlı bağlantı |
 | `conversations:write` | Durum, atanan kişi, erteleme, öncelik, etiketler; konuşmaları taşıma ve toplu güncelleme |
+| `conversations:delete` | Konuşmaları Çöp kutusuna taşıma, geri alma, Çöp kutusunu listeleme. Başka hiçbir yetkiye dahil değildir: adıyla verin. Yalnızca sahiplerin ve yöneticilerin anahtarlarına ve bağlı uygulamalarına sunulur. |
 | `messages:write` | Mesajlar ve taslaklar: oluşturma, düzenleme, atma |
 | `drafts:send` | `messages:write` ile birlikte taslak gönderme |
 | `notes:write` | Notlar |
@@ -156,6 +162,27 @@ Taslak olmayan bir mesajda: `409 not_a_draft`. Taslaklar `draft.created`, `draft
 | Sayfalar | `has_more` true iken `limit`'ten az olay içerebilir. |
 | Yetkiler | `conversations:read`; kişi olayları için ayrıca `contacts:read`. |
 | Yazıyor | `typing` çerçevelerinin `id`'si yoktur ve tekrar oynatılmaz. |
+
+### Konuşmaları silme
+
+`DELETE /v1/conversations/{conversationId}` bir konuşmayı Çöp kutusuna taşır. Bunu yalnızca sahipler ve
+yöneticiler ile `conversations:delete` yetkisi olan anahtarlar ve bağlı uygulamalar yapabilir; temsilciler
+`403 forbidden` alır. Gelen kutularıyla sınırlı bir anahtar yalnızca o gelen kutularında silebilir.
+`yuva api-key create` yetkiyi siz adlandırmadıkça vermez.
+
+| Kural | Ayrıntı |
+|---|---|
+| Çöp kutusu | Konuşma ekip, kişi, uygulamalar ve asistanlar için tüm listelerden, sayımlardan, aramalardan ve rakamlardan kaybolur; kimse onu değiştiremez. İki kez yapmak bir şey değiştirmez. |
+| Çöp kutusunu görme | `GET /v1/conversations?trashed=true`; sahipler, yöneticiler ve `conversations:delete` içindir. Konuşmada `trashed_at` ve `deletes_at` olur. |
+| Geri alma | 30 gün içinde `POST /v1/conversations/{conversationId}/restore`; durumu, atanan kişisi ve etiketleriyle geri gelir. Sonrasında `409 trash_expired` yanıtı alınır. |
+| 30 gün sonra | Saatlik temizlik onu mesajları, ekleri ve saklanan dosyalarıyla kalıcı olarak siler. |
+| Birçoğu birden | `POST /v1/conversations/bulk` ile yalnızca `trashed: true` veya `false`, en fazla 100. |
+| Kişi yeniden yazarsa | E-posta, sohbet veya uygulamadan yeni bir konuşma başlar; Çöp kutusundaki konuşma asla yeniden açılmaz. |
+
+Webhook'lar `conversation.trashed` ve `conversation.restored` (konuşma ve kişi) olaylarını, 30 gün sonra da
+yalnızca `id`, `inbox_id` ve `contact_id` taşıyan `conversation.deleted` olayını gönderir.
+[Denetim günlüğü](operations.md#denetim-günlüğü) her konuşmayı kimin Çöp kutusuna taşıdığını veya geri aldığını,
+son silmeyi ise sistemin yaptığını kaydeder.
 
 ### Idempotency
 

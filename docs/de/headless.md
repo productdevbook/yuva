@@ -61,6 +61,12 @@ await yuva.connect();
 const { conversation } = await yuva.startConversation({ body: "Hello" });
 ```
 
+Eine Unterhaltung, die ein Mitglied gelöscht hat, verschwindet aus `/client/v1`, und der Realtime-Stream sendet
+einen `conversation.removed`-Frame (`data: { id }`): Entfernen Sie sie aus Ihrer Liste und schließen Sie sie,
+wenn sie offen ist. Eine Nachricht an diese ID startet eine neue Unterhaltung; die `conversation_id` der
+Antwort nennt sie. Wird die Unterhaltung wiederhergestellt, kommt sie erneut als `conversation.created`. Der
+`useyuva`-Client und die mobilen SDKs behandeln diesen Frame noch nicht.
+
 Außerhalb eines Browsers verwenden Sie den Schlüssel eines `app`-Kanals; `chat`-Kanäle akzeptieren
 nur ihre erlaubten Origins. React-Hooks liegen in `useyuva/react`; alle Optionen stehen in der
 [SDK-README](../../sdk/js/README.md).
@@ -101,6 +107,7 @@ Ein Aufruf ohne den nötigen Scope antwortet mit `403 insufficient_scope`.
 |---|---|
 | `conversations:read` | Unterhaltungen, Nachrichten, Anhänge, Labels, Textbausteine, den Event-Feed und Realtime |
 | `conversations:write` | Status, Zuständige, Zurückstellen, Priorität, Labels; Unterhaltungen verschieben und gesammelt ändern |
+| `conversations:delete` | Unterhaltungen in den Papierkorb legen, wiederherstellen, den Papierkorb auflisten. In keinem anderen Scope enthalten: Nennen Sie ihn ausdrücklich. Nur für Schlüssel und verbundene Apps von Inhabern und Admins verfügbar. |
 | `messages:write` | Nachrichten und Entwürfe: anlegen, bearbeiten, verwerfen |
 | `drafts:send` | Einen Entwurf senden, zusammen mit `messages:write` |
 | `notes:write` | Notizen |
@@ -158,6 +165,27 @@ Bei einer Nachricht, die kein Entwurf ist: `409 not_a_draft`. Entwürfe lösen `
 | Seiten | Können weniger als `limit` enthalten, solange `has_more` true ist. |
 | Scopes | `conversations:read`; Kontaktereignisse zusätzlich `contacts:read`. |
 | Tippen | `typing`-Frames haben keine `id` und werden nicht erneut abgespielt. |
+
+### Unterhaltungen löschen
+
+`DELETE /v1/conversations/{conversationId}` legt eine Unterhaltung in den Papierkorb. Das dürfen nur Inhaber
+und Admins sowie Schlüssel und verbundene Apps mit `conversations:delete`; Agents erhalten `403 forbidden`.
+Ein auf Postfächer beschränkter Schlüssel darf nur in diesen Postfächern löschen. `yuva api-key create`
+lässt den Scope weg, solange Sie ihn nicht nennen.
+
+| Regel | Detail |
+|---|---|
+| Papierkorb | Die Unterhaltung verschwindet für das Team, den Kontakt, Apps und Assistenten aus allen Listen, Zählungen, Suchen und Kennzahlen; niemand kann sie ändern. Zweimal ausgeführt ändert nichts. |
+| Papierkorb ansehen | `GET /v1/conversations?trashed=true`, für Inhaber, Admins und `conversations:delete`; die Unterhaltung hat dann `trashed_at` und `deletes_at`. |
+| Wiederherstellen | `POST /v1/conversations/{conversationId}/restore` innerhalb von 30 Tagen, mit Status, Zuständigem und Labels. Danach antwortet es mit `409 trash_expired`. |
+| Nach 30 Tagen | Die stündliche Bereinigung löscht sie endgültig, mit Nachrichten, Anhängen und gespeicherten Dateien. |
+| Mehrere auf einmal | `POST /v1/conversations/bulk` mit `trashed: true` oder `false` und sonst nichts, bis zu 100. |
+| Der Kontakt schreibt wieder | Per E-Mail, Chat oder App beginnt eine neue Unterhaltung; die im Papierkorb wird nie wieder geöffnet. |
+
+Webhooks senden `conversation.trashed` und `conversation.restored` (Unterhaltung und Kontakt) und nach 30 Tagen
+`conversation.deleted` mit nur `id`, `inbox_id` und `contact_id`. Das [Audit-Log](operations.md#audit-log)
+hält fest, wer jede Unterhaltung in den Papierkorb gelegt oder wiederhergestellt hat, und die endgültige
+Löschung als vom System ausgeführt.
 
 ### Idempotenz
 

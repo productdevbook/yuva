@@ -58,6 +58,12 @@ await yuva.connect();
 const { conversation } = await yuva.startConversation({ body: "Hello" });
 ```
 
+A conversation a member deleted is gone from `/client/v1`, and the realtime stream sends a
+`conversation.removed` frame (`data: { id }`): drop it from your list and close it if it is open. A message
+sent to that id starts a new conversation; the answer's `conversation_id` names it. If the conversation is
+restored, it arrives again as `conversation.created`. The `useyuva` client and the mobile SDKs do not handle
+this frame yet.
+
 Outside a browser, use an `app` channel's key; `chat` channels accept only their allowed origins.
 React hooks are in `useyuva/react`; every option is in the [SDK README](../sdk/js/README.md).
 
@@ -96,6 +102,7 @@ A call without the needed scope answers `403 insufficient_scope`.
 |---|---|
 | `conversations:read` | Conversations, messages, attachments, labels, canned replies, the event feed and realtime |
 | `conversations:write` | Status, assignee, snooze, priority, labels; move and bulk-update conversations |
+| `conversations:delete` | Move conversations to the Trash, restore them, list the Trash. Not included in any other scope: name it. Offered only to owners' and admins' keys and tokens. |
 | `messages:write` | Messages and drafts: create, edit, discard |
 | `drafts:send` | Send a draft, together with `messages:write` |
 | `notes:write` | Notes |
@@ -153,6 +160,27 @@ and `draft.deleted`.
 | Pages | May hold fewer than `limit` while `has_more` is true. |
 | Scopes | `conversations:read`; contact events also `contacts:read`. |
 | Typing | `typing` frames have no `id` and are not replayed. |
+
+### Deleting conversations
+
+`DELETE /v1/conversations/{conversationId}` moves a conversation to the Trash. Only owners and admins,
+and keys and connected apps holding `conversations:delete`, can do it; agents get `403 forbidden`. A key
+limited to inboxes can delete in those inboxes. `yuva api-key create` leaves the scope out unless you
+name it.
+
+| Rule | Detail |
+|---|---|
+| Trash | The conversation disappears from every list, count, search and figure, for the team, the contact, apps and assistants, and nobody can change it. Doing it twice changes nothing. |
+| See the Trash | `GET /v1/conversations?trashed=true`, for owners, admins and `conversations:delete`; the conversation then has `trashed_at` and `deletes_at`. |
+| Restore | `POST /v1/conversations/{conversationId}/restore` within 30 days, with its status, assignee and labels. After that it answers `409 trash_expired`. |
+| After 30 days | The hourly cleanup deletes it for good, with its messages, attachments and stored files. |
+| Several at once | `POST /v1/conversations/bulk` with `trashed: true` or `false` and nothing else, up to 100. |
+| The contact writes again | A new conversation starts, by e-mail, chat or app; the trashed one is never reopened. |
+
+Webhooks send `conversation.trashed` and `conversation.restored` (the conversation and contact) and, after
+30 days, `conversation.deleted` with only `id`, `inbox_id` and `contact_id`. The
+[audit log](operations.md#audit-log) records who trashed or restored each conversation, and the final
+deletion as done by the system.
 
 ### Idempotency
 

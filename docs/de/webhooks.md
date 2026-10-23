@@ -43,6 +43,8 @@ eine `webhook-id`, die Sie schon verarbeitet haben, und sortieren Sie nach `time
 | `conversation.created` | Eine Unterhaltung hat begonnen, Feedback eingeschlossen | `conversation`, `contact` |
 | `conversation.updated` | Status, Zuständige, Priorität, Labels, Betreff oder Spam-Markierung haben sich geändert, oder sie wurde verschoben | `conversation`, `contact` |
 | `conversation.rated` | Der Kontakt hat sie bewertet (`conversation.rating`) | `conversation`, `contact` |
+| `conversation.trashed`, `conversation.restored` | Eine Unterhaltung wurde in den [Papierkorb](headless.md#unterhaltungen-löschen) gelegt oder wiederhergestellt | `conversation`, `contact` |
+| `conversation.deleted` | Der Papierkorb hat sie 30 Tage nach dem Ablegen endgültig gelöscht | `id`, `inbox_id`, `contact_id` |
 | `message.created` | Eine Nachricht vom oder an den Kontakt; Notizen, wenn aktiviert | `message`, `conversation`, `contact` |
 | `feedback.created` | Feedback aus einer App oder über `POST /v1/feedback`; Feedback aus einer App kann `feedback.score` (1 bis 5) tragen | `message`, `conversation`, `contact` |
 | `contact.updated` | Ein Kontakt hat sich geändert | `contact` |
