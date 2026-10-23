@@ -2135,6 +2135,14 @@ msgstr "অ্যানালিটিক্স"
 msgid "analytics not set up"
 msgstr "অ্যানালিটিক্স সেট আপ করা হয়নি"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Android (FCM)"
+msgstr "Android (FCM)"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Android devices get no push from Yuva until you add one again."
+msgstr "আবার সার্ভিস অ্যাকাউন্ট যোগ না করা পর্যন্ত Android ডিভাইস Yuva থেকে পুশ পাবে না।"
+
 #: src/components/common/DiscussionAuthor.tsx
 msgid "Anonymous"
 msgstr "বেনামি"
@@ -2921,6 +2929,10 @@ msgstr "ব্রাউজার"
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Bugs, ideas and praise sent from your apps and pages"
 msgstr "আপনার অ্যাপ ও পেজ থেকে পাঠানো বাগ, আইডিয়া ও প্রশংসা"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Bundle ID"
+msgstr "Bundle ID"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Business hours"
@@ -5317,6 +5329,10 @@ msgstr "এন্ট্রি"
 msgid "Entry: {entry}"
 msgstr "এন্ট্রি: {entry}"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Environment"
+msgstr "পরিবেশ"
+
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Error"
 msgstr "ত্রুটি"
@@ -6888,6 +6904,14 @@ msgstr "{email}-কে {role} হিসেবে আমন্ত্রণ জা
 msgid "Invites"
 msgstr "আমন্ত্রণ"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "iOS (APNs)"
+msgstr "iOS (APNs)"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "iOS devices get no push from Yuva until you add a key again."
+msgstr "আবার কী যোগ না করা পর্যন্ত iOS ডিভাইস Yuva থেকে পুশ পাবে না।"
+
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "IP address"
 msgstr "IP ঠিকানা"
@@ -7108,6 +7132,14 @@ msgstr "কী"
 #: src/features/home/HomePage.tsx
 msgid "Key figures"
 msgstr "মূল সংখ্যা"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Key ID"
+msgstr "কী আইডি"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Key set"
+msgstr "কী সেট করা আছে"
 
 #: src/app/Palette.tsx
 #: src/app/TopBar.tsx
@@ -7367,6 +7399,10 @@ msgstr "আইনি নাম"
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Let bots send replies?"
 msgstr "বটকে উত্তর পাঠাতে দেবেন?"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Let Yuva send the reply push to your app's users. <0>Read the guide</0>"
+msgstr "উত্তরের পুশ Yuva নিজেই আপনার অ্যাপের ব্যবহারকারীদের পাঠাক। <0>গাইড পড়ুন</0>"
 
 #: src/app/UserMenu.tsx
 #: src/features/settings/appearance/AppearancePage.tsx
@@ -9754,6 +9790,14 @@ msgstr "বন্ধ থাকলে চ্যানেল ও ওয়ার�
 msgid "Off, a redirect is judged against the expected status."
 msgstr "বন্ধ থাকলে রিডিরেক্ট প্রত্যাশিত স্ট্যাটাস দিয়ে বিচার করা হয়।"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Off: the notification only says there is a new reply, in the contact's language."
+msgstr "বন্ধ: বিজ্ঞপ্তিতে শুধু জানানো হয় যে নতুন উত্তর এসেছে, যোগাযোগের ভাষায়।"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Off: your backend sends its own push from the message webhook, as before. On: Yuva pushes a reply to the contact's devices when the app is not connected."
+msgstr "বন্ধ: আপনার ব্যাকএন্ড আগের মতোই বার্তার ওয়েবহুক থেকে নিজের পুশ পাঠায়। চালু: অ্যাপ সংযুক্ত না থাকলে Yuva উত্তরটি যোগাযোগের ডিভাইসে পাঠায়।"
+
 #: src/features/broadcasts/ListForm.tsx
 msgid "Offered on subscribe forms and the preference page. Private lists are filled by the team and the API."
 msgstr "সাবস্ক্রাইব ফর্ম ও পছন্দের পেজে দেওয়া হয়। ব্যক্তিগত লিস্ট টিম ও API ভরে।"
@@ -11177,6 +11221,10 @@ msgstr "প্রোডাক্ট সেটিংস"
 msgid "Product: {label}"
 msgstr "পণ্য: {label}"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Production"
+msgstr "প্রোডাকশন"
+
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Production backend"
@@ -11324,6 +11372,7 @@ msgstr "পুশ ঠিকানা"
 msgid "Push and e-mail"
 msgstr "পুশ ও ই-মেইল"
 
+#: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Push notifications"
@@ -11680,6 +11729,7 @@ msgstr "রিমোট ছবি প্রেরককে জানিয়ে
 
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/messages/MessageActions.tsx
+#: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
@@ -11760,6 +11810,10 @@ msgstr "ইমপোর্ট করা ইতিহাস সরান"
 msgid "Remove imported history?"
 msgstr "ইমপোর্ট করা ইতিহাস সরাবেন?"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Remove the APNs key?"
+msgstr "APNs কী সরাবেন?"
+
 #: src/features/migrations/DoneStep.tsx
 msgid "Remove the app password you made for Yuva in {provider}; it is not needed any more."
 msgstr "{provider}-এ Yuva-র জন্য বানানো অ্যাপ পাসওয়ার্ড সরান; এটি আর দরকার নেই।"
@@ -11767,6 +11821,10 @@ msgstr "{provider}-এ Yuva-র জন্য বানানো অ্যাপ 
 #: src/components/common/text.ts
 msgid "Remove the content of messages and notes"
 msgstr "বার্তা ও নোটের বিষয়বস্তু সরান"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Remove the FCM service account?"
+msgstr "FCM সার্ভিস অ্যাকাউন্ট সরাবেন?"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Remove the message or note you clicked on"
@@ -11861,6 +11919,7 @@ msgstr "গ্রুপের নাম বদলান"
 msgid "Reopen"
 msgstr "আবার খুলুন"
 
+#: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Replace"
@@ -12377,6 +12436,10 @@ msgstr "একই নাম, দুজনেই {shared}-কে লিখেছ�
 msgid "Same name."
 msgstr "একই নাম।"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Sandbox (development builds)"
+msgstr "স্যান্ডবক্স (ডেভেলপমেন্ট বিল্ড)"
+
 #: src/features/contact/ContactSheet.tsx
 msgid "Satisfaction"
 msgstr "সন্তুষ্টি"
@@ -12437,6 +12500,7 @@ msgstr "খসড়া এখনই সংরক্ষণ করুন"
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/settings/channels/app/AppSections.tsx
+#: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/chat/ChatSections.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/profile/ProfileForm.tsx
@@ -12825,6 +12889,10 @@ msgstr "শুধু পাঠান"
 msgid "Send or add the note, in a chat or app conversation (⇧↵ for a new line)"
 msgstr "চ্যাট বা অ্যাপ কথোপকথনে নোট পাঠান বা যোগ করুন (নতুন লাইনের জন্য ⇧↵)"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Send push notifications from Yuva"
+msgstr "Yuva থেকে পুশ বিজ্ঞপ্তি পাঠান"
+
 #: src/components/common/Linked.tsx
 msgid "Send reply"
 msgstr "উত্তর পাঠান"
@@ -13075,6 +13143,14 @@ msgstr "সার্ভার সেটিংস"
 msgid "Server URL"
 msgstr "সার্ভার URL"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Service account (JSON)"
+msgstr "সার্ভিস অ্যাকাউন্ট (JSON)"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Service account set"
+msgstr "সার্ভিস অ্যাকাউন্ট সেট করা আছে"
+
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "SES tenant"
 msgstr "SES টেন্যান্ট"
@@ -13230,6 +13306,10 @@ msgstr "HTTP-এর বিবরণ দেখান"
 #: src/features/inbox/AssistantsPage.tsx
 msgid "Show less"
 msgstr "কম দেখান"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Show message text in the notification"
+msgstr "বিজ্ঞপ্তিতে বার্তার লেখা দেখান"
 
 #: src/features/inbox/SidePanels.tsx
 #: src/features/migrations/CopyStep.tsx
@@ -14116,6 +14196,10 @@ msgstr "টিম"
 #: src/features/migrations/MapStep.tsx
 msgid "Team addresses"
 msgstr "টিমের ঠিকানা"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Team ID"
+msgstr "টিম আইডি"
 
 #: src/features/migrations/MapStep.tsx
 msgid "Team member for {sender}"
@@ -15624,6 +15708,10 @@ msgstr "আজ {at}-এ"
 msgid "Today at {at}"
 msgstr "আজ {at}-এ"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Token key (.p8)"
+msgstr "টোকেন কী (.p8)"
+
 #: src/features/settings/inboxes/InboxSecurity.tsx
 msgid "Tokens signed with the current secret stop working at once."
 msgstr "বর্তমান সিক্রেট দিয়ে সাইন করা টোকেন সঙ্গে সঙ্গে কাজ করা বন্ধ করে।"
@@ -16057,6 +16145,10 @@ msgstr "একটি .mbox ফাইল, বা .eml ফাইলের বা M
 #: src/features/broadcasts/Import.tsx
 msgid "Upload and check"
 msgstr "আপলোড করে পরীক্ষা করুন"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Upload file"
+msgstr "ফাইল আপলোড করুন"
 
 #: src/features/migrations/UploadStep.tsx
 msgid "Upload of {name}"

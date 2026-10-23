@@ -2135,6 +2135,14 @@ msgstr "Analitika"
 msgid "analytics not set up"
 msgstr "analitika nije postavljena"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Android (FCM)"
+msgstr "Android (FCM)"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Android devices get no push from Yuva until you add one again."
+msgstr "Android uređaji ne primaju push obavijesti od Yuve dok ponovno ne dodate servisni račun."
+
 #: src/components/common/DiscussionAuthor.tsx
 msgid "Anonymous"
 msgstr "Anonimno"
@@ -2921,6 +2929,10 @@ msgstr "Preglednik"
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Bugs, ideas and praise sent from your apps and pages"
 msgstr "Greške, ideje i pohvale poslane iz vaših aplikacija i stranica"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Bundle ID"
+msgstr "Bundle ID"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Business hours"
@@ -5317,6 +5329,10 @@ msgstr "Zapisi"
 msgid "Entry: {entry}"
 msgstr "Unos: {entry}"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Environment"
+msgstr "Okruženje"
+
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Error"
 msgstr "Pogreška"
@@ -6888,6 +6904,14 @@ msgstr "Pozvao/la {email} kao {role}"
 msgid "Invites"
 msgstr "Pozivnice"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "iOS (APNs)"
+msgstr "iOS (APNs)"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "iOS devices get no push from Yuva until you add a key again."
+msgstr "iOS uređaji ne primaju push obavijesti od Yuve dok ponovno ne dodate ključ."
+
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "IP address"
 msgstr "IP adresa"
@@ -7108,6 +7132,14 @@ msgstr "Ključ"
 #: src/features/home/HomePage.tsx
 msgid "Key figures"
 msgstr "Ključni brojevi"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Key ID"
+msgstr "ID ključa"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Key set"
+msgstr "Ključ postavljen"
 
 #: src/app/Palette.tsx
 #: src/app/TopBar.tsx
@@ -7367,6 +7399,10 @@ msgstr "Pravni naziv"
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Let bots send replies?"
 msgstr "Dopustiti botovima slanje odgovora?"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Let Yuva send the reply push to your app's users. <0>Read the guide</0>"
+msgstr "Neka Yuva korisnicima vaše aplikacije sama šalje push obavijest o odgovoru. <0>Pročitajte vodič</0>"
 
 #: src/app/UserMenu.tsx
 #: src/features/settings/appearance/AppearancePage.tsx
@@ -9754,6 +9790,14 @@ msgstr "Isključeno šalje što brže dopuštaju kanal i dnevno ograničenje rad
 msgid "Off, a redirect is judged against the expected status."
 msgstr "Isključeno: preusmjeravanje se procjenjuje prema očekivanom statusu."
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Off: the notification only says there is a new reply, in the contact's language."
+msgstr "Isključeno: obavijest samo kaže da postoji novi odgovor, na jeziku kontakta."
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Off: your backend sends its own push from the message webhook, as before. On: Yuva pushes a reply to the contact's devices when the app is not connected."
+msgstr "Isključeno: vaš backend šalje vlastiti push iz webhooka poruke kao i dosad. Uključeno: Yuva šalje odgovor na uređaje kontakta kad aplikacija nije povezana."
+
 #: src/features/broadcasts/ListForm.tsx
 msgid "Offered on subscribe forms and the preference page. Private lists are filled by the team and the API."
 msgstr "Nudi se na obrascima za pretplatu i stranici postavki. Privatne popise popunjavaju tim i API."
@@ -11177,6 +11221,10 @@ msgstr "Postavke proizvoda"
 msgid "Product: {label}"
 msgstr "Proizvod: {label}"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Production"
+msgstr "Produkcija"
+
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Production backend"
@@ -11324,6 +11372,7 @@ msgstr "Push adresa"
 msgid "Push and e-mail"
 msgstr "Push i e-pošta"
 
+#: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Push notifications"
@@ -11680,6 +11729,7 @@ msgstr "Udaljene slike mogu pošiljatelju reći da ste otvorili poruku."
 
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/messages/MessageActions.tsx
+#: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
@@ -11760,6 +11810,10 @@ msgstr "Ukloni uvezenu povijest"
 msgid "Remove imported history?"
 msgstr "Ukloniti uvezenu povijest?"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Remove the APNs key?"
+msgstr "Ukloniti APNs ključ?"
+
 #: src/features/migrations/DoneStep.tsx
 msgid "Remove the app password you made for Yuva in {provider}; it is not needed any more."
 msgstr "Uklonite lozinku aplikacije koju ste izradili za Yuvu kod {provider}; više nije potrebna."
@@ -11767,6 +11821,10 @@ msgstr "Uklonite lozinku aplikacije koju ste izradili za Yuvu kod {provider}; vi
 #: src/components/common/text.ts
 msgid "Remove the content of messages and notes"
 msgstr "Uklanjanje sadržaja poruka i bilješki"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Remove the FCM service account?"
+msgstr "Ukloniti FCM servisni račun?"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Remove the message or note you clicked on"
@@ -11861,6 +11919,7 @@ msgstr "Preimenuj grupu"
 msgid "Reopen"
 msgstr "Ponovno otvori"
 
+#: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Replace"
@@ -12377,6 +12436,10 @@ msgstr "Isto ime, oboje su pisali na {shared}."
 msgid "Same name."
 msgstr "Isto ime."
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Sandbox (development builds)"
+msgstr "Sandbox (razvojne verzije)"
+
 #: src/features/contact/ContactSheet.tsx
 msgid "Satisfaction"
 msgstr "Zadovoljstvo"
@@ -12437,6 +12500,7 @@ msgstr "Spremi skicu sada"
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/settings/channels/app/AppSections.tsx
+#: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/chat/ChatSections.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/profile/ProfileForm.tsx
@@ -12825,6 +12889,10 @@ msgstr "Samo šalji"
 msgid "Send or add the note, in a chat or app conversation (⇧↵ for a new line)"
 msgstr "Pošalji ili dodaj bilješku, u chatu ili razgovoru u aplikaciji (⇧↵ za novi redak)"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Send push notifications from Yuva"
+msgstr "Šalji push obavijesti iz Yuve"
+
 #: src/components/common/Linked.tsx
 msgid "Send reply"
 msgstr "Pošalji odgovor"
@@ -13075,6 +13143,14 @@ msgstr "Postavke poslužitelja"
 msgid "Server URL"
 msgstr "URL poslužitelja"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Service account (JSON)"
+msgstr "Servisni račun (JSON)"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Service account set"
+msgstr "Servisni račun postavljen"
+
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "SES tenant"
 msgstr "SES zakupac"
@@ -13230,6 +13306,10 @@ msgstr "Prikaži HTTP pojedinosti"
 #: src/features/inbox/AssistantsPage.tsx
 msgid "Show less"
 msgstr "Prikaži manje"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Show message text in the notification"
+msgstr "Prikaži tekst poruke u obavijesti"
 
 #: src/features/inbox/SidePanels.tsx
 #: src/features/migrations/CopyStep.tsx
@@ -14116,6 +14196,10 @@ msgstr "Tim"
 #: src/features/migrations/MapStep.tsx
 msgid "Team addresses"
 msgstr "Adrese tima"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Team ID"
+msgstr "ID tima"
 
 #: src/features/migrations/MapStep.tsx
 msgid "Team member for {sender}"
@@ -15624,6 +15708,10 @@ msgstr "danas u {at}"
 msgid "Today at {at}"
 msgstr "Danas u {at}"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Token key (.p8)"
+msgstr "Ključ tokena (.p8)"
+
 #: src/features/settings/inboxes/InboxSecurity.tsx
 msgid "Tokens signed with the current secret stop working at once."
 msgstr "Tokeni potpisani trenutnom tajnom odmah prestaju raditi."
@@ -16057,6 +16145,10 @@ msgstr "Učitajte .mbox datoteku ili .zip s .eml datotekama ili Maildirom. Yuvi 
 #: src/features/broadcasts/Import.tsx
 msgid "Upload and check"
 msgstr "Učitaj i provjeri"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Upload file"
+msgstr "Prenesi datoteku"
 
 #: src/features/migrations/UploadStep.tsx
 msgid "Upload of {name}"

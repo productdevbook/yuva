@@ -9,6 +9,7 @@ import { useEnumText } from "@/components/common/text"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useConversations } from "@/features/inbox/queries"
+import { PushSection } from "@/features/settings/channels/app/PushSection"
 import { AppAccessSection, AppInstallSection } from "@/features/settings/channels/app/AppSections"
 import {
   ChatInstallSection,
@@ -204,6 +205,7 @@ function Body({ ch, tab }: { ch: Channel; tab: ChannelTab }) {
       <>
         <NameSection key={`name:${ch.id}`} channel={ch} />
         <AppAccessSection channel={ch} />
+        <PushSection channel={ch} />
         <AttachmentsSection channel={ch} />
         <RemoveSection channel={ch} />
       </>

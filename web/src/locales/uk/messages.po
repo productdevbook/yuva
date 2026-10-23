@@ -2135,6 +2135,14 @@ msgstr "Аналітика"
 msgid "analytics not set up"
 msgstr "аналітику не налаштовано"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Android (FCM)"
+msgstr "Android (FCM)"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Android devices get no push from Yuva until you add one again."
+msgstr "Пристрої Android не отримують push від Yuva, доки ви знову не додасте службовий обліковий запис."
+
 #: src/components/common/DiscussionAuthor.tsx
 msgid "Anonymous"
 msgstr "Анонім"
@@ -2921,6 +2929,10 @@ msgstr "Браузер"
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Bugs, ideas and praise sent from your apps and pages"
 msgstr "Помилки, ідеї та похвала з ваших застосунків і сторінок"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Bundle ID"
+msgstr "Bundle ID"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Business hours"
@@ -5317,6 +5329,10 @@ msgstr "Записи"
 msgid "Entry: {entry}"
 msgstr "Запис: {entry}"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Environment"
+msgstr "Середовище"
+
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Error"
 msgstr "Помилка"
@@ -6888,6 +6904,14 @@ msgstr "Запросив(ла) {email} з роллю {role}"
 msgid "Invites"
 msgstr "Запрошення"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "iOS (APNs)"
+msgstr "iOS (APNs)"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "iOS devices get no push from Yuva until you add a key again."
+msgstr "Пристрої iOS не отримують push від Yuva, доки ви знову не додасте ключ."
+
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "IP address"
 msgstr "IP-адреса"
@@ -7108,6 +7132,14 @@ msgstr "Ключ"
 #: src/features/home/HomePage.tsx
 msgid "Key figures"
 msgstr "Ключові показники"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Key ID"
+msgstr "ID ключа"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Key set"
+msgstr "Ключ задано"
 
 #: src/app/Palette.tsx
 #: src/app/TopBar.tsx
@@ -7367,6 +7399,10 @@ msgstr "Юридична назва"
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Let bots send replies?"
 msgstr "Дозволити ботам надсилати відповіді?"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Let Yuva send the reply push to your app's users. <0>Read the guide</0>"
+msgstr "Нехай Yuva сама надсилає push про відповідь користувачам вашого застосунку. <0>Читати посібник</0>"
 
 #: src/app/UserMenu.tsx
 #: src/features/settings/appearance/AppearancePage.tsx
@@ -9754,6 +9790,14 @@ msgstr "За «Вимк.» надсилання йде так швидко, як
 msgid "Off, a redirect is judged against the expected status."
 msgstr "Вимкнено: переспрямування оцінюється за очікуваним статусом."
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Off: the notification only says there is a new reply, in the contact's language."
+msgstr "Вимк.: сповіщення лише повідомляє про нову відповідь мовою контакту."
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Off: your backend sends its own push from the message webhook, as before. On: Yuva pushes a reply to the contact's devices when the app is not connected."
+msgstr "Вимк.: ваш бекенд, як і раніше, надсилає власний push із вебхука повідомлення. Увімк.: Yuva надсилає відповідь на пристрої контакту, коли застосунок не підключений."
+
 #: src/features/broadcasts/ListForm.tsx
 msgid "Offered on subscribe forms and the preference page. Private lists are filled by the team and the API."
 msgstr "Пропонується у формах підписки та на сторінці вподобань. Закриті списки заповнюють команда й API."
@@ -11177,6 +11221,10 @@ msgstr "Налаштування продукту"
 msgid "Product: {label}"
 msgstr "Продукт: {label}"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Production"
+msgstr "Продакшен"
+
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Production backend"
@@ -11324,6 +11372,7 @@ msgstr "Адреса push"
 msgid "Push and e-mail"
 msgstr "Push і e-mail"
 
+#: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Push notifications"
@@ -11680,6 +11729,7 @@ msgstr "Віддалені зображення можуть повідомит�
 
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/messages/MessageActions.tsx
+#: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
@@ -11760,6 +11810,10 @@ msgstr "Видалити імпортовану історію"
 msgid "Remove imported history?"
 msgstr "Видалити імпортовану історію?"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Remove the APNs key?"
+msgstr "Видалити ключ APNs?"
+
 #: src/features/migrations/DoneStep.tsx
 msgid "Remove the app password you made for Yuva in {provider}; it is not needed any more."
 msgstr "Видаліть пароль застосунку, створений для Yuva в {provider}; він більше не потрібен."
@@ -11767,6 +11821,10 @@ msgstr "Видаліть пароль застосунку, створений �
 #: src/components/common/text.ts
 msgid "Remove the content of messages and notes"
 msgstr "Видаляти вміст повідомлень і нотаток"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Remove the FCM service account?"
+msgstr "Видалити службовий обліковий запис FCM?"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Remove the message or note you clicked on"
@@ -11861,6 +11919,7 @@ msgstr "Перейменувати групу"
 msgid "Reopen"
 msgstr "Відкрити знову"
 
+#: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Replace"
@@ -12377,6 +12436,10 @@ msgstr "Те саме ім’я, обоє писали на {shared}."
 msgid "Same name."
 msgstr "Те саме ім’я."
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Sandbox (development builds)"
+msgstr "Sandbox (збірки для розробки)"
+
 #: src/features/contact/ContactSheet.tsx
 msgid "Satisfaction"
 msgstr "Задоволеність"
@@ -12437,6 +12500,7 @@ msgstr "Зберегти чернетку зараз"
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/settings/channels/app/AppSections.tsx
+#: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/chat/ChatSections.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/profile/ProfileForm.tsx
@@ -12825,6 +12889,10 @@ msgstr "Лише надсилання"
 msgid "Send or add the note, in a chat or app conversation (⇧↵ for a new line)"
 msgstr "Надіслати або додати нотатку в розмові чату чи застосунку (⇧↵ для нового рядка)"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Send push notifications from Yuva"
+msgstr "Надсилати push-сповіщення з Yuva"
+
 #: src/components/common/Linked.tsx
 msgid "Send reply"
 msgstr "Надіслати відповідь"
@@ -13075,6 +13143,14 @@ msgstr "Налаштування сервера"
 msgid "Server URL"
 msgstr "URL сервера"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Service account (JSON)"
+msgstr "Службовий обліковий запис (JSON)"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Service account set"
+msgstr "Службовий обліковий запис задано"
+
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "SES tenant"
 msgstr "Орендар SES"
@@ -13230,6 +13306,10 @@ msgstr "Показати відомості про HTTP"
 #: src/features/inbox/AssistantsPage.tsx
 msgid "Show less"
 msgstr "Показати менше"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Show message text in the notification"
+msgstr "Показувати текст повідомлення в сповіщенні"
 
 #: src/features/inbox/SidePanels.tsx
 #: src/features/migrations/CopyStep.tsx
@@ -14116,6 +14196,10 @@ msgstr "Команда"
 #: src/features/migrations/MapStep.tsx
 msgid "Team addresses"
 msgstr "Адреси команди"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Team ID"
+msgstr "ID команди"
 
 #: src/features/migrations/MapStep.tsx
 msgid "Team member for {sender}"
@@ -15624,6 +15708,10 @@ msgstr "сьогодні о {at}"
 msgid "Today at {at}"
 msgstr "Сьогодні о {at}"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Token key (.p8)"
+msgstr "Ключ токена (.p8)"
+
 #: src/features/settings/inboxes/InboxSecurity.tsx
 msgid "Tokens signed with the current secret stop working at once."
 msgstr "Токени, підписані поточним секретом, перестають працювати одразу."
@@ -16057,6 +16145,10 @@ msgstr "Завантажте файл .mbox або .zip з файлами .eml �
 #: src/features/broadcasts/Import.tsx
 msgid "Upload and check"
 msgstr "Завантажити й перевірити"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Upload file"
+msgstr "Завантажити файл"
 
 #: src/features/migrations/UploadStep.tsx
 msgid "Upload of {name}"

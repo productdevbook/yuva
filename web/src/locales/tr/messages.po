@@ -2135,6 +2135,14 @@ msgstr "Analitik"
 msgid "analytics not set up"
 msgstr "analitik kurulmadı"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Android (FCM)"
+msgstr "Android (FCM)"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Android devices get no push from Yuva until you add one again."
+msgstr "Yeni bir hizmet hesabı ekleyene kadar Android cihazlar Yuva'dan bildirim almaz."
+
 #: src/components/common/DiscussionAuthor.tsx
 msgid "Anonymous"
 msgstr "Anonim"
@@ -2921,6 +2929,10 @@ msgstr "Tarayıcı"
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Bugs, ideas and praise sent from your apps and pages"
 msgstr "Uygulamalarınızdan ve sayfalarınızdan gelen hatalar, fikirler ve övgüler"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Bundle ID"
+msgstr "Bundle ID"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Business hours"
@@ -5317,6 +5329,10 @@ msgstr "Kayıtlar"
 msgid "Entry: {entry}"
 msgstr "Öğe: {entry}"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Environment"
+msgstr "Ortam"
+
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Error"
 msgstr "Hata"
@@ -6888,6 +6904,14 @@ msgstr "{email} adresini {role} olarak davet etti"
 msgid "Invites"
 msgstr "Davetler"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "iOS (APNs)"
+msgstr "iOS (APNs)"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "iOS devices get no push from Yuva until you add a key again."
+msgstr "Yeniden bir anahtar ekleyene kadar iOS cihazlar Yuva'dan bildirim almaz."
+
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "IP address"
 msgstr "IP adresi"
@@ -7108,6 +7132,14 @@ msgstr "Anahtar"
 #: src/features/home/HomePage.tsx
 msgid "Key figures"
 msgstr "Temel rakamlar"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Key ID"
+msgstr "Anahtar kimliği"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Key set"
+msgstr "Anahtar tanımlı"
 
 #: src/app/Palette.tsx
 #: src/app/TopBar.tsx
@@ -7367,6 +7399,10 @@ msgstr "Yasal unvan"
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Let bots send replies?"
 msgstr "Botlar yanıt göndersin mi?"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Let Yuva send the reply push to your app's users. <0>Read the guide</0>"
+msgstr "Yuva, yanıt bildirimini uygulamanızın kullanıcılarına kendisi göndersin. <0>Rehberi okuyun</0>"
 
 #: src/app/UserMenu.tsx
 #: src/features/settings/appearance/AppearancePage.tsx
@@ -9754,6 +9790,14 @@ msgstr "Kapalıyken kanalın ve çalışma alanının günlük sınırının izi
 msgid "Off, a redirect is judged against the expected status."
 msgstr "Kapalıyken yönlendirme, beklenen durum aralığına göre değerlendirilir."
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Off: the notification only says there is a new reply, in the contact's language."
+msgstr "Kapalıyken bildirim yalnızca yeni bir yanıt olduğunu söyler, kişinin dilinde."
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Off: your backend sends its own push from the message webhook, as before. On: Yuva pushes a reply to the contact's devices when the app is not connected."
+msgstr "Kapalıyken arka ucunuz bildirimi her zamanki gibi ileti web kancasından kendisi gönderir. Açıkken uygulama bağlı değilse Yuva, yanıtı kişinin cihazlarına bildirim olarak gönderir."
+
 #: src/features/broadcasts/ListForm.tsx
 msgid "Offered on subscribe forms and the preference page. Private lists are filled by the team and the API."
 msgstr "Abonelik formlarında ve tercih sayfasında sunulur. Özel listeleri ekip ve API doldurur."
@@ -11177,6 +11221,10 @@ msgstr "Ürün ayarları"
 msgid "Product: {label}"
 msgstr "Ürün: {label}"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Production"
+msgstr "Üretim"
+
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Production backend"
@@ -11324,6 +11372,7 @@ msgstr "Gönderim adresi"
 msgid "Push and e-mail"
 msgstr "Anlık ve e-posta"
 
+#: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Push notifications"
@@ -11680,6 +11729,7 @@ msgstr "Uzak görseller, postayı açtığınızı gönderene bildirebilir."
 
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/messages/MessageActions.tsx
+#: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
@@ -11760,6 +11810,10 @@ msgstr "Aktarılan geçmişi kaldır"
 msgid "Remove imported history?"
 msgstr "Aktarılan geçmiş kaldırılsın mı?"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Remove the APNs key?"
+msgstr "APNs anahtarı kaldırılsın mı?"
+
 #: src/features/migrations/DoneStep.tsx
 msgid "Remove the app password you made for Yuva in {provider}; it is not needed any more."
 msgstr "Yuva için oluşturduğunuz uygulama şifresini {provider} içinden kaldırın; artık gerekmiyor."
@@ -11767,6 +11821,10 @@ msgstr "Yuva için oluşturduğunuz uygulama şifresini {provider} içinden kald
 #: src/components/common/text.ts
 msgid "Remove the content of messages and notes"
 msgstr "İletilerin ve notların içeriğini kaldırma"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Remove the FCM service account?"
+msgstr "FCM hizmet hesabı kaldırılsın mı?"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Remove the message or note you clicked on"
@@ -11861,6 +11919,7 @@ msgstr "Grubu yeniden adlandır"
 msgid "Reopen"
 msgstr "Yeniden aç"
 
+#: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Replace"
@@ -12377,6 +12436,10 @@ msgstr "Aynı ad, ikisi de {shared} adresine yazdı."
 msgid "Same name."
 msgstr "Aynı ad."
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Sandbox (development builds)"
+msgstr "Sandbox (geliştirme sürümleri)"
+
 #: src/features/contact/ContactSheet.tsx
 msgid "Satisfaction"
 msgstr "Memnuniyet"
@@ -12437,6 +12500,7 @@ msgstr "Taslağı şimdi kaydet"
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/settings/channels/app/AppSections.tsx
+#: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/chat/ChatSections.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/profile/ProfileForm.tsx
@@ -12825,6 +12889,10 @@ msgstr "Sadece gönder"
 msgid "Send or add the note, in a chat or app conversation (⇧↵ for a new line)"
 msgstr "Sohbet ya da uygulama konuşmasında gönder veya notu ekle (yeni satır için ⇧↵)"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Send push notifications from Yuva"
+msgstr "Bildirimleri Yuva göndersin"
+
 #: src/components/common/Linked.tsx
 msgid "Send reply"
 msgstr "Yanıtı gönder"
@@ -13075,6 +13143,14 @@ msgstr "Sunucu ayarları"
 msgid "Server URL"
 msgstr "Sunucu adresi"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Service account (JSON)"
+msgstr "Hizmet hesabı (JSON)"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Service account set"
+msgstr "Hizmet hesabı tanımlı"
+
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "SES tenant"
 msgstr "SES kiracısı"
@@ -13230,6 +13306,10 @@ msgstr "HTTP ayrıntılarını göster"
 #: src/features/inbox/AssistantsPage.tsx
 msgid "Show less"
 msgstr "Daha az göster"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Show message text in the notification"
+msgstr "Bildirimde ileti metnini göster"
 
 #: src/features/inbox/SidePanels.tsx
 #: src/features/migrations/CopyStep.tsx
@@ -14116,6 +14196,10 @@ msgstr "Ekip"
 #: src/features/migrations/MapStep.tsx
 msgid "Team addresses"
 msgstr "Ekip adresleri"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Team ID"
+msgstr "Ekip kimliği"
 
 #: src/features/migrations/MapStep.tsx
 msgid "Team member for {sender}"
@@ -15624,6 +15708,10 @@ msgstr "bugün saat {at}"
 msgid "Today at {at}"
 msgstr "Bugün saat {at}"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Token key (.p8)"
+msgstr "Belirteç anahtarı (.p8)"
+
 #: src/features/settings/inboxes/InboxSecurity.tsx
 msgid "Tokens signed with the current secret stop working at once."
 msgstr "Mevcut anahtarla imzalanmış belirteçler hemen geçersiz olur."
@@ -16057,6 +16145,10 @@ msgstr "Bir .mbox dosyası ya da .eml dosyalarının veya bir Maildir'in .zip'in
 #: src/features/broadcasts/Import.tsx
 msgid "Upload and check"
 msgstr "Yükle ve denetle"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Upload file"
+msgstr "Dosya yükle"
 
 #: src/features/migrations/UploadStep.tsx
 msgid "Upload of {name}"

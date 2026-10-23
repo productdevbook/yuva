@@ -2135,6 +2135,14 @@ msgstr "Analitika"
 msgid "analytics not set up"
 msgstr "az analitika nincs beállítva"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Android (FCM)"
+msgstr "Android (FCM)"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Android devices get no push from Yuva until you add one again."
+msgstr "Az Android-eszközök nem kapnak push-értesítést a Yuvától, amíg újra nem adsz hozzá szolgáltatásfiókot."
+
 #: src/components/common/DiscussionAuthor.tsx
 msgid "Anonymous"
 msgstr "Névtelen"
@@ -2921,6 +2929,10 @@ msgstr "Böngésző"
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Bugs, ideas and praise sent from your apps and pages"
 msgstr "Hibák, ötletek és dicséretek az alkalmazásaidból és oldalaidról"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Bundle ID"
+msgstr "Bundle ID"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Business hours"
@@ -5317,6 +5329,10 @@ msgstr "Bejegyzések"
 msgid "Entry: {entry}"
 msgstr "Bejegyzés: {entry}"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Environment"
+msgstr "Környezet"
+
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Error"
 msgstr "Hiba"
@@ -6888,6 +6904,14 @@ msgstr "Meghívta: {email}, szerepkör: {role}"
 msgid "Invites"
 msgstr "Meghívók"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "iOS (APNs)"
+msgstr "iOS (APNs)"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "iOS devices get no push from Yuva until you add a key again."
+msgstr "Az iOS-eszközök nem kapnak push-értesítést a Yuvától, amíg újra nem adsz hozzá kulcsot."
+
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "IP address"
 msgstr "IP-cím"
@@ -7108,6 +7132,14 @@ msgstr "Kulcs"
 #: src/features/home/HomePage.tsx
 msgid "Key figures"
 msgstr "Kulcsszámok"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Key ID"
+msgstr "Kulcsazonosító"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Key set"
+msgstr "Kulcs beállítva"
 
 #: src/app/Palette.tsx
 #: src/app/TopBar.tsx
@@ -7367,6 +7399,10 @@ msgstr "Jogi név"
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Let bots send replies?"
 msgstr "Küldhetnek a botok válaszokat?"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Let Yuva send the reply push to your app's users. <0>Read the guide</0>"
+msgstr "Hagyd, hogy a Yuva maga küldje a válasz push-értesítését az alkalmazásod felhasználóinak. <0>Olvasd el az útmutatót</0>"
 
 #: src/app/UserMenu.tsx
 #: src/features/settings/appearance/AppearancePage.tsx
@@ -9754,6 +9790,14 @@ msgstr "Kikapcsolva olyan gyorsan küld, amennyire a csatorna és a munkaterüle
 msgid "Off, a redirect is judged against the expected status."
 msgstr "Kikapcsolva az átirányítást a várt állapot alapján értékeli."
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Off: the notification only says there is a new reply, in the contact's language."
+msgstr "Ki: az értesítés csak annyit mond, hogy új válasz érkezett, a kapcsolat nyelvén."
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Off: your backend sends its own push from the message webhook, as before. On: Yuva pushes a reply to the contact's devices when the app is not connected."
+msgstr "Ki: a háttérrendszered a saját push-értesítését küldi az üzenet-webhookból, mint eddig. Be: a Yuva elküldi a választ a kapcsolat eszközeire, ha az alkalmazás nincs csatlakozva."
+
 #: src/features/broadcasts/ListForm.tsx
 msgid "Offered on subscribe forms and the preference page. Private lists are filled by the team and the API."
 msgstr "Feliratkozási űrlapokon és a beállítások oldalon kínáljuk fel. A privát listákat a csapat és az API tölti fel."
@@ -11177,6 +11221,10 @@ msgstr "Termékbeállítások"
 msgid "Product: {label}"
 msgstr "Termék: {label}"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Production"
+msgstr "Éles"
+
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Production backend"
@@ -11324,6 +11372,7 @@ msgstr "Push-cím"
 msgid "Push and e-mail"
 msgstr "Push és e-mail"
 
+#: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Push notifications"
@@ -11680,6 +11729,7 @@ msgstr "A távoli képek elárulhatják a feladónak, hogy megnyitottad a levele
 
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/messages/MessageActions.tsx
+#: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
@@ -11760,6 +11810,10 @@ msgstr "Importált előzmények eltávolítása"
 msgid "Remove imported history?"
 msgstr "Eltávolítod az importált előzményeket?"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Remove the APNs key?"
+msgstr "Eltávolítod az APNs-kulcsot?"
+
 #: src/features/migrations/DoneStep.tsx
 msgid "Remove the app password you made for Yuva in {provider}; it is not needed any more."
 msgstr "Távolítsd el a Yuvához a(z) {provider} szolgáltatónál létrehozott alkalmazásjelszót; már nincs rá szükség."
@@ -11767,6 +11821,10 @@ msgstr "Távolítsd el a Yuvához a(z) {provider} szolgáltatónál létrehozott
 #: src/components/common/text.ts
 msgid "Remove the content of messages and notes"
 msgstr "Üzenetek és jegyzetek tartalmának eltávolítása"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Remove the FCM service account?"
+msgstr "Eltávolítod az FCM-szolgáltatásfiókot?"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Remove the message or note you clicked on"
@@ -11861,6 +11919,7 @@ msgstr "Csoport átnevezése"
 msgid "Reopen"
 msgstr "Újranyitás"
 
+#: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Replace"
@@ -12377,6 +12436,10 @@ msgstr "Azonos név, mindketten ide írtak: {shared}."
 msgid "Same name."
 msgstr "Azonos név."
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Sandbox (development builds)"
+msgstr "Sandbox (fejlesztői buildek)"
+
 #: src/features/contact/ContactSheet.tsx
 msgid "Satisfaction"
 msgstr "Elégedettség"
@@ -12437,6 +12500,7 @@ msgstr "A piszkozat mentése most"
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/settings/channels/app/AppSections.tsx
+#: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/chat/ChatSections.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/profile/ProfileForm.tsx
@@ -12825,6 +12889,10 @@ msgstr "Csak küldés"
 msgid "Send or add the note, in a chat or app conversation (⇧↵ for a new line)"
 msgstr "Megjegyzés küldése vagy hozzáadása, csevegésben vagy alkalmazásbeszélgetésben (⇧↵ új sorhoz)"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Send push notifications from Yuva"
+msgstr "Push-értesítések küldése a Yuvából"
+
 #: src/components/common/Linked.tsx
 msgid "Send reply"
 msgstr "Válasz elküldése"
@@ -13075,6 +13143,14 @@ msgstr "Szerverbeállítások"
 msgid "Server URL"
 msgstr "Szerver URL-je"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Service account (JSON)"
+msgstr "Szolgáltatásfiók (JSON)"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Service account set"
+msgstr "Szolgáltatásfiók beállítva"
+
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "SES tenant"
 msgstr "SES-bérlő"
@@ -13230,6 +13306,10 @@ msgstr "HTTP-részletek megjelenítése"
 #: src/features/inbox/AssistantsPage.tsx
 msgid "Show less"
 msgstr "Kevesebb megjelenítése"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Show message text in the notification"
+msgstr "Az üzenet szövegének megjelenítése az értesítésben"
 
 #: src/features/inbox/SidePanels.tsx
 #: src/features/migrations/CopyStep.tsx
@@ -14116,6 +14196,10 @@ msgstr "Csapat"
 #: src/features/migrations/MapStep.tsx
 msgid "Team addresses"
 msgstr "Csapatcímek"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Team ID"
+msgstr "Csapatazonosító"
 
 #: src/features/migrations/MapStep.tsx
 msgid "Team member for {sender}"
@@ -15624,6 +15708,10 @@ msgstr "ma ekkor: {at}"
 msgid "Today at {at}"
 msgstr "Ma ekkor: {at}"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Token key (.p8)"
+msgstr "Tokenkulcs (.p8)"
+
 #: src/features/settings/inboxes/InboxSecurity.tsx
 msgid "Tokens signed with the current secret stop working at once."
 msgstr "Az aktuális titokkal aláírt tokenek azonnal leállnak."
@@ -16057,6 +16145,10 @@ msgstr "Tölts fel egy .mbox fájlt, vagy egy .zip-et .eml fájlokkal vagy Maild
 #: src/features/broadcasts/Import.tsx
 msgid "Upload and check"
 msgstr "Feltöltés és ellenőrzés"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Upload file"
+msgstr "Fájl feltöltése"
 
 #: src/features/migrations/UploadStep.tsx
 msgid "Upload of {name}"

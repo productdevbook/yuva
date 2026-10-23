@@ -2135,6 +2135,14 @@ msgstr "Analiză"
 msgid "analytics not set up"
 msgstr "analitica nu este configurată"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Android (FCM)"
+msgstr "Android (FCM)"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Android devices get no push from Yuva until you add one again."
+msgstr "Dispozitivele Android nu primesc notificări push de la Yuva până când adaugi din nou un cont de serviciu."
+
 #: src/components/common/DiscussionAuthor.tsx
 msgid "Anonymous"
 msgstr "Anonim"
@@ -2921,6 +2929,10 @@ msgstr "Browser"
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Bugs, ideas and praise sent from your apps and pages"
 msgstr "Erori, idei și laude trimise din aplicațiile și paginile tale"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Bundle ID"
+msgstr "Bundle ID"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Business hours"
@@ -5317,6 +5329,10 @@ msgstr "Intrări"
 msgid "Entry: {entry}"
 msgstr "Intrare: {entry}"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Environment"
+msgstr "Mediu"
+
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Error"
 msgstr "Eroare"
@@ -6888,6 +6904,14 @@ msgstr "A invitat {email} ca {role}"
 msgid "Invites"
 msgstr "Invitații"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "iOS (APNs)"
+msgstr "iOS (APNs)"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "iOS devices get no push from Yuva until you add a key again."
+msgstr "Dispozitivele iOS nu primesc notificări push de la Yuva până când adaugi din nou o cheie."
+
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "IP address"
 msgstr "Adresă IP"
@@ -7108,6 +7132,14 @@ msgstr "Cheie"
 #: src/features/home/HomePage.tsx
 msgid "Key figures"
 msgstr "Cifre cheie"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Key ID"
+msgstr "ID cheie"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Key set"
+msgstr "Cheie setată"
 
 #: src/app/Palette.tsx
 #: src/app/TopBar.tsx
@@ -7367,6 +7399,10 @@ msgstr "Denumire legală"
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Let bots send replies?"
 msgstr "Lași boții să trimită răspunsuri?"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Let Yuva send the reply push to your app's users. <0>Read the guide</0>"
+msgstr "Lasă Yuva să trimită ea însăși notificarea push a răspunsului utilizatorilor aplicației tale. <0>Citește ghidul</0>"
 
 #: src/app/UserMenu.tsx
 #: src/features/settings/appearance/AppearancePage.tsx
@@ -9754,6 +9790,14 @@ msgstr "Oprit trimite cât de repede permit canalul și limita zilnică a spați
 msgid "Off, a redirect is judged against the expected status."
 msgstr "Dezactivat, o redirecționare este judecată după starea așteptată."
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Off: the notification only says there is a new reply, in the contact's language."
+msgstr "Oprit: notificarea spune doar că există un răspuns nou, în limba contactului."
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Off: your backend sends its own push from the message webhook, as before. On: Yuva pushes a reply to the contact's devices when the app is not connected."
+msgstr "Oprit: backendul tău trimite propria notificare push din webhook-ul mesajului, ca până acum. Pornit: Yuva trimite răspunsul către dispozitivele contactului când aplicația nu este conectată."
+
 #: src/features/broadcasts/ListForm.tsx
 msgid "Offered on subscribe forms and the preference page. Private lists are filled by the team and the API."
 msgstr "Oferită în formularele de abonare și pe pagina de preferințe. Listele private sunt completate de echipă și de API."
@@ -11177,6 +11221,10 @@ msgstr "Setările produsului"
 msgid "Product: {label}"
 msgstr "Produs: {label}"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Production"
+msgstr "Producție"
+
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Production backend"
@@ -11324,6 +11372,7 @@ msgstr "Adresa push"
 msgid "Push and e-mail"
 msgstr "Push și e-mail"
 
+#: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Push notifications"
@@ -11680,6 +11729,7 @@ msgstr "Imaginile de la distanță pot spune expeditorului că ai deschis mesaju
 
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/messages/MessageActions.tsx
+#: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
@@ -11760,6 +11810,10 @@ msgstr "Elimină istoricul importat"
 msgid "Remove imported history?"
 msgstr "Elimini istoricul importat?"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Remove the APNs key?"
+msgstr "Elimini cheia APNs?"
+
 #: src/features/migrations/DoneStep.tsx
 msgid "Remove the app password you made for Yuva in {provider}; it is not needed any more."
 msgstr "Elimină parola de aplicație pe care ai creat-o pentru Yuva la {provider}; nu mai este necesară."
@@ -11767,6 +11821,10 @@ msgstr "Elimină parola de aplicație pe care ai creat-o pentru Yuva la {provide
 #: src/components/common/text.ts
 msgid "Remove the content of messages and notes"
 msgstr "Elimină conținutul mesajelor și notelor"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Remove the FCM service account?"
+msgstr "Elimini contul de serviciu FCM?"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Remove the message or note you clicked on"
@@ -11861,6 +11919,7 @@ msgstr "Redenumește grupul"
 msgid "Reopen"
 msgstr "Redeschide"
 
+#: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Replace"
@@ -12377,6 +12436,10 @@ msgstr "Același nume, ambii au scris către {shared}."
 msgid "Same name."
 msgstr "Același nume."
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Sandbox (development builds)"
+msgstr "Sandbox (versiuni de dezvoltare)"
+
 #: src/features/contact/ContactSheet.tsx
 msgid "Satisfaction"
 msgstr "Satisfacție"
@@ -12437,6 +12500,7 @@ msgstr "Salvează ciorna acum"
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/settings/channels/app/AppSections.tsx
+#: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/chat/ChatSections.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/profile/ProfileForm.tsx
@@ -12825,6 +12889,10 @@ msgstr "Doar trimite"
 msgid "Send or add the note, in a chat or app conversation (⇧↵ for a new line)"
 msgstr "Trimite sau adaugă nota, într-un chat sau o conversație din aplicație (⇧↵ pentru rând nou)"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Send push notifications from Yuva"
+msgstr "Trimite notificări push din Yuva"
+
 #: src/components/common/Linked.tsx
 msgid "Send reply"
 msgstr "Trimite răspunsul"
@@ -13075,6 +13143,14 @@ msgstr "Setări server"
 msgid "Server URL"
 msgstr "URL server"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Service account (JSON)"
+msgstr "Cont de serviciu (JSON)"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Service account set"
+msgstr "Cont de serviciu setat"
+
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "SES tenant"
 msgstr "Tenant SES"
@@ -13230,6 +13306,10 @@ msgstr "Afișează detaliile HTTP"
 #: src/features/inbox/AssistantsPage.tsx
 msgid "Show less"
 msgstr "Arată mai puțin"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Show message text in the notification"
+msgstr "Arată textul mesajului în notificare"
 
 #: src/features/inbox/SidePanels.tsx
 #: src/features/migrations/CopyStep.tsx
@@ -14116,6 +14196,10 @@ msgstr "Echipă"
 #: src/features/migrations/MapStep.tsx
 msgid "Team addresses"
 msgstr "Adrese de echipă"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Team ID"
+msgstr "ID echipă"
 
 #: src/features/migrations/MapStep.tsx
 msgid "Team member for {sender}"
@@ -15624,6 +15708,10 @@ msgstr "azi la {at}"
 msgid "Today at {at}"
 msgstr "Azi la {at}"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Token key (.p8)"
+msgstr "Cheie token (.p8)"
+
 #: src/features/settings/inboxes/InboxSecurity.tsx
 msgid "Tokens signed with the current secret stop working at once."
 msgstr "Tokenurile semnate cu secretul curent încetează să funcționeze imediat."
@@ -16057,6 +16145,10 @@ msgstr "Încarcă un fișier .mbox sau un .zip cu fișiere .eml sau cu un Maildi
 #: src/features/broadcasts/Import.tsx
 msgid "Upload and check"
 msgstr "Încarcă și verifică"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Upload file"
+msgstr "Încarcă fișier"
 
 #: src/features/migrations/UploadStep.tsx
 msgid "Upload of {name}"

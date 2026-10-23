@@ -2135,6 +2135,14 @@ msgstr "التحليلات"
 msgid "analytics not set up"
 msgstr "لم يتم إعداد التحليلات"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Android (FCM)"
+msgstr "Android (FCM)"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Android devices get no push from Yuva until you add one again."
+msgstr "لن تتلقى أجهزة Android إشعارات من Yuva حتى تضيف حساب خدمة مرة أخرى."
+
 #: src/components/common/DiscussionAuthor.tsx
 msgid "Anonymous"
 msgstr "مجهول"
@@ -2921,6 +2929,10 @@ msgstr "المتصفح"
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Bugs, ideas and praise sent from your apps and pages"
 msgstr "الأخطاء والأفكار والثناء المرسلة من تطبيقاتك وصفحاتك"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Bundle ID"
+msgstr "Bundle ID"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Business hours"
@@ -5317,6 +5329,10 @@ msgstr "الإدخالات"
 msgid "Entry: {entry}"
 msgstr "الإدخال: {entry}"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Environment"
+msgstr "البيئة"
+
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Error"
 msgstr "خطأ"
@@ -6888,6 +6904,14 @@ msgstr "دعا {email} بدور {role}"
 msgid "Invites"
 msgstr "الدعوات"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "iOS (APNs)"
+msgstr "iOS (APNs)"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "iOS devices get no push from Yuva until you add a key again."
+msgstr "لن تتلقى أجهزة iOS إشعارات من Yuva حتى تضيف مفتاحًا مرة أخرى."
+
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "IP address"
 msgstr "عنوان IP"
@@ -7108,6 +7132,14 @@ msgstr "المفتاح"
 #: src/features/home/HomePage.tsx
 msgid "Key figures"
 msgstr "الأرقام الرئيسية"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Key ID"
+msgstr "معرّف المفتاح"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Key set"
+msgstr "المفتاح محدَّد"
 
 #: src/app/Palette.tsx
 #: src/app/TopBar.tsx
@@ -7367,6 +7399,10 @@ msgstr "الاسم القانوني"
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Let bots send replies?"
 msgstr "هل تسمح للروبوتات بإرسال الردود؟"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Let Yuva send the reply push to your app's users. <0>Read the guide</0>"
+msgstr "دع Yuva ترسل إشعار الرد بنفسها إلى مستخدمي تطبيقك. <0>اقرأ الدليل</0>"
 
 #: src/app/UserMenu.tsx
 #: src/features/settings/appearance/AppearancePage.tsx
@@ -9754,6 +9790,14 @@ msgstr "عند الإيقاف يُرسل بأسرع ما تسمح به القن�
 msgid "Off, a redirect is judged against the expected status."
 msgstr "عند الإيقاف يُحكم على إعادة التوجيه بحسب الحالة المتوقعة."
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Off: the notification only says there is a new reply, in the contact's language."
+msgstr "متوقف: يكتفي الإشعار بالقول إن هناك ردًا جديدًا، بلغة جهة الاتصال."
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Off: your backend sends its own push from the message webhook, as before. On: Yuva pushes a reply to the contact's devices when the app is not connected."
+msgstr "متوقف: يرسل الخادم الخلفي لديك إشعاره الخاص من webhook الرسالة كما في السابق. قيد التشغيل: ترسل Yuva الرد إلى أجهزة جهة الاتصال عندما لا يكون التطبيق متصلًا."
+
 #: src/features/broadcasts/ListForm.tsx
 msgid "Offered on subscribe forms and the preference page. Private lists are filled by the team and the API."
 msgstr "تُعرض في نماذج الاشتراك وصفحة التفضيلات. القوائم الخاصة يملؤها الفريق وAPI."
@@ -11177,6 +11221,10 @@ msgstr "إعدادات المنتج"
 msgid "Product: {label}"
 msgstr "المنتج: {label}"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Production"
+msgstr "الإنتاج"
+
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Production backend"
@@ -11324,6 +11372,7 @@ msgstr "عنوان الدفع"
 msgid "Push and e-mail"
 msgstr "الدفع والبريد الإلكتروني"
 
+#: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Push notifications"
@@ -11680,6 +11729,7 @@ msgstr "يمكن للصور البعيدة إخبار المرسِل بأنك ف
 
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/messages/MessageActions.tsx
+#: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
@@ -11760,6 +11810,10 @@ msgstr "إزالة السجل المستورد"
 msgid "Remove imported history?"
 msgstr "إزالة السجل المستورد؟"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Remove the APNs key?"
+msgstr "إزالة مفتاح APNs؟"
+
 #: src/features/migrations/DoneStep.tsx
 msgid "Remove the app password you made for Yuva in {provider}; it is not needed any more."
 msgstr "احذف كلمة مرور التطبيق التي أنشأتها لـ Yuva في {provider}؛ لم تعد مطلوبة."
@@ -11767,6 +11821,10 @@ msgstr "احذف كلمة مرور التطبيق التي أنشأتها لـ Y
 #: src/components/common/text.ts
 msgid "Remove the content of messages and notes"
 msgstr "إزالة محتوى الرسائل والملاحظات"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Remove the FCM service account?"
+msgstr "إزالة حساب خدمة FCM؟"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Remove the message or note you clicked on"
@@ -11861,6 +11919,7 @@ msgstr "إعادة تسمية المجموعة"
 msgid "Reopen"
 msgstr "إعادة الفتح"
 
+#: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Replace"
@@ -12377,6 +12436,10 @@ msgstr "الاسم نفسه، وكلاهما كتب إلى {shared}."
 msgid "Same name."
 msgstr "الاسم نفسه."
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Sandbox (development builds)"
+msgstr "Sandbox (إصدارات التطوير)"
+
 #: src/features/contact/ContactSheet.tsx
 msgid "Satisfaction"
 msgstr "الرضا"
@@ -12437,6 +12500,7 @@ msgstr "حفظ المسودة الآن"
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/settings/channels/app/AppSections.tsx
+#: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/chat/ChatSections.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/profile/ProfileForm.tsx
@@ -12825,6 +12889,10 @@ msgstr "الإرسال فقط"
 msgid "Send or add the note, in a chat or app conversation (⇧↵ for a new line)"
 msgstr "إرسال الملاحظة أو إضافتها، في محادثة دردشة أو تطبيق (⇧↵ لسطر جديد)"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Send push notifications from Yuva"
+msgstr "إرسال إشعارات الدفع من Yuva"
+
 #: src/components/common/Linked.tsx
 msgid "Send reply"
 msgstr "أرسل الرد"
@@ -13075,6 +13143,14 @@ msgstr "إعدادات الخادم"
 msgid "Server URL"
 msgstr "عنوان الخادم"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Service account (JSON)"
+msgstr "حساب الخدمة (JSON)"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Service account set"
+msgstr "حساب الخدمة محدَّد"
+
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "SES tenant"
 msgstr "مستأجر SES"
@@ -13230,6 +13306,10 @@ msgstr "إظهار تفاصيل HTTP"
 #: src/features/inbox/AssistantsPage.tsx
 msgid "Show less"
 msgstr "عرض أقل"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Show message text in the notification"
+msgstr "إظهار نص الرسالة في الإشعار"
 
 #: src/features/inbox/SidePanels.tsx
 #: src/features/migrations/CopyStep.tsx
@@ -14116,6 +14196,10 @@ msgstr "الفريق"
 #: src/features/migrations/MapStep.tsx
 msgid "Team addresses"
 msgstr "عناوين الفريق"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Team ID"
+msgstr "معرّف الفريق"
 
 #: src/features/migrations/MapStep.tsx
 msgid "Team member for {sender}"
@@ -15624,6 +15708,10 @@ msgstr "اليوم في {at}"
 msgid "Today at {at}"
 msgstr "اليوم في {at}"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Token key (.p8)"
+msgstr "مفتاح الرمز (.p8)"
+
 #: src/features/settings/inboxes/InboxSecurity.tsx
 msgid "Tokens signed with the current secret stop working at once."
 msgstr "تتوقف الرموز الموقّعة بالسر الحالي عن العمل فورًا."
@@ -16057,6 +16145,10 @@ msgstr "ارفع ملف .mbox، أو ملف .zip من ملفات .eml أو من 
 #: src/features/broadcasts/Import.tsx
 msgid "Upload and check"
 msgstr "رفع وفحص"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Upload file"
+msgstr "رفع ملف"
 
 #: src/features/migrations/UploadStep.tsx
 msgid "Upload of {name}"

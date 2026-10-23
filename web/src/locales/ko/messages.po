@@ -2135,6 +2135,14 @@ msgstr "분석"
 msgid "analytics not set up"
 msgstr "애널리틱스가 설정되지 않음"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Android (FCM)"
+msgstr "Android (FCM)"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Android devices get no push from Yuva until you add one again."
+msgstr "서비스 계정을 다시 추가하기 전까지 Android 기기는 Yuva에서 푸시를 받지 못합니다."
+
 #: src/components/common/DiscussionAuthor.tsx
 msgid "Anonymous"
 msgstr "익명"
@@ -2921,6 +2929,10 @@ msgstr "브라우저"
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Bugs, ideas and praise sent from your apps and pages"
 msgstr "앱과 페이지에서 보낸 버그, 아이디어, 칭찬"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Bundle ID"
+msgstr "Bundle ID"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Business hours"
@@ -5317,6 +5329,10 @@ msgstr "항목"
 msgid "Entry: {entry}"
 msgstr "항목: {entry}"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Environment"
+msgstr "환경"
+
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Error"
 msgstr "오류"
@@ -6888,6 +6904,14 @@ msgstr "{email} 님을 {role}(으)로 초대했습니다"
 msgid "Invites"
 msgstr "초대"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "iOS (APNs)"
+msgstr "iOS (APNs)"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "iOS devices get no push from Yuva until you add a key again."
+msgstr "키를 다시 추가하기 전까지 iOS 기기는 Yuva에서 푸시를 받지 못합니다."
+
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "IP address"
 msgstr "IP 주소"
@@ -7108,6 +7132,14 @@ msgstr "키"
 #: src/features/home/HomePage.tsx
 msgid "Key figures"
 msgstr "주요 수치"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Key ID"
+msgstr "키 ID"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Key set"
+msgstr "키 설정됨"
 
 #: src/app/Palette.tsx
 #: src/app/TopBar.tsx
@@ -7367,6 +7399,10 @@ msgstr "법적 이름"
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Let bots send replies?"
 msgstr "봇이 답장을 보내도록 허용할까요?"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Let Yuva send the reply push to your app's users. <0>Read the guide</0>"
+msgstr "답장 푸시를 Yuva가 앱 사용자에게 직접 보내도록 합니다. <0>가이드 읽기</0>"
 
 #: src/app/UserMenu.tsx
 #: src/features/settings/appearance/AppearancePage.tsx
@@ -9754,6 +9790,14 @@ msgstr "끄면 채널과 워크스페이스의 일일 한도가 허용하는 가
 msgid "Off, a redirect is judged against the expected status."
 msgstr "끄면 리디렉션은 기대 상태로 판정합니다."
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Off: the notification only says there is a new reply, in the contact's language."
+msgstr "끔: 알림에는 새 답장이 있다는 내용만 연락처의 언어로 표시됩니다."
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Off: your backend sends its own push from the message webhook, as before. On: Yuva pushes a reply to the contact's devices when the app is not connected."
+msgstr "끔: 이전처럼 백엔드가 메시지 웹훅에서 자체 푸시를 보냅니다. 켬: 앱이 연결되어 있지 않을 때 Yuva가 연락처의 기기로 답장을 푸시합니다."
+
 #: src/features/broadcasts/ListForm.tsx
 msgid "Offered on subscribe forms and the preference page. Private lists are filled by the team and the API."
 msgstr "구독 양식과 설정 페이지에 표시됩니다. 비공개 리스트는 팀과 API가 채웁니다."
@@ -11177,6 +11221,10 @@ msgstr "제품 설정"
 msgid "Product: {label}"
 msgstr "제품: {label}"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Production"
+msgstr "프로덕션"
+
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Production backend"
@@ -11324,6 +11372,7 @@ msgstr "푸시 주소"
 msgid "Push and e-mail"
 msgstr "푸시와 이메일"
 
+#: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Push notifications"
@@ -11680,6 +11729,7 @@ msgstr "원격 이미지는 보낸 사람에게 메일을 열었음을 알릴 �
 
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/messages/MessageActions.tsx
+#: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
@@ -11760,6 +11810,10 @@ msgstr "가져온 기록 제거"
 msgid "Remove imported history?"
 msgstr "가져온 기록을 제거할까요?"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Remove the APNs key?"
+msgstr "APNs 키를 제거할까요?"
+
 #: src/features/migrations/DoneStep.tsx
 msgid "Remove the app password you made for Yuva in {provider}; it is not needed any more."
 msgstr "Yuva용으로 {provider}에서 만든 앱 비밀번호를 제거하세요. 더 이상 필요하지 않습니다."
@@ -11767,6 +11821,10 @@ msgstr "Yuva용으로 {provider}에서 만든 앱 비밀번호를 제거하세�
 #: src/components/common/text.ts
 msgid "Remove the content of messages and notes"
 msgstr "메시지와 메모의 내용 삭제"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Remove the FCM service account?"
+msgstr "FCM 서비스 계정을 제거할까요?"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Remove the message or note you clicked on"
@@ -11861,6 +11919,7 @@ msgstr "그룹 이름 바꾸기"
 msgid "Reopen"
 msgstr "다시 열기"
 
+#: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Replace"
@@ -12377,6 +12436,10 @@ msgstr "이름이 같고, 둘 다 {shared}에 연락했습니다."
 msgid "Same name."
 msgstr "이름이 같습니다."
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Sandbox (development builds)"
+msgstr "샌드박스(개발 빌드)"
+
 #: src/features/contact/ContactSheet.tsx
 msgid "Satisfaction"
 msgstr "만족도"
@@ -12437,6 +12500,7 @@ msgstr "초안 지금 저장"
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/settings/channels/app/AppSections.tsx
+#: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/chat/ChatSections.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/profile/ProfileForm.tsx
@@ -12825,6 +12889,10 @@ msgstr "발송만"
 msgid "Send or add the note, in a chat or app conversation (⇧↵ for a new line)"
 msgstr "채팅 또는 앱 대화에서 메모 보내기 또는 추가(줄바꿈은 ⇧↵)"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Send push notifications from Yuva"
+msgstr "Yuva에서 푸시 알림 보내기"
+
 #: src/components/common/Linked.tsx
 msgid "Send reply"
 msgstr "답장 보내기"
@@ -13075,6 +13143,14 @@ msgstr "서버 설정"
 msgid "Server URL"
 msgstr "서버 URL"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Service account (JSON)"
+msgstr "서비스 계정(JSON)"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Service account set"
+msgstr "서비스 계정 설정됨"
+
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "SES tenant"
 msgstr "SES 테넌트"
@@ -13230,6 +13306,10 @@ msgstr "HTTP 세부 정보 표시"
 #: src/features/inbox/AssistantsPage.tsx
 msgid "Show less"
 msgstr "간단히 보기"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Show message text in the notification"
+msgstr "알림에 메시지 내용 표시"
 
 #: src/features/inbox/SidePanels.tsx
 #: src/features/migrations/CopyStep.tsx
@@ -14116,6 +14196,10 @@ msgstr "팀"
 #: src/features/migrations/MapStep.tsx
 msgid "Team addresses"
 msgstr "팀 주소"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Team ID"
+msgstr "팀 ID"
 
 #: src/features/migrations/MapStep.tsx
 msgid "Team member for {sender}"
@@ -15624,6 +15708,10 @@ msgstr "오늘 {at}"
 msgid "Today at {at}"
 msgstr "오늘 {at}"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Token key (.p8)"
+msgstr "토큰 키(.p8)"
+
 #: src/features/settings/inboxes/InboxSecurity.tsx
 msgid "Tokens signed with the current secret stop working at once."
 msgstr "현재 시크릿으로 서명된 토큰은 즉시 작동을 멈춥니다."
@@ -16057,6 +16145,10 @@ msgstr ".mbox 파일, 또는 .eml 파일이나 Maildir의 .zip을 업로드하�
 #: src/features/broadcasts/Import.tsx
 msgid "Upload and check"
 msgstr "업로드 및 확인"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Upload file"
+msgstr "파일 업로드"
 
 #: src/features/migrations/UploadStep.tsx
 msgid "Upload of {name}"

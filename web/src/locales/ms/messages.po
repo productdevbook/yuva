@@ -2135,6 +2135,14 @@ msgstr "Analitik"
 msgid "analytics not set up"
 msgstr "analitik belum disediakan"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Android (FCM)"
+msgstr "Android (FCM)"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Android devices get no push from Yuva until you add one again."
+msgstr "Peranti Android tidak menerima tolakan daripada Yuva sehingga anda menambah akaun perkhidmatan semula."
+
 #: src/components/common/DiscussionAuthor.tsx
 msgid "Anonymous"
 msgstr "Tanpa nama"
@@ -2921,6 +2929,10 @@ msgstr "Pelayar"
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Bugs, ideas and praise sent from your apps and pages"
 msgstr "Pepijat, idea dan pujian yang dihantar dari aplikasi dan halaman anda"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Bundle ID"
+msgstr "Bundle ID"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Business hours"
@@ -5317,6 +5329,10 @@ msgstr "Entri"
 msgid "Entry: {entry}"
 msgstr "Entri: {entry}"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Environment"
+msgstr "Persekitaran"
+
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Error"
 msgstr "Ralat"
@@ -6888,6 +6904,14 @@ msgstr "Menjemput {email} sebagai {role}"
 msgid "Invites"
 msgstr "Jemputan"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "iOS (APNs)"
+msgstr "iOS (APNs)"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "iOS devices get no push from Yuva until you add a key again."
+msgstr "Peranti iOS tidak menerima tolakan daripada Yuva sehingga anda menambah kunci semula."
+
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "IP address"
 msgstr "Alamat IP"
@@ -7108,6 +7132,14 @@ msgstr "Kunci"
 #: src/features/home/HomePage.tsx
 msgid "Key figures"
 msgstr "Angka utama"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Key ID"
+msgstr "ID kunci"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Key set"
+msgstr "Kunci ditetapkan"
 
 #: src/app/Palette.tsx
 #: src/app/TopBar.tsx
@@ -7367,6 +7399,10 @@ msgstr "Nama sah"
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Let bots send replies?"
 msgstr "Benarkan bot menghantar balasan?"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Let Yuva send the reply push to your app's users. <0>Read the guide</0>"
+msgstr "Biarkan Yuva menghantar sendiri pemberitahuan tolakan balasan kepada pengguna apl anda. <0>Baca panduan</0>"
 
 #: src/app/UserMenu.tsx
 #: src/features/settings/appearance/AppearancePage.tsx
@@ -9754,6 +9790,14 @@ msgstr "Mati menghantar secepat yang dibenarkan saluran dan had harian ruang ker
 msgid "Off, a redirect is judged against the expected status."
 msgstr "Mati, ubah hala dinilai berdasarkan status yang dijangka."
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Off: the notification only says there is a new reply, in the contact's language."
+msgstr "Mati: pemberitahuan hanya menyatakan ada balasan baharu, dalam bahasa kenalan."
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Off: your backend sends its own push from the message webhook, as before. On: Yuva pushes a reply to the contact's devices when the app is not connected."
+msgstr "Mati: bahagian belakang anda menghantar pemberitahuan tolakan sendiri daripada webhook mesej, seperti dahulu. Hidup: Yuva menghantar balasan ke peranti kenalan apabila apl tidak disambungkan."
+
 #: src/features/broadcasts/ListForm.tsx
 msgid "Offered on subscribe forms and the preference page. Private lists are filled by the team and the API."
 msgstr "Ditawarkan pada borang langganan dan halaman keutamaan. Senarai persendirian diisi oleh pasukan dan API."
@@ -11177,6 +11221,10 @@ msgstr "Tetapan produk"
 msgid "Product: {label}"
 msgstr "Produk: {label}"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Production"
+msgstr "Pengeluaran"
+
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Production backend"
@@ -11324,6 +11372,7 @@ msgstr "Alamat push"
 msgid "Push and e-mail"
 msgstr "Tolak dan e-mel"
 
+#: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Push notifications"
@@ -11680,6 +11729,7 @@ msgstr "Imej jauh boleh memberitahu penghantar bahawa anda membuka mel."
 
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/messages/MessageActions.tsx
+#: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
@@ -11760,6 +11810,10 @@ msgstr "Alih keluar sejarah diimport"
 msgid "Remove imported history?"
 msgstr "Alih keluar sejarah diimport?"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Remove the APNs key?"
+msgstr "Alih keluar kunci APNs?"
+
 #: src/features/migrations/DoneStep.tsx
 msgid "Remove the app password you made for Yuva in {provider}; it is not needed any more."
 msgstr "Alih keluar kata laluan apl yang anda cipta untuk Yuva dalam {provider}; ia tidak diperlukan lagi."
@@ -11767,6 +11821,10 @@ msgstr "Alih keluar kata laluan apl yang anda cipta untuk Yuva dalam {provider};
 #: src/components/common/text.ts
 msgid "Remove the content of messages and notes"
 msgstr "Alih keluar kandungan mesej dan nota"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Remove the FCM service account?"
+msgstr "Alih keluar akaun perkhidmatan FCM?"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Remove the message or note you clicked on"
@@ -11861,6 +11919,7 @@ msgstr "Namakan semula kumpulan"
 msgid "Reopen"
 msgstr "Buka semula"
 
+#: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Replace"
@@ -12377,6 +12436,10 @@ msgstr "Nama sama, kedua-duanya menulis kepada {shared}."
 msgid "Same name."
 msgstr "Nama sama."
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Sandbox (development builds)"
+msgstr "Sandbox (binaan pembangunan)"
+
 #: src/features/contact/ContactSheet.tsx
 msgid "Satisfaction"
 msgstr "Kepuasan"
@@ -12437,6 +12500,7 @@ msgstr "Simpan draf sekarang"
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/settings/channels/app/AppSections.tsx
+#: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/chat/ChatSections.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/profile/ProfileForm.tsx
@@ -12825,6 +12889,10 @@ msgstr "Hantar sahaja"
 msgid "Send or add the note, in a chat or app conversation (⇧↵ for a new line)"
 msgstr "Hantar atau tambah nota, dalam perbualan sembang atau apl (⇧↵ untuk baris baharu)"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Send push notifications from Yuva"
+msgstr "Hantar pemberitahuan tolakan daripada Yuva"
+
 #: src/components/common/Linked.tsx
 msgid "Send reply"
 msgstr "Hantar balasan"
@@ -13075,6 +13143,14 @@ msgstr "Tetapan pelayan"
 msgid "Server URL"
 msgstr "URL pelayan"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Service account (JSON)"
+msgstr "Akaun perkhidmatan (JSON)"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Service account set"
+msgstr "Akaun perkhidmatan ditetapkan"
+
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "SES tenant"
 msgstr "Penyewa SES"
@@ -13230,6 +13306,10 @@ msgstr "Tunjukkan butiran HTTP"
 #: src/features/inbox/AssistantsPage.tsx
 msgid "Show less"
 msgstr "Tunjuk kurang"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Show message text in the notification"
+msgstr "Tunjukkan teks mesej dalam pemberitahuan"
 
 #: src/features/inbox/SidePanels.tsx
 #: src/features/migrations/CopyStep.tsx
@@ -14116,6 +14196,10 @@ msgstr "Pasukan"
 #: src/features/migrations/MapStep.tsx
 msgid "Team addresses"
 msgstr "Alamat pasukan"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Team ID"
+msgstr "ID pasukan"
 
 #: src/features/migrations/MapStep.tsx
 msgid "Team member for {sender}"
@@ -15624,6 +15708,10 @@ msgstr "hari ini pada {at}"
 msgid "Today at {at}"
 msgstr "Hari ini pada {at}"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Token key (.p8)"
+msgstr "Kunci token (.p8)"
+
 #: src/features/settings/inboxes/InboxSecurity.tsx
 msgid "Tokens signed with the current secret stop working at once."
 msgstr "Token yang ditandatangani dengan rahsia semasa berhenti berfungsi serta-merta."
@@ -16057,6 +16145,10 @@ msgstr "Muat naik fail .mbox, atau .zip fail .eml atau Maildir. Yuva tidak memer
 #: src/features/broadcasts/Import.tsx
 msgid "Upload and check"
 msgstr "Muat naik dan semak"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Upload file"
+msgstr "Muat naik fail"
 
 #: src/features/migrations/UploadStep.tsx
 msgid "Upload of {name}"

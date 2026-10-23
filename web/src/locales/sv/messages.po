@@ -2135,6 +2135,14 @@ msgstr "Analytics"
 msgid "analytics not set up"
 msgstr "analys inte konfigurerad"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Android (FCM)"
+msgstr "Android (FCM)"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Android devices get no push from Yuva until you add one again."
+msgstr "Android-enheter får ingen push från Yuva förrän du lägger till ett tjänstkonto igen."
+
 #: src/components/common/DiscussionAuthor.tsx
 msgid "Anonymous"
 msgstr "Anonym"
@@ -2921,6 +2929,10 @@ msgstr "Webbläsare"
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Bugs, ideas and praise sent from your apps and pages"
 msgstr "Buggar, idéer och beröm som skickats från dina appar och sidor"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Bundle ID"
+msgstr "Bundle-ID"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Business hours"
@@ -5317,6 +5329,10 @@ msgstr "Inlägg"
 msgid "Entry: {entry}"
 msgstr "Post: {entry}"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Environment"
+msgstr "Miljö"
+
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Error"
 msgstr "Fel"
@@ -6888,6 +6904,14 @@ msgstr "Bjöd in {email} som {role}"
 msgid "Invites"
 msgstr "Inbjudningar"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "iOS (APNs)"
+msgstr "iOS (APNs)"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "iOS devices get no push from Yuva until you add a key again."
+msgstr "iOS-enheter får ingen push från Yuva förrän du lägger till en nyckel igen."
+
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "IP address"
 msgstr "IP-adress"
@@ -7108,6 +7132,14 @@ msgstr "Nyckel"
 #: src/features/home/HomePage.tsx
 msgid "Key figures"
 msgstr "Nyckeltal"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Key ID"
+msgstr "Nyckel-ID"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Key set"
+msgstr "Nyckel angiven"
 
 #: src/app/Palette.tsx
 #: src/app/TopBar.tsx
@@ -7367,6 +7399,10 @@ msgstr "Juridiskt namn"
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Let bots send replies?"
 msgstr "Låta botar skicka svar?"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Let Yuva send the reply push to your app's users. <0>Read the guide</0>"
+msgstr "Låt Yuva skicka svarsnotisen till din apps användare. <0>Läs guiden</0>"
 
 #: src/app/UserMenu.tsx
 #: src/features/settings/appearance/AppearancePage.tsx
@@ -9754,6 +9790,14 @@ msgstr "Av skickar så fort kanalen och arbetsytans dagsgräns tillåter. På sp
 msgid "Off, a redirect is judged against the expected status."
 msgstr "Av: en omdirigering bedöms mot den förväntade statusen."
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Off: the notification only says there is a new reply, in the contact's language."
+msgstr "Av: notisen säger bara att det finns ett nytt svar, på kontaktens språk."
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Off: your backend sends its own push from the message webhook, as before. On: Yuva pushes a reply to the contact's devices when the app is not connected."
+msgstr "Av: din backend skickar sin egen push från meddelandewebhooken, som förut. På: Yuva skickar svaret till kontaktens enheter när appen inte är ansluten."
+
 #: src/features/broadcasts/ListForm.tsx
 msgid "Offered on subscribe forms and the preference page. Private lists are filled by the team and the API."
 msgstr "Erbjuds på prenumerationsformulär och inställningssidan. Privata listor fylls av teamet och API:et."
@@ -11177,6 +11221,10 @@ msgstr "Produktinställningar"
 msgid "Product: {label}"
 msgstr "Produkt: {label}"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Production"
+msgstr "Produktion"
+
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Production backend"
@@ -11324,6 +11372,7 @@ msgstr "Push-adress"
 msgid "Push and e-mail"
 msgstr "Push och e-post"
 
+#: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Push notifications"
@@ -11680,6 +11729,7 @@ msgstr "Fjärrbilder kan tala om för avsändaren att du öppnade mejlet."
 
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/messages/MessageActions.tsx
+#: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
@@ -11760,6 +11810,10 @@ msgstr "Ta bort importerad historik"
 msgid "Remove imported history?"
 msgstr "Ta bort importerad historik?"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Remove the APNs key?"
+msgstr "Ta bort APNs-nyckeln?"
+
 #: src/features/migrations/DoneStep.tsx
 msgid "Remove the app password you made for Yuva in {provider}; it is not needed any more."
 msgstr "Ta bort applösenordet du skapade för Yuva hos {provider}; det behövs inte längre."
@@ -11767,6 +11821,10 @@ msgstr "Ta bort applösenordet du skapade för Yuva hos {provider}; det behövs 
 #: src/components/common/text.ts
 msgid "Remove the content of messages and notes"
 msgstr "Ta bort innehållet i meddelanden och anteckningar"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Remove the FCM service account?"
+msgstr "Ta bort FCM-tjänstkontot?"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Remove the message or note you clicked on"
@@ -11861,6 +11919,7 @@ msgstr "Byt namn på gruppen"
 msgid "Reopen"
 msgstr "Öppna igen"
 
+#: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Replace"
@@ -12377,6 +12436,10 @@ msgstr "Samma namn, båda skrev till {shared}."
 msgid "Same name."
 msgstr "Samma namn."
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Sandbox (development builds)"
+msgstr "Sandbox (utvecklingsbyggen)"
+
 #: src/features/contact/ContactSheet.tsx
 msgid "Satisfaction"
 msgstr "Nöjdhet"
@@ -12437,6 +12500,7 @@ msgstr "Spara utkastet nu"
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/settings/channels/app/AppSections.tsx
+#: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/chat/ChatSections.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/profile/ProfileForm.tsx
@@ -12825,6 +12889,10 @@ msgstr "Bara skicka"
 msgid "Send or add the note, in a chat or app conversation (⇧↵ for a new line)"
 msgstr "Skicka eller lägg till anteckningen, i en chatt- eller appkonversation (⇧↵ för ny rad)"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Send push notifications from Yuva"
+msgstr "Skicka pushnotiser från Yuva"
+
 #: src/components/common/Linked.tsx
 msgid "Send reply"
 msgstr "Skicka svar"
@@ -13075,6 +13143,14 @@ msgstr "Serverinställningar"
 msgid "Server URL"
 msgstr "Server-URL"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Service account (JSON)"
+msgstr "Tjänstkonto (JSON)"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Service account set"
+msgstr "Tjänstkonto angivet"
+
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "SES tenant"
 msgstr "SES-tenant"
@@ -13230,6 +13306,10 @@ msgstr "Visa HTTP-detaljer"
 #: src/features/inbox/AssistantsPage.tsx
 msgid "Show less"
 msgstr "Visa mindre"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Show message text in the notification"
+msgstr "Visa meddelandets text i notisen"
 
 #: src/features/inbox/SidePanels.tsx
 #: src/features/migrations/CopyStep.tsx
@@ -14116,6 +14196,10 @@ msgstr "Team"
 #: src/features/migrations/MapStep.tsx
 msgid "Team addresses"
 msgstr "Teamadresser"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Team ID"
+msgstr "Team-ID"
 
 #: src/features/migrations/MapStep.tsx
 msgid "Team member for {sender}"
@@ -15624,6 +15708,10 @@ msgstr "idag kl. {at}"
 msgid "Today at {at}"
 msgstr "Idag kl. {at}"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Token key (.p8)"
+msgstr "Tokennyckel (.p8)"
+
 #: src/features/settings/inboxes/InboxSecurity.tsx
 msgid "Tokens signed with the current secret stop working at once."
 msgstr "Tokens som signerats med den nuvarande hemligheten slutar fungera direkt."
@@ -16057,6 +16145,10 @@ msgstr "Ladda upp en .mbox-fil, eller en .zip med .eml-filer eller en Maildir. Y
 #: src/features/broadcasts/Import.tsx
 msgid "Upload and check"
 msgstr "Ladda upp och kontrollera"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Upload file"
+msgstr "Ladda upp fil"
 
 #: src/features/migrations/UploadStep.tsx
 msgid "Upload of {name}"

@@ -2135,6 +2135,14 @@ msgstr "അനലിറ്റിക്സ്"
 msgid "analytics not set up"
 msgstr "അനലിറ്റിക്സ് സജ്ജീകരിച്ചിട്ടില്ല"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Android (FCM)"
+msgstr "Android (FCM)"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Android devices get no push from Yuva until you add one again."
+msgstr "വീണ്ടും സർവീസ് അക്കൗണ്ട് ചേർക്കുന്നതുവരെ Android ഉപകരണങ്ങൾക്ക് Yuva-യിൽ നിന്ന് പുഷ് ലഭിക്കില്ല."
+
 #: src/components/common/DiscussionAuthor.tsx
 msgid "Anonymous"
 msgstr "അജ്ഞാതൻ"
@@ -2921,6 +2929,10 @@ msgstr "ബ്രൗസർ"
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Bugs, ideas and praise sent from your apps and pages"
 msgstr "നിങ്ങളുടെ ആപ്പുകളിൽ നിന്നും പേജുകളിൽ നിന്നും അയച്ച ബഗുകൾ, ആശയങ്ങൾ, അഭിനന്ദനങ്ങൾ"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Bundle ID"
+msgstr "Bundle ID"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Business hours"
@@ -5317,6 +5329,10 @@ msgstr "എൻട്രികൾ"
 msgid "Entry: {entry}"
 msgstr "എൻട്രി: {entry}"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Environment"
+msgstr "പരിസ്ഥിതി"
+
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Error"
 msgstr "പിശക്"
@@ -6888,6 +6904,14 @@ msgstr "{email}-നെ {role} ആയി ക്ഷണിച്ചു"
 msgid "Invites"
 msgstr "ക്ഷണങ്ങൾ"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "iOS (APNs)"
+msgstr "iOS (APNs)"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "iOS devices get no push from Yuva until you add a key again."
+msgstr "വീണ്ടും കീ ചേർക്കുന്നതുവരെ iOS ഉപകരണങ്ങൾക്ക് Yuva-യിൽ നിന്ന് പുഷ് ലഭിക്കില്ല."
+
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "IP address"
 msgstr "IP വിലാസം"
@@ -7108,6 +7132,14 @@ msgstr "കീ"
 #: src/features/home/HomePage.tsx
 msgid "Key figures"
 msgstr "പ്രധാന കണക്കുകൾ"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Key ID"
+msgstr "കീ ഐഡി"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Key set"
+msgstr "കീ സജ്ജമാക്കി"
 
 #: src/app/Palette.tsx
 #: src/app/TopBar.tsx
@@ -7367,6 +7399,10 @@ msgstr "നിയമപരമായ പേര്"
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Let bots send replies?"
 msgstr "ബോട്ടുകളെ മറുപടി അയയ്ക്കാൻ അനുവദിക്കണോ?"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Let Yuva send the reply push to your app's users. <0>Read the guide</0>"
+msgstr "മറുപടിയുടെ പുഷ് Yuva തന്നെ നിങ്ങളുടെ ആപ്പിലെ ഉപയോക്താക്കൾക്ക് അയയ്ക്കട്ടെ. <0>ഗൈഡ് വായിക്കുക</0>"
 
 #: src/app/UserMenu.tsx
 #: src/features/settings/appearance/AppearancePage.tsx
@@ -9754,6 +9790,14 @@ msgstr "ഓഫ് ആയിരിക്കുമ്പോൾ ചാനലും 
 msgid "Off, a redirect is judged against the expected status."
 msgstr "ഓഫ് ആണെങ്കിൽ റീഡയറക്ട് പ്രതീക്ഷിക്കുന്ന സ്റ്റാറ്റസ് വച്ച് വിലയിരുത്തും."
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Off: the notification only says there is a new reply, in the contact's language."
+msgstr "ഓഫ്: പുതിയ മറുപടി ഉണ്ടെന്ന് മാത്രമാണ് അറിയിപ്പ് പറയുന്നത്, കോൺടാക്റ്റിന്റെ ഭാഷയിൽ."
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Off: your backend sends its own push from the message webhook, as before. On: Yuva pushes a reply to the contact's devices when the app is not connected."
+msgstr "ഓഫ്: നിങ്ങളുടെ ബാക്കെൻഡ് മുമ്പത്തെപ്പോലെ സന്ദേശ വെബ്ഹുക്കിൽ നിന്ന് സ്വന്തം പുഷ് അയയ്ക്കുന്നു. ഓൺ: ആപ്പ് കണക്റ്റ് ചെയ്തിട്ടില്ലാത്തപ്പോൾ Yuva മറുപടി കോൺടാക്റ്റിന്റെ ഉപകരണങ്ങളിലേക്ക് അയയ്ക്കുന്നു."
+
 #: src/features/broadcasts/ListForm.tsx
 msgid "Offered on subscribe forms and the preference page. Private lists are filled by the team and the API."
 msgstr "സബ്സ്ക്രൈബ് ഫോമുകളിലും മുൻഗണനാ പേജിലും നൽകുന്നു. സ്വകാര്യ ലിസ്റ്റുകൾ ടീമും API-യും നിറയ്ക്കുന്നു."
@@ -11177,6 +11221,10 @@ msgstr "ഉൽപ്പന്ന ക്രമീകരണങ്ങൾ"
 msgid "Product: {label}"
 msgstr "ഉൽപ്പന്നം: {label}"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Production"
+msgstr "പ്രൊഡക്ഷൻ"
+
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Production backend"
@@ -11324,6 +11372,7 @@ msgstr "പുഷ് വിലാസം"
 msgid "Push and e-mail"
 msgstr "പുഷും ഇമെയിലും"
 
+#: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Push notifications"
@@ -11680,6 +11729,7 @@ msgstr "റിമോട്ട് ചിത്രങ്ങൾക്ക് നി�
 
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/messages/MessageActions.tsx
+#: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
@@ -11760,6 +11810,10 @@ msgstr "ഇറക്കുമതി ചെയ്ത ചരിത്രം നീ
 msgid "Remove imported history?"
 msgstr "ഇറക്കുമതി ചെയ്ത ചരിത്രം നീക്കം ചെയ്യണോ?"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Remove the APNs key?"
+msgstr "APNs കീ നീക്കം ചെയ്യണോ?"
+
 #: src/features/migrations/DoneStep.tsx
 msgid "Remove the app password you made for Yuva in {provider}; it is not needed any more."
 msgstr "നിങ്ങൾ Yuva-യ്ക്കായി {provider}-ൽ ഉണ്ടാക്കിയ ആപ്പ് പാസ്‌വേഡ് നീക്കം ചെയ്യുക; ഇനി അത് ആവശ്യമില്ല."
@@ -11767,6 +11821,10 @@ msgstr "നിങ്ങൾ Yuva-യ്ക്കായി {provider}-ൽ ഉണ�
 #: src/components/common/text.ts
 msgid "Remove the content of messages and notes"
 msgstr "സന്ദേശങ്ങളുടെയും കുറിപ്പുകളുടെയും ഉള്ളടക്കം നീക്കം ചെയ്യുക"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Remove the FCM service account?"
+msgstr "FCM സർവീസ് അക്കൗണ്ട് നീക്കം ചെയ്യണോ?"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Remove the message or note you clicked on"
@@ -11861,6 +11919,7 @@ msgstr "ഗ്രൂപ്പിന്റെ പേര് മാറ്റുക"
 msgid "Reopen"
 msgstr "വീണ്ടും തുറക്കുക"
 
+#: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Replace"
@@ -12377,6 +12436,10 @@ msgstr "ഒരേ പേര്, രണ്ടുപേരും {shared}-ലേ�
 msgid "Same name."
 msgstr "ഒരേ പേര്."
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Sandbox (development builds)"
+msgstr "സാൻഡ്ബോക്സ് (ഡെവലപ്മെന്റ് ബിൽഡുകൾ)"
+
 #: src/features/contact/ContactSheet.tsx
 msgid "Satisfaction"
 msgstr "സംതൃപ്തി"
@@ -12437,6 +12500,7 @@ msgstr "കരട് ഇപ്പോൾ സംരക്ഷിക്കുക"
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/settings/channels/app/AppSections.tsx
+#: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/chat/ChatSections.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/profile/ProfileForm.tsx
@@ -12825,6 +12889,10 @@ msgstr "അയയ്ക്കുക മാത്രം"
 msgid "Send or add the note, in a chat or app conversation (⇧↵ for a new line)"
 msgstr "ഒരു ചാറ്റ് അല്ലെങ്കിൽ ആപ്പ് സംഭാഷണത്തിൽ കുറിപ്പ് അയയ്ക്കുക അല്ലെങ്കിൽ ചേർക്കുക (പുതിയ വരിക്ക് ⇧↵)"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Send push notifications from Yuva"
+msgstr "Yuva-യിൽ നിന്ന് പുഷ് അറിയിപ്പുകൾ അയയ്ക്കുക"
+
 #: src/components/common/Linked.tsx
 msgid "Send reply"
 msgstr "മറുപടി അയയ്ക്കുക"
@@ -13075,6 +13143,14 @@ msgstr "സെർവർ ക്രമീകരണങ്ങൾ"
 msgid "Server URL"
 msgstr "സെർവർ URL"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Service account (JSON)"
+msgstr "സർവീസ് അക്കൗണ്ട് (JSON)"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Service account set"
+msgstr "സർവീസ് അക്കൗണ്ട് സജ്ജമാക്കി"
+
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "SES tenant"
 msgstr "SES ടെനന്റ്"
@@ -13230,6 +13306,10 @@ msgstr "HTTP വിശദാംശങ്ങൾ കാണിക്കുക"
 #: src/features/inbox/AssistantsPage.tsx
 msgid "Show less"
 msgstr "കുറച്ച് കാണിക്കുക"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Show message text in the notification"
+msgstr "അറിയിപ്പിൽ സന്ദേശത്തിന്റെ ടെക്സ്റ്റ് കാണിക്കുക"
 
 #: src/features/inbox/SidePanels.tsx
 #: src/features/migrations/CopyStep.tsx
@@ -14116,6 +14196,10 @@ msgstr "ടീം"
 #: src/features/migrations/MapStep.tsx
 msgid "Team addresses"
 msgstr "ടീം വിലാസങ്ങൾ"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Team ID"
+msgstr "ടീം ഐഡി"
 
 #: src/features/migrations/MapStep.tsx
 msgid "Team member for {sender}"
@@ -15624,6 +15708,10 @@ msgstr "ഇന്ന് {at}-ന്"
 msgid "Today at {at}"
 msgstr "ഇന്ന് {at}-ന്"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Token key (.p8)"
+msgstr "ടോക്കൺ കീ (.p8)"
+
 #: src/features/settings/inboxes/InboxSecurity.tsx
 msgid "Tokens signed with the current secret stop working at once."
 msgstr "നിലവിലെ സീക്രട്ട് ഉപയോഗിച്ച് സൈൻ ചെയ്ത ടോക്കണുകൾ ഉടൻ പ്രവർത്തനം നിർത്തും."
@@ -16057,6 +16145,10 @@ msgstr "ഒരു .mbox ഫയൽ, അല്ലെങ്കിൽ .eml ഫയല
 #: src/features/broadcasts/Import.tsx
 msgid "Upload and check"
 msgstr "അപ്‌ലോഡ് ചെയ്ത് പരിശോധിക്കുക"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Upload file"
+msgstr "ഫയൽ അപ്‌ലോഡ് ചെയ്യുക"
 
 #: src/features/migrations/UploadStep.tsx
 msgid "Upload of {name}"

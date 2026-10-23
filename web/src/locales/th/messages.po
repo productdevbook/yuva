@@ -2135,6 +2135,14 @@ msgstr "การวิเคราะห์"
 msgid "analytics not set up"
 msgstr "ยังไม่ได้ตั้งค่าการวิเคราะห์"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Android (FCM)"
+msgstr "Android (FCM)"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Android devices get no push from Yuva until you add one again."
+msgstr "อุปกรณ์ Android จะไม่ได้รับการแจ้งเตือนแบบพุชจาก Yuva จนกว่าคุณจะเพิ่มบัญชีบริการอีกครั้ง"
+
 #: src/components/common/DiscussionAuthor.tsx
 msgid "Anonymous"
 msgstr "นิรนาม"
@@ -2921,6 +2929,10 @@ msgstr "เบราว์เซอร์"
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Bugs, ideas and praise sent from your apps and pages"
 msgstr "บั๊ก ไอเดีย และคำชมที่ส่งมาจากแอปและหน้าเว็บของคุณ"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Bundle ID"
+msgstr "Bundle ID"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Business hours"
@@ -5317,6 +5329,10 @@ msgstr "รายการ"
 msgid "Entry: {entry}"
 msgstr "รายการ: {entry}"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Environment"
+msgstr "สภาพแวดล้อม"
+
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Error"
 msgstr "ข้อผิดพลาด"
@@ -6888,6 +6904,14 @@ msgstr "เชิญ {email} เป็น {role}"
 msgid "Invites"
 msgstr "คำเชิญ"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "iOS (APNs)"
+msgstr "iOS (APNs)"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "iOS devices get no push from Yuva until you add a key again."
+msgstr "อุปกรณ์ iOS จะไม่ได้รับการแจ้งเตือนแบบพุชจาก Yuva จนกว่าคุณจะเพิ่มคีย์อีกครั้ง"
+
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "IP address"
 msgstr "ที่อยู่ IP"
@@ -7108,6 +7132,14 @@ msgstr "คีย์"
 #: src/features/home/HomePage.tsx
 msgid "Key figures"
 msgstr "ตัวเลขสำคัญ"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Key ID"
+msgstr "รหัสคีย์"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Key set"
+msgstr "ตั้งค่าคีย์แล้ว"
 
 #: src/app/Palette.tsx
 #: src/app/TopBar.tsx
@@ -7367,6 +7399,10 @@ msgstr "ชื่อตามกฎหมาย"
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Let bots send replies?"
 msgstr "ให้บอทส่งคำตอบหรือไม่"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Let Yuva send the reply push to your app's users. <0>Read the guide</0>"
+msgstr "ให้ Yuva ส่งการแจ้งเตือนแบบพุชเมื่อมีการตอบกลับไปยังผู้ใช้แอปของคุณเอง <0>อ่านคู่มือ</0>"
 
 #: src/app/UserMenu.tsx
 #: src/features/settings/appearance/AppearancePage.tsx
@@ -9754,6 +9790,14 @@ msgstr "ปิดจะส่งเร็วที่สุดเท่าที
 msgid "Off, a redirect is judged against the expected status."
 msgstr "ปิด: การเปลี่ยนเส้นทางจะถูกตัดสินจากสถานะที่คาดหวัง"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Off: the notification only says there is a new reply, in the contact's language."
+msgstr "ปิด: การแจ้งเตือนจะบอกเพียงว่ามีการตอบกลับใหม่ ในภาษาของผู้ติดต่อ"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Off: your backend sends its own push from the message webhook, as before. On: Yuva pushes a reply to the contact's devices when the app is not connected."
+msgstr "ปิด: แบ็กเอนด์ของคุณส่งพุชของตัวเองจาก webhook ของข้อความ เหมือนเดิม เปิด: Yuva ส่งการตอบกลับไปยังอุปกรณ์ของผู้ติดต่อเมื่อแอปไม่ได้เชื่อมต่ออยู่"
+
 #: src/features/broadcasts/ListForm.tsx
 msgid "Offered on subscribe forms and the preference page. Private lists are filled by the team and the API."
 msgstr "เสนอบนแบบฟอร์มสมัครรับและหน้าการตั้งค่า รายชื่อส่วนตัวทีมและ API เป็นผู้เติม"
@@ -11177,6 +11221,10 @@ msgstr "การตั้งค่าผลิตภัณฑ์"
 msgid "Product: {label}"
 msgstr "ผลิตภัณฑ์: {label}"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Production"
+msgstr "โปรดักชัน"
+
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Production backend"
@@ -11324,6 +11372,7 @@ msgstr "ที่อยู่ Push"
 msgid "Push and e-mail"
 msgstr "พุชและอีเมล"
 
+#: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Push notifications"
@@ -11680,6 +11729,7 @@ msgstr "รูปภาพระยะไกลอาจบอกผู้ส่
 
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/messages/MessageActions.tsx
+#: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
@@ -11760,6 +11810,10 @@ msgstr "ลบประวัติที่นำเข้า"
 msgid "Remove imported history?"
 msgstr "ลบประวัติที่นำเข้าไหม"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Remove the APNs key?"
+msgstr "ลบคีย์ APNs หรือไม่"
+
 #: src/features/migrations/DoneStep.tsx
 msgid "Remove the app password you made for Yuva in {provider}; it is not needed any more."
 msgstr "ลบรหัสผ่านแอปที่คุณสร้างให้ Yuva ใน {provider} ไม่จำเป็นอีกต่อไป"
@@ -11767,6 +11821,10 @@ msgstr "ลบรหัสผ่านแอปที่คุณสร้าง
 #: src/components/common/text.ts
 msgid "Remove the content of messages and notes"
 msgstr "ลบเนื้อหาของข้อความและบันทึก"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Remove the FCM service account?"
+msgstr "ลบบัญชีบริการ FCM หรือไม่"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Remove the message or note you clicked on"
@@ -11861,6 +11919,7 @@ msgstr "เปลี่ยนชื่อกลุ่ม"
 msgid "Reopen"
 msgstr "เปิดอีกครั้ง"
 
+#: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Replace"
@@ -12377,6 +12436,10 @@ msgstr "ชื่อเดียวกัน ทั้งสองคนเข�
 msgid "Same name."
 msgstr "ชื่อเดียวกัน"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Sandbox (development builds)"
+msgstr "Sandbox (บิลด์สำหรับพัฒนา)"
+
 #: src/features/contact/ContactSheet.tsx
 msgid "Satisfaction"
 msgstr "ความพึงพอใจ"
@@ -12437,6 +12500,7 @@ msgstr "บันทึกฉบับร่างตอนนี้"
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/settings/channels/app/AppSections.tsx
+#: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/chat/ChatSections.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/profile/ProfileForm.tsx
@@ -12825,6 +12889,10 @@ msgstr "ส่งอย่างเดียว"
 msgid "Send or add the note, in a chat or app conversation (⇧↵ for a new line)"
 msgstr "ส่งหรือเพิ่มบันทึก ในการสนทนาแชตหรือแอป (⇧↵ เพื่อขึ้นบรรทัดใหม่)"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Send push notifications from Yuva"
+msgstr "ส่งการแจ้งเตือนแบบพุชจาก Yuva"
+
 #: src/components/common/Linked.tsx
 msgid "Send reply"
 msgstr "ส่งการตอบกลับ"
@@ -13075,6 +13143,14 @@ msgstr "การตั้งค่าเซิร์ฟเวอร์"
 msgid "Server URL"
 msgstr "URL เซิร์ฟเวอร์"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Service account (JSON)"
+msgstr "บัญชีบริการ (JSON)"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Service account set"
+msgstr "ตั้งค่าบัญชีบริการแล้ว"
+
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "SES tenant"
 msgstr "tenant SES"
@@ -13230,6 +13306,10 @@ msgstr "แสดงรายละเอียด HTTP"
 #: src/features/inbox/AssistantsPage.tsx
 msgid "Show less"
 msgstr "แสดงน้อยลง"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Show message text in the notification"
+msgstr "แสดงข้อความในการแจ้งเตือน"
 
 #: src/features/inbox/SidePanels.tsx
 #: src/features/migrations/CopyStep.tsx
@@ -14116,6 +14196,10 @@ msgstr "ทีม"
 #: src/features/migrations/MapStep.tsx
 msgid "Team addresses"
 msgstr "ที่อยู่ของทีม"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Team ID"
+msgstr "รหัสทีม"
 
 #: src/features/migrations/MapStep.tsx
 msgid "Team member for {sender}"
@@ -15624,6 +15708,10 @@ msgstr "วันนี้เวลา {at}"
 msgid "Today at {at}"
 msgstr "วันนี้เวลา {at}"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Token key (.p8)"
+msgstr "คีย์โทเค็น (.p8)"
+
 #: src/features/settings/inboxes/InboxSecurity.tsx
 msgid "Tokens signed with the current secret stop working at once."
 msgstr "โทเค็นที่ลงนามด้วย secret ปัจจุบันจะหยุดทำงานทันที"
@@ -16057,6 +16145,10 @@ msgstr "อัปโหลดไฟล์ .mbox หรือไฟล์ .zip �
 #: src/features/broadcasts/Import.tsx
 msgid "Upload and check"
 msgstr "อัปโหลดและตรวจสอบ"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Upload file"
+msgstr "อัปโหลดไฟล์"
 
 #: src/features/migrations/UploadStep.tsx
 msgid "Upload of {name}"

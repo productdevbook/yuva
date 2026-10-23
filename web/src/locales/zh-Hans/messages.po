@@ -2135,6 +2135,14 @@ msgstr "分析"
 msgid "analytics not set up"
 msgstr "尚未设置分析"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Android (FCM)"
+msgstr "Android (FCM)"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Android devices get no push from Yuva until you add one again."
+msgstr "在重新添加服务账号之前，Android 设备不会收到 Yuva 的推送。"
+
 #: src/components/common/DiscussionAuthor.tsx
 msgid "Anonymous"
 msgstr "匿名"
@@ -2921,6 +2929,10 @@ msgstr "浏览器"
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Bugs, ideas and praise sent from your apps and pages"
 msgstr "从你的应用和页面发来的问题、想法和好评"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Bundle ID"
+msgstr "Bundle ID"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Business hours"
@@ -5317,6 +5329,10 @@ msgstr "条目"
 msgid "Entry: {entry}"
 msgstr "条目:{entry}"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Environment"
+msgstr "环境"
+
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Error"
 msgstr "错误"
@@ -6888,6 +6904,14 @@ msgstr "邀请 {email} 担任{role}"
 msgid "Invites"
 msgstr "邀请"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "iOS (APNs)"
+msgstr "iOS (APNs)"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "iOS devices get no push from Yuva until you add a key again."
+msgstr "在重新添加密钥之前，iOS 设备不会收到 Yuva 的推送。"
+
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "IP address"
 msgstr "IP 地址"
@@ -7108,6 +7132,14 @@ msgstr "密钥"
 #: src/features/home/HomePage.tsx
 msgid "Key figures"
 msgstr "关键数据"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Key ID"
+msgstr "密钥 ID"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Key set"
+msgstr "密钥已设置"
 
 #: src/app/Palette.tsx
 #: src/app/TopBar.tsx
@@ -7367,6 +7399,10 @@ msgstr "法定名称"
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Let bots send replies?"
 msgstr "允许机器人发送回复吗？"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Let Yuva send the reply push to your app's users. <0>Read the guide</0>"
+msgstr "让 Yuva 直接向你的应用用户发送回复推送。<0>阅读指南</0>"
 
 #: src/app/UserMenu.tsx
 #: src/features/settings/appearance/AppearancePage.tsx
@@ -9754,6 +9790,14 @@ msgstr "关闭时,会按渠道和工作区每日上限允许的最快速度发�
 msgid "Off, a redirect is judged against the expected status."
 msgstr "关闭时,重定向按期望状态码判断。"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Off: the notification only says there is a new reply, in the contact's language."
+msgstr "关闭：通知只提示有新回复，使用联系人的语言。"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Off: your backend sends its own push from the message webhook, as before. On: Yuva pushes a reply to the contact's devices when the app is not connected."
+msgstr "关闭：你的后端像以前一样通过消息 webhook 自行发送推送。开启：应用未连接时，Yuva 会把回复推送到联系人的设备。"
+
 #: src/features/broadcasts/ListForm.tsx
 msgid "Offered on subscribe forms and the preference page. Private lists are filled by the team and the API."
 msgstr "会在订阅表单和偏好设置页面中提供。私有列表由团队和 API 填充。"
@@ -11177,6 +11221,10 @@ msgstr "产品设置"
 msgid "Product: {label}"
 msgstr "产品：{label}"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Production"
+msgstr "生产"
+
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Production backend"
@@ -11324,6 +11372,7 @@ msgstr "推送地址"
 msgid "Push and e-mail"
 msgstr "推送和邮件"
 
+#: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Push notifications"
@@ -11680,6 +11729,7 @@ msgstr "远程图片可能会让发件人知道你已打开邮件。"
 
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/messages/MessageActions.tsx
+#: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
@@ -11760,6 +11810,10 @@ msgstr "移除导入的历史记录"
 msgid "Remove imported history?"
 msgstr "移除导入的历史记录?"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Remove the APNs key?"
+msgstr "移除 APNs 密钥？"
+
 #: src/features/migrations/DoneStep.tsx
 msgid "Remove the app password you made for Yuva in {provider}; it is not needed any more."
 msgstr "请在 {provider} 中移除你为 Yuva 创建的应用专用密码;它不再需要了。"
@@ -11767,6 +11821,10 @@ msgstr "请在 {provider} 中移除你为 Yuva 创建的应用专用密码;它�
 #: src/components/common/text.ts
 msgid "Remove the content of messages and notes"
 msgstr "移除消息和备注的内容"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Remove the FCM service account?"
+msgstr "移除 FCM 服务账号？"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Remove the message or note you clicked on"
@@ -11861,6 +11919,7 @@ msgstr "重命名分组"
 msgid "Reopen"
 msgstr "重新打开"
 
+#: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Replace"
@@ -12377,6 +12436,10 @@ msgstr "名称相同，两人都给 {shared} 写过信。"
 msgid "Same name."
 msgstr "名称相同。"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Sandbox (development builds)"
+msgstr "沙盒（开发版本）"
+
 #: src/features/contact/ContactSheet.tsx
 msgid "Satisfaction"
 msgstr "满意度"
@@ -12437,6 +12500,7 @@ msgstr "立即保存草稿"
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/settings/channels/app/AppSections.tsx
+#: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/chat/ChatSections.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/profile/ProfileForm.tsx
@@ -12825,6 +12889,10 @@ msgstr "仅发送"
 msgid "Send or add the note, in a chat or app conversation (⇧↵ for a new line)"
 msgstr "在聊天或应用对话中发送或添加备注(换行用 ⇧↵)"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Send push notifications from Yuva"
+msgstr "由 Yuva 发送推送通知"
+
 #: src/components/common/Linked.tsx
 msgid "Send reply"
 msgstr "发送回复"
@@ -13075,6 +13143,14 @@ msgstr "服务器设置"
 msgid "Server URL"
 msgstr "服务器 URL"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Service account (JSON)"
+msgstr "服务账号（JSON）"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Service account set"
+msgstr "服务账号已设置"
+
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "SES tenant"
 msgstr "SES 租户"
@@ -13230,6 +13306,10 @@ msgstr "显示 HTTP 详情"
 #: src/features/inbox/AssistantsPage.tsx
 msgid "Show less"
 msgstr "收起"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Show message text in the notification"
+msgstr "在通知中显示消息内容"
 
 #: src/features/inbox/SidePanels.tsx
 #: src/features/migrations/CopyStep.tsx
@@ -14116,6 +14196,10 @@ msgstr "团队"
 #: src/features/migrations/MapStep.tsx
 msgid "Team addresses"
 msgstr "团队地址"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Team ID"
+msgstr "团队 ID"
 
 #: src/features/migrations/MapStep.tsx
 msgid "Team member for {sender}"
@@ -15624,6 +15708,10 @@ msgstr "今天 {at}"
 msgid "Today at {at}"
 msgstr "今天 {at}"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Token key (.p8)"
+msgstr "令牌密钥 (.p8)"
+
 #: src/features/settings/inboxes/InboxSecurity.tsx
 msgid "Tokens signed with the current secret stop working at once."
 msgstr "用当前密钥签名的令牌会立即失效。"
@@ -16057,6 +16145,10 @@ msgstr "上传 .mbox 文件,或 .eml 文件或 Maildir 的 .zip。Yuva 无需访
 #: src/features/broadcasts/Import.tsx
 msgid "Upload and check"
 msgstr "上传并检查"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Upload file"
+msgstr "上传文件"
 
 #: src/features/migrations/UploadStep.tsx
 msgid "Upload of {name}"

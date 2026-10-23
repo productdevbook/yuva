@@ -2135,6 +2135,14 @@ msgstr "アナリティクス"
 msgid "analytics not set up"
 msgstr "アナリティクスが未設定"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Android (FCM)"
+msgstr "Android (FCM)"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Android devices get no push from Yuva until you add one again."
+msgstr "サービスアカウントを再び追加するまで、Android 端末には Yuva からプッシュ通知が届きません。"
+
 #: src/components/common/DiscussionAuthor.tsx
 msgid "Anonymous"
 msgstr "匿名"
@@ -2921,6 +2929,10 @@ msgstr "ブラウザー"
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Bugs, ideas and praise sent from your apps and pages"
 msgstr "アプリやページから送られたバグ、アイデア、称賛"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Bundle ID"
+msgstr "Bundle ID"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Business hours"
@@ -5317,6 +5329,10 @@ msgstr "エントリ"
 msgid "Entry: {entry}"
 msgstr "エントリ: {entry}"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Environment"
+msgstr "環境"
+
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Error"
 msgstr "エラー"
@@ -6888,6 +6904,14 @@ msgstr "{email} を {role} として招待しました"
 msgid "Invites"
 msgstr "招待"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "iOS (APNs)"
+msgstr "iOS (APNs)"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "iOS devices get no push from Yuva until you add a key again."
+msgstr "キーを再び追加するまで、iOS 端末には Yuva からプッシュ通知が届きません。"
+
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "IP address"
 msgstr "IP アドレス"
@@ -7108,6 +7132,14 @@ msgstr "キー"
 #: src/features/home/HomePage.tsx
 msgid "Key figures"
 msgstr "主な数値"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Key ID"
+msgstr "キー ID"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Key set"
+msgstr "キーは設定済み"
 
 #: src/app/Palette.tsx
 #: src/app/TopBar.tsx
@@ -7367,6 +7399,10 @@ msgstr "正式名称"
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Let bots send replies?"
 msgstr "ボットに返信の送信を許可しますか？"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Let Yuva send the reply push to your app's users. <0>Read the guide</0>"
+msgstr "返信のプッシュ通知を Yuva からアプリのユーザーに直接送ります。<0>ガイドを読む</0>"
 
 #: src/app/UserMenu.tsx
 #: src/features/settings/appearance/AppearancePage.tsx
@@ -9754,6 +9790,14 @@ msgstr "オフにすると、チャネルとワークスペースの 1 日あた
 msgid "Off, a redirect is judged against the expected status."
 msgstr "オフの場合、リダイレクトは期待するステータスで判定されます。"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Off: the notification only says there is a new reply, in the contact's language."
+msgstr "オフ: 通知には新しい返信があることだけが、連絡先の言語で表示されます。"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Off: your backend sends its own push from the message webhook, as before. On: Yuva pushes a reply to the contact's devices when the app is not connected."
+msgstr "オフ: これまでどおり、バックエンドがメッセージの webhook から独自にプッシュを送ります。オン: アプリが接続されていないとき、Yuva が連絡先の端末に返信を送ります。"
+
 #: src/features/broadcasts/ListForm.tsx
 msgid "Offered on subscribe forms and the preference page. Private lists are filled by the team and the API."
 msgstr "登録フォームと設定ページに表示されます。非公開リストは、チームと API が登録者を追加します。"
@@ -11177,6 +11221,10 @@ msgstr "製品の設定"
 msgid "Product: {label}"
 msgstr "プロダクト: {label}"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Production"
+msgstr "本番"
+
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Production backend"
@@ -11324,6 +11372,7 @@ msgstr "プッシュ用アドレス"
 msgid "Push and e-mail"
 msgstr "プッシュとメール"
 
+#: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Push notifications"
@@ -11680,6 +11729,7 @@ msgstr "リモート画像により、メールを開いたことが送信者に
 
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/messages/MessageActions.tsx
+#: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
@@ -11760,6 +11810,10 @@ msgstr "インポートした履歴を削除"
 msgid "Remove imported history?"
 msgstr "インポートした履歴を削除しますか?"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Remove the APNs key?"
+msgstr "APNs キーを削除しますか？"
+
 #: src/features/migrations/DoneStep.tsx
 msgid "Remove the app password you made for Yuva in {provider}; it is not needed any more."
 msgstr "Yuva 用に {provider} で作成したアプリパスワードを削除してください。もう必要ありません。"
@@ -11767,6 +11821,10 @@ msgstr "Yuva 用に {provider} で作成したアプリパスワードを削除�
 #: src/components/common/text.ts
 msgid "Remove the content of messages and notes"
 msgstr "メッセージとノートの内容を削除する"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Remove the FCM service account?"
+msgstr "FCM サービスアカウントを削除しますか？"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Remove the message or note you clicked on"
@@ -11861,6 +11919,7 @@ msgstr "グループ名を変更"
 msgid "Reopen"
 msgstr "再開"
 
+#: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Replace"
@@ -12377,6 +12436,10 @@ msgstr "同じ名前で、どちらも {shared} に連絡しました。"
 msgid "Same name."
 msgstr "同じ名前です。"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Sandbox (development builds)"
+msgstr "Sandbox（開発ビルド）"
+
 #: src/features/contact/ContactSheet.tsx
 msgid "Satisfaction"
 msgstr "満足度"
@@ -12437,6 +12500,7 @@ msgstr "今すぐ下書きを保存"
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/settings/channels/app/AppSections.tsx
+#: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/chat/ChatSections.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/profile/ProfileForm.tsx
@@ -12825,6 +12889,10 @@ msgstr "送信のみ"
 msgid "Send or add the note, in a chat or app conversation (⇧↵ for a new line)"
 msgstr "チャットまたはアプリの会話で、メモを送信または追加(改行は ⇧↵)"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Send push notifications from Yuva"
+msgstr "Yuva からプッシュ通知を送る"
+
 #: src/components/common/Linked.tsx
 msgid "Send reply"
 msgstr "返信を送信"
@@ -13075,6 +13143,14 @@ msgstr "サーバー設定"
 msgid "Server URL"
 msgstr "サーバー URL"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Service account (JSON)"
+msgstr "サービスアカウント (JSON)"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Service account set"
+msgstr "サービスアカウントは設定済み"
+
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "SES tenant"
 msgstr "SES テナント"
@@ -13230,6 +13306,10 @@ msgstr "HTTPの詳細を表示"
 #: src/features/inbox/AssistantsPage.tsx
 msgid "Show less"
 msgstr "表示を減らす"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Show message text in the notification"
+msgstr "通知にメッセージの本文を表示する"
 
 #: src/features/inbox/SidePanels.tsx
 #: src/features/migrations/CopyStep.tsx
@@ -14116,6 +14196,10 @@ msgstr "チーム"
 #: src/features/migrations/MapStep.tsx
 msgid "Team addresses"
 msgstr "チームのアドレス"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Team ID"
+msgstr "チーム ID"
 
 #: src/features/migrations/MapStep.tsx
 msgid "Team member for {sender}"
@@ -15624,6 +15708,10 @@ msgstr "本日 {at}"
 msgid "Today at {at}"
 msgstr "本日 {at}"
 
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Token key (.p8)"
+msgstr "トークンキー (.p8)"
+
 #: src/features/settings/inboxes/InboxSecurity.tsx
 msgid "Tokens signed with the current secret stop working at once."
 msgstr "現在のシークレットで署名されたトークンは、すぐに無効になります。"
@@ -16057,6 +16145,10 @@ msgstr ".mbox ファイル、または .eml ファイルか Maildir の .zip を
 #: src/features/broadcasts/Import.tsx
 msgid "Upload and check"
 msgstr "アップロードして確認"
+
+#: src/features/settings/channels/app/PushSection.tsx
+msgid "Upload file"
+msgstr "ファイルをアップロード"
 
 #: src/features/migrations/UploadStep.tsx
 msgid "Upload of {name}"
