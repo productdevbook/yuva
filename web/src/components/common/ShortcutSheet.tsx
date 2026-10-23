@@ -259,7 +259,7 @@ export function ShortcutSheet({
         [["Tab"], t`Use the suggested reply`],
         [k(SHORTCUTS.discardSuggestion), t`Discard the suggested reply`],
         [k(SHORTCUTS.attach), t`Attach files`],
-        [["/"], t`Canned replies, in the reply box`],
+        [["/"], t`Canned replies and macros, in the reply box`],
         [k(SHORTCUTS.leave), t`Leave it to the teammate who is typing`],
         [["Del"], t`Remove the message or note you clicked on`],
       ],

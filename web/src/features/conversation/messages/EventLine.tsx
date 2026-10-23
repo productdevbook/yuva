@@ -102,6 +102,19 @@ export function EventLine({ m, ctx }: { m: Message; ctx: ThreadContext }) {
       )
       break
     }
+    case "macro_applied": {
+      const macro = e.macro?.name ?? ""
+      body = e.skipped?.includes("assignee") ? (
+        <Trans>
+          {actor} applied the macro {macro}, assignee skipped
+        </Trans>
+      ) : (
+        <Trans>
+          {actor} applied the macro {macro}
+        </Trans>
+      )
+      break
+    }
     case "moved": {
       const from = ctx.inboxes.find((i) => i.id === e.previous_inbox_id)?.name ?? t`another inbox`
       body = <Trans>Moved from {from}</Trans>

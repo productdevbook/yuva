@@ -149,6 +149,14 @@ msgid "{actor} added the label {added}"
 msgstr "{actor} {added} லேபிளைச் சேர்த்தார்"
 
 #: src/features/conversation/messages/EventLine.tsx
+msgid "{actor} applied the macro {macro}"
+msgstr "{actor} மேக்ரோ {macro} ஐப் பயன்படுத்தினார்"
+
+#: src/features/conversation/messages/EventLine.tsx
+msgid "{actor} applied the macro {macro}, assignee skipped"
+msgstr "{actor} மேக்ரோ {macro} ஐப் பயன்படுத்தினார், பொறுப்பாளர் தவிர்க்கப்பட்டார்"
+
+#: src/features/conversation/messages/EventLine.tsx
 msgid "{actor} assigned this to {assignee}"
 msgstr "{actor} இதை {assignee}-க்கு ஒதுக்கினார்"
 
@@ -1236,6 +1244,10 @@ msgstr "A linked GitHub or Linear issue changed"
 msgid "A list is who agreed to hear from you. Every subscriber keeps a consent record you can export."
 msgstr "பட்டியல் என்பது உங்களிடமிருந்து செய்திகளைப் பெற ஒப்புக்கொண்டவர்கள். ஒவ்வொரு சந்தாதாரருக்கும் நீங்கள் ஏற்றுமதி செய்யக்கூடிய ஒப்புதல் பதிவு உண்டு."
 
+#: src/features/settings/macros/MacrosPage.tsx
+msgid "A macro is a reply plus actions: labels, assignee, status, priority or snooze. Type / and its shortcut in the composer; the actions apply when the reply is sent."
+msgstr "மேக்ரோ என்பது ஒரு பதிலும் செயல்களும்: லேபிள்கள், பொறுப்பாளர், நிலை, முன்னுரிமை அல்லது ஒத்திவை. பதில் பெட்டியில் / மற்றும் அதன் குறுக்குவழியை உள்ளிடுங்கள்; பதில் அனுப்பப்படும்போது செயல்கள் பயன்படுத்தப்படும்."
+
 #: src/features/broadcasts/ListParts.tsx
 msgid "A mailing list holds the people who agreed to get your broadcasts. They join on a subscribe form on your site, or your team adds them and records how they agreed. Every step is kept as proof of consent, and everyone can leave with one click."
 msgstr "அஞ்சல் பட்டியல் உங்கள் ஒளிபரப்புகளைப் பெற ஒப்புக்கொண்டவர்களை வைத்திருக்கும். அவர்கள் உங்கள் தளத்தில் உள்ள சந்தா படிவம் மூலம் சேர்வார்கள், அல்லது உங்கள் குழு அவர்களைச் சேர்த்து எப்படி ஒப்புக்கொண்டனர் என்பதைப் பதிவு செய்யும். ஒவ்வொரு படியும் ஒப்புதலுக்கான சான்றாகப் பாதுகாக்கப்படும்; ஒவ்வொருவரும் ஒரே கிளிக்கில் விலகலாம்."
@@ -1343,6 +1355,10 @@ msgstr "வாசகரின் இடுகைகள், அவருடைய
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "A real address where you receive post"
 msgstr "நீங்கள் தபால் பெறும் உண்மையான முகவரி"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "A reply and its actions in one step"
+msgstr "ஒரு பதிலும் அதன் செயல்களும் ஒரே படியில்"
 
 #: src/components/common/text.ts
 msgid "A reply was written in a discussion"
@@ -1505,6 +1521,16 @@ msgstr "Acme நிலை"
 msgid "Acme Support"
 msgstr "Acme ஆதரவு"
 
+#: src/features/settings/macros/MacroDialog.tsx
+msgid "Actions"
+msgstr "செயல்கள்"
+
+#: src/features/conversation/composer/CannedMenu.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/settings/macros/MacrosPage.tsx
+msgid "Actions only"
+msgstr "செயல்கள் மட்டும்"
+
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/status/IncidentsPage.tsx
@@ -1518,6 +1544,7 @@ msgstr "செயல்பாடு"
 #: src/features/broadcasts/AudienceBuilder.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/migrations/MapStep.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Add"
 msgstr "சேர்"
@@ -1668,6 +1695,10 @@ msgstr "குழுவைச் சேர்"
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Add header"
 msgstr "தலைப்பைச் சேர்"
+
+#: src/features/conversation/composer/MacroChips.tsx
+msgid "Add label {labelName}"
+msgstr "லேபிள் {labelName} ஐச் சேர்"
 
 #: src/features/status/MonitorDialog.tsx
 msgid "Add monitor"
@@ -2273,6 +2304,8 @@ msgstr "மற்றொரு இன்பாக்ஸ்"
 #: src/components/common/text.ts
 msgid "Another member has already linked this Slack user."
 msgstr "Another member has already linked this Slack user."
+msgid "Another macro already uses this shortcut."
+msgstr "வேறொரு மேக்ரோ ஏற்கனவே இந்தக் குறுக்குவழியைப் பயன்படுத்துகிறது."
 
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Another page verified this domain first, and only a verified claim holds a name. Remove the domain, or start over once the other page lets it go."
@@ -2581,6 +2614,10 @@ msgstr "ஒதுக்கு (A)"
 msgid "Assign or hand to a teammate"
 msgstr "குழு உறுப்பினருக்கு ஒதுக்கு அல்லது ஒப்படை"
 
+#: src/features/conversation/composer/MacroChips.tsx
+msgid "Assign to {name}"
+msgstr "{name} க்கு ஒதுக்கு"
+
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 msgid "Assign to a team"
@@ -2603,6 +2640,10 @@ msgstr "{assignee}-க்கு ஒதுக்கப்பட்டது"
 #: src/features/migrations/ReviewStep.tsx
 msgid "Assigned to {assignee}, kept by name"
 msgstr "{assignee}-க்கு ஒதுக்கப்பட்டது, பெயரால் வைக்கப்பட்டது"
+
+#: src/features/settings/macros/MacroDialog.tsx
+msgid "Assignee"
+msgstr "பொறுப்பாளர்"
 
 #: src/features/inbox/AssistantsPage.tsx
 msgid "Assistant"
@@ -3181,8 +3222,8 @@ msgid "Canned replies"
 msgstr "தயார் பதில்கள்"
 
 #: src/components/common/ShortcutSheet.tsx
-msgid "Canned replies, in the reply box"
-msgstr "தயார் பதில்கள், பதில் பெட்டியில்"
+msgid "Canned replies and macros, in the reply box"
+msgstr "தயார் பதில்களும் மேக்ரோக்களும், பதில் பெட்டியில்"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Canned reply"
@@ -4586,6 +4627,7 @@ msgstr "குறைந்த செயல்திறன்"
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
+#: src/features/settings/macros/MacrosPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -4719,6 +4761,10 @@ msgstr "இந்தத் தயார் பதிலை நீக்கவா
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "Delete this DKIM key?"
 msgstr "இந்த DKIM விசையை நீக்கவா?"
+
+#: src/features/settings/macros/MacrosPage.tsx
+msgid "Delete this macro?"
+msgstr "இந்த மேக்ரோவை நீக்கவா?"
 
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Delete this migration?"
@@ -5390,6 +5436,7 @@ msgstr "ஒவ்வொன்றும் அதன் அனைத்துச�
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
+#: src/features/settings/macros/MacrosPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -5436,6 +5483,10 @@ msgstr "உதவி மையத் தொகுப்புகளையும�
 #: src/features/settings/labels/LabelDialog.tsx
 msgid "Edit label"
 msgstr "லேபிளைத் திருத்து"
+
+#: src/features/settings/macros/MacroDialog.tsx
+msgid "Edit macro"
+msgstr "மேக்ரோவைத் திருத்து"
 
 #: src/features/status/MonitorDialog.tsx
 msgid "Edit monitor"
@@ -5686,6 +5737,7 @@ msgid "Every website and app shows its visitors on Home and in Analytics."
 msgstr "ஒவ்வொரு இணையதளமும் ஆப்பும் தன் பார்வையாளர்களை முகப்பிலும் பகுப்பாய்விலும் காட்டும்."
 
 #: src/features/settings/audit/AuditLogPage.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 msgid "Everyone"
 msgstr "அனைவரும்"
 
@@ -7552,6 +7604,7 @@ msgstr "லேபிள் மட்டும்: அதன் அஞ்சல�
 #: src/features/migrations/MapStep.tsx
 #: src/features/migrations/ReviewStep.tsx
 #: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/SettingsColumn.tsx
 msgid "Labels"
 msgstr "லேபிள்கள்"
@@ -7704,6 +7757,10 @@ msgstr "துவக்கி நிறம்"
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Launcher position"
 msgstr "துவக்கி நிலை"
+
+#: src/features/settings/macros/MacroDialog.tsx
+msgid "Leave as is"
+msgstr "அப்படியே விடு"
 
 #. placeholder {0}: integration.default_target
 #: src/features/issues/IssueDialog.tsx
@@ -8091,12 +8148,25 @@ msgid "Lowercase letters, digits and dashes, not at the start or end."
 msgstr "சிறிய எழுத்துகள், இலக்கங்கள், இடைக்கோடுகள், தொடக்கத்திலோ முடிவிலோ அல்ல."
 
 #: src/features/settings/canned/CannedReplyDialog.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 msgid "Lowercase letters, digits and dashes."
 msgstr "சிறிய எழுத்துகள், இலக்கங்கள், இடைக்கோடுகள்."
 
 #: src/features/broadcasts/Composer.tsx
 msgid "Lowercase letters, digits, dashes, underscores and dots. Fixed once the broadcast is sent."
 msgstr "சிறிய எழுத்துகள், இலக்கங்கள், இடைக்கோடுகள், அடிக்கோடுகள், புள்ளிகள். ஒளிபரப்பு அனுப்பியதும் மாற்ற முடியாது."
+
+#: src/app/Palette.tsx
+#: src/features/conversation/composer/CannedMenu.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Macro"
+msgstr "மேக்ரோ"
+
+#: src/app/Palette.tsx
+#: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Macros"
+msgstr "மேக்ரோக்கள்"
 
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Mail arrives here; add a reply account when you are ready"
@@ -8835,6 +8905,7 @@ msgstr "என் குழுக்கள்"
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/ProfileForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
@@ -9094,6 +9165,11 @@ msgstr "புதிய லேபிள் “{folder}”"
 #: src/features/broadcasts/ListsHome.tsx
 msgid "New list"
 msgstr "புதிய பட்டியல்"
+
+#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacrosPage.tsx
+msgid "New macro"
+msgstr "புதிய மேக்ரோ"
 
 #: src/features/setup/previews.tsx
 #: src/lib/alerts.ts
@@ -9580,6 +9656,10 @@ msgstr "பூட்டப்பட்ட விவாதங்கள் இல�
 #: src/features/migrations/text.ts
 msgid "No longer in the mailbox"
 msgstr "இனி அஞ்சல்பெட்டியில் இல்லை"
+
+#: src/features/settings/macros/MacrosPage.tsx
+msgid "No macros yet"
+msgstr "இன்னும் மேக்ரோக்கள் இல்லை"
 
 #: src/features/migrations/SourceStep.tsx
 msgid "No mail server was found for {domain}. Pick your provider below, or “Other IMAP server” and enter the server on the next step."
@@ -10500,6 +10580,10 @@ msgstr "ஆப்பில் மட்டும்"
 msgid "Only mail since {date}"
 msgstr "{date}-க்குப் பிறகான அஞ்சல் மட்டும்"
 
+#: src/features/settings/macros/MacroDialog.tsx
+msgid "Only me"
+msgstr "நான் மட்டும்"
+
 #: src/features/settings/workspace/RetentionForm.tsx
 msgid "Only owners can change this."
 msgstr "உரிமையாளர்கள் மட்டுமே இதை மாற்ற முடியும்."
@@ -11339,6 +11423,10 @@ msgstr "அனுப்ப அனுமதி"
 msgid "Person"
 msgstr "நபர்"
 
+#: src/features/settings/macros/MacrosPage.tsx
+msgid "Personal"
+msgstr "தனிப்பட்டது"
+
 #: src/features/docs/PagesTab.tsx
 msgid "Pick a chat channel of the product and paste the snippet. Ratings and questions land in its inbox."
 msgstr "தயாரிப்பின் ஓர் அரட்டை சேனலைத் தேர்ந்தெடுத்து குறியீட்டை ஒட்டவும். மதிப்பீடுகளும் கேள்விகளும் அதன் இன்பாக்ஸுக்கு வரும்."
@@ -11705,6 +11793,7 @@ msgid "Previous screenshot"
 msgstr "முந்தைய திரைப்பிடிப்பு"
 
 #: src/features/conversation/ConversationMenu.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 msgid "Priority"
 msgstr "முன்னுரிமை"
 
@@ -11716,6 +11805,10 @@ msgstr "முன்னுரிமை {level} ஆக அமைக்கப்�
 #: src/components/common/ShortcutSheet.tsx
 msgid "Priority, inbox, spam and more"
 msgstr "முன்னுரிமை, இன்பாக்ஸ், ஸ்பேம் மற்றும் பல"
+
+#: src/features/conversation/composer/MacroChips.tsx
+msgid "Priority: {priority}"
+msgstr "முன்னுரிமை: {priority}"
 
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListsHome.tsx
@@ -12260,6 +12353,10 @@ msgstr "குறிப்பு"
 msgid "Refresh"
 msgstr "புதுப்பி"
 
+#: src/features/settings/macros/MacroDialog.tsx
+msgid "Refund approved"
+msgstr "பணத்திரும்பப் பெறல் அங்கீகரிக்கப்பட்டது"
+
 #: src/features/migrations/TokenConnectStep.tsx
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Region"
@@ -12296,6 +12393,7 @@ msgstr "தொலைநிலைப் படங்கள் நீங்கள�
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/Passkeys.tsx
@@ -12309,6 +12407,7 @@ msgstr "அகற்று"
 #. placeholder {0}: a.title
 #. placeholder {0}: f.name
 #. placeholder {0}: p.name
+#: src/features/conversation/composer/MacroChips.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Remove {0}"
@@ -12374,6 +12473,10 @@ msgstr "இறக்குமதி செய்த வரலாற்றை அ
 #: src/features/migrations/parts.tsx
 msgid "Remove imported history?"
 msgstr "இறக்குமதி செய்த வரலாற்றை அகற்றவா?"
+
+#: src/features/conversation/composer/MacroChips.tsx
+msgid "Remove label {labelName}"
+msgstr "லேபிள் {labelName} ஐ நீக்கு"
 
 #: src/features/settings/channels/app/PushSection.tsx
 msgid "Remove the APNs key?"
@@ -12532,6 +12635,7 @@ msgstr "<0>{title}</0> இழையில் பதிலளித்தார�
 msgid "Replied in the thread of another conversation"
 msgstr "மற்றொரு உரையாடலின் இழையில் பதிலளித்தார்"
 
+#: src/app/Palette.tsx
 #: src/features/broadcasts/Report.tsx
 #: src/features/conversation/Feedback.tsx
 #: src/features/reports/ReportPages.tsx
@@ -13066,6 +13170,7 @@ msgstr "சனிக்கிழமை"
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/slack/SlackPage.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/teams/TeamDialog.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
@@ -13075,6 +13180,10 @@ msgstr "சனிக்கிழமை"
 #: src/features/status/MonitorDialog.tsx
 msgid "Save"
 msgstr "சேமி"
+
+#: src/features/settings/macros/MacrosPage.tsx
+msgid "Save a reply together with what should happen to the conversation when you send it."
+msgstr "அனுப்பும்போது உரையாடலுக்கு என்ன நடக்க வேண்டும் என்பதோடு ஒரு பதிலைச் சேமியுங்கள்."
 
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Save and test"
@@ -13876,11 +13985,16 @@ msgstr "அமைவுப் படிகள்"
 msgid "SHA-256 fingerprint of the certificate the server sent"
 msgstr "சேவையகம் அனுப்பிய சான்றிதழின் SHA-256 கைரேகை"
 
+#: src/features/settings/macros/MacrosPage.tsx
+msgid "Shared"
+msgstr "பகிரப்பட்டது"
+
 #: src/components/common/text.ts
 msgid "Shipped"
 msgstr "வெளியிடப்பட்டது"
 
 #: src/features/settings/canned/CannedReplyDialog.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 msgid "Shortcut"
 msgstr "குறுக்குவழி"
 
@@ -14417,6 +14531,14 @@ msgstr "உறக்கநிலை"
 msgid "Snooze (S)"
 msgstr "உறக்கநிலை (S)"
 
+#: src/features/settings/macros/MacroDialog.tsx
+msgid "Snooze for (minutes)"
+msgstr "ஒத்திவைப்பு நேரம் (நிமிடங்கள்)"
+
+#: src/features/conversation/composer/MacroChips.tsx
+msgid "Snooze for {time}"
+msgstr "{time} ஒத்திவை"
+
 #: src/components/common/text.ts
 #: src/features/inbox/ChatList.tsx
 msgid "Snoozed"
@@ -14654,6 +14776,7 @@ msgstr "செயலிழந்தால் நிலை"
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/migrations/MapStep.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
 #: src/features/settings/webhooks/events.tsx
 msgid "Status"
@@ -14674,6 +14797,10 @@ msgstr "நிலைப் பக்கம் நீக்கப்பட்ட�
 #: src/features/status/StatusPages.tsx
 msgid "Status pages"
 msgstr "நிலைப் பக்கங்கள்"
+
+#: src/features/conversation/composer/MacroChips.tsx
+msgid "Status: {status}"
+msgstr "நிலை: {status}"
 
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "Stay under your provider’s sending rate. Support replies are never slowed down by a broadcast."
@@ -15013,6 +15140,7 @@ msgstr "சோதனைகள் பணியிட உறுப்பினர�
 
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 msgid "Text"
 msgstr "உரை"
 
@@ -16744,8 +16872,13 @@ msgstr "தட்டச்சு செய்கிறார்…"
 msgid "Unanswered"
 msgstr "பதிலளிக்கப்படாதவை"
 
+#: src/features/conversation/composer/MacroChips.tsx
+msgid "Unassign"
+msgstr "ஒதுக்கீட்டை நீக்கு"
+
 #: src/features/conversation/ChatView.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 msgid "Unassigned"
 msgstr "ஒதுக்கப்படாதது"
 
@@ -17144,6 +17277,7 @@ msgstr "எழுத்துகள், இலக்கங்கள், - மற
 
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 msgid "Use lowercase letters, digits and single dashes."
 msgstr "சிறிய எழுத்துகள், எண்கள், ஒற்றை ஹைபன்களைப் பயன்படுத்துங்கள்."
 
@@ -17820,6 +17954,10 @@ msgstr "யார், எங்கே பதிலளிக்கிறார்
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Who can reply"
 msgstr "யார் பதிலளிக்கலாம்"
+
+#: src/features/settings/macros/MacroDialog.tsx
+msgid "Who can use it"
+msgstr "யார் பயன்படுத்தலாம்"
 
 #: src/features/settings/SettingsColumn.tsx
 msgid "Who changed access, keys and data"

@@ -6,14 +6,22 @@ import { toast } from "@/components/common"
 import { useErrorText } from "@/components/common/text"
 import type { HelpPick } from "@/features/conversation/composer/ArticlePicker"
 import { useIsChat, useIsLive } from "@/features/conversation/liveness"
+import { macroSetsStatus, macroThen, type MacroPick } from "@/features/conversation/macros"
 import { patchConversation, postMessage } from "@/features/conversation/queries"
 import { api, unwrap, type Conversation, type ConversationUpdate, type Member, type Message } from "@/lib/api"
+import { keys } from "@/lib/keys"
 import { applyEvent } from "@/lib/live"
 import { useSession } from "@/lib/session"
 import { newId } from "@/lib/utils"
 import { useLiveContext } from "@/lib/workspace"
 
-export type ReplyDraft = { body: string; mode: "message" | "note"; files: File[]; articles: HelpPick[] }
+export type ReplyDraft = {
+  body: string
+  mode: "message" | "note"
+  files: File[]
+  articles: HelpPick[]
+  macro?: MacroPick
+}
 
 const drafts = new Map<string, ReplyDraft>()
 const revisions = new Map<string, number>()
@@ -32,18 +40,20 @@ export function readDraft(id: string): ReplyDraft {
 
 export function writeDraft(id: string, d: ReplyDraft) {
   const before = drafts.get(id)?.body ?? ""
-  if (d.body === "" && d.files.length === 0 && d.articles.length === 0 && d.mode === "message") drafts.delete(id)
+  if (d.body === "" && d.files.length === 0 && d.articles.length === 0 && !d.macro && d.mode === "message")
+    drafts.delete(id)
   else drafts.set(id, d)
   if (before !== d.body) draftListeners.forEach((l) => l())
 }
 
-function restoreDraftOf(id: string, body: string, files: File[], articles: HelpPick[] = []) {
+function restoreDraftOf(id: string, body: string, files: File[], articles: HelpPick[] = [], macro?: MacroPick) {
   const now = readDraft(id)
   writeDraft(id, {
     mode: "message",
     body: now.body || body,
     files: now.files.length ? now.files : files,
     articles: now.articles.length ? now.articles : articles,
+    macro: now.macro ?? macro,
   })
   revisions.set(id, (revisions.get(id) ?? 0) + 1)
   draftListeners.forEach((l) => l())
@@ -148,7 +158,14 @@ function revertOf(c: Conversation): ConversationUpdate {
   return { status: c.status }
 }
 
-export type SendRequest = { body: string; files: File[]; close: boolean; suggestion?: Message; articles?: HelpPick[] }
+export type SendRequest = {
+  body: string
+  files: File[]
+  close: boolean
+  suggestion?: Message
+  articles?: HelpPick[]
+  macro?: MacroPick
+}
 
 export function useConversationActions(c: Conversation, contactName: string) {
   const { t } = useLingui()
@@ -169,12 +186,12 @@ export function useConversationActions(c: Conversation, contactName: string) {
   const addMessage = (m: Message) => applyEvent(qc, ctx, { type: "message.created", data: m })
 
   const deliver = async (
-    { body, files, suggestion, articles = [] }: SendRequest,
+    { body, files, suggestion, articles = [], macro, close }: SendRequest,
     clientId = newId(),
     onSent?: () => void
   ) => {
     let sent: Message
-    if (suggestion && files.length === 0 && articles.length === 0) {
+    if (suggestion && files.length === 0 && articles.length === 0 && !macro) {
       const path = { params: { path: { messageId: suggestion.id } } }
       if (body.trim() !== suggestion.body.trim())
         await unwrap(
@@ -188,17 +205,24 @@ export function useConversationActions(c: Conversation, contactName: string) {
         client_id: clientId,
         files,
         article_ids: articles.length ? articles.map((a) => a.id) : undefined,
+        macro_id: macro?.macro.id,
+        // oxlint-disable-next-line unicorn/no-thenable -- the API names this field `then`
+        then: macro ? macroThen(c, macro, close) : undefined,
       })
     }
     addMessage(sent)
     onSent?.()
-    if (suggestion && (files.length > 0 || articles.length > 0))
+    if (macro) {
+      void qc.invalidateQueries({ queryKey: keys.conversation(ctx.ws, c.id) })
+      void qc.invalidateQueries({ queryKey: keys.conversationLists(ctx.ws) })
+    }
+    if (suggestion && (files.length > 0 || articles.length > 0 || macro))
       await api
         .DELETE("/v1/messages/{messageId}", { params: { path: { messageId: suggestion.id } } })
         .catch(() => undefined)
   }
   const notSent = (req: SendRequest, err: unknown) => {
-    restoreDraftOf(c.id, req.body, req.files, req.articles)
+    restoreDraftOf(c.id, req.body, req.files, req.articles, req.macro)
     toast(t`Your reply to ${first} was not sent. ${errorText(err)}`)
   }
 
@@ -238,6 +262,7 @@ export function useConversationActions(c: Conversation, contactName: string) {
     send: (req: SendRequest): Promise<void> | undefined => {
       const { close } = req
       writeDraft(c.id, { body: "", mode: "message", files: [], articles: [] })
+      const settled = !!req.macro && (close || macroSetsStatus(req.macro))
       if (live && !close) {
         return inLine(c.id, () => deliver(req)).catch((err) => {
           toast(t`Your reply to ${first} was not sent. ${errorText(err)}`)
@@ -247,7 +272,7 @@ export function useConversationActions(c: Conversation, contactName: string) {
       if (live) {
         inLine(c.id, () => deliver(req)).then(
           () =>
-            patch({ status: "closed" }).then(
+            (req.macro ? Promise.resolve() : patch({ status: "closed" })).then(
               () =>
                 toast(c.kind === "feedback" ? t`Sent to ${first} and resolved` : t`Sent to ${first} and closed`, () =>
                   patch(revertOf(c)).catch(failed)
@@ -267,7 +292,10 @@ export function useConversationActions(c: Conversation, contactName: string) {
         files: req.files,
         close,
         clientId,
-        messageId: req.suggestion && req.files.length === 0 && !req.articles?.length ? req.suggestion.id : undefined,
+        messageId:
+          req.suggestion && req.files.length === 0 && !req.articles?.length && !req.macro
+            ? req.suggestion.id
+            : undefined,
       }
       const drop = () => {
         if (pending.get(c.id)?.some((p) => p.key === key))
@@ -280,7 +308,7 @@ export function useConversationActions(c: Conversation, contactName: string) {
       hold(key, () => {
         deliver(req, clientId, drop).then(
           () => {
-            if (c.status !== status) patch({ status }).catch(failed)
+            if (!settled && c.status !== status) patch({ status }).catch(failed)
           },
           (err) => {
             drop()
@@ -297,7 +325,7 @@ export function useConversationActions(c: Conversation, contactName: string) {
         () => {
           if (cancel(key)) {
             drop()
-            restoreDraftOf(c.id, req.body, req.files, req.articles)
+            restoreDraftOf(c.id, req.body, req.files, req.articles, req.macro)
           } else {
             patch(revertOf(c)).catch(failed)
           }

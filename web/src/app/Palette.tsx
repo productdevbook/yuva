@@ -16,7 +16,8 @@ import {
   CommandList,
   CommandShortcut,
 } from "@/components/ui/command"
-import { hasCommands, runCommand, type CommandName } from "@/features/conversation/commands"
+import { useReplyChoices } from "@/features/conversation/composer/CannedMenu"
+import { hasCommands, runCommand, runInsert, type CommandName } from "@/features/conversation/commands"
 import { useInboxFilter } from "@/features/inbox/inboxFilter"
 import { focusListSearch, setListQuery } from "@/features/inbox/listSearch"
 import { useConversation } from "@/features/conversation/queries"
@@ -42,6 +43,7 @@ function useItems(open: boolean): Item[] {
   const recent = useConversations({ status: ["open"], inbox_id: inboxId || undefined }, open)
   const conversationId = /^\/(?:conversations|feedback)\/([^/]+)/.exec(pathname)?.[1]
   const current = useConversation(open ? conversationId : undefined).data
+  const replies = useReplyChoices()
   const commands =
     open && hasCommands() && (pathname.startsWith("/conversations/") || pathname.startsWith("/feedback/"))
   return useMemo(() => {
@@ -92,6 +94,16 @@ function useItems(open: boolean): Item[] {
         if (current.trashed_at) act("restore", t`Restore from the Trash`, SHORTCUTS.restore)
         else act("trash", t`Move to the Trash`, SHORTCUTS.trash)
       }
+      if (!current?.trashed_at) {
+        for (const r of replies) {
+          list.push({
+            group: t`Replies`,
+            label: r.title,
+            hint: [r.kind === "macro" ? t`Macro` : "", `/${r.shortcut}`].filter(Boolean).join(" · "),
+            run: () => runInsert(r),
+          })
+        }
+      }
     }
     if (inboxes.length > 1) {
       list.push({ group: t`Inbox`, label: t`All inboxes`, run: () => setFilter("") })
@@ -129,6 +141,7 @@ function useItems(open: boolean): Item[] {
     go(t`Members`, "/settings/members")
     go(t`Canned replies`, "/settings/canned-replies")
     go(t`Labels`, "/settings/labels")
+    go(t`Macros`, "/settings/macros")
     go(t`Connected apps`, "/settings/connected-apps")
     for (const i of inboxes) go(t`${i.name} settings`, `/settings/inboxes/${i.id}`)
     if (canManage) {
@@ -164,6 +177,7 @@ function useItems(open: boolean): Item[] {
     analytics,
     pathname,
     current,
+    replies,
   ])
 }
 

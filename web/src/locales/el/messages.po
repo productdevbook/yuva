@@ -149,6 +149,14 @@ msgid "{actor} added the label {added}"
 msgstr "Ο/Η {actor} πρόσθεσε την ετικέτα {added}"
 
 #: src/features/conversation/messages/EventLine.tsx
+msgid "{actor} applied the macro {macro}"
+msgstr "Ο/Η {actor} εφάρμοσε τη μακροεντολή {macro}"
+
+#: src/features/conversation/messages/EventLine.tsx
+msgid "{actor} applied the macro {macro}, assignee skipped"
+msgstr "Ο/Η {actor} εφάρμοσε τη μακροεντολή {macro}, ο υπεύθυνος παραλείφθηκε"
+
+#: src/features/conversation/messages/EventLine.tsx
 msgid "{actor} assigned this to {assignee}"
 msgstr "Ο/Η {actor} ανέθεσε τη συνομιλία στον/στην {assignee}"
 
@@ -1236,6 +1244,10 @@ msgstr "A linked GitHub or Linear issue changed"
 msgid "A list is who agreed to hear from you. Every subscriber keeps a consent record you can export."
 msgstr "Μια λίστα είναι όσοι συμφώνησαν να ακούν νέα σας. Κάθε συνδρομητής έχει καταγραφή συναίνεσης που μπορείτε να εξαγάγετε."
 
+#: src/features/settings/macros/MacrosPage.tsx
+msgid "A macro is a reply plus actions: labels, assignee, status, priority or snooze. Type / and its shortcut in the composer; the actions apply when the reply is sent."
+msgstr "Η μακροεντολή είναι μια απάντηση με ενέργειες: ετικέτες, υπεύθυνος, κατάσταση, προτεραιότητα ή αναβολή. Πληκτρολογήστε / και τη συντόμευση στο πλαίσιο απάντησης· οι ενέργειες εφαρμόζονται κατά την αποστολή."
+
 #: src/features/broadcasts/ListParts.tsx
 msgid "A mailing list holds the people who agreed to get your broadcasts. They join on a subscribe form on your site, or your team adds them and records how they agreed. Every step is kept as proof of consent, and everyone can leave with one click."
 msgstr "Μια λίστα αλληλογραφίας περιέχει τα άτομα που συμφώνησαν να λαμβάνουν τις μαζικές αποστολές σας. Εγγράφονται σε μια φόρμα εγγραφής στον ιστότοπό σας ή η ομάδα σας τα προσθέτει και καταγράφει πώς συμφώνησαν. Κάθε βήμα φυλάσσεται ως απόδειξη συναίνεσης και ο καθένας μπορεί να αποχωρήσει με ένα κλικ."
@@ -1343,6 +1355,10 @@ msgstr "Οι αναρτήσεις ενός αναγνώστη περιμένου
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "A real address where you receive post"
 msgstr "Μια πραγματική διεύθυνση όπου λαμβάνετε αλληλογραφία"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "A reply and its actions in one step"
+msgstr "Μια απάντηση και οι ενέργειές της σε ένα βήμα"
 
 #: src/components/common/text.ts
 msgid "A reply was written in a discussion"
@@ -1505,6 +1521,16 @@ msgstr "Κατάσταση Acme"
 msgid "Acme Support"
 msgstr "Υποστήριξη Acme"
 
+#: src/features/settings/macros/MacroDialog.tsx
+msgid "Actions"
+msgstr "Ενέργειες"
+
+#: src/features/conversation/composer/CannedMenu.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/settings/macros/MacrosPage.tsx
+msgid "Actions only"
+msgstr "Μόνο ενέργειες"
+
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/status/IncidentsPage.tsx
@@ -1518,6 +1544,7 @@ msgstr "Δραστηριότητα"
 #: src/features/broadcasts/AudienceBuilder.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/migrations/MapStep.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Add"
 msgstr "Προσθήκη"
@@ -1668,6 +1695,10 @@ msgstr "Προσθήκη ομάδας"
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Add header"
 msgstr "Προσθήκη κεφαλίδας"
+
+#: src/features/conversation/composer/MacroChips.tsx
+msgid "Add label {labelName}"
+msgstr "Προσθήκη ετικέτας {labelName}"
 
 #: src/features/status/MonitorDialog.tsx
 msgid "Add monitor"
@@ -2273,6 +2304,8 @@ msgstr "άλλα εισερχόμενα"
 #: src/components/common/text.ts
 msgid "Another member has already linked this Slack user."
 msgstr "Another member has already linked this Slack user."
+msgid "Another macro already uses this shortcut."
+msgstr "Άλλη μακροεντολή χρησιμοποιεί ήδη αυτή τη συντόμευση."
 
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Another page verified this domain first, and only a verified claim holds a name. Remove the domain, or start over once the other page lets it go."
@@ -2581,6 +2614,10 @@ msgstr "Ανάθεση (A)"
 msgid "Assign or hand to a teammate"
 msgstr "Ανάθεση ή παράδοση σε συνάδελφο"
 
+#: src/features/conversation/composer/MacroChips.tsx
+msgid "Assign to {name}"
+msgstr "Ανάθεση σε {name}"
+
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 msgid "Assign to a team"
@@ -2603,6 +2640,10 @@ msgstr "Ανατέθηκε σε {assignee}"
 #: src/features/migrations/ReviewStep.tsx
 msgid "Assigned to {assignee}, kept by name"
 msgstr "Ανατέθηκε σε {assignee}, διατηρήθηκε με όνομα"
+
+#: src/features/settings/macros/MacroDialog.tsx
+msgid "Assignee"
+msgstr "Υπεύθυνος"
 
 #: src/features/inbox/AssistantsPage.tsx
 msgid "Assistant"
@@ -3181,8 +3222,8 @@ msgid "Canned replies"
 msgstr "Έτοιμες απαντήσεις"
 
 #: src/components/common/ShortcutSheet.tsx
-msgid "Canned replies, in the reply box"
-msgstr "Έτοιμες απαντήσεις, στο πλαίσιο απάντησης"
+msgid "Canned replies and macros, in the reply box"
+msgstr "Έτοιμες απαντήσεις και μακροεντολές, στο πλαίσιο απάντησης"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Canned reply"
@@ -4586,6 +4627,7 @@ msgstr "Μειωμένη απόδοση"
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
+#: src/features/settings/macros/MacrosPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -4719,6 +4761,10 @@ msgstr "Διαγραφή αυτής της έτοιμης απάντησης;"
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "Delete this DKIM key?"
 msgstr "Διαγραφή αυτού του κλειδιού DKIM;"
+
+#: src/features/settings/macros/MacrosPage.tsx
+msgid "Delete this macro?"
+msgstr "Διαγραφή αυτής της μακροεντολής;"
 
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Delete this migration?"
@@ -5390,6 +5436,7 @@ msgstr "Καθεμία με όλα της τα μηνύματα και τις σ
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
+#: src/features/settings/macros/MacrosPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -5436,6 +5483,10 @@ msgstr "Επεξεργασία συλλογών κέντρου βοήθειας 
 #: src/features/settings/labels/LabelDialog.tsx
 msgid "Edit label"
 msgstr "Επεξεργασία ετικέτας"
+
+#: src/features/settings/macros/MacroDialog.tsx
+msgid "Edit macro"
+msgstr "Επεξεργασία μακροεντολής"
 
 #: src/features/status/MonitorDialog.tsx
 msgid "Edit monitor"
@@ -5686,6 +5737,7 @@ msgid "Every website and app shows its visitors on Home and in Analytics."
 msgstr "Κάθε ιστότοπος και εφαρμογή εμφανίζει τους επισκέπτες του στην Αρχική και στα Αναλυτικά στοιχεία."
 
 #: src/features/settings/audit/AuditLogPage.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 msgid "Everyone"
 msgstr "Όλοι"
 
@@ -7552,6 +7604,7 @@ msgstr "Μόνο ετικέτα: η αλληλογραφία του έρχετα
 #: src/features/migrations/MapStep.tsx
 #: src/features/migrations/ReviewStep.tsx
 #: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/SettingsColumn.tsx
 msgid "Labels"
 msgstr "Ετικέτες"
@@ -7704,6 +7757,10 @@ msgstr "Χρώμα κουμπιού συνομιλίας"
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Launcher position"
 msgstr "Θέση κουμπιού συνομιλίας"
+
+#: src/features/settings/macros/MacroDialog.tsx
+msgid "Leave as is"
+msgstr "Χωρίς αλλαγή"
 
 #. placeholder {0}: integration.default_target
 #: src/features/issues/IssueDialog.tsx
@@ -8091,12 +8148,25 @@ msgid "Lowercase letters, digits and dashes, not at the start or end."
 msgstr "Πεζά γράμματα, ψηφία και παύλες, όχι στην αρχή ή στο τέλος."
 
 #: src/features/settings/canned/CannedReplyDialog.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 msgid "Lowercase letters, digits and dashes."
 msgstr "Πεζά γράμματα, ψηφία και παύλες."
 
 #: src/features/broadcasts/Composer.tsx
 msgid "Lowercase letters, digits, dashes, underscores and dots. Fixed once the broadcast is sent."
 msgstr "Πεζά γράμματα, ψηφία, παύλες, κάτω παύλες και τελείες. Σταθερό όταν σταλεί η μαζική αποστολή."
+
+#: src/app/Palette.tsx
+#: src/features/conversation/composer/CannedMenu.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Macro"
+msgstr "Μακροεντολή"
+
+#: src/app/Palette.tsx
+#: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Macros"
+msgstr "Μακροεντολές"
 
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Mail arrives here; add a reply account when you are ready"
@@ -8835,6 +8905,7 @@ msgstr "Οι ομάδες μου"
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/ProfileForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
@@ -9094,6 +9165,11 @@ msgstr "Νέα ετικέτα «{folder}»"
 #: src/features/broadcasts/ListsHome.tsx
 msgid "New list"
 msgstr "Νέα λίστα"
+
+#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacrosPage.tsx
+msgid "New macro"
+msgstr "Νέα μακροεντολή"
 
 #: src/features/setup/previews.tsx
 #: src/lib/alerts.ts
@@ -9580,6 +9656,10 @@ msgstr "Δεν υπάρχουν κλειδωμένες συζητήσεις."
 #: src/features/migrations/text.ts
 msgid "No longer in the mailbox"
 msgstr "Δεν υπάρχει πια στο γραμματοκιβώτιο"
+
+#: src/features/settings/macros/MacrosPage.tsx
+msgid "No macros yet"
+msgstr "Δεν υπάρχουν μακροεντολές ακόμη"
 
 #: src/features/migrations/SourceStep.tsx
 msgid "No mail server was found for {domain}. Pick your provider below, or “Other IMAP server” and enter the server on the next step."
@@ -10500,6 +10580,10 @@ msgstr "Μόνο στην εφαρμογή"
 msgid "Only mail since {date}"
 msgstr "Μόνο αλληλογραφία από {date}"
 
+#: src/features/settings/macros/MacroDialog.tsx
+msgid "Only me"
+msgstr "Μόνο εγώ"
+
 #: src/features/settings/workspace/RetentionForm.tsx
 msgid "Only owners can change this."
 msgstr "Μόνο οι ιδιοκτήτες μπορούν να το αλλάξουν."
@@ -11339,6 +11423,10 @@ msgstr "Άδεια αποστολής"
 msgid "Person"
 msgstr "Άτομο"
 
+#: src/features/settings/macros/MacrosPage.tsx
+msgid "Personal"
+msgstr "Προσωπική"
+
 #: src/features/docs/PagesTab.tsx
 msgid "Pick a chat channel of the product and paste the snippet. Ratings and questions land in its inbox."
 msgstr "Επιλέξτε ένα κανάλι συνομιλίας του προϊόντος και επικολλήστε τον κώδικα. Οι αξιολογήσεις και οι ερωτήσεις καταλήγουν στα εισερχόμενά του."
@@ -11705,6 +11793,7 @@ msgid "Previous screenshot"
 msgstr "Προηγούμενο στιγμιότυπο"
 
 #: src/features/conversation/ConversationMenu.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 msgid "Priority"
 msgstr "Προτεραιότητα"
 
@@ -11716,6 +11805,10 @@ msgstr "Η προτεραιότητα ορίστηκε σε {level}"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Priority, inbox, spam and more"
 msgstr "Προτεραιότητα, εισερχόμενα, spam και άλλα"
+
+#: src/features/conversation/composer/MacroChips.tsx
+msgid "Priority: {priority}"
+msgstr "Προτεραιότητα: {priority}"
 
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListsHome.tsx
@@ -12260,6 +12353,10 @@ msgstr "Αναφορά"
 msgid "Refresh"
 msgstr "Ανανέωση"
 
+#: src/features/settings/macros/MacroDialog.tsx
+msgid "Refund approved"
+msgstr "Η επιστροφή χρημάτων εγκρίθηκε"
+
 #: src/features/migrations/TokenConnectStep.tsx
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Region"
@@ -12296,6 +12393,7 @@ msgstr "Οι απομακρυσμένες εικόνες μπορούν να π�
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/Passkeys.tsx
@@ -12309,6 +12407,7 @@ msgstr "Αφαίρεση"
 #. placeholder {0}: a.title
 #. placeholder {0}: f.name
 #. placeholder {0}: p.name
+#: src/features/conversation/composer/MacroChips.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Remove {0}"
@@ -12374,6 +12473,10 @@ msgstr "Αφαίρεση εισαγμένου ιστορικού"
 #: src/features/migrations/parts.tsx
 msgid "Remove imported history?"
 msgstr "Αφαίρεση εισαγμένου ιστορικού;"
+
+#: src/features/conversation/composer/MacroChips.tsx
+msgid "Remove label {labelName}"
+msgstr "Αφαίρεση ετικέτας {labelName}"
 
 #: src/features/settings/channels/app/PushSection.tsx
 msgid "Remove the APNs key?"
@@ -12532,6 +12635,7 @@ msgstr "Απάντησε στο νήμα του <0>{title}</0>"
 msgid "Replied in the thread of another conversation"
 msgstr "Απάντησε στο νήμα άλλης συνομιλίας"
 
+#: src/app/Palette.tsx
 #: src/features/broadcasts/Report.tsx
 #: src/features/conversation/Feedback.tsx
 #: src/features/reports/ReportPages.tsx
@@ -13066,6 +13170,7 @@ msgstr "Σάββατο"
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/slack/SlackPage.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/teams/TeamDialog.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
@@ -13075,6 +13180,10 @@ msgstr "Σάββατο"
 #: src/features/status/MonitorDialog.tsx
 msgid "Save"
 msgstr "Αποθήκευση"
+
+#: src/features/settings/macros/MacrosPage.tsx
+msgid "Save a reply together with what should happen to the conversation when you send it."
+msgstr "Αποθηκεύστε μια απάντηση μαζί με ό,τι πρέπει να γίνει στη συνομιλία όταν την στείλετε."
 
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Save and test"
@@ -13876,11 +13985,16 @@ msgstr "Βήματα ρύθμισης"
 msgid "SHA-256 fingerprint of the certificate the server sent"
 msgstr "Αποτύπωμα SHA-256 του πιστοποιητικού που έστειλε ο διακομιστής"
 
+#: src/features/settings/macros/MacrosPage.tsx
+msgid "Shared"
+msgstr "Κοινόχρηστη"
+
 #: src/components/common/text.ts
 msgid "Shipped"
 msgstr "Παραδόθηκε"
 
 #: src/features/settings/canned/CannedReplyDialog.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 msgid "Shortcut"
 msgstr "Συντόμευση"
 
@@ -14417,6 +14531,14 @@ msgstr "Αναβολή"
 msgid "Snooze (S)"
 msgstr "Αναβολή (S)"
 
+#: src/features/settings/macros/MacroDialog.tsx
+msgid "Snooze for (minutes)"
+msgstr "Αναβολή για (λεπτά)"
+
+#: src/features/conversation/composer/MacroChips.tsx
+msgid "Snooze for {time}"
+msgstr "Αναβολή για {time}"
+
 #: src/components/common/text.ts
 #: src/features/inbox/ChatList.tsx
 msgid "Snoozed"
@@ -14654,6 +14776,7 @@ msgstr "Κατάσταση όταν πέσει"
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/migrations/MapStep.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
 #: src/features/settings/webhooks/events.tsx
 msgid "Status"
@@ -14674,6 +14797,10 @@ msgstr "Η σελίδα κατάστασης διαγράφηκε"
 #: src/features/status/StatusPages.tsx
 msgid "Status pages"
 msgstr "Σελίδες κατάστασης"
+
+#: src/features/conversation/composer/MacroChips.tsx
+msgid "Status: {status}"
+msgstr "Κατάσταση: {status}"
 
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "Stay under your provider’s sending rate. Support replies are never slowed down by a broadcast."
@@ -15013,6 +15140,7 @@ msgstr "Οι δοκιμές πηγαίνουν μόνο σε μέλη του χ�
 
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 msgid "Text"
 msgstr "Κείμενο"
 
@@ -16744,8 +16872,13 @@ msgstr "πληκτρολογεί…"
 msgid "Unanswered"
 msgstr "Αναπάντητα"
 
+#: src/features/conversation/composer/MacroChips.tsx
+msgid "Unassign"
+msgstr "Αφαίρεση ανάθεσης"
+
 #: src/features/conversation/ChatView.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 msgid "Unassigned"
 msgstr "Χωρίς ανάθεση"
 
@@ -17144,6 +17277,7 @@ msgstr "Χρησιμοποιήστε γράμματα, ψηφία, - και _, �
 
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 msgid "Use lowercase letters, digits and single dashes."
 msgstr "Χρησιμοποιήστε πεζά γράμματα, ψηφία και μονές παύλες."
 
@@ -17820,6 +17954,10 @@ msgstr "Ποιος απαντά, πού, και ποιος είναι συνδε
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Who can reply"
 msgstr "Ποιος μπορεί να απαντά"
+
+#: src/features/settings/macros/MacroDialog.tsx
+msgid "Who can use it"
+msgstr "Ποιος μπορεί να τη χρησιμοποιεί"
 
 #: src/features/settings/SettingsColumn.tsx
 msgid "Who changed access, keys and data"

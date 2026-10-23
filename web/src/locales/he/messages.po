@@ -149,6 +149,14 @@ msgid "{actor} added the label {added}"
 msgstr "{actor} הוסיף/ה את התווית {added}"
 
 #: src/features/conversation/messages/EventLine.tsx
+msgid "{actor} applied the macro {macro}"
+msgstr "{actor} הפעיל/ה את המאקרו {macro}"
+
+#: src/features/conversation/messages/EventLine.tsx
+msgid "{actor} applied the macro {macro}, assignee skipped"
+msgstr "{actor} הפעיל/ה את המאקרו {macro}, האחראי דולג"
+
+#: src/features/conversation/messages/EventLine.tsx
 msgid "{actor} assigned this to {assignee}"
 msgstr "{actor} שייך/ה את השיחה ל{assignee}"
 
@@ -1236,6 +1244,10 @@ msgstr "A linked GitHub or Linear issue changed"
 msgid "A list is who agreed to hear from you. Every subscriber keeps a consent record you can export."
 msgstr "רשימה היא האנשים שהסכימו לשמוע ממך. לכל מנוי יש רישום הסכמה שאפשר לייצא."
 
+#: src/features/settings/macros/MacrosPage.tsx
+msgid "A macro is a reply plus actions: labels, assignee, status, priority or snooze. Type / and its shortcut in the composer; the actions apply when the reply is sent."
+msgstr "מאקרו הוא תשובה עם פעולות: תוויות, אחראי, סטטוס, עדיפות או דחייה. הקלידו / והקיצור בשדה התשובה; הפעולות מתבצעות עם שליחת התשובה."
+
 #: src/features/broadcasts/ListParts.tsx
 msgid "A mailing list holds the people who agreed to get your broadcasts. They join on a subscribe form on your site, or your team adds them and records how they agreed. Every step is kept as proof of consent, and everyone can leave with one click."
 msgstr "רשימת תפוצה מחזיקה את האנשים שהסכימו לקבל את השליחות ההמוניות שלך. הם מצטרפים בטופס הרשמה באתר שלך, או שהצוות שלך מוסיף אותם ורושם איך הסכימו. כל שלב נשמר כהוכחת הסכמה, וכל אחד יכול לעזוב בלחיצה אחת."
@@ -1343,6 +1355,10 @@ msgstr "פוסטים של קורא ממתינים לחבר צוות עד שאח�
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "A real address where you receive post"
 msgstr "כתובת אמיתית שבה אתה מקבל דואר"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "A reply and its actions in one step"
+msgstr "תשובה והפעולות שלה בצעד אחד"
 
 #: src/components/common/text.ts
 msgid "A reply was written in a discussion"
@@ -1505,6 +1521,16 @@ msgstr "הסטטוס של Acme"
 msgid "Acme Support"
 msgstr "התמיכה של Acme"
 
+#: src/features/settings/macros/MacroDialog.tsx
+msgid "Actions"
+msgstr "פעולות"
+
+#: src/features/conversation/composer/CannedMenu.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/settings/macros/MacrosPage.tsx
+msgid "Actions only"
+msgstr "פעולות בלבד"
+
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/status/IncidentsPage.tsx
@@ -1518,6 +1544,7 @@ msgstr "פעילות"
 #: src/features/broadcasts/AudienceBuilder.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/migrations/MapStep.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Add"
 msgstr "הוספה"
@@ -1668,6 +1695,10 @@ msgstr "הוספת קבוצה"
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Add header"
 msgstr "הוספת כותרת"
+
+#: src/features/conversation/composer/MacroChips.tsx
+msgid "Add label {labelName}"
+msgstr "הוספת התווית {labelName}"
 
 #: src/features/status/MonitorDialog.tsx
 msgid "Add monitor"
@@ -2273,6 +2304,8 @@ msgstr "תיבת דואר אחרת"
 #: src/components/common/text.ts
 msgid "Another member has already linked this Slack user."
 msgstr "Another member has already linked this Slack user."
+msgid "Another macro already uses this shortcut."
+msgstr "מאקרו אחר כבר משתמש בקיצור הזה."
 
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Another page verified this domain first, and only a verified claim holds a name. Remove the domain, or start over once the other page lets it go."
@@ -2581,6 +2614,10 @@ msgstr "שיוך (A)"
 msgid "Assign or hand to a teammate"
 msgstr "שיוך או העברה לחבר צוות"
 
+#: src/features/conversation/composer/MacroChips.tsx
+msgid "Assign to {name}"
+msgstr "הקצאה ל-{name}"
+
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 msgid "Assign to a team"
@@ -2603,6 +2640,10 @@ msgstr "משויכת ל-{assignee}"
 #: src/features/migrations/ReviewStep.tsx
 msgid "Assigned to {assignee}, kept by name"
 msgstr "משויכת ל-{assignee}, נשמר לפי שם"
+
+#: src/features/settings/macros/MacroDialog.tsx
+msgid "Assignee"
+msgstr "אחראי"
 
 #: src/features/inbox/AssistantsPage.tsx
 msgid "Assistant"
@@ -3181,8 +3222,8 @@ msgid "Canned replies"
 msgstr "תשובות מוכנות"
 
 #: src/components/common/ShortcutSheet.tsx
-msgid "Canned replies, in the reply box"
-msgstr "תשובות מוכנות, בתיבת התשובה"
+msgid "Canned replies and macros, in the reply box"
+msgstr "תשובות מוכנות ומאקרו, בשדה התשובה"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Canned reply"
@@ -4586,6 +4627,7 @@ msgstr "ביצועים מופחתים"
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
+#: src/features/settings/macros/MacrosPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -4719,6 +4761,10 @@ msgstr "למחוק את התשובה המוכנה הזאת?"
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "Delete this DKIM key?"
 msgstr "למחוק את מפתח ה-DKIM הזה?"
+
+#: src/features/settings/macros/MacrosPage.tsx
+msgid "Delete this macro?"
+msgstr "למחוק את המאקרו הזה?"
 
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Delete this migration?"
@@ -5390,6 +5436,7 @@ msgstr "כל אחת עם כל ההודעות וההערות שלה"
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
+#: src/features/settings/macros/MacrosPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -5436,6 +5483,10 @@ msgstr "עריכת אוספים במרכז העזרה וטיוטות מאמרי�
 #: src/features/settings/labels/LabelDialog.tsx
 msgid "Edit label"
 msgstr "עריכת תווית"
+
+#: src/features/settings/macros/MacroDialog.tsx
+msgid "Edit macro"
+msgstr "עריכת מאקרו"
 
 #: src/features/status/MonitorDialog.tsx
 msgid "Edit monitor"
@@ -5686,6 +5737,7 @@ msgid "Every website and app shows its visitors on Home and in Analytics."
 msgstr "כל אתר ואפליקציה מציגים את המבקרים שלהם בבית ובאנליטיקה."
 
 #: src/features/settings/audit/AuditLogPage.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 msgid "Everyone"
 msgstr "כולם"
 
@@ -7552,6 +7604,7 @@ msgstr "תווית בלבד: הדואר שלה מגיע מכל הדואר, וה�
 #: src/features/migrations/MapStep.tsx
 #: src/features/migrations/ReviewStep.tsx
 #: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/SettingsColumn.tsx
 msgid "Labels"
 msgstr "תוויות"
@@ -7704,6 +7757,10 @@ msgstr "צבע כפתור הפתיחה"
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Launcher position"
 msgstr "מיקום כפתור הפתיחה"
+
+#: src/features/settings/macros/MacroDialog.tsx
+msgid "Leave as is"
+msgstr "להשאיר כמו שהוא"
 
 #. placeholder {0}: integration.default_target
 #: src/features/issues/IssueDialog.tsx
@@ -8091,12 +8148,25 @@ msgid "Lowercase letters, digits and dashes, not at the start or end."
 msgstr "אותיות קטנות, ספרות ומקפים, לא בהתחלה או בסוף."
 
 #: src/features/settings/canned/CannedReplyDialog.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 msgid "Lowercase letters, digits and dashes."
 msgstr "אותיות קטנות, ספרות ומקפים."
 
 #: src/features/broadcasts/Composer.tsx
 msgid "Lowercase letters, digits, dashes, underscores and dots. Fixed once the broadcast is sent."
 msgstr "אותיות קטנות, ספרות, מקפים, קווים תחתונים ונקודות. קבוע אחרי שליחת השליחה ההמונית."
+
+#: src/app/Palette.tsx
+#: src/features/conversation/composer/CannedMenu.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Macro"
+msgstr "מאקרו"
+
+#: src/app/Palette.tsx
+#: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Macros"
+msgstr "מאקרו"
 
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Mail arrives here; add a reply account when you are ready"
@@ -8835,6 +8905,7 @@ msgstr "הצוותים שלי"
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/ProfileForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
@@ -9094,6 +9165,11 @@ msgstr "תווית חדשה „{folder}”"
 #: src/features/broadcasts/ListsHome.tsx
 msgid "New list"
 msgstr "רשימה חדשה"
+
+#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacrosPage.tsx
+msgid "New macro"
+msgstr "מאקרו חדש"
 
 #: src/features/setup/previews.tsx
 #: src/lib/alerts.ts
@@ -9580,6 +9656,10 @@ msgstr "אין דיונים נעולים."
 #: src/features/migrations/text.ts
 msgid "No longer in the mailbox"
 msgstr "כבר לא בתיבת הדואר"
+
+#: src/features/settings/macros/MacrosPage.tsx
+msgid "No macros yet"
+msgstr "עדיין אין מאקרו"
 
 #: src/features/migrations/SourceStep.tsx
 msgid "No mail server was found for {domain}. Pick your provider below, or “Other IMAP server” and enter the server on the next step."
@@ -10500,6 +10580,10 @@ msgstr "באפליקציה בלבד"
 msgid "Only mail since {date}"
 msgstr "רק דואר מאז {date}"
 
+#: src/features/settings/macros/MacroDialog.tsx
+msgid "Only me"
+msgstr "רק אני"
+
 #: src/features/settings/workspace/RetentionForm.tsx
 msgid "Only owners can change this."
 msgstr "רק בעלים יכולים לשנות זאת."
@@ -11339,6 +11423,10 @@ msgstr "הרשאה לשלוח"
 msgid "Person"
 msgstr "אדם"
 
+#: src/features/settings/macros/MacrosPage.tsx
+msgid "Personal"
+msgstr "אישי"
+
 #: src/features/docs/PagesTab.tsx
 msgid "Pick a chat channel of the product and paste the snippet. Ratings and questions land in its inbox."
 msgstr "בחרו ערוץ צ׳אט של המוצר והדביקו את הקוד. דירוגים ושאלות מגיעים לתיבת הדואר שלו."
@@ -11705,6 +11793,7 @@ msgid "Previous screenshot"
 msgstr "צילום המסך הקודם"
 
 #: src/features/conversation/ConversationMenu.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 msgid "Priority"
 msgstr "עדיפות"
 
@@ -11716,6 +11805,10 @@ msgstr "העדיפות הוגדרה ל{level}"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Priority, inbox, spam and more"
 msgstr "עדיפות, תיבת דואר, ספאם ועוד"
+
+#: src/features/conversation/composer/MacroChips.tsx
+msgid "Priority: {priority}"
+msgstr "עדיפות: {priority}"
 
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListsHome.tsx
@@ -12260,6 +12353,10 @@ msgstr "הפניה"
 msgid "Refresh"
 msgstr "רענון"
 
+#: src/features/settings/macros/MacroDialog.tsx
+msgid "Refund approved"
+msgstr "ההחזר אושר"
+
 #: src/features/migrations/TokenConnectStep.tsx
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Region"
@@ -12296,6 +12393,7 @@ msgstr "תמונות מרוחקות יכולות לומר לשולח שפתחת 
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/Passkeys.tsx
@@ -12309,6 +12407,7 @@ msgstr "הסרה"
 #. placeholder {0}: a.title
 #. placeholder {0}: f.name
 #. placeholder {0}: p.name
+#: src/features/conversation/composer/MacroChips.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Remove {0}"
@@ -12374,6 +12473,10 @@ msgstr "הסרת היסטוריה מיובאת"
 #: src/features/migrations/parts.tsx
 msgid "Remove imported history?"
 msgstr "להסיר היסטוריה מיובאת?"
+
+#: src/features/conversation/composer/MacroChips.tsx
+msgid "Remove label {labelName}"
+msgstr "הסרת התווית {labelName}"
 
 #: src/features/settings/channels/app/PushSection.tsx
 msgid "Remove the APNs key?"
@@ -12532,6 +12635,7 @@ msgstr "השיב בשרשור של <0>{title}</0>"
 msgid "Replied in the thread of another conversation"
 msgstr "השיב בשרשור של שיחה אחרת"
 
+#: src/app/Palette.tsx
 #: src/features/broadcasts/Report.tsx
 #: src/features/conversation/Feedback.tsx
 #: src/features/reports/ReportPages.tsx
@@ -13066,6 +13170,7 @@ msgstr "יום שבת"
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/slack/SlackPage.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/teams/TeamDialog.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
@@ -13075,6 +13180,10 @@ msgstr "יום שבת"
 #: src/features/status/MonitorDialog.tsx
 msgid "Save"
 msgstr "שמירה"
+
+#: src/features/settings/macros/MacrosPage.tsx
+msgid "Save a reply together with what should happen to the conversation when you send it."
+msgstr "שמרו תשובה יחד עם מה שיקרה לשיחה כשתשלחו אותה."
 
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Save and test"
@@ -13876,11 +13985,16 @@ msgstr "שלבי הגדרה"
 msgid "SHA-256 fingerprint of the certificate the server sent"
 msgstr "טביעת אצבע SHA-256 של האישור שהשרת שלח"
 
+#: src/features/settings/macros/MacrosPage.tsx
+msgid "Shared"
+msgstr "משותף"
+
 #: src/components/common/text.ts
 msgid "Shipped"
 msgstr "שוחרר"
 
 #: src/features/settings/canned/CannedReplyDialog.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 msgid "Shortcut"
 msgstr "קיצור"
 
@@ -14417,6 +14531,14 @@ msgstr "נודניק"
 msgid "Snooze (S)"
 msgstr "נודניק (S)"
 
+#: src/features/settings/macros/MacroDialog.tsx
+msgid "Snooze for (minutes)"
+msgstr "דחייה למשך (דקות)"
+
+#: src/features/conversation/composer/MacroChips.tsx
+msgid "Snooze for {time}"
+msgstr "דחייה ל-{time}"
+
 #: src/components/common/text.ts
 #: src/features/inbox/ChatList.tsx
 msgid "Snoozed"
@@ -14654,6 +14776,7 @@ msgstr "מצב בנפילה"
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/migrations/MapStep.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
 #: src/features/settings/webhooks/events.tsx
 msgid "Status"
@@ -14674,6 +14797,10 @@ msgstr "דף הסטטוס נמחק"
 #: src/features/status/StatusPages.tsx
 msgid "Status pages"
 msgstr "דפי סטטוס"
+
+#: src/features/conversation/composer/MacroChips.tsx
+msgid "Status: {status}"
+msgstr "סטטוס: {status}"
 
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "Stay under your provider’s sending rate. Support replies are never slowed down by a broadcast."
@@ -15013,6 +15140,7 @@ msgstr "בדיקות הולכות רק לחברי סביבת העבודה, לכ�
 
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 msgid "Text"
 msgstr "טקסט"
 
@@ -16744,8 +16872,13 @@ msgstr "מקליד…"
 msgid "Unanswered"
 msgstr "ללא מענה"
 
+#: src/features/conversation/composer/MacroChips.tsx
+msgid "Unassign"
+msgstr "ביטול ההקצאה"
+
 #: src/features/conversation/ChatView.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 msgid "Unassigned"
 msgstr "לא משויכות"
 
@@ -17144,6 +17277,7 @@ msgstr "השתמש באותיות, ספרות, - ו-_, עד 64."
 
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 msgid "Use lowercase letters, digits and single dashes."
 msgstr "השתמשו באותיות קטנות, ספרות ומקפים בודדים."
 
@@ -17820,6 +17954,10 @@ msgstr "מי עונה, איפה, ומי מחובר"
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Who can reply"
 msgstr "מי יכול להשיב"
+
+#: src/features/settings/macros/MacroDialog.tsx
+msgid "Who can use it"
+msgstr "מי יכול להשתמש בו"
 
 #: src/features/settings/SettingsColumn.tsx
 msgid "Who changed access, keys and data"

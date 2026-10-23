@@ -4,15 +4,16 @@ import { SettingsStrip } from "@/components/common/SettingsStrip"
 import { useMigrations } from "@/features/migrations/queries"
 import { PageHeader, PageTabs } from "@/features/settings/ui"
 import { useSession } from "@/lib/session"
-import { useCannedReplies, useLabels, useTeams } from "@/lib/workspace"
+import { useCannedReplies, useLabels, useMacros, useTeams } from "@/lib/workspace"
 
-type Tab = "workspace" | "labels" | "canned-replies" | "teams" | "migrations" | "audit-log"
+type Tab = "workspace" | "labels" | "canned-replies" | "macros" | "teams" | "migrations" | "audit-log"
 
 export function GeneralTabs({ current }: { current: Tab }) {
   const { t } = useLingui()
   const { canManage, isOwner } = useSession()
   const labels = useLabels().data
   const canned = useCannedReplies().data
+  const macros = useMacros().data
   const teams = useTeams().data
   const moves = useMigrations().data?.pages[0]?.items
   return (
@@ -34,6 +35,13 @@ export function GeneralTabs({ current }: { current: Tab }) {
           label: t`Canned replies`,
           count: canned?.length,
           testId: "general-tab-canned-replies",
+        },
+        {
+          key: "macros",
+          to: "/settings/macros",
+          label: t`Macros`,
+          count: macros?.length,
+          testId: "general-tab-macros",
         },
         ...(canManage
           ? [

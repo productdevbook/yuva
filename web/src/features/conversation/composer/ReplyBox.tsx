@@ -8,16 +8,24 @@ import { formatBytes } from "@/components/common/text"
 import { popupClass } from "@/components/ui/dropdown-menu"
 import { firstName, readDraft, writeDraft, type ConversationActions } from "@/features/conversation/actions"
 import { ArticlePicker, type HelpPick } from "@/features/conversation/composer/ArticlePicker"
-import { CannedMenu, slashToken, useCannedMatches } from "@/features/conversation/composer/CannedMenu"
+import {
+  CannedMenu,
+  slashToken,
+  useCannedMatches,
+  useReplyChoices,
+  type ReplyChoice,
+} from "@/features/conversation/composer/CannedMenu"
+import { MacroChips } from "@/features/conversation/composer/MacroChips"
+import type { MacroPick } from "@/features/conversation/macros"
 import { MentionMenu, mentionToken } from "@/features/conversation/composer/MentionMenu"
 import { useAuthorName, type ThreadContext } from "@/features/conversation/messages/context"
 import { useDraftActions } from "@/features/conversation/queries"
 import { useHelpCenters } from "@/features/help/queries"
-import type { CannedReply, Conversation, Member, Message } from "@/lib/api"
+import type { Conversation, Member, Message } from "@/lib/api"
 import { useSession } from "@/lib/session"
 import { useTypingSender } from "@/lib/typing"
 import { cn } from "@/lib/utils"
-import { useAssignableMembers, useCannedReplies } from "@/lib/workspace"
+import { useAssignableMembers } from "@/lib/workspace"
 import { Button } from "@/components/ui/button"
 import { Command, CommandEmpty, CommandItem, CommandList } from "@/components/ui/command"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
@@ -34,6 +42,7 @@ export type ReplyHandle = {
   quote: (text: string) => void
   article: () => void
   addFiles: (files: File[]) => void
+  insert: (choice: ReplyChoice) => void
 }
 
 const MAX_FILES = 10
@@ -116,6 +125,7 @@ export const ReplyBox = forwardRef<
   const [body, setBody] = useState(initial.body)
   const [files, setFiles] = useState<File[]>(initial.files)
   const [articles, setArticles] = useState<HelpPick[]>(initial.articles)
+  const [macro, setMacro] = useState<MacroPick | undefined>(initial.macro)
   const [articleOpen, setArticleOpen] = useState(false)
   const [linked, setLinked] = useState<string | null>(null)
   const [caret, setCaret] = useState(0)
@@ -131,14 +141,14 @@ export const ReplyBox = forwardRef<
   const typing = useTypingSender(c.id)
   const { discard } = useDraftActions()
   const { membership } = useSession()
-  const canned = useCannedReplies().data ?? []
+  const choices = useReplyChoices()
   const helpCenter = (useHelpCenters().data ?? []).find((h) => h.inbox_id === c.inbox_id)
   const note = mode === "note"
   const blocked = !note && !!undeliverable
   const first = firstName(contactName)
   const articleKey = keyLabel(SHORTCUTS.article).join("")
 
-  useEffect(() => writeDraft(c.id, { body, mode, files, articles }), [c.id, body, mode, files, articles])
+  useEffect(() => writeDraft(c.id, { body, mode, files, articles, macro }), [c.id, body, mode, files, articles, macro])
   const stopTyping = typing.stop
   useEffect(() => {
     if (note) stopTyping()
@@ -205,7 +215,11 @@ export const ReplyBox = forwardRef<
       textarea.current?.focus()
     })
   }
-  const insertSlash = (r: CannedReply) => token && insertAt(r.body, token.start, caret)
+  const choose = (r: ReplyChoice) => {
+    setMacro(r.kind === "macro" ? { macro: r.macro, dropped: [] } : macro)
+    return r.body ?? ""
+  }
+  const insertSlash = (r: ReplyChoice) => token && insertAt(choose(r), token.start, caret)
   const insertMention = (m: Member) => {
     if (!at) return
     const label = m.name || m.email
@@ -218,11 +232,12 @@ export const ReplyBox = forwardRef<
     const end = textarea.current?.selectionEnd ?? start
     insertAt(emoji, start, end)
   }
-  const insertCanned = (r: CannedReply) => {
+  const insertCanned = (r: ReplyChoice) => {
     setCannedOpen(false)
     const at = textarea.current?.selectionStart ?? body.length
-    const sep = at > 0 && !/\s$/.test(body.slice(0, at)) ? "\n" : ""
-    insertAt(sep + r.body, at, at)
+    const text = choose(r)
+    const sep = text && at > 0 && !/\s$/.test(body.slice(0, at)) ? "\n" : ""
+    insertAt(sep + text, at, at)
   }
 
   const addFiles = (more: File[]) => setFiles((f) => [...f, ...more].slice(0, MAX_FILES))
@@ -235,6 +250,10 @@ export const ReplyBox = forwardRef<
       if (helpCenter && !note) setArticleOpen(true)
     },
     addFiles,
+    insert: (r) => {
+      setMode("message")
+      insertCanned(r)
+    },
   }))
   const hasContent = body.trim() !== "" || files.length > 0 || articles.length > 0
   const notified = mentioned.filter((x) => body.includes(`@${x.label}`))
@@ -245,6 +264,7 @@ export const ReplyBox = forwardRef<
     setBody("")
     setFiles([])
     setArticles([])
+    setMacro(undefined)
     setCaret(0)
     setLinked(null)
     setError(null)
@@ -253,11 +273,12 @@ export const ReplyBox = forwardRef<
     if (!hasContent || note || blocked) return
     typing.stop()
     const linkedDraft = suggestion && linked === suggestion.id ? suggestion : undefined
-    const saved = { body, files, articles }
-    actions.send({ body, files, close, suggestion: linkedDraft, articles })?.catch(() => {
+    const saved = { body, files, articles, macro }
+    actions.send({ body, files, close, suggestion: linkedDraft, articles, macro })?.catch(() => {
       setBody((b) => b || saved.body)
       setFiles((f) => (f.length ? f : saved.files))
       setArticles((a) => (a.length ? a : saved.articles))
+      setMacro((m) => m ?? saved.macro)
     })
     reset()
   }
@@ -461,6 +482,7 @@ export const ReplyBox = forwardRef<
           ))}
         </ul>
       )}
+      {macro && !note && <MacroChips pick={macro} onChange={setMacro} />}
       <ErrorLine error={error} className="px-4 pb-2 text-caption" />
       <div className="relative flex flex-wrap items-center gap-1 px-2.5 pb-2.5">
         <input
@@ -527,15 +549,22 @@ export const ReplyBox = forwardRef<
                 <CommandEmpty className="px-3 py-6 text-faint">
                   <Trans>No canned replies yet. Add them in settings.</Trans>
                 </CommandEmpty>
-                {canned.map((r) => (
+                {choices.map((r) => (
                   <CommandItem
-                    key={r.id}
-                    value={`${r.title} ${r.shortcut} ${r.id}`}
+                    key={`${r.kind}:${r.id}`}
+                    value={`${r.title} ${r.shortcut} ${r.kind}:${r.id}`}
                     onSelect={() => insertCanned(r)}
                     className="block rounded-lg px-2.5 py-2 data-selected:bg-muted"
                   >
                     {r.title}
-                    <small className="block truncate text-caption text-faint">{r.body}</small>
+                    {r.kind === "macro" && (
+                      <span className="ms-2 rounded-md bg-muted px-1.5 text-caption text-muted-foreground">
+                        <Trans>Macro</Trans>
+                      </span>
+                    )}
+                    <small className="block truncate text-caption text-faint">
+                      {r.body ?? <Trans>Actions only</Trans>}
+                    </small>
                   </CommandItem>
                 ))}
               </CommandList>

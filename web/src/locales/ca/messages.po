@@ -149,6 +149,14 @@ msgid "{actor} added the label {added}"
 msgstr "{actor} ha afegit l'etiqueta {added}"
 
 #: src/features/conversation/messages/EventLine.tsx
+msgid "{actor} applied the macro {macro}"
+msgstr "{actor} ha aplicat la macro {macro}"
+
+#: src/features/conversation/messages/EventLine.tsx
+msgid "{actor} applied the macro {macro}, assignee skipped"
+msgstr "{actor} ha aplicat la macro {macro}, responsable omès"
+
+#: src/features/conversation/messages/EventLine.tsx
 msgid "{actor} assigned this to {assignee}"
 msgstr "{actor} ha assignat això a {assignee}"
 
@@ -1236,6 +1244,10 @@ msgstr "A linked GitHub or Linear issue changed"
 msgid "A list is who agreed to hear from you. Every subscriber keeps a consent record you can export."
 msgstr "Una llista reuneix qui ha acceptat rebre notícies teves. Cada subscriptor té un registre de consentiment que pots exportar."
 
+#: src/features/settings/macros/MacrosPage.tsx
+msgid "A macro is a reply plus actions: labels, assignee, status, priority or snooze. Type / and its shortcut in the composer; the actions apply when the reply is sent."
+msgstr "Una macro és una resposta més accions: etiquetes, responsable, estat, prioritat o posposar. Escriu / i la drecera al quadre de resposta; les accions s'apliquen en enviar la resposta."
+
 #: src/features/broadcasts/ListParts.tsx
 msgid "A mailing list holds the people who agreed to get your broadcasts. They join on a subscribe form on your site, or your team adds them and records how they agreed. Every step is kept as proof of consent, and everyone can leave with one click."
 msgstr "Una llista de correu conté les persones que han acceptat rebre els teus enviaments massius. S'hi apunten amb un formulari de subscripció al teu lloc, o bé hi afegeix el teu equip i registra com ho han acceptat. Cada pas es guarda com a prova de consentiment, i tothom pot marxar amb un clic."
@@ -1343,6 +1355,10 @@ msgstr "Les publicacions d'un lector esperen un membre fins que s'aprova una de 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "A real address where you receive post"
 msgstr "Una adreça real on rebis correu postal"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "A reply and its actions in one step"
+msgstr "Una resposta i les seves accions en un sol pas"
 
 #: src/components/common/text.ts
 msgid "A reply was written in a discussion"
@@ -1505,6 +1521,16 @@ msgstr "Estat d’Acme"
 msgid "Acme Support"
 msgstr "Suport d'Acme"
 
+#: src/features/settings/macros/MacroDialog.tsx
+msgid "Actions"
+msgstr "Accions"
+
+#: src/features/conversation/composer/CannedMenu.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/settings/macros/MacrosPage.tsx
+msgid "Actions only"
+msgstr "Només accions"
+
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/status/IncidentsPage.tsx
@@ -1518,6 +1544,7 @@ msgstr "Activitat"
 #: src/features/broadcasts/AudienceBuilder.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/migrations/MapStep.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Add"
 msgstr "Afegeix"
@@ -1668,6 +1695,10 @@ msgstr "Afegeix un grup"
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Add header"
 msgstr "Afegeix una capçalera"
+
+#: src/features/conversation/composer/MacroChips.tsx
+msgid "Add label {labelName}"
+msgstr "Afegeix l'etiqueta {labelName}"
 
 #: src/features/status/MonitorDialog.tsx
 msgid "Add monitor"
@@ -2273,6 +2304,8 @@ msgstr "una altra safata"
 #: src/components/common/text.ts
 msgid "Another member has already linked this Slack user."
 msgstr "Another member has already linked this Slack user."
+msgid "Another macro already uses this shortcut."
+msgstr "Una altra macro ja fa servir aquesta drecera."
 
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Another page verified this domain first, and only a verified claim holds a name. Remove the domain, or start over once the other page lets it go."
@@ -2581,6 +2614,10 @@ msgstr "Assigna (A)"
 msgid "Assign or hand to a teammate"
 msgstr "Assigna o passa a un company"
 
+#: src/features/conversation/composer/MacroChips.tsx
+msgid "Assign to {name}"
+msgstr "Assigna a {name}"
+
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 msgid "Assign to a team"
@@ -2603,6 +2640,10 @@ msgstr "Assignada a {assignee}"
 #: src/features/migrations/ReviewStep.tsx
 msgid "Assigned to {assignee}, kept by name"
 msgstr "Assignada a {assignee}, conservada pel nom"
+
+#: src/features/settings/macros/MacroDialog.tsx
+msgid "Assignee"
+msgstr "Responsable"
 
 #: src/features/inbox/AssistantsPage.tsx
 msgid "Assistant"
@@ -3181,8 +3222,8 @@ msgid "Canned replies"
 msgstr "Respostes predefinides"
 
 #: src/components/common/ShortcutSheet.tsx
-msgid "Canned replies, in the reply box"
-msgstr "Respostes predefinides, al quadre de resposta"
+msgid "Canned replies and macros, in the reply box"
+msgstr "Respostes predefinides i macros, al quadre de resposta"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Canned reply"
@@ -4586,6 +4627,7 @@ msgstr "Rendiment degradat"
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
+#: src/features/settings/macros/MacrosPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -4719,6 +4761,10 @@ msgstr "Elimines aquesta resposta predefinida?"
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "Delete this DKIM key?"
 msgstr "Elimines aquesta clau DKIM?"
+
+#: src/features/settings/macros/MacrosPage.tsx
+msgid "Delete this macro?"
+msgstr "Vols eliminar aquesta macro?"
 
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Delete this migration?"
@@ -5390,6 +5436,7 @@ msgstr "Cadascuna amb tots els seus missatges i notes"
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
+#: src/features/settings/macros/MacrosPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -5436,6 +5483,10 @@ msgstr "Edita les col·leccions del centre d'ajuda i els esborranys dels article
 #: src/features/settings/labels/LabelDialog.tsx
 msgid "Edit label"
 msgstr "Edita l'etiqueta"
+
+#: src/features/settings/macros/MacroDialog.tsx
+msgid "Edit macro"
+msgstr "Edita la macro"
 
 #: src/features/status/MonitorDialog.tsx
 msgid "Edit monitor"
@@ -5686,6 +5737,7 @@ msgid "Every website and app shows its visitors on Home and in Analytics."
 msgstr "Cada lloc web i aplicació mostra els seus visitants a Inici i a Analítica."
 
 #: src/features/settings/audit/AuditLogPage.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 msgid "Everyone"
 msgstr "Tothom"
 
@@ -7552,6 +7604,7 @@ msgstr "Només etiqueta: el seu correu ve de Tot el correu i les seves converses
 #: src/features/migrations/MapStep.tsx
 #: src/features/migrations/ReviewStep.tsx
 #: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/SettingsColumn.tsx
 msgid "Labels"
 msgstr "Etiquetes"
@@ -7704,6 +7757,10 @@ msgstr "Color del llançador"
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Launcher position"
 msgstr "Posició del llançador"
+
+#: src/features/settings/macros/MacroDialog.tsx
+msgid "Leave as is"
+msgstr "Deixa-ho com està"
 
 #. placeholder {0}: integration.default_target
 #: src/features/issues/IssueDialog.tsx
@@ -8091,12 +8148,25 @@ msgid "Lowercase letters, digits and dashes, not at the start or end."
 msgstr "Lletres minúscules, dígits i guions, no al principi ni al final."
 
 #: src/features/settings/canned/CannedReplyDialog.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 msgid "Lowercase letters, digits and dashes."
 msgstr "Lletres minúscules, dígits i guions."
 
 #: src/features/broadcasts/Composer.tsx
 msgid "Lowercase letters, digits, dashes, underscores and dots. Fixed once the broadcast is sent."
 msgstr "Lletres minúscules, dígits, guions, guions baixos i punts. Es fixa quan s'envia l'enviament massiu."
+
+#: src/app/Palette.tsx
+#: src/features/conversation/composer/CannedMenu.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Macro"
+msgstr "Macro"
+
+#: src/app/Palette.tsx
+#: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Macros"
+msgstr "Macros"
 
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Mail arrives here; add a reply account when you are ready"
@@ -8835,6 +8905,7 @@ msgstr "Els meus equips"
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/ProfileForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
@@ -9094,6 +9165,11 @@ msgstr "Etiqueta nova «{folder}»"
 #: src/features/broadcasts/ListsHome.tsx
 msgid "New list"
 msgstr "Llista nova"
+
+#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacrosPage.tsx
+msgid "New macro"
+msgstr "Macro nova"
 
 #: src/features/setup/previews.tsx
 #: src/lib/alerts.ts
@@ -9580,6 +9656,10 @@ msgstr "Cap debat bloquejat."
 #: src/features/migrations/text.ts
 msgid "No longer in the mailbox"
 msgstr "Ja no és a la bústia"
+
+#: src/features/settings/macros/MacrosPage.tsx
+msgid "No macros yet"
+msgstr "Encara no hi ha macros"
 
 #: src/features/migrations/SourceStep.tsx
 msgid "No mail server was found for {domain}. Pick your provider below, or “Other IMAP server” and enter the server on the next step."
@@ -10500,6 +10580,10 @@ msgstr "Només a l'aplicació"
 msgid "Only mail since {date}"
 msgstr "Només el correu des del {date}"
 
+#: src/features/settings/macros/MacroDialog.tsx
+msgid "Only me"
+msgstr "Només jo"
+
 #: src/features/settings/workspace/RetentionForm.tsx
 msgid "Only owners can change this."
 msgstr "Només els propietaris ho poden canviar."
@@ -11339,6 +11423,10 @@ msgstr "Permís per enviar"
 msgid "Person"
 msgstr "Persona"
 
+#: src/features/settings/macros/MacrosPage.tsx
+msgid "Personal"
+msgstr "Personal"
+
 #: src/features/docs/PagesTab.tsx
 msgid "Pick a chat channel of the product and paste the snippet. Ratings and questions land in its inbox."
 msgstr "Tria un canal de xat del producte i enganxa el codi. Les valoracions i preguntes arriben a la seva safata."
@@ -11705,6 +11793,7 @@ msgid "Previous screenshot"
 msgstr "Captura anterior"
 
 #: src/features/conversation/ConversationMenu.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 msgid "Priority"
 msgstr "Prioritat"
 
@@ -11716,6 +11805,10 @@ msgstr "Prioritat establerta a {level}"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Priority, inbox, spam and more"
 msgstr "Prioritat, safata d'entrada, brossa i més"
+
+#: src/features/conversation/composer/MacroChips.tsx
+msgid "Priority: {priority}"
+msgstr "Prioritat: {priority}"
 
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListsHome.tsx
@@ -12260,6 +12353,10 @@ msgstr "Referència"
 msgid "Refresh"
 msgstr "Actualitza"
 
+#: src/features/settings/macros/MacroDialog.tsx
+msgid "Refund approved"
+msgstr "Reemborsament aprovat"
+
 #: src/features/migrations/TokenConnectStep.tsx
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Region"
@@ -12296,6 +12393,7 @@ msgstr "Les imatges remotes poden dir al remitent que has obert el correu."
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/Passkeys.tsx
@@ -12309,6 +12407,7 @@ msgstr "Elimina"
 #. placeholder {0}: a.title
 #. placeholder {0}: f.name
 #. placeholder {0}: p.name
+#: src/features/conversation/composer/MacroChips.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Remove {0}"
@@ -12374,6 +12473,10 @@ msgstr "Elimina l'historial importat"
 #: src/features/migrations/parts.tsx
 msgid "Remove imported history?"
 msgstr "Elimines l'historial importat?"
+
+#: src/features/conversation/composer/MacroChips.tsx
+msgid "Remove label {labelName}"
+msgstr "Treu l'etiqueta {labelName}"
 
 #: src/features/settings/channels/app/PushSection.tsx
 msgid "Remove the APNs key?"
@@ -12532,6 +12635,7 @@ msgstr "Ha respost al fil de <0>{title}</0>"
 msgid "Replied in the thread of another conversation"
 msgstr "Ha respost al fil d'una altra conversa"
 
+#: src/app/Palette.tsx
 #: src/features/broadcasts/Report.tsx
 #: src/features/conversation/Feedback.tsx
 #: src/features/reports/ReportPages.tsx
@@ -13066,6 +13170,7 @@ msgstr "Dissabte"
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/slack/SlackPage.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/teams/TeamDialog.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
@@ -13075,6 +13180,10 @@ msgstr "Dissabte"
 #: src/features/status/MonitorDialog.tsx
 msgid "Save"
 msgstr "Desa"
+
+#: src/features/settings/macros/MacrosPage.tsx
+msgid "Save a reply together with what should happen to the conversation when you send it."
+msgstr "Desa una resposta juntament amb el que ha de passar amb la conversa quan l'enviïs."
 
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Save and test"
@@ -13876,11 +13985,16 @@ msgstr "Passos de configuració"
 msgid "SHA-256 fingerprint of the certificate the server sent"
 msgstr "Empremta SHA-256 del certificat que ha enviat el servidor"
 
+#: src/features/settings/macros/MacrosPage.tsx
+msgid "Shared"
+msgstr "Compartida"
+
 #: src/components/common/text.ts
 msgid "Shipped"
 msgstr "Lliurat"
 
 #: src/features/settings/canned/CannedReplyDialog.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 msgid "Shortcut"
 msgstr "Drecera"
 
@@ -14417,6 +14531,14 @@ msgstr "Ajorna"
 msgid "Snooze (S)"
 msgstr "Ajorna (S)"
 
+#: src/features/settings/macros/MacroDialog.tsx
+msgid "Snooze for (minutes)"
+msgstr "Posposa durant (minuts)"
+
+#: src/features/conversation/composer/MacroChips.tsx
+msgid "Snooze for {time}"
+msgstr "Posposa durant {time}"
+
 #: src/components/common/text.ts
 #: src/features/inbox/ChatList.tsx
 msgid "Snoozed"
@@ -14654,6 +14776,7 @@ msgstr "Estat en caure"
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/migrations/MapStep.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
 #: src/features/settings/webhooks/events.tsx
 msgid "Status"
@@ -14674,6 +14797,10 @@ msgstr "Pàgina d’estat suprimida"
 #: src/features/status/StatusPages.tsx
 msgid "Status pages"
 msgstr "Pàgines d’estat"
+
+#: src/features/conversation/composer/MacroChips.tsx
+msgid "Status: {status}"
+msgstr "Estat: {status}"
 
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "Stay under your provider’s sending rate. Support replies are never slowed down by a broadcast."
@@ -15013,6 +15140,7 @@ msgstr "Les proves només van als membres de l'espai de treball, com a màxim ci
 
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 msgid "Text"
 msgstr "Text"
 
@@ -16744,8 +16872,13 @@ msgstr "escrivint…"
 msgid "Unanswered"
 msgstr "Sense resposta"
 
+#: src/features/conversation/composer/MacroChips.tsx
+msgid "Unassign"
+msgstr "Treu l'assignació"
+
 #: src/features/conversation/ChatView.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 msgid "Unassigned"
 msgstr "Sense assignar"
 
@@ -17144,6 +17277,7 @@ msgstr "Fes servir lletres, dígits, - i _, com a màxim 64."
 
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 msgid "Use lowercase letters, digits and single dashes."
 msgstr "Fes servir minúscules, dígits i guions simples."
 
@@ -17820,6 +17954,10 @@ msgstr "Qui respon, on, i qui és en línia"
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Who can reply"
 msgstr "Qui pot respondre"
+
+#: src/features/settings/macros/MacroDialog.tsx
+msgid "Who can use it"
+msgstr "Qui la pot fer servir"
 
 #: src/features/settings/SettingsColumn.tsx
 msgid "Who changed access, keys and data"

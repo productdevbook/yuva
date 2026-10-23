@@ -36,7 +36,7 @@ import { ContactSheet } from "@/features/contact/ContactSheet"
 import { useContact } from "@/features/contact/queries"
 import { readDraft, useConversationActions, useDraftRevision, usePendingReplies } from "@/features/conversation/actions"
 import { Beaten, TypingCollision } from "@/features/conversation/Collision"
-import { useCommandHandlers } from "@/features/conversation/commands"
+import { useCommandHandlers, useInsertHandler } from "@/features/conversation/commands"
 import { ReplyBox, type ReplyHandle } from "@/features/conversation/composer/ReplyBox"
 import { ConversationMenu, type MenuView } from "@/features/conversation/ConversationMenu"
 import { TrashBanner } from "@/features/conversation/Trash"
@@ -460,6 +460,7 @@ function Loaded({
     article: () => reply.current?.article(),
     trash: () => canManage && trash(),
   }
+  useInsertHandler((choice) => !trashed && reply.current?.insert(choice))
   useCommandHandlers(
     trashed ? { contact: handlers.contact, history: handlers.history, restore: () => canManage && restore() } : handlers
   )

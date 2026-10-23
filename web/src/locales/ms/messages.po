@@ -149,6 +149,14 @@ msgid "{actor} added the label {added}"
 msgstr "{actor} menambah label {added}"
 
 #: src/features/conversation/messages/EventLine.tsx
+msgid "{actor} applied the macro {macro}"
+msgstr "{actor} menggunakan makro {macro}"
+
+#: src/features/conversation/messages/EventLine.tsx
+msgid "{actor} applied the macro {macro}, assignee skipped"
+msgstr "{actor} menggunakan makro {macro}, penanggungjawab dilangkau"
+
+#: src/features/conversation/messages/EventLine.tsx
 msgid "{actor} assigned this to {assignee}"
 msgstr "{actor} menugaskan perbualan ini kepada {assignee}"
 
@@ -1236,6 +1244,10 @@ msgstr "A linked GitHub or Linear issue changed"
 msgid "A list is who agreed to hear from you. Every subscriber keeps a consent record you can export."
 msgstr "Senarai ialah mereka yang bersetuju untuk mendengar daripada anda. Setiap pelanggan ada rekod persetujuan yang boleh anda eksport."
 
+#: src/features/settings/macros/MacrosPage.tsx
+msgid "A macro is a reply plus actions: labels, assignee, status, priority or snooze. Type / and its shortcut in the composer; the actions apply when the reply is sent."
+msgstr "Makro ialah balasan serta tindakan: label, penanggungjawab, status, keutamaan atau tangguh. Taip / dan pintasannya dalam kotak balasan; tindakan dilaksanakan apabila balasan dihantar."
+
 #: src/features/broadcasts/ListParts.tsx
 msgid "A mailing list holds the people who agreed to get your broadcasts. They join on a subscribe form on your site, or your team adds them and records how they agreed. Every step is kept as proof of consent, and everyone can leave with one click."
 msgstr "Senarai mel menyimpan orang yang bersetuju menerima siaran anda. Mereka menyertai melalui borang langganan di tapak anda, atau pasukan anda menambah mereka dan merekodkan bagaimana mereka bersetuju. Setiap langkah disimpan sebagai bukti persetujuan, dan sesiapa boleh keluar dengan satu klik."
@@ -1343,6 +1355,10 @@ msgstr "Siaran pembaca menunggu ahli sehingga salah satu siarannya diluluskan. P
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "A real address where you receive post"
 msgstr "Alamat sebenar tempat anda menerima surat"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "A reply and its actions in one step"
+msgstr "Satu balasan dan tindakannya dalam satu langkah"
 
 #: src/components/common/text.ts
 msgid "A reply was written in a discussion"
@@ -1505,6 +1521,16 @@ msgstr "Status Acme"
 msgid "Acme Support"
 msgstr "Sokongan Acme"
 
+#: src/features/settings/macros/MacroDialog.tsx
+msgid "Actions"
+msgstr "Tindakan"
+
+#: src/features/conversation/composer/CannedMenu.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/settings/macros/MacrosPage.tsx
+msgid "Actions only"
+msgstr "Tindakan sahaja"
+
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/status/IncidentsPage.tsx
@@ -1518,6 +1544,7 @@ msgstr "Aktiviti"
 #: src/features/broadcasts/AudienceBuilder.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/migrations/MapStep.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Add"
 msgstr "Tambah"
@@ -1668,6 +1695,10 @@ msgstr "Tambah kumpulan"
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Add header"
 msgstr "Tambah pengepala"
+
+#: src/features/conversation/composer/MacroChips.tsx
+msgid "Add label {labelName}"
+msgstr "Tambah label {labelName}"
 
 #: src/features/status/MonitorDialog.tsx
 msgid "Add monitor"
@@ -2273,6 +2304,8 @@ msgstr "peti masuk lain"
 #: src/components/common/text.ts
 msgid "Another member has already linked this Slack user."
 msgstr "Another member has already linked this Slack user."
+msgid "Another macro already uses this shortcut."
+msgstr "Makro lain sudah menggunakan pintasan ini."
 
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Another page verified this domain first, and only a verified claim holds a name. Remove the domain, or start over once the other page lets it go."
@@ -2581,6 +2614,10 @@ msgstr "Tugaskan (A)"
 msgid "Assign or hand to a teammate"
 msgstr "Tugaskan atau serahkan kepada rakan sepasukan"
 
+#: src/features/conversation/composer/MacroChips.tsx
+msgid "Assign to {name}"
+msgstr "Tugaskan kepada {name}"
+
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 msgid "Assign to a team"
@@ -2603,6 +2640,10 @@ msgstr "Ditugaskan kepada {assignee}"
 #: src/features/migrations/ReviewStep.tsx
 msgid "Assigned to {assignee}, kept by name"
 msgstr "Ditugaskan kepada {assignee}, disimpan mengikut nama"
+
+#: src/features/settings/macros/MacroDialog.tsx
+msgid "Assignee"
+msgstr "Penanggungjawab"
 
 #: src/features/inbox/AssistantsPage.tsx
 msgid "Assistant"
@@ -3181,8 +3222,8 @@ msgid "Canned replies"
 msgstr "Balasan siap sedia"
 
 #: src/components/common/ShortcutSheet.tsx
-msgid "Canned replies, in the reply box"
-msgstr "Balasan siap sedia, dalam kotak balasan"
+msgid "Canned replies and macros, in the reply box"
+msgstr "Balasan tersimpan dan makro, dalam kotak balasan"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Canned reply"
@@ -4586,6 +4627,7 @@ msgstr "Prestasi merosot"
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
+#: src/features/settings/macros/MacrosPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -4719,6 +4761,10 @@ msgstr "Padam balasan siap sedia ini?"
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "Delete this DKIM key?"
 msgstr "Padam kunci DKIM ini?"
+
+#: src/features/settings/macros/MacrosPage.tsx
+msgid "Delete this macro?"
+msgstr "Padam makro ini?"
 
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Delete this migration?"
@@ -5390,6 +5436,7 @@ msgstr "Masing-masing dengan semua mesej dan notanya"
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
+#: src/features/settings/macros/MacrosPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -5436,6 +5483,10 @@ msgstr "Edit koleksi pusat bantuan dan draf artikel"
 #: src/features/settings/labels/LabelDialog.tsx
 msgid "Edit label"
 msgstr "Sunting label"
+
+#: src/features/settings/macros/MacroDialog.tsx
+msgid "Edit macro"
+msgstr "Edit makro"
 
 #: src/features/status/MonitorDialog.tsx
 msgid "Edit monitor"
@@ -5686,6 +5737,7 @@ msgid "Every website and app shows its visitors on Home and in Analytics."
 msgstr "Setiap tapak web dan apl menunjukkan pelawatnya di Laman Utama dan Analitik."
 
 #: src/features/settings/audit/AuditLogPage.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 msgid "Everyone"
 msgstr "Semua orang"
 
@@ -7552,6 +7604,7 @@ msgstr "Label sahaja: melnya datang daripada Semua mel, dan perbualannya mendapa
 #: src/features/migrations/MapStep.tsx
 #: src/features/migrations/ReviewStep.tsx
 #: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/SettingsColumn.tsx
 msgid "Labels"
 msgstr "Label"
@@ -7704,6 +7757,10 @@ msgstr "Warna pelancar"
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Launcher position"
 msgstr "Kedudukan pelancar"
+
+#: src/features/settings/macros/MacroDialog.tsx
+msgid "Leave as is"
+msgstr "Biarkan seperti sedia ada"
 
 #. placeholder {0}: integration.default_target
 #: src/features/issues/IssueDialog.tsx
@@ -8091,12 +8148,25 @@ msgid "Lowercase letters, digits and dashes, not at the start or end."
 msgstr "Huruf kecil, digit dan sengkang, bukan pada permulaan atau penghujung."
 
 #: src/features/settings/canned/CannedReplyDialog.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 msgid "Lowercase letters, digits and dashes."
 msgstr "Huruf kecil, digit dan sengkang."
 
 #: src/features/broadcasts/Composer.tsx
 msgid "Lowercase letters, digits, dashes, underscores and dots. Fixed once the broadcast is sent."
 msgstr "Huruf kecil, digit, sengkang, garis bawah dan titik. Ditetapkan setelah siaran dihantar."
+
+#: src/app/Palette.tsx
+#: src/features/conversation/composer/CannedMenu.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Macro"
+msgstr "Makro"
+
+#: src/app/Palette.tsx
+#: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Macros"
+msgstr "Makro"
 
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Mail arrives here; add a reply account when you are ready"
@@ -8835,6 +8905,7 @@ msgstr "Pasukan saya"
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/ProfileForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
@@ -9094,6 +9165,11 @@ msgstr "Label baharu “{folder}”"
 #: src/features/broadcasts/ListsHome.tsx
 msgid "New list"
 msgstr "Senarai baharu"
+
+#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacrosPage.tsx
+msgid "New macro"
+msgstr "Makro baharu"
 
 #: src/features/setup/previews.tsx
 #: src/lib/alerts.ts
@@ -9580,6 +9656,10 @@ msgstr "Tiada perbincangan dikunci."
 #: src/features/migrations/text.ts
 msgid "No longer in the mailbox"
 msgstr "Tidak lagi dalam peti mel"
+
+#: src/features/settings/macros/MacrosPage.tsx
+msgid "No macros yet"
+msgstr "Belum ada makro"
 
 #: src/features/migrations/SourceStep.tsx
 msgid "No mail server was found for {domain}. Pick your provider below, or “Other IMAP server” and enter the server on the next step."
@@ -10500,6 +10580,10 @@ msgstr "Dalam apl sahaja"
 msgid "Only mail since {date}"
 msgstr "Hanya mel sejak {date}"
 
+#: src/features/settings/macros/MacroDialog.tsx
+msgid "Only me"
+msgstr "Saya sahaja"
+
 #: src/features/settings/workspace/RetentionForm.tsx
 msgid "Only owners can change this."
 msgstr "Hanya pemilik boleh mengubah ini."
@@ -11339,6 +11423,10 @@ msgstr "Kebenaran untuk menghantar"
 msgid "Person"
 msgstr "Orang"
 
+#: src/features/settings/macros/MacrosPage.tsx
+msgid "Personal"
+msgstr "Peribadi"
+
 #: src/features/docs/PagesTab.tsx
 msgid "Pick a chat channel of the product and paste the snippet. Ratings and questions land in its inbox."
 msgstr "Pilih saluran sembang produk dan tampal kod. Penilaian dan soalan masuk ke peti masuknya."
@@ -11705,6 +11793,7 @@ msgid "Previous screenshot"
 msgstr "Tangkapan skrin sebelumnya"
 
 #: src/features/conversation/ConversationMenu.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 msgid "Priority"
 msgstr "Keutamaan"
 
@@ -11716,6 +11805,10 @@ msgstr "Keutamaan ditetapkan kepada {level}"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Priority, inbox, spam and more"
 msgstr "Keutamaan, peti masuk, spam dan lagi"
+
+#: src/features/conversation/composer/MacroChips.tsx
+msgid "Priority: {priority}"
+msgstr "Keutamaan: {priority}"
 
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListsHome.tsx
@@ -12260,6 +12353,10 @@ msgstr "Rujukan"
 msgid "Refresh"
 msgstr "Muat semula"
 
+#: src/features/settings/macros/MacroDialog.tsx
+msgid "Refund approved"
+msgstr "Bayaran balik diluluskan"
+
 #: src/features/migrations/TokenConnectStep.tsx
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Region"
@@ -12296,6 +12393,7 @@ msgstr "Imej jauh boleh memberitahu penghantar bahawa anda membuka mel."
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/Passkeys.tsx
@@ -12309,6 +12407,7 @@ msgstr "Alih keluar"
 #. placeholder {0}: a.title
 #. placeholder {0}: f.name
 #. placeholder {0}: p.name
+#: src/features/conversation/composer/MacroChips.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Remove {0}"
@@ -12374,6 +12473,10 @@ msgstr "Alih keluar sejarah diimport"
 #: src/features/migrations/parts.tsx
 msgid "Remove imported history?"
 msgstr "Alih keluar sejarah diimport?"
+
+#: src/features/conversation/composer/MacroChips.tsx
+msgid "Remove label {labelName}"
+msgstr "Alih keluar label {labelName}"
 
 #: src/features/settings/channels/app/PushSection.tsx
 msgid "Remove the APNs key?"
@@ -12532,6 +12635,7 @@ msgstr "Membalas dalam utas <0>{title}</0>"
 msgid "Replied in the thread of another conversation"
 msgstr "Membalas dalam utas perbualan lain"
 
+#: src/app/Palette.tsx
 #: src/features/broadcasts/Report.tsx
 #: src/features/conversation/Feedback.tsx
 #: src/features/reports/ReportPages.tsx
@@ -13066,6 +13170,7 @@ msgstr "Sabtu"
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/slack/SlackPage.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/teams/TeamDialog.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
@@ -13075,6 +13180,10 @@ msgstr "Sabtu"
 #: src/features/status/MonitorDialog.tsx
 msgid "Save"
 msgstr "Simpan"
+
+#: src/features/settings/macros/MacrosPage.tsx
+msgid "Save a reply together with what should happen to the conversation when you send it."
+msgstr "Simpan balasan bersama perkara yang perlu berlaku pada perbualan apabila anda menghantarnya."
 
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Save and test"
@@ -13876,11 +13985,16 @@ msgstr "Langkah persediaan"
 msgid "SHA-256 fingerprint of the certificate the server sent"
 msgstr "Cap jari SHA-256 sijil yang dihantar pelayan"
 
+#: src/features/settings/macros/MacrosPage.tsx
+msgid "Shared"
+msgstr "Dikongsi"
+
 #: src/components/common/text.ts
 msgid "Shipped"
 msgstr "Dilancarkan"
 
 #: src/features/settings/canned/CannedReplyDialog.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 msgid "Shortcut"
 msgstr "Pintasan"
 
@@ -14417,6 +14531,14 @@ msgstr "Tangguh"
 msgid "Snooze (S)"
 msgstr "Tangguh (S)"
 
+#: src/features/settings/macros/MacroDialog.tsx
+msgid "Snooze for (minutes)"
+msgstr "Tangguh selama (minit)"
+
+#: src/features/conversation/composer/MacroChips.tsx
+msgid "Snooze for {time}"
+msgstr "Tangguh selama {time}"
+
 #: src/components/common/text.ts
 #: src/features/inbox/ChatList.tsx
 msgid "Snoozed"
@@ -14654,6 +14776,7 @@ msgstr "Status apabila tumbang"
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/migrations/MapStep.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
 #: src/features/settings/webhooks/events.tsx
 msgid "Status"
@@ -14674,6 +14797,10 @@ msgstr "Halaman status dipadam"
 #: src/features/status/StatusPages.tsx
 msgid "Status pages"
 msgstr "Halaman status"
+
+#: src/features/conversation/composer/MacroChips.tsx
+msgid "Status: {status}"
+msgstr "Status: {status}"
 
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "Stay under your provider’s sending rate. Support replies are never slowed down by a broadcast."
@@ -15013,6 +15140,7 @@ msgstr "Ujian hanya pergi kepada ahli ruang kerja, paling banyak lima sekali, de
 
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 msgid "Text"
 msgstr "Teks"
 
@@ -16744,8 +16872,13 @@ msgstr "menaip…"
 msgid "Unanswered"
 msgstr "Belum dijawab"
 
+#: src/features/conversation/composer/MacroChips.tsx
+msgid "Unassign"
+msgstr "Batalkan tugasan"
+
 #: src/features/conversation/ChatView.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 msgid "Unassigned"
 msgstr "Belum ditugaskan"
 
@@ -17144,6 +17277,7 @@ msgstr "Gunakan huruf, digit, - dan _, paling banyak 64."
 
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 msgid "Use lowercase letters, digits and single dashes."
 msgstr "Gunakan huruf kecil, digit dan sempang tunggal."
 
@@ -17820,6 +17954,10 @@ msgstr "Siapa yang menjawab, di mana, dan siapa yang dalam talian"
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Who can reply"
 msgstr "Siapa boleh membalas"
+
+#: src/features/settings/macros/MacroDialog.tsx
+msgid "Who can use it"
+msgstr "Siapa yang boleh menggunakannya"
 
 #: src/features/settings/SettingsColumn.tsx
 msgid "Who changed access, keys and data"

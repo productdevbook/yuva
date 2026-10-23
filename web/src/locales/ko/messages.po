@@ -149,6 +149,14 @@ msgid "{actor} added the label {added}"
 msgstr "{actor}님이 레이블 {added}을(를) 추가했습니다"
 
 #: src/features/conversation/messages/EventLine.tsx
+msgid "{actor} applied the macro {macro}"
+msgstr "{actor}님이 매크로 {macro}을(를) 적용했습니다"
+
+#: src/features/conversation/messages/EventLine.tsx
+msgid "{actor} applied the macro {macro}, assignee skipped"
+msgstr "{actor}님이 매크로 {macro}을(를) 적용했습니다. 담당자는 건너뜀"
+
+#: src/features/conversation/messages/EventLine.tsx
 msgid "{actor} assigned this to {assignee}"
 msgstr "{actor}님이 이 대화를 {assignee}님에게 배정했습니다"
 
@@ -1236,6 +1244,10 @@ msgstr "A linked GitHub or Linear issue changed"
 msgid "A list is who agreed to hear from you. Every subscriber keeps a consent record you can export."
 msgstr "목록은 당신의 소식을 받는 데 동의한 사람들입니다. 모든 구독자에게는 내보낼 수 있는 동의 기록이 있습니다."
 
+#: src/features/settings/macros/MacrosPage.tsx
+msgid "A macro is a reply plus actions: labels, assignee, status, priority or snooze. Type / and its shortcut in the composer; the actions apply when the reply is sent."
+msgstr "매크로는 답변과 동작(라벨, 담당자, 상태, 우선순위, 일시 중지)의 묶음입니다. 답변 창에서 /와 단축 이름을 입력하면 답변을 보낼 때 동작이 적용됩니다."
+
 #: src/features/broadcasts/ListParts.tsx
 msgid "A mailing list holds the people who agreed to get your broadcasts. They join on a subscribe form on your site, or your team adds them and records how they agreed. Every step is kept as proof of consent, and everyone can leave with one click."
 msgstr "메일링 리스트에는 일괄 발송 수신에 동의한 사람들이 담깁니다. 사이트의 구독 양식으로 가입하거나 팀이 직접 추가하고 동의 경위를 기록합니다. 모든 단계가 동의 증거로 보관되며 누구나 한 번의 클릭으로 탈퇴할 수 있습니다."
@@ -1343,6 +1355,10 @@ msgstr "독자의 게시물은 그중 하나가 승인될 때까지 멤버의 �
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "A real address where you receive post"
 msgstr "우편물을 받을 수 있는 실제 주소"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "A reply and its actions in one step"
+msgstr "답변과 동작을 한 번에"
 
 #: src/components/common/text.ts
 msgid "A reply was written in a discussion"
@@ -1505,6 +1521,16 @@ msgstr "Acme 상태"
 msgid "Acme Support"
 msgstr "Acme 지원"
 
+#: src/features/settings/macros/MacroDialog.tsx
+msgid "Actions"
+msgstr "동작"
+
+#: src/features/conversation/composer/CannedMenu.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/settings/macros/MacrosPage.tsx
+msgid "Actions only"
+msgstr "동작만"
+
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/status/IncidentsPage.tsx
@@ -1518,6 +1544,7 @@ msgstr "활동"
 #: src/features/broadcasts/AudienceBuilder.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/migrations/MapStep.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Add"
 msgstr "추가"
@@ -1668,6 +1695,10 @@ msgstr "그룹 추가"
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Add header"
 msgstr "헤더 추가"
+
+#: src/features/conversation/composer/MacroChips.tsx
+msgid "Add label {labelName}"
+msgstr "라벨 {labelName} 추가"
 
 #: src/features/status/MonitorDialog.tsx
 msgid "Add monitor"
@@ -2273,6 +2304,8 @@ msgstr "다른 받은 편지함"
 #: src/components/common/text.ts
 msgid "Another member has already linked this Slack user."
 msgstr "Another member has already linked this Slack user."
+msgid "Another macro already uses this shortcut."
+msgstr "다른 매크로가 이미 이 단축 이름을 쓰고 있습니다."
 
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Another page verified this domain first, and only a verified claim holds a name. Remove the domain, or start over once the other page lets it go."
@@ -2581,6 +2614,10 @@ msgstr "배정(A)"
 msgid "Assign or hand to a teammate"
 msgstr "팀원에게 배정하거나 넘기기"
 
+#: src/features/conversation/composer/MacroChips.tsx
+msgid "Assign to {name}"
+msgstr "{name}에게 배정"
+
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 msgid "Assign to a team"
@@ -2603,6 +2640,10 @@ msgstr "{assignee}님에게 배정됨"
 #: src/features/migrations/ReviewStep.tsx
 msgid "Assigned to {assignee}, kept by name"
 msgstr "{assignee}님에게 배정됨, 이름으로 유지"
+
+#: src/features/settings/macros/MacroDialog.tsx
+msgid "Assignee"
+msgstr "담당자"
 
 #: src/features/inbox/AssistantsPage.tsx
 msgid "Assistant"
@@ -3181,8 +3222,8 @@ msgid "Canned replies"
 msgstr "자주 쓰는 답장"
 
 #: src/components/common/ShortcutSheet.tsx
-msgid "Canned replies, in the reply box"
-msgstr "자주 쓰는 답장(답장 상자에서)"
+msgid "Canned replies and macros, in the reply box"
+msgstr "저장된 답변과 매크로, 답변 창에서"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Canned reply"
@@ -4586,6 +4627,7 @@ msgstr "성능 저하"
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
+#: src/features/settings/macros/MacrosPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -4719,6 +4761,10 @@ msgstr "이 자주 쓰는 답장을 삭제할까요?"
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "Delete this DKIM key?"
 msgstr "이 DKIM 키를 삭제할까요?"
+
+#: src/features/settings/macros/MacrosPage.tsx
+msgid "Delete this macro?"
+msgstr "이 매크로를 삭제할까요?"
 
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Delete this migration?"
@@ -5390,6 +5436,7 @@ msgstr "각각 모든 메시지와 메모 포함"
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
+#: src/features/settings/macros/MacrosPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -5436,6 +5483,10 @@ msgstr "도움말 센터 컬렉션과 문서 초안 편집"
 #: src/features/settings/labels/LabelDialog.tsx
 msgid "Edit label"
 msgstr "레이블 편집"
+
+#: src/features/settings/macros/MacroDialog.tsx
+msgid "Edit macro"
+msgstr "매크로 편집"
 
 #: src/features/status/MonitorDialog.tsx
 msgid "Edit monitor"
@@ -5686,6 +5737,7 @@ msgid "Every website and app shows its visitors on Home and in Analytics."
 msgstr "모든 웹사이트와 앱의 방문자가 홈과 분석에 표시됩니다."
 
 #: src/features/settings/audit/AuditLogPage.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 msgid "Everyone"
 msgstr "모든 사람"
 
@@ -7552,6 +7604,7 @@ msgstr "레이블만: 메일은 전체 메일에서 가져오고 대화에 레�
 #: src/features/migrations/MapStep.tsx
 #: src/features/migrations/ReviewStep.tsx
 #: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/SettingsColumn.tsx
 msgid "Labels"
 msgstr "레이블"
@@ -7704,6 +7757,10 @@ msgstr "런처 색상"
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Launcher position"
 msgstr "런처 위치"
+
+#: src/features/settings/macros/MacroDialog.tsx
+msgid "Leave as is"
+msgstr "그대로 두기"
 
 #. placeholder {0}: integration.default_target
 #: src/features/issues/IssueDialog.tsx
@@ -8091,12 +8148,25 @@ msgid "Lowercase letters, digits and dashes, not at the start or end."
 msgstr "영문 소문자, 숫자, 하이픈. 처음이나 끝에는 쓸 수 없습니다."
 
 #: src/features/settings/canned/CannedReplyDialog.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 msgid "Lowercase letters, digits and dashes."
 msgstr "영문 소문자, 숫자, 하이픈."
 
 #: src/features/broadcasts/Composer.tsx
 msgid "Lowercase letters, digits, dashes, underscores and dots. Fixed once the broadcast is sent."
 msgstr "영문 소문자, 숫자, 하이픈, 밑줄, 점. 일괄 발송이 나가면 변경할 수 없습니다."
+
+#: src/app/Palette.tsx
+#: src/features/conversation/composer/CannedMenu.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Macro"
+msgstr "매크로"
+
+#: src/app/Palette.tsx
+#: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Macros"
+msgstr "매크로"
 
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Mail arrives here; add a reply account when you are ready"
@@ -8835,6 +8905,7 @@ msgstr "내 팀"
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/ProfileForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
@@ -9094,6 +9165,11 @@ msgstr "새 레이블 \"{folder}\""
 #: src/features/broadcasts/ListsHome.tsx
 msgid "New list"
 msgstr "새 리스트"
+
+#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacrosPage.tsx
+msgid "New macro"
+msgstr "새 매크로"
 
 #: src/features/setup/previews.tsx
 #: src/lib/alerts.ts
@@ -9580,6 +9656,10 @@ msgstr "잠긴 토론이 없습니다."
 #: src/features/migrations/text.ts
 msgid "No longer in the mailbox"
 msgstr "메일함에 더 이상 없음"
+
+#: src/features/settings/macros/MacrosPage.tsx
+msgid "No macros yet"
+msgstr "아직 매크로가 없습니다"
 
 #: src/features/migrations/SourceStep.tsx
 msgid "No mail server was found for {domain}. Pick your provider below, or “Other IMAP server” and enter the server on the next step."
@@ -10500,6 +10580,10 @@ msgstr "앱에서만"
 msgid "Only mail since {date}"
 msgstr "{date} 이후 메일만"
 
+#: src/features/settings/macros/MacroDialog.tsx
+msgid "Only me"
+msgstr "나만"
+
 #: src/features/settings/workspace/RetentionForm.tsx
 msgid "Only owners can change this."
 msgstr "소유자만 변경할 수 있습니다."
@@ -11339,6 +11423,10 @@ msgstr "발송 권한"
 msgid "Person"
 msgstr "사람"
 
+#: src/features/settings/macros/MacrosPage.tsx
+msgid "Personal"
+msgstr "개인"
+
 #: src/features/docs/PagesTab.tsx
 msgid "Pick a chat channel of the product and paste the snippet. Ratings and questions land in its inbox."
 msgstr "제품의 채팅 채널을 고르고 코드를 붙여 넣으세요. 평가와 질문은 해당 받은 편지함으로 들어옵니다."
@@ -11705,6 +11793,7 @@ msgid "Previous screenshot"
 msgstr "이전 스크린샷"
 
 #: src/features/conversation/ConversationMenu.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 msgid "Priority"
 msgstr "우선순위"
 
@@ -11716,6 +11805,10 @@ msgstr "우선순위를 {level}(으)로 설정했습니다"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Priority, inbox, spam and more"
 msgstr "우선순위, 받은 편지함, 스팸 등"
+
+#: src/features/conversation/composer/MacroChips.tsx
+msgid "Priority: {priority}"
+msgstr "우선순위: {priority}"
 
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListsHome.tsx
@@ -12260,6 +12353,10 @@ msgstr "참조"
 msgid "Refresh"
 msgstr "새로 고침"
 
+#: src/features/settings/macros/MacroDialog.tsx
+msgid "Refund approved"
+msgstr "환불 승인"
+
 #: src/features/migrations/TokenConnectStep.tsx
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Region"
@@ -12296,6 +12393,7 @@ msgstr "원격 이미지는 보낸 사람에게 메일을 열었음을 알릴 �
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/Passkeys.tsx
@@ -12309,6 +12407,7 @@ msgstr "제거"
 #. placeholder {0}: a.title
 #. placeholder {0}: f.name
 #. placeholder {0}: p.name
+#: src/features/conversation/composer/MacroChips.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Remove {0}"
@@ -12374,6 +12473,10 @@ msgstr "가져온 기록 제거"
 #: src/features/migrations/parts.tsx
 msgid "Remove imported history?"
 msgstr "가져온 기록을 제거할까요?"
+
+#: src/features/conversation/composer/MacroChips.tsx
+msgid "Remove label {labelName}"
+msgstr "라벨 {labelName} 제거"
 
 #: src/features/settings/channels/app/PushSection.tsx
 msgid "Remove the APNs key?"
@@ -12532,6 +12635,7 @@ msgstr "<0>{title}</0>의 스레드에서 답장했습니다"
 msgid "Replied in the thread of another conversation"
 msgstr "다른 대화의 스레드에서 답장했습니다"
 
+#: src/app/Palette.tsx
 #: src/features/broadcasts/Report.tsx
 #: src/features/conversation/Feedback.tsx
 #: src/features/reports/ReportPages.tsx
@@ -13066,6 +13170,7 @@ msgstr "토요일"
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/slack/SlackPage.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/teams/TeamDialog.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
@@ -13075,6 +13180,10 @@ msgstr "토요일"
 #: src/features/status/MonitorDialog.tsx
 msgid "Save"
 msgstr "저장"
+
+#: src/features/settings/macros/MacrosPage.tsx
+msgid "Save a reply together with what should happen to the conversation when you send it."
+msgstr "답변을 보낼 때 대화에 일어날 일과 함께 저장하세요."
 
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Save and test"
@@ -13876,11 +13985,16 @@ msgstr "설정 단계"
 msgid "SHA-256 fingerprint of the certificate the server sent"
 msgstr "서버가 보낸 인증서의 SHA-256 지문"
 
+#: src/features/settings/macros/MacrosPage.tsx
+msgid "Shared"
+msgstr "공유"
+
 #: src/components/common/text.ts
 msgid "Shipped"
 msgstr "출시됨"
 
 #: src/features/settings/canned/CannedReplyDialog.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 msgid "Shortcut"
 msgstr "단축키"
 
@@ -14417,6 +14531,14 @@ msgstr "다시 알림"
 msgid "Snooze (S)"
 msgstr "다시 알림(S)"
 
+#: src/features/settings/macros/MacroDialog.tsx
+msgid "Snooze for (minutes)"
+msgstr "일시 중지 시간(분)"
+
+#: src/features/conversation/composer/MacroChips.tsx
+msgid "Snooze for {time}"
+msgstr "{time} 동안 일시 중지"
+
 #: src/components/common/text.ts
 #: src/features/inbox/ChatList.tsx
 msgid "Snoozed"
@@ -14654,6 +14776,7 @@ msgstr "다운 시 상태"
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/migrations/MapStep.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
 #: src/features/settings/webhooks/events.tsx
 msgid "Status"
@@ -14674,6 +14797,10 @@ msgstr "상태 페이지를 삭제했습니다"
 #: src/features/status/StatusPages.tsx
 msgid "Status pages"
 msgstr "상태 페이지"
+
+#: src/features/conversation/composer/MacroChips.tsx
+msgid "Status: {status}"
+msgstr "상태: {status}"
 
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "Stay under your provider’s sending rate. Support replies are never slowed down by a broadcast."
@@ -15013,6 +15140,7 @@ msgstr "테스트는 워크스페이스 멤버에게만, 한 번에 최대 5명�
 
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 msgid "Text"
 msgstr "텍스트"
 
@@ -16744,8 +16872,13 @@ msgstr "입력 중…"
 msgid "Unanswered"
 msgstr "답변 없음"
 
+#: src/features/conversation/composer/MacroChips.tsx
+msgid "Unassign"
+msgstr "배정 해제"
+
 #: src/features/conversation/ChatView.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 msgid "Unassigned"
 msgstr "배정 안 됨"
 
@@ -17144,6 +17277,7 @@ msgstr "영문자, 숫자, - 및 _를 쓰며 최대 64자입니다."
 
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 msgid "Use lowercase letters, digits and single dashes."
 msgstr "소문자, 숫자, 하이픈 하나만 사용하세요."
 
@@ -17820,6 +17954,10 @@ msgstr "누가, 어디서 답변하고 누가 온라인인지"
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Who can reply"
 msgstr "답장할 수 있는 사람"
+
+#: src/features/settings/macros/MacroDialog.tsx
+msgid "Who can use it"
+msgstr "사용할 수 있는 사람"
 
 #: src/features/settings/SettingsColumn.tsx
 msgid "Who changed access, keys and data"

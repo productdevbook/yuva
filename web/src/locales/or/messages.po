@@ -149,6 +149,14 @@ msgid "{actor} added the label {added}"
 msgstr "{actor} ଲେବଲ୍ {added} ଯୋଡ଼ିଲେ"
 
 #: src/features/conversation/messages/EventLine.tsx
+msgid "{actor} applied the macro {macro}"
+msgstr "{actor} ମ୍ୟାକ୍ରୋ {macro} ପ୍ରୟୋଗ କଲେ"
+
+#: src/features/conversation/messages/EventLine.tsx
+msgid "{actor} applied the macro {macro}, assignee skipped"
+msgstr "{actor} ମ୍ୟାକ୍ରୋ {macro} ପ୍ରୟୋଗ କଲେ, ଦାୟିତ୍ୱପ୍ରାପ୍ତ ବ୍ୟକ୍ତିଙ୍କୁ ଛାଡ଼ିଦିଆଗଲା"
+
+#: src/features/conversation/messages/EventLine.tsx
 msgid "{actor} assigned this to {assignee}"
 msgstr "{actor} ଏହାକୁ {assignee} ଙ୍କୁ ଦେଲେ"
 
@@ -1236,6 +1244,10 @@ msgstr "A linked GitHub or Linear issue changed"
 msgid "A list is who agreed to hear from you. Every subscriber keeps a consent record you can export."
 msgstr "ତାଲିକା ହେଉଛି ସେହି ଲୋକମାନେ ଯେଉଁମାନେ ଆପଣଙ୍କଠାରୁ ବାର୍ତ୍ତା ପାଇବାକୁ ସମ୍ମତ ହୋଇଛନ୍ତି। ପ୍ରତ୍ୟେକ ସବସ୍କ୍ରାଇବରଙ୍କର ଏକ ସମ୍ମତି ରେକର୍ଡ ଅଛି, ଯାହା ଆପଣ ଏକ୍ସପୋର୍ଟ କରିପାରିବେ।"
 
+#: src/features/settings/macros/MacrosPage.tsx
+msgid "A macro is a reply plus actions: labels, assignee, status, priority or snooze. Type / and its shortcut in the composer; the actions apply when the reply is sent."
+msgstr "ମ୍ୟାକ୍ରୋ ହେଉଛି ଏକ ଉତ୍ତର ଓ କିଛି କାର୍ଯ୍ୟ: ଲେବଲ୍, ଦାୟିତ୍ୱପ୍ରାପ୍ତ ବ୍ୟକ୍ତି, ସ୍ଥିତି, ପ୍ରାଥମିକତା କିମ୍ବା ସ୍ନୁଜ୍। ଉତ୍ତର ବାକ୍ସରେ / ଓ ତାହାର ସର୍ଟକଟ୍ ଲେଖନ୍ତୁ; ଉତ୍ତର ପଠାଇଲେ କାର୍ଯ୍ୟଗୁଡ଼ିକ ପ୍ରୟୋଗ ହୁଏ।"
+
 #: src/features/broadcasts/ListParts.tsx
 msgid "A mailing list holds the people who agreed to get your broadcasts. They join on a subscribe form on your site, or your team adds them and records how they agreed. Every step is kept as proof of consent, and everyone can leave with one click."
 msgstr "ମେଲିଂ ତାଲିକାରେ ଆପଣଙ୍କ ବ୍ରଡକାଷ୍ଟ ପାଇବାକୁ ରାଜି ହୋଇଥିବା ଲୋକ ଥାଆନ୍ତି। ସେମାନେ ଆପଣଙ୍କ ସାଇଟ୍ର ସବ୍ସ୍କ୍ରାଇବ୍ ଫର୍ମରେ ଯୋଗ ଦିଅନ୍ତି, କିମ୍ବା ଆପଣଙ୍କ ଦଳ ସେମାନଙ୍କୁ ଯୋଡ଼ି କିପରି ରାଜି ହେଲେ ତାହା ଦର୍ଜ କରେ। ପ୍ରତ୍ୟେକ ପଦକ୍ଷେପ ସମ୍ମତିର ପ୍ରମାଣ ଭାବେ ରଖାଯାଏ, ଏବଂ ପ୍ରତ୍ୟେକେ ଏକ କ୍ଲିକ୍ରେ ଛାଡ଼ିପାରିବେ।"
@@ -1343,6 +1355,10 @@ msgstr "ପାଠକଙ୍କ ପୋଷ୍ଟ ସେମାନଙ୍କର ଗୋ
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "A real address where you receive post"
 msgstr "ଏକ ପ୍ରକୃତ ଠିକଣା ଯେଉଁଠି ଆପଣ ଡାକ ପାଆନ୍ତି"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "A reply and its actions in one step"
+msgstr "ଗୋଟିଏ ଉତ୍ତର ଓ ତାହାର କାର୍ଯ୍ୟ ଗୋଟିଏ ପଦକ୍ଷେପରେ"
 
 #: src/components/common/text.ts
 msgid "A reply was written in a discussion"
@@ -1505,6 +1521,16 @@ msgstr "Acme ସ୍ଥିତି"
 msgid "Acme Support"
 msgstr "Acme ସପୋର୍ଟ"
 
+#: src/features/settings/macros/MacroDialog.tsx
+msgid "Actions"
+msgstr "କାର୍ଯ୍ୟ"
+
+#: src/features/conversation/composer/CannedMenu.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/settings/macros/MacrosPage.tsx
+msgid "Actions only"
+msgstr "କେବଳ କାର୍ଯ୍ୟ"
+
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/status/IncidentsPage.tsx
@@ -1518,6 +1544,7 @@ msgstr "କାର୍ଯ୍ୟକଳାପ"
 #: src/features/broadcasts/AudienceBuilder.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/migrations/MapStep.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Add"
 msgstr "ଯୋଡ଼ନ୍ତୁ"
@@ -1668,6 +1695,10 @@ msgstr "ଗୋଷ୍ଠୀ ଯୋଡନ୍ତୁ"
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Add header"
 msgstr "ହେଡର୍ ଯୋଡ଼ନ୍ତୁ"
+
+#: src/features/conversation/composer/MacroChips.tsx
+msgid "Add label {labelName}"
+msgstr "ଲେବଲ୍ {labelName} ଯୋଗ କରନ୍ତୁ"
 
 #: src/features/status/MonitorDialog.tsx
 msgid "Add monitor"
@@ -2273,6 +2304,8 @@ msgstr "ଅନ୍ୟ ଇନବକ୍ସ"
 #: src/components/common/text.ts
 msgid "Another member has already linked this Slack user."
 msgstr "Another member has already linked this Slack user."
+msgid "Another macro already uses this shortcut."
+msgstr "ଅନ୍ୟ ଏକ ମ୍ୟାକ୍ରୋ ଆଗରୁ ଏହି ସର୍ଟକଟ୍ ବ୍ୟବହାର କରୁଛି।"
 
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Another page verified this domain first, and only a verified claim holds a name. Remove the domain, or start over once the other page lets it go."
@@ -2581,6 +2614,10 @@ msgstr "ଦାୟିତ୍ୱ ଦିଅନ୍ତୁ (A)"
 msgid "Assign or hand to a teammate"
 msgstr "ସହକର୍ମୀଙ୍କୁ ଦାୟିତ୍ୱ ଦିଅନ୍ତୁ କିମ୍ବା ହସ୍ତାନ୍ତର କରନ୍ତୁ"
 
+#: src/features/conversation/composer/MacroChips.tsx
+msgid "Assign to {name}"
+msgstr "{name} ଙ୍କୁ ଦିଅନ୍ତୁ"
+
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 msgid "Assign to a team"
@@ -2603,6 +2640,10 @@ msgstr "{assignee} ଙ୍କୁ ଦିଆଗଲା"
 #: src/features/migrations/ReviewStep.tsx
 msgid "Assigned to {assignee}, kept by name"
 msgstr "{assignee} ଙ୍କୁ ଦିଆଗଲା, ନାମରେ ରଖାଗଲା"
+
+#: src/features/settings/macros/MacroDialog.tsx
+msgid "Assignee"
+msgstr "ଦାୟିତ୍ୱପ୍ରାପ୍ତ ବ୍ୟକ୍ତି"
 
 #: src/features/inbox/AssistantsPage.tsx
 msgid "Assistant"
@@ -3181,8 +3222,8 @@ msgid "Canned replies"
 msgstr "ପ୍ରସ୍ତୁତ ଉତ୍ତର"
 
 #: src/components/common/ShortcutSheet.tsx
-msgid "Canned replies, in the reply box"
-msgstr "ପ୍ରସ୍ତୁତ ଉତ୍ତର, ଉତ୍ତର ବକ୍ସରେ"
+msgid "Canned replies and macros, in the reply box"
+msgstr "ପ୍ରସ୍ତୁତ ଉତ୍ତର ଓ ମ୍ୟାକ୍ରୋ, ଉତ୍ତର ବାକ୍ସରେ"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Canned reply"
@@ -4586,6 +4627,7 @@ msgstr "ହ୍ରାସ ପାଇଥିବା କାର୍ଯ୍ୟଦକ୍ଷ�
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
+#: src/features/settings/macros/MacrosPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -4719,6 +4761,10 @@ msgstr "ଏହି ପ୍ରସ୍ତୁତ ଉତ୍ତର ଡିଲିଟ୍ �
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "Delete this DKIM key?"
 msgstr "ଏହି DKIM କୀ ଡିଲିଟ୍ କରିବେ?"
+
+#: src/features/settings/macros/MacrosPage.tsx
+msgid "Delete this macro?"
+msgstr "ଏହି ମ୍ୟାକ୍ରୋ ଡିଲିଟ୍ କରିବେ?"
 
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Delete this migration?"
@@ -5390,6 +5436,7 @@ msgstr "ପ୍ରତ୍ୟେକ ଏହାର ସମସ୍ତ ସଂଦେଶ �
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
+#: src/features/settings/macros/MacrosPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -5436,6 +5483,10 @@ msgstr "ସହାୟତା କେନ୍ଦ୍ରର ସଂଗ୍ରହ ଓ ଲ�
 #: src/features/settings/labels/LabelDialog.tsx
 msgid "Edit label"
 msgstr "ଲେବଲ୍ ସମ୍ପାଦନ କରନ୍ତୁ"
+
+#: src/features/settings/macros/MacroDialog.tsx
+msgid "Edit macro"
+msgstr "ମ୍ୟାକ୍ରୋ ସମ୍ପାଦନ କରନ୍ତୁ"
 
 #: src/features/status/MonitorDialog.tsx
 msgid "Edit monitor"
@@ -5686,6 +5737,7 @@ msgid "Every website and app shows its visitors on Home and in Analytics."
 msgstr "ପ୍ରତ୍ୟେକ ୱେବସାଇଟ୍ ଓ ଆପ୍ ଏହାର ପରିଦର୍ଶକଙ୍କୁ ହୋମ୍ ଓ ଆନାଲିଟିକ୍ସରେ ଦେଖାଏ।"
 
 #: src/features/settings/audit/AuditLogPage.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 msgid "Everyone"
 msgstr "ସମସ୍ତେ"
 
@@ -7552,6 +7604,7 @@ msgstr "କେବଳ ଲେବଲ୍: ଏହାର ମେଲ୍ All mail ରୁ 
 #: src/features/migrations/MapStep.tsx
 #: src/features/migrations/ReviewStep.tsx
 #: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/SettingsColumn.tsx
 msgid "Labels"
 msgstr "ଲେବଲ୍"
@@ -7704,6 +7757,10 @@ msgstr "ଲଞ୍ଚର୍ ରଙ୍ଗ"
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Launcher position"
 msgstr "ଲଞ୍ଚର୍ ସ୍ଥିତି"
+
+#: src/features/settings/macros/MacroDialog.tsx
+msgid "Leave as is"
+msgstr "ଯେପରି ଅଛି ସେପରି ରଖନ୍ତୁ"
 
 #. placeholder {0}: integration.default_target
 #: src/features/issues/IssueDialog.tsx
@@ -8091,12 +8148,25 @@ msgid "Lowercase letters, digits and dashes, not at the start or end."
 msgstr "ଛୋଟ ଅକ୍ଷର, ଅଙ୍କ ଓ ଡ୍ୟାସ୍, ଆରମ୍ଭ କିମ୍ବା ଶେଷରେ ନୁହେଁ।"
 
 #: src/features/settings/canned/CannedReplyDialog.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 msgid "Lowercase letters, digits and dashes."
 msgstr "ଛୋଟ ଅକ୍ଷର, ଅଙ୍କ ଓ ଡ୍ୟାସ୍।"
 
 #: src/features/broadcasts/Composer.tsx
 msgid "Lowercase letters, digits, dashes, underscores and dots. Fixed once the broadcast is sent."
 msgstr "ଛୋଟ ଅକ୍ଷର, ଅଙ୍କ, ଡ୍ୟାସ୍, ଅଣ୍ଡରସ୍କୋର ଓ ବିନ୍ଦୁ। ବ୍ରଡକାଷ୍ଟ ପଠାଗଲେ ସ୍ଥିର।"
+
+#: src/app/Palette.tsx
+#: src/features/conversation/composer/CannedMenu.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Macro"
+msgstr "ମ୍ୟାକ୍ରୋ"
+
+#: src/app/Palette.tsx
+#: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Macros"
+msgstr "ମ୍ୟାକ୍ରୋ"
 
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Mail arrives here; add a reply account when you are ready"
@@ -8835,6 +8905,7 @@ msgstr "ମୋ ଦଳ"
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/ProfileForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
@@ -9094,6 +9165,11 @@ msgstr "ନୂଆ ଲେବଲ୍ “{folder}”"
 #: src/features/broadcasts/ListsHome.tsx
 msgid "New list"
 msgstr "ନୂଆ ତାଲିକା"
+
+#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacrosPage.tsx
+msgid "New macro"
+msgstr "ନୂଆ ମ୍ୟାକ୍ରୋ"
 
 #: src/features/setup/previews.tsx
 #: src/lib/alerts.ts
@@ -9580,6 +9656,10 @@ msgstr "ଲକ୍ ହୋଇଥିବା ଆଲୋଚନା ନାହିଁ।"
 #: src/features/migrations/text.ts
 msgid "No longer in the mailbox"
 msgstr "ଆଉ ମେଲବକ୍ସରେ ନାହିଁ"
+
+#: src/features/settings/macros/MacrosPage.tsx
+msgid "No macros yet"
+msgstr "ଏପର୍ଯ୍ୟନ୍ତ ମ୍ୟାକ୍ରୋ ନାହିଁ"
 
 #: src/features/migrations/SourceStep.tsx
 msgid "No mail server was found for {domain}. Pick your provider below, or “Other IMAP server” and enter the server on the next step."
@@ -10500,6 +10580,10 @@ msgstr "କେବଳ ଆପ୍ରେ"
 msgid "Only mail since {date}"
 msgstr "କେବଳ {date} ପରର ମେଲ୍"
 
+#: src/features/settings/macros/MacroDialog.tsx
+msgid "Only me"
+msgstr "କେବଳ ମୁଁ"
+
 #: src/features/settings/workspace/RetentionForm.tsx
 msgid "Only owners can change this."
 msgstr "କେବଳ ମାଲିକ ଏହା ବଦଳାଇପାରିବେ।"
@@ -11339,6 +11423,10 @@ msgstr "ପଠାଇବା ଅନୁମତି"
 msgid "Person"
 msgstr "ବ୍ୟକ୍ତି"
 
+#: src/features/settings/macros/MacrosPage.tsx
+msgid "Personal"
+msgstr "ବ୍ୟକ୍ତିଗତ"
+
 #: src/features/docs/PagesTab.tsx
 msgid "Pick a chat channel of the product and paste the snippet. Ratings and questions land in its inbox."
 msgstr "ଉତ୍ପାଦର ଗୋଟିଏ ଚାଟ୍ ଚ୍ୟାନେଲ ବାଛି କୋଡ୍ ପେଷ୍ଟ କରନ୍ତୁ। ରେଟିଂ ଓ ପ୍ରଶ୍ନ ତାହାର ଇନବକ୍ସକୁ ଆସେ।"
@@ -11705,6 +11793,7 @@ msgid "Previous screenshot"
 msgstr "ପୂର୍ବ ସ୍କ୍ରିନସଟ"
 
 #: src/features/conversation/ConversationMenu.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 msgid "Priority"
 msgstr "ପ୍ରାଥମିକତା"
 
@@ -11716,6 +11805,10 @@ msgstr "ପ୍ରାଥମିକତା {level} କରାଗଲା"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Priority, inbox, spam and more"
 msgstr "ପ୍ରାଥମିକତା, ଇନବକ୍ସ, ସ୍ପାମ୍ ଓ ଆହୁରି"
+
+#: src/features/conversation/composer/MacroChips.tsx
+msgid "Priority: {priority}"
+msgstr "ପ୍ରାଥମିକତା: {priority}"
 
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListsHome.tsx
@@ -12260,6 +12353,10 @@ msgstr "ସନ୍ଦର୍ଭ"
 msgid "Refresh"
 msgstr "ରିଫ୍ରେସ୍ କରନ୍ତୁ"
 
+#: src/features/settings/macros/MacroDialog.tsx
+msgid "Refund approved"
+msgstr "ଫେରସ୍ତ ଅନୁମୋଦିତ"
+
 #: src/features/migrations/TokenConnectStep.tsx
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Region"
@@ -12296,6 +12393,7 @@ msgstr "ରିମୋଟ୍ ଇମେଜ୍ ପ୍ରେରକଙ୍କୁ ଜଣ
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/Passkeys.tsx
@@ -12309,6 +12407,7 @@ msgstr "ହଟାନ୍ତୁ"
 #. placeholder {0}: a.title
 #. placeholder {0}: f.name
 #. placeholder {0}: p.name
+#: src/features/conversation/composer/MacroChips.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Remove {0}"
@@ -12374,6 +12473,10 @@ msgstr "ଆମଦାନି ଇତିହାସ ହଟାନ୍ତୁ"
 #: src/features/migrations/parts.tsx
 msgid "Remove imported history?"
 msgstr "ଆମଦାନି ଇତିହାସ ହଟାଇବେ?"
+
+#: src/features/conversation/composer/MacroChips.tsx
+msgid "Remove label {labelName}"
+msgstr "ଲେବଲ୍ {labelName} ହଟାନ୍ତୁ"
 
 #: src/features/settings/channels/app/PushSection.tsx
 msgid "Remove the APNs key?"
@@ -12532,6 +12635,7 @@ msgstr "<0>{title}</0> ର ଥ୍ରେଡ୍ରେ ଉତ୍ତର ଦେଲେ
 msgid "Replied in the thread of another conversation"
 msgstr "ଅନ୍ୟ କଥାବାର୍ତ୍ତାର ଥ୍ରେଡ୍ରେ ଉତ୍ତର ଦେଲେ"
 
+#: src/app/Palette.tsx
 #: src/features/broadcasts/Report.tsx
 #: src/features/conversation/Feedback.tsx
 #: src/features/reports/ReportPages.tsx
@@ -13066,6 +13170,7 @@ msgstr "ଶନିବାର"
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/slack/SlackPage.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/teams/TeamDialog.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
@@ -13075,6 +13180,10 @@ msgstr "ଶନିବାର"
 #: src/features/status/MonitorDialog.tsx
 msgid "Save"
 msgstr "ସେଭ୍ କରନ୍ତୁ"
+
+#: src/features/settings/macros/MacrosPage.tsx
+msgid "Save a reply together with what should happen to the conversation when you send it."
+msgstr "ଉତ୍ତର ସହିତ ପଠାଇଲେ ବାର୍ତ୍ତାଳାପରେ କଣ ହେବ ତାହା ମଧ୍ୟ ସେଭ୍ କରନ୍ତୁ।"
 
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Save and test"
@@ -13876,11 +13985,16 @@ msgstr "ସେଟଅପ୍ର ପଦକ୍ଷେପ"
 msgid "SHA-256 fingerprint of the certificate the server sent"
 msgstr "ସର୍ଭର ପଠାଇଥିବା ସାର୍ଟିଫିକେଟ୍ର SHA-256 ଫିଙ୍ଗରପ୍ରିଣ୍ଟ"
 
+#: src/features/settings/macros/MacrosPage.tsx
+msgid "Shared"
+msgstr "ସେୟାର୍ କରାଯାଇଛି"
+
 #: src/components/common/text.ts
 msgid "Shipped"
 msgstr "ରିଲିଜ୍ ହୋଇଛି"
 
 #: src/features/settings/canned/CannedReplyDialog.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 msgid "Shortcut"
 msgstr "ସର୍ଟକଟ୍"
 
@@ -14417,6 +14531,14 @@ msgstr "ସ୍ନୁଜ୍ କରନ୍ତୁ"
 msgid "Snooze (S)"
 msgstr "ସ୍ନୁଜ୍ କରନ୍ତୁ (S)"
 
+#: src/features/settings/macros/MacroDialog.tsx
+msgid "Snooze for (minutes)"
+msgstr "ସ୍ନୁଜ୍ ସମୟ (ମିନିଟ୍)"
+
+#: src/features/conversation/composer/MacroChips.tsx
+msgid "Snooze for {time}"
+msgstr "{time} ପାଇଁ ସ୍ନୁଜ୍ କରନ୍ତୁ"
+
 #: src/components/common/text.ts
 #: src/features/inbox/ChatList.tsx
 msgid "Snoozed"
@@ -14654,6 +14776,7 @@ msgstr "ବନ୍ଦ ହେଲେ ସ୍ଥିତି"
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/migrations/MapStep.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
 #: src/features/settings/webhooks/events.tsx
 msgid "Status"
@@ -14674,6 +14797,10 @@ msgstr "ସ୍ଥିତି ପୃଷ୍ଠା ବିଲୋପ ହେଲା"
 #: src/features/status/StatusPages.tsx
 msgid "Status pages"
 msgstr "ସ୍ଥିତି ପୃଷ୍ଠା"
+
+#: src/features/conversation/composer/MacroChips.tsx
+msgid "Status: {status}"
+msgstr "ସ୍ଥିତି: {status}"
 
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "Stay under your provider’s sending rate. Support replies are never slowed down by a broadcast."
@@ -15013,6 +15140,7 @@ msgstr "ଟେଷ୍ଟ କେବଳ ୱାର୍କସ୍ପେସ୍ ସଦସ
 
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 msgid "Text"
 msgstr "ଟେକ୍ସଟ୍"
 
@@ -16744,8 +16872,13 @@ msgstr "ଟାଇପ୍ କରୁଛନ୍ତି…"
 msgid "Unanswered"
 msgstr "ଉତ୍ତରହୀନ"
 
+#: src/features/conversation/composer/MacroChips.tsx
+msgid "Unassign"
+msgstr "ଦିଆ ବାତିଲ୍ କରନ୍ତୁ"
+
 #: src/features/conversation/ChatView.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 msgid "Unassigned"
 msgstr "ଦିଆଯାଇନାହିଁ"
 
@@ -17144,6 +17277,7 @@ msgstr "ଅକ୍ଷର, ଅଙ୍କ, - ଓ _ ବ୍ୟବହାର କରନ�
 
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 msgid "Use lowercase letters, digits and single dashes."
 msgstr "ଛୋଟ ଅକ୍ଷର, ଅଙ୍କ ଓ ଏକକ ହାଇଫେନ୍ ବ୍ୟବହାର କରନ୍ତୁ।"
 
@@ -17820,6 +17954,10 @@ msgstr "କିଏ, କେଉଁଠି ଉତ୍ତର ଦିଏ, ଏବଂ କ�
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Who can reply"
 msgstr "କିଏ ଉତ୍ତର ଦେଇପାରିବ"
+
+#: src/features/settings/macros/MacroDialog.tsx
+msgid "Who can use it"
+msgstr "କିଏ ବ୍ୟବହାର କରିପାରିବ"
 
 #: src/features/settings/SettingsColumn.tsx
 msgid "Who changed access, keys and data"

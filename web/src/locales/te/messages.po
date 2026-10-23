@@ -149,6 +149,14 @@ msgid "{actor} added the label {added}"
 msgstr "{actor} {added} లేబుల్‌ను జోడించారు"
 
 #: src/features/conversation/messages/EventLine.tsx
+msgid "{actor} applied the macro {macro}"
+msgstr "{actor} మాక్రో {macro} ను వర్తింపజేశారు"
+
+#: src/features/conversation/messages/EventLine.tsx
+msgid "{actor} applied the macro {macro}, assignee skipped"
+msgstr "{actor} మాక్రో {macro} ను వర్తింపజేశారు, బాధ్యుడిని దాటవేశారు"
+
+#: src/features/conversation/messages/EventLine.tsx
 msgid "{actor} assigned this to {assignee}"
 msgstr "{actor} దీన్ని {assignee} కు కేటాయించారు"
 
@@ -1236,6 +1244,10 @@ msgstr "A linked GitHub or Linear issue changed"
 msgid "A list is who agreed to hear from you. Every subscriber keeps a consent record you can export."
 msgstr "జాబితా అంటే మీ నుండి సందేశాలు అందుకోవడానికి అంగీకరించినవారు. ప్రతి సబ్‌స్క్రైబర్‌కు మీరు ఎగుమతి చేయగల సమ్మతి రికార్డు ఉంటుంది."
 
+#: src/features/settings/macros/MacrosPage.tsx
+msgid "A macro is a reply plus actions: labels, assignee, status, priority or snooze. Type / and its shortcut in the composer; the actions apply when the reply is sent."
+msgstr "మాక్రో అంటే ఒక సమాధానం మరియు చర్యలు: లేబుళ్లు, బాధ్యుడు, స్థితి, ప్రాధాన్యత లేదా స్నూజ్. సమాధాన పెట్టెలో / మరియు దాని షార్ట్‌కట్ టైప్ చేయండి; సమాధానం పంపినప్పుడు చర్యలు వర్తిస్తాయి."
+
 #: src/features/broadcasts/ListParts.tsx
 msgid "A mailing list holds the people who agreed to get your broadcasts. They join on a subscribe form on your site, or your team adds them and records how they agreed. Every step is kept as proof of consent, and everyone can leave with one click."
 msgstr "మెయిలింగ్ లిస్ట్ మీ బ్రాడ్‌కాస్ట్‌లను అందుకోవడానికి అంగీకరించిన వ్యక్తులను కలిగి ఉంటుంది. వారు మీ సైట్‌లోని సబ్‌స్క్రైబ్ ఫారమ్ ద్వారా చేరతారు, లేదా మీ బృందం వారిని జోడించి వారు ఎలా అంగీకరించారో నమోదు చేస్తుంది. ప్రతి దశ సమ్మతికి రుజువుగా ఉంచబడుతుంది, మరియు ప్రతి ఒక్కరూ ఒక్క క్లిక్‌తో నిష్క్రమించవచ్చు."
@@ -1343,6 +1355,10 @@ msgstr "పాఠకుడి పోస్ట్‌లు వారివి ఒ
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "A real address where you receive post"
 msgstr "మీరు తపాలా అందుకునే నిజమైన చిరునామా"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "A reply and its actions in one step"
+msgstr "ఒక సమాధానం మరియు దాని చర్యలు ఒకే అడుగులో"
 
 #: src/components/common/text.ts
 msgid "A reply was written in a discussion"
@@ -1505,6 +1521,16 @@ msgstr "Acme స్థితి"
 msgid "Acme Support"
 msgstr "Acme సపోర్ట్"
 
+#: src/features/settings/macros/MacroDialog.tsx
+msgid "Actions"
+msgstr "చర్యలు"
+
+#: src/features/conversation/composer/CannedMenu.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/settings/macros/MacrosPage.tsx
+msgid "Actions only"
+msgstr "చర్యలు మాత్రమే"
+
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/status/IncidentsPage.tsx
@@ -1518,6 +1544,7 @@ msgstr "కార్యకలాపం"
 #: src/features/broadcasts/AudienceBuilder.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/migrations/MapStep.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Add"
 msgstr "జోడించండి"
@@ -1668,6 +1695,10 @@ msgstr "సమూహాన్ని జోడించండి"
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Add header"
 msgstr "హెడర్ జోడించండి"
+
+#: src/features/conversation/composer/MacroChips.tsx
+msgid "Add label {labelName}"
+msgstr "లేబుల్ {labelName} జోడించండి"
 
 #: src/features/status/MonitorDialog.tsx
 msgid "Add monitor"
@@ -2273,6 +2304,8 @@ msgstr "మరో ఇన్‌బాక్స్"
 #: src/components/common/text.ts
 msgid "Another member has already linked this Slack user."
 msgstr "Another member has already linked this Slack user."
+msgid "Another macro already uses this shortcut."
+msgstr "మరొక మాక్రో ఇప్పటికే ఈ షార్ట్‌కట్‌ను ఉపయోగిస్తోంది."
 
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Another page verified this domain first, and only a verified claim holds a name. Remove the domain, or start over once the other page lets it go."
@@ -2581,6 +2614,10 @@ msgstr "కేటాయించండి (A)"
 msgid "Assign or hand to a teammate"
 msgstr "సహచరుడికి కేటాయించండి లేదా అప్పగించండి"
 
+#: src/features/conversation/composer/MacroChips.tsx
+msgid "Assign to {name}"
+msgstr "{name} కు కేటాయించండి"
+
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 msgid "Assign to a team"
@@ -2603,6 +2640,10 @@ msgstr "{assignee} కు కేటాయించబడింది"
 #: src/features/migrations/ReviewStep.tsx
 msgid "Assigned to {assignee}, kept by name"
 msgstr "{assignee} కు కేటాయించబడింది, పేరుతో ఉంచబడింది"
+
+#: src/features/settings/macros/MacroDialog.tsx
+msgid "Assignee"
+msgstr "బాధ్యుడు"
 
 #: src/features/inbox/AssistantsPage.tsx
 msgid "Assistant"
@@ -3181,8 +3222,8 @@ msgid "Canned replies"
 msgstr "రెడీమేడ్ జవాబులు"
 
 #: src/components/common/ShortcutSheet.tsx
-msgid "Canned replies, in the reply box"
-msgstr "రెడీమేడ్ జవాబులు, జవాబు బాక్స్‌లో"
+msgid "Canned replies and macros, in the reply box"
+msgstr "సిద్ధ సమాధానాలు మరియు మాక్రోలు, సమాధాన పెట్టెలో"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Canned reply"
@@ -4586,6 +4627,7 @@ msgstr "తగ్గిన పనితీరు"
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
+#: src/features/settings/macros/MacrosPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -4719,6 +4761,10 @@ msgstr "ఈ రెడీమేడ్ జవాబును తొలగించ
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "Delete this DKIM key?"
 msgstr "ఈ DKIM కీని తొలగించాలా?"
+
+#: src/features/settings/macros/MacrosPage.tsx
+msgid "Delete this macro?"
+msgstr "ఈ మాక్రోను తొలగించాలా?"
 
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Delete this migration?"
@@ -5390,6 +5436,7 @@ msgstr "ప్రతిదీ దాని అన్ని సందేశాల
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
+#: src/features/settings/macros/MacrosPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -5436,6 +5483,10 @@ msgstr "సహాయ కేంద్రం సేకరణలు, వ్యా�
 #: src/features/settings/labels/LabelDialog.tsx
 msgid "Edit label"
 msgstr "లేబుల్‌ను సవరించండి"
+
+#: src/features/settings/macros/MacroDialog.tsx
+msgid "Edit macro"
+msgstr "మాక్రోను సవరించండి"
 
 #: src/features/status/MonitorDialog.tsx
 msgid "Edit monitor"
@@ -5686,6 +5737,7 @@ msgid "Every website and app shows its visitors on Home and in Analytics."
 msgstr "ప్రతి వెబ్‌సైట్ మరియు యాప్ తన సందర్శకులను హోమ్ మరియు అనలిటిక్స్‌లో చూపుతుంది."
 
 #: src/features/settings/audit/AuditLogPage.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 msgid "Everyone"
 msgstr "అందరూ"
 
@@ -7552,6 +7604,7 @@ msgstr "లేబుల్ మాత్రమే: దాని మెయిల�
 #: src/features/migrations/MapStep.tsx
 #: src/features/migrations/ReviewStep.tsx
 #: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/SettingsColumn.tsx
 msgid "Labels"
 msgstr "లేబుల్‌లు"
@@ -7704,6 +7757,10 @@ msgstr "లాంచర్ రంగు"
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Launcher position"
 msgstr "లాంచర్ స్థానం"
+
+#: src/features/settings/macros/MacroDialog.tsx
+msgid "Leave as is"
+msgstr "అలాగే ఉంచండి"
 
 #. placeholder {0}: integration.default_target
 #: src/features/issues/IssueDialog.tsx
@@ -8091,12 +8148,25 @@ msgid "Lowercase letters, digits and dashes, not at the start or end."
 msgstr "చిన్న అక్షరాలు, అంకెలు మరియు డ్యాష్‌లు, ప్రారంభంలో లేదా చివర కాదు."
 
 #: src/features/settings/canned/CannedReplyDialog.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 msgid "Lowercase letters, digits and dashes."
 msgstr "చిన్న అక్షరాలు, అంకెలు మరియు డ్యాష్‌లు."
 
 #: src/features/broadcasts/Composer.tsx
 msgid "Lowercase letters, digits, dashes, underscores and dots. Fixed once the broadcast is sent."
 msgstr "చిన్న అక్షరాలు, అంకెలు, డ్యాష్‌లు, అండర్‌స్కోర్‌లు మరియు చుక్కలు. బ్రాడ్‌కాస్ట్ పంపిన తర్వాత స్థిరం."
+
+#: src/app/Palette.tsx
+#: src/features/conversation/composer/CannedMenu.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Macro"
+msgstr "మాక్రో"
+
+#: src/app/Palette.tsx
+#: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Macros"
+msgstr "మాక్రోలు"
 
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Mail arrives here; add a reply account when you are ready"
@@ -8835,6 +8905,7 @@ msgstr "నా బృందాలు"
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/ProfileForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
@@ -9094,6 +9165,11 @@ msgstr "కొత్త లేబుల్ “{folder}”"
 #: src/features/broadcasts/ListsHome.tsx
 msgid "New list"
 msgstr "కొత్త లిస్ట్"
+
+#: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/macros/MacrosPage.tsx
+msgid "New macro"
+msgstr "కొత్త మాక్రో"
 
 #: src/features/setup/previews.tsx
 #: src/lib/alerts.ts
@@ -9580,6 +9656,10 @@ msgstr "లాక్ చేసిన చర్చలు లేవు."
 #: src/features/migrations/text.ts
 msgid "No longer in the mailbox"
 msgstr "ఇకపై మెయిల్‌బాక్స్‌లో లేదు"
+
+#: src/features/settings/macros/MacrosPage.tsx
+msgid "No macros yet"
+msgstr "ఇంకా మాక్రోలు లేవు"
 
 #: src/features/migrations/SourceStep.tsx
 msgid "No mail server was found for {domain}. Pick your provider below, or “Other IMAP server” and enter the server on the next step."
@@ -10500,6 +10580,10 @@ msgstr "యాప్‌లో మాత్రమే"
 msgid "Only mail since {date}"
 msgstr "{date} నుండి మెయిల్ మాత్రమే"
 
+#: src/features/settings/macros/MacroDialog.tsx
+msgid "Only me"
+msgstr "నేను మాత్రమే"
+
 #: src/features/settings/workspace/RetentionForm.tsx
 msgid "Only owners can change this."
 msgstr "యజమానులు మాత్రమే దీన్ని మార్చగలరు."
@@ -11339,6 +11423,10 @@ msgstr "పంపడానికి అనుమతి"
 msgid "Person"
 msgstr "వ్యక్తి"
 
+#: src/features/settings/macros/MacrosPage.tsx
+msgid "Personal"
+msgstr "వ్యక్తిగతం"
+
 #: src/features/docs/PagesTab.tsx
 msgid "Pick a chat channel of the product and paste the snippet. Ratings and questions land in its inbox."
 msgstr "ఉత్పత్తి యొక్క ఒక చాట్ ఛానెల్‌ను ఎంచుకుని కోడ్‌ను అతికించండి. రేటింగ్‌లు, ప్రశ్నలు దాని ఇన్‌బాక్స్‌కు వస్తాయి."
@@ -11705,6 +11793,7 @@ msgid "Previous screenshot"
 msgstr "మునుపటి స్క్రీన్‌షాట్"
 
 #: src/features/conversation/ConversationMenu.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 msgid "Priority"
 msgstr "ప్రాధాన్యత"
 
@@ -11716,6 +11805,10 @@ msgstr "ప్రాధాన్యత {level}కు సెట్ చేయబ�
 #: src/components/common/ShortcutSheet.tsx
 msgid "Priority, inbox, spam and more"
 msgstr "ప్రాధాన్యత, ఇన్‌బాక్స్, స్పామ్ మరియు మరిన్ని"
+
+#: src/features/conversation/composer/MacroChips.tsx
+msgid "Priority: {priority}"
+msgstr "ప్రాధాన్యత: {priority}"
 
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListsHome.tsx
@@ -12260,6 +12353,10 @@ msgstr "సూచన"
 msgid "Refresh"
 msgstr "రిఫ్రెష్ చేయండి"
 
+#: src/features/settings/macros/MacroDialog.tsx
+msgid "Refund approved"
+msgstr "రిఫండ్ ఆమోదించబడింది"
+
 #: src/features/migrations/TokenConnectStep.tsx
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Region"
@@ -12296,6 +12393,7 @@ msgstr "రిమోట్ చిత్రాలు మీరు మెయిల
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/Passkeys.tsx
@@ -12309,6 +12407,7 @@ msgstr "తొలగించండి"
 #. placeholder {0}: a.title
 #. placeholder {0}: f.name
 #. placeholder {0}: p.name
+#: src/features/conversation/composer/MacroChips.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Remove {0}"
@@ -12374,6 +12473,10 @@ msgstr "దిగుమతి చేసిన చరిత్రను తొల
 #: src/features/migrations/parts.tsx
 msgid "Remove imported history?"
 msgstr "దిగుమతి చేసిన చరిత్రను తొలగించాలా?"
+
+#: src/features/conversation/composer/MacroChips.tsx
+msgid "Remove label {labelName}"
+msgstr "లేబుల్ {labelName} ను తీసివేయండి"
 
 #: src/features/settings/channels/app/PushSection.tsx
 msgid "Remove the APNs key?"
@@ -12532,6 +12635,7 @@ msgstr "<0>{title}</0> థ్రెడ్‌లో జవాబిచ్చా�
 msgid "Replied in the thread of another conversation"
 msgstr "మరో సంభాషణ థ్రెడ్‌లో జవాబిచ్చారు"
 
+#: src/app/Palette.tsx
 #: src/features/broadcasts/Report.tsx
 #: src/features/conversation/Feedback.tsx
 #: src/features/reports/ReportPages.tsx
@@ -13066,6 +13170,7 @@ msgstr "శనివారం"
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/slack/SlackPage.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/teams/TeamDialog.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
@@ -13075,6 +13180,10 @@ msgstr "శనివారం"
 #: src/features/status/MonitorDialog.tsx
 msgid "Save"
 msgstr "సేవ్ చేయండి"
+
+#: src/features/settings/macros/MacrosPage.tsx
+msgid "Save a reply together with what should happen to the conversation when you send it."
+msgstr "పంపినప్పుడు సంభాషణకు ఏం జరగాలో దానితో పాటు ఒక సమాధానాన్ని సేవ్ చేయండి."
 
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Save and test"
@@ -13876,11 +13985,16 @@ msgstr "సెటప్ దశలు"
 msgid "SHA-256 fingerprint of the certificate the server sent"
 msgstr "సర్వర్ పంపిన సర్టిఫికెట్ SHA-256 వేలిముద్ర"
 
+#: src/features/settings/macros/MacrosPage.tsx
+msgid "Shared"
+msgstr "షేర్ చేసినది"
+
 #: src/components/common/text.ts
 msgid "Shipped"
 msgstr "విడుదలైంది"
 
 #: src/features/settings/canned/CannedReplyDialog.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 msgid "Shortcut"
 msgstr "షార్ట్‌కట్"
 
@@ -14417,6 +14531,14 @@ msgstr "స్నూజ్ చేయండి"
 msgid "Snooze (S)"
 msgstr "స్నూజ్ చేయండి (S)"
 
+#: src/features/settings/macros/MacroDialog.tsx
+msgid "Snooze for (minutes)"
+msgstr "స్నూజ్ వ్యవధి (నిమిషాలు)"
+
+#: src/features/conversation/composer/MacroChips.tsx
+msgid "Snooze for {time}"
+msgstr "{time} స్నూజ్ చేయండి"
+
 #: src/components/common/text.ts
 #: src/features/inbox/ChatList.tsx
 msgid "Snoozed"
@@ -14654,6 +14776,7 @@ msgstr "నిలిచిపోయినప్పుడు స్థితి"
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/migrations/MapStep.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
 #: src/features/settings/webhooks/events.tsx
 msgid "Status"
@@ -14674,6 +14797,10 @@ msgstr "స్టేటస్ పేజీ తొలగించబడింద�
 #: src/features/status/StatusPages.tsx
 msgid "Status pages"
 msgstr "స్టేటస్ పేజీలు"
+
+#: src/features/conversation/composer/MacroChips.tsx
+msgid "Status: {status}"
+msgstr "స్థితి: {status}"
 
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "Stay under your provider’s sending rate. Support replies are never slowed down by a broadcast."
@@ -15013,6 +15140,7 @@ msgstr "టెస్ట్‌లు వర్క్‌స్పేస్ సభ�
 
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 msgid "Text"
 msgstr "టెక్స్ట్"
 
@@ -16744,8 +16872,13 @@ msgstr "టైప్ చేస్తున్నారు…"
 msgid "Unanswered"
 msgstr "జవాబివ్వనివి"
 
+#: src/features/conversation/composer/MacroChips.tsx
+msgid "Unassign"
+msgstr "కేటాయింపు తీసివేయండి"
+
 #: src/features/conversation/ChatView.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 msgid "Unassigned"
 msgstr "కేటాయించలేదు"
 
@@ -17144,6 +17277,7 @@ msgstr "అక్షరాలు, అంకెలు, - మరియు _ ఉప
 
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/macros/MacroDialog.tsx
 msgid "Use lowercase letters, digits and single dashes."
 msgstr "చిన్న అక్షరాలు, అంకెలు, ఒంటరి హైఫన్‌లను ఉపయోగించండి."
 
@@ -17820,6 +17954,10 @@ msgstr "ఎవరు, ఎక్కడ జవాబిస్తారు, ఎవ�
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Who can reply"
 msgstr "ఎవరు జవాబివ్వగలరు"
+
+#: src/features/settings/macros/MacroDialog.tsx
+msgid "Who can use it"
+msgstr "ఎవరు ఉపయోగించగలరు"
 
 #: src/features/settings/SettingsColumn.tsx
 msgid "Who changed access, keys and data"

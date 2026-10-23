@@ -13,6 +13,7 @@ import {
   PlusIcon,
   QuoteIcon,
   UsersRoundIcon,
+  ZapIcon,
   ScrollTextIcon,
   ShieldCheckIcon,
   TagIcon,
@@ -29,7 +30,7 @@ import { Page, RowIcon, RowText } from "@/features/settings/ui"
 import { api, unwrap } from "@/lib/api"
 import { keys } from "@/lib/keys"
 import { useSession } from "@/lib/session"
-import { useCannedReplies, useInboxes, useLabels, useMembers, useTeams } from "@/lib/workspace"
+import { useCannedReplies, useInboxes, useLabels, useMacros, useMembers, useTeams } from "@/lib/workspace"
 
 const WIDE = [
   "/settings/api-keys",
@@ -114,6 +115,7 @@ export function SettingsColumn() {
   const members = useMembers().data
   const canned = useCannedReplies().data
   const labels = useLabels().data
+  const macros = useMacros().data
   const teams = useTeams().data
   const apiKeys = useQuery({
     queryKey: keys.apiKeys(ws),
@@ -189,6 +191,12 @@ export function SettingsColumn() {
             <QuoteIcon />
           </RowIcon>
           <RowText title={<Trans>Canned replies</Trans>} detail={<Trans>What you write often</Trans>} />
+        </NavRow>
+        <NavRow to="/settings/macros" value={list(macros?.length)}>
+          <RowIcon>
+            <ZapIcon />
+          </RowIcon>
+          <RowText title={<Trans>Macros</Trans>} detail={<Trans>A reply and its actions in one step</Trans>} />
         </NavRow>
         {canManage && (
           <NavRow to="/settings/teams" value={list(teams?.length)}>
