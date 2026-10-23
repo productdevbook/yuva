@@ -1503,7 +1503,7 @@ const setInboxSender = `-- name: SetInboxSender :one
 UPDATE inboxes SET sender_legal_name = $1, sender_postal_address = $2,
     sender_registration = $3, sender_contact = $4, updated_at = $5
 WHERE workspace_id = $6 AND id = $7
-RETURNING id, workspace_id, name, slug, branding, default_locale, timezone, mode, expected_reply_minutes, business_hours, identity_secret, created_at, updated_at, ask_for_rating, rating_since, sender_legal_name, sender_postal_address, sender_registration, sender_contact, feedback_categories
+RETURNING id, workspace_id, name, slug, branding, default_locale, timezone, mode, expected_reply_minutes, business_hours, identity_secret, created_at, updated_at, ask_for_rating, rating_since, sender_legal_name, sender_postal_address, sender_registration, sender_contact, feedback_categories, assignment_mode, assignment_cap
 `
 
 type SetInboxSenderParams struct {
@@ -1548,6 +1548,8 @@ func (q *Queries) SetInboxSender(ctx context.Context, arg SetInboxSenderParams) 
 		&i.SenderRegistration,
 		&i.SenderContact,
 		&i.FeedbackCategories,
+		&i.AssignmentMode,
+		&i.AssignmentCap,
 	)
 	return i, err
 }

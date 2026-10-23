@@ -294,7 +294,7 @@ func TestAutomationRulesRunInOrderOncePerTrigger(t *testing.T) {
 		t.Fatalf("tagger runs %v", runs)
 	}
 	acts := runs[0]["actions"].([]any)
-	if acts[2].(map[string]any)["result"] != "skipped" || acts[0].(map[string]any)["result"] != "applied" {
+	if acts[2].(map[string]any)["result"] != "applied" || acts[0].(map[string]any)["result"] != "applied" {
 		t.Fatalf("tagger actions %v", acts)
 	}
 	if n := len(ruleRuns(tm.owner, router)); n != 1 {

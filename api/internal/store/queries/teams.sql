@@ -1,6 +1,6 @@
 -- name: CreateTeam :one
-INSERT INTO teams (id, workspace_id, name, description, created_at, updated_at)
-VALUES (@id, @workspace_id, @name, @description, @now, @now)
+INSERT INTO teams (id, workspace_id, name, description, assignment_mode, assignment_cap, created_at, updated_at)
+VALUES (@id, @workspace_id, @name, @description, @assignment_mode, @assignment_cap, @now, @now)
 RETURNING *;
 
 -- name: GetTeam :one
@@ -26,7 +26,7 @@ WHERE t.workspace_id = @workspace_id
 ORDER BY t.name, t.id;
 
 -- name: UpdateTeam :one
-UPDATE teams SET name = @name, description = @description, updated_at = @now
+UPDATE teams SET name = @name, description = @description, assignment_mode = @assignment_mode, assignment_cap = @assignment_cap, updated_at = @now
 WHERE workspace_id = @workspace_id AND id = @id
 RETURNING *;
 

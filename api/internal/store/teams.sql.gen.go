@@ -68,7 +68,7 @@ const clearConversationsTeam = `-- name: ClearConversationsTeam :many
 UPDATE conversations SET team_id = NULL, updated_at = $1
 WHERE workspace_id = $2 AND team_id = $3
   AND ($4::uuid IS NULL OR inbox_id = $4::uuid)
-RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id, trashed_at, trashed_by_member_id, trashed_by_api_key_id, push_through, push_sent_at, team_id, fields, sla_due_at, snooze_rule_id
+RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id, trashed_at, trashed_by_member_id, trashed_by_api_key_id, push_through, push_sent_at, team_id, fields, sla_due_at, snooze_rule_id, assign_waiting_since
 `
 
 type ClearConversationsTeamParams struct {
@@ -138,6 +138,7 @@ func (q *Queries) ClearConversationsTeam(ctx context.Context, arg ClearConversat
 			&i.Fields,
 			&i.SlaDueAt,
 			&i.SnoozeRuleID,
+			&i.AssignWaitingSince,
 		); err != nil {
 			return nil, err
 		}
@@ -182,17 +183,19 @@ func (q *Queries) CountTeamMembers(ctx context.Context, arg CountTeamMembersPara
 }
 
 const createTeam = `-- name: CreateTeam :one
-INSERT INTO teams (id, workspace_id, name, description, created_at, updated_at)
-VALUES ($1, $2, $3, $4, $5, $5)
+INSERT INTO teams (id, workspace_id, name, description, assignment_mode, assignment_cap, created_at, updated_at)
+VALUES ($1, $2, $3, $4, $5, $6, $7, $7)
 RETURNING id, workspace_id, name, description, assignment_mode, assignment_cap, created_at, updated_at
 `
 
 type CreateTeamParams struct {
-	ID          uuid.UUID
-	WorkspaceID uuid.UUID
-	Name        string
-	Description string
-	Now         time.Time
+	ID             uuid.UUID
+	WorkspaceID    uuid.UUID
+	Name           string
+	Description    string
+	AssignmentMode string
+	AssignmentCap  *int32
+	Now            time.Time
 }
 
 func (q *Queries) CreateTeam(ctx context.Context, arg CreateTeamParams) (Team, error) {
@@ -201,6 +204,8 @@ func (q *Queries) CreateTeam(ctx context.Context, arg CreateTeamParams) (Team, e
 		arg.WorkspaceID,
 		arg.Name,
 		arg.Description,
+		arg.AssignmentMode,
+		arg.AssignmentCap,
 		arg.Now,
 	)
 	var i Team
@@ -591,23 +596,27 @@ func (q *Queries) TouchTeam(ctx context.Context, arg TouchTeamParams) (Team, err
 }
 
 const updateTeam = `-- name: UpdateTeam :one
-UPDATE teams SET name = $1, description = $2, updated_at = $3
-WHERE workspace_id = $4 AND id = $5
+UPDATE teams SET name = $1, description = $2, assignment_mode = $3, assignment_cap = $4, updated_at = $5
+WHERE workspace_id = $6 AND id = $7
 RETURNING id, workspace_id, name, description, assignment_mode, assignment_cap, created_at, updated_at
 `
 
 type UpdateTeamParams struct {
-	Name        string
-	Description string
-	Now         time.Time
-	WorkspaceID uuid.UUID
-	ID          uuid.UUID
+	Name           string
+	Description    string
+	AssignmentMode string
+	AssignmentCap  *int32
+	Now            time.Time
+	WorkspaceID    uuid.UUID
+	ID             uuid.UUID
 }
 
 func (q *Queries) UpdateTeam(ctx context.Context, arg UpdateTeamParams) (Team, error) {
 	row := q.db.QueryRow(ctx, updateTeam,
 		arg.Name,
 		arg.Description,
+		arg.AssignmentMode,
+		arg.AssignmentCap,
 		arg.Now,
 		arg.WorkspaceID,
 		arg.ID,

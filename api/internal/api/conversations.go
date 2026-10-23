@@ -208,7 +208,7 @@ func conversationBody(c store.Conversation, labels []uuid.UUID) oas.Conversation
 		AssigneeId: c.AssigneeID, TeamId: c.TeamID, Labels: labels, LastMessageAt: c.LastMessageAt, LastActivityAt: c.LastActivityAt,
 		CreatedAt: c.CreatedAt, UpdatedAt: c.UpdatedAt, RelatedConversationId: c.RelatedConversationID, BroadcastId: c.BroadcastID,
 		ClosedAt: c.ClosedAt, Rating: conversationRating(c), LastReadByContactAt: c.LastReadByContactAt, Imported: conversationImport(c),
-		HelpArticleId: c.HelpArticleID, TrashedAt: c.TrashedAt, Fields: decodeFields(c.Fields),
+		HelpArticleId: c.HelpArticleID, TrashedAt: c.TrashedAt, Fields: decodeFields(c.Fields), AssignWaitingSince: c.AssignWaitingSince,
 	}
 	if c.TrashedAt != nil {
 		out.TrashedBy = &oas.ConversationTrashedBy{MemberId: c.TrashedByMemberID, ApiKeyId: c.TrashedByApiKeyID}
@@ -317,7 +317,7 @@ func (s *Server) writeEvent(ctx context.Context, q *store.Queries, events *event
 }
 
 func authorFor(p principal) (string, *uuid.UUID, *uuid.UUID) {
-	if p.rule != nil {
+	if p.rule != nil || p.auto {
 		return string(oas.AuthorTypeSystem), nil, nil
 	}
 	if p.isKey() {
@@ -333,6 +333,9 @@ func (s *Server) recordChanges(ctx context.Context, q *store.Queries, events *ev
 		ev := oas.MessageEvent{Type: oas.Unassigned, PreviousAssigneeId: before.AssigneeID}
 		if after.AssigneeID != nil {
 			ev = oas.MessageEvent{Type: oas.Assigned, AssigneeId: after.AssigneeID, PreviousAssigneeId: before.AssigneeID}
+		}
+		if p.auto {
+			ev.Auto = new(true)
 		}
 		if err := s.writeEvent(ctx, q, events, p, after, ev, at); err != nil {
 			return err

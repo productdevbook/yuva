@@ -47,6 +47,7 @@ func teamBodies(ctx context.Context, q *store.Queries, workspaceID uuid.UUID, te
 	for i, t := range teams {
 		out[i] = oas.Team{
 			Id: t.ID, Name: t.Name, Description: t.Description, CreatedAt: t.CreatedAt, UpdatedAt: t.UpdatedAt,
+			AssignmentMode: oas.AssignmentMode(t.AssignmentMode), AssignmentCap: t.AssignmentCap,
 			MemberIds: []uuid.UUID{}, InboxIds: []uuid.UUID{},
 		}
 		for _, m := range members {
@@ -74,7 +75,7 @@ func teamBody(ctx context.Context, q *store.Queries, t store.Team) (oas.Team, er
 func teamEvent(events *eventBatch, typ string, t oas.Team, removed []uuid.UUID) {
 	d := oas.TeamEventData{
 		Id: t.Id, Name: t.Name, Description: t.Description, MemberIds: t.MemberIds, InboxIds: t.InboxIds,
-		CreatedAt: t.CreatedAt, UpdatedAt: t.UpdatedAt,
+		AssignmentMode: t.AssignmentMode, AssignmentCap: t.AssignmentCap, CreatedAt: t.CreatedAt, UpdatedAt: t.UpdatedAt,
 	}
 	if len(removed) > 0 {
 		d.RemovedMemberIds = &removed
@@ -279,13 +280,23 @@ func (s *Server) CreateTeam(ctx context.Context, req oas.CreateTeamRequestObject
 	if err := requireManagerOrKey(p); err != nil {
 		return nil, err
 	}
-	var t store.Team
+	t := store.Team{AssignmentMode: string(oas.AssignmentOff)}
 	if err := teamFields(&req.Body.Name, req.Body.Description, &t); err != nil {
+		return nil, err
+	}
+	as := assignmentSettings{mode: oas.AssignmentOff, cap: req.Body.AssignmentCap}
+	if req.Body.AssignmentMode != nil {
+		as.mode = *req.Body.AssignmentMode
+	}
+	if err := as.validate(); err != nil {
 		return nil, err
 	}
 	var out oas.Team
 	err := s.inTx(ctx, p.workspaceID, func(q *store.Queries, events *eventBatch) error {
-		created, err := q.CreateTeam(ctx, store.CreateTeamParams{ID: newID(), WorkspaceID: p.workspaceID, Name: t.Name, Description: t.Description, Now: s.now()})
+		created, err := q.CreateTeam(ctx, store.CreateTeamParams{
+			ID: newID(), WorkspaceID: p.workspaceID, Name: t.Name, Description: t.Description,
+			AssignmentMode: string(as.mode), AssignmentCap: as.cap, Now: s.now(),
+		})
 		if err != nil {
 			return err
 		}
@@ -322,13 +333,24 @@ func (s *Server) UpdateTeam(ctx context.Context, req oas.UpdateTeamRequestObject
 		if err := teamFields(req.Body.Name, req.Body.Description, &next); err != nil {
 			return err
 		}
-		if next.Name == t.Name && next.Description == t.Description {
+		as := assignmentSettings{mode: oas.AssignmentMode(t.AssignmentMode), cap: t.AssignmentCap}
+		as.apply(req.Body.AssignmentMode, req.Body.AssignmentCap)
+		if err := as.validate(); err != nil {
+			return err
+		}
+		if next.Name == t.Name && next.Description == t.Description && string(as.mode) == t.AssignmentMode && sameInt(as.cap, t.AssignmentCap) {
 			out, err = teamBody(ctx, q, t)
 			return err
 		}
-		updated, err := q.UpdateTeam(ctx, store.UpdateTeamParams{WorkspaceID: p.workspaceID, ID: t.ID, Name: next.Name, Description: next.Description, Now: s.now()})
+		updated, err := q.UpdateTeam(ctx, store.UpdateTeamParams{
+			WorkspaceID: p.workspaceID, ID: t.ID, Name: next.Name, Description: next.Description,
+			AssignmentMode: string(as.mode), AssignmentCap: as.cap, Now: s.now(),
+		})
 		if err != nil {
 			return err
+		}
+		if as.widened(t.AssignmentMode, t.AssignmentCap) {
+			events.jobOnce(AssignWaitingArgs{WorkspaceID: p.workspaceID}, nil)
 		}
 		if out, err = teamBody(ctx, q, updated); err != nil {
 			return err
@@ -372,6 +394,9 @@ func (s *Server) DeleteTeam(ctx context.Context, req oas.DeleteTeamRequestObject
 			_, err := q.DeleteTeam(ctx, store.DeleteTeamParams{WorkspaceID: p.workspaceID, ID: t.ID})
 			return true, err
 		}); err != nil {
+			return err
+		}
+		if err := q.DeleteAssignmentTurns(ctx, store.DeleteAssignmentTurnsParams{WorkspaceID: p.workspaceID, PoolID: t.ID}); err != nil {
 			return err
 		}
 		if err := q.StripTeamFromSavedViews(ctx, store.StripTeamFromSavedViewsParams{WorkspaceID: p.workspaceID, TeamID: t.ID.String()}); err != nil {

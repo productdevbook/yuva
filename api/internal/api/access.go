@@ -30,7 +30,7 @@ var (
 )
 
 func (p principal) seesAllInboxes() bool {
-	if p.rule != nil {
+	if p.rule != nil || p.auto {
 		return true
 	}
 	if p.isKey() {

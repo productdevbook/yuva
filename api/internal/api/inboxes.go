@@ -30,6 +30,7 @@ func inboxBody(in store.Inbox) oas.Inbox {
 	out := oas.Inbox{
 		Id: in.ID, Name: in.Name, Slug: in.Slug, DefaultLocale: in.DefaultLocale, Timezone: in.Timezone,
 		Mode: oas.InboxMode(in.Mode), ExpectedReplyMinutes: in.ExpectedReplyMinutes, AskForRating: in.AskForRating,
+		AssignmentMode: oas.AssignmentMode(in.AssignmentMode), AssignmentCap: in.AssignmentCap,
 		Sender: inboxSenderBody(in), CreatedAt: in.CreatedAt, UpdatedAt: in.UpdatedAt,
 	}
 	out.FeedbackCategories = inboxCategories(in)
@@ -135,6 +136,7 @@ type inboxFields struct {
 	branding                           oas.InboxBranding
 	hours                              oas.BusinessHours
 	replyMinutes                       *int32
+	assignment                         assignmentSettings
 }
 
 func (f *inboxFields) validate() error {
@@ -158,6 +160,9 @@ func (f *inboxFields) validate() error {
 		return errValidation("expected_reply_minutes must be 1 to 43200")
 	}
 	if err := validBranding(f.branding); err != nil {
+		return err
+	}
+	if err := f.assignment.validate(); err != nil {
 		return err
 	}
 	if f.hours.Intervals == nil {
@@ -199,6 +204,10 @@ func (s *Server) CreateInbox(ctx context.Context, req oas.CreateInboxRequestObje
 	f := inboxFields{
 		name: b.Name, slug: b.Slug, locale: "en", timezone: "UTC", mode: string(oas.Async),
 		hours: oas.BusinessHours{Intervals: []oas.BusinessHoursInterval{}}, replyMinutes: b.ExpectedReplyMinutes,
+		assignment: assignmentSettings{mode: oas.AssignmentOff, cap: b.AssignmentCap},
+	}
+	if b.AssignmentMode != nil {
+		f.assignment.mode = *b.AssignmentMode
 	}
 	if b.DefaultLocale != nil {
 		f.locale = *b.DefaultLocale
@@ -226,7 +235,8 @@ func (s *Server) CreateInbox(ctx context.Context, req oas.CreateInboxRequestObje
 		in, err = q.CreateInbox(ctx, store.CreateInboxParams{
 			ID: id, WorkspaceID: p.workspaceID, Name: f.name, Slug: f.slug, Branding: mustJSON(f.branding),
 			DefaultLocale: f.locale, Timezone: f.timezone, Mode: f.mode, ExpectedReplyMinutes: f.replyMinutes,
-			BusinessHours: mustJSON(f.hours), IdentitySecret: sealed, AskForRating: b.AskForRating, Now: s.now(),
+			BusinessHours: mustJSON(f.hours), IdentitySecret: sealed, AskForRating: b.AskForRating,
+			AssignmentMode: string(f.assignment.mode), AssignmentCap: f.assignment.cap, Now: s.now(),
 		})
 		if store.IsUniqueViolation(err) {
 			return errSlugTaken
@@ -282,7 +292,9 @@ func (s *Server) UpdateInbox(ctx context.Context, req oas.UpdateInboxRequestObje
 		f := inboxFields{
 			name: cur.Name, slug: cur.Slug, locale: cur.DefaultLocale, timezone: cur.Timezone, mode: cur.Mode,
 			replyMinutes: cur.ExpectedReplyMinutes,
+			assignment:   assignmentSettings{mode: oas.AssignmentMode(cur.AssignmentMode), cap: cur.AssignmentCap},
 		}
+		f.assignment.apply(b.AssignmentMode, b.AssignmentCap)
 		_ = json.Unmarshal(cur.Branding, &f.branding)
 		_ = json.Unmarshal(cur.BusinessHours, &f.hours)
 		if b.Name != nil {
@@ -323,7 +335,8 @@ func (s *Server) UpdateInbox(ctx context.Context, req oas.UpdateInboxRequestObje
 		in, err := q.UpdateInbox(ctx, store.UpdateInboxParams{
 			WorkspaceID: p.workspaceID, ID: cur.ID, Name: f.name, Slug: f.slug, Branding: mustJSON(f.branding),
 			DefaultLocale: f.locale, Timezone: f.timezone, Mode: f.mode, ExpectedReplyMinutes: f.replyMinutes,
-			BusinessHours: mustJSON(f.hours), AskForRating: ask, Now: s.now(),
+			BusinessHours: mustJSON(f.hours), AskForRating: ask,
+			AssignmentMode: string(f.assignment.mode), AssignmentCap: f.assignment.cap, Now: s.now(),
 		})
 		if store.IsUniqueViolation(err) {
 			return errSlugTaken
@@ -345,6 +358,9 @@ func (s *Server) UpdateInbox(ctx context.Context, req oas.UpdateInboxRequestObje
 			return err
 		}
 		events.add(realtime.InboxUpdated, &out.Id, nil, out)
+		if f.assignment.widened(cur.AssignmentMode, cur.AssignmentCap) {
+			events.jobOnce(AssignWaitingArgs{WorkspaceID: p.workspaceID}, nil)
+		}
 		return nil
 	})
 	if err != nil {
@@ -401,6 +417,9 @@ func (s *Server) DeleteInbox(ctx context.Context, req oas.DeleteInboxRequestObje
 			return err
 		}
 		if _, err = q.DeleteInbox(ctx, store.DeleteInboxParams{WorkspaceID: p.workspaceID, ID: req.InboxId}); err != nil {
+			return err
+		}
+		if err := q.DeleteAssignmentTurns(ctx, store.DeleteAssignmentTurnsParams{WorkspaceID: p.workspaceID, PoolID: req.InboxId}); err != nil {
 			return err
 		}
 		if err := q.StripInboxFromSLAPolicies(ctx, store.StripInboxFromSLAPoliciesParams{WorkspaceID: p.workspaceID, InboxID: req.InboxId, Now: s.now()}); err != nil {

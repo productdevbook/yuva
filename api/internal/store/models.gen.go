@@ -468,6 +468,13 @@ type AppPushSetting struct {
 	UpdatedAt      time.Time
 }
 
+type AssignmentTurn struct {
+	WorkspaceID uuid.UUID
+	PoolID      uuid.UUID
+	MemberID    uuid.UUID
+	LastAt      time.Time
+}
+
 type Attachment struct {
 	ID             uuid.UUID
 	WorkspaceID    uuid.UUID
@@ -877,6 +884,7 @@ type Conversation struct {
 	Fields                []byte
 	SlaDueAt              *time.Time
 	SnoozeRuleID          *uuid.UUID
+	AssignWaitingSince    *time.Time
 }
 
 type ConversationLabel struct {
@@ -1405,6 +1413,8 @@ type Inbox struct {
 	SenderRegistration   *string
 	SenderContact        *string
 	FeedbackCategories   []byte
+	AssignmentMode       string
+	AssignmentCap        *int32
 }
 
 type InboxMember struct {

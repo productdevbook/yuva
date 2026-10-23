@@ -21595,6 +21595,33 @@ components:
         `live` shows who is available, typing and read receipts; `async` shows the expected reply
         time instead.
       enum: [live, async]
+    AssignmentMode:
+      type: string
+      description: |
+        How conversations without an assignee get one when they arrive or are reopened by the
+        contact. `off`: they stay unassigned. `round_robin`: the eligible member of the pool who was
+        given one longest ago (never first). `least_open`: the eligible member with the fewest
+        open conversations, then the one given one longest ago. A member is eligible while they
+        have access to the inbox through their own or a team's grant (owners and admins too only
+        with a grant), have the panel or an app connected, have availability `auto`, are under the
+        pool's cap, and, for a team's pool, are in the team; and only while the inbox is inside
+        its business hours. A conversation with a team and no member uses the team's pool, one
+        with neither the inbox's. When nobody is eligible it waits (`assign_waiting_since`) and is
+        assigned, oldest first, as soon as someone is. A reopened conversation keeps its member
+        while they still have access to the inbox and are not `away`; otherwise it is unassigned
+        and goes to the pool. A conversation with a member is never reassigned otherwise.
+        Automation rules run first.
+      enum: ["off", round_robin, least_open]
+      x-enum-varnames: [AssignmentOff, AssignmentRoundRobin, AssignmentLeastOpen]
+    AssignmentCap:
+      type: integer
+      format: int32
+      minimum: 1
+      maximum: 500
+      description: |
+        The most `open`, non-spam conversations outside the trash a member of the pool may hold,
+        counted across the workspace, for automatic assignment to give them another. Assigning by
+        hand ignores it.
     Weekday:
       type: string
       enum: [mon, tue, wed, thu, fri, sat, sun]
@@ -21642,7 +21669,7 @@ components:
           maxLength: 500
     Inbox:
       type: object
-      required: [id, name, slug, branding, default_locale, timezone, mode, business_hours, feedback_categories, ask_for_rating, sender, created_at, updated_at]
+      required: [id, name, slug, branding, default_locale, timezone, mode, business_hours, feedback_categories, assignment_mode, ask_for_rating, sender, created_at, updated_at]
       properties:
         id:
           type: string
@@ -21669,6 +21696,11 @@ components:
           $ref: "#/components/schemas/BusinessHours"
         feedback_categories:
           $ref: "#/components/schemas/InboxFeedbackCategoryList"
+        assignment_mode:
+          $ref: "#/components/schemas/AssignmentMode"
+        assignment_cap:
+          $ref: "#/components/schemas/AssignmentCap"
+          description: Absent when there is no cap.
         ask_for_rating:
           type: boolean
           description: |
@@ -21745,6 +21777,11 @@ components:
           maximum: 43200
         business_hours:
           $ref: "#/components/schemas/BusinessHours"
+        assignment_mode:
+          $ref: "#/components/schemas/AssignmentMode"
+          description: Defaults to `off`.
+        assignment_cap:
+          $ref: "#/components/schemas/AssignmentCap"
         ask_for_rating:
           type: boolean
           default: false
@@ -21782,6 +21819,14 @@ components:
             in the same request (its `feedback.category` changes; no per-conversation events are
             sent, the `inbox.updated` event tells clients to reload). Owners, admins and keys with
             `inboxes:manage`.
+        assignment_mode:
+          $ref: "#/components/schemas/AssignmentMode"
+        assignment_cap:
+          type: [integer, "null"]
+          format: int32
+          minimum: 1
+          maximum: 500
+          description: See `AssignmentCap`; `null` removes the cap.
         ask_for_rating:
           type: boolean
         sender:
@@ -23264,6 +23309,13 @@ components:
           type: string
           format: uuid
           description: The assigned team; absent when none. Independent of `assignee_id`.
+        assign_waiting_since:
+          type: string
+          format: date-time
+          description: |
+            Automatic assignment found nobody eligible at this time and the conversation waits for
+            a member to become available; absent otherwise. It clears when the conversation gets a
+            member or stops being `open`.
         sla:
           $ref: "#/components/schemas/ConversationSla"
           description: The SLA policy that applies and its targets; absent when none does.
@@ -24390,6 +24442,11 @@ components:
           type: string
           format: uuid
           description: The previous assignee (`assigned`, `unassigned`).
+        auto:
+          type: boolean
+          description: |
+            `assigned` and `unassigned` only: true when automatic assignment made the change (the
+            author is `system`); absent otherwise.
         status:
           $ref: "#/components/schemas/ConversationStatus"
         previous_status:
@@ -27331,7 +27388,7 @@ components:
           $ref: "#/components/schemas/ConversationPin"
     Team:
       type: object
-      required: [id, name, description, member_ids, inbox_ids, created_at, updated_at]
+      required: [id, name, description, assignment_mode, member_ids, inbox_ids, created_at, updated_at]
       properties:
         id:
           type: string
@@ -27343,6 +27400,12 @@ components:
         description:
           type: string
           maxLength: 500
+        assignment_mode:
+          $ref: "#/components/schemas/AssignmentMode"
+          description: The team's pool, for conversations given to the team without a member.
+        assignment_cap:
+          $ref: "#/components/schemas/AssignmentCap"
+          description: Absent when there is no cap.
         member_ids:
           type: array
           description: The team's members, in the order they were added.
@@ -27375,6 +27438,11 @@ components:
         description:
           type: string
           maxLength: 500
+        assignment_mode:
+          $ref: "#/components/schemas/AssignmentMode"
+          description: Defaults to `off`.
+        assignment_cap:
+          $ref: "#/components/schemas/AssignmentCap"
     TeamUpdate:
       type: object
       minProperties: 1
@@ -27387,6 +27455,14 @@ components:
         description:
           type: string
           maxLength: 500
+        assignment_mode:
+          $ref: "#/components/schemas/AssignmentMode"
+        assignment_cap:
+          type: [integer, "null"]
+          format: int32
+          minimum: 1
+          maximum: 500
+          description: See `AssignmentCap`; `null` removes the cap.
     TeamList:
       type: object
       required: [items]
@@ -27726,8 +27802,9 @@ components:
         - `add_labels`, `remove_labels` (`label_ids`).
         - `assign_member` (`member_id`, a member with access to the conversation's inbox when the
           rule runs), `assign_team` (`team_id`, a team granted the inbox), `unassign` (clears the
-          member). `assign_pool` leaves the conversation to automatic assignment; until automatic
-          assignment exists it does nothing and the run lists it as `skipped`.
+          member). `assign_pool` clears the member and hands the conversation to automatic
+          assignment once every rule of the trigger has run, with the pool the conversation's team
+          or inbox sets; when that pool is `off` it stays unassigned.
         - `set_priority` (`priority`), `set_status` (`status`: `open`, `pending` or `closed`;
           closing needs the conversation's required custom fields), `snooze` (`snooze_minutes`).
         - `add_note` (`body`): an internal note.
@@ -27952,8 +28029,9 @@ components:
         result:
           type: string
           description: |
-            `applied`; `unchanged` when the conversation already was that way; `skipped` for
-            `assign_pool`; `not_run` in a failed run.
+            `applied`; `unchanged` when the conversation already was that way; `not_run` in a
+            failed run. `skipped` is not used any more; runs written before automatic assignment
+            existed list `assign_pool` with it.
           enum: [applied, unchanged, skipped, not_run]
           x-enum-varnames: [AutomationResultApplied, AutomationResultUnchanged, AutomationResultSkipped, AutomationResultNotRun]
     AutomationRun:

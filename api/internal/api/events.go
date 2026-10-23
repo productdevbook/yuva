@@ -34,6 +34,8 @@ type eventBatch struct {
 	quiet bool
 	// rule is the automation rule whose run wrote the batch; its events never trigger a rule.
 	rule *oas.AutomationRuleRef
+	// assign marks a batch automatic assignment wrote; it frees no member for waiting conversations.
+	assign bool
 }
 
 func (b *eventBatch) job(args river.JobArgs, opts *river.InsertOpts) {
@@ -98,6 +100,9 @@ func (s *Server) inTx(ctx context.Context, workspaceID uuid.UUID, fn func(q *sto
 			return err
 		}
 		if err := s.queueAutomations(ctx, tx, q, workspaceID, &ev, ids); err != nil {
+			return err
+		}
+		if err := s.queueAssignWaiting(ctx, tx, q, workspaceID, &ev); err != nil {
 			return err
 		}
 		return s.queueNotifications(ctx, tx, workspaceID, ev.items)

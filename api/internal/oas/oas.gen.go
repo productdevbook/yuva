@@ -1091,6 +1091,27 @@ func (e AppPushEnvironment) Valid() bool {
 	}
 }
 
+// Defines values for AssignmentMode.
+const (
+	AssignmentLeastOpen  AssignmentMode = "least_open"
+	AssignmentOff        AssignmentMode = "off"
+	AssignmentRoundRobin AssignmentMode = "round_robin"
+)
+
+// Valid indicates whether the value is a known member of the AssignmentMode enum.
+func (e AssignmentMode) Valid() bool {
+	switch e {
+	case AssignmentLeastOpen:
+		return true
+	case AssignmentOff:
+		return true
+	case AssignmentRoundRobin:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for AuditAction.
 const (
 	AuditAnalyticsExportCreated              AuditAction = "analytics_export.created"
@@ -9661,6 +9682,26 @@ type AppPushInput struct {
 	ShowContent *bool `json:"show_content,omitempty"`
 }
 
+// AssignmentCap The most `open`, non-spam conversations outside the trash a member of the pool may hold,
+// counted across the workspace, for automatic assignment to give them another. Assigning by
+// hand ignores it.
+type AssignmentCap = int32
+
+// AssignmentMode How conversations without an assignee get one when they arrive or are reopened by the
+// contact. `off`: they stay unassigned. `round_robin`: the eligible member of the pool who was
+// given one longest ago (never first). `least_open`: the eligible member with the fewest
+// open conversations, then the one given one longest ago. A member is eligible while they
+// have access to the inbox through their own or a team's grant (owners and admins too only
+// with a grant), have the panel or an app connected, have availability `auto`, are under the
+// pool's cap, and, for a team's pool, are in the team; and only while the inbox is inside
+// its business hours. A conversation with a team and no member uses the team's pool, one
+// with neither the inbox's. When nobody is eligible it waits (`assign_waiting_since`) and is
+// assigned, oldest first, as soon as someone is. A reopened conversation keeps its member
+// while they still have access to the inbox and are not `away`; otherwise it is unassigned
+// and goes to the pool. A conversation with a member is never reassigned otherwise.
+// Automation rules run first.
+type AssignmentMode string
+
 // Attachment defines model for Attachment.
 type Attachment struct {
 	// ContentId The `Content-ID` of an inbound e-mail part, without angle brackets. The message HTML
@@ -9916,8 +9957,9 @@ type AutomationAction struct {
 	// Type - `add_labels`, `remove_labels` (`label_ids`).
 	// - `assign_member` (`member_id`, a member with access to the conversation's inbox when the
 	//   rule runs), `assign_team` (`team_id`, a team granted the inbox), `unassign` (clears the
-	//   member). `assign_pool` leaves the conversation to automatic assignment; until automatic
-	//   assignment exists it does nothing and the run lists it as `skipped`.
+	//   member). `assign_pool` clears the member and hands the conversation to automatic
+	//   assignment once every rule of the trigger has run, with the pool the conversation's team
+	//   or inbox sets; when that pool is `off` it stays unassigned.
 	// - `set_priority` (`priority`), `set_status` (`status`: `open`, `pending` or `closed`;
 	//   closing needs the conversation's required custom fields), `snooze` (`snooze_minutes`).
 	// - `add_note` (`body`): an internal note.
@@ -9932,8 +9974,9 @@ type AutomationAction struct {
 // AutomationActionType - `add_labels`, `remove_labels` (`label_ids`).
 //   - `assign_member` (`member_id`, a member with access to the conversation's inbox when the
 //     rule runs), `assign_team` (`team_id`, a team granted the inbox), `unassign` (clears the
-//     member). `assign_pool` leaves the conversation to automatic assignment; until automatic
-//     assignment exists it does nothing and the run lists it as `skipped`.
+//     member). `assign_pool` clears the member and hands the conversation to automatic
+//     assignment once every rule of the trigger has run, with the pool the conversation's team
+//     or inbox sets; when that pool is `off` it stays unassigned.
 //   - `set_priority` (`priority`), `set_status` (`status`: `open`, `pending` or `closed`;
 //     closing needs the conversation's required custom fields), `snooze` (`snooze_minutes`).
 //   - `add_note` (`body`): an internal note.
@@ -10126,15 +10169,17 @@ type AutomationRun struct {
 
 // AutomationRunAction defines model for AutomationRunAction.
 type AutomationRunAction struct {
-	// Result `applied`; `unchanged` when the conversation already was that way; `skipped` for
-	// `assign_pool`; `not_run` in a failed run.
+	// Result `applied`; `unchanged` when the conversation already was that way; `not_run` in a
+	// failed run. `skipped` is not used any more; runs written before automatic assignment
+	// existed list `assign_pool` with it.
 	Result AutomationRunActionResult `json:"result"`
 
 	// Type - `add_labels`, `remove_labels` (`label_ids`).
 	// - `assign_member` (`member_id`, a member with access to the conversation's inbox when the
 	//   rule runs), `assign_team` (`team_id`, a team granted the inbox), `unassign` (clears the
-	//   member). `assign_pool` leaves the conversation to automatic assignment; until automatic
-	//   assignment exists it does nothing and the run lists it as `skipped`.
+	//   member). `assign_pool` clears the member and hands the conversation to automatic
+	//   assignment once every rule of the trigger has run, with the pool the conversation's team
+	//   or inbox sets; when that pool is `off` it stays unassigned.
 	// - `set_priority` (`priority`), `set_status` (`status`: `open`, `pending` or `closed`;
 	//   closing needs the conversation's required custom fields), `snooze` (`snooze_minutes`).
 	// - `add_note` (`body`): an internal note.
@@ -10145,8 +10190,9 @@ type AutomationRunAction struct {
 	Type AutomationActionType `json:"type"`
 }
 
-// AutomationRunActionResult `applied`; `unchanged` when the conversation already was that way; `skipped` for
-// `assign_pool`; `not_run` in a failed run.
+// AutomationRunActionResult `applied`; `unchanged` when the conversation already was that way; `not_run` in a
+// failed run. `skipped` is not used any more; runs written before automatic assignment
+// existed list `assign_pool` with it.
 type AutomationRunActionResult string
 
 // AutomationRunOutcome defines model for AutomationRunOutcome.
@@ -12976,6 +13022,11 @@ type ContactUpdatedEventType string
 
 // Conversation defines model for Conversation.
 type Conversation struct {
+	// AssignWaitingSince Automatic assignment found nobody eligible at this time and the conversation waits for
+	// a member to become available; absent otherwise. It clears when the conversation gets a
+	// member or stops being `open`.
+	AssignWaitingSince *time.Time `json:"assign_waiting_since,omitempty"`
+
 	// AssigneeId The assigned member; absent when unassigned.
 	AssigneeId *uuid.UUID `json:"assignee_id,omitempty"`
 
@@ -13262,6 +13313,11 @@ type ConversationKind string
 
 // ConversationListItem A conversation with what a list row shows.
 type ConversationListItem struct {
+	// AssignWaitingSince Automatic assignment found nobody eligible at this time and the conversation waits for
+	// a member to become available; absent otherwise. It clears when the conversation gets a
+	// member or stops being `open`.
+	AssignWaitingSince *time.Time `json:"assign_waiting_since,omitempty"`
+
 	// AssigneeId The assigned member; absent when unassigned.
 	AssigneeId *uuid.UUID `json:"assignee_id,omitempty"`
 
@@ -16786,8 +16842,26 @@ type Inbox struct {
 	// links after a member's conversation is closed. Off by default. Only conversations
 	// closed after it was turned on can be rated; turning it off and on again starts over.
 	// Feedback is never rated.
-	AskForRating bool          `json:"ask_for_rating"`
-	Branding     InboxBranding `json:"branding"`
+	AskForRating bool `json:"ask_for_rating"`
+
+	// AssignmentCap Absent when there is no cap.
+	AssignmentCap *AssignmentCap `json:"assignment_cap,omitempty"`
+
+	// AssignmentMode How conversations without an assignee get one when they arrive or are reopened by the
+	// contact. `off`: they stay unassigned. `round_robin`: the eligible member of the pool who was
+	// given one longest ago (never first). `least_open`: the eligible member with the fewest
+	// open conversations, then the one given one longest ago. A member is eligible while they
+	// have access to the inbox through their own or a team's grant (owners and admins too only
+	// with a grant), have the panel or an app connected, have availability `auto`, are under the
+	// pool's cap, and, for a team's pool, are in the team; and only while the inbox is inside
+	// its business hours. A conversation with a team and no member uses the team's pool, one
+	// with neither the inbox's. When nobody is eligible it waits (`assign_waiting_since`) and is
+	// assigned, oldest first, as soon as someone is. A reopened conversation keeps its member
+	// while they still have access to the inbox and are not `away`; otherwise it is unassigned
+	// and goes to the pool. A conversation with a member is never reassigned otherwise.
+	// Automation rules run first.
+	AssignmentMode AssignmentMode `json:"assignment_mode"`
+	Branding       InboxBranding  `json:"branding"`
 
 	// BusinessHours When `enabled` is false the inbox counts as always open.
 	BusinessHours BusinessHours `json:"business_hours"`
@@ -16876,8 +16950,16 @@ type InboxBranding struct {
 
 // InboxCreate defines model for InboxCreate.
 type InboxCreate struct {
-	AskForRating *bool          `json:"ask_for_rating,omitempty"`
-	Branding     *InboxBranding `json:"branding,omitempty"`
+	AskForRating *bool `json:"ask_for_rating,omitempty"`
+
+	// AssignmentCap The most `open`, non-spam conversations outside the trash a member of the pool may hold,
+	// counted across the workspace, for automatic assignment to give them another. Assigning by
+	// hand ignores it.
+	AssignmentCap *AssignmentCap `json:"assignment_cap,omitempty"`
+
+	// AssignmentMode Defaults to `off`.
+	AssignmentMode *AssignmentMode `json:"assignment_mode,omitempty"`
+	Branding       *InboxBranding  `json:"branding,omitempty"`
 
 	// BusinessHours When `enabled` is false the inbox counts as always open.
 	BusinessHours *BusinessHours `json:"business_hours,omitempty"`
@@ -17112,8 +17194,26 @@ type InboxSlackUpdate struct {
 
 // InboxUpdate defines model for InboxUpdate.
 type InboxUpdate struct {
-	AskForRating *bool          `json:"ask_for_rating,omitempty"`
-	Branding     *InboxBranding `json:"branding,omitempty"`
+	AskForRating *bool `json:"ask_for_rating,omitempty"`
+
+	// AssignmentCap See `AssignmentCap`; `null` removes the cap.
+	AssignmentCap nullable.Nullable[int32] `json:"assignment_cap,omitempty"`
+
+	// AssignmentMode How conversations without an assignee get one when they arrive or are reopened by the
+	// contact. `off`: they stay unassigned. `round_robin`: the eligible member of the pool who was
+	// given one longest ago (never first). `least_open`: the eligible member with the fewest
+	// open conversations, then the one given one longest ago. A member is eligible while they
+	// have access to the inbox through their own or a team's grant (owners and admins too only
+	// with a grant), have the panel or an app connected, have availability `auto`, are under the
+	// pool's cap, and, for a team's pool, are in the team; and only while the inbox is inside
+	// its business hours. A conversation with a team and no member uses the team's pool, one
+	// with neither the inbox's. When nobody is eligible it waits (`assign_waiting_since`) and is
+	// assigned, oldest first, as soon as someone is. A reopened conversation keeps its member
+	// while they still have access to the inbox and are not `away`; otherwise it is unassigned
+	// and goes to the pool. A conversation with a member is never reassigned otherwise.
+	// Automation rules run first.
+	AssignmentMode *AssignmentMode `json:"assignment_mode,omitempty"`
+	Branding       *InboxBranding  `json:"branding,omitempty"`
 
 	// BusinessHours When `enabled` is false the inbox counts as always open.
 	BusinessHours *BusinessHours `json:"business_hours,omitempty"`
@@ -18290,6 +18390,10 @@ type MessageEvent struct {
 
 	// AssigneeId The new assignee (`assigned`).
 	AssigneeId *uuid.UUID `json:"assignee_id,omitempty"`
+
+	// Auto `assigned` and `unassigned` only: true when automatic assignment made the change (the
+	// author is `system`); absent otherwise.
+	Auto *bool `json:"auto,omitempty"`
 
 	// Broadcast `broadcast_reply` only: the broadcast the contact answered; the first entry of the conversation.
 	Broadcast *BroadcastRef `json:"broadcast,omitempty"`
@@ -21534,6 +21638,11 @@ type StatusIncidentComponentInput struct {
 
 // StatusIncidentConversation A linked conversation with what a list row shows and when it was linked.
 type StatusIncidentConversation struct {
+	// AssignWaitingSince Automatic assignment found nobody eligible at this time and the conversation waits for
+	// a member to become available; absent otherwise. It clears when the conversation gets a
+	// member or stops being `open`.
+	AssignWaitingSince *time.Time `json:"assign_waiting_since,omitempty"`
+
 	// AssigneeId The assigned member; absent when unassigned.
 	AssigneeId *uuid.UUID `json:"assignee_id,omitempty"`
 
@@ -22602,9 +22711,14 @@ type SubscriptionUpdate struct {
 
 // Team defines model for Team.
 type Team struct {
-	CreatedAt   time.Time `json:"created_at"`
-	Description string    `json:"description"`
-	Id          uuid.UUID `json:"id"`
+	// AssignmentCap Absent when there is no cap.
+	AssignmentCap *AssignmentCap `json:"assignment_cap,omitempty"`
+
+	// AssignmentMode The team's pool, for conversations given to the team without a member.
+	AssignmentMode AssignmentMode `json:"assignment_mode"`
+	CreatedAt      time.Time      `json:"created_at"`
+	Description    string         `json:"description"`
+	Id             uuid.UUID      `json:"id"`
 
 	// InboxIds The inboxes the team is granted, in the order they were granted; for agents and keys
 	// limited to inboxes, only those they see.
@@ -22618,7 +22732,14 @@ type Team struct {
 
 // TeamCreate defines model for TeamCreate.
 type TeamCreate struct {
-	Description *string `json:"description,omitempty"`
+	// AssignmentCap The most `open`, non-spam conversations outside the trash a member of the pool may hold,
+	// counted across the workspace, for automatic assignment to give them another. Assigning by
+	// hand ignores it.
+	AssignmentCap *AssignmentCap `json:"assignment_cap,omitempty"`
+
+	// AssignmentMode Defaults to `off`.
+	AssignmentMode *AssignmentMode `json:"assignment_mode,omitempty"`
+	Description    *string         `json:"description,omitempty"`
 
 	// Name Unique in the workspace (`409 team_taken`).
 	Name string `json:"name"`
@@ -22642,9 +22763,14 @@ type TeamEventType string
 
 // TeamEventData defines model for TeamEventData.
 type TeamEventData struct {
-	CreatedAt   time.Time `json:"created_at"`
-	Description string    `json:"description"`
-	Id          uuid.UUID `json:"id"`
+	// AssignmentCap Absent when there is no cap.
+	AssignmentCap *AssignmentCap `json:"assignment_cap,omitempty"`
+
+	// AssignmentMode The team's pool, for conversations given to the team without a member.
+	AssignmentMode AssignmentMode `json:"assignment_mode"`
+	CreatedAt      time.Time      `json:"created_at"`
+	Description    string         `json:"description"`
+	Id             uuid.UUID      `json:"id"`
 
 	// InboxIds The inboxes the team is granted, in the order they were granted; for agents and keys
 	// limited to inboxes, only those they see.
@@ -22666,7 +22792,24 @@ type TeamList struct {
 
 // TeamUpdate defines model for TeamUpdate.
 type TeamUpdate struct {
-	Description *string `json:"description,omitempty"`
+	// AssignmentCap See `AssignmentCap`; `null` removes the cap.
+	AssignmentCap nullable.Nullable[int32] `json:"assignment_cap,omitempty"`
+
+	// AssignmentMode How conversations without an assignee get one when they arrive or are reopened by the
+	// contact. `off`: they stay unassigned. `round_robin`: the eligible member of the pool who was
+	// given one longest ago (never first). `least_open`: the eligible member with the fewest
+	// open conversations, then the one given one longest ago. A member is eligible while they
+	// have access to the inbox through their own or a team's grant (owners and admins too only
+	// with a grant), have the panel or an app connected, have availability `auto`, are under the
+	// pool's cap, and, for a team's pool, are in the team; and only while the inbox is inside
+	// its business hours. A conversation with a team and no member uses the team's pool, one
+	// with neither the inbox's. When nobody is eligible it waits (`assign_waiting_since`) and is
+	// assigned, oldest first, as soon as someone is. A reopened conversation keeps its member
+	// while they still have access to the inbox and are not `away`; otherwise it is unassigned
+	// and goes to the pool. A conversation with a member is never reassigned otherwise.
+	// Automation rules run first.
+	AssignmentMode *AssignmentMode `json:"assignment_mode,omitempty"`
+	Description    *string         `json:"description,omitempty"`
 
 	// Name Unique in the workspace (`409 team_taken`).
 	Name *string `json:"name,omitempty"`

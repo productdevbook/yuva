@@ -78,6 +78,9 @@ func (s *Server) UpdateMe(ctx context.Context, req oas.UpdateMeRequestObject) (o
 		for _, m := range members {
 			s.presenceHint(ctx, m.WorkspaceID)
 			s.memberPresence(ctx, m.WorkspaceID, m.ID)
+			if *b.Availability == oas.Auto {
+				s.wakeAssignWaiting(ctx, m.WorkspaceID)
+			}
 		}
 	}
 	me, err := s.buildMe(ctx, s.st.Queries, personID)

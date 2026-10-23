@@ -129,6 +129,7 @@ func (s *Server) stream(conn *websocket.Conn, r *http.Request, p principal, resu
 		}
 		s.presenceHint(ctx, p.workspaceID)
 		s.memberPresence(ctx, p.workspaceID, memberID)
+		s.wakeAssignWaiting(ctx, p.workspaceID)
 		defer func() {
 			bg := context.WithoutCancel(ctx)
 			if err := s.st.CloseConnection(bg, store.CloseConnectionParams{WorkspaceID: p.workspaceID, ID: connID}); err != nil {

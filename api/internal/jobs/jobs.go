@@ -54,6 +54,7 @@ const (
 	SnoozeWakeInterval          = time.Minute
 	SLASweepInterval            = time.Minute
 	AutomationIdleInterval      = 5 * time.Minute
+	AssignSweepInterval         = time.Minute
 )
 
 // StatusNoticeQueue holds the status notice jobs, so a notice about an outage never waits behind a
@@ -158,6 +159,9 @@ func New(pool *pgxpool.Pool, q *store.Queries, log *slog.Logger, broadcastWorker
 		river.NewPeriodicJob(river.PeriodicInterval(AutomationIdleInterval), func() (river.JobArgs, *river.InsertOpts) {
 			return AutomationIdleSweepArgs{}, nil
 		}, &river.PeriodicJobOpts{ID: "automation_idle_sweep", RunOnStart: true}),
+		river.NewPeriodicJob(river.PeriodicInterval(AssignSweepInterval), func() (river.JobArgs, *river.InsertOpts) {
+			return AssignSweepArgs{}, nil
+		}, &river.PeriodicJobOpts{ID: "assign_sweep", RunOnStart: true}),
 	}
 	if sesTenants {
 		periodic = append(periodic, river.NewPeriodicJob(river.PeriodicInterval(SESTenantStatusInterval), func() (river.JobArgs, *river.InsertOpts) {
@@ -359,6 +363,18 @@ type AutomationIdleSweepArgs struct{}
 func (AutomationIdleSweepArgs) Kind() string { return "automation_idle_sweep" }
 
 func (AutomationIdleSweepArgs) InsertOpts() river.InsertOpts {
+	return river.InsertOpts{UniqueOpts: river.UniqueOpts{ByArgs: true, ByState: []rivertype.JobState{
+		rivertype.JobStateAvailable, rivertype.JobStatePending, rivertype.JobStateRunning, rivertype.JobStateScheduled, rivertype.JobStateRetryable,
+	}}}
+}
+
+// AssignSweepArgs is worked by the api package: it queues the waiting conversations of workspaces
+// where a member is available.
+type AssignSweepArgs struct{}
+
+func (AssignSweepArgs) Kind() string { return "assign_sweep" }
+
+func (AssignSweepArgs) InsertOpts() river.InsertOpts {
 	return river.InsertOpts{UniqueOpts: river.UniqueOpts{ByArgs: true, ByState: []rivertype.JobState{
 		rivertype.JobStateAvailable, rivertype.JobStatePending, rivertype.JobStateRunning, rivertype.JobStateScheduled, rivertype.JobStateRetryable,
 	}}}

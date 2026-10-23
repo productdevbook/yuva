@@ -198,6 +198,8 @@ type principal struct {
 	ssoSettings      *uuid.UUID
 	// rule is set when an automation rule acts: it sees every inbox and writes as the system.
 	rule *oas.AutomationRuleRef
+	// auto is set when automatic assignment acts: it sees every inbox and writes as the system.
+	auto bool
 }
 
 func (p principal) isKey() bool { return p.keyID != uuid.Nil() }

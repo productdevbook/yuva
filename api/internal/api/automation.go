@@ -58,6 +58,9 @@ type AutomationRunArgs struct {
 	MessageID      *uuid.UUID `json:"message_id,omitempty"`
 	IdleSince      *time.Time `json:"idle_since,omitempty"`
 	IdleMinutes    int32      `json:"idle_minutes,omitempty"`
+	// Assign queues automatic assignment once the rules ran; Reopen as AutoAssignArgs.Reopen.
+	Assign bool `json:"assign,omitempty"`
+	Reopen bool `json:"reopen,omitempty"`
 }
 
 func (AutomationRunArgs) Kind() string { return "automation_run" }
@@ -122,6 +125,8 @@ func automationTriggerOf(e pendingEvent) (oas.AutomationTrigger, *uuid.UUID, boo
 
 // queueAutomations runs in the transaction that wrote the events, with their ids: a run job exists
 // exactly when its trigger committed. Events a rule wrote queue nothing, so rules never loop.
+// Automatic assignment of a conversation that enters a pool follows its rules: one of their jobs
+// queues it when done, or it is queued here when no rule runs.
 func (s *Server) queueAutomations(ctx context.Context, tx pgx.Tx, q *store.Queries, workspaceID uuid.UUID, ev *eventBatch, ids []int64) error {
 	if ev.rule != nil {
 		return nil
@@ -129,6 +134,7 @@ func (s *Server) queueAutomations(ctx context.Context, tx pgx.Tx, q *store.Queri
 	var (
 		triggers []string
 		loaded   bool
+		runs     []AutomationRunArgs
 		queued   []river.InsertManyParams
 	)
 	for i, e := range ev.items {
@@ -146,15 +152,47 @@ func (s *Server) queueAutomations(ctx context.Context, tx pgx.Tx, q *store.Queri
 		if !slices.Contains(triggers, string(trigger)) {
 			continue
 		}
-		queued = append(queued, river.InsertManyParams{Args: AutomationRunArgs{
+		runs = append(runs, AutomationRunArgs{
 			WorkspaceID: workspaceID, ConversationID: *e.conversationID, Trigger: string(trigger), EventID: ids[i], MessageID: msg,
-		}})
+		})
+	}
+	if pools := assignTriggers(ev.items); len(pools) > 0 {
+		enabled, err := q.AssignmentEnabled(ctx, workspaceID)
+		if err != nil {
+			return err
+		}
+		for _, t := range pools {
+			if !enabled {
+				break
+			}
+			if i := assignAfter(runs, t.conversation); i >= 0 {
+				runs[i].Assign, runs[i].Reopen = true, t.reopen
+				continue
+			}
+			queued = append(queued, river.InsertManyParams{Args: AutoAssignArgs{WorkspaceID: workspaceID, ConversationID: t.conversation, Reopen: t.reopen}})
+		}
+	}
+	for _, r := range runs {
+		queued = append(queued, river.InsertManyParams{Args: r})
 	}
 	if len(queued) == 0 {
 		return nil
 	}
 	_, err := s.jobs.InsertManyTx(ctx, tx, queued)
 	return err
+}
+
+// assignAfter picks the run job of the conversation that queues its assignment: conversation_created
+// first, then message_received, then status_changed; -1 when none runs.
+func assignAfter(runs []AutomationRunArgs, conversation uuid.UUID) int {
+	for _, trigger := range []oas.AutomationTrigger{oas.AutomationTriggerConversationCreated, oas.AutomationTriggerMessageReceived, oas.AutomationTriggerStatusChanged} {
+		for i, r := range runs {
+			if r.ConversationID == conversation && r.Trigger == string(trigger) {
+				return i
+			}
+		}
+	}
+	return -1
 }
 
 type automationRunWorker struct {
@@ -167,9 +205,51 @@ func (w *automationRunWorker) Work(ctx context.Context, job *river.Job[Automatio
 }
 
 // RunAutomations applies the enabled rules of the trigger to the conversation in order, each in
-// its own transaction, at most once per rule and trigger. The rate limit is checked before any
-// transaction opens.
+// its own transaction, at most once per rule and trigger, then queues automatic assignment when the
+// trigger or a rule's assign_pool asks for it. The rate limit is checked before any transaction
+// opens.
 func (s *Server) RunAutomations(ctx context.Context, a AutomationRunArgs) error {
+	if err := s.runAutomationRules(ctx, a); err != nil {
+		return err
+	}
+	return s.assignAfterRules(ctx, a)
+}
+
+// assignAfterRules reads what the trigger's applied runs did, so a retry decides the same: a rule
+// that assigned or unassigned a member keeps its choice over a reopen's.
+func (s *Server) assignAfterRules(ctx context.Context, a AutomationRunArgs) error {
+	rows, err := s.st.ListAppliedRunActions(ctx, store.ListAppliedRunActionsParams{
+		WorkspaceID: a.WorkspaceID, ConversationID: a.ConversationID, TriggerKey: a.triggerKey(),
+	})
+	if err != nil {
+		return err
+	}
+	pooled, reopen := false, a.Reopen
+	for _, raw := range rows {
+		var actions []oas.AutomationRunAction
+		if json.Unmarshal(raw, &actions) != nil {
+			continue
+		}
+		for _, act := range actions {
+			if act.Result != oas.AutomationResultApplied {
+				continue
+			}
+			switch act.Type {
+			case oas.AutomationActionAssignPool:
+				pooled, reopen = true, false
+			case oas.AutomationActionAssignMember, oas.AutomationActionUnassign:
+				reopen = false
+			}
+		}
+	}
+	if !a.Assign && !pooled {
+		return nil
+	}
+	_, err = s.jobs.Insert(ctx, AutoAssignArgs{WorkspaceID: a.WorkspaceID, ConversationID: a.ConversationID, Reopen: reopen}, nil)
+	return err
+}
+
+func (s *Server) runAutomationRules(ctx context.Context, a AutomationRunArgs) error {
 	w, err := s.st.GetWorkspace(ctx, a.WorkspaceID)
 	if store.IsNotFound(err) || (err == nil && w.DeletedAt != nil) {
 		return nil
@@ -567,7 +647,7 @@ func (s *Server) applyRule(ctx context.Context, q *store.Queries, ev *eventBatch
 		case oas.AutomationActionAssignTeam:
 			upd.TeamId, change = nullable.NewNullableWithValue(*act.TeamId), true
 		case oas.AutomationActionAssignPool:
-			results[i].Result = oas.AutomationResultSkipped
+			upd.AssigneeId, change = nullable.NewNullNullable[uuid.UUID](), true
 		case oas.AutomationActionSetPriority:
 			upd.Priority, change = act.Priority, true
 		case oas.AutomationActionSetStatus:
