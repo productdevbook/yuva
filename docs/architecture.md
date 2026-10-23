@@ -260,15 +260,16 @@ scoped API keys, and every key-authored message names its bot.
 | `changelog:read` | What's new feeds and entries |
 | `changelog:write` | feeds, entries and translation drafts |
 | `changelog:publish` | publish, schedule, unpublish and delete published entries (never implied) |
+| `audit:read` | the workspace audit log (never implied; owner-only, see Audit log) |
 
 A call without its scope gets `403 insufficient_scope` with the missing scope in `scope`. Keys made
 before scopes existed hold every scope above. Scopes added later (`lists:*`, `broadcasts:*`) are never
-added to existing keys, and `broadcasts:send`, `status:manage`, `roadmap:stage` and `changelog:publish` are never implied: a key made without
+added to existing keys, and `broadcasts:send`, `status:manage`, `roadmap:stage`, `changelog:publish` and `audit:read` are never implied: a key made without
 naming its scopes holds every scope but those. `yuva api-key create` takes `--scope` (repeatable, default
-every scope but those four) and `--inbox` (repeatable).
+every scope but those five) and `--inbox` (repeatable).
 
 A key may be limited to some inboxes. It then sees what an agent with access to exactly those
-inboxes sees; it cannot hold `inboxes:manage`, `webhooks:manage`, `workspace:manage` or `migrations:manage` (refused when
+inboxes sees; it cannot hold `inboxes:manage`, `webhooks:manage`, `workspace:manage`, `migrations:manage` or `audit:read` (refused when
 the key is made). An inbox that is deleted drops out of the limit; a key whose every inbox is gone
 sees nothing. A key may have an expiry; after it, the key gets `401 api_key_expired`. Scopes, inbox
 limit and expiry are fixed when the key is made; a different set needs a new key. Name, bot name and
@@ -3318,6 +3319,36 @@ now; per-channel limits can narrow them later (#136).
   hidden. A single message is redacted, not deleted: its text, attachments and raw e-mail go, and a
   "Removed by" line keeps the thread readable. A sent e-mail cannot be taken back from the recipient.
   Every step is in the audit log, without the removed content.
+- Audit log (#135): `audit_log` (migration 00089) records who changed access, credentials and data
+  of a workspace, in the same transaction as the change: a failed change leaves no row, and a row is
+  kept small enough never to fail one (details under 1500 bytes of JSON; longer lists become
+  `<name>_count` with `truncated: true`). Each row has `workspace_id`, the actor (`member`, `api_key`,
+  `oauth_grant` for a member through a connected app or MCP, with the member and the app's name in
+  `via`, or `operator` for the command line), the actor's display name at the time, the action
+  (`<target type>.<verb>`), the target's type and id, small details and the time; no foreign keys to
+  actors or targets, so an entry outlives what it names and goes with the workspace. Actions:
+  `member.joined`, `member.role_changed`, `member.removed`, `member.inbox_access_granted`,
+  `member.inbox_access_revoked`, `invite.created`, `invite.deleted`, `api_key.created`,
+  `api_key.revoked`, `oauth_grant.created`, `oauth_grant.revoked`, `webhook.created`,
+  `webhook.updated`, `webhook.deleted`, `webhook.secret_rotated`, `channel.credentials_changed`,
+  `channel.key_rotated`, `channel.forwarding_address_rotated`, `channel.dkim_key_created`,
+  `channel.dkim_key_deleted`, `inbox.identity_secret_rotated`, `inbox.deleted`, `contact.deleted`,
+  `contact.consent_exported` and `list.consent_exported` (written when the export starts streaming,
+  `started: true`), `analytics_export.created`, `workspace.retention_changed`,
+  `workspace.broadcast_approval_requested`, and the operator's `workspace.broadcasts_approved`,
+  `workspace.broadcasts_denied`, `workspace.broadcasts_suspended` and
+  `workspace.broadcast_limit_changed`. Revocations and deletes write their entry only when the row
+  changed, so repeated or concurrent calls record one; a password sent again unchanged records
+  nothing. No row holds message content, a secret, a password, a webhook URL (only its host), or a
+  contact's name or address. A workspace's own deletion is not in its log, which goes with it: it is
+  an operator notice `workspace_deleted` in the operator digest. MCP tools write through the same
+  handlers, so their rows name the OAuth grant. `GET /v1/audit-log` lists entries newest first for
+  owners and for keys and tokens with `audit:read`, filtered by `actor_id` (a member's id also
+  matches what they did through connected apps), `actor_kind`, `action`, `since` and `until`, with
+  cursor pagination; Settings › Audit log shows it to owners. `audit:read` on an API key holds only
+  while the member who made the key is still an owner, checked on every read; keys made with
+  `yuva api-key create` keep it. Entries are kept `YUVA_AUDIT_DAYS` (365). `migration_audit` stays as
+  it is.
 - Imported history (see "Moving to Yuva") is the workspace's data like any conversation: contact
   export and deletion, retention (counted from the import) and workspace deletion cover it. Source
   credentials are deleted when the migration ends.
@@ -3433,6 +3464,9 @@ now; per-channel limits can narrow them later (#136).
     (`migrations_lease_idx`), and the hourly upload sweep lists ended migrations that still have
     uploaded parts (`ListEndedMigrationUploads`); everything after those lookups is scoped by the
     workspace they returned.
+  - The hourly audit log sweep deletes entries older than `YUVA_AUDIT_DAYS` across workspaces, 5000
+    rows at a time (`audit_log_created_idx`): the period is the same for every workspace, and no row
+    is read or returned, only deleted by age.
   - `migration_audit` rows outlive their migration (no foreign key to it) but carry `workspace_id`
     and go with the workspace.
   - `yuva api-key revoke <id>` runs on the server with no workspace given: it finds the key by its
