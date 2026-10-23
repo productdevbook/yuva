@@ -4,7 +4,7 @@ Yuva läuft auf einem Host mit Docker Compose oder auf Kubernetes mit dem [Helm-
 brauchen Docker (oder einen Cluster), einen Hostnamen mit TLS und ein SMTP-Konto für Anmeldecodes.
 
 > [!WARNING]
-> Yuva ist Pre-Alpha. Lesen Sie den Hinweis in der [README](../../README.md), bevor Sie echte
+> Yuva ist in der Beta. Lesen Sie den Hinweis in der [README](../../README.md), bevor Sie echte
 > Unterhaltungen darin führen.
 
 ## Schnellstart mit Compose

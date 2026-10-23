@@ -60,7 +60,7 @@ export function contactCopy(i18n: I18n) {
       model: i18n._(msg`Business`),
     },
     channelNames: [i18n._(msg`E-mail`), i18n._(msg`Live chat`), i18n._(msg`In-app`), i18n._(msg`API`)],
-    stageValue: i18n._(msg`Pre-alpha`),
+    stageValue: i18n._(msg`Beta`),
     modelValue: i18n._(msg`Hosted service and commercial licenses`),
     releasesValue: (count: number, version: string) => i18n._(msg`${count} releases, latest ${version}`),
     investors: [
@@ -79,7 +79,7 @@ export function contactCopy(i18n: I18n) {
       {
         title: i18n._(msg`Early and built in the open`),
         body: i18n._(
-          msg`Yuva is pre-alpha. Every release, the roadmap and the code are public, so you can see exactly where it stands.`
+          msg`Yuva is in beta. Every release, the roadmap and the code are public, so you can see exactly where it stands.`
         ),
       },
     ],

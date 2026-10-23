@@ -29,8 +29,9 @@ You host it yourself: one Docker image and Postgres.
 </picture>
 
 > [!WARNING]
-> **Pre-alpha.** The API and database schema can change without migration paths, and the code has
-> not had an independent security audit. Try it with test data, not real customer conversations.
+> **Beta.** The API can still change before 1.0, so read the release notes before you
+> [upgrade](docs/operations.md#upgrades). Database migrations run when the server starts: back up
+> first. The code has not had an independent security audit.
 
 ## Features
 

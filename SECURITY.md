@@ -1,16 +1,16 @@
 # Security
 
-Yuva is pre-alpha. Do not use it for production data yet.
+Yuva is in beta. It has not had an independent security audit.
 
 ## Supported versions
 
-Until 1.0, only the latest 0.0.x release gets security fixes. Upgrade to it before reporting, and
-expect fixes to ship as a new 0.0.x release rather than as patches to older ones.
+Until 1.0, only the latest 0.1.x release gets security fixes. Upgrade to it before reporting, and
+expect fixes to ship as a new 0.1.x release rather than as patches to older ones.
 
 | Version | Supported |
 |---|---|
-| latest 0.0.x | yes |
-| older 0.0.x | no |
+| latest 0.1.x | yes |
+| older 0.1.x, and 0.0.x | no |
 | unreleased `main` | best effort |
 
 ## Reporting a vulnerability

@@ -5,7 +5,7 @@ arkasında çalıştırın. Gerekenler: Docker (ya da bir küme), TLS sertifikal
 SMTP hesabı.
 
 > [!WARNING]
-> Yuva pre-alpha aşamasında. Gerçek konuşmaları taşımadan önce [README](../../README.md)'deki
+> Yuva beta aşamasında. Gerçek konuşmaları taşımadan önce [README](../../README.md)'deki
 > uyarıyı okuyun.
 
 ## Compose ile hızlı başlangıç

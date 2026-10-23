@@ -5,7 +5,7 @@ behind a reverse proxy that serves HTTPS. You need Docker (or a cluster), a host
 SMTP account for sign-in codes.
 
 > [!WARNING]
-> Yuva is pre-alpha. Read the warning in the [README](../README.md) before you put real
+> Yuva is in beta. Read the warning in the [README](../README.md) before you put real
 > conversations in it.
 
 ## Quick start with Compose

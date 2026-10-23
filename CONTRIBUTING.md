@@ -1,6 +1,6 @@
 # Contributing
 
-Yuva is pre-alpha. The design is in [docs/architecture.md](docs/architecture.md) and the work is
+Yuva is in beta. The design is in [docs/architecture.md](docs/architecture.md) and the work is
 in [docs/roadmap.md](docs/roadmap.md) and the GitHub issues.
 
 - Open an issue before a large change, so we can agree on the approach first.
