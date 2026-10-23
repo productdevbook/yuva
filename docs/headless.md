@@ -61,8 +61,9 @@ const { conversation } = await yuva.startConversation({ body: "Hello" });
 A conversation a member deleted is gone from `/client/v1`, and the realtime stream sends a
 `conversation.removed` frame (`data: { id }`): drop it from your list and close it if it is open. A message
 sent to that id starts a new conversation; the answer's `conversation_id` names it. If the conversation is
-restored, it arrives again as `conversation.created`. The `useyuva` client and the mobile SDKs do not handle
-this frame yet.
+restored, it arrives again as `conversation.created`. `createYuvaClient()` emits it as the
+`conversationRemoved` event (`{ id }`), the React hooks drop the conversation, and the Swift and Kotlin SDKs
+send `YuvaEvent.conversationRemoved(id:)` / `YuvaEvent.ConversationRemoved(id)`.
 
 Outside a browser, use an `app` channel's key; `chat` channels accept only their allowed origins.
 React hooks are in `useyuva/react`; every option is in the [SDK README](../sdk/js/README.md).
@@ -176,6 +177,9 @@ name it.
 | After 30 days | The hourly cleanup deletes it for good, with its messages, attachments and stored files. |
 | Several at once | `POST /v1/conversations/bulk` with `trashed: true` or `false` and nothing else, up to 100. |
 | The contact writes again | A new conversation starts, by e-mail, chat or app; the trashed one is never reopened. |
+
+In the panel, owners and admins find Delete in a conversation's menu and for a selection, `#` as the shortcut, and
+a Trash tab with Restore.
 
 Webhooks send `conversation.trashed` and `conversation.restored` (the conversation and contact) and, after
 30 days, `conversation.deleted` with only `id`, `inbox_id` and `contact_id`. The

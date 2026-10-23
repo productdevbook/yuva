@@ -138,7 +138,7 @@ Yuva.disableShakeToFeedback()
 |---|---|
 | `serverURL` (Android `serverUrl`), `channelKey` | Ihr Server und der Schlüssel des App-Kanals. |
 | `identityToken` | Gibt ein Token zurück, oder `nil` / `null` für anonym. |
-| `maxAttachmentSize` | Größter Upload, Standard 25 MiB. Ein App-Kanal kann niedrigere [Datei-Grenzen](configuration.md#dateien-und-speicher) setzen; die SDKs lesen sie noch nicht, der Server lehnt eine zu große Datei also ab (`413` oder `415`). |
+| `maxAttachmentSize` | Größter Upload, Standard 25 MiB. Ein App-Kanal kann niedrigere [Datei-Grenzen](configuration.md#dateien-und-speicher) setzen; die SDKs lesen sie (`YuvaInbox.attachments`) und lehnen eine zu große Datei vor dem Upload mit demselben `413`- oder `415`-Fehler ab wie der Server. |
 | `start()`, `identify()`, `signOut()` | Sitzung. |
 | `conversations()`, `messages(...)` | Lesen, seitenweise. |
 | `startConversation(...)`, `sendMessage(...)` | Schreiben, mit optionalen Anhängen. |

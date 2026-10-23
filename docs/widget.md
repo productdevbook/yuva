@@ -133,5 +133,6 @@ Over the API: `POST /v1/inboxes/{inboxId}/channels` with `kind: "chat"` and a `c
 owner or admin.
 
 A chat channel can also narrow the server's [attachment limits](configuration.md#attachments-and-storage) with
-`attachments`. The widget does not read them yet: it sends the file and shows the server's refusal
-(`413 attachment_too_large` or `415 attachment_type_not_allowed`).
+`attachments`. The widget reads them: it refuses a file that is too large or of another type with a note before uploading it,
+restricts the file picker to the allowed types, and hides the attach button and the screenshot picker when no
+type is allowed. Channel owners and admins set them in the panel under the channel's settings, Attachments.

@@ -64,8 +64,9 @@ const { conversation } = await yuva.startConversation({ body: "Hello" });
 Eine Unterhaltung, die ein Mitglied gelöscht hat, verschwindet aus `/client/v1`, und der Realtime-Stream sendet
 einen `conversation.removed`-Frame (`data: { id }`): Entfernen Sie sie aus Ihrer Liste und schließen Sie sie,
 wenn sie offen ist. Eine Nachricht an diese ID startet eine neue Unterhaltung; die `conversation_id` der
-Antwort nennt sie. Wird die Unterhaltung wiederhergestellt, kommt sie erneut als `conversation.created`. Der
-`useyuva`-Client und die mobilen SDKs behandeln diesen Frame noch nicht.
+Antwort nennt sie. Wird die Unterhaltung wiederhergestellt, kommt sie erneut als `conversation.created`. `createYuvaClient()`
+meldet ihn als `conversationRemoved`-Event (`{ id }`), die React-Hooks entfernen die Unterhaltung, und die Swift-
+und Kotlin-SDKs senden `YuvaEvent.conversationRemoved(id:)` / `YuvaEvent.ConversationRemoved(id)`.
 
 Außerhalb eines Browsers verwenden Sie den Schlüssel eines `app`-Kanals; `chat`-Kanäle akzeptieren
 nur ihre erlaubten Origins. React-Hooks liegen in `useyuva/react`; alle Optionen stehen in der
@@ -181,6 +182,9 @@ lässt den Scope weg, solange Sie ihn nicht nennen.
 | Nach 30 Tagen | Die stündliche Bereinigung löscht sie endgültig, mit Nachrichten, Anhängen und gespeicherten Dateien. |
 | Mehrere auf einmal | `POST /v1/conversations/bulk` mit `trashed: true` oder `false` und sonst nichts, bis zu 100. |
 | Der Kontakt schreibt wieder | Per E-Mail, Chat oder App beginnt eine neue Unterhaltung; die im Papierkorb wird nie wieder geöffnet. |
+
+Im Panel finden Inhaber und Admins Löschen im Menü einer Unterhaltung und für eine Auswahl, als Kürzel `#`, und
+einen Papierkorb-Tab mit Wiederherstellen.
 
 Webhooks senden `conversation.trashed` und `conversation.restored` (Unterhaltung und Kontakt) und nach 30 Tagen
 `conversation.deleted` mit nur `id`, `inbox_id` und `contact_id`. Das [Audit-Log](operations.md#audit-log)

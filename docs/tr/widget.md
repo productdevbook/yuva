@@ -139,5 +139,6 @@ API üzerinden: sahip ya da yönetici olarak, `kind: "chat"` ve bir `chat` nesne
 `POST /v1/inboxes/{inboxId}/channels`.
 
 Bir sohbet kanalı, `attachments` ile sunucunun [ek sınırlarını](configuration.md#ekler-ve-depolama) da daraltabilir.
-Widget bunları henüz okumaz: dosyayı gönderir ve sunucunun reddini gösterir
-(`413 attachment_too_large` veya `415 attachment_type_not_allowed`).
+Widget bunları okur: çok büyük ya da başka türde bir dosyayı yüklemeden önce bir notla reddeder, dosya seçiciyi
+izinli türlerle sınırlar ve hiçbir tür izinli değilse ek düğmesini ile ekran görüntüsü seçiciyi gizler. Sahipler
+ve yöneticiler bunları panelde kanalın ayarlarındaki Ekler bölümünden belirler.

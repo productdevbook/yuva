@@ -144,5 +144,6 @@ Das Widget spricht 47 Sprachen: `en`, `tr`, `de`, `fr`, `fr-CA`, `es`, `es-MX`, 
 Inhaber oder Admin.
 
 Ein Chat-Kanal kann mit `attachments` auch die [Datei-Grenzen](configuration.md#dateien-und-speicher) des Servers
-einengen. Das Widget liest sie noch nicht: Es sendet die Datei und zeigt die Ablehnung des Servers
-(`413 attachment_too_large` oder `415 attachment_type_not_allowed`).
+einengen. Das Widget liest sie: Es lehnt eine zu große oder falsche Datei vor dem Upload mit einem Hinweis ab, beschränkt
+die Dateiauswahl auf die erlaubten Typen und blendet die Anhang-Schaltfläche und die Screenshot-Auswahl aus,
+wenn kein Typ erlaubt ist. Inhaber und Admins stellen sie im Panel in den Einstellungen des Kanals unter Anhänge ein.

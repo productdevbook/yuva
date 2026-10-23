@@ -62,7 +62,9 @@ const { conversation } = await yuva.startConversation({ body: "Hello" });
 Bir üyenin sildiği konuşma `/client/v1` içinde görünmez olur ve gerçek zamanlı akış bir `conversation.removed`
 çerçevesi (`data: { id }`) gönderir: konuşmayı listenizden çıkarın, açıksa kapatın. Bu kimliğe gönderilen
 mesaj yeni bir konuşma başlatır; yanıttaki `conversation_id` onu belirtir. Konuşma geri alınırsa yeniden
-`conversation.created` olarak gelir. `useyuva` istemcisi ve mobil SDK'lar bu çerçeveyi henüz işlemez.
+`conversation.created` olarak gelir. `createYuvaClient()` onu
+`conversationRemoved` olayı (`{ id }`) olarak yayar, React kancaları konuşmayı listeden çıkarır; Swift ve Kotlin
+SDK'ları `YuvaEvent.conversationRemoved(id:)` / `YuvaEvent.ConversationRemoved(id)` gönderir.
 
 Tarayıcı dışında bir `app` kanalının anahtarını kullanın; `chat` kanalları yalnızca izin verilen
 origin'leri kabul eder. React hook'ları `useyuva/react` içinde; tüm seçenekler
@@ -178,6 +180,9 @@ yöneticiler ile `conversations:delete` yetkisi olan anahtarlar ve bağlı uygul
 | 30 gün sonra | Saatlik temizlik onu mesajları, ekleri ve saklanan dosyalarıyla kalıcı olarak siler. |
 | Birçoğu birden | `POST /v1/conversations/bulk` ile yalnızca `trashed: true` veya `false`, en fazla 100. |
 | Kişi yeniden yazarsa | E-posta, sohbet veya uygulamadan yeni bir konuşma başlar; Çöp kutusundaki konuşma asla yeniden açılmaz. |
+
+Panelde sahipler ve yöneticiler Sil'i konuşmanın menüsünde ve bir seçim için bulur, kısayol `#`'dir; geri almak
+için Çöp kutusu sekmesi vardır.
 
 Webhook'lar `conversation.trashed` ve `conversation.restored` (konuşma ve kişi) olaylarını, 30 gün sonra da
 yalnızca `id`, `inbox_id` ve `contact_id` taşıyan `conversation.deleted` olayını gönderir.
