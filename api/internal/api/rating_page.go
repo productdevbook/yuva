@@ -15,6 +15,7 @@ import (
 
 	"github.com/riverqueue/river"
 
+	"github.com/productdevbook/yuva/api/internal/email"
 	"github.com/productdevbook/yuva/api/internal/mail"
 	"github.com/productdevbook/yuva/api/internal/oas"
 	"github.com/productdevbook/yuva/api/internal/realtime"
@@ -93,8 +94,8 @@ func (s *Server) scheduleRatingRequest(events *eventBatch, before, after store.C
 }
 
 // RequestRating e-mails the contact of a closed e-mail conversation two rating links, once per
-// close, when the inbox asks for ratings, a member or bot replied in it and it is still closed and
-// unrated.
+// close, when the inbox asks for ratings, a member or bot replied in it, the contact's latest mail
+// passed DMARC and it is still closed and unrated.
 func (s *Server) RequestRating(ctx context.Context, workspaceID, conversationID uuid.UUID) error {
 	if live, err := s.workspaceLive(ctx, workspaceID); err != nil || !live {
 		return err
@@ -117,6 +118,13 @@ func (s *Server) RequestRating(ctx context.Context, workspaceID, conversationID 
 		}
 		replied, err := q.ConversationHasReply(ctx, store.ConversationHasReplyParams{WorkspaceID: workspaceID, ConversationID: c.ID})
 		if err != nil || !replied {
+			return err
+		}
+		if last, err := q.LatestContactMessage(ctx, store.LatestContactMessageParams{WorkspaceID: workspaceID, ConversationID: c.ID}); err == nil {
+			if last.Dmarc != "" && last.Dmarc != email.DMARCPass {
+				return nil
+			}
+		} else if !store.IsNotFound(err) {
 			return err
 		}
 		plan, err := s.planEmail(ctx, q, c)

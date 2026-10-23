@@ -450,6 +450,12 @@ func TestAutomationReplyGuards(t *testing.T) {
 		if strings.HasPrefix(subject, "Re: ") {
 			headers = map[string]string{"In-Reply-To": "<" + firstID + ">", "References": "<" + firstID + ">"}
 		}
+		if headers == nil {
+			headers = map[string]string{}
+		}
+		if _, ok := headers["Authentication-Results"]; !ok {
+			headers["Authentication-Results"] = dmarcPass("example.net")
+		}
 		r := h.ingest(et.address, buildMail(mailOpts{from: from, to: et.address, subject: subject, messageID: id, headers: headers, body: "Hello"}), nil)
 		if r.status != http.StatusAccepted {
 			t.Fatalf("ingest %d %v", r.status, r.body)
@@ -484,6 +490,10 @@ func TestAutomationReplyGuards(t *testing.T) {
 	auto := mail(unique("away")+"@example.net", "Out of office", map[string]string{"Auto-Submitted": "auto-replied"})
 	if r := lastRun(); r["outcome"] != "failed" || r["error"] != "auto_reply" || r["conversation_id"] != auto || len(byRule(messages(et.owner, auto), "message")) != 0 {
 		t.Fatalf("an automatic mail got a rule reply: %v", r)
+	}
+	unverified := mail(unique("forged")+"@example.net", "Cheap meds", map[string]string{"Authentication-Results": testAuthservID + "; spf=pass smtp.mailfrom=dmarc=pass@attacker.example; dmarc=none header.from=example.net"})
+	if r := lastRun(); r["outcome"] != "failed" || r["error"] != "auto_reply" || !strings.Contains(r["detail"].(string), "DMARC") || len(byRule(messages(et.owner, unverified), "message")) != 0 {
+		t.Fatalf("a sender who did not pass DMARC got a rule reply: %v", r)
 	}
 	bounce := h.ingestFrom(et.address, "", buildMail(mailOpts{from: "mailer-daemon@example.net", to: et.address, subject: "Undeliverable", messageID: newMessageID(), body: "failed"}), nil)
 	if bounce.status != http.StatusAccepted || bounce.str("conversation_id") == "" {

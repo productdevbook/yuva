@@ -167,9 +167,13 @@ func TestEmailRatingRequest(t *testing.T) {
 	et.owner.expect(http.StatusOK, "PATCH", "/v1/inboxes/"+et.inbox, map[string]any{
 		"ask_for_rating": true, "default_locale": "de", "branding": map[string]any{"color": "#aa3300"},
 	})
-	open := func(subject string) string {
-		return h.ingest(et.address, buildMail(mailOpts{from: "rater@example.net", to: et.address, subject: subject, messageID: newMessageID(), body: "help"}), nil).str("conversation_id")
+	openAs := func(subject, authResults string) string {
+		return h.ingest(et.address, buildMail(mailOpts{
+			from: "rater@example.net", to: et.address, subject: subject, messageID: newMessageID(), body: "help",
+			headers: map[string]string{"Authentication-Results": authResults},
+		}), nil).str("conversation_id")
 	}
+	open := func(subject string) string { return openAs(subject, dmarcPass("example.net")) }
 	requests := func(conv string) []map[string]any {
 		var out []map[string]any
 		for _, m := range messages(et.owner, conv) {
@@ -189,11 +193,21 @@ func TestEmailRatingRequest(t *testing.T) {
 		t.Fatalf("asked to rate an unanswered conversation: %d", n)
 	}
 
+	unverified := openAs("Unverified", testAuthservID+"; dmarc=none header.from=example.net")
+	h.sendQueued(t, et.ws, post(et.owner, unverified, map[string]any{"kind": "message", "body": "Here it is."}))
+	et.owner.expect(http.StatusOK, "PATCH", "/v1/conversations/"+unverified, map[string]any{"status": "closed"})
+	if err := h.srv.RequestRating(ctx, uuid.MustParse(et.ws), uuid.MustParse(unverified)); err != nil {
+		t.Fatal(err)
+	}
+	if n := len(requests(unverified)); n != 0 {
+		t.Fatalf("asked a sender who did not pass DMARC to rate: %d", n)
+	}
+
 	conv := open("Invoice")
 	reply := post(et.owner, conv, map[string]any{"kind": "message", "body": "Here it is."})
 	h.sendQueued(t, et.ws, reply)
 	et.owner.expect(http.StatusOK, "PATCH", "/v1/conversations/"+conv, map[string]any{"status": "closed"})
-	if n := len(h.jobs("rating_request", et.ws)); n != 2 {
+	if n := len(h.jobs("rating_request", et.ws)); n != 3 {
 		t.Fatalf("rating request jobs %d", n)
 	}
 	for range 2 {

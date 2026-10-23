@@ -10287,8 +10287,9 @@ type AutomationRun struct {
 	// Error `failed` only: the problem code the action met, as the same change through `/v1`
 	// would answer it (`field_required`, `team_access`, `validation_failed`,
 	// `email_undeliverable`, …), or `auto_reply` when a reply was refused to protect the
-	// customer (an automatic reply or bounce, a blocked contact, spam, a rule reply in
-	// the last hour or three in the last day), `bot_sending_disabled` (see
+	// customer (an automatic reply or bounce, e-mail that did not pass DMARC, a blocked
+	// contact, spam, a rule reply in the last hour or three in the last day),
+	// `bot_sending_disabled` (see
 	// `AutomationRuleAuthor`), `label_gone`,
 	// `canned_reply_gone`, `webhook_unavailable`.
 	Error   *string              `json:"error,omitempty"`
@@ -14582,8 +14583,10 @@ type Email = openapi_types.Email
 type EmailAlign string
 
 // EmailAutoReply A greeting e-mailed when a new conversation starts by e-mail, at most once per contact
-// within `interval_hours`. It carries `Auto-Submitted: auto-replied` and is never sent in
-// answer to automatic mail.
+// within `interval_hours`. It carries `Auto-Submitted: auto-replied`, is never sent in
+// answer to automatic mail and goes only to a sender whose mail passed DMARC according to
+// the server's trusted receiver (`YUVA_INGRESS_AUTHSERV_ID`; without it no greeting is
+// sent). Its subject is `Re: ` and the first 60 characters of the sender's subject.
 type EmailAutoReply struct {
 	Enabled       bool   `json:"enabled"`
 	IntervalHours int32  `json:"interval_hours"`
@@ -14680,8 +14683,10 @@ type EmailChannel struct {
 	Address Email `json:"address"`
 
 	// AutoReply A greeting e-mailed when a new conversation starts by e-mail, at most once per contact
-	// within `interval_hours`. It carries `Auto-Submitted: auto-replied` and is never sent in
-	// answer to automatic mail.
+	// within `interval_hours`. It carries `Auto-Submitted: auto-replied`, is never sent in
+	// answer to automatic mail and goes only to a sender whose mail passed DMARC according to
+	// the server's trusted receiver (`YUVA_INGRESS_AUTHSERV_ID`; without it no greeting is
+	// sent). Its subject is `Re: ` and the first 60 characters of the sender's subject.
 	AutoReply EmailAutoReply `json:"auto_reply"`
 
 	// BroadcastRate Broadcast mails a second through this channel.
@@ -17001,9 +17006,9 @@ type ImportedAuthor struct {
 type Inbox struct {
 	// AskForRating Contacts may rate a closed conversation (`good` or `bad`, with an optional comment):
 	// the widget and the mobile SDKs offer it, and e-mail contacts get a request with two
-	// links after a member's conversation is closed. Off by default. Only conversations
-	// closed after it was turned on can be rated; turning it off and on again starts over.
-	// Feedback is never rated.
+	// links after a member's conversation is closed, when their latest mail passed DMARC.
+	// Off by default. Only conversations closed after it was turned on can be rated; turning
+	// it off and on again starts over. Feedback is never rated.
 	AskForRating bool `json:"ask_for_rating"`
 
 	// AssignmentCap Absent when there is no cap.

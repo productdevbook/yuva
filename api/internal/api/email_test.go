@@ -16,6 +16,7 @@ import (
 	"fmt"
 	"io"
 	"math/big"
+	"mime"
 	"net/http"
 	"net/mail"
 	"net/textproto"
@@ -587,6 +588,7 @@ func TestLoopProtection(t *testing.T) {
 			id = email.NormalizeID(v)
 			delete(hdrs, "Message-ID")
 		}
+		hdrs["Authentication-Results"] = dmarcPass("example.net")
 		r := h.ingest(et.address, buildMail(mailOpts{
 			from: unique("auto") + "@example.net", to: et.address, subject: "Out of office", messageID: id, headers: hdrs, body: "I am away.",
 		}), nil)
@@ -598,8 +600,30 @@ func TestLoopProtection(t *testing.T) {
 		}
 	}
 
+	for name, ar := range map[string]string{
+		"no header":            "",
+		"another receiver":     "mx.attacker.example; dmarc=pass header.from=example.net",
+		"dmarc none":           testAuthservID + "; dmarc=none header.from=example.net",
+		"pass in the envelope": testAuthservID + "; spf=pass smtp.mailfrom=dmarc=pass@attacker.example; dmarc=fail header.from=example.net",
+	} {
+		hdrs := map[string]string{}
+		if ar != "" {
+			hdrs["Authentication-Results"] = ar
+		}
+		r := h.ingest(et.address, buildMail(mailOpts{
+			from: unique("forged") + "@example.net", to: et.address, subject: "Cheap meds at evil.example", messageID: newMessageID(), headers: hdrs, body: "x",
+		}), nil)
+		if r.status != http.StatusAccepted {
+			t.Fatalf("%s: %d %v", name, r.status, r.body)
+		}
+		if n := autoReplies(r.str("conversation_id")); n != 0 {
+			t.Errorf("%s: greeted a sender who did not pass DMARC", name)
+		}
+	}
+
 	sender := unique("human") + "@example.net"
-	r := h.ingest(et.address, buildMail(mailOpts{from: sender, to: et.address, subject: "Hello", messageID: newMessageID(), body: "Hi"}), nil)
+	long := "Order 4711 \u202e arrived broken and " + strings.Repeat("the box was open ", 10)
+	r := h.ingest(et.address, buildMail(mailOpts{from: sender, to: et.address, subject: long, messageID: newMessageID(), headers: map[string]string{"Authentication-Results": dmarcPass("example.net")}, body: "Hi"}), nil)
 	conv := r.str("conversation_id")
 	if autoReplies(conv) != 1 {
 		t.Fatal("no greeting for a new conversation")
@@ -613,7 +637,10 @@ func TestLoopProtection(t *testing.T) {
 	if parsed.Header.Get("Auto-Submitted") != "auto-replied" || parsed.Header.Get("In-Reply-To") == "" {
 		t.Fatalf("greeting headers: %v", parsed.Header)
 	}
-	again := h.ingest(et.address, buildMail(mailOpts{from: sender, to: et.address, subject: "Second topic", messageID: newMessageID(), body: "Hi again"}), nil)
+	if subject, _ := new(mime.WordDecoder).DecodeHeader(parsed.Header.Get("Subject")); subject != "Re: Order 4711 arrived broken and the box was open the box was…" {
+		t.Fatalf("greeting subject %q", subject)
+	}
+	again := h.ingest(et.address, buildMail(mailOpts{from: sender, to: et.address, subject: "Second topic", messageID: newMessageID(), headers: map[string]string{"Authentication-Results": dmarcPass("example.net")}, body: "Hi again"}), nil)
 	if autoReplies(again.str("conversation_id")) != 0 {
 		t.Fatal("greeted the same contact twice within the interval")
 	}

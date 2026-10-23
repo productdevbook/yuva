@@ -30,7 +30,7 @@ func (q *Queries) AutomationRunExists(ctx context.Context, arg AutomationRunExis
 }
 
 const contactMessageOf = `-- name: ContactMessageOf :one
-SELECT m.id, m.body, coalesce(e.auto, false)::bool AS auto
+SELECT m.id, m.body, coalesce(e.auto, false)::bool AS auto, coalesce(e.dmarc, '')::text AS dmarc
 FROM messages m
 LEFT JOIN message_emails e ON e.workspace_id = m.workspace_id AND e.message_id = m.id
 WHERE m.workspace_id = $1::uuid AND m.conversation_id = $2::uuid AND m.id = $3::uuid
@@ -44,15 +44,21 @@ type ContactMessageOfParams struct {
 }
 
 type ContactMessageOfRow struct {
-	ID   uuid.UUID
-	Body string
-	Auto bool
+	ID    uuid.UUID
+	Body  string
+	Auto  bool
+	Dmarc string
 }
 
 func (q *Queries) ContactMessageOf(ctx context.Context, arg ContactMessageOfParams) (ContactMessageOfRow, error) {
 	row := q.db.QueryRow(ctx, contactMessageOf, arg.WorkspaceID, arg.ConversationID, arg.ID)
 	var i ContactMessageOfRow
-	err := row.Scan(&i.ID, &i.Body, &i.Auto)
+	err := row.Scan(
+		&i.ID,
+		&i.Body,
+		&i.Auto,
+		&i.Dmarc,
+	)
 	return i, err
 }
 
@@ -273,7 +279,7 @@ func (q *Queries) InsertAutomationRun(ctx context.Context, arg InsertAutomationR
 }
 
 const latestContactMessage = `-- name: LatestContactMessage :one
-SELECT m.id, m.body, coalesce(e.auto, false)::bool AS auto
+SELECT m.id, m.body, coalesce(e.auto, false)::bool AS auto, coalesce(e.dmarc, '')::text AS dmarc
 FROM messages m
 LEFT JOIN message_emails e ON e.workspace_id = m.workspace_id AND e.message_id = m.id
 WHERE m.workspace_id = $1::uuid AND m.conversation_id = $2::uuid
@@ -288,15 +294,21 @@ type LatestContactMessageParams struct {
 }
 
 type LatestContactMessageRow struct {
-	ID   uuid.UUID
-	Body string
-	Auto bool
+	ID    uuid.UUID
+	Body  string
+	Auto  bool
+	Dmarc string
 }
 
 func (q *Queries) LatestContactMessage(ctx context.Context, arg LatestContactMessageParams) (LatestContactMessageRow, error) {
 	row := q.db.QueryRow(ctx, latestContactMessage, arg.WorkspaceID, arg.ConversationID)
 	var i LatestContactMessageRow
-	err := row.Scan(&i.ID, &i.Body, &i.Auto)
+	err := row.Scan(
+		&i.ID,
+		&i.Body,
+		&i.Auto,
+		&i.Dmarc,
+	)
 	return i, err
 }
 

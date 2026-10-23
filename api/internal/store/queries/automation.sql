@@ -103,7 +103,7 @@ UPDATE automation_runs SET outcome = @outcome WHERE workspace_id = @workspace_id
 UPDATE conversations SET snooze_rule_id = sqlc.narg(rule_id) WHERE workspace_id = @workspace_id AND id = @id;
 
 -- name: LatestContactMessage :one
-SELECT m.id, m.body, coalesce(e.auto, false)::bool AS auto
+SELECT m.id, m.body, coalesce(e.auto, false)::bool AS auto, coalesce(e.dmarc, '')::text AS dmarc
 FROM messages m
 LEFT JOIN message_emails e ON e.workspace_id = m.workspace_id AND e.message_id = m.id
 WHERE m.workspace_id = sqlc.arg(workspace_id)::uuid AND m.conversation_id = sqlc.arg(conversation_id)::uuid
@@ -112,7 +112,7 @@ ORDER BY m.created_at DESC, m.id DESC
 LIMIT 1;
 
 -- name: ContactMessageOf :one
-SELECT m.id, m.body, coalesce(e.auto, false)::bool AS auto
+SELECT m.id, m.body, coalesce(e.auto, false)::bool AS auto, coalesce(e.dmarc, '')::text AS dmarc
 FROM messages m
 LEFT JOIN message_emails e ON e.workspace_id = m.workspace_id AND e.message_id = m.id
 WHERE m.workspace_id = sqlc.arg(workspace_id)::uuid AND m.conversation_id = sqlc.arg(conversation_id)::uuid AND m.id = sqlc.arg(id)::uuid

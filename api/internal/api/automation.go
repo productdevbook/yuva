@@ -16,6 +16,7 @@ import (
 	"github.com/riverqueue/river"
 	"github.com/riverqueue/river/rivertype"
 
+	"github.com/productdevbook/yuva/api/internal/email"
 	"github.com/productdevbook/yuva/api/internal/jobs"
 	"github.com/productdevbook/yuva/api/internal/oas"
 	"github.com/productdevbook/yuva/api/internal/realtime"
@@ -34,18 +35,19 @@ const (
 var limitAutomationActions = limit{600, time.Minute}
 
 var (
-	errRuleSkip          = errors.New("automation rule does not apply")
-	errRuleUncharged     = errors.New("automation rule matched before the rate limit counted it")
-	errRuleLabelGone     = problem(http.StatusConflict, "label_gone", "a label the rule adds or removes was deleted")
-	errRuleCannedGone    = problem(http.StatusConflict, "canned_reply_gone", "the rule's canned reply was deleted")
-	errRuleWebhookGone   = problem(http.StatusConflict, "webhook_unavailable", "the rule's webhook endpoint was deleted, is turned off or is limited to another inbox")
-	errRuleBotsMaySend   = problem(http.StatusForbidden, "bot_sending_disabled", "the rule was last saved by an API key or a connected app, and the workspace does not let bots deliver messages")
-	errRuleReplyAuto     = problem(http.StatusConflict, "auto_reply", "the contact's message is an automatic reply or a bounce")
-	errRuleReplyBlocked  = problem(http.StatusConflict, "auto_reply", "the contact is blocked")
-	errRuleReplySpam     = problem(http.StatusConflict, "auto_reply", "the conversation is spam")
-	errRuleReplyTooSoon  = problem(http.StatusConflict, "auto_reply", "a rule already replied in this conversation within the hour")
-	errRuleReplyTooMany  = problem(http.StatusConflict, "auto_reply", "rules already replied three times in this conversation within a day")
-	errRuleCannedBot     = problem(http.StatusForbidden, "bot_sending_disabled", "the canned reply was last saved by an API key or a connected app, or before this was recorded, and the workspace does not let bots deliver messages")
+	errRuleSkip         = errors.New("automation rule does not apply")
+	errRuleUncharged    = errors.New("automation rule matched before the rate limit counted it")
+	errRuleLabelGone    = problem(http.StatusConflict, "label_gone", "a label the rule adds or removes was deleted")
+	errRuleCannedGone   = problem(http.StatusConflict, "canned_reply_gone", "the rule's canned reply was deleted")
+	errRuleWebhookGone  = problem(http.StatusConflict, "webhook_unavailable", "the rule's webhook endpoint was deleted, is turned off or is limited to another inbox")
+	errRuleBotsMaySend  = problem(http.StatusForbidden, "bot_sending_disabled", "the rule was last saved by an API key or a connected app, and the workspace does not let bots deliver messages")
+	errRuleReplyAuto    = problem(http.StatusConflict, "auto_reply", "the contact's message is an automatic reply or a bounce")
+	errRuleReplyDMARC   = problem(http.StatusConflict, "auto_reply", "the contact's e-mail did not pass DMARC")
+	errRuleReplyBlocked = problem(http.StatusConflict, "auto_reply", "the contact is blocked")
+	errRuleReplySpam    = problem(http.StatusConflict, "auto_reply", "the conversation is spam")
+	errRuleReplyTooSoon = problem(http.StatusConflict, "auto_reply", "a rule already replied in this conversation within the hour")
+	errRuleReplyTooMany = problem(http.StatusConflict, "auto_reply", "rules already replied three times in this conversation within a day")
+	errRuleCannedBot    = problem(http.StatusForbidden, "bot_sending_disabled", "the canned reply was last saved by an API key or a connected app, or before this was recorded, and the workspace does not let bots deliver messages")
 )
 
 const ruleRepliesPerDay = 3
@@ -759,7 +761,8 @@ func unchangedBy(act oas.AutomationAction, before store.Conversation, labels []u
 	return false
 }
 
-// ruleReplyAllowed keeps rule replies away from automatic mail, blocked contacts and spam, at
+// ruleReplyAllowed keeps rule replies away from automatic mail, e-mail that did not pass DMARC,
+// blocked contacts and spam, at
 // most one an hour and three a day per conversation, and, while the workspace keeps bots from
 // sending, sends only text an owner or admin approved: both the rule and the canned reply last saved
 // by one. The conversation's lock orders every rule reply of the conversation.
@@ -780,6 +783,9 @@ func (s *Server) ruleReplyAllowed(ctx context.Context, q *store.Queries, w store
 	}
 	if m.Auto {
 		return errRuleReplyAuto
+	}
+	if m.Dmarc != "" && m.Dmarc != email.DMARCPass {
+		return errRuleReplyDMARC
 	}
 	n, err := q.CountRuleReplies(ctx, store.CountRuleRepliesParams{
 		WorkspaceID: c.WorkspaceID, ConversationID: c.ID, HourSince: now.Add(-ruleReplyEvery), DaySince: now.Add(-24 * time.Hour),

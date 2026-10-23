@@ -316,7 +316,7 @@ func serve(ctx context.Context, cfg config.Config, log *slog.Logger, args []stri
 		log.Warn("YUVA_INGRESS_ACCEPT_V2 is on; /ingress/email accepts v2 signatures, whose body is read before it is authenticated. Set it to false once every Email Worker signs v3")
 	}
 	if cfg.IngressSecret != "" && cfg.IngressAuthservID == "" {
-		log.Warn("YUVA_INGRESS_AUTHSERV_ID is not set; DMARC is treated as unknown for all inbound mail: nothing is marked spam, a forged sender can join an existing thread, and abuse reports and mailbox cutover are not accepted")
+		log.Warn("YUVA_INGRESS_AUTHSERV_ID is not set; DMARC is treated as unknown for all inbound mail: nothing is marked spam, no greeting, rule reply or rating request is e-mailed to a sender, and abuse reports and mailbox cutover are not accepted")
 	}
 	analyticsWorkers := 0
 	if cfg.Analytics.On {

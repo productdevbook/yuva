@@ -14,6 +14,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"unicode"
 	"uuid"
 
 	"github.com/productdevbook/yuva/api/internal/email"
@@ -525,7 +526,7 @@ func (s *Server) ingestToChannel(ctx context.Context, ch store.FindEmailChannelB
 		}
 		events.conversation(realtime.MessageCreated, conv, withEmail(messageBody(messageRow(msg), atts), &summary))
 		res = IngestResult{Status: IngestStored, ConversationID: &conv.ID, MessageID: &msg.ID}
-		if isNew && !auto && !spam && ch.AutoReplyEnabled && !opts.noGreeting {
+		if isNew && !auto && verified && ch.AutoReplyEnabled && !opts.noGreeting {
 			return s.autoReply(ctx, q, events, ch, conv, contact.ID, now)
 		}
 		return nil
@@ -859,6 +860,9 @@ func (s *Server) autoReply(ctx context.Context, q *store.Queries, events *eventB
 		return err
 	}
 	plan.auto = true
+	if subject := greetingSubject(c.Subject); subject != "" {
+		plan.subject = subject
+	}
 	direction, queued := string(oas.Out), deliveryQueued
 	at := now.Add(time.Microsecond)
 	msg, err := q.CreateMessage(ctx, store.CreateMessageParams{
@@ -881,6 +885,30 @@ func (s *Server) autoReply(ctx context.Context, q *store.Queries, events *eventB
 	}
 	events.conversation(realtime.MessageCreated, c, withEmail(messageBody(msg, nil), summary))
 	return nil
+}
+
+const greetingSubjectRunes = 60
+
+// greetingSubject is the sender's subject without control or format characters and cut to
+// greetingSubjectRunes at a word, so a greeting never repeats a long text verbatim.
+func greetingSubject(subject string) string {
+	clean := []rune(strings.Join(strings.Fields(strings.Map(func(r rune) rune {
+		if unicode.IsControl(r) || unicode.Is(unicode.Cf, r) {
+			return ' '
+		}
+		return r
+	}, subject)), " "))
+	if len(clean) <= greetingSubjectRunes {
+		return email.ReplySubject(string(clean))
+	}
+	cut := clean[:greetingSubjectRunes]
+	for i := len(cut) - 1; i > greetingSubjectRunes/2; i-- {
+		if cut[i] == ' ' {
+			cut = cut[:i]
+			break
+		}
+	}
+	return email.ReplySubject(strings.TrimSpace(string(cut)) + "…")
 }
 
 // reopenConversation opens a conversation a contact wrote in again, with the events of the change.
