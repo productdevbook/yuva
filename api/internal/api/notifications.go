@@ -390,6 +390,9 @@ func (s *Server) Notify(ctx context.Context, a NotifyArgs) error {
 	if err != nil || ev == "" {
 		return err
 	}
+	if err := s.queueSlack(ctx, ws, in.ID, m.ID, ev); err != nil {
+		return err
+	}
 	candidates, err := s.st.ListNotificationCandidates(ctx, store.ListNotificationCandidatesParams{WorkspaceID: ws, InboxID: in.ID})
 	if err != nil {
 		return err

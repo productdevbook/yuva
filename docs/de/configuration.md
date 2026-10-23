@@ -251,6 +251,13 @@ Die Befehle laufen wie unter [Operator-Befehle](operations.md#operator-befehle):
 |---|---|---|
 | `YUVA_WEBHOOK_ALLOW_PRIVATE` | `false` | Erlaubt Webhooks, Loopback- und private Adressen zu erreichen. Nur für die Entwicklung. |
 
+## Slack
+
+| Variable | Standard | Bedeutung |
+|---|---|---|
+| `YUVA_SLACK_CLIENT_ID`, `YUVA_SLACK_CLIENT_SECRET` | nicht gesetzt | Die Slack-App, über die sich Workspaces verbinden ([so legen Sie sie an](slack.md#die-slack-app-anlegen)). Setzen Sie alle drei Slack-Variablen oder keine; ohne sie ist Slack aus und `GET /v1/slack` antwortet `available: false`. |
+| `YUVA_SLACK_SIGNING_SECRET` | nicht gesetzt | Das Signing Secret der App; Yuva weist Ereignisse ab, deren Signatur oder Zeitstempel (5 Minuten) nicht passt. |
+
 ## Web Push
 
 | Variable | Standard | Bedeutung |

@@ -489,6 +489,15 @@ tags:
       `email_delay_minutes` (15 by default), one e-mail lists the conversation's unread contact
       messages and the notes mentioning the member, and links to it; at most one e-mail per conversation and member per hour. It goes
       to the person's sign-in address in their locale.
+  - name: slack
+    description: |
+      A workspace connects Slack through OAuth v2 with the Slack app the server's operator
+      registered (`YUVA_SLACK_*`; without it `GET /v1/slack` answers `available: false`). Each inbox
+      picks a channel for new conversations and one for mentions; a post carries the subject, the
+      contact's name and a link, and the message text only when the inbox's `include_content` is
+      on. A reply in the post's thread becomes a note by the member linked to the Slack user
+      (`via: Slack`), or with the reply command (`!reply` by default) a reply to the customer.
+      Members link their Slack user with a code the Yuva bot sends them in Slack.
   - name: webhooks
     description: |
       Signed HTTP callbacks to host backends per the Standard Webhooks specification
@@ -15912,6 +15921,397 @@ paths:
           $ref: "#/components/responses/Problem"
         "503":
           $ref: "#/components/responses/Problem"
+  /v1/slack:
+    get:
+      operationId: getSlack
+      summary: The workspace's Slack connection
+      description: |
+        Whether this server offers Slack (`available`: the operator set `YUVA_SLACK_CLIENT_ID`,
+        `YUVA_SLACK_CLIENT_SECRET` and `YUVA_SLACK_SIGNING_SECRET`) and, when the workspace is
+        connected, the Slack workspace, the bot user, the reply command and the last error a post
+        to Slack ended with. Never the token. API keys and tokens need `inboxes:read`.
+      tags: [slack]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+      responses:
+        "200":
+          description: The connection.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SlackConnection"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+    patch:
+      operationId: updateSlack
+      summary: Change the Slack connection's settings
+      description: |
+        Changes the reply command: a reply in a Slack thread that starts with it goes to the
+        customer, any other reply becomes a note. Owners and admins with a member session.
+        `409 slack_not_configured` when the server offers no Slack, `409 slack_not_connected` when
+        the workspace has not connected it.
+      tags: [slack]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SlackConnectionUpdate"
+      responses:
+        "200":
+          description: The connection.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SlackConnection"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "409":
+          $ref: "#/components/responses/Problem"
+    delete:
+      operationId: disconnectSlack
+      summary: Disconnect Slack
+      description: |
+        Revokes the bot token at Slack (`auth.revoke`; a failure there is logged and the
+        connection is removed anyway) and removes the connection with every inbox's channels, the
+        threads Yuva posted and the members' Slack links. Writes `workspace.slack_disconnected` to
+        the audit log. Owners and admins with a member session; `409 slack_not_connected` when
+        there is nothing to disconnect.
+      tags: [slack]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+      responses:
+        "204":
+          description: Disconnected.
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "409":
+          $ref: "#/components/responses/Problem"
+  /v1/slack/connect:
+    post:
+      operationId: connectSlack
+      summary: Start connecting Slack
+      description: |
+        Starts Slack's OAuth v2 install: open `authorize_url` in the browser of the same member
+        session. Slack sends the browser back to `GET /slack/oauth/callback`, which stores the bot
+        token sealed under the master key and redirects to the panel's
+        `/settings/slack?result=<SlackConnectResult>&workspace=<id>`. The start is valid for 10
+        minutes and a newer start replaces it. A Slack workspace is connected to one Yuva workspace
+        at a time; connecting another Slack workspace replaces the connection and drops the
+        channels, threads and member links of the previous one. Owners and admins with a member
+        session. `409 slack_not_configured` when the server offers no Slack.
+      tags: [slack]
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/WorkspaceHeader"
+      responses:
+        "200":
+          description: Where to send the browser.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SlackConnectStart"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "409":
+          $ref: "#/components/responses/Problem"
+  /v1/slack/channels:
+    get:
+      operationId: listSlackChannels
+      summary: Slack channels Yuva can post in
+      description: |
+        The public and private Slack channels the Yuva bot is a member of (invite it with
+        `/invite @<bot>` in Slack), not archived, at most 1000, sorted by name. Yuva posts only in
+        these and receives thread replies only from these. API keys and tokens need
+        `inboxes:read`. `409 slack_not_configured`, `409 slack_not_connected`, `502 slack_failed`
+        when Slack refused or did not answer.
+      tags: [slack]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+      responses:
+        "200":
+          description: The channels.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SlackChannelList"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "409":
+          $ref: "#/components/responses/Problem"
+        "502":
+          $ref: "#/components/responses/Problem"
+  /v1/inboxes/{inboxId}/slack:
+    get:
+      operationId: getInboxSlack
+      summary: An inbox's Slack channels
+      description: |
+        Which Slack channel gets the inbox's new conversations and which its mentions, and whether
+        the posts carry the message text (`include_content`, off by default: a post then carries
+        only the subject, the contact's name and a link). An inbox never set answers no channels.
+        API keys and tokens need `inboxes:read`.
+      tags: [slack]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/InboxId"
+      responses:
+        "200":
+          description: The inbox's Slack settings.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InboxSlack"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+    put:
+      operationId: setInboxSlack
+      summary: Set an inbox's Slack channels
+      description: |
+        Replaces the inbox's Slack settings. A channel must be one `GET /v1/slack/channels` lists
+        (the bot is a member), else `400 validation_failed`; `null` or an absent channel posts
+        nothing for that event. Owners and admins, or API keys and tokens with `inboxes:manage`.
+        `409 slack_not_configured`, `409 slack_not_connected`, `502 slack_failed`.
+      tags: [slack]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/InboxId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InboxSlackUpdate"
+      responses:
+        "200":
+          description: The inbox's Slack settings.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InboxSlack"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+        "409":
+          $ref: "#/components/responses/Problem"
+        "502":
+          $ref: "#/components/responses/Problem"
+  /v1/me/slack:
+    get:
+      operationId: getMySlack
+      summary: Your Slack link
+      description: |
+        Whether the calling member's Slack user is linked in this workspace, and a pending code's
+        expiry. A linked Slack user's replies in Yuva's threads are written as this member. Member
+        sessions only.
+      tags: [slack]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+      responses:
+        "200":
+          description: The link.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SlackMemberLink"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+    delete:
+      operationId: unlinkMySlack
+      summary: Unlink your Slack user
+      description: |
+        Removes the link (and a pending code); writes `member.slack_unlinked` to the audit log.
+        Member sessions only. `404 not_found` when nothing is linked.
+      tags: [slack]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+      responses:
+        "204":
+          description: Unlinked.
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+  /v1/me/slack/link:
+    post:
+      operationId: startMySlackLink
+      summary: Send a link code to your Slack user
+      description: |
+        Finds the Slack user with the member's e-mail address (or `email` when given) in the
+        connected Slack workspace and sends them a direct message with a 6-digit code from the
+        Yuva bot. The code is valid for 10 minutes and 5 tries; a new request replaces it. At most
+        5 requests per member and hour (`429 rate_limited`). Member sessions only.
+        `404 slack_user_not_found` when Slack knows no such user, `409 slack_user_taken` when
+        another member has linked that Slack user, `409 slack_not_configured`,
+        `409 slack_not_connected`, `502 slack_failed`.
+      tags: [slack]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SlackLinkStart"
+      responses:
+        "202":
+          description: The code was sent.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SlackMemberLink"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+        "409":
+          $ref: "#/components/responses/Problem"
+        "429":
+          $ref: "#/components/responses/Problem"
+        "502":
+          $ref: "#/components/responses/Problem"
+  /v1/me/slack/link/confirm:
+    post:
+      operationId: confirmMySlackLink
+      summary: Link your Slack user with the code
+      description: |
+        Links the Slack user the code was sent to; writes `member.slack_linked` to the audit log.
+        `400 invalid_code` for a wrong code, `400 code_expired` when it expired, was tried 5 times
+        or none is pending, `409 slack_user_taken` when another member linked that Slack user in
+        the meantime. Member sessions only.
+      tags: [slack]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SlackLinkConfirm"
+      responses:
+        "200":
+          description: Linked.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SlackMemberLink"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "409":
+          $ref: "#/components/responses/Problem"
+  /slack/oauth/callback:
+    get:
+      operationId: slackOAuthCallback
+      summary: Slack's redirect back after an install
+      description: |
+        Where Slack sends the browser after `POST /v1/slack/connect`; enter
+        `<YUVA_PUBLIC_URL>/slack/oauth/callback` as the Slack app's redirect URL. It needs the same
+        member session that started the install, exchanges the code at `oauth.v2.access`, checks
+        the granted scopes and redirects to the panel's
+        `/settings/slack?result=<SlackConnectResult>&workspace=<id>`. Writes
+        `workspace.slack_connected` to the audit log.
+      tags: [slack]
+      security: []
+      parameters:
+        - name: code
+          in: query
+          schema:
+            type: string
+        - name: state
+          in: query
+          schema:
+            type: string
+        - name: error
+          in: query
+          schema:
+            type: string
+      responses:
+        "303":
+          description: To the panel, with the result.
+          headers:
+            X-Yuva-Slack-Result:
+              description: The same result as the redirect's `result`.
+              schema:
+                $ref: "#/components/schemas/SlackConnectResult"
+  /ingress/slack:
+    post:
+      operationId: ingestSlack
+      summary: Receive Slack events
+      description: |
+        The Slack app's Event Subscriptions request URL (`<YUVA_PUBLIC_URL>/ingress/slack`). Every
+        request must carry `X-Slack-Signature` (`v0=` and the hex HMAC-SHA256 of
+        `v0:<X-Slack-Request-Timestamp>:<raw body>` keyed with `YUVA_SLACK_SIGNING_SECRET`) and a
+        timestamp within 5 minutes of the server's clock, else `401 invalid_signature`; bodies are
+        at most 1 MiB. `url_verification` is answered with its challenge. An `event_callback` is
+        found by its `team_id`, kept once per `event_id` (a retry is answered `200` without being
+        handled again) and handled in the background: a reply in a thread Yuva posted becomes a
+        note by the member linked to the Slack user, or with the reply command a reply to the
+        customer under that member's inbox access and the send rules; anyone else gets an
+        ephemeral explanation and nothing changes. `app_uninstalled` and `tokens_revoked` remove
+        the connection. `404 not_found` when the server offers no Slack.
+      tags: [ingress]
+      security: []
+      parameters:
+        - name: X-Slack-Signature
+          in: header
+          required: true
+          schema:
+            type: string
+        - name: X-Slack-Request-Timestamp
+          in: header
+          required: true
+          description: Unix time in seconds.
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          description: Accepted (or the `url_verification` challenge).
+        "401":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+        "413":
+          $ref: "#/components/responses/Problem"
   /ingress/email:
     post:
       operationId: ingestEmail
@@ -18045,6 +18445,9 @@ components:
           `workspace.broadcasts_denied`: `reason` when the operator gave one.
           `workspace.broadcasts_suspended`: `reason`, `paused_broadcasts` (by the operator).
           `workspace.broadcast_limit_changed`: `from`, `to` (recipients a day; `null` is no limit).
+        - `workspace.slack_connected`: `team_id`, `team_name`; `workspace.slack_disconnected`:
+          `team_id`, and `reason` `uninstalled` (by `system`) when Slack reported the app removed.
+        - `member.slack_linked`: `slack_user_id`; `member.slack_unlinked`: `slack_user_id`.
 
         Details never make an action fail: when they would be too long, lists are replaced by
         `<name>_count` and `truncated` is `true`.
@@ -18095,7 +18498,11 @@ components:
         - team.member_removed
         - team.inbox_access_granted
         - team.inbox_access_revoked
-      x-enum-varnames: [AuditMemberJoined, AuditMemberRoleChanged, AuditMemberRemoved, AuditMemberInboxAccessGranted, AuditMemberInboxAccessRevoked, AuditInviteCreated, AuditInviteDeleted, AuditApiKeyCreated, AuditApiKeyRevoked, AuditOAuthGrantCreated, AuditOAuthGrantRevoked, AuditWebhookCreated, AuditWebhookUpdated, AuditWebhookDeleted, AuditWebhookSecretRotated, AuditChannelCredentialsChanged, AuditChannelKeyRotated, AuditChannelForwardingAddressRotated, AuditChannelDkimKeyCreated, AuditChannelDkimKeyDeleted, AuditInboxIdentitySecretRotated, AuditInboxDeleted, AuditConversationTrashed, AuditConversationRestored, AuditConversationDeleted, AuditMessageRedacted, AuditContactDeleted, AuditContactConsentExported, AuditListConsentExported, AuditAnalyticsExportCreated, AuditWorkspaceRetentionChanged, AuditWorkspaceBroadcastApprovalRequested, AuditWorkspaceBroadcastsApproved, AuditWorkspaceBroadcastsDenied, AuditWorkspaceBroadcastsSuspended, AuditWorkspaceBroadcastLimitChanged, AuditTeamCreated, AuditTeamDeleted, AuditTeamMemberAdded, AuditTeamMemberRemoved, AuditTeamInboxAccessGranted, AuditTeamInboxAccessRevoked]
+        - workspace.slack_connected
+        - workspace.slack_disconnected
+        - member.slack_linked
+        - member.slack_unlinked
+      x-enum-varnames: [AuditMemberJoined, AuditMemberRoleChanged, AuditMemberRemoved, AuditMemberInboxAccessGranted, AuditMemberInboxAccessRevoked, AuditInviteCreated, AuditInviteDeleted, AuditApiKeyCreated, AuditApiKeyRevoked, AuditOAuthGrantCreated, AuditOAuthGrantRevoked, AuditWebhookCreated, AuditWebhookUpdated, AuditWebhookDeleted, AuditWebhookSecretRotated, AuditChannelCredentialsChanged, AuditChannelKeyRotated, AuditChannelForwardingAddressRotated, AuditChannelDkimKeyCreated, AuditChannelDkimKeyDeleted, AuditInboxIdentitySecretRotated, AuditInboxDeleted, AuditConversationTrashed, AuditConversationRestored, AuditConversationDeleted, AuditMessageRedacted, AuditContactDeleted, AuditContactConsentExported, AuditListConsentExported, AuditAnalyticsExportCreated, AuditWorkspaceRetentionChanged, AuditWorkspaceBroadcastApprovalRequested, AuditWorkspaceBroadcastsApproved, AuditWorkspaceBroadcastsDenied, AuditWorkspaceBroadcastsSuspended, AuditWorkspaceBroadcastLimitChanged, AuditTeamCreated, AuditTeamDeleted, AuditTeamMemberAdded, AuditTeamMemberRemoved, AuditTeamInboxAccessGranted, AuditTeamInboxAccessRevoked, AuditWorkspaceSlackConnected, AuditWorkspaceSlackDisconnected, AuditMemberSlackLinked, AuditMemberSlackUnlinked]
     AuditTargetType:
       type: string
       enum: [workspace, member, invite, inbox, channel, api_key, oauth_grant, webhook, contact, list, analytics_export, conversation, message, team]
@@ -21506,7 +21913,8 @@ components:
           type: string
           description: |
             The OAuth client the member wrote this with (its name at the time), as in
-            "Ayşe via Claude Code"; absent for the panel, API keys and contacts.
+            "Ayşe via Claude Code", or `Slack` for a note or reply written in a Slack thread; absent
+            for the panel, API keys and contacts.
     EventType:
       type: string
       enum: [assigned, unassigned, status_changed, labels_changed, moved, rated, broadcast_reply, feedback_progress, macro_applied]
@@ -36657,3 +37065,152 @@ components:
           $ref: "#/components/schemas/HostedLimit"
         detail:
           type: string
+    SlackConnection:
+      type: object
+      required: [available, connected, reply_command, redirect_url, events_url]
+      properties:
+        available:
+          type: boolean
+          description: "`false` when the server has no Slack app configured; every other Slack endpoint then answers `409 slack_not_configured`."
+        connected:
+          type: boolean
+        team_id:
+          type: string
+          description: The Slack workspace's id.
+        team_name:
+          type: string
+        bot_user_id:
+          type: string
+          description: The Yuva bot's Slack user, to invite into channels.
+        reply_command:
+          type: string
+          description: A thread reply starting with this goes to the customer; any other becomes a note.
+          examples: ["!reply"]
+        connected_at:
+          type: string
+          format: date-time
+        connected_by:
+          type: string
+          format: uuid
+          description: The member who connected it, while they are a member.
+        last_error:
+          type: string
+          description: Why the last post to Slack failed (such as `not_in_channel`); cleared by the next one that succeeds.
+        last_error_at:
+          type: string
+          format: date-time
+        redirect_url:
+          type: string
+          description: The OAuth redirect URL to enter in the Slack app.
+        events_url:
+          type: string
+          description: The Event Subscriptions request URL to enter in the Slack app.
+    SlackConnectionUpdate:
+      type: object
+      properties:
+        reply_command:
+          type: string
+          description: "`!` and 1 to 20 lowercase letters. Slack itself takes messages that start with `/`."
+          pattern: "^![a-z]{1,20}$"
+    SlackConnectStart:
+      type: object
+      required: [authorize_url, redirect_url, expires_at]
+      properties:
+        authorize_url:
+          type: string
+        redirect_url:
+          type: string
+        expires_at:
+          type: string
+          format: date-time
+    SlackConnectResult:
+      type: string
+      description: |
+        How an install ended, in the panel redirect's `result`: `connected`; `denied` (cancelled
+        at Slack); `expired` (no pending start, or older than 10 minutes); `session_mismatch`
+        (another browser session finished it); `team_taken` (that Slack workspace is connected to
+        another Yuva workspace); `scope_missing` (Slack granted fewer scopes than Yuva asks for);
+        `failed` (Slack refused the code or did not answer).
+      enum: [connected, denied, expired, session_mismatch, team_taken, scope_missing, failed]
+      x-enum-varnames: [SlackConnected, SlackDenied, SlackExpired, SlackSessionMismatch, SlackTeamTaken, SlackScopeMissing, SlackFailed]
+    SlackChannel:
+      type: object
+      required: [id, name, private]
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        private:
+          type: boolean
+    SlackChannelList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/SlackChannel"
+    InboxSlack:
+      type: object
+      required: [inbox_id, include_content]
+      properties:
+        inbox_id:
+          type: string
+          format: uuid
+        new_conversations_channel_id:
+          type: string
+          description: The channel that gets the inbox's new conversations (a contact's first message).
+        mentions_channel_id:
+          type: string
+          description: The channel that gets notes in the inbox that mention members.
+        include_content:
+          type: boolean
+          description: |
+            Whether posts carry the start of the message or note (300 characters). Off by default:
+            a post carries only the subject, the contact's name and a link to the conversation.
+        updated_at:
+          type: string
+          format: date-time
+    InboxSlackUpdate:
+      type: object
+      properties:
+        new_conversations_channel_id:
+          type: [string, "null"]
+        mentions_channel_id:
+          type: [string, "null"]
+        include_content:
+          type: boolean
+          description: Absent is `false`.
+    SlackMemberLink:
+      type: object
+      required: [linked]
+      properties:
+        linked:
+          type: boolean
+        slack_user_id:
+          type: string
+          description: The linked Slack user, or the one a pending code was sent to.
+        slack_user_name:
+          type: string
+        linked_at:
+          type: string
+          format: date-time
+        code_expires_at:
+          type: string
+          format: date-time
+          description: While a code is pending.
+    SlackLinkStart:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          description: The Slack account's e-mail address when it differs from the member's.
+    SlackLinkConfirm:
+      type: object
+      required: [code]
+      properties:
+        code:
+          type: string
+          pattern: "^[0-9]{6}$"

@@ -38,6 +38,11 @@ var operationScopes = map[string][]oas.ApiKeyScope{
 
 	"GetDeliverability": {oas.InboxesRead},
 
+	"GetSlack":          {oas.InboxesRead},
+	"ListSlackChannels": {oas.InboxesRead},
+	"GetInboxSlack":     {oas.InboxesRead},
+	"SetInboxSlack":     {oas.InboxesManage},
+
 	"CreateInbox":               {oas.InboxesManage},
 	"UpdateInbox":               {oas.InboxesManage},
 	"DeleteInbox":               {oas.InboxesManage},

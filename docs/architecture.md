@@ -1505,6 +1505,78 @@ conversation and to the notification settings; at most one per member and conver
 member's own message or note moves their read position to it, so the e-mail never lists what
 they already answered.
 
+### Slack (M32)
+
+A workspace connects one Slack workspace (a Slack team belongs to one Yuva workspace at a time)
+through Slack's OAuth v2 with the app the server's operator registers (`YUVA_SLACK_CLIENT_ID`,
+`YUVA_SLACK_CLIENT_SECRET`, `YUVA_SLACK_SIGNING_SECRET`, all or none; without them Slack is off,
+`GET /v1/slack` answers `available: false` and the other endpoints `409 slack_not_configured`). The
+manifest and scopes are in `docs/slack.md`. Self-contained: no shared integrations table (#158 builds
+its own).
+
+- **Tables.** `slack_installations` (one per workspace: team, app, bot user, the bot token sealed
+  under the master key with the workspace id as context, granted scopes, `reply_command` default
+  `!reply`, the last post error), `slack_connect_states` (one pending install per workspace, the
+  state's hash, 10 minutes), `slack_inbox_settings` (per inbox: the channel for new conversations,
+  the channel for mentions, `include_content` off by default), `slack_threads` (channel and thread
+  ts of each post Yuva made, to the conversation), `slack_member_links` (member to Slack user, one
+  each way), `slack_link_codes` (a pending code's HMAC, 10 minutes, 5 tries) and `slack_events`
+  (event ids seen in the last 24 hours, pruned on insert). All carry `workspace_id`.
+- **Install.** `POST /v1/slack/connect` (owners and admins, member session) returns Slack's authorize
+  URL with a state that names the workspace and member plus 32 random bytes, of which only the hash
+  is stored, as for migration sign-ins. `GET /slack/oauth/callback` takes the state once, needs the
+  same member session, exchanges the code at `oauth.v2.access`, requires a bot token with every
+  scope (else revokes it, `scope_missing`), refuses a team another workspace has (`team_taken`), and
+  redirects to the panel's `/settings/slack?result=…`. Connecting another team drops the previous
+  team's channels, threads and links. `DELETE /v1/slack` removes everything and revokes the token
+  at `auth.revoke` after the commit (a failure is logged). Audit: `workspace.slack_connected`,
+  `workspace.slack_disconnected` (by `system` with `reason: uninstalled` on Slack's
+  `app_uninstalled` or `tokens_revoked`), `member.slack_linked`, `member.slack_unlinked`.
+- **Posts.** The notification job (`notify`) queues a `slack_post` job, unique by message and
+  event, for a contact's first message (`new_conversation`) and for a note with mentions
+  (`mention`) when the inbox names a channel for it. SLA breaches join when `conversation.sla_breached` exists (M28). A post carries the
+  event, the subject, the contact's name, the inbox and `<public URL>/conversations/<id>`, and the
+  start of the text (300 characters) only with `include_content`; every value from people is
+  escaped (`&`, `<`, `>`), so customer text cannot become a Slack link, mention or `@channel`. A
+  mentioned member with a linked Slack user is mentioned as `<@U…>`. A mention goes into the
+  conversation's existing thread in that channel, else starts one; every top-level post is recorded
+  in `slack_threads`.
+- **Outbound.** Only `https://slack.com/api/` (tests point the client elsewhere). Each call is
+  tried up to three times: a 429 whose `Retry-After` is at most 10 seconds is waited out, a 5xx or
+  failed connection after 1 and 2 seconds. A longer rate limit snoozes the `slack_post` job for
+  `Retry-After`; other temporary failures retry the job (5 attempts); a refusal that will not pass
+  (`not_in_channel`, `channel_not_found`, `invalid_auth`, …) is recorded as the connection's
+  `last_error` instead, cleared by the next post that succeeds.
+- **Events.** `POST /ingress/slack` verifies `X-Slack-Signature` (HMAC-SHA256 of
+  `v0:<timestamp>:<body>` with the signing secret, compared in constant time) and a timestamp
+  within 5 minutes before parsing, answers `url_verification`, finds the installation by `team_id`
+  (and `api_app_id`), claims the `event_id` in `slack_events` and queues a `slack_event` job in the
+  same transaction, then answers `200` (Slack retries carry the same id and change nothing). The
+  job carries the `team_id` and `event_time` it was routed by and drops the event when the
+  installation now belongs to another team; `app_uninstalled` and `tokens_revoked` are also dropped
+  when the installation is newer than the event, so a queued uninstall never removes a reconnect.
+  The job acts only on a plain `message` in a thread Yuva posted (no subtype, no bot, not the bot
+  user).
+- **Replies.** The Slack user must be linked to a member; the reply runs `CreateMessage` as that
+  member's principal with `via: Slack`, so inbox access, the send rules and the events are the
+  panel's. Without the command it is a note (Slack mentions of linked members who see the inbox
+  become its `mentions`); with `reply_command` (`!` and 1 to 20 letters; Slack keeps `/` for its own
+  commands) it is an outgoing message, refused with an ephemeral explanation while the conversation
+  is marked spam (a note stays allowed). `client_id` `slack:<channel>:<ts>` makes a retried job
+  idempotent. An unlinked user, a member without access to the inbox (or a deleted conversation)
+  and any other refusal get an ephemeral explanation and nothing is written. The text is Slack's
+  mrkdwn turned into plain text (links as `label (url)`, entities decoded); it is the member's own
+  text, not instructions to anything.
+- **Member links.** `POST /v1/me/slack/link` (member session, 5 an hour per member, DB-backed
+  limit checked before any transaction) finds the Slack user by the member's address (or a given
+  one) with `users.lookupByEmail` and DMs a 6-digit code; `POST /v1/me/slack/link/confirm` links
+  it. `GET`/`DELETE /v1/me/slack`.
+- **Access.** `GET /v1/slack`, `GET /v1/slack/channels` and `GET /v1/inboxes/{id}/slack` need
+  `inboxes:read` for keys and tokens; `PUT /v1/inboxes/{id}/slack` owners and admins or
+  `inboxes:manage` (a channel must be one the bot is in); connect, change, disconnect and the
+  `/v1/me/slack` endpoints need a member session. No new realtime or webhook events: notes and
+  replies from Slack emit `message.created` as any other.
+
 ### Satisfaction ratings
 
 An inbox can ask contacts to rate their conversations (`ask_for_rating`, off by default). A
@@ -3867,6 +3939,9 @@ they belong to no channel. (#136, migration 00095)
     is read or returned, only deleted by age.
   - `migration_audit` rows outlive their migration (no foreign key to it) but carry `workspace_id`
     and go with the workspace.
+  - Slack (M32): `POST /ingress/slack` finds the installation by `slack_installations.team_id`
+    (unique across the server) before the workspace is known; everything after that lookup is
+    scoped by the workspace it returned. The OAuth callback's state names its workspace.
   - `yuva api-key revoke <id>` runs on the server with no workspace given: it finds the key by its
     id, unique across the server, and revokes it scoped by the workspace that lookup returned.
 - Usage counters (conversations, messages, members, storage, broadcast recipients, status notice mails) recorded per workspace per month.

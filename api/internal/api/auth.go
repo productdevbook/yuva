@@ -71,6 +71,14 @@ var operationAccess = map[string]access{
 	"MarkMentionSeen":        accessMember,
 	"MarkMentionsSeen":       accessMember,
 
+	"UpdateSlack":        accessMember,
+	"DisconnectSlack":    accessMember,
+	"ConnectSlack":       accessMember,
+	"GetMySlack":         accessMember,
+	"UnlinkMySlack":      accessMember,
+	"StartMySlackLink":   accessMember,
+	"ConfirmMySlackLink": accessMember,
+
 	"GetVapidPublicKey":          accessPerson,
 	"ListPushSubscriptions":      accessPerson,
 	"CreatePushSubscription":     accessPerson,

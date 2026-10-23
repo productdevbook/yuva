@@ -1095,6 +1095,8 @@ const (
 	AuditMemberJoined                        AuditAction = "member.joined"
 	AuditMemberRemoved                       AuditAction = "member.removed"
 	AuditMemberRoleChanged                   AuditAction = "member.role_changed"
+	AuditMemberSlackLinked                   AuditAction = "member.slack_linked"
+	AuditMemberSlackUnlinked                 AuditAction = "member.slack_unlinked"
 	AuditMessageRedacted                     AuditAction = "message.redacted"
 	AuditOAuthGrantCreated                   AuditAction = "oauth_grant.created"
 	AuditOAuthGrantRevoked                   AuditAction = "oauth_grant.revoked"
@@ -1114,6 +1116,8 @@ const (
 	AuditWorkspaceBroadcastsDenied           AuditAction = "workspace.broadcasts_denied"
 	AuditWorkspaceBroadcastsSuspended        AuditAction = "workspace.broadcasts_suspended"
 	AuditWorkspaceRetentionChanged           AuditAction = "workspace.retention_changed"
+	AuditWorkspaceSlackConnected             AuditAction = "workspace.slack_connected"
+	AuditWorkspaceSlackDisconnected          AuditAction = "workspace.slack_disconnected"
 )
 
 // Valid indicates whether the value is a known member of the AuditAction enum.
@@ -1165,6 +1169,10 @@ func (e AuditAction) Valid() bool {
 		return true
 	case AuditMemberRoleChanged:
 		return true
+	case AuditMemberSlackLinked:
+		return true
+	case AuditMemberSlackUnlinked:
+		return true
 	case AuditMessageRedacted:
 		return true
 	case AuditOAuthGrantCreated:
@@ -1202,6 +1210,10 @@ func (e AuditAction) Valid() bool {
 	case AuditWorkspaceBroadcastsSuspended:
 		return true
 	case AuditWorkspaceRetentionChanged:
+		return true
+	case AuditWorkspaceSlackConnected:
+		return true
+	case AuditWorkspaceSlackDisconnected:
 		return true
 	default:
 		return false
@@ -5579,6 +5591,39 @@ func (e SesTenantStatusState) Valid() bool {
 	}
 }
 
+// Defines values for SlackConnectResult.
+const (
+	SlackConnected       SlackConnectResult = "connected"
+	SlackDenied          SlackConnectResult = "denied"
+	SlackExpired         SlackConnectResult = "expired"
+	SlackFailed          SlackConnectResult = "failed"
+	SlackScopeMissing    SlackConnectResult = "scope_missing"
+	SlackSessionMismatch SlackConnectResult = "session_mismatch"
+	SlackTeamTaken       SlackConnectResult = "team_taken"
+)
+
+// Valid indicates whether the value is a known member of the SlackConnectResult enum.
+func (e SlackConnectResult) Valid() bool {
+	switch e {
+	case SlackConnected:
+		return true
+	case SlackDenied:
+		return true
+	case SlackExpired:
+		return true
+	case SlackFailed:
+		return true
+	case SlackScopeMissing:
+		return true
+	case SlackSessionMismatch:
+		return true
+	case SlackTeamTaken:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for SmtpTls.
 const (
 	SmtpTlsNone     SmtpTls = "none"
@@ -8982,6 +9027,9 @@ type Attributes map[string]interface{}
 //     `workspace.broadcasts_denied`: `reason` when the operator gave one.
 //     `workspace.broadcasts_suspended`: `reason`, `paused_broadcasts` (by the operator).
 //     `workspace.broadcast_limit_changed`: `from`, `to` (recipients a day; `null` is no limit).
+//   - `workspace.slack_connected`: `team_id`, `team_name`; `workspace.slack_disconnected`:
+//     `team_id`, and `reason` `uninstalled` (by `system`) when Slack reported the app removed.
+//   - `member.slack_linked`: `slack_user_id`; `member.slack_unlinked`: `slack_user_id`.
 //
 // Details never make an action fail: when they would be too long, lists are replaced by
 // `<name>_count` and `truncated` is `true`.
@@ -9059,6 +9107,9 @@ type AuditEntry struct {
 	//   `workspace.broadcasts_denied`: `reason` when the operator gave one.
 	//   `workspace.broadcasts_suspended`: `reason`, `paused_broadcasts` (by the operator).
 	//   `workspace.broadcast_limit_changed`: `from`, `to` (recipients a day; `null` is no limit).
+	// - `workspace.slack_connected`: `team_id`, `team_name`; `workspace.slack_disconnected`:
+	//   `team_id`, and `reason` `uninstalled` (by `system`) when Slack reported the app removed.
+	// - `member.slack_linked`: `slack_user_id`; `member.slack_unlinked`: `slack_user_id`.
 	//
 	// Details never make an action fail: when they would be too long, lists are replaced by
 	// `<name>_count` and `truncated` is `true`.
@@ -15657,6 +15708,30 @@ type InboxSenderUpdate struct {
 	Registration  nullable.Nullable[string] `json:"registration,omitempty"`
 }
 
+// InboxSlack defines model for InboxSlack.
+type InboxSlack struct {
+	InboxId uuid.UUID `json:"inbox_id"`
+
+	// IncludeContent Whether posts carry the start of the message or note (300 characters). Off by default:
+	// a post carries only the subject, the contact's name and a link to the conversation.
+	IncludeContent bool `json:"include_content"`
+
+	// MentionsChannelId The channel that gets notes in the inbox that mention members.
+	MentionsChannelId *string `json:"mentions_channel_id,omitempty"`
+
+	// NewConversationsChannelId The channel that gets the inbox's new conversations (a contact's first message).
+	NewConversationsChannelId *string    `json:"new_conversations_channel_id,omitempty"`
+	UpdatedAt                 *time.Time `json:"updated_at,omitempty"`
+}
+
+// InboxSlackUpdate defines model for InboxSlackUpdate.
+type InboxSlackUpdate struct {
+	// IncludeContent Absent is `false`.
+	IncludeContent            *bool                     `json:"include_content,omitempty"`
+	MentionsChannelId         nullable.Nullable[string] `json:"mentions_channel_id,omitempty"`
+	NewConversationsChannelId nullable.Nullable[string] `json:"new_conversations_channel_id,omitempty"`
+}
+
 // InboxUpdate defines model for InboxUpdate.
 type InboxUpdate struct {
 	AskForRating *bool          `json:"ask_for_rating,omitempty"`
@@ -16460,7 +16535,8 @@ type MessageAuthor struct {
 	Type AuthorType `json:"type"`
 
 	// Via The OAuth client the member wrote this with (its name at the time), as in
-	// "Ayşe via Claude Code"; absent for the panel, API keys and contacts.
+	// "Ayşe via Claude Code", or `Slack` for a note or reply written in a Slack thread; absent
+	// for the panel, API keys and contacts.
 	Via *string `json:"via,omitempty"`
 }
 
@@ -18964,6 +19040,94 @@ type SignInCodeVerify struct {
 
 	// Email Examples: owner@example.com
 	Email Email `json:"email"`
+}
+
+// SlackChannel defines model for SlackChannel.
+type SlackChannel struct {
+	Id      string `json:"id"`
+	Name    string `json:"name"`
+	Private bool   `json:"private"`
+}
+
+// SlackChannelList defines model for SlackChannelList.
+type SlackChannelList struct {
+	Items []SlackChannel `json:"items"`
+}
+
+// SlackConnectResult How an install ended, in the panel redirect's `result`: `connected`; `denied` (cancelled
+// at Slack); `expired` (no pending start, or older than 10 minutes); `session_mismatch`
+// (another browser session finished it); `team_taken` (that Slack workspace is connected to
+// another Yuva workspace); `scope_missing` (Slack granted fewer scopes than Yuva asks for);
+// `failed` (Slack refused the code or did not answer).
+type SlackConnectResult string
+
+// SlackConnectStart defines model for SlackConnectStart.
+type SlackConnectStart struct {
+	AuthorizeUrl string    `json:"authorize_url"`
+	ExpiresAt    time.Time `json:"expires_at"`
+	RedirectUrl  string    `json:"redirect_url"`
+}
+
+// SlackConnection defines model for SlackConnection.
+type SlackConnection struct {
+	// Available `false` when the server has no Slack app configured; every other Slack endpoint then answers `409 slack_not_configured`.
+	Available bool `json:"available"`
+
+	// BotUserId The Yuva bot's Slack user, to invite into channels.
+	BotUserId   *string    `json:"bot_user_id,omitempty"`
+	Connected   bool       `json:"connected"`
+	ConnectedAt *time.Time `json:"connected_at,omitempty"`
+
+	// ConnectedBy The member who connected it, while they are a member.
+	ConnectedBy *uuid.UUID `json:"connected_by,omitempty"`
+
+	// EventsUrl The Event Subscriptions request URL to enter in the Slack app.
+	EventsUrl string `json:"events_url"`
+
+	// LastError Why the last post to Slack failed (such as `not_in_channel`); cleared by the next one that succeeds.
+	LastError   *string    `json:"last_error,omitempty"`
+	LastErrorAt *time.Time `json:"last_error_at,omitempty"`
+
+	// RedirectUrl The OAuth redirect URL to enter in the Slack app.
+	RedirectUrl string `json:"redirect_url"`
+
+	// ReplyCommand A thread reply starting with this goes to the customer; any other becomes a note.
+	//
+	// Examples: !reply
+	ReplyCommand string `json:"reply_command"`
+
+	// TeamId The Slack workspace's id.
+	TeamId   *string `json:"team_id,omitempty"`
+	TeamName *string `json:"team_name,omitempty"`
+}
+
+// SlackConnectionUpdate defines model for SlackConnectionUpdate.
+type SlackConnectionUpdate struct {
+	// ReplyCommand `!` and 1 to 20 lowercase letters. Slack itself takes messages that start with `/`.
+	ReplyCommand *string `json:"reply_command,omitempty"`
+}
+
+// SlackLinkConfirm defines model for SlackLinkConfirm.
+type SlackLinkConfirm struct {
+	Code string `json:"code"`
+}
+
+// SlackLinkStart defines model for SlackLinkStart.
+type SlackLinkStart struct {
+	// Email The Slack account's e-mail address when it differs from the member's.
+	Email *openapi_types.Email `json:"email,omitempty"`
+}
+
+// SlackMemberLink defines model for SlackMemberLink.
+type SlackMemberLink struct {
+	// CodeExpiresAt While a code is pending.
+	CodeExpiresAt *time.Time `json:"code_expires_at,omitempty"`
+	Linked        bool       `json:"linked"`
+	LinkedAt      *time.Time `json:"linked_at,omitempty"`
+
+	// SlackUserId The linked Slack user, or the one a pending code was sent to.
+	SlackUserId   *string `json:"slack_user_id,omitempty"`
+	SlackUserName *string `json:"slack_user_name,omitempty"`
 }
 
 // Slug Examples: acme-app
@@ -23537,6 +23701,18 @@ type GrantInboxAccessParams struct {
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
 
+// GetInboxSlackParams defines parameters for GetInboxSlack.
+type GetInboxSlackParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// SetInboxSlackParams defines parameters for SetInboxSlack.
+type SetInboxSlackParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
 // ListInvitesParams defines parameters for ListInvites.
 type ListInvitesParams struct {
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
@@ -23840,6 +24016,30 @@ type DeleteInboxNotificationsParams struct {
 
 // SetInboxNotificationsParams defines parameters for SetInboxNotifications.
 type SetInboxNotificationsParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// UnlinkMySlackParams defines parameters for UnlinkMySlack.
+type UnlinkMySlackParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// GetMySlackParams defines parameters for GetMySlack.
+type GetMySlackParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// StartMySlackLinkParams defines parameters for StartMySlackLink.
+type StartMySlackLinkParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// ConfirmMySlackLinkParams defines parameters for ConfirmMySlackLink.
+type ConfirmMySlackLinkParams struct {
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
@@ -24178,6 +24378,39 @@ type PreviewRoadmapBoardParams struct {
 
 // PreviewRoadmapBoardParamsView defines parameters for PreviewRoadmapBoard.
 type PreviewRoadmapBoardParamsView string
+
+// DisconnectSlackParams defines parameters for DisconnectSlack.
+type DisconnectSlackParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// GetSlackParams defines parameters for GetSlack.
+type GetSlackParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// UpdateSlackParams defines parameters for UpdateSlack.
+type UpdateSlackParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// ListSlackChannelsParams defines parameters for ListSlackChannels.
+type ListSlackChannelsParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// ConnectSlackParams defines parameters for ConnectSlack.
+type ConnectSlackParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
 
 // GetStatsParams defines parameters for GetStats.
 type GetStatsParams struct {
@@ -25528,6 +25761,9 @@ type UpdateInboxJSONRequestBody = InboxUpdate
 // CreateChannelJSONRequestBody defines body for CreateChannel for application/json ContentType.
 type CreateChannelJSONRequestBody = ChannelCreate
 
+// SetInboxSlackJSONRequestBody defines body for SetInboxSlack for application/json ContentType.
+type SetInboxSlackJSONRequestBody = InboxSlackUpdate
+
 // CreateInviteJSONRequestBody defines body for CreateInvite for application/json ContentType.
 type CreateInviteJSONRequestBody = InviteCreate
 
@@ -25582,6 +25818,12 @@ type FinishPasskeyRegistrationJSONRequestBody = PasskeyRegistration
 // CreatePushSubscriptionJSONRequestBody defines body for CreatePushSubscription for application/json ContentType.
 type CreatePushSubscriptionJSONRequestBody = PushSubscriptionCreate
 
+// StartMySlackLinkJSONRequestBody defines body for StartMySlackLink for application/json ContentType.
+type StartMySlackLinkJSONRequestBody = SlackLinkStart
+
+// ConfirmMySlackLinkJSONRequestBody defines body for ConfirmMySlackLink for application/json ContentType.
+type ConfirmMySlackLinkJSONRequestBody = SlackLinkConfirm
+
 // UpdateMemberJSONRequestBody defines body for UpdateMember for application/json ContentType.
 type UpdateMemberJSONRequestBody = MemberUpdate
 
@@ -25623,6 +25865,9 @@ type CreateRoadmapBoardJSONRequestBody = RoadmapBoardCreate
 
 // UpdateRoadmapBoardJSONRequestBody defines body for UpdateRoadmapBoard for application/json ContentType.
 type UpdateRoadmapBoardJSONRequestBody = RoadmapBoardUpdate
+
+// UpdateSlackJSONRequestBody defines body for UpdateSlack for application/json ContentType.
+type UpdateSlackJSONRequestBody = SlackConnectionUpdate
 
 // CreateStatusPageJSONRequestBody defines body for CreateStatusPage for application/json ContentType.
 type CreateStatusPageJSONRequestBody = StatusPageCreate
@@ -30561,6 +30806,12 @@ type ServerInterface interface {
 	// GrantInboxAccess Give a member access
 	// (PUT /v1/inboxes/{inboxId}/members/{memberId})
 	GrantInboxAccess(w http.ResponseWriter, r *http.Request, inboxId InboxId, memberId MemberId, params GrantInboxAccessParams)
+	// GetInboxSlack An inbox's Slack channels
+	// (GET /v1/inboxes/{inboxId}/slack)
+	GetInboxSlack(w http.ResponseWriter, r *http.Request, inboxId InboxId, params GetInboxSlackParams)
+	// SetInboxSlack Set an inbox's Slack channels
+	// (PUT /v1/inboxes/{inboxId}/slack)
+	SetInboxSlack(w http.ResponseWriter, r *http.Request, inboxId InboxId, params SetInboxSlackParams)
 	// ListInvites List pending invites
 	// (GET /v1/invites)
 	ListInvites(w http.ResponseWriter, r *http.Request, params ListInvitesParams)
@@ -30714,6 +30965,18 @@ type ServerInterface interface {
 	// TestPushSubscription Send a test notification
 	// (POST /v1/me/push-subscriptions/{pushSubscriptionId}/test)
 	TestPushSubscription(w http.ResponseWriter, r *http.Request, pushSubscriptionId PushSubscriptionId)
+	// UnlinkMySlack Unlink your Slack user
+	// (DELETE /v1/me/slack)
+	UnlinkMySlack(w http.ResponseWriter, r *http.Request, params UnlinkMySlackParams)
+	// GetMySlack Your Slack link
+	// (GET /v1/me/slack)
+	GetMySlack(w http.ResponseWriter, r *http.Request, params GetMySlackParams)
+	// StartMySlackLink Send a link code to your Slack user
+	// (POST /v1/me/slack/link)
+	StartMySlackLink(w http.ResponseWriter, r *http.Request, params StartMySlackLinkParams)
+	// ConfirmMySlackLink Link your Slack user with the code
+	// (POST /v1/me/slack/link/confirm)
+	ConfirmMySlackLink(w http.ResponseWriter, r *http.Request, params ConfirmMySlackLinkParams)
 	// ListMembers List members
 	// (GET /v1/members)
 	ListMembers(w http.ResponseWriter, r *http.Request, params ListMembersParams)
@@ -30855,6 +31118,21 @@ type ServerInterface interface {
 	// PreviewRoadmapBoard Preview a roadmap board page
 	// (GET /v1/roadmap-boards/{boardId}/preview)
 	PreviewRoadmapBoard(w http.ResponseWriter, r *http.Request, boardId RoadmapBoardId, params PreviewRoadmapBoardParams)
+	// DisconnectSlack Disconnect Slack
+	// (DELETE /v1/slack)
+	DisconnectSlack(w http.ResponseWriter, r *http.Request, params DisconnectSlackParams)
+	// GetSlack The workspace's Slack connection
+	// (GET /v1/slack)
+	GetSlack(w http.ResponseWriter, r *http.Request, params GetSlackParams)
+	// UpdateSlack Change the Slack connection's settings
+	// (PATCH /v1/slack)
+	UpdateSlack(w http.ResponseWriter, r *http.Request, params UpdateSlackParams)
+	// ListSlackChannels Slack channels Yuva can post in
+	// (GET /v1/slack/channels)
+	ListSlackChannels(w http.ResponseWriter, r *http.Request, params ListSlackChannelsParams)
+	// ConnectSlack Start connecting Slack
+	// (POST /v1/slack/connect)
+	ConnectSlack(w http.ResponseWriter, r *http.Request, params ConnectSlackParams)
 	// GetStats Team activity since a moment
 	// (GET /v1/stats)
 	GetStats(w http.ResponseWriter, r *http.Request, params GetStatsParams)
@@ -47323,6 +47601,106 @@ func (siw *ServerInterfaceWrapper) GrantInboxAccess(w http.ResponseWriter, r *ht
 	handler.ServeHTTP(w, r)
 }
 
+// GetInboxSlack operation middleware
+func (siw *ServerInterfaceWrapper) GetInboxSlack(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "inboxId" -------------
+	var inboxId InboxId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "inboxId", r.PathValue("inboxId"), &inboxId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "inboxId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetInboxSlackParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetInboxSlack(w, r, inboxId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// SetInboxSlack operation middleware
+func (siw *ServerInterfaceWrapper) SetInboxSlack(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "inboxId" -------------
+	var inboxId InboxId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "inboxId", r.PathValue("inboxId"), &inboxId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "inboxId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params SetInboxSlackParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.SetInboxSlack(w, r, inboxId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // ListInvites operation middleware
 func (siw *ServerInterfaceWrapper) ListInvites(w http.ResponseWriter, r *http.Request) {
 
@@ -49828,6 +50206,170 @@ func (siw *ServerInterfaceWrapper) TestPushSubscription(w http.ResponseWriter, r
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.TestPushSubscription(w, r, pushSubscriptionId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UnlinkMySlack operation middleware
+func (siw *ServerInterfaceWrapper) UnlinkMySlack(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params UnlinkMySlackParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UnlinkMySlack(w, r, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetMySlack operation middleware
+func (siw *ServerInterfaceWrapper) GetMySlack(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetMySlackParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetMySlack(w, r, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// StartMySlackLink operation middleware
+func (siw *ServerInterfaceWrapper) StartMySlackLink(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params StartMySlackLinkParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.StartMySlackLink(w, r, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ConfirmMySlackLink operation middleware
+func (siw *ServerInterfaceWrapper) ConfirmMySlackLink(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ConfirmMySlackLinkParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ConfirmMySlackLink(w, r, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -52441,6 +52983,230 @@ func (siw *ServerInterfaceWrapper) PreviewRoadmapBoard(w http.ResponseWriter, r 
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.PreviewRoadmapBoard(w, r, boardId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// DisconnectSlack operation middleware
+func (siw *ServerInterfaceWrapper) DisconnectSlack(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params DisconnectSlackParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.DisconnectSlack(w, r, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetSlack operation middleware
+func (siw *ServerInterfaceWrapper) GetSlack(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetSlackParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetSlack(w, r, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UpdateSlack operation middleware
+func (siw *ServerInterfaceWrapper) UpdateSlack(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params UpdateSlackParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UpdateSlack(w, r, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListSlackChannels operation middleware
+func (siw *ServerInterfaceWrapper) ListSlackChannels(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListSlackChannelsParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListSlackChannels(w, r, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ConnectSlack operation middleware
+func (siw *ServerInterfaceWrapper) ConnectSlack(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ConnectSlackParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ConnectSlack(w, r, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -57084,6 +57850,17 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/client/v1/analytics-shares/{token}/query", wrapper.QuerySharedAnalytics)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/client/v1/analytics-shares/{token}/realtime", wrapper.GetSharedAnalyticsRealtime)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/client/v1/status/{slug}", wrapper.GetClientStatusPage)
+	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/slack", wrapper.DisconnectSlack)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/slack", wrapper.GetSlack)
+	m.HandleFunc(http.MethodPatch+" "+options.BaseURL+"/v1/slack", wrapper.UpdateSlack)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/slack/connect", wrapper.ConnectSlack)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/slack/channels", wrapper.ListSlackChannels)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/inboxes/{inboxId}/slack", wrapper.GetInboxSlack)
+	m.HandleFunc(http.MethodPut+" "+options.BaseURL+"/v1/inboxes/{inboxId}/slack", wrapper.SetInboxSlack)
+	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/me/slack", wrapper.UnlinkMySlack)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/me/slack", wrapper.GetMySlack)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/me/slack/link", wrapper.StartMySlackLink)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/me/slack/link/confirm", wrapper.ConfirmMySlackLink)
 
 	return m
 }
@@ -83134,6 +83911,183 @@ func (response GrantInboxAccess404ApplicationProblemPlusJSONResponse) VisitGrant
 	return err
 }
 
+type GetInboxSlackRequestObject struct {
+	InboxId InboxId `json:"inboxId"`
+	Params  GetInboxSlackParams
+}
+
+type GetInboxSlackResponseObject interface {
+	VisitGetInboxSlackResponse(w http.ResponseWriter) error
+}
+
+type GetInboxSlack200JSONResponse InboxSlack
+
+func (response GetInboxSlack200JSONResponse) VisitGetInboxSlackResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetInboxSlack401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response GetInboxSlack401ApplicationProblemPlusJSONResponse) VisitGetInboxSlackResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetInboxSlack403ApplicationProblemPlusJSONResponse Problem
+
+func (response GetInboxSlack403ApplicationProblemPlusJSONResponse) VisitGetInboxSlackResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetInboxSlack404ApplicationProblemPlusJSONResponse Problem
+
+func (response GetInboxSlack404ApplicationProblemPlusJSONResponse) VisitGetInboxSlackResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type SetInboxSlackRequestObject struct {
+	InboxId InboxId `json:"inboxId"`
+	Params  SetInboxSlackParams
+	Body    *SetInboxSlackJSONRequestBody
+}
+
+type SetInboxSlackResponseObject interface {
+	VisitSetInboxSlackResponse(w http.ResponseWriter) error
+}
+
+type SetInboxSlack200JSONResponse InboxSlack
+
+func (response SetInboxSlack200JSONResponse) VisitSetInboxSlackResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type SetInboxSlack400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response SetInboxSlack400ApplicationProblemPlusJSONResponse) VisitSetInboxSlackResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type SetInboxSlack401ApplicationProblemPlusJSONResponse Problem
+
+func (response SetInboxSlack401ApplicationProblemPlusJSONResponse) VisitSetInboxSlackResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type SetInboxSlack403ApplicationProblemPlusJSONResponse Problem
+
+func (response SetInboxSlack403ApplicationProblemPlusJSONResponse) VisitSetInboxSlackResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type SetInboxSlack404ApplicationProblemPlusJSONResponse Problem
+
+func (response SetInboxSlack404ApplicationProblemPlusJSONResponse) VisitSetInboxSlackResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type SetInboxSlack409ApplicationProblemPlusJSONResponse Problem
+
+func (response SetInboxSlack409ApplicationProblemPlusJSONResponse) VisitSetInboxSlackResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(409)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type SetInboxSlack502ApplicationProblemPlusJSONResponse Problem
+
+func (response SetInboxSlack502ApplicationProblemPlusJSONResponse) VisitSetInboxSlackResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(502)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
 type ListInvitesRequestObject struct {
 	Params ListInvitesParams
 }
@@ -86840,6 +87794,322 @@ func (response TestPushSubscription404ApplicationProblemPlusJSONResponse) VisitT
 	}
 	w.Header().Set("Content-Type", "application/problem+json")
 	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UnlinkMySlackRequestObject struct {
+	Params UnlinkMySlackParams
+}
+
+type UnlinkMySlackResponseObject interface {
+	VisitUnlinkMySlackResponse(w http.ResponseWriter) error
+}
+
+type UnlinkMySlack204Response struct {
+}
+
+func (response UnlinkMySlack204Response) VisitUnlinkMySlackResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
+}
+
+type UnlinkMySlack401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response UnlinkMySlack401ApplicationProblemPlusJSONResponse) VisitUnlinkMySlackResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UnlinkMySlack403ApplicationProblemPlusJSONResponse Problem
+
+func (response UnlinkMySlack403ApplicationProblemPlusJSONResponse) VisitUnlinkMySlackResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UnlinkMySlack404ApplicationProblemPlusJSONResponse Problem
+
+func (response UnlinkMySlack404ApplicationProblemPlusJSONResponse) VisitUnlinkMySlackResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetMySlackRequestObject struct {
+	Params GetMySlackParams
+}
+
+type GetMySlackResponseObject interface {
+	VisitGetMySlackResponse(w http.ResponseWriter) error
+}
+
+type GetMySlack200JSONResponse SlackMemberLink
+
+func (response GetMySlack200JSONResponse) VisitGetMySlackResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetMySlack401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response GetMySlack401ApplicationProblemPlusJSONResponse) VisitGetMySlackResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetMySlack403ApplicationProblemPlusJSONResponse Problem
+
+func (response GetMySlack403ApplicationProblemPlusJSONResponse) VisitGetMySlackResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type StartMySlackLinkRequestObject struct {
+	Params StartMySlackLinkParams
+	Body   *StartMySlackLinkJSONRequestBody
+}
+
+type StartMySlackLinkResponseObject interface {
+	VisitStartMySlackLinkResponse(w http.ResponseWriter) error
+}
+
+type StartMySlackLink202JSONResponse SlackMemberLink
+
+func (response StartMySlackLink202JSONResponse) VisitStartMySlackLinkResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(202)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type StartMySlackLink400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response StartMySlackLink400ApplicationProblemPlusJSONResponse) VisitStartMySlackLinkResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type StartMySlackLink401ApplicationProblemPlusJSONResponse Problem
+
+func (response StartMySlackLink401ApplicationProblemPlusJSONResponse) VisitStartMySlackLinkResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type StartMySlackLink403ApplicationProblemPlusJSONResponse Problem
+
+func (response StartMySlackLink403ApplicationProblemPlusJSONResponse) VisitStartMySlackLinkResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type StartMySlackLink404ApplicationProblemPlusJSONResponse Problem
+
+func (response StartMySlackLink404ApplicationProblemPlusJSONResponse) VisitStartMySlackLinkResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type StartMySlackLink409ApplicationProblemPlusJSONResponse Problem
+
+func (response StartMySlackLink409ApplicationProblemPlusJSONResponse) VisitStartMySlackLinkResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(409)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type StartMySlackLink429ApplicationProblemPlusJSONResponse Problem
+
+func (response StartMySlackLink429ApplicationProblemPlusJSONResponse) VisitStartMySlackLinkResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(429)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type StartMySlackLink502ApplicationProblemPlusJSONResponse Problem
+
+func (response StartMySlackLink502ApplicationProblemPlusJSONResponse) VisitStartMySlackLinkResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(502)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ConfirmMySlackLinkRequestObject struct {
+	Params ConfirmMySlackLinkParams
+	Body   *ConfirmMySlackLinkJSONRequestBody
+}
+
+type ConfirmMySlackLinkResponseObject interface {
+	VisitConfirmMySlackLinkResponse(w http.ResponseWriter) error
+}
+
+type ConfirmMySlackLink200JSONResponse SlackMemberLink
+
+func (response ConfirmMySlackLink200JSONResponse) VisitConfirmMySlackLinkResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ConfirmMySlackLink400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response ConfirmMySlackLink400ApplicationProblemPlusJSONResponse) VisitConfirmMySlackLinkResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ConfirmMySlackLink401ApplicationProblemPlusJSONResponse Problem
+
+func (response ConfirmMySlackLink401ApplicationProblemPlusJSONResponse) VisitConfirmMySlackLinkResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ConfirmMySlackLink403ApplicationProblemPlusJSONResponse Problem
+
+func (response ConfirmMySlackLink403ApplicationProblemPlusJSONResponse) VisitConfirmMySlackLinkResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ConfirmMySlackLink409ApplicationProblemPlusJSONResponse Problem
+
+func (response ConfirmMySlackLink409ApplicationProblemPlusJSONResponse) VisitConfirmMySlackLinkResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(409)
 	_, err := buf.WriteTo(w)
 	return err
 }
@@ -90695,6 +91965,345 @@ func (response PreviewRoadmapBoard404ApplicationProblemPlusJSONResponse) VisitPr
 	}
 	w.Header().Set("Content-Type", "application/problem+json")
 	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DisconnectSlackRequestObject struct {
+	Params DisconnectSlackParams
+}
+
+type DisconnectSlackResponseObject interface {
+	VisitDisconnectSlackResponse(w http.ResponseWriter) error
+}
+
+type DisconnectSlack204Response struct {
+}
+
+func (response DisconnectSlack204Response) VisitDisconnectSlackResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
+}
+
+type DisconnectSlack401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response DisconnectSlack401ApplicationProblemPlusJSONResponse) VisitDisconnectSlackResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DisconnectSlack403ApplicationProblemPlusJSONResponse Problem
+
+func (response DisconnectSlack403ApplicationProblemPlusJSONResponse) VisitDisconnectSlackResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DisconnectSlack409ApplicationProblemPlusJSONResponse Problem
+
+func (response DisconnectSlack409ApplicationProblemPlusJSONResponse) VisitDisconnectSlackResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(409)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetSlackRequestObject struct {
+	Params GetSlackParams
+}
+
+type GetSlackResponseObject interface {
+	VisitGetSlackResponse(w http.ResponseWriter) error
+}
+
+type GetSlack200JSONResponse SlackConnection
+
+func (response GetSlack200JSONResponse) VisitGetSlackResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetSlack401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response GetSlack401ApplicationProblemPlusJSONResponse) VisitGetSlackResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetSlack403ApplicationProblemPlusJSONResponse Problem
+
+func (response GetSlack403ApplicationProblemPlusJSONResponse) VisitGetSlackResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateSlackRequestObject struct {
+	Params UpdateSlackParams
+	Body   *UpdateSlackJSONRequestBody
+}
+
+type UpdateSlackResponseObject interface {
+	VisitUpdateSlackResponse(w http.ResponseWriter) error
+}
+
+type UpdateSlack200JSONResponse SlackConnection
+
+func (response UpdateSlack200JSONResponse) VisitUpdateSlackResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateSlack400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response UpdateSlack400ApplicationProblemPlusJSONResponse) VisitUpdateSlackResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateSlack401ApplicationProblemPlusJSONResponse Problem
+
+func (response UpdateSlack401ApplicationProblemPlusJSONResponse) VisitUpdateSlackResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateSlack403ApplicationProblemPlusJSONResponse Problem
+
+func (response UpdateSlack403ApplicationProblemPlusJSONResponse) VisitUpdateSlackResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateSlack409ApplicationProblemPlusJSONResponse Problem
+
+func (response UpdateSlack409ApplicationProblemPlusJSONResponse) VisitUpdateSlackResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(409)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListSlackChannelsRequestObject struct {
+	Params ListSlackChannelsParams
+}
+
+type ListSlackChannelsResponseObject interface {
+	VisitListSlackChannelsResponse(w http.ResponseWriter) error
+}
+
+type ListSlackChannels200JSONResponse SlackChannelList
+
+func (response ListSlackChannels200JSONResponse) VisitListSlackChannelsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListSlackChannels401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response ListSlackChannels401ApplicationProblemPlusJSONResponse) VisitListSlackChannelsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListSlackChannels403ApplicationProblemPlusJSONResponse Problem
+
+func (response ListSlackChannels403ApplicationProblemPlusJSONResponse) VisitListSlackChannelsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListSlackChannels409ApplicationProblemPlusJSONResponse Problem
+
+func (response ListSlackChannels409ApplicationProblemPlusJSONResponse) VisitListSlackChannelsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(409)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListSlackChannels502ApplicationProblemPlusJSONResponse Problem
+
+func (response ListSlackChannels502ApplicationProblemPlusJSONResponse) VisitListSlackChannelsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(502)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ConnectSlackRequestObject struct {
+	Params ConnectSlackParams
+}
+
+type ConnectSlackResponseObject interface {
+	VisitConnectSlackResponse(w http.ResponseWriter) error
+}
+
+type ConnectSlack200JSONResponse SlackConnectStart
+
+func (response ConnectSlack200JSONResponse) VisitConnectSlackResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ConnectSlack401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response ConnectSlack401ApplicationProblemPlusJSONResponse) VisitConnectSlackResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ConnectSlack403ApplicationProblemPlusJSONResponse Problem
+
+func (response ConnectSlack403ApplicationProblemPlusJSONResponse) VisitConnectSlackResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ConnectSlack409ApplicationProblemPlusJSONResponse Problem
+
+func (response ConnectSlack409ApplicationProblemPlusJSONResponse) VisitConnectSlackResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(409)
 	_, err := buf.WriteTo(w)
 	return err
 }
@@ -96473,6 +98082,12 @@ type StrictServerInterface interface {
 	// GrantInboxAccess Give a member access
 	// (PUT /v1/inboxes/{inboxId}/members/{memberId})
 	GrantInboxAccess(ctx context.Context, request GrantInboxAccessRequestObject) (GrantInboxAccessResponseObject, error)
+	// GetInboxSlack An inbox's Slack channels
+	// (GET /v1/inboxes/{inboxId}/slack)
+	GetInboxSlack(ctx context.Context, request GetInboxSlackRequestObject) (GetInboxSlackResponseObject, error)
+	// SetInboxSlack Set an inbox's Slack channels
+	// (PUT /v1/inboxes/{inboxId}/slack)
+	SetInboxSlack(ctx context.Context, request SetInboxSlackRequestObject) (SetInboxSlackResponseObject, error)
 	// ListInvites List pending invites
 	// (GET /v1/invites)
 	ListInvites(ctx context.Context, request ListInvitesRequestObject) (ListInvitesResponseObject, error)
@@ -96626,6 +98241,18 @@ type StrictServerInterface interface {
 	// TestPushSubscription Send a test notification
 	// (POST /v1/me/push-subscriptions/{pushSubscriptionId}/test)
 	TestPushSubscription(ctx context.Context, request TestPushSubscriptionRequestObject) (TestPushSubscriptionResponseObject, error)
+	// UnlinkMySlack Unlink your Slack user
+	// (DELETE /v1/me/slack)
+	UnlinkMySlack(ctx context.Context, request UnlinkMySlackRequestObject) (UnlinkMySlackResponseObject, error)
+	// GetMySlack Your Slack link
+	// (GET /v1/me/slack)
+	GetMySlack(ctx context.Context, request GetMySlackRequestObject) (GetMySlackResponseObject, error)
+	// StartMySlackLink Send a link code to your Slack user
+	// (POST /v1/me/slack/link)
+	StartMySlackLink(ctx context.Context, request StartMySlackLinkRequestObject) (StartMySlackLinkResponseObject, error)
+	// ConfirmMySlackLink Link your Slack user with the code
+	// (POST /v1/me/slack/link/confirm)
+	ConfirmMySlackLink(ctx context.Context, request ConfirmMySlackLinkRequestObject) (ConfirmMySlackLinkResponseObject, error)
 	// ListMembers List members
 	// (GET /v1/members)
 	ListMembers(ctx context.Context, request ListMembersRequestObject) (ListMembersResponseObject, error)
@@ -96767,6 +98394,21 @@ type StrictServerInterface interface {
 	// PreviewRoadmapBoard Preview a roadmap board page
 	// (GET /v1/roadmap-boards/{boardId}/preview)
 	PreviewRoadmapBoard(ctx context.Context, request PreviewRoadmapBoardRequestObject) (PreviewRoadmapBoardResponseObject, error)
+	// DisconnectSlack Disconnect Slack
+	// (DELETE /v1/slack)
+	DisconnectSlack(ctx context.Context, request DisconnectSlackRequestObject) (DisconnectSlackResponseObject, error)
+	// GetSlack The workspace's Slack connection
+	// (GET /v1/slack)
+	GetSlack(ctx context.Context, request GetSlackRequestObject) (GetSlackResponseObject, error)
+	// UpdateSlack Change the Slack connection's settings
+	// (PATCH /v1/slack)
+	UpdateSlack(ctx context.Context, request UpdateSlackRequestObject) (UpdateSlackResponseObject, error)
+	// ListSlackChannels Slack channels Yuva can post in
+	// (GET /v1/slack/channels)
+	ListSlackChannels(ctx context.Context, request ListSlackChannelsRequestObject) (ListSlackChannelsResponseObject, error)
+	// ConnectSlack Start connecting Slack
+	// (POST /v1/slack/connect)
+	ConnectSlack(ctx context.Context, request ConnectSlackRequestObject) (ConnectSlackResponseObject, error)
 	// GetStats Team activity since a moment
 	// (GET /v1/stats)
 	GetStats(ctx context.Context, request GetStatsRequestObject) (GetStatsResponseObject, error)
@@ -105354,6 +106996,67 @@ func (sh *strictHandler) GrantInboxAccess(w http.ResponseWriter, r *http.Request
 	}
 }
 
+// GetInboxSlack operation middleware
+func (sh *strictHandler) GetInboxSlack(w http.ResponseWriter, r *http.Request, inboxId InboxId, params GetInboxSlackParams) {
+	var request GetInboxSlackRequestObject
+
+	request.InboxId = inboxId
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.GetInboxSlack(ctx, request.(GetInboxSlackRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "GetInboxSlack")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(GetInboxSlackResponseObject); ok {
+		if err := validResponse.VisitGetInboxSlackResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// SetInboxSlack operation middleware
+func (sh *strictHandler) SetInboxSlack(w http.ResponseWriter, r *http.Request, inboxId InboxId, params SetInboxSlackParams) {
+	var request SetInboxSlackRequestObject
+
+	request.InboxId = inboxId
+	request.Params = params
+
+	var body SetInboxSlackJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.SetInboxSlack(ctx, request.(SetInboxSlackRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "SetInboxSlack")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(SetInboxSlackResponseObject); ok {
+		if err := validResponse.VisitSetInboxSlackResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
 // ListInvites operation middleware
 func (sh *strictHandler) ListInvites(w http.ResponseWriter, r *http.Request, params ListInvitesParams) {
 	var request ListInvitesRequestObject
@@ -106826,6 +108529,127 @@ func (sh *strictHandler) TestPushSubscription(w http.ResponseWriter, r *http.Req
 	}
 }
 
+// UnlinkMySlack operation middleware
+func (sh *strictHandler) UnlinkMySlack(w http.ResponseWriter, r *http.Request, params UnlinkMySlackParams) {
+	var request UnlinkMySlackRequestObject
+
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.UnlinkMySlack(ctx, request.(UnlinkMySlackRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "UnlinkMySlack")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(UnlinkMySlackResponseObject); ok {
+		if err := validResponse.VisitUnlinkMySlackResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// GetMySlack operation middleware
+func (sh *strictHandler) GetMySlack(w http.ResponseWriter, r *http.Request, params GetMySlackParams) {
+	var request GetMySlackRequestObject
+
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.GetMySlack(ctx, request.(GetMySlackRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "GetMySlack")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(GetMySlackResponseObject); ok {
+		if err := validResponse.VisitGetMySlackResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// StartMySlackLink operation middleware
+func (sh *strictHandler) StartMySlackLink(w http.ResponseWriter, r *http.Request, params StartMySlackLinkParams) {
+	var request StartMySlackLinkRequestObject
+
+	request.Params = params
+
+	var body StartMySlackLinkJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		if !errors.Is(err, io.EOF) {
+			sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+			return
+		}
+	} else {
+		request.Body = &body
+	}
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.StartMySlackLink(ctx, request.(StartMySlackLinkRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "StartMySlackLink")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(StartMySlackLinkResponseObject); ok {
+		if err := validResponse.VisitStartMySlackLinkResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// ConfirmMySlackLink operation middleware
+func (sh *strictHandler) ConfirmMySlackLink(w http.ResponseWriter, r *http.Request, params ConfirmMySlackLinkParams) {
+	var request ConfirmMySlackLinkRequestObject
+
+	request.Params = params
+
+	var body ConfirmMySlackLinkJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.ConfirmMySlackLink(ctx, request.(ConfirmMySlackLinkRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "ConfirmMySlackLink")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(ConfirmMySlackLinkResponseObject); ok {
+		if err := validResponse.VisitConfirmMySlackLinkResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
 // ListMembers operation middleware
 func (sh *strictHandler) ListMembers(w http.ResponseWriter, r *http.Request, params ListMembersParams) {
 	var request ListMembersRequestObject
@@ -108179,6 +110003,143 @@ func (sh *strictHandler) PreviewRoadmapBoard(w http.ResponseWriter, r *http.Requ
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
 	} else if validResponse, ok := response.(PreviewRoadmapBoardResponseObject); ok {
 		if err := validResponse.VisitPreviewRoadmapBoardResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// DisconnectSlack operation middleware
+func (sh *strictHandler) DisconnectSlack(w http.ResponseWriter, r *http.Request, params DisconnectSlackParams) {
+	var request DisconnectSlackRequestObject
+
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.DisconnectSlack(ctx, request.(DisconnectSlackRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "DisconnectSlack")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(DisconnectSlackResponseObject); ok {
+		if err := validResponse.VisitDisconnectSlackResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// GetSlack operation middleware
+func (sh *strictHandler) GetSlack(w http.ResponseWriter, r *http.Request, params GetSlackParams) {
+	var request GetSlackRequestObject
+
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.GetSlack(ctx, request.(GetSlackRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "GetSlack")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(GetSlackResponseObject); ok {
+		if err := validResponse.VisitGetSlackResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// UpdateSlack operation middleware
+func (sh *strictHandler) UpdateSlack(w http.ResponseWriter, r *http.Request, params UpdateSlackParams) {
+	var request UpdateSlackRequestObject
+
+	request.Params = params
+
+	var body UpdateSlackJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.UpdateSlack(ctx, request.(UpdateSlackRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "UpdateSlack")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(UpdateSlackResponseObject); ok {
+		if err := validResponse.VisitUpdateSlackResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// ListSlackChannels operation middleware
+func (sh *strictHandler) ListSlackChannels(w http.ResponseWriter, r *http.Request, params ListSlackChannelsParams) {
+	var request ListSlackChannelsRequestObject
+
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.ListSlackChannels(ctx, request.(ListSlackChannelsRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "ListSlackChannels")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(ListSlackChannelsResponseObject); ok {
+		if err := validResponse.VisitListSlackChannelsResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// ConnectSlack operation middleware
+func (sh *strictHandler) ConnectSlack(w http.ResponseWriter, r *http.Request, params ConnectSlackParams) {
+	var request ConnectSlackRequestObject
+
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.ConnectSlack(ctx, request.(ConnectSlackRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "ConnectSlack")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(ConnectSlackResponseObject); ok {
+		if err := validResponse.VisitConnectSlackResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {

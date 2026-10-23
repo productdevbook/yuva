@@ -250,6 +250,13 @@ Komutlar, [Operatör komutları](operations.md#operatör-komutları) bölümünd
 |---|---|---|
 | `YUVA_WEBHOOK_ALLOW_PRIVATE` | `false` | Webhook'ların loopback ve özel ağ adreslerine ulaşmasına izin verir. Yalnızca geliştirme için. |
 
+## Slack
+
+| Değişken | Varsayılan | Anlamı |
+|---|---|---|
+| `YUVA_SLACK_CLIENT_ID`, `YUVA_SLACK_CLIENT_SECRET` | atanmamış | Çalışma alanlarının bağlandığı Slack uygulaması ([nasıl oluşturulur](slack.md#slack-uygulamasını-oluşturun)). Üç Slack değişkenini birlikte atayın ya da hiçbirini; atanmamışsa Slack kapalıdır ve `GET /v1/slack` `available: false` döner. |
+| `YUVA_SLACK_SIGNING_SECRET` | atanmamış | Uygulamanın imzalama sırrı; imzası ya da zaman damgası (5 dakika) uymayan olayları Yuva reddeder. |
+
 ## Web Push
 
 | Değişken | Varsayılan | Anlamı |

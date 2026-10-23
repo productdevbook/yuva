@@ -1093,6 +1093,8 @@ const (
 	AuditMemberJoined                        AuditAction = "member.joined"
 	AuditMemberRemoved                       AuditAction = "member.removed"
 	AuditMemberRoleChanged                   AuditAction = "member.role_changed"
+	AuditMemberSlackLinked                   AuditAction = "member.slack_linked"
+	AuditMemberSlackUnlinked                 AuditAction = "member.slack_unlinked"
 	AuditMessageRedacted                     AuditAction = "message.redacted"
 	AuditOAuthGrantCreated                   AuditAction = "oauth_grant.created"
 	AuditOAuthGrantRevoked                   AuditAction = "oauth_grant.revoked"
@@ -1112,6 +1114,8 @@ const (
 	AuditWorkspaceBroadcastsDenied           AuditAction = "workspace.broadcasts_denied"
 	AuditWorkspaceBroadcastsSuspended        AuditAction = "workspace.broadcasts_suspended"
 	AuditWorkspaceRetentionChanged           AuditAction = "workspace.retention_changed"
+	AuditWorkspaceSlackConnected             AuditAction = "workspace.slack_connected"
+	AuditWorkspaceSlackDisconnected          AuditAction = "workspace.slack_disconnected"
 )
 
 // Valid indicates whether the value is a known member of the AuditAction enum.
@@ -1163,6 +1167,10 @@ func (e AuditAction) Valid() bool {
 		return true
 	case AuditMemberRoleChanged:
 		return true
+	case AuditMemberSlackLinked:
+		return true
+	case AuditMemberSlackUnlinked:
+		return true
 	case AuditMessageRedacted:
 		return true
 	case AuditOAuthGrantCreated:
@@ -1200,6 +1208,10 @@ func (e AuditAction) Valid() bool {
 	case AuditWorkspaceBroadcastsSuspended:
 		return true
 	case AuditWorkspaceRetentionChanged:
+		return true
+	case AuditWorkspaceSlackConnected:
+		return true
+	case AuditWorkspaceSlackDisconnected:
 		return true
 	default:
 		return false
@@ -5577,6 +5589,39 @@ func (e SesTenantStatusState) Valid() bool {
 	}
 }
 
+// Defines values for SlackConnectResult.
+const (
+	SlackConnected       SlackConnectResult = "connected"
+	SlackDenied          SlackConnectResult = "denied"
+	SlackExpired         SlackConnectResult = "expired"
+	SlackFailed          SlackConnectResult = "failed"
+	SlackScopeMissing    SlackConnectResult = "scope_missing"
+	SlackSessionMismatch SlackConnectResult = "session_mismatch"
+	SlackTeamTaken       SlackConnectResult = "team_taken"
+)
+
+// Valid indicates whether the value is a known member of the SlackConnectResult enum.
+func (e SlackConnectResult) Valid() bool {
+	switch e {
+	case SlackConnected:
+		return true
+	case SlackDenied:
+		return true
+	case SlackExpired:
+		return true
+	case SlackFailed:
+		return true
+	case SlackScopeMissing:
+		return true
+	case SlackSessionMismatch:
+		return true
+	case SlackTeamTaken:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for SmtpTls.
 const (
 	SmtpTlsNone     SmtpTls = "none"
@@ -9028,6 +9073,9 @@ type Attributes map[string]interface{}
 //     `workspace.broadcasts_denied`: `reason` when the operator gave one.
 //     `workspace.broadcasts_suspended`: `reason`, `paused_broadcasts` (by the operator).
 //     `workspace.broadcast_limit_changed`: `from`, `to` (recipients a day; `null` is no limit).
+//   - `workspace.slack_connected`: `team_id`, `team_name`; `workspace.slack_disconnected`:
+//     `team_id`, and `reason` `uninstalled` (by `system`) when Slack reported the app removed.
+//   - `member.slack_linked`: `slack_user_id`; `member.slack_unlinked`: `slack_user_id`.
 //
 // Details never make an action fail: when they would be too long, lists are replaced by
 // `<name>_count` and `truncated` is `true`.
@@ -9105,6 +9153,9 @@ type AuditEntry struct {
 	//   `workspace.broadcasts_denied`: `reason` when the operator gave one.
 	//   `workspace.broadcasts_suspended`: `reason`, `paused_broadcasts` (by the operator).
 	//   `workspace.broadcast_limit_changed`: `from`, `to` (recipients a day; `null` is no limit).
+	// - `workspace.slack_connected`: `team_id`, `team_name`; `workspace.slack_disconnected`:
+	//   `team_id`, and `reason` `uninstalled` (by `system`) when Slack reported the app removed.
+	// - `member.slack_linked`: `slack_user_id`; `member.slack_unlinked`: `slack_user_id`.
 	//
 	// Details never make an action fail: when they would be too long, lists are replaced by
 	// `<name>_count` and `truncated` is `true`.
@@ -15703,6 +15754,30 @@ type InboxSenderUpdate struct {
 	Registration  nullable.Nullable[string] `json:"registration,omitempty"`
 }
 
+// InboxSlack defines model for InboxSlack.
+type InboxSlack struct {
+	InboxId uuid.UUID `json:"inbox_id"`
+
+	// IncludeContent Whether posts carry the start of the message or note (300 characters). Off by default:
+	// a post carries only the subject, the contact's name and a link to the conversation.
+	IncludeContent bool `json:"include_content"`
+
+	// MentionsChannelId The channel that gets notes in the inbox that mention members.
+	MentionsChannelId *string `json:"mentions_channel_id,omitempty"`
+
+	// NewConversationsChannelId The channel that gets the inbox's new conversations (a contact's first message).
+	NewConversationsChannelId *string    `json:"new_conversations_channel_id,omitempty"`
+	UpdatedAt                 *time.Time `json:"updated_at,omitempty"`
+}
+
+// InboxSlackUpdate defines model for InboxSlackUpdate.
+type InboxSlackUpdate struct {
+	// IncludeContent Absent is `false`.
+	IncludeContent            *bool                     `json:"include_content,omitempty"`
+	MentionsChannelId         nullable.Nullable[string] `json:"mentions_channel_id,omitempty"`
+	NewConversationsChannelId nullable.Nullable[string] `json:"new_conversations_channel_id,omitempty"`
+}
+
 // InboxUpdate defines model for InboxUpdate.
 type InboxUpdate struct {
 	AskForRating *bool          `json:"ask_for_rating,omitempty"`
@@ -16506,7 +16581,8 @@ type MessageAuthor struct {
 	Type AuthorType `json:"type"`
 
 	// Via The OAuth client the member wrote this with (its name at the time), as in
-	// "Ayşe via Claude Code"; absent for the panel, API keys and contacts.
+	// "Ayşe via Claude Code", or `Slack` for a note or reply written in a Slack thread; absent
+	// for the panel, API keys and contacts.
 	Via *string `json:"via,omitempty"`
 }
 
@@ -19010,6 +19086,94 @@ type SignInCodeVerify struct {
 
 	// Email Examples: owner@example.com
 	Email Email `json:"email"`
+}
+
+// SlackChannel defines model for SlackChannel.
+type SlackChannel struct {
+	Id      string `json:"id"`
+	Name    string `json:"name"`
+	Private bool   `json:"private"`
+}
+
+// SlackChannelList defines model for SlackChannelList.
+type SlackChannelList struct {
+	Items []SlackChannel `json:"items"`
+}
+
+// SlackConnectResult How an install ended, in the panel redirect's `result`: `connected`; `denied` (cancelled
+// at Slack); `expired` (no pending start, or older than 10 minutes); `session_mismatch`
+// (another browser session finished it); `team_taken` (that Slack workspace is connected to
+// another Yuva workspace); `scope_missing` (Slack granted fewer scopes than Yuva asks for);
+// `failed` (Slack refused the code or did not answer).
+type SlackConnectResult string
+
+// SlackConnectStart defines model for SlackConnectStart.
+type SlackConnectStart struct {
+	AuthorizeUrl string    `json:"authorize_url"`
+	ExpiresAt    time.Time `json:"expires_at"`
+	RedirectUrl  string    `json:"redirect_url"`
+}
+
+// SlackConnection defines model for SlackConnection.
+type SlackConnection struct {
+	// Available `false` when the server has no Slack app configured; every other Slack endpoint then answers `409 slack_not_configured`.
+	Available bool `json:"available"`
+
+	// BotUserId The Yuva bot's Slack user, to invite into channels.
+	BotUserId   *string    `json:"bot_user_id,omitempty"`
+	Connected   bool       `json:"connected"`
+	ConnectedAt *time.Time `json:"connected_at,omitempty"`
+
+	// ConnectedBy The member who connected it, while they are a member.
+	ConnectedBy *uuid.UUID `json:"connected_by,omitempty"`
+
+	// EventsUrl The Event Subscriptions request URL to enter in the Slack app.
+	EventsUrl string `json:"events_url"`
+
+	// LastError Why the last post to Slack failed (such as `not_in_channel`); cleared by the next one that succeeds.
+	LastError   *string    `json:"last_error,omitempty"`
+	LastErrorAt *time.Time `json:"last_error_at,omitempty"`
+
+	// RedirectUrl The OAuth redirect URL to enter in the Slack app.
+	RedirectUrl string `json:"redirect_url"`
+
+	// ReplyCommand A thread reply starting with this goes to the customer; any other becomes a note.
+	//
+	// Examples: !reply
+	ReplyCommand string `json:"reply_command"`
+
+	// TeamId The Slack workspace's id.
+	TeamId   *string `json:"team_id,omitempty"`
+	TeamName *string `json:"team_name,omitempty"`
+}
+
+// SlackConnectionUpdate defines model for SlackConnectionUpdate.
+type SlackConnectionUpdate struct {
+	// ReplyCommand `!` and 1 to 20 lowercase letters. Slack itself takes messages that start with `/`.
+	ReplyCommand *string `json:"reply_command,omitempty"`
+}
+
+// SlackLinkConfirm defines model for SlackLinkConfirm.
+type SlackLinkConfirm struct {
+	Code string `json:"code"`
+}
+
+// SlackLinkStart defines model for SlackLinkStart.
+type SlackLinkStart struct {
+	// Email The Slack account's e-mail address when it differs from the member's.
+	Email *openapi_types.Email `json:"email,omitempty"`
+}
+
+// SlackMemberLink defines model for SlackMemberLink.
+type SlackMemberLink struct {
+	// CodeExpiresAt While a code is pending.
+	CodeExpiresAt *time.Time `json:"code_expires_at,omitempty"`
+	Linked        bool       `json:"linked"`
+	LinkedAt      *time.Time `json:"linked_at,omitempty"`
+
+	// SlackUserId The linked Slack user, or the one a pending code was sent to.
+	SlackUserId   *string `json:"slack_user_id,omitempty"`
+	SlackUserName *string `json:"slack_user_name,omitempty"`
 }
 
 // Slug Examples: acme-app
@@ -21636,9 +21800,27 @@ type StatusHeartbeatPostParams struct {
 // StatusHeartbeatPostParamsFail defines parameters for StatusHeartbeatPost.
 type StatusHeartbeatPostParamsFail string
 
+// IngestSlackJSONBody defines parameters for IngestSlack.
+type IngestSlackJSONBody = map[string]interface{}
+
+// IngestSlackParams defines parameters for IngestSlack.
+type IngestSlackParams struct {
+	XSlackSignature string `json:"X-Slack-Signature"`
+
+	// XSlackRequestTimestamp Unix time in seconds.
+	XSlackRequestTimestamp string `json:"X-Slack-Request-Timestamp"`
+}
+
 // StatusPushJSONBody defines parameters for StatusPush.
 type StatusPushJSONBody struct {
 	union json.RawMessage
+}
+
+// SlackOAuthCallbackParams defines parameters for SlackOAuthCallback.
+type SlackOAuthCallbackParams struct {
+	Code  *string `form:"code,omitempty" json:"code,omitempty"`
+	State *string `form:"state,omitempty" json:"state,omitempty"`
+	Error *string `form:"error,omitempty" json:"error,omitempty"`
 }
 
 // CheckStatusDomainParams defines parameters for CheckStatusDomain.
@@ -23606,6 +23788,18 @@ type GrantInboxAccessParams struct {
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
 
+// GetInboxSlackParams defines parameters for GetInboxSlack.
+type GetInboxSlackParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// SetInboxSlackParams defines parameters for SetInboxSlack.
+type SetInboxSlackParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
 // ListInvitesParams defines parameters for ListInvites.
 type ListInvitesParams struct {
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
@@ -23909,6 +24103,30 @@ type DeleteInboxNotificationsParams struct {
 
 // SetInboxNotificationsParams defines parameters for SetInboxNotifications.
 type SetInboxNotificationsParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// UnlinkMySlackParams defines parameters for UnlinkMySlack.
+type UnlinkMySlackParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// GetMySlackParams defines parameters for GetMySlack.
+type GetMySlackParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// StartMySlackLinkParams defines parameters for StartMySlackLink.
+type StartMySlackLinkParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// ConfirmMySlackLinkParams defines parameters for ConfirmMySlackLink.
+type ConfirmMySlackLinkParams struct {
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
@@ -24247,6 +24465,39 @@ type PreviewRoadmapBoardParams struct {
 
 // PreviewRoadmapBoardParamsView defines parameters for PreviewRoadmapBoard.
 type PreviewRoadmapBoardParamsView string
+
+// DisconnectSlackParams defines parameters for DisconnectSlack.
+type DisconnectSlackParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// GetSlackParams defines parameters for GetSlack.
+type GetSlackParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// UpdateSlackParams defines parameters for UpdateSlack.
+type UpdateSlackParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// ListSlackChannelsParams defines parameters for ListSlackChannels.
+type ListSlackChannelsParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// ConnectSlackParams defines parameters for ConnectSlack.
+type ConnectSlackParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
 
 // GetStatsParams defines parameters for GetStats.
 type GetStatsParams struct {
@@ -25348,6 +25599,9 @@ type CreateClientSessionJSONRequestBody = ClientSessionCreate
 // SubscribeClientJSONRequestBody defines body for SubscribeClient for application/json ContentType.
 type SubscribeClientJSONRequestBody = ClientSubscriptionPut
 
+// IngestSlackJSONRequestBody defines body for IngestSlack for application/json ContentType.
+type IngestSlackJSONRequestBody = IngestSlackJSONBody
+
 // StatusPushJSONRequestBody defines body for StatusPush for application/json ContentType.
 type StatusPushJSONRequestBody StatusPushJSONBody
 
@@ -25606,6 +25860,9 @@ type UpdateInboxJSONRequestBody = InboxUpdate
 // CreateChannelJSONRequestBody defines body for CreateChannel for application/json ContentType.
 type CreateChannelJSONRequestBody = ChannelCreate
 
+// SetInboxSlackJSONRequestBody defines body for SetInboxSlack for application/json ContentType.
+type SetInboxSlackJSONRequestBody = InboxSlackUpdate
+
 // CreateInviteJSONRequestBody defines body for CreateInvite for application/json ContentType.
 type CreateInviteJSONRequestBody = InviteCreate
 
@@ -25660,6 +25917,12 @@ type FinishPasskeyRegistrationJSONRequestBody = PasskeyRegistration
 // CreatePushSubscriptionJSONRequestBody defines body for CreatePushSubscription for application/json ContentType.
 type CreatePushSubscriptionJSONRequestBody = PushSubscriptionCreate
 
+// StartMySlackLinkJSONRequestBody defines body for StartMySlackLink for application/json ContentType.
+type StartMySlackLinkJSONRequestBody = SlackLinkStart
+
+// ConfirmMySlackLinkJSONRequestBody defines body for ConfirmMySlackLink for application/json ContentType.
+type ConfirmMySlackLinkJSONRequestBody = SlackLinkConfirm
+
 // UpdateMemberJSONRequestBody defines body for UpdateMember for application/json ContentType.
 type UpdateMemberJSONRequestBody = MemberUpdate
 
@@ -25701,6 +25964,9 @@ type CreateRoadmapBoardJSONRequestBody = RoadmapBoardCreate
 
 // UpdateRoadmapBoardJSONRequestBody defines body for UpdateRoadmapBoard for application/json ContentType.
 type UpdateRoadmapBoardJSONRequestBody = RoadmapBoardUpdate
+
+// UpdateSlackJSONRequestBody defines body for UpdateSlack for application/json ContentType.
+type UpdateSlackJSONRequestBody = SlackConnectionUpdate
 
 // CreateStatusPageJSONRequestBody defines body for CreateStatusPage for application/json ContentType.
 type CreateStatusPageJSONRequestBody = StatusPageCreate
@@ -31202,6 +31468,44 @@ type ClientInterface interface {
 	// Corresponds with POST /ingress/heartbeat/{token}/fail (the `StatusHeartbeatFailPost` operationId).
 	StatusHeartbeatFailPost(ctx context.Context, token StatusMonitorToken, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// IngestSlackWithBody Receive Slack events
+	//
+	// The Slack app's Event Subscriptions request URL (`<YUVA_PUBLIC_URL>/ingress/slack`). Every
+	// request must carry `X-Slack-Signature` (`v0=` and the hex HMAC-SHA256 of
+	// `v0:<X-Slack-Request-Timestamp>:<raw body>` keyed with `YUVA_SLACK_SIGNING_SECRET`) and a
+	// timestamp within 5 minutes of the server's clock, else `401 invalid_signature`; bodies are
+	// at most 1 MiB. `url_verification` is answered with its challenge. An `event_callback` is
+	// found by its `team_id`, kept once per `event_id` (a retry is answered `200` without being
+	// handled again) and handled in the background: a reply in a thread Yuva posted becomes a
+	// note by the member linked to the Slack user, or with the reply command a reply to the
+	// customer under that member's inbox access and the send rules; anyone else gets an
+	// ephemeral explanation and nothing changes. `app_uninstalled` and `tokens_revoked` remove
+	// the connection. `404 not_found` when the server offers no Slack.
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /ingress/slack (the `IngestSlack` operationId).
+	IngestSlackWithBody(ctx context.Context, params *IngestSlackParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// IngestSlack Receive Slack events
+	//
+	// The Slack app's Event Subscriptions request URL (`<YUVA_PUBLIC_URL>/ingress/slack`). Every
+	// request must carry `X-Slack-Signature` (`v0=` and the hex HMAC-SHA256 of
+	// `v0:<X-Slack-Request-Timestamp>:<raw body>` keyed with `YUVA_SLACK_SIGNING_SECRET`) and a
+	// timestamp within 5 minutes of the server's clock, else `401 invalid_signature`; bodies are
+	// at most 1 MiB. `url_verification` is answered with its challenge. An `event_callback` is
+	// found by its `team_id`, kept once per `event_id` (a retry is answered `200` without being
+	// handled again) and handled in the background: a reply in a thread Yuva posted becomes a
+	// note by the member linked to the Slack user, or with the reply command a reply to the
+	// customer under that member's inbox access and the send rules; anyone else gets an
+	// ephemeral explanation and nothing changes. `app_uninstalled` and `tokens_revoked` remove
+	// the connection. `404 not_found` when the server offers no Slack.
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /ingress/slack (the `IngestSlack` operationId).
+	IngestSlack(ctx context.Context, params *IngestSlackParams, body IngestSlackJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// StatusPushWithBody Push a state
 	//
 	// The state of a `push` monitor, from the host's own monitoring. The body is one of, as it is:
@@ -31252,6 +31556,18 @@ type ClientInterface interface {
 	//
 	// Corresponds with GET /readyz (the `GetReadyz` operationId).
 	GetReadyz(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// SlackOAuthCallback Slack's redirect back after an install
+	//
+	// Where Slack sends the browser after `POST /v1/slack/connect`; enter
+	// `<YUVA_PUBLIC_URL>/slack/oauth/callback` as the Slack app's redirect URL. It needs the same
+	// member session that started the install, exchanges the code at `oauth.v2.access`, checks
+	// the granted scopes and redirects to the panel's
+	// `/settings/slack?result=<SlackConnectResult>&workspace=<id>`. Writes
+	// `workspace.slack_connected` to the audit log.
+	//
+	// Corresponds with GET /slack/oauth/callback (the `SlackOAuthCallback` operationId).
+	SlackOAuthCallback(ctx context.Context, params *SlackOAuthCallbackParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// CheckStatusDomain Ask whether an own domain is verified
 	//
@@ -35636,6 +35952,40 @@ type ClientInterface interface {
 	// Corresponds with PUT /v1/inboxes/{inboxId}/members/{memberId} (the `GrantInboxAccess` operationId).
 	GrantInboxAccess(ctx context.Context, inboxId InboxId, memberId MemberId, params *GrantInboxAccessParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// GetInboxSlack An inbox's Slack channels
+	//
+	// Which Slack channel gets the inbox's new conversations and which its mentions, and whether
+	// the posts carry the message text (`include_content`, off by default: a post then carries
+	// only the subject, the contact's name and a link). An inbox never set answers no channels.
+	// API keys and tokens need `inboxes:read`.
+	//
+	// Corresponds with GET /v1/inboxes/{inboxId}/slack (the `GetInboxSlack` operationId).
+	GetInboxSlack(ctx context.Context, inboxId InboxId, params *GetInboxSlackParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// SetInboxSlackWithBody Set an inbox's Slack channels
+	//
+	// Replaces the inbox's Slack settings. A channel must be one `GET /v1/slack/channels` lists
+	// (the bot is a member), else `400 validation_failed`; `null` or an absent channel posts
+	// nothing for that event. Owners and admins, or API keys and tokens with `inboxes:manage`.
+	// `409 slack_not_configured`, `409 slack_not_connected`, `502 slack_failed`.
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with PUT /v1/inboxes/{inboxId}/slack (the `SetInboxSlack` operationId).
+	SetInboxSlackWithBody(ctx context.Context, inboxId InboxId, params *SetInboxSlackParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// SetInboxSlack Set an inbox's Slack channels
+	//
+	// Replaces the inbox's Slack settings. A channel must be one `GET /v1/slack/channels` lists
+	// (the bot is a member), else `400 validation_failed`; `null` or an absent channel posts
+	// nothing for that event. Owners and admins, or API keys and tokens with `inboxes:manage`.
+	// `409 slack_not_configured`, `409 slack_not_connected`, `502 slack_failed`.
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with PUT /v1/inboxes/{inboxId}/slack (the `SetInboxSlack` operationId).
+	SetInboxSlack(ctx context.Context, inboxId InboxId, params *SetInboxSlackParams, body SetInboxSlackJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// ListInvites List pending invites
 	//
 	// Corresponds with GET /v1/invites (the `ListInvites` operationId).
@@ -36448,6 +36798,77 @@ type ClientInterface interface {
 	//
 	// Corresponds with POST /v1/me/push-subscriptions/{pushSubscriptionId}/test (the `TestPushSubscription` operationId).
 	TestPushSubscription(ctx context.Context, pushSubscriptionId PushSubscriptionId, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UnlinkMySlack Unlink your Slack user
+	//
+	// Removes the link (and a pending code); writes `member.slack_unlinked` to the audit log.
+	// Member sessions only. `404 not_found` when nothing is linked.
+	//
+	// Corresponds with DELETE /v1/me/slack (the `UnlinkMySlack` operationId).
+	UnlinkMySlack(ctx context.Context, params *UnlinkMySlackParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetMySlack Your Slack link
+	//
+	// Whether the calling member's Slack user is linked in this workspace, and a pending code's
+	// expiry. A linked Slack user's replies in Yuva's threads are written as this member. Member
+	// sessions only.
+	//
+	// Corresponds with GET /v1/me/slack (the `GetMySlack` operationId).
+	GetMySlack(ctx context.Context, params *GetMySlackParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// StartMySlackLinkWithBody Send a link code to your Slack user
+	//
+	// Finds the Slack user with the member's e-mail address (or `email` when given) in the
+	// connected Slack workspace and sends them a direct message with a 6-digit code from the
+	// Yuva bot. The code is valid for 10 minutes and 5 tries; a new request replaces it. At most
+	// 5 requests per member and hour (`429 rate_limited`). Member sessions only.
+	// `404 slack_user_not_found` when Slack knows no such user, `409 slack_user_taken` when
+	// another member has linked that Slack user, `409 slack_not_configured`,
+	// `409 slack_not_connected`, `502 slack_failed`.
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /v1/me/slack/link (the `StartMySlackLink` operationId).
+	StartMySlackLinkWithBody(ctx context.Context, params *StartMySlackLinkParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// StartMySlackLink Send a link code to your Slack user
+	//
+	// Finds the Slack user with the member's e-mail address (or `email` when given) in the
+	// connected Slack workspace and sends them a direct message with a 6-digit code from the
+	// Yuva bot. The code is valid for 10 minutes and 5 tries; a new request replaces it. At most
+	// 5 requests per member and hour (`429 rate_limited`). Member sessions only.
+	// `404 slack_user_not_found` when Slack knows no such user, `409 slack_user_taken` when
+	// another member has linked that Slack user, `409 slack_not_configured`,
+	// `409 slack_not_connected`, `502 slack_failed`.
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /v1/me/slack/link (the `StartMySlackLink` operationId).
+	StartMySlackLink(ctx context.Context, params *StartMySlackLinkParams, body StartMySlackLinkJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ConfirmMySlackLinkWithBody Link your Slack user with the code
+	//
+	// Links the Slack user the code was sent to; writes `member.slack_linked` to the audit log.
+	// `400 invalid_code` for a wrong code, `400 code_expired` when it expired, was tried 5 times
+	// or none is pending, `409 slack_user_taken` when another member linked that Slack user in
+	// the meantime. Member sessions only.
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /v1/me/slack/link/confirm (the `ConfirmMySlackLink` operationId).
+	ConfirmMySlackLinkWithBody(ctx context.Context, params *ConfirmMySlackLinkParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ConfirmMySlackLink Link your Slack user with the code
+	//
+	// Links the Slack user the code was sent to; writes `member.slack_linked` to the audit log.
+	// `400 invalid_code` for a wrong code, `400 code_expired` when it expired, was tried 5 times
+	// or none is pending, `409 slack_user_taken` when another member linked that Slack user in
+	// the meantime. Member sessions only.
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /v1/me/slack/link/confirm (the `ConfirmMySlackLink` operationId).
+	ConfirmMySlackLink(ctx context.Context, params *ConfirmMySlackLinkParams, body ConfirmMySlackLinkJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ListMembers List members
 	//
@@ -37446,6 +37867,76 @@ type ClientInterface interface {
 	//
 	// Corresponds with GET /v1/roadmap-boards/{boardId}/preview (the `PreviewRoadmapBoard` operationId).
 	PreviewRoadmapBoard(ctx context.Context, boardId RoadmapBoardId, params *PreviewRoadmapBoardParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DisconnectSlack Disconnect Slack
+	//
+	// Revokes the bot token at Slack (`auth.revoke`; a failure there is logged and the
+	// connection is removed anyway) and removes the connection with every inbox's channels, the
+	// threads Yuva posted and the members' Slack links. Writes `workspace.slack_disconnected` to
+	// the audit log. Owners and admins with a member session; `409 slack_not_connected` when
+	// there is nothing to disconnect.
+	//
+	// Corresponds with DELETE /v1/slack (the `DisconnectSlack` operationId).
+	DisconnectSlack(ctx context.Context, params *DisconnectSlackParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetSlack The workspace's Slack connection
+	//
+	// Whether this server offers Slack (`available`: the operator set `YUVA_SLACK_CLIENT_ID`,
+	// `YUVA_SLACK_CLIENT_SECRET` and `YUVA_SLACK_SIGNING_SECRET`) and, when the workspace is
+	// connected, the Slack workspace, the bot user, the reply command and the last error a post
+	// to Slack ended with. Never the token. API keys and tokens need `inboxes:read`.
+	//
+	// Corresponds with GET /v1/slack (the `GetSlack` operationId).
+	GetSlack(ctx context.Context, params *GetSlackParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateSlackWithBody Change the Slack connection's settings
+	//
+	// Changes the reply command: a reply in a Slack thread that starts with it goes to the
+	// customer, any other reply becomes a note. Owners and admins with a member session.
+	// `409 slack_not_configured` when the server offers no Slack, `409 slack_not_connected` when
+	// the workspace has not connected it.
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with PATCH /v1/slack (the `UpdateSlack` operationId).
+	UpdateSlackWithBody(ctx context.Context, params *UpdateSlackParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateSlack Change the Slack connection's settings
+	//
+	// Changes the reply command: a reply in a Slack thread that starts with it goes to the
+	// customer, any other reply becomes a note. Owners and admins with a member session.
+	// `409 slack_not_configured` when the server offers no Slack, `409 slack_not_connected` when
+	// the workspace has not connected it.
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with PATCH /v1/slack (the `UpdateSlack` operationId).
+	UpdateSlack(ctx context.Context, params *UpdateSlackParams, body UpdateSlackJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListSlackChannels Slack channels Yuva can post in
+	//
+	// The public and private Slack channels the Yuva bot is a member of (invite it with
+	// `/invite @<bot>` in Slack), not archived, at most 1000, sorted by name. Yuva posts only in
+	// these and receives thread replies only from these. API keys and tokens need
+	// `inboxes:read`. `409 slack_not_configured`, `409 slack_not_connected`, `502 slack_failed`
+	// when Slack refused or did not answer.
+	//
+	// Corresponds with GET /v1/slack/channels (the `ListSlackChannels` operationId).
+	ListSlackChannels(ctx context.Context, params *ListSlackChannelsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ConnectSlack Start connecting Slack
+	//
+	// Starts Slack's OAuth v2 install: open `authorize_url` in the browser of the same member
+	// session. Slack sends the browser back to `GET /slack/oauth/callback`, which stores the bot
+	// token sealed under the master key and redirects to the panel's
+	// `/settings/slack?result=<SlackConnectResult>&workspace=<id>`. The start is valid for 10
+	// minutes and a newer start replaces it. A Slack workspace is connected to one Yuva workspace
+	// at a time; connecting another Slack workspace replaces the connection and drops the
+	// channels, threads and member links of the previous one. Owners and admins with a member
+	// session. `409 slack_not_configured` when the server offers no Slack.
+	//
+	// Corresponds with POST /v1/slack/connect (the `ConnectSlack` operationId).
+	ConnectSlack(ctx context.Context, params *ConnectSlackParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetStats Team activity since a moment
 	//
@@ -40645,6 +41136,64 @@ func (c *Client) StatusHeartbeatFailPost(ctx context.Context, token StatusMonito
 	return c.Client.Do(req)
 }
 
+// IngestSlackWithBody Receive Slack events
+//
+// The Slack app's Event Subscriptions request URL (`<YUVA_PUBLIC_URL>/ingress/slack`). Every
+// request must carry `X-Slack-Signature` (`v0=` and the hex HMAC-SHA256 of
+// `v0:<X-Slack-Request-Timestamp>:<raw body>` keyed with `YUVA_SLACK_SIGNING_SECRET`) and a
+// timestamp within 5 minutes of the server's clock, else `401 invalid_signature`; bodies are
+// at most 1 MiB. `url_verification` is answered with its challenge. An `event_callback` is
+// found by its `team_id`, kept once per `event_id` (a retry is answered `200` without being
+// handled again) and handled in the background: a reply in a thread Yuva posted becomes a
+// note by the member linked to the Slack user, or with the reply command a reply to the
+// customer under that member's inbox access and the send rules; anyone else gets an
+// ephemeral explanation and nothing changes. `app_uninstalled` and `tokens_revoked` remove
+// the connection. `404 not_found` when the server offers no Slack.
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /ingress/slack (the `IngestSlack` operationId).
+func (c *Client) IngestSlackWithBody(ctx context.Context, params *IngestSlackParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewIngestSlackRequestWithBody(c.Server, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// IngestSlack Receive Slack events
+//
+// The Slack app's Event Subscriptions request URL (`<YUVA_PUBLIC_URL>/ingress/slack`). Every
+// request must carry `X-Slack-Signature` (`v0=` and the hex HMAC-SHA256 of
+// `v0:<X-Slack-Request-Timestamp>:<raw body>` keyed with `YUVA_SLACK_SIGNING_SECRET`) and a
+// timestamp within 5 minutes of the server's clock, else `401 invalid_signature`; bodies are
+// at most 1 MiB. `url_verification` is answered with its challenge. An `event_callback` is
+// found by its `team_id`, kept once per `event_id` (a retry is answered `200` without being
+// handled again) and handled in the background: a reply in a thread Yuva posted becomes a
+// note by the member linked to the Slack user, or with the reply command a reply to the
+// customer under that member's inbox access and the send rules; anyone else gets an
+// ephemeral explanation and nothing changes. `app_uninstalled` and `tokens_revoked` remove
+// the connection. `404 not_found` when the server offers no Slack.
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /ingress/slack (the `IngestSlack` operationId).
+func (c *Client) IngestSlack(ctx context.Context, params *IngestSlackParams, body IngestSlackJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewIngestSlackRequest(c.Server, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 // StatusPushWithBody Push a state
 //
 // The state of a `push` monitor, from the host's own monitoring. The body is one of, as it is:
@@ -40716,6 +41265,28 @@ func (c *Client) StatusPush(ctx context.Context, token StatusMonitorToken, body 
 // Corresponds with GET /readyz (the `GetReadyz` operationId).
 func (c *Client) GetReadyz(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetReadyzRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// SlackOAuthCallback Slack's redirect back after an install
+//
+// Where Slack sends the browser after `POST /v1/slack/connect`; enter
+// `<YUVA_PUBLIC_URL>/slack/oauth/callback` as the Slack app's redirect URL. It needs the same
+// member session that started the install, exchanges the code at `oauth.v2.access`, checks
+// the granted scopes and redirects to the panel's
+// `/settings/slack?result=<SlackConnectResult>&workspace=<id>`. Writes
+// `workspace.slack_connected` to the audit log.
+//
+// Corresponds with GET /slack/oauth/callback (the `SlackOAuthCallback` operationId).
+func (c *Client) SlackOAuthCallback(ctx context.Context, params *SlackOAuthCallbackParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSlackOAuthCallbackRequest(c.Server, params)
 	if err != nil {
 		return nil, err
 	}
@@ -48219,6 +48790,70 @@ func (c *Client) GrantInboxAccess(ctx context.Context, inboxId InboxId, memberId
 	return c.Client.Do(req)
 }
 
+// GetInboxSlack An inbox's Slack channels
+//
+// Which Slack channel gets the inbox's new conversations and which its mentions, and whether
+// the posts carry the message text (`include_content`, off by default: a post then carries
+// only the subject, the contact's name and a link). An inbox never set answers no channels.
+// API keys and tokens need `inboxes:read`.
+//
+// Corresponds with GET /v1/inboxes/{inboxId}/slack (the `GetInboxSlack` operationId).
+func (c *Client) GetInboxSlack(ctx context.Context, inboxId InboxId, params *GetInboxSlackParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetInboxSlackRequest(c.Server, inboxId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// SetInboxSlackWithBody Set an inbox's Slack channels
+//
+// Replaces the inbox's Slack settings. A channel must be one `GET /v1/slack/channels` lists
+// (the bot is a member), else `400 validation_failed`; `null` or an absent channel posts
+// nothing for that event. Owners and admins, or API keys and tokens with `inboxes:manage`.
+// `409 slack_not_configured`, `409 slack_not_connected`, `502 slack_failed`.
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with PUT /v1/inboxes/{inboxId}/slack (the `SetInboxSlack` operationId).
+func (c *Client) SetInboxSlackWithBody(ctx context.Context, inboxId InboxId, params *SetInboxSlackParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSetInboxSlackRequestWithBody(c.Server, inboxId, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// SetInboxSlack Set an inbox's Slack channels
+//
+// Replaces the inbox's Slack settings. A channel must be one `GET /v1/slack/channels` lists
+// (the bot is a member), else `400 validation_failed`; `null` or an absent channel posts
+// nothing for that event. Owners and admins, or API keys and tokens with `inboxes:manage`.
+// `409 slack_not_configured`, `409 slack_not_connected`, `502 slack_failed`.
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with PUT /v1/inboxes/{inboxId}/slack (the `SetInboxSlack` operationId).
+func (c *Client) SetInboxSlack(ctx context.Context, inboxId InboxId, params *SetInboxSlackParams, body SetInboxSlackJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSetInboxSlackRequest(c.Server, inboxId, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 // ListInvites List pending invites
 //
 // Corresponds with GET /v1/invites (the `ListInvites` operationId).
@@ -49702,6 +50337,137 @@ func (c *Client) DeletePushSubscription(ctx context.Context, pushSubscriptionId 
 // Corresponds with POST /v1/me/push-subscriptions/{pushSubscriptionId}/test (the `TestPushSubscription` operationId).
 func (c *Client) TestPushSubscription(ctx context.Context, pushSubscriptionId PushSubscriptionId, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewTestPushSubscriptionRequest(c.Server, pushSubscriptionId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// UnlinkMySlack Unlink your Slack user
+//
+// Removes the link (and a pending code); writes `member.slack_unlinked` to the audit log.
+// Member sessions only. `404 not_found` when nothing is linked.
+//
+// Corresponds with DELETE /v1/me/slack (the `UnlinkMySlack` operationId).
+func (c *Client) UnlinkMySlack(ctx context.Context, params *UnlinkMySlackParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUnlinkMySlackRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetMySlack Your Slack link
+//
+// Whether the calling member's Slack user is linked in this workspace, and a pending code's
+// expiry. A linked Slack user's replies in Yuva's threads are written as this member. Member
+// sessions only.
+//
+// Corresponds with GET /v1/me/slack (the `GetMySlack` operationId).
+func (c *Client) GetMySlack(ctx context.Context, params *GetMySlackParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetMySlackRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// StartMySlackLinkWithBody Send a link code to your Slack user
+//
+// Finds the Slack user with the member's e-mail address (or `email` when given) in the
+// connected Slack workspace and sends them a direct message with a 6-digit code from the
+// Yuva bot. The code is valid for 10 minutes and 5 tries; a new request replaces it. At most
+// 5 requests per member and hour (`429 rate_limited`). Member sessions only.
+// `404 slack_user_not_found` when Slack knows no such user, `409 slack_user_taken` when
+// another member has linked that Slack user, `409 slack_not_configured`,
+// `409 slack_not_connected`, `502 slack_failed`.
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /v1/me/slack/link (the `StartMySlackLink` operationId).
+func (c *Client) StartMySlackLinkWithBody(ctx context.Context, params *StartMySlackLinkParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewStartMySlackLinkRequestWithBody(c.Server, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// StartMySlackLink Send a link code to your Slack user
+//
+// Finds the Slack user with the member's e-mail address (or `email` when given) in the
+// connected Slack workspace and sends them a direct message with a 6-digit code from the
+// Yuva bot. The code is valid for 10 minutes and 5 tries; a new request replaces it. At most
+// 5 requests per member and hour (`429 rate_limited`). Member sessions only.
+// `404 slack_user_not_found` when Slack knows no such user, `409 slack_user_taken` when
+// another member has linked that Slack user, `409 slack_not_configured`,
+// `409 slack_not_connected`, `502 slack_failed`.
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /v1/me/slack/link (the `StartMySlackLink` operationId).
+func (c *Client) StartMySlackLink(ctx context.Context, params *StartMySlackLinkParams, body StartMySlackLinkJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewStartMySlackLinkRequest(c.Server, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// ConfirmMySlackLinkWithBody Link your Slack user with the code
+//
+// Links the Slack user the code was sent to; writes `member.slack_linked` to the audit log.
+// `400 invalid_code` for a wrong code, `400 code_expired` when it expired, was tried 5 times
+// or none is pending, `409 slack_user_taken` when another member linked that Slack user in
+// the meantime. Member sessions only.
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /v1/me/slack/link/confirm (the `ConfirmMySlackLink` operationId).
+func (c *Client) ConfirmMySlackLinkWithBody(ctx context.Context, params *ConfirmMySlackLinkParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewConfirmMySlackLinkRequestWithBody(c.Server, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// ConfirmMySlackLink Link your Slack user with the code
+//
+// Links the Slack user the code was sent to; writes `member.slack_linked` to the audit log.
+// `400 invalid_code` for a wrong code, `400 code_expired` when it expired, was tried 5 times
+// or none is pending, `409 slack_user_taken` when another member linked that Slack user in
+// the meantime. Member sessions only.
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /v1/me/slack/link/confirm (the `ConfirmMySlackLink` operationId).
+func (c *Client) ConfirmMySlackLink(ctx context.Context, params *ConfirmMySlackLinkParams, body ConfirmMySlackLinkJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewConfirmMySlackLinkRequest(c.Server, params, body)
 	if err != nil {
 		return nil, err
 	}
@@ -51300,6 +52066,136 @@ func (c *Client) UpdateRoadmapBoard(ctx context.Context, boardId RoadmapBoardId,
 // Corresponds with GET /v1/roadmap-boards/{boardId}/preview (the `PreviewRoadmapBoard` operationId).
 func (c *Client) PreviewRoadmapBoard(ctx context.Context, boardId RoadmapBoardId, params *PreviewRoadmapBoardParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewPreviewRoadmapBoardRequest(c.Server, boardId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// DisconnectSlack Disconnect Slack
+//
+// Revokes the bot token at Slack (`auth.revoke`; a failure there is logged and the
+// connection is removed anyway) and removes the connection with every inbox's channels, the
+// threads Yuva posted and the members' Slack links. Writes `workspace.slack_disconnected` to
+// the audit log. Owners and admins with a member session; `409 slack_not_connected` when
+// there is nothing to disconnect.
+//
+// Corresponds with DELETE /v1/slack (the `DisconnectSlack` operationId).
+func (c *Client) DisconnectSlack(ctx context.Context, params *DisconnectSlackParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDisconnectSlackRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetSlack The workspace's Slack connection
+//
+// Whether this server offers Slack (`available`: the operator set `YUVA_SLACK_CLIENT_ID`,
+// `YUVA_SLACK_CLIENT_SECRET` and `YUVA_SLACK_SIGNING_SECRET`) and, when the workspace is
+// connected, the Slack workspace, the bot user, the reply command and the last error a post
+// to Slack ended with. Never the token. API keys and tokens need `inboxes:read`.
+//
+// Corresponds with GET /v1/slack (the `GetSlack` operationId).
+func (c *Client) GetSlack(ctx context.Context, params *GetSlackParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetSlackRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// UpdateSlackWithBody Change the Slack connection's settings
+//
+// Changes the reply command: a reply in a Slack thread that starts with it goes to the
+// customer, any other reply becomes a note. Owners and admins with a member session.
+// `409 slack_not_configured` when the server offers no Slack, `409 slack_not_connected` when
+// the workspace has not connected it.
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with PATCH /v1/slack (the `UpdateSlack` operationId).
+func (c *Client) UpdateSlackWithBody(ctx context.Context, params *UpdateSlackParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateSlackRequestWithBody(c.Server, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// UpdateSlack Change the Slack connection's settings
+//
+// Changes the reply command: a reply in a Slack thread that starts with it goes to the
+// customer, any other reply becomes a note. Owners and admins with a member session.
+// `409 slack_not_configured` when the server offers no Slack, `409 slack_not_connected` when
+// the workspace has not connected it.
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with PATCH /v1/slack (the `UpdateSlack` operationId).
+func (c *Client) UpdateSlack(ctx context.Context, params *UpdateSlackParams, body UpdateSlackJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateSlackRequest(c.Server, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// ListSlackChannels Slack channels Yuva can post in
+//
+// The public and private Slack channels the Yuva bot is a member of (invite it with
+// `/invite @<bot>` in Slack), not archived, at most 1000, sorted by name. Yuva posts only in
+// these and receives thread replies only from these. API keys and tokens need
+// `inboxes:read`. `409 slack_not_configured`, `409 slack_not_connected`, `502 slack_failed`
+// when Slack refused or did not answer.
+//
+// Corresponds with GET /v1/slack/channels (the `ListSlackChannels` operationId).
+func (c *Client) ListSlackChannels(ctx context.Context, params *ListSlackChannelsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListSlackChannelsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// ConnectSlack Start connecting Slack
+//
+// Starts Slack's OAuth v2 install: open `authorize_url` in the browser of the same member
+// session. Slack sends the browser back to `GET /slack/oauth/callback`, which stores the bot
+// token sealed under the master key and redirects to the panel's
+// `/settings/slack?result=<SlackConnectResult>&workspace=<id>`. The start is valid for 10
+// minutes and a newer start replaces it. A Slack workspace is connected to one Yuva workspace
+// at a time; connecting another Slack workspace replaces the connection and drops the
+// channels, threads and member links of the previous one. Owners and admins with a member
+// session. `409 slack_not_configured` when the server offers no Slack.
+//
+// Corresponds with POST /v1/slack/connect (the `ConnectSlack` operationId).
+func (c *Client) ConnectSlack(ctx context.Context, params *ConnectSlackParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewConnectSlackRequest(c.Server, params)
 	if err != nil {
 		return nil, err
 	}
@@ -56122,6 +57018,68 @@ func NewStatusHeartbeatFailPostRequest(server string, token StatusMonitorToken) 
 	return req, nil
 }
 
+// NewIngestSlackRequest calls the generic IngestSlack builder with application/json body
+func NewIngestSlackRequest(server string, params *IngestSlackParams, body IngestSlackJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewIngestSlackRequestWithBody(server, params, "application/json", bodyReader)
+}
+
+// NewIngestSlackRequestWithBody constructs an http.Request for the IngestSlack method, with any body, and a specified content type
+func NewIngestSlackRequestWithBody(server string, params *IngestSlackParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/ingress/slack")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		var headerParam0 string
+
+		headerParam0, err = runtime.StyleParamWithOptions("simple", false, "X-Slack-Signature", params.XSlackSignature, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+		if err != nil {
+			return nil, err
+		}
+
+		req.Header.Set("X-Slack-Signature", headerParam0)
+
+		var headerParam1 string
+
+		headerParam1, err = runtime.StyleParamWithOptions("simple", false, "X-Slack-Request-Timestamp", params.XSlackRequestTimestamp, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+		if err != nil {
+			return nil, err
+		}
+
+		req.Header.Set("X-Slack-Request-Timestamp", headerParam1)
+
+	}
+
+	return req, nil
+}
+
 // NewStatusPushRequest calls the generic StatusPush builder with application/json body
 func NewStatusPushRequest(server string, token StatusMonitorToken, body StatusPushJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
@@ -56186,6 +57144,84 @@ func NewGetReadyzRequest(server string) (*http.Request, error) {
 	queryURL, err := serverURL.Parse(operationPath)
 	if err != nil {
 		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewSlackOAuthCallbackRequest constructs an http.Request for the SlackOAuthCallback method
+func NewSlackOAuthCallbackRequest(server string, params *SlackOAuthCallbackParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/slack/oauth/callback")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if params.Code != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "code", *params.Code, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.State != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "state", *params.State, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Error != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "error", *params.Error, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
 	}
 
 	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
@@ -71694,6 +72730,117 @@ func NewGrantInboxAccessRequest(server string, inboxId InboxId, memberId MemberI
 	return req, nil
 }
 
+// NewGetInboxSlackRequest constructs an http.Request for the GetInboxSlack method
+func NewGetInboxSlackRequest(server string, inboxId InboxId, params *GetInboxSlackParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "inboxId", inboxId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/inboxes/%s/slack", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewSetInboxSlackRequest calls the generic SetInboxSlack builder with application/json body
+func NewSetInboxSlackRequest(server string, inboxId InboxId, params *SetInboxSlackParams, body SetInboxSlackJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewSetInboxSlackRequestWithBody(server, inboxId, params, "application/json", bodyReader)
+}
+
+// NewSetInboxSlackRequestWithBody constructs an http.Request for the SetInboxSlack method, with any body, and a specified content type
+func NewSetInboxSlackRequestWithBody(server string, inboxId InboxId, params *SetInboxSlackParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "inboxId", inboxId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/inboxes/%s/slack", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPut, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
 // NewListInvitesRequest constructs an http.Request for the ListInvites method
 func NewListInvitesRequest(server string, params *ListInvitesParams) (*http.Request, error) {
 	var err error
@@ -74537,6 +75684,200 @@ func NewTestPushSubscriptionRequest(server string, pushSubscriptionId PushSubscr
 	return req, nil
 }
 
+// NewUnlinkMySlackRequest constructs an http.Request for the UnlinkMySlack method
+func NewUnlinkMySlackRequest(server string, params *UnlinkMySlackParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/me/slack")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodDelete, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewGetMySlackRequest constructs an http.Request for the GetMySlack method
+func NewGetMySlackRequest(server string, params *GetMySlackParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/me/slack")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewStartMySlackLinkRequest calls the generic StartMySlackLink builder with application/json body
+func NewStartMySlackLinkRequest(server string, params *StartMySlackLinkParams, body StartMySlackLinkJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewStartMySlackLinkRequestWithBody(server, params, "application/json", bodyReader)
+}
+
+// NewStartMySlackLinkRequestWithBody constructs an http.Request for the StartMySlackLink method, with any body, and a specified content type
+func NewStartMySlackLinkRequestWithBody(server string, params *StartMySlackLinkParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/me/slack/link")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewConfirmMySlackLinkRequest calls the generic ConfirmMySlackLink builder with application/json body
+func NewConfirmMySlackLinkRequest(server string, params *ConfirmMySlackLinkParams, body ConfirmMySlackLinkJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewConfirmMySlackLinkRequestWithBody(server, params, "application/json", bodyReader)
+}
+
+// NewConfirmMySlackLinkRequestWithBody constructs an http.Request for the ConfirmMySlackLink method, with any body, and a specified content type
+func NewConfirmMySlackLinkRequestWithBody(server string, params *ConfirmMySlackLinkParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/me/slack/link/confirm")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
 // NewListMembersRequest constructs an http.Request for the ListMembers method
 func NewListMembersRequest(server string, params *ListMembersParams) (*http.Request, error) {
 	var err error
@@ -77259,6 +78600,240 @@ func NewPreviewRoadmapBoardRequest(server string, boardId RoadmapBoardId, params
 			}
 
 			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewDisconnectSlackRequest constructs an http.Request for the DisconnectSlack method
+func NewDisconnectSlackRequest(server string, params *DisconnectSlackParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/slack")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodDelete, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewGetSlackRequest constructs an http.Request for the GetSlack method
+func NewGetSlackRequest(server string, params *GetSlackParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/slack")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewUpdateSlackRequest calls the generic UpdateSlack builder with application/json body
+func NewUpdateSlackRequest(server string, params *UpdateSlackParams, body UpdateSlackJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateSlackRequestWithBody(server, params, "application/json", bodyReader)
+}
+
+// NewUpdateSlackRequestWithBody constructs an http.Request for the UpdateSlack method, with any body, and a specified content type
+func NewUpdateSlackRequestWithBody(server string, params *UpdateSlackParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/slack")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPatch, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewListSlackChannelsRequest constructs an http.Request for the ListSlackChannels method
+func NewListSlackChannelsRequest(server string, params *ListSlackChannelsParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/slack/channels")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewConnectSlackRequest constructs an http.Request for the ConnectSlack method
+func NewConnectSlackRequest(server string, params *ConnectSlackParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/slack/connect")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.IdempotencyKey != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Idempotency-Key", *params.IdempotencyKey, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Idempotency-Key", headerParam0)
+		}
+
+		if params.YuvaWorkspace != nil {
+			var headerParam1 string
+
+			headerParam1, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam1)
 		}
 
 	}
@@ -82955,6 +84530,44 @@ type ClientWithResponsesInterface interface {
 	// Corresponds with POST /ingress/heartbeat/{token}/fail (the `StatusHeartbeatFailPost` operationId).
 	StatusHeartbeatFailPostWithResponse(ctx context.Context, token StatusMonitorToken, reqEditors ...RequestEditorFn) (*StatusHeartbeatFailPostResponse, error)
 
+	// IngestSlackWithBodyWithResponse Receive Slack events
+	//
+	// The Slack app's Event Subscriptions request URL (`<YUVA_PUBLIC_URL>/ingress/slack`). Every
+	// request must carry `X-Slack-Signature` (`v0=` and the hex HMAC-SHA256 of
+	// `v0:<X-Slack-Request-Timestamp>:<raw body>` keyed with `YUVA_SLACK_SIGNING_SECRET`) and a
+	// timestamp within 5 minutes of the server's clock, else `401 invalid_signature`; bodies are
+	// at most 1 MiB. `url_verification` is answered with its challenge. An `event_callback` is
+	// found by its `team_id`, kept once per `event_id` (a retry is answered `200` without being
+	// handled again) and handled in the background: a reply in a thread Yuva posted becomes a
+	// note by the member linked to the Slack user, or with the reply command a reply to the
+	// customer under that member's inbox access and the send rules; anyone else gets an
+	// ephemeral explanation and nothing changes. `app_uninstalled` and `tokens_revoked` remove
+	// the connection. `404 not_found` when the server offers no Slack.
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /ingress/slack (the `IngestSlack` operationId).
+	IngestSlackWithBodyWithResponse(ctx context.Context, params *IngestSlackParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*IngestSlackResponse, error)
+
+	// IngestSlackWithResponse Receive Slack events
+	//
+	// The Slack app's Event Subscriptions request URL (`<YUVA_PUBLIC_URL>/ingress/slack`). Every
+	// request must carry `X-Slack-Signature` (`v0=` and the hex HMAC-SHA256 of
+	// `v0:<X-Slack-Request-Timestamp>:<raw body>` keyed with `YUVA_SLACK_SIGNING_SECRET`) and a
+	// timestamp within 5 minutes of the server's clock, else `401 invalid_signature`; bodies are
+	// at most 1 MiB. `url_verification` is answered with its challenge. An `event_callback` is
+	// found by its `team_id`, kept once per `event_id` (a retry is answered `200` without being
+	// handled again) and handled in the background: a reply in a thread Yuva posted becomes a
+	// note by the member linked to the Slack user, or with the reply command a reply to the
+	// customer under that member's inbox access and the send rules; anyone else gets an
+	// ephemeral explanation and nothing changes. `app_uninstalled` and `tokens_revoked` remove
+	// the connection. `404 not_found` when the server offers no Slack.
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /ingress/slack (the `IngestSlack` operationId).
+	IngestSlackWithResponse(ctx context.Context, params *IngestSlackParams, body IngestSlackJSONRequestBody, reqEditors ...RequestEditorFn) (*IngestSlackResponse, error)
+
 	// StatusPushWithBodyWithResponse Push a state
 	//
 	// The state of a `push` monitor, from the host's own monitoring. The body is one of, as it is:
@@ -83007,6 +84620,20 @@ type ClientWithResponsesInterface interface {
 	//
 	// Corresponds with GET /readyz (the `GetReadyz` operationId).
 	GetReadyzWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetReadyzResponse, error)
+
+	// SlackOAuthCallbackWithResponse Slack's redirect back after an install
+	//
+	// Where Slack sends the browser after `POST /v1/slack/connect`; enter
+	// `<YUVA_PUBLIC_URL>/slack/oauth/callback` as the Slack app's redirect URL. It needs the same
+	// member session that started the install, exchanges the code at `oauth.v2.access`, checks
+	// the granted scopes and redirects to the panel's
+	// `/settings/slack?result=<SlackConnectResult>&workspace=<id>`. Writes
+	// `workspace.slack_connected` to the audit log.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /slack/oauth/callback (the `SlackOAuthCallback` operationId).
+	SlackOAuthCallbackWithResponse(ctx context.Context, params *SlackOAuthCallbackParams, reqEditors ...RequestEditorFn) (*SlackOAuthCallbackResponse, error)
 
 	// CheckStatusDomainWithResponse Ask whether an own domain is verified
 	//
@@ -87683,6 +89310,42 @@ type ClientWithResponsesInterface interface {
 	// Corresponds with PUT /v1/inboxes/{inboxId}/members/{memberId} (the `GrantInboxAccess` operationId).
 	GrantInboxAccessWithResponse(ctx context.Context, inboxId InboxId, memberId MemberId, params *GrantInboxAccessParams, reqEditors ...RequestEditorFn) (*GrantInboxAccessResponse, error)
 
+	// GetInboxSlackWithResponse An inbox's Slack channels
+	//
+	// Which Slack channel gets the inbox's new conversations and which its mentions, and whether
+	// the posts carry the message text (`include_content`, off by default: a post then carries
+	// only the subject, the contact's name and a link). An inbox never set answers no channels.
+	// API keys and tokens need `inboxes:read`.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /v1/inboxes/{inboxId}/slack (the `GetInboxSlack` operationId).
+	GetInboxSlackWithResponse(ctx context.Context, inboxId InboxId, params *GetInboxSlackParams, reqEditors ...RequestEditorFn) (*GetInboxSlackResponse, error)
+
+	// SetInboxSlackWithBodyWithResponse Set an inbox's Slack channels
+	//
+	// Replaces the inbox's Slack settings. A channel must be one `GET /v1/slack/channels` lists
+	// (the bot is a member), else `400 validation_failed`; `null` or an absent channel posts
+	// nothing for that event. Owners and admins, or API keys and tokens with `inboxes:manage`.
+	// `409 slack_not_configured`, `409 slack_not_connected`, `502 slack_failed`.
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PUT /v1/inboxes/{inboxId}/slack (the `SetInboxSlack` operationId).
+	SetInboxSlackWithBodyWithResponse(ctx context.Context, inboxId InboxId, params *SetInboxSlackParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SetInboxSlackResponse, error)
+
+	// SetInboxSlackWithResponse Set an inbox's Slack channels
+	//
+	// Replaces the inbox's Slack settings. A channel must be one `GET /v1/slack/channels` lists
+	// (the bot is a member), else `400 validation_failed`; `null` or an absent channel posts
+	// nothing for that event. Owners and admins, or API keys and tokens with `inboxes:manage`.
+	// `409 slack_not_configured`, `409 slack_not_connected`, `502 slack_failed`.
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PUT /v1/inboxes/{inboxId}/slack (the `SetInboxSlack` operationId).
+	SetInboxSlackWithResponse(ctx context.Context, inboxId InboxId, params *SetInboxSlackParams, body SetInboxSlackJSONRequestBody, reqEditors ...RequestEditorFn) (*SetInboxSlackResponse, error)
+
 	// ListInvitesWithResponse List pending invites
 	//
 	// Returns a wrapper object for the known response body format(s).
@@ -88561,6 +90224,81 @@ type ClientWithResponsesInterface interface {
 	//
 	// Corresponds with POST /v1/me/push-subscriptions/{pushSubscriptionId}/test (the `TestPushSubscription` operationId).
 	TestPushSubscriptionWithResponse(ctx context.Context, pushSubscriptionId PushSubscriptionId, reqEditors ...RequestEditorFn) (*TestPushSubscriptionResponse, error)
+
+	// UnlinkMySlackWithResponse Unlink your Slack user
+	//
+	// Removes the link (and a pending code); writes `member.slack_unlinked` to the audit log.
+	// Member sessions only. `404 not_found` when nothing is linked.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with DELETE /v1/me/slack (the `UnlinkMySlack` operationId).
+	UnlinkMySlackWithResponse(ctx context.Context, params *UnlinkMySlackParams, reqEditors ...RequestEditorFn) (*UnlinkMySlackResponse, error)
+
+	// GetMySlackWithResponse Your Slack link
+	//
+	// Whether the calling member's Slack user is linked in this workspace, and a pending code's
+	// expiry. A linked Slack user's replies in Yuva's threads are written as this member. Member
+	// sessions only.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /v1/me/slack (the `GetMySlack` operationId).
+	GetMySlackWithResponse(ctx context.Context, params *GetMySlackParams, reqEditors ...RequestEditorFn) (*GetMySlackResponse, error)
+
+	// StartMySlackLinkWithBodyWithResponse Send a link code to your Slack user
+	//
+	// Finds the Slack user with the member's e-mail address (or `email` when given) in the
+	// connected Slack workspace and sends them a direct message with a 6-digit code from the
+	// Yuva bot. The code is valid for 10 minutes and 5 tries; a new request replaces it. At most
+	// 5 requests per member and hour (`429 rate_limited`). Member sessions only.
+	// `404 slack_user_not_found` when Slack knows no such user, `409 slack_user_taken` when
+	// another member has linked that Slack user, `409 slack_not_configured`,
+	// `409 slack_not_connected`, `502 slack_failed`.
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /v1/me/slack/link (the `StartMySlackLink` operationId).
+	StartMySlackLinkWithBodyWithResponse(ctx context.Context, params *StartMySlackLinkParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*StartMySlackLinkResponse, error)
+
+	// StartMySlackLinkWithResponse Send a link code to your Slack user
+	//
+	// Finds the Slack user with the member's e-mail address (or `email` when given) in the
+	// connected Slack workspace and sends them a direct message with a 6-digit code from the
+	// Yuva bot. The code is valid for 10 minutes and 5 tries; a new request replaces it. At most
+	// 5 requests per member and hour (`429 rate_limited`). Member sessions only.
+	// `404 slack_user_not_found` when Slack knows no such user, `409 slack_user_taken` when
+	// another member has linked that Slack user, `409 slack_not_configured`,
+	// `409 slack_not_connected`, `502 slack_failed`.
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /v1/me/slack/link (the `StartMySlackLink` operationId).
+	StartMySlackLinkWithResponse(ctx context.Context, params *StartMySlackLinkParams, body StartMySlackLinkJSONRequestBody, reqEditors ...RequestEditorFn) (*StartMySlackLinkResponse, error)
+
+	// ConfirmMySlackLinkWithBodyWithResponse Link your Slack user with the code
+	//
+	// Links the Slack user the code was sent to; writes `member.slack_linked` to the audit log.
+	// `400 invalid_code` for a wrong code, `400 code_expired` when it expired, was tried 5 times
+	// or none is pending, `409 slack_user_taken` when another member linked that Slack user in
+	// the meantime. Member sessions only.
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /v1/me/slack/link/confirm (the `ConfirmMySlackLink` operationId).
+	ConfirmMySlackLinkWithBodyWithResponse(ctx context.Context, params *ConfirmMySlackLinkParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ConfirmMySlackLinkResponse, error)
+
+	// ConfirmMySlackLinkWithResponse Link your Slack user with the code
+	//
+	// Links the Slack user the code was sent to; writes `member.slack_linked` to the audit log.
+	// `400 invalid_code` for a wrong code, `400 code_expired` when it expired, was tried 5 times
+	// or none is pending, `409 slack_user_taken` when another member linked that Slack user in
+	// the meantime. Member sessions only.
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /v1/me/slack/link/confirm (the `ConfirmMySlackLink` operationId).
+	ConfirmMySlackLinkWithResponse(ctx context.Context, params *ConfirmMySlackLinkParams, body ConfirmMySlackLinkJSONRequestBody, reqEditors ...RequestEditorFn) (*ConfirmMySlackLinkResponse, error)
 
 	// ListMembersWithResponse List members
 	//
@@ -89625,6 +91363,84 @@ type ClientWithResponsesInterface interface {
 	//
 	// Corresponds with GET /v1/roadmap-boards/{boardId}/preview (the `PreviewRoadmapBoard` operationId).
 	PreviewRoadmapBoardWithResponse(ctx context.Context, boardId RoadmapBoardId, params *PreviewRoadmapBoardParams, reqEditors ...RequestEditorFn) (*PreviewRoadmapBoardResponse, error)
+
+	// DisconnectSlackWithResponse Disconnect Slack
+	//
+	// Revokes the bot token at Slack (`auth.revoke`; a failure there is logged and the
+	// connection is removed anyway) and removes the connection with every inbox's channels, the
+	// threads Yuva posted and the members' Slack links. Writes `workspace.slack_disconnected` to
+	// the audit log. Owners and admins with a member session; `409 slack_not_connected` when
+	// there is nothing to disconnect.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with DELETE /v1/slack (the `DisconnectSlack` operationId).
+	DisconnectSlackWithResponse(ctx context.Context, params *DisconnectSlackParams, reqEditors ...RequestEditorFn) (*DisconnectSlackResponse, error)
+
+	// GetSlackWithResponse The workspace's Slack connection
+	//
+	// Whether this server offers Slack (`available`: the operator set `YUVA_SLACK_CLIENT_ID`,
+	// `YUVA_SLACK_CLIENT_SECRET` and `YUVA_SLACK_SIGNING_SECRET`) and, when the workspace is
+	// connected, the Slack workspace, the bot user, the reply command and the last error a post
+	// to Slack ended with. Never the token. API keys and tokens need `inboxes:read`.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /v1/slack (the `GetSlack` operationId).
+	GetSlackWithResponse(ctx context.Context, params *GetSlackParams, reqEditors ...RequestEditorFn) (*GetSlackResponse, error)
+
+	// UpdateSlackWithBodyWithResponse Change the Slack connection's settings
+	//
+	// Changes the reply command: a reply in a Slack thread that starts with it goes to the
+	// customer, any other reply becomes a note. Owners and admins with a member session.
+	// `409 slack_not_configured` when the server offers no Slack, `409 slack_not_connected` when
+	// the workspace has not connected it.
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PATCH /v1/slack (the `UpdateSlack` operationId).
+	UpdateSlackWithBodyWithResponse(ctx context.Context, params *UpdateSlackParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateSlackResponse, error)
+
+	// UpdateSlackWithResponse Change the Slack connection's settings
+	//
+	// Changes the reply command: a reply in a Slack thread that starts with it goes to the
+	// customer, any other reply becomes a note. Owners and admins with a member session.
+	// `409 slack_not_configured` when the server offers no Slack, `409 slack_not_connected` when
+	// the workspace has not connected it.
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PATCH /v1/slack (the `UpdateSlack` operationId).
+	UpdateSlackWithResponse(ctx context.Context, params *UpdateSlackParams, body UpdateSlackJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateSlackResponse, error)
+
+	// ListSlackChannelsWithResponse Slack channels Yuva can post in
+	//
+	// The public and private Slack channels the Yuva bot is a member of (invite it with
+	// `/invite @<bot>` in Slack), not archived, at most 1000, sorted by name. Yuva posts only in
+	// these and receives thread replies only from these. API keys and tokens need
+	// `inboxes:read`. `409 slack_not_configured`, `409 slack_not_connected`, `502 slack_failed`
+	// when Slack refused or did not answer.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /v1/slack/channels (the `ListSlackChannels` operationId).
+	ListSlackChannelsWithResponse(ctx context.Context, params *ListSlackChannelsParams, reqEditors ...RequestEditorFn) (*ListSlackChannelsResponse, error)
+
+	// ConnectSlackWithResponse Start connecting Slack
+	//
+	// Starts Slack's OAuth v2 install: open `authorize_url` in the browser of the same member
+	// session. Slack sends the browser back to `GET /slack/oauth/callback`, which stores the bot
+	// token sealed under the master key and redirects to the panel's
+	// `/settings/slack?result=<SlackConnectResult>&workspace=<id>`. The start is valid for 10
+	// minutes and a newer start replaces it. A Slack workspace is connected to one Yuva workspace
+	// at a time; connecting another Slack workspace replaces the connection and drops the
+	// channels, threads and member links of the previous one. Owners and admins with a member
+	// session. `409 slack_not_configured` when the server offers no Slack.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /v1/slack/connect (the `ConnectSlack` operationId).
+	ConnectSlackWithResponse(ctx context.Context, params *ConnectSlackParams, reqEditors ...RequestEditorFn) (*ConnectSlackResponse, error)
 
 	// GetStatsWithResponse Team activity since a moment
 	//
@@ -94608,6 +96424,61 @@ func (r StatusHeartbeatFailPostResponse) ContentType() string {
 	return ""
 }
 
+type IngestSlackResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+	// ApplicationproblemJSON413 the response for an HTTP 413 `application/problem+json` response
+	ApplicationproblemJSON413 *Problem
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r IngestSlackResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r IngestSlackResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetApplicationproblemJSON413 returns the response for an HTTP 413 `application/problem+json` response
+func (r IngestSlackResponse) GetApplicationproblemJSON413() *Problem {
+	return r.ApplicationproblemJSON413
+}
+
+// GetBody returns the raw response body bytes
+func (r IngestSlackResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r IngestSlackResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r IngestSlackResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r IngestSlackResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type StatusPushResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -94726,6 +96597,47 @@ func (r GetReadyzResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r GetReadyzResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+// SlackOAuthCallbackResponse303Headers the declared response headers of an HTTP 303 response for SlackOAuthCallback
+type SlackOAuthCallbackResponse303Headers struct {
+	XYuvaSlackResult *SlackConnectResult
+}
+
+type SlackOAuthCallbackResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// Headers303 the parsed response headers for an HTTP 303 response
+	Headers303 *SlackOAuthCallbackResponse303Headers
+}
+
+// GetBody returns the raw response body bytes
+func (r SlackOAuthCallbackResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r SlackOAuthCallbackResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r SlackOAuthCallbackResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r SlackOAuthCallbackResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -110211,6 +112123,151 @@ func (r GrantInboxAccessResponse) ContentType() string {
 	return ""
 }
 
+type GetInboxSlackResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *InboxSlack
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetInboxSlackResponse) GetJSON200() *InboxSlack {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r GetInboxSlackResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r GetInboxSlackResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r GetInboxSlackResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetBody returns the raw response body bytes
+func (r GetInboxSlackResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetInboxSlackResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetInboxSlackResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetInboxSlackResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type SetInboxSlackResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *InboxSlack
+	// ApplicationproblemJSON400 the response for an HTTP 400 `application/problem+json` response
+	ApplicationproblemJSON400 *Problem
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+	// ApplicationproblemJSON409 the response for an HTTP 409 `application/problem+json` response
+	ApplicationproblemJSON409 *Problem
+	// ApplicationproblemJSON502 the response for an HTTP 502 `application/problem+json` response
+	ApplicationproblemJSON502 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r SetInboxSlackResponse) GetJSON200() *InboxSlack {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON400 returns the response for an HTTP 400 `application/problem+json` response
+func (r SetInboxSlackResponse) GetApplicationproblemJSON400() *Problem {
+	return r.ApplicationproblemJSON400
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r SetInboxSlackResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r SetInboxSlackResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r SetInboxSlackResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetApplicationproblemJSON409 returns the response for an HTTP 409 `application/problem+json` response
+func (r SetInboxSlackResponse) GetApplicationproblemJSON409() *Problem {
+	return r.ApplicationproblemJSON409
+}
+
+// GetApplicationproblemJSON502 returns the response for an HTTP 502 `application/problem+json` response
+func (r SetInboxSlackResponse) GetApplicationproblemJSON502() *Problem {
+	return r.ApplicationproblemJSON502
+}
+
+// GetBody returns the raw response body bytes
+func (r SetInboxSlackResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r SetInboxSlackResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r SetInboxSlackResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r SetInboxSlackResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type ListInvitesResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -113464,6 +115521,275 @@ func (r TestPushSubscriptionResponse) ContentType() string {
 	return ""
 }
 
+type UnlinkMySlackResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r UnlinkMySlackResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r UnlinkMySlackResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r UnlinkMySlackResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetBody returns the raw response body bytes
+func (r UnlinkMySlackResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r UnlinkMySlackResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UnlinkMySlackResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r UnlinkMySlackResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetMySlackResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *SlackMemberLink
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetMySlackResponse) GetJSON200() *SlackMemberLink {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r GetMySlackResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r GetMySlackResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetBody returns the raw response body bytes
+func (r GetMySlackResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetMySlackResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetMySlackResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetMySlackResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type StartMySlackLinkResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON202 the response for an HTTP 202 `application/json` response
+	JSON202 *SlackMemberLink
+	// ApplicationproblemJSON400 the response for an HTTP 400 `application/problem+json` response
+	ApplicationproblemJSON400 *Problem
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+	// ApplicationproblemJSON409 the response for an HTTP 409 `application/problem+json` response
+	ApplicationproblemJSON409 *Problem
+	// ApplicationproblemJSON429 the response for an HTTP 429 `application/problem+json` response
+	ApplicationproblemJSON429 *Problem
+	// ApplicationproblemJSON502 the response for an HTTP 502 `application/problem+json` response
+	ApplicationproblemJSON502 *Problem
+}
+
+// GetJSON202 returns the response for an HTTP 202 `application/json` response
+func (r StartMySlackLinkResponse) GetJSON202() *SlackMemberLink {
+	return r.JSON202
+}
+
+// GetApplicationproblemJSON400 returns the response for an HTTP 400 `application/problem+json` response
+func (r StartMySlackLinkResponse) GetApplicationproblemJSON400() *Problem {
+	return r.ApplicationproblemJSON400
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r StartMySlackLinkResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r StartMySlackLinkResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r StartMySlackLinkResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetApplicationproblemJSON409 returns the response for an HTTP 409 `application/problem+json` response
+func (r StartMySlackLinkResponse) GetApplicationproblemJSON409() *Problem {
+	return r.ApplicationproblemJSON409
+}
+
+// GetApplicationproblemJSON429 returns the response for an HTTP 429 `application/problem+json` response
+func (r StartMySlackLinkResponse) GetApplicationproblemJSON429() *Problem {
+	return r.ApplicationproblemJSON429
+}
+
+// GetApplicationproblemJSON502 returns the response for an HTTP 502 `application/problem+json` response
+func (r StartMySlackLinkResponse) GetApplicationproblemJSON502() *Problem {
+	return r.ApplicationproblemJSON502
+}
+
+// GetBody returns the raw response body bytes
+func (r StartMySlackLinkResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r StartMySlackLinkResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r StartMySlackLinkResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r StartMySlackLinkResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type ConfirmMySlackLinkResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *SlackMemberLink
+	// ApplicationproblemJSON400 the response for an HTTP 400 `application/problem+json` response
+	ApplicationproblemJSON400 *Problem
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON409 the response for an HTTP 409 `application/problem+json` response
+	ApplicationproblemJSON409 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r ConfirmMySlackLinkResponse) GetJSON200() *SlackMemberLink {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON400 returns the response for an HTTP 400 `application/problem+json` response
+func (r ConfirmMySlackLinkResponse) GetApplicationproblemJSON400() *Problem {
+	return r.ApplicationproblemJSON400
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r ConfirmMySlackLinkResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r ConfirmMySlackLinkResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON409 returns the response for an HTTP 409 `application/problem+json` response
+func (r ConfirmMySlackLinkResponse) GetApplicationproblemJSON409() *Problem {
+	return r.ApplicationproblemJSON409
+}
+
+// GetBody returns the raw response body bytes
+func (r ConfirmMySlackLinkResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r ConfirmMySlackLinkResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ConfirmMySlackLinkResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ConfirmMySlackLinkResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type ListMembersResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -116681,6 +119007,316 @@ func (r PreviewRoadmapBoardResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r PreviewRoadmapBoardResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type DisconnectSlackResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON409 the response for an HTTP 409 `application/problem+json` response
+	ApplicationproblemJSON409 *Problem
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r DisconnectSlackResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r DisconnectSlackResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON409 returns the response for an HTTP 409 `application/problem+json` response
+func (r DisconnectSlackResponse) GetApplicationproblemJSON409() *Problem {
+	return r.ApplicationproblemJSON409
+}
+
+// GetBody returns the raw response body bytes
+func (r DisconnectSlackResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r DisconnectSlackResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DisconnectSlackResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r DisconnectSlackResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetSlackResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *SlackConnection
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetSlackResponse) GetJSON200() *SlackConnection {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r GetSlackResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r GetSlackResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetBody returns the raw response body bytes
+func (r GetSlackResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetSlackResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetSlackResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetSlackResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type UpdateSlackResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *SlackConnection
+	// ApplicationproblemJSON400 the response for an HTTP 400 `application/problem+json` response
+	ApplicationproblemJSON400 *Problem
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON409 the response for an HTTP 409 `application/problem+json` response
+	ApplicationproblemJSON409 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r UpdateSlackResponse) GetJSON200() *SlackConnection {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON400 returns the response for an HTTP 400 `application/problem+json` response
+func (r UpdateSlackResponse) GetApplicationproblemJSON400() *Problem {
+	return r.ApplicationproblemJSON400
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r UpdateSlackResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r UpdateSlackResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON409 returns the response for an HTTP 409 `application/problem+json` response
+func (r UpdateSlackResponse) GetApplicationproblemJSON409() *Problem {
+	return r.ApplicationproblemJSON409
+}
+
+// GetBody returns the raw response body bytes
+func (r UpdateSlackResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateSlackResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateSlackResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r UpdateSlackResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type ListSlackChannelsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *SlackChannelList
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON409 the response for an HTTP 409 `application/problem+json` response
+	ApplicationproblemJSON409 *Problem
+	// ApplicationproblemJSON502 the response for an HTTP 502 `application/problem+json` response
+	ApplicationproblemJSON502 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r ListSlackChannelsResponse) GetJSON200() *SlackChannelList {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r ListSlackChannelsResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r ListSlackChannelsResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON409 returns the response for an HTTP 409 `application/problem+json` response
+func (r ListSlackChannelsResponse) GetApplicationproblemJSON409() *Problem {
+	return r.ApplicationproblemJSON409
+}
+
+// GetApplicationproblemJSON502 returns the response for an HTTP 502 `application/problem+json` response
+func (r ListSlackChannelsResponse) GetApplicationproblemJSON502() *Problem {
+	return r.ApplicationproblemJSON502
+}
+
+// GetBody returns the raw response body bytes
+func (r ListSlackChannelsResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r ListSlackChannelsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListSlackChannelsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ListSlackChannelsResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type ConnectSlackResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *SlackConnectStart
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON409 the response for an HTTP 409 `application/problem+json` response
+	ApplicationproblemJSON409 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r ConnectSlackResponse) GetJSON200() *SlackConnectStart {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r ConnectSlackResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r ConnectSlackResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON409 returns the response for an HTTP 409 `application/problem+json` response
+func (r ConnectSlackResponse) GetApplicationproblemJSON409() *Problem {
+	return r.ApplicationproblemJSON409
+}
+
+// GetBody returns the raw response body bytes
+func (r ConnectSlackResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r ConnectSlackResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ConnectSlackResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ConnectSlackResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -122761,6 +125397,56 @@ func (c *ClientWithResponses) StatusHeartbeatFailPostWithResponse(ctx context.Co
 	return ParseStatusHeartbeatFailPostResponse(rsp)
 }
 
+// IngestSlackWithBodyWithResponse Receive Slack events
+//
+// The Slack app's Event Subscriptions request URL (`<YUVA_PUBLIC_URL>/ingress/slack`). Every
+// request must carry `X-Slack-Signature` (`v0=` and the hex HMAC-SHA256 of
+// `v0:<X-Slack-Request-Timestamp>:<raw body>` keyed with `YUVA_SLACK_SIGNING_SECRET`) and a
+// timestamp within 5 minutes of the server's clock, else `401 invalid_signature`; bodies are
+// at most 1 MiB. `url_verification` is answered with its challenge. An `event_callback` is
+// found by its `team_id`, kept once per `event_id` (a retry is answered `200` without being
+// handled again) and handled in the background: a reply in a thread Yuva posted becomes a
+// note by the member linked to the Slack user, or with the reply command a reply to the
+// customer under that member's inbox access and the send rules; anyone else gets an
+// ephemeral explanation and nothing changes. `app_uninstalled` and `tokens_revoked` remove
+// the connection. `404 not_found` when the server offers no Slack.
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /ingress/slack (the `IngestSlack` operationId).
+func (c *ClientWithResponses) IngestSlackWithBodyWithResponse(ctx context.Context, params *IngestSlackParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*IngestSlackResponse, error) {
+	rsp, err := c.IngestSlackWithBody(ctx, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseIngestSlackResponse(rsp)
+}
+
+// IngestSlackWithResponse Receive Slack events
+//
+// The Slack app's Event Subscriptions request URL (`<YUVA_PUBLIC_URL>/ingress/slack`). Every
+// request must carry `X-Slack-Signature` (`v0=` and the hex HMAC-SHA256 of
+// `v0:<X-Slack-Request-Timestamp>:<raw body>` keyed with `YUVA_SLACK_SIGNING_SECRET`) and a
+// timestamp within 5 minutes of the server's clock, else `401 invalid_signature`; bodies are
+// at most 1 MiB. `url_verification` is answered with its challenge. An `event_callback` is
+// found by its `team_id`, kept once per `event_id` (a retry is answered `200` without being
+// handled again) and handled in the background: a reply in a thread Yuva posted becomes a
+// note by the member linked to the Slack user, or with the reply command a reply to the
+// customer under that member's inbox access and the send rules; anyone else gets an
+// ephemeral explanation and nothing changes. `app_uninstalled` and `tokens_revoked` remove
+// the connection. `404 not_found` when the server offers no Slack.
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /ingress/slack (the `IngestSlack` operationId).
+func (c *ClientWithResponses) IngestSlackWithResponse(ctx context.Context, params *IngestSlackParams, body IngestSlackJSONRequestBody, reqEditors ...RequestEditorFn) (*IngestSlackResponse, error) {
+	rsp, err := c.IngestSlack(ctx, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseIngestSlackResponse(rsp)
+}
+
 // StatusPushWithBodyWithResponse Push a state
 //
 // The state of a `push` monitor, from the host's own monitoring. The body is one of, as it is:
@@ -122830,6 +125516,26 @@ func (c *ClientWithResponses) GetReadyzWithResponse(ctx context.Context, reqEdit
 		return nil, err
 	}
 	return ParseGetReadyzResponse(rsp)
+}
+
+// SlackOAuthCallbackWithResponse Slack's redirect back after an install
+//
+// Where Slack sends the browser after `POST /v1/slack/connect`; enter
+// `<YUVA_PUBLIC_URL>/slack/oauth/callback` as the Slack app's redirect URL. It needs the same
+// member session that started the install, exchanges the code at `oauth.v2.access`, checks
+// the granted scopes and redirects to the panel's
+// `/settings/slack?result=<SlackConnectResult>&workspace=<id>`. Writes
+// `workspace.slack_connected` to the audit log.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /slack/oauth/callback (the `SlackOAuthCallback` operationId).
+func (c *ClientWithResponses) SlackOAuthCallbackWithResponse(ctx context.Context, params *SlackOAuthCallbackParams, reqEditors ...RequestEditorFn) (*SlackOAuthCallbackResponse, error) {
+	rsp, err := c.SlackOAuthCallback(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSlackOAuthCallbackResponse(rsp)
 }
 
 // CheckStatusDomainWithResponse Ask whether an own domain is verified
@@ -129373,6 +132079,60 @@ func (c *ClientWithResponses) GrantInboxAccessWithResponse(ctx context.Context, 
 	return ParseGrantInboxAccessResponse(rsp)
 }
 
+// GetInboxSlackWithResponse An inbox's Slack channels
+//
+// Which Slack channel gets the inbox's new conversations and which its mentions, and whether
+// the posts carry the message text (`include_content`, off by default: a post then carries
+// only the subject, the contact's name and a link). An inbox never set answers no channels.
+// API keys and tokens need `inboxes:read`.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /v1/inboxes/{inboxId}/slack (the `GetInboxSlack` operationId).
+func (c *ClientWithResponses) GetInboxSlackWithResponse(ctx context.Context, inboxId InboxId, params *GetInboxSlackParams, reqEditors ...RequestEditorFn) (*GetInboxSlackResponse, error) {
+	rsp, err := c.GetInboxSlack(ctx, inboxId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetInboxSlackResponse(rsp)
+}
+
+// SetInboxSlackWithBodyWithResponse Set an inbox's Slack channels
+//
+// Replaces the inbox's Slack settings. A channel must be one `GET /v1/slack/channels` lists
+// (the bot is a member), else `400 validation_failed`; `null` or an absent channel posts
+// nothing for that event. Owners and admins, or API keys and tokens with `inboxes:manage`.
+// `409 slack_not_configured`, `409 slack_not_connected`, `502 slack_failed`.
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PUT /v1/inboxes/{inboxId}/slack (the `SetInboxSlack` operationId).
+func (c *ClientWithResponses) SetInboxSlackWithBodyWithResponse(ctx context.Context, inboxId InboxId, params *SetInboxSlackParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SetInboxSlackResponse, error) {
+	rsp, err := c.SetInboxSlackWithBody(ctx, inboxId, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSetInboxSlackResponse(rsp)
+}
+
+// SetInboxSlackWithResponse Set an inbox's Slack channels
+//
+// Replaces the inbox's Slack settings. A channel must be one `GET /v1/slack/channels` lists
+// (the bot is a member), else `400 validation_failed`; `null` or an absent channel posts
+// nothing for that event. Owners and admins, or API keys and tokens with `inboxes:manage`.
+// `409 slack_not_configured`, `409 slack_not_connected`, `502 slack_failed`.
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PUT /v1/inboxes/{inboxId}/slack (the `SetInboxSlack` operationId).
+func (c *ClientWithResponses) SetInboxSlackWithResponse(ctx context.Context, inboxId InboxId, params *SetInboxSlackParams, body SetInboxSlackJSONRequestBody, reqEditors ...RequestEditorFn) (*SetInboxSlackResponse, error) {
+	rsp, err := c.SetInboxSlack(ctx, inboxId, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSetInboxSlackResponse(rsp)
+}
+
 // ListInvitesWithResponse List pending invites
 //
 // Returns a wrapper object for the known response body format(s).
@@ -130658,6 +133418,117 @@ func (c *ClientWithResponses) TestPushSubscriptionWithResponse(ctx context.Conte
 		return nil, err
 	}
 	return ParseTestPushSubscriptionResponse(rsp)
+}
+
+// UnlinkMySlackWithResponse Unlink your Slack user
+//
+// Removes the link (and a pending code); writes `member.slack_unlinked` to the audit log.
+// Member sessions only. `404 not_found` when nothing is linked.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with DELETE /v1/me/slack (the `UnlinkMySlack` operationId).
+func (c *ClientWithResponses) UnlinkMySlackWithResponse(ctx context.Context, params *UnlinkMySlackParams, reqEditors ...RequestEditorFn) (*UnlinkMySlackResponse, error) {
+	rsp, err := c.UnlinkMySlack(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUnlinkMySlackResponse(rsp)
+}
+
+// GetMySlackWithResponse Your Slack link
+//
+// Whether the calling member's Slack user is linked in this workspace, and a pending code's
+// expiry. A linked Slack user's replies in Yuva's threads are written as this member. Member
+// sessions only.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /v1/me/slack (the `GetMySlack` operationId).
+func (c *ClientWithResponses) GetMySlackWithResponse(ctx context.Context, params *GetMySlackParams, reqEditors ...RequestEditorFn) (*GetMySlackResponse, error) {
+	rsp, err := c.GetMySlack(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetMySlackResponse(rsp)
+}
+
+// StartMySlackLinkWithBodyWithResponse Send a link code to your Slack user
+//
+// Finds the Slack user with the member's e-mail address (or `email` when given) in the
+// connected Slack workspace and sends them a direct message with a 6-digit code from the
+// Yuva bot. The code is valid for 10 minutes and 5 tries; a new request replaces it. At most
+// 5 requests per member and hour (`429 rate_limited`). Member sessions only.
+// `404 slack_user_not_found` when Slack knows no such user, `409 slack_user_taken` when
+// another member has linked that Slack user, `409 slack_not_configured`,
+// `409 slack_not_connected`, `502 slack_failed`.
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /v1/me/slack/link (the `StartMySlackLink` operationId).
+func (c *ClientWithResponses) StartMySlackLinkWithBodyWithResponse(ctx context.Context, params *StartMySlackLinkParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*StartMySlackLinkResponse, error) {
+	rsp, err := c.StartMySlackLinkWithBody(ctx, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseStartMySlackLinkResponse(rsp)
+}
+
+// StartMySlackLinkWithResponse Send a link code to your Slack user
+//
+// Finds the Slack user with the member's e-mail address (or `email` when given) in the
+// connected Slack workspace and sends them a direct message with a 6-digit code from the
+// Yuva bot. The code is valid for 10 minutes and 5 tries; a new request replaces it. At most
+// 5 requests per member and hour (`429 rate_limited`). Member sessions only.
+// `404 slack_user_not_found` when Slack knows no such user, `409 slack_user_taken` when
+// another member has linked that Slack user, `409 slack_not_configured`,
+// `409 slack_not_connected`, `502 slack_failed`.
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /v1/me/slack/link (the `StartMySlackLink` operationId).
+func (c *ClientWithResponses) StartMySlackLinkWithResponse(ctx context.Context, params *StartMySlackLinkParams, body StartMySlackLinkJSONRequestBody, reqEditors ...RequestEditorFn) (*StartMySlackLinkResponse, error) {
+	rsp, err := c.StartMySlackLink(ctx, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseStartMySlackLinkResponse(rsp)
+}
+
+// ConfirmMySlackLinkWithBodyWithResponse Link your Slack user with the code
+//
+// Links the Slack user the code was sent to; writes `member.slack_linked` to the audit log.
+// `400 invalid_code` for a wrong code, `400 code_expired` when it expired, was tried 5 times
+// or none is pending, `409 slack_user_taken` when another member linked that Slack user in
+// the meantime. Member sessions only.
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /v1/me/slack/link/confirm (the `ConfirmMySlackLink` operationId).
+func (c *ClientWithResponses) ConfirmMySlackLinkWithBodyWithResponse(ctx context.Context, params *ConfirmMySlackLinkParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ConfirmMySlackLinkResponse, error) {
+	rsp, err := c.ConfirmMySlackLinkWithBody(ctx, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseConfirmMySlackLinkResponse(rsp)
+}
+
+// ConfirmMySlackLinkWithResponse Link your Slack user with the code
+//
+// Links the Slack user the code was sent to; writes `member.slack_linked` to the audit log.
+// `400 invalid_code` for a wrong code, `400 code_expired` when it expired, was tried 5 times
+// or none is pending, `409 slack_user_taken` when another member linked that Slack user in
+// the meantime. Member sessions only.
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /v1/me/slack/link/confirm (the `ConfirmMySlackLink` operationId).
+func (c *ClientWithResponses) ConfirmMySlackLinkWithResponse(ctx context.Context, params *ConfirmMySlackLinkParams, body ConfirmMySlackLinkJSONRequestBody, reqEditors ...RequestEditorFn) (*ConfirmMySlackLinkResponse, error) {
+	rsp, err := c.ConfirmMySlackLink(ctx, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseConfirmMySlackLinkResponse(rsp)
 }
 
 // ListMembersWithResponse List members
@@ -132082,6 +134953,120 @@ func (c *ClientWithResponses) PreviewRoadmapBoardWithResponse(ctx context.Contex
 		return nil, err
 	}
 	return ParsePreviewRoadmapBoardResponse(rsp)
+}
+
+// DisconnectSlackWithResponse Disconnect Slack
+//
+// Revokes the bot token at Slack (`auth.revoke`; a failure there is logged and the
+// connection is removed anyway) and removes the connection with every inbox's channels, the
+// threads Yuva posted and the members' Slack links. Writes `workspace.slack_disconnected` to
+// the audit log. Owners and admins with a member session; `409 slack_not_connected` when
+// there is nothing to disconnect.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with DELETE /v1/slack (the `DisconnectSlack` operationId).
+func (c *ClientWithResponses) DisconnectSlackWithResponse(ctx context.Context, params *DisconnectSlackParams, reqEditors ...RequestEditorFn) (*DisconnectSlackResponse, error) {
+	rsp, err := c.DisconnectSlack(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDisconnectSlackResponse(rsp)
+}
+
+// GetSlackWithResponse The workspace's Slack connection
+//
+// Whether this server offers Slack (`available`: the operator set `YUVA_SLACK_CLIENT_ID`,
+// `YUVA_SLACK_CLIENT_SECRET` and `YUVA_SLACK_SIGNING_SECRET`) and, when the workspace is
+// connected, the Slack workspace, the bot user, the reply command and the last error a post
+// to Slack ended with. Never the token. API keys and tokens need `inboxes:read`.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /v1/slack (the `GetSlack` operationId).
+func (c *ClientWithResponses) GetSlackWithResponse(ctx context.Context, params *GetSlackParams, reqEditors ...RequestEditorFn) (*GetSlackResponse, error) {
+	rsp, err := c.GetSlack(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetSlackResponse(rsp)
+}
+
+// UpdateSlackWithBodyWithResponse Change the Slack connection's settings
+//
+// Changes the reply command: a reply in a Slack thread that starts with it goes to the
+// customer, any other reply becomes a note. Owners and admins with a member session.
+// `409 slack_not_configured` when the server offers no Slack, `409 slack_not_connected` when
+// the workspace has not connected it.
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PATCH /v1/slack (the `UpdateSlack` operationId).
+func (c *ClientWithResponses) UpdateSlackWithBodyWithResponse(ctx context.Context, params *UpdateSlackParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateSlackResponse, error) {
+	rsp, err := c.UpdateSlackWithBody(ctx, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateSlackResponse(rsp)
+}
+
+// UpdateSlackWithResponse Change the Slack connection's settings
+//
+// Changes the reply command: a reply in a Slack thread that starts with it goes to the
+// customer, any other reply becomes a note. Owners and admins with a member session.
+// `409 slack_not_configured` when the server offers no Slack, `409 slack_not_connected` when
+// the workspace has not connected it.
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PATCH /v1/slack (the `UpdateSlack` operationId).
+func (c *ClientWithResponses) UpdateSlackWithResponse(ctx context.Context, params *UpdateSlackParams, body UpdateSlackJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateSlackResponse, error) {
+	rsp, err := c.UpdateSlack(ctx, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateSlackResponse(rsp)
+}
+
+// ListSlackChannelsWithResponse Slack channels Yuva can post in
+//
+// The public and private Slack channels the Yuva bot is a member of (invite it with
+// `/invite @<bot>` in Slack), not archived, at most 1000, sorted by name. Yuva posts only in
+// these and receives thread replies only from these. API keys and tokens need
+// `inboxes:read`. `409 slack_not_configured`, `409 slack_not_connected`, `502 slack_failed`
+// when Slack refused or did not answer.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /v1/slack/channels (the `ListSlackChannels` operationId).
+func (c *ClientWithResponses) ListSlackChannelsWithResponse(ctx context.Context, params *ListSlackChannelsParams, reqEditors ...RequestEditorFn) (*ListSlackChannelsResponse, error) {
+	rsp, err := c.ListSlackChannels(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListSlackChannelsResponse(rsp)
+}
+
+// ConnectSlackWithResponse Start connecting Slack
+//
+// Starts Slack's OAuth v2 install: open `authorize_url` in the browser of the same member
+// session. Slack sends the browser back to `GET /slack/oauth/callback`, which stores the bot
+// token sealed under the master key and redirects to the panel's
+// `/settings/slack?result=<SlackConnectResult>&workspace=<id>`. The start is valid for 10
+// minutes and a newer start replaces it. A Slack workspace is connected to one Yuva workspace
+// at a time; connecting another Slack workspace replaces the connection and drops the
+// channels, threads and member links of the previous one. Owners and admins with a member
+// session. `409 slack_not_configured` when the server offers no Slack.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /v1/slack/connect (the `ConnectSlack` operationId).
+func (c *ClientWithResponses) ConnectSlackWithResponse(ctx context.Context, params *ConnectSlackParams, reqEditors ...RequestEditorFn) (*ConnectSlackResponse, error) {
+	rsp, err := c.ConnectSlack(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseConnectSlackResponse(rsp)
 }
 
 // GetStatsWithResponse Team activity since a moment
@@ -136846,6 +139831,49 @@ func ParseStatusHeartbeatFailPostResponse(rsp *http.Response) (*StatusHeartbeatF
 	return response, nil
 }
 
+// ParseIngestSlackResponse parses an HTTP response from a IngestSlackWithResponse call
+func ParseIngestSlackResponse(rsp *http.Response) (*IngestSlackResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &IngestSlackResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case rsp.StatusCode == 200:
+		break // No content-type
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 413:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON413 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseStatusPushResponse parses an HTTP response from a StatusPushWithResponse call
 func ParseStatusPushResponse(rsp *http.Response) (*StatusPushResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -136935,6 +139963,35 @@ func ParseGetReadyzResponse(rsp *http.Response) (*GetReadyzResponse, error) {
 		}
 		response.ApplicationproblemJSON503 = &dest
 
+	}
+
+	return response, nil
+}
+
+// ParseSlackOAuthCallbackResponse parses an HTTP response from a SlackOAuthCallbackWithResponse call
+func ParseSlackOAuthCallbackResponse(rsp *http.Response) (*SlackOAuthCallbackResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &SlackOAuthCallbackResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case rsp.StatusCode == 303:
+		var headers SlackOAuthCallbackResponse303Headers
+		if values := rsp.Header.Values("X-Yuva-Slack-Result"); len(values) > 0 {
+			var value SlackConnectResult
+			if err := runtime.BindStyledParameterWithOptions("simple", "X-Yuva-Slack-Result", values[0], &value, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			}
+			headers.XYuvaSlackResult = &value
+		}
+		response.Headers303 = &headers
 	}
 
 	return response, nil
@@ -149146,6 +152203,121 @@ func ParseGrantInboxAccessResponse(rsp *http.Response) (*GrantInboxAccessRespons
 	return response, nil
 }
 
+// ParseGetInboxSlackResponse parses an HTTP response from a GetInboxSlackWithResponse call
+func ParseGetInboxSlackResponse(rsp *http.Response) (*GetInboxSlackResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetInboxSlackResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest InboxSlack
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseSetInboxSlackResponse parses an HTTP response from a SetInboxSlackWithResponse call
+func ParseSetInboxSlackResponse(rsp *http.Response) (*SetInboxSlackResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &SetInboxSlackResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest InboxSlack
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON409 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 502:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON502 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseListInvitesResponse parses an HTTP response from a ListInvitesWithResponse call
 func ParseListInvitesResponse(rsp *http.Response) (*ListInvitesResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -151682,6 +154854,218 @@ func ParseTestPushSubscriptionResponse(rsp *http.Response) (*TestPushSubscriptio
 			return nil, err
 		}
 		response.ApplicationproblemJSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUnlinkMySlackResponse parses an HTTP response from a UnlinkMySlackWithResponse call
+func ParseUnlinkMySlackResponse(rsp *http.Response) (*UnlinkMySlackResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UnlinkMySlackResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case rsp.StatusCode == 204:
+		break // No content-type
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetMySlackResponse parses an HTTP response from a GetMySlackWithResponse call
+func ParseGetMySlackResponse(rsp *http.Response) (*GetMySlackResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetMySlackResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest SlackMemberLink
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseStartMySlackLinkResponse parses an HTTP response from a StartMySlackLinkWithResponse call
+func ParseStartMySlackLinkResponse(rsp *http.Response) (*StartMySlackLinkResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &StartMySlackLinkResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 202:
+		var dest SlackMemberLink
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON202 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON409 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 429:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON429 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 502:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON502 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseConfirmMySlackLinkResponse parses an HTTP response from a ConfirmMySlackLinkWithResponse call
+func ParseConfirmMySlackLinkResponse(rsp *http.Response) (*ConfirmMySlackLinkResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ConfirmMySlackLinkResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest SlackMemberLink
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON409 = &dest
 
 	}
 
@@ -154230,6 +157614,244 @@ func ParsePreviewRoadmapBoardResponse(rsp *http.Response) (*PreviewRoadmapBoardR
 			return nil, err
 		}
 		response.ApplicationproblemJSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDisconnectSlackResponse parses an HTTP response from a DisconnectSlackWithResponse call
+func ParseDisconnectSlackResponse(rsp *http.Response) (*DisconnectSlackResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DisconnectSlackResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case rsp.StatusCode == 204:
+		break // No content-type
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON409 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetSlackResponse parses an HTTP response from a GetSlackWithResponse call
+func ParseGetSlackResponse(rsp *http.Response) (*GetSlackResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetSlackResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest SlackConnection
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateSlackResponse parses an HTTP response from a UpdateSlackWithResponse call
+func ParseUpdateSlackResponse(rsp *http.Response) (*UpdateSlackResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateSlackResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest SlackConnection
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON409 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListSlackChannelsResponse parses an HTTP response from a ListSlackChannelsWithResponse call
+func ParseListSlackChannelsResponse(rsp *http.Response) (*ListSlackChannelsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListSlackChannelsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest SlackChannelList
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON409 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 502:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON502 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseConnectSlackResponse parses an HTTP response from a ConnectSlackWithResponse call
+func ParseConnectSlackResponse(rsp *http.Response) (*ConnectSlackResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ConnectSlackResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest SlackConnectStart
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON409 = &dest
 
 	}
 

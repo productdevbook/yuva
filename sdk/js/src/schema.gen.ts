@@ -9180,6 +9180,256 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/slack": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * The workspace's Slack connection
+         * @description Whether this server offers Slack (`available`: the operator set `YUVA_SLACK_CLIENT_ID`,
+         *     `YUVA_SLACK_CLIENT_SECRET` and `YUVA_SLACK_SIGNING_SECRET`) and, when the workspace is
+         *     connected, the Slack workspace, the bot user, the reply command and the last error a post
+         *     to Slack ended with. Never the token. API keys and tokens need `inboxes:read`.
+         */
+        get: operations["getSlack"];
+        put?: never;
+        post?: never;
+        /**
+         * Disconnect Slack
+         * @description Revokes the bot token at Slack (`auth.revoke`; a failure there is logged and the
+         *     connection is removed anyway) and removes the connection with every inbox's channels, the
+         *     threads Yuva posted and the members' Slack links. Writes `workspace.slack_disconnected` to
+         *     the audit log. Owners and admins with a member session; `409 slack_not_connected` when
+         *     there is nothing to disconnect.
+         */
+        delete: operations["disconnectSlack"];
+        options?: never;
+        head?: never;
+        /**
+         * Change the Slack connection's settings
+         * @description Changes the reply command: a reply in a Slack thread that starts with it goes to the
+         *     customer, any other reply becomes a note. Owners and admins with a member session.
+         *     `409 slack_not_configured` when the server offers no Slack, `409 slack_not_connected` when
+         *     the workspace has not connected it.
+         */
+        patch: operations["updateSlack"];
+        trace?: never;
+    };
+    "/v1/slack/connect": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Start connecting Slack
+         * @description Starts Slack's OAuth v2 install: open `authorize_url` in the browser of the same member
+         *     session. Slack sends the browser back to `GET /slack/oauth/callback`, which stores the bot
+         *     token sealed under the master key and redirects to the panel's
+         *     `/settings/slack?result=<SlackConnectResult>&workspace=<id>`. The start is valid for 10
+         *     minutes and a newer start replaces it. A Slack workspace is connected to one Yuva workspace
+         *     at a time; connecting another Slack workspace replaces the connection and drops the
+         *     channels, threads and member links of the previous one. Owners and admins with a member
+         *     session. `409 slack_not_configured` when the server offers no Slack.
+         */
+        post: operations["connectSlack"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/slack/channels": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Slack channels Yuva can post in
+         * @description The public and private Slack channels the Yuva bot is a member of (invite it with
+         *     `/invite @<bot>` in Slack), not archived, at most 1000, sorted by name. Yuva posts only in
+         *     these and receives thread replies only from these. API keys and tokens need
+         *     `inboxes:read`. `409 slack_not_configured`, `409 slack_not_connected`, `502 slack_failed`
+         *     when Slack refused or did not answer.
+         */
+        get: operations["listSlackChannels"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/inboxes/{inboxId}/slack": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * An inbox's Slack channels
+         * @description Which Slack channel gets the inbox's new conversations and which its mentions, and whether
+         *     the posts carry the message text (`include_content`, off by default: a post then carries
+         *     only the subject, the contact's name and a link). An inbox never set answers no channels.
+         *     API keys and tokens need `inboxes:read`.
+         */
+        get: operations["getInboxSlack"];
+        /**
+         * Set an inbox's Slack channels
+         * @description Replaces the inbox's Slack settings. A channel must be one `GET /v1/slack/channels` lists
+         *     (the bot is a member), else `400 validation_failed`; `null` or an absent channel posts
+         *     nothing for that event. Owners and admins, or API keys and tokens with `inboxes:manage`.
+         *     `409 slack_not_configured`, `409 slack_not_connected`, `502 slack_failed`.
+         */
+        put: operations["setInboxSlack"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/me/slack": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Your Slack link
+         * @description Whether the calling member's Slack user is linked in this workspace, and a pending code's
+         *     expiry. A linked Slack user's replies in Yuva's threads are written as this member. Member
+         *     sessions only.
+         */
+        get: operations["getMySlack"];
+        put?: never;
+        post?: never;
+        /**
+         * Unlink your Slack user
+         * @description Removes the link (and a pending code); writes `member.slack_unlinked` to the audit log.
+         *     Member sessions only. `404 not_found` when nothing is linked.
+         */
+        delete: operations["unlinkMySlack"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/me/slack/link": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Send a link code to your Slack user
+         * @description Finds the Slack user with the member's e-mail address (or `email` when given) in the
+         *     connected Slack workspace and sends them a direct message with a 6-digit code from the
+         *     Yuva bot. The code is valid for 10 minutes and 5 tries; a new request replaces it. At most
+         *     5 requests per member and hour (`429 rate_limited`). Member sessions only.
+         *     `404 slack_user_not_found` when Slack knows no such user, `409 slack_user_taken` when
+         *     another member has linked that Slack user, `409 slack_not_configured`,
+         *     `409 slack_not_connected`, `502 slack_failed`.
+         */
+        post: operations["startMySlackLink"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/me/slack/link/confirm": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Link your Slack user with the code
+         * @description Links the Slack user the code was sent to; writes `member.slack_linked` to the audit log.
+         *     `400 invalid_code` for a wrong code, `400 code_expired` when it expired, was tried 5 times
+         *     or none is pending, `409 slack_user_taken` when another member linked that Slack user in
+         *     the meantime. Member sessions only.
+         */
+        post: operations["confirmMySlackLink"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/slack/oauth/callback": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Slack's redirect back after an install
+         * @description Where Slack sends the browser after `POST /v1/slack/connect`; enter
+         *     `<YUVA_PUBLIC_URL>/slack/oauth/callback` as the Slack app's redirect URL. It needs the same
+         *     member session that started the install, exchanges the code at `oauth.v2.access`, checks
+         *     the granted scopes and redirects to the panel's
+         *     `/settings/slack?result=<SlackConnectResult>&workspace=<id>`. Writes
+         *     `workspace.slack_connected` to the audit log.
+         */
+        get: operations["slackOAuthCallback"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/ingress/slack": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Receive Slack events
+         * @description The Slack app's Event Subscriptions request URL (`<YUVA_PUBLIC_URL>/ingress/slack`). Every
+         *     request must carry `X-Slack-Signature` (`v0=` and the hex HMAC-SHA256 of
+         *     `v0:<X-Slack-Request-Timestamp>:<raw body>` keyed with `YUVA_SLACK_SIGNING_SECRET`) and a
+         *     timestamp within 5 minutes of the server's clock, else `401 invalid_signature`; bodies are
+         *     at most 1 MiB. `url_verification` is answered with its challenge. An `event_callback` is
+         *     found by its `team_id`, kept once per `event_id` (a retry is answered `200` without being
+         *     handled again) and handled in the background: a reply in a thread Yuva posted becomes a
+         *     note by the member linked to the Slack user, or with the reply command a reply to the
+         *     customer under that member's inbox access and the send rules; anyone else gets an
+         *     ephemeral explanation and nothing changes. `app_uninstalled` and `tokens_revoked` remove
+         *     the connection. `404 not_found` when the server offers no Slack.
+         */
+        post: operations["ingestSlack"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/ingress/email": {
         parameters: {
             query?: never;
@@ -10377,6 +10627,9 @@ export interface components {
          *       `workspace.broadcasts_denied`: `reason` when the operator gave one.
          *       `workspace.broadcasts_suspended`: `reason`, `paused_broadcasts` (by the operator).
          *       `workspace.broadcast_limit_changed`: `from`, `to` (recipients a day; `null` is no limit).
+         *     - `workspace.slack_connected`: `team_id`, `team_name`; `workspace.slack_disconnected`:
+         *       `team_id`, and `reason` `uninstalled` (by `system`) when Slack reported the app removed.
+         *     - `member.slack_linked`: `slack_user_id`; `member.slack_unlinked`: `slack_user_id`.
          *
          *     Details never make an action fail: when they would be too long, lists are replaced by
          *     `<name>_count` and `truncated` is `true`.
@@ -10386,7 +10639,7 @@ export interface components {
          *     More actions are added over time; show an unknown one by its name.
          * @enum {string}
          */
-        AuditAction: "member.joined" | "member.role_changed" | "member.removed" | "member.inbox_access_granted" | "member.inbox_access_revoked" | "invite.created" | "invite.deleted" | "api_key.created" | "api_key.revoked" | "oauth_grant.created" | "oauth_grant.revoked" | "webhook.created" | "webhook.updated" | "webhook.deleted" | "webhook.secret_rotated" | "channel.credentials_changed" | "channel.key_rotated" | "channel.forwarding_address_rotated" | "channel.dkim_key_created" | "channel.dkim_key_deleted" | "inbox.identity_secret_rotated" | "inbox.deleted" | "conversation.trashed" | "conversation.restored" | "conversation.deleted" | "message.redacted" | "contact.deleted" | "contact.consent_exported" | "list.consent_exported" | "analytics_export.created" | "workspace.retention_changed" | "workspace.broadcast_approval_requested" | "workspace.broadcasts_approved" | "workspace.broadcasts_denied" | "workspace.broadcasts_suspended" | "workspace.broadcast_limit_changed";
+        AuditAction: "member.joined" | "member.role_changed" | "member.removed" | "member.inbox_access_granted" | "member.inbox_access_revoked" | "invite.created" | "invite.deleted" | "api_key.created" | "api_key.revoked" | "oauth_grant.created" | "oauth_grant.revoked" | "webhook.created" | "webhook.updated" | "webhook.deleted" | "webhook.secret_rotated" | "channel.credentials_changed" | "channel.key_rotated" | "channel.forwarding_address_rotated" | "channel.dkim_key_created" | "channel.dkim_key_deleted" | "inbox.identity_secret_rotated" | "inbox.deleted" | "conversation.trashed" | "conversation.restored" | "conversation.deleted" | "message.redacted" | "contact.deleted" | "contact.consent_exported" | "list.consent_exported" | "analytics_export.created" | "workspace.retention_changed" | "workspace.broadcast_approval_requested" | "workspace.broadcasts_approved" | "workspace.broadcasts_denied" | "workspace.broadcasts_suspended" | "workspace.broadcast_limit_changed" | "workspace.slack_connected" | "workspace.slack_disconnected" | "member.slack_linked" | "member.slack_unlinked";
         /** @enum {string} */
         AuditTargetType: "workspace" | "member" | "invite" | "inbox" | "channel" | "api_key" | "oauth_grant" | "webhook" | "contact" | "list" | "analytics_export" | "conversation" | "message";
         AuditTarget: {
@@ -12615,7 +12868,8 @@ export interface components {
             avatar_url?: string;
             /**
              * @description The OAuth client the member wrote this with (its name at the time), as in
-             *     "Ayşe via Claude Code"; absent for the panel, API keys and contacts.
+             *     "Ayşe via Claude Code", or `Slack` for a note or reply written in a Slack thread; absent
+             *     for the panel, API keys and contacts.
              */
             via?: string;
         };
@@ -22295,6 +22549,107 @@ export interface components {
             scope?: string;
             limit?: components["schemas"]["HostedLimit"];
             detail?: string;
+        };
+        SlackConnection: {
+            /** @description `false` when the server has no Slack app configured; every other Slack endpoint then answers `409 slack_not_configured`. */
+            available: boolean;
+            connected: boolean;
+            /** @description The Slack workspace's id. */
+            team_id?: string;
+            team_name?: string;
+            /** @description The Yuva bot's Slack user, to invite into channels. */
+            bot_user_id?: string;
+            /**
+             * @description A thread reply starting with this goes to the customer; any other becomes a note.
+             * @example !reply
+             */
+            reply_command: string;
+            /** Format: date-time */
+            connected_at?: string;
+            /**
+             * Format: uuid
+             * @description The member who connected it, while they are a member.
+             */
+            connected_by?: string;
+            /** @description Why the last post to Slack failed (such as `not_in_channel`); cleared by the next one that succeeds. */
+            last_error?: string;
+            /** Format: date-time */
+            last_error_at?: string;
+            /** @description The OAuth redirect URL to enter in the Slack app. */
+            redirect_url: string;
+            /** @description The Event Subscriptions request URL to enter in the Slack app. */
+            events_url: string;
+        };
+        SlackConnectionUpdate: {
+            /** @description `!` and 1 to 20 lowercase letters. Slack itself takes messages that start with `/`. */
+            reply_command?: string;
+        };
+        SlackConnectStart: {
+            authorize_url: string;
+            redirect_url: string;
+            /** Format: date-time */
+            expires_at: string;
+        };
+        /**
+         * @description How an install ended, in the panel redirect's `result`: `connected`; `denied` (cancelled
+         *     at Slack); `expired` (no pending start, or older than 10 minutes); `session_mismatch`
+         *     (another browser session finished it); `team_taken` (that Slack workspace is connected to
+         *     another Yuva workspace); `scope_missing` (Slack granted fewer scopes than Yuva asks for);
+         *     `failed` (Slack refused the code or did not answer).
+         * @enum {string}
+         */
+        SlackConnectResult: "connected" | "denied" | "expired" | "session_mismatch" | "team_taken" | "scope_missing" | "failed";
+        SlackChannel: {
+            id: string;
+            name: string;
+            private: boolean;
+        };
+        SlackChannelList: {
+            items: components["schemas"]["SlackChannel"][];
+        };
+        InboxSlack: {
+            /** Format: uuid */
+            inbox_id: string;
+            /** @description The channel that gets the inbox's new conversations (a contact's first message). */
+            new_conversations_channel_id?: string;
+            /** @description The channel that gets notes in the inbox that mention members. */
+            mentions_channel_id?: string;
+            /**
+             * @description Whether posts carry the start of the message or note (300 characters). Off by default:
+             *     a post carries only the subject, the contact's name and a link to the conversation.
+             */
+            include_content: boolean;
+            /** Format: date-time */
+            updated_at?: string;
+        };
+        InboxSlackUpdate: {
+            new_conversations_channel_id?: string | null;
+            mentions_channel_id?: string | null;
+            /** @description Absent is `false`. */
+            include_content?: boolean;
+        };
+        SlackMemberLink: {
+            linked: boolean;
+            /** @description The linked Slack user, or the one a pending code was sent to. */
+            slack_user_id?: string;
+            slack_user_name?: string;
+            /** Format: date-time */
+            linked_at?: string;
+            /**
+             * Format: date-time
+             * @description While a code is pending.
+             */
+            code_expires_at?: string;
+        };
+        SlackLinkStart: {
+            /**
+             * Format: email
+             * @description The Slack account's e-mail address when it differs from the member's.
+             */
+            email?: string;
+        };
+        SlackLinkConfirm: {
+            code: string;
         };
     };
     responses: {
@@ -36129,6 +36484,371 @@ export interface operations {
             401: components["responses"]["Problem"];
             403: components["responses"]["Problem"];
             503: components["responses"]["Problem"];
+        };
+    };
+    getSlack: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The connection. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SlackConnection"];
+                };
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+        };
+    };
+    disconnectSlack: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Disconnected. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            409: components["responses"]["Problem"];
+        };
+    };
+    updateSlack: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SlackConnectionUpdate"];
+            };
+        };
+        responses: {
+            /** @description The connection. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SlackConnection"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            409: components["responses"]["Problem"];
+        };
+    };
+    connectSlack: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Makes a retried request return the first response; see "Idempotency". */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Where to send the browser. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SlackConnectStart"];
+                };
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            409: components["responses"]["Problem"];
+        };
+    };
+    listSlackChannels: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The channels. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SlackChannelList"];
+                };
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            409: components["responses"]["Problem"];
+            502: components["responses"]["Problem"];
+        };
+    };
+    getInboxSlack: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                inboxId: components["parameters"]["InboxId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The inbox's Slack settings. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InboxSlack"];
+                };
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    setInboxSlack: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                inboxId: components["parameters"]["InboxId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["InboxSlackUpdate"];
+            };
+        };
+        responses: {
+            /** @description The inbox's Slack settings. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InboxSlack"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+            409: components["responses"]["Problem"];
+            502: components["responses"]["Problem"];
+        };
+    };
+    getMySlack: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The link. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SlackMemberLink"];
+                };
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+        };
+    };
+    unlinkMySlack: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Unlinked. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    startMySlackLink: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["SlackLinkStart"];
+            };
+        };
+        responses: {
+            /** @description The code was sent. */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SlackMemberLink"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+            409: components["responses"]["Problem"];
+            429: components["responses"]["Problem"];
+            502: components["responses"]["Problem"];
+        };
+    };
+    confirmMySlackLink: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SlackLinkConfirm"];
+            };
+        };
+        responses: {
+            /** @description Linked. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SlackMemberLink"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            409: components["responses"]["Problem"];
+        };
+    };
+    slackOAuthCallback: {
+        parameters: {
+            query?: {
+                code?: string;
+                state?: string;
+                error?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description To the panel, with the result. */
+            303: {
+                headers: {
+                    /** @description The same result as the redirect's `result`. */
+                    "X-Yuva-Slack-Result"?: components["schemas"]["SlackConnectResult"];
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ingestSlack: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Slack-Signature": string;
+                /** @description Unix time in seconds. */
+                "X-Slack-Request-Timestamp": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": Record<string, never>;
+            };
+        };
+        responses: {
+            /** @description Accepted (or the `url_verification` challenge). */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+            413: components["responses"]["Problem"];
         };
     };
     ingestEmail: {

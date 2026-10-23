@@ -267,6 +267,7 @@ func serve(ctx context.Context, cfg config.Config, log *slog.Logger, args []stri
 		Webhooks:         api.WebhookSettings{AllowPrivate: cfg.WebhookAllowPrivate},
 		SMTPAllowPrivate: cfg.SMTPAllowPrivate,
 		Push:             api.PushSettings{Keys: pushKeys},
+		Slack:            api.SlackSettings{ClientID: cfg.SlackClientID, ClientSecret: cfg.SlackClientSecret, SigningSecret: cfg.SlackSigningSecret},
 		DisableMCP:       !cfg.MCP,
 		DisablePanel:     !cfg.Panel,
 		DisableWidget:    !cfg.Widget,

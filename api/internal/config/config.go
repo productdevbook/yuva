@@ -158,6 +158,11 @@ type Config struct {
 	MicrosoftClientID     string
 	MicrosoftClientSecret string
 	MicrosoftTenant       string
+	// SlackClientID, SlackClientSecret and SlackSigningSecret are the Slack app workspaces connect
+	// through (YUVA_SLACK_CLIENT_ID, _CLIENT_SECRET, _SIGNING_SECRET); all three or none.
+	SlackClientID      string
+	SlackClientSecret  string
+	SlackSigningSecret string
 
 	Analytics Analytics
 }
@@ -403,6 +408,12 @@ func Load(version string) (Config, error) {
 	}
 	if err := c.loadVAPID(); err != nil {
 		return c, err
+	}
+	c.SlackClientID = strings.TrimSpace(os.Getenv("YUVA_SLACK_CLIENT_ID"))
+	c.SlackClientSecret = strings.TrimSpace(os.Getenv("YUVA_SLACK_CLIENT_SECRET"))
+	c.SlackSigningSecret = strings.TrimSpace(os.Getenv("YUVA_SLACK_SIGNING_SECRET"))
+	if n := countSet(c.SlackClientID, c.SlackClientSecret, c.SlackSigningSecret); n != 0 && n != 3 {
+		return c, errors.New("set all of YUVA_SLACK_CLIENT_ID, YUVA_SLACK_CLIENT_SECRET and YUVA_SLACK_SIGNING_SECRET, or none")
 	}
 	if err := c.rejectDevSecrets(public.Hostname()); err != nil {
 		return c, err
@@ -777,6 +788,16 @@ func (c *Config) loadMigrations() error {
 		c.MigrationSources = slices.DeleteFunc(c.MigrationSources, func(s string) bool { return s == "file" })
 	}
 	return nil
+}
+
+func countSet(vs ...string) int {
+	n := 0
+	for _, v := range vs {
+		if v != "" {
+			n++
+		}
+	}
+	return n
 }
 
 func (c *Config) loadVAPID() error {

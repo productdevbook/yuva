@@ -2054,6 +2054,70 @@ type Session struct {
 	LastSeenAt time.Time
 }
 
+type SlackConnectState struct {
+	WorkspaceID uuid.UUID
+	MemberID    uuid.UUID
+	StateHash   string
+	ExpiresAt   time.Time
+}
+
+type SlackEvent struct {
+	WorkspaceID uuid.UUID
+	EventID     string
+	ReceivedAt  time.Time
+}
+
+type SlackInboxSetting struct {
+	WorkspaceID             uuid.UUID
+	InboxID                 uuid.UUID
+	NewConversationsChannel *string
+	MentionsChannel         *string
+	IncludeContent          bool
+	UpdatedAt               time.Time
+}
+
+type SlackInstallation struct {
+	WorkspaceID  uuid.UUID
+	TeamID       string
+	TeamName     string
+	AppID        string
+	BotUserID    string
+	BotToken     []byte
+	Scopes       []string
+	ReplyCommand string
+	ConnectedBy  *uuid.UUID
+	LastError    *string
+	LastErrorAt  *time.Time
+	CreatedAt    time.Time
+	UpdatedAt    time.Time
+}
+
+type SlackLinkCode struct {
+	WorkspaceID   uuid.UUID
+	MemberID      uuid.UUID
+	SlackUserID   string
+	SlackUserName string
+	CodeHash      []byte
+	Attempts      int32
+	ExpiresAt     time.Time
+}
+
+type SlackMemberLink struct {
+	WorkspaceID   uuid.UUID
+	MemberID      uuid.UUID
+	SlackUserID   string
+	SlackUserName string
+	LinkedAt      time.Time
+}
+
+type SlackThread struct {
+	WorkspaceID    uuid.UUID
+	ChannelID      string
+	ThreadTs       string
+	ConversationID uuid.UUID
+	CreatedAt      time.Time
+}
+
 type StatusCheck struct {
 	ID           uuid.UUID
 	WorkspaceID  uuid.UUID
