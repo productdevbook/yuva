@@ -104,6 +104,8 @@ export function useConversations(): ConversationsResult {
             ? s
             : { ...s, items: [message.data, ...s.items].sort(byActivity) }
         )
+      } else if (message.type === "conversation.removed") {
+        setState((s) => ({ ...s, items: s.items.filter((c) => c.id !== message.data.id) }))
       } else if (message.type === "conversation.updated") {
         setState((s) => ({
           ...s,

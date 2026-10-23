@@ -78,6 +78,7 @@ export interface ConnectionState {
 
 export interface YuvaClientEvents {
   event: ClientRealtimeMessage
+  conversationRemoved: { id: string }
   connection: ConnectionState
   session: { session: ClientSessionInfo; renewed: boolean }
   reader: ReaderSession | null
@@ -373,6 +374,7 @@ export class YuvaClient {
       event: (message) => {
         if (message.type === "ready") this.#emit("connection", { state: "open", attempt: 0 })
         this.#emit("event", message)
+        if (message.type === "conversation.removed") this.#emit("conversationRemoved", { id: message.data.id })
       },
       sessionEnded: () => void this.#renew().catch(() => this.#realtime?.nudge()),
       reconnecting: (attempt) => {

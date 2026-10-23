@@ -434,4 +434,104 @@ describe("<yuva-chat> realtime", () => {
       expect(JSON.parse(localStorage.getItem("yuva:pk_test")!).dismissed_status).toBeUndefined()
     })
   })
+  describe("removed conversation", () => {
+    const conversation = {
+      id: "c1",
+      kind: "conversation" as const,
+      subject: "Billing",
+      status: "open" as const,
+      unread: false,
+      can_rate: false,
+      created_at: at,
+    }
+
+    test("leaves the list, closes the open thread with a line, and the next message starts a new conversation", async () => {
+      const started: Record<string, unknown>[] = []
+      globalThis.fetch = (async (input: RequestInfo | URL, init?: RequestInit) => {
+        const route = `${init?.method ?? "GET"} ${new URL(String(input)).pathname}`
+        const reply = (status: number, body: unknown) =>
+          new Response(JSON.stringify(body), { status, headers: { "content-type": "application/json" } })
+        if (route === "GET /client/v1/channels/pk_test") return reply(200, inbox)
+        if (route === "POST /client/v1/session") return reply(201, session)
+        if (route === "GET /client/v1/session") return reply(200, { ...session, token: undefined })
+        if (route === "GET /client/v1/conversations") return reply(200, { items: [conversation] })
+        if (route === "GET /client/v1/conversations/c1/messages") return reply(200, { items: [] })
+        if (route === "POST /client/v1/conversations") {
+          const body = JSON.parse(String(init?.body)) as Record<string, unknown>
+          started.push(body)
+          const created: ClientConversationCreated = {
+            conversation: { ...conversation, id: "c2", subject: "Again" },
+            message: { ...message("m9", "Again", "contact", String(body.client_id)), conversation_id: "c2" },
+          }
+          return reply(201, created)
+        }
+        return reply(204, {})
+      }) as typeof fetch
+      globalThis.WebSocket = FakeSocket as unknown as typeof WebSocket
+      localStorage.setItem(
+        "yuva:pk_test",
+        JSON.stringify({ visitor_id: "v1", session: { token: "t1", expires_at: session.expires_at, sub: null } })
+      )
+
+      const element = mount({ layout: "embedded", channel: "pk_test", server: "http://yuva.test", locale: "en" })
+      await until(() => panel(element).querySelector(".home .item") !== null)
+      panel(element).querySelector<HTMLButtonElement>(".home .item")!.click()
+      await until(() => panel(element).querySelector("textarea") !== null)
+      await until(() => sockets.length > 0)
+
+      sockets[0]!.receive({
+        id: 5,
+        type: "conversation.removed",
+        conversation_id: "c1",
+        created_at: at,
+        data: { id: "c1" },
+      })
+      await until(() => panel(element).querySelector("textarea") === null)
+      expect(panel(element).querySelector(".home")).not.toBeNull()
+      expect(panel(element).querySelector(".home .item")).toBeNull()
+      const banner = panel(element).querySelector<HTMLElement>(".banner")!
+      expect(banner.hidden).toBe(false)
+      expect(banner.textContent).toBe("This conversation is no longer available.")
+
+      await compose(element)
+      expect(banner.hidden).toBe(true)
+      const textarea = panel(element).querySelector<HTMLTextAreaElement>("textarea")!
+      textarea.value = "Again"
+      textarea.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter", bubbles: true }))
+      await until(() => started.length > 0)
+      expect(started).toHaveLength(1)
+      expect(started[0]?.body).toBe("Again")
+    })
+
+    test("a list that is not open drops it without a line", async () => {
+      globalThis.fetch = (async (input: RequestInfo | URL, init?: RequestInit) => {
+        const route = `${init?.method ?? "GET"} ${new URL(String(input)).pathname}`
+        const reply = (status: number, body: unknown) =>
+          new Response(JSON.stringify(body), { status, headers: { "content-type": "application/json" } })
+        if (route === "GET /client/v1/channels/pk_test") return reply(200, inbox)
+        if (route === "POST /client/v1/session") return reply(201, session)
+        if (route === "GET /client/v1/session") return reply(200, { ...session, token: undefined })
+        if (route === "GET /client/v1/conversations") return reply(200, { items: [conversation] })
+        return reply(204, {})
+      }) as typeof fetch
+      globalThis.WebSocket = FakeSocket as unknown as typeof WebSocket
+      localStorage.setItem(
+        "yuva:pk_test",
+        JSON.stringify({ visitor_id: "v1", session: { token: "t1", expires_at: session.expires_at, sub: null } })
+      )
+      const element = mount({ layout: "embedded", channel: "pk_test", server: "http://yuva.test", locale: "en" })
+      await until(() => panel(element).querySelector(".home .item") !== null)
+      await until(() => sockets.length > 0)
+      sockets[0]!.receive({
+        id: 5,
+        type: "conversation.removed",
+        conversation_id: "c1",
+        created_at: at,
+        data: { id: "c1" },
+      })
+      await until(() => panel(element).querySelector(".home .item") === null)
+      expect(panel(element).querySelector(".home .item")).toBeNull()
+      expect(panel(element).querySelector<HTMLElement>(".banner")!.hidden).toBe(true)
+    })
+  })
 })

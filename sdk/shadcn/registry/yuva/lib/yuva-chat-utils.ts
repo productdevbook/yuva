@@ -16,6 +16,7 @@ export interface YuvaChatLabels {
   conversations: string
   newConversation: string
   noConversations: string
+  conversationRemoved: string
   noConversationsHint: string
   loadMore: string
   conversationFallback: string
@@ -82,6 +83,7 @@ export const defaultYuvaChatLabels: YuvaChatLabels = {
   conversations: "Conversations",
   newConversation: "New conversation",
   noConversations: "No conversations yet",
+  conversationRemoved: "This conversation is no longer available.",
   noConversationsHint: "Start one and we will answer here.",
   loadMore: "Show more",
   conversationFallback: "Conversation",

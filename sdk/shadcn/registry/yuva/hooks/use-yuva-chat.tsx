@@ -67,6 +67,7 @@ export interface YuvaChatState {
   activeId: string | null
   conversation: ClientConversation | null
   open(id: string | null): Promise<void>
+  removed: boolean
   threadLoading: boolean
   messages: YuvaChatMessage[]
   hasEarlier: boolean
@@ -160,6 +161,7 @@ export function useYuvaChat({
   const [conversations, setConversations] = React.useState<ClientConversation[]>([])
   const [conversationCursor, setConversationCursor] = React.useState<string | undefined>()
   const [activeId, setActiveId] = React.useState<string | null>(null)
+  const [removed, setRemoved] = React.useState(false)
   const [threadLoading, setThreadLoading] = React.useState(false)
   const [messages, setMessages] = React.useState<YuvaChatMessage[]>([])
   const [messageCursor, setMessageCursor] = React.useState<string | undefined>()
@@ -230,7 +232,14 @@ export function useYuvaChat({
       else if (event.type === "presence")
         setInbox((current) => (current ? { ...current, presence: event.data } : current))
       else if (event.type === "conversation.created") setConversations((list) => upsertConversation(list, event.data))
-      else if (event.type === "conversation.updated") {
+      else if (event.type === "conversation.removed") {
+        const { id } = event.data
+        setConversations((list) => list.filter((item) => item.id !== id))
+        if (active.current === id) {
+          forget()
+          setRemoved(true)
+        }
+      } else if (event.type === "conversation.updated") {
         const { id, status, can_rate, rating } = event.data
         setConversations((list) => list.map((item) => (item.id === id ? { ...item, status, can_rate, rating } : item)))
       } else if (event.type === "message.created" || event.type === "message.updated") {
@@ -315,6 +324,7 @@ export function useYuvaChat({
   const open = React.useCallback(
     async (id: string | null) => {
       if (!client) return
+      setRemoved(false)
       if (id === null) {
         forget()
         return
@@ -492,6 +502,7 @@ export function useYuvaChat({
     activeId,
     conversation,
     open,
+    removed,
     threadLoading,
     messages,
     hasEarlier: !!messageCursor,

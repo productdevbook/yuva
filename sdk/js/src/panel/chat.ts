@@ -152,6 +152,7 @@ export class Chat implements PanelController {
   #banner = el("div", "banner")
   #body = el("div", "body")
   #scroll = el("div", "scroll")
+  #flash = ""
   #notice = el("div", "notice")
   #email = el("div", "")
   #emailInput = el("input", "field")
@@ -628,6 +629,9 @@ export class Chat implements PanelController {
         }
         this.#syncUnread()
         break
+      case "conversation.removed":
+        this.#removeConversation(message.data.id)
+        break
       case "conversation.updated": {
         const conversation = this.#conversations.get(message.data.id)
         const { status, can_rate, rating } = message.data
@@ -659,6 +663,23 @@ export class Chat implements PanelController {
       }
     }
     this.#render()
+  }
+
+  #removeConversation(id: string): void {
+    const open = this.#view?.kind === "thread" && this.#view.id === id
+    this.#conversations.delete(id)
+    this.#threads.delete(id)
+    this.#ratings.delete(id)
+    const typing = this.#typing.get(id)
+    if (typing) clearTimeout(typing.timer)
+    this.#typing.delete(id)
+    this.#pending = this.#pending.filter((p) => p.conversation !== id || p.state === "sending")
+    this.#syncUnread()
+    if (!open) return
+    this.#stopTyping()
+    this.#view = { kind: "home" }
+    this.#flash = this.#t(msg`This conversation is no longer available.`)
+    this.#renderBanner()
   }
 
   #upsertMessage(message: ClientMessage, created: boolean): void {
@@ -974,6 +995,7 @@ export class Chat implements PanelController {
 
   #go(view: View): void {
     this.#stopTyping()
+    this.#clearFlash()
     if (view.kind !== "thread" || view.id !== null) this.#helpArticle = null
     if (view.kind !== "app") this.#closeApp()
     this.#view = view
@@ -1152,8 +1174,9 @@ export class Chat implements PanelController {
   }
 
   #renderBanner(): void {
-    this.#banner.hidden = !this.#reconnecting
-    this.#banner.textContent = this.#t(msg`Reconnecting…`)
+    const text = this.#reconnecting ? this.#t(msg`Reconnecting…`) : this.#flash
+    this.#banner.hidden = !text
+    this.#banner.textContent = text
   }
 
   #renderHome(): void {
@@ -1251,7 +1274,14 @@ export class Chat implements PanelController {
     this.#body.replaceChildren(page)
   }
 
+  #clearFlash(): void {
+    if (!this.#flash) return
+    this.#flash = ""
+    this.#renderBanner()
+  }
+
   async #openThread(id: string): Promise<void> {
+    this.#clearFlash()
     this.#closeApp()
     this.#view = { kind: "thread", id }
     this.#render()

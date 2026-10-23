@@ -68,7 +68,7 @@ export function YuvaChat({
   const chat = useYuvaChat({ server, channel, client, identityToken, helpArticleId })
   const [view, setView] = React.useState<"list" | "thread">("thread")
   const decided = React.useRef(false)
-  const { loading, conversations, open } = chat
+  const { loading, conversations, open, removed } = chat
 
   React.useEffect(() => {
     if (loading || decided.current) return
@@ -78,6 +78,11 @@ export function YuvaChat({
     // oxlint-disable-next-line react/set-state-in-effect -- the first view depends on what the client loaded
     else setView(latest ? "list" : "thread")
   }, [loading, conversations, open])
+
+  React.useEffect(() => {
+    // oxlint-disable-next-line react/set-state-in-effect -- the open thread was removed, so the view follows the client
+    if (removed) setView(conversations.length > 0 ? "list" : "thread")
+  }, [removed, conversations.length])
 
   const inbox = chat.inbox
   const presence = inbox?.presence
@@ -155,6 +160,11 @@ export function YuvaChat({
         <p role="status" className="flex items-center gap-2 border-b bg-muted px-3 py-1 text-xs text-muted-foreground">
           <Spinner className="size-3" />
           {labels.reconnecting}
+        </p>
+      )}
+      {removed && (
+        <p role="status" className="border-b bg-muted px-3 py-1 text-xs text-muted-foreground">
+          {labels.conversationRemoved}
         </p>
       )}
       {loading ? (
