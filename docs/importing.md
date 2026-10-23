@@ -50,7 +50,7 @@ Press "Upload and check". The file is read and every address checked, and nothin
 Yuva guesses what each column holds from its header. Check it: exactly one column is the e-mail
 address; the others can be the name (or first and last name), language, an external id, an attribute
 you name (letters, digits, dots, dashes and underscores, up to 64), or skipped. Attributes only fill
-keys a contact does not have yet, so an import never overwrites what you already know. Change a column
+keys a contact does not have yet, so an import never overwrites what you already know. An attribute named like a contact [custom field](custom-fields.md) is read as the field's type, and left out when the value does not fit. Change a column
 and press "Check again with these columns".
 
 ## 4. Review

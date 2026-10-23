@@ -232,6 +232,8 @@ Araçlar `/v1` ile aynı kontrollerden geçer. Kullanamayacağınız araçlar li
 | `list_members` | `inboxes:read` |
 | `list_teams` | `inboxes:read` |
 | `list_macros` | `conversations:read` |
+| `list_custom_fields` | `conversations:read` veya `contacts:read` |
+| `set_conversation_fields` | `conversations:write` |
 | `search_contacts`, `list_contact_notes` | `contacts:read` |
 | `list_contact_subscriptions` | `contacts:read` ve `lists:read` |
 | `create_contact`, `update_contact`, `add_contact_note` | `contacts:write` |
@@ -266,6 +268,8 @@ Hiçbir taşıma aracı şifre almaz: `create_migration`, uygulama şifresini gi
 `assign`, `team_id` (`list_teams` içinden, konuşmanın gelen kutusuna yetkisi olan bir ekip) veya `remove_team: true` alır; ikisinden biri gönderilip `assignee_id` verilmediğinde üye atanan olduğu gibi kalır. `search_conversations` `team_id` alır ve konuşmalarda `team_id` bulunur.
 
 `list_macros`, çalışma alanının paylaşılan makrolarını ve sizinkileri `id`, `name`, `shortcut`, `visibility`, `body` ve `actions` (`add_labels`, `remove_labels`, `assignee_id`, `unassign`, `status`, `snooze_minutes`, `priority`) ile döndürür. Eylemler yalnızca bilgi içindir; hiçbir araç makro uygulamaz.
+
+`list_custom_fields`, çalışma alanının [özel alanlarını](custom-fields.md) döndürür (`object`, `key`, `name`, `type`, `options`, `required_on_close`); isteğe bağlı `object` olarak `conversation` veya `contact` verilebilir. `set_conversation_fields`, `conversation_id` ve `fields` alır, yani anahtara göre değerler (`null` birini temizler); uymayan bir değer `field_invalid` döner. `search_conversations`, anahtar ve değerden oluşan bir nesne olan `fields` alır ve konuşmalar `fields` taşır. Zorunlu bir alan boşken `set_status` veya `bulk_update` ile kapatmak `field_required` döner. Hiçbir araç alan tanımlamaz.
 
 ### Kaynaklar ve prompt'lar
 

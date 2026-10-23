@@ -48,7 +48,7 @@ gelen kutusunda gönderebilen bir e-posta kanalı gerekir.
 Yuva her sütunda ne olduğunu başlığından tahmin eder. Denetleyin: tam olarak bir sütun e-posta adresi olmalı;
 diğerleri ad (ya da ad ve soyad), dil, dış kimlik, adlandırdığınız bir özellik (harf, rakam, nokta, tire ve
 alt çizgi; en fazla 64 karakter) olabilir ya da atlanır. Özellikler yalnızca kişide henüz olmayan anahtarları
-doldurur; yani içe aktarma, bildiğiniz bir şeyin üzerine yazmaz. Bir sütunu değiştirin ve "Bu sütunlarla yeniden
+doldurur; yani içe aktarma, bildiğiniz bir şeyin üzerine yazmaz. Bir kişi [özel alanıyla](custom-fields.md) aynı adı taşıyan özellik alanın türüne göre okunur, değer uymuyorsa dışarıda bırakılır. Bir sütunu değiştirin ve "Bu sütunlarla yeniden
 denetle"ye basın.
 
 ## 4. Gözden geçirme

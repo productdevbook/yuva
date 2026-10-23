@@ -73,6 +73,8 @@ Live-Verbindung hat: der Moment für einen [Push](mobile.md#4-push-benachrichtig
 vollständigen Schemas stehen im Abschnitt `webhooks` von
 [openapi.yaml](../../openapi/openapi.yaml).
 
+Die `conversation` dieser Ereignisse trägt `fields`, die Werte der [benutzerdefinierten Felder](custom-fields.md) nach Schlüssel (`{}`, wenn keiner gesetzt ist).
+
 Team-Ereignisse haben kein `inbox_id`. Ein auf einen Posteingang beschränkter Endpunkt erhält die Ereignisse der Teams mit Zugriff auf diesen Posteingang, mit nur diesem Posteingang in `inbox_ids`; ein Endpunkt für den ganzen Workspace erhält alle.
 
 ### Felder eines Endpunkts

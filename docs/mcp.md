@@ -257,6 +257,8 @@ answers `insufficient_scope` with the scope to grant.
 | `list_members` | `inboxes:read` |
 | `list_teams` | `inboxes:read` |
 | `list_macros` | `conversations:read` |
+| `list_custom_fields` | `conversations:read` or `contacts:read` |
+| `set_conversation_fields` | `conversations:write` |
 | `search_contacts`, `list_contact_notes` | `contacts:read` |
 | `list_contact_subscriptions` | `contacts:read` and `lists:read` |
 | `create_contact`, `update_contact`, `add_contact_note` | `contacts:write` |
@@ -291,6 +293,8 @@ With `inbox_id` and no `channel_id`, `create_migration` uses the inbox's e-mail 
 `assign` takes `team_id` (a team from `list_teams` that holds the conversation's inbox) or `remove_team: true`; when either is sent and `assignee_id` is left out, the member assignee stays as it is. `search_conversations` takes `team_id`, and conversations carry `team_id`.
 
 `list_macros` returns the workspace's shared macros and your own with `id`, `name`, `shortcut`, `visibility`, `body` and `actions` (`add_labels`, `remove_labels`, `assignee_id`, `unassign`, `status`, `snooze_minutes`, `priority`). The actions are for reference; no tool applies a macro.
+
+`list_custom_fields` returns the workspace's [custom fields](custom-fields.md) (`object`, `key`, `name`, `type`, `options`, `required_on_close`), optionally for `object` `conversation` or `contact`. `set_conversation_fields` takes `conversation_id` and `fields`, values by key (`null` clears one); a value that does not fit answers `field_invalid`. `search_conversations` takes `fields`, an object of key and value, and conversations carry `fields`. Closing with `set_status` or `bulk_update` while a required field is empty answers `field_required`. No tool defines fields.
 
 ### Resources and prompts
 

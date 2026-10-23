@@ -56,7 +56,7 @@ curl -X DELETE -H "Authorization: Bearer $YUVA_API_KEY" \
 | `email_verified` | nein | `true`, wenn Sie `email` verifiziert haben. Nur eine verifizierte Adresse wird mit einem bestehenden Kontakt verknüpft. |
 | `name` | nein | Anzeigename, bis zu 200 Zeichen. |
 | `locale` | nein | Sprach-Tag, etwa `en`. |
-| `attrs` | nein | JSON-Objekt, das Mitgliedern angezeigt wird (Tarif, App-Version, …), bis zu 16 KiB. |
+| `attrs` | nein | JSON-Objekt, das Mitgliedern angezeigt wird (Tarif, App-Version, …), bis zu 16 KiB. Ein Schlüssel mit einem [benutzerdefinierten Kontaktfeld](custom-fields.md) wird nur behalten, wenn sein Wert zum Typ des Felds passt; sonst wird er verworfen. |
 
 ### Regeln
 

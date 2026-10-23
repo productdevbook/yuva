@@ -72,6 +72,8 @@ ve `data` bulunur. Kişinin canlı bağlantısı yoksa `data.contact.online` `fa
 [push](mobile.md#4-anlık-bildirimler) göndermenin zamanı. Tam şemalar
 [openapi.yaml](../../openapi/openapi.yaml) içindeki `webhooks` bölümündedir.
 
+Bu olaylardaki `conversation`, `fields` taşır: [özel alan](custom-fields.md) değerleri anahtara göre (hiçbiri yoksa `{}`).
+
 Ekip olaylarında `inbox_id` yoktur. Bir gelen kutusuyla sınırlı uç nokta, o gelen kutusuna yetkili ekiplerin olaylarını alır ve `inbox_ids` içinde yalnızca o gelen kutusu bulunur; tüm çalışma alanı için olan uç nokta hepsini alır.
 
 ### Uç nokta alanları

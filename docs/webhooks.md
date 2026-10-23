@@ -70,6 +70,8 @@ events) and `data`. `data.contact.online` is `false` when the contact has no liv
 moment for a [push](mobile.md#4-push-notifications). Full schemas are in the `webhooks` section of
 [openapi.yaml](../openapi/openapi.yaml).
 
+The `conversation` in these events carries `fields`, the [custom field](custom-fields.md) values by key (`{}` when none is set).
+
 Team events have no `inbox_id`. An endpoint limited to an inbox receives the events of teams granted that inbox, with only that inbox in `inbox_ids`; a workspace-wide endpoint receives all.
 
 ### Endpoint fields

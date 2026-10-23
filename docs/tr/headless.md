@@ -174,6 +174,10 @@ hâlâ "üye yok" demektir. Toplu güncelleme ve `POST /v1/conversations` ekip a
 [MCP](mcp.md) asistanları `list_teams`, `team_id` veya `remove_team` ile `assign` ve `team_id` ile
 `search_conversations` kullanır.
 
+## Özel alanlar
+
+Konuşmalarda ve kişilerde türlü değerler, listede filtreler ve bir değer olmadan kapatmayı engelleyen bir kural: [Özel alanlar](custom-fields.md). Tanımlamak için anahtarın `fields:manage` yetkisi olmalı.
+
 ## Makrolar
 
 Makro, kayıtlı bir yanıt ile eylemlerdir: eklenecek ya da kaldırılacak etiketler, atanan kişi, durum,
@@ -287,6 +291,7 @@ Gereken yetki olmadan yapılan çağrı `403 insufficient_scope` döner.
 | `changelog:write` | Kayıt ve çeviri yazma, görsel yükleme |
 | `changelog:publish` | Değişiklik günlüğü oluşturma, değiştirme ve silme; yayındaki kayıtları yayınlama, zamanlama, yayından kaldırma ve silme. Başka hiçbir yetkiye dahil değildir: adıyla verin. |
 | `audit:read` | `GET /v1/audit-log`, [denetim günlüğü](operations.md#denetim-günlüğü). Başka hiçbir kapsama dahil değildir: adıyla verin. Yalnızca bir sahip anahtara verebilir, gelen kutularına sınırlı bir anahtar bunu tutamaz. Yalnızca anahtarı oluşturan üye hâlâ sahip olduğu sürece çalışır. `yuva api-key create` adını vermezseniz bunu eklemez. |
+| `fields:manage` | [Özel alan](custom-fields.md) tanımlarını oluşturma, değiştirme ve silme. Yalnızca sahipler ve yöneticiler; gelen kutularıyla sınırlı bir anahtar bunu taşıyamaz. Başka hiçbir yetkiye dahil değildir: adıyla verin. Değer yazmak için `conversations:write` veya `contacts:write` gerekir. |
 | `integrations:read` | `GET /v1/issue-integrations` ve tek bir entegrasyon: [GitHub ve Linear](issue-trackers.md) bağlantıları, hiçbir zaman bir belirteç değil. |
 | `integrations:manage` | GitHub ve Linear bağlamak, değiştirmek, bağlantıyı kesmek, yeni webhook gizli değeri üretmek. Gelen kutularına sınırlı bir anahtar bunu tutamaz. |
 | `issues:write` | Geri bildirim ve fikirlerde GitHub ve Linear kayıtları oluşturmak, bağlamak ve bağlantıyı kaldırmak (`/v1/conversations/{id}/issues`, `/v1/discussions/{id}/issues`), `conversations:read` ile birlikte. |

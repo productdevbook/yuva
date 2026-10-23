@@ -56,7 +56,7 @@ curl -X DELETE -H "Authorization: Bearer $YUVA_API_KEY" \
 | `email_verified` | hayır | `email`'i doğruladıysanız `true`. Yalnızca doğrulanmış bir adres mevcut bir kişiye bağlanır. |
 | `name` | hayır | Görünen ad, en fazla 200 karakter. |
 | `locale` | hayır | Dil etiketi, ör. `en`. |
-| `attrs` | hayır | Üyelere gösterilen JSON nesnesi (plan, uygulama sürümü, …), en fazla 16 KiB. |
+| `attrs` | hayır | Üyelere gösterilen JSON nesnesi (plan, uygulama sürümü, …), en fazla 16 KiB. Bir kişi [özel alanı](custom-fields.md) olan anahtar, yalnızca değeri alanın türüne uyuyorsa tutulur; aksi halde o anahtar atılır. |
 
 ### Kurallar
 

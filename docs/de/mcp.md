@@ -236,6 +236,8 @@ aufgelistet; ein Aufruf dennoch antwortet mit `insufficient_scope` und dem zu er
 | `list_members` | `inboxes:read` |
 | `list_teams` | `inboxes:read` |
 | `list_macros` | `conversations:read` |
+| `list_custom_fields` | `conversations:read` oder `contacts:read` |
+| `set_conversation_fields` | `conversations:write` |
 | `search_contacts`, `list_contact_notes` | `contacts:read` |
 | `list_contact_subscriptions` | `contacts:read` und `lists:read` |
 | `create_contact`, `update_contact`, `add_contact_note` | `contacts:write` |
@@ -270,6 +272,8 @@ Mit `inbox_id` und ohne `channel_id` verwendet `create_migration` den E-Mail-Kan
 `assign` nimmt `team_id` (ein Team aus `list_teams`, das den Posteingang der Unterhaltung hat) oder `remove_team: true`; wird eines davon gesendet und `assignee_id` weggelassen, bleibt das zuständige Mitglied unverändert. `search_conversations` nimmt `team_id`, und Unterhaltungen tragen `team_id`.
 
 `list_macros` liefert die geteilten Makros des Workspace und Ihre eigenen mit `id`, `name`, `shortcut`, `visibility`, `body` und `actions` (`add_labels`, `remove_labels`, `assignee_id`, `unassign`, `status`, `snooze_minutes`, `priority`). Die Aktionen dienen nur der Information; kein Tool wendet ein Makro an.
+
+`list_custom_fields` liefert die [benutzerdefinierten Felder](custom-fields.md) des Workspace (`object`, `key`, `name`, `type`, `options`, `required_on_close`), optional für `object` `conversation` oder `contact`. `set_conversation_fields` nimmt `conversation_id` und `fields`, Werte nach Schlüssel (`null` leert einen); ein Wert, der nicht passt, antwortet mit `field_invalid`. `search_conversations` nimmt `fields`, ein Objekt aus Schlüssel und Wert, und Unterhaltungen tragen `fields`. Schließen mit `set_status` oder `bulk_update`, während ein Pflichtfeld leer ist, antwortet mit `field_required`. Kein Tool definiert Felder.
 
 ### Ressourcen und Prompts
 

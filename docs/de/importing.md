@@ -52,7 +52,7 @@ Yuva rät an der Kopfzeile, was jede Spalte enthält. Prüfen Sie es: Genau eine
 die anderen können Name (oder Vor- und Nachname), Sprache, eine externe ID, ein von Ihnen benanntes Attribut
 (Buchstaben, Ziffern, Punkte, Bindestriche und Unterstriche, höchstens 64) sein oder übersprungen werden.
 Attribute füllen nur Schlüssel, die ein Kontakt noch nicht hat; ein Import überschreibt also nie, was Sie
-schon wissen. Ändern Sie eine Spalte und klicken Sie „Check again with these columns“.
+schon wissen. Ein Attribut, das wie ein [benutzerdefiniertes Kontaktfeld](custom-fields.md) heißt, wird als Typ des Felds gelesen und weggelassen, wenn der Wert nicht passt. Ändern Sie eine Spalte und klicken Sie „Check again with these columns“.
 
 ## 4. Review
 
