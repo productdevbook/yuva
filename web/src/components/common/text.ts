@@ -117,9 +117,16 @@ export const API_KEY_SCOPES: ApiKeyScope[] = [
   "integrations:read",
   "integrations:manage",
   "issues:write",
+  "fields:manage",
   "audit:read",
 ]
-export const OPT_IN_SCOPES: ApiKeyScope[] = ["conversations:delete", "messages:redact", "broadcasts:send", "audit:read"]
+export const OPT_IN_SCOPES: ApiKeyScope[] = [
+  "conversations:delete",
+  "messages:redact",
+  "broadcasts:send",
+  "fields:manage",
+  "audit:read",
+]
 export const OWNER_ONLY_SCOPES: ApiKeyScope[] = ["audit:read"]
 export type ApiKeyPreset = "read" | "support" | "everything" | "custom"
 export const API_KEY_PRESET_SCOPES: Record<Exclude<ApiKeyPreset, "custom">, ApiKeyScope[]> = {
@@ -153,6 +160,7 @@ export const WORKSPACE_WIDE_SCOPES: ApiKeyScope[] = [
   "migrations:manage",
   "analytics:manage",
   "integrations:manage",
+  "fields:manage",
   "audit:read",
 ]
 export const DELIVERY_STATES: WebhookDeliveryState[] = ["pending", "succeeded", "failed"]
@@ -283,6 +291,7 @@ export function useEnumText() {
       "integrations:read": t`Read the connected GitHub and Linear trackers`,
       "integrations:manage": t`Connect, change and disconnect GitHub and Linear trackers`,
       "issues:write": t`Create and link GitHub and Linear issues for feedback and ideas`,
+      "fields:manage": t`Create, change and delete custom fields`,
       "audit:read": t`Read the audit log (owners only)`,
     } satisfies Record<ApiKeyScope, string>,
     delivery: { pending: t`Pending`, succeeded: t`Succeeded`, failed: t`Failed` } satisfies Record<
