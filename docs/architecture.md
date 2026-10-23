@@ -3463,10 +3463,49 @@ they belong to no channel. (#136, migration 00095)
 - Schema: migration 00094 (`trashed_at`, `trashed_by_member_id`, `trashed_by_api_key_id`, the
   partial index `(workspace_id, trashed_at)`, `events_conversation_idx`, `member_mentions`
   without trashed conversations, audit actor kind `system`).
-- Redacting one message (planned, #179): a single message is redacted, not deleted: its text,
-  attachments and raw e-mail go, and a "Removed by" line keeps the thread readable. A sent e-mail
-  cannot be taken back from the recipient. Every redaction is in the audit log, without the removed
-  content.
+- Redacting one message (#179): `POST /v1/messages/{id}/redact` removes a message's or note's
+  content and keeps the line in the thread. One transaction empties `body`, `html`, `help_cards`
+  and `mentions`, sets `redacted_at` and `redacted_by_member_id` or `redacted_by_api_key_id`
+  (migration 00096 adds them with `NOT VALID` constraints, `ON DELETE SET NULL` like the trash;
+  00097, `NO TRANSACTION`, validates them without holding a lock on `messages`), deletes the
+  attachment rows and, for e-mail, clears `message_emails` subject, full text, full HTML, headers
+  and `raw_key` (Message-ID, In-Reply-To, References and addresses stay, so threading and import
+  dedupe keep working). When the message is a feedback's first message, `feedback.text` becomes
+  empty and `attachment_count` 0; when it is the inbound e-mail whose subject became the
+  conversation's subject, the conversation subject becomes empty (later replies are titled with
+  the channel's name) and the e-mail subjects in the conversation that repeat it are cleared;
+  either emits `conversation.updated`. Raw sources of later e-mails keep their `Subject:` header.
+  Stored copies are rewritten in the same transaction by one JSON walk: the conversation's events
+  (locked first), webhook deliveries and answers kept for `Idempotency-Key` that hold the message,
+  its preview, the conversation's subject or feedback text, or an e-mail summary repeating the
+  subject. Webhook fan-out reads its event under a shared lock, so a fan-out that read the event
+  before the redaction commits its deliveries before they are rewritten; a delivery attempt and a
+  stored idempotent answer are also checked against redacted messages when they are sent or
+  stored, under a shared lock on the messages that waits for a redaction in progress. The
+  contact's later inbound e-mails lose their quoted history and raw source only when the redacted
+  message is an e-mail we sent, the later e-mail answers it (its Message-ID in In-Reply-To or
+  References) and quotes all of its text (compared case-, whitespace- and `>`-insensitively in
+  the full text or HTML); partial quotes keep their history. A queued e-mail is not sent (its
+  delivery becomes `failed`, "removed before it was sent"); sending reads its messages under row
+  locks, so it waits for a redaction in progress and leaves redacted ones out of a batch while the
+  others go; an e-mail already on its way when the redaction comes is recorded as `sent`. A River
+  job `storage_delete` deletes the files after the commit, retried on failure. Pushes the message
+  caused are deleted from the job table after the commit (one being sent at that moment cannot be
+  stopped); `notify`, the e-mail digest and chat continuity skip redacted messages. Search forgets
+  it at once (the vector is generated from `body`); list previews keep the line with
+  `redacted: true` and empty text, the Home waiting preview is empty. Who: owners and admins any
+  message they can see, other members their own (`author_member_id`, also through an OAuth
+  token); API keys and OAuth tokens need `messages:redact` (never implied, not added to older keys,
+  offered to agents' tokens). Drafts and timeline events answer `409 not_redactable`, a trashed
+  conversation `404`; redacting again answers the message unchanged without an event or audit
+  row. Emits `message.redacted` (realtime, `/v1/events`, webhooks with the `include_notes` rule for
+  notes, the `/client/v1` stream for messages); the audit log records `message.redacted` on target
+  type `message` with `conversation_id`, `inbox_id`, `kind` and `files`, never content. A sent
+  e-mail cannot be taken back from the recipient's mailbox, and notification e-mails already sent
+  to members keep what they quoted.
+  Notes are redacted the same way; they never reach `/client/v1`, so no client frame, and their
+  mentions are cleared, so they leave members' Mentions. A chat or app conversation's subject is not
+  touched: it is the conversation's, not a message's.
 - Audit log (#135): `audit_log` (migration 00089) records who changed access, credentials and data
   of a workspace, in the same transaction as the change: a failed change leaves no row, and a row is
   kept small enough never to fail one (details under 1500 bytes of JSON; longer lists become
@@ -3485,7 +3524,8 @@ they belong to no channel. (#136, migration 00095)
   `started: true`), `analytics_export.created`, `workspace.retention_changed`,
   `workspace.broadcast_approval_requested`, and the operator's `workspace.broadcasts_approved`,
   `workspace.broadcasts_denied`, `workspace.broadcasts_suspended` and
-  `workspace.broadcast_limit_changed`. Revocations and deletes write their entry only when the row
+  `workspace.broadcast_limit_changed`; `conversation.trashed`, `conversation.restored`,
+  `conversation.deleted` (actor `system`) and `message.redacted` (target type `message`). Revocations and deletes write their entry only when the row
   changed, so repeated or concurrent calls record one; a password sent again unchanged records
   nothing. No row holds message content, a secret, a password, a webhook URL (only its host), or a
   contact's name or address. A workspace's own deletion is not in its log, which goes with it: it is
