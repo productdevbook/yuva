@@ -30,14 +30,16 @@ const (
 )
 
 var (
-	errIncomingNeedsKey   = problem(http.StatusForbidden, "forbidden", "only an API key can post an incoming message on behalf of the contact")
-	errAttachmentTooLarge = problem(http.StatusRequestEntityTooLarge, "attachment_too_large", "an attachment is larger than the server allows")
-	errAttachmentType     = problem(http.StatusUnsupportedMediaType, "attachment_type_not_allowed", "an attachment has a content type the server does not allow")
-	errAttachmentMismatch = problem(http.StatusUnsupportedMediaType, "attachment_type_mismatch", "an attachment's content does not match its declared content type")
-	errTooManyAttachments = errValidation("at most 10 files per message")
-	errBotSendingDisabled = problem(http.StatusForbidden, "bot_sending_disabled", "this workspace does not let API keys and MCP clients deliver messages; post a draft for a member to send")
-	errBotPostingDisabled = problem(http.StatusForbidden, "bot_sending_disabled", "this workspace does not let MCP clients post where readers see it; a member replies in Yuva")
-	errDraftKind          = errValidation("only an outgoing message can be a draft")
+	errIncomingNeedsKey          = problem(http.StatusForbidden, "forbidden", "only an API key can post an incoming message on behalf of the contact")
+	errAttachmentTooLarge        = problem(http.StatusRequestEntityTooLarge, "attachment_too_large", "an attachment is larger than the server allows")
+	errAttachmentType            = problem(http.StatusUnsupportedMediaType, "attachment_type_not_allowed", "an attachment has a content type the server does not allow")
+	errChannelAttachmentTooLarge = problem(http.StatusRequestEntityTooLarge, "attachment_too_large", "an attachment is larger than this channel allows")
+	errChannelAttachmentType     = problem(http.StatusUnsupportedMediaType, "attachment_type_not_allowed", "an attachment has a content type this channel does not allow")
+	errAttachmentMismatch        = problem(http.StatusUnsupportedMediaType, "attachment_type_mismatch", "an attachment's content does not match its declared content type")
+	errTooManyAttachments        = errValidation("at most 10 files per message")
+	errBotSendingDisabled        = problem(http.StatusForbidden, "bot_sending_disabled", "this workspace does not let API keys and MCP clients deliver messages; post a draft for a member to send")
+	errBotPostingDisabled        = problem(http.StatusForbidden, "bot_sending_disabled", "this workspace does not let MCP clients post where readers see it; a member replies in Yuva")
+	errDraftKind                 = errValidation("only an outgoing message can be a draft")
 )
 
 type messageRow = store.CreateMessageRow
@@ -183,7 +185,7 @@ func (s *Server) spool(workspaceID uuid.UUID, part *multipart.Part, limits attac
 	u.key = workspaceID.String() + "/attachments/" + u.id.String()
 	n, err := io.Copy(f, io.LimitReader(part, limits.maxBytes+1))
 	if err == nil && n > limits.maxBytes {
-		err = errAttachmentTooLarge
+		err = limits.tooLarge()
 	}
 	if err == nil {
 		u.size = n
@@ -211,12 +213,12 @@ func contentType(declared string, f io.ReaderAt, limits attachLimits) (string, e
 		ct = sniffed
 	case !contentMatches(ct, sniffed):
 		if !limits.allows(ct) {
-			return "", errAttachmentType
+			return "", limits.typeRefused()
 		}
 		return "", errAttachmentMismatch
 	}
 	if !limits.allows(ct) {
-		return "", errAttachmentType
+		return "", limits.typeRefused()
 	}
 	return ct, nil
 }

@@ -107,8 +107,13 @@ func TestChannelAttachmentLimits(t *testing.T) {
 		t.Fatalf("session inbox limits: %v", cs.body["inbox"])
 	}
 	fields := map[string]string{"body": "files", "client_id": unique("c")}
-	expectUpload(t, cs.upload("/client/v1/conversations", fields, []file{{"big.png", "image/png", pngOf(101)}}), http.StatusRequestEntityTooLarge, "attachment_too_large")
-	expectUpload(t, cs.upload("/client/v1/conversations", fields, []file{{"a.txt", "text/plain", []byte("hello")}}), http.StatusUnsupportedMediaType, "attachment_type_not_allowed")
+	big := cs.upload("/client/v1/conversations", fields, []file{{"big.png", "image/png", pngOf(101)}})
+	expectUpload(t, big, http.StatusRequestEntityTooLarge, "attachment_too_large")
+	refused := cs.upload("/client/v1/conversations", fields, []file{{"a.txt", "text/plain", []byte("hello")}})
+	expectUpload(t, refused, http.StatusUnsupportedMediaType, "attachment_type_not_allowed")
+	if !strings.Contains(big.str("detail"), "this channel allows") || !strings.Contains(refused.str("detail"), "this channel does not allow") {
+		t.Fatalf("refusals by the channel's limits name the server: %s %s", big.raw, refused.raw)
+	}
 	started := cs.upload("/client/v1/conversations", fields, []file{{"ok.png", "image/png", pngOf(100)}})
 	expectUpload(t, started, http.StatusCreated, "")
 	conv := started.body["conversation"].(map[string]any)["id"].(string)

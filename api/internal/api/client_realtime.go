@@ -97,6 +97,11 @@ func (s *Server) clientStream(conn *websocket.Conn, r *http.Request, cp contactP
 	ctx := conn.CloseRead(r.Context())
 	sub := s.hub.Subscribe(cp.workspaceID)
 	defer s.hub.Unsubscribe(sub)
+	// Read before the conversations load, so one created in between still arrives through its events.
+	last, err := s.st.LastEventID(ctx, cp.workspaceID)
+	if err != nil {
+		return websocket.StatusInternalError, "internal", err
+	}
 	f := &clientFilter{s: s, cp: cp, names: map[uuid.UUID]string{}, readAt: map[uuid.UUID]time.Time{}}
 	if err := f.load(ctx, resumeFrom != nil); err != nil {
 		var cs *closeStream
@@ -152,10 +157,6 @@ func (s *Server) clientStream(conn *websocket.Conn, r *http.Request, cp contactP
 		return 0, "", err
 	}
 
-	last, err := s.st.LastEventID(ctx, cp.workspaceID)
-	if err != nil {
-		return websocket.StatusInternalError, "internal", err
-	}
 	if resumeFrom != nil {
 		known := *resumeFrom == 0
 		if !known {

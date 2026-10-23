@@ -14,12 +14,28 @@ import (
 const maxChannelAttachmentTypes = 100
 
 type attachLimits struct {
-	maxBytes int64
-	types    []string
+	maxBytes     int64
+	types        []string
+	channelBytes bool
+	channelTypes bool
 }
 
 func (l attachLimits) allows(ct string) bool {
 	return typeIn(l.types, ct)
+}
+
+func (l attachLimits) tooLarge() error {
+	if l.channelBytes {
+		return errChannelAttachmentTooLarge
+	}
+	return errAttachmentTooLarge
+}
+
+func (l attachLimits) typeRefused() error {
+	if l.channelTypes {
+		return errChannelAttachmentType
+	}
+	return errAttachmentType
 }
 
 func typeIn(list []string, ct string) bool {
@@ -61,10 +77,10 @@ func (s *Server) serverLimits() attachLimits {
 func (s *Server) effectiveLimits(maxBytes *int64, types []string) attachLimits {
 	l := s.serverLimits()
 	if maxBytes != nil && *maxBytes < l.maxBytes {
-		l.maxBytes = *maxBytes
+		l.maxBytes, l.channelBytes = *maxBytes, true
 	}
 	if types != nil {
-		l.types = intersectTypes(s.attach.Types, types)
+		l.types, l.channelTypes = intersectTypes(s.attach.Types, types), true
 	}
 	return l
 }
@@ -77,7 +93,7 @@ func (s *Server) channelLimits(ctx context.Context, q *store.Queries, workspaceI
 	}
 	r, err := q.GetChannelAttachmentLimits(ctx, store.GetChannelAttachmentLimitsParams{WorkspaceID: workspaceID, ID: *channelID})
 	if store.IsNotFound(err) {
-		return attachLimits{types: []string{}}, nil
+		return attachLimits{types: []string{}, channelBytes: true, channelTypes: true}, nil
 	}
 	if err != nil {
 		return attachLimits{}, err

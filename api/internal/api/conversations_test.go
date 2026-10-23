@@ -313,11 +313,11 @@ func TestAttachmentLimits(t *testing.T) {
 	fields := map[string]string{"kind": "message", "body": "files"}
 
 	big := tm.owner.upload(path, fields, []file{{"big.txt", "text/plain", bytes.Repeat([]byte("x"), testAttachmentMaxBytes+1)}})
-	if big.status != http.StatusRequestEntityTooLarge || big.str("code") != "attachment_too_large" {
+	if big.status != http.StatusRequestEntityTooLarge || big.str("code") != "attachment_too_large" || !strings.Contains(big.str("detail"), "the server allows") {
 		t.Fatalf("too large: %d %s", big.status, big.raw)
 	}
 	bad := tm.owner.upload(path, fields, []file{{"page.html", "text/html", []byte("<script>alert(1)</script>")}})
-	if bad.status != http.StatusUnsupportedMediaType || bad.str("code") != "attachment_type_not_allowed" {
+	if bad.status != http.StatusUnsupportedMediaType || bad.str("code") != "attachment_type_not_allowed" || !strings.Contains(bad.str("detail"), "the server does not allow") {
 		t.Fatalf("type: %d %s", bad.status, bad.raw)
 	}
 	var many []file

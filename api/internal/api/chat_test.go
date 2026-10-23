@@ -731,6 +731,55 @@ func TestClientRealtimeFiltering(t *testing.T) {
 	}
 }
 
+func TestClientRealtimeConversationCreatedWhileConnecting(t *testing.T) {
+	h := newHarness(t)
+	ct := newChatTeam(t, h, "live", true)
+	cs := ct.session(h, map[string]any{})
+	other := ct.session(h, map[string]any{})
+
+	ctx := context.Background()
+	tx, err := h.st.Pool.Begin(ctx)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer func() { _ = tx.Rollback(ctx) }()
+	if _, err := tx.Exec(ctx, "LOCK TABLE realtime_connections IN SHARE MODE"); err != nil {
+		t.Fatal(err)
+	}
+	ws, _, err := dialContact(h, cs.token, ct.origin, "")
+	if err != nil {
+		t.Fatal(err)
+	}
+	// The socket records its connection after it has loaded the contact's conversations.
+	deadline := time.Now().Add(10 * time.Second)
+	for h.count("SELECT count(*) FROM pg_locks l JOIN pg_class c ON c.oid = l.relation WHERE c.relname = 'realtime_connections' AND NOT l.granted") == 0 {
+		if time.Now().After(deadline) {
+			t.Fatal("the socket never waited to record its connection")
+		}
+		time.Sleep(5 * time.Millisecond)
+	}
+	conv := cs.start("first message")
+	otherConv := other.start("another visitor's first message")
+	if err := tx.Rollback(ctx); err != nil {
+		t.Fatal(err)
+	}
+
+	ws.ready()
+	if m := ws.nextNot("presence"); m.Type != "conversation.created" || m.ConversationID != conv {
+		t.Fatalf("conversation created while connecting: %s %s", m.Type, m.Data)
+	}
+	if m := ws.nextNot("presence"); m.Type != "message.created" || m.ConversationID != conv {
+		t.Fatalf("first message: %s %s", m.Type, m.Data)
+	}
+	ct.owner.expect(http.StatusCreated, "POST", "/v1/conversations/"+otherConv+"/messages", map[string]any{"kind": "message", "body": "for the other visitor"})
+	ct.owner.expect(http.StatusOK, "DELETE", "/v1/conversations/"+otherConv, nil)
+	ct.owner.expect(http.StatusOK, "DELETE", "/v1/conversations/"+conv, nil)
+	if m := ws.nextNot("presence"); m.Type != "conversation.removed" || m.ConversationID != conv {
+		t.Fatalf("removed frame: %s %s", m.Type, m.Data)
+	}
+	ws.quiet(300*time.Millisecond, "presence")
+}
+
 func TestPresenceRules(t *testing.T) {
 	h := newHarness(t)
 	ct := newChatTeam(t, h, "live", true)
