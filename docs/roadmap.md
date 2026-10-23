@@ -569,7 +569,7 @@ shows each member only what they may see; a required custom field blocks closing
 
 ## M29 — E-mail and reports
 
-Status: planned; items Y-145 to Y-147 in `backlog.md`. Part of 0.1.0.
+Status: done on main (#145–#147), verified on 2026-10-23 on a running server with Mailpit and signed ingress (DMARC pass and none); real DNS, DMARC and SMTP delivery wait for the hosted server.
 
 - Cc and Bcc on replies with participants kept on the conversation; forwarding a conversation to an
   outside address; a Reports section from daily rollups with CSV export.
