@@ -65,12 +65,15 @@ eine `webhook-id`, die Sie schon verarbeitet haben, und sortieren Sie nach `time
 | `help.article.published`, `help.article.unpublished`, `help.article.deleted` | Die Übersetzung eines Artikels eines [Hilfecenters](help-center.md) wurde veröffentlicht, zurückgezogen oder gelöscht (ein ganzer Artikel, wenn `locale` fehlt) | `center_id`, `article_id`, `number`, `locale`; bei Veröffentlichung `title` und `url` |
 | `changelog.entry.published`, `changelog.entry.unpublished`, `changelog.entry.deleted` | Ein [Neuigkeiten](whats-new.md)-Eintrag wurde veröffentlicht (auch planmäßig oder wenn eine veröffentlichte Übersetzung ersetzt wurde), zurückgezogen, oder ein veröffentlichter Eintrag wurde gelöscht | `changelog` (`id`, `name`, `url`), `entry` (`id`, `number`, `labels`, `published_at`, `translations` mit `locale`, `title`, `url`) |
 | `discussion.stage_changed` | Eine Idee der [Roadmap](roadmap-board.md) wurde in eine andere Phase verschoben | `discussion`, `from`, `to`, `linked` (mit der Idee verknüpftes Feedback) |
+| `team.created`, `team.updated`, `team.deleted` | Ein Team wurde angelegt, geändert (Name, Beschreibung, Mitglieder, Posteingänge) oder gelöscht; siehe [Teams](headless.md#teams) | das Team (`id`, `name`, `description`, `member_ids`, `inbox_ids`) und bei `team.updated` `removed_member_ids` |
 
 Jeder Body hat `type`, `timestamp` (wann es passiert ist), `workspace_id`, `inbox_id` (nicht bei
 Kontaktereignissen) und `data`. `data.contact.online` ist `false`, wenn der Kontakt keine
 Live-Verbindung hat: der Moment für einen [Push](mobile.md#4-push-benachrichtigungen). Die
 vollständigen Schemas stehen im Abschnitt `webhooks` von
 [openapi.yaml](../../openapi/openapi.yaml).
+
+Team-Ereignisse haben kein `inbox_id`. Ein auf einen Posteingang beschränkter Endpunkt erhält die Ereignisse der Teams mit Zugriff auf diesen Posteingang, mit nur diesem Posteingang in `inbox_ids`; ein Endpunkt für den ganzen Workspace erhält alle.
 
 ### Felder eines Endpunkts
 

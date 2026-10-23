@@ -102,6 +102,78 @@ Açıkken `messages:write` yetkili bir anahtar doğrudan yanıt verir, `drafts:s
 gönderir. Bunu yalnızca panelde oturum açmış bir sahip ya da yönetici değiştirebilir
 (`PATCH /v1/workspace` üzerinde `bots_may_send`), anahtarlar asla.
 
+## Ekipler
+
+Ekip, gelen kutularına erişim verilen, adı olan bir üye grubudur. Bir üye bir gelen kutusuna kendi
+yetkisiyle, ait olduğu herhangi bir ekiple ya da ikisiyle ulaşır: erişim bunların birleşimidir; yani
+başka bir yetki gelen kutusunu vermeye devam ederken bir yetkiyi kaldırmak hiçbir şeyi değiştirmez.
+Bir konuşma bir üyeye olduğu gibi bir ekibe de atanabilir.
+
+```sh
+curl -X POST https://support.example.com/v1/teams \
+  -H "Authorization: Bearer $YUVA_API_KEY" -H "Content-Type: application/json" \
+  -d '{"name": "Billing", "description": "Invoices and refunds"}'
+curl -X PUT https://support.example.com/v1/teams/$TEAM/inboxes/$INBOX -H "Authorization: Bearer $YUVA_API_KEY"
+curl -X PUT https://support.example.com/v1/teams/$TEAM/members/$MEMBER -H "Authorization: Bearer $YUVA_API_KEY"
+```
+
+| Çağrı | Ne yapar |
+|---|---|
+| `GET /v1/teams` | Ekipleri ada göre listeler: `{"items": [...]}`. |
+| `POST /v1/teams` | Ekip oluşturur (`name` 1 ila 64 karakter ve benzersiz: `409 team_taken`; isteğe bağlı `description`, en fazla 500). `201`. |
+| `GET`, `PATCH`, `DELETE /v1/teams/{teamId}` | Ekibi okur, adını veya açıklamasını değiştirir (`PATCH` en az bir alan ister) ya da siler. |
+| `PUT`, `DELETE /v1/teams/{teamId}/members/{memberId}` | Üye ekler veya çıkarır. `204`; tekrarı hiçbir şeyi değiştirmez. |
+| `PUT`, `DELETE /v1/teams/{teamId}/inboxes/{inboxId}` | Gelen kutusu yetkisi verir veya kaldırır. `204`; tekrarı hiçbir şeyi değiştirmez. |
+| `GET /v1/inboxes/{inboxId}/members` | Bir gelen kutusuna kimlerin erişimi var. Her üyede `via` (`direct`, ya da erişimi yalnızca ekipler veriyorsa `team`) ve gelen kutusunu veren ekipler olan `team_ids` bulunur. |
+
+Bir ekipte `id`, `name`, `description`, `member_ids`, `inbox_ids` (ikisi de eklenme sırasıyla),
+`created_at` ve `updated_at` bulunur. Ekip başına en fazla 500 üye ve 100 gelen kutusu (`403 team_limit`);
+bilinmeyen bir ekip, üye veya gelen kutusu `404` verir.
+
+Okumak için `inboxes:read`, yazmak için `inboxes:manage` ve bir sahip, yönetici ya da gelen kutularıyla
+sınırlı olmayan bir anahtar gerekir (temsilciler `403 forbidden` alır). Sahipler, yöneticiler ve
+sınırsız anahtarlar her ekibi görür; temsilci üyesi olduğu ekipleri ve gördüğü bir gelen kutusuna yetkili
+ekipleri görür; gelen kutularıyla sınırlı bir anahtar, o gelen kutularından birine yetkili ekipleri görür.
+Göremediğiniz ekip `404` verir ve aldığınız `inbox_ids` yalnızca görebildiğiniz gelen kutularını listeler.
+
+Bir üyenin doğrudan yetkisini kaldırmak (`DELETE /v1/inboxes/{inboxId}/members/{memberId}`) bir ekibin ona
+verdiğini kaldırmaz; bunun yerine üyeyi ekipten çıkarın ya da ekibin gelen kutusu yetkisini kaldırın.
+
+### Bir ekibe atama
+
+`PATCH /v1/conversations/{conversationId}`, `assignee_id` yanında `team_id` alır (bir ekip kimliği ya da
+temizlemek için `null`). Ekibin konuşmanın gelen kutusuna yetkisi olmalıdır; yoksa çağrı
+`422 team_access` verir; çağrı sürerken silinen ya da yetkisi alınan ekip de aynısını verir.
+`POST /v1/conversations/{conversationId}/move` ile taşınan bir konuşma, ekibini yalnızca ekibin hedef
+gelen kutusuna yetkisi varsa korur. Bir ekibi silmek ya da gelen kutusu yetkisini kaldırmak, ilgili
+konuşmalarda `team_id` değerini temizler; her biri için bir `conversation.updated` gönderilir.
+Konuşmada ekip varsa `team_id` bulunur; bu ayrı bir alandır ve `assignee=unassigned` ekip ne olursa olsun
+hâlâ "üye yok" demektir. Toplu güncelleme ve `POST /v1/conversations` ekip almaz.
+
+| Liste filtresi | Gösterir |
+|---|---|
+| `GET /v1/conversations?team_id=<id>` | Bu ekibe atanmış konuşmalar. |
+| `GET /v1/conversations?team=mine` | İstek yapan üyenin bir ekibine atanmış konuşmalar. Yalnızca üye oturumları; anahtar `400` alır. |
+
+`GET /v1/conversations/counts` içinde `teams` (spam olmayan açık konuşmalar, ekip kimliği başına) ve
+`mine_teams` (isteği yapanın herhangi bir ekibine atanmış açık konuşmalar; anahtarlar için `0`) bulunur.
+
+### Olaylar
+
+- `team.created`, `team.updated` ve `team.deleted`, [olay akışına ve gerçek zamanlı bağlantıya](#olay-akışı-ve-gerçek-zamanlı-bağlantı)
+  ve [webhook'lara](webhooks.md#olaylar) gider. `team.updated`; ad, açıklama ve her üye ya da gelen kutusu
+  değişikliğinden sonra gelir; ekipten çıkarılan üyeler `removed_member_ids` içindedir. `inboxes:read`
+  gerekir ve her gelen kutusunu gören kullanıcılara, ekibin üyelerine ve gelen kutularından birini gören
+  kullanıcılara ulaşır.
+- `inbox_access.changed`, erişimi değişen her üye ve gelen kutusu için bir kez gönderilir; neden doğrudan
+  bir yetki, bir ekip ya da ekibin kaldırılması olabilir. Erişimi aynı bırakan bir değişiklik olay göndermez.
+- Bir ekibe atama, yükünde `team_id` taşıyan `conversation.updated` içinde görünür.
+- [Denetim günlüğü](operations.md#denetim-günlüğü) `team.created`, `team.deleted`, `team.member_added`,
+  `team.member_removed`, `team.inbox_access_granted` ve `team.inbox_access_revoked` kayıtlarını tutar.
+
+[MCP](mcp.md) asistanları `list_teams`, `team_id` veya `remove_team` ile `assign` ve `team_id` ile
+`search_conversations` kullanır.
+
 ## Başvuru
 
 ### Yetkiler

@@ -286,6 +286,9 @@ Name und Adresse eines Kontakts. Das Löschen eines Workspace steht nicht in sei
 Workspace verschwindet; der Digest des Betreibers nennt es, wenn [`YUVA_OPERATOR_EMAIL`](configuration.md)
 gesetzt ist.
 
+Team-Änderungen werden als `team.created`, `team.deleted`, `team.member_added`, `team.member_removed`,
+`team.inbox_access_granted` und `team.inbox_access_revoked` erfasst.
+
 Nur Inhaber lesen es: im Panel unter **Settings → Audit log** oder mit `GET /v1/audit-log` (Admins und
 Agents erhalten `403 forbidden`). Ein API-Schlüssel liest es mit dem [Scope](headless.md#scopes)
 `audit:read`, solange das Mitglied, das den Schlüssel erstellt hat, noch Inhaber ist.

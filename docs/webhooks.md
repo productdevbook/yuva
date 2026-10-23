@@ -63,11 +63,14 @@ or out of order: skip a `webhook-id` you have handled and order by `timestamp`.
 | `help.article.published`, `help.article.unpublished`, `help.article.deleted` | A [help center](help-center.md) article translation was published, unpublished, or deleted (a whole article when `locale` is absent) | `center_id`, `article_id`, `number`, `locale`, `title` and `url` when published |
 | `changelog.entry.published`, `changelog.entry.unpublished`, `changelog.entry.deleted` | A [What's new](whats-new.md) entry was published (also on schedule, or when a published translation was replaced), unpublished, or a published entry deleted | `changelog` (`id`, `name`, `url`), `entry` (`id`, `number`, `labels`, `published_at`, `translations` with `locale`, `title`, `url`) |
 | `discussion.stage_changed` | A [roadmap](roadmap-board.md) idea was moved to another stage | `discussion`, `from`, `to`, `linked` (feedback linked to the idea) |
+| `team.created`, `team.updated`, `team.deleted` | A team was created, changed (name, description, members, inboxes) or deleted; see [Teams](headless.md#teams) | the team (`id`, `name`, `description`, `member_ids`, `inbox_ids`), and `removed_member_ids` on `team.updated` |
 
 Every body has `type`, `timestamp` (when it happened), `workspace_id`, `inbox_id` (not on contact
 events) and `data`. `data.contact.online` is `false` when the contact has no live connection: the
 moment for a [push](mobile.md#4-push-notifications). Full schemas are in the `webhooks` section of
 [openapi.yaml](../openapi/openapi.yaml).
+
+Team events have no `inbox_id`. An endpoint limited to an inbox receives the events of teams granted that inbox, with only that inbox in `inbox_ids`; a workspace-wide endpoint receives all.
 
 ### Endpoint fields
 

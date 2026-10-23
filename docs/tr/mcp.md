@@ -230,6 +230,7 @@ Araçlar `/v1` ile aynı kontrollerden geçer. Kullanamayacağınız araçlar li
 | `create_design`, `update_design`, `create_broadcast_draft`, `update_broadcast`, `send_test_broadcast` (sahipler ve yöneticiler) | `broadcasts:write` |
 | `schedule_broadcast` (yalnızca çalışma alanı anahtarların ve asistanların bülten göndermesine izin veriyorsa) | `broadcasts:send` |
 | `list_members` | `inboxes:read` |
+| `list_teams` | `inboxes:read` |
 | `search_contacts`, `list_contact_notes` | `contacts:read` |
 | `list_contact_subscriptions` | `contacts:read` ve `lists:read` |
 | `create_contact`, `update_contact`, `add_contact_note` | `contacts:write` |
@@ -260,6 +261,8 @@ Bir konuşmada açık taslağınız varken oradaki `send_reply` `draft_pending` 
 Hiçbir taşıma aracı şifre almaz: `create_migration`, uygulama şifresini girdiğiniz bir Yuva sayfası (`connect_url`) döndürür. `remove_migration_history` yıkıcı olarak işaretlidir ve `confirm_count` ister; bu, onayladığınız konuşma sayısıdır.
 
 `create_migration`, `inbox_id` ile ve `channel_id` olmadan çağrıldığında, posta kutusu adresi için gelen kutusunun e-posta kanalını kullanır ya da yeni bir kanal oluşturur (ayrıca `inboxes:manage` gerekir). Yeni kanalın SMTP hesabı yoktur; bu yüzden yanıtta `channel_created`, `channel_setup` (yanıtlar gönderilebilmeden önce panelde nelerin ayarlanacağı) ve `channel_settings_url` bulunur; `move_to_yuva` prompt'u bunları size iletir.
+
+`assign`, `team_id` (`list_teams` içinden, konuşmanın gelen kutusuna yetkisi olan bir ekip) veya `remove_team: true` alır; ikisinden biri gönderilip `assignee_id` verilmediğinde üye atanan olduğu gibi kalır. `search_conversations` `team_id` alır ve konuşmalarda `team_id` bulunur.
 
 ### Kaynaklar ve prompt'lar
 

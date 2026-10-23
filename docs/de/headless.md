@@ -104,6 +104,82 @@ Ist sie an, antwortet ein Schlüssel mit `messages:write` direkt und sendet mit 
 Entwürfe. Ändern kann sie nur ein im Panel angemeldeter Inhaber oder Admin (`bots_may_send` bei
 `PATCH /v1/workspace`), nie ein Schlüssel.
 
+## Teams
+
+Ein Team ist eine benannte Gruppe von Mitgliedern, der Posteingänge zugewiesen werden. Ein Mitglied
+erreicht einen Posteingang über die eigene Freigabe, über jedes Team, dem es angehört, oder über beides:
+Der Zugriff ist die Vereinigung. Eine Freigabe zu entfernen ändert also nichts, solange eine andere den
+Posteingang weiter gibt. Eine Unterhaltung kann einem Team ebenso zugewiesen werden wie einem Mitglied.
+
+```sh
+curl -X POST https://support.example.com/v1/teams \
+  -H "Authorization: Bearer $YUVA_API_KEY" -H "Content-Type: application/json" \
+  -d '{"name": "Billing", "description": "Invoices and refunds"}'
+curl -X PUT https://support.example.com/v1/teams/$TEAM/inboxes/$INBOX -H "Authorization: Bearer $YUVA_API_KEY"
+curl -X PUT https://support.example.com/v1/teams/$TEAM/members/$MEMBER -H "Authorization: Bearer $YUVA_API_KEY"
+```
+
+| Aufruf | Bewirkt |
+|---|---|
+| `GET /v1/teams` | Listet die Teams nach Namen: `{"items": [...]}`. |
+| `POST /v1/teams` | Legt eines an (`name` 1 bis 64 Zeichen und eindeutig: `409 team_taken`; optional `description`, bis 500). `201`. |
+| `GET`, `PATCH`, `DELETE /v1/teams/{teamId}` | Liest ein Team, benennt es um oder beschreibt es neu (`PATCH` braucht mindestens ein Feld) oder löscht es. |
+| `PUT`, `DELETE /v1/teams/{teamId}/members/{memberId}` | Fügt ein Mitglied hinzu oder entfernt es. `204`; Wiederholen ändert nichts. |
+| `PUT`, `DELETE /v1/teams/{teamId}/inboxes/{inboxId}` | Gibt einen Posteingang frei oder entzieht ihn. `204`; Wiederholen ändert nichts. |
+| `GET /v1/inboxes/{inboxId}/members` | Wer Zugriff auf einen Posteingang hat. Jedes Mitglied hat `via` (`direct`, oder `team`, wenn nur Teams den Zugriff geben) und `team_ids`, die Teams, die den Posteingang geben. |
+
+Ein Team hat `id`, `name`, `description`, `member_ids`, `inbox_ids` (beide in der Reihenfolge des
+Hinzufügens), `created_at` und `updated_at`. Höchstens 500 Mitglieder und 100 Posteingänge pro Team
+(`403 team_limit`); ein unbekanntes Team, Mitglied oder ein unbekannter Posteingang ergibt `404`.
+
+Lesen braucht `inboxes:read`; Schreiben braucht `inboxes:manage` und einen Inhaber, Admin oder einen
+Schlüssel ohne Posteingangs-Beschränkung (Agents erhalten `403 forbidden`). Inhaber, Admins und
+unbeschränkte Schlüssel sehen jedes Team; ein Agent sieht die Teams, in denen er Mitglied ist, und die
+Teams mit Zugriff auf einen Posteingang, den er sieht; ein auf Posteingänge beschränkter Schlüssel sieht
+die Teams mit Zugriff auf einen dieser Posteingänge. Ein Team, das Sie nicht sehen, ist `404`, und die
+`inbox_ids`, die Sie erhalten, nennen nur die Posteingänge, die Sie sehen.
+
+Die direkte Freigabe eines Mitglieds zu entziehen (`DELETE /v1/inboxes/{inboxId}/members/{memberId}`)
+nimmt nicht, was ein Team ihm gibt; nehmen Sie stattdessen das Mitglied aus dem Team oder entziehen Sie
+dem Team den Posteingang.
+
+### Einem Team zuweisen
+
+`PATCH /v1/conversations/{conversationId}` nimmt neben `assignee_id` auch `team_id` (eine Team-ID, oder
+`null`, um es zu entfernen). Das Team muss den Posteingang der Unterhaltung haben, sonst antwortet der
+Aufruf mit `422 team_access`; ebenso bei einem Team, das während des Aufrufs gelöscht oder dem der Zugriff
+entzogen wird. Beim Verschieben mit `POST /v1/conversations/{conversationId}/move` behält die Unterhaltung
+ihr Team nur, wenn das Team den Ziel-Posteingang hat. Ein Team zu löschen oder ihm einen Posteingang zu
+entziehen, leert `team_id` der betroffenen Unterhaltungen, jeweils mit einem `conversation.updated`. Die
+Unterhaltung trägt `team_id`, wenn sie eines hat; das ist ein eigenes Feld, und `assignee=unassigned`
+bedeutet weiterhin „kein Mitglied“, egal welches Team. Die Sammelaktualisierung und
+`POST /v1/conversations` nehmen kein Team.
+
+| Listenfilter | Zeigt |
+|---|---|
+| `GET /v1/conversations?team_id=<id>` | Unterhaltungen, die diesem Team zugewiesen sind. |
+| `GET /v1/conversations?team=mine` | Unterhaltungen, die einem Team des aufrufenden Mitglieds zugewiesen sind. Nur Mitglieds-Sitzungen; ein Schlüssel erhält `400`. |
+
+`GET /v1/conversations/counts` hat `teams` (offene Unterhaltungen ohne Spam, pro Team-ID) und
+`mine_teams` (offene Unterhaltungen, die einem Team des Aufrufers zugewiesen sind; `0` für Schlüssel).
+
+### Ereignisse
+
+- `team.created`, `team.updated` und `team.deleted` gehen an den [Event-Feed und Realtime](#event-feed-und-realtime)
+  und an [Webhooks](webhooks.md#ereignisse). `team.updated` folgt auf jede Umbenennung, neue Beschreibung
+  und jede Änderung bei Mitgliedern oder Posteingängen; aus dem Team entfernte Mitglieder stehen in
+  `removed_member_ids`. Sie brauchen `inboxes:read` und erreichen Aufrufer, die jeden Posteingang sehen,
+  die Mitglieder des Teams und Aufrufer, die einen seiner Posteingänge sehen.
+- `inbox_access.changed` wird einmal pro Mitglied und Posteingang gesendet, dessen Zugriff sich geändert
+  hat, ob durch eine direkte Freigabe, ein Team oder dessen Entfernung. Eine Änderung, die den Zugriff
+  lässt, wie er war, sendet keines.
+- Die Zuweisung an ein Team zeigt sich in `conversation.updated`, dessen Payload `team_id` trägt.
+- Das [Audit-Log](operations.md#audit-log) erfasst `team.created`, `team.deleted`, `team.member_added`,
+  `team.member_removed`, `team.inbox_access_granted` und `team.inbox_access_revoked`.
+
+[MCP](mcp.md)-Assistenten nutzen `list_teams`, `assign` mit `team_id` oder `remove_team` und
+`search_conversations` mit `team_id`.
+
 ## Referenz
 
 ### Scopes

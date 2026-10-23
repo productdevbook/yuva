@@ -99,6 +99,78 @@ message must then be a draft (`403 bot_sending_disabled` otherwise). When on, a 
 `messages:write` replies directly, and with `drafts:send` also sends drafts. Only an owner or admin
 signed in to the panel can change it (`bots_may_send` on `PATCH /v1/workspace`), never a key.
 
+## Teams
+
+A team is a named group of members that is granted inboxes. A member reaches an inbox through their
+own grant, through any team they belong to, or both: access is the union, so removing one grant
+changes nothing while another still gives the inbox. A conversation can be assigned to a team as well
+as to a member.
+
+```sh
+curl -X POST https://support.example.com/v1/teams \
+  -H "Authorization: Bearer $YUVA_API_KEY" -H "Content-Type: application/json" \
+  -d '{"name": "Billing", "description": "Invoices and refunds"}'
+curl -X PUT https://support.example.com/v1/teams/$TEAM/inboxes/$INBOX -H "Authorization: Bearer $YUVA_API_KEY"
+curl -X PUT https://support.example.com/v1/teams/$TEAM/members/$MEMBER -H "Authorization: Bearer $YUVA_API_KEY"
+```
+
+| Call | Does |
+|---|---|
+| `GET /v1/teams` | Lists teams by name: `{"items": [...]}`. |
+| `POST /v1/teams` | Creates one (`name` 1 to 64 characters, unique: `409 team_taken`; optional `description`, up to 500). `201`. |
+| `GET`, `PATCH`, `DELETE /v1/teams/{teamId}` | Reads, renames or describes (`PATCH` needs at least one field), or deletes a team. |
+| `PUT`, `DELETE /v1/teams/{teamId}/members/{memberId}` | Adds or removes a member. `204`; repeating it changes nothing. |
+| `PUT`, `DELETE /v1/teams/{teamId}/inboxes/{inboxId}` | Grants or revokes an inbox. `204`; repeating it changes nothing. |
+| `GET /v1/inboxes/{inboxId}/members` | Who has access to an inbox. Each member has `via` (`direct`, or `team` when only teams give it) and `team_ids`, the teams that give the inbox. |
+
+A team has `id`, `name`, `description`, `member_ids`, `inbox_ids` (both in the order added),
+`created_at` and `updated_at`. At most 500 members and 100 inboxes per team (`403 team_limit`); an
+unknown team, member or inbox is `404`.
+
+Reading needs `inboxes:read`; writing needs `inboxes:manage` and an owner, admin or key not limited to
+inboxes (agents get `403 forbidden`). Owners, admins and unlimited keys see every team; an agent sees
+the teams they belong to and the teams granted an inbox they see; a key limited to inboxes sees the
+teams granted one of those inboxes. A team you cannot see is `404`, and the `inbox_ids` you get list
+only the inboxes you can see.
+
+Removing the direct grant of a member (`DELETE /v1/inboxes/{inboxId}/members/{memberId}`) does not
+remove what a team gives them; take the member out of the team or revoke the team's inbox instead.
+
+### Assigning to a team
+
+`PATCH /v1/conversations/{conversationId}` takes `team_id` (a team id, or `null` to clear it) next to
+`assignee_id`. The team must hold the conversation's inbox, otherwise the call answers
+`422 team_access`; so does a team deleted or revoked while the call runs. Moving a conversation with
+`POST /v1/conversations/{conversationId}/move` keeps its team only if the team holds the target
+inbox. Deleting a team, or revoking its inbox, clears `team_id` on the conversations concerned, each
+with a `conversation.updated`. The conversation carries `team_id` when it has one; it is a separate
+field, and `assignee=unassigned` still means "no member" whatever the team. Bulk update and
+`POST /v1/conversations` do not take a team.
+
+| List filter | Shows |
+|---|---|
+| `GET /v1/conversations?team_id=<id>` | Conversations assigned to this team. |
+| `GET /v1/conversations?team=mine` | Conversations assigned to a team of the calling member. Member sessions only; a key gets `400`. |
+
+`GET /v1/conversations/counts` has `teams` (open conversations that are not spam, per team id) and
+`mine_teams` (open conversations assigned to any team of the caller; `0` for keys).
+
+### Events
+
+- `team.created`, `team.updated` and `team.deleted` go to the [event feed and realtime](#event-feed-and-realtime)
+  and to [webhooks](webhooks.md#events). `team.updated` follows a rename, a new description and every
+  member or inbox change; members taken out of the team are in `removed_member_ids`. They need
+  `inboxes:read` and reach callers who see every inbox, the team's members and callers who see one of
+  its inboxes.
+- `inbox_access.changed` is sent once for each member and inbox whose access flipped, whether the
+  cause was a direct grant, a team or its removal. A change that leaves access as it was sends none.
+- Assigning a team shows in `conversation.updated`, whose payload carries `team_id`.
+- The [audit log](operations.md#audit-log) records `team.created`, `team.deleted`,
+  `team.member_added`, `team.member_removed`, `team.inbox_access_granted` and `team.inbox_access_revoked`.
+
+[MCP](mcp.md) assistants use `list_teams`, `assign` with `team_id` or `remove_team`, and
+`search_conversations` with `team_id`.
+
 ## Reference
 
 ### Scopes

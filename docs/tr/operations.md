@@ -278,6 +278,9 @@ ya da e-posta adresi kayda girmez. Çalışma alanının silinmesi kendi günlü
 çalışma alanıyla birlikte gider; [`YUVA_OPERATOR_EMAIL`](configuration.md) ayarlıysa operatörün özeti
 bunu bildirir.
 
+Ekip değişiklikleri `team.created`, `team.deleted`, `team.member_added`, `team.member_removed`,
+`team.inbox_access_granted` ve `team.inbox_access_revoked` olarak kaydedilir.
+
 Yalnızca sahipler okuyabilir: panelde **Ayarlar → Denetim günlüğü** altında veya `GET /v1/audit-log` ile
 (yöneticiler ve temsilciler `403 forbidden` alır). Bir API anahtarı, onu oluşturan üye hâlâ sahip olduğu
 sürece `audit:read` [kapsamıyla](headless.md#yetkiler) okur.
