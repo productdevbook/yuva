@@ -6,8 +6,9 @@ RETURNING *;
 -- name: ListPasskeys :many
 SELECT * FROM passkeys WHERE person_id = $1 AND rp_id = $2 ORDER BY created_at, id;
 
--- name: DeletePasskey :execrows
-DELETE FROM passkeys WHERE person_id = $1 AND id = $2;
+-- name: DeletePasskey :one
+DELETE FROM passkeys WHERE person_id = $1 AND id = $2
+RETURNING *;
 
 -- name: UpdatePasskeyUse :exec
 UPDATE passkeys SET credential = $3, last_used_at = $4 WHERE person_id = $1 AND id = $2;

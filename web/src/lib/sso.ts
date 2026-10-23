@@ -2,26 +2,40 @@ import { useSyncExternalStore } from "react"
 
 import { api, ApiError, unwrap } from "@/lib/api"
 
-let required: string | null = null
+export type SsoPrompt = { kind: "required"; email: string } | { kind: "scope"; workspaceId: string }
+
+let prompt: SsoPrompt | null = null
 const listeners = new Set<() => void>()
 
+function show(next: SsoPrompt | null) {
+  prompt = next
+  listeners.forEach((l) => l())
+}
+
 export function noteSsoRequired(err: unknown) {
-  if (err instanceof ApiError && err.status === 403 && err.code === "sso_required") {
-    const email = (err.body as { sso_email?: string } | undefined)?.sso_email
-    if (email && email !== required) {
-      required = email
-      listeners.forEach((l) => l())
+  if (!(err instanceof ApiError) || err.status !== 403) return
+  const body = err.body as { sso_email?: string; sso_workspace_id?: string } | undefined
+  if (err.code === "sso_required" && body?.sso_email) {
+    if (prompt?.kind !== "required" || prompt.email !== body.sso_email)
+      show({ kind: "required", email: body.sso_email })
+  } else if (err.code === "sso_session_scope" && body?.sso_workspace_id) {
+    if (prompt?.kind !== "scope" || prompt.workspaceId !== body.sso_workspace_id) {
+      show({ kind: "scope", workspaceId: body.sso_workspace_id })
     }
   }
 }
 
-export function useSsoRequired() {
+export function clearSsoPrompt() {
+  show(null)
+}
+
+export function useSsoPrompt() {
   return useSyncExternalStore(
     (l) => {
       listeners.add(l)
       return () => listeners.delete(l)
     },
-    () => required
+    () => prompt
   )
 }
 

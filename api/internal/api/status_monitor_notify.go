@@ -208,7 +208,7 @@ func (s *Server) pushStatusMonitor(ctx context.Context, person uuid.UUID, locale
 		return nil
 	}
 	ws, now := m.WorkspaceID, s.now()
-	subs, err := s.st.ListLivePushSubscriptionIDs(ctx, store.ListLivePushSubscriptionIDsParams{PersonID: person, Now: now})
+	subs, err := s.st.ListLivePushSubscriptionIDs(ctx, store.ListLivePushSubscriptionIDsParams{PersonID: person, Now: now, WorkspaceID: &ws})
 	if err != nil || len(subs) == 0 {
 		return err
 	}

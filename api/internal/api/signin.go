@@ -225,7 +225,7 @@ func (s *Server) VerifySignInCode(ctx context.Context, req oas.VerifySignInCodeR
 		if err := q.ConsumeLoginCode(ctx, store.ConsumeLoginCodeParams{ID: lc.ID, ConsumedAt: &now}); err != nil {
 			return err
 		}
-		personID, ok, err := acceptInvites(ctx, q, email, now)
+		personID, ok, err := acceptInvites(ctx, q, email, nil, now)
 		if err != nil {
 			return err
 		}
@@ -269,13 +269,19 @@ func (s *Server) VerifySignInCode(ctx context.Context, req oas.VerifySignInCodeR
 	}}, nil
 }
 
-func acceptInvites(ctx context.Context, q *store.Queries, email string, now time.Time) (uuid.UUID, bool, error) {
+// acceptInvites takes the address's pending invites, of workspace ws only when it is set.
+func acceptInvites(ctx context.Context, q *store.Queries, email string, ws *uuid.UUID, now time.Time) (uuid.UUID, bool, error) {
 	person, err := q.GetPersonByEmail(ctx, email)
 	found := err == nil
 	if err != nil && !store.IsNotFound(err) {
 		return uuid.Nil(), false, err
 	}
-	invites, err := q.TakePendingInvites(ctx, store.TakePendingInvitesParams{Email: email, Now: now})
+	var invites []store.Invite
+	if ws != nil {
+		invites, err = q.TakePendingInvitesIn(ctx, store.TakePendingInvitesInParams{WorkspaceID: *ws, Email: email, Now: now})
+	} else {
+		invites, err = q.TakePendingInvites(ctx, store.TakePendingInvitesParams{Email: email, Now: now})
+	}
 	if err != nil {
 		return uuid.Nil(), false, err
 	}

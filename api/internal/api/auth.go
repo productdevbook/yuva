@@ -200,6 +200,8 @@ type principal struct {
 	mcpOnly          bool
 	firstParty       bool
 	ssoSettings      *uuid.UUID
+	// ssoWorkspace is set for a session made through a workspace's single sign-on: it acts only there.
+	ssoWorkspace *uuid.UUID
 	// rule is set when an automation rule acts: it sees every inbox and writes as the system.
 	rule *oas.AutomationRuleRef
 	// auto is set when automatic assignment acts: it sees every inbox and writes as the system.
@@ -391,9 +393,15 @@ func (s *Server) resolvePrincipal(ctx context.Context, r *http.Request, kind acc
 	if err := s.st.TouchSession(ctx, store.TouchSessionParams{Now: now, ID: sess.ID, StaleBefore: now.Add(-touchEvery)}); err != nil {
 		return principal{}, err
 	}
-	p := principal{personID: sess.PersonID, sessionID: sess.ID, ssoSettings: sess.SsoSettingsID}
+	p := principal{personID: sess.PersonID, sessionID: sess.ID, ssoSettings: sess.SsoSettingsID, ssoWorkspace: sess.SsoWorkspaceID}
 	if kind == accessPerson {
 		return p, nil
+	}
+	if selected == nil {
+		selected = sess.SsoWorkspaceID
+	}
+	if err := p.ssoScope(selected); err != nil {
+		return principal{}, err
 	}
 	if selected == nil {
 		memberships, err := s.st.ListMemberships(ctx, sess.PersonID)

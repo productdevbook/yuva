@@ -56,6 +56,7 @@ const (
 	AutomationIdleInterval      = 5 * time.Minute
 	AssignSweepInterval         = time.Minute
 	ReportRollupScanInterval    = 5 * time.Minute
+	SSODomainSweepInterval      = time.Hour
 )
 
 // StatusNoticeQueue holds the status notice jobs, so a notice about an outage never waits behind a
@@ -200,6 +201,9 @@ func New(pool *pgxpool.Pool, q *store.Queries, log *slog.Logger, broadcastWorker
 		river.NewPeriodicJob(river.PeriodicInterval(ReportRollupScanInterval), func() (river.JobArgs, *river.InsertOpts) {
 			return ReportRollupScanArgs{}, nil
 		}, &river.PeriodicJobOpts{ID: "report_rollup_scan", RunOnStart: true}),
+		river.NewPeriodicJob(river.PeriodicInterval(SSODomainSweepInterval), func() (river.JobArgs, *river.InsertOpts) {
+			return SSODomainSweepArgs{}, nil
+		}, &river.PeriodicJobOpts{ID: "sso_domain_sweep", RunOnStart: true}),
 	}
 	if sesTenants {
 		periodic = append(periodic, river.NewPeriodicJob(river.PeriodicInterval(SESTenantStatusInterval), func() (river.JobArgs, *river.InsertOpts) {
@@ -346,6 +350,18 @@ func (StatusDomainSweepArgs) InsertOpts() river.InsertOpts {
 type ChangelogSweepArgs struct{}
 
 func (ChangelogSweepArgs) Kind() string { return "changelog_sweep" }
+
+// SSODomainSweepArgs is worked by the api package: it queues the daily check of every verified
+// single sign-on domain that was not looked up for a day.
+type SSODomainSweepArgs struct{}
+
+func (SSODomainSweepArgs) Kind() string { return "sso_domain_sweep" }
+
+func (SSODomainSweepArgs) InsertOpts() river.InsertOpts {
+	return river.InsertOpts{UniqueOpts: river.UniqueOpts{ByArgs: true, ByState: []rivertype.JobState{
+		rivertype.JobStateAvailable, rivertype.JobStatePending, rivertype.JobStateRunning, rivertype.JobStateScheduled, rivertype.JobStateRetryable,
+	}}}
+}
 
 // IssueSweepArgs is worked by the api package: it queues a read of every linked GitHub and Linear
 // issue that was not read for an hour.

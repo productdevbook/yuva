@@ -1,0 +1,4 @@
+{{template "heading" "A passkey was removed"}}
+<p style="margin:0 0 16px 0;">The passkey <strong>{{.Name}}</strong> was removed from your Yuva account <strong>{{.Email}}</strong>. It no longer signs you in.</p>
+<p style="margin:0 0 8px 0;">If this was not you, sign in with an e-mailed code and look at your profile's passkeys.</p>
+{{template "button" (button .URL "Open Yuva")}}

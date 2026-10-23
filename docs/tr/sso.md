@@ -25,8 +25,17 @@ anahtarlarını değiştirdiğinde yenileri alınır), issuer'ını, hedef kitle
 denetler. Token kişinin e-posta adresini `email_verified: true` ile taşımalı ve adres doğrulanmış
 alan adlarınızdan birinde olmalıdır.
 
-Oturumlar çalışma alanına değil kişiye aittir: birden çok çalışma alanının üyesi olan biri, kendi
-e-posta alan adının sağlayıcısıyla bir kez giriş yapar.
+Sağlayıcınız üzerinden yapılan giriş yalnızca sizin çalışma alanınızda (ve tartışma sayfalarında okur
+olarak) geçerlidir. Başka çalışma alanlarının da üyesi olan biri oralara e-postayla gelen bir kodla ya
+da geçiş anahtarıyla girer; başka bir çalışma alanını açtığında panel bunu ister. Böyle bir giriş
+geçiş anahtarı ekleyemez ya da kaldıramaz, çalışma alanı oluşturamaz, hesabı silemez
+(`sso_session_scope`) ve yalnızca sizin çalışma alanınızın davetlerini kabul eder. Yuva 0.1.0'a kadar
+bir sağlayıcı üzerinden giriş kişinin bütün çalışma alanlarında geçerliydi; artık değil, böylece bir
+çalışma alanının kimlik sağlayıcısını yöneten kişi birinin adına onun diğer çalışma alanlarında iş
+yapamaz.
+
+Yuva, kişi bir çalışma alanına onun sağlayıcısı üzerinden ilk kez giriş yaptığında ve hesabına her
+geçiş anahtarı eklendiğinde ya da kaldırıldığında kişiye e-posta gönderir.
 
 ## 1. Yuva'yı sağlayıcınızda kaydedin
 
@@ -202,8 +211,12 @@ _yuva-sso.example.com.  TXT  "yuva-verify-…"
 
 Sonra Doğrula'ya basın (`POST /v1/sso/domains/{id}/verify`). Yalnızca tam alan adı sahiplenilir,
 alt alan adları değil; kişilerin böyle adresleri varsa `eu.example.com`'u ayrıca ekleyin. Sunucudaki
-başka bir çalışma alanının doğruladığı bir alan adı sahiplenilemez (`domain_taken`). Doğrulanan alan
-adı siz kaldırana kadar sahiplenilmiş kalır.
+başka bir çalışma alanının doğruladığı bir alan adı sahiplenilemez (`domain_taken`). Kaydı yerinde
+bırakın: Yuva onu her gün yeniden sorgular. Kayıt 7 gün boyunca bulunamazsa alan adı beklemeye döner,
+sahiplere e-posta gider, son doğrulanmış alan adınızsa tek oturum açma artık zorunlu olmaz,
+`sso_domain.lapsed` kaydedilir ve başka bir çalışma alanı alan adını sahiplenebilir. Kayıt
+bulunamadığı sürece alan adı denetimin ne bulduğunu gösterir; kaydı yeniden yayımlayıp Doğrula'ya
+basarak bunu temizleyin.
 
 ## 4. Giriş kurallarını seçin
 
@@ -223,14 +236,14 @@ adı siz kaldırana kadar sahiplenilmiş kalır.
   değil). O rolün ve olağan gelen kutusu erişim kurallarının verdiğini görür. Kapalıyken kişiler
   eskisi gibi davet edilir; sağlayıcıyla giriş yapan davetli kişi daveti kabul etmiş olur.
 
-Alan adlarınızdan Yuva hesabı zaten olan kişiler (örneğin başka bir çalışma alanının üyesi olarak),
-çalışma alanınızın üyesi olmasalar da sağlayıcınız üzerinden giriş yapar.
+Alan adlarınızdan üye olmayan, çalışma alanınıza daveti bulunmayan ve anında üyelikle de katılmayan
+kişiler, bir Yuva hesapları olsa bile reddedilir (`not_member`).
 
 ## Denetim kaydı
 
 Her değişiklik ve her giriş çalışma alanının denetim kaydındadır (Ayarlar › Denetim kaydı):
 `sso.provider_created`, `sso.provider_updated`, `sso.provider_deleted`, `sso.settings_changed`,
-`sso_domain.added`, `sso_domain.verified`, `sso_domain.deleted`, `sso.signed_in`, nedeniyle
+`sso_domain.added`, `sso_domain.verified`, `sso_domain.deleted`, `sso_domain.lapsed`, `sso.signed_in`, nedeniyle
 `sso.sign_in_refused` ve anında üyeler için `via: sso` ile `member.joined`. Yuva SAML metadata'sını
 yeniden okuyup yeni sertifikalar bulduğunda sistem `via: metadata_refresh` ile
 `sso.provider_updated` kaydeder.
@@ -248,4 +261,4 @@ Giriş sayfası neyin yanlış gittiğini gösterir (`/sign-in?sso_error=…`):
 | `email_unverified` | Token'da adres yok ya da doğrulandığını söylemiyor; SAML'de NameID ya da e-posta özelliği adres taşımıyor. |
 | `domain_not_claimed` | Adres çalışma alanının doğrulanmış alan adlarından birinde değil. |
 | `group_not_allowed` | Kişi izin verilen grupların hiçbirinde değil. |
-| `not_member` | Kişinin burada hesabı yok ve anında üyelik kapalı. |
+| `not_member` | Kişi çalışma alanının üyesi değil, daveti yok ve anında üyelik kapalı. |

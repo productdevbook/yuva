@@ -217,6 +217,12 @@ export interface paths {
          *     `denied`, `failed`, `invalid_token` (for SAML: the response or assertion was refused),
          *     `email_unverified`, `domain_not_claimed`, `group_not_allowed`, `not_member`.
          *
+         *     The session acts only in the workspace whose provider made it (other workspaces answer `403
+         *     sso_session_scope`) and as a reader; it accepts only that workspace's pending invites. It
+         *     cannot add or remove passkeys, create a workspace or delete the account (`403
+         *     sso_session_scope`). The person is e-mailed the first time they sign in to a workspace
+         *     through its provider.
+         *
          *     A domain's claim is public (its DNS record is), so answering whether it has single
          *     sign-on reveals nothing about people. 30 requests a minute per client IP address (`429`).
          *     `502 sso_unavailable` when the OpenID Connect provider's discovery document cannot be read.
@@ -271,7 +277,8 @@ export interface paths {
          *     follows go, and in each workspace the contact linked to them is deleted when it has no
          *     conversations and no external ids, else only unlinked. Refused with `409 last_owner` while the
          *     person is the only owner of a workspace: make someone else an owner or delete that
-         *     workspace first. Needs a member session; the body repeats the person's e-mail address.
+         *     workspace first. Needs a member session; the body repeats the person's e-mail address. A
+         *     session made through single sign-on is refused with `403 sso_session_scope`.
          */
         delete: operations["deleteMe"];
         options?: never;
@@ -292,7 +299,9 @@ export interface paths {
         put?: never;
         /**
          * Register a passkey
-         * @description Completes a registration started with `POST /v1/me/passkeys/options`.
+         * @description Completes a registration started with `POST /v1/me/passkeys/options`. The person is
+         *     e-mailed that a passkey was added. A session made through single sign-on is refused with
+         *     `403 sso_session_scope`: a passkey signs in to every workspace of the person.
          */
         post: operations["finishPasskeyRegistration"];
         delete?: never;
@@ -313,7 +322,8 @@ export interface paths {
         /**
          * Start a passkey registration
          * @description Returns the options for `navigator.credentials.create()` and a ceremony id to send back
-         *     with the result. The ceremony expires after 5 minutes.
+         *     with the result. The ceremony expires after 5 minutes. A session made through single
+         *     sign-on is refused with `403 sso_session_scope`.
          */
         post: operations["beginPasskeyRegistration"];
         delete?: never;
@@ -332,8 +342,41 @@ export interface paths {
         get?: never;
         put?: never;
         post?: never;
-        /** Remove a passkey */
+        /**
+         * Remove a passkey
+         * @description Removes the passkey and ends every other session of the signed-in person, as `DELETE
+         *     /v1/me/sessions` does. The person is e-mailed that a passkey was removed. A session made
+         *     through single sign-on is refused with `403 sso_session_scope`.
+         */
         delete: operations["deletePasskey"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/me/sessions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List sign-in sessions
+         * @description The signed-in person's live sessions in the panel and the member apps, most recently seen
+         *     first. `current` marks the one making this request. Needs a member session: keys and tokens get
+         *     `403 member_session_required`.
+         */
+        get: operations["listSessions"];
+        put?: never;
+        post?: never;
+        /**
+         * Sign out everywhere else
+         * @description Ends every session of the signed-in person except the one making this request, with their
+         *     push subscriptions and reader tokens; their live updates close within a minute. Needs a member
+         *     session: keys and tokens get `403 member_session_required`. Removing a passkey does the same.
+         */
+        delete: operations["deleteOtherSessions"];
         options?: never;
         head?: never;
         patch?: never;
@@ -614,7 +657,8 @@ export interface paths {
          *     made it (sign-out), when the account is deleted, or with
          *     `DELETE /client/v1/reader-token`. In the channel's workspace it acts as the contact linked to
          *     the person, created on the first write; a person who is a member of that workspace with
-         *     access to the inbox writes as that member.
+         *     access to the inbox writes as that member. A session made through single sign-on gets
+         *     tokens only for its own workspace's channels (`403 sso_session_scope` otherwise).
          *
          *     Person sessions only; like every cookie request it must come from the server's own origin.
          */
@@ -993,7 +1037,10 @@ export interface paths {
         /**
          * Check a domain's TXT record
          * @description Looks the TXT record up now. When it holds `txt_value` the domain becomes `verified`
-         *     (recorded as `sso_domain.verified`) and stays so; the record may stay in place. Otherwise
+         *     (recorded as `sso_domain.verified`); keep the record in place. Verified domains are looked
+         *     up again daily: when the record has been missing for 7 days the claim goes back to
+         *     `pending` (recorded as `sso_domain.lapsed`, the owners are e-mailed, and `sso_required`
+         *     turns off with the last verified domain), and another workspace may claim it. Otherwise
          *     the claim stays `pending` with `problem` saying what was found. `409 domain_taken` when
          *     another workspace verified the domain first. Owners only, with a member session.
          */
@@ -1023,7 +1070,8 @@ export interface paths {
          *     hours (`429 rate_limited`). The name is 1 to 200 characters after trimming.
          *
          *     Person sessions only; the `Yuva-Workspace` header is ignored. Send the new id as
-         *     `Yuva-Workspace` to act on it.
+         *     `Yuva-Workspace` to act on it. A session made through single sign-on is refused with `403
+         *     sso_session_scope`.
          */
         post: operations["createWorkspace"];
         delete?: never;
@@ -6410,7 +6458,8 @@ export interface paths {
          *     answers the URL to send the browser to: the client's redirect URI with a `code` (single
          *     use, valid 60 seconds), `state` and `iss`. Scopes not offered in that workspace, or a
          *     workspace the person is not a member of, are refused (`400 validation_failed`,
-         *     `403 not_a_member`).
+         *     `403 not_a_member`), and so is any workspace but its own for a session made through single
+         *     sign-on (`403 sso_session_scope`).
          */
         post: operations["approveOAuthRequest"];
         delete?: never;
@@ -10765,7 +10814,7 @@ export interface paths {
          *
          *     The deprecated `v2=`, the hex HMAC over
          *     `<X-Yuva-Timestamp>.<X-Yuva-Envelope-To>.<X-Yuva-Envelope-From>.<raw body>`, is accepted
-         *     while `YUVA_INGRESS_ACCEPT_V2` is on (the default for now); its body is read before it is
+         *     only while `YUVA_INGRESS_ACCEPT_V2` is set (off by default); its body is read before it is
          *     authenticated. The deprecated `v1=`, over `<X-Yuva-Timestamp>.<X-Yuva-Envelope-To>.<raw body>`,
          *     is accepted only when `YUVA_INGRESS_ACCEPT_V1` is set, and then the envelope sender is not
          *     trusted (it never marks a delivery report or automatic mail). A version that is not accepted
@@ -12152,6 +12201,8 @@ export interface components {
          *     - `list.consent_exported`: `name`, `format`, `started`.
          *     - `analytics_export.created`: `property_id`, `kind`, `format`.
          *     - `workspace.retention_changed`: `from`, `to` (days; `null` keeps everything).
+         *     - `workspace.bots_may_send_changed`, `workspace.broadcasts_by_keys_changed`: `from`, `to`
+         *       (booleans).
          *     - `workspace.broadcast_approval_requested`: none. `workspace.broadcasts_approved`,
          *       `workspace.broadcasts_denied`: `reason` when the operator gave one.
          *       `workspace.broadcasts_suspended`: `reason`, `paused_broadcasts` (by the operator).
@@ -12179,6 +12230,9 @@ export interface components {
          *       is the member when the person is one, else `system`. Requests refused with
          *       `sso_required` are not recorded.
          *     - `sso_domain.added`, `sso_domain.verified`, `sso_domain.deleted`: `domain`.
+         *     - `sso_domain.lapsed` (by `system`): `domain`, `missing_since` (when the daily check first
+         *       missed the TXT record) and `sso_required_off` (`true` when it was the last verified
+         *       domain and the rule turned off).
          *     - `issue_integration.connected`, `issue_integration.disconnected`: `provider`, `name`,
          *       `account`, and `host` for a GitHub Enterprise Server. `issue_integration.updated`:
          *       `fields` among `name`, `token`, `default_target` and `webhook_secret`; never a token or
@@ -12197,7 +12251,7 @@ export interface components {
          *     More actions are added over time; show an unknown one by its name.
          * @enum {string}
          */
-        AuditAction: "member.joined" | "member.role_changed" | "member.removed" | "member.inbox_access_granted" | "member.inbox_access_revoked" | "invite.created" | "invite.deleted" | "api_key.created" | "api_key.revoked" | "oauth_grant.created" | "oauth_grant.revoked" | "webhook.created" | "webhook.updated" | "webhook.deleted" | "webhook.secret_rotated" | "channel.credentials_changed" | "channel.key_rotated" | "channel.forwarding_address_rotated" | "channel.dkim_key_created" | "channel.dkim_key_deleted" | "inbox.identity_secret_rotated" | "inbox.deleted" | "conversation.trashed" | "conversation.restored" | "conversation.deleted" | "message.redacted" | "contact.deleted" | "contact.consent_exported" | "list.consent_exported" | "analytics_export.created" | "workspace.retention_changed" | "workspace.broadcast_approval_requested" | "workspace.broadcasts_approved" | "workspace.broadcasts_denied" | "workspace.broadcasts_suspended" | "workspace.broadcast_limit_changed" | "team.created" | "team.deleted" | "team.member_added" | "team.member_removed" | "team.inbox_access_granted" | "team.inbox_access_revoked" | "workspace.slack_connected" | "workspace.slack_disconnected" | "member.slack_linked" | "member.slack_unlinked" | "sso.provider_created" | "sso.provider_updated" | "sso.provider_deleted" | "sso.settings_changed" | "sso.signed_in" | "sso.sign_in_refused" | "sso_domain.added" | "sso_domain.verified" | "sso_domain.deleted" | "issue_integration.connected" | "issue_integration.updated" | "issue_integration.disconnected" | "issue_integration.secret_rotated" | "automation_rule.created" | "automation_rule.updated" | "automation_rule.deleted";
+        AuditAction: "member.joined" | "member.role_changed" | "member.removed" | "member.inbox_access_granted" | "member.inbox_access_revoked" | "invite.created" | "invite.deleted" | "api_key.created" | "api_key.revoked" | "oauth_grant.created" | "oauth_grant.revoked" | "webhook.created" | "webhook.updated" | "webhook.deleted" | "webhook.secret_rotated" | "channel.credentials_changed" | "channel.key_rotated" | "channel.forwarding_address_rotated" | "channel.dkim_key_created" | "channel.dkim_key_deleted" | "inbox.identity_secret_rotated" | "inbox.deleted" | "conversation.trashed" | "conversation.restored" | "conversation.deleted" | "message.redacted" | "contact.deleted" | "contact.consent_exported" | "list.consent_exported" | "analytics_export.created" | "workspace.retention_changed" | "workspace.bots_may_send_changed" | "workspace.broadcasts_by_keys_changed" | "workspace.broadcast_approval_requested" | "workspace.broadcasts_approved" | "workspace.broadcasts_denied" | "workspace.broadcasts_suspended" | "workspace.broadcast_limit_changed" | "team.created" | "team.deleted" | "team.member_added" | "team.member_removed" | "team.inbox_access_granted" | "team.inbox_access_revoked" | "workspace.slack_connected" | "workspace.slack_disconnected" | "member.slack_linked" | "member.slack_unlinked" | "sso.provider_created" | "sso.provider_updated" | "sso.provider_deleted" | "sso.settings_changed" | "sso.signed_in" | "sso.sign_in_refused" | "sso_domain.added" | "sso_domain.verified" | "sso_domain.deleted" | "sso_domain.lapsed" | "issue_integration.connected" | "issue_integration.updated" | "issue_integration.disconnected" | "issue_integration.secret_rotated" | "automation_rule.created" | "automation_rule.updated" | "automation_rule.deleted";
         /** @enum {string} */
         AuditTargetType: "workspace" | "member" | "invite" | "inbox" | "channel" | "api_key" | "oauth_grant" | "webhook" | "contact" | "list" | "analytics_export" | "conversation" | "message" | "team" | "sso" | "sso_domain" | "issue_integration" | "automation_rule";
         AuditTarget: {
@@ -12366,7 +12420,10 @@ export interface components {
             /** @description The record's name, `_yuva-sso.<domain>`. */
             txt_name: string;
             txt_value: string;
-            /** @description What the last check found, while `pending`. */
+            /**
+             * @description What the last check found: while `pending`, or when the daily check of a `verified`
+             *     domain misses the record (the claim lapses after 7 days of that).
+             */
             problem?: string;
             /** Format: date-time */
             checked_at?: string;
@@ -12735,6 +12792,37 @@ export interface components {
         PasskeyList: {
             items: components["schemas"]["Passkey"][];
         };
+        Session: {
+            /** Format: uuid */
+            id: string;
+            /**
+             * @description How the person signed in.
+             * @enum {string}
+             */
+            method: "code" | "passkey" | "sso";
+            /** @description The session making this request. */
+            current: boolean;
+            /** @description Browser and system read from the user agent at sign-in, such as `Firefox on Linux`; absent when unknown. */
+            device?: string;
+            /** @description The user agent at sign-in, cut to 500 characters; absent when none was sent. */
+            user_agent?: string;
+            /** Format: date-time */
+            created_at: string;
+            /**
+             * Format: date-time
+             * @description Updated at most once a minute.
+             */
+            last_seen_at: string;
+            /** Format: date-time */
+            expires_at: string;
+        };
+        SessionList: {
+            items: components["schemas"]["Session"][];
+        };
+        SessionsRevoked: {
+            /** @description How many sessions ended. */
+            revoked: number;
+        };
         VapidPublicKey: {
             /** @description Uncompressed P-256 public key, base64url without padding. */
             public_key: string;
@@ -12977,9 +13065,9 @@ export interface components {
             /**
              * @description Contacts may rate a closed conversation (`good` or `bad`, with an optional comment):
              *     the widget and the mobile SDKs offer it, and e-mail contacts get a request with two
-             *     links after a member's conversation is closed. Off by default. Only conversations
-             *     closed after it was turned on can be rated; turning it off and on again starts over.
-             *     Feedback is never rated.
+             *     links after a member's conversation is closed, when their latest mail passed DMARC.
+             *     Off by default. Only conversations closed after it was turned on can be rated; turning
+             *     it off and on again starts over. Feedback is never rated.
              */
             ask_for_rating: boolean;
             sender: components["schemas"]["InboxSender"];
@@ -13114,8 +13202,10 @@ export interface components {
         };
         /**
          * @description A greeting e-mailed when a new conversation starts by e-mail, at most once per contact
-         *     within `interval_hours`. It carries `Auto-Submitted: auto-replied` and is never sent in
-         *     answer to automatic mail.
+         *     within `interval_hours`. It carries `Auto-Submitted: auto-replied`, is never sent in
+         *     answer to automatic mail and goes only to a sender whose mail passed DMARC according to
+         *     the server's trusted receiver (`YUVA_INGRESS_AUTHSERV_ID`; without it no greeting is
+         *     sent). Its subject is `Re: ` and the first 60 characters of the sender's subject.
          */
         EmailAutoReply: {
             enabled: boolean;
@@ -17434,8 +17524,9 @@ export interface components {
              * @description `failed` only: the problem code the action met, as the same change through `/v1`
              *     would answer it (`field_required`, `team_access`, `validation_failed`,
              *     `email_undeliverable`, …), or `auto_reply` when a reply was refused to protect the
-             *     customer (an automatic reply or bounce, a blocked contact, spam, a rule reply in
-             *     the last hour or three in the last day), `bot_sending_disabled` (see
+             *     customer (an automatic reply or bounce, e-mail that did not pass DMARC, a blocked
+             *     contact, spam, a rule reply in the last hour or three in the last day),
+             *     `bot_sending_disabled` (see
              *     `AutomationRuleAuthor`), `label_gone`,
              *     `canned_reply_gone`, `webhook_unavailable`.
              */
@@ -23472,7 +23563,7 @@ export interface components {
             status: "ok";
         };
         /**
-         * @description `mcp` for a `<public URL>/mcp` token, `api` for a `<public URL>` token (`/v1`, `/v1/realtime` and `/mcp`).
+         * @description `mcp` for a `<public URL>/mcp` token, `api` for a `<public URL>` token (`/v1`, `/v1/realtime` and `/mcp`), which only the server's own member apps may ask for.
          * @enum {string}
          */
         OAuthResource: "mcp" | "api";
@@ -23491,17 +23582,25 @@ export interface components {
             role: components["schemas"]["Role"];
             /** @description The scopes that can be granted in this workspace; empty when none of the requested ones can. */
             scopes: components["schemas"]["ApiKeyScope"][];
+            /** @description Whether the client, given `messages:write` or `drafts:send`, can deliver messages to customers as the member in this workspace: true for the server's own member apps and where the workspace lets bots and assistants send (`bots_may_send`); false means everything it writes to customers is kept as a draft for a member to send. */
+            may_send: boolean;
         };
         OAuthRequest: {
             /** Format: uuid */
             id: string;
             client: components["schemas"]["OAuthClient"];
+            /** @description The client is one of the server's own member apps, which the operator lists; every other client is an assistant or integration. */
+            first_party: boolean;
             redirect_uri: string;
             /** @description Where the browser goes after approval; the host, or the scheme of a native app's private-use URI. */
             redirect_host: string;
             resource: components["schemas"]["OAuthResource"];
             /** @description The scopes the client asked for; absent when it asked for none. */
             requested_scopes?: string[];
+            /**
+             * @description The person's workspaces; for a session made through single sign-on only the workspace
+             *     that made it.
+             */
             workspaces: components["schemas"]["OAuthWorkspaceChoice"][];
             /** Format: date-time */
             expires_at: string;
@@ -25612,6 +25711,12 @@ export interface components {
              *     identity provider's sign-in page.
              */
             sso_email?: string;
+            /**
+             * Format: uuid
+             * @description `sso_session_scope` only: the workspace whose single sign-on made the session, the only
+             *     one it acts in. Sign in with a code or a passkey to work in another workspace.
+             */
+            sso_workspace_id?: string;
             detail?: string;
         };
         SlackConnection: {
@@ -26230,6 +26335,7 @@ export interface operations {
             };
             400: components["responses"]["Problem"];
             401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
             409: components["responses"]["Problem"];
         };
     };
@@ -26304,6 +26410,7 @@ export interface operations {
             };
             400: components["responses"]["Problem"];
             401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
             409: components["responses"]["Problem"];
         };
     };
@@ -26326,6 +26433,7 @@ export interface operations {
                 };
             };
             401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
         };
     };
     deletePasskey: {
@@ -26347,7 +26455,52 @@ export interface operations {
                 content?: never;
             };
             401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
             404: components["responses"]["Problem"];
+        };
+    };
+    listSessions: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The sessions. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SessionList"];
+                };
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+        };
+    };
+    deleteOtherSessions: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description How many sessions ended. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SessionsRevoked"];
+                };
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
         };
     };
     getVapidPublicKey: {

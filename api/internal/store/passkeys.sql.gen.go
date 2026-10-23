@@ -83,8 +83,9 @@ func (q *Queries) DeleteExpiredWebauthnCeremonies(ctx context.Context, expiresAt
 	return err
 }
 
-const deletePasskey = `-- name: DeletePasskey :execrows
+const deletePasskey = `-- name: DeletePasskey :one
 DELETE FROM passkeys WHERE person_id = $1 AND id = $2
+RETURNING id, person_id, rp_id, credential_id, name, credential, created_at, last_used_at
 `
 
 type DeletePasskeyParams struct {
@@ -92,12 +93,20 @@ type DeletePasskeyParams struct {
 	ID       uuid.UUID
 }
 
-func (q *Queries) DeletePasskey(ctx context.Context, arg DeletePasskeyParams) (int64, error) {
-	result, err := q.db.Exec(ctx, deletePasskey, arg.PersonID, arg.ID)
-	if err != nil {
-		return 0, err
-	}
-	return result.RowsAffected(), nil
+func (q *Queries) DeletePasskey(ctx context.Context, arg DeletePasskeyParams) (Passkey, error) {
+	row := q.db.QueryRow(ctx, deletePasskey, arg.PersonID, arg.ID)
+	var i Passkey
+	err := row.Scan(
+		&i.ID,
+		&i.PersonID,
+		&i.RpID,
+		&i.CredentialID,
+		&i.Name,
+		&i.Credential,
+		&i.CreatedAt,
+		&i.LastUsedAt,
+	)
+	return i, err
 }
 
 const listPasskeys = `-- name: ListPasskeys :many

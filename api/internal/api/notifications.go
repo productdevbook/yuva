@@ -476,7 +476,7 @@ func (s *Server) Notify(ctx context.Context, a NotifyArgs) error {
 			continue
 		}
 		if ch.Push && s.push != nil {
-			subs, err := s.st.ListLivePushSubscriptionIDs(ctx, store.ListLivePushSubscriptionIDsParams{PersonID: r.PersonID, Now: now})
+			subs, err := s.st.ListLivePushSubscriptionIDs(ctx, store.ListLivePushSubscriptionIDsParams{PersonID: r.PersonID, Now: now, WorkspaceID: &ws})
 			if err != nil {
 				return err
 			}

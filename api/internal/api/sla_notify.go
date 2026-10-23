@@ -122,7 +122,7 @@ func (s *Server) NotifySLA(ctx context.Context, a SLANotifyArgs) error {
 		events := applyNotificationEvents(roleNotificationDefaults(r.Role), parseNotificationUpdate(r.NotificationEvents))
 		ch := notificationChannelsFor(applyNotificationEvents(events, perMember[r.ID]), ev)
 		if ch.Push && s.push != nil {
-			subs, err := s.st.ListLivePushSubscriptionIDs(ctx, store.ListLivePushSubscriptionIDsParams{PersonID: r.PersonID, Now: now})
+			subs, err := s.st.ListLivePushSubscriptionIDs(ctx, store.ListLivePushSubscriptionIDsParams{PersonID: r.PersonID, Now: now, WorkspaceID: &ws})
 			if err != nil {
 				return err
 			}

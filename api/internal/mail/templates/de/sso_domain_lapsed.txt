@@ -1,0 +1,12 @@
+{{.Domain}} ist für Single Sign-on in {{.Workspace}} nicht mehr bestätigt
+
+Die tägliche Prüfung findet den TXT-Eintrag {{.Record}} seit dem {{.Since}} nicht mehr. Nach
+{{.Days}} Tagen ohne ihn ist {{.Domain}} keine bestätigte Domain von {{.Workspace}} mehr: Ihre
+Personen melden sich nicht mehr über Ihren Identitätsanbieter an, und ein anderer Arbeitsbereich auf
+diesem Server kann die Domain beanspruchen.
+{{- if .RequiredOff}} Es war Ihre letzte bestätigte Domain, daher ist Single Sign-on nicht mehr vorgeschrieben.{{end}}
+
+Um sie erneut zu beanspruchen, veröffentlichen Sie den Eintrag und bestätigen Sie die Domain unter
+Einstellungen › Single Sign-on.
+
+{{.URL}}

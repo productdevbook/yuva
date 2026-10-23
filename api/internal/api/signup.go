@@ -22,6 +22,9 @@ var (
 )
 
 func (s *Server) CreateWorkspace(ctx context.Context, req oas.CreateWorkspaceRequestObject) (oas.CreateWorkspaceResponseObject, error) {
+	if err := principalFrom(ctx).ssoScope(nil); err != nil {
+		return nil, err
+	}
 	cfg := s.auth.Signup
 	if !cfg.Open {
 		return nil, errSignupClosed

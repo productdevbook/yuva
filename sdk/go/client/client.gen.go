@@ -1152,6 +1152,7 @@ const (
 	AuditOAuthGrantRevoked                   AuditAction = "oauth_grant.revoked"
 	AuditSsoDomainAdded                      AuditAction = "sso_domain.added"
 	AuditSsoDomainDeleted                    AuditAction = "sso_domain.deleted"
+	AuditSsoDomainLapsed                     AuditAction = "sso_domain.lapsed"
 	AuditSsoDomainVerified                   AuditAction = "sso_domain.verified"
 	AuditSsoProviderCreated                  AuditAction = "sso.provider_created"
 	AuditSsoProviderDeleted                  AuditAction = "sso.provider_deleted"
@@ -1257,6 +1258,8 @@ func (e AuditAction) Valid() bool {
 	case AuditSsoDomainAdded:
 		return true
 	case AuditSsoDomainDeleted:
+		return true
+	case AuditSsoDomainLapsed:
 		return true
 	case AuditSsoDomainVerified:
 		return true
@@ -9140,8 +9143,12 @@ type AnalyticsRangeProblem struct {
 	// SsoEmail `sso_required` only: the member's address; send it to `POST /v1/auth/sso` for the
 	// identity provider's sign-in page.
 	SsoEmail *string `json:"sso_email,omitempty"`
-	Status   int32   `json:"status"`
-	Title    string  `json:"title"`
+
+	// SsoWorkspaceId `sso_session_scope` only: the workspace whose single sign-on made the session, the only
+	// one it acts in. Sign in with a code or a passkey to work in another workspace.
+	SsoWorkspaceId *uuid.UUID `json:"sso_workspace_id,omitempty"`
+	Status         int32      `json:"status"`
+	Title          string     `json:"title"`
 
 	// Type A URI that identifies the problem type.
 	Type string `json:"type"`
@@ -9971,6 +9978,9 @@ type Attributes map[string]interface{}
 //     is the member when the person is one, else `system`. Requests refused with
 //     `sso_required` are not recorded.
 //   - `sso_domain.added`, `sso_domain.verified`, `sso_domain.deleted`: `domain`.
+//   - `sso_domain.lapsed` (by `system`): `domain`, `missing_since` (when the daily check first
+//     missed the TXT record) and `sso_required_off` (`true` when it was the last verified
+//     domain and the rule turned off).
 //   - `issue_integration.connected`, `issue_integration.disconnected`: `provider`, `name`,
 //     `account`, and `host` for a GitHub Enterprise Server. `issue_integration.updated`:
 //     `fields` among `name`, `token`, `default_target` and `webhook_secret`; never a token or
@@ -10082,6 +10092,9 @@ type AuditEntry struct {
 	//   is the member when the person is one, else `system`. Requests refused with
 	//   `sso_required` are not recorded.
 	// - `sso_domain.added`, `sso_domain.verified`, `sso_domain.deleted`: `domain`.
+	// - `sso_domain.lapsed` (by `system`): `domain`, `missing_since` (when the daily check first
+	//   missed the TXT record) and `sso_required_off` (`true` when it was the last verified
+	//   domain and the rule turned off).
 	// - `issue_integration.connected`, `issue_integration.disconnected`: `provider`, `name`,
 	//   `account`, and `host` for a GitHub Enterprise Server. `issue_integration.updated`:
 	//   `fields` among `name`, `token`, `default_target` and `webhook_secret`; never a token or
@@ -10792,8 +10805,12 @@ type BroadcastProblem struct {
 	// SsoEmail `sso_required` only: the member's address; send it to `POST /v1/auth/sso` for the
 	// identity provider's sign-in page.
 	SsoEmail *string `json:"sso_email,omitempty"`
-	Status   int32   `json:"status"`
-	Title    string  `json:"title"`
+
+	// SsoWorkspaceId `sso_session_scope` only: the workspace whose single sign-on made the session, the only
+	// one it acts in. Sign in with a code or a passkey to work in another workspace.
+	SsoWorkspaceId *uuid.UUID `json:"sso_workspace_id,omitempty"`
+	Status         int32      `json:"status"`
+	Title          string     `json:"title"`
 
 	// Type A URI that identifies the problem type.
 	Type string `json:"type"`
@@ -11160,8 +11177,12 @@ type ChangelogConflictProblem struct {
 	// SsoEmail `sso_required` only: the member's address; send it to `POST /v1/auth/sso` for the
 	// identity provider's sign-in page.
 	SsoEmail *string `json:"sso_email,omitempty"`
-	Status   int32   `json:"status"`
-	Title    string  `json:"title"`
+
+	// SsoWorkspaceId `sso_session_scope` only: the workspace whose single sign-on made the session, the only
+	// one it acts in. Sign in with a code or a passkey to work in another workspace.
+	SsoWorkspaceId *uuid.UUID `json:"sso_workspace_id,omitempty"`
+	Status         int32      `json:"status"`
+	Title          string     `json:"title"`
 
 	// Translation `version_conflict` only: the translation as it is now.
 	Translation *ChangelogEntryTranslation `json:"translation,omitempty"`
@@ -14979,8 +15000,12 @@ type EmailDesignProblem struct {
 	// SsoEmail `sso_required` only: the member's address; send it to `POST /v1/auth/sso` for the
 	// identity provider's sign-in page.
 	SsoEmail *string `json:"sso_email,omitempty"`
-	Status   int32   `json:"status"`
-	Title    string  `json:"title"`
+
+	// SsoWorkspaceId `sso_session_scope` only: the workspace whose single sign-on made the session, the only
+	// one it acts in. Sign in with a code or a passkey to work in another workspace.
+	SsoWorkspaceId *uuid.UUID `json:"sso_workspace_id,omitempty"`
+	Status         int32      `json:"status"`
+	Title          string     `json:"title"`
 
 	// Type A URI that identifies the problem type.
 	Type string `json:"type"`
@@ -15324,8 +15349,12 @@ type EmailImageProblem struct {
 	// SsoEmail `sso_required` only: the member's address; send it to `POST /v1/auth/sso` for the
 	// identity provider's sign-in page.
 	SsoEmail *string `json:"sso_email,omitempty"`
-	Status   int32   `json:"status"`
-	Title    string  `json:"title"`
+
+	// SsoWorkspaceId `sso_session_scope` only: the workspace whose single sign-on made the session, the only
+	// one it acts in. Sign in with a code or a passkey to work in another workspace.
+	SsoWorkspaceId *uuid.UUID `json:"sso_workspace_id,omitempty"`
+	Status         int32      `json:"status"`
+	Title          string     `json:"title"`
 
 	// Type A URI that identifies the problem type.
 	Type   string           `json:"type"`
@@ -16394,8 +16423,12 @@ type HelpConflictProblem struct {
 	// SsoEmail `sso_required` only: the member's address; send it to `POST /v1/auth/sso` for the
 	// identity provider's sign-in page.
 	SsoEmail *string `json:"sso_email,omitempty"`
-	Status   int32   `json:"status"`
-	Title    string  `json:"title"`
+
+	// SsoWorkspaceId `sso_session_scope` only: the workspace whose single sign-on made the session, the only
+	// one it acts in. Sign in with a code or a passkey to work in another workspace.
+	SsoWorkspaceId *uuid.UUID `json:"sso_workspace_id,omitempty"`
+	Status         int32      `json:"status"`
+	Title          string     `json:"title"`
 
 	// Translation `version_conflict` only: the translation as it is now.
 	Translation *HelpArticleTranslation `json:"translation,omitempty"`
@@ -19287,8 +19320,12 @@ type MigrationFileProblem struct {
 	// SsoEmail `sso_required` only: the member's address; send it to `POST /v1/auth/sso` for the
 	// identity provider's sign-in page.
 	SsoEmail *string `json:"sso_email,omitempty"`
-	Status   int32   `json:"status"`
-	Title    string  `json:"title"`
+
+	// SsoWorkspaceId `sso_session_scope` only: the workspace whose single sign-on made the session, the only
+	// one it acts in. Sign in with a code or a passkey to work in another workspace.
+	SsoWorkspaceId *uuid.UUID `json:"sso_workspace_id,omitempty"`
+	Status         int32      `json:"status"`
+	Title          string     `json:"title"`
 
 	// Type A URI that identifies the problem type.
 	Type string `json:"type"`
@@ -20151,7 +20188,10 @@ type OAuthRequest struct {
 	RequestedScopes *[]string `json:"requested_scopes,omitempty"`
 
 	// Resource `mcp` for a `<public URL>/mcp` token, `api` for a `<public URL>` token (`/v1`, `/v1/realtime` and `/mcp`), which only the server's own member apps may ask for.
-	Resource   OAuthResource          `json:"resource"`
+	Resource OAuthResource `json:"resource"`
+
+	// Workspaces The person's workspaces; for a session made through single sign-on only the workspace
+	// that made it.
 	Workspaces []OAuthWorkspaceChoice `json:"workspaces"`
 }
 
@@ -20341,8 +20381,12 @@ type Problem struct {
 	// SsoEmail `sso_required` only: the member's address; send it to `POST /v1/auth/sso` for the
 	// identity provider's sign-in page.
 	SsoEmail *string `json:"sso_email,omitempty"`
-	Status   int32   `json:"status"`
-	Title    string  `json:"title"`
+
+	// SsoWorkspaceId `sso_session_scope` only: the workspace whose single sign-on made the session, the only
+	// one it acts in. Sign in with a code or a passkey to work in another workspace.
+	SsoWorkspaceId *uuid.UUID `json:"sso_workspace_id,omitempty"`
+	Status         int32      `json:"status"`
+	Title          string     `json:"title"`
 
 	// Type A URI that identifies the problem type.
 	Type string `json:"type"`
@@ -21465,7 +21509,8 @@ type SsoDomain struct {
 	Domain    string     `json:"domain"`
 	Id        uuid.UUID  `json:"id"`
 
-	// Problem What the last check found, while `pending`.
+	// Problem What the last check found: while `pending`, or when the daily check of a `verified`
+	// domain misses the record (the claim lapses after 7 days of that).
 	Problem *string        `json:"problem,omitempty"`
 	State   SsoDomainState `json:"state"`
 
@@ -35208,7 +35253,8 @@ type ClientInterface interface {
 	// made it (sign-out), when the account is deleted, or with
 	// `DELETE /client/v1/reader-token`. In the channel's workspace it acts as the contact linked to
 	// the person, created on the first write; a person who is a member of that workspace with
-	// access to the inbox writes as that member.
+	// access to the inbox writes as that member. A session made through single sign-on gets
+	// tokens only for its own workspace's channels (`403 sso_session_scope` otherwise).
 	//
 	// Person sessions only; like every cookie request it must come from the server's own origin.
 	//
@@ -35234,7 +35280,8 @@ type ClientInterface interface {
 	// made it (sign-out), when the account is deleted, or with
 	// `DELETE /client/v1/reader-token`. In the channel's workspace it acts as the contact linked to
 	// the person, created on the first write; a person who is a member of that workspace with
-	// access to the inbox writes as that member.
+	// access to the inbox writes as that member. A session made through single sign-on gets
+	// tokens only for its own workspace's channels (`403 sso_session_scope` otherwise).
 	//
 	// Person sessions only; like every cookie request it must come from the server's own origin.
 	//
@@ -36308,6 +36355,12 @@ type ClientInterface interface {
 	// `denied`, `failed`, `invalid_token` (for SAML: the response or assertion was refused),
 	// `email_unverified`, `domain_not_claimed`, `group_not_allowed`, `not_member`.
 	//
+	// The session acts only in the workspace whose provider made it (other workspaces answer `403
+	// sso_session_scope`) and as a reader; it accepts only that workspace's pending invites. It
+	// cannot add or remove passkeys, create a workspace or delete the account (`403
+	// sso_session_scope`). The person is e-mailed the first time they sign in to a workspace
+	// through its provider.
+	//
 	// A domain's claim is public (its DNS record is), so answering whether it has single
 	// sign-on reveals nothing about people. 30 requests a minute per client IP address (`429`).
 	// `502 sso_unavailable` when the OpenID Connect provider's discovery document cannot be read.
@@ -36346,6 +36399,12 @@ type ClientInterface interface {
 	// session cookie set, or to `/sign-in?sso_error=<code>` with `code` one of `expired`,
 	// `denied`, `failed`, `invalid_token` (for SAML: the response or assertion was refused),
 	// `email_unverified`, `domain_not_claimed`, `group_not_allowed`, `not_member`.
+	//
+	// The session acts only in the workspace whose provider made it (other workspaces answer `403
+	// sso_session_scope`) and as a reader; it accepts only that workspace's pending invites. It
+	// cannot add or remove passkeys, create a workspace or delete the account (`403
+	// sso_session_scope`). The person is e-mailed the first time they sign in to a workspace
+	// through its provider.
 	//
 	// A domain's claim is public (its DNS record is), so answering whether it has single
 	// sign-on reveals nothing about people. 30 requests a minute per client IP address (`429`).
@@ -40822,7 +40881,8 @@ type ClientInterface interface {
 	// follows go, and in each workspace the contact linked to them is deleted when it has no
 	// conversations and no external ids, else only unlinked. Refused with `409 last_owner` while the
 	// person is the only owner of a workspace: make someone else an owner or delete that
-	// workspace first. Needs a member session; the body repeats the person's e-mail address.
+	// workspace first. Needs a member session; the body repeats the person's e-mail address. A
+	// session made through single sign-on is refused with `403 sso_session_scope`.
 	//
 	// Takes any type of body and a specified content type.
 	//
@@ -40838,7 +40898,8 @@ type ClientInterface interface {
 	// follows go, and in each workspace the contact linked to them is deleted when it has no
 	// conversations and no external ids, else only unlinked. Refused with `409 last_owner` while the
 	// person is the only owner of a workspace: make someone else an owner or delete that
-	// workspace first. Needs a member session; the body repeats the person's e-mail address.
+	// workspace first. Needs a member session; the body repeats the person's e-mail address. A
+	// session made through single sign-on is refused with `403 sso_session_scope`.
 	//
 	// Takes a body of the `application/json` content type.
 	//
@@ -40965,7 +41026,9 @@ type ClientInterface interface {
 
 	// FinishPasskeyRegistrationWithBody Register a passkey
 	//
-	// Completes a registration started with `POST /v1/me/passkeys/options`.
+	// Completes a registration started with `POST /v1/me/passkeys/options`. The person is
+	// e-mailed that a passkey was added. A session made through single sign-on is refused with
+	// `403 sso_session_scope`: a passkey signs in to every workspace of the person.
 	//
 	// Takes any type of body and a specified content type.
 	//
@@ -40974,7 +41037,9 @@ type ClientInterface interface {
 
 	// FinishPasskeyRegistration Register a passkey
 	//
-	// Completes a registration started with `POST /v1/me/passkeys/options`.
+	// Completes a registration started with `POST /v1/me/passkeys/options`. The person is
+	// e-mailed that a passkey was added. A session made through single sign-on is refused with
+	// `403 sso_session_scope`: a passkey signs in to every workspace of the person.
 	//
 	// Takes a body of the `application/json` content type.
 	//
@@ -40984,14 +41049,17 @@ type ClientInterface interface {
 	// BeginPasskeyRegistration Start a passkey registration
 	//
 	// Returns the options for `navigator.credentials.create()` and a ceremony id to send back
-	// with the result. The ceremony expires after 5 minutes.
+	// with the result. The ceremony expires after 5 minutes. A session made through single
+	// sign-on is refused with `403 sso_session_scope`.
 	//
 	// Corresponds with POST /v1/me/passkeys/options (the `BeginPasskeyRegistration` operationId).
 	BeginPasskeyRegistration(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// DeletePasskey Remove a passkey
 	//
-	// Removes the passkey and ends every other session of the signed-in person, as `DELETE /v1/me/sessions` does.
+	// Removes the passkey and ends every other session of the signed-in person, as `DELETE
+	// /v1/me/sessions` does. The person is e-mailed that a passkey was removed. A session made
+	// through single sign-on is refused with `403 sso_session_scope`.
 	//
 	// Corresponds with DELETE /v1/me/passkeys/{passkeyId} (the `DeletePasskey` operationId).
 	DeletePasskey(ctx context.Context, passkeyId PasskeyId, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -42012,7 +42080,8 @@ type ClientInterface interface {
 	// answers the URL to send the browser to: the client's redirect URI with a `code` (single
 	// use, valid 60 seconds), `state` and `iss`. Scopes not offered in that workspace, or a
 	// workspace the person is not a member of, are refused (`400 validation_failed`,
-	// `403 not_a_member`).
+	// `403 not_a_member`), and so is any workspace but its own for a session made through single
+	// sign-on (`403 sso_session_scope`).
 	//
 	// Takes any type of body and a specified content type.
 	//
@@ -42025,7 +42094,8 @@ type ClientInterface interface {
 	// answers the URL to send the browser to: the client's redirect URI with a `code` (single
 	// use, valid 60 seconds), `state` and `iss`. Scopes not offered in that workspace, or a
 	// workspace the person is not a member of, are refused (`400 validation_failed`,
-	// `403 not_a_member`).
+	// `403 not_a_member`), and so is any workspace but its own for a session made through single
+	// sign-on (`403 sso_session_scope`).
 	//
 	// Takes a body of the `application/json` content type.
 	//
@@ -42486,7 +42556,10 @@ type ClientInterface interface {
 	// VerifySsoDomain Check a domain's TXT record
 	//
 	// Looks the TXT record up now. When it holds `txt_value` the domain becomes `verified`
-	// (recorded as `sso_domain.verified`) and stays so; the record may stay in place. Otherwise
+	// (recorded as `sso_domain.verified`); keep the record in place. Verified domains are looked
+	// up again daily: when the record has been missing for 7 days the claim goes back to
+	// `pending` (recorded as `sso_domain.lapsed`, the owners are e-mailed, and `sso_required`
+	// turns off with the last verified domain), and another workspace may claim it. Otherwise
 	// the claim stays `pending` with `problem` saying what was found. `409 domain_taken` when
 	// another workspace verified the domain first. Owners only, with a member session.
 	//
@@ -43862,7 +43935,8 @@ type ClientInterface interface {
 	// hours (`429 rate_limited`). The name is 1 to 200 characters after trimming.
 	//
 	// Person sessions only; the `Yuva-Workspace` header is ignored. Send the new id as
-	// `Yuva-Workspace` to act on it.
+	// `Yuva-Workspace` to act on it. A session made through single sign-on is refused with `403
+	// sso_session_scope`.
 	//
 	// Takes any type of body and a specified content type.
 	//
@@ -43879,7 +43953,8 @@ type ClientInterface interface {
 	// hours (`429 rate_limited`). The name is 1 to 200 characters after trimming.
 	//
 	// Person sessions only; the `Yuva-Workspace` header is ignored. Send the new id as
-	// `Yuva-Workspace` to act on it.
+	// `Yuva-Workspace` to act on it. A session made through single sign-on is refused with `403
+	// sso_session_scope`.
 	//
 	// Takes a body of the `application/json` content type.
 	//
@@ -46350,7 +46425,8 @@ func (c *Client) MarkReaderNotificationsRead(ctx context.Context, body MarkReade
 // made it (sign-out), when the account is deleted, or with
 // `DELETE /client/v1/reader-token`. In the channel's workspace it acts as the contact linked to
 // the person, created on the first write; a person who is a member of that workspace with
-// access to the inbox writes as that member.
+// access to the inbox writes as that member. A session made through single sign-on gets
+// tokens only for its own workspace's channels (`403 sso_session_scope` otherwise).
 //
 // Person sessions only; like every cookie request it must come from the server's own origin.
 //
@@ -46386,7 +46462,8 @@ func (c *Client) CreateReaderTokenWithBody(ctx context.Context, contentType stri
 // made it (sign-out), when the account is deleted, or with
 // `DELETE /client/v1/reader-token`. In the channel's workspace it acts as the contact linked to
 // the person, created on the first write; a person who is a member of that workspace with
-// access to the inbox writes as that member.
+// access to the inbox writes as that member. A session made through single sign-on gets
+// tokens only for its own workspace's channels (`403 sso_session_scope` otherwise).
 //
 // Person sessions only; like every cookie request it must come from the server's own origin.
 //
@@ -48250,6 +48327,12 @@ func (c *Client) SignOut(ctx context.Context, reqEditors ...RequestEditorFn) (*h
 // `denied`, `failed`, `invalid_token` (for SAML: the response or assertion was refused),
 // `email_unverified`, `domain_not_claimed`, `group_not_allowed`, `not_member`.
 //
+// The session acts only in the workspace whose provider made it (other workspaces answer `403
+// sso_session_scope`) and as a reader; it accepts only that workspace's pending invites. It
+// cannot add or remove passkeys, create a workspace or delete the account (`403
+// sso_session_scope`). The person is e-mailed the first time they sign in to a workspace
+// through its provider.
+//
 // A domain's claim is public (its DNS record is), so answering whether it has single
 // sign-on reveals nothing about people. 30 requests a minute per client IP address (`429`).
 // `502 sso_unavailable` when the OpenID Connect provider's discovery document cannot be read.
@@ -48298,6 +48381,12 @@ func (c *Client) StartSsoSignInWithBody(ctx context.Context, contentType string,
 // session cookie set, or to `/sign-in?sso_error=<code>` with `code` one of `expired`,
 // `denied`, `failed`, `invalid_token` (for SAML: the response or assertion was refused),
 // `email_unverified`, `domain_not_claimed`, `group_not_allowed`, `not_member`.
+//
+// The session acts only in the workspace whose provider made it (other workspaces answer `403
+// sso_session_scope`) and as a reader; it accepts only that workspace's pending invites. It
+// cannot add or remove passkeys, create a workspace or delete the account (`403
+// sso_session_scope`). The person is e-mailed the first time they sign in to a workspace
+// through its provider.
 //
 // A domain's claim is public (its DNS record is), so answering whether it has single
 // sign-on reveals nothing about people. 30 requests a minute per client IP address (`429`).
@@ -55864,7 +55953,8 @@ func (c *Client) RenderMarkdown(ctx context.Context, params *RenderMarkdownParam
 // follows go, and in each workspace the contact linked to them is deleted when it has no
 // conversations and no external ids, else only unlinked. Refused with `409 last_owner` while the
 // person is the only owner of a workspace: make someone else an owner or delete that
-// workspace first. Needs a member session; the body repeats the person's e-mail address.
+// workspace first. Needs a member session; the body repeats the person's e-mail address. A
+// session made through single sign-on is refused with `403 sso_session_scope`.
 //
 // Takes any type of body and a specified content type.
 //
@@ -55890,7 +55980,8 @@ func (c *Client) DeleteMeWithBody(ctx context.Context, contentType string, body 
 // follows go, and in each workspace the contact linked to them is deleted when it has no
 // conversations and no external ids, else only unlinked. Refused with `409 last_owner` while the
 // person is the only owner of a workspace: make someone else an owner or delete that
-// workspace first. Needs a member session; the body repeats the person's e-mail address.
+// workspace first. Needs a member session; the body repeats the person's e-mail address. A
+// session made through single sign-on is refused with `403 sso_session_scope`.
 //
 // Takes a body of the `application/json` content type.
 //
@@ -56157,7 +56248,9 @@ func (c *Client) ListPasskeys(ctx context.Context, reqEditors ...RequestEditorFn
 
 // FinishPasskeyRegistrationWithBody Register a passkey
 //
-// Completes a registration started with `POST /v1/me/passkeys/options`.
+// Completes a registration started with `POST /v1/me/passkeys/options`. The person is
+// e-mailed that a passkey was added. A session made through single sign-on is refused with
+// `403 sso_session_scope`: a passkey signs in to every workspace of the person.
 //
 // Takes any type of body and a specified content type.
 //
@@ -56176,7 +56269,9 @@ func (c *Client) FinishPasskeyRegistrationWithBody(ctx context.Context, contentT
 
 // FinishPasskeyRegistration Register a passkey
 //
-// Completes a registration started with `POST /v1/me/passkeys/options`.
+// Completes a registration started with `POST /v1/me/passkeys/options`. The person is
+// e-mailed that a passkey was added. A session made through single sign-on is refused with
+// `403 sso_session_scope`: a passkey signs in to every workspace of the person.
 //
 // Takes a body of the `application/json` content type.
 //
@@ -56196,7 +56291,8 @@ func (c *Client) FinishPasskeyRegistration(ctx context.Context, body FinishPassk
 // BeginPasskeyRegistration Start a passkey registration
 //
 // Returns the options for `navigator.credentials.create()` and a ceremony id to send back
-// with the result. The ceremony expires after 5 minutes.
+// with the result. The ceremony expires after 5 minutes. A session made through single
+// sign-on is refused with `403 sso_session_scope`.
 //
 // Corresponds with POST /v1/me/passkeys/options (the `BeginPasskeyRegistration` operationId).
 func (c *Client) BeginPasskeyRegistration(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
@@ -56213,7 +56309,9 @@ func (c *Client) BeginPasskeyRegistration(ctx context.Context, reqEditors ...Req
 
 // DeletePasskey Remove a passkey
 //
-// Removes the passkey and ends every other session of the signed-in person, as `DELETE /v1/me/sessions` does.
+// Removes the passkey and ends every other session of the signed-in person, as `DELETE
+// /v1/me/sessions` does. The person is e-mailed that a passkey was removed. A session made
+// through single sign-on is refused with `403 sso_session_scope`.
 //
 // Corresponds with DELETE /v1/me/passkeys/{passkeyId} (the `DeletePasskey` operationId).
 func (c *Client) DeletePasskey(ctx context.Context, passkeyId PasskeyId, reqEditors ...RequestEditorFn) (*http.Response, error) {
@@ -57864,7 +57962,8 @@ func (c *Client) GetOAuthRequest(ctx context.Context, oauthRequestId OAuthReques
 // answers the URL to send the browser to: the client's redirect URI with a `code` (single
 // use, valid 60 seconds), `state` and `iss`. Scopes not offered in that workspace, or a
 // workspace the person is not a member of, are refused (`400 validation_failed`,
-// `403 not_a_member`).
+// `403 not_a_member`), and so is any workspace but its own for a session made through single
+// sign-on (`403 sso_session_scope`).
 //
 // Takes any type of body and a specified content type.
 //
@@ -57887,7 +57986,8 @@ func (c *Client) ApproveOAuthRequestWithBody(ctx context.Context, oauthRequestId
 // answers the URL to send the browser to: the client's redirect URI with a `code` (single
 // use, valid 60 seconds), `state` and `iss`. Scopes not offered in that workspace, or a
 // workspace the person is not a member of, are refused (`400 validation_failed`,
-// `403 not_a_member`).
+// `403 not_a_member`), and so is any workspace but its own for a session made through single
+// sign-on (`403 sso_session_scope`).
 //
 // Takes a body of the `application/json` content type.
 //
@@ -58688,7 +58788,10 @@ func (c *Client) DeleteSsoDomain(ctx context.Context, ssoDomainId SsoDomainId, p
 // VerifySsoDomain Check a domain's TXT record
 //
 // Looks the TXT record up now. When it holds `txt_value` the domain becomes `verified`
-// (recorded as `sso_domain.verified`) and stays so; the record may stay in place. Otherwise
+// (recorded as `sso_domain.verified`); keep the record in place. Verified domains are looked
+// up again daily: when the record has been missing for 7 days the claim goes back to
+// `pending` (recorded as `sso_domain.lapsed`, the owners are e-mailed, and `sso_required`
+// turns off with the last verified domain), and another workspace may claim it. Otherwise
 // the claim stays `pending` with `problem` saying what was found. `409 domain_taken` when
 // another workspace verified the domain first. Owners only, with a member session.
 //
@@ -61104,7 +61207,8 @@ func (c *Client) RequestBroadcastApproval(ctx context.Context, params *RequestBr
 // hours (`429 rate_limited`). The name is 1 to 200 characters after trimming.
 //
 // Person sessions only; the `Yuva-Workspace` header is ignored. Send the new id as
-// `Yuva-Workspace` to act on it.
+// `Yuva-Workspace` to act on it. A session made through single sign-on is refused with `403
+// sso_session_scope`.
 //
 // Takes any type of body and a specified content type.
 //
@@ -61131,7 +61235,8 @@ func (c *Client) CreateWorkspaceWithBody(ctx context.Context, contentType string
 // hours (`429 rate_limited`). The name is 1 to 200 characters after trimming.
 //
 // Person sessions only; the `Yuva-Workspace` header is ignored. Send the new id as
-// `Yuva-Workspace` to act on it.
+// `Yuva-Workspace` to act on it. A session made through single sign-on is refused with `403
+// sso_session_scope`.
 //
 // Takes a body of the `application/json` content type.
 //
@@ -95109,7 +95214,8 @@ type ClientWithResponsesInterface interface {
 	// made it (sign-out), when the account is deleted, or with
 	// `DELETE /client/v1/reader-token`. In the channel's workspace it acts as the contact linked to
 	// the person, created on the first write; a person who is a member of that workspace with
-	// access to the inbox writes as that member.
+	// access to the inbox writes as that member. A session made through single sign-on gets
+	// tokens only for its own workspace's channels (`403 sso_session_scope` otherwise).
 	//
 	// Person sessions only; like every cookie request it must come from the server's own origin.
 	//
@@ -95135,7 +95241,8 @@ type ClientWithResponsesInterface interface {
 	// made it (sign-out), when the account is deleted, or with
 	// `DELETE /client/v1/reader-token`. In the channel's workspace it acts as the contact linked to
 	// the person, created on the first write; a person who is a member of that workspace with
-	// access to the inbox writes as that member.
+	// access to the inbox writes as that member. A session made through single sign-on gets
+	// tokens only for its own workspace's channels (`403 sso_session_scope` otherwise).
 	//
 	// Person sessions only; like every cookie request it must come from the server's own origin.
 	//
@@ -96273,6 +96380,12 @@ type ClientWithResponsesInterface interface {
 	// `denied`, `failed`, `invalid_token` (for SAML: the response or assertion was refused),
 	// `email_unverified`, `domain_not_claimed`, `group_not_allowed`, `not_member`.
 	//
+	// The session acts only in the workspace whose provider made it (other workspaces answer `403
+	// sso_session_scope`) and as a reader; it accepts only that workspace's pending invites. It
+	// cannot add or remove passkeys, create a workspace or delete the account (`403
+	// sso_session_scope`). The person is e-mailed the first time they sign in to a workspace
+	// through its provider.
+	//
 	// A domain's claim is public (its DNS record is), so answering whether it has single
 	// sign-on reveals nothing about people. 30 requests a minute per client IP address (`429`).
 	// `502 sso_unavailable` when the OpenID Connect provider's discovery document cannot be read.
@@ -96311,6 +96424,12 @@ type ClientWithResponsesInterface interface {
 	// session cookie set, or to `/sign-in?sso_error=<code>` with `code` one of `expired`,
 	// `denied`, `failed`, `invalid_token` (for SAML: the response or assertion was refused),
 	// `email_unverified`, `domain_not_claimed`, `group_not_allowed`, `not_member`.
+	//
+	// The session acts only in the workspace whose provider made it (other workspaces answer `403
+	// sso_session_scope`) and as a reader; it accepts only that workspace's pending invites. It
+	// cannot add or remove passkeys, create a workspace or delete the account (`403
+	// sso_session_scope`). The person is e-mailed the first time they sign in to a workspace
+	// through its provider.
 	//
 	// A domain's claim is public (its DNS record is), so answering whether it has single
 	// sign-on reveals nothing about people. 30 requests a minute per client IP address (`429`).
@@ -101083,7 +101202,8 @@ type ClientWithResponsesInterface interface {
 	// follows go, and in each workspace the contact linked to them is deleted when it has no
 	// conversations and no external ids, else only unlinked. Refused with `409 last_owner` while the
 	// person is the only owner of a workspace: make someone else an owner or delete that
-	// workspace first. Needs a member session; the body repeats the person's e-mail address.
+	// workspace first. Needs a member session; the body repeats the person's e-mail address. A
+	// session made through single sign-on is refused with `403 sso_session_scope`.
 	//
 	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
 	//
@@ -101099,7 +101219,8 @@ type ClientWithResponsesInterface interface {
 	// follows go, and in each workspace the contact linked to them is deleted when it has no
 	// conversations and no external ids, else only unlinked. Refused with `409 last_owner` while the
 	// person is the only owner of a workspace: make someone else an owner or delete that
-	// workspace first. Needs a member session; the body repeats the person's e-mail address.
+	// workspace first. Needs a member session; the body repeats the person's e-mail address. A
+	// session made through single sign-on is refused with `403 sso_session_scope`.
 	//
 	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
 	//
@@ -101240,7 +101361,9 @@ type ClientWithResponsesInterface interface {
 
 	// FinishPasskeyRegistrationWithBodyWithResponse Register a passkey
 	//
-	// Completes a registration started with `POST /v1/me/passkeys/options`.
+	// Completes a registration started with `POST /v1/me/passkeys/options`. The person is
+	// e-mailed that a passkey was added. A session made through single sign-on is refused with
+	// `403 sso_session_scope`: a passkey signs in to every workspace of the person.
 	//
 	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
 	//
@@ -101249,7 +101372,9 @@ type ClientWithResponsesInterface interface {
 
 	// FinishPasskeyRegistrationWithResponse Register a passkey
 	//
-	// Completes a registration started with `POST /v1/me/passkeys/options`.
+	// Completes a registration started with `POST /v1/me/passkeys/options`. The person is
+	// e-mailed that a passkey was added. A session made through single sign-on is refused with
+	// `403 sso_session_scope`: a passkey signs in to every workspace of the person.
 	//
 	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
 	//
@@ -101259,7 +101384,8 @@ type ClientWithResponsesInterface interface {
 	// BeginPasskeyRegistrationWithResponse Start a passkey registration
 	//
 	// Returns the options for `navigator.credentials.create()` and a ceremony id to send back
-	// with the result. The ceremony expires after 5 minutes.
+	// with the result. The ceremony expires after 5 minutes. A session made through single
+	// sign-on is refused with `403 sso_session_scope`.
 	//
 	// Returns a wrapper object for the known response body format(s).
 	//
@@ -101268,7 +101394,9 @@ type ClientWithResponsesInterface interface {
 
 	// DeletePasskeyWithResponse Remove a passkey
 	//
-	// Removes the passkey and ends every other session of the signed-in person, as `DELETE /v1/me/sessions` does.
+	// Removes the passkey and ends every other session of the signed-in person, as `DELETE
+	// /v1/me/sessions` does. The person is e-mailed that a passkey was removed. A session made
+	// through single sign-on is refused with `403 sso_session_scope`.
 	//
 	// Returns a wrapper object for the known response body format(s).
 	//
@@ -102357,7 +102485,8 @@ type ClientWithResponsesInterface interface {
 	// answers the URL to send the browser to: the client's redirect URI with a `code` (single
 	// use, valid 60 seconds), `state` and `iss`. Scopes not offered in that workspace, or a
 	// workspace the person is not a member of, are refused (`400 validation_failed`,
-	// `403 not_a_member`).
+	// `403 not_a_member`), and so is any workspace but its own for a session made through single
+	// sign-on (`403 sso_session_scope`).
 	//
 	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
 	//
@@ -102370,7 +102499,8 @@ type ClientWithResponsesInterface interface {
 	// answers the URL to send the browser to: the client's redirect URI with a `code` (single
 	// use, valid 60 seconds), `state` and `iss`. Scopes not offered in that workspace, or a
 	// workspace the person is not a member of, are refused (`400 validation_failed`,
-	// `403 not_a_member`).
+	// `403 not_a_member`), and so is any workspace but its own for a session made through single
+	// sign-on (`403 sso_session_scope`).
 	//
 	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
 	//
@@ -102865,7 +102995,10 @@ type ClientWithResponsesInterface interface {
 	// VerifySsoDomainWithResponse Check a domain's TXT record
 	//
 	// Looks the TXT record up now. When it holds `txt_value` the domain becomes `verified`
-	// (recorded as `sso_domain.verified`) and stays so; the record may stay in place. Otherwise
+	// (recorded as `sso_domain.verified`); keep the record in place. Verified domains are looked
+	// up again daily: when the record has been missing for 7 days the claim goes back to
+	// `pending` (recorded as `sso_domain.lapsed`, the owners are e-mailed, and `sso_required`
+	// turns off with the last verified domain), and another workspace may claim it. Otherwise
 	// the claim stays `pending` with `problem` saying what was found. `409 domain_taken` when
 	// another workspace verified the domain first. Owners only, with a member session.
 	//
@@ -104341,7 +104474,8 @@ type ClientWithResponsesInterface interface {
 	// hours (`429 rate_limited`). The name is 1 to 200 characters after trimming.
 	//
 	// Person sessions only; the `Yuva-Workspace` header is ignored. Send the new id as
-	// `Yuva-Workspace` to act on it.
+	// `Yuva-Workspace` to act on it. A session made through single sign-on is refused with `403
+	// sso_session_scope`.
 	//
 	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
 	//
@@ -104358,7 +104492,8 @@ type ClientWithResponsesInterface interface {
 	// hours (`429 rate_limited`). The name is 1 to 200 characters after trimming.
 	//
 	// Person sessions only; the `Yuva-Workspace` header is ignored. Send the new id as
-	// `Yuva-Workspace` to act on it.
+	// `Yuva-Workspace` to act on it. A session made through single sign-on is refused with `403
+	// sso_session_scope`.
 	//
 	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
 	//
@@ -128244,6 +128379,8 @@ type DeleteMeResponse struct {
 	ApplicationproblemJSON400 *Problem
 	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
 	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
 	// ApplicationproblemJSON409 the response for an HTTP 409 `application/problem+json` response
 	ApplicationproblemJSON409 *Problem
 	// Headers204 the parsed response headers for an HTTP 204 response
@@ -128258,6 +128395,11 @@ func (r DeleteMeResponse) GetApplicationproblemJSON400() *Problem {
 // GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
 func (r DeleteMeResponse) GetApplicationproblemJSON401() *Problem {
 	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r DeleteMeResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
 }
 
 // GetApplicationproblemJSON409 returns the response for an HTTP 409 `application/problem+json` response
@@ -128874,6 +129016,8 @@ type FinishPasskeyRegistrationResponse struct {
 	ApplicationproblemJSON400 *Problem
 	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
 	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
 	// ApplicationproblemJSON409 the response for an HTTP 409 `application/problem+json` response
 	ApplicationproblemJSON409 *Problem
 }
@@ -128891,6 +129035,11 @@ func (r FinishPasskeyRegistrationResponse) GetApplicationproblemJSON400() *Probl
 // GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
 func (r FinishPasskeyRegistrationResponse) GetApplicationproblemJSON401() *Problem {
 	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r FinishPasskeyRegistrationResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
 }
 
 // GetApplicationproblemJSON409 returns the response for an HTTP 409 `application/problem+json` response
@@ -128934,6 +129083,8 @@ type BeginPasskeyRegistrationResponse struct {
 	JSON200 *PasskeyCeremony
 	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
 	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
 }
 
 // GetJSON200 returns the response for an HTTP 200 `application/json` response
@@ -128944,6 +129095,11 @@ func (r BeginPasskeyRegistrationResponse) GetJSON200() *PasskeyCeremony {
 // GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
 func (r BeginPasskeyRegistrationResponse) GetApplicationproblemJSON401() *Problem {
 	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r BeginPasskeyRegistrationResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
 }
 
 // GetBody returns the raw response body bytes
@@ -128980,6 +129136,8 @@ type DeletePasskeyResponse struct {
 	HTTPResponse *http.Response
 	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
 	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
 	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
 	ApplicationproblemJSON404 *Problem
 }
@@ -128987,6 +129145,11 @@ type DeletePasskeyResponse struct {
 // GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
 func (r DeletePasskeyResponse) GetApplicationproblemJSON401() *Problem {
 	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r DeletePasskeyResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
 }
 
 // GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
@@ -141033,7 +141196,8 @@ func (c *ClientWithResponses) MarkReaderNotificationsReadWithResponse(ctx contex
 // made it (sign-out), when the account is deleted, or with
 // `DELETE /client/v1/reader-token`. In the channel's workspace it acts as the contact linked to
 // the person, created on the first write; a person who is a member of that workspace with
-// access to the inbox writes as that member.
+// access to the inbox writes as that member. A session made through single sign-on gets
+// tokens only for its own workspace's channels (`403 sso_session_scope` otherwise).
 //
 // Person sessions only; like every cookie request it must come from the server's own origin.
 //
@@ -141065,7 +141229,8 @@ func (c *ClientWithResponses) CreateReaderTokenWithBodyWithResponse(ctx context.
 // made it (sign-out), when the account is deleted, or with
 // `DELETE /client/v1/reader-token`. In the channel's workspace it acts as the contact linked to
 // the person, created on the first write; a person who is a member of that workspace with
-// access to the inbox writes as that member.
+// access to the inbox writes as that member. A session made through single sign-on gets
+// tokens only for its own workspace's channels (`403 sso_session_scope` otherwise).
 //
 // Person sessions only; like every cookie request it must come from the server's own origin.
 //
@@ -142677,6 +142842,12 @@ func (c *ClientWithResponses) SignOutWithResponse(ctx context.Context, reqEditor
 // `denied`, `failed`, `invalid_token` (for SAML: the response or assertion was refused),
 // `email_unverified`, `domain_not_claimed`, `group_not_allowed`, `not_member`.
 //
+// The session acts only in the workspace whose provider made it (other workspaces answer `403
+// sso_session_scope`) and as a reader; it accepts only that workspace's pending invites. It
+// cannot add or remove passkeys, create a workspace or delete the account (`403
+// sso_session_scope`). The person is e-mailed the first time they sign in to a workspace
+// through its provider.
+//
 // A domain's claim is public (its DNS record is), so answering whether it has single
 // sign-on reveals nothing about people. 30 requests a minute per client IP address (`429`).
 // `502 sso_unavailable` when the OpenID Connect provider's discovery document cannot be read.
@@ -142721,6 +142892,12 @@ func (c *ClientWithResponses) StartSsoSignInWithBodyWithResponse(ctx context.Con
 // session cookie set, or to `/sign-in?sso_error=<code>` with `code` one of `expired`,
 // `denied`, `failed`, `invalid_token` (for SAML: the response or assertion was refused),
 // `email_unverified`, `domain_not_claimed`, `group_not_allowed`, `not_member`.
+//
+// The session acts only in the workspace whose provider made it (other workspaces answer `403
+// sso_session_scope`) and as a reader; it accepts only that workspace's pending invites. It
+// cannot add or remove passkeys, create a workspace or delete the account (`403
+// sso_session_scope`). The person is e-mailed the first time they sign in to a workspace
+// through its provider.
 //
 // A domain's claim is public (its DNS record is), so answering whether it has single
 // sign-on reveals nothing about people. 30 requests a minute per client IP address (`429`).
@@ -149347,7 +149524,8 @@ func (c *ClientWithResponses) RenderMarkdownWithResponse(ctx context.Context, pa
 // follows go, and in each workspace the contact linked to them is deleted when it has no
 // conversations and no external ids, else only unlinked. Refused with `409 last_owner` while the
 // person is the only owner of a workspace: make someone else an owner or delete that
-// workspace first. Needs a member session; the body repeats the person's e-mail address.
+// workspace first. Needs a member session; the body repeats the person's e-mail address. A
+// session made through single sign-on is refused with `403 sso_session_scope`.
 //
 // Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
 //
@@ -149369,7 +149547,8 @@ func (c *ClientWithResponses) DeleteMeWithBodyWithResponse(ctx context.Context, 
 // follows go, and in each workspace the contact linked to them is deleted when it has no
 // conversations and no external ids, else only unlinked. Refused with `409 last_owner` while the
 // person is the only owner of a workspace: make someone else an owner or delete that
-// workspace first. Needs a member session; the body repeats the person's e-mail address.
+// workspace first. Needs a member session; the body repeats the person's e-mail address. A
+// session made through single sign-on is refused with `403 sso_session_scope`.
 //
 // Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
 //
@@ -149594,7 +149773,9 @@ func (c *ClientWithResponses) ListPasskeysWithResponse(ctx context.Context, reqE
 
 // FinishPasskeyRegistrationWithBodyWithResponse Register a passkey
 //
-// Completes a registration started with `POST /v1/me/passkeys/options`.
+// Completes a registration started with `POST /v1/me/passkeys/options`. The person is
+// e-mailed that a passkey was added. A session made through single sign-on is refused with
+// `403 sso_session_scope`: a passkey signs in to every workspace of the person.
 //
 // Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
 //
@@ -149609,7 +149790,9 @@ func (c *ClientWithResponses) FinishPasskeyRegistrationWithBodyWithResponse(ctx 
 
 // FinishPasskeyRegistrationWithResponse Register a passkey
 //
-// Completes a registration started with `POST /v1/me/passkeys/options`.
+// Completes a registration started with `POST /v1/me/passkeys/options`. The person is
+// e-mailed that a passkey was added. A session made through single sign-on is refused with
+// `403 sso_session_scope`: a passkey signs in to every workspace of the person.
 //
 // Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
 //
@@ -149625,7 +149808,8 @@ func (c *ClientWithResponses) FinishPasskeyRegistrationWithResponse(ctx context.
 // BeginPasskeyRegistrationWithResponse Start a passkey registration
 //
 // Returns the options for `navigator.credentials.create()` and a ceremony id to send back
-// with the result. The ceremony expires after 5 minutes.
+// with the result. The ceremony expires after 5 minutes. A session made through single
+// sign-on is refused with `403 sso_session_scope`.
 //
 // Returns a wrapper object for the known response body format(s).
 //
@@ -149640,7 +149824,9 @@ func (c *ClientWithResponses) BeginPasskeyRegistrationWithResponse(ctx context.C
 
 // DeletePasskeyWithResponse Remove a passkey
 //
-// Removes the passkey and ends every other session of the signed-in person, as `DELETE /v1/me/sessions` does.
+// Removes the passkey and ends every other session of the signed-in person, as `DELETE
+// /v1/me/sessions` does. The person is e-mailed that a passkey was removed. A session made
+// through single sign-on is refused with `403 sso_session_scope`.
 //
 // Returns a wrapper object for the known response body format(s).
 //
@@ -151107,7 +151293,8 @@ func (c *ClientWithResponses) GetOAuthRequestWithResponse(ctx context.Context, o
 // answers the URL to send the browser to: the client's redirect URI with a `code` (single
 // use, valid 60 seconds), `state` and `iss`. Scopes not offered in that workspace, or a
 // workspace the person is not a member of, are refused (`400 validation_failed`,
-// `403 not_a_member`).
+// `403 not_a_member`), and so is any workspace but its own for a session made through single
+// sign-on (`403 sso_session_scope`).
 //
 // Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
 //
@@ -151126,7 +151313,8 @@ func (c *ClientWithResponses) ApproveOAuthRequestWithBodyWithResponse(ctx contex
 // answers the URL to send the browser to: the client's redirect URI with a `code` (single
 // use, valid 60 seconds), `state` and `iss`. Scopes not offered in that workspace, or a
 // workspace the person is not a member of, are refused (`400 validation_failed`,
-// `403 not_a_member`).
+// `403 not_a_member`), and so is any workspace but its own for a session made through single
+// sign-on (`403 sso_session_scope`).
 //
 // Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
 //
@@ -151825,7 +152013,10 @@ func (c *ClientWithResponses) DeleteSsoDomainWithResponse(ctx context.Context, s
 // VerifySsoDomainWithResponse Check a domain's TXT record
 //
 // Looks the TXT record up now. When it holds `txt_value` the domain becomes `verified`
-// (recorded as `sso_domain.verified`) and stays so; the record may stay in place. Otherwise
+// (recorded as `sso_domain.verified`); keep the record in place. Verified domains are looked
+// up again daily: when the record has been missing for 7 days the claim goes back to
+// `pending` (recorded as `sso_domain.lapsed`, the owners are e-mailed, and `sso_required`
+// turns off with the last verified domain), and another workspace may claim it. Otherwise
 // the claim stays `pending` with `problem` saying what was found. `409 domain_taken` when
 // another workspace verified the domain first. Owners only, with a member session.
 //
@@ -153925,7 +154116,8 @@ func (c *ClientWithResponses) RequestBroadcastApprovalWithResponse(ctx context.C
 // hours (`429 rate_limited`). The name is 1 to 200 characters after trimming.
 //
 // Person sessions only; the `Yuva-Workspace` header is ignored. Send the new id as
-// `Yuva-Workspace` to act on it.
+// `Yuva-Workspace` to act on it. A session made through single sign-on is refused with `403
+// sso_session_scope`.
 //
 // Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
 //
@@ -153948,7 +154140,8 @@ func (c *ClientWithResponses) CreateWorkspaceWithBodyWithResponse(ctx context.Co
 // hours (`429 rate_limited`). The name is 1 to 200 characters after trimming.
 //
 // Person sessions only; the `Yuva-Workspace` header is ignored. Send the new id as
-// `Yuva-Workspace` to act on it.
+// `Yuva-Workspace` to act on it. A session made through single sign-on is refused with `403
+// sso_session_scope`.
 //
 // Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
 //
@@ -172842,6 +173035,13 @@ func ParseDeleteMeResponse(rsp *http.Response) (*DeleteMeResponse, error) {
 		}
 		response.ApplicationproblemJSON401 = &dest
 
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
 		var dest Problem
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -173326,6 +173526,13 @@ func ParseFinishPasskeyRegistrationResponse(rsp *http.Response) (*FinishPasskeyR
 		}
 		response.ApplicationproblemJSON401 = &dest
 
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
 		var dest Problem
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -173366,6 +173573,13 @@ func ParseBeginPasskeyRegistrationResponse(rsp *http.Response) (*BeginPasskeyReg
 		}
 		response.ApplicationproblemJSON401 = &dest
 
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
 	}
 
 	return response, nil
@@ -173394,6 +173608,13 @@ func ParseDeletePasskeyResponse(rsp *http.Response) (*DeletePasskeyResponse, err
 			return nil, err
 		}
 		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
 		var dest Problem

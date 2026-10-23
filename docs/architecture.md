@@ -1680,7 +1680,10 @@ remote images, http(s)):
   address within 24 hours its codes are refused (`429 sign_in_paused`) and the member gets one
   e-mail about it. Passkeys are not affected.
   The sign-in page asks for the e-mail first and sends people of a domain claimed for single
-  sign-on to its identity provider (see Single sign-on (M33)).
+  sign-on to its identity provider (see Single sign-on (M33)). A request refused with `403
+  sso_required` opens a dialog that sends the person to the provider; one refused with `403
+  sso_session_scope` opens one that signs out and goes to the sign-in page for a code or a passkey,
+  or goes back to the workspace the session belongs to.
 
 ### Member notifications
 
@@ -3913,11 +3916,23 @@ and audit; `sso_settings.protocol` (`oidc` or `saml`) says which one, so a works
   `common` issuer is therefore refused) and answers `400 sso_discovery_failed` otherwise. Removing
   it turns `sso_required` off and keeps the domains. Not offered through MCP (credentials and access).
 - **Domain claims**: `sso_domains` rows, `pending` until `POST …/verify` finds the TXT record
-  `_yuva-sso.<domain>` holding the row's `yuva-verify-…` token (the status-page resolver, a lookup on
-  demand, no sweep). A verified domain is unique across the server (partial unique index): a domain
-  another workspace verified answers `409 domain_taken` when added or verified; pending claims may
-  overlap. Only the exact domain is claimed, not subdomains. At most 50 per workspace. A verified
-  claim stays until removed; removing the last verified one turns `sso_required` off.
+  `_yuva-sso.<domain>` holding the row's `yuva-verify-…` token (the status-page resolver). A
+  verified domain is unique across the server (partial unique index): a domain another workspace
+  verified answers `409 domain_taken` when added or verified; pending claims may overlap. Only the
+  exact domain is claimed, not subdomains. At most 50 per workspace. Removing the last verified one
+  turns `sso_required` off.
+- **Daily re-check** (migration 00122, #180): a verified claim no longer stays forever, since a
+  domain that changes hands would otherwise keep its old owner's claim (and its sign-ins) and block
+  the new one. The periodic `sso_domain_sweep` (hourly, default queue) lists the verified domains
+  not looked up for 24 hours (the documented exception, every workspace, 500 at a time) and queues
+  one `sso_domain_check` per domain on the `outbound` queue (a DNS call). A lookup that finds the
+  token clears `sso_domains.missing_since`; one that finds no record or no token sets it if unset,
+  and keeps the `problem` the owner sees on the still verified domain; a failed lookup (timeout,
+  `SERVFAIL`) changes neither. Seven days after `missing_since` the claim goes back to `pending`:
+  `sso_required` turns off with the last verified domain, `sso_domain.lapsed` is recorded by
+  `system` (`domain`, `missing_since`, `sso_required_off`), every owner gets the
+  `sso_domain_lapsed` mail, and another workspace may claim and verify the domain. `POST …/verify`
+  on a verified domain whose record is missing looks it up again at once.
 - **Sign-in**: the panel asks for the e-mail first and posts it to `POST /v1/auth/sso` (30 a minute per
   client IP address). When the address's domain is verified by a workspace with a provider, the answer carries
   `authorization_url` (code flow, PKCE S256, `state`, `nonce`, `login_hint`) and `required`, and sets
@@ -3933,13 +3948,33 @@ and audit; `sso_settings.protocol` (`oidc` or `saml`) says which one, so a works
   panel, else `/`) with the session cookie; a refusal to `/sign-in?sso_error=<code>`. Every session
   records how it was made (`sessions.method` `code`, `passkey` or `sso`, and for `sso` the
   workspace and `sso_settings` row it came through).
-- **Membership**: pending invites for the address are accepted as with a code. A person who is not a
-  member joins with `jit_role` (`agent` by default, `admin` allowed, never `owner`) when `jit` is on
-  (off by default), creating the person if needed: a `members` row only, inbox access follows the
-  usual grants. A person who already exists signs in even when not a member of the claiming
-  workspace (the session is the person's); with no person, no invite and `jit` off the answer is
-  `not_member`. Sessions stay person-level: a person's e-mail domain decides the one provider they
-  use, whatever workspaces they belong to.
+- **Membership**: pending invites for the address in this workspace are accepted, never those of
+  other workspaces (they wait for a code or passkey sign-in). A person who is not a member joins
+  with `jit_role` (`agent` by default, `admin` allowed, never `owner`) when `jit` is on (off by
+  default), creating the person if needed: a `members` row only, inbox access follows the usual
+  grants. A person who is not and does not become a member of the claiming workspace is refused
+  with `not_member`, whether or not they have an account. A person's e-mail domain still decides
+  the one provider the sign-in page sends them to.
+- **Session scope** (#180, changed decision): an `sso` session acts only in the workspace whose
+  provider made it (`sessions.sso_workspace_id`), and as a reader. Until 0.1.0 it was the person's,
+  like a code session, so whoever controlled one workspace's identity provider (one TXT record and
+  any OIDC issuer or SAML IdP they run) could sign in as anyone of that domain and act as them in
+  every other workspace they belonged to, and register a passkey that kept that access. Now
+  `resolvePrincipal` picks the session's workspace when no `Yuva-Workspace` is sent and refuses any
+  other with `403 sso_session_scope` and `sso_workspace_id` (also on `/v1/realtime`); the panel
+  then offers a code or passkey sign-in for that workspace. Approving an OAuth request for another
+  workspace is refused the same way (the consent page lists only the session's workspace), and a
+  grant whose `sso_settings_id` is not its own workspace's (approved that way before) no longer
+  authenticates. Actions for the whole person are refused from an `sso` session with `403
+  sso_session_scope`: adding or removing a passkey, creating a workspace and deleting the account;
+  reader tokens are issued only for the session's workspace's channels. Web Push from another
+  workspace skips subscriptions made under such a session. Owners keep their break-glass: a code
+  or passkey session is still the person's, and `sso_required` never refuses an owner.
+- **Notices**: the person gets `sso_first_sign_in` the first time they sign in to a workspace
+  through its provider (`sso_sign_ins`, one row per workspace and person, filled from existing
+  `sso` sessions by the migration), and `passkey_added` or `passkey_removed` whenever a passkey is
+  added to or removed from their account. Server mail, sent directly in the person's locale (en,
+  tr, de).
 - **`sso_required`** is enforced on workspace access, not on sign-in. It needs a provider and a
   verified domain (`409 sso_not_ready`). Every request that acts in the workspace as a member with a
   session (`/v1`, `/v1/realtime`, approving an OAuth request for it) is refused with `403
@@ -3994,7 +4029,7 @@ and audit; `sso_settings.protocol` (`oidc` or `saml`) says which one, so a works
   `YUVA_WEBHOOK_ALLOW_PRIVATE`, no redirects, 10-second timeout, answers read up to 1 MiB.
 - **Audit**: `sso.provider_created`, `sso.provider_updated`, `sso.provider_deleted`,
   `sso.settings_changed`, `sso_domain.added`, `sso_domain.verified`, `sso_domain.deleted`,
-  `sso.signed_in` and `sso.sign_in_refused` (reasons `failed`, `invalid_token`, `email_unverified`,
+  `sso_domain.lapsed`, `sso.signed_in` and `sso.sign_in_refused` (reasons `failed`, `invalid_token`, `email_unverified`,
   `domain_not_claimed`, `group_not_allowed`, `not_member`), actor the member when the address is one
   in the workspace, else `system`; `member.joined` with `via: sso` for JIT. Requests refused with
   `sso_required` are not recorded (they repeat on every call).
@@ -4375,7 +4410,8 @@ they belong to no channel. (#136, migration 00095)
     starting a sign-in), and the
     OIDC callback and the SAML ACS find their `sso_logins` row by the hash of the state or request id
     alone; adding or verifying a claim checks
-    the verified domains of every workspace. Everything after those lookups is scoped by the workspace
+    the verified domains of every workspace, and the daily sweep lists the verified domains due for a
+    check of every workspace. Everything after those lookups is scoped by the workspace
     they returned.
   - The person-level identity tables `people`, `sessions`, `login_codes`, `passkeys`,
     `webauthn_ceremonies` and `push_subscriptions` (a browser's subscription follows the person

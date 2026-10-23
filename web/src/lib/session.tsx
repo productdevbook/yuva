@@ -13,7 +13,7 @@ function storedWorkspace(): string | null {
   }
 }
 
-function storeWorkspace(id: string | null) {
+export function storeWorkspace(id: string | null) {
   try {
     if (id) localStorage.setItem(STORAGE_KEY, id)
     else localStorage.removeItem(STORAGE_KEY)

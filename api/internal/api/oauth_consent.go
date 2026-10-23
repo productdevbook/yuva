@@ -31,6 +31,9 @@ func (s *Server) GetOAuthRequest(ctx context.Context, req oas.GetOAuthRequestReq
 		out.RequestedScopes = &r.Scopes
 	}
 	for _, m := range memberships {
+		if p.ssoScope(&m.WorkspaceID) != nil {
+			continue
+		}
 		out.Workspaces = append(out.Workspaces, oas.OAuthWorkspaceChoice{
 			WorkspaceId: m.WorkspaceID, Name: m.WorkspaceName, Role: oas.Role(m.Role), Scopes: offeredScopes(r.Scopes, m.Role),
 			MaySend: (firstParty && r.Resource == s.apiResource()) || m.WorkspaceBotsMaySend,
@@ -42,6 +45,9 @@ func (s *Server) GetOAuthRequest(ctx context.Context, req oas.GetOAuthRequestReq
 func (s *Server) ApproveOAuthRequest(ctx context.Context, req oas.ApproveOAuthRequestRequestObject) (oas.ApproveOAuthRequestResponseObject, error) {
 	p := principalFrom(ctx)
 	b := req.Body
+	if err := p.ssoScope(&b.WorkspaceId); err != nil {
+		return nil, err
+	}
 	if len(b.Scopes) == 0 {
 		return nil, errValidation("choose at least one scope")
 	}

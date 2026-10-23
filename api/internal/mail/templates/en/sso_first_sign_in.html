@@ -1,0 +1,3 @@
+{{template "heading" (print "Signed in to " .Workspace)}}
+<p style="margin:0 0 16px 0;">Your Yuva account <strong>{{.Email}}</strong> signed in to the workspace <strong>{{.Workspace}}</strong> through its identity provider for the first time. That sign-in works only in {{.Workspace}}; your other workspaces still need a code or a passkey.</p>
+<p class="y-muted" style="margin:16px 0 0 0;font-size:13px;line-height:20px;color:#71717a;">If this was not you, tell the owners of {{.Workspace}} and your IT team at once: whoever runs that identity provider can sign in as you in {{.Workspace}}.</p>

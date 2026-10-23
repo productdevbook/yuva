@@ -24,8 +24,16 @@ with PKCE, `state` and `nonce`, and checks the `id_token`'s signature against th
 token must carry the person's e-mail address with `email_verified: true`, and the address must be in
 one of your verified domains.
 
-Sessions belong to the person, not the workspace: someone who is a member of several workspaces
-signs in once, through the provider of their own e-mail domain.
+A sign-in through your provider works only in your workspace (and on discussion pages as a reader).
+Someone who is also a member of other workspaces signs in there with an e-mailed code or a passkey;
+when they open another workspace, the panel asks them to. Such a sign-in cannot add or remove
+passkeys, create a workspace or delete the account (`sso_session_scope`), and it accepts only your
+workspace's invitations. Until Yuva 0.1.0 a sign-in through a provider counted for every workspace of
+the person; it no longer does, so that whoever runs one workspace's identity provider cannot act as
+someone in their other workspaces.
+
+Yuva e-mails the person the first time they sign in to a workspace through its provider, and every
+time a passkey is added to or removed from their account.
 
 ## 1. Register Yuva at your provider
 
@@ -200,8 +208,11 @@ _yuva-sso.example.com.  TXT  "yuva-verify-…"
 
 Then press Verify (`POST /v1/sso/domains/{id}/verify`). Only the exact domain is claimed, not its
 subdomains; add `eu.example.com` on its own if people have such addresses. A domain another
-workspace on the server has verified cannot be claimed (`domain_taken`). Once verified, a domain
-stays claimed until you remove it.
+workspace on the server has verified cannot be claimed (`domain_taken`). Keep the record in place: Yuva looks it up again every day. When it has been
+missing for 7 days, the domain goes back to pending, the owners get an e-mail, single sign-on stops
+being required if it was your last verified domain, `sso_domain.lapsed` is recorded, and another
+workspace may claim the domain. While the record is missing the domain shows what the check found;
+publish the record again and press Verify to clear it.
 
 ## 4. Choose the sign-in rules
 
@@ -221,15 +232,15 @@ stays claimed until you remove it.
   With it off, people are invited as before; an invited person who signs in through the provider
   accepts the invite.
 
-People of your domains who already have a Yuva account (for example as a member of another
-workspace) sign in through your provider even when they are not members of your workspace.
+People of your domains who are not members, have no invitation to your workspace and are not let
+in by just-in-time membership are refused (`not_member`), even when they have a Yuva account.
 
 ## Audit log
 
 Every change and every sign-in is in the workspace's audit log (Settings › Audit log):
 `sso.provider_created`, `sso.provider_updated`, `sso.provider_deleted`, `sso.settings_changed`,
-`sso_domain.added`, `sso_domain.verified`, `sso_domain.deleted`, `sso.signed_in` and
-`sso.sign_in_refused` with its reason, and `member.joined` with `via: sso` for just-in-time members.
+`sso_domain.added`, `sso_domain.verified`, `sso_domain.deleted`, `sso_domain.lapsed`, `sso.signed_in`
+and `sso.sign_in_refused` with its reason, and `member.joined` with `via: sso` for just-in-time members.
 When Yuva reads SAML metadata again and finds new certificates, `sso.provider_updated` is recorded
 by the system with `via: metadata_refresh`.
 
@@ -246,4 +257,4 @@ The sign-in page shows what went wrong (`/sign-in?sso_error=…`):
 | `email_unverified` | The token has no address or does not say it is verified; for SAML, the NameID or the e-mail attribute holds no address. |
 | `domain_not_claimed` | The address is not in one of the workspace's verified domains. |
 | `group_not_allowed` | The person is in none of the allowed groups. |
-| `not_member` | The person has no account here and just-in-time membership is off. |
+| `not_member` | The person is not a member of the workspace, has no invitation to it, and just-in-time membership is off. |

@@ -571,7 +571,7 @@ func (s *Server) NotifyBroadcastReplies(ctx context.Context, a BroadcastRepliesA
 	if err != nil {
 		return err
 	}
-	subs, err := s.st.ListLivePushSubscriptionIDs(ctx, store.ListLivePushSubscriptionIDsParams{PersonID: m.PersonID, Now: s.now()})
+	subs, err := s.st.ListLivePushSubscriptionIDs(ctx, store.ListLivePushSubscriptionIDsParams{PersonID: m.PersonID, Now: s.now(), WorkspaceID: &ws})
 	if err != nil || len(subs) == 0 {
 		return err
 	}

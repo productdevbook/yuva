@@ -19,6 +19,7 @@ import (
 	"github.com/coreos/go-oidc/v3/oidc"
 	"golang.org/x/oauth2"
 
+	yuvamail "github.com/productdevbook/yuva/api/internal/mail"
 	"github.com/productdevbook/yuva/api/internal/oas"
 	"github.com/productdevbook/yuva/api/internal/store"
 	"github.com/productdevbook/yuva/api/internal/webhook"
@@ -50,6 +51,7 @@ const (
 
 var (
 	errSSORequired     = problem(http.StatusForbidden, "sso_required", "this workspace requires signing in through its identity provider; send sso_email to POST /v1/auth/sso")
+	errSSOSessionScope = problem(http.StatusForbidden, "sso_session_scope", "this session was made through the single sign-on of the workspace sso_workspace_id and acts only there; sign in with a code or a passkey for this")
 	errSSONotReady     = problem(http.StatusConflict, "sso_not_ready", "single sign-on can be required only with an identity provider and a verified domain")
 	errSSOUnavailable  = problem(http.StatusBadGateway, "sso_unavailable", "the identity provider could not be reached; try again later")
 	errSSODomainExists = problem(http.StatusConflict, "domain_exists", "this workspace already claims this domain")
@@ -195,6 +197,18 @@ func (s *Server) ssoGate(ctx context.Context, ws, personID uuid.UUID, role strin
 	}
 	e := *errSSORequired
 	e.Extra = map[string]any{"sso_email": row.Email}
+	return &e
+}
+
+// ssoScope refuses a session made through a workspace's single sign-on outside that workspace;
+// a nil ws is an action for the whole person (passkeys, new workspaces, the account), which such a
+// session never takes.
+func (p principal) ssoScope(ws *uuid.UUID) error {
+	if p.ssoWorkspace == nil || (ws != nil && *ws == *p.ssoWorkspace) {
+		return nil
+	}
+	e := *errSSOSessionScope
+	e.Extra = map[string]any{"sso_workspace_id": *p.ssoWorkspace}
 	return &e
 }
 
@@ -465,7 +479,7 @@ func (s *Server) completeSSO(ctx context.Context, set store.SsoSetting, id ssoId
 	}
 	now := s.now()
 	var cookie string
-	refused := false
+	refused, first := false, false
 	err = s.st.InTx(ctx, func(q *store.Queries) error {
 		wasMember := false
 		if person, err := q.GetPersonByEmail(ctx, email); err == nil {
@@ -477,7 +491,7 @@ func (s *Server) completeSSO(ctx context.Context, set store.SsoSetting, id ssoId
 		} else if !store.IsNotFound(err) {
 			return err
 		}
-		personID, found, err := acceptInvites(ctx, q, email, now)
+		personID, found, err := acceptInvites(ctx, q, email, &set.WorkspaceID, now)
 		if err != nil {
 			return err
 		}
@@ -502,7 +516,7 @@ func (s *Server) completeSSO(ctx context.Context, set store.SsoSetting, id ssoId
 				if err != nil {
 					return err
 				}
-				personID, found = pe.ID, true
+				personID = pe.ID
 			}
 			m, err := q.CreateMember(ctx, store.CreateMemberParams{ID: newID(), WorkspaceID: set.WorkspaceID, PersonID: personID, Role: set.JitRole})
 			switch {
@@ -516,14 +530,20 @@ func (s *Server) completeSSO(ctx context.Context, set store.SsoSetting, id ssoId
 				}
 				details["joined"] = "jit"
 			}
+			isMember = true
 		}
-		if !found {
+		if !isMember {
 			refused = true
 			return s.auditSSORefusal(ctx, q, set, email, ssoFailNotMember, "")
 		}
 		if err := s.auditSSO(ctx, q, set, email, oas.AuditSsoSignedIn, details); err != nil {
 			return err
 		}
+		n, err := q.RecordSsoSignIn(ctx, store.RecordSsoSignInParams{WorkspaceID: set.WorkspaceID, PersonID: personID, Now: now})
+		if err != nil {
+			return err
+		}
+		first = n > 0
 		cookie, err = s.startSession(ctx, q, personID, methodSSO, &set)
 		return err
 	})
@@ -533,5 +553,30 @@ func (s *Server) completeSSO(ctx context.Context, set store.SsoSetting, id ssoId
 	if refused {
 		return "", ssoFailNotMember, nil
 	}
+	if first {
+		s.mailFirstSSOSignIn(ctx, set.WorkspaceID, email)
+	}
 	return cookie, "", nil
+}
+
+// mailFirstSSOSignIn tells the person that a workspace's identity provider signed them in, so a
+// provider that signs in someone it should not is noticed.
+func (s *Server) mailFirstSSOSignIn(ctx context.Context, ws uuid.UUID, email string) {
+	w, err := s.st.GetWorkspace(ctx, ws)
+	if err != nil {
+		s.log.WarnContext(ctx, "sso sign-in mail", "workspace", ws, "error", err)
+		return
+	}
+	locale, err := s.localeFor(ctx, email, s.now(), string(oas.En))
+	if err != nil {
+		s.log.WarnContext(ctx, "sso sign-in mail", "workspace", ws, "error", err)
+		return
+	}
+	msg, err := yuvamail.Render("sso_first_sign_in", locale, map[string]any{"Workspace": w.Name, "Email": email, "URL": s.auth.PublicURL})
+	if err != nil {
+		s.log.WarnContext(ctx, "sso sign-in mail", "workspace", ws, "error", err)
+		return
+	}
+	msg.To = email
+	s.sendMail(ctx, msg)
 }

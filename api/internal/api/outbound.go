@@ -345,6 +345,8 @@ func (s *Server) AddWorkers(workers *river.Workers) {
 	river.AddWorker(workers, &assignSweepWorker{s: s})
 	river.AddWorker(workers, &reportRollupWorker{s: s})
 	river.AddWorker(workers, &reportRollupScanWorker{s: s})
+	river.AddWorker(workers, &ssoDomainCheckWorker{s: s})
+	river.AddWorker(workers, &ssoDomainSweepWorker{s: s})
 	s.addStatusDomainWorkers(workers)
 	s.addAnalyticsWorkers(workers)
 	s.addSESWorkers(workers)

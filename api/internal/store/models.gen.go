@@ -2352,14 +2352,15 @@ type SlackThread struct {
 }
 
 type SsoDomain struct {
-	ID          uuid.UUID
-	WorkspaceID uuid.UUID
-	Domain      string
-	Token       string
-	VerifiedAt  *time.Time
-	CheckedAt   *time.Time
-	Problem     *string
-	CreatedAt   time.Time
+	ID           uuid.UUID
+	WorkspaceID  uuid.UUID
+	Domain       string
+	Token        string
+	VerifiedAt   *time.Time
+	CheckedAt    *time.Time
+	Problem      *string
+	CreatedAt    time.Time
+	MissingSince *time.Time
 }
 
 type SsoLogin struct {
@@ -2395,6 +2396,12 @@ type SsoSetting struct {
 	SamlMetadataAt      *time.Time
 	SamlMetadataTriedAt *time.Time
 	SamlEmailAttribute  *string
+}
+
+type SsoSignIn struct {
+	WorkspaceID uuid.UUID
+	PersonID    uuid.UUID
+	CreatedAt   time.Time
 }
 
 type StatusCheck struct {

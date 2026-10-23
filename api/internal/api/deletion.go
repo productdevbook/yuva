@@ -391,6 +391,9 @@ func mergeContactCopies(ctx context.Context, q *store.Queries, workspaceID, from
 
 func (s *Server) DeleteMe(ctx context.Context, req oas.DeleteMeRequestObject) (oas.DeleteMeResponseObject, error) {
 	p := principalFrom(ctx)
+	if err := p.ssoScope(nil); err != nil {
+		return nil, err
+	}
 	person, err := s.st.GetPerson(ctx, p.personID)
 	if err != nil {
 		return nil, err

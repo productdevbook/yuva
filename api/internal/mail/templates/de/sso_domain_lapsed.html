@@ -1,0 +1,4 @@
+{{template "heading" (print .Domain " ist nicht mehr bestätigt")}}
+<p style="margin:0 0 16px 0;">Die tägliche Prüfung findet den TXT-Eintrag <strong>{{.Record}}</strong> seit dem {{.Since}} nicht mehr. Nach {{.Days}} Tagen ohne ihn ist <strong>{{.Domain}}</strong> keine bestätigte Domain von <strong>{{.Workspace}}</strong> mehr: Ihre Personen melden sich nicht mehr über Ihren Identitätsanbieter an, und ein anderer Arbeitsbereich auf diesem Server kann die Domain beanspruchen.{{if .RequiredOff}} Es war Ihre letzte bestätigte Domain, daher ist Single Sign-on nicht mehr vorgeschrieben.{{end}}</p>
+<p style="margin:0 0 8px 0;">Um sie erneut zu beanspruchen, veröffentlichen Sie den Eintrag und bestätigen Sie die Domain unter Einstellungen › Single Sign-on.</p>
+{{template "button" (button .URL "Single-Sign-on-Einstellungen öffnen")}}

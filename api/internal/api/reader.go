@@ -86,6 +86,9 @@ func (s *Server) CreateReaderToken(ctx context.Context, req oas.CreateReaderToke
 	if err != nil {
 		return nil, err
 	}
+	if err := p.ssoScope(&ch.WorkspaceID); err != nil {
+		return nil, err
+	}
 	origin, ok := normalizeOrigin(string(req.Body.Origin))
 	if !ok || !s.originAllowedFor(ctx, ch.WorkspaceID, origin, ch.Kind, ch.AllowedOrigins) {
 		return nil, errOriginRefused

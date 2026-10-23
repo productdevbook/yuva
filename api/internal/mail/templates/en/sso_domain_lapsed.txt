@@ -1,0 +1,10 @@
+{{.Domain}} is no longer verified for single sign-on in {{.Workspace}}
+
+The daily check has not found the TXT record {{.Record}} since {{.Since}}. After {{.Days}} days
+without it, {{.Domain}} is no longer a verified domain of {{.Workspace}}: its people no longer sign
+in through your identity provider, and another workspace on this server may claim the domain.
+{{- if .RequiredOff}} It was your last verified domain, so single sign-on is no longer required.{{end}}
+
+To claim it again, publish the record and verify the domain in Settings › Single sign-on.
+
+{{.URL}}

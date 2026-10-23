@@ -77,7 +77,7 @@ RETURNING *;
 DELETE FROM sso_domains WHERE workspace_id = $1 AND id = $2
 RETURNING *;
 
--- name: RelaxSsoWithoutDomains :exec
+-- name: RelaxSsoWithoutDomains :execrows
 UPDATE sso_settings s SET sso_required = false, updated_at = @now
 WHERE s.workspace_id = @workspace_id AND s.sso_required
   AND NOT EXISTS (SELECT 1 FROM sso_domains d WHERE d.workspace_id = @workspace_id AND d.verified_at IS NOT NULL);
@@ -124,3 +124,25 @@ DELETE FROM saml_assertions WHERE workspace_id = @workspace_id AND expires_at <=
 INSERT INTO saml_assertions (workspace_id, id_hash, expires_at)
 VALUES (@workspace_id, @id_hash, @expires_at)
 ON CONFLICT DO NOTHING;
+
+-- name: RecordSsoSignIn :execrows
+INSERT INTO sso_sign_ins (workspace_id, person_id, created_at) VALUES (@workspace_id, @person_id, @now)
+ON CONFLICT DO NOTHING;
+
+-- The documented exception: the daily sweep lists the verified domains due for a check of every workspace.
+-- name: ListSsoDomainsToRecheck :many
+SELECT d.workspace_id, d.id FROM sso_domains d JOIN workspaces w ON w.id = d.workspace_id
+WHERE d.verified_at IS NOT NULL AND (d.checked_at IS NULL OR d.checked_at <= @due::timestamptz) AND w.deleted_at IS NULL
+ORDER BY d.checked_at NULLS FIRST, d.id
+LIMIT @lim;
+
+-- name: MarkSsoDomainRechecked :one
+UPDATE sso_domains SET checked_at = @now::timestamptz, problem = sqlc.narg(problem),
+    missing_since = CASE WHEN @missing::boolean THEN coalesce(missing_since, @now::timestamptz) WHEN @found::boolean THEN NULL ELSE missing_since END
+WHERE workspace_id = @workspace_id AND id = @id AND verified_at IS NOT NULL
+RETURNING *;
+
+-- name: LapseSsoDomain :one
+UPDATE sso_domains SET verified_at = NULL, missing_since = NULL
+WHERE workspace_id = @workspace_id AND id = @id AND verified_at IS NOT NULL AND missing_since <= @before::timestamptz
+RETURNING *;

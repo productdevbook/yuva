@@ -15,7 +15,7 @@ import (
 const addSsoDomain = `-- name: AddSsoDomain :one
 INSERT INTO sso_domains (id, workspace_id, domain, token, created_at)
 VALUES ($1, $2, $3, $4, $5)
-RETURNING id, workspace_id, domain, token, verified_at, checked_at, problem, created_at
+RETURNING id, workspace_id, domain, token, verified_at, checked_at, problem, created_at, missing_since
 `
 
 type AddSsoDomainParams struct {
@@ -44,6 +44,7 @@ func (q *Queries) AddSsoDomain(ctx context.Context, arg AddSsoDomainParams) (Sso
 		&i.CheckedAt,
 		&i.Problem,
 		&i.CreatedAt,
+		&i.MissingSince,
 	)
 	return i, err
 }
@@ -158,7 +159,7 @@ func (q *Queries) DeleteExpiredSsoLogins(ctx context.Context, now time.Time) err
 
 const deleteSsoDomain = `-- name: DeleteSsoDomain :one
 DELETE FROM sso_domains WHERE workspace_id = $1 AND id = $2
-RETURNING id, workspace_id, domain, token, verified_at, checked_at, problem, created_at
+RETURNING id, workspace_id, domain, token, verified_at, checked_at, problem, created_at, missing_since
 `
 
 type DeleteSsoDomainParams struct {
@@ -178,6 +179,7 @@ func (q *Queries) DeleteSsoDomain(ctx context.Context, arg DeleteSsoDomainParams
 		&i.CheckedAt,
 		&i.Problem,
 		&i.CreatedAt,
+		&i.MissingSince,
 	)
 	return i, err
 }
@@ -220,7 +222,7 @@ func (q *Queries) FindSsoByDomain(ctx context.Context, domain string) (SsoSettin
 }
 
 const getSsoDomain = `-- name: GetSsoDomain :one
-SELECT id, workspace_id, domain, token, verified_at, checked_at, problem, created_at FROM sso_domains WHERE workspace_id = $1 AND id = $2
+SELECT id, workspace_id, domain, token, verified_at, checked_at, problem, created_at, missing_since FROM sso_domains WHERE workspace_id = $1 AND id = $2
 `
 
 type GetSsoDomainParams struct {
@@ -240,6 +242,7 @@ func (q *Queries) GetSsoDomain(ctx context.Context, arg GetSsoDomainParams) (Sso
 		&i.CheckedAt,
 		&i.Problem,
 		&i.CreatedAt,
+		&i.MissingSince,
 	)
 	return i, err
 }
@@ -288,8 +291,37 @@ func (q *Queries) HasVerifiedSsoDomain(ctx context.Context, workspaceID uuid.UUI
 	return verified, err
 }
 
+const lapseSsoDomain = `-- name: LapseSsoDomain :one
+UPDATE sso_domains SET verified_at = NULL, missing_since = NULL
+WHERE workspace_id = $1 AND id = $2 AND verified_at IS NOT NULL AND missing_since <= $3::timestamptz
+RETURNING id, workspace_id, domain, token, verified_at, checked_at, problem, created_at, missing_since
+`
+
+type LapseSsoDomainParams struct {
+	WorkspaceID uuid.UUID
+	ID          uuid.UUID
+	Before      time.Time
+}
+
+func (q *Queries) LapseSsoDomain(ctx context.Context, arg LapseSsoDomainParams) (SsoDomain, error) {
+	row := q.db.QueryRow(ctx, lapseSsoDomain, arg.WorkspaceID, arg.ID, arg.Before)
+	var i SsoDomain
+	err := row.Scan(
+		&i.ID,
+		&i.WorkspaceID,
+		&i.Domain,
+		&i.Token,
+		&i.VerifiedAt,
+		&i.CheckedAt,
+		&i.Problem,
+		&i.CreatedAt,
+		&i.MissingSince,
+	)
+	return i, err
+}
+
 const listSsoDomains = `-- name: ListSsoDomains :many
-SELECT id, workspace_id, domain, token, verified_at, checked_at, problem, created_at FROM sso_domains WHERE workspace_id = $1 ORDER BY domain, id
+SELECT id, workspace_id, domain, token, verified_at, checked_at, problem, created_at, missing_since FROM sso_domains WHERE workspace_id = $1 ORDER BY domain, id
 `
 
 func (q *Queries) ListSsoDomains(ctx context.Context, workspaceID uuid.UUID) ([]SsoDomain, error) {
@@ -310,7 +342,46 @@ func (q *Queries) ListSsoDomains(ctx context.Context, workspaceID uuid.UUID) ([]
 			&i.CheckedAt,
 			&i.Problem,
 			&i.CreatedAt,
+			&i.MissingSince,
 		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listSsoDomainsToRecheck = `-- name: ListSsoDomainsToRecheck :many
+SELECT d.workspace_id, d.id FROM sso_domains d JOIN workspaces w ON w.id = d.workspace_id
+WHERE d.verified_at IS NOT NULL AND (d.checked_at IS NULL OR d.checked_at <= $1::timestamptz) AND w.deleted_at IS NULL
+ORDER BY d.checked_at NULLS FIRST, d.id
+LIMIT $2
+`
+
+type ListSsoDomainsToRecheckParams struct {
+	Due time.Time
+	Lim int32
+}
+
+type ListSsoDomainsToRecheckRow struct {
+	WorkspaceID uuid.UUID
+	ID          uuid.UUID
+}
+
+// The documented exception: the daily sweep lists the verified domains due for a check of every workspace.
+func (q *Queries) ListSsoDomainsToRecheck(ctx context.Context, arg ListSsoDomainsToRecheckParams) ([]ListSsoDomainsToRecheckRow, error) {
+	rows, err := q.db.Query(ctx, listSsoDomainsToRecheck, arg.Due, arg.Lim)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ListSsoDomainsToRecheckRow
+	for rows.Next() {
+		var i ListSsoDomainsToRecheckRow
+		if err := rows.Scan(&i.WorkspaceID, &i.ID); err != nil {
 			return nil, err
 		}
 		items = append(items, i)
@@ -389,7 +460,7 @@ const markSsoDomainChecked = `-- name: MarkSsoDomainChecked :one
 UPDATE sso_domains SET checked_at = $1::timestamptz, problem = $2,
     verified_at = CASE WHEN $3::boolean THEN coalesce(verified_at, $1::timestamptz) ELSE verified_at END
 WHERE workspace_id = $4 AND id = $5
-RETURNING id, workspace_id, domain, token, verified_at, checked_at, problem, created_at
+RETURNING id, workspace_id, domain, token, verified_at, checked_at, problem, created_at, missing_since
 `
 
 type MarkSsoDomainCheckedParams struct {
@@ -418,6 +489,47 @@ func (q *Queries) MarkSsoDomainChecked(ctx context.Context, arg MarkSsoDomainChe
 		&i.CheckedAt,
 		&i.Problem,
 		&i.CreatedAt,
+		&i.MissingSince,
+	)
+	return i, err
+}
+
+const markSsoDomainRechecked = `-- name: MarkSsoDomainRechecked :one
+UPDATE sso_domains SET checked_at = $1::timestamptz, problem = $2,
+    missing_since = CASE WHEN $3::boolean THEN coalesce(missing_since, $1::timestamptz) WHEN $4::boolean THEN NULL ELSE missing_since END
+WHERE workspace_id = $5 AND id = $6 AND verified_at IS NOT NULL
+RETURNING id, workspace_id, domain, token, verified_at, checked_at, problem, created_at, missing_since
+`
+
+type MarkSsoDomainRecheckedParams struct {
+	Now         time.Time
+	Problem     *string
+	Missing     bool
+	Found       bool
+	WorkspaceID uuid.UUID
+	ID          uuid.UUID
+}
+
+func (q *Queries) MarkSsoDomainRechecked(ctx context.Context, arg MarkSsoDomainRecheckedParams) (SsoDomain, error) {
+	row := q.db.QueryRow(ctx, markSsoDomainRechecked,
+		arg.Now,
+		arg.Problem,
+		arg.Missing,
+		arg.Found,
+		arg.WorkspaceID,
+		arg.ID,
+	)
+	var i SsoDomain
+	err := row.Scan(
+		&i.ID,
+		&i.WorkspaceID,
+		&i.Domain,
+		&i.Token,
+		&i.VerifiedAt,
+		&i.CheckedAt,
+		&i.Problem,
+		&i.CreatedAt,
+		&i.MissingSince,
 	)
 	return i, err
 }
@@ -436,6 +548,25 @@ type RecordSamlAssertionParams struct {
 
 func (q *Queries) RecordSamlAssertion(ctx context.Context, arg RecordSamlAssertionParams) (int64, error) {
 	result, err := q.db.Exec(ctx, recordSamlAssertion, arg.WorkspaceID, arg.IDHash, arg.ExpiresAt)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected(), nil
+}
+
+const recordSsoSignIn = `-- name: RecordSsoSignIn :execrows
+INSERT INTO sso_sign_ins (workspace_id, person_id, created_at) VALUES ($1, $2, $3)
+ON CONFLICT DO NOTHING
+`
+
+type RecordSsoSignInParams struct {
+	WorkspaceID uuid.UUID
+	PersonID    uuid.UUID
+	Now         time.Time
+}
+
+func (q *Queries) RecordSsoSignIn(ctx context.Context, arg RecordSsoSignInParams) (int64, error) {
+	result, err := q.db.Exec(ctx, recordSsoSignIn, arg.WorkspaceID, arg.PersonID, arg.Now)
 	if err != nil {
 		return 0, err
 	}
@@ -499,7 +630,7 @@ func (q *Queries) RefreshSsoSamlMetadata(ctx context.Context, arg RefreshSsoSaml
 	return i, err
 }
 
-const relaxSsoWithoutDomains = `-- name: RelaxSsoWithoutDomains :exec
+const relaxSsoWithoutDomains = `-- name: RelaxSsoWithoutDomains :execrows
 UPDATE sso_settings s SET sso_required = false, updated_at = $1
 WHERE s.workspace_id = $2 AND s.sso_required
   AND NOT EXISTS (SELECT 1 FROM sso_domains d WHERE d.workspace_id = $2 AND d.verified_at IS NOT NULL)
@@ -510,9 +641,12 @@ type RelaxSsoWithoutDomainsParams struct {
 	WorkspaceID uuid.UUID
 }
 
-func (q *Queries) RelaxSsoWithoutDomains(ctx context.Context, arg RelaxSsoWithoutDomainsParams) error {
-	_, err := q.db.Exec(ctx, relaxSsoWithoutDomains, arg.Now, arg.WorkspaceID)
-	return err
+func (q *Queries) RelaxSsoWithoutDomains(ctx context.Context, arg RelaxSsoWithoutDomainsParams) (int64, error) {
+	result, err := q.db.Exec(ctx, relaxSsoWithoutDomains, arg.Now, arg.WorkspaceID)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected(), nil
 }
 
 const saveSsoOidc = `-- name: SaveSsoOidc :one

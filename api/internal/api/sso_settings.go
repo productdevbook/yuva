@@ -56,7 +56,10 @@ func (s *Server) ssoSettingsBody(ctx context.Context, q *store.Queries, ws uuid.
 func ssoDomainBody(d store.SsoDomain) oas.SsoDomain {
 	state, problem := oas.SsoDomainPending, d.Problem
 	if d.VerifiedAt != nil {
-		state, problem = oas.SsoDomainVerified, nil
+		state = oas.SsoDomainVerified
+		if d.MissingSince == nil {
+			problem = nil
+		}
 	}
 	return oas.SsoDomain{
 		Id: d.ID, Domain: d.Domain, State: state, TxtName: ssoTXT + d.Domain, TxtValue: d.Token, Problem: problem,
@@ -490,7 +493,9 @@ func (s *Server) AddSsoDomain(ctx context.Context, req oas.AddSsoDomainRequestOb
 	return oas.AddSsoDomain201JSONResponse(ssoDomainBody(out)), nil
 }
 
-func (s *Server) lookupSSODomain(ctx context.Context, domain, token string) (bool, string) {
+// lookupSSODomain reports whether the TXT record holds the token, what was found otherwise, and
+// whether the lookup itself failed, which says nothing about the record.
+func (s *Server) lookupSSODomain(ctx context.Context, domain, token string) (bool, string, bool) {
 	r := s.status.Resolver
 	if r == nil {
 		r = net.DefaultResolver
@@ -501,13 +506,13 @@ func (s *Server) lookupSSODomain(ctx context.Context, domain, token string) (boo
 	txts, err := r.LookupTXT(ctx, name)
 	switch {
 	case err != nil && !dnsMissing(err):
-		return false, "DNS lookup of " + name + " failed: " + err.Error()
+		return false, "DNS lookup of " + name + " failed: " + err.Error(), true
 	case slices.ContainsFunc(txts, func(t string) bool { return strings.TrimSpace(t) == token }):
-		return true, ""
+		return true, "", false
 	case len(txts) > 0:
-		return false, "the TXT record " + name + " does not hold the verification value"
+		return false, "the TXT record " + name + " does not hold the verification value", false
 	}
-	return false, "no TXT record " + name
+	return false, "no TXT record " + name, false
 }
 
 func (s *Server) VerifySsoDomain(ctx context.Context, req oas.VerifySsoDomainRequestObject) (oas.VerifySsoDomainResponseObject, error) {
@@ -523,9 +528,16 @@ func (s *Server) VerifySsoDomain(ctx context.Context, req oas.VerifySsoDomainReq
 		return nil, err
 	}
 	if d.VerifiedAt != nil {
+		if d.MissingSince != nil {
+			if d, err = s.RecheckSSODomain(ctx, d.WorkspaceID, d.ID); store.IsNotFound(err) {
+				return nil, errNotFound
+			} else if err != nil {
+				return nil, err
+			}
+		}
 		return oas.VerifySsoDomain200JSONResponse(ssoDomainBody(d)), nil
 	}
-	seen, problem := s.lookupSSODomain(ctx, d.Domain, d.Token)
+	seen, problem, _ := s.lookupSSODomain(ctx, d.Domain, d.Token)
 	now := s.now()
 	err = s.st.InTx(ctx, func(q *store.Queries) error {
 		if seen {
@@ -572,7 +584,7 @@ func (s *Server) DeleteSsoDomain(ctx context.Context, req oas.DeleteSsoDomainReq
 		if err != nil {
 			return err
 		}
-		if err := q.RelaxSsoWithoutDomains(ctx, store.RelaxSsoWithoutDomainsParams{WorkspaceID: p.workspaceID, Now: s.now()}); err != nil {
+		if _, err := q.RelaxSsoWithoutDomains(ctx, store.RelaxSsoWithoutDomainsParams{WorkspaceID: p.workspaceID, Now: s.now()}); err != nil {
 			return err
 		}
 		return s.audit(ctx, q, p, oas.AuditSsoDomainDeleted, oas.AuditTargetSsoDomain, d.ID, auditDetails{"domain": d.Domain})

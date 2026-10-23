@@ -241,16 +241,18 @@ func (q *Queries) ListInboxNotificationsOfInbox(ctx context.Context, arg ListInb
 const listLivePushSubscriptionIDs = `-- name: ListLivePushSubscriptionIDs :many
 SELECT ps.id FROM push_subscriptions ps JOIN sessions s ON s.id = ps.session_id
 WHERE ps.person_id = $1 AND s.expires_at > $2
+  AND (s.sso_workspace_id IS NULL OR s.sso_workspace_id = $3)
 ORDER BY ps.created_at, ps.id
 `
 
 type ListLivePushSubscriptionIDsParams struct {
-	PersonID uuid.UUID
-	Now      time.Time
+	PersonID    uuid.UUID
+	Now         time.Time
+	WorkspaceID *uuid.UUID
 }
 
 func (q *Queries) ListLivePushSubscriptionIDs(ctx context.Context, arg ListLivePushSubscriptionIDsParams) ([]uuid.UUID, error) {
-	rows, err := q.db.Query(ctx, listLivePushSubscriptionIDs, arg.PersonID, arg.Now)
+	rows, err := q.db.Query(ctx, listLivePushSubscriptionIDs, arg.PersonID, arg.Now, arg.WorkspaceID)
 	if err != nil {
 		return nil, err
 	}

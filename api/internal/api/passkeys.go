@@ -13,6 +13,7 @@ import (
 	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/go-webauthn/webauthn/webauthn"
 
+	yuvamail "github.com/productdevbook/yuva/api/internal/mail"
 	"github.com/productdevbook/yuva/api/internal/oas"
 	"github.com/productdevbook/yuva/api/internal/store"
 )
@@ -114,6 +115,9 @@ func (s *Server) takeCeremony(ctx context.Context, id, kind string) (store.Webau
 }
 
 func (s *Server) BeginPasskeyRegistration(ctx context.Context, _ oas.BeginPasskeyRegistrationRequestObject) (oas.BeginPasskeyRegistrationResponseObject, error) {
+	if err := principalFrom(ctx).ssoScope(nil); err != nil {
+		return nil, err
+	}
 	personID := principalFrom(ctx).personID
 	person, err := s.st.GetPerson(ctx, personID)
 	if err != nil {
@@ -138,6 +142,9 @@ func (s *Server) BeginPasskeyRegistration(ctx context.Context, _ oas.BeginPasske
 }
 
 func (s *Server) FinishPasskeyRegistration(ctx context.Context, req oas.FinishPasskeyRegistrationRequestObject) (oas.FinishPasskeyRegistrationResponseObject, error) {
+	if err := principalFrom(ctx).ssoScope(nil); err != nil {
+		return nil, err
+	}
 	personID := principalFrom(ctx).personID
 	name := "Passkey"
 	if req.Body.Name != nil {
@@ -188,7 +195,20 @@ func (s *Server) FinishPasskeyRegistration(ctx context.Context, req oas.FinishPa
 	if err != nil {
 		return nil, err
 	}
+	s.mailPasskeyChange(ctx, person, "passkey_added", pk.Name)
 	return oas.FinishPasskeyRegistration201JSONResponse(passkeyBody(pk)), nil
+}
+
+// mailPasskeyChange tells the person a passkey was added or removed: a passkey signs in to every
+// workspace of theirs.
+func (s *Server) mailPasskeyChange(ctx context.Context, person store.Person, template, name string) {
+	msg, err := yuvamail.Render(template, person.Locale, map[string]any{"Name": name, "Email": person.Email, "URL": s.auth.PublicURL})
+	if err != nil {
+		s.log.WarnContext(ctx, "passkey mail", "error", err)
+		return
+	}
+	msg.To = person.Email
+	s.sendMail(ctx, msg)
 }
 
 func passkeyBody(p store.Passkey) oas.Passkey {
@@ -209,13 +229,18 @@ func (s *Server) ListPasskeys(ctx context.Context, _ oas.ListPasskeysRequestObje
 
 func (s *Server) DeletePasskey(ctx context.Context, req oas.DeletePasskeyRequestObject) (oas.DeletePasskeyResponseObject, error) {
 	p := principalFrom(ctx)
+	if err := p.ssoScope(nil); err != nil {
+		return nil, err
+	}
+	var pk store.Passkey
 	err := s.st.InTx(ctx, func(q *store.Queries) error {
-		n, err := q.DeletePasskey(ctx, store.DeletePasskeyParams{PersonID: p.personID, ID: req.PasskeyId})
+		var err error
+		pk, err = q.DeletePasskey(ctx, store.DeletePasskeyParams{PersonID: p.personID, ID: req.PasskeyId})
+		if store.IsNotFound(err) {
+			return errNotFound
+		}
 		if err != nil {
 			return err
-		}
-		if n == 0 {
-			return errNotFound
 		}
 		_, err = q.DeleteOtherSessions(ctx, store.DeleteOtherSessionsParams{PersonID: p.personID, Keep: p.sessionID})
 		return err
@@ -223,6 +248,11 @@ func (s *Server) DeletePasskey(ctx context.Context, req oas.DeletePasskeyRequest
 	if err != nil {
 		return nil, err
 	}
+	person, err := s.st.GetPerson(ctx, p.personID)
+	if err != nil {
+		return nil, err
+	}
+	s.mailPasskeyChange(ctx, person, "passkey_removed", pk.Name)
 	return oas.DeletePasskey204Response{}, nil
 }
 

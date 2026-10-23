@@ -1,0 +1,4 @@
+{{template "heading" (print .Domain " artık doğrulanmış değil")}}
+<p style="margin:0 0 16px 0;">Günlük denetim {{.Since}} tarihinden beri <strong>{{.Record}}</strong> TXT kaydını bulamıyor. Kayıt {{.Days}} gün bulunamadığı için <strong>{{.Domain}}</strong> artık <strong>{{.Workspace}}</strong> çalışma alanının doğrulanmış bir alan adı değil: bu alan adındaki kişiler artık kimlik sağlayıcınız üzerinden giriş yapmaz ve bu sunucudaki başka bir çalışma alanı alan adını sahiplenebilir.{{if .RequiredOff}} Son doğrulanmış alan adınız olduğu için tek oturum açma artık zorunlu değil.{{end}}</p>
+<p style="margin:0 0 8px 0;">Yeniden sahiplenmek için kaydı yayımlayın ve alan adını Ayarlar › Tek oturum açma'da doğrulayın.</p>
+{{template "button" (button .URL "Tek oturum açma ayarlarını açın")}}

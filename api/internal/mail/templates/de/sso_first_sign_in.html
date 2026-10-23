@@ -1,0 +1,3 @@
+{{template "heading" (print "Bei " .Workspace " angemeldet")}}
+<p style="margin:0 0 16px 0;">Ihr Yuva-Konto <strong>{{.Email}}</strong> wurde zum ersten Mal über den Identitätsanbieter des Arbeitsbereichs <strong>{{.Workspace}}</strong> angemeldet. Diese Anmeldung gilt nur in {{.Workspace}}; für Ihre anderen Arbeitsbereiche brauchen Sie weiterhin einen Code oder einen Passkey.</p>
+<p class="y-muted" style="margin:16px 0 0 0;font-size:13px;line-height:20px;color:#71717a;">Wenn Sie das nicht waren, informieren Sie sofort die Eigentümer von {{.Workspace}} und Ihre IT-Abteilung: Wer diesen Identitätsanbieter betreibt, kann sich in {{.Workspace}} als Sie anmelden.</p>

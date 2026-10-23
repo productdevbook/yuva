@@ -1,0 +1,11 @@
+{{.Domain}} artık {{.Workspace}} için tek oturum açmada doğrulanmış değil
+
+Günlük denetim {{.Since}} tarihinden beri {{.Record}} TXT kaydını bulamıyor. Kayıt {{.Days}} gün
+bulunamadığı için {{.Domain}} artık {{.Workspace}} çalışma alanının doğrulanmış bir alan adı değil:
+bu alan adındaki kişiler artık kimlik sağlayıcınız üzerinden giriş yapmaz ve bu sunucudaki başka bir
+çalışma alanı alan adını sahiplenebilir.
+{{- if .RequiredOff}} Son doğrulanmış alan adınız olduğu için tek oturum açma artık zorunlu değil.{{end}}
+
+Yeniden sahiplenmek için kaydı yayımlayın ve alan adını Ayarlar › Tek oturum açma'da doğrulayın.
+
+{{.URL}}

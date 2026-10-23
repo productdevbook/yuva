@@ -69,6 +69,7 @@ WHERE ps.id = @id AND s.expires_at > @now;
 -- name: ListLivePushSubscriptionIDs :many
 SELECT ps.id FROM push_subscriptions ps JOIN sessions s ON s.id = ps.session_id
 WHERE ps.person_id = @person_id AND s.expires_at > @now
+  AND (s.sso_workspace_id IS NULL OR s.sso_workspace_id = @workspace_id)
 ORDER BY ps.created_at, ps.id;
 
 -- name: DropPushSubscription :execrows

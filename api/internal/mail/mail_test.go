@@ -41,8 +41,13 @@ func TestContinuitySubjectByLocale(t *testing.T) {
 
 func samples(inbox, text string) map[string]map[string]any {
 	return map[string]map[string]any{
-		"sign_in_code":    {"Code": "482913", "Minutes": 10},
-		"sign_in_locked":  {"Failures": 10, "Hours": 24},
+		"sign_in_code":      {"Code": "482913", "Minutes": 10},
+		"sign_in_locked":    {"Failures": 10, "Hours": 24},
+		"sso_first_sign_in": {"Workspace": inbox, "Email": "ayse@example.com", "URL": "https://yuva.example.com"},
+		"passkey_added":     {"Name": inbox, "Email": "ayse@example.com", "URL": "https://yuva.example.com"},
+		"passkey_removed":   {"Name": inbox, "Email": "ayse@example.com", "URL": "https://yuva.example.com"},
+		"sso_domain_lapsed": {"Workspace": inbox, "Domain": "example.com", "Record": "_yuva-sso.example.com", "Since": "2026-10-16",
+			"Days": 7, "RequiredOff": true, "URL": "https://yuva.example.com/settings/sso"},
 		"analytics_limit": {"Workspace": inbox, "Limit": "1,000,000", "Month": "2026-10", "URL": "https://yuva.example.com/analytics"},
 		"analytics_report": {
 			"Property": "Acme docs", "From": "2026-10-05", "To": "2026-10-11",
@@ -103,7 +108,7 @@ func samples(inbox, text string) map[string]map[string]any {
 	}
 }
 
-var htmlMails = []string{"sign_in_code", "sign_in_locked", "invite", "confirm_email", "notification", "discussion_digest", "rating_request", "list_confirm", "status_confirm", "status_notice", "list_welcome", "analytics_limit", "analytics_report", "analytics_alert", "status_monitor", "sla_breached"}
+var htmlMails = []string{"sign_in_code", "sign_in_locked", "sso_first_sign_in", "passkey_added", "passkey_removed", "sso_domain_lapsed", "invite", "confirm_email", "notification", "discussion_digest", "rating_request", "list_confirm", "status_confirm", "status_notice", "list_welcome", "analytics_limit", "analytics_report", "analytics_alert", "status_monitor", "sla_breached"}
 
 // englishMails go only to the server's operator.
 var englishMails = []string{"operator_digest"}

@@ -1154,6 +1154,7 @@ const (
 	AuditOAuthGrantRevoked                   AuditAction = "oauth_grant.revoked"
 	AuditSsoDomainAdded                      AuditAction = "sso_domain.added"
 	AuditSsoDomainDeleted                    AuditAction = "sso_domain.deleted"
+	AuditSsoDomainLapsed                     AuditAction = "sso_domain.lapsed"
 	AuditSsoDomainVerified                   AuditAction = "sso_domain.verified"
 	AuditSsoProviderCreated                  AuditAction = "sso.provider_created"
 	AuditSsoProviderDeleted                  AuditAction = "sso.provider_deleted"
@@ -1259,6 +1260,8 @@ func (e AuditAction) Valid() bool {
 	case AuditSsoDomainAdded:
 		return true
 	case AuditSsoDomainDeleted:
+		return true
+	case AuditSsoDomainLapsed:
 		return true
 	case AuditSsoDomainVerified:
 		return true
@@ -9094,8 +9097,12 @@ type AnalyticsRangeProblem struct {
 	// SsoEmail `sso_required` only: the member's address; send it to `POST /v1/auth/sso` for the
 	// identity provider's sign-in page.
 	SsoEmail *string `json:"sso_email,omitempty"`
-	Status   int32   `json:"status"`
-	Title    string  `json:"title"`
+
+	// SsoWorkspaceId `sso_session_scope` only: the workspace whose single sign-on made the session, the only
+	// one it acts in. Sign in with a code or a passkey to work in another workspace.
+	SsoWorkspaceId *uuid.UUID `json:"sso_workspace_id,omitempty"`
+	Status         int32      `json:"status"`
+	Title          string     `json:"title"`
 
 	// Type A URI that identifies the problem type.
 	Type string `json:"type"`
@@ -9925,6 +9932,9 @@ type Attributes map[string]interface{}
 //     is the member when the person is one, else `system`. Requests refused with
 //     `sso_required` are not recorded.
 //   - `sso_domain.added`, `sso_domain.verified`, `sso_domain.deleted`: `domain`.
+//   - `sso_domain.lapsed` (by `system`): `domain`, `missing_since` (when the daily check first
+//     missed the TXT record) and `sso_required_off` (`true` when it was the last verified
+//     domain and the rule turned off).
 //   - `issue_integration.connected`, `issue_integration.disconnected`: `provider`, `name`,
 //     `account`, and `host` for a GitHub Enterprise Server. `issue_integration.updated`:
 //     `fields` among `name`, `token`, `default_target` and `webhook_secret`; never a token or
@@ -10036,6 +10046,9 @@ type AuditEntry struct {
 	//   is the member when the person is one, else `system`. Requests refused with
 	//   `sso_required` are not recorded.
 	// - `sso_domain.added`, `sso_domain.verified`, `sso_domain.deleted`: `domain`.
+	// - `sso_domain.lapsed` (by `system`): `domain`, `missing_since` (when the daily check first
+	//   missed the TXT record) and `sso_required_off` (`true` when it was the last verified
+	//   domain and the rule turned off).
 	// - `issue_integration.connected`, `issue_integration.disconnected`: `provider`, `name`,
 	//   `account`, and `host` for a GitHub Enterprise Server. `issue_integration.updated`:
 	//   `fields` among `name`, `token`, `default_target` and `webhook_secret`; never a token or
@@ -10746,8 +10759,12 @@ type BroadcastProblem struct {
 	// SsoEmail `sso_required` only: the member's address; send it to `POST /v1/auth/sso` for the
 	// identity provider's sign-in page.
 	SsoEmail *string `json:"sso_email,omitempty"`
-	Status   int32   `json:"status"`
-	Title    string  `json:"title"`
+
+	// SsoWorkspaceId `sso_session_scope` only: the workspace whose single sign-on made the session, the only
+	// one it acts in. Sign in with a code or a passkey to work in another workspace.
+	SsoWorkspaceId *uuid.UUID `json:"sso_workspace_id,omitempty"`
+	Status         int32      `json:"status"`
+	Title          string     `json:"title"`
 
 	// Type A URI that identifies the problem type.
 	Type string `json:"type"`
@@ -11114,8 +11131,12 @@ type ChangelogConflictProblem struct {
 	// SsoEmail `sso_required` only: the member's address; send it to `POST /v1/auth/sso` for the
 	// identity provider's sign-in page.
 	SsoEmail *string `json:"sso_email,omitempty"`
-	Status   int32   `json:"status"`
-	Title    string  `json:"title"`
+
+	// SsoWorkspaceId `sso_session_scope` only: the workspace whose single sign-on made the session, the only
+	// one it acts in. Sign in with a code or a passkey to work in another workspace.
+	SsoWorkspaceId *uuid.UUID `json:"sso_workspace_id,omitempty"`
+	Status         int32      `json:"status"`
+	Title          string     `json:"title"`
 
 	// Translation `version_conflict` only: the translation as it is now.
 	Translation *ChangelogEntryTranslation `json:"translation,omitempty"`
@@ -14933,8 +14954,12 @@ type EmailDesignProblem struct {
 	// SsoEmail `sso_required` only: the member's address; send it to `POST /v1/auth/sso` for the
 	// identity provider's sign-in page.
 	SsoEmail *string `json:"sso_email,omitempty"`
-	Status   int32   `json:"status"`
-	Title    string  `json:"title"`
+
+	// SsoWorkspaceId `sso_session_scope` only: the workspace whose single sign-on made the session, the only
+	// one it acts in. Sign in with a code or a passkey to work in another workspace.
+	SsoWorkspaceId *uuid.UUID `json:"sso_workspace_id,omitempty"`
+	Status         int32      `json:"status"`
+	Title          string     `json:"title"`
 
 	// Type A URI that identifies the problem type.
 	Type string `json:"type"`
@@ -15278,8 +15303,12 @@ type EmailImageProblem struct {
 	// SsoEmail `sso_required` only: the member's address; send it to `POST /v1/auth/sso` for the
 	// identity provider's sign-in page.
 	SsoEmail *string `json:"sso_email,omitempty"`
-	Status   int32   `json:"status"`
-	Title    string  `json:"title"`
+
+	// SsoWorkspaceId `sso_session_scope` only: the workspace whose single sign-on made the session, the only
+	// one it acts in. Sign in with a code or a passkey to work in another workspace.
+	SsoWorkspaceId *uuid.UUID `json:"sso_workspace_id,omitempty"`
+	Status         int32      `json:"status"`
+	Title          string     `json:"title"`
 
 	// Type A URI that identifies the problem type.
 	Type   string           `json:"type"`
@@ -16348,8 +16377,12 @@ type HelpConflictProblem struct {
 	// SsoEmail `sso_required` only: the member's address; send it to `POST /v1/auth/sso` for the
 	// identity provider's sign-in page.
 	SsoEmail *string `json:"sso_email,omitempty"`
-	Status   int32   `json:"status"`
-	Title    string  `json:"title"`
+
+	// SsoWorkspaceId `sso_session_scope` only: the workspace whose single sign-on made the session, the only
+	// one it acts in. Sign in with a code or a passkey to work in another workspace.
+	SsoWorkspaceId *uuid.UUID `json:"sso_workspace_id,omitempty"`
+	Status         int32      `json:"status"`
+	Title          string     `json:"title"`
 
 	// Translation `version_conflict` only: the translation as it is now.
 	Translation *HelpArticleTranslation `json:"translation,omitempty"`
@@ -19241,8 +19274,12 @@ type MigrationFileProblem struct {
 	// SsoEmail `sso_required` only: the member's address; send it to `POST /v1/auth/sso` for the
 	// identity provider's sign-in page.
 	SsoEmail *string `json:"sso_email,omitempty"`
-	Status   int32   `json:"status"`
-	Title    string  `json:"title"`
+
+	// SsoWorkspaceId `sso_session_scope` only: the workspace whose single sign-on made the session, the only
+	// one it acts in. Sign in with a code or a passkey to work in another workspace.
+	SsoWorkspaceId *uuid.UUID `json:"sso_workspace_id,omitempty"`
+	Status         int32      `json:"status"`
+	Title          string     `json:"title"`
 
 	// Type A URI that identifies the problem type.
 	Type string `json:"type"`
@@ -20105,7 +20142,10 @@ type OAuthRequest struct {
 	RequestedScopes *[]string `json:"requested_scopes,omitempty"`
 
 	// Resource `mcp` for a `<public URL>/mcp` token, `api` for a `<public URL>` token (`/v1`, `/v1/realtime` and `/mcp`), which only the server's own member apps may ask for.
-	Resource   OAuthResource          `json:"resource"`
+	Resource OAuthResource `json:"resource"`
+
+	// Workspaces The person's workspaces; for a session made through single sign-on only the workspace
+	// that made it.
 	Workspaces []OAuthWorkspaceChoice `json:"workspaces"`
 }
 
@@ -20295,8 +20335,12 @@ type Problem struct {
 	// SsoEmail `sso_required` only: the member's address; send it to `POST /v1/auth/sso` for the
 	// identity provider's sign-in page.
 	SsoEmail *string `json:"sso_email,omitempty"`
-	Status   int32   `json:"status"`
-	Title    string  `json:"title"`
+
+	// SsoWorkspaceId `sso_session_scope` only: the workspace whose single sign-on made the session, the only
+	// one it acts in. Sign in with a code or a passkey to work in another workspace.
+	SsoWorkspaceId *uuid.UUID `json:"sso_workspace_id,omitempty"`
+	Status         int32      `json:"status"`
+	Title          string     `json:"title"`
 
 	// Type A URI that identifies the problem type.
 	Type string `json:"type"`
@@ -21419,7 +21463,8 @@ type SsoDomain struct {
 	Domain    string     `json:"domain"`
 	Id        uuid.UUID  `json:"id"`
 
-	// Problem What the last check found, while `pending`.
+	// Problem What the last check found: while `pending`, or when the daily check of a `verified`
+	// domain misses the record (the claim lapses after 7 days of that).
 	Problem *string        `json:"problem,omitempty"`
 	State   SsoDomainState `json:"state"`
 
@@ -96489,6 +96534,20 @@ func (response DeleteMe401ApplicationProblemPlusJSONResponse) VisitDeleteMeRespo
 	return err
 }
 
+type DeleteMe403ApplicationProblemPlusJSONResponse Problem
+
+func (response DeleteMe403ApplicationProblemPlusJSONResponse) VisitDeleteMeResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
 type DeleteMe409ApplicationProblemPlusJSONResponse Problem
 
 func (response DeleteMe409ApplicationProblemPlusJSONResponse) VisitDeleteMeResponse(w http.ResponseWriter) error {
@@ -97128,6 +97187,20 @@ func (response FinishPasskeyRegistration401ApplicationProblemPlusJSONResponse) V
 	return err
 }
 
+type FinishPasskeyRegistration403ApplicationProblemPlusJSONResponse Problem
+
+func (response FinishPasskeyRegistration403ApplicationProblemPlusJSONResponse) VisitFinishPasskeyRegistrationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
 type FinishPasskeyRegistration409ApplicationProblemPlusJSONResponse Problem
 
 func (response FinishPasskeyRegistration409ApplicationProblemPlusJSONResponse) VisitFinishPasskeyRegistrationResponse(w http.ResponseWriter) error {
@@ -97179,6 +97252,20 @@ func (response BeginPasskeyRegistration401ApplicationProblemPlusJSONResponse) Vi
 	return err
 }
 
+type BeginPasskeyRegistration403ApplicationProblemPlusJSONResponse Problem
+
+func (response BeginPasskeyRegistration403ApplicationProblemPlusJSONResponse) VisitBeginPasskeyRegistrationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
 type DeletePasskeyRequestObject struct {
 	PasskeyId PasskeyId `json:"passkeyId"`
 }
@@ -97207,6 +97294,20 @@ func (response DeletePasskey401ApplicationProblemPlusJSONResponse) VisitDeletePa
 	}
 	w.Header().Set("Content-Type", "application/problem+json")
 	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeletePasskey403ApplicationProblemPlusJSONResponse Problem
+
+func (response DeletePasskey403ApplicationProblemPlusJSONResponse) VisitDeletePasskeyResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
 	_, err := buf.WriteTo(w)
 	return err
 }

@@ -25,8 +25,17 @@ Schlüssel des Anbieters (wechselt der Anbieter seine Schlüssel, werden die neu
 Audience, Ablauf und Nonce. Das Token muss die E-Mail-Adresse der Person mit `email_verified: true`
 tragen, und die Adresse muss in einer Ihrer verifizierten Domains liegen.
 
-Sitzungen gehören der Person, nicht dem Workspace: Wer Mitglied mehrerer Workspaces ist, meldet sich
-einmal an, über den Anbieter der eigenen E-Mail-Domain.
+Eine Anmeldung über Ihren Anbieter gilt nur in Ihrem Workspace (und auf Diskussionsseiten als Leser).
+Wer auch Mitglied anderer Workspaces ist, meldet sich dort mit einem per E-Mail gesendeten Code oder
+einem Passkey an; öffnet die Person einen anderen Workspace, fordert das Panel sie dazu auf. Eine
+solche Anmeldung kann keine Passkeys hinzufügen oder entfernen, keinen Workspace anlegen und das Konto
+nicht löschen (`sso_session_scope`), und sie nimmt nur Einladungen Ihres Workspaces an. Bis Yuva 0.1.0
+galt eine Anmeldung über einen Anbieter für alle Workspaces der Person; das ist nicht mehr so, damit
+niemand, der den Identitätsanbieter eines Workspaces betreibt, in den anderen Workspaces einer Person
+als diese handeln kann.
+
+Yuva schreibt der Person eine E-Mail, wenn sie sich zum ersten Mal über den Anbieter eines Workspaces
+anmeldet und jedes Mal, wenn ihrem Konto ein Passkey hinzugefügt oder daraus entfernt wird.
 
 ## 1. Yuva bei Ihrem Anbieter registrieren
 
@@ -210,7 +219,12 @@ _yuva-sso.example.com.  TXT  "yuva-verify-…"
 Dann auf Prüfen klicken (`POST /v1/sso/domains/{id}/verify`). Beansprucht wird nur genau diese Domain,
 nicht ihre Subdomains; fügen Sie `eu.example.com` eigens hinzu, wenn Personen solche Adressen haben.
 Eine Domain, die ein anderer Workspace auf dem Server verifiziert hat, lässt sich nicht beanspruchen
-(`domain_taken`). Eine verifizierte Domain bleibt beansprucht, bis Sie sie entfernen.
+(`domain_taken`). Lassen Sie den Eintrag bestehen: Yuva fragt ihn jeden Tag erneut ab. Fehlt er 7
+Tage lang, fällt die Domain auf ausstehend zurück, die Eigentümer erhalten eine E-Mail, Single Sign-on
+ist nicht mehr erzwungen, wenn es Ihre letzte verifizierte Domain war, `sso_domain.lapsed` wird
+verzeichnet und ein anderer Workspace kann die Domain beanspruchen. Solange der Eintrag fehlt, zeigt
+die Domain, was die Prüfung gefunden hat; veröffentlichen Sie den Eintrag wieder und klicken Sie auf
+Prüfen, um das zu beheben.
 
 ## 4. Die Anmelderegeln wählen
 
@@ -232,14 +246,15 @@ Eine Domain, die ein anderer Workspace auf dem Server verifiziert hat, lässt si
   Ist es aus, werden Personen wie bisher eingeladen; eine eingeladene Person, die sich über den
   Anbieter anmeldet, nimmt die Einladung an.
 
-Personen Ihrer Domains, die schon ein Yuva-Konto haben (etwa als Mitglied eines anderen Workspaces),
-melden sich über Ihren Anbieter an, auch wenn sie nicht Mitglied Ihres Workspaces sind.
+Personen Ihrer Domains, die kein Mitglied sind, keine Einladung in Ihren Workspace haben und nicht per
+Just-in-time-Mitgliedschaft beitreten, werden abgewiesen (`not_member`), auch wenn sie ein Yuva-Konto
+haben.
 
 ## Audit-Log
 
 Jede Änderung und jede Anmeldung steht im Audit-Log des Workspaces (Einstellungen › Audit-Log):
 `sso.provider_created`, `sso.provider_updated`, `sso.provider_deleted`, `sso.settings_changed`,
-`sso_domain.added`, `sso_domain.verified`, `sso_domain.deleted`, `sso.signed_in` und
+`sso_domain.added`, `sso_domain.verified`, `sso_domain.deleted`, `sso_domain.lapsed`, `sso.signed_in` und
 `sso.sign_in_refused` mit Grund, dazu `member.joined` mit `via: sso` für Just-in-time-Mitglieder.
 Liest Yuva SAML-Metadaten neu und findet neue Zertifikate, verzeichnet das System
 `sso.provider_updated` mit `via: metadata_refresh`.
@@ -257,4 +272,4 @@ Die Anmeldeseite zeigt, was schiefging (`/sign-in?sso_error=…`):
 | `email_unverified` | Das Token enthält keine Adresse oder sagt nicht, dass sie verifiziert ist; bei SAML enthält die NameID oder das E-Mail-Attribut keine Adresse. |
 | `domain_not_claimed` | Die Adresse liegt in keiner verifizierten Domain des Workspaces. |
 | `group_not_allowed` | Die Person ist in keiner der erlaubten Gruppen. |
-| `not_member` | Die Person hat hier kein Konto und die Just-in-time-Mitgliedschaft ist aus. |
+| `not_member` | Die Person ist kein Mitglied des Workspaces, hat keine Einladung und die Just-in-time-Mitgliedschaft ist aus. |

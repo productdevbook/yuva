@@ -398,7 +398,7 @@ func TestSSORequiredGatesWorkspaceAccess(t *testing.T) {
 	viaSSO.workspace = e.ws.WorkspaceID.String()
 	viaSSO.expect(http.StatusOK, "GET", "/v1/inboxes", nil)
 	viaSSO.workspace = other.WorkspaceID.String()
-	viaSSO.expect(http.StatusOK, "GET", "/v1/inboxes", nil)
+	viaSSO.expectProblem(http.StatusForbidden, "sso_session_scope", "GET", "/v1/inboxes", nil)
 
 	e.owner.expect(http.StatusOK, "PATCH", "/v1/sso", map[string]any{"sso_required": false})
 	codeSession.workspace = e.ws.WorkspaceID.String()

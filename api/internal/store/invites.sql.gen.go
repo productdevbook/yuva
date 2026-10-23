@@ -134,6 +134,46 @@ func (q *Queries) TakePendingInvites(ctx context.Context, arg TakePendingInvites
 	return items, nil
 }
 
+const takePendingInvitesIn = `-- name: TakePendingInvitesIn :many
+DELETE FROM invites WHERE workspace_id = $1 AND email = $2 AND expires_at > $3
+RETURNING id, workspace_id, email, role, locale, invited_by, created_at, expires_at
+`
+
+type TakePendingInvitesInParams struct {
+	WorkspaceID uuid.UUID
+	Email       string
+	Now         time.Time
+}
+
+func (q *Queries) TakePendingInvitesIn(ctx context.Context, arg TakePendingInvitesInParams) ([]Invite, error) {
+	rows, err := q.db.Query(ctx, takePendingInvitesIn, arg.WorkspaceID, arg.Email, arg.Now)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Invite
+	for rows.Next() {
+		var i Invite
+		if err := rows.Scan(
+			&i.ID,
+			&i.WorkspaceID,
+			&i.Email,
+			&i.Role,
+			&i.Locale,
+			&i.InvitedBy,
+			&i.CreatedAt,
+			&i.ExpiresAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const upsertInvite = `-- name: UpsertInvite :one
 INSERT INTO invites (id, workspace_id, email, role, locale, invited_by, created_at, expires_at)
 VALUES ($1, $2, $3, $4, $5, $6, $7, $8)

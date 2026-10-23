@@ -296,6 +296,7 @@ JOIN members m ON m.workspace_id = g.workspace_id AND m.id = g.member_id
 JOIN oauth_clients cl ON cl.id = g.client_id
 JOIN workspaces w ON w.id = g.workspace_id
 WHERE t.token_hash = $1 AND t.kind = 'access' AND g.revoked_at IS NULL AND w.deleted_at IS NULL
+  AND (g.sso_settings_id IS NULL OR EXISTS (SELECT 1 FROM sso_settings s WHERE s.workspace_id = g.workspace_id AND s.id = g.sso_settings_id))
 `
 
 type GetOAuthAccessRow struct {

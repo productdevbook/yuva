@@ -47,8 +47,11 @@ info:
 
     A member session belongs to a person, who can be a member of several workspaces. Workspace
     endpoints act on the workspace named in the `Yuva-Workspace` header; when the header is absent
-    and the person belongs to exactly one workspace, that workspace is used. An API key always acts
-    on its own workspace; a `Yuva-Workspace` header naming another workspace is refused.
+    and the person belongs to exactly one workspace, that workspace is used. A session made through
+    a workspace's single sign-on acts only in that workspace (used when the header is absent) and
+    as a reader; any other workspace answers `403 sso_session_scope` with `sso_workspace_id`, and
+    the person signs in with a code or a passkey to work there. An API key always acts on its own
+    workspace; a `Yuva-Workspace` header naming another workspace is refused.
 servers:
   - url: /
 security:
@@ -827,6 +830,12 @@ paths:
         `denied`, `failed`, `invalid_token` (for SAML: the response or assertion was refused),
         `email_unverified`, `domain_not_claimed`, `group_not_allowed`, `not_member`.
 
+        The session acts only in the workspace whose provider made it (other workspaces answer `403
+        sso_session_scope`) and as a reader; it accepts only that workspace's pending invites. It
+        cannot add or remove passkeys, create a workspace or delete the account (`403
+        sso_session_scope`). The person is e-mailed the first time they sign in to a workspace
+        through its provider.
+
         A domain's claim is public (its DNS record is), so answering whether it has single
         sign-on reveals nothing about people. 30 requests a minute per client IP address (`429`).
         `502 sso_unavailable` when the OpenID Connect provider's discovery document cannot be read.
@@ -928,7 +937,8 @@ paths:
         follows go, and in each workspace the contact linked to them is deleted when it has no
         conversations and no external ids, else only unlinked. Refused with `409 last_owner` while the
         person is the only owner of a workspace: make someone else an owner or delete that
-        workspace first. Needs a member session; the body repeats the person's e-mail address.
+        workspace first. Needs a member session; the body repeats the person's e-mail address. A
+        session made through single sign-on is refused with `403 sso_session_scope`.
       tags: [me]
       security:
         - session: []
@@ -949,6 +959,8 @@ paths:
         "400":
           $ref: "#/components/responses/Problem"
         "401":
+          $ref: "#/components/responses/Problem"
+        "403":
           $ref: "#/components/responses/Problem"
         "409":
           $ref: "#/components/responses/Problem"
@@ -971,7 +983,10 @@ paths:
     post:
       operationId: finishPasskeyRegistration
       summary: Register a passkey
-      description: Completes a registration started with `POST /v1/me/passkeys/options`.
+      description: |
+        Completes a registration started with `POST /v1/me/passkeys/options`. The person is
+        e-mailed that a passkey was added. A session made through single sign-on is refused with
+        `403 sso_session_scope`: a passkey signs in to every workspace of the person.
       tags: [me]
       security:
         - session: []
@@ -992,6 +1007,8 @@ paths:
           $ref: "#/components/responses/Problem"
         "401":
           $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
         "409":
           $ref: "#/components/responses/Problem"
   /v1/me/passkeys/options:
@@ -1000,7 +1017,8 @@ paths:
       summary: Start a passkey registration
       description: |
         Returns the options for `navigator.credentials.create()` and a ceremony id to send back
-        with the result. The ceremony expires after 5 minutes.
+        with the result. The ceremony expires after 5 minutes. A session made through single
+        sign-on is refused with `403 sso_session_scope`.
       tags: [me]
       security:
         - session: []
@@ -1013,11 +1031,16 @@ paths:
                 $ref: "#/components/schemas/PasskeyCeremony"
         "401":
           $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
   /v1/me/passkeys/{passkeyId}:
     delete:
       operationId: deletePasskey
       summary: Remove a passkey
-      description: Removes the passkey and ends every other session of the signed-in person, as `DELETE /v1/me/sessions` does.
+      description: |
+        Removes the passkey and ends every other session of the signed-in person, as `DELETE
+        /v1/me/sessions` does. The person is e-mailed that a passkey was removed. A session made
+        through single sign-on is refused with `403 sso_session_scope`.
       tags: [me]
       security:
         - session: []
@@ -1027,6 +1050,8 @@ paths:
         "204":
           description: Removed.
         "401":
+          $ref: "#/components/responses/Problem"
+        "403":
           $ref: "#/components/responses/Problem"
         "404":
           $ref: "#/components/responses/Problem"
@@ -1442,7 +1467,8 @@ paths:
         made it (sign-out), when the account is deleted, or with
         `DELETE /client/v1/reader-token`. In the channel's workspace it acts as the contact linked to
         the person, created on the first write; a person who is a member of that workspace with
-        access to the inbox writes as that member.
+        access to the inbox writes as that member. A session made through single sign-on gets
+        tokens only for its own workspace's channels (`403 sso_session_scope` otherwise).
 
         Person sessions only; like every cookie request it must come from the server's own origin.
       tags: [account]
@@ -2032,7 +2058,10 @@ paths:
       summary: Check a domain's TXT record
       description: |
         Looks the TXT record up now. When it holds `txt_value` the domain becomes `verified`
-        (recorded as `sso_domain.verified`) and stays so; the record may stay in place. Otherwise
+        (recorded as `sso_domain.verified`); keep the record in place. Verified domains are looked
+        up again daily: when the record has been missing for 7 days the claim goes back to
+        `pending` (recorded as `sso_domain.lapsed`, the owners are e-mailed, and `sso_required`
+        turns off with the last verified domain), and another workspace may claim it. Otherwise
         the claim stays `pending` with `problem` saying what was found. `409 domain_taken` when
         another workspace verified the domain first. Owners only, with a member session.
       tags: [sso]
@@ -2069,7 +2098,8 @@ paths:
         hours (`429 rate_limited`). The name is 1 to 200 characters after trimming.
 
         Person sessions only; the `Yuva-Workspace` header is ignored. Send the new id as
-        `Yuva-Workspace` to act on it.
+        `Yuva-Workspace` to act on it. A session made through single sign-on is refused with `403
+        sso_session_scope`.
       tags: [workspace]
       security:
         - session: []
@@ -11024,7 +11054,8 @@ paths:
         answers the URL to send the browser to: the client's redirect URI with a `code` (single
         use, valid 60 seconds), `state` and `iss`. Scopes not offered in that workspace, or a
         workspace the person is not a member of, are refused (`400 validation_failed`,
-        `403 not_a_member`).
+        `403 not_a_member`), and so is any workspace but its own for a session made through single
+        sign-on (`403 sso_session_scope`).
       tags: [oauth]
       security:
         - session: []
@@ -19770,8 +19801,10 @@ components:
         the grant's workspace with the member's role and inbox access, narrowed by the granted
         scopes exactly like an API key (`403 insufficient_scope`, `403 member_session_required`).
         An expired token is refused with `401 token_expired`, a token for `<public URL>/mcp` with
-        `401 token_wrong_resource`, and a revoked or unknown one with `401 unauthenticated`. Each
-        token is limited to 600 requests a minute (`429 rate_limited` with `Retry-After`).
+        `401 token_wrong_resource`, and a revoked or unknown one with `401 unauthenticated`, as is
+        a token of a grant approved with a session made through another workspace's single
+        sign-on. Each token is limited to 600 requests a minute (`429 rate_limited` with
+        `Retry-After`).
     contactSession:
       type: http
       scheme: bearer
@@ -20749,6 +20782,9 @@ components:
           is the member when the person is one, else `system`. Requests refused with
           `sso_required` are not recorded.
         - `sso_domain.added`, `sso_domain.verified`, `sso_domain.deleted`: `domain`.
+        - `sso_domain.lapsed` (by `system`): `domain`, `missing_since` (when the daily check first
+          missed the TXT record) and `sso_required_off` (`true` when it was the last verified
+          domain and the rule turned off).
         - `issue_integration.connected`, `issue_integration.disconnected`: `provider`, `name`,
           `account`, and `host` for a GitHub Enterprise Server. `issue_integration.updated`:
           `fields` among `name`, `token`, `default_target` and `webhook_secret`; never a token or
@@ -20823,6 +20859,7 @@ components:
         - sso_domain.added
         - sso_domain.verified
         - sso_domain.deleted
+        - sso_domain.lapsed
         - issue_integration.connected
         - issue_integration.updated
         - issue_integration.disconnected
@@ -20830,7 +20867,7 @@ components:
         - automation_rule.created
         - automation_rule.updated
         - automation_rule.deleted
-      x-enum-varnames: [AuditMemberJoined, AuditMemberRoleChanged, AuditMemberRemoved, AuditMemberInboxAccessGranted, AuditMemberInboxAccessRevoked, AuditInviteCreated, AuditInviteDeleted, AuditApiKeyCreated, AuditApiKeyRevoked, AuditOAuthGrantCreated, AuditOAuthGrantRevoked, AuditWebhookCreated, AuditWebhookUpdated, AuditWebhookDeleted, AuditWebhookSecretRotated, AuditChannelCredentialsChanged, AuditChannelKeyRotated, AuditChannelForwardingAddressRotated, AuditChannelDkimKeyCreated, AuditChannelDkimKeyDeleted, AuditInboxIdentitySecretRotated, AuditInboxDeleted, AuditConversationTrashed, AuditConversationRestored, AuditConversationDeleted, AuditMessageRedacted, AuditContactDeleted, AuditContactConsentExported, AuditListConsentExported, AuditAnalyticsExportCreated, AuditWorkspaceRetentionChanged, AuditWorkspaceBotsMaySendChanged, AuditWorkspaceBroadcastsByKeysChanged, AuditWorkspaceBroadcastApprovalRequested, AuditWorkspaceBroadcastsApproved, AuditWorkspaceBroadcastsDenied, AuditWorkspaceBroadcastsSuspended, AuditWorkspaceBroadcastLimitChanged, AuditTeamCreated, AuditTeamDeleted, AuditTeamMemberAdded, AuditTeamMemberRemoved, AuditTeamInboxAccessGranted, AuditTeamInboxAccessRevoked, AuditWorkspaceSlackConnected, AuditWorkspaceSlackDisconnected, AuditMemberSlackLinked, AuditMemberSlackUnlinked, AuditSsoProviderCreated, AuditSsoProviderUpdated, AuditSsoProviderDeleted, AuditSsoSettingsChanged, AuditSsoSignedIn, AuditSsoSignInRefused, AuditSsoDomainAdded, AuditSsoDomainVerified, AuditSsoDomainDeleted, AuditIssueIntegrationConnected, AuditIssueIntegrationUpdated, AuditIssueIntegrationDisconnected, AuditIssueIntegrationSecretRotated, AuditAutomationRuleCreated, AuditAutomationRuleUpdated, AuditAutomationRuleDeleted]
+      x-enum-varnames: [AuditMemberJoined, AuditMemberRoleChanged, AuditMemberRemoved, AuditMemberInboxAccessGranted, AuditMemberInboxAccessRevoked, AuditInviteCreated, AuditInviteDeleted, AuditApiKeyCreated, AuditApiKeyRevoked, AuditOAuthGrantCreated, AuditOAuthGrantRevoked, AuditWebhookCreated, AuditWebhookUpdated, AuditWebhookDeleted, AuditWebhookSecretRotated, AuditChannelCredentialsChanged, AuditChannelKeyRotated, AuditChannelForwardingAddressRotated, AuditChannelDkimKeyCreated, AuditChannelDkimKeyDeleted, AuditInboxIdentitySecretRotated, AuditInboxDeleted, AuditConversationTrashed, AuditConversationRestored, AuditConversationDeleted, AuditMessageRedacted, AuditContactDeleted, AuditContactConsentExported, AuditListConsentExported, AuditAnalyticsExportCreated, AuditWorkspaceRetentionChanged, AuditWorkspaceBotsMaySendChanged, AuditWorkspaceBroadcastsByKeysChanged, AuditWorkspaceBroadcastApprovalRequested, AuditWorkspaceBroadcastsApproved, AuditWorkspaceBroadcastsDenied, AuditWorkspaceBroadcastsSuspended, AuditWorkspaceBroadcastLimitChanged, AuditTeamCreated, AuditTeamDeleted, AuditTeamMemberAdded, AuditTeamMemberRemoved, AuditTeamInboxAccessGranted, AuditTeamInboxAccessRevoked, AuditWorkspaceSlackConnected, AuditWorkspaceSlackDisconnected, AuditMemberSlackLinked, AuditMemberSlackUnlinked, AuditSsoProviderCreated, AuditSsoProviderUpdated, AuditSsoProviderDeleted, AuditSsoSettingsChanged, AuditSsoSignedIn, AuditSsoSignInRefused, AuditSsoDomainAdded, AuditSsoDomainVerified, AuditSsoDomainDeleted, AuditSsoDomainLapsed, AuditIssueIntegrationConnected, AuditIssueIntegrationUpdated, AuditIssueIntegrationDisconnected, AuditIssueIntegrationSecretRotated, AuditAutomationRuleCreated, AuditAutomationRuleUpdated, AuditAutomationRuleDeleted]
     AuditTargetType:
       type: string
       enum: [workspace, member, invite, inbox, channel, api_key, oauth_grant, webhook, contact, list, analytics_export, conversation, message, team, sso, sso_domain, issue_integration, automation_rule]
@@ -21101,7 +21138,9 @@ components:
           type: string
         problem:
           type: string
-          description: What the last check found, while `pending`.
+          description: |
+            What the last check found: while `pending`, or when the daily check of a `verified`
+            domain misses the record (the claim lapses after 7 days of that).
         checked_at:
           type: string
           format: date-time
@@ -38166,6 +38205,9 @@ components:
             type: string
         workspaces:
           type: array
+          description: |
+            The person's workspaces; for a session made through single sign-on only the workspace
+            that made it.
           items:
             $ref: "#/components/schemas/OAuthWorkspaceChoice"
         expires_at:
@@ -41552,6 +41594,12 @@ components:
           description: |
             `sso_required` only: the member's address; send it to `POST /v1/auth/sso` for the
             identity provider's sign-in page.
+        sso_workspace_id:
+          type: string
+          format: uuid
+          description: |
+            `sso_session_scope` only: the workspace whose single sign-on made the session, the only
+            one it acts in. Sign in with a code or a passkey to work in another workspace.
         detail:
           type: string
     SlackConnection:
