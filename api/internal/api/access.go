@@ -30,6 +30,9 @@ var (
 )
 
 func (p principal) seesAllInboxes() bool {
+	if p.rule != nil {
+		return true
+	}
 	if p.isKey() {
 		return !p.limited
 	}

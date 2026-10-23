@@ -74,7 +74,7 @@ tags:
       Workspace API keys for host backends, scripts and bots. A key holds scopes (`ApiKeyScope`),
       may be limited to some inboxes and may expire; these are fixed when the key is made. A key
       limited to inboxes sees what an agent with access to exactly those inboxes sees and cannot
-      hold `inboxes:manage`, `webhooks:manage`, `workspace:manage`, `migrations:manage` or `fields:manage`; an inbox that is deleted
+      hold `inboxes:manage`, `webhooks:manage`, `workspace:manage`, `migrations:manage`, `fields:manage` or `automations:manage`; an inbox that is deleted
       drops out of the limit, and a key whose every inbox is gone sees nothing. Keys made before
       scopes existed hold every scope.
 
@@ -112,6 +112,25 @@ tags:
         has already passed when the target starts or resumes), and at the due time
         `conversation.sla_breached`, each once per target; both notify the assignee, or the
         members of the conversation's team when it has no assignee.
+  - name: automation
+    description: |
+      Rules that act on a conversation after a change: when it is created, when the contact writes,
+      when its status changes, or when it has been idle for a time. Workspace rules and inbox rules
+      share one list in `position` order; for each trigger every enabled rule whose conditions all
+      match the conversation's state at that moment applies its actions, so a later rule sees what
+      an earlier one changed.
+
+      - Rules run in a job after the change commits, each at most once per trigger. What a rule
+        writes names it (`rule` on its messages, a `rule_applied` timeline event) and never
+        triggers a rule, so rules cannot loop.
+      - A rule applies all of its actions or none: when one cannot be applied (a required custom
+        field on close, a member without access, a refused reply) the run is `failed` and nothing
+        of that rule changes. `GET /v1/automation-rules/{id}/runs` is the rule's log, kept 30 days.
+      - A reply never answers an automatic reply or a bounce, a blocked contact or spam, and goes
+        out at most once an hour per conversation; rule replies do not meet SLA targets. A rule
+        last saved by an owner or admin may reply while the workspace's `bots_may_send` is off;
+        one saved by an API key or a connected app only while it is on.
+      - At most 600 actions per workspace a minute; rules over the limit wait and run later.
   - name: channels
     description: |
       How messages reach an inbox. E-mail channels receive mail through `/ingress/email` and send
@@ -2222,7 +2241,7 @@ paths:
       description: |
         Owners and admins only, with a member session. The secret is returned once and stored
         only as a hash. A key limited to inboxes cannot hold `inboxes:manage`, `webhooks:manage`,
-        `workspace:manage`, `fields:manage` or `audit:read` (`400 validation_failed`); only an owner gives a key
+        `workspace:manage`, `fields:manage`, `automations:manage` or `audit:read` (`400 validation_failed`); only an owner gives a key
         `audit:read` (`403 forbidden`).
       tags: [api-keys]
       security:
@@ -2934,6 +2953,212 @@ paths:
       responses:
         "204":
           description: Deleted.
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+  /v1/automation-rules:
+    get:
+      operationId: listAutomationRules
+      summary: List automation rules
+      description: |
+        In `position` order. Callers limited to some inboxes (agents, inbox-limited keys) see the
+        workspace rules and the rules of their inboxes.
+
+        Scope: `automations:read`.
+      tags: [automation]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+      responses:
+        "200":
+          description: The rules.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AutomationRuleList"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+    post:
+      operationId: createAutomationRule
+      summary: Create an automation rule
+      description: |
+        Owners, admins and API keys not limited to inboxes. The rule goes last in the order and
+        runs for triggers that happen after it is saved. A workspace holds at most 100 rules
+        (`403 automation_rule_limit`). Every label, member, team, canned reply, webhook endpoint,
+        custom field and the inbox a rule names must exist in the workspace (`400
+        validation_failed`); one deleted later makes the actions that need it fail.
+
+        Scope: `automations:manage`.
+      tags: [automation]
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/WorkspaceHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AutomationRuleCreate"
+      responses:
+        "201":
+          description: The rule.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AutomationRule"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+  /v1/automation-rules/order:
+    put:
+      operationId: orderAutomationRules
+      summary: Reorder automation rules
+      description: |
+        Owners, admins and API keys not limited to inboxes. `ids` names every rule of the workspace
+        once, in the new order (`400 validation_failed` otherwise).
+
+        Scope: `automations:manage`.
+      tags: [automation]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AutomationRuleOrder"
+      responses:
+        "200":
+          description: The rules in their new order.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AutomationRuleList"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+  /v1/automation-rules/{automationRuleId}:
+    get:
+      operationId: getAutomationRule
+      summary: Get an automation rule
+      description: |
+        A rule the caller does not see (see `GET /v1/automation-rules`) answers `404`.
+
+        Scope: `automations:read`.
+      tags: [automation]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/AutomationRuleId"
+      responses:
+        "200":
+          description: The rule.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AutomationRule"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+    patch:
+      operationId: updateAutomationRule
+      summary: Update an automation rule
+      description: |
+        Owners, admins and API keys not limited to inboxes. Only what is sent changes;
+        `conditions` and `actions` are replaced whole. The caller becomes the rule's `saved_by`,
+        which decides whether its replies may go out while `bots_may_send` is off. Runs already
+        queued use the rule as it is when they run.
+
+        Scope: `automations:manage`.
+      tags: [automation]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/AutomationRuleId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AutomationRuleUpdate"
+      responses:
+        "200":
+          description: The updated rule.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AutomationRule"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+    delete:
+      operationId: deleteAutomationRule
+      summary: Delete an automation rule
+      description: |
+        Owners, admins and API keys not limited to inboxes. Its log goes with it; what it already
+        changed stays.
+
+        Scope: `automations:manage`.
+      tags: [automation]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/AutomationRuleId"
+      responses:
+        "204":
+          description: Deleted.
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+  /v1/automation-rules/{automationRuleId}/runs:
+    get:
+      operationId: listAutomationRuns
+      summary: A rule's log
+      description: |
+        The rule's runs of the last 30 days, newest first: one per trigger whose conditions
+        matched, `applied` or `failed` with the reason. Triggers whose conditions did not match
+        leave no run. Callers limited to some inboxes see the runs on conversations of their
+        inboxes.
+
+        Scope: `automations:read`.
+      tags: [automation]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/AutomationRuleId"
+        - name: outcome
+          in: query
+          description: Only runs with this outcome.
+          schema:
+            $ref: "#/components/schemas/AutomationRunOutcome"
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: The runs.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AutomationRunPage"
+        "400":
+          $ref: "#/components/responses/Problem"
         "401":
           $ref: "#/components/responses/Problem"
         "403":
@@ -19085,6 +19310,29 @@ webhooks:
       responses:
         "200":
           description: Any 2xx answer counts as delivered.
+  automation.triggered:
+    post:
+      operationId: webhookAutomationTriggered
+      summary: An automation rule sent a conversation
+      description: |
+        Sent only by a rule's `send_webhook` action, to the endpoint it names, whatever events the
+        endpoint lists; never through a subscription. An endpoint limited to another inbox, or
+        turned off, makes the action fail.
+      tags: [webhooks]
+      security: []
+      parameters:
+        - $ref: "#/components/parameters/WebhookIdHeader"
+        - $ref: "#/components/parameters/WebhookTimestampHeader"
+        - $ref: "#/components/parameters/WebhookSignatureHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WebhookAutomationTriggeredPayload"
+      responses:
+        "200":
+          description: Any 2xx answer counts as delivered.
 components:
   securitySchemes:
     session:
@@ -19317,6 +19565,13 @@ components:
         format: uuid
     SlaPolicyId:
       name: slaPolicyId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    AutomationRuleId:
+      name: automationRuleId
       in: path
       required: true
       schema:
@@ -20003,6 +20258,11 @@ components:
           `account`, and `host` for a GitHub Enterprise Server. `issue_integration.updated`:
           `fields` among `name`, `token`, `default_target` and `webhook_secret`; never a token or
           secret. `issue_integration.secret_rotated`: none.
+        - `automation_rule.created`, `automation_rule.deleted`: `name`, `trigger`, `inbox_id`
+          when set, `action_types`, and `webhook_hosts` (the hosts of the endpoints its
+          `send_webhook` actions name, never their URLs). `automation_rule.updated`: `fields`
+          among `name`, `enabled`, `inbox_id`, `trigger`, `idle_minutes`, `conditions` and
+          `actions`, with the same `name`, `trigger`, `action_types` and `webhook_hosts`.
 
         Details never make an action fail: when they would be too long, lists are replaced by
         `<name>_count` and `truncated` is `true`.
@@ -20070,11 +20330,14 @@ components:
         - issue_integration.updated
         - issue_integration.disconnected
         - issue_integration.secret_rotated
-      x-enum-varnames: [AuditMemberJoined, AuditMemberRoleChanged, AuditMemberRemoved, AuditMemberInboxAccessGranted, AuditMemberInboxAccessRevoked, AuditInviteCreated, AuditInviteDeleted, AuditApiKeyCreated, AuditApiKeyRevoked, AuditOAuthGrantCreated, AuditOAuthGrantRevoked, AuditWebhookCreated, AuditWebhookUpdated, AuditWebhookDeleted, AuditWebhookSecretRotated, AuditChannelCredentialsChanged, AuditChannelKeyRotated, AuditChannelForwardingAddressRotated, AuditChannelDkimKeyCreated, AuditChannelDkimKeyDeleted, AuditInboxIdentitySecretRotated, AuditInboxDeleted, AuditConversationTrashed, AuditConversationRestored, AuditConversationDeleted, AuditMessageRedacted, AuditContactDeleted, AuditContactConsentExported, AuditListConsentExported, AuditAnalyticsExportCreated, AuditWorkspaceRetentionChanged, AuditWorkspaceBroadcastApprovalRequested, AuditWorkspaceBroadcastsApproved, AuditWorkspaceBroadcastsDenied, AuditWorkspaceBroadcastsSuspended, AuditWorkspaceBroadcastLimitChanged, AuditTeamCreated, AuditTeamDeleted, AuditTeamMemberAdded, AuditTeamMemberRemoved, AuditTeamInboxAccessGranted, AuditTeamInboxAccessRevoked, AuditWorkspaceSlackConnected, AuditWorkspaceSlackDisconnected, AuditMemberSlackLinked, AuditMemberSlackUnlinked, AuditSsoProviderCreated, AuditSsoProviderUpdated, AuditSsoProviderDeleted, AuditSsoSettingsChanged, AuditSsoSignedIn, AuditSsoSignInRefused, AuditSsoDomainAdded, AuditSsoDomainVerified, AuditSsoDomainDeleted, AuditIssueIntegrationConnected, AuditIssueIntegrationUpdated, AuditIssueIntegrationDisconnected, AuditIssueIntegrationSecretRotated]
+        - automation_rule.created
+        - automation_rule.updated
+        - automation_rule.deleted
+      x-enum-varnames: [AuditMemberJoined, AuditMemberRoleChanged, AuditMemberRemoved, AuditMemberInboxAccessGranted, AuditMemberInboxAccessRevoked, AuditInviteCreated, AuditInviteDeleted, AuditApiKeyCreated, AuditApiKeyRevoked, AuditOAuthGrantCreated, AuditOAuthGrantRevoked, AuditWebhookCreated, AuditWebhookUpdated, AuditWebhookDeleted, AuditWebhookSecretRotated, AuditChannelCredentialsChanged, AuditChannelKeyRotated, AuditChannelForwardingAddressRotated, AuditChannelDkimKeyCreated, AuditChannelDkimKeyDeleted, AuditInboxIdentitySecretRotated, AuditInboxDeleted, AuditConversationTrashed, AuditConversationRestored, AuditConversationDeleted, AuditMessageRedacted, AuditContactDeleted, AuditContactConsentExported, AuditListConsentExported, AuditAnalyticsExportCreated, AuditWorkspaceRetentionChanged, AuditWorkspaceBroadcastApprovalRequested, AuditWorkspaceBroadcastsApproved, AuditWorkspaceBroadcastsDenied, AuditWorkspaceBroadcastsSuspended, AuditWorkspaceBroadcastLimitChanged, AuditTeamCreated, AuditTeamDeleted, AuditTeamMemberAdded, AuditTeamMemberRemoved, AuditTeamInboxAccessGranted, AuditTeamInboxAccessRevoked, AuditWorkspaceSlackConnected, AuditWorkspaceSlackDisconnected, AuditMemberSlackLinked, AuditMemberSlackUnlinked, AuditSsoProviderCreated, AuditSsoProviderUpdated, AuditSsoProviderDeleted, AuditSsoSettingsChanged, AuditSsoSignedIn, AuditSsoSignInRefused, AuditSsoDomainAdded, AuditSsoDomainVerified, AuditSsoDomainDeleted, AuditIssueIntegrationConnected, AuditIssueIntegrationUpdated, AuditIssueIntegrationDisconnected, AuditIssueIntegrationSecretRotated, AuditAutomationRuleCreated, AuditAutomationRuleUpdated, AuditAutomationRuleDeleted]
     AuditTargetType:
       type: string
-      enum: [workspace, member, invite, inbox, channel, api_key, oauth_grant, webhook, contact, list, analytics_export, conversation, message, team, sso, sso_domain, issue_integration]
-      x-enum-varnames: [AuditTargetWorkspace, AuditTargetMember, AuditTargetInvite, AuditTargetInbox, AuditTargetChannel, AuditTargetApiKey, AuditTargetOAuthGrant, AuditTargetWebhook, AuditTargetContact, AuditTargetList, AuditTargetAnalyticsExport, AuditTargetConversation, AuditTargetMessage, AuditTargetTeam, AuditTargetSso, AuditTargetSsoDomain, AuditTargetIssueIntegration]
+      enum: [workspace, member, invite, inbox, channel, api_key, oauth_grant, webhook, contact, list, analytics_export, conversation, message, team, sso, sso_domain, issue_integration, automation_rule]
+      x-enum-varnames: [AuditTargetWorkspace, AuditTargetMember, AuditTargetInvite, AuditTargetInbox, AuditTargetChannel, AuditTargetApiKey, AuditTargetOAuthGrant, AuditTargetWebhook, AuditTargetContact, AuditTargetList, AuditTargetAnalyticsExport, AuditTargetConversation, AuditTargetMessage, AuditTargetTeam, AuditTargetSso, AuditTargetSsoDomain, AuditTargetIssueIntegration, AuditTargetAutomationRule]
     AuditTarget:
       type: object
       required: [type, id]
@@ -20716,7 +20979,13 @@ components:
           implied: a key made without naming its scopes does not hold it. Writing values needs
           `conversations:write` or `contacts:write`.
 
-        `conversations:delete`, `messages:redact`, `lists:*`, `broadcasts:*`, `migrations:manage`, `analytics:*`, `status:*`, `help:*`, `roadmap:*`, `changelog:*`, `audit:read`, `integrations:*`, `issues:write`, `fields:manage` and `views:write` are never added to keys made before they existed.
+        - `automations:read`: automation rules and their logs.
+        - `automations:manage`: create, change, reorder and delete automation rules. Owners and
+          admins only; never offered to agents' tokens, refused for keys limited to inboxes. Never
+          implied: a key made without naming its scopes does not hold it. A rule acts on every
+          inbox it covers with the workspace's power.
+
+        `conversations:delete`, `messages:redact`, `lists:*`, `broadcasts:*`, `migrations:manage`, `analytics:*`, `status:*`, `help:*`, `roadmap:*`, `changelog:*`, `audit:read`, `integrations:*`, `issues:write`, `fields:manage`, `views:write` and `automations:*` are never added to keys made before they existed.
       enum:
         - conversations:read
         - conversations:write
@@ -20760,6 +21029,8 @@ components:
         - issues:write
         - fields:manage
         - views:write
+        - automations:read
+        - automations:manage
     BotAvatarUrl:
       type: string
       format: uri
@@ -22197,7 +22468,10 @@ components:
           format: int64
     WebhookEventType:
       type: string
-      enum: [conversation.created, conversation.updated, conversation.rated, conversation.trashed, conversation.restored, conversation.deleted, message.created, message.redacted, feedback.created, contact.updated, contact.deleted, draft.created, draft.updated, draft.deleted, discussion.created, discussion.post_created, discussion.answered, discussion.updated, subscription.created, subscription.updated, broadcast.updated, analytics.alert, status.component.updated, status.incident.created, status.incident.updated, status.incident.resolved, status.monitor.down, status.monitor.up, help.article.published, help.article.unpublished, help.article.deleted, discussion.stage_changed, changelog.entry.published, changelog.entry.unpublished, changelog.entry.deleted, team.created, team.updated, team.deleted, issue_link.created, issue_link.updated, issue_link.deleted, conversation.sla_warning, conversation.sla_breached]
+      enum: [conversation.created, conversation.updated, conversation.rated, conversation.trashed, conversation.restored, conversation.deleted, message.created, message.redacted, feedback.created, contact.updated, contact.deleted, draft.created, draft.updated, draft.deleted, discussion.created, discussion.post_created, discussion.answered, discussion.updated, subscription.created, subscription.updated, broadcast.updated, analytics.alert, status.component.updated, status.incident.created, status.incident.updated, status.incident.resolved, status.monitor.down, status.monitor.up, help.article.published, help.article.unpublished, help.article.deleted, discussion.stage_changed, changelog.entry.published, changelog.entry.unpublished, changelog.entry.deleted, team.created, team.updated, team.deleted, issue_link.created, issue_link.updated, issue_link.deleted, conversation.sla_warning, conversation.sla_breached, automation.triggered]
+      description: |
+        `automation.triggered` cannot be listed in an endpoint's `events`: it is sent only to the
+        endpoint a rule's `send_webhook` action names.
     WebhookEndpoint:
       type: object
       required: [id, url, description, events, include_notes, enabled, created_at, updated_at]
@@ -23822,8 +24096,8 @@ components:
             for the panel, API keys and contacts.
     EventType:
       type: string
-      enum: [assigned, unassigned, status_changed, labels_changed, moved, rated, broadcast_reply, feedback_progress, macro_applied]
-      x-enum-varnames: [Assigned, Unassigned, StatusChanged, LabelsChanged, Moved, Rated, BroadcastReply, EventTypeFeedbackProgress, MacroApplied]
+      enum: [assigned, unassigned, status_changed, labels_changed, moved, rated, broadcast_reply, feedback_progress, macro_applied, rule_applied]
+      x-enum-varnames: [Assigned, Unassigned, StatusChanged, LabelsChanged, Moved, Rated, BroadcastReply, EventTypeFeedbackProgress, MacroApplied, RuleApplied]
     MessageEvent:
       type: object
       required: [type]
@@ -23893,6 +24167,13 @@ components:
             sent and the rest applied.
           items:
             $ref: "#/components/schemas/MacroSkipped"
+        actions:
+          type: array
+          description: |
+            `rule_applied` only: what the rule did, after the timeline events of its changes; the
+            message's `rule` names the rule.
+          items:
+            $ref: "#/components/schemas/AutomationRunAction"
     Attachment:
       type: object
       required: [id, filename, content_type, size, inline, created_at]
@@ -23992,6 +24273,11 @@ components:
         redacted_by:
           $ref: "#/components/schemas/MessageRedactedBy"
           description: Who removed its content; absent when it was not redacted.
+        rule:
+          $ref: "#/components/schemas/AutomationRuleRef"
+          description: |
+            The automation rule that wrote it (author `system`): its notes, replies and the timeline
+            events of its changes. Absent for everything else.
         created_at:
           type: string
           format: date-time
@@ -27038,6 +27324,368 @@ components:
           items:
             type: string
             format: uuid
+    AutomationTrigger:
+      type: string
+      description: |
+        `conversation_created`: a conversation was created (by a contact, a member or a key).
+        `message_received`: the contact wrote (not imported messages or drafts). `status_changed`:
+        the status changed, also when a contact's message or the snooze time reopened it.
+        `idle`: nothing was written in an open or pending conversation for `idle_minutes`
+        (checked every 5 minutes; once per quiet period).
+      enum: [conversation_created, message_received, status_changed, idle]
+      x-enum-varnames: [AutomationTriggerConversationCreated, AutomationTriggerMessageReceived, AutomationTriggerStatusChanged, AutomationTriggerIdle]
+    AutomationConditionField:
+      type: string
+      description: |
+        What a condition tests, and the operators it takes:
+        - `channel_kind` (`in`, `not_in`; `ChannelKind` values), `kind` (`ConversationKind`),
+          `feedback_category` (category keys), `priority` (`Priority`), `status`
+          (`ConversationStatus`).
+        - `subject`, `body` (`contains`, `not_contains`; case-insensitive): `body` is the
+          triggering contact message, or the contact's latest message for other triggers.
+        - `contact_attribute`, `custom_field` (`equals`, `not_equals`, `contains`,
+          `not_contains`, `is_set`, `is_not_set`) with `key`: a contact attribute, or a conversation
+          custom field (`CustomField.key`). Numbers, checkboxes and dates compare as their JSON
+          text (`42`, `true`, `2026-01-31`).
+        - `label` (`in`: has any of the labels, `not_in`: has none of them), `team` (`in`, `not_in`
+          with team ids, `is_set`, `is_not_set`), `assignee` (`is_set`, `is_not_set`).
+        - `business_hours` (`equals` `inside` or `outside`): the inbox's business hours now; an
+          inbox without hours is always inside.
+      enum: [channel_kind, kind, feedback_category, priority, status, subject, body, contact_attribute, custom_field, label, team, assignee, business_hours]
+      x-enum-varnames: [AutomationFieldChannelKind, AutomationFieldKind, AutomationFieldFeedbackCategory, AutomationFieldPriority, AutomationFieldStatus, AutomationFieldSubject, AutomationFieldBody, AutomationFieldContactAttribute, AutomationFieldCustomField, AutomationFieldLabel, AutomationFieldTeam, AutomationFieldAssignee, AutomationFieldBusinessHours]
+    AutomationConditionOperator:
+      type: string
+      enum: [in, not_in, equals, not_equals, contains, not_contains, is_set, is_not_set]
+      x-enum-varnames: [AutomationOpIn, AutomationOpNotIn, AutomationOpEquals, AutomationOpNotEquals, AutomationOpContains, AutomationOpNotContains, AutomationOpIsSet, AutomationOpIsNotSet]
+    AutomationCondition:
+      type: object
+      description: |
+        `in` and `not_in` take `values`; `equals`, `not_equals`, `contains` and `not_contains`
+        take `value`; `is_set` and `is_not_set` take neither (`400 validation_failed` otherwise).
+      required: [field, operator]
+      properties:
+        field:
+          $ref: "#/components/schemas/AutomationConditionField"
+        operator:
+          $ref: "#/components/schemas/AutomationConditionOperator"
+        key:
+          type: string
+          minLength: 1
+          maxLength: 100
+          description: "`contact_attribute` and `custom_field` only."
+        value:
+          type: string
+          minLength: 1
+          maxLength: 500
+        values:
+          type: array
+          minItems: 1
+          maxItems: 50
+          items:
+            type: string
+            minLength: 1
+            maxLength: 100
+    AutomationActionType:
+      type: string
+      description: |
+        - `add_labels`, `remove_labels` (`label_ids`).
+        - `assign_member` (`member_id`, a member with access to the conversation's inbox when the
+          rule runs), `assign_team` (`team_id`, a team granted the inbox), `unassign` (clears the
+          member). `assign_pool` leaves the conversation to automatic assignment; until automatic
+          assignment exists it does nothing and the run lists it as `skipped`.
+        - `set_priority` (`priority`), `set_status` (`status`: `open`, `pending` or `closed`;
+          closing needs the conversation's required custom fields), `snooze` (`snooze_minutes`).
+        - `add_note` (`body`): an internal note.
+        - `send_reply` (`canned_reply_id`): the canned reply's text to the contact, as an
+          automatic reply (`Auto-Submitted: auto-replied` by e-mail).
+        - `send_webhook` (`webhook_id`): `automation.triggered` to that endpoint.
+      enum: [add_labels, remove_labels, assign_member, assign_team, assign_pool, unassign, set_priority, set_status, snooze, add_note, send_reply, send_webhook]
+      x-enum-varnames: [AutomationActionAddLabels, AutomationActionRemoveLabels, AutomationActionAssignMember, AutomationActionAssignTeam, AutomationActionAssignPool, AutomationActionUnassign, AutomationActionSetPriority, AutomationActionSetStatus, AutomationActionSnooze, AutomationActionAddNote, AutomationActionSendReply, AutomationActionSendWebhook]
+    AutomationAction:
+      type: object
+      description: |
+        Each type at most once per rule, and only the fields its type uses (`400
+        validation_failed` otherwise); `set_status` and `snooze` exclude each other, as do
+        `assign_member`, `assign_pool` and `unassign`, and `add_labels` and `remove_labels` share
+        no label.
+      required: [type]
+      properties:
+        type:
+          $ref: "#/components/schemas/AutomationActionType"
+        label_ids:
+          type: array
+          minItems: 1
+          maxItems: 50
+          items:
+            type: string
+            format: uuid
+        member_id:
+          type: string
+          format: uuid
+        team_id:
+          type: string
+          format: uuid
+        priority:
+          $ref: "#/components/schemas/Priority"
+        status:
+          $ref: "#/components/schemas/ConversationStatus"
+        snooze_minutes:
+          type: integer
+          format: int32
+          minimum: 1
+          maximum: 525600
+        body:
+          type: string
+          minLength: 1
+          maxLength: 10000
+        canned_reply_id:
+          type: string
+          format: uuid
+        webhook_id:
+          type: string
+          format: uuid
+    AutomationRuleAuthorType:
+      type: string
+      enum: [member, api_key, oauth_grant]
+      x-enum-varnames: [AutomationAuthorMember, AutomationAuthorApiKey, AutomationAuthorOAuthGrant]
+    AutomationRuleAuthor:
+      type: object
+      description: |
+        Who last saved the rule. Its replies go out while `bots_may_send` is off only when this
+        is a member who is still an owner or admin when the rule runs.
+      required: [type]
+      properties:
+        type:
+          $ref: "#/components/schemas/AutomationRuleAuthorType"
+        member_id:
+          type: string
+          format: uuid
+          description: "`member` and `oauth_grant`."
+        api_key_id:
+          type: string
+          format: uuid
+          description: "`api_key`."
+    AutomationRule:
+      type: object
+      required: [id, name, enabled, position, trigger, conditions, actions, saved_by, created_at, updated_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        enabled:
+          type: boolean
+        position:
+          type: integer
+          format: int32
+          description: Its place in the workspace's one list, from 0.
+        inbox_id:
+          type: string
+          format: uuid
+          description: Absent for a workspace rule; an inbox rule acts only on that inbox's conversations.
+        trigger:
+          $ref: "#/components/schemas/AutomationTrigger"
+        idle_minutes:
+          type: integer
+          format: int32
+          description: "`idle` only."
+        conditions:
+          type: array
+          description: All of them must match; empty matches every conversation.
+          items:
+            $ref: "#/components/schemas/AutomationCondition"
+        actions:
+          type: array
+          items:
+            $ref: "#/components/schemas/AutomationAction"
+        saved_by:
+          $ref: "#/components/schemas/AutomationRuleAuthor"
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    AutomationRuleCreate:
+      type: object
+      required: [name, trigger, actions]
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+        enabled:
+          type: boolean
+          default: true
+        inbox_id:
+          type: string
+          format: uuid
+        trigger:
+          $ref: "#/components/schemas/AutomationTrigger"
+        idle_minutes:
+          type: integer
+          format: int32
+          minimum: 5
+          maximum: 43200
+          description: Required for `idle`, refused for other triggers.
+        conditions:
+          type: array
+          maxItems: 20
+          items:
+            $ref: "#/components/schemas/AutomationCondition"
+        actions:
+          type: array
+          minItems: 1
+          maxItems: 10
+          items:
+            $ref: "#/components/schemas/AutomationAction"
+    AutomationRuleUpdate:
+      type: object
+      minProperties: 1
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+        enabled:
+          type: boolean
+        inbox_id:
+          type: [string, "null"]
+          format: uuid
+          description: "`null` makes it a workspace rule."
+        trigger:
+          $ref: "#/components/schemas/AutomationTrigger"
+        idle_minutes:
+          type: [integer, "null"]
+          format: int32
+          minimum: 5
+          maximum: 43200
+        conditions:
+          type: array
+          maxItems: 20
+          items:
+            $ref: "#/components/schemas/AutomationCondition"
+        actions:
+          type: array
+          minItems: 1
+          maxItems: 10
+          items:
+            $ref: "#/components/schemas/AutomationAction"
+    AutomationRuleList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/AutomationRule"
+    AutomationRuleOrder:
+      type: object
+      required: [ids]
+      properties:
+        ids:
+          type: array
+          minItems: 1
+          maxItems: 100
+          items:
+            type: string
+            format: uuid
+    AutomationRuleRef:
+      type: object
+      required: [id, name]
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          description: The rule's name when it acted.
+    AutomationRunOutcome:
+      type: string
+      enum: [applied, failed]
+      x-enum-varnames: [AutomationRunApplied, AutomationRunFailed]
+    AutomationRunAction:
+      type: object
+      required: [type, result]
+      properties:
+        type:
+          $ref: "#/components/schemas/AutomationActionType"
+        result:
+          type: string
+          description: |
+            `applied`; `unchanged` when the conversation already was that way; `skipped` for
+            `assign_pool`; `not_run` in a failed run.
+          enum: [applied, unchanged, skipped, not_run]
+          x-enum-varnames: [AutomationResultApplied, AutomationResultUnchanged, AutomationResultSkipped, AutomationResultNotRun]
+    AutomationRun:
+      type: object
+      required: [id, rule_id, conversation_id, trigger, outcome, actions, created_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+        rule_id:
+          type: string
+          format: uuid
+        conversation_id:
+          type: string
+          format: uuid
+        trigger:
+          $ref: "#/components/schemas/AutomationTrigger"
+        outcome:
+          $ref: "#/components/schemas/AutomationRunOutcome"
+        error:
+          type: string
+          description: |
+            `failed` only: the problem code the action met, as the same change through `/v1`
+            would answer it (`field_required`, `team_access`, `validation_failed`,
+            `email_undeliverable`, …), or `auto_reply` when a reply was refused to protect the
+            customer (an automatic reply or bounce, a blocked contact, spam, or a rule reply in
+            the last hour), `bot_sending_disabled` (see `saved_by`), `label_gone`,
+            `canned_reply_gone`, `webhook_unavailable`.
+        detail:
+          type: string
+          description: "`failed` only: a sentence for people."
+        actions:
+          type: array
+          items:
+            $ref: "#/components/schemas/AutomationRunAction"
+        created_at:
+          type: string
+          format: date-time
+    AutomationRunPage:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/AutomationRun"
+        next_cursor:
+          type: string
+          description: Absent on the last page.
+    WebhookAutomationTriggeredData:
+      type: object
+      required: [rule, trigger, conversation, contact]
+      properties:
+        rule:
+          $ref: "#/components/schemas/AutomationRuleRef"
+        trigger:
+          $ref: "#/components/schemas/AutomationTrigger"
+        conversation:
+          $ref: "#/components/schemas/Conversation"
+          description: After the rule's other actions.
+        contact:
+          $ref: "#/components/schemas/WebhookContact"
+    WebhookAutomationTriggeredPayload:
+      allOf:
+        - $ref: "#/components/schemas/WebhookPayloadBase"
+        - type: object
+          required: [data]
+          properties:
+            data:
+              $ref: "#/components/schemas/WebhookAutomationTriggeredData"
     ConversationSla:
       type: object
       required: [policy_id, state, targets]

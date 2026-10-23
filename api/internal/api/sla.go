@@ -449,7 +449,7 @@ type slaMessage struct {
 }
 
 // slaMessageOf reads a message.created event: a public message from the contact, or a sent public
-// reply of a member or bot. Notes, drafts, events, imports and automatic replies are not.
+// reply of a member or bot. Notes, drafts, events, imports, automatic replies and rule replies are not.
 func slaMessageOf(e pendingEvent) (slaMessage, bool) {
 	var m struct {
 		Kind       oas.MessageKind `json:"kind"`
@@ -457,11 +457,12 @@ func slaMessageOf(e pendingEvent) (slaMessage, bool) {
 		Draft      bool            `json:"draft"`
 		ImportedAt *time.Time      `json:"imported_at"`
 		CreatedAt  time.Time       `json:"created_at"`
+		Rule       *struct{}       `json:"rule"`
 		Author     struct {
 			Type oas.AuthorType `json:"type"`
 		} `json:"author"`
 	}
-	if json.Unmarshal(e.data, &m) != nil || m.Kind != oas.MessageKindMessage || m.Direction == nil || m.Draft || m.ImportedAt != nil {
+	if json.Unmarshal(e.data, &m) != nil || m.Kind != oas.MessageKindMessage || m.Direction == nil || m.Draft || m.ImportedAt != nil || m.Rule != nil {
 		return slaMessage{}, false
 	}
 	if *m.Direction == oas.In {

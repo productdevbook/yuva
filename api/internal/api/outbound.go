@@ -302,6 +302,8 @@ func (s *Server) AddWorkers(workers *river.Workers) {
 	river.AddWorker(workers, &slaNotifyWorker{s: s})
 	river.AddWorker(workers, &slaSweepWorker{s: s})
 	river.AddWorker(workers, &snoozeWakeWorker{s: s})
+	river.AddWorker(workers, &automationRunWorker{s: s})
+	river.AddWorker(workers, &automationIdleSweepWorker{s: s})
 	s.addStatusDomainWorkers(workers)
 	s.addAnalyticsWorkers(workers)
 	s.addSESWorkers(workers)

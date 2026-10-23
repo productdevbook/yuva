@@ -915,6 +915,8 @@ const (
 	AnalyticsRead       ApiKeyScope = "analytics:read"
 	AnalyticsWrite      ApiKeyScope = "analytics:write"
 	AuditRead           ApiKeyScope = "audit:read"
+	AutomationsManage   ApiKeyScope = "automations:manage"
+	AutomationsRead     ApiKeyScope = "automations:read"
 	BroadcastsRead      ApiKeyScope = "broadcasts:read"
 	BroadcastsSend      ApiKeyScope = "broadcasts:send"
 	BroadcastsWrite     ApiKeyScope = "broadcasts:write"
@@ -965,6 +967,10 @@ func (e ApiKeyScope) Valid() bool {
 	case AnalyticsWrite:
 		return true
 	case AuditRead:
+		return true
+	case AutomationsManage:
+		return true
+	case AutomationsRead:
 		return true
 	case BroadcastsRead:
 		return true
@@ -1088,6 +1094,9 @@ const (
 	AuditAnalyticsExportCreated              AuditAction = "analytics_export.created"
 	AuditApiKeyCreated                       AuditAction = "api_key.created"
 	AuditApiKeyRevoked                       AuditAction = "api_key.revoked"
+	AuditAutomationRuleCreated               AuditAction = "automation_rule.created"
+	AuditAutomationRuleDeleted               AuditAction = "automation_rule.deleted"
+	AuditAutomationRuleUpdated               AuditAction = "automation_rule.updated"
 	AuditChannelCredentialsChanged           AuditAction = "channel.credentials_changed"
 	AuditChannelDkimKeyCreated               AuditAction = "channel.dkim_key_created"
 	AuditChannelDkimKeyDeleted               AuditAction = "channel.dkim_key_deleted"
@@ -1154,6 +1163,12 @@ func (e AuditAction) Valid() bool {
 	case AuditApiKeyCreated:
 		return true
 	case AuditApiKeyRevoked:
+		return true
+	case AuditAutomationRuleCreated:
+		return true
+	case AuditAutomationRuleDeleted:
+		return true
+	case AuditAutomationRuleUpdated:
 		return true
 	case AuditChannelCredentialsChanged:
 		return true
@@ -1303,6 +1318,7 @@ func (e AuditActorKind) Valid() bool {
 const (
 	AuditTargetAnalyticsExport  AuditTargetType = "analytics_export"
 	AuditTargetApiKey           AuditTargetType = "api_key"
+	AuditTargetAutomationRule   AuditTargetType = "automation_rule"
 	AuditTargetChannel          AuditTargetType = "channel"
 	AuditTargetContact          AuditTargetType = "contact"
 	AuditTargetConversation     AuditTargetType = "conversation"
@@ -1326,6 +1342,8 @@ func (e AuditTargetType) Valid() bool {
 	case AuditTargetAnalyticsExport:
 		return true
 	case AuditTargetApiKey:
+		return true
+	case AuditTargetAutomationRule:
 		return true
 	case AuditTargetChannel:
 		return true
@@ -1419,6 +1437,228 @@ func (e AuthorType) Valid() bool {
 	case AuthorTypeMember:
 		return true
 	case AuthorTypeSystem:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for AutomationActionType.
+const (
+	AutomationActionAddLabels    AutomationActionType = "add_labels"
+	AutomationActionAddNote      AutomationActionType = "add_note"
+	AutomationActionAssignMember AutomationActionType = "assign_member"
+	AutomationActionAssignPool   AutomationActionType = "assign_pool"
+	AutomationActionAssignTeam   AutomationActionType = "assign_team"
+	AutomationActionRemoveLabels AutomationActionType = "remove_labels"
+	AutomationActionSendReply    AutomationActionType = "send_reply"
+	AutomationActionSendWebhook  AutomationActionType = "send_webhook"
+	AutomationActionSetPriority  AutomationActionType = "set_priority"
+	AutomationActionSetStatus    AutomationActionType = "set_status"
+	AutomationActionSnooze       AutomationActionType = "snooze"
+	AutomationActionUnassign     AutomationActionType = "unassign"
+)
+
+// Valid indicates whether the value is a known member of the AutomationActionType enum.
+func (e AutomationActionType) Valid() bool {
+	switch e {
+	case AutomationActionAddLabels:
+		return true
+	case AutomationActionAddNote:
+		return true
+	case AutomationActionAssignMember:
+		return true
+	case AutomationActionAssignPool:
+		return true
+	case AutomationActionAssignTeam:
+		return true
+	case AutomationActionRemoveLabels:
+		return true
+	case AutomationActionSendReply:
+		return true
+	case AutomationActionSendWebhook:
+		return true
+	case AutomationActionSetPriority:
+		return true
+	case AutomationActionSetStatus:
+		return true
+	case AutomationActionSnooze:
+		return true
+	case AutomationActionUnassign:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for AutomationConditionField.
+const (
+	AutomationFieldAssignee         AutomationConditionField = "assignee"
+	AutomationFieldBody             AutomationConditionField = "body"
+	AutomationFieldBusinessHours    AutomationConditionField = "business_hours"
+	AutomationFieldChannelKind      AutomationConditionField = "channel_kind"
+	AutomationFieldContactAttribute AutomationConditionField = "contact_attribute"
+	AutomationFieldCustomField      AutomationConditionField = "custom_field"
+	AutomationFieldFeedbackCategory AutomationConditionField = "feedback_category"
+	AutomationFieldKind             AutomationConditionField = "kind"
+	AutomationFieldLabel            AutomationConditionField = "label"
+	AutomationFieldPriority         AutomationConditionField = "priority"
+	AutomationFieldStatus           AutomationConditionField = "status"
+	AutomationFieldSubject          AutomationConditionField = "subject"
+	AutomationFieldTeam             AutomationConditionField = "team"
+)
+
+// Valid indicates whether the value is a known member of the AutomationConditionField enum.
+func (e AutomationConditionField) Valid() bool {
+	switch e {
+	case AutomationFieldAssignee:
+		return true
+	case AutomationFieldBody:
+		return true
+	case AutomationFieldBusinessHours:
+		return true
+	case AutomationFieldChannelKind:
+		return true
+	case AutomationFieldContactAttribute:
+		return true
+	case AutomationFieldCustomField:
+		return true
+	case AutomationFieldFeedbackCategory:
+		return true
+	case AutomationFieldKind:
+		return true
+	case AutomationFieldLabel:
+		return true
+	case AutomationFieldPriority:
+		return true
+	case AutomationFieldStatus:
+		return true
+	case AutomationFieldSubject:
+		return true
+	case AutomationFieldTeam:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for AutomationConditionOperator.
+const (
+	AutomationOpContains    AutomationConditionOperator = "contains"
+	AutomationOpEquals      AutomationConditionOperator = "equals"
+	AutomationOpIn          AutomationConditionOperator = "in"
+	AutomationOpIsNotSet    AutomationConditionOperator = "is_not_set"
+	AutomationOpIsSet       AutomationConditionOperator = "is_set"
+	AutomationOpNotContains AutomationConditionOperator = "not_contains"
+	AutomationOpNotEquals   AutomationConditionOperator = "not_equals"
+	AutomationOpNotIn       AutomationConditionOperator = "not_in"
+)
+
+// Valid indicates whether the value is a known member of the AutomationConditionOperator enum.
+func (e AutomationConditionOperator) Valid() bool {
+	switch e {
+	case AutomationOpContains:
+		return true
+	case AutomationOpEquals:
+		return true
+	case AutomationOpIn:
+		return true
+	case AutomationOpIsNotSet:
+		return true
+	case AutomationOpIsSet:
+		return true
+	case AutomationOpNotContains:
+		return true
+	case AutomationOpNotEquals:
+		return true
+	case AutomationOpNotIn:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for AutomationRuleAuthorType.
+const (
+	AutomationAuthorApiKey     AutomationRuleAuthorType = "api_key"
+	AutomationAuthorMember     AutomationRuleAuthorType = "member"
+	AutomationAuthorOAuthGrant AutomationRuleAuthorType = "oauth_grant"
+)
+
+// Valid indicates whether the value is a known member of the AutomationRuleAuthorType enum.
+func (e AutomationRuleAuthorType) Valid() bool {
+	switch e {
+	case AutomationAuthorApiKey:
+		return true
+	case AutomationAuthorMember:
+		return true
+	case AutomationAuthorOAuthGrant:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for AutomationRunActionResult.
+const (
+	AutomationResultApplied   AutomationRunActionResult = "applied"
+	AutomationResultNotRun    AutomationRunActionResult = "not_run"
+	AutomationResultSkipped   AutomationRunActionResult = "skipped"
+	AutomationResultUnchanged AutomationRunActionResult = "unchanged"
+)
+
+// Valid indicates whether the value is a known member of the AutomationRunActionResult enum.
+func (e AutomationRunActionResult) Valid() bool {
+	switch e {
+	case AutomationResultApplied:
+		return true
+	case AutomationResultNotRun:
+		return true
+	case AutomationResultSkipped:
+		return true
+	case AutomationResultUnchanged:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for AutomationRunOutcome.
+const (
+	AutomationRunApplied AutomationRunOutcome = "applied"
+	AutomationRunFailed  AutomationRunOutcome = "failed"
+)
+
+// Valid indicates whether the value is a known member of the AutomationRunOutcome enum.
+func (e AutomationRunOutcome) Valid() bool {
+	switch e {
+	case AutomationRunApplied:
+		return true
+	case AutomationRunFailed:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for AutomationTrigger.
+const (
+	AutomationTriggerConversationCreated AutomationTrigger = "conversation_created"
+	AutomationTriggerIdle                AutomationTrigger = "idle"
+	AutomationTriggerMessageReceived     AutomationTrigger = "message_received"
+	AutomationTriggerStatusChanged       AutomationTrigger = "status_changed"
+)
+
+// Valid indicates whether the value is a known member of the AutomationTrigger enum.
+func (e AutomationTrigger) Valid() bool {
+	switch e {
+	case AutomationTriggerConversationCreated:
+		return true
+	case AutomationTriggerIdle:
+		return true
+	case AutomationTriggerMessageReceived:
+		return true
+	case AutomationTriggerStatusChanged:
 		return true
 	default:
 		return false
@@ -3192,6 +3432,7 @@ const (
 	MacroApplied              EventType = "macro_applied"
 	Moved                     EventType = "moved"
 	Rated                     EventType = "rated"
+	RuleApplied               EventType = "rule_applied"
 	StatusChanged             EventType = "status_changed"
 	Unassigned                EventType = "unassigned"
 )
@@ -3212,6 +3453,8 @@ func (e EventType) Valid() bool {
 	case Moved:
 		return true
 	case Rated:
+		return true
+	case RuleApplied:
 		return true
 	case StatusChanged:
 		return true
@@ -6786,6 +7029,7 @@ func (e WebhookDeliveryState) Valid() bool {
 // Defines values for WebhookEventType.
 const (
 	WebhookEventTypeAnalyticsAlert            WebhookEventType = "analytics.alert"
+	WebhookEventTypeAutomationTriggered       WebhookEventType = "automation.triggered"
 	WebhookEventTypeBroadcastUpdated          WebhookEventType = "broadcast.updated"
 	WebhookEventTypeChangelogEntryDeleted     WebhookEventType = "changelog.entry.deleted"
 	WebhookEventTypeChangelogEntryPublished   WebhookEventType = "changelog.entry.published"
@@ -6834,6 +7078,8 @@ const (
 func (e WebhookEventType) Valid() bool {
 	switch e {
 	case WebhookEventTypeAnalyticsAlert:
+		return true
+	case WebhookEventTypeAutomationTriggered:
 		return true
 	case WebhookEventTypeBroadcastUpdated:
 		return true
@@ -9267,7 +9513,13 @@ type ApiKeyList struct {
 //	    implied: a key made without naming its scopes does not hold it. Writing values needs
 //	    `conversations:write` or `contacts:write`.
 //
-// `conversations:delete`, `messages:redact`, `lists:*`, `broadcasts:*`, `migrations:manage`, `analytics:*`, `status:*`, `help:*`, `roadmap:*`, `changelog:*`, `audit:read`, `integrations:*`, `issues:write`, `fields:manage` and `views:write` are never added to keys made before they existed.
+//	  - `automations:read`: automation rules and their logs.
+//	  - `automations:manage`: create, change, reorder and delete automation rules. Owners and
+//	    admins only; never offered to agents' tokens, refused for keys limited to inboxes. Never
+//	    implied: a key made without naming its scopes does not hold it. A rule acts on every
+//	    inbox it covers with the workspace's power.
+//
+// `conversations:delete`, `messages:redact`, `lists:*`, `broadcasts:*`, `migrations:manage`, `analytics:*`, `status:*`, `help:*`, `roadmap:*`, `changelog:*`, `audit:read`, `integrations:*`, `issues:write`, `fields:manage`, `views:write` and `automations:*` are never added to keys made before they existed.
 type ApiKeyScope string
 
 // ApiKeyUpdate Only the fields sent change. Scopes, inbox limit and expiry cannot change.
@@ -9486,6 +9738,11 @@ type Attributes map[string]interface{}
 //     `account`, and `host` for a GitHub Enterprise Server. `issue_integration.updated`:
 //     `fields` among `name`, `token`, `default_target` and `webhook_secret`; never a token or
 //     secret. `issue_integration.secret_rotated`: none.
+//   - `automation_rule.created`, `automation_rule.deleted`: `name`, `trigger`, `inbox_id`
+//     when set, `action_types`, and `webhook_hosts` (the hosts of the endpoints its
+//     `send_webhook` actions name, never their URLs). `automation_rule.updated`: `fields`
+//     among `name`, `enabled`, `inbox_id`, `trigger`, `idle_minutes`, `conditions` and
+//     `actions`, with the same `name`, `trigger`, `action_types` and `webhook_hosts`.
 //
 // Details never make an action fail: when they would be too long, lists are replaced by
 // `<name>_count` and `truncated` is `true`.
@@ -9590,6 +9847,11 @@ type AuditEntry struct {
 	//   `account`, and `host` for a GitHub Enterprise Server. `issue_integration.updated`:
 	//   `fields` among `name`, `token`, `default_target` and `webhook_secret`; never a token or
 	//   secret. `issue_integration.secret_rotated`: none.
+	// - `automation_rule.created`, `automation_rule.deleted`: `name`, `trigger`, `inbox_id`
+	//   when set, `action_types`, and `webhook_hosts` (the hosts of the endpoints its
+	//   `send_webhook` actions name, never their URLs). `automation_rule.updated`: `fields`
+	//   among `name`, `enabled`, `inbox_id`, `trigger`, `idle_minutes`, `conditions` and
+	//   `actions`, with the same `name`, `trigger`, `action_types` and `webhook_hosts`.
 	//
 	// Details never make an action fail: when they would be too long, lists are replaced by
 	// `<name>_count` and `truncated` is `true`.
@@ -9631,6 +9893,266 @@ type AuthStatus string
 
 // AuthorType `bot` is an API key. Rows written with a key before bot authors existed have `system`.
 type AuthorType string
+
+// AutomationAction Each type at most once per rule, and only the fields its type uses (`400
+// validation_failed` otherwise); `set_status` and `snooze` exclude each other, as do
+// `assign_member`, `assign_pool` and `unassign`, and `add_labels` and `remove_labels` share
+// no label.
+type AutomationAction struct {
+	Body          *string             `json:"body,omitempty"`
+	CannedReplyId *uuid.UUID          `json:"canned_reply_id,omitempty"`
+	LabelIds      *[]uuid.UUID        `json:"label_ids,omitempty"`
+	MemberId      *uuid.UUID          `json:"member_id,omitempty"`
+	Priority      *Priority           `json:"priority,omitempty"`
+	SnoozeMinutes *int32              `json:"snooze_minutes,omitempty"`
+	Status        *ConversationStatus `json:"status,omitempty"`
+	TeamId        *uuid.UUID          `json:"team_id,omitempty"`
+
+	// Type - `add_labels`, `remove_labels` (`label_ids`).
+	// - `assign_member` (`member_id`, a member with access to the conversation's inbox when the
+	//   rule runs), `assign_team` (`team_id`, a team granted the inbox), `unassign` (clears the
+	//   member). `assign_pool` leaves the conversation to automatic assignment; until automatic
+	//   assignment exists it does nothing and the run lists it as `skipped`.
+	// - `set_priority` (`priority`), `set_status` (`status`: `open`, `pending` or `closed`;
+	//   closing needs the conversation's required custom fields), `snooze` (`snooze_minutes`).
+	// - `add_note` (`body`): an internal note.
+	// - `send_reply` (`canned_reply_id`): the canned reply's text to the contact, as an
+	//   automatic reply (`Auto-Submitted: auto-replied` by e-mail).
+	// - `send_webhook` (`webhook_id`): `automation.triggered` to that endpoint.
+	Type      AutomationActionType `json:"type"`
+	WebhookId *uuid.UUID           `json:"webhook_id,omitempty"`
+}
+
+// AutomationActionType - `add_labels`, `remove_labels` (`label_ids`).
+//   - `assign_member` (`member_id`, a member with access to the conversation's inbox when the
+//     rule runs), `assign_team` (`team_id`, a team granted the inbox), `unassign` (clears the
+//     member). `assign_pool` leaves the conversation to automatic assignment; until automatic
+//     assignment exists it does nothing and the run lists it as `skipped`.
+//   - `set_priority` (`priority`), `set_status` (`status`: `open`, `pending` or `closed`;
+//     closing needs the conversation's required custom fields), `snooze` (`snooze_minutes`).
+//   - `add_note` (`body`): an internal note.
+//   - `send_reply` (`canned_reply_id`): the canned reply's text to the contact, as an
+//     automatic reply (`Auto-Submitted: auto-replied` by e-mail).
+//   - `send_webhook` (`webhook_id`): `automation.triggered` to that endpoint.
+type AutomationActionType string
+
+// AutomationCondition `in` and `not_in` take `values`; `equals`, `not_equals`, `contains` and `not_contains`
+// take `value`; `is_set` and `is_not_set` take neither (`400 validation_failed` otherwise).
+type AutomationCondition struct {
+	// Field What a condition tests, and the operators it takes:
+	// - `channel_kind` (`in`, `not_in`; `ChannelKind` values), `kind` (`ConversationKind`),
+	//   `feedback_category` (category keys), `priority` (`Priority`), `status`
+	//   (`ConversationStatus`).
+	// - `subject`, `body` (`contains`, `not_contains`; case-insensitive): `body` is the
+	//   triggering contact message, or the contact's latest message for other triggers.
+	// - `contact_attribute`, `custom_field` (`equals`, `not_equals`, `contains`,
+	//   `not_contains`, `is_set`, `is_not_set`) with `key`: a contact attribute, or a conversation
+	//   custom field (`CustomField.key`). Numbers, checkboxes and dates compare as their JSON
+	//   text (`42`, `true`, `2026-01-31`).
+	// - `label` (`in`: has any of the labels, `not_in`: has none of them), `team` (`in`, `not_in`
+	//   with team ids, `is_set`, `is_not_set`), `assignee` (`is_set`, `is_not_set`).
+	// - `business_hours` (`equals` `inside` or `outside`): the inbox's business hours now; an
+	//   inbox without hours is always inside.
+	Field AutomationConditionField `json:"field"`
+
+	// Key `contact_attribute` and `custom_field` only.
+	Key      *string                     `json:"key,omitempty"`
+	Operator AutomationConditionOperator `json:"operator"`
+	Value    *string                     `json:"value,omitempty"`
+	Values   *[]string                   `json:"values,omitempty"`
+}
+
+// AutomationConditionField What a condition tests, and the operators it takes:
+//   - `channel_kind` (`in`, `not_in`; `ChannelKind` values), `kind` (`ConversationKind`),
+//     `feedback_category` (category keys), `priority` (`Priority`), `status`
+//     (`ConversationStatus`).
+//   - `subject`, `body` (`contains`, `not_contains`; case-insensitive): `body` is the
+//     triggering contact message, or the contact's latest message for other triggers.
+//   - `contact_attribute`, `custom_field` (`equals`, `not_equals`, `contains`,
+//     `not_contains`, `is_set`, `is_not_set`) with `key`: a contact attribute, or a conversation
+//     custom field (`CustomField.key`). Numbers, checkboxes and dates compare as their JSON
+//     text (`42`, `true`, `2026-01-31`).
+//   - `label` (`in`: has any of the labels, `not_in`: has none of them), `team` (`in`, `not_in`
+//     with team ids, `is_set`, `is_not_set`), `assignee` (`is_set`, `is_not_set`).
+//   - `business_hours` (`equals` `inside` or `outside`): the inbox's business hours now; an
+//     inbox without hours is always inside.
+type AutomationConditionField string
+
+// AutomationConditionOperator defines model for AutomationConditionOperator.
+type AutomationConditionOperator string
+
+// AutomationRule defines model for AutomationRule.
+type AutomationRule struct {
+	Actions []AutomationAction `json:"actions"`
+
+	// Conditions All of them must match; empty matches every conversation.
+	Conditions []AutomationCondition `json:"conditions"`
+	CreatedAt  time.Time             `json:"created_at"`
+	Enabled    bool                  `json:"enabled"`
+	Id         uuid.UUID             `json:"id"`
+
+	// IdleMinutes `idle` only.
+	IdleMinutes *int32 `json:"idle_minutes,omitempty"`
+
+	// InboxId Absent for a workspace rule; an inbox rule acts only on that inbox's conversations.
+	InboxId *uuid.UUID `json:"inbox_id,omitempty"`
+	Name    string     `json:"name"`
+
+	// Position Its place in the workspace's one list, from 0.
+	Position int32 `json:"position"`
+
+	// SavedBy Who last saved the rule. Its replies go out while `bots_may_send` is off only when this
+	// is a member who is still an owner or admin when the rule runs.
+	SavedBy AutomationRuleAuthor `json:"saved_by"`
+
+	// Trigger `conversation_created`: a conversation was created (by a contact, a member or a key).
+	// `message_received`: the contact wrote (not imported messages or drafts). `status_changed`:
+	// the status changed, also when a contact's message or the snooze time reopened it.
+	// `idle`: nothing was written in an open or pending conversation for `idle_minutes`
+	// (checked every 5 minutes; once per quiet period).
+	Trigger   AutomationTrigger `json:"trigger"`
+	UpdatedAt time.Time         `json:"updated_at"`
+}
+
+// AutomationRuleAuthor Who last saved the rule. Its replies go out while `bots_may_send` is off only when this
+// is a member who is still an owner or admin when the rule runs.
+type AutomationRuleAuthor struct {
+	// ApiKeyId `api_key`.
+	ApiKeyId *uuid.UUID `json:"api_key_id,omitempty"`
+
+	// MemberId `member` and `oauth_grant`.
+	MemberId *uuid.UUID               `json:"member_id,omitempty"`
+	Type     AutomationRuleAuthorType `json:"type"`
+}
+
+// AutomationRuleAuthorType defines model for AutomationRuleAuthorType.
+type AutomationRuleAuthorType string
+
+// AutomationRuleCreate defines model for AutomationRuleCreate.
+type AutomationRuleCreate struct {
+	Actions    []AutomationAction     `json:"actions"`
+	Conditions *[]AutomationCondition `json:"conditions,omitempty"`
+	Enabled    *bool                  `json:"enabled,omitempty"`
+
+	// IdleMinutes Required for `idle`, refused for other triggers.
+	IdleMinutes *int32     `json:"idle_minutes,omitempty"`
+	InboxId     *uuid.UUID `json:"inbox_id,omitempty"`
+	Name        string     `json:"name"`
+
+	// Trigger `conversation_created`: a conversation was created (by a contact, a member or a key).
+	// `message_received`: the contact wrote (not imported messages or drafts). `status_changed`:
+	// the status changed, also when a contact's message or the snooze time reopened it.
+	// `idle`: nothing was written in an open or pending conversation for `idle_minutes`
+	// (checked every 5 minutes; once per quiet period).
+	Trigger AutomationTrigger `json:"trigger"`
+}
+
+// AutomationRuleList defines model for AutomationRuleList.
+type AutomationRuleList struct {
+	Items []AutomationRule `json:"items"`
+}
+
+// AutomationRuleOrder defines model for AutomationRuleOrder.
+type AutomationRuleOrder struct {
+	Ids []uuid.UUID `json:"ids"`
+}
+
+// AutomationRuleRef defines model for AutomationRuleRef.
+type AutomationRuleRef struct {
+	Id uuid.UUID `json:"id"`
+
+	// Name The rule's name when it acted.
+	Name string `json:"name"`
+}
+
+// AutomationRuleUpdate defines model for AutomationRuleUpdate.
+type AutomationRuleUpdate struct {
+	Actions     *[]AutomationAction      `json:"actions,omitempty"`
+	Conditions  *[]AutomationCondition   `json:"conditions,omitempty"`
+	Enabled     *bool                    `json:"enabled,omitempty"`
+	IdleMinutes nullable.Nullable[int32] `json:"idle_minutes,omitempty"`
+
+	// InboxId `null` makes it a workspace rule.
+	InboxId nullable.Nullable[uuid.UUID] `json:"inbox_id,omitempty"`
+	Name    *string                      `json:"name,omitempty"`
+
+	// Trigger `conversation_created`: a conversation was created (by a contact, a member or a key).
+	// `message_received`: the contact wrote (not imported messages or drafts). `status_changed`:
+	// the status changed, also when a contact's message or the snooze time reopened it.
+	// `idle`: nothing was written in an open or pending conversation for `idle_minutes`
+	// (checked every 5 minutes; once per quiet period).
+	Trigger *AutomationTrigger `json:"trigger,omitempty"`
+}
+
+// AutomationRun defines model for AutomationRun.
+type AutomationRun struct {
+	Actions        []AutomationRunAction `json:"actions"`
+	ConversationId uuid.UUID             `json:"conversation_id"`
+	CreatedAt      time.Time             `json:"created_at"`
+
+	// Detail `failed` only: a sentence for people.
+	Detail *string `json:"detail,omitempty"`
+
+	// Error `failed` only: the problem code the action met, as the same change through `/v1`
+	// would answer it (`field_required`, `team_access`, `validation_failed`,
+	// `email_undeliverable`, …), or `auto_reply` when a reply was refused to protect the
+	// customer (an automatic reply or bounce, a blocked contact, spam, or a rule reply in
+	// the last hour), `bot_sending_disabled` (see `saved_by`), `label_gone`,
+	// `canned_reply_gone`, `webhook_unavailable`.
+	Error   *string              `json:"error,omitempty"`
+	Id      uuid.UUID            `json:"id"`
+	Outcome AutomationRunOutcome `json:"outcome"`
+	RuleId  uuid.UUID            `json:"rule_id"`
+
+	// Trigger `conversation_created`: a conversation was created (by a contact, a member or a key).
+	// `message_received`: the contact wrote (not imported messages or drafts). `status_changed`:
+	// the status changed, also when a contact's message or the snooze time reopened it.
+	// `idle`: nothing was written in an open or pending conversation for `idle_minutes`
+	// (checked every 5 minutes; once per quiet period).
+	Trigger AutomationTrigger `json:"trigger"`
+}
+
+// AutomationRunAction defines model for AutomationRunAction.
+type AutomationRunAction struct {
+	// Result `applied`; `unchanged` when the conversation already was that way; `skipped` for
+	// `assign_pool`; `not_run` in a failed run.
+	Result AutomationRunActionResult `json:"result"`
+
+	// Type - `add_labels`, `remove_labels` (`label_ids`).
+	// - `assign_member` (`member_id`, a member with access to the conversation's inbox when the
+	//   rule runs), `assign_team` (`team_id`, a team granted the inbox), `unassign` (clears the
+	//   member). `assign_pool` leaves the conversation to automatic assignment; until automatic
+	//   assignment exists it does nothing and the run lists it as `skipped`.
+	// - `set_priority` (`priority`), `set_status` (`status`: `open`, `pending` or `closed`;
+	//   closing needs the conversation's required custom fields), `snooze` (`snooze_minutes`).
+	// - `add_note` (`body`): an internal note.
+	// - `send_reply` (`canned_reply_id`): the canned reply's text to the contact, as an
+	//   automatic reply (`Auto-Submitted: auto-replied` by e-mail).
+	// - `send_webhook` (`webhook_id`): `automation.triggered` to that endpoint.
+	Type AutomationActionType `json:"type"`
+}
+
+// AutomationRunActionResult `applied`; `unchanged` when the conversation already was that way; `skipped` for
+// `assign_pool`; `not_run` in a failed run.
+type AutomationRunActionResult string
+
+// AutomationRunOutcome defines model for AutomationRunOutcome.
+type AutomationRunOutcome string
+
+// AutomationRunPage defines model for AutomationRunPage.
+type AutomationRunPage struct {
+	Items []AutomationRun `json:"items"`
+
+	// NextCursor Absent on the last page.
+	NextCursor *string `json:"next_cursor,omitempty"`
+}
+
+// AutomationTrigger `conversation_created`: a conversation was created (by a contact, a member or a key).
+// `message_received`: the contact wrote (not imported messages or drafts). `status_changed`:
+// the status changed, also when a contact's message or the snooze time reopened it.
+// `idle`: nothing was written in an open or pending conversation for `idle_minutes`
+// (checked every 5 minutes; once per quiet period).
+type AutomationTrigger string
 
 // Availability `auto`: available in `live` inboxes while connected to `/v1/realtime` within business
 // hours. `away`: never shown as available.
@@ -17431,6 +17953,10 @@ type Message struct {
 	// RedactedBy Who removed its content; absent when it was not redacted.
 	RedactedBy *MessageRedactedBy `json:"redacted_by,omitempty"`
 
+	// Rule The automation rule that wrote it (author `system`): its notes, replies and the timeline
+	// events of its changes. Absent for everything else.
+	Rule *AutomationRuleRef `json:"rule,omitempty"`
+
 	// SentBy Who sent a draft (`member` or `bot`); absent for messages that were never drafts.
 	SentBy *MessageAuthor `json:"sent_by,omitempty"`
 }
@@ -17642,7 +18168,10 @@ type MessageEmailDetail struct {
 
 // MessageEvent defines model for MessageEvent.
 type MessageEvent struct {
-	AddedLabels *[]uuid.UUID `json:"added_labels,omitempty"`
+	// Actions `rule_applied` only: what the rule did, after the timeline events of its changes; the
+	// message's `rule` names the rule.
+	Actions     *[]AutomationRunAction `json:"actions,omitempty"`
+	AddedLabels *[]uuid.UUID           `json:"added_labels,omitempty"`
 
 	// AssigneeId The new assignee (`assigned`).
 	AssigneeId *uuid.UUID `json:"assignee_id,omitempty"`
@@ -22173,7 +22702,10 @@ type WebhookAnalyticsAlertPayload struct {
 	InboxId *uuid.UUID `json:"inbox_id,omitempty"`
 
 	// Timestamp When the event happened (not when it was sent).
-	Timestamp   time.Time        `json:"timestamp"`
+	Timestamp time.Time `json:"timestamp"`
+
+	// Type `automation.triggered` cannot be listed in an endpoint's `events`: it is sent only to the
+	// endpoint a rule's `send_webhook` action names.
 	Type        WebhookEventType `json:"type"`
 	WorkspaceId uuid.UUID        `json:"workspace_id"`
 }
@@ -22204,6 +22736,39 @@ type WebhookAttemptList struct {
 	Items []WebhookAttempt `json:"items"`
 }
 
+// WebhookAutomationTriggeredData defines model for WebhookAutomationTriggeredData.
+type WebhookAutomationTriggeredData struct {
+	// Contact The contact as a host backend needs it.
+	Contact WebhookContact `json:"contact"`
+
+	// Conversation After the rule's other actions.
+	Conversation Conversation      `json:"conversation"`
+	Rule         AutomationRuleRef `json:"rule"`
+
+	// Trigger `conversation_created`: a conversation was created (by a contact, a member or a key).
+	// `message_received`: the contact wrote (not imported messages or drafts). `status_changed`:
+	// the status changed, also when a contact's message or the snooze time reopened it.
+	// `idle`: nothing was written in an open or pending conversation for `idle_minutes`
+	// (checked every 5 minutes; once per quiet period).
+	Trigger AutomationTrigger `json:"trigger"`
+}
+
+// WebhookAutomationTriggeredPayload defines model for WebhookAutomationTriggeredPayload.
+type WebhookAutomationTriggeredPayload struct {
+	Data WebhookAutomationTriggeredData `json:"data"`
+
+	// InboxId The conversation's inbox; absent for contact events.
+	InboxId *uuid.UUID `json:"inbox_id,omitempty"`
+
+	// Timestamp When the event happened (not when it was sent).
+	Timestamp time.Time `json:"timestamp"`
+
+	// Type `automation.triggered` cannot be listed in an endpoint's `events`: it is sent only to the
+	// endpoint a rule's `send_webhook` action names.
+	Type        WebhookEventType `json:"type"`
+	WorkspaceId uuid.UUID        `json:"workspace_id"`
+}
+
 // WebhookBroadcastData defines model for WebhookBroadcastData.
 type WebhookBroadcastData struct {
 	Broadcast Broadcast `json:"broadcast"`
@@ -22222,7 +22787,10 @@ type WebhookBroadcastPayload struct {
 	InboxId *uuid.UUID `json:"inbox_id,omitempty"`
 
 	// Timestamp When the event happened (not when it was sent).
-	Timestamp   time.Time        `json:"timestamp"`
+	Timestamp time.Time `json:"timestamp"`
+
+	// Type `automation.triggered` cannot be listed in an endpoint's `events`: it is sent only to the
+	// endpoint a rule's `send_webhook` action names.
 	Type        WebhookEventType `json:"type"`
 	WorkspaceId uuid.UUID        `json:"workspace_id"`
 }
@@ -22235,7 +22803,10 @@ type WebhookChangelogEntryPayload struct {
 	InboxId *uuid.UUID `json:"inbox_id,omitempty"`
 
 	// Timestamp When the event happened (not when it was sent).
-	Timestamp   time.Time        `json:"timestamp"`
+	Timestamp time.Time `json:"timestamp"`
+
+	// Type `automation.triggered` cannot be listed in an endpoint's `events`: it is sent only to the
+	// endpoint a rule's `send_webhook` action names.
 	Type        WebhookEventType `json:"type"`
 	WorkspaceId uuid.UUID        `json:"workspace_id"`
 }
@@ -22280,7 +22851,10 @@ type WebhookContactDeletedPayload struct {
 	InboxId *uuid.UUID `json:"inbox_id,omitempty"`
 
 	// Timestamp When the event happened (not when it was sent).
-	Timestamp   time.Time        `json:"timestamp"`
+	Timestamp time.Time `json:"timestamp"`
+
+	// Type `automation.triggered` cannot be listed in an endpoint's `events`: it is sent only to the
+	// endpoint a rule's `send_webhook` action names.
 	Type        WebhookEventType `json:"type"`
 	WorkspaceId uuid.UUID        `json:"workspace_id"`
 }
@@ -22293,7 +22867,10 @@ type WebhookContactPayload struct {
 	InboxId *uuid.UUID `json:"inbox_id,omitempty"`
 
 	// Timestamp When the event happened (not when it was sent).
-	Timestamp   time.Time        `json:"timestamp"`
+	Timestamp time.Time `json:"timestamp"`
+
+	// Type `automation.triggered` cannot be listed in an endpoint's `events`: it is sent only to the
+	// endpoint a rule's `send_webhook` action names.
 	Type        WebhookEventType `json:"type"`
 	WorkspaceId uuid.UUID        `json:"workspace_id"`
 }
@@ -22319,7 +22896,10 @@ type WebhookConversationDeletedPayload struct {
 	InboxId *uuid.UUID `json:"inbox_id,omitempty"`
 
 	// Timestamp When the event happened (not when it was sent).
-	Timestamp   time.Time        `json:"timestamp"`
+	Timestamp time.Time `json:"timestamp"`
+
+	// Type `automation.triggered` cannot be listed in an endpoint's `events`: it is sent only to the
+	// endpoint a rule's `send_webhook` action names.
 	Type        WebhookEventType `json:"type"`
 	WorkspaceId uuid.UUID        `json:"workspace_id"`
 }
@@ -22332,7 +22912,10 @@ type WebhookConversationPayload struct {
 	InboxId *uuid.UUID `json:"inbox_id,omitempty"`
 
 	// Timestamp When the event happened (not when it was sent).
-	Timestamp   time.Time        `json:"timestamp"`
+	Timestamp time.Time `json:"timestamp"`
+
+	// Type `automation.triggered` cannot be listed in an endpoint's `events`: it is sent only to the
+	// endpoint a rule's `send_webhook` action names.
 	Type        WebhookEventType `json:"type"`
 	WorkspaceId uuid.UUID        `json:"workspace_id"`
 }
@@ -22358,7 +22941,10 @@ type WebhookConversationSlaPayload struct {
 	InboxId *uuid.UUID `json:"inbox_id,omitempty"`
 
 	// Timestamp When the event happened (not when it was sent).
-	Timestamp   time.Time        `json:"timestamp"`
+	Timestamp time.Time `json:"timestamp"`
+
+	// Type `automation.triggered` cannot be listed in an endpoint's `events`: it is sent only to the
+	// endpoint a rule's `send_webhook` action names.
 	Type        WebhookEventType `json:"type"`
 	WorkspaceId uuid.UUID        `json:"workspace_id"`
 }
@@ -22374,8 +22960,11 @@ type WebhookDeletedContact struct {
 
 // WebhookDelivery defines model for WebhookDelivery.
 type WebhookDelivery struct {
-	Attempts    int32            `json:"attempts"`
-	CreatedAt   time.Time        `json:"created_at"`
+	Attempts  int32     `json:"attempts"`
+	CreatedAt time.Time `json:"created_at"`
+
+	// EventType `automation.triggered` cannot be listed in an endpoint's `events`: it is sent only to the
+	// endpoint a rule's `send_webhook` action names.
 	EventType   WebhookEventType `json:"event_type"`
 	Id          uuid.UUID        `json:"id"`
 	LastAttempt *WebhookAttempt  `json:"last_attempt,omitempty"`
@@ -22394,9 +22983,12 @@ type WebhookDelivery struct {
 // WebhookDeliveryDetail defines model for WebhookDeliveryDetail.
 type WebhookDeliveryDetail struct {
 	// AttemptLog The delivery's attempts that are still kept, newest first.
-	AttemptLog  []WebhookAttempt `json:"attempt_log"`
-	Attempts    int32            `json:"attempts"`
-	CreatedAt   time.Time        `json:"created_at"`
+	AttemptLog []WebhookAttempt `json:"attempt_log"`
+	Attempts   int32            `json:"attempts"`
+	CreatedAt  time.Time        `json:"created_at"`
+
+	// EventType `automation.triggered` cannot be listed in an endpoint's `events`: it is sent only to the
+	// endpoint a rule's `send_webhook` action names.
 	EventType   WebhookEventType `json:"event_type"`
 	Id          uuid.UUID        `json:"id"`
 	LastAttempt *WebhookAttempt  `json:"last_attempt,omitempty"`
@@ -22435,7 +23027,10 @@ type WebhookDiscussionPayload struct {
 	InboxId *uuid.UUID `json:"inbox_id,omitempty"`
 
 	// Timestamp When the event happened (not when it was sent).
-	Timestamp   time.Time        `json:"timestamp"`
+	Timestamp time.Time `json:"timestamp"`
+
+	// Type `automation.triggered` cannot be listed in an endpoint's `events`: it is sent only to the
+	// endpoint a rule's `send_webhook` action names.
 	Type        WebhookEventType `json:"type"`
 	WorkspaceId uuid.UUID        `json:"workspace_id"`
 }
@@ -22448,7 +23043,10 @@ type WebhookDiscussionStagePayload struct {
 	InboxId *uuid.UUID `json:"inbox_id,omitempty"`
 
 	// Timestamp When the event happened (not when it was sent).
-	Timestamp   time.Time        `json:"timestamp"`
+	Timestamp time.Time `json:"timestamp"`
+
+	// Type `automation.triggered` cannot be listed in an endpoint's `events`: it is sent only to the
+	// endpoint a rule's `send_webhook` action names.
 	Type        WebhookEventType `json:"type"`
 	WorkspaceId uuid.UUID        `json:"workspace_id"`
 }
@@ -22513,7 +23111,8 @@ type WebhookEndpointUpdate struct {
 	Url          *string             `json:"url,omitempty"`
 }
 
-// WebhookEventType defines model for WebhookEventType.
+// WebhookEventType `automation.triggered` cannot be listed in an endpoint's `events`: it is sent only to the
+// endpoint a rule's `send_webhook` action names.
 type WebhookEventType string
 
 // WebhookFeedbackPayload defines model for WebhookFeedbackPayload.
@@ -22524,7 +23123,10 @@ type WebhookFeedbackPayload struct {
 	InboxId *uuid.UUID `json:"inbox_id,omitempty"`
 
 	// Timestamp When the event happened (not when it was sent).
-	Timestamp   time.Time        `json:"timestamp"`
+	Timestamp time.Time `json:"timestamp"`
+
+	// Type `automation.triggered` cannot be listed in an endpoint's `events`: it is sent only to the
+	// endpoint a rule's `send_webhook` action names.
 	Type        WebhookEventType `json:"type"`
 	WorkspaceId uuid.UUID        `json:"workspace_id"`
 }
@@ -22537,7 +23139,10 @@ type WebhookHelpArticlePayload struct {
 	InboxId *uuid.UUID `json:"inbox_id,omitempty"`
 
 	// Timestamp When the event happened (not when it was sent).
-	Timestamp   time.Time        `json:"timestamp"`
+	Timestamp time.Time `json:"timestamp"`
+
+	// Type `automation.triggered` cannot be listed in an endpoint's `events`: it is sent only to the
+	// endpoint a rule's `send_webhook` action names.
 	Type        WebhookEventType `json:"type"`
 	WorkspaceId uuid.UUID        `json:"workspace_id"`
 }
@@ -22550,7 +23155,10 @@ type WebhookIssueLinkPayload struct {
 	InboxId *uuid.UUID `json:"inbox_id,omitempty"`
 
 	// Timestamp When the event happened (not when it was sent).
-	Timestamp   time.Time        `json:"timestamp"`
+	Timestamp time.Time `json:"timestamp"`
+
+	// Type `automation.triggered` cannot be listed in an endpoint's `events`: it is sent only to the
+	// endpoint a rule's `send_webhook` action names.
 	Type        WebhookEventType `json:"type"`
 	WorkspaceId uuid.UUID        `json:"workspace_id"`
 }
@@ -22571,7 +23179,10 @@ type WebhookMessagePayload struct {
 	InboxId *uuid.UUID `json:"inbox_id,omitempty"`
 
 	// Timestamp When the event happened (not when it was sent).
-	Timestamp   time.Time        `json:"timestamp"`
+	Timestamp time.Time `json:"timestamp"`
+
+	// Type `automation.triggered` cannot be listed in an endpoint's `events`: it is sent only to the
+	// endpoint a rule's `send_webhook` action names.
 	Type        WebhookEventType `json:"type"`
 	WorkspaceId uuid.UUID        `json:"workspace_id"`
 }
@@ -22582,7 +23193,10 @@ type WebhookPayloadBase struct {
 	InboxId *uuid.UUID `json:"inbox_id,omitempty"`
 
 	// Timestamp When the event happened (not when it was sent).
-	Timestamp   time.Time        `json:"timestamp"`
+	Timestamp time.Time `json:"timestamp"`
+
+	// Type `automation.triggered` cannot be listed in an endpoint's `events`: it is sent only to the
+	// endpoint a rule's `send_webhook` action names.
 	Type        WebhookEventType `json:"type"`
 	WorkspaceId uuid.UUID        `json:"workspace_id"`
 }
@@ -22595,7 +23209,10 @@ type WebhookStatusComponentPayload struct {
 	InboxId *uuid.UUID `json:"inbox_id,omitempty"`
 
 	// Timestamp When the event happened (not when it was sent).
-	Timestamp   time.Time        `json:"timestamp"`
+	Timestamp time.Time `json:"timestamp"`
+
+	// Type `automation.triggered` cannot be listed in an endpoint's `events`: it is sent only to the
+	// endpoint a rule's `send_webhook` action names.
 	Type        WebhookEventType `json:"type"`
 	WorkspaceId uuid.UUID        `json:"workspace_id"`
 }
@@ -22608,7 +23225,10 @@ type WebhookStatusIncidentPayload struct {
 	InboxId *uuid.UUID `json:"inbox_id,omitempty"`
 
 	// Timestamp When the event happened (not when it was sent).
-	Timestamp   time.Time        `json:"timestamp"`
+	Timestamp time.Time `json:"timestamp"`
+
+	// Type `automation.triggered` cannot be listed in an endpoint's `events`: it is sent only to the
+	// endpoint a rule's `send_webhook` action names.
 	Type        WebhookEventType `json:"type"`
 	WorkspaceId uuid.UUID        `json:"workspace_id"`
 }
@@ -22621,7 +23241,10 @@ type WebhookStatusMonitorPayload struct {
 	InboxId *uuid.UUID `json:"inbox_id,omitempty"`
 
 	// Timestamp When the event happened (not when it was sent).
-	Timestamp   time.Time        `json:"timestamp"`
+	Timestamp time.Time `json:"timestamp"`
+
+	// Type `automation.triggered` cannot be listed in an endpoint's `events`: it is sent only to the
+	// endpoint a rule's `send_webhook` action names.
 	Type        WebhookEventType `json:"type"`
 	WorkspaceId uuid.UUID        `json:"workspace_id"`
 }
@@ -22647,7 +23270,10 @@ type WebhookSubscriptionPayload struct {
 	InboxId *uuid.UUID `json:"inbox_id,omitempty"`
 
 	// Timestamp When the event happened (not when it was sent).
-	Timestamp   time.Time        `json:"timestamp"`
+	Timestamp time.Time `json:"timestamp"`
+
+	// Type `automation.triggered` cannot be listed in an endpoint's `events`: it is sent only to the
+	// endpoint a rule's `send_webhook` action names.
 	Type        WebhookEventType `json:"type"`
 	WorkspaceId uuid.UUID        `json:"workspace_id"`
 }
@@ -22661,7 +23287,10 @@ type WebhookTeamPayload struct {
 	InboxId *uuid.UUID `json:"inbox_id,omitempty"`
 
 	// Timestamp When the event happened (not when it was sent).
-	Timestamp   time.Time        `json:"timestamp"`
+	Timestamp time.Time `json:"timestamp"`
+
+	// Type `automation.triggered` cannot be listed in an endpoint's `events`: it is sent only to the
+	// endpoint a rule's `send_webhook` action names.
 	Type        WebhookEventType `json:"type"`
 	WorkspaceId uuid.UUID        `json:"workspace_id"`
 }
@@ -22761,6 +23390,9 @@ type ApiKeyId = uuid.UUID
 
 // AttachmentId defines model for AttachmentId.
 type AttachmentId = uuid.UUID
+
+// AutomationRuleId defines model for AutomationRuleId.
+type AutomationRuleId = uuid.UUID
 
 // BroadcastId defines model for BroadcastId.
 type BroadcastId = uuid.UUID
@@ -23607,6 +24239,60 @@ type ListAuditLogParams struct {
 
 	// Until Only entries before this time.
 	Until *time.Time `form:"until,omitempty" json:"until,omitempty"`
+
+	// Cursor The `next_cursor` of the previous page.
+	Cursor *Cursor `form:"cursor,omitempty" json:"cursor,omitempty"`
+
+	// Limit Page size, 1 to 100; 25 by default.
+	Limit *Limit `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// ListAutomationRulesParams defines parameters for ListAutomationRules.
+type ListAutomationRulesParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// CreateAutomationRuleParams defines parameters for CreateAutomationRule.
+type CreateAutomationRuleParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// OrderAutomationRulesParams defines parameters for OrderAutomationRules.
+type OrderAutomationRulesParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// DeleteAutomationRuleParams defines parameters for DeleteAutomationRule.
+type DeleteAutomationRuleParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// GetAutomationRuleParams defines parameters for GetAutomationRule.
+type GetAutomationRuleParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// UpdateAutomationRuleParams defines parameters for UpdateAutomationRule.
+type UpdateAutomationRuleParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// ListAutomationRunsParams defines parameters for ListAutomationRuns.
+type ListAutomationRunsParams struct {
+	// Outcome Only runs with this outcome.
+	Outcome *AutomationRunOutcome `form:"outcome,omitempty" json:"outcome,omitempty"`
 
 	// Cursor The `next_cursor` of the previous page.
 	Cursor *Cursor `form:"cursor,omitempty" json:"cursor,omitempty"`
@@ -26646,6 +27332,20 @@ type WebhookAnalyticsAlertParams struct {
 	WebhookSignature WebhookSignatureHeader `json:"webhook-signature"`
 }
 
+// WebhookAutomationTriggeredParams defines parameters for WebhookAutomationTriggered.
+type WebhookAutomationTriggeredParams struct {
+	// WebhookId The delivery's id, the same on every retry; use it to ignore duplicates.
+	WebhookId WebhookIdHeader `json:"webhook-id"`
+
+	// WebhookTimestamp Unix seconds of this attempt. Refuse values far from your clock.
+	WebhookTimestamp WebhookTimestampHeader `json:"webhook-timestamp"`
+
+	// WebhookSignature Space-separated `v1,<base64>` signatures: HMAC-SHA256 over
+	// `<webhook-id>.<webhook-timestamp>.<body>` with the base64-decoded part of the
+	// `whsec_` secret (Standard Webhooks). Two during a secret rotation.
+	WebhookSignature WebhookSignatureHeader `json:"webhook-signature"`
+}
+
 // WebhookBroadcastUpdatedParams defines parameters for WebhookBroadcastUpdated.
 type WebhookBroadcastUpdatedParams struct {
 	// WebhookId The delivery's id, the same on every retry; use it to ignore duplicates.
@@ -27399,6 +28099,15 @@ type FinishPasskeySignInJSONRequestBody = PasskeyCeremonyResult
 // StartSsoSignInJSONRequestBody defines body for StartSsoSignIn for application/json ContentType.
 type StartSsoSignInJSONRequestBody = SsoStartRequest
 
+// CreateAutomationRuleJSONRequestBody defines body for CreateAutomationRule for application/json ContentType.
+type CreateAutomationRuleJSONRequestBody = AutomationRuleCreate
+
+// OrderAutomationRulesJSONRequestBody defines body for OrderAutomationRules for application/json ContentType.
+type OrderAutomationRulesJSONRequestBody = AutomationRuleOrder
+
+// UpdateAutomationRuleJSONRequestBody defines body for UpdateAutomationRule for application/json ContentType.
+type UpdateAutomationRuleJSONRequestBody = AutomationRuleUpdate
+
 // CreateBroadcastJSONRequestBody defines body for CreateBroadcast for application/json ContentType.
 type CreateBroadcastJSONRequestBody = BroadcastCreate
 
@@ -27803,6 +28512,9 @@ type CreateWorkspaceJSONRequestBody = WorkspaceCreate
 
 // WebhookAnalyticsAlertJSONRequestBody defines body for WebhookAnalyticsAlert for application/json ContentType.
 type WebhookAnalyticsAlertJSONRequestBody = WebhookAnalyticsAlertPayload
+
+// WebhookAutomationTriggeredJSONRequestBody defines body for WebhookAutomationTriggered for application/json ContentType.
+type WebhookAutomationTriggeredJSONRequestBody = WebhookAutomationTriggeredPayload
 
 // WebhookBroadcastUpdatedJSONRequestBody defines body for WebhookBroadcastUpdated for application/json ContentType.
 type WebhookBroadcastUpdatedJSONRequestBody = WebhookBroadcastPayload
@@ -34536,7 +35248,7 @@ type ClientInterface interface {
 	//
 	// Owners and admins only, with a member session. The secret is returned once and stored
 	// only as a hash. A key limited to inboxes cannot hold `inboxes:manage`, `webhooks:manage`,
-	// `workspace:manage`, `fields:manage` or `audit:read` (`400 validation_failed`); only an owner gives a key
+	// `workspace:manage`, `fields:manage`, `automations:manage` or `audit:read` (`400 validation_failed`); only an owner gives a key
 	// `audit:read` (`403 forbidden`).
 	//
 	// Takes any type of body and a specified content type.
@@ -34548,7 +35260,7 @@ type ClientInterface interface {
 	//
 	// Owners and admins only, with a member session. The secret is returned once and stored
 	// only as a hash. A key limited to inboxes cannot hold `inboxes:manage`, `webhooks:manage`,
-	// `workspace:manage`, `fields:manage` or `audit:read` (`400 validation_failed`); only an owner gives a key
+	// `workspace:manage`, `fields:manage`, `automations:manage` or `audit:read` (`400 validation_failed`); only an owner gives a key
 	// `audit:read` (`403 forbidden`).
 	//
 	// Takes a body of the `application/json` content type.
@@ -34772,6 +35484,129 @@ type ClientInterface interface {
 	//
 	// Corresponds with POST /v1/auth/sso (the `StartSsoSignIn` operationId).
 	StartSsoSignIn(ctx context.Context, body StartSsoSignInJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListAutomationRules List automation rules
+	//
+	// In `position` order. Callers limited to some inboxes (agents, inbox-limited keys) see the
+	// workspace rules and the rules of their inboxes.
+	//
+	// Scope: `automations:read`.
+	//
+	// Corresponds with GET /v1/automation-rules (the `ListAutomationRules` operationId).
+	ListAutomationRules(ctx context.Context, params *ListAutomationRulesParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateAutomationRuleWithBody Create an automation rule
+	//
+	// Owners, admins and API keys not limited to inboxes. The rule goes last in the order and
+	// runs for triggers that happen after it is saved. A workspace holds at most 100 rules
+	// (`403 automation_rule_limit`). Every label, member, team, canned reply, webhook endpoint,
+	// custom field and the inbox a rule names must exist in the workspace (`400
+	// validation_failed`); one deleted later makes the actions that need it fail.
+	//
+	// Scope: `automations:manage`.
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /v1/automation-rules (the `CreateAutomationRule` operationId).
+	CreateAutomationRuleWithBody(ctx context.Context, params *CreateAutomationRuleParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateAutomationRule Create an automation rule
+	//
+	// Owners, admins and API keys not limited to inboxes. The rule goes last in the order and
+	// runs for triggers that happen after it is saved. A workspace holds at most 100 rules
+	// (`403 automation_rule_limit`). Every label, member, team, canned reply, webhook endpoint,
+	// custom field and the inbox a rule names must exist in the workspace (`400
+	// validation_failed`); one deleted later makes the actions that need it fail.
+	//
+	// Scope: `automations:manage`.
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /v1/automation-rules (the `CreateAutomationRule` operationId).
+	CreateAutomationRule(ctx context.Context, params *CreateAutomationRuleParams, body CreateAutomationRuleJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// OrderAutomationRulesWithBody Reorder automation rules
+	//
+	// Owners, admins and API keys not limited to inboxes. `ids` names every rule of the workspace
+	// once, in the new order (`400 validation_failed` otherwise).
+	//
+	// Scope: `automations:manage`.
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with PUT /v1/automation-rules/order (the `OrderAutomationRules` operationId).
+	OrderAutomationRulesWithBody(ctx context.Context, params *OrderAutomationRulesParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// OrderAutomationRules Reorder automation rules
+	//
+	// Owners, admins and API keys not limited to inboxes. `ids` names every rule of the workspace
+	// once, in the new order (`400 validation_failed` otherwise).
+	//
+	// Scope: `automations:manage`.
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with PUT /v1/automation-rules/order (the `OrderAutomationRules` operationId).
+	OrderAutomationRules(ctx context.Context, params *OrderAutomationRulesParams, body OrderAutomationRulesJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteAutomationRule Delete an automation rule
+	//
+	// Owners, admins and API keys not limited to inboxes. Its log goes with it; what it already
+	// changed stays.
+	//
+	// Scope: `automations:manage`.
+	//
+	// Corresponds with DELETE /v1/automation-rules/{automationRuleId} (the `DeleteAutomationRule` operationId).
+	DeleteAutomationRule(ctx context.Context, automationRuleId AutomationRuleId, params *DeleteAutomationRuleParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetAutomationRule Get an automation rule
+	//
+	// A rule the caller does not see (see `GET /v1/automation-rules`) answers `404`.
+	//
+	// Scope: `automations:read`.
+	//
+	// Corresponds with GET /v1/automation-rules/{automationRuleId} (the `GetAutomationRule` operationId).
+	GetAutomationRule(ctx context.Context, automationRuleId AutomationRuleId, params *GetAutomationRuleParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateAutomationRuleWithBody Update an automation rule
+	//
+	// Owners, admins and API keys not limited to inboxes. Only what is sent changes;
+	// `conditions` and `actions` are replaced whole. The caller becomes the rule's `saved_by`,
+	// which decides whether its replies may go out while `bots_may_send` is off. Runs already
+	// queued use the rule as it is when they run.
+	//
+	// Scope: `automations:manage`.
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with PATCH /v1/automation-rules/{automationRuleId} (the `UpdateAutomationRule` operationId).
+	UpdateAutomationRuleWithBody(ctx context.Context, automationRuleId AutomationRuleId, params *UpdateAutomationRuleParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateAutomationRule Update an automation rule
+	//
+	// Owners, admins and API keys not limited to inboxes. Only what is sent changes;
+	// `conditions` and `actions` are replaced whole. The caller becomes the rule's `saved_by`,
+	// which decides whether its replies may go out while `bots_may_send` is off. Runs already
+	// queued use the rule as it is when they run.
+	//
+	// Scope: `automations:manage`.
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with PATCH /v1/automation-rules/{automationRuleId} (the `UpdateAutomationRule` operationId).
+	UpdateAutomationRule(ctx context.Context, automationRuleId AutomationRuleId, params *UpdateAutomationRuleParams, body UpdateAutomationRuleJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListAutomationRuns A rule's log
+	//
+	// The rule's runs of the last 30 days, newest first: one per trigger whose conditions
+	// matched, `applied` or `failed` with the reason. Triggers whose conditions did not match
+	// leave no run. Callers limited to some inboxes see the runs on conversations of their
+	// inboxes.
+	//
+	// Scope: `automations:read`.
+	//
+	// Corresponds with GET /v1/automation-rules/{automationRuleId}/runs (the `ListAutomationRuns` operationId).
+	ListAutomationRuns(ctx context.Context, automationRuleId AutomationRuleId, params *ListAutomationRunsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ListBroadcasts List broadcasts
 	//
@@ -45916,7 +46751,7 @@ func (c *Client) ListApiKeys(ctx context.Context, params *ListApiKeysParams, req
 //
 // Owners and admins only, with a member session. The secret is returned once and stored
 // only as a hash. A key limited to inboxes cannot hold `inboxes:manage`, `webhooks:manage`,
-// `workspace:manage`, `fields:manage` or `audit:read` (`400 validation_failed`); only an owner gives a key
+// `workspace:manage`, `fields:manage`, `automations:manage` or `audit:read` (`400 validation_failed`); only an owner gives a key
 // `audit:read` (`403 forbidden`).
 //
 // Takes any type of body and a specified content type.
@@ -45938,7 +46773,7 @@ func (c *Client) CreateApiKeyWithBody(ctx context.Context, params *CreateApiKeyP
 //
 // Owners and admins only, with a member session. The secret is returned once and stored
 // only as a hash. A key limited to inboxes cannot hold `inboxes:manage`, `webhooks:manage`,
-// `workspace:manage`, `fields:manage` or `audit:read` (`400 validation_failed`); only an owner gives a key
+// `workspace:manage`, `fields:manage`, `automations:manage` or `audit:read` (`400 validation_failed`); only an owner gives a key
 // `audit:read` (`403 forbidden`).
 //
 // Takes a body of the `application/json` content type.
@@ -46313,6 +47148,229 @@ func (c *Client) StartSsoSignInWithBody(ctx context.Context, contentType string,
 // Corresponds with POST /v1/auth/sso (the `StartSsoSignIn` operationId).
 func (c *Client) StartSsoSignIn(ctx context.Context, body StartSsoSignInJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewStartSsoSignInRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// ListAutomationRules List automation rules
+//
+// In `position` order. Callers limited to some inboxes (agents, inbox-limited keys) see the
+// workspace rules and the rules of their inboxes.
+//
+// Scope: `automations:read`.
+//
+// Corresponds with GET /v1/automation-rules (the `ListAutomationRules` operationId).
+func (c *Client) ListAutomationRules(ctx context.Context, params *ListAutomationRulesParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListAutomationRulesRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// CreateAutomationRuleWithBody Create an automation rule
+//
+// Owners, admins and API keys not limited to inboxes. The rule goes last in the order and
+// runs for triggers that happen after it is saved. A workspace holds at most 100 rules
+// (`403 automation_rule_limit`). Every label, member, team, canned reply, webhook endpoint,
+// custom field and the inbox a rule names must exist in the workspace (`400
+// validation_failed`); one deleted later makes the actions that need it fail.
+//
+// Scope: `automations:manage`.
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /v1/automation-rules (the `CreateAutomationRule` operationId).
+func (c *Client) CreateAutomationRuleWithBody(ctx context.Context, params *CreateAutomationRuleParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateAutomationRuleRequestWithBody(c.Server, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// CreateAutomationRule Create an automation rule
+//
+// Owners, admins and API keys not limited to inboxes. The rule goes last in the order and
+// runs for triggers that happen after it is saved. A workspace holds at most 100 rules
+// (`403 automation_rule_limit`). Every label, member, team, canned reply, webhook endpoint,
+// custom field and the inbox a rule names must exist in the workspace (`400
+// validation_failed`); one deleted later makes the actions that need it fail.
+//
+// Scope: `automations:manage`.
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /v1/automation-rules (the `CreateAutomationRule` operationId).
+func (c *Client) CreateAutomationRule(ctx context.Context, params *CreateAutomationRuleParams, body CreateAutomationRuleJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateAutomationRuleRequest(c.Server, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// OrderAutomationRulesWithBody Reorder automation rules
+//
+// Owners, admins and API keys not limited to inboxes. `ids` names every rule of the workspace
+// once, in the new order (`400 validation_failed` otherwise).
+//
+// Scope: `automations:manage`.
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with PUT /v1/automation-rules/order (the `OrderAutomationRules` operationId).
+func (c *Client) OrderAutomationRulesWithBody(ctx context.Context, params *OrderAutomationRulesParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewOrderAutomationRulesRequestWithBody(c.Server, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// OrderAutomationRules Reorder automation rules
+//
+// Owners, admins and API keys not limited to inboxes. `ids` names every rule of the workspace
+// once, in the new order (`400 validation_failed` otherwise).
+//
+// Scope: `automations:manage`.
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with PUT /v1/automation-rules/order (the `OrderAutomationRules` operationId).
+func (c *Client) OrderAutomationRules(ctx context.Context, params *OrderAutomationRulesParams, body OrderAutomationRulesJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewOrderAutomationRulesRequest(c.Server, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// DeleteAutomationRule Delete an automation rule
+//
+// Owners, admins and API keys not limited to inboxes. Its log goes with it; what it already
+// changed stays.
+//
+// Scope: `automations:manage`.
+//
+// Corresponds with DELETE /v1/automation-rules/{automationRuleId} (the `DeleteAutomationRule` operationId).
+func (c *Client) DeleteAutomationRule(ctx context.Context, automationRuleId AutomationRuleId, params *DeleteAutomationRuleParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteAutomationRuleRequest(c.Server, automationRuleId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetAutomationRule Get an automation rule
+//
+// A rule the caller does not see (see `GET /v1/automation-rules`) answers `404`.
+//
+// Scope: `automations:read`.
+//
+// Corresponds with GET /v1/automation-rules/{automationRuleId} (the `GetAutomationRule` operationId).
+func (c *Client) GetAutomationRule(ctx context.Context, automationRuleId AutomationRuleId, params *GetAutomationRuleParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetAutomationRuleRequest(c.Server, automationRuleId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// UpdateAutomationRuleWithBody Update an automation rule
+//
+// Owners, admins and API keys not limited to inboxes. Only what is sent changes;
+// `conditions` and `actions` are replaced whole. The caller becomes the rule's `saved_by`,
+// which decides whether its replies may go out while `bots_may_send` is off. Runs already
+// queued use the rule as it is when they run.
+//
+// Scope: `automations:manage`.
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with PATCH /v1/automation-rules/{automationRuleId} (the `UpdateAutomationRule` operationId).
+func (c *Client) UpdateAutomationRuleWithBody(ctx context.Context, automationRuleId AutomationRuleId, params *UpdateAutomationRuleParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateAutomationRuleRequestWithBody(c.Server, automationRuleId, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// UpdateAutomationRule Update an automation rule
+//
+// Owners, admins and API keys not limited to inboxes. Only what is sent changes;
+// `conditions` and `actions` are replaced whole. The caller becomes the rule's `saved_by`,
+// which decides whether its replies may go out while `bots_may_send` is off. Runs already
+// queued use the rule as it is when they run.
+//
+// Scope: `automations:manage`.
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with PATCH /v1/automation-rules/{automationRuleId} (the `UpdateAutomationRule` operationId).
+func (c *Client) UpdateAutomationRule(ctx context.Context, automationRuleId AutomationRuleId, params *UpdateAutomationRuleParams, body UpdateAutomationRuleJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateAutomationRuleRequest(c.Server, automationRuleId, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// ListAutomationRuns A rule's log
+//
+// The rule's runs of the last 30 days, newest first: one per trigger whose conditions
+// matched, `applied` or `failed` with the reason. Triggers whose conditions did not match
+// leave no run. Callers limited to some inboxes see the runs on conversations of their
+// inboxes.
+//
+// Scope: `automations:read`.
+//
+// Corresponds with GET /v1/automation-rules/{automationRuleId}/runs (the `ListAutomationRuns` operationId).
+func (c *Client) ListAutomationRuns(ctx context.Context, automationRuleId AutomationRuleId, params *ListAutomationRunsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListAutomationRunsRequest(c.Server, automationRuleId, params)
 	if err != nil {
 		return nil, err
 	}
@@ -65471,6 +66529,429 @@ func NewStartSsoSignInRequestWithBody(server string, contentType string, body io
 	}
 
 	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewListAutomationRulesRequest constructs an http.Request for the ListAutomationRules method
+func NewListAutomationRulesRequest(server string, params *ListAutomationRulesParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/automation-rules")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewCreateAutomationRuleRequest calls the generic CreateAutomationRule builder with application/json body
+func NewCreateAutomationRuleRequest(server string, params *CreateAutomationRuleParams, body CreateAutomationRuleJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateAutomationRuleRequestWithBody(server, params, "application/json", bodyReader)
+}
+
+// NewCreateAutomationRuleRequestWithBody constructs an http.Request for the CreateAutomationRule method, with any body, and a specified content type
+func NewCreateAutomationRuleRequestWithBody(server string, params *CreateAutomationRuleParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/automation-rules")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.IdempotencyKey != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Idempotency-Key", *params.IdempotencyKey, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Idempotency-Key", headerParam0)
+		}
+
+		if params.YuvaWorkspace != nil {
+			var headerParam1 string
+
+			headerParam1, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam1)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewOrderAutomationRulesRequest calls the generic OrderAutomationRules builder with application/json body
+func NewOrderAutomationRulesRequest(server string, params *OrderAutomationRulesParams, body OrderAutomationRulesJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewOrderAutomationRulesRequestWithBody(server, params, "application/json", bodyReader)
+}
+
+// NewOrderAutomationRulesRequestWithBody constructs an http.Request for the OrderAutomationRules method, with any body, and a specified content type
+func NewOrderAutomationRulesRequestWithBody(server string, params *OrderAutomationRulesParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/automation-rules/order")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPut, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewDeleteAutomationRuleRequest constructs an http.Request for the DeleteAutomationRule method
+func NewDeleteAutomationRuleRequest(server string, automationRuleId AutomationRuleId, params *DeleteAutomationRuleParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "automationRuleId", automationRuleId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/automation-rules/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodDelete, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewGetAutomationRuleRequest constructs an http.Request for the GetAutomationRule method
+func NewGetAutomationRuleRequest(server string, automationRuleId AutomationRuleId, params *GetAutomationRuleParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "automationRuleId", automationRuleId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/automation-rules/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewUpdateAutomationRuleRequest calls the generic UpdateAutomationRule builder with application/json body
+func NewUpdateAutomationRuleRequest(server string, automationRuleId AutomationRuleId, params *UpdateAutomationRuleParams, body UpdateAutomationRuleJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateAutomationRuleRequestWithBody(server, automationRuleId, params, "application/json", bodyReader)
+}
+
+// NewUpdateAutomationRuleRequestWithBody constructs an http.Request for the UpdateAutomationRule method, with any body, and a specified content type
+func NewUpdateAutomationRuleRequestWithBody(server string, automationRuleId AutomationRuleId, params *UpdateAutomationRuleParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "automationRuleId", automationRuleId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/automation-rules/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPatch, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewListAutomationRunsRequest constructs an http.Request for the ListAutomationRuns method
+func NewListAutomationRunsRequest(server string, automationRuleId AutomationRuleId, params *ListAutomationRunsParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "automationRuleId", automationRuleId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/automation-rules/%s/runs", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if params.Outcome != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "outcome", *params.Outcome, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Cursor != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "cursor", *params.Cursor, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "limit", *params.Limit, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: "int32"}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
 
 	return req, nil
 }
@@ -92256,7 +93737,7 @@ type ClientWithResponsesInterface interface {
 	//
 	// Owners and admins only, with a member session. The secret is returned once and stored
 	// only as a hash. A key limited to inboxes cannot hold `inboxes:manage`, `webhooks:manage`,
-	// `workspace:manage`, `fields:manage` or `audit:read` (`400 validation_failed`); only an owner gives a key
+	// `workspace:manage`, `fields:manage`, `automations:manage` or `audit:read` (`400 validation_failed`); only an owner gives a key
 	// `audit:read` (`403 forbidden`).
 	//
 	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
@@ -92268,7 +93749,7 @@ type ClientWithResponsesInterface interface {
 	//
 	// Owners and admins only, with a member session. The secret is returned once and stored
 	// only as a hash. A key limited to inboxes cannot hold `inboxes:manage`, `webhooks:manage`,
-	// `workspace:manage`, `fields:manage` or `audit:read` (`400 validation_failed`); only an owner gives a key
+	// `workspace:manage`, `fields:manage`, `automations:manage` or `audit:read` (`400 validation_failed`); only an owner gives a key
 	// `audit:read` (`403 forbidden`).
 	//
 	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
@@ -92502,6 +93983,137 @@ type ClientWithResponsesInterface interface {
 	//
 	// Corresponds with POST /v1/auth/sso (the `StartSsoSignIn` operationId).
 	StartSsoSignInWithResponse(ctx context.Context, body StartSsoSignInJSONRequestBody, reqEditors ...RequestEditorFn) (*StartSsoSignInResponse, error)
+
+	// ListAutomationRulesWithResponse List automation rules
+	//
+	// In `position` order. Callers limited to some inboxes (agents, inbox-limited keys) see the
+	// workspace rules and the rules of their inboxes.
+	//
+	// Scope: `automations:read`.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /v1/automation-rules (the `ListAutomationRules` operationId).
+	ListAutomationRulesWithResponse(ctx context.Context, params *ListAutomationRulesParams, reqEditors ...RequestEditorFn) (*ListAutomationRulesResponse, error)
+
+	// CreateAutomationRuleWithBodyWithResponse Create an automation rule
+	//
+	// Owners, admins and API keys not limited to inboxes. The rule goes last in the order and
+	// runs for triggers that happen after it is saved. A workspace holds at most 100 rules
+	// (`403 automation_rule_limit`). Every label, member, team, canned reply, webhook endpoint,
+	// custom field and the inbox a rule names must exist in the workspace (`400
+	// validation_failed`); one deleted later makes the actions that need it fail.
+	//
+	// Scope: `automations:manage`.
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /v1/automation-rules (the `CreateAutomationRule` operationId).
+	CreateAutomationRuleWithBodyWithResponse(ctx context.Context, params *CreateAutomationRuleParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateAutomationRuleResponse, error)
+
+	// CreateAutomationRuleWithResponse Create an automation rule
+	//
+	// Owners, admins and API keys not limited to inboxes. The rule goes last in the order and
+	// runs for triggers that happen after it is saved. A workspace holds at most 100 rules
+	// (`403 automation_rule_limit`). Every label, member, team, canned reply, webhook endpoint,
+	// custom field and the inbox a rule names must exist in the workspace (`400
+	// validation_failed`); one deleted later makes the actions that need it fail.
+	//
+	// Scope: `automations:manage`.
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /v1/automation-rules (the `CreateAutomationRule` operationId).
+	CreateAutomationRuleWithResponse(ctx context.Context, params *CreateAutomationRuleParams, body CreateAutomationRuleJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateAutomationRuleResponse, error)
+
+	// OrderAutomationRulesWithBodyWithResponse Reorder automation rules
+	//
+	// Owners, admins and API keys not limited to inboxes. `ids` names every rule of the workspace
+	// once, in the new order (`400 validation_failed` otherwise).
+	//
+	// Scope: `automations:manage`.
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PUT /v1/automation-rules/order (the `OrderAutomationRules` operationId).
+	OrderAutomationRulesWithBodyWithResponse(ctx context.Context, params *OrderAutomationRulesParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*OrderAutomationRulesResponse, error)
+
+	// OrderAutomationRulesWithResponse Reorder automation rules
+	//
+	// Owners, admins and API keys not limited to inboxes. `ids` names every rule of the workspace
+	// once, in the new order (`400 validation_failed` otherwise).
+	//
+	// Scope: `automations:manage`.
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PUT /v1/automation-rules/order (the `OrderAutomationRules` operationId).
+	OrderAutomationRulesWithResponse(ctx context.Context, params *OrderAutomationRulesParams, body OrderAutomationRulesJSONRequestBody, reqEditors ...RequestEditorFn) (*OrderAutomationRulesResponse, error)
+
+	// DeleteAutomationRuleWithResponse Delete an automation rule
+	//
+	// Owners, admins and API keys not limited to inboxes. Its log goes with it; what it already
+	// changed stays.
+	//
+	// Scope: `automations:manage`.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with DELETE /v1/automation-rules/{automationRuleId} (the `DeleteAutomationRule` operationId).
+	DeleteAutomationRuleWithResponse(ctx context.Context, automationRuleId AutomationRuleId, params *DeleteAutomationRuleParams, reqEditors ...RequestEditorFn) (*DeleteAutomationRuleResponse, error)
+
+	// GetAutomationRuleWithResponse Get an automation rule
+	//
+	// A rule the caller does not see (see `GET /v1/automation-rules`) answers `404`.
+	//
+	// Scope: `automations:read`.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /v1/automation-rules/{automationRuleId} (the `GetAutomationRule` operationId).
+	GetAutomationRuleWithResponse(ctx context.Context, automationRuleId AutomationRuleId, params *GetAutomationRuleParams, reqEditors ...RequestEditorFn) (*GetAutomationRuleResponse, error)
+
+	// UpdateAutomationRuleWithBodyWithResponse Update an automation rule
+	//
+	// Owners, admins and API keys not limited to inboxes. Only what is sent changes;
+	// `conditions` and `actions` are replaced whole. The caller becomes the rule's `saved_by`,
+	// which decides whether its replies may go out while `bots_may_send` is off. Runs already
+	// queued use the rule as it is when they run.
+	//
+	// Scope: `automations:manage`.
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PATCH /v1/automation-rules/{automationRuleId} (the `UpdateAutomationRule` operationId).
+	UpdateAutomationRuleWithBodyWithResponse(ctx context.Context, automationRuleId AutomationRuleId, params *UpdateAutomationRuleParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateAutomationRuleResponse, error)
+
+	// UpdateAutomationRuleWithResponse Update an automation rule
+	//
+	// Owners, admins and API keys not limited to inboxes. Only what is sent changes;
+	// `conditions` and `actions` are replaced whole. The caller becomes the rule's `saved_by`,
+	// which decides whether its replies may go out while `bots_may_send` is off. Runs already
+	// queued use the rule as it is when they run.
+	//
+	// Scope: `automations:manage`.
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PATCH /v1/automation-rules/{automationRuleId} (the `UpdateAutomationRule` operationId).
+	UpdateAutomationRuleWithResponse(ctx context.Context, automationRuleId AutomationRuleId, params *UpdateAutomationRuleParams, body UpdateAutomationRuleJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateAutomationRuleResponse, error)
+
+	// ListAutomationRunsWithResponse A rule's log
+	//
+	// The rule's runs of the last 30 days, newest first: one per trigger whose conditions
+	// matched, `applied` or `failed` with the reason. Triggers whose conditions did not match
+	// leave no run. Callers limited to some inboxes see the runs on conversations of their
+	// inboxes.
+	//
+	// Scope: `automations:read`.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /v1/automation-rules/{automationRuleId}/runs (the `ListAutomationRuns` operationId).
+	ListAutomationRunsWithResponse(ctx context.Context, automationRuleId AutomationRuleId, params *ListAutomationRunsParams, reqEditors ...RequestEditorFn) (*ListAutomationRunsResponse, error)
 
 	// ListBroadcastsWithResponse List broadcasts
 	//
@@ -108288,6 +109900,440 @@ func (r StartSsoSignInResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r StartSsoSignInResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type ListAutomationRulesResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *AutomationRuleList
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r ListAutomationRulesResponse) GetJSON200() *AutomationRuleList {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r ListAutomationRulesResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r ListAutomationRulesResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetBody returns the raw response body bytes
+func (r ListAutomationRulesResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r ListAutomationRulesResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListAutomationRulesResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ListAutomationRulesResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type CreateAutomationRuleResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON201 the response for an HTTP 201 `application/json` response
+	JSON201 *AutomationRule
+	// ApplicationproblemJSON400 the response for an HTTP 400 `application/problem+json` response
+	ApplicationproblemJSON400 *Problem
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+}
+
+// GetJSON201 returns the response for an HTTP 201 `application/json` response
+func (r CreateAutomationRuleResponse) GetJSON201() *AutomationRule {
+	return r.JSON201
+}
+
+// GetApplicationproblemJSON400 returns the response for an HTTP 400 `application/problem+json` response
+func (r CreateAutomationRuleResponse) GetApplicationproblemJSON400() *Problem {
+	return r.ApplicationproblemJSON400
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r CreateAutomationRuleResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r CreateAutomationRuleResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetBody returns the raw response body bytes
+func (r CreateAutomationRuleResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r CreateAutomationRuleResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateAutomationRuleResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r CreateAutomationRuleResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type OrderAutomationRulesResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *AutomationRuleList
+	// ApplicationproblemJSON400 the response for an HTTP 400 `application/problem+json` response
+	ApplicationproblemJSON400 *Problem
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r OrderAutomationRulesResponse) GetJSON200() *AutomationRuleList {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON400 returns the response for an HTTP 400 `application/problem+json` response
+func (r OrderAutomationRulesResponse) GetApplicationproblemJSON400() *Problem {
+	return r.ApplicationproblemJSON400
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r OrderAutomationRulesResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r OrderAutomationRulesResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetBody returns the raw response body bytes
+func (r OrderAutomationRulesResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r OrderAutomationRulesResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r OrderAutomationRulesResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r OrderAutomationRulesResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type DeleteAutomationRuleResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r DeleteAutomationRuleResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r DeleteAutomationRuleResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r DeleteAutomationRuleResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetBody returns the raw response body bytes
+func (r DeleteAutomationRuleResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteAutomationRuleResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteAutomationRuleResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r DeleteAutomationRuleResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetAutomationRuleResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *AutomationRule
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetAutomationRuleResponse) GetJSON200() *AutomationRule {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r GetAutomationRuleResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r GetAutomationRuleResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r GetAutomationRuleResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetBody returns the raw response body bytes
+func (r GetAutomationRuleResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetAutomationRuleResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetAutomationRuleResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetAutomationRuleResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type UpdateAutomationRuleResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *AutomationRule
+	// ApplicationproblemJSON400 the response for an HTTP 400 `application/problem+json` response
+	ApplicationproblemJSON400 *Problem
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r UpdateAutomationRuleResponse) GetJSON200() *AutomationRule {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON400 returns the response for an HTTP 400 `application/problem+json` response
+func (r UpdateAutomationRuleResponse) GetApplicationproblemJSON400() *Problem {
+	return r.ApplicationproblemJSON400
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r UpdateAutomationRuleResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r UpdateAutomationRuleResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r UpdateAutomationRuleResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetBody returns the raw response body bytes
+func (r UpdateAutomationRuleResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateAutomationRuleResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateAutomationRuleResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r UpdateAutomationRuleResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type ListAutomationRunsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *AutomationRunPage
+	// ApplicationproblemJSON400 the response for an HTTP 400 `application/problem+json` response
+	ApplicationproblemJSON400 *Problem
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r ListAutomationRunsResponse) GetJSON200() *AutomationRunPage {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON400 returns the response for an HTTP 400 `application/problem+json` response
+func (r ListAutomationRunsResponse) GetApplicationproblemJSON400() *Problem {
+	return r.ApplicationproblemJSON400
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r ListAutomationRunsResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r ListAutomationRunsResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r ListAutomationRunsResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetBody returns the raw response body bytes
+func (r ListAutomationRunsResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r ListAutomationRunsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListAutomationRunsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ListAutomationRunsResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -137090,7 +139136,7 @@ func (c *ClientWithResponses) ListApiKeysWithResponse(ctx context.Context, param
 //
 // Owners and admins only, with a member session. The secret is returned once and stored
 // only as a hash. A key limited to inboxes cannot hold `inboxes:manage`, `webhooks:manage`,
-// `workspace:manage`, `fields:manage` or `audit:read` (`400 validation_failed`); only an owner gives a key
+// `workspace:manage`, `fields:manage`, `automations:manage` or `audit:read` (`400 validation_failed`); only an owner gives a key
 // `audit:read` (`403 forbidden`).
 //
 // Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
@@ -137108,7 +139154,7 @@ func (c *ClientWithResponses) CreateApiKeyWithBodyWithResponse(ctx context.Conte
 //
 // Owners and admins only, with a member session. The secret is returned once and stored
 // only as a hash. A key limited to inboxes cannot hold `inboxes:manage`, `webhooks:manage`,
-// `workspace:manage`, `fields:manage` or `audit:read` (`400 validation_failed`); only an owner gives a key
+// `workspace:manage`, `fields:manage`, `automations:manage` or `audit:read` (`400 validation_failed`); only an owner gives a key
 // `audit:read` (`403 forbidden`).
 //
 // Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
@@ -137437,6 +139483,197 @@ func (c *ClientWithResponses) StartSsoSignInWithResponse(ctx context.Context, bo
 		return nil, err
 	}
 	return ParseStartSsoSignInResponse(rsp)
+}
+
+// ListAutomationRulesWithResponse List automation rules
+//
+// In `position` order. Callers limited to some inboxes (agents, inbox-limited keys) see the
+// workspace rules and the rules of their inboxes.
+//
+// Scope: `automations:read`.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /v1/automation-rules (the `ListAutomationRules` operationId).
+func (c *ClientWithResponses) ListAutomationRulesWithResponse(ctx context.Context, params *ListAutomationRulesParams, reqEditors ...RequestEditorFn) (*ListAutomationRulesResponse, error) {
+	rsp, err := c.ListAutomationRules(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListAutomationRulesResponse(rsp)
+}
+
+// CreateAutomationRuleWithBodyWithResponse Create an automation rule
+//
+// Owners, admins and API keys not limited to inboxes. The rule goes last in the order and
+// runs for triggers that happen after it is saved. A workspace holds at most 100 rules
+// (`403 automation_rule_limit`). Every label, member, team, canned reply, webhook endpoint,
+// custom field and the inbox a rule names must exist in the workspace (`400
+// validation_failed`); one deleted later makes the actions that need it fail.
+//
+// Scope: `automations:manage`.
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /v1/automation-rules (the `CreateAutomationRule` operationId).
+func (c *ClientWithResponses) CreateAutomationRuleWithBodyWithResponse(ctx context.Context, params *CreateAutomationRuleParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateAutomationRuleResponse, error) {
+	rsp, err := c.CreateAutomationRuleWithBody(ctx, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateAutomationRuleResponse(rsp)
+}
+
+// CreateAutomationRuleWithResponse Create an automation rule
+//
+// Owners, admins and API keys not limited to inboxes. The rule goes last in the order and
+// runs for triggers that happen after it is saved. A workspace holds at most 100 rules
+// (`403 automation_rule_limit`). Every label, member, team, canned reply, webhook endpoint,
+// custom field and the inbox a rule names must exist in the workspace (`400
+// validation_failed`); one deleted later makes the actions that need it fail.
+//
+// Scope: `automations:manage`.
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /v1/automation-rules (the `CreateAutomationRule` operationId).
+func (c *ClientWithResponses) CreateAutomationRuleWithResponse(ctx context.Context, params *CreateAutomationRuleParams, body CreateAutomationRuleJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateAutomationRuleResponse, error) {
+	rsp, err := c.CreateAutomationRule(ctx, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateAutomationRuleResponse(rsp)
+}
+
+// OrderAutomationRulesWithBodyWithResponse Reorder automation rules
+//
+// Owners, admins and API keys not limited to inboxes. `ids` names every rule of the workspace
+// once, in the new order (`400 validation_failed` otherwise).
+//
+// Scope: `automations:manage`.
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PUT /v1/automation-rules/order (the `OrderAutomationRules` operationId).
+func (c *ClientWithResponses) OrderAutomationRulesWithBodyWithResponse(ctx context.Context, params *OrderAutomationRulesParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*OrderAutomationRulesResponse, error) {
+	rsp, err := c.OrderAutomationRulesWithBody(ctx, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseOrderAutomationRulesResponse(rsp)
+}
+
+// OrderAutomationRulesWithResponse Reorder automation rules
+//
+// Owners, admins and API keys not limited to inboxes. `ids` names every rule of the workspace
+// once, in the new order (`400 validation_failed` otherwise).
+//
+// Scope: `automations:manage`.
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PUT /v1/automation-rules/order (the `OrderAutomationRules` operationId).
+func (c *ClientWithResponses) OrderAutomationRulesWithResponse(ctx context.Context, params *OrderAutomationRulesParams, body OrderAutomationRulesJSONRequestBody, reqEditors ...RequestEditorFn) (*OrderAutomationRulesResponse, error) {
+	rsp, err := c.OrderAutomationRules(ctx, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseOrderAutomationRulesResponse(rsp)
+}
+
+// DeleteAutomationRuleWithResponse Delete an automation rule
+//
+// Owners, admins and API keys not limited to inboxes. Its log goes with it; what it already
+// changed stays.
+//
+// Scope: `automations:manage`.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with DELETE /v1/automation-rules/{automationRuleId} (the `DeleteAutomationRule` operationId).
+func (c *ClientWithResponses) DeleteAutomationRuleWithResponse(ctx context.Context, automationRuleId AutomationRuleId, params *DeleteAutomationRuleParams, reqEditors ...RequestEditorFn) (*DeleteAutomationRuleResponse, error) {
+	rsp, err := c.DeleteAutomationRule(ctx, automationRuleId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteAutomationRuleResponse(rsp)
+}
+
+// GetAutomationRuleWithResponse Get an automation rule
+//
+// A rule the caller does not see (see `GET /v1/automation-rules`) answers `404`.
+//
+// Scope: `automations:read`.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /v1/automation-rules/{automationRuleId} (the `GetAutomationRule` operationId).
+func (c *ClientWithResponses) GetAutomationRuleWithResponse(ctx context.Context, automationRuleId AutomationRuleId, params *GetAutomationRuleParams, reqEditors ...RequestEditorFn) (*GetAutomationRuleResponse, error) {
+	rsp, err := c.GetAutomationRule(ctx, automationRuleId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetAutomationRuleResponse(rsp)
+}
+
+// UpdateAutomationRuleWithBodyWithResponse Update an automation rule
+//
+// Owners, admins and API keys not limited to inboxes. Only what is sent changes;
+// `conditions` and `actions` are replaced whole. The caller becomes the rule's `saved_by`,
+// which decides whether its replies may go out while `bots_may_send` is off. Runs already
+// queued use the rule as it is when they run.
+//
+// Scope: `automations:manage`.
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PATCH /v1/automation-rules/{automationRuleId} (the `UpdateAutomationRule` operationId).
+func (c *ClientWithResponses) UpdateAutomationRuleWithBodyWithResponse(ctx context.Context, automationRuleId AutomationRuleId, params *UpdateAutomationRuleParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateAutomationRuleResponse, error) {
+	rsp, err := c.UpdateAutomationRuleWithBody(ctx, automationRuleId, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateAutomationRuleResponse(rsp)
+}
+
+// UpdateAutomationRuleWithResponse Update an automation rule
+//
+// Owners, admins and API keys not limited to inboxes. Only what is sent changes;
+// `conditions` and `actions` are replaced whole. The caller becomes the rule's `saved_by`,
+// which decides whether its replies may go out while `bots_may_send` is off. Runs already
+// queued use the rule as it is when they run.
+//
+// Scope: `automations:manage`.
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PATCH /v1/automation-rules/{automationRuleId} (the `UpdateAutomationRule` operationId).
+func (c *ClientWithResponses) UpdateAutomationRuleWithResponse(ctx context.Context, automationRuleId AutomationRuleId, params *UpdateAutomationRuleParams, body UpdateAutomationRuleJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateAutomationRuleResponse, error) {
+	rsp, err := c.UpdateAutomationRule(ctx, automationRuleId, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateAutomationRuleResponse(rsp)
+}
+
+// ListAutomationRunsWithResponse A rule's log
+//
+// The rule's runs of the last 30 days, newest first: one per trigger whose conditions
+// matched, `applied` or `failed` with the reason. Triggers whose conditions did not match
+// leave no run. Callers limited to some inboxes see the runs on conversations of their
+// inboxes.
+//
+// Scope: `automations:read`.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /v1/automation-rules/{automationRuleId}/runs (the `ListAutomationRuns` operationId).
+func (c *ClientWithResponses) ListAutomationRunsWithResponse(ctx context.Context, automationRuleId AutomationRuleId, params *ListAutomationRunsParams, reqEditors ...RequestEditorFn) (*ListAutomationRunsResponse, error) {
+	rsp, err := c.ListAutomationRuns(ctx, automationRuleId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListAutomationRunsResponse(rsp)
 }
 
 // ListBroadcastsWithResponse List broadcasts
@@ -154568,6 +156805,338 @@ func ParseStartSsoSignInResponse(rsp *http.Response) (*StartSsoSignInResponse, e
 			headers.SetCookie = &value
 		}
 		response.Headers200 = &headers
+	}
+
+	return response, nil
+}
+
+// ParseListAutomationRulesResponse parses an HTTP response from a ListAutomationRulesWithResponse call
+func ParseListAutomationRulesResponse(rsp *http.Response) (*ListAutomationRulesResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListAutomationRulesResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest AutomationRuleList
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreateAutomationRuleResponse parses an HTTP response from a CreateAutomationRuleWithResponse call
+func ParseCreateAutomationRuleResponse(rsp *http.Response) (*CreateAutomationRuleResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateAutomationRuleResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
+		var dest AutomationRule
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON201 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseOrderAutomationRulesResponse parses an HTTP response from a OrderAutomationRulesWithResponse call
+func ParseOrderAutomationRulesResponse(rsp *http.Response) (*OrderAutomationRulesResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &OrderAutomationRulesResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest AutomationRuleList
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteAutomationRuleResponse parses an HTTP response from a DeleteAutomationRuleWithResponse call
+func ParseDeleteAutomationRuleResponse(rsp *http.Response) (*DeleteAutomationRuleResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteAutomationRuleResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case rsp.StatusCode == 204:
+		break // No content-type
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetAutomationRuleResponse parses an HTTP response from a GetAutomationRuleWithResponse call
+func ParseGetAutomationRuleResponse(rsp *http.Response) (*GetAutomationRuleResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetAutomationRuleResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest AutomationRule
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateAutomationRuleResponse parses an HTTP response from a UpdateAutomationRuleWithResponse call
+func ParseUpdateAutomationRuleResponse(rsp *http.Response) (*UpdateAutomationRuleResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateAutomationRuleResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest AutomationRule
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListAutomationRunsResponse parses an HTTP response from a ListAutomationRunsWithResponse call
+func ParseListAutomationRunsResponse(rsp *http.Response) (*ListAutomationRunsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListAutomationRunsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest AutomationRunPage
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
 	}
 
 	return response, nil
@@ -174469,6 +177038,11 @@ type WebhookInitiatorInterface interface {
 
 	WebhookAnalyticsAlert(ctx context.Context, targetURL string, params *WebhookAnalyticsAlertParams, body WebhookAnalyticsAlertJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// WebhookAutomationTriggeredWithBody fires the automation.triggered webhook with any body
+	WebhookAutomationTriggeredWithBody(ctx context.Context, targetURL string, params *WebhookAutomationTriggeredParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	WebhookAutomationTriggered(ctx context.Context, targetURL string, params *WebhookAutomationTriggeredParams, body WebhookAutomationTriggeredJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// WebhookBroadcastUpdatedWithBody fires the broadcast.updated webhook with any body
 	WebhookBroadcastUpdatedWithBody(ctx context.Context, targetURL string, params *WebhookBroadcastUpdatedParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -174694,6 +177268,30 @@ func (p *WebhookInitiator) WebhookAnalyticsAlertWithBody(ctx context.Context, ta
 
 func (p *WebhookInitiator) WebhookAnalyticsAlert(ctx context.Context, targetURL string, params *WebhookAnalyticsAlertParams, body WebhookAnalyticsAlertJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewWebhookAnalyticsAlertWebhookRequest(targetURL, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := p.applyWebhookEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return p.Client.Do(req)
+}
+
+func (p *WebhookInitiator) WebhookAutomationTriggeredWithBody(ctx context.Context, targetURL string, params *WebhookAutomationTriggeredParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewWebhookAutomationTriggeredWebhookRequestWithBody(targetURL, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := p.applyWebhookEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return p.Client.Do(req)
+}
+
+func (p *WebhookInitiator) WebhookAutomationTriggered(ctx context.Context, targetURL string, params *WebhookAutomationTriggeredParams, body WebhookAutomationTriggeredJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewWebhookAutomationTriggeredWebhookRequest(targetURL, params, body)
 	if err != nil {
 		return nil, err
 	}
@@ -175725,6 +178323,67 @@ func NewWebhookAnalyticsAlertWebhookRequest(targetURL string, params *WebhookAna
 
 // NewWebhookAnalyticsAlertWebhookRequestWithBody builds a POST request for the analytics.alert webhook with any body
 func NewWebhookAnalyticsAlertWebhookRequestWithBody(targetURL string, params *WebhookAnalyticsAlertParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+	_ = err
+
+	reqURL, err := url.Parse(targetURL)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, reqURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		var headerParam0 string
+
+		headerParam0, err = runtime.StyleParamWithOptions("simple", false, "webhook-id", params.WebhookId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+		if err != nil {
+			return nil, err
+		}
+
+		req.Header.Set("webhook-id", headerParam0)
+
+		var headerParam1 string
+
+		headerParam1, err = runtime.StyleParamWithOptions("simple", false, "webhook-timestamp", params.WebhookTimestamp, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+		if err != nil {
+			return nil, err
+		}
+
+		req.Header.Set("webhook-timestamp", headerParam1)
+
+		var headerParam2 string
+
+		headerParam2, err = runtime.StyleParamWithOptions("simple", false, "webhook-signature", params.WebhookSignature, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+		if err != nil {
+			return nil, err
+		}
+
+		req.Header.Set("webhook-signature", headerParam2)
+
+	}
+	return req, nil
+}
+
+// NewWebhookAutomationTriggeredWebhookRequest builds a application/json POST request for the automation.triggered webhook
+func NewWebhookAutomationTriggeredWebhookRequest(targetURL string, params *WebhookAutomationTriggeredParams, body WebhookAutomationTriggeredJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewWebhookAutomationTriggeredWebhookRequestWithBody(targetURL, params, "application/json", bodyReader)
+}
+
+// NewWebhookAutomationTriggeredWebhookRequestWithBody builds a POST request for the automation.triggered webhook with any body
+func NewWebhookAutomationTriggeredWebhookRequestWithBody(targetURL string, params *WebhookAutomationTriggeredParams, contentType string, body io.Reader) (*http.Request, error) {
 	var err error
 	_ = err
 

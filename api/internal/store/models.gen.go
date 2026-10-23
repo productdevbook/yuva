@@ -497,6 +497,38 @@ type AuditLog struct {
 	CreatedAt     time.Time
 }
 
+type AutomationRule struct {
+	ID              uuid.UUID
+	WorkspaceID     uuid.UUID
+	InboxID         *uuid.UUID
+	Name            string
+	Enabled         bool
+	Position        int32
+	Trigger         string
+	IdleMinutes     *int32
+	Conditions      []byte
+	Actions         []byte
+	SavedByKind     string
+	SavedByMemberID *uuid.UUID
+	SavedByApiKeyID *uuid.UUID
+	CreatedAt       time.Time
+	UpdatedAt       time.Time
+}
+
+type AutomationRun struct {
+	ID             uuid.UUID
+	WorkspaceID    uuid.UUID
+	RuleID         uuid.UUID
+	ConversationID uuid.UUID
+	Trigger        string
+	TriggerKey     string
+	Outcome        string
+	Error          *string
+	Detail         *string
+	Actions        []byte
+	CreatedAt      time.Time
+}
+
 type Broadcast struct {
 	ID                 uuid.UUID
 	WorkspaceID        uuid.UUID
@@ -1641,6 +1673,7 @@ type Message struct {
 	RedactedAt         *time.Time
 	RedactedByMemberID *uuid.UUID
 	RedactedByApiKeyID *uuid.UUID
+	Rule               []byte
 }
 
 type MessageEmail struct {

@@ -53,7 +53,9 @@ func writeSystemAudit(ctx context.Context, q *store.Queries, workspaceID uuid.UU
 	})
 }
 
-func (p principal) isOperator() bool { return !p.isKey() && !p.isGrant() && p.memberID == uuid.Nil() }
+func (p principal) isOperator() bool {
+	return !p.isKey() && !p.isGrant() && p.memberID == uuid.Nil() && p.rule == nil
+}
 
 // boundedDetails never lets an entry's size fail the action it records: lists become their
 // counts, and what is still too long is dropped, with truncated set.

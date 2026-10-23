@@ -917,6 +917,8 @@ const (
 	AnalyticsRead       ApiKeyScope = "analytics:read"
 	AnalyticsWrite      ApiKeyScope = "analytics:write"
 	AuditRead           ApiKeyScope = "audit:read"
+	AutomationsManage   ApiKeyScope = "automations:manage"
+	AutomationsRead     ApiKeyScope = "automations:read"
 	BroadcastsRead      ApiKeyScope = "broadcasts:read"
 	BroadcastsSend      ApiKeyScope = "broadcasts:send"
 	BroadcastsWrite     ApiKeyScope = "broadcasts:write"
@@ -967,6 +969,10 @@ func (e ApiKeyScope) Valid() bool {
 	case AnalyticsWrite:
 		return true
 	case AuditRead:
+		return true
+	case AutomationsManage:
+		return true
+	case AutomationsRead:
 		return true
 	case BroadcastsRead:
 		return true
@@ -1090,6 +1096,9 @@ const (
 	AuditAnalyticsExportCreated              AuditAction = "analytics_export.created"
 	AuditApiKeyCreated                       AuditAction = "api_key.created"
 	AuditApiKeyRevoked                       AuditAction = "api_key.revoked"
+	AuditAutomationRuleCreated               AuditAction = "automation_rule.created"
+	AuditAutomationRuleDeleted               AuditAction = "automation_rule.deleted"
+	AuditAutomationRuleUpdated               AuditAction = "automation_rule.updated"
 	AuditChannelCredentialsChanged           AuditAction = "channel.credentials_changed"
 	AuditChannelDkimKeyCreated               AuditAction = "channel.dkim_key_created"
 	AuditChannelDkimKeyDeleted               AuditAction = "channel.dkim_key_deleted"
@@ -1156,6 +1165,12 @@ func (e AuditAction) Valid() bool {
 	case AuditApiKeyCreated:
 		return true
 	case AuditApiKeyRevoked:
+		return true
+	case AuditAutomationRuleCreated:
+		return true
+	case AuditAutomationRuleDeleted:
+		return true
+	case AuditAutomationRuleUpdated:
 		return true
 	case AuditChannelCredentialsChanged:
 		return true
@@ -1305,6 +1320,7 @@ func (e AuditActorKind) Valid() bool {
 const (
 	AuditTargetAnalyticsExport  AuditTargetType = "analytics_export"
 	AuditTargetApiKey           AuditTargetType = "api_key"
+	AuditTargetAutomationRule   AuditTargetType = "automation_rule"
 	AuditTargetChannel          AuditTargetType = "channel"
 	AuditTargetContact          AuditTargetType = "contact"
 	AuditTargetConversation     AuditTargetType = "conversation"
@@ -1328,6 +1344,8 @@ func (e AuditTargetType) Valid() bool {
 	case AuditTargetAnalyticsExport:
 		return true
 	case AuditTargetApiKey:
+		return true
+	case AuditTargetAutomationRule:
 		return true
 	case AuditTargetChannel:
 		return true
@@ -1421,6 +1439,228 @@ func (e AuthorType) Valid() bool {
 	case AuthorTypeMember:
 		return true
 	case AuthorTypeSystem:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for AutomationActionType.
+const (
+	AutomationActionAddLabels    AutomationActionType = "add_labels"
+	AutomationActionAddNote      AutomationActionType = "add_note"
+	AutomationActionAssignMember AutomationActionType = "assign_member"
+	AutomationActionAssignPool   AutomationActionType = "assign_pool"
+	AutomationActionAssignTeam   AutomationActionType = "assign_team"
+	AutomationActionRemoveLabels AutomationActionType = "remove_labels"
+	AutomationActionSendReply    AutomationActionType = "send_reply"
+	AutomationActionSendWebhook  AutomationActionType = "send_webhook"
+	AutomationActionSetPriority  AutomationActionType = "set_priority"
+	AutomationActionSetStatus    AutomationActionType = "set_status"
+	AutomationActionSnooze       AutomationActionType = "snooze"
+	AutomationActionUnassign     AutomationActionType = "unassign"
+)
+
+// Valid indicates whether the value is a known member of the AutomationActionType enum.
+func (e AutomationActionType) Valid() bool {
+	switch e {
+	case AutomationActionAddLabels:
+		return true
+	case AutomationActionAddNote:
+		return true
+	case AutomationActionAssignMember:
+		return true
+	case AutomationActionAssignPool:
+		return true
+	case AutomationActionAssignTeam:
+		return true
+	case AutomationActionRemoveLabels:
+		return true
+	case AutomationActionSendReply:
+		return true
+	case AutomationActionSendWebhook:
+		return true
+	case AutomationActionSetPriority:
+		return true
+	case AutomationActionSetStatus:
+		return true
+	case AutomationActionSnooze:
+		return true
+	case AutomationActionUnassign:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for AutomationConditionField.
+const (
+	AutomationFieldAssignee         AutomationConditionField = "assignee"
+	AutomationFieldBody             AutomationConditionField = "body"
+	AutomationFieldBusinessHours    AutomationConditionField = "business_hours"
+	AutomationFieldChannelKind      AutomationConditionField = "channel_kind"
+	AutomationFieldContactAttribute AutomationConditionField = "contact_attribute"
+	AutomationFieldCustomField      AutomationConditionField = "custom_field"
+	AutomationFieldFeedbackCategory AutomationConditionField = "feedback_category"
+	AutomationFieldKind             AutomationConditionField = "kind"
+	AutomationFieldLabel            AutomationConditionField = "label"
+	AutomationFieldPriority         AutomationConditionField = "priority"
+	AutomationFieldStatus           AutomationConditionField = "status"
+	AutomationFieldSubject          AutomationConditionField = "subject"
+	AutomationFieldTeam             AutomationConditionField = "team"
+)
+
+// Valid indicates whether the value is a known member of the AutomationConditionField enum.
+func (e AutomationConditionField) Valid() bool {
+	switch e {
+	case AutomationFieldAssignee:
+		return true
+	case AutomationFieldBody:
+		return true
+	case AutomationFieldBusinessHours:
+		return true
+	case AutomationFieldChannelKind:
+		return true
+	case AutomationFieldContactAttribute:
+		return true
+	case AutomationFieldCustomField:
+		return true
+	case AutomationFieldFeedbackCategory:
+		return true
+	case AutomationFieldKind:
+		return true
+	case AutomationFieldLabel:
+		return true
+	case AutomationFieldPriority:
+		return true
+	case AutomationFieldStatus:
+		return true
+	case AutomationFieldSubject:
+		return true
+	case AutomationFieldTeam:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for AutomationConditionOperator.
+const (
+	AutomationOpContains    AutomationConditionOperator = "contains"
+	AutomationOpEquals      AutomationConditionOperator = "equals"
+	AutomationOpIn          AutomationConditionOperator = "in"
+	AutomationOpIsNotSet    AutomationConditionOperator = "is_not_set"
+	AutomationOpIsSet       AutomationConditionOperator = "is_set"
+	AutomationOpNotContains AutomationConditionOperator = "not_contains"
+	AutomationOpNotEquals   AutomationConditionOperator = "not_equals"
+	AutomationOpNotIn       AutomationConditionOperator = "not_in"
+)
+
+// Valid indicates whether the value is a known member of the AutomationConditionOperator enum.
+func (e AutomationConditionOperator) Valid() bool {
+	switch e {
+	case AutomationOpContains:
+		return true
+	case AutomationOpEquals:
+		return true
+	case AutomationOpIn:
+		return true
+	case AutomationOpIsNotSet:
+		return true
+	case AutomationOpIsSet:
+		return true
+	case AutomationOpNotContains:
+		return true
+	case AutomationOpNotEquals:
+		return true
+	case AutomationOpNotIn:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for AutomationRuleAuthorType.
+const (
+	AutomationAuthorApiKey     AutomationRuleAuthorType = "api_key"
+	AutomationAuthorMember     AutomationRuleAuthorType = "member"
+	AutomationAuthorOAuthGrant AutomationRuleAuthorType = "oauth_grant"
+)
+
+// Valid indicates whether the value is a known member of the AutomationRuleAuthorType enum.
+func (e AutomationRuleAuthorType) Valid() bool {
+	switch e {
+	case AutomationAuthorApiKey:
+		return true
+	case AutomationAuthorMember:
+		return true
+	case AutomationAuthorOAuthGrant:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for AutomationRunActionResult.
+const (
+	AutomationResultApplied   AutomationRunActionResult = "applied"
+	AutomationResultNotRun    AutomationRunActionResult = "not_run"
+	AutomationResultSkipped   AutomationRunActionResult = "skipped"
+	AutomationResultUnchanged AutomationRunActionResult = "unchanged"
+)
+
+// Valid indicates whether the value is a known member of the AutomationRunActionResult enum.
+func (e AutomationRunActionResult) Valid() bool {
+	switch e {
+	case AutomationResultApplied:
+		return true
+	case AutomationResultNotRun:
+		return true
+	case AutomationResultSkipped:
+		return true
+	case AutomationResultUnchanged:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for AutomationRunOutcome.
+const (
+	AutomationRunApplied AutomationRunOutcome = "applied"
+	AutomationRunFailed  AutomationRunOutcome = "failed"
+)
+
+// Valid indicates whether the value is a known member of the AutomationRunOutcome enum.
+func (e AutomationRunOutcome) Valid() bool {
+	switch e {
+	case AutomationRunApplied:
+		return true
+	case AutomationRunFailed:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for AutomationTrigger.
+const (
+	AutomationTriggerConversationCreated AutomationTrigger = "conversation_created"
+	AutomationTriggerIdle                AutomationTrigger = "idle"
+	AutomationTriggerMessageReceived     AutomationTrigger = "message_received"
+	AutomationTriggerStatusChanged       AutomationTrigger = "status_changed"
+)
+
+// Valid indicates whether the value is a known member of the AutomationTrigger enum.
+func (e AutomationTrigger) Valid() bool {
+	switch e {
+	case AutomationTriggerConversationCreated:
+		return true
+	case AutomationTriggerIdle:
+		return true
+	case AutomationTriggerMessageReceived:
+		return true
+	case AutomationTriggerStatusChanged:
 		return true
 	default:
 		return false
@@ -3194,6 +3434,7 @@ const (
 	MacroApplied              EventType = "macro_applied"
 	Moved                     EventType = "moved"
 	Rated                     EventType = "rated"
+	RuleApplied               EventType = "rule_applied"
 	StatusChanged             EventType = "status_changed"
 	Unassigned                EventType = "unassigned"
 )
@@ -3214,6 +3455,8 @@ func (e EventType) Valid() bool {
 	case Moved:
 		return true
 	case Rated:
+		return true
+	case RuleApplied:
 		return true
 	case StatusChanged:
 		return true
@@ -6788,6 +7031,7 @@ func (e WebhookDeliveryState) Valid() bool {
 // Defines values for WebhookEventType.
 const (
 	WebhookEventTypeAnalyticsAlert            WebhookEventType = "analytics.alert"
+	WebhookEventTypeAutomationTriggered       WebhookEventType = "automation.triggered"
 	WebhookEventTypeBroadcastUpdated          WebhookEventType = "broadcast.updated"
 	WebhookEventTypeChangelogEntryDeleted     WebhookEventType = "changelog.entry.deleted"
 	WebhookEventTypeChangelogEntryPublished   WebhookEventType = "changelog.entry.published"
@@ -6836,6 +7080,8 @@ const (
 func (e WebhookEventType) Valid() bool {
 	switch e {
 	case WebhookEventTypeAnalyticsAlert:
+		return true
+	case WebhookEventTypeAutomationTriggered:
 		return true
 	case WebhookEventTypeBroadcastUpdated:
 		return true
@@ -9221,7 +9467,13 @@ type ApiKeyList struct {
 //	    implied: a key made without naming its scopes does not hold it. Writing values needs
 //	    `conversations:write` or `contacts:write`.
 //
-// `conversations:delete`, `messages:redact`, `lists:*`, `broadcasts:*`, `migrations:manage`, `analytics:*`, `status:*`, `help:*`, `roadmap:*`, `changelog:*`, `audit:read`, `integrations:*`, `issues:write`, `fields:manage` and `views:write` are never added to keys made before they existed.
+//	  - `automations:read`: automation rules and their logs.
+//	  - `automations:manage`: create, change, reorder and delete automation rules. Owners and
+//	    admins only; never offered to agents' tokens, refused for keys limited to inboxes. Never
+//	    implied: a key made without naming its scopes does not hold it. A rule acts on every
+//	    inbox it covers with the workspace's power.
+//
+// `conversations:delete`, `messages:redact`, `lists:*`, `broadcasts:*`, `migrations:manage`, `analytics:*`, `status:*`, `help:*`, `roadmap:*`, `changelog:*`, `audit:read`, `integrations:*`, `issues:write`, `fields:manage`, `views:write` and `automations:*` are never added to keys made before they existed.
 type ApiKeyScope string
 
 // ApiKeyUpdate Only the fields sent change. Scopes, inbox limit and expiry cannot change.
@@ -9440,6 +9692,11 @@ type Attributes map[string]interface{}
 //     `account`, and `host` for a GitHub Enterprise Server. `issue_integration.updated`:
 //     `fields` among `name`, `token`, `default_target` and `webhook_secret`; never a token or
 //     secret. `issue_integration.secret_rotated`: none.
+//   - `automation_rule.created`, `automation_rule.deleted`: `name`, `trigger`, `inbox_id`
+//     when set, `action_types`, and `webhook_hosts` (the hosts of the endpoints its
+//     `send_webhook` actions name, never their URLs). `automation_rule.updated`: `fields`
+//     among `name`, `enabled`, `inbox_id`, `trigger`, `idle_minutes`, `conditions` and
+//     `actions`, with the same `name`, `trigger`, `action_types` and `webhook_hosts`.
 //
 // Details never make an action fail: when they would be too long, lists are replaced by
 // `<name>_count` and `truncated` is `true`.
@@ -9544,6 +9801,11 @@ type AuditEntry struct {
 	//   `account`, and `host` for a GitHub Enterprise Server. `issue_integration.updated`:
 	//   `fields` among `name`, `token`, `default_target` and `webhook_secret`; never a token or
 	//   secret. `issue_integration.secret_rotated`: none.
+	// - `automation_rule.created`, `automation_rule.deleted`: `name`, `trigger`, `inbox_id`
+	//   when set, `action_types`, and `webhook_hosts` (the hosts of the endpoints its
+	//   `send_webhook` actions name, never their URLs). `automation_rule.updated`: `fields`
+	//   among `name`, `enabled`, `inbox_id`, `trigger`, `idle_minutes`, `conditions` and
+	//   `actions`, with the same `name`, `trigger`, `action_types` and `webhook_hosts`.
 	//
 	// Details never make an action fail: when they would be too long, lists are replaced by
 	// `<name>_count` and `truncated` is `true`.
@@ -9585,6 +9847,266 @@ type AuthStatus string
 
 // AuthorType `bot` is an API key. Rows written with a key before bot authors existed have `system`.
 type AuthorType string
+
+// AutomationAction Each type at most once per rule, and only the fields its type uses (`400
+// validation_failed` otherwise); `set_status` and `snooze` exclude each other, as do
+// `assign_member`, `assign_pool` and `unassign`, and `add_labels` and `remove_labels` share
+// no label.
+type AutomationAction struct {
+	Body          *string             `json:"body,omitempty"`
+	CannedReplyId *uuid.UUID          `json:"canned_reply_id,omitempty"`
+	LabelIds      *[]uuid.UUID        `json:"label_ids,omitempty"`
+	MemberId      *uuid.UUID          `json:"member_id,omitempty"`
+	Priority      *Priority           `json:"priority,omitempty"`
+	SnoozeMinutes *int32              `json:"snooze_minutes,omitempty"`
+	Status        *ConversationStatus `json:"status,omitempty"`
+	TeamId        *uuid.UUID          `json:"team_id,omitempty"`
+
+	// Type - `add_labels`, `remove_labels` (`label_ids`).
+	// - `assign_member` (`member_id`, a member with access to the conversation's inbox when the
+	//   rule runs), `assign_team` (`team_id`, a team granted the inbox), `unassign` (clears the
+	//   member). `assign_pool` leaves the conversation to automatic assignment; until automatic
+	//   assignment exists it does nothing and the run lists it as `skipped`.
+	// - `set_priority` (`priority`), `set_status` (`status`: `open`, `pending` or `closed`;
+	//   closing needs the conversation's required custom fields), `snooze` (`snooze_minutes`).
+	// - `add_note` (`body`): an internal note.
+	// - `send_reply` (`canned_reply_id`): the canned reply's text to the contact, as an
+	//   automatic reply (`Auto-Submitted: auto-replied` by e-mail).
+	// - `send_webhook` (`webhook_id`): `automation.triggered` to that endpoint.
+	Type      AutomationActionType `json:"type"`
+	WebhookId *uuid.UUID           `json:"webhook_id,omitempty"`
+}
+
+// AutomationActionType - `add_labels`, `remove_labels` (`label_ids`).
+//   - `assign_member` (`member_id`, a member with access to the conversation's inbox when the
+//     rule runs), `assign_team` (`team_id`, a team granted the inbox), `unassign` (clears the
+//     member). `assign_pool` leaves the conversation to automatic assignment; until automatic
+//     assignment exists it does nothing and the run lists it as `skipped`.
+//   - `set_priority` (`priority`), `set_status` (`status`: `open`, `pending` or `closed`;
+//     closing needs the conversation's required custom fields), `snooze` (`snooze_minutes`).
+//   - `add_note` (`body`): an internal note.
+//   - `send_reply` (`canned_reply_id`): the canned reply's text to the contact, as an
+//     automatic reply (`Auto-Submitted: auto-replied` by e-mail).
+//   - `send_webhook` (`webhook_id`): `automation.triggered` to that endpoint.
+type AutomationActionType string
+
+// AutomationCondition `in` and `not_in` take `values`; `equals`, `not_equals`, `contains` and `not_contains`
+// take `value`; `is_set` and `is_not_set` take neither (`400 validation_failed` otherwise).
+type AutomationCondition struct {
+	// Field What a condition tests, and the operators it takes:
+	// - `channel_kind` (`in`, `not_in`; `ChannelKind` values), `kind` (`ConversationKind`),
+	//   `feedback_category` (category keys), `priority` (`Priority`), `status`
+	//   (`ConversationStatus`).
+	// - `subject`, `body` (`contains`, `not_contains`; case-insensitive): `body` is the
+	//   triggering contact message, or the contact's latest message for other triggers.
+	// - `contact_attribute`, `custom_field` (`equals`, `not_equals`, `contains`,
+	//   `not_contains`, `is_set`, `is_not_set`) with `key`: a contact attribute, or a conversation
+	//   custom field (`CustomField.key`). Numbers, checkboxes and dates compare as their JSON
+	//   text (`42`, `true`, `2026-01-31`).
+	// - `label` (`in`: has any of the labels, `not_in`: has none of them), `team` (`in`, `not_in`
+	//   with team ids, `is_set`, `is_not_set`), `assignee` (`is_set`, `is_not_set`).
+	// - `business_hours` (`equals` `inside` or `outside`): the inbox's business hours now; an
+	//   inbox without hours is always inside.
+	Field AutomationConditionField `json:"field"`
+
+	// Key `contact_attribute` and `custom_field` only.
+	Key      *string                     `json:"key,omitempty"`
+	Operator AutomationConditionOperator `json:"operator"`
+	Value    *string                     `json:"value,omitempty"`
+	Values   *[]string                   `json:"values,omitempty"`
+}
+
+// AutomationConditionField What a condition tests, and the operators it takes:
+//   - `channel_kind` (`in`, `not_in`; `ChannelKind` values), `kind` (`ConversationKind`),
+//     `feedback_category` (category keys), `priority` (`Priority`), `status`
+//     (`ConversationStatus`).
+//   - `subject`, `body` (`contains`, `not_contains`; case-insensitive): `body` is the
+//     triggering contact message, or the contact's latest message for other triggers.
+//   - `contact_attribute`, `custom_field` (`equals`, `not_equals`, `contains`,
+//     `not_contains`, `is_set`, `is_not_set`) with `key`: a contact attribute, or a conversation
+//     custom field (`CustomField.key`). Numbers, checkboxes and dates compare as their JSON
+//     text (`42`, `true`, `2026-01-31`).
+//   - `label` (`in`: has any of the labels, `not_in`: has none of them), `team` (`in`, `not_in`
+//     with team ids, `is_set`, `is_not_set`), `assignee` (`is_set`, `is_not_set`).
+//   - `business_hours` (`equals` `inside` or `outside`): the inbox's business hours now; an
+//     inbox without hours is always inside.
+type AutomationConditionField string
+
+// AutomationConditionOperator defines model for AutomationConditionOperator.
+type AutomationConditionOperator string
+
+// AutomationRule defines model for AutomationRule.
+type AutomationRule struct {
+	Actions []AutomationAction `json:"actions"`
+
+	// Conditions All of them must match; empty matches every conversation.
+	Conditions []AutomationCondition `json:"conditions"`
+	CreatedAt  time.Time             `json:"created_at"`
+	Enabled    bool                  `json:"enabled"`
+	Id         uuid.UUID             `json:"id"`
+
+	// IdleMinutes `idle` only.
+	IdleMinutes *int32 `json:"idle_minutes,omitempty"`
+
+	// InboxId Absent for a workspace rule; an inbox rule acts only on that inbox's conversations.
+	InboxId *uuid.UUID `json:"inbox_id,omitempty"`
+	Name    string     `json:"name"`
+
+	// Position Its place in the workspace's one list, from 0.
+	Position int32 `json:"position"`
+
+	// SavedBy Who last saved the rule. Its replies go out while `bots_may_send` is off only when this
+	// is a member who is still an owner or admin when the rule runs.
+	SavedBy AutomationRuleAuthor `json:"saved_by"`
+
+	// Trigger `conversation_created`: a conversation was created (by a contact, a member or a key).
+	// `message_received`: the contact wrote (not imported messages or drafts). `status_changed`:
+	// the status changed, also when a contact's message or the snooze time reopened it.
+	// `idle`: nothing was written in an open or pending conversation for `idle_minutes`
+	// (checked every 5 minutes; once per quiet period).
+	Trigger   AutomationTrigger `json:"trigger"`
+	UpdatedAt time.Time         `json:"updated_at"`
+}
+
+// AutomationRuleAuthor Who last saved the rule. Its replies go out while `bots_may_send` is off only when this
+// is a member who is still an owner or admin when the rule runs.
+type AutomationRuleAuthor struct {
+	// ApiKeyId `api_key`.
+	ApiKeyId *uuid.UUID `json:"api_key_id,omitempty"`
+
+	// MemberId `member` and `oauth_grant`.
+	MemberId *uuid.UUID               `json:"member_id,omitempty"`
+	Type     AutomationRuleAuthorType `json:"type"`
+}
+
+// AutomationRuleAuthorType defines model for AutomationRuleAuthorType.
+type AutomationRuleAuthorType string
+
+// AutomationRuleCreate defines model for AutomationRuleCreate.
+type AutomationRuleCreate struct {
+	Actions    []AutomationAction     `json:"actions"`
+	Conditions *[]AutomationCondition `json:"conditions,omitempty"`
+	Enabled    *bool                  `json:"enabled,omitempty"`
+
+	// IdleMinutes Required for `idle`, refused for other triggers.
+	IdleMinutes *int32     `json:"idle_minutes,omitempty"`
+	InboxId     *uuid.UUID `json:"inbox_id,omitempty"`
+	Name        string     `json:"name"`
+
+	// Trigger `conversation_created`: a conversation was created (by a contact, a member or a key).
+	// `message_received`: the contact wrote (not imported messages or drafts). `status_changed`:
+	// the status changed, also when a contact's message or the snooze time reopened it.
+	// `idle`: nothing was written in an open or pending conversation for `idle_minutes`
+	// (checked every 5 minutes; once per quiet period).
+	Trigger AutomationTrigger `json:"trigger"`
+}
+
+// AutomationRuleList defines model for AutomationRuleList.
+type AutomationRuleList struct {
+	Items []AutomationRule `json:"items"`
+}
+
+// AutomationRuleOrder defines model for AutomationRuleOrder.
+type AutomationRuleOrder struct {
+	Ids []uuid.UUID `json:"ids"`
+}
+
+// AutomationRuleRef defines model for AutomationRuleRef.
+type AutomationRuleRef struct {
+	Id uuid.UUID `json:"id"`
+
+	// Name The rule's name when it acted.
+	Name string `json:"name"`
+}
+
+// AutomationRuleUpdate defines model for AutomationRuleUpdate.
+type AutomationRuleUpdate struct {
+	Actions     *[]AutomationAction      `json:"actions,omitempty"`
+	Conditions  *[]AutomationCondition   `json:"conditions,omitempty"`
+	Enabled     *bool                    `json:"enabled,omitempty"`
+	IdleMinutes nullable.Nullable[int32] `json:"idle_minutes,omitempty"`
+
+	// InboxId `null` makes it a workspace rule.
+	InboxId nullable.Nullable[uuid.UUID] `json:"inbox_id,omitempty"`
+	Name    *string                      `json:"name,omitempty"`
+
+	// Trigger `conversation_created`: a conversation was created (by a contact, a member or a key).
+	// `message_received`: the contact wrote (not imported messages or drafts). `status_changed`:
+	// the status changed, also when a contact's message or the snooze time reopened it.
+	// `idle`: nothing was written in an open or pending conversation for `idle_minutes`
+	// (checked every 5 minutes; once per quiet period).
+	Trigger *AutomationTrigger `json:"trigger,omitempty"`
+}
+
+// AutomationRun defines model for AutomationRun.
+type AutomationRun struct {
+	Actions        []AutomationRunAction `json:"actions"`
+	ConversationId uuid.UUID             `json:"conversation_id"`
+	CreatedAt      time.Time             `json:"created_at"`
+
+	// Detail `failed` only: a sentence for people.
+	Detail *string `json:"detail,omitempty"`
+
+	// Error `failed` only: the problem code the action met, as the same change through `/v1`
+	// would answer it (`field_required`, `team_access`, `validation_failed`,
+	// `email_undeliverable`, …), or `auto_reply` when a reply was refused to protect the
+	// customer (an automatic reply or bounce, a blocked contact, spam, or a rule reply in
+	// the last hour), `bot_sending_disabled` (see `saved_by`), `label_gone`,
+	// `canned_reply_gone`, `webhook_unavailable`.
+	Error   *string              `json:"error,omitempty"`
+	Id      uuid.UUID            `json:"id"`
+	Outcome AutomationRunOutcome `json:"outcome"`
+	RuleId  uuid.UUID            `json:"rule_id"`
+
+	// Trigger `conversation_created`: a conversation was created (by a contact, a member or a key).
+	// `message_received`: the contact wrote (not imported messages or drafts). `status_changed`:
+	// the status changed, also when a contact's message or the snooze time reopened it.
+	// `idle`: nothing was written in an open or pending conversation for `idle_minutes`
+	// (checked every 5 minutes; once per quiet period).
+	Trigger AutomationTrigger `json:"trigger"`
+}
+
+// AutomationRunAction defines model for AutomationRunAction.
+type AutomationRunAction struct {
+	// Result `applied`; `unchanged` when the conversation already was that way; `skipped` for
+	// `assign_pool`; `not_run` in a failed run.
+	Result AutomationRunActionResult `json:"result"`
+
+	// Type - `add_labels`, `remove_labels` (`label_ids`).
+	// - `assign_member` (`member_id`, a member with access to the conversation's inbox when the
+	//   rule runs), `assign_team` (`team_id`, a team granted the inbox), `unassign` (clears the
+	//   member). `assign_pool` leaves the conversation to automatic assignment; until automatic
+	//   assignment exists it does nothing and the run lists it as `skipped`.
+	// - `set_priority` (`priority`), `set_status` (`status`: `open`, `pending` or `closed`;
+	//   closing needs the conversation's required custom fields), `snooze` (`snooze_minutes`).
+	// - `add_note` (`body`): an internal note.
+	// - `send_reply` (`canned_reply_id`): the canned reply's text to the contact, as an
+	//   automatic reply (`Auto-Submitted: auto-replied` by e-mail).
+	// - `send_webhook` (`webhook_id`): `automation.triggered` to that endpoint.
+	Type AutomationActionType `json:"type"`
+}
+
+// AutomationRunActionResult `applied`; `unchanged` when the conversation already was that way; `skipped` for
+// `assign_pool`; `not_run` in a failed run.
+type AutomationRunActionResult string
+
+// AutomationRunOutcome defines model for AutomationRunOutcome.
+type AutomationRunOutcome string
+
+// AutomationRunPage defines model for AutomationRunPage.
+type AutomationRunPage struct {
+	Items []AutomationRun `json:"items"`
+
+	// NextCursor Absent on the last page.
+	NextCursor *string `json:"next_cursor,omitempty"`
+}
+
+// AutomationTrigger `conversation_created`: a conversation was created (by a contact, a member or a key).
+// `message_received`: the contact wrote (not imported messages or drafts). `status_changed`:
+// the status changed, also when a contact's message or the snooze time reopened it.
+// `idle`: nothing was written in an open or pending conversation for `idle_minutes`
+// (checked every 5 minutes; once per quiet period).
+type AutomationTrigger string
 
 // Availability `auto`: available in `live` inboxes while connected to `/v1/realtime` within business
 // hours. `away`: never shown as available.
@@ -17385,6 +17907,10 @@ type Message struct {
 	// RedactedBy Who removed its content; absent when it was not redacted.
 	RedactedBy *MessageRedactedBy `json:"redacted_by,omitempty"`
 
+	// Rule The automation rule that wrote it (author `system`): its notes, replies and the timeline
+	// events of its changes. Absent for everything else.
+	Rule *AutomationRuleRef `json:"rule,omitempty"`
+
 	// SentBy Who sent a draft (`member` or `bot`); absent for messages that were never drafts.
 	SentBy *MessageAuthor `json:"sent_by,omitempty"`
 }
@@ -17596,7 +18122,10 @@ type MessageEmailDetail struct {
 
 // MessageEvent defines model for MessageEvent.
 type MessageEvent struct {
-	AddedLabels *[]uuid.UUID `json:"added_labels,omitempty"`
+	// Actions `rule_applied` only: what the rule did, after the timeline events of its changes; the
+	// message's `rule` names the rule.
+	Actions     *[]AutomationRunAction `json:"actions,omitempty"`
+	AddedLabels *[]uuid.UUID           `json:"added_labels,omitempty"`
 
 	// AssigneeId The new assignee (`assigned`).
 	AssigneeId *uuid.UUID `json:"assignee_id,omitempty"`
@@ -22127,7 +22656,10 @@ type WebhookAnalyticsAlertPayload struct {
 	InboxId *uuid.UUID `json:"inbox_id,omitempty"`
 
 	// Timestamp When the event happened (not when it was sent).
-	Timestamp   time.Time        `json:"timestamp"`
+	Timestamp time.Time `json:"timestamp"`
+
+	// Type `automation.triggered` cannot be listed in an endpoint's `events`: it is sent only to the
+	// endpoint a rule's `send_webhook` action names.
 	Type        WebhookEventType `json:"type"`
 	WorkspaceId uuid.UUID        `json:"workspace_id"`
 }
@@ -22158,6 +22690,39 @@ type WebhookAttemptList struct {
 	Items []WebhookAttempt `json:"items"`
 }
 
+// WebhookAutomationTriggeredData defines model for WebhookAutomationTriggeredData.
+type WebhookAutomationTriggeredData struct {
+	// Contact The contact as a host backend needs it.
+	Contact WebhookContact `json:"contact"`
+
+	// Conversation After the rule's other actions.
+	Conversation Conversation      `json:"conversation"`
+	Rule         AutomationRuleRef `json:"rule"`
+
+	// Trigger `conversation_created`: a conversation was created (by a contact, a member or a key).
+	// `message_received`: the contact wrote (not imported messages or drafts). `status_changed`:
+	// the status changed, also when a contact's message or the snooze time reopened it.
+	// `idle`: nothing was written in an open or pending conversation for `idle_minutes`
+	// (checked every 5 minutes; once per quiet period).
+	Trigger AutomationTrigger `json:"trigger"`
+}
+
+// WebhookAutomationTriggeredPayload defines model for WebhookAutomationTriggeredPayload.
+type WebhookAutomationTriggeredPayload struct {
+	Data WebhookAutomationTriggeredData `json:"data"`
+
+	// InboxId The conversation's inbox; absent for contact events.
+	InboxId *uuid.UUID `json:"inbox_id,omitempty"`
+
+	// Timestamp When the event happened (not when it was sent).
+	Timestamp time.Time `json:"timestamp"`
+
+	// Type `automation.triggered` cannot be listed in an endpoint's `events`: it is sent only to the
+	// endpoint a rule's `send_webhook` action names.
+	Type        WebhookEventType `json:"type"`
+	WorkspaceId uuid.UUID        `json:"workspace_id"`
+}
+
 // WebhookBroadcastData defines model for WebhookBroadcastData.
 type WebhookBroadcastData struct {
 	Broadcast Broadcast `json:"broadcast"`
@@ -22176,7 +22741,10 @@ type WebhookBroadcastPayload struct {
 	InboxId *uuid.UUID `json:"inbox_id,omitempty"`
 
 	// Timestamp When the event happened (not when it was sent).
-	Timestamp   time.Time        `json:"timestamp"`
+	Timestamp time.Time `json:"timestamp"`
+
+	// Type `automation.triggered` cannot be listed in an endpoint's `events`: it is sent only to the
+	// endpoint a rule's `send_webhook` action names.
 	Type        WebhookEventType `json:"type"`
 	WorkspaceId uuid.UUID        `json:"workspace_id"`
 }
@@ -22189,7 +22757,10 @@ type WebhookChangelogEntryPayload struct {
 	InboxId *uuid.UUID `json:"inbox_id,omitempty"`
 
 	// Timestamp When the event happened (not when it was sent).
-	Timestamp   time.Time        `json:"timestamp"`
+	Timestamp time.Time `json:"timestamp"`
+
+	// Type `automation.triggered` cannot be listed in an endpoint's `events`: it is sent only to the
+	// endpoint a rule's `send_webhook` action names.
 	Type        WebhookEventType `json:"type"`
 	WorkspaceId uuid.UUID        `json:"workspace_id"`
 }
@@ -22234,7 +22805,10 @@ type WebhookContactDeletedPayload struct {
 	InboxId *uuid.UUID `json:"inbox_id,omitempty"`
 
 	// Timestamp When the event happened (not when it was sent).
-	Timestamp   time.Time        `json:"timestamp"`
+	Timestamp time.Time `json:"timestamp"`
+
+	// Type `automation.triggered` cannot be listed in an endpoint's `events`: it is sent only to the
+	// endpoint a rule's `send_webhook` action names.
 	Type        WebhookEventType `json:"type"`
 	WorkspaceId uuid.UUID        `json:"workspace_id"`
 }
@@ -22247,7 +22821,10 @@ type WebhookContactPayload struct {
 	InboxId *uuid.UUID `json:"inbox_id,omitempty"`
 
 	// Timestamp When the event happened (not when it was sent).
-	Timestamp   time.Time        `json:"timestamp"`
+	Timestamp time.Time `json:"timestamp"`
+
+	// Type `automation.triggered` cannot be listed in an endpoint's `events`: it is sent only to the
+	// endpoint a rule's `send_webhook` action names.
 	Type        WebhookEventType `json:"type"`
 	WorkspaceId uuid.UUID        `json:"workspace_id"`
 }
@@ -22273,7 +22850,10 @@ type WebhookConversationDeletedPayload struct {
 	InboxId *uuid.UUID `json:"inbox_id,omitempty"`
 
 	// Timestamp When the event happened (not when it was sent).
-	Timestamp   time.Time        `json:"timestamp"`
+	Timestamp time.Time `json:"timestamp"`
+
+	// Type `automation.triggered` cannot be listed in an endpoint's `events`: it is sent only to the
+	// endpoint a rule's `send_webhook` action names.
 	Type        WebhookEventType `json:"type"`
 	WorkspaceId uuid.UUID        `json:"workspace_id"`
 }
@@ -22286,7 +22866,10 @@ type WebhookConversationPayload struct {
 	InboxId *uuid.UUID `json:"inbox_id,omitempty"`
 
 	// Timestamp When the event happened (not when it was sent).
-	Timestamp   time.Time        `json:"timestamp"`
+	Timestamp time.Time `json:"timestamp"`
+
+	// Type `automation.triggered` cannot be listed in an endpoint's `events`: it is sent only to the
+	// endpoint a rule's `send_webhook` action names.
 	Type        WebhookEventType `json:"type"`
 	WorkspaceId uuid.UUID        `json:"workspace_id"`
 }
@@ -22312,7 +22895,10 @@ type WebhookConversationSlaPayload struct {
 	InboxId *uuid.UUID `json:"inbox_id,omitempty"`
 
 	// Timestamp When the event happened (not when it was sent).
-	Timestamp   time.Time        `json:"timestamp"`
+	Timestamp time.Time `json:"timestamp"`
+
+	// Type `automation.triggered` cannot be listed in an endpoint's `events`: it is sent only to the
+	// endpoint a rule's `send_webhook` action names.
 	Type        WebhookEventType `json:"type"`
 	WorkspaceId uuid.UUID        `json:"workspace_id"`
 }
@@ -22328,8 +22914,11 @@ type WebhookDeletedContact struct {
 
 // WebhookDelivery defines model for WebhookDelivery.
 type WebhookDelivery struct {
-	Attempts    int32            `json:"attempts"`
-	CreatedAt   time.Time        `json:"created_at"`
+	Attempts  int32     `json:"attempts"`
+	CreatedAt time.Time `json:"created_at"`
+
+	// EventType `automation.triggered` cannot be listed in an endpoint's `events`: it is sent only to the
+	// endpoint a rule's `send_webhook` action names.
 	EventType   WebhookEventType `json:"event_type"`
 	Id          uuid.UUID        `json:"id"`
 	LastAttempt *WebhookAttempt  `json:"last_attempt,omitempty"`
@@ -22348,9 +22937,12 @@ type WebhookDelivery struct {
 // WebhookDeliveryDetail defines model for WebhookDeliveryDetail.
 type WebhookDeliveryDetail struct {
 	// AttemptLog The delivery's attempts that are still kept, newest first.
-	AttemptLog  []WebhookAttempt `json:"attempt_log"`
-	Attempts    int32            `json:"attempts"`
-	CreatedAt   time.Time        `json:"created_at"`
+	AttemptLog []WebhookAttempt `json:"attempt_log"`
+	Attempts   int32            `json:"attempts"`
+	CreatedAt  time.Time        `json:"created_at"`
+
+	// EventType `automation.triggered` cannot be listed in an endpoint's `events`: it is sent only to the
+	// endpoint a rule's `send_webhook` action names.
 	EventType   WebhookEventType `json:"event_type"`
 	Id          uuid.UUID        `json:"id"`
 	LastAttempt *WebhookAttempt  `json:"last_attempt,omitempty"`
@@ -22389,7 +22981,10 @@ type WebhookDiscussionPayload struct {
 	InboxId *uuid.UUID `json:"inbox_id,omitempty"`
 
 	// Timestamp When the event happened (not when it was sent).
-	Timestamp   time.Time        `json:"timestamp"`
+	Timestamp time.Time `json:"timestamp"`
+
+	// Type `automation.triggered` cannot be listed in an endpoint's `events`: it is sent only to the
+	// endpoint a rule's `send_webhook` action names.
 	Type        WebhookEventType `json:"type"`
 	WorkspaceId uuid.UUID        `json:"workspace_id"`
 }
@@ -22402,7 +22997,10 @@ type WebhookDiscussionStagePayload struct {
 	InboxId *uuid.UUID `json:"inbox_id,omitempty"`
 
 	// Timestamp When the event happened (not when it was sent).
-	Timestamp   time.Time        `json:"timestamp"`
+	Timestamp time.Time `json:"timestamp"`
+
+	// Type `automation.triggered` cannot be listed in an endpoint's `events`: it is sent only to the
+	// endpoint a rule's `send_webhook` action names.
 	Type        WebhookEventType `json:"type"`
 	WorkspaceId uuid.UUID        `json:"workspace_id"`
 }
@@ -22467,7 +23065,8 @@ type WebhookEndpointUpdate struct {
 	Url          *string             `json:"url,omitempty"`
 }
 
-// WebhookEventType defines model for WebhookEventType.
+// WebhookEventType `automation.triggered` cannot be listed in an endpoint's `events`: it is sent only to the
+// endpoint a rule's `send_webhook` action names.
 type WebhookEventType string
 
 // WebhookFeedbackPayload defines model for WebhookFeedbackPayload.
@@ -22478,7 +23077,10 @@ type WebhookFeedbackPayload struct {
 	InboxId *uuid.UUID `json:"inbox_id,omitempty"`
 
 	// Timestamp When the event happened (not when it was sent).
-	Timestamp   time.Time        `json:"timestamp"`
+	Timestamp time.Time `json:"timestamp"`
+
+	// Type `automation.triggered` cannot be listed in an endpoint's `events`: it is sent only to the
+	// endpoint a rule's `send_webhook` action names.
 	Type        WebhookEventType `json:"type"`
 	WorkspaceId uuid.UUID        `json:"workspace_id"`
 }
@@ -22491,7 +23093,10 @@ type WebhookHelpArticlePayload struct {
 	InboxId *uuid.UUID `json:"inbox_id,omitempty"`
 
 	// Timestamp When the event happened (not when it was sent).
-	Timestamp   time.Time        `json:"timestamp"`
+	Timestamp time.Time `json:"timestamp"`
+
+	// Type `automation.triggered` cannot be listed in an endpoint's `events`: it is sent only to the
+	// endpoint a rule's `send_webhook` action names.
 	Type        WebhookEventType `json:"type"`
 	WorkspaceId uuid.UUID        `json:"workspace_id"`
 }
@@ -22504,7 +23109,10 @@ type WebhookIssueLinkPayload struct {
 	InboxId *uuid.UUID `json:"inbox_id,omitempty"`
 
 	// Timestamp When the event happened (not when it was sent).
-	Timestamp   time.Time        `json:"timestamp"`
+	Timestamp time.Time `json:"timestamp"`
+
+	// Type `automation.triggered` cannot be listed in an endpoint's `events`: it is sent only to the
+	// endpoint a rule's `send_webhook` action names.
 	Type        WebhookEventType `json:"type"`
 	WorkspaceId uuid.UUID        `json:"workspace_id"`
 }
@@ -22525,7 +23133,10 @@ type WebhookMessagePayload struct {
 	InboxId *uuid.UUID `json:"inbox_id,omitempty"`
 
 	// Timestamp When the event happened (not when it was sent).
-	Timestamp   time.Time        `json:"timestamp"`
+	Timestamp time.Time `json:"timestamp"`
+
+	// Type `automation.triggered` cannot be listed in an endpoint's `events`: it is sent only to the
+	// endpoint a rule's `send_webhook` action names.
 	Type        WebhookEventType `json:"type"`
 	WorkspaceId uuid.UUID        `json:"workspace_id"`
 }
@@ -22536,7 +23147,10 @@ type WebhookPayloadBase struct {
 	InboxId *uuid.UUID `json:"inbox_id,omitempty"`
 
 	// Timestamp When the event happened (not when it was sent).
-	Timestamp   time.Time        `json:"timestamp"`
+	Timestamp time.Time `json:"timestamp"`
+
+	// Type `automation.triggered` cannot be listed in an endpoint's `events`: it is sent only to the
+	// endpoint a rule's `send_webhook` action names.
 	Type        WebhookEventType `json:"type"`
 	WorkspaceId uuid.UUID        `json:"workspace_id"`
 }
@@ -22549,7 +23163,10 @@ type WebhookStatusComponentPayload struct {
 	InboxId *uuid.UUID `json:"inbox_id,omitempty"`
 
 	// Timestamp When the event happened (not when it was sent).
-	Timestamp   time.Time        `json:"timestamp"`
+	Timestamp time.Time `json:"timestamp"`
+
+	// Type `automation.triggered` cannot be listed in an endpoint's `events`: it is sent only to the
+	// endpoint a rule's `send_webhook` action names.
 	Type        WebhookEventType `json:"type"`
 	WorkspaceId uuid.UUID        `json:"workspace_id"`
 }
@@ -22562,7 +23179,10 @@ type WebhookStatusIncidentPayload struct {
 	InboxId *uuid.UUID `json:"inbox_id,omitempty"`
 
 	// Timestamp When the event happened (not when it was sent).
-	Timestamp   time.Time        `json:"timestamp"`
+	Timestamp time.Time `json:"timestamp"`
+
+	// Type `automation.triggered` cannot be listed in an endpoint's `events`: it is sent only to the
+	// endpoint a rule's `send_webhook` action names.
 	Type        WebhookEventType `json:"type"`
 	WorkspaceId uuid.UUID        `json:"workspace_id"`
 }
@@ -22575,7 +23195,10 @@ type WebhookStatusMonitorPayload struct {
 	InboxId *uuid.UUID `json:"inbox_id,omitempty"`
 
 	// Timestamp When the event happened (not when it was sent).
-	Timestamp   time.Time        `json:"timestamp"`
+	Timestamp time.Time `json:"timestamp"`
+
+	// Type `automation.triggered` cannot be listed in an endpoint's `events`: it is sent only to the
+	// endpoint a rule's `send_webhook` action names.
 	Type        WebhookEventType `json:"type"`
 	WorkspaceId uuid.UUID        `json:"workspace_id"`
 }
@@ -22601,7 +23224,10 @@ type WebhookSubscriptionPayload struct {
 	InboxId *uuid.UUID `json:"inbox_id,omitempty"`
 
 	// Timestamp When the event happened (not when it was sent).
-	Timestamp   time.Time        `json:"timestamp"`
+	Timestamp time.Time `json:"timestamp"`
+
+	// Type `automation.triggered` cannot be listed in an endpoint's `events`: it is sent only to the
+	// endpoint a rule's `send_webhook` action names.
 	Type        WebhookEventType `json:"type"`
 	WorkspaceId uuid.UUID        `json:"workspace_id"`
 }
@@ -22615,7 +23241,10 @@ type WebhookTeamPayload struct {
 	InboxId *uuid.UUID `json:"inbox_id,omitempty"`
 
 	// Timestamp When the event happened (not when it was sent).
-	Timestamp   time.Time        `json:"timestamp"`
+	Timestamp time.Time `json:"timestamp"`
+
+	// Type `automation.triggered` cannot be listed in an endpoint's `events`: it is sent only to the
+	// endpoint a rule's `send_webhook` action names.
 	Type        WebhookEventType `json:"type"`
 	WorkspaceId uuid.UUID        `json:"workspace_id"`
 }
@@ -22715,6 +23344,9 @@ type ApiKeyId = uuid.UUID
 
 // AttachmentId defines model for AttachmentId.
 type AttachmentId = uuid.UUID
+
+// AutomationRuleId defines model for AutomationRuleId.
+type AutomationRuleId = uuid.UUID
 
 // BroadcastId defines model for BroadcastId.
 type BroadcastId = uuid.UUID
@@ -23507,6 +24139,60 @@ type ListAuditLogParams struct {
 
 	// Until Only entries before this time.
 	Until *time.Time `form:"until,omitempty" json:"until,omitempty"`
+
+	// Cursor The `next_cursor` of the previous page.
+	Cursor *Cursor `form:"cursor,omitempty" json:"cursor,omitempty"`
+
+	// Limit Page size, 1 to 100; 25 by default.
+	Limit *Limit `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// ListAutomationRulesParams defines parameters for ListAutomationRules.
+type ListAutomationRulesParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// CreateAutomationRuleParams defines parameters for CreateAutomationRule.
+type CreateAutomationRuleParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// OrderAutomationRulesParams defines parameters for OrderAutomationRules.
+type OrderAutomationRulesParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// DeleteAutomationRuleParams defines parameters for DeleteAutomationRule.
+type DeleteAutomationRuleParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// GetAutomationRuleParams defines parameters for GetAutomationRule.
+type GetAutomationRuleParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// UpdateAutomationRuleParams defines parameters for UpdateAutomationRule.
+type UpdateAutomationRuleParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// ListAutomationRunsParams defines parameters for ListAutomationRuns.
+type ListAutomationRunsParams struct {
+	// Outcome Only runs with this outcome.
+	Outcome *AutomationRunOutcome `form:"outcome,omitempty" json:"outcome,omitempty"`
 
 	// Cursor The `next_cursor` of the previous page.
 	Cursor *Cursor `form:"cursor,omitempty" json:"cursor,omitempty"`
@@ -26546,6 +27232,20 @@ type WebhookAnalyticsAlertParams struct {
 	WebhookSignature WebhookSignatureHeader `json:"webhook-signature"`
 }
 
+// WebhookAutomationTriggeredParams defines parameters for WebhookAutomationTriggered.
+type WebhookAutomationTriggeredParams struct {
+	// WebhookId The delivery's id, the same on every retry; use it to ignore duplicates.
+	WebhookId WebhookIdHeader `json:"webhook-id"`
+
+	// WebhookTimestamp Unix seconds of this attempt. Refuse values far from your clock.
+	WebhookTimestamp WebhookTimestampHeader `json:"webhook-timestamp"`
+
+	// WebhookSignature Space-separated `v1,<base64>` signatures: HMAC-SHA256 over
+	// `<webhook-id>.<webhook-timestamp>.<body>` with the base64-decoded part of the
+	// `whsec_` secret (Standard Webhooks). Two during a secret rotation.
+	WebhookSignature WebhookSignatureHeader `json:"webhook-signature"`
+}
+
 // WebhookBroadcastUpdatedParams defines parameters for WebhookBroadcastUpdated.
 type WebhookBroadcastUpdatedParams struct {
 	// WebhookId The delivery's id, the same on every retry; use it to ignore duplicates.
@@ -27284,6 +27984,15 @@ type FinishPasskeySignInJSONRequestBody = PasskeyCeremonyResult
 // StartSsoSignInJSONRequestBody defines body for StartSsoSignIn for application/json ContentType.
 type StartSsoSignInJSONRequestBody = SsoStartRequest
 
+// CreateAutomationRuleJSONRequestBody defines body for CreateAutomationRule for application/json ContentType.
+type CreateAutomationRuleJSONRequestBody = AutomationRuleCreate
+
+// OrderAutomationRulesJSONRequestBody defines body for OrderAutomationRules for application/json ContentType.
+type OrderAutomationRulesJSONRequestBody = AutomationRuleOrder
+
+// UpdateAutomationRuleJSONRequestBody defines body for UpdateAutomationRule for application/json ContentType.
+type UpdateAutomationRuleJSONRequestBody = AutomationRuleUpdate
+
 // CreateBroadcastJSONRequestBody defines body for CreateBroadcast for application/json ContentType.
 type CreateBroadcastJSONRequestBody = BroadcastCreate
 
@@ -27688,6 +28397,9 @@ type CreateWorkspaceJSONRequestBody = WorkspaceCreate
 
 // WebhookAnalyticsAlertJSONRequestBody defines body for WebhookAnalyticsAlert for application/json ContentType.
 type WebhookAnalyticsAlertJSONRequestBody = WebhookAnalyticsAlertPayload
+
+// WebhookAutomationTriggeredJSONRequestBody defines body for WebhookAutomationTriggered for application/json ContentType.
+type WebhookAutomationTriggeredJSONRequestBody = WebhookAutomationTriggeredPayload
 
 // WebhookBroadcastUpdatedJSONRequestBody defines body for WebhookBroadcastUpdated for application/json ContentType.
 type WebhookBroadcastUpdatedJSONRequestBody = WebhookBroadcastPayload
@@ -32198,6 +32910,27 @@ type ServerInterface interface {
 	// StartSsoSignIn Start a single sign-on
 	// (POST /v1/auth/sso)
 	StartSsoSignIn(w http.ResponseWriter, r *http.Request)
+	// ListAutomationRules List automation rules
+	// (GET /v1/automation-rules)
+	ListAutomationRules(w http.ResponseWriter, r *http.Request, params ListAutomationRulesParams)
+	// CreateAutomationRule Create an automation rule
+	// (POST /v1/automation-rules)
+	CreateAutomationRule(w http.ResponseWriter, r *http.Request, params CreateAutomationRuleParams)
+	// OrderAutomationRules Reorder automation rules
+	// (PUT /v1/automation-rules/order)
+	OrderAutomationRules(w http.ResponseWriter, r *http.Request, params OrderAutomationRulesParams)
+	// DeleteAutomationRule Delete an automation rule
+	// (DELETE /v1/automation-rules/{automationRuleId})
+	DeleteAutomationRule(w http.ResponseWriter, r *http.Request, automationRuleId AutomationRuleId, params DeleteAutomationRuleParams)
+	// GetAutomationRule Get an automation rule
+	// (GET /v1/automation-rules/{automationRuleId})
+	GetAutomationRule(w http.ResponseWriter, r *http.Request, automationRuleId AutomationRuleId, params GetAutomationRuleParams)
+	// UpdateAutomationRule Update an automation rule
+	// (PATCH /v1/automation-rules/{automationRuleId})
+	UpdateAutomationRule(w http.ResponseWriter, r *http.Request, automationRuleId AutomationRuleId, params UpdateAutomationRuleParams)
+	// ListAutomationRuns A rule's log
+	// (GET /v1/automation-rules/{automationRuleId}/runs)
+	ListAutomationRuns(w http.ResponseWriter, r *http.Request, automationRuleId AutomationRuleId, params ListAutomationRunsParams)
 	// ListBroadcasts List broadcasts
 	// (GET /v1/broadcasts)
 	ListBroadcasts(w http.ResponseWriter, r *http.Request, params ListBroadcastsParams)
@@ -38512,6 +39245,387 @@ func (siw *ServerInterfaceWrapper) StartSsoSignIn(w http.ResponseWriter, r *http
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.StartSsoSignIn(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListAutomationRules operation middleware
+func (siw *ServerInterfaceWrapper) ListAutomationRules(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListAutomationRulesParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListAutomationRules(w, r, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CreateAutomationRule operation middleware
+func (siw *ServerInterfaceWrapper) CreateAutomationRule(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params CreateAutomationRuleParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CreateAutomationRule(w, r, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// OrderAutomationRules operation middleware
+func (siw *ServerInterfaceWrapper) OrderAutomationRules(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params OrderAutomationRulesParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.OrderAutomationRules(w, r, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// DeleteAutomationRule operation middleware
+func (siw *ServerInterfaceWrapper) DeleteAutomationRule(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "automationRuleId" -------------
+	var automationRuleId AutomationRuleId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "automationRuleId", r.PathValue("automationRuleId"), &automationRuleId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "automationRuleId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params DeleteAutomationRuleParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.DeleteAutomationRule(w, r, automationRuleId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetAutomationRule operation middleware
+func (siw *ServerInterfaceWrapper) GetAutomationRule(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "automationRuleId" -------------
+	var automationRuleId AutomationRuleId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "automationRuleId", r.PathValue("automationRuleId"), &automationRuleId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "automationRuleId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetAutomationRuleParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetAutomationRule(w, r, automationRuleId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UpdateAutomationRule operation middleware
+func (siw *ServerInterfaceWrapper) UpdateAutomationRule(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "automationRuleId" -------------
+	var automationRuleId AutomationRuleId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "automationRuleId", r.PathValue("automationRuleId"), &automationRuleId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "automationRuleId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params UpdateAutomationRuleParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UpdateAutomationRule(w, r, automationRuleId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListAutomationRuns operation middleware
+func (siw *ServerInterfaceWrapper) ListAutomationRuns(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "automationRuleId" -------------
+	var automationRuleId AutomationRuleId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "automationRuleId", r.PathValue("automationRuleId"), &automationRuleId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "automationRuleId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListAutomationRunsParams
+
+	// ------------- Optional query parameter "outcome" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "outcome", r.URL.Query(), &params.Outcome, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "outcome"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "outcome", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "cursor" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "cursor", r.URL.Query(), &params.Cursor, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "cursor"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "cursor", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "limit" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "limit", r.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: "int32"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "limit"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "limit", Err: err})
+		}
+		return
+	}
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListAutomationRuns(w, r, automationRuleId, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -61458,6 +62572,13 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/sla-policies/{slaPolicyId}", wrapper.DeleteSlaPolicy)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/sla-policies/{slaPolicyId}", wrapper.GetSlaPolicy)
 	m.HandleFunc(http.MethodPatch+" "+options.BaseURL+"/v1/sla-policies/{slaPolicyId}", wrapper.UpdateSlaPolicy)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/automation-rules", wrapper.ListAutomationRules)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/automation-rules", wrapper.CreateAutomationRule)
+	m.HandleFunc(http.MethodPut+" "+options.BaseURL+"/v1/automation-rules/order", wrapper.OrderAutomationRules)
+	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/automation-rules/{automationRuleId}", wrapper.DeleteAutomationRule)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/automation-rules/{automationRuleId}", wrapper.GetAutomationRule)
+	m.HandleFunc(http.MethodPatch+" "+options.BaseURL+"/v1/automation-rules/{automationRuleId}", wrapper.UpdateAutomationRule)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/automation-rules/{automationRuleId}/runs", wrapper.ListAutomationRuns)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/inboxes/{inboxId}/channels", wrapper.ListChannels)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/inboxes/{inboxId}/channels", wrapper.CreateChannel)
 	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/channels/{channelId}", wrapper.DeleteChannel)
@@ -61881,6 +63002,9 @@ type WebhookReceiverInterface interface {
 	// A property raised an alert
 	// HandleWebhookAnalyticsAlertWebhook handles the POST webhook for analytics.alert.
 	HandleWebhookAnalyticsAlertWebhook(w http.ResponseWriter, r *http.Request, params WebhookAnalyticsAlertParams)
+	// An automation rule sent a conversation
+	// HandleWebhookAutomationTriggeredWebhook handles the POST webhook for automation.triggered.
+	HandleWebhookAutomationTriggeredWebhook(w http.ResponseWriter, r *http.Request, params WebhookAutomationTriggeredParams)
 	// A broadcast changed state
 	// HandleWebhookBroadcastUpdatedWebhook handles the POST webhook for broadcast.updated.
 	HandleWebhookBroadcastUpdatedWebhook(w http.ResponseWriter, r *http.Request, params WebhookBroadcastUpdatedParams)
@@ -62098,6 +63222,98 @@ func WebhookAnalyticsAlertWebhookHandler(si WebhookReceiverInterface, errHandler
 		}
 
 		si.HandleWebhookAnalyticsAlertWebhook(w, r, params)
+	})
+	for _, mw := range middlewares {
+		h = mw(h)
+	}
+	return h
+}
+
+// WebhookAutomationTriggeredWebhookHandler returns the http.Handler for the automation.triggered webhook.
+// Mount this at the URL path advertised to webhook senders. errHandler
+// may be nil; if so, parameter-binding errors return 400 with the error
+// message. Middlewares are applied in the order provided -- the last
+// argument becomes the outermost wrapper.
+func WebhookAutomationTriggeredWebhookHandler(si WebhookReceiverInterface, errHandler func(w http.ResponseWriter, r *http.Request, err error), middlewares ...WebhookReceiverMiddlewareFunc) http.Handler {
+	if errHandler == nil {
+		errHandler = func(w http.ResponseWriter, r *http.Request, err error) {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+		}
+	}
+	var h http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		var err error
+		_ = err
+
+		// Parameter object where we will unmarshal all parameters from the request.
+		var params WebhookAutomationTriggeredParams
+
+		// ------------- Required header parameter "webhook-id" -------------
+		if valueList, found := r.Header[http.CanonicalHeaderKey("webhook-id")]; found {
+			var WebhookId WebhookIdHeader
+			n := len(valueList)
+			if n != 1 {
+				errHandler(w, r, &TooManyValuesForParamError{ParamName: "webhook-id", Count: n})
+				return
+			}
+
+			err = runtime.BindStyledParameterWithOptions("simple", "webhook-id", valueList[0], &WebhookId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
+			if err != nil {
+				errHandler(w, r, &InvalidParamFormatError{ParamName: "webhook-id", Err: err})
+				return
+			}
+			params.WebhookId = WebhookId
+
+		} else {
+			err := fmt.Errorf("Header parameter webhook-id is required, but not found")
+			errHandler(w, r, &RequiredHeaderError{ParamName: "webhook-id", Err: err})
+			return
+		}
+
+		// ------------- Required header parameter "webhook-timestamp" -------------
+		if valueList, found := r.Header[http.CanonicalHeaderKey("webhook-timestamp")]; found {
+			var WebhookTimestamp WebhookTimestampHeader
+			n := len(valueList)
+			if n != 1 {
+				errHandler(w, r, &TooManyValuesForParamError{ParamName: "webhook-timestamp", Count: n})
+				return
+			}
+
+			err = runtime.BindStyledParameterWithOptions("simple", "webhook-timestamp", valueList[0], &WebhookTimestamp, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
+			if err != nil {
+				errHandler(w, r, &InvalidParamFormatError{ParamName: "webhook-timestamp", Err: err})
+				return
+			}
+			params.WebhookTimestamp = WebhookTimestamp
+
+		} else {
+			err := fmt.Errorf("Header parameter webhook-timestamp is required, but not found")
+			errHandler(w, r, &RequiredHeaderError{ParamName: "webhook-timestamp", Err: err})
+			return
+		}
+
+		// ------------- Required header parameter "webhook-signature" -------------
+		if valueList, found := r.Header[http.CanonicalHeaderKey("webhook-signature")]; found {
+			var WebhookSignature WebhookSignatureHeader
+			n := len(valueList)
+			if n != 1 {
+				errHandler(w, r, &TooManyValuesForParamError{ParamName: "webhook-signature", Count: n})
+				return
+			}
+
+			err = runtime.BindStyledParameterWithOptions("simple", "webhook-signature", valueList[0], &WebhookSignature, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
+			if err != nil {
+				errHandler(w, r, &InvalidParamFormatError{ParamName: "webhook-signature", Err: err})
+				return
+			}
+			params.WebhookSignature = WebhookSignature
+
+		} else {
+			err := fmt.Errorf("Header parameter webhook-signature is required, but not found")
+			errHandler(w, r, &RequiredHeaderError{ParamName: "webhook-signature", Err: err})
+			return
+		}
+
+		si.HandleWebhookAutomationTriggeredWebhook(w, r, params)
 	})
 	for _, mw := range middlewares {
 		h = mw(h)
@@ -74822,6 +76038,483 @@ func (response StartSsoSignIn502ApplicationProblemPlusJSONResponse) VisitStartSs
 	}
 	w.Header().Set("Content-Type", "application/problem+json")
 	w.WriteHeader(502)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListAutomationRulesRequestObject struct {
+	Params ListAutomationRulesParams
+}
+
+type ListAutomationRulesResponseObject interface {
+	VisitListAutomationRulesResponse(w http.ResponseWriter) error
+}
+
+type ListAutomationRules200JSONResponse AutomationRuleList
+
+func (response ListAutomationRules200JSONResponse) VisitListAutomationRulesResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListAutomationRules401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response ListAutomationRules401ApplicationProblemPlusJSONResponse) VisitListAutomationRulesResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListAutomationRules403ApplicationProblemPlusJSONResponse Problem
+
+func (response ListAutomationRules403ApplicationProblemPlusJSONResponse) VisitListAutomationRulesResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateAutomationRuleRequestObject struct {
+	Params CreateAutomationRuleParams
+	Body   *CreateAutomationRuleJSONRequestBody
+}
+
+type CreateAutomationRuleResponseObject interface {
+	VisitCreateAutomationRuleResponse(w http.ResponseWriter) error
+}
+
+type CreateAutomationRule201JSONResponse AutomationRule
+
+func (response CreateAutomationRule201JSONResponse) VisitCreateAutomationRuleResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(201)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateAutomationRule400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response CreateAutomationRule400ApplicationProblemPlusJSONResponse) VisitCreateAutomationRuleResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateAutomationRule401ApplicationProblemPlusJSONResponse Problem
+
+func (response CreateAutomationRule401ApplicationProblemPlusJSONResponse) VisitCreateAutomationRuleResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateAutomationRule403ApplicationProblemPlusJSONResponse Problem
+
+func (response CreateAutomationRule403ApplicationProblemPlusJSONResponse) VisitCreateAutomationRuleResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type OrderAutomationRulesRequestObject struct {
+	Params OrderAutomationRulesParams
+	Body   *OrderAutomationRulesJSONRequestBody
+}
+
+type OrderAutomationRulesResponseObject interface {
+	VisitOrderAutomationRulesResponse(w http.ResponseWriter) error
+}
+
+type OrderAutomationRules200JSONResponse AutomationRuleList
+
+func (response OrderAutomationRules200JSONResponse) VisitOrderAutomationRulesResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type OrderAutomationRules400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response OrderAutomationRules400ApplicationProblemPlusJSONResponse) VisitOrderAutomationRulesResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type OrderAutomationRules401ApplicationProblemPlusJSONResponse Problem
+
+func (response OrderAutomationRules401ApplicationProblemPlusJSONResponse) VisitOrderAutomationRulesResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type OrderAutomationRules403ApplicationProblemPlusJSONResponse Problem
+
+func (response OrderAutomationRules403ApplicationProblemPlusJSONResponse) VisitOrderAutomationRulesResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteAutomationRuleRequestObject struct {
+	AutomationRuleId AutomationRuleId `json:"automationRuleId"`
+	Params           DeleteAutomationRuleParams
+}
+
+type DeleteAutomationRuleResponseObject interface {
+	VisitDeleteAutomationRuleResponse(w http.ResponseWriter) error
+}
+
+type DeleteAutomationRule204Response struct {
+}
+
+func (response DeleteAutomationRule204Response) VisitDeleteAutomationRuleResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
+}
+
+type DeleteAutomationRule401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response DeleteAutomationRule401ApplicationProblemPlusJSONResponse) VisitDeleteAutomationRuleResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteAutomationRule403ApplicationProblemPlusJSONResponse Problem
+
+func (response DeleteAutomationRule403ApplicationProblemPlusJSONResponse) VisitDeleteAutomationRuleResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteAutomationRule404ApplicationProblemPlusJSONResponse Problem
+
+func (response DeleteAutomationRule404ApplicationProblemPlusJSONResponse) VisitDeleteAutomationRuleResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetAutomationRuleRequestObject struct {
+	AutomationRuleId AutomationRuleId `json:"automationRuleId"`
+	Params           GetAutomationRuleParams
+}
+
+type GetAutomationRuleResponseObject interface {
+	VisitGetAutomationRuleResponse(w http.ResponseWriter) error
+}
+
+type GetAutomationRule200JSONResponse AutomationRule
+
+func (response GetAutomationRule200JSONResponse) VisitGetAutomationRuleResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetAutomationRule401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response GetAutomationRule401ApplicationProblemPlusJSONResponse) VisitGetAutomationRuleResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetAutomationRule403ApplicationProblemPlusJSONResponse Problem
+
+func (response GetAutomationRule403ApplicationProblemPlusJSONResponse) VisitGetAutomationRuleResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetAutomationRule404ApplicationProblemPlusJSONResponse Problem
+
+func (response GetAutomationRule404ApplicationProblemPlusJSONResponse) VisitGetAutomationRuleResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateAutomationRuleRequestObject struct {
+	AutomationRuleId AutomationRuleId `json:"automationRuleId"`
+	Params           UpdateAutomationRuleParams
+	Body             *UpdateAutomationRuleJSONRequestBody
+}
+
+type UpdateAutomationRuleResponseObject interface {
+	VisitUpdateAutomationRuleResponse(w http.ResponseWriter) error
+}
+
+type UpdateAutomationRule200JSONResponse AutomationRule
+
+func (response UpdateAutomationRule200JSONResponse) VisitUpdateAutomationRuleResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateAutomationRule400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response UpdateAutomationRule400ApplicationProblemPlusJSONResponse) VisitUpdateAutomationRuleResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateAutomationRule401ApplicationProblemPlusJSONResponse Problem
+
+func (response UpdateAutomationRule401ApplicationProblemPlusJSONResponse) VisitUpdateAutomationRuleResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateAutomationRule403ApplicationProblemPlusJSONResponse Problem
+
+func (response UpdateAutomationRule403ApplicationProblemPlusJSONResponse) VisitUpdateAutomationRuleResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateAutomationRule404ApplicationProblemPlusJSONResponse Problem
+
+func (response UpdateAutomationRule404ApplicationProblemPlusJSONResponse) VisitUpdateAutomationRuleResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListAutomationRunsRequestObject struct {
+	AutomationRuleId AutomationRuleId `json:"automationRuleId"`
+	Params           ListAutomationRunsParams
+}
+
+type ListAutomationRunsResponseObject interface {
+	VisitListAutomationRunsResponse(w http.ResponseWriter) error
+}
+
+type ListAutomationRuns200JSONResponse AutomationRunPage
+
+func (response ListAutomationRuns200JSONResponse) VisitListAutomationRunsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListAutomationRuns400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response ListAutomationRuns400ApplicationProblemPlusJSONResponse) VisitListAutomationRunsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListAutomationRuns401ApplicationProblemPlusJSONResponse Problem
+
+func (response ListAutomationRuns401ApplicationProblemPlusJSONResponse) VisitListAutomationRunsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListAutomationRuns403ApplicationProblemPlusJSONResponse Problem
+
+func (response ListAutomationRuns403ApplicationProblemPlusJSONResponse) VisitListAutomationRunsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListAutomationRuns404ApplicationProblemPlusJSONResponse Problem
+
+func (response ListAutomationRuns404ApplicationProblemPlusJSONResponse) VisitListAutomationRunsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
 	_, err := buf.WriteTo(w)
 	return err
 }
@@ -104884,6 +106577,27 @@ type StrictServerInterface interface {
 	// StartSsoSignIn Start a single sign-on
 	// (POST /v1/auth/sso)
 	StartSsoSignIn(ctx context.Context, request StartSsoSignInRequestObject) (StartSsoSignInResponseObject, error)
+	// ListAutomationRules List automation rules
+	// (GET /v1/automation-rules)
+	ListAutomationRules(ctx context.Context, request ListAutomationRulesRequestObject) (ListAutomationRulesResponseObject, error)
+	// CreateAutomationRule Create an automation rule
+	// (POST /v1/automation-rules)
+	CreateAutomationRule(ctx context.Context, request CreateAutomationRuleRequestObject) (CreateAutomationRuleResponseObject, error)
+	// OrderAutomationRules Reorder automation rules
+	// (PUT /v1/automation-rules/order)
+	OrderAutomationRules(ctx context.Context, request OrderAutomationRulesRequestObject) (OrderAutomationRulesResponseObject, error)
+	// DeleteAutomationRule Delete an automation rule
+	// (DELETE /v1/automation-rules/{automationRuleId})
+	DeleteAutomationRule(ctx context.Context, request DeleteAutomationRuleRequestObject) (DeleteAutomationRuleResponseObject, error)
+	// GetAutomationRule Get an automation rule
+	// (GET /v1/automation-rules/{automationRuleId})
+	GetAutomationRule(ctx context.Context, request GetAutomationRuleRequestObject) (GetAutomationRuleResponseObject, error)
+	// UpdateAutomationRule Update an automation rule
+	// (PATCH /v1/automation-rules/{automationRuleId})
+	UpdateAutomationRule(ctx context.Context, request UpdateAutomationRuleRequestObject) (UpdateAutomationRuleResponseObject, error)
+	// ListAutomationRuns A rule's log
+	// (GET /v1/automation-rules/{automationRuleId}/runs)
+	ListAutomationRuns(ctx context.Context, request ListAutomationRunsRequestObject) (ListAutomationRunsResponseObject, error)
 	// ListBroadcasts List broadcasts
 	// (GET /v1/broadcasts)
 	ListBroadcasts(ctx context.Context, request ListBroadcastsRequestObject) (ListBroadcastsResponseObject, error)
@@ -109508,6 +111222,213 @@ func (sh *strictHandler) StartSsoSignIn(w http.ResponseWriter, r *http.Request) 
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
 	} else if validResponse, ok := response.(StartSsoSignInResponseObject); ok {
 		if err := validResponse.VisitStartSsoSignInResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// ListAutomationRules operation middleware
+func (sh *strictHandler) ListAutomationRules(w http.ResponseWriter, r *http.Request, params ListAutomationRulesParams) {
+	var request ListAutomationRulesRequestObject
+
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.ListAutomationRules(ctx, request.(ListAutomationRulesRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "ListAutomationRules")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(ListAutomationRulesResponseObject); ok {
+		if err := validResponse.VisitListAutomationRulesResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// CreateAutomationRule operation middleware
+func (sh *strictHandler) CreateAutomationRule(w http.ResponseWriter, r *http.Request, params CreateAutomationRuleParams) {
+	var request CreateAutomationRuleRequestObject
+
+	request.Params = params
+
+	var body CreateAutomationRuleJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.CreateAutomationRule(ctx, request.(CreateAutomationRuleRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "CreateAutomationRule")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(CreateAutomationRuleResponseObject); ok {
+		if err := validResponse.VisitCreateAutomationRuleResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// OrderAutomationRules operation middleware
+func (sh *strictHandler) OrderAutomationRules(w http.ResponseWriter, r *http.Request, params OrderAutomationRulesParams) {
+	var request OrderAutomationRulesRequestObject
+
+	request.Params = params
+
+	var body OrderAutomationRulesJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.OrderAutomationRules(ctx, request.(OrderAutomationRulesRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "OrderAutomationRules")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(OrderAutomationRulesResponseObject); ok {
+		if err := validResponse.VisitOrderAutomationRulesResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// DeleteAutomationRule operation middleware
+func (sh *strictHandler) DeleteAutomationRule(w http.ResponseWriter, r *http.Request, automationRuleId AutomationRuleId, params DeleteAutomationRuleParams) {
+	var request DeleteAutomationRuleRequestObject
+
+	request.AutomationRuleId = automationRuleId
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.DeleteAutomationRule(ctx, request.(DeleteAutomationRuleRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "DeleteAutomationRule")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(DeleteAutomationRuleResponseObject); ok {
+		if err := validResponse.VisitDeleteAutomationRuleResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// GetAutomationRule operation middleware
+func (sh *strictHandler) GetAutomationRule(w http.ResponseWriter, r *http.Request, automationRuleId AutomationRuleId, params GetAutomationRuleParams) {
+	var request GetAutomationRuleRequestObject
+
+	request.AutomationRuleId = automationRuleId
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.GetAutomationRule(ctx, request.(GetAutomationRuleRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "GetAutomationRule")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(GetAutomationRuleResponseObject); ok {
+		if err := validResponse.VisitGetAutomationRuleResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// UpdateAutomationRule operation middleware
+func (sh *strictHandler) UpdateAutomationRule(w http.ResponseWriter, r *http.Request, automationRuleId AutomationRuleId, params UpdateAutomationRuleParams) {
+	var request UpdateAutomationRuleRequestObject
+
+	request.AutomationRuleId = automationRuleId
+	request.Params = params
+
+	var body UpdateAutomationRuleJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.UpdateAutomationRule(ctx, request.(UpdateAutomationRuleRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "UpdateAutomationRule")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(UpdateAutomationRuleResponseObject); ok {
+		if err := validResponse.VisitUpdateAutomationRuleResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// ListAutomationRuns operation middleware
+func (sh *strictHandler) ListAutomationRuns(w http.ResponseWriter, r *http.Request, automationRuleId AutomationRuleId, params ListAutomationRunsParams) {
+	var request ListAutomationRunsRequestObject
+
+	request.AutomationRuleId = automationRuleId
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.ListAutomationRuns(ctx, request.(ListAutomationRunsRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "ListAutomationRuns")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(ListAutomationRunsResponseObject); ok {
+		if err := validResponse.VisitListAutomationRunsResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {

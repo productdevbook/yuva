@@ -8,6 +8,7 @@ import (
 	"github.com/jackc/pgx/v5"
 	"github.com/riverqueue/river"
 
+	"github.com/productdevbook/yuva/api/internal/oas"
 	"github.com/productdevbook/yuva/api/internal/realtime"
 	"github.com/productdevbook/yuva/api/internal/store"
 )
@@ -29,6 +30,8 @@ type eventBatch struct {
 	boards []boardRef
 	// quiet drops events and keeps jobs: imports write no event or webhook per row.
 	quiet bool
+	// rule is the automation rule whose run wrote the batch; its events never trigger a rule.
+	rule *oas.AutomationRuleRef
 }
 
 func (b *eventBatch) job(args river.JobArgs, opts *river.InsertOpts) {
@@ -90,6 +93,9 @@ func (s *Server) inTx(ctx context.Context, workspaceID uuid.UUID, fn func(q *sto
 			return err
 		}
 		if err := s.queueWebhooks(ctx, tx, q, workspaceID, ev.items, ids); err != nil {
+			return err
+		}
+		if err := s.queueAutomations(ctx, tx, q, workspaceID, &ev, ids); err != nil {
 			return err
 		}
 		return s.queueNotifications(ctx, tx, workspaceID, ev.items)

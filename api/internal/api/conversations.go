@@ -307,6 +307,7 @@ func (s *Server) writeEvent(ctx context.Context, q *store.Queries, events *event
 	msg, err := q.CreateMessage(ctx, store.CreateMessageParams{
 		ID: newID(), WorkspaceID: p.workspaceID, ConversationID: c.ID, Kind: string(oas.MessageKindEvent),
 		AuthorType: author, AuthorMemberID: member, AuthorApiKeyID: key, Event: mustJSON(ev), CreatedAt: at, Via: p.viaClient(),
+		Rule: p.ruleJSON(),
 	})
 	if err != nil {
 		return err
@@ -316,6 +317,9 @@ func (s *Server) writeEvent(ctx context.Context, q *store.Queries, events *event
 }
 
 func authorFor(p principal) (string, *uuid.UUID, *uuid.UUID) {
+	if p.rule != nil {
+		return string(oas.AuthorTypeSystem), nil, nil
+	}
 	if p.isKey() {
 		id := p.keyID
 		return string(oas.AuthorTypeBot), nil, &id

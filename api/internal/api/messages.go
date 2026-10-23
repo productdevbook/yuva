@@ -388,6 +388,12 @@ func messageBody(m messageRow, atts []store.Attachment) oas.Message {
 			out.ImportedAuthor = &a
 		}
 	}
+	if len(m.Rule) > 0 {
+		var r oas.AutomationRuleRef
+		if json.Unmarshal(m.Rule, &r) == nil {
+			out.Rule = &r
+		}
+	}
 	if m.DeliveryState != nil && m.DeliveryUpdatedAt != nil {
 		out.Delivery = &oas.MessageDelivery{
 			Channel: oas.MessageDeliveryChannelEmail, State: oas.MessageDeliveryState(*m.DeliveryState),

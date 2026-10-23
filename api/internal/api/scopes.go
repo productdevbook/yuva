@@ -15,12 +15,13 @@ var allScopes = []oas.ApiKeyScope{
 	oas.AnalyticsRead, oas.AnalyticsWrite, oas.AnalyticsManage, oas.StatusRead, oas.StatusManage,
 	oas.HelpRead, oas.HelpWrite, oas.HelpPublish, oas.RoadmapRead, oas.RoadmapWrite, oas.RoadmapStage,
 	oas.ChangelogRead, oas.ChangelogWrite, oas.ChangelogPublish, oas.AuditRead, oas.IntegrationsRead, oas.IntegrationsManage, oas.IssuesWrite, oas.FieldsManage, oas.ViewsWrite,
+	oas.AutomationsRead, oas.AutomationsManage,
 }
 
 // notImpliedScopes are left out of a key made without naming its scopes.
-var notImpliedScopes = []oas.ApiKeyScope{oas.ConversationsDelete, oas.MessagesRedact, oas.BroadcastsSend, oas.StatusManage, oas.HelpPublish, oas.RoadmapStage, oas.ChangelogPublish, oas.AuditRead, oas.FieldsManage}
+var notImpliedScopes = []oas.ApiKeyScope{oas.ConversationsDelete, oas.MessagesRedact, oas.BroadcastsSend, oas.StatusManage, oas.HelpPublish, oas.RoadmapStage, oas.ChangelogPublish, oas.AuditRead, oas.FieldsManage, oas.AutomationsManage}
 
-var unlimitedOnlyScopes = []oas.ApiKeyScope{oas.InboxesManage, oas.WebhooksManage, oas.WorkspaceManage, oas.MigrationsManage, oas.AnalyticsManage, oas.AuditRead, oas.IntegrationsManage, oas.FieldsManage}
+var unlimitedOnlyScopes = []oas.ApiKeyScope{oas.InboxesManage, oas.WebhooksManage, oas.WorkspaceManage, oas.MigrationsManage, oas.AnalyticsManage, oas.AuditRead, oas.IntegrationsManage, oas.FieldsManage, oas.AutomationsManage}
 
 // operationScopes lists every operation an API key may call with the scopes it needs. An operation
 // missing here needs a member session.
@@ -157,6 +158,14 @@ var operationScopes = map[string][]oas.ApiKeyScope{
 	"CreateCustomField": {oas.FieldsManage},
 	"UpdateCustomField": {oas.FieldsManage},
 	"DeleteCustomField": {oas.FieldsManage},
+
+	"ListAutomationRules":  {oas.AutomationsRead},
+	"GetAutomationRule":    {oas.AutomationsRead},
+	"ListAutomationRuns":   {oas.AutomationsRead},
+	"CreateAutomationRule": {oas.AutomationsManage},
+	"UpdateAutomationRule": {oas.AutomationsManage},
+	"DeleteAutomationRule": {oas.AutomationsManage},
+	"OrderAutomationRules": {oas.AutomationsManage},
 
 	"ListWebhooks":          {oas.WebhooksManage},
 	"CreateWebhook":         {oas.WebhooksManage},

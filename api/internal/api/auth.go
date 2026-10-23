@@ -196,6 +196,8 @@ type principal struct {
 	via              string
 	mcpOnly          bool
 	ssoSettings      *uuid.UUID
+	// rule is set when an automation rule acts: it sees every inbox and writes as the system.
+	rule *oas.AutomationRuleRef
 }
 
 func (p principal) isKey() bool { return p.keyID != uuid.Nil() }

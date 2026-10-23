@@ -1314,7 +1314,7 @@ const listPublicMessages = `-- name: ListPublicMessages :many
 SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
        m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
        m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions, m.imported_at, m.imported_author, m.help_cards,
-       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id,
+       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule,
        coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
        coalesce(sk.bot_name, sk.name, '')::text AS sent_by_bot_name
 FROM messages m
@@ -1365,6 +1365,7 @@ type ListPublicMessagesRow struct {
 	RedactedAt         *time.Time
 	RedactedByMemberID *uuid.UUID
 	RedactedByApiKeyID *uuid.UUID
+	Rule               []byte
 	BotName            string
 	BotAvatarUrl       string
 	SentByBotName      string
@@ -1415,6 +1416,7 @@ func (q *Queries) ListPublicMessages(ctx context.Context, arg ListPublicMessages
 			&i.RedactedAt,
 			&i.RedactedByMemberID,
 			&i.RedactedByApiKeyID,
+			&i.Rule,
 			&i.BotName,
 			&i.BotAvatarUrl,
 			&i.SentByBotName,
@@ -1433,7 +1435,7 @@ const listPublicMessagesDesc = `-- name: ListPublicMessagesDesc :many
 SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
        m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
        m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions, m.imported_at, m.imported_author, m.help_cards,
-       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id,
+       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule,
        coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
        coalesce(sk.bot_name, sk.name, '')::text AS sent_by_bot_name
 FROM messages m
@@ -1484,6 +1486,7 @@ type ListPublicMessagesDescRow struct {
 	RedactedAt         *time.Time
 	RedactedByMemberID *uuid.UUID
 	RedactedByApiKeyID *uuid.UUID
+	Rule               []byte
 	BotName            string
 	BotAvatarUrl       string
 	SentByBotName      string
@@ -1534,6 +1537,7 @@ func (q *Queries) ListPublicMessagesDesc(ctx context.Context, arg ListPublicMess
 			&i.RedactedAt,
 			&i.RedactedByMemberID,
 			&i.RedactedByApiKeyID,
+			&i.Rule,
 			&i.BotName,
 			&i.BotAvatarUrl,
 			&i.SentByBotName,
