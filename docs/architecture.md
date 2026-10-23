@@ -954,8 +954,37 @@ inline thread inside a product's own panel.
   puts the conversation's id (`data.message.conversation_id`) in the push payload as
   `yuva_conversation_id` (APNs: a top-level key next to `aps`; FCM: a `data` entry);
   `Yuva.handleNotification` in both SDKs reads it and returns the conversation to open.
-  `GET /v1/contacts/{id}/presence` answers the same question on demand. Yuva sending push itself
-  is a later, optional channel setting (#159).
+  `GET /v1/contacts/{id}/presence` answers the same question on demand.
+- Push sent by Yuva (optional, off by default, so hosts that push after the webhook keep working):
+  an `app` channel's `push` holds an APNs token key (`.p8`, key id, team id, bundle id, `sandbox`
+  or `production`) and an FCM service account (JSON key file, project id), each sealed under
+  `YUVA_MASTER_KEY`, write-only (the answer says which are `set`; an absent key or file keeps
+  the stored one, an empty one removes it; changes are audited as `channel.credentials_changed`), plus `show_content`. The SDKs register
+  the device with `POST /client/v1/push-devices` (platform, token, the app's bundle or package id)
+  on every start and token change and remove it on sign-out (`DELETE …/{id}`); a contact keeps
+  its 20 newest devices, a token registered by another contact of the channel moves to the new
+  one (its registration time restarts), and devices follow a contact merge. A member's or bot's reply that is not e-mailed queues a
+  River check when the contact has a device on an app channel of the inbox with push on. The check
+  pushes the newest reply the contact has neither read nor been pushed (`push_through` on the
+  conversation) and was created after the contact's first device registration (so turning push on
+  never pushes old history), unless they have a live `/client/v1/realtime` connection; a conversation is pushed
+  at most every 30 seconds (later replies wait for the window and go as one push) and a newer push
+  replaces the older one (`apns-collapse-id`, FCM `collapse_key` and `tag` are the conversation
+  id). The contact's last connection closing, or lapsing, queues the same check for replies that
+  arrived while they were connected. The push's title is the inbox name, its body the start of the
+  reply (140 characters) when `show_content`, else a fixed "new reply" line in the contact's
+  language; the badge is the contact's number of unread conversations in the inbox; the payload
+  carries `yuva_conversation_id` exactly as a host-sent push does. iOS devices whose app id is not
+  the channel's bundle id are skipped. One River job per device, naming the contact it was meant for (a token that moved since gets
+  nothing), sends it with the standard library
+  (an ES256 provider token for APNs over HTTP/2, an RS256 assertion exchanged at Google's token
+  endpoint for FCM HTTP v1; both cached in memory). APNs 410 and FCM `UNREGISTERED`
+  delete the device. APNs `BadDeviceToken` and `DeviceTokenNotForTopic` delete it only once an
+  APNs push has succeeded with the channel's current APNs settings; before that they usually mean
+  the wrong environment, so the token stays and the answer becomes `push.last_error`. 429, 5xx and
+  network errors retry (5 attempts); other answers (a refused key, FCM `SENDER_ID_MISMATCH` for a
+  service account of another project) keep the tokens and are kept on the channel as
+  `push.last_error` until the next success or save.
 
 ### Webhooks
 

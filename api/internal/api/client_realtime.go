@@ -127,6 +127,7 @@ func (s *Server) clientStream(conn *websocket.Conn, r *http.Request, cp contactP
 		}
 		s.announceContactPresence(bg, cp.workspaceID, cp.contactID)
 		s.scheduleContactContinuity(bg, cp.workspaceID, cp.contactID)
+		s.scheduleContactPush(bg, cp.workspaceID, cp.contactID)
 	}()
 	send := func(v any) error {
 		b, err := json.Marshal(v)

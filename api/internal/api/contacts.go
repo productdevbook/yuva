@@ -734,6 +734,9 @@ func (s *Server) MergeContact(ctx context.Context, req oas.MergeContactRequestOb
 		if err := q.MoveContactEmails(ctx, store.MoveContactEmailsParams{WorkspaceID: p.workspaceID, FromContact: from, ToContact: to}); err != nil {
 			return err
 		}
+		if err := q.MoveContactPushDevices(ctx, store.MoveContactPushDevicesParams{WorkspaceID: p.workspaceID, FromContact: from, ToContact: to}); err != nil {
+			return err
+		}
 		if err := q.MoveContactExternalIDs(ctx, store.MoveContactExternalIDsParams{WorkspaceID: p.workspaceID, FromContact: from, ToContact: to}); err != nil {
 			return err
 		}

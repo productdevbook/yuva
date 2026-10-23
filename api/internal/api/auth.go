@@ -138,6 +138,8 @@ var operationAccess = map[string]access{
 	"SetClientTyping":             accessContact,
 	"RateClientConversation":      accessContact,
 	"SetClientContactEmail":       accessContact,
+	"RegisterClientPushDevice":    accessContact,
+	"DeleteClientPushDevice":      accessContact,
 	"CreateClientFeedback":        accessContact,
 	"DownloadClientAttachment":    accessContact,
 	"ListClientSubscriptions":     accessContact,

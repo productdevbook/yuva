@@ -20,6 +20,9 @@ func (s *Server) dispatchOutgoing(ctx context.Context, q *store.Queries, events 
 	if plan != nil {
 		return s.queueEmail(ctx, q, events, plan, msg)
 	}
+	if err := s.scheduleAppPush(ctx, q, events, c); err != nil {
+		return nil, err
+	}
 	if p.isKey() || c.ChannelID == nil {
 		return nil, nil
 	}

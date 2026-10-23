@@ -176,6 +176,7 @@ func (s *Server) AnnounceLapsedPresence(ctx context.Context) error {
 		}
 		for _, id := range contacts {
 			s.announceContactPresence(ctx, ws, id)
+			s.scheduleContactPush(ctx, ws, id)
 		}
 	}
 	return nil

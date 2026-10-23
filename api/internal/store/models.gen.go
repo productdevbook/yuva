@@ -449,6 +449,25 @@ type ApiKeyInbox struct {
 	InboxID     uuid.UUID
 }
 
+type AppPushSetting struct {
+	WorkspaceID    uuid.UUID
+	ChannelID      uuid.UUID
+	Enabled        bool
+	ShowContent    bool
+	ApnsKeyID      *string
+	ApnsTeamID     *string
+	ApnsBundleID   *string
+	ApnsProduction bool
+	ApnsKey        []byte
+	ApnsVerified   bool
+	FcmProjectID   *string
+	FcmClientEmail *string
+	FcmCredentials []byte
+	LastError      *string
+	LastErrorAt    *time.Time
+	UpdatedAt      time.Time
+}
+
 type Attachment struct {
 	ID             uuid.UUID
 	WorkspaceID    uuid.UUID
@@ -817,6 +836,8 @@ type Conversation struct {
 	TrashedAt             *time.Time
 	TrashedByMemberID     *uuid.UUID
 	TrashedByApiKeyID     *uuid.UUID
+	PushThrough           *time.Time
+	PushSentAt            *time.Time
 }
 
 type ConversationLabel struct {
@@ -1791,6 +1812,18 @@ type Person struct {
 	CreatedAt                time.Time
 	Availability             string
 	ReaderEmailNotifications bool
+}
+
+type PushDevice struct {
+	ID          uuid.UUID
+	WorkspaceID uuid.UUID
+	ChannelID   uuid.UUID
+	ContactID   uuid.UUID
+	Platform    string
+	Token       string
+	AppID       string
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
 }
 
 type PushSubscription struct {

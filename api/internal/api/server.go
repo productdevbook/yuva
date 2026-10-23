@@ -22,6 +22,7 @@ import (
 	"github.com/riverqueue/river"
 	"github.com/riverqueue/river/riverdriver/riverpgxv5"
 
+	"github.com/productdevbook/yuva/api/internal/apppush"
 	"github.com/productdevbook/yuva/api/internal/email"
 	"github.com/productdevbook/yuva/api/internal/mail"
 	"github.com/productdevbook/yuva/api/internal/metrics"
@@ -70,6 +71,7 @@ type Server struct {
 	webhooks WebhookSettings
 	hooks    *webhook.Client
 	push     *push.Sender
+	appPush  *apppush.Client
 
 	imagesMax         int64
 	analytics         *analyticsState
@@ -131,6 +133,8 @@ type Deps struct {
 	Webhooks WebhookSettings
 
 	Push PushSettings
+
+	AppPush AppPushSettings
 
 	// DisableMCP turns the /mcp endpoint off (YUVA_MCP=off).
 	DisableMCP bool
@@ -280,7 +284,7 @@ func New(d Deps) *Server {
 		log: d.Log, st: d.Store, version: d.Version, mailer: d.Mailer, webauthn: d.WebAuthn, auth: d.Auth, now: now, sleep: sleep,
 		secrets: d.Secrets, objects: d.Storage, attach: d.Attachments, sanitize: htmlPolicy(), original: originalHTMLPolicy(),
 		hub: d.Hub, jobs: jobs, ingress: d.Ingress, ingestQ: make(chan struct{}, ingestSlots), sender: sender, smtpPriv: d.SMTPAllowPrivate, snsCerts: newCertCache(fetch), fetch: fetch,
-		chat: chat, limits: newRateLimiter(d.Store, d.Secrets, d.Log, d.RateLimitClock, sleep), webhooks: d.Webhooks, hooks: hooks, push: pusher,
+		chat: chat, limits: newRateLimiter(d.Store, d.Secrets, d.Log, d.RateLimitClock, sleep), webhooks: d.Webhooks, hooks: hooks, push: pusher, appPush: newAppPushClient(d.AppPush),
 		noPanel: d.DisablePanel, panelKey: d.PanelAnalyticsKey, noWidget: d.DisableWidget, operator: d.OperatorEmails, imagesMax: d.EmailImagesMaxBytes,
 		broadcasts: d.Broadcasts, imports: importSettings(d.Imports), migrations: migrationSettings(d.Migrations), ses: d.SES,
 		status: d.Status, statusCache: newStatusCache(), statusDomainCache: newStatusDomainCache(), started: now(),

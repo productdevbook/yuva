@@ -1052,6 +1052,24 @@ func (e AppPlatform) Valid() bool {
 	}
 }
 
+// Defines values for AppPushEnvironment.
+const (
+	Production AppPushEnvironment = "production"
+	Sandbox    AppPushEnvironment = "sandbox"
+)
+
+// Valid indicates whether the value is a known member of the AppPushEnvironment enum.
+func (e AppPushEnvironment) Valid() bool {
+	switch e {
+	case Production:
+		return true
+	case Sandbox:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for AuditAction.
 const (
 	AuditAnalyticsExportCreated              AuditAction = "analytics_export.created"
@@ -8562,6 +8580,14 @@ type AppChannel struct {
 	// PublicKey Identifies the channel to the SDKs (`channel_key`). Not a secret: it ships inside the
 	// app. Rotate it with `POST /v1/channels/{id}/public-key`.
 	PublicKey string `json:"public_key"`
+
+	// Push Whether Yuva sends the reply push itself. When `enabled`, a member's or bot's reply to a
+	// contact with no open `/client/v1/realtime` connection is pushed to the contact's devices
+	// registered with `POST /client/v1/push-devices`, with `yuva_conversation_id` as in a
+	// host-sent push. Off by default: hosts that send their own push after the
+	// `message.created` webhook keep doing so. Credentials are encrypted under the server's
+	// master key and never returned; `apns` and `fcm` say which are set.
+	Push AppPush `json:"push"`
 }
 
 // AppChannelInput defines model for AppChannelInput.
@@ -8571,10 +8597,100 @@ type AppChannelInput struct {
 
 	// Platforms Defaults to both.
 	Platforms *[]AppPlatform `json:"platforms,omitempty"`
+
+	// Push Absent fields keep their current value.
+	Push *AppPushInput `json:"push,omitempty"`
 }
 
 // AppPlatform defines model for AppPlatform.
 type AppPlatform string
+
+// AppPush Whether Yuva sends the reply push itself. When `enabled`, a member's or bot's reply to a
+// contact with no open `/client/v1/realtime` connection is pushed to the contact's devices
+// registered with `POST /client/v1/push-devices`, with `yuva_conversation_id` as in a
+// host-sent push. Off by default: hosts that send their own push after the
+// `message.created` webhook keep doing so. Credentials are encrypted under the server's
+// master key and never returned; `apns` and `fcm` say which are set.
+type AppPush struct {
+	// Apns The APNs token key (`.p8`). The key itself is never returned.
+	Apns    AppPushApns `json:"apns"`
+	Enabled bool        `json:"enabled"`
+
+	// Fcm The Firebase service account. Its private key is never returned.
+	Fcm AppPushFcm `json:"fcm"`
+
+	// LastError The last answer from APNs or FCM that was not about one device: a refused key, an FCM
+	// token of another project, or an APNs token refused before any push in this environment
+	// succeeded (often a `sandbox` token sent to `production` or the reverse).
+	LastError   *string    `json:"last_error,omitempty"`
+	LastErrorAt *time.Time `json:"last_error_at,omitempty"`
+
+	// ShowContent The push shows the start of the reply; otherwise a fixed "new reply" line in the
+	// contact's language.
+	ShowContent bool `json:"show_content"`
+}
+
+// AppPushApns The APNs token key (`.p8`). The key itself is never returned.
+type AppPushApns struct {
+	// BundleId The `apns-topic`; iOS devices registered with another `app_id` get no push.
+	BundleId *string `json:"bundle_id,omitempty"`
+
+	// Environment The APNs server the app's device tokens belong to (`sandbox` for development builds).
+	Environment *AppPushEnvironment `json:"environment,omitempty"`
+	KeyId       *string             `json:"key_id,omitempty"`
+	Set         bool                `json:"set"`
+	TeamId      *string             `json:"team_id,omitempty"`
+}
+
+// AppPushApnsInput Replaces the APNs settings. `key_id`, `team_id` and `bundle_id` are required unless
+// `private_key` is empty, which removes the APNs credentials.
+type AppPushApnsInput struct {
+	BundleId *string `json:"bundle_id,omitempty"`
+
+	// Environment Defaults to `production`.
+	Environment *AppPushEnvironment `json:"environment,omitempty"`
+	KeyId       *string             `json:"key_id,omitempty"`
+
+	// PrivateKey The `.p8` file's PEM text. Stored encrypted. Absent keeps the stored key (one must be
+	// stored); empty removes the APNs credentials.
+	PrivateKey *string `json:"private_key,omitempty"`
+	TeamId     *string `json:"team_id,omitempty"`
+}
+
+// AppPushEnvironment The APNs server the app's device tokens belong to (`sandbox` for development builds).
+type AppPushEnvironment string
+
+// AppPushFcm The Firebase service account. Its private key is never returned.
+type AppPushFcm struct {
+	ClientEmail *string `json:"client_email,omitempty"`
+	ProjectId   *string `json:"project_id,omitempty"`
+	Set         bool    `json:"set"`
+}
+
+// AppPushFcmInput defines model for AppPushFcmInput.
+type AppPushFcmInput struct {
+	// ProjectId Defaults to the service account's `project_id`.
+	ProjectId *string `json:"project_id,omitempty"`
+
+	// ServiceAccount The service account's JSON key file, with the `cloudmessaging.messages.create`
+	// permission. Stored encrypted. Absent keeps the stored file (one must be stored);
+	// empty removes the FCM credentials.
+	ServiceAccount *string `json:"service_account,omitempty"`
+}
+
+// AppPushInput Absent fields keep their current value.
+type AppPushInput struct {
+	// Apns Replaces the APNs settings. `key_id`, `team_id` and `bundle_id` are required unless
+	// `private_key` is empty, which removes the APNs credentials.
+	Apns *AppPushApnsInput `json:"apns,omitempty"`
+
+	// Enabled Defaults to false. Turning it on needs APNs or FCM credentials.
+	Enabled *bool            `json:"enabled,omitempty"`
+	Fcm     *AppPushFcmInput `json:"fcm,omitempty"`
+
+	// ShowContent Defaults to false.
+	ShowContent *bool `json:"show_content,omitempty"`
+}
 
 // Attachment defines model for Attachment.
 type Attachment struct {
@@ -8609,7 +8725,7 @@ type Attributes map[string]interface{}
 //     `webhook.updated`: `fields` among `url`, `events`, `enabled` and `include_notes`, and `host`.
 //     `webhook.secret_rotated`: none.
 //   - `channel.credentials_changed`: `fields` among `smtp` and `broadcast_smtp` (the account
-//     or its password; never the values).
+//     or its password), `apns` and `fcm` (an app channel's push credentials); never the values.
 //   - `channel.key_rotated`, `channel.forwarding_address_rotated`, `channel.dkim_key_deleted`:
 //     none. `channel.dkim_key_created`: `selector`.
 //   - `inbox.identity_secret_rotated`: none. `inbox.deleted`: `name`.
@@ -8683,7 +8799,7 @@ type AuditEntry struct {
 	//   `webhook.updated`: `fields` among `url`, `events`, `enabled` and `include_notes`, and `host`.
 	//   `webhook.secret_rotated`: none.
 	// - `channel.credentials_changed`: `fields` among `smtp` and `broadcast_smtp` (the account
-	//   or its password; never the values).
+	//   or its password), `apns` and `fcm` (an app channel's push credentials); never the values.
 	// - `channel.key_rotated`, `channel.forwarding_address_rotated`, `channel.dkim_key_deleted`:
 	//   none. `channel.dkim_key_created`: `selector`.
 	// - `inbox.identity_secret_rotated`: none. `inbox.deleted`: `name`.
@@ -10887,6 +11003,25 @@ type ClientPresenceEvent struct {
 
 // ClientPresenceEventType defines model for ClientPresenceEvent.Type.
 type ClientPresenceEventType string
+
+// ClientPushDevice defines model for ClientPushDevice.
+type ClientPushDevice struct {
+	AppId     string      `json:"app_id"`
+	CreatedAt time.Time   `json:"created_at"`
+	Id        uuid.UUID   `json:"id"`
+	Platform  AppPlatform `json:"platform"`
+	UpdatedAt time.Time   `json:"updated_at"`
+}
+
+// ClientPushDeviceCreate defines model for ClientPushDeviceCreate.
+type ClientPushDeviceCreate struct {
+	// AppId The app's bundle id (iOS) or package name (Android).
+	AppId    string      `json:"app_id"`
+	Platform AppPlatform `json:"platform"`
+
+	// Token The APNs device token (hex) or the FCM registration token.
+	Token string `json:"token"`
+}
 
 // ClientRatingCreate defines model for ClientRatingCreate.
 type ClientRatingCreate struct {
@@ -20544,6 +20679,9 @@ type OAuthRequestId = uuid.UUID
 // PasskeyId defines model for PasskeyId.
 type PasskeyId = uuid.UUID
 
+// PushDeviceId defines model for PushDeviceId.
+type PushDeviceId = uuid.UUID
+
 // PushSubscriptionId defines model for PushSubscriptionId.
 type PushSubscriptionId = uuid.UUID
 
@@ -24258,6 +24396,9 @@ type CreateClientFeedbackJSONRequestBody = ClientFeedbackCreate
 
 // CreateClientFeedbackMultipartRequestBody defines body for CreateClientFeedback for multipart/form-data ContentType.
 type CreateClientFeedbackMultipartRequestBody = ClientFeedbackCreateMultipart
+
+// RegisterClientPushDeviceJSONRequestBody defines body for RegisterClientPushDevice for application/json ContentType.
+type RegisterClientPushDeviceJSONRequestBody = ClientPushDeviceCreate
 
 // CreateClientSessionJSONRequestBody defines body for CreateClientSession for application/json ContentType.
 type CreateClientSessionJSONRequestBody = ClientSessionCreate
@@ -28683,6 +28824,12 @@ type ServerInterface interface {
 	// CreateClientFeedback Send feedback
 	// (POST /client/v1/feedback)
 	CreateClientFeedback(w http.ResponseWriter, r *http.Request, params CreateClientFeedbackParams)
+	// RegisterClientPushDevice Register the device for push
+	// (POST /client/v1/push-devices)
+	RegisterClientPushDevice(w http.ResponseWriter, r *http.Request)
+	// DeleteClientPushDevice Stop push to the device
+	// (DELETE /client/v1/push-devices/{pushDeviceId})
+	DeleteClientPushDevice(w http.ResponseWriter, r *http.Request, pushDeviceId PushDeviceId)
 	// DeleteReaderToken Sign a site out of the reader account
 	// (DELETE /client/v1/reader-token)
 	DeleteReaderToken(w http.ResponseWriter, r *http.Request)
@@ -31397,6 +31544,46 @@ func (siw *ServerInterfaceWrapper) CreateClientFeedback(w http.ResponseWriter, r
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.CreateClientFeedback(w, r, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// RegisterClientPushDevice operation middleware
+func (siw *ServerInterfaceWrapper) RegisterClientPushDevice(w http.ResponseWriter, r *http.Request) {
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.RegisterClientPushDevice(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// DeleteClientPushDevice operation middleware
+func (siw *ServerInterfaceWrapper) DeleteClientPushDevice(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "pushDeviceId" -------------
+	var pushDeviceId PushDeviceId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "pushDeviceId", r.PathValue("pushDeviceId"), &pushDeviceId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "pushDeviceId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.DeleteClientPushDevice(w, r, pushDeviceId)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -54627,6 +54814,8 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/client/v1/conversations/{conversationId}/typing", wrapper.SetClientTyping)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/client/v1/feedback", wrapper.CreateClientFeedback)
 	m.HandleFunc(http.MethodPut+" "+options.BaseURL+"/client/v1/contact/email", wrapper.SetClientContactEmail)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/client/v1/push-devices", wrapper.RegisterClientPushDevice)
+	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/client/v1/push-devices/{pushDeviceId}", wrapper.DeleteClientPushDevice)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/client/v1/attachments/{attachmentId}", wrapper.DownloadClientAttachment)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/client/v1/analytics-shares/{token}", wrapper.GetSharedAnalytics)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/client/v1/analytics-shares/{token}/access", wrapper.UnlockSharedAnalytics)
@@ -61316,6 +61505,132 @@ func (response CreateClientFeedback429ApplicationProblemPlusJSONResponse) VisitC
 	}
 	w.Header().Set("Content-Type", "application/problem+json")
 	w.WriteHeader(429)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type RegisterClientPushDeviceRequestObject struct {
+	Body *RegisterClientPushDeviceJSONRequestBody
+}
+
+type RegisterClientPushDeviceResponseObject interface {
+	VisitRegisterClientPushDeviceResponse(w http.ResponseWriter) error
+}
+
+type RegisterClientPushDevice200JSONResponse ClientPushDevice
+
+func (response RegisterClientPushDevice200JSONResponse) VisitRegisterClientPushDeviceResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type RegisterClientPushDevice400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response RegisterClientPushDevice400ApplicationProblemPlusJSONResponse) VisitRegisterClientPushDeviceResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type RegisterClientPushDevice401ApplicationProblemPlusJSONResponse Problem
+
+func (response RegisterClientPushDevice401ApplicationProblemPlusJSONResponse) VisitRegisterClientPushDeviceResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type RegisterClientPushDevice403ApplicationProblemPlusJSONResponse Problem
+
+func (response RegisterClientPushDevice403ApplicationProblemPlusJSONResponse) VisitRegisterClientPushDeviceResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type RegisterClientPushDevice429ApplicationProblemPlusJSONResponse Problem
+
+func (response RegisterClientPushDevice429ApplicationProblemPlusJSONResponse) VisitRegisterClientPushDeviceResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(429)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteClientPushDeviceRequestObject struct {
+	PushDeviceId PushDeviceId `json:"pushDeviceId"`
+}
+
+type DeleteClientPushDeviceResponseObject interface {
+	VisitDeleteClientPushDeviceResponse(w http.ResponseWriter) error
+}
+
+type DeleteClientPushDevice204Response struct {
+}
+
+func (response DeleteClientPushDevice204Response) VisitDeleteClientPushDeviceResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
+}
+
+type DeleteClientPushDevice401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response DeleteClientPushDevice401ApplicationProblemPlusJSONResponse) VisitDeleteClientPushDeviceResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteClientPushDevice404ApplicationProblemPlusJSONResponse Problem
+
+func (response DeleteClientPushDevice404ApplicationProblemPlusJSONResponse) VisitDeleteClientPushDeviceResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
 	_, err := buf.WriteTo(w)
 	return err
 }
@@ -91424,6 +91739,12 @@ type StrictServerInterface interface {
 	// CreateClientFeedback Send feedback
 	// (POST /client/v1/feedback)
 	CreateClientFeedback(ctx context.Context, request CreateClientFeedbackRequestObject) (CreateClientFeedbackResponseObject, error)
+	// RegisterClientPushDevice Register the device for push
+	// (POST /client/v1/push-devices)
+	RegisterClientPushDevice(ctx context.Context, request RegisterClientPushDeviceRequestObject) (RegisterClientPushDeviceResponseObject, error)
+	// DeleteClientPushDevice Stop push to the device
+	// (DELETE /client/v1/push-devices/{pushDeviceId})
+	DeleteClientPushDevice(ctx context.Context, request DeleteClientPushDeviceRequestObject) (DeleteClientPushDeviceResponseObject, error)
 	// DeleteReaderToken Sign a site out of the reader account
 	// (DELETE /client/v1/reader-token)
 	DeleteReaderToken(ctx context.Context, request DeleteReaderTokenRequestObject) (DeleteReaderTokenResponseObject, error)
@@ -93826,6 +94147,63 @@ func (sh *strictHandler) CreateClientFeedback(w http.ResponseWriter, r *http.Req
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
 	} else if validResponse, ok := response.(CreateClientFeedbackResponseObject); ok {
 		if err := validResponse.VisitCreateClientFeedbackResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// RegisterClientPushDevice operation middleware
+func (sh *strictHandler) RegisterClientPushDevice(w http.ResponseWriter, r *http.Request) {
+	var request RegisterClientPushDeviceRequestObject
+
+	var body RegisterClientPushDeviceJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.RegisterClientPushDevice(ctx, request.(RegisterClientPushDeviceRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "RegisterClientPushDevice")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(RegisterClientPushDeviceResponseObject); ok {
+		if err := validResponse.VisitRegisterClientPushDeviceResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// DeleteClientPushDevice operation middleware
+func (sh *strictHandler) DeleteClientPushDevice(w http.ResponseWriter, r *http.Request, pushDeviceId PushDeviceId) {
+	var request DeleteClientPushDeviceRequestObject
+
+	request.PushDeviceId = pushDeviceId
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.DeleteClientPushDevice(ctx, request.(DeleteClientPushDeviceRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "DeleteClientPushDevice")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(DeleteClientPushDeviceResponseObject); ok {
+		if err := validResponse.VisitDeleteClientPushDeviceResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {

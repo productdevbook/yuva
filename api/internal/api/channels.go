@@ -42,7 +42,8 @@ func (s *Server) oneChannelBody(ctx context.Context, q *store.Queries, c store.C
 		if err != nil {
 			return oas.Channel{}, err
 		}
-		return s.channelBody(c, nil, &chat, nil), nil
+		out := s.channelBody(c, nil, &chat, nil)
+		return out, fillAppPush(ctx, q, c.WorkspaceID, &out)
 	}
 	if c.Kind != string(oas.ChannelKindEmail) {
 		return s.channelBody(c, nil, nil, nil), nil
@@ -97,6 +98,14 @@ func (s *Server) ListChannels(ctx context.Context, req oas.ListChannelsRequestOb
 	if err != nil {
 		return nil, err
 	}
+	pushes, err := s.st.ListAppPushSettings(ctx, store.ListAppPushSettingsParams{WorkspaceID: p.workspaceID, ChannelIds: ids})
+	if err != nil {
+		return nil, err
+	}
+	pushByID := make(map[uuid.UUID]*store.AppPushSetting, len(pushes))
+	for i := range pushes {
+		pushByID[pushes[i].ChannelID] = &pushes[i]
+	}
 	out := oas.ListChannels200JSONResponse{Items: make([]oas.Channel, 0, len(rows))}
 	for _, r := range rows {
 		var e *store.EmailChannel
@@ -108,6 +117,9 @@ func (s *Server) ListChannels(ctx context.Context, req oas.ListChannelsRequestOb
 			chat = &v
 		}
 		ch := s.channelBody(r, e, chat, tenant)
+		if ch.App != nil {
+			ch.App.Push = appPushBody(pushByID[r.ID])
+		}
 		redactChannelSES(p, &ch)
 		out.Items = append(out.Items, ch)
 	}
@@ -193,8 +205,13 @@ func (s *Server) CreateChannel(ctx context.Context, req oas.CreateChannelRequest
 			if err != nil {
 				return err
 			}
+			if isApp && req.Body.App != nil {
+				if err := s.saveAppPush(ctx, q, p, c.ID, req.Body.App.Push); err != nil {
+					return err
+				}
+			}
 			out = s.channelBody(c, nil, &chat, nil)
-			return nil
+			return fillAppPush(ctx, q, p.workspaceID, &out)
 		}
 		if !isEmail {
 			out = s.channelBody(c, nil, nil, nil)
@@ -380,6 +397,9 @@ func (s *Server) UpdateChannel(ctx context.Context, req oas.UpdateChannelRequest
 				return err
 			}
 			if _, err := q.SaveChatChannel(ctx, arg); err != nil {
+				return err
+			}
+			if err := s.saveAppPush(ctx, q, p, c.ID, req.Body.App.Push); err != nil {
 				return err
 			}
 		}

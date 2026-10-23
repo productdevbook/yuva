@@ -83,7 +83,10 @@ func appChannelParams(workspaceID, channelID uuid.UUID, in *oas.AppChannelInput,
 		Discussions: string(oas.DiscussionModeOff),
 	}
 	if cur != nil {
-		out.PublicKey = cur.PublicKey
+		out.PublicKey, out.AllowAnonymous = cur.PublicKey, cur.AllowAnonymous
+		if len(cur.Platforms) > 0 {
+			out.Platforms = cur.Platforms
+		}
 	} else {
 		out.PublicKey = newChatKey()
 	}
@@ -220,7 +223,11 @@ func (s *Server) RotateChannelPublicKey(ctx context.Context, req oas.RotateChann
 	if err != nil {
 		return nil, err
 	}
-	return oas.RotateChannelPublicKey200JSONResponse(s.channelBody(c, nil, &chat, nil)), nil
+	out := s.channelBody(c, nil, &chat, nil)
+	if err := fillAppPush(ctx, s.st.Queries, p.workspaceID, &out); err != nil {
+		return nil, err
+	}
+	return oas.RotateChannelPublicKey200JSONResponse(out), nil
 }
 
 var errOriginRefused = problem(http.StatusForbidden, "origin_not_allowed", "this origin may not use the channel")

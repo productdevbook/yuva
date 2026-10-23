@@ -1050,6 +1050,24 @@ func (e AppPlatform) Valid() bool {
 	}
 }
 
+// Defines values for AppPushEnvironment.
+const (
+	Production AppPushEnvironment = "production"
+	Sandbox    AppPushEnvironment = "sandbox"
+)
+
+// Valid indicates whether the value is a known member of the AppPushEnvironment enum.
+func (e AppPushEnvironment) Valid() bool {
+	switch e {
+	case Production:
+		return true
+	case Sandbox:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for AuditAction.
 const (
 	AuditAnalyticsExportCreated              AuditAction = "analytics_export.created"
@@ -8608,6 +8626,14 @@ type AppChannel struct {
 	// PublicKey Identifies the channel to the SDKs (`channel_key`). Not a secret: it ships inside the
 	// app. Rotate it with `POST /v1/channels/{id}/public-key`.
 	PublicKey string `json:"public_key"`
+
+	// Push Whether Yuva sends the reply push itself. When `enabled`, a member's or bot's reply to a
+	// contact with no open `/client/v1/realtime` connection is pushed to the contact's devices
+	// registered with `POST /client/v1/push-devices`, with `yuva_conversation_id` as in a
+	// host-sent push. Off by default: hosts that send their own push after the
+	// `message.created` webhook keep doing so. Credentials are encrypted under the server's
+	// master key and never returned; `apns` and `fcm` say which are set.
+	Push AppPush `json:"push"`
 }
 
 // AppChannelInput defines model for AppChannelInput.
@@ -8617,10 +8643,100 @@ type AppChannelInput struct {
 
 	// Platforms Defaults to both.
 	Platforms *[]AppPlatform `json:"platforms,omitempty"`
+
+	// Push Absent fields keep their current value.
+	Push *AppPushInput `json:"push,omitempty"`
 }
 
 // AppPlatform defines model for AppPlatform.
 type AppPlatform string
+
+// AppPush Whether Yuva sends the reply push itself. When `enabled`, a member's or bot's reply to a
+// contact with no open `/client/v1/realtime` connection is pushed to the contact's devices
+// registered with `POST /client/v1/push-devices`, with `yuva_conversation_id` as in a
+// host-sent push. Off by default: hosts that send their own push after the
+// `message.created` webhook keep doing so. Credentials are encrypted under the server's
+// master key and never returned; `apns` and `fcm` say which are set.
+type AppPush struct {
+	// Apns The APNs token key (`.p8`). The key itself is never returned.
+	Apns    AppPushApns `json:"apns"`
+	Enabled bool        `json:"enabled"`
+
+	// Fcm The Firebase service account. Its private key is never returned.
+	Fcm AppPushFcm `json:"fcm"`
+
+	// LastError The last answer from APNs or FCM that was not about one device: a refused key, an FCM
+	// token of another project, or an APNs token refused before any push in this environment
+	// succeeded (often a `sandbox` token sent to `production` or the reverse).
+	LastError   *string    `json:"last_error,omitempty"`
+	LastErrorAt *time.Time `json:"last_error_at,omitempty"`
+
+	// ShowContent The push shows the start of the reply; otherwise a fixed "new reply" line in the
+	// contact's language.
+	ShowContent bool `json:"show_content"`
+}
+
+// AppPushApns The APNs token key (`.p8`). The key itself is never returned.
+type AppPushApns struct {
+	// BundleId The `apns-topic`; iOS devices registered with another `app_id` get no push.
+	BundleId *string `json:"bundle_id,omitempty"`
+
+	// Environment The APNs server the app's device tokens belong to (`sandbox` for development builds).
+	Environment *AppPushEnvironment `json:"environment,omitempty"`
+	KeyId       *string             `json:"key_id,omitempty"`
+	Set         bool                `json:"set"`
+	TeamId      *string             `json:"team_id,omitempty"`
+}
+
+// AppPushApnsInput Replaces the APNs settings. `key_id`, `team_id` and `bundle_id` are required unless
+// `private_key` is empty, which removes the APNs credentials.
+type AppPushApnsInput struct {
+	BundleId *string `json:"bundle_id,omitempty"`
+
+	// Environment Defaults to `production`.
+	Environment *AppPushEnvironment `json:"environment,omitempty"`
+	KeyId       *string             `json:"key_id,omitempty"`
+
+	// PrivateKey The `.p8` file's PEM text. Stored encrypted. Absent keeps the stored key (one must be
+	// stored); empty removes the APNs credentials.
+	PrivateKey *string `json:"private_key,omitempty"`
+	TeamId     *string `json:"team_id,omitempty"`
+}
+
+// AppPushEnvironment The APNs server the app's device tokens belong to (`sandbox` for development builds).
+type AppPushEnvironment string
+
+// AppPushFcm The Firebase service account. Its private key is never returned.
+type AppPushFcm struct {
+	ClientEmail *string `json:"client_email,omitempty"`
+	ProjectId   *string `json:"project_id,omitempty"`
+	Set         bool    `json:"set"`
+}
+
+// AppPushFcmInput defines model for AppPushFcmInput.
+type AppPushFcmInput struct {
+	// ProjectId Defaults to the service account's `project_id`.
+	ProjectId *string `json:"project_id,omitempty"`
+
+	// ServiceAccount The service account's JSON key file, with the `cloudmessaging.messages.create`
+	// permission. Stored encrypted. Absent keeps the stored file (one must be stored);
+	// empty removes the FCM credentials.
+	ServiceAccount *string `json:"service_account,omitempty"`
+}
+
+// AppPushInput Absent fields keep their current value.
+type AppPushInput struct {
+	// Apns Replaces the APNs settings. `key_id`, `team_id` and `bundle_id` are required unless
+	// `private_key` is empty, which removes the APNs credentials.
+	Apns *AppPushApnsInput `json:"apns,omitempty"`
+
+	// Enabled Defaults to false. Turning it on needs APNs or FCM credentials.
+	Enabled *bool            `json:"enabled,omitempty"`
+	Fcm     *AppPushFcmInput `json:"fcm,omitempty"`
+
+	// ShowContent Defaults to false.
+	ShowContent *bool `json:"show_content,omitempty"`
+}
 
 // Attachment defines model for Attachment.
 type Attachment struct {
@@ -8655,7 +8771,7 @@ type Attributes map[string]interface{}
 //     `webhook.updated`: `fields` among `url`, `events`, `enabled` and `include_notes`, and `host`.
 //     `webhook.secret_rotated`: none.
 //   - `channel.credentials_changed`: `fields` among `smtp` and `broadcast_smtp` (the account
-//     or its password; never the values).
+//     or its password), `apns` and `fcm` (an app channel's push credentials); never the values.
 //   - `channel.key_rotated`, `channel.forwarding_address_rotated`, `channel.dkim_key_deleted`:
 //     none. `channel.dkim_key_created`: `selector`.
 //   - `inbox.identity_secret_rotated`: none. `inbox.deleted`: `name`.
@@ -8729,7 +8845,7 @@ type AuditEntry struct {
 	//   `webhook.updated`: `fields` among `url`, `events`, `enabled` and `include_notes`, and `host`.
 	//   `webhook.secret_rotated`: none.
 	// - `channel.credentials_changed`: `fields` among `smtp` and `broadcast_smtp` (the account
-	//   or its password; never the values).
+	//   or its password), `apns` and `fcm` (an app channel's push credentials); never the values.
 	// - `channel.key_rotated`, `channel.forwarding_address_rotated`, `channel.dkim_key_deleted`:
 	//   none. `channel.dkim_key_created`: `selector`.
 	// - `inbox.identity_secret_rotated`: none. `inbox.deleted`: `name`.
@@ -10933,6 +11049,25 @@ type ClientPresenceEvent struct {
 
 // ClientPresenceEventType defines model for ClientPresenceEvent.Type.
 type ClientPresenceEventType string
+
+// ClientPushDevice defines model for ClientPushDevice.
+type ClientPushDevice struct {
+	AppId     string      `json:"app_id"`
+	CreatedAt time.Time   `json:"created_at"`
+	Id        uuid.UUID   `json:"id"`
+	Platform  AppPlatform `json:"platform"`
+	UpdatedAt time.Time   `json:"updated_at"`
+}
+
+// ClientPushDeviceCreate defines model for ClientPushDeviceCreate.
+type ClientPushDeviceCreate struct {
+	// AppId The app's bundle id (iOS) or package name (Android).
+	AppId    string      `json:"app_id"`
+	Platform AppPlatform `json:"platform"`
+
+	// Token The APNs device token (hex) or the FCM registration token.
+	Token string `json:"token"`
+}
 
 // ClientRatingCreate defines model for ClientRatingCreate.
 type ClientRatingCreate struct {
@@ -20590,6 +20725,9 @@ type OAuthRequestId = uuid.UUID
 // PasskeyId defines model for PasskeyId.
 type PasskeyId = uuid.UUID
 
+// PushDeviceId defines model for PushDeviceId.
+type PushDeviceId = uuid.UUID
+
 // PushSubscriptionId defines model for PushSubscriptionId.
 type PushSubscriptionId = uuid.UUID
 
@@ -24333,6 +24471,9 @@ type CreateClientFeedbackJSONRequestBody = ClientFeedbackCreate
 
 // CreateClientFeedbackMultipartRequestBody defines body for CreateClientFeedback for multipart/form-data ContentType.
 type CreateClientFeedbackMultipartRequestBody = ClientFeedbackCreateMultipart
+
+// RegisterClientPushDeviceJSONRequestBody defines body for RegisterClientPushDevice for application/json ContentType.
+type RegisterClientPushDeviceJSONRequestBody = ClientPushDeviceCreate
 
 // CreateClientSessionJSONRequestBody defines body for CreateClientSession for application/json ContentType.
 type CreateClientSessionJSONRequestBody = ClientSessionCreate
@@ -29816,6 +29957,44 @@ type ClientInterface interface {
 	//
 	// Corresponds with POST /client/v1/feedback (the `CreateClientFeedback` operationId).
 	CreateClientFeedback(ctx context.Context, params *CreateClientFeedbackParams, body CreateClientFeedbackJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// RegisterClientPushDeviceWithBody Register the device for push
+	//
+	// Registers this device's push token for the contact, so Yuva can push members' replies
+	// while the app is not connected (the channel's `push.enabled`). Call it after every app
+	// start and whenever the token changes; registering the same token again answers the same
+	// device. A token registered by another contact of the channel moves to this one, so call it
+	// again after signing a different user in. One contact can have many devices. Tokens that
+	// APNs or FCM report invalid are removed. Only for `app` channels, else `403 forbidden`.
+	// Rate limited per session.
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /client/v1/push-devices (the `RegisterClientPushDevice` operationId).
+	RegisterClientPushDeviceWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// RegisterClientPushDevice Register the device for push
+	//
+	// Registers this device's push token for the contact, so Yuva can push members' replies
+	// while the app is not connected (the channel's `push.enabled`). Call it after every app
+	// start and whenever the token changes; registering the same token again answers the same
+	// device. A token registered by another contact of the channel moves to this one, so call it
+	// again after signing a different user in. One contact can have many devices. Tokens that
+	// APNs or FCM report invalid are removed. Only for `app` channels, else `403 forbidden`.
+	// Rate limited per session.
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /client/v1/push-devices (the `RegisterClientPushDevice` operationId).
+	RegisterClientPushDevice(ctx context.Context, body RegisterClientPushDeviceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteClientPushDevice Stop push to the device
+	//
+	// Removes one of the contact's devices, as when the user signs out. `404 not_found` when it
+	// is not the contact's.
+	//
+	// Corresponds with DELETE /client/v1/push-devices/{pushDeviceId} (the `DeleteClientPushDevice` operationId).
+	DeleteClientPushDevice(ctx context.Context, pushDeviceId PushDeviceId, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// DeleteReaderToken Sign a site out of the reader account
 	//
@@ -38666,6 +38845,74 @@ func (c *Client) CreateClientFeedbackWithBody(ctx context.Context, params *Creat
 // Corresponds with POST /client/v1/feedback (the `CreateClientFeedback` operationId).
 func (c *Client) CreateClientFeedback(ctx context.Context, params *CreateClientFeedbackParams, body CreateClientFeedbackJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewCreateClientFeedbackRequest(c.Server, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// RegisterClientPushDeviceWithBody Register the device for push
+//
+// Registers this device's push token for the contact, so Yuva can push members' replies
+// while the app is not connected (the channel's `push.enabled`). Call it after every app
+// start and whenever the token changes; registering the same token again answers the same
+// device. A token registered by another contact of the channel moves to this one, so call it
+// again after signing a different user in. One contact can have many devices. Tokens that
+// APNs or FCM report invalid are removed. Only for `app` channels, else `403 forbidden`.
+// Rate limited per session.
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /client/v1/push-devices (the `RegisterClientPushDevice` operationId).
+func (c *Client) RegisterClientPushDeviceWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRegisterClientPushDeviceRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// RegisterClientPushDevice Register the device for push
+//
+// Registers this device's push token for the contact, so Yuva can push members' replies
+// while the app is not connected (the channel's `push.enabled`). Call it after every app
+// start and whenever the token changes; registering the same token again answers the same
+// device. A token registered by another contact of the channel moves to this one, so call it
+// again after signing a different user in. One contact can have many devices. Tokens that
+// APNs or FCM report invalid are removed. Only for `app` channels, else `403 forbidden`.
+// Rate limited per session.
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /client/v1/push-devices (the `RegisterClientPushDevice` operationId).
+func (c *Client) RegisterClientPushDevice(ctx context.Context, body RegisterClientPushDeviceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRegisterClientPushDeviceRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// DeleteClientPushDevice Stop push to the device
+//
+// Removes one of the contact's devices, as when the user signs out. `404 not_found` when it
+// is not the contact's.
+//
+// Corresponds with DELETE /client/v1/push-devices/{pushDeviceId} (the `DeleteClientPushDevice` operationId).
+func (c *Client) DeleteClientPushDevice(ctx context.Context, pushDeviceId PushDeviceId, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteClientPushDeviceRequest(c.Server, pushDeviceId)
 	if err != nil {
 		return nil, err
 	}
@@ -53308,6 +53555,80 @@ func NewCreateClientFeedbackRequestWithBody(server string, params *CreateClientF
 			req.Header.Set("Idempotency-Key", headerParam0)
 		}
 
+	}
+
+	return req, nil
+}
+
+// NewRegisterClientPushDeviceRequest calls the generic RegisterClientPushDevice builder with application/json body
+func NewRegisterClientPushDeviceRequest(server string, body RegisterClientPushDeviceJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewRegisterClientPushDeviceRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewRegisterClientPushDeviceRequestWithBody constructs an http.Request for the RegisterClientPushDevice method, with any body, and a specified content type
+func NewRegisterClientPushDeviceRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/client/v1/push-devices")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewDeleteClientPushDeviceRequest constructs an http.Request for the DeleteClientPushDevice method
+func NewDeleteClientPushDeviceRequest(server string, pushDeviceId PushDeviceId) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "pushDeviceId", pushDeviceId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/client/v1/push-devices/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodDelete, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
 	}
 
 	return req, nil
@@ -79176,6 +79497,46 @@ type ClientWithResponsesInterface interface {
 	// Corresponds with POST /client/v1/feedback (the `CreateClientFeedback` operationId).
 	CreateClientFeedbackWithResponse(ctx context.Context, params *CreateClientFeedbackParams, body CreateClientFeedbackJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateClientFeedbackResponse, error)
 
+	// RegisterClientPushDeviceWithBodyWithResponse Register the device for push
+	//
+	// Registers this device's push token for the contact, so Yuva can push members' replies
+	// while the app is not connected (the channel's `push.enabled`). Call it after every app
+	// start and whenever the token changes; registering the same token again answers the same
+	// device. A token registered by another contact of the channel moves to this one, so call it
+	// again after signing a different user in. One contact can have many devices. Tokens that
+	// APNs or FCM report invalid are removed. Only for `app` channels, else `403 forbidden`.
+	// Rate limited per session.
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /client/v1/push-devices (the `RegisterClientPushDevice` operationId).
+	RegisterClientPushDeviceWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*RegisterClientPushDeviceResponse, error)
+
+	// RegisterClientPushDeviceWithResponse Register the device for push
+	//
+	// Registers this device's push token for the contact, so Yuva can push members' replies
+	// while the app is not connected (the channel's `push.enabled`). Call it after every app
+	// start and whenever the token changes; registering the same token again answers the same
+	// device. A token registered by another contact of the channel moves to this one, so call it
+	// again after signing a different user in. One contact can have many devices. Tokens that
+	// APNs or FCM report invalid are removed. Only for `app` channels, else `403 forbidden`.
+	// Rate limited per session.
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /client/v1/push-devices (the `RegisterClientPushDevice` operationId).
+	RegisterClientPushDeviceWithResponse(ctx context.Context, body RegisterClientPushDeviceJSONRequestBody, reqEditors ...RequestEditorFn) (*RegisterClientPushDeviceResponse, error)
+
+	// DeleteClientPushDeviceWithResponse Stop push to the device
+	//
+	// Removes one of the contact's devices, as when the user signs out. `404 not_found` when it
+	// is not the contact's.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with DELETE /client/v1/push-devices/{pushDeviceId} (the `DeleteClientPushDevice` operationId).
+	DeleteClientPushDeviceWithResponse(ctx context.Context, pushDeviceId PushDeviceId, reqEditors ...RequestEditorFn) (*DeleteClientPushDeviceResponse, error)
+
 	// DeleteReaderTokenWithResponse Sign a site out of the reader account
 	//
 	// Ends the reader token sent as `Authorization: Bearer`; the account stays signed in on the
@@ -89770,6 +90131,123 @@ func (r CreateClientFeedbackResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r CreateClientFeedbackResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type RegisterClientPushDeviceResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *ClientPushDevice
+	// ApplicationproblemJSON400 the response for an HTTP 400 `application/problem+json` response
+	ApplicationproblemJSON400 *Problem
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON429 the response for an HTTP 429 `application/problem+json` response
+	ApplicationproblemJSON429 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r RegisterClientPushDeviceResponse) GetJSON200() *ClientPushDevice {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON400 returns the response for an HTTP 400 `application/problem+json` response
+func (r RegisterClientPushDeviceResponse) GetApplicationproblemJSON400() *Problem {
+	return r.ApplicationproblemJSON400
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r RegisterClientPushDeviceResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r RegisterClientPushDeviceResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON429 returns the response for an HTTP 429 `application/problem+json` response
+func (r RegisterClientPushDeviceResponse) GetApplicationproblemJSON429() *Problem {
+	return r.ApplicationproblemJSON429
+}
+
+// GetBody returns the raw response body bytes
+func (r RegisterClientPushDeviceResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r RegisterClientPushDeviceResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r RegisterClientPushDeviceResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r RegisterClientPushDeviceResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type DeleteClientPushDeviceResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r DeleteClientPushDeviceResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r DeleteClientPushDeviceResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetBody returns the raw response body bytes
+func (r DeleteClientPushDeviceResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteClientPushDeviceResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteClientPushDeviceResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r DeleteClientPushDeviceResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -117060,6 +117538,64 @@ func (c *ClientWithResponses) CreateClientFeedbackWithResponse(ctx context.Conte
 	return ParseCreateClientFeedbackResponse(rsp)
 }
 
+// RegisterClientPushDeviceWithBodyWithResponse Register the device for push
+//
+// Registers this device's push token for the contact, so Yuva can push members' replies
+// while the app is not connected (the channel's `push.enabled`). Call it after every app
+// start and whenever the token changes; registering the same token again answers the same
+// device. A token registered by another contact of the channel moves to this one, so call it
+// again after signing a different user in. One contact can have many devices. Tokens that
+// APNs or FCM report invalid are removed. Only for `app` channels, else `403 forbidden`.
+// Rate limited per session.
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /client/v1/push-devices (the `RegisterClientPushDevice` operationId).
+func (c *ClientWithResponses) RegisterClientPushDeviceWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*RegisterClientPushDeviceResponse, error) {
+	rsp, err := c.RegisterClientPushDeviceWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRegisterClientPushDeviceResponse(rsp)
+}
+
+// RegisterClientPushDeviceWithResponse Register the device for push
+//
+// Registers this device's push token for the contact, so Yuva can push members' replies
+// while the app is not connected (the channel's `push.enabled`). Call it after every app
+// start and whenever the token changes; registering the same token again answers the same
+// device. A token registered by another contact of the channel moves to this one, so call it
+// again after signing a different user in. One contact can have many devices. Tokens that
+// APNs or FCM report invalid are removed. Only for `app` channels, else `403 forbidden`.
+// Rate limited per session.
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /client/v1/push-devices (the `RegisterClientPushDevice` operationId).
+func (c *ClientWithResponses) RegisterClientPushDeviceWithResponse(ctx context.Context, body RegisterClientPushDeviceJSONRequestBody, reqEditors ...RequestEditorFn) (*RegisterClientPushDeviceResponse, error) {
+	rsp, err := c.RegisterClientPushDevice(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRegisterClientPushDeviceResponse(rsp)
+}
+
+// DeleteClientPushDeviceWithResponse Stop push to the device
+//
+// Removes one of the contact's devices, as when the user signs out. `404 not_found` when it
+// is not the contact's.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with DELETE /client/v1/push-devices/{pushDeviceId} (the `DeleteClientPushDevice` operationId).
+func (c *ClientWithResponses) DeleteClientPushDeviceWithResponse(ctx context.Context, pushDeviceId PushDeviceId, reqEditors ...RequestEditorFn) (*DeleteClientPushDeviceResponse, error) {
+	rsp, err := c.DeleteClientPushDevice(ctx, pushDeviceId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteClientPushDeviceResponse(rsp)
+}
+
 // DeleteReaderTokenWithResponse Sign a site out of the reader account
 //
 // Ends the reader token sent as `Authorization: Bearer`; the account stays signed in on the
@@ -130230,6 +130766,96 @@ func ParseCreateClientFeedbackResponse(rsp *http.Response) (*CreateClientFeedbac
 			return nil, err
 		}
 		response.ApplicationproblemJSON429 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseRegisterClientPushDeviceResponse parses an HTTP response from a RegisterClientPushDeviceWithResponse call
+func ParseRegisterClientPushDeviceResponse(rsp *http.Response) (*RegisterClientPushDeviceResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &RegisterClientPushDeviceResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ClientPushDevice
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 429:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON429 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteClientPushDeviceResponse parses an HTTP response from a DeleteClientPushDeviceWithResponse call
+func ParseDeleteClientPushDeviceResponse(rsp *http.Response) (*DeleteClientPushDeviceResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteClientPushDeviceResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case rsp.StatusCode == 204:
+		break // No content-type
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
 
 	}
 

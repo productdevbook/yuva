@@ -252,6 +252,8 @@ func (s *Server) AddWorkers(workers *river.Workers) {
 	river.AddWorker(workers, &webhookDeliveryWorker{s: s})
 	river.AddWorker(workers, &notifyWorker{s: s})
 	river.AddWorker(workers, &pushWorker{s: s})
+	river.AddWorker(workers, &appPushCheckWorker{s: s})
+	river.AddWorker(workers, &appPushSendWorker{s: s})
 	river.AddWorker(workers, &notificationEmailWorker{s: s})
 	river.AddWorker(workers, &retentionWorker{s: s})
 	river.AddWorker(workers, &workspaceDeleteWorker{s: s})
