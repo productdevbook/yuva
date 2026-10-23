@@ -20082,7 +20082,7 @@ type OAuthGrant struct {
 	// RequestsThisMonth Requests made with the grant's tokens in the current calendar month (UTC).
 	RequestsThisMonth int64 `json:"requests_this_month"`
 
-	// Resource `mcp` for a `<public URL>/mcp` token, `api` for a `<public URL>` token (`/v1`, `/v1/realtime` and `/mcp`).
+	// Resource `mcp` for a `<public URL>/mcp` token, `api` for a `<public URL>` token (`/v1`, `/v1/realtime` and `/mcp`), which only the server's own member apps may ask for.
 	Resource OAuthResource `json:"resource"`
 	Scopes   []ApiKeyScope `json:"scopes"`
 }
@@ -20102,7 +20102,10 @@ type OAuthRedirect struct {
 type OAuthRequest struct {
 	Client    OAuthClient `json:"client"`
 	ExpiresAt time.Time   `json:"expires_at"`
-	Id        uuid.UUID   `json:"id"`
+
+	// FirstParty The client is one of the server's own member apps, which the operator lists; every other client is an assistant or integration.
+	FirstParty bool      `json:"first_party"`
+	Id         uuid.UUID `json:"id"`
 
 	// RedirectHost Where the browser goes after approval; the host, or the scheme of a native app's private-use URI.
 	RedirectHost string `json:"redirect_host"`
@@ -20111,12 +20114,12 @@ type OAuthRequest struct {
 	// RequestedScopes The scopes the client asked for; absent when it asked for none.
 	RequestedScopes *[]string `json:"requested_scopes,omitempty"`
 
-	// Resource `mcp` for a `<public URL>/mcp` token, `api` for a `<public URL>` token (`/v1`, `/v1/realtime` and `/mcp`).
+	// Resource `mcp` for a `<public URL>/mcp` token, `api` for a `<public URL>` token (`/v1`, `/v1/realtime` and `/mcp`), which only the server's own member apps may ask for.
 	Resource   OAuthResource          `json:"resource"`
 	Workspaces []OAuthWorkspaceChoice `json:"workspaces"`
 }
 
-// OAuthResource `mcp` for a `<public URL>/mcp` token, `api` for a `<public URL>` token (`/v1`, `/v1/realtime` and `/mcp`).
+// OAuthResource `mcp` for a `<public URL>/mcp` token, `api` for a `<public URL>` token (`/v1`, `/v1/realtime` and `/mcp`), which only the server's own member apps may ask for.
 type OAuthResource string
 
 // OAuthResourceMetadata RFC 9728 protected resource metadata.
@@ -20178,8 +20181,10 @@ type OAuthTokenResponseTokenType string
 
 // OAuthWorkspaceChoice defines model for OAuthWorkspaceChoice.
 type OAuthWorkspaceChoice struct {
-	Name string `json:"name"`
-	Role Role   `json:"role"`
+	// MaySend Whether the client, given `messages:write` or `drafts:send`, can deliver messages to customers as the member in this workspace: true for the server's own member apps and where the workspace lets bots and assistants send (`bots_may_send`); false means everything it writes to customers is kept as a draft for a member to send.
+	MaySend bool   `json:"may_send"`
+	Name    string `json:"name"`
+	Role    Role   `json:"role"`
 
 	// Scopes The scopes that can be granted in this workspace; empty when none of the requested ones can.
 	Scopes      []ApiKeyScope `json:"scopes"`

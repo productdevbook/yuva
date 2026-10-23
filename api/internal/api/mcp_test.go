@@ -71,6 +71,9 @@ func (h *harness) oauthTokenVia(member *client, workspace, clientName, resource 
 	if res.StatusCode != http.StatusCreated {
 		h.t.Fatalf("register: %d", res.StatusCode)
 	}
+	if resource == testOrigin {
+		h.firstParty.Store(registered.ClientID, true)
+	}
 	b := make([]byte, 32)
 	_, _ = rand.Read(b)
 	verifier := base64.RawURLEncoding.EncodeToString(b)

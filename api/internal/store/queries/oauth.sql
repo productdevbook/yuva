@@ -86,7 +86,7 @@ DELETE FROM oauth_codes WHERE workspace_id = $1 AND grant_id = $2;
 
 -- name: GetOAuthAccess :one
 SELECT t.expires_at, g.workspace_id, g.id AS grant_id, g.scopes, g.resource, g.sso_settings_id, m.id AS member_id, m.person_id, m.role,
-       cl.name AS client_name, w.bots_may_send, w.broadcasts_by_keys
+       cl.name AS client_name, cl.client_id AS client_key, w.bots_may_send, w.broadcasts_by_keys
 FROM oauth_tokens t
 JOIN oauth_grants g ON g.workspace_id = t.workspace_id AND g.id = t.grant_id
 JOIN members m ON m.workspace_id = g.workspace_id AND m.id = g.member_id
@@ -125,6 +125,10 @@ DELETE FROM oauth_clients c
 WHERE c.created_at < @before::timestamptz
   AND NOT EXISTS (SELECT 1 FROM oauth_grants g WHERE g.client_id = c.id)
   AND NOT EXISTS (SELECT 1 FROM oauth_requests r WHERE r.client_id = c.id);
+
+-- name: GetOAuthGrantClientKey :one
+SELECT c.client_id FROM oauth_grants g JOIN oauth_clients c ON c.id = g.client_id
+WHERE g.workspace_id = @workspace_id AND g.id = @id;
 
 -- name: GetOAuthGrantClientName :one
 SELECT c.name FROM oauth_grants g JOIN oauth_clients c ON c.id = g.client_id

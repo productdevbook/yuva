@@ -224,7 +224,15 @@ type AuthSettings struct {
 	TrustedProxies []netip.Prefix
 	// CodeReplyDelay is how long every sign-in code request takes; 0 means 800 ms.
 	CodeReplyDelay time.Duration
-	Signup         SignupSettings
+	// FirstPartyClients reports the member apps: OAuth clients that may ask for the whole-API
+	// resource and deliver as the member whatever bots_may_send says. Nil means none.
+	FirstPartyClients func(clientID string) bool
+	Signup            SignupSettings
+}
+
+// ClientList is a FirstPartyClients that allows exactly ids.
+func ClientList(ids []string) func(string) bool {
+	return func(id string) bool { return slices.Contains(ids, id) }
 }
 
 // SignupSettings: Open lets anyone sign in with a code and create workspaces, within the limits;

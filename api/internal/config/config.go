@@ -74,6 +74,10 @@ type Config struct {
 	Panel  bool
 	Widget bool
 
+	// OAuthFirstPartyClients are the OAuth client ids (YUVA_OAUTH_FIRST_PARTY_CLIENTS) that may ask
+	// for the whole-API resource and deliver as the member whatever bots_may_send says.
+	OAuthFirstPartyClients []string
+
 	PanelAnalyticsKey string
 
 	// Broadcasts is on, approval or off (YUVA_BROADCASTS).
@@ -365,6 +369,7 @@ func Load(version string) (Config, error) {
 	if c.MCP, err = switchEnv("YUVA_MCP", true); err != nil {
 		return c, err
 	}
+	c.OAuthFirstPartyClients = strings.FieldsFunc(os.Getenv("YUVA_OAUTH_FIRST_PARTY_CLIENTS"), func(r rune) bool { return r == ',' || r == ' ' })
 	if c.Panel, err = switchEnv("YUVA_PANEL", true); err != nil {
 		return c, err
 	}

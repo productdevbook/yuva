@@ -157,6 +157,8 @@ type harness struct {
 	srv     *api.Server
 	smtp    *smtpCapture
 	web     *fakeWeb
+	// firstParty holds the client ids the server treats as its member apps.
+	firstParty *sync.Map
 }
 
 const (
@@ -221,14 +223,14 @@ func newHarnessWith(t *testing.T, configure func(*api.Deps)) *harness {
 	t.Cleanup(stopListening)
 	go realtime.Listen(listenCtx, dsn, st.Queries, hub, slog.New(slog.DiscardHandler))
 	h := &harness{t: t, st: st, clock: &clock{now: time.Now()}, sleep: &sleeper{}, mail: &outbox{}, secrets: key, storage: objects, hub: hub,
-		smtp: &smtpCapture{}, web: newFakeWeb()}
+		smtp: &smtpCapture{}, web: newFakeWeb(), firstParty: &sync.Map{}}
 	deps := api.Deps{
 		Log:            slog.New(slog.DiscardHandler),
 		Store:          st,
 		Version:        "test",
 		Mailer:         h.mail,
 		WebAuthn:       wa,
-		Auth:           api.AuthSettings{PublicURL: testOrigin, ClientIPHeader: "X-Forwarded-For", TrustedProxies: []netip.Prefix{netip.MustParsePrefix("127.0.0.1/32"), netip.MustParsePrefix("::1/128")}, CodeReplyDelay: time.Millisecond},
+		Auth:           api.AuthSettings{PublicURL: testOrigin, ClientIPHeader: "X-Forwarded-For", TrustedProxies: []netip.Prefix{netip.MustParsePrefix("127.0.0.1/32"), netip.MustParsePrefix("::1/128")}, CodeReplyDelay: time.Millisecond, FirstPartyClients: func(id string) bool { _, ok := h.firstParty.Load(id); return ok }},
 		Now:            h.clock.Now,
 		Sleep:          h.sleep.Sleep,
 		RateLimitClock: h.clock.Now,

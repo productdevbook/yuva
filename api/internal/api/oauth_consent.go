@@ -21,8 +21,9 @@ func (s *Server) GetOAuthRequest(ctx context.Context, req oas.GetOAuthRequestReq
 	if err != nil {
 		return nil, err
 	}
+	firstParty := s.firstParty(r.ClientKey)
 	out := oas.OAuthRequest{
-		Id: r.ID, Client: oas.OAuthClient{ClientId: r.ClientKey, Name: r.ClientName, ClientUri: r.ClientUri},
+		Id: r.ID, Client: oas.OAuthClient{ClientId: r.ClientKey, Name: r.ClientName, ClientUri: r.ClientUri}, FirstParty: firstParty,
 		RedirectUri: r.RedirectUri, RedirectHost: redirectHost(r.RedirectUri), Resource: s.resourceKind(r.Resource),
 		Workspaces: make([]oas.OAuthWorkspaceChoice, 0, len(memberships)), ExpiresAt: r.ExpiresAt,
 	}
@@ -32,6 +33,7 @@ func (s *Server) GetOAuthRequest(ctx context.Context, req oas.GetOAuthRequestReq
 	for _, m := range memberships {
 		out.Workspaces = append(out.Workspaces, oas.OAuthWorkspaceChoice{
 			WorkspaceId: m.WorkspaceID, Name: m.WorkspaceName, Role: oas.Role(m.Role), Scopes: offeredScopes(r.Scopes, m.Role),
+			MaySend: (firstParty && r.Resource == s.apiResource()) || m.WorkspaceBotsMaySend,
 		})
 	}
 	return oas.GetOAuthRequest200JSONResponse(out), nil

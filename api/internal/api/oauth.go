@@ -61,6 +61,12 @@ var (
 )
 
 func (s *Server) apiResource() string { return s.auth.PublicURL }
+
+// firstParty reports the member apps the operator lists; every other client is an assistant whose
+// deliveries follow bots_may_send.
+func (s *Server) firstParty(clientID string) bool {
+	return s.auth.FirstPartyClients != nil && s.auth.FirstPartyClients(clientID)
+}
 func (s *Server) mcpResource() string { return s.auth.PublicURL + "/mcp" }
 
 func normalizeResource(r string) string { return strings.TrimSuffix(strings.TrimSpace(r), "/") }
@@ -131,7 +137,7 @@ func (s *Server) resolveOAuthAccess(ctx context.Context, token string, kind acce
 	}
 	return principal{
 		grantID: a.GrantID, workspaceID: a.WorkspaceID, memberID: a.MemberID, role: a.Role, scopes: a.Scopes,
-		via: a.ClientName, mcpOnly: mcpOnly, botsMaySend: a.BotsMaySend, broadcastsByKeys: a.BroadcastsByKeys,
+		via: a.ClientName, mcpOnly: mcpOnly, firstParty: s.firstParty(a.ClientKey), botsMaySend: a.BotsMaySend, broadcastsByKeys: a.BroadcastsByKeys,
 	}, nil
 }
 
@@ -510,6 +516,10 @@ func (s *Server) serveOAuthAuthorize(w http.ResponseWriter, r *http.Request) {
 	resource := normalizeResource(resources[0])
 	if resource != s.mcpResource() && resource != s.apiResource() {
 		fail("invalid_target", "resource must be "+s.mcpResource()+" or "+s.apiResource())
+		return
+	}
+	if resource == s.apiResource() && !s.firstParty(client.ClientID) {
+		fail("invalid_target", "this client may ask only for "+s.mcpResource()+"; "+s.apiResource()+" is for the server's own member apps")
 		return
 	}
 	var scopes []string

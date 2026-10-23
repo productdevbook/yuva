@@ -249,6 +249,7 @@ func serve(ctx context.Context, cfg config.Config, log *slog.Logger, args []stri
 			LocaleCookieDomain: cfg.LocaleCookieDomain,
 			ClientIPHeader:     cfg.ClientIPHeader,
 			TrustedProxies:     cfg.TrustedProxies,
+			FirstPartyClients:  api.ClientList(cfg.OAuthFirstPartyClients),
 			Signup: api.SignupSettings{
 				Open:                cfg.SignupOpen,
 				WorkspacesPerPerson: cfg.SignupWorkspacesPerPerson,

@@ -285,7 +285,7 @@ func (q *Queries) DeleteUnusedOAuthClients(ctx context.Context, before time.Time
 
 const getOAuthAccess = `-- name: GetOAuthAccess :one
 SELECT t.expires_at, g.workspace_id, g.id AS grant_id, g.scopes, g.resource, g.sso_settings_id, m.id AS member_id, m.person_id, m.role,
-       cl.name AS client_name, w.bots_may_send, w.broadcasts_by_keys
+       cl.name AS client_name, cl.client_id AS client_key, w.bots_may_send, w.broadcasts_by_keys
 FROM oauth_tokens t
 JOIN oauth_grants g ON g.workspace_id = t.workspace_id AND g.id = t.grant_id
 JOIN members m ON m.workspace_id = g.workspace_id AND m.id = g.member_id
@@ -305,6 +305,7 @@ type GetOAuthAccessRow struct {
 	PersonID         uuid.UUID
 	Role             string
 	ClientName       string
+	ClientKey        string
 	BotsMaySend      bool
 	BroadcastsByKeys bool
 }
@@ -323,6 +324,7 @@ func (q *Queries) GetOAuthAccess(ctx context.Context, tokenHash []byte) (GetOAut
 		&i.PersonID,
 		&i.Role,
 		&i.ClientName,
+		&i.ClientKey,
 		&i.BotsMaySend,
 		&i.BroadcastsByKeys,
 	)
@@ -376,6 +378,23 @@ func (q *Queries) GetOAuthGrant(ctx context.Context, arg GetOAuthGrantParams) (O
 		&i.SsoSettingsID,
 	)
 	return i, err
+}
+
+const getOAuthGrantClientKey = `-- name: GetOAuthGrantClientKey :one
+SELECT c.client_id FROM oauth_grants g JOIN oauth_clients c ON c.id = g.client_id
+WHERE g.workspace_id = $1 AND g.id = $2
+`
+
+type GetOAuthGrantClientKeyParams struct {
+	WorkspaceID uuid.UUID
+	ID          uuid.UUID
+}
+
+func (q *Queries) GetOAuthGrantClientKey(ctx context.Context, arg GetOAuthGrantClientKeyParams) (string, error) {
+	row := q.db.QueryRow(ctx, getOAuthGrantClientKey, arg.WorkspaceID, arg.ID)
+	var client_id string
+	err := row.Scan(&client_id)
+	return client_id, err
 }
 
 const getOAuthGrantClientName = `-- name: GetOAuthGrantClientName :one

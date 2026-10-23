@@ -336,7 +336,11 @@ func (s *Server) callerPrincipal(ctx context.Context, ws uuid.UUID, member, apiK
 			if err != nil {
 				return p, false, err
 			}
-			p.grantID, p.scopes = g.ID, g.Scopes
+			key, err := s.st.GetOAuthGrantClientKey(ctx, store.GetOAuthGrantClientKeyParams{WorkspaceID: ws, ID: g.ID})
+			if err != nil {
+				return p, false, err
+			}
+			p.grantID, p.scopes, p.firstParty = g.ID, g.Scopes, s.firstParty(key)
 		}
 	default:
 		return p, false, nil

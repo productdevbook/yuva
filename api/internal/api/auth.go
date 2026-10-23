@@ -195,6 +195,7 @@ type principal struct {
 	grantID          uuid.UUID
 	via              string
 	mcpOnly          bool
+	firstParty       bool
 	ssoSettings      *uuid.UUID
 	// rule is set when an automation rule acts: it sees every inbox and writes as the system.
 	rule *oas.AutomationRuleRef
@@ -209,8 +210,11 @@ func (p principal) isGrant() bool { return p.grantID != uuid.Nil() }
 
 func (p principal) scoped() bool { return p.isKey() || p.isGrant() }
 
-// deliversAsBot reports callers whose outgoing messages follow the workspace's bots_may_send.
-func (p principal) deliversAsBot() bool { return p.isKey() || p.mcpOnly }
+// deliversAsBot reports callers whose outgoing messages follow the workspace's bots_may_send: keys,
+// and tokens of every OAuth client but the operator's member apps, whatever resource they name.
+func (p principal) deliversAsBot() bool {
+	return p.isKey() || p.mcpOnly || (p.isGrant() && !p.firstParty)
+}
 
 func (p principal) viaClient() *string {
 	if p.via == "" {
