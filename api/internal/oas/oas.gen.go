@@ -6212,6 +6212,27 @@ func (e SesTenantStatusState) Valid() bool {
 	}
 }
 
+// Defines values for SessionMethod.
+const (
+	SessionMethodCode    SessionMethod = "code"
+	SessionMethodPasskey SessionMethod = "passkey"
+	SessionMethodSso     SessionMethod = "sso"
+)
+
+// Valid indicates whether the value is a known member of the SessionMethod enum.
+func (e SessionMethod) Valid() bool {
+	switch e {
+	case SessionMethodCode:
+		return true
+	case SessionMethodPasskey:
+		return true
+	case SessionMethodSso:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for SlaState.
 const (
 	SlaStateBreached SlaState = "breached"
@@ -21081,6 +21102,42 @@ type SesTenantStatusSendingStatus string
 // SesTenantStatusState defines model for SesTenantStatus.State.
 type SesTenantStatusState string
 
+// Session defines model for Session.
+type Session struct {
+	CreatedAt time.Time `json:"created_at"`
+
+	// Current The session making this request.
+	Current bool `json:"current"`
+
+	// Device Browser and system read from the user agent at sign-in, such as `Firefox on Linux`; absent when unknown.
+	Device    *string   `json:"device,omitempty"`
+	ExpiresAt time.Time `json:"expires_at"`
+	Id        uuid.UUID `json:"id"`
+
+	// LastSeenAt Updated at most once a minute.
+	LastSeenAt time.Time `json:"last_seen_at"`
+
+	// Method How the person signed in.
+	Method SessionMethod `json:"method"`
+
+	// UserAgent The user agent at sign-in, cut to 500 characters; absent when none was sent.
+	UserAgent *string `json:"user_agent,omitempty"`
+}
+
+// SessionMethod How the person signed in.
+type SessionMethod string
+
+// SessionList defines model for SessionList.
+type SessionList struct {
+	Items []Session `json:"items"`
+}
+
+// SessionsRevoked defines model for SessionsRevoked.
+type SessionsRevoked struct {
+	// Revoked How many sessions ended.
+	Revoked int `json:"revoked"`
+}
+
 // SignInCodeRequest defines model for SignInCodeRequest.
 type SignInCodeRequest struct {
 	// Email Examples: owner@example.com
@@ -34453,6 +34510,12 @@ type ServerInterface interface {
 	// TestPushSubscription Send a test notification
 	// (POST /v1/me/push-subscriptions/{pushSubscriptionId}/test)
 	TestPushSubscription(w http.ResponseWriter, r *http.Request, pushSubscriptionId PushSubscriptionId)
+	// DeleteOtherSessions Sign out everywhere else
+	// (DELETE /v1/me/sessions)
+	DeleteOtherSessions(w http.ResponseWriter, r *http.Request)
+	// ListSessions List sign-in sessions
+	// (GET /v1/me/sessions)
+	ListSessions(w http.ResponseWriter, r *http.Request)
 	// UnlinkMySlack Unlink your Slack user
 	// (DELETE /v1/me/slack)
 	UnlinkMySlack(w http.ResponseWriter, r *http.Request, params UnlinkMySlackParams)
@@ -55456,6 +55519,34 @@ func (siw *ServerInterfaceWrapper) TestPushSubscription(w http.ResponseWriter, r
 	handler.ServeHTTP(w, r)
 }
 
+// DeleteOtherSessions operation middleware
+func (siw *ServerInterfaceWrapper) DeleteOtherSessions(w http.ResponseWriter, r *http.Request) {
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.DeleteOtherSessions(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListSessions operation middleware
+func (siw *ServerInterfaceWrapper) ListSessions(w http.ResponseWriter, r *http.Request) {
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListSessions(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // UnlinkMySlack operation middleware
 func (siw *ServerInterfaceWrapper) UnlinkMySlack(w http.ResponseWriter, r *http.Request) {
 
@@ -64013,6 +64104,8 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/me/passkeys", wrapper.FinishPasskeyRegistration)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/me/passkeys/options", wrapper.BeginPasskeyRegistration)
 	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/me/passkeys/{passkeyId}", wrapper.DeletePasskey)
+	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/me/sessions", wrapper.DeleteOtherSessions)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/me/sessions", wrapper.ListSessions)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/push/vapid-public-key", wrapper.GetVapidPublicKey)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/me/push-subscriptions", wrapper.ListPushSubscriptions)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/me/push-subscriptions", wrapper.CreatePushSubscription)
@@ -97332,6 +97425,80 @@ func (response TestPushSubscription404ApplicationProblemPlusJSONResponse) VisitT
 	return err
 }
 
+type DeleteOtherSessionsRequestObject struct {
+}
+
+type DeleteOtherSessionsResponseObject interface {
+	VisitDeleteOtherSessionsResponse(w http.ResponseWriter) error
+}
+
+type DeleteOtherSessions200JSONResponse SessionsRevoked
+
+func (response DeleteOtherSessions200JSONResponse) VisitDeleteOtherSessionsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteOtherSessions401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response DeleteOtherSessions401ApplicationProblemPlusJSONResponse) VisitDeleteOtherSessionsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListSessionsRequestObject struct {
+}
+
+type ListSessionsResponseObject interface {
+	VisitListSessionsResponse(w http.ResponseWriter) error
+}
+
+type ListSessions200JSONResponse SessionList
+
+func (response ListSessions200JSONResponse) VisitListSessionsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListSessions401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response ListSessions401ApplicationProblemPlusJSONResponse) VisitListSessionsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
 type UnlinkMySlackRequestObject struct {
 	Params UnlinkMySlackParams
 }
@@ -109464,6 +109631,12 @@ type StrictServerInterface interface {
 	// TestPushSubscription Send a test notification
 	// (POST /v1/me/push-subscriptions/{pushSubscriptionId}/test)
 	TestPushSubscription(ctx context.Context, request TestPushSubscriptionRequestObject) (TestPushSubscriptionResponseObject, error)
+	// DeleteOtherSessions Sign out everywhere else
+	// (DELETE /v1/me/sessions)
+	DeleteOtherSessions(ctx context.Context, request DeleteOtherSessionsRequestObject) (DeleteOtherSessionsResponseObject, error)
+	// ListSessions List sign-in sessions
+	// (GET /v1/me/sessions)
+	ListSessions(ctx context.Context, request ListSessionsRequestObject) (ListSessionsResponseObject, error)
 	// UnlinkMySlack Unlink your Slack user
 	// (DELETE /v1/me/slack)
 	UnlinkMySlack(ctx context.Context, request UnlinkMySlackRequestObject) (UnlinkMySlackResponseObject, error)
@@ -120701,6 +120874,54 @@ func (sh *strictHandler) TestPushSubscription(w http.ResponseWriter, r *http.Req
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
 	} else if validResponse, ok := response.(TestPushSubscriptionResponseObject); ok {
 		if err := validResponse.VisitTestPushSubscriptionResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// DeleteOtherSessions operation middleware
+func (sh *strictHandler) DeleteOtherSessions(w http.ResponseWriter, r *http.Request) {
+	var request DeleteOtherSessionsRequestObject
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.DeleteOtherSessions(ctx, request.(DeleteOtherSessionsRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "DeleteOtherSessions")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(DeleteOtherSessionsResponseObject); ok {
+		if err := validResponse.VisitDeleteOtherSessionsResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// ListSessions operation middleware
+func (sh *strictHandler) ListSessions(w http.ResponseWriter, r *http.Request) {
+	var request ListSessionsRequestObject
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.ListSessions(ctx, request.(ListSessionsRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "ListSessions")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(ListSessionsResponseObject); ok {
+		if err := validResponse.VisitListSessionsResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {

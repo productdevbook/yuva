@@ -14,11 +14,11 @@ RETURNING *;
 SELECT * FROM oauth_clients WHERE client_id = $1;
 
 -- name: CreateOAuthRequest :exec
-INSERT INTO oauth_requests (id, client_id, redirect_uri, state, code_challenge, scopes, resource, created_at, expires_at)
-VALUES (@id, @client_id, @redirect_uri, sqlc.narg(state), @code_challenge, sqlc.narg(scopes), @resource, @created_at, @expires_at);
+INSERT INTO oauth_requests (id, client_id, redirect_uri, redirect_uri_sent, state, code_challenge, scopes, resource, created_at, expires_at)
+VALUES (@id, @client_id, @redirect_uri, @redirect_uri_sent, sqlc.narg(state), @code_challenge, sqlc.narg(scopes), @resource, @created_at, @expires_at);
 
 -- name: GetOAuthRequest :one
-SELECT r.id, r.redirect_uri, r.state, r.code_challenge, r.scopes, r.resource, r.created_at, r.expires_at,
+SELECT r.id, r.redirect_uri, r.redirect_uri_sent, r.state, r.code_challenge, r.scopes, r.resource, r.created_at, r.expires_at,
        c.id AS client_ref, c.client_id AS client_key, c.name AS client_name, c.client_uri
 FROM oauth_requests r JOIN oauth_clients c ON c.id = r.client_id
 WHERE r.id = @id AND r.expires_at > @now::timestamptz;
@@ -34,11 +34,11 @@ DO UPDATE SET scopes = EXCLUDED.scopes, resource = EXCLUDED.resource, sso_settin
 RETURNING *;
 
 -- name: CreateOAuthCode :exec
-INSERT INTO oauth_codes (workspace_id, id, grant_id, code_hash, redirect_uri, code_challenge, created_at, expires_at)
-VALUES (@workspace_id, @id, @grant_id, @code_hash, @redirect_uri, @code_challenge, @created_at, @expires_at);
+INSERT INTO oauth_codes (workspace_id, id, grant_id, code_hash, redirect_uri, redirect_uri_sent, code_challenge, created_at, expires_at)
+VALUES (@workspace_id, @id, @grant_id, @code_hash, @redirect_uri, @redirect_uri_sent, @code_challenge, @created_at, @expires_at);
 
 -- name: LockOAuthCode :one
-SELECT oc.workspace_id, oc.id, oc.grant_id, oc.redirect_uri, oc.code_challenge, oc.expires_at, oc.used_at,
+SELECT oc.workspace_id, oc.id, oc.grant_id, oc.redirect_uri, oc.redirect_uri_sent, oc.code_challenge, oc.expires_at, oc.used_at,
        g.scopes, g.resource, cl.client_id AS client_key
 FROM oauth_codes oc
 JOIN oauth_grants g ON g.workspace_id = oc.workspace_id AND g.id = oc.grant_id

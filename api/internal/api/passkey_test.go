@@ -170,6 +170,8 @@ func TestPasskeyRegistrationAndSignIn(t *testing.T) {
 	}
 	other.expectProblem(http.StatusNotFound, "not_found", "DELETE", "/v1/me/passkeys/"+created.str("id"), nil)
 	owner.expect(http.StatusNoContent, "DELETE", "/v1/me/passkeys/"+created.str("id"), nil)
+	browser.expectProblem(http.StatusUnauthorized, "unauthenticated", "GET", "/v1/me", nil)
+	owner.expect(http.StatusOK, "GET", "/v1/me", nil)
 
 	login = browser.expect(http.StatusOK, "POST", "/v1/auth/passkey/options", nil)
 	browser.expectProblem(http.StatusBadRequest, "invalid_passkey", "POST", "/v1/auth/passkey",

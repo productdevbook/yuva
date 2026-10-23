@@ -1017,6 +1017,7 @@ paths:
     delete:
       operationId: deletePasskey
       summary: Remove a passkey
+      description: Removes the passkey and ends every other session of the signed-in person, as `DELETE /v1/me/sessions` does.
       tags: [me]
       security:
         - session: []
@@ -1028,6 +1029,44 @@ paths:
         "401":
           $ref: "#/components/responses/Problem"
         "404":
+          $ref: "#/components/responses/Problem"
+  /v1/me/sessions:
+    get:
+      operationId: listSessions
+      summary: List sign-in sessions
+      description: |
+        The signed-in person's live sessions in the panel and the member apps, most recently seen
+        first. `current` marks the one making this request. Needs a member session.
+      tags: [me]
+      security:
+        - session: []
+      responses:
+        "200":
+          description: The sessions.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SessionList"
+        "401":
+          $ref: "#/components/responses/Problem"
+    delete:
+      operationId: deleteOtherSessions
+      summary: Sign out everywhere else
+      description: |
+        Ends every session of the signed-in person except the one making this request, with their
+        push subscriptions and reader tokens; their live updates close within a minute. Needs a member
+        session. Removing a passkey does the same.
+      tags: [me]
+      security:
+        - session: []
+      responses:
+        "200":
+          description: How many sessions ended.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SessionsRevoked"
+        "401":
           $ref: "#/components/responses/Problem"
   /v1/push/vapid-public-key:
     get:
@@ -21623,6 +21662,51 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Passkey"
+    Session:
+      type: object
+      required: [id, method, current, created_at, last_seen_at, expires_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+        method:
+          type: string
+          description: How the person signed in.
+          enum: [code, passkey, sso]
+        current:
+          type: boolean
+          description: The session making this request.
+        device:
+          type: string
+          description: Browser and system read from the user agent at sign-in, such as `Firefox on Linux`; absent when unknown.
+        user_agent:
+          type: string
+          description: The user agent at sign-in, cut to 500 characters; absent when none was sent.
+        created_at:
+          type: string
+          format: date-time
+        last_seen_at:
+          type: string
+          format: date-time
+          description: Updated at most once a minute.
+        expires_at:
+          type: string
+          format: date-time
+    SessionList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Session"
+    SessionsRevoked:
+      type: object
+      required: [revoked]
+      properties:
+        revoked:
+          type: integer
+          description: How many sessions ended.
     VapidPublicKey:
       type: object
       required: [public_key]

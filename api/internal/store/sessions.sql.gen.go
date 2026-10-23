@@ -13,8 +13,8 @@ import (
 )
 
 const createSession = `-- name: CreateSession :exec
-INSERT INTO sessions (id, person_id, token_hash, method, created_at, expires_at, last_seen_at, sso_workspace_id, sso_settings_id)
-VALUES ($1, $2, $3, $4, $5, $6, $5, $7, $8)
+INSERT INTO sessions (id, person_id, token_hash, method, created_at, expires_at, last_seen_at, sso_workspace_id, sso_settings_id, user_agent)
+VALUES ($1, $2, $3, $4, $5, $6, $5, $7, $8, $9)
 `
 
 type CreateSessionParams struct {
@@ -26,6 +26,7 @@ type CreateSessionParams struct {
 	ExpiresAt      time.Time
 	SsoWorkspaceID *uuid.UUID
 	SsoSettingsID  *uuid.UUID
+	UserAgent      *string
 }
 
 func (q *Queries) CreateSession(ctx context.Context, arg CreateSessionParams) error {
@@ -38,8 +39,26 @@ func (q *Queries) CreateSession(ctx context.Context, arg CreateSessionParams) er
 		arg.ExpiresAt,
 		arg.SsoWorkspaceID,
 		arg.SsoSettingsID,
+		arg.UserAgent,
 	)
 	return err
+}
+
+const deleteOtherSessions = `-- name: DeleteOtherSessions :execrows
+DELETE FROM sessions WHERE person_id = $1 AND id <> $2
+`
+
+type DeleteOtherSessionsParams struct {
+	PersonID uuid.UUID
+	Keep     uuid.UUID
+}
+
+func (q *Queries) DeleteOtherSessions(ctx context.Context, arg DeleteOtherSessionsParams) (int64, error) {
+	result, err := q.db.Exec(ctx, deleteOtherSessions, arg.PersonID, arg.Keep)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected(), nil
 }
 
 const deleteSession = `-- name: DeleteSession :exec
@@ -52,7 +71,7 @@ func (q *Queries) DeleteSession(ctx context.Context, id uuid.UUID) error {
 }
 
 const getSessionByTokenHash = `-- name: GetSessionByTokenHash :one
-SELECT id, person_id, token_hash, method, created_at, expires_at, last_seen_at, sso_workspace_id, sso_settings_id FROM sessions WHERE token_hash = $1 AND expires_at > $2
+SELECT id, person_id, token_hash, method, created_at, expires_at, last_seen_at, sso_workspace_id, sso_settings_id, user_agent FROM sessions WHERE token_hash = $1 AND expires_at > $2
 `
 
 type GetSessionByTokenHashParams struct {
@@ -73,8 +92,56 @@ func (q *Queries) GetSessionByTokenHash(ctx context.Context, arg GetSessionByTok
 		&i.LastSeenAt,
 		&i.SsoWorkspaceID,
 		&i.SsoSettingsID,
+		&i.UserAgent,
 	)
 	return i, err
+}
+
+const listSessions = `-- name: ListSessions :many
+SELECT id, method, user_agent, created_at, last_seen_at, expires_at FROM sessions
+WHERE person_id = $1 AND expires_at > $2::timestamptz
+ORDER BY last_seen_at DESC, id
+`
+
+type ListSessionsParams struct {
+	PersonID uuid.UUID
+	Now      time.Time
+}
+
+type ListSessionsRow struct {
+	ID         uuid.UUID
+	Method     string
+	UserAgent  *string
+	CreatedAt  time.Time
+	LastSeenAt time.Time
+	ExpiresAt  time.Time
+}
+
+func (q *Queries) ListSessions(ctx context.Context, arg ListSessionsParams) ([]ListSessionsRow, error) {
+	rows, err := q.db.Query(ctx, listSessions, arg.PersonID, arg.Now)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ListSessionsRow
+	for rows.Next() {
+		var i ListSessionsRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.Method,
+			&i.UserAgent,
+			&i.CreatedAt,
+			&i.LastSeenAt,
+			&i.ExpiresAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const touchSession = `-- name: TouchSession :exec

@@ -208,12 +208,20 @@ func (s *Server) ListPasskeys(ctx context.Context, _ oas.ListPasskeysRequestObje
 }
 
 func (s *Server) DeletePasskey(ctx context.Context, req oas.DeletePasskeyRequestObject) (oas.DeletePasskeyResponseObject, error) {
-	n, err := s.st.DeletePasskey(ctx, store.DeletePasskeyParams{PersonID: principalFrom(ctx).personID, ID: req.PasskeyId})
+	p := principalFrom(ctx)
+	err := s.st.InTx(ctx, func(q *store.Queries) error {
+		n, err := q.DeletePasskey(ctx, store.DeletePasskeyParams{PersonID: p.personID, ID: req.PasskeyId})
+		if err != nil {
+			return err
+		}
+		if n == 0 {
+			return errNotFound
+		}
+		_, err = q.DeleteOtherSessions(ctx, store.DeleteOtherSessionsParams{PersonID: p.personID, Keep: p.sessionID})
+		return err
+	})
 	if err != nil {
 		return nil, err
-	}
-	if n == 0 {
-		return nil, errNotFound
 	}
 	return oas.DeletePasskey204Response{}, nil
 }

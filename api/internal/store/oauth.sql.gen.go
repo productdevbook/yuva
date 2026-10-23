@@ -79,19 +79,20 @@ func (q *Queries) CreateOAuthClient(ctx context.Context, arg CreateOAuthClientPa
 }
 
 const createOAuthCode = `-- name: CreateOAuthCode :exec
-INSERT INTO oauth_codes (workspace_id, id, grant_id, code_hash, redirect_uri, code_challenge, created_at, expires_at)
-VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+INSERT INTO oauth_codes (workspace_id, id, grant_id, code_hash, redirect_uri, redirect_uri_sent, code_challenge, created_at, expires_at)
+VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
 `
 
 type CreateOAuthCodeParams struct {
-	WorkspaceID   uuid.UUID
-	ID            uuid.UUID
-	GrantID       uuid.UUID
-	CodeHash      []byte
-	RedirectUri   string
-	CodeChallenge string
-	CreatedAt     time.Time
-	ExpiresAt     time.Time
+	WorkspaceID     uuid.UUID
+	ID              uuid.UUID
+	GrantID         uuid.UUID
+	CodeHash        []byte
+	RedirectUri     string
+	RedirectUriSent bool
+	CodeChallenge   string
+	CreatedAt       time.Time
+	ExpiresAt       time.Time
 }
 
 func (q *Queries) CreateOAuthCode(ctx context.Context, arg CreateOAuthCodeParams) error {
@@ -101,6 +102,7 @@ func (q *Queries) CreateOAuthCode(ctx context.Context, arg CreateOAuthCodeParams
 		arg.GrantID,
 		arg.CodeHash,
 		arg.RedirectUri,
+		arg.RedirectUriSent,
 		arg.CodeChallenge,
 		arg.CreatedAt,
 		arg.ExpiresAt,
@@ -109,20 +111,21 @@ func (q *Queries) CreateOAuthCode(ctx context.Context, arg CreateOAuthCodeParams
 }
 
 const createOAuthRequest = `-- name: CreateOAuthRequest :exec
-INSERT INTO oauth_requests (id, client_id, redirect_uri, state, code_challenge, scopes, resource, created_at, expires_at)
-VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+INSERT INTO oauth_requests (id, client_id, redirect_uri, redirect_uri_sent, state, code_challenge, scopes, resource, created_at, expires_at)
+VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
 `
 
 type CreateOAuthRequestParams struct {
-	ID            uuid.UUID
-	ClientID      uuid.UUID
-	RedirectUri   string
-	State         *string
-	CodeChallenge string
-	Scopes        []string
-	Resource      string
-	CreatedAt     time.Time
-	ExpiresAt     time.Time
+	ID              uuid.UUID
+	ClientID        uuid.UUID
+	RedirectUri     string
+	RedirectUriSent bool
+	State           *string
+	CodeChallenge   string
+	Scopes          []string
+	Resource        string
+	CreatedAt       time.Time
+	ExpiresAt       time.Time
 }
 
 func (q *Queries) CreateOAuthRequest(ctx context.Context, arg CreateOAuthRequestParams) error {
@@ -130,6 +133,7 @@ func (q *Queries) CreateOAuthRequest(ctx context.Context, arg CreateOAuthRequest
 		arg.ID,
 		arg.ClientID,
 		arg.RedirectUri,
+		arg.RedirectUriSent,
 		arg.State,
 		arg.CodeChallenge,
 		arg.Scopes,
@@ -415,7 +419,7 @@ func (q *Queries) GetOAuthGrantClientName(ctx context.Context, arg GetOAuthGrant
 }
 
 const getOAuthRequest = `-- name: GetOAuthRequest :one
-SELECT r.id, r.redirect_uri, r.state, r.code_challenge, r.scopes, r.resource, r.created_at, r.expires_at,
+SELECT r.id, r.redirect_uri, r.redirect_uri_sent, r.state, r.code_challenge, r.scopes, r.resource, r.created_at, r.expires_at,
        c.id AS client_ref, c.client_id AS client_key, c.name AS client_name, c.client_uri
 FROM oauth_requests r JOIN oauth_clients c ON c.id = r.client_id
 WHERE r.id = $1 AND r.expires_at > $2::timestamptz
@@ -427,18 +431,19 @@ type GetOAuthRequestParams struct {
 }
 
 type GetOAuthRequestRow struct {
-	ID            uuid.UUID
-	RedirectUri   string
-	State         *string
-	CodeChallenge string
-	Scopes        []string
-	Resource      string
-	CreatedAt     time.Time
-	ExpiresAt     time.Time
-	ClientRef     uuid.UUID
-	ClientKey     string
-	ClientName    string
-	ClientUri     *string
+	ID              uuid.UUID
+	RedirectUri     string
+	RedirectUriSent bool
+	State           *string
+	CodeChallenge   string
+	Scopes          []string
+	Resource        string
+	CreatedAt       time.Time
+	ExpiresAt       time.Time
+	ClientRef       uuid.UUID
+	ClientKey       string
+	ClientName      string
+	ClientUri       *string
 }
 
 func (q *Queries) GetOAuthRequest(ctx context.Context, arg GetOAuthRequestParams) (GetOAuthRequestRow, error) {
@@ -447,6 +452,7 @@ func (q *Queries) GetOAuthRequest(ctx context.Context, arg GetOAuthRequestParams
 	err := row.Scan(
 		&i.ID,
 		&i.RedirectUri,
+		&i.RedirectUriSent,
 		&i.State,
 		&i.CodeChallenge,
 		&i.Scopes,
@@ -551,7 +557,7 @@ func (q *Queries) ListOAuthGrants(ctx context.Context, arg ListOAuthGrantsParams
 }
 
 const lockOAuthCode = `-- name: LockOAuthCode :one
-SELECT oc.workspace_id, oc.id, oc.grant_id, oc.redirect_uri, oc.code_challenge, oc.expires_at, oc.used_at,
+SELECT oc.workspace_id, oc.id, oc.grant_id, oc.redirect_uri, oc.redirect_uri_sent, oc.code_challenge, oc.expires_at, oc.used_at,
        g.scopes, g.resource, cl.client_id AS client_key
 FROM oauth_codes oc
 JOIN oauth_grants g ON g.workspace_id = oc.workspace_id AND g.id = oc.grant_id
@@ -561,16 +567,17 @@ FOR UPDATE OF oc
 `
 
 type LockOAuthCodeRow struct {
-	WorkspaceID   uuid.UUID
-	ID            uuid.UUID
-	GrantID       uuid.UUID
-	RedirectUri   string
-	CodeChallenge string
-	ExpiresAt     time.Time
-	UsedAt        *time.Time
-	Scopes        []string
-	Resource      string
-	ClientKey     string
+	WorkspaceID     uuid.UUID
+	ID              uuid.UUID
+	GrantID         uuid.UUID
+	RedirectUri     string
+	RedirectUriSent bool
+	CodeChallenge   string
+	ExpiresAt       time.Time
+	UsedAt          *time.Time
+	Scopes          []string
+	Resource        string
+	ClientKey       string
 }
 
 func (q *Queries) LockOAuthCode(ctx context.Context, codeHash []byte) (LockOAuthCodeRow, error) {
@@ -581,6 +588,7 @@ func (q *Queries) LockOAuthCode(ctx context.Context, codeHash []byte) (LockOAuth
 		&i.ID,
 		&i.GrantID,
 		&i.RedirectUri,
+		&i.RedirectUriSent,
 		&i.CodeChallenge,
 		&i.ExpiresAt,
 		&i.UsedAt,

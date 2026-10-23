@@ -96,7 +96,7 @@ func (s *Server) ApproveOAuthRequest(ctx context.Context, req oas.ApproveOAuthRe
 		}
 		code := randomToken(32)
 		if err := q.CreateOAuthCode(ctx, store.CreateOAuthCodeParams{
-			WorkspaceID: g.WorkspaceID, ID: newID(), GrantID: g.ID, CodeHash: hashSecret(code), RedirectUri: r.RedirectUri,
+			WorkspaceID: g.WorkspaceID, ID: newID(), GrantID: g.ID, CodeHash: hashSecret(code), RedirectUri: r.RedirectUri, RedirectUriSent: r.RedirectUriSent,
 			CodeChallenge: r.CodeChallenge, CreatedAt: now, ExpiresAt: now.Add(oauthCodeTTL),
 		}); err != nil {
 			return err

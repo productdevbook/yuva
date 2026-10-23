@@ -1923,15 +1923,16 @@ type OauthClient struct {
 }
 
 type OauthCode struct {
-	WorkspaceID   uuid.UUID
-	ID            uuid.UUID
-	GrantID       uuid.UUID
-	CodeHash      []byte
-	RedirectUri   string
-	CodeChallenge string
-	CreatedAt     time.Time
-	ExpiresAt     time.Time
-	UsedAt        *time.Time
+	WorkspaceID     uuid.UUID
+	ID              uuid.UUID
+	GrantID         uuid.UUID
+	CodeHash        []byte
+	RedirectUri     string
+	CodeChallenge   string
+	CreatedAt       time.Time
+	ExpiresAt       time.Time
+	UsedAt          *time.Time
+	RedirectUriSent bool
 }
 
 type OauthGrant struct {
@@ -1950,15 +1951,16 @@ type OauthGrant struct {
 }
 
 type OauthRequest struct {
-	ID            uuid.UUID
-	ClientID      uuid.UUID
-	RedirectUri   string
-	State         *string
-	CodeChallenge string
-	Scopes        []string
-	Resource      string
-	CreatedAt     time.Time
-	ExpiresAt     time.Time
+	ID              uuid.UUID
+	ClientID        uuid.UUID
+	RedirectUri     string
+	State           *string
+	CodeChallenge   string
+	Scopes          []string
+	Resource        string
+	CreatedAt       time.Time
+	ExpiresAt       time.Time
+	RedirectUriSent bool
 }
 
 type OauthToken struct {
@@ -2237,6 +2239,7 @@ type Session struct {
 	LastSeenAt     time.Time
 	SsoWorkspaceID *uuid.UUID
 	SsoSettingsID  *uuid.UUID
+	UserAgent      *string
 }
 
 type SlaOutcome struct {

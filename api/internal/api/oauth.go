@@ -538,7 +538,7 @@ func (s *Server) serveOAuthAuthorize(w http.ResponseWriter, r *http.Request) {
 	now := s.now()
 	id := newID()
 	if err := s.st.CreateOAuthRequest(ctx, store.CreateOAuthRequestParams{
-		ID: id, ClientID: client.ID, RedirectUri: redirect, State: optional(state), CodeChallenge: challenge,
+		ID: id, ClientID: client.ID, RedirectUri: redirect, RedirectUriSent: q.Get("redirect_uri") != "", State: optional(state), CodeChallenge: challenge,
 		Scopes: scopes, Resource: resource, CreatedAt: now, ExpiresAt: now.Add(oauthRequestTTL),
 	}); err != nil {
 		s.log.ErrorContext(ctx, "oauth authorize", slog.Any("error", err))
@@ -656,8 +656,8 @@ func (s *Server) serveOAuthToken(w http.ResponseWriter, r *http.Request) {
 				return err
 			case !now.Before(c.ExpiresAt):
 				failed = oauthErr("invalid_grant", "the code has expired")
-			case f.Get("redirect_uri") != "" && f.Get("redirect_uri") != c.RedirectUri:
-				failed = oauthErr("invalid_grant", "redirect_uri does not match the authorization request")
+			case (c.RedirectUriSent || f.Get("redirect_uri") != "") && f.Get("redirect_uri") != c.RedirectUri:
+				failed = oauthErr("invalid_grant", "redirect_uri must repeat the one the authorization request sent")
 			case !pkceMatches(verifier, c.CodeChallenge):
 				failed = oauthErr("invalid_grant", "code_verifier does not match the code_challenge")
 			}

@@ -6210,6 +6210,27 @@ func (e SesTenantStatusState) Valid() bool {
 	}
 }
 
+// Defines values for SessionMethod.
+const (
+	SessionMethodCode    SessionMethod = "code"
+	SessionMethodPasskey SessionMethod = "passkey"
+	SessionMethodSso     SessionMethod = "sso"
+)
+
+// Valid indicates whether the value is a known member of the SessionMethod enum.
+func (e SessionMethod) Valid() bool {
+	switch e {
+	case SessionMethodCode:
+		return true
+	case SessionMethodPasskey:
+		return true
+	case SessionMethodSso:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for SlaState.
 const (
 	SlaStateBreached SlaState = "breached"
@@ -21126,6 +21147,42 @@ type SesTenantStatusSendingStatus string
 
 // SesTenantStatusState defines model for SesTenantStatus.State.
 type SesTenantStatusState string
+
+// Session defines model for Session.
+type Session struct {
+	CreatedAt time.Time `json:"created_at"`
+
+	// Current The session making this request.
+	Current bool `json:"current"`
+
+	// Device Browser and system read from the user agent at sign-in, such as `Firefox on Linux`; absent when unknown.
+	Device    *string   `json:"device,omitempty"`
+	ExpiresAt time.Time `json:"expires_at"`
+	Id        uuid.UUID `json:"id"`
+
+	// LastSeenAt Updated at most once a minute.
+	LastSeenAt time.Time `json:"last_seen_at"`
+
+	// Method How the person signed in.
+	Method SessionMethod `json:"method"`
+
+	// UserAgent The user agent at sign-in, cut to 500 characters; absent when none was sent.
+	UserAgent *string `json:"user_agent,omitempty"`
+}
+
+// SessionMethod How the person signed in.
+type SessionMethod string
+
+// SessionList defines model for SessionList.
+type SessionList struct {
+	Items []Session `json:"items"`
+}
+
+// SessionsRevoked defines model for SessionsRevoked.
+type SessionsRevoked struct {
+	// Revoked How many sessions ended.
+	Revoked int `json:"revoked"`
+}
 
 // SignInCodeRequest defines model for SignInCodeRequest.
 type SignInCodeRequest struct {
@@ -40919,6 +40976,8 @@ type ClientInterface interface {
 
 	// DeletePasskey Remove a passkey
 	//
+	// Removes the passkey and ends every other session of the signed-in person, as `DELETE /v1/me/sessions` does.
+	//
 	// Corresponds with DELETE /v1/me/passkeys/{passkeyId} (the `DeletePasskey` operationId).
 	DeletePasskey(ctx context.Context, passkeyId PasskeyId, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -40973,6 +41032,23 @@ type ClientInterface interface {
 	//
 	// Corresponds with POST /v1/me/push-subscriptions/{pushSubscriptionId}/test (the `TestPushSubscription` operationId).
 	TestPushSubscription(ctx context.Context, pushSubscriptionId PushSubscriptionId, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteOtherSessions Sign out everywhere else
+	//
+	// Ends every session of the signed-in person except the one making this request, with their
+	// push subscriptions and reader tokens; their live updates close within a minute. Needs a member
+	// session. Removing a passkey does the same.
+	//
+	// Corresponds with DELETE /v1/me/sessions (the `DeleteOtherSessions` operationId).
+	DeleteOtherSessions(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListSessions List sign-in sessions
+	//
+	// The signed-in person's live sessions in the panel and the member apps, most recently seen
+	// first. `current` marks the one making this request. Needs a member session.
+	//
+	// Corresponds with GET /v1/me/sessions (the `ListSessions` operationId).
+	ListSessions(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// UnlinkMySlack Unlink your Slack user
 	//
@@ -56121,6 +56197,8 @@ func (c *Client) BeginPasskeyRegistration(ctx context.Context, reqEditors ...Req
 
 // DeletePasskey Remove a passkey
 //
+// Removes the passkey and ends every other session of the signed-in person, as `DELETE /v1/me/sessions` does.
+//
 // Corresponds with DELETE /v1/me/passkeys/{passkeyId} (the `DeletePasskey` operationId).
 func (c *Client) DeletePasskey(ctx context.Context, passkeyId PasskeyId, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewDeletePasskeyRequest(c.Server, passkeyId)
@@ -56226,6 +56304,43 @@ func (c *Client) DeletePushSubscription(ctx context.Context, pushSubscriptionId 
 // Corresponds with POST /v1/me/push-subscriptions/{pushSubscriptionId}/test (the `TestPushSubscription` operationId).
 func (c *Client) TestPushSubscription(ctx context.Context, pushSubscriptionId PushSubscriptionId, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewTestPushSubscriptionRequest(c.Server, pushSubscriptionId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// DeleteOtherSessions Sign out everywhere else
+//
+// Ends every session of the signed-in person except the one making this request, with their
+// push subscriptions and reader tokens; their live updates close within a minute. Needs a member
+// session. Removing a passkey does the same.
+//
+// Corresponds with DELETE /v1/me/sessions (the `DeleteOtherSessions` operationId).
+func (c *Client) DeleteOtherSessions(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteOtherSessionsRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// ListSessions List sign-in sessions
+//
+// The signed-in person's live sessions in the panel and the member apps, most recently seen
+// first. `current` marks the one making this request. Needs a member session.
+//
+// Corresponds with GET /v1/me/sessions (the `ListSessions` operationId).
+func (c *Client) ListSessions(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListSessionsRequest(c.Server)
 	if err != nil {
 		return nil, err
 	}
@@ -84315,6 +84430,60 @@ func NewTestPushSubscriptionRequest(server string, pushSubscriptionId PushSubscr
 	return req, nil
 }
 
+// NewDeleteOtherSessionsRequest constructs an http.Request for the DeleteOtherSessions method
+func NewDeleteOtherSessionsRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/me/sessions")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodDelete, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewListSessionsRequest constructs an http.Request for the ListSessions method
+func NewListSessionsRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/me/sessions")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewUnlinkMySlackRequest constructs an http.Request for the UnlinkMySlack method
 func NewUnlinkMySlackRequest(server string, params *UnlinkMySlackParams) (*http.Request, error) {
 	var err error
@@ -101082,6 +101251,8 @@ type ClientWithResponsesInterface interface {
 
 	// DeletePasskeyWithResponse Remove a passkey
 	//
+	// Removes the passkey and ends every other session of the signed-in person, as `DELETE /v1/me/sessions` does.
+	//
 	// Returns a wrapper object for the known response body format(s).
 	//
 	// Corresponds with DELETE /v1/me/passkeys/{passkeyId} (the `DeletePasskey` operationId).
@@ -101144,6 +101315,27 @@ type ClientWithResponsesInterface interface {
 	//
 	// Corresponds with POST /v1/me/push-subscriptions/{pushSubscriptionId}/test (the `TestPushSubscription` operationId).
 	TestPushSubscriptionWithResponse(ctx context.Context, pushSubscriptionId PushSubscriptionId, reqEditors ...RequestEditorFn) (*TestPushSubscriptionResponse, error)
+
+	// DeleteOtherSessionsWithResponse Sign out everywhere else
+	//
+	// Ends every session of the signed-in person except the one making this request, with their
+	// push subscriptions and reader tokens; their live updates close within a minute. Needs a member
+	// session. Removing a passkey does the same.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with DELETE /v1/me/sessions (the `DeleteOtherSessions` operationId).
+	DeleteOtherSessionsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*DeleteOtherSessionsResponse, error)
+
+	// ListSessionsWithResponse List sign-in sessions
+	//
+	// The signed-in person's live sessions in the panel and the member apps, most recently seen
+	// first. `current` marks the one making this request. Needs a member session.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /v1/me/sessions (the `ListSessions` operationId).
+	ListSessionsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*ListSessionsResponse, error)
 
 	// UnlinkMySlackWithResponse Unlink your Slack user
 	//
@@ -129033,6 +129225,102 @@ func (r TestPushSubscriptionResponse) ContentType() string {
 	return ""
 }
 
+type DeleteOtherSessionsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *SessionsRevoked
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r DeleteOtherSessionsResponse) GetJSON200() *SessionsRevoked {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r DeleteOtherSessionsResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetBody returns the raw response body bytes
+func (r DeleteOtherSessionsResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteOtherSessionsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteOtherSessionsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r DeleteOtherSessionsResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type ListSessionsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *SessionList
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r ListSessionsResponse) GetJSON200() *SessionList {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r ListSessionsResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetBody returns the raw response body bytes
+func (r ListSessionsResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r ListSessionsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListSessionsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ListSessionsResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type UnlinkMySlackResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -149320,6 +149608,8 @@ func (c *ClientWithResponses) BeginPasskeyRegistrationWithResponse(ctx context.C
 
 // DeletePasskeyWithResponse Remove a passkey
 //
+// Removes the passkey and ends every other session of the signed-in person, as `DELETE /v1/me/sessions` does.
+//
 // Returns a wrapper object for the known response body format(s).
 //
 // Corresponds with DELETE /v1/me/passkeys/{passkeyId} (the `DeletePasskey` operationId).
@@ -149417,6 +149707,39 @@ func (c *ClientWithResponses) TestPushSubscriptionWithResponse(ctx context.Conte
 		return nil, err
 	}
 	return ParseTestPushSubscriptionResponse(rsp)
+}
+
+// DeleteOtherSessionsWithResponse Sign out everywhere else
+//
+// Ends every session of the signed-in person except the one making this request, with their
+// push subscriptions and reader tokens; their live updates close within a minute. Needs a member
+// session. Removing a passkey does the same.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with DELETE /v1/me/sessions (the `DeleteOtherSessions` operationId).
+func (c *ClientWithResponses) DeleteOtherSessionsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*DeleteOtherSessionsResponse, error) {
+	rsp, err := c.DeleteOtherSessions(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteOtherSessionsResponse(rsp)
+}
+
+// ListSessionsWithResponse List sign-in sessions
+//
+// The signed-in person's live sessions in the panel and the member apps, most recently seen
+// first. `current` marks the one making this request. Needs a member session.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /v1/me/sessions (the `ListSessions` operationId).
+func (c *ClientWithResponses) ListSessionsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*ListSessionsResponse, error) {
+	rsp, err := c.ListSessions(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListSessionsResponse(rsp)
 }
 
 // UnlinkMySlackWithResponse Unlink your Slack user
@@ -173208,6 +173531,72 @@ func ParseTestPushSubscriptionResponse(rsp *http.Response) (*TestPushSubscriptio
 			return nil, err
 		}
 		response.ApplicationproblemJSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteOtherSessionsResponse parses an HTTP response from a DeleteOtherSessionsWithResponse call
+func ParseDeleteOtherSessionsResponse(rsp *http.Response) (*DeleteOtherSessionsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteOtherSessionsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest SessionsRevoked
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListSessionsResponse parses an HTTP response from a ListSessionsWithResponse call
+func ParseListSessionsResponse(rsp *http.Response) (*ListSessionsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListSessionsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest SessionList
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
 
 	}
 

@@ -106,3 +106,74 @@ func TestOAuthAPIResourceIsForMemberApps(t *testing.T) {
 		t.Fatalf("e-mail queued: %d jobs", len(jobs))
 	}
 }
+
+func TestOAuthTokenRepeatsTheRedirectURI(t *testing.T) {
+	h := newHarness(t)
+	tm := newTeam(t, h)
+	redirect := "http://127.0.0.1:33418/callback"
+	reg, _ := json.Marshal(map[string]any{"client_name": "Claude Code", "redirect_uris": []string{redirect}})
+	res, err := http.Post(h.url+"/oauth/register", "application/json", strings.NewReader(string(reg)))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var registered struct {
+		ClientID string `json:"client_id"`
+	}
+	_ = json.NewDecoder(res.Body).Decode(&registered)
+	res.Body.Close()
+	verifier := strings.Repeat("v", 43)
+	sum := sha256.Sum256([]byte(verifier))
+	noFollow := &http.Client{CheckRedirect: func(*http.Request, []*http.Request) error { return http.ErrUseLastResponse }}
+	code := func(sendRedirect string) string {
+		t.Helper()
+		q := url.Values{
+			"response_type": {"code"}, "client_id": {registered.ClientID}, "state": {"s"},
+			"code_challenge": {base64.RawURLEncoding.EncodeToString(sum[:])}, "code_challenge_method": {"S256"},
+			"resource": {testOrigin + "/mcp"}, "scope": {"conversations:read"},
+		}
+		if sendRedirect != "" {
+			q.Set("redirect_uri", sendRedirect)
+		}
+		ares, err := noFollow.Get(h.url + "/oauth/authorize?" + q.Encode())
+		if err != nil {
+			t.Fatal(err)
+		}
+		ares.Body.Close()
+		consent, _ := url.Parse(ares.Header.Get("Location"))
+		approved := tm.owner.expect(http.StatusOK, "POST", "/v1/oauth/requests/"+consent.Query().Get("request")+"/approve",
+			map[string]any{"workspace_id": tm.ws, "scopes": []string{"conversations:read"}})
+		back, _ := url.Parse(approved.str("redirect_url"))
+		return back.Query().Get("code")
+	}
+	exchange := func(code, redirectURI string) (int, string) {
+		t.Helper()
+		v := url.Values{"grant_type": {"authorization_code"}, "code": {code}, "code_verifier": {verifier}, "client_id": {registered.ClientID}}
+		if redirectURI != "" {
+			v.Set("redirect_uri", redirectURI)
+		}
+		res, err := http.PostForm(h.url+"/oauth/token", v)
+		if err != nil {
+			t.Fatal(err)
+		}
+		defer res.Body.Close()
+		var body struct {
+			Error string `json:"error"`
+		}
+		_ = json.NewDecoder(res.Body).Decode(&body)
+		return res.StatusCode, body.Error
+	}
+
+	loopback := "http://127.0.0.1:50123/callback"
+	if status, e := exchange(code(loopback), ""); status != http.StatusBadRequest || e != "invalid_grant" {
+		t.Fatalf("token without the redirect_uri sent at authorize: %d %s", status, e)
+	}
+	if status, e := exchange(code(loopback), redirect); status != http.StatusBadRequest || e != "invalid_grant" {
+		t.Fatalf("token with another redirect_uri: %d %s", status, e)
+	}
+	if status, e := exchange(code(loopback), loopback); status != http.StatusOK {
+		t.Fatalf("token with the same redirect_uri: %d %s", status, e)
+	}
+	if status, e := exchange(code(""), ""); status != http.StatusOK {
+		t.Fatalf("token when authorize named no redirect_uri: %d %s", status, e)
+	}
+}

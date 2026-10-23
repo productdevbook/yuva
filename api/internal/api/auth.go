@@ -23,6 +23,7 @@ const (
 	workspaceHeader  = "Yuva-Workspace"
 	sessionTTL       = 30 * 24 * time.Hour
 	touchEvery       = time.Minute
+	maxUserAgent     = 500
 	roleOwner        = string(oas.Owner)
 	roleAdmin        = string(oas.Admin)
 	roleAgent        = string(oas.Agent)
@@ -60,6 +61,8 @@ var operationAccess = map[string]access{
 	"BeginPasskeyRegistration":  accessPerson,
 	"FinishPasskeyRegistration": accessPerson,
 	"DeletePasskey":             accessPerson,
+	"ListSessions":              accessPerson,
+	"DeleteOtherSessions":       accessPerson,
 	"DeleteMe":                  accessPerson,
 	"CreateWorkspace":           accessPerson,
 
@@ -215,6 +218,10 @@ func (p principal) scoped() bool { return p.isKey() || p.isGrant() }
 func (p principal) deliversAsBot() bool {
 	return p.isKey() || p.mcpOnly || (p.isGrant() && !p.firstParty)
 }
+
+// present reports callers whose live connection counts the member as online for assignment: member
+// sessions and the member apps, never keys or assistants.
+func (p principal) present() bool { return !p.isKey() && (!p.isGrant() || p.firstParty) }
 
 func (p principal) viaClient() *string {
 	if p.via == "" {
@@ -625,6 +632,9 @@ func (s *Server) startSession(ctx context.Context, q *store.Queries, personID uu
 	}
 	if sso != nil {
 		arg.SsoWorkspaceID, arg.SsoSettingsID = &sso.WorkspaceID, &sso.ID
+	}
+	if r := requestFrom(ctx); r != nil {
+		arg.UserAgent = optional(truncateRunes(strings.TrimSpace(r.UserAgent()), maxUserAgent))
 	}
 	if err := q.CreateSession(ctx, arg); err != nil {
 		return "", err

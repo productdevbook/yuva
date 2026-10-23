@@ -121,7 +121,7 @@ func (s *Server) stream(conn *websocket.Conn, r *http.Request, p principal, resu
 	sub := s.hub.Subscribe(p.workspaceID)
 	defer s.hub.Unsubscribe(sub)
 	var connID uuid.UUID
-	if !p.isKey() {
+	if p.present() {
 		connID = newID()
 		memberID := p.memberID
 		if err := s.st.OpenConnection(ctx, store.OpenConnectionParams{ID: connID, WorkspaceID: p.workspaceID, MemberID: &memberID, Now: s.now()}); err != nil {
