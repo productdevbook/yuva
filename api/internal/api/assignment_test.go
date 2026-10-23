@@ -3,6 +3,7 @@ package api_test
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"slices"
@@ -10,6 +11,8 @@ import (
 	"testing"
 	"time"
 	"uuid"
+
+	"github.com/riverqueue/river"
 
 	"github.com/productdevbook/yuva/api/internal/api"
 )
@@ -520,5 +523,115 @@ func TestAutoAssignParallelCap(t *testing.T) {
 	}
 	if counts[""] != n-6 || waiting != n-6 {
 		t.Fatalf("%d unassigned, %d waiting, want %d", counts[""], waiting, n-6)
+	}
+}
+
+func waitingSince(c *client, conv string) any {
+	return c.expect(http.StatusOK, "GET", "/v1/conversations/"+conv, nil).body["assign_waiting_since"]
+}
+
+func TestAutoAssignTeamPoolPerInbox(t *testing.T) {
+	t.Parallel()
+	h := newHarness(t)
+	tm := newTeam(t, h)
+	h.clock.Set(time.Date(2026, 10, 12, 20, 0, 0, 0, time.UTC))
+	closed := tm.newInbox("Night")
+	tm.owner.expect(http.StatusOK, "PATCH", "/v1/inboxes/"+closed, map[string]any{
+		"timezone": "UTC", "business_hours": map[string]any{"enabled": true, "intervals": []map[string]any{{"day": "mon", "start": "09:00", "end": "17:00"}}},
+	})
+	_, member := tm.newAgent()
+	team := tm.newTeamOf("Billing", []string{member}, []string{closed, tm.inbox})
+	tm.owner.expect(http.StatusOK, "PATCH", "/v1/teams/"+team, map[string]any{"assignment_mode": "round_robin"})
+	tm.rule(tm.owner, map[string]any{"name": "To billing", "trigger": "conversation_created",
+		"actions": []map[string]any{{"type": "assign_team", "team_id": team}, {"type": "assign_pool"}}})
+	var convs []string
+	for _, in := range []string{closed, closed, tm.inbox} {
+		convs = append(convs, tm.owner.expect(http.StatusCreated, "POST", "/v1/conversations", map[string]any{"inbox_id": in, "contact_id": tm.contact}).str("id"))
+		h.clock.Advance(time.Second)
+		h.runAutomations(tm.ws)
+		h.runAssignments(tm.ws)
+	}
+	for _, c := range convs {
+		if waitingSince(tm.owner, c) == nil {
+			t.Fatalf("%s does not wait with nobody online", c)
+		}
+	}
+	h.online(tm.ws, member)
+	if err := h.srv.AssignWaiting(context.Background(), api.AssignWaitingArgs{WorkspaceID: uuid.MustParse(tm.ws)}); err != nil {
+		t.Fatal(err)
+	}
+	if a, b, c := assigneeOf(tm.owner, convs[0]), assigneeOf(tm.owner, convs[1]), assigneeOf(tm.owner, convs[2]); a != "" || b != "" || c != member {
+		t.Fatalf("closed inbox %q %q, open inbox %q (member %s)", a, b, c, member)
+	}
+}
+
+func TestAutoAssignWaitEndsWithTrashAndSpam(t *testing.T) {
+	t.Parallel()
+	h := newHarness(t)
+	tm := newTeam(t, h)
+	tm.owner.expect(http.StatusOK, "PATCH", "/v1/inboxes/"+tm.inbox, map[string]any{"assignment_mode": "round_robin"})
+	trashed, spam := tm.conversation(tm.owner), tm.conversation(tm.owner)
+	h.runAssignments(tm.ws)
+	if waitingSince(tm.owner, trashed) == nil || waitingSince(tm.owner, spam) == nil {
+		t.Fatal("not waiting")
+	}
+	tm.owner.expect(http.StatusOK, "DELETE", "/v1/conversations/"+trashed, nil)
+	tm.owner.expect(http.StatusOK, "PATCH", "/v1/conversations/"+spam, map[string]any{"spam": true})
+	if n := h.count("SELECT count(*) FROM conversations WHERE workspace_id = $1 AND assign_waiting_since IS NOT NULL", tm.ws); n != 0 {
+		t.Fatalf("%d still waiting after trash and spam", n)
+	}
+}
+
+func TestAutoAssignHeldWhileRulesWait(t *testing.T) {
+	t.Parallel()
+	h := newHarness(t)
+	tm := newTeam(t, h)
+	ctx := context.Background()
+	tm.owner.expect(http.StatusNoContent, "PUT", "/v1/inboxes/"+tm.inbox+"/members/"+tm.agentID, nil)
+	tm.owner.expect(http.StatusOK, "PATCH", "/v1/inboxes/"+tm.inbox, map[string]any{"assignment_mode": "round_robin"})
+	a := tm.owner.expect(http.StatusCreated, "POST", "/v1/labels", map[string]any{"name": "A"}).str("id")
+	b := tm.owner.expect(http.StatusCreated, "POST", "/v1/labels", map[string]any{"name": "B"}).str("id")
+	for i := range 10 {
+		tm.rule(tm.owner, map[string]any{"name": fmt.Sprint("Rule ", i), "trigger": "conversation_created", "actions": []map[string]any{
+			{"type": "add_labels", "label_ids": []string{a}}, {"type": "remove_labels", "label_ids": []string{b}},
+			{"type": "set_priority", "priority": "high"}, {"type": "add_note", "body": "x"},
+		}})
+	}
+	for range 16 {
+		tm.conversation(tm.owner)
+	}
+	jobs := h.automationJobs(tm.ws)
+	for _, j := range jobs[:15] {
+		if err := h.srv.RunAutomations(ctx, j); err != nil {
+			t.Fatal(err)
+		}
+	}
+	last := jobs[15]
+	var snooze *river.JobSnoozeError
+	if err := h.srv.RunAutomations(ctx, last); !errors.As(err, &snooze) {
+		t.Fatalf("the 601st action in a minute ran: %v", err)
+	}
+	held := last.ConversationID.String()
+	if waitingSince(tm.owner, held) == nil {
+		t.Fatal("a conversation whose rules wait for the rate limit does not show as waiting")
+	}
+	h.online(tm.ws, tm.agentID)
+	h.runAssignments(tm.ws)
+	if err := h.srv.AssignWaiting(ctx, api.AssignWaitingArgs{WorkspaceID: uuid.MustParse(tm.ws)}); err != nil {
+		t.Fatal(err)
+	}
+	if a := assigneeOf(tm.owner, held); a != "" {
+		t.Fatalf("assigned to %s before its rules ran", a)
+	}
+	h.clock.Advance(61 * time.Second)
+	h.heartbeat(tm.ws)
+	if err := h.srv.RunAutomations(ctx, last); err != nil {
+		t.Fatal(err)
+	}
+	if n, _ := h.runAssignments(tm.ws); n != 1 {
+		t.Fatalf("%d auto_assign jobs after the rules ran", n)
+	}
+	if a := assigneeOf(tm.owner, held); a != tm.agentID {
+		t.Fatalf("after its rules ran: %q", a)
 	}
 }

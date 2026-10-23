@@ -20,7 +20,8 @@ SELECT * FROM conversations WHERE workspace_id = $1 AND id = $2 FOR UPDATE;
 UPDATE conversations SET subject = @subject, status = @status, snooze_until = @snooze_until,
     priority = @priority, assignee_id = @assignee_id, spam = @spam, feedback_progress = @feedback_progress, updated_at = @now,
     closed_at = CASE WHEN @status = 'closed' AND status <> 'closed' THEN @now ELSE closed_at END,
-    assign_waiting_since = CASE WHEN @status <> 'open' OR @assignee_id::uuid IS NOT NULL THEN NULL ELSE assign_waiting_since END
+    assign_waiting_since = CASE WHEN @status <> 'open' OR @assignee_id::uuid IS NOT NULL OR @spam::bool THEN NULL ELSE assign_waiting_since END,
+    assign_after_rules = assign_after_rules AND @status = 'open' AND @assignee_id::uuid IS NULL AND NOT @spam::bool
 WHERE workspace_id = @workspace_id AND id = @id
 RETURNING *;
 
@@ -192,7 +193,8 @@ DELETE FROM conversations WHERE workspace_id = @workspace_id AND id = ANY(@ids::
 
 -- name: MoveConversation :one
 UPDATE conversations SET inbox_id = @inbox_id, channel_id = sqlc.narg(channel_id), assignee_id = sqlc.narg(assignee_id),
-    team_id = sqlc.narg(team_id), updated_at = @now
+    team_id = sqlc.narg(team_id), updated_at = @now,
+    assign_waiting_since = CASE WHEN sqlc.narg(assignee_id)::uuid IS NOT NULL THEN NULL ELSE assign_waiting_since END
 WHERE workspace_id = @workspace_id AND id = @id
 RETURNING *;
 
@@ -208,7 +210,8 @@ RETURNING *;
 
 -- The trash's 30 days run on the database's clock (at replaces it in tests), as rate limits do.
 -- name: TrashConversation :one
-UPDATE conversations SET trashed_at = coalesce(sqlc.narg(at)::timestamptz, clock_timestamp()), trashed_by_member_id = sqlc.narg(member_id), trashed_by_api_key_id = sqlc.narg(api_key_id), updated_at = @now::timestamptz
+UPDATE conversations SET trashed_at = coalesce(sqlc.narg(at)::timestamptz, clock_timestamp()), trashed_by_member_id = sqlc.narg(member_id), trashed_by_api_key_id = sqlc.narg(api_key_id), updated_at = @now::timestamptz,
+    assign_waiting_since = NULL, assign_after_rules = false
 WHERE workspace_id = @workspace_id AND id = @id AND trashed_at IS NULL
 RETURNING *;
 

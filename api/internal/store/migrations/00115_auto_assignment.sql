@@ -13,10 +13,13 @@ CREATE TABLE assignment_turns (
     FOREIGN KEY (workspace_id, member_id) REFERENCES members (workspace_id, id) ON DELETE CASCADE
 );
 
--- Indexed by 00115 outside a transaction.
-ALTER TABLE conversations ADD COLUMN assign_waiting_since timestamptz;
+-- Indexed by 00116 outside a transaction. assign_after_rules holds a waiting conversation back
+-- from the waiting runs while its rules job waits for the rate limit.
+ALTER TABLE conversations
+    ADD COLUMN assign_waiting_since timestamptz,
+    ADD COLUMN assign_after_rules   boolean NOT NULL DEFAULT false;
 
 -- +goose Down
-ALTER TABLE conversations DROP COLUMN assign_waiting_since;
+ALTER TABLE conversations DROP COLUMN assign_after_rules, DROP COLUMN assign_waiting_since;
 DROP TABLE assignment_turns;
 ALTER TABLE inboxes DROP COLUMN assignment_cap, DROP COLUMN assignment_mode;

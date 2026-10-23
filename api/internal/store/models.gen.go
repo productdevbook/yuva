@@ -885,6 +885,7 @@ type Conversation struct {
 	SlaDueAt              *time.Time
 	SnoozeRuleID          *uuid.UUID
 	AssignWaitingSince    *time.Time
+	AssignAfterRules      bool
 }
 
 type ConversationLabel struct {

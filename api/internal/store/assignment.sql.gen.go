@@ -13,7 +13,7 @@ import (
 )
 
 const assignWaitingReady = `-- name: AssignWaitingReady :one
-SELECT (EXISTS (SELECT 1 FROM conversations c WHERE c.workspace_id = $1 AND c.assign_waiting_since IS NOT NULL)
+SELECT (EXISTS (SELECT 1 FROM conversations c WHERE c.workspace_id = $1 AND c.assign_waiting_since IS NOT NULL AND NOT c.assign_after_rules)
     AND EXISTS (
         SELECT 1 FROM realtime_connections rc
         JOIN members m ON m.workspace_id = rc.workspace_id AND m.id = rc.member_id
@@ -60,7 +60,7 @@ func (q *Queries) DeleteAssignmentTurns(ctx context.Context, arg DeleteAssignmen
 }
 
 const hasAssignWaiting = `-- name: HasAssignWaiting :one
-SELECT EXISTS (SELECT 1 FROM conversations WHERE workspace_id = $1 AND assign_waiting_since IS NOT NULL) AS waiting
+SELECT EXISTS (SELECT 1 FROM conversations WHERE workspace_id = $1 AND assign_waiting_since IS NOT NULL AND NOT assign_after_rules) AS waiting
 `
 
 func (q *Queries) HasAssignWaiting(ctx context.Context, workspaceID uuid.UUID) (bool, error) {
@@ -68,6 +68,74 @@ func (q *Queries) HasAssignWaiting(ctx context.Context, workspaceID uuid.UUID) (
 	var waiting bool
 	err := row.Scan(&waiting)
 	return waiting, err
+}
+
+const holdForRules = `-- name: HoldForRules :one
+UPDATE conversations SET assign_waiting_since = coalesce(assign_waiting_since, $1::timestamptz), assign_after_rules = true
+WHERE workspace_id = $2 AND id = $3 AND assignee_id IS NULL AND status = 'open' AND NOT spam AND trashed_at IS NULL
+  AND NOT assign_after_rules
+RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id, trashed_at, trashed_by_member_id, trashed_by_api_key_id, push_through, push_sent_at, team_id, fields, sla_due_at, snooze_rule_id, assign_waiting_since, assign_after_rules
+`
+
+type HoldForRulesParams struct {
+	Now         time.Time
+	WorkspaceID uuid.UUID
+	ID          uuid.UUID
+}
+
+func (q *Queries) HoldForRules(ctx context.Context, arg HoldForRulesParams) (Conversation, error) {
+	row := q.db.QueryRow(ctx, holdForRules, arg.Now, arg.WorkspaceID, arg.ID)
+	var i Conversation
+	err := row.Scan(
+		&i.ID,
+		&i.WorkspaceID,
+		&i.InboxID,
+		&i.ContactID,
+		&i.ChannelID,
+		&i.Subject,
+		&i.Status,
+		&i.SnoozeUntil,
+		&i.Priority,
+		&i.AssigneeID,
+		&i.LastMessageAt,
+		&i.LastActivityAt,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.Spam,
+		&i.EmailToken,
+		&i.RelatedConversationID,
+		&i.ContinuityThrough,
+		&i.ContinuitySentAt,
+		&i.Kind,
+		&i.Feedback,
+		&i.EmailAddress,
+		&i.ClosedAt,
+		&i.Rating,
+		&i.RatingComment,
+		&i.RatedAt,
+		&i.RatingRequestedAt,
+		&i.LastReadByContactAt,
+		&i.PageUrl,
+		&i.PageTitle,
+		&i.ChannelKind,
+		&i.BroadcastID,
+		&i.MigrationID,
+		&i.ImportedAt,
+		&i.FeedbackProgress,
+		&i.HelpArticleID,
+		&i.TrashedAt,
+		&i.TrashedByMemberID,
+		&i.TrashedByApiKeyID,
+		&i.PushThrough,
+		&i.PushSentAt,
+		&i.TeamID,
+		&i.Fields,
+		&i.SlaDueAt,
+		&i.SnoozeRuleID,
+		&i.AssignWaitingSince,
+		&i.AssignAfterRules,
+	)
+	return i, err
 }
 
 const listAppliedRunActions = `-- name: ListAppliedRunActions :many
@@ -158,7 +226,7 @@ func (q *Queries) ListAssignCandidates(ctx context.Context, arg ListAssignCandid
 
 const listAssignWaiting = `-- name: ListAssignWaiting :many
 SELECT id, inbox_id, team_id, assign_waiting_since FROM conversations
-WHERE workspace_id = $1 AND assign_waiting_since IS NOT NULL
+WHERE workspace_id = $1 AND assign_waiting_since IS NOT NULL AND NOT assign_after_rules
   AND (assign_waiting_since, id) > ($2::timestamptz, $3::uuid)
 ORDER BY assign_waiting_since, id
 LIMIT $4
@@ -234,10 +302,25 @@ func (q *Queries) MemberAway(ctx context.Context, arg MemberAwayParams) (bool, e
 	return away, err
 }
 
+const releaseForRules = `-- name: ReleaseForRules :exec
+UPDATE conversations SET assign_after_rules = false
+WHERE workspace_id = $1 AND id = $2 AND assign_after_rules
+`
+
+type ReleaseForRulesParams struct {
+	WorkspaceID uuid.UUID
+	ID          uuid.UUID
+}
+
+func (q *Queries) ReleaseForRules(ctx context.Context, arg ReleaseForRulesParams) error {
+	_, err := q.db.Exec(ctx, releaseForRules, arg.WorkspaceID, arg.ID)
+	return err
+}
+
 const startAssignWaiting = `-- name: StartAssignWaiting :one
 UPDATE conversations SET assign_waiting_since = $1::timestamptz
 WHERE workspace_id = $2 AND id = $3 AND assign_waiting_since IS NULL
-RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id, trashed_at, trashed_by_member_id, trashed_by_api_key_id, push_through, push_sent_at, team_id, fields, sla_due_at, snooze_rule_id, assign_waiting_since
+RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id, trashed_at, trashed_by_member_id, trashed_by_api_key_id, push_through, push_sent_at, team_id, fields, sla_due_at, snooze_rule_id, assign_waiting_since, assign_after_rules
 `
 
 type StartAssignWaitingParams struct {
@@ -296,6 +379,7 @@ func (q *Queries) StartAssignWaiting(ctx context.Context, arg StartAssignWaiting
 		&i.SlaDueAt,
 		&i.SnoozeRuleID,
 		&i.AssignWaitingSince,
+		&i.AssignAfterRules,
 	)
 	return i, err
 }

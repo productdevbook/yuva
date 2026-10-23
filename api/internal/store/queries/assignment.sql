@@ -41,16 +41,16 @@ WHERE workspace_id = @workspace_id AND id = @id AND assign_waiting_since IS NOT 
 
 -- name: ListAssignWaiting :many
 SELECT id, inbox_id, team_id, assign_waiting_since FROM conversations
-WHERE workspace_id = @workspace_id AND assign_waiting_since IS NOT NULL
+WHERE workspace_id = @workspace_id AND assign_waiting_since IS NOT NULL AND NOT assign_after_rules
   AND (assign_waiting_since, id) > (@after_since::timestamptz, @after_id::uuid)
 ORDER BY assign_waiting_since, id
 LIMIT @lim;
 
 -- name: HasAssignWaiting :one
-SELECT EXISTS (SELECT 1 FROM conversations WHERE workspace_id = @workspace_id AND assign_waiting_since IS NOT NULL) AS waiting;
+SELECT EXISTS (SELECT 1 FROM conversations WHERE workspace_id = @workspace_id AND assign_waiting_since IS NOT NULL AND NOT assign_after_rules) AS waiting;
 
 -- name: AssignWaitingReady :one
-SELECT (EXISTS (SELECT 1 FROM conversations c WHERE c.workspace_id = @workspace_id AND c.assign_waiting_since IS NOT NULL)
+SELECT (EXISTS (SELECT 1 FROM conversations c WHERE c.workspace_id = @workspace_id AND c.assign_waiting_since IS NOT NULL AND NOT c.assign_after_rules)
     AND EXISTS (
         SELECT 1 FROM realtime_connections rc
         JOIN members m ON m.workspace_id = rc.workspace_id AND m.id = rc.member_id
@@ -63,3 +63,13 @@ WHERE workspace_id = @workspace_id AND conversation_id = @conversation_id AND tr
 
 -- name: DeleteAssignmentTurns :exec
 DELETE FROM assignment_turns WHERE workspace_id = @workspace_id AND pool_id = @pool_id;
+
+-- name: HoldForRules :one
+UPDATE conversations SET assign_waiting_since = coalesce(assign_waiting_since, @now::timestamptz), assign_after_rules = true
+WHERE workspace_id = @workspace_id AND id = @id AND assignee_id IS NULL AND status = 'open' AND NOT spam AND trashed_at IS NULL
+  AND NOT assign_after_rules
+RETURNING *;
+
+-- name: ReleaseForRules :exec
+UPDATE conversations SET assign_after_rules = false
+WHERE workspace_id = @workspace_id AND id = @id AND assign_after_rules;

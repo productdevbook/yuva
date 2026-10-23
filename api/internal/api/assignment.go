@@ -232,13 +232,17 @@ func (s *Server) AutoAssign(ctx context.Context, a AutoAssignArgs) error {
 		if err := q.LockAssignment(ctx, a.WorkspaceID); err != nil {
 			return err
 		}
-		_, err := s.assignOne(ctx, q, ev, a.WorkspaceID, a.ConversationID, a.Reopen, s.now())
+		_, err := s.assignOne(ctx, q, ev, a.WorkspaceID, a.ConversationID, a.Reopen, false, s.now())
 		return err
 	})
 }
 
-// AssignWaiting walks the waiting conversations oldest first, a page per transaction, until the
-// end; a pool found empty is not asked again in the same page.
+type poolInbox struct{ pool, inbox uuid.UUID }
+
+// AssignWaiting walks the waiting conversations oldest first, a page of ids at a time, to the end.
+// Each conversation is decided in its own short transaction, so the run never holds more than one
+// conversation's lock; a pool that had nobody eligible for an inbox is not asked again for that
+// inbox in the same page.
 func (s *Server) AssignWaiting(ctx context.Context, a AssignWaitingArgs) error {
 	if ok, err := s.liveWorkspace(ctx, a.WorkspaceID); err != nil || !ok {
 		return err
@@ -252,33 +256,31 @@ func (s *Server) AssignWaiting(ctx context.Context, a AssignWaitingArgs) error {
 		if err != nil || len(rows) == 0 {
 			return err
 		}
-		err = s.inTx(ctx, a.WorkspaceID, func(q *store.Queries, ev *eventBatch) error {
-			ev.assign = true
-			if err := q.LockAssignment(ctx, a.WorkspaceID); err != nil {
-				return err
+		empty := map[poolInbox]bool{}
+		for _, r := range rows {
+			key := poolInbox{pool: r.InboxID, inbox: r.InboxID}
+			if r.TeamID != nil {
+				key.pool = *r.TeamID
 			}
-			now := s.now()
-			empty := map[uuid.UUID]bool{}
-			for _, r := range rows {
-				pool := r.InboxID
-				if r.TeamID != nil {
-					pool = *r.TeamID
-				}
-				if empty[pool] {
-					continue
-				}
-				assigned, err := s.assignOne(ctx, q, ev, a.WorkspaceID, r.ID, false, now)
-				if err != nil {
+			if empty[key] {
+				continue
+			}
+			var got assignResult
+			err := s.inTx(ctx, a.WorkspaceID, func(q *store.Queries, ev *eventBatch) error {
+				ev.assign = true
+				if err := q.LockAssignment(ctx, a.WorkspaceID); err != nil {
 					return err
 				}
-				if !assigned {
-					empty[pool] = true
-				}
+				var err error
+				got, err = s.assignOne(ctx, q, ev, a.WorkspaceID, r.ID, false, true, s.now())
+				return err
+			})
+			if err != nil {
+				return err
 			}
-			return nil
-		})
-		if err != nil {
-			return err
+			if got == assignNobody {
+				empty[key] = true
+			}
 		}
 		last := rows[len(rows)-1]
 		afterSince, afterID = *last.AssignWaitingSince, last.ID
@@ -342,24 +344,38 @@ func (s *Server) poolOf(ctx context.Context, q *store.Queries, c store.Conversat
 	return pool, nil
 }
 
-// assignOne decides one conversation under the assignment lock and reports whether it got a member.
-func (s *Server) assignOne(ctx context.Context, q *store.Queries, ev *eventBatch, ws, id uuid.UUID, reopen bool, now time.Time) (bool, error) {
+type assignResult int
+
+const (
+	// assignSkipped: the conversation is not the pool's to give (gone, closed, spam, trashed, has a
+	// member, its pool is off, or its rules have not run yet).
+	assignSkipped assignResult = iota
+	assignNobody
+	assignGiven
+)
+
+// assignOne decides one conversation under the assignment lock. waiting is a run over waiting
+// conversations, which leaves alone one whose rules still have to run.
+func (s *Server) assignOne(ctx context.Context, q *store.Queries, ev *eventBatch, ws, id uuid.UUID, reopen, waiting bool, now time.Time) (assignResult, error) {
 	c, err := q.LockConversation(ctx, store.LockConversationParams{WorkspaceID: ws, ID: id})
 	if store.IsNotFound(err) {
-		return false, nil
+		return assignSkipped, nil
 	}
 	if err != nil {
-		return false, err
+		return assignSkipped, err
 	}
-	stop := func() (bool, error) {
-		return false, q.StopAssignWaiting(ctx, store.StopAssignWaitingParams{WorkspaceID: ws, ID: c.ID})
+	if waiting && c.AssignAfterRules {
+		return assignSkipped, nil
+	}
+	stop := func() (assignResult, error) {
+		return assignSkipped, q.StopAssignWaiting(ctx, store.StopAssignWaitingParams{WorkspaceID: ws, ID: c.ID})
 	}
 	if c.TrashedAt != nil || c.Spam || c.Status != string(oas.ConversationStatusOpen) {
 		return stop()
 	}
 	pool, err := s.poolOf(ctx, q, c)
 	if err != nil {
-		return false, err
+		return assignSkipped, err
 	}
 	if pool.mode == oas.AssignmentOff {
 		return stop()
@@ -372,42 +388,42 @@ func (s *Server) assignOne(ctx context.Context, q *store.Queries, ev *eventBatch
 		keep, err := assigneeKeeps(ctx, q, c)
 		if err != nil || keep {
 			if err != nil {
-				return false, err
+				return assignSkipped, err
 			}
 			return stop()
 		}
 	}
 	member, err := s.pickMember(ctx, q, pool, now)
 	if err != nil {
-		return false, err
+		return assignSkipped, err
 	}
 	if member == nil {
 		if c.AssigneeID != nil {
 			if _, err := s.changeConversation(ctx, q, ev, p, c.ID, oas.ConversationUpdate{AssigneeId: nullable.NewNullNullable[uuid.UUID]()}, nil, nil); err != nil {
-				return false, err
+				return assignSkipped, err
 			}
 		}
 		started, err := q.StartAssignWaiting(ctx, store.StartAssignWaitingParams{WorkspaceID: ws, ID: c.ID, Now: now})
 		if store.IsNotFound(err) {
-			return false, nil
+			return assignNobody, nil
 		}
 		if err != nil {
-			return false, err
+			return assignSkipped, err
 		}
 		body, err := oneConversation(ctx, q, started)
 		if err != nil {
-			return false, err
+			return assignSkipped, err
 		}
 		ev.conversation(realtime.ConversationUpdated, started, body)
-		return false, nil
+		return assignNobody, nil
 	}
 	if err := q.TakeAssignmentTurn(ctx, store.TakeAssignmentTurnParams{WorkspaceID: ws, PoolID: pool.id, MemberID: *member, Now: now}); err != nil {
-		return false, err
+		return assignSkipped, err
 	}
 	if _, err := s.changeConversation(ctx, q, ev, p, c.ID, oas.ConversationUpdate{AssigneeId: nullable.NewNullableWithValue(*member)}, nil, nil); err != nil {
-		return false, err
+		return assignSkipped, err
 	}
-	return true, nil
+	return assignGiven, nil
 }
 
 // assigneeKeeps reports an assignee who can still answer a reopened conversation: access to its

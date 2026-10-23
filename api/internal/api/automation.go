@@ -14,6 +14,7 @@ import (
 	"github.com/jackc/pgx/v5"
 	"github.com/oapi-codegen/nullable"
 	"github.com/riverqueue/river"
+	"github.com/riverqueue/river/rivertype"
 
 	"github.com/productdevbook/yuva/api/internal/jobs"
 	"github.com/productdevbook/yuva/api/internal/oas"
@@ -210,9 +211,36 @@ func (w *automationRunWorker) Work(ctx context.Context, job *river.Job[Automatio
 // opens.
 func (s *Server) RunAutomations(ctx context.Context, a AutomationRunArgs) error {
 	if err := s.runAutomationRules(ctx, a); err != nil {
+		var snooze *rivertype.JobSnoozeError
+		if a.Assign && errors.As(err, &snooze) {
+			if err := s.holdForRules(ctx, a); err != nil {
+				return err
+			}
+		}
 		return err
 	}
 	return s.assignAfterRules(ctx, a)
+}
+
+// holdForRules shows a conversation whose rules wait for the rate limit as waiting, and keeps the
+// waiting runs from assigning it before its rules ran.
+func (s *Server) holdForRules(ctx context.Context, a AutomationRunArgs) error {
+	return s.inTx(ctx, a.WorkspaceID, func(q *store.Queries, ev *eventBatch) error {
+		ev.assign = true
+		c, err := q.HoldForRules(ctx, store.HoldForRulesParams{WorkspaceID: a.WorkspaceID, ID: a.ConversationID, Now: s.now()})
+		if store.IsNotFound(err) {
+			return nil
+		}
+		if err != nil {
+			return err
+		}
+		body, err := oneConversation(ctx, q, c)
+		if err != nil {
+			return err
+		}
+		ev.conversation(realtime.ConversationUpdated, c, body)
+		return nil
+	})
 }
 
 // assignAfterRules reads what the trigger's applied runs did, so a retry decides the same: a rule
@@ -245,8 +273,13 @@ func (s *Server) assignAfterRules(ctx context.Context, a AutomationRunArgs) erro
 	if !a.Assign && !pooled {
 		return nil
 	}
-	_, err = s.jobs.Insert(ctx, AutoAssignArgs{WorkspaceID: a.WorkspaceID, ConversationID: a.ConversationID, Reopen: reopen}, nil)
-	return err
+	return s.st.InTxRaw(ctx, func(tx pgx.Tx, q *store.Queries) error {
+		if err := q.ReleaseForRules(ctx, store.ReleaseForRulesParams{WorkspaceID: a.WorkspaceID, ID: a.ConversationID}); err != nil {
+			return err
+		}
+		_, err := s.jobs.InsertTx(ctx, tx, AutoAssignArgs{WorkspaceID: a.WorkspaceID, ConversationID: a.ConversationID, Reopen: reopen}, nil)
+		return err
+	})
 }
 
 func (s *Server) runAutomationRules(ctx context.Context, a AutomationRunArgs) error {
