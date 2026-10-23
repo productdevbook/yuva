@@ -653,9 +653,11 @@ paths:
         `200` when `domain` is the verified own domain of a published status page, help center or
         changelog or a public roadmap board in a live workspace (and that feature is not off on the
         server), `404` otherwise, also when the server's `YUVA_STATUS_DOMAINS` is not `ask`. It is public and
-        reveals only domains that already serve public pages. The proxy asks from one address for
-        every name a handshake brings, so a name known not to be an own domain is answered from
-        memory and the limit is per name asked: up to 30 lookups a minute (`429 rate_limited`).
+        reveals only domains that already serve public pages. A live domain and a name known not to
+        be one are answered from memory (30 seconds). The proxy's own asks (from a loopback or
+        trusted proxy address, without a forwarded client address) are never limited; any other
+        caller gets 120 asks a minute per address and 30 lookups a minute per name that memory
+        cannot answer (`429 rate_limited`).
       tags: [status]
       security: []
       parameters:

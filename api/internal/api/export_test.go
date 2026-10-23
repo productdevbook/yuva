@@ -137,3 +137,12 @@ func (p PublicCache) Len() int {
 	defer p.c.mu.Unlock()
 	return len(p.c.entries)
 }
+
+// ForgetStatusDomains empties the own-domain cache, as its 30 seconds running out would.
+func (s *Server) ForgetStatusDomains() {
+	c := s.statusDomainCache
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	c.gen++
+	c.verified, c.misses = map[string]statusDomainHit{}, map[string]time.Time{}
+}

@@ -625,32 +625,43 @@ func TestStatusDomainAsk(t *testing.T) {
 			t.Fatalf("%q: %d", bad, code)
 		}
 	}
-	for i := range 200 {
-		if code := ask(unique("random") + ".example.net"); code != http.StatusNotFound {
-			t.Fatalf("random name %d: %d", i+1, code)
+	proxy := func(domain string) int {
+		res, err := http.Get(h.url + "/status-domains/check?domain=" + domain)
+		if err != nil {
+			t.Fatal(err)
+		}
+		res.Body.Close()
+		return res.StatusCode
+	}
+	for i := range 300 {
+		if code := proxy(unique("random") + ".example.net"); code != http.StatusNotFound {
+			t.Fatalf("the proxy's ask for random name %d: %d", i+1, code)
 		}
 	}
-	if code := ask(name); code != http.StatusOK {
-		t.Fatalf("the verified domain after 200 random names from the same address: %d", code)
-	}
 	limited := false
-	for range 40 {
+	for range 130 {
 		if code := ask(name); code == http.StatusTooManyRequests {
 			limited = true
 			break
 		}
 	}
 	if !limited {
-		t.Fatal("no rate limit on asking for one name")
+		t.Fatal("no per-address limit for a caller other than the proxy")
 	}
-	if code := ask(unique("other") + ".example.net"); code != http.StatusNotFound {
-		t.Fatalf("another name: %d", code)
+	for range 50 {
+		if code := proxy(name); code != http.StatusOK {
+			t.Fatalf("the proxy's ask after others were limited: %d", code)
+		}
 	}
-	h.clock.Advance(time.Minute)
+	other := h.client()
+	if code := other.do("GET", "/status-domains/check?domain="+name, nil).status; code != http.StatusOK {
+		t.Fatalf("another address: %d", code)
+	}
 	if _, err := h.st.Pool.Exec(context.Background(), "UPDATE workspaces SET deleted_at = now() WHERE id = $1", st.ws); err != nil {
 		t.Fatal(err)
 	}
-	if code := ask(name); code != http.StatusNotFound {
+	h.srv.ForgetStatusDomains()
+	if code := proxy(name); code != http.StatusNotFound {
 		t.Fatalf("deleted workspace: %d", code)
 	}
 }

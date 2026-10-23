@@ -8,6 +8,7 @@ import (
 	"log/slog"
 	"net"
 	"net/http"
+	"net/netip"
 	"net/url"
 	"regexp"
 	"slices"
@@ -815,35 +816,58 @@ func (s *Server) CheckStatusDomain(ctx context.Context, req oas.CheckStatusDomai
 	if s.statusDomainsMode() != statusDomainsAsk || !domainSyntax(d) {
 		return nil, errNotFound
 	}
-	// Caddy asks from one address for every name a TLS handshake brings: a name known not to be an
-	// own domain is answered from memory, and the limit is per name asked, so random names never
-	// hold up a verified one.
+	// The TLS proxy asks for every name a handshake brings, itself and without a forwarded
+	// address; nobody else's asks may hold it up, so only other callers are limited, per address
+	// and per name looked up. A live domain and a name known not to be one are answered from
+	// memory; a known page that is not live is looked up again, so publishing it counts at once.
+	r := requestFrom(ctx)
+	caller := ""
+	if r != nil {
+		caller = s.clientIP(r)
+	}
+	proxy := r != nil && caller == peerAddr(r) && (isLoopback(caller) || s.trusted(caller))
+	if !proxy {
+		if err := s.rateLimit(ctx, rateCheck{"status-domain-check:ip:" + rateIP(caller), limitStatusPerIP}); err != nil {
+			return nil, err
+		}
+	}
 	now := time.Now()
-	_, known, cached, gen := s.statusDomainCache.get(d, now)
-	if cached && !known {
+	hit, known, cached, gen := s.statusDomainCache.get(d, now)
+	switch {
+	case cached && !known:
 		return nil, errNotFound
+	case !cached || !hit.live:
+		if !proxy {
+			if err := s.rateLimit(ctx, rateCheck{"status-domain-check:host:" + d, limitDomainCheckPerHost}); err != nil {
+				return nil, err
+			}
+		}
+		pg, err := s.st.FindOwnDomain(ctx, d)
+		if err != nil && !store.IsNotFound(err) {
+			return nil, err
+		}
+		hit = statusDomainHit{at: now}
+		if known = err == nil; known {
+			hit.kind, hit.workspace, hit.page, hit.slug, hit.live = pg.Kind, pg.WorkspaceID, pg.ID, pg.Slug, pg.Live
+		}
+		s.statusDomainCache.put(d, hit, known, gen)
 	}
-	if err := s.rateLimit(ctx, rateCheck{"status-domain-check:host:" + d, limitDomainCheckPerHost}); err != nil {
-		return nil, err
-	}
-	hit, err := s.st.FindOwnDomain(ctx, d)
-	if store.IsNotFound(err) {
-		s.statusDomainCache.put(d, statusDomainHit{at: now}, false, gen)
-		return nil, errNotFound
-	}
-	if err != nil {
-		return nil, err
-	}
-	if k, ok := s.ownKind(hit.Kind); !ok || !hit.Live || !k.on() {
+	if k, ok := s.ownKind(hit.kind); !known || !ok || !hit.live || !k.on() {
 		return nil, errNotFound
 	}
 	return oas.CheckStatusDomain200JSONResponse{Domain: d}, nil
+}
+
+func isLoopback(ip string) bool {
+	a, err := netip.ParseAddr(ip)
+	return err == nil && a.Unmap().IsLoopback()
 }
 
 type statusDomainHit struct {
 	kind            string
 	workspace, page uuid.UUID
 	slug            string
+	live            bool
 	at              time.Time
 }
 
@@ -931,7 +955,7 @@ func (s *Server) domainPage(ctx context.Context, host string) (statusDomainHit, 
 	}
 	e = statusDomainHit{at: now}
 	if ok = err == nil; ok {
-		e.kind, e.workspace, e.page, e.slug = pg.Kind, pg.WorkspaceID, pg.ID, pg.Slug
+		e.kind, e.workspace, e.page, e.slug, e.live = pg.Kind, pg.WorkspaceID, pg.ID, pg.Slug, pg.Live
 	}
 	c.put(host, e, ok, gen)
 	return e, ok
