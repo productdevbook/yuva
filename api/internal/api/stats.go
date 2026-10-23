@@ -49,6 +49,10 @@ func (s *Server) GetStats(ctx context.Context, req oas.GetStatsRequestObject) (o
 	if err != nil {
 		return nil, err
 	}
+	slaRows, err := s.st.StatsSLA(ctx, store.StatsSLAParams(arg))
+	if err != nil {
+		return nil, err
+	}
 	out := oas.GetStats200JSONResponse{
 		Since: since, Until: now, FirstReplies: int64(len(firsts)), Members: []oas.MemberStats{},
 		Ratings: oas.RatingStats{Inboxes: []oas.InboxRatingStats{}},
@@ -89,6 +93,7 @@ func (s *Server) GetStats(ctx context.Context, req oas.GetStatsRequestObject) (o
 		out.Members = append(out.Members, *m)
 	}
 	slices.SortFunc(out.Members, func(a, b oas.MemberStats) int { return a.MemberId.Compare(b.MemberId) })
+	out.Sla = slaStats(slaRows)
 	if len(firsts) > 0 {
 		out.MedianFirstReplySeconds = new(medianSeconds(firsts))
 	}
@@ -144,4 +149,40 @@ func medianDuration(d []time.Duration) int64 {
 		return int64(d[mid] / time.Second)
 	}
 	return int64((d[mid-1] + d[mid]) / 2 / time.Second)
+}
+
+// slaStats adds up the SLA outcomes per inbox and per assignee at the outcome; rows come ordered
+// by inbox.
+func slaStats(rows []store.StatsSLARow) oas.SlaStats {
+	out := oas.SlaStats{Inboxes: []oas.InboxSlaStats{}, Members: []oas.MemberSlaStats{}}
+	members := map[uuid.UUID]*oas.MemberSlaStats{}
+	for _, r := range rows {
+		if n := len(out.Inboxes); n == 0 || out.Inboxes[n-1].InboxId != r.InboxID {
+			out.Inboxes = append(out.Inboxes, oas.InboxSlaStats{InboxId: r.InboxID})
+		}
+		in := &out.Inboxes[len(out.Inboxes)-1]
+		var m *oas.MemberSlaStats
+		if r.AssigneeID != nil {
+			if m = members[*r.AssigneeID]; m == nil {
+				m = &oas.MemberSlaStats{MemberId: *r.AssigneeID}
+				members[*r.AssigneeID] = m
+			}
+		}
+		if r.Outcome == "met" {
+			out.Met, in.Met = out.Met+r.N, in.Met+r.N
+			if m != nil {
+				m.Met += r.N
+			}
+		} else {
+			out.Breached, in.Breached = out.Breached+r.N, in.Breached+r.N
+			if m != nil {
+				m.Breached += r.N
+			}
+		}
+	}
+	for _, m := range members {
+		out.Members = append(out.Members, *m)
+	}
+	slices.SortFunc(out.Members, func(a, b oas.MemberSlaStats) int { return a.MemberId.Compare(b.MemberId) })
+	return out
 }

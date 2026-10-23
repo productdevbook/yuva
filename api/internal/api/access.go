@@ -132,6 +132,43 @@ func encodeCursor(t time.Time, id uuid.UUID) string {
 	return base64.RawURLEncoding.EncodeToString([]byte(strconv.FormatInt(t.UnixMicro(), 10) + "." + id.String()))
 }
 
+// encodeSLACursor continues sort=sla_due: the due time ("-" when none), then the activity and id.
+func encodeSLACursor(due *time.Time, t time.Time, id uuid.UUID) string {
+	d := "-"
+	if due != nil {
+		d = strconv.FormatInt(due.UnixMicro(), 10)
+	}
+	return base64.RawURLEncoding.EncodeToString([]byte("s." + d + "." + strconv.FormatInt(t.UnixMicro(), 10) + "." + id.String()))
+}
+
+func decodeSLACursor(s *string) (*time.Time, *time.Time, *uuid.UUID, error) {
+	if s == nil || *s == "" {
+		return nil, nil, nil, nil
+	}
+	raw, err := base64.RawURLEncoding.DecodeString(*s)
+	if err != nil {
+		return nil, nil, nil, errInvalidCursor
+	}
+	parts := strings.SplitN(string(raw), ".", 4)
+	if len(parts) != 4 || parts[0] != "s" {
+		return nil, nil, nil, errInvalidCursor
+	}
+	var due *time.Time
+	if parts[1] != "-" {
+		micros, err := strconv.ParseInt(parts[1], 10, 64)
+		if err != nil {
+			return nil, nil, nil, errInvalidCursor
+		}
+		due = new(time.UnixMicro(micros).UTC())
+	}
+	rest := base64.RawURLEncoding.EncodeToString([]byte(parts[2] + "." + parts[3]))
+	at, id, err := decodeCursor(&rest)
+	if err != nil {
+		return nil, nil, nil, err
+	}
+	return due, at, id, nil
+}
+
 func decodeCursor(s *string) (*time.Time, *uuid.UUID, error) {
 	if s == nil || *s == "" {
 		return nil, nil, nil

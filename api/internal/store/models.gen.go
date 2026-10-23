@@ -840,6 +840,7 @@ type Conversation struct {
 	PushSentAt            *time.Time
 	TeamID                *uuid.UUID
 	Fields                []byte
+	SlaDueAt              *time.Time
 }
 
 type ConversationLabel struct {
@@ -863,6 +864,40 @@ type ConversationRead struct {
 	LastReadMessageID uuid.UUID
 	LastReadAt        time.Time
 	UpdatedAt         time.Time
+}
+
+type ConversationSla struct {
+	WorkspaceID          uuid.UUID
+	ConversationID       uuid.UUID
+	PolicyID             uuid.UUID
+	MatchKey             string
+	WarnMinutes          int32
+	AwaitingReply        bool
+	PausedAt             *time.Time
+	CheckAt              *time.Time
+	FirstReplyTargetS    *int32
+	FirstReplyStartedAt  *time.Time
+	FirstReplyDueAt      *time.Time
+	FirstReplyRemainingS *int32
+	FirstReplyMetAt      *time.Time
+	FirstReplyBreachedAt *time.Time
+	FirstReplyWarnedAt   *time.Time
+	NextReplyTargetS     *int32
+	NextReplyStartedAt   *time.Time
+	NextReplyDueAt       *time.Time
+	NextReplyRemainingS  *int32
+	NextReplyMetAt       *time.Time
+	NextReplyBreachedAt  *time.Time
+	NextReplyWarnedAt    *time.Time
+	ResolutionTargetS    *int32
+	ResolutionStartedAt  *time.Time
+	ResolutionDueAt      *time.Time
+	ResolutionRemainingS *int32
+	ResolutionMetAt      *time.Time
+	ResolutionBreachedAt *time.Time
+	ResolutionWarnedAt   *time.Time
+	CreatedAt            time.Time
+	UpdatedAt            time.Time
 }
 
 type CustomField struct {
@@ -2107,6 +2142,37 @@ type Session struct {
 	LastSeenAt     time.Time
 	SsoWorkspaceID *uuid.UUID
 	SsoSettingsID  *uuid.UUID
+}
+
+type SlaOutcome struct {
+	ID             uuid.UUID
+	WorkspaceID    uuid.UUID
+	ConversationID uuid.UUID
+	InboxID        uuid.UUID
+	PolicyID       *uuid.UUID
+	Target         string
+	Outcome        string
+	At             time.Time
+	AssigneeID     *uuid.UUID
+	TeamID         *uuid.UUID
+}
+
+type SlaPolicy struct {
+	ID                uuid.UUID
+	WorkspaceID       uuid.UUID
+	Name              string
+	Position          int32
+	Enabled           bool
+	InboxIds          []uuid.UUID
+	ChannelKinds      []string
+	LabelIds          []uuid.UUID
+	Priorities        []string
+	FirstReplyMinutes *int32
+	NextReplyMinutes  *int32
+	ResolutionMinutes *int32
+	WarnMinutes       int32
+	CreatedAt         time.Time
+	UpdatedAt         time.Time
 }
 
 type SlackConnectState struct {

@@ -1,0 +1,3 @@
+{{.Inbox}} · {{if .Contact}}{{.Contact}}{{else}}Ziyaretçi{{end}}
+
+{{if eq .Target "first_reply"}}ilk yanıt{{else if eq .Target "next_reply"}}sonraki yanıt{{else}}çözüm{{end}} için SLA hedefinin süresi {{.Due}} itibarıyla doluyor

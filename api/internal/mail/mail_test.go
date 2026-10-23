@@ -68,6 +68,10 @@ func samples(inbox, text string) map[string]map[string]any {
 			"Assigned": true, "AssignedBy": "Mehmet", "URL": "https://yuva.example.com/c/1",
 			"SettingsURL": "https://yuva.example.com/settings/notifications", "Minutes": 15,
 		},
+		"sla_breached": {
+			"Inbox": inbox, "Contact": "Jane Doe", "Subject": "Invoice question", "Target": "first_reply", "Due": "2026-10-23 15:00 Europe/Istanbul",
+			"URL": "https://yuva.example.com/c/1", "SettingsURL": "https://yuva.example.com/settings/notifications",
+		},
 		"discussion_digest": {
 			"Inbox": inbox, "Title": "How do I export my data?",
 			"Answer": map[string]string{"Author": "Mehmet Kaya", "Text": "Open Settings, then Export.\nThe file arrives by e-mail."},
@@ -98,7 +102,7 @@ func samples(inbox, text string) map[string]map[string]any {
 	}
 }
 
-var htmlMails = []string{"sign_in_code", "sign_in_locked", "invite", "confirm_email", "notification", "discussion_digest", "rating_request", "list_confirm", "status_confirm", "status_notice", "list_welcome", "analytics_limit", "analytics_report", "analytics_alert", "status_monitor"}
+var htmlMails = []string{"sign_in_code", "sign_in_locked", "invite", "confirm_email", "notification", "discussion_digest", "rating_request", "list_confirm", "status_confirm", "status_notice", "list_welcome", "analytics_limit", "analytics_report", "analytics_alert", "status_monitor", "sla_breached"}
 
 // englishMails go only to the server's operator.
 var englishMails = []string{"operator_digest"}

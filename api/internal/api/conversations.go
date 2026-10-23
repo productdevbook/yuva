@@ -179,6 +179,9 @@ func (s *Server) listItems(ctx context.Context, p principal, rows []store.Conver
 	if err := fillIssues(ctx, s.st.Queries, p.workspaceID, refs...); err != nil {
 		return nil, err
 	}
+	if err := s.fillSLA(ctx, s.st.Queries, p.workspaceID, refs...); err != nil {
+		return nil, err
+	}
 	out := make([]oas.ConversationListItem, len(rows))
 	for i, r := range rows {
 		c := bodies[i]
@@ -188,7 +191,7 @@ func (s *Server) listItems(ctx context.Context, p principal, rows []store.Conver
 			LastMessageAt: c.LastMessageAt, LastActivityAt: c.LastActivityAt, CreatedAt: c.CreatedAt, UpdatedAt: c.UpdatedAt,
 			RelatedConversationId: c.RelatedConversationId, ClosedAt: c.ClosedAt, Rating: c.Rating, LastReadByContactAt: c.LastReadByContactAt, BroadcastId: c.BroadcastId,
 			Imported: c.Imported, HelpArticleId: c.HelpArticleId, Idea: c.Idea, Issues: c.Issues, Contact: contacts[r.ContactID], LastMessage: previews[r.ID], Unread: unread[r.ID], PinnedAt: pinned[r.ID],
-			TrashedAt: c.TrashedAt, TrashedBy: c.TrashedBy, DeletesAt: c.DeletesAt, Fields: c.Fields,
+			TrashedAt: c.TrashedAt, TrashedBy: c.TrashedBy, DeletesAt: c.DeletesAt, Fields: c.Fields, Sla: c.Sla,
 		}
 	}
 	return out, nil
@@ -394,7 +397,17 @@ func (s *Server) ListConversations(ctx context.Context, req oas.ListConversation
 	if err != nil {
 		return nil, err
 	}
-	at, cid, err := decodeCursor(prm.Cursor)
+	bySLA := prm.Sort != nil && *prm.Sort == oas.ListConversationsSortSlaDue
+	if prm.Sort != nil && !prm.Sort.Valid() {
+		return nil, errValidation("sort must be last_activity or sla_due")
+	}
+	var at, due *time.Time
+	var cid *uuid.UUID
+	if bySLA {
+		due, at, cid, err = decodeSLACursor(prm.Cursor)
+	} else {
+		at, cid, err = decodeCursor(prm.Cursor)
+	}
 	if err != nil {
 		return nil, err
 	}
@@ -407,6 +420,10 @@ func (s *Server) ListConversations(ctx context.Context, req oas.ListConversation
 		WorkspaceID: p.workspaceID, AllInboxes: p.seesAllInboxes(), ViewerID: p.viewerID(),
 		InboxID: prm.InboxId, ContactID: prm.ContactId, BroadcastID: prm.BroadcastId, LabelID: prm.LabelId, Q: pos, QNot: neg,
 		CursorAt: at, CursorID: cid, Lim: lim + 1, Spam: prm.Spam, Trashed: prm.Trashed != nil && *prm.Trashed,
+		BySla: bySLA, CursorDue: due, SlaNow: s.now(),
+	}
+	if arg.SlaStates, err = enumList(prm.SlaState, "sla_state must be on_track, due_soon, breached, met or paused"); err != nil {
+		return nil, err
 	}
 	if arg.Trashed {
 		if err := requireTrashManager(p); err != nil {
@@ -517,7 +534,11 @@ func (s *Server) ListConversations(ctx context.Context, req oas.ListConversation
 	var next *string
 	if len(rows) > int(lim) {
 		rows = rows[:lim]
-		c := encodeCursor(rows[lim-1].LastActivityAt, rows[lim-1].ID)
+		last := rows[lim-1]
+		c := encodeCursor(last.LastActivityAt, last.ID)
+		if bySLA {
+			c = encodeSLACursor(last.SlaDueAt, last.LastActivityAt, last.ID)
+		}
 		next = &c
 	}
 	items, err := s.listItems(ctx, p, rows)
@@ -681,6 +702,9 @@ func (s *Server) CreateConversation(ctx context.Context, req oas.CreateConversat
 	if err != nil {
 		return nil, err
 	}
+	if err := s.fillSLA(ctx, s.st.Queries, p.workspaceID, &out); err != nil {
+		return nil, err
+	}
 	return oas.CreateConversation201JSONResponse(out), nil
 }
 
@@ -692,6 +716,9 @@ func (s *Server) GetConversation(ctx context.Context, req oas.GetConversationReq
 	}
 	out, err := oneConversation(ctx, s.st.Queries, c)
 	if err != nil {
+		return nil, err
+	}
+	if err := s.fillSLA(ctx, s.st.Queries, p.workspaceID, &out); err != nil {
 		return nil, err
 	}
 	return oas.GetConversation200JSONResponse(out), nil
@@ -706,6 +733,9 @@ func (s *Server) UpdateConversation(ctx context.Context, req oas.UpdateConversat
 		return err
 	})
 	if err != nil {
+		return nil, err
+	}
+	if err := s.fillSLA(ctx, s.st.Queries, p.workspaceID, &out); err != nil {
 		return nil, err
 	}
 	return oas.UpdateConversation200JSONResponse(out), nil

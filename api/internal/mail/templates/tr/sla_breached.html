@@ -1,0 +1,4 @@
+{{template "heading" "Bir SLA hedefi kaçırıldı"}}
+<p style="margin:0 0 16px 0;"><strong>{{.Inbox}}</strong> gelen kutusunda {{if .Contact}}<strong>{{.Contact}}</strong>{{else}}bir ziyaretçi{{end}} ile{{if .Subject}} “{{.Subject}}” konulu{{end}} konuşma, son tarihi {{.Due}} olan {{if eq .Target "first_reply"}}ilk yanıt{{else if eq .Target "next_reply"}}sonraki yanıt{{else}}çözüm{{end}} SLA hedefini kaçırdı.</p>
+{{template "button" (button .URL "Konuşmayı açın")}}
+{{define "sla_breached.footer"}}Bu e-postayı, konuşma size veya ekibinize ait olduğu için alıyorsunuz. <a href="{{.SettingsURL}}" target="_blank" style="color:#71717a;text-decoration:underline;">Hangi e-postaları alacağınızı seçin</a>{{end}}

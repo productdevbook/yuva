@@ -51,6 +51,8 @@ const (
 	ChangelogSweepInterval      = time.Minute
 	RateLimitSweepInterval      = time.Minute
 	IssueSweepInterval          = 15 * time.Minute
+	SnoozeWakeInterval          = time.Minute
+	SLASweepInterval            = time.Minute
 )
 
 // StatusNoticeQueue holds the status notice jobs, so a notice about an outage never waits behind a
@@ -146,6 +148,12 @@ func New(pool *pgxpool.Pool, q *store.Queries, log *slog.Logger, broadcastWorker
 		river.NewPeriodicJob(river.PeriodicInterval(IssueSweepInterval), func() (river.JobArgs, *river.InsertOpts) {
 			return IssueSweepArgs{}, nil
 		}, &river.PeriodicJobOpts{ID: "issue_sweep", RunOnStart: true}),
+		river.NewPeriodicJob(river.PeriodicInterval(SnoozeWakeInterval), func() (river.JobArgs, *river.InsertOpts) {
+			return SnoozeWakeArgs{}, nil
+		}, &river.PeriodicJobOpts{ID: "snooze_wake", RunOnStart: true}),
+		river.NewPeriodicJob(river.PeriodicInterval(SLASweepInterval), func() (river.JobArgs, *river.InsertOpts) {
+			return SLASweepArgs{}, nil
+		}, &river.PeriodicJobOpts{ID: "sla_sweep", RunOnStart: true}),
 	}
 	if sesTenants {
 		periodic = append(periodic, river.NewPeriodicJob(river.PeriodicInterval(SESTenantStatusInterval), func() (river.JobArgs, *river.InsertOpts) {
@@ -312,6 +320,29 @@ type RateLimitSweepArgs struct{}
 func (RateLimitSweepArgs) Kind() string { return "rate_limit_sweep" }
 
 func (RateLimitSweepArgs) InsertOpts() river.InsertOpts {
+	return river.InsertOpts{UniqueOpts: river.UniqueOpts{ByArgs: true, ByState: []rivertype.JobState{
+		rivertype.JobStateAvailable, rivertype.JobStatePending, rivertype.JobStateRunning, rivertype.JobStateScheduled, rivertype.JobStateRetryable,
+	}}}
+}
+
+// SnoozeWakeArgs is worked by the api package: it reopens the snoozed conversations whose
+// snooze_until passed.
+type SnoozeWakeArgs struct{}
+
+func (SnoozeWakeArgs) Kind() string { return "snooze_wake" }
+
+func (SnoozeWakeArgs) InsertOpts() river.InsertOpts {
+	return river.InsertOpts{UniqueOpts: river.UniqueOpts{ByArgs: true, ByState: []rivertype.JobState{
+		rivertype.JobStateAvailable, rivertype.JobStatePending, rivertype.JobStateRunning, rivertype.JobStateScheduled, rivertype.JobStateRetryable,
+	}}}
+}
+
+// SLASweepArgs is worked by the api package: it breaches the SLA targets whose check job was lost.
+type SLASweepArgs struct{}
+
+func (SLASweepArgs) Kind() string { return "sla_sweep" }
+
+func (SLASweepArgs) InsertOpts() river.InsertOpts {
 	return river.InsertOpts{UniqueOpts: river.UniqueOpts{ByArgs: true, ByState: []rivertype.JobState{
 		rivertype.JobStateAvailable, rivertype.JobStatePending, rivertype.JobStateRunning, rivertype.JobStateScheduled, rivertype.JobStateRetryable,
 	}}}

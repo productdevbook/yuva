@@ -44,6 +44,8 @@ func roleNotificationDefaults(role string) oas.NotificationEvents {
 		MessageInUnassignedConversation: oas.NotificationChannels{Push: manager},
 		AssignedToMe:                    oas.NotificationChannels{Push: true, Email: true},
 		Mentioned:                       oas.NotificationChannels{Push: true, Email: true},
+		SlaWarning:                      oas.NotificationChannels{Push: true},
+		SlaBreached:                     oas.NotificationChannels{Push: true, Email: true},
 	}
 }
 
@@ -59,6 +61,8 @@ func applyNotificationEvents(base oas.NotificationEvents, u oas.NotificationEven
 	set(&base.MessageInUnassignedConversation, u.MessageInUnassignedConversation)
 	set(&base.AssignedToMe, u.AssignedToMe)
 	set(&base.Mentioned, u.Mentioned)
+	set(&base.SlaWarning, u.SlaWarning)
+	set(&base.SlaBreached, u.SlaBreached)
 	return base
 }
 
@@ -76,12 +80,14 @@ func mergeNotificationUpdates(base, u oas.NotificationEventsUpdate) oas.Notifica
 		MessageInUnassignedConversation: pick(base.MessageInUnassignedConversation, u.MessageInUnassignedConversation),
 		AssignedToMe:                    pick(base.AssignedToMe, u.AssignedToMe),
 		Mentioned:                       pick(base.Mentioned, u.Mentioned),
+		SlaWarning:                      pick(base.SlaWarning, u.SlaWarning),
+		SlaBreached:                     pick(base.SlaBreached, u.SlaBreached),
 	}
 }
 
 func emptyNotificationUpdate(u oas.NotificationEventsUpdate) bool {
 	return u.NewLiveConversation == nil && u.NewAsyncConversation == nil && u.MessageInMyConversation == nil &&
-		u.MessageInUnassignedConversation == nil && u.AssignedToMe == nil && u.Mentioned == nil
+		u.MessageInUnassignedConversation == nil && u.AssignedToMe == nil && u.Mentioned == nil && u.SlaWarning == nil && u.SlaBreached == nil
 }
 
 func notificationChannelsFor(e oas.NotificationEvents, ev notificationEvent) oas.NotificationChannels {
@@ -98,6 +104,10 @@ func notificationChannelsFor(e oas.NotificationEvents, ev notificationEvent) oas
 		return e.AssignedToMe
 	case oas.Mentioned:
 		return e.Mentioned
+	case oas.SlaWarning:
+		return e.SlaWarning
+	case oas.SlaBreached:
+		return e.SlaBreached
 	}
 	return oas.NotificationChannels{}
 }

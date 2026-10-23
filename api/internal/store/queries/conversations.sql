@@ -87,9 +87,28 @@ WHERE c.workspace_id = @workspace_id
           SELECT 1 FROM contacts ct
           WHERE ct.workspace_id = c.workspace_id AND ct.id = c.contact_id
             AND ct.search @@ websearch_to_tsquery('simple', translate(sqlc.narg(q_not)::text, 'İı', 'ii')))))
-  AND (sqlc.narg(cursor_at)::timestamptz IS NULL
-       OR (c.last_activity_at, c.id) < (sqlc.narg(cursor_at)::timestamptz, sqlc.narg(cursor_id)::uuid))
-ORDER BY c.last_activity_at DESC, c.id DESC
+  AND (sqlc.narg(sla_states)::text[] IS NULL OR EXISTS (
+      SELECT 1 FROM conversation_sla s
+      WHERE s.workspace_id = c.workspace_id AND s.conversation_id = c.id
+        AND (CASE
+            WHEN c.sla_due_at IS NOT NULL AND c.sla_due_at <= @sla_now::timestamptz THEN 'breached'
+            WHEN c.sla_due_at IS NOT NULL AND s.warn_minutes > 0
+                AND c.sla_due_at - s.warn_minutes * interval '1 minute' <= @sla_now::timestamptz THEN 'due_soon'
+            WHEN c.sla_due_at IS NOT NULL THEN 'on_track'
+            WHEN s.paused_at IS NOT NULL THEN 'paused'
+            WHEN s.first_reply_breached_at IS NOT NULL OR s.next_reply_breached_at IS NOT NULL OR s.resolution_breached_at IS NOT NULL THEN 'breached'
+            WHEN (s.first_reply_target_s IS NOT NULL AND s.first_reply_met_at IS NOT NULL)
+                OR (s.next_reply_target_s IS NOT NULL AND s.next_reply_met_at IS NOT NULL)
+                OR (s.resolution_target_s IS NOT NULL AND s.resolution_met_at IS NOT NULL) THEN 'met'
+            ELSE 'on_track' END) = ANY (sqlc.narg(sla_states)::text[])))
+  AND (sqlc.narg(cursor_at)::timestamptz IS NULL OR CASE
+      WHEN NOT @by_sla::bool THEN (c.last_activity_at, c.id) < (sqlc.narg(cursor_at)::timestamptz, sqlc.narg(cursor_id)::uuid)
+      WHEN sqlc.narg(cursor_due)::timestamptz IS NULL THEN c.sla_due_at IS NULL
+          AND (c.last_activity_at, c.id) < (sqlc.narg(cursor_at)::timestamptz, sqlc.narg(cursor_id)::uuid)
+      ELSE c.sla_due_at IS NULL OR c.sla_due_at > sqlc.narg(cursor_due)::timestamptz
+          OR (c.sla_due_at = sqlc.narg(cursor_due)::timestamptz
+              AND (c.last_activity_at, c.id) < (sqlc.narg(cursor_at)::timestamptz, sqlc.narg(cursor_id)::uuid)) END)
+ORDER BY CASE WHEN @by_sla::bool THEN c.sla_due_at END ASC NULLS LAST, c.last_activity_at DESC, c.id DESC
 LIMIT @lim;
 
 -- name: ListConversationLabels :many

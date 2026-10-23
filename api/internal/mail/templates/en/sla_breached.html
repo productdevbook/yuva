@@ -1,0 +1,4 @@
+{{template "heading" "An SLA target was missed"}}
+<p style="margin:0 0 16px 0;">The conversation with {{if .Contact}}<strong>{{.Contact}}</strong>{{else}}a visitor{{end}} in <strong>{{.Inbox}}</strong>{{if .Subject}} about “{{.Subject}}”{{end}} missed its SLA target for the {{if eq .Target "first_reply"}}first reply{{else if eq .Target "next_reply"}}next reply{{else}}resolution{{end}}, which was due at {{.Due}}.</p>
+{{template "button" (button .URL "Open the conversation")}}
+{{define "sla_breached.footer"}}You get this e-mail because the conversation is yours or your team's. <a href="{{.SettingsURL}}" target="_blank" style="color:#71717a;text-decoration:underline;">Choose which e-mails you get</a>{{end}}

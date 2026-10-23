@@ -2289,6 +2289,24 @@ func (e ConversationReadEventType) Valid() bool {
 	}
 }
 
+// Defines values for ConversationSlaEventType.
+const (
+	ConversationSlaBreachedEvent ConversationSlaEventType = "conversation.sla_breached"
+	ConversationSlaWarningEvent  ConversationSlaEventType = "conversation.sla_warning"
+)
+
+// Valid indicates whether the value is a known member of the ConversationSlaEventType enum.
+func (e ConversationSlaEventType) Valid() bool {
+	switch e {
+	case ConversationSlaBreachedEvent:
+		return true
+	case ConversationSlaWarningEvent:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for ConversationStatus.
 const (
 	ConversationStatusClosed  ConversationStatus = "closed"
@@ -5498,6 +5516,8 @@ const (
 	MessageInUnassignedConversation PushNotificationEvent = "message_in_unassigned_conversation"
 	NewAsyncConversation            PushNotificationEvent = "new_async_conversation"
 	NewLiveConversation             PushNotificationEvent = "new_live_conversation"
+	SlaBreached                     PushNotificationEvent = "sla_breached"
+	SlaWarning                      PushNotificationEvent = "sla_warning"
 	Test                            PushNotificationEvent = "test"
 )
 
@@ -5515,6 +5535,10 @@ func (e PushNotificationEvent) Valid() bool {
 	case NewAsyncConversation:
 		return true
 	case NewLiveConversation:
+		return true
+	case SlaBreached:
+		return true
+	case SlaWarning:
 		return true
 	case Test:
 		return true
@@ -5727,6 +5751,84 @@ func (e SesTenantStatusState) Valid() bool {
 	case SesTenantPending:
 		return true
 	case SesTenantReady:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for SlaState.
+const (
+	SlaStateBreached SlaState = "breached"
+	SlaStateDueSoon  SlaState = "due_soon"
+	SlaStateMet      SlaState = "met"
+	SlaStateOnTrack  SlaState = "on_track"
+	SlaStatePaused   SlaState = "paused"
+)
+
+// Valid indicates whether the value is a known member of the SlaState enum.
+func (e SlaState) Valid() bool {
+	switch e {
+	case SlaStateBreached:
+		return true
+	case SlaStateDueSoon:
+		return true
+	case SlaStateMet:
+		return true
+	case SlaStateOnTrack:
+		return true
+	case SlaStatePaused:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for SlaTargetName.
+const (
+	SlaFirstReply SlaTargetName = "first_reply"
+	SlaNextReply  SlaTargetName = "next_reply"
+	SlaResolution SlaTargetName = "resolution"
+)
+
+// Valid indicates whether the value is a known member of the SlaTargetName enum.
+func (e SlaTargetName) Valid() bool {
+	switch e {
+	case SlaFirstReply:
+		return true
+	case SlaNextReply:
+		return true
+	case SlaResolution:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for SlaTargetState.
+const (
+	SlaTargetBreached SlaTargetState = "breached"
+	SlaTargetDueSoon  SlaTargetState = "due_soon"
+	SlaTargetMet      SlaTargetState = "met"
+	SlaTargetOnTrack  SlaTargetState = "on_track"
+	SlaTargetPaused   SlaTargetState = "paused"
+	SlaTargetStopped  SlaTargetState = "stopped"
+)
+
+// Valid indicates whether the value is a known member of the SlaTargetState enum.
+func (e SlaTargetState) Valid() bool {
+	switch e {
+	case SlaTargetBreached:
+		return true
+	case SlaTargetDueSoon:
+		return true
+	case SlaTargetMet:
+		return true
+	case SlaTargetOnTrack:
+		return true
+	case SlaTargetPaused:
+		return true
+	case SlaTargetStopped:
 		return true
 	default:
 		return false
@@ -6670,6 +6772,8 @@ const (
 	WebhookEventTypeConversationDeleted       WebhookEventType = "conversation.deleted"
 	WebhookEventTypeConversationRated         WebhookEventType = "conversation.rated"
 	WebhookEventTypeConversationRestored      WebhookEventType = "conversation.restored"
+	WebhookEventTypeConversationSlaBreached   WebhookEventType = "conversation.sla_breached"
+	WebhookEventTypeConversationSlaWarning    WebhookEventType = "conversation.sla_warning"
 	WebhookEventTypeConversationTrashed       WebhookEventType = "conversation.trashed"
 	WebhookEventTypeConversationUpdated       WebhookEventType = "conversation.updated"
 	WebhookEventTypeDiscussionAnswered        WebhookEventType = "discussion.answered"
@@ -6726,6 +6830,10 @@ func (e WebhookEventType) Valid() bool {
 	case WebhookEventTypeConversationRated:
 		return true
 	case WebhookEventTypeConversationRestored:
+		return true
+	case WebhookEventTypeConversationSlaBreached:
+		return true
+	case WebhookEventTypeConversationSlaWarning:
 		return true
 	case WebhookEventTypeConversationTrashed:
 		return true
@@ -7149,6 +7257,24 @@ const (
 func (e ListConversationsParamsIdea) Valid() bool {
 	switch e {
 	case ListConversationsParamsIdeaNone:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ListConversationsParamsSort.
+const (
+	ListConversationsSortLastActivity ListConversationsParamsSort = "last_activity"
+	ListConversationsSortSlaDue       ListConversationsParamsSort = "sla_due"
+)
+
+// Valid indicates whether the value is a known member of the ListConversationsParamsSort enum.
+func (e ListConversationsParamsSort) Valid() bool {
+	switch e {
+	case ListConversationsSortLastActivity:
+		return true
+	case ListConversationsSortSlaDue:
 		return true
 	default:
 		return false
@@ -12334,7 +12460,10 @@ type Conversation struct {
 	// thread the mail named. That mail never joins the other conversation and replies here go
 	// only to this conversation's contact. Absent otherwise or when that conversation is gone.
 	RelatedConversationId *uuid.UUID `json:"related_conversation_id,omitempty"`
-	SnoozeUntil           *time.Time `json:"snooze_until,omitempty"`
+
+	// Sla The SLA policy that applies and its targets; absent when none does.
+	Sla         *ConversationSla `json:"sla,omitempty"`
+	SnoozeUntil *time.Time       `json:"snooze_until,omitempty"`
 
 	// Spam Flagged as spam, e.g. because the first e-mail failed DMARC. Spam is left out of lists
 	// and counts unless asked for, and gets no automatic reply.
@@ -12478,8 +12607,8 @@ type ConversationDeletedEvent struct {
 // ConversationDeletedEventType defines model for ConversationDeletedEvent.Type.
 type ConversationDeletedEventType string
 
-// ConversationEvent A conversation was created, or its status, snooze, assignee, priority, labels or subject
-// changed. `conversation.trashed`: it went to the trash, so drop it from every list but the
+// ConversationEvent A conversation was created, or its status, snooze, assignee, priority, labels, subject or
+// SLA (`sla`, for example when a target starts, is met or is breached) changed. `conversation.trashed`: it went to the trash, so drop it from every list but the
 // Trash view; `conversation.restored`: it came back.
 type ConversationEvent struct {
 	ConversationId uuid.UUID             `json:"conversation_id"`
@@ -12626,7 +12755,10 @@ type ConversationListItem struct {
 	// thread the mail named. That mail never joins the other conversation and replies here go
 	// only to this conversation's contact. Absent otherwise or when that conversation is gone.
 	RelatedConversationId *uuid.UUID `json:"related_conversation_id,omitempty"`
-	SnoozeUntil           *time.Time `json:"snooze_until,omitempty"`
+
+	// Sla The SLA policy that applies and its targets; absent when none does.
+	Sla         *ConversationSla `json:"sla,omitempty"`
+	SnoozeUntil *time.Time       `json:"snooze_until,omitempty"`
 
 	// Spam Flagged as spam, e.g. because the first e-mail failed DMARC. Spam is left out of lists
 	// and counts unless asked for, and gets no automatic reply.
@@ -12753,6 +12885,76 @@ type ConversationReadEvent struct {
 
 // ConversationReadEventType defines model for ConversationReadEvent.Type.
 type ConversationReadEventType string
+
+// ConversationSla defines model for ConversationSla.
+type ConversationSla struct {
+	// DueAt The earliest due time of a running target; absent when none runs. `sort=sla_due` orders by it.
+	DueAt    *time.Time `json:"due_at,omitempty"`
+	PolicyId uuid.UUID  `json:"policy_id"`
+
+	// State A conversation's SLA at a glance. `breached`: a running target is past its due time (it
+	// stays `breached` until that target is met, the conversation waits on the contact or
+	// closes). `due_soon`: the earliest running target is due within the policy's
+	// `warn_minutes`. `on_track`: it is due later, or no target has started. `paused`: nothing
+	// runs and a target waits for the conversation to be `open` again. Otherwise `breached` when
+	// any target was breached, else `met`.
+	State SlaState `json:"state"`
+
+	// Targets The targets that started, in the order first reply, next reply, resolution. Only the latest next-reply target is kept.
+	Targets []ConversationSlaTarget `json:"targets"`
+}
+
+// ConversationSlaEvent `conversation.sla_warning`: a target of the conversation is due within the policy's
+// `warn_minutes`. `conversation.sla_breached`: it passed its due time unmet. Each is sent
+// once per target; `conversation.updated` follows a breach with the new `sla`.
+type ConversationSlaEvent struct {
+	ConversationId uuid.UUID                `json:"conversation_id"`
+	CreatedAt      time.Time                `json:"created_at"`
+	Data           ConversationSlaEventData `json:"data"`
+	Id             int64                    `json:"id"`
+	InboxId        uuid.UUID                `json:"inbox_id"`
+	Type           ConversationSlaEventType `json:"type"`
+	WorkspaceId    uuid.UUID                `json:"workspace_id"`
+}
+
+// ConversationSlaEventType defines model for ConversationSlaEvent.Type.
+type ConversationSlaEventType string
+
+// ConversationSlaEventData defines model for ConversationSlaEventData.
+type ConversationSlaEventData struct {
+	Conversation Conversation `json:"conversation"`
+	DueAt        time.Time    `json:"due_at"`
+
+	// Target `first_reply`: from the contact's first message to the first public reply of a member or
+	// bot. `next_reply`: from a contact message that follows a reply to the next reply.
+	// `resolution`: from the conversation's creation to its first close.
+	Target SlaTargetName `json:"target"`
+}
+
+// ConversationSlaTarget defines model for ConversationSlaTarget.
+type ConversationSlaTarget struct {
+	BreachedAt *time.Time `json:"breached_at,omitempty"`
+
+	// DueAt While it runs.
+	DueAt *time.Time `json:"due_at,omitempty"`
+	MetAt *time.Time `json:"met_at,omitempty"`
+
+	// RemainingSeconds While it is paused, the business seconds that were left.
+	RemainingSeconds *int64    `json:"remaining_seconds,omitempty"`
+	StartedAt        time.Time `json:"started_at"`
+
+	// State One target: `on_track`, `due_soon` or `breached` while it runs, `paused` while the
+	// conversation is `pending` or `snoozed`, `met` when it was met in time, `breached` when it
+	// was not (then `met_at` is when it was met late, if it was), `stopped` when the conversation
+	// closed before a reply.
+	State SlaTargetState `json:"state"`
+
+	// Target `first_reply`: from the contact's first message to the first public reply of a member or
+	// bot. `next_reply`: from a contact message that follows a reply to the next reply.
+	// `resolution`: from the conversation's creation to its first close.
+	Target   SlaTargetName `json:"target"`
+	WarnedAt *time.Time    `json:"warned_at,omitempty"`
+}
 
 // ConversationStatus defines model for ConversationStatus.
 type ConversationStatus string
@@ -16204,6 +16406,13 @@ type InboxSenderUpdate struct {
 	Registration  nullable.Nullable[string] `json:"registration,omitempty"`
 }
 
+// InboxSlaStats defines model for InboxSlaStats.
+type InboxSlaStats struct {
+	Breached int64     `json:"breached"`
+	InboxId  uuid.UUID `json:"inbox_id"`
+	Met      int64     `json:"met"`
+}
+
 // InboxSlack defines model for InboxSlack.
 type InboxSlack struct {
 	InboxId uuid.UUID `json:"inbox_id"`
@@ -17045,6 +17254,13 @@ type MemberPresenceEvent struct {
 
 // MemberPresenceEventType defines model for MemberPresenceEvent.Type.
 type MemberPresenceEventType string
+
+// MemberSlaStats defines model for MemberSlaStats.
+type MemberSlaStats struct {
+	Breached int64     `json:"breached"`
+	MemberId uuid.UUID `json:"member_id"`
+	Met      int64     `json:"met"`
+}
 
 // MemberStats defines model for MemberStats.
 type MemberStats struct {
@@ -18723,6 +18939,8 @@ type NotificationEvents struct {
 	MessageInUnassignedConversation NotificationChannels `json:"message_in_unassigned_conversation"`
 	NewAsyncConversation            NotificationChannels `json:"new_async_conversation"`
 	NewLiveConversation             NotificationChannels `json:"new_live_conversation"`
+	SlaBreached                     NotificationChannels `json:"sla_breached"`
+	SlaWarning                      NotificationChannels `json:"sla_warning"`
 }
 
 // NotificationEventsUpdate Some events and their channels.
@@ -18733,6 +18951,8 @@ type NotificationEventsUpdate struct {
 	MessageInUnassignedConversation *NotificationChannels `json:"message_in_unassigned_conversation,omitempty"`
 	NewAsyncConversation            *NotificationChannels `json:"new_async_conversation,omitempty"`
 	NewLiveConversation             *NotificationChannels `json:"new_live_conversation,omitempty"`
+	SlaBreached                     *NotificationChannels `json:"sla_breached,omitempty"`
+	SlaWarning                      *NotificationChannels `json:"sla_warning,omitempty"`
 }
 
 // NotificationSettings defines model for NotificationSettings.
@@ -19715,6 +19935,109 @@ type SignInCodeVerify struct {
 	Email Email `json:"email"`
 }
 
+// SlaPolicy Conditions are all-of; an empty list matches anything, and within a list any entry
+// matches. A target without minutes is not tracked.
+type SlaPolicy struct {
+	// ChannelKinds Conversations without a `channel_kind` never match a non-empty list.
+	ChannelKinds []ChannelKind `json:"channel_kinds"`
+	CreatedAt    time.Time     `json:"created_at"`
+	Enabled      bool          `json:"enabled"`
+
+	// FirstReplyMinutes Business minutes for the first reply; absent when not tracked.
+	FirstReplyMinutes *int32      `json:"first_reply_minutes,omitempty"`
+	Id                uuid.UUID   `json:"id"`
+	InboxIds          []uuid.UUID `json:"inbox_ids"`
+
+	// LabelIds Matches a conversation with any of these labels.
+	LabelIds []uuid.UUID `json:"label_ids"`
+	Name     string      `json:"name"`
+
+	// NextReplyMinutes Business minutes for each next reply; absent when not tracked.
+	NextReplyMinutes *int32 `json:"next_reply_minutes,omitempty"`
+
+	// Position Its place in the order, from 0.
+	Position   int32      `json:"position"`
+	Priorities []Priority `json:"priorities"`
+
+	// ResolutionMinutes Business minutes from creation to the first close; absent when not tracked.
+	ResolutionMinutes *int32    `json:"resolution_minutes,omitempty"`
+	UpdatedAt         time.Time `json:"updated_at"`
+
+	// WarnMinutes How long before a due time `conversation.sla_warning` is sent; `0` sends none.
+	WarnMinutes int32 `json:"warn_minutes"`
+}
+
+// SlaPolicyCreate At least one of the three targets is required (`400 validation_failed`).
+type SlaPolicyCreate struct {
+	ChannelKinds      *[]ChannelKind `json:"channel_kinds,omitempty"`
+	Enabled           *bool          `json:"enabled,omitempty"`
+	FirstReplyMinutes *int32         `json:"first_reply_minutes,omitempty"`
+
+	// InboxIds Inboxes of the workspace (`400 validation_failed` otherwise).
+	InboxIds *[]uuid.UUID `json:"inbox_ids,omitempty"`
+
+	// LabelIds Labels of the workspace (`400 validation_failed` otherwise).
+	LabelIds          *[]uuid.UUID `json:"label_ids,omitempty"`
+	Name              string       `json:"name"`
+	NextReplyMinutes  *int32       `json:"next_reply_minutes,omitempty"`
+	Priorities        *[]Priority  `json:"priorities,omitempty"`
+	ResolutionMinutes *int32       `json:"resolution_minutes,omitempty"`
+	WarnMinutes       *int32       `json:"warn_minutes,omitempty"`
+}
+
+// SlaPolicyList defines model for SlaPolicyList.
+type SlaPolicyList struct {
+	Items []SlaPolicy `json:"items"`
+}
+
+// SlaPolicyOrder defines model for SlaPolicyOrder.
+type SlaPolicyOrder struct {
+	Ids []uuid.UUID `json:"ids"`
+}
+
+// SlaPolicyUpdate Only what is sent changes; `null` stops tracking a target. At least one target must remain.
+type SlaPolicyUpdate struct {
+	ChannelKinds      *[]ChannelKind           `json:"channel_kinds,omitempty"`
+	Enabled           *bool                    `json:"enabled,omitempty"`
+	FirstReplyMinutes nullable.Nullable[int32] `json:"first_reply_minutes,omitempty"`
+	InboxIds          *[]uuid.UUID             `json:"inbox_ids,omitempty"`
+	LabelIds          *[]uuid.UUID             `json:"label_ids,omitempty"`
+	Name              *string                  `json:"name,omitempty"`
+	NextReplyMinutes  nullable.Nullable[int32] `json:"next_reply_minutes,omitempty"`
+	Priorities        *[]Priority              `json:"priorities,omitempty"`
+	ResolutionMinutes nullable.Nullable[int32] `json:"resolution_minutes,omitempty"`
+	WarnMinutes       *int32                   `json:"warn_minutes,omitempty"`
+}
+
+// SlaState A conversation's SLA at a glance. `breached`: a running target is past its due time (it
+// stays `breached` until that target is met, the conversation waits on the contact or
+// closes). `due_soon`: the earliest running target is due within the policy's
+// `warn_minutes`. `on_track`: it is due later, or no target has started. `paused`: nothing
+// runs and a target waits for the conversation to be `open` again. Otherwise `breached` when
+// any target was breached, else `met`.
+type SlaState string
+
+// SlaStats SLA targets met and breached in the window, in total, per inbox and per member (the
+// conversation's assignee when the outcome happened; unassigned outcomes count only in the
+// totals and per inbox).
+type SlaStats struct {
+	Breached int64            `json:"breached"`
+	Inboxes  []InboxSlaStats  `json:"inboxes"`
+	Members  []MemberSlaStats `json:"members"`
+	Met      int64            `json:"met"`
+}
+
+// SlaTargetName `first_reply`: from the contact's first message to the first public reply of a member or
+// bot. `next_reply`: from a contact message that follows a reply to the next reply.
+// `resolution`: from the conversation's creation to its first close.
+type SlaTargetName string
+
+// SlaTargetState One target: `on_track`, `due_soon` or `breached` while it runs, `paused` while the
+// conversation is `pending` or `snoozed`, `met` when it was met in time, `breached` when it
+// was not (then `met_at` is when it was met late, if it was), `stopped` when the conversation
+// closed before a reply.
+type SlaTargetState string
+
 // SlackChannel defines model for SlackChannel.
 type SlackChannel struct {
 	Id      string `json:"id"`
@@ -20061,6 +20384,11 @@ type Stats struct {
 	// Replies Replies sent by members.
 	Replies int64     `json:"replies"`
 	Since   time.Time `json:"since"`
+
+	// Sla SLA targets met and breached in the window, in total, per inbox and per member (the
+	// conversation's assignee when the outcome happened; unassigned outcomes count only in the
+	// totals and per inbox).
+	Sla SlaStats `json:"sla"`
 
 	// Until When it was counted.
 	Until time.Time `json:"until"`
@@ -20497,7 +20825,10 @@ type StatusIncidentConversation struct {
 	// thread the mail named. That mail never joins the other conversation and replies here go
 	// only to this conversation's contact. Absent otherwise or when that conversation is gone.
 	RelatedConversationId *uuid.UUID `json:"related_conversation_id,omitempty"`
-	SnoozeUntil           *time.Time `json:"snooze_until,omitempty"`
+
+	// Sla The SLA policy that applies and its targets; absent when none does.
+	Sla         *ConversationSla `json:"sla,omitempty"`
+	SnoozeUntil *time.Time       `json:"snooze_until,omitempty"`
 
 	// Spam Flagged as spam, e.g. because the first e-mail failed DMARC. Spam is left out of lists
 	// and counts unless asked for, and gets no automatic reply.
@@ -21862,6 +22193,32 @@ type WebhookConversationPayload struct {
 	WorkspaceId uuid.UUID        `json:"workspace_id"`
 }
 
+// WebhookConversationSlaData defines model for WebhookConversationSlaData.
+type WebhookConversationSlaData struct {
+	// Contact The contact as a host backend needs it.
+	Contact      WebhookContact `json:"contact"`
+	Conversation Conversation   `json:"conversation"`
+	DueAt        time.Time      `json:"due_at"`
+
+	// Target `first_reply`: from the contact's first message to the first public reply of a member or
+	// bot. `next_reply`: from a contact message that follows a reply to the next reply.
+	// `resolution`: from the conversation's creation to its first close.
+	Target SlaTargetName `json:"target"`
+}
+
+// WebhookConversationSlaPayload defines model for WebhookConversationSlaPayload.
+type WebhookConversationSlaPayload struct {
+	Data WebhookConversationSlaData `json:"data"`
+
+	// InboxId The conversation's inbox; absent for contact events.
+	InboxId *uuid.UUID `json:"inbox_id,omitempty"`
+
+	// Timestamp When the event happened (not when it was sent).
+	Timestamp   time.Time        `json:"timestamp"`
+	Type        WebhookEventType `json:"type"`
+	WorkspaceId uuid.UUID        `json:"workspace_id"`
+}
+
 // WebhookDeletedContact defines model for WebhookDeletedContact.
 type WebhookDeletedContact struct {
 	ExternalIds []ExternalId `json:"external_ids"`
@@ -22421,6 +22778,9 @@ type RoadmapBoardId = uuid.UUID
 
 // Search defines model for Search.
 type Search = string
+
+// SlaPolicyId defines model for SlaPolicyId.
+type SlaPolicyId = uuid.UUID
 
 // SsoDomainId defines model for SsoDomainId.
 type SsoDomainId = uuid.UUID
@@ -23721,6 +24081,16 @@ type ListConversationsParams struct {
 	// without it, both. Member sessions only (`400 validation_failed` for API keys).
 	Pinned *bool `form:"pinned,omitempty" json:"pinned,omitempty"`
 
+	// Sort `last_activity` (the default): most recent activity first. `sla_due`: conversations
+	// with a running SLA target first, the earliest `sla.due_at` first (so breached ones
+	// lead), then the others by most recent activity. A cursor continues only the order it
+	// came from (`400 validation_failed` otherwise).
+	Sort *ListConversationsParamsSort `form:"sort,omitempty" json:"sort,omitempty"`
+
+	// SlaState Only conversations whose `sla.state` is one of these. Repeat the parameter or give a
+	// comma-separated list. Conversations without an SLA never match.
+	SlaState *[]SlaState `form:"sla_state,omitempty" json:"sla_state,omitempty"`
+
 	// Q Full-text search (Postgres `simple` configuration, `websearch` syntax).
 	Q *Search `form:"q,omitempty" json:"q,omitempty"`
 
@@ -23739,6 +24109,9 @@ type ListConversationsParamsTeam string
 
 // ListConversationsParamsIdea defines parameters for ListConversations.
 type ListConversationsParamsIdea string
+
+// ListConversationsParamsSort defines parameters for ListConversations.
+type ListConversationsParamsSort string
 
 // CreateConversationParams defines parameters for CreateConversation.
 type CreateConversationParams struct {
@@ -25451,6 +25824,45 @@ type PreviewRoadmapBoardParams struct {
 // PreviewRoadmapBoardParamsView defines parameters for PreviewRoadmapBoard.
 type PreviewRoadmapBoardParamsView string
 
+// ListSlaPoliciesParams defines parameters for ListSlaPolicies.
+type ListSlaPoliciesParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// CreateSlaPolicyParams defines parameters for CreateSlaPolicy.
+type CreateSlaPolicyParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// OrderSlaPoliciesParams defines parameters for OrderSlaPolicies.
+type OrderSlaPoliciesParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// DeleteSlaPolicyParams defines parameters for DeleteSlaPolicy.
+type DeleteSlaPolicyParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// GetSlaPolicyParams defines parameters for GetSlaPolicy.
+type GetSlaPolicyParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// UpdateSlaPolicyParams defines parameters for UpdateSlaPolicy.
+type UpdateSlaPolicyParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
 // DisconnectSlackParams defines parameters for DisconnectSlack.
 type DisconnectSlackParams struct {
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
@@ -26173,6 +26585,34 @@ type WebhookConversationRatedParams struct {
 
 // WebhookConversationRestoredParams defines parameters for WebhookConversationRestored.
 type WebhookConversationRestoredParams struct {
+	// WebhookId The delivery's id, the same on every retry; use it to ignore duplicates.
+	WebhookId WebhookIdHeader `json:"webhook-id"`
+
+	// WebhookTimestamp Unix seconds of this attempt. Refuse values far from your clock.
+	WebhookTimestamp WebhookTimestampHeader `json:"webhook-timestamp"`
+
+	// WebhookSignature Space-separated `v1,<base64>` signatures: HMAC-SHA256 over
+	// `<webhook-id>.<webhook-timestamp>.<body>` with the base64-decoded part of the
+	// `whsec_` secret (Standard Webhooks). Two during a secret rotation.
+	WebhookSignature WebhookSignatureHeader `json:"webhook-signature"`
+}
+
+// WebhookConversationSlaBreachedParams defines parameters for WebhookConversationSlaBreached.
+type WebhookConversationSlaBreachedParams struct {
+	// WebhookId The delivery's id, the same on every retry; use it to ignore duplicates.
+	WebhookId WebhookIdHeader `json:"webhook-id"`
+
+	// WebhookTimestamp Unix seconds of this attempt. Refuse values far from your clock.
+	WebhookTimestamp WebhookTimestampHeader `json:"webhook-timestamp"`
+
+	// WebhookSignature Space-separated `v1,<base64>` signatures: HMAC-SHA256 over
+	// `<webhook-id>.<webhook-timestamp>.<body>` with the base64-decoded part of the
+	// `whsec_` secret (Standard Webhooks). Two during a secret rotation.
+	WebhookSignature WebhookSignatureHeader `json:"webhook-signature"`
+}
+
+// WebhookConversationSlaWarningParams defines parameters for WebhookConversationSlaWarning.
+type WebhookConversationSlaWarningParams struct {
 	// WebhookId The delivery's id, the same on every retry; use it to ignore duplicates.
 	WebhookId WebhookIdHeader `json:"webhook-id"`
 
@@ -27070,6 +27510,15 @@ type CreateRoadmapBoardJSONRequestBody = RoadmapBoardCreate
 // UpdateRoadmapBoardJSONRequestBody defines body for UpdateRoadmapBoard for application/json ContentType.
 type UpdateRoadmapBoardJSONRequestBody = RoadmapBoardUpdate
 
+// CreateSlaPolicyJSONRequestBody defines body for CreateSlaPolicy for application/json ContentType.
+type CreateSlaPolicyJSONRequestBody = SlaPolicyCreate
+
+// OrderSlaPoliciesJSONRequestBody defines body for OrderSlaPolicies for application/json ContentType.
+type OrderSlaPoliciesJSONRequestBody = SlaPolicyOrder
+
+// UpdateSlaPolicyJSONRequestBody defines body for UpdateSlaPolicy for application/json ContentType.
+type UpdateSlaPolicyJSONRequestBody = SlaPolicyUpdate
+
 // UpdateSlackJSONRequestBody defines body for UpdateSlack for application/json ContentType.
 type UpdateSlackJSONRequestBody = SlackConnectionUpdate
 
@@ -27186,6 +27635,12 @@ type WebhookConversationRatedJSONRequestBody = WebhookConversationPayload
 
 // WebhookConversationRestoredJSONRequestBody defines body for WebhookConversationRestored for application/json ContentType.
 type WebhookConversationRestoredJSONRequestBody = WebhookConversationPayload
+
+// WebhookConversationSlaBreachedJSONRequestBody defines body for WebhookConversationSlaBreached for application/json ContentType.
+type WebhookConversationSlaBreachedJSONRequestBody = WebhookConversationSlaPayload
+
+// WebhookConversationSlaWarningJSONRequestBody defines body for WebhookConversationSlaWarning for application/json ContentType.
+type WebhookConversationSlaWarningJSONRequestBody = WebhookConversationSlaPayload
 
 // WebhookConversationTrashedJSONRequestBody defines body for WebhookConversationTrashed for application/json ContentType.
 type WebhookConversationTrashedJSONRequestBody = WebhookConversationPayload
@@ -29315,6 +29770,32 @@ func (t *RealtimeMessage) MergeTeamEvent(v TeamEvent) error {
 	return err
 }
 
+// AsConversationSlaEvent returns the union data inside the RealtimeMessage as a ConversationSlaEvent
+func (t RealtimeMessage) AsConversationSlaEvent() (ConversationSlaEvent, error) {
+	var body ConversationSlaEvent
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromConversationSlaEvent overwrites any union data inside the RealtimeMessage as the provided ConversationSlaEvent
+func (t *RealtimeMessage) FromConversationSlaEvent(v ConversationSlaEvent) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeConversationSlaEvent performs a merge with any union data inside the RealtimeMessage, using the provided ConversationSlaEvent
+func (t *RealtimeMessage) MergeConversationSlaEvent(v ConversationSlaEvent) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
 // AsConversationReadEvent returns the union data inside the RealtimeMessage as a ConversationReadEvent
 func (t RealtimeMessage) AsConversationReadEvent() (ConversationReadEvent, error) {
 	var body ConversationReadEvent
@@ -30275,6 +30756,10 @@ func (t RealtimeMessage) ValueByDiscriminator() (interface{}, error) {
 		return t.AsConversationReadEvent()
 	case "conversation.restored":
 		return t.AsConversationEvent()
+	case "conversation.sla_breached":
+		return t.AsConversationSlaEvent()
+	case "conversation.sla_warning":
+		return t.AsConversationSlaEvent()
 	case "conversation.trashed":
 		return t.AsConversationEvent()
 	case "conversation.updated":
@@ -30730,6 +31215,32 @@ func (t *StoredEvent) MergeTeamEvent(v TeamEvent) error {
 	return err
 }
 
+// AsConversationSlaEvent returns the union data inside the StoredEvent as a ConversationSlaEvent
+func (t StoredEvent) AsConversationSlaEvent() (ConversationSlaEvent, error) {
+	var body ConversationSlaEvent
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromConversationSlaEvent overwrites any union data inside the StoredEvent as the provided ConversationSlaEvent
+func (t *StoredEvent) FromConversationSlaEvent(v ConversationSlaEvent) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeConversationSlaEvent performs a merge with any union data inside the StoredEvent, using the provided ConversationSlaEvent
+func (t *StoredEvent) MergeConversationSlaEvent(v ConversationSlaEvent) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
 // AsConversationReadEvent returns the union data inside the StoredEvent as a ConversationReadEvent
 func (t StoredEvent) AsConversationReadEvent() (ConversationReadEvent, error) {
 	var body ConversationReadEvent
@@ -31162,6 +31673,10 @@ func (t StoredEvent) ValueByDiscriminator() (interface{}, error) {
 		return t.AsConversationReadEvent()
 	case "conversation.restored":
 		return t.AsConversationEvent()
+	case "conversation.sla_breached":
+		return t.AsConversationSlaEvent()
+	case "conversation.sla_warning":
+		return t.AsConversationSlaEvent()
 	case "conversation.trashed":
 		return t.AsConversationEvent()
 	case "conversation.updated":
@@ -35162,7 +35677,7 @@ type ClientInterface interface {
 
 	// ListConversations List conversations
 	//
-	// Most recent activity (message or note) first, in the inboxes the caller can see. `q` is a
+	// Most recent activity (message or note) first, or by SLA due time (`sort`), in the inboxes the caller can see. `q` is a
 	// full-text search over the subject, the messages and notes, and the contact; a negated term
 	// (`-word`, `-"some phrase"`) excludes every conversation in which any of those contains it.
 	// Conversations in the trash are listed only with `trashed=true`.
@@ -39507,6 +40022,110 @@ type ClientInterface interface {
 	//
 	// Corresponds with GET /v1/roadmap-boards/{boardId}/preview (the `PreviewRoadmapBoard` operationId).
 	PreviewRoadmapBoard(ctx context.Context, boardId RoadmapBoardId, params *PreviewRoadmapBoardParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListSlaPolicies List SLA policies
+	//
+	// In `position` order. `inbox_ids` lists only the inboxes the caller sees.
+	//
+	// Scope: `inboxes:read`.
+	//
+	// Corresponds with GET /v1/sla-policies (the `ListSlaPolicies` operationId).
+	ListSlaPolicies(ctx context.Context, params *ListSlaPoliciesParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateSlaPolicyWithBody Create an SLA policy
+	//
+	// Owners, admins and API keys not limited to inboxes. The policy goes last in the order. A
+	// workspace holds at most 100 policies (`403 sla_policy_limit`). It applies to a conversation
+	// without an SLA the next time it changes or gets a message, and to one with an SLA when its
+	// priority, labels or inbox change.
+	//
+	// Scope: `inboxes:manage`.
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /v1/sla-policies (the `CreateSlaPolicy` operationId).
+	CreateSlaPolicyWithBody(ctx context.Context, params *CreateSlaPolicyParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateSlaPolicy Create an SLA policy
+	//
+	// Owners, admins and API keys not limited to inboxes. The policy goes last in the order. A
+	// workspace holds at most 100 policies (`403 sla_policy_limit`). It applies to a conversation
+	// without an SLA the next time it changes or gets a message, and to one with an SLA when its
+	// priority, labels or inbox change.
+	//
+	// Scope: `inboxes:manage`.
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /v1/sla-policies (the `CreateSlaPolicy` operationId).
+	CreateSlaPolicy(ctx context.Context, params *CreateSlaPolicyParams, body CreateSlaPolicyJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// OrderSlaPoliciesWithBody Reorder SLA policies
+	//
+	// Owners, admins and API keys not limited to inboxes. `ids` names every policy of the
+	// workspace once, in the new order (`400 validation_failed` otherwise).
+	//
+	// Scope: `inboxes:manage`.
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with PUT /v1/sla-policies/order (the `OrderSlaPolicies` operationId).
+	OrderSlaPoliciesWithBody(ctx context.Context, params *OrderSlaPoliciesParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// OrderSlaPolicies Reorder SLA policies
+	//
+	// Owners, admins and API keys not limited to inboxes. `ids` names every policy of the
+	// workspace once, in the new order (`400 validation_failed` otherwise).
+	//
+	// Scope: `inboxes:manage`.
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with PUT /v1/sla-policies/order (the `OrderSlaPolicies` operationId).
+	OrderSlaPolicies(ctx context.Context, params *OrderSlaPoliciesParams, body OrderSlaPoliciesJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteSlaPolicy Delete an SLA policy
+	//
+	// Owners, admins and API keys not limited to inboxes. Conversations it applies to lose their
+	// SLA (`sla` absent) without an event; the outcomes they reached stay in `/v1/stats`.
+	//
+	// Scope: `inboxes:manage`.
+	//
+	// Corresponds with DELETE /v1/sla-policies/{slaPolicyId} (the `DeleteSlaPolicy` operationId).
+	DeleteSlaPolicy(ctx context.Context, slaPolicyId SlaPolicyId, params *DeleteSlaPolicyParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetSlaPolicy Get an SLA policy
+	//
+	// Scope: `inboxes:read`.
+	//
+	// Corresponds with GET /v1/sla-policies/{slaPolicyId} (the `GetSlaPolicy` operationId).
+	GetSlaPolicy(ctx context.Context, slaPolicyId SlaPolicyId, params *GetSlaPolicyParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateSlaPolicyWithBody Update an SLA policy
+	//
+	// Owners, admins and API keys not limited to inboxes. New minutes apply to targets that
+	// start afterwards; running targets keep their due times. Conditions apply as for a new
+	// policy.
+	//
+	// Scope: `inboxes:manage`.
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with PATCH /v1/sla-policies/{slaPolicyId} (the `UpdateSlaPolicy` operationId).
+	UpdateSlaPolicyWithBody(ctx context.Context, slaPolicyId SlaPolicyId, params *UpdateSlaPolicyParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateSlaPolicy Update an SLA policy
+	//
+	// Owners, admins and API keys not limited to inboxes. New minutes apply to targets that
+	// start afterwards; running targets keep their due times. Conditions apply as for a new
+	// policy.
+	//
+	// Scope: `inboxes:manage`.
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with PATCH /v1/sla-policies/{slaPolicyId} (the `UpdateSlaPolicy` operationId).
+	UpdateSlaPolicy(ctx context.Context, slaPolicyId SlaPolicyId, params *UpdateSlaPolicyParams, body UpdateSlaPolicyJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// DisconnectSlack Disconnect Slack
 	//
@@ -47295,7 +47914,7 @@ func (c *Client) ListContactVisits(ctx context.Context, contactId ContactId, par
 
 // ListConversations List conversations
 //
-// Most recent activity (message or note) first, in the inboxes the caller can see. `q` is a
+// Most recent activity (message or note) first, or by SLA due time (`sort`), in the inboxes the caller can see. `q` is a
 // full-text search over the subject, the messages and notes, and the contact; a negated term
 // (`-word`, `-"some phrase"`) excludes every conversation in which any of those contains it.
 // Conversations in the trash are listed only with `trashed=true`.
@@ -54611,6 +55230,200 @@ func (c *Client) UpdateRoadmapBoard(ctx context.Context, boardId RoadmapBoardId,
 // Corresponds with GET /v1/roadmap-boards/{boardId}/preview (the `PreviewRoadmapBoard` operationId).
 func (c *Client) PreviewRoadmapBoard(ctx context.Context, boardId RoadmapBoardId, params *PreviewRoadmapBoardParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewPreviewRoadmapBoardRequest(c.Server, boardId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// ListSlaPolicies List SLA policies
+//
+// In `position` order. `inbox_ids` lists only the inboxes the caller sees.
+//
+// Scope: `inboxes:read`.
+//
+// Corresponds with GET /v1/sla-policies (the `ListSlaPolicies` operationId).
+func (c *Client) ListSlaPolicies(ctx context.Context, params *ListSlaPoliciesParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListSlaPoliciesRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// CreateSlaPolicyWithBody Create an SLA policy
+//
+// Owners, admins and API keys not limited to inboxes. The policy goes last in the order. A
+// workspace holds at most 100 policies (`403 sla_policy_limit`). It applies to a conversation
+// without an SLA the next time it changes or gets a message, and to one with an SLA when its
+// priority, labels or inbox change.
+//
+// Scope: `inboxes:manage`.
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /v1/sla-policies (the `CreateSlaPolicy` operationId).
+func (c *Client) CreateSlaPolicyWithBody(ctx context.Context, params *CreateSlaPolicyParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateSlaPolicyRequestWithBody(c.Server, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// CreateSlaPolicy Create an SLA policy
+//
+// Owners, admins and API keys not limited to inboxes. The policy goes last in the order. A
+// workspace holds at most 100 policies (`403 sla_policy_limit`). It applies to a conversation
+// without an SLA the next time it changes or gets a message, and to one with an SLA when its
+// priority, labels or inbox change.
+//
+// Scope: `inboxes:manage`.
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /v1/sla-policies (the `CreateSlaPolicy` operationId).
+func (c *Client) CreateSlaPolicy(ctx context.Context, params *CreateSlaPolicyParams, body CreateSlaPolicyJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateSlaPolicyRequest(c.Server, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// OrderSlaPoliciesWithBody Reorder SLA policies
+//
+// Owners, admins and API keys not limited to inboxes. `ids` names every policy of the
+// workspace once, in the new order (`400 validation_failed` otherwise).
+//
+// Scope: `inboxes:manage`.
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with PUT /v1/sla-policies/order (the `OrderSlaPolicies` operationId).
+func (c *Client) OrderSlaPoliciesWithBody(ctx context.Context, params *OrderSlaPoliciesParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewOrderSlaPoliciesRequestWithBody(c.Server, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// OrderSlaPolicies Reorder SLA policies
+//
+// Owners, admins and API keys not limited to inboxes. `ids` names every policy of the
+// workspace once, in the new order (`400 validation_failed` otherwise).
+//
+// Scope: `inboxes:manage`.
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with PUT /v1/sla-policies/order (the `OrderSlaPolicies` operationId).
+func (c *Client) OrderSlaPolicies(ctx context.Context, params *OrderSlaPoliciesParams, body OrderSlaPoliciesJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewOrderSlaPoliciesRequest(c.Server, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// DeleteSlaPolicy Delete an SLA policy
+//
+// Owners, admins and API keys not limited to inboxes. Conversations it applies to lose their
+// SLA (`sla` absent) without an event; the outcomes they reached stay in `/v1/stats`.
+//
+// Scope: `inboxes:manage`.
+//
+// Corresponds with DELETE /v1/sla-policies/{slaPolicyId} (the `DeleteSlaPolicy` operationId).
+func (c *Client) DeleteSlaPolicy(ctx context.Context, slaPolicyId SlaPolicyId, params *DeleteSlaPolicyParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteSlaPolicyRequest(c.Server, slaPolicyId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetSlaPolicy Get an SLA policy
+//
+// Scope: `inboxes:read`.
+//
+// Corresponds with GET /v1/sla-policies/{slaPolicyId} (the `GetSlaPolicy` operationId).
+func (c *Client) GetSlaPolicy(ctx context.Context, slaPolicyId SlaPolicyId, params *GetSlaPolicyParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetSlaPolicyRequest(c.Server, slaPolicyId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// UpdateSlaPolicyWithBody Update an SLA policy
+//
+// Owners, admins and API keys not limited to inboxes. New minutes apply to targets that
+// start afterwards; running targets keep their due times. Conditions apply as for a new
+// policy.
+//
+// Scope: `inboxes:manage`.
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with PATCH /v1/sla-policies/{slaPolicyId} (the `UpdateSlaPolicy` operationId).
+func (c *Client) UpdateSlaPolicyWithBody(ctx context.Context, slaPolicyId SlaPolicyId, params *UpdateSlaPolicyParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateSlaPolicyRequestWithBody(c.Server, slaPolicyId, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// UpdateSlaPolicy Update an SLA policy
+//
+// Owners, admins and API keys not limited to inboxes. New minutes apply to targets that
+// start afterwards; running targets keep their due times. Conditions apply as for a new
+// policy.
+//
+// Scope: `inboxes:manage`.
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with PATCH /v1/sla-policies/{slaPolicyId} (the `UpdateSlaPolicy` operationId).
+func (c *Client) UpdateSlaPolicy(ctx context.Context, slaPolicyId SlaPolicyId, params *UpdateSlaPolicyParams, body UpdateSlaPolicyJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateSlaPolicyRequest(c.Server, slaPolicyId, params, body)
 	if err != nil {
 		return nil, err
 	}
@@ -68515,6 +69328,30 @@ func NewListConversationsRequest(server string, params *ListConversationsParams)
 		if params.Pinned != nil {
 
 			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "pinned", *params.Pinned, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "boolean", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Sort != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "sort", *params.Sort, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.SlaState != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "sla_state", *params.SlaState, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "array", Format: ""}); err != nil {
 				return nil, err
 			} else {
 				for _, qp := range strings.Split(queryFrag, "&") {
@@ -82570,6 +83407,329 @@ func NewPreviewRoadmapBoardRequest(server string, boardId RoadmapBoardId, params
 	return req, nil
 }
 
+// NewListSlaPoliciesRequest constructs an http.Request for the ListSlaPolicies method
+func NewListSlaPoliciesRequest(server string, params *ListSlaPoliciesParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/sla-policies")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewCreateSlaPolicyRequest calls the generic CreateSlaPolicy builder with application/json body
+func NewCreateSlaPolicyRequest(server string, params *CreateSlaPolicyParams, body CreateSlaPolicyJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateSlaPolicyRequestWithBody(server, params, "application/json", bodyReader)
+}
+
+// NewCreateSlaPolicyRequestWithBody constructs an http.Request for the CreateSlaPolicy method, with any body, and a specified content type
+func NewCreateSlaPolicyRequestWithBody(server string, params *CreateSlaPolicyParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/sla-policies")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.IdempotencyKey != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Idempotency-Key", *params.IdempotencyKey, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Idempotency-Key", headerParam0)
+		}
+
+		if params.YuvaWorkspace != nil {
+			var headerParam1 string
+
+			headerParam1, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam1)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewOrderSlaPoliciesRequest calls the generic OrderSlaPolicies builder with application/json body
+func NewOrderSlaPoliciesRequest(server string, params *OrderSlaPoliciesParams, body OrderSlaPoliciesJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewOrderSlaPoliciesRequestWithBody(server, params, "application/json", bodyReader)
+}
+
+// NewOrderSlaPoliciesRequestWithBody constructs an http.Request for the OrderSlaPolicies method, with any body, and a specified content type
+func NewOrderSlaPoliciesRequestWithBody(server string, params *OrderSlaPoliciesParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/sla-policies/order")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPut, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewDeleteSlaPolicyRequest constructs an http.Request for the DeleteSlaPolicy method
+func NewDeleteSlaPolicyRequest(server string, slaPolicyId SlaPolicyId, params *DeleteSlaPolicyParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "slaPolicyId", slaPolicyId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/sla-policies/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodDelete, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewGetSlaPolicyRequest constructs an http.Request for the GetSlaPolicy method
+func NewGetSlaPolicyRequest(server string, slaPolicyId SlaPolicyId, params *GetSlaPolicyParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "slaPolicyId", slaPolicyId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/sla-policies/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewUpdateSlaPolicyRequest calls the generic UpdateSlaPolicy builder with application/json body
+func NewUpdateSlaPolicyRequest(server string, slaPolicyId SlaPolicyId, params *UpdateSlaPolicyParams, body UpdateSlaPolicyJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateSlaPolicyRequestWithBody(server, slaPolicyId, params, "application/json", bodyReader)
+}
+
+// NewUpdateSlaPolicyRequestWithBody constructs an http.Request for the UpdateSlaPolicy method, with any body, and a specified content type
+func NewUpdateSlaPolicyRequestWithBody(server string, slaPolicyId SlaPolicyId, params *UpdateSlaPolicyParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "slaPolicyId", slaPolicyId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/sla-policies/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPatch, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
 // NewDisconnectSlackRequest constructs an http.Request for the DisconnectSlack method
 func NewDisconnectSlackRequest(server string, params *DisconnectSlackParams) (*http.Request, error) {
 	var err error
@@ -91605,7 +92765,7 @@ type ClientWithResponsesInterface interface {
 
 	// ListConversationsWithResponse List conversations
 	//
-	// Most recent activity (message or note) first, in the inboxes the caller can see. `q` is a
+	// Most recent activity (message or note) first, or by SLA due time (`sort`), in the inboxes the caller can see. `q` is a
 	// full-text search over the subject, the messages and notes, and the contact; a negated term
 	// (`-word`, `-"some phrase"`) excludes every conversation in which any of those contains it.
 	// Conversations in the trash are listed only with `trashed=true`.
@@ -96242,6 +97402,116 @@ type ClientWithResponsesInterface interface {
 	//
 	// Corresponds with GET /v1/roadmap-boards/{boardId}/preview (the `PreviewRoadmapBoard` operationId).
 	PreviewRoadmapBoardWithResponse(ctx context.Context, boardId RoadmapBoardId, params *PreviewRoadmapBoardParams, reqEditors ...RequestEditorFn) (*PreviewRoadmapBoardResponse, error)
+
+	// ListSlaPoliciesWithResponse List SLA policies
+	//
+	// In `position` order. `inbox_ids` lists only the inboxes the caller sees.
+	//
+	// Scope: `inboxes:read`.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /v1/sla-policies (the `ListSlaPolicies` operationId).
+	ListSlaPoliciesWithResponse(ctx context.Context, params *ListSlaPoliciesParams, reqEditors ...RequestEditorFn) (*ListSlaPoliciesResponse, error)
+
+	// CreateSlaPolicyWithBodyWithResponse Create an SLA policy
+	//
+	// Owners, admins and API keys not limited to inboxes. The policy goes last in the order. A
+	// workspace holds at most 100 policies (`403 sla_policy_limit`). It applies to a conversation
+	// without an SLA the next time it changes or gets a message, and to one with an SLA when its
+	// priority, labels or inbox change.
+	//
+	// Scope: `inboxes:manage`.
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /v1/sla-policies (the `CreateSlaPolicy` operationId).
+	CreateSlaPolicyWithBodyWithResponse(ctx context.Context, params *CreateSlaPolicyParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateSlaPolicyResponse, error)
+
+	// CreateSlaPolicyWithResponse Create an SLA policy
+	//
+	// Owners, admins and API keys not limited to inboxes. The policy goes last in the order. A
+	// workspace holds at most 100 policies (`403 sla_policy_limit`). It applies to a conversation
+	// without an SLA the next time it changes or gets a message, and to one with an SLA when its
+	// priority, labels or inbox change.
+	//
+	// Scope: `inboxes:manage`.
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /v1/sla-policies (the `CreateSlaPolicy` operationId).
+	CreateSlaPolicyWithResponse(ctx context.Context, params *CreateSlaPolicyParams, body CreateSlaPolicyJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateSlaPolicyResponse, error)
+
+	// OrderSlaPoliciesWithBodyWithResponse Reorder SLA policies
+	//
+	// Owners, admins and API keys not limited to inboxes. `ids` names every policy of the
+	// workspace once, in the new order (`400 validation_failed` otherwise).
+	//
+	// Scope: `inboxes:manage`.
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PUT /v1/sla-policies/order (the `OrderSlaPolicies` operationId).
+	OrderSlaPoliciesWithBodyWithResponse(ctx context.Context, params *OrderSlaPoliciesParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*OrderSlaPoliciesResponse, error)
+
+	// OrderSlaPoliciesWithResponse Reorder SLA policies
+	//
+	// Owners, admins and API keys not limited to inboxes. `ids` names every policy of the
+	// workspace once, in the new order (`400 validation_failed` otherwise).
+	//
+	// Scope: `inboxes:manage`.
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PUT /v1/sla-policies/order (the `OrderSlaPolicies` operationId).
+	OrderSlaPoliciesWithResponse(ctx context.Context, params *OrderSlaPoliciesParams, body OrderSlaPoliciesJSONRequestBody, reqEditors ...RequestEditorFn) (*OrderSlaPoliciesResponse, error)
+
+	// DeleteSlaPolicyWithResponse Delete an SLA policy
+	//
+	// Owners, admins and API keys not limited to inboxes. Conversations it applies to lose their
+	// SLA (`sla` absent) without an event; the outcomes they reached stay in `/v1/stats`.
+	//
+	// Scope: `inboxes:manage`.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with DELETE /v1/sla-policies/{slaPolicyId} (the `DeleteSlaPolicy` operationId).
+	DeleteSlaPolicyWithResponse(ctx context.Context, slaPolicyId SlaPolicyId, params *DeleteSlaPolicyParams, reqEditors ...RequestEditorFn) (*DeleteSlaPolicyResponse, error)
+
+	// GetSlaPolicyWithResponse Get an SLA policy
+	//
+	// Scope: `inboxes:read`.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /v1/sla-policies/{slaPolicyId} (the `GetSlaPolicy` operationId).
+	GetSlaPolicyWithResponse(ctx context.Context, slaPolicyId SlaPolicyId, params *GetSlaPolicyParams, reqEditors ...RequestEditorFn) (*GetSlaPolicyResponse, error)
+
+	// UpdateSlaPolicyWithBodyWithResponse Update an SLA policy
+	//
+	// Owners, admins and API keys not limited to inboxes. New minutes apply to targets that
+	// start afterwards; running targets keep their due times. Conditions apply as for a new
+	// policy.
+	//
+	// Scope: `inboxes:manage`.
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PATCH /v1/sla-policies/{slaPolicyId} (the `UpdateSlaPolicy` operationId).
+	UpdateSlaPolicyWithBodyWithResponse(ctx context.Context, slaPolicyId SlaPolicyId, params *UpdateSlaPolicyParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateSlaPolicyResponse, error)
+
+	// UpdateSlaPolicyWithResponse Update an SLA policy
+	//
+	// Owners, admins and API keys not limited to inboxes. New minutes apply to targets that
+	// start afterwards; running targets keep their due times. Conditions apply as for a new
+	// policy.
+	//
+	// Scope: `inboxes:manage`.
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PATCH /v1/sla-policies/{slaPolicyId} (the `UpdateSlaPolicy` operationId).
+	UpdateSlaPolicyWithResponse(ctx context.Context, slaPolicyId SlaPolicyId, params *UpdateSlaPolicyParams, body UpdateSlaPolicyJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateSlaPolicyResponse, error)
 
 	// DisconnectSlackWithResponse Disconnect Slack
 	//
@@ -125349,6 +126619,371 @@ func (r PreviewRoadmapBoardResponse) ContentType() string {
 	return ""
 }
 
+type ListSlaPoliciesResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *SlaPolicyList
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r ListSlaPoliciesResponse) GetJSON200() *SlaPolicyList {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r ListSlaPoliciesResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r ListSlaPoliciesResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetBody returns the raw response body bytes
+func (r ListSlaPoliciesResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r ListSlaPoliciesResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListSlaPoliciesResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ListSlaPoliciesResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type CreateSlaPolicyResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON201 the response for an HTTP 201 `application/json` response
+	JSON201 *SlaPolicy
+	// ApplicationproblemJSON400 the response for an HTTP 400 `application/problem+json` response
+	ApplicationproblemJSON400 *Problem
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+}
+
+// GetJSON201 returns the response for an HTTP 201 `application/json` response
+func (r CreateSlaPolicyResponse) GetJSON201() *SlaPolicy {
+	return r.JSON201
+}
+
+// GetApplicationproblemJSON400 returns the response for an HTTP 400 `application/problem+json` response
+func (r CreateSlaPolicyResponse) GetApplicationproblemJSON400() *Problem {
+	return r.ApplicationproblemJSON400
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r CreateSlaPolicyResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r CreateSlaPolicyResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetBody returns the raw response body bytes
+func (r CreateSlaPolicyResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r CreateSlaPolicyResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateSlaPolicyResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r CreateSlaPolicyResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type OrderSlaPoliciesResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *SlaPolicyList
+	// ApplicationproblemJSON400 the response for an HTTP 400 `application/problem+json` response
+	ApplicationproblemJSON400 *Problem
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r OrderSlaPoliciesResponse) GetJSON200() *SlaPolicyList {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON400 returns the response for an HTTP 400 `application/problem+json` response
+func (r OrderSlaPoliciesResponse) GetApplicationproblemJSON400() *Problem {
+	return r.ApplicationproblemJSON400
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r OrderSlaPoliciesResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r OrderSlaPoliciesResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetBody returns the raw response body bytes
+func (r OrderSlaPoliciesResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r OrderSlaPoliciesResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r OrderSlaPoliciesResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r OrderSlaPoliciesResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type DeleteSlaPolicyResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r DeleteSlaPolicyResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r DeleteSlaPolicyResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r DeleteSlaPolicyResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetBody returns the raw response body bytes
+func (r DeleteSlaPolicyResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteSlaPolicyResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteSlaPolicyResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r DeleteSlaPolicyResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetSlaPolicyResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *SlaPolicy
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetSlaPolicyResponse) GetJSON200() *SlaPolicy {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r GetSlaPolicyResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r GetSlaPolicyResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r GetSlaPolicyResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetBody returns the raw response body bytes
+func (r GetSlaPolicyResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetSlaPolicyResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetSlaPolicyResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetSlaPolicyResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type UpdateSlaPolicyResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *SlaPolicy
+	// ApplicationproblemJSON400 the response for an HTTP 400 `application/problem+json` response
+	ApplicationproblemJSON400 *Problem
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r UpdateSlaPolicyResponse) GetJSON200() *SlaPolicy {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON400 returns the response for an HTTP 400 `application/problem+json` response
+func (r UpdateSlaPolicyResponse) GetApplicationproblemJSON400() *Problem {
+	return r.ApplicationproblemJSON400
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r UpdateSlaPolicyResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r UpdateSlaPolicyResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r UpdateSlaPolicyResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetBody returns the raw response body bytes
+func (r UpdateSlaPolicyResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateSlaPolicyResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateSlaPolicyResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r UpdateSlaPolicyResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type DisconnectSlackResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -136050,7 +137685,7 @@ func (c *ClientWithResponses) ListContactVisitsWithResponse(ctx context.Context,
 
 // ListConversationsWithResponse List conversations
 //
-// Most recent activity (message or note) first, in the inboxes the caller can see. `q` is a
+// Most recent activity (message or note) first, or by SLA due time (`sort`), in the inboxes the caller can see. `q` is a
 // full-text search over the subject, the messages and notes, and the contact; a negated term
 // (`-word`, `-"some phrase"`) excludes every conversation in which any of those contains it.
 // Conversations in the trash are listed only with `trashed=true`.
@@ -142474,6 +144109,170 @@ func (c *ClientWithResponses) PreviewRoadmapBoardWithResponse(ctx context.Contex
 		return nil, err
 	}
 	return ParsePreviewRoadmapBoardResponse(rsp)
+}
+
+// ListSlaPoliciesWithResponse List SLA policies
+//
+// In `position` order. `inbox_ids` lists only the inboxes the caller sees.
+//
+// Scope: `inboxes:read`.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /v1/sla-policies (the `ListSlaPolicies` operationId).
+func (c *ClientWithResponses) ListSlaPoliciesWithResponse(ctx context.Context, params *ListSlaPoliciesParams, reqEditors ...RequestEditorFn) (*ListSlaPoliciesResponse, error) {
+	rsp, err := c.ListSlaPolicies(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListSlaPoliciesResponse(rsp)
+}
+
+// CreateSlaPolicyWithBodyWithResponse Create an SLA policy
+//
+// Owners, admins and API keys not limited to inboxes. The policy goes last in the order. A
+// workspace holds at most 100 policies (`403 sla_policy_limit`). It applies to a conversation
+// without an SLA the next time it changes or gets a message, and to one with an SLA when its
+// priority, labels or inbox change.
+//
+// Scope: `inboxes:manage`.
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /v1/sla-policies (the `CreateSlaPolicy` operationId).
+func (c *ClientWithResponses) CreateSlaPolicyWithBodyWithResponse(ctx context.Context, params *CreateSlaPolicyParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateSlaPolicyResponse, error) {
+	rsp, err := c.CreateSlaPolicyWithBody(ctx, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateSlaPolicyResponse(rsp)
+}
+
+// CreateSlaPolicyWithResponse Create an SLA policy
+//
+// Owners, admins and API keys not limited to inboxes. The policy goes last in the order. A
+// workspace holds at most 100 policies (`403 sla_policy_limit`). It applies to a conversation
+// without an SLA the next time it changes or gets a message, and to one with an SLA when its
+// priority, labels or inbox change.
+//
+// Scope: `inboxes:manage`.
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /v1/sla-policies (the `CreateSlaPolicy` operationId).
+func (c *ClientWithResponses) CreateSlaPolicyWithResponse(ctx context.Context, params *CreateSlaPolicyParams, body CreateSlaPolicyJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateSlaPolicyResponse, error) {
+	rsp, err := c.CreateSlaPolicy(ctx, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateSlaPolicyResponse(rsp)
+}
+
+// OrderSlaPoliciesWithBodyWithResponse Reorder SLA policies
+//
+// Owners, admins and API keys not limited to inboxes. `ids` names every policy of the
+// workspace once, in the new order (`400 validation_failed` otherwise).
+//
+// Scope: `inboxes:manage`.
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PUT /v1/sla-policies/order (the `OrderSlaPolicies` operationId).
+func (c *ClientWithResponses) OrderSlaPoliciesWithBodyWithResponse(ctx context.Context, params *OrderSlaPoliciesParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*OrderSlaPoliciesResponse, error) {
+	rsp, err := c.OrderSlaPoliciesWithBody(ctx, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseOrderSlaPoliciesResponse(rsp)
+}
+
+// OrderSlaPoliciesWithResponse Reorder SLA policies
+//
+// Owners, admins and API keys not limited to inboxes. `ids` names every policy of the
+// workspace once, in the new order (`400 validation_failed` otherwise).
+//
+// Scope: `inboxes:manage`.
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PUT /v1/sla-policies/order (the `OrderSlaPolicies` operationId).
+func (c *ClientWithResponses) OrderSlaPoliciesWithResponse(ctx context.Context, params *OrderSlaPoliciesParams, body OrderSlaPoliciesJSONRequestBody, reqEditors ...RequestEditorFn) (*OrderSlaPoliciesResponse, error) {
+	rsp, err := c.OrderSlaPolicies(ctx, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseOrderSlaPoliciesResponse(rsp)
+}
+
+// DeleteSlaPolicyWithResponse Delete an SLA policy
+//
+// Owners, admins and API keys not limited to inboxes. Conversations it applies to lose their
+// SLA (`sla` absent) without an event; the outcomes they reached stay in `/v1/stats`.
+//
+// Scope: `inboxes:manage`.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with DELETE /v1/sla-policies/{slaPolicyId} (the `DeleteSlaPolicy` operationId).
+func (c *ClientWithResponses) DeleteSlaPolicyWithResponse(ctx context.Context, slaPolicyId SlaPolicyId, params *DeleteSlaPolicyParams, reqEditors ...RequestEditorFn) (*DeleteSlaPolicyResponse, error) {
+	rsp, err := c.DeleteSlaPolicy(ctx, slaPolicyId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteSlaPolicyResponse(rsp)
+}
+
+// GetSlaPolicyWithResponse Get an SLA policy
+//
+// Scope: `inboxes:read`.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /v1/sla-policies/{slaPolicyId} (the `GetSlaPolicy` operationId).
+func (c *ClientWithResponses) GetSlaPolicyWithResponse(ctx context.Context, slaPolicyId SlaPolicyId, params *GetSlaPolicyParams, reqEditors ...RequestEditorFn) (*GetSlaPolicyResponse, error) {
+	rsp, err := c.GetSlaPolicy(ctx, slaPolicyId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetSlaPolicyResponse(rsp)
+}
+
+// UpdateSlaPolicyWithBodyWithResponse Update an SLA policy
+//
+// Owners, admins and API keys not limited to inboxes. New minutes apply to targets that
+// start afterwards; running targets keep their due times. Conditions apply as for a new
+// policy.
+//
+// Scope: `inboxes:manage`.
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PATCH /v1/sla-policies/{slaPolicyId} (the `UpdateSlaPolicy` operationId).
+func (c *ClientWithResponses) UpdateSlaPolicyWithBodyWithResponse(ctx context.Context, slaPolicyId SlaPolicyId, params *UpdateSlaPolicyParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateSlaPolicyResponse, error) {
+	rsp, err := c.UpdateSlaPolicyWithBody(ctx, slaPolicyId, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateSlaPolicyResponse(rsp)
+}
+
+// UpdateSlaPolicyWithResponse Update an SLA policy
+//
+// Owners, admins and API keys not limited to inboxes. New minutes apply to targets that
+// start afterwards; running targets keep their due times. Conditions apply as for a new
+// policy.
+//
+// Scope: `inboxes:manage`.
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PATCH /v1/sla-policies/{slaPolicyId} (the `UpdateSlaPolicy` operationId).
+func (c *ClientWithResponses) UpdateSlaPolicyWithResponse(ctx context.Context, slaPolicyId SlaPolicyId, params *UpdateSlaPolicyParams, body UpdateSlaPolicyJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateSlaPolicyResponse, error) {
+	rsp, err := c.UpdateSlaPolicy(ctx, slaPolicyId, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateSlaPolicyResponse(rsp)
 }
 
 // DisconnectSlackWithResponse Disconnect Slack
@@ -166412,6 +168211,284 @@ func ParsePreviewRoadmapBoardResponse(rsp *http.Response) (*PreviewRoadmapBoardR
 	return response, nil
 }
 
+// ParseListSlaPoliciesResponse parses an HTTP response from a ListSlaPoliciesWithResponse call
+func ParseListSlaPoliciesResponse(rsp *http.Response) (*ListSlaPoliciesResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListSlaPoliciesResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest SlaPolicyList
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreateSlaPolicyResponse parses an HTTP response from a CreateSlaPolicyWithResponse call
+func ParseCreateSlaPolicyResponse(rsp *http.Response) (*CreateSlaPolicyResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateSlaPolicyResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
+		var dest SlaPolicy
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON201 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseOrderSlaPoliciesResponse parses an HTTP response from a OrderSlaPoliciesWithResponse call
+func ParseOrderSlaPoliciesResponse(rsp *http.Response) (*OrderSlaPoliciesResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &OrderSlaPoliciesResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest SlaPolicyList
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteSlaPolicyResponse parses an HTTP response from a DeleteSlaPolicyWithResponse call
+func ParseDeleteSlaPolicyResponse(rsp *http.Response) (*DeleteSlaPolicyResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteSlaPolicyResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case rsp.StatusCode == 204:
+		break // No content-type
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetSlaPolicyResponse parses an HTTP response from a GetSlaPolicyWithResponse call
+func ParseGetSlaPolicyResponse(rsp *http.Response) (*GetSlaPolicyResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetSlaPolicyResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest SlaPolicy
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateSlaPolicyResponse parses an HTTP response from a UpdateSlaPolicyWithResponse call
+func ParseUpdateSlaPolicyResponse(rsp *http.Response) (*UpdateSlaPolicyResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateSlaPolicyResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest SlaPolicy
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseDisconnectSlackResponse parses an HTTP response from a DisconnectSlackWithResponse call
 func ParseDisconnectSlackResponse(rsp *http.Response) (*DisconnectSlackResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -170520,6 +172597,16 @@ type WebhookInitiatorInterface interface {
 
 	WebhookConversationRestored(ctx context.Context, targetURL string, params *WebhookConversationRestoredParams, body WebhookConversationRestoredJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// WebhookConversationSlaBreachedWithBody fires the conversation.sla_breached webhook with any body
+	WebhookConversationSlaBreachedWithBody(ctx context.Context, targetURL string, params *WebhookConversationSlaBreachedParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	WebhookConversationSlaBreached(ctx context.Context, targetURL string, params *WebhookConversationSlaBreachedParams, body WebhookConversationSlaBreachedJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// WebhookConversationSlaWarningWithBody fires the conversation.sla_warning webhook with any body
+	WebhookConversationSlaWarningWithBody(ctx context.Context, targetURL string, params *WebhookConversationSlaWarningParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	WebhookConversationSlaWarning(ctx context.Context, targetURL string, params *WebhookConversationSlaWarningParams, body WebhookConversationSlaWarningJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// WebhookConversationTrashedWithBody fires the conversation.trashed webhook with any body
 	WebhookConversationTrashedWithBody(ctx context.Context, targetURL string, params *WebhookConversationTrashedParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -170925,6 +173012,54 @@ func (p *WebhookInitiator) WebhookConversationRestoredWithBody(ctx context.Conte
 
 func (p *WebhookInitiator) WebhookConversationRestored(ctx context.Context, targetURL string, params *WebhookConversationRestoredParams, body WebhookConversationRestoredJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewWebhookConversationRestoredWebhookRequest(targetURL, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := p.applyWebhookEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return p.Client.Do(req)
+}
+
+func (p *WebhookInitiator) WebhookConversationSlaBreachedWithBody(ctx context.Context, targetURL string, params *WebhookConversationSlaBreachedParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewWebhookConversationSlaBreachedWebhookRequestWithBody(targetURL, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := p.applyWebhookEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return p.Client.Do(req)
+}
+
+func (p *WebhookInitiator) WebhookConversationSlaBreached(ctx context.Context, targetURL string, params *WebhookConversationSlaBreachedParams, body WebhookConversationSlaBreachedJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewWebhookConversationSlaBreachedWebhookRequest(targetURL, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := p.applyWebhookEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return p.Client.Do(req)
+}
+
+func (p *WebhookInitiator) WebhookConversationSlaWarningWithBody(ctx context.Context, targetURL string, params *WebhookConversationSlaWarningParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewWebhookConversationSlaWarningWebhookRequestWithBody(targetURL, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := p.applyWebhookEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return p.Client.Do(req)
+}
+
+func (p *WebhookInitiator) WebhookConversationSlaWarning(ctx context.Context, targetURL string, params *WebhookConversationSlaWarningParams, body WebhookConversationSlaWarningJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewWebhookConversationSlaWarningWebhookRequest(targetURL, params, body)
 	if err != nil {
 		return nil, err
 	}
@@ -172278,6 +174413,128 @@ func NewWebhookConversationRestoredWebhookRequest(targetURL string, params *Webh
 
 // NewWebhookConversationRestoredWebhookRequestWithBody builds a POST request for the conversation.restored webhook with any body
 func NewWebhookConversationRestoredWebhookRequestWithBody(targetURL string, params *WebhookConversationRestoredParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+	_ = err
+
+	reqURL, err := url.Parse(targetURL)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, reqURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		var headerParam0 string
+
+		headerParam0, err = runtime.StyleParamWithOptions("simple", false, "webhook-id", params.WebhookId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+		if err != nil {
+			return nil, err
+		}
+
+		req.Header.Set("webhook-id", headerParam0)
+
+		var headerParam1 string
+
+		headerParam1, err = runtime.StyleParamWithOptions("simple", false, "webhook-timestamp", params.WebhookTimestamp, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+		if err != nil {
+			return nil, err
+		}
+
+		req.Header.Set("webhook-timestamp", headerParam1)
+
+		var headerParam2 string
+
+		headerParam2, err = runtime.StyleParamWithOptions("simple", false, "webhook-signature", params.WebhookSignature, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+		if err != nil {
+			return nil, err
+		}
+
+		req.Header.Set("webhook-signature", headerParam2)
+
+	}
+	return req, nil
+}
+
+// NewWebhookConversationSlaBreachedWebhookRequest builds a application/json POST request for the conversation.sla_breached webhook
+func NewWebhookConversationSlaBreachedWebhookRequest(targetURL string, params *WebhookConversationSlaBreachedParams, body WebhookConversationSlaBreachedJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewWebhookConversationSlaBreachedWebhookRequestWithBody(targetURL, params, "application/json", bodyReader)
+}
+
+// NewWebhookConversationSlaBreachedWebhookRequestWithBody builds a POST request for the conversation.sla_breached webhook with any body
+func NewWebhookConversationSlaBreachedWebhookRequestWithBody(targetURL string, params *WebhookConversationSlaBreachedParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+	_ = err
+
+	reqURL, err := url.Parse(targetURL)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, reqURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		var headerParam0 string
+
+		headerParam0, err = runtime.StyleParamWithOptions("simple", false, "webhook-id", params.WebhookId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+		if err != nil {
+			return nil, err
+		}
+
+		req.Header.Set("webhook-id", headerParam0)
+
+		var headerParam1 string
+
+		headerParam1, err = runtime.StyleParamWithOptions("simple", false, "webhook-timestamp", params.WebhookTimestamp, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+		if err != nil {
+			return nil, err
+		}
+
+		req.Header.Set("webhook-timestamp", headerParam1)
+
+		var headerParam2 string
+
+		headerParam2, err = runtime.StyleParamWithOptions("simple", false, "webhook-signature", params.WebhookSignature, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+		if err != nil {
+			return nil, err
+		}
+
+		req.Header.Set("webhook-signature", headerParam2)
+
+	}
+	return req, nil
+}
+
+// NewWebhookConversationSlaWarningWebhookRequest builds a application/json POST request for the conversation.sla_warning webhook
+func NewWebhookConversationSlaWarningWebhookRequest(targetURL string, params *WebhookConversationSlaWarningParams, body WebhookConversationSlaWarningJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewWebhookConversationSlaWarningWebhookRequestWithBody(targetURL, params, "application/json", bodyReader)
+}
+
+// NewWebhookConversationSlaWarningWebhookRequestWithBody builds a POST request for the conversation.sla_warning webhook with any body
+func NewWebhookConversationSlaWarningWebhookRequestWithBody(targetURL string, params *WebhookConversationSlaWarningParams, contentType string, body io.Reader) (*http.Request, error) {
 	var err error
 	_ = err
 

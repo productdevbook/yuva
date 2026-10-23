@@ -121,6 +121,8 @@ func defineTool[In, Out any](name, title, description string, ann mcp.ToolAnnota
 
 var conversationStatuses = []any{"open", "pending", "snoozed", "closed"}
 
+var slaStates = []any{"on_track", "due_soon", "breached", "met", "paused"}
+
 type mcpPage[T any] struct {
 	Items      []T    `json:"items"`
 	NextCursor string `json:"next_cursor,omitempty" jsonschema:"pass as cursor to get the next page"`
@@ -135,6 +137,8 @@ type searchConversationsIn struct {
 	LabelID   *uuid.UUID        `json:"label_id,omitempty"`
 	ContactID *uuid.UUID        `json:"contact_id,omitempty"`
 	Spam      bool              `json:"spam,omitempty" jsonschema:"true lists only conversations flagged as spam"`
+	SLAState  string            `json:"sla_state,omitempty" jsonschema:"only conversations whose SLA is in this state"`
+	Sort      string            `json:"sort,omitempty" jsonschema:"last_activity (the default) or sla_due: the earliest SLA due time first, breached ones leading"`
 	Fields    map[string]string `json:"fields,omitempty" jsonschema:"custom field key from list_custom_fields to the exact value it must hold (a number, true or false, or the text); all must match"`
 	Cursor    string            `json:"cursor,omitempty"`
 	Limit     int32             `json:"limit,omitempty" jsonschema:"1 to 100, default 25"`
@@ -525,11 +529,12 @@ func mayDeliver(p principal) bool { return !(p.deliversAsBot() && !p.botsMaySend
 var mcpTools = append([]mcpTool{
 	defineTool("search_conversations", "Search conversations",
 		"Lists conversations in the inboxes you can see, most recent activity first, with filters and full-text search. Maps to GET /v1/conversations.",
-		readOnly, map[string][]any{"status": conversationStatuses}, mcpTool{ops: []string{"ListConversations"}},
+		readOnly, map[string][]any{"status": conversationStatuses, "sla_state": slaStates, "sort": {"last_activity", "sla_due"}}, mcpTool{ops: []string{"ListConversations"}},
 		func(ctx context.Context, c *mcpCall, in searchConversationsIn) (mcpPage[mcpConversation], error) {
 			params := oas.ListConversationsParams{
 				InboxId: in.InboxID, ContactId: in.ContactID, LabelId: in.LabelID, Status: optList(optString[oas.ConversationStatus](in.Status)),
 				Assignee: optString[string](in.Assignee), TeamId: in.TeamID, Q: optString[string](in.Query), Cursor: optString[string](in.Cursor), Limit: optLimit(in.Limit),
+				SlaState: optList(optString[oas.SlaState](in.SLAState)), Sort: optString[oas.ListConversationsParamsSort](in.Sort),
 			}
 			if in.Spam {
 				params.Spam = &in.Spam

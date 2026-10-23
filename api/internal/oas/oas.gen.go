@@ -2291,6 +2291,24 @@ func (e ConversationReadEventType) Valid() bool {
 	}
 }
 
+// Defines values for ConversationSlaEventType.
+const (
+	ConversationSlaBreachedEvent ConversationSlaEventType = "conversation.sla_breached"
+	ConversationSlaWarningEvent  ConversationSlaEventType = "conversation.sla_warning"
+)
+
+// Valid indicates whether the value is a known member of the ConversationSlaEventType enum.
+func (e ConversationSlaEventType) Valid() bool {
+	switch e {
+	case ConversationSlaBreachedEvent:
+		return true
+	case ConversationSlaWarningEvent:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for ConversationStatus.
 const (
 	ConversationStatusClosed  ConversationStatus = "closed"
@@ -5500,6 +5518,8 @@ const (
 	MessageInUnassignedConversation PushNotificationEvent = "message_in_unassigned_conversation"
 	NewAsyncConversation            PushNotificationEvent = "new_async_conversation"
 	NewLiveConversation             PushNotificationEvent = "new_live_conversation"
+	SlaBreached                     PushNotificationEvent = "sla_breached"
+	SlaWarning                      PushNotificationEvent = "sla_warning"
 	Test                            PushNotificationEvent = "test"
 )
 
@@ -5517,6 +5537,10 @@ func (e PushNotificationEvent) Valid() bool {
 	case NewAsyncConversation:
 		return true
 	case NewLiveConversation:
+		return true
+	case SlaBreached:
+		return true
+	case SlaWarning:
 		return true
 	case Test:
 		return true
@@ -5729,6 +5753,84 @@ func (e SesTenantStatusState) Valid() bool {
 	case SesTenantPending:
 		return true
 	case SesTenantReady:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for SlaState.
+const (
+	SlaStateBreached SlaState = "breached"
+	SlaStateDueSoon  SlaState = "due_soon"
+	SlaStateMet      SlaState = "met"
+	SlaStateOnTrack  SlaState = "on_track"
+	SlaStatePaused   SlaState = "paused"
+)
+
+// Valid indicates whether the value is a known member of the SlaState enum.
+func (e SlaState) Valid() bool {
+	switch e {
+	case SlaStateBreached:
+		return true
+	case SlaStateDueSoon:
+		return true
+	case SlaStateMet:
+		return true
+	case SlaStateOnTrack:
+		return true
+	case SlaStatePaused:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for SlaTargetName.
+const (
+	SlaFirstReply SlaTargetName = "first_reply"
+	SlaNextReply  SlaTargetName = "next_reply"
+	SlaResolution SlaTargetName = "resolution"
+)
+
+// Valid indicates whether the value is a known member of the SlaTargetName enum.
+func (e SlaTargetName) Valid() bool {
+	switch e {
+	case SlaFirstReply:
+		return true
+	case SlaNextReply:
+		return true
+	case SlaResolution:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for SlaTargetState.
+const (
+	SlaTargetBreached SlaTargetState = "breached"
+	SlaTargetDueSoon  SlaTargetState = "due_soon"
+	SlaTargetMet      SlaTargetState = "met"
+	SlaTargetOnTrack  SlaTargetState = "on_track"
+	SlaTargetPaused   SlaTargetState = "paused"
+	SlaTargetStopped  SlaTargetState = "stopped"
+)
+
+// Valid indicates whether the value is a known member of the SlaTargetState enum.
+func (e SlaTargetState) Valid() bool {
+	switch e {
+	case SlaTargetBreached:
+		return true
+	case SlaTargetDueSoon:
+		return true
+	case SlaTargetMet:
+		return true
+	case SlaTargetOnTrack:
+		return true
+	case SlaTargetPaused:
+		return true
+	case SlaTargetStopped:
 		return true
 	default:
 		return false
@@ -6672,6 +6774,8 @@ const (
 	WebhookEventTypeConversationDeleted       WebhookEventType = "conversation.deleted"
 	WebhookEventTypeConversationRated         WebhookEventType = "conversation.rated"
 	WebhookEventTypeConversationRestored      WebhookEventType = "conversation.restored"
+	WebhookEventTypeConversationSlaBreached   WebhookEventType = "conversation.sla_breached"
+	WebhookEventTypeConversationSlaWarning    WebhookEventType = "conversation.sla_warning"
 	WebhookEventTypeConversationTrashed       WebhookEventType = "conversation.trashed"
 	WebhookEventTypeConversationUpdated       WebhookEventType = "conversation.updated"
 	WebhookEventTypeDiscussionAnswered        WebhookEventType = "discussion.answered"
@@ -6728,6 +6832,10 @@ func (e WebhookEventType) Valid() bool {
 	case WebhookEventTypeConversationRated:
 		return true
 	case WebhookEventTypeConversationRestored:
+		return true
+	case WebhookEventTypeConversationSlaBreached:
+		return true
+	case WebhookEventTypeConversationSlaWarning:
 		return true
 	case WebhookEventTypeConversationTrashed:
 		return true
@@ -7103,6 +7211,24 @@ const (
 func (e ListConversationsParamsIdea) Valid() bool {
 	switch e {
 	case ListConversationsParamsIdeaNone:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ListConversationsParamsSort.
+const (
+	ListConversationsSortLastActivity ListConversationsParamsSort = "last_activity"
+	ListConversationsSortSlaDue       ListConversationsParamsSort = "sla_due"
+)
+
+// Valid indicates whether the value is a known member of the ListConversationsParamsSort enum.
+func (e ListConversationsParamsSort) Valid() bool {
+	switch e {
+	case ListConversationsSortLastActivity:
+		return true
+	case ListConversationsSortSlaDue:
 		return true
 	default:
 		return false
@@ -12288,7 +12414,10 @@ type Conversation struct {
 	// thread the mail named. That mail never joins the other conversation and replies here go
 	// only to this conversation's contact. Absent otherwise or when that conversation is gone.
 	RelatedConversationId *uuid.UUID `json:"related_conversation_id,omitempty"`
-	SnoozeUntil           *time.Time `json:"snooze_until,omitempty"`
+
+	// Sla The SLA policy that applies and its targets; absent when none does.
+	Sla         *ConversationSla `json:"sla,omitempty"`
+	SnoozeUntil *time.Time       `json:"snooze_until,omitempty"`
 
 	// Spam Flagged as spam, e.g. because the first e-mail failed DMARC. Spam is left out of lists
 	// and counts unless asked for, and gets no automatic reply.
@@ -12432,8 +12561,8 @@ type ConversationDeletedEvent struct {
 // ConversationDeletedEventType defines model for ConversationDeletedEvent.Type.
 type ConversationDeletedEventType string
 
-// ConversationEvent A conversation was created, or its status, snooze, assignee, priority, labels or subject
-// changed. `conversation.trashed`: it went to the trash, so drop it from every list but the
+// ConversationEvent A conversation was created, or its status, snooze, assignee, priority, labels, subject or
+// SLA (`sla`, for example when a target starts, is met or is breached) changed. `conversation.trashed`: it went to the trash, so drop it from every list but the
 // Trash view; `conversation.restored`: it came back.
 type ConversationEvent struct {
 	ConversationId uuid.UUID             `json:"conversation_id"`
@@ -12580,7 +12709,10 @@ type ConversationListItem struct {
 	// thread the mail named. That mail never joins the other conversation and replies here go
 	// only to this conversation's contact. Absent otherwise or when that conversation is gone.
 	RelatedConversationId *uuid.UUID `json:"related_conversation_id,omitempty"`
-	SnoozeUntil           *time.Time `json:"snooze_until,omitempty"`
+
+	// Sla The SLA policy that applies and its targets; absent when none does.
+	Sla         *ConversationSla `json:"sla,omitempty"`
+	SnoozeUntil *time.Time       `json:"snooze_until,omitempty"`
 
 	// Spam Flagged as spam, e.g. because the first e-mail failed DMARC. Spam is left out of lists
 	// and counts unless asked for, and gets no automatic reply.
@@ -12707,6 +12839,76 @@ type ConversationReadEvent struct {
 
 // ConversationReadEventType defines model for ConversationReadEvent.Type.
 type ConversationReadEventType string
+
+// ConversationSla defines model for ConversationSla.
+type ConversationSla struct {
+	// DueAt The earliest due time of a running target; absent when none runs. `sort=sla_due` orders by it.
+	DueAt    *time.Time `json:"due_at,omitempty"`
+	PolicyId uuid.UUID  `json:"policy_id"`
+
+	// State A conversation's SLA at a glance. `breached`: a running target is past its due time (it
+	// stays `breached` until that target is met, the conversation waits on the contact or
+	// closes). `due_soon`: the earliest running target is due within the policy's
+	// `warn_minutes`. `on_track`: it is due later, or no target has started. `paused`: nothing
+	// runs and a target waits for the conversation to be `open` again. Otherwise `breached` when
+	// any target was breached, else `met`.
+	State SlaState `json:"state"`
+
+	// Targets The targets that started, in the order first reply, next reply, resolution. Only the latest next-reply target is kept.
+	Targets []ConversationSlaTarget `json:"targets"`
+}
+
+// ConversationSlaEvent `conversation.sla_warning`: a target of the conversation is due within the policy's
+// `warn_minutes`. `conversation.sla_breached`: it passed its due time unmet. Each is sent
+// once per target; `conversation.updated` follows a breach with the new `sla`.
+type ConversationSlaEvent struct {
+	ConversationId uuid.UUID                `json:"conversation_id"`
+	CreatedAt      time.Time                `json:"created_at"`
+	Data           ConversationSlaEventData `json:"data"`
+	Id             int64                    `json:"id"`
+	InboxId        uuid.UUID                `json:"inbox_id"`
+	Type           ConversationSlaEventType `json:"type"`
+	WorkspaceId    uuid.UUID                `json:"workspace_id"`
+}
+
+// ConversationSlaEventType defines model for ConversationSlaEvent.Type.
+type ConversationSlaEventType string
+
+// ConversationSlaEventData defines model for ConversationSlaEventData.
+type ConversationSlaEventData struct {
+	Conversation Conversation `json:"conversation"`
+	DueAt        time.Time    `json:"due_at"`
+
+	// Target `first_reply`: from the contact's first message to the first public reply of a member or
+	// bot. `next_reply`: from a contact message that follows a reply to the next reply.
+	// `resolution`: from the conversation's creation to its first close.
+	Target SlaTargetName `json:"target"`
+}
+
+// ConversationSlaTarget defines model for ConversationSlaTarget.
+type ConversationSlaTarget struct {
+	BreachedAt *time.Time `json:"breached_at,omitempty"`
+
+	// DueAt While it runs.
+	DueAt *time.Time `json:"due_at,omitempty"`
+	MetAt *time.Time `json:"met_at,omitempty"`
+
+	// RemainingSeconds While it is paused, the business seconds that were left.
+	RemainingSeconds *int64    `json:"remaining_seconds,omitempty"`
+	StartedAt        time.Time `json:"started_at"`
+
+	// State One target: `on_track`, `due_soon` or `breached` while it runs, `paused` while the
+	// conversation is `pending` or `snoozed`, `met` when it was met in time, `breached` when it
+	// was not (then `met_at` is when it was met late, if it was), `stopped` when the conversation
+	// closed before a reply.
+	State SlaTargetState `json:"state"`
+
+	// Target `first_reply`: from the contact's first message to the first public reply of a member or
+	// bot. `next_reply`: from a contact message that follows a reply to the next reply.
+	// `resolution`: from the conversation's creation to its first close.
+	Target   SlaTargetName `json:"target"`
+	WarnedAt *time.Time    `json:"warned_at,omitempty"`
+}
 
 // ConversationStatus defines model for ConversationStatus.
 type ConversationStatus string
@@ -16158,6 +16360,13 @@ type InboxSenderUpdate struct {
 	Registration  nullable.Nullable[string] `json:"registration,omitempty"`
 }
 
+// InboxSlaStats defines model for InboxSlaStats.
+type InboxSlaStats struct {
+	Breached int64     `json:"breached"`
+	InboxId  uuid.UUID `json:"inbox_id"`
+	Met      int64     `json:"met"`
+}
+
 // InboxSlack defines model for InboxSlack.
 type InboxSlack struct {
 	InboxId uuid.UUID `json:"inbox_id"`
@@ -16999,6 +17208,13 @@ type MemberPresenceEvent struct {
 
 // MemberPresenceEventType defines model for MemberPresenceEvent.Type.
 type MemberPresenceEventType string
+
+// MemberSlaStats defines model for MemberSlaStats.
+type MemberSlaStats struct {
+	Breached int64     `json:"breached"`
+	MemberId uuid.UUID `json:"member_id"`
+	Met      int64     `json:"met"`
+}
 
 // MemberStats defines model for MemberStats.
 type MemberStats struct {
@@ -18677,6 +18893,8 @@ type NotificationEvents struct {
 	MessageInUnassignedConversation NotificationChannels `json:"message_in_unassigned_conversation"`
 	NewAsyncConversation            NotificationChannels `json:"new_async_conversation"`
 	NewLiveConversation             NotificationChannels `json:"new_live_conversation"`
+	SlaBreached                     NotificationChannels `json:"sla_breached"`
+	SlaWarning                      NotificationChannels `json:"sla_warning"`
 }
 
 // NotificationEventsUpdate Some events and their channels.
@@ -18687,6 +18905,8 @@ type NotificationEventsUpdate struct {
 	MessageInUnassignedConversation *NotificationChannels `json:"message_in_unassigned_conversation,omitempty"`
 	NewAsyncConversation            *NotificationChannels `json:"new_async_conversation,omitempty"`
 	NewLiveConversation             *NotificationChannels `json:"new_live_conversation,omitempty"`
+	SlaBreached                     *NotificationChannels `json:"sla_breached,omitempty"`
+	SlaWarning                      *NotificationChannels `json:"sla_warning,omitempty"`
 }
 
 // NotificationSettings defines model for NotificationSettings.
@@ -19669,6 +19889,109 @@ type SignInCodeVerify struct {
 	Email Email `json:"email"`
 }
 
+// SlaPolicy Conditions are all-of; an empty list matches anything, and within a list any entry
+// matches. A target without minutes is not tracked.
+type SlaPolicy struct {
+	// ChannelKinds Conversations without a `channel_kind` never match a non-empty list.
+	ChannelKinds []ChannelKind `json:"channel_kinds"`
+	CreatedAt    time.Time     `json:"created_at"`
+	Enabled      bool          `json:"enabled"`
+
+	// FirstReplyMinutes Business minutes for the first reply; absent when not tracked.
+	FirstReplyMinutes *int32      `json:"first_reply_minutes,omitempty"`
+	Id                uuid.UUID   `json:"id"`
+	InboxIds          []uuid.UUID `json:"inbox_ids"`
+
+	// LabelIds Matches a conversation with any of these labels.
+	LabelIds []uuid.UUID `json:"label_ids"`
+	Name     string      `json:"name"`
+
+	// NextReplyMinutes Business minutes for each next reply; absent when not tracked.
+	NextReplyMinutes *int32 `json:"next_reply_minutes,omitempty"`
+
+	// Position Its place in the order, from 0.
+	Position   int32      `json:"position"`
+	Priorities []Priority `json:"priorities"`
+
+	// ResolutionMinutes Business minutes from creation to the first close; absent when not tracked.
+	ResolutionMinutes *int32    `json:"resolution_minutes,omitempty"`
+	UpdatedAt         time.Time `json:"updated_at"`
+
+	// WarnMinutes How long before a due time `conversation.sla_warning` is sent; `0` sends none.
+	WarnMinutes int32 `json:"warn_minutes"`
+}
+
+// SlaPolicyCreate At least one of the three targets is required (`400 validation_failed`).
+type SlaPolicyCreate struct {
+	ChannelKinds      *[]ChannelKind `json:"channel_kinds,omitempty"`
+	Enabled           *bool          `json:"enabled,omitempty"`
+	FirstReplyMinutes *int32         `json:"first_reply_minutes,omitempty"`
+
+	// InboxIds Inboxes of the workspace (`400 validation_failed` otherwise).
+	InboxIds *[]uuid.UUID `json:"inbox_ids,omitempty"`
+
+	// LabelIds Labels of the workspace (`400 validation_failed` otherwise).
+	LabelIds          *[]uuid.UUID `json:"label_ids,omitempty"`
+	Name              string       `json:"name"`
+	NextReplyMinutes  *int32       `json:"next_reply_minutes,omitempty"`
+	Priorities        *[]Priority  `json:"priorities,omitempty"`
+	ResolutionMinutes *int32       `json:"resolution_minutes,omitempty"`
+	WarnMinutes       *int32       `json:"warn_minutes,omitempty"`
+}
+
+// SlaPolicyList defines model for SlaPolicyList.
+type SlaPolicyList struct {
+	Items []SlaPolicy `json:"items"`
+}
+
+// SlaPolicyOrder defines model for SlaPolicyOrder.
+type SlaPolicyOrder struct {
+	Ids []uuid.UUID `json:"ids"`
+}
+
+// SlaPolicyUpdate Only what is sent changes; `null` stops tracking a target. At least one target must remain.
+type SlaPolicyUpdate struct {
+	ChannelKinds      *[]ChannelKind           `json:"channel_kinds,omitempty"`
+	Enabled           *bool                    `json:"enabled,omitempty"`
+	FirstReplyMinutes nullable.Nullable[int32] `json:"first_reply_minutes,omitempty"`
+	InboxIds          *[]uuid.UUID             `json:"inbox_ids,omitempty"`
+	LabelIds          *[]uuid.UUID             `json:"label_ids,omitempty"`
+	Name              *string                  `json:"name,omitempty"`
+	NextReplyMinutes  nullable.Nullable[int32] `json:"next_reply_minutes,omitempty"`
+	Priorities        *[]Priority              `json:"priorities,omitempty"`
+	ResolutionMinutes nullable.Nullable[int32] `json:"resolution_minutes,omitempty"`
+	WarnMinutes       *int32                   `json:"warn_minutes,omitempty"`
+}
+
+// SlaState A conversation's SLA at a glance. `breached`: a running target is past its due time (it
+// stays `breached` until that target is met, the conversation waits on the contact or
+// closes). `due_soon`: the earliest running target is due within the policy's
+// `warn_minutes`. `on_track`: it is due later, or no target has started. `paused`: nothing
+// runs and a target waits for the conversation to be `open` again. Otherwise `breached` when
+// any target was breached, else `met`.
+type SlaState string
+
+// SlaStats SLA targets met and breached in the window, in total, per inbox and per member (the
+// conversation's assignee when the outcome happened; unassigned outcomes count only in the
+// totals and per inbox).
+type SlaStats struct {
+	Breached int64            `json:"breached"`
+	Inboxes  []InboxSlaStats  `json:"inboxes"`
+	Members  []MemberSlaStats `json:"members"`
+	Met      int64            `json:"met"`
+}
+
+// SlaTargetName `first_reply`: from the contact's first message to the first public reply of a member or
+// bot. `next_reply`: from a contact message that follows a reply to the next reply.
+// `resolution`: from the conversation's creation to its first close.
+type SlaTargetName string
+
+// SlaTargetState One target: `on_track`, `due_soon` or `breached` while it runs, `paused` while the
+// conversation is `pending` or `snoozed`, `met` when it was met in time, `breached` when it
+// was not (then `met_at` is when it was met late, if it was), `stopped` when the conversation
+// closed before a reply.
+type SlaTargetState string
+
 // SlackChannel defines model for SlackChannel.
 type SlackChannel struct {
 	Id      string `json:"id"`
@@ -20015,6 +20338,11 @@ type Stats struct {
 	// Replies Replies sent by members.
 	Replies int64     `json:"replies"`
 	Since   time.Time `json:"since"`
+
+	// Sla SLA targets met and breached in the window, in total, per inbox and per member (the
+	// conversation's assignee when the outcome happened; unassigned outcomes count only in the
+	// totals and per inbox).
+	Sla SlaStats `json:"sla"`
 
 	// Until When it was counted.
 	Until time.Time `json:"until"`
@@ -20451,7 +20779,10 @@ type StatusIncidentConversation struct {
 	// thread the mail named. That mail never joins the other conversation and replies here go
 	// only to this conversation's contact. Absent otherwise or when that conversation is gone.
 	RelatedConversationId *uuid.UUID `json:"related_conversation_id,omitempty"`
-	SnoozeUntil           *time.Time `json:"snooze_until,omitempty"`
+
+	// Sla The SLA policy that applies and its targets; absent when none does.
+	Sla         *ConversationSla `json:"sla,omitempty"`
+	SnoozeUntil *time.Time       `json:"snooze_until,omitempty"`
 
 	// Spam Flagged as spam, e.g. because the first e-mail failed DMARC. Spam is left out of lists
 	// and counts unless asked for, and gets no automatic reply.
@@ -21816,6 +22147,32 @@ type WebhookConversationPayload struct {
 	WorkspaceId uuid.UUID        `json:"workspace_id"`
 }
 
+// WebhookConversationSlaData defines model for WebhookConversationSlaData.
+type WebhookConversationSlaData struct {
+	// Contact The contact as a host backend needs it.
+	Contact      WebhookContact `json:"contact"`
+	Conversation Conversation   `json:"conversation"`
+	DueAt        time.Time      `json:"due_at"`
+
+	// Target `first_reply`: from the contact's first message to the first public reply of a member or
+	// bot. `next_reply`: from a contact message that follows a reply to the next reply.
+	// `resolution`: from the conversation's creation to its first close.
+	Target SlaTargetName `json:"target"`
+}
+
+// WebhookConversationSlaPayload defines model for WebhookConversationSlaPayload.
+type WebhookConversationSlaPayload struct {
+	Data WebhookConversationSlaData `json:"data"`
+
+	// InboxId The conversation's inbox; absent for contact events.
+	InboxId *uuid.UUID `json:"inbox_id,omitempty"`
+
+	// Timestamp When the event happened (not when it was sent).
+	Timestamp   time.Time        `json:"timestamp"`
+	Type        WebhookEventType `json:"type"`
+	WorkspaceId uuid.UUID        `json:"workspace_id"`
+}
+
 // WebhookDeletedContact defines model for WebhookDeletedContact.
 type WebhookDeletedContact struct {
 	ExternalIds []ExternalId `json:"external_ids"`
@@ -22375,6 +22732,9 @@ type RoadmapBoardId = uuid.UUID
 
 // Search defines model for Search.
 type Search = string
+
+// SlaPolicyId defines model for SlaPolicyId.
+type SlaPolicyId = uuid.UUID
 
 // SsoDomainId defines model for SsoDomainId.
 type SsoDomainId = uuid.UUID
@@ -23621,6 +23981,16 @@ type ListConversationsParams struct {
 	// without it, both. Member sessions only (`400 validation_failed` for API keys).
 	Pinned *bool `form:"pinned,omitempty" json:"pinned,omitempty"`
 
+	// Sort `last_activity` (the default): most recent activity first. `sla_due`: conversations
+	// with a running SLA target first, the earliest `sla.due_at` first (so breached ones
+	// lead), then the others by most recent activity. A cursor continues only the order it
+	// came from (`400 validation_failed` otherwise).
+	Sort *ListConversationsParamsSort `form:"sort,omitempty" json:"sort,omitempty"`
+
+	// SlaState Only conversations whose `sla.state` is one of these. Repeat the parameter or give a
+	// comma-separated list. Conversations without an SLA never match.
+	SlaState *[]SlaState `form:"sla_state,omitempty" json:"sla_state,omitempty"`
+
 	// Q Full-text search (Postgres `simple` configuration, `websearch` syntax).
 	Q *Search `form:"q,omitempty" json:"q,omitempty"`
 
@@ -23639,6 +24009,9 @@ type ListConversationsParamsTeam string
 
 // ListConversationsParamsIdea defines parameters for ListConversations.
 type ListConversationsParamsIdea string
+
+// ListConversationsParamsSort defines parameters for ListConversations.
+type ListConversationsParamsSort string
 
 // CreateConversationParams defines parameters for CreateConversation.
 type CreateConversationParams struct {
@@ -25351,6 +25724,45 @@ type PreviewRoadmapBoardParams struct {
 // PreviewRoadmapBoardParamsView defines parameters for PreviewRoadmapBoard.
 type PreviewRoadmapBoardParamsView string
 
+// ListSlaPoliciesParams defines parameters for ListSlaPolicies.
+type ListSlaPoliciesParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// CreateSlaPolicyParams defines parameters for CreateSlaPolicy.
+type CreateSlaPolicyParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// OrderSlaPoliciesParams defines parameters for OrderSlaPolicies.
+type OrderSlaPoliciesParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// DeleteSlaPolicyParams defines parameters for DeleteSlaPolicy.
+type DeleteSlaPolicyParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// GetSlaPolicyParams defines parameters for GetSlaPolicy.
+type GetSlaPolicyParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// UpdateSlaPolicyParams defines parameters for UpdateSlaPolicy.
+type UpdateSlaPolicyParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
 // DisconnectSlackParams defines parameters for DisconnectSlack.
 type DisconnectSlackParams struct {
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
@@ -26073,6 +26485,34 @@ type WebhookConversationRatedParams struct {
 
 // WebhookConversationRestoredParams defines parameters for WebhookConversationRestored.
 type WebhookConversationRestoredParams struct {
+	// WebhookId The delivery's id, the same on every retry; use it to ignore duplicates.
+	WebhookId WebhookIdHeader `json:"webhook-id"`
+
+	// WebhookTimestamp Unix seconds of this attempt. Refuse values far from your clock.
+	WebhookTimestamp WebhookTimestampHeader `json:"webhook-timestamp"`
+
+	// WebhookSignature Space-separated `v1,<base64>` signatures: HMAC-SHA256 over
+	// `<webhook-id>.<webhook-timestamp>.<body>` with the base64-decoded part of the
+	// `whsec_` secret (Standard Webhooks). Two during a secret rotation.
+	WebhookSignature WebhookSignatureHeader `json:"webhook-signature"`
+}
+
+// WebhookConversationSlaBreachedParams defines parameters for WebhookConversationSlaBreached.
+type WebhookConversationSlaBreachedParams struct {
+	// WebhookId The delivery's id, the same on every retry; use it to ignore duplicates.
+	WebhookId WebhookIdHeader `json:"webhook-id"`
+
+	// WebhookTimestamp Unix seconds of this attempt. Refuse values far from your clock.
+	WebhookTimestamp WebhookTimestampHeader `json:"webhook-timestamp"`
+
+	// WebhookSignature Space-separated `v1,<base64>` signatures: HMAC-SHA256 over
+	// `<webhook-id>.<webhook-timestamp>.<body>` with the base64-decoded part of the
+	// `whsec_` secret (Standard Webhooks). Two during a secret rotation.
+	WebhookSignature WebhookSignatureHeader `json:"webhook-signature"`
+}
+
+// WebhookConversationSlaWarningParams defines parameters for WebhookConversationSlaWarning.
+type WebhookConversationSlaWarningParams struct {
 	// WebhookId The delivery's id, the same on every retry; use it to ignore duplicates.
 	WebhookId WebhookIdHeader `json:"webhook-id"`
 
@@ -26955,6 +27395,15 @@ type CreateRoadmapBoardJSONRequestBody = RoadmapBoardCreate
 // UpdateRoadmapBoardJSONRequestBody defines body for UpdateRoadmapBoard for application/json ContentType.
 type UpdateRoadmapBoardJSONRequestBody = RoadmapBoardUpdate
 
+// CreateSlaPolicyJSONRequestBody defines body for CreateSlaPolicy for application/json ContentType.
+type CreateSlaPolicyJSONRequestBody = SlaPolicyCreate
+
+// OrderSlaPoliciesJSONRequestBody defines body for OrderSlaPolicies for application/json ContentType.
+type OrderSlaPoliciesJSONRequestBody = SlaPolicyOrder
+
+// UpdateSlaPolicyJSONRequestBody defines body for UpdateSlaPolicy for application/json ContentType.
+type UpdateSlaPolicyJSONRequestBody = SlaPolicyUpdate
+
 // UpdateSlackJSONRequestBody defines body for UpdateSlack for application/json ContentType.
 type UpdateSlackJSONRequestBody = SlackConnectionUpdate
 
@@ -27071,6 +27520,12 @@ type WebhookConversationRatedJSONRequestBody = WebhookConversationPayload
 
 // WebhookConversationRestoredJSONRequestBody defines body for WebhookConversationRestored for application/json ContentType.
 type WebhookConversationRestoredJSONRequestBody = WebhookConversationPayload
+
+// WebhookConversationSlaBreachedJSONRequestBody defines body for WebhookConversationSlaBreached for application/json ContentType.
+type WebhookConversationSlaBreachedJSONRequestBody = WebhookConversationSlaPayload
+
+// WebhookConversationSlaWarningJSONRequestBody defines body for WebhookConversationSlaWarning for application/json ContentType.
+type WebhookConversationSlaWarningJSONRequestBody = WebhookConversationSlaPayload
 
 // WebhookConversationTrashedJSONRequestBody defines body for WebhookConversationTrashed for application/json ContentType.
 type WebhookConversationTrashedJSONRequestBody = WebhookConversationPayload
@@ -29200,6 +29655,32 @@ func (t *RealtimeMessage) MergeTeamEvent(v TeamEvent) error {
 	return err
 }
 
+// AsConversationSlaEvent returns the union data inside the RealtimeMessage as a ConversationSlaEvent
+func (t RealtimeMessage) AsConversationSlaEvent() (ConversationSlaEvent, error) {
+	var body ConversationSlaEvent
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromConversationSlaEvent overwrites any union data inside the RealtimeMessage as the provided ConversationSlaEvent
+func (t *RealtimeMessage) FromConversationSlaEvent(v ConversationSlaEvent) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeConversationSlaEvent performs a merge with any union data inside the RealtimeMessage, using the provided ConversationSlaEvent
+func (t *RealtimeMessage) MergeConversationSlaEvent(v ConversationSlaEvent) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
 // AsConversationReadEvent returns the union data inside the RealtimeMessage as a ConversationReadEvent
 func (t RealtimeMessage) AsConversationReadEvent() (ConversationReadEvent, error) {
 	var body ConversationReadEvent
@@ -30160,6 +30641,10 @@ func (t RealtimeMessage) ValueByDiscriminator() (interface{}, error) {
 		return t.AsConversationReadEvent()
 	case "conversation.restored":
 		return t.AsConversationEvent()
+	case "conversation.sla_breached":
+		return t.AsConversationSlaEvent()
+	case "conversation.sla_warning":
+		return t.AsConversationSlaEvent()
 	case "conversation.trashed":
 		return t.AsConversationEvent()
 	case "conversation.updated":
@@ -30615,6 +31100,32 @@ func (t *StoredEvent) MergeTeamEvent(v TeamEvent) error {
 	return err
 }
 
+// AsConversationSlaEvent returns the union data inside the StoredEvent as a ConversationSlaEvent
+func (t StoredEvent) AsConversationSlaEvent() (ConversationSlaEvent, error) {
+	var body ConversationSlaEvent
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromConversationSlaEvent overwrites any union data inside the StoredEvent as the provided ConversationSlaEvent
+func (t *StoredEvent) FromConversationSlaEvent(v ConversationSlaEvent) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeConversationSlaEvent performs a merge with any union data inside the StoredEvent, using the provided ConversationSlaEvent
+func (t *StoredEvent) MergeConversationSlaEvent(v ConversationSlaEvent) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
 // AsConversationReadEvent returns the union data inside the StoredEvent as a ConversationReadEvent
 func (t StoredEvent) AsConversationReadEvent() (ConversationReadEvent, error) {
 	var body ConversationReadEvent
@@ -31047,6 +31558,10 @@ func (t StoredEvent) ValueByDiscriminator() (interface{}, error) {
 		return t.AsConversationReadEvent()
 	case "conversation.restored":
 		return t.AsConversationEvent()
+	case "conversation.sla_breached":
+		return t.AsConversationSlaEvent()
+	case "conversation.sla_warning":
+		return t.AsConversationSlaEvent()
 	case "conversation.trashed":
 		return t.AsConversationEvent()
 	case "conversation.updated":
@@ -32346,6 +32861,24 @@ type ServerInterface interface {
 	// PreviewRoadmapBoard Preview a roadmap board page
 	// (GET /v1/roadmap-boards/{boardId}/preview)
 	PreviewRoadmapBoard(w http.ResponseWriter, r *http.Request, boardId RoadmapBoardId, params PreviewRoadmapBoardParams)
+	// ListSlaPolicies List SLA policies
+	// (GET /v1/sla-policies)
+	ListSlaPolicies(w http.ResponseWriter, r *http.Request, params ListSlaPoliciesParams)
+	// CreateSlaPolicy Create an SLA policy
+	// (POST /v1/sla-policies)
+	CreateSlaPolicy(w http.ResponseWriter, r *http.Request, params CreateSlaPolicyParams)
+	// OrderSlaPolicies Reorder SLA policies
+	// (PUT /v1/sla-policies/order)
+	OrderSlaPolicies(w http.ResponseWriter, r *http.Request, params OrderSlaPoliciesParams)
+	// DeleteSlaPolicy Delete an SLA policy
+	// (DELETE /v1/sla-policies/{slaPolicyId})
+	DeleteSlaPolicy(w http.ResponseWriter, r *http.Request, slaPolicyId SlaPolicyId, params DeleteSlaPolicyParams)
+	// GetSlaPolicy Get an SLA policy
+	// (GET /v1/sla-policies/{slaPolicyId})
+	GetSlaPolicy(w http.ResponseWriter, r *http.Request, slaPolicyId SlaPolicyId, params GetSlaPolicyParams)
+	// UpdateSlaPolicy Update an SLA policy
+	// (PATCH /v1/sla-policies/{slaPolicyId})
+	UpdateSlaPolicy(w http.ResponseWriter, r *http.Request, slaPolicyId SlaPolicyId, params UpdateSlaPolicyParams)
 	// DisconnectSlack Disconnect Slack
 	// (DELETE /v1/slack)
 	DisconnectSlack(w http.ResponseWriter, r *http.Request, params DisconnectSlackParams)
@@ -42080,6 +42613,32 @@ func (siw *ServerInterfaceWrapper) ListConversations(w http.ResponseWriter, r *h
 			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "pinned"})
 		} else {
 			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "pinned", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "sort" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "sort", r.URL.Query(), &params.Sort, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "sort"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "sort", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "sla_state" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "sla_state", r.URL.Query(), &params.SlaState, runtime.BindQueryParameterOptions{Type: "array", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "sla_state"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "sla_state", Err: err})
 		}
 		return
 	}
@@ -55201,6 +55760,298 @@ func (siw *ServerInterfaceWrapper) PreviewRoadmapBoard(w http.ResponseWriter, r 
 	handler.ServeHTTP(w, r)
 }
 
+// ListSlaPolicies operation middleware
+func (siw *ServerInterfaceWrapper) ListSlaPolicies(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListSlaPoliciesParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListSlaPolicies(w, r, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CreateSlaPolicy operation middleware
+func (siw *ServerInterfaceWrapper) CreateSlaPolicy(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params CreateSlaPolicyParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CreateSlaPolicy(w, r, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// OrderSlaPolicies operation middleware
+func (siw *ServerInterfaceWrapper) OrderSlaPolicies(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params OrderSlaPoliciesParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.OrderSlaPolicies(w, r, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// DeleteSlaPolicy operation middleware
+func (siw *ServerInterfaceWrapper) DeleteSlaPolicy(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "slaPolicyId" -------------
+	var slaPolicyId SlaPolicyId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "slaPolicyId", r.PathValue("slaPolicyId"), &slaPolicyId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "slaPolicyId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params DeleteSlaPolicyParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.DeleteSlaPolicy(w, r, slaPolicyId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetSlaPolicy operation middleware
+func (siw *ServerInterfaceWrapper) GetSlaPolicy(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "slaPolicyId" -------------
+	var slaPolicyId SlaPolicyId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "slaPolicyId", r.PathValue("slaPolicyId"), &slaPolicyId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "slaPolicyId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetSlaPolicyParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetSlaPolicy(w, r, slaPolicyId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UpdateSlaPolicy operation middleware
+func (siw *ServerInterfaceWrapper) UpdateSlaPolicy(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "slaPolicyId" -------------
+	var slaPolicyId SlaPolicyId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "slaPolicyId", r.PathValue("slaPolicyId"), &slaPolicyId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "slaPolicyId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params UpdateSlaPolicyParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UpdateSlaPolicy(w, r, slaPolicyId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // DisconnectSlack operation middleware
 func (siw *ServerInterfaceWrapper) DisconnectSlack(w http.ResponseWriter, r *http.Request) {
 
@@ -60080,6 +60931,12 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc(http.MethodPut+" "+options.BaseURL+"/v1/teams/{teamId}/members/{memberId}", wrapper.AddTeamMember)
 	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/teams/{teamId}/inboxes/{inboxId}", wrapper.RevokeTeamInboxAccess)
 	m.HandleFunc(http.MethodPut+" "+options.BaseURL+"/v1/teams/{teamId}/inboxes/{inboxId}", wrapper.GrantTeamInboxAccess)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/sla-policies", wrapper.ListSlaPolicies)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/sla-policies", wrapper.CreateSlaPolicy)
+	m.HandleFunc(http.MethodPut+" "+options.BaseURL+"/v1/sla-policies/order", wrapper.OrderSlaPolicies)
+	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/sla-policies/{slaPolicyId}", wrapper.DeleteSlaPolicy)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/sla-policies/{slaPolicyId}", wrapper.GetSlaPolicy)
+	m.HandleFunc(http.MethodPatch+" "+options.BaseURL+"/v1/sla-policies/{slaPolicyId}", wrapper.UpdateSlaPolicy)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/inboxes/{inboxId}/channels", wrapper.ListChannels)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/inboxes/{inboxId}/channels", wrapper.CreateChannel)
 	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/channels/{channelId}", wrapper.DeleteChannel)
@@ -60527,6 +61384,12 @@ type WebhookReceiverInterface interface {
 	// A conversation came back from the trash
 	// HandleWebhookConversationRestoredWebhook handles the POST webhook for conversation.restored.
 	HandleWebhookConversationRestoredWebhook(w http.ResponseWriter, r *http.Request, params WebhookConversationRestoredParams)
+	// An SLA target was breached
+	// HandleWebhookConversationSlaBreachedWebhook handles the POST webhook for conversation.sla_breached.
+	HandleWebhookConversationSlaBreachedWebhook(w http.ResponseWriter, r *http.Request, params WebhookConversationSlaBreachedParams)
+	// An SLA target is due soon
+	// HandleWebhookConversationSlaWarningWebhook handles the POST webhook for conversation.sla_warning.
+	HandleWebhookConversationSlaWarningWebhook(w http.ResponseWriter, r *http.Request, params WebhookConversationSlaWarningParams)
 	// A conversation went to the trash
 	// HandleWebhookConversationTrashedWebhook handles the POST webhook for conversation.trashed.
 	HandleWebhookConversationTrashedWebhook(w http.ResponseWriter, r *http.Request, params WebhookConversationTrashedParams)
@@ -61628,6 +62491,190 @@ func WebhookConversationRestoredWebhookHandler(si WebhookReceiverInterface, errH
 		}
 
 		si.HandleWebhookConversationRestoredWebhook(w, r, params)
+	})
+	for _, mw := range middlewares {
+		h = mw(h)
+	}
+	return h
+}
+
+// WebhookConversationSlaBreachedWebhookHandler returns the http.Handler for the conversation.sla_breached webhook.
+// Mount this at the URL path advertised to webhook senders. errHandler
+// may be nil; if so, parameter-binding errors return 400 with the error
+// message. Middlewares are applied in the order provided -- the last
+// argument becomes the outermost wrapper.
+func WebhookConversationSlaBreachedWebhookHandler(si WebhookReceiverInterface, errHandler func(w http.ResponseWriter, r *http.Request, err error), middlewares ...WebhookReceiverMiddlewareFunc) http.Handler {
+	if errHandler == nil {
+		errHandler = func(w http.ResponseWriter, r *http.Request, err error) {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+		}
+	}
+	var h http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		var err error
+		_ = err
+
+		// Parameter object where we will unmarshal all parameters from the request.
+		var params WebhookConversationSlaBreachedParams
+
+		// ------------- Required header parameter "webhook-id" -------------
+		if valueList, found := r.Header[http.CanonicalHeaderKey("webhook-id")]; found {
+			var WebhookId WebhookIdHeader
+			n := len(valueList)
+			if n != 1 {
+				errHandler(w, r, &TooManyValuesForParamError{ParamName: "webhook-id", Count: n})
+				return
+			}
+
+			err = runtime.BindStyledParameterWithOptions("simple", "webhook-id", valueList[0], &WebhookId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
+			if err != nil {
+				errHandler(w, r, &InvalidParamFormatError{ParamName: "webhook-id", Err: err})
+				return
+			}
+			params.WebhookId = WebhookId
+
+		} else {
+			err := fmt.Errorf("Header parameter webhook-id is required, but not found")
+			errHandler(w, r, &RequiredHeaderError{ParamName: "webhook-id", Err: err})
+			return
+		}
+
+		// ------------- Required header parameter "webhook-timestamp" -------------
+		if valueList, found := r.Header[http.CanonicalHeaderKey("webhook-timestamp")]; found {
+			var WebhookTimestamp WebhookTimestampHeader
+			n := len(valueList)
+			if n != 1 {
+				errHandler(w, r, &TooManyValuesForParamError{ParamName: "webhook-timestamp", Count: n})
+				return
+			}
+
+			err = runtime.BindStyledParameterWithOptions("simple", "webhook-timestamp", valueList[0], &WebhookTimestamp, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
+			if err != nil {
+				errHandler(w, r, &InvalidParamFormatError{ParamName: "webhook-timestamp", Err: err})
+				return
+			}
+			params.WebhookTimestamp = WebhookTimestamp
+
+		} else {
+			err := fmt.Errorf("Header parameter webhook-timestamp is required, but not found")
+			errHandler(w, r, &RequiredHeaderError{ParamName: "webhook-timestamp", Err: err})
+			return
+		}
+
+		// ------------- Required header parameter "webhook-signature" -------------
+		if valueList, found := r.Header[http.CanonicalHeaderKey("webhook-signature")]; found {
+			var WebhookSignature WebhookSignatureHeader
+			n := len(valueList)
+			if n != 1 {
+				errHandler(w, r, &TooManyValuesForParamError{ParamName: "webhook-signature", Count: n})
+				return
+			}
+
+			err = runtime.BindStyledParameterWithOptions("simple", "webhook-signature", valueList[0], &WebhookSignature, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
+			if err != nil {
+				errHandler(w, r, &InvalidParamFormatError{ParamName: "webhook-signature", Err: err})
+				return
+			}
+			params.WebhookSignature = WebhookSignature
+
+		} else {
+			err := fmt.Errorf("Header parameter webhook-signature is required, but not found")
+			errHandler(w, r, &RequiredHeaderError{ParamName: "webhook-signature", Err: err})
+			return
+		}
+
+		si.HandleWebhookConversationSlaBreachedWebhook(w, r, params)
+	})
+	for _, mw := range middlewares {
+		h = mw(h)
+	}
+	return h
+}
+
+// WebhookConversationSlaWarningWebhookHandler returns the http.Handler for the conversation.sla_warning webhook.
+// Mount this at the URL path advertised to webhook senders. errHandler
+// may be nil; if so, parameter-binding errors return 400 with the error
+// message. Middlewares are applied in the order provided -- the last
+// argument becomes the outermost wrapper.
+func WebhookConversationSlaWarningWebhookHandler(si WebhookReceiverInterface, errHandler func(w http.ResponseWriter, r *http.Request, err error), middlewares ...WebhookReceiverMiddlewareFunc) http.Handler {
+	if errHandler == nil {
+		errHandler = func(w http.ResponseWriter, r *http.Request, err error) {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+		}
+	}
+	var h http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		var err error
+		_ = err
+
+		// Parameter object where we will unmarshal all parameters from the request.
+		var params WebhookConversationSlaWarningParams
+
+		// ------------- Required header parameter "webhook-id" -------------
+		if valueList, found := r.Header[http.CanonicalHeaderKey("webhook-id")]; found {
+			var WebhookId WebhookIdHeader
+			n := len(valueList)
+			if n != 1 {
+				errHandler(w, r, &TooManyValuesForParamError{ParamName: "webhook-id", Count: n})
+				return
+			}
+
+			err = runtime.BindStyledParameterWithOptions("simple", "webhook-id", valueList[0], &WebhookId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
+			if err != nil {
+				errHandler(w, r, &InvalidParamFormatError{ParamName: "webhook-id", Err: err})
+				return
+			}
+			params.WebhookId = WebhookId
+
+		} else {
+			err := fmt.Errorf("Header parameter webhook-id is required, but not found")
+			errHandler(w, r, &RequiredHeaderError{ParamName: "webhook-id", Err: err})
+			return
+		}
+
+		// ------------- Required header parameter "webhook-timestamp" -------------
+		if valueList, found := r.Header[http.CanonicalHeaderKey("webhook-timestamp")]; found {
+			var WebhookTimestamp WebhookTimestampHeader
+			n := len(valueList)
+			if n != 1 {
+				errHandler(w, r, &TooManyValuesForParamError{ParamName: "webhook-timestamp", Count: n})
+				return
+			}
+
+			err = runtime.BindStyledParameterWithOptions("simple", "webhook-timestamp", valueList[0], &WebhookTimestamp, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
+			if err != nil {
+				errHandler(w, r, &InvalidParamFormatError{ParamName: "webhook-timestamp", Err: err})
+				return
+			}
+			params.WebhookTimestamp = WebhookTimestamp
+
+		} else {
+			err := fmt.Errorf("Header parameter webhook-timestamp is required, but not found")
+			errHandler(w, r, &RequiredHeaderError{ParamName: "webhook-timestamp", Err: err})
+			return
+		}
+
+		// ------------- Required header parameter "webhook-signature" -------------
+		if valueList, found := r.Header[http.CanonicalHeaderKey("webhook-signature")]; found {
+			var WebhookSignature WebhookSignatureHeader
+			n := len(valueList)
+			if n != 1 {
+				errHandler(w, r, &TooManyValuesForParamError{ParamName: "webhook-signature", Count: n})
+				return
+			}
+
+			err = runtime.BindStyledParameterWithOptions("simple", "webhook-signature", valueList[0], &WebhookSignature, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
+			if err != nil {
+				errHandler(w, r, &InvalidParamFormatError{ParamName: "webhook-signature", Err: err})
+				return
+			}
+			params.WebhookSignature = WebhookSignature
+
+		} else {
+			err := fmt.Errorf("Header parameter webhook-signature is required, but not found")
+			errHandler(w, r, &RequiredHeaderError{ParamName: "webhook-signature", Err: err})
+			return
+		}
+
+		si.HandleWebhookConversationSlaWarningWebhook(w, r, params)
 	})
 	for _, mw := range middlewares {
 		h = mw(h)
@@ -96282,6 +97329,402 @@ func (response PreviewRoadmapBoard404ApplicationProblemPlusJSONResponse) VisitPr
 	return err
 }
 
+type ListSlaPoliciesRequestObject struct {
+	Params ListSlaPoliciesParams
+}
+
+type ListSlaPoliciesResponseObject interface {
+	VisitListSlaPoliciesResponse(w http.ResponseWriter) error
+}
+
+type ListSlaPolicies200JSONResponse SlaPolicyList
+
+func (response ListSlaPolicies200JSONResponse) VisitListSlaPoliciesResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListSlaPolicies401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response ListSlaPolicies401ApplicationProblemPlusJSONResponse) VisitListSlaPoliciesResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListSlaPolicies403ApplicationProblemPlusJSONResponse Problem
+
+func (response ListSlaPolicies403ApplicationProblemPlusJSONResponse) VisitListSlaPoliciesResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateSlaPolicyRequestObject struct {
+	Params CreateSlaPolicyParams
+	Body   *CreateSlaPolicyJSONRequestBody
+}
+
+type CreateSlaPolicyResponseObject interface {
+	VisitCreateSlaPolicyResponse(w http.ResponseWriter) error
+}
+
+type CreateSlaPolicy201JSONResponse SlaPolicy
+
+func (response CreateSlaPolicy201JSONResponse) VisitCreateSlaPolicyResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(201)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateSlaPolicy400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response CreateSlaPolicy400ApplicationProblemPlusJSONResponse) VisitCreateSlaPolicyResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateSlaPolicy401ApplicationProblemPlusJSONResponse Problem
+
+func (response CreateSlaPolicy401ApplicationProblemPlusJSONResponse) VisitCreateSlaPolicyResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateSlaPolicy403ApplicationProblemPlusJSONResponse Problem
+
+func (response CreateSlaPolicy403ApplicationProblemPlusJSONResponse) VisitCreateSlaPolicyResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type OrderSlaPoliciesRequestObject struct {
+	Params OrderSlaPoliciesParams
+	Body   *OrderSlaPoliciesJSONRequestBody
+}
+
+type OrderSlaPoliciesResponseObject interface {
+	VisitOrderSlaPoliciesResponse(w http.ResponseWriter) error
+}
+
+type OrderSlaPolicies200JSONResponse SlaPolicyList
+
+func (response OrderSlaPolicies200JSONResponse) VisitOrderSlaPoliciesResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type OrderSlaPolicies400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response OrderSlaPolicies400ApplicationProblemPlusJSONResponse) VisitOrderSlaPoliciesResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type OrderSlaPolicies401ApplicationProblemPlusJSONResponse Problem
+
+func (response OrderSlaPolicies401ApplicationProblemPlusJSONResponse) VisitOrderSlaPoliciesResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type OrderSlaPolicies403ApplicationProblemPlusJSONResponse Problem
+
+func (response OrderSlaPolicies403ApplicationProblemPlusJSONResponse) VisitOrderSlaPoliciesResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteSlaPolicyRequestObject struct {
+	SlaPolicyId SlaPolicyId `json:"slaPolicyId"`
+	Params      DeleteSlaPolicyParams
+}
+
+type DeleteSlaPolicyResponseObject interface {
+	VisitDeleteSlaPolicyResponse(w http.ResponseWriter) error
+}
+
+type DeleteSlaPolicy204Response struct {
+}
+
+func (response DeleteSlaPolicy204Response) VisitDeleteSlaPolicyResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
+}
+
+type DeleteSlaPolicy401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response DeleteSlaPolicy401ApplicationProblemPlusJSONResponse) VisitDeleteSlaPolicyResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteSlaPolicy403ApplicationProblemPlusJSONResponse Problem
+
+func (response DeleteSlaPolicy403ApplicationProblemPlusJSONResponse) VisitDeleteSlaPolicyResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteSlaPolicy404ApplicationProblemPlusJSONResponse Problem
+
+func (response DeleteSlaPolicy404ApplicationProblemPlusJSONResponse) VisitDeleteSlaPolicyResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetSlaPolicyRequestObject struct {
+	SlaPolicyId SlaPolicyId `json:"slaPolicyId"`
+	Params      GetSlaPolicyParams
+}
+
+type GetSlaPolicyResponseObject interface {
+	VisitGetSlaPolicyResponse(w http.ResponseWriter) error
+}
+
+type GetSlaPolicy200JSONResponse SlaPolicy
+
+func (response GetSlaPolicy200JSONResponse) VisitGetSlaPolicyResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetSlaPolicy401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response GetSlaPolicy401ApplicationProblemPlusJSONResponse) VisitGetSlaPolicyResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetSlaPolicy403ApplicationProblemPlusJSONResponse Problem
+
+func (response GetSlaPolicy403ApplicationProblemPlusJSONResponse) VisitGetSlaPolicyResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetSlaPolicy404ApplicationProblemPlusJSONResponse Problem
+
+func (response GetSlaPolicy404ApplicationProblemPlusJSONResponse) VisitGetSlaPolicyResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateSlaPolicyRequestObject struct {
+	SlaPolicyId SlaPolicyId `json:"slaPolicyId"`
+	Params      UpdateSlaPolicyParams
+	Body        *UpdateSlaPolicyJSONRequestBody
+}
+
+type UpdateSlaPolicyResponseObject interface {
+	VisitUpdateSlaPolicyResponse(w http.ResponseWriter) error
+}
+
+type UpdateSlaPolicy200JSONResponse SlaPolicy
+
+func (response UpdateSlaPolicy200JSONResponse) VisitUpdateSlaPolicyResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateSlaPolicy400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response UpdateSlaPolicy400ApplicationProblemPlusJSONResponse) VisitUpdateSlaPolicyResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateSlaPolicy401ApplicationProblemPlusJSONResponse Problem
+
+func (response UpdateSlaPolicy401ApplicationProblemPlusJSONResponse) VisitUpdateSlaPolicyResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateSlaPolicy403ApplicationProblemPlusJSONResponse Problem
+
+func (response UpdateSlaPolicy403ApplicationProblemPlusJSONResponse) VisitUpdateSlaPolicyResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateSlaPolicy404ApplicationProblemPlusJSONResponse Problem
+
+func (response UpdateSlaPolicy404ApplicationProblemPlusJSONResponse) VisitUpdateSlaPolicyResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
 type DisconnectSlackRequestObject struct {
 	Params DisconnectSlackParams
 }
@@ -103371,6 +104814,24 @@ type StrictServerInterface interface {
 	// PreviewRoadmapBoard Preview a roadmap board page
 	// (GET /v1/roadmap-boards/{boardId}/preview)
 	PreviewRoadmapBoard(ctx context.Context, request PreviewRoadmapBoardRequestObject) (PreviewRoadmapBoardResponseObject, error)
+	// ListSlaPolicies List SLA policies
+	// (GET /v1/sla-policies)
+	ListSlaPolicies(ctx context.Context, request ListSlaPoliciesRequestObject) (ListSlaPoliciesResponseObject, error)
+	// CreateSlaPolicy Create an SLA policy
+	// (POST /v1/sla-policies)
+	CreateSlaPolicy(ctx context.Context, request CreateSlaPolicyRequestObject) (CreateSlaPolicyResponseObject, error)
+	// OrderSlaPolicies Reorder SLA policies
+	// (PUT /v1/sla-policies/order)
+	OrderSlaPolicies(ctx context.Context, request OrderSlaPoliciesRequestObject) (OrderSlaPoliciesResponseObject, error)
+	// DeleteSlaPolicy Delete an SLA policy
+	// (DELETE /v1/sla-policies/{slaPolicyId})
+	DeleteSlaPolicy(ctx context.Context, request DeleteSlaPolicyRequestObject) (DeleteSlaPolicyResponseObject, error)
+	// GetSlaPolicy Get an SLA policy
+	// (GET /v1/sla-policies/{slaPolicyId})
+	GetSlaPolicy(ctx context.Context, request GetSlaPolicyRequestObject) (GetSlaPolicyResponseObject, error)
+	// UpdateSlaPolicy Update an SLA policy
+	// (PATCH /v1/sla-policies/{slaPolicyId})
+	UpdateSlaPolicy(ctx context.Context, request UpdateSlaPolicyRequestObject) (UpdateSlaPolicyResponseObject, error)
 	// DisconnectSlack Disconnect Slack
 	// (DELETE /v1/slack)
 	DisconnectSlack(ctx context.Context, request DisconnectSlackRequestObject) (DisconnectSlackResponseObject, error)
@@ -115537,6 +116998,186 @@ func (sh *strictHandler) PreviewRoadmapBoard(w http.ResponseWriter, r *http.Requ
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
 	} else if validResponse, ok := response.(PreviewRoadmapBoardResponseObject); ok {
 		if err := validResponse.VisitPreviewRoadmapBoardResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// ListSlaPolicies operation middleware
+func (sh *strictHandler) ListSlaPolicies(w http.ResponseWriter, r *http.Request, params ListSlaPoliciesParams) {
+	var request ListSlaPoliciesRequestObject
+
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.ListSlaPolicies(ctx, request.(ListSlaPoliciesRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "ListSlaPolicies")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(ListSlaPoliciesResponseObject); ok {
+		if err := validResponse.VisitListSlaPoliciesResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// CreateSlaPolicy operation middleware
+func (sh *strictHandler) CreateSlaPolicy(w http.ResponseWriter, r *http.Request, params CreateSlaPolicyParams) {
+	var request CreateSlaPolicyRequestObject
+
+	request.Params = params
+
+	var body CreateSlaPolicyJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.CreateSlaPolicy(ctx, request.(CreateSlaPolicyRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "CreateSlaPolicy")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(CreateSlaPolicyResponseObject); ok {
+		if err := validResponse.VisitCreateSlaPolicyResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// OrderSlaPolicies operation middleware
+func (sh *strictHandler) OrderSlaPolicies(w http.ResponseWriter, r *http.Request, params OrderSlaPoliciesParams) {
+	var request OrderSlaPoliciesRequestObject
+
+	request.Params = params
+
+	var body OrderSlaPoliciesJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.OrderSlaPolicies(ctx, request.(OrderSlaPoliciesRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "OrderSlaPolicies")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(OrderSlaPoliciesResponseObject); ok {
+		if err := validResponse.VisitOrderSlaPoliciesResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// DeleteSlaPolicy operation middleware
+func (sh *strictHandler) DeleteSlaPolicy(w http.ResponseWriter, r *http.Request, slaPolicyId SlaPolicyId, params DeleteSlaPolicyParams) {
+	var request DeleteSlaPolicyRequestObject
+
+	request.SlaPolicyId = slaPolicyId
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.DeleteSlaPolicy(ctx, request.(DeleteSlaPolicyRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "DeleteSlaPolicy")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(DeleteSlaPolicyResponseObject); ok {
+		if err := validResponse.VisitDeleteSlaPolicyResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// GetSlaPolicy operation middleware
+func (sh *strictHandler) GetSlaPolicy(w http.ResponseWriter, r *http.Request, slaPolicyId SlaPolicyId, params GetSlaPolicyParams) {
+	var request GetSlaPolicyRequestObject
+
+	request.SlaPolicyId = slaPolicyId
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.GetSlaPolicy(ctx, request.(GetSlaPolicyRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "GetSlaPolicy")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(GetSlaPolicyResponseObject); ok {
+		if err := validResponse.VisitGetSlaPolicyResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// UpdateSlaPolicy operation middleware
+func (sh *strictHandler) UpdateSlaPolicy(w http.ResponseWriter, r *http.Request, slaPolicyId SlaPolicyId, params UpdateSlaPolicyParams) {
+	var request UpdateSlaPolicyRequestObject
+
+	request.SlaPolicyId = slaPolicyId
+	request.Params = params
+
+	var body UpdateSlaPolicyJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.UpdateSlaPolicy(ctx, request.(UpdateSlaPolicyRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "UpdateSlaPolicy")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(UpdateSlaPolicyResponseObject); ok {
+		if err := validResponse.VisitUpdateSlaPolicyResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {

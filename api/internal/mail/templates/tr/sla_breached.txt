@@ -1,0 +1,7 @@
+{{.Inbox}}: {{if eq .Target "first_reply"}}ilk yanıt{{else if eq .Target "next_reply"}}sonraki yanıt{{else}}çözüm{{end}} için SLA hedefi kaçırıldı
+
+{{if .Contact}}{{.Contact}}{{else}}Bir ziyaretçi{{end}} ile{{if .Subject}} "{{.Subject}}" konulu{{end}} konuşma, son tarihi {{.Due}} olan {{if eq .Target "first_reply"}}ilk yanıt{{else if eq .Target "next_reply"}}sonraki yanıt{{else}}çözüm{{end}} SLA hedefini kaçırdı.
+
+Konuşmayı açın: {{.URL}}
+
+Bu e-postayı, konuşma size veya ekibinize ait olduğu için alıyorsunuz. Hangi e-postaları alacağınızı seçin: {{.SettingsURL}}

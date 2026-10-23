@@ -35,6 +35,7 @@ type mcpConversation struct {
 	Fields           map[string]any         `json:"fields,omitempty" jsonschema:"custom field values by key; names and types come from list_custom_fields"`
 	CreatedAt        time.Time              `json:"created_at"`
 	LastActivityAt   time.Time              `json:"last_activity_at"`
+	SLA              *oas.ConversationSla   `json:"sla,omitempty" jsonschema:"the SLA policy that applies: state (on_track, due_soon, breached, met or paused), due_at and its targets; absent when none applies"`
 	CustomerContent  mcpConversationContent `json:"customer_content"`
 }
 
@@ -76,7 +77,7 @@ func conversationOut(c oas.Conversation) mcpConversation {
 		IdeaID: idea, ID: c.Id, InboxID: c.InboxId, ContactID: c.ContactId, Kind: string(c.Kind), Status: string(c.Status),
 		Priority: string(c.Priority), AssigneeID: c.AssigneeId, TeamID: c.TeamId, Labels: labels, Spam: c.Spam, SnoozeUntil: c.SnoozeUntil,
 		FeedbackCategory: cat, FeedbackScore: score, FeedbackProgress: progress, CreatedAt: c.CreatedAt, LastActivityAt: c.LastActivityAt,
-		CustomerContent: mcpConversationContent{Subject: c.Subject, Feedback: fb}, Fields: c.Fields,
+		SLA: c.Sla, CustomerContent: mcpConversationContent{Subject: c.Subject, Feedback: fb}, Fields: c.Fields,
 	}
 }
 
@@ -84,7 +85,7 @@ func conversationItemOut(c oas.ConversationListItem) mcpConversation {
 	out := conversationOut(oas.Conversation{
 		Id: c.Id, InboxId: c.InboxId, ContactId: c.ContactId, Kind: c.Kind, Status: c.Status, Priority: c.Priority,
 		AssigneeId: c.AssigneeId, Labels: c.Labels, Spam: c.Spam, SnoozeUntil: c.SnoozeUntil, Feedback: c.Feedback, Idea: c.Idea,
-		CreatedAt: c.CreatedAt, LastActivityAt: c.LastActivityAt, Subject: c.Subject, Fields: c.Fields,
+		CreatedAt: c.CreatedAt, LastActivityAt: c.LastActivityAt, Subject: c.Subject, Fields: c.Fields, Sla: c.Sla,
 	})
 	unread := c.Unread
 	out.Unread = &unread

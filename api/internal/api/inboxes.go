@@ -395,6 +395,9 @@ func (s *Server) DeleteInbox(ctx context.Context, req oas.DeleteInboxRequestObje
 		if _, err = q.DeleteInbox(ctx, store.DeleteInboxParams{WorkspaceID: p.workspaceID, ID: req.InboxId}); err != nil {
 			return err
 		}
+		if err := q.StripInboxFromSLAPolicies(ctx, store.StripInboxFromSLAPoliciesParams{WorkspaceID: p.workspaceID, InboxID: req.InboxId, Now: s.now()}); err != nil {
+			return err
+		}
 		if err := s.audit(ctx, q, p, oas.AuditInboxDeleted, oas.AuditTargetInbox, in.ID, auditDetails{"name": in.Name}); err != nil {
 			return err
 		}

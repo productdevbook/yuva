@@ -89,6 +89,26 @@ tags:
       Groups of members. A team granted an inbox gives each of its members access to it, so a
       member sees the union of their own grants and their teams'. Conversations can be assigned to
       a team as well as, or instead of, a member.
+  - name: sla
+    description: |
+      Service level policies: targets for the first reply, the next reply and the resolution of a
+      conversation, counted in the inbox's business hours (plain time when its hours are off). The
+      first enabled policy, in `position` order, whose conditions match a conversation applies to
+      it; `sla` on the conversation shows its targets, due time and state.
+
+      - A first-reply target starts at the contact's first message, a next-reply target at a
+        contact message that follows a reply, and the resolution target at the conversation's
+        creation.
+      - A public reply sent by a member or a bot meets the first-reply and next-reply targets;
+        notes, drafts and automatic replies do not. The first close meets the resolution target; a
+        reopened conversation gets no new resolution target, only next-reply ones.
+      - `pending` and `snoozed` pause every running target and `open` resumes it with the time
+        that was left. A snoozed conversation reopens by itself at `snooze_until`.
+      - A change of priority, labels or inbox picks the policy again; targets already met or
+        breached keep their outcome. Spam and the trash drop the SLA.
+      - `warn_minutes` before a due time `conversation.sla_warning` is sent, and at the due time
+        `conversation.sla_breached`, each once per target; both notify the assignee, or the
+        members of the conversation's team when it has no assignee.
   - name: channels
     description: |
       How messages reach an inbox. E-mail channels receive mail through `/ingress/email` and send
@@ -513,15 +533,21 @@ tags:
         conversation; every member with access is a candidate.
       - `assigned_to_me`: someone else assigned a conversation to the member.
       - `mentioned`: someone else mentioned the member in a note (`mentions` on the note).
+      - `sla_warning`, `sla_breached`: an SLA target of a conversation is due soon or was
+        breached (see the `sla` tag). The assignee is the candidate, or, without one, the members
+        of the conversation's team; without either, nobody. The e-mail for `sla_breached` is sent
+        at once, not after `email_delay_minutes`.
 
       Never notified: the member who caused it (their own assignment), conversations marked spam,
       a member whose open panel reports that it is showing that conversation (the `viewing` frame
       on `/v1/realtime`), and, while the member's `availability` is `away`, everything except
-      `message_in_my_conversation`, `assigned_to_me` and `mentioned`.
+      `message_in_my_conversation`, `assigned_to_me`, `mentioned` and the SLA events of
+      conversations assigned to them.
 
       Defaults by role (`defaults` in `NotificationSettings`): push for everything except, for
       agents, `new_async_conversation` and `message_in_unassigned_conversation`; e-mail only for
-      `message_in_my_conversation`, `assigned_to_me` and `mentioned`, for every role.
+      `message_in_my_conversation`, `assigned_to_me`, `mentioned` and `sla_breached`, for every
+      role.
 
       E-mail fallback: when an event with `email: true` is still unread after
       `email_delay_minutes` (15 by default), one e-mail lists the conversation's unread contact
@@ -2732,6 +2758,169 @@ paths:
           $ref: "#/components/responses/Problem"
         "404":
           $ref: "#/components/responses/Problem"
+  /v1/sla-policies:
+    get:
+      operationId: listSlaPolicies
+      summary: List SLA policies
+      description: |
+        In `position` order. `inbox_ids` lists only the inboxes the caller sees.
+
+        Scope: `inboxes:read`.
+      tags: [sla]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+      responses:
+        "200":
+          description: The policies.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SlaPolicyList"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+    post:
+      operationId: createSlaPolicy
+      summary: Create an SLA policy
+      description: |
+        Owners, admins and API keys not limited to inboxes. The policy goes last in the order. A
+        workspace holds at most 100 policies (`403 sla_policy_limit`). It applies to a conversation
+        without an SLA the next time it changes or gets a message, and to one with an SLA when its
+        priority, labels or inbox change.
+
+        Scope: `inboxes:manage`.
+      tags: [sla]
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/WorkspaceHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SlaPolicyCreate"
+      responses:
+        "201":
+          description: The policy.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SlaPolicy"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+  /v1/sla-policies/order:
+    put:
+      operationId: orderSlaPolicies
+      summary: Reorder SLA policies
+      description: |
+        Owners, admins and API keys not limited to inboxes. `ids` names every policy of the
+        workspace once, in the new order (`400 validation_failed` otherwise).
+
+        Scope: `inboxes:manage`.
+      tags: [sla]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SlaPolicyOrder"
+      responses:
+        "200":
+          description: The policies in their new order.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SlaPolicyList"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+  /v1/sla-policies/{slaPolicyId}:
+    get:
+      operationId: getSlaPolicy
+      summary: Get an SLA policy
+      description: "Scope: `inboxes:read`."
+      tags: [sla]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/SlaPolicyId"
+      responses:
+        "200":
+          description: The policy.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SlaPolicy"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+    patch:
+      operationId: updateSlaPolicy
+      summary: Update an SLA policy
+      description: |
+        Owners, admins and API keys not limited to inboxes. New minutes apply to targets that
+        start afterwards; running targets keep their due times. Conditions apply as for a new
+        policy.
+
+        Scope: `inboxes:manage`.
+      tags: [sla]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/SlaPolicyId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SlaPolicyUpdate"
+      responses:
+        "200":
+          description: The updated policy.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SlaPolicy"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+    delete:
+      operationId: deleteSlaPolicy
+      summary: Delete an SLA policy
+      description: |
+        Owners, admins and API keys not limited to inboxes. Conversations it applies to lose their
+        SLA (`sla` absent) without an event; the outcomes they reached stay in `/v1/stats`.
+
+        Scope: `inboxes:manage`.
+      tags: [sla]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/SlaPolicyId"
+      responses:
+        "204":
+          description: Deleted.
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
   /v1/inboxes/{inboxId}/channels:
     get:
       operationId: listChannels
@@ -3617,7 +3806,7 @@ paths:
       operationId: listConversations
       summary: List conversations
       description: |
-        Most recent activity (message or note) first, in the inboxes the caller can see. `q` is a
+        Most recent activity (message or note) first, or by SLA due time (`sort`), in the inboxes the caller can see. `q` is a
         full-text search over the subject, the messages and notes, and the contact; a negated term
         (`-word`, `-"some phrase"`) excludes every conversation in which any of those contains it.
         Conversations in the trash are listed only with `trashed=true`.
@@ -3759,6 +3948,27 @@ paths:
             without it, both. Member sessions only (`400 validation_failed` for API keys).
           schema:
             type: boolean
+        - name: sort
+          in: query
+          description: |
+            `last_activity` (the default): most recent activity first. `sla_due`: conversations
+            with a running SLA target first, the earliest `sla.due_at` first (so breached ones
+            lead), then the others by most recent activity. A cursor continues only the order it
+            came from (`400 validation_failed` otherwise).
+          schema:
+            type: string
+            enum: [last_activity, sla_due]
+            default: last_activity
+            x-enum-varnames: [ListConversationsSortLastActivity, ListConversationsSortSlaDue]
+        - name: sla_state
+          in: query
+          description: |
+            Only conversations whose `sla.state` is one of these. Repeat the parameter or give a
+            comma-separated list. Conversations without an SLA never match.
+          schema:
+            type: array
+            items:
+              $ref: "#/components/schemas/SlaState"
         - $ref: "#/components/parameters/Search"
         - $ref: "#/components/parameters/Cursor"
         - $ref: "#/components/parameters/Limit"
@@ -18632,6 +18842,46 @@ webhooks:
       responses:
         "200":
           description: Any 2xx answer counts as delivered.
+  conversation.sla_warning:
+    post:
+      operationId: webhookConversationSlaWarning
+      summary: An SLA target is due soon
+      description: Sent once per target, `warn_minutes` before its due time.
+      tags: [webhooks]
+      security: []
+      parameters:
+        - $ref: "#/components/parameters/WebhookIdHeader"
+        - $ref: "#/components/parameters/WebhookTimestampHeader"
+        - $ref: "#/components/parameters/WebhookSignatureHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WebhookConversationSlaPayload"
+      responses:
+        "200":
+          description: Any 2xx answer counts as delivered.
+  conversation.sla_breached:
+    post:
+      operationId: webhookConversationSlaBreached
+      summary: An SLA target was breached
+      description: Sent once per target, when it passes its due time unmet.
+      tags: [webhooks]
+      security: []
+      parameters:
+        - $ref: "#/components/parameters/WebhookIdHeader"
+        - $ref: "#/components/parameters/WebhookTimestampHeader"
+        - $ref: "#/components/parameters/WebhookSignatureHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WebhookConversationSlaPayload"
+      responses:
+        "200":
+          description: Any 2xx answer counts as delivered.
 components:
   securitySchemes:
     session:
@@ -18857,6 +19107,13 @@ components:
         format: uuid
     TeamId:
       name: teamId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    SlaPolicyId:
+      name: slaPolicyId
       in: path
       required: true
       schema:
@@ -20511,7 +20768,7 @@ components:
           description: An e-mail when it is still unread after `email_delay_minutes`.
     NotificationEvents:
       type: object
-      required: [new_live_conversation, new_async_conversation, message_in_my_conversation, message_in_unassigned_conversation, assigned_to_me, mentioned]
+      required: [new_live_conversation, new_async_conversation, message_in_my_conversation, message_in_unassigned_conversation, assigned_to_me, mentioned, sla_warning, sla_breached]
       properties:
         new_live_conversation:
           $ref: "#/components/schemas/NotificationChannels"
@@ -20524,6 +20781,10 @@ components:
         assigned_to_me:
           $ref: "#/components/schemas/NotificationChannels"
         mentioned:
+          $ref: "#/components/schemas/NotificationChannels"
+        sla_warning:
+          $ref: "#/components/schemas/NotificationChannels"
+        sla_breached:
           $ref: "#/components/schemas/NotificationChannels"
     NotificationEventsUpdate:
       type: object
@@ -20540,6 +20801,10 @@ components:
         assigned_to_me:
           $ref: "#/components/schemas/NotificationChannels"
         mentioned:
+          $ref: "#/components/schemas/NotificationChannels"
+        sla_warning:
+          $ref: "#/components/schemas/NotificationChannels"
+        sla_breached:
           $ref: "#/components/schemas/NotificationChannels"
     NotificationSettings:
       type: object
@@ -20599,7 +20864,7 @@ components:
         event:
           type: string
           description: What caused it (see the `notifications` tag), or `test`.
-          enum: [new_live_conversation, new_async_conversation, message_in_my_conversation, message_in_unassigned_conversation, assigned_to_me, mentioned, test]
+          enum: [new_live_conversation, new_async_conversation, message_in_my_conversation, message_in_unassigned_conversation, assigned_to_me, mentioned, sla_warning, sla_breached, test]
         title:
           type: string
           description: The inbox name and the contact's name.
@@ -21717,7 +21982,7 @@ components:
           format: int64
     WebhookEventType:
       type: string
-      enum: [conversation.created, conversation.updated, conversation.rated, conversation.trashed, conversation.restored, conversation.deleted, message.created, message.redacted, feedback.created, contact.updated, contact.deleted, draft.created, draft.updated, draft.deleted, discussion.created, discussion.post_created, discussion.answered, discussion.updated, subscription.created, subscription.updated, broadcast.updated, analytics.alert, status.component.updated, status.incident.created, status.incident.updated, status.incident.resolved, status.monitor.down, status.monitor.up, help.article.published, help.article.unpublished, help.article.deleted, discussion.stage_changed, changelog.entry.published, changelog.entry.unpublished, changelog.entry.deleted, team.created, team.updated, team.deleted, issue_link.created, issue_link.updated, issue_link.deleted]
+      enum: [conversation.created, conversation.updated, conversation.rated, conversation.trashed, conversation.restored, conversation.deleted, message.created, message.redacted, feedback.created, contact.updated, contact.deleted, draft.created, draft.updated, draft.deleted, discussion.created, discussion.post_created, discussion.answered, discussion.updated, subscription.created, subscription.updated, broadcast.updated, analytics.alert, status.component.updated, status.incident.created, status.incident.updated, status.incident.resolved, status.monitor.down, status.monitor.up, help.article.published, help.article.unpublished, help.article.deleted, discussion.stage_changed, changelog.entry.published, changelog.entry.unpublished, changelog.entry.deleted, team.created, team.updated, team.deleted, issue_link.created, issue_link.updated, issue_link.deleted, conversation.sla_warning, conversation.sla_breached]
     WebhookEndpoint:
       type: object
       required: [id, url, description, events, include_notes, enabled, created_at, updated_at]
@@ -22232,6 +22497,9 @@ components:
           type: string
           format: uuid
           description: The assigned team; absent when none. Independent of `assignee_id`.
+        sla:
+          $ref: "#/components/schemas/ConversationSla"
+          description: The SLA policy that applies and its targets; absent when none does.
         labels:
           type: array
           description: Label ids.
@@ -22652,7 +22920,7 @@ components:
           format: int64
     Stats:
       type: object
-      required: [since, until, replies, closed, first_replies, members, ratings]
+      required: [since, until, replies, closed, first_replies, members, ratings, sla]
       properties:
         since:
           type: string
@@ -22692,6 +22960,8 @@ components:
           description: Per member, by member id.
           items:
             $ref: "#/components/schemas/MemberStats"
+        sla:
+          $ref: "#/components/schemas/SlaStats"
     RatingStats:
       type: object
       description: Ratings contacts gave in the window, in total and per inbox (inboxes without any are left out).
@@ -25739,8 +26009,8 @@ components:
     ConversationEvent:
       type: object
       description: |
-        A conversation was created, or its status, snooze, assignee, priority, labels or subject
-        changed. `conversation.trashed`: it went to the trash, so drop it from every list but the
+        A conversation was created, or its status, snooze, assignee, priority, labels, subject or
+        SLA (`sla`, for example when a target starts, is met or is breached) changed. `conversation.trashed`: it went to the trash, so drop it from every list but the
         Trash view; `conversation.restored`: it came back.
       required: [id, type, workspace_id, inbox_id, conversation_id, created_at, data]
       properties:
@@ -26217,6 +26487,378 @@ components:
           properties:
             data:
               $ref: "#/components/schemas/TeamEventData"
+    SlaTargetName:
+      type: string
+      description: |
+        `first_reply`: from the contact's first message to the first public reply of a member or
+        bot. `next_reply`: from a contact message that follows a reply to the next reply.
+        `resolution`: from the conversation's creation to its first close.
+      enum: [first_reply, next_reply, resolution]
+      x-enum-varnames: [SlaFirstReply, SlaNextReply, SlaResolution]
+    SlaState:
+      type: string
+      description: |
+        A conversation's SLA at a glance. `breached`: a running target is past its due time (it
+        stays `breached` until that target is met, the conversation waits on the contact or
+        closes). `due_soon`: the earliest running target is due within the policy's
+        `warn_minutes`. `on_track`: it is due later, or no target has started. `paused`: nothing
+        runs and a target waits for the conversation to be `open` again. Otherwise `breached` when
+        any target was breached, else `met`.
+      enum: [on_track, due_soon, breached, met, paused]
+      x-enum-varnames: [SlaStateOnTrack, SlaStateDueSoon, SlaStateBreached, SlaStateMet, SlaStatePaused]
+    SlaTargetState:
+      type: string
+      description: |
+        One target: `on_track`, `due_soon` or `breached` while it runs, `paused` while the
+        conversation is `pending` or `snoozed`, `met` when it was met in time, `breached` when it
+        was not (then `met_at` is when it was met late, if it was), `stopped` when the conversation
+        closed before a reply.
+      enum: [on_track, due_soon, breached, met, paused, stopped]
+      x-enum-varnames: [SlaTargetOnTrack, SlaTargetDueSoon, SlaTargetBreached, SlaTargetMet, SlaTargetPaused, SlaTargetStopped]
+    SlaPolicy:
+      type: object
+      description: |
+        Conditions are all-of; an empty list matches anything, and within a list any entry
+        matches. A target without minutes is not tracked.
+      required: [id, name, position, enabled, inbox_ids, channel_kinds, label_ids, priorities, warn_minutes, created_at, updated_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        position:
+          type: integer
+          format: int32
+          description: Its place in the order, from 0.
+        enabled:
+          type: boolean
+        inbox_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+        channel_kinds:
+          type: array
+          description: Conversations without a `channel_kind` never match a non-empty list.
+          items:
+            $ref: "#/components/schemas/ChannelKind"
+        label_ids:
+          type: array
+          description: Matches a conversation with any of these labels.
+          items:
+            type: string
+            format: uuid
+        priorities:
+          type: array
+          items:
+            $ref: "#/components/schemas/Priority"
+        first_reply_minutes:
+          type: integer
+          format: int32
+          description: Business minutes for the first reply; absent when not tracked.
+        next_reply_minutes:
+          type: integer
+          format: int32
+          description: Business minutes for each next reply; absent when not tracked.
+        resolution_minutes:
+          type: integer
+          format: int32
+          description: Business minutes from creation to the first close; absent when not tracked.
+        warn_minutes:
+          type: integer
+          format: int32
+          description: How long before a due time `conversation.sla_warning` is sent; `0` sends none.
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    SlaPolicyCreate:
+      type: object
+      description: At least one of the three targets is required (`400 validation_failed`).
+      required: [name]
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+        enabled:
+          type: boolean
+          default: true
+        inbox_ids:
+          type: array
+          maxItems: 100
+          description: Inboxes of the workspace (`400 validation_failed` otherwise).
+          items:
+            type: string
+            format: uuid
+        channel_kinds:
+          type: array
+          maxItems: 4
+          items:
+            $ref: "#/components/schemas/ChannelKind"
+        label_ids:
+          type: array
+          maxItems: 50
+          description: Labels of the workspace (`400 validation_failed` otherwise).
+          items:
+            type: string
+            format: uuid
+        priorities:
+          type: array
+          maxItems: 4
+          items:
+            $ref: "#/components/schemas/Priority"
+        first_reply_minutes:
+          type: integer
+          format: int32
+          minimum: 1
+          maximum: 525600
+        next_reply_minutes:
+          type: integer
+          format: int32
+          minimum: 1
+          maximum: 525600
+        resolution_minutes:
+          type: integer
+          format: int32
+          minimum: 1
+          maximum: 525600
+        warn_minutes:
+          type: integer
+          format: int32
+          minimum: 0
+          maximum: 1440
+          default: 15
+    SlaPolicyUpdate:
+      type: object
+      description: Only what is sent changes; `null` stops tracking a target. At least one target must remain.
+      minProperties: 1
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+        enabled:
+          type: boolean
+        inbox_ids:
+          type: array
+          maxItems: 100
+          items:
+            type: string
+            format: uuid
+        channel_kinds:
+          type: array
+          maxItems: 4
+          items:
+            $ref: "#/components/schemas/ChannelKind"
+        label_ids:
+          type: array
+          maxItems: 50
+          items:
+            type: string
+            format: uuid
+        priorities:
+          type: array
+          maxItems: 4
+          items:
+            $ref: "#/components/schemas/Priority"
+        first_reply_minutes:
+          type: [integer, "null"]
+          format: int32
+          minimum: 1
+          maximum: 525600
+        next_reply_minutes:
+          type: [integer, "null"]
+          format: int32
+          minimum: 1
+          maximum: 525600
+        resolution_minutes:
+          type: [integer, "null"]
+          format: int32
+          minimum: 1
+          maximum: 525600
+        warn_minutes:
+          type: integer
+          format: int32
+          minimum: 0
+          maximum: 1440
+    SlaPolicyList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/SlaPolicy"
+    SlaPolicyOrder:
+      type: object
+      required: [ids]
+      properties:
+        ids:
+          type: array
+          minItems: 1
+          maxItems: 100
+          items:
+            type: string
+            format: uuid
+    ConversationSla:
+      type: object
+      required: [policy_id, state, targets]
+      properties:
+        policy_id:
+          type: string
+          format: uuid
+        due_at:
+          type: string
+          format: date-time
+          description: The earliest due time of a running target; absent when none runs. `sort=sla_due` orders by it.
+        state:
+          $ref: "#/components/schemas/SlaState"
+        targets:
+          type: array
+          description: The targets that started, in the order first reply, next reply, resolution. Only the latest next-reply target is kept.
+          items:
+            $ref: "#/components/schemas/ConversationSlaTarget"
+    ConversationSlaTarget:
+      type: object
+      required: [target, state, started_at]
+      properties:
+        target:
+          $ref: "#/components/schemas/SlaTargetName"
+        state:
+          $ref: "#/components/schemas/SlaTargetState"
+        started_at:
+          type: string
+          format: date-time
+        due_at:
+          type: string
+          format: date-time
+          description: While it runs.
+        remaining_seconds:
+          type: integer
+          format: int64
+          description: While it is paused, the business seconds that were left.
+        met_at:
+          type: string
+          format: date-time
+        breached_at:
+          type: string
+          format: date-time
+        warned_at:
+          type: string
+          format: date-time
+    SlaStats:
+      type: object
+      description: |
+        SLA targets met and breached in the window, in total, per inbox and per member (the
+        conversation's assignee when the outcome happened; unassigned outcomes count only in the
+        totals and per inbox).
+      required: [met, breached, inboxes, members]
+      properties:
+        met:
+          type: integer
+          format: int64
+        breached:
+          type: integer
+          format: int64
+        inboxes:
+          type: array
+          items:
+            $ref: "#/components/schemas/InboxSlaStats"
+        members:
+          type: array
+          items:
+            $ref: "#/components/schemas/MemberSlaStats"
+    InboxSlaStats:
+      type: object
+      required: [inbox_id, met, breached]
+      properties:
+        inbox_id:
+          type: string
+          format: uuid
+        met:
+          type: integer
+          format: int64
+        breached:
+          type: integer
+          format: int64
+    MemberSlaStats:
+      type: object
+      required: [member_id, met, breached]
+      properties:
+        member_id:
+          type: string
+          format: uuid
+        met:
+          type: integer
+          format: int64
+        breached:
+          type: integer
+          format: int64
+    ConversationSlaEvent:
+      type: object
+      description: |
+        `conversation.sla_warning`: a target of the conversation is due within the policy's
+        `warn_minutes`. `conversation.sla_breached`: it passed its due time unmet. Each is sent
+        once per target; `conversation.updated` follows a breach with the new `sla`.
+      required: [id, type, workspace_id, inbox_id, conversation_id, created_at, data]
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+          enum: [conversation.sla_warning, conversation.sla_breached]
+          x-enum-varnames: [ConversationSlaWarningEvent, ConversationSlaBreachedEvent]
+        workspace_id:
+          type: string
+          format: uuid
+        inbox_id:
+          type: string
+          format: uuid
+        conversation_id:
+          type: string
+          format: uuid
+        created_at:
+          type: string
+          format: date-time
+        data:
+          $ref: "#/components/schemas/ConversationSlaEventData"
+    ConversationSlaEventData:
+      type: object
+      required: [target, due_at, conversation]
+      properties:
+        target:
+          $ref: "#/components/schemas/SlaTargetName"
+        due_at:
+          type: string
+          format: date-time
+        conversation:
+          $ref: "#/components/schemas/Conversation"
+    WebhookConversationSlaData:
+      type: object
+      required: [target, due_at, conversation, contact]
+      properties:
+        target:
+          $ref: "#/components/schemas/SlaTargetName"
+        due_at:
+          type: string
+          format: date-time
+        conversation:
+          $ref: "#/components/schemas/Conversation"
+        contact:
+          $ref: "#/components/schemas/WebhookContact"
+    WebhookConversationSlaPayload:
+      allOf:
+        - $ref: "#/components/schemas/WebhookPayloadBase"
+        - type: object
+          required: [data]
+          properties:
+            data:
+              $ref: "#/components/schemas/WebhookConversationSlaData"
     InboxAccessVia:
       type: string
       description: "`direct`: the member has their own grant (and may have teams' too); `team`: only through teams."
@@ -26334,6 +26976,7 @@ components:
         - $ref: "#/components/schemas/InboxDeletedEvent"
         - $ref: "#/components/schemas/InboxAccessChangedEvent"
         - $ref: "#/components/schemas/TeamEvent"
+        - $ref: "#/components/schemas/ConversationSlaEvent"
         - $ref: "#/components/schemas/ConversationReadEvent"
         - $ref: "#/components/schemas/ContactReadEvent"
         - $ref: "#/components/schemas/ConversationPinEvent"
@@ -26373,6 +27016,8 @@ components:
           team.created: "#/components/schemas/TeamEvent"
           team.updated: "#/components/schemas/TeamEvent"
           team.deleted: "#/components/schemas/TeamEvent"
+          conversation.sla_warning: "#/components/schemas/ConversationSlaEvent"
+          conversation.sla_breached: "#/components/schemas/ConversationSlaEvent"
           conversation.read: "#/components/schemas/ConversationReadEvent"
           contact.read: "#/components/schemas/ContactReadEvent"
           conversation.pin: "#/components/schemas/ConversationPinEvent"
@@ -26440,6 +27085,7 @@ components:
         - $ref: "#/components/schemas/InboxDeletedEvent"
         - $ref: "#/components/schemas/InboxAccessChangedEvent"
         - $ref: "#/components/schemas/TeamEvent"
+        - $ref: "#/components/schemas/ConversationSlaEvent"
         - $ref: "#/components/schemas/ConversationReadEvent"
         - $ref: "#/components/schemas/ContactReadEvent"
         - $ref: "#/components/schemas/ConversationPinEvent"
@@ -26499,6 +27145,8 @@ components:
           team.created: "#/components/schemas/TeamEvent"
           team.updated: "#/components/schemas/TeamEvent"
           team.deleted: "#/components/schemas/TeamEvent"
+          conversation.sla_warning: "#/components/schemas/ConversationSlaEvent"
+          conversation.sla_breached: "#/components/schemas/ConversationSlaEvent"
           conversation.read: "#/components/schemas/ConversationReadEvent"
           contact.read: "#/components/schemas/ContactReadEvent"
           conversation.pin: "#/components/schemas/ConversationPinEvent"

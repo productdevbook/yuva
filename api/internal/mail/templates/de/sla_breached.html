@@ -1,0 +1,4 @@
+{{template "heading" "Ein SLA-Ziel wurde verfehlt"}}
+<p style="margin:0 0 16px 0;">Die Unterhaltung mit {{if .Contact}}<strong>{{.Contact}}</strong>{{else}}einem Besucher{{end}} in <strong>{{.Inbox}}</strong>{{if .Subject}} zu „{{.Subject}}“{{end}} hat ihr SLA-Ziel für die {{if eq .Target "first_reply"}}Erstantwort{{else if eq .Target "next_reply"}}nächste Antwort{{else}}Lösung{{end}} verfehlt, das um {{.Due}} fällig war.</p>
+{{template "button" (button .URL "Unterhaltung öffnen")}}
+{{define "sla_breached.footer"}}Sie erhalten diese E-Mail, weil die Unterhaltung Ihnen oder Ihrem Team zugewiesen ist. <a href="{{.SettingsURL}}" target="_blank" style="color:#71717a;text-decoration:underline;">Wählen Sie, welche E-Mails Sie erhalten</a>{{end}}

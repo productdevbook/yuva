@@ -59,6 +59,7 @@ var webhookEventTypes = []oas.WebhookEventType{
 	oas.WebhookEventTypeChangelogEntryPublished, oas.WebhookEventTypeChangelogEntryUnpublished, oas.WebhookEventTypeChangelogEntryDeleted,
 	oas.WebhookEventTypeTeamCreated, oas.WebhookEventTypeTeamUpdated, oas.WebhookEventTypeTeamDeleted,
 	oas.WebhookEventTypeIssueLinkCreated, oas.WebhookEventTypeIssueLinkUpdated, oas.WebhookEventTypeIssueLinkDeleted,
+	oas.WebhookEventTypeConversationSlaWarning, oas.WebhookEventTypeConversationSlaBreached,
 }
 
 func webhookSecretContext(workspaceID, endpointID uuid.UUID) []byte {
@@ -507,7 +508,7 @@ func webhookSource(e pendingEvent) bool {
 		statusEventComponent, statusEventCreated, statusEventUpdated, statusEventResolved, statusEventMonitorDown, statusEventMonitorUp,
 		helpEventPublished, helpEventUnpublish, helpEventDeleted,
 		changelogEventPublished, changelogEventUnpublished, changelogEventDeleted,
-		eventTeamCreated, eventTeamUpdated, eventTeamDeleted,
+		eventTeamCreated, eventTeamUpdated, eventTeamDeleted, eventSLAWarning, eventSLABreached,
 		eventIssueLinkCreated, eventIssueLinkUpdated, eventIssueLinkDeleted:
 		return true
 	case realtime.ContactDeleted:
@@ -703,6 +704,19 @@ func (s *Server) webhookPayloads(ctx context.Context, q *store.Queries, ev store
 			})})
 		}
 		return out, []uuid.UUID{inbox}, nil
+	case eventSLAWarning, eventSLABreached:
+		var d oas.ConversationSlaEventData
+		if err := json.Unmarshal(ev.Payload, &d); err != nil {
+			return nil, nil, err
+		}
+		contact, err := s.webhookContact(ctx, q, ws, d.Conversation.ContactId)
+		if err != nil || contact == nil {
+			return nil, nil, err
+		}
+		inbox := d.Conversation.InboxId
+		return []webhookOut{{typ: ev.Type, body: payload(ev.Type, &inbox, oas.WebhookConversationSlaData{
+			Target: d.Target, DueAt: d.DueAt, Conversation: d.Conversation, Contact: *contact,
+		})}}, []uuid.UUID{inbox}, nil
 	case realtime.MessageCreated, realtime.MessageRedacted, realtime.DraftCreated, realtime.DraftUpdated, realtime.DraftDeleted:
 		var m oas.Message
 		if err := json.Unmarshal(ev.Payload, &m); err != nil {

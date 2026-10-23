@@ -1,0 +1,7 @@
+{{.Inbox}}: the SLA target for the {{if eq .Target "first_reply"}}first reply{{else if eq .Target "next_reply"}}next reply{{else}}resolution{{end}} was missed
+
+The conversation with {{if .Contact}}{{.Contact}}{{else}}a visitor{{end}}{{if .Subject}} about "{{.Subject}}"{{end}} missed its SLA target for the {{if eq .Target "first_reply"}}first reply{{else if eq .Target "next_reply"}}next reply{{else}}resolution{{end}}, which was due at {{.Due}}.
+
+Open the conversation: {{.URL}}
+
+You get this e-mail because the conversation is yours or your team's. Choose which e-mails you get: {{.SettingsURL}}

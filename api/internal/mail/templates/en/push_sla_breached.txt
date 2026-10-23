@@ -1,0 +1,3 @@
+{{.Inbox}} · {{if .Contact}}{{.Contact}}{{else}}Visitor{{end}}
+
+The SLA target for the {{if eq .Target "first_reply"}}first reply{{else if eq .Target "next_reply"}}next reply{{else}}resolution{{end}} was missed (due {{.Due}})

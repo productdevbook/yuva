@@ -1,0 +1,3 @@
+{{.Inbox}} · {{if .Contact}}{{.Contact}}{{else}}Besucher{{end}}
+
+Das SLA-Ziel für die {{if eq .Target "first_reply"}}Erstantwort{{else if eq .Target "next_reply"}}nächste Antwort{{else}}Lösung{{end}} ist um {{.Due}} fällig

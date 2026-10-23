@@ -112,6 +112,9 @@ func (s *Server) DeleteLabel(ctx context.Context, req oas.DeleteLabelRequestObje
 		if n == 0 {
 			return errLabelGone
 		}
+		if err := q.StripLabelFromSLAPolicies(ctx, store.StripLabelFromSLAPoliciesParams{WorkspaceID: p.workspaceID, LabelID: req.LabelId, Now: s.now()}); err != nil {
+			return err
+		}
 		return q.StripLabelFromMacros(ctx, store.StripLabelFromMacrosParams{WorkspaceID: p.workspaceID, LabelID: req.LabelId.String()})
 	})
 	if err != nil {

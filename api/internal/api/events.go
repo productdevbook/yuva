@@ -76,6 +76,9 @@ func (s *Server) inTx(ctx context.Context, workspaceID uuid.UUID, fn func(q *sto
 		if err := fn(q, &ev); err != nil {
 			return err
 		}
+		if err := s.syncSLA(ctx, q, workspaceID, &ev); err != nil {
+			return err
+		}
 		boards = ev.boards
 		if len(ev.jobs) > 0 {
 			if _, err := s.jobs.InsertManyTx(ctx, tx, ev.jobs); err != nil {
