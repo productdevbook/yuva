@@ -296,6 +296,8 @@ With `inbox_id` and no `channel_id`, `create_migration` uses the inbox's e-mail 
 
 `list_custom_fields` returns the workspace's [custom fields](custom-fields.md) (`object`, `key`, `name`, `type`, `options`, `required_on_close`), optionally for `object` `conversation` or `contact`. `set_conversation_fields` takes `conversation_id` and `fields`, values by key (`null` clears one); a value that does not fit answers `field_invalid`. `search_conversations` takes `fields`, an object of key and value, and conversations carry `fields`. Closing with `set_status` or `bulk_update` while a required field is empty answers `field_required`. No tool defines fields.
 
+`search_conversations` takes `sla_state` (`on_track`, `due_soon`, `breached`, `met` or `paused`) and `sort` (`last_activity`, or `sla_due` for the earliest [SLA](sla.md) due time first), and conversations carry `sla` when a policy applies. No tool manages policies.
+
 ### Resources and prompts
 
 | Kind | Items |

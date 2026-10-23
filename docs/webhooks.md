@@ -63,6 +63,7 @@ or out of order: skip a `webhook-id` you have handled and order by `timestamp`.
 | `help.article.published`, `help.article.unpublished`, `help.article.deleted` | A [help center](help-center.md) article translation was published, unpublished, or deleted (a whole article when `locale` is absent) | `center_id`, `article_id`, `number`, `locale`, `title` and `url` when published |
 | `changelog.entry.published`, `changelog.entry.unpublished`, `changelog.entry.deleted` | A [What's new](whats-new.md) entry was published (also on schedule, or when a published translation was replaced), unpublished, or a published entry deleted | `changelog` (`id`, `name`, `url`), `entry` (`id`, `number`, `labels`, `published_at`, `translations` with `locale`, `title`, `url`) |
 | `discussion.stage_changed` | A [roadmap](roadmap-board.md) idea was moved to another stage | `discussion`, `from`, `to`, `linked` (feedback linked to the idea) |
+| `conversation.sla_warning`, `conversation.sla_breached` | A target of an [SLA policy](sla.md#7-warnings-and-breaches) is due soon, or was breached; once per target | `target`, `due_at`, `conversation`, `contact` |
 | `team.created`, `team.updated`, `team.deleted` | A team was created, changed (name, description, members, inboxes) or deleted; see [Teams](headless.md#teams) | the team (`id`, `name`, `description`, `member_ids`, `inbox_ids`), and `removed_member_ids` on `team.updated` |
 
 Every body has `type`, `timestamp` (when it happened), `workspace_id`, `inbox_id` (not on contact

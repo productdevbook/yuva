@@ -174,6 +174,14 @@ hâlâ "üye yok" demektir. Toplu güncelleme ve `POST /v1/conversations` ekip a
 [MCP](mcp.md) asistanları `list_teams`, `team_id` veya `remove_team` ile `assign` ve `team_id` ile
 `search_conversations` kullanır.
 
+## SLA politikaları
+
+Mesai saatlerine göre yanıt süresi hedefleri, uyarılar ve ihlaller: [SLA politikaları](sla.md). Bunları
+`GET`, `POST /v1/sla-policies`, `GET`, `PATCH`, `DELETE /v1/sla-policies/{slaPolicyId}` ve
+`PUT /v1/sla-policies/order` ile yönetin (okumak için `inboxes:read`, yazmak için `inboxes:manage`; sahipler,
+yöneticiler ve gelen kutularıyla sınırlı olmayan anahtarlar). Konuşmalar `sla` taşır, liste `sort=sla_due` ve
+`sla_state` alır, `conversation.sla_warning` ile `conversation.sla_breached` olay akışına ve webhook'lara ulaşır.
+
 ## Özel alanlar
 
 Konuşmalarda ve kişilerde türlü değerler, listede filtreler ve bir değer olmadan kapatmayı engelleyen bir kural: [Özel alanlar](custom-fields.md). Tanımlamak için anahtarın `fields:manage` yetkisi olmalı.

@@ -271,6 +271,8 @@ Hiçbir taşıma aracı şifre almaz: `create_migration`, uygulama şifresini gi
 
 `list_custom_fields`, çalışma alanının [özel alanlarını](custom-fields.md) döndürür (`object`, `key`, `name`, `type`, `options`, `required_on_close`); isteğe bağlı `object` olarak `conversation` veya `contact` verilebilir. `set_conversation_fields`, `conversation_id` ve `fields` alır, yani anahtara göre değerler (`null` birini temizler); uymayan bir değer `field_invalid` döner. `search_conversations`, anahtar ve değerden oluşan bir nesne olan `fields` alır ve konuşmalar `fields` taşır. Zorunlu bir alan boşken `set_status` veya `bulk_update` ile kapatmak `field_required` döner. Hiçbir araç alan tanımlamaz.
 
+`search_conversations`, `sla_state` (`on_track`, `due_soon`, `breached`, `met` veya `paused`) ve `sort` alır (`last_activity` ya da en erken [SLA](sla.md) son tarihi önce gelsin diye `sla_due`); bir politika uygulandığında konuşmalar `sla` taşır. Politikaları yöneten bir araç yoktur.
+
 ### Kaynaklar ve prompt'lar
 
 | Tür | Öğeler |

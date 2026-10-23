@@ -180,6 +180,15 @@ bedeutet weiterhin „kein Mitglied“, egal welches Team. Die Sammelaktualisier
 [MCP](mcp.md)-Assistenten nutzen `list_teams`, `assign` mit `team_id` oder `remove_team` und
 `search_conversations` mit `team_id`.
 
+## SLA-Richtlinien
+
+Antwortzeit-Ziele mit Geschäftszeiten, Warnungen und Verstößen: [SLA-Richtlinien](sla.md). Verwalten Sie sie
+mit `GET`, `POST /v1/sla-policies`, `GET`, `PATCH`, `DELETE /v1/sla-policies/{slaPolicyId}` und
+`PUT /v1/sla-policies/order` (`inboxes:read` zum Lesen, `inboxes:manage` zum Schreiben; Inhaber, Admins und
+nicht auf Posteingänge beschränkte Schlüssel). Unterhaltungen tragen `sla`, die Liste nimmt `sort=sla_due`
+und `sla_state`, und `conversation.sla_warning` und `conversation.sla_breached` erreichen Event-Feed und
+Webhooks.
+
 ## Benutzerdefinierte Felder
 
 Typisierte Werte an Unterhaltungen und Kontakten, Filter in der Liste und eine Regel, die das Schließen ohne Wert verhindert: siehe [Benutzerdefinierte Felder](custom-fields.md). Zum Definieren braucht der Schlüssel `fields:manage`.

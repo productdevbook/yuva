@@ -171,6 +171,14 @@ field, and `assignee=unassigned` still means "no member" whatever the team. Bulk
 [MCP](mcp.md) assistants use `list_teams`, `assign` with `team_id` or `remove_team`, and
 `search_conversations` with `team_id`.
 
+## SLA policies
+
+Response-time targets with business hours, warnings and breaches: see [SLA policies](sla.md). Manage them
+with `GET`, `POST /v1/sla-policies`, `GET`, `PATCH`, `DELETE /v1/sla-policies/{slaPolicyId}` and
+`PUT /v1/sla-policies/order` (`inboxes:read` to read, `inboxes:manage` to write; owners, admins and keys
+not limited to inboxes). Conversations carry `sla`, the list takes `sort=sla_due` and `sla_state`, and
+`conversation.sla_warning` and `conversation.sla_breached` reach the event feed and webhooks.
+
 ## Custom fields
 
 Typed values on conversations and contacts, filters on the list, and a rule that blocks closing without one: see [Custom fields](custom-fields.md). The key needs `fields:manage` to define them.

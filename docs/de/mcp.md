@@ -275,6 +275,8 @@ Mit `inbox_id` und ohne `channel_id` verwendet `create_migration` den E-Mail-Kan
 
 `list_custom_fields` liefert die [benutzerdefinierten Felder](custom-fields.md) des Workspace (`object`, `key`, `name`, `type`, `options`, `required_on_close`), optional für `object` `conversation` oder `contact`. `set_conversation_fields` nimmt `conversation_id` und `fields`, Werte nach Schlüssel (`null` leert einen); ein Wert, der nicht passt, antwortet mit `field_invalid`. `search_conversations` nimmt `fields`, ein Objekt aus Schlüssel und Wert, und Unterhaltungen tragen `fields`. Schließen mit `set_status` oder `bulk_update`, während ein Pflichtfeld leer ist, antwortet mit `field_required`. Kein Tool definiert Felder.
 
+`search_conversations` nimmt `sla_state` (`on_track`, `due_soon`, `breached`, `met` oder `paused`) und `sort` (`last_activity` oder `sla_due` für die früheste [SLA](sla.md)-Fälligkeit zuerst); Unterhaltungen tragen `sla`, wenn eine Richtlinie gilt. Kein Werkzeug verwaltet Richtlinien.
+
 ### Ressourcen und Prompts
 
 | Art | Einträge |

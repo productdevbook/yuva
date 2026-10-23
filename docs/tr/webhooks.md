@@ -65,6 +65,7 @@ göre sıralayın.
 | `help.article.published`, `help.article.unpublished`, `help.article.deleted` | Bir [yardım merkezi](help-center.md) makale çevirisi yayınlandı, yayından kaldırıldı ya da silindi (`locale` yoksa makalenin tamamı) | `center_id`, `article_id`, `number`, `locale`; yayınlandığında `title` ve `url` |
 | `changelog.entry.published`, `changelog.entry.unpublished`, `changelog.entry.deleted` | Bir [Yenilikler](whats-new.md) kaydı yayınlandı (zamanlamayla ya da yayındaki bir çeviri değiştirildiğinde de), yayından kaldırıldı ya da yayındaki bir kayıt silindi | `changelog` (`id`, `name`, `url`), `entry` (`id`, `number`, `labels`, `published_at`, `translations`: `locale`, `title`, `url`) |
 | `discussion.stage_changed` | Bir [yol haritası](roadmap-board.md) fikri başka bir aşamaya taşındı | `discussion`, `from`, `to`, `linked` (fikre bağlı geri bildirim sayısı) |
+| `conversation.sla_warning`, `conversation.sla_breached` | Bir [SLA politikası](sla.md#7-uyarılar-ve-ihlaller) hedefinin süresi dolmak üzere ya da hedef kaçırıldı; hedef başına bir kez | `target`, `due_at`, `conversation`, `contact` |
 | `team.created`, `team.updated`, `team.deleted` | Bir ekip oluşturuldu, değişti (ad, açıklama, üyeler, gelen kutuları) ya da silindi; bkz. [Ekipler](headless.md#ekipler) | ekip (`id`, `name`, `description`, `member_ids`, `inbox_ids`) ve `team.updated` için `removed_member_ids` |
 
 Her gövdede `type`, `timestamp` (olayın zamanı), `workspace_id`, `inbox_id` (kişi olaylarında yok)
