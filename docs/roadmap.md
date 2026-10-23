@@ -541,15 +541,18 @@ before M26.
 
 ## M27 — Scale and safety
 
-Status: planned; items Y-134 to Y-137 in `backlog.md`. Part of 0.1.0.
+Status: planned; items Y-134 to Y-137, Y-178 and Y-179 in `backlog.md`. Part of 0.1.0.
 
 - Rate limits counted in Postgres so several replicas keep them; a workspace audit log; attachment
-  limits per channel; OpenTelemetry tracing.
+  limits per channel; OpenTelemetry tracing; deleting a conversation through a 30-day trash and
+  redacting a single message.
 
 Accept: two replicas on one database refuse the same request the same way one does; an owner reads who
 created, revoked and deleted what in Settings › Audit log, with no content or secret in it; a chat
 channel with a 2 MB limit refuses a 3 MB file in the widget; a trace of a reply shows the request, the
-job and the SMTP send.
+job and the SMTP send; an owner trashes a conversation, restores it, trashes it again and it is gone
+for good after 30 days, while an agent cannot delete; a redacted message shows as removed in the panel
+and the widget and its attachment no longer downloads.
 
 ## M28 — Team workflow
 
@@ -690,7 +693,7 @@ Accept: each run reports pass with evidence; each failure becomes its own backlo
 | M24 Tidy | 9 (+1 withdrawn) | Y-117–Y-125, Y-133 | 1 | – | 2 | 6 | – | – |
 | M25 Acceptance | 3 | Y-126–Y-128 | – | – | – | – | 3 | – |
 | M26 Release | 4 | Y-129–Y-132 | 1 | – | – | 1 | – | 2 |
-| M27 Scale and safety | 4 | Y-134–Y-137 | 4 | – | – | – | – | – |
+| M27 Scale and safety | 6 | Y-134–Y-137, Y-178–Y-179 | 6 | – | – | – | – | – |
 | M28 Team workflow | 7 | Y-138–Y-144 | 5 | 2 | – | – | – | – |
 | M29 E-mail and reports | 3 | Y-145–Y-147 | 2 | 1 | – | – | – | – |
 | M30 Own domains and content | 3 | Y-148–Y-150 | 3 | – | – | – | – | – |

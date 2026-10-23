@@ -242,6 +242,34 @@ a withdrawn item stays here marked withdrawn. Work before `Y-117` is tracked in 
   - Log lines carry the trace id when tracing is on.
   - `docs/operations.md` and `docs/configuration.md` (with `tr`, `de`) document it.
 
+### Y-178 · Deleting a conversation
+
+- **Area** api · **Owner** yuva-api, then yuva-panel · **Priority** P1 · **Depends on** Y-135 · **Chapters** architecture › Privacy and data
+- **Acceptance**
+  - `DELETE /v1/conversations/{id}` moves a conversation to the trash (`trashed_at`, the member who
+    did it); `POST /v1/conversations/{id}/restore` brings it back within 30 days; after 30 days the
+    retention job deletes it for good with its messages, attachments, raw e-mails and stored files.
+  - In a support inbox only owners, admins and keys with a new `conversations:delete` scope may delete;
+    agents get `403 forbidden`. Bulk delete through `/v1/conversations/bulk`, up to 100.
+  - A trashed conversation is gone everywhere a contact or a list reads it (`/client/v1`, counts,
+    search, stats, MCP) and shows only in the panel's Trash view.
+  - `conversation.trashed`, `conversation.restored` and `conversation.deleted` as events and webhook
+    types; each step in the audit log.
+  - A new message from the contact in a trashed conversation starts a new conversation.
+
+### Y-179 · Redacting a message
+
+- **Area** api · **Owner** yuva-api, then yuva-panel · **Priority** P1 · **Depends on** Y-135 · **Chapters** architecture › Privacy and data
+- **Acceptance**
+  - `POST /v1/messages/{id}/redact` removes a message's text, HTML, attachments and stored files, and
+    for e-mail its raw source, in one transaction plus a storage job; the message stays in the thread
+    as "Removed by <member>" with its time.
+  - Owners, admins and the member who wrote it may redact; keys need `messages:redact`.
+  - The contact sees the removed line in the widget and the SDKs; `message.redacted` reaches realtime
+    and webhooks without the old content.
+  - The panel says that a sent e-mail cannot be taken back from the recipient's mailbox.
+  - Each redaction in the audit log, without the removed content.
+
 ## M28 — Team workflow
 
 ### Y-138 · Teams
@@ -622,7 +650,7 @@ a withdrawn item stays here marked withdrawn. Work before `Y-117` is tracked in 
 
 ### Y-164 · Mail section in the panel
 
-- **Area** web · **Owner** yuva-panel · **Priority** P0 · **Depends on** Y-163 · **Chapters** architecture › Team mail
+- **Area** web · **Owner** yuva-panel · **Priority** P0 · **Depends on** Y-163, Y-178 · **Chapters** architecture › Team mail
 - **Acceptance**
   - A Mail entry in the rail (`/mail`, its own `G` shortcut, an unread badge) for members with a
     `mail` inbox; Conversations and its counts leave `mail` inboxes out, as Feedback is left out today.
@@ -630,7 +658,7 @@ a withdrawn item stays here marked withdrawn. Work before `Y-117` is tracked in 
     them; rows read as mail (sender, subject, first line, attachment mark, time), the thread as stacked
     messages with headers, not chat bubbles.
   - Archive, Trash, Star, Snooze, Mark unread with undo; a starred and a trashed state per conversation
-    (`starred_by` per member, `trashed_at` emptied after 30 days by the retention job).
+    (`starred_by` per member, `trashed_at`, emptied after 30 days, from Y-178).
   - en, tr, de and the other panel catalogs; screenshots (WebP) at desktop and phone width.
 
 ### Y-165 · Choosing support, mail or both

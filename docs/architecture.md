@@ -3312,6 +3312,12 @@ now; per-channel limits can narrow them later (#136).
   everything. An hourly River job deletes closed conversations whose last change and
   last activity are older than that, with their messages, attachments and stored files, and
   removes raw e-mails older than that from storage (the parsed message stays).
+- Deleting one conversation or one message (planned, #178 and #179): a conversation goes to a trash
+  for 30 days, restorable, then the retention job deletes it with its files; in a support inbox only
+  owners, admins and keys with `conversations:delete` may do it, never agents, so a mistake cannot be
+  hidden. A single message is redacted, not deleted: its text, attachments and raw e-mail go, and a
+  "Removed by" line keeps the thread readable. A sent e-mail cannot be taken back from the recipient.
+  Every step is in the audit log, without the removed content.
 - Imported history (see "Moving to Yuva") is the workspace's data like any conversation: contact
   export and deletion, retention (counted from the import) and workspace deletion cover it. Source
   credentials are deleted when the migration ends.
