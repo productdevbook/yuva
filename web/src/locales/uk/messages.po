@@ -1943,6 +1943,10 @@ msgstr "Додав(ла) вебхук на {host}"
 msgid "Added by the team"
 msgstr "Додано командою"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Added the domain {domain} for single sign-on"
+msgstr "Додав(ла) домен {domain} для єдиного входу"
+
 #: src/features/conversation/Feedback.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/setup/email/EmailLayout.tsx
@@ -2433,6 +2437,10 @@ msgstr "Термін цілі SLA незабаром спливе"
 #: src/features/settings/notifications/events.ts
 msgid "An SLA target was breached"
 msgstr "Ціль SLA порушено"
+
+#: src/features/settings/audit/sentence.ts
+msgid "an unknown person"
+msgstr "невідома особа"
 
 #: src/features/migrations/UploadStep.tsx
 msgid "An upload was cut off: {count} parts, {size}, are already on the server."
@@ -3635,6 +3643,10 @@ msgid "Changed how long conversations are kept from {from} to {to}"
 msgstr "Змінив(ла) термін зберігання розмов з {from} на {to}"
 
 #: src/features/settings/audit/sentence.ts
+msgid "Changed the {protocol} single sign-on provider"
+msgstr "Змінив(ла) провайдера єдиного входу {protocol}"
+
+#: src/features/settings/audit/sentence.ts
 msgid "Changed the automation rule {name}"
 msgstr "Змінив(ла) правило автоматизації {name}"
 
@@ -3649,6 +3661,14 @@ msgstr "Змінив(ла) поштовий обліковий запис або
 #: src/features/settings/audit/sentence.ts
 msgid "Changed the role of {person} from {from} to {to}"
 msgstr "Змінив(ла) роль користувача {person} з {from} на {to}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the settings of an issue tracker connection"
+msgstr "Змінив(ла) налаштування підключення до трекера завдань"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the single sign-on settings"
+msgstr "Змінив(ла) налаштування єдиного входу"
 
 #: src/features/settings/audit/sentence.ts
 msgid "Changed the webhook to {host}"
@@ -4371,6 +4391,14 @@ msgstr "Підключив {by}, {since}"
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Connected on {since}"
 msgstr "Підключено {since}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Connected the issue tracker {name} ({provider})"
+msgstr "Підключив(ла) трекер завдань {name} ({provider})"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Connected the Slack workspace {slackTeam}"
+msgstr "Підключив(ла) робочий простір Slack {slackTeam}"
 
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Connected to {address}"
@@ -5485,6 +5513,18 @@ msgstr "Відключив(ла) {client}"
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "Disconnected {name}"
 msgstr "Disconnected {name}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Disconnected Slack"
+msgstr "Від’єднав(ла) Slack"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Disconnected Slack because the app was removed in Slack"
+msgstr "Від’єднав(ла) Slack, бо застосунок видалили в Slack"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Disconnected the issue tracker {name} ({provider})"
+msgstr "Від’єднав(ла) трекер завдань {name} ({provider})"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/DocsPage.tsx
@@ -8748,6 +8788,10 @@ msgstr "Linked {0}"
 msgid "Linked {key}"
 msgstr "Linked {key}"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Linked {person} to Slack"
+msgstr "Зв’язав(ла) {person} зі Slack"
+
 #: src/features/status/LinkedSection.tsx
 msgid "Linked conversations"
 msgstr "Пов’язані розмови"
@@ -8981,6 +9025,14 @@ msgstr "Макрос"
 #: src/features/settings/SettingsColumn.tsx
 msgid "Macros"
 msgstr "Макроси"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Made single sign-on optional"
+msgstr "Зробив(ла) єдиний вхід необов’язковим"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Made single sign-on required"
+msgstr "Зробив(ла) єдиний вхід обов’язковим"
 
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Mail arrives here; add a reply account when you are ready"
@@ -13529,6 +13581,10 @@ msgstr "Повернення коштів"
 msgid "Refund approved"
 msgstr "Повернення схвалено"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Refused a sign-in with single sign-on ({protocol}) by {who}: {reason}"
+msgstr "Відхилив(ла) вхід через єдиний вхід ({protocol}) користувача {who}: {reason}"
+
 #: src/features/migrations/TokenConnectStep.tsx
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Region"
@@ -13765,6 +13821,14 @@ msgstr "Видалено користувачем {who}"
 #: src/features/settings/fields/FieldDialog.tsx
 msgid "Removed options are cleared from every conversation that holds them. This runs in the background."
 msgstr "Вилучені варіанти стираються з усіх розмов, де вони є. Це виконується у фоні."
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed the {protocol} single sign-on provider"
+msgstr "Видалив(ла) провайдера єдиного входу {protocol}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed the domain {domain} from single sign-on"
+msgstr "Прибрав(ла) домен {domain} з єдиного входу"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Removes {name} with its products, channels, conversations, contacts, files, labels, webhooks and API keys for everyone. Members keep their accounts."
@@ -14355,6 +14419,10 @@ msgstr "Оновив(ла) ключ каналу"
 #: src/features/settings/audit/sentence.ts
 msgid "Rotated the signing secret of a webhook"
 msgstr "Оновив(ла) секрет підпису вебхука"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the webhook secret of an issue tracker connection"
+msgstr "Оновив(ла) секрет вебхука підключення до трекера завдань"
 
 #: src/components/common/AssignmentFields.tsx
 msgid "Round robin"
@@ -15274,6 +15342,10 @@ msgstr "Налаштувати DKIM"
 msgid "Set up e-mail"
 msgstr "Налаштувати пошту"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Set up single sign-on with {protocol}"
+msgstr "Налаштував(ла) єдиний вхід через {protocol}"
+
 #: src/app/Palette.tsx
 #: src/features/setup/SetupHub.tsx
 msgid "Set up Yuva"
@@ -15688,9 +15760,17 @@ msgstr "Вийти скрізь, крім цього пристрою?"
 msgid "Sign-in address"
 msgstr "Адреса для входу"
 
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Sign-in and integrations"
+msgstr "Вхід та інтеграції"
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Sign-in rules"
 msgstr "Sign-in rules"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Sign-in with single sign-on ({protocol}) by {who}"
+msgstr "Вхід через єдиний вхід ({protocol}): {who}"
 
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/setup/NewsletterStep.tsx
@@ -16834,6 +16914,14 @@ msgstr "Каналу документації {host} більше не існу�
 msgid "The documentation page to put it under, on a site of this inbox."
 msgstr "Сторінка документації, під якою розмістити, на сайті цієї скриньки."
 
+#: src/features/settings/audit/sentence.ts
+msgid "The domain {domain} lost its verification: its DNS record is missing"
+msgstr "Домен {domain} втратив підтвердження: бракує його DNS-запису"
+
+#: src/features/settings/audit/sentence.ts
+msgid "The domain {domain} lost its verification: its DNS record is missing, so single sign-on is no longer required"
+msgstr "Домен {domain} втратив підтвердження: бракує його DNS-запису, тож єдиний вхід більше не обов’язковий"
+
 #: src/features/broadcasts/Import.tsx
 msgid "The domain takes no mail"
 msgstr "Домен не приймає пошту"
@@ -16849,6 +16937,10 @@ msgstr "Поштовий канал готовий"
 #: src/features/broadcasts/ListForm.tsx
 msgid "The e-mail channel that sends the confirmation and welcome mails. It needs an SMTP account."
 msgstr "Поштовий канал, що надсилає листи з підтвердженням і привітанням. Йому потрібен обліковий запис SMTP."
+
+#: src/features/settings/audit/sentence.ts
+msgid "the e-mail domain is not verified for this workspace"
+msgstr "домен електронної пошти не підтверджено для цього робочого простору"
 
 #: src/features/setup/InstallStep.tsx
 msgid "The elements work on these addresses; add your dev server in the inbox settings:"
@@ -17315,6 +17407,14 @@ msgstr "Пароль зберігається в зашифрованому ви
 msgid "The password is too long."
 msgstr "Пароль занадто довгий."
 
+#: src/features/settings/audit/sentence.ts
+msgid "the person is in none of the allowed groups"
+msgstr "особа не входить до жодної з дозволених груп"
+
+#: src/features/settings/audit/sentence.ts
+msgid "the person is not a member of this workspace"
+msgstr "особа не є учасником цього робочого простору"
+
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "The policy is none: receivers only report. Move to quarantine once all your mail passes."
 msgstr "Політика — none: отримувачі лише повідомляють. Переходьте на quarantine, коли вся ваша пошта проходить."
@@ -17351,9 +17451,21 @@ msgstr "Продукт не можна буде змінити пізніше."
 msgid "The provider asked to slow down"
 msgstr "Провайдер попросив сповільнитися"
 
+#: src/features/settings/audit/sentence.ts
+msgid "the provider did not complete the sign-in"
+msgstr "провайдер не завершив вхід"
+
+#: src/features/settings/audit/sentence.ts
+msgid "the provider has not verified the e-mail address"
+msgstr "провайдер не підтвердив адресу електронної пошти"
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "The provider's address, exactly as its discovery document names it. Yuva reads it on save."
 msgstr "The provider's address, exactly as its discovery document names it. Yuva reads it on save."
+
+#: src/features/settings/audit/sentence.ts
+msgid "the provider's response was not accepted"
+msgstr "відповідь провайдера не прийнято"
 
 #: src/features/migrations/SwitchStep.tsx
 msgid "The quiet period is over; the migration finishes at the next sync."
@@ -18593,6 +18705,10 @@ msgstr "Невідомо"
 msgid "Unknown device"
 msgstr "Невідомий пристрій"
 
+#: src/features/settings/audit/sentence.ts
+msgid "unknown reason"
+msgstr "невідома причина"
+
 #: src/features/feedback/RoadmapCard.tsx
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Unlink"
@@ -18616,6 +18732,10 @@ msgstr "Відв’язати від {title}"
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Unlink your Slack account?"
 msgstr "Unlink your Slack account?"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Unlinked {person} from Slack"
+msgstr "Розв’язав(ла) {person} і Slack"
 
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Unlock"
@@ -19071,6 +19191,10 @@ msgstr "Значення умови {n}, через кому"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Verified"
 msgstr "Підтверджено"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Verified the domain {domain} for single sign-on"
+msgstr "Підтвердив(ла) домен {domain} для єдиного входу"
 
 #: src/features/settings/channels/email/AddressProof.tsx
 #: src/features/settings/sso/SsoPage.tsx

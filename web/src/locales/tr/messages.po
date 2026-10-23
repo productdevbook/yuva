@@ -1943,6 +1943,10 @@ msgstr "{host} adresine bir webhook ekledi"
 msgid "Added by the team"
 msgstr "Ekip ekledi"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Added the domain {domain} for single sign-on"
+msgstr "{domain} alan adı tek oturum açma için eklendi"
+
 #: src/features/conversation/Feedback.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/setup/email/EmailLayout.tsx
@@ -2433,6 +2437,10 @@ msgstr "Bir SLA hedefinin süresi dolmak üzere"
 #: src/features/settings/notifications/events.ts
 msgid "An SLA target was breached"
 msgstr "Bir SLA hedefi aşıldı"
+
+#: src/features/settings/audit/sentence.ts
+msgid "an unknown person"
+msgstr "bilinmeyen biri"
 
 #: src/features/migrations/UploadStep.tsx
 msgid "An upload was cut off: {count} parts, {size}, are already on the server."
@@ -3635,6 +3643,10 @@ msgid "Changed how long conversations are kept from {from} to {to}"
 msgstr "Konuşmaların saklanma süresini {from} değerinden {to} değerine değiştirdi"
 
 #: src/features/settings/audit/sentence.ts
+msgid "Changed the {protocol} single sign-on provider"
+msgstr "{protocol} tek oturum açma sağlayıcısını değiştirdi"
+
+#: src/features/settings/audit/sentence.ts
 msgid "Changed the automation rule {name}"
 msgstr "{name} otomasyon kuralını değiştirdi"
 
@@ -3649,6 +3661,14 @@ msgstr "Bir kanalın posta hesabını veya parolasını değiştirdi"
 #: src/features/settings/audit/sentence.ts
 msgid "Changed the role of {person} from {from} to {to}"
 msgstr "{person} kişisinin rolünü {from} rolünden {to} rolüne değiştirdi"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the settings of an issue tracker connection"
+msgstr "Bir sorun izleyici bağlantısının ayarlarını değiştirdi"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the single sign-on settings"
+msgstr "Tek oturum açma ayarlarını değiştirdi"
 
 #: src/features/settings/audit/sentence.ts
 msgid "Changed the webhook to {host}"
@@ -4371,6 +4391,14 @@ msgstr "{by} tarafından {since} tarihinde bağlandı"
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Connected on {since}"
 msgstr "{since} tarihinde bağlandı"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Connected the issue tracker {name} ({provider})"
+msgstr "{name} sorun izleyicisini ({provider}) bağladı"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Connected the Slack workspace {slackTeam}"
+msgstr "{slackTeam} Slack çalışma alanını bağladı"
 
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Connected to {address}"
@@ -5485,6 +5513,18 @@ msgstr "{client} uygulamasının bağlantısını kesti"
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "Disconnected {name}"
 msgstr "{name} bağlantısı kesildi"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Disconnected Slack"
+msgstr "Slack bağlantısını kesti"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Disconnected Slack because the app was removed in Slack"
+msgstr "Uygulama Slack'te kaldırıldığı için Slack bağlantısını kesti"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Disconnected the issue tracker {name} ({provider})"
+msgstr "{name} sorun izleyicisinin ({provider}) bağlantısını kesti"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/DocsPage.tsx
@@ -8748,6 +8788,10 @@ msgstr "{0} tarihinde bağlandı"
 msgid "Linked {key}"
 msgstr "{key} bağlandı"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Linked {person} to Slack"
+msgstr "{person} kişisini Slack'e bağladı"
+
 #: src/features/status/LinkedSection.tsx
 msgid "Linked conversations"
 msgstr "Bağlı konuşmalar"
@@ -8981,6 +9025,14 @@ msgstr "Makro"
 #: src/features/settings/SettingsColumn.tsx
 msgid "Macros"
 msgstr "Makrolar"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Made single sign-on optional"
+msgstr "Tek oturum açmayı isteğe bağlı yaptı"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Made single sign-on required"
+msgstr "Tek oturum açmayı zorunlu yaptı"
 
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Mail arrives here; add a reply account when you are ready"
@@ -13529,6 +13581,10 @@ msgstr "İade"
 msgid "Refund approved"
 msgstr "İade onaylandı"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Refused a sign-in with single sign-on ({protocol}) by {who}: {reason}"
+msgstr "{who} tarafından tek oturum açma ({protocol}) ile yapılan oturum açma reddedildi: {reason}"
+
 #: src/features/migrations/TokenConnectStep.tsx
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Region"
@@ -13765,6 +13821,14 @@ msgstr "{who} kaldırdı"
 #: src/features/settings/fields/FieldDialog.tsx
 msgid "Removed options are cleared from every conversation that holds them. This runs in the background."
 msgstr "Kaldırılan seçenekler, onları taşıyan tüm görüşmelerden temizlenir. Bu arka planda çalışır."
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed the {protocol} single sign-on provider"
+msgstr "{protocol} tek oturum açma sağlayıcısını kaldırdı"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed the domain {domain} from single sign-on"
+msgstr "{domain} alan adını tek oturum açmadan kaldırdı"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Removes {name} with its products, channels, conversations, contacts, files, labels, webhooks and API keys for everyone. Members keep their accounts."
@@ -14355,6 +14419,10 @@ msgstr "Bir kanalın anahtarını yeniledi"
 #: src/features/settings/audit/sentence.ts
 msgid "Rotated the signing secret of a webhook"
 msgstr "Bir webhook'un imza gizli anahtarını yeniledi"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the webhook secret of an issue tracker connection"
+msgstr "Bir sorun izleyici bağlantısının webhook gizli anahtarını yeniledi"
 
 #: src/components/common/AssignmentFields.tsx
 msgid "Round robin"
@@ -15274,6 +15342,10 @@ msgstr "DKIM kur"
 msgid "Set up e-mail"
 msgstr "E-postayı kur"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Set up single sign-on with {protocol}"
+msgstr "{protocol} ile tek oturum açmayı kurdu"
+
 #: src/app/Palette.tsx
 #: src/features/setup/SetupHub.tsx
 msgid "Set up Yuva"
@@ -15688,9 +15760,17 @@ msgstr "Diğer her yerde çıkış yapılsın mı?"
 msgid "Sign-in address"
 msgstr "Oturum açma adresi"
 
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Sign-in and integrations"
+msgstr "Oturum açma ve entegrasyonlar"
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Sign-in rules"
 msgstr "Giriş kuralları"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Sign-in with single sign-on ({protocol}) by {who}"
+msgstr "{who} tarafından tek oturum açma ({protocol}) ile oturum açıldı"
 
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/setup/NewsletterStep.tsx
@@ -16834,6 +16914,14 @@ msgstr "{host} sitesinin dokümantasyon kanalı artık yok."
 msgid "The documentation page to put it under, on a site of this inbox."
 msgstr "Tartışmanın altına ekleneceği, bu gelen kutusunun sitelerinden birindeki dokümantasyon sayfası."
 
+#: src/features/settings/audit/sentence.ts
+msgid "The domain {domain} lost its verification: its DNS record is missing"
+msgstr "{domain} alan adı doğrulamasını kaybetti: DNS kaydı eksik"
+
+#: src/features/settings/audit/sentence.ts
+msgid "The domain {domain} lost its verification: its DNS record is missing, so single sign-on is no longer required"
+msgstr "{domain} alan adı doğrulamasını kaybetti: DNS kaydı eksik, bu yüzden tek oturum açma artık zorunlu değil"
+
 #: src/features/broadcasts/Import.tsx
 msgid "The domain takes no mail"
 msgstr "Alan adı e-posta almıyor"
@@ -16849,6 +16937,10 @@ msgstr "E-posta kanalı hazır"
 #: src/features/broadcasts/ListForm.tsx
 msgid "The e-mail channel that sends the confirmation and welcome mails. It needs an SMTP account."
 msgstr "Onay ve hoş geldin e-postalarını gönderen e-posta kanalı. SMTP hesabı olmalıdır."
+
+#: src/features/settings/audit/sentence.ts
+msgid "the e-mail domain is not verified for this workspace"
+msgstr "e-posta alan adı bu çalışma alanı için doğrulanmamış"
 
 #: src/features/setup/InstallStep.tsx
 msgid "The elements work on these addresses; add your dev server in the inbox settings:"
@@ -17315,6 +17407,14 @@ msgstr "Parola şifreli saklanır ve bir daha gösterilmez."
 msgid "The password is too long."
 msgstr "Parola çok uzun."
 
+#: src/features/settings/audit/sentence.ts
+msgid "the person is in none of the allowed groups"
+msgstr "kişi izin verilen gruplardan hiçbirinde değil"
+
+#: src/features/settings/audit/sentence.ts
+msgid "the person is not a member of this workspace"
+msgstr "kişi bu çalışma alanının üyesi değil"
+
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "The policy is none: receivers only report. Move to quarantine once all your mail passes."
 msgstr "İlke none: alıcılar yalnızca rapor verir. Tüm e-postalarınız geçince quarantine ilkesine geçin."
@@ -17351,9 +17451,21 @@ msgstr "Ürün sonradan değiştirilemez."
 msgid "The provider asked to slow down"
 msgstr "Sağlayıcı yavaşlamayı istedi"
 
+#: src/features/settings/audit/sentence.ts
+msgid "the provider did not complete the sign-in"
+msgstr "sağlayıcı oturum açmayı tamamlamadı"
+
+#: src/features/settings/audit/sentence.ts
+msgid "the provider has not verified the e-mail address"
+msgstr "sağlayıcı e-posta adresini doğrulamadı"
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "The provider's address, exactly as its discovery document names it. Yuva reads it on save."
 msgstr "Sağlayıcının adresi, keşif belgesinde yazdığı gibi. Yuva kaydederken okur."
+
+#: src/features/settings/audit/sentence.ts
+msgid "the provider's response was not accepted"
+msgstr "sağlayıcının yanıtı kabul edilmedi"
 
 #: src/features/migrations/SwitchStep.tsx
 msgid "The quiet period is over; the migration finishes at the next sync."
@@ -18593,6 +18705,10 @@ msgstr "Bilinmiyor"
 msgid "Unknown device"
 msgstr "Bilinmeyen cihaz"
 
+#: src/features/settings/audit/sentence.ts
+msgid "unknown reason"
+msgstr "bilinmeyen neden"
+
 #: src/features/feedback/RoadmapCard.tsx
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Unlink"
@@ -18616,6 +18732,10 @@ msgstr "{title} ile bağlantıyı kaldır"
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Unlink your Slack account?"
 msgstr "Slack hesabınızın bağlantısı kaldırılsın mı?"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Unlinked {person} from Slack"
+msgstr "{person} kişisinin Slack bağlantısını kaldırdı"
 
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Unlock"
@@ -19071,6 +19191,10 @@ msgstr "{n}. koşulun değerleri, virgülle ayrılmış"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Verified"
 msgstr "Doğrulandı"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Verified the domain {domain} for single sign-on"
+msgstr "{domain} alan adını tek oturum açma için doğruladı"
 
 #: src/features/settings/channels/email/AddressProof.tsx
 #: src/features/settings/sso/SsoPage.tsx

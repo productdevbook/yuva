@@ -1943,6 +1943,10 @@ msgstr "Добавил(а) вебхук на {host}"
 msgid "Added by the team"
 msgstr "Добавлено командой"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Added the domain {domain} for single sign-on"
+msgstr "Добавил(а) домен {domain} для единого входа"
+
 #: src/features/conversation/Feedback.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/setup/email/EmailLayout.tsx
@@ -2433,6 +2437,10 @@ msgstr "Срок цели SLA скоро истечёт"
 #: src/features/settings/notifications/events.ts
 msgid "An SLA target was breached"
 msgstr "Цель SLA нарушена"
+
+#: src/features/settings/audit/sentence.ts
+msgid "an unknown person"
+msgstr "неизвестный человек"
 
 #: src/features/migrations/UploadStep.tsx
 msgid "An upload was cut off: {count} parts, {size}, are already on the server."
@@ -3635,6 +3643,10 @@ msgid "Changed how long conversations are kept from {from} to {to}"
 msgstr "Изменил(а) срок хранения переписок с {from} на {to}"
 
 #: src/features/settings/audit/sentence.ts
+msgid "Changed the {protocol} single sign-on provider"
+msgstr "Изменил(а) провайдера единого входа {protocol}"
+
+#: src/features/settings/audit/sentence.ts
 msgid "Changed the automation rule {name}"
 msgstr "Изменил(а) правило автоматизации {name}"
 
@@ -3649,6 +3661,14 @@ msgstr "Изменил(а) почтовый аккаунт или пароль �
 #: src/features/settings/audit/sentence.ts
 msgid "Changed the role of {person} from {from} to {to}"
 msgstr "Изменил(а) роль пользователя {person} с {from} на {to}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the settings of an issue tracker connection"
+msgstr "Изменил(а) настройки подключения к трекеру задач"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the single sign-on settings"
+msgstr "Изменил(а) настройки единого входа"
 
 #: src/features/settings/audit/sentence.ts
 msgid "Changed the webhook to {host}"
@@ -4371,6 +4391,14 @@ msgstr "Подключил {by}, {since}"
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Connected on {since}"
 msgstr "Подключено {since}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Connected the issue tracker {name} ({provider})"
+msgstr "Подключил(а) трекер задач {name} ({provider})"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Connected the Slack workspace {slackTeam}"
+msgstr "Подключил(а) рабочее пространство Slack {slackTeam}"
 
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Connected to {address}"
@@ -5485,6 +5513,18 @@ msgstr "Отключил(а) {client}"
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "Disconnected {name}"
 msgstr "Disconnected {name}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Disconnected Slack"
+msgstr "Отключил(а) Slack"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Disconnected Slack because the app was removed in Slack"
+msgstr "Отключил(а) Slack, потому что приложение удалили в Slack"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Disconnected the issue tracker {name} ({provider})"
+msgstr "Отключил(а) трекер задач {name} ({provider})"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/DocsPage.tsx
@@ -8748,6 +8788,10 @@ msgstr "Linked {0}"
 msgid "Linked {key}"
 msgstr "Linked {key}"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Linked {person} to Slack"
+msgstr "Связал(а) {person} со Slack"
+
 #: src/features/status/LinkedSection.tsx
 msgid "Linked conversations"
 msgstr "Связанные диалоги"
@@ -8981,6 +9025,14 @@ msgstr "Макрос"
 #: src/features/settings/SettingsColumn.tsx
 msgid "Macros"
 msgstr "Макросы"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Made single sign-on optional"
+msgstr "Сделал(а) единый вход необязательным"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Made single sign-on required"
+msgstr "Сделал(а) единый вход обязательным"
 
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Mail arrives here; add a reply account when you are ready"
@@ -13529,6 +13581,10 @@ msgstr "Возврат"
 msgid "Refund approved"
 msgstr "Возврат одобрен"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Refused a sign-in with single sign-on ({protocol}) by {who}: {reason}"
+msgstr "Отклонил(а) вход через единый вход ({protocol}) пользователя {who}: {reason}"
+
 #: src/features/migrations/TokenConnectStep.tsx
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Region"
@@ -13765,6 +13821,14 @@ msgstr "Удалил(а): {who}"
 #: src/features/settings/fields/FieldDialog.tsx
 msgid "Removed options are cleared from every conversation that holds them. This runs in the background."
 msgstr "Удалённые варианты стираются из всех бесед, где они есть. Это выполняется в фоне."
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed the {protocol} single sign-on provider"
+msgstr "Удалил(а) провайдера единого входа {protocol}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed the domain {domain} from single sign-on"
+msgstr "Убрал(а) домен {domain} из единого входа"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Removes {name} with its products, channels, conversations, contacts, files, labels, webhooks and API keys for everyone. Members keep their accounts."
@@ -14355,6 +14419,10 @@ msgstr "Обновил(а) ключ канала"
 #: src/features/settings/audit/sentence.ts
 msgid "Rotated the signing secret of a webhook"
 msgstr "Обновил(а) секрет подписи вебхука"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the webhook secret of an issue tracker connection"
+msgstr "Обновил(а) секрет вебхука подключения к трекеру задач"
 
 #: src/components/common/AssignmentFields.tsx
 msgid "Round robin"
@@ -15274,6 +15342,10 @@ msgstr "Настроить DKIM"
 msgid "Set up e-mail"
 msgstr "Настроить почту"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Set up single sign-on with {protocol}"
+msgstr "Настроил(а) единый вход через {protocol}"
+
 #: src/app/Palette.tsx
 #: src/features/setup/SetupHub.tsx
 msgid "Set up Yuva"
@@ -15688,9 +15760,17 @@ msgstr "Выйти везде, кроме этого устройства?"
 msgid "Sign-in address"
 msgstr "Адрес для входа"
 
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Sign-in and integrations"
+msgstr "Вход и интеграции"
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Sign-in rules"
 msgstr "Sign-in rules"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Sign-in with single sign-on ({protocol}) by {who}"
+msgstr "Вход через единый вход ({protocol}): {who}"
 
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/setup/NewsletterStep.tsx
@@ -16834,6 +16914,14 @@ msgstr "Канал документации {host} больше не сущес�
 msgid "The documentation page to put it under, on a site of this inbox."
 msgstr "Страница документации, под которой разместить, на сайте этого ящика."
 
+#: src/features/settings/audit/sentence.ts
+msgid "The domain {domain} lost its verification: its DNS record is missing"
+msgstr "Домен {domain} потерял подтверждение: отсутствует его DNS-запись"
+
+#: src/features/settings/audit/sentence.ts
+msgid "The domain {domain} lost its verification: its DNS record is missing, so single sign-on is no longer required"
+msgstr "Домен {domain} потерял подтверждение: отсутствует его DNS-запись, поэтому единый вход больше не обязателен"
+
 #: src/features/broadcasts/Import.tsx
 msgid "The domain takes no mail"
 msgstr "Домен не принимает почту"
@@ -16849,6 +16937,10 @@ msgstr "Почтовый канал готов"
 #: src/features/broadcasts/ListForm.tsx
 msgid "The e-mail channel that sends the confirmation and welcome mails. It needs an SMTP account."
 msgstr "Почтовый канал, который отправляет письма с подтверждением и приветствием. Ему нужен аккаунт SMTP."
+
+#: src/features/settings/audit/sentence.ts
+msgid "the e-mail domain is not verified for this workspace"
+msgstr "домен электронной почты не подтверждён для этого рабочего пространства"
 
 #: src/features/setup/InstallStep.tsx
 msgid "The elements work on these addresses; add your dev server in the inbox settings:"
@@ -17315,6 +17407,14 @@ msgstr "Пароль хранится в зашифрованном виде и 
 msgid "The password is too long."
 msgstr "Пароль слишком длинный."
 
+#: src/features/settings/audit/sentence.ts
+msgid "the person is in none of the allowed groups"
+msgstr "человек не состоит ни в одной из разрешённых групп"
+
+#: src/features/settings/audit/sentence.ts
+msgid "the person is not a member of this workspace"
+msgstr "человек не участник этого рабочего пространства"
+
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "The policy is none: receivers only report. Move to quarantine once all your mail passes."
 msgstr "Политика — none: получатели только сообщают. Переходите на quarantine, когда вся ваша почта проходит."
@@ -17351,9 +17451,21 @@ msgstr "Продукт нельзя будет изменить позже."
 msgid "The provider asked to slow down"
 msgstr "Провайдер попросил замедлиться"
 
+#: src/features/settings/audit/sentence.ts
+msgid "the provider did not complete the sign-in"
+msgstr "провайдер не завершил вход"
+
+#: src/features/settings/audit/sentence.ts
+msgid "the provider has not verified the e-mail address"
+msgstr "провайдер не подтвердил адрес электронной почты"
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "The provider's address, exactly as its discovery document names it. Yuva reads it on save."
 msgstr "The provider's address, exactly as its discovery document names it. Yuva reads it on save."
+
+#: src/features/settings/audit/sentence.ts
+msgid "the provider's response was not accepted"
+msgstr "ответ провайдера не принят"
 
 #: src/features/migrations/SwitchStep.tsx
 msgid "The quiet period is over; the migration finishes at the next sync."
@@ -18593,6 +18705,10 @@ msgstr "Неизвестно"
 msgid "Unknown device"
 msgstr "Неизвестное устройство"
 
+#: src/features/settings/audit/sentence.ts
+msgid "unknown reason"
+msgstr "неизвестная причина"
+
 #: src/features/feedback/RoadmapCard.tsx
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Unlink"
@@ -18616,6 +18732,10 @@ msgstr "Отвязать от {title}"
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Unlink your Slack account?"
 msgstr "Unlink your Slack account?"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Unlinked {person} from Slack"
+msgstr "Отвязал(а) {person} от Slack"
 
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Unlock"
@@ -19071,6 +19191,10 @@ msgstr "Значения условия {n}, через запятую"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Verified"
 msgstr "Подтверждён"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Verified the domain {domain} for single sign-on"
+msgstr "Подтвердил(а) домен {domain} для единого входа"
 
 #: src/features/settings/channels/email/AddressProof.tsx
 #: src/features/settings/sso/SsoPage.tsx

@@ -1943,6 +1943,10 @@ msgstr "أضاف webhook إلى {host}"
 msgid "Added by the team"
 msgstr "أضافه الفريق"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Added the domain {domain} for single sign-on"
+msgstr "أضاف النطاق {domain} لتسجيل الدخول الموحّد"
+
 #: src/features/conversation/Feedback.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/setup/email/EmailLayout.tsx
@@ -2433,6 +2437,10 @@ msgstr "هدف SLA يوشك على الاستحقاق"
 #: src/features/settings/notifications/events.ts
 msgid "An SLA target was breached"
 msgstr "تم انتهاك هدف SLA"
+
+#: src/features/settings/audit/sentence.ts
+msgid "an unknown person"
+msgstr "شخص غير معروف"
 
 #: src/features/migrations/UploadStep.tsx
 msgid "An upload was cut off: {count} parts, {size}, are already on the server."
@@ -3635,6 +3643,10 @@ msgid "Changed how long conversations are kept from {from} to {to}"
 msgstr "غيّر مدة الاحتفاظ بالمحادثات من {from} إلى {to}"
 
 #: src/features/settings/audit/sentence.ts
+msgid "Changed the {protocol} single sign-on provider"
+msgstr "غيّر مزوّد تسجيل الدخول الموحّد {protocol}"
+
+#: src/features/settings/audit/sentence.ts
 msgid "Changed the automation rule {name}"
 msgstr "غيّر قاعدة الأتمتة {name}"
 
@@ -3649,6 +3661,14 @@ msgstr "غيّر حساب البريد أو كلمة المرور لقناة"
 #: src/features/settings/audit/sentence.ts
 msgid "Changed the role of {person} from {from} to {to}"
 msgstr "غيّر دور {person} من {from} إلى {to}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the settings of an issue tracker connection"
+msgstr "غيّر إعدادات اتصال متتبّع المشكلات"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the single sign-on settings"
+msgstr "غيّر إعدادات تسجيل الدخول الموحّد"
 
 #: src/features/settings/audit/sentence.ts
 msgid "Changed the webhook to {host}"
@@ -4371,6 +4391,14 @@ msgstr "ربطه {by} في {since}"
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Connected on {since}"
 msgstr "متصل منذ {since}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Connected the issue tracker {name} ({provider})"
+msgstr "ربط متتبّع المشكلات {name} ({provider})"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Connected the Slack workspace {slackTeam}"
+msgstr "ربط مساحة عمل Slack {slackTeam}"
 
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Connected to {address}"
@@ -5485,6 +5513,18 @@ msgstr "فصل {client}"
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "Disconnected {name}"
 msgstr "Disconnected {name}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Disconnected Slack"
+msgstr "فصل Slack"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Disconnected Slack because the app was removed in Slack"
+msgstr "فصل Slack لأن التطبيق أُزيل في Slack"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Disconnected the issue tracker {name} ({provider})"
+msgstr "فصل متتبّع المشكلات {name} ({provider})"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/DocsPage.tsx
@@ -8748,6 +8788,10 @@ msgstr "Linked {0}"
 msgid "Linked {key}"
 msgstr "Linked {key}"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Linked {person} to Slack"
+msgstr "ربط {person} بـ Slack"
+
 #: src/features/status/LinkedSection.tsx
 msgid "Linked conversations"
 msgstr "المحادثات المرتبطة"
@@ -8981,6 +9025,14 @@ msgstr "ماكرو"
 #: src/features/settings/SettingsColumn.tsx
 msgid "Macros"
 msgstr "الماكرو"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Made single sign-on optional"
+msgstr "جعل تسجيل الدخول الموحّد اختياريًا"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Made single sign-on required"
+msgstr "جعل تسجيل الدخول الموحّد إلزاميًا"
 
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Mail arrives here; add a reply account when you are ready"
@@ -13529,6 +13581,10 @@ msgstr "استرداد"
 msgid "Refund approved"
 msgstr "تمت الموافقة على الاسترداد"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Refused a sign-in with single sign-on ({protocol}) by {who}: {reason}"
+msgstr "رفض تسجيل دخول موحّد ({protocol}) لـ {who}: {reason}"
+
 #: src/features/migrations/TokenConnectStep.tsx
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Region"
@@ -13765,6 +13821,14 @@ msgstr "أزالها {who}"
 #: src/features/settings/fields/FieldDialog.tsx
 msgid "Removed options are cleared from every conversation that holds them. This runs in the background."
 msgstr "تُمسح الخيارات المحذوفة من كل المحادثات التي تحتويها. يجري ذلك في الخلفية."
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed the {protocol} single sign-on provider"
+msgstr "أزال مزوّد تسجيل الدخول الموحّد {protocol}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed the domain {domain} from single sign-on"
+msgstr "أزال النطاق {domain} من تسجيل الدخول الموحّد"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Removes {name} with its products, channels, conversations, contacts, files, labels, webhooks and API keys for everyone. Members keep their accounts."
@@ -14355,6 +14419,10 @@ msgstr "جدّد مفتاح قناة"
 #: src/features/settings/audit/sentence.ts
 msgid "Rotated the signing secret of a webhook"
 msgstr "جدّد سرّ توقيع webhook"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the webhook secret of an issue tracker connection"
+msgstr "جدّد سرّ webhook لاتصال متتبّع المشكلات"
 
 #: src/components/common/AssignmentFields.tsx
 msgid "Round robin"
@@ -15274,6 +15342,10 @@ msgstr "إعداد DKIM"
 msgid "Set up e-mail"
 msgstr "إعداد البريد الإلكتروني"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Set up single sign-on with {protocol}"
+msgstr "أعدّ تسجيل الدخول الموحّد باستخدام {protocol}"
+
 #: src/app/Palette.tsx
 #: src/features/setup/SetupHub.tsx
 msgid "Set up Yuva"
@@ -15688,9 +15760,17 @@ msgstr "تسجيل الخروج من كل مكان آخر؟"
 msgid "Sign-in address"
 msgstr "عنوان الدخول"
 
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Sign-in and integrations"
+msgstr "تسجيل الدخول والتكاملات"
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Sign-in rules"
 msgstr "Sign-in rules"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Sign-in with single sign-on ({protocol}) by {who}"
+msgstr "تسجيل دخول موحّد ({protocol}) بواسطة {who}"
 
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/setup/NewsletterStep.tsx
@@ -16834,6 +16914,14 @@ msgstr "لم تعد قناة الوثائق لـ {host} موجودة."
 msgid "The documentation page to put it under, on a site of this inbox."
 msgstr "صفحة الوثائق التي يوضع تحتها، على موقع من هذا الصندوق."
 
+#: src/features/settings/audit/sentence.ts
+msgid "The domain {domain} lost its verification: its DNS record is missing"
+msgstr "فقد النطاق {domain} توثيقه: سجل DNS مفقود"
+
+#: src/features/settings/audit/sentence.ts
+msgid "The domain {domain} lost its verification: its DNS record is missing, so single sign-on is no longer required"
+msgstr "فقد النطاق {domain} توثيقه: سجل DNS مفقود، لذا لم يعد تسجيل الدخول الموحّد إلزاميًا"
+
 #: src/features/broadcasts/Import.tsx
 msgid "The domain takes no mail"
 msgstr "النطاق لا يستقبل بريدًا"
@@ -16849,6 +16937,10 @@ msgstr "قناة البريد الإلكتروني جاهزة"
 #: src/features/broadcasts/ListForm.tsx
 msgid "The e-mail channel that sends the confirmation and welcome mails. It needs an SMTP account."
 msgstr "قناة البريد الإلكتروني التي ترسل رسائل التأكيد والترحيب. تحتاج إلى حساب SMTP."
+
+#: src/features/settings/audit/sentence.ts
+msgid "the e-mail domain is not verified for this workspace"
+msgstr "نطاق البريد الإلكتروني غير موثّق لمساحة العمل هذه"
 
 #: src/features/setup/InstallStep.tsx
 msgid "The elements work on these addresses; add your dev server in the inbox settings:"
@@ -17315,6 +17407,14 @@ msgstr "تُخزَّن كلمة المرور مشفرة ولا تُعرض مجد
 msgid "The password is too long."
 msgstr "كلمة المرور طويلة جدًا."
 
+#: src/features/settings/audit/sentence.ts
+msgid "the person is in none of the allowed groups"
+msgstr "الشخص ليس في أي من المجموعات المسموح بها"
+
+#: src/features/settings/audit/sentence.ts
+msgid "the person is not a member of this workspace"
+msgstr "الشخص ليس عضوًا في مساحة العمل هذه"
+
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "The policy is none: receivers only report. Move to quarantine once all your mail passes."
 msgstr "السياسة none: يكتفي المستقبِلون بالإبلاغ. انتقل إلى quarantine عندما ينجح كل بريدك."
@@ -17351,9 +17451,21 @@ msgstr "لا يمكن تغيير المنتج لاحقًا."
 msgid "The provider asked to slow down"
 msgstr "طلب المزوّد التباطؤ"
 
+#: src/features/settings/audit/sentence.ts
+msgid "the provider did not complete the sign-in"
+msgstr "لم يُكمل المزوّد تسجيل الدخول"
+
+#: src/features/settings/audit/sentence.ts
+msgid "the provider has not verified the e-mail address"
+msgstr "لم يوثّق المزوّد عنوان البريد الإلكتروني"
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "The provider's address, exactly as its discovery document names it. Yuva reads it on save."
 msgstr "The provider's address, exactly as its discovery document names it. Yuva reads it on save."
+
+#: src/features/settings/audit/sentence.ts
+msgid "the provider's response was not accepted"
+msgstr "لم يُقبل ردّ المزوّد"
 
 #: src/features/migrations/SwitchStep.tsx
 msgid "The quiet period is over; the migration finishes at the next sync."
@@ -18593,6 +18705,10 @@ msgstr "غير معروف"
 msgid "Unknown device"
 msgstr "جهاز غير معروف"
 
+#: src/features/settings/audit/sentence.ts
+msgid "unknown reason"
+msgstr "سبب غير معروف"
+
 #: src/features/feedback/RoadmapCard.tsx
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Unlink"
@@ -18616,6 +18732,10 @@ msgstr "إلغاء الارتباط بـ {title}"
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Unlink your Slack account?"
 msgstr "Unlink your Slack account?"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Unlinked {person} from Slack"
+msgstr "ألغى ربط {person} بـ Slack"
 
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Unlock"
@@ -19071,6 +19191,10 @@ msgstr "قيم الشرط {n}، مفصولة بفواصل"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Verified"
 msgstr "تم التحقق"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Verified the domain {domain} for single sign-on"
+msgstr "وثّق النطاق {domain} لتسجيل الدخول الموحّد"
 
 #: src/features/settings/channels/email/AddressProof.tsx
 #: src/features/settings/sso/SsoPage.tsx

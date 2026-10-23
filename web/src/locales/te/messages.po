@@ -1943,6 +1943,10 @@ msgstr "{host}కి వెబ్‌హుక్ జోడించారు"
 msgid "Added by the team"
 msgstr "బృందం జోడించింది"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Added the domain {domain} for single sign-on"
+msgstr "సింగిల్ సైన్-ఆన్ కోసం డొమైన్ {domain} జోడించారు"
+
 #: src/features/conversation/Feedback.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/setup/email/EmailLayout.tsx
@@ -2433,6 +2437,10 @@ msgstr "ఒక SLA లక్ష్యం గడువు త్వరలో మ�
 #: src/features/settings/notifications/events.ts
 msgid "An SLA target was breached"
 msgstr "ఒక SLA లక్ష్యం ఉల్లంఘించబడింది"
+
+#: src/features/settings/audit/sentence.ts
+msgid "an unknown person"
+msgstr "తెలియని వ్యక్తి"
 
 #: src/features/migrations/UploadStep.tsx
 msgid "An upload was cut off: {count} parts, {size}, are already on the server."
@@ -3635,6 +3643,10 @@ msgid "Changed how long conversations are kept from {from} to {to}"
 msgstr "సంభాషణలు ఉంచే కాలాన్ని {from} నుండి {to}కి మార్చారు"
 
 #: src/features/settings/audit/sentence.ts
+msgid "Changed the {protocol} single sign-on provider"
+msgstr "సింగిల్ సైన్-ఆన్ ప్రొవైడర్ {protocol} మార్చారు"
+
+#: src/features/settings/audit/sentence.ts
 msgid "Changed the automation rule {name}"
 msgstr "ఆటోమేషన్ నియమం {name} ను మార్చారు"
 
@@ -3649,6 +3661,14 @@ msgstr "ఒక ఛానెల్ మెయిల్ ఖాతా లేదా �
 #: src/features/settings/audit/sentence.ts
 msgid "Changed the role of {person} from {from} to {to}"
 msgstr "{person} పాత్రను {from} నుండి {to}కి మార్చారు"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the settings of an issue tracker connection"
+msgstr "ఇష్యూ ట్రాకర్ కనెక్షన్ సెట్టింగ్‌లను మార్చారు"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the single sign-on settings"
+msgstr "సింగిల్ సైన్-ఆన్ సెట్టింగ్‌లను మార్చారు"
 
 #: src/features/settings/audit/sentence.ts
 msgid "Changed the webhook to {host}"
@@ -4371,6 +4391,14 @@ msgstr "{by} {since}న కనెక్ట్ చేశారు"
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Connected on {since}"
 msgstr "{since}న కనెక్ట్ అయింది"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Connected the issue tracker {name} ({provider})"
+msgstr "ఇష్యూ ట్రాకర్ {name} ({provider}) కనెక్ట్ చేశారు"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Connected the Slack workspace {slackTeam}"
+msgstr "Slack వర్క్‌స్పేస్ {slackTeam} కనెక్ట్ చేశారు"
 
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Connected to {address}"
@@ -5485,6 +5513,18 @@ msgstr "{client}ను డిస్‌కనెక్ట్ చేశారు"
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "Disconnected {name}"
 msgstr "Disconnected {name}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Disconnected Slack"
+msgstr "Slack కనెక్షన్ తెంచారు"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Disconnected Slack because the app was removed in Slack"
+msgstr "Slack లో యాప్ తొలగించబడినందున Slack కనెక్షన్ తెంచారు"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Disconnected the issue tracker {name} ({provider})"
+msgstr "ఇష్యూ ట్రాకర్ {name} ({provider}) కనెక్షన్ తెంచారు"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/DocsPage.tsx
@@ -8748,6 +8788,10 @@ msgstr "Linked {0}"
 msgid "Linked {key}"
 msgstr "Linked {key}"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Linked {person} to Slack"
+msgstr "{person} ను Slack కు లింక్ చేశారు"
+
 #: src/features/status/LinkedSection.tsx
 msgid "Linked conversations"
 msgstr "లింక్ చేసిన సంభాషణలు"
@@ -8981,6 +9025,14 @@ msgstr "మాక్రో"
 #: src/features/settings/SettingsColumn.tsx
 msgid "Macros"
 msgstr "మాక్రోలు"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Made single sign-on optional"
+msgstr "సింగిల్ సైన్-ఆన్‌ను ఐచ్ఛికం చేశారు"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Made single sign-on required"
+msgstr "సింగిల్ సైన్-ఆన్‌ను తప్పనిసరి చేశారు"
 
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Mail arrives here; add a reply account when you are ready"
@@ -13529,6 +13581,10 @@ msgstr "రీఫండ్"
 msgid "Refund approved"
 msgstr "రిఫండ్ ఆమోదించబడింది"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Refused a sign-in with single sign-on ({protocol}) by {who}: {reason}"
+msgstr "{who} యొక్క సింగిల్ సైన్-ఆన్ ({protocol}) సైన్-ఇన్ తిరస్కరించారు: {reason}"
+
 #: src/features/migrations/TokenConnectStep.tsx
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Region"
@@ -13765,6 +13821,14 @@ msgstr "{who} తొలగించారు"
 #: src/features/settings/fields/FieldDialog.tsx
 msgid "Removed options are cleared from every conversation that holds them. This runs in the background."
 msgstr "తీసివేసిన ఎంపికలు వాటిని కలిగి ఉన్న అన్ని సంభాషణల నుండి తొలగించబడతాయి. ఇది నేపథ్యంలో నడుస్తుంది."
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed the {protocol} single sign-on provider"
+msgstr "సింగిల్ సైన్-ఆన్ ప్రొవైడర్ {protocol} తొలగించారు"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed the domain {domain} from single sign-on"
+msgstr "సింగిల్ సైన్-ఆన్ నుండి డొమైన్ {domain} తొలగించారు"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Removes {name} with its products, channels, conversations, contacts, files, labels, webhooks and API keys for everyone. Members keep their accounts."
@@ -14355,6 +14419,10 @@ msgstr "ఒక ఛానెల్ కీని పునరుద్ధరిం
 #: src/features/settings/audit/sentence.ts
 msgid "Rotated the signing secret of a webhook"
 msgstr "ఒక వెబ్‌హుక్ సంతకం సీక్రెట్‌ను పునరుద్ధరించారు"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the webhook secret of an issue tracker connection"
+msgstr "ఇష్యూ ట్రాకర్ కనెక్షన్ వెబ్‌హుక్ సీక్రెట్‌ను పునరుద్ధరించారు"
 
 #: src/components/common/AssignmentFields.tsx
 msgid "Round robin"
@@ -15274,6 +15342,10 @@ msgstr "DKIM ను సెటప్ చేయండి"
 msgid "Set up e-mail"
 msgstr "ఇమెయిల్‌ను సెటప్ చేయండి"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Set up single sign-on with {protocol}"
+msgstr "{protocol} తో సింగిల్ సైన్-ఆన్ సెటప్ చేశారు"
+
 #: src/app/Palette.tsx
 #: src/features/setup/SetupHub.tsx
 msgid "Set up Yuva"
@@ -15688,9 +15760,17 @@ msgstr "మిగతా అన్నిచోట్లా సైన్ అవు
 msgid "Sign-in address"
 msgstr "సైన్ ఇన్ చిరునామా"
 
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Sign-in and integrations"
+msgstr "సైన్-ఇన్ మరియు ఇంటిగ్రేషన్‌లు"
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Sign-in rules"
 msgstr "Sign-in rules"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Sign-in with single sign-on ({protocol}) by {who}"
+msgstr "{who} యొక్క సింగిల్ సైన్-ఆన్ ({protocol}) ద్వారా సైన్-ఇన్"
 
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/setup/NewsletterStep.tsx
@@ -16834,6 +16914,14 @@ msgstr "{host} డాక్యుమెంటేషన్ ఛానెల్ ఇ
 msgid "The documentation page to put it under, on a site of this inbox."
 msgstr "దీని కింద ఉంచాల్సిన డాక్యుమెంటేషన్ పేజీ, ఈ ఇన్‌బాక్స్ సైట్‌లో."
 
+#: src/features/settings/audit/sentence.ts
+msgid "The domain {domain} lost its verification: its DNS record is missing"
+msgstr "డొమైన్ {domain} ధృవీకరణ కోల్పోయింది: దాని DNS రికార్డ్ లేదు"
+
+#: src/features/settings/audit/sentence.ts
+msgid "The domain {domain} lost its verification: its DNS record is missing, so single sign-on is no longer required"
+msgstr "డొమైన్ {domain} ధృవీకరణ కోల్పోయింది: దాని DNS రికార్డ్ లేదు, కాబట్టి సింగిల్ సైన్-ఆన్ ఇకపై తప్పనిసరి కాదు"
+
 #: src/features/broadcasts/Import.tsx
 msgid "The domain takes no mail"
 msgstr "డొమైన్ మెయిల్ తీసుకోదు"
@@ -16849,6 +16937,10 @@ msgstr "ఇమెయిల్ ఛానెల్ సిద్ధంగా ఉం
 #: src/features/broadcasts/ListForm.tsx
 msgid "The e-mail channel that sends the confirmation and welcome mails. It needs an SMTP account."
 msgstr "నిర్ధారణ మరియు స్వాగత మెయిల్‌లను పంపే ఇమెయిల్ ఛానెల్. దానికి SMTP ఖాతా అవసరం."
+
+#: src/features/settings/audit/sentence.ts
+msgid "the e-mail domain is not verified for this workspace"
+msgstr "ఈ వర్క్‌స్పేస్ కోసం ఇమెయిల్ డొమైన్ ధృవీకరించబడలేదు"
 
 #: src/features/setup/InstallStep.tsx
 msgid "The elements work on these addresses; add your dev server in the inbox settings:"
@@ -17315,6 +17407,14 @@ msgstr "పాస్‌వర్డ్ ఎన్‌క్రిప్ట్ చ�
 msgid "The password is too long."
 msgstr "పాస్‌వర్డ్ చాలా పొడవుగా ఉంది."
 
+#: src/features/settings/audit/sentence.ts
+msgid "the person is in none of the allowed groups"
+msgstr "ఆ వ్యక్తి అనుమతించిన ఏ గ్రూప్‌లోనూ లేరు"
+
+#: src/features/settings/audit/sentence.ts
+msgid "the person is not a member of this workspace"
+msgstr "ఆ వ్యక్తి ఈ వర్క్‌స్పేస్ సభ్యుడు కాదు"
+
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "The policy is none: receivers only report. Move to quarantine once all your mail passes."
 msgstr "పాలసీ none: స్వీకర్తలు నివేదించడం మాత్రమే చేస్తారు. మీ మెయిల్ అంతా పాస్ అయ్యాక quarantine కు వెళ్లండి."
@@ -17351,9 +17451,21 @@ msgstr "ఉత్పత్తిని తర్వాత మార్చలే�
 msgid "The provider asked to slow down"
 msgstr "ప్రొవైడర్ నెమ్మదించమని అడిగారు"
 
+#: src/features/settings/audit/sentence.ts
+msgid "the provider did not complete the sign-in"
+msgstr "ప్రొవైడర్ సైన్-ఇన్ పూర్తి చేయలేదు"
+
+#: src/features/settings/audit/sentence.ts
+msgid "the provider has not verified the e-mail address"
+msgstr "ప్రొవైడర్ ఇమెయిల్ చిరునామాను ధృవీకరించలేదు"
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "The provider's address, exactly as its discovery document names it. Yuva reads it on save."
 msgstr "The provider's address, exactly as its discovery document names it. Yuva reads it on save."
+
+#: src/features/settings/audit/sentence.ts
+msgid "the provider's response was not accepted"
+msgstr "ప్రొవైడర్ ప్రతిస్పందన ఆమోదించబడలేదు"
 
 #: src/features/migrations/SwitchStep.tsx
 msgid "The quiet period is over; the migration finishes at the next sync."
@@ -18593,6 +18705,10 @@ msgstr "తెలియదు"
 msgid "Unknown device"
 msgstr "తెలియని పరికరం"
 
+#: src/features/settings/audit/sentence.ts
+msgid "unknown reason"
+msgstr "తెలియని కారణం"
+
 #: src/features/feedback/RoadmapCard.tsx
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Unlink"
@@ -18616,6 +18732,10 @@ msgstr "{title} నుండి అన్‌లింక్ చేయండి"
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Unlink your Slack account?"
 msgstr "Unlink your Slack account?"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Unlinked {person} from Slack"
+msgstr "{person} యొక్క Slack లింక్ తొలగించారు"
 
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Unlock"
@@ -19071,6 +19191,10 @@ msgstr "షరతు {n} విలువలు, కామాలతో వేర�
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Verified"
 msgstr "ధృవీకరించబడింది"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Verified the domain {domain} for single sign-on"
+msgstr "సింగిల్ సైన్-ఆన్ కోసం డొమైన్ {domain} ధృవీకరించారు"
 
 #: src/features/settings/channels/email/AddressProof.tsx
 #: src/features/settings/sso/SsoPage.tsx

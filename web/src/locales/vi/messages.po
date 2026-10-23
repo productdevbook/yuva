@@ -1943,6 +1943,10 @@ msgstr "Đã thêm webhook tới {host}"
 msgid "Added by the team"
 msgstr "Do nhóm thêm"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Added the domain {domain} for single sign-on"
+msgstr "Đã thêm tên miền {domain} cho đăng nhập một lần"
+
 #: src/features/conversation/Feedback.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/setup/email/EmailLayout.tsx
@@ -2433,6 +2437,10 @@ msgstr "Một mục tiêu SLA sắp đến hạn"
 #: src/features/settings/notifications/events.ts
 msgid "An SLA target was breached"
 msgstr "Một mục tiêu SLA đã bị vi phạm"
+
+#: src/features/settings/audit/sentence.ts
+msgid "an unknown person"
+msgstr "một người không xác định"
 
 #: src/features/migrations/UploadStep.tsx
 msgid "An upload was cut off: {count} parts, {size}, are already on the server."
@@ -3635,6 +3643,10 @@ msgid "Changed how long conversations are kept from {from} to {to}"
 msgstr "Đã đổi thời gian lưu hội thoại từ {from} sang {to}"
 
 #: src/features/settings/audit/sentence.ts
+msgid "Changed the {protocol} single sign-on provider"
+msgstr "Đã thay đổi nhà cung cấp đăng nhập một lần {protocol}"
+
+#: src/features/settings/audit/sentence.ts
 msgid "Changed the automation rule {name}"
 msgstr "Đã thay đổi quy tắc tự động hóa {name}"
 
@@ -3649,6 +3661,14 @@ msgstr "Đã đổi tài khoản thư hoặc mật khẩu của một kênh"
 #: src/features/settings/audit/sentence.ts
 msgid "Changed the role of {person} from {from} to {to}"
 msgstr "Đã đổi vai trò của {person} từ {from} sang {to}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the settings of an issue tracker connection"
+msgstr "Đã thay đổi cài đặt của một kết nối trình theo dõi sự cố"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the single sign-on settings"
+msgstr "Đã thay đổi cài đặt đăng nhập một lần"
 
 #: src/features/settings/audit/sentence.ts
 msgid "Changed the webhook to {host}"
@@ -4371,6 +4391,14 @@ msgstr "Kết nối bởi {by} vào {since}"
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Connected on {since}"
 msgstr "Đã kết nối vào {since}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Connected the issue tracker {name} ({provider})"
+msgstr "Đã kết nối trình theo dõi sự cố {name} ({provider})"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Connected the Slack workspace {slackTeam}"
+msgstr "Đã kết nối không gian làm việc Slack {slackTeam}"
 
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Connected to {address}"
@@ -5485,6 +5513,18 @@ msgstr "Đã ngắt kết nối {client}"
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "Disconnected {name}"
 msgstr "Disconnected {name}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Disconnected Slack"
+msgstr "Đã ngắt kết nối Slack"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Disconnected Slack because the app was removed in Slack"
+msgstr "Đã ngắt kết nối Slack vì ứng dụng bị gỡ trong Slack"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Disconnected the issue tracker {name} ({provider})"
+msgstr "Đã ngắt kết nối trình theo dõi sự cố {name} ({provider})"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/DocsPage.tsx
@@ -8748,6 +8788,10 @@ msgstr "Linked {0}"
 msgid "Linked {key}"
 msgstr "Linked {key}"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Linked {person} to Slack"
+msgstr "Đã liên kết {person} với Slack"
+
 #: src/features/status/LinkedSection.tsx
 msgid "Linked conversations"
 msgstr "Cuộc trò chuyện liên kết"
@@ -8981,6 +9025,14 @@ msgstr "Macro"
 #: src/features/settings/SettingsColumn.tsx
 msgid "Macros"
 msgstr "Macro"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Made single sign-on optional"
+msgstr "Đã đặt đăng nhập một lần là tùy chọn"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Made single sign-on required"
+msgstr "Đã đặt đăng nhập một lần là bắt buộc"
 
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Mail arrives here; add a reply account when you are ready"
@@ -13529,6 +13581,10 @@ msgstr "Hoàn tiền"
 msgid "Refund approved"
 msgstr "Đã duyệt hoàn tiền"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Refused a sign-in with single sign-on ({protocol}) by {who}: {reason}"
+msgstr "Đã từ chối đăng nhập một lần ({protocol}) của {who}: {reason}"
+
 #: src/features/migrations/TokenConnectStep.tsx
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Region"
@@ -13765,6 +13821,14 @@ msgstr "Gỡ bởi {who}"
 #: src/features/settings/fields/FieldDialog.tsx
 msgid "Removed options are cleared from every conversation that holds them. This runs in the background."
 msgstr "Các tùy chọn đã gỡ sẽ bị xóa khỏi mọi cuộc trò chuyện có chúng. Việc này chạy trong nền."
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed the {protocol} single sign-on provider"
+msgstr "Đã xóa nhà cung cấp đăng nhập một lần {protocol}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed the domain {domain} from single sign-on"
+msgstr "Đã gỡ tên miền {domain} khỏi đăng nhập một lần"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Removes {name} with its products, channels, conversations, contacts, files, labels, webhooks and API keys for everyone. Members keep their accounts."
@@ -14355,6 +14419,10 @@ msgstr "Đã làm mới khóa của một kênh"
 #: src/features/settings/audit/sentence.ts
 msgid "Rotated the signing secret of a webhook"
 msgstr "Đã làm mới bí mật chữ ký của một webhook"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the webhook secret of an issue tracker connection"
+msgstr "Đã làm mới bí mật webhook của một kết nối trình theo dõi sự cố"
 
 #: src/components/common/AssignmentFields.tsx
 msgid "Round robin"
@@ -15274,6 +15342,10 @@ msgstr "Thiết lập DKIM"
 msgid "Set up e-mail"
 msgstr "Thiết lập email"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Set up single sign-on with {protocol}"
+msgstr "Đã thiết lập đăng nhập một lần với {protocol}"
+
 #: src/app/Palette.tsx
 #: src/features/setup/SetupHub.tsx
 msgid "Set up Yuva"
@@ -15688,9 +15760,17 @@ msgstr "Đăng xuất ở mọi nơi khác?"
 msgid "Sign-in address"
 msgstr "Địa chỉ đăng nhập"
 
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Sign-in and integrations"
+msgstr "Đăng nhập và tích hợp"
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Sign-in rules"
 msgstr "Sign-in rules"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Sign-in with single sign-on ({protocol}) by {who}"
+msgstr "Đăng nhập một lần ({protocol}): {who}"
 
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/setup/NewsletterStep.tsx
@@ -16834,6 +16914,14 @@ msgstr "Kênh tài liệu của {host} không còn tồn tại."
 msgid "The documentation page to put it under, on a site of this inbox."
 msgstr "Trang tài liệu để đặt nó bên dưới, trên một trang web của hộp thư này."
 
+#: src/features/settings/audit/sentence.ts
+msgid "The domain {domain} lost its verification: its DNS record is missing"
+msgstr "Tên miền {domain} mất xác minh: thiếu bản ghi DNS"
+
+#: src/features/settings/audit/sentence.ts
+msgid "The domain {domain} lost its verification: its DNS record is missing, so single sign-on is no longer required"
+msgstr "Tên miền {domain} mất xác minh: thiếu bản ghi DNS, nên đăng nhập một lần không còn bắt buộc"
+
 #: src/features/broadcasts/Import.tsx
 msgid "The domain takes no mail"
 msgstr "Tên miền không nhận thư"
@@ -16849,6 +16937,10 @@ msgstr "Kênh email đã sẵn sàng"
 #: src/features/broadcasts/ListForm.tsx
 msgid "The e-mail channel that sends the confirmation and welcome mails. It needs an SMTP account."
 msgstr "Kênh email gửi thư xác nhận và chào mừng. Nó cần một tài khoản SMTP."
+
+#: src/features/settings/audit/sentence.ts
+msgid "the e-mail domain is not verified for this workspace"
+msgstr "tên miền email chưa được xác minh cho không gian làm việc này"
 
 #: src/features/setup/InstallStep.tsx
 msgid "The elements work on these addresses; add your dev server in the inbox settings:"
@@ -17315,6 +17407,14 @@ msgstr "Mật khẩu được lưu mã hóa và không bao giờ hiện lại."
 msgid "The password is too long."
 msgstr "Mật khẩu quá dài."
 
+#: src/features/settings/audit/sentence.ts
+msgid "the person is in none of the allowed groups"
+msgstr "người này không thuộc nhóm nào được phép"
+
+#: src/features/settings/audit/sentence.ts
+msgid "the person is not a member of this workspace"
+msgstr "người này không phải thành viên của không gian làm việc này"
+
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "The policy is none: receivers only report. Move to quarantine once all your mail passes."
 msgstr "Chính sách là none: bên nhận chỉ báo cáo. Hãy chuyển sang quarantine khi mọi thư của bạn đều đạt."
@@ -17351,9 +17451,21 @@ msgstr "Không thể đổi sản phẩm sau này."
 msgid "The provider asked to slow down"
 msgstr "Nhà cung cấp yêu cầu chậm lại"
 
+#: src/features/settings/audit/sentence.ts
+msgid "the provider did not complete the sign-in"
+msgstr "nhà cung cấp chưa hoàn tất đăng nhập"
+
+#: src/features/settings/audit/sentence.ts
+msgid "the provider has not verified the e-mail address"
+msgstr "nhà cung cấp chưa xác minh địa chỉ email"
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "The provider's address, exactly as its discovery document names it. Yuva reads it on save."
 msgstr "The provider's address, exactly as its discovery document names it. Yuva reads it on save."
+
+#: src/features/settings/audit/sentence.ts
+msgid "the provider's response was not accepted"
+msgstr "phản hồi của nhà cung cấp không được chấp nhận"
 
 #: src/features/migrations/SwitchStep.tsx
 msgid "The quiet period is over; the migration finishes at the next sync."
@@ -18593,6 +18705,10 @@ msgstr "Không rõ"
 msgid "Unknown device"
 msgstr "Thiết bị không xác định"
 
+#: src/features/settings/audit/sentence.ts
+msgid "unknown reason"
+msgstr "lý do không xác định"
+
 #: src/features/feedback/RoadmapCard.tsx
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Unlink"
@@ -18616,6 +18732,10 @@ msgstr "Hủy liên kết khỏi {title}"
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Unlink your Slack account?"
 msgstr "Unlink your Slack account?"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Unlinked {person} from Slack"
+msgstr "Đã hủy liên kết {person} với Slack"
 
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Unlock"
@@ -19071,6 +19191,10 @@ msgstr "Các giá trị của điều kiện {n}, phân tách bằng dấu phẩ
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Verified"
 msgstr "Đã xác minh"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Verified the domain {domain} for single sign-on"
+msgstr "Đã xác minh tên miền {domain} cho đăng nhập một lần"
 
 #: src/features/settings/channels/email/AddressProof.tsx
 #: src/features/settings/sso/SsoPage.tsx

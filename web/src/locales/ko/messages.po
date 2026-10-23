@@ -1943,6 +1943,10 @@ msgstr "{host}(으)로 웹훅을 추가했습니다"
 msgid "Added by the team"
 msgstr "팀이 추가함"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Added the domain {domain} for single sign-on"
+msgstr "싱글 사인온용 도메인 {domain}을(를) 추가했습니다"
+
 #: src/features/conversation/Feedback.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/setup/email/EmailLayout.tsx
@@ -2433,6 +2437,10 @@ msgstr "SLA 목표가 곧 기한입니다"
 #: src/features/settings/notifications/events.ts
 msgid "An SLA target was breached"
 msgstr "SLA 목표를 위반했습니다"
+
+#: src/features/settings/audit/sentence.ts
+msgid "an unknown person"
+msgstr "알 수 없는 사용자"
 
 #: src/features/migrations/UploadStep.tsx
 msgid "An upload was cut off: {count} parts, {size}, are already on the server."
@@ -3635,6 +3643,10 @@ msgid "Changed how long conversations are kept from {from} to {to}"
 msgstr "대화 보관 기간을 {from}에서 {to}(으)로 변경했습니다"
 
 #: src/features/settings/audit/sentence.ts
+msgid "Changed the {protocol} single sign-on provider"
+msgstr "싱글 사인온 제공자 {protocol}을(를) 변경했습니다"
+
+#: src/features/settings/audit/sentence.ts
 msgid "Changed the automation rule {name}"
 msgstr "자동화 규칙 {name}을(를) 변경했습니다"
 
@@ -3649,6 +3661,14 @@ msgstr "채널의 메일 계정 또는 비밀번호를 변경했습니다"
 #: src/features/settings/audit/sentence.ts
 msgid "Changed the role of {person} from {from} to {to}"
 msgstr "{person} 님의 역할을 {from}에서 {to}(으)로 변경했습니다"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the settings of an issue tracker connection"
+msgstr "이슈 트래커 연결 설정을 변경했습니다"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the single sign-on settings"
+msgstr "싱글 사인온 설정을 변경했습니다"
 
 #: src/features/settings/audit/sentence.ts
 msgid "Changed the webhook to {host}"
@@ -4371,6 +4391,14 @@ msgstr "{by}님이 {since}에 연결"
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Connected on {since}"
 msgstr "{since}에 연결됨"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Connected the issue tracker {name} ({provider})"
+msgstr "이슈 트래커 {name} ({provider})을(를) 연결했습니다"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Connected the Slack workspace {slackTeam}"
+msgstr "Slack 워크스페이스 {slackTeam}을(를) 연결했습니다"
 
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Connected to {address}"
@@ -5485,6 +5513,18 @@ msgstr "{client} 연결을 해제했습니다"
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "Disconnected {name}"
 msgstr "Disconnected {name}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Disconnected Slack"
+msgstr "Slack 연결을 해제했습니다"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Disconnected Slack because the app was removed in Slack"
+msgstr "Slack에서 앱이 제거되어 Slack 연결을 해제했습니다"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Disconnected the issue tracker {name} ({provider})"
+msgstr "이슈 트래커 {name} ({provider}) 연결을 해제했습니다"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/DocsPage.tsx
@@ -8748,6 +8788,10 @@ msgstr "Linked {0}"
 msgid "Linked {key}"
 msgstr "Linked {key}"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Linked {person} to Slack"
+msgstr "{person}을(를) Slack에 연결했습니다"
+
 #: src/features/status/LinkedSection.tsx
 msgid "Linked conversations"
 msgstr "연결된 대화"
@@ -8981,6 +9025,14 @@ msgstr "매크로"
 #: src/features/settings/SettingsColumn.tsx
 msgid "Macros"
 msgstr "매크로"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Made single sign-on optional"
+msgstr "싱글 사인온을 선택 사항으로 바꿨습니다"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Made single sign-on required"
+msgstr "싱글 사인온을 필수로 바꿨습니다"
 
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Mail arrives here; add a reply account when you are ready"
@@ -13529,6 +13581,10 @@ msgstr "환불"
 msgid "Refund approved"
 msgstr "환불 승인"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Refused a sign-in with single sign-on ({protocol}) by {who}: {reason}"
+msgstr "{who}의 싱글 사인온({protocol}) 로그인을 거부했습니다: {reason}"
+
 #: src/features/migrations/TokenConnectStep.tsx
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Region"
@@ -13765,6 +13821,14 @@ msgstr "{who}님이 삭제함"
 #: src/features/settings/fields/FieldDialog.tsx
 msgid "Removed options are cleared from every conversation that holds them. This runs in the background."
 msgstr "삭제한 옵션은 그 옵션을 가진 모든 대화에서 지워집니다. 백그라운드에서 실행됩니다."
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed the {protocol} single sign-on provider"
+msgstr "싱글 사인온 제공자 {protocol}을(를) 삭제했습니다"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed the domain {domain} from single sign-on"
+msgstr "싱글 사인온에서 도메인 {domain}을(를) 제거했습니다"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Removes {name} with its products, channels, conversations, contacts, files, labels, webhooks and API keys for everyone. Members keep their accounts."
@@ -14355,6 +14419,10 @@ msgstr "채널의 키를 새로 발급했습니다"
 #: src/features/settings/audit/sentence.ts
 msgid "Rotated the signing secret of a webhook"
 msgstr "웹훅의 서명 비밀 값을 새로 발급했습니다"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the webhook secret of an issue tracker connection"
+msgstr "이슈 트래커 연결의 웹훅 비밀 값을 새로 발급했습니다"
 
 #: src/components/common/AssignmentFields.tsx
 msgid "Round robin"
@@ -15274,6 +15342,10 @@ msgstr "DKIM 설정"
 msgid "Set up e-mail"
 msgstr "이메일 설정"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Set up single sign-on with {protocol}"
+msgstr "{protocol}(으)로 싱글 사인온을 설정했습니다"
+
 #: src/app/Palette.tsx
 #: src/features/setup/SetupHub.tsx
 msgid "Set up Yuva"
@@ -15688,9 +15760,17 @@ msgstr "다른 모든 곳에서 로그아웃할까요?"
 msgid "Sign-in address"
 msgstr "로그인 주소"
 
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Sign-in and integrations"
+msgstr "로그인 및 연동"
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Sign-in rules"
 msgstr "Sign-in rules"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Sign-in with single sign-on ({protocol}) by {who}"
+msgstr "{who}의 싱글 사인온({protocol}) 로그인"
 
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/setup/NewsletterStep.tsx
@@ -16834,6 +16914,14 @@ msgstr "{host}의 문서 채널이 더 이상 존재하지 않습니다."
 msgid "The documentation page to put it under, on a site of this inbox."
 msgstr "아래에 둘 문서 페이지(이 받은 편지함의 사이트에 있는 것)."
 
+#: src/features/settings/audit/sentence.ts
+msgid "The domain {domain} lost its verification: its DNS record is missing"
+msgstr "도메인 {domain}의 인증이 해제되었습니다: DNS 레코드가 없습니다"
+
+#: src/features/settings/audit/sentence.ts
+msgid "The domain {domain} lost its verification: its DNS record is missing, so single sign-on is no longer required"
+msgstr "도메인 {domain}의 인증이 해제되었습니다: DNS 레코드가 없어 싱글 사인온이 더 이상 필수가 아닙니다"
+
 #: src/features/broadcasts/Import.tsx
 msgid "The domain takes no mail"
 msgstr "도메인이 메일을 받지 않음"
@@ -16849,6 +16937,10 @@ msgstr "이메일 채널이 준비되었습니다"
 #: src/features/broadcasts/ListForm.tsx
 msgid "The e-mail channel that sends the confirmation and welcome mails. It needs an SMTP account."
 msgstr "확인 메일과 환영 메일을 보내는 이메일 채널입니다. SMTP 계정이 필요합니다."
+
+#: src/features/settings/audit/sentence.ts
+msgid "the e-mail domain is not verified for this workspace"
+msgstr "이메일 도메인이 이 워크스페이스에서 인증되지 않았습니다"
 
 #: src/features/setup/InstallStep.tsx
 msgid "The elements work on these addresses; add your dev server in the inbox settings:"
@@ -17315,6 +17407,14 @@ msgstr "비밀번호는 암호화되어 저장되며 다시 표시되지 않습�
 msgid "The password is too long."
 msgstr "비밀번호가 너무 깁니다."
 
+#: src/features/settings/audit/sentence.ts
+msgid "the person is in none of the allowed groups"
+msgstr "허용된 그룹에 속해 있지 않습니다"
+
+#: src/features/settings/audit/sentence.ts
+msgid "the person is not a member of this workspace"
+msgstr "이 워크스페이스의 멤버가 아닙니다"
+
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "The policy is none: receivers only report. Move to quarantine once all your mail passes."
 msgstr "정책이 none입니다. 수신 측은 보고만 합니다. 모든 메일이 통과하면 quarantine으로 옮기세요."
@@ -17351,9 +17451,21 @@ msgstr "제품은 나중에 변경할 수 없습니다."
 msgid "The provider asked to slow down"
 msgstr "제공업체가 속도를 늦추라고 요청했습니다"
 
+#: src/features/settings/audit/sentence.ts
+msgid "the provider did not complete the sign-in"
+msgstr "제공자가 로그인을 완료하지 않았습니다"
+
+#: src/features/settings/audit/sentence.ts
+msgid "the provider has not verified the e-mail address"
+msgstr "제공자가 이메일 주소를 확인하지 않았습니다"
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "The provider's address, exactly as its discovery document names it. Yuva reads it on save."
 msgstr "The provider's address, exactly as its discovery document names it. Yuva reads it on save."
+
+#: src/features/settings/audit/sentence.ts
+msgid "the provider's response was not accepted"
+msgstr "제공자의 응답이 수락되지 않았습니다"
 
 #: src/features/migrations/SwitchStep.tsx
 msgid "The quiet period is over; the migration finishes at the next sync."
@@ -18593,6 +18705,10 @@ msgstr "알 수 없음"
 msgid "Unknown device"
 msgstr "알 수 없는 기기"
 
+#: src/features/settings/audit/sentence.ts
+msgid "unknown reason"
+msgstr "알 수 없는 이유"
+
 #: src/features/feedback/RoadmapCard.tsx
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Unlink"
@@ -18616,6 +18732,10 @@ msgstr "{title}에서 연결 해제"
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Unlink your Slack account?"
 msgstr "Unlink your Slack account?"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Unlinked {person} from Slack"
+msgstr "{person}과(와) Slack의 연결을 해제했습니다"
 
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Unlock"
@@ -19071,6 +19191,10 @@ msgstr "조건 {n}의 값, 쉼표로 구분"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Verified"
 msgstr "확인됨"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Verified the domain {domain} for single sign-on"
+msgstr "싱글 사인온용 도메인 {domain}을(를) 인증했습니다"
 
 #: src/features/settings/channels/email/AddressProof.tsx
 #: src/features/settings/sso/SsoPage.tsx

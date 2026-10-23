@@ -1943,6 +1943,10 @@ msgstr "{host}-ലേക്ക് ഒരു വെബ്‌ഹുക്ക് �
 msgid "Added by the team"
 msgstr "ടീം ചേർത്തത്"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Added the domain {domain} for single sign-on"
+msgstr "സിംഗിൾ സൈൻ-ഓണിനായി ഡൊമെയ്ൻ {domain} ചേർത്തു"
+
 #: src/features/conversation/Feedback.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/setup/email/EmailLayout.tsx
@@ -2433,6 +2437,10 @@ msgstr "ഒരു SLA ലക്ഷ്യത്തിന്റെ അവസാന
 #: src/features/settings/notifications/events.ts
 msgid "An SLA target was breached"
 msgstr "ഒരു SLA ലക്ഷ്യം ലംഘിക്കപ്പെട്ടു"
+
+#: src/features/settings/audit/sentence.ts
+msgid "an unknown person"
+msgstr "അജ്ഞാത വ്യക്തി"
 
 #: src/features/migrations/UploadStep.tsx
 msgid "An upload was cut off: {count} parts, {size}, are already on the server."
@@ -3635,6 +3643,10 @@ msgid "Changed how long conversations are kept from {from} to {to}"
 msgstr "സംഭാഷണങ്ങൾ സൂക്ഷിക്കുന്ന കാലയളവ് {from}-ൽ നിന്ന് {to} ആക്കി"
 
 #: src/features/settings/audit/sentence.ts
+msgid "Changed the {protocol} single sign-on provider"
+msgstr "സിംഗിൾ സൈൻ-ഓൺ ദാതാവ് {protocol} മാറ്റി"
+
+#: src/features/settings/audit/sentence.ts
 msgid "Changed the automation rule {name}"
 msgstr "ഓട്ടോമേഷൻ നിയമം {name} മാറ്റി"
 
@@ -3649,6 +3661,14 @@ msgstr "ഒരു ചാനലിന്റെ മെയിൽ അക്കൗണ
 #: src/features/settings/audit/sentence.ts
 msgid "Changed the role of {person} from {from} to {to}"
 msgstr "{person}-ന്റെ റോൾ {from}-ൽ നിന്ന് {to} ആക്കി"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the settings of an issue tracker connection"
+msgstr "ഇഷ്യൂ ട്രാക്കർ കണക്ഷന്റെ ക്രമീകരണങ്ങൾ മാറ്റി"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the single sign-on settings"
+msgstr "സിംഗിൾ സൈൻ-ഓൺ ക്രമീകരണങ്ങൾ മാറ്റി"
 
 #: src/features/settings/audit/sentence.ts
 msgid "Changed the webhook to {host}"
@@ -4371,6 +4391,14 @@ msgstr "{by} {since}-ന് ബന്ധിപ്പിച്ചു"
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Connected on {since}"
 msgstr "{since}-ന് കണക്റ്റ് ചെയ്തു"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Connected the issue tracker {name} ({provider})"
+msgstr "ഇഷ്യൂ ട്രാക്കർ {name} ({provider}) ബന്ധിപ്പിച്ചു"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Connected the Slack workspace {slackTeam}"
+msgstr "Slack വർക്ക്‌സ്‌പെയ്സ് {slackTeam} ബന്ധിപ്പിച്ചു"
 
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Connected to {address}"
@@ -5485,6 +5513,18 @@ msgstr "{client} വിച്ഛേദിച്ചു"
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "Disconnected {name}"
 msgstr "Disconnected {name}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Disconnected Slack"
+msgstr "Slack ബന്ധം വിച്ഛേദിച്ചു"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Disconnected Slack because the app was removed in Slack"
+msgstr "Slack-ൽ ആപ്പ് നീക്കം ചെയ്തതിനാൽ Slack ബന്ധം വിച്ഛേദിച്ചു"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Disconnected the issue tracker {name} ({provider})"
+msgstr "ഇഷ്യൂ ട്രാക്കർ {name} ({provider}) ബന്ധം വിച്ഛേദിച്ചു"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/DocsPage.tsx
@@ -8748,6 +8788,10 @@ msgstr "Linked {0}"
 msgid "Linked {key}"
 msgstr "Linked {key}"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Linked {person} to Slack"
+msgstr "{person} നെ Slack-മായി ലിങ്ക് ചെയ്തു"
+
 #: src/features/status/LinkedSection.tsx
 msgid "Linked conversations"
 msgstr "ലിങ്ക് ചെയ്ത സംഭാഷണങ്ങൾ"
@@ -8981,6 +9025,14 @@ msgstr "മാക്രോ"
 #: src/features/settings/SettingsColumn.tsx
 msgid "Macros"
 msgstr "മാക്രോകൾ"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Made single sign-on optional"
+msgstr "സിംഗിൾ സൈൻ-ഓൺ ഓപ്ഷണൽ ആക്കി"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Made single sign-on required"
+msgstr "സിംഗിൾ സൈൻ-ഓൺ നിർബന്ധമാക്കി"
 
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Mail arrives here; add a reply account when you are ready"
@@ -13529,6 +13581,10 @@ msgstr "റീഫണ്ട്"
 msgid "Refund approved"
 msgstr "റീഫണ്ട് അംഗീകരിച്ചു"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Refused a sign-in with single sign-on ({protocol}) by {who}: {reason}"
+msgstr "{who} ന്റെ സിംഗിൾ സൈൻ-ഓൺ ({protocol}) സൈൻ-ഇൻ നിരസിച്ചു: {reason}"
+
 #: src/features/migrations/TokenConnectStep.tsx
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Region"
@@ -13765,6 +13821,14 @@ msgstr "{who} നീക്കം ചെയ്തു"
 #: src/features/settings/fields/FieldDialog.tsx
 msgid "Removed options are cleared from every conversation that holds them. This runs in the background."
 msgstr "നീക്കിയ ഓപ്ഷനുകൾ അവയുള്ള എല്ലാ സംഭാഷണങ്ങളിൽ നിന്നും മായ്ക്കപ്പെടും. ഇത് പശ്ചാത്തലത്തിൽ നടക്കും."
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed the {protocol} single sign-on provider"
+msgstr "സിംഗിൾ സൈൻ-ഓൺ ദാതാവ് {protocol} നീക്കം ചെയ്തു"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed the domain {domain} from single sign-on"
+msgstr "സിംഗിൾ സൈൻ-ഓണിൽ നിന്ന് ഡൊമെയ്ൻ {domain} നീക്കം ചെയ്തു"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Removes {name} with its products, channels, conversations, contacts, files, labels, webhooks and API keys for everyone. Members keep their accounts."
@@ -14355,6 +14419,10 @@ msgstr "ഒരു ചാനലിന്റെ കീ പുതുക്കി"
 #: src/features/settings/audit/sentence.ts
 msgid "Rotated the signing secret of a webhook"
 msgstr "ഒരു വെബ്‌ഹുക്കിന്റെ സിഗ്നേച്ചർ സീക്രട്ട് പുതുക്കി"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the webhook secret of an issue tracker connection"
+msgstr "ഇഷ്യൂ ട്രാക്കർ കണക്ഷന്റെ വെബ്‌ഹുക്ക് സീക്രട്ട് പുതുക്കി"
 
 #: src/components/common/AssignmentFields.tsx
 msgid "Round robin"
@@ -15274,6 +15342,10 @@ msgstr "DKIM സജ്ജീകരിക്കുക"
 msgid "Set up e-mail"
 msgstr "ഇമെയിൽ സജ്ജീകരിക്കുക"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Set up single sign-on with {protocol}"
+msgstr "{protocol} ഉപയോഗിച്ച് സിംഗിൾ സൈൻ-ഓൺ സജ്ജീകരിച്ചു"
+
 #: src/app/Palette.tsx
 #: src/features/setup/SetupHub.tsx
 msgid "Set up Yuva"
@@ -15688,9 +15760,17 @@ msgstr "മറ്റെല്ലായിടത്തും സൈൻ ഔട്�
 msgid "Sign-in address"
 msgstr "സൈൻ-ഇൻ വിലാസം"
 
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Sign-in and integrations"
+msgstr "സൈൻ-ഇൻ, ഇന്റഗ്രേഷനുകൾ"
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Sign-in rules"
 msgstr "Sign-in rules"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Sign-in with single sign-on ({protocol}) by {who}"
+msgstr "{who} ന്റെ സിംഗിൾ സൈൻ-ഓൺ ({protocol}) വഴിയുള്ള സൈൻ-ഇൻ"
 
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/setup/NewsletterStep.tsx
@@ -16834,6 +16914,14 @@ msgstr "{host}-ന്റെ ഡോക്യുമെന്റേഷൻ ചാന
 msgid "The documentation page to put it under, on a site of this inbox."
 msgstr "ഇത് സ്ഥാപിക്കേണ്ട ഡോക്യുമെന്റേഷൻ പേജ്, ഈ ഇൻബോക്സിന്റെ ഒരു സൈറ്റിൽ."
 
+#: src/features/settings/audit/sentence.ts
+msgid "The domain {domain} lost its verification: its DNS record is missing"
+msgstr "ഡൊമെയ്ൻ {domain} ന് സ്ഥിരീകരണം നഷ്ടമായി: DNS റെക്കോർഡ് ഇല്ല"
+
+#: src/features/settings/audit/sentence.ts
+msgid "The domain {domain} lost its verification: its DNS record is missing, so single sign-on is no longer required"
+msgstr "ഡൊമെയ്ൻ {domain} ന് സ്ഥിരീകരണം നഷ്ടമായി: DNS റെക്കോർഡ് ഇല്ല, അതിനാൽ സിംഗിൾ സൈൻ-ഓൺ ഇനി നിർബന്ധമല്ല"
+
 #: src/features/broadcasts/Import.tsx
 msgid "The domain takes no mail"
 msgstr "ഡൊമെയ്ൻ മെയിൽ സ്വീകരിക്കുന്നില്ല"
@@ -16849,6 +16937,10 @@ msgstr "ഇമെയിൽ ചാനൽ തയ്യാറാണ്"
 #: src/features/broadcasts/ListForm.tsx
 msgid "The e-mail channel that sends the confirmation and welcome mails. It needs an SMTP account."
 msgstr "സ്ഥിരീകരണ, സ്വാഗത മെയിലുകൾ അയയ്ക്കുന്ന ഇമെയിൽ ചാനൽ. അതിന് ഒരു SMTP അക്കൗണ്ട് വേണം."
+
+#: src/features/settings/audit/sentence.ts
+msgid "the e-mail domain is not verified for this workspace"
+msgstr "ഇമെയിൽ ഡൊമെയ്ൻ ഈ വർക്ക്‌സ്‌പെയ്സിനായി സ്ഥിരീകരിച്ചിട്ടില്ല"
 
 #: src/features/setup/InstallStep.tsx
 msgid "The elements work on these addresses; add your dev server in the inbox settings:"
@@ -17315,6 +17407,14 @@ msgstr "പാസ്‌വേഡ് എൻക്രിപ്റ്റ് ചെ�
 msgid "The password is too long."
 msgstr "പാസ്‌വേഡ് വളരെ നീളമുള്ളതാണ്."
 
+#: src/features/settings/audit/sentence.ts
+msgid "the person is in none of the allowed groups"
+msgstr "വ്യക്തി അനുവദിച്ച ഒരു ഗ്രൂപ്പിലും ഇല്ല"
+
+#: src/features/settings/audit/sentence.ts
+msgid "the person is not a member of this workspace"
+msgstr "വ്യക്തി ഈ വർക്ക്‌സ്‌പെയ്സിലെ അംഗമല്ല"
+
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "The policy is none: receivers only report. Move to quarantine once all your mail passes."
 msgstr "നയം none ആണ്: സ്വീകർത്താക്കൾ റിപ്പോർട്ട് മാത്രം ചെയ്യുന്നു. നിങ്ങളുടെ എല്ലാ മെയിലും വിജയിച്ചാൽ quarantine-ലേക്ക് മാറുക."
@@ -17351,9 +17451,21 @@ msgstr "ഉൽപ്പന്നം പിന്നീട് മാറ്റാ�
 msgid "The provider asked to slow down"
 msgstr "ദാതാവ് വേഗത കുറയ്ക്കാൻ ആവശ്യപ്പെട്ടു"
 
+#: src/features/settings/audit/sentence.ts
+msgid "the provider did not complete the sign-in"
+msgstr "ദാതാവ് സൈൻ-ഇൻ പൂർത്തിയാക്കിയില്ല"
+
+#: src/features/settings/audit/sentence.ts
+msgid "the provider has not verified the e-mail address"
+msgstr "ദാതാവ് ഇമെയിൽ വിലാസം സ്ഥിരീകരിച്ചിട്ടില്ല"
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "The provider's address, exactly as its discovery document names it. Yuva reads it on save."
 msgstr "The provider's address, exactly as its discovery document names it. Yuva reads it on save."
+
+#: src/features/settings/audit/sentence.ts
+msgid "the provider's response was not accepted"
+msgstr "ദാതാവിന്റെ പ്രതികരണം സ്വീകരിച്ചില്ല"
 
 #: src/features/migrations/SwitchStep.tsx
 msgid "The quiet period is over; the migration finishes at the next sync."
@@ -18593,6 +18705,10 @@ msgstr "അജ്ഞാതം"
 msgid "Unknown device"
 msgstr "അജ്ഞാത ഉപകരണം"
 
+#: src/features/settings/audit/sentence.ts
+msgid "unknown reason"
+msgstr "അജ്ഞാത കാരണം"
+
 #: src/features/feedback/RoadmapCard.tsx
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Unlink"
@@ -18616,6 +18732,10 @@ msgstr "{title}-ൽ നിന്ന് ലിങ്ക് നീക്കുക"
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Unlink your Slack account?"
 msgstr "Unlink your Slack account?"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Unlinked {person} from Slack"
+msgstr "{person} ന്റെ Slack ലിങ്ക് നീക്കം ചെയ്തു"
 
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Unlock"
@@ -19071,6 +19191,10 @@ msgstr "നിബന്ധന {n}-ന്റെ മൂല്യങ്ങൾ, ക�
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Verified"
 msgstr "പരിശോധിച്ചു"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Verified the domain {domain} for single sign-on"
+msgstr "സിംഗിൾ സൈൻ-ഓണിനായി ഡൊമെയ്ൻ {domain} സ്ഥിരീകരിച്ചു"
 
 #: src/features/settings/channels/email/AddressProof.tsx
 #: src/features/settings/sso/SsoPage.tsx

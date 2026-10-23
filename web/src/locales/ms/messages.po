@@ -1943,6 +1943,10 @@ msgstr "Menambah webhook ke {host}"
 msgid "Added by the team"
 msgstr "Ditambah oleh pasukan"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Added the domain {domain} for single sign-on"
+msgstr "Menambah domain {domain} untuk log masuk tunggal"
+
 #: src/features/conversation/Feedback.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/setup/email/EmailLayout.tsx
@@ -2433,6 +2437,10 @@ msgstr "Sasaran SLA akan tamat tempoh tidak lama lagi"
 #: src/features/settings/notifications/events.ts
 msgid "An SLA target was breached"
 msgstr "Sasaran SLA telah dilanggar"
+
+#: src/features/settings/audit/sentence.ts
+msgid "an unknown person"
+msgstr "orang yang tidak dikenali"
 
 #: src/features/migrations/UploadStep.tsx
 msgid "An upload was cut off: {count} parts, {size}, are already on the server."
@@ -3635,6 +3643,10 @@ msgid "Changed how long conversations are kept from {from} to {to}"
 msgstr "Menukar tempoh simpanan perbualan daripada {from} kepada {to}"
 
 #: src/features/settings/audit/sentence.ts
+msgid "Changed the {protocol} single sign-on provider"
+msgstr "Menukar penyedia log masuk tunggal {protocol}"
+
+#: src/features/settings/audit/sentence.ts
 msgid "Changed the automation rule {name}"
 msgstr "Mengubah peraturan automasi {name}"
 
@@ -3649,6 +3661,14 @@ msgstr "Menukar akaun mel atau kata laluan sesuatu saluran"
 #: src/features/settings/audit/sentence.ts
 msgid "Changed the role of {person} from {from} to {to}"
 msgstr "Menukar peranan {person} daripada {from} kepada {to}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the settings of an issue tracker connection"
+msgstr "Menukar tetapan sambungan penjejak isu"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the single sign-on settings"
+msgstr "Menukar tetapan log masuk tunggal"
 
 #: src/features/settings/audit/sentence.ts
 msgid "Changed the webhook to {host}"
@@ -4371,6 +4391,14 @@ msgstr "Disambungkan oleh {by} pada {since}"
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Connected on {since}"
 msgstr "Disambungkan pada {since}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Connected the issue tracker {name} ({provider})"
+msgstr "Menyambungkan penjejak isu {name} ({provider})"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Connected the Slack workspace {slackTeam}"
+msgstr "Menyambungkan ruang kerja Slack {slackTeam}"
 
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Connected to {address}"
@@ -5485,6 +5513,18 @@ msgstr "Memutuskan {client}"
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "Disconnected {name}"
 msgstr "Disconnected {name}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Disconnected Slack"
+msgstr "Memutuskan sambungan Slack"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Disconnected Slack because the app was removed in Slack"
+msgstr "Memutuskan sambungan Slack kerana aplikasi dialih keluar dalam Slack"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Disconnected the issue tracker {name} ({provider})"
+msgstr "Memutuskan sambungan penjejak isu {name} ({provider})"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/DocsPage.tsx
@@ -8748,6 +8788,10 @@ msgstr "Linked {0}"
 msgid "Linked {key}"
 msgstr "Linked {key}"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Linked {person} to Slack"
+msgstr "Memautkan {person} ke Slack"
+
 #: src/features/status/LinkedSection.tsx
 msgid "Linked conversations"
 msgstr "Perbualan dipautkan"
@@ -8981,6 +9025,14 @@ msgstr "Makro"
 #: src/features/settings/SettingsColumn.tsx
 msgid "Macros"
 msgstr "Makro"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Made single sign-on optional"
+msgstr "Menjadikan log masuk tunggal pilihan"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Made single sign-on required"
+msgstr "Mewajibkan log masuk tunggal"
 
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Mail arrives here; add a reply account when you are ready"
@@ -13529,6 +13581,10 @@ msgstr "Bayaran balik"
 msgid "Refund approved"
 msgstr "Bayaran balik diluluskan"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Refused a sign-in with single sign-on ({protocol}) by {who}: {reason}"
+msgstr "Menolak log masuk dengan log masuk tunggal ({protocol}) oleh {who}: {reason}"
+
 #: src/features/migrations/TokenConnectStep.tsx
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Region"
@@ -13765,6 +13821,14 @@ msgstr "Dialih keluar oleh {who}"
 #: src/features/settings/fields/FieldDialog.tsx
 msgid "Removed options are cleared from every conversation that holds them. This runs in the background."
 msgstr "Pilihan yang dibuang dipadam daripada semua perbualan yang memilikinya. Ini berjalan di latar belakang."
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed the {protocol} single sign-on provider"
+msgstr "Mengalih keluar penyedia log masuk tunggal {protocol}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed the domain {domain} from single sign-on"
+msgstr "Mengalih keluar domain {domain} daripada log masuk tunggal"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Removes {name} with its products, channels, conversations, contacts, files, labels, webhooks and API keys for everyone. Members keep their accounts."
@@ -14355,6 +14419,10 @@ msgstr "Memperbaharui kunci sesuatu saluran"
 #: src/features/settings/audit/sentence.ts
 msgid "Rotated the signing secret of a webhook"
 msgstr "Memperbaharui rahsia tandatangan sesuatu webhook"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the webhook secret of an issue tracker connection"
+msgstr "Memperbaharui rahsia webhook sambungan penjejak isu"
 
 #: src/components/common/AssignmentFields.tsx
 msgid "Round robin"
@@ -15274,6 +15342,10 @@ msgstr "Sediakan DKIM"
 msgid "Set up e-mail"
 msgstr "Sediakan e-mel"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Set up single sign-on with {protocol}"
+msgstr "Menyediakan log masuk tunggal dengan {protocol}"
+
 #: src/app/Palette.tsx
 #: src/features/setup/SetupHub.tsx
 msgid "Set up Yuva"
@@ -15688,9 +15760,17 @@ msgstr "Log keluar di semua tempat lain?"
 msgid "Sign-in address"
 msgstr "Alamat log masuk"
 
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Sign-in and integrations"
+msgstr "Log masuk dan integrasi"
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Sign-in rules"
 msgstr "Sign-in rules"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Sign-in with single sign-on ({protocol}) by {who}"
+msgstr "Log masuk dengan log masuk tunggal ({protocol}) oleh {who}"
 
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/setup/NewsletterStep.tsx
@@ -16834,6 +16914,14 @@ msgstr "Saluran dokumentasi {host} tidak lagi wujud."
 msgid "The documentation page to put it under, on a site of this inbox."
 msgstr "Halaman dokumentasi untuk meletakkannya di bawah, pada tapak peti masuk ini."
 
+#: src/features/settings/audit/sentence.ts
+msgid "The domain {domain} lost its verification: its DNS record is missing"
+msgstr "Domain {domain} hilang pengesahannya: rekod DNS tiada"
+
+#: src/features/settings/audit/sentence.ts
+msgid "The domain {domain} lost its verification: its DNS record is missing, so single sign-on is no longer required"
+msgstr "Domain {domain} hilang pengesahannya: rekod DNS tiada, jadi log masuk tunggal tidak lagi diwajibkan"
+
 #: src/features/broadcasts/Import.tsx
 msgid "The domain takes no mail"
 msgstr "Domain tidak menerima mel"
@@ -16849,6 +16937,10 @@ msgstr "Saluran e-mel sedia"
 #: src/features/broadcasts/ListForm.tsx
 msgid "The e-mail channel that sends the confirmation and welcome mails. It needs an SMTP account."
 msgstr "Saluran e-mel yang menghantar mel pengesahan dan alu-aluan. Ia memerlukan akaun SMTP."
+
+#: src/features/settings/audit/sentence.ts
+msgid "the e-mail domain is not verified for this workspace"
+msgstr "domain e-mel belum disahkan untuk ruang kerja ini"
 
 #: src/features/setup/InstallStep.tsx
 msgid "The elements work on these addresses; add your dev server in the inbox settings:"
@@ -17315,6 +17407,14 @@ msgstr "Kata laluan disimpan disulitkan dan tidak pernah ditunjukkan lagi."
 msgid "The password is too long."
 msgstr "Kata laluan terlalu panjang."
 
+#: src/features/settings/audit/sentence.ts
+msgid "the person is in none of the allowed groups"
+msgstr "orang itu tiada dalam mana-mana kumpulan yang dibenarkan"
+
+#: src/features/settings/audit/sentence.ts
+msgid "the person is not a member of this workspace"
+msgstr "orang itu bukan ahli ruang kerja ini"
+
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "The policy is none: receivers only report. Move to quarantine once all your mail passes."
 msgstr "Dasarnya none: penerima hanya melaporkan. Beralih ke quarantine setelah semua mel anda lulus."
@@ -17351,9 +17451,21 @@ msgstr "Produk tidak boleh diubah kemudian."
 msgid "The provider asked to slow down"
 msgstr "Penyedia meminta diperlahankan"
 
+#: src/features/settings/audit/sentence.ts
+msgid "the provider did not complete the sign-in"
+msgstr "penyedia tidak menyelesaikan log masuk"
+
+#: src/features/settings/audit/sentence.ts
+msgid "the provider has not verified the e-mail address"
+msgstr "penyedia belum mengesahkan alamat e-mel"
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "The provider's address, exactly as its discovery document names it. Yuva reads it on save."
 msgstr "The provider's address, exactly as its discovery document names it. Yuva reads it on save."
+
+#: src/features/settings/audit/sentence.ts
+msgid "the provider's response was not accepted"
+msgstr "respons penyedia tidak diterima"
 
 #: src/features/migrations/SwitchStep.tsx
 msgid "The quiet period is over; the migration finishes at the next sync."
@@ -18593,6 +18705,10 @@ msgstr "Tidak diketahui"
 msgid "Unknown device"
 msgstr "Peranti tidak diketahui"
 
+#: src/features/settings/audit/sentence.ts
+msgid "unknown reason"
+msgstr "sebab tidak diketahui"
+
 #: src/features/feedback/RoadmapCard.tsx
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Unlink"
@@ -18616,6 +18732,10 @@ msgstr "Nyahpautkan daripada {title}"
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Unlink your Slack account?"
 msgstr "Unlink your Slack account?"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Unlinked {person} from Slack"
+msgstr "Menyahpaut {person} daripada Slack"
 
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Unlock"
@@ -19071,6 +19191,10 @@ msgstr "Nilai syarat {n}, dipisahkan koma"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Verified"
 msgstr "Disahkan"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Verified the domain {domain} for single sign-on"
+msgstr "Mengesahkan domain {domain} untuk log masuk tunggal"
 
 #: src/features/settings/channels/email/AddressProof.tsx
 #: src/features/settings/sso/SsoPage.tsx

@@ -103,6 +103,7 @@ function Filters({
     ["all", t`Everything`],
     ["people", t`Members and invitations`],
     ["access", t`Keys and connected apps`],
+    ["signin", t`Sign-in and integrations`],
     ["webhooks", t`Webhooks`],
     ["mail", t`Channels and inboxes`],
     ["data", t`Contacts and exports`],

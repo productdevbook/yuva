@@ -1943,6 +1943,10 @@ msgstr "A adăugat un webhook către {host}"
 msgid "Added by the team"
 msgstr "Adăugat de echipă"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Added the domain {domain} for single sign-on"
+msgstr "A adăugat domeniul {domain} pentru autentificarea unică"
+
 #: src/features/conversation/Feedback.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/setup/email/EmailLayout.tsx
@@ -2433,6 +2437,10 @@ msgstr "Un obiectiv SLA expiră curând"
 #: src/features/settings/notifications/events.ts
 msgid "An SLA target was breached"
 msgstr "Un obiectiv SLA a fost încălcat"
+
+#: src/features/settings/audit/sentence.ts
+msgid "an unknown person"
+msgstr "o persoană necunoscută"
 
 #: src/features/migrations/UploadStep.tsx
 msgid "An upload was cut off: {count} parts, {size}, are already on the server."
@@ -3635,6 +3643,10 @@ msgid "Changed how long conversations are kept from {from} to {to}"
 msgstr "A schimbat durata de păstrare a conversațiilor de la {from} la {to}"
 
 #: src/features/settings/audit/sentence.ts
+msgid "Changed the {protocol} single sign-on provider"
+msgstr "A modificat furnizorul de autentificare unică {protocol}"
+
+#: src/features/settings/audit/sentence.ts
 msgid "Changed the automation rule {name}"
 msgstr "A modificat regula de automatizare {name}"
 
@@ -3649,6 +3661,14 @@ msgstr "A schimbat contul de e-mail sau parola unui canal"
 #: src/features/settings/audit/sentence.ts
 msgid "Changed the role of {person} from {from} to {to}"
 msgstr "A schimbat rolul lui {person} din {from} în {to}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the settings of an issue tracker connection"
+msgstr "A modificat setările unei conexiuni cu un sistem de urmărire a problemelor"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the single sign-on settings"
+msgstr "A modificat setările autentificării unice"
 
 #: src/features/settings/audit/sentence.ts
 msgid "Changed the webhook to {host}"
@@ -4371,6 +4391,14 @@ msgstr "Conectat de {by} pe {since}"
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Connected on {since}"
 msgstr "Conectat din {since}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Connected the issue tracker {name} ({provider})"
+msgstr "A conectat sistemul de urmărire a problemelor {name} ({provider})"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Connected the Slack workspace {slackTeam}"
+msgstr "A conectat spațiul de lucru Slack {slackTeam}"
 
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Connected to {address}"
@@ -5485,6 +5513,18 @@ msgstr "A deconectat {client}"
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "Disconnected {name}"
 msgstr "Disconnected {name}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Disconnected Slack"
+msgstr "A deconectat Slack"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Disconnected Slack because the app was removed in Slack"
+msgstr "A deconectat Slack pentru că aplicația a fost eliminată în Slack"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Disconnected the issue tracker {name} ({provider})"
+msgstr "A deconectat sistemul de urmărire a problemelor {name} ({provider})"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/DocsPage.tsx
@@ -8748,6 +8788,10 @@ msgstr "Linked {0}"
 msgid "Linked {key}"
 msgstr "Linked {key}"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Linked {person} to Slack"
+msgstr "A asociat {person} cu Slack"
+
 #: src/features/status/LinkedSection.tsx
 msgid "Linked conversations"
 msgstr "Conversații asociate"
@@ -8981,6 +9025,14 @@ msgstr "Macro"
 #: src/features/settings/SettingsColumn.tsx
 msgid "Macros"
 msgstr "Macrouri"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Made single sign-on optional"
+msgstr "A făcut autentificarea unică opțională"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Made single sign-on required"
+msgstr "A făcut autentificarea unică obligatorie"
 
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Mail arrives here; add a reply account when you are ready"
@@ -13529,6 +13581,10 @@ msgstr "Rambursare"
 msgid "Refund approved"
 msgstr "Rambursare aprobată"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Refused a sign-in with single sign-on ({protocol}) by {who}: {reason}"
+msgstr "A refuzat autentificarea unică ({protocol}) a lui {who}: {reason}"
+
 #: src/features/migrations/TokenConnectStep.tsx
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Region"
@@ -13765,6 +13821,14 @@ msgstr "Eliminat de {who}"
 #: src/features/settings/fields/FieldDialog.tsx
 msgid "Removed options are cleared from every conversation that holds them. This runs in the background."
 msgstr "Opțiunile eliminate sunt șterse din toate conversațiile care le au. Rulează în fundal."
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed the {protocol} single sign-on provider"
+msgstr "A eliminat furnizorul de autentificare unică {protocol}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed the domain {domain} from single sign-on"
+msgstr "A eliminat domeniul {domain} din autentificarea unică"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Removes {name} with its products, channels, conversations, contacts, files, labels, webhooks and API keys for everyone. Members keep their accounts."
@@ -14355,6 +14419,10 @@ msgstr "A reînnoit cheia unui canal"
 #: src/features/settings/audit/sentence.ts
 msgid "Rotated the signing secret of a webhook"
 msgstr "A reînnoit secretul de semnare al unui webhook"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the webhook secret of an issue tracker connection"
+msgstr "A reînnoit secretul webhook al unei conexiuni cu un sistem de urmărire a problemelor"
 
 #: src/components/common/AssignmentFields.tsx
 msgid "Round robin"
@@ -15274,6 +15342,10 @@ msgstr "Configurează DKIM"
 msgid "Set up e-mail"
 msgstr "Configurează e-mailul"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Set up single sign-on with {protocol}"
+msgstr "A configurat autentificarea unică cu {protocol}"
+
 #: src/app/Palette.tsx
 #: src/features/setup/SetupHub.tsx
 msgid "Set up Yuva"
@@ -15688,9 +15760,17 @@ msgstr "Te deconectezi de peste tot în rest?"
 msgid "Sign-in address"
 msgstr "Adresă de conectare"
 
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Sign-in and integrations"
+msgstr "Autentificare și integrări"
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Sign-in rules"
 msgstr "Sign-in rules"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Sign-in with single sign-on ({protocol}) by {who}"
+msgstr "Autentificare unică ({protocol}): {who}"
 
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/setup/NewsletterStep.tsx
@@ -16834,6 +16914,14 @@ msgstr "Canalul de documentație al {host} nu mai există."
 msgid "The documentation page to put it under, on a site of this inbox."
 msgstr "Pagina de documentație sub care să fie pus, pe un site al acestei căsuțe."
 
+#: src/features/settings/audit/sentence.ts
+msgid "The domain {domain} lost its verification: its DNS record is missing"
+msgstr "Domeniul {domain} și-a pierdut verificarea: lipsește înregistrarea DNS"
+
+#: src/features/settings/audit/sentence.ts
+msgid "The domain {domain} lost its verification: its DNS record is missing, so single sign-on is no longer required"
+msgstr "Domeniul {domain} și-a pierdut verificarea: lipsește înregistrarea DNS, deci autentificarea unică nu mai este obligatorie"
+
 #: src/features/broadcasts/Import.tsx
 msgid "The domain takes no mail"
 msgstr "Domeniul nu primește e-mail"
@@ -16849,6 +16937,10 @@ msgstr "Canalul de e-mail este gata"
 #: src/features/broadcasts/ListForm.tsx
 msgid "The e-mail channel that sends the confirmation and welcome mails. It needs an SMTP account."
 msgstr "Canalul de e-mail care trimite mesajele de confirmare și de bun venit. Are nevoie de un cont SMTP."
+
+#: src/features/settings/audit/sentence.ts
+msgid "the e-mail domain is not verified for this workspace"
+msgstr "domeniul e-mailului nu este verificat pentru acest spațiu de lucru"
 
 #: src/features/setup/InstallStep.tsx
 msgid "The elements work on these addresses; add your dev server in the inbox settings:"
@@ -17315,6 +17407,14 @@ msgstr "Parola este stocată criptat și niciodată afișată din nou."
 msgid "The password is too long."
 msgstr "Parola este prea lungă."
 
+#: src/features/settings/audit/sentence.ts
+msgid "the person is in none of the allowed groups"
+msgstr "persoana nu face parte din niciunul dintre grupurile permise"
+
+#: src/features/settings/audit/sentence.ts
+msgid "the person is not a member of this workspace"
+msgstr "persoana nu este membră a acestui spațiu de lucru"
+
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "The policy is none: receivers only report. Move to quarantine once all your mail passes."
 msgstr "Politica este none: destinatarii doar raportează. Treci la quarantine când tot e-mailul tău trece."
@@ -17351,9 +17451,21 @@ msgstr "Produsul nu mai poate fi schimbat ulterior."
 msgid "The provider asked to slow down"
 msgstr "Furnizorul a cerut să încetinești"
 
+#: src/features/settings/audit/sentence.ts
+msgid "the provider did not complete the sign-in"
+msgstr "furnizorul nu a finalizat autentificarea"
+
+#: src/features/settings/audit/sentence.ts
+msgid "the provider has not verified the e-mail address"
+msgstr "furnizorul nu a verificat adresa de e-mail"
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "The provider's address, exactly as its discovery document names it. Yuva reads it on save."
 msgstr "The provider's address, exactly as its discovery document names it. Yuva reads it on save."
+
+#: src/features/settings/audit/sentence.ts
+msgid "the provider's response was not accepted"
+msgstr "răspunsul furnizorului nu a fost acceptat"
 
 #: src/features/migrations/SwitchStep.tsx
 msgid "The quiet period is over; the migration finishes at the next sync."
@@ -18593,6 +18705,10 @@ msgstr "Necunoscut"
 msgid "Unknown device"
 msgstr "Dispozitiv necunoscut"
 
+#: src/features/settings/audit/sentence.ts
+msgid "unknown reason"
+msgstr "motiv necunoscut"
+
 #: src/features/feedback/RoadmapCard.tsx
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Unlink"
@@ -18616,6 +18732,10 @@ msgstr "Dezleagă de {title}"
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Unlink your Slack account?"
 msgstr "Unlink your Slack account?"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Unlinked {person} from Slack"
+msgstr "A dezasociat {person} de Slack"
 
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Unlock"
@@ -19071,6 +19191,10 @@ msgstr "Valorile condiției {n}, separate prin virgule"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Verified"
 msgstr "Verificat"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Verified the domain {domain} for single sign-on"
+msgstr "A verificat domeniul {domain} pentru autentificarea unică"
 
 #: src/features/settings/channels/email/AddressProof.tsx
 #: src/features/settings/sso/SsoPage.tsx

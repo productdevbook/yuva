@@ -1943,6 +1943,10 @@ msgstr "Ha afegit un webhook cap a {host}"
 msgid "Added by the team"
 msgstr "Afegit per l'equip"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Added the domain {domain} for single sign-on"
+msgstr "Ha afegit el domini {domain} per a l'inici de sessió únic"
+
 #: src/features/conversation/Feedback.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/setup/email/EmailLayout.tsx
@@ -2433,6 +2437,10 @@ msgstr "Un objectiu d'SLA venç aviat"
 #: src/features/settings/notifications/events.ts
 msgid "An SLA target was breached"
 msgstr "S'ha incomplert un objectiu d'SLA"
+
+#: src/features/settings/audit/sentence.ts
+msgid "an unknown person"
+msgstr "una persona desconeguda"
 
 #: src/features/migrations/UploadStep.tsx
 msgid "An upload was cut off: {count} parts, {size}, are already on the server."
@@ -3635,6 +3643,10 @@ msgid "Changed how long conversations are kept from {from} to {to}"
 msgstr "Ha canviat el temps de conservació de les converses de {from} a {to}"
 
 #: src/features/settings/audit/sentence.ts
+msgid "Changed the {protocol} single sign-on provider"
+msgstr "Ha canviat el proveïdor d'inici de sessió únic {protocol}"
+
+#: src/features/settings/audit/sentence.ts
 msgid "Changed the automation rule {name}"
 msgstr "Ha canviat la regla d'automatització {name}"
 
@@ -3649,6 +3661,14 @@ msgstr "Ha canviat el compte de correu o la contrasenya d'un canal"
 #: src/features/settings/audit/sentence.ts
 msgid "Changed the role of {person} from {from} to {to}"
 msgstr "Ha canviat el rol de {person} de {from} a {to}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the settings of an issue tracker connection"
+msgstr "Ha canviat la configuració d'una connexió amb un gestor d'incidències"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the single sign-on settings"
+msgstr "Ha canviat la configuració de l'inici de sessió únic"
 
 #: src/features/settings/audit/sentence.ts
 msgid "Changed the webhook to {host}"
@@ -4371,6 +4391,14 @@ msgstr "Connectat per {by} el {since}"
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Connected on {since}"
 msgstr "Connectat des de {since}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Connected the issue tracker {name} ({provider})"
+msgstr "Ha connectat el gestor d'incidències {name} ({provider})"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Connected the Slack workspace {slackTeam}"
+msgstr "Ha connectat l'espai de treball de Slack {slackTeam}"
 
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Connected to {address}"
@@ -5485,6 +5513,18 @@ msgstr "Ha desconnectat {client}"
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "Disconnected {name}"
 msgstr "Disconnected {name}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Disconnected Slack"
+msgstr "Ha desconnectat Slack"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Disconnected Slack because the app was removed in Slack"
+msgstr "Ha desconnectat Slack perquè l'aplicació es va eliminar a Slack"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Disconnected the issue tracker {name} ({provider})"
+msgstr "Ha desconnectat el gestor d'incidències {name} ({provider})"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/DocsPage.tsx
@@ -8748,6 +8788,10 @@ msgstr "Linked {0}"
 msgid "Linked {key}"
 msgstr "Linked {key}"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Linked {person} to Slack"
+msgstr "Ha vinculat {person} amb Slack"
+
 #: src/features/status/LinkedSection.tsx
 msgid "Linked conversations"
 msgstr "Converses vinculades"
@@ -8981,6 +9025,14 @@ msgstr "Macro"
 #: src/features/settings/SettingsColumn.tsx
 msgid "Macros"
 msgstr "Macros"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Made single sign-on optional"
+msgstr "Ha fet opcional l'inici de sessió únic"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Made single sign-on required"
+msgstr "Ha fet obligatori l'inici de sessió únic"
 
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Mail arrives here; add a reply account when you are ready"
@@ -13529,6 +13581,10 @@ msgstr "Reemborsament"
 msgid "Refund approved"
 msgstr "Reemborsament aprovat"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Refused a sign-in with single sign-on ({protocol}) by {who}: {reason}"
+msgstr "Ha rebutjat un inici de sessió únic ({protocol}) de {who}: {reason}"
+
 #: src/features/migrations/TokenConnectStep.tsx
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Region"
@@ -13765,6 +13821,14 @@ msgstr "Eliminat per {who}"
 #: src/features/settings/fields/FieldDialog.tsx
 msgid "Removed options are cleared from every conversation that holds them. This runs in the background."
 msgstr "Les opcions eliminades s’esborren de totes les converses que les tenen. S’executa en segon pla."
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed the {protocol} single sign-on provider"
+msgstr "Ha eliminat el proveïdor d'inici de sessió únic {protocol}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed the domain {domain} from single sign-on"
+msgstr "Ha tret el domini {domain} de l'inici de sessió únic"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Removes {name} with its products, channels, conversations, contacts, files, labels, webhooks and API keys for everyone. Members keep their accounts."
@@ -14355,6 +14419,10 @@ msgstr "Ha renovat la clau d'un canal"
 #: src/features/settings/audit/sentence.ts
 msgid "Rotated the signing secret of a webhook"
 msgstr "Ha renovat el secret de signatura d'un webhook"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the webhook secret of an issue tracker connection"
+msgstr "Ha renovat el secret del webhook d'una connexió amb un gestor d'incidències"
 
 #: src/components/common/AssignmentFields.tsx
 msgid "Round robin"
@@ -15274,6 +15342,10 @@ msgstr "Configura DKIM"
 msgid "Set up e-mail"
 msgstr "Configura el correu"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Set up single sign-on with {protocol}"
+msgstr "Ha configurat l'inici de sessió únic amb {protocol}"
+
 #: src/app/Palette.tsx
 #: src/features/setup/SetupHub.tsx
 msgid "Set up Yuva"
@@ -15688,9 +15760,17 @@ msgstr "Vols tancar la sessió a tota la resta?"
 msgid "Sign-in address"
 msgstr "Adreça d'inici de sessió"
 
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Sign-in and integrations"
+msgstr "Inici de sessió i integracions"
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Sign-in rules"
 msgstr "Sign-in rules"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Sign-in with single sign-on ({protocol}) by {who}"
+msgstr "Inici de sessió únic ({protocol}) de {who}"
 
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/setup/NewsletterStep.tsx
@@ -16834,6 +16914,14 @@ msgstr "El canal de documentació de {host} ja no existeix."
 msgid "The documentation page to put it under, on a site of this inbox."
 msgstr "La pàgina de documentació sota la qual posar-ho, en un lloc d'aquesta safata."
 
+#: src/features/settings/audit/sentence.ts
+msgid "The domain {domain} lost its verification: its DNS record is missing"
+msgstr "El domini {domain} ha perdut la verificació: falta el registre DNS"
+
+#: src/features/settings/audit/sentence.ts
+msgid "The domain {domain} lost its verification: its DNS record is missing, so single sign-on is no longer required"
+msgstr "El domini {domain} ha perdut la verificació: falta el registre DNS, per tant l'inici de sessió únic ja no és obligatori"
+
 #: src/features/broadcasts/Import.tsx
 msgid "The domain takes no mail"
 msgstr "El domini no accepta correu"
@@ -16849,6 +16937,10 @@ msgstr "El canal de correu és a punt"
 #: src/features/broadcasts/ListForm.tsx
 msgid "The e-mail channel that sends the confirmation and welcome mails. It needs an SMTP account."
 msgstr "El canal de correu que envia els correus de confirmació i de benvinguda. Necessita un compte SMTP."
+
+#: src/features/settings/audit/sentence.ts
+msgid "the e-mail domain is not verified for this workspace"
+msgstr "el domini del correu no està verificat per a aquest espai de treball"
 
 #: src/features/setup/InstallStep.tsx
 msgid "The elements work on these addresses; add your dev server in the inbox settings:"
@@ -17315,6 +17407,14 @@ msgstr "La contrasenya es desa xifrada i no es torna a mostrar mai."
 msgid "The password is too long."
 msgstr "La contrasenya és massa llarga."
 
+#: src/features/settings/audit/sentence.ts
+msgid "the person is in none of the allowed groups"
+msgstr "la persona no és a cap dels grups permesos"
+
+#: src/features/settings/audit/sentence.ts
+msgid "the person is not a member of this workspace"
+msgstr "la persona no és membre d'aquest espai de treball"
+
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "The policy is none: receivers only report. Move to quarantine once all your mail passes."
 msgstr "La política és none: els receptors només informen. Passa a quarantine quan tot el teu correu passi."
@@ -17351,9 +17451,21 @@ msgstr "El producte no es pot canviar després."
 msgid "The provider asked to slow down"
 msgstr "El proveïdor ha demanat d'alentir"
 
+#: src/features/settings/audit/sentence.ts
+msgid "the provider did not complete the sign-in"
+msgstr "el proveïdor no ha completat l'inici de sessió"
+
+#: src/features/settings/audit/sentence.ts
+msgid "the provider has not verified the e-mail address"
+msgstr "el proveïdor no ha verificat l'adreça de correu"
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "The provider's address, exactly as its discovery document names it. Yuva reads it on save."
 msgstr "The provider's address, exactly as its discovery document names it. Yuva reads it on save."
+
+#: src/features/settings/audit/sentence.ts
+msgid "the provider's response was not accepted"
+msgstr "no s'ha acceptat la resposta del proveïdor"
 
 #: src/features/migrations/SwitchStep.tsx
 msgid "The quiet period is over; the migration finishes at the next sync."
@@ -18593,6 +18705,10 @@ msgstr "Desconegut"
 msgid "Unknown device"
 msgstr "Dispositiu desconegut"
 
+#: src/features/settings/audit/sentence.ts
+msgid "unknown reason"
+msgstr "motiu desconegut"
+
 #: src/features/feedback/RoadmapCard.tsx
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Unlink"
@@ -18616,6 +18732,10 @@ msgstr "Desvincula de {title}"
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Unlink your Slack account?"
 msgstr "Unlink your Slack account?"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Unlinked {person} from Slack"
+msgstr "Ha desvinculat {person} de Slack"
 
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Unlock"
@@ -19071,6 +19191,10 @@ msgstr "Valors de la condició {n}, separats per comes"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Verified"
 msgstr "Verificat"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Verified the domain {domain} for single sign-on"
+msgstr "Ha verificat el domini {domain} per a l'inici de sessió únic"
 
 #: src/features/settings/channels/email/AddressProof.tsx
 #: src/features/settings/sso/SsoPage.tsx

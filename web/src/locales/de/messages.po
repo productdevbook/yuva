@@ -1943,6 +1943,10 @@ msgstr "Einen Webhook an {host} hinzugefügt"
 msgid "Added by the team"
 msgstr "Vom Team hinzugefügt"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Added the domain {domain} for single sign-on"
+msgstr "Die Domain {domain} für Single Sign-on hinzugefügt"
+
 #: src/features/conversation/Feedback.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/setup/email/EmailLayout.tsx
@@ -2433,6 +2437,10 @@ msgstr "Ein SLA-Ziel ist bald fällig"
 #: src/features/settings/notifications/events.ts
 msgid "An SLA target was breached"
 msgstr "Ein SLA-Ziel wurde verletzt"
+
+#: src/features/settings/audit/sentence.ts
+msgid "an unknown person"
+msgstr "eine unbekannte Person"
 
 #: src/features/migrations/UploadStep.tsx
 msgid "An upload was cut off: {count} parts, {size}, are already on the server."
@@ -3635,6 +3643,10 @@ msgid "Changed how long conversations are kept from {from} to {to}"
 msgstr "Die Aufbewahrung von Unterhaltungen von {from} auf {to} geändert"
 
 #: src/features/settings/audit/sentence.ts
+msgid "Changed the {protocol} single sign-on provider"
+msgstr "Den Single-Sign-on-Anbieter {protocol} geändert"
+
+#: src/features/settings/audit/sentence.ts
 msgid "Changed the automation rule {name}"
 msgstr "Hat die Automatisierungsregel {name} geändert"
 
@@ -3649,6 +3661,14 @@ msgstr "Das Mailkonto oder Passwort eines Kanals geändert"
 #: src/features/settings/audit/sentence.ts
 msgid "Changed the role of {person} from {from} to {to}"
 msgstr "Die Rolle von {person} von {from} auf {to} geändert"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the settings of an issue tracker connection"
+msgstr "Die Einstellungen einer Issue-Tracker-Verbindung geändert"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the single sign-on settings"
+msgstr "Die Single-Sign-on-Einstellungen geändert"
 
 #: src/features/settings/audit/sentence.ts
 msgid "Changed the webhook to {host}"
@@ -4371,6 +4391,14 @@ msgstr "Verbunden von {by} am {since}"
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Connected on {since}"
 msgstr "Verbunden seit {since}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Connected the issue tracker {name} ({provider})"
+msgstr "Den Issue-Tracker {name} ({provider}) verbunden"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Connected the Slack workspace {slackTeam}"
+msgstr "Den Slack-Workspace {slackTeam} verbunden"
 
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Connected to {address}"
@@ -5485,6 +5513,18 @@ msgstr "{client} getrennt"
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "Disconnected {name}"
 msgstr "{name} getrennt"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Disconnected Slack"
+msgstr "Slack getrennt"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Disconnected Slack because the app was removed in Slack"
+msgstr "Slack getrennt, weil die App in Slack entfernt wurde"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Disconnected the issue tracker {name} ({provider})"
+msgstr "Den Issue-Tracker {name} ({provider}) getrennt"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/DocsPage.tsx
@@ -8748,6 +8788,10 @@ msgstr "Verknüpft am {0}"
 msgid "Linked {key}"
 msgstr "{key} verknüpft"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Linked {person} to Slack"
+msgstr "{person} mit Slack verknüpft"
+
 #: src/features/status/LinkedSection.tsx
 msgid "Linked conversations"
 msgstr "Verknüpfte Unterhaltungen"
@@ -8981,6 +9025,14 @@ msgstr "Makro"
 #: src/features/settings/SettingsColumn.tsx
 msgid "Macros"
 msgstr "Makros"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Made single sign-on optional"
+msgstr "Single Sign-on optional gemacht"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Made single sign-on required"
+msgstr "Single Sign-on verpflichtend gemacht"
 
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Mail arrives here; add a reply account when you are ready"
@@ -13529,6 +13581,10 @@ msgstr "Erstattung"
 msgid "Refund approved"
 msgstr "Erstattung genehmigt"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Refused a sign-in with single sign-on ({protocol}) by {who}: {reason}"
+msgstr "Anmeldung per Single Sign-on ({protocol}) durch {who} abgelehnt: {reason}"
+
 #: src/features/migrations/TokenConnectStep.tsx
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Region"
@@ -13765,6 +13821,14 @@ msgstr "Entfernt von {who}"
 #: src/features/settings/fields/FieldDialog.tsx
 msgid "Removed options are cleared from every conversation that holds them. This runs in the background."
 msgstr "Entfernte Optionen werden aus allen Unterhaltungen entfernt, die sie enthalten. Das läuft im Hintergrund."
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed the {protocol} single sign-on provider"
+msgstr "Den Single-Sign-on-Anbieter {protocol} entfernt"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed the domain {domain} from single sign-on"
+msgstr "Die Domain {domain} aus Single Sign-on entfernt"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Removes {name} with its products, channels, conversations, contacts, files, labels, webhooks and API keys for everyone. Members keep their accounts."
@@ -14355,6 +14419,10 @@ msgstr "Den Schlüssel eines Kanals erneuert"
 #: src/features/settings/audit/sentence.ts
 msgid "Rotated the signing secret of a webhook"
 msgstr "Das Signaturgeheimnis eines Webhooks erneuert"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the webhook secret of an issue tracker connection"
+msgstr "Das Webhook-Geheimnis einer Issue-Tracker-Verbindung erneuert"
 
 #: src/components/common/AssignmentFields.tsx
 msgid "Round robin"
@@ -15274,6 +15342,10 @@ msgstr "DKIM einrichten"
 msgid "Set up e-mail"
 msgstr "E-Mail einrichten"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Set up single sign-on with {protocol}"
+msgstr "Single Sign-on mit {protocol} eingerichtet"
+
 #: src/app/Palette.tsx
 #: src/features/setup/SetupHub.tsx
 msgid "Set up Yuva"
@@ -15688,9 +15760,17 @@ msgstr "Überall sonst abmelden?"
 msgid "Sign-in address"
 msgstr "Anmeldeadresse"
 
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Sign-in and integrations"
+msgstr "Anmeldung und Integrationen"
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Sign-in rules"
 msgstr "Anmelderegeln"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Sign-in with single sign-on ({protocol}) by {who}"
+msgstr "Anmeldung per Single Sign-on ({protocol}) durch {who}"
 
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/setup/NewsletterStep.tsx
@@ -16834,6 +16914,14 @@ msgstr "Der Dokumentationskanal von {host} existiert nicht mehr."
 msgid "The documentation page to put it under, on a site of this inbox."
 msgstr "Die Dokumentationsseite, unter der es erscheint, auf einer Website dieses Postfachs."
 
+#: src/features/settings/audit/sentence.ts
+msgid "The domain {domain} lost its verification: its DNS record is missing"
+msgstr "Die Domain {domain} hat ihre Bestätigung verloren: Der DNS-Eintrag fehlt"
+
+#: src/features/settings/audit/sentence.ts
+msgid "The domain {domain} lost its verification: its DNS record is missing, so single sign-on is no longer required"
+msgstr "Die Domain {domain} hat ihre Bestätigung verloren: Der DNS-Eintrag fehlt, daher ist Single Sign-on nicht mehr verpflichtend"
+
 #: src/features/broadcasts/Import.tsx
 msgid "The domain takes no mail"
 msgstr "Die Domain nimmt keine Mail an"
@@ -16849,6 +16937,10 @@ msgstr "Der E-Mail-Kanal ist bereit"
 #: src/features/broadcasts/ListForm.tsx
 msgid "The e-mail channel that sends the confirmation and welcome mails. It needs an SMTP account."
 msgstr "Der E-Mail-Kanal, der die Bestätigungs- und Willkommensmails sendet. Er braucht ein SMTP-Konto."
+
+#: src/features/settings/audit/sentence.ts
+msgid "the e-mail domain is not verified for this workspace"
+msgstr "die E-Mail-Domain ist für diesen Workspace nicht bestätigt"
 
 #: src/features/setup/InstallStep.tsx
 msgid "The elements work on these addresses; add your dev server in the inbox settings:"
@@ -17315,6 +17407,14 @@ msgstr "Das Passwort wird verschlüsselt gespeichert und nie wieder angezeigt."
 msgid "The password is too long."
 msgstr "Das Passwort ist zu lang."
 
+#: src/features/settings/audit/sentence.ts
+msgid "the person is in none of the allowed groups"
+msgstr "die Person gehört keiner der erlaubten Gruppen an"
+
+#: src/features/settings/audit/sentence.ts
+msgid "the person is not a member of this workspace"
+msgstr "die Person ist kein Mitglied dieses Workspace"
+
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "The policy is none: receivers only report. Move to quarantine once all your mail passes."
 msgstr "Die Richtlinie ist none: Empfänger melden nur. Wechseln Sie zu quarantine, sobald alle Ihre Mails bestehen."
@@ -17351,9 +17451,21 @@ msgstr "Das Produkt lässt sich später nicht mehr ändern."
 msgid "The provider asked to slow down"
 msgstr "Der Anbieter hat darum gebeten, langsamer zu machen"
 
+#: src/features/settings/audit/sentence.ts
+msgid "the provider did not complete the sign-in"
+msgstr "der Anbieter hat die Anmeldung nicht abgeschlossen"
+
+#: src/features/settings/audit/sentence.ts
+msgid "the provider has not verified the e-mail address"
+msgstr "der Anbieter hat die E-Mail-Adresse nicht bestätigt"
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "The provider's address, exactly as its discovery document names it. Yuva reads it on save."
 msgstr "Die Adresse des Anbieters, genau wie sie in seinem Discovery-Dokument steht. Yuva liest es beim Speichern."
+
+#: src/features/settings/audit/sentence.ts
+msgid "the provider's response was not accepted"
+msgstr "die Antwort des Anbieters wurde nicht akzeptiert"
 
 #: src/features/migrations/SwitchStep.tsx
 msgid "The quiet period is over; the migration finishes at the next sync."
@@ -18593,6 +18705,10 @@ msgstr "Unbekannt"
 msgid "Unknown device"
 msgstr "Unbekanntes Gerät"
 
+#: src/features/settings/audit/sentence.ts
+msgid "unknown reason"
+msgstr "unbekannter Grund"
+
 #: src/features/feedback/RoadmapCard.tsx
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Unlink"
@@ -18616,6 +18732,10 @@ msgstr "Verknüpfung mit {title} lösen"
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Unlink your Slack account?"
 msgstr "Ihr Slack-Konto trennen?"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Unlinked {person} from Slack"
+msgstr "Die Verknüpfung von {person} mit Slack aufgehoben"
 
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Unlock"
@@ -19071,6 +19191,10 @@ msgstr "Werte von Bedingung {n}, durch Kommas getrennt"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Verified"
 msgstr "Verifiziert"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Verified the domain {domain} for single sign-on"
+msgstr "Die Domain {domain} für Single Sign-on bestätigt"
 
 #: src/features/settings/channels/email/AddressProof.tsx
 #: src/features/settings/sso/SsoPage.tsx

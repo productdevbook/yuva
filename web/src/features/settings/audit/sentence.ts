@@ -5,7 +5,7 @@ import { useEnumText } from "@/components/common/text"
 import type { AuditAction, AuditEntry } from "@/lib/api"
 import { useInboxes, useMemberMap, useTeams } from "@/lib/workspace"
 
-export type AuditGroup = "people" | "access" | "webhooks" | "mail" | "data" | "workspace"
+export type AuditGroup = "people" | "access" | "signin" | "webhooks" | "mail" | "data" | "workspace"
 
 export const AUDIT_GROUPS: Record<AuditGroup, AuditAction[]> = {
   people: [
@@ -22,8 +22,28 @@ export const AUDIT_GROUPS: Record<AuditGroup, AuditAction[]> = {
     "team.member_removed",
     "team.inbox_access_granted",
     "team.inbox_access_revoked",
+    "member.slack_linked",
+    "member.slack_unlinked",
   ],
   access: ["api_key.created", "api_key.revoked", "oauth_grant.created", "oauth_grant.revoked"],
+  signin: [
+    "sso.provider_created",
+    "sso.provider_updated",
+    "sso.provider_deleted",
+    "sso.settings_changed",
+    "sso.signed_in",
+    "sso.sign_in_refused",
+    "sso_domain.added",
+    "sso_domain.verified",
+    "sso_domain.deleted",
+    "sso_domain.lapsed",
+    "workspace.slack_connected",
+    "workspace.slack_disconnected",
+    "issue_integration.connected",
+    "issue_integration.updated",
+    "issue_integration.disconnected",
+    "issue_integration.secret_rotated",
+  ],
   webhooks: ["webhook.created", "webhook.updated", "webhook.deleted", "webhook.secret_rotated"],
   mail: [
     "channel.credentials_changed",
@@ -78,6 +98,9 @@ function recipients(v: unknown, none: string) {
   return plural(n, { one: "# recipient a day", other: "# recipients a day" })
 }
 
+const SSO_PROTOCOLS: Record<string, string> = { oidc: "OpenID Connect", saml: "SAML" }
+const ISSUE_PROVIDERS: Record<string, string> = { github: "GitHub", linear: "Linear" }
+
 export function useAuditSentence() {
   const { t } = useLingui()
   const text = useEnumText()
@@ -96,6 +119,27 @@ export function useAuditSentence() {
     const team = str(d.name) ?? teams?.find((x) => x.id === e.target.id)?.name ?? dash
     const teamMember = members.get(str(d.member_id) ?? "")
     const who = teamMember ? teamMember.name || teamMember.email : t`a former member`
+    const protocol = SSO_PROTOCOLS[str(d.protocol) ?? ""] ?? str(d.protocol) ?? dash
+    const domain = str(d.domain) ?? dash
+    const provider = ISSUE_PROVIDERS[str(d.provider) ?? ""] ?? str(d.provider) ?? dash
+    const refusal = (reason: unknown) => {
+      switch (reason) {
+        case "failed":
+          return t`the provider did not complete the sign-in`
+        case "invalid_token":
+          return t`the provider's response was not accepted`
+        case "email_unverified":
+          return t`the provider has not verified the e-mail address`
+        case "domain_not_claimed":
+          return t`the e-mail domain is not verified for this workspace`
+        case "group_not_allowed":
+          return t`the person is in none of the allowed groups`
+        case "not_member":
+          return t`the person is not a member of this workspace`
+        default:
+          return t`unknown reason`
+      }
+    }
     switch (e.action) {
       case "team.created":
         return t`Created the team ${team}`
@@ -234,6 +278,57 @@ export function useAuditSentence() {
         return t`Changed the automation rule ${name}`
       case "automation_rule.deleted":
         return t`Deleted the automation rule ${name}`
+      case "sso.provider_created":
+        return t`Set up single sign-on with ${protocol}`
+      case "sso.provider_updated":
+        return t`Changed the ${protocol} single sign-on provider`
+      case "sso.provider_deleted":
+        return t`Removed the ${protocol} single sign-on provider`
+      case "sso.settings_changed": {
+        const to = (d.to ?? {}) as Record<string, unknown>
+        if (to.sso_required === true) return t`Made single sign-on required`
+        if (to.sso_required === false) return t`Made single sign-on optional`
+        return t`Changed the single sign-on settings`
+      }
+      case "sso.signed_in": {
+        const who = str(d.email) ?? t`an unknown person`
+        return t`Sign-in with single sign-on (${protocol}) by ${who}`
+      }
+      case "sso.sign_in_refused": {
+        const who = str(d.email) ?? t`an unknown person`
+        const reason = refusal(d.reason)
+        return t`Refused a sign-in with single sign-on (${protocol}) by ${who}: ${reason}`
+      }
+      case "sso_domain.added":
+        return t`Added the domain ${domain} for single sign-on`
+      case "sso_domain.verified":
+        return t`Verified the domain ${domain} for single sign-on`
+      case "sso_domain.deleted":
+        return t`Removed the domain ${domain} from single sign-on`
+      case "sso_domain.lapsed":
+        return d.sso_required_off === true
+          ? t`The domain ${domain} lost its verification: its DNS record is missing, so single sign-on is no longer required`
+          : t`The domain ${domain} lost its verification: its DNS record is missing`
+      case "workspace.slack_connected": {
+        const slackTeam = str(d.team_name) ?? dash
+        return t`Connected the Slack workspace ${slackTeam}`
+      }
+      case "workspace.slack_disconnected":
+        return d.reason === "uninstalled"
+          ? t`Disconnected Slack because the app was removed in Slack`
+          : t`Disconnected Slack`
+      case "member.slack_linked":
+        return t`Linked ${person} to Slack`
+      case "member.slack_unlinked":
+        return t`Unlinked ${person} from Slack`
+      case "issue_integration.connected":
+        return t`Connected the issue tracker ${name} (${provider})`
+      case "issue_integration.updated":
+        return t`Changed the settings of an issue tracker connection`
+      case "issue_integration.disconnected":
+        return t`Disconnected the issue tracker ${name} (${provider})`
+      case "issue_integration.secret_rotated":
+        return t`Rotated the webhook secret of an issue tracker connection`
       default:
         return e.action
     }

@@ -1943,6 +1943,10 @@ msgstr "เพิ่ม webhook ไปยัง {host}"
 msgid "Added by the team"
 msgstr "เพิ่มโดยทีม"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Added the domain {domain} for single sign-on"
+msgstr "เพิ่มโดเมน {domain} สำหรับการลงชื่อเข้าใช้ครั้งเดียว"
+
 #: src/features/conversation/Feedback.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/setup/email/EmailLayout.tsx
@@ -2433,6 +2437,10 @@ msgstr "เป้าหมาย SLA ใกล้ครบกำหนด"
 #: src/features/settings/notifications/events.ts
 msgid "An SLA target was breached"
 msgstr "เป้าหมาย SLA ถูกละเมิด"
+
+#: src/features/settings/audit/sentence.ts
+msgid "an unknown person"
+msgstr "บุคคลที่ไม่ทราบชื่อ"
 
 #: src/features/migrations/UploadStep.tsx
 msgid "An upload was cut off: {count} parts, {size}, are already on the server."
@@ -3635,6 +3643,10 @@ msgid "Changed how long conversations are kept from {from} to {to}"
 msgstr "เปลี่ยนระยะเวลาเก็บการสนทนาจาก {from} เป็น {to}"
 
 #: src/features/settings/audit/sentence.ts
+msgid "Changed the {protocol} single sign-on provider"
+msgstr "เปลี่ยนผู้ให้บริการลงชื่อเข้าใช้ครั้งเดียว {protocol}"
+
+#: src/features/settings/audit/sentence.ts
 msgid "Changed the automation rule {name}"
 msgstr "เปลี่ยนกฎระบบอัตโนมัติ {name}"
 
@@ -3649,6 +3661,14 @@ msgstr "เปลี่ยนบัญชีอีเมลหรือรหั
 #: src/features/settings/audit/sentence.ts
 msgid "Changed the role of {person} from {from} to {to}"
 msgstr "เปลี่ยนบทบาทของ {person} จาก {from} เป็น {to}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the settings of an issue tracker connection"
+msgstr "เปลี่ยนการตั้งค่าการเชื่อมต่อตัวติดตามปัญหา"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the single sign-on settings"
+msgstr "เปลี่ยนการตั้งค่าการลงชื่อเข้าใช้ครั้งเดียว"
 
 #: src/features/settings/audit/sentence.ts
 msgid "Changed the webhook to {host}"
@@ -4371,6 +4391,14 @@ msgstr "เชื่อมต่อโดย {by} เมื่อ {since}"
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Connected on {since}"
 msgstr "เชื่อมต่อเมื่อ {since}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Connected the issue tracker {name} ({provider})"
+msgstr "เชื่อมต่อตัวติดตามปัญหา {name} ({provider})"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Connected the Slack workspace {slackTeam}"
+msgstr "เชื่อมต่อเวิร์กสเปซ Slack {slackTeam}"
 
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Connected to {address}"
@@ -5485,6 +5513,18 @@ msgstr "ยกเลิกการเชื่อมต่อ {client}"
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "Disconnected {name}"
 msgstr "Disconnected {name}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Disconnected Slack"
+msgstr "ยกเลิกการเชื่อมต่อ Slack"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Disconnected Slack because the app was removed in Slack"
+msgstr "ยกเลิกการเชื่อมต่อ Slack เพราะแอปถูกนำออกใน Slack"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Disconnected the issue tracker {name} ({provider})"
+msgstr "ยกเลิกการเชื่อมต่อตัวติดตามปัญหา {name} ({provider})"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/DocsPage.tsx
@@ -8748,6 +8788,10 @@ msgstr "Linked {0}"
 msgid "Linked {key}"
 msgstr "Linked {key}"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Linked {person} to Slack"
+msgstr "เชื่อมโยง {person} กับ Slack"
+
 #: src/features/status/LinkedSection.tsx
 msgid "Linked conversations"
 msgstr "การสนทนาที่เชื่อมโยง"
@@ -8981,6 +9025,14 @@ msgstr "มาโคร"
 #: src/features/settings/SettingsColumn.tsx
 msgid "Macros"
 msgstr "มาโคร"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Made single sign-on optional"
+msgstr "ตั้งการลงชื่อเข้าใช้ครั้งเดียวเป็นตัวเลือก"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Made single sign-on required"
+msgstr "ตั้งการลงชื่อเข้าใช้ครั้งเดียวเป็นข้อบังคับ"
 
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Mail arrives here; add a reply account when you are ready"
@@ -13529,6 +13581,10 @@ msgstr "คืนเงิน"
 msgid "Refund approved"
 msgstr "อนุมัติการคืนเงินแล้ว"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Refused a sign-in with single sign-on ({protocol}) by {who}: {reason}"
+msgstr "ปฏิเสธการลงชื่อเข้าใช้ครั้งเดียว ({protocol}) ของ {who}: {reason}"
+
 #: src/features/migrations/TokenConnectStep.tsx
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Region"
@@ -13765,6 +13821,14 @@ msgstr "ลบโดย {who}"
 #: src/features/settings/fields/FieldDialog.tsx
 msgid "Removed options are cleared from every conversation that holds them. This runs in the background."
 msgstr "ตัวเลือกที่เอาออกจะถูกล้างจากทุกการสนทนาที่มีตัวเลือกนั้น ทำงานในเบื้องหลัง"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed the {protocol} single sign-on provider"
+msgstr "นำผู้ให้บริการลงชื่อเข้าใช้ครั้งเดียว {protocol} ออก"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed the domain {domain} from single sign-on"
+msgstr "นำโดเมน {domain} ออกจากการลงชื่อเข้าใช้ครั้งเดียว"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Removes {name} with its products, channels, conversations, contacts, files, labels, webhooks and API keys for everyone. Members keep their accounts."
@@ -14355,6 +14419,10 @@ msgstr "สร้างคีย์ของช่องทางใหม่"
 #: src/features/settings/audit/sentence.ts
 msgid "Rotated the signing secret of a webhook"
 msgstr "สร้างความลับสำหรับลงลายมือชื่อของ webhook ใหม่"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the webhook secret of an issue tracker connection"
+msgstr "สร้างความลับ webhook ของการเชื่อมต่อตัวติดตามปัญหาใหม่"
 
 #: src/components/common/AssignmentFields.tsx
 msgid "Round robin"
@@ -15274,6 +15342,10 @@ msgstr "ตั้งค่า DKIM"
 msgid "Set up e-mail"
 msgstr "ตั้งค่าอีเมล"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Set up single sign-on with {protocol}"
+msgstr "ตั้งค่าการลงชื่อเข้าใช้ครั้งเดียวด้วย {protocol}"
+
 #: src/app/Palette.tsx
 #: src/features/setup/SetupHub.tsx
 msgid "Set up Yuva"
@@ -15688,9 +15760,17 @@ msgstr "ออกจากระบบทุกที่อื่นหรือ
 msgid "Sign-in address"
 msgstr "ที่อยู่ลงชื่อเข้าใช้"
 
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Sign-in and integrations"
+msgstr "การลงชื่อเข้าใช้และการผสานรวม"
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Sign-in rules"
 msgstr "Sign-in rules"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Sign-in with single sign-on ({protocol}) by {who}"
+msgstr "ลงชื่อเข้าใช้ครั้งเดียว ({protocol}) โดย {who}"
 
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/setup/NewsletterStep.tsx
@@ -16834,6 +16914,14 @@ msgstr "ช่องทางเอกสารของ {host} ไม่มี�
 msgid "The documentation page to put it under, on a site of this inbox."
 msgstr "หน้าเอกสารที่จะวางไว้ใต้ บนไซต์ของกล่องข้อความนี้"
 
+#: src/features/settings/audit/sentence.ts
+msgid "The domain {domain} lost its verification: its DNS record is missing"
+msgstr "โดเมน {domain} สูญเสียการยืนยัน: ไม่มีเรคคอร์ด DNS"
+
+#: src/features/settings/audit/sentence.ts
+msgid "The domain {domain} lost its verification: its DNS record is missing, so single sign-on is no longer required"
+msgstr "โดเมน {domain} สูญเสียการยืนยัน: ไม่มีเรคคอร์ด DNS จึงไม่จำเป็นต้องใช้การลงชื่อเข้าใช้ครั้งเดียวอีกต่อไป"
+
 #: src/features/broadcasts/Import.tsx
 msgid "The domain takes no mail"
 msgstr "โดเมนไม่รับอีเมล"
@@ -16849,6 +16937,10 @@ msgstr "ช่องทางอีเมลพร้อมแล้ว"
 #: src/features/broadcasts/ListForm.tsx
 msgid "The e-mail channel that sends the confirmation and welcome mails. It needs an SMTP account."
 msgstr "ช่องทางอีเมลที่ส่งอีเมลยืนยันและต้อนรับ ต้องมีบัญชี SMTP"
+
+#: src/features/settings/audit/sentence.ts
+msgid "the e-mail domain is not verified for this workspace"
+msgstr "โดเมนอีเมลยังไม่ได้รับการยืนยันสำหรับเวิร์กสเปซนี้"
 
 #: src/features/setup/InstallStep.tsx
 msgid "The elements work on these addresses; add your dev server in the inbox settings:"
@@ -17315,6 +17407,14 @@ msgstr "รหัสผ่านถูกเก็บแบบเข้ารห
 msgid "The password is too long."
 msgstr "รหัสผ่านยาวเกินไป"
 
+#: src/features/settings/audit/sentence.ts
+msgid "the person is in none of the allowed groups"
+msgstr "บุคคลนี้ไม่ได้อยู่ในกลุ่มที่อนุญาตกลุ่มใดเลย"
+
+#: src/features/settings/audit/sentence.ts
+msgid "the person is not a member of this workspace"
+msgstr "บุคคลนี้ไม่ได้เป็นสมาชิกของเวิร์กสเปซนี้"
+
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "The policy is none: receivers only report. Move to quarantine once all your mail passes."
 msgstr "นโยบายคือ none: ผู้รับเพียงรายงาน เปลี่ยนเป็น quarantine เมื่ออีเมลทั้งหมดของคุณผ่าน"
@@ -17351,9 +17451,21 @@ msgstr "เปลี่ยนผลิตภัณฑ์ภายหลังไ
 msgid "The provider asked to slow down"
 msgstr "ผู้ให้บริการขอให้ช้าลง"
 
+#: src/features/settings/audit/sentence.ts
+msgid "the provider did not complete the sign-in"
+msgstr "ผู้ให้บริการไม่ได้ลงชื่อเข้าใช้ให้เสร็จสิ้น"
+
+#: src/features/settings/audit/sentence.ts
+msgid "the provider has not verified the e-mail address"
+msgstr "ผู้ให้บริการยังไม่ได้ยืนยันที่อยู่อีเมล"
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "The provider's address, exactly as its discovery document names it. Yuva reads it on save."
 msgstr "The provider's address, exactly as its discovery document names it. Yuva reads it on save."
+
+#: src/features/settings/audit/sentence.ts
+msgid "the provider's response was not accepted"
+msgstr "ไม่ยอมรับการตอบกลับของผู้ให้บริการ"
 
 #: src/features/migrations/SwitchStep.tsx
 msgid "The quiet period is over; the migration finishes at the next sync."
@@ -18593,6 +18705,10 @@ msgstr "ไม่ทราบ"
 msgid "Unknown device"
 msgstr "อุปกรณ์ที่ไม่รู้จัก"
 
+#: src/features/settings/audit/sentence.ts
+msgid "unknown reason"
+msgstr "ไม่ทราบสาเหตุ"
+
 #: src/features/feedback/RoadmapCard.tsx
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Unlink"
@@ -18616,6 +18732,10 @@ msgstr "ยกเลิกการเชื่อมโยงจาก {title}"
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Unlink your Slack account?"
 msgstr "Unlink your Slack account?"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Unlinked {person} from Slack"
+msgstr "ยกเลิกการเชื่อมโยง {person} กับ Slack"
 
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Unlock"
@@ -19071,6 +19191,10 @@ msgstr "ค่าของเงื่อนไข {n} คั่นด้วย�
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Verified"
 msgstr "ยืนยันแล้ว"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Verified the domain {domain} for single sign-on"
+msgstr "ยืนยันโดเมน {domain} สำหรับการลงชื่อเข้าใช้ครั้งเดียว"
 
 #: src/features/settings/channels/email/AddressProof.tsx
 #: src/features/settings/sso/SsoPage.tsx

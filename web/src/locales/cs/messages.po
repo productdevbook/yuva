@@ -1943,6 +1943,10 @@ msgstr "Přidal(a) webhook na {host}"
 msgid "Added by the team"
 msgstr "Přidáno týmem"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Added the domain {domain} for single sign-on"
+msgstr "Přidal(a) doménu {domain} pro jednotné přihlašování"
+
 #: src/features/conversation/Feedback.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/setup/email/EmailLayout.tsx
@@ -2433,6 +2437,10 @@ msgstr "Cíl SLA brzy vyprší"
 #: src/features/settings/notifications/events.ts
 msgid "An SLA target was breached"
 msgstr "Cíl SLA byl porušen"
+
+#: src/features/settings/audit/sentence.ts
+msgid "an unknown person"
+msgstr "neznámá osoba"
 
 #: src/features/migrations/UploadStep.tsx
 msgid "An upload was cut off: {count} parts, {size}, are already on the server."
@@ -3635,6 +3643,10 @@ msgid "Changed how long conversations are kept from {from} to {to}"
 msgstr "Změnil(a) dobu uchování konverzací z {from} na {to}"
 
 #: src/features/settings/audit/sentence.ts
+msgid "Changed the {protocol} single sign-on provider"
+msgstr "Změnil(a) poskytovatele jednotného přihlašování {protocol}"
+
+#: src/features/settings/audit/sentence.ts
 msgid "Changed the automation rule {name}"
 msgstr "Změnil(a) pravidlo automatizace {name}"
 
@@ -3649,6 +3661,14 @@ msgstr "Změnil(a) poštovní účet nebo heslo kanálu"
 #: src/features/settings/audit/sentence.ts
 msgid "Changed the role of {person} from {from} to {to}"
 msgstr "Změnil(a) roli uživatele {person} z {from} na {to}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the settings of an issue tracker connection"
+msgstr "Změnil(a) nastavení propojení se sledováním úkolů"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the single sign-on settings"
+msgstr "Změnil(a) nastavení jednotného přihlašování"
 
 #: src/features/settings/audit/sentence.ts
 msgid "Changed the webhook to {host}"
@@ -4371,6 +4391,14 @@ msgstr "Připojil {by} dne {since}"
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Connected on {since}"
 msgstr "Připojeno {since}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Connected the issue tracker {name} ({provider})"
+msgstr "Připojil(a) sledování úkolů {name} ({provider})"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Connected the Slack workspace {slackTeam}"
+msgstr "Připojil(a) pracovní prostor Slack {slackTeam}"
 
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Connected to {address}"
@@ -5485,6 +5513,18 @@ msgstr "Odpojil(a) {client}"
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "Disconnected {name}"
 msgstr "Disconnected {name}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Disconnected Slack"
+msgstr "Odpojil(a) Slack"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Disconnected Slack because the app was removed in Slack"
+msgstr "Odpojil(a) Slack, protože aplikace byla ve Slacku odebrána"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Disconnected the issue tracker {name} ({provider})"
+msgstr "Odpojil(a) sledování úkolů {name} ({provider})"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/DocsPage.tsx
@@ -8748,6 +8788,10 @@ msgstr "Linked {0}"
 msgid "Linked {key}"
 msgstr "Linked {key}"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Linked {person} to Slack"
+msgstr "Propojil(a) {person} se Slackem"
+
 #: src/features/status/LinkedSection.tsx
 msgid "Linked conversations"
 msgstr "Propojené konverzace"
@@ -8981,6 +9025,14 @@ msgstr "Makro"
 #: src/features/settings/SettingsColumn.tsx
 msgid "Macros"
 msgstr "Makra"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Made single sign-on optional"
+msgstr "Nastavil(a) jednotné přihlašování jako volitelné"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Made single sign-on required"
+msgstr "Nastavil(a) jednotné přihlašování jako povinné"
 
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Mail arrives here; add a reply account when you are ready"
@@ -13529,6 +13581,10 @@ msgstr "Vrácení peněz"
 msgid "Refund approved"
 msgstr "Vrácení peněz schváleno"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Refused a sign-in with single sign-on ({protocol}) by {who}: {reason}"
+msgstr "Odmítl(a) přihlášení jednotným přihlašováním ({protocol}) uživatele {who}: {reason}"
+
 #: src/features/migrations/TokenConnectStep.tsx
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Region"
@@ -13765,6 +13821,14 @@ msgstr "Odebral(a): {who}"
 #: src/features/settings/fields/FieldDialog.tsx
 msgid "Removed options are cleared from every conversation that holds them. This runs in the background."
 msgstr "Odebrané možnosti se vymažou ze všech konverzací, které je mají. Probíhá to na pozadí."
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed the {protocol} single sign-on provider"
+msgstr "Odebral(a) poskytovatele jednotného přihlašování {protocol}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed the domain {domain} from single sign-on"
+msgstr "Odebral(a) doménu {domain} z jednotného přihlašování"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Removes {name} with its products, channels, conversations, contacts, files, labels, webhooks and API keys for everyone. Members keep their accounts."
@@ -14355,6 +14419,10 @@ msgstr "Obnovil(a) klíč kanálu"
 #: src/features/settings/audit/sentence.ts
 msgid "Rotated the signing secret of a webhook"
 msgstr "Obnovil(a) podpisový tajný klíč webhooku"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the webhook secret of an issue tracker connection"
+msgstr "Obnovil(a) tajný klíč webhooku propojení se sledováním úkolů"
 
 #: src/components/common/AssignmentFields.tsx
 msgid "Round robin"
@@ -15274,6 +15342,10 @@ msgstr "Nastavit DKIM"
 msgid "Set up e-mail"
 msgstr "Nastavit e-mail"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Set up single sign-on with {protocol}"
+msgstr "Nastavil(a) jednotné přihlašování přes {protocol}"
+
 #: src/app/Palette.tsx
 #: src/features/setup/SetupHub.tsx
 msgid "Set up Yuva"
@@ -15688,9 +15760,17 @@ msgstr "Odhlásit všude jinde?"
 msgid "Sign-in address"
 msgstr "Přihlašovací adresa"
 
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Sign-in and integrations"
+msgstr "Přihlášení a integrace"
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Sign-in rules"
 msgstr "Sign-in rules"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Sign-in with single sign-on ({protocol}) by {who}"
+msgstr "Přihlášení jednotným přihlašováním ({protocol}): {who}"
 
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/setup/NewsletterStep.tsx
@@ -16834,6 +16914,14 @@ msgstr "Dokumentační kanál {host} už neexistuje."
 msgid "The documentation page to put it under, on a site of this inbox."
 msgstr "Stránka dokumentace, pod kterou se má umístit, na webu této schránky."
 
+#: src/features/settings/audit/sentence.ts
+msgid "The domain {domain} lost its verification: its DNS record is missing"
+msgstr "Doména {domain} ztratila ověření: chybí její záznam DNS"
+
+#: src/features/settings/audit/sentence.ts
+msgid "The domain {domain} lost its verification: its DNS record is missing, so single sign-on is no longer required"
+msgstr "Doména {domain} ztratila ověření: chybí její záznam DNS, proto už jednotné přihlašování není povinné"
+
 #: src/features/broadcasts/Import.tsx
 msgid "The domain takes no mail"
 msgstr "Doména nepřijímá poštu"
@@ -16849,6 +16937,10 @@ msgstr "E-mailový kanál je připraven"
 #: src/features/broadcasts/ListForm.tsx
 msgid "The e-mail channel that sends the confirmation and welcome mails. It needs an SMTP account."
 msgstr "E-mailový kanál, který odesílá potvrzovací a uvítací zprávy. Potřebuje účet SMTP."
+
+#: src/features/settings/audit/sentence.ts
+msgid "the e-mail domain is not verified for this workspace"
+msgstr "doména e-mailu není pro tento pracovní prostor ověřena"
 
 #: src/features/setup/InstallStep.tsx
 msgid "The elements work on these addresses; add your dev server in the inbox settings:"
@@ -17315,6 +17407,14 @@ msgstr "Heslo se ukládá šifrovaně a už se nikdy nezobrazí."
 msgid "The password is too long."
 msgstr "Heslo je příliš dlouhé."
 
+#: src/features/settings/audit/sentence.ts
+msgid "the person is in none of the allowed groups"
+msgstr "osoba není v žádné z povolených skupin"
+
+#: src/features/settings/audit/sentence.ts
+msgid "the person is not a member of this workspace"
+msgstr "osoba není členem tohoto pracovního prostoru"
+
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "The policy is none: receivers only report. Move to quarantine once all your mail passes."
 msgstr "Zásada je none: příjemci jen hlásí. Přejděte na quarantine, až projde veškerá vaše pošta."
@@ -17351,9 +17451,21 @@ msgstr "Produkt nelze později změnit."
 msgid "The provider asked to slow down"
 msgstr "Poskytovatel požádal o zpomalení"
 
+#: src/features/settings/audit/sentence.ts
+msgid "the provider did not complete the sign-in"
+msgstr "poskytovatel nedokončil přihlášení"
+
+#: src/features/settings/audit/sentence.ts
+msgid "the provider has not verified the e-mail address"
+msgstr "poskytovatel neověřil e-mailovou adresu"
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "The provider's address, exactly as its discovery document names it. Yuva reads it on save."
 msgstr "The provider's address, exactly as its discovery document names it. Yuva reads it on save."
+
+#: src/features/settings/audit/sentence.ts
+msgid "the provider's response was not accepted"
+msgstr "odpověď poskytovatele nebyla přijata"
 
 #: src/features/migrations/SwitchStep.tsx
 msgid "The quiet period is over; the migration finishes at the next sync."
@@ -18593,6 +18705,10 @@ msgstr "Neznámé"
 msgid "Unknown device"
 msgstr "Neznámé zařízení"
 
+#: src/features/settings/audit/sentence.ts
+msgid "unknown reason"
+msgstr "neznámý důvod"
+
 #: src/features/feedback/RoadmapCard.tsx
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Unlink"
@@ -18616,6 +18732,10 @@ msgstr "Odpojit od {title}"
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Unlink your Slack account?"
 msgstr "Unlink your Slack account?"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Unlinked {person} from Slack"
+msgstr "Zrušil(a) propojení {person} se Slackem"
 
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Unlock"
@@ -19071,6 +19191,10 @@ msgstr "Hodnoty podmínky {n}, oddělené čárkami"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Verified"
 msgstr "Ověřeno"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Verified the domain {domain} for single sign-on"
+msgstr "Ověřil(a) doménu {domain} pro jednotné přihlašování"
 
 #: src/features/settings/channels/email/AddressProof.tsx
 #: src/features/settings/sso/SsoPage.tsx

@@ -1943,6 +1943,10 @@ msgstr "Πρόσθεσε webhook προς {host}"
 msgid "Added by the team"
 msgstr "Προστέθηκε από την ομάδα"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Added the domain {domain} for single sign-on"
+msgstr "Πρόσθεσε το domain {domain} για ενιαία σύνδεση"
+
 #: src/features/conversation/Feedback.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/setup/email/EmailLayout.tsx
@@ -2433,6 +2437,10 @@ msgstr "Ένας στόχος SLA λήγει σύντομα"
 #: src/features/settings/notifications/events.ts
 msgid "An SLA target was breached"
 msgstr "Παραβιάστηκε ένας στόχος SLA"
+
+#: src/features/settings/audit/sentence.ts
+msgid "an unknown person"
+msgstr "ένα άγνωστο άτομο"
 
 #: src/features/migrations/UploadStep.tsx
 msgid "An upload was cut off: {count} parts, {size}, are already on the server."
@@ -3635,6 +3643,10 @@ msgid "Changed how long conversations are kept from {from} to {to}"
 msgstr "Άλλαξε τη διάρκεια διατήρησης των συνομιλιών από {from} σε {to}"
 
 #: src/features/settings/audit/sentence.ts
+msgid "Changed the {protocol} single sign-on provider"
+msgstr "Άλλαξε τον πάροχο ενιαίας σύνδεσης {protocol}"
+
+#: src/features/settings/audit/sentence.ts
 msgid "Changed the automation rule {name}"
 msgstr "Άλλαξε τον κανόνα αυτοματισμού {name}"
 
@@ -3649,6 +3661,14 @@ msgstr "Άλλαξε τον λογαριασμό αλληλογραφίας ή �
 #: src/features/settings/audit/sentence.ts
 msgid "Changed the role of {person} from {from} to {to}"
 msgstr "Άλλαξε τον ρόλο του/της {person} από {from} σε {to}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the settings of an issue tracker connection"
+msgstr "Άλλαξε τις ρυθμίσεις μιας σύνδεσης με εργαλείο παρακολούθησης ζητημάτων"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the single sign-on settings"
+msgstr "Άλλαξε τις ρυθμίσεις της ενιαίας σύνδεσης"
 
 #: src/features/settings/audit/sentence.ts
 msgid "Changed the webhook to {host}"
@@ -4371,6 +4391,14 @@ msgstr "Συνδέθηκε από {by} στις {since}"
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Connected on {since}"
 msgstr "Συνδέθηκε στις {since}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Connected the issue tracker {name} ({provider})"
+msgstr "Συνέδεσε το εργαλείο παρακολούθησης ζητημάτων {name} ({provider})"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Connected the Slack workspace {slackTeam}"
+msgstr "Συνέδεσε τον χώρο εργασίας Slack {slackTeam}"
 
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Connected to {address}"
@@ -5485,6 +5513,18 @@ msgstr "Αποσύνδεσε το {client}"
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "Disconnected {name}"
 msgstr "Disconnected {name}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Disconnected Slack"
+msgstr "Αποσύνδεσε το Slack"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Disconnected Slack because the app was removed in Slack"
+msgstr "Αποσύνδεσε το Slack επειδή η εφαρμογή αφαιρέθηκε στο Slack"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Disconnected the issue tracker {name} ({provider})"
+msgstr "Αποσύνδεσε το εργαλείο παρακολούθησης ζητημάτων {name} ({provider})"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/DocsPage.tsx
@@ -8748,6 +8788,10 @@ msgstr "Linked {0}"
 msgid "Linked {key}"
 msgstr "Linked {key}"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Linked {person} to Slack"
+msgstr "Συνέδεσε τον/την {person} με το Slack"
+
 #: src/features/status/LinkedSection.tsx
 msgid "Linked conversations"
 msgstr "Συνδεδεμένες συνομιλίες"
@@ -8981,6 +9025,14 @@ msgstr "Μακροεντολή"
 #: src/features/settings/SettingsColumn.tsx
 msgid "Macros"
 msgstr "Μακροεντολές"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Made single sign-on optional"
+msgstr "Έκανε την ενιαία σύνδεση προαιρετική"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Made single sign-on required"
+msgstr "Έκανε την ενιαία σύνδεση υποχρεωτική"
 
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Mail arrives here; add a reply account when you are ready"
@@ -13529,6 +13581,10 @@ msgstr "Επιστροφή χρημάτων"
 msgid "Refund approved"
 msgstr "Η επιστροφή χρημάτων εγκρίθηκε"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Refused a sign-in with single sign-on ({protocol}) by {who}: {reason}"
+msgstr "Απέρριψε σύνδεση με ενιαία σύνδεση ({protocol}) του/της {who}: {reason}"
+
 #: src/features/migrations/TokenConnectStep.tsx
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Region"
@@ -13765,6 +13821,14 @@ msgstr "Αφαιρέθηκε από {who}"
 #: src/features/settings/fields/FieldDialog.tsx
 msgid "Removed options are cleared from every conversation that holds them. This runs in the background."
 msgstr "Οι επιλογές που αφαιρέθηκαν διαγράφονται από όλες τις συνομιλίες που τις έχουν. Εκτελείται στο παρασκήνιο."
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed the {protocol} single sign-on provider"
+msgstr "Αφαίρεσε τον πάροχο ενιαίας σύνδεσης {protocol}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed the domain {domain} from single sign-on"
+msgstr "Αφαίρεσε το domain {domain} από την ενιαία σύνδεση"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Removes {name} with its products, channels, conversations, contacts, files, labels, webhooks and API keys for everyone. Members keep their accounts."
@@ -14355,6 +14419,10 @@ msgstr "Ανανέωσε το κλειδί ενός καναλιού"
 #: src/features/settings/audit/sentence.ts
 msgid "Rotated the signing secret of a webhook"
 msgstr "Ανανέωσε το μυστικό υπογραφής ενός webhook"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the webhook secret of an issue tracker connection"
+msgstr "Ανανέωσε το μυστικό webhook μιας σύνδεσης με εργαλείο παρακολούθησης ζητημάτων"
 
 #: src/components/common/AssignmentFields.tsx
 msgid "Round robin"
@@ -15274,6 +15342,10 @@ msgstr "Ρύθμιση DKIM"
 msgid "Set up e-mail"
 msgstr "Ρύθμιση e-mail"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Set up single sign-on with {protocol}"
+msgstr "Ρύθμισε την ενιαία σύνδεση με {protocol}"
+
 #: src/app/Palette.tsx
 #: src/features/setup/SetupHub.tsx
 msgid "Set up Yuva"
@@ -15688,9 +15760,17 @@ msgstr "Αποσύνδεση από παντού αλλού;"
 msgid "Sign-in address"
 msgstr "Διεύθυνση σύνδεσης"
 
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Sign-in and integrations"
+msgstr "Σύνδεση και ενσωματώσεις"
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Sign-in rules"
 msgstr "Sign-in rules"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Sign-in with single sign-on ({protocol}) by {who}"
+msgstr "Σύνδεση με ενιαία σύνδεση ({protocol}): {who}"
 
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/setup/NewsletterStep.tsx
@@ -16834,6 +16914,14 @@ msgstr "Το κανάλι τεκμηρίωσης του {host} δεν υπάρχ
 msgid "The documentation page to put it under, on a site of this inbox."
 msgstr "Η σελίδα τεκμηρίωσης κάτω από την οποία θα μπει, σε ιστότοπο αυτών των εισερχομένων."
 
+#: src/features/settings/audit/sentence.ts
+msgid "The domain {domain} lost its verification: its DNS record is missing"
+msgstr "Το domain {domain} έχασε την επαλήθευσή του: λείπει η εγγραφή DNS"
+
+#: src/features/settings/audit/sentence.ts
+msgid "The domain {domain} lost its verification: its DNS record is missing, so single sign-on is no longer required"
+msgstr "Το domain {domain} έχασε την επαλήθευσή του: λείπει η εγγραφή DNS, επομένως η ενιαία σύνδεση δεν είναι πλέον υποχρεωτική"
+
 #: src/features/broadcasts/Import.tsx
 msgid "The domain takes no mail"
 msgstr "Ο τομέας δεν δέχεται αλληλογραφία"
@@ -16849,6 +16937,10 @@ msgstr "Το κανάλι e-mail είναι έτοιμο"
 #: src/features/broadcasts/ListForm.tsx
 msgid "The e-mail channel that sends the confirmation and welcome mails. It needs an SMTP account."
 msgstr "Το κανάλι e-mail που στέλνει τα e-mail επιβεβαίωσης και καλωσορίσματος. Χρειάζεται λογαριασμό SMTP."
+
+#: src/features/settings/audit/sentence.ts
+msgid "the e-mail domain is not verified for this workspace"
+msgstr "το domain του email δεν έχει επαληθευτεί για αυτόν τον χώρο εργασίας"
 
 #: src/features/setup/InstallStep.tsx
 msgid "The elements work on these addresses; add your dev server in the inbox settings:"
@@ -17315,6 +17407,14 @@ msgstr "Ο κωδικός αποθηκεύεται κρυπτογραφημέν�
 msgid "The password is too long."
 msgstr "Ο κωδικός είναι πολύ μεγάλος."
 
+#: src/features/settings/audit/sentence.ts
+msgid "the person is in none of the allowed groups"
+msgstr "το άτομο δεν ανήκει σε καμία από τις επιτρεπόμενες ομάδες"
+
+#: src/features/settings/audit/sentence.ts
+msgid "the person is not a member of this workspace"
+msgstr "το άτομο δεν είναι μέλος αυτού του χώρου εργασίας"
+
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "The policy is none: receivers only report. Move to quarantine once all your mail passes."
 msgstr "Η πολιτική είναι none: οι παραλήπτες μόνο αναφέρουν. Περάστε σε quarantine όταν περνά όλη η αλληλογραφία σας."
@@ -17351,9 +17451,21 @@ msgstr "Το προϊόν δεν μπορεί να αλλάξει αργότερ
 msgid "The provider asked to slow down"
 msgstr "Ο πάροχος ζήτησε να επιβραδύνετε"
 
+#: src/features/settings/audit/sentence.ts
+msgid "the provider did not complete the sign-in"
+msgstr "ο πάροχος δεν ολοκλήρωσε τη σύνδεση"
+
+#: src/features/settings/audit/sentence.ts
+msgid "the provider has not verified the e-mail address"
+msgstr "ο πάροχος δεν επαλήθευσε τη διεύθυνση email"
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "The provider's address, exactly as its discovery document names it. Yuva reads it on save."
 msgstr "The provider's address, exactly as its discovery document names it. Yuva reads it on save."
+
+#: src/features/settings/audit/sentence.ts
+msgid "the provider's response was not accepted"
+msgstr "η απάντηση του παρόχου δεν έγινε δεκτή"
 
 #: src/features/migrations/SwitchStep.tsx
 msgid "The quiet period is over; the migration finishes at the next sync."
@@ -18593,6 +18705,10 @@ msgstr "Άγνωστο"
 msgid "Unknown device"
 msgstr "Άγνωστη συσκευή"
 
+#: src/features/settings/audit/sentence.ts
+msgid "unknown reason"
+msgstr "άγνωστος λόγος"
+
 #: src/features/feedback/RoadmapCard.tsx
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Unlink"
@@ -18616,6 +18732,10 @@ msgstr "Αποσύνδεση από το {title}"
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Unlink your Slack account?"
 msgstr "Unlink your Slack account?"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Unlinked {person} from Slack"
+msgstr "Αποσύνδεσε τον/την {person} από το Slack"
 
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Unlock"
@@ -19071,6 +19191,10 @@ msgstr "Τιμές της συνθήκης {n}, χωρισμένες με κόμ
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Verified"
 msgstr "Επαληθευμένο"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Verified the domain {domain} for single sign-on"
+msgstr "Επαλήθευσε το domain {domain} για ενιαία σύνδεση"
 
 #: src/features/settings/channels/email/AddressProof.tsx
 #: src/features/settings/sso/SsoPage.tsx

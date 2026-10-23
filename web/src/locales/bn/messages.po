@@ -1943,6 +1943,10 @@ msgstr "{host}-এ একটি ওয়েবহুক যোগ করেছ�
 msgid "Added by the team"
 msgstr "টিম যোগ করেছে"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Added the domain {domain} for single sign-on"
+msgstr "সিঙ্গল সাইন-অনের জন্য ডোমেন {domain} যোগ করেছেন"
+
 #: src/features/conversation/Feedback.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/setup/email/EmailLayout.tsx
@@ -2433,6 +2437,10 @@ msgstr "একটি SLA লক্ষ্যের সময় শীঘ্র�
 #: src/features/settings/notifications/events.ts
 msgid "An SLA target was breached"
 msgstr "একটি SLA লক্ষ্য লঙ্ঘিত হয়েছে"
+
+#: src/features/settings/audit/sentence.ts
+msgid "an unknown person"
+msgstr "অজানা ব্যক্তি"
 
 #: src/features/migrations/UploadStep.tsx
 msgid "An upload was cut off: {count} parts, {size}, are already on the server."
@@ -3635,6 +3643,10 @@ msgid "Changed how long conversations are kept from {from} to {to}"
 msgstr "কথোপকথন সংরক্ষণের সময় {from} থেকে {to} করেছেন"
 
 #: src/features/settings/audit/sentence.ts
+msgid "Changed the {protocol} single sign-on provider"
+msgstr "সিঙ্গল সাইন-অন প্রদানকারী {protocol} পরিবর্তন করেছেন"
+
+#: src/features/settings/audit/sentence.ts
 msgid "Changed the automation rule {name}"
 msgstr "অটোমেশন নিয়ম {name} বদলেছেন"
 
@@ -3649,6 +3661,14 @@ msgstr "একটি চ্যানেলের মেইল অ্যাকা
 #: src/features/settings/audit/sentence.ts
 msgid "Changed the role of {person} from {from} to {to}"
 msgstr "{person}-এর ভূমিকা {from} থেকে {to} করেছেন"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the settings of an issue tracker connection"
+msgstr "ইস্যু ট্র্যাকার সংযোগের সেটিংস পরিবর্তন করেছেন"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the single sign-on settings"
+msgstr "সিঙ্গল সাইন-অনের সেটিংস পরিবর্তন করেছেন"
 
 #: src/features/settings/audit/sentence.ts
 msgid "Changed the webhook to {host}"
@@ -4371,6 +4391,14 @@ msgstr "{by} {since} তারিখে সংযুক্ত করেছেন
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Connected on {since}"
 msgstr "{since}-এ সংযুক্ত হয়েছে"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Connected the issue tracker {name} ({provider})"
+msgstr "ইস্যু ট্র্যাকার {name} ({provider}) সংযুক্ত করেছেন"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Connected the Slack workspace {slackTeam}"
+msgstr "Slack ওয়ার্কস্পেস {slackTeam} সংযুক্ত করেছেন"
 
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Connected to {address}"
@@ -5485,6 +5513,18 @@ msgstr "{client} বিচ্ছিন্ন করেছেন"
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "Disconnected {name}"
 msgstr "Disconnected {name}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Disconnected Slack"
+msgstr "Slack সংযোগ বিচ্ছিন্ন করেছেন"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Disconnected Slack because the app was removed in Slack"
+msgstr "Slack-এ অ্যাপ সরিয়ে দেওয়ায় Slack সংযোগ বিচ্ছিন্ন করেছেন"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Disconnected the issue tracker {name} ({provider})"
+msgstr "ইস্যু ট্র্যাকার {name} ({provider}) সংযোগ বিচ্ছিন্ন করেছেন"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/DocsPage.tsx
@@ -8748,6 +8788,10 @@ msgstr "Linked {0}"
 msgid "Linked {key}"
 msgstr "Linked {key}"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Linked {person} to Slack"
+msgstr "{person}-কে Slack-এর সঙ্গে যুক্ত করেছেন"
+
 #: src/features/status/LinkedSection.tsx
 msgid "Linked conversations"
 msgstr "লিঙ্ক করা কথোপকথন"
@@ -8981,6 +9025,14 @@ msgstr "ম্যাক্রো"
 #: src/features/settings/SettingsColumn.tsx
 msgid "Macros"
 msgstr "ম্যাক্রো"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Made single sign-on optional"
+msgstr "সিঙ্গল সাইন-অন ঐচ্ছিক করেছেন"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Made single sign-on required"
+msgstr "সিঙ্গল সাইন-অন বাধ্যতামূলক করেছেন"
 
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Mail arrives here; add a reply account when you are ready"
@@ -13529,6 +13581,10 @@ msgstr "রিফান্ড"
 msgid "Refund approved"
 msgstr "ফেরত অনুমোদিত"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Refused a sign-in with single sign-on ({protocol}) by {who}: {reason}"
+msgstr "{who}-এর সিঙ্গল সাইন-অন ({protocol}) সাইন-ইন প্রত্যাখ্যান করেছেন: {reason}"
+
 #: src/features/migrations/TokenConnectStep.tsx
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Region"
@@ -13765,6 +13821,14 @@ msgstr "{who} সরিয়েছেন"
 #: src/features/settings/fields/FieldDialog.tsx
 msgid "Removed options are cleared from every conversation that holds them. This runs in the background."
 msgstr "সরানো বিকল্পগুলো যেসব কথোপকথনে আছে সেগুলো থেকে মুছে যায়। এটি ব্যাকগ্রাউন্ডে চলে।"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed the {protocol} single sign-on provider"
+msgstr "সিঙ্গল সাইন-অন প্রদানকারী {protocol} সরিয়েছেন"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed the domain {domain} from single sign-on"
+msgstr "সিঙ্গল সাইন-অন থেকে ডোমেন {domain} সরিয়েছেন"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Removes {name} with its products, channels, conversations, contacts, files, labels, webhooks and API keys for everyone. Members keep their accounts."
@@ -14355,6 +14419,10 @@ msgstr "একটি চ্যানেলের কী নতুন করে�
 #: src/features/settings/audit/sentence.ts
 msgid "Rotated the signing secret of a webhook"
 msgstr "একটি ওয়েবহুকের স্বাক্ষর সিক্রেট নতুন করেছেন"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the webhook secret of an issue tracker connection"
+msgstr "ইস্যু ট্র্যাকার সংযোগের ওয়েবহুক সিক্রেট নতুন করেছেন"
 
 #: src/components/common/AssignmentFields.tsx
 msgid "Round robin"
@@ -15274,6 +15342,10 @@ msgstr "DKIM সেট আপ করুন"
 msgid "Set up e-mail"
 msgstr "ই-মেইল সেট আপ করুন"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Set up single sign-on with {protocol}"
+msgstr "{protocol} দিয়ে সিঙ্গল সাইন-অন সেট আপ করেছেন"
+
 #: src/app/Palette.tsx
 #: src/features/setup/SetupHub.tsx
 msgid "Set up Yuva"
@@ -15688,9 +15760,17 @@ msgstr "অন্য সব জায়গা থেকে সাইন আউ�
 msgid "Sign-in address"
 msgstr "সাইন-ইন ঠিকানা"
 
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Sign-in and integrations"
+msgstr "সাইন-ইন ও ইন্টিগ্রেশন"
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Sign-in rules"
 msgstr "Sign-in rules"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Sign-in with single sign-on ({protocol}) by {who}"
+msgstr "{who}-এর সিঙ্গল সাইন-অন ({protocol}) দিয়ে সাইন-ইন"
 
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/setup/NewsletterStep.tsx
@@ -16834,6 +16914,14 @@ msgstr "{host}-এর ডকুমেন্টেশন চ্যানেল �
 msgid "The documentation page to put it under, on a site of this inbox."
 msgstr "যে ডকুমেন্টেশন পেজের নিচে রাখবেন, এই ইনবক্সের একটি সাইটে।"
 
+#: src/features/settings/audit/sentence.ts
+msgid "The domain {domain} lost its verification: its DNS record is missing"
+msgstr "ডোমেন {domain}-এর যাচাই বাতিল হয়েছে: DNS রেকর্ড নেই"
+
+#: src/features/settings/audit/sentence.ts
+msgid "The domain {domain} lost its verification: its DNS record is missing, so single sign-on is no longer required"
+msgstr "ডোমেন {domain}-এর যাচাই বাতিল হয়েছে: DNS রেকর্ড নেই, তাই সিঙ্গল সাইন-অন আর বাধ্যতামূলক নয়"
+
 #: src/features/broadcasts/Import.tsx
 msgid "The domain takes no mail"
 msgstr "ডোমেন মেইল নেয় না"
@@ -16849,6 +16937,10 @@ msgstr "ই-মেইল চ্যানেল প্রস্তুত"
 #: src/features/broadcasts/ListForm.tsx
 msgid "The e-mail channel that sends the confirmation and welcome mails. It needs an SMTP account."
 msgstr "যে ই-মেইল চ্যানেল নিশ্চিতকরণ ও স্বাগত মেইল পাঠায়। এর একটি SMTP অ্যাকাউন্ট দরকার।"
+
+#: src/features/settings/audit/sentence.ts
+msgid "the e-mail domain is not verified for this workspace"
+msgstr "ইমেল ডোমেন এই ওয়ার্কস্পেসের জন্য যাচাই করা হয়নি"
 
 #: src/features/setup/InstallStep.tsx
 msgid "The elements work on these addresses; add your dev server in the inbox settings:"
@@ -17315,6 +17407,14 @@ msgstr "পাসওয়ার্ড এনক্রিপ্ট করে র
 msgid "The password is too long."
 msgstr "পাসওয়ার্ড অনেক লম্বা।"
 
+#: src/features/settings/audit/sentence.ts
+msgid "the person is in none of the allowed groups"
+msgstr "ব্যক্তিটি অনুমোদিত কোনো গ্রুপে নেই"
+
+#: src/features/settings/audit/sentence.ts
+msgid "the person is not a member of this workspace"
+msgstr "ব্যক্তিটি এই ওয়ার্কস্পেসের সদস্য নন"
+
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "The policy is none: receivers only report. Move to quarantine once all your mail passes."
 msgstr "নীতি none: রিসিভাররা শুধু রিপোর্ট করে। আপনার সব মেইল পাস করলে quarantine-এ যান।"
@@ -17351,9 +17451,21 @@ msgstr "প্রোডাক্ট পরে বদলানো যায় �
 msgid "The provider asked to slow down"
 msgstr "প্রদানকারী ধীর হতে বলেছে"
 
+#: src/features/settings/audit/sentence.ts
+msgid "the provider did not complete the sign-in"
+msgstr "প্রদানকারী সাইন-ইন সম্পূর্ণ করেননি"
+
+#: src/features/settings/audit/sentence.ts
+msgid "the provider has not verified the e-mail address"
+msgstr "প্রদানকারী ইমেল ঠিকানা যাচাই করেননি"
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "The provider's address, exactly as its discovery document names it. Yuva reads it on save."
 msgstr "The provider's address, exactly as its discovery document names it. Yuva reads it on save."
+
+#: src/features/settings/audit/sentence.ts
+msgid "the provider's response was not accepted"
+msgstr "প্রদানকারীর উত্তর গ্রহণ করা হয়নি"
 
 #: src/features/migrations/SwitchStep.tsx
 msgid "The quiet period is over; the migration finishes at the next sync."
@@ -18593,6 +18705,10 @@ msgstr "অজানা"
 msgid "Unknown device"
 msgstr "অজানা ডিভাইস"
 
+#: src/features/settings/audit/sentence.ts
+msgid "unknown reason"
+msgstr "অজানা কারণ"
+
 #: src/features/feedback/RoadmapCard.tsx
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Unlink"
@@ -18616,6 +18732,10 @@ msgstr "{title} থেকে সংযোগ সরান"
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Unlink your Slack account?"
 msgstr "Unlink your Slack account?"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Unlinked {person} from Slack"
+msgstr "{person}-এর Slack যুক্তি সরিয়েছেন"
 
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Unlock"
@@ -19071,6 +19191,10 @@ msgstr "শর্ত {n}-এর মান, কমা দিয়ে আলা�
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Verified"
 msgstr "যাচাই হয়েছে"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Verified the domain {domain} for single sign-on"
+msgstr "সিঙ্গল সাইন-অনের জন্য ডোমেন {domain} যাচাই করেছেন"
 
 #: src/features/settings/channels/email/AddressProof.tsx
 #: src/features/settings/sso/SsoPage.tsx

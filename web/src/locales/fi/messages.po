@@ -1943,6 +1943,10 @@ msgstr "Lisäsi webhookin osoitteeseen {host}"
 msgid "Added by the team"
 msgstr "Tiimin lisäämä"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Added the domain {domain} for single sign-on"
+msgstr "Lisäsi verkkotunnuksen {domain} kertakirjautumiseen"
+
 #: src/features/conversation/Feedback.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/setup/email/EmailLayout.tsx
@@ -2433,6 +2437,10 @@ msgstr "SLA-tavoite erääntyy pian"
 #: src/features/settings/notifications/events.ts
 msgid "An SLA target was breached"
 msgstr "SLA-tavoite rikottiin"
+
+#: src/features/settings/audit/sentence.ts
+msgid "an unknown person"
+msgstr "tuntematon henkilö"
 
 #: src/features/migrations/UploadStep.tsx
 msgid "An upload was cut off: {count} parts, {size}, are already on the server."
@@ -3635,6 +3643,10 @@ msgid "Changed how long conversations are kept from {from} to {to}"
 msgstr "Muutti keskustelujen säilytysajan arvosta {from} arvoon {to}"
 
 #: src/features/settings/audit/sentence.ts
+msgid "Changed the {protocol} single sign-on provider"
+msgstr "Muutti kertakirjautumispalvelun {protocol} tarjoajaa"
+
+#: src/features/settings/audit/sentence.ts
 msgid "Changed the automation rule {name}"
 msgstr "Muutti automaatiosääntöä {name}"
 
@@ -3649,6 +3661,14 @@ msgstr "Muutti kanavan sähköpostitiliä tai salasanaa"
 #: src/features/settings/audit/sentence.ts
 msgid "Changed the role of {person} from {from} to {to}"
 msgstr "Muutti käyttäjän {person} roolin roolista {from} rooliin {to}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the settings of an issue tracker connection"
+msgstr "Muutti ongelmienseurantayhteyden asetuksia"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the single sign-on settings"
+msgstr "Muutti kertakirjautumisen asetuksia"
 
 #: src/features/settings/audit/sentence.ts
 msgid "Changed the webhook to {host}"
@@ -4371,6 +4391,14 @@ msgstr "Yhdistänyt {by} {since}"
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Connected on {since}"
 msgstr "Yhdistetty {since}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Connected the issue tracker {name} ({provider})"
+msgstr "Yhdisti ongelmienseurannan {name} ({provider})"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Connected the Slack workspace {slackTeam}"
+msgstr "Yhdisti Slack-työtilan {slackTeam}"
 
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Connected to {address}"
@@ -5485,6 +5513,18 @@ msgstr "Katkaisi sovelluksen {client} yhteyden"
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "Disconnected {name}"
 msgstr "Disconnected {name}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Disconnected Slack"
+msgstr "Katkaisi Slack-yhteyden"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Disconnected Slack because the app was removed in Slack"
+msgstr "Katkaisi Slack-yhteyden, koska sovellus poistettiin Slackissa"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Disconnected the issue tracker {name} ({provider})"
+msgstr "Katkaisi ongelmienseurannan {name} ({provider}) yhteyden"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/DocsPage.tsx
@@ -8748,6 +8788,10 @@ msgstr "Linked {0}"
 msgid "Linked {key}"
 msgstr "Linked {key}"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Linked {person} to Slack"
+msgstr "Linkitti henkilön {person} Slackiin"
+
 #: src/features/status/LinkedSection.tsx
 msgid "Linked conversations"
 msgstr "Liitetyt keskustelut"
@@ -8981,6 +9025,14 @@ msgstr "Makro"
 #: src/features/settings/SettingsColumn.tsx
 msgid "Macros"
 msgstr "Makrot"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Made single sign-on optional"
+msgstr "Teki kertakirjautumisesta valinnaisen"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Made single sign-on required"
+msgstr "Teki kertakirjautumisesta pakollisen"
 
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Mail arrives here; add a reply account when you are ready"
@@ -13529,6 +13581,10 @@ msgstr "Hyvitys"
 msgid "Refund approved"
 msgstr "Hyvitys hyväksytty"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Refused a sign-in with single sign-on ({protocol}) by {who}: {reason}"
+msgstr "Hylkäsi henkilön {who} kertakirjautumisen ({protocol}): {reason}"
+
 #: src/features/migrations/TokenConnectStep.tsx
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Region"
@@ -13765,6 +13821,14 @@ msgstr "Poistanut {who}"
 #: src/features/settings/fields/FieldDialog.tsx
 msgid "Removed options are cleared from every conversation that holds them. This runs in the background."
 msgstr "Poistetut vaihtoehdot tyhjennetään kaikista keskusteluista, joissa ne ovat. Tämä tapahtuu taustalla."
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed the {protocol} single sign-on provider"
+msgstr "Poisti kertakirjautumisen tarjoajan {protocol}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed the domain {domain} from single sign-on"
+msgstr "Poisti verkkotunnuksen {domain} kertakirjautumisesta"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Removes {name} with its products, channels, conversations, contacts, files, labels, webhooks and API keys for everyone. Members keep their accounts."
@@ -14355,6 +14419,10 @@ msgstr "Uusi kanavan avaimen"
 #: src/features/settings/audit/sentence.ts
 msgid "Rotated the signing secret of a webhook"
 msgstr "Uusi webhookin allekirjoitussalaisuuden"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the webhook secret of an issue tracker connection"
+msgstr "Uusi ongelmienseurantayhteyden webhook-salaisuuden"
 
 #: src/components/common/AssignmentFields.tsx
 msgid "Round robin"
@@ -15274,6 +15342,10 @@ msgstr "Määritä DKIM"
 msgid "Set up e-mail"
 msgstr "Määritä sähköposti"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Set up single sign-on with {protocol}"
+msgstr "Otti kertakirjautumisen käyttöön tarjoajalla {protocol}"
+
 #: src/app/Palette.tsx
 #: src/features/setup/SetupHub.tsx
 msgid "Set up Yuva"
@@ -15688,9 +15760,17 @@ msgstr "Kirjaudutaanko ulos kaikkialta muualta?"
 msgid "Sign-in address"
 msgstr "Kirjautumisosoite"
 
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Sign-in and integrations"
+msgstr "Kirjautuminen ja integraatiot"
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Sign-in rules"
 msgstr "Sign-in rules"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Sign-in with single sign-on ({protocol}) by {who}"
+msgstr "Kertakirjautuminen ({protocol}): {who}"
 
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/setup/NewsletterStep.tsx
@@ -16834,6 +16914,14 @@ msgstr "Sivuston {host} dokumentaatiokanavaa ei enää ole."
 msgid "The documentation page to put it under, on a site of this inbox."
 msgstr "Dokumentaatiosivu, jonka alle se laitetaan, tämän postilaatikon sivustolla."
 
+#: src/features/settings/audit/sentence.ts
+msgid "The domain {domain} lost its verification: its DNS record is missing"
+msgstr "Verkkotunnus {domain} menetti vahvistuksensa: sen DNS-tietue puuttuu"
+
+#: src/features/settings/audit/sentence.ts
+msgid "The domain {domain} lost its verification: its DNS record is missing, so single sign-on is no longer required"
+msgstr "Verkkotunnus {domain} menetti vahvistuksensa: sen DNS-tietue puuttuu, joten kertakirjautuminen ei ole enää pakollinen"
+
 #: src/features/broadcasts/Import.tsx
 msgid "The domain takes no mail"
 msgstr "Verkkotunnus ei ota postia vastaan"
@@ -16849,6 +16937,10 @@ msgstr "Sähköpostikanava on valmis"
 #: src/features/broadcasts/ListForm.tsx
 msgid "The e-mail channel that sends the confirmation and welcome mails. It needs an SMTP account."
 msgstr "Sähköpostikanava, joka lähettää vahvistus- ja tervetuloviestit. Se tarvitsee SMTP-tilin."
+
+#: src/features/settings/audit/sentence.ts
+msgid "the e-mail domain is not verified for this workspace"
+msgstr "sähköpostin verkkotunnusta ei ole vahvistettu tälle työtilalle"
 
 #: src/features/setup/InstallStep.tsx
 msgid "The elements work on these addresses; add your dev server in the inbox settings:"
@@ -17315,6 +17407,14 @@ msgstr "Salasana tallennetaan salattuna eikä näytetä enää koskaan."
 msgid "The password is too long."
 msgstr "Salasana on liian pitkä."
 
+#: src/features/settings/audit/sentence.ts
+msgid "the person is in none of the allowed groups"
+msgstr "henkilö ei kuulu mihinkään sallittuun ryhmään"
+
+#: src/features/settings/audit/sentence.ts
+msgid "the person is not a member of this workspace"
+msgstr "henkilö ei ole tämän työtilan jäsen"
+
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "The policy is none: receivers only report. Move to quarantine once all your mail passes."
 msgstr "Käytäntö on none: vastaanottajat vain raportoivat. Siirry tilaan quarantine, kun kaikki viestisi läpäisevät."
@@ -17351,9 +17451,21 @@ msgstr "Tuotetta ei voi vaihtaa myöhemmin."
 msgid "The provider asked to slow down"
 msgstr "Palveluntarjoaja pyysi hidastamaan"
 
+#: src/features/settings/audit/sentence.ts
+msgid "the provider did not complete the sign-in"
+msgstr "tarjoaja ei viimeistellyt kirjautumista"
+
+#: src/features/settings/audit/sentence.ts
+msgid "the provider has not verified the e-mail address"
+msgstr "tarjoaja ei ole vahvistanut sähköpostiosoitetta"
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "The provider's address, exactly as its discovery document names it. Yuva reads it on save."
 msgstr "The provider's address, exactly as its discovery document names it. Yuva reads it on save."
+
+#: src/features/settings/audit/sentence.ts
+msgid "the provider's response was not accepted"
+msgstr "tarjoajan vastausta ei hyväksytty"
 
 #: src/features/migrations/SwitchStep.tsx
 msgid "The quiet period is over; the migration finishes at the next sync."
@@ -18593,6 +18705,10 @@ msgstr "Tuntematon"
 msgid "Unknown device"
 msgstr "Tuntematon laite"
 
+#: src/features/settings/audit/sentence.ts
+msgid "unknown reason"
+msgstr "tuntematon syy"
+
 #: src/features/feedback/RoadmapCard.tsx
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Unlink"
@@ -18616,6 +18732,10 @@ msgstr "Poista liitos kohteeseen {title}"
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Unlink your Slack account?"
 msgstr "Unlink your Slack account?"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Unlinked {person} from Slack"
+msgstr "Poisti henkilön {person} Slack-linkityksen"
 
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Unlock"
@@ -19071,6 +19191,10 @@ msgstr "Ehdon {n} arvot, pilkuilla eroteltuina"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Verified"
 msgstr "Vahvistettu"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Verified the domain {domain} for single sign-on"
+msgstr "Vahvisti verkkotunnuksen {domain} kertakirjautumiseen"
 
 #: src/features/settings/channels/email/AddressProof.tsx
 #: src/features/settings/sso/SsoPage.tsx
