@@ -592,7 +592,7 @@ imports as drafts with their images.
 
 ## M31 — More help desks
 
-Status: planned; items Y-151 to Y-156 in `backlog.md`. Part of 0.1.0. Plan by `yuva-migration`.
+Status: done on main (#151–#156), verified on 2026-10-23 with the recorded-answer end-to-end tests against Postgres and the live API's token and access checks; plan by `yuva-migration`. A server kill mid-import was not repeated for the new desks.
 
 - History imports from Front, Freshdesk, Intercom, Crisp and Chatwoot on the M14 engine, read-only, with
   the wizard, guides and MCP tools.
