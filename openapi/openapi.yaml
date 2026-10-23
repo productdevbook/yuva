@@ -100,6 +100,10 @@ tags:
     description: Workspace labels for conversations.
   - name: canned-replies
     description: Saved answers members insert into replies.
+  - name: macros
+    description: |
+      A reply plus actions (labels, assignee, status, priority, snooze), personal or shared. The
+      actions are applied only when a message is sent with `macro_id`.
   - name: docs
     description: |
       Documentation pages on a product's own site: ratings per page, feedback sent from a page, and
@@ -3682,6 +3686,16 @@ paths:
         SMTP account, with `409 email_not_configured`. A catch-all channel (`*@domain`) sends from the
         address the contact wrote to; when the conversation has none and the channel has no
         `from_address`, the reply is refused with `409 email_no_sender`.
+
+        `macro_id` applies a macro's actions and `then` applies a `ConversationUpdate`, in the same
+        transaction as the message: when either is refused (an assignee without access to the
+        inbox, a snooze without a future time) nothing is written, and when the message is
+        refused no action is applied. With both, the macro's actions come first and the fields of
+        `then` take their place (`then.labels` replaces the labels, the macro's label changes
+        included). They need `conversations:write` for API keys and OAuth tokens, are refused on a
+        draft (`400 validation_failed`) and are not applied again when a `client_id` repeats. A
+        macro of another workspace, or another member's personal macro, is `404`. Applying a
+        macro writes a `macro_applied` event naming it before the events of the changes.
       tags: [messages]
       parameters:
         - $ref: "#/components/parameters/IdempotencyKey"
@@ -4399,6 +4413,141 @@ paths:
       parameters:
         - $ref: "#/components/parameters/WorkspaceHeader"
         - $ref: "#/components/parameters/CannedReplyId"
+      responses:
+        "204":
+          description: Deleted.
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+  /v1/macros:
+    get:
+      operationId: listMacros
+      summary: List macros
+      description: |
+        The workspace's shared macros and the caller's own personal ones: personal first, then
+        shared, each by `position` and name. API keys see the shared ones only.
+
+        Scope: `conversations:read`.
+      tags: [macros]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+      responses:
+        "200":
+          description: The macros.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MacroList"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+    post:
+      operationId: createMacro
+      summary: Create a macro
+      description: |
+        A `personal` macro belongs to the calling member: any member with a session, or an OAuth
+        token with `conversations:write`; API keys are refused with `403 member_session_required`.
+        A `shared` macro is created by owners, admins and API keys with `canned_replies:write`.
+
+        Labels must exist and the assignee must be a member (`400 validation_failed`). The
+        shortcut is unique among the shared macros, and among each member's personal ones
+        (`409 shortcut_taken`).
+      tags: [macros]
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/WorkspaceHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MacroCreate"
+      responses:
+        "201":
+          description: The macro.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Macro"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "409":
+          $ref: "#/components/responses/Problem"
+  /v1/macros/{macroId}:
+    get:
+      operationId: getMacro
+      summary: Get a macro
+      description: |
+        A shared macro, or one of the caller's own personal macros; another member's personal
+        macro is `404`.
+
+        Scope: `conversations:read`.
+      tags: [macros]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/MacroId"
+      responses:
+        "200":
+          description: The macro.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Macro"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+    patch:
+      operationId: updateMacro
+      summary: Update a macro
+      description: |
+        Same permissions as creating one of its visibility. `actions` replaces the actions as a
+        whole. The visibility does not change; create a new macro instead.
+      tags: [macros]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/MacroId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MacroUpdate"
+      responses:
+        "200":
+          description: The updated macro.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Macro"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+        "409":
+          $ref: "#/components/responses/Problem"
+    delete:
+      operationId: deleteMacro
+      summary: Delete a macro
+      description: Same permissions as creating one of its visibility.
+      tags: [macros]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/MacroId"
       responses:
         "204":
           description: Deleted.
@@ -16949,6 +17098,13 @@ components:
       schema:
         type: string
         format: uuid
+    MacroId:
+      name: macroId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
     ChannelKey:
       name: channel_key
       in: path
@@ -21004,8 +21160,8 @@ components:
             "Ayşe via Claude Code"; absent for the panel, API keys and contacts.
     EventType:
       type: string
-      enum: [assigned, unassigned, status_changed, labels_changed, moved, rated, broadcast_reply, feedback_progress]
-      x-enum-varnames: [Assigned, Unassigned, StatusChanged, LabelsChanged, Moved, Rated, BroadcastReply, EventTypeFeedbackProgress]
+      enum: [assigned, unassigned, status_changed, labels_changed, moved, rated, broadcast_reply, feedback_progress, macro_applied]
+      x-enum-varnames: [Assigned, Unassigned, StatusChanged, LabelsChanged, Moved, Rated, BroadcastReply, EventTypeFeedbackProgress, MacroApplied]
     MessageEvent:
       type: object
       required: [type]
@@ -21060,6 +21216,9 @@ components:
         previous_feedback_progress:
           $ref: "#/components/schemas/FeedbackProgress"
           description: "`feedback_progress` only: the progress before; absent when it was not set."
+        macro:
+          $ref: "#/components/schemas/MacroRef"
+          description: "`macro_applied` only: the macro sent with the message just before."
     Attachment:
       type: object
       required: [id, filename, content_type, size, inline, created_at]
@@ -21328,6 +21487,13 @@ components:
           items:
             type: string
             format: uuid
+        macro_id:
+          type: string
+          format: uuid
+          description: A macro whose actions are applied with the message; see the operation.
+        then:
+          $ref: "#/components/schemas/ConversationUpdate"
+          description: Changes to the conversation applied with the message; see the operation.
     MessageCreateMultipart:
       type: object
       required: [kind]
@@ -21363,6 +21529,13 @@ components:
           items:
             type: string
             format: uuid
+        macro_id:
+          type: string
+          format: uuid
+        then:
+          type: string
+          maxLength: 65536
+          description: A `ConversationUpdate` as JSON.
         files:
           type: array
           maxItems: 10
@@ -21492,6 +21665,140 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/CannedReply"
+    MacroVisibility:
+      type: string
+      enum: [personal, shared]
+      x-enum-varnames: [MacroVisibilityPersonal, MacroVisibilityShared]
+      description: "`personal`: only its owner sees and applies it. `shared`: the whole workspace."
+    MacroActions:
+      type: object
+      description: |
+        What sending a message with the macro does to the conversation. Absent fields change
+        nothing. A deleted label drops out of `add_labels` and `remove_labels`.
+      properties:
+        add_labels:
+          type: array
+          maxItems: 50
+          uniqueItems: true
+          items:
+            type: string
+            format: uuid
+        remove_labels:
+          type: array
+          maxItems: 50
+          uniqueItems: true
+          items:
+            type: string
+            format: uuid
+        assignee_id:
+          type: [string, "null"]
+          format: uuid
+          description: A member to assign; `null` unassigns.
+        status:
+          $ref: "#/components/schemas/ConversationStatus"
+          description: "`snoozed` needs `snooze_minutes`."
+        snooze_minutes:
+          type: integer
+          minimum: 1
+          maximum: 525600
+          description: Snoozes for this long from the moment the message is sent; implies status `snoozed`.
+        priority:
+          $ref: "#/components/schemas/Priority"
+    Macro:
+      type: object
+      required: [id, visibility, name, shortcut, actions, position, created_at, updated_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+        visibility:
+          $ref: "#/components/schemas/MacroVisibility"
+        owner_member_id:
+          type: string
+          format: uuid
+          description: The member a `personal` macro belongs to.
+        name:
+          type: string
+        shortcut:
+          $ref: "#/components/schemas/Slug"
+        body:
+          type: string
+          description: The reply text that fills the composer; absent for a macro of actions only.
+        actions:
+          $ref: "#/components/schemas/MacroActions"
+        position:
+          type: integer
+          format: int32
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    MacroCreate:
+      type: object
+      required: [visibility, name, shortcut]
+      description: Needs a `body`, at least one action, or both.
+      properties:
+        visibility:
+          $ref: "#/components/schemas/MacroVisibility"
+        name:
+          type: string
+          minLength: 1
+          maxLength: 200
+        shortcut:
+          $ref: "#/components/schemas/Slug"
+        body:
+          type: string
+          minLength: 1
+          maxLength: 65536
+        actions:
+          $ref: "#/components/schemas/MacroActions"
+        position:
+          type: integer
+          format: int32
+          minimum: 0
+          maximum: 10000
+    MacroUpdate:
+      type: object
+      minProperties: 1
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 200
+        shortcut:
+          $ref: "#/components/schemas/Slug"
+        body:
+          type: [string, "null"]
+          minLength: 1
+          maxLength: 65536
+          description: "`null` removes the reply text."
+        actions:
+          $ref: "#/components/schemas/MacroActions"
+        position:
+          type: integer
+          format: int32
+          minimum: 0
+          maximum: 10000
+    MacroList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Macro"
+    MacroRef:
+      type: object
+      required: [id, name]
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          description: The macro's name when it was applied.
     UsageMonth:
       type: object
       required: [month, conversations, messages, attachment_bytes, broadcast_recipients, imported_conversations, imported_messages, imported_bytes, analytics_events]

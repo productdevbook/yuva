@@ -3032,6 +3032,7 @@ const (
 	BroadcastReply            EventType = "broadcast_reply"
 	EventTypeFeedbackProgress EventType = "feedback_progress"
 	LabelsChanged             EventType = "labels_changed"
+	MacroApplied              EventType = "macro_applied"
 	Moved                     EventType = "moved"
 	Rated                     EventType = "rated"
 	StatusChanged             EventType = "status_changed"
@@ -3048,6 +3049,8 @@ func (e EventType) Valid() bool {
 	case EventTypeFeedbackProgress:
 		return true
 	case LabelsChanged:
+		return true
+	case MacroApplied:
 		return true
 	case Moved:
 		return true
@@ -4019,6 +4022,24 @@ func (e Locale) Valid() bool {
 	case ZhHans:
 		return true
 	case ZhHant:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for MacroVisibility.
+const (
+	MacroVisibilityPersonal MacroVisibility = "personal"
+	MacroVisibilityShared   MacroVisibility = "shared"
+)
+
+// Valid indicates whether the value is a known member of the MacroVisibility enum.
+func (e MacroVisibility) Valid() bool {
+	switch e {
+	case MacroVisibilityPersonal:
+		return true
+	case MacroVisibilityShared:
 		return true
 	default:
 		return false
@@ -15873,6 +15894,94 @@ type ListImportUpload struct {
 // Locale The person's language: the language of the panel and of e-mails sent to them. E-mails are sent in English where the server has no translation for the language (today English, Turkish and German).
 type Locale string
 
+// Macro defines model for Macro.
+type Macro struct {
+	// Actions What sending a message with the macro does to the conversation. Absent fields change
+	// nothing. A deleted label drops out of `add_labels` and `remove_labels`.
+	Actions MacroActions `json:"actions"`
+
+	// Body The reply text that fills the composer; absent for a macro of actions only.
+	Body      *string   `json:"body,omitempty"`
+	CreatedAt time.Time `json:"created_at"`
+	Id        uuid.UUID `json:"id"`
+	Name      string    `json:"name"`
+
+	// OwnerMemberId The member a `personal` macro belongs to.
+	OwnerMemberId *uuid.UUID `json:"owner_member_id,omitempty"`
+	Position      int32      `json:"position"`
+
+	// Shortcut Examples: acme-app
+	Shortcut  Slug      `json:"shortcut"`
+	UpdatedAt time.Time `json:"updated_at"`
+
+	// Visibility `personal`: only its owner sees and applies it. `shared`: the whole workspace.
+	Visibility MacroVisibility `json:"visibility"`
+}
+
+// MacroActions What sending a message with the macro does to the conversation. Absent fields change
+// nothing. A deleted label drops out of `add_labels` and `remove_labels`.
+type MacroActions struct {
+	AddLabels *[]uuid.UUID `json:"add_labels,omitempty"`
+
+	// AssigneeId A member to assign; `null` unassigns.
+	AssigneeId   nullable.Nullable[uuid.UUID] `json:"assignee_id,omitempty"`
+	Priority     *Priority                    `json:"priority,omitempty"`
+	RemoveLabels *[]uuid.UUID                 `json:"remove_labels,omitempty"`
+
+	// SnoozeMinutes Snoozes for this long from the moment the message is sent; implies status `snoozed`.
+	SnoozeMinutes *int `json:"snooze_minutes,omitempty"`
+
+	// Status `snoozed` needs `snooze_minutes`.
+	Status *ConversationStatus `json:"status,omitempty"`
+}
+
+// MacroCreate Needs a `body`, at least one action, or both.
+type MacroCreate struct {
+	// Actions What sending a message with the macro does to the conversation. Absent fields change
+	// nothing. A deleted label drops out of `add_labels` and `remove_labels`.
+	Actions  *MacroActions `json:"actions,omitempty"`
+	Body     *string       `json:"body,omitempty"`
+	Name     string        `json:"name"`
+	Position *int32        `json:"position,omitempty"`
+
+	// Shortcut Examples: acme-app
+	Shortcut Slug `json:"shortcut"`
+
+	// Visibility `personal`: only its owner sees and applies it. `shared`: the whole workspace.
+	Visibility MacroVisibility `json:"visibility"`
+}
+
+// MacroList defines model for MacroList.
+type MacroList struct {
+	Items []Macro `json:"items"`
+}
+
+// MacroRef defines model for MacroRef.
+type MacroRef struct {
+	Id uuid.UUID `json:"id"`
+
+	// Name The macro's name when it was applied.
+	Name string `json:"name"`
+}
+
+// MacroUpdate defines model for MacroUpdate.
+type MacroUpdate struct {
+	// Actions What sending a message with the macro does to the conversation. Absent fields change
+	// nothing. A deleted label drops out of `add_labels` and `remove_labels`.
+	Actions *MacroActions `json:"actions,omitempty"`
+
+	// Body `null` removes the reply text.
+	Body     nullable.Nullable[string] `json:"body,omitempty"`
+	Name     *string                   `json:"name,omitempty"`
+	Position *int32                    `json:"position,omitempty"`
+
+	// Shortcut Examples: acme-app
+	Shortcut *Slug `json:"shortcut,omitempty"`
+}
+
+// MacroVisibility `personal`: only its owner sees and applies it. `shared`: the whole workspace.
+type MacroVisibility string
+
 // MailingList defines model for MailingList.
 type MailingList struct {
 	ArchivedAt *time.Time `json:"archived_at,omitempty"`
@@ -16232,12 +16341,18 @@ type MessageCreate struct {
 	Html *string           `json:"html,omitempty"`
 	Kind MessageCreateKind `json:"kind"`
 
+	// MacroId A macro whose actions are applied with the message; see the operation.
+	MacroId *uuid.UUID `json:"macro_id,omitempty"`
+
 	// Mentions Notes only: members to notify about the note. Each must be a member of the workspace
 	// who can see the conversation's inbox (`400 validation_failed` otherwise). They get the
 	// `mentioned` notification (realtime as `message.created`, Web Push and e-mail per their
 	// notification settings); the author is never notified. The panel shows mentions in the
 	// body as it likes; the server does not parse `@` in the text.
 	Mentions *[]uuid.UUID `json:"mentions,omitempty"`
+
+	// Then Changes to the conversation applied with the message; see the operation.
+	Then *ConversationUpdate `json:"then,omitempty"`
 }
 
 // MessageCreateKind defines model for MessageCreate.Kind.
@@ -16254,9 +16369,13 @@ type MessageCreateMultipart struct {
 	Files      *[]openapi_types.File      `json:"files,omitempty"`
 	Html       *string                    `json:"html,omitempty"`
 	Kind       MessageCreateMultipartKind `json:"kind"`
+	MacroId    *uuid.UUID                 `json:"macro_id,omitempty"`
 
 	// Mentions Notes only; repeat the field once per member id.
 	Mentions *[]uuid.UUID `json:"mentions,omitempty"`
+
+	// Then A `ConversationUpdate` as JSON.
+	Then *string `json:"then,omitempty"`
 }
 
 // MessageCreateMultipartKind defines model for MessageCreateMultipart.Kind.
@@ -16379,6 +16498,9 @@ type MessageEvent struct {
 
 	// InboxId The inbox it moved to (`moved`).
 	InboxId *uuid.UUID `json:"inbox_id,omitempty"`
+
+	// Macro `macro_applied` only: the macro sent with the message just before.
+	Macro *MacroRef `json:"macro,omitempty"`
 
 	// PreviousAssigneeId The previous assignee (`assigned`, `unassigned`).
 	PreviousAssigneeId *uuid.UUID `json:"previous_assignee_id,omitempty"`
@@ -20951,6 +21073,9 @@ type ListConsentFormat string
 // ListId defines model for ListId.
 type ListId = uuid.UUID
 
+// MacroId defines model for MacroId.
+type MacroId = uuid.UUID
+
 // MemberId defines model for MemberId.
 type MemberId = uuid.UUID
 
@@ -23357,6 +23482,39 @@ type ResendSubscriptionConfirmationParams struct {
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
 
+// ListMacrosParams defines parameters for ListMacros.
+type ListMacrosParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// CreateMacroParams defines parameters for CreateMacro.
+type CreateMacroParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// DeleteMacroParams defines parameters for DeleteMacro.
+type DeleteMacroParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// GetMacroParams defines parameters for GetMacro.
+type GetMacroParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// UpdateMacroParams defines parameters for UpdateMacro.
+type UpdateMacroParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
 // RenderMarkdownParams defines parameters for RenderMarkdown.
 type RenderMarkdownParams struct {
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
@@ -25028,6 +25186,12 @@ type CreateSubscriptionJSONRequestBody = SubscriptionCreate
 
 // UpdateSubscriptionJSONRequestBody defines body for UpdateSubscription for application/json ContentType.
 type UpdateSubscriptionJSONRequestBody = SubscriptionUpdate
+
+// CreateMacroJSONRequestBody defines body for CreateMacro for application/json ContentType.
+type CreateMacroJSONRequestBody = MacroCreate
+
+// UpdateMacroJSONRequestBody defines body for UpdateMacro for application/json ContentType.
+type UpdateMacroJSONRequestBody = MacroUpdate
 
 // RenderMarkdownJSONRequestBody defines body for RenderMarkdown for application/json ContentType.
 type RenderMarkdownJSONRequestBody = HelpMarkdown
@@ -30031,6 +30195,21 @@ type ServerInterface interface {
 	// ResendSubscriptionConfirmation Mail the confirmation again
 	// (POST /v1/lists/{listId}/subscriptions/{subscriptionId}/confirmation)
 	ResendSubscriptionConfirmation(w http.ResponseWriter, r *http.Request, listId ListId, subscriptionId SubscriptionId, params ResendSubscriptionConfirmationParams)
+	// ListMacros List macros
+	// (GET /v1/macros)
+	ListMacros(w http.ResponseWriter, r *http.Request, params ListMacrosParams)
+	// CreateMacro Create a macro
+	// (POST /v1/macros)
+	CreateMacro(w http.ResponseWriter, r *http.Request, params CreateMacroParams)
+	// DeleteMacro Delete a macro
+	// (DELETE /v1/macros/{macroId})
+	DeleteMacro(w http.ResponseWriter, r *http.Request, macroId MacroId, params DeleteMacroParams)
+	// GetMacro Get a macro
+	// (GET /v1/macros/{macroId})
+	GetMacro(w http.ResponseWriter, r *http.Request, macroId MacroId, params GetMacroParams)
+	// UpdateMacro Update a macro
+	// (PATCH /v1/macros/{macroId})
+	UpdateMacro(w http.ResponseWriter, r *http.Request, macroId MacroId, params UpdateMacroParams)
 	// RenderMarkdown Render Markdown for an editor
 	// (POST /v1/markdown/render)
 	RenderMarkdown(w http.ResponseWriter, r *http.Request, params RenderMarkdownParams)
@@ -48298,6 +48477,257 @@ func (siw *ServerInterfaceWrapper) ResendSubscriptionConfirmation(w http.Respons
 	handler.ServeHTTP(w, r)
 }
 
+// ListMacros operation middleware
+func (siw *ServerInterfaceWrapper) ListMacros(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListMacrosParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListMacros(w, r, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CreateMacro operation middleware
+func (siw *ServerInterfaceWrapper) CreateMacro(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params CreateMacroParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CreateMacro(w, r, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// DeleteMacro operation middleware
+func (siw *ServerInterfaceWrapper) DeleteMacro(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "macroId" -------------
+	var macroId MacroId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "macroId", r.PathValue("macroId"), &macroId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "macroId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params DeleteMacroParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.DeleteMacro(w, r, macroId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetMacro operation middleware
+func (siw *ServerInterfaceWrapper) GetMacro(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "macroId" -------------
+	var macroId MacroId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "macroId", r.PathValue("macroId"), &macroId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "macroId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetMacroParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetMacro(w, r, macroId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UpdateMacro operation middleware
+func (siw *ServerInterfaceWrapper) UpdateMacro(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "macroId" -------------
+	var macroId MacroId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "macroId", r.PathValue("macroId"), &macroId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "macroId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params UpdateMacroParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UpdateMacro(w, r, macroId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // RenderMarkdown operation middleware
 func (siw *ServerInterfaceWrapper) RenderMarkdown(w http.ResponseWriter, r *http.Request) {
 
@@ -55345,6 +55775,11 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/canned-replies", wrapper.CreateCannedReply)
 	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/canned-replies/{cannedReplyId}", wrapper.DeleteCannedReply)
 	m.HandleFunc(http.MethodPatch+" "+options.BaseURL+"/v1/canned-replies/{cannedReplyId}", wrapper.UpdateCannedReply)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/macros", wrapper.ListMacros)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/macros", wrapper.CreateMacro)
+	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/macros/{macroId}", wrapper.DeleteMacro)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/macros/{macroId}", wrapper.GetMacro)
+	m.HandleFunc(http.MethodPatch+" "+options.BaseURL+"/v1/macros/{macroId}", wrapper.UpdateMacro)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/docs/sites", wrapper.ListDocsSites)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/docs/pages", wrapper.ListDocsPages)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/docs/summary", wrapper.GetDocsSummary)
@@ -83685,6 +84120,363 @@ func (response ResendSubscriptionConfirmation429ApplicationProblemPlusJSONRespon
 	return err
 }
 
+type ListMacrosRequestObject struct {
+	Params ListMacrosParams
+}
+
+type ListMacrosResponseObject interface {
+	VisitListMacrosResponse(w http.ResponseWriter) error
+}
+
+type ListMacros200JSONResponse MacroList
+
+func (response ListMacros200JSONResponse) VisitListMacrosResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListMacros401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response ListMacros401ApplicationProblemPlusJSONResponse) VisitListMacrosResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListMacros403ApplicationProblemPlusJSONResponse Problem
+
+func (response ListMacros403ApplicationProblemPlusJSONResponse) VisitListMacrosResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateMacroRequestObject struct {
+	Params CreateMacroParams
+	Body   *CreateMacroJSONRequestBody
+}
+
+type CreateMacroResponseObject interface {
+	VisitCreateMacroResponse(w http.ResponseWriter) error
+}
+
+type CreateMacro201JSONResponse Macro
+
+func (response CreateMacro201JSONResponse) VisitCreateMacroResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(201)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateMacro400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response CreateMacro400ApplicationProblemPlusJSONResponse) VisitCreateMacroResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateMacro401ApplicationProblemPlusJSONResponse Problem
+
+func (response CreateMacro401ApplicationProblemPlusJSONResponse) VisitCreateMacroResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateMacro403ApplicationProblemPlusJSONResponse Problem
+
+func (response CreateMacro403ApplicationProblemPlusJSONResponse) VisitCreateMacroResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateMacro409ApplicationProblemPlusJSONResponse Problem
+
+func (response CreateMacro409ApplicationProblemPlusJSONResponse) VisitCreateMacroResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(409)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteMacroRequestObject struct {
+	MacroId MacroId `json:"macroId"`
+	Params  DeleteMacroParams
+}
+
+type DeleteMacroResponseObject interface {
+	VisitDeleteMacroResponse(w http.ResponseWriter) error
+}
+
+type DeleteMacro204Response struct {
+}
+
+func (response DeleteMacro204Response) VisitDeleteMacroResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
+}
+
+type DeleteMacro401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response DeleteMacro401ApplicationProblemPlusJSONResponse) VisitDeleteMacroResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteMacro403ApplicationProblemPlusJSONResponse Problem
+
+func (response DeleteMacro403ApplicationProblemPlusJSONResponse) VisitDeleteMacroResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteMacro404ApplicationProblemPlusJSONResponse Problem
+
+func (response DeleteMacro404ApplicationProblemPlusJSONResponse) VisitDeleteMacroResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetMacroRequestObject struct {
+	MacroId MacroId `json:"macroId"`
+	Params  GetMacroParams
+}
+
+type GetMacroResponseObject interface {
+	VisitGetMacroResponse(w http.ResponseWriter) error
+}
+
+type GetMacro200JSONResponse Macro
+
+func (response GetMacro200JSONResponse) VisitGetMacroResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetMacro401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response GetMacro401ApplicationProblemPlusJSONResponse) VisitGetMacroResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetMacro403ApplicationProblemPlusJSONResponse Problem
+
+func (response GetMacro403ApplicationProblemPlusJSONResponse) VisitGetMacroResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetMacro404ApplicationProblemPlusJSONResponse Problem
+
+func (response GetMacro404ApplicationProblemPlusJSONResponse) VisitGetMacroResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateMacroRequestObject struct {
+	MacroId MacroId `json:"macroId"`
+	Params  UpdateMacroParams
+	Body    *UpdateMacroJSONRequestBody
+}
+
+type UpdateMacroResponseObject interface {
+	VisitUpdateMacroResponse(w http.ResponseWriter) error
+}
+
+type UpdateMacro200JSONResponse Macro
+
+func (response UpdateMacro200JSONResponse) VisitUpdateMacroResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateMacro400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response UpdateMacro400ApplicationProblemPlusJSONResponse) VisitUpdateMacroResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateMacro401ApplicationProblemPlusJSONResponse Problem
+
+func (response UpdateMacro401ApplicationProblemPlusJSONResponse) VisitUpdateMacroResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateMacro403ApplicationProblemPlusJSONResponse Problem
+
+func (response UpdateMacro403ApplicationProblemPlusJSONResponse) VisitUpdateMacroResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateMacro404ApplicationProblemPlusJSONResponse Problem
+
+func (response UpdateMacro404ApplicationProblemPlusJSONResponse) VisitUpdateMacroResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateMacro409ApplicationProblemPlusJSONResponse Problem
+
+func (response UpdateMacro409ApplicationProblemPlusJSONResponse) VisitUpdateMacroResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(409)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
 type RenderMarkdownRequestObject struct {
 	Params RenderMarkdownParams
 	Body   *RenderMarkdownJSONRequestBody
@@ -93876,6 +94668,21 @@ type StrictServerInterface interface {
 	// ResendSubscriptionConfirmation Mail the confirmation again
 	// (POST /v1/lists/{listId}/subscriptions/{subscriptionId}/confirmation)
 	ResendSubscriptionConfirmation(ctx context.Context, request ResendSubscriptionConfirmationRequestObject) (ResendSubscriptionConfirmationResponseObject, error)
+	// ListMacros List macros
+	// (GET /v1/macros)
+	ListMacros(ctx context.Context, request ListMacrosRequestObject) (ListMacrosResponseObject, error)
+	// CreateMacro Create a macro
+	// (POST /v1/macros)
+	CreateMacro(ctx context.Context, request CreateMacroRequestObject) (CreateMacroResponseObject, error)
+	// DeleteMacro Delete a macro
+	// (DELETE /v1/macros/{macroId})
+	DeleteMacro(ctx context.Context, request DeleteMacroRequestObject) (DeleteMacroResponseObject, error)
+	// GetMacro Get a macro
+	// (GET /v1/macros/{macroId})
+	GetMacro(ctx context.Context, request GetMacroRequestObject) (GetMacroResponseObject, error)
+	// UpdateMacro Update a macro
+	// (PATCH /v1/macros/{macroId})
+	UpdateMacro(ctx context.Context, request UpdateMacroRequestObject) (UpdateMacroResponseObject, error)
 	// RenderMarkdown Render Markdown for an editor
 	// (POST /v1/markdown/render)
 	RenderMarkdown(ctx context.Context, request RenderMarkdownRequestObject) (RenderMarkdownResponseObject, error)
@@ -103422,6 +104229,153 @@ func (sh *strictHandler) ResendSubscriptionConfirmation(w http.ResponseWriter, r
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
 	} else if validResponse, ok := response.(ResendSubscriptionConfirmationResponseObject); ok {
 		if err := validResponse.VisitResendSubscriptionConfirmationResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// ListMacros operation middleware
+func (sh *strictHandler) ListMacros(w http.ResponseWriter, r *http.Request, params ListMacrosParams) {
+	var request ListMacrosRequestObject
+
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.ListMacros(ctx, request.(ListMacrosRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "ListMacros")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(ListMacrosResponseObject); ok {
+		if err := validResponse.VisitListMacrosResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// CreateMacro operation middleware
+func (sh *strictHandler) CreateMacro(w http.ResponseWriter, r *http.Request, params CreateMacroParams) {
+	var request CreateMacroRequestObject
+
+	request.Params = params
+
+	var body CreateMacroJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.CreateMacro(ctx, request.(CreateMacroRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "CreateMacro")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(CreateMacroResponseObject); ok {
+		if err := validResponse.VisitCreateMacroResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// DeleteMacro operation middleware
+func (sh *strictHandler) DeleteMacro(w http.ResponseWriter, r *http.Request, macroId MacroId, params DeleteMacroParams) {
+	var request DeleteMacroRequestObject
+
+	request.MacroId = macroId
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.DeleteMacro(ctx, request.(DeleteMacroRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "DeleteMacro")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(DeleteMacroResponseObject); ok {
+		if err := validResponse.VisitDeleteMacroResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// GetMacro operation middleware
+func (sh *strictHandler) GetMacro(w http.ResponseWriter, r *http.Request, macroId MacroId, params GetMacroParams) {
+	var request GetMacroRequestObject
+
+	request.MacroId = macroId
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.GetMacro(ctx, request.(GetMacroRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "GetMacro")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(GetMacroResponseObject); ok {
+		if err := validResponse.VisitGetMacroResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// UpdateMacro operation middleware
+func (sh *strictHandler) UpdateMacro(w http.ResponseWriter, r *http.Request, macroId MacroId, params UpdateMacroParams) {
+	var request UpdateMacroRequestObject
+
+	request.MacroId = macroId
+	request.Params = params
+
+	var body UpdateMacroJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.UpdateMacro(ctx, request.(UpdateMacroRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "UpdateMacro")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(UpdateMacroResponseObject); ok {
+		if err := validResponse.VisitUpdateMacroResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {

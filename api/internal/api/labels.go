@@ -104,12 +104,18 @@ func (s *Server) DeleteLabel(ctx context.Context, req oas.DeleteLabelRequestObje
 	if err := requireManagerOrKey(p); err != nil {
 		return nil, err
 	}
-	n, err := s.st.DeleteLabel(ctx, store.DeleteLabelParams{WorkspaceID: p.workspaceID, ID: req.LabelId})
+	err := s.inTx(ctx, p.workspaceID, func(q *store.Queries, _ *eventBatch) error {
+		n, err := q.DeleteLabel(ctx, store.DeleteLabelParams{WorkspaceID: p.workspaceID, ID: req.LabelId})
+		if err != nil {
+			return err
+		}
+		if n == 0 {
+			return errLabelGone
+		}
+		return q.StripLabelFromMacros(ctx, store.StripLabelFromMacrosParams{WorkspaceID: p.workspaceID, LabelID: req.LabelId.String()})
+	})
 	if err != nil {
 		return nil, err
-	}
-	if n == 0 {
-		return nil, errLabelGone
 	}
 	return oas.DeleteLabel204Response{}, nil
 }

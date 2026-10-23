@@ -283,6 +283,56 @@ type mcpCannedReply struct {
 	Body     string    `json:"body" jsonschema:"text written by the workspace's members"`
 }
 
+type mcpMacro struct {
+	ID         uuid.UUID       `json:"id"`
+	Name       string          `json:"name"`
+	Shortcut   string          `json:"shortcut"`
+	Visibility string          `json:"visibility" jsonschema:"personal (yours only) or shared"`
+	Body       string          `json:"body,omitempty" jsonschema:"the reply text, written by the workspace's members; pass it to draft_reply"`
+	Actions    mcpMacroActions `json:"actions" jsonschema:"what the macro changes when a member sends a reply with it in Yuva; tools cannot apply it"`
+}
+
+type mcpMacroActions struct {
+	AddLabels     []uuid.UUID `json:"add_labels,omitempty"`
+	RemoveLabels  []uuid.UUID `json:"remove_labels,omitempty"`
+	AssigneeID    *uuid.UUID  `json:"assignee_id,omitempty"`
+	Unassign      bool        `json:"unassign,omitempty"`
+	Status        string      `json:"status,omitempty"`
+	SnoozeMinutes int         `json:"snooze_minutes,omitempty"`
+	Priority      string      `json:"priority,omitempty"`
+}
+
+func macroOut(m oas.Macro) mcpMacro {
+	out := mcpMacro{ID: m.Id, Name: m.Name, Shortcut: m.Shortcut, Visibility: string(m.Visibility)}
+	if m.Body != nil {
+		out.Body = *m.Body
+	}
+	a := m.Actions
+	if a.AddLabels != nil {
+		out.Actions.AddLabels = *a.AddLabels
+	}
+	if a.RemoveLabels != nil {
+		out.Actions.RemoveLabels = *a.RemoveLabels
+	}
+	if a.AssigneeId.IsSpecified() {
+		if a.AssigneeId.IsNull() {
+			out.Actions.Unassign = true
+		} else {
+			out.Actions.AssigneeID = new(a.AssigneeId.MustGet())
+		}
+	}
+	if a.Status != nil {
+		out.Actions.Status = string(*a.Status)
+	}
+	if a.SnoozeMinutes != nil {
+		out.Actions.SnoozeMinutes = *a.SnoozeMinutes
+	}
+	if a.Priority != nil {
+		out.Actions.Priority = string(*a.Priority)
+	}
+	return out
+}
+
 type mcpCount struct {
 	ID    uuid.UUID `json:"id"`
 	Count int64     `json:"count"`
@@ -557,6 +607,20 @@ var mcpTools = append([]mcpTool{
 			out := mcpPage[mcpCannedReply]{Items: []mcpCannedReply{}}
 			for _, r := range res.(oas.ListCannedReplies200JSONResponse).Items {
 				out.Items = append(out.Items, mcpCannedReply{ID: r.Id, Title: r.Title, Shortcut: r.Shortcut, Body: r.Body})
+			}
+			return out, nil
+		}),
+	defineTool("list_macros", "List macros",
+		"Lists the workspace's shared macros and your own: a reply plus actions (labels, assignee, status, priority, snooze) a member applies when sending from Yuva. Use the body with draft_reply; the actions are listed for reference and are not applied by tools. Maps to GET /v1/macros.",
+		readOnly, nil, mcpTool{ops: []string{"ListMacros"}},
+		func(ctx context.Context, c *mcpCall, _ noInput) (mcpPage[mcpMacro], error) {
+			res, err := c.s.ListMacros(ctx, oas.ListMacrosRequestObject{})
+			if err != nil {
+				return mcpPage[mcpMacro]{}, err
+			}
+			out := mcpPage[mcpMacro]{Items: []mcpMacro{}}
+			for _, m := range res.(oas.ListMacros200JSONResponse).Items {
+				out.Items = append(out.Items, macroOut(m))
 			}
 			return out, nil
 		}),

@@ -3030,6 +3030,7 @@ const (
 	BroadcastReply            EventType = "broadcast_reply"
 	EventTypeFeedbackProgress EventType = "feedback_progress"
 	LabelsChanged             EventType = "labels_changed"
+	MacroApplied              EventType = "macro_applied"
 	Moved                     EventType = "moved"
 	Rated                     EventType = "rated"
 	StatusChanged             EventType = "status_changed"
@@ -3046,6 +3047,8 @@ func (e EventType) Valid() bool {
 	case EventTypeFeedbackProgress:
 		return true
 	case LabelsChanged:
+		return true
+	case MacroApplied:
 		return true
 	case Moved:
 		return true
@@ -4017,6 +4020,24 @@ func (e Locale) Valid() bool {
 	case ZhHans:
 		return true
 	case ZhHant:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for MacroVisibility.
+const (
+	MacroVisibilityPersonal MacroVisibility = "personal"
+	MacroVisibilityShared   MacroVisibility = "shared"
+)
+
+// Valid indicates whether the value is a known member of the MacroVisibility enum.
+func (e MacroVisibility) Valid() bool {
+	switch e {
+	case MacroVisibilityPersonal:
+		return true
+	case MacroVisibilityShared:
 		return true
 	default:
 		return false
@@ -15919,6 +15940,94 @@ type ListImportUpload struct {
 // Locale The person's language: the language of the panel and of e-mails sent to them. E-mails are sent in English where the server has no translation for the language (today English, Turkish and German).
 type Locale string
 
+// Macro defines model for Macro.
+type Macro struct {
+	// Actions What sending a message with the macro does to the conversation. Absent fields change
+	// nothing. A deleted label drops out of `add_labels` and `remove_labels`.
+	Actions MacroActions `json:"actions"`
+
+	// Body The reply text that fills the composer; absent for a macro of actions only.
+	Body      *string   `json:"body,omitempty"`
+	CreatedAt time.Time `json:"created_at"`
+	Id        uuid.UUID `json:"id"`
+	Name      string    `json:"name"`
+
+	// OwnerMemberId The member a `personal` macro belongs to.
+	OwnerMemberId *uuid.UUID `json:"owner_member_id,omitempty"`
+	Position      int32      `json:"position"`
+
+	// Shortcut Examples: acme-app
+	Shortcut  Slug      `json:"shortcut"`
+	UpdatedAt time.Time `json:"updated_at"`
+
+	// Visibility `personal`: only its owner sees and applies it. `shared`: the whole workspace.
+	Visibility MacroVisibility `json:"visibility"`
+}
+
+// MacroActions What sending a message with the macro does to the conversation. Absent fields change
+// nothing. A deleted label drops out of `add_labels` and `remove_labels`.
+type MacroActions struct {
+	AddLabels *[]uuid.UUID `json:"add_labels,omitempty"`
+
+	// AssigneeId A member to assign; `null` unassigns.
+	AssigneeId   nullable.Nullable[uuid.UUID] `json:"assignee_id,omitempty"`
+	Priority     *Priority                    `json:"priority,omitempty"`
+	RemoveLabels *[]uuid.UUID                 `json:"remove_labels,omitempty"`
+
+	// SnoozeMinutes Snoozes for this long from the moment the message is sent; implies status `snoozed`.
+	SnoozeMinutes *int `json:"snooze_minutes,omitempty"`
+
+	// Status `snoozed` needs `snooze_minutes`.
+	Status *ConversationStatus `json:"status,omitempty"`
+}
+
+// MacroCreate Needs a `body`, at least one action, or both.
+type MacroCreate struct {
+	// Actions What sending a message with the macro does to the conversation. Absent fields change
+	// nothing. A deleted label drops out of `add_labels` and `remove_labels`.
+	Actions  *MacroActions `json:"actions,omitempty"`
+	Body     *string       `json:"body,omitempty"`
+	Name     string        `json:"name"`
+	Position *int32        `json:"position,omitempty"`
+
+	// Shortcut Examples: acme-app
+	Shortcut Slug `json:"shortcut"`
+
+	// Visibility `personal`: only its owner sees and applies it. `shared`: the whole workspace.
+	Visibility MacroVisibility `json:"visibility"`
+}
+
+// MacroList defines model for MacroList.
+type MacroList struct {
+	Items []Macro `json:"items"`
+}
+
+// MacroRef defines model for MacroRef.
+type MacroRef struct {
+	Id uuid.UUID `json:"id"`
+
+	// Name The macro's name when it was applied.
+	Name string `json:"name"`
+}
+
+// MacroUpdate defines model for MacroUpdate.
+type MacroUpdate struct {
+	// Actions What sending a message with the macro does to the conversation. Absent fields change
+	// nothing. A deleted label drops out of `add_labels` and `remove_labels`.
+	Actions *MacroActions `json:"actions,omitempty"`
+
+	// Body `null` removes the reply text.
+	Body     nullable.Nullable[string] `json:"body,omitempty"`
+	Name     *string                   `json:"name,omitempty"`
+	Position *int32                    `json:"position,omitempty"`
+
+	// Shortcut Examples: acme-app
+	Shortcut *Slug `json:"shortcut,omitempty"`
+}
+
+// MacroVisibility `personal`: only its owner sees and applies it. `shared`: the whole workspace.
+type MacroVisibility string
+
 // MailingList defines model for MailingList.
 type MailingList struct {
 	ArchivedAt *time.Time `json:"archived_at,omitempty"`
@@ -16278,12 +16387,18 @@ type MessageCreate struct {
 	Html *string           `json:"html,omitempty"`
 	Kind MessageCreateKind `json:"kind"`
 
+	// MacroId A macro whose actions are applied with the message; see the operation.
+	MacroId *uuid.UUID `json:"macro_id,omitempty"`
+
 	// Mentions Notes only: members to notify about the note. Each must be a member of the workspace
 	// who can see the conversation's inbox (`400 validation_failed` otherwise). They get the
 	// `mentioned` notification (realtime as `message.created`, Web Push and e-mail per their
 	// notification settings); the author is never notified. The panel shows mentions in the
 	// body as it likes; the server does not parse `@` in the text.
 	Mentions *[]uuid.UUID `json:"mentions,omitempty"`
+
+	// Then Changes to the conversation applied with the message; see the operation.
+	Then *ConversationUpdate `json:"then,omitempty"`
 }
 
 // MessageCreateKind defines model for MessageCreate.Kind.
@@ -16300,9 +16415,13 @@ type MessageCreateMultipart struct {
 	Files      *[]openapi_types.File      `json:"files,omitempty"`
 	Html       *string                    `json:"html,omitempty"`
 	Kind       MessageCreateMultipartKind `json:"kind"`
+	MacroId    *uuid.UUID                 `json:"macro_id,omitempty"`
 
 	// Mentions Notes only; repeat the field once per member id.
 	Mentions *[]uuid.UUID `json:"mentions,omitempty"`
+
+	// Then A `ConversationUpdate` as JSON.
+	Then *string `json:"then,omitempty"`
 }
 
 // MessageCreateMultipartKind defines model for MessageCreateMultipart.Kind.
@@ -16425,6 +16544,9 @@ type MessageEvent struct {
 
 	// InboxId The inbox it moved to (`moved`).
 	InboxId *uuid.UUID `json:"inbox_id,omitempty"`
+
+	// Macro `macro_applied` only: the macro sent with the message just before.
+	Macro *MacroRef `json:"macro,omitempty"`
 
 	// PreviousAssigneeId The previous assignee (`assigned`, `unassigned`).
 	PreviousAssigneeId *uuid.UUID `json:"previous_assignee_id,omitempty"`
@@ -20997,6 +21119,9 @@ type ListConsentFormat string
 // ListId defines model for ListId.
 type ListId = uuid.UUID
 
+// MacroId defines model for MacroId.
+type MacroId = uuid.UUID
+
 // MemberId defines model for MemberId.
 type MemberId = uuid.UUID
 
@@ -23426,6 +23551,39 @@ type ResendSubscriptionConfirmationParams struct {
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
 
+// ListMacrosParams defines parameters for ListMacros.
+type ListMacrosParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// CreateMacroParams defines parameters for CreateMacro.
+type CreateMacroParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// DeleteMacroParams defines parameters for DeleteMacro.
+type DeleteMacroParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// GetMacroParams defines parameters for GetMacro.
+type GetMacroParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// UpdateMacroParams defines parameters for UpdateMacro.
+type UpdateMacroParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
 // RenderMarkdownParams defines parameters for RenderMarkdown.
 type RenderMarkdownParams struct {
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
@@ -25106,6 +25264,12 @@ type CreateSubscriptionJSONRequestBody = SubscriptionCreate
 
 // UpdateSubscriptionJSONRequestBody defines body for UpdateSubscription for application/json ContentType.
 type UpdateSubscriptionJSONRequestBody = SubscriptionUpdate
+
+// CreateMacroJSONRequestBody defines body for CreateMacro for application/json ContentType.
+type CreateMacroJSONRequestBody = MacroCreate
+
+// UpdateMacroJSONRequestBody defines body for UpdateMacro for application/json ContentType.
+type UpdateMacroJSONRequestBody = MacroUpdate
 
 // RenderMarkdownJSONRequestBody defines body for RenderMarkdown for application/json ContentType.
 type RenderMarkdownJSONRequestBody = HelpMarkdown
@@ -33201,6 +33365,16 @@ type ClientInterface interface {
 	// address the contact wrote to; when the conversation has none and the channel has no
 	// `from_address`, the reply is refused with `409 email_no_sender`.
 	//
+	// `macro_id` applies a macro's actions and `then` applies a `ConversationUpdate`, in the same
+	// transaction as the message: when either is refused (an assignee without access to the
+	// inbox, a snooze without a future time) nothing is written, and when the message is
+	// refused no action is applied. With both, the macro's actions come first and the fields of
+	// `then` take their place (`then.labels` replaces the labels, the macro's label changes
+	// included). They need `conversations:write` for API keys and OAuth tokens, are refused on a
+	// draft (`400 validation_failed`) and are not applied again when a `client_id` repeats. A
+	// macro of another workspace, or another member's personal macro, is `404`. Applying a
+	// macro writes a `macro_applied` event naming it before the events of the changes.
+	//
 	// Takes any type of body and a specified content type.
 	//
 	// Corresponds with POST /v1/conversations/{conversationId}/messages (the `CreateMessage` operationId).
@@ -33244,6 +33418,16 @@ type ClientInterface interface {
 	// SMTP account, with `409 email_not_configured`. A catch-all channel (`*@domain`) sends from the
 	// address the contact wrote to; when the conversation has none and the channel has no
 	// `from_address`, the reply is refused with `409 email_no_sender`.
+	//
+	// `macro_id` applies a macro's actions and `then` applies a `ConversationUpdate`, in the same
+	// transaction as the message: when either is refused (an assignee without access to the
+	// inbox, a snooze without a future time) nothing is written, and when the message is
+	// refused no action is applied. With both, the macro's actions come first and the fields of
+	// `then` take their place (`then.labels` replaces the labels, the macro's label changes
+	// included). They need `conversations:write` for API keys and OAuth tokens, are refused on a
+	// draft (`400 validation_failed`) and are not applied again when a `client_id` repeats. A
+	// macro of another workspace, or another member's personal macro, is `404`. Applying a
+	// macro writes a `macro_applied` event naming it before the events of the changes.
 	//
 	// Takes a body of the `application/json` content type.
 	//
@@ -35473,6 +35657,83 @@ type ClientInterface interface {
 	//
 	// Corresponds with POST /v1/lists/{listId}/subscriptions/{subscriptionId}/confirmation (the `ResendSubscriptionConfirmation` operationId).
 	ResendSubscriptionConfirmation(ctx context.Context, listId ListId, subscriptionId SubscriptionId, params *ResendSubscriptionConfirmationParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListMacros List macros
+	//
+	// The workspace's shared macros and the caller's own personal ones: personal first, then
+	// shared, each by `position` and name. API keys see the shared ones only.
+	//
+	// Scope: `conversations:read`.
+	//
+	// Corresponds with GET /v1/macros (the `ListMacros` operationId).
+	ListMacros(ctx context.Context, params *ListMacrosParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateMacroWithBody Create a macro
+	//
+	// A `personal` macro belongs to the calling member: any member with a session, or an OAuth
+	// token with `conversations:write`; API keys are refused with `403 member_session_required`.
+	// A `shared` macro is created by owners, admins and API keys with `canned_replies:write`.
+	//
+	// Labels must exist and the assignee must be a member (`400 validation_failed`). The
+	// shortcut is unique among the shared macros, and among each member's personal ones
+	// (`409 shortcut_taken`).
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /v1/macros (the `CreateMacro` operationId).
+	CreateMacroWithBody(ctx context.Context, params *CreateMacroParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateMacro Create a macro
+	//
+	// A `personal` macro belongs to the calling member: any member with a session, or an OAuth
+	// token with `conversations:write`; API keys are refused with `403 member_session_required`.
+	// A `shared` macro is created by owners, admins and API keys with `canned_replies:write`.
+	//
+	// Labels must exist and the assignee must be a member (`400 validation_failed`). The
+	// shortcut is unique among the shared macros, and among each member's personal ones
+	// (`409 shortcut_taken`).
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /v1/macros (the `CreateMacro` operationId).
+	CreateMacro(ctx context.Context, params *CreateMacroParams, body CreateMacroJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteMacro Delete a macro
+	//
+	// Same permissions as creating one of its visibility.
+	//
+	// Corresponds with DELETE /v1/macros/{macroId} (the `DeleteMacro` operationId).
+	DeleteMacro(ctx context.Context, macroId MacroId, params *DeleteMacroParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetMacro Get a macro
+	//
+	// A shared macro, or one of the caller's own personal macros; another member's personal
+	// macro is `404`.
+	//
+	// Scope: `conversations:read`.
+	//
+	// Corresponds with GET /v1/macros/{macroId} (the `GetMacro` operationId).
+	GetMacro(ctx context.Context, macroId MacroId, params *GetMacroParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateMacroWithBody Update a macro
+	//
+	// Same permissions as creating one of its visibility. `actions` replaces the actions as a
+	// whole. The visibility does not change; create a new macro instead.
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with PATCH /v1/macros/{macroId} (the `UpdateMacro` operationId).
+	UpdateMacroWithBody(ctx context.Context, macroId MacroId, params *UpdateMacroParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateMacro Update a macro
+	//
+	// Same permissions as creating one of its visibility. `actions` replaces the actions as a
+	// whole. The visibility does not change; create a new macro instead.
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with PATCH /v1/macros/{macroId} (the `UpdateMacro` operationId).
+	UpdateMacro(ctx context.Context, macroId MacroId, params *UpdateMacroParams, body UpdateMacroJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// RenderMarkdownWithBody Render Markdown for an editor
 	//
@@ -44320,6 +44581,16 @@ func (c *Client) ListMessages(ctx context.Context, conversationId ConversationId
 // address the contact wrote to; when the conversation has none and the channel has no
 // `from_address`, the reply is refused with `409 email_no_sender`.
 //
+// `macro_id` applies a macro's actions and `then` applies a `ConversationUpdate`, in the same
+// transaction as the message: when either is refused (an assignee without access to the
+// inbox, a snooze without a future time) nothing is written, and when the message is
+// refused no action is applied. With both, the macro's actions come first and the fields of
+// `then` take their place (`then.labels` replaces the labels, the macro's label changes
+// included). They need `conversations:write` for API keys and OAuth tokens, are refused on a
+// draft (`400 validation_failed`) and are not applied again when a `client_id` repeats. A
+// macro of another workspace, or another member's personal macro, is `404`. Applying a
+// macro writes a `macro_applied` event naming it before the events of the changes.
+//
 // Takes any type of body and a specified content type.
 //
 // Corresponds with POST /v1/conversations/{conversationId}/messages (the `CreateMessage` operationId).
@@ -44373,6 +44644,16 @@ func (c *Client) CreateMessageWithBody(ctx context.Context, conversationId Conve
 // SMTP account, with `409 email_not_configured`. A catch-all channel (`*@domain`) sends from the
 // address the contact wrote to; when the conversation has none and the channel has no
 // `from_address`, the reply is refused with `409 email_no_sender`.
+//
+// `macro_id` applies a macro's actions and `then` applies a `ConversationUpdate`, in the same
+// transaction as the message: when either is refused (an assignee without access to the
+// inbox, a snooze without a future time) nothing is written, and when the message is
+// refused no action is applied. With both, the macro's actions come first and the fields of
+// `then` take their place (`then.labels` replaces the labels, the macro's label changes
+// included). They need `conversations:write` for API keys and OAuth tokens, are refused on a
+// draft (`400 validation_failed`) and are not applied again when a `client_id` repeats. A
+// macro of another workspace, or another member's personal macro, is `404`. Applying a
+// macro writes a `macro_applied` event naming it before the events of the changes.
 //
 // Takes a body of the `application/json` content type.
 //
@@ -48173,6 +48454,153 @@ func (c *Client) UpdateSubscription(ctx context.Context, listId ListId, subscrip
 // Corresponds with POST /v1/lists/{listId}/subscriptions/{subscriptionId}/confirmation (the `ResendSubscriptionConfirmation` operationId).
 func (c *Client) ResendSubscriptionConfirmation(ctx context.Context, listId ListId, subscriptionId SubscriptionId, params *ResendSubscriptionConfirmationParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewResendSubscriptionConfirmationRequest(c.Server, listId, subscriptionId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// ListMacros List macros
+//
+// The workspace's shared macros and the caller's own personal ones: personal first, then
+// shared, each by `position` and name. API keys see the shared ones only.
+//
+// Scope: `conversations:read`.
+//
+// Corresponds with GET /v1/macros (the `ListMacros` operationId).
+func (c *Client) ListMacros(ctx context.Context, params *ListMacrosParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListMacrosRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// CreateMacroWithBody Create a macro
+//
+// A `personal` macro belongs to the calling member: any member with a session, or an OAuth
+// token with `conversations:write`; API keys are refused with `403 member_session_required`.
+// A `shared` macro is created by owners, admins and API keys with `canned_replies:write`.
+//
+// Labels must exist and the assignee must be a member (`400 validation_failed`). The
+// shortcut is unique among the shared macros, and among each member's personal ones
+// (`409 shortcut_taken`).
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /v1/macros (the `CreateMacro` operationId).
+func (c *Client) CreateMacroWithBody(ctx context.Context, params *CreateMacroParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateMacroRequestWithBody(c.Server, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// CreateMacro Create a macro
+//
+// A `personal` macro belongs to the calling member: any member with a session, or an OAuth
+// token with `conversations:write`; API keys are refused with `403 member_session_required`.
+// A `shared` macro is created by owners, admins and API keys with `canned_replies:write`.
+//
+// Labels must exist and the assignee must be a member (`400 validation_failed`). The
+// shortcut is unique among the shared macros, and among each member's personal ones
+// (`409 shortcut_taken`).
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /v1/macros (the `CreateMacro` operationId).
+func (c *Client) CreateMacro(ctx context.Context, params *CreateMacroParams, body CreateMacroJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateMacroRequest(c.Server, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// DeleteMacro Delete a macro
+//
+// Same permissions as creating one of its visibility.
+//
+// Corresponds with DELETE /v1/macros/{macroId} (the `DeleteMacro` operationId).
+func (c *Client) DeleteMacro(ctx context.Context, macroId MacroId, params *DeleteMacroParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteMacroRequest(c.Server, macroId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetMacro Get a macro
+//
+// A shared macro, or one of the caller's own personal macros; another member's personal
+// macro is `404`.
+//
+// Scope: `conversations:read`.
+//
+// Corresponds with GET /v1/macros/{macroId} (the `GetMacro` operationId).
+func (c *Client) GetMacro(ctx context.Context, macroId MacroId, params *GetMacroParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetMacroRequest(c.Server, macroId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// UpdateMacroWithBody Update a macro
+//
+// Same permissions as creating one of its visibility. `actions` replaces the actions as a
+// whole. The visibility does not change; create a new macro instead.
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with PATCH /v1/macros/{macroId} (the `UpdateMacro` operationId).
+func (c *Client) UpdateMacroWithBody(ctx context.Context, macroId MacroId, params *UpdateMacroParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateMacroRequestWithBody(c.Server, macroId, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// UpdateMacro Update a macro
+//
+// Same permissions as creating one of its visibility. `actions` replaces the actions as a
+// whole. The visibility does not change; create a new macro instead.
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with PATCH /v1/macros/{macroId} (the `UpdateMacro` operationId).
+func (c *Client) UpdateMacro(ctx context.Context, macroId MacroId, params *UpdateMacroParams, body UpdateMacroJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateMacroRequest(c.Server, macroId, params, body)
 	if err != nil {
 		return nil, err
 	}
@@ -72179,6 +72607,274 @@ func NewResendSubscriptionConfirmationRequest(server string, listId ListId, subs
 	return req, nil
 }
 
+// NewListMacrosRequest constructs an http.Request for the ListMacros method
+func NewListMacrosRequest(server string, params *ListMacrosParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/macros")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewCreateMacroRequest calls the generic CreateMacro builder with application/json body
+func NewCreateMacroRequest(server string, params *CreateMacroParams, body CreateMacroJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateMacroRequestWithBody(server, params, "application/json", bodyReader)
+}
+
+// NewCreateMacroRequestWithBody constructs an http.Request for the CreateMacro method, with any body, and a specified content type
+func NewCreateMacroRequestWithBody(server string, params *CreateMacroParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/macros")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.IdempotencyKey != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Idempotency-Key", *params.IdempotencyKey, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Idempotency-Key", headerParam0)
+		}
+
+		if params.YuvaWorkspace != nil {
+			var headerParam1 string
+
+			headerParam1, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam1)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewDeleteMacroRequest constructs an http.Request for the DeleteMacro method
+func NewDeleteMacroRequest(server string, macroId MacroId, params *DeleteMacroParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "macroId", macroId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/macros/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodDelete, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewGetMacroRequest constructs an http.Request for the GetMacro method
+func NewGetMacroRequest(server string, macroId MacroId, params *GetMacroParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "macroId", macroId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/macros/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewUpdateMacroRequest calls the generic UpdateMacro builder with application/json body
+func NewUpdateMacroRequest(server string, macroId MacroId, params *UpdateMacroParams, body UpdateMacroJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateMacroRequestWithBody(server, macroId, params, "application/json", bodyReader)
+}
+
+// NewUpdateMacroRequestWithBody constructs an http.Request for the UpdateMacro method, with any body, and a specified content type
+func NewUpdateMacroRequestWithBody(server string, macroId MacroId, params *UpdateMacroParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "macroId", macroId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/macros/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPatch, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
 // NewRenderMarkdownRequest calls the generic RenderMarkdown builder with application/json body
 func NewRenderMarkdownRequest(server string, params *RenderMarkdownParams, body RenderMarkdownJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
@@ -83716,6 +84412,16 @@ type ClientWithResponsesInterface interface {
 	// address the contact wrote to; when the conversation has none and the channel has no
 	// `from_address`, the reply is refused with `409 email_no_sender`.
 	//
+	// `macro_id` applies a macro's actions and `then` applies a `ConversationUpdate`, in the same
+	// transaction as the message: when either is refused (an assignee without access to the
+	// inbox, a snooze without a future time) nothing is written, and when the message is
+	// refused no action is applied. With both, the macro's actions come first and the fields of
+	// `then` take their place (`then.labels` replaces the labels, the macro's label changes
+	// included). They need `conversations:write` for API keys and OAuth tokens, are refused on a
+	// draft (`400 validation_failed`) and are not applied again when a `client_id` repeats. A
+	// macro of another workspace, or another member's personal macro, is `404`. Applying a
+	// macro writes a `macro_applied` event naming it before the events of the changes.
+	//
 	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
 	//
 	// Corresponds with POST /v1/conversations/{conversationId}/messages (the `CreateMessage` operationId).
@@ -83759,6 +84465,16 @@ type ClientWithResponsesInterface interface {
 	// SMTP account, with `409 email_not_configured`. A catch-all channel (`*@domain`) sends from the
 	// address the contact wrote to; when the conversation has none and the channel has no
 	// `from_address`, the reply is refused with `409 email_no_sender`.
+	//
+	// `macro_id` applies a macro's actions and `then` applies a `ConversationUpdate`, in the same
+	// transaction as the message: when either is refused (an assignee without access to the
+	// inbox, a snooze without a future time) nothing is written, and when the message is
+	// refused no action is applied. With both, the macro's actions come first and the fields of
+	// `then` take their place (`then.labels` replaces the labels, the macro's label changes
+	// included). They need `conversations:write` for API keys and OAuth tokens, are refused on a
+	// draft (`400 validation_failed`) and are not applied again when a `client_id` repeats. A
+	// macro of another workspace, or another member's personal macro, is `404`. Applying a
+	// macro writes a `macro_applied` event naming it before the events of the changes.
 	//
 	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
 	//
@@ -86144,6 +86860,89 @@ type ClientWithResponsesInterface interface {
 	//
 	// Corresponds with POST /v1/lists/{listId}/subscriptions/{subscriptionId}/confirmation (the `ResendSubscriptionConfirmation` operationId).
 	ResendSubscriptionConfirmationWithResponse(ctx context.Context, listId ListId, subscriptionId SubscriptionId, params *ResendSubscriptionConfirmationParams, reqEditors ...RequestEditorFn) (*ResendSubscriptionConfirmationResponse, error)
+
+	// ListMacrosWithResponse List macros
+	//
+	// The workspace's shared macros and the caller's own personal ones: personal first, then
+	// shared, each by `position` and name. API keys see the shared ones only.
+	//
+	// Scope: `conversations:read`.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /v1/macros (the `ListMacros` operationId).
+	ListMacrosWithResponse(ctx context.Context, params *ListMacrosParams, reqEditors ...RequestEditorFn) (*ListMacrosResponse, error)
+
+	// CreateMacroWithBodyWithResponse Create a macro
+	//
+	// A `personal` macro belongs to the calling member: any member with a session, or an OAuth
+	// token with `conversations:write`; API keys are refused with `403 member_session_required`.
+	// A `shared` macro is created by owners, admins and API keys with `canned_replies:write`.
+	//
+	// Labels must exist and the assignee must be a member (`400 validation_failed`). The
+	// shortcut is unique among the shared macros, and among each member's personal ones
+	// (`409 shortcut_taken`).
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /v1/macros (the `CreateMacro` operationId).
+	CreateMacroWithBodyWithResponse(ctx context.Context, params *CreateMacroParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateMacroResponse, error)
+
+	// CreateMacroWithResponse Create a macro
+	//
+	// A `personal` macro belongs to the calling member: any member with a session, or an OAuth
+	// token with `conversations:write`; API keys are refused with `403 member_session_required`.
+	// A `shared` macro is created by owners, admins and API keys with `canned_replies:write`.
+	//
+	// Labels must exist and the assignee must be a member (`400 validation_failed`). The
+	// shortcut is unique among the shared macros, and among each member's personal ones
+	// (`409 shortcut_taken`).
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /v1/macros (the `CreateMacro` operationId).
+	CreateMacroWithResponse(ctx context.Context, params *CreateMacroParams, body CreateMacroJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateMacroResponse, error)
+
+	// DeleteMacroWithResponse Delete a macro
+	//
+	// Same permissions as creating one of its visibility.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with DELETE /v1/macros/{macroId} (the `DeleteMacro` operationId).
+	DeleteMacroWithResponse(ctx context.Context, macroId MacroId, params *DeleteMacroParams, reqEditors ...RequestEditorFn) (*DeleteMacroResponse, error)
+
+	// GetMacroWithResponse Get a macro
+	//
+	// A shared macro, or one of the caller's own personal macros; another member's personal
+	// macro is `404`.
+	//
+	// Scope: `conversations:read`.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /v1/macros/{macroId} (the `GetMacro` operationId).
+	GetMacroWithResponse(ctx context.Context, macroId MacroId, params *GetMacroParams, reqEditors ...RequestEditorFn) (*GetMacroResponse, error)
+
+	// UpdateMacroWithBodyWithResponse Update a macro
+	//
+	// Same permissions as creating one of its visibility. `actions` replaces the actions as a
+	// whole. The visibility does not change; create a new macro instead.
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PATCH /v1/macros/{macroId} (the `UpdateMacro` operationId).
+	UpdateMacroWithBodyWithResponse(ctx context.Context, macroId MacroId, params *UpdateMacroParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateMacroResponse, error)
+
+	// UpdateMacroWithResponse Update a macro
+	//
+	// Same permissions as creating one of its visibility. `actions` replaces the actions as a
+	// whole. The visibility does not change; create a new macro instead.
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PATCH /v1/macros/{macroId} (the `UpdateMacro` operationId).
+	UpdateMacroWithResponse(ctx context.Context, macroId MacroId, params *UpdateMacroParams, body UpdateMacroJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateMacroResponse, error)
 
 	// RenderMarkdownWithBodyWithResponse Render Markdown for an editor
 	//
@@ -109800,6 +110599,323 @@ func (r ResendSubscriptionConfirmationResponse) ContentType() string {
 	return ""
 }
 
+type ListMacrosResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *MacroList
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r ListMacrosResponse) GetJSON200() *MacroList {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r ListMacrosResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r ListMacrosResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetBody returns the raw response body bytes
+func (r ListMacrosResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r ListMacrosResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListMacrosResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ListMacrosResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type CreateMacroResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON201 the response for an HTTP 201 `application/json` response
+	JSON201 *Macro
+	// ApplicationproblemJSON400 the response for an HTTP 400 `application/problem+json` response
+	ApplicationproblemJSON400 *Problem
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON409 the response for an HTTP 409 `application/problem+json` response
+	ApplicationproblemJSON409 *Problem
+}
+
+// GetJSON201 returns the response for an HTTP 201 `application/json` response
+func (r CreateMacroResponse) GetJSON201() *Macro {
+	return r.JSON201
+}
+
+// GetApplicationproblemJSON400 returns the response for an HTTP 400 `application/problem+json` response
+func (r CreateMacroResponse) GetApplicationproblemJSON400() *Problem {
+	return r.ApplicationproblemJSON400
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r CreateMacroResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r CreateMacroResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON409 returns the response for an HTTP 409 `application/problem+json` response
+func (r CreateMacroResponse) GetApplicationproblemJSON409() *Problem {
+	return r.ApplicationproblemJSON409
+}
+
+// GetBody returns the raw response body bytes
+func (r CreateMacroResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r CreateMacroResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateMacroResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r CreateMacroResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type DeleteMacroResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r DeleteMacroResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r DeleteMacroResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r DeleteMacroResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetBody returns the raw response body bytes
+func (r DeleteMacroResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteMacroResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteMacroResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r DeleteMacroResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetMacroResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *Macro
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetMacroResponse) GetJSON200() *Macro {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r GetMacroResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r GetMacroResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r GetMacroResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetBody returns the raw response body bytes
+func (r GetMacroResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetMacroResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetMacroResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetMacroResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type UpdateMacroResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *Macro
+	// ApplicationproblemJSON400 the response for an HTTP 400 `application/problem+json` response
+	ApplicationproblemJSON400 *Problem
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+	// ApplicationproblemJSON409 the response for an HTTP 409 `application/problem+json` response
+	ApplicationproblemJSON409 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r UpdateMacroResponse) GetJSON200() *Macro {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON400 returns the response for an HTTP 400 `application/problem+json` response
+func (r UpdateMacroResponse) GetApplicationproblemJSON400() *Problem {
+	return r.ApplicationproblemJSON400
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r UpdateMacroResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r UpdateMacroResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r UpdateMacroResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetApplicationproblemJSON409 returns the response for an HTTP 409 `application/problem+json` response
+func (r UpdateMacroResponse) GetApplicationproblemJSON409() *Problem {
+	return r.ApplicationproblemJSON409
+}
+
+// GetBody returns the raw response body bytes
+func (r UpdateMacroResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateMacroResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateMacroResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r UpdateMacroResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type RenderMarkdownResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -123564,6 +124680,16 @@ func (c *ClientWithResponses) ListMessagesWithResponse(ctx context.Context, conv
 // address the contact wrote to; when the conversation has none and the channel has no
 // `from_address`, the reply is refused with `409 email_no_sender`.
 //
+// `macro_id` applies a macro's actions and `then` applies a `ConversationUpdate`, in the same
+// transaction as the message: when either is refused (an assignee without access to the
+// inbox, a snooze without a future time) nothing is written, and when the message is
+// refused no action is applied. With both, the macro's actions come first and the fields of
+// `then` take their place (`then.labels` replaces the labels, the macro's label changes
+// included). They need `conversations:write` for API keys and OAuth tokens, are refused on a
+// draft (`400 validation_failed`) and are not applied again when a `client_id` repeats. A
+// macro of another workspace, or another member's personal macro, is `404`. Applying a
+// macro writes a `macro_applied` event naming it before the events of the changes.
+//
 // Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
 //
 // Corresponds with POST /v1/conversations/{conversationId}/messages (the `CreateMessage` operationId).
@@ -123613,6 +124739,16 @@ func (c *ClientWithResponses) CreateMessageWithBodyWithResponse(ctx context.Cont
 // SMTP account, with `409 email_not_configured`. A catch-all channel (`*@domain`) sends from the
 // address the contact wrote to; when the conversation has none and the channel has no
 // `from_address`, the reply is refused with `409 email_no_sender`.
+//
+// `macro_id` applies a macro's actions and `then` applies a `ConversationUpdate`, in the same
+// transaction as the message: when either is refused (an assignee without access to the
+// inbox, a snooze without a future time) nothing is written, and when the message is
+// refused no action is applied. With both, the macro's actions come first and the fields of
+// `then` take their place (`then.labels` replaces the labels, the macro's label changes
+// included). They need `conversations:write` for API keys and OAuth tokens, are refused on a
+// draft (`400 validation_failed`) and are not applied again when a `client_id` repeats. A
+// macro of another workspace, or another member's personal macro, is `404`. Applying a
+// macro writes a `macro_applied` event naming it before the events of the changes.
 //
 // Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
 //
@@ -126945,6 +128081,131 @@ func (c *ClientWithResponses) ResendSubscriptionConfirmationWithResponse(ctx con
 		return nil, err
 	}
 	return ParseResendSubscriptionConfirmationResponse(rsp)
+}
+
+// ListMacrosWithResponse List macros
+//
+// The workspace's shared macros and the caller's own personal ones: personal first, then
+// shared, each by `position` and name. API keys see the shared ones only.
+//
+// Scope: `conversations:read`.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /v1/macros (the `ListMacros` operationId).
+func (c *ClientWithResponses) ListMacrosWithResponse(ctx context.Context, params *ListMacrosParams, reqEditors ...RequestEditorFn) (*ListMacrosResponse, error) {
+	rsp, err := c.ListMacros(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListMacrosResponse(rsp)
+}
+
+// CreateMacroWithBodyWithResponse Create a macro
+//
+// A `personal` macro belongs to the calling member: any member with a session, or an OAuth
+// token with `conversations:write`; API keys are refused with `403 member_session_required`.
+// A `shared` macro is created by owners, admins and API keys with `canned_replies:write`.
+//
+// Labels must exist and the assignee must be a member (`400 validation_failed`). The
+// shortcut is unique among the shared macros, and among each member's personal ones
+// (`409 shortcut_taken`).
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /v1/macros (the `CreateMacro` operationId).
+func (c *ClientWithResponses) CreateMacroWithBodyWithResponse(ctx context.Context, params *CreateMacroParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateMacroResponse, error) {
+	rsp, err := c.CreateMacroWithBody(ctx, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateMacroResponse(rsp)
+}
+
+// CreateMacroWithResponse Create a macro
+//
+// A `personal` macro belongs to the calling member: any member with a session, or an OAuth
+// token with `conversations:write`; API keys are refused with `403 member_session_required`.
+// A `shared` macro is created by owners, admins and API keys with `canned_replies:write`.
+//
+// Labels must exist and the assignee must be a member (`400 validation_failed`). The
+// shortcut is unique among the shared macros, and among each member's personal ones
+// (`409 shortcut_taken`).
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /v1/macros (the `CreateMacro` operationId).
+func (c *ClientWithResponses) CreateMacroWithResponse(ctx context.Context, params *CreateMacroParams, body CreateMacroJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateMacroResponse, error) {
+	rsp, err := c.CreateMacro(ctx, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateMacroResponse(rsp)
+}
+
+// DeleteMacroWithResponse Delete a macro
+//
+// Same permissions as creating one of its visibility.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with DELETE /v1/macros/{macroId} (the `DeleteMacro` operationId).
+func (c *ClientWithResponses) DeleteMacroWithResponse(ctx context.Context, macroId MacroId, params *DeleteMacroParams, reqEditors ...RequestEditorFn) (*DeleteMacroResponse, error) {
+	rsp, err := c.DeleteMacro(ctx, macroId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteMacroResponse(rsp)
+}
+
+// GetMacroWithResponse Get a macro
+//
+// A shared macro, or one of the caller's own personal macros; another member's personal
+// macro is `404`.
+//
+// Scope: `conversations:read`.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /v1/macros/{macroId} (the `GetMacro` operationId).
+func (c *ClientWithResponses) GetMacroWithResponse(ctx context.Context, macroId MacroId, params *GetMacroParams, reqEditors ...RequestEditorFn) (*GetMacroResponse, error) {
+	rsp, err := c.GetMacro(ctx, macroId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetMacroResponse(rsp)
+}
+
+// UpdateMacroWithBodyWithResponse Update a macro
+//
+// Same permissions as creating one of its visibility. `actions` replaces the actions as a
+// whole. The visibility does not change; create a new macro instead.
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PATCH /v1/macros/{macroId} (the `UpdateMacro` operationId).
+func (c *ClientWithResponses) UpdateMacroWithBodyWithResponse(ctx context.Context, macroId MacroId, params *UpdateMacroParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateMacroResponse, error) {
+	rsp, err := c.UpdateMacroWithBody(ctx, macroId, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateMacroResponse(rsp)
+}
+
+// UpdateMacroWithResponse Update a macro
+//
+// Same permissions as creating one of its visibility. `actions` replaces the actions as a
+// whole. The visibility does not change; create a new macro instead.
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PATCH /v1/macros/{macroId} (the `UpdateMacro` operationId).
+func (c *ClientWithResponses) UpdateMacroWithResponse(ctx context.Context, macroId MacroId, params *UpdateMacroParams, body UpdateMacroJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateMacroResponse, error) {
+	rsp, err := c.UpdateMacro(ctx, macroId, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateMacroResponse(rsp)
 }
 
 // RenderMarkdownWithBodyWithResponse Render Markdown for an editor
@@ -147151,6 +148412,251 @@ func ParseResendSubscriptionConfirmationResponse(rsp *http.Response) (*ResendSub
 			return nil, err
 		}
 		response.ApplicationproblemJSON429 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListMacrosResponse parses an HTTP response from a ListMacrosWithResponse call
+func ParseListMacrosResponse(rsp *http.Response) (*ListMacrosResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListMacrosResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest MacroList
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreateMacroResponse parses an HTTP response from a CreateMacroWithResponse call
+func ParseCreateMacroResponse(rsp *http.Response) (*CreateMacroResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateMacroResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
+		var dest Macro
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON201 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON409 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteMacroResponse parses an HTTP response from a DeleteMacroWithResponse call
+func ParseDeleteMacroResponse(rsp *http.Response) (*DeleteMacroResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteMacroResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case rsp.StatusCode == 204:
+		break // No content-type
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetMacroResponse parses an HTTP response from a GetMacroWithResponse call
+func ParseGetMacroResponse(rsp *http.Response) (*GetMacroResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetMacroResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest Macro
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateMacroResponse parses an HTTP response from a UpdateMacroWithResponse call
+func ParseUpdateMacroResponse(rsp *http.Response) (*UpdateMacroResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateMacroResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest Macro
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON409 = &dest
 
 	}
 

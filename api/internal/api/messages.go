@@ -65,9 +65,11 @@ type messageInput struct {
 	articles  []uuid.UUID
 	extra     map[string]string
 	files     []*upload
+	macroID   *uuid.UUID
+	then      *oas.ConversationUpdate
 }
 
-var memberFormFields = []string{"kind", "direction", "body", "html", "client_id", "draft", "mentions", "article_ids"}
+var memberFormFields = []string{"kind", "direction", "body", "html", "client_id", "draft", "mentions", "article_ids", "macro_id", "then"}
 
 func (in *messageInput) close() {
 	for _, f := range in.files {
@@ -489,6 +491,7 @@ func (s *Server) CreateMessage(ctx context.Context, req oas.CreateMessageRequest
 		if b.ArticleIds != nil {
 			in.articles = *b.ArticleIds
 		}
+		in.macroID, in.then = b.MacroId, b.Then
 	case req.MultipartBody != nil:
 		limits, err := s.channelLimits(ctx, s.st.Queries, p.workspaceID, conv.ChannelID)
 		if err != nil {
@@ -497,12 +500,24 @@ func (s *Server) CreateMessage(ctx context.Context, req oas.CreateMessageRequest
 		if in, err = s.readMultipart(req.MultipartBody, p.workspaceID, memberFormFields, limits); err != nil {
 			return nil, err
 		}
+		if err := in.takeMacroFields(); err != nil {
+			in.close()
+			return nil, err
+		}
 	default:
 		return nil, errValidation("send application/json or multipart/form-data")
 	}
 	defer in.close()
 	if err := s.validateMessage(p, in); err != nil {
 		return nil, err
+	}
+	if in.macroID != nil || in.then != nil {
+		if in.draft {
+			return nil, errValidation("macro_id and then are applied when a message is sent, not on a draft")
+		}
+		if err := requireScope(p, oas.ConversationsWrite); err != nil {
+			return nil, err
+		}
 	}
 	var stored []string
 	for _, f := range in.files {
@@ -542,6 +557,17 @@ func (s *Server) CreateMessage(ctx context.Context, req oas.CreateMessageRequest
 			if !store.IsNotFound(err) {
 				return err
 			}
+		}
+		var macro *store.Macro
+		if in.macroID != nil {
+			m, err := q.GetMacroFor(ctx, store.GetMacroForParams{WorkspaceID: p.workspaceID, ID: *in.macroID, MemberID: p.memberRef()})
+			if store.IsNotFound(err) {
+				return errMacroGone
+			}
+			if err != nil {
+				return err
+			}
+			macro = &m
 		}
 		now := s.now()
 		deliver := in.kind == string(oas.MessageKindMessage) && in.direction == string(oas.Out) && !in.draft
@@ -625,7 +651,7 @@ func (s *Server) CreateMessage(ctx context.Context, req oas.CreateMessageRequest
 				return err
 			}
 		}
-		return nil
+		return s.applyAfterMessage(ctx, q, events, p, c, macro, in.then, now)
 	})
 	if err != nil || !created {
 		s.deleteObjects(ctx, stored)

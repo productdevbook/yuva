@@ -84,6 +84,8 @@ var operationScopes = map[string][]oas.ApiKeyScope{
 	"DownloadMessageRaw":    {oas.ConversationsRead},
 	"ListLabels":            {oas.ConversationsRead},
 	"ListCannedReplies":     {oas.ConversationsRead},
+	"ListMacros":            {oas.ConversationsRead},
+	"GetMacro":              {oas.ConversationsRead},
 	"ListEvents":            {oas.ConversationsRead},
 	"GetLatestEvent":        {oas.ConversationsRead},
 	"ListDiscussions":       {oas.ConversationsRead},
@@ -118,6 +120,10 @@ var operationScopes = map[string][]oas.ApiKeyScope{
 	"CreateCannedReply": {oas.CannedRepliesWrite},
 	"UpdateCannedReply": {oas.CannedRepliesWrite},
 	"DeleteCannedReply": {oas.CannedRepliesWrite},
+
+	"CreateMacro": nil,
+	"UpdateMacro": nil,
+	"DeleteMacro": nil,
 
 	"ListWebhooks":          {oas.WebhooksManage},
 	"CreateWebhook":         {oas.WebhooksManage},
@@ -376,7 +382,8 @@ func errInsufficientScope(scope oas.ApiKeyScope) *apiError {
 }
 
 // keyMayCall refuses a key an operation that is not in operationScopes or whose scopes it lacks;
-// CreateMessage (nil) needs messages:write or notes:write by its kind, and BulkUpdateConversations
+// CreateMessage (nil) needs messages:write or notes:write by its kind, the macro writes (nil)
+// canned_replies:write for a shared macro and conversations:write for a personal one, and BulkUpdateConversations
 // (nil) conversations:delete for trashed and conversations:write for any other change, checked
 // once the body is read.
 func keyMayCall(p principal, operationID string) error {

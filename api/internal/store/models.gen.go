@@ -1462,6 +1462,19 @@ type M12Answer struct {
 	FirstLine      string
 }
 
+type Macro struct {
+	ID            uuid.UUID
+	WorkspaceID   uuid.UUID
+	OwnerMemberID *uuid.UUID
+	Name          string
+	Shortcut      string
+	Body          *string
+	Actions       []byte
+	Position      int32
+	CreatedAt     time.Time
+	UpdatedAt     time.Time
+}
+
 type MailingList struct {
 	ID          uuid.UUID
 	WorkspaceID uuid.UUID
