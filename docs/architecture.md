@@ -391,7 +391,7 @@ with the server URL as a variable and the stdio bridge as a package.
 ### OAuth and MCP
 
 **Authorization server.** Yuva is its own OAuth 2.1 authorization server, for MCP clients and for
-the member apps (M10). Authorization code with PKCE (`S256` only), no implicit or password grant.
+the native member apps planned in M10. Authorization code with PKCE (`S256` only), no implicit or password grant.
 Client metadata must list `authorization_code` among its `grant_types`; other types it lists are
 ignored (claude.ai lists `jwt-bearer`), and registration answers with the two Yuva offers.
 - Metadata: `/.well-known/oauth-authorization-server` (RFC 8414) and
@@ -421,7 +421,7 @@ ignored (claude.ai lists `jwt-bearer`), and registration answers with the two Yu
   alone, like API keys. `POST /oauth/revoke` (RFC 7009): a refresh token revokes the grant, an
   access token only itself.
 - Resource indicators (RFC 8707) are required. `<YUVA_PUBLIC_URL>/mcp` gives a token for `/mcp`
-  only; `<YUVA_PUBLIC_URL>` gives one for `/v1`, `/v1/realtime` and `/mcp` (the member apps). A
+  only; `<YUVA_PUBLIC_URL>` gives one for `/v1`, `/v1/realtime` and `/mcp` (for the planned member apps). A
   trailing `/` is ignored. A `/mcp`-only token on `/v1` gets `401 token_wrong_resource`; an expired
   one `401 token_expired`.
   Accepting a `/v1` token at `/mcp` is intentional: MCP acts as the member with the same scopes.
@@ -447,8 +447,8 @@ ignored (claude.ai lists `jwt-bearer`), and registration answers with the two Yu
 drafts and conversation events get `via` (the client name at the time), and the timeline shows
 "Ayşe via Claude Code". `via` is on the message's `author`, and a draft sent with a token also gets
 it on `sent_by`. Delivery from a `/mcp`-only token follows `bots_may_send` like an API key:
-off, an outgoing message must be a draft. A `<YUVA_PUBLIC_URL>` token (member apps) sends as the
-member.
+off, an outgoing message must be a draft. A `<YUVA_PUBLIC_URL>` token (for the planned member apps) sends
+as the member.
 
 **MCP endpoint.** `/mcp` in the same binary, Streamable HTTP, MCP specification 2026-07-28, built
 on `github.com/modelcontextprotocol/go-sdk` (MIT/Apache-2.0). Bearer is an OAuth token or a scoped
@@ -904,7 +904,8 @@ inline thread inside a product's own panel.
 ### In-app messaging (mobile)
 
 - `sdk/swift` (Swift package `YuvaKit`): a headless client plus SwiftUI screens (conversation list,
-  thread, composer, attachments, feedback form).
+  thread, composer, attachments, feedback form, the rating card and the status line), mailing list
+  subscriptions, opt-in shake to send feedback, and analytics (`YuvaAnalytics`).
 - `sdk/kotlin`: the same for Android, Compose UI.
 - The apps talk to `/client/v1` with the public key of an `app` channel: like a chat key it starts
   contact sessions and can be rotated, anonymous use is off unless the channel allows it, and the
@@ -972,8 +973,8 @@ no plugins; inline styles and any http(s) image stay allowed for the sandboxed e
 inherits the policy. Every response carries `X-Content-Type-Options: nosniff`.
 
 Languages: the panel ships 47 languages, one list in `web/src/localeList.ts` that `web/lingui.config.ts`
-and the loader both read; adding a language is one line there plus its three catalogs
-(`messages`, `analytics`, `designs`). Catalogs load lazily per locale (`import.meta.glob`), only the
+and the loader both read; adding a language is one line there plus its six catalogs
+(`messages`, `analytics`, `designs`, `help`, `roadmap`, `changelog`). Catalogs load lazily per locale (`import.meta.glob`), only the
 active language is fetched, and the service worker precaches just `en` and `tr`. Before sign-in a `lang`
 query parameter (the marketing site's choice, matched the same way, unknown values ignored) wins on the
 first load, is remembered like a picker choice and is removed from the address bar; otherwise the
