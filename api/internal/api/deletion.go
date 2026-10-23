@@ -73,7 +73,7 @@ func (s *Server) DeleteWorkspace(ctx context.Context, req oas.DeleteWorkspaceReq
 	if req.Body.Name != w.Name {
 		return nil, errWorkspaceConfirmation
 	}
-	if err := s.closeWorkspace(ctx, p.workspaceID); err != nil {
+	if err := s.closeWorkspace(ctx, p); err != nil {
 		return nil, err
 	}
 	return oas.DeleteWorkspace202Response{}, nil
@@ -81,13 +81,14 @@ func (s *Server) DeleteWorkspace(ctx context.Context, req oas.DeleteWorkspaceReq
 
 // OperatorDeleteWorkspace closes a workspace for the command line and queues the deletion of its data.
 func (s *Server) OperatorDeleteWorkspace(ctx context.Context, workspaceID uuid.UUID) error {
-	return s.closeWorkspace(ctx, workspaceID)
+	return s.closeWorkspace(ctx, principal{workspaceID: workspaceID})
 }
 
 // closeWorkspace marks the workspace deleted, which every authentication path checks, removes
 // what would still reach outside (webhook endpoints, push subscriptions of members left without a
 // workspace) and queues the job that deletes the rest.
-func (s *Server) closeWorkspace(ctx context.Context, workspaceID uuid.UUID) error {
+func (s *Server) closeWorkspace(ctx context.Context, p principal) error {
+	workspaceID := p.workspaceID
 	now := s.now()
 	if s.analytics != nil {
 		defer s.analytics.props.forgetWorkspace(workspaceID)
@@ -97,6 +98,9 @@ func (s *Server) closeWorkspace(ctx context.Context, workspaceID uuid.UUID) erro
 			return err
 		}
 		if _, err := q.MarkWorkspaceDeleted(ctx, store.MarkWorkspaceDeletedParams{ID: workspaceID, Now: &now}); err != nil {
+			return err
+		}
+		if err := writeAudit(ctx, q, p, now, oas.AuditWorkspaceDeleted, oas.AuditTargetWorkspace, workspaceID, nil); err != nil {
 			return err
 		}
 		if _, err := q.DeleteWorkspaceWebhookEndpoints(ctx, workspaceID); err != nil {
@@ -312,7 +316,7 @@ func (s *Server) DeleteMe(ctx context.Context, req oas.DeleteMeRequestObject) (o
 	if !strings.EqualFold(strings.TrimSpace(req.Body.Email), person.Email) {
 		return nil, errAccountConfirmation
 	}
-	if err := s.deletePerson(ctx, person); err != nil {
+	if err := s.deletePerson(ctx, person, false); err != nil {
 		return nil, err
 	}
 	cookie := s.sessionCookie("", -1)
@@ -333,13 +337,13 @@ func (s *Server) OperatorDeletePerson(ctx context.Context, email string) (store.
 	if err != nil {
 		return store.Person{}, err
 	}
-	return person, s.deletePerson(ctx, person)
+	return person, s.deletePerson(ctx, person, true)
 }
 
 // deletePerson removes a person who is not the last owner of a workspace. Their memberships,
 // sessions, passkeys and push subscriptions go with the row; messages they wrote lose their
-// author.
-func (s *Server) deletePerson(ctx context.Context, person store.Person) error {
+// author. Each workspace's audit log records the member's removal, by the person or the operator.
+func (s *Server) deletePerson(ctx context.Context, person store.Person, byOperator bool) error {
 	var workspaces []uuid.UUID
 	err := s.st.InTx(ctx, func(q *store.Queries) error {
 		if _, err := q.LockPersonWorkspaces(ctx, person.ID); err != nil {
@@ -371,6 +375,19 @@ func (s *Server) deletePerson(ctx context.Context, person store.Person) error {
 		}
 		if err := s.forgetReader(ctx, q, person.ID); err != nil {
 			return err
+		}
+		memberships, err := q.ListMemberships(ctx, person.ID)
+		if err != nil {
+			return err
+		}
+		for _, m := range memberships {
+			by := principal{workspaceID: m.WorkspaceID}
+			if !byOperator {
+				by.memberID = m.MemberID
+			}
+			if err := s.audit(ctx, q, by, oas.AuditMemberRemoved, oas.AuditTargetMember, m.MemberID, auditDetails{"role": m.Role, "reason": "account_deleted"}); err != nil {
+				return err
+			}
 		}
 		_, err = q.DeletePerson(ctx, person.ID)
 		return err

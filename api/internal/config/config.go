@@ -145,6 +145,8 @@ type Config struct {
 	MigrationSyncMaxDays int
 	// MigrationAuditDays keeps a migration's audit entries so many days after it ended.
 	MigrationAuditDays int
+	// AuditDays keeps a workspace's audit log entries so many days.
+	AuditDays int
 	// ForwardingDomain gives every e-mail channel the address <token>@ForwardingDomain; empty for none.
 	ForwardingDomain string
 	// MicrosoftClientID and MicrosoftClientSecret are the server's own Microsoft Entra app
@@ -734,6 +736,9 @@ func (c *Config) loadMigrations() error {
 	}
 	if c.MigrationAuditDays, err = strconv.Atoi(env("YUVA_MIGRATION_AUDIT_DAYS", "365")); err != nil || c.MigrationAuditDays < 1 || c.MigrationAuditDays > 36500 {
 		return errors.New("YUVA_MIGRATION_AUDIT_DAYS must be 1 to 36500 days")
+	}
+	if c.AuditDays, err = strconv.Atoi(env("YUVA_AUDIT_DAYS", "365")); err != nil || c.AuditDays < 1 || c.AuditDays > 36500 {
+		return errors.New("YUVA_AUDIT_DAYS must be 1 to 36500 days")
 	}
 	c.ForwardingDomain = strings.TrimSuffix(strings.ToLower(strings.TrimSpace(os.Getenv("YUVA_FORWARDING_DOMAIN"))), ".")
 	if c.ForwardingDomain != "" && !forwardingDomainRe.MatchString(c.ForwardingDomain) {

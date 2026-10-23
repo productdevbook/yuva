@@ -353,12 +353,13 @@ func (s *Server) DeleteInbox(ctx context.Context, req oas.DeleteInboxRequestObje
 	var keys []string
 	var page uuid.UUID
 	err := s.inTx(ctx, p.workspaceID, func(q *store.Queries, events *eventBatch) error {
-		if _, err := q.LockInbox(ctx, store.LockInboxParams{WorkspaceID: p.workspaceID, ID: req.InboxId}); store.IsNotFound(err) {
+		in, err := q.LockInbox(ctx, store.LockInboxParams{WorkspaceID: p.workspaceID, ID: req.InboxId})
+		if store.IsNotFound(err) {
 			return errInboxGone
-		} else if err != nil {
+		}
+		if err != nil {
 			return err
 		}
-		var err error
 		if keys, err = q.ListInboxStorageKeys(ctx, store.ListInboxStorageKeysParams{WorkspaceID: p.workspaceID, InboxID: req.InboxId}); err != nil {
 			return err
 		}
@@ -381,6 +382,9 @@ func (s *Server) DeleteInbox(ctx context.Context, req oas.DeleteInboxRequestObje
 		if _, err = q.DeleteInbox(ctx, store.DeleteInboxParams{WorkspaceID: p.workspaceID, ID: req.InboxId}); err != nil {
 			return err
 		}
+		if err := s.audit(ctx, q, p, oas.AuditInboxDeleted, oas.AuditTargetInbox, in.ID, auditDetails{"name": in.Name}); err != nil {
+			return err
+		}
 		id := req.InboxId
 		events.add(realtime.InboxDeleted, &id, nil, oas.InboxRef{Id: id})
 		return nil
@@ -401,14 +405,20 @@ func (s *Server) RotateInboxIdentitySecret(ctx context.Context, req oas.RotateIn
 		return nil, err
 	}
 	plain, sealed := s.sealIdentitySecret(p.workspaceID, req.InboxId)
-	n, err := s.st.SetInboxIdentitySecret(ctx, store.SetInboxIdentitySecretParams{
-		WorkspaceID: p.workspaceID, ID: req.InboxId, IdentitySecret: sealed, Now: s.now(),
+	err := s.st.InTx(ctx, func(q *store.Queries) error {
+		n, err := q.SetInboxIdentitySecret(ctx, store.SetInboxIdentitySecretParams{
+			WorkspaceID: p.workspaceID, ID: req.InboxId, IdentitySecret: sealed, Now: s.now(),
+		})
+		if err != nil {
+			return err
+		}
+		if n == 0 {
+			return errInboxGone
+		}
+		return s.audit(ctx, q, p, oas.AuditInboxIdentitySecretRotated, oas.AuditTargetInbox, req.InboxId, nil)
 	})
 	if err != nil {
 		return nil, err
-	}
-	if n == 0 {
-		return nil, errInboxGone
 	}
 	return oas.RotateInboxIdentitySecret200JSONResponse{IdentitySecret: plain}, nil
 }
@@ -432,18 +442,19 @@ func (s *Server) ListInboxMembers(ctx context.Context, req oas.ListInboxMembersR
 	return out, nil
 }
 
-func (s *Server) inboxAndMember(ctx context.Context, p principal, inboxID, memberID uuid.UUID) error {
-	if _, err := s.st.GetInbox(ctx, store.GetInboxParams{WorkspaceID: p.workspaceID, ID: inboxID}); store.IsNotFound(err) {
-		return errInboxGone
+func (s *Server) inboxAndMember(ctx context.Context, p principal, inboxID, memberID uuid.UUID) (store.Inbox, error) {
+	in, err := s.st.GetInbox(ctx, store.GetInboxParams{WorkspaceID: p.workspaceID, ID: inboxID})
+	if store.IsNotFound(err) {
+		return in, errInboxGone
 	} else if err != nil {
-		return err
+		return in, err
 	}
 	if _, err := s.st.GetMember(ctx, store.GetMemberParams{WorkspaceID: p.workspaceID, ID: memberID}); store.IsNotFound(err) {
-		return errMemberGone
+		return in, errMemberGone
 	} else if err != nil {
-		return err
+		return in, err
 	}
-	return nil
+	return in, nil
 }
 
 func (s *Server) GrantInboxAccess(ctx context.Context, req oas.GrantInboxAccessRequestObject) (oas.GrantInboxAccessResponseObject, error) {
@@ -451,16 +462,17 @@ func (s *Server) GrantInboxAccess(ctx context.Context, req oas.GrantInboxAccessR
 	if err := requireManagerOrKey(p); err != nil {
 		return nil, err
 	}
-	if err := s.inboxAndMember(ctx, p, req.InboxId, req.MemberId); err != nil {
+	in, err := s.inboxAndMember(ctx, p, req.InboxId, req.MemberId)
+	if err != nil {
 		return nil, err
 	}
-	err := s.inTx(ctx, p.workspaceID, func(q *store.Queries, events *eventBatch) error {
+	err = s.inTx(ctx, p.workspaceID, func(q *store.Queries, events *eventBatch) error {
 		n, err := q.GrantInboxAccess(ctx, store.GrantInboxAccessParams{WorkspaceID: p.workspaceID, InboxID: req.InboxId, MemberID: req.MemberId, Now: s.now()})
 		if err != nil || n == 0 {
 			return err
 		}
 		accessChanged(events, req.InboxId, req.MemberId, true)
-		return nil
+		return s.audit(ctx, q, p, oas.AuditMemberInboxAccessGranted, oas.AuditTargetMember, req.MemberId, auditDetails{"inbox_id": in.ID, "inbox_name": in.Name})
 	})
 	if store.IsForeignKeyViolation(err) {
 		return nil, errNotFound
@@ -476,16 +488,17 @@ func (s *Server) RevokeInboxAccess(ctx context.Context, req oas.RevokeInboxAcces
 	if err := requireManagerOrKey(p); err != nil {
 		return nil, err
 	}
-	if err := s.inboxAndMember(ctx, p, req.InboxId, req.MemberId); err != nil {
+	in, err := s.inboxAndMember(ctx, p, req.InboxId, req.MemberId)
+	if err != nil {
 		return nil, err
 	}
-	err := s.inTx(ctx, p.workspaceID, func(q *store.Queries, events *eventBatch) error {
+	err = s.inTx(ctx, p.workspaceID, func(q *store.Queries, events *eventBatch) error {
 		n, err := q.RevokeInboxAccess(ctx, store.RevokeInboxAccessParams{WorkspaceID: p.workspaceID, InboxID: req.InboxId, MemberID: req.MemberId})
 		if err != nil || n == 0 {
 			return err
 		}
 		accessChanged(events, req.InboxId, req.MemberId, false)
-		return nil
+		return s.audit(ctx, q, p, oas.AuditMemberInboxAccessRevoked, oas.AuditTargetMember, req.MemberId, auditDetails{"inbox_id": in.ID, "inbox_name": in.Name})
 	})
 	if err != nil {
 		return nil, err

@@ -114,6 +114,11 @@ func (s *Server) UpdateMember(ctx context.Context, req oas.UpdateMemberRequestOb
 		if err := q.UpdateMemberRole(ctx, store.UpdateMemberRoleParams{WorkspaceID: p.workspaceID, ID: target.ID, Role: string(role)}); err != nil {
 			return err
 		}
+		if target.Role != string(role) {
+			if err := s.audit(ctx, q, p, oas.AuditMemberRoleChanged, oas.AuditTargetMember, target.ID, auditDetails{"from": target.Role, "to": role}); err != nil {
+				return err
+			}
+		}
 		target.Role = string(role)
 		out = target
 		return nil
@@ -146,7 +151,10 @@ func (s *Server) RemoveMember(ctx context.Context, req oas.RemoveMemberRequestOb
 				return err
 			}
 		}
-		return q.DeleteMember(ctx, store.DeleteMemberParams{WorkspaceID: p.workspaceID, ID: target.ID})
+		if err := q.DeleteMember(ctx, store.DeleteMemberParams{WorkspaceID: p.workspaceID, ID: target.ID}); err != nil {
+			return err
+		}
+		return s.audit(ctx, q, p, oas.AuditMemberRemoved, oas.AuditTargetMember, target.ID, auditDetails{"role": target.Role})
 	})
 	if err != nil {
 		return nil, err

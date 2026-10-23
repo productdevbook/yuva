@@ -197,7 +197,11 @@ func (s *Server) CreateAnalyticsExport(ctx context.Context, req oas.CreateAnalyt
 		if err != nil {
 			return err
 		}
-		_, err = s.jobs.InsertTx(ctx, tx, AnalyticsExportArgs{WorkspaceID: p.workspaceID, ExportID: out.ID}, nil)
+		if _, err = s.jobs.InsertTx(ctx, tx, AnalyticsExportArgs{WorkspaceID: p.workspaceID, ExportID: out.ID}, nil); err != nil {
+			return err
+		}
+		err = s.audit(ctx, q, p, oas.AuditAnalyticsExportCreated, oas.AuditTargetAnalyticsExport, out.ID,
+			auditDetails{"property_id": prop.ID, "kind": out.Kind, "format": out.Format})
 		return err
 	})
 	if err != nil {

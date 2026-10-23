@@ -209,6 +209,9 @@ func (s *Server) CreateChannel(ctx context.Context, req oas.CreateChannelRequest
 				return err
 			}
 		}
+		if err := s.auditCredentials(ctx, q, p, nil, e); err != nil {
+			return err
+		}
 		if e, err = applySESInput(ctx, q, e, req.Body.Email.Ses); err != nil {
 			return err
 		}
@@ -321,6 +324,9 @@ func (s *Server) UpdateChannel(ctx context.Context, req oas.UpdateChannelRequest
 				if saved, err = q.SetEmailChannelBroadcast(ctx, *bc); err != nil {
 					return err
 				}
+			}
+			if err := s.auditCredentials(ctx, q, p, prev, saved); err != nil {
+				return err
 			}
 			if err := s.applyDkimInput(ctx, q, prev, saved, req.Body.Email.Dkim); err != nil {
 				return err

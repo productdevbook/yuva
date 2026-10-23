@@ -931,18 +931,24 @@ func (s *Server) ExportListConsent(ctx context.Context, req oas.ExportListConsen
 	if req.Params.Format != nil && !req.Params.Format.Valid() {
 		return nil, errValidation("format must be csv, json or iys")
 	}
-	if req.Params.Format != nil && *req.Params.Format == oas.ExportListConsentParamsFormatIys {
-		if list.Kind == listKindStatus {
-			return nil, errListKind
+	iys := req.Params.Format != nil && *req.Params.Format == oas.ExportListConsentParamsFormatIys
+	if iys && list.Kind == listKindStatus {
+		return nil, errListKind
+	}
+	format := "iys"
+	if !iys {
+		if format, err = consentFormat((*string)(req.Params.Format)); err != nil {
+			return nil, err
 		}
+	}
+	if err := s.audit(ctx, s.st.Queries, p, oas.AuditListConsentExported, oas.AuditTargetList, list.ID, auditDetails{"name": list.Name, "format": format}); err != nil {
+		return nil, err
+	}
+	if iys {
 		return iysStream{
 			s: s, ctx: ctx, name: "iys-" + list.ID.String(),
 			arg: store.ListIYSRecordsParams{WorkspaceID: p.workspaceID, ListID: list.ID, Since: req.Params.Since},
 		}, nil
-	}
-	format, err := consentFormat((*string)(req.Params.Format))
-	if err != nil {
-		return nil, err
 	}
 	return consentStream{
 		s: s, ctx: ctx, format: format, name: "consent-" + list.ID.String(),
@@ -960,6 +966,9 @@ func (s *Server) ExportContactConsent(ctx context.Context, req oas.ExportContact
 	}
 	format, err := consentFormat((*string)(req.Params.Format))
 	if err != nil {
+		return nil, err
+	}
+	if err := s.audit(ctx, s.st.Queries, p, oas.AuditContactConsentExported, oas.AuditTargetContact, req.ContactId, auditDetails{"format": format}); err != nil {
 		return nil, err
 	}
 	return consentStream{

@@ -914,6 +914,7 @@ const (
 	AnalyticsManage    ApiKeyScope = "analytics:manage"
 	AnalyticsRead      ApiKeyScope = "analytics:read"
 	AnalyticsWrite     ApiKeyScope = "analytics:write"
+	AuditRead          ApiKeyScope = "audit:read"
 	BroadcastsRead     ApiKeyScope = "broadcasts:read"
 	BroadcastsSend     ApiKeyScope = "broadcasts:send"
 	BroadcastsWrite    ApiKeyScope = "broadcasts:write"
@@ -955,6 +956,8 @@ func (e ApiKeyScope) Valid() bool {
 	case AnalyticsRead:
 		return true
 	case AnalyticsWrite:
+		return true
+	case AuditRead:
 		return true
 	case BroadcastsRead:
 		return true
@@ -1035,6 +1038,180 @@ func (e AppPlatform) Valid() bool {
 	case Android:
 		return true
 	case Ios:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for AuditAction.
+const (
+	AuditAnalyticsExportCreated              AuditAction = "analytics_export.created"
+	AuditApiKeyCreated                       AuditAction = "api_key.created"
+	AuditApiKeyRevoked                       AuditAction = "api_key.revoked"
+	AuditChannelCredentialsChanged           AuditAction = "channel.credentials_changed"
+	AuditChannelDkimKeyCreated               AuditAction = "channel.dkim_key_created"
+	AuditChannelDkimKeyDeleted               AuditAction = "channel.dkim_key_deleted"
+	AuditChannelForwardingAddressRotated     AuditAction = "channel.forwarding_address_rotated"
+	AuditChannelKeyRotated                   AuditAction = "channel.key_rotated"
+	AuditContactConsentExported              AuditAction = "contact.consent_exported"
+	AuditContactDeleted                      AuditAction = "contact.deleted"
+	AuditInboxDeleted                        AuditAction = "inbox.deleted"
+	AuditInboxIdentitySecretRotated          AuditAction = "inbox.identity_secret_rotated"
+	AuditInviteCreated                       AuditAction = "invite.created"
+	AuditInviteDeleted                       AuditAction = "invite.deleted"
+	AuditListConsentExported                 AuditAction = "list.consent_exported"
+	AuditMemberInboxAccessGranted            AuditAction = "member.inbox_access_granted"
+	AuditMemberInboxAccessRevoked            AuditAction = "member.inbox_access_revoked"
+	AuditMemberJoined                        AuditAction = "member.joined"
+	AuditMemberRemoved                       AuditAction = "member.removed"
+	AuditMemberRoleChanged                   AuditAction = "member.role_changed"
+	AuditOAuthGrantCreated                   AuditAction = "oauth_grant.created"
+	AuditOAuthGrantRevoked                   AuditAction = "oauth_grant.revoked"
+	AuditWebhookCreated                      AuditAction = "webhook.created"
+	AuditWebhookDeleted                      AuditAction = "webhook.deleted"
+	AuditWebhookSecretRotated                AuditAction = "webhook.secret_rotated"
+	AuditWebhookUpdated                      AuditAction = "webhook.updated"
+	AuditWorkspaceBroadcastApprovalRequested AuditAction = "workspace.broadcast_approval_requested"
+	AuditWorkspaceBroadcastsApproved         AuditAction = "workspace.broadcasts_approved"
+	AuditWorkspaceBroadcastsDenied           AuditAction = "workspace.broadcasts_denied"
+	AuditWorkspaceDeleted                    AuditAction = "workspace.deleted"
+	AuditWorkspaceRetentionChanged           AuditAction = "workspace.retention_changed"
+)
+
+// Valid indicates whether the value is a known member of the AuditAction enum.
+func (e AuditAction) Valid() bool {
+	switch e {
+	case AuditAnalyticsExportCreated:
+		return true
+	case AuditApiKeyCreated:
+		return true
+	case AuditApiKeyRevoked:
+		return true
+	case AuditChannelCredentialsChanged:
+		return true
+	case AuditChannelDkimKeyCreated:
+		return true
+	case AuditChannelDkimKeyDeleted:
+		return true
+	case AuditChannelForwardingAddressRotated:
+		return true
+	case AuditChannelKeyRotated:
+		return true
+	case AuditContactConsentExported:
+		return true
+	case AuditContactDeleted:
+		return true
+	case AuditInboxDeleted:
+		return true
+	case AuditInboxIdentitySecretRotated:
+		return true
+	case AuditInviteCreated:
+		return true
+	case AuditInviteDeleted:
+		return true
+	case AuditListConsentExported:
+		return true
+	case AuditMemberInboxAccessGranted:
+		return true
+	case AuditMemberInboxAccessRevoked:
+		return true
+	case AuditMemberJoined:
+		return true
+	case AuditMemberRemoved:
+		return true
+	case AuditMemberRoleChanged:
+		return true
+	case AuditOAuthGrantCreated:
+		return true
+	case AuditOAuthGrantRevoked:
+		return true
+	case AuditWebhookCreated:
+		return true
+	case AuditWebhookDeleted:
+		return true
+	case AuditWebhookSecretRotated:
+		return true
+	case AuditWebhookUpdated:
+		return true
+	case AuditWorkspaceBroadcastApprovalRequested:
+		return true
+	case AuditWorkspaceBroadcastsApproved:
+		return true
+	case AuditWorkspaceBroadcastsDenied:
+		return true
+	case AuditWorkspaceDeleted:
+		return true
+	case AuditWorkspaceRetentionChanged:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for AuditActorKind.
+const (
+	AuditActorApiKey     AuditActorKind = "api_key"
+	AuditActorMember     AuditActorKind = "member"
+	AuditActorOAuthGrant AuditActorKind = "oauth_grant"
+	AuditActorOperator   AuditActorKind = "operator"
+)
+
+// Valid indicates whether the value is a known member of the AuditActorKind enum.
+func (e AuditActorKind) Valid() bool {
+	switch e {
+	case AuditActorApiKey:
+		return true
+	case AuditActorMember:
+		return true
+	case AuditActorOAuthGrant:
+		return true
+	case AuditActorOperator:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for AuditTargetType.
+const (
+	AuditTargetAnalyticsExport AuditTargetType = "analytics_export"
+	AuditTargetApiKey          AuditTargetType = "api_key"
+	AuditTargetChannel         AuditTargetType = "channel"
+	AuditTargetContact         AuditTargetType = "contact"
+	AuditTargetInbox           AuditTargetType = "inbox"
+	AuditTargetInvite          AuditTargetType = "invite"
+	AuditTargetList            AuditTargetType = "list"
+	AuditTargetMember          AuditTargetType = "member"
+	AuditTargetOAuthGrant      AuditTargetType = "oauth_grant"
+	AuditTargetWebhook         AuditTargetType = "webhook"
+	AuditTargetWorkspace       AuditTargetType = "workspace"
+)
+
+// Valid indicates whether the value is a known member of the AuditTargetType enum.
+func (e AuditTargetType) Valid() bool {
+	switch e {
+	case AuditTargetAnalyticsExport:
+		return true
+	case AuditTargetApiKey:
+		return true
+	case AuditTargetChannel:
+		return true
+	case AuditTargetContact:
+		return true
+	case AuditTargetInbox:
+		return true
+	case AuditTargetInvite:
+		return true
+	case AuditTargetList:
+		return true
+	case AuditTargetMember:
+		return true
+	case AuditTargetOAuthGrant:
+		return true
+	case AuditTargetWebhook:
+		return true
+	case AuditTargetWorkspace:
 		return true
 	default:
 		return false
@@ -8198,7 +8375,11 @@ type ApiKeyList struct {
 //	    and unpublish entries, change or delete published ones. API keys only, and never implied:
 //	    a key made without naming its scopes does not hold it, and OAuth clients are not offered it.
 //
-// `lists:*`, `broadcasts:*`, `migrations:manage`, `analytics:*`, `status:*`, `help:*`, `roadmap:*` and `changelog:*` are never added to keys made before they existed.
+//	  - `audit:read`: the workspace's audit log. Only an owner gives it to a key, and only to a key
+//	    without an inbox limit; offered only to owners' OAuth tokens. Never implied: a key made
+//	    without naming its scopes does not hold it.
+//
+// `lists:*`, `broadcasts:*`, `migrations:manage`, `analytics:*`, `status:*`, `help:*`, `roadmap:*`, `changelog:*` and `audit:read` are never added to keys made before they existed.
 type ApiKeyScope string
 
 // ApiKeyUpdate Only the fields sent change. Scopes, inbox limit and expiry cannot change.
@@ -8256,6 +8437,119 @@ type Attachment struct {
 
 // Attributes Free-form data about the contact (plan, app version, ...), at most 16 KiB.
 type Attributes map[string]interface{}
+
+// AuditAction The action; the part before the dot is the target's type. `details` by action:
+//   - `member.joined`: `role`; the actor is the member who accepted an invite.
+//   - `member.role_changed`: `from`, `to`.
+//   - `member.removed`: `role`, and `reason` `account_deleted` when the person deleted their account.
+//   - `member.inbox_access_granted`, `member.inbox_access_revoked`: `inbox_id`, `inbox_name`.
+//   - `invite.created`: `email`, `role`. `invite.deleted`: none.
+//   - `api_key.created`: `name`, `prefix`, `scopes`, `inbox_ids` when limited, `expires_at` when set.
+//     `api_key.revoked`: `name`, `prefix`.
+//   - `oauth_grant.created`: `client`, `scopes`. `oauth_grant.revoked`: `client`.
+//   - `webhook.created`, `webhook.deleted`: `host` (never the URL), `events`.
+//     `webhook.updated`: `fields` among `url`, `events`, `enabled` and `include_notes`, and `host`.
+//     `webhook.secret_rotated`: none.
+//   - `channel.credentials_changed`: `fields` among `smtp` and `broadcast_smtp` (the account
+//     or its password; never the values).
+//   - `channel.key_rotated`, `channel.forwarding_address_rotated`, `channel.dkim_key_deleted`:
+//     none. `channel.dkim_key_created`: `selector`.
+//   - `inbox.identity_secret_rotated`: none. `inbox.deleted`: `name`.
+//   - `contact.deleted`: none (no name or address is kept). `contact.consent_exported`: `format`.
+//   - `list.consent_exported`: `name`, `format`.
+//   - `analytics_export.created`: `property_id`, `kind`, `format`.
+//   - `workspace.retention_changed`: `from`, `to` (days; `null` keeps everything).
+//   - `workspace.broadcast_approval_requested`: none. `workspace.broadcasts_approved`,
+//     `workspace.broadcasts_denied`: `reason` when the operator gave one.
+//   - `workspace.deleted`: none.
+//
+// More actions are added over time; show an unknown one by its name.
+type AuditAction string
+
+// AuditActor defines model for AuditActor.
+type AuditActor struct {
+	// Id The member, API key or connected app (grant). Absent for `operator`.
+	Id *uuid.UUID `json:"id,omitempty"`
+
+	// Kind - `member`: a member with a session.
+	// - `api_key`: an API key; `name` is its bot name.
+	// - `oauth_grant`: a member through a connected app (OAuth or MCP); `member_id` is the member
+	//   and `via` the app's name.
+	// - `operator`: the server's operator on the command line; no `id` or `name`.
+	Kind AuditActorKind `json:"kind"`
+
+	// MemberId For `member` and `oauth_grant`, the member.
+	MemberId *uuid.UUID `json:"member_id,omitempty"`
+
+	// Name The display name at the time, kept after the actor is gone. Absent for `operator`.
+	Name *string `json:"name,omitempty"`
+
+	// Via For `oauth_grant`, the connected app's name.
+	Via *string `json:"via,omitempty"`
+}
+
+// AuditActorKind - `member`: a member with a session.
+//   - `api_key`: an API key; `name` is its bot name.
+//   - `oauth_grant`: a member through a connected app (OAuth or MCP); `member_id` is the member
+//     and `via` the app's name.
+//   - `operator`: the server's operator on the command line; no `id` or `name`.
+type AuditActorKind string
+
+// AuditEntry defines model for AuditEntry.
+type AuditEntry struct {
+	// Action The action; the part before the dot is the target's type. `details` by action:
+	// - `member.joined`: `role`; the actor is the member who accepted an invite.
+	// - `member.role_changed`: `from`, `to`.
+	// - `member.removed`: `role`, and `reason` `account_deleted` when the person deleted their account.
+	// - `member.inbox_access_granted`, `member.inbox_access_revoked`: `inbox_id`, `inbox_name`.
+	// - `invite.created`: `email`, `role`. `invite.deleted`: none.
+	// - `api_key.created`: `name`, `prefix`, `scopes`, `inbox_ids` when limited, `expires_at` when set.
+	//   `api_key.revoked`: `name`, `prefix`.
+	// - `oauth_grant.created`: `client`, `scopes`. `oauth_grant.revoked`: `client`.
+	// - `webhook.created`, `webhook.deleted`: `host` (never the URL), `events`.
+	//   `webhook.updated`: `fields` among `url`, `events`, `enabled` and `include_notes`, and `host`.
+	//   `webhook.secret_rotated`: none.
+	// - `channel.credentials_changed`: `fields` among `smtp` and `broadcast_smtp` (the account
+	//   or its password; never the values).
+	// - `channel.key_rotated`, `channel.forwarding_address_rotated`, `channel.dkim_key_deleted`:
+	//   none. `channel.dkim_key_created`: `selector`.
+	// - `inbox.identity_secret_rotated`: none. `inbox.deleted`: `name`.
+	// - `contact.deleted`: none (no name or address is kept). `contact.consent_exported`: `format`.
+	// - `list.consent_exported`: `name`, `format`.
+	// - `analytics_export.created`: `property_id`, `kind`, `format`.
+	// - `workspace.retention_changed`: `from`, `to` (days; `null` keeps everything).
+	// - `workspace.broadcast_approval_requested`: none. `workspace.broadcasts_approved`,
+	//   `workspace.broadcasts_denied`: `reason` when the operator gave one.
+	// - `workspace.deleted`: none.
+	//
+	// More actions are added over time; show an unknown one by its name.
+	Action    AuditAction `json:"action"`
+	Actor     AuditActor  `json:"actor"`
+	CreatedAt time.Time   `json:"created_at"`
+
+	// Details Small, non-secret facts about the action; see `AuditAction`.
+	Details map[string]interface{} `json:"details"`
+	Id      uuid.UUID              `json:"id"`
+	Target  AuditTarget            `json:"target"`
+}
+
+// AuditEntryPage defines model for AuditEntryPage.
+type AuditEntryPage struct {
+	Items []AuditEntry `json:"items"`
+
+	// NextCursor Absent on the last page.
+	NextCursor *string `json:"next_cursor,omitempty"`
+}
+
+// AuditTarget defines model for AuditTarget.
+type AuditTarget struct {
+	// Id The target, which may no longer exist.
+	Id   uuid.UUID       `json:"id"`
+	Type AuditTargetType `json:"type"`
+}
+
+// AuditTargetType defines model for AuditTargetType.
+type AuditTargetType string
 
 // AuthStatus A result as the receiving server reported it (RFC 8601); `unknown` until it is read or
 // when it was not reported.
@@ -20238,6 +20532,35 @@ type DownloadAttachmentParams struct {
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
 
+// ListAuditLogParams defines parameters for ListAuditLog.
+type ListAuditLogParams struct {
+	// ActorId Only entries by this member, API key or connected app (`actor.id`). A member's id also
+	// matches what they did through connected apps (`actor.member_id`).
+	ActorId *uuid.UUID `form:"actor_id,omitempty" json:"actor_id,omitempty"`
+
+	// ActorKind Only entries by this kind of actor.
+	ActorKind *AuditActorKind `form:"actor_kind,omitempty" json:"actor_kind,omitempty"`
+
+	// Action Only these actions. Repeat the parameter (`action=api_key.created&action=api_key.revoked`)
+	// or give a comma-separated list.
+	Action *[]AuditAction `form:"action,omitempty" json:"action,omitempty"`
+
+	// Since Only entries at or after this time.
+	Since *time.Time `form:"since,omitempty" json:"since,omitempty"`
+
+	// Until Only entries before this time.
+	Until *time.Time `form:"until,omitempty" json:"until,omitempty"`
+
+	// Cursor The `next_cursor` of the previous page.
+	Cursor *Cursor `form:"cursor,omitempty" json:"cursor,omitempty"`
+
+	// Limit Page size, 1 to 100; 25 by default.
+	Limit *Limit `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
 // ListBroadcastsParams defines parameters for ListBroadcasts.
 type ListBroadcastsParams struct {
 	InboxId *uuid.UUID        `form:"inbox_id,omitempty" json:"inbox_id,omitempty"`
@@ -29805,8 +30128,9 @@ type ClientInterface interface {
 	// CreateApiKeyWithBody Create an API key
 	//
 	// Owners and admins only, with a member session. The secret is returned once and stored
-	// only as a hash. A key limited to inboxes cannot hold `inboxes:manage`, `webhooks:manage`
-	// or `workspace:manage` (`400 validation_failed`).
+	// only as a hash. A key limited to inboxes cannot hold `inboxes:manage`, `webhooks:manage`,
+	// `workspace:manage` or `audit:read` (`400 validation_failed`); only an owner gives a key
+	// `audit:read` (`403 forbidden`).
 	//
 	// Takes any type of body and a specified content type.
 	//
@@ -29816,8 +30140,9 @@ type ClientInterface interface {
 	// CreateApiKey Create an API key
 	//
 	// Owners and admins only, with a member session. The secret is returned once and stored
-	// only as a hash. A key limited to inboxes cannot hold `inboxes:manage`, `webhooks:manage`
-	// or `workspace:manage` (`400 validation_failed`).
+	// only as a hash. A key limited to inboxes cannot hold `inboxes:manage`, `webhooks:manage`,
+	// `workspace:manage` or `audit:read` (`400 validation_failed`); only an owner gives a key
+	// `audit:read` (`403 forbidden`).
 	//
 	// Takes a body of the `application/json` content type.
 	//
@@ -29859,6 +30184,24 @@ type ClientInterface interface {
 	//
 	// Corresponds with GET /v1/attachments/{attachmentId} (the `DownloadAttachment` operationId).
 	DownloadAttachment(ctx context.Context, attachmentId AttachmentId, params *DownloadAttachmentParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListAuditLog The workspace's audit log
+	//
+	// Who did what to the workspace's members, access, keys, webhooks, channel credentials,
+	// retention, exports and deletions, newest first. Each entry names its actor as it was at the
+	// time (`member`, `api_key`, `oauth_grant` for a member through a connected app, `operator`
+	// for the server's command line), the action, its target and small details. Entries never
+	// hold message content, secrets, webhook URLs (only their host) or a contact's name or
+	// address. They are kept `YUVA_AUDIT_DAYS` (365 by default) and go with the workspace.
+	//
+	// Owners only: admins and agents get `403 forbidden`. API keys need `audit:read`, which only
+	// an owner can give a key and which a key limited to inboxes cannot hold; OAuth tokens need
+	// `audit:read`, offered only to owners.
+	//
+	// Scope: `audit:read`.
+	//
+	// Corresponds with GET /v1/audit-log (the `ListAuditLog` operationId).
+	ListAuditLog(ctx context.Context, params *ListAuditLogParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// RequestSignInCodeWithBody Request a sign-in code
 	//
@@ -39429,8 +39772,9 @@ func (c *Client) ListApiKeys(ctx context.Context, params *ListApiKeysParams, req
 // CreateApiKeyWithBody Create an API key
 //
 // Owners and admins only, with a member session. The secret is returned once and stored
-// only as a hash. A key limited to inboxes cannot hold `inboxes:manage`, `webhooks:manage`
-// or `workspace:manage` (`400 validation_failed`).
+// only as a hash. A key limited to inboxes cannot hold `inboxes:manage`, `webhooks:manage`,
+// `workspace:manage` or `audit:read` (`400 validation_failed`); only an owner gives a key
+// `audit:read` (`403 forbidden`).
 //
 // Takes any type of body and a specified content type.
 //
@@ -39450,8 +39794,9 @@ func (c *Client) CreateApiKeyWithBody(ctx context.Context, params *CreateApiKeyP
 // CreateApiKey Create an API key
 //
 // Owners and admins only, with a member session. The secret is returned once and stored
-// only as a hash. A key limited to inboxes cannot hold `inboxes:manage`, `webhooks:manage`
-// or `workspace:manage` (`400 validation_failed`).
+// only as a hash. A key limited to inboxes cannot hold `inboxes:manage`, `webhooks:manage`,
+// `workspace:manage` or `audit:read` (`400 validation_failed`); only an owner gives a key
+// `audit:read` (`403 forbidden`).
 //
 // Takes a body of the `application/json` content type.
 //
@@ -39534,6 +39879,34 @@ func (c *Client) UpdateApiKey(ctx context.Context, apiKeyId ApiKeyId, params *Up
 // Corresponds with GET /v1/attachments/{attachmentId} (the `DownloadAttachment` operationId).
 func (c *Client) DownloadAttachment(ctx context.Context, attachmentId AttachmentId, params *DownloadAttachmentParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewDownloadAttachmentRequest(c.Server, attachmentId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// ListAuditLog The workspace's audit log
+//
+// Who did what to the workspace's members, access, keys, webhooks, channel credentials,
+// retention, exports and deletions, newest first. Each entry names its actor as it was at the
+// time (`member`, `api_key`, `oauth_grant` for a member through a connected app, `operator`
+// for the server's command line), the action, its target and small details. Entries never
+// hold message content, secrets, webhook URLs (only their host) or a contact's name or
+// address. They are kept `YUVA_AUDIT_DAYS` (365 by default) and go with the workspace.
+//
+// Owners only: admins and agents get `403 forbidden`. API keys need `audit:read`, which only
+// an owner can give a key and which a key limited to inboxes cannot hold; OAuth tokens need
+// `audit:read`, offered only to owners.
+//
+// Scope: `audit:read`.
+//
+// Corresponds with GET /v1/audit-log (the `ListAuditLog` operationId).
+func (c *Client) ListAuditLog(ctx context.Context, params *ListAuditLogParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListAuditLogRequest(c.Server, params)
 	if err != nil {
 		return nil, err
 	}
@@ -55769,6 +56142,147 @@ func NewDownloadAttachmentRequest(server string, attachmentId AttachmentId, para
 		if params.WorkspaceId != nil {
 
 			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "workspace_id", *params.WorkspaceId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "uuid"}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewListAuditLogRequest constructs an http.Request for the ListAuditLog method
+func NewListAuditLogRequest(server string, params *ListAuditLogParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/audit-log")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if params.ActorId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "actor_id", *params.ActorId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "uuid"}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.ActorKind != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "actor_kind", *params.ActorKind, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Action != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "action", *params.Action, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "array", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Since != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "since", *params.Since, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "date-time"}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Until != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "until", *params.Until, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "date-time"}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Cursor != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "cursor", *params.Cursor, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "limit", *params.Limit, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: "int32"}); err != nil {
 				return nil, err
 			} else {
 				for _, qp := range strings.Split(queryFrag, "&") {
@@ -78573,8 +79087,9 @@ type ClientWithResponsesInterface interface {
 	// CreateApiKeyWithBodyWithResponse Create an API key
 	//
 	// Owners and admins only, with a member session. The secret is returned once and stored
-	// only as a hash. A key limited to inboxes cannot hold `inboxes:manage`, `webhooks:manage`
-	// or `workspace:manage` (`400 validation_failed`).
+	// only as a hash. A key limited to inboxes cannot hold `inboxes:manage`, `webhooks:manage`,
+	// `workspace:manage` or `audit:read` (`400 validation_failed`); only an owner gives a key
+	// `audit:read` (`403 forbidden`).
 	//
 	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
 	//
@@ -78584,8 +79099,9 @@ type ClientWithResponsesInterface interface {
 	// CreateApiKeyWithResponse Create an API key
 	//
 	// Owners and admins only, with a member session. The secret is returned once and stored
-	// only as a hash. A key limited to inboxes cannot hold `inboxes:manage`, `webhooks:manage`
-	// or `workspace:manage` (`400 validation_failed`).
+	// only as a hash. A key limited to inboxes cannot hold `inboxes:manage`, `webhooks:manage`,
+	// `workspace:manage` or `audit:read` (`400 validation_failed`); only an owner gives a key
+	// `audit:read` (`403 forbidden`).
 	//
 	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
 	//
@@ -78631,6 +79147,26 @@ type ClientWithResponsesInterface interface {
 	//
 	// Corresponds with GET /v1/attachments/{attachmentId} (the `DownloadAttachment` operationId).
 	DownloadAttachmentWithResponse(ctx context.Context, attachmentId AttachmentId, params *DownloadAttachmentParams, reqEditors ...RequestEditorFn) (*DownloadAttachmentResponse, error)
+
+	// ListAuditLogWithResponse The workspace's audit log
+	//
+	// Who did what to the workspace's members, access, keys, webhooks, channel credentials,
+	// retention, exports and deletions, newest first. Each entry names its actor as it was at the
+	// time (`member`, `api_key`, `oauth_grant` for a member through a connected app, `operator`
+	// for the server's command line), the action, its target and small details. Entries never
+	// hold message content, secrets, webhook URLs (only their host) or a contact's name or
+	// address. They are kept `YUVA_AUDIT_DAYS` (365 by default) and go with the workspace.
+	//
+	// Owners only: admins and agents get `403 forbidden`. API keys need `audit:read`, which only
+	// an owner can give a key and which a key limited to inboxes cannot hold; OAuth tokens need
+	// `audit:read`, offered only to owners.
+	//
+	// Scope: `audit:read`.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /v1/audit-log (the `ListAuditLog` operationId).
+	ListAuditLogWithResponse(ctx context.Context, params *ListAuditLogParams, reqEditors ...RequestEditorFn) (*ListAuditLogResponse, error)
 
 	// RequestSignInCodeWithBodyWithResponse Request a sign-in code
 	//
@@ -92321,6 +92857,68 @@ func (r DownloadAttachmentResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r DownloadAttachmentResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type ListAuditLogResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *AuditEntryPage
+	// ApplicationproblemJSON400 the response for an HTTP 400 `application/problem+json` response
+	ApplicationproblemJSON400 *Problem
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r ListAuditLogResponse) GetJSON200() *AuditEntryPage {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON400 returns the response for an HTTP 400 `application/problem+json` response
+func (r ListAuditLogResponse) GetApplicationproblemJSON400() *Problem {
+	return r.ApplicationproblemJSON400
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r ListAuditLogResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r ListAuditLogResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetBody returns the raw response body bytes
+func (r ListAuditLogResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r ListAuditLogResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListAuditLogResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ListAuditLogResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -116580,8 +117178,9 @@ func (c *ClientWithResponses) ListApiKeysWithResponse(ctx context.Context, param
 // CreateApiKeyWithBodyWithResponse Create an API key
 //
 // Owners and admins only, with a member session. The secret is returned once and stored
-// only as a hash. A key limited to inboxes cannot hold `inboxes:manage`, `webhooks:manage`
-// or `workspace:manage` (`400 validation_failed`).
+// only as a hash. A key limited to inboxes cannot hold `inboxes:manage`, `webhooks:manage`,
+// `workspace:manage` or `audit:read` (`400 validation_failed`); only an owner gives a key
+// `audit:read` (`403 forbidden`).
 //
 // Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
 //
@@ -116597,8 +117196,9 @@ func (c *ClientWithResponses) CreateApiKeyWithBodyWithResponse(ctx context.Conte
 // CreateApiKeyWithResponse Create an API key
 //
 // Owners and admins only, with a member session. The secret is returned once and stored
-// only as a hash. A key limited to inboxes cannot hold `inboxes:manage`, `webhooks:manage`
-// or `workspace:manage` (`400 validation_failed`).
+// only as a hash. A key limited to inboxes cannot hold `inboxes:manage`, `webhooks:manage`,
+// `workspace:manage` or `audit:read` (`400 validation_failed`); only an owner gives a key
+// `audit:read` (`403 forbidden`).
 //
 // Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
 //
@@ -116673,6 +117273,32 @@ func (c *ClientWithResponses) DownloadAttachmentWithResponse(ctx context.Context
 		return nil, err
 	}
 	return ParseDownloadAttachmentResponse(rsp)
+}
+
+// ListAuditLogWithResponse The workspace's audit log
+//
+// Who did what to the workspace's members, access, keys, webhooks, channel credentials,
+// retention, exports and deletions, newest first. Each entry names its actor as it was at the
+// time (`member`, `api_key`, `oauth_grant` for a member through a connected app, `operator`
+// for the server's command line), the action, its target and small details. Entries never
+// hold message content, secrets, webhook URLs (only their host) or a contact's name or
+// address. They are kept `YUVA_AUDIT_DAYS` (365 by default) and go with the workspace.
+//
+// Owners only: admins and agents get `403 forbidden`. API keys need `audit:read`, which only
+// an owner can give a key and which a key limited to inboxes cannot hold; OAuth tokens need
+// `audit:read`, offered only to owners.
+//
+// Scope: `audit:read`.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /v1/audit-log (the `ListAuditLog` operationId).
+func (c *ClientWithResponses) ListAuditLogWithResponse(ctx context.Context, params *ListAuditLogParams, reqEditors ...RequestEditorFn) (*ListAuditLogResponse, error) {
+	rsp, err := c.ListAuditLog(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListAuditLogResponse(rsp)
 }
 
 // RequestSignInCodeWithBodyWithResponse Request a sign-in code
@@ -131312,6 +131938,53 @@ func ParseDownloadAttachmentResponse(rsp *http.Response) (*DownloadAttachmentRes
 			headers.XContentTypeOptions = &value
 		}
 		response.Headers200 = &headers
+	}
+
+	return response, nil
+}
+
+// ParseListAuditLogResponse parses an HTTP response from a ListAuditLogWithResponse call
+func ParseListAuditLogResponse(rsp *http.Response) (*ListAuditLogResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListAuditLogResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest AuditEntryPage
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
 	}
 
 	return response, nil

@@ -49,8 +49,14 @@ func (s *Server) UpdateWorkspace(ctx context.Context, req oas.UpdateWorkspaceReq
 			return err
 		}
 		if b.RetentionDays.IsSpecified() {
+			from := w.RetentionDays
 			if w, err = q.SetWorkspaceRetention(ctx, store.SetWorkspaceRetentionParams{ID: p.workspaceID, RetentionDays: days}); err != nil {
 				return err
+			}
+			if !equalPtr(from, w.RetentionDays) {
+				if err := s.audit(ctx, q, p, oas.AuditWorkspaceRetentionChanged, oas.AuditTargetWorkspace, p.workspaceID, auditDetails{"from": from, "to": w.RetentionDays}); err != nil {
+					return err
+				}
 			}
 		}
 		if b.BotsMaySend != nil {
@@ -117,6 +123,9 @@ func (w *retentionWorker) Work(ctx context.Context, _ *river.Job[jobs.RetentionA
 		return err
 	}
 	if err := w.s.CleanMigrationAudit(ctx); err != nil {
+		return err
+	}
+	if err := w.s.CleanAudit(ctx); err != nil {
 		return err
 	}
 	return w.s.ApplyRetention(ctx)

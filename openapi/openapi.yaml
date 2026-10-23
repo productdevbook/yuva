@@ -1473,6 +1473,78 @@ paths:
           $ref: "#/components/responses/Problem"
         "409":
           $ref: "#/components/responses/Problem"
+  /v1/audit-log:
+    get:
+      operationId: listAuditLog
+      summary: The workspace's audit log
+      description: |
+        Who did what to the workspace's members, access, keys, webhooks, channel credentials,
+        retention, exports and deletions, newest first. Each entry names its actor as it was at the
+        time (`member`, `api_key`, `oauth_grant` for a member through a connected app, `operator`
+        for the server's command line), the action, its target and small details. Entries never
+        hold message content, secrets, webhook URLs (only their host) or a contact's name or
+        address. They are kept `YUVA_AUDIT_DAYS` (365 by default) and go with the workspace.
+
+        Owners only: admins and agents get `403 forbidden`. API keys need `audit:read`, which only
+        an owner can give a key and which a key limited to inboxes cannot hold; OAuth tokens need
+        `audit:read`, offered only to owners.
+
+        Scope: `audit:read`.
+      tags: [workspace]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - name: actor_id
+          in: query
+          description: |
+            Only entries by this member, API key or connected app (`actor.id`). A member's id also
+            matches what they did through connected apps (`actor.member_id`).
+          schema:
+            type: string
+            format: uuid
+        - name: actor_kind
+          in: query
+          description: Only entries by this kind of actor.
+          schema:
+            $ref: "#/components/schemas/AuditActorKind"
+        - name: action
+          in: query
+          description: |
+            Only these actions. Repeat the parameter (`action=api_key.created&action=api_key.revoked`)
+            or give a comma-separated list.
+          style: form
+          explode: true
+          schema:
+            type: array
+            maxItems: 50
+            items:
+              $ref: "#/components/schemas/AuditAction"
+        - name: since
+          in: query
+          description: Only entries at or after this time.
+          schema:
+            type: string
+            format: date-time
+        - name: until
+          in: query
+          description: Only entries before this time.
+          schema:
+            type: string
+            format: date-time
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: A page of entries.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuditEntryPage"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
   /v1/workspaces:
     post:
       operationId: createWorkspace
@@ -1711,8 +1783,9 @@ paths:
       summary: Create an API key
       description: |
         Owners and admins only, with a member session. The secret is returned once and stored
-        only as a hash. A key limited to inboxes cannot hold `inboxes:manage`, `webhooks:manage`
-        or `workspace:manage` (`400 validation_failed`).
+        only as a hash. A key limited to inboxes cannot hold `inboxes:manage`, `webhooks:manage`,
+        `workspace:manage` or `audit:read` (`400 validation_failed`); only an owner gives a key
+        `audit:read` (`403 forbidden`).
       tags: [api-keys]
       security:
         - session: []
@@ -16886,6 +16959,143 @@ components:
         broadcasts_by_keys:
           type: boolean
           description: Whether API keys and OAuth tokens with `broadcasts:send` may schedule and resume broadcasts. Owners and admins, with a member session.
+    AuditActorKind:
+      type: string
+      description: |
+        - `member`: a member with a session.
+        - `api_key`: an API key; `name` is its bot name.
+        - `oauth_grant`: a member through a connected app (OAuth or MCP); `member_id` is the member
+          and `via` the app's name.
+        - `operator`: the server's operator on the command line; no `id` or `name`.
+      enum: [member, api_key, oauth_grant, operator]
+      x-enum-varnames: [AuditActorMember, AuditActorApiKey, AuditActorOAuthGrant, AuditActorOperator]
+    AuditActor:
+      type: object
+      required: [kind]
+      properties:
+        kind:
+          $ref: "#/components/schemas/AuditActorKind"
+        id:
+          type: string
+          format: uuid
+          description: The member, API key or connected app (grant). Absent for `operator`.
+        name:
+          type: string
+          description: The display name at the time, kept after the actor is gone. Absent for `operator`.
+        member_id:
+          type: string
+          format: uuid
+          description: For `member` and `oauth_grant`, the member.
+        via:
+          type: string
+          description: For `oauth_grant`, the connected app's name.
+    AuditAction:
+      type: string
+      description: |
+        The action; the part before the dot is the target's type. `details` by action:
+        - `member.joined`: `role`; the actor is the member who accepted an invite.
+        - `member.role_changed`: `from`, `to`.
+        - `member.removed`: `role`, and `reason` `account_deleted` when the person deleted their account.
+        - `member.inbox_access_granted`, `member.inbox_access_revoked`: `inbox_id`, `inbox_name`.
+        - `invite.created`: `email`, `role`. `invite.deleted`: none.
+        - `api_key.created`: `name`, `prefix`, `scopes`, `inbox_ids` when limited, `expires_at` when set.
+          `api_key.revoked`: `name`, `prefix`.
+        - `oauth_grant.created`: `client`, `scopes`. `oauth_grant.revoked`: `client`.
+        - `webhook.created`, `webhook.deleted`: `host` (never the URL), `events`.
+          `webhook.updated`: `fields` among `url`, `events`, `enabled` and `include_notes`, and `host`.
+          `webhook.secret_rotated`: none.
+        - `channel.credentials_changed`: `fields` among `smtp` and `broadcast_smtp` (the account
+          or its password; never the values).
+        - `channel.key_rotated`, `channel.forwarding_address_rotated`, `channel.dkim_key_deleted`:
+          none. `channel.dkim_key_created`: `selector`.
+        - `inbox.identity_secret_rotated`: none. `inbox.deleted`: `name`.
+        - `contact.deleted`: none (no name or address is kept). `contact.consent_exported`: `format`.
+        - `list.consent_exported`: `name`, `format`.
+        - `analytics_export.created`: `property_id`, `kind`, `format`.
+        - `workspace.retention_changed`: `from`, `to` (days; `null` keeps everything).
+        - `workspace.broadcast_approval_requested`: none. `workspace.broadcasts_approved`,
+          `workspace.broadcasts_denied`: `reason` when the operator gave one.
+        - `workspace.deleted`: none.
+
+        More actions are added over time; show an unknown one by its name.
+      enum:
+        - member.joined
+        - member.role_changed
+        - member.removed
+        - member.inbox_access_granted
+        - member.inbox_access_revoked
+        - invite.created
+        - invite.deleted
+        - api_key.created
+        - api_key.revoked
+        - oauth_grant.created
+        - oauth_grant.revoked
+        - webhook.created
+        - webhook.updated
+        - webhook.deleted
+        - webhook.secret_rotated
+        - channel.credentials_changed
+        - channel.key_rotated
+        - channel.forwarding_address_rotated
+        - channel.dkim_key_created
+        - channel.dkim_key_deleted
+        - inbox.identity_secret_rotated
+        - inbox.deleted
+        - contact.deleted
+        - contact.consent_exported
+        - list.consent_exported
+        - analytics_export.created
+        - workspace.retention_changed
+        - workspace.broadcast_approval_requested
+        - workspace.broadcasts_approved
+        - workspace.broadcasts_denied
+        - workspace.deleted
+      x-enum-varnames: [AuditMemberJoined, AuditMemberRoleChanged, AuditMemberRemoved, AuditMemberInboxAccessGranted, AuditMemberInboxAccessRevoked, AuditInviteCreated, AuditInviteDeleted, AuditApiKeyCreated, AuditApiKeyRevoked, AuditOAuthGrantCreated, AuditOAuthGrantRevoked, AuditWebhookCreated, AuditWebhookUpdated, AuditWebhookDeleted, AuditWebhookSecretRotated, AuditChannelCredentialsChanged, AuditChannelKeyRotated, AuditChannelForwardingAddressRotated, AuditChannelDkimKeyCreated, AuditChannelDkimKeyDeleted, AuditInboxIdentitySecretRotated, AuditInboxDeleted, AuditContactDeleted, AuditContactConsentExported, AuditListConsentExported, AuditAnalyticsExportCreated, AuditWorkspaceRetentionChanged, AuditWorkspaceBroadcastApprovalRequested, AuditWorkspaceBroadcastsApproved, AuditWorkspaceBroadcastsDenied, AuditWorkspaceDeleted]
+    AuditTargetType:
+      type: string
+      enum: [workspace, member, invite, inbox, channel, api_key, oauth_grant, webhook, contact, list, analytics_export]
+      x-enum-varnames: [AuditTargetWorkspace, AuditTargetMember, AuditTargetInvite, AuditTargetInbox, AuditTargetChannel, AuditTargetApiKey, AuditTargetOAuthGrant, AuditTargetWebhook, AuditTargetContact, AuditTargetList, AuditTargetAnalyticsExport]
+    AuditTarget:
+      type: object
+      required: [type, id]
+      properties:
+        type:
+          $ref: "#/components/schemas/AuditTargetType"
+        id:
+          type: string
+          format: uuid
+          description: The target, which may no longer exist.
+    AuditEntry:
+      type: object
+      required: [id, actor, action, target, details, created_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+        actor:
+          $ref: "#/components/schemas/AuditActor"
+        action:
+          $ref: "#/components/schemas/AuditAction"
+        target:
+          $ref: "#/components/schemas/AuditTarget"
+        details:
+          type: object
+          additionalProperties: true
+          description: Small, non-secret facts about the action; see `AuditAction`.
+        created_at:
+          type: string
+          format: date-time
+    AuditEntryPage:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/AuditEntry"
+        next_cursor:
+          type: string
+          description: Absent on the last page.
     WorkspaceDeletion:
       type: object
       required: [name]
@@ -17174,7 +17384,11 @@ components:
           and unpublish entries, change or delete published ones. API keys only, and never implied:
           a key made without naming its scopes does not hold it, and OAuth clients are not offered it.
 
-        `lists:*`, `broadcasts:*`, `migrations:manage`, `analytics:*`, `status:*`, `help:*`, `roadmap:*` and `changelog:*` are never added to keys made before they existed.
+        - `audit:read`: the workspace's audit log. Only an owner gives it to a key, and only to a key
+          without an inbox limit; offered only to owners' OAuth tokens. Never implied: a key made
+          without naming its scopes does not hold it.
+
+        `lists:*`, `broadcasts:*`, `migrations:manage`, `analytics:*`, `status:*`, `help:*`, `roadmap:*`, `changelog:*` and `audit:read` are never added to keys made before they existed.
       enum:
         - conversations:read
         - conversations:write
@@ -17210,6 +17424,7 @@ components:
         - changelog:read
         - changelog:write
         - changelog:publish
+        - audit:read
     BotAvatarUrl:
       type: string
       format: uri

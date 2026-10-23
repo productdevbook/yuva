@@ -5,6 +5,7 @@ import (
 	"crypto/rand"
 	"errors"
 	"fmt"
+	"net/http"
 	"net/url"
 	"slices"
 	"strings"
@@ -16,6 +17,8 @@ import (
 )
 
 const prefixAlphabet = "abcdefghijkmnopqrstuvwxyz23456789"
+
+var errOwnerScope = problem(http.StatusForbidden, "forbidden", "only an owner can give a key audit:read")
 
 func apiKeyBody(k store.ApiKey, inboxes []uuid.UUID) oas.ApiKey {
 	out := oas.ApiKey{
@@ -106,6 +109,9 @@ func (s *Server) CreateApiKey(ctx context.Context, req oas.CreateApiKeyRequestOb
 			spec.Scopes[i] = string(sc)
 		}
 	}
+	if p.role != roleOwner && slices.Contains(spec.Scopes, string(oas.AuditRead)) {
+		return nil, errOwnerScope
+	}
 	if b.InboxIds != nil {
 		spec.Inboxes = *b.InboxIds
 		if len(spec.Inboxes) == 0 {
@@ -118,7 +124,7 @@ func (s *Server) CreateApiKey(ctx context.Context, req oas.CreateApiKeyRequestOb
 	)
 	err := s.st.InTx(ctx, func(q *store.Queries) error {
 		var err error
-		k, secret, err = createAPIKey(ctx, q, p.workspaceID, spec, &p.memberID, s.now())
+		k, secret, err = createAPIKey(ctx, q, p, spec, s.now())
 		return err
 	})
 	if err != nil {
@@ -202,7 +208,8 @@ type apiKeySpecError string
 
 func (e apiKeySpecError) Error() string { return string(e) }
 
-func createAPIKey(ctx context.Context, q *store.Queries, workspaceID uuid.UUID, spec APIKeySpec, createdBy *uuid.UUID, now time.Time) (store.ApiKey, string, error) {
+func createAPIKey(ctx context.Context, q *store.Queries, p principal, spec APIKeySpec, now time.Time) (store.ApiKey, string, error) {
+	workspaceID := p.workspaceID
 	name, ok := apiKeyName(spec.Name)
 	if !ok {
 		return store.ApiKey{}, "", apiKeySpecError("name must be 1 to 200 characters")
@@ -265,7 +272,7 @@ func createAPIKey(ctx context.Context, q *store.Queries, workspaceID uuid.UUID, 
 	prefix, secret := newAPIKey()
 	k, err := q.CreateAPIKey(ctx, store.CreateAPIKeyParams{
 		ID: newID(), WorkspaceID: workspaceID, Name: name, Prefix: prefix,
-		SecretHash: hashSecret(secret), CreatedBy: createdBy, Scopes: scopes, InboxLimited: len(inboxes) > 0,
+		SecretHash: hashSecret(secret), CreatedBy: p.memberRef(), Scopes: scopes, InboxLimited: len(inboxes) > 0,
 		ExpiresAt: spec.ExpiresAt, BotName: botName, BotAvatarUrl: avatar,
 	})
 	if err != nil {
@@ -276,7 +283,35 @@ func createAPIKey(ctx context.Context, q *store.Queries, workspaceID uuid.UUID, 
 			return store.ApiKey{}, "", err
 		}
 	}
+	details := auditDetails{"name": k.Name, "prefix": k.Prefix, "scopes": k.Scopes}
+	if len(inboxes) > 0 {
+		details["inbox_ids"] = inboxes
+	}
+	if k.ExpiresAt != nil {
+		details["expires_at"] = k.ExpiresAt
+	}
+	if err := writeAudit(ctx, q, p, now, oas.AuditApiKeyCreated, oas.AuditTargetApiKey, k.ID, details); err != nil {
+		return store.ApiKey{}, "", err
+	}
 	return k, secret, nil
+}
+
+// revokeAPIKey revokes a key and records it unless it was revoked already.
+func revokeAPIKey(ctx context.Context, q *store.Queries, p principal, id uuid.UUID, now time.Time) (store.ApiKey, error) {
+	k, err := q.GetAPIKey(ctx, store.GetAPIKeyParams{WorkspaceID: p.workspaceID, ID: id})
+	if store.IsNotFound(err) {
+		return k, errNotFound
+	}
+	if err != nil {
+		return k, err
+	}
+	if _, err := q.RevokeAPIKey(ctx, store.RevokeAPIKeyParams{Now: now, WorkspaceID: p.workspaceID, ID: k.ID}); err != nil {
+		return k, err
+	}
+	if k.RevokedAt != nil {
+		return k, nil
+	}
+	return k, writeAudit(ctx, q, p, now, oas.AuditApiKeyRevoked, oas.AuditTargetApiKey, k.ID, auditDetails{"name": k.Name, "prefix": k.Prefix})
 }
 
 // FindWorkspace resolves a workspace id or an exact workspace name for the command line.
@@ -320,7 +355,7 @@ func CreateWorkspaceAPIKey(ctx context.Context, st *store.Store, workspaceID uui
 	)
 	err := st.InTx(ctx, func(q *store.Queries) error {
 		var err error
-		k, secret, err = createAPIKey(ctx, q, workspaceID, spec, nil, time.Now())
+		k, secret, err = createAPIKey(ctx, q, principal{workspaceID: workspaceID}, spec, time.Now())
 		return err
 	})
 	return k, secret, err
@@ -335,10 +370,11 @@ func RevokeAPIKeyByID(ctx context.Context, st *store.Store, id uuid.UUID, now ti
 	if err != nil {
 		return store.ApiKey{}, err
 	}
-	if _, err := st.RevokeAPIKey(ctx, store.RevokeAPIKeyParams{Now: now, WorkspaceID: k.WorkspaceID, ID: k.ID}); err != nil {
-		return store.ApiKey{}, err
-	}
-	return k, nil
+	err = st.InTx(ctx, func(q *store.Queries) error {
+		_, err := revokeAPIKey(ctx, q, principal{workspaceID: k.WorkspaceID}, k.ID, now)
+		return err
+	})
+	return k, err
 }
 
 func (s *Server) RevokeApiKey(ctx context.Context, req oas.RevokeApiKeyRequestObject) (oas.RevokeApiKeyResponseObject, error) {
@@ -346,12 +382,12 @@ func (s *Server) RevokeApiKey(ctx context.Context, req oas.RevokeApiKeyRequestOb
 	if err := requireManager(p); err != nil {
 		return nil, err
 	}
-	n, err := s.st.RevokeAPIKey(ctx, store.RevokeAPIKeyParams{Now: s.now(), WorkspaceID: p.workspaceID, ID: req.ApiKeyId})
+	err := s.st.InTx(ctx, func(q *store.Queries) error {
+		_, err := revokeAPIKey(ctx, q, p, req.ApiKeyId, s.now())
+		return err
+	})
 	if err != nil {
 		return nil, err
-	}
-	if n == 0 {
-		return nil, errNotFound
 	}
 	return oas.RevokeApiKey204Response{}, nil
 }

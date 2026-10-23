@@ -85,6 +85,10 @@ func (s *Server) ApproveOAuthRequest(ctx context.Context, req oas.ApproveOAuthRe
 		if err != nil {
 			return err
 		}
+		by := principal{workspaceID: m.WorkspaceID, memberID: m.ID}
+		if err := s.audit(ctx, q, by, oas.AuditOAuthGrantCreated, oas.AuditTargetOAuthGrant, g.ID, auditDetails{"client": r.ClientName, "scopes": g.Scopes}); err != nil {
+			return err
+		}
 		code := randomToken(32)
 		if err := q.CreateOAuthCode(ctx, store.CreateOAuthCodeParams{
 			WorkspaceID: g.WorkspaceID, ID: newID(), GrantID: g.ID, CodeHash: hashSecret(code), RedirectUri: r.RedirectUri,
@@ -167,8 +171,14 @@ func (s *Server) RevokeOAuthGrant(ctx context.Context, req oas.RevokeOAuthGrantR
 		if p.role == roleAgent && g.MemberID != p.memberID {
 			return errOAuthGrantGone
 		}
-		_, err = revokeGrant(ctx, q, p.workspaceID, g.ID, s.now())
-		return err
+		client, err := q.GetOAuthGrantClientName(ctx, store.GetOAuthGrantClientNameParams{WorkspaceID: p.workspaceID, ID: g.ID})
+		if err != nil {
+			return err
+		}
+		if _, err = revokeGrant(ctx, q, p.workspaceID, g.ID, s.now()); err != nil {
+			return err
+		}
+		return s.audit(ctx, q, p, oas.AuditOAuthGrantRevoked, oas.AuditTargetOAuthGrant, g.ID, auditDetails{"client": client})
 	})
 	if err != nil {
 		return nil, err

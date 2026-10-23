@@ -276,6 +276,7 @@ func serve(ctx context.Context, cfg config.Config, log *slog.Logger, args []stri
 		PanelAnalyticsKey:   cfg.PanelAnalyticsKey,
 		Imports:             api.ImportSettings{MaxRows: cfg.ImportMaxRows},
 		Migrations:          migrationSettings(cfg),
+		AuditDays:           cfg.AuditDays,
 		Broadcasts: api.BroadcastSettings{
 			Mode: cfg.Broadcasts, DailyRecipients: cfg.BroadcastDailyRecipients, LinkURL: cfg.MailLinkURL,
 		},

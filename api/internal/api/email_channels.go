@@ -1,6 +1,7 @@
 package api
 
 import (
+	"bytes"
 	"context"
 	"net/http"
 	"regexp"
@@ -238,4 +239,25 @@ func isCatchAll(address string) bool {
 
 func loopbackHost(h string) bool {
 	return h == "localhost" || h == "127.0.0.1" || h == "::1"
+}
+
+// auditCredentials records which SMTP accounts of an e-mail channel were set or changed: host,
+// username or password, never their values.
+func (s *Server) auditCredentials(ctx context.Context, q *store.Queries, p principal, prev *store.EmailChannel, cur store.EmailChannel) error {
+	var before store.EmailChannel
+	if prev != nil {
+		before = *prev
+	}
+	var fields []string
+	if before.SmtpHost != cur.SmtpHost || before.SmtpUsername != cur.SmtpUsername || !bytes.Equal(before.SmtpPassword, cur.SmtpPassword) {
+		fields = append(fields, "smtp")
+	}
+	if deref(before.BroadcastSmtpHost) != deref(cur.BroadcastSmtpHost) || deref(before.BroadcastSmtpUsername) != deref(cur.BroadcastSmtpUsername) ||
+		!bytes.Equal(before.BroadcastSmtpPassword, cur.BroadcastSmtpPassword) {
+		fields = append(fields, "broadcast_smtp")
+	}
+	if len(fields) == 0 {
+		return nil
+	}
+	return s.audit(ctx, q, p, oas.AuditChannelCredentialsChanged, oas.AuditTargetChannel, cur.ChannelID, auditDetails{"fields": fields})
 }

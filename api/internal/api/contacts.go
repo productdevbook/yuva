@@ -665,6 +665,9 @@ func (s *Server) deleteContact(ctx context.Context, p principal, id uuid.UUID) e
 		if _, err = q.DeleteContact(ctx, store.DeleteContactParams{WorkspaceID: p.workspaceID, ID: id}); err != nil {
 			return err
 		}
+		if err := s.audit(ctx, q, p, oas.AuditContactDeleted, oas.AuditTargetContact, id, nil); err != nil {
+			return err
+		}
 		events.add(realtime.ContactDeleted, nil, nil, oas.ContactRef{Id: id})
 		events.items[len(events.items)-1].deleted = snap
 		return nil

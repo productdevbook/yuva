@@ -373,6 +373,23 @@ func (q *Queries) GetOAuthGrant(ctx context.Context, arg GetOAuthGrantParams) (O
 	return i, err
 }
 
+const getOAuthGrantClientName = `-- name: GetOAuthGrantClientName :one
+SELECT c.name FROM oauth_grants g JOIN oauth_clients c ON c.id = g.client_id
+WHERE g.workspace_id = $1 AND g.id = $2
+`
+
+type GetOAuthGrantClientNameParams struct {
+	WorkspaceID uuid.UUID
+	ID          uuid.UUID
+}
+
+func (q *Queries) GetOAuthGrantClientName(ctx context.Context, arg GetOAuthGrantClientNameParams) (string, error) {
+	row := q.db.QueryRow(ctx, getOAuthGrantClientName, arg.WorkspaceID, arg.ID)
+	var name string
+	err := row.Scan(&name)
+	return name, err
+}
+
 const getOAuthRequest = `-- name: GetOAuthRequest :one
 SELECT r.id, r.redirect_uri, r.state, r.code_challenge, r.scopes, r.resource, r.created_at, r.expires_at,
        c.id AS client_ref, c.client_id AS client_key, c.name AS client_name, c.client_uri

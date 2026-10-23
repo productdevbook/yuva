@@ -6,20 +6,33 @@ import (
 	"time"
 	"uuid"
 
+	"github.com/productdevbook/yuva/api/internal/oas"
 	"github.com/productdevbook/yuva/api/internal/store"
 )
 
 // OperatorApproveBroadcasts lets a workspace send broadcasts (an approval, or lifting a suspension).
 // Broadcasts it paused stay paused until a member resumes them.
 func (s *Server) OperatorApproveBroadcasts(ctx context.Context, ws uuid.UUID, reason string) error {
-	_, err := s.st.SetWorkspaceBroadcastsStatus(ctx, store.SetWorkspaceBroadcastsStatusParams{ID: ws, Status: wsAllowed, Reason: optionalText(reason, 500), Now: s.now()})
-	return err
+	return s.answerBroadcastApproval(ctx, ws, wsAllowed, oas.AuditWorkspaceBroadcastsApproved, reason)
 }
 
 // OperatorDenyBroadcasts answers an approval request with no; the workspace may ask again.
 func (s *Server) OperatorDenyBroadcasts(ctx context.Context, ws uuid.UUID, reason string) error {
-	_, err := s.st.SetWorkspaceBroadcastsStatus(ctx, store.SetWorkspaceBroadcastsStatusParams{ID: ws, Status: wsApprovalRequired, Reason: optionalText(reason, 500), Now: s.now()})
-	return err
+	return s.answerBroadcastApproval(ctx, ws, wsApprovalRequired, oas.AuditWorkspaceBroadcastsDenied, reason)
+}
+
+func (s *Server) answerBroadcastApproval(ctx context.Context, ws uuid.UUID, status string, action oas.AuditAction, reason string) error {
+	return s.st.InTx(ctx, func(q *store.Queries) error {
+		w, err := q.SetWorkspaceBroadcastsStatus(ctx, store.SetWorkspaceBroadcastsStatusParams{ID: ws, Status: status, Reason: optionalText(reason, 500), Now: s.now()})
+		if err != nil {
+			return err
+		}
+		details := auditDetails{}
+		if w.BroadcastsStatusReason != nil {
+			details["reason"] = *w.BroadcastsStatusReason
+		}
+		return s.audit(ctx, q, principal{workspaceID: ws}, action, oas.AuditTargetWorkspace, ws, details)
+	})
 }
 
 // OperatorSuspendBroadcasts stops a workspace from sending and pauses its running broadcasts.

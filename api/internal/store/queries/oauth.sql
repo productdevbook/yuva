@@ -125,3 +125,7 @@ DELETE FROM oauth_clients c
 WHERE c.created_at < @before::timestamptz
   AND NOT EXISTS (SELECT 1 FROM oauth_grants g WHERE g.client_id = c.id)
   AND NOT EXISTS (SELECT 1 FROM oauth_requests r WHERE r.client_id = c.id);
+
+-- name: GetOAuthGrantClientName :one
+SELECT c.name FROM oauth_grants g JOIN oauth_clients c ON c.id = g.client_id
+WHERE g.workspace_id = @workspace_id AND g.id = @id;

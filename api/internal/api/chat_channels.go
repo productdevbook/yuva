@@ -206,7 +206,14 @@ func (s *Server) RotateChannelPublicKey(ctx context.Context, req oas.RotateChann
 	if !hasPublicKey(c.Kind) {
 		return nil, errNotChat
 	}
-	chat, err := s.st.SetChatChannelKey(ctx, store.SetChatChannelKeyParams{WorkspaceID: p.workspaceID, ChannelID: c.ID, PublicKey: newChatKey()})
+	var chat store.ChatChannel
+	err = s.st.InTx(ctx, func(q *store.Queries) error {
+		var err error
+		if chat, err = q.SetChatChannelKey(ctx, store.SetChatChannelKeyParams{WorkspaceID: p.workspaceID, ChannelID: c.ID, PublicKey: newChatKey()}); err != nil {
+			return err
+		}
+		return s.audit(ctx, q, p, oas.AuditChannelKeyRotated, oas.AuditTargetChannel, c.ID, nil)
+	})
 	if store.IsNotFound(err) {
 		return nil, errNotChat
 	}

@@ -174,10 +174,18 @@ func (s *Server) CreateWebhook(ctx context.Context, req oas.CreateWebhookRequest
 	}
 	id := newID()
 	secret, key := webhook.NewSecret()
-	e, err := s.st.CreateWebhookEndpoint(ctx, store.CreateWebhookEndpointParams{
-		ID: id, WorkspaceID: p.workspaceID, InboxID: b.InboxId, Url: url, Description: desc, Events: events,
-		IncludeNotes: b.IncludeNotes != nil && *b.IncludeNotes, Enabled: b.Enabled == nil || *b.Enabled,
-		Secret: s.secrets.Seal(key, webhookSecretContext(p.workspaceID, id)), Now: s.now(),
+	var e store.WebhookEndpoint
+	err = s.st.InTx(ctx, func(q *store.Queries) error {
+		var err error
+		e, err = q.CreateWebhookEndpoint(ctx, store.CreateWebhookEndpointParams{
+			ID: id, WorkspaceID: p.workspaceID, InboxID: b.InboxId, Url: url, Description: desc, Events: events,
+			IncludeNotes: b.IncludeNotes != nil && *b.IncludeNotes, Enabled: b.Enabled == nil || *b.Enabled,
+			Secret: s.secrets.Seal(key, webhookSecretContext(p.workspaceID, id)), Now: s.now(),
+		})
+		if err != nil {
+			return err
+		}
+		return s.audit(ctx, q, p, oas.AuditWebhookCreated, oas.AuditTargetWebhook, e.ID, auditDetails{"host": urlHost(e.Url), "events": e.Events})
 	})
 	if store.IsForeignKeyViolation(err) {
 		return nil, errInboxGone
@@ -238,8 +246,27 @@ func (s *Server) UpdateWebhook(ctx context.Context, req oas.UpdateWebhookRequest
 			arg.Enabled = *b.Enabled
 		}
 		e, err := q.UpdateWebhookEndpoint(ctx, arg)
+		if err != nil {
+			return err
+		}
 		out = s.webhookEndpointBody(e)
-		return err
+		var fields []string
+		if cur.Url != e.Url {
+			fields = append(fields, "url")
+		}
+		if !slices.Equal(cur.Events, e.Events) {
+			fields = append(fields, "events")
+		}
+		if cur.Enabled != e.Enabled {
+			fields = append(fields, "enabled")
+		}
+		if cur.IncludeNotes != e.IncludeNotes {
+			fields = append(fields, "include_notes")
+		}
+		if len(fields) == 0 {
+			return nil
+		}
+		return s.audit(ctx, q, p, oas.AuditWebhookUpdated, oas.AuditTargetWebhook, e.ID, auditDetails{"fields": fields, "host": urlHost(e.Url)})
 	})
 	if err != nil {
 		return nil, err
@@ -252,12 +279,18 @@ func (s *Server) DeleteWebhook(ctx context.Context, req oas.DeleteWebhookRequest
 	if err := requireManagerOrKey(p); err != nil {
 		return nil, err
 	}
-	n, err := s.st.DeleteWebhookEndpoint(ctx, store.DeleteWebhookEndpointParams{WorkspaceID: p.workspaceID, ID: req.WebhookId})
+	err := s.st.InTx(ctx, func(q *store.Queries) error {
+		e, err := s.visibleWebhook(ctx, q, p, req.WebhookId, true)
+		if err != nil {
+			return err
+		}
+		if _, err := q.DeleteWebhookEndpoint(ctx, store.DeleteWebhookEndpointParams{WorkspaceID: p.workspaceID, ID: e.ID}); err != nil {
+			return err
+		}
+		return s.audit(ctx, q, p, oas.AuditWebhookDeleted, oas.AuditTargetWebhook, e.ID, auditDetails{"host": urlHost(e.Url), "events": e.Events})
+	})
 	if err != nil {
 		return nil, err
-	}
-	if n == 0 {
-		return nil, errWebhookGone
 	}
 	return oas.DeleteWebhook204Response{}, nil
 }
@@ -272,9 +305,17 @@ func (s *Server) RotateWebhookSecret(ctx context.Context, req oas.RotateWebhookS
 	}
 	secret, key := webhook.NewSecret()
 	now := s.now()
-	e, err := s.st.RotateWebhookSecret(ctx, store.RotateWebhookSecretParams{
-		WorkspaceID: p.workspaceID, ID: req.WebhookId, Secret: s.secrets.Seal(key, webhookSecretContext(p.workspaceID, req.WebhookId)),
-		PreviousUntil: new(now.Add(webhookPreviousSecretTTL)), Now: now,
+	var e store.WebhookEndpoint
+	err := s.st.InTx(ctx, func(q *store.Queries) error {
+		var err error
+		e, err = q.RotateWebhookSecret(ctx, store.RotateWebhookSecretParams{
+			WorkspaceID: p.workspaceID, ID: req.WebhookId, Secret: s.secrets.Seal(key, webhookSecretContext(p.workspaceID, req.WebhookId)),
+			PreviousUntil: new(now.Add(webhookPreviousSecretTTL)), Now: now,
+		})
+		if err != nil {
+			return err
+		}
+		return s.audit(ctx, q, p, oas.AuditWebhookSecretRotated, oas.AuditTargetWebhook, e.ID, nil)
 	})
 	if store.IsNotFound(err) {
 		return nil, errWebhookGone

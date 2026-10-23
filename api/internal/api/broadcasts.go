@@ -1043,6 +1043,9 @@ func (s *Server) RequestBroadcastApproval(ctx context.Context, req oas.RequestBr
 		if w, err = q.SetWorkspaceBroadcastsStatus(ctx, store.SetWorkspaceBroadcastsStatusParams{ID: p.workspaceID, Status: wsApprovalRequested, Now: s.now()}); err != nil {
 			return err
 		}
+		if err := s.audit(ctx, q, p, oas.AuditWorkspaceBroadcastApprovalRequested, oas.AuditTargetWorkspace, p.workspaceID, nil); err != nil {
+			return err
+		}
 		owner, err := q.GetMember(ctx, store.GetMemberParams{WorkspaceID: p.workspaceID, ID: p.memberID})
 		if err != nil {
 			return err

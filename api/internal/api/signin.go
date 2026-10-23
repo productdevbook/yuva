@@ -288,10 +288,17 @@ func acceptInvites(ctx context.Context, q *store.Queries, email string, now time
 		}
 	}
 	for _, inv := range invites {
-		_, err := q.CreateMember(ctx, store.CreateMemberParams{
+		m, err := q.CreateMember(ctx, store.CreateMemberParams{
 			ID: newID(), WorkspaceID: inv.WorkspaceID, PersonID: person.ID, Role: inv.Role,
 		})
-		if err != nil && !store.IsNotFound(err) {
+		if store.IsNotFound(err) {
+			continue
+		}
+		if err != nil {
+			return uuid.Nil(), false, err
+		}
+		joined := principal{workspaceID: m.WorkspaceID, memberID: m.ID}
+		if err := writeAudit(ctx, q, joined, now, oas.AuditMemberJoined, oas.AuditTargetMember, m.ID, auditDetails{"role": m.Role}); err != nil {
 			return uuid.Nil(), false, err
 		}
 	}

@@ -76,6 +76,7 @@ type Server struct {
 	broadcasts        BroadcastSettings
 	imports           ImportSettings
 	migrations        MigrationSettings
+	auditDays         int
 	ses               SESSettings
 	status            StatusSettings
 	statusCache       *statusCache
@@ -144,6 +145,7 @@ type Deps struct {
 	Broadcasts          BroadcastSettings
 	Imports             ImportSettings
 	Migrations          MigrationSettings
+	AuditDays           int
 	Analytics           AnalyticsSettings
 	SES                 SESSettings
 	Status              StatusSettings
@@ -280,6 +282,9 @@ func New(d Deps) *Server {
 		broadcasts: d.Broadcasts, imports: importSettings(d.Imports), migrations: migrationSettings(d.Migrations), ses: d.SES,
 		status: d.Status, statusCache: newStatusCache(), statusDomainCache: newStatusDomainCache(), started: now(),
 		roadmap: d.Roadmap, changelog: d.Changelog, changelogCache: newPublicCache(changelogCacheTTL, changelogCacheMax), roadmapCache: newPublicCache(roadmapCacheTTL, roadmapCacheMax), help: d.Help, helpCounts: newHelpCounters(), helpCache: newPublicCache(helpPageCacheTTL, helpPageCacheMax),
+	}
+	if srv.auditDays = d.AuditDays; srv.auditDays <= 0 {
+		srv.auditDays = defaultWorkspaceAuditDays
 	}
 	if !d.DisableMCP {
 		srv.mcp, srv.mcpSchemas = newMCPHandler(), mcp.NewSchemaCache()

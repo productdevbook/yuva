@@ -64,9 +64,17 @@ func (s *Server) CreateInvite(ctx context.Context, req oas.CreateInviteRequestOb
 		return nil, errAlreadyMember
 	}
 	now := s.now()
-	inv, err := s.st.UpsertInvite(ctx, store.UpsertInviteParams{
-		ID: newID(), WorkspaceID: p.workspaceID, Email: email, Role: string(b.Role), Locale: string(locale),
-		InvitedBy: &p.memberID, CreatedAt: now, ExpiresAt: now.Add(inviteTTL),
+	var inv store.Invite
+	err = s.st.InTx(ctx, func(q *store.Queries) error {
+		var err error
+		inv, err = q.UpsertInvite(ctx, store.UpsertInviteParams{
+			ID: newID(), WorkspaceID: p.workspaceID, Email: email, Role: string(b.Role), Locale: string(locale),
+			InvitedBy: &p.memberID, CreatedAt: now, ExpiresAt: now.Add(inviteTTL),
+		})
+		if err != nil {
+			return err
+		}
+		return s.audit(ctx, q, p, oas.AuditInviteCreated, oas.AuditTargetInvite, inv.ID, auditDetails{"email": inv.Email, "role": inv.Role})
 	})
 	if err != nil {
 		return nil, err
@@ -102,12 +110,18 @@ func (s *Server) DeleteInvite(ctx context.Context, req oas.DeleteInviteRequestOb
 	if err := requireManager(p); err != nil {
 		return nil, err
 	}
-	n, err := s.st.DeleteInvite(ctx, store.DeleteInviteParams{WorkspaceID: p.workspaceID, ID: req.InviteId})
+	err := s.st.InTx(ctx, func(q *store.Queries) error {
+		n, err := q.DeleteInvite(ctx, store.DeleteInviteParams{WorkspaceID: p.workspaceID, ID: req.InviteId})
+		if err != nil {
+			return err
+		}
+		if n == 0 {
+			return errNotFound
+		}
+		return s.audit(ctx, q, p, oas.AuditInviteDeleted, oas.AuditTargetInvite, req.InviteId, nil)
+	})
 	if err != nil {
 		return nil, err
-	}
-	if n == 0 {
-		return nil, errNotFound
 	}
 	return oas.DeleteInvite204Response{}, nil
 }

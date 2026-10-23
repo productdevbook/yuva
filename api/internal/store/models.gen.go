@@ -462,6 +462,21 @@ type Attachment struct {
 	Inline         bool
 }
 
+type AuditLog struct {
+	ID            uuid.UUID
+	WorkspaceID   uuid.UUID
+	ActorKind     string
+	ActorID       *uuid.UUID
+	ActorMemberID *uuid.UUID
+	ActorName     string
+	Via           *string
+	Action        string
+	TargetType    string
+	TargetID      uuid.UUID
+	Details       []byte
+	CreatedAt     time.Time
+}
+
 type Broadcast struct {
 	ID                 uuid.UUID
 	WorkspaceID        uuid.UUID

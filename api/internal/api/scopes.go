@@ -14,13 +14,13 @@ var allScopes = []oas.ApiKeyScope{
 	oas.BroadcastsRead, oas.BroadcastsWrite, oas.BroadcastsSend, oas.MigrationsManage,
 	oas.AnalyticsRead, oas.AnalyticsWrite, oas.AnalyticsManage, oas.StatusRead, oas.StatusManage,
 	oas.HelpRead, oas.HelpWrite, oas.HelpPublish, oas.RoadmapRead, oas.RoadmapWrite, oas.RoadmapStage,
-	oas.ChangelogRead, oas.ChangelogWrite, oas.ChangelogPublish,
+	oas.ChangelogRead, oas.ChangelogWrite, oas.ChangelogPublish, oas.AuditRead,
 }
 
 // notImpliedScopes are left out of a key made without naming its scopes.
-var notImpliedScopes = []oas.ApiKeyScope{oas.BroadcastsSend, oas.StatusManage, oas.HelpPublish, oas.RoadmapStage, oas.ChangelogPublish}
+var notImpliedScopes = []oas.ApiKeyScope{oas.BroadcastsSend, oas.StatusManage, oas.HelpPublish, oas.RoadmapStage, oas.ChangelogPublish, oas.AuditRead}
 
-var unlimitedOnlyScopes = []oas.ApiKeyScope{oas.InboxesManage, oas.WebhooksManage, oas.WorkspaceManage, oas.MigrationsManage, oas.AnalyticsManage}
+var unlimitedOnlyScopes = []oas.ApiKeyScope{oas.InboxesManage, oas.WebhooksManage, oas.WorkspaceManage, oas.MigrationsManage, oas.AnalyticsManage, oas.AuditRead}
 
 // operationScopes lists every operation an API key may call with the scopes it needs. An operation
 // missing here needs a member session.
@@ -54,6 +54,8 @@ var operationScopes = map[string][]oas.ApiKeyScope{
 	"UpdateWorkspace":          {oas.WorkspaceManage},
 	"GetUsage":                 {oas.WorkspaceManage},
 	"RequestBroadcastApproval": {oas.WorkspaceManage},
+
+	"ListAuditLog": {oas.AuditRead},
 
 	"ListContacts":       {oas.ContactsRead},
 	"LookupContact":      {oas.ContactsRead},

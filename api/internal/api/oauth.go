@@ -49,9 +49,11 @@ var (
 	errOAuthGrantGone     = problem(http.StatusNotFound, "not_found", "no such connected app")
 )
 
-// managerScopes need an owner or admin; tokens of agents are never offered them. feedback:write,
-// analytics:write, help:publish and changelog:publish are for API keys only and offered to nobody.
+// managerScopes need an owner or admin; tokens of agents are never offered them, and ownerScopes
+// are offered to owners only. feedback:write, analytics:write, help:publish and changelog:publish
+// are for API keys only and offered to nobody.
 var (
+	ownerScopes    = []oas.ApiKeyScope{oas.AuditRead}
 	managerScopes  = []oas.ApiKeyScope{oas.InboxesManage, oas.LabelsWrite, oas.CannedRepliesWrite, oas.WebhooksManage, oas.WorkspaceManage, oas.ListsWrite, oas.BroadcastsWrite, oas.BroadcastsSend, oas.MigrationsManage, oas.AnalyticsManage}
 	keyOnlyScopes  = []oas.ApiKeyScope{oas.FeedbackWrite, oas.AnalyticsWrite, oas.HelpPublish, oas.ChangelogPublish}
 	privateSchemeR = regexp.MustCompile(`^[a-z][a-z0-9+.-]*$`)
@@ -89,6 +91,9 @@ func offeredScopes(requested []string, role string) []oas.ApiKeyScope {
 			continue
 		}
 		if role == roleAgent && slices.Contains(managerScopes, sc) {
+			continue
+		}
+		if role != roleOwner && slices.Contains(ownerScopes, sc) {
 			continue
 		}
 		out = append(out, sc)

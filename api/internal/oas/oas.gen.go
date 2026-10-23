@@ -916,6 +916,7 @@ const (
 	AnalyticsManage    ApiKeyScope = "analytics:manage"
 	AnalyticsRead      ApiKeyScope = "analytics:read"
 	AnalyticsWrite     ApiKeyScope = "analytics:write"
+	AuditRead          ApiKeyScope = "audit:read"
 	BroadcastsRead     ApiKeyScope = "broadcasts:read"
 	BroadcastsSend     ApiKeyScope = "broadcasts:send"
 	BroadcastsWrite    ApiKeyScope = "broadcasts:write"
@@ -957,6 +958,8 @@ func (e ApiKeyScope) Valid() bool {
 	case AnalyticsRead:
 		return true
 	case AnalyticsWrite:
+		return true
+	case AuditRead:
 		return true
 	case BroadcastsRead:
 		return true
@@ -1037,6 +1040,180 @@ func (e AppPlatform) Valid() bool {
 	case Android:
 		return true
 	case Ios:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for AuditAction.
+const (
+	AuditAnalyticsExportCreated              AuditAction = "analytics_export.created"
+	AuditApiKeyCreated                       AuditAction = "api_key.created"
+	AuditApiKeyRevoked                       AuditAction = "api_key.revoked"
+	AuditChannelCredentialsChanged           AuditAction = "channel.credentials_changed"
+	AuditChannelDkimKeyCreated               AuditAction = "channel.dkim_key_created"
+	AuditChannelDkimKeyDeleted               AuditAction = "channel.dkim_key_deleted"
+	AuditChannelForwardingAddressRotated     AuditAction = "channel.forwarding_address_rotated"
+	AuditChannelKeyRotated                   AuditAction = "channel.key_rotated"
+	AuditContactConsentExported              AuditAction = "contact.consent_exported"
+	AuditContactDeleted                      AuditAction = "contact.deleted"
+	AuditInboxDeleted                        AuditAction = "inbox.deleted"
+	AuditInboxIdentitySecretRotated          AuditAction = "inbox.identity_secret_rotated"
+	AuditInviteCreated                       AuditAction = "invite.created"
+	AuditInviteDeleted                       AuditAction = "invite.deleted"
+	AuditListConsentExported                 AuditAction = "list.consent_exported"
+	AuditMemberInboxAccessGranted            AuditAction = "member.inbox_access_granted"
+	AuditMemberInboxAccessRevoked            AuditAction = "member.inbox_access_revoked"
+	AuditMemberJoined                        AuditAction = "member.joined"
+	AuditMemberRemoved                       AuditAction = "member.removed"
+	AuditMemberRoleChanged                   AuditAction = "member.role_changed"
+	AuditOAuthGrantCreated                   AuditAction = "oauth_grant.created"
+	AuditOAuthGrantRevoked                   AuditAction = "oauth_grant.revoked"
+	AuditWebhookCreated                      AuditAction = "webhook.created"
+	AuditWebhookDeleted                      AuditAction = "webhook.deleted"
+	AuditWebhookSecretRotated                AuditAction = "webhook.secret_rotated"
+	AuditWebhookUpdated                      AuditAction = "webhook.updated"
+	AuditWorkspaceBroadcastApprovalRequested AuditAction = "workspace.broadcast_approval_requested"
+	AuditWorkspaceBroadcastsApproved         AuditAction = "workspace.broadcasts_approved"
+	AuditWorkspaceBroadcastsDenied           AuditAction = "workspace.broadcasts_denied"
+	AuditWorkspaceDeleted                    AuditAction = "workspace.deleted"
+	AuditWorkspaceRetentionChanged           AuditAction = "workspace.retention_changed"
+)
+
+// Valid indicates whether the value is a known member of the AuditAction enum.
+func (e AuditAction) Valid() bool {
+	switch e {
+	case AuditAnalyticsExportCreated:
+		return true
+	case AuditApiKeyCreated:
+		return true
+	case AuditApiKeyRevoked:
+		return true
+	case AuditChannelCredentialsChanged:
+		return true
+	case AuditChannelDkimKeyCreated:
+		return true
+	case AuditChannelDkimKeyDeleted:
+		return true
+	case AuditChannelForwardingAddressRotated:
+		return true
+	case AuditChannelKeyRotated:
+		return true
+	case AuditContactConsentExported:
+		return true
+	case AuditContactDeleted:
+		return true
+	case AuditInboxDeleted:
+		return true
+	case AuditInboxIdentitySecretRotated:
+		return true
+	case AuditInviteCreated:
+		return true
+	case AuditInviteDeleted:
+		return true
+	case AuditListConsentExported:
+		return true
+	case AuditMemberInboxAccessGranted:
+		return true
+	case AuditMemberInboxAccessRevoked:
+		return true
+	case AuditMemberJoined:
+		return true
+	case AuditMemberRemoved:
+		return true
+	case AuditMemberRoleChanged:
+		return true
+	case AuditOAuthGrantCreated:
+		return true
+	case AuditOAuthGrantRevoked:
+		return true
+	case AuditWebhookCreated:
+		return true
+	case AuditWebhookDeleted:
+		return true
+	case AuditWebhookSecretRotated:
+		return true
+	case AuditWebhookUpdated:
+		return true
+	case AuditWorkspaceBroadcastApprovalRequested:
+		return true
+	case AuditWorkspaceBroadcastsApproved:
+		return true
+	case AuditWorkspaceBroadcastsDenied:
+		return true
+	case AuditWorkspaceDeleted:
+		return true
+	case AuditWorkspaceRetentionChanged:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for AuditActorKind.
+const (
+	AuditActorApiKey     AuditActorKind = "api_key"
+	AuditActorMember     AuditActorKind = "member"
+	AuditActorOAuthGrant AuditActorKind = "oauth_grant"
+	AuditActorOperator   AuditActorKind = "operator"
+)
+
+// Valid indicates whether the value is a known member of the AuditActorKind enum.
+func (e AuditActorKind) Valid() bool {
+	switch e {
+	case AuditActorApiKey:
+		return true
+	case AuditActorMember:
+		return true
+	case AuditActorOAuthGrant:
+		return true
+	case AuditActorOperator:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for AuditTargetType.
+const (
+	AuditTargetAnalyticsExport AuditTargetType = "analytics_export"
+	AuditTargetApiKey          AuditTargetType = "api_key"
+	AuditTargetChannel         AuditTargetType = "channel"
+	AuditTargetContact         AuditTargetType = "contact"
+	AuditTargetInbox           AuditTargetType = "inbox"
+	AuditTargetInvite          AuditTargetType = "invite"
+	AuditTargetList            AuditTargetType = "list"
+	AuditTargetMember          AuditTargetType = "member"
+	AuditTargetOAuthGrant      AuditTargetType = "oauth_grant"
+	AuditTargetWebhook         AuditTargetType = "webhook"
+	AuditTargetWorkspace       AuditTargetType = "workspace"
+)
+
+// Valid indicates whether the value is a known member of the AuditTargetType enum.
+func (e AuditTargetType) Valid() bool {
+	switch e {
+	case AuditTargetAnalyticsExport:
+		return true
+	case AuditTargetApiKey:
+		return true
+	case AuditTargetChannel:
+		return true
+	case AuditTargetContact:
+		return true
+	case AuditTargetInbox:
+		return true
+	case AuditTargetInvite:
+		return true
+	case AuditTargetList:
+		return true
+	case AuditTargetMember:
+		return true
+	case AuditTargetOAuthGrant:
+		return true
+	case AuditTargetWebhook:
+		return true
+	case AuditTargetWorkspace:
 		return true
 	default:
 		return false
@@ -8152,7 +8329,11 @@ type ApiKeyList struct {
 //	    and unpublish entries, change or delete published ones. API keys only, and never implied:
 //	    a key made without naming its scopes does not hold it, and OAuth clients are not offered it.
 //
-// `lists:*`, `broadcasts:*`, `migrations:manage`, `analytics:*`, `status:*`, `help:*`, `roadmap:*` and `changelog:*` are never added to keys made before they existed.
+//	  - `audit:read`: the workspace's audit log. Only an owner gives it to a key, and only to a key
+//	    without an inbox limit; offered only to owners' OAuth tokens. Never implied: a key made
+//	    without naming its scopes does not hold it.
+//
+// `lists:*`, `broadcasts:*`, `migrations:manage`, `analytics:*`, `status:*`, `help:*`, `roadmap:*`, `changelog:*` and `audit:read` are never added to keys made before they existed.
 type ApiKeyScope string
 
 // ApiKeyUpdate Only the fields sent change. Scopes, inbox limit and expiry cannot change.
@@ -8210,6 +8391,119 @@ type Attachment struct {
 
 // Attributes Free-form data about the contact (plan, app version, ...), at most 16 KiB.
 type Attributes map[string]interface{}
+
+// AuditAction The action; the part before the dot is the target's type. `details` by action:
+//   - `member.joined`: `role`; the actor is the member who accepted an invite.
+//   - `member.role_changed`: `from`, `to`.
+//   - `member.removed`: `role`, and `reason` `account_deleted` when the person deleted their account.
+//   - `member.inbox_access_granted`, `member.inbox_access_revoked`: `inbox_id`, `inbox_name`.
+//   - `invite.created`: `email`, `role`. `invite.deleted`: none.
+//   - `api_key.created`: `name`, `prefix`, `scopes`, `inbox_ids` when limited, `expires_at` when set.
+//     `api_key.revoked`: `name`, `prefix`.
+//   - `oauth_grant.created`: `client`, `scopes`. `oauth_grant.revoked`: `client`.
+//   - `webhook.created`, `webhook.deleted`: `host` (never the URL), `events`.
+//     `webhook.updated`: `fields` among `url`, `events`, `enabled` and `include_notes`, and `host`.
+//     `webhook.secret_rotated`: none.
+//   - `channel.credentials_changed`: `fields` among `smtp` and `broadcast_smtp` (the account
+//     or its password; never the values).
+//   - `channel.key_rotated`, `channel.forwarding_address_rotated`, `channel.dkim_key_deleted`:
+//     none. `channel.dkim_key_created`: `selector`.
+//   - `inbox.identity_secret_rotated`: none. `inbox.deleted`: `name`.
+//   - `contact.deleted`: none (no name or address is kept). `contact.consent_exported`: `format`.
+//   - `list.consent_exported`: `name`, `format`.
+//   - `analytics_export.created`: `property_id`, `kind`, `format`.
+//   - `workspace.retention_changed`: `from`, `to` (days; `null` keeps everything).
+//   - `workspace.broadcast_approval_requested`: none. `workspace.broadcasts_approved`,
+//     `workspace.broadcasts_denied`: `reason` when the operator gave one.
+//   - `workspace.deleted`: none.
+//
+// More actions are added over time; show an unknown one by its name.
+type AuditAction string
+
+// AuditActor defines model for AuditActor.
+type AuditActor struct {
+	// Id The member, API key or connected app (grant). Absent for `operator`.
+	Id *uuid.UUID `json:"id,omitempty"`
+
+	// Kind - `member`: a member with a session.
+	// - `api_key`: an API key; `name` is its bot name.
+	// - `oauth_grant`: a member through a connected app (OAuth or MCP); `member_id` is the member
+	//   and `via` the app's name.
+	// - `operator`: the server's operator on the command line; no `id` or `name`.
+	Kind AuditActorKind `json:"kind"`
+
+	// MemberId For `member` and `oauth_grant`, the member.
+	MemberId *uuid.UUID `json:"member_id,omitempty"`
+
+	// Name The display name at the time, kept after the actor is gone. Absent for `operator`.
+	Name *string `json:"name,omitempty"`
+
+	// Via For `oauth_grant`, the connected app's name.
+	Via *string `json:"via,omitempty"`
+}
+
+// AuditActorKind - `member`: a member with a session.
+//   - `api_key`: an API key; `name` is its bot name.
+//   - `oauth_grant`: a member through a connected app (OAuth or MCP); `member_id` is the member
+//     and `via` the app's name.
+//   - `operator`: the server's operator on the command line; no `id` or `name`.
+type AuditActorKind string
+
+// AuditEntry defines model for AuditEntry.
+type AuditEntry struct {
+	// Action The action; the part before the dot is the target's type. `details` by action:
+	// - `member.joined`: `role`; the actor is the member who accepted an invite.
+	// - `member.role_changed`: `from`, `to`.
+	// - `member.removed`: `role`, and `reason` `account_deleted` when the person deleted their account.
+	// - `member.inbox_access_granted`, `member.inbox_access_revoked`: `inbox_id`, `inbox_name`.
+	// - `invite.created`: `email`, `role`. `invite.deleted`: none.
+	// - `api_key.created`: `name`, `prefix`, `scopes`, `inbox_ids` when limited, `expires_at` when set.
+	//   `api_key.revoked`: `name`, `prefix`.
+	// - `oauth_grant.created`: `client`, `scopes`. `oauth_grant.revoked`: `client`.
+	// - `webhook.created`, `webhook.deleted`: `host` (never the URL), `events`.
+	//   `webhook.updated`: `fields` among `url`, `events`, `enabled` and `include_notes`, and `host`.
+	//   `webhook.secret_rotated`: none.
+	// - `channel.credentials_changed`: `fields` among `smtp` and `broadcast_smtp` (the account
+	//   or its password; never the values).
+	// - `channel.key_rotated`, `channel.forwarding_address_rotated`, `channel.dkim_key_deleted`:
+	//   none. `channel.dkim_key_created`: `selector`.
+	// - `inbox.identity_secret_rotated`: none. `inbox.deleted`: `name`.
+	// - `contact.deleted`: none (no name or address is kept). `contact.consent_exported`: `format`.
+	// - `list.consent_exported`: `name`, `format`.
+	// - `analytics_export.created`: `property_id`, `kind`, `format`.
+	// - `workspace.retention_changed`: `from`, `to` (days; `null` keeps everything).
+	// - `workspace.broadcast_approval_requested`: none. `workspace.broadcasts_approved`,
+	//   `workspace.broadcasts_denied`: `reason` when the operator gave one.
+	// - `workspace.deleted`: none.
+	//
+	// More actions are added over time; show an unknown one by its name.
+	Action    AuditAction `json:"action"`
+	Actor     AuditActor  `json:"actor"`
+	CreatedAt time.Time   `json:"created_at"`
+
+	// Details Small, non-secret facts about the action; see `AuditAction`.
+	Details map[string]interface{} `json:"details"`
+	Id      uuid.UUID              `json:"id"`
+	Target  AuditTarget            `json:"target"`
+}
+
+// AuditEntryPage defines model for AuditEntryPage.
+type AuditEntryPage struct {
+	Items []AuditEntry `json:"items"`
+
+	// NextCursor Absent on the last page.
+	NextCursor *string `json:"next_cursor,omitempty"`
+}
+
+// AuditTarget defines model for AuditTarget.
+type AuditTarget struct {
+	// Id The target, which may no longer exist.
+	Id   uuid.UUID       `json:"id"`
+	Type AuditTargetType `json:"type"`
+}
+
+// AuditTargetType defines model for AuditTargetType.
+type AuditTargetType string
 
 // AuthStatus A result as the receiving server reported it (RFC 8601); `unknown` until it is read or
 // when it was not reported.
@@ -20169,6 +20463,35 @@ type DownloadAttachmentParams struct {
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
 
+// ListAuditLogParams defines parameters for ListAuditLog.
+type ListAuditLogParams struct {
+	// ActorId Only entries by this member, API key or connected app (`actor.id`). A member's id also
+	// matches what they did through connected apps (`actor.member_id`).
+	ActorId *uuid.UUID `form:"actor_id,omitempty" json:"actor_id,omitempty"`
+
+	// ActorKind Only entries by this kind of actor.
+	ActorKind *AuditActorKind `form:"actor_kind,omitempty" json:"actor_kind,omitempty"`
+
+	// Action Only these actions. Repeat the parameter (`action=api_key.created&action=api_key.revoked`)
+	// or give a comma-separated list.
+	Action *[]AuditAction `form:"action,omitempty" json:"action,omitempty"`
+
+	// Since Only entries at or after this time.
+	Since *time.Time `form:"since,omitempty" json:"since,omitempty"`
+
+	// Until Only entries before this time.
+	Until *time.Time `form:"until,omitempty" json:"until,omitempty"`
+
+	// Cursor The `next_cursor` of the previous page.
+	Cursor *Cursor `form:"cursor,omitempty" json:"cursor,omitempty"`
+
+	// Limit Page size, 1 to 100; 25 by default.
+	Limit *Limit `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
 // ListBroadcastsParams defines parameters for ListBroadcasts.
 type ListBroadcastsParams struct {
 	InboxId *uuid.UUID        `form:"inbox_id,omitempty" json:"inbox_id,omitempty"`
@@ -27625,6 +27948,9 @@ type ServerInterface interface {
 	// DownloadAttachment Download an attachment
 	// (GET /v1/attachments/{attachmentId})
 	DownloadAttachment(w http.ResponseWriter, r *http.Request, attachmentId AttachmentId, params DownloadAttachmentParams)
+	// ListAuditLog The workspace's audit log
+	// (GET /v1/audit-log)
+	ListAuditLog(w http.ResponseWriter, r *http.Request, params ListAuditLogParams)
 	// RequestSignInCode Request a sign-in code
 	// (POST /v1/auth/code)
 	RequestSignInCode(w http.ResponseWriter, r *http.Request)
@@ -33482,6 +33808,138 @@ func (siw *ServerInterfaceWrapper) DownloadAttachment(w http.ResponseWriter, r *
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.DownloadAttachment(w, r, attachmentId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListAuditLog operation middleware
+func (siw *ServerInterfaceWrapper) ListAuditLog(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListAuditLogParams
+
+	// ------------- Optional query parameter "actor_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "actor_id", r.URL.Query(), &params.ActorId, runtime.BindQueryParameterOptions{Type: "string", Format: "uuid"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "actor_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "actor_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "actor_kind" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "actor_kind", r.URL.Query(), &params.ActorKind, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "actor_kind"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "actor_kind", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "action" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "action", r.URL.Query(), &params.Action, runtime.BindQueryParameterOptions{Type: "array", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "action"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "action", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "since" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "since", r.URL.Query(), &params.Since, runtime.BindQueryParameterOptions{Type: "string", Format: "date-time"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "since"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "since", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "until" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "until", r.URL.Query(), &params.Until, runtime.BindQueryParameterOptions{Type: "string", Format: "date-time"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "until"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "until", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "cursor" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "cursor", r.URL.Query(), &params.Cursor, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "cursor"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "cursor", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "limit" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "limit", r.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: "int32"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "limit"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "limit", Err: err})
+		}
+		return
+	}
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListAuditLog(w, r, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -52660,6 +53118,7 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/workspace", wrapper.GetWorkspace)
 	m.HandleFunc(http.MethodPatch+" "+options.BaseURL+"/v1/workspace", wrapper.UpdateWorkspace)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/workspace/broadcast-approval", wrapper.RequestBroadcastApproval)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/audit-log", wrapper.ListAuditLog)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/workspaces", wrapper.CreateWorkspace)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/members", wrapper.ListMembers)
 	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/members/{memberId}", wrapper.RemoveMember)
@@ -64385,6 +64844,72 @@ func (response DownloadAttachment404ApplicationProblemPlusJSONResponse) VisitDow
 	}
 	w.Header().Set("Content-Type", "application/problem+json")
 	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListAuditLogRequestObject struct {
+	Params ListAuditLogParams
+}
+
+type ListAuditLogResponseObject interface {
+	VisitListAuditLogResponse(w http.ResponseWriter) error
+}
+
+type ListAuditLog200JSONResponse AuditEntryPage
+
+func (response ListAuditLog200JSONResponse) VisitListAuditLogResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListAuditLog400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response ListAuditLog400ApplicationProblemPlusJSONResponse) VisitListAuditLogResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListAuditLog401ApplicationProblemPlusJSONResponse Problem
+
+func (response ListAuditLog401ApplicationProblemPlusJSONResponse) VisitListAuditLogResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListAuditLog403ApplicationProblemPlusJSONResponse Problem
+
+func (response ListAuditLog403ApplicationProblemPlusJSONResponse) VisitListAuditLogResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
 	_, err := buf.WriteTo(w)
 	return err
 }
@@ -89361,6 +89886,9 @@ type StrictServerInterface interface {
 	// DownloadAttachment Download an attachment
 	// (GET /v1/attachments/{attachmentId})
 	DownloadAttachment(ctx context.Context, request DownloadAttachmentRequestObject) (DownloadAttachmentResponseObject, error)
+	// ListAuditLog The workspace's audit log
+	// (GET /v1/audit-log)
+	ListAuditLog(ctx context.Context, request ListAuditLogRequestObject) (ListAuditLogResponseObject, error)
 	// RequestSignInCode Request a sign-in code
 	// (POST /v1/auth/code)
 	RequestSignInCode(ctx context.Context, request RequestSignInCodeRequestObject) (RequestSignInCodeResponseObject, error)
@@ -93529,6 +94057,32 @@ func (sh *strictHandler) DownloadAttachment(w http.ResponseWriter, r *http.Reque
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
 	} else if validResponse, ok := response.(DownloadAttachmentResponseObject); ok {
 		if err := validResponse.VisitDownloadAttachmentResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// ListAuditLog operation middleware
+func (sh *strictHandler) ListAuditLog(w http.ResponseWriter, r *http.Request, params ListAuditLogParams) {
+	var request ListAuditLogRequestObject
+
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.ListAuditLog(ctx, request.(ListAuditLogRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "ListAuditLog")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(ListAuditLogResponseObject); ok {
+		if err := validResponse.VisitListAuditLogResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {

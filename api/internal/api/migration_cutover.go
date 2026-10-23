@@ -516,7 +516,14 @@ func (s *Server) RotateForwardingAddress(ctx context.Context, req oas.RotateForw
 	if s.ingress.ForwardingDomain == "" {
 		return nil, errNoForwarding
 	}
-	e, err := s.st.RotateForwardToken(ctx, store.RotateForwardTokenParams{WorkspaceID: p.workspaceID, ChannelID: c.ID})
+	var e store.EmailChannel
+	err = s.st.InTx(ctx, func(q *store.Queries) error {
+		var err error
+		if e, err = q.RotateForwardToken(ctx, store.RotateForwardTokenParams{WorkspaceID: p.workspaceID, ChannelID: c.ID}); err != nil {
+			return err
+		}
+		return s.audit(ctx, q, p, oas.AuditChannelForwardingAddressRotated, oas.AuditTargetChannel, c.ID, nil)
+	})
 	if store.IsNotFound(err) {
 		return nil, errValidation("only e-mail channels have a forwarding address")
 	}

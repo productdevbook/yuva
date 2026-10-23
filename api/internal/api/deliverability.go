@@ -196,9 +196,16 @@ func (s *Server) CreateDkimKey(ctx context.Context, req oas.CreateDkimKeyRequest
 	if err != nil {
 		return nil, err
 	}
-	e, err = s.st.CreateEmailChannelDkimKey(ctx, store.CreateEmailChannelDkimKeyParams{
-		WorkspaceID: p.workspaceID, ChannelID: c.ID, Selector: &selector,
-		PrivateKey: s.secrets.Seal(private, dkimSecretContext(p.workspaceID, c.ID)), PublicKey: public,
+	err = s.st.InTx(ctx, func(q *store.Queries) error {
+		var err error
+		e, err = q.CreateEmailChannelDkimKey(ctx, store.CreateEmailChannelDkimKeyParams{
+			WorkspaceID: p.workspaceID, ChannelID: c.ID, Selector: &selector,
+			PrivateKey: s.secrets.Seal(private, dkimSecretContext(p.workspaceID, c.ID)), PublicKey: public,
+		})
+		if err != nil {
+			return err
+		}
+		return s.audit(ctx, q, p, oas.AuditChannelDkimKeyCreated, oas.AuditTargetChannel, c.ID, auditDetails{"selector": selector})
 	})
 	if store.IsNotFound(err) {
 		return nil, errDkimExists
@@ -214,11 +221,20 @@ func (s *Server) DeleteDkimKey(ctx context.Context, req oas.DeleteDkimKeyRequest
 	if err := requireManagerOrKey(p); err != nil {
 		return nil, err
 	}
-	c, _, err := s.visibleEmailChannel(ctx, p, req.ChannelId)
+	c, e, err := s.visibleEmailChannel(ctx, p, req.ChannelId)
 	if err != nil {
 		return nil, err
 	}
-	if err := s.st.DeleteEmailChannelDkimKey(ctx, store.DeleteEmailChannelDkimKeyParams{WorkspaceID: p.workspaceID, ChannelID: c.ID}); err != nil {
+	err = s.st.InTx(ctx, func(q *store.Queries) error {
+		if err := q.DeleteEmailChannelDkimKey(ctx, store.DeleteEmailChannelDkimKeyParams{WorkspaceID: p.workspaceID, ChannelID: c.ID}); err != nil {
+			return err
+		}
+		if len(e.DkimPrivateKey) == 0 {
+			return nil
+		}
+		return s.audit(ctx, q, p, oas.AuditChannelDkimKeyDeleted, oas.AuditTargetChannel, c.ID, nil)
+	})
+	if err != nil {
 		return nil, err
 	}
 	return oas.DeleteDkimKey204Response{}, nil
