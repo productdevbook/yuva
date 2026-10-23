@@ -1211,9 +1211,9 @@ msgstr "Egy üzenet legfeljebb 3 cikket fogad."
 msgid "A message was added"
 msgstr "Egy üzenet hozzáadva"
 
-#: src/features/status/DomainCard.tsx
-msgid "A name you control, like status.example.com. Yuva then shows you two DNS records to add, and the page answers on the domain once it has seen them."
-msgstr "Egy név, amelyet Ön irányít, pl. status.example.com. A Yuva megmutat két DNS-rekordot, amelyet hozzá kell adnia; amint látja őket, az oldal a domainen válaszol."
+#: src/features/settings/OwnDomainCard.tsx
+msgid "A name you control, like {example}. Yuva then shows you two DNS records to add, and the page answers on the domain once it has seen them."
+msgstr "Egy név, amelyet Ön irányít, pl. {example}. A Yuva megmutat két DNS-rekordot, amelyet hozzá kell adnia; amint látja őket, az oldal a domainen válaszol."
 
 #: src/features/setup/StartStep.tsx
 msgid "A new product"
@@ -1413,7 +1413,7 @@ msgid "Acme Support"
 msgstr "Acme Support"
 
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 #: src/features/status/IncidentsPage.tsx
 msgid "Active"
 msgstr "Aktív"
@@ -1545,7 +1545,7 @@ msgstr "Összetevő hozzáadása"
 msgid "Add contact"
 msgstr "Kontakt hozzáadása"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Add domain"
 msgstr "Domain hozzáadása"
 
@@ -2124,7 +2124,7 @@ msgstr "Ennek a munkaterületnek egy másik importja fut. Az importok egyenként
 msgid "another inbox"
 msgstr "másik postafiók"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Another page verified this domain first, and only a verified claim holds a name. Remove the domain, or start over once the other page lets it go."
 msgstr "Egy másik oldal előbb ellenőrizte ezt a domaint, és nevet csak ellenőrzött igény tart. Távolítsa el a domaint, vagy kezdje újra, ha a másik oldal elengedi."
 
@@ -2685,7 +2685,7 @@ msgstr "Kapcsolat letiltása"
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactSheet.tsx
 #: src/features/contact/ContactsPage.tsx
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Blocked"
 msgstr "Letiltva"
 
@@ -2739,7 +2739,7 @@ msgstr "Bot neve"
 msgid "Bot name (optional)"
 msgstr "Bot neve (nem kötelező)"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Both records were found. Yuva checks them once a day; keep them in place."
 msgstr "Mindkét rekord megvan. A Yuva naponta egyszer ellenőrzi őket; hagyja a helyükön."
 
@@ -3022,7 +3022,7 @@ msgstr "Megvan az ok"
 msgid "Cc: {cc}"
 msgstr "Másolat: {cc}"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Certificate"
 msgstr "Tanúsítvány"
 
@@ -3185,7 +3185,7 @@ msgstr "DNS ellenőrzése és aláírás indítása"
 msgid "Check every"
 msgstr "Ellenőrzés ennyi időnként"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Check now"
 msgstr "Ellenőrzés most"
 
@@ -3471,7 +3471,7 @@ msgstr "Lezárja"
 msgid "Closing each conversation"
 msgstr "Minden beszélgetés lezárása folyamatban"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "CNAME record"
 msgstr "CNAME-rekord"
 
@@ -4723,7 +4723,7 @@ msgstr "Dokumentumok"
 msgid "Does it work with server-side rendering?"
 msgstr "Működik szerveroldali rendereléssel?"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Domain"
 msgstr "Domain"
 
@@ -5139,9 +5139,9 @@ msgstr "Vége"
 msgid "English"
 msgstr "English"
 
-#: src/features/status/DomainCard.tsx
-msgid "Enter a domain like status.example.com."
-msgstr "Adjon meg egy domaint, például status.example.com."
+#: src/features/settings/OwnDomainCard.tsx
+msgid "Enter a domain like {example}."
+msgstr "Adjon meg egy domaint, például {example}."
 
 #: src/features/status/monitorErrors.ts
 msgid "Enter a host name or an IP address."
@@ -5781,7 +5781,7 @@ msgstr "Átirányítás"
 msgid "Forwarding address"
 msgstr "Átirányítási cím"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Found"
 msgstr "Megtalálva"
 
@@ -6238,11 +6238,11 @@ msgstr "Gazda"
 msgid "Hosted by Yuva on its own address. Searched from the chat widget and the reply box. For support answers."
 msgstr "A Yuva üzemelteti őket saját címen. A csevegőwidgetből és a válaszmezőből kereshetők. Ügyfélszolgálati válaszokhoz."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Hostname"
 msgstr "Gazdagépnév"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Hostname and certificate"
 msgstr "Gazdagépnév és tanúsítvány"
 
@@ -7084,7 +7084,7 @@ msgstr "Utolsó ellenőrzés"
 msgid "Last checked"
 msgstr "Utoljára ellenőrizve"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Last checked {last}."
 msgstr "Utolsó ellenőrzés: {last}."
 
@@ -7307,13 +7307,13 @@ msgstr "Összekapcsolás…"
 msgid "Links"
 msgstr "Linkek"
 
+#: src/features/settings/OwnDomainCard.tsx
+msgid "Links and feeds keep using the address on this server until the hostname and its certificate are both active."
+msgstr "A hivatkozások és a hírcsatornák addig az ezen a szerveren lévő címet használják, amíg a gazdanév és a tanúsítvány is aktív nem lesz."
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Links will point at this server’s link domain instead of your own. Spam filters look at link domains."
 msgstr "A linkek ennek a szervernek a linkdomainjére mutatnak a sajátod helyett. A spamszűrők a linkdomaineket nézik."
-
-#: src/features/status/DomainCard.tsx
-msgid "Links, the feed and the badge keep using the address on this server until the hostname and its certificate are both active."
-msgstr "A hivatkozások, a hírcsatorna és a jelvény addig a szerveren lévő címet használják, amíg a gazdagépnév és a tanúsítványa nem aktív."
 
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/Overview.tsx
@@ -8159,13 +8159,13 @@ msgstr "Profilom"
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/ProfileForm.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/setup/email/EmailLayout.tsx
 #: src/features/setup/SetupLayout.tsx
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/CreatePageDialog.tsx
-#: src/features/status/DomainCard.tsx
 #: src/features/status/MonitorDialog.tsx
 #: src/features/status/SettingsTab.tsx
 msgid "Name"
@@ -8221,8 +8221,8 @@ msgstr "Feladó kell"
 
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/text.ts
+#: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/ProductsPage.tsx
-#: src/features/status/DomainCard.tsx
 msgid "Needs attention"
 msgstr "Figyelmet igényel"
 
@@ -8519,7 +8519,7 @@ msgstr "Következő kísérlet"
 msgid "next attempt {when}"
 msgstr "következő kísérlet: {when}"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Next check {next}."
 msgstr "Következő ellenőrzés: {next}."
 
@@ -9193,7 +9193,7 @@ msgstr "Még nincs csatlakoztatva. Ez az oldal frissül, amikor befejezted a bej
 msgid "Not delivered"
 msgstr "Nincs kézbesítve"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Not found"
 msgstr "Nem található"
 
@@ -10238,7 +10238,7 @@ msgstr "Idővel"
 msgid "Overview"
 msgstr "Áttekintés"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Own domain"
 msgstr "Saját domain"
 
@@ -10440,7 +10440,7 @@ msgid "Payload"
 msgstr "Adattartalom"
 
 #: src/components/common/text.ts
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Pending"
 msgstr "Függőben"
 
@@ -10795,7 +10795,7 @@ msgstr "Hang lejátszása"
 msgid "Point the MX records at Yuva as the e-mail guide describes. Sync catches the mail that still reaches the old server meanwhile."
 msgstr "Irányítsd az MX-rekordokat a Yuvára, ahogy az e-mail-útmutató leírja. A szinkronizálás elkapja a közben még a régi szerverre érkező leveleket."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Points to"
 msgstr "Erre mutat"
 
@@ -11444,9 +11444,9 @@ msgstr "A távoli képek elárulhatják a feladónak, hogy megnyitottad a levele
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/Passkeys.tsx
 #: src/features/settings/webhooks/sections.tsx
-#: src/features/status/DomainCard.tsx
 #: src/features/status/MonitorHttpFields.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Remove"
@@ -11461,7 +11461,7 @@ msgid "Remove {0}"
 msgstr "{0} eltávolítása"
 
 #. placeholder {0}: d.domain
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Remove {0}?"
 msgstr "Eltávolítja: {0}?"
 
@@ -11490,7 +11490,7 @@ msgstr "Csatorna eltávolítása"
 msgid "Remove condition {n}"
 msgstr "A(z) {n}. feltétel eltávolítása"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Remove domain"
 msgstr "Domain eltávolítása"
 
@@ -12989,7 +12989,7 @@ msgstr "Előnézet megjelenítése"
 msgid "Show the reply time"
 msgstr "A válaszidő megjelenítése"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Show this page on your own address instead of this server’s."
 msgstr "Jelenítse meg az oldalt a saját címén a szerver címe helyett."
 
@@ -13455,7 +13455,7 @@ msgstr "Beszélgetés indítása"
 msgid "Start migration"
 msgstr "Átvitel indítása"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Start over"
 msgstr "Újrakezdés"
 
@@ -14190,7 +14190,7 @@ msgstr "Az exportfájl előzményei átmásolásra kerülnek a Yuvába."
 msgid "The history is copied and its mail now reaches Yuva."
 msgstr "Az előzmények átmásolva, és a leveleik már a Yuvába érkeznek."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The hostname is being set up. This takes a moment once the records are found."
 msgstr "A gazdagépnév beállítása folyamatban van. A rekordok megtalálása után ez egy pillanatig tart."
 
@@ -14279,7 +14279,7 @@ msgid "The last check found no passing DKIM signature. Set up DKIM with your SMT
 msgstr "Az utolsó ellenőrzés nem talált átmenő DKIM-aláírást. Állítsd be a DKIM-et az SMTP-szolgáltatódnál, vagy kapcsold be a Yuva DKIM-et a csatornához."
 
 #. placeholder {0}: d.problem
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The last check saw: {0}"
 msgstr "Az utolsó ellenőrzés ezt látta: {0}"
 
@@ -14411,7 +14411,7 @@ msgstr "A másik postafióknak nincs e-mail-csatornája, így ez az e-mail-besz�
 msgid "The page already sent 10 notices in the last hour"
 msgstr "Az oldal már 10 értesítést küldött az elmúlt órában"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The page answers at"
 msgstr "Az oldal itt válaszol"
 
@@ -14439,7 +14439,7 @@ msgstr "Az oldal nincs közzétéve. Ezt csak a csapatod látja."
 msgid "The page or the incident is not public"
 msgstr "Az oldal vagy az incidens nem nyilvános"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The page stops answering on this domain. Its address on this server keeps working."
 msgstr "Az oldal ezen a domainen nem válaszol tovább. A szerveren lévő címe tovább működik."
 
@@ -14519,19 +14519,19 @@ msgstr "A címzettek a küldés indításakor kerülnek kiválasztásra: akik k�
 msgid "The record at {name} is published."
 msgstr "A(z) {name} rekordja közzé van téve."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The records exist, but they do not point where Yuva needs them. Change them to match the ones below. Yuva looks again every 10 minutes."
 msgstr "A rekordok léteznek, de nem oda mutatnak, ahová a Yuvának kell. Módosítsa őket az alábbiak szerint. A Yuva 10 percenként újra ellenőriz."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The records have not been visible since {missing}. The domain is turned off after 3 days unless they come back."
 msgstr "A rekordok {missing} óta nem láthatók. Ha nem térnek vissza, a domain 3 nap után kikapcsol."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The records were gone for 3 days, so the domain no longer shows this page and is not checked any more. Put the records back and start over."
 msgstr "A rekordok 3 napig hiányoztak, ezért a domain már nem jeleníti meg ezt az oldalt, és nem ellenőrizzük. Tegye vissza a rekordokat, és kezdje újra."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The records were not found within 7 days, so the claim ended. Add the records below, then start over for 7 more days."
 msgstr "A rekordokat 7 napon belül nem találtuk meg, ezért az igény lejárt. Adja hozzá az alábbi rekordokat, majd kezdje újra további 7 napra."
 
@@ -15000,9 +15000,9 @@ msgstr "Ez sem mbox-fájl, sem zip. Tölts fel magát a .mbox fájlt, vagy egy .
 msgid "This is not a CSV file. Save the spreadsheet as CSV and upload that."
 msgstr "Ez nem CSV-fájl. Mentsd a táblázatot CSV-ként, és azt töltsd fel."
 
-#: src/features/status/DomainCard.tsx
-msgid "This is not a domain this page can use. Use a name like status.example.com that is not one of this server’s own addresses."
-msgstr "Ez az oldal nem használhatja ezt a domaint. Használjon olyan nevet, mint a status.example.com, amely nem a szerver saját címei egyike."
+#: src/features/settings/OwnDomainCard.tsx
+msgid "This is not a domain this page can use. Use a name like {example} that is not one of this server’s own addresses."
+msgstr "Ez az oldal nem használhatja ezt a domaint. Használjon olyan nevet, mint a {example}, amely nem a szerver saját címei egyike."
 
 #: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/channels/sections.tsx
@@ -15112,7 +15112,7 @@ msgstr "Ez a kérés véget ért"
 msgid "This server does not offer imports from this kind of mailbox."
 msgstr "Ez a szerver nem kínál importot az ilyen típusú postafiókból."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "This server does not offer own domains. Ask its operator to turn them on."
 msgstr "Ez a szerver nem kínál saját domaineket. Kérje az üzemeltetőt, hogy kapcsolja be."
 
@@ -15409,7 +15409,7 @@ msgstr "Kapcsolja be az e-mail-feliratkozókat az oldal beállításaiban, hogy 
 msgid "Turn on for this device"
 msgstr "Bekapcsolás ennél az eszköznél"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Turned off"
 msgstr "Kikapcsolva"
 
@@ -15418,7 +15418,7 @@ msgstr "Kikapcsolva"
 msgid "Turned off by Yuva"
 msgstr "A Yuva kikapcsolta"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "TXT record"
 msgstr "TXT-rekord"
 
@@ -15921,7 +15921,7 @@ msgid "value"
 msgstr "érték"
 
 #: src/features/settings/channels/email/Deliverability.tsx
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Value"
 msgstr "Érték"
 
@@ -15941,7 +15941,7 @@ msgstr "Az értékek titkosítva tárolódnak, és többé nem jelennek meg. Mó
 msgid "Values of condition {n}, separated by commas"
 msgstr "A(z) {n}. feltétel értékei, vesszővel elválasztva"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Verified"
 msgstr "Ellenőrizve"
 
@@ -16050,7 +16050,7 @@ msgstr "Látogatások a webhelyeiden utm_campaign={campaign} paraméterrel a kü
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/parts.tsx
 #: src/features/settings/channels/ChannelPage.tsx
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Waiting"
 msgstr "Várakozik"
@@ -16082,7 +16082,7 @@ msgstr "megerősítésre vár"
 msgid "Waiting for confirmation"
 msgstr "Megerősítésre vár"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Waiting for DNS"
 msgstr "Várakozás a DNS-re"
 
@@ -16118,11 +16118,11 @@ msgstr "Az üzemeltetőre vár"
 msgid "Waiting for the provider's limit; continues at {time}."
 msgstr "Várakozás a szolgáltató korlátjára; folytatódik: {time}."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Waiting for the two DNS records below. Add them where you manage the domain; DNS changes can take a while to spread. Yuva looks every 10 minutes, and the claim ends if they are not found within 7 days."
 msgstr "Várakozás az alábbi két DNS-rekordra. Adja hozzá őket ott, ahol a domaint kezeli; a DNS-változások terjedése eltarthat egy ideig. A Yuva 10 percenként ellenőriz, és az igény lejár, ha 7 napon belül nem találja meg őket."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Waiting for validation"
 msgstr "Várakozás az érvényesítésre"
 

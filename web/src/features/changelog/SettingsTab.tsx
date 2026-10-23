@@ -2,6 +2,7 @@ import { Trans, useLingui } from "@lingui/react/macro"
 import { useState } from "react"
 import { useNavigate } from "react-router"
 
+import { OwnDomainCard } from "@/features/settings/OwnDomainCard"
 import { CopyButton, toast, useConfirm } from "@/components/common"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -264,11 +265,19 @@ function Danger({ changelog }: { changelog: Changelog }) {
 }
 
 export function SettingsTab({ changelog }: { changelog: Changelog }) {
+  const domainSave = useUpdateChangelog(changelog.id)
   return (
     <div className="flex flex-col gap-8" data-testid="changelog-settings">
       <Address changelog={changelog} />
       <General changelog={changelog} />
       <Access changelog={changelog} />
+      <OwnDomainCard
+        domain={changelog.custom_domain}
+        enabled={!!changelog.own_domains}
+        example="news.example.com"
+        tid="changelog-domain"
+        save={domainSave}
+      />
       <Danger changelog={changelog} />
     </div>
   )

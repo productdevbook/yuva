@@ -2,6 +2,7 @@ import { Trans, useLingui } from "@lingui/react/macro"
 import { useState } from "react"
 import { Link, useNavigate } from "react-router"
 
+import { OwnDomainCard } from "@/features/settings/OwnDomainCard"
 import { CopyButton, ErrorLine, Segmented, toast, useConfirm } from "@/components/common"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -281,10 +282,18 @@ function Danger({ board }: { board: RoadmapBoard }) {
 }
 
 export function Settings({ board }: { board: RoadmapBoard }) {
+  const domainSave = useUpdateBoard(board.id)
   return (
     <div className="flex max-w-[640px] flex-col gap-8 px-6 pb-24 phone:px-4" data-testid="board-settings">
       <Visibility board={board} />
       <General board={board} />
+      <OwnDomainCard
+        domain={board.custom_domain}
+        enabled={!!board.own_domains}
+        example="roadmap.example.com"
+        tid="board-domain"
+        save={domainSave}
+      />
       <Danger board={board} />
     </div>
   )

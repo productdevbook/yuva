@@ -1211,9 +1211,9 @@ msgstr "Ένα μήνυμα δέχεται το πολύ 3 άρθρα."
 msgid "A message was added"
 msgstr "Ένα μήνυμα προστέθηκε"
 
-#: src/features/status/DomainCard.tsx
-msgid "A name you control, like status.example.com. Yuva then shows you two DNS records to add, and the page answers on the domain once it has seen them."
-msgstr "Ένα όνομα που ελέγχετε, όπως status.example.com. Το Yuva σας δείχνει δύο εγγραφές DNS για προσθήκη και η σελίδα απαντά στο domain μόλις τις δει."
+#: src/features/settings/OwnDomainCard.tsx
+msgid "A name you control, like {example}. Yuva then shows you two DNS records to add, and the page answers on the domain once it has seen them."
+msgstr "Ένα όνομα που ελέγχετε, όπως {example}. Το Yuva σας δείχνει δύο εγγραφές DNS για προσθήκη και η σελίδα απαντά στο domain μόλις τις δει."
 
 #: src/features/setup/StartStep.tsx
 msgid "A new product"
@@ -1413,7 +1413,7 @@ msgid "Acme Support"
 msgstr "Υποστήριξη Acme"
 
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 #: src/features/status/IncidentsPage.tsx
 msgid "Active"
 msgstr "Ενεργό"
@@ -1545,7 +1545,7 @@ msgstr "Προσθήκη στοιχείου"
 msgid "Add contact"
 msgstr "Προσθήκη επαφής"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Add domain"
 msgstr "Προσθήκη domain"
 
@@ -2124,7 +2124,7 @@ msgstr "Εκτελείται άλλη εισαγωγή αυτού του χώρ�
 msgid "another inbox"
 msgstr "άλλα εισερχόμενα"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Another page verified this domain first, and only a verified claim holds a name. Remove the domain, or start over once the other page lets it go."
 msgstr "Άλλη σελίδα επαλήθευσε πρώτη αυτό το domain και μόνο μια επαληθευμένη διεκδίκηση κρατά ένα όνομα. Αφαιρέστε το domain ή ξεκινήστε από την αρχή όταν η άλλη σελίδα το αφήσει."
 
@@ -2685,7 +2685,7 @@ msgstr "Αποκλεισμός επαφής"
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactSheet.tsx
 #: src/features/contact/ContactsPage.tsx
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Blocked"
 msgstr "Αποκλεισμένοι"
 
@@ -2739,7 +2739,7 @@ msgstr "Όνομα του bot"
 msgid "Bot name (optional)"
 msgstr "Όνομα του bot (προαιρετικά)"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Both records were found. Yuva checks them once a day; keep them in place."
 msgstr "Βρέθηκαν και οι δύο εγγραφές. Το Yuva τις ελέγχει μία φορά την ημέρα· αφήστε τις στη θέση τους."
 
@@ -3022,7 +3022,7 @@ msgstr "Βρέθηκε η αιτία"
 msgid "Cc: {cc}"
 msgstr "Κοιν.: {cc}"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Certificate"
 msgstr "Πιστοποιητικό"
 
@@ -3185,7 +3185,7 @@ msgstr "Έλεγχος DNS και έναρξη υπογραφής"
 msgid "Check every"
 msgstr "Έλεγχος κάθε"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Check now"
 msgstr "Έλεγχος τώρα"
 
@@ -3471,7 +3471,7 @@ msgstr "Κλείνει"
 msgid "Closing each conversation"
 msgstr "Κλείσιμο κάθε συνομιλίας"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "CNAME record"
 msgstr "Εγγραφή CNAME"
 
@@ -4723,7 +4723,7 @@ msgstr "Έγγραφα"
 msgid "Does it work with server-side rendering?"
 msgstr "Λειτουργεί με απόδοση στον διακομιστή (SSR);"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Domain"
 msgstr "Domain"
 
@@ -5139,9 +5139,9 @@ msgstr "Λήξη"
 msgid "English"
 msgstr "English"
 
-#: src/features/status/DomainCard.tsx
-msgid "Enter a domain like status.example.com."
-msgstr "Εισαγάγετε ένα domain όπως status.example.com."
+#: src/features/settings/OwnDomainCard.tsx
+msgid "Enter a domain like {example}."
+msgstr "Εισαγάγετε ένα domain όπως {example}."
 
 #: src/features/status/monitorErrors.ts
 msgid "Enter a host name or an IP address."
@@ -5781,7 +5781,7 @@ msgstr "Προώθηση"
 msgid "Forwarding address"
 msgstr "Διεύθυνση προώθησης"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Found"
 msgstr "Βρέθηκε"
 
@@ -6238,11 +6238,11 @@ msgstr "Κεντρικός υπολογιστής"
 msgid "Hosted by Yuva on its own address. Searched from the chat widget and the reply box. For support answers."
 msgstr "Φιλοξενούνται από το Yuva στη δική τους διεύθυνση. Αναζητούνται από το γραφικό στοιχείο συνομιλίας και το πλαίσιο απάντησης. Για απαντήσεις υποστήριξης."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Hostname"
 msgstr "Όνομα κεντρικού υπολογιστή"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Hostname and certificate"
 msgstr "Όνομα κεντρικού υπολογιστή και πιστοποιητικό"
 
@@ -7084,7 +7084,7 @@ msgstr "Τελευταίος έλεγχος"
 msgid "Last checked"
 msgstr "Τελευταίος έλεγχος"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Last checked {last}."
 msgstr "Τελευταίος έλεγχος {last}."
 
@@ -7307,13 +7307,13 @@ msgstr "Σύνδεση…"
 msgid "Links"
 msgstr "Σύνδεσμοι"
 
+#: src/features/settings/OwnDomainCard.tsx
+msgid "Links and feeds keep using the address on this server until the hostname and its certificate are both active."
+msgstr "Οι σύνδεσμοι και οι ροές συνεχίζουν να χρησιμοποιούν τη διεύθυνση σε αυτόν τον διακομιστή μέχρι να ενεργοποιηθούν τόσο το όνομα κεντρικού υπολογιστή όσο και το πιστοποιητικό του."
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Links will point at this server’s link domain instead of your own. Spam filters look at link domains."
 msgstr "Οι σύνδεσμοι θα δείχνουν στον τομέα συνδέσμων αυτού του διακομιστή αντί για τον δικό σας. Τα φίλτρα spam εξετάζουν τους τομείς συνδέσμων."
-
-#: src/features/status/DomainCard.tsx
-msgid "Links, the feed and the badge keep using the address on this server until the hostname and its certificate are both active."
-msgstr "Οι σύνδεσμοι, η ροή και το σήμα συνεχίζουν να χρησιμοποιούν τη διεύθυνση σε αυτόν τον διακομιστή μέχρι το όνομα κεντρικού υπολογιστή και το πιστοποιητικό του να είναι και τα δύο ενεργά."
 
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/Overview.tsx
@@ -8159,13 +8159,13 @@ msgstr "Το προφίλ μου"
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/ProfileForm.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/setup/email/EmailLayout.tsx
 #: src/features/setup/SetupLayout.tsx
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/CreatePageDialog.tsx
-#: src/features/status/DomainCard.tsx
 #: src/features/status/MonitorDialog.tsx
 #: src/features/status/SettingsTab.tsx
 msgid "Name"
@@ -8221,8 +8221,8 @@ msgstr "Χρειάζεται αποστολέα"
 
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/text.ts
+#: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/ProductsPage.tsx
-#: src/features/status/DomainCard.tsx
 msgid "Needs attention"
 msgstr "Χρειάζεται προσοχή"
 
@@ -8519,7 +8519,7 @@ msgstr "Επόμενη προσπάθεια"
 msgid "next attempt {when}"
 msgstr "επόμενη προσπάθεια {when}"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Next check {next}."
 msgstr "Επόμενος έλεγχος {next}."
 
@@ -9193,7 +9193,7 @@ msgstr "Δεν έχει συνδεθεί ακόμη. Αυτή η σελίδα ε
 msgid "Not delivered"
 msgstr "Δεν παραδόθηκε"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Not found"
 msgstr "Δεν βρέθηκε"
 
@@ -10238,7 +10238,7 @@ msgstr "Με τον χρόνο"
 msgid "Overview"
 msgstr "Επισκόπηση"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Own domain"
 msgstr "Δικό σας domain"
 
@@ -10440,7 +10440,7 @@ msgid "Payload"
 msgstr "Payload"
 
 #: src/components/common/text.ts
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Pending"
 msgstr "Σε εκκρεμότητα"
 
@@ -10795,7 +10795,7 @@ msgstr "Αναπαραγωγή του ήχου"
 msgid "Point the MX records at Yuva as the e-mail guide describes. Sync catches the mail that still reaches the old server meanwhile."
 msgstr "Δείξτε τις εγγραφές MX στο Yuva όπως περιγράφει ο οδηγός e-mail. Ο συγχρονισμός πιάνει την αλληλογραφία που στο μεταξύ φτάνει ακόμη στον παλιό διακομιστή."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Points to"
 msgstr "Δείχνει σε"
 
@@ -11444,9 +11444,9 @@ msgstr "Οι απομακρυσμένες εικόνες μπορούν να π�
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/Passkeys.tsx
 #: src/features/settings/webhooks/sections.tsx
-#: src/features/status/DomainCard.tsx
 #: src/features/status/MonitorHttpFields.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Remove"
@@ -11461,7 +11461,7 @@ msgid "Remove {0}"
 msgstr "Αφαίρεση {0}"
 
 #. placeholder {0}: d.domain
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Remove {0}?"
 msgstr "Αφαίρεση του {0};"
 
@@ -11490,7 +11490,7 @@ msgstr "Αφαίρεση καναλιού"
 msgid "Remove condition {n}"
 msgstr "Αφαίρεση συνθήκης {n}"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Remove domain"
 msgstr "Αφαίρεση domain"
 
@@ -12989,7 +12989,7 @@ msgstr "Εμφάνιση της προεπισκόπησης"
 msgid "Show the reply time"
 msgstr "Εμφάνιση του χρόνου απάντησης"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Show this page on your own address instead of this server’s."
 msgstr "Εμφανίστε αυτή τη σελίδα στη δική σας διεύθυνση αντί για τη διεύθυνση αυτού του διακομιστή."
 
@@ -13455,7 +13455,7 @@ msgstr "Έναρξη συνομιλίας"
 msgid "Start migration"
 msgstr "Έναρξη μεταφοράς"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Start over"
 msgstr "Ξεκινήστε από την αρχή"
 
@@ -14190,7 +14190,7 @@ msgstr "Το ιστορικό από το αρχείο εξαγωγής αντι
 msgid "The history is copied and its mail now reaches Yuva."
 msgstr "Το ιστορικό αντιγράφηκε και η αλληλογραφία του φτάνει πλέον στο Yuva."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The hostname is being set up. This takes a moment once the records are found."
 msgstr "Το όνομα κεντρικού υπολογιστή ρυθμίζεται. Χρειάζεται λίγη ώρα αφού βρεθούν οι εγγραφές."
 
@@ -14279,7 +14279,7 @@ msgid "The last check found no passing DKIM signature. Set up DKIM with your SMT
 msgstr "Ο τελευταίος έλεγχος δεν βρήκε υπογραφή DKIM που να περνά. Ρυθμίστε το DKIM με τον πάροχο SMTP ή ενεργοποιήστε το DKIM του Yuva για το κανάλι."
 
 #. placeholder {0}: d.problem
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The last check saw: {0}"
 msgstr "Ο τελευταίος έλεγχος είδε: {0}"
 
@@ -14411,7 +14411,7 @@ msgstr "Τα άλλα εισερχόμενα δεν έχουν κανάλι e-ma
 msgid "The page already sent 10 notices in the last hour"
 msgstr "Η σελίδα έχει ήδη στείλει 10 ειδοποιήσεις την τελευταία ώρα"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The page answers at"
 msgstr "Η σελίδα απαντά στο"
 
@@ -14439,7 +14439,7 @@ msgstr "Η σελίδα δεν είναι δημοσιευμένη. Αυτό τ�
 msgid "The page or the incident is not public"
 msgstr "Η σελίδα ή το περιστατικό δεν είναι δημόσιο"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The page stops answering on this domain. Its address on this server keeps working."
 msgstr "Η σελίδα δεν θα απαντά πλέον σε αυτό το domain. Η διεύθυνσή της σε αυτόν τον διακομιστή συνεχίζει να λειτουργεί."
 
@@ -14519,19 +14519,19 @@ msgstr "Οι παραλήπτες λαμβάνονται όταν ξεκινά �
 msgid "The record at {name} is published."
 msgstr "Η εγγραφή στο {name} δημοσιεύτηκε."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The records exist, but they do not point where Yuva needs them. Change them to match the ones below. Yuva looks again every 10 minutes."
 msgstr "Οι εγγραφές υπάρχουν, αλλά δεν δείχνουν εκεί που χρειάζεται το Yuva. Αλλάξτε τις ώστε να ταιριάζουν με τις παρακάτω. Το Yuva ελέγχει ξανά κάθε 10 λεπτά."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The records have not been visible since {missing}. The domain is turned off after 3 days unless they come back."
 msgstr "Οι εγγραφές δεν φαίνονται από {missing}. Το domain απενεργοποιείται μετά από 3 ημέρες αν δεν επανέλθουν."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The records were gone for 3 days, so the domain no longer shows this page and is not checked any more. Put the records back and start over."
 msgstr "Οι εγγραφές έλειπαν για 3 ημέρες, οπότε το domain δεν εμφανίζει πια αυτή τη σελίδα και δεν ελέγχεται. Επαναφέρετε τις εγγραφές και ξεκινήστε από την αρχή."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The records were not found within 7 days, so the claim ended. Add the records below, then start over for 7 more days."
 msgstr "Οι εγγραφές δεν βρέθηκαν σε 7 ημέρες, οπότε η διεκδίκηση έληξε. Προσθέστε τις παρακάτω εγγραφές και ξεκινήστε από την αρχή για άλλες 7 ημέρες."
 
@@ -15000,9 +15000,9 @@ msgstr "Αυτό δεν είναι ούτε αρχείο mbox ούτε zip. Αν
 msgid "This is not a CSV file. Save the spreadsheet as CSV and upload that."
 msgstr "Αυτό δεν είναι αρχείο CSV. Αποθηκεύστε το υπολογιστικό φύλλο ως CSV και ανεβάστε το."
 
-#: src/features/status/DomainCard.tsx
-msgid "This is not a domain this page can use. Use a name like status.example.com that is not one of this server’s own addresses."
-msgstr "Αυτή η σελίδα δεν μπορεί να χρησιμοποιήσει αυτό το domain. Χρησιμοποιήστε ένα όνομα όπως status.example.com που δεν είναι μία από τις δικές διευθύνσεις αυτού του διακομιστή."
+#: src/features/settings/OwnDomainCard.tsx
+msgid "This is not a domain this page can use. Use a name like {example} that is not one of this server’s own addresses."
+msgstr "Αυτή η σελίδα δεν μπορεί να χρησιμοποιήσει αυτό το domain. Χρησιμοποιήστε ένα όνομα όπως {example} που δεν είναι μία από τις δικές διευθύνσεις αυτού του διακομιστή."
 
 #: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/channels/sections.tsx
@@ -15112,7 +15112,7 @@ msgstr "Αυτό το αίτημα έχει τελειώσει"
 msgid "This server does not offer imports from this kind of mailbox."
 msgstr "Αυτός ο διακομιστής δεν προσφέρει εισαγωγές από αυτό το είδος γραμματοκιβωτίου."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "This server does not offer own domains. Ask its operator to turn them on."
 msgstr "Αυτός ο διακομιστής δεν προσφέρει δικά σας domain. Ζητήστε από τον διαχειριστή του να τα ενεργοποιήσει."
 
@@ -15409,7 +15409,7 @@ msgstr "Ενεργοποιήστε τους συνδρομητές e-mail στι
 msgid "Turn on for this device"
 msgstr "Ενεργοποίηση για αυτή τη συσκευή"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Turned off"
 msgstr "Απενεργοποιημένο"
 
@@ -15418,7 +15418,7 @@ msgstr "Απενεργοποιημένο"
 msgid "Turned off by Yuva"
 msgstr "Απενεργοποιήθηκε από το Yuva"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "TXT record"
 msgstr "Εγγραφή TXT"
 
@@ -15921,7 +15921,7 @@ msgid "value"
 msgstr "τιμή"
 
 #: src/features/settings/channels/email/Deliverability.tsx
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Value"
 msgstr "Τιμή"
 
@@ -15941,7 +15941,7 @@ msgstr "Οι τιμές αποθηκεύονται κρυπτογραφημέν�
 msgid "Values of condition {n}, separated by commas"
 msgstr "Τιμές της συνθήκης {n}, χωρισμένες με κόμματα"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Verified"
 msgstr "Επαληθευμένο"
 
@@ -16050,7 +16050,7 @@ msgstr "Επισκέψεις στους ιστότοπούς σας με utm_cam
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/parts.tsx
 #: src/features/settings/channels/ChannelPage.tsx
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Waiting"
 msgstr "Αναμονή"
@@ -16082,7 +16082,7 @@ msgstr "περιμένουν επιβεβαίωση"
 msgid "Waiting for confirmation"
 msgstr "Σε αναμονή επιβεβαίωσης"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Waiting for DNS"
 msgstr "Αναμονή για DNS"
 
@@ -16118,11 +16118,11 @@ msgstr "Αναμονή για τον διαχειριστή"
 msgid "Waiting for the provider's limit; continues at {time}."
 msgstr "Αναμονή για το όριο του παρόχου· συνεχίζει στις {time}."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Waiting for the two DNS records below. Add them where you manage the domain; DNS changes can take a while to spread. Yuva looks every 10 minutes, and the claim ends if they are not found within 7 days."
 msgstr "Αναμονή για τις δύο εγγραφές DNS παρακάτω. Προσθέστε τις εκεί όπου διαχειρίζεστε το domain· οι αλλαγές DNS μπορεί να αργήσουν να διαδοθούν. Το Yuva ελέγχει κάθε 10 λεπτά και η διεκδίκηση λήγει αν δεν βρεθούν σε 7 ημέρες."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Waiting for validation"
 msgstr "Αναμονή για επικύρωση"
 

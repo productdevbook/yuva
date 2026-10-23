@@ -3,6 +3,7 @@ import { XIcon } from "lucide-react"
 import { useState } from "react"
 import { useNavigate } from "react-router"
 
+import { OwnDomainCard } from "@/features/settings/OwnDomainCard"
 import { CopyButton, toast, useConfirm } from "@/components/common"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -409,11 +410,19 @@ function Danger({ center }: { center: HelpCenter }) {
 }
 
 export function SettingsTab({ center }: { center: HelpCenter }) {
+  const domainSave = useUpdateHelpCenter(center.id)
   return (
     <div className="flex flex-col gap-8" data-testid="help-settings">
       <Address center={center} />
       <General center={center} />
       <Publishing center={center} />
+      <OwnDomainCard
+        domain={center.custom_domain}
+        enabled={!!center.own_domains}
+        example="help.example.com"
+        tid="help-domain"
+        save={domainSave}
+      />
       <Danger center={center} />
     </div>
   )

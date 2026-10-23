@@ -1211,9 +1211,9 @@ msgstr "تقبل الرسالة 3 مقالات على الأكثر."
 msgid "A message was added"
 msgstr "أُضيفت رسالة"
 
-#: src/features/status/DomainCard.tsx
-msgid "A name you control, like status.example.com. Yuva then shows you two DNS records to add, and the page answers on the domain once it has seen them."
-msgstr "اسم تتحكم فيه، مثل status.example.com. يعرض لك Yuva سجلَّي DNS لإضافتهما، وتستجيب الصفحة على النطاق فور رؤيتهما."
+#: src/features/settings/OwnDomainCard.tsx
+msgid "A name you control, like {example}. Yuva then shows you two DNS records to add, and the page answers on the domain once it has seen them."
+msgstr "اسم تتحكم فيه، مثل {example}. يعرض لك Yuva سجلَّي DNS لإضافتهما، وتستجيب الصفحة على النطاق فور رؤيتهما."
 
 #: src/features/setup/StartStep.tsx
 msgid "A new product"
@@ -1413,7 +1413,7 @@ msgid "Acme Support"
 msgstr "دعم Acme"
 
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 #: src/features/status/IncidentsPage.tsx
 msgid "Active"
 msgstr "نشط"
@@ -1545,7 +1545,7 @@ msgstr "إضافة مكوّن"
 msgid "Add contact"
 msgstr "إضافة جهة اتصال"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Add domain"
 msgstr "إضافة نطاق"
 
@@ -2124,7 +2124,7 @@ msgstr "عملية استيراد أخرى لمساحة العمل هذه قيد
 msgid "another inbox"
 msgstr "صندوق وارد آخر"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Another page verified this domain first, and only a verified claim holds a name. Remove the domain, or start over once the other page lets it go."
 msgstr "تحققت صفحة أخرى من هذا النطاق أولاً، والمطالبة المتحقق منها وحدها تحتفظ بالاسم. أزل النطاق أو ابدأ من جديد عندما تتخلى عنه الصفحة الأخرى."
 
@@ -2685,7 +2685,7 @@ msgstr "حظر جهة الاتصال"
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactSheet.tsx
 #: src/features/contact/ContactsPage.tsx
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Blocked"
 msgstr "محظور"
 
@@ -2739,7 +2739,7 @@ msgstr "اسم الروبوت"
 msgid "Bot name (optional)"
 msgstr "اسم الروبوت (اختياري)"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Both records were found. Yuva checks them once a day; keep them in place."
 msgstr "تم العثور على السجلين. يفحصهما Yuva مرة في اليوم؛ أبقهما في مكانهما."
 
@@ -3022,7 +3022,7 @@ msgstr "تم العثور على السبب"
 msgid "Cc: {cc}"
 msgstr "نسخة: {cc}"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Certificate"
 msgstr "الشهادة"
 
@@ -3185,7 +3185,7 @@ msgstr "فحص DNS وبدء التوقيع"
 msgid "Check every"
 msgstr "الفحص كل"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Check now"
 msgstr "افحص الآن"
 
@@ -3471,7 +3471,7 @@ msgstr "تُغلق"
 msgid "Closing each conversation"
 msgstr "يجري إغلاق كل محادثة"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "CNAME record"
 msgstr "سجل CNAME"
 
@@ -4723,7 +4723,7 @@ msgstr "المستندات"
 msgid "Does it work with server-side rendering?"
 msgstr "هل يعمل مع العرض من جهة الخادم؟"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Domain"
 msgstr "النطاق"
 
@@ -5139,9 +5139,9 @@ msgstr "النهاية"
 msgid "English"
 msgstr "English"
 
-#: src/features/status/DomainCard.tsx
-msgid "Enter a domain like status.example.com."
-msgstr "أدخل نطاقاً مثل status.example.com."
+#: src/features/settings/OwnDomainCard.tsx
+msgid "Enter a domain like {example}."
+msgstr "أدخل نطاقاً مثل {example}."
 
 #: src/features/status/monitorErrors.ts
 msgid "Enter a host name or an IP address."
@@ -5781,7 +5781,7 @@ msgstr "التحويل"
 msgid "Forwarding address"
 msgstr "عنوان التحويل"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Found"
 msgstr "تم العثور عليه"
 
@@ -6238,11 +6238,11 @@ msgstr "المضيف"
 msgid "Hosted by Yuva on its own address. Searched from the chat widget and the reply box. For support answers."
 msgstr "تستضيفها Yuva على عنوان خاص بها. يُبحث فيها من أداة الدردشة ومربع الرد. لإجابات الدعم."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Hostname"
 msgstr "اسم المضيف"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Hostname and certificate"
 msgstr "اسم المضيف والشهادة"
 
@@ -7084,7 +7084,7 @@ msgstr "آخر فحص"
 msgid "Last checked"
 msgstr "آخر فحص"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Last checked {last}."
 msgstr "آخر فحص {last}."
 
@@ -7307,13 +7307,13 @@ msgstr "جارٍ الربط…"
 msgid "Links"
 msgstr "الروابط"
 
+#: src/features/settings/OwnDomainCard.tsx
+msgid "Links and feeds keep using the address on this server until the hostname and its certificate are both active."
+msgstr "تستمر الروابط والخلاصات في استخدام العنوان على هذا الخادم إلى أن يصبح اسم المضيف وشهادته نشطين معًا."
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Links will point at this server’s link domain instead of your own. Spam filters look at link domains."
 msgstr "ستشير الروابط إلى نطاق الروابط الخاص بهذا الخادم بدلًا من نطاقك. تنظر مرشحات البريد المزعج إلى نطاقات الروابط."
-
-#: src/features/status/DomainCard.tsx
-msgid "Links, the feed and the badge keep using the address on this server until the hostname and its certificate are both active."
-msgstr "تظل الروابط والخلاصة والشارة تستخدم العنوان على هذا الخادم حتى يصبح اسم المضيف وشهادته نشطين معاً."
 
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/Overview.tsx
@@ -8159,13 +8159,13 @@ msgstr "ملفي الشخصي"
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/ProfileForm.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/setup/email/EmailLayout.tsx
 #: src/features/setup/SetupLayout.tsx
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/CreatePageDialog.tsx
-#: src/features/status/DomainCard.tsx
 #: src/features/status/MonitorDialog.tsx
 #: src/features/status/SettingsTab.tsx
 msgid "Name"
@@ -8221,8 +8221,8 @@ msgstr "يحتاج إلى مرسِل"
 
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/text.ts
+#: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/ProductsPage.tsx
-#: src/features/status/DomainCard.tsx
 msgid "Needs attention"
 msgstr "يحتاج إلى اهتمام"
 
@@ -8519,7 +8519,7 @@ msgstr "المحاولة التالية"
 msgid "next attempt {when}"
 msgstr "المحاولة التالية {when}"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Next check {next}."
 msgstr "الفحص التالي {next}."
 
@@ -9193,7 +9193,7 @@ msgstr "غير متصل بعد. تتحدث هذه الصفحة عند انتها
 msgid "Not delivered"
 msgstr "لم يُسلَّم"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Not found"
 msgstr "غير موجود"
 
@@ -10238,7 +10238,7 @@ msgstr "مع الوقت"
 msgid "Overview"
 msgstr "نظرة عامة"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Own domain"
 msgstr "نطاق خاص"
 
@@ -10440,7 +10440,7 @@ msgid "Payload"
 msgstr "الحمولة"
 
 #: src/components/common/text.ts
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Pending"
 msgstr "قيد الانتظار"
 
@@ -10795,7 +10795,7 @@ msgstr "تشغيل الصوت"
 msgid "Point the MX records at Yuva as the e-mail guide describes. Sync catches the mail that still reaches the old server meanwhile."
 msgstr "وجّه سجلات MX إلى Yuva كما يصف دليل البريد الإلكتروني. تلتقط المزامنة البريد الذي لا يزال يصل إلى الخادم القديم في الأثناء."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Points to"
 msgstr "يشير إلى"
 
@@ -11444,9 +11444,9 @@ msgstr "يمكن للصور البعيدة إخبار المرسِل بأنك ف
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/Passkeys.tsx
 #: src/features/settings/webhooks/sections.tsx
-#: src/features/status/DomainCard.tsx
 #: src/features/status/MonitorHttpFields.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Remove"
@@ -11461,7 +11461,7 @@ msgid "Remove {0}"
 msgstr "إزالة {0}"
 
 #. placeholder {0}: d.domain
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Remove {0}?"
 msgstr "إزالة {0}؟"
 
@@ -11490,7 +11490,7 @@ msgstr "إزالة القناة"
 msgid "Remove condition {n}"
 msgstr "إزالة الشرط {n}"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Remove domain"
 msgstr "إزالة النطاق"
 
@@ -12989,7 +12989,7 @@ msgstr "إظهار المعاينة"
 msgid "Show the reply time"
 msgstr "إظهار وقت الرد"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Show this page on your own address instead of this server’s."
 msgstr "اعرض هذه الصفحة على عنوانك الخاص بدلاً من عنوان هذا الخادم."
 
@@ -13455,7 +13455,7 @@ msgstr "بدء المحادثة"
 msgid "Start migration"
 msgstr "بدء النقل"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Start over"
 msgstr "ابدأ من جديد"
 
@@ -14190,7 +14190,7 @@ msgstr "يُنسخ السجل من ملف التصدير إلى Yuva."
 msgid "The history is copied and its mail now reaches Yuva."
 msgstr "نُسخ السجل ويصل بريده الآن إلى Yuva."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The hostname is being set up. This takes a moment once the records are found."
 msgstr "يجري إعداد اسم المضيف. يستغرق ذلك لحظة بعد العثور على السجلات."
 
@@ -14279,7 +14279,7 @@ msgid "The last check found no passing DKIM signature. Set up DKIM with your SMT
 msgstr "لم يجد آخر فحص توقيع DKIM ناجحًا. أعدّ DKIM لدى مزوّد SMTP، أو فعّل DKIM الخاص بـ Yuva للقناة."
 
 #. placeholder {0}: d.problem
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The last check saw: {0}"
 msgstr "ما رآه آخر فحص: {0}"
 
@@ -14411,7 +14411,7 @@ msgstr "ليس للصندوق الآخر قناة بريد إلكتروني، ل
 msgid "The page already sent 10 notices in the last hour"
 msgstr "أرسلت الصفحة 10 إشعارات خلال الساعة الأخيرة"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The page answers at"
 msgstr "تستجيب الصفحة على"
 
@@ -14439,7 +14439,7 @@ msgstr "الصفحة غير منشورة. لا يرى هذا إلا فريقك."
 msgid "The page or the incident is not public"
 msgstr "الصفحة أو الحادثة غير عامة"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The page stops answering on this domain. Its address on this server keeps working."
 msgstr "ستتوقف الصفحة عن الاستجابة على هذا النطاق. يظل عنوانها على هذا الخادم يعمل."
 
@@ -14519,19 +14519,19 @@ msgstr "يُحدَّد المستلمون عند بدء الإرسال: من ي�
 msgid "The record at {name} is published."
 msgstr "نُشر السجل عند {name}."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The records exist, but they do not point where Yuva needs them. Change them to match the ones below. Yuva looks again every 10 minutes."
 msgstr "السجلات موجودة لكنها لا تشير إلى المكان الذي يحتاجه Yuva. غيّرها لتطابق السجلات أدناه. يفحص Yuva مجدداً كل 10 دقائق."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The records have not been visible since {missing}. The domain is turned off after 3 days unless they come back."
 msgstr "السجلات غير ظاهرة منذ {missing}. سيتم إيقاف النطاق بعد 3 أيام ما لم تعد."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The records were gone for 3 days, so the domain no longer shows this page and is not checked any more. Put the records back and start over."
 msgstr "غابت السجلات 3 أيام، لذا لم يعد النطاق يعرض هذه الصفحة ولا يُفحص. أعد السجلات وابدأ من جديد."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The records were not found within 7 days, so the claim ended. Add the records below, then start over for 7 more days."
 msgstr "لم يتم العثور على السجلات خلال 7 أيام، لذا انتهت المطالبة. أضف السجلات أدناه ثم ابدأ من جديد لمدة 7 أيام أخرى."
 
@@ -15000,9 +15000,9 @@ msgstr "هذا ليس ملف mbox ولا ملف zip. ارفع ملف .mbox نف�
 msgid "This is not a CSV file. Save the spreadsheet as CSV and upload that."
 msgstr "هذا ليس ملف CSV. احفظ جدول البيانات بصيغة CSV وارفعه."
 
-#: src/features/status/DomainCard.tsx
-msgid "This is not a domain this page can use. Use a name like status.example.com that is not one of this server’s own addresses."
-msgstr "لا يمكن لهذه الصفحة استخدام هذا النطاق. استخدم اسماً مثل status.example.com ليس من عناوين هذا الخادم نفسه."
+#: src/features/settings/OwnDomainCard.tsx
+msgid "This is not a domain this page can use. Use a name like {example} that is not one of this server’s own addresses."
+msgstr "لا يمكن لهذه الصفحة استخدام هذا النطاق. استخدم اسماً مثل {example} ليس من عناوين هذا الخادم نفسه."
 
 #: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/channels/sections.tsx
@@ -15112,7 +15112,7 @@ msgstr "انتهى هذا الطلب"
 msgid "This server does not offer imports from this kind of mailbox."
 msgstr "لا يتيح هذا الخادم الاستيراد من هذا النوع من صناديق البريد."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "This server does not offer own domains. Ask its operator to turn them on."
 msgstr "لا يقدم هذا الخادم نطاقات خاصة. اطلب من المشغّل تشغيلها."
 
@@ -15409,7 +15409,7 @@ msgstr "فعّل مشتركي البريد الإلكتروني في إعداد�
 msgid "Turn on for this device"
 msgstr "تفعيل لهذا الجهاز"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Turned off"
 msgstr "متوقف"
 
@@ -15418,7 +15418,7 @@ msgstr "متوقف"
 msgid "Turned off by Yuva"
 msgstr "أوقفته Yuva"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "TXT record"
 msgstr "سجل TXT"
 
@@ -15921,7 +15921,7 @@ msgid "value"
 msgstr "القيمة"
 
 #: src/features/settings/channels/email/Deliverability.tsx
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Value"
 msgstr "القيمة"
 
@@ -15941,7 +15941,7 @@ msgstr "تُخزَّن القيم مشفّرة ولا تُعرض مرة أخرى
 msgid "Values of condition {n}, separated by commas"
 msgstr "قيم الشرط {n}، مفصولة بفواصل"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Verified"
 msgstr "تم التحقق"
 
@@ -16050,7 +16050,7 @@ msgstr "زيارات مواقعك بـ utm_campaign={campaign} منذ بدء ا�
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/parts.tsx
 #: src/features/settings/channels/ChannelPage.tsx
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Waiting"
 msgstr "في الانتظار"
@@ -16082,7 +16082,7 @@ msgstr "بانتظار التأكيد"
 msgid "Waiting for confirmation"
 msgstr "بانتظار التأكيد"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Waiting for DNS"
 msgstr "بانتظار DNS"
 
@@ -16118,11 +16118,11 @@ msgstr "بانتظار المشغّل"
 msgid "Waiting for the provider's limit; continues at {time}."
 msgstr "في انتظار حد المزوّد؛ يتابع في {time}."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Waiting for the two DNS records below. Add them where you manage the domain; DNS changes can take a while to spread. Yuva looks every 10 minutes, and the claim ends if they are not found within 7 days."
 msgstr "بانتظار سجلي DNS أدناه. أضفهما حيث تدير النطاق؛ قد يستغرق انتشار تغييرات DNS بعض الوقت. يفحص Yuva كل 10 دقائق، وتنتهي المطالبة إذا لم يعثر عليهما خلال 7 أيام."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Waiting for validation"
 msgstr "بانتظار التحقق"
 

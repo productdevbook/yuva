@@ -1211,9 +1211,9 @@ msgstr "Poruka prima najviše 3 članka."
 msgid "A message was added"
 msgstr "Poruka je dodana"
 
-#: src/features/status/DomainCard.tsx
-msgid "A name you control, like status.example.com. Yuva then shows you two DNS records to add, and the page answers on the domain once it has seen them."
-msgstr "Naziv koji kontrolirate, npr. status.example.com. Yuva će vam pokazati dva DNS zapisa za dodavanje, a stranica će odgovarati na domeni čim ih vidi."
+#: src/features/settings/OwnDomainCard.tsx
+msgid "A name you control, like {example}. Yuva then shows you two DNS records to add, and the page answers on the domain once it has seen them."
+msgstr "Naziv koji kontrolirate, npr. {example}. Yuva će vam pokazati dva DNS zapisa za dodavanje, a stranica će odgovarati na domeni čim ih vidi."
 
 #: src/features/setup/StartStep.tsx
 msgid "A new product"
@@ -1413,7 +1413,7 @@ msgid "Acme Support"
 msgstr "Acme Support"
 
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 #: src/features/status/IncidentsPage.tsx
 msgid "Active"
 msgstr "Aktivno"
@@ -1545,7 +1545,7 @@ msgstr "Dodaj komponentu"
 msgid "Add contact"
 msgstr "Dodaj kontakt"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Add domain"
 msgstr "Dodaj domenu"
 
@@ -2124,7 +2124,7 @@ msgstr "Drugi uvoz ovog radnog prostora je u tijeku. Uvozi idu jedan po jedan; p
 msgid "another inbox"
 msgstr "drugi pretinac"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Another page verified this domain first, and only a verified claim holds a name. Remove the domain, or start over once the other page lets it go."
 msgstr "Druga je stranica ovu domenu provjerila prije, a naziv drži samo provjeren zahtjev. Uklonite domenu ili počnite ispočetka kad je druga stranica oslobodi."
 
@@ -2685,7 +2685,7 @@ msgstr "Blokiraj kontakt"
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactSheet.tsx
 #: src/features/contact/ContactsPage.tsx
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Blocked"
 msgstr "Blokirano"
 
@@ -2739,7 +2739,7 @@ msgstr "Ime bota"
 msgid "Bot name (optional)"
 msgstr "Ime bota (neobavezno)"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Both records were found. Yuva checks them once a day; keep them in place."
 msgstr "Oba su zapisa pronađena. Yuva ih provjerava jednom dnevno; ostavite ih na mjestu."
 
@@ -3022,7 +3022,7 @@ msgstr "Uzrok pronađen"
 msgid "Cc: {cc}"
 msgstr "Kopija: {cc}"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Certificate"
 msgstr "Certifikat"
 
@@ -3185,7 +3185,7 @@ msgstr "Provjeri DNS i počni potpisivati"
 msgid "Check every"
 msgstr "Provjeravaj svakih"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Check now"
 msgstr "Provjeri sada"
 
@@ -3471,7 +3471,7 @@ msgstr "Zatvara"
 msgid "Closing each conversation"
 msgstr "Zatvaranje svakog razgovora"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "CNAME record"
 msgstr "CNAME zapis"
 
@@ -4723,7 +4723,7 @@ msgstr "Dokumenti"
 msgid "Does it work with server-side rendering?"
 msgstr "Radi li s renderiranjem na strani poslužitelja?"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Domain"
 msgstr "Domena"
 
@@ -5139,9 +5139,9 @@ msgstr "Završetak"
 msgid "English"
 msgstr "English"
 
-#: src/features/status/DomainCard.tsx
-msgid "Enter a domain like status.example.com."
-msgstr "Unesite domenu poput status.example.com."
+#: src/features/settings/OwnDomainCard.tsx
+msgid "Enter a domain like {example}."
+msgstr "Unesite domenu poput {example}."
 
 #: src/features/status/monitorErrors.ts
 msgid "Enter a host name or an IP address."
@@ -5781,7 +5781,7 @@ msgstr "Preusmjeravanje"
 msgid "Forwarding address"
 msgstr "Adresa za preusmjeravanje"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Found"
 msgstr "Pronađeno"
 
@@ -6238,11 +6238,11 @@ msgstr "Host"
 msgid "Hosted by Yuva on its own address. Searched from the chat widget and the reply box. For support answers."
 msgstr "Hostira ih Yuva na vlastitoj adresi. Pretražuju se iz chat widgeta i polja za odgovor. Za odgovore podrške."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Hostname"
 msgstr "Naziv hosta"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Hostname and certificate"
 msgstr "Naziv hosta i certifikat"
 
@@ -7084,7 +7084,7 @@ msgstr "Zadnja provjera"
 msgid "Last checked"
 msgstr "Zadnji put provjereno"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Last checked {last}."
 msgstr "Zadnja provjera {last}."
 
@@ -7307,13 +7307,13 @@ msgstr "Povezivanje…"
 msgid "Links"
 msgstr "Poveznice"
 
+#: src/features/settings/OwnDomainCard.tsx
+msgid "Links and feeds keep using the address on this server until the hostname and its certificate are both active."
+msgstr "Poveznice i feedovi i dalje koriste adresu na ovom poslužitelju dok naziv hosta i njegov certifikat ne postanu aktivni."
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Links will point at this server’s link domain instead of your own. Spam filters look at link domains."
 msgstr "Poveznice će upućivati na domenu poveznica ovog poslužitelja umjesto na vašu. Filtri neželjene pošte gledaju domene poveznica."
-
-#: src/features/status/DomainCard.tsx
-msgid "Links, the feed and the badge keep using the address on this server until the hostname and its certificate are both active."
-msgstr "Poveznice, feed i značka i dalje koriste adresu na ovom poslužitelju dok naziv hosta i njegov certifikat nisu oba aktivni."
 
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/Overview.tsx
@@ -8159,13 +8159,13 @@ msgstr "Moj profil"
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/ProfileForm.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/setup/email/EmailLayout.tsx
 #: src/features/setup/SetupLayout.tsx
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/CreatePageDialog.tsx
-#: src/features/status/DomainCard.tsx
 #: src/features/status/MonitorDialog.tsx
 #: src/features/status/SettingsTab.tsx
 msgid "Name"
@@ -8221,8 +8221,8 @@ msgstr "Treba pošiljatelja"
 
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/text.ts
+#: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/ProductsPage.tsx
-#: src/features/status/DomainCard.tsx
 msgid "Needs attention"
 msgstr "Treba pažnju"
 
@@ -8519,7 +8519,7 @@ msgstr "Sljedeći pokušaj"
 msgid "next attempt {when}"
 msgstr "sljedeći pokušaj {when}"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Next check {next}."
 msgstr "Sljedeća provjera {next}."
 
@@ -9193,7 +9193,7 @@ msgstr "Još nije povezano. Ova se stranica ažurira kad završite prijavu."
 msgid "Not delivered"
 msgstr "Nije isporučeno"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Not found"
 msgstr "Nije pronađeno"
 
@@ -10238,7 +10238,7 @@ msgstr "Kroz vrijeme"
 msgid "Overview"
 msgstr "Pregled"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Own domain"
 msgstr "Vlastita domena"
 
@@ -10440,7 +10440,7 @@ msgid "Payload"
 msgstr "Sadržaj zahtjeva"
 
 #: src/components/common/text.ts
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Pending"
 msgstr "Na čekanju"
 
@@ -10795,7 +10795,7 @@ msgstr "Reproduciraj zvuk"
 msgid "Point the MX records at Yuva as the e-mail guide describes. Sync catches the mail that still reaches the old server meanwhile."
 msgstr "Usmjerite MX zapise na Yuvu kako opisuje vodič za e-poštu. Sinkronizacija hvata poštu koja u međuvremenu i dalje stiže na stari poslužitelj."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Points to"
 msgstr "Pokazuje na"
 
@@ -11444,9 +11444,9 @@ msgstr "Udaljene slike mogu pošiljatelju reći da ste otvorili poruku."
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/Passkeys.tsx
 #: src/features/settings/webhooks/sections.tsx
-#: src/features/status/DomainCard.tsx
 #: src/features/status/MonitorHttpFields.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Remove"
@@ -11461,7 +11461,7 @@ msgid "Remove {0}"
 msgstr "Ukloni {0}"
 
 #. placeholder {0}: d.domain
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Remove {0}?"
 msgstr "Ukloniti {0}?"
 
@@ -11490,7 +11490,7 @@ msgstr "Ukloni kanal"
 msgid "Remove condition {n}"
 msgstr "Ukloni uvjet {n}"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Remove domain"
 msgstr "Ukloni domenu"
 
@@ -12989,7 +12989,7 @@ msgstr "Prikaži pregled"
 msgid "Show the reply time"
 msgstr "Prikaži vrijeme odgovora"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Show this page on your own address instead of this server’s."
 msgstr "Prikažite ovu stranicu na vlastitoj adresi umjesto na adresi ovog poslužitelja."
 
@@ -13455,7 +13455,7 @@ msgstr "Započni razgovor"
 msgid "Start migration"
 msgstr "Započni migraciju"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Start over"
 msgstr "Počni ispočetka"
 
@@ -14190,7 +14190,7 @@ msgstr "Povijest iz izvozne datoteke kopira se u Yuvu."
 msgid "The history is copied and its mail now reaches Yuva."
 msgstr "Povijest je kopirana, a njezina pošta sada stiže u Yuvu."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The hostname is being set up. This takes a moment once the records are found."
 msgstr "Naziv hosta se postavlja. To traje trenutak nakon što se zapisi pronađu."
 
@@ -14279,7 +14279,7 @@ msgid "The last check found no passing DKIM signature. Set up DKIM with your SMT
 msgstr "Zadnja provjera nije pronašla valjan DKIM potpis. Postavite DKIM kod svog SMTP pružatelja ili za kanal uključite Yuva DKIM."
 
 #. placeholder {0}: d.problem
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The last check saw: {0}"
 msgstr "Zadnja provjera vidjela je: {0}"
 
@@ -14411,7 +14411,7 @@ msgstr "Drugi pretinac nema e-poštni kanal pa se ovaj e-poštni razgovor ne mo�
 msgid "The page already sent 10 notices in the last hour"
 msgstr "Stranica je u posljednjih sat vremena već poslala 10 obavijesti"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The page answers at"
 msgstr "Stranica odgovara na"
 
@@ -14439,7 +14439,7 @@ msgstr "Stranica nije objavljena. Ovo vidi samo vaš tim."
 msgid "The page or the incident is not public"
 msgstr "Stranica ili incident nisu javni"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The page stops answering on this domain. Its address on this server keeps working."
 msgstr "Stranica na ovoj domeni više ne odgovara. Njezina adresa na ovom poslužitelju i dalje radi."
 
@@ -14519,19 +14519,19 @@ msgstr "Primatelji se određuju kad slanje počne: ljudi koji se pretplate posli
 msgid "The record at {name} is published."
 msgstr "Zapis na {name} je objavljen."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The records exist, but they do not point where Yuva needs them. Change them to match the ones below. Yuva looks again every 10 minutes."
 msgstr "Zapisi postoje, ali ne pokazuju gdje ih Yuva treba. Promijenite ih da odgovaraju onima ispod. Yuva ponovno provjerava svakih 10 minuta."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The records have not been visible since {missing}. The domain is turned off after 3 days unless they come back."
 msgstr "Zapisi nisu vidljivi od {missing}. Ako se ne vrate, domena se isključuje nakon 3 dana."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The records were gone for 3 days, so the domain no longer shows this page and is not checked any more. Put the records back and start over."
 msgstr "Zapisa nije bilo 3 dana, pa domena više ne prikazuje ovu stranicu i ne provjerava se. Vratite zapise i počnite ispočetka."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The records were not found within 7 days, so the claim ended. Add the records below, then start over for 7 more days."
 msgstr "Zapisi nisu pronađeni u 7 dana, pa je zahtjev istekao. Dodajte zapise ispod pa počnite ispočetka na još 7 dana."
 
@@ -15000,9 +15000,9 @@ msgstr "Ovo nije ni mbox datoteka ni zip. Učitajte samu .mbox datoteku ili .zip
 msgid "This is not a CSV file. Save the spreadsheet as CSV and upload that."
 msgstr "Ovo nije CSV datoteka. Spremite tablicu kao CSV i učitajte to."
 
-#: src/features/status/DomainCard.tsx
-msgid "This is not a domain this page can use. Use a name like status.example.com that is not one of this server’s own addresses."
-msgstr "Ova stranica ne može koristiti ovu domenu. Upotrijebite naziv poput status.example.com koji nije jedna od vlastitih adresa ovog poslužitelja."
+#: src/features/settings/OwnDomainCard.tsx
+msgid "This is not a domain this page can use. Use a name like {example} that is not one of this server’s own addresses."
+msgstr "Ova stranica ne može koristiti ovu domenu. Upotrijebite naziv poput {example} koji nije jedna od vlastitih adresa ovog poslužitelja."
 
 #: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/channels/sections.tsx
@@ -15112,7 +15112,7 @@ msgstr "Ovaj zahtjev je završio"
 msgid "This server does not offer imports from this kind of mailbox."
 msgstr "Ovaj poslužitelj ne nudi uvoz iz ove vrste pretinca."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "This server does not offer own domains. Ask its operator to turn them on."
 msgstr "Ovaj poslužitelj ne nudi vlastite domene. Zamolite njegova operatera da ih uključi."
 
@@ -15409,7 +15409,7 @@ msgstr "Uključi pretplatnike e-poštom u postavkama stranice da se posjetitelji
 msgid "Turn on for this device"
 msgstr "Uključi za ovaj uređaj"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Turned off"
 msgstr "Isključeno"
 
@@ -15418,7 +15418,7 @@ msgstr "Isključeno"
 msgid "Turned off by Yuva"
 msgstr "Isključila Yuva"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "TXT record"
 msgstr "TXT zapis"
 
@@ -15921,7 +15921,7 @@ msgid "value"
 msgstr "vrijednost"
 
 #: src/features/settings/channels/email/Deliverability.tsx
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Value"
 msgstr "Vrijednost"
 
@@ -15941,7 +15941,7 @@ msgstr "Vrijednosti se pohranjuju šifrirane i više se ne prikazuju. Da biste j
 msgid "Values of condition {n}, separated by commas"
 msgstr "Vrijednosti uvjeta {n}, odvojene zarezima"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Verified"
 msgstr "Provjereno"
 
@@ -16050,7 +16050,7 @@ msgstr "Posjeti vašim web-mjestima s utm_campaign={campaign} od početka slanja
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/parts.tsx
 #: src/features/settings/channels/ChannelPage.tsx
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Waiting"
 msgstr "Čeka"
@@ -16082,7 +16082,7 @@ msgstr "čeka potvrdu"
 msgid "Waiting for confirmation"
 msgstr "Čeka potvrdu"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Waiting for DNS"
 msgstr "Čekanje DNS-a"
 
@@ -16118,11 +16118,11 @@ msgstr "Čeka operatera"
 msgid "Waiting for the provider's limit; continues at {time}."
 msgstr "Čekanje na ograničenje pružatelja; nastavlja se {time}."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Waiting for the two DNS records below. Add them where you manage the domain; DNS changes can take a while to spread. Yuva looks every 10 minutes, and the claim ends if they are not found within 7 days."
 msgstr "Čekanje na dva DNS zapisa ispod. Dodajte ih tamo gdje upravljate domenom; promjene DNS-a mogu se neko vrijeme širiti. Yuva provjerava svakih 10 minuta, a zahtjev ističe ako ih ne pronađe u 7 dana."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Waiting for validation"
 msgstr "Čekanje provjere"
 

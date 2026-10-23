@@ -1211,9 +1211,9 @@ msgstr "En besked tager højst 3 artikler."
 msgid "A message was added"
 msgstr "En besked blev tilføjet"
 
-#: src/features/status/DomainCard.tsx
-msgid "A name you control, like status.example.com. Yuva then shows you two DNS records to add, and the page answers on the domain once it has seen them."
-msgstr "Et navn, du styrer, fx status.example.com. Yuva viser dig to DNS-poster at tilføje, og siden svarer på domænet, så snart de er set."
+#: src/features/settings/OwnDomainCard.tsx
+msgid "A name you control, like {example}. Yuva then shows you two DNS records to add, and the page answers on the domain once it has seen them."
+msgstr "Et navn, du styrer, fx {example}. Yuva viser dig to DNS-poster at tilføje, og siden svarer på domænet, så snart de er set."
 
 #: src/features/setup/StartStep.tsx
 msgid "A new product"
@@ -1413,7 +1413,7 @@ msgid "Acme Support"
 msgstr "Acme Support"
 
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 #: src/features/status/IncidentsPage.tsx
 msgid "Active"
 msgstr "Aktiv"
@@ -1545,7 +1545,7 @@ msgstr "Tilføj komponent"
 msgid "Add contact"
 msgstr "Tilføj kontakt"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Add domain"
 msgstr "Tilføj domæne"
 
@@ -2124,7 +2124,7 @@ msgstr "Et andet import af dette arbejdsområde kører. Importer kører ét ad g
 msgid "another inbox"
 msgstr "en anden postkasse"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Another page verified this domain first, and only a verified claim holds a name. Remove the domain, or start over once the other page lets it go."
 msgstr "En anden side har bekræftet dette domæne først, og kun et bekræftet krav holder et navn. Fjern domænet, eller start forfra, når den anden side slipper det."
 
@@ -2685,7 +2685,7 @@ msgstr "Bloker kontakt"
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactSheet.tsx
 #: src/features/contact/ContactsPage.tsx
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Blocked"
 msgstr "Blokeret"
 
@@ -2739,7 +2739,7 @@ msgstr "Botnavn"
 msgid "Bot name (optional)"
 msgstr "Botnavn (valgfrit)"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Both records were found. Yuva checks them once a day; keep them in place."
 msgstr "Begge poster blev fundet. Yuva tjekker dem én gang om dagen; lad dem blive."
 
@@ -3022,7 +3022,7 @@ msgstr "Årsag fundet"
 msgid "Cc: {cc}"
 msgstr "Cc: {cc}"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Certificate"
 msgstr "Certifikat"
 
@@ -3185,7 +3185,7 @@ msgstr "Tjek DNS og begynd at signere"
 msgid "Check every"
 msgstr "Tjek hver"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Check now"
 msgstr "Tjek nu"
 
@@ -3471,7 +3471,7 @@ msgstr "Lukker"
 msgid "Closing each conversation"
 msgstr "Lukker hver samtale"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "CNAME record"
 msgstr "CNAME-post"
 
@@ -4723,7 +4723,7 @@ msgstr "Dokumenter"
 msgid "Does it work with server-side rendering?"
 msgstr "Virker det med server-side rendering?"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Domain"
 msgstr "Domæne"
 
@@ -5139,9 +5139,9 @@ msgstr "Slut"
 msgid "English"
 msgstr "English"
 
-#: src/features/status/DomainCard.tsx
-msgid "Enter a domain like status.example.com."
-msgstr "Indtast et domæne som status.example.com."
+#: src/features/settings/OwnDomainCard.tsx
+msgid "Enter a domain like {example}."
+msgstr "Indtast et domæne som {example}."
 
 #: src/features/status/monitorErrors.ts
 msgid "Enter a host name or an IP address."
@@ -5781,7 +5781,7 @@ msgstr "Videresendelse"
 msgid "Forwarding address"
 msgstr "Videresendelsesadresse"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Found"
 msgstr "Fundet"
 
@@ -6238,11 +6238,11 @@ msgstr "Vært"
 msgid "Hosted by Yuva on its own address. Searched from the chat widget and the reply box. For support answers."
 msgstr "Hostet af Yuva på sin egen adresse. Søges fra chatwidgetten og svarfeltet. Til svar fra support."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Hostname"
 msgstr "Værtsnavn"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Hostname and certificate"
 msgstr "Værtsnavn og certifikat"
 
@@ -7084,7 +7084,7 @@ msgstr "Seneste tjek"
 msgid "Last checked"
 msgstr "Sidst tjekket"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Last checked {last}."
 msgstr "Sidst tjekket {last}."
 
@@ -7307,13 +7307,13 @@ msgstr "Knytter…"
 msgid "Links"
 msgstr "Links"
 
+#: src/features/settings/OwnDomainCard.tsx
+msgid "Links and feeds keep using the address on this server until the hostname and its certificate are both active."
+msgstr "Links og feeds bruger fortsat adressen på denne server, indtil værtsnavnet og dets certifikat begge er aktive."
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Links will point at this server’s link domain instead of your own. Spam filters look at link domains."
 msgstr "Links peger på denne servers linkdomæne i stedet for dit eget. Spamfiltre ser på linkdomæner."
-
-#: src/features/status/DomainCard.tsx
-msgid "Links, the feed and the badge keep using the address on this server until the hostname and its certificate are both active."
-msgstr "Links, feed og badge bruger stadig adressen på denne server, indtil værtsnavnet og dets certifikat begge er aktive."
 
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/Overview.tsx
@@ -8159,13 +8159,13 @@ msgstr "Min profil"
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/ProfileForm.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/setup/email/EmailLayout.tsx
 #: src/features/setup/SetupLayout.tsx
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/CreatePageDialog.tsx
-#: src/features/status/DomainCard.tsx
 #: src/features/status/MonitorDialog.tsx
 #: src/features/status/SettingsTab.tsx
 msgid "Name"
@@ -8221,8 +8221,8 @@ msgstr "Mangler en afsender"
 
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/text.ts
+#: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/ProductsPage.tsx
-#: src/features/status/DomainCard.tsx
 msgid "Needs attention"
 msgstr "Kræver opmærksomhed"
 
@@ -8519,7 +8519,7 @@ msgstr "Næste forsøg"
 msgid "next attempt {when}"
 msgstr "næste forsøg {when}"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Next check {next}."
 msgstr "Næste tjek {next}."
 
@@ -9193,7 +9193,7 @@ msgstr "Ikke forbundet endnu. Denne side opdateres, når du er færdig med at lo
 msgid "Not delivered"
 msgstr "Ikke leveret"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Not found"
 msgstr "Ikke fundet"
 
@@ -10238,7 +10238,7 @@ msgstr "Over tid"
 msgid "Overview"
 msgstr "Oversigt"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Own domain"
 msgstr "Eget domæne"
 
@@ -10440,7 +10440,7 @@ msgid "Payload"
 msgstr "Payload"
 
 #: src/components/common/text.ts
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Pending"
 msgstr "Afventer"
 
@@ -10795,7 +10795,7 @@ msgstr "Afspil lyden"
 msgid "Point the MX records at Yuva as the e-mail guide describes. Sync catches the mail that still reaches the old server meanwhile."
 msgstr "Peg MX-posterne mod Yuva, som e-mailguiden beskriver. Synkroniseringen opfanger den mail, der imens stadig når den gamle server."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Points to"
 msgstr "Peger på"
 
@@ -11444,9 +11444,9 @@ msgstr "Fjernbilleder kan fortælle afsenderen, at du åbnede mailen."
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/Passkeys.tsx
 #: src/features/settings/webhooks/sections.tsx
-#: src/features/status/DomainCard.tsx
 #: src/features/status/MonitorHttpFields.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Remove"
@@ -11461,7 +11461,7 @@ msgid "Remove {0}"
 msgstr "Fjern {0}"
 
 #. placeholder {0}: d.domain
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Remove {0}?"
 msgstr "Fjern {0}?"
 
@@ -11490,7 +11490,7 @@ msgstr "Fjern kanal"
 msgid "Remove condition {n}"
 msgstr "Fjern betingelse {n}"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Remove domain"
 msgstr "Fjern domæne"
 
@@ -12989,7 +12989,7 @@ msgstr "Vis eksemplet"
 msgid "Show the reply time"
 msgstr "Vis svartiden"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Show this page on your own address instead of this server’s."
 msgstr "Vis denne side på din egen adresse i stedet for denne servers."
 
@@ -13455,7 +13455,7 @@ msgstr "Start samtale"
 msgid "Start migration"
 msgstr "Start migrering"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Start over"
 msgstr "Start forfra"
 
@@ -14190,7 +14190,7 @@ msgstr "Historikken fra eksportfilen kopieres ind i Yuva."
 msgid "The history is copied and its mail now reaches Yuva."
 msgstr "Historikken er kopieret, og dens mail når nu Yuva."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The hostname is being set up. This takes a moment once the records are found."
 msgstr "Værtsnavnet bliver sat op. Det tager et øjeblik, når posterne er fundet."
 
@@ -14279,7 +14279,7 @@ msgid "The last check found no passing DKIM signature. Set up DKIM with your SMT
 msgstr "Det seneste tjek fandt ingen bestået DKIM-signatur. Opsæt DKIM hos din SMTP-udbyder, eller slå Yuva DKIM til for kanalen."
 
 #. placeholder {0}: d.problem
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The last check saw: {0}"
 msgstr "Det seneste tjek så: {0}"
 
@@ -14411,7 +14411,7 @@ msgstr "Den anden postkasse har ingen e-mailkanal, så denne e-mailsamtale kan i
 msgid "The page already sent 10 notices in the last hour"
 msgstr "Siden har allerede sendt 10 underretninger den seneste time"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The page answers at"
 msgstr "Siden svarer på"
 
@@ -14439,7 +14439,7 @@ msgstr "Siden er ikke udgivet. Kun dit team ser dette."
 msgid "The page or the incident is not public"
 msgstr "Siden eller hændelsen er ikke offentlig"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The page stops answering on this domain. Its address on this server keeps working."
 msgstr "Siden svarer ikke længere på dette domæne. Dens adresse på denne server virker stadig."
 
@@ -14519,19 +14519,19 @@ msgstr "Modtagerne udtages, når afsendelsen starter: folk, der tilmelder sig se
 msgid "The record at {name} is published."
 msgstr "Posten på {name} er udgivet."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The records exist, but they do not point where Yuva needs them. Change them to match the ones below. Yuva looks again every 10 minutes."
 msgstr "Posterne findes, men peger ikke dér, hvor Yuva har brug for det. Ret dem, så de passer til dem nedenfor. Yuva kigger igen hvert 10. minut."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The records have not been visible since {missing}. The domain is turned off after 3 days unless they come back."
 msgstr "Posterne har ikke været synlige siden {missing}. Domænet slås fra efter 3 dage, medmindre de vender tilbage."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The records were gone for 3 days, so the domain no longer shows this page and is not checked any more. Put the records back and start over."
 msgstr "Posterne manglede i 3 dage, så domænet viser ikke længere denne side og tjekkes ikke mere. Sæt posterne tilbage, og start forfra."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The records were not found within 7 days, so the claim ended. Add the records below, then start over for 7 more days."
 msgstr "Posterne blev ikke fundet inden for 7 dage, så kravet er udløbet. Tilføj posterne nedenfor, og start forfra i 7 dage mere."
 
@@ -15000,9 +15000,9 @@ msgstr "Dette er hverken en mbox-fil eller en zip. Upload selve .mbox-filen elle
 msgid "This is not a CSV file. Save the spreadsheet as CSV and upload that."
 msgstr "Dette er ikke en CSV-fil. Gem regnearket som CSV, og upload den."
 
-#: src/features/status/DomainCard.tsx
-msgid "This is not a domain this page can use. Use a name like status.example.com that is not one of this server’s own addresses."
-msgstr "Denne side kan ikke bruge dette domæne. Brug et navn som status.example.com, der ikke er en af denne servers egne adresser."
+#: src/features/settings/OwnDomainCard.tsx
+msgid "This is not a domain this page can use. Use a name like {example} that is not one of this server’s own addresses."
+msgstr "Denne side kan ikke bruge dette domæne. Brug et navn som {example}, der ikke er en af denne servers egne adresser."
 
 #: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/channels/sections.tsx
@@ -15112,7 +15112,7 @@ msgstr "Denne anmodning er afsluttet"
 msgid "This server does not offer imports from this kind of mailbox."
 msgstr "Denne server tilbyder ikke import fra denne slags postkasse."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "This server does not offer own domains. Ask its operator to turn them on."
 msgstr "Denne server tilbyder ikke egne domæner. Bed operatøren slå dem til."
 
@@ -15409,7 +15409,7 @@ msgstr "Slå e-mailabonnenter til i sidens indstillinger, så besøgende kan abo
 msgid "Turn on for this device"
 msgstr "Slå til for denne enhed"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Turned off"
 msgstr "Slået fra"
 
@@ -15418,7 +15418,7 @@ msgstr "Slået fra"
 msgid "Turned off by Yuva"
 msgstr "Slået fra af Yuva"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "TXT record"
 msgstr "TXT-post"
 
@@ -15921,7 +15921,7 @@ msgid "value"
 msgstr "værdi"
 
 #: src/features/settings/channels/email/Deliverability.tsx
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Value"
 msgstr "Værdi"
 
@@ -15941,7 +15941,7 @@ msgstr "Værdier gemmes krypteret og vises aldrig igen. Erstat en værdi for at 
 msgid "Values of condition {n}, separated by commas"
 msgstr "Værdier for betingelse {n}, adskilt af kommaer"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Verified"
 msgstr "Bekræftet"
 
@@ -16050,7 +16050,7 @@ msgstr "Besøg på dine websteder med utm_campaign={campaign} siden afsendelsen 
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/parts.tsx
 #: src/features/settings/channels/ChannelPage.tsx
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Waiting"
 msgstr "Venter"
@@ -16082,7 +16082,7 @@ msgstr "venter på bekræftelse"
 msgid "Waiting for confirmation"
 msgstr "Venter på bekræftelse"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Waiting for DNS"
 msgstr "Venter på DNS"
 
@@ -16118,11 +16118,11 @@ msgstr "Venter på operatøren"
 msgid "Waiting for the provider's limit; continues at {time}."
 msgstr "Venter på udbyderens grænse; fortsætter {time}."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Waiting for the two DNS records below. Add them where you manage the domain; DNS changes can take a while to spread. Yuva looks every 10 minutes, and the claim ends if they are not found within 7 days."
 msgstr "Venter på de to DNS-poster nedenfor. Tilføj dem, hvor du styrer domænet; DNS-ændringer kan tage tid at brede sig. Yuva kigger hvert 10. minut, og kravet udløber, hvis de ikke findes inden for 7 dage."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Waiting for validation"
 msgstr "Venter på validering"
 

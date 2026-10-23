@@ -1211,9 +1211,9 @@ msgstr "Zpráva pojme nejvýše 3 články."
 msgid "A message was added"
 msgstr "Zpráva byla přidána"
 
-#: src/features/status/DomainCard.tsx
-msgid "A name you control, like status.example.com. Yuva then shows you two DNS records to add, and the page answers on the domain once it has seen them."
-msgstr "Název, který ovládáte, např. status.example.com. Yuva vám ukáže dva DNS záznamy k přidání a stránka začne na doméně odpovídat, jakmile je uvidí."
+#: src/features/settings/OwnDomainCard.tsx
+msgid "A name you control, like {example}. Yuva then shows you two DNS records to add, and the page answers on the domain once it has seen them."
+msgstr "Název, který ovládáte, např. {example}. Yuva vám ukáže dva DNS záznamy k přidání a stránka začne na doméně odpovídat, jakmile je uvidí."
 
 #: src/features/setup/StartStep.tsx
 msgid "A new product"
@@ -1413,7 +1413,7 @@ msgid "Acme Support"
 msgstr "Acme Support"
 
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 #: src/features/status/IncidentsPage.tsx
 msgid "Active"
 msgstr "Aktivní"
@@ -1545,7 +1545,7 @@ msgstr "Přidat komponentu"
 msgid "Add contact"
 msgstr "Přidat kontakt"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Add domain"
 msgstr "Přidat doménu"
 
@@ -2124,7 +2124,7 @@ msgstr "Probíhá jiný import tohoto pracovního prostoru. Importy běží po j
 msgid "another inbox"
 msgstr "jiná schránka"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Another page verified this domain first, and only a verified claim holds a name. Remove the domain, or start over once the other page lets it go."
 msgstr "Jiná stránka tuto doménu ověřila dříve a název drží jen ověřený nárok. Doménu odeberte, nebo začněte znovu, až ji druhá stránka uvolní."
 
@@ -2685,7 +2685,7 @@ msgstr "Zablokovat kontakt"
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactSheet.tsx
 #: src/features/contact/ContactsPage.tsx
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Blocked"
 msgstr "Zablokováno"
 
@@ -2739,7 +2739,7 @@ msgstr "Jméno bota"
 msgid "Bot name (optional)"
 msgstr "Jméno bota (volitelné)"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Both records were found. Yuva checks them once a day; keep them in place."
 msgstr "Oba záznamy byly nalezeny. Yuva je kontroluje jednou denně; ponechte je na místě."
 
@@ -3022,7 +3022,7 @@ msgstr "Příčina nalezena"
 msgid "Cc: {cc}"
 msgstr "Kopie: {cc}"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Certificate"
 msgstr "Certifikát"
 
@@ -3185,7 +3185,7 @@ msgstr "Zkontrolovat DNS a začít podepisovat"
 msgid "Check every"
 msgstr "Kontrolovat každých"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Check now"
 msgstr "Zkontrolovat nyní"
 
@@ -3471,7 +3471,7 @@ msgstr "Uzavírá"
 msgid "Closing each conversation"
 msgstr "Zavírání každé konverzace"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "CNAME record"
 msgstr "Záznam CNAME"
 
@@ -4723,7 +4723,7 @@ msgstr "Dokumenty"
 msgid "Does it work with server-side rendering?"
 msgstr "Funguje to s vykreslováním na straně serveru?"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Domain"
 msgstr "Doména"
 
@@ -5139,9 +5139,9 @@ msgstr "Konec"
 msgid "English"
 msgstr "English"
 
-#: src/features/status/DomainCard.tsx
-msgid "Enter a domain like status.example.com."
-msgstr "Zadejte doménu jako status.example.com."
+#: src/features/settings/OwnDomainCard.tsx
+msgid "Enter a domain like {example}."
+msgstr "Zadejte doménu jako {example}."
 
 #: src/features/status/monitorErrors.ts
 msgid "Enter a host name or an IP address."
@@ -5781,7 +5781,7 @@ msgstr "Přeposílání"
 msgid "Forwarding address"
 msgstr "Adresa pro přeposílání"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Found"
 msgstr "Nalezeno"
 
@@ -6238,11 +6238,11 @@ msgstr "Hostitel"
 msgid "Hosted by Yuva on its own address. Searched from the chat widget and the reply box. For support answers."
 msgstr "Hostuje je Yuva na vlastní adrese. Hledá se v nich z chatovacího widgetu a z pole odpovědi. Pro odpovědi podpory."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Hostname"
 msgstr "Název hostitele"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Hostname and certificate"
 msgstr "Název hostitele a certifikát"
 
@@ -7084,7 +7084,7 @@ msgstr "Poslední kontrola"
 msgid "Last checked"
 msgstr "Naposledy zkontrolováno"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Last checked {last}."
 msgstr "Naposledy zkontrolováno {last}."
 
@@ -7307,13 +7307,13 @@ msgstr "Propojování…"
 msgid "Links"
 msgstr "Odkazy"
 
+#: src/features/settings/OwnDomainCard.tsx
+msgid "Links and feeds keep using the address on this server until the hostname and its certificate are both active."
+msgstr "Odkazy a kanály dál používají adresu na tomto serveru, dokud nejsou název hostitele i jeho certifikát aktivní."
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Links will point at this server’s link domain instead of your own. Spam filters look at link domains."
 msgstr "Odkazy budou mířit na doménu odkazů tohoto serveru místo vaší vlastní. Spamové filtry sledují domény odkazů."
-
-#: src/features/status/DomainCard.tsx
-msgid "Links, the feed and the badge keep using the address on this server until the hostname and its certificate are both active."
-msgstr "Odkazy, kanál a odznak dál používají adresu na tomto serveru, dokud nejsou název hostitele i jeho certifikát aktivní."
 
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/Overview.tsx
@@ -8159,13 +8159,13 @@ msgstr "Můj profil"
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/ProfileForm.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/setup/email/EmailLayout.tsx
 #: src/features/setup/SetupLayout.tsx
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/CreatePageDialog.tsx
-#: src/features/status/DomainCard.tsx
 #: src/features/status/MonitorDialog.tsx
 #: src/features/status/SettingsTab.tsx
 msgid "Name"
@@ -8221,8 +8221,8 @@ msgstr "Potřebuje odesílatele"
 
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/text.ts
+#: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/ProductsPage.tsx
-#: src/features/status/DomainCard.tsx
 msgid "Needs attention"
 msgstr "Vyžaduje pozornost"
 
@@ -8519,7 +8519,7 @@ msgstr "Další pokus"
 msgid "next attempt {when}"
 msgstr "další pokus {when}"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Next check {next}."
 msgstr "Další kontrola {next}."
 
@@ -9193,7 +9193,7 @@ msgstr "Zatím nepřipojeno. Tato stránka se aktualizuje, až dokončíte přih
 msgid "Not delivered"
 msgstr "Nedoručeno"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Not found"
 msgstr "Nenalezeno"
 
@@ -10238,7 +10238,7 @@ msgstr "V čase"
 msgid "Overview"
 msgstr "Přehled"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Own domain"
 msgstr "Vlastní doména"
 
@@ -10440,7 +10440,7 @@ msgid "Payload"
 msgstr "Obsah požadavku"
 
 #: src/components/common/text.ts
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Pending"
 msgstr "Čeká"
 
@@ -10795,7 +10795,7 @@ msgstr "Přehrát zvuk"
 msgid "Point the MX records at Yuva as the e-mail guide describes. Sync catches the mail that still reaches the old server meanwhile."
 msgstr "Nasměrujte záznamy MX na Yuvu, jak popisuje průvodce e-mailem. Synchronizace zachytí poštu, která mezitím stále chodí na starý server."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Points to"
 msgstr "Odkazuje na"
 
@@ -11444,9 +11444,9 @@ msgstr "Vzdálené obrázky mohou odesílateli prozradit, že jste zprávu otev�
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/Passkeys.tsx
 #: src/features/settings/webhooks/sections.tsx
-#: src/features/status/DomainCard.tsx
 #: src/features/status/MonitorHttpFields.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Remove"
@@ -11461,7 +11461,7 @@ msgid "Remove {0}"
 msgstr "Odebrat {0}"
 
 #. placeholder {0}: d.domain
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Remove {0}?"
 msgstr "Odebrat {0}?"
 
@@ -11490,7 +11490,7 @@ msgstr "Odebrat kanál"
 msgid "Remove condition {n}"
 msgstr "Odebrat podmínku {n}"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Remove domain"
 msgstr "Odebrat doménu"
 
@@ -12989,7 +12989,7 @@ msgstr "Zobrazit náhled"
 msgid "Show the reply time"
 msgstr "Zobrazovat dobu odpovědi"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Show this page on your own address instead of this server’s."
 msgstr "Zobrazte tuto stránku na vlastní adrese místo adresy tohoto serveru."
 
@@ -13455,7 +13455,7 @@ msgstr "Zahájit konverzaci"
 msgid "Start migration"
 msgstr "Zahájit migraci"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Start over"
 msgstr "Začít znovu"
 
@@ -14190,7 +14190,7 @@ msgstr "Historie z exportního souboru se kopíruje do Yuvy."
 msgid "The history is copied and its mail now reaches Yuva."
 msgstr "Historie je zkopírována a její pošta teď chodí do Yuvy."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The hostname is being set up. This takes a moment once the records are found."
 msgstr "Název hostitele se nastavuje. Po nalezení záznamů to chvíli trvá."
 
@@ -14279,7 +14279,7 @@ msgid "The last check found no passing DKIM signature. Set up DKIM with your SMT
 msgstr "Poslední kontrola nenašla procházející podpis DKIM. Nastavte DKIM u svého poskytovatele SMTP, nebo pro kanál zapněte Yuva DKIM."
 
 #. placeholder {0}: d.problem
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The last check saw: {0}"
 msgstr "Poslední kontrola zjistila: {0}"
 
@@ -14411,7 +14411,7 @@ msgstr "Druhá schránka nemá e-mailový kanál, takže tuto e-mailovou konverz
 msgid "The page already sent 10 notices in the last hour"
 msgstr "Stránka už za poslední hodinu odeslala 10 oznámení"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The page answers at"
 msgstr "Stránka odpovídá na"
 
@@ -14439,7 +14439,7 @@ msgstr "Stránka není zveřejněná. Vidí to jen váš tým."
 msgid "The page or the incident is not public"
 msgstr "Stránka nebo incident není veřejný"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The page stops answering on this domain. Its address on this server keeps working."
 msgstr "Stránka na této doméně přestane odpovídat. Její adresa na tomto serveru dál funguje."
 
@@ -14519,19 +14519,19 @@ msgstr "Příjemci se určí při zahájení odesílání: ti, kdo se přihlás�
 msgid "The record at {name} is published."
 msgstr "Záznam na {name} je zveřejněn."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The records exist, but they do not point where Yuva needs them. Change them to match the ones below. Yuva looks again every 10 minutes."
 msgstr "Záznamy existují, ale neodkazují tam, kam Yuva potřebuje. Změňte je podle těch níže. Yuva kontroluje znovu každých 10 minut."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The records have not been visible since {missing}. The domain is turned off after 3 days unless they come back."
 msgstr "Záznamy nejsou vidět od {missing}. Pokud se nevrátí, doména se po 3 dnech vypne."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The records were gone for 3 days, so the domain no longer shows this page and is not checked any more. Put the records back and start over."
 msgstr "Záznamy chyběly 3 dny, takže doména už tuto stránku nezobrazuje a nekontroluje se. Vraťte záznamy a začněte znovu."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The records were not found within 7 days, so the claim ended. Add the records below, then start over for 7 more days."
 msgstr "Záznamy nebyly do 7 dnů nalezeny, takže nárok skončil. Přidejte záznamy níže a začněte znovu na dalších 7 dnů."
 
@@ -15000,9 +15000,9 @@ msgstr "Toto není ani soubor mbox, ani zip. Nahrajte samotný soubor .mbox, neb
 msgid "This is not a CSV file. Save the spreadsheet as CSV and upload that."
 msgstr "Toto není soubor CSV. Uložte tabulku jako CSV a nahrajte ji."
 
-#: src/features/status/DomainCard.tsx
-msgid "This is not a domain this page can use. Use a name like status.example.com that is not one of this server’s own addresses."
-msgstr "Tato stránka nemůže tuto doménu použít. Použijte název jako status.example.com, který není jednou z vlastních adres tohoto serveru."
+#: src/features/settings/OwnDomainCard.tsx
+msgid "This is not a domain this page can use. Use a name like {example} that is not one of this server’s own addresses."
+msgstr "Tato stránka nemůže tuto doménu použít. Použijte název jako {example}, který není jednou z vlastních adres tohoto serveru."
 
 #: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/channels/sections.tsx
@@ -15112,7 +15112,7 @@ msgstr "Tento požadavek skončil"
 msgid "This server does not offer imports from this kind of mailbox."
 msgstr "Tento server nenabízí import z tohoto druhu schránky."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "This server does not offer own domains. Ask its operator to turn them on."
 msgstr "Tento server nenabízí vlastní domény. Požádejte jeho provozovatele o zapnutí."
 
@@ -15409,7 +15409,7 @@ msgstr "Zapněte odběratele e-mailem v nastavení stránky, aby se návštěvn�
 msgid "Turn on for this device"
 msgstr "Zapnout pro toto zařízení"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Turned off"
 msgstr "Vypnuto"
 
@@ -15418,7 +15418,7 @@ msgstr "Vypnuto"
 msgid "Turned off by Yuva"
 msgstr "Vypnuto Yuvou"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "TXT record"
 msgstr "Záznam TXT"
 
@@ -15921,7 +15921,7 @@ msgid "value"
 msgstr "hodnota"
 
 #: src/features/settings/channels/email/Deliverability.tsx
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Value"
 msgstr "Hodnota"
 
@@ -15941,7 +15941,7 @@ msgstr "Hodnoty se ukládají šifrovaně a už se nezobrazují. Chcete-li hodno
 msgid "Values of condition {n}, separated by commas"
 msgstr "Hodnoty podmínky {n}, oddělené čárkami"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Verified"
 msgstr "Ověřeno"
 
@@ -16050,7 +16050,7 @@ msgstr "Návštěvy vašich webů s utm_campaign={campaign} od zahájení odesí
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/parts.tsx
 #: src/features/settings/channels/ChannelPage.tsx
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Waiting"
 msgstr "Čeká"
@@ -16082,7 +16082,7 @@ msgstr "čeká na potvrzení"
 msgid "Waiting for confirmation"
 msgstr "Čeká na potvrzení"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Waiting for DNS"
 msgstr "Čekání na DNS"
 
@@ -16118,11 +16118,11 @@ msgstr "Čeká na provozovatele"
 msgid "Waiting for the provider's limit; continues at {time}."
 msgstr "Čeká se na limit poskytovatele; pokračuje {time}."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Waiting for the two DNS records below. Add them where you manage the domain; DNS changes can take a while to spread. Yuva looks every 10 minutes, and the claim ends if they are not found within 7 days."
 msgstr "Čekání na dva DNS záznamy níže. Přidejte je tam, kde doménu spravujete; změny DNS se mohou chvíli šířit. Yuva kontroluje každých 10 minut a nárok skončí, pokud je do 7 dnů nenajde."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Waiting for validation"
 msgstr "Čekání na ověření"
 

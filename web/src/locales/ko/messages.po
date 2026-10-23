@@ -1211,9 +1211,9 @@ msgstr "메시지 하나에는 문서를 최대 3개까지 넣을 수 있습니�
 msgid "A message was added"
 msgstr "메시지가 추가되었을 때"
 
-#: src/features/status/DomainCard.tsx
-msgid "A name you control, like status.example.com. Yuva then shows you two DNS records to add, and the page answers on the domain once it has seen them."
-msgstr "직접 관리하는 이름입니다(예: status.example.com). Yuva가 추가할 DNS 레코드 두 개를 보여 주고, 레코드가 확인되면 페이지가 그 도메인에서 응답합니다."
+#: src/features/settings/OwnDomainCard.tsx
+msgid "A name you control, like {example}. Yuva then shows you two DNS records to add, and the page answers on the domain once it has seen them."
+msgstr "직접 관리하는 이름입니다(예: {example}). Yuva가 추가할 DNS 레코드 두 개를 보여 주고, 레코드가 확인되면 페이지가 그 도메인에서 응답합니다."
 
 #: src/features/setup/StartStep.tsx
 msgid "A new product"
@@ -1413,7 +1413,7 @@ msgid "Acme Support"
 msgstr "Acme 지원"
 
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 #: src/features/status/IncidentsPage.tsx
 msgid "Active"
 msgstr "활성"
@@ -1545,7 +1545,7 @@ msgstr "구성 요소 추가"
 msgid "Add contact"
 msgstr "연락처 추가"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Add domain"
 msgstr "도메인 추가"
 
@@ -2124,7 +2124,7 @@ msgstr "이 워크스페이스의 다른 가져오기가 실행 중입니다. �
 msgid "another inbox"
 msgstr "다른 받은 편지함"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Another page verified this domain first, and only a verified claim holds a name. Remove the domain, or start over once the other page lets it go."
 msgstr "다른 페이지가 이 도메인을 먼저 확인했으며, 이름은 확인된 신청만 보유합니다. 도메인을 제거하거나, 다른 페이지가 놓아 주면 처음부터 다시 시작하세요."
 
@@ -2685,7 +2685,7 @@ msgstr "연락처 차단"
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactSheet.tsx
 #: src/features/contact/ContactsPage.tsx
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Blocked"
 msgstr "차단됨"
 
@@ -2739,7 +2739,7 @@ msgstr "봇 이름"
 msgid "Bot name (optional)"
 msgstr "봇 이름(선택)"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Both records were found. Yuva checks them once a day; keep them in place."
 msgstr "두 레코드를 모두 찾았습니다. Yuva는 하루에 한 번 확인하므로 그대로 두세요."
 
@@ -3022,7 +3022,7 @@ msgstr "원인 파악됨"
 msgid "Cc: {cc}"
 msgstr "Cc: {cc}"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Certificate"
 msgstr "인증서"
 
@@ -3185,7 +3185,7 @@ msgstr "DNS를 확인하고 서명 시작"
 msgid "Check every"
 msgstr "확인 간격"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Check now"
 msgstr "지금 확인"
 
@@ -3471,7 +3471,7 @@ msgstr "종료 시각"
 msgid "Closing each conversation"
 msgstr "각 대화를 닫는 중"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "CNAME record"
 msgstr "CNAME 레코드"
 
@@ -4723,7 +4723,7 @@ msgstr "문서"
 msgid "Does it work with server-side rendering?"
 msgstr "서버 사이드 렌더링에서도 작동하나요?"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Domain"
 msgstr "도메인"
 
@@ -5139,9 +5139,9 @@ msgstr "종료"
 msgid "English"
 msgstr "English"
 
-#: src/features/status/DomainCard.tsx
-msgid "Enter a domain like status.example.com."
-msgstr "status.example.com 같은 도메인을 입력하세요."
+#: src/features/settings/OwnDomainCard.tsx
+msgid "Enter a domain like {example}."
+msgstr "{example} 같은 도메인을 입력하세요."
 
 #: src/features/status/monitorErrors.ts
 msgid "Enter a host name or an IP address."
@@ -5781,7 +5781,7 @@ msgstr "전달"
 msgid "Forwarding address"
 msgstr "전달 주소"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Found"
 msgstr "확인됨"
 
@@ -6238,11 +6238,11 @@ msgstr "호스트"
 msgid "Hosted by Yuva on its own address. Searched from the chat widget and the reply box. For support answers."
 msgstr "Yuva가 전용 주소로 호스팅합니다. 채팅 위젯과 답장 상자에서 검색됩니다. 지원 답변용입니다."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Hostname"
 msgstr "호스트 이름"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Hostname and certificate"
 msgstr "호스트 이름 및 인증서"
 
@@ -7084,7 +7084,7 @@ msgstr "마지막 확인"
 msgid "Last checked"
 msgstr "마지막으로 확인한 시각"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Last checked {last}."
 msgstr "마지막 확인: {last}."
 
@@ -7307,13 +7307,13 @@ msgstr "연결하는 중…"
 msgid "Links"
 msgstr "링크"
 
+#: src/features/settings/OwnDomainCard.tsx
+msgid "Links and feeds keep using the address on this server until the hostname and its certificate are both active."
+msgstr "호스트 이름과 인증서가 모두 활성화될 때까지 링크와 피드는 이 서버의 주소를 계속 사용합니다."
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Links will point at this server’s link domain instead of your own. Spam filters look at link domains."
 msgstr "링크가 내 도메인이 아니라 이 서버의 링크 도메인을 가리킵니다. 스팸 필터는 링크 도메인을 봅니다."
-
-#: src/features/status/DomainCard.tsx
-msgid "Links, the feed and the badge keep using the address on this server until the hostname and its certificate are both active."
-msgstr "호스트 이름과 인증서가 모두 활성화될 때까지 링크, 피드, 배지는 이 서버의 주소를 계속 사용합니다."
 
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/Overview.tsx
@@ -8159,13 +8159,13 @@ msgstr "내 프로필"
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/ProfileForm.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/setup/email/EmailLayout.tsx
 #: src/features/setup/SetupLayout.tsx
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/CreatePageDialog.tsx
-#: src/features/status/DomainCard.tsx
 #: src/features/status/MonitorDialog.tsx
 #: src/features/status/SettingsTab.tsx
 msgid "Name"
@@ -8221,8 +8221,8 @@ msgstr "발신자 필요"
 
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/text.ts
+#: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/ProductsPage.tsx
-#: src/features/status/DomainCard.tsx
 msgid "Needs attention"
 msgstr "확인 필요"
 
@@ -8519,7 +8519,7 @@ msgstr "다음 시도"
 msgid "next attempt {when}"
 msgstr "다음 시도 {when}"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Next check {next}."
 msgstr "다음 확인: {next}."
 
@@ -9193,7 +9193,7 @@ msgstr "아직 연결되지 않았습니다. 로그인을 마치면 이 페이�
 msgid "Not delivered"
 msgstr "전달되지 않음"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Not found"
 msgstr "찾을 수 없음"
 
@@ -10238,7 +10238,7 @@ msgstr "시간 경과"
 msgid "Overview"
 msgstr "개요"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Own domain"
 msgstr "자체 도메인"
 
@@ -10440,7 +10440,7 @@ msgid "Payload"
 msgstr "페이로드"
 
 #: src/components/common/text.ts
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Pending"
 msgstr "대기 중"
 
@@ -10795,7 +10795,7 @@ msgstr "소리 재생"
 msgid "Point the MX records at Yuva as the e-mail guide describes. Sync catches the mail that still reaches the old server meanwhile."
 msgstr "메일 가이드의 설명대로 MX 레코드를 Yuva로 향하게 하세요. 그동안 예전 서버에 도착하는 메일은 동기화가 놓치지 않고 가져옵니다."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Points to"
 msgstr "연결 대상"
 
@@ -11444,9 +11444,9 @@ msgstr "원격 이미지는 보낸 사람에게 메일을 열었음을 알릴 �
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/Passkeys.tsx
 #: src/features/settings/webhooks/sections.tsx
-#: src/features/status/DomainCard.tsx
 #: src/features/status/MonitorHttpFields.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Remove"
@@ -11461,7 +11461,7 @@ msgid "Remove {0}"
 msgstr "{0} 제거"
 
 #. placeholder {0}: d.domain
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Remove {0}?"
 msgstr "{0}을(를) 제거할까요?"
 
@@ -11490,7 +11490,7 @@ msgstr "채널 제거"
 msgid "Remove condition {n}"
 msgstr "조건 {n} 제거"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Remove domain"
 msgstr "도메인 제거"
 
@@ -12989,7 +12989,7 @@ msgstr "미리 보기 표시"
 msgid "Show the reply time"
 msgstr "답장 시간 표시"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Show this page on your own address instead of this server’s."
 msgstr "이 페이지를 이 서버의 주소 대신 직접 보유한 주소로 표시합니다."
 
@@ -13455,7 +13455,7 @@ msgstr "대화 시작"
 msgid "Start migration"
 msgstr "이전 시작"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Start over"
 msgstr "처음부터 다시 시작"
 
@@ -14190,7 +14190,7 @@ msgstr "내보내기 파일의 기록이 Yuva로 복사됩니다."
 msgid "The history is copied and its mail now reaches Yuva."
 msgstr "기록이 복사되었고 이제 메일이 Yuva에 도착합니다."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The hostname is being set up. This takes a moment once the records are found."
 msgstr "호스트 이름을 설정하는 중입니다. 레코드를 찾은 뒤 잠시 걸립니다."
 
@@ -14279,7 +14279,7 @@ msgid "The last check found no passing DKIM signature. Set up DKIM with your SMT
 msgstr "마지막 확인에서 통과하는 DKIM 서명을 찾지 못했습니다. SMTP 제공업체에서 DKIM을 설정하거나 채널에서 Yuva DKIM을 켜세요."
 
 #. placeholder {0}: d.problem
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The last check saw: {0}"
 msgstr "마지막 확인에서 발견된 내용: {0}"
 
@@ -14411,7 +14411,7 @@ msgstr "다른 받은 편지함에 이메일 채널이 없어 이 이메일 대�
 msgid "The page already sent 10 notices in the last hour"
 msgstr "이 페이지는 지난 1시간 동안 이미 알림 10건을 발송했습니다"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The page answers at"
 msgstr "페이지 응답 주소"
 
@@ -14439,7 +14439,7 @@ msgstr "페이지가 게시되지 않았습니다. 팀만 볼 수 있습니다."
 msgid "The page or the incident is not public"
 msgstr "페이지 또는 인시던트가 공개 상태가 아닙니다"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The page stops answering on this domain. Its address on this server keeps working."
 msgstr "이 도메인에서 페이지가 더 이상 응답하지 않습니다. 이 서버의 주소는 계속 작동합니다."
 
@@ -14519,19 +14519,19 @@ msgstr "수신자는 발송이 시작될 때 확정됩니다. 나중에 구독�
 msgid "The record at {name} is published."
 msgstr "{name}의 레코드가 게시되었습니다."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The records exist, but they do not point where Yuva needs them. Change them to match the ones below. Yuva looks again every 10 minutes."
 msgstr "레코드는 있지만 Yuva가 필요로 하는 곳을 가리키지 않습니다. 아래 레코드와 일치하도록 변경하세요. Yuva는 10분마다 다시 확인합니다."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The records have not been visible since {missing}. The domain is turned off after 3 days unless they come back."
 msgstr "{missing}부터 레코드가 보이지 않습니다. 돌아오지 않으면 3일 후 도메인이 꺼집니다."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The records were gone for 3 days, so the domain no longer shows this page and is not checked any more. Put the records back and start over."
 msgstr "레코드가 3일 동안 없어서 도메인은 더 이상 이 페이지를 표시하지 않으며 확인도 하지 않습니다. 레코드를 다시 넣고 처음부터 시작하세요."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The records were not found within 7 days, so the claim ended. Add the records below, then start over for 7 more days."
 msgstr "7일 안에 레코드를 찾지 못해 신청이 끝났습니다. 아래 레코드를 추가한 뒤 7일 더 처음부터 시작하세요."
 
@@ -15000,9 +15000,9 @@ msgstr "mbox 파일도 zip도 아닙니다. .mbox 파일 자체, 또는 .eml 파
 msgid "This is not a CSV file. Save the spreadsheet as CSV and upload that."
 msgstr "CSV 파일이 아닙니다. 스프레드시트를 CSV로 저장해 업로드하세요."
 
-#: src/features/status/DomainCard.tsx
-msgid "This is not a domain this page can use. Use a name like status.example.com that is not one of this server’s own addresses."
-msgstr "이 페이지는 이 도메인을 사용할 수 없습니다. 이 서버 자체 주소가 아닌 status.example.com 같은 이름을 사용하세요."
+#: src/features/settings/OwnDomainCard.tsx
+msgid "This is not a domain this page can use. Use a name like {example} that is not one of this server’s own addresses."
+msgstr "이 페이지는 이 도메인을 사용할 수 없습니다. 이 서버 자체 주소가 아닌 {example} 같은 이름을 사용하세요."
 
 #: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/channels/sections.tsx
@@ -15112,7 +15112,7 @@ msgstr "이 요청은 종료되었습니다"
 msgid "This server does not offer imports from this kind of mailbox."
 msgstr "이 서버는 이런 종류의 메일함에서 가져오기를 지원하지 않습니다."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "This server does not offer own domains. Ask its operator to turn them on."
 msgstr "이 서버는 자체 도메인을 제공하지 않습니다. 운영자에게 켜 달라고 요청하세요."
 
@@ -15409,7 +15409,7 @@ msgstr "방문자가 알림을 구독할 수 있도록 페이지 설정에서 �
 msgid "Turn on for this device"
 msgstr "이 기기에서 켜기"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Turned off"
 msgstr "꺼짐"
 
@@ -15418,7 +15418,7 @@ msgstr "꺼짐"
 msgid "Turned off by Yuva"
 msgstr "Yuva가 껐음"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "TXT record"
 msgstr "TXT 레코드"
 
@@ -15921,7 +15921,7 @@ msgid "value"
 msgstr "값"
 
 #: src/features/settings/channels/email/Deliverability.tsx
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Value"
 msgstr "값"
 
@@ -15941,7 +15941,7 @@ msgstr "값은 암호화되어 저장되며 다시 표시되지 않습니다. �
 msgid "Values of condition {n}, separated by commas"
 msgstr "조건 {n}의 값, 쉼표로 구분"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Verified"
 msgstr "확인됨"
 
@@ -16050,7 +16050,7 @@ msgstr "발송 시작 이후 utm_campaign={campaign}이 붙은 내 사이트 방
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/parts.tsx
 #: src/features/settings/channels/ChannelPage.tsx
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Waiting"
 msgstr "대기 중"
@@ -16082,7 +16082,7 @@ msgstr "확인 대기 중"
 msgid "Waiting for confirmation"
 msgstr "확인 대기 중"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Waiting for DNS"
 msgstr "DNS 대기 중"
 
@@ -16118,11 +16118,11 @@ msgstr "운영자를 기다리는 중"
 msgid "Waiting for the provider's limit; continues at {time}."
 msgstr "제공업체의 한도를 기다리는 중입니다. {time}에 이어 갑니다."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Waiting for the two DNS records below. Add them where you manage the domain; DNS changes can take a while to spread. Yuva looks every 10 minutes, and the claim ends if they are not found within 7 days."
 msgstr "아래 두 DNS 레코드를 기다리는 중입니다. 도메인을 관리하는 곳에서 추가하세요. DNS 변경은 전파되는 데 시간이 걸릴 수 있습니다. Yuva는 10분마다 확인하며, 7일 안에 찾지 못하면 신청이 끝납니다."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Waiting for validation"
 msgstr "검증 대기 중"
 

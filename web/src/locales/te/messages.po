@@ -1211,9 +1211,9 @@ msgstr "ఒక సందేశంలో గరిష్ఠంగా 3 కథన�
 msgid "A message was added"
 msgstr "సందేశం జోడించబడింది"
 
-#: src/features/status/DomainCard.tsx
-msgid "A name you control, like status.example.com. Yuva then shows you two DNS records to add, and the page answers on the domain once it has seen them."
-msgstr "మీరు నియంత్రించే పేరు, ఉదా. status.example.com. జోడించాల్సిన రెండు DNS రికార్డులను Yuva చూపిస్తుంది, వాటిని చూడగానే పేజీ డొమైన్‌లో స్పందిస్తుంది."
+#: src/features/settings/OwnDomainCard.tsx
+msgid "A name you control, like {example}. Yuva then shows you two DNS records to add, and the page answers on the domain once it has seen them."
+msgstr "మీరు నియంత్రించే పేరు, ఉదా. {example}. జోడించాల్సిన రెండు DNS రికార్డులను Yuva చూపిస్తుంది, వాటిని చూడగానే పేజీ డొమైన్‌లో స్పందిస్తుంది."
 
 #: src/features/setup/StartStep.tsx
 msgid "A new product"
@@ -1413,7 +1413,7 @@ msgid "Acme Support"
 msgstr "Acme సపోర్ట్"
 
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 #: src/features/status/IncidentsPage.tsx
 msgid "Active"
 msgstr "క్రియాశీలం"
@@ -1545,7 +1545,7 @@ msgstr "భాగాన్ని జోడించండి"
 msgid "Add contact"
 msgstr "కాంటాక్ట్ జోడించండి"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Add domain"
 msgstr "డొమైన్ జోడించండి"
 
@@ -2124,7 +2124,7 @@ msgstr "ఈ వర్క్‌స్పేస్ యొక్క మరో ద�
 msgid "another inbox"
 msgstr "మరో ఇన్‌బాక్స్"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Another page verified this domain first, and only a verified claim holds a name. Remove the domain, or start over once the other page lets it go."
 msgstr "మరొక పేజీ ఈ డొమైన్‌ను ముందే ధృవీకరించింది, ధృవీకరించిన క్లెయిమ్ మాత్రమే పేరును నిలుపుకుంటుంది. డొమైన్ తీసివేయండి, లేదా ఆ పేజీ వదిలేసినప్పుడు మళ్లీ మొదలుపెట్టండి."
 
@@ -2685,7 +2685,7 @@ msgstr "కాంటాక్ట్‌ను బ్లాక్ చేయండ�
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactSheet.tsx
 #: src/features/contact/ContactsPage.tsx
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Blocked"
 msgstr "బ్లాక్ చేయబడింది"
 
@@ -2739,7 +2739,7 @@ msgstr "బాట్ పేరు"
 msgid "Bot name (optional)"
 msgstr "బాట్ పేరు (ఐచ్ఛికం)"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Both records were found. Yuva checks them once a day; keep them in place."
 msgstr "రెండు రికార్డులు దొరికాయి. Yuva వాటిని రోజుకు ఒకసారి తనిఖీ చేస్తుంది; వాటిని అలాగే ఉంచండి."
 
@@ -3022,7 +3022,7 @@ msgstr "కారణం దొరికింది"
 msgid "Cc: {cc}"
 msgstr "Cc: {cc}"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Certificate"
 msgstr "సర్టిఫికేట్"
 
@@ -3185,7 +3185,7 @@ msgstr "DNS ను తనిఖీ చేసి సైనింగ్ ప్ర�
 msgid "Check every"
 msgstr "తనిఖీ ప్రతి"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Check now"
 msgstr "ఇప్పుడే తనిఖీ చేయండి"
 
@@ -3471,7 +3471,7 @@ msgstr "మూసివేస్తుంది"
 msgid "Closing each conversation"
 msgstr "ప్రతి సంభాషణను మూసివేస్తున్నాం"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "CNAME record"
 msgstr "CNAME రికార్డ్"
 
@@ -4723,7 +4723,7 @@ msgstr "పత్రాలు"
 msgid "Does it work with server-side rendering?"
 msgstr "ఇది సర్వర్-సైడ్ రెండరింగ్‌తో పనిచేస్తుందా?"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Domain"
 msgstr "డొమైన్"
 
@@ -5139,9 +5139,9 @@ msgstr "ముగింపు"
 msgid "English"
 msgstr "English"
 
-#: src/features/status/DomainCard.tsx
-msgid "Enter a domain like status.example.com."
-msgstr "status.example.com లాంటి డొమైన్ నమోదు చేయండి."
+#: src/features/settings/OwnDomainCard.tsx
+msgid "Enter a domain like {example}."
+msgstr "{example} లాంటి డొమైన్ నమోదు చేయండి."
 
 #: src/features/status/monitorErrors.ts
 msgid "Enter a host name or an IP address."
@@ -5781,7 +5781,7 @@ msgstr "ఫార్వర్డింగ్"
 msgid "Forwarding address"
 msgstr "ఫార్వర్డింగ్ చిరునామా"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Found"
 msgstr "కనుగొనబడింది"
 
@@ -6238,11 +6238,11 @@ msgstr "హోస్ట్"
 msgid "Hosted by Yuva on its own address. Searched from the chat widget and the reply box. For support answers."
 msgstr "Yuva తన సొంత చిరునామాలో హోస్ట్ చేస్తుంది. చాట్ విడ్జెట్, జవాబు పెట్టె నుండి వెతకవచ్చు. సపోర్ట్ జవాబుల కోసం."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Hostname"
 msgstr "హోస్ట్‌నేమ్"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Hostname and certificate"
 msgstr "హోస్ట్‌నేమ్ మరియు సర్టిఫికేట్"
 
@@ -7084,7 +7084,7 @@ msgstr "చివరి తనిఖీ"
 msgid "Last checked"
 msgstr "చివరిగా తనిఖీ చేసింది"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Last checked {last}."
 msgstr "చివరి తనిఖీ {last}."
 
@@ -7307,13 +7307,13 @@ msgstr "లింక్ చేస్తున్నాం…"
 msgid "Links"
 msgstr "లింక్‌లు"
 
+#: src/features/settings/OwnDomainCard.tsx
+msgid "Links and feeds keep using the address on this server until the hostname and its certificate are both active."
+msgstr "హోస్ట్‌నేమ్, దాని సర్టిఫికెట్ రెండూ యాక్టివ్ అయ్యే వరకు లింక్‌లు, ఫీడ్‌లు ఈ సర్వర్‌లోని చిరునామానే ఉపయోగిస్తాయి."
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Links will point at this server’s link domain instead of your own. Spam filters look at link domains."
 msgstr "లింక్‌లు మీ స్వంతదానికి బదులుగా ఈ సర్వర్ లింక్ డొమైన్‌ను సూచిస్తాయి. స్పామ్ ఫిల్టర్‌లు లింక్ డొమైన్‌లను చూస్తాయి."
-
-#: src/features/status/DomainCard.tsx
-msgid "Links, the feed and the badge keep using the address on this server until the hostname and its certificate are both active."
-msgstr "హోస్ట్‌నేమ్ మరియు దాని సర్టిఫికేట్ రెండూ క్రియాశీలమయ్యే వరకు లింక్‌లు, ఫీడ్ మరియు బ్యాడ్జ్ ఈ సర్వర్ చిరునామానే ఉపయోగిస్తాయి."
 
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/Overview.tsx
@@ -8159,13 +8159,13 @@ msgstr "నా ప్రొఫైల్"
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/ProfileForm.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/setup/email/EmailLayout.tsx
 #: src/features/setup/SetupLayout.tsx
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/CreatePageDialog.tsx
-#: src/features/status/DomainCard.tsx
 #: src/features/status/MonitorDialog.tsx
 #: src/features/status/SettingsTab.tsx
 msgid "Name"
@@ -8221,8 +8221,8 @@ msgstr "పంపేవారు అవసరం"
 
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/text.ts
+#: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/ProductsPage.tsx
-#: src/features/status/DomainCard.tsx
 msgid "Needs attention"
 msgstr "శ్రద్ధ అవసరం"
 
@@ -8519,7 +8519,7 @@ msgstr "తదుపరి ప్రయత్నం"
 msgid "next attempt {when}"
 msgstr "తదుపరి ప్రయత్నం {when}"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Next check {next}."
 msgstr "తదుపరి తనిఖీ {next}."
 
@@ -9193,7 +9193,7 @@ msgstr "ఇంకా కనెక్ట్ కాలేదు. మీరు స�
 msgid "Not delivered"
 msgstr "డెలివర్ కాలేదు"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Not found"
 msgstr "కనుగొనబడలేదు"
 
@@ -10238,7 +10238,7 @@ msgstr "కాలక్రమేణా"
 msgid "Overview"
 msgstr "అవలోకనం"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Own domain"
 msgstr "సొంత డొమైన్"
 
@@ -10440,7 +10440,7 @@ msgid "Payload"
 msgstr "పేలోడ్"
 
 #: src/components/common/text.ts
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Pending"
 msgstr "పెండింగ్"
 
@@ -10795,7 +10795,7 @@ msgstr "శబ్దాన్ని ప్లే చేయండి"
 msgid "Point the MX records at Yuva as the e-mail guide describes. Sync catches the mail that still reaches the old server meanwhile."
 msgstr "ఇమెయిల్ గైడ్ వివరించినట్లు MX రికార్డ్‌లను Yuva వైపు చూపండి. ఈలోగా పాత సర్వర్‌కు ఇంకా చేరే మెయిల్‌ను సింక్ పట్టుకుంటుంది."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Points to"
 msgstr "దీనిని సూచిస్తుంది"
 
@@ -11444,9 +11444,9 @@ msgstr "రిమోట్ చిత్రాలు మీరు మెయిల
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/Passkeys.tsx
 #: src/features/settings/webhooks/sections.tsx
-#: src/features/status/DomainCard.tsx
 #: src/features/status/MonitorHttpFields.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Remove"
@@ -11461,7 +11461,7 @@ msgid "Remove {0}"
 msgstr "{0} ను తొలగించండి"
 
 #. placeholder {0}: d.domain
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Remove {0}?"
 msgstr "{0} తీసివేయాలా?"
 
@@ -11490,7 +11490,7 @@ msgstr "ఛానెల్‌ను తొలగించండి"
 msgid "Remove condition {n}"
 msgstr "షరతు {n} ను తొలగించండి"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Remove domain"
 msgstr "డొమైన్ తీసివేయండి"
 
@@ -12989,7 +12989,7 @@ msgstr "ప్రివ్యూను చూపండి"
 msgid "Show the reply time"
 msgstr "జవాబు సమయాన్ని చూపండి"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Show this page on your own address instead of this server’s."
 msgstr "ఈ పేజీని ఈ సర్వర్ చిరునామాకు బదులు మీ సొంత చిరునామాలో చూపించండి."
 
@@ -13455,7 +13455,7 @@ msgstr "సంభాషణను ప్రారంభించండి"
 msgid "Start migration"
 msgstr "మైగ్రేషన్‌ను ప్రారంభించండి"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Start over"
 msgstr "మళ్లీ మొదలుపెట్టండి"
 
@@ -14190,7 +14190,7 @@ msgstr "ఎగుమతి ఫైల్ చరిత్ర Yuva కు కాప
 msgid "The history is copied and its mail now reaches Yuva."
 msgstr "చరిత్ర కాపీ అయింది మరియు దాని మెయిల్ ఇప్పుడు Yuva కు చేరుతోంది."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The hostname is being set up. This takes a moment once the records are found."
 msgstr "హోస్ట్‌నేమ్ సెటప్ అవుతోంది. రికార్డులు దొరికిన తర్వాత కొంత సమయం పడుతుంది."
 
@@ -14279,7 +14279,7 @@ msgid "The last check found no passing DKIM signature. Set up DKIM with your SMT
 msgstr "చివరి తనిఖీలో పాస్ అయ్యే DKIM సంతకం కనుగొనబడలేదు. మీ SMTP ప్రొవైడర్‌తో DKIM ను సెటప్ చేయండి, లేదా ఛానెల్ కోసం Yuva DKIM ను ఆన్ చేయండి."
 
 #. placeholder {0}: d.problem
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The last check saw: {0}"
 msgstr "చివరి తనిఖీ చూసింది: {0}"
 
@@ -14411,7 +14411,7 @@ msgstr "మరో ఇన్‌బాక్స్‌కు ఇమెయిల్ 
 msgid "The page already sent 10 notices in the last hour"
 msgstr "పేజీ గత గంటలో ఇప్పటికే 10 నోటీసులు పంపింది"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The page answers at"
 msgstr "పేజీ ఈ చిరునామాలో స్పందిస్తుంది"
 
@@ -14439,7 +14439,7 @@ msgstr "పేజీ ప్రచురించబడలేదు. దీన్
 msgid "The page or the incident is not public"
 msgstr "పేజీ లేదా ఘటన పబ్లిక్ కాదు"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The page stops answering on this domain. Its address on this server keeps working."
 msgstr "పేజీ ఇకపై ఈ డొమైన్‌లో స్పందించదు. ఈ సర్వర్‌లో దాని చిరునామా పని చేస్తూనే ఉంటుంది."
 
@@ -14519,19 +14519,19 @@ msgstr "పంపడం ప్రారంభమైనప్పుడు గ్�
 msgid "The record at {name} is published."
 msgstr "{name} వద్ద రికార్డ్ ప్రచురించబడింది."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The records exist, but they do not point where Yuva needs them. Change them to match the ones below. Yuva looks again every 10 minutes."
 msgstr "రికార్డులు ఉన్నాయి, కానీ Yuvaకి అవసరమైన చోటికి సూచించడం లేదు. కింద ఉన్న వాటికి సరిపోయేలా మార్చండి. Yuva ప్రతి 10 నిమిషాలకు మళ్లీ చూస్తుంది."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The records have not been visible since {missing}. The domain is turned off after 3 days unless they come back."
 msgstr "రికార్డులు {missing} నుండి కనిపించడం లేదు. అవి తిరిగి రాకపోతే 3 రోజుల తర్వాత డొమైన్ ఆఫ్ అవుతుంది."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The records were gone for 3 days, so the domain no longer shows this page and is not checked any more. Put the records back and start over."
 msgstr "రికార్డులు 3 రోజులు లేవు, కాబట్టి డొమైన్ ఇకపై ఈ పేజీని చూపదు మరియు తనిఖీ చేయబడదు. రికార్డులను తిరిగి ఉంచి మళ్లీ మొదలుపెట్టండి."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The records were not found within 7 days, so the claim ended. Add the records below, then start over for 7 more days."
 msgstr "7 రోజుల్లో రికార్డులు దొరకలేదు, కాబట్టి క్లెయిమ్ ముగిసింది. కింది రికార్డులను జోడించి, మరో 7 రోజులకు మళ్లీ మొదలుపెట్టండి."
 
@@ -15000,9 +15000,9 @@ msgstr "ఇది mbox ఫైల్ కాదు, జిప్ కాదు. .mb
 msgid "This is not a CSV file. Save the spreadsheet as CSV and upload that."
 msgstr "ఇది CSV ఫైల్ కాదు. స్ప్రెడ్‌షీట్‌ను CSV గా సేవ్ చేసి దాన్ని అప్‌లోడ్ చేయండి."
 
-#: src/features/status/DomainCard.tsx
-msgid "This is not a domain this page can use. Use a name like status.example.com that is not one of this server’s own addresses."
-msgstr "ఈ పేజీ ఈ డొమైన్‌ను ఉపయోగించలేదు. ఈ సర్వర్ సొంత చిరునామాల్లో ఒకటి కాని status.example.com లాంటి పేరును ఉపయోగించండి."
+#: src/features/settings/OwnDomainCard.tsx
+msgid "This is not a domain this page can use. Use a name like {example} that is not one of this server’s own addresses."
+msgstr "ఈ పేజీ ఈ డొమైన్‌ను ఉపయోగించలేదు. ఈ సర్వర్ సొంత చిరునామాల్లో ఒకటి కాని {example} లాంటి పేరును ఉపయోగించండి."
 
 #: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/channels/sections.tsx
@@ -15112,7 +15112,7 @@ msgstr "ఈ అభ్యర్థన ముగిసింది"
 msgid "This server does not offer imports from this kind of mailbox."
 msgstr "ఈ సర్వర్ ఈ రకమైన మెయిల్‌బాక్స్ నుండి దిగుమతులను అందించదు."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "This server does not offer own domains. Ask its operator to turn them on."
 msgstr "ఈ సర్వర్ సొంత డొమైన్‌లను అందించదు. దాని ఆపరేటర్‌ను ఆన్ చేయమని అడగండి."
 
@@ -15409,7 +15409,7 @@ msgstr "సందర్శకులు నోటీసులకు సబ్‌�
 msgid "Turn on for this device"
 msgstr "ఈ పరికరానికి ఆన్ చేయండి"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Turned off"
 msgstr "ఆఫ్"
 
@@ -15418,7 +15418,7 @@ msgstr "ఆఫ్"
 msgid "Turned off by Yuva"
 msgstr "Yuva ఆఫ్ చేసింది"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "TXT record"
 msgstr "TXT రికార్డ్"
 
@@ -15921,7 +15921,7 @@ msgid "value"
 msgstr "విలువ"
 
 #: src/features/settings/channels/email/Deliverability.tsx
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Value"
 msgstr "విలువ"
 
@@ -15941,7 +15941,7 @@ msgstr "విలువలు ఎన్‌క్రిప్ట్ చేసి 
 msgid "Values of condition {n}, separated by commas"
 msgstr "షరతు {n} విలువలు, కామాలతో వేరు చేయబడినవి"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Verified"
 msgstr "ధృవీకరించబడింది"
 
@@ -16050,7 +16050,7 @@ msgstr "పంపడం ప్రారంభమైనప్పటి నుం�
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/parts.tsx
 #: src/features/settings/channels/ChannelPage.tsx
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Waiting"
 msgstr "వేచి ఉంది"
@@ -16082,7 +16082,7 @@ msgstr "నిర్ధారణ కోసం వేచి ఉంది"
 msgid "Waiting for confirmation"
 msgstr "నిర్ధారణ కోసం వేచి ఉంది"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Waiting for DNS"
 msgstr "DNS కోసం వేచి ఉంది"
 
@@ -16118,11 +16118,11 @@ msgstr "ఆపరేటర్ కోసం వేచి ఉంది"
 msgid "Waiting for the provider's limit; continues at {time}."
 msgstr "ప్రొవైడర్ పరిమితి కోసం వేచి ఉంది; {time} న కొనసాగుతుంది."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Waiting for the two DNS records below. Add them where you manage the domain; DNS changes can take a while to spread. Yuva looks every 10 minutes, and the claim ends if they are not found within 7 days."
 msgstr "కింది రెండు DNS రికార్డుల కోసం వేచి ఉంది. మీరు డొమైన్ నిర్వహించే చోట వాటిని జోడించండి; DNS మార్పులు వ్యాపించడానికి సమయం పట్టవచ్చు. Yuva ప్రతి 10 నిమిషాలకు చూస్తుంది, 7 రోజుల్లో దొరకకపోతే క్లెయిమ్ ముగుస్తుంది."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Waiting for validation"
 msgstr "ధ్రువీకరణ కోసం వేచి ఉంది"
 

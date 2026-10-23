@@ -1211,9 +1211,9 @@ msgstr "Bir mesaja en fazla 3 makale eklenebilir."
 msgid "A message was added"
 msgstr "Bir mesaj eklendi"
 
-#: src/features/status/DomainCard.tsx
-msgid "A name you control, like status.example.com. Yuva then shows you two DNS records to add, and the page answers on the domain once it has seen them."
-msgstr "Sahibi olduğunuz bir ad, örneğin status.example.com. Yuva size eklemeniz gereken iki DNS kaydını gösterir; kayıtları görünce sayfa bu alan adında yayın yapar."
+#: src/features/settings/OwnDomainCard.tsx
+msgid "A name you control, like {example}. Yuva then shows you two DNS records to add, and the page answers on the domain once it has seen them."
+msgstr "Sahibi olduğunuz bir ad, örneğin {example}. Yuva size eklemeniz gereken iki DNS kaydını gösterir; kayıtları görünce sayfa bu alan adında yayın yapar."
 
 #: src/features/setup/StartStep.tsx
 msgid "A new product"
@@ -1413,7 +1413,7 @@ msgid "Acme Support"
 msgstr "Acme Destek"
 
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 #: src/features/status/IncidentsPage.tsx
 msgid "Active"
 msgstr "Etkin"
@@ -1545,7 +1545,7 @@ msgstr "Bileşen ekle"
 msgid "Add contact"
 msgstr "Kişi ekle"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Add domain"
 msgstr "Alan adı ekle"
 
@@ -2124,7 +2124,7 @@ msgstr "Bu çalışma alanında başka bir içe aktarma sürüyor. İçe aktarma
 msgid "another inbox"
 msgstr "başka bir gelen kutusu"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Another page verified this domain first, and only a verified claim holds a name. Remove the domain, or start over once the other page lets it go."
 msgstr "Bu alan adını önce başka bir sayfa doğruladı ve bir adı yalnızca doğrulanmış talep tutar. Alan adını kaldırın ya da diğer sayfa bırakınca baştan başlayın."
 
@@ -2685,7 +2685,7 @@ msgstr "Kişiyi engelle"
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactSheet.tsx
 #: src/features/contact/ContactsPage.tsx
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Blocked"
 msgstr "Engelli"
 
@@ -2739,7 +2739,7 @@ msgstr "Bot adı"
 msgid "Bot name (optional)"
 msgstr "Bot adı (isteğe bağlı)"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Both records were found. Yuva checks them once a day; keep them in place."
 msgstr "İki kayıt da bulundu. Yuva bunları günde bir kez kontrol eder; yerinde bırakın."
 
@@ -3022,7 +3022,7 @@ msgstr "Neden bulundu"
 msgid "Cc: {cc}"
 msgstr "Bilgi: {cc}"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Certificate"
 msgstr "Sertifika"
 
@@ -3185,7 +3185,7 @@ msgstr "DNS'i denetle ve imzalamaya başla"
 msgid "Check every"
 msgstr "Kontrol sıklığı"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Check now"
 msgstr "Şimdi kontrol et"
 
@@ -3471,7 +3471,7 @@ msgstr "Kapanış"
 msgid "Closing each conversation"
 msgstr "Her konuşma kapatılıyor"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "CNAME record"
 msgstr "CNAME kaydı"
 
@@ -4723,7 +4723,7 @@ msgstr "Belgeler"
 msgid "Does it work with server-side rendering?"
 msgstr "Sunucu tarafında oluşturmayla çalışıyor mu?"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Domain"
 msgstr "Alan adı"
 
@@ -5139,9 +5139,9 @@ msgstr "Biter"
 msgid "English"
 msgstr "English"
 
-#: src/features/status/DomainCard.tsx
-msgid "Enter a domain like status.example.com."
-msgstr "status.example.com gibi bir alan adı girin."
+#: src/features/settings/OwnDomainCard.tsx
+msgid "Enter a domain like {example}."
+msgstr "{example} gibi bir alan adı girin."
 
 #: src/features/status/monitorErrors.ts
 msgid "Enter a host name or an IP address."
@@ -5781,7 +5781,7 @@ msgstr "Yönlendirme"
 msgid "Forwarding address"
 msgstr "Yönlendirme adresi"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Found"
 msgstr "Bulundu"
 
@@ -6238,11 +6238,11 @@ msgstr "Ana makine"
 msgid "Hosted by Yuva on its own address. Searched from the chat widget and the reply box. For support answers."
 msgstr "Yuva tarafından kendi adresinde barındırılır. Sohbet widget'ında ve yanıt kutusunda aranır. Destek yanıtları içindir."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Hostname"
 msgstr "Ana makine adı"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Hostname and certificate"
 msgstr "Ana makine adı ve sertifika"
 
@@ -7084,7 +7084,7 @@ msgstr "Son denetim"
 msgid "Last checked"
 msgstr "Son kontrol"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Last checked {last}."
 msgstr "Son kontrol: {last}."
 
@@ -7307,13 +7307,13 @@ msgstr "Bağlanıyor…"
 msgid "Links"
 msgstr "Bağlantılar"
 
+#: src/features/settings/OwnDomainCard.tsx
+msgid "Links and feeds keep using the address on this server until the hostname and its certificate are both active."
+msgstr "Ana makine adı ve sertifikası birlikte etkin olana kadar bağlantılar ve akışlar bu sunucudaki adresi kullanmaya devam eder."
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Links will point at this server’s link domain instead of your own. Spam filters look at link domains."
 msgstr "Bağlantılar sizin alan adınız yerine bu sunucunun bağlantı alan adına gider. Spam filtreleri bağlantı alan adlarına bakar."
-
-#: src/features/status/DomainCard.tsx
-msgid "Links, the feed and the badge keep using the address on this server until the hostname and its certificate are both active."
-msgstr "Ana makine adı ve sertifikası etkin olana kadar bağlantılar, akış ve rozet bu sunucudaki adresi kullanmaya devam eder."
 
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/Overview.tsx
@@ -8159,13 +8159,13 @@ msgstr "Profilim"
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/ProfileForm.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/setup/email/EmailLayout.tsx
 #: src/features/setup/SetupLayout.tsx
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/CreatePageDialog.tsx
-#: src/features/status/DomainCard.tsx
 #: src/features/status/MonitorDialog.tsx
 #: src/features/status/SettingsTab.tsx
 msgid "Name"
@@ -8221,8 +8221,8 @@ msgstr "Gönderen gerekli"
 
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/text.ts
+#: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/ProductsPage.tsx
-#: src/features/status/DomainCard.tsx
 msgid "Needs attention"
 msgstr "İlgilenmeniz gerekiyor"
 
@@ -8519,7 +8519,7 @@ msgstr "Sonraki deneme"
 msgid "next attempt {when}"
 msgstr "sonraki deneme {when}"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Next check {next}."
 msgstr "Sonraki kontrol: {next}."
 
@@ -9193,7 +9193,7 @@ msgstr "Henüz bağlı değil. Oturum açmayı bitirdiğinizde bu sayfa güncell
 msgid "Not delivered"
 msgstr "Teslim edilemedi"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Not found"
 msgstr "Bulunamadı"
 
@@ -10238,7 +10238,7 @@ msgstr "Zaman içinde"
 msgid "Overview"
 msgstr "Genel bakış"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Own domain"
 msgstr "Kendi alan adı"
 
@@ -10440,7 +10440,7 @@ msgid "Payload"
 msgstr "Gövde"
 
 #: src/components/common/text.ts
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Pending"
 msgstr "Beklemede"
 
@@ -10795,7 +10795,7 @@ msgstr "Sesi çal"
 msgid "Point the MX records at Yuva as the e-mail guide describes. Sync catches the mail that still reaches the old server meanwhile."
 msgstr "MX kayıtlarını e-posta rehberinde anlatıldığı gibi Yuva'ya yöneltin. Bu sırada hâlâ eski sunucuya ulaşan e-postaları eşitleme yakalar."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Points to"
 msgstr "Hedef"
 
@@ -11444,9 +11444,9 @@ msgstr "Uzak görseller, postayı açtığınızı gönderene bildirebilir."
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/Passkeys.tsx
 #: src/features/settings/webhooks/sections.tsx
-#: src/features/status/DomainCard.tsx
 #: src/features/status/MonitorHttpFields.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Remove"
@@ -11461,7 +11461,7 @@ msgid "Remove {0}"
 msgstr "{0} öğesini kaldır"
 
 #. placeholder {0}: d.domain
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Remove {0}?"
 msgstr "{0} kaldırılsın mı?"
 
@@ -11490,7 +11490,7 @@ msgstr "Kanalı kaldır"
 msgid "Remove condition {n}"
 msgstr "{n}. koşulu kaldır"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Remove domain"
 msgstr "Alan adını kaldır"
 
@@ -12989,7 +12989,7 @@ msgstr "Önizlemeyi göster"
 msgid "Show the reply time"
 msgstr "Yanıt süresini göster"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Show this page on your own address instead of this server’s."
 msgstr "Bu sayfayı bu sunucunun adresi yerine kendi adresinizde gösterin."
 
@@ -13455,7 +13455,7 @@ msgstr "Konuşmayı başlat"
 msgid "Start migration"
 msgstr "Taşımayı başlat"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Start over"
 msgstr "Baştan başla"
 
@@ -14190,7 +14190,7 @@ msgstr "Dışa aktarım dosyasındaki geçmiş Yuva'ya kopyalandı."
 msgid "The history is copied and its mail now reaches Yuva."
 msgstr "Geçmiş kopyalandı ve e-postalar artık Yuva'ya ulaşıyor."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The hostname is being set up. This takes a moment once the records are found."
 msgstr "Ana makine adı kuruluyor. Kayıtlar bulunduktan sonra bu kısa sürer."
 
@@ -14279,7 +14279,7 @@ msgid "The last check found no passing DKIM signature. Set up DKIM with your SMT
 msgstr "Son denetim geçen bir DKIM imzası bulamadı. SMTP sağlayıcınızda DKIM kurun ya da kanal için Yuva DKIM'i açın."
 
 #. placeholder {0}: d.problem
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The last check saw: {0}"
 msgstr "Son kontrolde görülen: {0}"
 
@@ -14411,7 +14411,7 @@ msgstr "Diğer gelen kutusunun e-posta kanalı yok, bu yüzden bu e-posta konuş
 msgid "The page already sent 10 notices in the last hour"
 msgstr "Sayfa son bir saatte zaten 10 bildirim gönderdi"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The page answers at"
 msgstr "Sayfa şu adreste yanıt veriyor"
 
@@ -14439,7 +14439,7 @@ msgstr "Sayfa yayında değil. Bunu yalnızca ekibiniz görür."
 msgid "The page or the incident is not public"
 msgstr "Sayfa ya da olay herkese açık değil"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The page stops answering on this domain. Its address on this server keeps working."
 msgstr "Sayfa artık bu alan adında yanıt vermez. Bu sunucudaki adresi çalışmaya devam eder."
 
@@ -14519,19 +14519,19 @@ msgstr "Alıcılar gönderim başladığında belirlenir: sonradan abone olanlar
 msgid "The record at {name} is published."
 msgstr "{name} adındaki kayıt yayımlanmış."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The records exist, but they do not point where Yuva needs them. Change them to match the ones below. Yuva looks again every 10 minutes."
 msgstr "Kayıtlar var ama Yuva'nın gerek duyduğu yeri göstermiyor. Aşağıdakilerle eşleşecek şekilde değiştirin. Yuva her 10 dakikada bir yeniden bakar."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The records have not been visible since {missing}. The domain is turned off after 3 days unless they come back."
 msgstr "Kayıtlar {missing} tarihinden beri görünmüyor. Geri gelmezlerse alan adı 3 gün sonra kapatılır."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The records were gone for 3 days, so the domain no longer shows this page and is not checked any more. Put the records back and start over."
 msgstr "Kayıtlar 3 gün boyunca yoktu; bu yüzden alan adı artık bu sayfayı göstermiyor ve kontrol edilmiyor. Kayıtları geri koyun ve baştan başlayın."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The records were not found within 7 days, so the claim ended. Add the records below, then start over for 7 more days."
 msgstr "Kayıtlar 7 gün içinde bulunamadı, bu yüzden talep sona erdi. Aşağıdaki kayıtları ekleyin, sonra 7 gün daha için baştan başlayın."
 
@@ -15000,9 +15000,9 @@ msgstr "Bu ne bir mbox dosyası ne de bir zip. .mbox dosyasının kendisini ya d
 msgid "This is not a CSV file. Save the spreadsheet as CSV and upload that."
 msgstr "Bu bir CSV dosyası değil. Tabloyu CSV olarak kaydedip onu yükleyin."
 
-#: src/features/status/DomainCard.tsx
-msgid "This is not a domain this page can use. Use a name like status.example.com that is not one of this server’s own addresses."
-msgstr "Bu sayfa bu alan adını kullanamaz. Bu sunucunun kendi adreslerinden biri olmayan, status.example.com gibi bir ad kullanın."
+#: src/features/settings/OwnDomainCard.tsx
+msgid "This is not a domain this page can use. Use a name like {example} that is not one of this server’s own addresses."
+msgstr "Bu sayfa bu alan adını kullanamaz. Bu sunucunun kendi adreslerinden biri olmayan, {example} gibi bir ad kullanın."
 
 #: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/channels/sections.tsx
@@ -15112,7 +15112,7 @@ msgstr "Bu istek artık geçerli değil"
 msgid "This server does not offer imports from this kind of mailbox."
 msgstr "Bu sunucu bu tür bir posta kutusundan içe aktarma sunmuyor."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "This server does not offer own domains. Ask its operator to turn them on."
 msgstr "Bu sunucu kendi alan adı sunmuyor. İşletmecisinden açmasını isteyin."
 
@@ -15409,7 +15409,7 @@ msgstr "Ziyaretçilerin bildirimlere abone olabilmesi için sayfa ayarlarında e
 msgid "Turn on for this device"
 msgstr "Bu cihazda aç"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Turned off"
 msgstr "Kapalı"
 
@@ -15418,7 +15418,7 @@ msgstr "Kapalı"
 msgid "Turned off by Yuva"
 msgstr "Yuva kapattı"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "TXT record"
 msgstr "TXT kaydı"
 
@@ -15921,7 +15921,7 @@ msgid "value"
 msgstr "değer"
 
 #: src/features/settings/channels/email/Deliverability.tsx
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Value"
 msgstr "Değer"
 
@@ -15941,7 +15941,7 @@ msgstr "Değerler şifreli saklanır ve bir daha gösterilmez. Birini değiştir
 msgid "Values of condition {n}, separated by commas"
 msgstr "{n}. koşulun değerleri, virgülle ayrılmış"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Verified"
 msgstr "Doğrulandı"
 
@@ -16050,7 +16050,7 @@ msgstr "Gönderim başladığından beri utm_campaign={campaign} ile siteleriniz
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/parts.tsx
 #: src/features/settings/channels/ChannelPage.tsx
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Waiting"
 msgstr "Bekleyen"
@@ -16082,7 +16082,7 @@ msgstr "onay bekliyor"
 msgid "Waiting for confirmation"
 msgstr "Onay bekliyor"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Waiting for DNS"
 msgstr "DNS bekleniyor"
 
@@ -16118,11 +16118,11 @@ msgstr "Sunucu yöneticisi bekleniyor"
 msgid "Waiting for the provider's limit; continues at {time}."
 msgstr "Sağlayıcının sınırı bekleniyor; {time} itibarıyla devam edecek."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Waiting for the two DNS records below. Add them where you manage the domain; DNS changes can take a while to spread. Yuva looks every 10 minutes, and the claim ends if they are not found within 7 days."
 msgstr "Aşağıdaki iki DNS kaydı bekleniyor. Alan adınızı yönettiğiniz yerde ekleyin; DNS değişikliklerinin yayılması biraz sürebilir. Yuva her 10 dakikada bir bakar; kayıtlar 7 gün içinde bulunmazsa talep sona erer."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Waiting for validation"
 msgstr "Doğrulama bekleniyor"
 

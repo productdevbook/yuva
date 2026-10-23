@@ -11,7 +11,7 @@ import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
 import { canSend } from "@/features/broadcasts/ListForm"
 import { useInboxChannels } from "@/features/broadcasts/queries"
-import { DomainCard } from "@/features/status/DomainCard"
+import { OwnDomainCard } from "@/features/settings/OwnDomainCard"
 import { validSlug } from "@/features/status/CreatePageDialog"
 import { useDeleteStatusPage, usePatchStatusPage } from "@/features/status/queries"
 import { Card, ChoiceSelect, Field, Section, ToggleRow } from "@/features/settings/ui"
@@ -503,6 +503,7 @@ function Danger({ page }: { page: StatusPage }) {
 
 export function SettingsTab({ page }: { page: StatusPage }) {
   const auto = useAutosave(page)
+  const domainSave = usePatchStatusPage(page.id)
   const [shown, setShown] = useState(false)
   const [seen, setSeen] = useState(0)
   if (auto.saved !== seen) {
@@ -530,7 +531,13 @@ export function SettingsTab({ page }: { page: StatusPage }) {
       <PageCard page={page} auto={auto} />
       <DisplayCard page={page} auto={auto} />
       <EmailSubscribers page={page} />
-      <DomainCard page={page} />
+      <OwnDomainCard
+        domain={page.custom_domain}
+        enabled={!!page.own_domains}
+        example="status.example.com"
+        tid="status-domain"
+        save={domainSave}
+      />
       <Address page={page} />
       <Danger page={page} />
     </div>

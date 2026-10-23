@@ -1211,9 +1211,9 @@ msgstr "Viestiin voi liittää enintään 3 artikkelia."
 msgid "A message was added"
 msgstr "Viesti lisättiin"
 
-#: src/features/status/DomainCard.tsx
-msgid "A name you control, like status.example.com. Yuva then shows you two DNS records to add, and the page answers on the domain once it has seen them."
-msgstr "Nimi, jota hallitset, esimerkiksi status.example.com. Yuva näyttää kaksi lisättävää DNS-tietuetta, ja sivu vastaa verkkotunnuksella heti, kun ne näkyvät."
+#: src/features/settings/OwnDomainCard.tsx
+msgid "A name you control, like {example}. Yuva then shows you two DNS records to add, and the page answers on the domain once it has seen them."
+msgstr "Nimi, jota hallitset, esimerkiksi {example}. Yuva näyttää kaksi lisättävää DNS-tietuetta, ja sivu vastaa verkkotunnuksella heti, kun ne näkyvät."
 
 #: src/features/setup/StartStep.tsx
 msgid "A new product"
@@ -1413,7 +1413,7 @@ msgid "Acme Support"
 msgstr "Acme Support"
 
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 #: src/features/status/IncidentsPage.tsx
 msgid "Active"
 msgstr "Aktiivinen"
@@ -1545,7 +1545,7 @@ msgstr "Lisää komponentti"
 msgid "Add contact"
 msgstr "Lisää kontakti"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Add domain"
 msgstr "Lisää verkkotunnus"
 
@@ -2124,7 +2124,7 @@ msgstr "Tämän työtilan toinen tuonti on käynnissä. Tuonnit ajetaan yksi ker
 msgid "another inbox"
 msgstr "toinen postilaatikko"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Another page verified this domain first, and only a verified claim holds a name. Remove the domain, or start over once the other page lets it go."
 msgstr "Toinen sivu vahvisti tämän verkkotunnuksen ensin, ja nimen pitää vain vahvistettu vaatimus. Poista verkkotunnus tai aloita alusta, kun toinen sivu vapauttaa sen."
 
@@ -2685,7 +2685,7 @@ msgstr "Estä yhteystieto"
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactSheet.tsx
 #: src/features/contact/ContactsPage.tsx
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Blocked"
 msgstr "Estetty"
 
@@ -2739,7 +2739,7 @@ msgstr "Botin nimi"
 msgid "Bot name (optional)"
 msgstr "Botin nimi (valinnainen)"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Both records were found. Yuva checks them once a day; keep them in place."
 msgstr "Molemmat tietueet löytyivät. Yuva tarkistaa ne kerran päivässä; jätä ne paikoilleen."
 
@@ -3022,7 +3022,7 @@ msgstr "Syy löytyi"
 msgid "Cc: {cc}"
 msgstr "Kopio: {cc}"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Certificate"
 msgstr "Varmenne"
 
@@ -3185,7 +3185,7 @@ msgstr "Tarkista DNS ja aloita allekirjoitus"
 msgid "Check every"
 msgstr "Tarkista joka"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Check now"
 msgstr "Tarkista nyt"
 
@@ -3471,7 +3471,7 @@ msgstr "Sulkee"
 msgid "Closing each conversation"
 msgstr "Suljetaan jokainen keskustelu"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "CNAME record"
 msgstr "CNAME-tietue"
 
@@ -4723,7 +4723,7 @@ msgstr "Dokumentit"
 msgid "Does it work with server-side rendering?"
 msgstr "Toimiiko se palvelinpuolen renderöinnin kanssa?"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Domain"
 msgstr "Verkkotunnus"
 
@@ -5139,9 +5139,9 @@ msgstr "Päättyy"
 msgid "English"
 msgstr "English"
 
-#: src/features/status/DomainCard.tsx
-msgid "Enter a domain like status.example.com."
-msgstr "Anna verkkotunnus, kuten status.example.com."
+#: src/features/settings/OwnDomainCard.tsx
+msgid "Enter a domain like {example}."
+msgstr "Anna verkkotunnus, kuten {example}."
 
 #: src/features/status/monitorErrors.ts
 msgid "Enter a host name or an IP address."
@@ -5781,7 +5781,7 @@ msgstr "Ohjaus"
 msgid "Forwarding address"
 msgstr "Ohjausosoite"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Found"
 msgstr "Löytyi"
 
@@ -6238,11 +6238,11 @@ msgstr "Isäntä"
 msgid "Hosted by Yuva on its own address. Searched from the chat widget and the reply box. For support answers."
 msgstr "Yuva isännöi niitä omassa osoitteessaan. Haku tehdään chat-widgetistä ja vastauskentästä. Tuen vastauksiin."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Hostname"
 msgstr "Isäntänimi"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Hostname and certificate"
 msgstr "Isäntänimi ja varmenne"
 
@@ -7084,7 +7084,7 @@ msgstr "Viimeisin tarkistus"
 msgid "Last checked"
 msgstr "Viimeksi tarkistettu"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Last checked {last}."
 msgstr "Viimeksi tarkistettu {last}."
 
@@ -7307,13 +7307,13 @@ msgstr "Liitetään…"
 msgid "Links"
 msgstr "Linkit"
 
+#: src/features/settings/OwnDomainCard.tsx
+msgid "Links and feeds keep using the address on this server until the hostname and its certificate are both active."
+msgstr "Linkit ja syötteet käyttävät edelleen tämän palvelimen osoitetta, kunnes isäntänimi ja sen varmenne ovat molemmat aktiivisia."
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Links will point at this server’s link domain instead of your own. Spam filters look at link domains."
 msgstr "Linkit osoittavat tämän palvelimen linkkiverkkotunnukseen omasi sijaan. Roskapostisuodattimet katsovat linkkiverkkotunnuksia."
-
-#: src/features/status/DomainCard.tsx
-msgid "Links, the feed and the badge keep using the address on this server until the hostname and its certificate are both active."
-msgstr "Linkit, syöte ja merkki käyttävät edelleen tämän palvelimen osoitetta, kunnes isäntänimi ja sen varmenne ovat molemmat aktiivisia."
 
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/Overview.tsx
@@ -8159,13 +8159,13 @@ msgstr "Oma profiilini"
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/ProfileForm.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/setup/email/EmailLayout.tsx
 #: src/features/setup/SetupLayout.tsx
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/CreatePageDialog.tsx
-#: src/features/status/DomainCard.tsx
 #: src/features/status/MonitorDialog.tsx
 #: src/features/status/SettingsTab.tsx
 msgid "Name"
@@ -8221,8 +8221,8 @@ msgstr "Tarvitsee lähettäjän"
 
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/text.ts
+#: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/ProductsPage.tsx
-#: src/features/status/DomainCard.tsx
 msgid "Needs attention"
 msgstr "Vaatii huomiota"
 
@@ -8519,7 +8519,7 @@ msgstr "Seuraava yritys"
 msgid "next attempt {when}"
 msgstr "seuraava yritys {when}"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Next check {next}."
 msgstr "Seuraava tarkistus {next}."
 
@@ -9193,7 +9193,7 @@ msgstr "Ei vielä yhdistetty. Tämä sivu päivittyy, kun olet kirjautunut sisä
 msgid "Not delivered"
 msgstr "Ei toimitettu"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Not found"
 msgstr "Ei löytynyt"
 
@@ -10238,7 +10238,7 @@ msgstr "Ajan mittaan"
 msgid "Overview"
 msgstr "Yleiskatsaus"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Own domain"
 msgstr "Oma verkkotunnus"
 
@@ -10440,7 +10440,7 @@ msgid "Payload"
 msgstr "Sisältö"
 
 #: src/components/common/text.ts
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Pending"
 msgstr "Odottaa"
 
@@ -10795,7 +10795,7 @@ msgstr "Toista ääni"
 msgid "Point the MX records at Yuva as the e-mail guide describes. Sync catches the mail that still reaches the old server meanwhile."
 msgstr "Osoita MX-tietueet Yuvaan sähköpostioppaan mukaan. Synkronointi nappaa postin, joka sillä välin vielä saapuu vanhalle palvelimelle."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Points to"
 msgstr "Osoittaa kohteeseen"
 
@@ -11444,9 +11444,9 @@ msgstr "Etäkuvat voivat kertoa lähettäjälle, että avasit viestin."
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/Passkeys.tsx
 #: src/features/settings/webhooks/sections.tsx
-#: src/features/status/DomainCard.tsx
 #: src/features/status/MonitorHttpFields.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Remove"
@@ -11461,7 +11461,7 @@ msgid "Remove {0}"
 msgstr "Poista {0}"
 
 #. placeholder {0}: d.domain
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Remove {0}?"
 msgstr "Poistetaanko {0}?"
 
@@ -11490,7 +11490,7 @@ msgstr "Poista kanava"
 msgid "Remove condition {n}"
 msgstr "Poista ehto {n}"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Remove domain"
 msgstr "Poista verkkotunnus"
 
@@ -12989,7 +12989,7 @@ msgstr "Näytä esikatselu"
 msgid "Show the reply time"
 msgstr "Näytä vastausaika"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Show this page on your own address instead of this server’s."
 msgstr "Näytä tämä sivu omassa osoitteessasi tämän palvelimen osoitteen sijaan."
 
@@ -13455,7 +13455,7 @@ msgstr "Aloita keskustelu"
 msgid "Start migration"
 msgstr "Aloita siirto"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Start over"
 msgstr "Aloita alusta"
 
@@ -14190,7 +14190,7 @@ msgstr "Vientitiedoston historia kopioidaan Yuvaan."
 msgid "The history is copied and its mail now reaches Yuva."
 msgstr "Historia on kopioitu ja sen posti saapuu nyt Yuvaan."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The hostname is being set up. This takes a moment once the records are found."
 msgstr "Isäntänimeä määritetään. Se vie hetken, kun tietueet on löydetty."
 
@@ -14279,7 +14279,7 @@ msgid "The last check found no passing DKIM signature. Set up DKIM with your SMT
 msgstr "Viimeisin tarkistus ei löytänyt läpäisevää DKIM-allekirjoitusta. Määritä DKIM SMTP-palveluntarjoajallasi tai ota Yuva DKIM käyttöön kanavalle."
 
 #. placeholder {0}: d.problem
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The last check saw: {0}"
 msgstr "Viimeisin tarkistus näki: {0}"
 
@@ -14411,7 +14411,7 @@ msgstr "Toisella postilaatikolla ei ole sähköpostikanavaa, joten tätä sähk�
 msgid "The page already sent 10 notices in the last hour"
 msgstr "Sivu on jo lähettänyt 10 ilmoitusta viimeisen tunnin aikana"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The page answers at"
 msgstr "Sivu vastaa osoitteessa"
 
@@ -14439,7 +14439,7 @@ msgstr "Sivua ei ole julkaistu. Vain tiimisi näkee tämän."
 msgid "The page or the incident is not public"
 msgstr "Sivu tai häiriö ei ole julkinen"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The page stops answering on this domain. Its address on this server keeps working."
 msgstr "Sivu ei enää vastaa tällä verkkotunnuksella. Sen osoite tällä palvelimella toimii edelleen."
 
@@ -14519,19 +14519,19 @@ msgstr "Vastaanottajat poimitaan, kun lähetys alkaa: myöhemmin tilaavat eivät
 msgid "The record at {name} is published."
 msgstr "Tietue kohteessa {name} on julkaistu."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The records exist, but they do not point where Yuva needs them. Change them to match the ones below. Yuva looks again every 10 minutes."
 msgstr "Tietueet ovat olemassa, mutta ne eivät osoita sinne, minne Yuva tarvitsee. Muuta ne vastaamaan alla olevia. Yuva tarkistaa uudelleen 10 minuutin välein."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The records have not been visible since {missing}. The domain is turned off after 3 days unless they come back."
 msgstr "Tietueet eivät ole näkyneet {missing} lähtien. Verkkotunnus poistetaan käytöstä 3 päivän kuluttua, ellei niitä palauteta."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The records were gone for 3 days, so the domain no longer shows this page and is not checked any more. Put the records back and start over."
 msgstr "Tietueet puuttuivat 3 päivää, joten verkkotunnus ei enää näytä tätä sivua eikä sitä tarkisteta. Palauta tietueet ja aloita alusta."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The records were not found within 7 days, so the claim ended. Add the records below, then start over for 7 more days."
 msgstr "Tietueita ei löytynyt 7 päivässä, joten vaatimus päättyi. Lisää alla olevat tietueet ja aloita alusta vielä 7 päiväksi."
 
@@ -15000,9 +15000,9 @@ msgstr "Tämä ei ole mbox-tiedosto eikä zip. Lataa itse .mbox-tiedosto tai .zi
 msgid "This is not a CSV file. Save the spreadsheet as CSV and upload that."
 msgstr "Tämä ei ole CSV-tiedosto. Tallenna taulukko CSV-muodossa ja lataa se."
 
-#: src/features/status/DomainCard.tsx
-msgid "This is not a domain this page can use. Use a name like status.example.com that is not one of this server’s own addresses."
-msgstr "Tämä sivu ei voi käyttää tätä verkkotunnusta. Käytä nimeä, kuten status.example.com, joka ei ole yksi tämän palvelimen omista osoitteista."
+#: src/features/settings/OwnDomainCard.tsx
+msgid "This is not a domain this page can use. Use a name like {example} that is not one of this server’s own addresses."
+msgstr "Tämä sivu ei voi käyttää tätä verkkotunnusta. Käytä nimeä, kuten {example}, joka ei ole yksi tämän palvelimen omista osoitteista."
 
 #: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/channels/sections.tsx
@@ -15112,7 +15112,7 @@ msgstr "Tämä pyyntö on päättynyt"
 msgid "This server does not offer imports from this kind of mailbox."
 msgstr "Tämä palvelin ei tarjoa tuontia tämäntyyppisestä postilaatikosta."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "This server does not offer own domains. Ask its operator to turn them on."
 msgstr "Tämä palvelin ei tarjoa omia verkkotunnuksia. Pyydä ylläpitäjää ottamaan ne käyttöön."
 
@@ -15409,7 +15409,7 @@ msgstr "Ota sähköpostitilaajat käyttöön sivun asetuksissa, jotta kävijät 
 msgid "Turn on for this device"
 msgstr "Ota käyttöön tälle laitteelle"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Turned off"
 msgstr "Pois käytöstä"
 
@@ -15418,7 +15418,7 @@ msgstr "Pois käytöstä"
 msgid "Turned off by Yuva"
 msgstr "Yuvan poistama käytöstä"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "TXT record"
 msgstr "TXT-tietue"
 
@@ -15921,7 +15921,7 @@ msgid "value"
 msgstr "arvo"
 
 #: src/features/settings/channels/email/Deliverability.tsx
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Value"
 msgstr "Arvo"
 
@@ -15941,7 +15941,7 @@ msgstr "Arvot tallennetaan salattuina, eikä niitä näytetä enää. Vaihda arv
 msgid "Values of condition {n}, separated by commas"
 msgstr "Ehdon {n} arvot, pilkuilla eroteltuina"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Verified"
 msgstr "Vahvistettu"
 
@@ -16050,7 +16050,7 @@ msgstr "Käynnit sivustoillesi, joilla on utm_campaign={campaign}, lähetyksen a
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/parts.tsx
 #: src/features/settings/channels/ChannelPage.tsx
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Waiting"
 msgstr "Odottaa"
@@ -16082,7 +16082,7 @@ msgstr "odottaa vahvistusta"
 msgid "Waiting for confirmation"
 msgstr "Odottaa vahvistusta"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Waiting for DNS"
 msgstr "Odotetaan DNS:ää"
 
@@ -16118,11 +16118,11 @@ msgstr "Odottaa ylläpitäjää"
 msgid "Waiting for the provider's limit; continues at {time}."
 msgstr "Odotetaan palveluntarjoajan rajaa; jatkuu {time}."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Waiting for the two DNS records below. Add them where you manage the domain; DNS changes can take a while to spread. Yuva looks every 10 minutes, and the claim ends if they are not found within 7 days."
 msgstr "Odotetaan alla olevia kahta DNS-tietuetta. Lisää ne sinne, missä hallitset verkkotunnusta; DNS-muutokset voivat levitä hetken. Yuva tarkistaa 10 minuutin välein, ja vaatimus päättyy, jos tietueita ei löydy 7 päivässä."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Waiting for validation"
 msgstr "Odotetaan vahvistusta"
 

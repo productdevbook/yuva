@@ -1211,9 +1211,9 @@ msgstr "一則訊息最多可附 3 篇文章。"
 msgid "A message was added"
 msgstr "新增了訊息時"
 
-#: src/features/status/DomainCard.tsx
-msgid "A name you control, like status.example.com. Yuva then shows you two DNS records to add, and the page answers on the domain once it has seen them."
-msgstr "你控制的名稱，例如 status.example.com。Yuva 會顯示兩筆需要新增的 DNS 記錄，看到記錄後頁面就會在該網域上回應。"
+#: src/features/settings/OwnDomainCard.tsx
+msgid "A name you control, like {example}. Yuva then shows you two DNS records to add, and the page answers on the domain once it has seen them."
+msgstr "你控制的名稱，例如 {example}。Yuva 會顯示兩筆需要新增的 DNS 記錄，看到記錄後頁面就會在該網域上回應。"
 
 #: src/features/setup/StartStep.tsx
 msgid "A new product"
@@ -1413,7 +1413,7 @@ msgid "Acme Support"
 msgstr "Acme 支援"
 
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 #: src/features/status/IncidentsPage.tsx
 msgid "Active"
 msgstr "已啟用"
@@ -1545,7 +1545,7 @@ msgstr "新增元件"
 msgid "Add contact"
 msgstr "新增聯絡人"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Add domain"
 msgstr "新增網域"
 
@@ -2124,7 +2124,7 @@ msgstr "此工作區的另一個匯入正在執行。匯入一次只能執行一
 msgid "another inbox"
 msgstr "另一個收件匣"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Another page verified this domain first, and only a verified claim holds a name. Remove the domain, or start over once the other page lets it go."
 msgstr "另一個頁面先驗證了此網域，只有已驗證的申請才能佔有名稱。請移除該網域，或在對方頁面釋出後重新開始。"
 
@@ -2685,7 +2685,7 @@ msgstr "封鎖聯絡人"
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactSheet.tsx
 #: src/features/contact/ContactsPage.tsx
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Blocked"
 msgstr "已遮蔽"
 
@@ -2739,7 +2739,7 @@ msgstr "機器人名稱"
 msgid "Bot name (optional)"
 msgstr "機器人名稱(可選)"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Both records were found. Yuva checks them once a day; keep them in place."
 msgstr "兩筆記錄都已找到。Yuva 每天檢查一次，請保持不變。"
 
@@ -3022,7 +3022,7 @@ msgstr "已找到原因"
 msgid "Cc: {cc}"
 msgstr "抄送:{cc}"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Certificate"
 msgstr "憑證"
 
@@ -3185,7 +3185,7 @@ msgstr "檢查 DNS 並開始簽名"
 msgid "Check every"
 msgstr "檢查間隔"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Check now"
 msgstr "立即檢查"
 
@@ -3471,7 +3471,7 @@ msgstr "關閉於"
 msgid "Closing each conversation"
 msgstr "正在關閉每則對話"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "CNAME record"
 msgstr "CNAME 記錄"
 
@@ -4723,7 +4723,7 @@ msgstr "文件"
 msgid "Does it work with server-side rendering?"
 msgstr "它能用於服務端渲染嗎?"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Domain"
 msgstr "網域"
 
@@ -5139,9 +5139,9 @@ msgstr "結束"
 msgid "English"
 msgstr "English"
 
-#: src/features/status/DomainCard.tsx
-msgid "Enter a domain like status.example.com."
-msgstr "請輸入類似 status.example.com 的網域。"
+#: src/features/settings/OwnDomainCard.tsx
+msgid "Enter a domain like {example}."
+msgstr "請輸入類似 {example} 的網域。"
 
 #: src/features/status/monitorErrors.ts
 msgid "Enter a host name or an IP address."
@@ -5781,7 +5781,7 @@ msgstr "轉發"
 msgid "Forwarding address"
 msgstr "轉發地址"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Found"
 msgstr "已找到"
 
@@ -6238,11 +6238,11 @@ msgstr "主機"
 msgid "Hosted by Yuva on its own address. Searched from the chat widget and the reply box. For support answers."
 msgstr "由 Yuva 以獨立網址代管。可在聊天小工具與回覆框中搜尋。用於客服解答。"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Hostname"
 msgstr "主機名稱"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Hostname and certificate"
 msgstr "主機名稱和憑證"
 
@@ -7084,7 +7084,7 @@ msgstr "最近檢查"
 msgid "Last checked"
 msgstr "最近檢查於"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Last checked {last}."
 msgstr "上次檢查：{last}。"
 
@@ -7307,13 +7307,13 @@ msgstr "正在連結…"
 msgid "Links"
 msgstr "連結"
 
+#: src/features/settings/OwnDomainCard.tsx
+msgid "Links and feeds keep using the address on this server until the hostname and its certificate are both active."
+msgstr "在主機名稱及其憑證都生效之前，連結和訂閱源會繼續使用此伺服器上的位址。"
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Links will point at this server’s link domain instead of your own. Spam filters look at link domains."
 msgstr "連結將指向此伺服器的連結域名,而不是你自己的域名。垃圾郵件過濾器會檢視連結域名。"
-
-#: src/features/status/DomainCard.tsx
-msgid "Links, the feed and the badge keep using the address on this server until the hostname and its certificate are both active."
-msgstr "在主機名稱及其憑證都生效之前，連結、訂閱源和徽章仍使用此伺服器上的位址。"
 
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/Overview.tsx
@@ -8159,13 +8159,13 @@ msgstr "我的個人資料"
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/ProfileForm.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/setup/email/EmailLayout.tsx
 #: src/features/setup/SetupLayout.tsx
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/CreatePageDialog.tsx
-#: src/features/status/DomainCard.tsx
 #: src/features/status/MonitorDialog.tsx
 #: src/features/status/SettingsTab.tsx
 msgid "Name"
@@ -8221,8 +8221,8 @@ msgstr "需要發件人"
 
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/text.ts
+#: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/ProductsPage.tsx
-#: src/features/status/DomainCard.tsx
 msgid "Needs attention"
 msgstr "需要處理"
 
@@ -8519,7 +8519,7 @@ msgstr "下次嘗試"
 msgid "next attempt {when}"
 msgstr "下次嘗試 {when}"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Next check {next}."
 msgstr "下次檢查：{next}。"
 
@@ -9193,7 +9193,7 @@ msgstr "尚未連線。完成登入後此頁面會更新。"
 msgid "Not delivered"
 msgstr "未送達"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Not found"
 msgstr "未找到"
 
@@ -10238,7 +10238,7 @@ msgstr "隨時間變化"
 msgid "Overview"
 msgstr "概覽"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Own domain"
 msgstr "自有網域"
 
@@ -10440,7 +10440,7 @@ msgid "Payload"
 msgstr "載荷"
 
 #: src/components/common/text.ts
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Pending"
 msgstr "待處理"
 
@@ -10795,7 +10795,7 @@ msgstr "播放聲音"
 msgid "Point the MX records at Yuva as the e-mail guide describes. Sync catches the mail that still reaches the old server meanwhile."
 msgstr "按郵件指南所述,把 MX 記錄指向 Yuva。同步會補上這期間仍到達舊伺服器的郵件。"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Points to"
 msgstr "指向"
 
@@ -11444,9 +11444,9 @@ msgstr "遠端圖片可能會讓發件人知道你已開啟郵件。"
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/Passkeys.tsx
 #: src/features/settings/webhooks/sections.tsx
-#: src/features/status/DomainCard.tsx
 #: src/features/status/MonitorHttpFields.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Remove"
@@ -11461,7 +11461,7 @@ msgid "Remove {0}"
 msgstr "移除 {0}"
 
 #. placeholder {0}: d.domain
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Remove {0}?"
 msgstr "移除 {0}？"
 
@@ -11490,7 +11490,7 @@ msgstr "移除頻道"
 msgid "Remove condition {n}"
 msgstr "移除條件 {n}"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Remove domain"
 msgstr "移除網域"
 
@@ -12989,7 +12989,7 @@ msgstr "顯示預覽"
 msgid "Show the reply time"
 msgstr "顯示回覆時間"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Show this page on your own address instead of this server’s."
 msgstr "用你自己的位址而不是此伺服器的位址來顯示此頁面。"
 
@@ -13455,7 +13455,7 @@ msgstr "開始對話"
 msgid "Start migration"
 msgstr "開始遷移"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Start over"
 msgstr "重新開始"
 
@@ -14190,7 +14190,7 @@ msgstr "匯出檔案中的歷史記錄會複製到 Yuva。"
 msgid "The history is copied and its mail now reaches Yuva."
 msgstr "歷史記錄已複製,其郵件現在到達 Yuva。"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The hostname is being set up. This takes a moment once the records are found."
 msgstr "正在設定主機名稱。找到記錄後需要一點時間。"
 
@@ -14279,7 +14279,7 @@ msgid "The last check found no passing DKIM signature. Set up DKIM with your SMT
 msgstr "上次檢查沒有發現透過的 DKIM 簽名。請在你的 SMTP 供應商處設定 DKIM,或為該頻道開啟 Yuva DKIM。"
 
 #. placeholder {0}: d.problem
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The last check saw: {0}"
 msgstr "上次檢查看到：{0}"
 
@@ -14411,7 +14411,7 @@ msgstr "另一個收件匣沒有郵件頻道,因此此郵件對話無法移到�
 msgid "The page already sent 10 notices in the last hour"
 msgstr "此頁面在過去一小時內已傳送 10 則通知"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The page answers at"
 msgstr "頁面的回應位址"
 
@@ -14439,7 +14439,7 @@ msgstr "頁面尚未發布，只有你的團隊看得到。"
 msgid "The page or the incident is not public"
 msgstr "頁面或事件未公開"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The page stops answering on this domain. Its address on this server keeps working."
 msgstr "頁面將不再在此網域上回應。它在此伺服器上的位址仍可使用。"
 
@@ -14519,19 +14519,19 @@ msgstr "收件人在開始傳送時確定:之後訂閱的人不會收到,在郵�
 msgid "The record at {name} is published."
 msgstr "{name} 處的記錄已釋出。"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The records exist, but they do not point where Yuva needs them. Change them to match the ones below. Yuva looks again every 10 minutes."
 msgstr "記錄存在，但沒有指向 Yuva 所需的位置。請將它們改為與下方一致。Yuva 每 10 分鐘重新檢查一次。"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The records have not been visible since {missing}. The domain is turned off after 3 days unless they come back."
 msgstr "自 {missing}起一直看不到這些記錄。若它們不恢復，網域將在 3 天後關閉。"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The records were gone for 3 days, so the domain no longer shows this page and is not checked any more. Put the records back and start over."
 msgstr "記錄已缺失 3 天，因此該網域不再顯示此頁面，也不再被檢查。請恢復記錄並重新開始。"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The records were not found within 7 days, so the claim ended. Add the records below, then start over for 7 more days."
 msgstr "7 天內未找到記錄，申請已結束。請新增下方記錄，然後重新開始，再取得 7 天。"
 
@@ -15000,9 +15000,9 @@ msgstr "這既不是 mbox 檔案也不是 zip。請上傳 .mbox 檔案本身,或
 msgid "This is not a CSV file. Save the spreadsheet as CSV and upload that."
 msgstr "這不是 CSV 檔案。請把電子表格另存為 CSV 後上傳。"
 
-#: src/features/status/DomainCard.tsx
-msgid "This is not a domain this page can use. Use a name like status.example.com that is not one of this server’s own addresses."
-msgstr "此頁面無法使用該網域。請使用類似 status.example.com 的名稱，且不能是此伺服器自身的位址。"
+#: src/features/settings/OwnDomainCard.tsx
+msgid "This is not a domain this page can use. Use a name like {example} that is not one of this server’s own addresses."
+msgstr "此頁面無法使用該網域。請使用類似 {example} 的名稱，且不能是此伺服器自身的位址。"
 
 #: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/channels/sections.tsx
@@ -15112,7 +15112,7 @@ msgstr "此請求已結束"
 msgid "This server does not offer imports from this kind of mailbox."
 msgstr "此伺服器不提供從這類信箱匯入。"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "This server does not offer own domains. Ask its operator to turn them on."
 msgstr "此伺服器不提供自有網域。請讓其營運者開啟。"
 
@@ -15409,7 +15409,7 @@ msgstr "在頁面設定中開啟電子郵件訂閱者,即可讓訪客訂閱通�
 msgid "Turn on for this device"
 msgstr "在此裝置上開啟"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Turned off"
 msgstr "已關閉"
 
@@ -15418,7 +15418,7 @@ msgstr "已關閉"
 msgid "Turned off by Yuva"
 msgstr "已被 Yuva 關閉"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "TXT record"
 msgstr "TXT 記錄"
 
@@ -15921,7 +15921,7 @@ msgid "value"
 msgstr "值"
 
 #: src/features/settings/channels/email/Deliverability.tsx
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Value"
 msgstr "值"
 
@@ -15941,7 +15941,7 @@ msgstr "值以加密方式儲存,不會再次顯示。要修改,請取代它。"
 msgid "Values of condition {n}, separated by commas"
 msgstr "條件 {n} 的值,用逗號分隔"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Verified"
 msgstr "已驗證"
 
@@ -16050,7 +16050,7 @@ msgstr "傳送開始以來帶有 utm_campaign={campaign} 的網站存取,由分�
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/parts.tsx
 #: src/features/settings/channels/ChannelPage.tsx
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Waiting"
 msgstr "等待中"
@@ -16082,7 +16082,7 @@ msgstr "等待確認"
 msgid "Waiting for confirmation"
 msgstr "等待確認"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Waiting for DNS"
 msgstr "等待 DNS"
 
@@ -16118,11 +16118,11 @@ msgstr "等待維運人員"
 msgid "Waiting for the provider's limit; continues at {time}."
 msgstr "正在等待供應商的限制;將在 {time} 繼續。"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Waiting for the two DNS records below. Add them where you manage the domain; DNS changes can take a while to spread. Yuva looks every 10 minutes, and the claim ends if they are not found within 7 days."
 msgstr "正在等待下方兩筆 DNS 記錄。請在你管理網域的地方新增；DNS 變更可能需要一段時間才會生效。Yuva 每 10 分鐘檢查一次，若 7 天內未找到，申請將結束。"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Waiting for validation"
 msgstr "等待驗證"
 

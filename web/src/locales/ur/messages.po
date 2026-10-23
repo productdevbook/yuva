@@ -1211,9 +1211,9 @@ msgstr "ایک پیغام میں زیادہ سے زیادہ 3 مضامین جا 
 msgid "A message was added"
 msgstr "پیغام شامل ہوا"
 
-#: src/features/status/DomainCard.tsx
-msgid "A name you control, like status.example.com. Yuva then shows you two DNS records to add, and the page answers on the domain once it has seen them."
-msgstr "ایک نام جو آپ کے قبضے میں ہو، جیسے status.example.com۔ Yuva آپ کو شامل کرنے کے لیے دو DNS ریکارڈ دکھاتا ہے، اور انہیں دیکھتے ہی صفحہ ڈومین پر جواب دینے لگتا ہے۔"
+#: src/features/settings/OwnDomainCard.tsx
+msgid "A name you control, like {example}. Yuva then shows you two DNS records to add, and the page answers on the domain once it has seen them."
+msgstr "ایک نام جو آپ کے قبضے میں ہو، جیسے {example}۔ Yuva آپ کو شامل کرنے کے لیے دو DNS ریکارڈ دکھاتا ہے، اور انہیں دیکھتے ہی صفحہ ڈومین پر جواب دینے لگتا ہے۔"
 
 #: src/features/setup/StartStep.tsx
 msgid "A new product"
@@ -1413,7 +1413,7 @@ msgid "Acme Support"
 msgstr "Acme سپورٹ"
 
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 #: src/features/status/IncidentsPage.tsx
 msgid "Active"
 msgstr "فعال"
@@ -1545,7 +1545,7 @@ msgstr "جزو شامل کریں"
 msgid "Add contact"
 msgstr "رابطہ شامل کریں"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Add domain"
 msgstr "ڈومین شامل کریں"
 
@@ -2124,7 +2124,7 @@ msgstr "اس ورک اسپیس کی ایک اور درآمد چل رہی ہے۔ 
 msgid "another inbox"
 msgstr "دوسرا ان باکس"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Another page verified this domain first, and only a verified claim holds a name. Remove the domain, or start over once the other page lets it go."
 msgstr "کسی اور صفحے نے یہ ڈومین پہلے تصدیق کیا ہے، اور نام صرف تصدیق شدہ دعویٰ ہی رکھتا ہے۔ ڈومین ہٹائیں، یا دوسرا صفحہ چھوڑ دے تو دوبارہ شروع کریں۔"
 
@@ -2685,7 +2685,7 @@ msgstr "رابطہ بلاک کریں"
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactSheet.tsx
 #: src/features/contact/ContactsPage.tsx
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Blocked"
 msgstr "بلاک شدہ"
 
@@ -2739,7 +2739,7 @@ msgstr "بوٹ کا نام"
 msgid "Bot name (optional)"
 msgstr "بوٹ کا نام (اختیاری)"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Both records were found. Yuva checks them once a day; keep them in place."
 msgstr "دونوں ریکارڈ مل گئے۔ Yuva انہیں دن میں ایک بار جانچتا ہے؛ انہیں جوں کا توں رہنے دیں۔"
 
@@ -3022,7 +3022,7 @@ msgstr "وجہ مل گئی"
 msgid "Cc: {cc}"
 msgstr "Cc: {cc}"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Certificate"
 msgstr "سرٹیفکیٹ"
 
@@ -3185,7 +3185,7 @@ msgstr "DNS جانچیں اور دستخط شروع کریں"
 msgid "Check every"
 msgstr "جانچ ہر"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Check now"
 msgstr "ابھی جانچیں"
 
@@ -3471,7 +3471,7 @@ msgstr "بند ہوتی ہیں"
 msgid "Closing each conversation"
 msgstr "ہر گفتگو بند کی جا رہی ہے"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "CNAME record"
 msgstr "CNAME ریکارڈ"
 
@@ -4723,7 +4723,7 @@ msgstr "دستاویزات"
 msgid "Does it work with server-side rendering?"
 msgstr "کیا یہ سرور سائیڈ رینڈرنگ کے ساتھ کام کرتا ہے؟"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Domain"
 msgstr "ڈومین"
 
@@ -5139,9 +5139,9 @@ msgstr "اختتام"
 msgid "English"
 msgstr "English"
 
-#: src/features/status/DomainCard.tsx
-msgid "Enter a domain like status.example.com."
-msgstr "status.example.com جیسا ڈومین درج کریں۔"
+#: src/features/settings/OwnDomainCard.tsx
+msgid "Enter a domain like {example}."
+msgstr "{example} جیسا ڈومین درج کریں۔"
 
 #: src/features/status/monitorErrors.ts
 msgid "Enter a host name or an IP address."
@@ -5781,7 +5781,7 @@ msgstr "فارورڈنگ"
 msgid "Forwarding address"
 msgstr "فارورڈنگ کا پتہ"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Found"
 msgstr "مل گیا"
 
@@ -6238,11 +6238,11 @@ msgstr "ہوسٹ"
 msgid "Hosted by Yuva on its own address. Searched from the chat widget and the reply box. For support answers."
 msgstr "Yuva اپنے پتے پر ہوسٹ کرتا ہے۔ چیٹ ویجیٹ اور جواب کے خانے سے تلاش کیے جاتے ہیں۔ سپورٹ کے جوابات کے لیے۔"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Hostname"
 msgstr "ہوسٹ نیم"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Hostname and certificate"
 msgstr "ہوسٹ نیم اور سرٹیفکیٹ"
 
@@ -7084,7 +7084,7 @@ msgstr "آخری جانچ"
 msgid "Last checked"
 msgstr "آخری بار جانچا گیا"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Last checked {last}."
 msgstr "آخری جانچ {last}۔"
 
@@ -7307,13 +7307,13 @@ msgstr "منسلک کیا جا رہا ہے…"
 msgid "Links"
 msgstr "لنکس"
 
+#: src/features/settings/OwnDomainCard.tsx
+msgid "Links and feeds keep using the address on this server until the hostname and its certificate are both active."
+msgstr "جب تک ہوسٹ نیم اور اس کا سرٹیفکیٹ دونوں فعال نہیں ہو جاتے، لنکس اور فیڈز اسی سرور کا پتہ استعمال کرتے رہتے ہیں۔"
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Links will point at this server’s link domain instead of your own. Spam filters look at link domains."
 msgstr "لنکس آپ کے اپنے کے بجائے اس سرور کے لنک ڈومین کی طرف جائیں گے۔ اسپام فلٹرز لنک ڈومینز دیکھتے ہیں۔"
-
-#: src/features/status/DomainCard.tsx
-msgid "Links, the feed and the badge keep using the address on this server until the hostname and its certificate are both active."
-msgstr "جب تک ہوسٹ نیم اور اس کا سرٹیفکیٹ دونوں فعال نہیں ہوتے، لنکس، فیڈ اور بیج اسی سرور کا پتہ استعمال کرتے رہتے ہیں۔"
 
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/Overview.tsx
@@ -8159,13 +8159,13 @@ msgstr "میری پروفائل"
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/ProfileForm.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/setup/email/EmailLayout.tsx
 #: src/features/setup/SetupLayout.tsx
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/CreatePageDialog.tsx
-#: src/features/status/DomainCard.tsx
 #: src/features/status/MonitorDialog.tsx
 #: src/features/status/SettingsTab.tsx
 msgid "Name"
@@ -8221,8 +8221,8 @@ msgstr "بھیجنے والا چاہیے"
 
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/text.ts
+#: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/ProductsPage.tsx
-#: src/features/status/DomainCard.tsx
 msgid "Needs attention"
 msgstr "توجہ درکار ہے"
 
@@ -8519,7 +8519,7 @@ msgstr "اگلی کوشش"
 msgid "next attempt {when}"
 msgstr "اگلی کوشش {when}"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Next check {next}."
 msgstr "اگلی جانچ {next}۔"
 
@@ -9193,7 +9193,7 @@ msgstr "ابھی منسلک نہیں۔ جب آپ سائن ان مکمل کریں
 msgid "Not delivered"
 msgstr "ڈیلیور نہیں ہوئی"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Not found"
 msgstr "نہیں ملا"
 
@@ -10238,7 +10238,7 @@ msgstr "وقت کے ساتھ"
 msgid "Overview"
 msgstr "جائزہ"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Own domain"
 msgstr "اپنا ڈومین"
 
@@ -10440,7 +10440,7 @@ msgid "Payload"
 msgstr "پے لوڈ"
 
 #: src/components/common/text.ts
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Pending"
 msgstr "زیر التوا"
 
@@ -10795,7 +10795,7 @@ msgstr "آواز چلائیں"
 msgid "Point the MX records at Yuva as the e-mail guide describes. Sync catches the mail that still reaches the old server meanwhile."
 msgstr "MX ریکارڈز کو Yuva کی طرف کریں جیسا ای میل گائیڈ بتاتی ہے۔ سنک اس دوران وہ میل پکڑتا ہے جو اب بھی پرانے سرور تک پہنچتی ہے۔"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Points to"
 msgstr "اس کی طرف اشارہ کرتا ہے"
 
@@ -11444,9 +11444,9 @@ msgstr "ریموٹ تصاویر بھیجنے والے کو بتا سکتی ہی�
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/Passkeys.tsx
 #: src/features/settings/webhooks/sections.tsx
-#: src/features/status/DomainCard.tsx
 #: src/features/status/MonitorHttpFields.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Remove"
@@ -11461,7 +11461,7 @@ msgid "Remove {0}"
 msgstr "{0} ہٹائیں"
 
 #. placeholder {0}: d.domain
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Remove {0}?"
 msgstr "{0} ہٹائیں؟"
 
@@ -11490,7 +11490,7 @@ msgstr "چینل ہٹائیں"
 msgid "Remove condition {n}"
 msgstr "شرط {n} ہٹائیں"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Remove domain"
 msgstr "ڈومین ہٹائیں"
 
@@ -12989,7 +12989,7 @@ msgstr "پیش منظر دکھائیں"
 msgid "Show the reply time"
 msgstr "جواب کا وقت دکھائیں"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Show this page on your own address instead of this server’s."
 msgstr "اس صفحے کو اس سرور کے پتے کی بجائے اپنے پتے پر دکھائیں۔"
 
@@ -13455,7 +13455,7 @@ msgstr "گفتگو شروع کریں"
 msgid "Start migration"
 msgstr "منتقلی شروع کریں"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Start over"
 msgstr "دوبارہ شروع کریں"
 
@@ -14190,7 +14190,7 @@ msgstr "ایکسپورٹ فائل کی تاریخ Yuva میں کاپی ہو رہ
 msgid "The history is copied and its mail now reaches Yuva."
 msgstr "تاریخ کاپی ہو گئی اور اس کی میل اب Yuva تک پہنچتی ہے۔"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The hostname is being set up. This takes a moment once the records are found."
 msgstr "ہوسٹ نیم ترتیب دیا جا رہا ہے۔ ریکارڈ ملنے کے بعد اس میں تھوڑا وقت لگتا ہے۔"
 
@@ -14279,7 +14279,7 @@ msgid "The last check found no passing DKIM signature. Set up DKIM with your SMT
 msgstr "آخری جانچ میں کوئی پاس ہونے والا DKIM دستخط نہیں ملا۔ اپنے SMTP فراہم کنندہ کے ساتھ DKIM سیٹ اپ کریں، یا چینل کے لیے Yuva DKIM آن کریں۔"
 
 #. placeholder {0}: d.problem
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The last check saw: {0}"
 msgstr "آخری جانچ میں نظر آیا: {0}"
 
@@ -14411,7 +14411,7 @@ msgstr "دوسرے ان باکس میں ای میل چینل نہیں، اس ل�
 msgid "The page already sent 10 notices in the last hour"
 msgstr "پیج پچھلے ایک گھنٹے میں 10 نوٹس بھیج چکا ہے"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The page answers at"
 msgstr "صفحہ اس پتے پر جواب دیتا ہے"
 
@@ -14439,7 +14439,7 @@ msgstr "صفحہ شائع نہیں ہے۔ یہ صرف آپ کی ٹیم کو نظ
 msgid "The page or the incident is not public"
 msgstr "پیج یا واقعہ عوامی نہیں ہے"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The page stops answering on this domain. Its address on this server keeps working."
 msgstr "صفحہ اب اس ڈومین پر جواب نہیں دے گا۔ اس سرور پر اس کا پتہ کام کرتا رہے گا۔"
 
@@ -14519,19 +14519,19 @@ msgstr "وصول کنندگان بھیجنا شروع ہونے پر لیے جا�
 msgid "The record at {name} is published."
 msgstr "{name} پر ریکارڈ شائع ہو گیا۔"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The records exist, but they do not point where Yuva needs them. Change them to match the ones below. Yuva looks again every 10 minutes."
 msgstr "ریکارڈ موجود ہیں، مگر وہاں اشارہ نہیں کرتے جہاں Yuva کو چاہیے۔ انہیں نیچے والوں سے ملانے کے لیے بدلیں۔ Yuva ہر 10 منٹ بعد دوبارہ دیکھتا ہے۔"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The records have not been visible since {missing}. The domain is turned off after 3 days unless they come back."
 msgstr "ریکارڈ {missing} سے نظر نہیں آ رہے۔ اگر وہ واپس نہ آئے تو ڈومین 3 دن بعد بند کر دیا جائے گا۔"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The records were gone for 3 days, so the domain no longer shows this page and is not checked any more. Put the records back and start over."
 msgstr "ریکارڈ 3 دن غائب رہے، اس لیے ڈومین اب یہ صفحہ نہیں دکھاتا اور جانچا نہیں جاتا۔ ریکارڈ واپس لگائیں اور دوبارہ شروع کریں۔"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The records were not found within 7 days, so the claim ended. Add the records below, then start over for 7 more days."
 msgstr "7 دن میں ریکارڈ نہیں ملے، اس لیے دعویٰ ختم ہو گیا۔ نیچے کے ریکارڈ شامل کریں، پھر مزید 7 دن کے لیے دوبارہ شروع کریں۔"
 
@@ -15000,9 +15000,9 @@ msgstr "یہ نہ mbox فائل ہے نہ zip۔ خود .mbox فائل اپ لو�
 msgid "This is not a CSV file. Save the spreadsheet as CSV and upload that."
 msgstr "یہ CSV فائل نہیں۔ اسپریڈشیٹ کو CSV کے طور پر محفوظ کریں اور وہ اپ لوڈ کریں۔"
 
-#: src/features/status/DomainCard.tsx
-msgid "This is not a domain this page can use. Use a name like status.example.com that is not one of this server’s own addresses."
-msgstr "یہ صفحہ یہ ڈومین استعمال نہیں کر سکتا۔ status.example.com جیسا نام استعمال کریں جو اس سرور کے اپنے پتوں میں سے نہ ہو۔"
+#: src/features/settings/OwnDomainCard.tsx
+msgid "This is not a domain this page can use. Use a name like {example} that is not one of this server’s own addresses."
+msgstr "یہ صفحہ یہ ڈومین استعمال نہیں کر سکتا۔ {example} جیسا نام استعمال کریں جو اس سرور کے اپنے پتوں میں سے نہ ہو۔"
 
 #: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/channels/sections.tsx
@@ -15112,7 +15112,7 @@ msgstr "یہ درخواست ختم ہو گئی"
 msgid "This server does not offer imports from this kind of mailbox."
 msgstr "یہ سرور اس قسم کے میل باکس سے درآمد پیش نہیں کرتا۔"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "This server does not offer own domains. Ask its operator to turn them on."
 msgstr "یہ سرور اپنے ڈومین فراہم نہیں کرتا۔ اس کے آپریٹر سے اسے آن کرنے کو کہیں۔"
 
@@ -15409,7 +15409,7 @@ msgstr "زائرین کو نوٹس کے لیے سبسکرائب کرنے دین�
 msgid "Turn on for this device"
 msgstr "اس ڈیوائس کے لیے آن کریں"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Turned off"
 msgstr "بند"
 
@@ -15418,7 +15418,7 @@ msgstr "بند"
 msgid "Turned off by Yuva"
 msgstr "Yuva نے بند کیا"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "TXT record"
 msgstr "TXT ریکارڈ"
 
@@ -15921,7 +15921,7 @@ msgid "value"
 msgstr "قدر"
 
 #: src/features/settings/channels/email/Deliverability.tsx
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Value"
 msgstr "قدر"
 
@@ -15941,7 +15941,7 @@ msgstr "قدریں خفیہ کر کے محفوظ ہوتی ہیں اور دوبا
 msgid "Values of condition {n}, separated by commas"
 msgstr "شرط {n} کی قدریں، کاما سے جدا"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Verified"
 msgstr "تصدیق شدہ"
 
@@ -16050,7 +16050,7 @@ msgstr "بھیجنا شروع ہونے سے آپ کی سائٹس پر utm_campai
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/parts.tsx
 #: src/features/settings/channels/ChannelPage.tsx
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Waiting"
 msgstr "منتظر"
@@ -16082,7 +16082,7 @@ msgstr "تصدیق کے منتظر"
 msgid "Waiting for confirmation"
 msgstr "تصدیق کے منتظر"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Waiting for DNS"
 msgstr "DNS کا انتظار"
 
@@ -16118,11 +16118,11 @@ msgstr "آپریٹر کا انتظار"
 msgid "Waiting for the provider's limit; continues at {time}."
 msgstr "فراہم کنندہ کی حد کا انتظار؛ {time} پر جاری رہتا ہے۔"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Waiting for the two DNS records below. Add them where you manage the domain; DNS changes can take a while to spread. Yuva looks every 10 minutes, and the claim ends if they are not found within 7 days."
 msgstr "نیچے کے دو DNS ریکارڈ کا انتظار ہے۔ انہیں وہاں شامل کریں جہاں آپ ڈومین سنبھالتے ہیں؛ DNS تبدیلیوں کو پھیلنے میں وقت لگ سکتا ہے۔ Yuva ہر 10 منٹ بعد دیکھتا ہے، اور 7 دن میں نہ ملنے پر دعویٰ ختم ہو جاتا ہے۔"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Waiting for validation"
 msgstr "توثیق کا انتظار"
 

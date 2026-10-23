@@ -32,10 +32,11 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Ask whether a status page domain is verified
+         * Ask whether an own domain is verified
          * @description For the operator's TLS proxy issuing certificates on demand (Caddy `on_demand_tls` `ask`):
-         *     `200` when `domain` is the verified own domain of a published status page in a live workspace,
-         *     `404` otherwise, also when the server's `YUVA_STATUS_DOMAINS` is not `ask`. It is public and
+         *     `200` when `domain` is the verified own domain of a published status page, help center or
+         *     changelog or a public roadmap board in a live workspace (and that feature is not off on the
+         *     server), `404` otherwise, also when the server's `YUVA_STATUS_DOMAINS` is not `ask`. It is public and
          *     reveals only domains that already serve public pages. Up to 120 requests a minute per IP
          *     address (`429 rate_limited`).
          */
@@ -2772,6 +2773,8 @@ export interface paths {
          *     keeps the old one reserved for this board, and its public addresses redirect to the new one,
          *     for 90 days; a board keeps its 10 newest former slugs, and its slug changes 10 times a day
          *     at most (`429 rate_limited`). `channel_id` must stay a `chat` channel of the board's inbox.
+         *     `custom_domain` sets or removes the board's own domain, checked and served like a status
+         *     page's; a private board does not answer on it.
          *
          *     Owners, admins and API keys; not OAuth tokens (`403 member_session_required`). Scope: `roadmap:write`.
          */
@@ -6874,7 +6877,8 @@ export interface paths {
          *     `slug` keeps the old one reserved for this changelog, and its public addresses redirect to
          *     the new one, for 90 days; a changelog keeps its 10 newest former slugs, and its slug
          *     changes 10 times a day at most (`429 rate_limited`). A locale cannot leave `locales` while
-         *     an entry has a translation in it (`409 locale_in_use`).
+         *     an entry has a translation in it (`409 locale_in_use`). `custom_domain` sets or removes the
+         *     changelog's own domain, checked and served like a status page's.
          *
          *     Owners, admins and API keys; not OAuth tokens (`403 member_session_required`). Scope: `changelog:publish`.
          */
@@ -7250,7 +7254,8 @@ export interface paths {
          *     Changing `slug` keeps the old one reserved for this center, and its public addresses
          *     redirect to the new one, for 90 days; a center keeps its 10 newest former slugs, and its
          *     slug changes 10 times a day at most (`429 rate_limited`). A locale cannot leave `locales`
-         *     while an article has a translation in it (`409 locale_in_use`).
+         *     while an article has a translation in it (`409 locale_in_use`). `custom_domain` sets or
+         *     removes the center's own domain, checked and served like a status page's.
          *
          *     Owners, admins and API keys; not OAuth tokens (`403 member_session_required`). Scope: `help:publish`.
          */
@@ -13903,7 +13908,7 @@ export interface components {
             id: number;
         };
         /** @description One server message on `/v1/realtime`, told apart by `type`. */
-        RealtimeMessage: components["schemas"]["ConversationEvent"] | components["schemas"]["ConversationMovedEvent"] | components["schemas"]["MessageCreatedEvent"] | components["schemas"]["MessageUpdatedEvent"] | components["schemas"]["DraftEvent"] | components["schemas"]["ContactUpdatedEvent"] | components["schemas"]["ContactDeletedEvent"] | components["schemas"]["InboxCreatedEvent"] | components["schemas"]["InboxUpdatedEvent"] | components["schemas"]["InboxDeletedEvent"] | components["schemas"]["InboxAccessChangedEvent"] | components["schemas"]["ConversationReadEvent"] | components["schemas"]["ContactReadEvent"] | components["schemas"]["ConversationPinEvent"] | components["schemas"]["DiscussionEvent"] | components["schemas"]["DiscussionStageEvent"] | components["schemas"]["SubscriptionEvent"] | components["schemas"]["BroadcastEvent"] | components["schemas"]["MigrationEvent"] | components["schemas"]["AnalyticsAlertEvent"] | components["schemas"]["StatusComponentEvent"] | components["schemas"]["StatusIncidentEvent"] | components["schemas"]["StatusMonitorEvent"] | components["schemas"]["MigrationProgressEvent"] | components["schemas"]["MigrationForwardingConfirmationEvent"] | components["schemas"]["BroadcastProgressEvent"] | components["schemas"]["StatusNoticeEvent"] | components["schemas"]["StatusPageEvent"] | components["schemas"]["HelpArticleEvent"] | components["schemas"]["HelpArticleSignal"] | components["schemas"]["ChangelogEntryEvent"] | components["schemas"]["ChangelogEntrySignal"] | components["schemas"]["RoadmapBoardSignal"] | components["schemas"]["ListImportEvent"] | components["schemas"]["ListImportProgressEvent"] | components["schemas"]["TypingEvent"] | components["schemas"]["MemberPresenceEvent"] | components["schemas"]["ContactPresenceEvent"] | components["schemas"]["ViewingEvent"] | components["schemas"]["RealtimeReady"] | components["schemas"]["RealtimeResyncRequired"];
+        RealtimeMessage: components["schemas"]["ConversationEvent"] | components["schemas"]["ConversationMovedEvent"] | components["schemas"]["MessageCreatedEvent"] | components["schemas"]["MessageUpdatedEvent"] | components["schemas"]["DraftEvent"] | components["schemas"]["ContactUpdatedEvent"] | components["schemas"]["ContactDeletedEvent"] | components["schemas"]["InboxCreatedEvent"] | components["schemas"]["InboxUpdatedEvent"] | components["schemas"]["InboxDeletedEvent"] | components["schemas"]["InboxAccessChangedEvent"] | components["schemas"]["ConversationReadEvent"] | components["schemas"]["ContactReadEvent"] | components["schemas"]["ConversationPinEvent"] | components["schemas"]["DiscussionEvent"] | components["schemas"]["DiscussionStageEvent"] | components["schemas"]["SubscriptionEvent"] | components["schemas"]["BroadcastEvent"] | components["schemas"]["MigrationEvent"] | components["schemas"]["AnalyticsAlertEvent"] | components["schemas"]["StatusComponentEvent"] | components["schemas"]["StatusIncidentEvent"] | components["schemas"]["StatusMonitorEvent"] | components["schemas"]["MigrationProgressEvent"] | components["schemas"]["MigrationForwardingConfirmationEvent"] | components["schemas"]["BroadcastProgressEvent"] | components["schemas"]["StatusNoticeEvent"] | components["schemas"]["StatusPageEvent"] | components["schemas"]["HelpArticleEvent"] | components["schemas"]["HelpArticleSignal"] | components["schemas"]["ChangelogEntryEvent"] | components["schemas"]["ChangelogEntrySignal"] | components["schemas"]["RoadmapBoardSignal"] | components["schemas"]["HelpCenterSignal"] | components["schemas"]["ChangelogSignal"] | components["schemas"]["ListImportEvent"] | components["schemas"]["ListImportProgressEvent"] | components["schemas"]["TypingEvent"] | components["schemas"]["MemberPresenceEvent"] | components["schemas"]["ContactPresenceEvent"] | components["schemas"]["ViewingEvent"] | components["schemas"]["RealtimeReady"] | components["schemas"]["RealtimeResyncRequired"];
         /**
          * @description `auto`: available in `live` inboxes while connected to `/v1/realtime` within business
          *     hours. `away`: never shown as available.
@@ -14553,7 +14558,11 @@ export interface components {
             name: string;
             description: string;
             slug: components["schemas"]["RoadmapBoardSlug"];
-            /** @description The public page, at the server's `/roadmap/{slug}`. */
+            /**
+             * @description The public page: on its own domain once that is verified (with
+             *     `YUVA_STATUS_DOMAINS=cloudflare`, once its custom hostname and certificate are both
+             *     `active`), else at the server's `/roadmap/{slug}`.
+             */
             url: string;
             /** @description A private board is a triage tool for the team and has no public page. */
             public: boolean;
@@ -14564,6 +14573,8 @@ export interface components {
              */
             analytics_property_id?: string;
             counts: components["schemas"]["RoadmapBoardCounts"];
+            custom_domain?: components["schemas"]["StatusCustomDomain"];
+            own_domains?: components["schemas"]["StatusOwnDomains"];
             /** Format: date-time */
             created_at: string;
             /** Format: date-time */
@@ -14599,6 +14610,16 @@ export interface components {
             suggestions?: components["schemas"]["RoadmapSuggestions"];
             /** Format: uuid */
             analytics_property_id?: string | null;
+            /**
+             * @description A hostname such as `roadmap.example.com`, `null` to remove it; the public board then answers at `/` of
+             *     the domain once it is verified. The rules are a status page's `custom_domain`: not one of the
+             *     server's own hosts, not the verified domain of another status page, help center, roadmap
+             *     board or changelog (`409 domain_taken`), at most `YUVA_STATUS_DOMAIN_LIMIT` pages of any kind
+             *     in a workspace with a domain that is not `off` (`403 status_domain_limit`), and only
+             *     `null`, an empty string or the current domain when `YUVA_STATUS_DOMAINS` is `off`.
+             * @example roadmap.example.com
+             */
+            custom_domain?: string | null;
         };
         RoadmapStageMove: {
             stage: components["schemas"]["IdeaStage"];
@@ -17664,8 +17685,9 @@ export interface components {
             updated_at: string;
         };
         /**
-         * @description Whether the server lets pages use their own domain (`YUVA_STATUS_DOMAINS`). Absent when it
-         *     is `off`; setting `custom_domain` is then refused.
+         * @description Whether the server lets status pages, help centers, roadmap boards and changelogs use their
+         *     own domain (`YUVA_STATUS_DOMAINS`). Absent when it is `off`; setting `custom_domain` is then
+         *     refused.
          */
         StatusOwnDomains: {
             /**
@@ -17679,8 +17701,8 @@ export interface components {
         /**
          * @description `pending`: the CNAME and TXT records were not seen yet (checked every 10 minutes).
          *     `failed`: the last check found them but they name another target or value (checked every 10
-         *     minutes); or, no longer checked until `custom_domain` is sent again, another page verified the
-         *     domain first (`problem` `taken`) or the claim was not verified within 7 days (`problem`
+         *     minutes); or, no longer checked until `custom_domain` is sent again, another page (of any
+         *     kind) verified the domain first (`problem` `taken`) or the claim was not verified within 7 days (`problem`
          *     `expired`). `verified`: both were seen; the domain serves the page (checked every day). Only
          *     a verified domain holds its name: any number of pages may claim a domain while it is pending
          *     or failed. `off`: a verified domain whose records were gone for 3 days; it no longer serves
@@ -17689,8 +17711,9 @@ export interface components {
          */
         StatusDomainState: "pending" | "verified" | "failed" | "off";
         /**
-         * @description The page's own domain, absent when it has none or the server's `YUVA_STATUS_DOMAINS` is
-         *     `off`. The owner adds a CNAME from `domain` to `cname_target` and a TXT record `txt_name` with
+         * @description The own domain of a status page, help center, roadmap board or changelog, absent when it has
+         *     none or the server's `YUVA_STATUS_DOMAINS` is `off`. One domain belongs to one page of one
+         *     workspace across all four kinds. The owner adds a CNAME from `domain` to `cname_target` and a TXT record `txt_name` with
          *     `txt_value`. `cloudflare` is present when the server registers verified domains as Cloudflare
          *     for SaaS custom hostnames.
          */
@@ -20078,7 +20101,11 @@ export interface components {
             /** @description Shown on the changelog's home page. */
             description: string;
             slug: components["schemas"]["ChangelogSlug"];
-            /** @description The public home page, `<public URL>/changelog/{slug}`. */
+            /**
+             * @description The public home page: on its own domain once that is verified (with
+             *     `YUVA_STATUS_DOMAINS=cloudflare`, once its custom hostname and certificate are both
+             *     `active`), else `<public URL>/changelog/{slug}`.
+             */
             url: string;
             default_locale: components["schemas"]["LanguageTag"];
             /** @description The locales entries may be written and published in; the default locale is one of them. */
@@ -20094,6 +20121,8 @@ export interface components {
             /** @description The caller may publish and schedule this changelog's entries. */
             can_publish: boolean;
             counts: components["schemas"]["ChangelogCounts"];
+            custom_domain?: components["schemas"]["StatusCustomDomain"];
+            own_domains?: components["schemas"]["StatusOwnDomains"];
             /** Format: date-time */
             created_at: string;
             /** Format: date-time */
@@ -20127,6 +20156,16 @@ export interface components {
             analytics_property_id?: string | null;
             agents_may_publish?: boolean;
             published?: boolean;
+            /**
+             * @description A hostname such as `changelog.example.com`, `null` to remove it; the changelog then answers at `/` of
+             *     the domain once it is verified. The rules are a status page's `custom_domain`: not one of the
+             *     server's own hosts, not the verified domain of another status page, help center, roadmap
+             *     board or changelog (`409 domain_taken`), at most `YUVA_STATUS_DOMAIN_LIMIT` pages of any kind
+             *     in a workspace with a domain that is not `off` (`403 status_domain_limit`), and only
+             *     `null`, an empty string or the current domain when `YUVA_STATUS_DOMAINS` is `off`.
+             * @example changelog.example.com
+             */
+            custom_domain?: string | null;
         };
         ChangelogEntryTranslationSummary: {
             locale: components["schemas"]["LanguageTag"];
@@ -20381,6 +20420,29 @@ export interface components {
             data: components["schemas"]["ChangelogEntryEventData"];
         };
         /**
+         * @description `changelog.updated`, on `/v1/realtime` only: the changelog was edited, or its own domain changed state or
+         *     its Cloudflare hostname or certificate status moved. Not stored, no id, never replayed;
+         *     reload the changelog after it and after a reconnect. Reaches whoever holds `changelog:read` and sees
+         *     its inbox.
+         */
+        ChangelogSignal: {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "changelog.updated";
+            /** Format: uuid */
+            workspace_id: string;
+            /** Format: uuid */
+            inbox_id: string;
+            /** Format: date-time */
+            created_at: string;
+            data: {
+                /** Format: uuid */
+                changelog_id: string;
+            };
+        };
+        /**
          * @description `changelog.entry.updated`, on `/v1/realtime` only: an entry or a translation's draft
          *     changed (created, saved, labels or image changed, scheduled, unscheduled), so an editor
          *     open on an older `version` can say it changed elsewhere and lists can refresh. Not
@@ -20506,7 +20568,11 @@ export interface components {
             /** @description Shown on the center's home page. */
             description: string;
             slug: components["schemas"]["HelpCenterSlug"];
-            /** @description The public home page, at the server's help URL. */
+            /**
+             * @description The public home page: on its own domain once that is verified (with
+             *     `YUVA_STATUS_DOMAINS=cloudflare`, once its custom hostname and certificate are both
+             *     `active`), else at the server's help URL.
+             */
             url: string;
             default_locale: components["schemas"]["LanguageTag"];
             /** @description The locales articles may be written and published in; the default locale is one of them. */
@@ -20530,6 +20596,8 @@ export interface components {
             /** @description The caller may publish and unpublish this center's articles. */
             can_publish: boolean;
             counts: components["schemas"]["HelpCenterCounts"];
+            custom_domain?: components["schemas"]["StatusCustomDomain"];
+            own_domains?: components["schemas"]["StatusOwnDomains"];
             /** Format: date-time */
             created_at: string;
             /** Format: date-time */
@@ -20566,6 +20634,29 @@ export interface components {
             /** @description Default `false`. */
             published?: boolean;
         };
+        /**
+         * @description `help.center.updated`, on `/v1/realtime` only: the center was edited, or its own domain changed state or
+         *     its Cloudflare hostname or certificate status moved. Not stored, no id, never replayed;
+         *     reload the center after it and after a reconnect. Reaches whoever holds `help:read` and sees
+         *     its inbox.
+         */
+        HelpCenterSignal: {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "help.center.updated";
+            /** Format: uuid */
+            workspace_id: string;
+            /** Format: uuid */
+            inbox_id: string;
+            /** Format: date-time */
+            created_at: string;
+            data: {
+                /** Format: uuid */
+                center_id: string;
+            };
+        };
         HelpCenterUpdate: {
             name?: string;
             description?: string;
@@ -20583,6 +20674,16 @@ export interface components {
             analytics_property_id?: string | null;
             agents_may_publish?: boolean;
             published?: boolean;
+            /**
+             * @description A hostname such as `help.example.com`, `null` to remove it; the center then answers at `/` of
+             *     the domain once it is verified. The rules are a status page's `custom_domain`: not one of the
+             *     server's own hosts, not the verified domain of another status page, help center, roadmap
+             *     board or changelog (`409 domain_taken`), at most `YUVA_STATUS_DOMAIN_LIMIT` pages of any kind
+             *     in a workspace with a domain that is not `off` (`403 status_domain_limit`), and only
+             *     `null`, an empty string or the current domain when `YUVA_STATUS_DOMAINS` is `off`.
+             * @example help.example.com
+             */
+            custom_domain?: string | null;
         };
         /**
          * @description One of a fixed set of icons a collection shows.

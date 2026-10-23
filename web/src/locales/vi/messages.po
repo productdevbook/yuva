@@ -1211,9 +1211,9 @@ msgstr "Một tin nhắn nhận tối đa 3 bài viết."
 msgid "A message was added"
 msgstr "Một tin nhắn đã được thêm"
 
-#: src/features/status/DomainCard.tsx
-msgid "A name you control, like status.example.com. Yuva then shows you two DNS records to add, and the page answers on the domain once it has seen them."
-msgstr "Một tên bạn kiểm soát, ví dụ status.example.com. Yuva sẽ cho bạn thấy hai bản ghi DNS cần thêm, và trang sẽ trả lời trên tên miền ngay khi thấy chúng."
+#: src/features/settings/OwnDomainCard.tsx
+msgid "A name you control, like {example}. Yuva then shows you two DNS records to add, and the page answers on the domain once it has seen them."
+msgstr "Một tên bạn kiểm soát, ví dụ {example}. Yuva sẽ cho bạn thấy hai bản ghi DNS cần thêm, và trang sẽ trả lời trên tên miền ngay khi thấy chúng."
 
 #: src/features/setup/StartStep.tsx
 msgid "A new product"
@@ -1413,7 +1413,7 @@ msgid "Acme Support"
 msgstr "Acme Support"
 
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 #: src/features/status/IncidentsPage.tsx
 msgid "Active"
 msgstr "Đang hoạt động"
@@ -1545,7 +1545,7 @@ msgstr "Thêm thành phần"
 msgid "Add contact"
 msgstr "Thêm liên hệ"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Add domain"
 msgstr "Thêm tên miền"
 
@@ -2124,7 +2124,7 @@ msgstr "Một lần nhập khác của không gian làm việc này đang chạy
 msgid "another inbox"
 msgstr "hộp thư khác"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Another page verified this domain first, and only a verified claim holds a name. Remove the domain, or start over once the other page lets it go."
 msgstr "Một trang khác đã xác minh tên miền này trước, và chỉ yêu cầu đã xác minh mới giữ được một tên. Hãy xóa tên miền, hoặc bắt đầu lại khi trang kia nhả nó ra."
 
@@ -2685,7 +2685,7 @@ msgstr "Chặn liên hệ"
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactSheet.tsx
 #: src/features/contact/ContactsPage.tsx
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Blocked"
 msgstr "Đã chặn"
 
@@ -2739,7 +2739,7 @@ msgstr "Tên bot"
 msgid "Bot name (optional)"
 msgstr "Tên bot (không bắt buộc)"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Both records were found. Yuva checks them once a day; keep them in place."
 msgstr "Đã tìm thấy cả hai bản ghi. Yuva kiểm tra chúng mỗi ngày một lần; hãy giữ nguyên."
 
@@ -3022,7 +3022,7 @@ msgstr "Đã tìm ra nguyên nhân"
 msgid "Cc: {cc}"
 msgstr "Cc: {cc}"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Certificate"
 msgstr "Chứng chỉ"
 
@@ -3185,7 +3185,7 @@ msgstr "Kiểm tra DNS và bắt đầu ký"
 msgid "Check every"
 msgstr "Kiểm tra mỗi"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Check now"
 msgstr "Kiểm tra ngay"
 
@@ -3471,7 +3471,7 @@ msgstr "Đóng lúc"
 msgid "Closing each conversation"
 msgstr "Đang đóng từng cuộc trò chuyện"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "CNAME record"
 msgstr "Bản ghi CNAME"
 
@@ -4723,7 +4723,7 @@ msgstr "Tài liệu"
 msgid "Does it work with server-side rendering?"
 msgstr "Nó có hoạt động với kết xuất phía máy chủ không?"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Domain"
 msgstr "Tên miền"
 
@@ -5139,9 +5139,9 @@ msgstr "Kết thúc"
 msgid "English"
 msgstr "English"
 
-#: src/features/status/DomainCard.tsx
-msgid "Enter a domain like status.example.com."
-msgstr "Nhập một tên miền như status.example.com."
+#: src/features/settings/OwnDomainCard.tsx
+msgid "Enter a domain like {example}."
+msgstr "Nhập một tên miền như {example}."
 
 #: src/features/status/monitorErrors.ts
 msgid "Enter a host name or an IP address."
@@ -5781,7 +5781,7 @@ msgstr "Chuyển tiếp"
 msgid "Forwarding address"
 msgstr "Địa chỉ chuyển tiếp"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Found"
 msgstr "Đã tìm thấy"
 
@@ -6238,11 +6238,11 @@ msgstr "Máy chủ"
 msgid "Hosted by Yuva on its own address. Searched from the chat widget and the reply box. For support answers."
 msgstr "Do Yuva lưu trữ tại địa chỉ riêng. Được tìm từ tiện ích trò chuyện và ô trả lời. Dùng cho câu trả lời hỗ trợ."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Hostname"
 msgstr "Tên máy chủ"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Hostname and certificate"
 msgstr "Tên máy chủ và chứng chỉ"
 
@@ -7084,7 +7084,7 @@ msgstr "Lần kiểm tra cuối"
 msgid "Last checked"
 msgstr "Kiểm tra lần cuối"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Last checked {last}."
 msgstr "Kiểm tra lần cuối {last}."
 
@@ -7307,13 +7307,13 @@ msgstr "Đang liên kết…"
 msgid "Links"
 msgstr "Liên kết"
 
+#: src/features/settings/OwnDomainCard.tsx
+msgid "Links and feeds keep using the address on this server until the hostname and its certificate are both active."
+msgstr "Liên kết và nguồn cấp tiếp tục dùng địa chỉ trên máy chủ này cho đến khi cả tên máy chủ lẫn chứng chỉ của nó đều hoạt động."
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Links will point at this server’s link domain instead of your own. Spam filters look at link domains."
 msgstr "Các liên kết sẽ trỏ tới tên miền liên kết của máy chủ này thay vì của bạn. Bộ lọc thư rác xem xét tên miền liên kết."
-
-#: src/features/status/DomainCard.tsx
-msgid "Links, the feed and the badge keep using the address on this server until the hostname and its certificate are both active."
-msgstr "Liên kết, nguồn cấp và huy hiệu vẫn dùng địa chỉ trên máy chủ này cho đến khi tên máy chủ và chứng chỉ của nó đều hoạt động."
 
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/Overview.tsx
@@ -8159,13 +8159,13 @@ msgstr "Hồ sơ của tôi"
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/ProfileForm.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/setup/email/EmailLayout.tsx
 #: src/features/setup/SetupLayout.tsx
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/CreatePageDialog.tsx
-#: src/features/status/DomainCard.tsx
 #: src/features/status/MonitorDialog.tsx
 #: src/features/status/SettingsTab.tsx
 msgid "Name"
@@ -8221,8 +8221,8 @@ msgstr "Cần người gửi"
 
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/text.ts
+#: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/ProductsPage.tsx
-#: src/features/status/DomainCard.tsx
 msgid "Needs attention"
 msgstr "Cần chú ý"
 
@@ -8519,7 +8519,7 @@ msgstr "Lần thử tiếp theo"
 msgid "next attempt {when}"
 msgstr "lần thử tiếp theo {when}"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Next check {next}."
 msgstr "Lần kiểm tra tiếp theo {next}."
 
@@ -9193,7 +9193,7 @@ msgstr "Chưa kết nối. Trang này cập nhật khi bạn đăng nhập xong.
 msgid "Not delivered"
 msgstr "Chưa gửi được"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Not found"
 msgstr "Không tìm thấy"
 
@@ -10238,7 +10238,7 @@ msgstr "Theo thời gian"
 msgid "Overview"
 msgstr "Tổng quan"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Own domain"
 msgstr "Tên miền riêng"
 
@@ -10440,7 +10440,7 @@ msgid "Payload"
 msgstr "Payload"
 
 #: src/components/common/text.ts
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Pending"
 msgstr "Đang chờ"
 
@@ -10795,7 +10795,7 @@ msgstr "Phát âm thanh"
 msgid "Point the MX records at Yuva as the e-mail guide describes. Sync catches the mail that still reaches the old server meanwhile."
 msgstr "Trỏ các bản ghi MX về Yuva như hướng dẫn email mô tả. Đồng bộ bắt thư vẫn đến máy chủ cũ trong thời gian đó."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Points to"
 msgstr "Trỏ tới"
 
@@ -11444,9 +11444,9 @@ msgstr "Hình ảnh từ xa có thể cho người gửi biết bạn đã mở 
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/Passkeys.tsx
 #: src/features/settings/webhooks/sections.tsx
-#: src/features/status/DomainCard.tsx
 #: src/features/status/MonitorHttpFields.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Remove"
@@ -11461,7 +11461,7 @@ msgid "Remove {0}"
 msgstr "Gỡ {0}"
 
 #. placeholder {0}: d.domain
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Remove {0}?"
 msgstr "Xóa {0}?"
 
@@ -11490,7 +11490,7 @@ msgstr "Gỡ kênh"
 msgid "Remove condition {n}"
 msgstr "Gỡ điều kiện {n}"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Remove domain"
 msgstr "Xóa tên miền"
 
@@ -12989,7 +12989,7 @@ msgstr "Hiện bản xem trước"
 msgid "Show the reply time"
 msgstr "Hiện thời gian phản hồi"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Show this page on your own address instead of this server’s."
 msgstr "Hiển thị trang này trên địa chỉ của riêng bạn thay vì địa chỉ của máy chủ này."
 
@@ -13455,7 +13455,7 @@ msgstr "Bắt đầu cuộc trò chuyện"
 msgid "Start migration"
 msgstr "Bắt đầu di chuyển"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Start over"
 msgstr "Bắt đầu lại"
 
@@ -14190,7 +14190,7 @@ msgstr "Lịch sử từ tệp xuất được sao chép vào Yuva."
 msgid "The history is copied and its mail now reaches Yuva."
 msgstr "Lịch sử đã được sao chép và thư của nó giờ đến Yuva."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The hostname is being set up. This takes a moment once the records are found."
 msgstr "Tên máy chủ đang được thiết lập. Việc này mất một lát sau khi tìm thấy các bản ghi."
 
@@ -14279,7 +14279,7 @@ msgid "The last check found no passing DKIM signature. Set up DKIM with your SMT
 msgstr "Lần kiểm tra cuối không thấy chữ ký DKIM nào đạt. Hãy thiết lập DKIM với nhà cung cấp SMTP của bạn, hoặc bật Yuva DKIM cho kênh."
 
 #. placeholder {0}: d.problem
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The last check saw: {0}"
 msgstr "Lần kiểm tra gần nhất thấy: {0}"
 
@@ -14411,7 +14411,7 @@ msgstr "Hộp thư kia không có kênh email, nên cuộc trò chuyện email n
 msgid "The page already sent 10 notices in the last hour"
 msgstr "Trang đã gửi 10 thông báo trong giờ qua"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The page answers at"
 msgstr "Trang trả lời tại"
 
@@ -14439,7 +14439,7 @@ msgstr "Trang chưa được xuất bản. Chỉ nhóm của bạn thấy điề
 msgid "The page or the incident is not public"
 msgstr "Trang hoặc sự cố này không công khai"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The page stops answering on this domain. Its address on this server keeps working."
 msgstr "Trang sẽ không còn trả lời trên tên miền này. Địa chỉ của nó trên máy chủ này vẫn hoạt động."
 
@@ -14519,19 +14519,19 @@ msgstr "Người nhận được lấy khi bắt đầu gửi: người đăng k
 msgid "The record at {name} is published."
 msgstr "Bản ghi tại {name} đã được đăng."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The records exist, but they do not point where Yuva needs them. Change them to match the ones below. Yuva looks again every 10 minutes."
 msgstr "Các bản ghi có tồn tại nhưng không trỏ tới nơi Yuva cần. Hãy sửa cho khớp với các bản ghi bên dưới. Yuva kiểm tra lại mỗi 10 phút."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The records have not been visible since {missing}. The domain is turned off after 3 days unless they come back."
 msgstr "Các bản ghi không còn thấy từ {missing}. Tên miền sẽ bị tắt sau 3 ngày nếu chúng không quay lại."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The records were gone for 3 days, so the domain no longer shows this page and is not checked any more. Put the records back and start over."
 msgstr "Các bản ghi đã biến mất trong 3 ngày, nên tên miền không còn hiển thị trang này và không được kiểm tra nữa. Hãy đặt lại các bản ghi và bắt đầu lại."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The records were not found within 7 days, so the claim ended. Add the records below, then start over for 7 more days."
 msgstr "Không tìm thấy các bản ghi trong 7 ngày, nên yêu cầu đã kết thúc. Hãy thêm các bản ghi bên dưới rồi bắt đầu lại thêm 7 ngày."
 
@@ -15000,9 +15000,9 @@ msgstr "Đây không phải tệp mbox cũng không phải zip. Hãy tải lên 
 msgid "This is not a CSV file. Save the spreadsheet as CSV and upload that."
 msgstr "Đây không phải tệp CSV. Hãy lưu bảng tính thành CSV và tải lên."
 
-#: src/features/status/DomainCard.tsx
-msgid "This is not a domain this page can use. Use a name like status.example.com that is not one of this server’s own addresses."
-msgstr "Trang này không thể dùng tên miền này. Hãy dùng một tên như status.example.com mà không phải là địa chỉ riêng của máy chủ này."
+#: src/features/settings/OwnDomainCard.tsx
+msgid "This is not a domain this page can use. Use a name like {example} that is not one of this server’s own addresses."
+msgstr "Trang này không thể dùng tên miền này. Hãy dùng một tên như {example} mà không phải là địa chỉ riêng của máy chủ này."
 
 #: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/channels/sections.tsx
@@ -15112,7 +15112,7 @@ msgstr "Yêu cầu này đã kết thúc"
 msgid "This server does not offer imports from this kind of mailbox."
 msgstr "Máy chủ này không hỗ trợ nhập từ loại hộp thư này."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "This server does not offer own domains. Ask its operator to turn them on."
 msgstr "Máy chủ này không cung cấp tên miền riêng. Hãy nhờ quản trị viên bật lên."
 
@@ -15409,7 +15409,7 @@ msgstr "Hãy bật người đăng ký qua e-mail trong cài đặt trang để 
 msgid "Turn on for this device"
 msgstr "Bật cho thiết bị này"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Turned off"
 msgstr "Đã tắt"
 
@@ -15418,7 +15418,7 @@ msgstr "Đã tắt"
 msgid "Turned off by Yuva"
 msgstr "Bị Yuva tắt"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "TXT record"
 msgstr "Bản ghi TXT"
 
@@ -15921,7 +15921,7 @@ msgid "value"
 msgstr "giá trị"
 
 #: src/features/settings/channels/email/Deliverability.tsx
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Value"
 msgstr "Giá trị"
 
@@ -15941,7 +15941,7 @@ msgstr "Giá trị được lưu đã mã hóa và không bao giờ hiển thị
 msgid "Values of condition {n}, separated by commas"
 msgstr "Các giá trị của điều kiện {n}, phân tách bằng dấu phẩy"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Verified"
 msgstr "Đã xác minh"
 
@@ -16050,7 +16050,7 @@ msgstr "Lượt truy cập vào các trang của bạn với utm_campaign={campa
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/parts.tsx
 #: src/features/settings/channels/ChannelPage.tsx
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Waiting"
 msgstr "Đang chờ"
@@ -16082,7 +16082,7 @@ msgstr "đang chờ xác nhận"
 msgid "Waiting for confirmation"
 msgstr "Đang chờ xác nhận"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Waiting for DNS"
 msgstr "Đang chờ DNS"
 
@@ -16118,11 +16118,11 @@ msgstr "Đang chờ người vận hành"
 msgid "Waiting for the provider's limit; continues at {time}."
 msgstr "Đang chờ giới hạn của nhà cung cấp; tiếp tục lúc {time}."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Waiting for the two DNS records below. Add them where you manage the domain; DNS changes can take a while to spread. Yuva looks every 10 minutes, and the claim ends if they are not found within 7 days."
 msgstr "Đang chờ hai bản ghi DNS bên dưới. Hãy thêm chúng ở nơi bạn quản lý tên miền; thay đổi DNS có thể mất một lúc để lan truyền. Yuva kiểm tra mỗi 10 phút, và yêu cầu kết thúc nếu không tìm thấy chúng trong 7 ngày."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Waiting for validation"
 msgstr "Đang chờ xác thực"
 

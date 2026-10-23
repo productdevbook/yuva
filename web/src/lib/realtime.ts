@@ -144,6 +144,10 @@ export function useRealtime(ws: string, memberId: string) {
           applyEvent(qc, ctx, { type: msg.type, data: msg.data } as LiveEvent)
           return
         }
+        if (msg.type === "help.center.updated" || msg.type === "changelog.updated") {
+          applyEvent(qc, ctx, { type: msg.type, data: msg.data } as LiveEvent)
+          return
+        }
         if (msg.type === "changelog.entry.updated") {
           applyEvent(qc, ctx, { type: msg.type, data: msg.data } as LiveEvent)
           return

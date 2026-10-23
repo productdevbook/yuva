@@ -1211,9 +1211,9 @@ msgstr "הודעה מקבלת עד 3 מאמרים."
 msgid "A message was added"
 msgstr "הודעה נוספה"
 
-#: src/features/status/DomainCard.tsx
-msgid "A name you control, like status.example.com. Yuva then shows you two DNS records to add, and the page answers on the domain once it has seen them."
-msgstr "שם שבשליטתך, למשל status.example.com. Yuva יציג שתי רשומות DNS להוספה, והעמוד יענה בדומיין ברגע שיראה אותן."
+#: src/features/settings/OwnDomainCard.tsx
+msgid "A name you control, like {example}. Yuva then shows you two DNS records to add, and the page answers on the domain once it has seen them."
+msgstr "שם שבשליטתך, למשל {example}. Yuva יציג שתי רשומות DNS להוספה, והעמוד יענה בדומיין ברגע שיראה אותן."
 
 #: src/features/setup/StartStep.tsx
 msgid "A new product"
@@ -1413,7 +1413,7 @@ msgid "Acme Support"
 msgstr "התמיכה של Acme"
 
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 #: src/features/status/IncidentsPage.tsx
 msgid "Active"
 msgstr "פעיל"
@@ -1545,7 +1545,7 @@ msgstr "הוספת רכיב"
 msgid "Add contact"
 msgstr "הוספת איש קשר"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Add domain"
 msgstr "הוספת דומיין"
 
@@ -2124,7 +2124,7 @@ msgstr "ייבוא אחר של סביבת העבודה הזאת רץ. ייבוא
 msgid "another inbox"
 msgstr "תיבת דואר אחרת"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Another page verified this domain first, and only a verified claim holds a name. Remove the domain, or start over once the other page lets it go."
 msgstr "עמוד אחר אימת את הדומיין הזה קודם, ורק תביעה מאומתת מחזיקה שם. הסירו את הדומיין, או התחילו מחדש כשהעמוד האחר ישחרר אותו."
 
@@ -2685,7 +2685,7 @@ msgstr "חסימת איש קשר"
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactSheet.tsx
 #: src/features/contact/ContactsPage.tsx
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Blocked"
 msgstr "חסום"
 
@@ -2739,7 +2739,7 @@ msgstr "שם הבוט"
 msgid "Bot name (optional)"
 msgstr "שם הבוט (אופציונלי)"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Both records were found. Yuva checks them once a day; keep them in place."
 msgstr "שתי הרשומות נמצאו. Yuva בודק אותן פעם ביום; השאירו אותן במקומן."
 
@@ -3022,7 +3022,7 @@ msgstr "הסיבה נמצאה"
 msgid "Cc: {cc}"
 msgstr "עותק: {cc}"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Certificate"
 msgstr "אישור"
 
@@ -3185,7 +3185,7 @@ msgstr "בדיקת DNS והתחלת חתימה"
 msgid "Check every"
 msgstr "בדיקה כל"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Check now"
 msgstr "בדיקה עכשיו"
 
@@ -3471,7 +3471,7 @@ msgstr "נסגרות"
 msgid "Closing each conversation"
 msgstr "סוגר כל שיחה"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "CNAME record"
 msgstr "רשומת CNAME"
 
@@ -4723,7 +4723,7 @@ msgstr "מסמכים"
 msgid "Does it work with server-side rendering?"
 msgstr "האם זה עובד עם רינדור בצד השרת?"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Domain"
 msgstr "דומיין"
 
@@ -5139,9 +5139,9 @@ msgstr "סיום"
 msgid "English"
 msgstr "English"
 
-#: src/features/status/DomainCard.tsx
-msgid "Enter a domain like status.example.com."
-msgstr "הזינו דומיין כמו status.example.com."
+#: src/features/settings/OwnDomainCard.tsx
+msgid "Enter a domain like {example}."
+msgstr "הזינו דומיין כמו {example}."
 
 #: src/features/status/monitorErrors.ts
 msgid "Enter a host name or an IP address."
@@ -5781,7 +5781,7 @@ msgstr "העברה"
 msgid "Forwarding address"
 msgstr "כתובת העברה"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Found"
 msgstr "נמצא"
 
@@ -6238,11 +6238,11 @@ msgstr "מארח"
 msgid "Hosted by Yuva on its own address. Searched from the chat widget and the reply box. For support answers."
 msgstr "מתארחים ב-Yuva בכתובת משלהם. ניתן לחפש בהם מווידג׳ט הצ׳אט ומתיבת התשובה. לתשובות תמיכה."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Hostname"
 msgstr "שם מארח"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Hostname and certificate"
 msgstr "שם מארח ואישור"
 
@@ -7084,7 +7084,7 @@ msgstr "בדיקה אחרונה"
 msgid "Last checked"
 msgstr "נבדק לאחרונה"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Last checked {last}."
 msgstr "נבדק לאחרונה {last}."
 
@@ -7307,13 +7307,13 @@ msgstr "מקשר…"
 msgid "Links"
 msgstr "קישורים"
 
+#: src/features/settings/OwnDomainCard.tsx
+msgid "Links and feeds keep using the address on this server until the hostname and its certificate are both active."
+msgstr "קישורים והזנות ימשיכו להשתמש בכתובת בשרת הזה עד ששם המארח והאישור שלו יהיו פעילים שניהם."
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Links will point at this server’s link domain instead of your own. Spam filters look at link domains."
 msgstr "הקישורים יצביעו על דומיין הקישורים של השרת הזה במקום על שלך. מסנני ספאם בודקים דומייני קישורים."
-
-#: src/features/status/DomainCard.tsx
-msgid "Links, the feed and the badge keep using the address on this server until the hostname and its certificate are both active."
-msgstr "קישורים, הפיד והתג ימשיכו להשתמש בכתובת בשרת הזה עד ששם המארח והאישור שלו יהיו פעילים שניהם."
 
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/Overview.tsx
@@ -8159,13 +8159,13 @@ msgstr "הפרופיל שלי"
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/ProfileForm.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/setup/email/EmailLayout.tsx
 #: src/features/setup/SetupLayout.tsx
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/CreatePageDialog.tsx
-#: src/features/status/DomainCard.tsx
 #: src/features/status/MonitorDialog.tsx
 #: src/features/status/SettingsTab.tsx
 msgid "Name"
@@ -8221,8 +8221,8 @@ msgstr "דורש שולח"
 
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/text.ts
+#: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/ProductsPage.tsx
-#: src/features/status/DomainCard.tsx
 msgid "Needs attention"
 msgstr "דורש תשומת לב"
 
@@ -8519,7 +8519,7 @@ msgstr "הניסיון הבא"
 msgid "next attempt {when}"
 msgstr "ניסיון הבא {when}"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Next check {next}."
 msgstr "הבדיקה הבאה {next}."
 
@@ -9193,7 +9193,7 @@ msgstr "עדיין לא מחובר. הדף הזה מתעדכן כשתסיים ל
 msgid "Not delivered"
 msgstr "לא נמסר"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Not found"
 msgstr "לא נמצא"
 
@@ -10238,7 +10238,7 @@ msgstr "לאורך זמן"
 msgid "Overview"
 msgstr "סקירה כללית"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Own domain"
 msgstr "דומיין עצמאי"
 
@@ -10440,7 +10440,7 @@ msgid "Payload"
 msgstr "מטען"
 
 #: src/components/common/text.ts
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Pending"
 msgstr "ממתין"
 
@@ -10795,7 +10795,7 @@ msgstr "השמעת הצליל"
 msgid "Point the MX records at Yuva as the e-mail guide describes. Sync catches the mail that still reaches the old server meanwhile."
 msgstr "כוון את רשומות ה-MX אל Yuva כפי שמדריך האימייל מתאר. הסנכרון קולט בינתיים את הדואר שעדיין מגיע לשרת הישן."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Points to"
 msgstr "מצביע אל"
 
@@ -11444,9 +11444,9 @@ msgstr "תמונות מרוחקות יכולות לומר לשולח שפתחת 
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/Passkeys.tsx
 #: src/features/settings/webhooks/sections.tsx
-#: src/features/status/DomainCard.tsx
 #: src/features/status/MonitorHttpFields.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Remove"
@@ -11461,7 +11461,7 @@ msgid "Remove {0}"
 msgstr "הסרת {0}"
 
 #. placeholder {0}: d.domain
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Remove {0}?"
 msgstr "להסיר את {0}?"
 
@@ -11490,7 +11490,7 @@ msgstr "הסרת ערוץ"
 msgid "Remove condition {n}"
 msgstr "הסרת תנאי {n}"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Remove domain"
 msgstr "הסרת דומיין"
 
@@ -12989,7 +12989,7 @@ msgstr "הצגת התצוגה המקדימה"
 msgid "Show the reply time"
 msgstr "הצגת זמן התגובה"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Show this page on your own address instead of this server’s."
 msgstr "הציגו את העמוד הזה בכתובת שלכם במקום בכתובת של השרת הזה."
 
@@ -13455,7 +13455,7 @@ msgstr "התחלת שיחה"
 msgid "Start migration"
 msgstr "התחלת העברה"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Start over"
 msgstr "התחלה מחדש"
 
@@ -14190,7 +14190,7 @@ msgstr "ההיסטוריה מקובץ הייצוא מועתקת ל-Yuva."
 msgid "The history is copied and its mail now reaches Yuva."
 msgstr "ההיסטוריה הועתקה והדואר שלה מגיע עכשיו ל-Yuva."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The hostname is being set up. This takes a moment once the records are found."
 msgstr "שם המארח בהגדרה. זה לוקח רגע אחרי שהרשומות נמצאות."
 
@@ -14279,7 +14279,7 @@ msgid "The last check found no passing DKIM signature. Set up DKIM with your SMT
 msgstr "הבדיקה האחרונה לא מצאה חתימת DKIM שעוברת. הגדר DKIM אצל ספק ה-SMTP שלך, או הפעל את DKIM של Yuva לערוץ."
 
 #. placeholder {0}: d.problem
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The last check saw: {0}"
 msgstr "הבדיקה האחרונה ראתה: {0}"
 
@@ -14411,7 +14411,7 @@ msgstr "לתיבת הדואר האחרת אין ערוץ אימייל, ולכן 
 msgid "The page already sent 10 notices in the last hour"
 msgstr "הדף כבר שלח 10 הודעות בשעה האחרונה"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The page answers at"
 msgstr "העמוד עונה בכתובת"
 
@@ -14439,7 +14439,7 @@ msgstr "הדף לא מפורסם. רק הצוות שלכם רואה זאת."
 msgid "The page or the incident is not public"
 msgstr "הדף או האירוע אינם ציבוריים"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The page stops answering on this domain. Its address on this server keeps working."
 msgstr "העמוד יפסיק לענות בדומיין הזה. הכתובת שלו בשרת הזה ממשיכה לעבוד."
 
@@ -14519,19 +14519,19 @@ msgstr "הנמענים נקבעים כשהשליחה מתחילה: מי שנרש
 msgid "The record at {name} is published."
 msgstr "הרשומה ב-{name} פורסמה."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The records exist, but they do not point where Yuva needs them. Change them to match the ones below. Yuva looks again every 10 minutes."
 msgstr "הרשומות קיימות, אך אינן מצביעות למקום ש-Yuva צריך. שנו אותן כך שיתאימו לאלה שלמטה. Yuva בודק שוב כל 10 דקות."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The records have not been visible since {missing}. The domain is turned off after 3 days unless they come back."
 msgstr "הרשומות אינן נראות מאז {missing}. הדומיין יכובה אחרי 3 ימים אלא אם יחזרו."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The records were gone for 3 days, so the domain no longer shows this page and is not checked any more. Put the records back and start over."
 msgstr "הרשומות נעדרו 3 ימים, ולכן הדומיין כבר אינו מציג את העמוד הזה ואינו נבדק. החזירו את הרשומות והתחילו מחדש."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "The records were not found within 7 days, so the claim ended. Add the records below, then start over for 7 more days."
 msgstr "הרשומות לא נמצאו תוך 7 ימים, ולכן התביעה הסתיימה. הוסיפו את הרשומות שלמטה והתחילו מחדש ל-7 ימים נוספים."
 
@@ -15000,9 +15000,9 @@ msgstr "זה לא קובץ mbox ולא zip. העלה את קובץ ה-mbox עצ�
 msgid "This is not a CSV file. Save the spreadsheet as CSV and upload that."
 msgstr "זה לא קובץ CSV. שמור את הגיליון כ-CSV והעלה אותו."
 
-#: src/features/status/DomainCard.tsx
-msgid "This is not a domain this page can use. Use a name like status.example.com that is not one of this server’s own addresses."
-msgstr "העמוד הזה לא יכול להשתמש בדומיין הזה. השתמשו בשם כמו status.example.com שאינו אחת מכתובות השרת עצמו."
+#: src/features/settings/OwnDomainCard.tsx
+msgid "This is not a domain this page can use. Use a name like {example} that is not one of this server’s own addresses."
+msgstr "העמוד הזה לא יכול להשתמש בדומיין הזה. השתמשו בשם כמו {example} שאינו אחת מכתובות השרת עצמו."
 
 #: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/channels/sections.tsx
@@ -15112,7 +15112,7 @@ msgstr "הבקשה הזאת הסתיימה"
 msgid "This server does not offer imports from this kind of mailbox."
 msgstr "השרת הזה לא מציע ייבוא מסוג תיבת הדואר הזה."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "This server does not offer own domains. Ask its operator to turn them on."
 msgstr "השרת הזה אינו מציע דומיינים עצמאיים. בקשו מהמפעיל להפעיל אותם."
 
@@ -15409,7 +15409,7 @@ msgstr "הפעילו את מנויי הדוא״ל בהגדרות הדף כדי �
 msgid "Turn on for this device"
 msgstr "הפעלה במכשיר הזה"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Turned off"
 msgstr "כבוי"
 
@@ -15418,7 +15418,7 @@ msgstr "כבוי"
 msgid "Turned off by Yuva"
 msgstr "כובה על ידי Yuva"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "TXT record"
 msgstr "רשומת TXT"
 
@@ -15921,7 +15921,7 @@ msgid "value"
 msgstr "ערך"
 
 #: src/features/settings/channels/email/Deliverability.tsx
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Value"
 msgstr "ערך"
 
@@ -15941,7 +15941,7 @@ msgstr "ערכים נשמרים מוצפנים ולא מוצגים שוב. כד�
 msgid "Values of condition {n}, separated by commas"
 msgstr "ערכים של תנאי {n}, מופרדים בפסיקים"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Verified"
 msgstr "אומת"
 
@@ -16050,7 +16050,7 @@ msgstr "ביקורים באתרים שלך עם utm_campaign={campaign} מאז �
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/parts.tsx
 #: src/features/settings/channels/ChannelPage.tsx
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Waiting"
 msgstr "ממתין"
@@ -16082,7 +16082,7 @@ msgstr "ממתינים לאישור כתובת"
 msgid "Waiting for confirmation"
 msgstr "ממתינים לאישור כתובת"
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Waiting for DNS"
 msgstr "ממתין ל-DNS"
 
@@ -16118,11 +16118,11 @@ msgstr "ממתין למפעיל"
 msgid "Waiting for the provider's limit; continues at {time}."
 msgstr "ממתין למגבלה של הספק; ממשיך ב-{time}."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Waiting for the two DNS records below. Add them where you manage the domain; DNS changes can take a while to spread. Yuva looks every 10 minutes, and the claim ends if they are not found within 7 days."
 msgstr "ממתין לשתי רשומות ה-DNS שלמטה. הוסיפו אותן במקום שבו אתם מנהלים את הדומיין; שינויי DNS עשויים להתפשט לאט. Yuva בודק כל 10 דקות, והתביעה מסתיימת אם הן לא נמצאות תוך 7 ימים."
 
-#: src/features/status/DomainCard.tsx
+#: src/features/settings/OwnDomainCard.tsx
 msgid "Waiting for validation"
 msgstr "ממתין לאימות"
 
