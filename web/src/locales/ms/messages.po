@@ -1384,6 +1384,14 @@ msgstr "Monitor status turun"
 msgid "A subscription changed"
 msgstr "Langganan berubah"
 
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "A team gives its members the inboxes it covers. A conversation can go to a team as well as to a member."
+msgstr "Pasukan memberi ahlinya peti masuk yang diliputinya. Perbualan boleh ditugaskan kepada pasukan, bukan hanya kepada ahli."
+
+#: src/components/common/text.ts
+msgid "A team holds at most 500 members and 100 inboxes."
+msgstr "Satu pasukan boleh mempunyai paling banyak 500 ahli dan 100 peti masuk."
+
 #: src/features/issues/IssueDialog.tsx
 msgid "A team key such as ENG."
 msgstr "A team key such as ENG."
@@ -2291,6 +2299,10 @@ msgid "Another team address"
 msgstr "Alamat pasukan lain"
 
 #: src/components/common/text.ts
+msgid "Another team already has this name."
+msgstr "Pasukan lain sudah menggunakan nama ini."
+
+#: src/components/common/text.ts
 msgid "Another workspace on this server has already verified this domain."
 msgstr "Another workspace on this server has already verified this domain."
 
@@ -2338,6 +2350,10 @@ msgstr "Mana-mana negara"
 #: src/features/inbox/ChatList.tsx
 msgid "Any label"
 msgstr "Mana-mana label"
+
+#: src/features/inbox/ChatList.tsx
+msgid "Any team"
+msgstr "Mana-mana pasukan"
 
 #: src/features/setup/AddChannelStep.tsx
 msgid "Anyone on your site can write. Turn it off when only signed-in users may chat."
@@ -2564,6 +2580,11 @@ msgstr "Tugaskan (A)"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Assign or hand to a teammate"
 msgstr "Tugaskan atau serahkan kepada rakan sepasukan"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Assign to a team"
+msgstr "Tugaskan kepada pasukan"
 
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/HeaderActions.tsx
@@ -2825,6 +2846,7 @@ msgid "Besides openid, email and profile. Okta needs groups for group checks."
 msgstr "Besides openid, email and profile. Okta needs groups for group checks."
 
 #: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/teams/TeamDialog.tsx
 msgid "Billing"
 msgstr "Pengebilan"
 
@@ -4375,6 +4397,10 @@ msgstr "Cipta halaman status ({newKey})"
 msgid "Create status page for {product}"
 msgstr "Cipta halaman status untuk {product}"
 
+#: src/features/settings/teams/TeamDialog.tsx
+msgid "Create team"
+msgstr "Cipta pasukan"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Create the board"
 msgstr "Cipta papan"
@@ -4560,6 +4586,7 @@ msgstr "Prestasi merosot"
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
 #: src/features/status/SettingsTab.tsx
@@ -4680,6 +4707,10 @@ msgstr "Padam klien OAuth yang anda cipta untuk Yuva"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Delete the selected block"
 msgstr "Padam blok yang dipilih"
+
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "Delete the team {name}?"
+msgstr "Padam pasukan {name}?"
 
 #: src/features/settings/canned/CannedRepliesPage.tsx
 msgid "Delete this canned reply?"
@@ -4825,6 +4856,7 @@ msgid "Deny"
 msgstr "Tolak"
 
 #: src/features/issues/IssueDialog.tsx
+#: src/features/settings/teams/TeamDialog.tsx
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/SettingsTab.tsx
 msgid "Description"
@@ -5358,6 +5390,7 @@ msgstr "Masing-masing dengan semua mesej dan notanya"
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Edit"
@@ -5407,6 +5440,10 @@ msgstr "Sunting label"
 #: src/features/status/MonitorDialog.tsx
 msgid "Edit monitor"
 msgstr "Sunting monitor"
+
+#: src/features/settings/teams/TeamDialog.tsx
+msgid "Edit team"
+msgstr "Edit pasukan"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Edit the design"
@@ -5910,6 +5947,10 @@ msgstr "Tapis mengikut label"
 #: src/features/contact/ContactsPage.tsx
 msgid "Filter by product"
 msgstr "Tapis mengikut produk"
+
+#: src/features/inbox/ChatList.tsx
+msgid "Filter by team"
+msgstr "Tapis mengikut pasukan"
 
 #: src/features/inbox/SourceFilter.tsx
 msgid "Filter by type, site and broadcast"
@@ -6420,9 +6461,17 @@ msgstr "Menyambut perbualan baharu melalui e-mel, sekali bagi setiap kenalan dal
 msgid "Group"
 msgstr "Kumpulan"
 
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "Group members, such as billing or support, and give the group its inboxes in one place."
+msgstr "Kumpulkan ahli, contohnya pengebilan atau sokongan, dan beri kumpulan itu peti masuknya di satu tempat."
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Groups claim"
 msgstr "Groups claim"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Groups of members and the inboxes they cover"
+msgstr "Kumpulan ahli dan peti masuk yang diliputi"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/Growth.tsx
@@ -7038,6 +7087,10 @@ msgstr "Dalam Zoho Mail, buka Settings › Mail accounts › IMAP access dan hid
 msgid "Inbox"
 msgstr "Peti masuk"
 
+#: src/features/settings/teams/TeamDialog.tsx
+msgid "Inbox access"
+msgstr "Akses peti masuk"
+
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Inbox color"
 msgstr "Warna peti masuk"
@@ -7052,6 +7105,7 @@ msgstr "Peti masuk untuk {name}"
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/slack/SlackPage.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 msgid "Inboxes"
 msgstr "Peti masuk"
 
@@ -7353,6 +7407,10 @@ msgstr "Rekod persetujuannya dipadam bersamanya. Kerana mereka menyahlanggan, al
 #: src/features/status/ComponentsTab.tsx
 msgid "Its history is deleted. Incidents that named it no longer do."
 msgstr "Sejarahnya dipadam. Insiden yang menyebutnya tidak lagi menyebutnya."
+
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "Its members lose the inbox access the team gave them, and its conversations lose the team but keep their assignee."
+msgstr "Ahlinya hilang akses peti masuk yang diberikan pasukan, dan perbualannya hilang pasukan tetapi mengekalkan orang yang ditugaskan."
 
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/Composer.tsx
@@ -8341,6 +8399,8 @@ msgstr "Ahli"
 #: src/features/inbox/SidePanels.tsx
 #: src/features/settings/ProductsPage.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/teams/TeamDialog.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Members"
 msgstr "Ahli"
@@ -8757,6 +8817,10 @@ msgstr "Perbincangan saya"
 msgid "My profile"
 msgstr "Profil saya"
 
+#: src/features/inbox/ChatList.tsx
+msgid "My teams"
+msgstr "Pasukan saya"
+
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListForm.tsx
@@ -8774,6 +8838,7 @@ msgstr "Profil saya"
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/ProfileForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
+#: src/features/settings/teams/TeamDialog.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/setup/email/EmailLayout.tsx
 #: src/features/setup/SetupLayout.tsx
@@ -9074,6 +9139,11 @@ msgstr "Halaman status baharu"
 #: src/features/broadcasts/Import.tsx
 msgid "New subscribers added"
 msgstr "Pelanggan baharu ditambah"
+
+#: src/features/settings/teams/TeamDialog.tsx
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "New team"
+msgstr "Pasukan baharu"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "New update · {stage}"
@@ -9663,9 +9733,21 @@ msgstr "Belum ada pelanggan. Pelawat melanggan di halaman status, atau anda bole
 msgid "No support address"
 msgstr "Tiada alamat sokongan"
 
+#: src/features/conversation/HeaderActions.tsx
+msgid "No team"
+msgstr "Tiada pasukan"
+
+#: src/features/inbox/ChatList.tsx
+msgid "No team covers all the selected inboxes."
+msgstr "Tiada pasukan meliputi semua peti masuk yang dipilih."
+
 #: src/features/conversation/messages/MessageActions.tsx
 msgid "No teammate can see this inbox"
 msgstr "Tiada rakan sepasukan boleh melihat peti masuk ini"
+
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "No teams yet"
+msgstr "Belum ada pasukan"
 
 #: src/features/migrations/parts.tsx
 msgid "No test message has reached Yuva by the new route yet. If you finish now, mail that still goes only to {provider} is not copied. Yuva's token is deleted."
@@ -10027,6 +10109,10 @@ msgstr "Belum ada apa ditambah. Fail dibaca, setiap domain ditanya sama ada ia m
 #: src/features/inbox/ChatList.tsx
 msgid "Nothing is assigned to you."
 msgstr "Tiada apa ditugaskan kepada anda."
+
+#: src/features/inbox/ChatList.tsx
+msgid "Nothing is assigned to your teams."
+msgstr "Tiada apa-apa ditugaskan kepada pasukan anda."
 
 #: src/features/inbox/ChatList.tsx
 msgid "Nothing is closed yet."
@@ -12313,6 +12399,11 @@ msgstr "Alih keluar mesej atau nota yang anda klik"
 msgid "Remove the provider?"
 msgstr "Remove the provider?"
 
+#: src/features/conversation/HeaderActions.tsx
+#: src/features/inbox/ChatList.tsx
+msgid "Remove the team"
+msgstr "Alih keluar pasukan"
+
 #: src/features/settings/channels/sections.tsx
 msgid "Remove this channel?"
 msgstr "Alih keluar saluran ini?"
@@ -12975,6 +13066,7 @@ msgstr "Sabtu"
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/slack/SlackPage.tsx
+#: src/features/settings/teams/TeamDialog.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/status/ComponentDialogs.tsx
@@ -14822,18 +14914,28 @@ msgstr "Semakan TCP"
 #: src/app/TeamMenu.tsx
 #: src/components/common/DiscussionAuthor.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/conversation/HeaderActions.tsx
 #: src/features/conversation/History.tsx
 #: src/features/docs/discussions/parts.tsx
 #: src/features/home/HomePage.tsx
+#: src/features/inbox/ChatList.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Team"
 msgstr "Pasukan"
 
+#: src/features/conversation/HeaderActions.tsx
+msgid "Team (M)"
+msgstr "Pasukan (M)"
+
 #: src/features/migrations/MapStep.tsx
 msgid "Team addresses"
 msgstr "Alamat pasukan"
+
+#: src/features/inbox/ChatList.tsx
+msgid "Team changed"
+msgstr "Pasukan diubah"
 
 #: src/features/settings/channels/app/PushSection.tsx
 msgid "Team ID"
@@ -14866,6 +14968,14 @@ msgstr "Pasukan sekarang"
 #: src/features/team/TeamPage.tsx
 msgid "teammate@company.com"
 msgstr "teammate@company.com"
+
+#: src/app/Palette.tsx
+#: src/features/conversation/HeaderActions.tsx
+#: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/webhooks/events.tsx
+msgid "Teams"
+msgstr "Pasukan"
 
 #: src/features/status/StatusPages.tsx
 msgid "Tell your customers whether your product works. Each product gets one page, where you open incidents, plan maintenance and set the state of each component."
@@ -16304,6 +16414,10 @@ msgstr "Tapak ini tidak dibenarkan menggunakan saluran dokumentasi ini."
 msgid "This subscription is no longer waiting for confirmation."
 msgstr "Langganan ini tidak lagi menunggu pengesahan."
 
+#: src/components/common/text.ts
+msgid "This team does not cover the conversation's inbox."
+msgstr "Pasukan ini tidak meliputi peti masuk perbualan."
+
 #: src/features/status/Notices.tsx
 msgid "This was a closing notice and no earlier notice was sent, so nobody had heard of the incident"
 msgstr "Ini ialah notis penutup dan tiada notis terdahulu dihantar, jadi tiada sesiapa yang tahu tentang insiden itu"
@@ -16355,6 +16469,10 @@ msgstr "Utas yang hanya mengandungi mel pasukan anda"
 #: src/features/migrations/ChooseStep.tsx
 msgid "Threads whose last message is on or after"
 msgstr "Utas yang mesej terakhirnya pada atau selepas"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Through {through}"
+msgstr "Melalui {through}"
 
 #: src/features/broadcasts/Composer.tsx
 msgid "through its own broadcast account"

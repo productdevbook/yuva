@@ -10,6 +10,7 @@ export const SHORTCUTS = {
   attach: "f",
   snooze: "s",
   hand: "a",
+  assignTeam: "M",
   labels: "l",
   progress: "o",
   close: "e",
@@ -267,6 +268,7 @@ export function ShortcutSheet({
       title: t`This conversation`,
       items: [
         [k(SHORTCUTS.hand), t`Assign or hand to a teammate`],
+        [k(SHORTCUTS.assignTeam), t`Assign to a team`],
         [k(SHORTCUTS.snooze), t`Snooze`],
         [k(SHORTCUTS.labels), t`Labels`],
         [k(SHORTCUTS.progress), t`Set the feedback progress`],

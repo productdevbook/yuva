@@ -1,5 +1,6 @@
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
+import { patchConversation } from "@/features/conversation/queries"
 import { api, unwrap, type ConversationBulkUpdate, type ConversationKind, type ConversationListItem } from "@/lib/api"
 import { keys, type ConversationFilters, type DraftFilters } from "@/lib/keys"
 import { applyEvent } from "@/lib/live"
@@ -50,6 +51,22 @@ export function useBulkUpdateConversations() {
       if (!isLive(live.ws)) {
         for (const c of data.updated) void qc.invalidateQueries({ queryKey: keys.messages(live.ws, c.id) })
       }
+    },
+  })
+}
+
+export function useBulkTeam() {
+  const qc = useQueryClient()
+  const live = useLiveContext()
+  return useMutation({
+    mutationFn: async ({ ids, teamId }: { ids: string[]; teamId: string | null }) => {
+      const results = await Promise.allSettled(ids.map((id) => patchConversation(id, { team_id: teamId })))
+      for (const r of results) {
+        if (r.status === "fulfilled") applyEvent(qc, live, { type: "conversation.updated", data: r.value })
+      }
+      const failed = results.find((r): r is PromiseRejectedResult => r.status === "rejected")
+      if (failed) throw failed.reason
+      return results.length
     },
   })
 }

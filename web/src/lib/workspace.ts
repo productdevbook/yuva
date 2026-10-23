@@ -72,6 +72,29 @@ export function useCannedReplies() {
   })
 }
 
+export function useMacros() {
+  const { workspaceId: ws } = useSession()
+  return useQuery({
+    queryKey: keys.macros(ws),
+    queryFn: () => unwrap(api.GET("/v1/macros")).then((r) => r.items),
+    staleTime: 60_000,
+  })
+}
+
+export function useTeams() {
+  const { workspaceId: ws } = useSession()
+  return useQuery({
+    queryKey: keys.teams(ws),
+    queryFn: () => unwrap(api.GET("/v1/teams")).then((r) => r.items),
+    staleTime: 60_000,
+  })
+}
+
+export function useMyTeams() {
+  const { membership } = useSession()
+  return (useTeams().data ?? []).filter((team) => team.member_ids.includes(membership.member_id))
+}
+
 export function useChannel(id: string | undefined) {
   const { workspaceId: ws } = useSession()
   return useQuery({

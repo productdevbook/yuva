@@ -17,6 +17,7 @@ type GroupId =
   | "messages"
   | "feedback"
   | "contacts"
+  | "teams"
   | "drafts"
   | "discussions"
   | "lists"
@@ -30,6 +31,7 @@ const GROUPS: [GroupId, WebhookEventType[]][] = [
   ["messages", ["message.created"]],
   ["feedback", ["feedback.created"]],
   ["contacts", ["contact.updated", "contact.deleted"]],
+  ["teams", ["team.created", "team.updated", "team.deleted"]],
   ["drafts", ["draft.created", "draft.updated", "draft.deleted"]],
   ["discussions", ["discussion.created", "discussion.post_created", "discussion.answered", "discussion.updated"]],
   ["lists", ["subscription.created", "subscription.updated"]],
@@ -99,6 +101,7 @@ export function EventPicker({
     messages: t`Messages`,
     feedback: t`Feedback`,
     contacts: t`Contacts`,
+    teams: t`Teams`,
     drafts: t`Drafts`,
     discussions: t`Discussions`,
     lists: t`Lists`,

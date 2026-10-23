@@ -424,6 +424,9 @@ export function useErrorText() {
     if (err.code === "email_no_sender")
       return t`The e-mail channel is a catch-all without a From address, so it has no address to send this conversation from. Set one in the inbox settings.`
     if (err.code === "not_redactable") return t`Drafts and timeline events cannot be removed.`
+    if (err.code === "team_taken") return t`Another team already has this name.`
+    if (err.code === "team_limit") return t`A team holds at most 500 members and 100 inboxes.`
+    if (err.code === "team_access") return t`This team does not cover the conversation's inbox.`
     if (err.code === "already_discussed") return t`This conversation is already a discussion.`
     if (err.code === "no_discussion_channel")
       return t`No chat channel of this inbox allows the page's site with discussions on. Turn discussions on in the inbox settings.`

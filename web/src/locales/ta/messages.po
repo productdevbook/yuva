@@ -1384,6 +1384,14 @@ msgstr "ஒரு நிலைக் கண்காணிப்பி செய
 msgid "A subscription changed"
 msgstr "ஒரு சந்தா மாறியது"
 
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "A team gives its members the inboxes it covers. A conversation can go to a team as well as to a member."
+msgstr "குழு தான் கவனிக்கும் இன்பாக்ஸ்களை உறுப்பினர்களுக்கு வழங்குகிறது. உரையாடலை உறுப்பினருக்கு மட்டுமின்றி குழுவுக்கும் ஒதுக்கலாம்."
+
+#: src/components/common/text.ts
+msgid "A team holds at most 500 members and 100 inboxes."
+msgstr "ஒரு குழுவில் அதிகபட்சம் 500 உறுப்பினர்களும் 100 இன்பாக்ஸ்களும் இருக்கலாம்."
+
 #: src/features/issues/IssueDialog.tsx
 msgid "A team key such as ENG."
 msgstr "A team key such as ENG."
@@ -2291,6 +2299,10 @@ msgid "Another team address"
 msgstr "மற்றொரு குழு முகவரி"
 
 #: src/components/common/text.ts
+msgid "Another team already has this name."
+msgstr "வேறொரு குழுவுக்கு ஏற்கனவே இந்தப் பெயர் உள்ளது."
+
+#: src/components/common/text.ts
 msgid "Another workspace on this server has already verified this domain."
 msgstr "Another workspace on this server has already verified this domain."
 
@@ -2338,6 +2350,10 @@ msgstr "எந்த நாடும்"
 #: src/features/inbox/ChatList.tsx
 msgid "Any label"
 msgstr "ஏதேனும் லேபிள்"
+
+#: src/features/inbox/ChatList.tsx
+msgid "Any team"
+msgstr "எந்தக் குழுவும்"
 
 #: src/features/setup/AddChannelStep.tsx
 msgid "Anyone on your site can write. Turn it off when only signed-in users may chat."
@@ -2564,6 +2580,11 @@ msgstr "ஒதுக்கு (A)"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Assign or hand to a teammate"
 msgstr "குழு உறுப்பினருக்கு ஒதுக்கு அல்லது ஒப்படை"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Assign to a team"
+msgstr "குழுவுக்கு ஒதுக்கு"
 
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/HeaderActions.tsx
@@ -2825,6 +2846,7 @@ msgid "Besides openid, email and profile. Okta needs groups for group checks."
 msgstr "Besides openid, email and profile. Okta needs groups for group checks."
 
 #: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/teams/TeamDialog.tsx
 msgid "Billing"
 msgstr "கட்டணம்"
 
@@ -4375,6 +4397,10 @@ msgstr "நிலைப் பக்கத்தை உருவாக்கு 
 msgid "Create status page for {product}"
 msgstr "{product}க்கான நிலைப் பக்கத்தை உருவாக்கு"
 
+#: src/features/settings/teams/TeamDialog.tsx
+msgid "Create team"
+msgstr "குழுவை உருவாக்கு"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Create the board"
 msgstr "பலகையை உருவாக்கு"
@@ -4560,6 +4586,7 @@ msgstr "குறைந்த செயல்திறன்"
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
 #: src/features/status/SettingsTab.tsx
@@ -4680,6 +4707,10 @@ msgstr "Yuva-வுக்காக நீங்கள் உருவாக்�
 #: src/components/common/ShortcutSheet.tsx
 msgid "Delete the selected block"
 msgstr "தேர்ந்தெடுத்த தொகுதியை நீக்கு"
+
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "Delete the team {name}?"
+msgstr "{name} குழுவை நீக்கவா?"
 
 #: src/features/settings/canned/CannedRepliesPage.tsx
 msgid "Delete this canned reply?"
@@ -4825,6 +4856,7 @@ msgid "Deny"
 msgstr "மறு"
 
 #: src/features/issues/IssueDialog.tsx
+#: src/features/settings/teams/TeamDialog.tsx
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/SettingsTab.tsx
 msgid "Description"
@@ -5358,6 +5390,7 @@ msgstr "ஒவ்வொன்றும் அதன் அனைத்துச�
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Edit"
@@ -5407,6 +5440,10 @@ msgstr "லேபிளைத் திருத்து"
 #: src/features/status/MonitorDialog.tsx
 msgid "Edit monitor"
 msgstr "கண்காணிப்பைத் திருத்து"
+
+#: src/features/settings/teams/TeamDialog.tsx
+msgid "Edit team"
+msgstr "குழுவைத் திருத்து"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Edit the design"
@@ -5910,6 +5947,10 @@ msgstr "லேபிள் மூலம் வடிகட்டு"
 #: src/features/contact/ContactsPage.tsx
 msgid "Filter by product"
 msgstr "தயாரிப்பு மூலம் வடிகட்டு"
+
+#: src/features/inbox/ChatList.tsx
+msgid "Filter by team"
+msgstr "குழுவால் வடிகட்டு"
 
 #: src/features/inbox/SourceFilter.tsx
 msgid "Filter by type, site and broadcast"
@@ -6420,9 +6461,17 @@ msgstr "புதிய உரையாடல்களை மின்னஞ்�
 msgid "Group"
 msgstr "குழு"
 
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "Group members, such as billing or support, and give the group its inboxes in one place."
+msgstr "பில்லிங் அல்லது ஆதரவு போன்று உறுப்பினர்களை குழுவாக்கி, குழுவின் இன்பாக்ஸ்களை ஒரே இடத்தில் அமைக்கவும்."
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Groups claim"
 msgstr "Groups claim"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Groups of members and the inboxes they cover"
+msgstr "உறுப்பினர் குழுக்களும் அவை கவனிக்கும் இன்பாக்ஸ்களும்"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/Growth.tsx
@@ -7038,6 +7087,10 @@ msgstr "Zoho Mail-இல் Settings › Mail accounts › IMAP access திற
 msgid "Inbox"
 msgstr "இன்பாக்ஸ்"
 
+#: src/features/settings/teams/TeamDialog.tsx
+msgid "Inbox access"
+msgstr "இன்பாக்ஸ் அணுகல்"
+
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Inbox color"
 msgstr "இன்பாக்ஸ் நிறம்"
@@ -7052,6 +7105,7 @@ msgstr "{name}-க்கான இன்பாக்ஸ்"
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/slack/SlackPage.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 msgid "Inboxes"
 msgstr "இன்பாக்ஸ்கள்"
 
@@ -7353,6 +7407,10 @@ msgstr "இதன் ஒப்புதல் பதிவு இதனுடன
 #: src/features/status/ComponentsTab.tsx
 msgid "Its history is deleted. Incidents that named it no longer do."
 msgstr "அதன் வரலாறு நீக்கப்படும். அதைக் குறிப்பிட்ட சம்பவங்கள் இனி குறிப்பிடாது."
+
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "Its members lose the inbox access the team gave them, and its conversations lose the team but keep their assignee."
+msgstr "அதன் உறுப்பினர்கள் குழு வழங்கிய இன்பாக்ஸ் அணுகலை இழக்கிறார்கள்; உரையாடல்கள் குழுவை இழக்கும், ஆனால் பொறுப்பாளர் தொடர்வார்."
 
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/Composer.tsx
@@ -8341,6 +8399,8 @@ msgstr "உறுப்பினர்"
 #: src/features/inbox/SidePanels.tsx
 #: src/features/settings/ProductsPage.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/teams/TeamDialog.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Members"
 msgstr "உறுப்பினர்கள்"
@@ -8757,6 +8817,10 @@ msgstr "என் விவாதங்கள்"
 msgid "My profile"
 msgstr "என் சுயவிவரம்"
 
+#: src/features/inbox/ChatList.tsx
+msgid "My teams"
+msgstr "என் குழுக்கள்"
+
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListForm.tsx
@@ -8774,6 +8838,7 @@ msgstr "என் சுயவிவரம்"
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/ProfileForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
+#: src/features/settings/teams/TeamDialog.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/setup/email/EmailLayout.tsx
 #: src/features/setup/SetupLayout.tsx
@@ -9074,6 +9139,11 @@ msgstr "புதிய நிலைப் பக்கம்"
 #: src/features/broadcasts/Import.tsx
 msgid "New subscribers added"
 msgstr "புதிய சந்தாதாரர்கள் சேர்க்கப்பட்டனர்"
+
+#: src/features/settings/teams/TeamDialog.tsx
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "New team"
+msgstr "புதிய குழு"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "New update · {stage}"
@@ -9663,9 +9733,21 @@ msgstr "சந்தாதாரர்கள் இன்னும் இல்�
 msgid "No support address"
 msgstr "ஆதரவு முகவரி இல்லை"
 
+#: src/features/conversation/HeaderActions.tsx
+msgid "No team"
+msgstr "குழு இல்லை"
+
+#: src/features/inbox/ChatList.tsx
+msgid "No team covers all the selected inboxes."
+msgstr "தேர்ந்தெடுத்த எல்லா இன்பாக்ஸ்களையும் எந்தக் குழுவும் கவனிக்கவில்லை."
+
 #: src/features/conversation/messages/MessageActions.tsx
 msgid "No teammate can see this inbox"
 msgstr "எந்தக் குழு உறுப்பினரும் இந்த இன்பாக்ஸைப் பார்க்க முடியாது"
+
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "No teams yet"
+msgstr "இன்னும் குழுக்கள் இல்லை"
 
 #: src/features/migrations/parts.tsx
 msgid "No test message has reached Yuva by the new route yet. If you finish now, mail that still goes only to {provider} is not copied. Yuva's token is deleted."
@@ -10027,6 +10109,10 @@ msgstr "இன்னும் எதுவும் சேர்க்கப்�
 #: src/features/inbox/ChatList.tsx
 msgid "Nothing is assigned to you."
 msgstr "உங்களுக்கு எதுவும் ஒதுக்கப்படவில்லை."
+
+#: src/features/inbox/ChatList.tsx
+msgid "Nothing is assigned to your teams."
+msgstr "உங்கள் குழுக்களுக்கு எதுவும் ஒதுக்கப்படவில்லை."
 
 #: src/features/inbox/ChatList.tsx
 msgid "Nothing is closed yet."
@@ -12313,6 +12399,11 @@ msgstr "நீங்கள் கிளிக் செய்த செய்த
 msgid "Remove the provider?"
 msgstr "Remove the provider?"
 
+#: src/features/conversation/HeaderActions.tsx
+#: src/features/inbox/ChatList.tsx
+msgid "Remove the team"
+msgstr "குழுவை நீக்கு"
+
 #: src/features/settings/channels/sections.tsx
 msgid "Remove this channel?"
 msgstr "இந்தச் சேனலை அகற்றவா?"
@@ -12975,6 +13066,7 @@ msgstr "சனிக்கிழமை"
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/slack/SlackPage.tsx
+#: src/features/settings/teams/TeamDialog.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/status/ComponentDialogs.tsx
@@ -14822,18 +14914,28 @@ msgstr "TCP சோதனை"
 #: src/app/TeamMenu.tsx
 #: src/components/common/DiscussionAuthor.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/conversation/HeaderActions.tsx
 #: src/features/conversation/History.tsx
 #: src/features/docs/discussions/parts.tsx
 #: src/features/home/HomePage.tsx
+#: src/features/inbox/ChatList.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Team"
 msgstr "குழு"
 
+#: src/features/conversation/HeaderActions.tsx
+msgid "Team (M)"
+msgstr "குழு (M)"
+
 #: src/features/migrations/MapStep.tsx
 msgid "Team addresses"
 msgstr "குழு முகவரிகள்"
+
+#: src/features/inbox/ChatList.tsx
+msgid "Team changed"
+msgstr "குழு மாற்றப்பட்டது"
 
 #: src/features/settings/channels/app/PushSection.tsx
 msgid "Team ID"
@@ -14866,6 +14968,14 @@ msgstr "இப்போது குழு"
 #: src/features/team/TeamPage.tsx
 msgid "teammate@company.com"
 msgstr "teammate@company.com"
+
+#: src/app/Palette.tsx
+#: src/features/conversation/HeaderActions.tsx
+#: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/webhooks/events.tsx
+msgid "Teams"
+msgstr "குழுக்கள்"
 
 #: src/features/status/StatusPages.tsx
 msgid "Tell your customers whether your product works. Each product gets one page, where you open incidents, plan maintenance and set the state of each component."
@@ -16304,6 +16414,10 @@ msgstr "இந்தத் தளம் இந்த ஆவணச் சேன�
 msgid "This subscription is no longer waiting for confirmation."
 msgstr "இந்தச் சந்தா இனி உறுதிப்படுத்தலுக்காகக் காத்திருக்கவில்லை."
 
+#: src/components/common/text.ts
+msgid "This team does not cover the conversation's inbox."
+msgstr "இந்தக் குழு உரையாடலின் இன்பாக்ஸைக் கவனிக்கவில்லை."
+
 #: src/features/status/Notices.tsx
 msgid "This was a closing notice and no earlier notice was sent, so nobody had heard of the incident"
 msgstr "இது முடிவு அறிவிப்பு, இதற்கு முன் எந்த அறிவிப்பும் அனுப்பப்படவில்லை; எனவே இந்தச் சம்பவம் பற்றி யாருக்கும் தெரியாது"
@@ -16355,6 +16469,10 @@ msgstr "உங்கள் குழுவின் அஞ்சல் மட்
 #: src/features/migrations/ChooseStep.tsx
 msgid "Threads whose last message is on or after"
 msgstr "கடைசிச் செய்தி இந்தத் தேதி அல்லது அதற்குப் பிறகு உள்ள இழைகள்"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Through {through}"
+msgstr "{through} வழியாக"
 
 #: src/features/broadcasts/Composer.tsx
 msgid "through its own broadcast account"

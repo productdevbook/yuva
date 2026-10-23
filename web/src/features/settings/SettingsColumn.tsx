@@ -12,6 +12,7 @@ import {
   PlugIcon,
   PlusIcon,
   QuoteIcon,
+  UsersRoundIcon,
   ScrollTextIcon,
   ShieldCheckIcon,
   TagIcon,
@@ -28,7 +29,7 @@ import { Page, RowIcon, RowText } from "@/features/settings/ui"
 import { api, unwrap } from "@/lib/api"
 import { keys } from "@/lib/keys"
 import { useSession } from "@/lib/session"
-import { useCannedReplies, useInboxes, useLabels, useMembers } from "@/lib/workspace"
+import { useCannedReplies, useInboxes, useLabels, useMembers, useTeams } from "@/lib/workspace"
 
 const WIDE = [
   "/settings/api-keys",
@@ -113,6 +114,7 @@ export function SettingsColumn() {
   const members = useMembers().data
   const canned = useCannedReplies().data
   const labels = useLabels().data
+  const teams = useTeams().data
   const apiKeys = useQuery({
     queryKey: keys.apiKeys(ws),
     queryFn: () => unwrap(api.GET("/v1/api-keys")).then((r) => r.items),
@@ -188,6 +190,17 @@ export function SettingsColumn() {
           </RowIcon>
           <RowText title={<Trans>Canned replies</Trans>} detail={<Trans>What you write often</Trans>} />
         </NavRow>
+        {canManage && (
+          <NavRow to="/settings/teams" value={list(teams?.length)}>
+            <RowIcon>
+              <UsersRoundIcon />
+            </RowIcon>
+            <RowText
+              title={<Trans>Teams</Trans>}
+              detail={<Trans>Groups of members and the inboxes they cover</Trans>}
+            />
+          </NavRow>
+        )}
         <NavRow to="/settings/labels" value={list(labels?.length)}>
           <RowIcon>
             <TagIcon />

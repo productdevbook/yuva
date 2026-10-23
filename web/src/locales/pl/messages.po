@@ -1384,6 +1384,14 @@ msgstr "Monitor statusu przestał działać"
 msgid "A subscription changed"
 msgstr "Zmieniła się subskrypcja"
 
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "A team gives its members the inboxes it covers. A conversation can go to a team as well as to a member."
+msgstr "Zespół daje swoim członkom skrzynki, które obejmuje. Rozmowę można przypisać do zespołu, a także do członka."
+
+#: src/components/common/text.ts
+msgid "A team holds at most 500 members and 100 inboxes."
+msgstr "Zespół może mieć najwyżej 500 członków i 100 skrzynek."
+
 #: src/features/issues/IssueDialog.tsx
 msgid "A team key such as ENG."
 msgstr "A team key such as ENG."
@@ -2291,6 +2299,10 @@ msgid "Another team address"
 msgstr "Inny adres zespołu"
 
 #: src/components/common/text.ts
+msgid "Another team already has this name."
+msgstr "Inny zespół ma już tę nazwę."
+
+#: src/components/common/text.ts
 msgid "Another workspace on this server has already verified this domain."
 msgstr "Another workspace on this server has already verified this domain."
 
@@ -2338,6 +2350,10 @@ msgstr "Dowolny kraj"
 #: src/features/inbox/ChatList.tsx
 msgid "Any label"
 msgstr "Dowolna etykieta"
+
+#: src/features/inbox/ChatList.tsx
+msgid "Any team"
+msgstr "Dowolny zespół"
 
 #: src/features/setup/AddChannelStep.tsx
 msgid "Anyone on your site can write. Turn it off when only signed-in users may chat."
@@ -2564,6 +2580,11 @@ msgstr "Przypisz (A)"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Assign or hand to a teammate"
 msgstr "Przypisz lub przekaż koledze"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Assign to a team"
+msgstr "Przypisz do zespołu"
 
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/HeaderActions.tsx
@@ -2825,6 +2846,7 @@ msgid "Besides openid, email and profile. Okta needs groups for group checks."
 msgstr "Besides openid, email and profile. Okta needs groups for group checks."
 
 #: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/teams/TeamDialog.tsx
 msgid "Billing"
 msgstr "Rozliczenia"
 
@@ -4375,6 +4397,10 @@ msgstr "Utwórz stronę statusu ({newKey})"
 msgid "Create status page for {product}"
 msgstr "Utwórz stronę statusu dla {product}"
 
+#: src/features/settings/teams/TeamDialog.tsx
+msgid "Create team"
+msgstr "Utwórz zespół"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Create the board"
 msgstr "Utwórz tablicę"
@@ -4560,6 +4586,7 @@ msgstr "Obniżona wydajność"
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
 #: src/features/status/SettingsTab.tsx
@@ -4680,6 +4707,10 @@ msgstr "Usuń klienta OAuth utworzonego dla Yuva"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Delete the selected block"
 msgstr "Usuń zaznaczony blok"
+
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "Delete the team {name}?"
+msgstr "Usunąć zespół {name}?"
 
 #: src/features/settings/canned/CannedRepliesPage.tsx
 msgid "Delete this canned reply?"
@@ -4825,6 +4856,7 @@ msgid "Deny"
 msgstr "Odmów"
 
 #: src/features/issues/IssueDialog.tsx
+#: src/features/settings/teams/TeamDialog.tsx
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/SettingsTab.tsx
 msgid "Description"
@@ -5358,6 +5390,7 @@ msgstr "Każda ze wszystkimi wiadomościami i notatkami"
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Edit"
@@ -5407,6 +5440,10 @@ msgstr "Edytuj etykietę"
 #: src/features/status/MonitorDialog.tsx
 msgid "Edit monitor"
 msgstr "Edytuj monitor"
+
+#: src/features/settings/teams/TeamDialog.tsx
+msgid "Edit team"
+msgstr "Edytuj zespół"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Edit the design"
@@ -5910,6 +5947,10 @@ msgstr "Filtruj wg etykiety"
 #: src/features/contact/ContactsPage.tsx
 msgid "Filter by product"
 msgstr "Filtruj wg produktu"
+
+#: src/features/inbox/ChatList.tsx
+msgid "Filter by team"
+msgstr "Filtruj według zespołu"
 
 #: src/features/inbox/SourceFilter.tsx
 msgid "Filter by type, site and broadcast"
@@ -6420,9 +6461,17 @@ msgstr "Wita nowe rozmowy e-mailem, raz na kontakt w ramach interwału. Nigdy ni
 msgid "Group"
 msgstr "Grupa"
 
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "Group members, such as billing or support, and give the group its inboxes in one place."
+msgstr "Grupuj członków, na przykład rozliczenia lub wsparcie, i nadaj grupie jej skrzynki w jednym miejscu."
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Groups claim"
 msgstr "Groups claim"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Groups of members and the inboxes they cover"
+msgstr "Grupy członków i skrzynki, które obejmują"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/Growth.tsx
@@ -7038,6 +7087,10 @@ msgstr "W Zoho Mail otwórz Settings › Mail accounts › IMAP access i włącz
 msgid "Inbox"
 msgstr "Skrzynka"
 
+#: src/features/settings/teams/TeamDialog.tsx
+msgid "Inbox access"
+msgstr "Dostęp do skrzynek"
+
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Inbox color"
 msgstr "Kolor skrzynki"
@@ -7052,6 +7105,7 @@ msgstr "Skrzynka dla {name}"
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/slack/SlackPage.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 msgid "Inboxes"
 msgstr "Skrzynki"
 
@@ -7353,6 +7407,10 @@ msgstr "Jej rekord zgody zostaje usunięty razem z nią. Ponieważ zrezygnowali,
 #: src/features/status/ComponentsTab.tsx
 msgid "Its history is deleted. Incidents that named it no longer do."
 msgstr "Jego historia zostaje usunięta. Incydenty, które go wymieniały, już tego nie robią."
+
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "Its members lose the inbox access the team gave them, and its conversations lose the team but keep their assignee."
+msgstr "Jego członkowie tracą dostęp do skrzynek nadany przez zespół, a rozmowy tracą zespół, ale zachowują osobę przypisaną."
 
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/Composer.tsx
@@ -8341,6 +8399,8 @@ msgstr "Członek"
 #: src/features/inbox/SidePanels.tsx
 #: src/features/settings/ProductsPage.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/teams/TeamDialog.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Members"
 msgstr "Członkowie"
@@ -8757,6 +8817,10 @@ msgstr "Moje dyskusje"
 msgid "My profile"
 msgstr "Mój profil"
 
+#: src/features/inbox/ChatList.tsx
+msgid "My teams"
+msgstr "Moje zespoły"
+
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListForm.tsx
@@ -8774,6 +8838,7 @@ msgstr "Mój profil"
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/ProfileForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
+#: src/features/settings/teams/TeamDialog.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/setup/email/EmailLayout.tsx
 #: src/features/setup/SetupLayout.tsx
@@ -9074,6 +9139,11 @@ msgstr "Nowa strona statusu"
 #: src/features/broadcasts/Import.tsx
 msgid "New subscribers added"
 msgstr "Dodano nowych subskrybentów"
+
+#: src/features/settings/teams/TeamDialog.tsx
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "New team"
+msgstr "Nowy zespół"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "New update · {stage}"
@@ -9663,9 +9733,21 @@ msgstr "Brak subskrybentów. Odwiedzający zapisują się na stronie statusu, a 
 msgid "No support address"
 msgstr "Brak adresu obsługi"
 
+#: src/features/conversation/HeaderActions.tsx
+msgid "No team"
+msgstr "Brak zespołu"
+
+#: src/features/inbox/ChatList.tsx
+msgid "No team covers all the selected inboxes."
+msgstr "Żaden zespół nie obejmuje wszystkich wybranych skrzynek."
+
 #: src/features/conversation/messages/MessageActions.tsx
 msgid "No teammate can see this inbox"
 msgstr "Żaden kolega nie widzi tej skrzynki"
+
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "No teams yet"
+msgstr "Brak zespołów"
 
 #: src/features/migrations/parts.tsx
 msgid "No test message has reached Yuva by the new route yet. If you finish now, mail that still goes only to {provider} is not copied. Yuva's token is deleted."
@@ -10027,6 +10109,10 @@ msgstr "Nic nie jest jeszcze dodawane. Plik jest czytany, każda domena jest pyt
 #: src/features/inbox/ChatList.tsx
 msgid "Nothing is assigned to you."
 msgstr "Nic nie jest do Ciebie przypisane."
+
+#: src/features/inbox/ChatList.tsx
+msgid "Nothing is assigned to your teams."
+msgstr "Nic nie jest przypisane do Twoich zespołów."
 
 #: src/features/inbox/ChatList.tsx
 msgid "Nothing is closed yet."
@@ -12313,6 +12399,11 @@ msgstr "Usuń wiadomość lub notatkę, którą kliknięto"
 msgid "Remove the provider?"
 msgstr "Remove the provider?"
 
+#: src/features/conversation/HeaderActions.tsx
+#: src/features/inbox/ChatList.tsx
+msgid "Remove the team"
+msgstr "Usuń zespół"
+
 #: src/features/settings/channels/sections.tsx
 msgid "Remove this channel?"
 msgstr "Usunąć ten kanał?"
@@ -12975,6 +13066,7 @@ msgstr "Sobota"
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/slack/SlackPage.tsx
+#: src/features/settings/teams/TeamDialog.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/status/ComponentDialogs.tsx
@@ -14822,18 +14914,28 @@ msgstr "Sprawdzenie TCP"
 #: src/app/TeamMenu.tsx
 #: src/components/common/DiscussionAuthor.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/conversation/HeaderActions.tsx
 #: src/features/conversation/History.tsx
 #: src/features/docs/discussions/parts.tsx
 #: src/features/home/HomePage.tsx
+#: src/features/inbox/ChatList.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Team"
 msgstr "Zespół"
 
+#: src/features/conversation/HeaderActions.tsx
+msgid "Team (M)"
+msgstr "Zespół (M)"
+
 #: src/features/migrations/MapStep.tsx
 msgid "Team addresses"
 msgstr "Adresy zespołu"
+
+#: src/features/inbox/ChatList.tsx
+msgid "Team changed"
+msgstr "Zmieniono zespół"
 
 #: src/features/settings/channels/app/PushSection.tsx
 msgid "Team ID"
@@ -14866,6 +14968,14 @@ msgstr "Zespół teraz"
 #: src/features/team/TeamPage.tsx
 msgid "teammate@company.com"
 msgstr "kolega@firma.pl"
+
+#: src/app/Palette.tsx
+#: src/features/conversation/HeaderActions.tsx
+#: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/webhooks/events.tsx
+msgid "Teams"
+msgstr "Zespoły"
 
 #: src/features/status/StatusPages.tsx
 msgid "Tell your customers whether your product works. Each product gets one page, where you open incidents, plan maintenance and set the state of each component."
@@ -16304,6 +16414,10 @@ msgstr "Ta witryna nie może używać tego kanału dokumentacji."
 msgid "This subscription is no longer waiting for confirmation."
 msgstr "Ta subskrypcja już nie czeka na potwierdzenie."
 
+#: src/components/common/text.ts
+msgid "This team does not cover the conversation's inbox."
+msgstr "Ten zespół nie obejmuje skrzynki rozmowy."
+
 #: src/features/status/Notices.tsx
 msgid "This was a closing notice and no earlier notice was sent, so nobody had heard of the incident"
 msgstr "To było powiadomienie o zakończeniu, a wcześniejszego powiadomienia nie wysłano, więc nikt nie wiedział o incydencie"
@@ -16355,6 +16469,10 @@ msgstr "Wątki zawierające tylko pocztę Twojego zespołu"
 #: src/features/migrations/ChooseStep.tsx
 msgid "Threads whose last message is on or after"
 msgstr "Wątki, których ostatnia wiadomość jest w tym dniu lub później"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Through {through}"
+msgstr "Przez {through}"
 
 #: src/features/broadcasts/Composer.tsx
 msgid "through its own broadcast account"

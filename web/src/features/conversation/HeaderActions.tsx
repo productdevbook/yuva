@@ -1,8 +1,8 @@
 import { Plural, Trans, useLingui } from "@lingui/react/macro"
-import { CheckIcon, ChevronDownIcon, FlagIcon, UserRoundCheckIcon } from "lucide-react"
+import { CheckIcon, ChevronDownIcon, FlagIcon, UserRoundCheckIcon, UsersRoundIcon } from "lucide-react"
 import { useState, type RefObject } from "react"
 
-import { MemberAvatar } from "@/components/common"
+import { ErrorLine, MemberAvatar } from "@/components/common"
 import { useEnumText } from "@/components/common/text"
 import { Button } from "@/components/ui/button"
 import {
@@ -21,14 +21,15 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Separator } from "@/components/ui/separator"
 import { firstName, type ConversationActions } from "@/features/conversation/actions"
 import { progressIcons } from "@/features/conversation/Feedback"
+import { useUpdateConversation } from "@/features/conversation/queries"
 import { look } from "@/features/inbox/PageFrame"
 import { useCounts } from "@/features/inbox/queries"
 import type { Conversation, ConversationUpdate, FeedbackProgress } from "@/lib/api"
 import { useSession } from "@/lib/session"
 import { cn } from "@/lib/utils"
-import { useAssignableMembers } from "@/lib/workspace"
+import { useAssignableMembers, useTeams } from "@/lib/workspace"
 
-export type HeaderMenu = "snooze" | "hand" | "progress" | null
+export type HeaderMenu = "snooze" | "hand" | "team" | "progress" | null
 
 function useSnoozeTimes() {
   const { t, i18n } = useLingui()
@@ -102,6 +103,104 @@ function SnoozeTimes({ name, actions }: { name: string; actions: ConversationAct
   )
 }
 
+export function useInboxTeams(inboxId: string) {
+  return (useTeams().data ?? []).filter((team) => team.inbox_ids.includes(inboxId))
+}
+
+function useTeamChoice(c: Conversation, close: () => void) {
+  const update = useUpdateConversation(c.id)
+  const choose = (teamId: string | null) => update.mutate({ team_id: teamId }, { onSuccess: close })
+  return { choose, error: update.error, pending: update.isPending }
+}
+
+function TeamChoices({
+  c,
+  teams,
+  error,
+  pending,
+  choose,
+}: {
+  c: Conversation
+  teams: { id: string; name: string }[]
+  error: unknown
+  pending: boolean
+  choose: (teamId: string | null) => void
+}) {
+  return (
+    <>
+      {teams.map((team) => (
+        <Item
+          key={team.id}
+          render={<button type="button" disabled={pending} />}
+          size="xs"
+          onClick={() => choose(team.id)}
+          className={cn("flex-nowrap", c.team_id === team.id && "bg-muted")}
+          data-testid="team-choice"
+        >
+          <UsersRoundIcon className="size-4 text-muted-foreground" />
+          <span className="min-w-0 flex-1 truncate text-start">{team.name}</span>
+          {c.team_id === team.id && <CheckIcon className="size-4 text-brand" />}
+        </Item>
+      ))}
+      <ErrorLine error={error} className="px-2.5 py-1.5 text-small" />
+    </>
+  )
+}
+
+export function TeamMenu({
+  c,
+  open,
+  onOpenChange,
+  anchor,
+}: {
+  c: Conversation
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  anchor?: RefObject<Element | null>
+}) {
+  const { t } = useLingui()
+  const all = useTeams().data ?? []
+  const teams = useInboxTeams(c.inbox_id)
+  const current = all.find((x) => x.id === c.team_id)
+  const { choose, error, pending } = useTeamChoice(c, () => onOpenChange(false))
+  if (teams.length === 0 && !current) return null
+  return (
+    <Popover open={open} onOpenChange={onOpenChange}>
+      <PopoverTrigger
+        render={<Button variant="outline" className={cn(look.btnSm, "max-w-40 gap-1")} />}
+        title={t`Team (M)`}
+        data-testid="team-menu"
+      >
+        <UsersRoundIcon className="text-faint" />
+        <span className="min-w-0 truncate">{current ? current.name : <Trans>No team</Trans>}</span>
+        <ChevronDownIcon className="text-faint" />
+      </PopoverTrigger>
+      <PopoverContent
+        align="start"
+        anchor={anchor}
+        sideOffset={6}
+        className={cn(popupClass, "w-[260px] max-w-[calc(100vw-32px)] gap-0 rounded-xl p-1.5 ring-0")}
+        data-testid="team-popup"
+      >
+        <p className="px-2.5 pt-1.5 pb-1 text-caption font-medium text-faint">
+          <Trans>Team</Trans>
+        </p>
+        <TeamChoices c={c} teams={teams} error={error} pending={pending} choose={choose} />
+        {current && (
+          <Item
+            render={<button type="button" disabled={pending} />}
+            size="xs"
+            onClick={() => choose(null)}
+            data-testid="team-clear"
+          >
+            <Trans>Remove the team</Trans>
+          </Item>
+        )}
+      </PopoverContent>
+    </Popover>
+  )
+}
+
 export function HandMenu({
   c,
   actions,
@@ -127,6 +226,8 @@ export function HandMenu({
   const [note, setNote] = useState("")
   const load = new Map((useCounts().data?.assignees ?? []).map((a) => [a.id, a.count]))
   const mine = c.assignee_id === membership.member_id
+  const teams = useInboxTeams(c.inbox_id)
+  const teamChoice = useTeamChoice(c, () => onOpenChange(false))
   return (
     <Popover
       open={open}
@@ -210,6 +311,20 @@ export function HandMenu({
             </Item>
           )
         })}
+        {teams.length > 0 && (
+          <>
+            <p className="px-2.5 pt-2.5 pb-1 text-caption font-medium text-faint">
+              <Trans>Teams</Trans>
+            </p>
+            <TeamChoices
+              c={c}
+              teams={teams}
+              error={teamChoice.error}
+              pending={teamChoice.pending}
+              choose={teamChoice.choose}
+            />
+          </>
+        )}
         {people.length > 0 && (
           <Input
             name="hand-note"

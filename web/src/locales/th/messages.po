@@ -1384,6 +1384,14 @@ msgstr "ตัวตรวจสอบสถานะหยุดทำงาน
 msgid "A subscription changed"
 msgstr "การสมัครรับมีการเปลี่ยนแปลง"
 
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "A team gives its members the inboxes it covers. A conversation can go to a team as well as to a member."
+msgstr "ทีมให้สมาชิกเข้าถึงกล่องข้อความที่ทีมดูแล การสนทนามอบหมายให้ทีมได้ ไม่ใช่แค่สมาชิก"
+
+#: src/components/common/text.ts
+msgid "A team holds at most 500 members and 100 inboxes."
+msgstr "ทีมมีสมาชิกได้สูงสุด 500 คนและกล่องข้อความ 100 กล่อง"
+
 #: src/features/issues/IssueDialog.tsx
 msgid "A team key such as ENG."
 msgstr "A team key such as ENG."
@@ -2291,6 +2299,10 @@ msgid "Another team address"
 msgstr "ที่อยู่อื่นของทีม"
 
 #: src/components/common/text.ts
+msgid "Another team already has this name."
+msgstr "มีทีมอื่นใช้ชื่อนี้แล้ว"
+
+#: src/components/common/text.ts
 msgid "Another workspace on this server has already verified this domain."
 msgstr "Another workspace on this server has already verified this domain."
 
@@ -2338,6 +2350,10 @@ msgstr "ทุกประเทศ"
 #: src/features/inbox/ChatList.tsx
 msgid "Any label"
 msgstr "ป้ายกำกับใดก็ได้"
+
+#: src/features/inbox/ChatList.tsx
+msgid "Any team"
+msgstr "ทีมใดก็ได้"
 
 #: src/features/setup/AddChannelStep.tsx
 msgid "Anyone on your site can write. Turn it off when only signed-in users may chat."
@@ -2564,6 +2580,11 @@ msgstr "มอบหมาย (A)"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Assign or hand to a teammate"
 msgstr "มอบหมายหรือส่งให้เพื่อนร่วมทีม"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Assign to a team"
+msgstr "มอบหมายให้ทีม"
 
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/HeaderActions.tsx
@@ -2825,6 +2846,7 @@ msgid "Besides openid, email and profile. Okta needs groups for group checks."
 msgstr "Besides openid, email and profile. Okta needs groups for group checks."
 
 #: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/teams/TeamDialog.tsx
 msgid "Billing"
 msgstr "การเรียกเก็บเงิน"
 
@@ -4375,6 +4397,10 @@ msgstr "สร้างหน้าสถานะ ({newKey})"
 msgid "Create status page for {product}"
 msgstr "สร้างหน้าสถานะสำหรับ {product}"
 
+#: src/features/settings/teams/TeamDialog.tsx
+msgid "Create team"
+msgstr "สร้างทีม"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Create the board"
 msgstr "สร้างบอร์ด"
@@ -4560,6 +4586,7 @@ msgstr "ประสิทธิภาพลดลง"
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
 #: src/features/status/SettingsTab.tsx
@@ -4680,6 +4707,10 @@ msgstr "ลบไคลเอนต์ OAuth ที่คุณสร้าง�
 #: src/components/common/ShortcutSheet.tsx
 msgid "Delete the selected block"
 msgstr "ลบบล็อกที่เลือก"
+
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "Delete the team {name}?"
+msgstr "ลบทีม {name} ไหม"
 
 #: src/features/settings/canned/CannedRepliesPage.tsx
 msgid "Delete this canned reply?"
@@ -4825,6 +4856,7 @@ msgid "Deny"
 msgstr "ปฏิเสธ"
 
 #: src/features/issues/IssueDialog.tsx
+#: src/features/settings/teams/TeamDialog.tsx
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/SettingsTab.tsx
 msgid "Description"
@@ -5358,6 +5390,7 @@ msgstr "แต่ละรายการพร้อมข้อความแ
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Edit"
@@ -5407,6 +5440,10 @@ msgstr "แก้ไขป้ายกำกับ"
 #: src/features/status/MonitorDialog.tsx
 msgid "Edit monitor"
 msgstr "แก้ไขมอนิเตอร์"
+
+#: src/features/settings/teams/TeamDialog.tsx
+msgid "Edit team"
+msgstr "แก้ไขทีม"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Edit the design"
@@ -5910,6 +5947,10 @@ msgstr "กรองตามป้ายกำกับ"
 #: src/features/contact/ContactsPage.tsx
 msgid "Filter by product"
 msgstr "กรองตามผลิตภัณฑ์"
+
+#: src/features/inbox/ChatList.tsx
+msgid "Filter by team"
+msgstr "กรองตามทีม"
 
 #: src/features/inbox/SourceFilter.tsx
 msgid "Filter by type, site and broadcast"
@@ -6420,9 +6461,17 @@ msgstr "ทักทายการสนทนาใหม่ทางอีเ
 msgid "Group"
 msgstr "กลุ่ม"
 
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "Group members, such as billing or support, and give the group its inboxes in one place."
+msgstr "จัดกลุ่มสมาชิก เช่น การเรียกเก็บเงินหรือฝ่ายสนับสนุน แล้วกำหนดกล่องข้อความของกลุ่มได้ในที่เดียว"
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Groups claim"
 msgstr "Groups claim"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Groups of members and the inboxes they cover"
+msgstr "กลุ่มสมาชิกและกล่องข้อความที่ดูแล"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/Growth.tsx
@@ -7038,6 +7087,10 @@ msgstr "ใน Zoho Mail เปิด Settings › Mail accounts › IMAP access
 msgid "Inbox"
 msgstr "กล่องข้อความ"
 
+#: src/features/settings/teams/TeamDialog.tsx
+msgid "Inbox access"
+msgstr "สิทธิ์เข้าถึงกล่องข้อความ"
+
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Inbox color"
 msgstr "สีกล่องข้อความ"
@@ -7052,6 +7105,7 @@ msgstr "กล่องข้อความสำหรับ {name}"
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/slack/SlackPage.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 msgid "Inboxes"
 msgstr "กล่องข้อความ"
 
@@ -7353,6 +7407,10 @@ msgstr "บันทึกความยินยอมจะถูกลบไ
 #: src/features/status/ComponentsTab.tsx
 msgid "Its history is deleted. Incidents that named it no longer do."
 msgstr "ประวัติจะถูกลบ เหตุการณ์ที่เคยกล่าวถึงจะไม่กล่าวถึงอีก"
+
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "Its members lose the inbox access the team gave them, and its conversations lose the team but keep their assignee."
+msgstr "สมาชิกจะเสียสิทธิ์เข้าถึงกล่องข้อความที่ทีมให้ และการสนทนาจะไม่มีทีม แต่ยังคงมีผู้รับผิดชอบ"
 
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/Composer.tsx
@@ -8341,6 +8399,8 @@ msgstr "สมาชิก"
 #: src/features/inbox/SidePanels.tsx
 #: src/features/settings/ProductsPage.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/teams/TeamDialog.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Members"
 msgstr "สมาชิก"
@@ -8757,6 +8817,10 @@ msgstr "กระทู้ของฉัน"
 msgid "My profile"
 msgstr "โปรไฟล์ของฉัน"
 
+#: src/features/inbox/ChatList.tsx
+msgid "My teams"
+msgstr "ทีมของฉัน"
+
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListForm.tsx
@@ -8774,6 +8838,7 @@ msgstr "โปรไฟล์ของฉัน"
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/ProfileForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
+#: src/features/settings/teams/TeamDialog.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/setup/email/EmailLayout.tsx
 #: src/features/setup/SetupLayout.tsx
@@ -9074,6 +9139,11 @@ msgstr "หน้าสถานะใหม่"
 #: src/features/broadcasts/Import.tsx
 msgid "New subscribers added"
 msgstr "เพิ่มผู้สมัครรับใหม่"
+
+#: src/features/settings/teams/TeamDialog.tsx
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "New team"
+msgstr "ทีมใหม่"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "New update · {stage}"
@@ -9663,9 +9733,21 @@ msgstr "ยังไม่มีผู้สมัครรับ ผู้เ�
 msgid "No support address"
 msgstr "ไม่มีที่อยู่ฝ่ายสนับสนุน"
 
+#: src/features/conversation/HeaderActions.tsx
+msgid "No team"
+msgstr "ไม่มีทีม"
+
+#: src/features/inbox/ChatList.tsx
+msgid "No team covers all the selected inboxes."
+msgstr "ไม่มีทีมที่ดูแลกล่องข้อความที่เลือกทั้งหมด"
+
 #: src/features/conversation/messages/MessageActions.tsx
 msgid "No teammate can see this inbox"
 msgstr "ไม่มีเพื่อนร่วมทีมที่เห็นกล่องข้อความนี้"
+
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "No teams yet"
+msgstr "ยังไม่มีทีม"
 
 #: src/features/migrations/parts.tsx
 msgid "No test message has reached Yuva by the new route yet. If you finish now, mail that still goes only to {provider} is not copied. Yuva's token is deleted."
@@ -10027,6 +10109,10 @@ msgstr "ยังไม่มีอะไรถูกเพิ่ม ไฟล�
 #: src/features/inbox/ChatList.tsx
 msgid "Nothing is assigned to you."
 msgstr "ไม่มีอะไรมอบหมายให้คุณ"
+
+#: src/features/inbox/ChatList.tsx
+msgid "Nothing is assigned to your teams."
+msgstr "ไม่มีสิ่งใดมอบหมายให้ทีมของคุณ"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Nothing is closed yet."
@@ -12313,6 +12399,11 @@ msgstr "ลบข้อความหรือบันทึกที่คุ
 msgid "Remove the provider?"
 msgstr "Remove the provider?"
 
+#: src/features/conversation/HeaderActions.tsx
+#: src/features/inbox/ChatList.tsx
+msgid "Remove the team"
+msgstr "เอาทีมออก"
+
 #: src/features/settings/channels/sections.tsx
 msgid "Remove this channel?"
 msgstr "นำช่องทางนี้ออกไหม"
@@ -12975,6 +13066,7 @@ msgstr "วันเสาร์"
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/slack/SlackPage.tsx
+#: src/features/settings/teams/TeamDialog.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/status/ComponentDialogs.tsx
@@ -14822,18 +14914,28 @@ msgstr "การตรวจสอบ TCP"
 #: src/app/TeamMenu.tsx
 #: src/components/common/DiscussionAuthor.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/conversation/HeaderActions.tsx
 #: src/features/conversation/History.tsx
 #: src/features/docs/discussions/parts.tsx
 #: src/features/home/HomePage.tsx
+#: src/features/inbox/ChatList.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Team"
 msgstr "ทีม"
 
+#: src/features/conversation/HeaderActions.tsx
+msgid "Team (M)"
+msgstr "ทีม (M)"
+
 #: src/features/migrations/MapStep.tsx
 msgid "Team addresses"
 msgstr "ที่อยู่ของทีม"
+
+#: src/features/inbox/ChatList.tsx
+msgid "Team changed"
+msgstr "เปลี่ยนทีมแล้ว"
 
 #: src/features/settings/channels/app/PushSection.tsx
 msgid "Team ID"
@@ -14866,6 +14968,14 @@ msgstr "ทีมตอนนี้"
 #: src/features/team/TeamPage.tsx
 msgid "teammate@company.com"
 msgstr "teammate@company.com"
+
+#: src/app/Palette.tsx
+#: src/features/conversation/HeaderActions.tsx
+#: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/webhooks/events.tsx
+msgid "Teams"
+msgstr "ทีม"
 
 #: src/features/status/StatusPages.tsx
 msgid "Tell your customers whether your product works. Each product gets one page, where you open incidents, plan maintenance and set the state of each component."
@@ -16304,6 +16414,10 @@ msgstr "ไซต์นี้ไม่ได้รับอนุญาตให
 msgid "This subscription is no longer waiting for confirmation."
 msgstr "การสมัครรับนี้ไม่ได้รอการยืนยันอีกต่อไป"
 
+#: src/components/common/text.ts
+msgid "This team does not cover the conversation's inbox."
+msgstr "ทีมนี้ไม่ได้ดูแลกล่องข้อความของการสนทนา"
+
 #: src/features/status/Notices.tsx
 msgid "This was a closing notice and no earlier notice was sent, so nobody had heard of the incident"
 msgstr "นี่เป็นการแจ้งปิดเหตุการณ์ และไม่ได้ส่งการแจ้งก่อนหน้านี้ จึงไม่มีใครทราบเรื่องเหตุการณ์นี้มาก่อน"
@@ -16355,6 +16469,10 @@ msgstr "เธรดที่มีเฉพาะอีเมลของที
 #: src/features/migrations/ChooseStep.tsx
 msgid "Threads whose last message is on or after"
 msgstr "เธรดที่ข้อความสุดท้ายอยู่ในหรือหลังวันที่"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Through {through}"
+msgstr "ผ่าน {through}"
 
 #: src/features/broadcasts/Composer.tsx
 msgid "through its own broadcast account"

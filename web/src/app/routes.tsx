@@ -34,6 +34,7 @@ import {
 } from "@/features/settings/api-keys/ApiKeyWizard"
 import { InboxWebhooksPage } from "@/features/settings/inboxes/InboxWebhooksPage"
 import { LabelsPage } from "@/features/settings/labels/LabelsPage"
+import { TeamsPage } from "@/features/settings/teams/TeamsPage"
 import { NotificationsPage } from "@/features/settings/notifications/NotificationsPage"
 import { ProfilePage } from "@/features/settings/profile/ProfilePage"
 import { MembersReport, RatingsReport, ReportsPane, TodayReport } from "@/features/reports/ReportPages"
@@ -285,6 +286,7 @@ export function AppRoutes() {
               <Route path="inboxes/:inboxId/channels/:channelId" element={<ChannelPage />} />
               <Route path="labels" element={<LabelsPage />} />
               <Route path="canned-replies" element={<CannedRepliesPage />} />
+              <Route path="teams" element={<TeamsPage />} />
               <Route path="api-keys" element={<ApiKeysPage />} />
               <Route path="connected-apps" element={<ConnectedAppsPage />} />
               <Route path="connected-apps/:assistant" element={<ConnectedAppsPage />} />

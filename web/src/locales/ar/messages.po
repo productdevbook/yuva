@@ -1384,6 +1384,14 @@ msgstr "توقف مراقب حالة"
 msgid "A subscription changed"
 msgstr "تغيّر اشتراك"
 
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "A team gives its members the inboxes it covers. A conversation can go to a team as well as to a member."
+msgstr "يمنح الفريق أعضاءه صناديق الوارد التي يغطيها. يمكن إسناد المحادثة إلى فريق وليس إلى عضو فقط."
+
+#: src/components/common/text.ts
+msgid "A team holds at most 500 members and 100 inboxes."
+msgstr "يضم الفريق 500 عضو و100 صندوق وارد كحد أقصى."
+
 #: src/features/issues/IssueDialog.tsx
 msgid "A team key such as ENG."
 msgstr "A team key such as ENG."
@@ -2291,6 +2299,10 @@ msgid "Another team address"
 msgstr "عنوان فريق آخر"
 
 #: src/components/common/text.ts
+msgid "Another team already has this name."
+msgstr "يوجد فريق آخر بهذا الاسم."
+
+#: src/components/common/text.ts
 msgid "Another workspace on this server has already verified this domain."
 msgstr "Another workspace on this server has already verified this domain."
 
@@ -2338,6 +2350,10 @@ msgstr "أي بلد"
 #: src/features/inbox/ChatList.tsx
 msgid "Any label"
 msgstr "أي وسم"
+
+#: src/features/inbox/ChatList.tsx
+msgid "Any team"
+msgstr "أي فريق"
 
 #: src/features/setup/AddChannelStep.tsx
 msgid "Anyone on your site can write. Turn it off when only signed-in users may chat."
@@ -2564,6 +2580,11 @@ msgstr "إسناد (A)"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Assign or hand to a teammate"
 msgstr "إسناد أو تسليم إلى زميل"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Assign to a team"
+msgstr "إسناد إلى فريق"
 
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/HeaderActions.tsx
@@ -2825,6 +2846,7 @@ msgid "Besides openid, email and profile. Okta needs groups for group checks."
 msgstr "Besides openid, email and profile. Okta needs groups for group checks."
 
 #: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/teams/TeamDialog.tsx
 msgid "Billing"
 msgstr "الفوترة"
 
@@ -4375,6 +4397,10 @@ msgstr "إنشاء صفحة حالة ({newKey})"
 msgid "Create status page for {product}"
 msgstr "إنشاء صفحة حالة لـ {product}"
 
+#: src/features/settings/teams/TeamDialog.tsx
+msgid "Create team"
+msgstr "إنشاء فريق"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Create the board"
 msgstr "إنشاء اللوحة"
@@ -4560,6 +4586,7 @@ msgstr "أداء متدهور"
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
 #: src/features/status/SettingsTab.tsx
@@ -4680,6 +4707,10 @@ msgstr "احذف عميل OAuth الذي أنشأته لـ Yuva"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Delete the selected block"
 msgstr "حذف الكتلة المحددة"
+
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "Delete the team {name}?"
+msgstr "حذف الفريق {name}؟"
 
 #: src/features/settings/canned/CannedRepliesPage.tsx
 msgid "Delete this canned reply?"
@@ -4825,6 +4856,7 @@ msgid "Deny"
 msgstr "رفض"
 
 #: src/features/issues/IssueDialog.tsx
+#: src/features/settings/teams/TeamDialog.tsx
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/SettingsTab.tsx
 msgid "Description"
@@ -5358,6 +5390,7 @@ msgstr "كل واحدة بكل رسائلها وملاحظاتها"
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Edit"
@@ -5407,6 +5440,10 @@ msgstr "تعديل الوسم"
 #: src/features/status/MonitorDialog.tsx
 msgid "Edit monitor"
 msgstr "تعديل المراقب"
+
+#: src/features/settings/teams/TeamDialog.tsx
+msgid "Edit team"
+msgstr "تعديل الفريق"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Edit the design"
@@ -5910,6 +5947,10 @@ msgstr "تصفية حسب الوسم"
 #: src/features/contact/ContactsPage.tsx
 msgid "Filter by product"
 msgstr "تصفية حسب المنتج"
+
+#: src/features/inbox/ChatList.tsx
+msgid "Filter by team"
+msgstr "التصفية حسب الفريق"
 
 #: src/features/inbox/SourceFilter.tsx
 msgid "Filter by type, site and broadcast"
@@ -6420,9 +6461,17 @@ msgstr "يحيّي المحادثات الجديدة بالبريد الإلكت
 msgid "Group"
 msgstr "المجموعة"
 
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "Group members, such as billing or support, and give the group its inboxes in one place."
+msgstr "اجمع الأعضاء في مجموعات، مثل الفوترة أو الدعم، وحدّد صناديق وارد المجموعة في مكان واحد."
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Groups claim"
 msgstr "Groups claim"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Groups of members and the inboxes they cover"
+msgstr "مجموعات الأعضاء وصناديق الوارد التي تغطيها"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/Growth.tsx
@@ -7038,6 +7087,10 @@ msgstr "في Zoho Mail، افتح Settings › Mail accounts › IMAP access و�
 msgid "Inbox"
 msgstr "صندوق الوارد"
 
+#: src/features/settings/teams/TeamDialog.tsx
+msgid "Inbox access"
+msgstr "الوصول إلى صناديق الوارد"
+
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Inbox color"
 msgstr "لون صندوق الوارد"
@@ -7052,6 +7105,7 @@ msgstr "صندوق وارد لـ {name}"
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/slack/SlackPage.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 msgid "Inboxes"
 msgstr "صناديق الوارد"
 
@@ -7353,6 +7407,10 @@ msgstr "يُحذف سجل موافقته معه. ولأنه ألغى الاشت�
 #: src/features/status/ComponentsTab.tsx
 msgid "Its history is deleted. Incidents that named it no longer do."
 msgstr "يُحذف سجله. الحوادث التي ذكرته لم تعد تذكره."
+
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "Its members lose the inbox access the team gave them, and its conversations lose the team but keep their assignee."
+msgstr "يفقد أعضاؤه الوصول إلى صناديق الوارد التي منحها الفريق، وتفقد محادثاته الفريق لكنها تحتفظ بالمسؤول."
 
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/Composer.tsx
@@ -8341,6 +8399,8 @@ msgstr "عضو"
 #: src/features/inbox/SidePanels.tsx
 #: src/features/settings/ProductsPage.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/teams/TeamDialog.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Members"
 msgstr "الأعضاء"
@@ -8757,6 +8817,10 @@ msgstr "نقاشاتي"
 msgid "My profile"
 msgstr "ملفي الشخصي"
 
+#: src/features/inbox/ChatList.tsx
+msgid "My teams"
+msgstr "فرقي"
+
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListForm.tsx
@@ -8774,6 +8838,7 @@ msgstr "ملفي الشخصي"
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/ProfileForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
+#: src/features/settings/teams/TeamDialog.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/setup/email/EmailLayout.tsx
 #: src/features/setup/SetupLayout.tsx
@@ -9074,6 +9139,11 @@ msgstr "صفحة حالة جديدة"
 #: src/features/broadcasts/Import.tsx
 msgid "New subscribers added"
 msgstr "أُضيف مشتركون جدد"
+
+#: src/features/settings/teams/TeamDialog.tsx
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "New team"
+msgstr "فريق جديد"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "New update · {stage}"
@@ -9663,9 +9733,21 @@ msgstr "لا يوجد مشتركون بعد. يشترك الزوار من صفح
 msgid "No support address"
 msgstr "لا عنوان دعم"
 
+#: src/features/conversation/HeaderActions.tsx
+msgid "No team"
+msgstr "بلا فريق"
+
+#: src/features/inbox/ChatList.tsx
+msgid "No team covers all the selected inboxes."
+msgstr "لا يغطي أي فريق كل صناديق الوارد المحددة."
+
 #: src/features/conversation/messages/MessageActions.tsx
 msgid "No teammate can see this inbox"
 msgstr "لا زميل يستطيع رؤية صندوق الوارد هذا"
+
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "No teams yet"
+msgstr "لا توجد فرق بعد"
 
 #: src/features/migrations/parts.tsx
 msgid "No test message has reached Yuva by the new route yet. If you finish now, mail that still goes only to {provider} is not copied. Yuva's token is deleted."
@@ -10027,6 +10109,10 @@ msgstr "لا يُضاف شيء بعد. يُقرأ الملف، ويُسأل كل
 #: src/features/inbox/ChatList.tsx
 msgid "Nothing is assigned to you."
 msgstr "لا شيء مسند إليك."
+
+#: src/features/inbox/ChatList.tsx
+msgid "Nothing is assigned to your teams."
+msgstr "لا شيء مُسنَد إلى فرقك."
 
 #: src/features/inbox/ChatList.tsx
 msgid "Nothing is closed yet."
@@ -12313,6 +12399,11 @@ msgstr "إزالة الرسالة أو الملاحظة التي نقرت علي
 msgid "Remove the provider?"
 msgstr "Remove the provider?"
 
+#: src/features/conversation/HeaderActions.tsx
+#: src/features/inbox/ChatList.tsx
+msgid "Remove the team"
+msgstr "إزالة الفريق"
+
 #: src/features/settings/channels/sections.tsx
 msgid "Remove this channel?"
 msgstr "إزالة هذه القناة؟"
@@ -12975,6 +13066,7 @@ msgstr "السبت"
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/slack/SlackPage.tsx
+#: src/features/settings/teams/TeamDialog.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/status/ComponentDialogs.tsx
@@ -14822,18 +14914,28 @@ msgstr "فحص TCP"
 #: src/app/TeamMenu.tsx
 #: src/components/common/DiscussionAuthor.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/conversation/HeaderActions.tsx
 #: src/features/conversation/History.tsx
 #: src/features/docs/discussions/parts.tsx
 #: src/features/home/HomePage.tsx
+#: src/features/inbox/ChatList.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Team"
 msgstr "الفريق"
 
+#: src/features/conversation/HeaderActions.tsx
+msgid "Team (M)"
+msgstr "الفريق (M)"
+
 #: src/features/migrations/MapStep.tsx
 msgid "Team addresses"
 msgstr "عناوين الفريق"
+
+#: src/features/inbox/ChatList.tsx
+msgid "Team changed"
+msgstr "تغيّر الفريق"
 
 #: src/features/settings/channels/app/PushSection.tsx
 msgid "Team ID"
@@ -14866,6 +14968,14 @@ msgstr "الفريق الآن"
 #: src/features/team/TeamPage.tsx
 msgid "teammate@company.com"
 msgstr "teammate@company.com"
+
+#: src/app/Palette.tsx
+#: src/features/conversation/HeaderActions.tsx
+#: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/webhooks/events.tsx
+msgid "Teams"
+msgstr "الفرق"
 
 #: src/features/status/StatusPages.tsx
 msgid "Tell your customers whether your product works. Each product gets one page, where you open incidents, plan maintenance and set the state of each component."
@@ -16304,6 +16414,10 @@ msgstr "هذا الموقع غير مسموح له باستخدام قناة ا�
 msgid "This subscription is no longer waiting for confirmation."
 msgstr "لم يعد هذا الاشتراك بانتظار التأكيد."
 
+#: src/components/common/text.ts
+msgid "This team does not cover the conversation's inbox."
+msgstr "لا يغطي هذا الفريق صندوق وارد المحادثة."
+
 #: src/features/status/Notices.tsx
 msgid "This was a closing notice and no earlier notice was sent, so nobody had heard of the incident"
 msgstr "كان هذا إشعار إغلاق ولم يُرسل أي إشعار سابق، لذا لم يعلم أحد بالحادثة"
@@ -16355,6 +16469,10 @@ msgstr "السلاسل التي تحتوي على بريد فريقك فقط"
 #: src/features/migrations/ChooseStep.tsx
 msgid "Threads whose last message is on or after"
 msgstr "السلاسل التي رسالتها الأخيرة في أو بعد"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Through {through}"
+msgstr "عبر {through}"
 
 #: src/features/broadcasts/Composer.tsx
 msgid "through its own broadcast account"

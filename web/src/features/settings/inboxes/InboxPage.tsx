@@ -38,7 +38,7 @@ import {
 import { keys } from "@/lib/keys"
 import { useSession } from "@/lib/session"
 import { timeZones } from "@/lib/utils"
-import { useInboxMembers, useMembers } from "@/lib/workspace"
+import { useInboxMembers, useMembers, useTeams } from "@/lib/workspace"
 import { InboxMark } from "@/components/common"
 
 const InboxContext = createContext<{ inbox: Inbox } | null>(null)
@@ -334,13 +334,14 @@ function ChatTab({ d, set, inbox, locked }: Form) {
 }
 
 function WhoCanReply({ inbox }: { inbox: Inbox }) {
-  const { t } = useLingui()
+  const { t, i18n } = useLingui()
   const text = useEnumText()
   const errorText = useErrorText()
   const qc = useQueryClient()
   const { workspaceId: ws, canManage } = useSession()
   const members = useMembers().data ?? []
-  const granted = new Set((useInboxMembers(inbox.id).data ?? []).map((m) => m.id))
+  const access = new Map((useInboxMembers(inbox.id).data ?? []).map((m) => [m.id, m]))
+  const teams = new Map((useTeams().data ?? []).map((team) => [team.id, team.name]))
   const toggle = useMutation({
     mutationFn: ({ memberId, on }: { memberId: string; on: boolean }) => {
       const params = { params: { path: { inboxId: inbox.id, memberId } } }
@@ -363,11 +364,20 @@ function WhoCanReply({ inbox }: { inbox: Inbox }) {
         {members.map((m) => {
           const name = m.name || m.email
           const always = m.role !== "agent"
+          const entry = access.get(m.id)
+          const through = new Intl.ListFormat(i18n.locale, { type: "conjunction" }).format(
+            (entry?.team_ids ?? []).map((id) => teams.get(id)).filter((x): x is string => !!x)
+          )
           return (
             <li key={m.id} className="flex min-h-[52px] items-center gap-3 px-[18px] py-2.5">
               <span className="flex min-w-0 flex-1 flex-col leading-[1.3]">
                 <span className="truncate">{name}</span>
                 <span className="text-caption text-faint">{text.role[m.role]}</span>
+                {!always && through && (
+                  <span className="truncate text-caption text-faint" data-testid="access-teams">
+                    <Trans>Through {through}</Trans>
+                  </span>
+                )}
               </span>
               {always ? (
                 <span className="text-caption text-faint">
@@ -375,7 +385,7 @@ function WhoCanReply({ inbox }: { inbox: Inbox }) {
                 </span>
               ) : (
                 <Switch
-                  checked={granted.has(m.id)}
+                  checked={entry?.via === "direct"}
                   disabled={!canManage || toggle.isPending}
                   onCheckedChange={(on) => toggle.mutate({ memberId: m.id, on })}
                   aria-label={t`${name} can reply`}

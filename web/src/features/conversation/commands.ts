@@ -7,6 +7,7 @@ export type CommandName =
   | "note"
   | "snooze"
   | "hand"
+  | "assignTeam"
   | "labels"
   | "progress"
   | "close"

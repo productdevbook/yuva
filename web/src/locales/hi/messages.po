@@ -1384,6 +1384,14 @@ msgstr "एक स्टेटस मॉनिटर बंद हो गया"
 msgid "A subscription changed"
 msgstr "सब्सक्रिप्शन बदला"
 
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "A team gives its members the inboxes it covers. A conversation can go to a team as well as to a member."
+msgstr "टीम अपने सदस्यों को वे इनबॉक्स देती है जिन्हें वह संभालती है। बातचीत को सदस्य के साथ-साथ टीम को भी सौंपा जा सकता है।"
+
+#: src/components/common/text.ts
+msgid "A team holds at most 500 members and 100 inboxes."
+msgstr "एक टीम में अधिकतम 500 सदस्य और 100 इनबॉक्स हो सकते हैं।"
+
 #: src/features/issues/IssueDialog.tsx
 msgid "A team key such as ENG."
 msgstr "A team key such as ENG."
@@ -2291,6 +2299,10 @@ msgid "Another team address"
 msgstr "दूसरा टीम पता"
 
 #: src/components/common/text.ts
+msgid "Another team already has this name."
+msgstr "किसी और टीम का नाम यही है।"
+
+#: src/components/common/text.ts
 msgid "Another workspace on this server has already verified this domain."
 msgstr "Another workspace on this server has already verified this domain."
 
@@ -2338,6 +2350,10 @@ msgstr "कोई भी देश"
 #: src/features/inbox/ChatList.tsx
 msgid "Any label"
 msgstr "कोई भी लेबल"
+
+#: src/features/inbox/ChatList.tsx
+msgid "Any team"
+msgstr "कोई भी टीम"
 
 #: src/features/setup/AddChannelStep.tsx
 msgid "Anyone on your site can write. Turn it off when only signed-in users may chat."
@@ -2564,6 +2580,11 @@ msgstr "असाइन करें (A)"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Assign or hand to a teammate"
 msgstr "किसी टीममेट को असाइन करें या सौंपें"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Assign to a team"
+msgstr "टीम को सौंपें"
 
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/HeaderActions.tsx
@@ -2825,6 +2846,7 @@ msgid "Besides openid, email and profile. Okta needs groups for group checks."
 msgstr "Besides openid, email and profile. Okta needs groups for group checks."
 
 #: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/teams/TeamDialog.tsx
 msgid "Billing"
 msgstr "बिलिंग"
 
@@ -4375,6 +4397,10 @@ msgstr "स्टेटस पेज बनाएँ ({newKey})"
 msgid "Create status page for {product}"
 msgstr "{product} के लिए स्टेटस पेज बनाएँ"
 
+#: src/features/settings/teams/TeamDialog.tsx
+msgid "Create team"
+msgstr "टीम बनाएँ"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Create the board"
 msgstr "बोर्ड बनाएँ"
@@ -4560,6 +4586,7 @@ msgstr "घटा हुआ प्रदर्शन"
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
 #: src/features/status/SettingsTab.tsx
@@ -4680,6 +4707,10 @@ msgstr "Yuva के लिए बनाया गया OAuth क्लाइं
 #: src/components/common/ShortcutSheet.tsx
 msgid "Delete the selected block"
 msgstr "चुना हुआ ब्लॉक हटाएँ"
+
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "Delete the team {name}?"
+msgstr "टीम {name} हटाएँ?"
 
 #: src/features/settings/canned/CannedRepliesPage.tsx
 msgid "Delete this canned reply?"
@@ -4825,6 +4856,7 @@ msgid "Deny"
 msgstr "अस्वीकार करें"
 
 #: src/features/issues/IssueDialog.tsx
+#: src/features/settings/teams/TeamDialog.tsx
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/SettingsTab.tsx
 msgid "Description"
@@ -5358,6 +5390,7 @@ msgstr "हर एक अपने सभी संदेशों और नो
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Edit"
@@ -5407,6 +5440,10 @@ msgstr "लेबल संपादित करें"
 #: src/features/status/MonitorDialog.tsx
 msgid "Edit monitor"
 msgstr "मॉनिटर संपादित करें"
+
+#: src/features/settings/teams/TeamDialog.tsx
+msgid "Edit team"
+msgstr "टीम संपादित करें"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Edit the design"
@@ -5910,6 +5947,10 @@ msgstr "लेबल के अनुसार फ़िल्टर करे�
 #: src/features/contact/ContactsPage.tsx
 msgid "Filter by product"
 msgstr "उत्पाद के अनुसार फ़िल्टर करें"
+
+#: src/features/inbox/ChatList.tsx
+msgid "Filter by team"
+msgstr "टीम के अनुसार फ़िल्टर करें"
 
 #: src/features/inbox/SourceFilter.tsx
 msgid "Filter by type, site and broadcast"
@@ -6420,9 +6461,17 @@ msgstr "नई बातचीत का ई-मेल से अभिवाद
 msgid "Group"
 msgstr "समूह"
 
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "Group members, such as billing or support, and give the group its inboxes in one place."
+msgstr "सदस्यों को समूह में रखें, जैसे बिलिंग या सहायता, और समूह के इनबॉक्स एक ही जगह तय करें।"
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Groups claim"
 msgstr "Groups claim"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Groups of members and the inboxes they cover"
+msgstr "सदस्यों के समूह और वे इनबॉक्स जिन्हें वे संभालते हैं"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/Growth.tsx
@@ -7038,6 +7087,10 @@ msgstr "Zoho Mail में Settings › Mail accounts › IMAP access खोल
 msgid "Inbox"
 msgstr "इनबॉक्स"
 
+#: src/features/settings/teams/TeamDialog.tsx
+msgid "Inbox access"
+msgstr "इनबॉक्स तक पहुँच"
+
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Inbox color"
 msgstr "इनबॉक्स का रंग"
@@ -7052,6 +7105,7 @@ msgstr "{name} के लिए इनबॉक्स"
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/slack/SlackPage.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 msgid "Inboxes"
 msgstr "इनबॉक्स"
 
@@ -7353,6 +7407,10 @@ msgstr "इसके साथ इसका सहमति रिकॉर्�
 #: src/features/status/ComponentsTab.tsx
 msgid "Its history is deleted. Incidents that named it no longer do."
 msgstr "उसका इतिहास हट जाता है। जिन घटनाओं ने उसका उल्लेख किया था, वे अब नहीं करतीं।"
+
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "Its members lose the inbox access the team gave them, and its conversations lose the team but keep their assignee."
+msgstr "इसके सदस्य टीम से मिली इनबॉक्स पहुँच खो देते हैं, और इसकी बातचीत टीम खो देती है पर ज़िम्मेदार व्यक्ति बना रहता है।"
 
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/Composer.tsx
@@ -8341,6 +8399,8 @@ msgstr "सदस्य"
 #: src/features/inbox/SidePanels.tsx
 #: src/features/settings/ProductsPage.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/teams/TeamDialog.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Members"
 msgstr "सदस्य"
@@ -8757,6 +8817,10 @@ msgstr "मेरी चर्चाएँ"
 msgid "My profile"
 msgstr "मेरी प्रोफ़ाइल"
 
+#: src/features/inbox/ChatList.tsx
+msgid "My teams"
+msgstr "मेरी टीमें"
+
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListForm.tsx
@@ -8774,6 +8838,7 @@ msgstr "मेरी प्रोफ़ाइल"
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/ProfileForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
+#: src/features/settings/teams/TeamDialog.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/setup/email/EmailLayout.tsx
 #: src/features/setup/SetupLayout.tsx
@@ -9074,6 +9139,11 @@ msgstr "नया स्टेटस पेज"
 #: src/features/broadcasts/Import.tsx
 msgid "New subscribers added"
 msgstr "नए सब्सक्राइबर जोड़े गए"
+
+#: src/features/settings/teams/TeamDialog.tsx
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "New team"
+msgstr "नई टीम"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "New update · {stage}"
@@ -9663,9 +9733,21 @@ msgstr "अभी कोई सब्सक्राइबर नहीं ह�
 msgid "No support address"
 msgstr "कोई सपोर्ट पता नहीं"
 
+#: src/features/conversation/HeaderActions.tsx
+msgid "No team"
+msgstr "कोई टीम नहीं"
+
+#: src/features/inbox/ChatList.tsx
+msgid "No team covers all the selected inboxes."
+msgstr "कोई टीम चुने गए सभी इनबॉक्स नहीं संभालती।"
+
 #: src/features/conversation/messages/MessageActions.tsx
 msgid "No teammate can see this inbox"
 msgstr "कोई टीममेट इस इनबॉक्स को नहीं देख सकता"
+
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "No teams yet"
+msgstr "अभी कोई टीम नहीं"
 
 #: src/features/migrations/parts.tsx
 msgid "No test message has reached Yuva by the new route yet. If you finish now, mail that still goes only to {provider} is not copied. Yuva's token is deleted."
@@ -10027,6 +10109,10 @@ msgstr "अभी कुछ नहीं जोड़ा गया। फ़ा�
 #: src/features/inbox/ChatList.tsx
 msgid "Nothing is assigned to you."
 msgstr "आपको कुछ असाइन नहीं है।"
+
+#: src/features/inbox/ChatList.tsx
+msgid "Nothing is assigned to your teams."
+msgstr "आपकी टीमों को कुछ नहीं सौंपा गया है।"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Nothing is closed yet."
@@ -12313,6 +12399,11 @@ msgstr "जिस संदेश या नोट पर क्लिक कि
 msgid "Remove the provider?"
 msgstr "Remove the provider?"
 
+#: src/features/conversation/HeaderActions.tsx
+#: src/features/inbox/ChatList.tsx
+msgid "Remove the team"
+msgstr "टीम हटाएँ"
+
 #: src/features/settings/channels/sections.tsx
 msgid "Remove this channel?"
 msgstr "यह चैनल हटाएँ?"
@@ -12975,6 +13066,7 @@ msgstr "शनिवार"
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/slack/SlackPage.tsx
+#: src/features/settings/teams/TeamDialog.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/status/ComponentDialogs.tsx
@@ -14822,18 +14914,28 @@ msgstr "TCP जाँच"
 #: src/app/TeamMenu.tsx
 #: src/components/common/DiscussionAuthor.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/conversation/HeaderActions.tsx
 #: src/features/conversation/History.tsx
 #: src/features/docs/discussions/parts.tsx
 #: src/features/home/HomePage.tsx
+#: src/features/inbox/ChatList.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Team"
 msgstr "टीम"
 
+#: src/features/conversation/HeaderActions.tsx
+msgid "Team (M)"
+msgstr "टीम (M)"
+
 #: src/features/migrations/MapStep.tsx
 msgid "Team addresses"
 msgstr "टीम के पते"
+
+#: src/features/inbox/ChatList.tsx
+msgid "Team changed"
+msgstr "टीम बदली गई"
 
 #: src/features/settings/channels/app/PushSection.tsx
 msgid "Team ID"
@@ -14866,6 +14968,14 @@ msgstr "अभी टीम"
 #: src/features/team/TeamPage.tsx
 msgid "teammate@company.com"
 msgstr "teammate@company.com"
+
+#: src/app/Palette.tsx
+#: src/features/conversation/HeaderActions.tsx
+#: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/webhooks/events.tsx
+msgid "Teams"
+msgstr "टीमें"
 
 #: src/features/status/StatusPages.tsx
 msgid "Tell your customers whether your product works. Each product gets one page, where you open incidents, plan maintenance and set the state of each component."
@@ -16304,6 +16414,10 @@ msgstr "इस साइट को इस डॉक्यूमेंटेश�
 msgid "This subscription is no longer waiting for confirmation."
 msgstr "यह सब्सक्रिप्शन अब पुष्टि की प्रतीक्षा में नहीं है।"
 
+#: src/components/common/text.ts
+msgid "This team does not cover the conversation's inbox."
+msgstr "यह टीम बातचीत का इनबॉक्स नहीं संभालती।"
+
 #: src/features/status/Notices.tsx
 msgid "This was a closing notice and no earlier notice was sent, so nobody had heard of the incident"
 msgstr "यह समापन नोटिस था और इससे पहले कोई नोटिस नहीं भेजा गया था, इसलिए किसी को घटना की जानकारी नहीं मिली"
@@ -16355,6 +16469,10 @@ msgstr "केवल आपकी टीम के मेल वाले थ्
 #: src/features/migrations/ChooseStep.tsx
 msgid "Threads whose last message is on or after"
 msgstr "वे थ्रेड जिनका आख़िरी संदेश इस तारीख़ को या उसके बाद है"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Through {through}"
+msgstr "{through} के ज़रिए"
 
 #: src/features/broadcasts/Composer.tsx
 msgid "through its own broadcast account"

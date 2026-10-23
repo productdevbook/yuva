@@ -1384,6 +1384,14 @@ msgstr "ఒక స్టేటస్ మానిటర్ పనిచేయడ
 msgid "A subscription changed"
 msgstr "సబ్‌స్క్రిప్షన్ మారింది"
 
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "A team gives its members the inboxes it covers. A conversation can go to a team as well as to a member."
+msgstr "బృందం తాను చూసే ఇన్‌బాక్స్‌లను సభ్యులకు ఇస్తుంది. సంభాషణను సభ్యునికే కాక బృందానికి కూడా కేటాయించవచ్చు."
+
+#: src/components/common/text.ts
+msgid "A team holds at most 500 members and 100 inboxes."
+msgstr "ఒక బృందంలో గరిష్టంగా 500 సభ్యులు, 100 ఇన్‌బాక్స్‌లు ఉండవచ్చు."
+
 #: src/features/issues/IssueDialog.tsx
 msgid "A team key such as ENG."
 msgstr "A team key such as ENG."
@@ -2291,6 +2299,10 @@ msgid "Another team address"
 msgstr "మరో బృందం చిరునామా"
 
 #: src/components/common/text.ts
+msgid "Another team already has this name."
+msgstr "మరొక బృందానికి ఇప్పటికే ఈ పేరు ఉంది."
+
+#: src/components/common/text.ts
 msgid "Another workspace on this server has already verified this domain."
 msgstr "Another workspace on this server has already verified this domain."
 
@@ -2338,6 +2350,10 @@ msgstr "ఏ దేశమైనా"
 #: src/features/inbox/ChatList.tsx
 msgid "Any label"
 msgstr "ఏదైనా లేబుల్"
+
+#: src/features/inbox/ChatList.tsx
+msgid "Any team"
+msgstr "ఏ బృందమైనా"
 
 #: src/features/setup/AddChannelStep.tsx
 msgid "Anyone on your site can write. Turn it off when only signed-in users may chat."
@@ -2564,6 +2580,11 @@ msgstr "కేటాయించండి (A)"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Assign or hand to a teammate"
 msgstr "సహచరుడికి కేటాయించండి లేదా అప్పగించండి"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Assign to a team"
+msgstr "బృందానికి కేటాయించండి"
 
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/HeaderActions.tsx
@@ -2825,6 +2846,7 @@ msgid "Besides openid, email and profile. Okta needs groups for group checks."
 msgstr "Besides openid, email and profile. Okta needs groups for group checks."
 
 #: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/teams/TeamDialog.tsx
 msgid "Billing"
 msgstr "బిల్లింగ్"
 
@@ -4375,6 +4397,10 @@ msgstr "స్టేటస్ పేజీని సృష్టించండ�
 msgid "Create status page for {product}"
 msgstr "{product} కోసం స్టేటస్ పేజీని సృష్టించండి"
 
+#: src/features/settings/teams/TeamDialog.tsx
+msgid "Create team"
+msgstr "బృందాన్ని సృష్టించండి"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Create the board"
 msgstr "బోర్డ్‌ను సృష్టించండి"
@@ -4560,6 +4586,7 @@ msgstr "తగ్గిన పనితీరు"
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
 #: src/features/status/SettingsTab.tsx
@@ -4680,6 +4707,10 @@ msgstr "మీరు Yuva కోసం సృష్టించిన OAuth క�
 #: src/components/common/ShortcutSheet.tsx
 msgid "Delete the selected block"
 msgstr "ఎంచుకున్న బ్లాక్‌ను తొలగించండి"
+
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "Delete the team {name}?"
+msgstr "{name} బృందాన్ని తొలగించాలా?"
 
 #: src/features/settings/canned/CannedRepliesPage.tsx
 msgid "Delete this canned reply?"
@@ -4825,6 +4856,7 @@ msgid "Deny"
 msgstr "తిరస్కరించండి"
 
 #: src/features/issues/IssueDialog.tsx
+#: src/features/settings/teams/TeamDialog.tsx
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/SettingsTab.tsx
 msgid "Description"
@@ -5358,6 +5390,7 @@ msgstr "ప్రతిదీ దాని అన్ని సందేశాల
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Edit"
@@ -5407,6 +5440,10 @@ msgstr "లేబుల్‌ను సవరించండి"
 #: src/features/status/MonitorDialog.tsx
 msgid "Edit monitor"
 msgstr "మానిటర్ సవరించండి"
+
+#: src/features/settings/teams/TeamDialog.tsx
+msgid "Edit team"
+msgstr "బృందాన్ని సవరించండి"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Edit the design"
@@ -5910,6 +5947,10 @@ msgstr "లేబుల్ ద్వారా ఫిల్టర్ చేయం
 #: src/features/contact/ContactsPage.tsx
 msgid "Filter by product"
 msgstr "ఉత్పత్తి ద్వారా ఫిల్టర్ చేయండి"
+
+#: src/features/inbox/ChatList.tsx
+msgid "Filter by team"
+msgstr "బృందం ప్రకారం ఫిల్టర్ చేయండి"
 
 #: src/features/inbox/SourceFilter.tsx
 msgid "Filter by type, site and broadcast"
@@ -6420,9 +6461,17 @@ msgstr "కొత్త సంభాషణలను ఇమెయిల్ ద్
 msgid "Group"
 msgstr "సమూహం"
 
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "Group members, such as billing or support, and give the group its inboxes in one place."
+msgstr "బిల్లింగ్ లేదా సపోర్ట్ వంటి సభ్యులను గుంపుగా చేసి, గుంపు ఇన్‌బాక్స్‌లను ఒకే చోట ఇవ్వండి."
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Groups claim"
 msgstr "Groups claim"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Groups of members and the inboxes they cover"
+msgstr "సభ్యుల గుంపులు మరియు అవి చూసే ఇన్‌బాక్స్‌లు"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/Growth.tsx
@@ -7038,6 +7087,10 @@ msgstr "Zoho Mail లో Settings › Mail accounts › IMAP access తెరి
 msgid "Inbox"
 msgstr "ఇన్‌బాక్స్"
 
+#: src/features/settings/teams/TeamDialog.tsx
+msgid "Inbox access"
+msgstr "ఇన్‌బాక్స్ యాక్సెస్"
+
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Inbox color"
 msgstr "ఇన్‌బాక్స్ రంగు"
@@ -7052,6 +7105,7 @@ msgstr "{name} కోసం ఇన్‌బాక్స్"
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/slack/SlackPage.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 msgid "Inboxes"
 msgstr "ఇన్‌బాక్స్‌లు"
 
@@ -7353,6 +7407,10 @@ msgstr "దాని సమ్మతి రికార్డ్ దానిత
 #: src/features/status/ComponentsTab.tsx
 msgid "Its history is deleted. Incidents that named it no longer do."
 msgstr "దాని చరిత్ర తొలగించబడుతుంది. దాన్ని పేర్కొన్న ఘటనలు ఇకపై పేర్కొనవు."
+
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "Its members lose the inbox access the team gave them, and its conversations lose the team but keep their assignee."
+msgstr "దాని సభ్యులు బృందం ఇచ్చిన ఇన్‌బాక్స్ యాక్సెస్‌ను కోల్పోతారు, సంభాషణలు బృందాన్ని కోల్పోతాయి కానీ బాధ్యుడు అలాగే ఉంటాడు."
 
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/Composer.tsx
@@ -8341,6 +8399,8 @@ msgstr "సభ్యుడు"
 #: src/features/inbox/SidePanels.tsx
 #: src/features/settings/ProductsPage.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/teams/TeamDialog.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Members"
 msgstr "సభ్యులు"
@@ -8757,6 +8817,10 @@ msgstr "నా చర్చలు"
 msgid "My profile"
 msgstr "నా ప్రొఫైల్"
 
+#: src/features/inbox/ChatList.tsx
+msgid "My teams"
+msgstr "నా బృందాలు"
+
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListForm.tsx
@@ -8774,6 +8838,7 @@ msgstr "నా ప్రొఫైల్"
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/ProfileForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
+#: src/features/settings/teams/TeamDialog.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/setup/email/EmailLayout.tsx
 #: src/features/setup/SetupLayout.tsx
@@ -9074,6 +9139,11 @@ msgstr "కొత్త స్టేటస్ పేజీ"
 #: src/features/broadcasts/Import.tsx
 msgid "New subscribers added"
 msgstr "కొత్త సబ్‌స్క్రైబర్‌లు జోడించబడ్డారు"
+
+#: src/features/settings/teams/TeamDialog.tsx
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "New team"
+msgstr "కొత్త బృందం"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "New update · {stage}"
@@ -9663,9 +9733,21 @@ msgstr "ఇంకా సబ్‌స్క్రైబర్‌లు లేర�
 msgid "No support address"
 msgstr "సపోర్ట్ చిరునామా లేదు"
 
+#: src/features/conversation/HeaderActions.tsx
+msgid "No team"
+msgstr "బృందం లేదు"
+
+#: src/features/inbox/ChatList.tsx
+msgid "No team covers all the selected inboxes."
+msgstr "ఎంచుకున్న అన్ని ఇన్‌బాక్స్‌లను ఏ బృందమూ చూడదు."
+
 #: src/features/conversation/messages/MessageActions.tsx
 msgid "No teammate can see this inbox"
 msgstr "ఏ సహచరుడూ ఈ ఇన్‌బాక్స్‌ను చూడలేరు"
+
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "No teams yet"
+msgstr "ఇంకా బృందాలు లేవు"
 
 #: src/features/migrations/parts.tsx
 msgid "No test message has reached Yuva by the new route yet. If you finish now, mail that still goes only to {provider} is not copied. Yuva's token is deleted."
@@ -10027,6 +10109,10 @@ msgstr "ఇంకా ఏదీ జోడించబడలేదు. ఫైల�
 #: src/features/inbox/ChatList.tsx
 msgid "Nothing is assigned to you."
 msgstr "మీకు ఏదీ కేటాయించబడలేదు."
+
+#: src/features/inbox/ChatList.tsx
+msgid "Nothing is assigned to your teams."
+msgstr "మీ బృందాలకు ఏదీ కేటాయించలేదు."
 
 #: src/features/inbox/ChatList.tsx
 msgid "Nothing is closed yet."
@@ -12313,6 +12399,11 @@ msgstr "మీరు క్లిక్ చేసిన సందేశం ల�
 msgid "Remove the provider?"
 msgstr "Remove the provider?"
 
+#: src/features/conversation/HeaderActions.tsx
+#: src/features/inbox/ChatList.tsx
+msgid "Remove the team"
+msgstr "బృందాన్ని తీసివేయండి"
+
 #: src/features/settings/channels/sections.tsx
 msgid "Remove this channel?"
 msgstr "ఈ ఛానెల్‌ను తొలగించాలా?"
@@ -12975,6 +13066,7 @@ msgstr "శనివారం"
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/slack/SlackPage.tsx
+#: src/features/settings/teams/TeamDialog.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/status/ComponentDialogs.tsx
@@ -14822,18 +14914,28 @@ msgstr "TCP తనిఖీ"
 #: src/app/TeamMenu.tsx
 #: src/components/common/DiscussionAuthor.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/conversation/HeaderActions.tsx
 #: src/features/conversation/History.tsx
 #: src/features/docs/discussions/parts.tsx
 #: src/features/home/HomePage.tsx
+#: src/features/inbox/ChatList.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Team"
 msgstr "బృందం"
 
+#: src/features/conversation/HeaderActions.tsx
+msgid "Team (M)"
+msgstr "బృందం (M)"
+
 #: src/features/migrations/MapStep.tsx
 msgid "Team addresses"
 msgstr "బృందం చిరునామాలు"
+
+#: src/features/inbox/ChatList.tsx
+msgid "Team changed"
+msgstr "బృందం మార్చబడింది"
 
 #: src/features/settings/channels/app/PushSection.tsx
 msgid "Team ID"
@@ -14866,6 +14968,14 @@ msgstr "ఇప్పుడు బృందం"
 #: src/features/team/TeamPage.tsx
 msgid "teammate@company.com"
 msgstr "teammate@company.com"
+
+#: src/app/Palette.tsx
+#: src/features/conversation/HeaderActions.tsx
+#: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/webhooks/events.tsx
+msgid "Teams"
+msgstr "బృందాలు"
 
 #: src/features/status/StatusPages.tsx
 msgid "Tell your customers whether your product works. Each product gets one page, where you open incidents, plan maintenance and set the state of each component."
@@ -16304,6 +16414,10 @@ msgstr "ఈ సైట్‌కు ఈ డాక్యుమెంటేషన్
 msgid "This subscription is no longer waiting for confirmation."
 msgstr "ఈ సబ్‌స్క్రిప్షన్ ఇకపై నిర్ధారణ కోసం వేచి లేదు."
 
+#: src/components/common/text.ts
+msgid "This team does not cover the conversation's inbox."
+msgstr "ఈ బృందం సంభాషణ ఇన్‌బాక్స్‌ను చూడదు."
+
 #: src/features/status/Notices.tsx
 msgid "This was a closing notice and no earlier notice was sent, so nobody had heard of the incident"
 msgstr "ఇది ముగింపు నోటీసు, దీనికి ముందు ఎలాంటి నోటీసు పంపబడలేదు, కాబట్టి ఈ ఘటన గురించి ఎవరికీ తెలియలేదు"
@@ -16355,6 +16469,10 @@ msgstr "మీ బృందం మెయిల్ మాత్రమే ఉన�
 #: src/features/migrations/ChooseStep.tsx
 msgid "Threads whose last message is on or after"
 msgstr "చివరి సందేశం ఈ తేదీ లేదా తర్వాత ఉన్న థ్రెడ్‌లు"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Through {through}"
+msgstr "{through} ద్వారా"
 
 #: src/features/broadcasts/Composer.tsx
 msgid "through its own broadcast account"

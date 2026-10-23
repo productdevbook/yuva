@@ -1384,6 +1384,14 @@ msgstr "Một bộ giám sát trạng thái đã ngừng hoạt động"
 msgid "A subscription changed"
 msgstr "Một đăng ký đã thay đổi"
 
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "A team gives its members the inboxes it covers. A conversation can go to a team as well as to a member."
+msgstr "Nhóm cấp cho thành viên các hộp thư mà nhóm phụ trách. Cuộc trò chuyện có thể giao cho một nhóm chứ không chỉ một thành viên."
+
+#: src/components/common/text.ts
+msgid "A team holds at most 500 members and 100 inboxes."
+msgstr "Một nhóm có tối đa 500 thành viên và 100 hộp thư."
+
 #: src/features/issues/IssueDialog.tsx
 msgid "A team key such as ENG."
 msgstr "A team key such as ENG."
@@ -2291,6 +2299,10 @@ msgid "Another team address"
 msgstr "Địa chỉ khác của nhóm"
 
 #: src/components/common/text.ts
+msgid "Another team already has this name."
+msgstr "Một nhóm khác đã dùng tên này."
+
+#: src/components/common/text.ts
 msgid "Another workspace on this server has already verified this domain."
 msgstr "Another workspace on this server has already verified this domain."
 
@@ -2338,6 +2350,10 @@ msgstr "Mọi quốc gia"
 #: src/features/inbox/ChatList.tsx
 msgid "Any label"
 msgstr "Nhãn bất kỳ"
+
+#: src/features/inbox/ChatList.tsx
+msgid "Any team"
+msgstr "Nhóm bất kỳ"
 
 #: src/features/setup/AddChannelStep.tsx
 msgid "Anyone on your site can write. Turn it off when only signed-in users may chat."
@@ -2564,6 +2580,11 @@ msgstr "Giao (A)"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Assign or hand to a teammate"
 msgstr "Giao hoặc chuyển cho đồng nghiệp"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Assign to a team"
+msgstr "Giao cho nhóm"
 
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/HeaderActions.tsx
@@ -2825,6 +2846,7 @@ msgid "Besides openid, email and profile. Okta needs groups for group checks."
 msgstr "Besides openid, email and profile. Okta needs groups for group checks."
 
 #: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/teams/TeamDialog.tsx
 msgid "Billing"
 msgstr "Thanh toán"
 
@@ -4375,6 +4397,10 @@ msgstr "Tạo trang trạng thái ({newKey})"
 msgid "Create status page for {product}"
 msgstr "Tạo trang trạng thái cho {product}"
 
+#: src/features/settings/teams/TeamDialog.tsx
+msgid "Create team"
+msgstr "Tạo nhóm"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Create the board"
 msgstr "Tạo bảng"
@@ -4560,6 +4586,7 @@ msgstr "Hiệu năng giảm"
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
 #: src/features/status/SettingsTab.tsx
@@ -4680,6 +4707,10 @@ msgstr "Xóa ứng dụng khách OAuth bạn đã tạo cho Yuva"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Delete the selected block"
 msgstr "Xóa khối đã chọn"
+
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "Delete the team {name}?"
+msgstr "Xóa nhóm {name}?"
 
 #: src/features/settings/canned/CannedRepliesPage.tsx
 msgid "Delete this canned reply?"
@@ -4825,6 +4856,7 @@ msgid "Deny"
 msgstr "Từ chối"
 
 #: src/features/issues/IssueDialog.tsx
+#: src/features/settings/teams/TeamDialog.tsx
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/SettingsTab.tsx
 msgid "Description"
@@ -5358,6 +5390,7 @@ msgstr "Mỗi cái cùng toàn bộ tin nhắn và ghi chú"
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Edit"
@@ -5407,6 +5440,10 @@ msgstr "Sửa nhãn"
 #: src/features/status/MonitorDialog.tsx
 msgid "Edit monitor"
 msgstr "Sửa trình giám sát"
+
+#: src/features/settings/teams/TeamDialog.tsx
+msgid "Edit team"
+msgstr "Sửa nhóm"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Edit the design"
@@ -5910,6 +5947,10 @@ msgstr "Lọc theo nhãn"
 #: src/features/contact/ContactsPage.tsx
 msgid "Filter by product"
 msgstr "Lọc theo sản phẩm"
+
+#: src/features/inbox/ChatList.tsx
+msgid "Filter by team"
+msgstr "Lọc theo nhóm"
 
 #: src/features/inbox/SourceFilter.tsx
 msgid "Filter by type, site and broadcast"
@@ -6420,9 +6461,17 @@ msgstr "Chào các cuộc trò chuyện mới bằng email, mỗi liên hệ m�
 msgid "Group"
 msgstr "Nhóm"
 
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "Group members, such as billing or support, and give the group its inboxes in one place."
+msgstr "Gom thành viên theo nhóm, chẳng hạn thanh toán hoặc hỗ trợ, và gán hộp thư cho nhóm ở một nơi."
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Groups claim"
 msgstr "Groups claim"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Groups of members and the inboxes they cover"
+msgstr "Các nhóm thành viên và hộp thư họ phụ trách"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/Growth.tsx
@@ -7038,6 +7087,10 @@ msgstr "Trong Zoho Mail, mở Settings › Mail accounts › IMAP access và b�
 msgid "Inbox"
 msgstr "Hộp thư"
 
+#: src/features/settings/teams/TeamDialog.tsx
+msgid "Inbox access"
+msgstr "Quyền truy cập hộp thư"
+
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Inbox color"
 msgstr "Màu hộp thư"
@@ -7052,6 +7105,7 @@ msgstr "Hộp thư cho {name}"
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/slack/SlackPage.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 msgid "Inboxes"
 msgstr "Hộp thư"
 
@@ -7353,6 +7407,10 @@ msgstr "Bản ghi đồng ý của nó bị xóa cùng với nó. Vì họ đã 
 #: src/features/status/ComponentsTab.tsx
 msgid "Its history is deleted. Incidents that named it no longer do."
 msgstr "Lịch sử của nó bị xóa. Các sự cố từng nhắc đến nó sẽ không còn nhắc nữa."
+
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "Its members lose the inbox access the team gave them, and its conversations lose the team but keep their assignee."
+msgstr "Thành viên mất quyền truy cập hộp thư mà nhóm cấp, còn cuộc trò chuyện mất nhóm nhưng vẫn giữ người phụ trách."
 
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/Composer.tsx
@@ -8341,6 +8399,8 @@ msgstr "Thành viên"
 #: src/features/inbox/SidePanels.tsx
 #: src/features/settings/ProductsPage.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/teams/TeamDialog.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Members"
 msgstr "Thành viên"
@@ -8757,6 +8817,10 @@ msgstr "Thảo luận của tôi"
 msgid "My profile"
 msgstr "Hồ sơ của tôi"
 
+#: src/features/inbox/ChatList.tsx
+msgid "My teams"
+msgstr "Nhóm của tôi"
+
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListForm.tsx
@@ -8774,6 +8838,7 @@ msgstr "Hồ sơ của tôi"
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/ProfileForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
+#: src/features/settings/teams/TeamDialog.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/setup/email/EmailLayout.tsx
 #: src/features/setup/SetupLayout.tsx
@@ -9074,6 +9139,11 @@ msgstr "Trang trạng thái mới"
 #: src/features/broadcasts/Import.tsx
 msgid "New subscribers added"
 msgstr "Người đăng ký mới được thêm"
+
+#: src/features/settings/teams/TeamDialog.tsx
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "New team"
+msgstr "Nhóm mới"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "New update · {stage}"
@@ -9663,9 +9733,21 @@ msgstr "Chưa có người đăng ký. Khách truy cập đăng ký trên trang 
 msgid "No support address"
 msgstr "Không có địa chỉ hỗ trợ"
 
+#: src/features/conversation/HeaderActions.tsx
+msgid "No team"
+msgstr "Không có nhóm"
+
+#: src/features/inbox/ChatList.tsx
+msgid "No team covers all the selected inboxes."
+msgstr "Không nhóm nào phụ trách tất cả hộp thư đã chọn."
+
 #: src/features/conversation/messages/MessageActions.tsx
 msgid "No teammate can see this inbox"
 msgstr "Không đồng nghiệp nào thấy hộp thư này"
+
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "No teams yet"
+msgstr "Chưa có nhóm nào"
 
 #: src/features/migrations/parts.tsx
 msgid "No test message has reached Yuva by the new route yet. If you finish now, mail that still goes only to {provider} is not copied. Yuva's token is deleted."
@@ -10027,6 +10109,10 @@ msgstr "Chưa có gì được thêm. Tệp được đọc, mỗi tên miền �
 #: src/features/inbox/ChatList.tsx
 msgid "Nothing is assigned to you."
 msgstr "Không có gì được giao cho bạn."
+
+#: src/features/inbox/ChatList.tsx
+msgid "Nothing is assigned to your teams."
+msgstr "Chưa có gì được giao cho các nhóm của bạn."
 
 #: src/features/inbox/ChatList.tsx
 msgid "Nothing is closed yet."
@@ -12313,6 +12399,11 @@ msgstr "Gỡ tin nhắn hoặc ghi chú bạn đã nhấp vào"
 msgid "Remove the provider?"
 msgstr "Remove the provider?"
 
+#: src/features/conversation/HeaderActions.tsx
+#: src/features/inbox/ChatList.tsx
+msgid "Remove the team"
+msgstr "Gỡ nhóm"
+
 #: src/features/settings/channels/sections.tsx
 msgid "Remove this channel?"
 msgstr "Gỡ kênh này?"
@@ -12975,6 +13066,7 @@ msgstr "Thứ Bảy"
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/slack/SlackPage.tsx
+#: src/features/settings/teams/TeamDialog.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/status/ComponentDialogs.tsx
@@ -14822,18 +14914,28 @@ msgstr "Kiểm tra TCP"
 #: src/app/TeamMenu.tsx
 #: src/components/common/DiscussionAuthor.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/conversation/HeaderActions.tsx
 #: src/features/conversation/History.tsx
 #: src/features/docs/discussions/parts.tsx
 #: src/features/home/HomePage.tsx
+#: src/features/inbox/ChatList.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Team"
 msgstr "Nhóm"
 
+#: src/features/conversation/HeaderActions.tsx
+msgid "Team (M)"
+msgstr "Nhóm (M)"
+
 #: src/features/migrations/MapStep.tsx
 msgid "Team addresses"
 msgstr "Địa chỉ của nhóm"
+
+#: src/features/inbox/ChatList.tsx
+msgid "Team changed"
+msgstr "Đã đổi nhóm"
 
 #: src/features/settings/channels/app/PushSection.tsx
 msgid "Team ID"
@@ -14866,6 +14968,14 @@ msgstr "Nhóm ngay lúc này"
 #: src/features/team/TeamPage.tsx
 msgid "teammate@company.com"
 msgstr "teammate@company.com"
+
+#: src/app/Palette.tsx
+#: src/features/conversation/HeaderActions.tsx
+#: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/webhooks/events.tsx
+msgid "Teams"
+msgstr "Nhóm"
 
 #: src/features/status/StatusPages.tsx
 msgid "Tell your customers whether your product works. Each product gets one page, where you open incidents, plan maintenance and set the state of each component."
@@ -16304,6 +16414,10 @@ msgstr "Trang web này không được phép dùng kênh tài liệu này."
 msgid "This subscription is no longer waiting for confirmation."
 msgstr "Đăng ký này không còn chờ xác nhận."
 
+#: src/components/common/text.ts
+msgid "This team does not cover the conversation's inbox."
+msgstr "Nhóm này không phụ trách hộp thư của cuộc trò chuyện."
+
 #: src/features/status/Notices.tsx
 msgid "This was a closing notice and no earlier notice was sent, so nobody had heard of the incident"
 msgstr "Đây là thông báo kết thúc và trước đó chưa có thông báo nào được gửi, nên không ai biết về sự cố này"
@@ -16355,6 +16469,10 @@ msgstr "Các chuỗi chỉ có thư của nhóm bạn"
 #: src/features/migrations/ChooseStep.tsx
 msgid "Threads whose last message is on or after"
 msgstr "Các chuỗi có tin nhắn cuối từ ngày"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Through {through}"
+msgstr "Qua {through}"
 
 #: src/features/broadcasts/Composer.tsx
 msgid "through its own broadcast account"

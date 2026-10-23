@@ -72,6 +72,7 @@ function useItems(open: boolean): Item[] {
       act("reply", t`Write a reply`, SHORTCUTS.reply)
       act("note", t`Write a note for the team`, SHORTCUTS.note)
       act("hand", t`Assign or hand to a teammate`, SHORTCUTS.hand)
+      act("assignTeam", t`Assign to a team`, SHORTCUTS.assignTeam)
       act("snooze", t`Snooze`, SHORTCUTS.snooze)
       act("labels", t`Labels`, SHORTCUTS.labels)
       if (pathname.startsWith("/feedback/")) act("progress", t`Set the feedback progress`, SHORTCUTS.progress)
@@ -138,6 +139,7 @@ function useItems(open: boolean): Item[] {
       go(t`Webhooks`, "/settings/webhooks")
       go(t`Issue trackers`, "/settings/issue-trackers")
       go(t`Workspace`, "/settings/workspace")
+      go(t`Teams`, "/settings/teams")
     }
     if (isOwner) go(t`Audit log`, "/settings/audit-log")
     if (isOwner) go(t`Single sign-on`, "/settings/sso")

@@ -1384,6 +1384,14 @@ msgstr "Monitor stavu prestal fungovať"
 msgid "A subscription changed"
 msgstr "Odber sa zmenil"
 
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "A team gives its members the inboxes it covers. A conversation can go to a team as well as to a member."
+msgstr "Tím dáva svojim členom schránky, ktoré pokrýva. Konverzáciu možno priradiť tímu aj členovi."
+
+#: src/components/common/text.ts
+msgid "A team holds at most 500 members and 100 inboxes."
+msgstr "Tím môže mať najviac 500 členov a 100 schránok."
+
 #: src/features/issues/IssueDialog.tsx
 msgid "A team key such as ENG."
 msgstr "A team key such as ENG."
@@ -2291,6 +2299,10 @@ msgid "Another team address"
 msgstr "Iná adresa tímu"
 
 #: src/components/common/text.ts
+msgid "Another team already has this name."
+msgstr "Iný tím už má tento názov."
+
+#: src/components/common/text.ts
 msgid "Another workspace on this server has already verified this domain."
 msgstr "Another workspace on this server has already verified this domain."
 
@@ -2338,6 +2350,10 @@ msgstr "Ľubovoľná krajina"
 #: src/features/inbox/ChatList.tsx
 msgid "Any label"
 msgstr "Ľubovoľný štítok"
+
+#: src/features/inbox/ChatList.tsx
+msgid "Any team"
+msgstr "Ľubovoľný tím"
 
 #: src/features/setup/AddChannelStep.tsx
 msgid "Anyone on your site can write. Turn it off when only signed-in users may chat."
@@ -2564,6 +2580,11 @@ msgstr "Prideliť (A)"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Assign or hand to a teammate"
 msgstr "Prideliť alebo odovzdať kolegovi"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Assign to a team"
+msgstr "Priradiť tímu"
 
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/HeaderActions.tsx
@@ -2825,6 +2846,7 @@ msgid "Besides openid, email and profile. Okta needs groups for group checks."
 msgstr "Besides openid, email and profile. Okta needs groups for group checks."
 
 #: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/teams/TeamDialog.tsx
 msgid "Billing"
 msgstr "Fakturácia"
 
@@ -4375,6 +4397,10 @@ msgstr "Vytvoriť stránku stavu ({newKey})"
 msgid "Create status page for {product}"
 msgstr "Vytvoriť stránku stavu pre {product}"
 
+#: src/features/settings/teams/TeamDialog.tsx
+msgid "Create team"
+msgstr "Vytvoriť tím"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Create the board"
 msgstr "Vytvoriť nástenku"
@@ -4560,6 +4586,7 @@ msgstr "Znížený výkon"
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
 #: src/features/status/SettingsTab.tsx
@@ -4680,6 +4707,10 @@ msgstr "Odstráňte klienta OAuth, ktorého ste vytvorili pre Yuvu"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Delete the selected block"
 msgstr "Odstrániť vybraný blok"
+
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "Delete the team {name}?"
+msgstr "Odstrániť tím {name}?"
 
 #: src/features/settings/canned/CannedRepliesPage.tsx
 msgid "Delete this canned reply?"
@@ -4825,6 +4856,7 @@ msgid "Deny"
 msgstr "Zamietnuť"
 
 #: src/features/issues/IssueDialog.tsx
+#: src/features/settings/teams/TeamDialog.tsx
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/SettingsTab.tsx
 msgid "Description"
@@ -5358,6 +5390,7 @@ msgstr "Každá so všetkými svojimi správami a poznámkami"
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Edit"
@@ -5407,6 +5440,10 @@ msgstr "Upraviť štítok"
 #: src/features/status/MonitorDialog.tsx
 msgid "Edit monitor"
 msgstr "Upraviť monitor"
+
+#: src/features/settings/teams/TeamDialog.tsx
+msgid "Edit team"
+msgstr "Upraviť tím"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Edit the design"
@@ -5910,6 +5947,10 @@ msgstr "Filtrovať podľa štítku"
 #: src/features/contact/ContactsPage.tsx
 msgid "Filter by product"
 msgstr "Filtrovať podľa produktu"
+
+#: src/features/inbox/ChatList.tsx
+msgid "Filter by team"
+msgstr "Filtrovať podľa tímu"
 
 #: src/features/inbox/SourceFilter.tsx
 msgid "Filter by type, site and broadcast"
@@ -6420,9 +6461,17 @@ msgstr "Pozdraví nové konverzácie e-mailom, raz na kontakt v rámci intervalu
 msgid "Group"
 msgstr "Skupina"
 
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "Group members, such as billing or support, and give the group its inboxes in one place."
+msgstr "Zoskupte členov, napríklad fakturáciu alebo podporu, a dajte skupine jej schránky na jednom mieste."
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Groups claim"
 msgstr "Groups claim"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Groups of members and the inboxes they cover"
+msgstr "Skupiny členov a schránky, ktoré pokrývajú"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/Growth.tsx
@@ -7038,6 +7087,10 @@ msgstr "V Zoho Mail otvorte Settings › Mail accounts › IMAP access a zapnite
 msgid "Inbox"
 msgstr "Schránka"
 
+#: src/features/settings/teams/TeamDialog.tsx
+msgid "Inbox access"
+msgstr "Prístup k schránkam"
+
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Inbox color"
 msgstr "Farba schránky"
@@ -7052,6 +7105,7 @@ msgstr "Schránka pre {name}"
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/slack/SlackPage.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 msgid "Inboxes"
 msgstr "Schránky"
 
@@ -7353,6 +7407,10 @@ msgstr "Jej záznam o súhlase sa s ňou odstráni. Keďže sa odhlásili, adres
 #: src/features/status/ComponentsTab.tsx
 msgid "Its history is deleted. Incidents that named it no longer do."
 msgstr "Jeho história sa odstráni. Incidenty, ktoré ho spomínali, ho už nespomínajú."
+
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "Its members lose the inbox access the team gave them, and its conversations lose the team but keep their assignee."
+msgstr "Jeho členovia stratia prístup k schránkam, ktoré im tím dával, a konverzácie stratia tím, ale ponechajú si priradenú osobu."
 
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/Composer.tsx
@@ -8341,6 +8399,8 @@ msgstr "Člen"
 #: src/features/inbox/SidePanels.tsx
 #: src/features/settings/ProductsPage.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/teams/TeamDialog.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Members"
 msgstr "Členovia"
@@ -8757,6 +8817,10 @@ msgstr "Moje diskusie"
 msgid "My profile"
 msgstr "Môj profil"
 
+#: src/features/inbox/ChatList.tsx
+msgid "My teams"
+msgstr "Moje tímy"
+
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListForm.tsx
@@ -8774,6 +8838,7 @@ msgstr "Môj profil"
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/ProfileForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
+#: src/features/settings/teams/TeamDialog.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/setup/email/EmailLayout.tsx
 #: src/features/setup/SetupLayout.tsx
@@ -9074,6 +9139,11 @@ msgstr "Nová stránka stavu"
 #: src/features/broadcasts/Import.tsx
 msgid "New subscribers added"
 msgstr "Noví odberatelia pridaní"
+
+#: src/features/settings/teams/TeamDialog.tsx
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "New team"
+msgstr "Nový tím"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "New update · {stage}"
@@ -9663,9 +9733,21 @@ msgstr "Zatiaľ žiadni odberatelia. Návštevníci sa prihlasujú na stránke s
 msgid "No support address"
 msgstr "Žiadna adresa podpory"
 
+#: src/features/conversation/HeaderActions.tsx
+msgid "No team"
+msgstr "Žiadny tím"
+
+#: src/features/inbox/ChatList.tsx
+msgid "No team covers all the selected inboxes."
+msgstr "Žiadny tím nepokrýva všetky vybrané schránky."
+
 #: src/features/conversation/messages/MessageActions.tsx
 msgid "No teammate can see this inbox"
 msgstr "Túto schránku nevidí žiadny kolega"
+
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "No teams yet"
+msgstr "Zatiaľ žiadne tímy"
 
 #: src/features/migrations/parts.tsx
 msgid "No test message has reached Yuva by the new route yet. If you finish now, mail that still goes only to {provider} is not copied. Yuva's token is deleted."
@@ -10027,6 +10109,10 @@ msgstr "Zatiaľ sa nič nepridáva. Súbor sa prečíta, každej doméne sa polo
 #: src/features/inbox/ChatList.tsx
 msgid "Nothing is assigned to you."
 msgstr "Nič vám nie je pridelené."
+
+#: src/features/inbox/ChatList.tsx
+msgid "Nothing is assigned to your teams."
+msgstr "Vašim tímom nie je nič priradené."
 
 #: src/features/inbox/ChatList.tsx
 msgid "Nothing is closed yet."
@@ -12313,6 +12399,11 @@ msgstr "Odstrániť správu alebo poznámku, na ktorú ste klikli"
 msgid "Remove the provider?"
 msgstr "Remove the provider?"
 
+#: src/features/conversation/HeaderActions.tsx
+#: src/features/inbox/ChatList.tsx
+msgid "Remove the team"
+msgstr "Odstrániť tím"
+
 #: src/features/settings/channels/sections.tsx
 msgid "Remove this channel?"
 msgstr "Odstrániť tento kanál?"
@@ -12975,6 +13066,7 @@ msgstr "Sobota"
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/slack/SlackPage.tsx
+#: src/features/settings/teams/TeamDialog.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/status/ComponentDialogs.tsx
@@ -14822,18 +14914,28 @@ msgstr "Kontrola TCP"
 #: src/app/TeamMenu.tsx
 #: src/components/common/DiscussionAuthor.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/conversation/HeaderActions.tsx
 #: src/features/conversation/History.tsx
 #: src/features/docs/discussions/parts.tsx
 #: src/features/home/HomePage.tsx
+#: src/features/inbox/ChatList.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Team"
 msgstr "Tím"
 
+#: src/features/conversation/HeaderActions.tsx
+msgid "Team (M)"
+msgstr "Tím (M)"
+
 #: src/features/migrations/MapStep.tsx
 msgid "Team addresses"
 msgstr "Adresy tímu"
+
+#: src/features/inbox/ChatList.tsx
+msgid "Team changed"
+msgstr "Tím zmenený"
 
 #: src/features/settings/channels/app/PushSection.tsx
 msgid "Team ID"
@@ -14866,6 +14968,14 @@ msgstr "Tím práve teraz"
 #: src/features/team/TeamPage.tsx
 msgid "teammate@company.com"
 msgstr "kolega@firma.sk"
+
+#: src/app/Palette.tsx
+#: src/features/conversation/HeaderActions.tsx
+#: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/webhooks/events.tsx
+msgid "Teams"
+msgstr "Tímy"
 
 #: src/features/status/StatusPages.tsx
 msgid "Tell your customers whether your product works. Each product gets one page, where you open incidents, plan maintenance and set the state of each component."
@@ -16304,6 +16414,10 @@ msgstr "Tento web nesmie používať tento dokumentačný kanál."
 msgid "This subscription is no longer waiting for confirmation."
 msgstr "Tento odber už nečaká na potvrdenie."
 
+#: src/components/common/text.ts
+msgid "This team does not cover the conversation's inbox."
+msgstr "Tento tím nepokrýva schránku konverzácie."
+
 #: src/features/status/Notices.tsx
 msgid "This was a closing notice and no earlier notice was sent, so nobody had heard of the incident"
 msgstr "Toto bolo záverečné oznámenie a žiadne skoršie sa neodoslalo, takže o incidente nikto nevedel"
@@ -16355,6 +16469,10 @@ msgstr "Vlákna len s poštou vášho tímu"
 #: src/features/migrations/ChooseStep.tsx
 msgid "Threads whose last message is on or after"
 msgstr "Vlákna, ktorých posledná správa je v tento deň alebo neskôr"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Through {through}"
+msgstr "Cez {through}"
 
 #: src/features/broadcasts/Composer.tsx
 msgid "through its own broadcast account"

@@ -1384,6 +1384,14 @@ msgstr "상태 모니터가 중단되었습니다"
 msgid "A subscription changed"
 msgstr "구독이 변경되었을 때"
 
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "A team gives its members the inboxes it covers. A conversation can go to a team as well as to a member."
+msgstr "팀은 담당하는 받은 편지함을 멤버에게 줍니다. 대화는 멤버뿐 아니라 팀에도 배정할 수 있습니다."
+
+#: src/components/common/text.ts
+msgid "A team holds at most 500 members and 100 inboxes."
+msgstr "팀에는 멤버 500명과 받은 편지함 100개까지 둘 수 있습니다."
+
 #: src/features/issues/IssueDialog.tsx
 msgid "A team key such as ENG."
 msgstr "A team key such as ENG."
@@ -2291,6 +2299,10 @@ msgid "Another team address"
 msgstr "다른 팀 주소"
 
 #: src/components/common/text.ts
+msgid "Another team already has this name."
+msgstr "같은 이름의 다른 팀이 있습니다."
+
+#: src/components/common/text.ts
 msgid "Another workspace on this server has already verified this domain."
 msgstr "Another workspace on this server has already verified this domain."
 
@@ -2338,6 +2350,10 @@ msgstr "모든 국가"
 #: src/features/inbox/ChatList.tsx
 msgid "Any label"
 msgstr "모든 레이블"
+
+#: src/features/inbox/ChatList.tsx
+msgid "Any team"
+msgstr "모든 팀"
 
 #: src/features/setup/AddChannelStep.tsx
 msgid "Anyone on your site can write. Turn it off when only signed-in users may chat."
@@ -2564,6 +2580,11 @@ msgstr "배정(A)"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Assign or hand to a teammate"
 msgstr "팀원에게 배정하거나 넘기기"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Assign to a team"
+msgstr "팀에 배정"
 
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/HeaderActions.tsx
@@ -2825,6 +2846,7 @@ msgid "Besides openid, email and profile. Okta needs groups for group checks."
 msgstr "Besides openid, email and profile. Okta needs groups for group checks."
 
 #: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/teams/TeamDialog.tsx
 msgid "Billing"
 msgstr "결제"
 
@@ -4375,6 +4397,10 @@ msgstr "상태 페이지 만들기({newKey})"
 msgid "Create status page for {product}"
 msgstr "{product}용 상태 페이지 만들기"
 
+#: src/features/settings/teams/TeamDialog.tsx
+msgid "Create team"
+msgstr "팀 만들기"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Create the board"
 msgstr "보드 만들기"
@@ -4560,6 +4586,7 @@ msgstr "성능 저하"
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
 #: src/features/status/SettingsTab.tsx
@@ -4680,6 +4707,10 @@ msgstr "Yuva용으로 만든 OAuth 클라이언트 삭제"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Delete the selected block"
 msgstr "선택한 블록 삭제"
+
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "Delete the team {name}?"
+msgstr "{name} 팀을 삭제할까요?"
 
 #: src/features/settings/canned/CannedRepliesPage.tsx
 msgid "Delete this canned reply?"
@@ -4825,6 +4856,7 @@ msgid "Deny"
 msgstr "거부"
 
 #: src/features/issues/IssueDialog.tsx
+#: src/features/settings/teams/TeamDialog.tsx
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/SettingsTab.tsx
 msgid "Description"
@@ -5358,6 +5390,7 @@ msgstr "각각 모든 메시지와 메모 포함"
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Edit"
@@ -5407,6 +5440,10 @@ msgstr "레이블 편집"
 #: src/features/status/MonitorDialog.tsx
 msgid "Edit monitor"
 msgstr "모니터 편집"
+
+#: src/features/settings/teams/TeamDialog.tsx
+msgid "Edit team"
+msgstr "팀 편집"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Edit the design"
@@ -5910,6 +5947,10 @@ msgstr "레이블로 필터"
 #: src/features/contact/ContactsPage.tsx
 msgid "Filter by product"
 msgstr "제품으로 필터"
+
+#: src/features/inbox/ChatList.tsx
+msgid "Filter by team"
+msgstr "팀으로 필터"
 
 #: src/features/inbox/SourceFilter.tsx
 msgid "Filter by type, site and broadcast"
@@ -6420,9 +6461,17 @@ msgstr "새 대화에 간격 안에서 연락처당 한 번 이메일로 인사�
 msgid "Group"
 msgstr "그룹"
 
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "Group members, such as billing or support, and give the group its inboxes in one place."
+msgstr "결제나 지원처럼 멤버를 묶고, 그룹의 받은 편지함을 한곳에서 지정하세요."
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Groups claim"
 msgstr "Groups claim"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Groups of members and the inboxes they cover"
+msgstr "멤버 그룹과 담당하는 받은 편지함"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/Growth.tsx
@@ -7038,6 +7087,10 @@ msgstr "Zoho Mail에서 설정 › 메일 계정 › IMAP 접근을 열고 IMAP�
 msgid "Inbox"
 msgstr "받은 편지함"
 
+#: src/features/settings/teams/TeamDialog.tsx
+msgid "Inbox access"
+msgstr "받은 편지함 접근"
+
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Inbox color"
 msgstr "받은 편지함 색상"
@@ -7052,6 +7105,7 @@ msgstr "{name}의 받은 편지함"
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/slack/SlackPage.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 msgid "Inboxes"
 msgstr "받은 편지함"
 
@@ -7353,6 +7407,10 @@ msgstr "동의 기록도 함께 삭제됩니다. 구독을 취소했기 때문�
 #: src/features/status/ComponentsTab.tsx
 msgid "Its history is deleted. Incidents that named it no longer do."
 msgstr "기록이 삭제됩니다. 이를 언급한 인시던트는 더 이상 언급하지 않습니다."
+
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "Its members lose the inbox access the team gave them, and its conversations lose the team but keep their assignee."
+msgstr "멤버는 팀이 준 받은 편지함 접근 권한을 잃고, 대화는 팀 배정이 해제되지만 담당자는 유지됩니다."
 
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/Composer.tsx
@@ -8341,6 +8399,8 @@ msgstr "멤버"
 #: src/features/inbox/SidePanels.tsx
 #: src/features/settings/ProductsPage.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/teams/TeamDialog.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Members"
 msgstr "멤버"
@@ -8757,6 +8817,10 @@ msgstr "내 토론"
 msgid "My profile"
 msgstr "내 프로필"
 
+#: src/features/inbox/ChatList.tsx
+msgid "My teams"
+msgstr "내 팀"
+
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListForm.tsx
@@ -8774,6 +8838,7 @@ msgstr "내 프로필"
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/ProfileForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
+#: src/features/settings/teams/TeamDialog.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/setup/email/EmailLayout.tsx
 #: src/features/setup/SetupLayout.tsx
@@ -9074,6 +9139,11 @@ msgstr "새 상태 페이지"
 #: src/features/broadcasts/Import.tsx
 msgid "New subscribers added"
 msgstr "추가된 새 구독자"
+
+#: src/features/settings/teams/TeamDialog.tsx
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "New team"
+msgstr "새 팀"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "New update · {stage}"
@@ -9663,9 +9733,21 @@ msgstr "아직 구독자가 없습니다. 방문자가 상태 페이지에서 �
 msgid "No support address"
 msgstr "지원 주소 없음"
 
+#: src/features/conversation/HeaderActions.tsx
+msgid "No team"
+msgstr "팀 없음"
+
+#: src/features/inbox/ChatList.tsx
+msgid "No team covers all the selected inboxes."
+msgstr "선택한 받은 편지함을 모두 담당하는 팀이 없습니다."
+
 #: src/features/conversation/messages/MessageActions.tsx
 msgid "No teammate can see this inbox"
 msgstr "이 받은 편지함을 볼 수 있는 팀원이 없습니다"
+
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "No teams yet"
+msgstr "아직 팀이 없습니다"
 
 #: src/features/migrations/parts.tsx
 msgid "No test message has reached Yuva by the new route yet. If you finish now, mail that still goes only to {provider} is not copied. Yuva's token is deleted."
@@ -10027,6 +10109,10 @@ msgstr "아직 아무것도 추가되지 않았습니다. 파일을 읽고, 각 
 #: src/features/inbox/ChatList.tsx
 msgid "Nothing is assigned to you."
 msgstr "나에게 배정된 항목이 없습니다."
+
+#: src/features/inbox/ChatList.tsx
+msgid "Nothing is assigned to your teams."
+msgstr "내 팀에 배정된 항목이 없습니다."
 
 #: src/features/inbox/ChatList.tsx
 msgid "Nothing is closed yet."
@@ -12313,6 +12399,11 @@ msgstr "클릭한 메시지 또는 메모 삭제"
 msgid "Remove the provider?"
 msgstr "Remove the provider?"
 
+#: src/features/conversation/HeaderActions.tsx
+#: src/features/inbox/ChatList.tsx
+msgid "Remove the team"
+msgstr "팀 해제"
+
 #: src/features/settings/channels/sections.tsx
 msgid "Remove this channel?"
 msgstr "이 채널을 제거할까요?"
@@ -12975,6 +13066,7 @@ msgstr "토요일"
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/slack/SlackPage.tsx
+#: src/features/settings/teams/TeamDialog.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/status/ComponentDialogs.tsx
@@ -14822,18 +14914,28 @@ msgstr "TCP 확인"
 #: src/app/TeamMenu.tsx
 #: src/components/common/DiscussionAuthor.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/conversation/HeaderActions.tsx
 #: src/features/conversation/History.tsx
 #: src/features/docs/discussions/parts.tsx
 #: src/features/home/HomePage.tsx
+#: src/features/inbox/ChatList.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Team"
 msgstr "팀"
 
+#: src/features/conversation/HeaderActions.tsx
+msgid "Team (M)"
+msgstr "팀 (M)"
+
 #: src/features/migrations/MapStep.tsx
 msgid "Team addresses"
 msgstr "팀 주소"
+
+#: src/features/inbox/ChatList.tsx
+msgid "Team changed"
+msgstr "팀을 변경했습니다"
 
 #: src/features/settings/channels/app/PushSection.tsx
 msgid "Team ID"
@@ -14866,6 +14968,14 @@ msgstr "현재 팀"
 #: src/features/team/TeamPage.tsx
 msgid "teammate@company.com"
 msgstr "teammate@company.com"
+
+#: src/app/Palette.tsx
+#: src/features/conversation/HeaderActions.tsx
+#: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/webhooks/events.tsx
+msgid "Teams"
+msgstr "팀"
 
 #: src/features/status/StatusPages.tsx
 msgid "Tell your customers whether your product works. Each product gets one page, where you open incidents, plan maintenance and set the state of each component."
@@ -16304,6 +16414,10 @@ msgstr "이 사이트는 이 문서 채널을 사용할 수 없습니다."
 msgid "This subscription is no longer waiting for confirmation."
 msgstr "이 구독은 더 이상 확인을 기다리고 있지 않습니다."
 
+#: src/components/common/text.ts
+msgid "This team does not cover the conversation's inbox."
+msgstr "이 팀은 대화의 받은 편지함을 담당하지 않습니다."
+
 #: src/features/status/Notices.tsx
 msgid "This was a closing notice and no earlier notice was sent, so nobody had heard of the incident"
 msgstr "종료 알림이었고 이전에 발송된 알림이 없어 아무도 이 인시던트에 대해 알지 못했습니다"
@@ -16355,6 +16469,10 @@ msgstr "팀 메일만 있는 스레드"
 #: src/features/migrations/ChooseStep.tsx
 msgid "Threads whose last message is on or after"
 msgstr "마지막 메시지가 다음 날짜 이후인 스레드"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Through {through}"
+msgstr "{through}을(를) 통해"
 
 #: src/features/broadcasts/Composer.tsx
 msgid "through its own broadcast account"

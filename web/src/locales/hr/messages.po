@@ -1384,6 +1384,14 @@ msgstr "Monitor statusa prestao je raditi"
 msgid "A subscription changed"
 msgstr "Pretplata se promijenila"
 
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "A team gives its members the inboxes it covers. A conversation can go to a team as well as to a member."
+msgstr "Tim svojim članovima daje pretince koje pokriva. Razgovor se može dodijeliti timu kao i članu."
+
+#: src/components/common/text.ts
+msgid "A team holds at most 500 members and 100 inboxes."
+msgstr "Tim može imati najviše 500 članova i 100 pretinaca."
+
 #: src/features/issues/IssueDialog.tsx
 msgid "A team key such as ENG."
 msgstr "A team key such as ENG."
@@ -2291,6 +2299,10 @@ msgid "Another team address"
 msgstr "Druga adresa tima"
 
 #: src/components/common/text.ts
+msgid "Another team already has this name."
+msgstr "Drugi tim već ima taj naziv."
+
+#: src/components/common/text.ts
 msgid "Another workspace on this server has already verified this domain."
 msgstr "Another workspace on this server has already verified this domain."
 
@@ -2338,6 +2350,10 @@ msgstr "Bilo koja zemlja"
 #: src/features/inbox/ChatList.tsx
 msgid "Any label"
 msgstr "Bilo koja oznaka"
+
+#: src/features/inbox/ChatList.tsx
+msgid "Any team"
+msgstr "Bilo koji tim"
 
 #: src/features/setup/AddChannelStep.tsx
 msgid "Anyone on your site can write. Turn it off when only signed-in users may chat."
@@ -2564,6 +2580,11 @@ msgstr "Dodijeli (A)"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Assign or hand to a teammate"
 msgstr "Dodijeli ili predaj kolegi"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Assign to a team"
+msgstr "Dodijeli timu"
 
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/HeaderActions.tsx
@@ -2825,6 +2846,7 @@ msgid "Besides openid, email and profile. Okta needs groups for group checks."
 msgstr "Besides openid, email and profile. Okta needs groups for group checks."
 
 #: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/teams/TeamDialog.tsx
 msgid "Billing"
 msgstr "Naplata"
 
@@ -4375,6 +4397,10 @@ msgstr "Izradi stranicu statusa ({newKey})"
 msgid "Create status page for {product}"
 msgstr "Izradi stranicu statusa za {product}"
 
+#: src/features/settings/teams/TeamDialog.tsx
+msgid "Create team"
+msgstr "Stvori tim"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Create the board"
 msgstr "Izradi ploču"
@@ -4560,6 +4586,7 @@ msgstr "Smanjena učinkovitost"
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
 #: src/features/status/SettingsTab.tsx
@@ -4680,6 +4707,10 @@ msgstr "Izbrišite OAuth klijenta kojeg ste izradili za Yuvu"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Delete the selected block"
 msgstr "Izbriši odabrani blok"
+
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "Delete the team {name}?"
+msgstr "Izbrisati tim {name}?"
 
 #: src/features/settings/canned/CannedRepliesPage.tsx
 msgid "Delete this canned reply?"
@@ -4825,6 +4856,7 @@ msgid "Deny"
 msgstr "Odbij"
 
 #: src/features/issues/IssueDialog.tsx
+#: src/features/settings/teams/TeamDialog.tsx
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/SettingsTab.tsx
 msgid "Description"
@@ -5358,6 +5390,7 @@ msgstr "Svaki sa svim svojim porukama i bilješkama"
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Edit"
@@ -5407,6 +5440,10 @@ msgstr "Uredi oznaku"
 #: src/features/status/MonitorDialog.tsx
 msgid "Edit monitor"
 msgstr "Uredi monitor"
+
+#: src/features/settings/teams/TeamDialog.tsx
+msgid "Edit team"
+msgstr "Uredi tim"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Edit the design"
@@ -5910,6 +5947,10 @@ msgstr "Filtriraj po oznaci"
 #: src/features/contact/ContactsPage.tsx
 msgid "Filter by product"
 msgstr "Filtriraj po proizvodu"
+
+#: src/features/inbox/ChatList.tsx
+msgid "Filter by team"
+msgstr "Filtriraj po timu"
 
 #: src/features/inbox/SourceFilter.tsx
 msgid "Filter by type, site and broadcast"
@@ -6420,9 +6461,17 @@ msgstr "Pozdravlja nove razgovore e-poštom, jednom po kontaktu unutar intervala
 msgid "Group"
 msgstr "Grupa"
 
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "Group members, such as billing or support, and give the group its inboxes in one place."
+msgstr "Grupirajte članove, na primjer naplatu ili podršku, i grupi na jednom mjestu dajte njezine pretince."
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Groups claim"
 msgstr "Groups claim"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Groups of members and the inboxes they cover"
+msgstr "Grupe članova i pretinaci koje pokrivaju"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/Growth.tsx
@@ -7038,6 +7087,10 @@ msgstr "U Zoho Mailu otvorite Settings › Mail accounts › IMAP access i uklju
 msgid "Inbox"
 msgstr "Pretinac"
 
+#: src/features/settings/teams/TeamDialog.tsx
+msgid "Inbox access"
+msgstr "Pristup pretincima"
+
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Inbox color"
 msgstr "Boja pretinca"
@@ -7052,6 +7105,7 @@ msgstr "Pretinac za {name}"
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/slack/SlackPage.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 msgid "Inboxes"
 msgstr "Pretinci"
 
@@ -7353,6 +7407,10 @@ msgstr "Njegov zapis o privoli briše se s njim. Budući da su se odjavili, adre
 #: src/features/status/ComponentsTab.tsx
 msgid "Its history is deleted. Incidents that named it no longer do."
 msgstr "Njegova povijest se briše. Incidenti koji su ga spominjali više ga ne spominju."
+
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "Its members lose the inbox access the team gave them, and its conversations lose the team but keep their assignee."
+msgstr "Njegovi članovi gube pristup pretincima koje im je tim davao, a razgovori gube tim, ali zadržavaju dodijeljenu osobu."
 
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/Composer.tsx
@@ -8341,6 +8399,8 @@ msgstr "Član"
 #: src/features/inbox/SidePanels.tsx
 #: src/features/settings/ProductsPage.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/teams/TeamDialog.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Members"
 msgstr "Članovi"
@@ -8757,6 +8817,10 @@ msgstr "Moje rasprave"
 msgid "My profile"
 msgstr "Moj profil"
 
+#: src/features/inbox/ChatList.tsx
+msgid "My teams"
+msgstr "Moji timovi"
+
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListForm.tsx
@@ -8774,6 +8838,7 @@ msgstr "Moj profil"
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/ProfileForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
+#: src/features/settings/teams/TeamDialog.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/setup/email/EmailLayout.tsx
 #: src/features/setup/SetupLayout.tsx
@@ -9074,6 +9139,11 @@ msgstr "Nova stranica statusa"
 #: src/features/broadcasts/Import.tsx
 msgid "New subscribers added"
 msgstr "Novi pretplatnici dodani"
+
+#: src/features/settings/teams/TeamDialog.tsx
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "New team"
+msgstr "Novi tim"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "New update · {stage}"
@@ -9663,9 +9733,21 @@ msgstr "Još nema pretplatnika. Posjetitelji se pretplaćuju na stranici statusa
 msgid "No support address"
 msgstr "Nema adrese podrške"
 
+#: src/features/conversation/HeaderActions.tsx
+msgid "No team"
+msgstr "Nema tima"
+
+#: src/features/inbox/ChatList.tsx
+msgid "No team covers all the selected inboxes."
+msgstr "Nijedan tim ne pokriva sve odabrane pretince."
+
 #: src/features/conversation/messages/MessageActions.tsx
 msgid "No teammate can see this inbox"
 msgstr "Nijedan kolega ne vidi ovaj pretinac"
+
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "No teams yet"
+msgstr "Još nema timova"
 
 #: src/features/migrations/parts.tsx
 msgid "No test message has reached Yuva by the new route yet. If you finish now, mail that still goes only to {provider} is not copied. Yuva's token is deleted."
@@ -10027,6 +10109,10 @@ msgstr "Još se ništa ne dodaje. Datoteka se čita, svaka domena se pita prima 
 #: src/features/inbox/ChatList.tsx
 msgid "Nothing is assigned to you."
 msgstr "Ništa vam nije dodijeljeno."
+
+#: src/features/inbox/ChatList.tsx
+msgid "Nothing is assigned to your teams."
+msgstr "Vašim timovima ništa nije dodijeljeno."
 
 #: src/features/inbox/ChatList.tsx
 msgid "Nothing is closed yet."
@@ -12313,6 +12399,11 @@ msgstr "Ukloni poruku ili bilješku na koju ste kliknuli"
 msgid "Remove the provider?"
 msgstr "Remove the provider?"
 
+#: src/features/conversation/HeaderActions.tsx
+#: src/features/inbox/ChatList.tsx
+msgid "Remove the team"
+msgstr "Ukloni tim"
+
 #: src/features/settings/channels/sections.tsx
 msgid "Remove this channel?"
 msgstr "Ukloniti ovaj kanal?"
@@ -12975,6 +13066,7 @@ msgstr "Subota"
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/slack/SlackPage.tsx
+#: src/features/settings/teams/TeamDialog.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/status/ComponentDialogs.tsx
@@ -14822,18 +14914,28 @@ msgstr "TCP provjera"
 #: src/app/TeamMenu.tsx
 #: src/components/common/DiscussionAuthor.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/conversation/HeaderActions.tsx
 #: src/features/conversation/History.tsx
 #: src/features/docs/discussions/parts.tsx
 #: src/features/home/HomePage.tsx
+#: src/features/inbox/ChatList.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Team"
 msgstr "Tim"
 
+#: src/features/conversation/HeaderActions.tsx
+msgid "Team (M)"
+msgstr "Tim (M)"
+
 #: src/features/migrations/MapStep.tsx
 msgid "Team addresses"
 msgstr "Adrese tima"
+
+#: src/features/inbox/ChatList.tsx
+msgid "Team changed"
+msgstr "Tim promijenjen"
 
 #: src/features/settings/channels/app/PushSection.tsx
 msgid "Team ID"
@@ -14866,6 +14968,14 @@ msgstr "Tim upravo sada"
 #: src/features/team/TeamPage.tsx
 msgid "teammate@company.com"
 msgstr "kolega@tvrtka.hr"
+
+#: src/app/Palette.tsx
+#: src/features/conversation/HeaderActions.tsx
+#: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/webhooks/events.tsx
+msgid "Teams"
+msgstr "Timovi"
 
 #: src/features/status/StatusPages.tsx
 msgid "Tell your customers whether your product works. Each product gets one page, where you open incidents, plan maintenance and set the state of each component."
@@ -16304,6 +16414,10 @@ msgstr "Ovo web-mjesto ne smije koristiti ovaj dokumentacijski kanal."
 msgid "This subscription is no longer waiting for confirmation."
 msgstr "Ova pretplata više ne čeka potvrdu."
 
+#: src/components/common/text.ts
+msgid "This team does not cover the conversation's inbox."
+msgstr "Ovaj tim ne pokriva pretinac razgovora."
+
 #: src/features/status/Notices.tsx
 msgid "This was a closing notice and no earlier notice was sent, so nobody had heard of the incident"
 msgstr "Ovo je bila završna obavijest, a nijedna prethodna nije poslana, pa nitko nije znao za incident"
@@ -16355,6 +16469,10 @@ msgstr "Niti samo s poštom vašeg tima"
 #: src/features/migrations/ChooseStep.tsx
 msgid "Threads whose last message is on or after"
 msgstr "Niti čija je zadnja poruka na ovaj dan ili poslije"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Through {through}"
+msgstr "Preko {through}"
 
 #: src/features/broadcasts/Composer.tsx
 msgid "through its own broadcast account"

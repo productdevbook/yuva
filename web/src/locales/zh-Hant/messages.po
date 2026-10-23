@@ -1384,6 +1384,14 @@ msgstr "某個狀態監控已中斷"
 msgid "A subscription changed"
 msgstr "訂閱發生變化時"
 
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "A team gives its members the inboxes it covers. A conversation can go to a team as well as to a member."
+msgstr "團隊會把它負責的收件匣授予成員。對話既可以指派給成員，也可以指派給團隊。"
+
+#: src/components/common/text.ts
+msgid "A team holds at most 500 members and 100 inboxes."
+msgstr "一個團隊最多有 500 位成員和 100 個收件匣。"
+
 #: src/features/issues/IssueDialog.tsx
 msgid "A team key such as ENG."
 msgstr "A team key such as ENG."
@@ -2291,6 +2299,10 @@ msgid "Another team address"
 msgstr "另一個團隊地址"
 
 #: src/components/common/text.ts
+msgid "Another team already has this name."
+msgstr "已有另一個團隊使用這個名稱。"
+
+#: src/components/common/text.ts
 msgid "Another workspace on this server has already verified this domain."
 msgstr "Another workspace on this server has already verified this domain."
 
@@ -2338,6 +2350,10 @@ msgstr "任何國家"
 #: src/features/inbox/ChatList.tsx
 msgid "Any label"
 msgstr "任何標籤"
+
+#: src/features/inbox/ChatList.tsx
+msgid "Any team"
+msgstr "任何團隊"
 
 #: src/features/setup/AddChannelStep.tsx
 msgid "Anyone on your site can write. Turn it off when only signed-in users may chat."
@@ -2564,6 +2580,11 @@ msgstr "指派(A)"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Assign or hand to a teammate"
 msgstr "指派或交給團隊成員"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Assign to a team"
+msgstr "指派給團隊"
 
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/HeaderActions.tsx
@@ -2825,6 +2846,7 @@ msgid "Besides openid, email and profile. Okta needs groups for group checks."
 msgstr "Besides openid, email and profile. Okta needs groups for group checks."
 
 #: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/teams/TeamDialog.tsx
 msgid "Billing"
 msgstr "帳單"
 
@@ -4375,6 +4397,10 @@ msgstr "建立狀態頁（{newKey}）"
 msgid "Create status page for {product}"
 msgstr "為 {product} 建立狀態頁"
 
+#: src/features/settings/teams/TeamDialog.tsx
+msgid "Create team"
+msgstr "建立團隊"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Create the board"
 msgstr "建立看板"
@@ -4560,6 +4586,7 @@ msgstr "效能降低"
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
 #: src/features/status/SettingsTab.tsx
@@ -4680,6 +4707,10 @@ msgstr "刪除你為 Yuva 建立的 OAuth 用戶端"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Delete the selected block"
 msgstr "刪除所選區塊"
+
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "Delete the team {name}?"
+msgstr "刪除團隊「{name}」？"
 
 #: src/features/settings/canned/CannedRepliesPage.tsx
 msgid "Delete this canned reply?"
@@ -4825,6 +4856,7 @@ msgid "Deny"
 msgstr "拒絕"
 
 #: src/features/issues/IssueDialog.tsx
+#: src/features/settings/teams/TeamDialog.tsx
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/SettingsTab.tsx
 msgid "Description"
@@ -5358,6 +5390,7 @@ msgstr "每個都包含其所有訊息和備註"
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Edit"
@@ -5407,6 +5440,10 @@ msgstr "編輯標籤"
 #: src/features/status/MonitorDialog.tsx
 msgid "Edit monitor"
 msgstr "編輯監控"
+
+#: src/features/settings/teams/TeamDialog.tsx
+msgid "Edit team"
+msgstr "編輯團隊"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Edit the design"
@@ -5910,6 +5947,10 @@ msgstr "依標籤篩選"
 #: src/features/contact/ContactsPage.tsx
 msgid "Filter by product"
 msgstr "依產品篩選"
+
+#: src/features/inbox/ChatList.tsx
+msgid "Filter by team"
+msgstr "依團隊篩選"
 
 #: src/features/inbox/SourceFilter.tsx
 msgid "Filter by type, site and broadcast"
@@ -6420,9 +6461,17 @@ msgstr "在間隔時間內,對每位聯絡人透過郵件問候新對話一次�
 msgid "Group"
 msgstr "群組"
 
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "Group members, such as billing or support, and give the group its inboxes in one place."
+msgstr "把成員依帳單、支援等分組，並在一處為該組指定收件匣。"
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Groups claim"
 msgstr "Groups claim"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Groups of members and the inboxes they cover"
+msgstr "成員群組及其負責的收件匣"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/Growth.tsx
@@ -7038,6 +7087,10 @@ msgstr "在 Zoho Mail 中,開啟「設定 › 郵件帳戶 › IMAP 存取」並
 msgid "Inbox"
 msgstr "收件匣"
 
+#: src/features/settings/teams/TeamDialog.tsx
+msgid "Inbox access"
+msgstr "收件匣存取權限"
+
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Inbox color"
 msgstr "收件匣顏色"
@@ -7052,6 +7105,7 @@ msgstr "{name} 的收件匣"
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/slack/SlackPage.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 msgid "Inboxes"
 msgstr "收件匣"
 
@@ -7353,6 +7407,10 @@ msgstr "其同意記錄會一併刪除。由於對方已退訂,該地址會被�
 #: src/features/status/ComponentsTab.tsx
 msgid "Its history is deleted. Incidents that named it no longer do."
 msgstr "其歷史記錄將被刪除。曾提到它的事件不再提到它。"
+
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "Its members lose the inbox access the team gave them, and its conversations lose the team but keep their assignee."
+msgstr "成員將失去團隊授予的收件匣存取權限；對話會失去團隊，但保留負責人。"
 
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/Composer.tsx
@@ -8341,6 +8399,8 @@ msgstr "成員"
 #: src/features/inbox/SidePanels.tsx
 #: src/features/settings/ProductsPage.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/teams/TeamDialog.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Members"
 msgstr "成員"
@@ -8757,6 +8817,10 @@ msgstr "我的討論"
 msgid "My profile"
 msgstr "我的個人資料"
 
+#: src/features/inbox/ChatList.tsx
+msgid "My teams"
+msgstr "我的團隊"
+
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListForm.tsx
@@ -8774,6 +8838,7 @@ msgstr "我的個人資料"
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/ProfileForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
+#: src/features/settings/teams/TeamDialog.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/setup/email/EmailLayout.tsx
 #: src/features/setup/SetupLayout.tsx
@@ -9074,6 +9139,11 @@ msgstr "新增狀態頁"
 #: src/features/broadcasts/Import.tsx
 msgid "New subscribers added"
 msgstr "新增的訂閱者"
+
+#: src/features/settings/teams/TeamDialog.tsx
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "New team"
+msgstr "新團隊"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "New update · {stage}"
@@ -9663,9 +9733,21 @@ msgstr "尚無訂閱者。訪客可在狀態頁面訂閱,你也可以在此新�
 msgid "No support address"
 msgstr "無支援地址"
 
+#: src/features/conversation/HeaderActions.tsx
+msgid "No team"
+msgstr "無團隊"
+
+#: src/features/inbox/ChatList.tsx
+msgid "No team covers all the selected inboxes."
+msgstr "沒有團隊涵蓋所有所選收件匣。"
+
 #: src/features/conversation/messages/MessageActions.tsx
 msgid "No teammate can see this inbox"
 msgstr "沒有團隊成員能看到此收件匣"
+
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "No teams yet"
+msgstr "尚無團隊"
 
 #: src/features/migrations/parts.tsx
 msgid "No test message has reached Yuva by the new route yet. If you finish now, mail that still goes only to {provider} is not copied. Yuva's token is deleted."
@@ -10027,6 +10109,10 @@ msgstr "還沒有新增任何內容。會讀取檔案,詢問每個域名是否�
 #: src/features/inbox/ChatList.tsx
 msgid "Nothing is assigned to you."
 msgstr "沒有指派給你的內容。"
+
+#: src/features/inbox/ChatList.tsx
+msgid "Nothing is assigned to your teams."
+msgstr "沒有指派給你的團隊的項目。"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Nothing is closed yet."
@@ -12313,6 +12399,11 @@ msgstr "移除你點選的訊息或備註"
 msgid "Remove the provider?"
 msgstr "Remove the provider?"
 
+#: src/features/conversation/HeaderActions.tsx
+#: src/features/inbox/ChatList.tsx
+msgid "Remove the team"
+msgstr "移除團隊"
+
 #: src/features/settings/channels/sections.tsx
 msgid "Remove this channel?"
 msgstr "移除此頻道?"
@@ -12975,6 +13066,7 @@ msgstr "星期六"
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/slack/SlackPage.tsx
+#: src/features/settings/teams/TeamDialog.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/status/ComponentDialogs.tsx
@@ -14822,18 +14914,28 @@ msgstr "TCP 檢查"
 #: src/app/TeamMenu.tsx
 #: src/components/common/DiscussionAuthor.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/conversation/HeaderActions.tsx
 #: src/features/conversation/History.tsx
 #: src/features/docs/discussions/parts.tsx
 #: src/features/home/HomePage.tsx
+#: src/features/inbox/ChatList.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Team"
 msgstr "團隊"
 
+#: src/features/conversation/HeaderActions.tsx
+msgid "Team (M)"
+msgstr "團隊 (M)"
+
 #: src/features/migrations/MapStep.tsx
 msgid "Team addresses"
 msgstr "團隊地址"
+
+#: src/features/inbox/ChatList.tsx
+msgid "Team changed"
+msgstr "團隊已變更"
 
 #: src/features/settings/channels/app/PushSection.tsx
 msgid "Team ID"
@@ -14866,6 +14968,14 @@ msgstr "當前團隊"
 #: src/features/team/TeamPage.tsx
 msgid "teammate@company.com"
 msgstr "teammate@company.com"
+
+#: src/app/Palette.tsx
+#: src/features/conversation/HeaderActions.tsx
+#: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/webhooks/events.tsx
+msgid "Teams"
+msgstr "團隊"
 
 #: src/features/status/StatusPages.tsx
 msgid "Tell your customers whether your product works. Each product gets one page, where you open incidents, plan maintenance and set the state of each component."
@@ -16304,6 +16414,10 @@ msgstr "此站點不允許使用此文件頻道。"
 msgid "This subscription is no longer waiting for confirmation."
 msgstr "此訂閱不再等待確認。"
 
+#: src/components/common/text.ts
+msgid "This team does not cover the conversation's inbox."
+msgstr "此團隊不負責這則對話的收件匣。"
+
 #: src/features/status/Notices.tsx
 msgid "This was a closing notice and no earlier notice was sent, so nobody had heard of the incident"
 msgstr "這是一則結案通知，且之前未傳送過任何通知，因此沒有人得知這起事件"
@@ -16355,6 +16469,10 @@ msgstr "只有你團隊郵件的對話串"
 #: src/features/migrations/ChooseStep.tsx
 msgid "Threads whose last message is on or after"
 msgstr "最後一條訊息在此日期當天或之後的對話串"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Through {through}"
+msgstr "透過 {through}"
 
 #: src/features/broadcasts/Composer.tsx
 msgid "through its own broadcast account"

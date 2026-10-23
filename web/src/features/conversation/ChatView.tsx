@@ -50,7 +50,15 @@ import { LinkIncidentDialog } from "@/features/status/LinkIncidentDialog"
 import { useConversationIncidents } from "@/features/status/linked"
 import { FromConversationDialog } from "@/features/docs/discussions/FromConversation"
 import { conversationPage, PageLine } from "@/features/docs/PageContext"
-import { CloseButton, HandMenu, ProgressMenu, SnoozeMenu, type HeaderMenu } from "@/features/conversation/HeaderActions"
+import {
+  CloseButton,
+  HandMenu,
+  ProgressMenu,
+  SnoozeMenu,
+  TeamMenu,
+  useInboxTeams,
+  type HeaderMenu,
+} from "@/features/conversation/HeaderActions"
 import { History } from "@/features/conversation/History"
 import type { ThreadContext } from "@/features/conversation/messages/context"
 import { foldText, quoteOf } from "@/features/conversation/messages/MessageActions"
@@ -304,6 +312,7 @@ function Loaded({
   const incidents = useConversationIncidents(c.id).data ?? []
   const chipLabels = labels.filter((l) => c.labels.includes(l.id))
   const assignee = c.assignee_id ? members.get(c.assignee_id) : undefined
+  const inboxTeams = useInboxTeams(c.inbox_id)
 
   const memberName = (id?: string) => {
     const m = id ? members.get(id) : undefined
@@ -433,6 +442,7 @@ function Loaded({
     note: () => reply.current?.focus("note"),
     snooze: () => setMenu("snooze"),
     hand: () => setMenu("hand"),
+    assignTeam: () => (inboxTeams.length > 0 || c.team_id) && setMenu("team"),
     labels: () => {
       setMoreView("labels")
       setMoreOpen(true)
@@ -468,6 +478,7 @@ function Loaded({
           [SHORTCUTS.attach]: () => reply.current?.attach(),
           [SHORTCUTS.snooze]: handlers.snooze,
           [SHORTCUTS.hand]: handlers.hand,
+          [SHORTCUTS.assignTeam]: handlers.assignTeam,
           [SHORTCUTS.labels]: handlers.labels,
           [SHORTCUTS.progress]: handlers.progress,
           [SHORTCUTS.close]: handlers.close,
@@ -623,6 +634,7 @@ function Loaded({
                   </span>
                 }
               />
+              <TeamMenu c={c} open={menu === "team"} onOpenChange={openMenu("team")} />
               {!c.assignee_id && (
                 <Button
                   variant="outline"

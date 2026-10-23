@@ -1384,6 +1384,14 @@ msgstr "ഒരു സ്റ്റാറ്റസ് മോണിറ്റർ പ
 msgid "A subscription changed"
 msgstr "ഒരു സബ്സ്ക്രിപ്ഷൻ മാറി"
 
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "A team gives its members the inboxes it covers. A conversation can go to a team as well as to a member."
+msgstr "ടീം അത് കൈകാര്യം ചെയ്യുന്ന ഇൻബോക്സുകൾ അംഗങ്ങൾക്ക് നൽകുന്നു. സംഭാഷണം അംഗത്തിനു മാത്രമല്ല, ടീമിനും നൽകാം."
+
+#: src/components/common/text.ts
+msgid "A team holds at most 500 members and 100 inboxes."
+msgstr "ഒരു ടീമിൽ പരമാവധി 500 അംഗങ്ങളും 100 ഇൻബോക്സുകളും ഉണ്ടാകാം."
+
 #: src/features/issues/IssueDialog.tsx
 msgid "A team key such as ENG."
 msgstr "A team key such as ENG."
@@ -2291,6 +2299,10 @@ msgid "Another team address"
 msgstr "ടീമിന്റെ മറ്റൊരു വിലാസം"
 
 #: src/components/common/text.ts
+msgid "Another team already has this name."
+msgstr "മറ്റൊരു ടീമിന് ഇതിനകം ഈ പേരുണ്ട്."
+
+#: src/components/common/text.ts
 msgid "Another workspace on this server has already verified this domain."
 msgstr "Another workspace on this server has already verified this domain."
 
@@ -2338,6 +2350,10 @@ msgstr "ഏത് രാജ്യവും"
 #: src/features/inbox/ChatList.tsx
 msgid "Any label"
 msgstr "ഏതെങ്കിലും ലേബൽ"
+
+#: src/features/inbox/ChatList.tsx
+msgid "Any team"
+msgstr "ഏതെങ്കിലും ടീം"
 
 #: src/features/setup/AddChannelStep.tsx
 msgid "Anyone on your site can write. Turn it off when only signed-in users may chat."
@@ -2564,6 +2580,11 @@ msgstr "നിയോഗിക്കുക (A)"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Assign or hand to a teammate"
 msgstr "ഒരു സഹപ്രവർത്തകനെ നിയോഗിക്കുക അല്ലെങ്കിൽ കൈമാറുക"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Assign to a team"
+msgstr "ടീമിന് നൽകുക"
 
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/HeaderActions.tsx
@@ -2825,6 +2846,7 @@ msgid "Besides openid, email and profile. Okta needs groups for group checks."
 msgstr "Besides openid, email and profile. Okta needs groups for group checks."
 
 #: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/teams/TeamDialog.tsx
 msgid "Billing"
 msgstr "ബില്ലിംഗ്"
 
@@ -4375,6 +4397,10 @@ msgstr "സ്റ്റാറ്റസ് പേജ് സൃഷ്ടിക്�
 msgid "Create status page for {product}"
 msgstr "{product}-നായി സ്റ്റാറ്റസ് പേജ് സൃഷ്ടിക്കുക"
 
+#: src/features/settings/teams/TeamDialog.tsx
+msgid "Create team"
+msgstr "ടീം സൃഷ്ടിക്കുക"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Create the board"
 msgstr "ബോർഡ് സൃഷ്ടിക്കുക"
@@ -4560,6 +4586,7 @@ msgstr "പ്രകടനം കുറഞ്ഞു"
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
 #: src/features/status/SettingsTab.tsx
@@ -4680,6 +4707,10 @@ msgstr "നിങ്ങൾ Yuva-യ്ക്കായി ഉണ്ടാക്�
 #: src/components/common/ShortcutSheet.tsx
 msgid "Delete the selected block"
 msgstr "തിരഞ്ഞെടുത്ത ബ്ലോക്ക് ഇല്ലാതാക്കുക"
+
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "Delete the team {name}?"
+msgstr "{name} ടീം ഇല്ലാതാക്കണോ?"
 
 #: src/features/settings/canned/CannedRepliesPage.tsx
 msgid "Delete this canned reply?"
@@ -4825,6 +4856,7 @@ msgid "Deny"
 msgstr "നിരസിക്കുക"
 
 #: src/features/issues/IssueDialog.tsx
+#: src/features/settings/teams/TeamDialog.tsx
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/SettingsTab.tsx
 msgid "Description"
@@ -5358,6 +5390,7 @@ msgstr "ഓരോന്നും അതിന്റെ എല്ലാ സന്
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Edit"
@@ -5407,6 +5440,10 @@ msgstr "ലേബൽ എഡിറ്റ് ചെയ്യുക"
 #: src/features/status/MonitorDialog.tsx
 msgid "Edit monitor"
 msgstr "മോണിറ്റർ എഡിറ്റ് ചെയ്യുക"
+
+#: src/features/settings/teams/TeamDialog.tsx
+msgid "Edit team"
+msgstr "ടീം എഡിറ്റ് ചെയ്യുക"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Edit the design"
@@ -5910,6 +5947,10 @@ msgstr "ലേബൽ അനുസരിച്ച് ഫിൽട്ടർ ചെ
 #: src/features/contact/ContactsPage.tsx
 msgid "Filter by product"
 msgstr "ഉൽപ്പന്നം അനുസരിച്ച് ഫിൽട്ടർ ചെയ്യുക"
+
+#: src/features/inbox/ChatList.tsx
+msgid "Filter by team"
+msgstr "ടീം അനുസരിച്ച് ഫിൽട്ടർ ചെയ്യുക"
 
 #: src/features/inbox/SourceFilter.tsx
 msgid "Filter by type, site and broadcast"
@@ -6420,9 +6461,17 @@ msgstr "പുതിയ സംഭാഷണങ്ങളെ ഇമെയിൽ വ
 msgid "Group"
 msgstr "ഗ്രൂപ്പ്"
 
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "Group members, such as billing or support, and give the group its inboxes in one place."
+msgstr "ബില്ലിംഗ് അല്ലെങ്കിൽ സപ്പോർട്ട് പോലെ അംഗങ്ങളെ ഗ്രൂപ്പാക്കി, ഗ്രൂപ്പിന്റെ ഇൻബോക്സുകൾ ഒരിടത്ത് നൽകുക."
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Groups claim"
 msgstr "Groups claim"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Groups of members and the inboxes they cover"
+msgstr "അംഗങ്ങളുടെ ഗ്രൂപ്പുകളും അവ കൈകാര്യം ചെയ്യുന്ന ഇൻബോക്സുകളും"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/Growth.tsx
@@ -7038,6 +7087,10 @@ msgstr "Zoho Mail-ൽ Settings › Mail accounts › IMAP access തുറന്
 msgid "Inbox"
 msgstr "ഇൻബോക്സ്"
 
+#: src/features/settings/teams/TeamDialog.tsx
+msgid "Inbox access"
+msgstr "ഇൻബോക്സ് ആക്സസ്"
+
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Inbox color"
 msgstr "ഇൻബോക്സ് നിറം"
@@ -7052,6 +7105,7 @@ msgstr "{name}-നുള്ള ഇൻബോക്സ്"
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/slack/SlackPage.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 msgid "Inboxes"
 msgstr "ഇൻബോക്സുകൾ"
 
@@ -7353,6 +7407,10 @@ msgstr "ഇതിന്റെ സമ്മത രേഖ ഇതോടൊപ്പ
 #: src/features/status/ComponentsTab.tsx
 msgid "Its history is deleted. Incidents that named it no longer do."
 msgstr "അതിന്റെ ചരിത്രം ഇല്ലാതാകും. അത് പരാമർശിച്ച സംഭവങ്ങൾ ഇനി പരാമർശിക്കില്ല."
+
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "Its members lose the inbox access the team gave them, and its conversations lose the team but keep their assignee."
+msgstr "ഇതിലെ അംഗങ്ങൾക്ക് ടീം നൽകിയ ഇൻബോക്സ് ആക്സസ് നഷ്ടമാകും; സംഭാഷണങ്ങൾക്ക് ടീം നഷ്ടമാകും, പക്ഷേ ചുമതലക്കാരൻ തുടരും."
 
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/Composer.tsx
@@ -8341,6 +8399,8 @@ msgstr "അംഗം"
 #: src/features/inbox/SidePanels.tsx
 #: src/features/settings/ProductsPage.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/teams/TeamDialog.tsx
+#: src/features/settings/teams/TeamsPage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Members"
 msgstr "അംഗങ്ങൾ"
@@ -8757,6 +8817,10 @@ msgstr "എന്റെ ചർച്ചകൾ"
 msgid "My profile"
 msgstr "എന്റെ പ്രൊഫൈൽ"
 
+#: src/features/inbox/ChatList.tsx
+msgid "My teams"
+msgstr "എന്റെ ടീമുകൾ"
+
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListForm.tsx
@@ -8774,6 +8838,7 @@ msgstr "എന്റെ പ്രൊഫൈൽ"
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/ProfileForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
+#: src/features/settings/teams/TeamDialog.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/setup/email/EmailLayout.tsx
 #: src/features/setup/SetupLayout.tsx
@@ -9074,6 +9139,11 @@ msgstr "പുതിയ സ്റ്റാറ്റസ് പേജ്"
 #: src/features/broadcasts/Import.tsx
 msgid "New subscribers added"
 msgstr "പുതിയ സബ്സ്ക്രൈബർമാരെ ചേർത്തു"
+
+#: src/features/settings/teams/TeamDialog.tsx
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "New team"
+msgstr "പുതിയ ടീം"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "New update · {stage}"
@@ -9663,9 +9733,21 @@ msgstr "സബ്സ്ക്രൈബർമാർ ഇതുവരെയില�
 msgid "No support address"
 msgstr "സപ്പോർട്ട് വിലാസമില്ല"
 
+#: src/features/conversation/HeaderActions.tsx
+msgid "No team"
+msgstr "ടീം ഇല്ല"
+
+#: src/features/inbox/ChatList.tsx
+msgid "No team covers all the selected inboxes."
+msgstr "തിരഞ്ഞെടുത്ത എല്ലാ ഇൻബോക്സുകളും ഒരു ടീമും കൈകാര്യം ചെയ്യുന്നില്ല."
+
 #: src/features/conversation/messages/MessageActions.tsx
 msgid "No teammate can see this inbox"
 msgstr "ഒരു സഹപ്രവർത്തകനും ഈ ഇൻബോക്സ് കാണാൻ കഴിയില്ല"
+
+#: src/features/settings/teams/TeamsPage.tsx
+msgid "No teams yet"
+msgstr "ഇതുവരെ ടീമുകളില്ല"
 
 #: src/features/migrations/parts.tsx
 msgid "No test message has reached Yuva by the new route yet. If you finish now, mail that still goes only to {provider} is not copied. Yuva's token is deleted."
@@ -10027,6 +10109,10 @@ msgstr "ഇതുവരെ ഒന്നും ചേർത്തിട്ടി�
 #: src/features/inbox/ChatList.tsx
 msgid "Nothing is assigned to you."
 msgstr "നിങ്ങൾക്ക് ഒന്നും നിയോഗിച്ചിട്ടില്ല."
+
+#: src/features/inbox/ChatList.tsx
+msgid "Nothing is assigned to your teams."
+msgstr "നിങ്ങളുടെ ടീമുകൾക്ക് ഒന്നും നൽകിയിട്ടില്ല."
 
 #: src/features/inbox/ChatList.tsx
 msgid "Nothing is closed yet."
@@ -12313,6 +12399,11 @@ msgstr "നിങ്ങൾ ക്ലിക്ക് ചെയ്ത സന്ദ
 msgid "Remove the provider?"
 msgstr "Remove the provider?"
 
+#: src/features/conversation/HeaderActions.tsx
+#: src/features/inbox/ChatList.tsx
+msgid "Remove the team"
+msgstr "ടീമിനെ നീക്കുക"
+
 #: src/features/settings/channels/sections.tsx
 msgid "Remove this channel?"
 msgstr "ഈ ചാനൽ നീക്കം ചെയ്യണോ?"
@@ -12975,6 +13066,7 @@ msgstr "ശനിയാഴ്ച"
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/slack/SlackPage.tsx
+#: src/features/settings/teams/TeamDialog.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/status/ComponentDialogs.tsx
@@ -14822,18 +14914,28 @@ msgstr "TCP പരിശോധന"
 #: src/app/TeamMenu.tsx
 #: src/components/common/DiscussionAuthor.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/conversation/HeaderActions.tsx
 #: src/features/conversation/History.tsx
 #: src/features/docs/discussions/parts.tsx
 #: src/features/home/HomePage.tsx
+#: src/features/inbox/ChatList.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Team"
 msgstr "ടീം"
 
+#: src/features/conversation/HeaderActions.tsx
+msgid "Team (M)"
+msgstr "ടീം (M)"
+
 #: src/features/migrations/MapStep.tsx
 msgid "Team addresses"
 msgstr "ടീം വിലാസങ്ങൾ"
+
+#: src/features/inbox/ChatList.tsx
+msgid "Team changed"
+msgstr "ടീം മാറ്റി"
 
 #: src/features/settings/channels/app/PushSection.tsx
 msgid "Team ID"
@@ -14866,6 +14968,14 @@ msgstr "ടീം ഇപ്പോൾ"
 #: src/features/team/TeamPage.tsx
 msgid "teammate@company.com"
 msgstr "teammate@company.com"
+
+#: src/app/Palette.tsx
+#: src/features/conversation/HeaderActions.tsx
+#: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/webhooks/events.tsx
+msgid "Teams"
+msgstr "ടീമുകൾ"
 
 #: src/features/status/StatusPages.tsx
 msgid "Tell your customers whether your product works. Each product gets one page, where you open incidents, plan maintenance and set the state of each component."
@@ -16304,6 +16414,10 @@ msgstr "ഈ ഡോക്യുമെന്റേഷൻ ചാനൽ ഉപയോ
 msgid "This subscription is no longer waiting for confirmation."
 msgstr "ഈ സബ്സ്ക്രിപ്ഷൻ ഇനി സ്ഥിരീകരണത്തിനായി കാത്തിരിക്കുന്നില്ല."
 
+#: src/components/common/text.ts
+msgid "This team does not cover the conversation's inbox."
+msgstr "ഈ ടീം സംഭാഷണത്തിന്റെ ഇൻബോക്സ് കൈകാര്യം ചെയ്യുന്നില്ല."
+
 #: src/features/status/Notices.tsx
 msgid "This was a closing notice and no earlier notice was sent, so nobody had heard of the incident"
 msgstr "ഇത് ഒരു ക്ലോസിംഗ് അറിയിപ്പായിരുന്നു, മുൻപ് അറിയിപ്പൊന്നും അയച്ചിരുന്നില്ല, അതിനാൽ സംഭവത്തെക്കുറിച്ച് ആരും അറിഞ്ഞിരുന്നില്ല"
@@ -16355,6 +16469,10 @@ msgstr "നിങ്ങളുടെ ടീമിന്റെ മെയിൽ മ
 #: src/features/migrations/ChooseStep.tsx
 msgid "Threads whose last message is on or after"
 msgstr "അവസാന സന്ദേശം ഈ തീയതിയിലോ അതിന് ശേഷമോ ഉള്ള ത്രെഡുകൾ"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Through {through}"
+msgstr "{through} വഴി"
 
 #: src/features/broadcasts/Composer.tsx
 msgid "through its own broadcast account"

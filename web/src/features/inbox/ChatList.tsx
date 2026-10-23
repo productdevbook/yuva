@@ -79,27 +79,36 @@ import { LabelTag, look } from "@/features/inbox/PageFrame"
 import { useListActions } from "@/features/inbox/memberState"
 import { setListQuery, useListSearch } from "@/features/inbox/listSearch"
 import { SourceFilter, sourceFilters, useSourceFilter } from "@/features/inbox/SourceFilter"
-import { useBulkUpdateConversations, useConversations, useCounts, useLoadedCount } from "@/features/inbox/queries"
+import {
+  useBulkTeam,
+  useBulkUpdateConversations,
+  useConversations,
+  useCounts,
+  useLoadedCount,
+} from "@/features/inbox/queries"
 import type { Contact, ConversationListItem, ConversationStatus } from "@/lib/api"
 import type { ConversationFilters } from "@/lib/keys"
 import { useSetAvailability } from "@/lib/availability"
 import { useSession } from "@/lib/session"
 import { useTyping } from "@/lib/typing"
 import { cn } from "@/lib/utils"
-import { useChannelMap, useLabels, useMemberMap } from "@/lib/workspace"
+import { useChannelMap, useLabels, useMemberMap, useMyTeams, useTeams } from "@/lib/workspace"
 
-export type Chip = "waiting" | "all" | "mine" | "unassigned" | "snoozed" | "done" | "trash"
-export const PAGE_CHIPS: Chip[] = ["waiting", "all", "mine", "unassigned", "snoozed", "done"]
+export type Chip = "waiting" | "all" | "mine" | "teams" | "unassigned" | "snoozed" | "done" | "trash"
+export const PAGE_CHIPS: Chip[] = ["waiting", "all", "mine", "teams", "unassigned", "snoozed", "done"]
 
 export function useChips(): Chip[] {
   const { canManage } = useSession()
-  return canManage ? [...PAGE_CHIPS, "trash"] : PAGE_CHIPS
+  const inTeam = useMyTeams().length > 0
+  const chips = inTeam ? PAGE_CHIPS : PAGE_CHIPS.filter((c) => c !== "teams")
+  return canManage ? [...chips, "trash"] : chips
 }
 
 const chipFilters: Record<Chip, ConversationFilters> = {
   waiting: { status: ["open"] },
   all: {},
   mine: { status: ["open"], assignee: "me" },
+  teams: { status: ["open"], team: "mine" },
   unassigned: { status: ["open"], assignee: "unassigned" },
   snoozed: { status: ["snoozed"] },
   done: { status: ["closed"] },
@@ -128,6 +137,7 @@ export function useChipLabels(): Record<Chip, string> {
     waiting: t`Waiting`,
     all: t`All`,
     mine: t`Mine`,
+    teams: t`My teams`,
     unassigned: t`Unassigned`,
     snoozed: t`Snoozed`,
     done: t`Closed`,
@@ -622,6 +632,38 @@ function LabelChip({ value, onChange }: { value: string; onChange: (id: string) 
   )
 }
 
+function TeamChip({ value, onChange }: { value: string; onChange: (id: string) => void }) {
+  const { t } = useLingui()
+  const teams = useTeams().data ?? []
+  const current = teams.find((x) => x.id === value)
+  if (teams.length === 0) return null
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger
+        render={<button type="button" className={current ? look.chipOn : look.chip} />}
+        aria-label={t`Filter by team`}
+        title={t`Filter by team`}
+        data-testid="team-filter"
+      >
+        {current ? <span className="max-w-24 truncate">{current.name}</span> : <Trans>Team</Trans>}
+        <ChevronDownIcon className="size-3.5 shrink-0 text-faint" />
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="start" className="max-h-[60svh] min-w-48">
+        <DropdownMenuRadioGroup value={value} onValueChange={(v) => onChange(String(v))}>
+          <DropdownMenuRadioItem value="">
+            <Trans>Any team</Trans>
+          </DropdownMenuRadioItem>
+          {teams.map((team) => (
+            <DropdownMenuRadioItem key={team.id} value={team.id}>
+              <span className="truncate">{team.name}</span>
+            </DropdownMenuRadioItem>
+          ))}
+        </DropdownMenuRadioGroup>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
+}
+
 function statusGroups(prev: ConversationListItem[]) {
   const groups = new Map<string, { status: ConversationStatus; until?: string; ids: string[] }>()
   for (const c of prev) {
@@ -673,6 +715,7 @@ export function ChatList({
   const [order, setOrder] = useState<Order | null>(null)
   const [unreadOnly, setUnreadOnly] = useState(false)
   const [labelId, setLabelId] = useState("")
+  const [teamId, setTeamId] = useState("")
   const search = useRef<HTMLInputElement>(null)
   const scroller = useRef<HTMLDivElement>(null)
   const sentinel = useRef<HTMLDivElement>(null)
@@ -683,13 +726,14 @@ export function ChatList({
   const sort: Order = order ?? (chip === "waiting" ? "oldest" : "newest")
 
   const [source, setSource] = useSourceFilter()
-  const narrowed = !!source.source || !!source.site || !!source.broadcast || !!labelId || !!chipInbox
+  const narrowed = !!source.source || !!source.site || !!source.broadcast || !!labelId || !!teamId || !!chipInbox
   const filters = {
     kind: ["conversation" as const],
     ...chipFilters[chip],
     ...sourceFilters(source),
     inbox_id: inboxId || undefined,
     label_id: labelId || undefined,
+    team_id: teamId || undefined,
     q: q || undefined,
   }
   const list = useConversations(filters)
@@ -708,7 +752,9 @@ export function ChatList({
   const live = useLiveIds(rows.filter((c) => c.status !== "closed"))
   const { cursorId, setCursorId, moveCursor, openCursor } = useListCursor(rows, currentId, onOpen, active, scroller)
 
-  const scope = [chip, q, inboxId, labelId, unreadOnly, source.source, source.site, source.broadcast?.id].join("|")
+  const scope = [chip, q, inboxId, labelId, teamId, unreadOnly, source.source, source.site, source.broadcast?.id].join(
+    "|"
+  )
   const shown = useRef({ scope, ids: [] as string[] })
   useEffect(() => {
     const before = shown.current
@@ -811,6 +857,7 @@ export function ChatList({
     waiting: <Trans>Nobody is waiting for a reply.</Trans>,
     all: <Trans>No conversations yet.</Trans>,
     mine: <Trans>Nothing is assigned to you.</Trans>,
+    teams: <Trans>Nothing is assigned to your teams.</Trans>,
     unassigned: <Trans>Every open conversation has someone.</Trans>,
     snoozed: <Trans>Nothing is snoozed.</Trans>,
     done: <Trans>Nothing is closed yet.</Trans>,
@@ -820,6 +867,7 @@ export function ChatList({
   const clearFilters = () => {
     setListQuery("")
     setLabelId("")
+    setTeamId("")
     setSource({})
     setUnreadOnly(false)
     setInbox("")
@@ -882,6 +930,20 @@ export function ChatList({
     )
   }
   const allLabels = useLabels().data ?? []
+  const allTeams = useTeams().data ?? []
+  const bulkTeam = useBulkTeam()
+  const teamsForAll = allTeams.filter((team) => chosenRows.every((c) => team.inbox_ids.includes(c.inbox_id)))
+  const teamChosen = (teamId: string | null) =>
+    bulkTeam.mutate(
+      { ids: chosen.slice(0, 100), teamId },
+      {
+        onSuccess: () => {
+          toast(t`Team changed`)
+          stopSelecting()
+        },
+        onError: failed,
+      }
+    )
   const inTrash = chip === "trash"
   const setTrashed = async (ids: string[], trashed: boolean) => {
     const done: string[] = []
@@ -1056,6 +1118,37 @@ export function ChatList({
               ))}
             </DropdownMenuContent>
           </DropdownMenu>
+          {allTeams.length > 0 && (
+            <DropdownMenu>
+              <DropdownMenuTrigger
+                render={<Button variant="outline" className={look.btnSm} disabled={none || bulkTeam.isPending} />}
+                data-testid="team-selected"
+              >
+                <Trans>Team</Trans>
+                <ChevronDownIcon className="text-faint" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="max-h-[60svh] min-w-48">
+                {teamsForAll.length === 0 && (
+                  <p className="px-2.5 py-1.5 text-body text-muted-foreground">
+                    <Trans>No team covers all the selected inboxes.</Trans>
+                  </p>
+                )}
+                {teamsForAll.map((team) => (
+                  <DropdownMenuItem key={team.id} onClick={() => teamChosen(team.id)}>
+                    {team.name}
+                  </DropdownMenuItem>
+                ))}
+                {teamsForAll.length > 0 && (
+                  <>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={() => teamChosen(null)}>
+                      <Trans>Remove the team</Trans>
+                    </DropdownMenuItem>
+                  </>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
           <Button
             variant="outline"
             className={look.btnSm}
@@ -1098,6 +1191,13 @@ export function ChatList({
         value={labelId}
         onChange={(id) => {
           setLabelId(id)
+          reset()
+        }}
+      />
+      <TeamChip
+        value={teamId}
+        onChange={(id) => {
+          setTeamId(id)
           reset()
         }}
       />
@@ -1150,7 +1250,9 @@ export function ChatList({
                     ? inboxId
                       ? unassignedHere
                       : counts?.unassigned
-                    : undefined,
+                    : k === "teams"
+                      ? counts?.mine_teams
+                      : undefined,
               testId: `chip-${k}`,
             }))}
           />

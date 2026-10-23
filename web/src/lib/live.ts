@@ -70,6 +70,7 @@ function matches(c: Conversation & { pinned_at?: string }, f: ConversationFilter
   if (f.broadcast_id && c.broadcast_id !== f.broadcast_id) return false
   if (f.contact_id && c.contact_id !== f.contact_id) return false
   if (f.label_id && !c.labels.includes(f.label_id)) return false
+  if (f.team_id && c.team_id !== f.team_id) return false
   if (f.assignee === "unassigned" && c.assignee_id) return false
   if (f.assignee === "me" && c.assignee_id !== memberId) return false
   if (f.assignee && f.assignee !== "me" && f.assignee !== "unassigned" && c.assignee_id !== f.assignee) return false
@@ -121,7 +122,7 @@ function updateLists(qc: QueryClient, ctx: LiveContext, c: Conversation, patch: 
       void qc.invalidateQueries({ queryKey: key, exact: true })
       continue
     }
-    if (f.q || (!base && matches(c, f, ctx.memberId))) {
+    if (f.q || f.team === "mine" || (!base && matches(c, f, ctx.memberId))) {
       void qc.invalidateQueries({ queryKey: key, exact: true })
       continue
     }
@@ -677,6 +678,7 @@ export function applyEvent(qc: QueryClient, ctx: LiveContext, event: LiveEvent) 
     case "inbox_access.changed":
       void qc.invalidateQueries({ queryKey: keys.inboxMembers(ctx.ws, event.data.inbox_id) })
       knowMember(qc, ctx.ws, event.data.member_id)
+      void qc.invalidateQueries({ queryKey: keys.teams(ctx.ws) })
       if (event.data.member_id === ctx.memberId) {
         if (!event.data.granted) forgetInbox(qc, ctx.ws, event.data.inbox_id)
         void qc.invalidateQueries({ queryKey: keys.inboxes(ctx.ws) })
@@ -688,6 +690,23 @@ export function applyEvent(qc: QueryClient, ctx: LiveContext, event: LiveEvent) 
         refreshDrafts(qc, ctx.ws)
       }
       return
+    case "team.created":
+    case "team.updated":
+    case "team.deleted": {
+      void qc.invalidateQueries({ queryKey: keys.teams(ctx.ws) })
+      const removed = "removed_member_ids" in event.data ? (event.data.removed_member_ids ?? []) : []
+      const aboutMe =
+        event.type === "team.deleted" || event.data.member_ids.includes(ctx.memberId) || removed.includes(ctx.memberId)
+      if (event.type !== "team.created" && aboutMe) {
+        for (const [key] of listCaches(qc, ctx.ws)) {
+          const f = (key as QueryKey)[3] as ConversationFilters
+          if (f.team === "mine" || f.team_id === event.data.id)
+            void qc.invalidateQueries({ queryKey: key, exact: true })
+        }
+      }
+      refreshCounts(qc, ctx.ws)
+      return
+    }
     case "subscription.created":
     case "subscription.updated":
       refreshLists(qc, ctx.ws)

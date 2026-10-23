@@ -159,7 +159,15 @@ function InboxPage({ id }: { id: string | null }) {
   const contactId = useConversation(id ?? undefined).data?.contact_id
   const open = useCallback((next: string) => navigate(`/conversations/${next}`), [navigate])
   const count = (k: Chip) =>
-    k === "waiting" ? waiting : k === "unassigned" ? (inboxId ? unassigned : counts?.unassigned) : undefined
+    k === "waiting"
+      ? waiting
+      : k === "unassigned"
+        ? inboxId
+          ? unassigned
+          : counts?.unassigned
+        : k === "teams"
+          ? counts?.mine_teams
+          : undefined
   const inline = roomy && panel && !!contactId && !!id
   const layout = useDefaultLayout({
     id: "inbox-panes",

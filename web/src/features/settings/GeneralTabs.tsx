@@ -4,15 +4,16 @@ import { SettingsStrip } from "@/components/common/SettingsStrip"
 import { useMigrations } from "@/features/migrations/queries"
 import { PageHeader, PageTabs } from "@/features/settings/ui"
 import { useSession } from "@/lib/session"
-import { useCannedReplies, useLabels } from "@/lib/workspace"
+import { useCannedReplies, useLabels, useTeams } from "@/lib/workspace"
 
-type Tab = "workspace" | "labels" | "canned-replies" | "migrations" | "audit-log"
+type Tab = "workspace" | "labels" | "canned-replies" | "teams" | "migrations" | "audit-log"
 
 export function GeneralTabs({ current }: { current: Tab }) {
   const { t } = useLingui()
   const { canManage, isOwner } = useSession()
   const labels = useLabels().data
   const canned = useCannedReplies().data
+  const teams = useTeams().data
   const moves = useMigrations().data?.pages[0]?.items
   return (
     <PageTabs
@@ -36,6 +37,13 @@ export function GeneralTabs({ current }: { current: Tab }) {
         },
         ...(canManage
           ? [
+              {
+                key: "teams",
+                to: "/settings/teams",
+                label: t`Teams`,
+                count: teams?.length,
+                testId: "general-tab-teams",
+              },
               {
                 key: "migrations",
                 to: "/settings/migrations",
