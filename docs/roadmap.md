@@ -625,7 +625,7 @@ the person can still sign in by code as a reader; every sign-in is in the audit 
 
 ## M26 — Release 0.1.0
 
-Status: planned; items Y-129 to Y-132 in `backlog.md`. Waits for M24, M25 and M27 to M33.
+Status: in progress; security review done (#129 and its findings #180–#197 fixed); version, release notes and the tag (#130–#132) remain.
 
 - A security review of everything added since the 0.0.1 review (#15).
 - One version, `0.1.0`, in the server, the contract, every SDK, the chart, the MCP manifests and the
