@@ -401,6 +401,14 @@ func checkActions(ctx context.Context, q *store.Queries, ws uuid.UUID, actions [
 	return hosts, nil
 }
 
+// behaviourChanged reports a change of what the rule does, which makes the caller its author; a
+// rename does not.
+func behaviourChanged(cur store.AutomationRule, f automationRuleFields) bool {
+	return cur.Enabled != f.enabled || cur.Trigger != string(f.trigger) || !sameID(cur.InboxID, f.inbox) ||
+		!sameInt(cur.IdleMinutes, f.idle) || string(mustJSON(ruleConditions(cur))) != string(mustJSON(f.conditions)) ||
+		string(mustJSON(ruleActions(cur))) != string(mustJSON(f.actions))
+}
+
 func ruleAuditDetails(r store.AutomationRule, hosts []string) auditDetails {
 	types := []string{}
 	for _, a := range ruleActions(r) {
@@ -569,7 +577,10 @@ func (s *Server) UpdateAutomationRule(ctx context.Context, req oas.UpdateAutomat
 		if err := f.check(ctx, q, p.workspaceID); err != nil {
 			return err
 		}
-		kind, member, key := savedBy(p)
+		kind, member, key := cur.SavedByKind, cur.SavedByMemberID, cur.SavedByApiKeyID
+		if behaviourChanged(cur, f) {
+			kind, member, key = savedBy(p)
+		}
 		now := s.now()
 		out, err = q.UpdateAutomationRule(ctx, store.UpdateAutomationRuleParams{
 			WorkspaceID: p.workspaceID, ID: cur.ID, InboxID: f.inbox, Name: f.name, Enabled: f.enabled, Trigger: string(f.trigger),

@@ -30,7 +30,7 @@ WHERE c.workspace_id = $3 AND c.id = batch.id
           SELECT 1 FROM custom_fields cf
           WHERE cf.workspace_id = c.workspace_id AND cf.object = 'conversation' AND cf.key = $1::text
             AND cf.type = 'select' AND NOT cf.options ? $4::text) END
-RETURNING c.id, c.workspace_id, c.inbox_id, c.contact_id, c.channel_id, c.subject, c.status, c.snooze_until, c.priority, c.assignee_id, c.last_message_at, c.last_activity_at, c.created_at, c.updated_at, c.spam, c.email_token, c.related_conversation_id, c.continuity_through, c.continuity_sent_at, c.kind, c.feedback, c.email_address, c.closed_at, c.rating, c.rating_comment, c.rated_at, c.rating_requested_at, c.last_read_by_contact_at, c.page_url, c.page_title, c.channel_kind, c.broadcast_id, c.migration_id, c.imported_at, c.feedback_progress, c.help_article_id, c.trashed_at, c.trashed_by_member_id, c.trashed_by_api_key_id, c.push_through, c.push_sent_at, c.team_id, c.fields, c.sla_due_at
+RETURNING c.id, c.workspace_id, c.inbox_id, c.contact_id, c.channel_id, c.subject, c.status, c.snooze_until, c.priority, c.assignee_id, c.last_message_at, c.last_activity_at, c.created_at, c.updated_at, c.spam, c.email_token, c.related_conversation_id, c.continuity_through, c.continuity_sent_at, c.kind, c.feedback, c.email_address, c.closed_at, c.rating, c.rating_comment, c.rated_at, c.rating_requested_at, c.last_read_by_contact_at, c.page_url, c.page_title, c.channel_kind, c.broadcast_id, c.migration_id, c.imported_at, c.feedback_progress, c.help_article_id, c.trashed_at, c.trashed_by_member_id, c.trashed_by_api_key_id, c.push_through, c.push_sent_at, c.team_id, c.fields, c.sla_due_at, c.snooze_rule_id
 `
 
 type ClearConversationFieldParams struct {
@@ -106,6 +106,7 @@ func (q *Queries) ClearConversationField(ctx context.Context, arg ClearConversat
 			&i.TeamID,
 			&i.Fields,
 			&i.SlaDueAt,
+			&i.SnoozeRuleID,
 		); err != nil {
 			return nil, err
 		}
@@ -327,7 +328,7 @@ func (q *Queries) LockCustomFields(ctx context.Context, workspaceID uuid.UUID) e
 const setConversationFields = `-- name: SetConversationFields :one
 UPDATE conversations SET fields = $1, updated_at = $2
 WHERE workspace_id = $3 AND id = $4
-RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id, trashed_at, trashed_by_member_id, trashed_by_api_key_id, push_through, push_sent_at, team_id, fields, sla_due_at
+RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id, trashed_at, trashed_by_member_id, trashed_by_api_key_id, push_through, push_sent_at, team_id, fields, sla_due_at, snooze_rule_id
 `
 
 type SetConversationFieldsParams struct {
@@ -390,6 +391,7 @@ func (q *Queries) SetConversationFields(ctx context.Context, arg SetConversation
 		&i.TeamID,
 		&i.Fields,
 		&i.SlaDueAt,
+		&i.SnoozeRuleID,
 	)
 	return i, err
 }

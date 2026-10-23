@@ -19,6 +19,8 @@ type pendingEvent struct {
 	conversationID *uuid.UUID
 	data           []byte
 	deleted        *deletedContact
+	// noRules marks an event a rule caused later, such as the end of a snooze it set.
+	noRules bool
 }
 
 type boardRef struct{ ws, inbox, board uuid.UUID }

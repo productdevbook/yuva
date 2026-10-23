@@ -13,18 +13,21 @@ import (
 )
 
 const createCannedReply = `-- name: CreateCannedReply :one
-INSERT INTO canned_replies (id, workspace_id, shortcut, title, body, created_at, updated_at)
-VALUES ($1, $2, $3, $4, $5, $6, $6)
-RETURNING id, workspace_id, shortcut, title, body, created_at, updated_at
+INSERT INTO canned_replies (id, workspace_id, shortcut, title, body, saved_by_kind, saved_by_member_id, saved_by_api_key_id, created_at, updated_at)
+VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $9)
+RETURNING id, workspace_id, shortcut, title, body, created_at, updated_at, saved_by_kind, saved_by_member_id, saved_by_api_key_id
 `
 
 type CreateCannedReplyParams struct {
-	ID          uuid.UUID
-	WorkspaceID uuid.UUID
-	Shortcut    string
-	Title       string
-	Body        string
-	Now         time.Time
+	ID              uuid.UUID
+	WorkspaceID     uuid.UUID
+	Shortcut        string
+	Title           string
+	Body            string
+	SavedByKind     *string
+	SavedByMemberID *uuid.UUID
+	SavedByApiKeyID *uuid.UUID
+	Now             time.Time
 }
 
 func (q *Queries) CreateCannedReply(ctx context.Context, arg CreateCannedReplyParams) (CannedReply, error) {
@@ -34,6 +37,9 @@ func (q *Queries) CreateCannedReply(ctx context.Context, arg CreateCannedReplyPa
 		arg.Shortcut,
 		arg.Title,
 		arg.Body,
+		arg.SavedByKind,
+		arg.SavedByMemberID,
+		arg.SavedByApiKeyID,
 		arg.Now,
 	)
 	var i CannedReply
@@ -45,6 +51,9 @@ func (q *Queries) CreateCannedReply(ctx context.Context, arg CreateCannedReplyPa
 		&i.Body,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.SavedByKind,
+		&i.SavedByMemberID,
+		&i.SavedByApiKeyID,
 	)
 	return i, err
 }
@@ -67,7 +76,7 @@ func (q *Queries) DeleteCannedReply(ctx context.Context, arg DeleteCannedReplyPa
 }
 
 const getCannedReply = `-- name: GetCannedReply :one
-SELECT id, workspace_id, shortcut, title, body, created_at, updated_at FROM canned_replies WHERE workspace_id = $1 AND id = $2
+SELECT id, workspace_id, shortcut, title, body, created_at, updated_at, saved_by_kind, saved_by_member_id, saved_by_api_key_id FROM canned_replies WHERE workspace_id = $1 AND id = $2
 `
 
 type GetCannedReplyParams struct {
@@ -86,12 +95,15 @@ func (q *Queries) GetCannedReply(ctx context.Context, arg GetCannedReplyParams) 
 		&i.Body,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.SavedByKind,
+		&i.SavedByMemberID,
+		&i.SavedByApiKeyID,
 	)
 	return i, err
 }
 
 const listCannedReplies = `-- name: ListCannedReplies :many
-SELECT id, workspace_id, shortcut, title, body, created_at, updated_at FROM canned_replies WHERE workspace_id = $1 ORDER BY shortcut
+SELECT id, workspace_id, shortcut, title, body, created_at, updated_at, saved_by_kind, saved_by_member_id, saved_by_api_key_id FROM canned_replies WHERE workspace_id = $1 ORDER BY shortcut
 `
 
 func (q *Queries) ListCannedReplies(ctx context.Context, workspaceID uuid.UUID) ([]CannedReply, error) {
@@ -111,6 +123,9 @@ func (q *Queries) ListCannedReplies(ctx context.Context, workspaceID uuid.UUID) 
 			&i.Body,
 			&i.CreatedAt,
 			&i.UpdatedAt,
+			&i.SavedByKind,
+			&i.SavedByMemberID,
+			&i.SavedByApiKeyID,
 		); err != nil {
 			return nil, err
 		}
@@ -123,18 +138,22 @@ func (q *Queries) ListCannedReplies(ctx context.Context, workspaceID uuid.UUID) 
 }
 
 const updateCannedReply = `-- name: UpdateCannedReply :one
-UPDATE canned_replies SET shortcut = $1, title = $2, body = $3, updated_at = $4
-WHERE workspace_id = $5 AND id = $6
-RETURNING id, workspace_id, shortcut, title, body, created_at, updated_at
+UPDATE canned_replies SET shortcut = $1, title = $2, body = $3, saved_by_kind = $4,
+    saved_by_member_id = $5, saved_by_api_key_id = $6, updated_at = $7
+WHERE workspace_id = $8 AND id = $9
+RETURNING id, workspace_id, shortcut, title, body, created_at, updated_at, saved_by_kind, saved_by_member_id, saved_by_api_key_id
 `
 
 type UpdateCannedReplyParams struct {
-	Shortcut    string
-	Title       string
-	Body        string
-	Now         time.Time
-	WorkspaceID uuid.UUID
-	ID          uuid.UUID
+	Shortcut        string
+	Title           string
+	Body            string
+	SavedByKind     *string
+	SavedByMemberID *uuid.UUID
+	SavedByApiKeyID *uuid.UUID
+	Now             time.Time
+	WorkspaceID     uuid.UUID
+	ID              uuid.UUID
 }
 
 func (q *Queries) UpdateCannedReply(ctx context.Context, arg UpdateCannedReplyParams) (CannedReply, error) {
@@ -142,6 +161,9 @@ func (q *Queries) UpdateCannedReply(ctx context.Context, arg UpdateCannedReplyPa
 		arg.Shortcut,
 		arg.Title,
 		arg.Body,
+		arg.SavedByKind,
+		arg.SavedByMemberID,
+		arg.SavedByApiKeyID,
 		arg.Now,
 		arg.WorkspaceID,
 		arg.ID,
@@ -155,6 +177,9 @@ func (q *Queries) UpdateCannedReply(ctx context.Context, arg UpdateCannedReplyPa
 		&i.Body,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.SavedByKind,
+		&i.SavedByMemberID,
+		&i.SavedByApiKeyID,
 	)
 	return i, err
 }

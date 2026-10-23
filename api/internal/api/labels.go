@@ -138,7 +138,11 @@ func (s *Server) DeleteLabel(ctx context.Context, req oas.DeleteLabelRequestObje
 }
 
 func cannedBody(c store.CannedReply) oas.CannedReply {
-	return oas.CannedReply{Id: c.ID, Shortcut: c.Shortcut, Title: c.Title, Body: c.Body, CreatedAt: c.CreatedAt, UpdatedAt: c.UpdatedAt}
+	out := oas.CannedReply{Id: c.ID, Shortcut: c.Shortcut, Title: c.Title, Body: c.Body, CreatedAt: c.CreatedAt, UpdatedAt: c.UpdatedAt}
+	if c.SavedByKind != nil {
+		out.SavedBy = &oas.AutomationRuleAuthor{Type: oas.AutomationRuleAuthorType(*c.SavedByKind), MemberId: c.SavedByMemberID, ApiKeyId: c.SavedByApiKeyID}
+	}
+	return out
 }
 
 func validCanned(c *store.CannedReply) error {
@@ -176,8 +180,10 @@ func (s *Server) CreateCannedReply(ctx context.Context, req oas.CreateCannedRepl
 	if err := validCanned(&c); err != nil {
 		return nil, err
 	}
+	kind, member, key := savedBy(p)
 	out, err := s.st.CreateCannedReply(ctx, store.CreateCannedReplyParams{
 		ID: newID(), WorkspaceID: p.workspaceID, Shortcut: c.Shortcut, Title: c.Title, Body: c.Body, Now: s.now(),
+		SavedByKind: &kind, SavedByMemberID: member, SavedByApiKeyID: key,
 	})
 	if store.IsUniqueViolation(err) {
 		return nil, errShortcutTaken
@@ -206,15 +212,22 @@ func (s *Server) UpdateCannedReply(ctx context.Context, req oas.UpdateCannedRepl
 	if req.Body.Title != nil {
 		c.Title = *req.Body.Title
 	}
+	before := c.Body
 	if req.Body.Body != nil {
 		c.Body = *req.Body.Body
 	}
 	if err := validCanned(&c); err != nil {
 		return nil, err
 	}
-	out, err := s.st.UpdateCannedReply(ctx, store.UpdateCannedReplyParams{
+	arg := store.UpdateCannedReplyParams{
 		WorkspaceID: p.workspaceID, ID: c.ID, Shortcut: c.Shortcut, Title: c.Title, Body: c.Body, Now: s.now(),
-	})
+		SavedByKind: c.SavedByKind, SavedByMemberID: c.SavedByMemberID, SavedByApiKeyID: c.SavedByApiKeyID,
+	}
+	if c.Body != before {
+		kind, member, key := savedBy(p)
+		arg.SavedByKind, arg.SavedByMemberID, arg.SavedByApiKeyID = &kind, member, key
+	}
+	out, err := s.st.UpdateCannedReply(ctx, arg)
 	if store.IsUniqueViolation(err) {
 		return nil, errShortcutTaken
 	}

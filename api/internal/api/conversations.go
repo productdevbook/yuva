@@ -929,6 +929,17 @@ func (s *Server) changeConversation(ctx context.Context, q *store.Queries, event
 	if err != nil {
 		return out, err
 	}
+	if cur.Status != updated.Status || !sameTime(cur.SnoozeUntil, updated.SnoozeUntil) {
+		var rule *uuid.UUID
+		if p.rule != nil && updated.Status == string(oas.ConversationStatusSnoozed) {
+			rule = &p.rule.Id
+		}
+		if !sameID(cur.SnoozeRuleID, rule) {
+			if err := q.SetConversationSnoozeRule(ctx, store.SetConversationSnoozeRuleParams{WorkspaceID: p.workspaceID, ID: cur.ID, RuleID: rule}); err != nil {
+				return out, err
+			}
+		}
+	}
 	out = conversationBody(updated, want)
 	if err := fillImportSources(ctx, q, p.workspaceID, &out); err != nil {
 		return out, err

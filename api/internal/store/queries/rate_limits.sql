@@ -15,6 +15,25 @@ ON CONFLICT (key) DO UPDATE SET (started_at, ends_at, checked_at, lim, want, cou
 )
 RETURNING key, granted, ends_at, checked_at;
 
+-- TakeRateLimitAll counts want against the key only when all of it fits, or nothing.
+-- name: TakeRateLimitAll :one
+WITH c AS (SELECT coalesce(sqlc.narg(at)::timestamptz, clock_timestamp()) AS now)
+INSERT INTO rate_limits AS r (key, started_at, ends_at, checked_at, lim, want, count, granted)
+SELECT u.key, c.now, c.now + u.window_ms * interval '1 millisecond', c.now, u.lim, u.want,
+    CASE WHEN u.want <= u.lim THEN u.want ELSE 0 END, CASE WHEN u.want <= u.lim THEN u.want ELSE 0 END
+FROM c, (SELECT sqlc.arg(key)::bytea AS key, sqlc.arg(window_ms)::bigint AS window_ms, sqlc.arg(lim)::int AS lim, sqlc.arg(want)::int AS want) u
+WHERE true
+ON CONFLICT (key) DO UPDATE SET (started_at, ends_at, checked_at, lim, want, count, granted) = (
+    SELECT
+        CASE WHEN x.reset THEN excluded.started_at ELSE r.started_at END,
+        CASE WHEN x.reset THEN excluded.ends_at ELSE r.ends_at END,
+        excluded.checked_at, excluded.lim, excluded.want,
+        CASE WHEN x.reset THEN excluded.count WHEN r.count + excluded.want <= excluded.lim THEN r.count + excluded.want ELSE r.count END,
+        CASE WHEN x.reset THEN excluded.granted WHEN r.count + excluded.want <= excluded.lim THEN excluded.want ELSE 0 END
+    FROM (SELECT r.ends_at <= excluded.started_at OR r.started_at > excluded.ends_at AS reset) x
+)
+RETURNING granted, ends_at, checked_at;
+
 -- name: TakeRateSlot :one
 INSERT INTO rate_slots AS r (key, slot, holder, expires_at)
 SELECT @key::bytea, s.n, @holder::uuid, s.now + make_interval(secs => @lease_seconds::float8)

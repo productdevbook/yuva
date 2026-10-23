@@ -402,7 +402,7 @@ func (q *Queries) EmailSuppressionReason(ctx context.Context, arg EmailSuppressi
 }
 
 const findConversationByEmailToken = `-- name: FindConversationByEmailToken :one
-SELECT id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id, trashed_at, trashed_by_member_id, trashed_by_api_key_id, push_through, push_sent_at, team_id, fields, sla_due_at FROM conversations WHERE workspace_id = $1 AND inbox_id = $2 AND email_token = ANY($3::text[])
+SELECT id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id, trashed_at, trashed_by_member_id, trashed_by_api_key_id, push_through, push_sent_at, team_id, fields, sla_due_at, snooze_rule_id FROM conversations WHERE workspace_id = $1 AND inbox_id = $2 AND email_token = ANY($3::text[])
   AND trashed_at IS NULL
 ORDER BY (contact_id = $4) DESC, created_at DESC
 LIMIT 1
@@ -468,12 +468,13 @@ func (q *Queries) FindConversationByEmailToken(ctx context.Context, arg FindConv
 		&i.TeamID,
 		&i.Fields,
 		&i.SlaDueAt,
+		&i.SnoozeRuleID,
 	)
 	return i, err
 }
 
 const findConversationByHeaders = `-- name: FindConversationByHeaders :one
-SELECT c.id, c.workspace_id, c.inbox_id, c.contact_id, c.channel_id, c.subject, c.status, c.snooze_until, c.priority, c.assignee_id, c.last_message_at, c.last_activity_at, c.created_at, c.updated_at, c.spam, c.email_token, c.related_conversation_id, c.continuity_through, c.continuity_sent_at, c.kind, c.feedback, c.email_address, c.closed_at, c.rating, c.rating_comment, c.rated_at, c.rating_requested_at, c.last_read_by_contact_at, c.page_url, c.page_title, c.channel_kind, c.broadcast_id, c.migration_id, c.imported_at, c.feedback_progress, c.help_article_id, c.trashed_at, c.trashed_by_member_id, c.trashed_by_api_key_id, c.push_through, c.push_sent_at, c.team_id, c.fields, c.sla_due_at FROM message_emails e
+SELECT c.id, c.workspace_id, c.inbox_id, c.contact_id, c.channel_id, c.subject, c.status, c.snooze_until, c.priority, c.assignee_id, c.last_message_at, c.last_activity_at, c.created_at, c.updated_at, c.spam, c.email_token, c.related_conversation_id, c.continuity_through, c.continuity_sent_at, c.kind, c.feedback, c.email_address, c.closed_at, c.rating, c.rating_comment, c.rated_at, c.rating_requested_at, c.last_read_by_contact_at, c.page_url, c.page_title, c.channel_kind, c.broadcast_id, c.migration_id, c.imported_at, c.feedback_progress, c.help_article_id, c.trashed_at, c.trashed_by_member_id, c.trashed_by_api_key_id, c.push_through, c.push_sent_at, c.team_id, c.fields, c.sla_due_at, c.snooze_rule_id FROM message_emails e
 JOIN conversations c ON c.workspace_id = e.workspace_id AND c.id = e.conversation_id
 WHERE e.workspace_id = $1 AND c.inbox_id = $2 AND c.trashed_at IS NULL
   AND (e.header_message_id = ANY($3::text[]) OR e.relay_message_id = ANY($3::text[]))
@@ -541,6 +542,7 @@ func (q *Queries) FindConversationByHeaders(ctx context.Context, arg FindConvers
 		&i.TeamID,
 		&i.Fields,
 		&i.SlaDueAt,
+		&i.SnoozeRuleID,
 	)
 	return i, err
 }
@@ -1026,7 +1028,7 @@ func (q *Queries) IsEmailSuppressed(ctx context.Context, arg IsEmailSuppressedPa
 }
 
 const latestContactConversation = `-- name: LatestContactConversation :one
-SELECT id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id, trashed_at, trashed_by_member_id, trashed_by_api_key_id, push_through, push_sent_at, team_id, fields, sla_due_at FROM conversations
+SELECT id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id, trashed_at, trashed_by_member_id, trashed_by_api_key_id, push_through, push_sent_at, team_id, fields, sla_due_at, snooze_rule_id FROM conversations
 WHERE workspace_id = $1 AND channel_id = $2 AND contact_id = $3 AND trashed_at IS NULL
 ORDER BY created_at DESC, id DESC
 LIMIT 1
@@ -1086,6 +1088,7 @@ func (q *Queries) LatestContactConversation(ctx context.Context, arg LatestConta
 		&i.TeamID,
 		&i.Fields,
 		&i.SlaDueAt,
+		&i.SnoozeRuleID,
 	)
 	return i, err
 }

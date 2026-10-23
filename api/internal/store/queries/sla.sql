@@ -147,7 +147,7 @@ WHERE workspace_id = @workspace_id AND conversation_id = @conversation_id
 ORDER BY created_at, id;
 
 -- name: ClaimDueSnoozed :many
-SELECT id FROM conversations
+SELECT id, snooze_rule_id FROM conversations
 WHERE workspace_id = @workspace_id AND status = 'snoozed' AND snooze_until <= @now::timestamptz AND trashed_at IS NULL AND NOT spam
 ORDER BY snooze_until, id
 LIMIT @lim

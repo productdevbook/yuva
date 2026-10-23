@@ -619,13 +619,16 @@ type BroadcastSendingDay struct {
 }
 
 type CannedReply struct {
-	ID          uuid.UUID
-	WorkspaceID uuid.UUID
-	Shortcut    string
-	Title       string
-	Body        string
-	CreatedAt   time.Time
-	UpdatedAt   time.Time
+	ID              uuid.UUID
+	WorkspaceID     uuid.UUID
+	Shortcut        string
+	Title           string
+	Body            string
+	CreatedAt       time.Time
+	UpdatedAt       time.Time
+	SavedByKind     *string
+	SavedByMemberID *uuid.UUID
+	SavedByApiKeyID *uuid.UUID
 }
 
 type Changelog struct {
@@ -873,6 +876,7 @@ type Conversation struct {
 	TeamID                *uuid.UUID
 	Fields                []byte
 	SlaDueAt              *time.Time
+	SnoozeRuleID          *uuid.UUID
 }
 
 type ConversationLabel struct {

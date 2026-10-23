@@ -34,6 +34,7 @@ var limitAutomationActions = limit{600, time.Minute}
 
 var (
 	errRuleSkip          = errors.New("automation rule does not apply")
+	errRuleUncharged     = errors.New("automation rule matched before the rate limit counted it")
 	errRuleLabelGone     = problem(http.StatusConflict, "label_gone", "a label the rule adds or removes was deleted")
 	errRuleCannedGone    = problem(http.StatusConflict, "canned_reply_gone", "the rule's canned reply was deleted")
 	errRuleWebhookGone   = problem(http.StatusConflict, "webhook_unavailable", "the rule's webhook endpoint was deleted, is turned off or is limited to another inbox")
@@ -42,7 +43,11 @@ var (
 	errRuleReplyBlocked  = problem(http.StatusConflict, "auto_reply", "the contact is blocked")
 	errRuleReplySpam     = problem(http.StatusConflict, "auto_reply", "the conversation is spam")
 	errRuleReplyTooSoon  = problem(http.StatusConflict, "auto_reply", "a rule already replied in this conversation within the hour")
+	errRuleReplyTooMany  = problem(http.StatusConflict, "auto_reply", "rules already replied three times in this conversation within a day")
+	errRuleCannedBot     = problem(http.StatusForbidden, "bot_sending_disabled", "the canned reply was last saved by an API key or a connected app, or before this was recorded, and the workspace does not let bots deliver messages")
 )
+
+const ruleRepliesPerDay = 3
 
 // AutomationRunArgs runs the rules of one trigger on one conversation, in order.
 type AutomationRunArgs struct {
@@ -128,7 +133,7 @@ func (s *Server) queueAutomations(ctx context.Context, tx pgx.Tx, q *store.Queri
 	)
 	for i, e := range ev.items {
 		trigger, msg, ok := automationTriggerOf(e)
-		if !ok {
+		if !ok || e.noRules {
 			continue
 		}
 		if !loaded {
@@ -187,31 +192,63 @@ func (s *Server) RunAutomations(ctx context.Context, a AutomationRunArgs) error 
 	if err != nil {
 		return err
 	}
-	var todo []uuid.UUID
-	n := 0
+	key := a.triggerKey()
 	for _, r := range rules {
 		if r.InboxID != nil && *r.InboxID != c.InboxID {
 			continue
 		}
-		todo = append(todo, r.ID)
-		n += len(ruleActions(r))
-	}
-	if len(todo) == 0 {
-		return nil
-	}
-	want := min(n, limitAutomationActions.n)
-	if g := s.limits.take(ctx, nil, rateTake{"automation_actions:" + a.WorkspaceID.String(), limitAutomationActions, want}); g[0].n < want {
-		return river.JobSnooze(time.Minute)
-	}
-	for _, id := range todo {
-		if err := s.runRule(ctx, w, a, id); err != nil {
+		done, err := s.st.AutomationRunExists(ctx, store.AutomationRunExistsParams{WorkspaceID: a.WorkspaceID, RuleID: r.ID, TriggerKey: key})
+		if err != nil {
+			return err
+		}
+		if done {
+			continue
+		}
+		charge := func() error {
+			if ok, wait := s.limits.takeAll(ctx, "automation_actions:"+a.WorkspaceID.String(), limitAutomationActions, len(ruleActions(r))); !ok {
+				return river.JobSnooze(wait)
+			}
+			return nil
+		}
+		match, err := s.ruleMatchesNow(ctx, a, r)
+		if err != nil {
+			return err
+		}
+		if match {
+			if err := charge(); err != nil {
+				return err
+			}
+		}
+		err = s.runRule(ctx, w, a, r.ID, match)
+		if errors.Is(err, errRuleUncharged) {
+			if err := charge(); err != nil {
+				return err
+			}
+			err = s.runRule(ctx, w, a, r.ID, true)
+		}
+		if err != nil {
 			return err
 		}
 	}
 	return nil
 }
 
-func (s *Server) runRule(ctx context.Context, w store.Workspace, a AutomationRunArgs, ruleID uuid.UUID) error {
+// ruleMatchesNow evaluates a rule's conditions without a lock, to charge the rate limit only for
+// rules that will apply; the rule's transaction decides again under the conversation's lock.
+func (s *Server) ruleMatchesNow(ctx context.Context, a AutomationRunArgs, r store.AutomationRule) (bool, error) {
+	c, err := s.st.GetConversation(ctx, store.GetConversationParams{WorkspaceID: a.WorkspaceID, ID: a.ConversationID})
+	if store.IsNotFound(err) {
+		return false, nil
+	}
+	if err != nil {
+		return false, err
+	}
+	return s.ruleMatches(ctx, s.st.Queries, c, a, ruleConditions(r), s.now())
+}
+
+// runRule applies one rule in one transaction. charged says the rate limit already counted its
+// actions; a rule that matches uncharged rolls back with errRuleUncharged to be charged and run again.
+func (s *Server) runRule(ctx context.Context, w store.Workspace, a AutomationRunArgs, ruleID uuid.UUID, charged bool) error {
 	var (
 		rule    store.AutomationRule
 		planned []oas.AutomationAction
@@ -250,6 +287,10 @@ func (s *Server) runRule(ctx context.Context, w store.Workspace, a AutomationRun
 		if c.TrashedAt != nil || (r.InboxID != nil && *r.InboxID != c.InboxID) {
 			return errRuleSkip
 		}
+		if a.IdleSince != nil && (!c.LastActivityAt.Equal(*a.IdleSince) || c.Spam ||
+			(c.Status != string(oas.ConversationStatusOpen) && c.Status != string(oas.ConversationStatusPending))) {
+			return errRuleSkip
+		}
 		now := s.now()
 		runID := newID()
 		if _, err := q.InsertAutomationRun(ctx, store.InsertAutomationRunParams{
@@ -265,7 +306,10 @@ func (s *Server) runRule(ctx context.Context, w store.Workspace, a AutomationRun
 			return err
 		}
 		if !match {
-			return errRuleSkip
+			return q.SetAutomationRunOutcome(ctx, store.SetAutomationRunOutcomeParams{WorkspaceID: a.WorkspaceID, ID: runID, Outcome: string(oas.AutomationRunNotMatched)})
+		}
+		if !charged {
+			return errRuleUncharged
 		}
 		p := principal{workspaceID: a.WorkspaceID, rule: ev.rule, botsMaySend: w.BotsMaySend}
 		results, err := s.applyRule(ctx, q, ev, p, w, r, c, a, planned, now)
@@ -279,6 +323,9 @@ func (s *Server) runRule(ctx context.Context, w store.Workspace, a AutomationRun
 	})
 	if err == nil || errors.Is(err, errRuleSkip) {
 		return nil
+	}
+	if errors.Is(err, errRuleUncharged) {
+		return err
 	}
 	var ae *apiError
 	if !errors.As(err, &ae) {
@@ -542,14 +589,14 @@ func (s *Server) applyRule(ctx context.Context, q *store.Queries, ev *eventBatch
 		}
 	}
 	if reply != nil {
-		if err := s.ruleReplyAllowed(ctx, q, w, r, c, a, now); err != nil {
-			return nil, err
-		}
 		cr, err := q.GetCannedReply(ctx, store.GetCannedReplyParams{WorkspaceID: c.WorkspaceID, ID: *reply})
 		if store.IsNotFound(err) {
 			return nil, errRuleCannedGone
 		}
 		if err != nil {
+			return nil, err
+		}
+		if err := s.ruleReplyAllowed(ctx, q, w, r, cr, c, a, now); err != nil {
 			return nil, err
 		}
 		if err := s.ruleMessage(ctx, q, ev, p, c, string(oas.MessageKindMessage), cr.Body, now); err != nil {
@@ -600,9 +647,10 @@ func unchangedBy(act oas.AutomationAction, before store.Conversation, labels []u
 }
 
 // ruleReplyAllowed keeps rule replies away from automatic mail, blocked contacts and spam, at
-// most one an hour per conversation, and from bots while the workspace keeps them from sending.
-// The conversation's lock orders every rule reply of the conversation.
-func (s *Server) ruleReplyAllowed(ctx context.Context, q *store.Queries, w store.Workspace, r store.AutomationRule, c store.Conversation, a AutomationRunArgs, now time.Time) error {
+// most one an hour and three a day per conversation, and, while the workspace keeps bots from
+// sending, sends only text an owner or admin approved: both the rule and the canned reply last saved
+// by one. The conversation's lock orders every rule reply of the conversation.
+func (s *Server) ruleReplyAllowed(ctx context.Context, q *store.Queries, w store.Workspace, r store.AutomationRule, cr store.CannedReply, c store.Conversation, a AutomationRunArgs, now time.Time) error {
 	if c.Spam {
 		return errRuleReplySpam
 	}
@@ -620,26 +668,50 @@ func (s *Server) ruleReplyAllowed(ctx context.Context, q *store.Queries, w store
 	if m.Auto {
 		return errRuleReplyAuto
 	}
-	replied, err := q.RuleRepliedSince(ctx, store.RuleRepliedSinceParams{WorkspaceID: c.WorkspaceID, ConversationID: c.ID, Since: now.Add(-ruleReplyEvery)})
+	n, err := q.CountRuleReplies(ctx, store.CountRuleRepliesParams{
+		WorkspaceID: c.WorkspaceID, ConversationID: c.ID, HourSince: now.Add(-ruleReplyEvery), DaySince: now.Add(-24 * time.Hour),
+	})
 	if err != nil {
 		return err
 	}
-	if replied {
+	if n.Hour > 0 {
 		return errRuleReplyTooSoon
+	}
+	if n.Day >= ruleRepliesPerDay {
+		return errRuleReplyTooMany
 	}
 	if w.BotsMaySend {
 		return nil
 	}
-	if r.SavedByKind == string(oas.AutomationAuthorMember) && r.SavedByMemberID != nil {
-		mem, err := q.GetMember(ctx, store.GetMemberParams{WorkspaceID: c.WorkspaceID, ID: *r.SavedByMemberID})
-		if err == nil && (mem.Role == roleOwner || mem.Role == roleAdmin) {
-			return nil
+	if ok, err := savedByManager(ctx, q, c.WorkspaceID, &r.SavedByKind, r.SavedByMemberID); err != nil || !ok {
+		if err == nil {
+			err = errRuleBotsMaySend
 		}
-		if err != nil && !store.IsNotFound(err) {
-			return err
-		}
+		return err
 	}
-	return errRuleBotsMaySend
+	if ok, err := savedByManager(ctx, q, c.WorkspaceID, cr.SavedByKind, cr.SavedByMemberID); err != nil || !ok {
+		if err == nil {
+			err = errRuleCannedBot
+		}
+		return err
+	}
+	return nil
+}
+
+// savedByManager reports a member who is an owner or admin now; keys, connected apps, removed
+// members and unknown authors are not.
+func savedByManager(ctx context.Context, q *store.Queries, ws uuid.UUID, kind *string, member *uuid.UUID) (bool, error) {
+	if kind == nil || *kind != string(oas.AutomationAuthorMember) || member == nil {
+		return false, nil
+	}
+	m, err := q.GetMember(ctx, store.GetMemberParams{WorkspaceID: ws, ID: *member})
+	if store.IsNotFound(err) {
+		return false, nil
+	}
+	if err != nil {
+		return false, err
+	}
+	return m.Role == roleOwner || m.Role == roleAdmin, nil
 }
 
 // ruleMessage writes a rule's note or reply as /v1 would, by the system and naming the rule. It

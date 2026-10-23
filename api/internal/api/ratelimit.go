@@ -191,6 +191,22 @@ func (l *rateLimiter) allowWait(ctx context.Context, q *store.Queries, key strin
 	return g[0].n == 1, g[0].wait
 }
 
+// takeAll counts n requests against key only when all of them fit in the window, and otherwise
+// counts none and says how long until the window ends. When the database fails it lets them through.
+func (l *rateLimiter) takeAll(ctx context.Context, key string, lim limit, n int) (bool, time.Duration) {
+	r, err := l.st.TakeRateLimitAll(ctx, store.TakeRateLimitAllParams{
+		Key: l.hash(key), WindowMs: lim.window.Milliseconds(), Lim: int32(max(lim.n, 0)), Want: int32(n), At: l.at(),
+	})
+	if err != nil {
+		l.failed(ctx, err)
+		return true, 0
+	}
+	if int(r.Granted) == n {
+		return true, 0
+	}
+	return false, min(max(r.EndsAt.Sub(r.CheckedAt), time.Second), lim.window)
+}
+
 func (l *rateLimiter) allow(ctx context.Context, q *store.Queries, key string, lim limit) bool {
 	ok, _ := l.allowWait(ctx, q, key, lim)
 	return ok

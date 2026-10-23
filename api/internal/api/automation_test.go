@@ -2,6 +2,8 @@ package api_test
 
 import (
 	"context"
+	"crypto/rand"
+	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -200,8 +202,12 @@ func TestAutomationRuleEndpoints(t *testing.T) {
 	}
 	tm.owner.expectProblem(http.StatusBadRequest, "validation_failed", "PATCH", "/v1/automation-rules/"+inboxRule, map[string]any{"trigger": "idle"})
 	manager.expect(http.StatusOK, "PATCH", "/v1/automation-rules/"+id, map[string]any{"name": "Tag VIPs by key"})
+	if sb := tm.owner.expect(http.StatusOK, "GET", "/v1/automation-rules/"+id, nil).body["saved_by"].(map[string]any); sb["type"] != "member" {
+		t.Fatalf("a rename made %v the author", sb)
+	}
+	manager.expect(http.StatusOK, "PATCH", "/v1/automation-rules/"+id, map[string]any{"enabled": false})
 	if sb := tm.owner.expect(http.StatusOK, "GET", "/v1/automation-rules/"+id, nil).body["saved_by"].(map[string]any); sb["type"] != "api_key" {
-		t.Fatalf("the last saver is %v", sb)
+		t.Fatalf("the last to change what it does is %v", sb)
 	}
 
 	tm.owner.expect(http.StatusNoContent, "DELETE", "/v1/automation-rules/"+id, nil)
@@ -218,7 +224,7 @@ func TestAutomationRuleEndpoints(t *testing.T) {
 	if fmt.Sprint(d["webhook_hosts"]) != "[hooks.example.com]" || d["trigger"] != "message_received" || targetOf(deleted)["type"] != "automation_rule" {
 		t.Fatalf("deleted entry %v", deleted)
 	}
-	if len(auditOf(entries, "automation_rule.updated")) != 2 {
+	if len(auditOf(entries, "automation_rule.updated")) != 3 {
 		t.Fatalf("updated entries %v", auditOf(entries, "automation_rule.updated"))
 	}
 	if rows := h.auditRows(tm.ws); strings.Contains(rows, "secret-path") || strings.Contains(rows, "token=abc") {
@@ -294,10 +300,11 @@ func TestAutomationRulesRunInOrderOncePerTrigger(t *testing.T) {
 	if n := len(ruleRuns(tm.owner, router)); n != 1 {
 		t.Fatalf("router ran %d times", n)
 	}
-	for _, r := range []string{never, ignored} {
-		if n := len(ruleRuns(tm.owner, r)); n != 0 {
-			t.Fatalf("rule %s ran %d times", r, n)
-		}
+	if r := ruleRuns(tm.owner, never); len(r) != 1 || r[0]["outcome"] != "not_matched" || len(r[0]["actions"].([]any)) != 0 {
+		t.Fatalf("a rule whose conditions failed logs %v", r)
+	}
+	if n := len(ruleRuns(tm.owner, ignored)); n != 0 {
+		t.Fatalf("a status_changed rule ran %d times on a new conversation", n)
 	}
 
 	tm.owner.expect(http.StatusOK, "PATCH", "/v1/automation-rules/"+tagger, map[string]any{"actions": []map[string]any{{"type": "add_labels", "label_ids": []string{vip}}}})
@@ -308,7 +315,7 @@ func TestAutomationRulesRunInOrderOncePerTrigger(t *testing.T) {
 	if runs[0]["actions"].([]any)[0].(map[string]any)["result"] != "unchanged" {
 		t.Fatalf("adding a label it already has %v", runs[0])
 	}
-	if r := ruleRuns(tm.owner, router); len(r) != 1 {
+	if r := items(tm.owner.expect(http.StatusOK, "GET", "/v1/automation-rules/"+router+"/runs?outcome=applied", nil)); len(r) != 1 {
 		t.Fatalf("a normal-priority conversation matched: %v", r)
 	}
 }
@@ -507,26 +514,58 @@ func TestAutomationReplyGuards(t *testing.T) {
 		t.Fatalf("bots_may_send starts %v", w.body["bots_may_send"])
 	}
 	manager := h.client()
-	manager.bearer = apiKey(et.owner, "manager", "automations:read", "automations:manage")
-	manager.expect(http.StatusOK, "PATCH", "/v1/automation-rules/"+greet, map[string]any{"name": "Greet by key"})
-	byKey := et.conversation(et.owner)
-	h.runAutomations(et.ws)
-	if r := ruleRuns(et.owner, greet)[0]; r["conversation_id"] != byKey || r["error"] != "bot_sending_disabled" {
-		t.Fatalf("a key's rule replied while bots may not send: %v", r)
+	manager.bearer = apiKey(et.owner, "manager", "automations:read", "automations:manage", "canned_replies:write")
+	expectGreet := func(label, want string) {
+		t.Helper()
+		conv := et.conversation(et.owner)
+		h.runAutomations(et.ws)
+		r := ruleRuns(et.owner, greet)[0]
+		if r["conversation_id"] != conv {
+			t.Fatalf("%s: last run %v", label, r)
+		}
+		switch want {
+		case "applied":
+			if r["outcome"] != "applied" {
+				t.Fatalf("%s: %v", label, r)
+			}
+		default:
+			if r["error"] != "bot_sending_disabled" || !strings.Contains(r["detail"].(string), want) {
+				t.Fatalf("%s: want refused (%s), got %v", label, want, r)
+			}
+		}
 	}
+	cannedBy := func() any {
+		for _, c := range items(et.owner.expect(http.StatusOK, "GET", "/v1/canned-replies", nil)) {
+			if c["id"] == canned {
+				return c["saved_by"].(map[string]any)["type"]
+			}
+		}
+		return nil
+	}
+	if got := cannedBy(); got != "member" {
+		t.Fatalf("canned reply saved by %v", got)
+	}
+	expectGreet("owner's rule and canned reply", "applied")
+	manager.expect(http.StatusOK, "PATCH", "/v1/automation-rules/"+greet, map[string]any{"conditions": []map[string]any{{"field": "subject", "operator": "contains", "value": "help"}}})
+	expectGreet("a key changed the rule's conditions", "rule was last saved")
+	et.owner.expect(http.StatusOK, "PATCH", "/v1/automation-rules/"+greet, map[string]any{"name": "Greet, renamed by the owner"})
+	expectGreet("the owner only renamed the key's rule", "rule was last saved")
 	et.owner.expect(http.StatusOK, "PATCH", "/v1/workspace", map[string]any{"bots_may_send": true})
-	allowed := et.conversation(et.owner)
-	h.runAutomations(et.ws)
-	if r := ruleRuns(et.owner, greet)[0]; r["conversation_id"] != allowed || r["outcome"] != "applied" {
-		t.Fatalf("a key's rule while bots may send: %v", r)
-	}
+	expectGreet("a key's rule while bots may send", "applied")
 	et.owner.expect(http.StatusOK, "PATCH", "/v1/workspace", map[string]any{"bots_may_send": false})
-	et.owner.expect(http.StatusOK, "PATCH", "/v1/automation-rules/"+greet, map[string]any{"name": "Greet by owner"})
-	byOwner := et.conversation(et.owner)
-	h.runAutomations(et.ws)
-	if r := ruleRuns(et.owner, greet)[0]; r["conversation_id"] != byOwner || r["outcome"] != "applied" {
-		t.Fatalf("an owner's rule while bots may not send: %v", r)
+	et.owner.expect(http.StatusOK, "PATCH", "/v1/automation-rules/"+greet, map[string]any{"actions": []map[string]any{
+		{"type": "send_reply", "canned_reply_id": canned}, {"type": "set_priority", "priority": "high"},
+	}})
+	expectGreet("the owner edited the actions", "applied")
+	manager.expect(http.StatusOK, "PATCH", "/v1/canned-replies/"+canned, map[string]any{"title": "Renamed by a key"})
+	expectGreet("a key renamed the canned reply", "applied")
+	manager.expect(http.StatusOK, "PATCH", "/v1/canned-replies/"+canned, map[string]any{"body": "Text from a key."})
+	if got := cannedBy(); got != "api_key" {
+		t.Fatalf("canned reply saved by %v", got)
 	}
+	expectGreet("a key edited the owner's canned reply", "canned reply was last saved")
+	et.owner.expect(http.StatusOK, "PATCH", "/v1/canned-replies/"+canned, map[string]any{"body": "We got it, the owner says."})
+	expectGreet("the owner saved the text again", "applied")
 }
 
 func TestAutomationReplyDoesNotMeetSLA(t *testing.T) {
@@ -762,5 +801,241 @@ func TestAutomationRunsKept30Days(t *testing.T) {
 	}
 	if n := len(ruleRuns(tm.owner, rule)); n != 1 {
 		t.Fatalf("%d runs after the cleanup", n)
+	}
+}
+
+func TestAutomationIdleRunRechecksTheConversation(t *testing.T) {
+	t.Parallel()
+	h := newHarness(t)
+	tm := newTeam(t, h)
+	ctx := context.Background()
+	nudge := tm.rule(tm.owner, map[string]any{"name": "Nudge", "trigger": "idle", "idle_minutes": 30, "actions": []map[string]any{{"type": "add_note", "body": "Still quiet."}}})
+	replied, closed, snoozed, quiet := tm.conversation(tm.owner), tm.conversation(tm.owner), tm.conversation(tm.owner), tm.conversation(tm.owner)
+	h.clock.Advance(31 * time.Minute)
+	if err := h.srv.SweepIdleAutomationsIn(ctx, uuid.MustParse(tm.ws)); err != nil {
+		t.Fatal(err)
+	}
+	if n := len(h.automationJobs(tm.ws)); n != 4 {
+		t.Fatalf("%d idle jobs", n)
+	}
+	backend := h.client()
+	backend.bearer = apiKey(tm.owner, "backend", "conversations:read", "messages:write")
+	backend.expect(http.StatusCreated, "POST", "/v1/conversations/"+replied+"/messages", map[string]any{"kind": "message", "direction": "in", "body": "Hello again"})
+	tm.owner.expect(http.StatusOK, "PATCH", "/v1/conversations/"+closed, map[string]any{"status": "closed"})
+	tm.owner.expect(http.StatusOK, "PATCH", "/v1/conversations/"+snoozed, map[string]any{"status": "snoozed", "snooze_until": h.clock.Now().Add(time.Hour)})
+	for _, j := range h.jobs("automation_run", tm.ws) {
+		var a api.AutomationRunArgs
+		if err := json.Unmarshal(j.args, &a); err != nil {
+			t.Fatal(err)
+		}
+		if a.Trigger != "idle" {
+			h.dropJob(j.id)
+		}
+	}
+	h.runAutomations(tm.ws)
+	runs := ruleRuns(tm.owner, nudge)
+	if len(runs) != 1 || runs[0]["conversation_id"] != quiet {
+		t.Fatalf("idle runs %v", runs)
+	}
+	for _, conv := range []string{replied, closed, snoozed} {
+		if n := len(byRule(messages(tm.owner, conv), "note")); n != 0 {
+			t.Fatalf("a conversation that stopped being idle got %d notes", n)
+		}
+	}
+}
+
+func TestAutomationSnoozeWakeAndReplyCap(t *testing.T) {
+	t.Parallel()
+	h := newHarness(t)
+	tm := newTeam(t, h)
+	ctx := context.Background()
+	canned := tm.owner.expect(http.StatusCreated, "POST", "/v1/canned-replies", map[string]any{"shortcut": "back", "title": "Back", "body": "We are back on it."}).str("id")
+	again := tm.rule(tm.owner, map[string]any{"name": "Reply and wait", "trigger": "status_changed",
+		"conditions": []map[string]any{{"field": "status", "operator": "in", "values": []string{"open"}}},
+		"actions":    []map[string]any{{"type": "send_reply", "canned_reply_id": canned}, {"type": "snooze", "snooze_minutes": 60}}})
+	conv := tm.conversation(tm.owner)
+	reopen := func() {
+		t.Helper()
+		tm.owner.expect(http.StatusOK, "PATCH", "/v1/conversations/"+conv, map[string]any{"status": "pending"})
+		tm.owner.expect(http.StatusOK, "PATCH", "/v1/conversations/"+conv, map[string]any{"status": "open"})
+		h.runAutomations(tm.ws)
+	}
+	reopen()
+	if got := tm.owner.expect(http.StatusOK, "GET", "/v1/conversations/"+conv, nil).str("status"); got != "snoozed" {
+		t.Fatalf("status %s", got)
+	}
+	h.clock.Advance(61 * time.Minute)
+	if err := h.srv.WakeSnoozedIn(ctx, uuid.MustParse(tm.ws)); err != nil {
+		t.Fatal(err)
+	}
+	if got := tm.owner.expect(http.StatusOK, "GET", "/v1/conversations/"+conv, nil).str("status"); got != "open" {
+		t.Fatalf("after the wake %s", got)
+	}
+	if n := len(h.automationJobs(tm.ws)); n != 0 {
+		t.Fatalf("the end of the rule's snooze queued %d runs", n)
+	}
+	for range 3 {
+		h.clock.Advance(61 * time.Minute)
+		reopen()
+	}
+	if n := len(byRule(messages(tm.owner, conv), "message")); n != 3 {
+		t.Fatalf("%d rule replies in a day", n)
+	}
+	var last map[string]any
+	for _, r := range ruleRuns(tm.owner, again) {
+		if r["outcome"] != "not_matched" {
+			last = r
+			break
+		}
+	}
+	if last["error"] != "auto_reply" || !strings.Contains(last["detail"].(string), "three") {
+		t.Fatalf("the fourth reply in a day %v", last)
+	}
+
+	member := tm.conversation(tm.owner)
+	tm.owner.expect(http.StatusOK, "PATCH", "/v1/conversations/"+member, map[string]any{"status": "snoozed", "snooze_until": h.clock.Now().Add(time.Minute)})
+	for _, j := range h.jobs("automation_run", tm.ws) {
+		h.dropJob(j.id)
+	}
+	h.clock.Advance(2 * time.Minute)
+	if err := h.srv.WakeSnoozedIn(ctx, uuid.MustParse(tm.ws)); err != nil {
+		t.Fatal(err)
+	}
+	if n := len(h.automationJobs(tm.ws)); n != 1 {
+		t.Fatalf("the end of a member's snooze queued %d runs", n)
+	}
+}
+
+func TestAutomationRetryKeepsEarlierDecisions(t *testing.T) {
+	t.Parallel()
+	h := newHarness(t)
+	tm := newTeam(t, h)
+	ctx := context.Background()
+	vip := tm.owner.expect(http.StatusCreated, "POST", "/v1/labels", map[string]any{"name": "VIP"}).str("id")
+	first := tm.rule(tm.owner, map[string]any{"name": "VIPs", "trigger": "conversation_created",
+		"conditions": []map[string]any{{"field": "label", "operator": "in", "values": []string{vip}}},
+		"actions":    []map[string]any{{"type": "add_note", "body": "one"}}})
+	tm.rule(tm.owner, map[string]any{"name": "Everyone", "trigger": "conversation_created", "actions": []map[string]any{{"type": "add_note", "body": "two"}}})
+	third := tm.rule(tm.owner, map[string]any{"name": "Broken", "trigger": "conversation_created", "actions": []map[string]any{{"type": "add_note", "body": "three"}}})
+	conv := tm.conversation(tm.owner)
+	jobs := h.automationJobs(tm.ws)
+
+	b := make([]byte, 6)
+	_, _ = rand.Read(b)
+	constraint := "automation_block_" + hex.EncodeToString(b)
+	if _, err := h.st.Pool.Exec(ctx, fmt.Sprintf("ALTER TABLE automation_runs ADD CONSTRAINT %s CHECK (rule_id <> '%s') NOT VALID", constraint, third)); err != nil {
+		t.Fatal(err)
+	}
+	dropped := false
+	drop := func() {
+		if !dropped {
+			dropped = true
+			if _, err := h.st.Pool.Exec(context.Background(), "ALTER TABLE automation_runs DROP CONSTRAINT "+constraint); err != nil {
+				t.Error(err)
+			}
+		}
+	}
+	t.Cleanup(drop)
+	if err := h.srv.RunAutomations(ctx, jobs[0]); err == nil {
+		t.Fatal("the third rule's database error must fail the job")
+	}
+	drop()
+	tm.owner.expect(http.StatusOK, "PATCH", "/v1/conversations/"+conv, map[string]any{"labels": []string{vip}})
+	if err := h.srv.RunAutomations(ctx, jobs[0]); err != nil {
+		t.Fatal(err)
+	}
+	var notes []string
+	for _, m := range byRule(messages(tm.owner, conv), "note") {
+		notes = append(notes, m["body"].(string))
+	}
+	slices.Sort(notes)
+	if !slices.Equal(notes, []string{"three", "two"}) {
+		t.Fatalf("notes after the retry %v", notes)
+	}
+	if r := ruleRuns(tm.owner, first); len(r) != 1 || r[0]["outcome"] != "not_matched" {
+		t.Fatalf("the retry evaluated the first rule again: %v", r)
+	}
+}
+
+func TestAutomationRateLimitPerRule(t *testing.T) {
+	t.Parallel()
+	h := newHarness(t)
+	tm := newTeam(t, h)
+	ctx := context.Background()
+	a := tm.owner.expect(http.StatusCreated, "POST", "/v1/labels", map[string]any{"name": "A"}).str("id")
+	b := tm.owner.expect(http.StatusCreated, "POST", "/v1/labels", map[string]any{"name": "B"}).str("id")
+	team := tm.owner.expect(http.StatusCreated, "POST", "/v1/teams", map[string]any{"name": "Support"}).str("id")
+	tm.owner.expect(http.StatusNoContent, "PUT", "/v1/teams/"+team+"/inboxes/"+tm.inbox, nil)
+	hook := tm.owner.expect(http.StatusCreated, "POST", "/v1/webhooks", map[string]any{"url": "https://hooks.example.com/x", "events": []string{"conversation.rated"}}).body["endpoint"].(map[string]any)["id"].(string)
+	for i := range 60 {
+		tm.rule(tm.owner, map[string]any{"name": fmt.Sprint("Big ", i), "trigger": "conversation_created",
+			"conditions": []map[string]any{{"field": "subject", "operator": "contains", "value": "big"}},
+			"actions": []map[string]any{
+				{"type": "add_labels", "label_ids": []string{a}}, {"type": "remove_labels", "label_ids": []string{b}}, {"type": "set_priority", "priority": "high"},
+				{"type": "set_status", "status": "pending"}, {"type": "add_note", "body": "x"}, {"type": "unassign"}, {"type": "assign_team", "team_id": team},
+				{"type": "send_webhook", "webhook_id": hook},
+			}})
+	}
+	tm.rule(tm.owner, map[string]any{"name": "Small", "trigger": "conversation_created",
+		"conditions": []map[string]any{{"field": "subject", "operator": "contains", "value": "small"}},
+		"actions":    []map[string]any{{"type": "add_labels", "label_ids": []string{a}}, {"type": "set_priority", "priority": "low"}, {"type": "add_note", "body": "s"}, {"type": "unassign"}, {"type": "set_status", "status": "pending"}}})
+	tm.rule(tm.owner, map[string]any{"name": "Tiny", "trigger": "conversation_created",
+		"conditions": []map[string]any{{"field": "subject", "operator": "contains", "value": "tiny"}},
+		"actions":    []map[string]any{{"type": "add_labels", "label_ids": []string{b}}, {"type": "set_priority", "priority": "urgent"}, {"type": "add_note", "body": "t"}}})
+	conv := func(subject string) api.AutomationRunArgs {
+		t.Helper()
+		id := tm.owner.expect(http.StatusCreated, "POST", "/v1/conversations", map[string]any{"inbox_id": tm.inbox, "contact_id": tm.contact, "subject": subject}).str("id")
+		for _, j := range h.jobs("automation_run", tm.ws) {
+			var args api.AutomationRunArgs
+			if err := json.Unmarshal(j.args, &args); err != nil {
+				t.Fatal(err)
+			}
+			h.dropJob(j.id)
+			if args.ConversationID.String() == id {
+				return args
+			}
+		}
+		t.Fatal("no job")
+		return api.AutomationRunArgs{}
+	}
+	snoozed := func(err error) bool {
+		var s *river.JobSnoozeError
+		return errors.As(err, &s)
+	}
+	runs := func(c uuid.UUID) int {
+		return h.count("SELECT count(*) FROM automation_runs WHERE conversation_id = $1 AND outcome = 'applied'", c)
+	}
+	for range 25 {
+		if err := h.srv.RunAutomations(ctx, conv("small")); err != nil {
+			t.Fatal(err)
+		}
+	}
+	big := conv("big")
+	if err := h.srv.RunAutomations(ctx, big); !snoozed(err) {
+		t.Fatalf("480 actions after 125 must not all fit: %v", err)
+	}
+	if n := runs(big.ConversationID); n != 59 {
+		t.Fatalf("%d big rules ran before the limit", n)
+	}
+	tiny := conv("tiny")
+	if err := h.srv.RunAutomations(ctx, tiny); err != nil {
+		t.Fatalf("the 3 actions left were burnt by the refused rule: %v", err)
+	}
+	if err := h.srv.RunAutomations(ctx, conv("small")); !snoozed(err) {
+		t.Fatalf("a full window let a small job through: %v", err)
+	}
+	h.clock.Advance(61 * time.Second)
+	if err := h.srv.RunAutomations(ctx, big); err != nil {
+		t.Fatal(err)
+	}
+	if n := runs(big.ConversationID); n != 60 {
+		t.Fatalf("%d big rules after the window", n)
+	}
+	second := conv("big")
+	if err := h.srv.RunAutomations(ctx, second); err != nil {
+		t.Fatalf("the rules that already ran were charged again: %v", err)
+	}
+	if n := runs(second.ConversationID); n != 60 {
+		t.Fatalf("%d rules on the second big conversation", n)
 	}
 }

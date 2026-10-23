@@ -1625,8 +1625,9 @@ func (e AutomationRunActionResult) Valid() bool {
 
 // Defines values for AutomationRunOutcome.
 const (
-	AutomationRunApplied AutomationRunOutcome = "applied"
-	AutomationRunFailed  AutomationRunOutcome = "failed"
+	AutomationRunApplied    AutomationRunOutcome = "applied"
+	AutomationRunFailed     AutomationRunOutcome = "failed"
+	AutomationRunNotMatched AutomationRunOutcome = "not_matched"
 )
 
 // Valid indicates whether the value is a known member of the AutomationRunOutcome enum.
@@ -1635,6 +1636,8 @@ func (e AutomationRunOutcome) Valid() bool {
 	case AutomationRunApplied:
 		return true
 	case AutomationRunFailed:
+		return true
+	case AutomationRunNotMatched:
 		return true
 	default:
 		return false
@@ -9917,7 +9920,8 @@ type AutomationAction struct {
 	//   closing needs the conversation's required custom fields), `snooze` (`snooze_minutes`).
 	// - `add_note` (`body`): an internal note.
 	// - `send_reply` (`canned_reply_id`): the canned reply's text to the contact, as an
-	//   automatic reply (`Auto-Submitted: auto-replied` by e-mail).
+	//   automatic reply (`Auto-Submitted: auto-replied` by e-mail); see `AutomationRuleAuthor`
+	//   for `bots_may_send`.
 	// - `send_webhook` (`webhook_id`): `automation.triggered` to that endpoint.
 	Type      AutomationActionType `json:"type"`
 	WebhookId *uuid.UUID           `json:"webhook_id,omitempty"`
@@ -9932,7 +9936,8 @@ type AutomationAction struct {
 //     closing needs the conversation's required custom fields), `snooze` (`snooze_minutes`).
 //   - `add_note` (`body`): an internal note.
 //   - `send_reply` (`canned_reply_id`): the canned reply's text to the contact, as an
-//     automatic reply (`Auto-Submitted: auto-replied` by e-mail).
+//     automatic reply (`Auto-Submitted: auto-replied` by e-mail); see `AutomationRuleAuthor`
+//     for `bots_may_send`.
 //   - `send_webhook` (`webhook_id`): `automation.triggered` to that endpoint.
 type AutomationActionType string
 
@@ -10001,8 +10006,10 @@ type AutomationRule struct {
 	// Position Its place in the workspace's one list, from 0.
 	Position int32 `json:"position"`
 
-	// SavedBy Who last saved the rule. Its replies go out while `bots_may_send` is off only when this
-	// is a member who is still an owner or admin when the rule runs.
+	// SavedBy Who last changed what a rule does (its trigger, scope, conditions, actions or `enabled`), or
+	// a canned reply's text. A rule's reply goes out while `bots_may_send` is off only when both
+	// the rule's and the canned reply's are a member who is still an owner or admin when the rule
+	// runs.
 	SavedBy AutomationRuleAuthor `json:"saved_by"`
 
 	// Trigger `conversation_created`: a conversation was created (by a contact, a member or a key).
@@ -10014,8 +10021,10 @@ type AutomationRule struct {
 	UpdatedAt time.Time         `json:"updated_at"`
 }
 
-// AutomationRuleAuthor Who last saved the rule. Its replies go out while `bots_may_send` is off only when this
-// is a member who is still an owner or admin when the rule runs.
+// AutomationRuleAuthor Who last changed what a rule does (its trigger, scope, conditions, actions or `enabled`), or
+// a canned reply's text. A rule's reply goes out while `bots_may_send` is off only when both
+// the rule's and the canned reply's are a member who is still an owner or admin when the rule
+// runs.
 type AutomationRuleAuthor struct {
 	// ApiKeyId `api_key`.
 	ApiKeyId *uuid.UUID `json:"api_key_id,omitempty"`
@@ -10096,8 +10105,9 @@ type AutomationRun struct {
 	// Error `failed` only: the problem code the action met, as the same change through `/v1`
 	// would answer it (`field_required`, `team_access`, `validation_failed`,
 	// `email_undeliverable`, …), or `auto_reply` when a reply was refused to protect the
-	// customer (an automatic reply or bounce, a blocked contact, spam, or a rule reply in
-	// the last hour), `bot_sending_disabled` (see `saved_by`), `label_gone`,
+	// customer (an automatic reply or bounce, a blocked contact, spam, a rule reply in
+	// the last hour or three in the last day), `bot_sending_disabled` (see
+	// `AutomationRuleAuthor`), `label_gone`,
 	// `canned_reply_gone`, `webhook_unavailable`.
 	Error   *string              `json:"error,omitempty"`
 	Id      uuid.UUID            `json:"id"`
@@ -10127,7 +10137,8 @@ type AutomationRunAction struct {
 	//   closing needs the conversation's required custom fields), `snooze` (`snooze_minutes`).
 	// - `add_note` (`body`): an internal note.
 	// - `send_reply` (`canned_reply_id`): the canned reply's text to the contact, as an
-	//   automatic reply (`Auto-Submitted: auto-replied` by e-mail).
+	//   automatic reply (`Auto-Submitted: auto-replied` by e-mail); see `AutomationRuleAuthor`
+	//   for `bots_may_send`.
 	// - `send_webhook` (`webhook_id`): `automation.triggered` to that endpoint.
 	Type AutomationActionType `json:"type"`
 }
@@ -10776,6 +10787,10 @@ type CannedReply struct {
 	Body      string    `json:"body"`
 	CreatedAt time.Time `json:"created_at"`
 	Id        uuid.UUID `json:"id"`
+
+	// SavedBy Who last set its text; absent for replies last saved before this was recorded, which
+	// automation rules send only while `bots_may_send` is on.
+	SavedBy *AutomationRuleAuthor `json:"saved_by,omitempty"`
 
 	// Shortcut Examples: acme-app
 	Shortcut  Slug      `json:"shortcut"`
@@ -35571,9 +35586,10 @@ type ClientInterface interface {
 	// UpdateAutomationRuleWithBody Update an automation rule
 	//
 	// Owners, admins and API keys not limited to inboxes. Only what is sent changes;
-	// `conditions` and `actions` are replaced whole. The caller becomes the rule's `saved_by`,
-	// which decides whether its replies may go out while `bots_may_send` is off. Runs already
-	// queued use the rule as it is when they run.
+	// `conditions` and `actions` are replaced whole. The caller becomes the rule's `saved_by`
+	// when the change alters `trigger`, `idle_minutes`, `inbox_id`, `conditions`, `actions` or
+	// `enabled` (not a rename), which decides whether its replies may go out while
+	// `bots_may_send` is off. Runs already queued use the rule as it is when they run.
 	//
 	// Scope: `automations:manage`.
 	//
@@ -35585,9 +35601,10 @@ type ClientInterface interface {
 	// UpdateAutomationRule Update an automation rule
 	//
 	// Owners, admins and API keys not limited to inboxes. Only what is sent changes;
-	// `conditions` and `actions` are replaced whole. The caller becomes the rule's `saved_by`,
-	// which decides whether its replies may go out while `bots_may_send` is off. Runs already
-	// queued use the rule as it is when they run.
+	// `conditions` and `actions` are replaced whole. The caller becomes the rule's `saved_by`
+	// when the change alters `trigger`, `idle_minutes`, `inbox_id`, `conditions`, `actions` or
+	// `enabled` (not a rename), which decides whether its replies may go out while
+	// `bots_may_send` is off. Runs already queued use the rule as it is when they run.
 	//
 	// Scope: `automations:manage`.
 	//
@@ -35598,10 +35615,11 @@ type ClientInterface interface {
 
 	// ListAutomationRuns A rule's log
 	//
-	// The rule's runs of the last 30 days, newest first: one per trigger whose conditions
-	// matched, `applied` or `failed` with the reason. Triggers whose conditions did not match
-	// leave no run. Callers limited to some inboxes see the runs on conversations of their
-	// inboxes.
+	// The rule's runs of the last 30 days, newest first: one per trigger it was evaluated for,
+	// `applied`, `failed` with the reason, or `not_matched` when its conditions did not match.
+	// An idle trigger whose conversation is no longer quiet or no longer open or pending when the
+	// rule would run leaves no run. Callers limited to some inboxes see the runs on
+	// conversations of their inboxes.
 	//
 	// Scope: `automations:read`.
 	//
@@ -47314,9 +47332,10 @@ func (c *Client) GetAutomationRule(ctx context.Context, automationRuleId Automat
 // UpdateAutomationRuleWithBody Update an automation rule
 //
 // Owners, admins and API keys not limited to inboxes. Only what is sent changes;
-// `conditions` and `actions` are replaced whole. The caller becomes the rule's `saved_by`,
-// which decides whether its replies may go out while `bots_may_send` is off. Runs already
-// queued use the rule as it is when they run.
+// `conditions` and `actions` are replaced whole. The caller becomes the rule's `saved_by`
+// when the change alters `trigger`, `idle_minutes`, `inbox_id`, `conditions`, `actions` or
+// `enabled` (not a rename), which decides whether its replies may go out while
+// `bots_may_send` is off. Runs already queued use the rule as it is when they run.
 //
 // Scope: `automations:manage`.
 //
@@ -47338,9 +47357,10 @@ func (c *Client) UpdateAutomationRuleWithBody(ctx context.Context, automationRul
 // UpdateAutomationRule Update an automation rule
 //
 // Owners, admins and API keys not limited to inboxes. Only what is sent changes;
-// `conditions` and `actions` are replaced whole. The caller becomes the rule's `saved_by`,
-// which decides whether its replies may go out while `bots_may_send` is off. Runs already
-// queued use the rule as it is when they run.
+// `conditions` and `actions` are replaced whole. The caller becomes the rule's `saved_by`
+// when the change alters `trigger`, `idle_minutes`, `inbox_id`, `conditions`, `actions` or
+// `enabled` (not a rename), which decides whether its replies may go out while
+// `bots_may_send` is off. Runs already queued use the rule as it is when they run.
 //
 // Scope: `automations:manage`.
 //
@@ -47361,10 +47381,11 @@ func (c *Client) UpdateAutomationRule(ctx context.Context, automationRuleId Auto
 
 // ListAutomationRuns A rule's log
 //
-// The rule's runs of the last 30 days, newest first: one per trigger whose conditions
-// matched, `applied` or `failed` with the reason. Triggers whose conditions did not match
-// leave no run. Callers limited to some inboxes see the runs on conversations of their
-// inboxes.
+// The rule's runs of the last 30 days, newest first: one per trigger it was evaluated for,
+// `applied`, `failed` with the reason, or `not_matched` when its conditions did not match.
+// An idle trigger whose conversation is no longer quiet or no longer open or pending when the
+// rule would run leaves no run. Callers limited to some inboxes see the runs on
+// conversations of their inboxes.
 //
 // Scope: `automations:read`.
 //
@@ -94076,9 +94097,10 @@ type ClientWithResponsesInterface interface {
 	// UpdateAutomationRuleWithBodyWithResponse Update an automation rule
 	//
 	// Owners, admins and API keys not limited to inboxes. Only what is sent changes;
-	// `conditions` and `actions` are replaced whole. The caller becomes the rule's `saved_by`,
-	// which decides whether its replies may go out while `bots_may_send` is off. Runs already
-	// queued use the rule as it is when they run.
+	// `conditions` and `actions` are replaced whole. The caller becomes the rule's `saved_by`
+	// when the change alters `trigger`, `idle_minutes`, `inbox_id`, `conditions`, `actions` or
+	// `enabled` (not a rename), which decides whether its replies may go out while
+	// `bots_may_send` is off. Runs already queued use the rule as it is when they run.
 	//
 	// Scope: `automations:manage`.
 	//
@@ -94090,9 +94112,10 @@ type ClientWithResponsesInterface interface {
 	// UpdateAutomationRuleWithResponse Update an automation rule
 	//
 	// Owners, admins and API keys not limited to inboxes. Only what is sent changes;
-	// `conditions` and `actions` are replaced whole. The caller becomes the rule's `saved_by`,
-	// which decides whether its replies may go out while `bots_may_send` is off. Runs already
-	// queued use the rule as it is when they run.
+	// `conditions` and `actions` are replaced whole. The caller becomes the rule's `saved_by`
+	// when the change alters `trigger`, `idle_minutes`, `inbox_id`, `conditions`, `actions` or
+	// `enabled` (not a rename), which decides whether its replies may go out while
+	// `bots_may_send` is off. Runs already queued use the rule as it is when they run.
 	//
 	// Scope: `automations:manage`.
 	//
@@ -94103,10 +94126,11 @@ type ClientWithResponsesInterface interface {
 
 	// ListAutomationRunsWithResponse A rule's log
 	//
-	// The rule's runs of the last 30 days, newest first: one per trigger whose conditions
-	// matched, `applied` or `failed` with the reason. Triggers whose conditions did not match
-	// leave no run. Callers limited to some inboxes see the runs on conversations of their
-	// inboxes.
+	// The rule's runs of the last 30 days, newest first: one per trigger it was evaluated for,
+	// `applied`, `failed` with the reason, or `not_matched` when its conditions did not match.
+	// An idle trigger whose conversation is no longer quiet or no longer open or pending when the
+	// rule would run leaves no run. Callers limited to some inboxes see the runs on
+	// conversations of their inboxes.
 	//
 	// Scope: `automations:read`.
 	//
@@ -139619,9 +139643,10 @@ func (c *ClientWithResponses) GetAutomationRuleWithResponse(ctx context.Context,
 // UpdateAutomationRuleWithBodyWithResponse Update an automation rule
 //
 // Owners, admins and API keys not limited to inboxes. Only what is sent changes;
-// `conditions` and `actions` are replaced whole. The caller becomes the rule's `saved_by`,
-// which decides whether its replies may go out while `bots_may_send` is off. Runs already
-// queued use the rule as it is when they run.
+// `conditions` and `actions` are replaced whole. The caller becomes the rule's `saved_by`
+// when the change alters `trigger`, `idle_minutes`, `inbox_id`, `conditions`, `actions` or
+// `enabled` (not a rename), which decides whether its replies may go out while
+// `bots_may_send` is off. Runs already queued use the rule as it is when they run.
 //
 // Scope: `automations:manage`.
 //
@@ -139639,9 +139664,10 @@ func (c *ClientWithResponses) UpdateAutomationRuleWithBodyWithResponse(ctx conte
 // UpdateAutomationRuleWithResponse Update an automation rule
 //
 // Owners, admins and API keys not limited to inboxes. Only what is sent changes;
-// `conditions` and `actions` are replaced whole. The caller becomes the rule's `saved_by`,
-// which decides whether its replies may go out while `bots_may_send` is off. Runs already
-// queued use the rule as it is when they run.
+// `conditions` and `actions` are replaced whole. The caller becomes the rule's `saved_by`
+// when the change alters `trigger`, `idle_minutes`, `inbox_id`, `conditions`, `actions` or
+// `enabled` (not a rename), which decides whether its replies may go out while
+// `bots_may_send` is off. Runs already queued use the rule as it is when they run.
 //
 // Scope: `automations:manage`.
 //
@@ -139658,10 +139684,11 @@ func (c *ClientWithResponses) UpdateAutomationRuleWithResponse(ctx context.Conte
 
 // ListAutomationRunsWithResponse A rule's log
 //
-// The rule's runs of the last 30 days, newest first: one per trigger whose conditions
-// matched, `applied` or `failed` with the reason. Triggers whose conditions did not match
-// leave no run. Callers limited to some inboxes see the runs on conversations of their
-// inboxes.
+// The rule's runs of the last 30 days, newest first: one per trigger it was evaluated for,
+// `applied`, `failed` with the reason, or `not_matched` when its conditions did not match.
+// An idle trigger whose conversation is no longer quiet or no longer open or pending when the
+// rule would run leaves no run. Callers limited to some inboxes see the runs on
+// conversations of their inboxes.
 //
 // Scope: `automations:read`.
 //

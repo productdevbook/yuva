@@ -935,9 +935,15 @@ func (s *Server) WakeSnoozedIn(ctx context.Context, ws uuid.UUID) error {
 				return err
 			}
 			n = len(due)
-			for _, id := range due {
-				if _, err := s.reopenConversation(ctx, q, ev, ws, id, now); err != nil {
+			for _, d := range due {
+				from := len(ev.items)
+				if _, err := s.reopenConversation(ctx, q, ev, ws, d.ID, now); err != nil {
 					return err
+				}
+				if d.SnoozeRuleID != nil {
+					for i := from; i < len(ev.items); i++ {
+						ev.items[i].noRules = true
+					}
 				}
 			}
 			return nil

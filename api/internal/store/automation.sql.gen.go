@@ -12,6 +12,23 @@ import (
 	"uuid"
 )
 
+const automationRunExists = `-- name: AutomationRunExists :one
+SELECT EXISTS (SELECT 1 FROM automation_runs WHERE workspace_id = $1 AND rule_id = $2 AND trigger_key = $3) AS found
+`
+
+type AutomationRunExistsParams struct {
+	WorkspaceID uuid.UUID
+	RuleID      uuid.UUID
+	TriggerKey  string
+}
+
+func (q *Queries) AutomationRunExists(ctx context.Context, arg AutomationRunExistsParams) (bool, error) {
+	row := q.db.QueryRow(ctx, automationRunExists, arg.WorkspaceID, arg.RuleID, arg.TriggerKey)
+	var found bool
+	err := row.Scan(&found)
+	return found, err
+}
+
 const contactMessageOf = `-- name: ContactMessageOf :one
 SELECT m.id, m.body, coalesce(e.auto, false)::bool AS auto
 FROM messages m
@@ -48,6 +65,37 @@ func (q *Queries) CountAutomationRules(ctx context.Context, workspaceID uuid.UUI
 	var count int64
 	err := row.Scan(&count)
 	return count, err
+}
+
+const countRuleReplies = `-- name: CountRuleReplies :one
+SELECT count(*) FILTER (WHERE created_at > $1)::int AS hour, count(*)::int AS day
+FROM messages
+WHERE workspace_id = $2 AND conversation_id = $3 AND rule IS NOT NULL
+  AND kind = 'message' AND direction = 'out' AND created_at > $4
+`
+
+type CountRuleRepliesParams struct {
+	HourSince      time.Time
+	WorkspaceID    uuid.UUID
+	ConversationID uuid.UUID
+	DaySince       time.Time
+}
+
+type CountRuleRepliesRow struct {
+	Hour int32
+	Day  int32
+}
+
+func (q *Queries) CountRuleReplies(ctx context.Context, arg CountRuleRepliesParams) (CountRuleRepliesRow, error) {
+	row := q.db.QueryRow(ctx, countRuleReplies,
+		arg.HourSince,
+		arg.WorkspaceID,
+		arg.ConversationID,
+		arg.DaySince,
+	)
+	var i CountRuleRepliesRow
+	err := row.Scan(&i.Hour, &i.Day)
+	return i, err
 }
 
 const createAutomationRule = `-- name: CreateAutomationRule :one
@@ -646,26 +694,6 @@ func (q *Queries) LockAutomationRules(ctx context.Context, workspaceID uuid.UUID
 	return err
 }
 
-const ruleRepliedSince = `-- name: RuleRepliedSince :one
-SELECT EXISTS (
-    SELECT 1 FROM messages
-    WHERE workspace_id = $1 AND conversation_id = $2 AND rule IS NOT NULL
-      AND kind = 'message' AND direction = 'out' AND created_at > $3) AS replied
-`
-
-type RuleRepliedSinceParams struct {
-	WorkspaceID    uuid.UUID
-	ConversationID uuid.UUID
-	Since          time.Time
-}
-
-func (q *Queries) RuleRepliedSince(ctx context.Context, arg RuleRepliedSinceParams) (bool, error) {
-	row := q.db.QueryRow(ctx, ruleRepliedSince, arg.WorkspaceID, arg.ConversationID, arg.Since)
-	var replied bool
-	err := row.Scan(&replied)
-	return replied, err
-}
-
 const setAutomationRulePosition = `-- name: SetAutomationRulePosition :exec
 UPDATE automation_rules SET position = $1 WHERE workspace_id = $2 AND id = $3
 `
@@ -693,6 +721,36 @@ type SetAutomationRunActionsParams struct {
 
 func (q *Queries) SetAutomationRunActions(ctx context.Context, arg SetAutomationRunActionsParams) error {
 	_, err := q.db.Exec(ctx, setAutomationRunActions, arg.Actions, arg.WorkspaceID, arg.ID)
+	return err
+}
+
+const setAutomationRunOutcome = `-- name: SetAutomationRunOutcome :exec
+UPDATE automation_runs SET outcome = $1 WHERE workspace_id = $2 AND id = $3
+`
+
+type SetAutomationRunOutcomeParams struct {
+	Outcome     string
+	WorkspaceID uuid.UUID
+	ID          uuid.UUID
+}
+
+func (q *Queries) SetAutomationRunOutcome(ctx context.Context, arg SetAutomationRunOutcomeParams) error {
+	_, err := q.db.Exec(ctx, setAutomationRunOutcome, arg.Outcome, arg.WorkspaceID, arg.ID)
+	return err
+}
+
+const setConversationSnoozeRule = `-- name: SetConversationSnoozeRule :exec
+UPDATE conversations SET snooze_rule_id = $1 WHERE workspace_id = $2 AND id = $3
+`
+
+type SetConversationSnoozeRuleParams struct {
+	RuleID      *uuid.UUID
+	WorkspaceID uuid.UUID
+	ID          uuid.UUID
+}
+
+func (q *Queries) SetConversationSnoozeRule(ctx context.Context, arg SetConversationSnoozeRuleParams) error {
+	_, err := q.db.Exec(ctx, setConversationSnoozeRule, arg.RuleID, arg.WorkspaceID, arg.ID)
 	return err
 }
 

@@ -51,6 +51,53 @@ func (q *Queries) SweepRateSlots(ctx context.Context, at *time.Time) (int64, err
 	return result.RowsAffected(), nil
 }
 
+const takeRateLimitAll = `-- name: TakeRateLimitAll :one
+WITH c AS (SELECT coalesce($5::timestamptz, clock_timestamp()) AS now)
+INSERT INTO rate_limits AS r (key, started_at, ends_at, checked_at, lim, want, count, granted)
+SELECT u.key, c.now, c.now + u.window_ms * interval '1 millisecond', c.now, u.lim, u.want,
+    CASE WHEN u.want <= u.lim THEN u.want ELSE 0 END, CASE WHEN u.want <= u.lim THEN u.want ELSE 0 END
+FROM c, (SELECT $1::bytea AS key, $2::bigint AS window_ms, $3::int AS lim, $4::int AS want) u
+WHERE true
+ON CONFLICT (key) DO UPDATE SET (started_at, ends_at, checked_at, lim, want, count, granted) = (
+    SELECT
+        CASE WHEN x.reset THEN excluded.started_at ELSE r.started_at END,
+        CASE WHEN x.reset THEN excluded.ends_at ELSE r.ends_at END,
+        excluded.checked_at, excluded.lim, excluded.want,
+        CASE WHEN x.reset THEN excluded.count WHEN r.count + excluded.want <= excluded.lim THEN r.count + excluded.want ELSE r.count END,
+        CASE WHEN x.reset THEN excluded.granted WHEN r.count + excluded.want <= excluded.lim THEN excluded.want ELSE 0 END
+    FROM (SELECT r.ends_at <= excluded.started_at OR r.started_at > excluded.ends_at AS reset) x
+)
+RETURNING granted, ends_at, checked_at
+`
+
+type TakeRateLimitAllParams struct {
+	Key      []byte
+	WindowMs int64
+	Lim      int32
+	Want     int32
+	At       *time.Time
+}
+
+type TakeRateLimitAllRow struct {
+	Granted   int32
+	EndsAt    time.Time
+	CheckedAt time.Time
+}
+
+// TakeRateLimitAll counts want against the key only when all of it fits, or nothing.
+func (q *Queries) TakeRateLimitAll(ctx context.Context, arg TakeRateLimitAllParams) (TakeRateLimitAllRow, error) {
+	row := q.db.QueryRow(ctx, takeRateLimitAll,
+		arg.Key,
+		arg.WindowMs,
+		arg.Lim,
+		arg.Want,
+		arg.At,
+	)
+	var i TakeRateLimitAllRow
+	err := row.Scan(&i.Granted, &i.EndsAt, &i.CheckedAt)
+	return i, err
+}
+
 const takeRateLimits = `-- name: TakeRateLimits :many
 WITH c AS (SELECT coalesce($5::timestamptz, clock_timestamp()) AS now)
 INSERT INTO rate_limits AS r (key, started_at, ends_at, checked_at, lim, want, count, granted)

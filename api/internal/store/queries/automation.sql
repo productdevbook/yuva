@@ -87,11 +87,20 @@ WHERE r.workspace_id = sqlc.arg(workspace_id)::uuid AND r.id IN (
     WHERE o.workspace_id = sqlc.arg(workspace_id)::uuid AND o.created_at < sqlc.arg(before)::timestamptz
     LIMIT sqlc.arg(lim)::int);
 
--- name: RuleRepliedSince :one
-SELECT EXISTS (
-    SELECT 1 FROM messages
-    WHERE workspace_id = @workspace_id AND conversation_id = @conversation_id AND rule IS NOT NULL
-      AND kind = 'message' AND direction = 'out' AND created_at > @since) AS replied;
+-- name: CountRuleReplies :one
+SELECT count(*) FILTER (WHERE created_at > @hour_since)::int AS hour, count(*)::int AS day
+FROM messages
+WHERE workspace_id = @workspace_id AND conversation_id = @conversation_id AND rule IS NOT NULL
+  AND kind = 'message' AND direction = 'out' AND created_at > @day_since;
+
+-- name: AutomationRunExists :one
+SELECT EXISTS (SELECT 1 FROM automation_runs WHERE workspace_id = @workspace_id AND rule_id = @rule_id AND trigger_key = @trigger_key) AS found;
+
+-- name: SetAutomationRunOutcome :exec
+UPDATE automation_runs SET outcome = @outcome WHERE workspace_id = @workspace_id AND id = @id;
+
+-- name: SetConversationSnoozeRule :exec
+UPDATE conversations SET snooze_rule_id = sqlc.narg(rule_id) WHERE workspace_id = @workspace_id AND id = @id;
 
 -- name: LatestContactMessage :one
 SELECT m.id, m.body, coalesce(e.auto, false)::bool AS auto

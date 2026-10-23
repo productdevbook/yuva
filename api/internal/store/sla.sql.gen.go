@@ -13,7 +13,7 @@ import (
 )
 
 const claimDueSnoozed = `-- name: ClaimDueSnoozed :many
-SELECT id FROM conversations
+SELECT id, snooze_rule_id FROM conversations
 WHERE workspace_id = $1 AND status = 'snoozed' AND snooze_until <= $2::timestamptz AND trashed_at IS NULL AND NOT spam
 ORDER BY snooze_until, id
 LIMIT $3
@@ -26,19 +26,24 @@ type ClaimDueSnoozedParams struct {
 	Lim         int32
 }
 
-func (q *Queries) ClaimDueSnoozed(ctx context.Context, arg ClaimDueSnoozedParams) ([]uuid.UUID, error) {
+type ClaimDueSnoozedRow struct {
+	ID           uuid.UUID
+	SnoozeRuleID *uuid.UUID
+}
+
+func (q *Queries) ClaimDueSnoozed(ctx context.Context, arg ClaimDueSnoozedParams) ([]ClaimDueSnoozedRow, error) {
 	rows, err := q.db.Query(ctx, claimDueSnoozed, arg.WorkspaceID, arg.Now, arg.Lim)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []uuid.UUID
+	var items []ClaimDueSnoozedRow
 	for rows.Next() {
-		var id uuid.UUID
-		if err := rows.Scan(&id); err != nil {
+		var i ClaimDueSnoozedRow
+		if err := rows.Scan(&i.ID, &i.SnoozeRuleID); err != nil {
 			return nil, err
 		}
-		items = append(items, id)
+		items = append(items, i)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, err

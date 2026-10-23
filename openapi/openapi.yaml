@@ -126,11 +126,14 @@ tags:
       - A rule applies all of its actions or none: when one cannot be applied (a required custom
         field on close, a member without access, a refused reply) the run is `failed` and nothing
         of that rule changes. `GET /v1/automation-rules/{id}/runs` is the rule's log, kept 30 days.
-      - A reply never answers an automatic reply or a bounce, a blocked contact or spam, and goes
-        out at most once an hour per conversation; rule replies do not meet SLA targets. A rule
-        last saved by an owner or admin may reply while the workspace's `bots_may_send` is off;
-        one saved by an API key or a connected app only while it is on.
-      - At most 600 actions per workspace a minute; rules over the limit wait and run later.
+      - A reply never answers an automatic reply or a bounce, a blocked contact or spam, and rules
+        reply at most once an hour and three times a day per conversation; rule replies do not
+        meet SLA targets. While the workspace's `bots_may_send` is off, a rule replies only when
+        both the rule and its canned reply were last saved by a member who is still an owner or
+        admin; otherwise only while it is on.
+      - The end of a snooze a rule set triggers no rule.
+      - At most 600 actions per workspace a minute, counted per rule that runs; a rule that does
+        not fit waits, with the rules after it, until the minute is over.
   - name: channels
     description: |
       How messages reach an inbox. E-mail channels receive mail through `/ingress/email` and send
@@ -3077,9 +3080,10 @@ paths:
       summary: Update an automation rule
       description: |
         Owners, admins and API keys not limited to inboxes. Only what is sent changes;
-        `conditions` and `actions` are replaced whole. The caller becomes the rule's `saved_by`,
-        which decides whether its replies may go out while `bots_may_send` is off. Runs already
-        queued use the rule as it is when they run.
+        `conditions` and `actions` are replaced whole. The caller becomes the rule's `saved_by`
+        when the change alters `trigger`, `idle_minutes`, `inbox_id`, `conditions`, `actions` or
+        `enabled` (not a rename), which decides whether its replies may go out while
+        `bots_may_send` is off. Runs already queued use the rule as it is when they run.
 
         Scope: `automations:manage`.
       tags: [automation]
@@ -3133,10 +3137,11 @@ paths:
       operationId: listAutomationRuns
       summary: A rule's log
       description: |
-        The rule's runs of the last 30 days, newest first: one per trigger whose conditions
-        matched, `applied` or `failed` with the reason. Triggers whose conditions did not match
-        leave no run. Callers limited to some inboxes see the runs on conversations of their
-        inboxes.
+        The rule's runs of the last 30 days, newest first: one per trigger it was evaluated for,
+        `applied`, `failed` with the reason, or `not_matched` when its conditions did not match.
+        An idle trigger whose conversation is no longer quiet or no longer open or pending when the
+        rule would run leaves no run. Callers limited to some inboxes see the runs on
+        conversations of their inboxes.
 
         Scope: `automations:read`.
       tags: [automation]
@@ -24583,6 +24588,11 @@ components:
           type: string
         body:
           type: string
+        saved_by:
+          $ref: "#/components/schemas/AutomationRuleAuthor"
+          description: |
+            Who last set its text; absent for replies last saved before this was recorded, which
+            automation rules send only while `bots_may_send` is on.
         created_at:
           type: string
           format: date-time
@@ -27397,7 +27407,8 @@ components:
           closing needs the conversation's required custom fields), `snooze` (`snooze_minutes`).
         - `add_note` (`body`): an internal note.
         - `send_reply` (`canned_reply_id`): the canned reply's text to the contact, as an
-          automatic reply (`Auto-Submitted: auto-replied` by e-mail).
+          automatic reply (`Auto-Submitted: auto-replied` by e-mail); see `AutomationRuleAuthor`
+          for `bots_may_send`.
         - `send_webhook` (`webhook_id`): `automation.triggered` to that endpoint.
       enum: [add_labels, remove_labels, assign_member, assign_team, assign_pool, unassign, set_priority, set_status, snooze, add_note, send_reply, send_webhook]
       x-enum-varnames: [AutomationActionAddLabels, AutomationActionRemoveLabels, AutomationActionAssignMember, AutomationActionAssignTeam, AutomationActionAssignPool, AutomationActionUnassign, AutomationActionSetPriority, AutomationActionSetStatus, AutomationActionSnooze, AutomationActionAddNote, AutomationActionSendReply, AutomationActionSendWebhook]
@@ -27451,8 +27462,10 @@ components:
     AutomationRuleAuthor:
       type: object
       description: |
-        Who last saved the rule. Its replies go out while `bots_may_send` is off only when this
-        is a member who is still an owner or admin when the rule runs.
+        Who last changed what a rule does (its trigger, scope, conditions, actions or `enabled`), or
+        a canned reply's text. A rule's reply goes out while `bots_may_send` is off only when both
+        the rule's and the canned reply's are a member who is still an owner or admin when the rule
+        runs.
       required: [type]
       properties:
         type:
@@ -27603,8 +27616,8 @@ components:
           description: The rule's name when it acted.
     AutomationRunOutcome:
       type: string
-      enum: [applied, failed]
-      x-enum-varnames: [AutomationRunApplied, AutomationRunFailed]
+      enum: [applied, failed, not_matched]
+      x-enum-varnames: [AutomationRunApplied, AutomationRunFailed, AutomationRunNotMatched]
     AutomationRunAction:
       type: object
       required: [type, result]
@@ -27641,8 +27654,9 @@ components:
             `failed` only: the problem code the action met, as the same change through `/v1`
             would answer it (`field_required`, `team_access`, `validation_failed`,
             `email_undeliverable`, …), or `auto_reply` when a reply was refused to protect the
-            customer (an automatic reply or bounce, a blocked contact, spam, or a rule reply in
-            the last hour), `bot_sending_disabled` (see `saved_by`), `label_gone`,
+            customer (an automatic reply or bounce, a blocked contact, spam, a rule reply in
+            the last hour or three in the last day), `bot_sending_disabled` (see
+            `AutomationRuleAuthor`), `label_gone`,
             `canned_reply_gone`, `webhook_unavailable`.
         detail:
           type: string
