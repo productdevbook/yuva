@@ -69,6 +69,11 @@ msgstr "{0, plural, other {# 位電子郵件訂閱者}}"
 msgid "{0, plural, one {recipient} other {recipients}}"
 msgstr "{0, plural, other {收件人}}"
 
+#. placeholder {0}: c.name
+#: src/features/settings/slack/SlackPage.tsx
+msgid "{0} (private)"
+msgstr "{0} (private)"
+
 #. placeholder {0}: fmt.format(s.members.length)
 #: src/features/reports/ReportsColumn.tsx
 msgid "{0} active today"
@@ -1408,6 +1413,10 @@ msgstr "測試郵件正在發往 {address}。送達後結果會顯示在這裡,�
 msgid "A thread is taken whole when its last message is in the range."
 msgstr "最後一條訊息在範圍內的對話串會被整體匯入。"
 
+#: src/features/settings/slack/SlackPage.tsx
+msgid "A thread reply that starts with this goes to the customer. Any other reply becomes a note. An exclamation mark and 1 to 20 lowercase letters."
+msgstr "A thread reply that starts with this goes to the customer. Any other reply becomes a note. An exclamation mark and 1 to 20 lowercase letters."
+
 #: src/features/settings/channels/email/form.ts
 msgid "A username needs TLS or STARTTLS: the password is never sent unencrypted."
 msgstr "使用者名稱需要 TLS 或 STARTTLS:密碼絕不會以明文傳送。"
@@ -2252,6 +2261,10 @@ msgstr "此工作區的另一個匯入正在執行。匯入一次只能執行一
 #: src/features/conversation/messages/EventLine.tsx
 msgid "another inbox"
 msgstr "另一個收件匣"
+
+#: src/components/common/text.ts
+msgid "Another member has already linked this Slack user."
+msgstr "Another member has already linked this Slack user."
 
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Another page verified this domain first, and only a verified claim holds a name. Remove the domain, or start over once the other page lets it go."
@@ -3272,6 +3285,14 @@ msgstr "頻道"
 msgid "Channel added"
 msgstr "已新增頻道"
 
+#: src/features/settings/slack/SlackPage.tsx
+msgid "Channel for mentions in {name}"
+msgstr "Channel for mentions in {name}"
+
+#: src/features/settings/slack/SlackPage.tsx
+msgid "Channel for new conversations in {name}"
+msgstr "Channel for new conversations in {name}"
+
 #: src/features/settings/channels/sections.tsx
 msgid "Channel removed"
 msgstr "已移除頻道"
@@ -3645,6 +3666,10 @@ msgstr "CNAME 記錄"
 msgid "Code"
 msgstr "程式碼"
 
+#: src/features/settings/slack/SlackAccount.tsx
+msgid "Code from Slack"
+msgstr "Code from Slack"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Collapse or expand the sidebar"
 msgstr "收合或展開側邊欄"
@@ -3847,6 +3872,10 @@ msgstr "連線 Claude、ChatGPT、Cursor 或其他 MCP 用戶端，讓它讀取�
 msgid "Connect GitHub or Linear to create and link issues from feedback and ideas."
 msgstr "Connect GitHub or Linear to create and link issues from feedback and ideas."
 
+#: src/features/settings/slack/SlackPage.tsx
+msgid "Connect Slack"
+msgstr "Connect Slack"
+
 #: src/features/account/ConnectPage.tsx
 msgid "Connect to {host}"
 msgstr "連線到 {host}"
@@ -3854,6 +3883,10 @@ msgstr "連線到 {host}"
 #: src/features/settings/SettingsColumn.tsx
 msgid "Connect your servers and bots to Yuva"
 msgstr "把你的伺服器和機器人連線到 Yuva"
+
+#: src/features/settings/slack/SlackPage.tsx
+msgid "Connect your Slack workspace. Yuva asks Slack for the permissions it needs, and the bot token is stored encrypted."
+msgstr "Connect your Slack workspace. Yuva asks Slack for the permissions it needs, and the bot token is stored encrypted."
 
 #: src/components/common/text.ts
 msgid "Connect, change and disconnect GitHub and Linear trackers"
@@ -3864,11 +3897,14 @@ msgstr "Connect, change and disconnect GitHub and Linear trackers"
 #: src/features/migrations/text.ts
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
+#: src/features/settings/slack/SlackPage.tsx
 msgid "Connected"
 msgstr "已連線"
 
+#. placeholder {0}: formatDateTime(data.connected_at, i18n.locale)
 #. placeholder {0}: providerName(provider)
 #: src/features/settings/issues/IssueTrackersPage.tsx
+#: src/features/settings/slack/SlackPage.tsx
 msgid "Connected {0}"
 msgstr "Connected {0}"
 
@@ -4867,12 +4903,17 @@ msgid "Discard the suggested reply"
 msgstr "丟棄建議的回覆"
 
 #: src/features/settings/issues/IssueTrackersPage.tsx
+#: src/features/settings/slack/SlackPage.tsx
 msgid "Disconnect"
 msgstr "Disconnect"
 
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "Disconnect {name}?"
 msgstr "Disconnect {name}?"
+
+#: src/features/settings/slack/SlackPage.tsx
+msgid "Disconnect {teamName}?"
+msgstr "Disconnect {teamName}?"
 
 #: src/features/settings/audit/sentence.ts
 msgid "Disconnected {client}"
@@ -4927,6 +4968,7 @@ msgid "Discussions you started or replied to"
 msgstr "你發起或回覆過的討論"
 
 #: src/components/common/Linked.tsx
+#: src/features/settings/slack/SlackPage.tsx
 msgid "Dismiss"
 msgstr "關閉"
 
@@ -7009,6 +7051,7 @@ msgstr "{name} 的收件匣"
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
+#: src/features/settings/slack/SlackPage.tsx
 msgid "Inboxes"
 msgstr "收件匣"
 
@@ -7039,9 +7082,17 @@ msgstr "事件"
 msgid "Incidents live on a status page. Create one first."
 msgstr "事件屬於某個狀態頁。請先建立一個。"
 
+#: src/features/settings/slack/SlackPage.tsx
+msgid "Include message text for {name}"
+msgstr "Include message text for {name}"
+
 #: src/features/settings/webhooks/events.tsx
 msgid "Include notes"
 msgstr "包含備註"
+
+#: src/features/settings/slack/SlackPage.tsx
+msgid "Include the start of the message"
+msgstr "Include the start of the message"
 
 #: src/features/contact/ContactSheet.tsx
 msgid "Info"
@@ -7675,6 +7726,7 @@ msgid "Linear signing secret"
 msgstr "Linear signing secret"
 
 #: src/components/common/Linked.tsx
+#: src/features/settings/slack/SlackAccount.tsx
 #: src/features/status/LinkConversationsDialog.tsx
 msgid "Link"
 msgstr "關聯"
@@ -7762,9 +7814,18 @@ msgstr "連結到事件"
 msgid "Link to an incident ({linkKey})"
 msgstr "連結到事件 ({linkKey})"
 
+#: src/features/settings/slack/SlackAccount.tsx
+msgid "Link your Slack user so replies you write in Slack threads are written as you."
+msgstr "Link your Slack user so replies you write in Slack threads are written as you."
+
 #: src/components/common/Linked.tsx
 msgid "Linked"
 msgstr "已連結"
+
+#. placeholder {0}: formatDateTime(link.linked_at, i18n.locale)
+#: src/features/settings/slack/SlackAccount.tsx
+msgid "Linked {0}"
+msgstr "Linked {0}"
 
 #: src/features/issues/IssueDialog.tsx
 msgid "Linked {key}"
@@ -8300,6 +8361,7 @@ msgstr "提到了你"
 #: src/app/TopBar.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/inbox/SidePanels.tsx
+#: src/features/settings/slack/SlackPage.tsx
 msgid "Mentions"
 msgstr "提及"
 
@@ -8779,6 +8841,7 @@ msgstr "需要發件人"
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/ProductsPage.tsx
+#: src/features/settings/slack/SlackPage.tsx
 msgid "Needs attention"
 msgstr "需要處理"
 
@@ -8882,6 +8945,7 @@ msgid "New conversation in an async inbox"
 msgstr "非同步收件匣中的新對話"
 
 #: src/features/reports/ReportPages.tsx
+#: src/features/settings/slack/SlackPage.tsx
 msgid "New conversations"
 msgstr "新對話"
 
@@ -9706,6 +9770,7 @@ msgstr "沒有人會收到這封郵件。請選擇有訂閱者的列表,或放�
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/slack/SlackPage.tsx
 #: src/features/setup/email/EmailTestStep.tsx
 #: src/features/status/MonitorDialog.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -10096,6 +10161,7 @@ msgstr "關閉"
 
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/settings/channels/chat/ChatFields.tsx
+#: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/webhooks/parts.tsx
 msgid "Off"
 msgstr "關"
@@ -10111,6 +10177,10 @@ msgstr "此裝置已關閉。"
 #: src/features/broadcasts/Composer.tsx
 msgid "Off sends as fast as the channel and the workspace’s daily limit allow. On spreads the mails evenly, so no 60 minutes, 24 hours or 30 days get more than you set."
 msgstr "關閉時,會按頻道和工作區每日上限允許的最快速度傳送。開啟時,會把郵件均勻分散,使任意 60 分鐘、24 小時或 30 天內都不會超過你的設定。"
+
+#: src/features/settings/slack/SlackPage.tsx
+msgid "Off, a post carries only the subject, the contact's name and a link. On, it also carries the first 300 characters of the message or note, which then leave Yuva for Slack."
+msgstr "Off, a post carries only the subject, the contact's name and a link. On, it also carries the first 300 characters of the message or note, which then leave Yuva for Slack."
 
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Off, a redirect is judged against the expected status."
@@ -10172,6 +10242,7 @@ msgid "oldest {oldestFor}, in {oldestInbox}"
 msgstr "最早 {oldestFor}，位於 {oldestInbox}"
 
 #: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/webhooks/parts.tsx
 msgid "On"
 msgstr "開"
@@ -10303,6 +10374,10 @@ msgstr "只新增同意接收此列表的人。你在這裡輸入的內容會作
 msgid "Only an owner can change an owner's role."
 msgstr "只有擁有者才能變更擁有者的角色。"
 
+#: src/features/settings/slack/SlackPage.tsx
+msgid "Only channels the Yuva bot is a member of are listed. In Slack, invite it with /invite and the bot's name."
+msgstr "Only channels the Yuva bot is a member of are listed. In Slack, invite it with /invite and the bot's name."
+
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Only contacts whose language is one of these."
 msgstr "僅限語言是其中之一的聯絡人。"
@@ -10326,6 +10401,10 @@ msgstr "僅適用於舊程式生成的、按舊方式轉義「From 」行的 mbo
 #: src/features/migrations/ChooseStep.tsx
 msgid "Only headers are read: no message is opened or marked. You can close this page; the scan goes on and the list in Settings shows when it is done."
 msgstr "只讀取標頭:不會開啟或標記任何郵件。你可以關閉此頁面;掃描會繼續,完成後設定中的列表會顯示。"
+
+#: src/features/settings/slack/SlackAccount.tsx
+msgid "Only if your Slack account uses another address than this one. Optional."
+msgstr "Only if your Slack account uses another address than this one. Optional."
 
 #: src/features/conversation/Feedback.tsx
 msgid "Only in the app"
@@ -10619,6 +10698,10 @@ msgstr "開啟端點"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Open the entry"
 msgstr "開啟項目"
+
+#: src/features/settings/slack/SlackPage.tsx
+msgid "Open the guide"
+msgstr "Open the guide"
 
 #: src/features/conversation/messages/ArticleCards.tsx
 msgid "Open the help article"
@@ -11452,9 +11535,17 @@ msgstr "發布更新"
 msgid "Post an update ({updateKey})"
 msgstr "發布更新（{updateKey}）"
 
+#: src/features/settings/SettingsColumn.tsx
+msgid "Post conversations to a channel and answer from it"
+msgstr "Post conversations to a channel and answer from it"
+
 #: src/components/common/text.ts
 msgid "Post feedback for your app's users"
 msgstr "為你的應用程式使用者釋出反饋"
+
+#: src/features/settings/slack/SlackPage.tsx
+msgid "Post new conversations and mentions to a Slack channel, and answer from the thread. The <0>guide</0> shows how to set up the Slack app."
+msgstr "Post new conversations and mentions to a Slack channel, and answer from the thread. The <0>guide</0> shows how to set up the Slack app."
 
 #: src/features/home/HomePage.tsx
 msgid "Post status update"
@@ -12415,6 +12506,10 @@ msgstr "有空時回覆"
 msgid "replies within {within}"
 msgstr "{within} 內回覆"
 
+#: src/features/settings/slack/SlackAccount.tsx
+msgid "Replies you write in Slack threads no longer reach Yuva."
+msgstr "Replies you write in Slack threads no longer reach Yuva."
+
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
@@ -12438,6 +12533,10 @@ msgstr "回覆帳號"
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Reply and resolve"
 msgstr "回覆並標示為已解決"
+
+#: src/features/settings/slack/SlackPage.tsx
+msgid "Reply command"
+msgstr "Reply command"
 
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Reply posted"
@@ -12875,6 +12974,7 @@ msgstr "星期六"
 #: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/slack/SlackPage.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/status/ComponentDialogs.tsx
@@ -13227,6 +13327,7 @@ msgid "Send a message from your app"
 msgstr "從你的應用程式傳送訊息"
 
 #: src/features/auth/SignInForm.tsx
+#: src/features/settings/slack/SlackAccount.tsx
 msgid "Send a new code"
 msgstr "傳送新驗證碼"
 
@@ -13291,6 +13392,7 @@ msgid "Send invite"
 msgstr "寄出邀請"
 
 #: src/features/auth/SignInForm.tsx
+#: src/features/settings/slack/SlackAccount.tsx
 msgid "Send me a code"
 msgstr "給我發驗證碼"
 
@@ -14148,6 +14250,63 @@ msgstr "已跳過或失敗"
 msgid "Skipped: {0}"
 msgstr "已跳過:{0}"
 
+#: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/slack/SlackPage.tsx
+msgid "Slack"
+msgstr "Slack"
+
+#: src/features/settings/slack/SlackAccount.tsx
+msgid "Slack account"
+msgstr "Slack account"
+
+#: src/features/settings/slack/SlackAccount.tsx
+msgid "Slack account linked"
+msgstr "Slack account linked"
+
+#: src/features/settings/slack/SlackAccount.tsx
+msgid "Slack account unlinked"
+msgstr "Slack account unlinked"
+
+#: src/features/settings/slack/SlackPage.tsx
+msgid "Slack connected"
+msgstr "Slack connected"
+
+#: src/features/settings/slack/SlackPage.tsx
+msgid "Slack disconnected"
+msgstr "Slack disconnected"
+
+#: src/features/settings/slack/SlackAccount.tsx
+msgid "Slack e-mail address"
+msgstr "Slack e-mail address"
+
+#: src/features/settings/slack/SlackPage.tsx
+msgid "Slack granted fewer permissions than Yuva needs. Check the app's scopes in the guide and try again."
+msgstr "Slack granted fewer permissions than Yuva needs. Check the app's scopes in the guide and try again."
+
+#: src/features/settings/slack/SlackPage.tsx
+msgid "Slack is connected."
+msgstr "Slack is connected."
+
+#: src/components/common/text.ts
+msgid "Slack is not connected to this workspace."
+msgstr "Slack is not connected to this workspace."
+
+#: src/components/common/text.ts
+msgid "Slack knows no user with this e-mail address."
+msgstr "Slack knows no user with this e-mail address."
+
+#: src/features/settings/slack/SlackPage.tsx
+msgid "Slack refused the install or did not answer. Try again."
+msgstr "Slack refused the install or did not answer. Try again."
+
+#: src/components/common/text.ts
+msgid "Slack refused the request or did not answer. Try again in a moment."
+msgstr "Slack refused the request or did not answer. Try again in a moment."
+
+#: src/features/settings/slack/SlackAccount.tsx
+msgid "Slack sent a 6-digit code to {who} as a direct message."
+msgstr "Slack sent a 6-digit code to {who} as a direct message."
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Slug"
 msgstr "別名"
@@ -14759,6 +14918,10 @@ msgstr "感謝來信"
 msgid "Thanks for writing. We usually answer within a day."
 msgstr "感謝來信。我們通常會在一天內回覆。"
 
+#: src/features/settings/slack/SlackPage.tsx
+msgid "That Slack workspace is connected to another Yuva workspace. Disconnect it there first."
+msgstr "That Slack workspace is connected to another Yuva workspace. Disconnect it there first."
+
 #: src/features/settings/channels/email/Deliverability.tsx
 #: src/features/setup/email/EmailTestStep.tsx
 msgid "That was the sixth check this hour. You can check again at {retry}."
@@ -14795,6 +14958,10 @@ msgstr "你為 Yuva 建立的應用程式註冊也不再需要:請在 Microsoft 
 #: src/features/status/ComponentsTab.tsx
 msgid "The bars are the last {days} days, as visitors see them."
 msgstr "長條顯示最近 {days} 天，與訪客看到的一致。"
+
+#: src/features/settings/slack/SlackPage.tsx
+msgid "The bot token is revoked, and every Slack thread and every member's Slack link is deleted. Replies in old threads no longer reach Yuva."
+msgstr "The bot token is revoked, and every Slack thread and every member's Slack link is deleted. Replies in old threads no longer reach Yuva."
 
 #: src/components/common/text.ts
 msgid "The broadcast changed in the meantime. Look at its state and try again."
@@ -15129,6 +15296,18 @@ msgstr "該事件已解決或已完成，不再接受變更。"
 #: src/features/status/Notices.tsx
 msgid "The incident was closed without notifying subscribers"
 msgstr "此事件已關閉，未通知訂閱者"
+
+#: src/features/settings/slack/SlackPage.tsx
+msgid "The install took longer than 10 minutes. Start again."
+msgstr "The install took longer than 10 minutes. Start again."
+
+#: src/features/settings/slack/SlackPage.tsx
+msgid "The install was cancelled at Slack."
+msgstr "The install was cancelled at Slack."
+
+#: src/features/settings/slack/SlackPage.tsx
+msgid "The install was finished in another browser session. Start again in this one."
+msgstr "The install was finished in another browser session. Start again in this one."
 
 #: src/features/status/monitorErrors.ts
 msgid "The interval must be {lo} to {hi} seconds."
@@ -15537,6 +15716,10 @@ msgstr "伺服器維運人員已收到你傳送群發的請求。批准後你就
 msgid "The server’s operator reads this before letting the workspace send. New workspaces start with a small daily limit that grows with every clean day."
 msgstr "伺服器維運人員會在允許工作區傳送之前檢視這一點。新工作區從較小的每日上限開始,每多一個沒有問題的日子就會增加。"
 
+#: src/features/settings/slack/SlackPage.tsx
+msgid "The server's operator registers the Slack app and sets its credentials. The guide explains how."
+msgstr "The server's operator registers the Slack app and sets its credentials. The guide explains how."
+
 #: src/features/migrations/text.ts
 msgid "The sign-in came back in another browser"
 msgstr "登入在另一個瀏覽器中返回了"
@@ -15832,6 +16015,14 @@ msgid "This channel’s broadcasts go through Amazon SES, which signs your mail 
 msgstr "此頻道的群發透過 Amazon SES 發出,SES 會用 Easy DKIM 以你的域名為郵件簽名。Yuva DKIM 適用於其他中繼;請改為在 SES 中為你的域名設定 Easy DKIM。"
 
 #: src/components/common/text.ts
+msgid "This code has expired. Ask for a new one."
+msgstr "This code has expired. Ask for a new one."
+
+#: src/components/common/text.ts
+msgid "This code is not right."
+msgstr "This code is not right."
+
+#: src/components/common/text.ts
 msgid "This conflicts with something that already exists."
 msgstr "這與已存在的內容衝突。"
 
@@ -16064,6 +16255,14 @@ msgstr "此伺服器不提供自有網域。請讓其營運者開啟。"
 #: src/features/migrations/SwitchStep.tsx
 msgid "This server has no forwarding address, so the mail reaches Yuva through an MX change."
 msgstr "此伺服器沒有轉發地址,因此郵件透過更改 MX 到達 Yuva。"
+
+#: src/features/settings/slack/SlackPage.tsx
+msgid "This server has no Slack app set up, so Slack cannot be connected."
+msgstr "This server has no Slack app set up, so Slack cannot be connected."
+
+#: src/components/common/text.ts
+msgid "This server has no Slack app set up."
+msgstr "This server has no Slack app set up."
 
 #: src/features/settings/notifications/PushSection.tsx
 msgid "This server is not set up to send push notifications."
@@ -16501,6 +16700,7 @@ msgid "Unknown device"
 msgstr "未知裝置"
 
 #: src/features/feedback/RoadmapCard.tsx
+#: src/features/settings/slack/SlackAccount.tsx
 msgid "Unlink"
 msgstr "取消連結"
 
@@ -16518,6 +16718,10 @@ msgstr "取消連結 {name}"
 #: src/features/status/IncidentChips.tsx
 msgid "Unlink from {title}"
 msgstr "取消與 {title} 的連結"
+
+#: src/features/settings/slack/SlackAccount.tsx
+msgid "Unlink your Slack account?"
+msgstr "Unlink your Slack account?"
 
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Unlock"

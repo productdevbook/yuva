@@ -69,6 +69,11 @@ msgstr "{0, plural, one {# ഇമെയിൽ സബ്സ്ക്രൈബർ}
 msgid "{0, plural, one {recipient} other {recipients}}"
 msgstr "{0, plural, one {സ്വീകർത്താവ്} other {സ്വീകർത്താക്കൾ}}"
 
+#. placeholder {0}: c.name
+#: src/features/settings/slack/SlackPage.tsx
+msgid "{0} (private)"
+msgstr "{0} (private)"
+
 #. placeholder {0}: fmt.format(s.members.length)
 #: src/features/reports/ReportsColumn.tsx
 msgid "{0} active today"
@@ -1408,6 +1413,10 @@ msgstr "ഒരു ടെസ്റ്റ് മെയിൽ {address}-ലേക�
 msgid "A thread is taken whole when its last message is in the range."
 msgstr "ഒരു ത്രെഡിന്റെ അവസാന സന്ദേശം ശ്രേണിയിലായിരിക്കുമ്പോൾ അത് പൂർണ്ണമായി എടുക്കുന്നു."
 
+#: src/features/settings/slack/SlackPage.tsx
+msgid "A thread reply that starts with this goes to the customer. Any other reply becomes a note. An exclamation mark and 1 to 20 lowercase letters."
+msgstr "A thread reply that starts with this goes to the customer. Any other reply becomes a note. An exclamation mark and 1 to 20 lowercase letters."
+
 #: src/features/settings/channels/email/form.ts
 msgid "A username needs TLS or STARTTLS: the password is never sent unencrypted."
 msgstr "ഒരു ഉപയോക്തൃനാമത്തിന് TLS അല്ലെങ്കിൽ STARTTLS വേണം: പാസ്‌വേഡ് ഒരിക്കലും എൻക്രിപ്റ്റ് ചെയ്യാതെ അയയ്ക്കില്ല."
@@ -2252,6 +2261,10 @@ msgstr "ഈ വർക്ക്സ്പേസിന്റെ മറ്റൊര�
 #: src/features/conversation/messages/EventLine.tsx
 msgid "another inbox"
 msgstr "മറ്റൊരു ഇൻബോക്സ്"
+
+#: src/components/common/text.ts
+msgid "Another member has already linked this Slack user."
+msgstr "Another member has already linked this Slack user."
 
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Another page verified this domain first, and only a verified claim holds a name. Remove the domain, or start over once the other page lets it go."
@@ -3272,6 +3285,14 @@ msgstr "ചാനൽ"
 msgid "Channel added"
 msgstr "ചാനൽ ചേർത്തു"
 
+#: src/features/settings/slack/SlackPage.tsx
+msgid "Channel for mentions in {name}"
+msgstr "Channel for mentions in {name}"
+
+#: src/features/settings/slack/SlackPage.tsx
+msgid "Channel for new conversations in {name}"
+msgstr "Channel for new conversations in {name}"
+
 #: src/features/settings/channels/sections.tsx
 msgid "Channel removed"
 msgstr "ചാനൽ നീക്കം ചെയ്തു"
@@ -3645,6 +3666,10 @@ msgstr "CNAME റെക്കോർഡ്"
 msgid "Code"
 msgstr "കോഡ്"
 
+#: src/features/settings/slack/SlackAccount.tsx
+msgid "Code from Slack"
+msgstr "Code from Slack"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Collapse or expand the sidebar"
 msgstr "സൈഡ്‌ബാർ ചുരുക്കുക അല്ലെങ്കിൽ വികസിപ്പിക്കുക"
@@ -3847,6 +3872,10 @@ msgstr "Claude, ChatGPT, Cursor അല്ലെങ്കിൽ മറ്റൊ�
 msgid "Connect GitHub or Linear to create and link issues from feedback and ideas."
 msgstr "Connect GitHub or Linear to create and link issues from feedback and ideas."
 
+#: src/features/settings/slack/SlackPage.tsx
+msgid "Connect Slack"
+msgstr "Connect Slack"
+
 #: src/features/account/ConnectPage.tsx
 msgid "Connect to {host}"
 msgstr "{host}-ലേക്ക് കണക്റ്റ് ചെയ്യുക"
@@ -3854,6 +3883,10 @@ msgstr "{host}-ലേക്ക് കണക്റ്റ് ചെയ്യുക
 #: src/features/settings/SettingsColumn.tsx
 msgid "Connect your servers and bots to Yuva"
 msgstr "നിങ്ങളുടെ സെർവറുകളും ബോട്ടുകളും Yuva-യിലേക്ക് കണക്റ്റ് ചെയ്യുക"
+
+#: src/features/settings/slack/SlackPage.tsx
+msgid "Connect your Slack workspace. Yuva asks Slack for the permissions it needs, and the bot token is stored encrypted."
+msgstr "Connect your Slack workspace. Yuva asks Slack for the permissions it needs, and the bot token is stored encrypted."
 
 #: src/components/common/text.ts
 msgid "Connect, change and disconnect GitHub and Linear trackers"
@@ -3864,11 +3897,14 @@ msgstr "Connect, change and disconnect GitHub and Linear trackers"
 #: src/features/migrations/text.ts
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
+#: src/features/settings/slack/SlackPage.tsx
 msgid "Connected"
 msgstr "കണക്റ്റ് ചെയ്തു"
 
+#. placeholder {0}: formatDateTime(data.connected_at, i18n.locale)
 #. placeholder {0}: providerName(provider)
 #: src/features/settings/issues/IssueTrackersPage.tsx
+#: src/features/settings/slack/SlackPage.tsx
 msgid "Connected {0}"
 msgstr "Connected {0}"
 
@@ -4867,12 +4903,17 @@ msgid "Discard the suggested reply"
 msgstr "നിർദ്ദേശിച്ച മറുപടി ഉപേക്ഷിക്കുക"
 
 #: src/features/settings/issues/IssueTrackersPage.tsx
+#: src/features/settings/slack/SlackPage.tsx
 msgid "Disconnect"
 msgstr "Disconnect"
 
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "Disconnect {name}?"
 msgstr "Disconnect {name}?"
+
+#: src/features/settings/slack/SlackPage.tsx
+msgid "Disconnect {teamName}?"
+msgstr "Disconnect {teamName}?"
 
 #: src/features/settings/audit/sentence.ts
 msgid "Disconnected {client}"
@@ -4927,6 +4968,7 @@ msgid "Discussions you started or replied to"
 msgstr "നിങ്ങൾ ആരംഭിച്ചതോ മറുപടി നൽകിയതോ ആയ ചർച്ചകൾ"
 
 #: src/components/common/Linked.tsx
+#: src/features/settings/slack/SlackPage.tsx
 msgid "Dismiss"
 msgstr "അടയ്ക്കുക"
 
@@ -7009,6 +7051,7 @@ msgstr "{name}-നുള്ള ഇൻബോക്സ്"
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
+#: src/features/settings/slack/SlackPage.tsx
 msgid "Inboxes"
 msgstr "ഇൻബോക്സുകൾ"
 
@@ -7039,9 +7082,17 @@ msgstr "സംഭവങ്ങൾ"
 msgid "Incidents live on a status page. Create one first."
 msgstr "സംഭവങ്ങൾ ഒരു സ്റ്റാറ്റസ് പേജിലാണ്. ആദ്യം ഒന്ന് സൃഷ്ടിക്കുക."
 
+#: src/features/settings/slack/SlackPage.tsx
+msgid "Include message text for {name}"
+msgstr "Include message text for {name}"
+
 #: src/features/settings/webhooks/events.tsx
 msgid "Include notes"
 msgstr "കുറിപ്പുകൾ ഉൾപ്പെടുത്തുക"
+
+#: src/features/settings/slack/SlackPage.tsx
+msgid "Include the start of the message"
+msgstr "Include the start of the message"
 
 #: src/features/contact/ContactSheet.tsx
 msgid "Info"
@@ -7675,6 +7726,7 @@ msgid "Linear signing secret"
 msgstr "Linear signing secret"
 
 #: src/components/common/Linked.tsx
+#: src/features/settings/slack/SlackAccount.tsx
 #: src/features/status/LinkConversationsDialog.tsx
 msgid "Link"
 msgstr "ലിങ്ക് ചെയ്യുക"
@@ -7762,9 +7814,18 @@ msgstr "സംഭവത്തിലേക്ക് ലിങ്ക് ചെയ�
 msgid "Link to an incident ({linkKey})"
 msgstr "സംഭവത്തിലേക്ക് ലിങ്ക് ചെയ്യുക ({linkKey})"
 
+#: src/features/settings/slack/SlackAccount.tsx
+msgid "Link your Slack user so replies you write in Slack threads are written as you."
+msgstr "Link your Slack user so replies you write in Slack threads are written as you."
+
 #: src/components/common/Linked.tsx
 msgid "Linked"
 msgstr "ലിങ്ക് ചെയ്തത്"
+
+#. placeholder {0}: formatDateTime(link.linked_at, i18n.locale)
+#: src/features/settings/slack/SlackAccount.tsx
+msgid "Linked {0}"
+msgstr "Linked {0}"
 
 #: src/features/issues/IssueDialog.tsx
 msgid "Linked {key}"
@@ -8300,6 +8361,7 @@ msgstr "നിങ്ങളെ പരാമർശിച്ചു"
 #: src/app/TopBar.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/inbox/SidePanels.tsx
+#: src/features/settings/slack/SlackPage.tsx
 msgid "Mentions"
 msgstr "പരാമർശങ്ങൾ"
 
@@ -8779,6 +8841,7 @@ msgstr "അയയ്ക്കുന്നയാൾ വേണം"
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/ProductsPage.tsx
+#: src/features/settings/slack/SlackPage.tsx
 msgid "Needs attention"
 msgstr "ശ്രദ്ധ വേണം"
 
@@ -8882,6 +8945,7 @@ msgid "New conversation in an async inbox"
 msgstr "അസിങ്ക് ഇൻബോക്സിൽ പുതിയ സംഭാഷണം"
 
 #: src/features/reports/ReportPages.tsx
+#: src/features/settings/slack/SlackPage.tsx
 msgid "New conversations"
 msgstr "പുതിയ സംഭാഷണങ്ങൾ"
 
@@ -9706,6 +9770,7 @@ msgstr "ആർക്കും ഈ മെയിൽ ലഭിക്കില്ല
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/slack/SlackPage.tsx
 #: src/features/setup/email/EmailTestStep.tsx
 #: src/features/status/MonitorDialog.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -10096,6 +10161,7 @@ msgstr "ഓഫ്"
 
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/settings/channels/chat/ChatFields.tsx
+#: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/webhooks/parts.tsx
 msgid "Off"
 msgstr "ഓഫ്"
@@ -10111,6 +10177,10 @@ msgstr "ഈ ഉപകരണത്തിന് ഓഫ്."
 #: src/features/broadcasts/Composer.tsx
 msgid "Off sends as fast as the channel and the workspace’s daily limit allow. On spreads the mails evenly, so no 60 minutes, 24 hours or 30 days get more than you set."
 msgstr "ഓഫ് ആയിരിക്കുമ്പോൾ ചാനലും വർക്ക്സ്പേസിന്റെ ദൈനംദിന പരിധിയും അനുവദിക്കുന്നത്ര വേഗത്തിൽ അയയ്ക്കുന്നു. ഓൺ ആയിരിക്കുമ്പോൾ മെയിലുകൾ ഒരേപോലെ വ്യാപിപ്പിക്കുന്നു, അതിനാൽ ഒരു 60 മിനിറ്റോ 24 മണിക്കൂറോ 30 ദിവസമോ നിങ്ങൾ സജ്ജമാക്കിയതിൽ കൂടുതൽ നേടില്ല."
+
+#: src/features/settings/slack/SlackPage.tsx
+msgid "Off, a post carries only the subject, the contact's name and a link. On, it also carries the first 300 characters of the message or note, which then leave Yuva for Slack."
+msgstr "Off, a post carries only the subject, the contact's name and a link. On, it also carries the first 300 characters of the message or note, which then leave Yuva for Slack."
 
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Off, a redirect is judged against the expected status."
@@ -10172,6 +10242,7 @@ msgid "oldest {oldestFor}, in {oldestInbox}"
 msgstr "ഏറ്റവും പഴയത് {oldestFor}, {oldestInbox}-ൽ"
 
 #: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/webhooks/parts.tsx
 msgid "On"
 msgstr "ഓൺ"
@@ -10303,6 +10374,10 @@ msgstr "ഈ ലിസ്റ്റ് ലഭിക്കാൻ സമ്മതി
 msgid "Only an owner can change an owner's role."
 msgstr "ഒരു ഉടമയുടെ റോൾ മാറ്റാൻ ഉടമയ്ക്ക് മാത്രമേ കഴിയൂ."
 
+#: src/features/settings/slack/SlackPage.tsx
+msgid "Only channels the Yuva bot is a member of are listed. In Slack, invite it with /invite and the bot's name."
+msgstr "Only channels the Yuva bot is a member of are listed. In Slack, invite it with /invite and the bot's name."
+
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Only contacts whose language is one of these."
 msgstr "ഭാഷ ഇവയിൽ ഒന്നായ കോൺടാക്റ്റുകൾ മാത്രം."
@@ -10326,6 +10401,10 @@ msgstr "“From ” വരികൾ പഴയ രീതിയിൽ എസ്ക
 #: src/features/migrations/ChooseStep.tsx
 msgid "Only headers are read: no message is opened or marked. You can close this page; the scan goes on and the list in Settings shows when it is done."
 msgstr "ഹെഡറുകൾ മാത്രം വായിക്കുന്നു: ഒരു സന്ദേശവും തുറക്കുകയോ അടയാളപ്പെടുത്തുകയോ ചെയ്യുന്നില്ല. നിങ്ങൾക്ക് ഈ പേജ് അടയ്ക്കാം; സ്കാൻ തുടരും, ക്രമീകരണങ്ങളിലെ ലിസ്റ്റ് അത് തീരുമ്പോൾ കാണിക്കും."
+
+#: src/features/settings/slack/SlackAccount.tsx
+msgid "Only if your Slack account uses another address than this one. Optional."
+msgstr "Only if your Slack account uses another address than this one. Optional."
 
 #: src/features/conversation/Feedback.tsx
 msgid "Only in the app"
@@ -10619,6 +10698,10 @@ msgstr "എൻഡ്‌പോയിന്റ് തുറക്കുക"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Open the entry"
 msgstr "എൻട്രി തുറക്കുക"
+
+#: src/features/settings/slack/SlackPage.tsx
+msgid "Open the guide"
+msgstr "Open the guide"
 
 #: src/features/conversation/messages/ArticleCards.tsx
 msgid "Open the help article"
@@ -11452,9 +11535,17 @@ msgstr "അപ്ഡേറ്റ് പ്രസിദ്ധീകരിക്�
 msgid "Post an update ({updateKey})"
 msgstr "അപ്ഡേറ്റ് പ്രസിദ്ധീകരിക്കുക ({updateKey})"
 
+#: src/features/settings/SettingsColumn.tsx
+msgid "Post conversations to a channel and answer from it"
+msgstr "Post conversations to a channel and answer from it"
+
 #: src/components/common/text.ts
 msgid "Post feedback for your app's users"
 msgstr "നിങ്ങളുടെ ആപ്പിന്റെ ഉപയോക്താക്കൾക്കുള്ള ഫീഡ്ബാക്ക് പോസ്റ്റ് ചെയ്യുക"
+
+#: src/features/settings/slack/SlackPage.tsx
+msgid "Post new conversations and mentions to a Slack channel, and answer from the thread. The <0>guide</0> shows how to set up the Slack app."
+msgstr "Post new conversations and mentions to a Slack channel, and answer from the thread. The <0>guide</0> shows how to set up the Slack app."
 
 #: src/features/home/HomePage.tsx
 msgid "Post status update"
@@ -12415,6 +12506,10 @@ msgstr "ലഭ്യമാകുമ്പോൾ മറുപടി നൽകു�
 msgid "replies within {within}"
 msgstr "{within} നുള്ളിൽ മറുപടി"
 
+#: src/features/settings/slack/SlackAccount.tsx
+msgid "Replies you write in Slack threads no longer reach Yuva."
+msgstr "Replies you write in Slack threads no longer reach Yuva."
+
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
@@ -12438,6 +12533,10 @@ msgstr "മറുപടി അക്കൗണ്ട്"
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Reply and resolve"
 msgstr "Reply and resolve"
+
+#: src/features/settings/slack/SlackPage.tsx
+msgid "Reply command"
+msgstr "Reply command"
 
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Reply posted"
@@ -12875,6 +12974,7 @@ msgstr "ശനിയാഴ്ച"
 #: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/slack/SlackPage.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/status/ComponentDialogs.tsx
@@ -13227,6 +13327,7 @@ msgid "Send a message from your app"
 msgstr "നിങ്ങളുടെ ആപ്പിൽ നിന്ന് ഒരു സന്ദേശം അയയ്ക്കുക"
 
 #: src/features/auth/SignInForm.tsx
+#: src/features/settings/slack/SlackAccount.tsx
 msgid "Send a new code"
 msgstr "പുതിയ കോഡ് അയയ്ക്കുക"
 
@@ -13291,6 +13392,7 @@ msgid "Send invite"
 msgstr "ക്ഷണം അയയ്ക്കുക"
 
 #: src/features/auth/SignInForm.tsx
+#: src/features/settings/slack/SlackAccount.tsx
 msgid "Send me a code"
 msgstr "എനിക്ക് ഒരു കോഡ് അയയ്ക്കുക"
 
@@ -14148,6 +14250,63 @@ msgstr "ഒഴിവാക്കിയതോ പരാജയപ്പെട്�
 msgid "Skipped: {0}"
 msgstr "ഒഴിവാക്കിയത്: {0}"
 
+#: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/slack/SlackPage.tsx
+msgid "Slack"
+msgstr "Slack"
+
+#: src/features/settings/slack/SlackAccount.tsx
+msgid "Slack account"
+msgstr "Slack account"
+
+#: src/features/settings/slack/SlackAccount.tsx
+msgid "Slack account linked"
+msgstr "Slack account linked"
+
+#: src/features/settings/slack/SlackAccount.tsx
+msgid "Slack account unlinked"
+msgstr "Slack account unlinked"
+
+#: src/features/settings/slack/SlackPage.tsx
+msgid "Slack connected"
+msgstr "Slack connected"
+
+#: src/features/settings/slack/SlackPage.tsx
+msgid "Slack disconnected"
+msgstr "Slack disconnected"
+
+#: src/features/settings/slack/SlackAccount.tsx
+msgid "Slack e-mail address"
+msgstr "Slack e-mail address"
+
+#: src/features/settings/slack/SlackPage.tsx
+msgid "Slack granted fewer permissions than Yuva needs. Check the app's scopes in the guide and try again."
+msgstr "Slack granted fewer permissions than Yuva needs. Check the app's scopes in the guide and try again."
+
+#: src/features/settings/slack/SlackPage.tsx
+msgid "Slack is connected."
+msgstr "Slack is connected."
+
+#: src/components/common/text.ts
+msgid "Slack is not connected to this workspace."
+msgstr "Slack is not connected to this workspace."
+
+#: src/components/common/text.ts
+msgid "Slack knows no user with this e-mail address."
+msgstr "Slack knows no user with this e-mail address."
+
+#: src/features/settings/slack/SlackPage.tsx
+msgid "Slack refused the install or did not answer. Try again."
+msgstr "Slack refused the install or did not answer. Try again."
+
+#: src/components/common/text.ts
+msgid "Slack refused the request or did not answer. Try again in a moment."
+msgstr "Slack refused the request or did not answer. Try again in a moment."
+
+#: src/features/settings/slack/SlackAccount.tsx
+msgid "Slack sent a 6-digit code to {who} as a direct message."
+msgstr "Slack sent a 6-digit code to {who} as a direct message."
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Slug"
 msgstr "സ്ലഗ്"
@@ -14759,6 +14918,10 @@ msgstr "എഴുതിയതിന് നന്ദി"
 msgid "Thanks for writing. We usually answer within a day."
 msgstr "എഴുതിയതിന് നന്ദി. ഞങ്ങൾ സാധാരണയായി ഒരു ദിവസത്തിനുള്ളിൽ മറുപടി നൽകും."
 
+#: src/features/settings/slack/SlackPage.tsx
+msgid "That Slack workspace is connected to another Yuva workspace. Disconnect it there first."
+msgstr "That Slack workspace is connected to another Yuva workspace. Disconnect it there first."
+
 #: src/features/settings/channels/email/Deliverability.tsx
 #: src/features/setup/email/EmailTestStep.tsx
 msgid "That was the sixth check this hour. You can check again at {retry}."
@@ -14795,6 +14958,10 @@ msgstr "നിങ്ങൾ Yuva-യ്ക്കായി ഉണ്ടാക്�
 #: src/features/status/ComponentsTab.tsx
 msgid "The bars are the last {days} days, as visitors see them."
 msgstr "സന്ദർശകർ കാണുന്നതുപോലെ കഴിഞ്ഞ {days} ദിവസമാണ് ബാറുകൾ."
+
+#: src/features/settings/slack/SlackPage.tsx
+msgid "The bot token is revoked, and every Slack thread and every member's Slack link is deleted. Replies in old threads no longer reach Yuva."
+msgstr "The bot token is revoked, and every Slack thread and every member's Slack link is deleted. Replies in old threads no longer reach Yuva."
 
 #: src/components/common/text.ts
 msgid "The broadcast changed in the meantime. Look at its state and try again."
@@ -15129,6 +15296,18 @@ msgstr "സംഭവം ഇതിനകം പരിഹരിച്ചതോ പ
 #: src/features/status/Notices.tsx
 msgid "The incident was closed without notifying subscribers"
 msgstr "വരിക്കാരെ അറിയിക്കാതെ സംഭവം അടച്ചു"
+
+#: src/features/settings/slack/SlackPage.tsx
+msgid "The install took longer than 10 minutes. Start again."
+msgstr "The install took longer than 10 minutes. Start again."
+
+#: src/features/settings/slack/SlackPage.tsx
+msgid "The install was cancelled at Slack."
+msgstr "The install was cancelled at Slack."
+
+#: src/features/settings/slack/SlackPage.tsx
+msgid "The install was finished in another browser session. Start again in this one."
+msgstr "The install was finished in another browser session. Start again in this one."
 
 #: src/features/status/monitorErrors.ts
 msgid "The interval must be {lo} to {hi} seconds."
@@ -15537,6 +15716,10 @@ msgstr "സെർവറിന്റെ ഓപ്പറേറ്റർക്ക�
 msgid "The server’s operator reads this before letting the workspace send. New workspaces start with a small daily limit that grows with every clean day."
 msgstr "വർക്ക്സ്പേസിനെ അയയ്ക്കാൻ അനുവദിക്കുന്നതിന് മുമ്പ് സെർവറിന്റെ ഓപ്പറേറ്റർ ഇത് വായിക്കുന്നു. പുതിയ വർക്ക്സ്പേസുകൾ ചെറിയ ദൈനംദിന പരിധിയിൽ തുടങ്ങുന്നു, അത് ഓരോ ശുദ്ധമായ ദിവസത്തിലും വളരുന്നു."
 
+#: src/features/settings/slack/SlackPage.tsx
+msgid "The server's operator registers the Slack app and sets its credentials. The guide explains how."
+msgstr "The server's operator registers the Slack app and sets its credentials. The guide explains how."
+
 #: src/features/migrations/text.ts
 msgid "The sign-in came back in another browser"
 msgstr "സൈൻ-ഇൻ മറ്റൊരു ബ്രൗസറിൽ തിരിച്ചെത്തി"
@@ -15832,6 +16015,14 @@ msgid "This channel’s broadcasts go through Amazon SES, which signs your mail 
 msgstr "ഈ ചാനലിന്റെ ബ്രോഡ്കാസ്റ്റുകൾ Amazon SES വഴി പോകുന്നു, അത് Easy DKIM വഴി നിങ്ങളുടെ ഡൊമെയ്ൻ ഉപയോഗിച്ച് മെയിൽ സൈൻ ചെയ്യുന്നു. Yuva DKIM മറ്റ് റിലേകൾക്കുള്ളതാണ്; പകരം SES-ൽ നിങ്ങളുടെ ഡൊമെയ്‌നിന് Easy DKIM സജ്ജീകരിക്കുക."
 
 #: src/components/common/text.ts
+msgid "This code has expired. Ask for a new one."
+msgstr "This code has expired. Ask for a new one."
+
+#: src/components/common/text.ts
+msgid "This code is not right."
+msgstr "This code is not right."
+
+#: src/components/common/text.ts
 msgid "This conflicts with something that already exists."
 msgstr "ഇത് ഇതിനകം നിലവിലുള്ള എന്തോ ഒന്നുമായി പൊരുത്തപ്പെടുന്നില്ല."
 
@@ -16064,6 +16255,14 @@ msgstr "ഈ സെർവർ സ്വന്തം ഡൊമെയ്നുകൾ
 #: src/features/migrations/SwitchStep.tsx
 msgid "This server has no forwarding address, so the mail reaches Yuva through an MX change."
 msgstr "ഈ സെർവറിന് ഫോർവേഡിംഗ് വിലാസമില്ല, അതിനാൽ മെയിൽ MX മാറ്റത്തിലൂടെ Yuva-യിൽ എത്തുന്നു."
+
+#: src/features/settings/slack/SlackPage.tsx
+msgid "This server has no Slack app set up, so Slack cannot be connected."
+msgstr "This server has no Slack app set up, so Slack cannot be connected."
+
+#: src/components/common/text.ts
+msgid "This server has no Slack app set up."
+msgstr "This server has no Slack app set up."
 
 #: src/features/settings/notifications/PushSection.tsx
 msgid "This server is not set up to send push notifications."
@@ -16501,6 +16700,7 @@ msgid "Unknown device"
 msgstr "അജ്ഞാത ഉപകരണം"
 
 #: src/features/feedback/RoadmapCard.tsx
+#: src/features/settings/slack/SlackAccount.tsx
 msgid "Unlink"
 msgstr "ബന്ധം നീക്കുക"
 
@@ -16518,6 +16718,10 @@ msgstr "{name}-ന്റെ ലിങ്ക് നീക്കുക"
 #: src/features/status/IncidentChips.tsx
 msgid "Unlink from {title}"
 msgstr "{title}-ൽ നിന്ന് ലിങ്ക് നീക്കുക"
+
+#: src/features/settings/slack/SlackAccount.tsx
+msgid "Unlink your Slack account?"
+msgstr "Unlink your Slack account?"
 
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Unlock"

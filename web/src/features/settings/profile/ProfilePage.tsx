@@ -2,6 +2,7 @@ import { Trans } from "@lingui/react/macro"
 import { useNavigate } from "react-router"
 
 import { DeleteAccountButton } from "@/features/auth/DeleteAccountButton"
+import { SlackAccount } from "@/features/settings/slack/SlackAccount"
 import { Passkeys } from "@/features/settings/profile/Passkeys"
 import { ProfileForm } from "@/features/settings/profile/ProfileForm"
 import { Card, PageHeader, Rows, Section, SettingRow } from "@/features/settings/ui"
@@ -17,6 +18,7 @@ export function ProfilePage() {
       <PageHeader title={<Trans>Profile</Trans>} />
       <ProfileForm key={me.person.id} />
       <Passkeys />
+      <SlackAccount />
       <Section>
         <Card flush>
           <Rows>

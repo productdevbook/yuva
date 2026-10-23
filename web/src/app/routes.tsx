@@ -20,6 +20,7 @@ import { ConsentPage } from "@/features/oauth/ConsentPage"
 import { ApiKeysPage } from "@/features/settings/api-keys/ApiKeysPage"
 import { AppearancePage } from "@/features/settings/appearance/AppearancePage"
 import { CannedRepliesPage } from "@/features/settings/canned/CannedRepliesPage"
+import { SlackPage } from "@/features/settings/slack/SlackPage"
 import { IssueTrackersPage } from "@/features/settings/issues/IssueTrackersPage"
 import { SsoPage } from "@/features/settings/sso/SsoPage"
 import { ConnectedAppsPage } from "@/features/settings/connected-apps/ConnectedAppsPage"
@@ -289,6 +290,7 @@ export function AppRoutes() {
               <Route path="connected-apps/:assistant" element={<ConnectedAppsPage />} />
               <Route path="issue-trackers" element={<IssueTrackersPage />} />
               <Route path="sso" element={<SsoPage />} />
+              <Route path="slack" element={<SlackPage />} />
               <Route path="webhooks" element={<WebhooksPage />} />
               <Route path="webhooks/:webhookId" element={<WebhookPage />} />
               <Route path="migrations" element={<MigrationsPage />} />

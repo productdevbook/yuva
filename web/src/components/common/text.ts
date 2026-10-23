@@ -387,6 +387,13 @@ export function useErrorText() {
   const { t } = useLingui()
   return (err: unknown): string => {
     if (!(err instanceof ApiError)) return t`Could not reach the server. Check your connection and try again.`
+    if (err.code === "slack_not_configured") return t`This server has no Slack app set up.`
+    if (err.code === "slack_not_connected") return t`Slack is not connected to this workspace.`
+    if (err.code === "slack_failed") return t`Slack refused the request or did not answer. Try again in a moment.`
+    if (err.code === "slack_user_not_found") return t`Slack knows no user with this e-mail address.`
+    if (err.code === "slack_user_taken") return t`Another member has already linked this Slack user.`
+    if (err.code === "invalid_code") return t`This code is not right.`
+    if (err.code === "code_expired") return t`This code has expired. Ask for a new one.`
     if (err.code === "email_undeliverable")
       return t`This e-mail address bounced or complained, so the reply was not sent. Clear it on the contact to send again.`
     if (err.code === "email_not_configured")

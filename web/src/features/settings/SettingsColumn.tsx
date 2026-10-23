@@ -7,6 +7,7 @@ import {
   BuildingIcon,
   CircleDotIcon,
   KeyRoundIcon,
+  MessageSquareIcon,
   PaletteIcon,
   PlugIcon,
   PlusIcon,
@@ -20,6 +21,7 @@ import { Outlet, useLocation } from "react-router"
 
 import { Column, ColumnHeading, ColumnLink } from "@/components/common/Column"
 import { initials, useEnumText } from "@/components/common/text"
+import { useSlack } from "@/features/settings/slack/queries"
 import { useIssueIntegrations } from "@/features/issues/queries"
 import { ProductsHome } from "@/features/settings/ProductsPage"
 import { Page, RowIcon, RowText } from "@/features/settings/ui"
@@ -28,7 +30,13 @@ import { keys } from "@/lib/keys"
 import { useSession } from "@/lib/session"
 import { useCannedReplies, useInboxes, useLabels, useMembers } from "@/lib/workspace"
 
-const WIDE = ["/settings/api-keys", "/settings/issue-trackers", "/settings/webhooks", "/settings/connected-apps"]
+const WIDE = [
+  "/settings/api-keys",
+  "/settings/issue-trackers",
+  "/settings/slack",
+  "/settings/webhooks",
+  "/settings/connected-apps",
+]
 
 function isWide(pathname: string) {
   if (WIDE.includes(pathname)) return true
@@ -116,6 +124,7 @@ export function SettingsColumn() {
     enabled: canManage,
   })
   const trackers = useIssueIntegrations(canManage)
+  const slack = useSlack(canManage)
   const name = me.person.name || me.person.email
   const list = (n?: number) => (n === undefined ? "" : n)
   return (
@@ -222,6 +231,15 @@ export function SettingsColumn() {
             <RowText
               title={<Trans>Issue trackers</Trans>}
               detail={<Trans>Turn feedback into GitHub or Linear issues</Trans>}
+            />
+          </NavRow>
+          <NavRow to="/settings/slack" value={slack.data?.available ? (slack.data.connected ? t`On` : t`Off`) : ""}>
+            <RowIcon>
+              <MessageSquareIcon />
+            </RowIcon>
+            <RowText
+              title={<Trans>Slack</Trans>}
+              detail={<Trans>Post conversations to a channel and answer from it</Trans>}
             />
           </NavRow>
         </Group>

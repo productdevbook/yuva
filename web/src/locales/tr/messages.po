@@ -69,6 +69,11 @@ msgstr "{0, plural, one {# e-posta abonesi} other {# e-posta abonesi}}"
 msgid "{0, plural, one {recipient} other {recipients}}"
 msgstr "{0, plural, one {alıcı} other {alıcı}}"
 
+#. placeholder {0}: c.name
+#: src/features/settings/slack/SlackPage.tsx
+msgid "{0} (private)"
+msgstr "{0} (özel)"
+
 #. placeholder {0}: fmt.format(s.members.length)
 #: src/features/reports/ReportsColumn.tsx
 msgid "{0} active today"
@@ -1408,6 +1413,10 @@ msgstr "{address} adresine bir deneme e-postası yolda. Sonuç, e-posta ulaşın
 msgid "A thread is taken whole when its last message is in the range."
 msgstr "Son mesajı bu aralıkta olan bir yazışma bütünüyle alınır."
 
+#: src/features/settings/slack/SlackPage.tsx
+msgid "A thread reply that starts with this goes to the customer. Any other reply becomes a note. An exclamation mark and 1 to 20 lowercase letters."
+msgstr "Bununla başlayan bir ileti yanıtı müşteriye gider. Diğer her yanıt not olur. Ünlem işareti ve 1 ile 20 arası küçük harf."
+
 #: src/features/settings/channels/email/form.ts
 msgid "A username needs TLS or STARTTLS: the password is never sent unencrypted."
 msgstr "Kullanıcı adı TLS ya da STARTTLS ister: parola hiçbir zaman şifresiz gönderilmez."
@@ -2252,6 +2261,10 @@ msgstr "Bu çalışma alanında başka bir içe aktarma sürüyor. İçe aktarma
 #: src/features/conversation/messages/EventLine.tsx
 msgid "another inbox"
 msgstr "başka bir gelen kutusu"
+
+#: src/components/common/text.ts
+msgid "Another member has already linked this Slack user."
+msgstr "Başka bir üye bu Slack kullanıcısını zaten bağlamış."
 
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Another page verified this domain first, and only a verified claim holds a name. Remove the domain, or start over once the other page lets it go."
@@ -3272,6 +3285,14 @@ msgstr "Kanal"
 msgid "Channel added"
 msgstr "Kanal eklendi"
 
+#: src/features/settings/slack/SlackPage.tsx
+msgid "Channel for mentions in {name}"
+msgstr "{name} gelen kutusundaki bahsetmeler için kanal"
+
+#: src/features/settings/slack/SlackPage.tsx
+msgid "Channel for new conversations in {name}"
+msgstr "{name} gelen kutusundaki yeni konuşmalar için kanal"
+
 #: src/features/settings/channels/sections.tsx
 msgid "Channel removed"
 msgstr "Kanal kaldırıldı"
@@ -3645,6 +3666,10 @@ msgstr "CNAME kaydı"
 msgid "Code"
 msgstr "Kod"
 
+#: src/features/settings/slack/SlackAccount.tsx
+msgid "Code from Slack"
+msgstr "Slack'ten gelen kod"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Collapse or expand the sidebar"
 msgstr "Kenar çubuğunu daralt veya genişlet"
@@ -3847,6 +3872,10 @@ msgstr "Claude, ChatGPT, Cursor veya başka bir MCP istemcisini bağlayın; konu
 msgid "Connect GitHub or Linear to create and link issues from feedback and ideas."
 msgstr "Geri bildirimlerden ve fikirlerden issue oluşturmak ve bağlamak için GitHub veya Linear'ı bağlayın."
 
+#: src/features/settings/slack/SlackPage.tsx
+msgid "Connect Slack"
+msgstr "Slack'i bağla"
+
 #: src/features/account/ConnectPage.tsx
 msgid "Connect to {host}"
 msgstr "{host} ile bağlan"
@@ -3854,6 +3883,10 @@ msgstr "{host} ile bağlan"
 #: src/features/settings/SettingsColumn.tsx
 msgid "Connect your servers and bots to Yuva"
 msgstr "Sunucularını ve botlarını Yuva'ya bağla"
+
+#: src/features/settings/slack/SlackPage.tsx
+msgid "Connect your Slack workspace. Yuva asks Slack for the permissions it needs, and the bot token is stored encrypted."
+msgstr "Slack çalışma alanınızı bağlayın. Yuva, ihtiyaç duyduğu izinleri Slack'ten ister; bot anahtarı şifreli saklanır."
 
 #: src/components/common/text.ts
 msgid "Connect, change and disconnect GitHub and Linear trackers"
@@ -3864,11 +3897,14 @@ msgstr "GitHub ve Linear takip araçlarını bağlama, değiştirme ve bağlant�
 #: src/features/migrations/text.ts
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
+#: src/features/settings/slack/SlackPage.tsx
 msgid "Connected"
 msgstr "Bağlı"
 
+#. placeholder {0}: formatDateTime(data.connected_at, i18n.locale)
 #. placeholder {0}: providerName(provider)
 #: src/features/settings/issues/IssueTrackersPage.tsx
+#: src/features/settings/slack/SlackPage.tsx
 msgid "Connected {0}"
 msgstr "{0} bağlandı"
 
@@ -4867,12 +4903,17 @@ msgid "Discard the suggested reply"
 msgstr "Önerilen yanıtı sil"
 
 #: src/features/settings/issues/IssueTrackersPage.tsx
+#: src/features/settings/slack/SlackPage.tsx
 msgid "Disconnect"
 msgstr "Bağlantıyı kes"
 
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "Disconnect {name}?"
 msgstr "{name} bağlantısı kesilsin mi?"
+
+#: src/features/settings/slack/SlackPage.tsx
+msgid "Disconnect {teamName}?"
+msgstr "{teamName} bağlantısı kesilsin mi?"
 
 #: src/features/settings/audit/sentence.ts
 msgid "Disconnected {client}"
@@ -4927,6 +4968,7 @@ msgid "Discussions you started or replied to"
 msgstr "Başlattığınız ya da yanıt yazdığınız tartışmalar"
 
 #: src/components/common/Linked.tsx
+#: src/features/settings/slack/SlackPage.tsx
 msgid "Dismiss"
 msgstr "Kapat"
 
@@ -7009,6 +7051,7 @@ msgstr "{name} için gelen kutusu"
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
+#: src/features/settings/slack/SlackPage.tsx
 msgid "Inboxes"
 msgstr "Gelen kutuları"
 
@@ -7039,9 +7082,17 @@ msgstr "Olaylar"
 msgid "Incidents live on a status page. Create one first."
 msgstr "Olaylar bir durum sayfasında yer alır. Önce bir tane oluşturun."
 
+#: src/features/settings/slack/SlackPage.tsx
+msgid "Include message text for {name}"
+msgstr "{name} için mesaj metnini ekle"
+
 #: src/features/settings/webhooks/events.tsx
 msgid "Include notes"
 msgstr "Notları dahil et"
+
+#: src/features/settings/slack/SlackPage.tsx
+msgid "Include the start of the message"
+msgstr "Mesajın başını ekle"
 
 #: src/features/contact/ContactSheet.tsx
 msgid "Info"
@@ -7675,6 +7726,7 @@ msgid "Linear signing secret"
 msgstr "Linear imza gizli anahtarı"
 
 #: src/components/common/Linked.tsx
+#: src/features/settings/slack/SlackAccount.tsx
 #: src/features/status/LinkConversationsDialog.tsx
 msgid "Link"
 msgstr "Bağla"
@@ -7762,9 +7814,18 @@ msgstr "Olaya bağla"
 msgid "Link to an incident ({linkKey})"
 msgstr "Olaya bağla ({linkKey})"
 
+#: src/features/settings/slack/SlackAccount.tsx
+msgid "Link your Slack user so replies you write in Slack threads are written as you."
+msgstr "Slack kullanıcınızı bağlayın; Slack ileti dizilerinde yazdığınız yanıtlar sizin adınıza yazılsın."
+
 #: src/components/common/Linked.tsx
 msgid "Linked"
 msgstr "Bağlandı"
+
+#. placeholder {0}: formatDateTime(link.linked_at, i18n.locale)
+#: src/features/settings/slack/SlackAccount.tsx
+msgid "Linked {0}"
+msgstr "{0} tarihinde bağlandı"
 
 #: src/features/issues/IssueDialog.tsx
 msgid "Linked {key}"
@@ -8300,6 +8361,7 @@ msgstr "sizden bahsetti"
 #: src/app/TopBar.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/inbox/SidePanels.tsx
+#: src/features/settings/slack/SlackPage.tsx
 msgid "Mentions"
 msgstr "Bahsetmeler"
 
@@ -8779,6 +8841,7 @@ msgstr "Gönderen gerekli"
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/ProductsPage.tsx
+#: src/features/settings/slack/SlackPage.tsx
 msgid "Needs attention"
 msgstr "İlgilenmeniz gerekiyor"
 
@@ -8882,6 +8945,7 @@ msgid "New conversation in an async inbox"
 msgstr "Eşzamansız bir gelen kutusunda yeni konuşma"
 
 #: src/features/reports/ReportPages.tsx
+#: src/features/settings/slack/SlackPage.tsx
 msgid "New conversations"
 msgstr "Yeni konuşmalar"
 
@@ -9706,6 +9770,7 @@ msgstr "Bu e-postayı kimse almayacak. Abonesi olan listeler seçin ya da koşul
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/slack/SlackPage.tsx
 #: src/features/setup/email/EmailTestStep.tsx
 #: src/features/status/MonitorDialog.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -10096,6 +10161,7 @@ msgstr "kapalı"
 
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/settings/channels/chat/ChatFields.tsx
+#: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/webhooks/parts.tsx
 msgid "Off"
 msgstr "Kapalı"
@@ -10111,6 +10177,10 @@ msgstr "Bu cihazda kapalı."
 #: src/features/broadcasts/Composer.tsx
 msgid "Off sends as fast as the channel and the workspace’s daily limit allow. On spreads the mails evenly, so no 60 minutes, 24 hours or 30 days get more than you set."
 msgstr "Kapalıyken kanalın ve çalışma alanının günlük sınırının izin verdiği hızda gönderir. Açıkken postaları eşit aralıklarla dağıtır; hiçbir 60 dakikaya, 24 saate ya da 30 güne belirlediğinizden fazlası düşmez."
+
+#: src/features/settings/slack/SlackPage.tsx
+msgid "Off, a post carries only the subject, the contact's name and a link. On, it also carries the first 300 characters of the message or note, which then leave Yuva for Slack."
+msgstr "Kapalıyken gönderi yalnızca konuyu, kişinin adını ve bir bağlantıyı taşır. Açıkken mesajın veya notun ilk 300 karakterini de taşır; bu metin Yuva'dan Slack'e çıkar."
 
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Off, a redirect is judged against the expected status."
@@ -10172,6 +10242,7 @@ msgid "oldest {oldestFor}, in {oldestInbox}"
 msgstr "en eski {oldestFor}, {oldestInbox} içinde"
 
 #: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/webhooks/parts.tsx
 msgid "On"
 msgstr "Açık"
@@ -10303,6 +10374,10 @@ msgstr "Yalnızca bu listeyi almayı kabul etmiş kişileri ekleyin. Buraya gird
 msgid "Only an owner can change an owner's role."
 msgstr "Bir sahibin rolünü yalnızca bir sahip değiştirebilir."
 
+#: src/features/settings/slack/SlackPage.tsx
+msgid "Only channels the Yuva bot is a member of are listed. In Slack, invite it with /invite and the bot's name."
+msgstr "Yalnızca Yuva botunun üye olduğu kanallar listelenir. Slack'te /invite ve botun adıyla davet edin."
+
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Only contacts whose language is one of these."
 msgstr "Yalnızca dili bunlardan biri olan kişiler."
@@ -10326,6 +10401,10 @@ msgstr "Yalnızca “From ” satırlarını eski yolla kaçışlayan eski progr
 #: src/features/migrations/ChooseStep.tsx
 msgid "Only headers are read: no message is opened or marked. You can close this page; the scan goes on and the list in Settings shows when it is done."
 msgstr "Yalnızca başlıklar okunur: hiçbir mesaj açılmaz ya da işaretlenmez. Bu sayfayı kapatabilirsiniz; tarama sürer ve bittiğinde Ayarlar'daki listede görünür."
+
+#: src/features/settings/slack/SlackAccount.tsx
+msgid "Only if your Slack account uses another address than this one. Optional."
+msgstr "Yalnızca Slack hesabınız bundan farklı bir adres kullanıyorsa. İsteğe bağlı."
 
 #: src/features/conversation/Feedback.tsx
 msgid "Only in the app"
@@ -10619,6 +10698,10 @@ msgstr "Uç noktayı aç"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Open the entry"
 msgstr "Kaydı aç"
+
+#: src/features/settings/slack/SlackPage.tsx
+msgid "Open the guide"
+msgstr "Kılavuzu aç"
 
 #: src/features/conversation/messages/ArticleCards.tsx
 msgid "Open the help article"
@@ -11452,9 +11535,17 @@ msgstr "Güncelleme yaz"
 msgid "Post an update ({updateKey})"
 msgstr "Güncelleme yaz ({updateKey})"
 
+#: src/features/settings/SettingsColumn.tsx
+msgid "Post conversations to a channel and answer from it"
+msgstr "Konuşmaları bir kanala gönderin, oradan yanıtlayın"
+
 #: src/components/common/text.ts
 msgid "Post feedback for your app's users"
 msgstr "Uygulamanızın kullanıcıları adına geri bildirim gönderme"
+
+#: src/features/settings/slack/SlackPage.tsx
+msgid "Post new conversations and mentions to a Slack channel, and answer from the thread. The <0>guide</0> shows how to set up the Slack app."
+msgstr "Yeni konuşmaları ve bahsetmeleri bir Slack kanalına gönderin, ileti dizisinden yanıtlayın. Slack uygulamasının nasıl kurulacağını <0>kılavuz</0> anlatır."
 
 #: src/features/home/HomePage.tsx
 msgid "Post status update"
@@ -12415,6 +12506,10 @@ msgstr "Uygun olduğunda yanıtlar"
 msgid "replies within {within}"
 msgstr "{within} içinde yanıt"
 
+#: src/features/settings/slack/SlackAccount.tsx
+msgid "Replies you write in Slack threads no longer reach Yuva."
+msgstr "Slack ileti dizilerinde yazdığınız yanıtlar artık Yuva'ya ulaşmaz."
+
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
@@ -12438,6 +12533,10 @@ msgstr "Yanıt hesabı"
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Reply and resolve"
 msgstr "Yanıtla ve çözüldü say"
+
+#: src/features/settings/slack/SlackPage.tsx
+msgid "Reply command"
+msgstr "Yanıt komutu"
 
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Reply posted"
@@ -12875,6 +12974,7 @@ msgstr "Cumartesi"
 #: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
+#: src/features/settings/slack/SlackPage.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/status/ComponentDialogs.tsx
@@ -13227,6 +13327,7 @@ msgid "Send a message from your app"
 msgstr "Uygulamanızdan bir mesaj gönderin"
 
 #: src/features/auth/SignInForm.tsx
+#: src/features/settings/slack/SlackAccount.tsx
 msgid "Send a new code"
 msgstr "Yeni kod gönder"
 
@@ -13291,6 +13392,7 @@ msgid "Send invite"
 msgstr "Daveti gönder"
 
 #: src/features/auth/SignInForm.tsx
+#: src/features/settings/slack/SlackAccount.tsx
 msgid "Send me a code"
 msgstr "Bana kod gönder"
 
@@ -14148,6 +14250,63 @@ msgstr "Atlanan ya da başarısız"
 msgid "Skipped: {0}"
 msgstr "Atlanan: {0}"
 
+#: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/slack/SlackPage.tsx
+msgid "Slack"
+msgstr "Slack"
+
+#: src/features/settings/slack/SlackAccount.tsx
+msgid "Slack account"
+msgstr "Slack hesabı"
+
+#: src/features/settings/slack/SlackAccount.tsx
+msgid "Slack account linked"
+msgstr "Slack hesabı bağlandı"
+
+#: src/features/settings/slack/SlackAccount.tsx
+msgid "Slack account unlinked"
+msgstr "Slack hesabının bağlantısı kaldırıldı"
+
+#: src/features/settings/slack/SlackPage.tsx
+msgid "Slack connected"
+msgstr "Slack bağlandı"
+
+#: src/features/settings/slack/SlackPage.tsx
+msgid "Slack disconnected"
+msgstr "Slack bağlantısı kesildi"
+
+#: src/features/settings/slack/SlackAccount.tsx
+msgid "Slack e-mail address"
+msgstr "Slack e-posta adresi"
+
+#: src/features/settings/slack/SlackPage.tsx
+msgid "Slack granted fewer permissions than Yuva needs. Check the app's scopes in the guide and try again."
+msgstr "Slack, Yuva'nın ihtiyaç duyduğundan az izin verdi. Kılavuzdaki uygulama izinlerini denetleyip yeniden deneyin."
+
+#: src/features/settings/slack/SlackPage.tsx
+msgid "Slack is connected."
+msgstr "Slack bağlandı."
+
+#: src/components/common/text.ts
+msgid "Slack is not connected to this workspace."
+msgstr "Slack bu çalışma alanına bağlı değil."
+
+#: src/components/common/text.ts
+msgid "Slack knows no user with this e-mail address."
+msgstr "Slack'te bu e-posta adresiyle bir kullanıcı yok."
+
+#: src/features/settings/slack/SlackPage.tsx
+msgid "Slack refused the install or did not answer. Try again."
+msgstr "Slack kurulumu reddetti veya yanıt vermedi. Yeniden deneyin."
+
+#: src/components/common/text.ts
+msgid "Slack refused the request or did not answer. Try again in a moment."
+msgstr "Slack isteği reddetti veya yanıt vermedi. Biraz sonra yeniden deneyin."
+
+#: src/features/settings/slack/SlackAccount.tsx
+msgid "Slack sent a 6-digit code to {who} as a direct message."
+msgstr "Slack, {who} kullanıcısına doğrudan mesajla 6 haneli bir kod gönderdi."
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Slug"
 msgstr "Kısa ad"
@@ -14759,6 +14918,10 @@ msgstr "Yazdığınız için teşekkürler"
 msgid "Thanks for writing. We usually answer within a day."
 msgstr "Yazdığınız için teşekkürler. Genellikle bir gün içinde yanıt veririz."
 
+#: src/features/settings/slack/SlackPage.tsx
+msgid "That Slack workspace is connected to another Yuva workspace. Disconnect it there first."
+msgstr "Bu Slack çalışma alanı başka bir Yuva çalışma alanına bağlı. Önce oradaki bağlantıyı kesin."
+
 #: src/features/settings/channels/email/Deliverability.tsx
 #: src/features/setup/email/EmailTestStep.tsx
 msgid "That was the sixth check this hour. You can check again at {retry}."
@@ -14795,6 +14958,10 @@ msgstr "Yuva için oluşturduğunuz uygulama kaydına da artık gerek yok: Micro
 #: src/features/status/ComponentsTab.tsx
 msgid "The bars are the last {days} days, as visitors see them."
 msgstr "Çubuklar, ziyaretçilerin gördüğü gibi son {days} günü gösterir."
+
+#: src/features/settings/slack/SlackPage.tsx
+msgid "The bot token is revoked, and every Slack thread and every member's Slack link is deleted. Replies in old threads no longer reach Yuva."
+msgstr "Bot anahtarı iptal edilir; her Slack ileti dizisi ve her üyenin Slack bağlantısı silinir. Eski dizilerdeki yanıtlar artık Yuva'ya ulaşmaz."
 
 #: src/components/common/text.ts
 msgid "The broadcast changed in the meantime. Look at its state and try again."
@@ -15129,6 +15296,18 @@ msgstr "Olay zaten çözüldü ya da tamamlandı; artık değişiklik kabul etme
 #: src/features/status/Notices.tsx
 msgid "The incident was closed without notifying subscribers"
 msgstr "Olay, aboneler bilgilendirilmeden kapatıldı"
+
+#: src/features/settings/slack/SlackPage.tsx
+msgid "The install took longer than 10 minutes. Start again."
+msgstr "Kurulum 10 dakikadan uzun sürdü. Baştan başlayın."
+
+#: src/features/settings/slack/SlackPage.tsx
+msgid "The install was cancelled at Slack."
+msgstr "Kurulum Slack'te iptal edildi."
+
+#: src/features/settings/slack/SlackPage.tsx
+msgid "The install was finished in another browser session. Start again in this one."
+msgstr "Kurulum başka bir tarayıcı oturumunda tamamlandı. Bu oturumda yeniden başlayın."
 
 #: src/features/status/monitorErrors.ts
 msgid "The interval must be {lo} to {hi} seconds."
@@ -15537,6 +15716,10 @@ msgstr "Bülten gönderme talebiniz sunucu yöneticisinde. Onaylandığında bü
 msgid "The server’s operator reads this before letting the workspace send. New workspaces start with a small daily limit that grows with every clean day."
 msgstr "Sunucu yöneticisi, çalışma alanının göndermesine izin vermeden önce bunu okur. Yeni çalışma alanları küçük bir günlük sınırla başlar; sınır sorunsuz geçen her günle büyür."
 
+#: src/features/settings/slack/SlackPage.tsx
+msgid "The server's operator registers the Slack app and sets its credentials. The guide explains how."
+msgstr "Slack uygulamasını sunucunun işletmecisi kaydeder ve kimlik bilgilerini ayarlar. Nasıl yapıldığını kılavuz anlatır."
+
 #: src/features/migrations/text.ts
 msgid "The sign-in came back in another browser"
 msgstr "Oturum açma başka bir tarayıcıda döndü"
@@ -15832,6 +16015,14 @@ msgid "This channel’s broadcasts go through Amazon SES, which signs your mail 
 msgstr "Bu kanalın toplu gönderimleri Amazon SES üzerinden gider; SES postanızı Easy DKIM ile kendi alan adınızla imzalar. Yuva DKIM başka aktarıcılar içindir; bunun yerine SES’te alan adınız için Easy DKIM’i kurun."
 
 #: src/components/common/text.ts
+msgid "This code has expired. Ask for a new one."
+msgstr "Bu kodun süresi doldu. Yenisini isteyin."
+
+#: src/components/common/text.ts
+msgid "This code is not right."
+msgstr "Bu kod doğru değil."
+
+#: src/components/common/text.ts
 msgid "This conflicts with something that already exists."
 msgstr "Bu, var olan bir kayıtla çakışıyor."
 
@@ -16064,6 +16255,14 @@ msgstr "Bu sunucu kendi alan adı sunmuyor. İşletmecisinden açmasını isteyi
 #: src/features/migrations/SwitchStep.tsx
 msgid "This server has no forwarding address, so the mail reaches Yuva through an MX change."
 msgstr "Bu sunucuda yönlendirme adresi yok; e-postalar Yuva'ya bir MX değişikliğiyle ulaşır."
+
+#: src/features/settings/slack/SlackPage.tsx
+msgid "This server has no Slack app set up, so Slack cannot be connected."
+msgstr "Bu sunucuda Slack uygulaması kurulu değil, bu yüzden Slack bağlanamaz."
+
+#: src/components/common/text.ts
+msgid "This server has no Slack app set up."
+msgstr "Bu sunucuda Slack uygulaması kurulu değil."
 
 #: src/features/settings/notifications/PushSection.tsx
 msgid "This server is not set up to send push notifications."
@@ -16501,6 +16700,7 @@ msgid "Unknown device"
 msgstr "Bilinmeyen cihaz"
 
 #: src/features/feedback/RoadmapCard.tsx
+#: src/features/settings/slack/SlackAccount.tsx
 msgid "Unlink"
 msgstr "Bağlantıyı kaldır"
 
@@ -16518,6 +16718,10 @@ msgstr "{name} bağlantısını kaldır"
 #: src/features/status/IncidentChips.tsx
 msgid "Unlink from {title}"
 msgstr "{title} ile bağlantıyı kaldır"
+
+#: src/features/settings/slack/SlackAccount.tsx
+msgid "Unlink your Slack account?"
+msgstr "Slack hesabınızın bağlantısı kaldırılsın mı?"
 
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Unlock"
