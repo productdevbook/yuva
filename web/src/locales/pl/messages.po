@@ -1314,6 +1314,10 @@ msgstr "Lista mailingowa wysyła w imieniu skrzynki, przez jej kanał e-mail. Na
 msgid "A mailing list with subscribe forms, for your broadcasts"
 msgstr "Lista mailingowa z formularzami subskrypcji dla Twoich wysyłek masowych"
 
+#: src/components/common/AssignmentFields.tsx
+msgid "A member is eligible while they have access to the product (owners and admins only with a grant), have the panel or an app open, are set to Auto availability, the product is inside its business hours and they are under the limit. When nobody is eligible the conversation waits and goes to the first teammate who becomes available."
+msgstr "Członek się kwalifikuje, jeśli ma dostęp do produktu (właściciele i administratorzy tylko z przyznanym dostępem), ma otwarty panel lub aplikację, dostępność Auto, produkt jest w godzinach pracy i nie przekroczył limitu. Gdy nikt się nie kwalifikuje, rozmowa czeka i trafia do pierwszej osoby, która się zwolni."
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "A merge field without a fallback would be empty for some recipients. Give it a fallback."
 msgstr "Pole scalania bez wartości zastępczej byłoby puste dla niektórych odbiorców. Podaj wartość zastępczą."
@@ -1951,6 +1955,10 @@ msgstr "Administratorzy widzą każdą skrzynkę i zarządzają produktami, kana
 #: src/features/status/IncidentDetail.tsx
 msgid "Affects"
 msgstr "Dotyczy"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "After the other rules have run, the conversation goes to the team's pool, or the product's when it has no team."
+msgstr "Po wykonaniu pozostałych reguł rozmowa trafia do puli zespołu, a bez zespołu do puli produktu."
 
 #: src/components/common/text.ts
 #: src/features/settings/sso/SsoPage.tsx
@@ -2830,6 +2838,10 @@ msgstr "Przypisz do zespołu"
 msgid "Assign to me"
 msgstr "Przypisz do mnie"
 
+#: src/features/conversation/messages/EventLine.tsx
+msgid "Assigned automatically to {assignee}"
+msgstr "Przypisano automatycznie: {assignee}"
+
 #. placeholder {0}: assignee.name || assignee.email
 #: src/features/inbox/ChatList.tsx
 msgid "Assigned to {0}"
@@ -2995,9 +3007,10 @@ msgstr "Automatyczna odpowiedź"
 msgid "automatic"
 msgstr "automatycznie"
 
-#: src/features/settings/automation/text.ts
-msgid "Automatic assignment (not available yet)"
-msgstr "Automatyczne przypisywanie (jeszcze niedostępne)"
+#: src/components/common/AssignmentFields.tsx
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Automatic assignment"
+msgstr "Automatyczne przypisywanie"
 
 #: src/features/conversation/messages/Thread.tsx
 msgid "Automatic mail never triggers an automatic reply."
@@ -3118,6 +3131,10 @@ msgstr "Przed wysłaniem"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Besides openid, email and profile. Okta needs groups for group checks."
 msgstr "Besides openid, email and profile. Okta needs groups for group checks."
+
+#: src/components/common/AssignmentFields.tsx
+msgid "Between 1 and 500, counted across the workspace. Assigning by hand ignores it. Leave empty for no limit."
+msgstr "Od 1 do 500, liczone w całej przestrzeni roboczej. Ręczne przypisanie to pomija. Zostaw puste, aby nie ustawiać limitu."
 
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/teams/TeamDialog.tsx
@@ -6464,6 +6481,10 @@ msgstr "Opinia wysłana z aplikacji"
 msgid "Feedback, {feedback} open"
 msgstr "Opinie, otwartych: {feedback}"
 
+#: src/components/common/AssignmentFields.tsx
+msgid "Fewest open conversations"
+msgstr "Najmniej otwartych rozmów"
+
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactSheet.tsx
 msgid "Fields"
@@ -6968,6 +6989,10 @@ msgstr "Nadać kanałowi nowy adres przekierowania?"
 msgid "Give the page a name."
 msgstr "Nadaj stronie nazwę."
 
+#: src/components/common/AssignmentFields.tsx
+msgid "Gives a conversation without an assignee to a teammate when it arrives or is reopened by the contact. Automation rules run first."
+msgstr "Przekazuje rozmowę bez osoby odpowiedzialnej koledze, gdy napłynie lub kontakt otworzy ją ponownie. Najpierw działają reguły automatyzacji."
+
 #: src/features/migrations/SwitchStep.tsx
 msgid "Gmail forwards only new mail that is not spam. If a Workspace admin turned forwarding off, use the admin's routing."
 msgstr "Gmail przekierowuje tylko nową pocztę, która nie jest spamem. Jeśli administrator Workspace wyłączył przekierowanie, użyj trasowania administratora."
@@ -7083,6 +7108,10 @@ msgstr "Grupy członków i skrzynki, które obejmują"
 #: src/features/broadcasts/ListPage.tsx
 msgid "Growth"
 msgstr "Wzrost"
+
+#: src/features/settings/automation/text.ts
+msgid "Hand to automatic assignment"
+msgstr "Przekaż do automatycznego przypisywania"
 
 #: src/features/conversation/actions.ts
 msgid "Handed to {name}"
@@ -9372,6 +9401,10 @@ msgstr "Najbardziej pomocne"
 msgid "Most liked"
 msgstr "Najbardziej lubiane"
 
+#: src/components/common/AssignmentFields.tsx
+msgid "Most open conversations per member"
+msgstr "Maksymalnie otwartych rozmów na członka"
+
 #: src/features/docs/Toolbar.tsx
 msgid "Most ratings, open feedback, open discussions and waiting posts first"
 msgstr "Najpierw najwięcej ocen, otwarte opinie, otwarte dyskusje i oczekujące wpisy"
@@ -10348,6 +10381,7 @@ msgstr "Brak etykiet. Dodaj je w ustawieniach."
 msgid "no limit"
 msgstr "bez limitu"
 
+#: src/components/common/AssignmentFields.tsx
 #: src/features/broadcasts/Pace.tsx
 msgid "No limit"
 msgstr "Bez limitu"
@@ -11083,6 +11117,7 @@ msgstr "Newsletter październikowy"
 msgid "off"
 msgstr "wył."
 
+#: src/components/common/AssignmentFields.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/settings/channels/chat/ChatFields.tsx
 #: src/features/settings/SettingsColumn.tsx
@@ -11882,6 +11917,10 @@ msgstr "Poza godzinami pracy"
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Outside them the product counts as closed."
 msgstr "Poza nimi produkt jest uznawany za zamknięty."
+
+#: src/features/conversation/HeaderActions.tsx
+msgid "over cap"
+msgstr "limit przekroczony"
 
 #: src/features/broadcasts/Report.tsx
 msgid "Over time"
@@ -14033,6 +14072,10 @@ msgstr "Odnowiono klucz kanału"
 #: src/features/settings/audit/sentence.ts
 msgid "Rotated the signing secret of a webhook"
 msgstr "Odnowiono sekret podpisu webhooka"
+
+#: src/components/common/AssignmentFields.tsx
+msgid "Round robin"
+msgstr "Po kolei"
 
 #: src/features/setup/email/EmailReceiveStep.tsx
 msgid "Route your domain"
@@ -18068,6 +18111,10 @@ msgstr "Usuń przypisanie"
 msgid "Unassigned"
 msgstr "Nieprzypisane"
 
+#: src/features/conversation/messages/EventLine.tsx
+msgid "Unassigned automatically"
+msgstr "Automatycznie cofnięto przypisanie"
+
 #: src/features/contact/ContactDetail.tsx
 msgid "Unblock contact"
 msgstr "Odblokuj kontakt"
@@ -18532,6 +18579,10 @@ msgstr "Użyj tej odpowiedzi"
 msgid "Use your GMX password, or an app password if two-factor sign-in is on."
 msgstr "Użyj hasła GMX albo hasła aplikacji, jeśli logowanie dwuskładnikowe jest włączone."
 
+#: src/components/common/AssignmentFields.tsx
+msgid "Used for conversations given to this team without a member. Only team members are considered."
+msgstr "Używane dla rozmów przekazanych temu zespołowi bez członka. Liczą się tylko członkowie zespołu."
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Used in addresses and the widget"
 msgstr "Używana w adresach i widżecie"
@@ -18728,6 +18779,15 @@ msgstr "Oczekuje"
 #: src/features/migrations/CopyStep.tsx
 msgid "Waiting for {provider}'s limit; continues at {waiting}."
 msgstr "Oczekiwanie na limit {provider}; kontynuacja {waiting}."
+
+#: src/features/inbox/ChatList.tsx
+msgid "Waiting for a teammate"
+msgstr "Czeka na dostępnego kolegę"
+
+#: src/features/conversation/ConversationStatus.tsx
+#: src/features/inbox/ChatList.tsx
+msgid "Waiting for an available teammate since {since}"
+msgstr "Czeka na dostępnego kolegę od {since}"
 
 #: src/features/docs/DocsPage.tsx
 #: src/features/docs/PagesTab.tsx

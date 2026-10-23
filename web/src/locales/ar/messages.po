@@ -1314,6 +1314,10 @@ msgstr "ترسل القائمة البريدية باسم صندوق وارد، 
 msgid "A mailing list with subscribe forms, for your broadcasts"
 msgstr "قائمة بريدية بنماذج اشتراك، لرسائلك الجماعية"
 
+#: src/components/common/AssignmentFields.tsx
+msgid "A member is eligible while they have access to the product (owners and admins only with a grant), have the panel or an app open, are set to Auto availability, the product is inside its business hours and they are under the limit. When nobody is eligible the conversation waits and goes to the first teammate who becomes available."
+msgstr "يكون العضو مؤهلاً إذا كان لديه وصول إلى المنتج (المالكون والمشرفون فقط بمنحة وصول)، ولوحة التحكم أو تطبيق مفتوح، وتوافره تلقائي، وكان المنتج ضمن ساعات العمل، وكان العضو دون الحد. إذا لم يكن أحد مؤهلاً تنتظر المحادثة وتذهب إلى أول زميل يصبح متاحاً."
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "A merge field without a fallback would be empty for some recipients. Give it a fallback."
 msgstr "الحقل الدمجي بلا قيمة بديلة سيكون فارغًا لدى بعض المستلمين. أعطه قيمة بديلة."
@@ -1951,6 +1955,10 @@ msgstr "يرى المشرفون كل صندوق وارد ويديرون المن
 #: src/features/status/IncidentDetail.tsx
 msgid "Affects"
 msgstr "يؤثر على"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "After the other rules have run, the conversation goes to the team's pool, or the product's when it has no team."
+msgstr "بعد تشغيل القواعد الأخرى تذهب المحادثة إلى مجموعة الفريق، أو مجموعة المنتج إذا لم يكن لها فريق."
 
 #: src/components/common/text.ts
 #: src/features/settings/sso/SsoPage.tsx
@@ -2830,6 +2838,10 @@ msgstr "إسناد إلى فريق"
 msgid "Assign to me"
 msgstr "إسناد إليّ"
 
+#: src/features/conversation/messages/EventLine.tsx
+msgid "Assigned automatically to {assignee}"
+msgstr "أُسندت تلقائياً إلى {assignee}"
+
 #. placeholder {0}: assignee.name || assignee.email
 #: src/features/inbox/ChatList.tsx
 msgid "Assigned to {0}"
@@ -2995,9 +3007,10 @@ msgstr "رد تلقائي"
 msgid "automatic"
 msgstr "تلقائي"
 
-#: src/features/settings/automation/text.ts
-msgid "Automatic assignment (not available yet)"
-msgstr "الإسناد التلقائي (غير متاح بعد)"
+#: src/components/common/AssignmentFields.tsx
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Automatic assignment"
+msgstr "الإسناد التلقائي"
 
 #: src/features/conversation/messages/Thread.tsx
 msgid "Automatic mail never triggers an automatic reply."
@@ -3118,6 +3131,10 @@ msgstr "قبل الإرسال"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Besides openid, email and profile. Okta needs groups for group checks."
 msgstr "Besides openid, email and profile. Okta needs groups for group checks."
+
+#: src/components/common/AssignmentFields.tsx
+msgid "Between 1 and 500, counted across the workspace. Assigning by hand ignores it. Leave empty for no limit."
+msgstr "بين 1 و500، تُحسب في مساحة العمل كلها. الإسناد اليدوي يتجاهله. اتركه فارغاً لعدم وضع حد."
 
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/teams/TeamDialog.tsx
@@ -6464,6 +6481,10 @@ msgstr "ملاحظات مرسلة من التطبيق"
 msgid "Feedback, {feedback} open"
 msgstr "Feedback, {feedback} open"
 
+#: src/components/common/AssignmentFields.tsx
+msgid "Fewest open conversations"
+msgstr "أقل عدد من المحادثات المفتوحة"
+
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactSheet.tsx
 msgid "Fields"
@@ -6968,6 +6989,10 @@ msgstr "منح القناة عنوان تحويل جديدًا؟"
 msgid "Give the page a name."
 msgstr "أعطِ الصفحة اسمًا."
 
+#: src/components/common/AssignmentFields.tsx
+msgid "Gives a conversation without an assignee to a teammate when it arrives or is reopened by the contact. Automation rules run first."
+msgstr "يعطي محادثة بلا مسؤول لزميل عند وصولها أو عندما تعيد جهة الاتصال فتحها. تعمل قواعد الأتمتة أولاً."
+
 #: src/features/migrations/SwitchStep.tsx
 msgid "Gmail forwards only new mail that is not spam. If a Workspace admin turned forwarding off, use the admin's routing."
 msgstr "يحوّل Gmail البريد الجديد غير المزعج فقط. إذا أوقف مسؤول Workspace التحويل، فاستخدم توجيه المسؤول."
@@ -7083,6 +7108,10 @@ msgstr "مجموعات الأعضاء وصناديق الوارد التي تغ�
 #: src/features/broadcasts/ListPage.tsx
 msgid "Growth"
 msgstr "النمو"
+
+#: src/features/settings/automation/text.ts
+msgid "Hand to automatic assignment"
+msgstr "سلّمها للإسناد التلقائي"
 
 #: src/features/conversation/actions.ts
 msgid "Handed to {name}"
@@ -9372,6 +9401,10 @@ msgstr "الأكثر فائدة"
 msgid "Most liked"
 msgstr "الأكثر إعجابًا"
 
+#: src/components/common/AssignmentFields.tsx
+msgid "Most open conversations per member"
+msgstr "أقصى عدد من المحادثات المفتوحة لكل عضو"
+
 #: src/features/docs/Toolbar.tsx
 msgid "Most ratings, open feedback, open discussions and waiting posts first"
 msgstr "الأكثر تقييمًا ثم الملاحظات المفتوحة ثم النقاشات المفتوحة ثم المنشورات المنتظرة أولًا"
@@ -10348,6 +10381,7 @@ msgstr "لا وسوم بعد. أضفها من الإعدادات."
 msgid "no limit"
 msgstr "بلا حد"
 
+#: src/components/common/AssignmentFields.tsx
 #: src/features/broadcasts/Pace.tsx
 msgid "No limit"
 msgstr "بلا حد"
@@ -11083,6 +11117,7 @@ msgstr "نشرة أكتوبر"
 msgid "off"
 msgstr "متوقف"
 
+#: src/components/common/AssignmentFields.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/settings/channels/chat/ChatFields.tsx
 #: src/features/settings/SettingsColumn.tsx
@@ -11882,6 +11917,10 @@ msgstr "خارج ساعات العمل"
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Outside them the product counts as closed."
 msgstr "خارج هذه الساعات يُعدّ المنتج مغلقًا."
+
+#: src/features/conversation/HeaderActions.tsx
+msgid "over cap"
+msgstr "تجاوز الحد"
 
 #: src/features/broadcasts/Report.tsx
 msgid "Over time"
@@ -14033,6 +14072,10 @@ msgstr "جدّد مفتاح قناة"
 #: src/features/settings/audit/sentence.ts
 msgid "Rotated the signing secret of a webhook"
 msgstr "جدّد سرّ توقيع webhook"
+
+#: src/components/common/AssignmentFields.tsx
+msgid "Round robin"
+msgstr "بالتناوب"
 
 #: src/features/setup/email/EmailReceiveStep.tsx
 msgid "Route your domain"
@@ -18068,6 +18111,10 @@ msgstr "إلغاء الإسناد"
 msgid "Unassigned"
 msgstr "غير مسندة"
 
+#: src/features/conversation/messages/EventLine.tsx
+msgid "Unassigned automatically"
+msgstr "أُلغي الإسناد تلقائياً"
+
 #: src/features/contact/ContactDetail.tsx
 msgid "Unblock contact"
 msgstr "إلغاء حظر جهة الاتصال"
@@ -18532,6 +18579,10 @@ msgstr "استخدام هذا الرد"
 msgid "Use your GMX password, or an app password if two-factor sign-in is on."
 msgstr "استخدم كلمة مرور GMX، أو كلمة مرور تطبيق إن كان الدخول بخطوتين مفعّلًا."
 
+#: src/components/common/AssignmentFields.tsx
+msgid "Used for conversations given to this team without a member. Only team members are considered."
+msgstr "يُستخدم للمحادثات المسندة إلى هذا الفريق بلا عضو. يُنظر فقط في أعضاء الفريق."
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Used in addresses and the widget"
 msgstr "يُستخدم في العناوين والأداة"
@@ -18728,6 +18779,15 @@ msgstr "في الانتظار"
 #: src/features/migrations/CopyStep.tsx
 msgid "Waiting for {provider}'s limit; continues at {waiting}."
 msgstr "في انتظار حد {provider}؛ يتابع في {waiting}."
+
+#: src/features/inbox/ChatList.tsx
+msgid "Waiting for a teammate"
+msgstr "في انتظار زميل متاح"
+
+#: src/features/conversation/ConversationStatus.tsx
+#: src/features/inbox/ChatList.tsx
+msgid "Waiting for an available teammate since {since}"
+msgstr "في انتظار زميل متاح منذ {since}"
 
 #: src/features/docs/DocsPage.tsx
 #: src/features/docs/PagesTab.tsx

@@ -1314,6 +1314,10 @@ msgstr "En mailingliste sender i en postkasses navn via dens e-mailkanal. Opsæt
 msgid "A mailing list with subscribe forms, for your broadcasts"
 msgstr "En mailingliste med tilmeldingsformularer, til dine udsendelser"
 
+#: src/components/common/AssignmentFields.tsx
+msgid "A member is eligible while they have access to the product (owners and admins only with a grant), have the panel or an app open, are set to Auto availability, the product is inside its business hours and they are under the limit. When nobody is eligible the conversation waits and goes to the first teammate who becomes available."
+msgstr "Et medlem er egnet, hvis det har adgang til produktet (ejere og administratorer kun med tildelt adgang), har panelet eller en app åben, tilgængelighed Auto, produktet er inden for åbningstiden og medlemmet er under grænsen. Hvis ingen er egnet, venter samtalen og går til den første kollega, der bliver ledig."
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "A merge field without a fallback would be empty for some recipients. Give it a fallback."
 msgstr "Et flettefelt uden reserveværdi ville være tomt for nogle modtagere. Giv det en reserveværdi."
@@ -1951,6 +1955,10 @@ msgstr "Administratorer ser alle indbakker og styrer produkter, kanaler og medle
 #: src/features/status/IncidentDetail.tsx
 msgid "Affects"
 msgstr "Berører"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "After the other rules have run, the conversation goes to the team's pool, or the product's when it has no team."
+msgstr "Når de andre regler er kørt, går samtalen til teamets pulje, eller produktets hvis den ikke har et team."
 
 #: src/components/common/text.ts
 #: src/features/settings/sso/SsoPage.tsx
@@ -2830,6 +2838,10 @@ msgstr "Tildel et team"
 msgid "Assign to me"
 msgstr "Tildel til mig"
 
+#: src/features/conversation/messages/EventLine.tsx
+msgid "Assigned automatically to {assignee}"
+msgstr "Tildelt automatisk til {assignee}"
+
 #. placeholder {0}: assignee.name || assignee.email
 #: src/features/inbox/ChatList.tsx
 msgid "Assigned to {0}"
@@ -2995,9 +3007,10 @@ msgstr "Autosvar"
 msgid "automatic"
 msgstr "automatisk"
 
-#: src/features/settings/automation/text.ts
-msgid "Automatic assignment (not available yet)"
-msgstr "Automatisk tildeling (ikke tilgængelig endnu)"
+#: src/components/common/AssignmentFields.tsx
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Automatic assignment"
+msgstr "Automatisk tildeling"
 
 #: src/features/conversation/messages/Thread.tsx
 msgid "Automatic mail never triggers an automatic reply."
@@ -3118,6 +3131,10 @@ msgstr "Før du sender"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Besides openid, email and profile. Okta needs groups for group checks."
 msgstr "Besides openid, email and profile. Okta needs groups for group checks."
+
+#: src/components/common/AssignmentFields.tsx
+msgid "Between 1 and 500, counted across the workspace. Assigning by hand ignores it. Leave empty for no limit."
+msgstr "Mellem 1 og 500, talt i hele arbejdsområdet. Manuel tildeling ignorerer den. Lad feltet stå tomt for ingen grænse."
 
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/teams/TeamDialog.tsx
@@ -6464,6 +6481,10 @@ msgstr "Feedback sendt fra appen"
 msgid "Feedback, {feedback} open"
 msgstr "Feedback, {feedback} åbne"
 
+#: src/components/common/AssignmentFields.tsx
+msgid "Fewest open conversations"
+msgstr "Færrest åbne samtaler"
+
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactSheet.tsx
 msgid "Fields"
@@ -6968,6 +6989,10 @@ msgstr "Giv kanalen en ny videresendelsesadresse?"
 msgid "Give the page a name."
 msgstr "Giv siden et navn."
 
+#: src/components/common/AssignmentFields.tsx
+msgid "Gives a conversation without an assignee to a teammate when it arrives or is reopened by the contact. Automation rules run first."
+msgstr "Giver en samtale uden ansvarlig til en kollega, når den kommer ind, eller kontakten genåbner den. Automatiseringsregler kører først."
+
 #: src/features/migrations/SwitchStep.tsx
 msgid "Gmail forwards only new mail that is not spam. If a Workspace admin turned forwarding off, use the admin's routing."
 msgstr "Gmail videresender kun ny mail, der ikke er spam. Hvis en Workspace-admin har slået videresendelse fra, brug adminens routing."
@@ -7083,6 +7108,10 @@ msgstr "Grupper af medlemmer og de postkasser, de dækker"
 #: src/features/broadcasts/ListPage.tsx
 msgid "Growth"
 msgstr "Vækst"
+
+#: src/features/settings/automation/text.ts
+msgid "Hand to automatic assignment"
+msgstr "Giv til automatisk tildeling"
 
 #: src/features/conversation/actions.ts
 msgid "Handed to {name}"
@@ -9372,6 +9401,10 @@ msgstr "Mest nyttige"
 msgid "Most liked"
 msgstr "Mest kendte"
 
+#: src/components/common/AssignmentFields.tsx
+msgid "Most open conversations per member"
+msgstr "Flest åbne samtaler pr. medlem"
+
 #: src/features/docs/Toolbar.tsx
 msgid "Most ratings, open feedback, open discussions and waiting posts first"
 msgstr "Flest vurderinger, åben feedback, åbne diskussioner og ventende indlæg først"
@@ -10348,6 +10381,7 @@ msgstr "Ingen etiketter endnu. Tilføj dem i indstillingerne."
 msgid "no limit"
 msgstr "ingen grænse"
 
+#: src/components/common/AssignmentFields.tsx
 #: src/features/broadcasts/Pace.tsx
 msgid "No limit"
 msgstr "Ingen grænse"
@@ -11083,6 +11117,7 @@ msgstr "Oktobernyhedsbrev"
 msgid "off"
 msgstr "fra"
 
+#: src/components/common/AssignmentFields.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/settings/channels/chat/ChatFields.tsx
 #: src/features/settings/SettingsColumn.tsx
@@ -11882,6 +11917,10 @@ msgstr "Uden for åbningstiden"
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Outside them the product counts as closed."
 msgstr "Uden for dem regnes produktet som lukket."
+
+#: src/features/conversation/HeaderActions.tsx
+msgid "over cap"
+msgstr "over grænsen"
 
 #: src/features/broadcasts/Report.tsx
 msgid "Over time"
@@ -14033,6 +14072,10 @@ msgstr "Fornyede nøglen for en kanal"
 #: src/features/settings/audit/sentence.ts
 msgid "Rotated the signing secret of a webhook"
 msgstr "Fornyede signeringshemmeligheden for en webhook"
+
+#: src/components/common/AssignmentFields.tsx
+msgid "Round robin"
+msgstr "På skift"
 
 #: src/features/setup/email/EmailReceiveStep.tsx
 msgid "Route your domain"
@@ -18068,6 +18111,10 @@ msgstr "Fjern tildeling"
 msgid "Unassigned"
 msgstr "Utildelt"
 
+#: src/features/conversation/messages/EventLine.tsx
+msgid "Unassigned automatically"
+msgstr "Tildelingen blev fjernet automatisk"
+
 #: src/features/contact/ContactDetail.tsx
 msgid "Unblock contact"
 msgstr "Fjern blokering af kontakt"
@@ -18532,6 +18579,10 @@ msgstr "Brug dette svar"
 msgid "Use your GMX password, or an app password if two-factor sign-in is on."
 msgstr "Brug din GMX-adgangskode, eller en app-adgangskode, hvis totrinslogin er slået til."
 
+#: src/components/common/AssignmentFields.tsx
+msgid "Used for conversations given to this team without a member. Only team members are considered."
+msgstr "Bruges til samtaler givet til dette team uden et medlem. Kun teamets medlemmer tages i betragtning."
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Used in addresses and the widget"
 msgstr "Bruges i adresser og widgetten"
@@ -18728,6 +18779,15 @@ msgstr "Venter"
 #: src/features/migrations/CopyStep.tsx
 msgid "Waiting for {provider}'s limit; continues at {waiting}."
 msgstr "Venter på {provider}s grænse; fortsætter {waiting}."
+
+#: src/features/inbox/ChatList.tsx
+msgid "Waiting for a teammate"
+msgstr "Venter på en ledig kollega"
+
+#: src/features/conversation/ConversationStatus.tsx
+#: src/features/inbox/ChatList.tsx
+msgid "Waiting for an available teammate since {since}"
+msgstr "Venter på en ledig kollega siden {since}"
 
 #: src/features/docs/DocsPage.tsx
 #: src/features/docs/PagesTab.tsx

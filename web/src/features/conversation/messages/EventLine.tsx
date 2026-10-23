@@ -25,7 +25,9 @@ export function EventLine({ m, ctx }: { m: Message; ctx: ThreadContext }) {
   switch (e.type) {
     case "assigned": {
       const assignee = memberName(e.assignee_id)
-      body = (
+      body = e.auto ? (
+        <Trans>Assigned automatically to {assignee}</Trans>
+      ) : (
         <Trans>
           {actor} assigned this to {assignee}
         </Trans>
@@ -33,7 +35,7 @@ export function EventLine({ m, ctx }: { m: Message; ctx: ThreadContext }) {
       break
     }
     case "unassigned":
-      body = <Trans>{actor} removed the assignee</Trans>
+      body = e.auto ? <Trans>Unassigned automatically</Trans> : <Trans>{actor} removed the assignee</Trans>
       break
     case "status_changed": {
       const status = text.statusOf(e.status ?? "open", ctx.feedback ? "feedback" : undefined)

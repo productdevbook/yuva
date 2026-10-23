@@ -1314,6 +1314,10 @@ msgstr "Milis mengirim atas nama sebuah kotak masuk, lewat saluran emailnya. Sia
 msgid "A mailing list with subscribe forms, for your broadcasts"
 msgstr "Milis dengan formulir berlangganan, untuk siaran massal Anda"
 
+#: src/components/common/AssignmentFields.tsx
+msgid "A member is eligible while they have access to the product (owners and admins only with a grant), have the panel or an app open, are set to Auto availability, the product is inside its business hours and they are under the limit. When nobody is eligible the conversation waits and goes to the first teammate who becomes available."
+msgstr "Anggota memenuhi syarat jika punya akses ke produk (pemilik dan admin hanya dengan izin), panel atau aplikasi terbuka, ketersediaan Otomatis, produk berada dalam jam kerja, dan anggota di bawah batas. Jika tidak ada yang memenuhi syarat, percakapan menunggu dan diberikan ke rekan pertama yang tersedia."
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "A merge field without a fallback would be empty for some recipients. Give it a fallback."
 msgstr "Bidang gabungan tanpa nilai cadangan akan kosong untuk sebagian penerima. Beri nilai cadangan."
@@ -1951,6 +1955,10 @@ msgstr "Admin melihat setiap kotak masuk dan mengelola produk, kanal, dan anggot
 #: src/features/status/IncidentDetail.tsx
 msgid "Affects"
 msgstr "Berdampak pada"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "After the other rules have run, the conversation goes to the team's pool, or the product's when it has no team."
+msgstr "Setelah aturan lain berjalan, percakapan masuk ke kelompok tim, atau kelompok produk jika tidak punya tim."
 
 #: src/components/common/text.ts
 #: src/features/settings/sso/SsoPage.tsx
@@ -2830,6 +2838,10 @@ msgstr "Tugaskan ke tim"
 msgid "Assign to me"
 msgstr "Tugaskan ke saya"
 
+#: src/features/conversation/messages/EventLine.tsx
+msgid "Assigned automatically to {assignee}"
+msgstr "Ditugaskan otomatis ke {assignee}"
+
 #. placeholder {0}: assignee.name || assignee.email
 #: src/features/inbox/ChatList.tsx
 msgid "Assigned to {0}"
@@ -2995,9 +3007,10 @@ msgstr "Balasan otomatis"
 msgid "automatic"
 msgstr "otomatis"
 
-#: src/features/settings/automation/text.ts
-msgid "Automatic assignment (not available yet)"
-msgstr "Penugasan otomatis (belum tersedia)"
+#: src/components/common/AssignmentFields.tsx
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Automatic assignment"
+msgstr "Penugasan otomatis"
 
 #: src/features/conversation/messages/Thread.tsx
 msgid "Automatic mail never triggers an automatic reply."
@@ -3118,6 +3131,10 @@ msgstr "Sebelum mengirim"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Besides openid, email and profile. Okta needs groups for group checks."
 msgstr "Besides openid, email and profile. Okta needs groups for group checks."
+
+#: src/components/common/AssignmentFields.tsx
+msgid "Between 1 and 500, counted across the workspace. Assigning by hand ignores it. Leave empty for no limit."
+msgstr "Antara 1 dan 500, dihitung di seluruh ruang kerja. Penugasan manual mengabaikannya. Kosongkan jika tanpa batas."
 
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/teams/TeamDialog.tsx
@@ -6464,6 +6481,10 @@ msgstr "Masukan yang dikirim dari aplikasi"
 msgid "Feedback, {feedback} open"
 msgstr "Masukan, {feedback} terbuka"
 
+#: src/components/common/AssignmentFields.tsx
+msgid "Fewest open conversations"
+msgstr "Percakapan terbuka paling sedikit"
+
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactSheet.tsx
 msgid "Fields"
@@ -6968,6 +6989,10 @@ msgstr "Beri saluran alamat penerusan baru?"
 msgid "Give the page a name."
 msgstr "Beri nama pada halaman."
 
+#: src/components/common/AssignmentFields.tsx
+msgid "Gives a conversation without an assignee to a teammate when it arrives or is reopened by the contact. Automation rules run first."
+msgstr "Memberikan percakapan tanpa penanggung jawab ke rekan saat masuk atau dibuka kembali oleh kontak. Aturan otomasi berjalan lebih dulu."
+
 #: src/features/migrations/SwitchStep.tsx
 msgid "Gmail forwards only new mail that is not spam. If a Workspace admin turned forwarding off, use the admin's routing."
 msgstr "Gmail hanya meneruskan email baru yang bukan spam. Jika admin Workspace menonaktifkan penerusan, gunakan perutean admin."
@@ -7083,6 +7108,10 @@ msgstr "Kelompok anggota dan kotak masuk yang mereka cakup"
 #: src/features/broadcasts/ListPage.tsx
 msgid "Growth"
 msgstr "Pertumbuhan"
+
+#: src/features/settings/automation/text.ts
+msgid "Hand to automatic assignment"
+msgstr "Serahkan ke penugasan otomatis"
 
 #: src/features/conversation/actions.ts
 msgid "Handed to {name}"
@@ -9372,6 +9401,10 @@ msgstr "Paling membantu"
 msgid "Most liked"
 msgstr "Paling disukai"
 
+#: src/components/common/AssignmentFields.tsx
+msgid "Most open conversations per member"
+msgstr "Maksimum percakapan terbuka per anggota"
+
 #: src/features/docs/Toolbar.tsx
 msgid "Most ratings, open feedback, open discussions and waiting posts first"
 msgstr "Penilaian terbanyak, masukan terbuka, diskusi terbuka, dan kiriman menunggu dulu"
@@ -10348,6 +10381,7 @@ msgstr "Belum ada label. Tambahkan di pengaturan."
 msgid "no limit"
 msgstr "tanpa batas"
 
+#: src/components/common/AssignmentFields.tsx
 #: src/features/broadcasts/Pace.tsx
 msgid "No limit"
 msgstr "Tanpa batas"
@@ -11083,6 +11117,7 @@ msgstr "Buletin Oktober"
 msgid "off"
 msgstr "nonaktif"
 
+#: src/components/common/AssignmentFields.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/settings/channels/chat/ChatFields.tsx
 #: src/features/settings/SettingsColumn.tsx
@@ -11882,6 +11917,10 @@ msgstr "Di luar jam kerja"
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Outside them the product counts as closed."
 msgstr "Di luar jam itu, produk dianggap tutup."
+
+#: src/features/conversation/HeaderActions.tsx
+msgid "over cap"
+msgstr "melebihi batas"
 
 #: src/features/broadcasts/Report.tsx
 msgid "Over time"
@@ -14033,6 +14072,10 @@ msgstr "Memperbarui kunci sebuah kanal"
 #: src/features/settings/audit/sentence.ts
 msgid "Rotated the signing secret of a webhook"
 msgstr "Memperbarui rahasia tanda tangan sebuah webhook"
+
+#: src/components/common/AssignmentFields.tsx
+msgid "Round robin"
+msgstr "Bergiliran"
 
 #: src/features/setup/email/EmailReceiveStep.tsx
 msgid "Route your domain"
@@ -18068,6 +18111,10 @@ msgstr "Batalkan penugasan"
 msgid "Unassigned"
 msgstr "Belum ditugaskan"
 
+#: src/features/conversation/messages/EventLine.tsx
+msgid "Unassigned automatically"
+msgstr "Penugasan dicabut otomatis"
+
 #: src/features/contact/ContactDetail.tsx
 msgid "Unblock contact"
 msgstr "Buka blokir kontak"
@@ -18532,6 +18579,10 @@ msgstr "Gunakan balasan ini"
 msgid "Use your GMX password, or an app password if two-factor sign-in is on."
 msgstr "Gunakan kata sandi GMX Anda, atau kata sandi aplikasi jika masuk dua faktor aktif."
 
+#: src/components/common/AssignmentFields.tsx
+msgid "Used for conversations given to this team without a member. Only team members are considered."
+msgstr "Dipakai untuk percakapan yang diberikan ke tim ini tanpa anggota. Hanya anggota tim yang dipertimbangkan."
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Used in addresses and the widget"
 msgstr "Dipakai di alamat dan widget"
@@ -18728,6 +18779,15 @@ msgstr "Menunggu"
 #: src/features/migrations/CopyStep.tsx
 msgid "Waiting for {provider}'s limit; continues at {waiting}."
 msgstr "Menunggu batas {provider}; berlanjut pukul {waiting}."
+
+#: src/features/inbox/ChatList.tsx
+msgid "Waiting for a teammate"
+msgstr "Menunggu rekan yang tersedia"
+
+#: src/features/conversation/ConversationStatus.tsx
+#: src/features/inbox/ChatList.tsx
+msgid "Waiting for an available teammate since {since}"
+msgstr "Menunggu rekan yang tersedia sejak {since}"
 
 #: src/features/docs/DocsPage.tsx
 #: src/features/docs/PagesTab.tsx

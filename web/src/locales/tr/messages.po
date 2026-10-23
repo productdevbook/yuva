@@ -1314,6 +1314,10 @@ msgstr "E-posta listesi bir gelen kutusunun adıyla, onun e-posta kanalı üzeri
 msgid "A mailing list with subscribe forms, for your broadcasts"
 msgstr "Bültenleriniz için abonelik formlu bir e-posta listesi"
 
+#: src/components/common/AssignmentFields.tsx
+msgid "A member is eligible while they have access to the product (owners and admins only with a grant), have the panel or an app open, are set to Auto availability, the product is inside its business hours and they are under the limit. When nobody is eligible the conversation waits and goes to the first teammate who becomes available."
+msgstr "Bir üye, ürüne erişimi olduğunda (yönetici ve sahipler yalnızca yetki verilmişse), panel veya bir uygulama açıkken, uygunluğu Otomatik iken, ürün çalışma saatleri içindeyken ve sınırın altındayken uygundur. Kimse uygun değilse konuşma bekler ve uygun olan ilk takım arkadaşına verilir."
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "A merge field without a fallback would be empty for some recipients. Give it a fallback."
 msgstr "Yedek metni olmayan bir birleştirme alanı bazı alıcılarda boş kalacak. Bir yedek metin ekleyin."
@@ -1951,6 +1955,10 @@ msgstr "Yöneticiler her gelen kutusunu görür; ürünleri, kanalları ve üyel
 #: src/features/status/IncidentDetail.tsx
 msgid "Affects"
 msgstr "Etkilenen"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "After the other rules have run, the conversation goes to the team's pool, or the product's when it has no team."
+msgstr "Diğer kurallar çalıştıktan sonra konuşma ekibin havuzuna, ekibi yoksa ürünün havuzuna verilir."
 
 #: src/components/common/text.ts
 #: src/features/settings/sso/SsoPage.tsx
@@ -2830,6 +2838,10 @@ msgstr "Bir ekibe ata"
 msgid "Assign to me"
 msgstr "Bana ata"
 
+#: src/features/conversation/messages/EventLine.tsx
+msgid "Assigned automatically to {assignee}"
+msgstr "{assignee} kişisine otomatik olarak atandı"
+
 #. placeholder {0}: assignee.name || assignee.email
 #: src/features/inbox/ChatList.tsx
 msgid "Assigned to {0}"
@@ -2995,9 +3007,10 @@ msgstr "Otomatik yanıt"
 msgid "automatic"
 msgstr "otomatik"
 
-#: src/features/settings/automation/text.ts
-msgid "Automatic assignment (not available yet)"
-msgstr "Otomatik atama (henüz yok)"
+#: src/components/common/AssignmentFields.tsx
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Automatic assignment"
+msgstr "Otomatik atama"
 
 #: src/features/conversation/messages/Thread.tsx
 msgid "Automatic mail never triggers an automatic reply."
@@ -3118,6 +3131,10 @@ msgstr "Göndermeden önce"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Besides openid, email and profile. Okta needs groups for group checks."
 msgstr "openid, email ve profile dışında. Okta, grup denetimleri için groups ister."
+
+#: src/components/common/AssignmentFields.tsx
+msgid "Between 1 and 500, counted across the workspace. Assigning by hand ignores it. Leave empty for no limit."
+msgstr "1 ile 500 arasında, çalışma alanının tamamında sayılır. Elle atama bunu yok sayar. Sınır istemiyorsanız boş bırakın."
 
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/teams/TeamDialog.tsx
@@ -6464,6 +6481,10 @@ msgstr "Uygulamadan gönderilen geri bildirim"
 msgid "Feedback, {feedback} open"
 msgstr "Geri bildirim, {feedback} açık"
 
+#: src/components/common/AssignmentFields.tsx
+msgid "Fewest open conversations"
+msgstr "En az açık konuşması olan"
+
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactSheet.tsx
 msgid "Fields"
@@ -6968,6 +6989,10 @@ msgstr "Kanala yeni bir yönlendirme adresi verilsin mi?"
 msgid "Give the page a name."
 msgstr "Sayfaya bir ad verin."
 
+#: src/components/common/AssignmentFields.tsx
+msgid "Gives a conversation without an assignee to a teammate when it arrives or is reopened by the contact. Automation rules run first."
+msgstr "Atanan kişisi olmayan bir konuşmayı, geldiğinde veya kişi tarafından yeniden açıldığında bir takım arkadaşına verir. Önce otomasyon kuralları çalışır."
+
 #: src/features/migrations/SwitchStep.tsx
 msgid "Gmail forwards only new mail that is not spam. If a Workspace admin turned forwarding off, use the admin's routing."
 msgstr "Gmail yalnızca spam olmayan yeni e-postaları yönlendirir. Bir Workspace yöneticisi yönlendirmeyi kapattıysa yönetici yönlendirmesini kullanın."
@@ -7083,6 +7108,10 @@ msgstr "Üye grupları ve kapsadıkları gelen kutuları"
 #: src/features/broadcasts/ListPage.tsx
 msgid "Growth"
 msgstr "Büyüme"
+
+#: src/features/settings/automation/text.ts
+msgid "Hand to automatic assignment"
+msgstr "Otomatik atamaya ver"
 
 #: src/features/conversation/actions.ts
 msgid "Handed to {name}"
@@ -9372,6 +9401,10 @@ msgstr "En yararlı"
 msgid "Most liked"
 msgstr "En çok beğenilen"
 
+#: src/components/common/AssignmentFields.tsx
+msgid "Most open conversations per member"
+msgstr "Üye başına en çok açık konuşma"
+
 #: src/features/docs/Toolbar.tsx
 msgid "Most ratings, open feedback, open discussions and waiting posts first"
 msgstr "En çok puan, açık geri bildirim, açık tartışma ve bekleyen gönderi önce"
@@ -10348,6 +10381,7 @@ msgstr "Henüz etiket yok. Ayarlardan ekleyebilirsiniz."
 msgid "no limit"
 msgstr "sınırsız"
 
+#: src/components/common/AssignmentFields.tsx
 #: src/features/broadcasts/Pace.tsx
 msgid "No limit"
 msgstr "Sınırsız"
@@ -11083,6 +11117,7 @@ msgstr "Ekim bülteni"
 msgid "off"
 msgstr "kapalı"
 
+#: src/components/common/AssignmentFields.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/settings/channels/chat/ChatFields.tsx
 #: src/features/settings/SettingsColumn.tsx
@@ -11882,6 +11917,10 @@ msgstr "Çalışma saatleri dışında"
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Outside them the product counts as closed."
 msgstr "Bunların dışında ürün kapalı sayılır."
+
+#: src/features/conversation/HeaderActions.tsx
+msgid "over cap"
+msgstr "sınır aşıldı"
 
 #: src/features/broadcasts/Report.tsx
 msgid "Over time"
@@ -14033,6 +14072,10 @@ msgstr "Bir kanalın anahtarını yeniledi"
 #: src/features/settings/audit/sentence.ts
 msgid "Rotated the signing secret of a webhook"
 msgstr "Bir webhook'un imza gizli anahtarını yeniledi"
+
+#: src/components/common/AssignmentFields.tsx
+msgid "Round robin"
+msgstr "Sırayla"
 
 #: src/features/setup/email/EmailReceiveStep.tsx
 msgid "Route your domain"
@@ -18068,6 +18111,10 @@ msgstr "Atamayı kaldır"
 msgid "Unassigned"
 msgstr "Atanmamış"
 
+#: src/features/conversation/messages/EventLine.tsx
+msgid "Unassigned automatically"
+msgstr "Otomatik olarak atama kaldırıldı"
+
 #: src/features/contact/ContactDetail.tsx
 msgid "Unblock contact"
 msgstr "Engeli kaldır"
@@ -18532,6 +18579,10 @@ msgstr "Bu yanıtı kullan"
 msgid "Use your GMX password, or an app password if two-factor sign-in is on."
 msgstr "GMX şifrenizi ya da iki adımlı oturum açma açıksa bir uygulama şifresini kullanın."
 
+#: src/components/common/AssignmentFields.tsx
+msgid "Used for conversations given to this team without a member. Only team members are considered."
+msgstr "Üyesi olmadan bu ekibe verilen konuşmalar için kullanılır. Yalnızca ekip üyeleri dikkate alınır."
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Used in addresses and the widget"
 msgstr "Adreslerde ve sohbet penceresinde kullanılır"
@@ -18728,6 +18779,15 @@ msgstr "Bekleyen"
 #: src/features/migrations/CopyStep.tsx
 msgid "Waiting for {provider}'s limit; continues at {waiting}."
 msgstr "Bekliyor: {provider} sınırı, {waiting} itibarıyla devam edecek."
+
+#: src/features/inbox/ChatList.tsx
+msgid "Waiting for a teammate"
+msgstr "Uygun bir takım arkadaşı bekleniyor"
+
+#: src/features/conversation/ConversationStatus.tsx
+#: src/features/inbox/ChatList.tsx
+msgid "Waiting for an available teammate since {since}"
+msgstr "{since} tarihinden beri uygun bir takım arkadaşı bekleniyor"
 
 #: src/features/docs/DocsPage.tsx
 #: src/features/docs/PagesTab.tsx

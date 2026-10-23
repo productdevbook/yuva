@@ -1314,6 +1314,10 @@ msgstr "Una lista de correo envía con el nombre de un buzón, por su canal de c
 msgid "A mailing list with subscribe forms, for your broadcasts"
 msgstr "Una lista de correo con formularios de suscripción, para tus envíos"
 
+#: src/components/common/AssignmentFields.tsx
+msgid "A member is eligible while they have access to the product (owners and admins only with a grant), have the panel or an app open, are set to Auto availability, the product is inside its business hours and they are under the limit. When nobody is eligible the conversation waits and goes to the first teammate who becomes available."
+msgstr "Un miembro es elegible si tiene acceso al producto (propietarios y administradores solo con permiso), tiene el panel o una app abierta, su disponibilidad es Auto, el producto está dentro de su horario y no ha llegado al límite. Si nadie es elegible, la conversación espera y pasa al primer compañero que quede disponible."
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "A merge field without a fallback would be empty for some recipients. Give it a fallback."
 msgstr "Un campo de combinación sin valor alternativo quedaría vacío para algunos destinatarios. Dale un valor alternativo."
@@ -1951,6 +1955,10 @@ msgstr "Los administradores ven todas las bandejas de entrada y gestionan produc
 #: src/features/status/IncidentDetail.tsx
 msgid "Affects"
 msgstr "Afecta a"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "After the other rules have run, the conversation goes to the team's pool, or the product's when it has no team."
+msgstr "Cuando se han ejecutado las demás reglas, la conversación pasa al grupo del equipo, o al del producto si no tiene equipo."
 
 #: src/components/common/text.ts
 #: src/features/settings/sso/SsoPage.tsx
@@ -2830,6 +2838,10 @@ msgstr "Asignar a un equipo"
 msgid "Assign to me"
 msgstr "Asignarme"
 
+#: src/features/conversation/messages/EventLine.tsx
+msgid "Assigned automatically to {assignee}"
+msgstr "Asignada automáticamente a {assignee}"
+
 #. placeholder {0}: assignee.name || assignee.email
 #: src/features/inbox/ChatList.tsx
 msgid "Assigned to {0}"
@@ -2995,9 +3007,10 @@ msgstr "Respuesta automática"
 msgid "automatic"
 msgstr "automático"
 
-#: src/features/settings/automation/text.ts
-msgid "Automatic assignment (not available yet)"
-msgstr "Asignación automática (aún no disponible)"
+#: src/components/common/AssignmentFields.tsx
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Automatic assignment"
+msgstr "Asignación automática"
 
 #: src/features/conversation/messages/Thread.tsx
 msgid "Automatic mail never triggers an automatic reply."
@@ -3118,6 +3131,10 @@ msgstr "Antes de enviar"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Besides openid, email and profile. Okta needs groups for group checks."
 msgstr "Besides openid, email and profile. Okta needs groups for group checks."
+
+#: src/components/common/AssignmentFields.tsx
+msgid "Between 1 and 500, counted across the workspace. Assigning by hand ignores it. Leave empty for no limit."
+msgstr "Entre 1 y 500, contadas en todo el espacio de trabajo. La asignación manual lo ignora. Déjalo vacío para no poner límite."
 
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/teams/TeamDialog.tsx
@@ -6464,6 +6481,10 @@ msgstr "Comentarios enviados desde la app"
 msgid "Feedback, {feedback} open"
 msgstr "Comentarios, {feedback} abiertos"
 
+#: src/components/common/AssignmentFields.tsx
+msgid "Fewest open conversations"
+msgstr "Menos conversaciones abiertas"
+
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactSheet.tsx
 msgid "Fields"
@@ -6968,6 +6989,10 @@ msgstr "¿Dar al canal una nueva dirección de reenvío?"
 msgid "Give the page a name."
 msgstr "Ponle un nombre a la página."
 
+#: src/components/common/AssignmentFields.tsx
+msgid "Gives a conversation without an assignee to a teammate when it arrives or is reopened by the contact. Automation rules run first."
+msgstr "Da una conversación sin responsable a un compañero cuando llega o el contacto la reabre. Las reglas de automatización se ejecutan primero."
+
 #: src/features/migrations/SwitchStep.tsx
 msgid "Gmail forwards only new mail that is not spam. If a Workspace admin turned forwarding off, use the admin's routing."
 msgstr "Gmail solo reenvía el correo nuevo que no es spam. Si un administrador de Workspace desactivó el reenvío, usa el enrutamiento del administrador."
@@ -7083,6 +7108,10 @@ msgstr "Grupos de miembros y los buzones que cubren"
 #: src/features/broadcasts/ListPage.tsx
 msgid "Growth"
 msgstr "Crecimiento"
+
+#: src/features/settings/automation/text.ts
+msgid "Hand to automatic assignment"
+msgstr "Pasar a la asignación automática"
 
 #: src/features/conversation/actions.ts
 msgid "Handed to {name}"
@@ -9372,6 +9401,10 @@ msgstr "Más útiles"
 msgid "Most liked"
 msgstr "Más valorados"
 
+#: src/components/common/AssignmentFields.tsx
+msgid "Most open conversations per member"
+msgstr "Máximo de conversaciones abiertas por miembro"
+
 #: src/features/docs/Toolbar.tsx
 msgid "Most ratings, open feedback, open discussions and waiting posts first"
 msgstr "Más valoraciones, comentarios abiertos, debates abiertos y publicaciones en espera primero"
@@ -10348,6 +10381,7 @@ msgstr "Aún no hay etiquetas. Añádelas en los ajustes."
 msgid "no limit"
 msgstr "sin límite"
 
+#: src/components/common/AssignmentFields.tsx
 #: src/features/broadcasts/Pace.tsx
 msgid "No limit"
 msgstr "Sin límite"
@@ -11083,6 +11117,7 @@ msgstr "Boletín de octubre"
 msgid "off"
 msgstr "desactivado"
 
+#: src/components/common/AssignmentFields.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/settings/channels/chat/ChatFields.tsx
 #: src/features/settings/SettingsColumn.tsx
@@ -11882,6 +11917,10 @@ msgstr "Fuera del horario laboral"
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Outside them the product counts as closed."
 msgstr "Fuera de ese horario, el producto se considera cerrado."
+
+#: src/features/conversation/HeaderActions.tsx
+msgid "over cap"
+msgstr "límite superado"
 
 #: src/features/broadcasts/Report.tsx
 msgid "Over time"
@@ -14033,6 +14072,10 @@ msgstr "Renovó la clave de un canal"
 #: src/features/settings/audit/sentence.ts
 msgid "Rotated the signing secret of a webhook"
 msgstr "Renovó el secreto de firma de un webhook"
+
+#: src/components/common/AssignmentFields.tsx
+msgid "Round robin"
+msgstr "Por turnos"
 
 #: src/features/setup/email/EmailReceiveStep.tsx
 msgid "Route your domain"
@@ -18068,6 +18111,10 @@ msgstr "Quitar asignación"
 msgid "Unassigned"
 msgstr "Sin asignar"
 
+#: src/features/conversation/messages/EventLine.tsx
+msgid "Unassigned automatically"
+msgstr "Desasignada automáticamente"
+
 #: src/features/contact/ContactDetail.tsx
 msgid "Unblock contact"
 msgstr "Desbloquear contacto"
@@ -18532,6 +18579,10 @@ msgstr "Usar esta respuesta"
 msgid "Use your GMX password, or an app password if two-factor sign-in is on."
 msgstr "Usa tu contraseña de GMX, o una contraseña de aplicación si tienes activado el inicio de sesión en dos pasos."
 
+#: src/components/common/AssignmentFields.tsx
+msgid "Used for conversations given to this team without a member. Only team members are considered."
+msgstr "Se usa para las conversaciones dadas a este equipo sin un miembro. Solo se tiene en cuenta a los miembros del equipo."
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Used in addresses and the widget"
 msgstr "Se usa en direcciones y en el widget"
@@ -18728,6 +18779,15 @@ msgstr "Esperando"
 #: src/features/migrations/CopyStep.tsx
 msgid "Waiting for {provider}'s limit; continues at {waiting}."
 msgstr "Esperando el límite de {provider}; continúa a las {waiting}."
+
+#: src/features/inbox/ChatList.tsx
+msgid "Waiting for a teammate"
+msgstr "Esperando a un compañero disponible"
+
+#: src/features/conversation/ConversationStatus.tsx
+#: src/features/inbox/ChatList.tsx
+msgid "Waiting for an available teammate since {since}"
+msgstr "Esperando a un compañero disponible desde {since}"
 
 #: src/features/docs/DocsPage.tsx
 #: src/features/docs/PagesTab.tsx

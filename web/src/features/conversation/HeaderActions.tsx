@@ -27,7 +27,7 @@ import { useCounts } from "@/features/inbox/queries"
 import type { Conversation, ConversationUpdate, FeedbackProgress } from "@/lib/api"
 import { useSession } from "@/lib/session"
 import { cn } from "@/lib/utils"
-import { useAssignableMembers, useTeams } from "@/lib/workspace"
+import { useAssignableMembers, useInboxes, useTeams } from "@/lib/workspace"
 
 export type HeaderMenu = "snooze" | "hand" | "team" | "progress" | "sla" | null
 
@@ -227,6 +227,9 @@ export function HandMenu({
   const load = new Map((useCounts().data?.assignees ?? []).map((a) => [a.id, a.count]))
   const mine = c.assignee_id === membership.member_id
   const teams = useInboxTeams(c.inbox_id)
+  const inboxCap = (useInboxes().data ?? []).find((i) => i.id === c.inbox_id)?.assignment_cap
+  const teamPool = teams.find((x) => x.id === c.team_id && x.assignment_mode !== "off")
+  const cap = teamPool ? teamPool.assignment_cap : inboxCap
   const teamChoice = useTeamChoice(c, () => onOpenChange(false))
   return (
     <Popover
@@ -306,6 +309,12 @@ export function HandMenu({
                   )}
                   {" · "}
                   <Plural value={load.get(m.id) ?? 0} one="# conversation" other="# conversations" />
+                  {cap !== undefined && (load.get(m.id) ?? 0) >= cap && (
+                    <span className="text-warning" data-testid="over-cap">
+                      {" · "}
+                      <Trans>over cap</Trans>
+                    </span>
+                  )}
                 </small>
               </span>
             </Item>

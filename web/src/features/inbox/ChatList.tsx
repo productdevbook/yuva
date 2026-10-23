@@ -42,7 +42,7 @@ import {
   VisitorAvatar,
 } from "@/components/common"
 import { keyLabel, mod, SHORTCUTS } from "@/components/common/ShortcutSheet"
-import { formatDuration, formatShort, useErrorText, usePreviewText } from "@/components/common/text"
+import { formatDateTime, formatDuration, formatShort, useErrorText, usePreviewText } from "@/components/common/text"
 import { useLatest } from "@/hooks/use-latest"
 import { useNow } from "@/hooks/use-now"
 import { useConfirm } from "@/components/common/ConfirmDialog"
@@ -241,6 +241,7 @@ function Row({
   const waiting = isWaiting(c)
   const now = useNow(60_000)
   const subject = c.subject.trim()
+  const since = c.assign_waiting_since ? formatDateTime(c.assign_waiting_since, i18n.locale) : ""
   return (
     <button
       type="button"
@@ -344,6 +345,16 @@ function Row({
           <span className="flex-1" />
           {c.sla && <SlaBadge sla={c.sla} />}
           {rating && <RatingMark rating={rating.rating} comment={rating.comment} />}
+          {!assignee && c.assign_waiting_since && (
+            <span
+              className="inline-flex shrink-0 items-center gap-1 text-warning"
+              title={t`Waiting for an available teammate since ${since}`}
+              data-testid="row-assign-waiting"
+            >
+              <ClockIcon className="size-3" />
+              <Trans>Waiting for a teammate</Trans>
+            </span>
+          )}
           {assignee && (
             <span title={t`Assigned to ${assignee.name || assignee.email}`} data-testid="row-assignee">
               <MemberAvatar name={assignee.name || assignee.email} className="size-[18px] text-[8px]" />

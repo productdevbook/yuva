@@ -5,6 +5,7 @@ import { createContext, useContext } from "react"
 import { Link, useParams } from "react-router"
 
 import { ChannelIcon, ErrorLine, Notice, toast } from "@/components/common"
+import { AssignmentFields, capValid } from "@/components/common/AssignmentFields"
 import { ChipGroup } from "@/components/common/ChipGroup"
 import { SaveBar } from "@/components/common/SaveBar"
 import { formatRelative, useEnumText, useErrorText, WEEKDAYS } from "@/components/common/text"
@@ -28,6 +29,7 @@ import { useTab } from "@/features/settings/useTab"
 import {
   api,
   unwrap,
+  type AssignmentMode,
   type BusinessHours,
   type Inbox,
   type InboxFeedbackCategory,
@@ -74,6 +76,8 @@ type Draft = {
   slug: string
   sender: Record<SenderKey, string>
   categories: InboxFeedbackCategory[]
+  assignMode: AssignmentMode
+  assignCap: string
 }
 
 function uniform(h: BusinessHours) {
@@ -111,6 +115,8 @@ function draftOf(inbox: Inbox): Draft {
       contact: sender.contact ?? "",
     },
     categories: inbox.feedback_categories,
+    assignMode: inbox.assignment_mode,
+    assignCap: inbox.assignment_cap ? String(inbox.assignment_cap) : "",
   }
 }
 
@@ -120,6 +126,7 @@ function problems(d: Draft) {
     slug: !SLUG.test(d.slug),
     zone: !timeZones().includes(d.zone),
     categories: categoriesInvalid(d.categories, d.locale),
+    cap: !capValid(d.assignCap),
   }
 }
 
@@ -144,6 +151,9 @@ function changes(inbox: Inbox, d: Draft): InboxUpdate {
   for (const k of Object.keys(d.sender) as SenderKey[])
     if (d.sender[k].trim() !== base.sender[k]) sender[k] = d.sender[k].trim() || null
   if (Object.keys(sender).length) body.sender = sender
+  if (d.assignMode !== base.assignMode) body.assignment_mode = d.assignMode
+  if (d.assignCap !== base.assignCap && capValid(d.assignCap))
+    body.assignment_cap = d.assignCap === "" ? null : Number(d.assignCap)
   const categories = cleanCategories(d.categories)
   if (JSON.stringify(categories) !== JSON.stringify(cleanCategories(base.categories)))
     body.feedback_categories = categories
@@ -488,6 +498,18 @@ function HoursTab({ d, set, locked, inbox }: Form) {
           </datalist>
         </BlockRow>
       </Block>
+      <Block title={<Trans>Automatic assignment</Trans>}>
+        <div className="px-[18px] py-4">
+          <AssignmentFields
+            scope="inbox"
+            mode={d.assignMode}
+            cap={d.assignCap}
+            disabled={locked}
+            onMode={(assignMode) => set({ assignMode })}
+            onCap={(assignCap) => set({ assignCap })}
+          />
+        </div>
+      </Block>
       <WhoCanReply inbox={inbox} />
     </div>
   )
@@ -751,7 +773,7 @@ function Editor({ inbox }: { inbox: Inbox }) {
   const body = changes(inbox, d)
   const dirty = Object.keys(body).length > 0
   const bad = problems(d)
-  const invalid = bad.name || bad.slug || bad.zone || bad.categories
+  const invalid = bad.name || bad.slug || bad.zone || bad.categories || bad.cap
   const form: Form = { d, set: (p) => setD((x) => ({ ...x, ...p })), inbox, locked: !canManage }
   const domain = channelDomain(channels.data)
   const tabs = [

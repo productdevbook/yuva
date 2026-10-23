@@ -1314,6 +1314,10 @@ msgstr "메일링 리스트는 받은 편지함의 이름으로 이메일 채널
 msgid "A mailing list with subscribe forms, for your broadcasts"
 msgstr "일괄 발송을 위한 구독 양식이 있는 메일링 리스트"
 
+#: src/components/common/AssignmentFields.tsx
+msgid "A member is eligible while they have access to the product (owners and admins only with a grant), have the panel or an app open, are set to Auto availability, the product is inside its business hours and they are under the limit. When nobody is eligible the conversation waits and goes to the first teammate who becomes available."
+msgstr "멤버는 제품에 접근 권한이 있고(소유자와 관리자는 권한이 부여된 경우만), 패널이나 앱이 열려 있고, 가용성이 자동이며, 제품이 영업시간 안에 있고, 한도 미만일 때 대상이 됩니다. 아무도 대상이 아니면 대화는 대기하다가 처음 가능해진 팀원에게 배정됩니다."
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "A merge field without a fallback would be empty for some recipients. Give it a fallback."
 msgstr "대체값이 없는 병합 필드는 일부 수신자에게 비어 보입니다. 대체값을 지정하세요."
@@ -1951,6 +1955,10 @@ msgstr "관리자는 모든 받은편지함을 보고 제품, 채널, 멤버를 
 #: src/features/status/IncidentDetail.tsx
 msgid "Affects"
 msgstr "영향 범위"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "After the other rules have run, the conversation goes to the team's pool, or the product's when it has no team."
+msgstr "다른 규칙이 실행된 뒤 대화는 팀의 풀로 가고, 팀이 없으면 제품의 풀로 갑니다."
 
 #: src/components/common/text.ts
 #: src/features/settings/sso/SsoPage.tsx
@@ -2830,6 +2838,10 @@ msgstr "팀에 배정"
 msgid "Assign to me"
 msgstr "나에게 배정"
 
+#: src/features/conversation/messages/EventLine.tsx
+msgid "Assigned automatically to {assignee}"
+msgstr "{assignee}님에게 자동으로 배정됨"
+
 #. placeholder {0}: assignee.name || assignee.email
 #: src/features/inbox/ChatList.tsx
 msgid "Assigned to {0}"
@@ -2995,9 +3007,10 @@ msgstr "자동 응답"
 msgid "automatic"
 msgstr "자동"
 
-#: src/features/settings/automation/text.ts
-msgid "Automatic assignment (not available yet)"
-msgstr "자동 할당(아직 사용할 수 없음)"
+#: src/components/common/AssignmentFields.tsx
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Automatic assignment"
+msgstr "자동 배정"
 
 #: src/features/conversation/messages/Thread.tsx
 msgid "Automatic mail never triggers an automatic reply."
@@ -3118,6 +3131,10 @@ msgstr "보내기 전에"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Besides openid, email and profile. Okta needs groups for group checks."
 msgstr "Besides openid, email and profile. Okta needs groups for group checks."
+
+#: src/components/common/AssignmentFields.tsx
+msgid "Between 1 and 500, counted across the workspace. Assigning by hand ignores it. Leave empty for no limit."
+msgstr "1에서 500 사이이며 워크스페이스 전체에서 셉니다. 수동 배정은 무시합니다. 한도가 없으면 비워 두세요."
 
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/teams/TeamDialog.tsx
@@ -6464,6 +6481,10 @@ msgstr "앱에서 보낸 의견"
 msgid "Feedback, {feedback} open"
 msgstr "피드백, {feedback}건 열림"
 
+#: src/components/common/AssignmentFields.tsx
+msgid "Fewest open conversations"
+msgstr "열린 대화가 가장 적은 사람"
+
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactSheet.tsx
 msgid "Fields"
@@ -6968,6 +6989,10 @@ msgstr "채널에 새 전달 주소를 발급할까요?"
 msgid "Give the page a name."
 msgstr "페이지 이름을 입력하세요."
 
+#: src/components/common/AssignmentFields.tsx
+msgid "Gives a conversation without an assignee to a teammate when it arrives or is reopened by the contact. Automation rules run first."
+msgstr "담당자가 없는 대화가 들어오거나 연락처가 다시 열 때 팀원에게 배정합니다. 자동화 규칙이 먼저 실행됩니다."
+
 #: src/features/migrations/SwitchStep.tsx
 msgid "Gmail forwards only new mail that is not spam. If a Workspace admin turned forwarding off, use the admin's routing."
 msgstr "Gmail은 스팸이 아닌 새 메일만 전달합니다. Workspace 관리자가 전달을 꺼 두었다면 관리자의 라우팅을 사용하세요."
@@ -7083,6 +7108,10 @@ msgstr "멤버 그룹과 담당하는 받은 편지함"
 #: src/features/broadcasts/ListPage.tsx
 msgid "Growth"
 msgstr "성장"
+
+#: src/features/settings/automation/text.ts
+msgid "Hand to automatic assignment"
+msgstr "자동 배정에 넘기기"
 
 #: src/features/conversation/actions.ts
 msgid "Handed to {name}"
@@ -9372,6 +9401,10 @@ msgstr "가장 도움이 된 순"
 msgid "Most liked"
 msgstr "추천이 많은 순"
 
+#: src/components/common/AssignmentFields.tsx
+msgid "Most open conversations per member"
+msgstr "멤버당 열린 대화 최대 수"
+
 #: src/features/docs/Toolbar.tsx
 msgid "Most ratings, open feedback, open discussions and waiting posts first"
 msgstr "평가가 많은 순, 그다음 열린 의견, 열린 토론, 대기 중인 게시물 순"
@@ -10348,6 +10381,7 @@ msgstr "아직 레이블이 없습니다. 설정에서 추가하세요."
 msgid "no limit"
 msgstr "제한 없음"
 
+#: src/components/common/AssignmentFields.tsx
 #: src/features/broadcasts/Pace.tsx
 msgid "No limit"
 msgstr "제한 없음"
@@ -11083,6 +11117,7 @@ msgstr "10월 뉴스레터"
 msgid "off"
 msgstr "꺼짐"
 
+#: src/components/common/AssignmentFields.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/settings/channels/chat/ChatFields.tsx
 #: src/features/settings/SettingsColumn.tsx
@@ -11882,6 +11917,10 @@ msgstr "영업시간 외"
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Outside them the product counts as closed."
 msgstr "그 외 시간에는 제품이 닫힌 것으로 간주됩니다."
+
+#: src/features/conversation/HeaderActions.tsx
+msgid "over cap"
+msgstr "한도 초과"
 
 #: src/features/broadcasts/Report.tsx
 msgid "Over time"
@@ -14033,6 +14072,10 @@ msgstr "채널의 키를 새로 발급했습니다"
 #: src/features/settings/audit/sentence.ts
 msgid "Rotated the signing secret of a webhook"
 msgstr "웹훅의 서명 비밀 값을 새로 발급했습니다"
+
+#: src/components/common/AssignmentFields.tsx
+msgid "Round robin"
+msgstr "순서대로"
 
 #: src/features/setup/email/EmailReceiveStep.tsx
 msgid "Route your domain"
@@ -18068,6 +18111,10 @@ msgstr "배정 해제"
 msgid "Unassigned"
 msgstr "배정 안 됨"
 
+#: src/features/conversation/messages/EventLine.tsx
+msgid "Unassigned automatically"
+msgstr "자동으로 배정 해제됨"
+
 #: src/features/contact/ContactDetail.tsx
 msgid "Unblock contact"
 msgstr "연락처 차단 해제"
@@ -18532,6 +18579,10 @@ msgstr "이 답장 사용"
 msgid "Use your GMX password, or an app password if two-factor sign-in is on."
 msgstr "GMX 비밀번호를 사용하세요. 2단계 로그인이 켜져 있으면 앱 비밀번호를 쓰세요."
 
+#: src/components/common/AssignmentFields.tsx
+msgid "Used for conversations given to this team without a member. Only team members are considered."
+msgstr "멤버 없이 이 팀에 배정된 대화에 쓰입니다. 팀 멤버만 대상입니다."
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Used in addresses and the widget"
 msgstr "주소와 위젯에서 사용됨"
@@ -18728,6 +18779,15 @@ msgstr "대기 중"
 #: src/features/migrations/CopyStep.tsx
 msgid "Waiting for {provider}'s limit; continues at {waiting}."
 msgstr "{provider}의 한도를 기다리는 중입니다. {waiting}에 이어 갑니다."
+
+#: src/features/inbox/ChatList.tsx
+msgid "Waiting for a teammate"
+msgstr "가능한 팀원을 기다리는 중"
+
+#: src/features/conversation/ConversationStatus.tsx
+#: src/features/inbox/ChatList.tsx
+msgid "Waiting for an available teammate since {since}"
+msgstr "{since}부터 가능한 팀원을 기다리는 중"
 
 #: src/features/docs/DocsPage.tsx
 #: src/features/docs/PagesTab.tsx

@@ -1314,6 +1314,10 @@ msgstr "邮件列表以收件箱的名义,通过其邮件渠道发送。请先�
 msgid "A mailing list with subscribe forms, for your broadcasts"
 msgstr "带订阅表单的邮件列表,用于你的群发"
 
+#: src/components/common/AssignmentFields.tsx
+msgid "A member is eligible while they have access to the product (owners and admins only with a grant), have the panel or an app open, are set to Auto availability, the product is inside its business hours and they are under the limit. When nobody is eligible the conversation waits and goes to the first teammate who becomes available."
+msgstr "成员符合条件的情况是：有该产品的访问权限（所有者和管理员须获授权）、已打开面板或应用、可用状态为自动、产品在营业时间内、且未达上限。无人符合时，会话会等待，并交给第一个空闲的同事。"
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "A merge field without a fallback would be empty for some recipients. Give it a fallback."
 msgstr "没有备用值的合并字段对部分收件人会显示为空。请为它设置备用值。"
@@ -1951,6 +1955,10 @@ msgstr "管理员可以查看所有收件箱，并管理产品、渠道和成员
 #: src/features/status/IncidentDetail.tsx
 msgid "Affects"
 msgstr "影响范围"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "After the other rules have run, the conversation goes to the team's pool, or the product's when it has no team."
+msgstr "其他规则运行后，会话进入团队的池；没有团队时进入产品的池。"
 
 #: src/components/common/text.ts
 #: src/features/settings/sso/SsoPage.tsx
@@ -2830,6 +2838,10 @@ msgstr "分配给团队"
 msgid "Assign to me"
 msgstr "分配给我"
 
+#: src/features/conversation/messages/EventLine.tsx
+msgid "Assigned automatically to {assignee}"
+msgstr "已自动分配给 {assignee}"
+
 #. placeholder {0}: assignee.name || assignee.email
 #: src/features/inbox/ChatList.tsx
 msgid "Assigned to {0}"
@@ -2995,9 +3007,10 @@ msgstr "自动回复"
 msgid "automatic"
 msgstr "自动"
 
-#: src/features/settings/automation/text.ts
-msgid "Automatic assignment (not available yet)"
-msgstr "自动分配(暂未提供)"
+#: src/components/common/AssignmentFields.tsx
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Automatic assignment"
+msgstr "自动分配"
 
 #: src/features/conversation/messages/Thread.tsx
 msgid "Automatic mail never triggers an automatic reply."
@@ -3118,6 +3131,10 @@ msgstr "发送前"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Besides openid, email and profile. Okta needs groups for group checks."
 msgstr "Besides openid, email and profile. Okta needs groups for group checks."
+
+#: src/components/common/AssignmentFields.tsx
+msgid "Between 1 and 500, counted across the workspace. Assigning by hand ignores it. Leave empty for no limit."
+msgstr "1 到 500，在整个工作区内计数。手动分配不受限制。留空表示不设上限。"
 
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/teams/TeamDialog.tsx
@@ -6464,6 +6481,10 @@ msgstr "从应用发送的反馈"
 msgid "Feedback, {feedback} open"
 msgstr "反馈，{feedback} 条未解决"
 
+#: src/components/common/AssignmentFields.tsx
+msgid "Fewest open conversations"
+msgstr "未结会话最少"
+
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactSheet.tsx
 msgid "Fields"
@@ -6968,6 +6989,10 @@ msgstr "为渠道生成新的转发地址?"
 msgid "Give the page a name."
 msgstr "请为页面起个名字。"
 
+#: src/components/common/AssignmentFields.tsx
+msgid "Gives a conversation without an assignee to a teammate when it arrives or is reopened by the contact. Automation rules run first."
+msgstr "当没有负责人的会话到达或联系人重新打开时，分配给一位同事。自动化规则先运行。"
+
 #: src/features/migrations/SwitchStep.tsx
 msgid "Gmail forwards only new mail that is not spam. If a Workspace admin turned forwarding off, use the admin's routing."
 msgstr "Gmail 只转发非垃圾的新邮件。如果 Workspace 管理员关闭了转发,请使用管理员的路由。"
@@ -7083,6 +7108,10 @@ msgstr "成员分组及其负责的收件箱"
 #: src/features/broadcasts/ListPage.tsx
 msgid "Growth"
 msgstr "增长"
+
+#: src/features/settings/automation/text.ts
+msgid "Hand to automatic assignment"
+msgstr "交给自动分配"
 
 #: src/features/conversation/actions.ts
 msgid "Handed to {name}"
@@ -9372,6 +9401,10 @@ msgstr "最有帮助"
 msgid "Most liked"
 msgstr "最多赞"
 
+#: src/components/common/AssignmentFields.tsx
+msgid "Most open conversations per member"
+msgstr "每位成员的未结会话上限"
+
 #: src/features/docs/Toolbar.tsx
 msgid "Most ratings, open feedback, open discussions and waiting posts first"
 msgstr "评分最多、待处理反馈、未关闭讨论和等待审核的帖子最多的在前"
@@ -10348,6 +10381,7 @@ msgstr "还没有标签。请在设置中添加。"
 msgid "no limit"
 msgstr "无限制"
 
+#: src/components/common/AssignmentFields.tsx
 #: src/features/broadcasts/Pace.tsx
 msgid "No limit"
 msgstr "无限制"
@@ -11083,6 +11117,7 @@ msgstr "十月新闻简报"
 msgid "off"
 msgstr "关闭"
 
+#: src/components/common/AssignmentFields.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/settings/channels/chat/ChatFields.tsx
 #: src/features/settings/SettingsColumn.tsx
@@ -11882,6 +11917,10 @@ msgstr "营业时间外"
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Outside them the product counts as closed."
 msgstr "除此之外，产品视为关闭。"
+
+#: src/features/conversation/HeaderActions.tsx
+msgid "over cap"
+msgstr "已超上限"
 
 #: src/features/broadcasts/Report.tsx
 msgid "Over time"
@@ -14033,6 +14072,10 @@ msgstr "更新了渠道的密钥"
 #: src/features/settings/audit/sentence.ts
 msgid "Rotated the signing secret of a webhook"
 msgstr "更新了 Webhook 的签名密钥"
+
+#: src/components/common/AssignmentFields.tsx
+msgid "Round robin"
+msgstr "轮流"
 
 #: src/features/setup/email/EmailReceiveStep.tsx
 msgid "Route your domain"
@@ -18068,6 +18111,10 @@ msgstr "取消分配"
 msgid "Unassigned"
 msgstr "未分配"
 
+#: src/features/conversation/messages/EventLine.tsx
+msgid "Unassigned automatically"
+msgstr "已自动取消分配"
+
 #: src/features/contact/ContactDetail.tsx
 msgid "Unblock contact"
 msgstr "取消屏蔽联系人"
@@ -18532,6 +18579,10 @@ msgstr "使用此回复"
 msgid "Use your GMX password, or an app password if two-factor sign-in is on."
 msgstr "使用你的 GMX 密码;如果开启了两步登录,则使用应用专用密码。"
 
+#: src/components/common/AssignmentFields.tsx
+msgid "Used for conversations given to this team without a member. Only team members are considered."
+msgstr "用于交给此团队但未指定成员的会话。只考虑团队成员。"
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Used in addresses and the widget"
 msgstr "用于地址和小部件"
@@ -18728,6 +18779,15 @@ msgstr "等待中"
 #: src/features/migrations/CopyStep.tsx
 msgid "Waiting for {provider}'s limit; continues at {waiting}."
 msgstr "正在等待 {provider} 的限制;将在 {waiting} 继续。"
+
+#: src/features/inbox/ChatList.tsx
+msgid "Waiting for a teammate"
+msgstr "正在等待空闲的同事"
+
+#: src/features/conversation/ConversationStatus.tsx
+#: src/features/inbox/ChatList.tsx
+msgid "Waiting for an available teammate since {since}"
+msgstr "自 {since} 起等待空闲的同事"
 
 #: src/features/docs/DocsPage.tsx
 #: src/features/docs/PagesTab.tsx

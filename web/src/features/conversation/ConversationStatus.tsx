@@ -39,6 +39,14 @@ export function Status({ c, lastInbound }: { c: Conversation; lastInbound?: Mess
     const name = m ? m.name || m.email : "…"
     return <Trans>With {name}</Trans>
   }
+  if (c.status === "open" && !c.assignee_id && c.assign_waiting_since) {
+    const since = formatDateTime(c.assign_waiting_since, i18n.locale)
+    return (
+      <span className="text-warning" data-testid="assign-waiting">
+        <Trans>Waiting for an available teammate since {since}</Trans>
+      </span>
+    )
+  }
   if (c.status === "open") {
     const waiting = c.last_message_at && lastInbound && lastInbound.created_at >= c.last_message_at
     return waiting ? (

@@ -1314,6 +1314,10 @@ msgstr "ಮೇಲಿಂಗ್ ಪಟ್ಟಿಯು ಇನ್‌ಬಾಕ್ಸ�
 msgid "A mailing list with subscribe forms, for your broadcasts"
 msgstr "ನಿಮ್ಮ ಬ್ರಾಡ್‌ಕಾಸ್ಟ್‌ಗಳಿಗಾಗಿ ಚಂದಾದಾರಿಕೆ ಫಾರ್ಮ್‌ಗಳಿರುವ ಮೇಲಿಂಗ್ ಪಟ್ಟಿ"
 
+#: src/components/common/AssignmentFields.tsx
+msgid "A member is eligible while they have access to the product (owners and admins only with a grant), have the panel or an app open, are set to Auto availability, the product is inside its business hours and they are under the limit. When nobody is eligible the conversation waits and goes to the first teammate who becomes available."
+msgstr "ಸದಸ್ಯರಿಗೆ ಉತ್ಪನ್ನದ ಪ್ರವೇಶವಿದ್ದರೆ (ಮಾಲೀಕರು ಮತ್ತು ನಿರ್ವಾಹಕರು ಅನುಮತಿಯೊಂದಿಗೆ ಮಾತ್ರ), ಪ್ಯಾನೆಲ್ ಅಥವಾ ಆ್ಯಪ್ ತೆರೆದಿದ್ದರೆ, ಲಭ್ಯತೆ ಆಟೋ ಆಗಿದ್ದರೆ, ಉತ್ಪನ್ನ ಕೆಲಸದ ಸಮಯದಲ್ಲಿದ್ದರೆ ಮತ್ತು ಸದಸ್ಯರು ಮಿತಿಗಿಂತ ಕೆಳಗಿದ್ದರೆ ಅರ್ಹರು. ಯಾರೂ ಅರ್ಹರಿಲ್ಲದಿದ್ದರೆ ಸಂಭಾಷಣೆ ಕಾಯುತ್ತದೆ ಮತ್ತು ಮೊದಲು ಲಭ್ಯರಾದವರಿಗೆ ಹೋಗುತ್ತದೆ."
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "A merge field without a fallback would be empty for some recipients. Give it a fallback."
 msgstr "ಫಾಲ್‌ಬ್ಯಾಕ್ ಇಲ್ಲದ ಮರ್ಜ್ ಫೀಲ್ಡ್ ಕೆಲವು ಸ್ವೀಕರಿಸುವವರಿಗೆ ಖಾಲಿಯಾಗಿರುತ್ತದೆ. ಅದಕ್ಕೆ ಫಾಲ್‌ಬ್ಯಾಕ್ ನೀಡಿ."
@@ -1951,6 +1955,10 @@ msgstr "ನಿರ್ವಾಹಕರು ಪ್ರತಿ ಇನ್‌ಬಾಕ್�
 #: src/features/status/IncidentDetail.tsx
 msgid "Affects"
 msgstr "ಪರಿಣಾಮ"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "After the other rules have run, the conversation goes to the team's pool, or the product's when it has no team."
+msgstr "ಇತರ ನಿಯಮಗಳು ಚಲಿಸಿದ ನಂತರ ಸಂಭಾಷಣೆ ತಂಡದ ಪೂಲ್‌ಗೆ ಹೋಗುತ್ತದೆ, ತಂಡ ಇಲ್ಲದಿದ್ದರೆ ಉತ್ಪನ್ನದ ಪೂಲ್‌ಗೆ."
 
 #: src/components/common/text.ts
 #: src/features/settings/sso/SsoPage.tsx
@@ -2830,6 +2838,10 @@ msgstr "ತಂಡಕ್ಕೆ ನಿಯೋಜಿಸಿ"
 msgid "Assign to me"
 msgstr "ನನಗೆ ನಿಯೋಜಿಸಿ"
 
+#: src/features/conversation/messages/EventLine.tsx
+msgid "Assigned automatically to {assignee}"
+msgstr "{assignee} ಅವರಿಗೆ ಸ್ವಯಂಚಾಲಿತವಾಗಿ ನಿಯೋಜಿಸಲಾಗಿದೆ"
+
 #. placeholder {0}: assignee.name || assignee.email
 #: src/features/inbox/ChatList.tsx
 msgid "Assigned to {0}"
@@ -2995,9 +3007,10 @@ msgstr "ಸ್ವಯಂ-ಉತ್ತರ"
 msgid "automatic"
 msgstr "ಸ್ವಯಂಚಾಲಿತ"
 
-#: src/features/settings/automation/text.ts
-msgid "Automatic assignment (not available yet)"
-msgstr "ಸ್ವಯಂಚಾಲಿತ ನಿಯೋಜನೆ (ಇನ್ನೂ ಲಭ್ಯವಿಲ್ಲ)"
+#: src/components/common/AssignmentFields.tsx
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Automatic assignment"
+msgstr "ಸ್ವಯಂಚಾಲಿತ ನಿಯೋಜನೆ"
 
 #: src/features/conversation/messages/Thread.tsx
 msgid "Automatic mail never triggers an automatic reply."
@@ -3118,6 +3131,10 @@ msgstr "ಕಳುಹಿಸುವ ಮೊದಲು"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Besides openid, email and profile. Okta needs groups for group checks."
 msgstr "Besides openid, email and profile. Okta needs groups for group checks."
+
+#: src/components/common/AssignmentFields.tsx
+msgid "Between 1 and 500, counted across the workspace. Assigning by hand ignores it. Leave empty for no limit."
+msgstr "1 ರಿಂದ 500, ಇಡೀ ಕಾರ್ಯಸ್ಥಳದಲ್ಲಿ ಎಣಿಸಲಾಗುತ್ತದೆ. ಕೈಯಾರೆ ನಿಯೋಜನೆ ಇದನ್ನು ಗಮನಿಸುವುದಿಲ್ಲ. ಮಿತಿ ಬೇಡವಾದರೆ ಖಾಲಿ ಬಿಡಿ."
 
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/teams/TeamDialog.tsx
@@ -6464,6 +6481,10 @@ msgstr "ಆ್ಯಪ್‌ನಿಂದ ಕಳುಹಿಸಿದ ಪ್ರತಿ�
 msgid "Feedback, {feedback} open"
 msgstr "Feedback, {feedback} open"
 
+#: src/components/common/AssignmentFields.tsx
+msgid "Fewest open conversations"
+msgstr "ಕಡಿಮೆ ತೆರೆದ ಸಂಭಾಷಣೆಗಳು"
+
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactSheet.tsx
 msgid "Fields"
@@ -6968,6 +6989,10 @@ msgstr "ಚಾನೆಲ್‌ಗೆ ಹೊಸ ಫಾರ್ವರ್ಡಿಂಗ�
 msgid "Give the page a name."
 msgstr "ಪುಟಕ್ಕೆ ಹೆಸರು ನೀಡಿ."
 
+#: src/components/common/AssignmentFields.tsx
+msgid "Gives a conversation without an assignee to a teammate when it arrives or is reopened by the contact. Automation rules run first."
+msgstr "ಜವಾಬ್ದಾರರಿಲ್ಲದ ಸಂಭಾಷಣೆ ಬಂದಾಗ ಅಥವಾ ಸಂಪರ್ಕ ಮತ್ತೆ ತೆರೆದಾಗ ಸಹೋದ್ಯೋಗಿಗೆ ನೀಡುತ್ತದೆ. ಮೊದಲು ಆಟೋಮೇಶನ್ ನಿಯಮಗಳು ಚಲಿಸುತ್ತವೆ."
+
 #: src/features/migrations/SwitchStep.tsx
 msgid "Gmail forwards only new mail that is not spam. If a Workspace admin turned forwarding off, use the admin's routing."
 msgstr "Gmail ಸ್ಪ್ಯಾಮ್ ಅಲ್ಲದ ಹೊಸ ಮೇಲ್ ಅನ್ನು ಮಾತ್ರ ಫಾರ್ವರ್ಡ್ ಮಾಡುತ್ತದೆ. Workspace ನಿರ್ವಾಹಕರು ಫಾರ್ವರ್ಡಿಂಗ್ ಆಫ್ ಮಾಡಿದ್ದರೆ, ನಿರ್ವಾಹಕರ ರೂಟಿಂಗ್ ಬಳಸಿ."
@@ -7083,6 +7108,10 @@ msgstr "ಸದಸ್ಯರ ಗುಂಪುಗಳು ಮತ್ತು ಅವು �
 #: src/features/broadcasts/ListPage.tsx
 msgid "Growth"
 msgstr "ಬೆಳವಣಿಗೆ"
+
+#: src/features/settings/automation/text.ts
+msgid "Hand to automatic assignment"
+msgstr "ಸ್ವಯಂಚಾಲಿತ ನಿಯೋಜನೆಗೆ ಒಪ್ಪಿಸಿ"
 
 #: src/features/conversation/actions.ts
 msgid "Handed to {name}"
@@ -9372,6 +9401,10 @@ msgstr "ಅತ್ಯಂತ ಸಹಾಯಕ"
 msgid "Most liked"
 msgstr "ಅತಿ ಹೆಚ್ಚು ಇಷ್ಟವಾದದ್ದು"
 
+#: src/components/common/AssignmentFields.tsx
+msgid "Most open conversations per member"
+msgstr "ಪ್ರತಿ ಸದಸ್ಯರಿಗೆ ಗರಿಷ್ಠ ತೆರೆದ ಸಂಭಾಷಣೆಗಳು"
+
 #: src/features/docs/Toolbar.tsx
 msgid "Most ratings, open feedback, open discussions and waiting posts first"
 msgstr "ಅತಿ ಹೆಚ್ಚು ರೇಟಿಂಗ್‌ಗಳು, ತೆರೆದ ಪ್ರತಿಕ್ರಿಯೆ, ತೆರೆದ ಚರ್ಚೆಗಳು ಮತ್ತು ಕಾಯುತ್ತಿರುವ ಪೋಸ್ಟ್‌ಗಳು ಮೊದಲು"
@@ -10348,6 +10381,7 @@ msgstr "ಇನ್ನೂ ಲೇಬಲ್‌ಗಳಿಲ್ಲ. ಸೆಟ್ಟಿ
 msgid "no limit"
 msgstr "ಮಿತಿ ಇಲ್ಲ"
 
+#: src/components/common/AssignmentFields.tsx
 #: src/features/broadcasts/Pace.tsx
 msgid "No limit"
 msgstr "ಮಿತಿ ಇಲ್ಲ"
@@ -11083,6 +11117,7 @@ msgstr "ಅಕ್ಟೋಬರ್ ನ್ಯೂಸ್‌ಲೆಟರ್"
 msgid "off"
 msgstr "ಆಫ್"
 
+#: src/components/common/AssignmentFields.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/settings/channels/chat/ChatFields.tsx
 #: src/features/settings/SettingsColumn.tsx
@@ -11882,6 +11917,10 @@ msgstr "ಕೆಲಸದ ಸಮಯದ ಹೊರಗೆ"
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Outside them the product counts as closed."
 msgstr "ಅದರ ಹೊರಗೆ ಉತ್ಪನ್ನವು ಮುಚ್ಚಿದೆ ಎಂದು ಪರಿಗಣಿಸಲಾಗುತ್ತದೆ."
+
+#: src/features/conversation/HeaderActions.tsx
+msgid "over cap"
+msgstr "ಮಿತಿ ಮೀರಿದೆ"
 
 #: src/features/broadcasts/Report.tsx
 msgid "Over time"
@@ -14033,6 +14072,10 @@ msgstr "ಚಾನೆಲ್‌ನ ಕೀ ನವೀಕರಿಸಿದರು"
 #: src/features/settings/audit/sentence.ts
 msgid "Rotated the signing secret of a webhook"
 msgstr "ವೆಬ್‌ಹುಕ್‌ನ ಸಹಿ ಸೀಕ್ರೆಟ್ ನವೀಕರಿಸಿದರು"
+
+#: src/components/common/AssignmentFields.tsx
+msgid "Round robin"
+msgstr "ಸರದಿಯಂತೆ"
 
 #: src/features/setup/email/EmailReceiveStep.tsx
 msgid "Route your domain"
@@ -18068,6 +18111,10 @@ msgstr "ನಿಯೋಜನೆ ತೆಗೆದುಹಾಕಿ"
 msgid "Unassigned"
 msgstr "ನಿಯೋಜಿಸಿಲ್ಲ"
 
+#: src/features/conversation/messages/EventLine.tsx
+msgid "Unassigned automatically"
+msgstr "ನಿಯೋಜನೆಯನ್ನು ಸ್ವಯಂಚಾಲಿತವಾಗಿ ತೆಗೆದುಹಾಕಲಾಗಿದೆ"
+
 #: src/features/contact/ContactDetail.tsx
 msgid "Unblock contact"
 msgstr "ಸಂಪರ್ಕದ ನಿರ್ಬಂಧ ತೆಗೆಯಿರಿ"
@@ -18532,6 +18579,10 @@ msgstr "ಈ ಉತ್ತರ ಬಳಸಿ"
 msgid "Use your GMX password, or an app password if two-factor sign-in is on."
 msgstr "ನಿಮ್ಮ GMX ಪಾಸ್‌ವರ್ಡ್ ಬಳಸಿ, ಅಥವಾ ಎರಡು-ಅಂಶ ಸೈನ್-ಇನ್ ಆನ್ ಇದ್ದರೆ ಆ್ಯಪ್ ಪಾಸ್‌ವರ್ಡ್ ಬಳಸಿ."
 
+#: src/components/common/AssignmentFields.tsx
+msgid "Used for conversations given to this team without a member. Only team members are considered."
+msgstr "ಸದಸ್ಯರಿಲ್ಲದೆ ಈ ತಂಡಕ್ಕೆ ನೀಡಿದ ಸಂಭಾಷಣೆಗಳಿಗೆ ಬಳಸಲಾಗುತ್ತದೆ. ತಂಡದ ಸದಸ್ಯರನ್ನು ಮಾತ್ರ ಪರಿಗಣಿಸಲಾಗುತ್ತದೆ."
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Used in addresses and the widget"
 msgstr "ವಿಳಾಸಗಳು ಮತ್ತು ವಿಜೆಟ್‌ನಲ್ಲಿ ಬಳಸಲಾಗುತ್ತದೆ"
@@ -18728,6 +18779,15 @@ msgstr "ಕಾಯುತ್ತಿದೆ"
 #: src/features/migrations/CopyStep.tsx
 msgid "Waiting for {provider}'s limit; continues at {waiting}."
 msgstr "{provider} ನ ಮಿತಿಗಾಗಿ ಕಾಯುತ್ತಿದೆ; {waiting} ಕ್ಕೆ ಮುಂದುವರಿಯುತ್ತದೆ."
+
+#: src/features/inbox/ChatList.tsx
+msgid "Waiting for a teammate"
+msgstr "ಲಭ್ಯ ಸಹೋದ್ಯೋಗಿಗಾಗಿ ಕಾಯುತ್ತಿದೆ"
+
+#: src/features/conversation/ConversationStatus.tsx
+#: src/features/inbox/ChatList.tsx
+msgid "Waiting for an available teammate since {since}"
+msgstr "{since} ರಿಂದ ಲಭ್ಯ ಸಹೋದ್ಯೋಗಿಗಾಗಿ ಕಾಯುತ್ತಿದೆ"
 
 #: src/features/docs/DocsPage.tsx
 #: src/features/docs/PagesTab.tsx

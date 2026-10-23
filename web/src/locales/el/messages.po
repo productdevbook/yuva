@@ -1314,6 +1314,10 @@ msgstr "Μια λίστα αλληλογραφίας στέλνει στο όν�
 msgid "A mailing list with subscribe forms, for your broadcasts"
 msgstr "Μια λίστα αλληλογραφίας με φόρμες εγγραφής, για τις μαζικές αποστολές σας"
 
+#: src/components/common/AssignmentFields.tsx
+msgid "A member is eligible while they have access to the product (owners and admins only with a grant), have the panel or an app open, are set to Auto availability, the product is inside its business hours and they are under the limit. When nobody is eligible the conversation waits and goes to the first teammate who becomes available."
+msgstr "Ένα μέλος είναι κατάλληλο όταν έχει πρόσβαση στο προϊόν (ιδιοκτήτες και διαχειριστές μόνο με παραχωρημένη πρόσβαση), έχει ανοιχτό το πάνελ ή μια εφαρμογή, διαθεσιμότητα Αυτόματη, το προϊόν είναι εντός ωραρίου και το μέλος είναι κάτω από το όριο. Αν κανείς δεν είναι κατάλληλος, η συνομιλία περιμένει και πηγαίνει στον πρώτο συνάδελφο που θα ελευθερωθεί."
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "A merge field without a fallback would be empty for some recipients. Give it a fallback."
 msgstr "Ένα πεδίο συγχώνευσης χωρίς εφεδρική τιμή θα ήταν κενό για ορισμένους παραλήπτες. Δώστε του εφεδρική τιμή."
@@ -1951,6 +1955,10 @@ msgstr "Οι διαχειριστές βλέπουν κάθε εισερχόμε
 #: src/features/status/IncidentDetail.tsx
 msgid "Affects"
 msgstr "Επηρεάζει"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "After the other rules have run, the conversation goes to the team's pool, or the product's when it has no team."
+msgstr "Αφού εκτελεστούν οι υπόλοιποι κανόνες, η συνομιλία πηγαίνει στη δεξαμενή της ομάδας ή, αν δεν έχει ομάδα, του προϊόντος."
 
 #: src/components/common/text.ts
 #: src/features/settings/sso/SsoPage.tsx
@@ -2830,6 +2838,10 @@ msgstr "Ανάθεση σε ομάδα"
 msgid "Assign to me"
 msgstr "Ανάθεση σε εμένα"
 
+#: src/features/conversation/messages/EventLine.tsx
+msgid "Assigned automatically to {assignee}"
+msgstr "Ανατέθηκε αυτόματα στον/στην {assignee}"
+
 #. placeholder {0}: assignee.name || assignee.email
 #: src/features/inbox/ChatList.tsx
 msgid "Assigned to {0}"
@@ -2995,9 +3007,10 @@ msgstr "Αυτόματη απάντηση"
 msgid "automatic"
 msgstr "αυτόματο"
 
-#: src/features/settings/automation/text.ts
-msgid "Automatic assignment (not available yet)"
-msgstr "Αυτόματη ανάθεση (δεν είναι ακόμη διαθέσιμη)"
+#: src/components/common/AssignmentFields.tsx
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Automatic assignment"
+msgstr "Αυτόματη ανάθεση"
 
 #: src/features/conversation/messages/Thread.tsx
 msgid "Automatic mail never triggers an automatic reply."
@@ -3118,6 +3131,10 @@ msgstr "Πριν στείλετε"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Besides openid, email and profile. Okta needs groups for group checks."
 msgstr "Besides openid, email and profile. Okta needs groups for group checks."
+
+#: src/components/common/AssignmentFields.tsx
+msgid "Between 1 and 500, counted across the workspace. Assigning by hand ignores it. Leave empty for no limit."
+msgstr "Από 1 έως 500, μετρημένες σε ολόκληρο τον χώρο εργασίας. Η χειροκίνητη ανάθεση το αγνοεί. Αφήστε κενό για χωρίς όριο."
 
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/teams/TeamDialog.tsx
@@ -6464,6 +6481,10 @@ msgstr "Σχόλια που στάλθηκαν από την εφαρμογή"
 msgid "Feedback, {feedback} open"
 msgstr "Σχόλια, {feedback} ανοιχτά"
 
+#: src/components/common/AssignmentFields.tsx
+msgid "Fewest open conversations"
+msgstr "Λιγότερες ανοιχτές συνομιλίες"
+
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactSheet.tsx
 msgid "Fields"
@@ -6968,6 +6989,10 @@ msgstr "Να δοθεί στο κανάλι νέα διεύθυνση προώθ
 msgid "Give the page a name."
 msgstr "Δώστε ένα όνομα στη σελίδα."
 
+#: src/components/common/AssignmentFields.tsx
+msgid "Gives a conversation without an assignee to a teammate when it arrives or is reopened by the contact. Automation rules run first."
+msgstr "Δίνει μια συνομιλία χωρίς υπεύθυνο σε έναν συνάδελφο όταν φτάνει ή την ανοίγει ξανά η επαφή. Πρώτα τρέχουν οι κανόνες αυτοματισμού."
+
 #: src/features/migrations/SwitchStep.tsx
 msgid "Gmail forwards only new mail that is not spam. If a Workspace admin turned forwarding off, use the admin's routing."
 msgstr "Το Gmail προωθεί μόνο νέα αλληλογραφία που δεν είναι spam. Αν διαχειριστής του Workspace απενεργοποίησε την προώθηση, χρησιμοποιήστε τη δρομολόγηση διαχειριστή."
@@ -7083,6 +7108,10 @@ msgstr "Ομάδες μελών και τα εισερχόμενα που καλ
 #: src/features/broadcasts/ListPage.tsx
 msgid "Growth"
 msgstr "Ανάπτυξη"
+
+#: src/features/settings/automation/text.ts
+msgid "Hand to automatic assignment"
+msgstr "Παράδοση στην αυτόματη ανάθεση"
 
 #: src/features/conversation/actions.ts
 msgid "Handed to {name}"
@@ -9372,6 +9401,10 @@ msgstr "Πιο χρήσιμα"
 msgid "Most liked"
 msgstr "Περισσότερα «μου αρέσει»"
 
+#: src/components/common/AssignmentFields.tsx
+msgid "Most open conversations per member"
+msgstr "Μέγιστες ανοιχτές συνομιλίες ανά μέλος"
+
 #: src/features/docs/Toolbar.tsx
 msgid "Most ratings, open feedback, open discussions and waiting posts first"
 msgstr "Πρώτα οι περισσότερες βαθμολογίες, ανοιχτά σχόλια, ανοιχτές συζητήσεις και αναρτήσεις σε αναμονή"
@@ -10348,6 +10381,7 @@ msgstr "Καμία ετικέτα ακόμη. Προσθέστε στις ρυθ
 msgid "no limit"
 msgstr "χωρίς όριο"
 
+#: src/components/common/AssignmentFields.tsx
 #: src/features/broadcasts/Pace.tsx
 msgid "No limit"
 msgstr "Χωρίς όριο"
@@ -11083,6 +11117,7 @@ msgstr "Ενημερωτικό δελτίο Οκτωβρίου"
 msgid "off"
 msgstr "ανενεργό"
 
+#: src/components/common/AssignmentFields.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/settings/channels/chat/ChatFields.tsx
 #: src/features/settings/SettingsColumn.tsx
@@ -11882,6 +11917,10 @@ msgstr "Εκτός ωραρίου"
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Outside them the product counts as closed."
 msgstr "Εκτός αυτού, το προϊόν θεωρείται κλειστό."
+
+#: src/features/conversation/HeaderActions.tsx
+msgid "over cap"
+msgstr "πάνω από το όριο"
 
 #: src/features/broadcasts/Report.tsx
 msgid "Over time"
@@ -14033,6 +14072,10 @@ msgstr "Ανανέωσε το κλειδί ενός καναλιού"
 #: src/features/settings/audit/sentence.ts
 msgid "Rotated the signing secret of a webhook"
 msgstr "Ανανέωσε το μυστικό υπογραφής ενός webhook"
+
+#: src/components/common/AssignmentFields.tsx
+msgid "Round robin"
+msgstr "Εκ περιτροπής"
 
 #: src/features/setup/email/EmailReceiveStep.tsx
 msgid "Route your domain"
@@ -18068,6 +18111,10 @@ msgstr "Αφαίρεση ανάθεσης"
 msgid "Unassigned"
 msgstr "Χωρίς ανάθεση"
 
+#: src/features/conversation/messages/EventLine.tsx
+msgid "Unassigned automatically"
+msgstr "Η ανάθεση αφαιρέθηκε αυτόματα"
+
 #: src/features/contact/ContactDetail.tsx
 msgid "Unblock contact"
 msgstr "Άρση αποκλεισμού επαφής"
@@ -18532,6 +18579,10 @@ msgstr "Χρήση αυτής της απάντησης"
 msgid "Use your GMX password, or an app password if two-factor sign-in is on."
 msgstr "Χρησιμοποιήστε τον κωδικό GMX ή έναν κωδικό εφαρμογής αν είναι ενεργή η σύνδεση δύο παραγόντων."
 
+#: src/components/common/AssignmentFields.tsx
+msgid "Used for conversations given to this team without a member. Only team members are considered."
+msgstr "Χρησιμοποιείται για συνομιλίες που δόθηκαν σε αυτή την ομάδα χωρίς μέλος. Λαμβάνονται υπόψη μόνο τα μέλη της ομάδας."
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Used in addresses and the widget"
 msgstr "Χρησιμοποιείται σε διευθύνσεις και στο widget"
@@ -18728,6 +18779,15 @@ msgstr "Αναμονή"
 #: src/features/migrations/CopyStep.tsx
 msgid "Waiting for {provider}'s limit; continues at {waiting}."
 msgstr "Αναμονή για το όριο του {provider}· συνεχίζει στις {waiting}."
+
+#: src/features/inbox/ChatList.tsx
+msgid "Waiting for a teammate"
+msgstr "Αναμονή για διαθέσιμο συνάδελφο"
+
+#: src/features/conversation/ConversationStatus.tsx
+#: src/features/inbox/ChatList.tsx
+msgid "Waiting for an available teammate since {since}"
+msgstr "Αναμονή για διαθέσιμο συνάδελφο από {since}"
 
 #: src/features/docs/DocsPage.tsx
 #: src/features/docs/PagesTab.tsx

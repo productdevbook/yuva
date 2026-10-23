@@ -1314,6 +1314,10 @@ msgstr "A levelezési lista a postafiók nevében küld, az e-mail-csatornáján
 msgid "A mailing list with subscribe forms, for your broadcasts"
 msgstr "Levelezési lista feliratkozási űrlapokkal a tömeges leveleidhez"
 
+#: src/components/common/AssignmentFields.tsx
+msgid "A member is eligible while they have access to the product (owners and admins only with a grant), have the panel or an app open, are set to Auto availability, the product is inside its business hours and they are under the limit. When nobody is eligible the conversation waits and goes to the first teammate who becomes available."
+msgstr "Egy tag akkor alkalmas, ha hozzáfér a termékhez (tulajdonosok és adminok csak kapott hozzáféréssel), nyitva van a panel vagy egy app, az elérhetősége Auto, a termék a nyitvatartáson belül van, és a tag a korlát alatt van. Ha senki sem alkalmas, a beszélgetés vár, és az első felszabaduló kollégához kerül."
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "A merge field without a fallback would be empty for some recipients. Give it a fallback."
 msgstr "A tartalék érték nélküli egyesítési mező néhány címzettnél üres lenne. Adj neki tartalék értéket."
@@ -1951,6 +1955,10 @@ msgstr "Az adminisztrátorok minden postaládát látnak, és kezelik a terméke
 #: src/features/status/IncidentDetail.tsx
 msgid "Affects"
 msgstr "Érinti"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "After the other rules have run, the conversation goes to the team's pool, or the product's when it has no team."
+msgstr "A többi szabály lefutása után a beszélgetés a csapat készletébe kerül, csapat nélkül a termékébe."
 
 #: src/components/common/text.ts
 #: src/features/settings/sso/SsoPage.tsx
@@ -2830,6 +2838,10 @@ msgstr "Hozzárendelés csapathoz"
 msgid "Assign to me"
 msgstr "Hozzám rendelés"
 
+#: src/features/conversation/messages/EventLine.tsx
+msgid "Assigned automatically to {assignee}"
+msgstr "Automatikusan hozzárendelve: {assignee}"
+
 #. placeholder {0}: assignee.name || assignee.email
 #: src/features/inbox/ChatList.tsx
 msgid "Assigned to {0}"
@@ -2995,9 +3007,10 @@ msgstr "Automatikus válasz"
 msgid "automatic"
 msgstr "automatikus"
 
-#: src/features/settings/automation/text.ts
-msgid "Automatic assignment (not available yet)"
-msgstr "Automatikus hozzárendelés (még nem elérhető)"
+#: src/components/common/AssignmentFields.tsx
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Automatic assignment"
+msgstr "Automatikus hozzárendelés"
 
 #: src/features/conversation/messages/Thread.tsx
 msgid "Automatic mail never triggers an automatic reply."
@@ -3118,6 +3131,10 @@ msgstr "Küldés előtt"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Besides openid, email and profile. Okta needs groups for group checks."
 msgstr "Besides openid, email and profile. Okta needs groups for group checks."
+
+#: src/components/common/AssignmentFields.tsx
+msgid "Between 1 and 500, counted across the workspace. Assigning by hand ignores it. Leave empty for no limit."
+msgstr "1 és 500 között, a teljes munkaterületen számolva. A kézi hozzárendelés figyelmen kívül hagyja. Hagyja üresen, ha nincs korlát."
 
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/teams/TeamDialog.tsx
@@ -6464,6 +6481,10 @@ msgstr "Az alkalmazásból küldött visszajelzés"
 msgid "Feedback, {feedback} open"
 msgstr "Visszajelzések, {feedback} nyitott"
 
+#: src/components/common/AssignmentFields.tsx
+msgid "Fewest open conversations"
+msgstr "Legkevesebb nyitott beszélgetés"
+
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactSheet.tsx
 msgid "Fields"
@@ -6968,6 +6989,10 @@ msgstr "Új átirányítási címet adsz a csatornának?"
 msgid "Give the page a name."
 msgstr "Adjon nevet az oldalnak."
 
+#: src/components/common/AssignmentFields.tsx
+msgid "Gives a conversation without an assignee to a teammate when it arrives or is reopened by the contact. Automation rules run first."
+msgstr "Felelős nélküli beszélgetést ad egy kollégának, amikor megérkezik vagy a kapcsolat újra megnyitja. Az automatizálási szabályok futnak előbb."
+
 #: src/features/migrations/SwitchStep.tsx
 msgid "Gmail forwards only new mail that is not spam. If a Workspace admin turned forwarding off, use the admin's routing."
 msgstr "A Gmail csak az új, nem spam leveleket továbbítja. Ha egy Workspace-admin kikapcsolta az átirányítást, használd az admin útválasztását."
@@ -7083,6 +7108,10 @@ msgstr "Tagok csoportjai és az általuk lefedett postafiókok"
 #: src/features/broadcasts/ListPage.tsx
 msgid "Growth"
 msgstr "Növekedés"
+
+#: src/features/settings/automation/text.ts
+msgid "Hand to automatic assignment"
+msgstr "Átadás az automatikus hozzárendelésnek"
 
 #: src/features/conversation/actions.ts
 msgid "Handed to {name}"
@@ -9372,6 +9401,10 @@ msgstr "Leghasznosabb"
 msgid "Most liked"
 msgstr "Legkedveltebb"
 
+#: src/components/common/AssignmentFields.tsx
+msgid "Most open conversations per member"
+msgstr "Legfeljebb ennyi nyitott beszélgetés tagonként"
+
 #: src/features/docs/Toolbar.tsx
 msgid "Most ratings, open feedback, open discussions and waiting posts first"
 msgstr "Először a legtöbb értékelés, nyitott visszajelzés, nyitott vita és várakozó bejegyzés"
@@ -10348,6 +10381,7 @@ msgstr "Még nincsenek címkék. Add hozzá őket a beállításokban."
 msgid "no limit"
 msgstr "nincs korlát"
 
+#: src/components/common/AssignmentFields.tsx
 #: src/features/broadcasts/Pace.tsx
 msgid "No limit"
 msgstr "Nincs korlát"
@@ -11083,6 +11117,7 @@ msgstr "Októberi hírlevél"
 msgid "off"
 msgstr "ki"
 
+#: src/components/common/AssignmentFields.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/settings/channels/chat/ChatFields.tsx
 #: src/features/settings/SettingsColumn.tsx
@@ -11882,6 +11917,10 @@ msgstr "Nyitvatartási időn kívül"
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Outside them the product counts as closed."
 msgstr "Azon kívül a termék zártnak számít."
+
+#: src/features/conversation/HeaderActions.tsx
+msgid "over cap"
+msgstr "korlát felett"
 
 #: src/features/broadcasts/Report.tsx
 msgid "Over time"
@@ -14033,6 +14072,10 @@ msgstr "Megújította egy csatorna kulcsát"
 #: src/features/settings/audit/sentence.ts
 msgid "Rotated the signing secret of a webhook"
 msgstr "Megújította egy webhook aláírási titkát"
+
+#: src/components/common/AssignmentFields.tsx
+msgid "Round robin"
+msgstr "Sorban"
 
 #: src/features/setup/email/EmailReceiveStep.tsx
 msgid "Route your domain"
@@ -18068,6 +18111,10 @@ msgstr "Hozzárendelés törlése"
 msgid "Unassigned"
 msgstr "Nincs hozzárendelve"
 
+#: src/features/conversation/messages/EventLine.tsx
+msgid "Unassigned automatically"
+msgstr "A hozzárendelés automatikusan megszűnt"
+
 #: src/features/contact/ContactDetail.tsx
 msgid "Unblock contact"
 msgstr "Letiltás feloldása"
@@ -18532,6 +18579,10 @@ msgstr "Ennek a válasznak a használata"
 msgid "Use your GMX password, or an app password if two-factor sign-in is on."
 msgstr "Használd a GMX-jelszavadat, vagy alkalmazásjelszót, ha a kétlépcsős bejelentkezés be van kapcsolva."
 
+#: src/components/common/AssignmentFields.tsx
+msgid "Used for conversations given to this team without a member. Only team members are considered."
+msgstr "Azokhoz a beszélgetésekhez használt, amelyeket tag nélkül kapott ez a csapat. Csak a csapat tagjai számítanak."
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Used in addresses and the widget"
 msgstr "A címekben és a widgetben használatos"
@@ -18728,6 +18779,15 @@ msgstr "Várakozik"
 #: src/features/migrations/CopyStep.tsx
 msgid "Waiting for {provider}'s limit; continues at {waiting}."
 msgstr "Várakozás a(z) {provider} korlátjára; folytatódik: {waiting}."
+
+#: src/features/inbox/ChatList.tsx
+msgid "Waiting for a teammate"
+msgstr "Elérhető kollégára vár"
+
+#: src/features/conversation/ConversationStatus.tsx
+#: src/features/inbox/ChatList.tsx
+msgid "Waiting for an available teammate since {since}"
+msgstr "Elérhető kollégára vár ekkortól: {since}"
 
 #: src/features/docs/DocsPage.tsx
 #: src/features/docs/PagesTab.tsx

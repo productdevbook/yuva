@@ -2,6 +2,7 @@ import { Trans, useLingui } from "@lingui/react/macro"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
 
+import { AssignmentFields, capValid } from "@/components/common/AssignmentFields"
 import { ErrorLine } from "@/components/common"
 import { useEnumText } from "@/components/common/text"
 import { Button } from "@/components/ui/button"
@@ -11,7 +12,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Field } from "@/features/settings/ui"
-import { api, unwrap, type Team } from "@/lib/api"
+import { api, unwrap, type AssignmentMode, type Team } from "@/lib/api"
 import { keys } from "@/lib/keys"
 import { useSession } from "@/lib/session"
 import { useInboxes, useMembers, useTeams } from "@/lib/workspace"
@@ -33,13 +34,28 @@ function Details({
   const { workspaceId: ws } = useSession()
   const [name, setName] = useState(team?.name ?? "")
   const [description, setDescription] = useState(team?.description ?? "")
+  const [mode, setMode] = useState<AssignmentMode>(team?.assignment_mode ?? "off")
+  const [cap, setCap] = useState(team?.assignment_cap ? String(team.assignment_cap) : "")
+  const capNumber = cap === "" ? null : Number(cap)
   const save = useMutation({
     mutationFn: () =>
       team
         ? unwrap(
-            api.PATCH("/v1/teams/{teamId}", { params: { path: { teamId: team.id } }, body: { name, description } })
+            api.PATCH("/v1/teams/{teamId}", {
+              params: { path: { teamId: team.id } },
+              body: { name, description, assignment_mode: mode, assignment_cap: capNumber },
+            })
           )
-        : unwrap(api.POST("/v1/teams", { body: { name, description } })),
+        : unwrap(
+            api.POST("/v1/teams", {
+              body: {
+                name,
+                description,
+                assignment_mode: mode,
+                ...(capNumber === null ? {} : { assignment_cap: capNumber }),
+              },
+            })
+          ),
     onSuccess: (saved) => {
       if (!team) qc.setQueryData<Team[]>(keys.teams(ws), (old) => (old ? [...old, saved] : old))
       void qc.invalidateQueries({ queryKey: keys.teams(ws) })
@@ -47,7 +63,12 @@ function Details({
       else onSaved(saved.id)
     },
   })
-  const changed = !team || name !== team.name || description !== team.description
+  const changed =
+    !team ||
+    name !== team.name ||
+    description !== team.description ||
+    mode !== team.assignment_mode ||
+    capNumber !== (team.assignment_cap ?? null)
   return (
     <form
       className="flex flex-col gap-5"
@@ -75,9 +96,14 @@ function Details({
           onChange={(e) => setDescription(e.target.value)}
         />
       </Field>
+      <AssignmentFields scope="team" mode={mode} cap={cap} onMode={setMode} onCap={setCap} />
       <ErrorLine error={save.error} />
       <DialogFooter>
-        <Button type="submit" disabled={save.isPending || name.trim() === "" || !changed} data-testid="team-save">
+        <Button
+          type="submit"
+          disabled={save.isPending || name.trim() === "" || !changed || !capValid(cap)}
+          data-testid="team-save"
+        >
           {team ? <Trans>Save</Trans> : <Trans>Create team</Trans>}
         </Button>
       </DialogFooter>

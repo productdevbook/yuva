@@ -1314,6 +1314,10 @@ msgstr "Postituslista lähettää postilaatikon nimissä sen sähköpostikanavan
 msgid "A mailing list with subscribe forms, for your broadcasts"
 msgstr "Postituslista tilauslomakkeineen joukkolähetyksiäsi varten"
 
+#: src/components/common/AssignmentFields.tsx
+msgid "A member is eligible while they have access to the product (owners and admins only with a grant), have the panel or an app open, are set to Auto availability, the product is inside its business hours and they are under the limit. When nobody is eligible the conversation waits and goes to the first teammate who becomes available."
+msgstr "Jäsen on kelvollinen, jos hänellä on pääsy tuotteeseen (omistajilla ja ylläpitäjillä vain myönnetyllä pääsyllä), paneeli tai sovellus on auki, saatavuus on Auto, tuote on aukioloaikojen sisällä ja jäsen on rajan alla. Jos kukaan ei ole kelvollinen, keskustelu odottaa ja menee ensimmäiselle vapautuvalle."
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "A merge field without a fallback would be empty for some recipients. Give it a fallback."
 msgstr "Yhdistämiskenttä ilman varaarvoa jäisi tyhjäksi joillekin vastaanottajille. Anna sille varaarvo."
@@ -1951,6 +1955,10 @@ msgstr "Ylläpitäjät näkevät kaikki postilaatikot ja hallitsevat tuotteita, 
 #: src/features/status/IncidentDetail.tsx
 msgid "Affects"
 msgstr "Koskee"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "After the other rules have run, the conversation goes to the team's pool, or the product's when it has no team."
+msgstr "Kun muut säännöt on ajettu, keskustelu menee tiimin joukkoon tai, jos tiimiä ei ole, tuotteen joukkoon."
 
 #: src/components/common/text.ts
 #: src/features/settings/sso/SsoPage.tsx
@@ -2830,6 +2838,10 @@ msgstr "Osoita tiimille"
 msgid "Assign to me"
 msgstr "Osoita minulle"
 
+#: src/features/conversation/messages/EventLine.tsx
+msgid "Assigned automatically to {assignee}"
+msgstr "Määritetty automaattisesti: {assignee}"
+
 #. placeholder {0}: assignee.name || assignee.email
 #: src/features/inbox/ChatList.tsx
 msgid "Assigned to {0}"
@@ -2995,9 +3007,10 @@ msgstr "Automaattivastaus"
 msgid "automatic"
 msgstr "automaattinen"
 
-#: src/features/settings/automation/text.ts
-msgid "Automatic assignment (not available yet)"
-msgstr "Automaattinen määritys (ei vielä käytettävissä)"
+#: src/components/common/AssignmentFields.tsx
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Automatic assignment"
+msgstr "Automaattinen määritys"
 
 #: src/features/conversation/messages/Thread.tsx
 msgid "Automatic mail never triggers an automatic reply."
@@ -3118,6 +3131,10 @@ msgstr "Ennen lähettämistä"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Besides openid, email and profile. Okta needs groups for group checks."
 msgstr "Besides openid, email and profile. Okta needs groups for group checks."
+
+#: src/components/common/AssignmentFields.tsx
+msgid "Between 1 and 500, counted across the workspace. Assigning by hand ignores it. Leave empty for no limit."
+msgstr "1–500, lasketaan koko työtilassa. Käsin määritys ohittaa tämän. Jätä tyhjäksi, jos rajaa ei ole."
 
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/teams/TeamDialog.tsx
@@ -6464,6 +6481,10 @@ msgstr "Sovelluksesta lähetetty palaute"
 msgid "Feedback, {feedback} open"
 msgstr "Palaute, {feedback} avointa"
 
+#: src/components/common/AssignmentFields.tsx
+msgid "Fewest open conversations"
+msgstr "Vähiten avoimia keskusteluja"
+
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactSheet.tsx
 msgid "Fields"
@@ -6968,6 +6989,10 @@ msgstr "Annetaanko kanavalle uusi ohjausosoite?"
 msgid "Give the page a name."
 msgstr "Anna sivulle nimi."
 
+#: src/components/common/AssignmentFields.tsx
+msgid "Gives a conversation without an assignee to a teammate when it arrives or is reopened by the contact. Automation rules run first."
+msgstr "Antaa keskustelun, jolla ei ole vastuuhenkilöä, kollegalle, kun se saapuu tai yhteyshenkilö avaa sen uudelleen. Automaatiosäännöt ajetaan ensin."
+
 #: src/features/migrations/SwitchStep.tsx
 msgid "Gmail forwards only new mail that is not spam. If a Workspace admin turned forwarding off, use the admin's routing."
 msgstr "Gmail ohjaa vain uuden postin, joka ei ole roskapostia. Jos Workspace-ylläpitäjä poisti ohjauksen käytöstä, käytä ylläpitäjän reititystä."
@@ -7083,6 +7108,10 @@ msgstr "Jäsenryhmät ja niiden kattamat postilaatikot"
 #: src/features/broadcasts/ListPage.tsx
 msgid "Growth"
 msgstr "Kasvu"
+
+#: src/features/settings/automation/text.ts
+msgid "Hand to automatic assignment"
+msgstr "Anna automaattiselle määritykselle"
 
 #: src/features/conversation/actions.ts
 msgid "Handed to {name}"
@@ -9372,6 +9401,10 @@ msgstr "Hyödyllisimmät"
 msgid "Most liked"
 msgstr "Eniten pidetyt"
 
+#: src/components/common/AssignmentFields.tsx
+msgid "Most open conversations per member"
+msgstr "Avoimia keskusteluja enintään jäsentä kohti"
+
 #: src/features/docs/Toolbar.tsx
 msgid "Most ratings, open feedback, open discussions and waiting posts first"
 msgstr "Eniten arvioita, avointa palautetta, avoimia keskusteluja ja odottavia viestejä ensin"
@@ -10348,6 +10381,7 @@ msgstr "Ei vielä tunnisteita. Lisää niitä asetuksissa."
 msgid "no limit"
 msgstr "ei rajaa"
 
+#: src/components/common/AssignmentFields.tsx
 #: src/features/broadcasts/Pace.tsx
 msgid "No limit"
 msgstr "Ei rajaa"
@@ -11083,6 +11117,7 @@ msgstr "Lokakuun uutiskirje"
 msgid "off"
 msgstr "pois"
 
+#: src/components/common/AssignmentFields.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/settings/channels/chat/ChatFields.tsx
 #: src/features/settings/SettingsColumn.tsx
@@ -11882,6 +11917,10 @@ msgstr "Aukioloaikojen ulkopuolella"
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Outside them the product counts as closed."
 msgstr "Niiden ulkopuolella tuote on suljettu."
+
+#: src/features/conversation/HeaderActions.tsx
+msgid "over cap"
+msgstr "raja ylitetty"
 
 #: src/features/broadcasts/Report.tsx
 msgid "Over time"
@@ -14033,6 +14072,10 @@ msgstr "Uusi kanavan avaimen"
 #: src/features/settings/audit/sentence.ts
 msgid "Rotated the signing secret of a webhook"
 msgstr "Uusi webhookin allekirjoitussalaisuuden"
+
+#: src/components/common/AssignmentFields.tsx
+msgid "Round robin"
+msgstr "Vuorotellen"
 
 #: src/features/setup/email/EmailReceiveStep.tsx
 msgid "Route your domain"
@@ -18068,6 +18111,10 @@ msgstr "Poista osoitus"
 msgid "Unassigned"
 msgstr "Osoittamaton"
 
+#: src/features/conversation/messages/EventLine.tsx
+msgid "Unassigned automatically"
+msgstr "Määritys poistettu automaattisesti"
+
 #: src/features/contact/ContactDetail.tsx
 msgid "Unblock contact"
 msgstr "Poista yhteystiedon esto"
@@ -18532,6 +18579,10 @@ msgstr "Käytä tätä vastausta"
 msgid "Use your GMX password, or an app password if two-factor sign-in is on."
 msgstr "Käytä GMX-salasanaasi tai sovellussalasanaa, jos kaksivaiheinen kirjautuminen on päällä."
 
+#: src/components/common/AssignmentFields.tsx
+msgid "Used for conversations given to this team without a member. Only team members are considered."
+msgstr "Käytetään keskusteluihin, jotka annettiin tälle tiimille ilman jäsentä. Vain tiimin jäsenet huomioidaan."
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Used in addresses and the widget"
 msgstr "Käytetään osoitteissa ja widgetissä"
@@ -18728,6 +18779,15 @@ msgstr "Odottaa"
 #: src/features/migrations/CopyStep.tsx
 msgid "Waiting for {provider}'s limit; continues at {waiting}."
 msgstr "Odotetaan palvelun {provider} rajaa; jatkuu {waiting}."
+
+#: src/features/inbox/ChatList.tsx
+msgid "Waiting for a teammate"
+msgstr "Odottaa vapaata kollegaa"
+
+#: src/features/conversation/ConversationStatus.tsx
+#: src/features/inbox/ChatList.tsx
+msgid "Waiting for an available teammate since {since}"
+msgstr "Odottaa vapaata kollegaa {since} alkaen"
 
 #: src/features/docs/DocsPage.tsx
 #: src/features/docs/PagesTab.tsx

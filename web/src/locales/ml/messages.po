@@ -1314,6 +1314,10 @@ msgstr "മെയിലിംഗ് ലിസ്റ്റ് ഒരു ഇൻബ
 msgid "A mailing list with subscribe forms, for your broadcasts"
 msgstr "സബ്സ്ക്രൈബ് ഫോമുകളുള്ള ഒരു മെയിലിംഗ് ലിസ്റ്റ്, നിങ്ങളുടെ ബ്രോഡ്കാസ്റ്റുകൾക്കായി"
 
+#: src/components/common/AssignmentFields.tsx
+msgid "A member is eligible while they have access to the product (owners and admins only with a grant), have the panel or an app open, are set to Auto availability, the product is inside its business hours and they are under the limit. When nobody is eligible the conversation waits and goes to the first teammate who becomes available."
+msgstr "ഒരു അംഗത്തിന് ഉൽപ്പന്നത്തിലേക്ക് ആക്സസ് ഉണ്ടെങ്കിൽ (ഉടമകളും അഡ്മിനുകളും അനുമതിയോടെ മാത്രം), പാനലോ ആപ്പോ തുറന്നിരിക്കുകയും ലഭ്യത ഓട്ടോ ആയിരിക്കുകയും ഉൽപ്പന്നം പ്രവൃത്തി സമയത്തിനുള്ളിലായിരിക്കുകയും അംഗം പരിധിക്ക് താഴെയായിരിക്കുകയും ചെയ്താൽ അർഹനാണ്. ആരും അർഹരല്ലെങ്കിൽ സംഭാഷണം കാത്തിരിക്കുകയും ആദ്യം ലഭ്യമാകുന്ന സഹപ്രവർത്തകനു ലഭിക്കുകയും ചെയ്യും."
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "A merge field without a fallback would be empty for some recipients. Give it a fallback."
 msgstr "ഫാൾബാക്ക് ഇല്ലാത്ത ഒരു മെർജ് ഫീൽഡ് ചില സ്വീകർത്താക്കൾക്ക് ശൂന്യമായിരിക്കും. അതിന് ഒരു ഫാൾബാക്ക് നൽകുക."
@@ -1951,6 +1955,10 @@ msgstr "അഡ്മിനുകൾ എല്ലാ ഇൻബോക്സും 
 #: src/features/status/IncidentDetail.tsx
 msgid "Affects"
 msgstr "ബാധിക്കുന്നത്"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "After the other rules have run, the conversation goes to the team's pool, or the product's when it has no team."
+msgstr "മറ്റ് നിയമങ്ങൾ പ്രവർത്തിച്ച ശേഷം സംഭാഷണം ടീമിന്റെ പൂളിലേക്ക് പോകും; ടീം ഇല്ലെങ്കിൽ ഉൽപ്പന്നത്തിന്റെ പൂളിലേക്ക്."
 
 #: src/components/common/text.ts
 #: src/features/settings/sso/SsoPage.tsx
@@ -2830,6 +2838,10 @@ msgstr "ടീമിന് നൽകുക"
 msgid "Assign to me"
 msgstr "എനിക്ക് നിയോഗിക്കുക"
 
+#: src/features/conversation/messages/EventLine.tsx
+msgid "Assigned automatically to {assignee}"
+msgstr "{assignee} എന്നയാൾക്ക് സ്വയമേവ നൽകി"
+
 #. placeholder {0}: assignee.name || assignee.email
 #: src/features/inbox/ChatList.tsx
 msgid "Assigned to {0}"
@@ -2995,9 +3007,10 @@ msgstr "ഓട്ടോ-മറുപടി"
 msgid "automatic"
 msgstr "ഓട്ടോമാറ്റിക്"
 
-#: src/features/settings/automation/text.ts
-msgid "Automatic assignment (not available yet)"
-msgstr "സ്വയം നിയോഗിക്കൽ (ഇതുവരെ ലഭ്യമല്ല)"
+#: src/components/common/AssignmentFields.tsx
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Automatic assignment"
+msgstr "സ്വയമേവയുള്ള അസൈൻമെന്റ്"
 
 #: src/features/conversation/messages/Thread.tsx
 msgid "Automatic mail never triggers an automatic reply."
@@ -3118,6 +3131,10 @@ msgstr "അയയ്ക്കുന്നതിന് മുമ്പ്"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Besides openid, email and profile. Okta needs groups for group checks."
 msgstr "Besides openid, email and profile. Okta needs groups for group checks."
+
+#: src/components/common/AssignmentFields.tsx
+msgid "Between 1 and 500, counted across the workspace. Assigning by hand ignores it. Leave empty for no limit."
+msgstr "1 മുതൽ 500 വരെ, മുഴുവൻ വർക്ക്‌സ്‌പേസിലും കണക്കാക്കുന്നു. കൈകൊണ്ടുള്ള അസൈൻമെന്റ് ഇത് അവഗണിക്കും. പരിധി വേണ്ടെങ്കിൽ ഒഴിച്ചിടുക."
 
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/teams/TeamDialog.tsx
@@ -6464,6 +6481,10 @@ msgstr "ആപ്പിൽ നിന്ന് അയച്ച ഫീഡ്ബാ
 msgid "Feedback, {feedback} open"
 msgstr "Feedback, {feedback} open"
 
+#: src/components/common/AssignmentFields.tsx
+msgid "Fewest open conversations"
+msgstr "ഏറ്റവും കുറച്ച് തുറന്ന സംഭാഷണങ്ങൾ"
+
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactSheet.tsx
 msgid "Fields"
@@ -6968,6 +6989,10 @@ msgstr "ചാനലിന് ഒരു പുതിയ ഫോർവേഡിം
 msgid "Give the page a name."
 msgstr "പേജിന് ഒരു പേര് നൽകുക."
 
+#: src/components/common/AssignmentFields.tsx
+msgid "Gives a conversation without an assignee to a teammate when it arrives or is reopened by the contact. Automation rules run first."
+msgstr "ചുമതലക്കാരനില്ലാത്ത സംഭാഷണം വരുമ്പോഴോ കോൺടാക്റ്റ് വീണ്ടും തുറക്കുമ്പോഴോ ഒരു സഹപ്രവർത്തകന് നൽകുന്നു. ആദ്യം ഓട്ടോമേഷൻ നിയമങ്ങൾ പ്രവർത്തിക്കും."
+
 #: src/features/migrations/SwitchStep.tsx
 msgid "Gmail forwards only new mail that is not spam. If a Workspace admin turned forwarding off, use the admin's routing."
 msgstr "Gmail സ്പാം അല്ലാത്ത പുതിയ മെയിൽ മാത്രമേ ഫോർവേഡ് ചെയ്യൂ. Workspace അഡ്മിൻ ഫോർവേഡിംഗ് ഓഫാക്കിയിട്ടുണ്ടെങ്കിൽ, അഡ്മിന്റെ റൂട്ടിംഗ് ഉപയോഗിക്കുക."
@@ -7083,6 +7108,10 @@ msgstr "അംഗങ്ങളുടെ ഗ്രൂപ്പുകളും അ�
 #: src/features/broadcasts/ListPage.tsx
 msgid "Growth"
 msgstr "വളർച്ച"
+
+#: src/features/settings/automation/text.ts
+msgid "Hand to automatic assignment"
+msgstr "സ്വയമേവയുള്ള അസൈൻമെന്റിന് കൈമാറുക"
 
 #: src/features/conversation/actions.ts
 msgid "Handed to {name}"
@@ -9372,6 +9401,10 @@ msgstr "ഏറ്റവും സഹായകം"
 msgid "Most liked"
 msgstr "ഏറ്റവും കൂടുതൽ ഇഷ്ടപ്പെട്ടത്"
 
+#: src/components/common/AssignmentFields.tsx
+msgid "Most open conversations per member"
+msgstr "ഒരു അംഗത്തിന് പരമാവധി തുറന്ന സംഭാഷണങ്ങൾ"
+
 #: src/features/docs/Toolbar.tsx
 msgid "Most ratings, open feedback, open discussions and waiting posts first"
 msgstr "ഏറ്റവും കൂടുതൽ റേറ്റിംഗുകൾ, തുറന്ന ഫീഡ്ബാക്ക്, തുറന്ന ചർച്ചകൾ, കാത്തിരിക്കുന്ന പോസ്റ്റുകൾ എന്നിവ ആദ്യം"
@@ -10348,6 +10381,7 @@ msgstr "ഇതുവരെ ലേബലുകളില്ല. ക്രമീക
 msgid "no limit"
 msgstr "പരിധിയില്ല"
 
+#: src/components/common/AssignmentFields.tsx
 #: src/features/broadcasts/Pace.tsx
 msgid "No limit"
 msgstr "പരിധിയില്ല"
@@ -11083,6 +11117,7 @@ msgstr "ഒക്ടോബർ ന്യൂസ്‌ലെറ്റർ"
 msgid "off"
 msgstr "ഓഫ്"
 
+#: src/components/common/AssignmentFields.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/settings/channels/chat/ChatFields.tsx
 #: src/features/settings/SettingsColumn.tsx
@@ -11882,6 +11917,10 @@ msgstr "പ്രവൃത്തി സമയത്തിന് പുറത്�
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Outside them the product counts as closed."
 msgstr "അതിന് പുറത്ത് ഉൽപ്പന്നം അടച്ചതായി കണക്കാക്കും."
+
+#: src/features/conversation/HeaderActions.tsx
+msgid "over cap"
+msgstr "പരിധി കടന്നു"
 
 #: src/features/broadcasts/Report.tsx
 msgid "Over time"
@@ -14033,6 +14072,10 @@ msgstr "ഒരു ചാനലിന്റെ കീ പുതുക്കി"
 #: src/features/settings/audit/sentence.ts
 msgid "Rotated the signing secret of a webhook"
 msgstr "ഒരു വെബ്‌ഹുക്കിന്റെ സിഗ്നേച്ചർ സീക്രട്ട് പുതുക്കി"
+
+#: src/components/common/AssignmentFields.tsx
+msgid "Round robin"
+msgstr "ഊഴമനുസരിച്ച്"
 
 #: src/features/setup/email/EmailReceiveStep.tsx
 msgid "Route your domain"
@@ -18068,6 +18111,10 @@ msgstr "നൽകിയത് നീക്കുക"
 msgid "Unassigned"
 msgstr "നിയോഗിക്കാത്തത്"
 
+#: src/features/conversation/messages/EventLine.tsx
+msgid "Unassigned automatically"
+msgstr "അസൈൻമെന്റ് സ്വയമേവ നീക്കി"
+
 #: src/features/contact/ContactDetail.tsx
 msgid "Unblock contact"
 msgstr "കോൺടാക്റ്റിന്റെ തടയൽ നീക്കുക"
@@ -18532,6 +18579,10 @@ msgstr "ഈ മറുപടി ഉപയോഗിക്കുക"
 msgid "Use your GMX password, or an app password if two-factor sign-in is on."
 msgstr "നിങ്ങളുടെ GMX പാസ്‌വേഡ് ഉപയോഗിക്കുക, അല്ലെങ്കിൽ രണ്ട്-ഘടക സൈൻ-ഇൻ ഓണാണെങ്കിൽ ആപ്പ് പാസ്‌വേഡ് ഉപയോഗിക്കുക."
 
+#: src/components/common/AssignmentFields.tsx
+msgid "Used for conversations given to this team without a member. Only team members are considered."
+msgstr "അംഗമില്ലാതെ ഈ ടീമിന് നൽകിയ സംഭാഷണങ്ങൾക്ക് ഉപയോഗിക്കുന്നു. ടീം അംഗങ്ങളെ മാത്രം പരിഗണിക്കുന്നു."
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Used in addresses and the widget"
 msgstr "വിലാസങ്ങളിലും വിജറ്റിലും ഉപയോഗിക്കുന്നു"
@@ -18728,6 +18779,15 @@ msgstr "കാത്തിരിക്കുന്നു"
 #: src/features/migrations/CopyStep.tsx
 msgid "Waiting for {provider}'s limit; continues at {waiting}."
 msgstr "{provider}-ന്റെ പരിധിക്കായി കാത്തിരിക്കുന്നു; {waiting}-ന് തുടരും."
+
+#: src/features/inbox/ChatList.tsx
+msgid "Waiting for a teammate"
+msgstr "ലഭ്യമായ സഹപ്രവർത്തകനായി കാത്തിരിക്കുന്നു"
+
+#: src/features/conversation/ConversationStatus.tsx
+#: src/features/inbox/ChatList.tsx
+msgid "Waiting for an available teammate since {since}"
+msgstr "{since} മുതൽ ലഭ്യമായ സഹപ്രവർത്തകനായി കാത്തിരിക്കുന്നു"
 
 #: src/features/docs/DocsPage.tsx
 #: src/features/docs/PagesTab.tsx

@@ -1314,6 +1314,10 @@ msgstr "メーリングリストは、受信トレイの名前でメールチャ
 msgid "A mailing list with subscribe forms, for your broadcasts"
 msgstr "一斉配信用の登録フォーム付きメーリングリスト"
 
+#: src/components/common/AssignmentFields.tsx
+msgid "A member is eligible while they have access to the product (owners and admins only with a grant), have the panel or an app open, are set to Auto availability, the product is inside its business hours and they are under the limit. When nobody is eligible the conversation waits and goes to the first teammate who becomes available."
+msgstr "メンバーが対象になるのは、プロダクトへのアクセス権があり（オーナーと管理者は付与された場合のみ）、パネルまたはアプリを開いていて、可用性が自動で、プロダクトが営業時間内にあり、上限未満のときです。誰も対象でなければ会話は待機し、最初に空いたチームメイトに割り当てられます。"
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "A merge field without a fallback would be empty for some recipients. Give it a fallback."
 msgstr "差し込み項目に代替値がないと、一部の宛先では空になります。代替値を設定してください。"
@@ -1951,6 +1955,10 @@ msgstr "管理者はすべての受信トレイを見ることができ、プロ
 #: src/features/status/IncidentDetail.tsx
 msgid "Affects"
 msgstr "影響範囲"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "After the other rules have run, the conversation goes to the team's pool, or the product's when it has no team."
+msgstr "他のルールが実行された後、会話はチームのプールに入ります。チームがなければプロダクトのプールに入ります。"
 
 #: src/components/common/text.ts
 #: src/features/settings/sso/SsoPage.tsx
@@ -2830,6 +2838,10 @@ msgstr "チームに割り当てる"
 msgid "Assign to me"
 msgstr "自分に割り当て"
 
+#: src/features/conversation/messages/EventLine.tsx
+msgid "Assigned automatically to {assignee}"
+msgstr "{assignee}に自動で割り当てました"
+
 #. placeholder {0}: assignee.name || assignee.email
 #: src/features/inbox/ChatList.tsx
 msgid "Assigned to {0}"
@@ -2995,9 +3007,10 @@ msgstr "自動返信"
 msgid "automatic"
 msgstr "自動"
 
-#: src/features/settings/automation/text.ts
-msgid "Automatic assignment (not available yet)"
-msgstr "自動割り当て(まだ利用できません)"
+#: src/components/common/AssignmentFields.tsx
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Automatic assignment"
+msgstr "自動割り当て"
 
 #: src/features/conversation/messages/Thread.tsx
 msgid "Automatic mail never triggers an automatic reply."
@@ -3118,6 +3131,10 @@ msgstr "送信前に"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Besides openid, email and profile. Okta needs groups for group checks."
 msgstr "Besides openid, email and profile. Okta needs groups for group checks."
+
+#: src/components/common/AssignmentFields.tsx
+msgid "Between 1 and 500, counted across the workspace. Assigning by hand ignores it. Leave empty for no limit."
+msgstr "1〜500。ワークスペース全体で数えます。手動の割り当ては対象外です。上限なしにするには空のままにします。"
 
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/teams/TeamDialog.tsx
@@ -6464,6 +6481,10 @@ msgstr "アプリから送られたフィードバック"
 msgid "Feedback, {feedback} open"
 msgstr "フィードバック、未解決 {feedback} 件"
 
+#: src/components/common/AssignmentFields.tsx
+msgid "Fewest open conversations"
+msgstr "未完了の会話が最も少ない人"
+
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactSheet.tsx
 msgid "Fields"
@@ -6968,6 +6989,10 @@ msgstr "チャネルに新しい転送先アドレスを発行しますか?"
 msgid "Give the page a name."
 msgstr "ページに名前を付けてください。"
 
+#: src/components/common/AssignmentFields.tsx
+msgid "Gives a conversation without an assignee to a teammate when it arrives or is reopened by the contact. Automation rules run first."
+msgstr "担当者のいない会話が届いたとき、または連絡先が再び開いたときに、チームメイトに割り当てます。先にオートメーションルールが実行されます。"
+
 #: src/features/migrations/SwitchStep.tsx
 msgid "Gmail forwards only new mail that is not spam. If a Workspace admin turned forwarding off, use the admin's routing."
 msgstr "Gmail が転送するのは、スパムではない新着メールのみです。Workspace 管理者が転送をオフにしている場合は、管理者のルーティングを使ってください。"
@@ -7083,6 +7108,10 @@ msgstr "メンバーのグループと、その対象の受信トレイ"
 #: src/features/broadcasts/ListPage.tsx
 msgid "Growth"
 msgstr "成長"
+
+#: src/features/settings/automation/text.ts
+msgid "Hand to automatic assignment"
+msgstr "自動割り当てに任せる"
 
 #: src/features/conversation/actions.ts
 msgid "Handed to {name}"
@@ -9372,6 +9401,10 @@ msgstr "最も役に立った"
 msgid "Most liked"
 msgstr "高評価が多い順"
 
+#: src/components/common/AssignmentFields.tsx
+msgid "Most open conversations per member"
+msgstr "メンバーあたりの未完了の会話の上限"
+
 #: src/features/docs/Toolbar.tsx
 msgid "Most ratings, open feedback, open discussions and waiting posts first"
 msgstr "評価が多い順、次に未対応のフィードバック、未完了のディスカッション、承認待ちの投稿の順"
@@ -10348,6 +10381,7 @@ msgstr "ラベルはまだありません。設定で追加してください。
 msgid "no limit"
 msgstr "上限なし"
 
+#: src/components/common/AssignmentFields.tsx
 #: src/features/broadcasts/Pace.tsx
 msgid "No limit"
 msgstr "制限なし"
@@ -11083,6 +11117,7 @@ msgstr "10 月のニュースレター"
 msgid "off"
 msgstr "オフ"
 
+#: src/components/common/AssignmentFields.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/settings/channels/chat/ChatFields.tsx
 #: src/features/settings/SettingsColumn.tsx
@@ -11882,6 +11917,10 @@ msgstr "営業時間外"
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Outside them the product counts as closed."
 msgstr "それ以外の時間は、製品は閉まっているものとして扱われます。"
+
+#: src/features/conversation/HeaderActions.tsx
+msgid "over cap"
+msgstr "上限超過"
 
 #: src/features/broadcasts/Report.tsx
 msgid "Over time"
@@ -14033,6 +14072,10 @@ msgstr "チャンネルのキーを再生成しました"
 #: src/features/settings/audit/sentence.ts
 msgid "Rotated the signing secret of a webhook"
 msgstr "Webhook の署名シークレットを再生成しました"
+
+#: src/components/common/AssignmentFields.tsx
+msgid "Round robin"
+msgstr "順番に"
 
 #: src/features/setup/email/EmailReceiveStep.tsx
 msgid "Route your domain"
@@ -18068,6 +18111,10 @@ msgstr "割り当てを解除"
 msgid "Unassigned"
 msgstr "未割り当て"
 
+#: src/features/conversation/messages/EventLine.tsx
+msgid "Unassigned automatically"
+msgstr "自動で割り当てを解除しました"
+
 #: src/features/contact/ContactDetail.tsx
 msgid "Unblock contact"
 msgstr "コンタクトのブロックを解除"
@@ -18532,6 +18579,10 @@ msgstr "この返信を使う"
 msgid "Use your GMX password, or an app password if two-factor sign-in is on."
 msgstr "GMX のパスワードを使います。2 段階認証がオンの場合はアプリパスワードを使います。"
 
+#: src/components/common/AssignmentFields.tsx
+msgid "Used for conversations given to this team without a member. Only team members are considered."
+msgstr "メンバーなしでこのチームに割り当てられた会話に使われます。チームのメンバーだけが対象です。"
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Used in addresses and the widget"
 msgstr "アドレスとウィジェットで使われます"
@@ -18728,6 +18779,15 @@ msgstr "待機中"
 #: src/features/migrations/CopyStep.tsx
 msgid "Waiting for {provider}'s limit; continues at {waiting}."
 msgstr "{provider} の上限を待機中。{waiting} に再開します。"
+
+#: src/features/inbox/ChatList.tsx
+msgid "Waiting for a teammate"
+msgstr "対応できるチームメイトを待っています"
+
+#: src/features/conversation/ConversationStatus.tsx
+#: src/features/inbox/ChatList.tsx
+msgid "Waiting for an available teammate since {since}"
+msgstr "{since}から対応できるチームメイトを待っています"
 
 #: src/features/docs/DocsPage.tsx
 #: src/features/docs/PagesTab.tsx

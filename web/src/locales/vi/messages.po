@@ -1314,6 +1314,10 @@ msgstr "Danh sách gửi thư gửi với tên của một hộp thư, qua kênh
 msgid "A mailing list with subscribe forms, for your broadcasts"
 msgstr "Danh sách gửi thư có biểu mẫu đăng ký, cho thư hàng loạt của bạn"
 
+#: src/components/common/AssignmentFields.tsx
+msgid "A member is eligible while they have access to the product (owners and admins only with a grant), have the panel or an app open, are set to Auto availability, the product is inside its business hours and they are under the limit. When nobody is eligible the conversation waits and goes to the first teammate who becomes available."
+msgstr "Một thành viên đủ điều kiện khi có quyền truy cập sản phẩm (chủ sở hữu và quản trị viên chỉ khi được cấp quyền), đang mở bảng điều khiển hoặc ứng dụng, trạng thái sẵn sàng là Tự động, sản phẩm trong giờ làm việc và thành viên dưới giới hạn. Nếu không ai đủ điều kiện, cuộc trò chuyện chờ và chuyển cho đồng nghiệp đầu tiên rảnh."
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "A merge field without a fallback would be empty for some recipients. Give it a fallback."
 msgstr "Trường hợp nhất không có giá trị dự phòng sẽ để trống với một số người nhận. Hãy đặt giá trị dự phòng cho nó."
@@ -1951,6 +1955,10 @@ msgstr "Quản trị viên thấy mọi hộp thư đến và quản lý sản p
 #: src/features/status/IncidentDetail.tsx
 msgid "Affects"
 msgstr "Ảnh hưởng"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "After the other rules have run, the conversation goes to the team's pool, or the product's when it has no team."
+msgstr "Sau khi các quy tắc khác chạy xong, cuộc trò chuyện vào nhóm của đội, hoặc nhóm của sản phẩm nếu không có đội."
 
 #: src/components/common/text.ts
 #: src/features/settings/sso/SsoPage.tsx
@@ -2830,6 +2838,10 @@ msgstr "Giao cho nhóm"
 msgid "Assign to me"
 msgstr "Giao cho tôi"
 
+#: src/features/conversation/messages/EventLine.tsx
+msgid "Assigned automatically to {assignee}"
+msgstr "Đã tự động giao cho {assignee}"
+
 #. placeholder {0}: assignee.name || assignee.email
 #: src/features/inbox/ChatList.tsx
 msgid "Assigned to {0}"
@@ -2995,9 +3007,10 @@ msgstr "Phản hồi tự động"
 msgid "automatic"
 msgstr "tự động"
 
-#: src/features/settings/automation/text.ts
-msgid "Automatic assignment (not available yet)"
-msgstr "Giao tự động (chưa có)"
+#: src/components/common/AssignmentFields.tsx
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Automatic assignment"
+msgstr "Giao việc tự động"
 
 #: src/features/conversation/messages/Thread.tsx
 msgid "Automatic mail never triggers an automatic reply."
@@ -3118,6 +3131,10 @@ msgstr "Trước khi gửi"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Besides openid, email and profile. Okta needs groups for group checks."
 msgstr "Besides openid, email and profile. Okta needs groups for group checks."
+
+#: src/components/common/AssignmentFields.tsx
+msgid "Between 1 and 500, counted across the workspace. Assigning by hand ignores it. Leave empty for no limit."
+msgstr "Từ 1 đến 500, tính trên toàn không gian làm việc. Giao thủ công bỏ qua giới hạn này. Để trống nếu không giới hạn."
 
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/teams/TeamDialog.tsx
@@ -6464,6 +6481,10 @@ msgstr "Phản hồi gửi từ ứng dụng"
 msgid "Feedback, {feedback} open"
 msgstr "Góp ý, {feedback} đang mở"
 
+#: src/components/common/AssignmentFields.tsx
+msgid "Fewest open conversations"
+msgstr "Ít cuộc trò chuyện đang mở nhất"
+
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactSheet.tsx
 msgid "Fields"
@@ -6968,6 +6989,10 @@ msgstr "Cấp cho kênh một địa chỉ chuyển tiếp mới?"
 msgid "Give the page a name."
 msgstr "Hãy đặt tên cho trang."
 
+#: src/components/common/AssignmentFields.tsx
+msgid "Gives a conversation without an assignee to a teammate when it arrives or is reopened by the contact. Automation rules run first."
+msgstr "Giao cuộc trò chuyện chưa có người phụ trách cho một đồng nghiệp khi nó đến hoặc khi liên hệ mở lại. Quy tắc tự động hóa chạy trước."
+
 #: src/features/migrations/SwitchStep.tsx
 msgid "Gmail forwards only new mail that is not spam. If a Workspace admin turned forwarding off, use the admin's routing."
 msgstr "Gmail chỉ chuyển tiếp thư mới không phải thư rác. Nếu quản trị viên Workspace đã tắt chuyển tiếp, hãy dùng định tuyến của quản trị viên."
@@ -7083,6 +7108,10 @@ msgstr "Các nhóm thành viên và hộp thư họ phụ trách"
 #: src/features/broadcasts/ListPage.tsx
 msgid "Growth"
 msgstr "Tăng trưởng"
+
+#: src/features/settings/automation/text.ts
+msgid "Hand to automatic assignment"
+msgstr "Chuyển cho giao việc tự động"
 
 #: src/features/conversation/actions.ts
 msgid "Handed to {name}"
@@ -9372,6 +9401,10 @@ msgstr "Hữu ích nhất"
 msgid "Most liked"
 msgstr "Được thích nhiều nhất"
 
+#: src/components/common/AssignmentFields.tsx
+msgid "Most open conversations per member"
+msgstr "Số cuộc trò chuyện đang mở tối đa cho mỗi thành viên"
+
 #: src/features/docs/Toolbar.tsx
 msgid "Most ratings, open feedback, open discussions and waiting posts first"
 msgstr "Nhiều đánh giá nhất, phản hồi đang mở, thảo luận đang mở và bài đang chờ trước"
@@ -10348,6 +10381,7 @@ msgstr "Chưa có nhãn. Hãy thêm trong cài đặt."
 msgid "no limit"
 msgstr "không giới hạn"
 
+#: src/components/common/AssignmentFields.tsx
 #: src/features/broadcasts/Pace.tsx
 msgid "No limit"
 msgstr "Không giới hạn"
@@ -11083,6 +11117,7 @@ msgstr "Bản tin tháng Mười"
 msgid "off"
 msgstr "tắt"
 
+#: src/components/common/AssignmentFields.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/settings/channels/chat/ChatFields.tsx
 #: src/features/settings/SettingsColumn.tsx
@@ -11882,6 +11917,10 @@ msgstr "Ngoài giờ làm việc"
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Outside them the product counts as closed."
 msgstr "Ngoài giờ đó, sản phẩm được coi là đóng cửa."
+
+#: src/features/conversation/HeaderActions.tsx
+msgid "over cap"
+msgstr "vượt giới hạn"
 
 #: src/features/broadcasts/Report.tsx
 msgid "Over time"
@@ -14033,6 +14072,10 @@ msgstr "Đã làm mới khóa của một kênh"
 #: src/features/settings/audit/sentence.ts
 msgid "Rotated the signing secret of a webhook"
 msgstr "Đã làm mới bí mật chữ ký của một webhook"
+
+#: src/components/common/AssignmentFields.tsx
+msgid "Round robin"
+msgstr "Luân phiên"
 
 #: src/features/setup/email/EmailReceiveStep.tsx
 msgid "Route your domain"
@@ -18068,6 +18111,10 @@ msgstr "Hủy giao"
 msgid "Unassigned"
 msgstr "Chưa giao"
 
+#: src/features/conversation/messages/EventLine.tsx
+msgid "Unassigned automatically"
+msgstr "Đã tự động bỏ giao việc"
+
 #: src/features/contact/ContactDetail.tsx
 msgid "Unblock contact"
 msgstr "Bỏ chặn liên hệ"
@@ -18532,6 +18579,10 @@ msgstr "Dùng phản hồi này"
 msgid "Use your GMX password, or an app password if two-factor sign-in is on."
 msgstr "Dùng mật khẩu GMX của bạn, hoặc mật khẩu ứng dụng nếu bật đăng nhập hai yếu tố."
 
+#: src/components/common/AssignmentFields.tsx
+msgid "Used for conversations given to this team without a member. Only team members are considered."
+msgstr "Dùng cho các cuộc trò chuyện giao cho đội này mà không có thành viên. Chỉ các thành viên trong đội được xét."
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Used in addresses and the widget"
 msgstr "Dùng trong địa chỉ và widget"
@@ -18728,6 +18779,15 @@ msgstr "Đang chờ"
 #: src/features/migrations/CopyStep.tsx
 msgid "Waiting for {provider}'s limit; continues at {waiting}."
 msgstr "Đang chờ giới hạn của {provider}; tiếp tục lúc {waiting}."
+
+#: src/features/inbox/ChatList.tsx
+msgid "Waiting for a teammate"
+msgstr "Đang chờ đồng nghiệp rảnh"
+
+#: src/features/conversation/ConversationStatus.tsx
+#: src/features/inbox/ChatList.tsx
+msgid "Waiting for an available teammate since {since}"
+msgstr "Đang chờ đồng nghiệp rảnh từ {since}"
 
 #: src/features/docs/DocsPage.tsx
 #: src/features/docs/PagesTab.tsx

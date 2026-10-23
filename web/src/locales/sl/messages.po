@@ -1314,6 +1314,10 @@ msgstr "Poštni seznam pošilja v imenu nabiralnika prek njegovega e-poštnega k
 msgid "A mailing list with subscribe forms, for your broadcasts"
 msgstr "Poštni seznam z naročniškimi obrazci za vaša množična sporočila"
 
+#: src/components/common/AssignmentFields.tsx
+msgid "A member is eligible while they have access to the product (owners and admins only with a grant), have the panel or an app open, are set to Auto availability, the product is inside its business hours and they are under the limit. When nobody is eligible the conversation waits and goes to the first teammate who becomes available."
+msgstr "Član je primeren, če ima dostop do izdelka (lastniki in skrbniki le z dodeljenim dostopom), ima odprt panel ali aplikacijo, razpoložljivost Auto, je izdelek znotraj delovnega časa in je član pod omejitvijo. Če ni primeren nihče, pogovor čaka in ga dobi prvi, ki bo prost."
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "A merge field without a fallback would be empty for some recipients. Give it a fallback."
 msgstr "Polje za združevanje brez nadomestne vrednosti bi bilo za nekatere prejemnike prazno. Dodajte mu nadomestno vrednost."
@@ -1951,6 +1955,10 @@ msgstr "Skrbniki vidijo vse predale in upravljajo izdelke, kanale in člane."
 #: src/features/status/IncidentDetail.tsx
 msgid "Affects"
 msgstr "Zadeva"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "After the other rules have run, the conversation goes to the team's pool, or the product's when it has no team."
+msgstr "Ko se izvedejo druga pravila, gre pogovor v skupino ekipe ali, če ekipe nima, v skupino izdelka."
 
 #: src/components/common/text.ts
 #: src/features/settings/sso/SsoPage.tsx
@@ -2830,6 +2838,10 @@ msgstr "Dodeli ekipi"
 msgid "Assign to me"
 msgstr "Dodeli meni"
 
+#: src/features/conversation/messages/EventLine.tsx
+msgid "Assigned automatically to {assignee}"
+msgstr "Samodejno dodeljeno: {assignee}"
+
 #. placeholder {0}: assignee.name || assignee.email
 #: src/features/inbox/ChatList.tsx
 msgid "Assigned to {0}"
@@ -2995,9 +3007,10 @@ msgstr "Samodejni odgovor"
 msgid "automatic"
 msgstr "samodejno"
 
-#: src/features/settings/automation/text.ts
-msgid "Automatic assignment (not available yet)"
-msgstr "Samodejna dodelitev (še ni na voljo)"
+#: src/components/common/AssignmentFields.tsx
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Automatic assignment"
+msgstr "Samodejna dodelitev"
 
 #: src/features/conversation/messages/Thread.tsx
 msgid "Automatic mail never triggers an automatic reply."
@@ -3118,6 +3131,10 @@ msgstr "Pred pošiljanjem"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Besides openid, email and profile. Okta needs groups for group checks."
 msgstr "Besides openid, email and profile. Okta needs groups for group checks."
+
+#: src/components/common/AssignmentFields.tsx
+msgid "Between 1 and 500, counted across the workspace. Assigning by hand ignores it. Leave empty for no limit."
+msgstr "Od 1 do 500, štetih v celotnem delovnem prostoru. Ročna dodelitev to prezre. Pustite prazno za brez omejitve."
 
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/teams/TeamDialog.tsx
@@ -6464,6 +6481,10 @@ msgstr "Povratna informacija, poslana iz aplikacije"
 msgid "Feedback, {feedback} open"
 msgstr "Povratne informacije, odprtih: {feedback}"
 
+#: src/components/common/AssignmentFields.tsx
+msgid "Fewest open conversations"
+msgstr "Najmanj odprtih pogovorov"
+
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactSheet.tsx
 msgid "Fields"
@@ -6968,6 +6989,10 @@ msgstr "Kanalu dodeliti nov naslov za preusmeritev?"
 msgid "Give the page a name."
 msgstr "Strani dajte ime."
 
+#: src/components/common/AssignmentFields.tsx
+msgid "Gives a conversation without an assignee to a teammate when it arrives or is reopened by the contact. Automation rules run first."
+msgstr "Preda pogovor brez odgovorne osebe kolegu, ko prispe ali ga stik znova odpre. Najprej tečejo pravila avtomatizacije."
+
 #: src/features/migrations/SwitchStep.tsx
 msgid "Gmail forwards only new mail that is not spam. If a Workspace admin turned forwarding off, use the admin's routing."
 msgstr "Gmail preusmeri samo novo pošto, ki ni vsiljena. Če je skrbnik Workspace preusmeritev izklopil, uporabite usmerjanje skrbnika."
@@ -7083,6 +7108,10 @@ msgstr "Skupine članov in nabiralniki, ki jih pokrivajo"
 #: src/features/broadcasts/ListPage.tsx
 msgid "Growth"
 msgstr "Rast"
+
+#: src/features/settings/automation/text.ts
+msgid "Hand to automatic assignment"
+msgstr "Predaj samodejni dodelitvi"
 
 #: src/features/conversation/actions.ts
 msgid "Handed to {name}"
@@ -9372,6 +9401,10 @@ msgstr "Najbolj koristni"
 msgid "Most liked"
 msgstr "Najbolj priljubljeni"
 
+#: src/components/common/AssignmentFields.tsx
+msgid "Most open conversations per member"
+msgstr "Največ odprtih pogovorov na člana"
+
 #: src/features/docs/Toolbar.tsx
 msgid "Most ratings, open feedback, open discussions and waiting posts first"
 msgstr "Najprej največ ocen, odprte povratne informacije, odprte razprave in objave na čakanju"
@@ -10348,6 +10381,7 @@ msgstr "Še ni oznak. Dodajte jih v nastavitvah."
 msgid "no limit"
 msgstr "brez omejitve"
 
+#: src/components/common/AssignmentFields.tsx
 #: src/features/broadcasts/Pace.tsx
 msgid "No limit"
 msgstr "Brez omejitve"
@@ -11083,6 +11117,7 @@ msgstr "Oktobrske novice"
 msgid "off"
 msgstr "izklopljeno"
 
+#: src/components/common/AssignmentFields.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/settings/channels/chat/ChatFields.tsx
 #: src/features/settings/SettingsColumn.tsx
@@ -11882,6 +11917,10 @@ msgstr "Izven delovnega časa"
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Outside them the product counts as closed."
 msgstr "Zunaj tega časa izdelek velja za zaprtega."
+
+#: src/features/conversation/HeaderActions.tsx
+msgid "over cap"
+msgstr "omejitev presežena"
 
 #: src/features/broadcasts/Report.tsx
 msgid "Over time"
@@ -14033,6 +14072,10 @@ msgstr "Obnovil(a) ključ kanala"
 #: src/features/settings/audit/sentence.ts
 msgid "Rotated the signing secret of a webhook"
 msgstr "Obnovil(a) skrivnost podpisovanja webhooka"
+
+#: src/components/common/AssignmentFields.tsx
+msgid "Round robin"
+msgstr "Izmenično"
 
 #: src/features/setup/email/EmailReceiveStep.tsx
 msgid "Route your domain"
@@ -18068,6 +18111,10 @@ msgstr "Odstrani dodelitev"
 msgid "Unassigned"
 msgstr "Nedodeljeno"
 
+#: src/features/conversation/messages/EventLine.tsx
+msgid "Unassigned automatically"
+msgstr "Dodelitev samodejno odstranjena"
+
 #: src/features/contact/ContactDetail.tsx
 msgid "Unblock contact"
 msgstr "Odblokiraj stik"
@@ -18532,6 +18579,10 @@ msgstr "Uporabi ta odgovor"
 msgid "Use your GMX password, or an app password if two-factor sign-in is on."
 msgstr "Uporabite svoje geslo GMX ali geslo aplikacije, če je dvostopenjska prijava vklopljena."
 
+#: src/components/common/AssignmentFields.tsx
+msgid "Used for conversations given to this team without a member. Only team members are considered."
+msgstr "Uporabljeno za pogovore, dodeljene tej ekipi brez člana. Upoštevani so le člani ekipe."
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Used in addresses and the widget"
 msgstr "Uporabljeno v naslovih in pripomočku"
@@ -18728,6 +18779,15 @@ msgstr "Čaka"
 #: src/features/migrations/CopyStep.tsx
 msgid "Waiting for {provider}'s limit; continues at {waiting}."
 msgstr "Čakanje na omejitev {provider}; nadaljuje se {waiting}."
+
+#: src/features/inbox/ChatList.tsx
+msgid "Waiting for a teammate"
+msgstr "Čaka na razpoložljivega kolega"
+
+#: src/features/conversation/ConversationStatus.tsx
+#: src/features/inbox/ChatList.tsx
+msgid "Waiting for an available teammate since {since}"
+msgstr "Čaka na razpoložljivega kolega od {since}"
 
 #: src/features/docs/DocsPage.tsx
 #: src/features/docs/PagesTab.tsx

@@ -1314,6 +1314,10 @@ msgstr "मेलिंग लिस्ट इनबॉक्स के ना�
 msgid "A mailing list with subscribe forms, for your broadcasts"
 msgstr "आपके ब्रॉडकास्ट के लिए सब्सक्राइब फ़ॉर्म वाली मेलिंग लिस्ट"
 
+#: src/components/common/AssignmentFields.tsx
+msgid "A member is eligible while they have access to the product (owners and admins only with a grant), have the panel or an app open, are set to Auto availability, the product is inside its business hours and they are under the limit. When nobody is eligible the conversation waits and goes to the first teammate who becomes available."
+msgstr "कोई सदस्य तब पात्र है जब उसके पास उत्पाद की पहुँच हो (स्वामी और एडमिन केवल अनुमति मिलने पर), पैनल या ऐप खुला हो, उपलब्धता ऑटो हो, उत्पाद कार्य-समय में हो और सदस्य सीमा से नीचे हो। कोई पात्र न हो तो बातचीत प्रतीक्षा करती है और पहले उपलब्ध साथी को मिलती है।"
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "A merge field without a fallback would be empty for some recipients. Give it a fallback."
 msgstr "बिना फ़ॉलबैक वाला मर्ज फ़ील्ड कुछ प्राप्तकर्ताओं के लिए खाली रहेगा। उसे एक फ़ॉलबैक दें।"
@@ -1951,6 +1955,10 @@ msgstr "एडमिन हर इनबॉक्स देखते हैं �
 #: src/features/status/IncidentDetail.tsx
 msgid "Affects"
 msgstr "असर"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "After the other rules have run, the conversation goes to the team's pool, or the product's when it has no team."
+msgstr "अन्य नियम चलने के बाद बातचीत टीम के पूल में जाती है, या टीम न होने पर उत्पाद के पूल में।"
 
 #: src/components/common/text.ts
 #: src/features/settings/sso/SsoPage.tsx
@@ -2830,6 +2838,10 @@ msgstr "टीम को सौंपें"
 msgid "Assign to me"
 msgstr "मुझे असाइन करें"
 
+#: src/features/conversation/messages/EventLine.tsx
+msgid "Assigned automatically to {assignee}"
+msgstr "{assignee} को अपने-आप सौंपा गया"
+
 #. placeholder {0}: assignee.name || assignee.email
 #: src/features/inbox/ChatList.tsx
 msgid "Assigned to {0}"
@@ -2995,9 +3007,10 @@ msgstr "ऑटो-रिप्लाई"
 msgid "automatic"
 msgstr "अपने आप"
 
-#: src/features/settings/automation/text.ts
-msgid "Automatic assignment (not available yet)"
-msgstr "स्वचालित असाइनमेंट (अभी उपलब्ध नहीं)"
+#: src/components/common/AssignmentFields.tsx
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Automatic assignment"
+msgstr "स्वचालित असाइनमेंट"
 
 #: src/features/conversation/messages/Thread.tsx
 msgid "Automatic mail never triggers an automatic reply."
@@ -3118,6 +3131,10 @@ msgstr "भेजने से पहले"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Besides openid, email and profile. Okta needs groups for group checks."
 msgstr "Besides openid, email and profile. Okta needs groups for group checks."
+
+#: src/components/common/AssignmentFields.tsx
+msgid "Between 1 and 500, counted across the workspace. Assigning by hand ignores it. Leave empty for no limit."
+msgstr "1 से 500 के बीच, पूरे कार्यक्षेत्र में गिनी जाती हैं। हाथ से असाइन करने पर यह लागू नहीं होती। सीमा न चाहिए तो खाली छोड़ें।"
 
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/teams/TeamDialog.tsx
@@ -6464,6 +6481,10 @@ msgstr "ऐप से भेजा गया फ़ीडबैक"
 msgid "Feedback, {feedback} open"
 msgstr "Feedback, {feedback} open"
 
+#: src/components/common/AssignmentFields.tsx
+msgid "Fewest open conversations"
+msgstr "सबसे कम खुली बातचीतें"
+
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactSheet.tsx
 msgid "Fields"
@@ -6968,6 +6989,10 @@ msgstr "चैनल को नया फ़ॉरवर्डिंग पत�
 msgid "Give the page a name."
 msgstr "पेज को एक नाम दें।"
 
+#: src/components/common/AssignmentFields.tsx
+msgid "Gives a conversation without an assignee to a teammate when it arrives or is reopened by the contact. Automation rules run first."
+msgstr "बिना ज़िम्मेदार वाली बातचीत आने या संपर्क द्वारा दोबारा खोले जाने पर किसी साथी को देता है। पहले ऑटोमेशन नियम चलते हैं।"
+
 #: src/features/migrations/SwitchStep.tsx
 msgid "Gmail forwards only new mail that is not spam. If a Workspace admin turned forwarding off, use the admin's routing."
 msgstr "Gmail केवल नया मेल फ़ॉरवर्ड करता है जो स्पैम नहीं है। यदि किसी Workspace एडमिन ने फ़ॉरवर्डिंग बंद की है, तो एडमिन की रूटिंग इस्तेमाल करें।"
@@ -7083,6 +7108,10 @@ msgstr "सदस्यों के समूह और वे इनबॉक�
 #: src/features/broadcasts/ListPage.tsx
 msgid "Growth"
 msgstr "ग्रोथ"
+
+#: src/features/settings/automation/text.ts
+msgid "Hand to automatic assignment"
+msgstr "स्वचालित असाइनमेंट को सौंपें"
 
 #: src/features/conversation/actions.ts
 msgid "Handed to {name}"
@@ -9372,6 +9401,10 @@ msgstr "सबसे उपयोगी"
 msgid "Most liked"
 msgstr "सबसे ज़्यादा पसंद"
 
+#: src/components/common/AssignmentFields.tsx
+msgid "Most open conversations per member"
+msgstr "प्रति सदस्य अधिकतम खुली बातचीतें"
+
 #: src/features/docs/Toolbar.tsx
 msgid "Most ratings, open feedback, open discussions and waiting posts first"
 msgstr "सबसे ज़्यादा रेटिंग, खुले फ़ीडबैक, खुली चर्चाएँ और प्रतीक्षा में पोस्ट पहले"
@@ -10348,6 +10381,7 @@ msgstr "अभी कोई लेबल नहीं। उन्हें स�
 msgid "no limit"
 msgstr "कोई सीमा नहीं"
 
+#: src/components/common/AssignmentFields.tsx
 #: src/features/broadcasts/Pace.tsx
 msgid "No limit"
 msgstr "कोई सीमा नहीं"
@@ -11083,6 +11117,7 @@ msgstr "अक्टूबर का न्यूज़लेटर"
 msgid "off"
 msgstr "बंद"
 
+#: src/components/common/AssignmentFields.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/settings/channels/chat/ChatFields.tsx
 #: src/features/settings/SettingsColumn.tsx
@@ -11882,6 +11917,10 @@ msgstr "कार्य समय के बाहर"
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Outside them the product counts as closed."
 msgstr "इनके बाहर प्रोडक्ट बंद माना जाता है।"
+
+#: src/features/conversation/HeaderActions.tsx
+msgid "over cap"
+msgstr "सीमा पार"
 
 #: src/features/broadcasts/Report.tsx
 msgid "Over time"
@@ -14033,6 +14072,10 @@ msgstr "एक चैनल की कुंजी नई बनाई"
 #: src/features/settings/audit/sentence.ts
 msgid "Rotated the signing secret of a webhook"
 msgstr "एक वेबहुक का हस्ताक्षर सीक्रेट नया बनाया"
+
+#: src/components/common/AssignmentFields.tsx
+msgid "Round robin"
+msgstr "बारी-बारी से"
 
 #: src/features/setup/email/EmailReceiveStep.tsx
 msgid "Route your domain"
@@ -18068,6 +18111,10 @@ msgstr "सौंपना हटाएँ"
 msgid "Unassigned"
 msgstr "बिना असाइन"
 
+#: src/features/conversation/messages/EventLine.tsx
+msgid "Unassigned automatically"
+msgstr "असाइनमेंट अपने-आप हटाया गया"
+
 #: src/features/contact/ContactDetail.tsx
 msgid "Unblock contact"
 msgstr "संपर्क अनब्लॉक करें"
@@ -18532,6 +18579,10 @@ msgstr "यह जवाब इस्तेमाल करें"
 msgid "Use your GMX password, or an app password if two-factor sign-in is on."
 msgstr "अपना GMX पासवर्ड इस्तेमाल करें, या यदि दो-चरणीय साइन-इन चालू है तो ऐप पासवर्ड।"
 
+#: src/components/common/AssignmentFields.tsx
+msgid "Used for conversations given to this team without a member. Only team members are considered."
+msgstr "बिना सदस्य के इस टीम को दी गई बातचीतों के लिए उपयोग होता है। केवल टीम के सदस्य गिने जाते हैं।"
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Used in addresses and the widget"
 msgstr "पतों और विजेट में इस्तेमाल होता है"
@@ -18728,6 +18779,15 @@ msgstr "प्रतीक्षा में"
 #: src/features/migrations/CopyStep.tsx
 msgid "Waiting for {provider}'s limit; continues at {waiting}."
 msgstr "{provider} की सीमा की प्रतीक्षा; {waiting} पर जारी रहता है।"
+
+#: src/features/inbox/ChatList.tsx
+msgid "Waiting for a teammate"
+msgstr "उपलब्ध साथी की प्रतीक्षा"
+
+#: src/features/conversation/ConversationStatus.tsx
+#: src/features/inbox/ChatList.tsx
+msgid "Waiting for an available teammate since {since}"
+msgstr "{since} से उपलब्ध साथी की प्रतीक्षा"
 
 #: src/features/docs/DocsPage.tsx
 #: src/features/docs/PagesTab.tsx

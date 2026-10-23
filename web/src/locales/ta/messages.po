@@ -1314,6 +1314,10 @@ msgstr "அஞ்சல் பட்டியல் இன்பாக்ஸி�
 msgid "A mailing list with subscribe forms, for your broadcasts"
 msgstr "உங்கள் ஒளிபரப்புகளுக்கான சந்தா படிவங்களுடன் கூடிய அஞ்சல் பட்டியல்"
 
+#: src/components/common/AssignmentFields.tsx
+msgid "A member is eligible while they have access to the product (owners and admins only with a grant), have the panel or an app open, are set to Auto availability, the product is inside its business hours and they are under the limit. When nobody is eligible the conversation waits and goes to the first teammate who becomes available."
+msgstr "உறுப்பினருக்கு தயாரிப்புக்கான அணுகல் இருந்தால் (உரிமையாளர்கள், நிர்வாகிகள் அனுமதியுடன் மட்டும்), பேனல் அல்லது செயலி திறந்திருந்தால், கிடைக்கும் நிலை தானியங்கி என்றால், தயாரிப்பு வேலை நேரத்திற்குள் இருந்தால், உறுப்பினர் வரம்புக்குக் கீழ் இருந்தால் தகுதியானவர். யாரும் தகுதியில்லையெனில் உரையாடல் காத்திருந்து முதலில் கிடைக்கும் சக ஊழியருக்குச் செல்லும்."
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "A merge field without a fallback would be empty for some recipients. Give it a fallback."
 msgstr "மாற்று மதிப்பு இல்லாத இணைப்புப் புலம் சில பெறுநர்களுக்குக் காலியாக இருக்கும். அதற்கு மாற்று மதிப்பைக் கொடுங்கள்."
@@ -1951,6 +1955,10 @@ msgstr "நிர்வாகிகள் ஒவ்வொரு இன்பா�
 #: src/features/status/IncidentDetail.tsx
 msgid "Affects"
 msgstr "பாதிப்பு"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "After the other rules have run, the conversation goes to the team's pool, or the product's when it has no team."
+msgstr "மற்ற விதிகள் இயங்கிய பிறகு உரையாடல் குழுவின் தொகுப்புக்கு செல்லும்; குழு இல்லையெனில் தயாரிப்பின் தொகுப்புக்கு."
 
 #: src/components/common/text.ts
 #: src/features/settings/sso/SsoPage.tsx
@@ -2830,6 +2838,10 @@ msgstr "குழுவுக்கு ஒதுக்கு"
 msgid "Assign to me"
 msgstr "எனக்கு ஒதுக்கு"
 
+#: src/features/conversation/messages/EventLine.tsx
+msgid "Assigned automatically to {assignee}"
+msgstr "{assignee} அவர்களுக்கு தானாக ஒதுக்கப்பட்டது"
+
 #. placeholder {0}: assignee.name || assignee.email
 #: src/features/inbox/ChatList.tsx
 msgid "Assigned to {0}"
@@ -2995,9 +3007,10 @@ msgstr "தானியங்கி பதில்"
 msgid "automatic"
 msgstr "தானியங்கி"
 
-#: src/features/settings/automation/text.ts
-msgid "Automatic assignment (not available yet)"
-msgstr "தானியங்கி ஒதுக்கீடு (இன்னும் கிடைக்கவில்லை)"
+#: src/components/common/AssignmentFields.tsx
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Automatic assignment"
+msgstr "தானியங்கி ஒதுக்கீடு"
 
 #: src/features/conversation/messages/Thread.tsx
 msgid "Automatic mail never triggers an automatic reply."
@@ -3118,6 +3131,10 @@ msgstr "அனுப்பும் முன்"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Besides openid, email and profile. Okta needs groups for group checks."
 msgstr "Besides openid, email and profile. Okta needs groups for group checks."
+
+#: src/components/common/AssignmentFields.tsx
+msgid "Between 1 and 500, counted across the workspace. Assigning by hand ignores it. Leave empty for no limit."
+msgstr "1 முதல் 500 வரை, முழு பணியிடத்திலும் கணக்கிடப்படும். கையால் ஒதுக்குவது இதை புறக்கணிக்கும். வரம்பு வேண்டாமெனில் காலியாக விடுங்கள்."
 
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/teams/TeamDialog.tsx
@@ -6464,6 +6481,10 @@ msgstr "ஆப்பிலிருந்து அனுப்பப்பட�
 msgid "Feedback, {feedback} open"
 msgstr "Feedback, {feedback} open"
 
+#: src/components/common/AssignmentFields.tsx
+msgid "Fewest open conversations"
+msgstr "குறைந்த திறந்த உரையாடல்கள்"
+
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactSheet.tsx
 msgid "Fields"
@@ -6968,6 +6989,10 @@ msgstr "சேனலுக்குப் புதிய முன்னனு�
 msgid "Give the page a name."
 msgstr "பக்கத்திற்கு ஒரு பெயரைக் கொடுங்கள்."
 
+#: src/components/common/AssignmentFields.tsx
+msgid "Gives a conversation without an assignee to a teammate when it arrives or is reopened by the contact. Automation rules run first."
+msgstr "பொறுப்பாளர் இல்லாத உரையாடல் வரும்போது அல்லது தொடர்பு மீண்டும் திறக்கும்போது சக ஊழியருக்கு வழங்கும். முதலில் தானியக்க விதிகள் இயங்கும்."
+
 #: src/features/migrations/SwitchStep.tsx
 msgid "Gmail forwards only new mail that is not spam. If a Workspace admin turned forwarding off, use the admin's routing."
 msgstr "Gmail ஸ்பேம் அல்லாத புதிய அஞ்சலை மட்டுமே முன்னனுப்பும். Workspace நிர்வாகி முன்னனுப்புதலை அணைத்திருந்தால், நிர்வாகி வழித்தடத்தைப் பயன்படுத்துங்கள்."
@@ -7083,6 +7108,10 @@ msgstr "உறுப்பினர் குழுக்களும் அவ�
 #: src/features/broadcasts/ListPage.tsx
 msgid "Growth"
 msgstr "வளர்ச்சி"
+
+#: src/features/settings/automation/text.ts
+msgid "Hand to automatic assignment"
+msgstr "தானியங்கி ஒதுக்கீட்டிடம் ஒப்படை"
 
 #: src/features/conversation/actions.ts
 msgid "Handed to {name}"
@@ -9372,6 +9401,10 @@ msgstr "மிகவும் உதவியவை"
 msgid "Most liked"
 msgstr "மிகவும் விரும்பப்பட்டவை"
 
+#: src/components/common/AssignmentFields.tsx
+msgid "Most open conversations per member"
+msgstr "ஒரு உறுப்பினருக்கு அதிகபட்ச திறந்த உரையாடல்கள்"
+
 #: src/features/docs/Toolbar.tsx
 msgid "Most ratings, open feedback, open discussions and waiting posts first"
 msgstr "அதிக மதிப்பீடுகள், திறந்த கருத்துகள், திறந்த விவாதங்கள், காத்திருக்கும் இடுகைகள் முதலில்"
@@ -10348,6 +10381,7 @@ msgstr "இன்னும் லேபிள்கள் இல்லை. அ�
 msgid "no limit"
 msgstr "வரம்பு இல்லை"
 
+#: src/components/common/AssignmentFields.tsx
 #: src/features/broadcasts/Pace.tsx
 msgid "No limit"
 msgstr "வரம்பு இல்லை"
@@ -11083,6 +11117,7 @@ msgstr "அக்டோபர் செய்திமடல்"
 msgid "off"
 msgstr "முடக்கம்"
 
+#: src/components/common/AssignmentFields.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/settings/channels/chat/ChatFields.tsx
 #: src/features/settings/SettingsColumn.tsx
@@ -11882,6 +11917,10 @@ msgstr "பணி நேரத்திற்கு வெளியே"
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Outside them the product counts as closed."
 msgstr "அதற்கு வெளியே தயாரிப்பு மூடப்பட்டதாகக் கருதப்படும்."
+
+#: src/features/conversation/HeaderActions.tsx
+msgid "over cap"
+msgstr "வரம்பை மீறியது"
 
 #: src/features/broadcasts/Report.tsx
 msgid "Over time"
@@ -14033,6 +14072,10 @@ msgstr "ஒரு சேனலின் விசையைப் புதுப
 #: src/features/settings/audit/sentence.ts
 msgid "Rotated the signing secret of a webhook"
 msgstr "ஒரு வெப்ஹுக்கின் கையொப்ப ரகசியத்தைப் புதுப்பித்தார்"
+
+#: src/components/common/AssignmentFields.tsx
+msgid "Round robin"
+msgstr "சுழற்சி முறை"
 
 #: src/features/setup/email/EmailReceiveStep.tsx
 msgid "Route your domain"
@@ -18068,6 +18111,10 @@ msgstr "ஒதுக்கீட்டை நீக்கு"
 msgid "Unassigned"
 msgstr "ஒதுக்கப்படாதது"
 
+#: src/features/conversation/messages/EventLine.tsx
+msgid "Unassigned automatically"
+msgstr "ஒதுக்கீடு தானாக நீக்கப்பட்டது"
+
 #: src/features/contact/ContactDetail.tsx
 msgid "Unblock contact"
 msgstr "தொடர்பின் தடையை நீக்கு"
@@ -18532,6 +18579,10 @@ msgstr "இந்தப் பதிலைப் பயன்படுத்த�
 msgid "Use your GMX password, or an app password if two-factor sign-in is on."
 msgstr "உங்கள் GMX கடவுச்சொல்லைப் பயன்படுத்துங்கள், அல்லது இரு-காரணி உள்நுழைவு இயக்கத்தில் இருந்தால் ஆப் கடவுச்சொல்."
 
+#: src/components/common/AssignmentFields.tsx
+msgid "Used for conversations given to this team without a member. Only team members are considered."
+msgstr "உறுப்பினர் இல்லாமல் இந்தக் குழுவுக்கு வழங்கப்பட்ட உரையாடல்களுக்குப் பயன்படுகிறது. குழு உறுப்பினர்கள் மட்டுமே கருதப்படுவர்."
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Used in addresses and the widget"
 msgstr "முகவரிகளிலும் விட்ஜெட்டிலும் பயன்படுத்தப்படும்"
@@ -18728,6 +18779,15 @@ msgstr "காத்திருக்கிறது"
 #: src/features/migrations/CopyStep.tsx
 msgid "Waiting for {provider}'s limit; continues at {waiting}."
 msgstr "{provider}-இன் வரம்புக்காகக் காத்திருக்கிறது; {waiting} அன்று தொடரும்."
+
+#: src/features/inbox/ChatList.tsx
+msgid "Waiting for a teammate"
+msgstr "கிடைக்கும் சக ஊழியருக்காக காத்திருக்கிறது"
+
+#: src/features/conversation/ConversationStatus.tsx
+#: src/features/inbox/ChatList.tsx
+msgid "Waiting for an available teammate since {since}"
+msgstr "{since} முதல் கிடைக்கும் சக ஊழியருக்காக காத்திருக்கிறது"
 
 #: src/features/docs/DocsPage.tsx
 #: src/features/docs/PagesTab.tsx

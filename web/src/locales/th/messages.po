@@ -1314,6 +1314,10 @@ msgstr "รายชื่อผู้รับจดหมายส่งใน
 msgid "A mailing list with subscribe forms, for your broadcasts"
 msgstr "รายชื่อผู้รับจดหมายพร้อมแบบฟอร์มสมัครรับ สำหรับบรอดคาสต์ของคุณ"
 
+#: src/components/common/AssignmentFields.tsx
+msgid "A member is eligible while they have access to the product (owners and admins only with a grant), have the panel or an app open, are set to Auto availability, the product is inside its business hours and they are under the limit. When nobody is eligible the conversation waits and goes to the first teammate who becomes available."
+msgstr "สมาชิกมีสิทธิ์เมื่อมีสิทธิ์เข้าถึงผลิตภัณฑ์ (เจ้าของและผู้ดูแลเฉพาะเมื่อได้รับสิทธิ์), เปิดแผงควบคุมหรือแอปอยู่, สถานะพร้อมเป็นอัตโนมัติ, ผลิตภัณฑ์อยู่ในเวลาทำการ และสมาชิกยังต่ำกว่าขีดจำกัด หากไม่มีใครมีสิทธิ์ การสนทนาจะรอและส่งให้เพื่อนร่วมทีมคนแรกที่ว่าง"
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "A merge field without a fallback would be empty for some recipients. Give it a fallback."
 msgstr "ฟิลด์รวมที่ไม่มีค่าสำรองจะว่างเปล่าสำหรับผู้รับบางคน ตั้งค่าสำรองให้ฟิลด์นั้น"
@@ -1951,6 +1955,10 @@ msgstr "ผู้ดูแลระบบเห็นกล่องข้อค
 #: src/features/status/IncidentDetail.tsx
 msgid "Affects"
 msgstr "ส่งผลต่อ"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "After the other rules have run, the conversation goes to the team's pool, or the product's when it has no team."
+msgstr "หลังจากกฎอื่นทำงานแล้ว การสนทนาจะเข้ากลุ่มของทีม หรือกลุ่มของผลิตภัณฑ์หากไม่มีทีม"
 
 #: src/components/common/text.ts
 #: src/features/settings/sso/SsoPage.tsx
@@ -2830,6 +2838,10 @@ msgstr "มอบหมายให้ทีม"
 msgid "Assign to me"
 msgstr "มอบหมายให้ฉัน"
 
+#: src/features/conversation/messages/EventLine.tsx
+msgid "Assigned automatically to {assignee}"
+msgstr "มอบหมายให้ {assignee} โดยอัตโนมัติ"
+
 #. placeholder {0}: assignee.name || assignee.email
 #: src/features/inbox/ChatList.tsx
 msgid "Assigned to {0}"
@@ -2995,9 +3007,10 @@ msgstr "ตอบกลับอัตโนมัติ"
 msgid "automatic"
 msgstr "อัตโนมัติ"
 
-#: src/features/settings/automation/text.ts
-msgid "Automatic assignment (not available yet)"
-msgstr "การมอบหมายอัตโนมัติ (ยังไม่พร้อมใช้งาน)"
+#: src/components/common/AssignmentFields.tsx
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Automatic assignment"
+msgstr "การมอบหมายอัตโนมัติ"
 
 #: src/features/conversation/messages/Thread.tsx
 msgid "Automatic mail never triggers an automatic reply."
@@ -3118,6 +3131,10 @@ msgstr "ก่อนส่ง"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Besides openid, email and profile. Okta needs groups for group checks."
 msgstr "Besides openid, email and profile. Okta needs groups for group checks."
+
+#: src/components/common/AssignmentFields.tsx
+msgid "Between 1 and 500, counted across the workspace. Assigning by hand ignores it. Leave empty for no limit."
+msgstr "ระหว่าง 1 ถึง 500 นับทั้งพื้นที่ทำงาน การมอบหมายด้วยมือไม่สนใจค่านี้ เว้นว่างไว้หากไม่จำกัด"
 
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/teams/TeamDialog.tsx
@@ -6464,6 +6481,10 @@ msgstr "ความคิดเห็นที่ส่งจากแอป"
 msgid "Feedback, {feedback} open"
 msgstr "Feedback, {feedback} open"
 
+#: src/components/common/AssignmentFields.tsx
+msgid "Fewest open conversations"
+msgstr "มีการสนทนาที่เปิดอยู่น้อยที่สุด"
+
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactSheet.tsx
 msgid "Fields"
@@ -6968,6 +6989,10 @@ msgstr "ให้ช่องทางมีที่อยู่ส่งต่
 msgid "Give the page a name."
 msgstr "ตั้งชื่อให้หน้านี้"
 
+#: src/components/common/AssignmentFields.tsx
+msgid "Gives a conversation without an assignee to a teammate when it arrives or is reopened by the contact. Automation rules run first."
+msgstr "มอบการสนทนาที่ยังไม่มีผู้รับผิดชอบให้เพื่อนร่วมทีมเมื่อเข้ามาหรือเมื่อผู้ติดต่อเปิดอีกครั้ง กฎระบบอัตโนมัติทำงานก่อน"
+
 #: src/features/migrations/SwitchStep.tsx
 msgid "Gmail forwards only new mail that is not spam. If a Workspace admin turned forwarding off, use the admin's routing."
 msgstr "Gmail ส่งต่อเฉพาะอีเมลใหม่ที่ไม่ใช่สแปม หากผู้ดูแล Workspace ปิดการส่งต่อ ให้ใช้การกำหนดเส้นทางของผู้ดูแล"
@@ -7083,6 +7108,10 @@ msgstr "กลุ่มสมาชิกและกล่องข้อคว
 #: src/features/broadcasts/ListPage.tsx
 msgid "Growth"
 msgstr "การเติบโต"
+
+#: src/features/settings/automation/text.ts
+msgid "Hand to automatic assignment"
+msgstr "ส่งให้การมอบหมายอัตโนมัติ"
 
 #: src/features/conversation/actions.ts
 msgid "Handed to {name}"
@@ -9372,6 +9401,10 @@ msgstr "เป็นประโยชน์มากที่สุด"
 msgid "Most liked"
 msgstr "ถูกใจมากที่สุด"
 
+#: src/components/common/AssignmentFields.tsx
+msgid "Most open conversations per member"
+msgstr "จำนวนการสนทนาที่เปิดอยู่สูงสุดต่อสมาชิก"
+
 #: src/features/docs/Toolbar.tsx
 msgid "Most ratings, open feedback, open discussions and waiting posts first"
 msgstr "คะแนนมากที่สุด ความคิดเห็นที่เปิดอยู่ กระทู้ที่เปิดอยู่ และโพสต์ที่รออยู่ ก่อน"
@@ -10348,6 +10381,7 @@ msgstr "ยังไม่มีป้ายกำกับ เพิ่มใ�
 msgid "no limit"
 msgstr "ไม่จำกัด"
 
+#: src/components/common/AssignmentFields.tsx
 #: src/features/broadcasts/Pace.tsx
 msgid "No limit"
 msgstr "ไม่จำกัด"
@@ -11083,6 +11117,7 @@ msgstr "จดหมายข่าวเดือนตุลาคม"
 msgid "off"
 msgstr "ปิด"
 
+#: src/components/common/AssignmentFields.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/settings/channels/chat/ChatFields.tsx
 #: src/features/settings/SettingsColumn.tsx
@@ -11882,6 +11917,10 @@ msgstr "นอกเวลาทำการ"
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Outside them the product counts as closed."
 msgstr "นอกเวลาเหล่านั้น ผลิตภัณฑ์จะถือว่าปิด"
+
+#: src/features/conversation/HeaderActions.tsx
+msgid "over cap"
+msgstr "เกินขีดจำกัด"
 
 #: src/features/broadcasts/Report.tsx
 msgid "Over time"
@@ -14033,6 +14072,10 @@ msgstr "สร้างคีย์ของช่องทางใหม่"
 #: src/features/settings/audit/sentence.ts
 msgid "Rotated the signing secret of a webhook"
 msgstr "สร้างความลับสำหรับลงลายมือชื่อของ webhook ใหม่"
+
+#: src/components/common/AssignmentFields.tsx
+msgid "Round robin"
+msgstr "สลับกัน"
 
 #: src/features/setup/email/EmailReceiveStep.tsx
 msgid "Route your domain"
@@ -18068,6 +18111,10 @@ msgstr "ยกเลิกการมอบหมาย"
 msgid "Unassigned"
 msgstr "ยังไม่มอบหมาย"
 
+#: src/features/conversation/messages/EventLine.tsx
+msgid "Unassigned automatically"
+msgstr "ยกเลิกการมอบหมายโดยอัตโนมัติ"
+
 #: src/features/contact/ContactDetail.tsx
 msgid "Unblock contact"
 msgstr "เลิกบล็อกผู้ติดต่อ"
@@ -18532,6 +18579,10 @@ msgstr "ใช้คำตอบนี้"
 msgid "Use your GMX password, or an app password if two-factor sign-in is on."
 msgstr "ใช้รหัสผ่าน GMX ของคุณ หรือรหัสผ่านแอปหากเปิดการลงชื่อเข้าใช้สองปัจจัย"
 
+#: src/components/common/AssignmentFields.tsx
+msgid "Used for conversations given to this team without a member. Only team members are considered."
+msgstr "ใช้กับการสนทนาที่มอบให้ทีมนี้โดยไม่ระบุสมาชิก พิจารณาเฉพาะสมาชิกของทีม"
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Used in addresses and the widget"
 msgstr "ใช้ในที่อยู่และวิดเจ็ต"
@@ -18728,6 +18779,15 @@ msgstr "รอ"
 #: src/features/migrations/CopyStep.tsx
 msgid "Waiting for {provider}'s limit; continues at {waiting}."
 msgstr "รอขีดจำกัดของ {provider} ดำเนินต่อเมื่อ {waiting}"
+
+#: src/features/inbox/ChatList.tsx
+msgid "Waiting for a teammate"
+msgstr "กำลังรอเพื่อนร่วมทีมที่ว่าง"
+
+#: src/features/conversation/ConversationStatus.tsx
+#: src/features/inbox/ChatList.tsx
+msgid "Waiting for an available teammate since {since}"
+msgstr "กำลังรอเพื่อนร่วมทีมที่ว่างตั้งแต่ {since}"
 
 #: src/features/docs/DocsPage.tsx
 #: src/features/docs/PagesTab.tsx

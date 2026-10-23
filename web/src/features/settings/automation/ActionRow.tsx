@@ -123,6 +123,13 @@ export function ActionRow({
         />
       )
       break
+    case "assign_pool":
+      body = (
+        <p className="text-small text-faint">
+          {t`After the other rules have run, the conversation goes to the team's pool, or the product's when it has no team.`}
+        </p>
+      )
+      break
     case "send_reply":
       body = (
         <ChoiceSelect
