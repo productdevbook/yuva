@@ -233,6 +233,31 @@ Each finding below is its own GitHub issue with the full acceptance; all are fix
   - Queued actions replayed as a member (`callerPrincipal`: linked replies, issue-link and roadmap actions) apply the same gate and stop for a covered member.
   - Tests for both.
 
+### Y-195 · App push previews follow redaction, trash and deletion
+
+- **Area** api · **Owner** yuva-api · **Priority** P1 · **Depends on** – · **Chapters** architecture › In-app messaging (mobile)
+- **Acceptance**
+  - The `app_push_send` job carries no message text; the preview is rendered when the job runs, and a redacted, trashed or deleted message, a trashed conversation or a deleted contact sends nothing.
+  - Pending and retrying jobs queued before this change are handled the same way (or dropped on upgrade).
+  - Tests: redact, trash and contact deletion between enqueue and send.
+
+### Y-196 · Slack posts follow redaction, trash and deletion
+
+- **Area** api · **Owner** yuva-api · **Priority** P1 · **Depends on** – · **Chapters** architecture › Slack (M32)
+- **Acceptance**
+  - When a message whose text was posted to Slack is redacted, its Slack post is updated with `chat.update` to the removed line; when the conversation is trashed or deleted, or the contact is deleted, the conversation's Slack posts are updated to a placeholder without names or text (or deleted with `chat.delete`; decide and document).
+  - Retries and Slack rate limits as for other Slack calls; disconnected Slack is skipped.
+  - `architecture.md` › Privacy and data and `docs/slack.md` (tr, de) say what happens to Slack posts.
+  - Tests against the fake Slack.
+
+### Y-197 · Help-desk migration rows forget people's names and addresses
+
+- **Area** api · **Owner** yuva-api · **Priority** P1 · **Depends on** – · **Chapters** architecture › Moving to Yuva (M14)
+- **Acceptance**
+  - Migration work rows (planned tickets, requester names and addresses, cursors with personal data) are cleared when the migration completes, is cancelled or fails for good, keeping only counts.
+  - Contact deletion clears that person's names and addresses from any running migration's rows.
+  - Tests for both.
+
 ## M27 — Scale and safety
 
 ### Y-134 · Rate limits shared across replicas
