@@ -28,7 +28,15 @@ export const AUDIT_GROUPS: Record<AuditGroup, AuditAction[]> = {
     "inbox.identity_secret_rotated",
     "inbox.deleted",
   ],
-  data: ["contact.deleted", "contact.consent_exported", "list.consent_exported", "analytics_export.created"],
+  data: [
+    "conversation.trashed",
+    "conversation.restored",
+    "conversation.deleted",
+    "contact.deleted",
+    "contact.consent_exported",
+    "list.consent_exported",
+    "analytics_export.created",
+  ],
   workspace: [
     "workspace.retention_changed",
     "workspace.broadcast_approval_requested",
@@ -130,6 +138,12 @@ export function useAuditSentence() {
         return t`Rotated the identity secret of an inbox`
       case "inbox.deleted":
         return t`Deleted the inbox ${name}`
+      case "conversation.trashed":
+        return t`Moved a conversation to the Trash`
+      case "conversation.restored":
+        return t`Restored a conversation from the Trash`
+      case "conversation.deleted":
+        return t`Deleted a conversation for good`
       case "contact.deleted":
         return t`Deleted a contact`
       case "contact.consent_exported":

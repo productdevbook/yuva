@@ -32,6 +32,18 @@ function Actor({ entry }: { entry: AuditEntry }) {
   const { t } = useLingui()
   const { actor } = entry
   const name = actor.name ?? ""
+  if (actor.kind === "system") {
+    return (
+      <span className="flex min-w-0 items-center gap-2">
+        <span className="inline-flex size-[26px] shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground">
+          <TerminalIcon className="size-3.5" />
+        </span>
+        <span className="truncate text-body font-medium">
+          <Trans>System</Trans>
+        </span>
+      </span>
+    )
+  }
   if (actor.kind === "operator") {
     return (
       <span className="flex min-w-0 items-center gap-2">
@@ -85,6 +97,7 @@ function Filters({
     ["kind:api_key", t`API keys`],
     ["kind:oauth_grant", t`Connected apps`],
     ["kind:operator", t`Operator`],
+    ["kind:system", t`System`],
   ]
   const groups: [AuditGroup | "all", string][] = [
     ["all", t`Everything`],
