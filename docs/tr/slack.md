@@ -82,13 +82,18 @@ Botu, gönderi yapacağı her kanala davet edin: o kanalda `/invite @Yuva`. Öze
 Bir gelen kutusunun ayarlarında şunları seçin:
 
 - **yeni konuşmalar** için bir kanal (bir kişinin ilk mesajı) ve
-- **anmalar** için bir kanal (üyeleri anan bir not; bağlı bir üye Slack'te de anılır).
+- **anmalar** için bir kanal (üyeleri anan bir not; bağlı bir üye Slack'te de anılır) ve
+- **SLA** için bir kanal (bir konuşma SLA hedefini aşar; hedef uyarıya ulaştığında da göndermek
+  için **SLA warnings** seçeneğini açın). Gönderi hedefi (ilk yanıt, sonraki yanıt ya da çözüm),
+  ne kadar geciktiğini (ya da ne kadar kaldığını), atanan kişiyi ya da ekibi, konuyu, kişiyi ve bir
+  bağlantıyı içerir.
 
 Gönderi konuyu, kişinin adını, gelen kutusunu ve konuşmanın bağlantısını taşır. Gelen kutusu
 **Include message text** seçeneğini açmadıkça mesajın kendisi Yuva'da kalır; açıksa gönderi ilk
-300 karakterini de alıntılar. Kanalda konuşmanın bir başlığı zaten varsa anma o başlığa gönderilir.
+300 karakterini de alıntılar. Kanalda konuşmanın bir başlığı zaten varsa anma ve SLA gönderisi o başlığa gider; oradaki yanıt
+diğer başlıklardaki gibi çalışır.
 
-API ile: `new_conversations_channel_id`, `mentions_channel_id` ve `include_content` ile
+API ile: `new_conversations_channel_id`, `mentions_channel_id`, `sla_channel_id`, `sla_warnings` ve `include_content` ile
 `PUT /v1/inboxes/{id}/slack`; `GET /v1/slack/channels` botun bulunduğu kanalları listeler.
 
 ## Slack kullanıcınızı bağlayın

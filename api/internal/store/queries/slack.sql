@@ -55,10 +55,11 @@ RETURNING member_id;
 SELECT * FROM slack_inbox_settings WHERE workspace_id = @workspace_id AND inbox_id = @inbox_id;
 
 -- name: SaveSlackInboxSettings :one
-INSERT INTO slack_inbox_settings (workspace_id, inbox_id, new_conversations_channel, mentions_channel, include_content, updated_at)
-VALUES (@workspace_id, @inbox_id, sqlc.narg(new_conversations_channel), sqlc.narg(mentions_channel), @include_content, @now)
+INSERT INTO slack_inbox_settings (workspace_id, inbox_id, new_conversations_channel, mentions_channel, sla_channel, sla_warnings, include_content, updated_at)
+VALUES (@workspace_id, @inbox_id, sqlc.narg(new_conversations_channel), sqlc.narg(mentions_channel), sqlc.narg(sla_channel), @sla_warnings, @include_content, @now)
 ON CONFLICT (workspace_id, inbox_id) DO UPDATE SET
     new_conversations_channel = excluded.new_conversations_channel, mentions_channel = excluded.mentions_channel,
+    sla_channel = excluded.sla_channel, sla_warnings = excluded.sla_warnings,
     include_content = excluded.include_content, updated_at = excluded.updated_at
 RETURNING *;
 

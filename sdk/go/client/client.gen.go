@@ -16465,8 +16465,15 @@ type InboxSlack struct {
 	MentionsChannelId *string `json:"mentions_channel_id,omitempty"`
 
 	// NewConversationsChannelId The channel that gets the inbox's new conversations (a contact's first message).
-	NewConversationsChannelId *string    `json:"new_conversations_channel_id,omitempty"`
-	UpdatedAt                 *time.Time `json:"updated_at,omitempty"`
+	NewConversationsChannelId *string `json:"new_conversations_channel_id,omitempty"`
+
+	// SlaChannelId The channel that gets a post when a conversation of the inbox breaches an SLA target
+	// (which target, how late, who has it, the subject, the contact and a link).
+	SlaChannelId *string `json:"sla_channel_id,omitempty"`
+
+	// SlaWarnings Whether `sla_channel_id` also gets a post when a target reaches its warning.
+	SlaWarnings bool       `json:"sla_warnings"`
+	UpdatedAt   *time.Time `json:"updated_at,omitempty"`
 }
 
 // InboxSlackUpdate defines model for InboxSlackUpdate.
@@ -16475,6 +16482,12 @@ type InboxSlackUpdate struct {
 	IncludeContent            *bool                     `json:"include_content,omitempty"`
 	MentionsChannelId         nullable.Nullable[string] `json:"mentions_channel_id,omitempty"`
 	NewConversationsChannelId nullable.Nullable[string] `json:"new_conversations_channel_id,omitempty"`
+
+	// SlaChannelId Absent keeps the stored channel; `null` clears it.
+	SlaChannelId nullable.Nullable[string] `json:"sla_channel_id,omitempty"`
+
+	// SlaWarnings Absent keeps the stored value (`false` for an inbox never set).
+	SlaWarnings *bool `json:"sla_warnings,omitempty"`
 }
 
 // InboxUpdate defines model for InboxUpdate.
@@ -38176,7 +38189,8 @@ type ClientInterface interface {
 
 	// GetInboxSlack An inbox's Slack channels
 	//
-	// Which Slack channel gets the inbox's new conversations and which its mentions, and whether
+	// Which Slack channel gets the inbox's new conversations, which its mentions and which its SLA
+	// breaches (`sla_channel_id`; with `sla_warnings` also the warnings), and whether
 	// the posts carry the message text (`include_content`, off by default: a post then carries
 	// only the subject, the contact's name and a link). An inbox never set answers no channels.
 	// API keys and tokens need `inboxes:read`.
@@ -52085,7 +52099,8 @@ func (c *Client) GrantInboxAccess(ctx context.Context, inboxId InboxId, memberId
 
 // GetInboxSlack An inbox's Slack channels
 //
-// Which Slack channel gets the inbox's new conversations and which its mentions, and whether
+// Which Slack channel gets the inbox's new conversations, which its mentions and which its SLA
+// breaches (`sla_channel_id`; with `sla_warnings` also the warnings), and whether
 // the posts carry the message text (`include_content`, off by default: a post then carries
 // only the subject, the contact's name and a link). An inbox never set answers no channels.
 // API keys and tokens need `inboxes:read`.
@@ -96134,7 +96149,8 @@ type ClientWithResponsesInterface interface {
 
 	// GetInboxSlackWithResponse An inbox's Slack channels
 	//
-	// Which Slack channel gets the inbox's new conversations and which its mentions, and whether
+	// Which Slack channel gets the inbox's new conversations, which its mentions and which its SLA
+	// breaches (`sla_channel_id`; with `sla_warnings` also the warnings), and whether
 	// the posts carry the message text (`include_content`, off by default: a post then carries
 	// only the subject, the contact's name and a link). An inbox never set answers no channels.
 	// API keys and tokens need `inboxes:read`.
@@ -142485,7 +142501,8 @@ func (c *ClientWithResponses) GrantInboxAccessWithResponse(ctx context.Context, 
 
 // GetInboxSlackWithResponse An inbox's Slack channels
 //
-// Which Slack channel gets the inbox's new conversations and which its mentions, and whether
+// Which Slack channel gets the inbox's new conversations, which its mentions and which its SLA
+// breaches (`sla_channel_id`; with `sla_warnings` also the warnings), and whether
 // the posts carry the message text (`include_content`, off by default: a post then carries
 // only the subject, the contact's name and a link). An inbox never set answers no channels.
 // API keys and tokens need `inboxes:read`.

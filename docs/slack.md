@@ -83,15 +83,19 @@ In an inbox's settings, pick:
 
 - a channel for **new conversations** (a contact's first message), and
 - a channel for **mentions** (a note that mentions members; a linked member is mentioned in Slack
-  too).
+  too), and
+- a channel for **SLA** (a conversation breaches an SLA target; switch on **SLA warnings** to also
+  post when a target reaches its warning). The post names the target (first reply, next reply or
+  resolution), how late it is (or how long is left), the assignee or team, the subject, the contact
+  and a link.
 
 A post carries the subject, the contact's name, the inbox and a link to the conversation. The
 message itself stays in Yuva unless the inbox turns on **Include message text**; then the post
-also quotes its first 300 characters. A mention is posted in the conversation's thread when the
-channel already has one.
+also quotes its first 300 characters. A mention or SLA post goes into the conversation's thread when the
+channel already has one, and a reply there works like in any other thread.
 
 With the API: `PUT /v1/inboxes/{id}/slack` with `new_conversations_channel_id`,
-`mentions_channel_id` and `include_content`; `GET /v1/slack/channels` lists the channels the bot
+`mentions_channel_id`, `sla_channel_id`, `sla_warnings` and `include_content`; `GET /v1/slack/channels` lists the channels the bot
 is in.
 
 ## Link your Slack user

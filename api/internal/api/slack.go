@@ -395,7 +395,8 @@ func (s *Server) ListSlackChannels(ctx context.Context, _ oas.ListSlackChannelsR
 func inboxSlackBody(inboxID uuid.UUID, r *store.SlackInboxSetting) oas.InboxSlack {
 	out := oas.InboxSlack{InboxId: inboxID}
 	if r != nil {
-		out.NewConversationsChannelId, out.MentionsChannelId, out.IncludeContent, out.UpdatedAt = r.NewConversationsChannel, r.MentionsChannel, r.IncludeContent, &r.UpdatedAt
+		out.NewConversationsChannelId, out.MentionsChannelId, out.SlaChannelId = r.NewConversationsChannel, r.MentionsChannel, r.SlaChannel
+		out.SlaWarnings, out.IncludeContent, out.UpdatedAt = r.SlaWarnings, r.IncludeContent, &r.UpdatedAt
 	}
 	return out
 }
@@ -451,16 +452,40 @@ func (s *Server) SetInboxSlack(ctx context.Context, req oas.SetInboxSlackRequest
 	if err != nil {
 		return nil, err
 	}
+	slaCh, err := slackChannelInput(b.SlaChannelId, "sla_channel_id")
+	if err != nil {
+		return nil, err
+	}
+	keepSLA := !b.SlaChannelId.IsSpecified()
+	var stored *store.SlackInboxSetting
+	if keepSLA || b.SlaWarnings == nil {
+		cur, err := s.st.GetSlackInboxSettings(ctx, store.GetSlackInboxSettingsParams{WorkspaceID: p.workspaceID, InboxID: req.InboxId})
+		if err != nil && !store.IsNotFound(err) {
+			return nil, err
+		}
+		if err == nil {
+			stored = &cur
+		}
+	}
+	slaWarnings := b.SlaWarnings != nil && *b.SlaWarnings
+	if stored != nil {
+		if keepSLA {
+			slaCh = stored.SlaChannel
+		}
+		if b.SlaWarnings == nil {
+			slaWarnings = stored.SlaWarnings
+		}
+	}
 	_, token, err := s.connectedSlack(ctx, p.workspaceID)
 	if err != nil {
 		return nil, err
 	}
-	if newConv != nil || mentions != nil {
+	if newConv != nil || mentions != nil || slaCh != nil {
 		chs, err := s.slackChannels(ctx, token)
 		if err != nil {
 			return nil, err
 		}
-		for _, c := range []*string{newConv, mentions} {
+		for _, c := range []*string{newConv, mentions, slaCh} {
 			if c != nil && !slices.ContainsFunc(chs, func(ch slack.Channel) bool { return ch.ID == *c }) {
 				return nil, errValidation("the Yuva bot is not in channel " + *c + "; invite it there in Slack first")
 			}
@@ -468,7 +493,7 @@ func (s *Server) SetInboxSlack(ctx context.Context, req oas.SetInboxSlackRequest
 	}
 	r, err := s.st.SaveSlackInboxSettings(ctx, store.SaveSlackInboxSettingsParams{
 		WorkspaceID: p.workspaceID, InboxID: req.InboxId, NewConversationsChannel: newConv, MentionsChannel: mentions,
-		IncludeContent: b.IncludeContent != nil && *b.IncludeContent, Now: s.now(),
+		SlaChannel: slaCh, SlaWarnings: slaWarnings, IncludeContent: b.IncludeContent != nil && *b.IncludeContent, Now: s.now(),
 	})
 	if err != nil {
 		return nil, err
@@ -1063,6 +1088,12 @@ func (s *Server) PostToSlack(ctx context.Context, a SlackPostArgs) (time.Duratio
 			return 0, err
 		}
 	}
+	return s.sendSlackPost(ctx, inst, c.ID, msg)
+}
+
+// sendSlackPost posts msg and records a top-level post as the conversation's thread.
+func (s *Server) sendSlackPost(ctx context.Context, inst store.SlackInstallation, conversationID uuid.UUID, msg slack.Message) (time.Duration, error) {
+	ws := inst.WorkspaceID
 	token, err := s.slackToken(inst)
 	if err != nil {
 		return 0, s.slackError(ctx, ws, "the Slack token cannot be decrypted; connect Slack again")
@@ -1080,7 +1111,7 @@ func (s *Server) PostToSlack(ctx context.Context, a SlackPostArgs) (time.Duratio
 		return 0, err
 	}
 	if msg.ThreadTS == "" && ts != "" {
-		if err := s.st.AddSlackThread(ctx, store.AddSlackThreadParams{WorkspaceID: ws, ChannelID: channel, ThreadTs: ts, ConversationID: c.ID, Now: s.now()}); err != nil {
+		if err := s.st.AddSlackThread(ctx, store.AddSlackThreadParams{WorkspaceID: ws, ChannelID: msg.Channel, ThreadTs: ts, ConversationID: conversationID, Now: s.now()}); err != nil {
 			return 0, err
 		}
 	}

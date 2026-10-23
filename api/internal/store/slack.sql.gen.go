@@ -219,7 +219,7 @@ func (q *Queries) FindSlackInstallationByTeam(ctx context.Context, teamID string
 }
 
 const getSlackInboxSettings = `-- name: GetSlackInboxSettings :one
-SELECT workspace_id, inbox_id, new_conversations_channel, mentions_channel, include_content, updated_at FROM slack_inbox_settings WHERE workspace_id = $1 AND inbox_id = $2
+SELECT workspace_id, inbox_id, new_conversations_channel, mentions_channel, include_content, updated_at, sla_channel, sla_warnings FROM slack_inbox_settings WHERE workspace_id = $1 AND inbox_id = $2
 `
 
 type GetSlackInboxSettingsParams struct {
@@ -237,6 +237,8 @@ func (q *Queries) GetSlackInboxSettings(ctx context.Context, arg GetSlackInboxSe
 		&i.MentionsChannel,
 		&i.IncludeContent,
 		&i.UpdatedAt,
+		&i.SlaChannel,
+		&i.SlaWarnings,
 	)
 	return i, err
 }
@@ -480,12 +482,13 @@ func (q *Queries) PruneSlackEvents(ctx context.Context, arg PruneSlackEventsPara
 }
 
 const saveSlackInboxSettings = `-- name: SaveSlackInboxSettings :one
-INSERT INTO slack_inbox_settings (workspace_id, inbox_id, new_conversations_channel, mentions_channel, include_content, updated_at)
-VALUES ($1, $2, $3, $4, $5, $6)
+INSERT INTO slack_inbox_settings (workspace_id, inbox_id, new_conversations_channel, mentions_channel, sla_channel, sla_warnings, include_content, updated_at)
+VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
 ON CONFLICT (workspace_id, inbox_id) DO UPDATE SET
     new_conversations_channel = excluded.new_conversations_channel, mentions_channel = excluded.mentions_channel,
+    sla_channel = excluded.sla_channel, sla_warnings = excluded.sla_warnings,
     include_content = excluded.include_content, updated_at = excluded.updated_at
-RETURNING workspace_id, inbox_id, new_conversations_channel, mentions_channel, include_content, updated_at
+RETURNING workspace_id, inbox_id, new_conversations_channel, mentions_channel, include_content, updated_at, sla_channel, sla_warnings
 `
 
 type SaveSlackInboxSettingsParams struct {
@@ -493,6 +496,8 @@ type SaveSlackInboxSettingsParams struct {
 	InboxID                 uuid.UUID
 	NewConversationsChannel *string
 	MentionsChannel         *string
+	SlaChannel              *string
+	SlaWarnings             bool
 	IncludeContent          bool
 	Now                     time.Time
 }
@@ -503,6 +508,8 @@ func (q *Queries) SaveSlackInboxSettings(ctx context.Context, arg SaveSlackInbox
 		arg.InboxID,
 		arg.NewConversationsChannel,
 		arg.MentionsChannel,
+		arg.SlaChannel,
+		arg.SlaWarnings,
 		arg.IncludeContent,
 		arg.Now,
 	)
@@ -514,6 +521,8 @@ func (q *Queries) SaveSlackInboxSettings(ctx context.Context, arg SaveSlackInbox
 		&i.MentionsChannel,
 		&i.IncludeContent,
 		&i.UpdatedAt,
+		&i.SlaChannel,
+		&i.SlaWarnings,
 	)
 	return i, err
 }

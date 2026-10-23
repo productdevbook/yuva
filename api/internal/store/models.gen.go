@@ -2210,6 +2210,8 @@ type SlackInboxSetting struct {
 	MentionsChannel         *string
 	IncludeContent          bool
 	UpdatedAt               time.Time
+	SlaChannel              *string
+	SlaWarnings             bool
 }
 
 type SlackInstallation struct {

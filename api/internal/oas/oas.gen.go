@@ -16419,8 +16419,15 @@ type InboxSlack struct {
 	MentionsChannelId *string `json:"mentions_channel_id,omitempty"`
 
 	// NewConversationsChannelId The channel that gets the inbox's new conversations (a contact's first message).
-	NewConversationsChannelId *string    `json:"new_conversations_channel_id,omitempty"`
-	UpdatedAt                 *time.Time `json:"updated_at,omitempty"`
+	NewConversationsChannelId *string `json:"new_conversations_channel_id,omitempty"`
+
+	// SlaChannelId The channel that gets a post when a conversation of the inbox breaches an SLA target
+	// (which target, how late, who has it, the subject, the contact and a link).
+	SlaChannelId *string `json:"sla_channel_id,omitempty"`
+
+	// SlaWarnings Whether `sla_channel_id` also gets a post when a target reaches its warning.
+	SlaWarnings bool       `json:"sla_warnings"`
+	UpdatedAt   *time.Time `json:"updated_at,omitempty"`
 }
 
 // InboxSlackUpdate defines model for InboxSlackUpdate.
@@ -16429,6 +16436,12 @@ type InboxSlackUpdate struct {
 	IncludeContent            *bool                     `json:"include_content,omitempty"`
 	MentionsChannelId         nullable.Nullable[string] `json:"mentions_channel_id,omitempty"`
 	NewConversationsChannelId nullable.Nullable[string] `json:"new_conversations_channel_id,omitempty"`
+
+	// SlaChannelId Absent keeps the stored channel; `null` clears it.
+	SlaChannelId nullable.Nullable[string] `json:"sla_channel_id,omitempty"`
+
+	// SlaWarnings Absent keeps the stored value (`false` for an inbox never set).
+	SlaWarnings *bool `json:"sla_warnings,omitempty"`
 }
 
 // InboxUpdate defines model for InboxUpdate.

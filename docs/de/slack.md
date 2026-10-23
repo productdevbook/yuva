@@ -86,15 +86,19 @@ Wählen Sie in den Einstellungen eines Posteingangs:
 
 - einen Kanal für **neue Unterhaltungen** (die erste Nachricht eines Kontakts) und
 - einen Kanal für **Erwähnungen** (eine Notiz, die Mitglieder erwähnt; ein verknüpftes Mitglied
-  wird auch in Slack erwähnt).
+  wird auch in Slack erwähnt) und
+- einen Kanal für **SLA** (eine Unterhaltung verletzt ein SLA-Ziel; schalten Sie **SLA warnings**
+  ein, um auch beim Erreichen der Warnung zu posten). Der Post nennt das Ziel (erste Antwort,
+  nächste Antwort oder Lösung), wie spät es ist (oder wie viel Zeit bleibt), die zugewiesene Person
+  oder das Team, den Betreff, den Kontakt und einen Link.
 
 Ein Post enthält den Betreff, den Namen des Kontakts, den Posteingang und einen Link zur
 Unterhaltung. Die Nachricht selbst bleibt in Yuva, außer der Posteingang schaltet **Include message
-text** ein; dann zitiert der Post auch ihre ersten 300 Zeichen. Eine Erwähnung wird im Thread der
-Unterhaltung gepostet, wenn der Kanal schon einen hat.
+text** ein; dann zitiert der Post auch ihre ersten 300 Zeichen. Eine Erwähnung oder ein SLA-Post geht in den Thread der
+Unterhaltung, wenn der Kanal schon einen hat; eine Antwort dort funktioniert wie in jedem anderen Thread.
 
 Über die API: `PUT /v1/inboxes/{id}/slack` mit `new_conversations_channel_id`,
-`mentions_channel_id` und `include_content`; `GET /v1/slack/channels` listet die Kanäle, in denen
+`mentions_channel_id`, `sla_channel_id`, `sla_warnings` und `include_content`; `GET /v1/slack/channels` listet die Kanäle, in denen
 der Bot ist.
 
 ## Ihren Slack-Benutzer verknüpfen

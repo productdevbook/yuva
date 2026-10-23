@@ -1566,13 +1566,21 @@ its own).
   `app_uninstalled` or `tokens_revoked`), `member.slack_linked`, `member.slack_unlinked`.
 - **Posts.** The notification job (`notify`) queues a `slack_post` job, unique by message and
   event, for a contact's first message (`new_conversation`) and for a note with mentions
-  (`mention`) when the inbox names a channel for it. SLA breaches join when `conversation.sla_breached` exists (M28). A post carries the
+  (`mention`) when the inbox names a channel for it. A post carries the
   event, the subject, the contact's name, the inbox and `<public URL>/conversations/<id>`, and the
   start of the text (300 characters) only with `include_content`; every value from people is
   escaped (`&`, `<`, `>`), so customer text cannot become a Slack link, mention or `@channel`. A
   mentioned member with a linked Slack user is mentioned as `<@U…>`. A mention goes into the
   conversation's existing thread in that channel, else starts one; every top-level post is recorded
   in `slack_threads`.
+- **SLA posts.** `slack_inbox_settings.sla_channel` and `sla_warnings` (migration 00111). The
+  `sla_check` transaction that marks a target breached (or warned, only with `sla_warnings`) also
+  queues one `slack_sla_post` job, unique by its arguments, when the inbox has an SLA channel; the
+  mark happens once, so the post is never repeated across replicas or retries. The post names the
+  target, the lateness (or time left), the assignee (mentioned as `<@U…>` when linked) or team, the
+  subject, contact, inbox and link, and the latest customer-visible message start only with
+  `include_content`. It joins the conversation's thread in that channel or starts one, so replies
+  behave as in other threads. Delivery, rate limits and error recording are those of `slack_post`.
 - **Outbound.** Only `https://slack.com/api/` (tests point the client elsewhere). Each call is
   tried up to three times: a 429 whose `Retry-After` is at most 10 seconds is waited out, a 5xx or
   failed connection after 1 and 2 seconds. A longer rate limit snoozes the `slack_post` job for

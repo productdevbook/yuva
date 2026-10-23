@@ -854,7 +854,7 @@ func (s *Server) CheckSLA(ctx context.Context, a SLACheckArgs) error {
 			ev.conversation(realtime.ConversationUpdated, c, conv)
 		}
 		ev.job(SLANotifyArgs{WorkspaceID: a.WorkspaceID, ConversationID: a.ConversationID, Target: a.Target, DueAt: a.DueAt.UTC(), Breached: !a.Warn}, nil)
-		return nil
+		return s.queueSlackSLA(ctx, q, ev, c, SlackSLAArgs{WorkspaceID: a.WorkspaceID, ConversationID: a.ConversationID, Target: a.Target, DueAt: a.DueAt.UTC(), At: now.UTC(), Breached: !a.Warn})
 	})
 }
 
