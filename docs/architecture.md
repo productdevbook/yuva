@@ -122,6 +122,138 @@ into another (`POST /v1/contacts/{id}/merge`): the target keeps its id and gains
 addresses, external ids, attributes (its own value wins) and conversations; the source is deleted,
 so identity tokens and mail for its keys find the target.
 
+### Team workflow (M28)
+
+Planned; built in the order teams and macros, SLA and custom fields, automation and automatic
+assignment, saved views. Snoozed conversations wake on the server at `snooze_until`; a rule made by
+an owner or admin may reply to customers while `bots_may_send` is off, one made by an API key only
+while it is on; a reopened conversation gets no new resolution target.
+
+**Teams (#138).**
+- **Tables.** `teams (workspace_id, id, name unique per workspace, description, assignment_mode, assignment_cap, created_at, updated_at)`, `team_members (workspace_id, team_id, member_id)` and `team_inboxes (workspace_id, team_id, inbox_id, created_at)`. All foreign keys are composite `(workspace_id, …)` with `ON DELETE CASCADE`.
+- **Access.** A member's inbox access is the union of their own grants and their teams' grants. A migration adds the view `member_inbox_access` (`inbox_members ∪ team_inboxes⋈team_members`) and redefines `inbox_viewers` as `member_inbox_access ∪ api_key_inboxes`. Every query on `inbox_viewers` follows without change.
+- **Switching the seven direct readers.** `HasInboxAccess`, `ListNotificationCandidates`, `ListInboxNotifications`, `ListAvailableMembers` and `ListAnalyticsSubscriberAddresses` move to `member_inbox_access`. `ListViewerInboxIDs` gains `DISTINCT`. `ListInboxMembers` returns each member with `via: direct | team` and the team ids.
+- **No raw reads.** A test greps `queries/*.sql` and fails on any `FROM inbox_members` outside the view and the grant and revoke queries.
+- **Assigning to a team.** `conversations.team_id` (nullable, `ON DELETE SET NULL`). A conversation has a team, a member, both or neither. A team can be set only if it holds a grant on the conversation's inbox; otherwise `422 team_access`. Moving a conversation keeps `team_id` only when the team can see the new inbox, the same rule as the assignee.
+- **List filters.** `team_id=<id>` and `team=mine` (any team of the caller); "Unassigned" stays `assignee_id IS NULL`. `/v1/conversations/counts` gains `teams` (open per team) and `mine_teams`.
+- **Endpoints.** `/v1/teams` (CRUD), `PUT|DELETE /v1/teams/{id}/members/{member_id}`, `PUT|DELETE /v1/teams/{id}/inboxes/{inbox_id}`. Reads need `inboxes:read`; writes need `inboxes:manage` (owners, admins, keys not limited to inboxes).
+- **Who sees teams.** Agents and inbox-limited keys see the teams they belong to and the teams granted an inbox they see. Owners and admins see all.
+- **Revocation takes effect at once.** Every change that alters a member's effective access diffs `member_inbox_access` for the affected members inside the same transaction. It emits one `inbox_access.changed` per `(member, inbox)` whose effective access flipped (existing schema), so open realtime connections reload their inbox set. Removing a member deletes their `team_members` rows by cascade. The heartbeat re-check already closes their connections.
+- **Events and audit.** Events `team.created`, `team.updated` and `team.deleted` (payload carries `member_ids` and `inbox_ids`) go to realtime, to webhooks, and to members named in the payload or who see all inboxes. Audit actions: `team.created`, `team.deleted`, `team.member_added`, `team.member_removed`, `team.inbox_access_granted`, `team.inbox_access_revoked`.
+
+**Automatic assignment (#139).**
+- **Settings.** `inboxes.assignment_mode` and `teams.assignment_mode` (`off | round_robin | least_open`), and `assignment_cap` (1–500, null for no cap).
+- **Turn tracking.** `assignment_turns (workspace_id, pool_id, member_id, last_at)` holds round-robin turns. `pool_id` is the inbox id or the team id.
+- **Eligible members.** A member is eligible when all of these hold:
+  - they have access to the inbox (`member_inbox_access`);
+  - they have a fresh realtime connection (`presenceFresh`) and `availability = 'auto'`;
+  - the inbox is inside its business hours (`inboxOpen`);
+  - they are under the cap;
+  - for a team pool, they are a member of the team.
+- **Cap.** The cap counts the member's `open`, non-spam, untrashed conversations across the workspace. Manual assignment ignores the cap; the hand-off menu shows "over cap".
+- **Which pool.** A conversation with a team and no member uses the team's pool. One with neither uses the inbox's pool. One with `assignee_id` set is never touched.
+- **The job.** `auto_assign {workspace_id, conversation_id}` (unique by args) runs after the automation job for the same trigger, or directly when the workspace has no enabled rule for it. Rules decide first.
+- **Nobody eligible.** `conversations.assign_waiting_since` is set; a partial index `(workspace_id, assign_waiting_since) WHERE assign_waiting_since IS NOT NULL` covers it.
+- **Picking up waiting conversations.** `assign_waiting {workspace_id}` (unique while pending) takes waiting conversations oldest first, 50 per run. It is queued when:
+  - a member connects or sets availability to `auto`;
+  - a member's conversation leaves `open` or is unassigned;
+  - the per-minute sweep finds an inbox whose business hours just opened.
+- **Reopen.** If the assignee still has inbox access and is not `away`, they keep the conversation; otherwise it is unassigned and enters the pool.
+- **Events.** An automatic assignment writes the same `assigned` timeline event and `conversation.updated` as a manual one, with `auto: true`, and notifies like a manual assignment.
+
+**SLA policies (#140).**
+- **Policies.** `sla_policies (workspace_id, id, name, position, enabled, inbox_ids uuid[], channel_kinds text[], label_ids uuid[], priorities text[], first_reply_minutes, next_reply_minutes, resolution_minutes, warn_minutes default 15)`. An empty array matches anything; at least one target is required. The first enabled policy by `position` whose conditions match applies.
+- **Per-conversation state.** `conversation_sla (workspace_id, conversation_id PK, policy_id, assignee_id_at_outcome, team_id_at_outcome)`, plus for each target `t ∈ {first_reply, next_reply, resolution}`: `t_due_at`, `t_remaining_s` (business seconds left while paused), `t_met_at`, `t_breached_at`, `t_warned_at`, and `paused_at`. The list's `sla_due_at` is `least(open due times)`, stored on `conversations` (indexed `(workspace_id, sla_due_at) WHERE sla_due_at IS NOT NULL`) so the list sorts by `sort=sla_due`.
+- **Clocks.** Every target counts in the inbox's business hours and timezone, and in plain time when hours are off. The arithmetic is one Go function `addBusinessSeconds(inbox, from, secs)`.
+  - First reply: starts at the first contact message.
+  - Next reply: starts at a contact message that follows a team reply.
+  - Resolution: starts at creation.
+- **What meets a target.** A member's or a bot's sent public reply meets first and next reply. Notes, drafts, system auto-replies and rule replies never do. Resolution is met at the first close.
+- **Reopen.** A reopened conversation runs no new resolution target: the outcome of the first close stands. Only next reply applies. 
+- **Pausing.** `pending` and `snoozed` pause every running target: `t_remaining_s` is stored and `t_due_at` cleared. `open` resumes them with `t_due_at = addBusinessSeconds(now, t_remaining_s)`.
+- **Snooze wake.** New per-minute job `snooze_wake`. Per workspace it runs `UPDATE … SET status='open' WHERE status='snoozed' AND snooze_until <= now() … FOR UPDATE SKIP LOCKED LIMIT 500`. Each change emits `conversation.updated` and a `status_changed` event and resumes the clock.
+- **Re-evaluation.** A change of priority, labels or inbox (move) picks the policy again. A different policy recomputes due times from the original start instants; outcomes already met or breached stay as they are.
+- **Exclusions.** Spam and trash drop the row. `mail` inboxes (M34) never get one.
+- **Breach detection.**
+  - When a due time is set, the same transaction queues `sla_check {conversation_id, target, due_at}` with `ScheduledAt = due_at`, and a warning check at `due_at − warn_minutes`.
+  - The job acts only when the stored `t_due_at` still equals its `due_at`: `UPDATE … SET t_breached_at = now() WHERE … AND t_breached_at IS NULL AND t_met_at IS NULL AND t_due_at = $due RETURNING`. Stale jobs do nothing, and each breach fires once.
+  - A per-minute sweep catches lost jobs via the `sla_due_at` index.
+- **Breach output.** A breach emits `conversation.sla_breached` and a warning emits `conversation.sla_warning` (realtime and webhooks). Both notify the assignee, or the team's members when there is no assignee, through two new member notification kinds (`sla_warning` push; `sla_breached` push and e-mail).
+- **API, stats, reports.** `Conversation.sla` = `{policy_id, due_at, state: on_track | due_soon | breached | met | paused, targets[]}`. `/v1/stats` gains `sla.met` and `sla.breached`, in total, per inbox and per member (`assignee_id_at_outcome`). Y-147 rolls up the met and breached instants of `conversation_sla`.
+- **Endpoints.** `/v1/sla-policies` (CRUD plus `PUT /order`): `inboxes:read` and `inboxes:manage`, owners and admins.
+
+**Automation rules (#141).**
+- **Rules.** `automation_rules (workspace_id, id, name, enabled, position, inbox_id nullable, trigger, idle_minutes, conditions jsonb, actions jsonb, created_by, …)`.
+  - Triggers: `conversation_created`, `message_received` (contact message), `status_changed`, `idle`.
+  - Conditions are an all-of list over: channel kind, kind, feedback category, subject or body contains, contact attribute, label, priority, team, assignee empty, inside or outside business hours.
+  - Actions, at most 10 per rule: add or remove label, assign (member, team, or the auto-assignment pool), priority, status, snooze, note, reply with a canned reply, send to a webhook endpoint.
+- **One ordered list.** Workspace and inbox rules share one list ordered by `position`; an inbox rule is a rule with `inbox_id`.
+- **Runs.** `automation_runs (workspace_id, id, rule_id, conversation_id, trigger_key, outcome: applied | failed, error, actions jsonb, created_at)` with a unique key on `(workspace_id, rule_id, trigger_key)`. Kept 30 days. `GET /v1/automation-rules/{id}/runs` is the rule log.
+- **Queuing.** `inTx` calls `queueAutomations(ev.items)`. Each eligible event queues `automation_run {workspace_id, event_id}`, using the ids `writeEvents` returns. `trigger_key` is `event:<id>`. For `idle`, a 5-minute sweep uses `idle:<conversation_id>:<last_activity_at>`, so each idle period fires once.
+- **Execution.** The job loads the enabled rules for the trigger in order. For each rule, one transaction:
+  1. lock the conversation;
+  2. `INSERT automation_runs … ON CONFLICT DO NOTHING`; zero rows means the rule already ran, so skip it;
+  3. evaluate the conditions on the current state, so a later rule sees an earlier rule's changes; when they do not match, roll back, so no row is written;
+  4. apply the actions through the same code as `/v1` (`changeConversation`, message create) under a rule principal that sees every inbox.
+
+  A failed action rolls back that rule's transaction and records `failed` in a separate transaction. Rules already committed stay committed on retry, so each rule has at most one effect per trigger.
+- **No loops.** `eventBatch` carries `origin_rule_id`; events written by a rule store it in the payload (`rule: {id, name}`), and `queueAutomations` skips them. A rule's change never triggers a rule.
+- **Customer-facing safety.** A canned-reply action is skipped (outcome `failed`, reason `auto_reply`) when any of these hold:
+  - the triggering message is `message_emails.auto` or a bounce;
+  - the contact is blocked;
+  - the conversation is spam;
+  - a rule already replied in this conversation within the hour (`ClaimAutoReply`-style claim).
+- **Webhook action.** It delivers an `automation.triggered` event to an existing endpoint through the normal delivery jobs (same signing and address checks). Rules store no URLs or secrets.
+- **Rate limit.** `automation_actions`, 600 per workspace per minute, checked in the job before any transaction opens. Over the limit, the job snoozes 60 s.
+- **Order with assignment.** The automation job queues `auto_assign` last for `conversation_created` and `message_received` (reopen).
+- **Scopes.** `automations:read`; `automations:manage` is a manager scope, never implied, refused for inbox-limited keys. A rule acts with workspace-wide power.
+- **Audit.** `automation_rule.created`, `.updated`, `.deleted` (target host only for webhook actions).
+
+**Macros (#142).**
+- **Table.** `macros (workspace_id, id, owner_member_id nullable, name, shortcut, body nullable, actions jsonb, position, …)`. Null owner means shared. Shortcut is unique per owner scope.
+- **Actions.** Labels add and remove, assignee or team, status, priority, snooze duration.
+- **Endpoints and scopes.** `/v1/macros`. Read with `conversations:read` (shared ones, plus the caller's own). Personal macros need a member session or OAuth token. Shared macros are written by owners, admins and keys with `canned_replies:write`.
+- **Composer.** The `/` menu and the command palette list canned replies and macros together. Choosing a macro fills the composer and holds its actions.
+- **Applying on send.** `MessageCreate` gains `then: ConversationUpdate` plus `macro_id`. The server applies them in the same transaction as the message, so the existing undo hold (which only delays the POST) covers both. The timeline event names the macro.
+- **Unchanged.** Canned replies stay as they are. `then` is also how "send and close" can become atomic later.
+
+**Saved views (#143).**
+- **Table.** `saved_views (workspace_id, id, name, visibility: personal | workspace | team, owner_member_id, team_id, filters jsonb, position, …)`.
+- **Filters.** The stored filters use exactly the `ListConversations` query parameters, validated by the same parser.
+- **Who manages them.** Personal views: any member. Workspace and team views: owners, admins and keys with `views:write`. Team views are listed to team members, owners and admins.
+- **Counts.** `GET /v1/views` returns each view with `count`, open conversations counted under the caller's own `inbox_viewers` filter, capped at 1000. A shared view therefore never counts or lists anything the caller cannot see. At most 50 views per caller.
+- **Deleted labels and teams.** The delete transaction strips the id from `filters` with a jsonb update. A rename changes nothing, because views store ids.
+
+**Custom fields (#144).**
+- **Definitions.** `custom_fields (workspace_id, id, object: conversation | contact, key ^[a-z][a-z0-9_]{0,39}$, name, type: text | number | date | select | checkbox, options jsonb, required_on_close, position)`. At most 50 per object.
+- **Values.**
+  - Conversations: `conversations.fields jsonb NOT NULL DEFAULT '{}'`.
+  - Contacts: the existing `attributes`. A key with a definition is validated (`400 field_invalid` on `/v1`). On `/client/v1` and identity tokens an invalid value is dropped and logged, never refused. Other keys stay free-form.
+- **Filtering.** `field.<key>=<value>` on the list and in views, via `fields @> $1`, served by a GIN index (`jsonb_path_ops`).
+- **Required on close.** Closing without a required field answers `409 field_required` (with `field`). This holds on PATCH, bulk (per item), MCP, macros and rules (the rule logs `failed`).
+- **Deletions.** Deleting a field or a select option clears the conversation values in a River batch job; contact attributes are kept.
+- **Endpoints and payloads.** `/v1/custom-fields` with the new manager scope `fields:manage`. Values are written with `conversations:write` / `contacts:write`. `fields` appears on webhook and realtime payloads.
+
+**MCP (coverage rules).**
+- **Added:** `list_teams`, `list_macros` (body as text for `draft_reply`; actions listed), `list_custom_fields`, `set_conversation_fields`. Also: `assign` gains `team_id`; `search_conversations` gains `team_id`, `sla_state`, `sort=sla_due` and `fields`; `get_conversation` returns `sla` and `fields`.
+- **Left out on purpose:**
+  - Team management and membership: access, under the credentials-and-access rule.
+  - Automation rules, read and write: they act with workspace power and can mail customers and call webhooks.
+  - SLA policies and field definitions: workspace settings.
+  - Saved views: a panel construct; search covers the filters.
+  - Macro writes and applying a macro: actions are applied only on a member's send.
+
+**Webhook and event types added:** `team.created`, `team.updated`, `team.deleted`, `conversation.sla_warning`, `conversation.sla_breached`, `automation.triggered` (endpoint action only).
+
+**Left out of M28:**
+- holiday calendars;
+- per-member business hours;
+- skills-based routing;
+- load weighting by channel;
+- SLA on `mail` inboxes;
+- rules with OR groups;
+- rules triggered by notes or by other rules.
+
 ## Components
 
 ```
