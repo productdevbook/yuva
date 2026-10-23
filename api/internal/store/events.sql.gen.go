@@ -209,3 +209,30 @@ func (q *Queries) NotifySignal(ctx context.Context, arg NotifySignalParams) erro
 	_, err := q.db.Exec(ctx, notifySignal, arg.Channel, arg.Payload)
 	return err
 }
+
+const redactMessageEvents = `-- name: RedactMessageEvents :execrows
+UPDATE events SET payload = $1::jsonb || jsonb_build_object('draft', coalesce(payload->'draft', 'false'::jsonb))
+WHERE workspace_id = $2 AND conversation_id = $3
+  AND type IN ('message.created', 'message.updated', 'draft.created', 'draft.updated', 'draft.deleted')
+  AND payload->>'id' = $4::text
+`
+
+type RedactMessageEventsParams struct {
+	Message        []byte
+	WorkspaceID    uuid.UUID
+	ConversationID *uuid.UUID
+	MessageID      string
+}
+
+func (q *Queries) RedactMessageEvents(ctx context.Context, arg RedactMessageEventsParams) (int64, error) {
+	result, err := q.db.Exec(ctx, redactMessageEvents,
+		arg.Message,
+		arg.WorkspaceID,
+		arg.ConversationID,
+		arg.MessageID,
+	)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected(), nil
+}

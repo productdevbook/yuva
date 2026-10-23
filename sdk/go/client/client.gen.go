@@ -937,6 +937,7 @@ const (
 	LabelsWrite         ApiKeyScope = "labels:write"
 	ListsRead           ApiKeyScope = "lists:read"
 	ListsWrite          ApiKeyScope = "lists:write"
+	MessagesRedact      ApiKeyScope = "messages:redact"
 	MessagesWrite       ApiKeyScope = "messages:write"
 	MigrationsManage    ApiKeyScope = "migrations:manage"
 	NotesWrite          ApiKeyScope = "notes:write"
@@ -1003,6 +1004,8 @@ func (e ApiKeyScope) Valid() bool {
 	case ListsRead:
 		return true
 	case ListsWrite:
+		return true
+	case MessagesRedact:
 		return true
 	case MessagesWrite:
 		return true
@@ -1072,6 +1075,7 @@ const (
 	AuditMemberJoined                        AuditAction = "member.joined"
 	AuditMemberRemoved                       AuditAction = "member.removed"
 	AuditMemberRoleChanged                   AuditAction = "member.role_changed"
+	AuditMessageRedacted                     AuditAction = "message.redacted"
 	AuditOAuthGrantCreated                   AuditAction = "oauth_grant.created"
 	AuditOAuthGrantRevoked                   AuditAction = "oauth_grant.revoked"
 	AuditWebhookCreated                      AuditAction = "webhook.created"
@@ -1134,6 +1138,8 @@ func (e AuditAction) Valid() bool {
 	case AuditMemberRemoved:
 		return true
 	case AuditMemberRoleChanged:
+		return true
+	case AuditMessageRedacted:
 		return true
 	case AuditOAuthGrantCreated:
 		return true
@@ -1202,6 +1208,7 @@ const (
 	AuditTargetInvite          AuditTargetType = "invite"
 	AuditTargetList            AuditTargetType = "list"
 	AuditTargetMember          AuditTargetType = "member"
+	AuditTargetMessage         AuditTargetType = "message"
 	AuditTargetOAuthGrant      AuditTargetType = "oauth_grant"
 	AuditTargetWebhook         AuditTargetType = "webhook"
 	AuditTargetWorkspace       AuditTargetType = "workspace"
@@ -1227,6 +1234,8 @@ func (e AuditTargetType) Valid() bool {
 	case AuditTargetList:
 		return true
 	case AuditTargetMember:
+		return true
+	case AuditTargetMessage:
 		return true
 	case AuditTargetOAuthGrant:
 		return true
@@ -1913,14 +1922,17 @@ func (e ClientInboxUpdatedEventType) Valid() bool {
 
 // Defines values for ClientMessageEventType.
 const (
-	ClientMessageEventTypeMessageCreated ClientMessageEventType = "message.created"
-	ClientMessageEventTypeMessageUpdated ClientMessageEventType = "message.updated"
+	ClientMessageEventTypeMessageCreated  ClientMessageEventType = "message.created"
+	ClientMessageEventTypeMessageRedacted ClientMessageEventType = "message.redacted"
+	ClientMessageEventTypeMessageUpdated  ClientMessageEventType = "message.updated"
 )
 
 // Valid indicates whether the value is a known member of the ClientMessageEventType enum.
 func (e ClientMessageEventType) Valid() bool {
 	switch e {
 	case ClientMessageEventTypeMessageCreated:
+		return true
+	case ClientMessageEventTypeMessageRedacted:
 		return true
 	case ClientMessageEventTypeMessageUpdated:
 		return true
@@ -4058,12 +4070,15 @@ func (e MessageKind) Valid() bool {
 
 // Defines values for MessageUpdatedEventType.
 const (
-	MessageUpdatedEventTypeMessageUpdated MessageUpdatedEventType = "message.updated"
+	MessageUpdatedEventTypeMessageRedacted MessageUpdatedEventType = "message.redacted"
+	MessageUpdatedEventTypeMessageUpdated  MessageUpdatedEventType = "message.updated"
 )
 
 // Valid indicates whether the value is a known member of the MessageUpdatedEventType enum.
 func (e MessageUpdatedEventType) Valid() bool {
 	switch e {
+	case MessageUpdatedEventTypeMessageRedacted:
+		return true
 	case MessageUpdatedEventTypeMessageUpdated:
 		return true
 	default:
@@ -6187,6 +6202,7 @@ const (
 	WebhookEventTypeHelpArticlePublished      WebhookEventType = "help.article.published"
 	WebhookEventTypeHelpArticleUnpublished    WebhookEventType = "help.article.unpublished"
 	WebhookEventTypeMessageCreated            WebhookEventType = "message.created"
+	WebhookEventTypeMessageRedacted           WebhookEventType = "message.redacted"
 	WebhookEventTypeStatusComponentUpdated    WebhookEventType = "status.component.updated"
 	WebhookEventTypeStatusIncidentCreated     WebhookEventType = "status.incident.created"
 	WebhookEventTypeStatusIncidentResolved    WebhookEventType = "status.incident.resolved"
@@ -6251,6 +6267,8 @@ func (e WebhookEventType) Valid() bool {
 	case WebhookEventTypeHelpArticleUnpublished:
 		return true
 	case WebhookEventTypeMessageCreated:
+		return true
+	case WebhookEventTypeMessageRedacted:
 		return true
 	case WebhookEventTypeStatusComponentUpdated:
 		return true
@@ -8493,6 +8511,9 @@ type ApiKeyList struct {
 //	    OAuth tokens also replies to reader threads and their accepted answer.
 //	  - `drafts:send`: send a draft (`POST /v1/messages/{id}/send`), together with
 //	    `messages:write`.
+//	  - `messages:redact`: remove a message's or note's content (`POST /v1/messages/{id}/redact`).
+//	    An OAuth token redacts only what its member may: owners and admins any message, other
+//	    members their own. Never implied: a key made without naming its scopes does not hold it.
 //	  - `notes:write`: notes.
 //	  - `contacts:read`: list, look up and get contacts, presence.
 //	  - `contacts:write`: create, update, delete and merge contacts.
@@ -8553,7 +8574,7 @@ type ApiKeyList struct {
 //	    without an inbox limit; offered only to owners' OAuth tokens. Never implied: a key made
 //	    without naming its scopes does not hold it.
 //
-// `conversations:delete`, `lists:*`, `broadcasts:*`, `migrations:manage`, `analytics:*`, `status:*`, `help:*`, `roadmap:*`, `changelog:*` and `audit:read` are never added to keys made before they existed.
+// `conversations:delete`, `messages:redact`, `lists:*`, `broadcasts:*`, `migrations:manage`, `analytics:*`, `status:*`, `help:*`, `roadmap:*`, `changelog:*` and `audit:read` are never added to keys made before they existed.
 type ApiKeyScope string
 
 // ApiKeyUpdate Only the fields sent change. Scopes, inbox limit and expiry cannot change.
@@ -8631,6 +8652,8 @@ type Attributes map[string]interface{}
 //   - `inbox.identity_secret_rotated`: none. `inbox.deleted`: `name`.
 //   - `conversation.trashed`, `conversation.restored`: `inbox_id`. `conversation.deleted`:
 //     `inbox_id`, by `system` (never the subject or content).
+//   - `message.redacted`: `conversation_id`, `inbox_id`, `kind` (`message` or `note`),
+//     `files` (attachments and raw e-mails removed); never the removed content.
 //   - `contact.deleted`: none (no name or address is kept). `contact.consent_exported`: `format`,
 //     `started` (the entry is written when the export starts streaming).
 //   - `list.consent_exported`: `name`, `format`, `started`.
@@ -8703,6 +8726,8 @@ type AuditEntry struct {
 	// - `inbox.identity_secret_rotated`: none. `inbox.deleted`: `name`.
 	// - `conversation.trashed`, `conversation.restored`: `inbox_id`. `conversation.deleted`:
 	//   `inbox_id`, by `system` (never the subject or content).
+	// - `message.redacted`: `conversation_id`, `inbox_id`, `kind` (`message` or `note`),
+	//   `files` (attachments and raw e-mails removed); never the removed content.
 	// - `contact.deleted`: none (no name or address is kept). `contact.consent_exported`: `format`,
 	//   `started` (the entry is written when the export starts streaming).
 	// - `list.consent_exported`: `name`, `format`, `started`.
@@ -10808,6 +10833,10 @@ type ClientMessage struct {
 	// Html Sanitized HTML, when the message has one.
 	Html *string   `json:"html,omitempty"`
 	Id   uuid.UUID `json:"id"`
+
+	// Redacted `true` when a member removed its content: `body` is empty and it has no `html`,
+	// attachments or cards. Show it in place as removed. Absent otherwise.
+	Redacted *bool `json:"redacted,omitempty"`
 }
 
 // ClientMessageAuthor defines model for ClientMessageAuthor.
@@ -10841,7 +10870,8 @@ type ClientMessageCreateMultipart struct {
 	Files    *[]openapi_types.File `json:"files,omitempty"`
 }
 
-// ClientMessageEvent A message was added or changed.
+// ClientMessageEvent A message was added or changed. `message.redacted`: a member removed its content; `data`
+// has `redacted: true`, an empty `body` and no attachments. Show it as removed in place.
 type ClientMessageEvent struct {
 	ConversationId uuid.UUID              `json:"conversation_id"`
 	CreatedAt      time.Time              `json:"created_at"`
@@ -10867,6 +10897,9 @@ type ClientMessagePreview struct {
 	AuthorType AuthorType `json:"author_type"`
 	CreatedAt  time.Time  `json:"created_at"`
 	Id         uuid.UUID  `json:"id"`
+
+	// Redacted `true` when its content was removed; `text` is empty. Absent otherwise.
+	Redacted *bool `json:"redacted,omitempty"`
 
 	// Text The plain-text body on one line, cut to 140 characters with `...` when longer.
 	Text string `json:"text"`
@@ -15690,7 +15723,7 @@ type Message struct {
 	Attachments []Attachment  `json:"attachments"`
 	Author      MessageAuthor `json:"author"`
 
-	// Body Plain text.
+	// Body Plain text; empty once redacted.
 	Body string `json:"body"`
 
 	// Cards Help articles sent with the message; absent when none were.
@@ -15733,6 +15766,14 @@ type Message struct {
 
 	// Mentions Members a note mentions (notes only; absent when it mentions nobody).
 	Mentions *[]uuid.UUID `json:"mentions,omitempty"`
+
+	// RedactedAt When its content was removed (`POST /v1/messages/{id}/redact`); absent otherwise. A
+	// redacted message has an empty `body` and no `html`, attachments, cards or mentions;
+	// show it as "Removed by" `redacted_by` at this time.
+	RedactedAt *time.Time `json:"redacted_at,omitempty"`
+
+	// RedactedBy Who removed its content; absent when it was not redacted.
+	RedactedBy *MessageRedactedBy `json:"redacted_by,omitempty"`
 
 	// SentBy Who sent a draft (`member` or `bot`); absent for messages that were never drafts.
 	SentBy *MessageAuthor `json:"sent_by,omitempty"`
@@ -15991,8 +16032,19 @@ type MessagePreview struct {
 	// change (assignment, status, labels).
 	Kind MessageKind `json:"kind"`
 
+	// Redacted `true` when its content was removed; `text` is empty. Absent otherwise.
+	Redacted *bool `json:"redacted,omitempty"`
+
 	// Text The plain-text body on one line, cut to 140 characters with `...` when longer.
 	Text string `json:"text"`
+}
+
+// MessageRedactedBy The member or API key that removed a message's content; empty when it is gone.
+type MessageRedactedBy struct {
+	ApiKeyId *uuid.UUID `json:"api_key_id,omitempty"`
+
+	// MemberId The member, also when they acted through a connected app.
+	MemberId *uuid.UUID `json:"member_id,omitempty"`
 }
 
 // MessageUpdate Only the fields sent change.
@@ -16003,7 +16055,9 @@ type MessageUpdate struct {
 	Html nullable.Nullable[string] `json:"html,omitempty"`
 }
 
-// MessageUpdatedEvent A message changed, e.g. its e-mail delivery state.
+// MessageUpdatedEvent A message changed, e.g. its e-mail delivery state. `message.redacted`: its content was
+// removed (`data.redacted_at`, `redacted_by`; empty `body`, no `html` or attachments); show
+// it as removed wherever it appears, and drop any copy of its content.
 type MessageUpdatedEvent struct {
 	ConversationId uuid.UUID               `json:"conversation_id"`
 	CreatedAt      time.Time               `json:"created_at"`
@@ -20124,7 +20178,7 @@ type WebhookEndpoint struct {
 	// InboxId Absent for workspace endpoints.
 	InboxId *uuid.UUID `json:"inbox_id,omitempty"`
 
-	// IncludeNotes `message.created` also for members' notes.
+	// IncludeNotes `message.created` and `message.redacted` also for members' notes.
 	IncludeNotes bool `json:"include_notes"`
 
 	// SecretRotatedAt While the previous secret still signs (24 hours after a rotation), when it was replaced.
@@ -22992,6 +23046,15 @@ type DownloadMessageRawParams struct {
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
 
+// RedactMessageParams defines parameters for RedactMessage.
+type RedactMessageParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
 // SendMessageParams defines parameters for SendMessage.
 type SendMessageParams struct {
 	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
@@ -24067,6 +24130,20 @@ type WebhookMessageCreatedParams struct {
 	WebhookSignature WebhookSignatureHeader `json:"webhook-signature"`
 }
 
+// WebhookMessageRedactedParams defines parameters for WebhookMessageRedacted.
+type WebhookMessageRedactedParams struct {
+	// WebhookId The delivery's id, the same on every retry; use it to ignore duplicates.
+	WebhookId WebhookIdHeader `json:"webhook-id"`
+
+	// WebhookTimestamp Unix seconds of this attempt. Refuse values far from your clock.
+	WebhookTimestamp WebhookTimestampHeader `json:"webhook-timestamp"`
+
+	// WebhookSignature Space-separated `v1,<base64>` signatures: HMAC-SHA256 over
+	// `<webhook-id>.<webhook-timestamp>.<body>` with the base64-decoded part of the
+	// `whsec_` secret (Standard Webhooks). Two during a secret rotation.
+	WebhookSignature WebhookSignatureHeader `json:"webhook-signature"`
+}
+
 // WebhookStatusComponentUpdatedParams defines parameters for WebhookStatusComponentUpdated.
 type WebhookStatusComponentUpdatedParams struct {
 	// WebhookId The delivery's id, the same on every retry; use it to ignore duplicates.
@@ -24737,6 +24814,9 @@ type WebhookHelpArticleUnpublishedJSONRequestBody = WebhookHelpArticlePayload
 // WebhookMessageCreatedJSONRequestBody defines body for WebhookMessageCreated for application/json ContentType.
 type WebhookMessageCreatedJSONRequestBody = WebhookMessagePayload
 
+// WebhookMessageRedactedJSONRequestBody defines body for WebhookMessageRedacted for application/json ContentType.
+type WebhookMessageRedactedJSONRequestBody = WebhookMessagePayload
+
 // WebhookStatusComponentUpdatedJSONRequestBody defines body for WebhookStatusComponentUpdated for application/json ContentType.
 type WebhookStatusComponentUpdatedJSONRequestBody = WebhookStatusComponentPayload
 
@@ -25372,6 +25452,8 @@ func (t ClientRealtimeMessage) ValueByDiscriminator() (interface{}, error) {
 	case "inbox.updated":
 		return t.AsClientInboxUpdatedEvent()
 	case "message.created":
+		return t.AsClientMessageEvent()
+	case "message.redacted":
 		return t.AsClientMessageEvent()
 	case "message.updated":
 		return t.AsClientMessageEvent()
@@ -27699,6 +27781,8 @@ func (t RealtimeMessage) ValueByDiscriminator() (interface{}, error) {
 		return t.AsMemberPresenceEvent()
 	case "message.created":
 		return t.AsMessageCreatedEvent()
+	case "message.redacted":
+		return t.AsMessageUpdatedEvent()
 	case "message.updated":
 		return t.AsMessageUpdatedEvent()
 	case "migration.forwarding_confirmation":
@@ -28506,6 +28590,8 @@ func (t StoredEvent) ValueByDiscriminator() (interface{}, error) {
 		return t.AsInboxAccessChangedEvent()
 	case "message.created":
 		return t.AsMessageCreatedEvent()
+	case "message.redacted":
+		return t.AsMessageUpdatedEvent()
 	case "message.updated":
 		return t.AsMessageUpdatedEvent()
 	case "migration.updated":
@@ -35015,6 +35101,30 @@ type ClientInterface interface {
 	//
 	// Corresponds with GET /v1/messages/{messageId}/raw (the `DownloadMessageRaw` operationId).
 	DownloadMessageRaw(ctx context.Context, messageId MessageId, params *DownloadMessageRawParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// RedactMessage Remove a message's content
+	//
+	// Removes the text, HTML, attachments and their stored files, the cards and mentions of a
+	// message or note and, for e-mail, its subject, full text, headers and raw source, in one
+	// transaction; a job deletes the files. The message stays in the thread with `redacted_at`,
+	// `redacted_by` and no content, so the thread reads "Removed by …". Its earlier events,
+	// webhook deliveries and pushes are rewritten or dropped without the content, its search
+	// entry and previews go with the text, and later e-mails from the contact that quote it lose
+	// their quoted history and raw source. A queued e-mail is not sent (`delivery.state`
+	// `failed`); a sent e-mail cannot be taken back from the recipient's mailbox.
+	//
+	// Owners and admins may redact any message they can see, and other members their own
+	// messages and notes (`403 forbidden` otherwise). An API key needs `messages:redact`, an
+	// OAuth token `messages:redact` and its member's right as above. Drafts are discarded with
+	// `DELETE`, and timeline events cannot be redacted: both answer `409 not_redactable`. A
+	// conversation in the trash answers `404`. Redacting a message again answers it unchanged.
+	// Emits `message.redacted` (realtime, `/client/v1` for messages, webhooks); the audit log
+	// records `message.redacted` without the content.
+	//
+	// Scope: `messages:redact`.
+	//
+	// Corresponds with POST /v1/messages/{messageId}/redact (the `RedactMessage` operationId).
+	RedactMessage(ctx context.Context, messageId MessageId, params *RedactMessageParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// SendMessage Send a draft
 	//
@@ -47765,6 +47875,40 @@ func (c *Client) GetMessageEmail(ctx context.Context, messageId MessageId, param
 // Corresponds with GET /v1/messages/{messageId}/raw (the `DownloadMessageRaw` operationId).
 func (c *Client) DownloadMessageRaw(ctx context.Context, messageId MessageId, params *DownloadMessageRawParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewDownloadMessageRawRequest(c.Server, messageId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// RedactMessage Remove a message's content
+//
+// Removes the text, HTML, attachments and their stored files, the cards and mentions of a
+// message or note and, for e-mail, its subject, full text, headers and raw source, in one
+// transaction; a job deletes the files. The message stays in the thread with `redacted_at`,
+// `redacted_by` and no content, so the thread reads "Removed by …". Its earlier events,
+// webhook deliveries and pushes are rewritten or dropped without the content, its search
+// entry and previews go with the text, and later e-mails from the contact that quote it lose
+// their quoted history and raw source. A queued e-mail is not sent (`delivery.state`
+// `failed`); a sent e-mail cannot be taken back from the recipient's mailbox.
+//
+// Owners and admins may redact any message they can see, and other members their own
+// messages and notes (`403 forbidden` otherwise). An API key needs `messages:redact`, an
+// OAuth token `messages:redact` and its member's right as above. Drafts are discarded with
+// `DELETE`, and timeline events cannot be redacted: both answer `409 not_redactable`. A
+// conversation in the trash answers `404`. Redacting a message again answers it unchanged.
+// Emits `message.redacted` (realtime, `/client/v1` for messages, webhooks); the audit log
+// records `message.redacted` without the content.
+//
+// Scope: `messages:redact`.
+//
+// Corresponds with POST /v1/messages/{messageId}/redact (the `RedactMessage` operationId).
+func (c *Client) RedactMessage(ctx context.Context, messageId MessageId, params *RedactMessageParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRedactMessageRequest(c.Server, messageId, params)
 	if err != nil {
 		return nil, err
 	}
@@ -71777,6 +71921,66 @@ func NewDownloadMessageRawRequest(server string, messageId MessageId, params *Do
 	return req, nil
 }
 
+// NewRedactMessageRequest constructs an http.Request for the RedactMessage method
+func NewRedactMessageRequest(server string, messageId MessageId, params *RedactMessageParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "messageId", messageId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/messages/%s/redact", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.IdempotencyKey != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Idempotency-Key", *params.IdempotencyKey, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Idempotency-Key", headerParam0)
+		}
+
+		if params.YuvaWorkspace != nil {
+			var headerParam1 string
+
+			headerParam1, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam1)
+		}
+
+	}
+
+	return req, nil
+}
+
 // NewSendMessageRequest constructs an http.Request for the SendMessage method
 func NewSendMessageRequest(server string, messageId MessageId, params *SendMessageParams) (*http.Request, error) {
 	var err error
@@ -84622,6 +84826,32 @@ type ClientWithResponsesInterface interface {
 	//
 	// Corresponds with GET /v1/messages/{messageId}/raw (the `DownloadMessageRaw` operationId).
 	DownloadMessageRawWithResponse(ctx context.Context, messageId MessageId, params *DownloadMessageRawParams, reqEditors ...RequestEditorFn) (*DownloadMessageRawResponse, error)
+
+	// RedactMessageWithResponse Remove a message's content
+	//
+	// Removes the text, HTML, attachments and their stored files, the cards and mentions of a
+	// message or note and, for e-mail, its subject, full text, headers and raw source, in one
+	// transaction; a job deletes the files. The message stays in the thread with `redacted_at`,
+	// `redacted_by` and no content, so the thread reads "Removed by …". Its earlier events,
+	// webhook deliveries and pushes are rewritten or dropped without the content, its search
+	// entry and previews go with the text, and later e-mails from the contact that quote it lose
+	// their quoted history and raw source. A queued e-mail is not sent (`delivery.state`
+	// `failed`); a sent e-mail cannot be taken back from the recipient's mailbox.
+	//
+	// Owners and admins may redact any message they can see, and other members their own
+	// messages and notes (`403 forbidden` otherwise). An API key needs `messages:redact`, an
+	// OAuth token `messages:redact` and its member's right as above. Drafts are discarded with
+	// `DELETE`, and timeline events cannot be redacted: both answer `409 not_redactable`. A
+	// conversation in the trash answers `404`. Redacting a message again answers it unchanged.
+	// Emits `message.redacted` (realtime, `/client/v1` for messages, webhooks); the audit log
+	// records `message.redacted` without the content.
+	//
+	// Scope: `messages:redact`.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /v1/messages/{messageId}/redact (the `RedactMessage` operationId).
+	RedactMessageWithResponse(ctx context.Context, messageId MessageId, params *RedactMessageParams, reqEditors ...RequestEditorFn) (*RedactMessageResponse, error)
 
 	// SendMessageWithResponse Send a draft
 	//
@@ -108930,6 +109160,75 @@ func (r DownloadMessageRawResponse) ContentType() string {
 	return ""
 }
 
+type RedactMessageResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *Message
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+	// ApplicationproblemJSON409 the response for an HTTP 409 `application/problem+json` response
+	ApplicationproblemJSON409 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r RedactMessageResponse) GetJSON200() *Message {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r RedactMessageResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r RedactMessageResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r RedactMessageResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetApplicationproblemJSON409 returns the response for an HTTP 409 `application/problem+json` response
+func (r RedactMessageResponse) GetApplicationproblemJSON409() *Problem {
+	return r.ApplicationproblemJSON409
+}
+
+// GetBody returns the raw response body bytes
+func (r RedactMessageResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r RedactMessageResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r RedactMessageResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r RedactMessageResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type SendMessageResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -124762,6 +125061,38 @@ func (c *ClientWithResponses) DownloadMessageRawWithResponse(ctx context.Context
 		return nil, err
 	}
 	return ParseDownloadMessageRawResponse(rsp)
+}
+
+// RedactMessageWithResponse Remove a message's content
+//
+// Removes the text, HTML, attachments and their stored files, the cards and mentions of a
+// message or note and, for e-mail, its subject, full text, headers and raw source, in one
+// transaction; a job deletes the files. The message stays in the thread with `redacted_at`,
+// `redacted_by` and no content, so the thread reads "Removed by …". Its earlier events,
+// webhook deliveries and pushes are rewritten or dropped without the content, its search
+// entry and previews go with the text, and later e-mails from the contact that quote it lose
+// their quoted history and raw source. A queued e-mail is not sent (`delivery.state`
+// `failed`); a sent e-mail cannot be taken back from the recipient's mailbox.
+//
+// Owners and admins may redact any message they can see, and other members their own
+// messages and notes (`403 forbidden` otherwise). An API key needs `messages:redact`, an
+// OAuth token `messages:redact` and its member's right as above. Drafts are discarded with
+// `DELETE`, and timeline events cannot be redacted: both answer `409 not_redactable`. A
+// conversation in the trash answers `404`. Redacting a message again answers it unchanged.
+// Emits `message.redacted` (realtime, `/client/v1` for messages, webhooks); the audit log
+// records `message.redacted` without the content.
+//
+// Scope: `messages:redact`.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /v1/messages/{messageId}/redact (the `RedactMessage` operationId).
+func (c *ClientWithResponses) RedactMessageWithResponse(ctx context.Context, messageId MessageId, params *RedactMessageParams, reqEditors ...RequestEditorFn) (*RedactMessageResponse, error) {
+	rsp, err := c.RedactMessage(ctx, messageId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRedactMessageResponse(rsp)
 }
 
 // SendMessageWithResponse Send a draft
@@ -145143,6 +145474,60 @@ func ParseDownloadMessageRawResponse(rsp *http.Response) (*DownloadMessageRawRes
 	return response, nil
 }
 
+// ParseRedactMessageResponse parses an HTTP response from a RedactMessageWithResponse call
+func ParseRedactMessageResponse(rsp *http.Response) (*RedactMessageResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &RedactMessageResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest Message
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON409 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseSendMessageResponse parses an HTTP response from a SendMessageWithResponse call
 func ParseSendMessageResponse(rsp *http.Response) (*SendMessageResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -150317,6 +150702,11 @@ type WebhookInitiatorInterface interface {
 
 	WebhookMessageCreated(ctx context.Context, targetURL string, params *WebhookMessageCreatedParams, body WebhookMessageCreatedJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// WebhookMessageRedactedWithBody fires the message.redacted webhook with any body
+	WebhookMessageRedactedWithBody(ctx context.Context, targetURL string, params *WebhookMessageRedactedParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	WebhookMessageRedacted(ctx context.Context, targetURL string, params *WebhookMessageRedactedParams, body WebhookMessageRedactedJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// WebhookStatusComponentUpdatedWithBody fires the status.component.updated webhook with any body
 	WebhookStatusComponentUpdatedWithBody(ctx context.Context, targetURL string, params *WebhookStatusComponentUpdatedParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -150972,6 +151362,30 @@ func (p *WebhookInitiator) WebhookMessageCreatedWithBody(ctx context.Context, ta
 
 func (p *WebhookInitiator) WebhookMessageCreated(ctx context.Context, targetURL string, params *WebhookMessageCreatedParams, body WebhookMessageCreatedJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewWebhookMessageCreatedWebhookRequest(targetURL, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := p.applyWebhookEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return p.Client.Do(req)
+}
+
+func (p *WebhookInitiator) WebhookMessageRedactedWithBody(ctx context.Context, targetURL string, params *WebhookMessageRedactedParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewWebhookMessageRedactedWebhookRequestWithBody(targetURL, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := p.applyWebhookEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return p.Client.Do(req)
+}
+
+func (p *WebhookInitiator) WebhookMessageRedacted(ctx context.Context, targetURL string, params *WebhookMessageRedactedParams, body WebhookMessageRedactedJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewWebhookMessageRedactedWebhookRequest(targetURL, params, body)
 	if err != nil {
 		return nil, err
 	}
@@ -152712,6 +153126,67 @@ func NewWebhookMessageCreatedWebhookRequest(targetURL string, params *WebhookMes
 
 // NewWebhookMessageCreatedWebhookRequestWithBody builds a POST request for the message.created webhook with any body
 func NewWebhookMessageCreatedWebhookRequestWithBody(targetURL string, params *WebhookMessageCreatedParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+	_ = err
+
+	reqURL, err := url.Parse(targetURL)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, reqURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		var headerParam0 string
+
+		headerParam0, err = runtime.StyleParamWithOptions("simple", false, "webhook-id", params.WebhookId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+		if err != nil {
+			return nil, err
+		}
+
+		req.Header.Set("webhook-id", headerParam0)
+
+		var headerParam1 string
+
+		headerParam1, err = runtime.StyleParamWithOptions("simple", false, "webhook-timestamp", params.WebhookTimestamp, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+		if err != nil {
+			return nil, err
+		}
+
+		req.Header.Set("webhook-timestamp", headerParam1)
+
+		var headerParam2 string
+
+		headerParam2, err = runtime.StyleParamWithOptions("simple", false, "webhook-signature", params.WebhookSignature, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+		if err != nil {
+			return nil, err
+		}
+
+		req.Header.Set("webhook-signature", headerParam2)
+
+	}
+	return req, nil
+}
+
+// NewWebhookMessageRedactedWebhookRequest builds a application/json POST request for the message.redacted webhook
+func NewWebhookMessageRedactedWebhookRequest(targetURL string, params *WebhookMessageRedactedParams, body WebhookMessageRedactedJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewWebhookMessageRedactedWebhookRequestWithBody(targetURL, params, "application/json", bodyReader)
+}
+
+// NewWebhookMessageRedactedWebhookRequestWithBody builds a POST request for the message.redacted webhook with any body
+func NewWebhookMessageRedactedWebhookRequestWithBody(targetURL string, params *WebhookMessageRedactedParams, contentType string, body io.Reader) (*http.Request, error) {
 	var err error
 	_ = err
 

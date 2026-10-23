@@ -132,6 +132,51 @@ func (q *Queries) GetIdempotencyKey(ctx context.Context, arg GetIdempotencyKeyPa
 	return i, err
 }
 
+const listIdempotentRepliesMentioning = `-- name: ListIdempotentRepliesMentioning :many
+SELECT caller_type, caller_id, key, path, body FROM idempotency_keys
+WHERE workspace_id = $1 AND body IS NOT NULL AND position(convert_to($2::text, 'UTF8') IN body) > 0
+FOR UPDATE
+`
+
+type ListIdempotentRepliesMentioningParams struct {
+	WorkspaceID uuid.UUID
+	Needle      string
+}
+
+type ListIdempotentRepliesMentioningRow struct {
+	CallerType string
+	CallerID   uuid.UUID
+	Key        string
+	Path       string
+	Body       []byte
+}
+
+func (q *Queries) ListIdempotentRepliesMentioning(ctx context.Context, arg ListIdempotentRepliesMentioningParams) ([]ListIdempotentRepliesMentioningRow, error) {
+	rows, err := q.db.Query(ctx, listIdempotentRepliesMentioning, arg.WorkspaceID, arg.Needle)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ListIdempotentRepliesMentioningRow
+	for rows.Next() {
+		var i ListIdempotentRepliesMentioningRow
+		if err := rows.Scan(
+			&i.CallerType,
+			&i.CallerID,
+			&i.Key,
+			&i.Path,
+			&i.Body,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const releaseIdempotencyKey = `-- name: ReleaseIdempotencyKey :exec
 DELETE FROM idempotency_keys
 WHERE workspace_id = $1 AND caller_type = $2 AND caller_id = $3 AND key = $4
@@ -147,6 +192,30 @@ type ReleaseIdempotencyKeyParams struct {
 
 func (q *Queries) ReleaseIdempotencyKey(ctx context.Context, arg ReleaseIdempotencyKeyParams) error {
 	_, err := q.db.Exec(ctx, releaseIdempotencyKey,
+		arg.WorkspaceID,
+		arg.CallerType,
+		arg.CallerID,
+		arg.Key,
+	)
+	return err
+}
+
+const setIdempotentReplyBody = `-- name: SetIdempotentReplyBody :exec
+UPDATE idempotency_keys SET body = $1
+WHERE workspace_id = $2 AND caller_type = $3 AND caller_id = $4 AND key = $5
+`
+
+type SetIdempotentReplyBodyParams struct {
+	Body        []byte
+	WorkspaceID uuid.UUID
+	CallerType  string
+	CallerID    uuid.UUID
+	Key         string
+}
+
+func (q *Queries) SetIdempotentReplyBody(ctx context.Context, arg SetIdempotentReplyBodyParams) error {
+	_, err := q.db.Exec(ctx, setIdempotentReplyBody,
+		arg.Body,
 		arg.WorkspaceID,
 		arg.CallerType,
 		arg.CallerID,

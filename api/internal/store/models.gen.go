@@ -1447,33 +1447,36 @@ type MentionSeen struct {
 }
 
 type Message struct {
-	ID                uuid.UUID
-	WorkspaceID       uuid.UUID
-	ConversationID    uuid.UUID
-	Kind              string
-	Direction         *string
-	AuthorType        string
-	AuthorMemberID    *uuid.UUID
-	AuthorContactID   *uuid.UUID
-	Body              string
-	Html              *string
-	ClientID          *string
-	Event             []byte
-	Search            interface{}
-	CreatedAt         time.Time
-	DeliveryState     *string
-	DeliveryError     *string
-	DeliveryUpdatedAt *time.Time
-	AuthorApiKeyID    *uuid.UUID
-	Draft             bool
-	SentByMemberID    *uuid.UUID
-	SentByApiKeyID    *uuid.UUID
-	Via               *string
-	SentVia           *string
-	Mentions          []uuid.UUID
-	ImportedAt        *time.Time
-	ImportedAuthor    []byte
-	HelpCards         []byte
+	ID                 uuid.UUID
+	WorkspaceID        uuid.UUID
+	ConversationID     uuid.UUID
+	Kind               string
+	Direction          *string
+	AuthorType         string
+	AuthorMemberID     *uuid.UUID
+	AuthorContactID    *uuid.UUID
+	Body               string
+	Html               *string
+	ClientID           *string
+	Event              []byte
+	Search             interface{}
+	CreatedAt          time.Time
+	DeliveryState      *string
+	DeliveryError      *string
+	DeliveryUpdatedAt  *time.Time
+	AuthorApiKeyID     *uuid.UUID
+	Draft              bool
+	SentByMemberID     *uuid.UUID
+	SentByApiKeyID     *uuid.UUID
+	Via                *string
+	SentVia            *string
+	Mentions           []uuid.UUID
+	ImportedAt         *time.Time
+	ImportedAuthor     []byte
+	HelpCards          []byte
+	RedactedAt         *time.Time
+	RedactedByMemberID *uuid.UUID
+	RedactedByApiKeyID *uuid.UUID
 }
 
 type MessageEmail struct {

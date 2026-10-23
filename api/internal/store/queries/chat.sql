@@ -162,6 +162,7 @@ GROUP BY r.conversation_id;
 SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
        m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
        m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions, m.imported_at, m.imported_author, m.help_cards,
+       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id,
        coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
        coalesce(sk.bot_name, sk.name, '')::text AS sent_by_bot_name
 FROM messages m
@@ -177,6 +178,7 @@ LIMIT @lim;
 SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
        m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
        m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions, m.imported_at, m.imported_author, m.help_cards,
+       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id,
        coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
        coalesce(sk.bot_name, sk.name, '')::text AS sent_by_bot_name
 FROM messages m
@@ -255,6 +257,7 @@ JOIN conversations c ON c.workspace_id = m.workspace_id AND c.id = m.conversatio
 LEFT JOIN contact_reads r ON r.workspace_id = m.workspace_id AND r.conversation_id = m.conversation_id
 WHERE m.workspace_id = @workspace_id AND m.conversation_id = @conversation_id
   AND m.kind = 'message' AND m.direction = 'out' AND m.author_type = 'member' AND m.delivery_state IS NULL AND NOT m.draft
+  AND m.redacted_at IS NULL
   AND (r.last_read_at IS NULL OR (m.created_at, m.id) > (r.last_read_at, r.last_read_message_id))
   AND (c.continuity_through IS NULL OR m.created_at > c.continuity_through)
 ORDER BY m.created_at, m.id
@@ -266,6 +269,7 @@ JOIN messages m ON m.workspace_id = c.workspace_id AND m.conversation_id = c.id
 LEFT JOIN contact_reads r ON r.workspace_id = c.workspace_id AND r.conversation_id = c.id
 WHERE c.workspace_id = @workspace_id AND c.contact_id = @contact_id AND c.trashed_at IS NULL
   AND m.kind = 'message' AND m.direction = 'out' AND m.author_type = 'member' AND m.delivery_state IS NULL AND NOT m.draft
+  AND m.redacted_at IS NULL
   AND (r.last_read_at IS NULL OR (m.created_at, m.id) > (r.last_read_at, r.last_read_message_id))
   AND (c.continuity_through IS NULL OR m.created_at > c.continuity_through);
 

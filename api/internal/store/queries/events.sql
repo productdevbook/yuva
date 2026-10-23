@@ -33,3 +33,9 @@ SELECT coalesce(min(id), 0)::bigint AS id FROM events WHERE workspace_id = $1;
 -- name: DeleteConversationEvents :exec
 DELETE FROM events WHERE workspace_id = @workspace_id AND conversation_id = ANY(@conversation_ids::uuid[])
   AND (NOT @keep_trash::bool OR type NOT IN ('conversation.trashed', 'conversation.restored'));
+
+-- name: RedactMessageEvents :execrows
+UPDATE events SET payload = @message::jsonb || jsonb_build_object('draft', coalesce(payload->'draft', 'false'::jsonb))
+WHERE workspace_id = @workspace_id AND conversation_id = @conversation_id
+  AND type IN ('message.created', 'message.updated', 'draft.created', 'draft.updated', 'draft.deleted')
+  AND payload->>'id' = @message_id::text;

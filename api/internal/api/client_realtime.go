@@ -343,6 +343,7 @@ func (f *clientFilter) clientMessage(ctx context.Context, m oas.Message) (oas.Cl
 		out.Direction = *m.Direction
 	}
 	out.Cards = m.Cards
+	out.Redacted = trueOrNil(m.RedactedAt != nil)
 	out.Author = clientAuthor(m.Author, map[uuid.UUID]string{derefID(m.Author.MemberId): name})
 	if m.Author.Type == oas.AuthorTypeContact {
 		out.ClientId = m.ClientId
@@ -484,7 +485,7 @@ func (f *clientFilter) transform(ctx context.Context, e realtime.Event) ([]any, 
 		}
 		st.CanRate, st.Rating = ratingState(f.inbox.RatingSince, string(c.Kind), string(c.Status), c.ClosedAt, ratedAt, rating, f.s.now())
 		return frame(st), nil
-	case realtime.MessageCreated, realtime.MessageUpdated:
+	case realtime.MessageCreated, realtime.MessageUpdated, realtime.MessageRedacted:
 		if !ownConv {
 			return nil, nil
 		}

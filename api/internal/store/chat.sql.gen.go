@@ -1067,6 +1067,7 @@ JOIN messages m ON m.workspace_id = c.workspace_id AND m.conversation_id = c.id
 LEFT JOIN contact_reads r ON r.workspace_id = c.workspace_id AND r.conversation_id = c.id
 WHERE c.workspace_id = $1 AND c.contact_id = $2 AND c.trashed_at IS NULL
   AND m.kind = 'message' AND m.direction = 'out' AND m.author_type = 'member' AND m.delivery_state IS NULL AND NOT m.draft
+  AND m.redacted_at IS NULL
   AND (r.last_read_at IS NULL OR (m.created_at, m.id) > (r.last_read_at, r.last_read_message_id))
   AND (c.continuity_through IS NULL OR m.created_at > c.continuity_through)
 `
@@ -1242,6 +1243,7 @@ JOIN conversations c ON c.workspace_id = m.workspace_id AND c.id = m.conversatio
 LEFT JOIN contact_reads r ON r.workspace_id = m.workspace_id AND r.conversation_id = m.conversation_id
 WHERE m.workspace_id = $1 AND m.conversation_id = $2
   AND m.kind = 'message' AND m.direction = 'out' AND m.author_type = 'member' AND m.delivery_state IS NULL AND NOT m.draft
+  AND m.redacted_at IS NULL
   AND (r.last_read_at IS NULL OR (m.created_at, m.id) > (r.last_read_at, r.last_read_message_id))
   AND (c.continuity_through IS NULL OR m.created_at > c.continuity_through)
 ORDER BY m.created_at, m.id
@@ -1307,6 +1309,7 @@ const listPublicMessages = `-- name: ListPublicMessages :many
 SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
        m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
        m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions, m.imported_at, m.imported_author, m.help_cards,
+       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id,
        coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
        coalesce(sk.bot_name, sk.name, '')::text AS sent_by_bot_name
 FROM messages m
@@ -1328,35 +1331,38 @@ type ListPublicMessagesParams struct {
 }
 
 type ListPublicMessagesRow struct {
-	ID                uuid.UUID
-	WorkspaceID       uuid.UUID
-	ConversationID    uuid.UUID
-	Kind              string
-	Direction         *string
-	AuthorType        string
-	AuthorMemberID    *uuid.UUID
-	AuthorContactID   *uuid.UUID
-	Body              string
-	Html              *string
-	ClientID          *string
-	Event             []byte
-	CreatedAt         time.Time
-	DeliveryState     *string
-	DeliveryError     *string
-	DeliveryUpdatedAt *time.Time
-	AuthorApiKeyID    *uuid.UUID
-	Draft             bool
-	SentByMemberID    *uuid.UUID
-	SentByApiKeyID    *uuid.UUID
-	Via               *string
-	SentVia           *string
-	Mentions          []uuid.UUID
-	ImportedAt        *time.Time
-	ImportedAuthor    []byte
-	HelpCards         []byte
-	BotName           string
-	BotAvatarUrl      string
-	SentByBotName     string
+	ID                 uuid.UUID
+	WorkspaceID        uuid.UUID
+	ConversationID     uuid.UUID
+	Kind               string
+	Direction          *string
+	AuthorType         string
+	AuthorMemberID     *uuid.UUID
+	AuthorContactID    *uuid.UUID
+	Body               string
+	Html               *string
+	ClientID           *string
+	Event              []byte
+	CreatedAt          time.Time
+	DeliveryState      *string
+	DeliveryError      *string
+	DeliveryUpdatedAt  *time.Time
+	AuthorApiKeyID     *uuid.UUID
+	Draft              bool
+	SentByMemberID     *uuid.UUID
+	SentByApiKeyID     *uuid.UUID
+	Via                *string
+	SentVia            *string
+	Mentions           []uuid.UUID
+	ImportedAt         *time.Time
+	ImportedAuthor     []byte
+	HelpCards          []byte
+	RedactedAt         *time.Time
+	RedactedByMemberID *uuid.UUID
+	RedactedByApiKeyID *uuid.UUID
+	BotName            string
+	BotAvatarUrl       string
+	SentByBotName      string
 }
 
 func (q *Queries) ListPublicMessages(ctx context.Context, arg ListPublicMessagesParams) ([]ListPublicMessagesRow, error) {
@@ -1401,6 +1407,9 @@ func (q *Queries) ListPublicMessages(ctx context.Context, arg ListPublicMessages
 			&i.ImportedAt,
 			&i.ImportedAuthor,
 			&i.HelpCards,
+			&i.RedactedAt,
+			&i.RedactedByMemberID,
+			&i.RedactedByApiKeyID,
 			&i.BotName,
 			&i.BotAvatarUrl,
 			&i.SentByBotName,
@@ -1419,6 +1428,7 @@ const listPublicMessagesDesc = `-- name: ListPublicMessagesDesc :many
 SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
        m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
        m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions, m.imported_at, m.imported_author, m.help_cards,
+       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id,
        coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
        coalesce(sk.bot_name, sk.name, '')::text AS sent_by_bot_name
 FROM messages m
@@ -1440,35 +1450,38 @@ type ListPublicMessagesDescParams struct {
 }
 
 type ListPublicMessagesDescRow struct {
-	ID                uuid.UUID
-	WorkspaceID       uuid.UUID
-	ConversationID    uuid.UUID
-	Kind              string
-	Direction         *string
-	AuthorType        string
-	AuthorMemberID    *uuid.UUID
-	AuthorContactID   *uuid.UUID
-	Body              string
-	Html              *string
-	ClientID          *string
-	Event             []byte
-	CreatedAt         time.Time
-	DeliveryState     *string
-	DeliveryError     *string
-	DeliveryUpdatedAt *time.Time
-	AuthorApiKeyID    *uuid.UUID
-	Draft             bool
-	SentByMemberID    *uuid.UUID
-	SentByApiKeyID    *uuid.UUID
-	Via               *string
-	SentVia           *string
-	Mentions          []uuid.UUID
-	ImportedAt        *time.Time
-	ImportedAuthor    []byte
-	HelpCards         []byte
-	BotName           string
-	BotAvatarUrl      string
-	SentByBotName     string
+	ID                 uuid.UUID
+	WorkspaceID        uuid.UUID
+	ConversationID     uuid.UUID
+	Kind               string
+	Direction          *string
+	AuthorType         string
+	AuthorMemberID     *uuid.UUID
+	AuthorContactID    *uuid.UUID
+	Body               string
+	Html               *string
+	ClientID           *string
+	Event              []byte
+	CreatedAt          time.Time
+	DeliveryState      *string
+	DeliveryError      *string
+	DeliveryUpdatedAt  *time.Time
+	AuthorApiKeyID     *uuid.UUID
+	Draft              bool
+	SentByMemberID     *uuid.UUID
+	SentByApiKeyID     *uuid.UUID
+	Via                *string
+	SentVia            *string
+	Mentions           []uuid.UUID
+	ImportedAt         *time.Time
+	ImportedAuthor     []byte
+	HelpCards          []byte
+	RedactedAt         *time.Time
+	RedactedByMemberID *uuid.UUID
+	RedactedByApiKeyID *uuid.UUID
+	BotName            string
+	BotAvatarUrl       string
+	SentByBotName      string
 }
 
 func (q *Queries) ListPublicMessagesDesc(ctx context.Context, arg ListPublicMessagesDescParams) ([]ListPublicMessagesDescRow, error) {
@@ -1513,6 +1526,9 @@ func (q *Queries) ListPublicMessagesDesc(ctx context.Context, arg ListPublicMess
 			&i.ImportedAt,
 			&i.ImportedAuthor,
 			&i.HelpCards,
+			&i.RedactedAt,
+			&i.RedactedByMemberID,
+			&i.RedactedByApiKeyID,
 			&i.BotName,
 			&i.BotAvatarUrl,
 			&i.SentByBotName,

@@ -157,6 +157,7 @@ type mcpMessage struct {
 	SentBy          *mcpAuthor        `json:"sent_by,omitempty" jsonschema:"who sent a draft"`
 	DeliveryState   string            `json:"delivery_state,omitempty" jsonschema:"queued, sent or failed for e-mailed replies"`
 	Event           *mcpEvent         `json:"event,omitempty"`
+	Redacted        bool              `json:"redacted,omitempty" jsonschema:"true when a member removed its content"`
 	CreatedAt       time.Time         `json:"created_at"`
 	CustomerContent mcpMessageContent `json:"customer_content"`
 }
@@ -165,6 +166,7 @@ func messageOut(m oas.Message) mcpMessage {
 	author, contactName := authorOut(m.Author)
 	out := mcpMessage{
 		ID: m.Id, ConversationID: m.ConversationId, Kind: string(m.Kind), Draft: m.Draft, Author: author, CreatedAt: m.CreatedAt,
+		Redacted: m.RedactedAt != nil,
 		CustomerContent: mcpMessageContent{Body: m.Body, AuthorName: contactName},
 	}
 	if m.Direction != nil {

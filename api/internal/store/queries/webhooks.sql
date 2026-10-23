@@ -117,3 +117,11 @@ SELECT coalesce(greatest(
     (SELECT max(last_seen_at) FROM contact_sessions s WHERE s.workspace_id = @workspace_id AND s.contact_id = @contact_id),
     (SELECT max(seen_at) FROM realtime_connections rc WHERE rc.workspace_id = @workspace_id AND rc.contact_id = @contact_id)
 ), 'epoch')::timestamptz AS last_seen;
+
+-- name: RedactMessageWebhookDeliveries :execrows
+UPDATE webhook_deliveries
+SET payload = jsonb_set(payload::jsonb, '{data,message}', @message::jsonb || jsonb_build_object('draft', coalesce(payload::jsonb #> '{data,message,draft}', 'false'::jsonb)))::text
+WHERE workspace_id = @workspace_id
+  AND event_type IN ('message.created', 'feedback.created', 'draft.created', 'draft.updated', 'draft.deleted')
+  AND strpos(payload, @message_id::text) > 0
+  AND payload::jsonb #>> '{data,message,id}' = @message_id::text;

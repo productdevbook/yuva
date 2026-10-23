@@ -100,10 +100,11 @@ ON CONFLICT DO NOTHING;
 DELETE FROM conversation_labels WHERE workspace_id = $1 AND conversation_id = $2 AND label_id = $3;
 
 -- name: ListConversationPreviews :many
-SELECT c.id AS conversation_id, m.id, m.kind, m.author_type, left(m.body, 1000)::text AS body, m.created_at
+SELECT c.id AS conversation_id, m.id, m.kind, m.author_type, left(m.body, 1000)::text AS body, m.created_at,
+       (m.redacted_at IS NOT NULL)::bool AS redacted
 FROM conversations c
 CROSS JOIN LATERAL (
-    SELECT lm.id, lm.kind, lm.author_type, lm.body, lm.created_at FROM messages lm
+    SELECT lm.id, lm.kind, lm.author_type, lm.body, lm.created_at, lm.redacted_at FROM messages lm
     WHERE lm.workspace_id = c.workspace_id AND lm.conversation_id = c.id AND lm.kind = 'message' AND NOT lm.draft
     ORDER BY lm.created_at DESC, lm.id DESC
     LIMIT 1) m

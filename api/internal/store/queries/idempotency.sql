@@ -21,3 +21,12 @@ WHERE workspace_id = @workspace_id AND caller_type = @caller_type AND caller_id 
 
 -- name: DeleteIdempotencyKeysBefore :execrows
 DELETE FROM idempotency_keys WHERE workspace_id = @workspace_id AND created_at < @before;
+
+-- name: ListIdempotentRepliesMentioning :many
+SELECT caller_type, caller_id, key, path, body FROM idempotency_keys
+WHERE workspace_id = @workspace_id AND body IS NOT NULL AND position(convert_to(@needle::text, 'UTF8') IN body) > 0
+FOR UPDATE;
+
+-- name: SetIdempotentReplyBody :exec
+UPDATE idempotency_keys SET body = @body
+WHERE workspace_id = @workspace_id AND caller_type = @caller_type AND caller_id = @caller_id AND key = @key;

@@ -46,7 +46,7 @@ var (
 var webhookEventTypes = []oas.WebhookEventType{
 	oas.WebhookEventTypeConversationCreated, oas.WebhookEventTypeConversationUpdated, oas.WebhookEventTypeConversationRated,
 	oas.WebhookEventTypeConversationTrashed, oas.WebhookEventTypeConversationRestored, oas.WebhookEventTypeConversationDeleted,
-	oas.WebhookEventTypeMessageCreated,
+	oas.WebhookEventTypeMessageCreated, oas.WebhookEventTypeMessageRedacted,
 	oas.WebhookEventTypeFeedbackCreated, oas.WebhookEventTypeContactUpdated, oas.WebhookEventTypeContactDeleted,
 	oas.WebhookEventTypeDraftCreated, oas.WebhookEventTypeDraftUpdated, oas.WebhookEventTypeDraftDeleted,
 	oas.WebhookEventTypeDiscussionCreated, oas.WebhookEventTypeDiscussionPostCreated, oas.WebhookEventTypeDiscussionAnswered,
@@ -497,7 +497,7 @@ func (s *Server) ListWebhookAttempts(ctx context.Context, req oas.ListWebhookAtt
 // recorded the contact's external ids (a merged anonymous visitor does not).
 func webhookSource(e pendingEvent) bool {
 	switch e.typ {
-	case realtime.ConversationCreated, realtime.ConversationUpdated, realtime.MessageCreated, realtime.ContactUpdated,
+	case realtime.ConversationCreated, realtime.ConversationUpdated, realtime.MessageCreated, realtime.MessageRedacted, realtime.ContactUpdated,
 		realtime.ConversationTrashed, realtime.ConversationRestored, realtime.ConversationDeleted,
 		realtime.DraftCreated, realtime.DraftUpdated, realtime.DraftDeleted,
 		eventDiscussionCreated, eventDiscussionPostCreated, eventDiscussionAnswered, eventDiscussionUpdated, eventDiscussionStageChanged,
@@ -697,7 +697,7 @@ func (s *Server) webhookPayloads(ctx context.Context, q *store.Queries, ev store
 			})})
 		}
 		return out, []uuid.UUID{inbox}, nil
-	case realtime.MessageCreated, realtime.DraftCreated, realtime.DraftUpdated, realtime.DraftDeleted:
+	case realtime.MessageCreated, realtime.MessageRedacted, realtime.DraftCreated, realtime.DraftUpdated, realtime.DraftDeleted:
 		var m oas.Message
 		if err := json.Unmarshal(ev.Payload, &m); err != nil {
 			return nil, nil, err

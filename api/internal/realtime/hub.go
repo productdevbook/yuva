@@ -32,6 +32,7 @@ const (
 	ConversationDeleted  = "conversation.deleted"
 	MessageCreated       = "message.created"
 	MessageUpdated       = "message.updated"
+	MessageRedacted      = "message.redacted"
 	DraftCreated         = "draft.created"
 	DraftUpdated         = "draft.updated"
 	DraftDeleted         = "draft.deleted"

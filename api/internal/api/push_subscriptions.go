@@ -158,6 +158,7 @@ type PushArgs struct {
 	TTL            int             `json:"ttl"`
 	Urgency        string          `json:"urgency"`
 	Topic          string          `json:"topic,omitempty"`
+	MessageID      *uuid.UUID      `json:"message_id,omitempty"`
 }
 
 func (PushArgs) Kind() string { return "push_send" }

@@ -939,6 +939,7 @@ const (
 	LabelsWrite         ApiKeyScope = "labels:write"
 	ListsRead           ApiKeyScope = "lists:read"
 	ListsWrite          ApiKeyScope = "lists:write"
+	MessagesRedact      ApiKeyScope = "messages:redact"
 	MessagesWrite       ApiKeyScope = "messages:write"
 	MigrationsManage    ApiKeyScope = "migrations:manage"
 	NotesWrite          ApiKeyScope = "notes:write"
@@ -1005,6 +1006,8 @@ func (e ApiKeyScope) Valid() bool {
 	case ListsRead:
 		return true
 	case ListsWrite:
+		return true
+	case MessagesRedact:
 		return true
 	case MessagesWrite:
 		return true
@@ -1074,6 +1077,7 @@ const (
 	AuditMemberJoined                        AuditAction = "member.joined"
 	AuditMemberRemoved                       AuditAction = "member.removed"
 	AuditMemberRoleChanged                   AuditAction = "member.role_changed"
+	AuditMessageRedacted                     AuditAction = "message.redacted"
 	AuditOAuthGrantCreated                   AuditAction = "oauth_grant.created"
 	AuditOAuthGrantRevoked                   AuditAction = "oauth_grant.revoked"
 	AuditWebhookCreated                      AuditAction = "webhook.created"
@@ -1136,6 +1140,8 @@ func (e AuditAction) Valid() bool {
 	case AuditMemberRemoved:
 		return true
 	case AuditMemberRoleChanged:
+		return true
+	case AuditMessageRedacted:
 		return true
 	case AuditOAuthGrantCreated:
 		return true
@@ -1204,6 +1210,7 @@ const (
 	AuditTargetInvite          AuditTargetType = "invite"
 	AuditTargetList            AuditTargetType = "list"
 	AuditTargetMember          AuditTargetType = "member"
+	AuditTargetMessage         AuditTargetType = "message"
 	AuditTargetOAuthGrant      AuditTargetType = "oauth_grant"
 	AuditTargetWebhook         AuditTargetType = "webhook"
 	AuditTargetWorkspace       AuditTargetType = "workspace"
@@ -1229,6 +1236,8 @@ func (e AuditTargetType) Valid() bool {
 	case AuditTargetList:
 		return true
 	case AuditTargetMember:
+		return true
+	case AuditTargetMessage:
 		return true
 	case AuditTargetOAuthGrant:
 		return true
@@ -1915,14 +1924,17 @@ func (e ClientInboxUpdatedEventType) Valid() bool {
 
 // Defines values for ClientMessageEventType.
 const (
-	ClientMessageEventTypeMessageCreated ClientMessageEventType = "message.created"
-	ClientMessageEventTypeMessageUpdated ClientMessageEventType = "message.updated"
+	ClientMessageEventTypeMessageCreated  ClientMessageEventType = "message.created"
+	ClientMessageEventTypeMessageRedacted ClientMessageEventType = "message.redacted"
+	ClientMessageEventTypeMessageUpdated  ClientMessageEventType = "message.updated"
 )
 
 // Valid indicates whether the value is a known member of the ClientMessageEventType enum.
 func (e ClientMessageEventType) Valid() bool {
 	switch e {
 	case ClientMessageEventTypeMessageCreated:
+		return true
+	case ClientMessageEventTypeMessageRedacted:
 		return true
 	case ClientMessageEventTypeMessageUpdated:
 		return true
@@ -4060,12 +4072,15 @@ func (e MessageKind) Valid() bool {
 
 // Defines values for MessageUpdatedEventType.
 const (
-	MessageUpdatedEventTypeMessageUpdated MessageUpdatedEventType = "message.updated"
+	MessageUpdatedEventTypeMessageRedacted MessageUpdatedEventType = "message.redacted"
+	MessageUpdatedEventTypeMessageUpdated  MessageUpdatedEventType = "message.updated"
 )
 
 // Valid indicates whether the value is a known member of the MessageUpdatedEventType enum.
 func (e MessageUpdatedEventType) Valid() bool {
 	switch e {
+	case MessageUpdatedEventTypeMessageRedacted:
+		return true
 	case MessageUpdatedEventTypeMessageUpdated:
 		return true
 	default:
@@ -6189,6 +6204,7 @@ const (
 	WebhookEventTypeHelpArticlePublished      WebhookEventType = "help.article.published"
 	WebhookEventTypeHelpArticleUnpublished    WebhookEventType = "help.article.unpublished"
 	WebhookEventTypeMessageCreated            WebhookEventType = "message.created"
+	WebhookEventTypeMessageRedacted           WebhookEventType = "message.redacted"
 	WebhookEventTypeStatusComponentUpdated    WebhookEventType = "status.component.updated"
 	WebhookEventTypeStatusIncidentCreated     WebhookEventType = "status.incident.created"
 	WebhookEventTypeStatusIncidentResolved    WebhookEventType = "status.incident.resolved"
@@ -6253,6 +6269,8 @@ func (e WebhookEventType) Valid() bool {
 	case WebhookEventTypeHelpArticleUnpublished:
 		return true
 	case WebhookEventTypeMessageCreated:
+		return true
+	case WebhookEventTypeMessageRedacted:
 		return true
 	case WebhookEventTypeStatusComponentUpdated:
 		return true
@@ -8447,6 +8465,9 @@ type ApiKeyList struct {
 //	    OAuth tokens also replies to reader threads and their accepted answer.
 //	  - `drafts:send`: send a draft (`POST /v1/messages/{id}/send`), together with
 //	    `messages:write`.
+//	  - `messages:redact`: remove a message's or note's content (`POST /v1/messages/{id}/redact`).
+//	    An OAuth token redacts only what its member may: owners and admins any message, other
+//	    members their own. Never implied: a key made without naming its scopes does not hold it.
 //	  - `notes:write`: notes.
 //	  - `contacts:read`: list, look up and get contacts, presence.
 //	  - `contacts:write`: create, update, delete and merge contacts.
@@ -8507,7 +8528,7 @@ type ApiKeyList struct {
 //	    without an inbox limit; offered only to owners' OAuth tokens. Never implied: a key made
 //	    without naming its scopes does not hold it.
 //
-// `conversations:delete`, `lists:*`, `broadcasts:*`, `migrations:manage`, `analytics:*`, `status:*`, `help:*`, `roadmap:*`, `changelog:*` and `audit:read` are never added to keys made before they existed.
+// `conversations:delete`, `messages:redact`, `lists:*`, `broadcasts:*`, `migrations:manage`, `analytics:*`, `status:*`, `help:*`, `roadmap:*`, `changelog:*` and `audit:read` are never added to keys made before they existed.
 type ApiKeyScope string
 
 // ApiKeyUpdate Only the fields sent change. Scopes, inbox limit and expiry cannot change.
@@ -8585,6 +8606,8 @@ type Attributes map[string]interface{}
 //   - `inbox.identity_secret_rotated`: none. `inbox.deleted`: `name`.
 //   - `conversation.trashed`, `conversation.restored`: `inbox_id`. `conversation.deleted`:
 //     `inbox_id`, by `system` (never the subject or content).
+//   - `message.redacted`: `conversation_id`, `inbox_id`, `kind` (`message` or `note`),
+//     `files` (attachments and raw e-mails removed); never the removed content.
 //   - `contact.deleted`: none (no name or address is kept). `contact.consent_exported`: `format`,
 //     `started` (the entry is written when the export starts streaming).
 //   - `list.consent_exported`: `name`, `format`, `started`.
@@ -8657,6 +8680,8 @@ type AuditEntry struct {
 	// - `inbox.identity_secret_rotated`: none. `inbox.deleted`: `name`.
 	// - `conversation.trashed`, `conversation.restored`: `inbox_id`. `conversation.deleted`:
 	//   `inbox_id`, by `system` (never the subject or content).
+	// - `message.redacted`: `conversation_id`, `inbox_id`, `kind` (`message` or `note`),
+	//   `files` (attachments and raw e-mails removed); never the removed content.
 	// - `contact.deleted`: none (no name or address is kept). `contact.consent_exported`: `format`,
 	//   `started` (the entry is written when the export starts streaming).
 	// - `list.consent_exported`: `name`, `format`, `started`.
@@ -10762,6 +10787,10 @@ type ClientMessage struct {
 	// Html Sanitized HTML, when the message has one.
 	Html *string   `json:"html,omitempty"`
 	Id   uuid.UUID `json:"id"`
+
+	// Redacted `true` when a member removed its content: `body` is empty and it has no `html`,
+	// attachments or cards. Show it in place as removed. Absent otherwise.
+	Redacted *bool `json:"redacted,omitempty"`
 }
 
 // ClientMessageAuthor defines model for ClientMessageAuthor.
@@ -10795,7 +10824,8 @@ type ClientMessageCreateMultipart struct {
 	Files    *[]openapi_types.File `json:"files,omitempty"`
 }
 
-// ClientMessageEvent A message was added or changed.
+// ClientMessageEvent A message was added or changed. `message.redacted`: a member removed its content; `data`
+// has `redacted: true`, an empty `body` and no attachments. Show it as removed in place.
 type ClientMessageEvent struct {
 	ConversationId uuid.UUID              `json:"conversation_id"`
 	CreatedAt      time.Time              `json:"created_at"`
@@ -10821,6 +10851,9 @@ type ClientMessagePreview struct {
 	AuthorType AuthorType `json:"author_type"`
 	CreatedAt  time.Time  `json:"created_at"`
 	Id         uuid.UUID  `json:"id"`
+
+	// Redacted `true` when its content was removed; `text` is empty. Absent otherwise.
+	Redacted *bool `json:"redacted,omitempty"`
 
 	// Text The plain-text body on one line, cut to 140 characters with `...` when longer.
 	Text string `json:"text"`
@@ -15644,7 +15677,7 @@ type Message struct {
 	Attachments []Attachment  `json:"attachments"`
 	Author      MessageAuthor `json:"author"`
 
-	// Body Plain text.
+	// Body Plain text; empty once redacted.
 	Body string `json:"body"`
 
 	// Cards Help articles sent with the message; absent when none were.
@@ -15687,6 +15720,14 @@ type Message struct {
 
 	// Mentions Members a note mentions (notes only; absent when it mentions nobody).
 	Mentions *[]uuid.UUID `json:"mentions,omitempty"`
+
+	// RedactedAt When its content was removed (`POST /v1/messages/{id}/redact`); absent otherwise. A
+	// redacted message has an empty `body` and no `html`, attachments, cards or mentions;
+	// show it as "Removed by" `redacted_by` at this time.
+	RedactedAt *time.Time `json:"redacted_at,omitempty"`
+
+	// RedactedBy Who removed its content; absent when it was not redacted.
+	RedactedBy *MessageRedactedBy `json:"redacted_by,omitempty"`
 
 	// SentBy Who sent a draft (`member` or `bot`); absent for messages that were never drafts.
 	SentBy *MessageAuthor `json:"sent_by,omitempty"`
@@ -15945,8 +15986,19 @@ type MessagePreview struct {
 	// change (assignment, status, labels).
 	Kind MessageKind `json:"kind"`
 
+	// Redacted `true` when its content was removed; `text` is empty. Absent otherwise.
+	Redacted *bool `json:"redacted,omitempty"`
+
 	// Text The plain-text body on one line, cut to 140 characters with `...` when longer.
 	Text string `json:"text"`
+}
+
+// MessageRedactedBy The member or API key that removed a message's content; empty when it is gone.
+type MessageRedactedBy struct {
+	ApiKeyId *uuid.UUID `json:"api_key_id,omitempty"`
+
+	// MemberId The member, also when they acted through a connected app.
+	MemberId *uuid.UUID `json:"member_id,omitempty"`
 }
 
 // MessageUpdate Only the fields sent change.
@@ -15957,7 +16009,9 @@ type MessageUpdate struct {
 	Html nullable.Nullable[string] `json:"html,omitempty"`
 }
 
-// MessageUpdatedEvent A message changed, e.g. its e-mail delivery state.
+// MessageUpdatedEvent A message changed, e.g. its e-mail delivery state. `message.redacted`: its content was
+// removed (`data.redacted_at`, `redacted_by`; empty `body`, no `html` or attachments); show
+// it as removed wherever it appears, and drop any copy of its content.
 type MessageUpdatedEvent struct {
 	ConversationId uuid.UUID               `json:"conversation_id"`
 	CreatedAt      time.Time               `json:"created_at"`
@@ -20078,7 +20132,7 @@ type WebhookEndpoint struct {
 	// InboxId Absent for workspace endpoints.
 	InboxId *uuid.UUID `json:"inbox_id,omitempty"`
 
-	// IncludeNotes `message.created` also for members' notes.
+	// IncludeNotes `message.created` and `message.redacted` also for members' notes.
 	IncludeNotes bool `json:"include_notes"`
 
 	// SecretRotatedAt While the previous secret still signs (24 hours after a rotation), when it was replaced.
@@ -22923,6 +22977,15 @@ type DownloadMessageRawParams struct {
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
 
+// RedactMessageParams defines parameters for RedactMessage.
+type RedactMessageParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
 // SendMessageParams defines parameters for SendMessage.
 type SendMessageParams struct {
 	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
@@ -23998,6 +24061,20 @@ type WebhookMessageCreatedParams struct {
 	WebhookSignature WebhookSignatureHeader `json:"webhook-signature"`
 }
 
+// WebhookMessageRedactedParams defines parameters for WebhookMessageRedacted.
+type WebhookMessageRedactedParams struct {
+	// WebhookId The delivery's id, the same on every retry; use it to ignore duplicates.
+	WebhookId WebhookIdHeader `json:"webhook-id"`
+
+	// WebhookTimestamp Unix seconds of this attempt. Refuse values far from your clock.
+	WebhookTimestamp WebhookTimestampHeader `json:"webhook-timestamp"`
+
+	// WebhookSignature Space-separated `v1,<base64>` signatures: HMAC-SHA256 over
+	// `<webhook-id>.<webhook-timestamp>.<body>` with the base64-decoded part of the
+	// `whsec_` secret (Standard Webhooks). Two during a secret rotation.
+	WebhookSignature WebhookSignatureHeader `json:"webhook-signature"`
+}
+
 // WebhookStatusComponentUpdatedParams defines parameters for WebhookStatusComponentUpdated.
 type WebhookStatusComponentUpdatedParams struct {
 	// WebhookId The delivery's id, the same on every retry; use it to ignore duplicates.
@@ -24659,6 +24736,9 @@ type WebhookHelpArticleUnpublishedJSONRequestBody = WebhookHelpArticlePayload
 // WebhookMessageCreatedJSONRequestBody defines body for WebhookMessageCreated for application/json ContentType.
 type WebhookMessageCreatedJSONRequestBody = WebhookMessagePayload
 
+// WebhookMessageRedactedJSONRequestBody defines body for WebhookMessageRedacted for application/json ContentType.
+type WebhookMessageRedactedJSONRequestBody = WebhookMessagePayload
+
 // WebhookStatusComponentUpdatedJSONRequestBody defines body for WebhookStatusComponentUpdated for application/json ContentType.
 type WebhookStatusComponentUpdatedJSONRequestBody = WebhookStatusComponentPayload
 
@@ -25294,6 +25374,8 @@ func (t ClientRealtimeMessage) ValueByDiscriminator() (interface{}, error) {
 	case "inbox.updated":
 		return t.AsClientInboxUpdatedEvent()
 	case "message.created":
+		return t.AsClientMessageEvent()
+	case "message.redacted":
 		return t.AsClientMessageEvent()
 	case "message.updated":
 		return t.AsClientMessageEvent()
@@ -27621,6 +27703,8 @@ func (t RealtimeMessage) ValueByDiscriminator() (interface{}, error) {
 		return t.AsMemberPresenceEvent()
 	case "message.created":
 		return t.AsMessageCreatedEvent()
+	case "message.redacted":
+		return t.AsMessageUpdatedEvent()
 	case "message.updated":
 		return t.AsMessageUpdatedEvent()
 	case "migration.forwarding_confirmation":
@@ -28428,6 +28512,8 @@ func (t StoredEvent) ValueByDiscriminator() (interface{}, error) {
 		return t.AsInboxAccessChangedEvent()
 	case "message.created":
 		return t.AsMessageCreatedEvent()
+	case "message.redacted":
+		return t.AsMessageUpdatedEvent()
 	case "message.updated":
 		return t.AsMessageUpdatedEvent()
 	case "migration.updated":
@@ -29449,6 +29535,9 @@ type ServerInterface interface {
 	// DownloadMessageRaw Download the original e-mail
 	// (GET /v1/messages/{messageId}/raw)
 	DownloadMessageRaw(w http.ResponseWriter, r *http.Request, messageId MessageId, params DownloadMessageRawParams)
+	// RedactMessage Remove a message's content
+	// (POST /v1/messages/{messageId}/redact)
+	RedactMessage(w http.ResponseWriter, r *http.Request, messageId MessageId, params RedactMessageParams)
 	// SendMessage Send a draft
 	// (POST /v1/messages/{messageId}/send)
 	SendMessage(w http.ResponseWriter, r *http.Request, messageId MessageId, params SendMessageParams)
@@ -48198,6 +48287,75 @@ func (siw *ServerInterfaceWrapper) DownloadMessageRaw(w http.ResponseWriter, r *
 	handler.ServeHTTP(w, r)
 }
 
+// RedactMessage operation middleware
+func (siw *ServerInterfaceWrapper) RedactMessage(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "messageId" -------------
+	var messageId MessageId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "messageId", r.PathValue("messageId"), &messageId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "messageId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params RedactMessageParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.RedactMessage(w, r, messageId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // SendMessage operation middleware
 func (siw *ServerInterfaceWrapper) SendMessage(w http.ResponseWriter, r *http.Request) {
 
@@ -54152,6 +54310,7 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/messages/{messageId}", wrapper.DeleteMessage)
 	m.HandleFunc(http.MethodPatch+" "+options.BaseURL+"/v1/messages/{messageId}", wrapper.UpdateMessage)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/messages/{messageId}/send", wrapper.SendMessage)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/messages/{messageId}/redact", wrapper.RedactMessage)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/messages/{messageId}/email", wrapper.GetMessageEmail)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/messages/{messageId}/raw", wrapper.DownloadMessageRaw)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/labels", wrapper.ListLabels)
@@ -54550,6 +54709,9 @@ type WebhookReceiverInterface interface {
 	// A message was added
 	// HandleWebhookMessageCreatedWebhook handles the POST webhook for message.created.
 	HandleWebhookMessageCreatedWebhook(w http.ResponseWriter, r *http.Request, params WebhookMessageCreatedParams)
+	// A message's content was removed
+	// HandleWebhookMessageRedactedWebhook handles the POST webhook for message.redacted.
+	HandleWebhookMessageRedactedWebhook(w http.ResponseWriter, r *http.Request, params WebhookMessageRedactedParams)
 	// A status component changed
 	// HandleWebhookStatusComponentUpdatedWebhook handles the POST webhook for status.component.updated.
 	HandleWebhookStatusComponentUpdatedWebhook(w http.ResponseWriter, r *http.Request, params WebhookStatusComponentUpdatedParams)
@@ -56965,6 +57127,98 @@ func WebhookMessageCreatedWebhookHandler(si WebhookReceiverInterface, errHandler
 		}
 
 		si.HandleWebhookMessageCreatedWebhook(w, r, params)
+	})
+	for _, mw := range middlewares {
+		h = mw(h)
+	}
+	return h
+}
+
+// WebhookMessageRedactedWebhookHandler returns the http.Handler for the message.redacted webhook.
+// Mount this at the URL path advertised to webhook senders. errHandler
+// may be nil; if so, parameter-binding errors return 400 with the error
+// message. Middlewares are applied in the order provided -- the last
+// argument becomes the outermost wrapper.
+func WebhookMessageRedactedWebhookHandler(si WebhookReceiverInterface, errHandler func(w http.ResponseWriter, r *http.Request, err error), middlewares ...WebhookReceiverMiddlewareFunc) http.Handler {
+	if errHandler == nil {
+		errHandler = func(w http.ResponseWriter, r *http.Request, err error) {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+		}
+	}
+	var h http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		var err error
+		_ = err
+
+		// Parameter object where we will unmarshal all parameters from the request.
+		var params WebhookMessageRedactedParams
+
+		// ------------- Required header parameter "webhook-id" -------------
+		if valueList, found := r.Header[http.CanonicalHeaderKey("webhook-id")]; found {
+			var WebhookId WebhookIdHeader
+			n := len(valueList)
+			if n != 1 {
+				errHandler(w, r, &TooManyValuesForParamError{ParamName: "webhook-id", Count: n})
+				return
+			}
+
+			err = runtime.BindStyledParameterWithOptions("simple", "webhook-id", valueList[0], &WebhookId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
+			if err != nil {
+				errHandler(w, r, &InvalidParamFormatError{ParamName: "webhook-id", Err: err})
+				return
+			}
+			params.WebhookId = WebhookId
+
+		} else {
+			err := fmt.Errorf("Header parameter webhook-id is required, but not found")
+			errHandler(w, r, &RequiredHeaderError{ParamName: "webhook-id", Err: err})
+			return
+		}
+
+		// ------------- Required header parameter "webhook-timestamp" -------------
+		if valueList, found := r.Header[http.CanonicalHeaderKey("webhook-timestamp")]; found {
+			var WebhookTimestamp WebhookTimestampHeader
+			n := len(valueList)
+			if n != 1 {
+				errHandler(w, r, &TooManyValuesForParamError{ParamName: "webhook-timestamp", Count: n})
+				return
+			}
+
+			err = runtime.BindStyledParameterWithOptions("simple", "webhook-timestamp", valueList[0], &WebhookTimestamp, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
+			if err != nil {
+				errHandler(w, r, &InvalidParamFormatError{ParamName: "webhook-timestamp", Err: err})
+				return
+			}
+			params.WebhookTimestamp = WebhookTimestamp
+
+		} else {
+			err := fmt.Errorf("Header parameter webhook-timestamp is required, but not found")
+			errHandler(w, r, &RequiredHeaderError{ParamName: "webhook-timestamp", Err: err})
+			return
+		}
+
+		// ------------- Required header parameter "webhook-signature" -------------
+		if valueList, found := r.Header[http.CanonicalHeaderKey("webhook-signature")]; found {
+			var WebhookSignature WebhookSignatureHeader
+			n := len(valueList)
+			if n != 1 {
+				errHandler(w, r, &TooManyValuesForParamError{ParamName: "webhook-signature", Count: n})
+				return
+			}
+
+			err = runtime.BindStyledParameterWithOptions("simple", "webhook-signature", valueList[0], &WebhookSignature, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
+			if err != nil {
+				errHandler(w, r, &InvalidParamFormatError{ParamName: "webhook-signature", Err: err})
+				return
+			}
+			params.WebhookSignature = WebhookSignature
+
+		} else {
+			err := fmt.Errorf("Header parameter webhook-signature is required, but not found")
+			errHandler(w, r, &RequiredHeaderError{ParamName: "webhook-signature", Err: err})
+			return
+		}
+
+		si.HandleWebhookMessageRedactedWebhook(w, r, params)
 	})
 	for _, mw := range middlewares {
 		h = mw(h)
@@ -83487,6 +83741,87 @@ func (response DownloadMessageRaw404ApplicationProblemPlusJSONResponse) VisitDow
 	return err
 }
 
+type RedactMessageRequestObject struct {
+	MessageId MessageId `json:"messageId"`
+	Params    RedactMessageParams
+}
+
+type RedactMessageResponseObject interface {
+	VisitRedactMessageResponse(w http.ResponseWriter) error
+}
+
+type RedactMessage200JSONResponse Message
+
+func (response RedactMessage200JSONResponse) VisitRedactMessageResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type RedactMessage401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response RedactMessage401ApplicationProblemPlusJSONResponse) VisitRedactMessageResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type RedactMessage403ApplicationProblemPlusJSONResponse Problem
+
+func (response RedactMessage403ApplicationProblemPlusJSONResponse) VisitRedactMessageResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type RedactMessage404ApplicationProblemPlusJSONResponse Problem
+
+func (response RedactMessage404ApplicationProblemPlusJSONResponse) VisitRedactMessageResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type RedactMessage409ApplicationProblemPlusJSONResponse Problem
+
+func (response RedactMessage409ApplicationProblemPlusJSONResponse) VisitRedactMessageResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(409)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
 type SendMessageRequestObject struct {
 	MessageId MessageId `json:"messageId"`
 	Params    SendMessageParams
@@ -91941,6 +92276,9 @@ type StrictServerInterface interface {
 	// DownloadMessageRaw Download the original e-mail
 	// (GET /v1/messages/{messageId}/raw)
 	DownloadMessageRaw(ctx context.Context, request DownloadMessageRawRequestObject) (DownloadMessageRawResponseObject, error)
+	// RedactMessage Remove a message's content
+	// (POST /v1/messages/{messageId}/redact)
+	RedactMessage(ctx context.Context, request RedactMessageRequestObject) (RedactMessageResponseObject, error)
 	// SendMessage Send a draft
 	// (POST /v1/messages/{messageId}/send)
 	SendMessage(ctx context.Context, request SendMessageRequestObject) (SendMessageResponseObject, error)
@@ -101932,6 +102270,33 @@ func (sh *strictHandler) DownloadMessageRaw(w http.ResponseWriter, r *http.Reque
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
 	} else if validResponse, ok := response.(DownloadMessageRawResponseObject); ok {
 		if err := validResponse.VisitDownloadMessageRawResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// RedactMessage operation middleware
+func (sh *strictHandler) RedactMessage(w http.ResponseWriter, r *http.Request, messageId MessageId, params RedactMessageParams) {
+	var request RedactMessageRequestObject
+
+	request.MessageId = messageId
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.RedactMessage(ctx, request.(RedactMessageRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "RedactMessage")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(RedactMessageResponseObject); ok {
+		if err := validResponse.VisitRedactMessageResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {

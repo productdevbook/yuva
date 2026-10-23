@@ -374,6 +374,10 @@ func messageBody(m messageRow, atts []store.Attachment) oas.Message {
 		out.Cards = &cards
 	}
 	out.ImportedAt = m.ImportedAt
+	if m.RedactedAt != nil {
+		out.RedactedAt = m.RedactedAt
+		out.RedactedBy = &oas.MessageRedactedBy{MemberId: m.RedactedByMemberID, ApiKeyId: m.RedactedByApiKeyID}
+	}
 	if len(m.ImportedAuthor) > 0 {
 		var a oas.ImportedAuthor
 		if json.Unmarshal(m.ImportedAuthor, &a) == nil {

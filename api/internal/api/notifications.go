@@ -369,7 +369,7 @@ func (s *Server) Notify(ctx context.Context, a NotifyArgs) error {
 		return err
 	}
 	m, err := s.st.GetMessage(ctx, store.GetMessageParams{WorkspaceID: ws, ID: a.MessageID})
-	if store.IsNotFound(err) {
+	if store.IsNotFound(err) || (err == nil && m.RedactedAt != nil) {
 		return nil
 	}
 	if err != nil {
@@ -453,7 +453,9 @@ func (s *Server) Notify(ctx context.Context, a NotifyArgs) error {
 					return err
 				}
 				for _, id := range subs {
-					jobs = append(jobs, river.InsertManyParams{Args: s.pushArgs(&ws, id, payload, in, c), InsertOpts: pushOpts()})
+					args := s.pushArgs(&ws, id, payload, in, c)
+					args.MessageID = &m.ID
+					jobs = append(jobs, river.InsertManyParams{Args: args, InsertOpts: pushOpts()})
 				}
 			}
 		}

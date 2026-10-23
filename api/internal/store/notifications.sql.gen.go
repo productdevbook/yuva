@@ -271,7 +271,7 @@ func (q *Queries) ListLivePushSubscriptionIDs(ctx context.Context, arg ListLiveP
 
 const listNotifiableMessages = `-- name: ListNotifiableMessages :many
 SELECT id, kind, body, author_member_id, created_at FROM messages
-WHERE workspace_id = $1 AND conversation_id = $2 AND created_at > $3
+WHERE workspace_id = $1 AND conversation_id = $2 AND created_at > $3 AND redacted_at IS NULL
   AND ((kind = 'message' AND author_type = 'contact')
        OR (kind = 'event' AND event->>'type' = 'assigned' AND (event->>'assignee_id')::uuid = $4::uuid
            AND author_member_id IS DISTINCT FROM $4::uuid)

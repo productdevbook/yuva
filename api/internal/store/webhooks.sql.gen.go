@@ -694,6 +694,29 @@ func (q *Queries) RecordWebhookAttempt(ctx context.Context, arg RecordWebhookAtt
 	return err
 }
 
+const redactMessageWebhookDeliveries = `-- name: RedactMessageWebhookDeliveries :execrows
+UPDATE webhook_deliveries
+SET payload = jsonb_set(payload::jsonb, '{data,message}', $1::jsonb || jsonb_build_object('draft', coalesce(payload::jsonb #> '{data,message,draft}', 'false'::jsonb)))::text
+WHERE workspace_id = $2
+  AND event_type IN ('message.created', 'feedback.created', 'draft.created', 'draft.updated', 'draft.deleted')
+  AND strpos(payload, $3::text) > 0
+  AND payload::jsonb #>> '{data,message,id}' = $3::text
+`
+
+type RedactMessageWebhookDeliveriesParams struct {
+	Message     []byte
+	WorkspaceID uuid.UUID
+	MessageID   string
+}
+
+func (q *Queries) RedactMessageWebhookDeliveries(ctx context.Context, arg RedactMessageWebhookDeliveriesParams) (int64, error) {
+	result, err := q.db.Exec(ctx, redactMessageWebhookDeliveries, arg.Message, arg.WorkspaceID, arg.MessageID)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected(), nil
+}
+
 const rotateWebhookSecret = `-- name: RotateWebhookSecret :one
 UPDATE webhook_endpoints SET previous_secret = secret, previous_secret_until = $1, secret = $2, updated_at = $3
 WHERE workspace_id = $4 AND id = $5

@@ -143,7 +143,7 @@ func (s *Server) listItems(ctx context.Context, p principal, rows []store.Conver
 	previews := make(map[uuid.UUID]*oas.MessagePreview, len(previewRows))
 	for _, m := range previewRows {
 		previews[m.ConversationID] = &oas.MessagePreview{
-			Id: m.ID, Kind: oas.MessageKind(m.Kind), AuthorType: oas.AuthorType(m.AuthorType), Text: previewText(m.Body), CreatedAt: m.CreatedAt,
+			Id: m.ID, Kind: oas.MessageKind(m.Kind), AuthorType: oas.AuthorType(m.AuthorType), Text: previewText(m.Body), Redacted: trueOrNil(m.Redacted), CreatedAt: m.CreatedAt,
 		}
 	}
 	unread := map[uuid.UUID]bool{}

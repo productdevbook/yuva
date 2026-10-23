@@ -64,6 +64,7 @@ func clientMessageBody(m messageRow, atts []store.Attachment, names map[uuid.UUI
 	if cards := helpCardsOf(m.HelpCards); len(cards) > 0 {
 		out.Cards = &cards
 	}
+	out.Redacted = trueOrNil(m.RedactedAt != nil)
 	return out
 }
 
@@ -130,7 +131,7 @@ func clientConversationItems(ctx context.Context, q *store.Queries, cp contactPr
 	}
 	byConv := map[uuid.UUID]*oas.ClientMessagePreview{}
 	for _, m := range previews {
-		byConv[m.ConversationID] = &oas.ClientMessagePreview{Id: m.ID, AuthorType: oas.AuthorType(m.AuthorType), Text: previewText(m.Body), CreatedAt: m.CreatedAt}
+		byConv[m.ConversationID] = &oas.ClientMessagePreview{Id: m.ID, AuthorType: oas.AuthorType(m.AuthorType), Text: previewText(m.Body), Redacted: trueOrNil(m.Redacted), CreatedAt: m.CreatedAt}
 	}
 	unreadIDs, err := q.ListUnreadForContact(ctx, store.ListUnreadForContactParams{WorkspaceID: workspaceID, ConversationIds: ids})
 	if err != nil {
