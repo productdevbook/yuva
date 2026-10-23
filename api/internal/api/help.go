@@ -68,12 +68,15 @@ func (s *Server) helpBase() string {
 	return s.auth.PublicURL + helpPathPrefix[:len(helpPathPrefix)-1]
 }
 
-func (s *Server) helpURL(slug, path string) string {
-	return s.helpBase() + "/" + slug + path
+func (s *Server) helpURL(c store.HelpCenter, path string) string {
+	if s.domainLive(c.CustomDomain, c.DomainState, c.CfStatus, c.CfSslStatus) {
+		return s.domainURL(*c.CustomDomain, path)
+	}
+	return s.helpBase() + "/" + c.Slug + path
 }
 
 func (s *Server) helpArticleURL(c store.HelpCenter, number int32, locale, slug string) string {
-	return s.helpURL(c.Slug, "/"+locale+"/articles/"+strconv.Itoa(int(number))+"-"+slug)
+	return s.helpURL(c, "/"+locale+"/articles/"+strconv.Itoa(int(number))+"-"+slug)
 }
 
 func helpUniqueConflict(err error) error {
@@ -228,10 +231,11 @@ func (s *Server) helpCenterOut(ctx context.Context, q *store.Queries, p principa
 	}
 	out := oas.HelpCenter{
 		Id: c.ID, InboxId: c.InboxID, Name: c.Name, Description: c.Description, Slug: oas.HelpCenterSlug(c.Slug),
-		Url: s.helpURL(c.Slug, "/"), DefaultLocale: c.DefaultLocale, Locales: c.Locales, LogoUrl: c.LogoUrl, SiteUrl: c.SiteUrl,
+		Url: s.helpURL(c, "/"), DefaultLocale: c.DefaultLocale, Locales: c.Locales, LogoUrl: c.LogoUrl, SiteUrl: c.SiteUrl,
 		ChatChannelId: c.ChatChannelID, AnalyticsPropertyId: c.AnalyticsPropertyID, AgentsMayPublish: c.AgentsMayPublish,
 		Published: c.Published, CanPublish: mayPublishHelp(p, c) == nil, CreatedAt: c.CreatedAt, UpdatedAt: c.UpdatedAt,
-		Counts: oas.HelpCenterCounts{Collections: n.Collections, Articles: n.Articles, PublishedArticles: n.PublishedArticles},
+		Counts:       oas.HelpCenterCounts{Collections: n.Collections, Articles: n.Articles, PublishedArticles: n.PublishedArticles},
+		CustomDomain: s.customDomainBody(helpOwn(c)), OwnDomains: s.ownDomainsBody(),
 	}
 	if c.AccentColor != nil {
 		out.AccentColor = new(oas.StatusColor(*c.AccentColor))
@@ -365,10 +369,14 @@ func (s *Server) UpdateHelpCenter(ctx context.Context, req oas.UpdateHelpCenterR
 	}
 	b := req.Body
 	var out oas.HelpCenter
-	err := s.inTx(ctx, p.workspaceID, func(q *store.Queries, _ *eventBatch) error {
+	var hosts []string
+	err := s.inTx(ctx, p.workspaceID, func(q *store.Queries, ev *eventBatch) error {
 		cur, err := visibleHelpCenter(ctx, q, p, req.CenterId, true)
 		if err != nil {
 			return err
+		}
+		if cur.CustomDomain != nil {
+			hosts = append(hosts, *cur.CustomDomain)
 		}
 		f := helpCenterFields{
 			name: cur.Name, description: cur.Description, slug: cur.Slug, defaultLocale: cur.DefaultLocale, locales: cur.Locales,
@@ -433,13 +441,25 @@ func (s *Server) UpdateHelpCenter(ctx context.Context, req oas.UpdateHelpCenterR
 		if err != nil {
 			return err
 		}
+		if sent, raw := customDomainField(b.CustomDomain); sent {
+			d, err := s.setOwnDomain(ctx, q, ev, helpOwn(c), raw)
+			if err != nil {
+				return err
+			}
+			c = d.row.(store.HelpCenter)
+			if c.CustomDomain != nil {
+				hosts = append(hosts, *c.CustomDomain)
+			}
+		}
 		out, err = s.helpCenterOut(ctx, q, p, c)
 		return err
 	})
 	if err != nil {
 		return nil, helpUniqueConflict(err)
 	}
+	s.statusDomainCache.forget(req.CenterId, hosts...)
 	s.statusHint(ctx, p.workspaceID, out.InboxId)
+	s.helpCenterSignal(ctx, p.workspaceID, out.InboxId, out.Id)
 	return oas.UpdateHelpCenter200JSONResponse(out), nil
 }
 
@@ -452,18 +472,20 @@ func (s *Server) DeleteHelpCenter(ctx context.Context, req oas.DeleteHelpCenterR
 		return nil, err
 	}
 	var inbox uuid.UUID
-	err := s.inTx(ctx, p.workspaceID, func(q *store.Queries, _ *eventBatch) error {
+	err := s.inTx(ctx, p.workspaceID, func(q *store.Queries, ev *eventBatch) error {
 		c, err := visibleHelpCenter(ctx, q, p, req.CenterId, true)
 		if err != nil {
 			return err
 		}
 		inbox = c.InboxID
+		releaseOwnCloudflare(ev, helpOwn(c))
 		_, err = q.DeleteHelpCenter(ctx, store.DeleteHelpCenterParams{WorkspaceID: p.workspaceID, ID: c.ID})
 		return err
 	})
 	if err != nil {
 		return nil, err
 	}
+	s.statusDomainCache.forget(req.CenterId)
 	s.statusHint(ctx, p.workspaceID, inbox)
 	return oas.DeleteHelpCenter204Response{}, nil
 }

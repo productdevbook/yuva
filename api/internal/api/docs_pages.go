@@ -124,7 +124,7 @@ func (s *Server) docsChannel(ctx context.Context, key string, perChannel *limit)
 			return ch, err
 		}
 	}
-	if !s.originAllowedFor(originFrom(ctx), ch.Kind, ch.AllowedOrigins) {
+	if !s.originAllowedFor(ctx, ch.WorkspaceID, originFrom(ctx), ch.Kind, ch.AllowedOrigins) {
 		return ch, errOriginRefused
 	}
 	return ch, nil

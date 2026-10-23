@@ -180,7 +180,7 @@ INSERT INTO changelogs (id, workspace_id, inbox_id, name, description, slug, def
     agents_may_publish, published, changed_at, created_at, updated_at)
 VALUES ($1, $2, $3, $4, $5, $6, $7, $8::text[], $9,
     $10, $11, $12, $12, $12)
-RETURNING id, workspace_id, inbox_id, name, description, slug, default_locale, locales, analytics_property_id, agents_may_publish, published, next_entry_number, changed_at, created_at, updated_at
+RETURNING id, workspace_id, inbox_id, name, description, slug, default_locale, locales, analytics_property_id, agents_may_publish, published, next_entry_number, changed_at, created_at, updated_at, custom_domain, domain_token, domain_state, domain_problem, domain_checked_at, domain_check_at, domain_verified_at, domain_missing_since, domain_claimed_at, cf_hostname_id, cf_status, cf_ssl_status, cf_errors, cf_checked_at
 `
 
 type CreateChangelogParams struct {
@@ -230,6 +230,20 @@ func (q *Queries) CreateChangelog(ctx context.Context, arg CreateChangelogParams
 		&i.ChangedAt,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.CustomDomain,
+		&i.DomainToken,
+		&i.DomainState,
+		&i.DomainProblem,
+		&i.DomainCheckedAt,
+		&i.DomainCheckAt,
+		&i.DomainVerifiedAt,
+		&i.DomainMissingSince,
+		&i.DomainClaimedAt,
+		&i.CfHostnameID,
+		&i.CfStatus,
+		&i.CfSslStatus,
+		&i.CfErrors,
+		&i.CfCheckedAt,
 	)
 	return i, err
 }
@@ -496,7 +510,7 @@ func (q *Queries) FailChangelogSchedule(ctx context.Context, arg FailChangelogSc
 }
 
 const findChangelogByFormerSlug = `-- name: FindChangelogByFormerSlug :one
-SELECT c.id, c.workspace_id, c.inbox_id, c.name, c.description, c.slug, c.default_locale, c.locales, c.analytics_property_id, c.agents_may_publish, c.published, c.next_entry_number, c.changed_at, c.created_at, c.updated_at FROM changelog_slugs f
+SELECT c.id, c.workspace_id, c.inbox_id, c.name, c.description, c.slug, c.default_locale, c.locales, c.analytics_property_id, c.agents_may_publish, c.published, c.next_entry_number, c.changed_at, c.created_at, c.updated_at, c.custom_domain, c.domain_token, c.domain_state, c.domain_problem, c.domain_checked_at, c.domain_check_at, c.domain_verified_at, c.domain_missing_since, c.domain_claimed_at, c.cf_hostname_id, c.cf_status, c.cf_ssl_status, c.cf_errors, c.cf_checked_at FROM changelog_slugs f
 JOIN changelogs c ON c.workspace_id = f.workspace_id AND c.id = f.changelog_id
 WHERE f.slug = $1
 `
@@ -521,12 +535,26 @@ func (q *Queries) FindChangelogByFormerSlug(ctx context.Context, slug string) (C
 		&i.ChangedAt,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.CustomDomain,
+		&i.DomainToken,
+		&i.DomainState,
+		&i.DomainProblem,
+		&i.DomainCheckedAt,
+		&i.DomainCheckAt,
+		&i.DomainVerifiedAt,
+		&i.DomainMissingSince,
+		&i.DomainClaimedAt,
+		&i.CfHostnameID,
+		&i.CfStatus,
+		&i.CfSslStatus,
+		&i.CfErrors,
+		&i.CfCheckedAt,
 	)
 	return i, err
 }
 
 const findChangelogBySlug = `-- name: FindChangelogBySlug :one
-SELECT id, workspace_id, inbox_id, name, description, slug, default_locale, locales, analytics_property_id, agents_may_publish, published, next_entry_number, changed_at, created_at, updated_at FROM changelogs WHERE slug = $1
+SELECT id, workspace_id, inbox_id, name, description, slug, default_locale, locales, analytics_property_id, agents_may_publish, published, next_entry_number, changed_at, created_at, updated_at, custom_domain, domain_token, domain_state, domain_problem, domain_checked_at, domain_check_at, domain_verified_at, domain_missing_since, domain_claimed_at, cf_hostname_id, cf_status, cf_ssl_status, cf_errors, cf_checked_at FROM changelogs WHERE slug = $1
 `
 
 // The documented exception: a public URL names only the slug, which is unique across the server.
@@ -549,12 +577,26 @@ func (q *Queries) FindChangelogBySlug(ctx context.Context, slug string) (Changel
 		&i.ChangedAt,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.CustomDomain,
+		&i.DomainToken,
+		&i.DomainState,
+		&i.DomainProblem,
+		&i.DomainCheckedAt,
+		&i.DomainCheckAt,
+		&i.DomainVerifiedAt,
+		&i.DomainMissingSince,
+		&i.DomainClaimedAt,
+		&i.CfHostnameID,
+		&i.CfStatus,
+		&i.CfSslStatus,
+		&i.CfErrors,
+		&i.CfCheckedAt,
 	)
 	return i, err
 }
 
 const getChangelog = `-- name: GetChangelog :one
-SELECT id, workspace_id, inbox_id, name, description, slug, default_locale, locales, analytics_property_id, agents_may_publish, published, next_entry_number, changed_at, created_at, updated_at FROM changelogs WHERE workspace_id = $1 AND id = $2
+SELECT id, workspace_id, inbox_id, name, description, slug, default_locale, locales, analytics_property_id, agents_may_publish, published, next_entry_number, changed_at, created_at, updated_at, custom_domain, domain_token, domain_state, domain_problem, domain_checked_at, domain_check_at, domain_verified_at, domain_missing_since, domain_claimed_at, cf_hostname_id, cf_status, cf_ssl_status, cf_errors, cf_checked_at FROM changelogs WHERE workspace_id = $1 AND id = $2
 `
 
 type GetChangelogParams struct {
@@ -581,6 +623,20 @@ func (q *Queries) GetChangelog(ctx context.Context, arg GetChangelogParams) (Cha
 		&i.ChangedAt,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.CustomDomain,
+		&i.DomainToken,
+		&i.DomainState,
+		&i.DomainProblem,
+		&i.DomainCheckedAt,
+		&i.DomainCheckAt,
+		&i.DomainVerifiedAt,
+		&i.DomainMissingSince,
+		&i.DomainClaimedAt,
+		&i.CfHostnameID,
+		&i.CfStatus,
+		&i.CfSslStatus,
+		&i.CfErrors,
+		&i.CfCheckedAt,
 	)
 	return i, err
 }
@@ -694,7 +750,7 @@ func (q *Queries) GetChangelogTranslation(ctx context.Context, arg GetChangelogT
 }
 
 const getInboxChangelog = `-- name: GetInboxChangelog :one
-SELECT id, workspace_id, inbox_id, name, description, slug, default_locale, locales, analytics_property_id, agents_may_publish, published, next_entry_number, changed_at, created_at, updated_at FROM changelogs WHERE workspace_id = $1 AND inbox_id = $2
+SELECT id, workspace_id, inbox_id, name, description, slug, default_locale, locales, analytics_property_id, agents_may_publish, published, next_entry_number, changed_at, created_at, updated_at, custom_domain, domain_token, domain_state, domain_problem, domain_checked_at, domain_check_at, domain_verified_at, domain_missing_since, domain_claimed_at, cf_hostname_id, cf_status, cf_ssl_status, cf_errors, cf_checked_at FROM changelogs WHERE workspace_id = $1 AND inbox_id = $2
 `
 
 type GetInboxChangelogParams struct {
@@ -721,6 +777,20 @@ func (q *Queries) GetInboxChangelog(ctx context.Context, arg GetInboxChangelogPa
 		&i.ChangedAt,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.CustomDomain,
+		&i.DomainToken,
+		&i.DomainState,
+		&i.DomainProblem,
+		&i.DomainCheckedAt,
+		&i.DomainCheckAt,
+		&i.DomainVerifiedAt,
+		&i.DomainMissingSince,
+		&i.DomainClaimedAt,
+		&i.CfHostnameID,
+		&i.CfStatus,
+		&i.CfSslStatus,
+		&i.CfErrors,
+		&i.CfCheckedAt,
 	)
 	return i, err
 }
@@ -1144,7 +1214,7 @@ func (q *Queries) ListChangelogTranslations(ctx context.Context, arg ListChangel
 }
 
 const listChangelogs = `-- name: ListChangelogs :many
-SELECT id, workspace_id, inbox_id, name, description, slug, default_locale, locales, analytics_property_id, agents_may_publish, published, next_entry_number, changed_at, created_at, updated_at FROM changelogs c
+SELECT id, workspace_id, inbox_id, name, description, slug, default_locale, locales, analytics_property_id, agents_may_publish, published, next_entry_number, changed_at, created_at, updated_at, custom_domain, domain_token, domain_state, domain_problem, domain_checked_at, domain_check_at, domain_verified_at, domain_missing_since, domain_claimed_at, cf_hostname_id, cf_status, cf_ssl_status, cf_errors, cf_checked_at FROM changelogs c
 WHERE c.workspace_id = $1
   AND ($2::uuid IS NULL OR c.inbox_id = $2::uuid)
   AND ($3::bool OR EXISTS (
@@ -1190,6 +1260,20 @@ func (q *Queries) ListChangelogs(ctx context.Context, arg ListChangelogsParams) 
 			&i.ChangedAt,
 			&i.CreatedAt,
 			&i.UpdatedAt,
+			&i.CustomDomain,
+			&i.DomainToken,
+			&i.DomainState,
+			&i.DomainProblem,
+			&i.DomainCheckedAt,
+			&i.DomainCheckAt,
+			&i.DomainVerifiedAt,
+			&i.DomainMissingSince,
+			&i.DomainClaimedAt,
+			&i.CfHostnameID,
+			&i.CfStatus,
+			&i.CfSslStatus,
+			&i.CfErrors,
+			&i.CfCheckedAt,
 		); err != nil {
 			return nil, err
 		}
@@ -1435,7 +1519,7 @@ func (q *Queries) ListPublicChangelogPage(ctx context.Context, arg ListPublicCha
 }
 
 const lockChangelog = `-- name: LockChangelog :one
-SELECT id, workspace_id, inbox_id, name, description, slug, default_locale, locales, analytics_property_id, agents_may_publish, published, next_entry_number, changed_at, created_at, updated_at FROM changelogs WHERE workspace_id = $1 AND id = $2 FOR UPDATE
+SELECT id, workspace_id, inbox_id, name, description, slug, default_locale, locales, analytics_property_id, agents_may_publish, published, next_entry_number, changed_at, created_at, updated_at, custom_domain, domain_token, domain_state, domain_problem, domain_checked_at, domain_check_at, domain_verified_at, domain_missing_since, domain_claimed_at, cf_hostname_id, cf_status, cf_ssl_status, cf_errors, cf_checked_at FROM changelogs WHERE workspace_id = $1 AND id = $2 FOR UPDATE
 `
 
 type LockChangelogParams struct {
@@ -1462,6 +1546,20 @@ func (q *Queries) LockChangelog(ctx context.Context, arg LockChangelogParams) (C
 		&i.ChangedAt,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.CustomDomain,
+		&i.DomainToken,
+		&i.DomainState,
+		&i.DomainProblem,
+		&i.DomainCheckedAt,
+		&i.DomainCheckAt,
+		&i.DomainVerifiedAt,
+		&i.DomainMissingSince,
+		&i.DomainClaimedAt,
+		&i.CfHostnameID,
+		&i.CfStatus,
+		&i.CfSslStatus,
+		&i.CfErrors,
+		&i.CfCheckedAt,
 	)
 	return i, err
 }
@@ -1968,7 +2066,7 @@ UPDATE changelogs SET name = $1, description = $2, slug = $3, default_locale = $
     analytics_property_id = $6, agents_may_publish = $7, published = $8,
     changed_at = greatest(changed_at + interval '1 microsecond', $9::timestamptz), updated_at = $9
 WHERE workspace_id = $10 AND id = $11
-RETURNING id, workspace_id, inbox_id, name, description, slug, default_locale, locales, analytics_property_id, agents_may_publish, published, next_entry_number, changed_at, created_at, updated_at
+RETURNING id, workspace_id, inbox_id, name, description, slug, default_locale, locales, analytics_property_id, agents_may_publish, published, next_entry_number, changed_at, created_at, updated_at, custom_domain, domain_token, domain_state, domain_problem, domain_checked_at, domain_check_at, domain_verified_at, domain_missing_since, domain_claimed_at, cf_hostname_id, cf_status, cf_ssl_status, cf_errors, cf_checked_at
 `
 
 type UpdateChangelogParams struct {
@@ -2016,6 +2114,20 @@ func (q *Queries) UpdateChangelog(ctx context.Context, arg UpdateChangelogParams
 		&i.ChangedAt,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.CustomDomain,
+		&i.DomainToken,
+		&i.DomainState,
+		&i.DomainProblem,
+		&i.DomainCheckedAt,
+		&i.DomainCheckAt,
+		&i.DomainVerifiedAt,
+		&i.DomainMissingSince,
+		&i.DomainClaimedAt,
+		&i.CfHostnameID,
+		&i.CfStatus,
+		&i.CfSslStatus,
+		&i.CfErrors,
+		&i.CfCheckedAt,
 	)
 	return i, err
 }

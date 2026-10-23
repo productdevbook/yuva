@@ -110,15 +110,20 @@ func (s *Server) publicRoadmapBoard(w http.ResponseWriter, r *http.Request) (sto
 		writeProblem(w, err.(*apiError))
 		return store.RoadmapBoard{}, false
 	}
-	b, err := s.st.FindRoadmapBoardBySlug(ctx, slug)
-	if store.IsNotFound(err) {
+	var b store.RoadmapBoard
+	var err error
+	moved := false
+	if on, ok := ownDomainOn(ctx, kindRoadmap); ok {
+		b, err = s.st.GetRoadmapBoard(ctx, store.GetRoadmapBoardParams{WorkspaceID: on.workspace, ID: on.page})
+		moved = err == nil && !stillOn(b.CustomDomain, b.DomainState, on.host)
+	} else if b, err = s.st.FindRoadmapBoardBySlug(ctx, slug); store.IsNotFound(err) {
 		b, err = s.st.FindRoadmapBoardByFormerSlug(ctx, slug)
 		if err == nil && b.Public {
-			redirectPublic(w, r, s.roadmapURL(b.Slug)+strings.TrimPrefix(r.URL.Path, roadmapPathPrefix+slug), true)
+			redirectPublic(w, r, s.roadmapURL(b)+strings.TrimPrefix(r.URL.Path, roadmapPathPrefix+slug), true)
 			return b, false
 		}
 	}
-	if store.IsNotFound(err) || (err == nil && !b.Public) {
+	if moved || store.IsNotFound(err) || (err == nil && !b.Public) {
 		roadmapGone(w, "en")
 		return b, false
 	}
@@ -244,15 +249,15 @@ func (s *Server) roadmapBody(ctx context.Context, b store.RoadmapBoard, in store
 }
 
 func (s *Server) roadmapLangHref(b store.RoadmapBoard, path, code string) string {
-	return s.roadmapURL(b.Slug) + path + "?lang=" + code
+	return s.roadmapURL(b) + path + "?lang=" + code
 }
 
 func (s *Server) roadmapBaseView(ctx context.Context, b store.RoadmapBoard, in store.Inbox, locale, view string, chat bool) (*roadmapPageView, error) {
 	sw := statusWordsFor(locale)
 	v := &roadmapPageView{
 		W: roadmapWordsFor(locale), SW: sw, Lang: sw.Lang, Dir: sw.direction(), View: view, Name: b.Name, OGLocale: strings.ReplaceAll(sw.Lang, "-", "_"),
-		OGType: "website", FontSans: s.roadmapURL(b.Slug) + publicFontPath("Geist"), FontMono: s.roadmapURL(b.Slug) + publicFontPath("GeistMono"),
-		Home: s.roadmapURL(b.Slug), Mark: yuvaMark, YuvaSite: yuvaSite, Script: template.JS(roadmapScript), Logo: inboxLogo(in),
+		OGType: "website", FontSans: s.roadmapURL(b) + publicFontPath("Geist"), FontMono: s.roadmapURL(b) + publicFontPath("GeistMono"),
+		Home: s.roadmapURL(b), Mark: yuvaMark, YuvaSite: yuvaSite, Script: template.JS(roadmapScript), Logo: inboxLogo(in),
 		Suggest: b.Suggestions != string(oas.RoadmapSuggestionsOff),
 	}
 	var br oas.InboxBranding
@@ -278,7 +283,7 @@ func (s *Server) roadmapCards(w roadmapWords, sw statusWords, rows []store.ListP
 	out := make([]roadmapCard, len(rows))
 	for i, r := range rows {
 		c := roadmapCard{
-			Title: r.Title, URL: s.roadmapURL(b.Slug) + "/ideas/" + r.ID.String(), Excerpt: postExcerpt(r.Body),
+			Title: r.Title, URL: s.roadmapURL(b) + "/ideas/" + r.ID.String(), Excerpt: postExcerpt(r.Body),
 			Votes: w.votes(r.VoteCount), Comments: w.comments(r.ReplyCount), DateLabel: w.stageOn(r.Stage),
 		}
 		at := r.CreatedAt

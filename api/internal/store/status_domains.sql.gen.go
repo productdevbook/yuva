@@ -12,110 +12,78 @@ import (
 	"uuid"
 )
 
-const checkStatusDomainSoon = `-- name: CheckStatusDomainSoon :one
-UPDATE status_pages SET domain_check_at = $1::timestamptz, updated_at = $1
-WHERE workspace_id = $2 AND id = $3
-RETURNING id, workspace_id, inbox_id, name, description, slug, logo_url, accent_color, site_url, support_url, locale, timezone, history_days, show_uptime, published, changed_at, created_at, updated_at, mailing_list_id, email_enabled, custom_domain, domain_token, domain_state, domain_problem, domain_checked_at, domain_check_at, domain_verified_at, domain_missing_since, cf_hostname_id, cf_status, cf_ssl_status, cf_errors, cf_checked_at, domain_claimed_at, show_response_times, show_name, show_follow, logo_dark_url
+const countOwnDomains = `-- name: CountOwnDomains :one
+SELECT ((SELECT count(*) FROM status_pages WHERE workspace_id = $1::uuid AND id <> $2::uuid AND custom_domain IS NOT NULL AND domain_state <> 'off')
+    + (SELECT count(*) FROM help_centers WHERE workspace_id = $1::uuid AND id <> $2::uuid AND custom_domain IS NOT NULL AND domain_state <> 'off')
+    + (SELECT count(*) FROM roadmap_boards WHERE workspace_id = $1::uuid AND id <> $2::uuid AND custom_domain IS NOT NULL AND domain_state <> 'off')
+    + (SELECT count(*) FROM changelogs WHERE workspace_id = $1::uuid AND id <> $2::uuid AND custom_domain IS NOT NULL AND domain_state <> 'off'))::bigint
 `
 
-type CheckStatusDomainSoonParams struct {
-	Now         time.Time
+type CountOwnDomainsParams struct {
 	WorkspaceID uuid.UUID
 	ID          uuid.UUID
 }
 
-func (q *Queries) CheckStatusDomainSoon(ctx context.Context, arg CheckStatusDomainSoonParams) (StatusPage, error) {
-	row := q.db.QueryRow(ctx, checkStatusDomainSoon, arg.Now, arg.WorkspaceID, arg.ID)
-	var i StatusPage
-	err := row.Scan(
-		&i.ID,
-		&i.WorkspaceID,
-		&i.InboxID,
-		&i.Name,
-		&i.Description,
-		&i.Slug,
-		&i.LogoUrl,
-		&i.AccentColor,
-		&i.SiteUrl,
-		&i.SupportUrl,
-		&i.Locale,
-		&i.Timezone,
-		&i.HistoryDays,
-		&i.ShowUptime,
-		&i.Published,
-		&i.ChangedAt,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-		&i.MailingListID,
-		&i.EmailEnabled,
-		&i.CustomDomain,
-		&i.DomainToken,
-		&i.DomainState,
-		&i.DomainProblem,
-		&i.DomainCheckedAt,
-		&i.DomainCheckAt,
-		&i.DomainVerifiedAt,
-		&i.DomainMissingSince,
-		&i.CfHostnameID,
-		&i.CfStatus,
-		&i.CfSslStatus,
-		&i.CfErrors,
-		&i.CfCheckedAt,
-		&i.DomainClaimedAt,
-		&i.ShowResponseTimes,
-		&i.ShowName,
-		&i.ShowFollow,
-		&i.LogoDarkUrl,
-	)
-	return i, err
+func (q *Queries) CountOwnDomains(ctx context.Context, arg CountOwnDomainsParams) (int64, error) {
+	row := q.db.QueryRow(ctx, countOwnDomains, arg.WorkspaceID, arg.ID)
+	var column_1 int64
+	err := row.Scan(&column_1)
+	return column_1, err
 }
 
-const countStatusDomains = `-- name: CountStatusDomains :one
-SELECT count(*) FROM status_pages
-WHERE workspace_id = $1 AND id <> $2 AND custom_domain IS NOT NULL AND domain_state <> 'off'
+const failOwnDomainClaims = `-- name: FailOwnDomainClaims :many
+WITH s AS (
+    UPDATE status_pages SET domain_state = 'failed', domain_problem = 'taken', domain_check_at = NULL, updated_at = $1::timestamptz
+    WHERE custom_domain = $2::text AND id <> $3::uuid AND domain_state IN ('pending', 'failed')
+    RETURNING 'status'::text AS kind, id, workspace_id, inbox_id
+), h AS (
+    UPDATE help_centers SET domain_state = 'failed', domain_problem = 'taken', domain_check_at = NULL, updated_at = $1::timestamptz
+    WHERE custom_domain = $2::text AND id <> $3::uuid AND domain_state IN ('pending', 'failed')
+    RETURNING 'help'::text AS kind, id, workspace_id, inbox_id
+), r AS (
+    UPDATE roadmap_boards SET domain_state = 'failed', domain_problem = 'taken', domain_check_at = NULL, updated_at = $1::timestamptz
+    WHERE custom_domain = $2::text AND id <> $3::uuid AND domain_state IN ('pending', 'failed')
+    RETURNING 'roadmap'::text AS kind, id, workspace_id, inbox_id
+), c AS (
+    UPDATE changelogs SET domain_state = 'failed', domain_problem = 'taken', domain_check_at = NULL, updated_at = $1::timestamptz
+    WHERE custom_domain = $2::text AND id <> $3::uuid AND domain_state IN ('pending', 'failed')
+    RETURNING 'changelog'::text AS kind, id, workspace_id, inbox_id
+)
+SELECT kind, id, workspace_id, inbox_id FROM s
+UNION ALL SELECT kind, id, workspace_id, inbox_id FROM h
+UNION ALL SELECT kind, id, workspace_id, inbox_id FROM r
+UNION ALL SELECT kind, id, workspace_id, inbox_id FROM c
 `
 
-type CountStatusDomainsParams struct {
-	WorkspaceID uuid.UUID
-	ID          uuid.UUID
-}
-
-func (q *Queries) CountStatusDomains(ctx context.Context, arg CountStatusDomainsParams) (int64, error) {
-	row := q.db.QueryRow(ctx, countStatusDomains, arg.WorkspaceID, arg.ID)
-	var count int64
-	err := row.Scan(&count)
-	return count, err
-}
-
-const failStatusDomainClaims = `-- name: FailStatusDomainClaims :many
-UPDATE status_pages SET domain_state = 'failed', domain_problem = 'taken', domain_check_at = NULL, updated_at = $1
-WHERE custom_domain = $2 AND id <> $3 AND domain_state IN ('pending', 'failed')
-RETURNING id, workspace_id, inbox_id
-`
-
-type FailStatusDomainClaimsParams struct {
+type FailOwnDomainClaimsParams struct {
 	Now    time.Time
-	Domain *string
+	Domain string
 	ID     uuid.UUID
 }
 
-type FailStatusDomainClaimsRow struct {
+type FailOwnDomainClaimsRow struct {
+	Kind        string
 	ID          uuid.UUID
 	WorkspaceID uuid.UUID
 	InboxID     uuid.UUID
 }
 
-// The documented exception: once a page verifies a domain, the other claims of every workspace lose it.
-func (q *Queries) FailStatusDomainClaims(ctx context.Context, arg FailStatusDomainClaimsParams) ([]FailStatusDomainClaimsRow, error) {
-	rows, err := q.db.Query(ctx, failStatusDomainClaims, arg.Now, arg.Domain, arg.ID)
+// The documented exception: once a page of any kind verifies a domain, the other claims of every workspace lose it.
+func (q *Queries) FailOwnDomainClaims(ctx context.Context, arg FailOwnDomainClaimsParams) ([]FailOwnDomainClaimsRow, error) {
+	rows, err := q.db.Query(ctx, failOwnDomainClaims, arg.Now, arg.Domain, arg.ID)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []FailStatusDomainClaimsRow
+	var items []FailOwnDomainClaimsRow
 	for rows.Next() {
-		var i FailStatusDomainClaimsRow
-		if err := rows.Scan(&i.ID, &i.WorkspaceID, &i.InboxID); err != nil {
+		var i FailOwnDomainClaimsRow
+		if err := rows.Scan(
+			&i.Kind,
+			&i.ID,
+			&i.WorkspaceID,
+			&i.InboxID,
+		); err != nil {
 			return nil, err
 		}
 		items = append(items, i)
@@ -126,88 +94,84 @@ func (q *Queries) FailStatusDomainClaims(ctx context.Context, arg FailStatusDoma
 	return items, nil
 }
 
-const findStatusPageByDomain = `-- name: FindStatusPageByDomain :one
-SELECT p.id, p.workspace_id, p.inbox_id, p.name, p.description, p.slug, p.logo_url, p.accent_color, p.site_url, p.support_url, p.locale, p.timezone, p.history_days, p.show_uptime, p.published, p.changed_at, p.created_at, p.updated_at, p.mailing_list_id, p.email_enabled, p.custom_domain, p.domain_token, p.domain_state, p.domain_problem, p.domain_checked_at, p.domain_check_at, p.domain_verified_at, p.domain_missing_since, p.cf_hostname_id, p.cf_status, p.cf_ssl_status, p.cf_errors, p.cf_checked_at, p.domain_claimed_at, p.show_response_times, p.show_name, p.show_follow, p.logo_dark_url FROM status_pages p
-JOIN workspaces w ON w.id = p.workspace_id AND w.deleted_at IS NULL
-WHERE p.custom_domain = $1 AND p.domain_state = 'verified'
+const findOwnDomain = `-- name: FindOwnDomain :one
+SELECT d.kind::text AS kind, d.workspace_id::uuid AS workspace_id, d.id::uuid AS id, d.slug::text AS slug, d.live::bool AS live FROM (
+    SELECT 'status' AS kind, workspace_id, id, slug, published AS live FROM status_pages WHERE custom_domain = $1::text AND domain_state = 'verified'
+    UNION ALL
+    SELECT 'help', workspace_id, id, slug, published FROM help_centers WHERE custom_domain = $1::text AND domain_state = 'verified'
+    UNION ALL
+    SELECT 'roadmap', workspace_id, id, slug, public FROM roadmap_boards WHERE custom_domain = $1::text AND domain_state = 'verified'
+    UNION ALL
+    SELECT 'changelog', workspace_id, id, slug, published FROM changelogs WHERE custom_domain = $1::text AND domain_state = 'verified'
+) d
+JOIN workspaces w ON w.id = d.workspace_id AND w.deleted_at IS NULL
+ORDER BY d.kind, d.id
+LIMIT 1
 `
 
+type FindOwnDomainRow struct {
+	Kind        string
+	WorkspaceID uuid.UUID
+	ID          uuid.UUID
+	Slug        string
+	Live        bool
+}
+
 // The documented exception: a request on an own domain finds its page before its workspace is known.
-func (q *Queries) FindStatusPageByDomain(ctx context.Context, domain *string) (StatusPage, error) {
-	row := q.db.QueryRow(ctx, findStatusPageByDomain, domain)
-	var i StatusPage
+func (q *Queries) FindOwnDomain(ctx context.Context, domain string) (FindOwnDomainRow, error) {
+	row := q.db.QueryRow(ctx, findOwnDomain, domain)
+	var i FindOwnDomainRow
 	err := row.Scan(
-		&i.ID,
+		&i.Kind,
 		&i.WorkspaceID,
-		&i.InboxID,
-		&i.Name,
-		&i.Description,
+		&i.ID,
 		&i.Slug,
-		&i.LogoUrl,
-		&i.AccentColor,
-		&i.SiteUrl,
-		&i.SupportUrl,
-		&i.Locale,
-		&i.Timezone,
-		&i.HistoryDays,
-		&i.ShowUptime,
-		&i.Published,
-		&i.ChangedAt,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-		&i.MailingListID,
-		&i.EmailEnabled,
-		&i.CustomDomain,
-		&i.DomainToken,
-		&i.DomainState,
-		&i.DomainProblem,
-		&i.DomainCheckedAt,
-		&i.DomainCheckAt,
-		&i.DomainVerifiedAt,
-		&i.DomainMissingSince,
-		&i.CfHostnameID,
-		&i.CfStatus,
-		&i.CfSslStatus,
-		&i.CfErrors,
-		&i.CfCheckedAt,
-		&i.DomainClaimedAt,
-		&i.ShowResponseTimes,
-		&i.ShowName,
-		&i.ShowFollow,
-		&i.LogoDarkUrl,
+		&i.Live,
 	)
 	return i, err
 }
 
-const listDueStatusDomains = `-- name: ListDueStatusDomains :many
-SELECT p.workspace_id, p.id FROM status_pages p
-JOIN workspaces w ON w.id = p.workspace_id AND w.deleted_at IS NULL
-WHERE p.domain_check_at <= $1::timestamptz AND p.domain_state IN ('pending', 'failed', 'verified')
-ORDER BY p.domain_check_at
+const listDueOwnDomains = `-- name: ListDueOwnDomains :many
+SELECT d.kind::text AS kind, d.workspace_id::uuid AS workspace_id, d.id::uuid AS id FROM (
+    SELECT 'status' AS kind, workspace_id, id, domain_check_at FROM status_pages
+    WHERE domain_check_at <= $1::timestamptz AND domain_state IN ('pending', 'failed', 'verified')
+    UNION ALL
+    SELECT 'help', workspace_id, id, domain_check_at FROM help_centers
+    WHERE domain_check_at <= $1::timestamptz AND domain_state IN ('pending', 'failed', 'verified')
+    UNION ALL
+    SELECT 'roadmap', workspace_id, id, domain_check_at FROM roadmap_boards
+    WHERE domain_check_at <= $1::timestamptz AND domain_state IN ('pending', 'failed', 'verified')
+    UNION ALL
+    SELECT 'changelog', workspace_id, id, domain_check_at FROM changelogs
+    WHERE domain_check_at <= $1::timestamptz AND domain_state IN ('pending', 'failed', 'verified')
+) d
+JOIN workspaces w ON w.id = d.workspace_id AND w.deleted_at IS NULL
+ORDER BY d.domain_check_at
 LIMIT $2
 `
 
-type ListDueStatusDomainsParams struct {
+type ListDueOwnDomainsParams struct {
 	Now time.Time
 	Lim int32
 }
 
-type ListDueStatusDomainsRow struct {
+type ListDueOwnDomainsRow struct {
+	Kind        string
 	WorkspaceID uuid.UUID
 	ID          uuid.UUID
 }
 
 // The documented exception: the sweep lists the own domains due for a check of every workspace.
-func (q *Queries) ListDueStatusDomains(ctx context.Context, arg ListDueStatusDomainsParams) ([]ListDueStatusDomainsRow, error) {
-	rows, err := q.db.Query(ctx, listDueStatusDomains, arg.Now, arg.Lim)
+func (q *Queries) ListDueOwnDomains(ctx context.Context, arg ListDueOwnDomainsParams) ([]ListDueOwnDomainsRow, error) {
+	rows, err := q.db.Query(ctx, listDueOwnDomains, arg.Now, arg.Lim)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []ListDueStatusDomainsRow
+	var items []ListDueOwnDomainsRow
 	for rows.Next() {
-		var i ListDueStatusDomainsRow
-		if err := rows.Scan(&i.WorkspaceID, &i.ID); err != nil {
+		var i ListDueOwnDomainsRow
+		if err := rows.Scan(&i.Kind, &i.WorkspaceID, &i.ID); err != nil {
 			return nil, err
 		}
 		items = append(items, i)
@@ -218,25 +182,72 @@ func (q *Queries) ListDueStatusDomains(ctx context.Context, arg ListDueStatusDom
 	return items, nil
 }
 
-const listStatusCloudflareHostnames = `-- name: ListStatusCloudflareHostnames :many
-SELECT cf_hostname_id::text AS hostname_id, custom_domain::text AS domain FROM status_pages
-WHERE workspace_id = $1 AND cf_hostname_id IS NOT NULL
+const listInboxOwnDomains = `-- name: ListInboxOwnDomains :many
+SELECT id, cf_hostname_id, custom_domain FROM status_pages WHERE workspace_id = $1::uuid AND inbox_id = $2::uuid
+UNION ALL
+SELECT id, cf_hostname_id, custom_domain FROM help_centers WHERE workspace_id = $1::uuid AND inbox_id = $2::uuid
+UNION ALL
+SELECT id, cf_hostname_id, custom_domain FROM roadmap_boards WHERE workspace_id = $1::uuid AND inbox_id = $2::uuid
+UNION ALL
+SELECT id, cf_hostname_id, custom_domain FROM changelogs WHERE workspace_id = $1::uuid AND inbox_id = $2::uuid
 `
 
-type ListStatusCloudflareHostnamesRow struct {
-	HostnameID string
-	Domain     string
+type ListInboxOwnDomainsParams struct {
+	WorkspaceID uuid.UUID
+	InboxID     uuid.UUID
 }
 
-func (q *Queries) ListStatusCloudflareHostnames(ctx context.Context, workspaceID uuid.UUID) ([]ListStatusCloudflareHostnamesRow, error) {
-	rows, err := q.db.Query(ctx, listStatusCloudflareHostnames, workspaceID)
+type ListInboxOwnDomainsRow struct {
+	ID           uuid.UUID
+	CfHostnameID *string
+	CustomDomain *string
+}
+
+func (q *Queries) ListInboxOwnDomains(ctx context.Context, arg ListInboxOwnDomainsParams) ([]ListInboxOwnDomainsRow, error) {
+	rows, err := q.db.Query(ctx, listInboxOwnDomains, arg.WorkspaceID, arg.InboxID)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []ListStatusCloudflareHostnamesRow
+	var items []ListInboxOwnDomainsRow
 	for rows.Next() {
-		var i ListStatusCloudflareHostnamesRow
+		var i ListInboxOwnDomainsRow
+		if err := rows.Scan(&i.ID, &i.CfHostnameID, &i.CustomDomain); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listOwnCloudflareHostnames = `-- name: ListOwnCloudflareHostnames :many
+SELECT cf_hostname_id::text AS hostname_id, custom_domain::text AS domain FROM status_pages
+WHERE workspace_id = $1::uuid AND cf_hostname_id IS NOT NULL
+UNION ALL
+SELECT cf_hostname_id::text, custom_domain::text FROM help_centers WHERE workspace_id = $1::uuid AND cf_hostname_id IS NOT NULL
+UNION ALL
+SELECT cf_hostname_id::text, custom_domain::text FROM roadmap_boards WHERE workspace_id = $1::uuid AND cf_hostname_id IS NOT NULL
+UNION ALL
+SELECT cf_hostname_id::text, custom_domain::text FROM changelogs WHERE workspace_id = $1::uuid AND cf_hostname_id IS NOT NULL
+`
+
+type ListOwnCloudflareHostnamesRow struct {
+	HostnameID string
+	Domain     string
+}
+
+func (q *Queries) ListOwnCloudflareHostnames(ctx context.Context, workspaceID uuid.UUID) ([]ListOwnCloudflareHostnamesRow, error) {
+	rows, err := q.db.Query(ctx, listOwnCloudflareHostnames, workspaceID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ListOwnCloudflareHostnamesRow
+	for rows.Next() {
+		var i ListOwnCloudflareHostnamesRow
 		if err := rows.Scan(&i.HostnameID, &i.Domain); err != nil {
 			return nil, err
 		}
@@ -266,181 +277,347 @@ func (q *Queries) LockStatusDomainName(ctx context.Context, domain string) error
 	return err
 }
 
-const recordStatusDomainCheck = `-- name: RecordStatusDomainCheck :one
-UPDATE status_pages SET domain_state = $1::text, domain_problem = $2, domain_checked_at = $3::timestamptz,
-    domain_check_at = $4, domain_verified_at = $5, domain_missing_since = $6,
-    changed_at = CASE WHEN $7::bool THEN greatest(changed_at + interval '1 microsecond', $3::timestamptz) ELSE changed_at END,
-    updated_at = $3
-WHERE workspace_id = $8 AND id = $9
-RETURNING id, workspace_id, inbox_id, name, description, slug, logo_url, accent_color, site_url, support_url, locale, timezone, history_days, show_uptime, published, changed_at, created_at, updated_at, mailing_list_id, email_enabled, custom_domain, domain_token, domain_state, domain_problem, domain_checked_at, domain_check_at, domain_verified_at, domain_missing_since, cf_hostname_id, cf_status, cf_ssl_status, cf_errors, cf_checked_at, domain_claimed_at, show_response_times, show_name, show_follow, logo_dark_url
+const ownDomainTaken = `-- name: OwnDomainTaken :one
+SELECT (EXISTS (SELECT 1 FROM status_pages WHERE custom_domain = $1::text AND id <> $2::uuid AND domain_state = 'verified')
+    OR EXISTS (SELECT 1 FROM help_centers WHERE custom_domain = $1::text AND id <> $2::uuid AND domain_state = 'verified')
+    OR EXISTS (SELECT 1 FROM roadmap_boards WHERE custom_domain = $1::text AND id <> $2::uuid AND domain_state = 'verified')
+    OR EXISTS (SELECT 1 FROM changelogs WHERE custom_domain = $1::text AND id <> $2::uuid AND domain_state = 'verified'))::bool
 `
 
-type RecordStatusDomainCheckParams struct {
-	State        string
+type OwnDomainTakenParams struct {
+	Domain string
+	ID     uuid.UUID
+}
+
+// The documented exception: a verified own domain is unique across the server and across status pages, help centers,
+// roadmap boards and changelogs, so availability is checked across workspaces.
+func (q *Queries) OwnDomainTaken(ctx context.Context, arg OwnDomainTakenParams) (bool, error) {
+	row := q.db.QueryRow(ctx, ownDomainTaken, arg.Domain, arg.ID)
+	var column_1 bool
+	err := row.Scan(&column_1)
+	return column_1, err
+}
+
+const writeChangelogDomain = `-- name: WriteChangelogDomain :one
+UPDATE changelogs SET custom_domain = $1, domain_token = $2, domain_state = $3,
+    domain_problem = $4, domain_checked_at = $5, domain_check_at = $6,
+    domain_verified_at = $7, domain_missing_since = $8, domain_claimed_at = $9,
+    cf_hostname_id = $10, cf_status = $11, cf_ssl_status = $12,
+    cf_errors = $13::text[], cf_checked_at = $14,
+    changed_at = CASE WHEN $15::bool THEN greatest(changed_at + interval '1 microsecond', $16::timestamptz) ELSE changed_at END,
+    updated_at = $16
+WHERE workspace_id = $17 AND id = $18
+RETURNING id, workspace_id, inbox_id, name, description, slug, default_locale, locales, analytics_property_id, agents_may_publish, published, next_entry_number, changed_at, created_at, updated_at, custom_domain, domain_token, domain_state, domain_problem, domain_checked_at, domain_check_at, domain_verified_at, domain_missing_since, domain_claimed_at, cf_hostname_id, cf_status, cf_ssl_status, cf_errors, cf_checked_at
+`
+
+type WriteChangelogDomainParams struct {
+	Domain       *string
+	Token        *string
+	State        *string
 	Problem      *string
-	Now          time.Time
+	CheckedAt    *time.Time
 	CheckAt      *time.Time
 	VerifiedAt   *time.Time
 	MissingSince *time.Time
+	ClaimedAt    *time.Time
+	CfHostnameID *string
+	CfStatus     *string
+	CfSslStatus  *string
+	CfErrors     []string
+	CfCheckedAt  *time.Time
 	Moved        bool
+	Now          time.Time
 	WorkspaceID  uuid.UUID
 	ID           uuid.UUID
 }
 
-func (q *Queries) RecordStatusDomainCheck(ctx context.Context, arg RecordStatusDomainCheckParams) (StatusPage, error) {
-	row := q.db.QueryRow(ctx, recordStatusDomainCheck,
-		arg.State,
-		arg.Problem,
-		arg.Now,
-		arg.CheckAt,
-		arg.VerifiedAt,
-		arg.MissingSince,
-		arg.Moved,
-		arg.WorkspaceID,
-		arg.ID,
-	)
-	var i StatusPage
-	err := row.Scan(
-		&i.ID,
-		&i.WorkspaceID,
-		&i.InboxID,
-		&i.Name,
-		&i.Description,
-		&i.Slug,
-		&i.LogoUrl,
-		&i.AccentColor,
-		&i.SiteUrl,
-		&i.SupportUrl,
-		&i.Locale,
-		&i.Timezone,
-		&i.HistoryDays,
-		&i.ShowUptime,
-		&i.Published,
-		&i.ChangedAt,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-		&i.MailingListID,
-		&i.EmailEnabled,
-		&i.CustomDomain,
-		&i.DomainToken,
-		&i.DomainState,
-		&i.DomainProblem,
-		&i.DomainCheckedAt,
-		&i.DomainCheckAt,
-		&i.DomainVerifiedAt,
-		&i.DomainMissingSince,
-		&i.CfHostnameID,
-		&i.CfStatus,
-		&i.CfSslStatus,
-		&i.CfErrors,
-		&i.CfCheckedAt,
-		&i.DomainClaimedAt,
-		&i.ShowResponseTimes,
-		&i.ShowName,
-		&i.ShowFollow,
-		&i.LogoDarkUrl,
-	)
-	return i, err
-}
-
-const setStatusPageCloudflare = `-- name: SetStatusPageCloudflare :one
-UPDATE status_pages SET cf_hostname_id = $1, cf_status = $2, cf_ssl_status = $3,
-    cf_errors = $4::text[], cf_checked_at = $5::timestamptz, domain_check_at = coalesce($6, domain_check_at), updated_at = $5
-WHERE workspace_id = $7 AND id = $8
-RETURNING id, workspace_id, inbox_id, name, description, slug, logo_url, accent_color, site_url, support_url, locale, timezone, history_days, show_uptime, published, changed_at, created_at, updated_at, mailing_list_id, email_enabled, custom_domain, domain_token, domain_state, domain_problem, domain_checked_at, domain_check_at, domain_verified_at, domain_missing_since, cf_hostname_id, cf_status, cf_ssl_status, cf_errors, cf_checked_at, domain_claimed_at, show_response_times, show_name, show_follow, logo_dark_url
-`
-
-type SetStatusPageCloudflareParams struct {
-	HostnameID  *string
-	Status      *string
-	SslStatus   *string
-	Errors      []string
-	Now         time.Time
-	CheckAt     *time.Time
-	WorkspaceID uuid.UUID
-	ID          uuid.UUID
-}
-
-func (q *Queries) SetStatusPageCloudflare(ctx context.Context, arg SetStatusPageCloudflareParams) (StatusPage, error) {
-	row := q.db.QueryRow(ctx, setStatusPageCloudflare,
-		arg.HostnameID,
-		arg.Status,
-		arg.SslStatus,
-		arg.Errors,
-		arg.Now,
-		arg.CheckAt,
-		arg.WorkspaceID,
-		arg.ID,
-	)
-	var i StatusPage
-	err := row.Scan(
-		&i.ID,
-		&i.WorkspaceID,
-		&i.InboxID,
-		&i.Name,
-		&i.Description,
-		&i.Slug,
-		&i.LogoUrl,
-		&i.AccentColor,
-		&i.SiteUrl,
-		&i.SupportUrl,
-		&i.Locale,
-		&i.Timezone,
-		&i.HistoryDays,
-		&i.ShowUptime,
-		&i.Published,
-		&i.ChangedAt,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-		&i.MailingListID,
-		&i.EmailEnabled,
-		&i.CustomDomain,
-		&i.DomainToken,
-		&i.DomainState,
-		&i.DomainProblem,
-		&i.DomainCheckedAt,
-		&i.DomainCheckAt,
-		&i.DomainVerifiedAt,
-		&i.DomainMissingSince,
-		&i.CfHostnameID,
-		&i.CfStatus,
-		&i.CfSslStatus,
-		&i.CfErrors,
-		&i.CfCheckedAt,
-		&i.DomainClaimedAt,
-		&i.ShowResponseTimes,
-		&i.ShowName,
-		&i.ShowFollow,
-		&i.LogoDarkUrl,
-	)
-	return i, err
-}
-
-const setStatusPageDomain = `-- name: SetStatusPageDomain :one
-UPDATE status_pages SET custom_domain = $1, domain_token = $2, domain_state = $3,
-    domain_problem = NULL, domain_checked_at = NULL, domain_check_at = $4, domain_verified_at = NULL,
-    domain_missing_since = NULL, domain_claimed_at = CASE WHEN $1::text IS NULL THEN NULL ELSE $5::timestamptz END, cf_hostname_id = NULL, cf_status = NULL, cf_ssl_status = NULL, cf_errors = NULL, cf_checked_at = NULL,
-    changed_at = greatest(changed_at + interval '1 microsecond', $5::timestamptz), updated_at = $5
-WHERE workspace_id = $6 AND id = $7
-RETURNING id, workspace_id, inbox_id, name, description, slug, logo_url, accent_color, site_url, support_url, locale, timezone, history_days, show_uptime, published, changed_at, created_at, updated_at, mailing_list_id, email_enabled, custom_domain, domain_token, domain_state, domain_problem, domain_checked_at, domain_check_at, domain_verified_at, domain_missing_since, cf_hostname_id, cf_status, cf_ssl_status, cf_errors, cf_checked_at, domain_claimed_at, show_response_times, show_name, show_follow, logo_dark_url
-`
-
-type SetStatusPageDomainParams struct {
-	Domain      *string
-	Token       *string
-	State       *string
-	CheckAt     *time.Time
-	Now         time.Time
-	WorkspaceID uuid.UUID
-	ID          uuid.UUID
-}
-
-func (q *Queries) SetStatusPageDomain(ctx context.Context, arg SetStatusPageDomainParams) (StatusPage, error) {
-	row := q.db.QueryRow(ctx, setStatusPageDomain,
+func (q *Queries) WriteChangelogDomain(ctx context.Context, arg WriteChangelogDomainParams) (Changelog, error) {
+	row := q.db.QueryRow(ctx, writeChangelogDomain,
 		arg.Domain,
 		arg.Token,
 		arg.State,
+		arg.Problem,
+		arg.CheckedAt,
 		arg.CheckAt,
+		arg.VerifiedAt,
+		arg.MissingSince,
+		arg.ClaimedAt,
+		arg.CfHostnameID,
+		arg.CfStatus,
+		arg.CfSslStatus,
+		arg.CfErrors,
+		arg.CfCheckedAt,
+		arg.Moved,
+		arg.Now,
+		arg.WorkspaceID,
+		arg.ID,
+	)
+	var i Changelog
+	err := row.Scan(
+		&i.ID,
+		&i.WorkspaceID,
+		&i.InboxID,
+		&i.Name,
+		&i.Description,
+		&i.Slug,
+		&i.DefaultLocale,
+		&i.Locales,
+		&i.AnalyticsPropertyID,
+		&i.AgentsMayPublish,
+		&i.Published,
+		&i.NextEntryNumber,
+		&i.ChangedAt,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.CustomDomain,
+		&i.DomainToken,
+		&i.DomainState,
+		&i.DomainProblem,
+		&i.DomainCheckedAt,
+		&i.DomainCheckAt,
+		&i.DomainVerifiedAt,
+		&i.DomainMissingSince,
+		&i.DomainClaimedAt,
+		&i.CfHostnameID,
+		&i.CfStatus,
+		&i.CfSslStatus,
+		&i.CfErrors,
+		&i.CfCheckedAt,
+	)
+	return i, err
+}
+
+const writeHelpCenterDomain = `-- name: WriteHelpCenterDomain :one
+UPDATE help_centers SET custom_domain = $1, domain_token = $2, domain_state = $3,
+    domain_problem = $4, domain_checked_at = $5, domain_check_at = $6,
+    domain_verified_at = $7, domain_missing_since = $8, domain_claimed_at = $9,
+    cf_hostname_id = $10, cf_status = $11, cf_ssl_status = $12,
+    cf_errors = $13::text[], cf_checked_at = $14,
+    changed_at = CASE WHEN $15::bool THEN greatest(changed_at + interval '1 microsecond', $16::timestamptz) ELSE changed_at END,
+    updated_at = $16
+WHERE workspace_id = $17 AND id = $18
+RETURNING id, workspace_id, inbox_id, name, description, slug, default_locale, locales, logo_url, accent_color, site_url, chat_channel_id, analytics_property_id, agents_may_publish, published, next_collection_number, next_article_number, changed_at, created_at, updated_at, custom_domain, domain_token, domain_state, domain_problem, domain_checked_at, domain_check_at, domain_verified_at, domain_missing_since, domain_claimed_at, cf_hostname_id, cf_status, cf_ssl_status, cf_errors, cf_checked_at
+`
+
+type WriteHelpCenterDomainParams struct {
+	Domain       *string
+	Token        *string
+	State        *string
+	Problem      *string
+	CheckedAt    *time.Time
+	CheckAt      *time.Time
+	VerifiedAt   *time.Time
+	MissingSince *time.Time
+	ClaimedAt    *time.Time
+	CfHostnameID *string
+	CfStatus     *string
+	CfSslStatus  *string
+	CfErrors     []string
+	CfCheckedAt  *time.Time
+	Moved        bool
+	Now          time.Time
+	WorkspaceID  uuid.UUID
+	ID           uuid.UUID
+}
+
+func (q *Queries) WriteHelpCenterDomain(ctx context.Context, arg WriteHelpCenterDomainParams) (HelpCenter, error) {
+	row := q.db.QueryRow(ctx, writeHelpCenterDomain,
+		arg.Domain,
+		arg.Token,
+		arg.State,
+		arg.Problem,
+		arg.CheckedAt,
+		arg.CheckAt,
+		arg.VerifiedAt,
+		arg.MissingSince,
+		arg.ClaimedAt,
+		arg.CfHostnameID,
+		arg.CfStatus,
+		arg.CfSslStatus,
+		arg.CfErrors,
+		arg.CfCheckedAt,
+		arg.Moved,
+		arg.Now,
+		arg.WorkspaceID,
+		arg.ID,
+	)
+	var i HelpCenter
+	err := row.Scan(
+		&i.ID,
+		&i.WorkspaceID,
+		&i.InboxID,
+		&i.Name,
+		&i.Description,
+		&i.Slug,
+		&i.DefaultLocale,
+		&i.Locales,
+		&i.LogoUrl,
+		&i.AccentColor,
+		&i.SiteUrl,
+		&i.ChatChannelID,
+		&i.AnalyticsPropertyID,
+		&i.AgentsMayPublish,
+		&i.Published,
+		&i.NextCollectionNumber,
+		&i.NextArticleNumber,
+		&i.ChangedAt,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.CustomDomain,
+		&i.DomainToken,
+		&i.DomainState,
+		&i.DomainProblem,
+		&i.DomainCheckedAt,
+		&i.DomainCheckAt,
+		&i.DomainVerifiedAt,
+		&i.DomainMissingSince,
+		&i.DomainClaimedAt,
+		&i.CfHostnameID,
+		&i.CfStatus,
+		&i.CfSslStatus,
+		&i.CfErrors,
+		&i.CfCheckedAt,
+	)
+	return i, err
+}
+
+const writeRoadmapBoardDomain = `-- name: WriteRoadmapBoardDomain :one
+UPDATE roadmap_boards SET custom_domain = $1, domain_token = $2, domain_state = $3,
+    domain_problem = $4, domain_checked_at = $5, domain_check_at = $6,
+    domain_verified_at = $7, domain_missing_since = $8, domain_claimed_at = $9,
+    cf_hostname_id = $10, cf_status = $11, cf_ssl_status = $12,
+    cf_errors = $13::text[], cf_checked_at = $14,
+    changed_at = CASE WHEN $15::bool THEN greatest(changed_at + interval '1 microsecond', $16::timestamptz) ELSE changed_at END,
+    updated_at = $16
+WHERE workspace_id = $17 AND id = $18
+RETURNING id, workspace_id, inbox_id, channel_id, name, description, slug, public, suggestions, analytics_property_id, changed_at, created_at, updated_at, custom_domain, domain_token, domain_state, domain_problem, domain_checked_at, domain_check_at, domain_verified_at, domain_missing_since, domain_claimed_at, cf_hostname_id, cf_status, cf_ssl_status, cf_errors, cf_checked_at
+`
+
+type WriteRoadmapBoardDomainParams struct {
+	Domain       *string
+	Token        *string
+	State        *string
+	Problem      *string
+	CheckedAt    *time.Time
+	CheckAt      *time.Time
+	VerifiedAt   *time.Time
+	MissingSince *time.Time
+	ClaimedAt    *time.Time
+	CfHostnameID *string
+	CfStatus     *string
+	CfSslStatus  *string
+	CfErrors     []string
+	CfCheckedAt  *time.Time
+	Moved        bool
+	Now          time.Time
+	WorkspaceID  uuid.UUID
+	ID           uuid.UUID
+}
+
+func (q *Queries) WriteRoadmapBoardDomain(ctx context.Context, arg WriteRoadmapBoardDomainParams) (RoadmapBoard, error) {
+	row := q.db.QueryRow(ctx, writeRoadmapBoardDomain,
+		arg.Domain,
+		arg.Token,
+		arg.State,
+		arg.Problem,
+		arg.CheckedAt,
+		arg.CheckAt,
+		arg.VerifiedAt,
+		arg.MissingSince,
+		arg.ClaimedAt,
+		arg.CfHostnameID,
+		arg.CfStatus,
+		arg.CfSslStatus,
+		arg.CfErrors,
+		arg.CfCheckedAt,
+		arg.Moved,
+		arg.Now,
+		arg.WorkspaceID,
+		arg.ID,
+	)
+	var i RoadmapBoard
+	err := row.Scan(
+		&i.ID,
+		&i.WorkspaceID,
+		&i.InboxID,
+		&i.ChannelID,
+		&i.Name,
+		&i.Description,
+		&i.Slug,
+		&i.Public,
+		&i.Suggestions,
+		&i.AnalyticsPropertyID,
+		&i.ChangedAt,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.CustomDomain,
+		&i.DomainToken,
+		&i.DomainState,
+		&i.DomainProblem,
+		&i.DomainCheckedAt,
+		&i.DomainCheckAt,
+		&i.DomainVerifiedAt,
+		&i.DomainMissingSince,
+		&i.DomainClaimedAt,
+		&i.CfHostnameID,
+		&i.CfStatus,
+		&i.CfSslStatus,
+		&i.CfErrors,
+		&i.CfCheckedAt,
+	)
+	return i, err
+}
+
+const writeStatusPageDomain = `-- name: WriteStatusPageDomain :one
+UPDATE status_pages SET custom_domain = $1, domain_token = $2, domain_state = $3,
+    domain_problem = $4, domain_checked_at = $5, domain_check_at = $6,
+    domain_verified_at = $7, domain_missing_since = $8, domain_claimed_at = $9,
+    cf_hostname_id = $10, cf_status = $11, cf_ssl_status = $12,
+    cf_errors = $13::text[], cf_checked_at = $14,
+    changed_at = CASE WHEN $15::bool THEN greatest(changed_at + interval '1 microsecond', $16::timestamptz) ELSE changed_at END,
+    updated_at = $16
+WHERE workspace_id = $17 AND id = $18
+RETURNING id, workspace_id, inbox_id, name, description, slug, logo_url, accent_color, site_url, support_url, locale, timezone, history_days, show_uptime, published, changed_at, created_at, updated_at, mailing_list_id, email_enabled, custom_domain, domain_token, domain_state, domain_problem, domain_checked_at, domain_check_at, domain_verified_at, domain_missing_since, cf_hostname_id, cf_status, cf_ssl_status, cf_errors, cf_checked_at, domain_claimed_at, show_response_times, show_name, show_follow, logo_dark_url
+`
+
+type WriteStatusPageDomainParams struct {
+	Domain       *string
+	Token        *string
+	State        *string
+	Problem      *string
+	CheckedAt    *time.Time
+	CheckAt      *time.Time
+	VerifiedAt   *time.Time
+	MissingSince *time.Time
+	ClaimedAt    *time.Time
+	CfHostnameID *string
+	CfStatus     *string
+	CfSslStatus  *string
+	CfErrors     []string
+	CfCheckedAt  *time.Time
+	Moved        bool
+	Now          time.Time
+	WorkspaceID  uuid.UUID
+	ID           uuid.UUID
+}
+
+func (q *Queries) WriteStatusPageDomain(ctx context.Context, arg WriteStatusPageDomainParams) (StatusPage, error) {
+	row := q.db.QueryRow(ctx, writeStatusPageDomain,
+		arg.Domain,
+		arg.Token,
+		arg.State,
+		arg.Problem,
+		arg.CheckedAt,
+		arg.CheckAt,
+		arg.VerifiedAt,
+		arg.MissingSince,
+		arg.ClaimedAt,
+		arg.CfHostnameID,
+		arg.CfStatus,
+		arg.CfSslStatus,
+		arg.CfErrors,
+		arg.CfCheckedAt,
+		arg.Moved,
 		arg.Now,
 		arg.WorkspaceID,
 		arg.ID,
@@ -487,21 +664,4 @@ func (q *Queries) SetStatusPageDomain(ctx context.Context, arg SetStatusPageDoma
 		&i.LogoDarkUrl,
 	)
 	return i, err
-}
-
-const statusDomainTaken = `-- name: StatusDomainTaken :one
-SELECT EXISTS (SELECT 1 FROM status_pages WHERE custom_domain = $1 AND id <> $2 AND domain_state = 'verified')::bool
-`
-
-type StatusDomainTakenParams struct {
-	Domain *string
-	ID     uuid.UUID
-}
-
-// The documented exception: a verified own domain is unique across the server, so availability is checked across workspaces.
-func (q *Queries) StatusDomainTaken(ctx context.Context, arg StatusDomainTakenParams) (bool, error) {
-	row := q.db.QueryRow(ctx, statusDomainTaken, arg.Domain, arg.ID)
-	var column_1 bool
-	err := row.Scan(&column_1)
-	return column_1, err
 }

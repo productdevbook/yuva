@@ -202,7 +202,7 @@ const createRoadmapBoard = `-- name: CreateRoadmapBoard :one
 INSERT INTO roadmap_boards (id, workspace_id, inbox_id, channel_id, name, description, slug, public, suggestions, analytics_property_id,
     changed_at, created_at, updated_at)
 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $11, $11)
-RETURNING id, workspace_id, inbox_id, channel_id, name, description, slug, public, suggestions, analytics_property_id, changed_at, created_at, updated_at
+RETURNING id, workspace_id, inbox_id, channel_id, name, description, slug, public, suggestions, analytics_property_id, changed_at, created_at, updated_at, custom_domain, domain_token, domain_state, domain_problem, domain_checked_at, domain_check_at, domain_verified_at, domain_missing_since, domain_claimed_at, cf_hostname_id, cf_status, cf_ssl_status, cf_errors, cf_checked_at
 `
 
 type CreateRoadmapBoardParams struct {
@@ -248,6 +248,20 @@ func (q *Queries) CreateRoadmapBoard(ctx context.Context, arg CreateRoadmapBoard
 		&i.ChangedAt,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.CustomDomain,
+		&i.DomainToken,
+		&i.DomainState,
+		&i.DomainProblem,
+		&i.DomainCheckedAt,
+		&i.DomainCheckAt,
+		&i.DomainVerifiedAt,
+		&i.DomainMissingSince,
+		&i.DomainClaimedAt,
+		&i.CfHostnameID,
+		&i.CfStatus,
+		&i.CfSslStatus,
+		&i.CfErrors,
+		&i.CfCheckedAt,
 	)
 	return i, err
 }
@@ -349,7 +363,7 @@ func (q *Queries) DeleteRoadmapBoard(ctx context.Context, arg DeleteRoadmapBoard
 }
 
 const findRoadmapBoardByFormerSlug = `-- name: FindRoadmapBoardByFormerSlug :one
-SELECT b.id, b.workspace_id, b.inbox_id, b.channel_id, b.name, b.description, b.slug, b.public, b.suggestions, b.analytics_property_id, b.changed_at, b.created_at, b.updated_at FROM roadmap_board_slugs s
+SELECT b.id, b.workspace_id, b.inbox_id, b.channel_id, b.name, b.description, b.slug, b.public, b.suggestions, b.analytics_property_id, b.changed_at, b.created_at, b.updated_at, b.custom_domain, b.domain_token, b.domain_state, b.domain_problem, b.domain_checked_at, b.domain_check_at, b.domain_verified_at, b.domain_missing_since, b.domain_claimed_at, b.cf_hostname_id, b.cf_status, b.cf_ssl_status, b.cf_errors, b.cf_checked_at FROM roadmap_board_slugs s
 JOIN roadmap_boards b ON b.workspace_id = s.workspace_id AND b.id = s.board_id
 JOIN workspaces w ON w.id = b.workspace_id AND w.deleted_at IS NULL
 WHERE s.slug = $1
@@ -373,12 +387,26 @@ func (q *Queries) FindRoadmapBoardByFormerSlug(ctx context.Context, slug string)
 		&i.ChangedAt,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.CustomDomain,
+		&i.DomainToken,
+		&i.DomainState,
+		&i.DomainProblem,
+		&i.DomainCheckedAt,
+		&i.DomainCheckAt,
+		&i.DomainVerifiedAt,
+		&i.DomainMissingSince,
+		&i.DomainClaimedAt,
+		&i.CfHostnameID,
+		&i.CfStatus,
+		&i.CfSslStatus,
+		&i.CfErrors,
+		&i.CfCheckedAt,
 	)
 	return i, err
 }
 
 const findRoadmapBoardBySlug = `-- name: FindRoadmapBoardBySlug :one
-SELECT b.id, b.workspace_id, b.inbox_id, b.channel_id, b.name, b.description, b.slug, b.public, b.suggestions, b.analytics_property_id, b.changed_at, b.created_at, b.updated_at FROM roadmap_boards b JOIN workspaces w ON w.id = b.workspace_id AND w.deleted_at IS NULL WHERE b.slug = $1
+SELECT b.id, b.workspace_id, b.inbox_id, b.channel_id, b.name, b.description, b.slug, b.public, b.suggestions, b.analytics_property_id, b.changed_at, b.created_at, b.updated_at, b.custom_domain, b.domain_token, b.domain_state, b.domain_problem, b.domain_checked_at, b.domain_check_at, b.domain_verified_at, b.domain_missing_since, b.domain_claimed_at, b.cf_hostname_id, b.cf_status, b.cf_ssl_status, b.cf_errors, b.cf_checked_at FROM roadmap_boards b JOIN workspaces w ON w.id = b.workspace_id AND w.deleted_at IS NULL WHERE b.slug = $1
 `
 
 // The documented exception: a public page is found by its slug before its workspace is known.
@@ -399,6 +427,20 @@ func (q *Queries) FindRoadmapBoardBySlug(ctx context.Context, slug string) (Road
 		&i.ChangedAt,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.CustomDomain,
+		&i.DomainToken,
+		&i.DomainState,
+		&i.DomainProblem,
+		&i.DomainCheckedAt,
+		&i.DomainCheckAt,
+		&i.DomainVerifiedAt,
+		&i.DomainMissingSince,
+		&i.DomainClaimedAt,
+		&i.CfHostnameID,
+		&i.CfStatus,
+		&i.CfSslStatus,
+		&i.CfErrors,
+		&i.CfCheckedAt,
 	)
 	return i, err
 }
@@ -442,7 +484,7 @@ func (q *Queries) GetConversationIdeaLink(ctx context.Context, arg GetConversati
 }
 
 const getInboxRoadmapBoard = `-- name: GetInboxRoadmapBoard :one
-SELECT id, workspace_id, inbox_id, channel_id, name, description, slug, public, suggestions, analytics_property_id, changed_at, created_at, updated_at FROM roadmap_boards WHERE workspace_id = $1 AND inbox_id = $2
+SELECT id, workspace_id, inbox_id, channel_id, name, description, slug, public, suggestions, analytics_property_id, changed_at, created_at, updated_at, custom_domain, domain_token, domain_state, domain_problem, domain_checked_at, domain_check_at, domain_verified_at, domain_missing_since, domain_claimed_at, cf_hostname_id, cf_status, cf_ssl_status, cf_errors, cf_checked_at FROM roadmap_boards WHERE workspace_id = $1 AND inbox_id = $2
 `
 
 type GetInboxRoadmapBoardParams struct {
@@ -467,12 +509,26 @@ func (q *Queries) GetInboxRoadmapBoard(ctx context.Context, arg GetInboxRoadmapB
 		&i.ChangedAt,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.CustomDomain,
+		&i.DomainToken,
+		&i.DomainState,
+		&i.DomainProblem,
+		&i.DomainCheckedAt,
+		&i.DomainCheckAt,
+		&i.DomainVerifiedAt,
+		&i.DomainMissingSince,
+		&i.DomainClaimedAt,
+		&i.CfHostnameID,
+		&i.CfStatus,
+		&i.CfSslStatus,
+		&i.CfErrors,
+		&i.CfCheckedAt,
 	)
 	return i, err
 }
 
 const getRoadmapBoard = `-- name: GetRoadmapBoard :one
-SELECT id, workspace_id, inbox_id, channel_id, name, description, slug, public, suggestions, analytics_property_id, changed_at, created_at, updated_at FROM roadmap_boards WHERE workspace_id = $1 AND id = $2
+SELECT id, workspace_id, inbox_id, channel_id, name, description, slug, public, suggestions, analytics_property_id, changed_at, created_at, updated_at, custom_domain, domain_token, domain_state, domain_problem, domain_checked_at, domain_check_at, domain_verified_at, domain_missing_since, domain_claimed_at, cf_hostname_id, cf_status, cf_ssl_status, cf_errors, cf_checked_at FROM roadmap_boards WHERE workspace_id = $1 AND id = $2
 `
 
 type GetRoadmapBoardParams struct {
@@ -497,6 +553,20 @@ func (q *Queries) GetRoadmapBoard(ctx context.Context, arg GetRoadmapBoardParams
 		&i.ChangedAt,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.CustomDomain,
+		&i.DomainToken,
+		&i.DomainState,
+		&i.DomainProblem,
+		&i.DomainCheckedAt,
+		&i.DomainCheckAt,
+		&i.DomainVerifiedAt,
+		&i.DomainMissingSince,
+		&i.DomainClaimedAt,
+		&i.CfHostnameID,
+		&i.CfStatus,
+		&i.CfSslStatus,
+		&i.CfErrors,
+		&i.CfCheckedAt,
 	)
 	return i, err
 }
@@ -876,7 +946,7 @@ func (q *Queries) ListPublicIdeas(ctx context.Context, arg ListPublicIdeasParams
 }
 
 const listRoadmapBoards = `-- name: ListRoadmapBoards :many
-SELECT id, workspace_id, inbox_id, channel_id, name, description, slug, public, suggestions, analytics_property_id, changed_at, created_at, updated_at FROM roadmap_boards b
+SELECT id, workspace_id, inbox_id, channel_id, name, description, slug, public, suggestions, analytics_property_id, changed_at, created_at, updated_at, custom_domain, domain_token, domain_state, domain_problem, domain_checked_at, domain_check_at, domain_verified_at, domain_missing_since, domain_claimed_at, cf_hostname_id, cf_status, cf_ssl_status, cf_errors, cf_checked_at FROM roadmap_boards b
 WHERE b.workspace_id = $1
   AND ($2::uuid IS NULL OR b.inbox_id = $2::uuid)
   AND ($3::bool OR EXISTS (
@@ -920,6 +990,20 @@ func (q *Queries) ListRoadmapBoards(ctx context.Context, arg ListRoadmapBoardsPa
 			&i.ChangedAt,
 			&i.CreatedAt,
 			&i.UpdatedAt,
+			&i.CustomDomain,
+			&i.DomainToken,
+			&i.DomainState,
+			&i.DomainProblem,
+			&i.DomainCheckedAt,
+			&i.DomainCheckAt,
+			&i.DomainVerifiedAt,
+			&i.DomainMissingSince,
+			&i.DomainClaimedAt,
+			&i.CfHostnameID,
+			&i.CfStatus,
+			&i.CfSslStatus,
+			&i.CfErrors,
+			&i.CfCheckedAt,
 		); err != nil {
 			return nil, err
 		}
@@ -1030,7 +1114,7 @@ func (q *Queries) ListStageDigestChanges(ctx context.Context, arg ListStageDiges
 }
 
 const lockRoadmapBoard = `-- name: LockRoadmapBoard :one
-SELECT id, workspace_id, inbox_id, channel_id, name, description, slug, public, suggestions, analytics_property_id, changed_at, created_at, updated_at FROM roadmap_boards WHERE workspace_id = $1 AND id = $2 FOR UPDATE
+SELECT id, workspace_id, inbox_id, channel_id, name, description, slug, public, suggestions, analytics_property_id, changed_at, created_at, updated_at, custom_domain, domain_token, domain_state, domain_problem, domain_checked_at, domain_check_at, domain_verified_at, domain_missing_since, domain_claimed_at, cf_hostname_id, cf_status, cf_ssl_status, cf_errors, cf_checked_at FROM roadmap_boards WHERE workspace_id = $1 AND id = $2 FOR UPDATE
 `
 
 type LockRoadmapBoardParams struct {
@@ -1055,6 +1139,20 @@ func (q *Queries) LockRoadmapBoard(ctx context.Context, arg LockRoadmapBoardPara
 		&i.ChangedAt,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.CustomDomain,
+		&i.DomainToken,
+		&i.DomainState,
+		&i.DomainProblem,
+		&i.DomainCheckedAt,
+		&i.DomainCheckAt,
+		&i.DomainVerifiedAt,
+		&i.DomainMissingSince,
+		&i.DomainClaimedAt,
+		&i.CfHostnameID,
+		&i.CfStatus,
+		&i.CfSslStatus,
+		&i.CfErrors,
+		&i.CfCheckedAt,
 	)
 	return i, err
 }
@@ -1230,7 +1328,7 @@ UPDATE roadmap_boards SET channel_id = $1, name = $2, description = $3, slug = $
     suggestions = $6, analytics_property_id = $7,
     changed_at = greatest(changed_at + interval '1 microsecond', $8::timestamptz), updated_at = $8
 WHERE workspace_id = $9 AND id = $10
-RETURNING id, workspace_id, inbox_id, channel_id, name, description, slug, public, suggestions, analytics_property_id, changed_at, created_at, updated_at
+RETURNING id, workspace_id, inbox_id, channel_id, name, description, slug, public, suggestions, analytics_property_id, changed_at, created_at, updated_at, custom_domain, domain_token, domain_state, domain_problem, domain_checked_at, domain_check_at, domain_verified_at, domain_missing_since, domain_claimed_at, cf_hostname_id, cf_status, cf_ssl_status, cf_errors, cf_checked_at
 `
 
 type UpdateRoadmapBoardParams struct {
@@ -1274,6 +1372,20 @@ func (q *Queries) UpdateRoadmapBoard(ctx context.Context, arg UpdateRoadmapBoard
 		&i.ChangedAt,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.CustomDomain,
+		&i.DomainToken,
+		&i.DomainState,
+		&i.DomainProblem,
+		&i.DomainCheckedAt,
+		&i.DomainCheckAt,
+		&i.DomainVerifiedAt,
+		&i.DomainMissingSince,
+		&i.DomainClaimedAt,
+		&i.CfHostnameID,
+		&i.CfStatus,
+		&i.CfSslStatus,
+		&i.CfErrors,
+		&i.CfCheckedAt,
 	)
 	return i, err
 }

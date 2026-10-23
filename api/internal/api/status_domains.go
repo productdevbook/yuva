@@ -22,6 +22,7 @@ import (
 	"github.com/productdevbook/yuva/api/internal/cfsaas"
 	"github.com/productdevbook/yuva/api/internal/jobs"
 	"github.com/productdevbook/yuva/api/internal/oas"
+	"github.com/productdevbook/yuva/api/internal/realtime"
 	"github.com/productdevbook/yuva/api/internal/store"
 )
 
@@ -47,10 +48,18 @@ const (
 
 	domainProblemTaken   = "taken"
 	domainProblemExpired = "expired"
+
+	helpSignalCenter       = string(oas.HelpCenterUpdated)
+	changelogSignalUpdates = string(oas.ChangelogUpdated)
+
+	kindStatus    = "status"
+	kindHelp      = "help"
+	kindRoadmap   = "roadmap"
+	kindChangelog = "changelog"
 )
 
 var (
-	errStatusDomainTaken = problem(http.StatusConflict, "domain_taken", "another status page has this domain")
+	errStatusDomainTaken = problem(http.StatusConflict, "domain_taken", "another page has this domain")
 	errStatusDomainLimit = problem(http.StatusForbidden, "status_domain_limit", "this workspace has as many own domains as the server allows (YUVA_STATUS_DOMAIN_LIMIT)")
 
 	domainLabelPattern = regexp.MustCompile(`^[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?$`)
@@ -63,10 +72,12 @@ type StatusResolver interface {
 	LookupHost(ctx context.Context, host string) ([]string, error)
 }
 
-// StatusDomainArgs checks one page's own domain.
+// StatusDomainArgs checks the own domain of one status page, help center, roadmap board or changelog;
+// Kind is empty for a status page.
 type StatusDomainArgs struct {
 	WorkspaceID uuid.UUID `json:"workspace_id"`
 	PageID      uuid.UUID `json:"page_id"`
+	PageKind    string    `json:"kind,omitempty"`
 }
 
 func (StatusDomainArgs) Kind() string { return "status_domain_check" }
@@ -75,6 +86,13 @@ func (StatusDomainArgs) InsertOpts() river.InsertOpts {
 	return river.InsertOpts{UniqueOpts: river.UniqueOpts{ByArgs: true, ByState: []rivertype.JobState{
 		rivertype.JobStateAvailable, rivertype.JobStatePending, rivertype.JobStateRunning, rivertype.JobStateScheduled, rivertype.JobStateRetryable,
 	}}}
+}
+
+func domainCheckArgs(kind string, ws, id uuid.UUID) StatusDomainArgs {
+	if kind == kindStatus {
+		kind = ""
+	}
+	return StatusDomainArgs{WorkspaceID: ws, PageID: id, PageKind: kind}
 }
 
 // StatusDomainReleaseArgs deletes a Cloudflare custom hostname whose domain was removed, turned off
@@ -86,6 +104,151 @@ type StatusDomainReleaseArgs struct {
 }
 
 func (StatusDomainReleaseArgs) Kind() string { return "status_domain_release" }
+
+type ownDomain struct {
+	kind      string
+	workspace uuid.UUID
+	id        uuid.UUID
+	inbox     uuid.UUID
+	slug      string
+	live      bool
+	row       any
+	cols      store.WriteStatusPageDomainParams
+}
+
+func statusOwn(pg store.StatusPage) ownDomain {
+	return ownDomain{kind: kindStatus, workspace: pg.WorkspaceID, id: pg.ID, inbox: pg.InboxID, slug: pg.Slug, live: pg.Published, row: pg,
+		cols: store.WriteStatusPageDomainParams{WorkspaceID: pg.WorkspaceID, ID: pg.ID, Domain: pg.CustomDomain, Token: pg.DomainToken,
+			State: pg.DomainState, Problem: pg.DomainProblem, CheckedAt: pg.DomainCheckedAt, CheckAt: pg.DomainCheckAt,
+			VerifiedAt: pg.DomainVerifiedAt, MissingSince: pg.DomainMissingSince, ClaimedAt: pg.DomainClaimedAt,
+			CfHostnameID: pg.CfHostnameID, CfStatus: pg.CfStatus, CfSslStatus: pg.CfSslStatus, CfErrors: pg.CfErrors, CfCheckedAt: pg.CfCheckedAt}}
+}
+
+func helpOwn(c store.HelpCenter) ownDomain {
+	return ownDomain{kind: kindHelp, workspace: c.WorkspaceID, id: c.ID, inbox: c.InboxID, slug: c.Slug, live: c.Published, row: c,
+		cols: store.WriteStatusPageDomainParams{WorkspaceID: c.WorkspaceID, ID: c.ID, Domain: c.CustomDomain, Token: c.DomainToken,
+			State: c.DomainState, Problem: c.DomainProblem, CheckedAt: c.DomainCheckedAt, CheckAt: c.DomainCheckAt,
+			VerifiedAt: c.DomainVerifiedAt, MissingSince: c.DomainMissingSince, ClaimedAt: c.DomainClaimedAt,
+			CfHostnameID: c.CfHostnameID, CfStatus: c.CfStatus, CfSslStatus: c.CfSslStatus, CfErrors: c.CfErrors, CfCheckedAt: c.CfCheckedAt}}
+}
+
+func boardOwn(b store.RoadmapBoard) ownDomain {
+	return ownDomain{kind: kindRoadmap, workspace: b.WorkspaceID, id: b.ID, inbox: b.InboxID, slug: b.Slug, live: b.Public, row: b,
+		cols: store.WriteStatusPageDomainParams{WorkspaceID: b.WorkspaceID, ID: b.ID, Domain: b.CustomDomain, Token: b.DomainToken,
+			State: b.DomainState, Problem: b.DomainProblem, CheckedAt: b.DomainCheckedAt, CheckAt: b.DomainCheckAt,
+			VerifiedAt: b.DomainVerifiedAt, MissingSince: b.DomainMissingSince, ClaimedAt: b.DomainClaimedAt,
+			CfHostnameID: b.CfHostnameID, CfStatus: b.CfStatus, CfSslStatus: b.CfSslStatus, CfErrors: b.CfErrors, CfCheckedAt: b.CfCheckedAt}}
+}
+
+func changelogOwn(c store.Changelog) ownDomain {
+	return ownDomain{kind: kindChangelog, workspace: c.WorkspaceID, id: c.ID, inbox: c.InboxID, slug: c.Slug, live: c.Published, row: c,
+		cols: store.WriteStatusPageDomainParams{WorkspaceID: c.WorkspaceID, ID: c.ID, Domain: c.CustomDomain, Token: c.DomainToken,
+			State: c.DomainState, Problem: c.DomainProblem, CheckedAt: c.DomainCheckedAt, CheckAt: c.DomainCheckAt,
+			VerifiedAt: c.DomainVerifiedAt, MissingSince: c.DomainMissingSince, ClaimedAt: c.DomainClaimedAt,
+			CfHostnameID: c.CfHostnameID, CfStatus: c.CfStatus, CfSslStatus: c.CfSslStatus, CfErrors: c.CfErrors, CfCheckedAt: c.CfCheckedAt}}
+}
+
+type ownKind struct {
+	get   func(context.Context, *store.Queries, uuid.UUID, uuid.UUID) (ownDomain, error)
+	lock  func(context.Context, *store.Queries, uuid.UUID, uuid.UUID) (ownDomain, error)
+	write func(context.Context, *store.Queries, store.WriteStatusPageDomainParams) (ownDomain, error)
+	on    func() bool
+	moved func(ctx context.Context, ws, inbox, id uuid.UUID)
+}
+
+func (s *Server) ownKind(kind string) (ownKind, bool) {
+	switch kind {
+	case "", kindStatus:
+		return ownKind{
+			get: func(ctx context.Context, q *store.Queries, ws, id uuid.UUID) (ownDomain, error) {
+				pg, err := q.GetStatusPage(ctx, store.GetStatusPageParams{WorkspaceID: ws, ID: id})
+				return statusOwn(pg), err
+			},
+			lock: func(ctx context.Context, q *store.Queries, ws, id uuid.UUID) (ownDomain, error) {
+				pg, err := q.LockStatusPage(ctx, store.LockStatusPageParams{WorkspaceID: ws, ID: id})
+				return statusOwn(pg), err
+			},
+			write: func(ctx context.Context, q *store.Queries, p store.WriteStatusPageDomainParams) (ownDomain, error) {
+				pg, err := q.WriteStatusPageDomain(ctx, p)
+				return statusOwn(pg), err
+			},
+			on: func() bool { return true },
+			moved: func(ctx context.Context, ws, inbox, id uuid.UUID) {
+				s.statusHint(ctx, ws, inbox)
+				s.statusPageSignal(ctx, ws, inbox, id)
+			},
+		}, true
+	case kindHelp:
+		return ownKind{
+			get: func(ctx context.Context, q *store.Queries, ws, id uuid.UUID) (ownDomain, error) {
+				c, err := q.GetHelpCenter(ctx, store.GetHelpCenterParams{WorkspaceID: ws, ID: id})
+				return helpOwn(c), err
+			},
+			lock: func(ctx context.Context, q *store.Queries, ws, id uuid.UUID) (ownDomain, error) {
+				c, err := q.LockHelpCenter(ctx, store.LockHelpCenterParams{WorkspaceID: ws, ID: id})
+				return helpOwn(c), err
+			},
+			write: func(ctx context.Context, q *store.Queries, p store.WriteStatusPageDomainParams) (ownDomain, error) {
+				c, err := q.WriteHelpCenterDomain(ctx, store.WriteHelpCenterDomainParams(p))
+				return helpOwn(c), err
+			},
+			on: func() bool { return !s.help.Off },
+			moved: func(ctx context.Context, ws, inbox, id uuid.UUID) {
+				s.statusHint(ctx, ws, inbox)
+				s.helpCenterSignal(ctx, ws, inbox, id)
+			},
+		}, true
+	case kindRoadmap:
+		return ownKind{
+			get: func(ctx context.Context, q *store.Queries, ws, id uuid.UUID) (ownDomain, error) {
+				b, err := q.GetRoadmapBoard(ctx, store.GetRoadmapBoardParams{WorkspaceID: ws, ID: id})
+				return boardOwn(b), err
+			},
+			lock: func(ctx context.Context, q *store.Queries, ws, id uuid.UUID) (ownDomain, error) {
+				b, err := q.LockRoadmapBoard(ctx, store.LockRoadmapBoardParams{WorkspaceID: ws, ID: id})
+				return boardOwn(b), err
+			},
+			write: func(ctx context.Context, q *store.Queries, p store.WriteStatusPageDomainParams) (ownDomain, error) {
+				b, err := q.WriteRoadmapBoardDomain(ctx, store.WriteRoadmapBoardDomainParams(p))
+				return boardOwn(b), err
+			},
+			on: func() bool { return !s.roadmap.Off },
+			moved: func(ctx context.Context, ws, inbox, id uuid.UUID) {
+				s.statusHint(ctx, ws, inbox)
+				s.boardSignal(ctx, ws, inbox, id)
+			},
+		}, true
+	case kindChangelog:
+		return ownKind{
+			get: func(ctx context.Context, q *store.Queries, ws, id uuid.UUID) (ownDomain, error) {
+				c, err := q.GetChangelog(ctx, store.GetChangelogParams{WorkspaceID: ws, ID: id})
+				return changelogOwn(c), err
+			},
+			lock: func(ctx context.Context, q *store.Queries, ws, id uuid.UUID) (ownDomain, error) {
+				c, err := q.LockChangelog(ctx, store.LockChangelogParams{WorkspaceID: ws, ID: id})
+				return changelogOwn(c), err
+			},
+			write: func(ctx context.Context, q *store.Queries, p store.WriteStatusPageDomainParams) (ownDomain, error) {
+				c, err := q.WriteChangelogDomain(ctx, store.WriteChangelogDomainParams(p))
+				return changelogOwn(c), err
+			},
+			on: func() bool { return !s.changelog.Off },
+			moved: func(ctx context.Context, ws, inbox, id uuid.UUID) {
+				s.statusHint(ctx, ws, inbox)
+				s.changelogUpdatedSignal(ctx, ws, inbox, id)
+			},
+		}, true
+	}
+	return ownKind{}, false
+}
+
+func (s *Server) helpCenterSignal(ctx context.Context, ws, inboxID, centerID uuid.UUID) {
+	s.signal(ctx, realtime.Event{Type: helpSignalCenter, WorkspaceID: ws, InboxID: &inboxID, Data: mustJSON(map[string]uuid.UUID{"center_id": centerID})})
+}
+
+func (s *Server) changelogUpdatedSignal(ctx context.Context, ws, inboxID, changelogID uuid.UUID) {
+	s.signal(ctx, realtime.Event{Type: changelogSignalUpdates, WorkspaceID: ws, InboxID: &inboxID, Data: mustJSON(map[string]uuid.UUID{"changelog_id": changelogID})})
+}
 
 func (s *Server) statusDomainsMode() string {
 	if s.status.Domains == "" {
@@ -113,7 +276,7 @@ func (s *Server) statusCNAME() string {
 
 func (s *Server) ownHosts() []string {
 	var out []string
-	for _, h := range []string{hostnameOf(s.auth.PublicURL), hostnameOf(s.status.URL), s.statusCNAME()} {
+	for _, h := range []string{hostnameOf(s.auth.PublicURL), hostnameOf(s.status.URL), s.statusCNAME(), hostnameOf(s.help.URL)} {
 		if h != "" && !slices.Contains(out, h) {
 			out = append(out, h)
 		}
@@ -191,21 +354,22 @@ func newDomainToken() string {
 	return "yuva-verify-" + hex.EncodeToString(b)
 }
 
-func (s *Server) customDomainBody(pg store.StatusPage) *oas.StatusCustomDomain {
-	if !s.statusDomainsOn() || pg.CustomDomain == nil || pg.DomainState == nil || pg.DomainToken == nil {
+func (s *Server) customDomainBody(d ownDomain) *oas.StatusCustomDomain {
+	c := d.cols
+	if !s.statusDomainsOn() || c.Domain == nil || c.State == nil || c.Token == nil {
 		return nil
 	}
 	out := &oas.StatusCustomDomain{
-		Domain: *pg.CustomDomain, State: oas.StatusDomainState(*pg.DomainState), CnameTarget: s.statusCNAME(),
-		TxtName: statusDomainTXT + *pg.CustomDomain, TxtValue: *pg.DomainToken, Certificates: oas.StatusCertificatesAsk,
-		Problem: pg.DomainProblem, CheckedAt: pg.DomainCheckedAt, NextCheckAt: pg.DomainCheckAt, VerifiedAt: pg.DomainVerifiedAt,
-		MissingSince: pg.DomainMissingSince,
+		Domain: *c.Domain, State: oas.StatusDomainState(*c.State), CnameTarget: s.statusCNAME(),
+		TxtName: statusDomainTXT + *c.Domain, TxtValue: *c.Token, Certificates: oas.StatusCertificatesAsk,
+		Problem: c.Problem, CheckedAt: c.CheckedAt, NextCheckAt: c.CheckAt, VerifiedAt: c.VerifiedAt,
+		MissingSince: c.MissingSince,
 	}
 	if s.statusDomainsMode() == statusDomainsCloudflare {
 		out.Certificates = oas.StatusCertificatesCloudflare
-		cf := &oas.StatusCloudflareHostname{Id: pg.CfHostnameID, Status: pg.CfStatus, SslStatus: pg.CfSslStatus, CheckedAt: pg.CfCheckedAt}
-		if len(pg.CfErrors) > 0 {
-			errs := slices.Clone(pg.CfErrors)
+		cf := &oas.StatusCloudflareHostname{Id: c.CfHostnameID, Status: c.CfStatus, SslStatus: c.CfSslStatus, CheckedAt: c.CfCheckedAt}
+		if len(c.CfErrors) > 0 {
+			errs := slices.Clone(c.CfErrors)
 			cf.Errors = &errs
 		}
 		out.Cloudflare = cf
@@ -223,24 +387,54 @@ func (s *Server) ownDomainsBody() *oas.StatusOwnDomains {
 	return nil
 }
 
-func releaseCloudflare(ev *eventBatch, pg store.StatusPage) {
-	if pg.CfHostnameID != nil && pg.CustomDomain != nil {
-		ev.job(StatusDomainReleaseArgs{WorkspaceID: pg.WorkspaceID, HostnameID: *pg.CfHostnameID, Domain: *pg.CustomDomain}, nil)
+func releaseCloudflareHostname(ev *eventBatch, ws uuid.UUID, hostnameID, domain *string) {
+	if hostnameID != nil && domain != nil {
+		ev.job(StatusDomainReleaseArgs{WorkspaceID: ws, HostnameID: *hostnameID, Domain: *domain}, nil)
 	}
+}
+
+func releaseCloudflare(ev *eventBatch, pg store.StatusPage) {
+	releaseCloudflareHostname(ev, pg.WorkspaceID, pg.CfHostnameID, pg.CustomDomain)
+}
+
+func releaseOwnCloudflare(ev *eventBatch, d ownDomain) {
+	releaseCloudflareHostname(ev, d.workspace, d.cols.CfHostnameID, d.cols.Domain)
 }
 
 // setStatusDomain applies custom_domain of a PATCH to the locked page.
 func (s *Server) setStatusDomain(ctx context.Context, q *store.Queries, ev *eventBatch, cur store.StatusPage, raw *string) (store.StatusPage, error) {
+	d, err := s.setOwnDomain(ctx, q, ev, statusOwn(cur), raw)
+	return d.row.(store.StatusPage), err
+}
+
+func customDomainField(v interface {
+	IsSpecified() bool
+	IsNull() bool
+	MustGet() string
+}) (bool, *string) {
+	if !v.IsSpecified() {
+		return false, nil
+	}
+	if v.IsNull() {
+		return true, nil
+	}
+	raw := v.MustGet()
+	return true, &raw
+}
+
+func (s *Server) setOwnDomain(ctx context.Context, q *store.Queries, ev *eventBatch, cur ownDomain, raw *string) (ownDomain, error) {
+	k, _ := s.ownKind(cur.kind)
 	now := s.now()
+	c := cur.cols
 	if raw == nil || strings.TrimSpace(*raw) == "" {
-		if cur.CustomDomain == nil {
+		if c.Domain == nil {
 			return cur, nil
 		}
-		releaseCloudflare(ev, cur)
-		return q.SetStatusPageDomain(ctx, store.SetStatusPageDomainParams{WorkspaceID: cur.WorkspaceID, ID: cur.ID, Now: now})
+		releaseOwnCloudflare(ev, cur)
+		return k.write(ctx, q, store.WriteStatusPageDomainParams{WorkspaceID: cur.workspace, ID: cur.id, Moved: true, Now: now})
 	}
 	if !s.statusDomainsOn() {
-		if cur.CustomDomain != nil && *cur.CustomDomain == spelledDomain(*raw) {
+		if c.Domain != nil && *c.Domain == spelledDomain(*raw) {
 			return cur, nil
 		}
 		return cur, errValidation("own domains are off on this server (YUVA_STATUS_DOMAINS=off)")
@@ -249,28 +443,29 @@ func (s *Server) setStatusDomain(ctx context.Context, q *store.Queries, ev *even
 	if err != nil {
 		return cur, err
 	}
-	check := func(pg store.StatusPage) (store.StatusPage, error) {
-		ev.job(StatusDomainArgs{WorkspaceID: pg.WorkspaceID, PageID: pg.ID}, nil)
-		return pg, nil
+	check := func(o ownDomain) (ownDomain, error) {
+		ev.job(domainCheckArgs(o.kind, o.workspace, o.id), nil)
+		return o, nil
 	}
-	if cur.CustomDomain != nil && *cur.CustomDomain == d && *cur.DomainState == domainVerified {
-		pg, err := q.CheckStatusDomainSoon(ctx, store.CheckStatusDomainSoonParams{WorkspaceID: cur.WorkspaceID, ID: cur.ID, Now: now})
+	if c.Domain != nil && *c.Domain == d && *c.State == domainVerified {
+		c.CheckAt, c.Moved, c.Now = &now, false, now
+		o, err := k.write(ctx, q, c)
 		if err != nil {
 			return cur, err
 		}
-		return check(pg)
+		return check(o)
 	}
-	if taken, err := q.StatusDomainTaken(ctx, store.StatusDomainTakenParams{Domain: &d, ID: cur.ID}); err != nil || taken {
+	if taken, err := q.OwnDomainTaken(ctx, store.OwnDomainTakenParams{Domain: d, ID: cur.id}); err != nil || taken {
 		if err == nil {
 			err = errStatusDomainTaken
 		}
 		return cur, err
 	}
 	if lim := s.status.DomainLimit; lim > 0 {
-		if err := q.LockStatusDomainCount(ctx, cur.WorkspaceID); err != nil {
+		if err := q.LockStatusDomainCount(ctx, cur.workspace); err != nil {
 			return cur, err
 		}
-		n, err := q.CountStatusDomains(ctx, store.CountStatusDomainsParams{WorkspaceID: cur.WorkspaceID, ID: cur.ID})
+		n, err := q.CountOwnDomains(ctx, store.CountOwnDomainsParams{WorkspaceID: cur.workspace, ID: cur.id})
 		if err != nil {
 			return cur, err
 		}
@@ -279,18 +474,18 @@ func (s *Server) setStatusDomain(ctx context.Context, q *store.Queries, ev *even
 		}
 	}
 	token := newDomainToken()
-	if cur.CustomDomain != nil && *cur.CustomDomain == d {
-		token = *cur.DomainToken
+	if c.Domain != nil && *c.Domain == d {
+		token = *c.Token
 	}
-	releaseCloudflare(ev, cur)
+	releaseOwnCloudflare(ev, cur)
 	state := domainPending
-	pg, err := q.SetStatusPageDomain(ctx, store.SetStatusPageDomainParams{
-		WorkspaceID: cur.WorkspaceID, ID: cur.ID, Domain: &d, Token: &token, State: &state, CheckAt: &now, Now: now,
+	o, err := k.write(ctx, q, store.WriteStatusPageDomainParams{
+		WorkspaceID: cur.workspace, ID: cur.id, Domain: &d, Token: &token, State: &state, CheckAt: &now, ClaimedAt: &now, Moved: true, Now: now,
 	})
 	if err != nil {
 		return cur, err
 	}
-	return check(pg)
+	return check(o)
 }
 
 type domainLookup struct {
@@ -354,62 +549,71 @@ func (s *Server) lookupStatusDomain(ctx context.Context, domain, token string) d
 	return out
 }
 
-// RunStatusDomainCheck looks the page's own domain up and moves its state: pending or failed to verified
-// when both records are there and no other page holds the domain, verified to off when they have been
-// gone for 3 days, and a claim not verified within 7 days to failed. A lookup that fails for another
-// reason than a missing record changes nothing and is tried again in 10 minutes.
 func (s *Server) RunStatusDomainCheck(ctx context.Context, ws, id uuid.UUID) error {
-	if !s.statusDomainsOn() {
+	return s.RunOwnDomainCheck(ctx, kindStatus, ws, id)
+}
+
+// RunOwnDomainCheck looks the own domain of a status page, help center ("help"), roadmap board
+// ("roadmap") or changelog ("changelog") up and moves its state: pending or failed to verified when
+// both records are there and no other page of any kind holds the domain, verified to off when they
+// have been gone for 3 days, and a claim not verified within 7 days to failed. A lookup that fails for
+// another reason than a missing record changes nothing and is tried again in 10 minutes.
+func (s *Server) RunOwnDomainCheck(ctx context.Context, kind string, ws, id uuid.UUID) error {
+	k, ok := s.ownKind(kind)
+	if !ok || !s.statusDomainsOn() {
 		return nil
 	}
-	pg, err := s.st.GetStatusPage(ctx, store.GetStatusPageParams{WorkspaceID: ws, ID: id})
+	pg, err := k.get(ctx, s.st.Queries, ws, id)
 	if store.IsNotFound(err) {
 		return nil
 	}
 	if err != nil {
 		return err
 	}
-	if pg.CustomDomain == nil || pg.DomainCheckAt == nil || *pg.DomainState == domainOff {
+	if pg.cols.Domain == nil || pg.cols.CheckAt == nil || *pg.cols.State == domainOff {
 		return nil
 	}
-	domain, token := *pg.CustomDomain, *pg.DomainToken
+	domain, token := *pg.cols.Domain, *pg.cols.Token
 	look := s.lookupStatusDomain(ctx, domain, token)
 	var moved, verified bool
-	var others []store.FailStatusDomainClaimsRow
+	var others []store.FailOwnDomainClaimsRow
 	err = s.inTx(ctx, ws, func(q *store.Queries, ev *eventBatch) error {
 		if err := q.LockStatusDomainName(ctx, domain); err != nil {
 			return err
 		}
-		cur, err := q.LockStatusPage(ctx, store.LockStatusPageParams{WorkspaceID: ws, ID: id})
+		cur, err := k.lock(ctx, q, ws, id)
 		if store.IsNotFound(err) {
 			return nil
 		}
 		if err != nil {
 			return err
 		}
-		if cur.CustomDomain == nil || *cur.CustomDomain != domain || *cur.DomainToken != token || *cur.DomainState == domainOff || cur.DomainCheckAt == nil {
+		c := cur.cols
+		if c.Domain == nil || *c.Domain != domain || *c.Token != token || *c.State == domainOff || c.CheckAt == nil {
 			return nil
 		}
 		now := s.now()
-		state := *cur.DomainState
-		arg := store.RecordStatusDomainCheckParams{WorkspaceID: ws, ID: id, State: state, Now: now, VerifiedAt: cur.DomainVerifiedAt,
-			MissingSince: cur.DomainMissingSince}
+		state := *c.State
+		arg := c
+		arg.Now, arg.CheckedAt, arg.Problem, arg.CheckAt = now, &now, nil, nil
 		if look.problem != "" {
 			arg.Problem = &look.problem
 		}
 		next := now.Add(statusDomainRetry)
 		halt := false
+		set := func(v string) { arg.State = &v }
 		stop := func(problem string) {
-			arg.State, arg.Problem, halt = domainFailed, &problem, true
+			set(domainFailed)
+			arg.Problem, halt = &problem, true
 		}
-		expired := cur.DomainClaimedAt == nil || !now.Before(cur.DomainClaimedAt.Add(statusDomainClaim))
+		expired := c.ClaimedAt == nil || !now.Before(c.ClaimedAt.Add(statusDomainClaim))
 		switch {
 		case look.unsure:
 		case look.seen && state == domainVerified:
 			arg.MissingSince = nil
 			next = now.Add(statusDomainRecheck)
 		case look.seen:
-			taken, err := q.StatusDomainTaken(ctx, store.StatusDomainTakenParams{Domain: &domain, ID: id})
+			taken, err := q.OwnDomainTaken(ctx, store.OwnDomainTakenParams{Domain: domain, ID: id})
 			if err != nil {
 				return err
 			}
@@ -417,7 +621,8 @@ func (s *Server) RunStatusDomainCheck(ctx context.Context, ws, id uuid.UUID) err
 				stop(domainProblemTaken)
 				break
 			}
-			arg.State, arg.VerifiedAt, arg.MissingSince = domainVerified, &now, nil
+			set(domainVerified)
+			arg.VerifiedAt, arg.MissingSince = &now, nil
 			next = now.Add(statusDomainRecheck)
 		case state == domainVerified:
 			if arg.MissingSince == nil {
@@ -425,35 +630,34 @@ func (s *Server) RunStatusDomainCheck(ctx context.Context, ws, id uuid.UUID) err
 			}
 			next = now.Add(statusDomainRecheck)
 			if !now.Before(arg.MissingSince.Add(statusDomainGrace)) {
-				arg.State = domainOff
+				set(domainOff)
 			} else if until := arg.MissingSince.Add(statusDomainGrace); until.Before(next) {
 				next = until
 			}
 		case expired:
 			stop(domainProblemExpired)
 		case look.wrong:
-			arg.State = domainFailed
+			set(domainFailed)
 		default:
-			arg.State = domainPending
+			set(domainPending)
 		}
-		if arg.State != domainOff && !halt {
+		if *arg.State != domainOff && !halt {
 			arg.CheckAt = &next
 		}
-		moved = (arg.State == domainVerified) != (state == domainVerified)
+		moved = (*arg.State == domainVerified) != (state == domainVerified)
 		arg.Moved = moved
-		if _, err := q.RecordStatusDomainCheck(ctx, arg); err != nil {
+		verified = *arg.State == domainVerified
+		if *arg.State == domainOff && c.CfHostnameID != nil {
+			releaseOwnCloudflare(ev, cur)
+			arg.CfHostnameID, arg.CfStatus, arg.CfSslStatus, arg.CfErrors, arg.CfCheckedAt = nil, nil, nil, nil, &now
+		}
+		if _, err := k.write(ctx, q, arg); err != nil {
 			return err
 		}
-		verified = arg.State == domainVerified
 		if verified && moved {
-			if others, err = q.FailStatusDomainClaims(ctx, store.FailStatusDomainClaimsParams{Now: now, Domain: &domain, ID: id}); err != nil {
+			if others, err = q.FailOwnDomainClaims(ctx, store.FailOwnDomainClaimsParams{Now: now, Domain: domain, ID: id}); err != nil {
 				return err
 			}
-		}
-		if arg.State == domainOff && cur.CfHostnameID != nil {
-			releaseCloudflare(ev, cur)
-			_, err = q.SetStatusPageCloudflare(ctx, store.SetStatusPageCloudflareParams{WorkspaceID: ws, ID: id, Now: now})
-			return err
 		}
 		return nil
 	})
@@ -462,58 +666,60 @@ func (s *Server) RunStatusDomainCheck(ctx context.Context, ws, id uuid.UUID) err
 	}
 	if moved {
 		s.statusDomainCache.forget(id, domain)
-		s.statusHint(ctx, ws, pg.InboxID)
-		s.statusPageSignal(ctx, ws, pg.InboxID, id)
+		k.moved(ctx, ws, pg.inbox, id)
 	}
 	for _, o := range others {
-		s.statusHint(ctx, o.WorkspaceID, o.InboxID)
-		s.statusPageSignal(ctx, o.WorkspaceID, o.InboxID, o.ID)
+		if other, found := s.ownKind(o.Kind); found {
+			s.statusDomainCache.forget(o.ID)
+			other.moved(ctx, o.WorkspaceID, o.InboxID, o.ID)
+		}
 	}
 	if !verified || s.statusDomainsMode() != statusDomainsCloudflare {
 		return nil
 	}
-	pg, err = s.st.GetStatusPage(ctx, store.GetStatusPageParams{WorkspaceID: ws, ID: id})
+	pg, err = k.get(ctx, s.st.Queries, ws, id)
 	if store.IsNotFound(err) {
 		return nil
 	}
 	if err != nil {
 		return err
 	}
-	if pg.CustomDomain == nil || *pg.CustomDomain != domain || *pg.DomainState != domainVerified {
+	if pg.cols.Domain == nil || *pg.cols.Domain != domain || *pg.cols.State != domainVerified {
 		return nil
 	}
-	return s.syncCloudflareHostname(ctx, pg)
+	return s.syncCloudflareHostname(ctx, k, pg)
 }
 
 // syncCloudflareHostname creates the verified domain's custom hostname, or reads its state, and keeps
 // checking every 10 minutes until Cloudflare reports both the hostname and its certificate active.
-func (s *Server) syncCloudflareHostname(ctx context.Context, pg store.StatusPage) error {
+func (s *Server) syncCloudflareHostname(ctx context.Context, k ownKind, pg ownDomain) error {
 	cf := s.status.Cloudflare
 	if cf == nil {
 		return nil
 	}
-	domain := *pg.CustomDomain
+	domain := *pg.cols.Domain
 	var h cfsaas.Hostname
 	var err error
 	created := false
-	if pg.CfHostnameID != nil {
-		h, err = cf.Get(ctx, *pg.CfHostnameID)
+	if pg.cols.CfHostnameID != nil {
+		h, err = cf.Get(ctx, *pg.cols.CfHostnameID)
 	}
-	if pg.CfHostnameID == nil || errors.Is(err, cfsaas.ErrNotFound) {
+	if pg.cols.CfHostnameID == nil || errors.Is(err, cfsaas.ErrNotFound) {
 		h, err = cf.Create(ctx, domain)
 		created = err == nil
 	}
 	if err != nil {
-		s.log.ErrorContext(ctx, "cloudflare custom hostname", slog.String("workspace_id", pg.WorkspaceID.String()),
+		s.log.ErrorContext(ctx, "cloudflare custom hostname", slog.String("workspace_id", pg.workspace.String()),
 			slog.String("domain", domain), slog.Any("error", err))
 	}
 	changed := false
-	err = s.inTx(ctx, pg.WorkspaceID, func(q *store.Queries, ev *eventBatch) error {
-		cur, lerr := q.LockStatusPage(ctx, store.LockStatusPageParams{WorkspaceID: pg.WorkspaceID, ID: pg.ID})
-		gone := store.IsNotFound(lerr) || (lerr == nil && (cur.CustomDomain == nil || *cur.CustomDomain != domain || *cur.DomainState != domainVerified))
+	err = s.inTx(ctx, pg.workspace, func(q *store.Queries, ev *eventBatch) error {
+		cur, lerr := k.lock(ctx, q, pg.workspace, pg.id)
+		c := cur.cols
+		gone := store.IsNotFound(lerr) || (lerr == nil && (c.Domain == nil || *c.Domain != domain || *c.State != domainVerified))
 		if gone {
 			if created {
-				ev.job(StatusDomainReleaseArgs{WorkspaceID: pg.WorkspaceID, HostnameID: h.ID, Domain: domain}, nil)
+				ev.job(StatusDomainReleaseArgs{WorkspaceID: pg.workspace, HostnameID: h.ID, Domain: domain}, nil)
 			}
 			return nil
 		}
@@ -522,23 +728,24 @@ func (s *Server) syncCloudflareHostname(ctx context.Context, pg store.StatusPage
 		}
 		now := s.now()
 		retry := now.Add(statusDomainRetry)
-		arg := store.SetStatusPageCloudflareParams{WorkspaceID: pg.WorkspaceID, ID: pg.ID, Now: now, CheckAt: &retry,
-			HostnameID: cur.CfHostnameID, Status: cur.CfStatus, SslStatus: cur.CfSslStatus}
+		arg := c
+		arg.Now, arg.CfCheckedAt, arg.CheckAt = now, &now, &retry
 		if err != nil {
-			arg.Errors = []string{err.Error()}
+			arg.CfErrors = []string{err.Error()}
 		} else {
-			arg.HostnameID, arg.Status, arg.SslStatus, arg.Errors = &h.ID, &h.Status, &h.SSL, h.Errors
+			arg.CfHostnameID, arg.CfStatus, arg.CfSslStatus, arg.CfErrors = &h.ID, &h.Status, &h.SSL, h.Errors
 			if h.Status == "active" && h.SSL == "active" {
-				arg.CheckAt = nil
+				arg.CheckAt = c.CheckAt
 			}
 		}
-		_, err := q.SetStatusPageCloudflare(ctx, arg)
-		changed = !sameString(arg.Status, cur.CfStatus) || !sameString(arg.SslStatus, cur.CfSslStatus)
+		changed = !sameString(arg.CfStatus, c.CfStatus) || !sameString(arg.CfSslStatus, c.CfSslStatus)
+		arg.Moved = changed
+		_, err := k.write(ctx, q, arg)
 		return err
 	})
 	if err == nil && changed {
-		s.statusHint(ctx, pg.WorkspaceID, pg.InboxID)
-		s.statusPageSignal(ctx, pg.WorkspaceID, pg.InboxID, pg.ID)
+		s.statusDomainCache.forget(pg.id, domain)
+		k.moved(ctx, pg.workspace, pg.inbox, pg.id)
 	}
 	return err
 }
@@ -553,18 +760,18 @@ func (s *Server) ReleaseStatusDomain(ctx context.Context, a StatusDomainReleaseA
 	return s.status.Cloudflare.Delete(ctx, a.HostnameID)
 }
 
-// QueueStatusDomainChecks queues a check of every own domain that is due.
+// QueueStatusDomainChecks queues a check of every own domain that is due, of every kind.
 func (s *Server) QueueStatusDomainChecks(ctx context.Context) error {
 	if !s.statusDomainsOn() {
 		return nil
 	}
-	due, err := s.st.ListDueStatusDomains(ctx, store.ListDueStatusDomainsParams{Now: s.now(), Lim: statusDomainSweepMax})
+	due, err := s.st.ListDueOwnDomains(ctx, store.ListDueOwnDomainsParams{Now: s.now(), Lim: statusDomainSweepMax})
 	if err != nil || len(due) == 0 {
 		return err
 	}
 	params := make([]river.InsertManyParams, len(due))
 	for i, d := range due {
-		params[i] = river.InsertManyParams{Args: StatusDomainArgs{WorkspaceID: d.WorkspaceID, PageID: d.ID}}
+		params[i] = river.InsertManyParams{Args: domainCheckArgs(d.Kind, d.WorkspaceID, d.ID)}
 	}
 	_, err = s.jobs.InsertMany(ctx, params)
 	return err
@@ -576,7 +783,7 @@ type statusDomainCheckWorker struct {
 }
 
 func (w *statusDomainCheckWorker) Work(ctx context.Context, job *river.Job[StatusDomainArgs]) error {
-	return w.s.RunStatusDomainCheck(ctx, job.Args.WorkspaceID, job.Args.PageID)
+	return w.s.RunOwnDomainCheck(ctx, job.Args.PageKind, job.Args.WorkspaceID, job.Args.PageID)
 }
 
 type statusDomainReleaseWorker struct {
@@ -611,17 +818,21 @@ func (s *Server) CheckStatusDomain(ctx context.Context, req oas.CheckStatusDomai
 	if s.statusDomainsMode() != statusDomainsAsk || !domainSyntax(d) {
 		return nil, errNotFound
 	}
-	pg, err := s.st.FindStatusPageByDomain(ctx, &d)
-	if store.IsNotFound(err) || err == nil && !pg.Published {
+	hit, err := s.st.FindOwnDomain(ctx, d)
+	if store.IsNotFound(err) {
 		return nil, errNotFound
 	}
 	if err != nil {
 		return nil, err
 	}
+	if k, ok := s.ownKind(hit.Kind); !ok || !hit.Live || !k.on() {
+		return nil, errNotFound
+	}
 	return oas.CheckStatusDomain200JSONResponse{Domain: d}, nil
 }
 
 type statusDomainHit struct {
+	kind            string
 	workspace, page uuid.UUID
 	slug            string
 	at              time.Time
@@ -702,14 +913,14 @@ func (s *Server) domainPage(ctx context.Context, host string) (statusDomainHit, 
 	if hit {
 		return e, ok
 	}
-	pg, err := s.st.FindStatusPageByDomain(ctx, &host)
+	pg, err := s.st.FindOwnDomain(ctx, host)
 	if err != nil && !store.IsNotFound(err) {
-		s.log.ErrorContext(ctx, "status domain", slog.Any("error", err))
+		s.log.ErrorContext(ctx, "own domain", slog.Any("error", err))
 		return statusDomainHit{}, false
 	}
 	e = statusDomainHit{at: now}
 	if ok = err == nil; ok {
-		e.workspace, e.page, e.slug = pg.WorkspaceID, pg.ID, pg.Slug
+		e.kind, e.workspace, e.page, e.slug = pg.Kind, pg.WorkspaceID, pg.ID, pg.Slug
 	}
 	c.put(host, e, ok, gen)
 	return e, ok
@@ -731,4 +942,63 @@ func statusDomainPath(slug, path string) (string, bool) {
 		return statusPathPrefix + slug + path, true
 	}
 	return "", false
+}
+
+// ownDomainOrigin is whether origin is the verified own domain of a help center or roadmap board of
+// workspace ws, whose pages embed the chat; uuid.Nil stands for any workspace, as a CORS preflight names
+// no channel.
+func (s *Server) ownDomainOrigin(ctx context.Context, ws uuid.UUID, origin string) bool {
+	if !s.statusDomainsOn() {
+		return false
+	}
+	u, err := url.Parse(origin)
+	if err != nil || u.Port() != "" || origin != s.domainURL(u.Host, "") {
+		return false
+	}
+	hit, ok := s.domainPage(ctx, u.Host)
+	return ok && (hit.kind == kindHelp || hit.kind == kindRoadmap) && (ws == uuid.Nil() || hit.workspace == ws)
+}
+
+type ownDomainKey struct{}
+
+type ownOn struct {
+	kind            string
+	host            string
+	workspace, page uuid.UUID
+}
+
+func ownDomainOn(ctx context.Context, kind string) (ownOn, bool) {
+	on, ok := ctx.Value(ownDomainKey{}).(ownOn)
+	return on, ok && on.kind == kind
+}
+
+func stillOn(domain, state *string, host string) bool {
+	return domain != nil && *domain == host && state != nil && *state == domainVerified
+}
+
+var ownDomainPrefixes = map[string]string{kindHelp: helpPathPrefix, kindRoadmap: roadmapPathPrefix, kindChangelog: changelogPathPrefix}
+
+// serveOwnDomain serves a help center, roadmap board or changelog at / of its verified own domain: every
+// path maps under the page's own prefix, so nothing else of the server answers there.
+func (s *Server) serveOwnDomain(w http.ResponseWriter, r *http.Request, next http.Handler, host string, hit statusDomainHit) {
+	prefix := ownDomainPrefixes[hit.kind]
+	if r.URL.Path == "/robots.txt" {
+		body := "User-agent: *\nAllow: /\n"
+		if hit.kind != kindRoadmap {
+			body += "Sitemap: " + s.domainURL(host, "/sitemap.xml") + "\n"
+		}
+		h := w.Header()
+		h.Set("Content-Type", "text/plain; charset=utf-8")
+		h.Set("Cache-Control", "public, max-age=3600")
+		_, _ = w.Write([]byte(body))
+		return
+	}
+	path := strings.TrimSuffix(prefix, "/") + "/" + hit.slug
+	if r.URL.Path != "/" {
+		path += r.URL.Path
+	}
+	r2 := r.Clone(context.WithValue(r.Context(), ownDomainKey{}, ownOn{kind: hit.kind, host: host, workspace: hit.workspace, page: hit.page}))
+	r2.URL.Path = path
+	r2.URL.RawPath = ""
+	next.ServeHTTP(w, r2)
 }

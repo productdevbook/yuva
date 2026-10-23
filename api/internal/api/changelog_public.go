@@ -95,15 +95,20 @@ func (s *Server) publicChangelog(w http.ResponseWriter, r *http.Request) (store.
 		writeProblem(w, err.(*apiError))
 		return store.Changelog{}, false
 	}
-	c, err := s.st.FindChangelogBySlug(ctx, slug)
-	if store.IsNotFound(err) {
+	var c store.Changelog
+	var err error
+	moved := false
+	if on, ok := ownDomainOn(ctx, kindChangelog); ok {
+		c, err = s.st.GetChangelog(ctx, store.GetChangelogParams{WorkspaceID: on.workspace, ID: on.page})
+		moved = err == nil && !stillOn(c.CustomDomain, c.DomainState, on.host)
+	} else if c, err = s.st.FindChangelogBySlug(ctx, slug); store.IsNotFound(err) {
 		c, err = s.st.FindChangelogByFormerSlug(ctx, slug)
 		if err == nil && c.Published {
-			redirectPublic(w, r, s.changelogURL(c.Slug, strings.TrimPrefix(r.URL.Path, changelogPathPrefix+slug)), true)
+			redirectPublic(w, r, s.changelogURL(c, strings.TrimPrefix(r.URL.Path, changelogPathPrefix+slug)), true)
 			return c, false
 		}
 	}
-	if store.IsNotFound(err) || (err == nil && !c.Published) {
+	if moved || store.IsNotFound(err) || (err == nil && !c.Published) {
 		changelogGone(w, "en")
 		return c, false
 	}
@@ -133,7 +138,7 @@ func (s *Server) serveChangelog(w http.ResponseWriter, r *http.Request) {
 	}
 	rt, ok := parseChangelogRoute(r.PathValue("rest"))
 	if ok && rt.view == "root" {
-		redirectPublic(w, r, s.changelogURL(c.Slug, "/"+c.DefaultLocale+"/"), false)
+		redirectPublic(w, r, s.changelogURL(c, "/"+c.DefaultLocale+"/"), false)
 		return
 	}
 	if ok && rt.locale != "" && !slices.Contains(c.Locales, rt.locale) {
@@ -269,8 +274,8 @@ func (s *Server) changelogBaseView(c store.Changelog, in store.Inbox, locale, vi
 	sw := statusWordsFor(locale)
 	v := &changelogPageView{
 		W: changelogWordsFor(locale), SW: sw, Lang: locale, Dir: sw.direction(), View: view, Name: c.Name, OGLocale: strings.ReplaceAll(locale, "-", "_"),
-		OGType: "website", FontSans: s.changelogURL(c.Slug, publicFontPath("Geist")), FontMono: s.changelogURL(c.Slug, publicFontPath("GeistMono")),
-		Home: s.changelogURL(c.Slug, "/"+locale+"/"), FeedURL: s.changelogURL(c.Slug, "/"+locale+"/feed.atom"), Mark: yuvaMark, YuvaSite: yuvaSite,
+		OGType: "website", FontSans: s.changelogURL(c, publicFontPath("Geist")), FontMono: s.changelogURL(c, publicFontPath("GeistMono")),
+		Home: s.changelogURL(c, "/"+locale+"/"), FeedURL: s.changelogURL(c, "/"+locale+"/feed.atom"), Mark: yuvaMark, YuvaSite: yuvaSite,
 		Script: template.JS(changelogScript), Logo: inboxLogo(in),
 	}
 	var br oas.InboxBranding
@@ -296,8 +301,8 @@ func (s *Server) changelogPage(ctx context.Context, c store.Changelog, in store.
 		}
 		for _, l := range c.Locales {
 			if slices.Contains(locales, l) {
-				v.Alternates = append(v.Alternates, helpAlt{Hreflang: l, Href: s.changelogURL(c.Slug, "/"+l+"/")})
-				v.Langs = append(v.Langs, helpLangLink{Code: l, Label: helpLanguageName(l), Href: s.changelogURL(c.Slug, "/"+l+"/"), On: l == locale})
+				v.Alternates = append(v.Alternates, helpAlt{Hreflang: l, Href: s.changelogURL(c, "/"+l+"/")})
+				v.Langs = append(v.Langs, helpLangLink{Code: l, Label: helpLanguageName(l), Href: s.changelogURL(c, "/"+l+"/"), On: l == locale})
 			}
 		}
 	default:
@@ -438,8 +443,8 @@ func (s *Server) changelogFeed(ctx context.Context, c store.Changelog, locale st
 		return nil, err
 	}
 	feed := atomFeed{
-		ID: s.changelogURL(c.Slug, "/"+locale+"/"), Title: c.Name, Updated: c.ChangedAt.UTC().Format(time.RFC3339),
-		Links: []atomLink{{Href: s.changelogURL(c.Slug, "/"+locale+"/"), Rel: "alternate"}, {Href: s.changelogURL(c.Slug, "/"+locale+"/feed.atom"), Rel: "self"}},
+		ID: s.changelogURL(c, "/"+locale+"/"), Title: c.Name, Updated: c.ChangedAt.UTC().Format(time.RFC3339),
+		Links: []atomLink{{Href: s.changelogURL(c, "/"+locale+"/"), Rel: "alternate"}, {Href: s.changelogURL(c, "/"+locale+"/feed.atom"), Rel: "self"}},
 	}
 	for _, r := range rows {
 		e := atomEntry{
@@ -479,7 +484,7 @@ func (s *Server) changelogSitemap(ctx context.Context, c store.Changelog) ([]byt
 	}
 	homes := map[string]string{}
 	for _, l := range locales {
-		homes[l] = s.changelogURL(c.Slug, "/"+l+"/")
+		homes[l] = s.changelogURL(c, "/"+l+"/")
 	}
 	for _, l := range c.Locales {
 		if h, ok := homes[l]; ok {

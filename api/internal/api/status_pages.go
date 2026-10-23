@@ -160,7 +160,7 @@ func (s *Server) statusPageBody(pg store.StatusPage, state string, email oas.Sta
 		Url: s.pageURL(pg, ""), LogoUrl: pg.LogoUrl, LogoDarkUrl: pg.LogoDarkUrl, SiteUrl: pg.SiteUrl, SupportUrl: pg.SupportUrl, Locale: pg.Locale,
 		Timezone: pg.Timezone, HistoryDays: pg.HistoryDays, ShowUptime: pg.ShowUptime, ShowResponseTimes: pg.ShowResponseTimes,
 		ShowName: pg.ShowName, ShowFollow: pg.ShowFollow, Published: pg.Published, State: oas.StatusComponentStateValue(state), CreatedAt: pg.CreatedAt, UpdatedAt: pg.UpdatedAt,
-		EmailSubscribers: email, CustomDomain: s.customDomainBody(pg), OwnDomains: s.ownDomainsBody(),
+		EmailSubscribers: email, CustomDomain: s.customDomainBody(statusOwn(pg)), OwnDomains: s.ownDomainsBody(),
 	}
 	if pg.AccentColor != nil {
 		c := oas.StatusColor(*pg.AccentColor)

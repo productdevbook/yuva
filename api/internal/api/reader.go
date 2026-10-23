@@ -87,7 +87,7 @@ func (s *Server) CreateReaderToken(ctx context.Context, req oas.CreateReaderToke
 		return nil, err
 	}
 	origin, ok := normalizeOrigin(string(req.Body.Origin))
-	if !ok || !s.originAllowedFor(origin, ch.Kind, ch.AllowedOrigins) {
+	if !ok || !s.originAllowedFor(ctx, ch.WorkspaceID, origin, ch.Kind, ch.AllowedOrigins) {
 		return nil, errOriginRefused
 	}
 	if ch.Discussions == string(oas.DiscussionModeOff) {

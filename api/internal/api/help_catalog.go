@@ -59,15 +59,15 @@ func servedLocale(locales []string, def, requested string) string {
 }
 
 func (s *Server) helpHomeURL(c store.HelpCenter, locale string) string {
-	return s.helpURL(c.Slug, "/"+locale+"/")
+	return s.helpURL(c, "/"+locale+"/")
 }
 
 func (s *Server) helpCollectionURL(c store.HelpCenter, locale string, col *helpColl) string {
-	return s.helpURL(c.Slug, "/"+locale+"/collections/"+strconv.Itoa(int(col.Number))+"-"+col.Slug)
+	return s.helpURL(c, "/"+locale+"/collections/"+strconv.Itoa(int(col.Number))+"-"+col.Slug)
 }
 
 func (s *Server) helpSearchURL(c store.HelpCenter, locale string) string {
-	return s.helpURL(c.Slug, "/"+locale+"/search")
+	return s.helpURL(c, "/"+locale+"/search")
 }
 
 func (s *Server) helpArtURL(c store.HelpCenter, a helpArt) string {

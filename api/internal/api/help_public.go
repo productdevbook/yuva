@@ -120,9 +120,10 @@ func (s *Server) publicHelpCenter(w http.ResponseWriter, r *http.Request) (store
 	}
 	rest := strings.TrimPrefix(r.URL.Path, helpPathPrefix+slug)
 	redirect := func(c store.HelpCenter, permanent bool) {
-		redirectPublic(w, r, s.helpURL(c.Slug, rest), permanent)
+		redirectPublic(w, r, s.helpURL(c, rest), permanent)
 	}
-	if s.help.URL != "" && ctx.Value(helpHostKey{}) == nil {
+	on, onDomain := ownDomainOn(ctx, kindHelp)
+	if s.help.URL != "" && ctx.Value(helpHostKey{}) == nil && !onDomain {
 		redirect(store.HelpCenter{Slug: slug}, false)
 		return store.HelpCenter{}, false
 	}
@@ -130,15 +131,20 @@ func (s *Server) publicHelpCenter(w http.ResponseWriter, r *http.Request) (store
 		writeProblem(w, err.(*apiError))
 		return store.HelpCenter{}, false
 	}
-	c, err := s.st.FindHelpCenterBySlug(ctx, slug)
-	if store.IsNotFound(err) {
+	var c store.HelpCenter
+	var err error
+	moved := false
+	if onDomain {
+		c, err = s.st.GetHelpCenter(ctx, store.GetHelpCenterParams{WorkspaceID: on.workspace, ID: on.page})
+		moved = err == nil && !stillOn(c.CustomDomain, c.DomainState, on.host)
+	} else if c, err = s.st.FindHelpCenterBySlug(ctx, slug); store.IsNotFound(err) {
 		c, err = s.st.FindHelpCenterByFormerSlug(ctx, slug)
 		if err == nil && c.Published {
 			redirect(c, true)
 			return c, false
 		}
 	}
-	if store.IsNotFound(err) || (err == nil && !c.Published) {
+	if moved || store.IsNotFound(err) || (err == nil && !c.Published) {
 		helpGone(w, "en")
 		return c, false
 	}

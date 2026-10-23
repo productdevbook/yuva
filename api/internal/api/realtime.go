@@ -323,11 +323,11 @@ func (f *eventFilter) allows(ctx context.Context, q *store.Queries, e realtime.E
 		if requireScope(f.p, oas.StatusRead) != nil && requireScope(f.p, oas.StatusManage) != nil {
 			return false, nil
 		}
-	case helpEventPublished, helpEventUnpublish, helpEventDeleted, helpSignalUpdated:
+	case helpEventPublished, helpEventUnpublish, helpEventDeleted, helpSignalUpdated, helpSignalCenter:
 		if requireScope(f.p, oas.HelpRead) != nil {
 			return false, nil
 		}
-	case changelogEventPublished, changelogEventUnpublished, changelogEventDeleted, changelogSignalUpdated:
+	case changelogEventPublished, changelogEventUnpublished, changelogEventDeleted, changelogSignalUpdated, changelogSignalUpdates:
 		if requireScope(f.p, oas.ChangelogRead) != nil {
 			return false, nil
 		}

@@ -2179,7 +2179,25 @@ incident before a customer writes, and the conversations an outage brings are an
   so a resolver outage never turns domains off. A CNAME counts when the domain's canonical name is the
   target or, for a provider that flattens it, its addresses are all the target's. The domain is a
   hostname that is not, contains or sits inside one of the server's own hosts (`YUVA_PUBLIC_URL`,
-  `YUVA_STATUS_URL`, `YUVA_STATUS_CNAME`); setting it queues a check at once.
+  `YUVA_STATUS_URL`, `YUVA_STATUS_CNAME`, `YUVA_HELP_URL`); setting it queues a check at once.
+  - **Other kinds (#148).** Help centers, roadmap boards and changelogs have the same own domain, with the
+    same columns on `help_centers`, `roadmap_boards` and `changelogs`, the same `custom_domain` in their
+    PATCH and answers, the same CNAME target, `_yuva-status.` TXT record, states, timings, claims, check job
+    (`status_domain_check` with a `kind`), sweep and certificate modes; one code path in
+    `status_domains.go` serves all four kinds. One domain belongs to one page of one workspace across the
+    four kinds: availability, the verification under the advisory lock on the name and the failing of the
+    other claims look at all four tables, and `YUVA_STATUS_DOMAIN_LIMIT` counts them together. A verified
+    domain serves its page at `/`: every path maps under the page's own prefix (`/help/{slug}`,
+    `/roadmap/{slug}`, `/changelog/{slug}`), so the domain shows only that page's paths (fonts, sitemap,
+    the helpful form included), and `/robots.txt` names `/sitemap.xml` of the domain for help centers and
+    changelogs. The page is read again by id on every request; a private board, an unpublished center or
+    changelog, or one whose domain moved answers its plain `404`. Links, canonical and `hreflang` links,
+    sitemaps, the Atom feed, the API's and widgets' `url` and notification links name the page on its
+    domain once it is live (as for status pages). The chat embedded in help and roadmap pages accepts the
+    verified own domain of a help center or roadmap board as an origin of every chat channel of the same
+    workspace (checked after the channel's own origins), since the server serves every path there. Domain moves reach `/v1/realtime` as
+    `help.center.updated` (`data.center_id`, `help:read`), `roadmap.board.updated` and `changelog.updated`
+    (`data.changelog_id`, `changelog:read`), each also sent after a PATCH and not stored.
   - **Claims.** Only a verified domain holds its name: a partial unique index over
     `status_pages.custom_domain` where `domain_state = 'verified'`. Any number of pages, in any workspace,
     may claim a name while it is `pending` or `failed`; setting another page's verified domain is
@@ -2204,7 +2222,8 @@ incident before a customer writes, and the conversations an outage brings are an
   - **Certificates.** Yuva does not terminate TLS; who issues the certificate is `YUVA_STATUS_DOMAINS`:
     - `ask` (default): the operator's proxy issues certificates on demand and asks
       `GET /status-domains/check?domain=` on the same server (the Caddy `on_demand_tls` `ask` form).
-      It answers `200` only for the verified domain of a published page in a live workspace and `404`
+      It answers `200` only for the verified domain of a published status page, help center or changelog,
+      or a public roadmap board (its feature not off on the server), in a live workspace, and `404`
       otherwise (also in the other modes); it is public, rate-limited like the other public status
       routes (120 a minute per address, `429`), and reveals only domains that already serve public
       pages. `deploy/caddy/Caddyfile` documents Caddy.
@@ -2596,8 +2615,9 @@ and the searches that found nothing say which article to write next.
   or a locale the center does not offer, answers the center's `404`. With a
   `chat_channel_id` the page embeds `<yuva-chat>` under "Still need help?", and a conversation started
   there carries the article.
-  Own domains (`help.example.com`) are not part of M20: generalising the status custom-domain machinery
-  (CNAME and TXT checks, the on-demand certificate check, Cloudflare custom hostnames) is a later step (#148).
+  Own domains (`help.example.com`) are the status pages' own domains (M19 › Own domain › Other kinds,
+  #148): the center answers at `/` of its verified domain, its links, `hreflang`, sitemap and `url` name it
+  there.
 - **Rendering.** One goldmark instance for members' content: GFM tables, strikethrough, autolinks,
   heading ids (anchors and a table of contents from h2 and h3), fenced code without highlighting; raw
   HTML is dropped. Images stay only when their URL is this server's `/i/{token}` of the same
@@ -2654,8 +2674,7 @@ and the searches that found nothing say which article to write next.
   are Yuva counters, not analytics events: they work without a property and never hold a visitor
   hash. Whether the widget's Help app sends a `help_article_view` event to a linked property is
   decided with the analytics architect before the widget step.
-- **Not in M20.** Own domains for help centers, and importing help articles from Zendesk or Help
-  Scout in "Moving to Yuva".
+- **Not in M20.** Importing help articles from Zendesk or Help Scout in "Moving to Yuva".
 
 ### Roadmap board (M21)
 
@@ -2812,7 +2831,9 @@ posts, votes, follows, moderation, reader accounts, rendering and notifications 
     Without JavaScript the page reads complete and the buttons are absent.
   - **Analytics.** With an `analytics_property_id` the page sends cookieless page views as status pages
     do.
-  - **Later.** Own domains and a separate origin come later, with M20's (#148).
+  - **Own domain.** A board answers at `/` of its verified own domain like a status page (M19 › Own domain ›
+    Other kinds, #148); a private board answers `404` there too. A separate origin for every board is not
+    planned.
 - **Rendering.** Idea bodies and replies are discussion posts: Markdown rendered by M12's goldmark and
   sanitized by bluemonday's UGC policy into `body_html`. There is no second renderer. Titles are 3 to 200
   characters and bodies up to 20,000, as for discussions.
@@ -3093,7 +3114,8 @@ appear in help search. Writing, rendering and translating are M20's.
     plain `404` text of status pages.
   - **Analytics.** With an `analytics_property_id` the pages send cookieless page views as status and
     help pages do.
-  - **Later.** Own domains come with M20's (#148).
+  - **Own domain.** A changelog answers at `/` of its verified own domain like a status page (M19 › Own
+    domain › Other kinds, #148), with its feeds and sitemap there.
 - **Rendering.** M20's one goldmark instance for members' content and its bluemonday policy: images only
   from this server's `/i/{token}` of the same workspace, raw HTML dropped, rendered once at publish and
   stored. The entry image is served from `/i/{token}` with its immutable cache.
@@ -3431,6 +3453,13 @@ now; per-channel limits can narrow them later (#136).
     `help_center_slugs`, both unique across the server (availability is checked against current and
     former slugs of every workspace); everything after that lookup is scoped by the workspace it
     returned. The in-process counter flush writes per workspace. No other exception.
+  - Own domains (M19, #148): a request on an own domain, and the certificate check, find the page by a
+    verified `custom_domain` of `status_pages`, `help_centers`, `roadmap_boards` or `changelogs` in one
+    query; a verified name is unique across the server and the four kinds. A domain's availability is
+    checked against the verified domains of all four in every workspace, its verification fails the
+    other claims of its name in all four and every workspace, and the domain sweep lists the domains due
+    for a check of all four and every workspace. Everything after those lookups is scoped by the
+    workspace they returned.
   - The person-level identity tables `people`, `sessions`, `login_codes`, `passkeys`,
     `webauthn_ceremonies` and `push_subscriptions` (a browser's subscription follows the person
     into every workspace; the send job finds it by its id). A person signs in once and can be a member of several workspaces, so

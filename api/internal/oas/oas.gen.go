@@ -1721,6 +1721,21 @@ func (e ChangelogScheduleFailureReason) Valid() bool {
 	}
 }
 
+// Defines values for ChangelogSignalType.
+const (
+	ChangelogUpdated ChangelogSignalType = "changelog.updated"
+)
+
+// Valid indicates whether the value is a known member of the ChangelogSignalType enum.
+func (e ChangelogSignalType) Valid() bool {
+	switch e {
+	case ChangelogUpdated:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for ChangelogTranslationState.
 const (
 	ChangelogTranslationChanged   ChangelogTranslationState = "changed"
@@ -3083,6 +3098,21 @@ const (
 func (e HelpArticleSignalType) Valid() bool {
 	switch e {
 	case HelpArticleUpdated:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for HelpCenterSignalType.
+const (
+	HelpCenterUpdated HelpCenterSignalType = "help.center.updated"
+)
+
+// Valid indicates whether the value is a known member of the HelpCenterSignalType enum.
+func (e HelpCenterSignalType) Valid() bool {
+	switch e {
+	case HelpCenterUpdated:
 		return true
 	default:
 		return false
@@ -9183,6 +9213,13 @@ type Changelog struct {
 	Counts     ChangelogCounts `json:"counts"`
 	CreatedAt  time.Time       `json:"created_at"`
 
+	// CustomDomain The own domain of a status page, help center, roadmap board or changelog, absent when it has
+	// none or the server's `YUVA_STATUS_DOMAINS` is `off`. One domain belongs to one page of one
+	// workspace across all four kinds. The owner adds a CNAME from `domain` to `cname_target` and a TXT record `txt_name` with
+	// `txt_value`. `cloudflare` is present when the server registers verified domains as Cloudflare
+	// for SaaS custom hostnames.
+	CustomDomain *StatusCustomDomain `json:"custom_domain,omitempty"`
+
 	// DefaultLocale A BCP 47 language tag.
 	//
 	// Examples: en, tr
@@ -9194,9 +9231,14 @@ type Changelog struct {
 	InboxId     uuid.UUID `json:"inbox_id"`
 
 	// Locales The locales entries may be written and published in; the default locale is one of them.
-	Locales   []LanguageTag `json:"locales"`
-	Name      string        `json:"name"`
-	Published bool          `json:"published"`
+	Locales []LanguageTag `json:"locales"`
+	Name    string        `json:"name"`
+
+	// OwnDomains Whether the server lets status pages, help centers, roadmap boards and changelogs use their
+	// own domain (`YUVA_STATUS_DOMAINS`). Absent when it is `off`; setting `custom_domain` is then
+	// refused.
+	OwnDomains *StatusOwnDomains `json:"own_domains,omitempty"`
+	Published  bool              `json:"published"`
 
 	// Slug `a-z`, `0-9` and inner hyphens, 3 to 48 characters; unique across the server.
 	//
@@ -9204,7 +9246,9 @@ type Changelog struct {
 	Slug      ChangelogSlug `json:"slug"`
 	UpdatedAt time.Time     `json:"updated_at"`
 
-	// Url The public home page, `<public URL>/changelog/{slug}`.
+	// Url The public home page: on its own domain once that is verified (with
+	// `YUVA_STATUS_DOMAINS=cloudflare`, once its custom hostname and certificate are both
+	// `active`), else `<public URL>/changelog/{slug}`.
 	Url string `json:"url"`
 }
 
@@ -9589,6 +9633,23 @@ type ChangelogScheduleFailure struct {
 // ChangelogScheduleFailureReason defines model for ChangelogScheduleFailure.Reason.
 type ChangelogScheduleFailureReason string
 
+// ChangelogSignal `changelog.updated`, on `/v1/realtime` only: the changelog was edited, or its own domain changed state or
+// its Cloudflare hostname or certificate status moved. Not stored, no id, never replayed;
+// reload the changelog after it and after a reconnect. Reaches whoever holds `changelog:read` and sees
+// its inbox.
+type ChangelogSignal struct {
+	CreatedAt time.Time `json:"created_at"`
+	Data      struct {
+		ChangelogId uuid.UUID `json:"changelog_id"`
+	} `json:"data"`
+	InboxId     uuid.UUID           `json:"inbox_id"`
+	Type        ChangelogSignalType `json:"type"`
+	WorkspaceId uuid.UUID           `json:"workspace_id"`
+}
+
+// ChangelogSignalType defines model for ChangelogSignal.Type.
+type ChangelogSignalType string
+
 // ChangelogSlug `a-z`, `0-9` and inner hyphens, 3 to 48 characters; unique across the server.
 //
 // Examples: acme-news
@@ -9617,6 +9678,17 @@ type ChangelogTranslationWrite struct {
 type ChangelogUpdate struct {
 	AgentsMayPublish    *bool                        `json:"agents_may_publish,omitempty"`
 	AnalyticsPropertyId nullable.Nullable[uuid.UUID] `json:"analytics_property_id,omitempty"`
+
+	// CustomDomain A hostname such as `changelog.example.com`, `null` to remove it; the changelog then answers at `/` of
+	// the domain once it is verified. The rules are a status page's `custom_domain`: not one of the
+	// server's own hosts, not the verified domain of another status page, help center, roadmap
+	// board or changelog (`409 domain_taken`), at most `YUVA_STATUS_DOMAIN_LIMIT` pages of any kind
+	// in a workspace with a domain that is not `off` (`403 status_domain_limit`), and only
+	// `null`, an empty string or the current domain when `YUVA_STATUS_DOMAINS` is `off`.
+	//
+	//
+	// Examples: changelog.example.com
+	CustomDomain nullable.Nullable[string] `json:"custom_domain,omitempty"`
 
 	// DefaultLocale A BCP 47 language tag.
 	//
@@ -13615,6 +13687,13 @@ type HelpCenter struct {
 	Counts        HelpCenterCounts `json:"counts"`
 	CreatedAt     time.Time        `json:"created_at"`
 
+	// CustomDomain The own domain of a status page, help center, roadmap board or changelog, absent when it has
+	// none or the server's `YUVA_STATUS_DOMAINS` is `off`. One domain belongs to one page of one
+	// workspace across all four kinds. The owner adds a CNAME from `domain` to `cname_target` and a TXT record `txt_name` with
+	// `txt_value`. `cloudflare` is present when the server registers verified domains as Cloudflare
+	// for SaaS custom hostnames.
+	CustomDomain *StatusCustomDomain `json:"custom_domain,omitempty"`
+
 	// DefaultLocale A BCP 47 language tag.
 	//
 	// Examples: en, tr
@@ -13626,11 +13705,16 @@ type HelpCenter struct {
 	InboxId     uuid.UUID `json:"inbox_id"`
 
 	// Locales The locales articles may be written and published in; the default locale is one of them.
-	Locales   []LanguageTag `json:"locales"`
-	LogoUrl   *string       `json:"logo_url,omitempty"`
-	Name      string        `json:"name"`
-	Published bool          `json:"published"`
-	SiteUrl   *string       `json:"site_url,omitempty"`
+	Locales []LanguageTag `json:"locales"`
+	LogoUrl *string       `json:"logo_url,omitempty"`
+	Name    string        `json:"name"`
+
+	// OwnDomains Whether the server lets status pages, help centers, roadmap boards and changelogs use their
+	// own domain (`YUVA_STATUS_DOMAINS`). Absent when it is `off`; setting `custom_domain` is then
+	// refused.
+	OwnDomains *StatusOwnDomains `json:"own_domains,omitempty"`
+	Published  bool              `json:"published"`
+	SiteUrl    *string           `json:"site_url,omitempty"`
 
 	// Slug `a-z`, `0-9` and inner hyphens, 3 to 48 characters; unique across the server.
 	//
@@ -13638,7 +13722,9 @@ type HelpCenter struct {
 	Slug      HelpCenterSlug `json:"slug"`
 	UpdatedAt time.Time      `json:"updated_at"`
 
-	// Url The public home page, at the server's help URL.
+	// Url The public home page: on its own domain once that is verified (with
+	// `YUVA_STATUS_DOMAINS=cloudflare`, once its custom hostname and certificate are both
+	// `active`), else at the server's help URL.
 	Url string `json:"url"`
 }
 
@@ -13690,6 +13776,23 @@ type HelpCenterList struct {
 	Items []HelpCenter `json:"items"`
 }
 
+// HelpCenterSignal `help.center.updated`, on `/v1/realtime` only: the center was edited, or its own domain changed state or
+// its Cloudflare hostname or certificate status moved. Not stored, no id, never replayed;
+// reload the center after it and after a reconnect. Reaches whoever holds `help:read` and sees
+// its inbox.
+type HelpCenterSignal struct {
+	CreatedAt time.Time `json:"created_at"`
+	Data      struct {
+		CenterId uuid.UUID `json:"center_id"`
+	} `json:"data"`
+	InboxId     uuid.UUID            `json:"inbox_id"`
+	Type        HelpCenterSignalType `json:"type"`
+	WorkspaceId uuid.UUID            `json:"workspace_id"`
+}
+
+// HelpCenterSignalType defines model for HelpCenterSignal.Type.
+type HelpCenterSignalType string
+
 // HelpCenterSlug `a-z`, `0-9` and inner hyphens, 3 to 48 characters; unique across the server.
 //
 // Examples: acme
@@ -13701,6 +13804,17 @@ type HelpCenterUpdate struct {
 	AgentsMayPublish    *bool                        `json:"agents_may_publish,omitempty"`
 	AnalyticsPropertyId nullable.Nullable[uuid.UUID] `json:"analytics_property_id,omitempty"`
 	ChatChannelId       nullable.Nullable[uuid.UUID] `json:"chat_channel_id,omitempty"`
+
+	// CustomDomain A hostname such as `help.example.com`, `null` to remove it; the center then answers at `/` of
+	// the domain once it is verified. The rules are a status page's `custom_domain`: not one of the
+	// server's own hosts, not the verified domain of another status page, help center, roadmap
+	// board or changelog (`409 domain_taken`), at most `YUVA_STATUS_DOMAIN_LIMIT` pages of any kind
+	// in a workspace with a domain that is not `off` (`403 status_domain_limit`), and only
+	// `null`, an empty string or the current domain when `YUVA_STATUS_DOMAINS` is `off`.
+	//
+	//
+	// Examples: help.example.com
+	CustomDomain nullable.Nullable[string] `json:"custom_domain,omitempty"`
 
 	// DefaultLocale A BCP 47 language tag.
 	//
@@ -17358,12 +17472,24 @@ type RoadmapBoard struct {
 	ChannelId uuid.UUID `json:"channel_id"`
 
 	// Counts Published ideas per stage, and the ideas waiting for approval.
-	Counts      RoadmapBoardCounts `json:"counts"`
-	CreatedAt   time.Time          `json:"created_at"`
-	Description string             `json:"description"`
-	Id          uuid.UUID          `json:"id"`
-	InboxId     uuid.UUID          `json:"inbox_id"`
-	Name        string             `json:"name"`
+	Counts    RoadmapBoardCounts `json:"counts"`
+	CreatedAt time.Time          `json:"created_at"`
+
+	// CustomDomain The own domain of a status page, help center, roadmap board or changelog, absent when it has
+	// none or the server's `YUVA_STATUS_DOMAINS` is `off`. One domain belongs to one page of one
+	// workspace across all four kinds. The owner adds a CNAME from `domain` to `cname_target` and a TXT record `txt_name` with
+	// `txt_value`. `cloudflare` is present when the server registers verified domains as Cloudflare
+	// for SaaS custom hostnames.
+	CustomDomain *StatusCustomDomain `json:"custom_domain,omitempty"`
+	Description  string              `json:"description"`
+	Id           uuid.UUID           `json:"id"`
+	InboxId      uuid.UUID           `json:"inbox_id"`
+	Name         string              `json:"name"`
+
+	// OwnDomains Whether the server lets status pages, help centers, roadmap boards and changelogs use their
+	// own domain (`YUVA_STATUS_DOMAINS`). Absent when it is `off`; setting `custom_domain` is then
+	// refused.
+	OwnDomains *StatusOwnDomains `json:"own_domains,omitempty"`
 
 	// Public A private board is a triage tool for the team and has no public page.
 	Public bool `json:"public"`
@@ -17381,7 +17507,9 @@ type RoadmapBoard struct {
 	Suggestions RoadmapSuggestions `json:"suggestions"`
 	UpdatedAt   time.Time          `json:"updated_at"`
 
-	// Url The public page, at the server's `/roadmap/{slug}`.
+	// Url The public page: on its own domain once that is verified (with
+	// `YUVA_STATUS_DOMAINS=cloudflare`, once its custom hostname and certificate are both
+	// `active`), else at the server's `/roadmap/{slug}`.
 	Url string `json:"url"`
 }
 
@@ -17453,9 +17581,20 @@ type RoadmapBoardSlug = string
 type RoadmapBoardUpdate struct {
 	AnalyticsPropertyId nullable.Nullable[uuid.UUID] `json:"analytics_property_id,omitempty"`
 	ChannelId           *uuid.UUID                   `json:"channel_id,omitempty"`
-	Description         *string                      `json:"description,omitempty"`
-	Name                *string                      `json:"name,omitempty"`
-	Public              *bool                        `json:"public,omitempty"`
+
+	// CustomDomain A hostname such as `roadmap.example.com`, `null` to remove it; the public board then answers at `/` of
+	// the domain once it is verified. The rules are a status page's `custom_domain`: not one of the
+	// server's own hosts, not the verified domain of another status page, help center, roadmap
+	// board or changelog (`409 domain_taken`), at most `YUVA_STATUS_DOMAIN_LIMIT` pages of any kind
+	// in a workspace with a domain that is not `off` (`403 status_domain_limit`), and only
+	// `null`, an empty string or the current domain when `YUVA_STATUS_DOMAINS` is `off`.
+	//
+	//
+	// Examples: roadmap.example.com
+	CustomDomain nullable.Nullable[string] `json:"custom_domain,omitempty"`
+	Description  *string                   `json:"description,omitempty"`
+	Name         *string                   `json:"name,omitempty"`
+	Public       *bool                     `json:"public,omitempty"`
 
 	// Slug `a-z`, `0-9` and inner hyphens, 3 to 48 characters; unique across the server.
 	//
@@ -17876,8 +18015,9 @@ type StatusComponentUpdate struct {
 	Position *int32                       `json:"position,omitempty"`
 }
 
-// StatusCustomDomain The page's own domain, absent when it has none or the server's `YUVA_STATUS_DOMAINS` is
-// `off`. The owner adds a CNAME from `domain` to `cname_target` and a TXT record `txt_name` with
+// StatusCustomDomain The own domain of a status page, help center, roadmap board or changelog, absent when it has
+// none or the server's `YUVA_STATUS_DOMAINS` is `off`. One domain belongs to one page of one
+// workspace across all four kinds. The owner adds a CNAME from `domain` to `cname_target` and a TXT record `txt_name` with
 // `txt_value`. `cloudflare` is present when the server registers verified domains as Cloudflare
 // for SaaS custom hostnames.
 type StatusCustomDomain struct {
@@ -17907,8 +18047,8 @@ type StatusCustomDomain struct {
 
 	// State `pending`: the CNAME and TXT records were not seen yet (checked every 10 minutes).
 	// `failed`: the last check found them but they name another target or value (checked every 10
-	// minutes); or, no longer checked until `custom_domain` is sent again, another page verified the
-	// domain first (`problem` `taken`) or the claim was not verified within 7 days (`problem`
+	// minutes); or, no longer checked until `custom_domain` is sent again, another page (of any
+	// kind) verified the domain first (`problem` `taken`) or the claim was not verified within 7 days (`problem`
 	// `expired`). `verified`: both were seen; the domain serves the page (checked every day). Only
 	// a verified domain holds its name: any number of pages may claim a domain while it is pending
 	// or failed. `off`: a verified domain whose records were gone for 3 days; it no longer serves
@@ -17931,8 +18071,8 @@ type StatusDomainCheck struct {
 
 // StatusDomainState `pending`: the CNAME and TXT records were not seen yet (checked every 10 minutes).
 // `failed`: the last check found them but they name another target or value (checked every 10
-// minutes); or, no longer checked until `custom_domain` is sent again, another page verified the
-// domain first (`problem` `taken`) or the claim was not verified within 7 days (`problem`
+// minutes); or, no longer checked until `custom_domain` is sent again, another page (of any
+// kind) verified the domain first (`problem` `taken`) or the claim was not verified within 7 days (`problem`
 // `expired`). `verified`: both were seen; the domain serves the page (checked every day). Only
 // a verified domain holds its name: any number of pages may claim a domain while it is pending
 // or failed. `off`: a verified domain whose records were gone for 3 days; it no longer serves
@@ -18667,8 +18807,9 @@ type StatusNoticeSkipReason string
 // `skip_reason`), `cancelled` (a member stopped it while it waited, or the incident was closed without notifying: `skip_reason` `closed_quietly`).
 type StatusNoticeState string
 
-// StatusOwnDomains Whether the server lets pages use their own domain (`YUVA_STATUS_DOMAINS`). Absent when it
-// is `off`; setting `custom_domain` is then refused.
+// StatusOwnDomains Whether the server lets status pages, help centers, roadmap boards and changelogs use their
+// own domain (`YUVA_STATUS_DOMAINS`). Absent when it is `off`; setting `custom_domain` is then
+// refused.
 type StatusOwnDomains struct {
 	// Mode `ask`: the owner points the records and asks for the certificate elsewhere (a proxy in
 	// front). `cloudflare`: verified domains are registered as Cloudflare for SaaS custom
@@ -18687,8 +18828,9 @@ type StatusPage struct {
 	AccentColor *StatusColor `json:"accent_color,omitempty"`
 	CreatedAt   time.Time    `json:"created_at"`
 
-	// CustomDomain The page's own domain, absent when it has none or the server's `YUVA_STATUS_DOMAINS` is
-	// `off`. The owner adds a CNAME from `domain` to `cname_target` and a TXT record `txt_name` with
+	// CustomDomain The own domain of a status page, help center, roadmap board or changelog, absent when it has
+	// none or the server's `YUVA_STATUS_DOMAINS` is `off`. One domain belongs to one page of one
+	// workspace across all four kinds. The owner adds a CNAME from `domain` to `cname_target` and a TXT record `txt_name` with
 	// `txt_value`. `cloudflare` is present when the server registers verified domains as Cloudflare
 	// for SaaS custom hostnames.
 	CustomDomain *StatusCustomDomain `json:"custom_domain,omitempty"`
@@ -18717,8 +18859,9 @@ type StatusPage struct {
 	LogoUrl     *string `json:"logo_url,omitempty"`
 	Name        string  `json:"name"`
 
-	// OwnDomains Whether the server lets pages use their own domain (`YUVA_STATUS_DOMAINS`). Absent when it
-	// is `off`; setting `custom_domain` is then refused.
+	// OwnDomains Whether the server lets status pages, help centers, roadmap boards and changelogs use their
+	// own domain (`YUVA_STATUS_DOMAINS`). Absent when it is `off`; setting `custom_domain` is then
+	// refused.
 	OwnDomains *StatusOwnDomains `json:"own_domains,omitempty"`
 	Published  bool              `json:"published"`
 
@@ -26535,6 +26678,58 @@ func (t *RealtimeMessage) MergeRoadmapBoardSignal(v RoadmapBoardSignal) error {
 	return err
 }
 
+// AsHelpCenterSignal returns the union data inside the RealtimeMessage as a HelpCenterSignal
+func (t RealtimeMessage) AsHelpCenterSignal() (HelpCenterSignal, error) {
+	var body HelpCenterSignal
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromHelpCenterSignal overwrites any union data inside the RealtimeMessage as the provided HelpCenterSignal
+func (t *RealtimeMessage) FromHelpCenterSignal(v HelpCenterSignal) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeHelpCenterSignal performs a merge with any union data inside the RealtimeMessage, using the provided HelpCenterSignal
+func (t *RealtimeMessage) MergeHelpCenterSignal(v HelpCenterSignal) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsChangelogSignal returns the union data inside the RealtimeMessage as a ChangelogSignal
+func (t RealtimeMessage) AsChangelogSignal() (ChangelogSignal, error) {
+	var body ChangelogSignal
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromChangelogSignal overwrites any union data inside the RealtimeMessage as the provided ChangelogSignal
+func (t *RealtimeMessage) FromChangelogSignal(v ChangelogSignal) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeChangelogSignal performs a merge with any union data inside the RealtimeMessage, using the provided ChangelogSignal
+func (t *RealtimeMessage) MergeChangelogSignal(v ChangelogSignal) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
 // AsListImportEvent returns the union data inside the RealtimeMessage as a ListImportEvent
 func (t RealtimeMessage) AsListImportEvent() (ListImportEvent, error) {
 	var body ListImportEvent
@@ -26771,6 +26966,8 @@ func (t RealtimeMessage) ValueByDiscriminator() (interface{}, error) {
 		return t.AsChangelogEntryEvent()
 	case "changelog.entry.updated":
 		return t.AsChangelogEntrySignal()
+	case "changelog.updated":
+		return t.AsChangelogSignal()
 	case "contact.deleted":
 		return t.AsContactDeletedEvent()
 	case "contact.presence":
@@ -26813,6 +27010,8 @@ func (t RealtimeMessage) ValueByDiscriminator() (interface{}, error) {
 		return t.AsHelpArticleEvent()
 	case "help.article.updated":
 		return t.AsHelpArticleSignal()
+	case "help.center.updated":
+		return t.AsHelpCenterSignal()
 	case "inbox.created":
 		return t.AsInboxCreatedEvent()
 	case "inbox.deleted":
@@ -27791,7 +27990,7 @@ type ServerInterface interface {
 	// GetReadyz Readiness
 	// (GET /readyz)
 	GetReadyz(w http.ResponseWriter, r *http.Request)
-	// CheckStatusDomain Ask whether a status page domain is verified
+	// CheckStatusDomain Ask whether an own domain is verified
 	// (GET /status-domains/check)
 	CheckStatusDomain(w http.ResponseWriter, r *http.Request, params CheckStatusDomainParams)
 	// GetReaderAccount The signed-in person as a reader
@@ -89729,7 +89928,7 @@ type StrictServerInterface interface {
 	// GetReadyz Readiness
 	// (GET /readyz)
 	GetReadyz(ctx context.Context, request GetReadyzRequestObject) (GetReadyzResponseObject, error)
-	// CheckStatusDomain Ask whether a status page domain is verified
+	// CheckStatusDomain Ask whether an own domain is verified
 	// (GET /status-domains/check)
 	CheckStatusDomain(ctx context.Context, request CheckStatusDomainRequestObject) (CheckStatusDomainResponseObject, error)
 	// GetReaderAccount The signed-in person as a reader

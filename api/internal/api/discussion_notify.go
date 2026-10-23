@@ -183,7 +183,7 @@ func (s *Server) SendDiscussionDigest(ctx context.Context, a DiscussionDigestArg
 			if err != nil {
 				return err
 			}
-			data["URL"], data["Idea"], data["Stages"] = s.roadmapURL(board.Slug)+"/ideas/"+d.ID.String(), true, stages
+			data["URL"], data["Idea"], data["Stages"] = s.roadmapURL(board)+"/ideas/"+d.ID.String(), true, stages
 		}
 		m, err := mail.RenderAs(inboxMailBrand(in), "discussion_digest", locale, data)
 		if err != nil {

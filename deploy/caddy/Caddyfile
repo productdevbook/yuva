@@ -1,4 +1,5 @@
-# Caddy in front of Yuva, with certificates for status pages on their own domains.
+# Caddy in front of Yuva, with certificates for the own domains of status pages, help centers,
+# roadmap boards and changelogs.
 #
 # YUVA_PUBLIC_URL=https://support.example.com, YUVA_STATUS_DOMAINS=ask (the default) and
 # YUVA_STATUS_CNAME=support.example.com (also the default). A customer points
@@ -26,7 +27,8 @@ support.example.com {
 	}
 }
 
-# Every other name: own domains of status pages. Yuva serves only the page there.
+# Every other name: own domains of status pages, help centers, roadmap boards and changelogs.
+# Yuva serves only that page there.
 https:// {
 	tls {
 		on_demand

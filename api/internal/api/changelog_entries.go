@@ -755,7 +755,7 @@ func (s *Server) changelogEventData(c store.Changelog, e store.ChangelogEntry, t
 		ref.Translations = append(ref.Translations, tr)
 	}
 	return oas.ChangelogEntryEventData{
-		Changelog: oas.ChangelogRef{Id: c.ID, Name: c.Name, Url: s.changelogURL(c.Slug, "")},
+		Changelog: oas.ChangelogRef{Id: c.ID, Name: c.Name, Url: s.changelogURL(c, "")},
 		Entry:     ref,
 	}
 }

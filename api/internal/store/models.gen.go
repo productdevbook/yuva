@@ -593,6 +593,20 @@ type Changelog struct {
 	ChangedAt           time.Time
 	CreatedAt           time.Time
 	UpdatedAt           time.Time
+	CustomDomain        *string
+	DomainToken         *string
+	DomainState         *string
+	DomainProblem       *string
+	DomainCheckedAt     *time.Time
+	DomainCheckAt       *time.Time
+	DomainVerifiedAt    *time.Time
+	DomainMissingSince  *time.Time
+	DomainClaimedAt     *time.Time
+	CfHostnameID        *string
+	CfStatus            *string
+	CfSslStatus         *string
+	CfErrors            []string
+	CfCheckedAt         *time.Time
 }
 
 type ChangelogEntry struct {
@@ -1130,6 +1144,20 @@ type HelpCenter struct {
 	ChangedAt            time.Time
 	CreatedAt            time.Time
 	UpdatedAt            time.Time
+	CustomDomain         *string
+	DomainToken          *string
+	DomainState          *string
+	DomainProblem        *string
+	DomainCheckedAt      *time.Time
+	DomainCheckAt        *time.Time
+	DomainVerifiedAt     *time.Time
+	DomainMissingSince   *time.Time
+	DomainClaimedAt      *time.Time
+	CfHostnameID         *string
+	CfStatus             *string
+	CfSslStatus          *string
+	CfErrors             []string
+	CfCheckedAt          *time.Time
 }
 
 type HelpCenterSlug struct {
@@ -1817,6 +1845,20 @@ type RoadmapBoard struct {
 	ChangedAt           time.Time
 	CreatedAt           time.Time
 	UpdatedAt           time.Time
+	CustomDomain        *string
+	DomainToken         *string
+	DomainState         *string
+	DomainProblem       *string
+	DomainCheckedAt     *time.Time
+	DomainCheckAt       *time.Time
+	DomainVerifiedAt    *time.Time
+	DomainMissingSince  *time.Time
+	DomainClaimedAt     *time.Time
+	CfHostnameID        *string
+	CfStatus            *string
+	CfSslStatus         *string
+	CfErrors            []string
+	CfCheckedAt         *time.Time
 }
 
 type RoadmapBoardSlug struct {

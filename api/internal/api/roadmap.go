@@ -66,8 +66,11 @@ func (s *Server) roadmapOn() error {
 	return nil
 }
 
-func (s *Server) roadmapURL(slug string) string {
-	return s.auth.PublicURL + roadmapPathPrefix + slug
+func (s *Server) roadmapURL(b store.RoadmapBoard) string {
+	if s.domainLive(b.CustomDomain, b.DomainState, b.CfStatus, b.CfSslStatus) {
+		return s.domainURL(*b.CustomDomain, "")
+	}
+	return s.auth.PublicURL + roadmapPathPrefix + b.Slug
 }
 
 func roadmapUniqueConflict(err error) error {
@@ -179,8 +182,8 @@ func (s *Server) roadmapBoardOut(ctx context.Context, q *store.Queries, b store.
 	}
 	return oas.RoadmapBoard{
 		Id: b.ID, InboxId: b.InboxID, ChannelId: b.ChannelID, Name: b.Name, Description: b.Description, Slug: oas.RoadmapBoardSlug(b.Slug),
-		Url: s.roadmapURL(b.Slug), Public: b.Public, Suggestions: oas.RoadmapSuggestions(b.Suggestions), AnalyticsPropertyId: b.AnalyticsPropertyID,
-		Counts: counts, CreatedAt: b.CreatedAt, UpdatedAt: b.UpdatedAt,
+		Url: s.roadmapURL(b), Public: b.Public, Suggestions: oas.RoadmapSuggestions(b.Suggestions), AnalyticsPropertyId: b.AnalyticsPropertyID,
+		Counts: counts, CreatedAt: b.CreatedAt, UpdatedAt: b.UpdatedAt, CustomDomain: s.customDomainBody(boardOwn(b)), OwnDomains: s.ownDomainsBody(),
 	}, nil
 }
 
@@ -285,10 +288,14 @@ func (s *Server) UpdateRoadmapBoard(ctx context.Context, req oas.UpdateRoadmapBo
 	}
 	b := req.Body
 	var out oas.RoadmapBoard
-	err := s.inTx(ctx, p.workspaceID, func(q *store.Queries, _ *eventBatch) error {
+	var hosts []string
+	err := s.inTx(ctx, p.workspaceID, func(q *store.Queries, ev *eventBatch) error {
 		cur, err := visibleBoard(ctx, q, p, req.BoardId, true)
 		if err != nil {
 			return err
+		}
+		if cur.CustomDomain != nil {
+			hosts = append(hosts, *cur.CustomDomain)
 		}
 		f := roadmapBoardFields{
 			name: cur.Name, description: cur.Description, slug: cur.Slug, channel: cur.ChannelID, public: boolOr(b.Public, cur.Public),
@@ -345,12 +352,23 @@ func (s *Server) UpdateRoadmapBoard(ctx context.Context, req oas.UpdateRoadmapBo
 		if err != nil {
 			return err
 		}
+		if sent, raw := customDomainField(b.CustomDomain); sent {
+			d, err := s.setOwnDomain(ctx, q, ev, boardOwn(board), raw)
+			if err != nil {
+				return err
+			}
+			board = d.row.(store.RoadmapBoard)
+			if board.CustomDomain != nil {
+				hosts = append(hosts, *board.CustomDomain)
+			}
+		}
 		out, err = s.roadmapBoardOut(ctx, q, board)
 		return err
 	})
 	if err != nil {
 		return nil, roadmapUniqueConflict(err)
 	}
+	s.statusDomainCache.forget(req.BoardId, hosts...)
 	s.statusHint(ctx, p.workspaceID, out.InboxId)
 	s.boardSignal(ctx, p.workspaceID, out.InboxId, out.Id)
 	return oas.UpdateRoadmapBoard200JSONResponse(out), nil
@@ -365,18 +383,20 @@ func (s *Server) DeleteRoadmapBoard(ctx context.Context, req oas.DeleteRoadmapBo
 		return nil, err
 	}
 	var inbox uuid.UUID
-	err := s.inTx(ctx, p.workspaceID, func(q *store.Queries, _ *eventBatch) error {
+	err := s.inTx(ctx, p.workspaceID, func(q *store.Queries, ev *eventBatch) error {
 		b, err := visibleBoard(ctx, q, p, req.BoardId, true)
 		if err != nil {
 			return err
 		}
 		inbox = b.InboxID
+		releaseOwnCloudflare(ev, boardOwn(b))
 		_, err = q.DeleteRoadmapBoard(ctx, store.DeleteRoadmapBoardParams{WorkspaceID: p.workspaceID, ID: b.ID})
 		return err
 	})
 	if err != nil {
 		return nil, err
 	}
+	s.statusDomainCache.forget(req.BoardId)
 	s.statusHint(ctx, p.workspaceID, inbox)
 	s.boardSignal(ctx, p.workspaceID, inbox, req.BoardId)
 	return oas.DeleteRoadmapBoard204Response{}, nil
@@ -405,7 +425,7 @@ func (s *Server) clientRoadmapInbox(ctx context.Context, q *store.Queries, in st
 	if err != nil {
 		return nil, err
 	}
-	return &oas.ClientInboxRoadmap{Url: s.roadmapURL(b.Slug), Suggestions: oas.RoadmapSuggestions(b.Suggestions)}, nil
+	return &oas.ClientInboxRoadmap{Url: s.roadmapURL(b), Suggestions: oas.RoadmapSuggestions(b.Suggestions)}, nil
 }
 
 func ideaVotesClosed(d store.Discussion) bool {

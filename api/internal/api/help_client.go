@@ -85,7 +85,7 @@ func (s *Server) helpClientCenter(ctx context.Context, key string) (store.HelpCe
 	if err != nil {
 		return none, ch, err
 	}
-	if !s.originAllowedFor(originFrom(ctx), ch.Kind, ch.AllowedOrigins) {
+	if !s.originAllowedFor(ctx, ch.WorkspaceID, originFrom(ctx), ch.Kind, ch.AllowedOrigins) {
 		return none, ch, errOriginRefused
 	}
 	c, err := s.st.GetInboxHelpCenter(ctx, store.GetInboxHelpCenterParams{WorkspaceID: ch.WorkspaceID, InboxID: ch.InboxID})
@@ -106,7 +106,7 @@ func (s *Server) clientHelpInbox(ctx context.Context, q *store.Queries, in store
 	if err != nil {
 		return nil, err
 	}
-	return &oas.ClientInboxHelp{Url: s.helpURL(c.Slug, "/"), Locales: c.Locales, DefaultLocale: c.DefaultLocale}, nil
+	return &oas.ClientInboxHelp{Url: s.helpURL(c, "/"), Locales: c.Locales, DefaultLocale: c.DefaultLocale}, nil
 }
 
 func (s *Server) clientHelpCollRef(index map[uuid.UUID]*helpColl, id *uuid.UUID) *oas.ClientHelpCollectionRef {

@@ -92,7 +92,10 @@ func (s *Server) clientCORS(next http.Handler) http.Handler {
 		known := ok && s.ownsOrigin(origin)
 		if ok && !known {
 			var err error
-			if known, err = s.st.AnyChatChannelAllowsOrigin(r.Context(), origin); err != nil {
+			if known, err = s.st.AnyChatChannelAllowsOrigin(r.Context(), origin); err == nil && !known {
+				known = s.ownDomainOrigin(r.Context(), uuid.Nil(), origin)
+			}
+			if err != nil {
 				s.log.ErrorContext(r.Context(), "origin check", "error", err)
 				writeProblem(w, errInternal)
 				return
@@ -141,11 +144,11 @@ func (s *Server) ownsOrigin(origin string) bool {
 
 // originAllowedFor checks a chat channel's origins; app channels serve native apps, which send no
 // Origin, so their keys are not tied to origins.
-func (s *Server) originAllowedFor(origin, kind string, allowed []string) bool {
+func (s *Server) originAllowedFor(ctx context.Context, ws uuid.UUID, origin, kind string, allowed []string) bool {
 	if kind == string(oas.ChannelKindApp) {
 		return true
 	}
-	return origin != "" && (s.ownsOrigin(origin) || slices.Contains(allowed, origin))
+	return origin != "" && (s.ownsOrigin(origin) || slices.Contains(allowed, origin) || s.ownDomainOrigin(ctx, ws, origin))
 }
 
 func sessionChat(ch store.GetSessionChannelRow) store.ChatChannel {
@@ -176,7 +179,7 @@ func (s *Server) resolveContact(ctx context.Context, token string) (contactPrinc
 		return contactPrincipal{}, err
 	}
 	chat := sessionChat(ch)
-	if !s.originAllowedFor(originFrom(ctx), ch.Kind, chat.AllowedOrigins) {
+	if !s.originAllowedFor(ctx, ch.WorkspaceID, originFrom(ctx), ch.Kind, chat.AllowedOrigins) {
 		return contactPrincipal{}, errOriginRefused
 	}
 	if sess.ContactBlocked {

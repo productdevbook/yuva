@@ -309,7 +309,7 @@ INSERT INTO help_centers (id, workspace_id, inbox_id, name, description, slug, d
     chat_channel_id, analytics_property_id, agents_may_publish, published, changed_at, created_at, updated_at)
 VALUES ($1, $2, $3, $4, $5, $6, $7, $8::text[], $9, $10,
     $11, $12, $13, $14, $15, $16, $16, $16)
-RETURNING id, workspace_id, inbox_id, name, description, slug, default_locale, locales, logo_url, accent_color, site_url, chat_channel_id, analytics_property_id, agents_may_publish, published, next_collection_number, next_article_number, changed_at, created_at, updated_at
+RETURNING id, workspace_id, inbox_id, name, description, slug, default_locale, locales, logo_url, accent_color, site_url, chat_channel_id, analytics_property_id, agents_may_publish, published, next_collection_number, next_article_number, changed_at, created_at, updated_at, custom_domain, domain_token, domain_state, domain_problem, domain_checked_at, domain_check_at, domain_verified_at, domain_missing_since, domain_claimed_at, cf_hostname_id, cf_status, cf_ssl_status, cf_errors, cf_checked_at
 `
 
 type CreateHelpCenterParams struct {
@@ -372,6 +372,20 @@ func (q *Queries) CreateHelpCenter(ctx context.Context, arg CreateHelpCenterPara
 		&i.ChangedAt,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.CustomDomain,
+		&i.DomainToken,
+		&i.DomainState,
+		&i.DomainProblem,
+		&i.DomainCheckedAt,
+		&i.DomainCheckAt,
+		&i.DomainVerifiedAt,
+		&i.DomainMissingSince,
+		&i.DomainClaimedAt,
+		&i.CfHostnameID,
+		&i.CfStatus,
+		&i.CfSslStatus,
+		&i.CfErrors,
+		&i.CfCheckedAt,
 	)
 	return i, err
 }
@@ -627,7 +641,7 @@ func (q *Queries) DeleteOldHelpSearchDaily(ctx context.Context, arg DeleteOldHel
 }
 
 const findHelpCenterByFormerSlug = `-- name: FindHelpCenterByFormerSlug :one
-SELECT c.id, c.workspace_id, c.inbox_id, c.name, c.description, c.slug, c.default_locale, c.locales, c.logo_url, c.accent_color, c.site_url, c.chat_channel_id, c.analytics_property_id, c.agents_may_publish, c.published, c.next_collection_number, c.next_article_number, c.changed_at, c.created_at, c.updated_at FROM help_center_slugs f
+SELECT c.id, c.workspace_id, c.inbox_id, c.name, c.description, c.slug, c.default_locale, c.locales, c.logo_url, c.accent_color, c.site_url, c.chat_channel_id, c.analytics_property_id, c.agents_may_publish, c.published, c.next_collection_number, c.next_article_number, c.changed_at, c.created_at, c.updated_at, c.custom_domain, c.domain_token, c.domain_state, c.domain_problem, c.domain_checked_at, c.domain_check_at, c.domain_verified_at, c.domain_missing_since, c.domain_claimed_at, c.cf_hostname_id, c.cf_status, c.cf_ssl_status, c.cf_errors, c.cf_checked_at FROM help_center_slugs f
 JOIN help_centers c ON c.workspace_id = f.workspace_id AND c.id = f.center_id
 WHERE f.slug = $1
 `
@@ -657,12 +671,26 @@ func (q *Queries) FindHelpCenterByFormerSlug(ctx context.Context, slug string) (
 		&i.ChangedAt,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.CustomDomain,
+		&i.DomainToken,
+		&i.DomainState,
+		&i.DomainProblem,
+		&i.DomainCheckedAt,
+		&i.DomainCheckAt,
+		&i.DomainVerifiedAt,
+		&i.DomainMissingSince,
+		&i.DomainClaimedAt,
+		&i.CfHostnameID,
+		&i.CfStatus,
+		&i.CfSslStatus,
+		&i.CfErrors,
+		&i.CfCheckedAt,
 	)
 	return i, err
 }
 
 const findHelpCenterBySlug = `-- name: FindHelpCenterBySlug :one
-SELECT id, workspace_id, inbox_id, name, description, slug, default_locale, locales, logo_url, accent_color, site_url, chat_channel_id, analytics_property_id, agents_may_publish, published, next_collection_number, next_article_number, changed_at, created_at, updated_at FROM help_centers WHERE slug = $1
+SELECT id, workspace_id, inbox_id, name, description, slug, default_locale, locales, logo_url, accent_color, site_url, chat_channel_id, analytics_property_id, agents_may_publish, published, next_collection_number, next_article_number, changed_at, created_at, updated_at, custom_domain, domain_token, domain_state, domain_problem, domain_checked_at, domain_check_at, domain_verified_at, domain_missing_since, domain_claimed_at, cf_hostname_id, cf_status, cf_ssl_status, cf_errors, cf_checked_at FROM help_centers WHERE slug = $1
 `
 
 // The documented exception: a public URL names only the slug, which is unique across the server.
@@ -690,6 +718,20 @@ func (q *Queries) FindHelpCenterBySlug(ctx context.Context, slug string) (HelpCe
 		&i.ChangedAt,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.CustomDomain,
+		&i.DomainToken,
+		&i.DomainState,
+		&i.DomainProblem,
+		&i.DomainCheckedAt,
+		&i.DomainCheckAt,
+		&i.DomainVerifiedAt,
+		&i.DomainMissingSince,
+		&i.DomainClaimedAt,
+		&i.CfHostnameID,
+		&i.CfStatus,
+		&i.CfSslStatus,
+		&i.CfErrors,
+		&i.CfCheckedAt,
 	)
 	return i, err
 }
@@ -764,7 +806,7 @@ func (q *Queries) GetHelpArticleLocalesForConversation(ctx context.Context, arg 
 }
 
 const getHelpCenter = `-- name: GetHelpCenter :one
-SELECT id, workspace_id, inbox_id, name, description, slug, default_locale, locales, logo_url, accent_color, site_url, chat_channel_id, analytics_property_id, agents_may_publish, published, next_collection_number, next_article_number, changed_at, created_at, updated_at FROM help_centers WHERE workspace_id = $1 AND id = $2
+SELECT id, workspace_id, inbox_id, name, description, slug, default_locale, locales, logo_url, accent_color, site_url, chat_channel_id, analytics_property_id, agents_may_publish, published, next_collection_number, next_article_number, changed_at, created_at, updated_at, custom_domain, domain_token, domain_state, domain_problem, domain_checked_at, domain_check_at, domain_verified_at, domain_missing_since, domain_claimed_at, cf_hostname_id, cf_status, cf_ssl_status, cf_errors, cf_checked_at FROM help_centers WHERE workspace_id = $1 AND id = $2
 `
 
 type GetHelpCenterParams struct {
@@ -796,6 +838,20 @@ func (q *Queries) GetHelpCenter(ctx context.Context, arg GetHelpCenterParams) (H
 		&i.ChangedAt,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.CustomDomain,
+		&i.DomainToken,
+		&i.DomainState,
+		&i.DomainProblem,
+		&i.DomainCheckedAt,
+		&i.DomainCheckAt,
+		&i.DomainVerifiedAt,
+		&i.DomainMissingSince,
+		&i.DomainClaimedAt,
+		&i.CfHostnameID,
+		&i.CfStatus,
+		&i.CfSslStatus,
+		&i.CfErrors,
+		&i.CfCheckedAt,
 	)
 	return i, err
 }
@@ -909,7 +965,7 @@ func (q *Queries) GetHelpTranslation(ctx context.Context, arg GetHelpTranslation
 }
 
 const getInboxHelpCenter = `-- name: GetInboxHelpCenter :one
-SELECT id, workspace_id, inbox_id, name, description, slug, default_locale, locales, logo_url, accent_color, site_url, chat_channel_id, analytics_property_id, agents_may_publish, published, next_collection_number, next_article_number, changed_at, created_at, updated_at FROM help_centers WHERE workspace_id = $1 AND inbox_id = $2
+SELECT id, workspace_id, inbox_id, name, description, slug, default_locale, locales, logo_url, accent_color, site_url, chat_channel_id, analytics_property_id, agents_may_publish, published, next_collection_number, next_article_number, changed_at, created_at, updated_at, custom_domain, domain_token, domain_state, domain_problem, domain_checked_at, domain_check_at, domain_verified_at, domain_missing_since, domain_claimed_at, cf_hostname_id, cf_status, cf_ssl_status, cf_errors, cf_checked_at FROM help_centers WHERE workspace_id = $1 AND inbox_id = $2
 `
 
 type GetInboxHelpCenterParams struct {
@@ -941,6 +997,20 @@ func (q *Queries) GetInboxHelpCenter(ctx context.Context, arg GetInboxHelpCenter
 		&i.ChangedAt,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.CustomDomain,
+		&i.DomainToken,
+		&i.DomainState,
+		&i.DomainProblem,
+		&i.DomainCheckedAt,
+		&i.DomainCheckAt,
+		&i.DomainVerifiedAt,
+		&i.DomainMissingSince,
+		&i.DomainClaimedAt,
+		&i.CfHostnameID,
+		&i.CfStatus,
+		&i.CfSslStatus,
+		&i.CfErrors,
+		&i.CfCheckedAt,
 	)
 	return i, err
 }
@@ -1610,7 +1680,7 @@ func (q *Queries) ListHelpCardArticles(ctx context.Context, arg ListHelpCardArti
 }
 
 const listHelpCenters = `-- name: ListHelpCenters :many
-SELECT id, workspace_id, inbox_id, name, description, slug, default_locale, locales, logo_url, accent_color, site_url, chat_channel_id, analytics_property_id, agents_may_publish, published, next_collection_number, next_article_number, changed_at, created_at, updated_at FROM help_centers c
+SELECT id, workspace_id, inbox_id, name, description, slug, default_locale, locales, logo_url, accent_color, site_url, chat_channel_id, analytics_property_id, agents_may_publish, published, next_collection_number, next_article_number, changed_at, created_at, updated_at, custom_domain, domain_token, domain_state, domain_problem, domain_checked_at, domain_check_at, domain_verified_at, domain_missing_since, domain_claimed_at, cf_hostname_id, cf_status, cf_ssl_status, cf_errors, cf_checked_at FROM help_centers c
 WHERE c.workspace_id = $1
   AND ($2::uuid IS NULL OR c.inbox_id = $2::uuid)
   AND ($3::bool OR EXISTS (
@@ -1661,6 +1731,20 @@ func (q *Queries) ListHelpCenters(ctx context.Context, arg ListHelpCentersParams
 			&i.ChangedAt,
 			&i.CreatedAt,
 			&i.UpdatedAt,
+			&i.CustomDomain,
+			&i.DomainToken,
+			&i.DomainState,
+			&i.DomainProblem,
+			&i.DomainCheckedAt,
+			&i.DomainCheckAt,
+			&i.DomainVerifiedAt,
+			&i.DomainMissingSince,
+			&i.DomainClaimedAt,
+			&i.CfHostnameID,
+			&i.CfStatus,
+			&i.CfSslStatus,
+			&i.CfErrors,
+			&i.CfCheckedAt,
 		); err != nil {
 			return nil, err
 		}
@@ -2296,7 +2380,7 @@ func (q *Queries) LockHelpArticleQuota(ctx context.Context, workspaceID uuid.UUI
 }
 
 const lockHelpCenter = `-- name: LockHelpCenter :one
-SELECT id, workspace_id, inbox_id, name, description, slug, default_locale, locales, logo_url, accent_color, site_url, chat_channel_id, analytics_property_id, agents_may_publish, published, next_collection_number, next_article_number, changed_at, created_at, updated_at FROM help_centers WHERE workspace_id = $1 AND id = $2 FOR UPDATE
+SELECT id, workspace_id, inbox_id, name, description, slug, default_locale, locales, logo_url, accent_color, site_url, chat_channel_id, analytics_property_id, agents_may_publish, published, next_collection_number, next_article_number, changed_at, created_at, updated_at, custom_domain, domain_token, domain_state, domain_problem, domain_checked_at, domain_check_at, domain_verified_at, domain_missing_since, domain_claimed_at, cf_hostname_id, cf_status, cf_ssl_status, cf_errors, cf_checked_at FROM help_centers WHERE workspace_id = $1 AND id = $2 FOR UPDATE
 `
 
 type LockHelpCenterParams struct {
@@ -2328,6 +2412,20 @@ func (q *Queries) LockHelpCenter(ctx context.Context, arg LockHelpCenterParams) 
 		&i.ChangedAt,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.CustomDomain,
+		&i.DomainToken,
+		&i.DomainState,
+		&i.DomainProblem,
+		&i.DomainCheckedAt,
+		&i.DomainCheckAt,
+		&i.DomainVerifiedAt,
+		&i.DomainMissingSince,
+		&i.DomainClaimedAt,
+		&i.CfHostnameID,
+		&i.CfStatus,
+		&i.CfSslStatus,
+		&i.CfErrors,
+		&i.CfCheckedAt,
 	)
 	return i, err
 }
@@ -2911,7 +3009,7 @@ UPDATE help_centers SET name = $1, description = $2, slug = $3, default_locale =
     agents_may_publish = $11, published = $12,
     changed_at = greatest(changed_at + interval '1 microsecond', $13::timestamptz), updated_at = $13
 WHERE workspace_id = $14 AND id = $15
-RETURNING id, workspace_id, inbox_id, name, description, slug, default_locale, locales, logo_url, accent_color, site_url, chat_channel_id, analytics_property_id, agents_may_publish, published, next_collection_number, next_article_number, changed_at, created_at, updated_at
+RETURNING id, workspace_id, inbox_id, name, description, slug, default_locale, locales, logo_url, accent_color, site_url, chat_channel_id, analytics_property_id, agents_may_publish, published, next_collection_number, next_article_number, changed_at, created_at, updated_at, custom_domain, domain_token, domain_state, domain_problem, domain_checked_at, domain_check_at, domain_verified_at, domain_missing_since, domain_claimed_at, cf_hostname_id, cf_status, cf_ssl_status, cf_errors, cf_checked_at
 `
 
 type UpdateHelpCenterParams struct {
@@ -2972,6 +3070,20 @@ func (q *Queries) UpdateHelpCenter(ctx context.Context, arg UpdateHelpCenterPara
 		&i.ChangedAt,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.CustomDomain,
+		&i.DomainToken,
+		&i.DomainState,
+		&i.DomainProblem,
+		&i.DomainCheckedAt,
+		&i.DomainCheckAt,
+		&i.DomainVerifiedAt,
+		&i.DomainMissingSince,
+		&i.DomainClaimedAt,
+		&i.CfHostnameID,
+		&i.CfStatus,
+		&i.CfSslStatus,
+		&i.CfErrors,
+		&i.CfCheckedAt,
 	)
 	return i, err
 }

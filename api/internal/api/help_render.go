@@ -151,7 +151,7 @@ func (s *Server) helpBaseView(ctx context.Context, q *store.Queries, c store.Hel
 	sw := statusWordsFor(locale)
 	v := &helpPageView{
 		W: helpWordsFor(locale), SW: sw, Lang: locale, Dir: sw.direction(), View: view, Name: c.Name, OGLocale: strings.ReplaceAll(locale, "-", "_"),
-		OGType: "website", FontSans: s.helpURL(c.Slug, publicFontPath("Geist")), FontMono: s.helpURL(c.Slug, publicFontPath("GeistMono")),
+		OGType: "website", FontSans: s.helpURL(c, publicFontPath("Geist")), FontMono: s.helpURL(c, publicFontPath("GeistMono")),
 		Home: s.helpHomeURL(c, locale), SearchURL: s.helpSearchURL(c, locale), Mark: yuvaMark, YuvaSite: yuvaSite, Script: template.JS(helpScript),
 	}
 	if c.AccentColor != nil {

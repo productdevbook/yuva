@@ -351,7 +351,7 @@ func (s *Server) DeleteInbox(ctx context.Context, req oas.DeleteInboxRequestObje
 		return nil, err
 	}
 	var keys []string
-	var page uuid.UUID
+	var pages []uuid.UUID
 	err := s.inTx(ctx, p.workspaceID, func(q *store.Queries, events *eventBatch) error {
 		in, err := q.LockInbox(ctx, store.LockInboxParams{WorkspaceID: p.workspaceID, ID: req.InboxId})
 		if store.IsNotFound(err) {
@@ -373,11 +373,13 @@ func (s *Server) DeleteInbox(ctx context.Context, req oas.DeleteInboxRequestObje
 		} else if t != nil {
 			events.job(SESTenantDeleteArgs{Name: t.Name, Region: t.Region}, nil)
 		}
-		if pg, err := q.GetInboxStatusPage(ctx, store.GetInboxStatusPageParams{WorkspaceID: p.workspaceID, InboxID: req.InboxId}); err == nil {
-			releaseCloudflare(events, pg)
-			page = pg.ID
-		} else if !store.IsNotFound(err) {
+		owned, err := q.ListInboxOwnDomains(ctx, store.ListInboxOwnDomainsParams{WorkspaceID: p.workspaceID, InboxID: req.InboxId})
+		if err != nil {
 			return err
+		}
+		for _, o := range owned {
+			releaseCloudflareHostname(events, p.workspaceID, o.CfHostnameID, o.CustomDomain)
+			pages = append(pages, o.ID)
 		}
 		if _, err = q.DeleteInbox(ctx, store.DeleteInboxParams{WorkspaceID: p.workspaceID, ID: req.InboxId}); err != nil {
 			return err
@@ -392,7 +394,7 @@ func (s *Server) DeleteInbox(ctx context.Context, req oas.DeleteInboxRequestObje
 	if err != nil {
 		return nil, err
 	}
-	if page != uuid.Nil() {
+	for _, page := range pages {
 		s.statusDomainCache.forget(page)
 	}
 	s.deleteObjects(ctx, keys)

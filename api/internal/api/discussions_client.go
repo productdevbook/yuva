@@ -66,7 +66,7 @@ func (s *Server) resolveDiscussant(ctx context.Context, token string) (*discussa
 	if err != nil {
 		return nil, err
 	}
-	if !s.originAllowedFor(originFrom(ctx), ch.Kind, ch.AllowedOrigins) {
+	if !s.originAllowedFor(ctx, ch.WorkspaceID, originFrom(ctx), ch.Kind, ch.AllowedOrigins) {
 		return nil, errOriginRefused
 	}
 	if originFrom(ctx) != tok.Origin {
@@ -891,7 +891,7 @@ func (s *Server) GetClientRoadmap(ctx context.Context, req oas.GetClientRoadmapR
 	cache := publicMaxAge
 	return oas.GetClientRoadmap200JSONResponse{
 		Body: oas.ClientRoadmap{
-			Name: board.Name, Description: board.Description, Url: s.roadmapURL(board.Slug), Suggestions: oas.RoadmapSuggestions(board.Suggestions),
+			Name: board.Name, Description: board.Description, Url: s.roadmapURL(board), Suggestions: oas.RoadmapSuggestions(board.Suggestions),
 			Stages: oas.ClientRoadmapStages{
 				Ideas: counts.Counts.Ideas, Planned: counts.Counts.Planned, InProgress: counts.Counts.InProgress, Shipped: counts.Counts.Shipped,
 			},

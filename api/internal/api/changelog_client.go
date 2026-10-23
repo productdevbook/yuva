@@ -54,7 +54,7 @@ func (s *Server) whatsNewClientChangelog(ctx context.Context, key string) (store
 	if err != nil {
 		return none, err
 	}
-	if !s.originAllowedFor(originFrom(ctx), ch.Kind, ch.AllowedOrigins) {
+	if !s.originAllowedFor(ctx, ch.WorkspaceID, originFrom(ctx), ch.Kind, ch.AllowedOrigins) {
 		return none, errOriginRefused
 	}
 	c, err := s.st.GetInboxChangelog(ctx, store.GetInboxChangelogParams{WorkspaceID: ch.WorkspaceID, InboxID: ch.InboxID})
@@ -89,7 +89,7 @@ func (s *Server) clientWhatsNewInbox(ctx context.Context, q *store.Queries, in s
 	if err != nil {
 		return nil, err
 	}
-	return &oas.ClientInboxWhatsNew{Url: s.changelogURL(c.Slug, ""), Locales: c.Locales, DefaultLocale: c.DefaultLocale, LatestPublishedAt: latest}, nil
+	return &oas.ClientInboxWhatsNew{Url: s.changelogURL(c, ""), Locales: c.Locales, DefaultLocale: c.DefaultLocale, LatestPublishedAt: latest}, nil
 }
 
 type publicChangelogEntry struct {
@@ -146,7 +146,7 @@ func (s *Server) GetClientWhatsNew(ctx context.Context, req oas.GetClientWhatsNe
 	out := oas.ClientWhatsNew{
 		Changelog: oas.ClientChangelog{
 			Name: c.Name, Description: c.Description, Locale: locale, Locales: c.Locales, DefaultLocale: c.DefaultLocale,
-			Url: s.changelogURL(c.Slug, "/"+locale+"/"),
+			Url: s.changelogURL(c, "/"+locale+"/"),
 		},
 		Items: []oas.ClientWhatsNewEntry{},
 	}

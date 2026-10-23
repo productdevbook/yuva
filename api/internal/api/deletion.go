@@ -121,7 +121,7 @@ func (s *Server) closeWorkspace(ctx context.Context, p principal) error {
 				return err
 			}
 		}
-		hostnames, err := q.ListStatusCloudflareHostnames(ctx, workspaceID)
+		hostnames, err := q.ListOwnCloudflareHostnames(ctx, workspaceID)
 		if err != nil {
 			return err
 		}

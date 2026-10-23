@@ -51,7 +51,8 @@ type statusOn struct {
 }
 
 // statusHost serves the status pages at /{slug} on YUVA_STATUS_URL's host and nothing else there,
-// and a page at / on its verified own domain and nothing else there.
+// and a status page, help center, roadmap board or changelog at / on its verified own domain and
+// nothing else there.
 func (s *Server) statusHost(next http.Handler) http.Handler {
 	var statusHost string
 	if u, err := url.Parse(s.status.URL); s.status.URL != "" && err == nil {
@@ -84,6 +85,10 @@ func (s *Server) statusHost(next http.Handler) http.Handler {
 			hit, ok := s.domainPage(r.Context(), host)
 			if !ok {
 				next.ServeHTTP(w, r)
+				return
+			}
+			if hit.kind != kindStatus {
+				s.serveOwnDomain(w, r, next, host, hit)
 				return
 			}
 			path, ok := statusDomainPath(hit.slug, r.URL.Path)
