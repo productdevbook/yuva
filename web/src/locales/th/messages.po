@@ -4043,6 +4043,10 @@ msgstr "คัดลอกรายละเอียดความคิดเ
 msgid "Copy the feedback details (Y)"
 msgstr "คัดลอกรายละเอียดความคิดเห็น (Y)"
 
+#: src/features/migrations/text.ts
+msgid "Copy the key under “Your API Key”. A Freshdesk key cannot be limited to reading; Yuva's connection only sends read requests."
+msgstr "คัดลอกคีย์ใต้ “Your API Key” คีย์ของ Freshdesk จำกัดให้อ่านอย่างเดียวไม่ได้ แต่การเชื่อมต่อของ Yuva ส่งเฉพาะคำขออ่านเท่านั้น"
+
 #: src/features/setup/InstallStep.tsx
 msgid "Copy the lines below. They already contain this server's address and the channel's public key, which is not a secret."
 msgstr "คัดลอกบรรทัดด้านล่าง ซึ่งมีที่อยู่ของเซิร์ฟเวอร์นี้และคีย์สาธารณะของช่องทางอยู่แล้ว และไม่ใช่ความลับ"
@@ -10553,6 +10557,10 @@ msgid "Paste it before the closing body tag of every page that should show the c
 msgstr "วางก่อนแท็กปิด body ของทุกหน้าที่ต้องการแสดงแชต"
 
 #: src/features/migrations/text.ts
+msgid "Paste it below with your subdomain, the acme of acme.freshdesk.com."
+msgstr "วางลงด้านล่างพร้อมโดเมนย่อยของคุณ คือ acme ใน acme.freshdesk.com"
+
+#: src/features/migrations/text.ts
 msgid "Paste them below with your subdomain. Yuva asks only for the scope read and accepts nothing more."
 msgstr "วางด้านล่างพร้อมโดเมนย่อยของคุณ Yuva ขอเฉพาะขอบเขต read และไม่รับอะไรเพิ่ม"
 
@@ -11144,6 +11152,9 @@ msgstr "แบ็กเอนด์โปรดักชัน"
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/home/HomePage.tsx
+#: src/features/migrations/ChooseStep.tsx
+#: src/features/migrations/CopyStep.tsx
+#: src/features/migrations/MapStep.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/ProductsPage.tsx
@@ -11996,6 +12007,10 @@ msgstr "ผลต่อชื่อเสียง"
 #: src/features/team/TeamPage.tsx
 msgid "Resend"
 msgstr "ส่งอีกครั้ง"
+
+#: src/features/migrations/DoneStep.tsx
+msgid "Reset the API key you gave Yuva"
+msgstr "รีเซ็ตคีย์ API ที่คุณให้ Yuva"
 
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "Reset to defaults"
@@ -13319,6 +13334,10 @@ msgstr "ลงชื่อเข้าใช้หรือสร้างบั
 #: src/features/account/AccountPage.tsx
 msgid "Sign in or create an account with your e-mail address to follow the discussions you write in on documentation sites. We e-mail you a one-time code; no password."
 msgstr "ลงชื่อเข้าใช้หรือสร้างบัญชีด้วยอีเมลของคุณเพื่อติดตามกระทู้ที่คุณเขียนบนไซต์เอกสาร เราส่งรหัสใช้ครั้งเดียวให้ทางอีเมล ไม่ต้องใช้รหัสผ่าน"
+
+#: src/features/migrations/text.ts
+msgid "Sign in to Freshdesk as an admin, open your profile picture at the top right and choose Profile settings."
+msgstr "ลงชื่อเข้าใช้ Freshdesk ในฐานะผู้ดูแล เปิดรูปโปรไฟล์ของคุณที่มุมขวาบน แล้วเลือก Profile settings"
 
 #: src/features/account/ConnectPage.tsx
 msgid "Sign in to join the discussion"
@@ -17232,6 +17251,10 @@ msgid "Yuva deleted its copy of the token but cannot revoke it in Front. Delete 
 msgstr "Yuva ลบสำเนาโทเค็นของตนแล้ว แต่เพิกถอนใน Front ไม่ได้ โปรดลบโทเค็นที่ Settings › Developers › API tokens เพราะ Yuva ไม่ต้องใช้อีกแล้ว"
 
 #: src/features/migrations/DoneStep.tsx
+msgid "Yuva deleted its key but cannot reset it in Freshdesk. Open Profile settings and choose Reset API key; Yuva does not need it any more."
+msgstr "Yuva ลบคีย์ของตนแล้ว แต่รีเซ็ตใน Freshdesk ไม่ได้ เปิด Profile settings แล้วเลือก Reset API key; Yuva ไม่ต้องใช้คีย์นี้อีกต่อไป"
+
+#: src/features/migrations/DoneStep.tsx
 msgid "Yuva deleted its token {deletedAt} and can no longer read {provider}."
 msgstr "Yuva ลบโทเค็นเมื่อ {deletedAt} และอ่าน {provider} ไม่ได้อีกต่อไป"
 
@@ -17377,5 +17400,5 @@ msgid "Yuva's own notes cannot be changed."
 msgstr "เปลี่ยนบันทึกของ Yuva เองไม่ได้"
 
 #: src/features/migrations/MigrationsPage.tsx
-msgid "Zendesk, Help Scout, Front"
-msgstr "Zendesk, Help Scout, Front"
+msgid "Zendesk, Help Scout, Front, Freshdesk"
+msgstr "Zendesk, Help Scout, Front, Freshdesk"

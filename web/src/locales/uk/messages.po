@@ -4043,6 +4043,10 @@ msgstr "Скопіювати дані відгуку"
 msgid "Copy the feedback details (Y)"
 msgstr "Скопіювати дані відгуку (Y)"
 
+#: src/features/migrations/text.ts
+msgid "Copy the key under “Your API Key”. A Freshdesk key cannot be limited to reading; Yuva's connection only sends read requests."
+msgstr "Скопіюйте ключ під написом «Your API Key». Ключ Freshdesk не можна обмежити лише читанням; з’єднання Yuva надсилає тільки запити на читання."
+
 #: src/features/setup/InstallStep.tsx
 msgid "Copy the lines below. They already contain this server's address and the channel's public key, which is not a secret."
 msgstr "Скопіюйте рядки нижче. У них уже є адреса цього сервера й публічний ключ каналу, який не є секретом."
@@ -10553,6 +10557,10 @@ msgid "Paste it before the closing body tag of every page that should show the c
 msgstr "Вставте перед закривним тегом body на кожній сторінці, де має бути чат."
 
 #: src/features/migrations/text.ts
+msgid "Paste it below with your subdomain, the acme of acme.freshdesk.com."
+msgstr "Вставте його нижче разом із піддоменом: це acme з acme.freshdesk.com."
+
+#: src/features/migrations/text.ts
 msgid "Paste them below with your subdomain. Yuva asks only for the scope read and accepts nothing more."
 msgstr "Вставте їх нижче разом із вашим піддоменом. Yuva запитує лише область read і нічого більше не приймає."
 
@@ -11144,6 +11152,9 @@ msgstr "Робочий бекенд"
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/home/HomePage.tsx
+#: src/features/migrations/ChooseStep.tsx
+#: src/features/migrations/CopyStep.tsx
+#: src/features/migrations/MapStep.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/ProductsPage.tsx
@@ -11996,6 +12007,10 @@ msgstr "Вплив на репутацію"
 #: src/features/team/TeamPage.tsx
 msgid "Resend"
 msgstr "Надіслати знову"
+
+#: src/features/migrations/DoneStep.tsx
+msgid "Reset the API key you gave Yuva"
+msgstr "Скиньте API-ключ, який ви дали Yuva"
 
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "Reset to defaults"
@@ -13319,6 +13334,10 @@ msgstr "Увійти або створити обліковий запис"
 #: src/features/account/AccountPage.tsx
 msgid "Sign in or create an account with your e-mail address to follow the discussions you write in on documentation sites. We e-mail you a one-time code; no password."
 msgstr "Увійдіть або створіть обліковий запис зі своєю адресою електронної пошти, щоб стежити за обговореннями, у яких ви пишете на сайтах документації. Ми надішлемо одноразовий код; без пароля."
+
+#: src/features/migrations/text.ts
+msgid "Sign in to Freshdesk as an admin, open your profile picture at the top right and choose Profile settings."
+msgstr "Увійдіть у Freshdesk як адміністратор, відкрийте фото профілю вгорі праворуч і виберіть Profile settings."
 
 #: src/features/account/ConnectPage.tsx
 msgid "Sign in to join the discussion"
@@ -17232,6 +17251,10 @@ msgid "Yuva deleted its copy of the token but cannot revoke it in Front. Delete 
 msgstr "Yuva видалила свою копію токена, але не може відкликати його у Front. Видаліть токен у Settings › Developers › API tokens; Yuva він більше не потрібен."
 
 #: src/features/migrations/DoneStep.tsx
+msgid "Yuva deleted its key but cannot reset it in Freshdesk. Open Profile settings and choose Reset API key; Yuva does not need it any more."
+msgstr "Yuva видалила свій ключ, але не може скинути його у Freshdesk. Відкрийте Profile settings і виберіть Reset API key; Yuva він більше не потрібен."
+
+#: src/features/migrations/DoneStep.tsx
 msgid "Yuva deleted its token {deletedAt} and can no longer read {provider}."
 msgstr "Yuva видалив свій токен {deletedAt} і більше не може читати {provider}."
 
@@ -17377,5 +17400,5 @@ msgid "Yuva's own notes cannot be changed."
 msgstr "Власні нотатки Yuva змінити не можна."
 
 #: src/features/migrations/MigrationsPage.tsx
-msgid "Zendesk, Help Scout, Front"
-msgstr "Zendesk, Help Scout, Front"
+msgid "Zendesk, Help Scout, Front, Freshdesk"
+msgstr "Zendesk, Help Scout, Front, Freshdesk"

@@ -4043,6 +4043,10 @@ msgstr "Skopiuj szczegóły opinii"
 msgid "Copy the feedback details (Y)"
 msgstr "Kopiuj szczegóły opinii (Y)"
 
+#: src/features/migrations/text.ts
+msgid "Copy the key under “Your API Key”. A Freshdesk key cannot be limited to reading; Yuva's connection only sends read requests."
+msgstr "Skopiuj klucz pod „Your API Key”. Klucza Freshdesk nie można ograniczyć do odczytu; połączenie Yuvy wysyła tylko żądania odczytu."
+
 #: src/features/setup/InstallStep.tsx
 msgid "Copy the lines below. They already contain this server's address and the channel's public key, which is not a secret."
 msgstr "Skopiuj poniższe linie. Zawierają już adres tego serwera i publiczny klucz kanału, który nie jest sekretem."
@@ -10553,6 +10557,10 @@ msgid "Paste it before the closing body tag of every page that should show the c
 msgstr "Wklej go przed zamykającym tagiem body każdej strony, która ma pokazywać czat."
 
 #: src/features/migrations/text.ts
+msgid "Paste it below with your subdomain, the acme of acme.freshdesk.com."
+msgstr "Wklej go poniżej razem z subdomeną, czyli acme z acme.freshdesk.com."
+
+#: src/features/migrations/text.ts
 msgid "Paste them below with your subdomain. Yuva asks only for the scope read and accepts nothing more."
 msgstr "Wklej je poniżej wraz ze swoją subdomeną. Yuva prosi tylko o zakres read i nie przyjmuje niczego więcej."
 
@@ -11144,6 +11152,9 @@ msgstr "Backend produkcyjny"
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/home/HomePage.tsx
+#: src/features/migrations/ChooseStep.tsx
+#: src/features/migrations/CopyStep.tsx
+#: src/features/migrations/MapStep.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/ProductsPage.tsx
@@ -11996,6 +12007,10 @@ msgstr "Wpływ na reputację"
 #: src/features/team/TeamPage.tsx
 msgid "Resend"
 msgstr "Wyślij ponownie"
+
+#: src/features/migrations/DoneStep.tsx
+msgid "Reset the API key you gave Yuva"
+msgstr "Zresetuj klucz API przekazany Yuvie"
 
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "Reset to defaults"
@@ -13319,6 +13334,10 @@ msgstr "Zaloguj się lub utwórz konto"
 #: src/features/account/AccountPage.tsx
 msgid "Sign in or create an account with your e-mail address to follow the discussions you write in on documentation sites. We e-mail you a one-time code; no password."
 msgstr "Zaloguj się lub utwórz konto za pomocą adresu e-mail, aby obserwować dyskusje, w których piszesz w witrynach z dokumentacją. Wyślemy Ci jednorazowy kod; bez hasła."
+
+#: src/features/migrations/text.ts
+msgid "Sign in to Freshdesk as an admin, open your profile picture at the top right and choose Profile settings."
+msgstr "Zaloguj się do Freshdesk jako administrator, otwórz swoje zdjęcie profilowe w prawym górnym rogu i wybierz Profile settings."
 
 #: src/features/account/ConnectPage.tsx
 msgid "Sign in to join the discussion"
@@ -17232,6 +17251,10 @@ msgid "Yuva deleted its copy of the token but cannot revoke it in Front. Delete 
 msgstr "Yuva usunęła swoją kopię tokenu, ale nie może go unieważnić we Froncie. Usuń token w Settings › Developers › API tokens; Yuva już go nie potrzebuje."
 
 #: src/features/migrations/DoneStep.tsx
+msgid "Yuva deleted its key but cannot reset it in Freshdesk. Open Profile settings and choose Reset API key; Yuva does not need it any more."
+msgstr "Yuva usunęła swój klucz, ale nie może go zresetować we Freshdesk. Otwórz Profile settings i wybierz Reset API key; Yuva już go nie potrzebuje."
+
+#: src/features/migrations/DoneStep.tsx
 msgid "Yuva deleted its token {deletedAt} and can no longer read {provider}."
 msgstr "Yuva usunęła swój token {deletedAt} i nie może już czytać {provider}."
 
@@ -17377,5 +17400,5 @@ msgid "Yuva's own notes cannot be changed."
 msgstr "Własnych notatek Yuva nie można zmieniać."
 
 #: src/features/migrations/MigrationsPage.tsx
-msgid "Zendesk, Help Scout, Front"
-msgstr "Zendesk, Help Scout, Front"
+msgid "Zendesk, Help Scout, Front, Freshdesk"
+msgstr "Zendesk, Help Scout, Front, Freshdesk"

@@ -132,7 +132,7 @@ type Desk struct {
 
 var (
 	registryMu sync.RWMutex
-	registry   = []Desk{zendeskDesk, helpScoutDesk, chatwootDesk, frontDesk}
+	registry   = []Desk{zendeskDesk, helpScoutDesk, chatwootDesk, frontDesk, freshdeskDesk}
 )
 
 // Desks are the help desks in the order the panel shows them.
@@ -252,6 +252,10 @@ func (d Desk) client(cfg Config, a Account, creds Credentials, budget *Budget) *
 		tokenHosts = Hosts{Exact: append(slices.Clone(api.Exact), f.Exact...), Suffixes: append(slices.Clone(api.Suffixes), f.Suffixes...)}
 	}
 	files := api
+	if d.Auth == AuthToken && d.FileHosts != nil {
+		f := d.FileHosts(a)
+		files = Hosts{Exact: append(slices.Clone(api.Exact), f.Exact...), Suffixes: append(slices.Clone(api.Suffixes), f.Suffixes...), Pattern: f.Pattern}
+	}
 	if d.FilesAnywhere {
 		files = Hosts{Any: true}
 	}

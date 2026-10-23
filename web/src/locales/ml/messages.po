@@ -4043,6 +4043,10 @@ msgstr "ഫീഡ്ബാക്ക് വിശദാംശങ്ങൾ പക�
 msgid "Copy the feedback details (Y)"
 msgstr "ഫീഡ്ബാക്ക് വിവരങ്ങൾ പകർത്തുക (Y)"
 
+#: src/features/migrations/text.ts
+msgid "Copy the key under “Your API Key”. A Freshdesk key cannot be limited to reading; Yuva's connection only sends read requests."
+msgstr "“Your API Key”-ന് താഴെയുള്ള കീ പകർത്തുക. Freshdesk കീ വായനയിലേക്ക് മാത്രമായി പരിമിതപ്പെടുത്താനാവില്ല; Yuva-യുടെ കണക്ഷൻ വായനാ അഭ്യർത്ഥനകൾ മാത്രമേ അയയ്ക്കൂ."
+
 #: src/features/setup/InstallStep.tsx
 msgid "Copy the lines below. They already contain this server's address and the channel's public key, which is not a secret."
 msgstr "താഴെയുള്ള വരികൾ പകർത്തുക. അവയിൽ ഈ സെർവറിന്റെ വിലാസവും ചാനലിന്റെ പൊതു കീയും ഇതിനകം ഉണ്ട്, അത് രഹസ്യമല്ല."
@@ -10553,6 +10557,10 @@ msgid "Paste it before the closing body tag of every page that should show the c
 msgstr "ചാറ്റ് കാണിക്കേണ്ട ഓരോ പേജിന്റെയും അടയ്ക്കുന്ന body ടാഗിന് മുമ്പ് ഇത് ഒട്ടിക്കുക."
 
 #: src/features/migrations/text.ts
+msgid "Paste it below with your subdomain, the acme of acme.freshdesk.com."
+msgstr "ഇത് നിങ്ങളുടെ സബ്ഡൊമെയ്‌നോടൊപ്പം താഴെ ഒട്ടിക്കുക, അതായത് acme.freshdesk.com-ലെ acme."
+
+#: src/features/migrations/text.ts
 msgid "Paste them below with your subdomain. Yuva asks only for the scope read and accepts nothing more."
 msgstr "അവ നിങ്ങളുടെ സബ്ഡൊമെയ്‌നിനൊപ്പം താഴെ ഒട്ടിക്കുക. Yuva read സ്കോപ്പ് മാത്രം ആവശ്യപ്പെടുന്നു, അതിൽ കൂടുതൽ ഒന്നും സ്വീകരിക്കുന്നില്ല."
 
@@ -11144,6 +11152,9 @@ msgstr "പ്രൊഡക്ഷൻ ബാക്കെൻഡ്"
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/home/HomePage.tsx
+#: src/features/migrations/ChooseStep.tsx
+#: src/features/migrations/CopyStep.tsx
+#: src/features/migrations/MapStep.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/ProductsPage.tsx
@@ -11996,6 +12007,10 @@ msgstr "പ്രശസ്തിയിലെ സ്വാധീനം"
 #: src/features/team/TeamPage.tsx
 msgid "Resend"
 msgstr "വീണ്ടും അയയ്ക്കുക"
+
+#: src/features/migrations/DoneStep.tsx
+msgid "Reset the API key you gave Yuva"
+msgstr "Yuva-യ്ക്ക് നൽകിയ API കീ റീസെറ്റ് ചെയ്യുക"
 
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "Reset to defaults"
@@ -13319,6 +13334,10 @@ msgstr "സൈൻ ഇൻ ചെയ്യുക അല്ലെങ്കിൽ �
 #: src/features/account/AccountPage.tsx
 msgid "Sign in or create an account with your e-mail address to follow the discussions you write in on documentation sites. We e-mail you a one-time code; no password."
 msgstr "ഡോക്യുമെന്റേഷൻ സൈറ്റുകളിൽ നിങ്ങൾ എഴുതുന്ന ചർച്ചകൾ പിന്തുടരാൻ നിങ്ങളുടെ ഇമെയിൽ വിലാസം ഉപയോഗിച്ച് സൈൻ ഇൻ ചെയ്യുക അല്ലെങ്കിൽ അക്കൗണ്ട് ഉണ്ടാക്കുക. ഞങ്ങൾ നിങ്ങൾക്ക് ഒറ്റത്തവണ കോഡ് ഇമെയിൽ ചെയ്യും; പാസ്‌വേഡ് ഇല്ല."
+
+#: src/features/migrations/text.ts
+msgid "Sign in to Freshdesk as an admin, open your profile picture at the top right and choose Profile settings."
+msgstr "അഡ്മിനായി Freshdesk-ൽ സൈൻ ഇൻ ചെയ്യുക, മുകളിൽ വലതുവശത്തുള്ള നിങ്ങളുടെ പ്രൊഫൈൽ ചിത്രം തുറന്ന് Profile settings തിരഞ്ഞെടുക്കുക."
 
 #: src/features/account/ConnectPage.tsx
 msgid "Sign in to join the discussion"
@@ -17232,6 +17251,10 @@ msgid "Yuva deleted its copy of the token but cannot revoke it in Front. Delete 
 msgstr "Yuva ടോക്കണിന്റെ സ്വന്തം പകർപ്പ് ഇല്ലാതാക്കി, പക്ഷേ Front-ൽ അത് അസാധുവാക്കാൻ കഴിയില്ല. Settings › Developers › API tokens-ൽ ടോക്കൺ ഇല്ലാതാക്കുക; Yuva-യ്ക്ക് ഇനി അത് ആവശ്യമില്ല."
 
 #: src/features/migrations/DoneStep.tsx
+msgid "Yuva deleted its key but cannot reset it in Freshdesk. Open Profile settings and choose Reset API key; Yuva does not need it any more."
+msgstr "Yuva അതിന്റെ കീ ഇല്ലാതാക്കി, പക്ഷേ Freshdesk-ൽ അത് റീസെറ്റ് ചെയ്യാൻ കഴിയില്ല. Profile settings തുറന്ന് Reset API key തിരഞ്ഞെടുക്കുക; Yuva-യ്ക്ക് ഇനി അത് ആവശ്യമില്ല."
+
+#: src/features/migrations/DoneStep.tsx
 msgid "Yuva deleted its token {deletedAt} and can no longer read {provider}."
 msgstr "Yuva അതിന്റെ ടോക്കൺ {deletedAt}-ന് ഇല്ലാതാക്കി, ഇനി {provider} വായിക്കാൻ കഴിയില്ല."
 
@@ -17377,5 +17400,5 @@ msgid "Yuva's own notes cannot be changed."
 msgstr "Yuva-യുടെ സ്വന്തം കുറിപ്പുകൾ മാറ്റാൻ കഴിയില്ല."
 
 #: src/features/migrations/MigrationsPage.tsx
-msgid "Zendesk, Help Scout, Front"
-msgstr "Zendesk, Help Scout, Front"
+msgid "Zendesk, Help Scout, Front, Freshdesk"
+msgstr "Zendesk, Help Scout, Front, Freshdesk"

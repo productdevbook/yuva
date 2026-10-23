@@ -4043,6 +4043,10 @@ msgstr "의견 상세 복사"
 msgid "Copy the feedback details (Y)"
 msgstr "의견 세부 정보 복사 (Y)"
 
+#: src/features/migrations/text.ts
+msgid "Copy the key under “Your API Key”. A Freshdesk key cannot be limited to reading; Yuva's connection only sends read requests."
+msgstr "“Your API Key” 아래의 키를 복사하세요. Freshdesk 키는 읽기 전용으로 제한할 수 없지만, Yuva의 연결은 읽기 요청만 보냅니다."
+
 #: src/features/setup/InstallStep.tsx
 msgid "Copy the lines below. They already contain this server's address and the channel's public key, which is not a secret."
 msgstr "아래 줄을 복사하세요. 이 서버의 주소와 채널의 공개 키(비밀이 아닙니다)가 이미 들어 있습니다."
@@ -10553,6 +10557,10 @@ msgid "Paste it before the closing body tag of every page that should show the c
 msgstr "채팅을 표시할 모든 페이지의 body 닫는 태그 바로 앞에 붙여 넣으세요."
 
 #: src/features/migrations/text.ts
+msgid "Paste it below with your subdomain, the acme of acme.freshdesk.com."
+msgstr "하위 도메인(acme.freshdesk.com의 acme)과 함께 아래에 붙여 넣으세요."
+
+#: src/features/migrations/text.ts
 msgid "Paste them below with your subdomain. Yuva asks only for the scope read and accepts nothing more."
 msgstr "서브도메인과 함께 아래에 붙여 넣으세요. Yuva는 read 스코프만 요청하며 그 이상은 받지 않습니다."
 
@@ -11144,6 +11152,9 @@ msgstr "프로덕션 백엔드"
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/home/HomePage.tsx
+#: src/features/migrations/ChooseStep.tsx
+#: src/features/migrations/CopyStep.tsx
+#: src/features/migrations/MapStep.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/ProductsPage.tsx
@@ -11996,6 +12007,10 @@ msgstr "평판 영향"
 #: src/features/team/TeamPage.tsx
 msgid "Resend"
 msgstr "다시 보내기"
+
+#: src/features/migrations/DoneStep.tsx
+msgid "Reset the API key you gave Yuva"
+msgstr "Yuva에 준 API 키 재설정"
 
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "Reset to defaults"
@@ -13319,6 +13334,10 @@ msgstr "로그인 또는 계정 만들기"
 #: src/features/account/AccountPage.tsx
 msgid "Sign in or create an account with your e-mail address to follow the discussions you write in on documentation sites. We e-mail you a one-time code; no password."
 msgstr "이메일 주소로 로그인하거나 계정을 만들면 문서 사이트에서 쓴 토론을 팔로우할 수 있습니다. 일회용 코드를 이메일로 보내 드립니다. 비밀번호는 필요 없습니다."
+
+#: src/features/migrations/text.ts
+msgid "Sign in to Freshdesk as an admin, open your profile picture at the top right and choose Profile settings."
+msgstr "관리자로 Freshdesk에 로그인하고, 오른쪽 위의 프로필 사진을 열어 Profile settings를 선택하세요."
 
 #: src/features/account/ConnectPage.tsx
 msgid "Sign in to join the discussion"
@@ -17232,6 +17251,10 @@ msgid "Yuva deleted its copy of the token but cannot revoke it in Front. Delete 
 msgstr "Yuva는 토큰의 자체 사본을 삭제했지만 Front에서 해지할 수는 없습니다. Settings › Developers › API tokens에서 토큰을 삭제하세요. Yuva는 더 이상 필요하지 않습니다."
 
 #: src/features/migrations/DoneStep.tsx
+msgid "Yuva deleted its key but cannot reset it in Freshdesk. Open Profile settings and choose Reset API key; Yuva does not need it any more."
+msgstr "Yuva가 키를 삭제했지만 Freshdesk에서 재설정할 수는 없습니다. Profile settings를 열어 Reset API key를 선택하세요. Yuva는 더 이상 필요하지 않습니다."
+
+#: src/features/migrations/DoneStep.tsx
 msgid "Yuva deleted its token {deletedAt} and can no longer read {provider}."
 msgstr "Yuva가 {deletedAt}에 토큰을 삭제했으며 더 이상 {provider}을(를) 읽을 수 없습니다."
 
@@ -17377,5 +17400,5 @@ msgid "Yuva's own notes cannot be changed."
 msgstr "Yuva 자체의 메모는 변경할 수 없습니다."
 
 #: src/features/migrations/MigrationsPage.tsx
-msgid "Zendesk, Help Scout, Front"
-msgstr "Zendesk, Help Scout, Front"
+msgid "Zendesk, Help Scout, Front, Freshdesk"
+msgstr "Zendesk, Help Scout, Front, Freshdesk"

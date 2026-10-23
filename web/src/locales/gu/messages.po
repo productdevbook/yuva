@@ -4043,6 +4043,10 @@ msgstr "ફીડબૅકની વિગતો કૉપિ કરો"
 msgid "Copy the feedback details (Y)"
 msgstr "ફીડબૅકની વિગતો કૉપિ કરો (Y)"
 
+#: src/features/migrations/text.ts
+msgid "Copy the key under “Your API Key”. A Freshdesk key cannot be limited to reading; Yuva's connection only sends read requests."
+msgstr "“Your API Key” હેઠળની કી કૉપિ કરો. Freshdeskની કીને ફક્ત વાંચવા પૂરતી મર્યાદિત કરી શકાતી નથી; Yuvaનું કનેક્શન ફક્ત વાંચવાની વિનંતીઓ મોકલે છે."
+
 #: src/features/setup/InstallStep.tsx
 msgid "Copy the lines below. They already contain this server's address and the channel's public key, which is not a secret."
 msgstr "નીચેની લીટીઓ કૉપિ કરો. તેમાં આ સર્વરનું સરનામું અને ચૅનલની પબ્લિક કી પહેલેથી છે, જે સિક્રેટ નથી."
@@ -10553,6 +10557,10 @@ msgid "Paste it before the closing body tag of every page that should show the c
 msgstr "ચૅટ બતાવવા માગતા દરેક પેજના બંધ થતા body ટૅગ પહેલાં તેને પેસ્ટ કરો."
 
 #: src/features/migrations/text.ts
+msgid "Paste it below with your subdomain, the acme of acme.freshdesk.com."
+msgstr "તેને તમારા સબડોમેઇન સાથે નીચે પેસ્ટ કરો, એટલે કે acme.freshdesk.comનો acme."
+
+#: src/features/migrations/text.ts
 msgid "Paste them below with your subdomain. Yuva asks only for the scope read and accepts nothing more."
 msgstr "તેમને તમારા સબડોમેન સાથે નીચે પેસ્ટ કરો. Yuva ફક્ત read સ્કોપ માગે છે અને તેનાથી વધુ કશું સ્વીકારતું નથી."
 
@@ -11144,6 +11152,9 @@ msgstr "પ્રોડક્શન બૅકએન્ડ"
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/home/HomePage.tsx
+#: src/features/migrations/ChooseStep.tsx
+#: src/features/migrations/CopyStep.tsx
+#: src/features/migrations/MapStep.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/ProductsPage.tsx
@@ -11996,6 +12007,10 @@ msgstr "પ્રતિષ્ઠા પર અસર"
 #: src/features/team/TeamPage.tsx
 msgid "Resend"
 msgstr "ફરી મોકલો"
+
+#: src/features/migrations/DoneStep.tsx
+msgid "Reset the API key you gave Yuva"
+msgstr "Yuvaને આપેલી API કી રીસેટ કરો"
 
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "Reset to defaults"
@@ -13319,6 +13334,10 @@ msgstr "સાઇન ઇન કરો અથવા ખાતું બનાવ�
 #: src/features/account/AccountPage.tsx
 msgid "Sign in or create an account with your e-mail address to follow the discussions you write in on documentation sites. We e-mail you a one-time code; no password."
 msgstr "ડૉક્યુમેન્ટેશન સાઇટ્સ પર તમે જેમાં લખો તે ચર્ચાઓ અનુસરવા તમારા ઇમેઇલ સરનામાથી સાઇન ઇન કરો અથવા ખાતું બનાવો. અમે તમને એક-વારનો કોડ ઇમેઇલ કરીએ છીએ; પાસવર્ડ નહીં."
+
+#: src/features/migrations/text.ts
+msgid "Sign in to Freshdesk as an admin, open your profile picture at the top right and choose Profile settings."
+msgstr "એડમિન તરીકે Freshdeskમાં સાઇન ઇન કરો, ઉપર જમણે તમારો પ્રોફાઇલ ફોટો ખોલો અને Profile settings પસંદ કરો."
 
 #: src/features/account/ConnectPage.tsx
 msgid "Sign in to join the discussion"
@@ -17232,6 +17251,10 @@ msgid "Yuva deleted its copy of the token but cannot revoke it in Front. Delete 
 msgstr "Yuva એ ટોકનની પોતાની નકલ કાઢી નાખી છે, પણ Front માં તેને રદ કરી શકતું નથી. Settings › Developers › API tokens માં ટોકન કાઢી નાખો; Yuva ને હવે તેની જરૂર નથી."
 
 #: src/features/migrations/DoneStep.tsx
+msgid "Yuva deleted its key but cannot reset it in Freshdesk. Open Profile settings and choose Reset API key; Yuva does not need it any more."
+msgstr "Yuvaએ તેની કી ડિલીટ કરી છે, પણ Freshdeskમાં તેને રીસેટ કરી શકતું નથી. Profile settings ખોલો અને Reset API key પસંદ કરો; Yuvaને હવે તેની જરૂર નથી."
+
+#: src/features/migrations/DoneStep.tsx
 msgid "Yuva deleted its token {deletedAt} and can no longer read {provider}."
 msgstr "Yuva એ {deletedAt} તેનું ટોકન કાઢી નાખ્યું અને હવે {provider} વાંચી શકતું નથી."
 
@@ -17377,5 +17400,5 @@ msgid "Yuva's own notes cannot be changed."
 msgstr "Yuva ની પોતાની નોંધો બદલી શકાતી નથી."
 
 #: src/features/migrations/MigrationsPage.tsx
-msgid "Zendesk, Help Scout, Front"
-msgstr "Zendesk, Help Scout, Front"
+msgid "Zendesk, Help Scout, Front, Freshdesk"
+msgstr "Zendesk, Help Scout, Front, Freshdesk"

@@ -138,6 +138,8 @@ export function DoneStep({ m, preset }: { m: Migration; preset: MigrationPreset 
                   <Trans>Delete the OAuth client you created for Yuva</Trans>
                 ) : m.source === "front" ? (
                   <Trans>Delete the API token you created for Yuva</Trans>
+                ) : m.source === "freshdesk" ? (
+                  <Trans>Reset the API key you gave Yuva</Trans>
                 ) : (
                   <Trans>Delete the app you created for Yuva</Trans>
                 )}
@@ -152,6 +154,11 @@ export function DoneStep({ m, preset }: { m: Migration; preset: MigrationPreset 
                   <Trans>
                     Yuva deleted its copy of the token but cannot revoke it in Front. Delete the token in Settings ›
                     Developers › API tokens; Yuva does not need it any more.
+                  </Trans>
+                ) : m.source === "freshdesk" ? (
+                  <Trans>
+                    Yuva deleted its key but cannot reset it in Freshdesk. Open Profile settings and choose Reset API
+                    key; Yuva does not need it any more.
                   </Trans>
                 ) : (
                   <Trans>

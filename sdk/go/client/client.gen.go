@@ -4568,6 +4568,7 @@ const (
 	PresetChatwoot        MigrationPresetId = "chatwoot"
 	PresetFastmail        MigrationPresetId = "fastmail"
 	PresetFile            MigrationPresetId = "file"
+	PresetFreshdesk       MigrationPresetId = "freshdesk"
 	PresetFront           MigrationPresetId = "front"
 	PresetGmail           MigrationPresetId = "gmail"
 	PresetGmx             MigrationPresetId = "gmx"
@@ -4591,6 +4592,8 @@ func (e MigrationPresetId) Valid() bool {
 	case PresetFastmail:
 		return true
 	case PresetFile:
+		return true
+	case PresetFreshdesk:
 		return true
 	case PresetFront:
 		return true
@@ -4702,6 +4705,7 @@ func (e MigrationSignInResult) Valid() bool {
 const (
 	MigrationSourceChatwoot  MigrationSource = "chatwoot"
 	MigrationSourceFile      MigrationSource = "file"
+	MigrationSourceFreshdesk MigrationSource = "freshdesk"
 	MigrationSourceFront     MigrationSource = "front"
 	MigrationSourceHelpscout MigrationSource = "helpscout"
 	MigrationSourceImap      MigrationSource = "imap"
@@ -4714,6 +4718,8 @@ func (e MigrationSource) Valid() bool {
 	case MigrationSourceChatwoot:
 		return true
 	case MigrationSourceFile:
+		return true
+	case MigrationSourceFreshdesk:
 		return true
 	case MigrationSourceFront:
 		return true
@@ -16001,7 +16007,7 @@ type Migration struct {
 
 	// Credentials The stored credentials, without the secret. A help desk's are `oauth` or `token`, as its
 	// preset's `auth`, with the account's API host as `server` (`<subdomain>.zendesk.com`,
-	// `api.helpscout.net`, `api2.frontapp.com`, or the host of a `base_url`); a `token` is never answered and has no
+	// `<subdomain>.freshdesk.com`, `api.helpscout.net`, `api2.frontapp.com`, or the host of a `base_url`); a `token` is never answered and has no
 	// `scopes` or `expires_at`. A Microsoft
 	// sign-in's are `oauth` too, with `outlook.office365.com:993` as `server`, the granted
 	// `scopes` and when the access token expires; the token is refreshed before a connection
@@ -16050,7 +16056,7 @@ type Migration struct {
 	// `fastmail`, `gmx`, or `imap` for any other server. For a `file` migration: `takeout`, a
 	// Google Takeout file, or `file`, any other export file; both read every format the server
 	// knows, which `upload.format` names once the upload is complete. A help desk has the preset
-	// of its source: `zendesk`, `helpscout`, `chatwoot` or `front`.
+	// of its source: `zendesk`, `helpscout`, `chatwoot`, `front` or `freshdesk`.
 	Preset MigrationPresetId `json:"preset"`
 
 	// ProbeSentAt When the last test message was sent.
@@ -16078,7 +16084,7 @@ type Migration struct {
 	SignInResult *MigrationSignInResult `json:"sign_in_result,omitempty"`
 
 	// Source Where the history comes from: `imap`, a mailbox read over IMAP; `file`, export files;
-	// `zendesk`, `helpscout`, `chatwoot` and `front`, help desks. A server offers the sources its operator allows
+	// `zendesk`, `helpscout`, `chatwoot`, `front` and `freshdesk`, help desks. A server offers the sources its operator allows
 	// (`YUVA_MIGRATION_SOURCES`) among those built: all of them.
 	Source MigrationSource `json:"source"`
 
@@ -16161,7 +16167,7 @@ type MigrationBudget struct {
 	BytesPerSecond *int64 `json:"bytes_per_second,omitempty"`
 	Connections    int32  `json:"connections"`
 
-	// IncrementalPerMinute Zendesk: incremental export requests a minute (of the 10 Zendesk allows).
+	// IncrementalPerMinute Zendesk: incremental export requests a minute (of the 10 Zendesk allows). Freshdesk: ticket-listing requests a minute.
 	IncrementalPerMinute *int32 `json:"incremental_per_minute,omitempty"`
 
 	// RequestsPerDay Help desks with a daily limit: requests a day until the provider reports its limit;
@@ -16170,7 +16176,7 @@ type MigrationBudget struct {
 	RequestsPerDay *int32 `json:"requests_per_day,omitempty"`
 
 	// RequestsPerMinute Help desks: requests a minute until the provider reports its limit; then at most half
-	// of the per-minute limit it reports (`X-Rate-Limit`, `X-RateLimit-Limit-Minute`).
+	// of the per-minute limit it reports (`X-Rate-Limit`, `X-RateLimit-Limit-Minute`, `X-RateLimit-Total`).
 	RequestsPerMinute *int32 `json:"requests_per_minute,omitempty"`
 }
 
@@ -16208,7 +16214,7 @@ type MigrationCreate struct {
 	// `fastmail`, `gmx`, or `imap` for any other server. For a `file` migration: `takeout`, a
 	// Google Takeout file, or `file`, any other export file; both read every format the server
 	// knows, which `upload.format` names once the upload is complete. A help desk has the preset
-	// of its source: `zendesk`, `helpscout`, `chatwoot` or `front`.
+	// of its source: `zendesk`, `helpscout`, `chatwoot`, `front` or `freshdesk`.
 	Preset MigrationPresetId `json:"preset"`
 
 	// Source `imap` when absent.
@@ -16220,7 +16226,7 @@ type MigrationCreate struct {
 
 // MigrationCredentials The stored credentials, without the secret. A help desk's are `oauth` or `token`, as its
 // preset's `auth`, with the account's API host as `server` (`<subdomain>.zendesk.com`,
-// `api.helpscout.net`, `api2.frontapp.com`, or the host of a `base_url`); a `token` is never answered and has no
+// `<subdomain>.freshdesk.com`, `api.helpscout.net`, `api2.frontapp.com`, or the host of a `base_url`); a `token` is never answered and has no
 // `scopes` or `expires_at`. A Microsoft
 // sign-in's are `oauth` too, with `outlook.office365.com:993` as `server`, the granted
 // `scopes` and when the access token expires; the token is refreshed before a connection
@@ -16320,7 +16326,7 @@ type MigrationDetection struct {
 	// `fastmail`, `gmx`, or `imap` for any other server. For a `file` migration: `takeout`, a
 	// Google Takeout file, or `file`, any other export file; both read every format the server
 	// knows, which `upload.format` names once the upload is complete. A help desk has the preset
-	// of its source: `zendesk`, `helpscout`, `chatwoot` or `front`.
+	// of its source: `zendesk`, `helpscout`, `chatwoot`, `front` or `freshdesk`.
 	Preset MigrationPresetId `json:"preset"`
 
 	// Server The IMAP server to use; absent when none was found.
@@ -16747,7 +16753,7 @@ type MigrationPreset struct {
 	// `fastmail`, `gmx`, or `imap` for any other server. For a `file` migration: `takeout`, a
 	// Google Takeout file, or `file`, any other export file; both read every format the server
 	// knows, which `upload.format` names once the upload is complete. A help desk has the preset
-	// of its source: `zendesk`, `helpscout`, `chatwoot` or `front`.
+	// of its source: `zendesk`, `helpscout`, `chatwoot`, `front` or `freshdesk`.
 	Id   MigrationPresetId `json:"id"`
 	Name string            `json:"name"`
 
@@ -16769,7 +16775,7 @@ type MigrationPreset struct {
 	Servers []MigrationServer `json:"servers"`
 
 	// Source Where the history comes from: `imap`, a mailbox read over IMAP; `file`, export files;
-	// `zendesk`, `helpscout`, `chatwoot` and `front`, help desks. A server offers the sources its operator allows
+	// `zendesk`, `helpscout`, `chatwoot`, `front` and `freshdesk`, help desks. A server offers the sources its operator allows
 	// (`YUVA_MIGRATION_SOURCES`) among those built: all of them.
 	Source MigrationSource `json:"source"`
 
@@ -16801,7 +16807,7 @@ type MigrationPresetUsername string
 // `fastmail`, `gmx`, or `imap` for any other server. For a `file` migration: `takeout`, a
 // Google Takeout file, or `file`, any other export file; both read every format the server
 // knows, which `upload.format` names once the upload is complete. A help desk has the preset
-// of its source: `zendesk`, `helpscout`, `chatwoot` or `front`.
+// of its source: `zendesk`, `helpscout`, `chatwoot`, `front` or `freshdesk`.
 type MigrationPresetId string
 
 // MigrationPresetList defines model for MigrationPresetList.
@@ -16994,7 +17000,7 @@ type MigrationSkipped struct {
 }
 
 // MigrationSource Where the history comes from: `imap`, a mailbox read over IMAP; `file`, export files;
-// `zendesk`, `helpscout`, `chatwoot` and `front`, help desks. A server offers the sources its operator allows
+// `zendesk`, `helpscout`, `chatwoot`, `front` and `freshdesk`, help desks. A server offers the sources its operator allows
 // (`YUVA_MIGRATION_SOURCES`) among those built: all of them.
 type MigrationSource string
 
@@ -17134,7 +17140,7 @@ type MigrationUpdate struct {
 	// `fastmail`, `gmx`, or `imap` for any other server. For a `file` migration: `takeout`, a
 	// Google Takeout file, or `file`, any other export file; both read every format the server
 	// knows, which `upload.format` names once the upload is complete. A help desk has the preset
-	// of its source: `zendesk`, `helpscout`, `chatwoot` or `front`.
+	// of its source: `zendesk`, `helpscout`, `chatwoot`, `front` or `freshdesk`.
 	Preset *MigrationPresetId `json:"preset,omitempty"`
 
 	// SourceAddress Examples: owner@example.com

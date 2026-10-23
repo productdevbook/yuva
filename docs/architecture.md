@@ -1824,7 +1824,12 @@ losing a message and without changing anything at the source. Decisions:
   and the copy read the entry, so a new help desk is a new entry. A `token` desk connects with
   `PUT /v1/migrations/{id}/credentials` (`kind: token`, the API token and, where the entry asks, a
   second secret, the account's subdomain, the HTTPS base URL of a self-hosted install or an account number), sealed like
-  OAuth tokens and deleted with them; the panel shows its form in place of "Sign in". Detection from the address and the domain's MX picks the preset; autoconfig is
+  OAuth tokens and deleted with them; the panel shows its form in place of "Sign in". Freshdesk is
+  a token desk: an admin's API key (no scopes, no read-only key) sent as Basic `key:X` to
+  `<subdomain>.freshdesk.com` only; tickets listed by `updated_at` from `updated_since`, started again at the
+  last change time after Freshdesk's 300-page cut and deduplicated by id; attachment URLs are pre-signed,
+  fetched without the key and read again once when expired; a budget of half of `X-RateLimit-Total` (50 a
+  minute until reported) and 20 list requests a minute. Detection from the address and the domain's MX picks the preset; autoconfig is
   read only from the team's own domain. Provider mail APIs and other sign-ins were considered and
   rejected for one IMAP path.
 - **Read-only, enforced three times.** No credential a mailbox accepts is read-only (Microsoft's

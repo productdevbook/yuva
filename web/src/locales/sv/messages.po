@@ -4043,6 +4043,10 @@ msgstr "Kopiera feedbackens detaljer"
 msgid "Copy the feedback details (Y)"
 msgstr "Kopiera feedbackdetaljerna (Y)"
 
+#: src/features/migrations/text.ts
+msgid "Copy the key under “Your API Key”. A Freshdesk key cannot be limited to reading; Yuva's connection only sends read requests."
+msgstr "Kopiera nyckeln under ”Your API Key”. En Freshdesk-nyckel kan inte begränsas till läsning; Yuvas anslutning skickar bara läsförfrågningar."
+
 #: src/features/setup/InstallStep.tsx
 msgid "Copy the lines below. They already contain this server's address and the channel's public key, which is not a secret."
 msgstr "Kopiera raderna nedan. De innehåller redan den här serverns adress och kanalens publika nyckel, som inte är en hemlighet."
@@ -10553,6 +10557,10 @@ msgid "Paste it before the closing body tag of every page that should show the c
 msgstr "Klistra in den före den avslutande body-taggen på varje sida som ska visa chatten."
 
 #: src/features/migrations/text.ts
+msgid "Paste it below with your subdomain, the acme of acme.freshdesk.com."
+msgstr "Klistra in den nedan tillsammans med din underdomän, acme i acme.freshdesk.com."
+
+#: src/features/migrations/text.ts
 msgid "Paste them below with your subdomain. Yuva asks only for the scope read and accepts nothing more."
 msgstr "Klistra in dem nedan med din underdomän. Yuva begär bara scopet read och accepterar inget mer."
 
@@ -11144,6 +11152,9 @@ msgstr "Produktionsbackend"
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/home/HomePage.tsx
+#: src/features/migrations/ChooseStep.tsx
+#: src/features/migrations/CopyStep.tsx
+#: src/features/migrations/MapStep.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/ProductsPage.tsx
@@ -11996,6 +12007,10 @@ msgstr "Påverkan på ryktet"
 #: src/features/team/TeamPage.tsx
 msgid "Resend"
 msgstr "Skicka igen"
+
+#: src/features/migrations/DoneStep.tsx
+msgid "Reset the API key you gave Yuva"
+msgstr "Återställ API-nyckeln du gav Yuva"
 
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "Reset to defaults"
@@ -13319,6 +13334,10 @@ msgstr "Logga in eller skapa ett konto"
 #: src/features/account/AccountPage.tsx
 msgid "Sign in or create an account with your e-mail address to follow the discussions you write in on documentation sites. We e-mail you a one-time code; no password."
 msgstr "Logga in eller skapa ett konto med din e-postadress för att följa de diskussioner du skriver i på dokumentationswebbplatser. Vi mejlar dig en engångskod; inget lösenord."
+
+#: src/features/migrations/text.ts
+msgid "Sign in to Freshdesk as an admin, open your profile picture at the top right and choose Profile settings."
+msgstr "Logga in på Freshdesk som administratör, öppna din profilbild högst upp till höger och välj Profile settings."
 
 #: src/features/account/ConnectPage.tsx
 msgid "Sign in to join the discussion"
@@ -17232,6 +17251,10 @@ msgid "Yuva deleted its copy of the token but cannot revoke it in Front. Delete 
 msgstr "Yuva har tagit bort sin kopia av token, men kan inte återkalla den i Front. Ta bort token under Settings › Developers › API tokens; Yuva behöver den inte längre."
 
 #: src/features/migrations/DoneStep.tsx
+msgid "Yuva deleted its key but cannot reset it in Freshdesk. Open Profile settings and choose Reset API key; Yuva does not need it any more."
+msgstr "Yuva har raderat sin nyckel men kan inte återställa den i Freshdesk. Öppna Profile settings och välj Reset API key; Yuva behöver den inte längre."
+
+#: src/features/migrations/DoneStep.tsx
 msgid "Yuva deleted its token {deletedAt} and can no longer read {provider}."
 msgstr "Yuva raderade sin token {deletedAt} och kan inte längre läsa {provider}."
 
@@ -17377,5 +17400,5 @@ msgid "Yuva's own notes cannot be changed."
 msgstr "Yuvas egna anteckningar kan inte ändras."
 
 #: src/features/migrations/MigrationsPage.tsx
-msgid "Zendesk, Help Scout, Front"
-msgstr "Zendesk, Help Scout, Front"
+msgid "Zendesk, Help Scout, Front, Freshdesk"
+msgstr "Zendesk, Help Scout, Front, Freshdesk"

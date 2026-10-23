@@ -4043,6 +4043,10 @@ msgstr "Zkopírovat podrobnosti zpětné vazby"
 msgid "Copy the feedback details (Y)"
 msgstr "Kopírovat podrobnosti zpětné vazby (Y)"
 
+#: src/features/migrations/text.ts
+msgid "Copy the key under “Your API Key”. A Freshdesk key cannot be limited to reading; Yuva's connection only sends read requests."
+msgstr "Zkopírujte klíč pod „Your API Key“. Klíč Freshdesku nelze omezit jen na čtení; připojení Yuvy odesílá pouze požadavky na čtení."
+
 #: src/features/setup/InstallStep.tsx
 msgid "Copy the lines below. They already contain this server's address and the channel's public key, which is not a secret."
 msgstr "Zkopírujte řádky níže. Už obsahují adresu tohoto serveru a veřejný klíč kanálu, který není tajný."
@@ -10553,6 +10557,10 @@ msgid "Paste it before the closing body tag of every page that should show the c
 msgstr "Vložte ho před uzavírací značku body každé stránky, která má zobrazovat chat."
 
 #: src/features/migrations/text.ts
+msgid "Paste it below with your subdomain, the acme of acme.freshdesk.com."
+msgstr "Vložte jej níže spolu se subdoménou, tedy acme z acme.freshdesk.com."
+
+#: src/features/migrations/text.ts
 msgid "Paste them below with your subdomain. Yuva asks only for the scope read and accepts nothing more."
 msgstr "Vložte je níže se svou subdoménou. Yuva žádá jen o rozsah read a nic víc nepřijme."
 
@@ -11144,6 +11152,9 @@ msgstr "Produkční backend"
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/home/HomePage.tsx
+#: src/features/migrations/ChooseStep.tsx
+#: src/features/migrations/CopyStep.tsx
+#: src/features/migrations/MapStep.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/ProductsPage.tsx
@@ -11996,6 +12007,10 @@ msgstr "Dopad na reputaci"
 #: src/features/team/TeamPage.tsx
 msgid "Resend"
 msgstr "Odeslat znovu"
+
+#: src/features/migrations/DoneStep.tsx
+msgid "Reset the API key you gave Yuva"
+msgstr "Obnovte klíč API, který jste dali Yuvě"
 
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "Reset to defaults"
@@ -13319,6 +13334,10 @@ msgstr "Přihlaste se nebo vytvořte účet"
 #: src/features/account/AccountPage.tsx
 msgid "Sign in or create an account with your e-mail address to follow the discussions you write in on documentation sites. We e-mail you a one-time code; no password."
 msgstr "Přihlaste se nebo vytvořte účet svou e-mailovou adresou, abyste sledovali diskuse, do kterých píšete na dokumentačních webech. Pošleme vám jednorázový kód; žádné heslo."
+
+#: src/features/migrations/text.ts
+msgid "Sign in to Freshdesk as an admin, open your profile picture at the top right and choose Profile settings."
+msgstr "Přihlaste se do Freshdesku jako správce, vpravo nahoře otevřete svůj profilový obrázek a zvolte Profile settings."
 
 #: src/features/account/ConnectPage.tsx
 msgid "Sign in to join the discussion"
@@ -17232,6 +17251,10 @@ msgid "Yuva deleted its copy of the token but cannot revoke it in Front. Delete 
 msgstr "Yuva smazala svou kopii tokenu, ale nemůže ho ve Frontu zneplatnit. Smažte token v Settings › Developers › API tokens; Yuva ho už nepotřebuje."
 
 #: src/features/migrations/DoneStep.tsx
+msgid "Yuva deleted its key but cannot reset it in Freshdesk. Open Profile settings and choose Reset API key; Yuva does not need it any more."
+msgstr "Yuva svůj klíč smazala, ale ve Freshdesku ho nemůže obnovit. Otevřete Profile settings a zvolte Reset API key; Yuva ho už nepotřebuje."
+
+#: src/features/migrations/DoneStep.tsx
 msgid "Yuva deleted its token {deletedAt} and can no longer read {provider}."
 msgstr "Yuva smazala svůj token {deletedAt} a už nemůže číst {provider}."
 
@@ -17377,5 +17400,5 @@ msgid "Yuva's own notes cannot be changed."
 msgstr "Vlastní poznámky Yuvy nelze měnit."
 
 #: src/features/migrations/MigrationsPage.tsx
-msgid "Zendesk, Help Scout, Front"
-msgstr "Zendesk, Help Scout, Front"
+msgid "Zendesk, Help Scout, Front, Freshdesk"
+msgstr "Zendesk, Help Scout, Front, Freshdesk"

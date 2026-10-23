@@ -263,7 +263,7 @@ func (o *migrationOptionsIn) body() *oas.MigrationOptionsInput {
 
 type createMigrationIn struct {
 	Address   string              `json:"address" jsonschema:"the mailbox to move"`
-	Provider  string              `json:"provider,omitempty" jsonschema:"the preset from detect_mail_source, or zendesk, helpscout, chatwoot or front for a help desk (address is then its support address); detected when empty"`
+	Provider  string              `json:"provider,omitempty" jsonschema:"the preset from detect_mail_source, or zendesk, helpscout, chatwoot, front or freshdesk for a help desk (address is then its support address); detected when empty"`
 	InboxID   *uuid.UUID          `json:"inbox_id,omitempty" jsonschema:"the inbox the history goes to"`
 	ChannelID *uuid.UUID          `json:"channel_id,omitempty" jsonschema:"the inbox's e-mail channel that receives mail at the address; with inbox_id and no channel_id, that channel is found or created"`
 	Options   *migrationOptionsIn `json:"options,omitempty"`

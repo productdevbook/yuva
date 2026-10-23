@@ -348,6 +348,8 @@ export function MapStep({ m, preset }: { m: Migration; preset: MigrationPreset }
                 <Trans>Brands</Trans>
               ) : m.source === "front" ? (
                 <Trans>Inboxes</Trans>
+              ) : m.source === "freshdesk" ? (
+                <Trans>Products</Trans>
               ) : (
                 <Trans>Mailboxes</Trans>
               )}
@@ -613,7 +615,7 @@ export function MapStep({ m, preset }: { m: Migration; preset: MigrationPreset }
           </fieldset>
         )}
 
-        {m.source !== "zendesk" && m.source !== "front" && (
+        {m.source !== "zendesk" && m.source !== "front" && m.source !== "freshdesk" && (
           <Label className="items-start justify-between gap-4 font-normal">
             <span className="flex flex-col gap-0.5">
               <span className="font-medium">

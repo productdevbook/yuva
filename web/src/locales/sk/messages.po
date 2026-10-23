@@ -4043,6 +4043,10 @@ msgstr "Skopírovať podrobnosti spätnej väzby"
 msgid "Copy the feedback details (Y)"
 msgstr "Kopírovať podrobnosti spätnej väzby (Y)"
 
+#: src/features/migrations/text.ts
+msgid "Copy the key under “Your API Key”. A Freshdesk key cannot be limited to reading; Yuva's connection only sends read requests."
+msgstr "Skopírujte kľúč pod „Your API Key“. Kľúč Freshdesku nemožno obmedziť len na čítanie; pripojenie Yuvy odosiela iba požiadavky na čítanie."
+
 #: src/features/setup/InstallStep.tsx
 msgid "Copy the lines below. They already contain this server's address and the channel's public key, which is not a secret."
 msgstr "Skopírujte riadky nižšie. Už obsahujú adresu tohto servera a verejný kľúč kanála, ktorý nie je tajný."
@@ -10553,6 +10557,10 @@ msgid "Paste it before the closing body tag of every page that should show the c
 msgstr "Vložte ho pred uzatvárací tag body každej stránky, ktorá má zobrazovať chat."
 
 #: src/features/migrations/text.ts
+msgid "Paste it below with your subdomain, the acme of acme.freshdesk.com."
+msgstr "Vložte ho nižšie spolu so subdoménou, teda acme z acme.freshdesk.com."
+
+#: src/features/migrations/text.ts
 msgid "Paste them below with your subdomain. Yuva asks only for the scope read and accepts nothing more."
 msgstr "Vložte ich nižšie so svojou subdoménou. Yuva žiada len o rozsah read a nič viac neprijme."
 
@@ -11144,6 +11152,9 @@ msgstr "Produkčný backend"
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/home/HomePage.tsx
+#: src/features/migrations/ChooseStep.tsx
+#: src/features/migrations/CopyStep.tsx
+#: src/features/migrations/MapStep.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/ProductsPage.tsx
@@ -11996,6 +12007,10 @@ msgstr "Vplyv na reputáciu"
 #: src/features/team/TeamPage.tsx
 msgid "Resend"
 msgstr "Odoslať znova"
+
+#: src/features/migrations/DoneStep.tsx
+msgid "Reset the API key you gave Yuva"
+msgstr "Obnovte kľúč API, ktorý ste dali Yuve"
 
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "Reset to defaults"
@@ -13319,6 +13334,10 @@ msgstr "Prihláste sa alebo vytvorte účet"
 #: src/features/account/AccountPage.tsx
 msgid "Sign in or create an account with your e-mail address to follow the discussions you write in on documentation sites. We e-mail you a one-time code; no password."
 msgstr "Prihláste sa alebo vytvorte účet svojou e-mailovou adresou, aby ste sledovali diskusie, do ktorých píšete na dokumentačných weboch. Pošleme vám jednorazový kód; žiadne heslo."
+
+#: src/features/migrations/text.ts
+msgid "Sign in to Freshdesk as an admin, open your profile picture at the top right and choose Profile settings."
+msgstr "Prihláste sa do Freshdesku ako správca, vpravo hore otvorte svoju profilovú fotografiu a vyberte Profile settings."
 
 #: src/features/account/ConnectPage.tsx
 msgid "Sign in to join the discussion"
@@ -17232,6 +17251,10 @@ msgid "Yuva deleted its copy of the token but cannot revoke it in Front. Delete 
 msgstr "Yuva odstránila svoju kópiu tokenu, ale nemôže ho vo Fronte zrušiť. Odstráňte token v Settings › Developers › API tokens; Yuva ho už nepotrebuje."
 
 #: src/features/migrations/DoneStep.tsx
+msgid "Yuva deleted its key but cannot reset it in Freshdesk. Open Profile settings and choose Reset API key; Yuva does not need it any more."
+msgstr "Yuva svoj kľúč vymazala, ale vo Freshdesku ho nemôže obnoviť. Otvorte Profile settings a vyberte Reset API key; Yuva ho už nepotrebuje."
+
+#: src/features/migrations/DoneStep.tsx
 msgid "Yuva deleted its token {deletedAt} and can no longer read {provider}."
 msgstr "Yuva odstránila svoj token {deletedAt} a už nemôže čítať {provider}."
 
@@ -17377,5 +17400,5 @@ msgid "Yuva's own notes cannot be changed."
 msgstr "Vlastné poznámky Yuvy sa nedajú meniť."
 
 #: src/features/migrations/MigrationsPage.tsx
-msgid "Zendesk, Help Scout, Front"
-msgstr "Zendesk, Help Scout, Front"
+msgid "Zendesk, Help Scout, Front, Freshdesk"
+msgstr "Zendesk, Help Scout, Front, Freshdesk"

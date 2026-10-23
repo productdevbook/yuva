@@ -4043,6 +4043,10 @@ msgstr "ফিডব্যাকের বিবরণ কপি করুন"
 msgid "Copy the feedback details (Y)"
 msgstr "ফিডব্যাকের বিবরণ কপি করুন (Y)"
 
+#: src/features/migrations/text.ts
+msgid "Copy the key under “Your API Key”. A Freshdesk key cannot be limited to reading; Yuva's connection only sends read requests."
+msgstr "“Your API Key”-এর নিচের কী-টি কপি করুন। Freshdesk-এর কী শুধু পড়ার মধ্যে সীমাবদ্ধ করা যায় না; Yuva-র সংযোগ কেবল পড়ার অনুরোধ পাঠায়।"
+
 #: src/features/setup/InstallStep.tsx
 msgid "Copy the lines below. They already contain this server's address and the channel's public key, which is not a secret."
 msgstr "নিচের লাইনগুলো কপি করুন। এতে ইতিমধ্যে এই সার্ভারের ঠিকানা ও চ্যানেলের পাবলিক কী আছে, যা কোনো সিক্রেট নয়।"
@@ -10553,6 +10557,10 @@ msgid "Paste it before the closing body tag of every page that should show the c
 msgstr "চ্যাট দেখাবে এমন প্রতিটি পেজের বন্ধ body ট্যাগের আগে এটি পেস্ট করুন।"
 
 #: src/features/migrations/text.ts
+msgid "Paste it below with your subdomain, the acme of acme.freshdesk.com."
+msgstr "এটি আপনার সাবডোমেইনসহ নিচে পেস্ট করুন, অর্থাৎ acme.freshdesk.com-এর acme।"
+
+#: src/features/migrations/text.ts
 msgid "Paste them below with your subdomain. Yuva asks only for the scope read and accepts nothing more."
 msgstr "এগুলো আপনার সাবডোমেনসহ নিচে পেস্ট করুন। Yuva শুধু read স্কোপ চায় এবং এর বেশি কিছু গ্রহণ করে না।"
 
@@ -11144,6 +11152,9 @@ msgstr "প্রোডাকশন ব্যাকএন্ড"
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/home/HomePage.tsx
+#: src/features/migrations/ChooseStep.tsx
+#: src/features/migrations/CopyStep.tsx
+#: src/features/migrations/MapStep.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/ProductsPage.tsx
@@ -11996,6 +12007,10 @@ msgstr "সুনামে প্রভাব"
 #: src/features/team/TeamPage.tsx
 msgid "Resend"
 msgstr "আবার পাঠান"
+
+#: src/features/migrations/DoneStep.tsx
+msgid "Reset the API key you gave Yuva"
+msgstr "Yuva-কে দেওয়া API কী রিসেট করুন"
 
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "Reset to defaults"
@@ -13319,6 +13334,10 @@ msgstr "সাইন ইন করুন বা অ্যাকাউন্ট �
 #: src/features/account/AccountPage.tsx
 msgid "Sign in or create an account with your e-mail address to follow the discussions you write in on documentation sites. We e-mail you a one-time code; no password."
 msgstr "ডকুমেন্টেশন সাইটে আপনি যে আলোচনায় লেখেন তা অনুসরণ করতে আপনার ই-মেইল ঠিকানা দিয়ে সাইন ইন করুন বা অ্যাকাউন্ট খুলুন। আমরা আপনাকে একবারের কোড ই-মেইল করি; কোনো পাসওয়ার্ড নেই।"
+
+#: src/features/migrations/text.ts
+msgid "Sign in to Freshdesk as an admin, open your profile picture at the top right and choose Profile settings."
+msgstr "অ্যাডমিন হিসেবে Freshdesk-এ সাইন ইন করুন, উপরের ডানদিকে আপনার প্রোফাইল ছবি খুলে Profile settings বেছে নিন।"
 
 #: src/features/account/ConnectPage.tsx
 msgid "Sign in to join the discussion"
@@ -17232,6 +17251,10 @@ msgid "Yuva deleted its copy of the token but cannot revoke it in Front. Delete 
 msgstr "Yuva টোকেনের নিজের কপি মুছে ফেলেছে, কিন্তু Front-এ সেটি বাতিল করতে পারে না। Settings › Developers › API tokens-এ টোকেনটি মুছে ফেলুন; Yuva-র আর এটির প্রয়োজন নেই।"
 
 #: src/features/migrations/DoneStep.tsx
+msgid "Yuva deleted its key but cannot reset it in Freshdesk. Open Profile settings and choose Reset API key; Yuva does not need it any more."
+msgstr "Yuva তার কী মুছে দিয়েছে, কিন্তু Freshdesk-এ তা রিসেট করতে পারে না। Profile settings খুলে Reset API key বেছে নিন; Yuva-র আর এটি লাগবে না।"
+
+#: src/features/migrations/DoneStep.tsx
 msgid "Yuva deleted its token {deletedAt} and can no longer read {provider}."
 msgstr "Yuva {deletedAt} তার টোকেন মুছে ফেলেছে এবং আর {provider} পড়তে পারে না।"
 
@@ -17377,5 +17400,5 @@ msgid "Yuva's own notes cannot be changed."
 msgstr "Yuva-র নিজের নোট বদলানো যায় না।"
 
 #: src/features/migrations/MigrationsPage.tsx
-msgid "Zendesk, Help Scout, Front"
-msgstr "Zendesk, Help Scout, Front"
+msgid "Zendesk, Help Scout, Front, Freshdesk"
+msgstr "Zendesk, Help Scout, Front, Freshdesk"

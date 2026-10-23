@@ -267,6 +267,15 @@ export function useGuides() {
       link: guideUrl("migrate-front"),
       linkLabel: t`Read the guide`,
     },
+    freshdesk: {
+      steps: [
+        t`Sign in to Freshdesk as an admin, open your profile picture at the top right and choose Profile settings.`,
+        t`Copy the key under “Your API Key”. A Freshdesk key cannot be limited to reading; Yuva's connection only sends read requests.`,
+        t`Paste it below with your subdomain, the acme of acme.freshdesk.com.`,
+      ],
+      link: guideUrl("migrate-freshdesk"),
+      linkLabel: t`Read the guide`,
+    },
     file: {
       steps: [
         t`Thunderbird, Apple Mail and most mail apps export a folder as an .mbox file: upload that file.`,

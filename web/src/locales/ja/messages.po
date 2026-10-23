@@ -4043,6 +4043,10 @@ msgstr "フィードバックの詳細をコピー"
 msgid "Copy the feedback details (Y)"
 msgstr "フィードバックの詳細をコピー (Y)"
 
+#: src/features/migrations/text.ts
+msgid "Copy the key under “Your API Key”. A Freshdesk key cannot be limited to reading; Yuva's connection only sends read requests."
+msgstr "「Your API Key」の下にあるキーをコピーします。Freshdeskのキーは読み取り専用に制限できませんが、Yuvaの接続は読み取りリクエストしか送りません。"
+
 #: src/features/setup/InstallStep.tsx
 msgid "Copy the lines below. They already contain this server's address and the channel's public key, which is not a secret."
 msgstr "下の行をコピーしてください。このサーバーのアドレスとチャネルの公開キー(秘密ではありません)がすでに含まれています。"
@@ -10553,6 +10557,10 @@ msgid "Paste it before the closing body tag of every page that should show the c
 msgstr "チャットを表示したいすべてのページの閉じる body タグの直前に貼り付けます。"
 
 #: src/features/migrations/text.ts
+msgid "Paste it below with your subdomain, the acme of acme.freshdesk.com."
+msgstr "サブドメイン（acme.freshdesk.comのacme）と一緒に、下に貼り付けます。"
+
+#: src/features/migrations/text.ts
 msgid "Paste them below with your subdomain. Yuva asks only for the scope read and accepts nothing more."
 msgstr "サブドメインと一緒に下に貼り付けます。Yuva が求めるのは read スコープのみで、それ以上は受け付けません。"
 
@@ -11144,6 +11152,9 @@ msgstr "本番バックエンド"
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/home/HomePage.tsx
+#: src/features/migrations/ChooseStep.tsx
+#: src/features/migrations/CopyStep.tsx
+#: src/features/migrations/MapStep.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/ProductsPage.tsx
@@ -11996,6 +12007,10 @@ msgstr "評価への影響"
 #: src/features/team/TeamPage.tsx
 msgid "Resend"
 msgstr "再送信"
+
+#: src/features/migrations/DoneStep.tsx
+msgid "Reset the API key you gave Yuva"
+msgstr "Yuvaに渡したAPIキーをリセットする"
 
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "Reset to defaults"
@@ -13319,6 +13334,10 @@ msgstr "サインインまたはアカウント作成"
 #: src/features/account/AccountPage.tsx
 msgid "Sign in or create an account with your e-mail address to follow the discussions you write in on documentation sites. We e-mail you a one-time code; no password."
 msgstr "メールアドレスでサインインまたはアカウントを作成すると、ドキュメントサイトで書き込んだディスカッションをフォローできます。ワンタイムコードをメールでお送りします。パスワードは不要です。"
+
+#: src/features/migrations/text.ts
+msgid "Sign in to Freshdesk as an admin, open your profile picture at the top right and choose Profile settings."
+msgstr "管理者としてFreshdeskにサインインし、右上のプロフィール画像を開いて「Profile settings」を選びます。"
 
 #: src/features/account/ConnectPage.tsx
 msgid "Sign in to join the discussion"
@@ -17232,6 +17251,10 @@ msgid "Yuva deleted its copy of the token but cannot revoke it in Front. Delete 
 msgstr "Yuva はトークンの自分のコピーを削除しましたが、Front 側で失効させることはできません。Settings › Developers › API tokens でトークンを削除してください。Yuva にはもう必要ありません。"
 
 #: src/features/migrations/DoneStep.tsx
+msgid "Yuva deleted its key but cannot reset it in Freshdesk. Open Profile settings and choose Reset API key; Yuva does not need it any more."
+msgstr "Yuvaはキーを削除しましたが、Freshdesk側でリセットすることはできません。「Profile settings」を開いて「Reset API key」を選んでください。Yuvaにはもう不要です。"
+
+#: src/features/migrations/DoneStep.tsx
 msgid "Yuva deleted its token {deletedAt} and can no longer read {provider}."
 msgstr "Yuva は {deletedAt} にトークンを削除し、{provider} を読み取れなくなりました。"
 
@@ -17377,5 +17400,5 @@ msgid "Yuva's own notes cannot be changed."
 msgstr "Yuva 自身のメモは変更できません。"
 
 #: src/features/migrations/MigrationsPage.tsx
-msgid "Zendesk, Help Scout, Front"
-msgstr "Zendesk、Help Scout、Front"
+msgid "Zendesk, Help Scout, Front, Freshdesk"
+msgstr "Zendesk, Help Scout, Front, Freshdesk"

@@ -81,6 +81,7 @@ type Server struct {
 
 	throttle      int
 	throttleRetry string
+	fresh         freshdeskState
 }
 
 // New starts the server; now is the clock requests are recorded at.
@@ -92,7 +93,7 @@ func New(t testing.TB, now func() time.Time) *Server {
 	}
 	tmpl := &x509.Certificate{
 		SerialNumber: big.NewInt(1), Subject: pkix.Name{CommonName: "helpdesk fixtures"},
-		DNSNames:  []string{"*.zendesk.com", "*.zdusercontent.com", "api.helpscout.net", "secure.helpscout.net", "api2.frontapp.com", OutsideHost, ChatwootHost},
+		DNSNames:  []string{"*.zendesk.com", "*.zdusercontent.com", "api.helpscout.net", "secure.helpscout.net", "api2.frontapp.com", "*.freshdesk.com", "s3.eu-west-1.amazonaws.com", OutsideHost, ChatwootHost},
 		NotBefore: time.Now().Add(-time.Hour), NotAfter: time.Now().Add(24 * time.Hour), KeyUsage: x509.KeyUsageDigitalSignature,
 		ExtKeyUsage: []x509.ExtKeyUsage{x509.ExtKeyUsageServerAuth}, IsCA: true, BasicConstraintsValid: true,
 	}
@@ -165,6 +166,10 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 		s.attachment(w, r.URL.Path)
 	case host == ChatwootHost:
 		s.chatwoot(w, r)
+	case host == FreshdeskSubdomain+".freshdesk.com":
+		s.freshdesk(w, r)
+	case host == FreshdeskFilesHost, host == FreshdeskS3Host:
+		s.freshdeskFiles(w, r)
 	case host == "api.helpscout.net":
 		w.Header().Set("X-RateLimit-Limit-Minute", fmt.Sprint(HelpScoutLimit))
 		s.helpscout(w, r, body)

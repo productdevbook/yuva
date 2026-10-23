@@ -13,6 +13,7 @@ import (
 	"net"
 	"net/http"
 	"net/url"
+	"regexp"
 	"strings"
 	"time"
 )
@@ -35,6 +36,8 @@ type Hosts struct {
 	Any      bool
 	// Port is the port a token host is reached on; empty means 443.
 	Port string
+	// Pattern matches host names no list can name, such as an object store's regional hosts.
+	Pattern *regexp.Regexp
 }
 
 // AllowsURL is Allows for the host and the port of u, which a token goes to.
@@ -68,7 +71,7 @@ func (h Hosts) Allows(host string) bool {
 			return true
 		}
 	}
-	return false
+	return h.Pattern != nil && h.Pattern.MatchString(host)
 }
 
 // getOnly is the transport under every data client: a request that is not a GET over HTTPS to an

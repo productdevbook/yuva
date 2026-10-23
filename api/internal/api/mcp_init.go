@@ -61,7 +61,7 @@ var setupIntegrations = []setupIntegration{
 	{ID: "email_inbox", Title: "Support e-mail", What: "A support address whose mail and replies live in the inbox.",
 		Signals: "a support@ or help@ address in the code, footer or docs", How: "create_email_channel, then the person sets its SMTP account in the panel; get_deliverability and create_dkim_key for the DNS records", Scope: "inboxes:manage", Guide: docsBase + "email/"},
 	{ID: "move_history", Title: "Bring the history over", What: "Copies old support mail or help-desk tickets into the inbox, reading only.",
-		Signals: "an existing help desk (Zendesk, Help Scout, Front) or a support mailbox (Gmail, Outlook, IMAP)",
+		Signals: "an existing help desk (Zendesk, Help Scout, Front, Freshdesk) or a support mailbox (Gmail, Outlook, IMAP)",
 		How:     "the move_to_yuva prompt", Scope: "migrations:manage", Guide: docsBase + "migrate/"},
 	{ID: "webhooks", Title: "Webhooks and the API", What: "The backend reacts to conversations and contacts, or drives Yuva itself.",
 		Signals: "a backend that should open tickets, sync contacts or post to Slack", How: "Settings → Webhooks, or an API key", Guide: docsBase + "webhooks/"},

@@ -4043,6 +4043,10 @@ msgstr "複製反饋詳情"
 msgid "Copy the feedback details (Y)"
 msgstr "複製反饋詳情 (Y)"
 
+#: src/features/migrations/text.ts
+msgid "Copy the key under “Your API Key”. A Freshdesk key cannot be limited to reading; Yuva's connection only sends read requests."
+msgstr "複製「Your API Key」下方的金鑰。Freshdesk 的金鑰無法限制為唯讀，但 Yuva 的連線只會傳送讀取要求。"
+
 #: src/features/setup/InstallStep.tsx
 msgid "Copy the lines below. They already contain this server's address and the channel's public key, which is not a secret."
 msgstr "複製下面幾行。其中已包含此伺服器的地址和頻道的公開金鑰(它不是機密)。"
@@ -10553,6 +10557,10 @@ msgid "Paste it before the closing body tag of every page that should show the c
 msgstr "把它貼上到每個要顯示聊天的頁面的 body 結束標籤之前。"
 
 #: src/features/migrations/text.ts
+msgid "Paste it below with your subdomain, the acme of acme.freshdesk.com."
+msgstr "將它與你的子網域一起貼到下方，也就是 acme.freshdesk.com 中的 acme。"
+
+#: src/features/migrations/text.ts
 msgid "Paste them below with your subdomain. Yuva asks only for the scope read and accepts nothing more."
 msgstr "連同你的子域名一起貼上到下面。Yuva 只請求 read 許可權範圍,不接受更多。"
 
@@ -11144,6 +11152,9 @@ msgstr "生產環境後端"
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/home/HomePage.tsx
+#: src/features/migrations/ChooseStep.tsx
+#: src/features/migrations/CopyStep.tsx
+#: src/features/migrations/MapStep.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/ProductsPage.tsx
@@ -11996,6 +12007,10 @@ msgstr "信譽影響"
 #: src/features/team/TeamPage.tsx
 msgid "Resend"
 msgstr "重新傳送"
+
+#: src/features/migrations/DoneStep.tsx
+msgid "Reset the API key you gave Yuva"
+msgstr "重設你提供給 Yuva 的 API 金鑰"
 
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "Reset to defaults"
@@ -13319,6 +13334,10 @@ msgstr "登入或建立帳號"
 #: src/features/account/AccountPage.tsx
 msgid "Sign in or create an account with your e-mail address to follow the discussions you write in on documentation sites. We e-mail you a one-time code; no password."
 msgstr "用你的電子郵件地址登入或建立帳號,即可關注你在文件站點上參與的討論。我們會透過郵件傳送一次性驗證碼;無需密碼。"
+
+#: src/features/migrations/text.ts
+msgid "Sign in to Freshdesk as an admin, open your profile picture at the top right and choose Profile settings."
+msgstr "以管理員身分登入 Freshdesk，點選右上角的個人大頭貼，然後選擇 Profile settings。"
 
 #: src/features/account/ConnectPage.tsx
 msgid "Sign in to join the discussion"
@@ -17232,6 +17251,10 @@ msgid "Yuva deleted its copy of the token but cannot revoke it in Front. Delete 
 msgstr "Yuva 已刪除它保存的權杖副本，但無法在 Front 中撤銷。請在 Settings › Developers › API tokens 中刪除該權杖；Yuva 不再需要它。"
 
 #: src/features/migrations/DoneStep.tsx
+msgid "Yuva deleted its key but cannot reset it in Freshdesk. Open Profile settings and choose Reset API key; Yuva does not need it any more."
+msgstr "Yuva 已刪除它的金鑰，但無法在 Freshdesk 中重設。請開啟 Profile settings 並選擇 Reset API key；Yuva 不再需要它。"
+
+#: src/features/migrations/DoneStep.tsx
 msgid "Yuva deleted its token {deletedAt} and can no longer read {provider}."
 msgstr "Yuva 已於 {deletedAt} 刪除其權杖,無法再讀取 {provider}。"
 
@@ -17377,5 +17400,5 @@ msgid "Yuva's own notes cannot be changed."
 msgstr "Yuva 自帶的備註無法更改。"
 
 #: src/features/migrations/MigrationsPage.tsx
-msgid "Zendesk, Help Scout, Front"
-msgstr "Zendesk、Help Scout、Front"
+msgid "Zendesk, Help Scout, Front, Freshdesk"
+msgstr "Zendesk, Help Scout, Front, Freshdesk"
