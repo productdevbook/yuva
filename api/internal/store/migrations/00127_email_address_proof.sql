@@ -1,7 +1,7 @@
 -- +goose Up
 ALTER TABLE email_channels
     ADD COLUMN verified_at             timestamptz,
-    ADD COLUMN verified_by             text CHECK (verified_by IN ('code', 'dns')),
+    ADD COLUMN verified_by             text CHECK (verified_by IN ('code', 'dns', 'operator')),
     ADD COLUMN verify_problem          text CHECK (length(verify_problem) <= 500),
     ADD COLUMN verify_checked_at       timestamptz,
     ADD COLUMN verify_code_hash        bytea,
@@ -30,7 +30,8 @@ SELECT gen_random_uuid(), 'email_unproven', '', w.name,
        'channel "' || c.name || '" (' || e.channel_id || ') at ' || e.address ||
        CASE WHEN e.address LIKE '*@%' THEN ' is a catch-all and needs the TXT record _yuva-mail.' || split_part(e.address, '@', 2)
             ELSE ' needs the code mail or the TXT record _yuva-mail.' || split_part(e.address, '@', 2) END ||
-       '; until then it receives mail only at its forwarding address',
+       '; until then it receives mail only at its forwarding address. To vouch for it: yuva channel prove --channel ' ||
+       e.channel_id || ' --workspace ' || e.workspace_id || ' --yes',
        now()
 FROM email_channels e
 JOIN channels c ON c.workspace_id = e.workspace_id AND c.id = e.channel_id

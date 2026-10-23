@@ -307,3 +307,19 @@ WHERE workspace_id = @workspace_id AND channel_id = @channel_id AND dkim_private
 UPDATE email_channels SET dkim_enabled = @enabled
 WHERE workspace_id = @workspace_id AND channel_id = @channel_id AND (dkim_private_key IS NOT NULL OR NOT @enabled)
 RETURNING *;
+
+-- The operator's command line names a channel by id or address before it knows the workspace
+-- (the written exception in docs/architecture.md, like the ingress lookup).
+-- name: OperatorEmailChannels :many
+SELECT e.workspace_id, e.channel_id, c.name, e.address, (e.verified_at IS NOT NULL)::bool AS verified FROM email_channels e
+JOIN channels c ON c.workspace_id = e.workspace_id AND c.id = e.channel_id
+JOIN workspaces w ON w.id = e.workspace_id
+WHERE w.deleted_at IS NULL
+  AND (sqlc.narg(workspace_id)::uuid IS NULL OR e.workspace_id = sqlc.narg(workspace_id))
+  AND (e.channel_id = sqlc.narg(channel_id) OR e.address = sqlc.narg(address) OR (@all_unproven::bool AND e.verified_at IS NULL))
+ORDER BY e.address, e.workspace_id;
+
+-- name: EmailAddressProvenElsewhere :one
+SELECT EXISTS (
+  SELECT 1 FROM email_channels WHERE address = @address AND verified_at IS NOT NULL AND workspace_id <> @workspace_id
+)::bool;

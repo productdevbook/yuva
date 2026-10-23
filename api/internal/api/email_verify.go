@@ -30,6 +30,7 @@ const (
 	verifyCodeGap         = time.Minute
 	verifiedByCode        = string(oas.EmailVerifiedByCode)
 	verifiedByDNS         = string(oas.EmailVerifiedByDns)
+	verifiedByOperator    = string(oas.EmailVerifiedByOperator)
 )
 
 var (
@@ -336,11 +337,14 @@ func (s *Server) proveAddress(ctx context.Context, q *store.Queries, p *principa
 	if err != nil {
 		return e, err
 	}
-	details := auditDetails{"address": e.Address, "method": method}
+	action, details := oas.AuditChannelAddressVerified, auditDetails{"address": e.Address, "method": method}
+	if method == verifiedByOperator {
+		action, details = oas.AuditChannelAddressProven, auditDetails{"address": e.Address}
+	}
 	if p == nil {
-		err = writeSystemAudit(ctx, q, e.WorkspaceID, now, oas.AuditChannelAddressVerified, oas.AuditTargetChannel, e.ChannelID, details)
+		err = writeSystemAudit(ctx, q, e.WorkspaceID, now, action, oas.AuditTargetChannel, e.ChannelID, details)
 	} else {
-		err = s.audit(ctx, q, *p, oas.AuditChannelAddressVerified, oas.AuditTargetChannel, e.ChannelID, details)
+		err = s.audit(ctx, q, *p, action, oas.AuditTargetChannel, e.ChannelID, details)
 	}
 	return saved, err
 }

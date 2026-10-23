@@ -20891,7 +20891,9 @@ components:
           code came back through the forwarding address. `channel.address_lost`: `address`, by
           `system`, when a channel of another workspace proved the address later, or proved an
           exact address that this catch-all or `local@` channel received until then (`via`, the
-          channel's address); the workspace's owners are e-mailed too.
+          channel's address); the workspace's owners are e-mailed too. `channel.address_proven`:
+          `address`, by `operator`, when the server's operator vouched for the address with
+          `yuva channel prove`.
         - `inbox.identity_secret_rotated`: none. `inbox.deleted`: `name`.
         - `team.created`, `team.deleted`: `name`. `team.member_added`, `team.member_removed`:
           `member_id`. `team.inbox_access_granted`, `team.inbox_access_revoked`: `inbox_id`,
@@ -20976,6 +20978,7 @@ components:
         - channel.forwarding_address_rotated
         - channel.address_verified
         - channel.address_lost
+        - channel.address_proven
         - channel.dkim_key_created
         - channel.dkim_key_deleted
         - inbox.identity_secret_rotated
@@ -21023,7 +21026,7 @@ components:
         - automation_rule.created
         - automation_rule.updated
         - automation_rule.deleted
-      x-enum-varnames: [AuditMemberJoined, AuditMemberRoleChanged, AuditMemberRemoved, AuditMemberInboxAccessGranted, AuditMemberInboxAccessRevoked, AuditInviteCreated, AuditInviteDeleted, AuditApiKeyCreated, AuditApiKeyRevoked, AuditOAuthGrantCreated, AuditOAuthGrantRevoked, AuditWebhookCreated, AuditWebhookUpdated, AuditWebhookDeleted, AuditWebhookSecretRotated, AuditChannelCredentialsChanged, AuditChannelKeyRotated, AuditChannelForwardingAddressRotated, AuditChannelAddressVerified, AuditChannelAddressLost, AuditChannelDkimKeyCreated, AuditChannelDkimKeyDeleted, AuditInboxIdentitySecretRotated, AuditInboxDeleted, AuditConversationTrashed, AuditConversationRestored, AuditConversationDeleted, AuditMessageRedacted, AuditContactDeleted, AuditContactConsentExported, AuditListConsentExported, AuditAnalyticsExportCreated, AuditWorkspaceRetentionChanged, AuditWorkspaceBotsMaySendChanged, AuditWorkspaceBroadcastsByKeysChanged, AuditWorkspaceBroadcastApprovalRequested, AuditWorkspaceBroadcastsApproved, AuditWorkspaceBroadcastsDenied, AuditWorkspaceBroadcastsSuspended, AuditWorkspaceBroadcastLimitChanged, AuditTeamCreated, AuditTeamDeleted, AuditTeamMemberAdded, AuditTeamMemberRemoved, AuditTeamInboxAccessGranted, AuditTeamInboxAccessRevoked, AuditWorkspaceSlackConnected, AuditWorkspaceSlackDisconnected, AuditMemberSlackLinked, AuditMemberSlackUnlinked, AuditSsoProviderCreated, AuditSsoProviderUpdated, AuditSsoProviderDeleted, AuditSsoSettingsChanged, AuditSsoSignedIn, AuditSsoSignInRefused, AuditSsoDomainAdded, AuditSsoDomainVerified, AuditSsoDomainDeleted, AuditSsoDomainLapsed, AuditIssueIntegrationConnected, AuditIssueIntegrationUpdated, AuditIssueIntegrationDisconnected, AuditIssueIntegrationSecretRotated, AuditAutomationRuleCreated, AuditAutomationRuleUpdated, AuditAutomationRuleDeleted]
+      x-enum-varnames: [AuditMemberJoined, AuditMemberRoleChanged, AuditMemberRemoved, AuditMemberInboxAccessGranted, AuditMemberInboxAccessRevoked, AuditInviteCreated, AuditInviteDeleted, AuditApiKeyCreated, AuditApiKeyRevoked, AuditOAuthGrantCreated, AuditOAuthGrantRevoked, AuditWebhookCreated, AuditWebhookUpdated, AuditWebhookDeleted, AuditWebhookSecretRotated, AuditChannelCredentialsChanged, AuditChannelKeyRotated, AuditChannelForwardingAddressRotated, AuditChannelAddressVerified, AuditChannelAddressLost, AuditChannelAddressProven, AuditChannelDkimKeyCreated, AuditChannelDkimKeyDeleted, AuditInboxIdentitySecretRotated, AuditInboxDeleted, AuditConversationTrashed, AuditConversationRestored, AuditConversationDeleted, AuditMessageRedacted, AuditContactDeleted, AuditContactConsentExported, AuditListConsentExported, AuditAnalyticsExportCreated, AuditWorkspaceRetentionChanged, AuditWorkspaceBotsMaySendChanged, AuditWorkspaceBroadcastsByKeysChanged, AuditWorkspaceBroadcastApprovalRequested, AuditWorkspaceBroadcastsApproved, AuditWorkspaceBroadcastsDenied, AuditWorkspaceBroadcastsSuspended, AuditWorkspaceBroadcastLimitChanged, AuditTeamCreated, AuditTeamDeleted, AuditTeamMemberAdded, AuditTeamMemberRemoved, AuditTeamInboxAccessGranted, AuditTeamInboxAccessRevoked, AuditWorkspaceSlackConnected, AuditWorkspaceSlackDisconnected, AuditMemberSlackLinked, AuditMemberSlackUnlinked, AuditSsoProviderCreated, AuditSsoProviderUpdated, AuditSsoProviderDeleted, AuditSsoSettingsChanged, AuditSsoSignedIn, AuditSsoSignInRefused, AuditSsoDomainAdded, AuditSsoDomainVerified, AuditSsoDomainDeleted, AuditSsoDomainLapsed, AuditIssueIntegrationConnected, AuditIssueIntegrationUpdated, AuditIssueIntegrationDisconnected, AuditIssueIntegrationSecretRotated, AuditAutomationRuleCreated, AuditAutomationRuleUpdated, AuditAutomationRuleDeleted]
     AuditTargetType:
       type: string
       enum: [workspace, member, invite, inbox, channel, api_key, oauth_grant, webhook, contact, list, analytics_export, conversation, message, team, sso, sso_domain, issue_integration, automation_rule]
@@ -22589,10 +22592,11 @@ components:
         method:
           type: string
           description: |
-            How the address was proven: `code` (the code mailed to it) or `dns` (the TXT record).
-            Absent while unverified.
-          enum: [code, dns]
-          x-enum-varnames: [EmailVerifiedByCode, EmailVerifiedByDns]
+            How the address was proven: `code` (the code mailed to it), `dns` (the TXT record) or
+            `operator` (the server's operator vouched for it with `yuva channel prove`). Absent
+            while unverified.
+          enum: [code, dns, operator]
+          x-enum-varnames: [EmailVerifiedByCode, EmailVerifiedByDns, EmailVerifiedByOperator]
         verified_at:
           type: string
           format: date-time

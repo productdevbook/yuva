@@ -1122,6 +1122,7 @@ const (
 	AuditAutomationRuleDeleted               AuditAction = "automation_rule.deleted"
 	AuditAutomationRuleUpdated               AuditAction = "automation_rule.updated"
 	AuditChannelAddressLost                  AuditAction = "channel.address_lost"
+	AuditChannelAddressProven                AuditAction = "channel.address_proven"
 	AuditChannelAddressVerified              AuditAction = "channel.address_verified"
 	AuditChannelCredentialsChanged           AuditAction = "channel.credentials_changed"
 	AuditChannelDkimKeyCreated               AuditAction = "channel.dkim_key_created"
@@ -1200,6 +1201,8 @@ func (e AuditAction) Valid() bool {
 	case AuditAutomationRuleUpdated:
 		return true
 	case AuditChannelAddressLost:
+		return true
+	case AuditChannelAddressProven:
 		return true
 	case AuditChannelAddressVerified:
 		return true
@@ -3521,8 +3524,9 @@ func (e EmailThemeDirection) Valid() bool {
 
 // Defines values for EmailVerificationMethod.
 const (
-	EmailVerifiedByCode EmailVerificationMethod = "code"
-	EmailVerifiedByDns  EmailVerificationMethod = "dns"
+	EmailVerifiedByCode     EmailVerificationMethod = "code"
+	EmailVerifiedByDns      EmailVerificationMethod = "dns"
+	EmailVerifiedByOperator EmailVerificationMethod = "operator"
 )
 
 // Valid indicates whether the value is a known member of the EmailVerificationMethod enum.
@@ -3531,6 +3535,8 @@ func (e EmailVerificationMethod) Valid() bool {
 	case EmailVerifiedByCode:
 		return true
 	case EmailVerifiedByDns:
+		return true
+	case EmailVerifiedByOperator:
 		return true
 	default:
 		return false
@@ -9985,7 +9991,9 @@ type Attributes map[string]interface{}
 //     code came back through the forwarding address. `channel.address_lost`: `address`, by
 //     `system`, when a channel of another workspace proved the address later, or proved an
 //     exact address that this catch-all or `local@` channel received until then (`via`, the
-//     channel's address); the workspace's owners are e-mailed too.
+//     channel's address); the workspace's owners are e-mailed too. `channel.address_proven`:
+//     `address`, by `operator`, when the server's operator vouched for the address with
+//     `yuva channel prove`.
 //   - `inbox.identity_secret_rotated`: none. `inbox.deleted`: `name`.
 //   - `team.created`, `team.deleted`: `name`. `team.member_added`, `team.member_removed`:
 //     `member_id`. `team.inbox_access_granted`, `team.inbox_access_revoked`: `inbox_id`,
@@ -10106,7 +10114,9 @@ type AuditEntry struct {
 	//   code came back through the forwarding address. `channel.address_lost`: `address`, by
 	//   `system`, when a channel of another workspace proved the address later, or proved an
 	//   exact address that this catch-all or `local@` channel received until then (`via`, the
-	//   channel's address); the workspace's owners are e-mailed too.
+	//   channel's address); the workspace's owners are e-mailed too. `channel.address_proven`:
+	//   `address`, by `operator`, when the server's operator vouched for the address with
+	//   `yuva channel prove`.
 	// - `inbox.identity_secret_rotated`: none. `inbox.deleted`: `name`.
 	// - `team.created`, `team.deleted`: `name`. `team.member_added`, `team.member_removed`:
 	//   `member_id`. `team.inbox_access_granted`, `team.inbox_access_revoked`: `inbox_id`,
@@ -15826,8 +15836,9 @@ type EmailVerification struct {
 	// CodeSentAt When the last code was mailed; absent when no code is open.
 	CodeSentAt *time.Time `json:"code_sent_at,omitempty"`
 
-	// Method How the address was proven: `code` (the code mailed to it) or `dns` (the TXT record).
-	// Absent while unverified.
+	// Method How the address was proven: `code` (the code mailed to it), `dns` (the TXT record) or
+	// `operator` (the server's operator vouched for it with `yuva channel prove`). Absent
+	// while unverified.
 	Method *EmailVerificationMethod `json:"method,omitempty"`
 
 	// Problem Why the last check did not verify it, or `taken` when another channel proved the
@@ -15843,8 +15854,9 @@ type EmailVerification struct {
 	VerifiedAt *time.Time `json:"verified_at,omitempty"`
 }
 
-// EmailVerificationMethod How the address was proven: `code` (the code mailed to it) or `dns` (the TXT record).
-// Absent while unverified.
+// EmailVerificationMethod How the address was proven: `code` (the code mailed to it), `dns` (the TXT record) or
+// `operator` (the server's operator vouched for it with `yuva channel prove`). Absent
+// while unverified.
 type EmailVerificationMethod string
 
 // EmailVerificationState defines model for EmailVerification.State.

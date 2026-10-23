@@ -418,6 +418,24 @@ func (q *Queries) DeleteExpiredConfirmationBounces(ctx context.Context, arg Dele
 	return result.RowsAffected(), nil
 }
 
+const emailAddressProvenElsewhere = `-- name: EmailAddressProvenElsewhere :one
+SELECT EXISTS (
+  SELECT 1 FROM email_channels WHERE address = $1 AND verified_at IS NOT NULL AND workspace_id <> $2
+)::bool
+`
+
+type EmailAddressProvenElsewhereParams struct {
+	Address     string
+	WorkspaceID uuid.UUID
+}
+
+func (q *Queries) EmailAddressProvenElsewhere(ctx context.Context, arg EmailAddressProvenElsewhereParams) (bool, error) {
+	row := q.db.QueryRow(ctx, emailAddressProvenElsewhere, arg.Address, arg.WorkspaceID)
+	var column_1 bool
+	err := row.Scan(&column_1)
+	return column_1, err
+}
+
 const emailSuppressionReason = `-- name: EmailSuppressionReason :one
 SELECT reason FROM email_suppressions
 WHERE workspace_id = $1 AND email = $2
@@ -1771,6 +1789,64 @@ func (q *Queries) MessageIDSharedBeyond(ctx context.Context, arg MessageIDShared
 	var shared bool
 	err := row.Scan(&shared)
 	return shared, err
+}
+
+const operatorEmailChannels = `-- name: OperatorEmailChannels :many
+SELECT e.workspace_id, e.channel_id, c.name, e.address, (e.verified_at IS NOT NULL)::bool AS verified FROM email_channels e
+JOIN channels c ON c.workspace_id = e.workspace_id AND c.id = e.channel_id
+JOIN workspaces w ON w.id = e.workspace_id
+WHERE w.deleted_at IS NULL
+  AND ($1::uuid IS NULL OR e.workspace_id = $1)
+  AND (e.channel_id = $2 OR e.address = $3 OR ($4::bool AND e.verified_at IS NULL))
+ORDER BY e.address, e.workspace_id
+`
+
+type OperatorEmailChannelsParams struct {
+	WorkspaceID *uuid.UUID
+	ChannelID   *uuid.UUID
+	Address     *string
+	AllUnproven bool
+}
+
+type OperatorEmailChannelsRow struct {
+	WorkspaceID uuid.UUID
+	ChannelID   uuid.UUID
+	Name        string
+	Address     string
+	Verified    bool
+}
+
+// The operator's command line names a channel by id or address before it knows the workspace
+// (the written exception in docs/architecture.md, like the ingress lookup).
+func (q *Queries) OperatorEmailChannels(ctx context.Context, arg OperatorEmailChannelsParams) ([]OperatorEmailChannelsRow, error) {
+	rows, err := q.db.Query(ctx, operatorEmailChannels,
+		arg.WorkspaceID,
+		arg.ChannelID,
+		arg.Address,
+		arg.AllUnproven,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []OperatorEmailChannelsRow
+	for rows.Next() {
+		var i OperatorEmailChannelsRow
+		if err := rows.Scan(
+			&i.WorkspaceID,
+			&i.ChannelID,
+			&i.Name,
+			&i.Address,
+			&i.Verified,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const releaseEmailAddress = `-- name: ReleaseEmailAddress :many

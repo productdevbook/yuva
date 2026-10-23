@@ -32,7 +32,9 @@ const (
 	channelUsage = "usage: yuva channel create-email --workspace <id|name> --inbox <id|slug> --name <name> --address <address> [--display-name <name>] [--from-address <address>]\n" +
 		"         [--smtp-host <host> [--smtp-port <n>] [--tls starttls|tls|none] [--smtp-username <name>] [--smtp-password-file <path|->]]\n" +
 		"       yuva channel create-chat --workspace <id|name> --inbox <id|slug> --name <name> --origin <origin>... [--allow-anonymous] [--ask-email-offline=false] [--greeting <text>]\n" +
-		"       yuva channel list --workspace <id|name> --inbox <id|slug>"
+		"       yuva channel list --workspace <id|name> --inbox <id|slug>\n" +
+		"       yuva channel prove --channel <id|address> [--workspace <id|name>] [--yes]\n" +
+		"       yuva channel prove --all-unproven --workspace <id|name> [--yes]   (lists what it proves without --yes)"
 	workspaceUsage = "usage: yuva workspace delete --workspace <id|name> --yes\n" +
 		"       yuva workspace broadcasts approve|deny|suspend --workspace <id|name> [--reason <text>]\n" +
 		"       yuva workspace broadcasts limit --workspace <id|name> --daily <n>   (0 removes the limit)\n" +
@@ -210,6 +212,9 @@ func inboxCommand(ctx context.Context, st *store.Store, srv *api.Server, args []
 func channelCommand(ctx context.Context, st *store.Store, srv *api.Server, args []string, stdin io.Reader, stdout, stderr io.Writer) error {
 	if len(args) == 0 {
 		return errors.New(channelUsage)
+	}
+	if args[0] == "prove" {
+		return proveCommand(ctx, st, srv, args[1:], stdout, stderr)
 	}
 	fs := flag.NewFlagSet("channel "+args[0], flag.ContinueOnError)
 	fs.SetOutput(stderr)
@@ -823,4 +828,73 @@ func deref(v *string) string {
 		return ""
 	}
 	return *v
+}
+
+// proveCommand lets the operator vouch for channel addresses they trust, under the rules of a
+// proof: never a catch-all on a shared domain, never an address another workspace proved.
+func proveCommand(ctx context.Context, st *store.Store, srv *api.Server, args []string, stdout, stderr io.Writer) error {
+	fs := flag.NewFlagSet("channel prove", flag.ContinueOnError)
+	fs.SetOutput(stderr)
+	workspace := fs.String("workspace", "", "workspace id or exact name")
+	channel := fs.String("channel", "", "channel id or address")
+	all := fs.Bool("all-unproven", false, "every unproven e-mail channel of --workspace")
+	yes := fs.Bool("yes", false, "prove them; without it the command only lists them")
+	if err := fs.Parse(args); err != nil {
+		return err
+	}
+	if fs.NArg() != 0 || (*channel == "") == !*all || (*all && *workspace == "") {
+		return errors.New(channelUsage)
+	}
+	var ws *uuid.UUID
+	if *workspace != "" {
+		w, err := api.FindWorkspace(ctx, st, *workspace)
+		if err != nil {
+			return err
+		}
+		ws = &w.ID
+	}
+	found, err := srv.OperatorEmailChannels(ctx, ws, *channel, *all)
+	if err != nil {
+		return err
+	}
+	if *channel != "" {
+		switch {
+		case len(found) == 0:
+			return fmt.Errorf("no e-mail channel %s", *channel)
+		case len(found) > 1:
+			return fmt.Errorf("%d workspaces claim %s; name one with --workspace", len(found), *channel)
+		}
+	}
+	tw := tabwriter.NewWriter(stdout, 0, 0, 2, ' ', 0)
+	fmt.Fprintln(tw, "CHANNEL\tWORKSPACE\tADDRESS\tNAME\tRESULT")
+	proved, refused, pending := 0, 0, 0
+	for _, c := range found {
+		result := "would prove"
+		switch err := srv.OperatorProveCheck(ctx, c); {
+		case c.Verified:
+			result = "already proven"
+		case err != nil:
+			result, refused = "refused: "+err.Error(), refused+1
+		case *yes:
+			if err := srv.OperatorProveChannel(ctx, c); err != nil {
+				result, refused = "refused: "+err.Error(), refused+1
+			} else {
+				result, proved = "proved", proved+1
+			}
+		default:
+			pending++
+		}
+		fmt.Fprintf(tw, "%s\t%s\t%s\t%s\t%s\n", c.ChannelID, c.WorkspaceID, c.Address, c.Name, result)
+	}
+	if err := tw.Flush(); err != nil {
+		return err
+	}
+	switch {
+	case pending > 0:
+		return errors.New("nothing was proven; run again with --yes to prove the channels listed as would prove")
+	case refused > 0 && *channel != "":
+		return errors.New("the channel was not proven")
+	}
+	fmt.Fprintf(stderr, "%d proven, %d refused\n", proved, refused)
+	return nil
 }

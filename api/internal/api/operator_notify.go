@@ -196,7 +196,8 @@ func (s *Server) logEmailNotices(ctx context.Context) error {
 			if n.Kind != noticeEmailUnproven {
 				continue
 			}
-			s.log.WarnContext(ctx, "e-mail channel address must be proven", slog.String("workspace", deref(n.WorkspaceName)), slog.String("detail", deref(n.Detail)))
+			s.log.WarnContext(ctx, "e-mail channel address must be proven; an operator who trusts it runs yuva channel prove",
+				slog.String("workspace", deref(n.WorkspaceName)), slog.String("detail", deref(n.Detail)))
 			ids = append(ids, n.ID)
 		}
 		if len(ids) == 0 {
