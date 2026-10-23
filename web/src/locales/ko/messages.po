@@ -882,6 +882,10 @@ msgstr "구독 {subscribed}"
 msgid "{subscribed} subscribers"
 msgstr "구독자 {subscribed}명"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "{text} vs previous period"
+msgstr "이전 기간 대비 {text}"
+
 #: src/features/docs/PagesTab.tsx
 msgid "{threads} open discussions"
 msgstr "열린 토론 {threads}개"
@@ -1055,6 +1059,10 @@ msgstr "7일"
 #: src/features/status/SettingsTab.tsx
 msgid "7 to 90."
 msgstr "7~90."
+
+#: src/features/reports/TrendsReport.tsx
+msgid "90th percentile"
+msgstr "90번째 백분위수"
 
 #: src/features/status/ResponseChart.tsx
 msgid "95th percentile"
@@ -2006,6 +2014,7 @@ msgstr "Alertmanager"
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/RunLog.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -3367,6 +3376,10 @@ msgstr "이메일로"
 msgid "By e-mail"
 msgstr "이메일로"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "By group"
+msgstr "그룹별"
+
 #: src/features/reports/ReportsColumn.tsx
 msgid "By member"
 msgstr "멤버별"
@@ -3625,6 +3638,7 @@ msgid "Changing the sending domain turns DKIM signing off until you enable it ag
 msgstr "발송 도메인을 바꾸면 새 도메인에서 다시 켤 때까지 DKIM 서명이 꺼집니다."
 
 #: src/features/contact/ContactDetails.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/settings/channels/AddChannelDialog.tsx
 #: src/features/settings/channels/ChannelPage.tsx
@@ -4011,6 +4025,7 @@ msgstr "검색 닫기(Esc)"
 #: src/components/common/text.ts
 #: src/features/inbox/ChatList.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Closed"
 msgstr "종료됨"
 
@@ -4535,6 +4550,10 @@ msgstr "대화"
 msgid "Conversations"
 msgstr "대화"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Conversations and replies"
+msgstr "대화 및 답변"
+
 #: src/features/migrations/parts.tsx
 msgid "Conversations copied"
 msgstr "대화를 복사했습니다"
@@ -4900,6 +4919,7 @@ msgstr "Cron"
 msgid "CSV file"
 msgstr "CSV 파일"
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/inboxes/colors.tsx
@@ -4963,6 +4983,10 @@ msgstr "어둡게"
 msgid "Darken the colours to match the theme"
 msgstr "테마에 맞춰 색상을 어둡게"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Data up to {builtText}"
+msgstr "{builtText}까지의 데이터"
+
 #: src/features/status/IncidentDialog.tsx
 msgid "Database upgrade"
 msgstr "데이터베이스 업그레이드"
@@ -4977,6 +5001,7 @@ msgid "Dates"
 msgstr "날짜"
 
 #: src/features/broadcasts/Growth.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Days"
 msgstr "일"
@@ -5261,6 +5286,7 @@ msgstr "삭제된 받은 편지함"
 #: src/components/common/DiscussionAuthor.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Deleted member"
 msgstr "삭제된 멤버"
@@ -6353,6 +6379,10 @@ msgstr "Expires soon"
 msgid "Export"
 msgstr "내보내기"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Export CSV"
+msgstr "CSV 내보내기"
+
 #: src/features/migrations/text.ts
 msgid "Export file"
 msgstr "내보내기 파일"
@@ -6490,6 +6520,10 @@ msgstr "열린 대화가 가장 적은 사람"
 msgid "Fields"
 msgstr "필드"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Figures by group"
+msgstr "그룹별 수치"
+
 #: src/features/migrations/Wizard.tsx
 msgid "File"
 msgstr "파일"
@@ -6621,6 +6655,7 @@ msgstr "첫 답장"
 #: src/features/conversation/SlaPopover.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "First reply"
 msgstr "첫 답장"
@@ -6632,6 +6667,10 @@ msgstr "첫 답변 {first}"
 #: src/app/TeamMenu.tsx
 msgid "first reply in {first}"
 msgstr "{first}의 첫 답장"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "First reply, 90th percentile"
+msgstr "첫 답변, 90번째 백분위수"
 
 #: src/features/broadcasts/Import.tsx
 msgid "First rows of the file"
@@ -6835,6 +6874,7 @@ msgstr "보낸 편지함에서 찾았습니다"
 msgid "Friday"
 msgstr "금요일"
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "From"
@@ -7086,6 +7126,10 @@ msgstr "새 대화에 간격 안에서 연락처당 한 번 이메일로 인사�
 #: src/features/status/ComponentDialogs.tsx
 msgid "Group"
 msgstr "그룹"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Group by"
+msgstr "그룹 기준"
 
 #: src/features/settings/teams/TeamsPage.tsx
 msgid "Group members, such as billing or support, and give the group its inboxes in one place."
@@ -8208,6 +8252,7 @@ msgstr "테스트 메일에 대한 수신 서버의 결과로만 알 수 있습�
 
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/text.ts
+#: src/features/reports/TrendsReport.tsx
 msgid "Label"
 msgstr "레이블"
 
@@ -8279,17 +8324,31 @@ msgstr "이 서버의 메시지 하나당 제한보다 큼"
 msgid "Largest file (MB)"
 msgstr "최대 파일 크기 (MB)"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Last 12 months"
+msgstr "최근 12개월"
+
 #: src/features/home/HomePage.tsx
 msgid "Last 14 days"
 msgstr "최근 14일"
 
-#: src/features/home/HomePage.tsx
-#: src/features/reports/ReportPages.tsx
-msgid "Last 30 days"
-msgstr "최근 30일"
+#: src/features/reports/TrendsReport.tsx
+msgid "Last 3 months"
+msgstr "최근 3개월"
 
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
+msgid "Last 30 days"
+msgstr "최근 30일"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Last 6 months"
+msgstr "최근 6개월"
+
+#: src/features/home/HomePage.tsx
+#: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Last 7 days"
 msgstr "최근 7일"
 
@@ -8316,6 +8375,10 @@ msgstr "마지막 확인: {last}."
 #: src/features/status/StatusPages.tsx
 msgid "Last incident"
 msgstr "마지막 인시던트"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Last month"
+msgstr "지난달"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Last name"
@@ -9078,6 +9141,7 @@ msgstr "미디어, 링크, 문서"
 msgid "median"
 msgstr "중앙값"
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/status/ResponseChart.tsx
 msgid "Median"
 msgstr "중앙값"
@@ -9100,6 +9164,7 @@ msgstr "중앙값, 첫 메시지부터 종료까지"
 
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Member"
@@ -9342,6 +9407,10 @@ msgstr "모니터"
 #: src/features/status/MonitorsPage.tsx
 msgid "Monitors set the state of a status page component. Create a status page first."
 msgstr "모니터는 상태 페이지 구성 요소의 상태를 설정합니다. 먼저 상태 페이지를 만드세요."
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Months"
+msgstr "월"
 
 #: src/features/contact/ContactDetail.tsx
 msgid "More"
@@ -9591,6 +9660,7 @@ msgstr "내 보기"
 #: src/features/broadcasts/NewBroadcastDialog.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/inbox/views/ViewDialog.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/automation/RuleDialog.tsx
@@ -10057,6 +10127,10 @@ msgstr "{inboxName} ID가 없습니다. 로그인하기 전에는 이메일로�
 msgid "No {provider} account has that subdomain. Check it in your address: acme in acme.zendesk.com."
 msgstr "해당 서브도메인의 {provider} 계정이 없습니다. 주소를 확인하세요: acme.zendesk.com의 acme입니다."
 
+#: src/features/reports/TrendsReport.tsx
+msgid "No activity in this period"
+msgstr "이 기간에는 활동이 없습니다"
+
 #: src/features/settings/webhooks/parts.tsx
 msgid "no answer"
 msgstr "답변 없음"
@@ -10294,6 +10368,10 @@ msgstr "확인 메일과 환영 메일을 보낼 수 있는 이메일 채널이 
 #: src/features/status/SubscribersTab.tsx
 msgid "No e-mail subscribers yet"
 msgstr "이메일 구독자가 아직 없습니다"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "No earlier figure"
+msgstr "이전 수치 없음"
 
 #: src/features/conversation/composer/EmojiPanel.tsx
 msgid "No emoji found."
@@ -10692,6 +10770,7 @@ msgstr "이 메일을 받을 사람이 없습니다. 구독자가 있는 리스�
 #: src/features/contact/MergePreview.tsx
 #: src/features/conversation/Feedback.tsx
 #: src/features/feedback/FeedbackPage.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/slack/SlackPage.tsx
@@ -10924,6 +11003,7 @@ msgstr "메모"
 msgid "Notes where a teammate mentioned you"
 msgstr "팀원이 나를 멘션한 메모"
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/notifications/events.ts
 msgid "Nothing"
 msgstr "없음"
@@ -11063,6 +11143,14 @@ msgstr "읽지 않은 항목이 없습니다."
 #: src/features/home/HomePage.tsx
 msgid "nothing waiting"
 msgstr "대기 중인 항목 없음"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Nothing was measured in this period."
+msgstr "이 기간에는 측정된 것이 없습니다."
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Nothing was opened, replied to or closed here. Try a longer period or other filters."
+msgstr "여기서는 열리거나 답변되거나 닫힌 항목이 없습니다. 더 긴 기간이나 다른 필터를 사용해 보세요."
 
 #: src/features/status/Notices.tsx
 msgid "Notices to subscribers"
@@ -11779,6 +11867,10 @@ msgstr "열림, 배정됨"
 msgid "open, unassigned"
 msgstr "열림, 배정 안 됨"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Opened"
+msgstr "열림"
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "OpenID Connect"
 msgstr "OpenID Connect"
@@ -12253,6 +12345,7 @@ msgstr "월별(30일)"
 
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Period"
 msgstr "기간"
 
@@ -12696,6 +12789,7 @@ msgstr "pro, team"
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/channels/AddChannelDialog.tsx
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/status/CreatePageDialog.tsx
@@ -13577,6 +13671,7 @@ msgstr "다른 대화의 스레드에서 답장했습니다"
 #: src/features/broadcasts/Report.tsx
 #: src/features/conversation/Feedback.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/channels/email/EmailSections.tsx
 #: src/features/setup/email/EmailLayout.tsx
 msgid "Replies"
@@ -13853,6 +13948,7 @@ msgid "Resolved at {endedAt}"
 msgstr "{endedAt}에 해결됨"
 
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Resolved in"
 msgstr "해결까지 걸린 시간"
 
@@ -13873,6 +13969,10 @@ msgstr "응답 시간"
 #: src/features/status/MonitorsPage.tsx
 msgid "Response time, last 24 hours"
 msgstr "응답 시간, 최근 24시간"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Response times"
+msgstr "응답 시간"
 
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
@@ -14148,6 +14248,10 @@ msgstr "샌드박스(개발 빌드)"
 #: src/features/contact/ContactSheet.tsx
 msgid "Satisfaction"
 msgstr "만족도"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Satisfied"
+msgstr "만족"
 
 #: src/features/inbox/ChatsPage.tsx
 msgid "satisfied · 👍 {good} 👎 {bad}"
@@ -15536,6 +15640,7 @@ msgid "SLA breaches"
 msgstr "SLA breaches"
 
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "SLA met"
 msgstr "SLA 충족"
 
@@ -15767,6 +15872,10 @@ msgstr "SPF가 발송 도메인 {from}이(가) 아니라 {spfDomain}에서 통�
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "SPF passes for {spfDomain}."
 msgstr "{spfDomain}의 SPF가 통과합니다."
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Split by"
+msgstr "나누기"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "Stage"
@@ -16164,6 +16273,7 @@ msgstr "TCP 확인"
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/settings/SettingsColumn.tsx
@@ -16504,6 +16614,10 @@ msgstr "요소는 다음 주소에서 작동합니다. 개발 서버는 받은 �
 msgid "The end must be after the start."
 msgstr "종료는 시작보다 뒤여야 합니다."
 
+#: src/features/reports/TrendsReport.tsx
+msgid "The end must not be before the start, and the range can be at most 13 months."
+msgstr "종료일은 시작일보다 앞설 수 없고 범위는 최대 13개월입니다."
+
 #: src/components/common/text.ts
 msgid "The endpoint is disabled. Enable it to send deliveries again."
 msgstr "엔드포인트가 비활성화되어 있습니다. 전송을 다시 하려면 활성화하세요."
@@ -16519,6 +16633,10 @@ msgstr "체크박스나 서명 옆에 표시된 정확한 문구."
 #: src/features/migrations/DoneStep.tsx
 msgid "The export file"
 msgstr "내보내기 파일"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "The figures are still being prepared."
+msgstr "수치를 아직 준비 중입니다."
 
 #: src/features/migrations/UploadStep.tsx
 msgid "The file"
@@ -17639,6 +17757,7 @@ msgstr "이 멤버는 더 이상 워크스페이스에 없습니다."
 msgid "This migration has ended, so nothing more can be uploaded. Start a new one for another file."
 msgstr "이 이전은 종료되어 더 이상 업로드할 수 없습니다. 다른 파일은 새 이전을 시작하세요."
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "This month"
 msgstr "이번 달"
@@ -17841,6 +17960,7 @@ msgid "Tickets come over with their replies, notes, tags, status and assignee. E
 msgstr "티켓은 답글, 메모, 태그, 상태, 담당자와 함께 가져옵니다. 위에 지원 주소를 입력하세요."
 
 #: src/features/migrations/ReviewStep.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
 msgid "Time"
 msgstr "시간"
@@ -17870,6 +17990,7 @@ msgstr "TLS(포트 465)"
 
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "To"
@@ -17887,6 +18008,7 @@ msgstr "받는 사람: {emailTo}"
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/ReportsColumn.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Today"
 msgstr "오늘"
 
@@ -17951,6 +18073,11 @@ msgstr "휴지통"
 #: src/features/migrations/text.ts
 msgid "Trash, never imported"
 msgstr "휴지통(가져오지 않음)"
+
+#: src/features/reports/ReportPages.tsx
+#: src/features/reports/ReportsColumn.tsx
+msgid "Trends"
+msgstr "추세"
 
 #: src/features/home/HomePage.tsx
 msgid "Triage"
@@ -18373,6 +18500,10 @@ msgstr "{upSince}부터 정상 작동 중입니다. 확신이 서면 정상화 �
 #: src/features/broadcasts/Import.tsx
 msgid "Up to {max} and 100,000 rows, with a header row. Excel files in Turkish or Western encodings and columns separated by commas, semicolons or tabs are read as they are."
 msgstr "최대 {max}, 100,000행, 헤더 행 포함. 터키어 또는 서유럽 인코딩의 Excel 파일과 쉼표, 세미콜론, 탭으로 구분된 열은 그대로 읽습니다."
+
+#: src/features/reports/ReportsColumn.tsx
+msgid "Up to 13 months, by group"
+msgstr "최대 13개월, 그룹별"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "Update text"
@@ -18971,6 +19102,10 @@ msgstr "웹사이트와 앱"
 #: src/components/common/text.ts
 msgid "Wednesday"
 msgstr "수요일"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Weeks"
+msgstr "주"
 
 #: src/features/broadcasts/ListForm.tsx
 msgid "Welcome receipt"

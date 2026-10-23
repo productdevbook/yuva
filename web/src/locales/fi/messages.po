@@ -882,6 +882,10 @@ msgstr "{subscribed} tilaajaa"
 msgid "{subscribed} subscribers"
 msgstr "{subscribed} tilaajaa"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "{text} vs previous period"
+msgstr "{text} edelliseen jaksoon verrattuna"
+
 #: src/features/docs/PagesTab.tsx
 msgid "{threads} open discussions"
 msgstr "{threads} avointa keskustelua"
@@ -1055,6 +1059,10 @@ msgstr "7 päivää"
 #: src/features/status/SettingsTab.tsx
 msgid "7 to 90."
 msgstr "7–90."
+
+#: src/features/reports/TrendsReport.tsx
+msgid "90th percentile"
+msgstr "90. persentiili"
 
 #: src/features/status/ResponseChart.tsx
 msgid "95th percentile"
@@ -2006,6 +2014,7 @@ msgstr "Alertmanager"
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/RunLog.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -3367,6 +3376,10 @@ msgstr "sähköpostilla"
 msgid "By e-mail"
 msgstr "Sähköpostitse"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "By group"
+msgstr "Ryhmittäin"
+
 #: src/features/reports/ReportsColumn.tsx
 msgid "By member"
 msgstr "Jäsenen mukaan"
@@ -3625,6 +3638,7 @@ msgid "Changing the sending domain turns DKIM signing off until you enable it ag
 msgstr "Lähetysverkkotunnuksen vaihtaminen poistaa DKIM-allekirjoituksen käytöstä, kunnes otat sen uudelleen käyttöön uudelle verkkotunnukselle."
 
 #: src/features/contact/ContactDetails.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/settings/channels/AddChannelDialog.tsx
 #: src/features/settings/channels/ChannelPage.tsx
@@ -4011,6 +4025,7 @@ msgstr "Sulje haku (Esc)"
 #: src/components/common/text.ts
 #: src/features/inbox/ChatList.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Closed"
 msgstr "Suljettu"
 
@@ -4535,6 +4550,10 @@ msgstr "keskustelua"
 msgid "Conversations"
 msgstr "Keskustelut"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Conversations and replies"
+msgstr "Keskustelut ja vastaukset"
+
 #: src/features/migrations/parts.tsx
 msgid "Conversations copied"
 msgstr "Keskustelut kopioitu"
@@ -4900,6 +4919,7 @@ msgstr "Cron"
 msgid "CSV file"
 msgstr "CSV-tiedosto"
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/inboxes/colors.tsx
@@ -4963,6 +4983,10 @@ msgstr "Tummenna"
 msgid "Darken the colours to match the theme"
 msgstr "Tummenna värit teeman mukaan"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Data up to {builtText}"
+msgstr "Tiedot {builtText} asti"
+
 #: src/features/status/IncidentDialog.tsx
 msgid "Database upgrade"
 msgstr "Tietokannan päivitys"
@@ -4977,6 +5001,7 @@ msgid "Dates"
 msgstr "Päivämäärät"
 
 #: src/features/broadcasts/Growth.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Days"
 msgstr "Päivät"
@@ -5261,6 +5286,7 @@ msgstr "Poistettu postilaatikko"
 #: src/components/common/DiscussionAuthor.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Deleted member"
 msgstr "Poistettu jäsen"
@@ -6353,6 +6379,10 @@ msgstr "Expires soon"
 msgid "Export"
 msgstr "Vie"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Export CSV"
+msgstr "Vie CSV"
+
 #: src/features/migrations/text.ts
 msgid "Export file"
 msgstr "Vientitiedosto"
@@ -6490,6 +6520,10 @@ msgstr "Vähiten avoimia keskusteluja"
 msgid "Fields"
 msgstr "Kentät"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Figures by group"
+msgstr "Luvut ryhmittäin"
+
 #: src/features/migrations/Wizard.tsx
 msgid "File"
 msgstr "Tiedosto"
@@ -6621,6 +6655,7 @@ msgstr "ensimmäinen vastaus"
 #: src/features/conversation/SlaPopover.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "First reply"
 msgstr "Ensimmäinen vastaus"
@@ -6632,6 +6667,10 @@ msgstr "Ensimmäinen vastaus {first}"
 #: src/app/TeamMenu.tsx
 msgid "first reply in {first}"
 msgstr "ensimmäinen vastaus ajassa {first}"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "First reply, 90th percentile"
+msgstr "Ensimmäinen vastaus, 90. persentiili"
 
 #: src/features/broadcasts/Import.tsx
 msgid "First rows of the file"
@@ -6835,6 +6874,7 @@ msgstr "Löytyi Lähetetyt-kansioistasi"
 msgid "Friday"
 msgstr "Perjantai"
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "From"
@@ -7086,6 +7126,10 @@ msgstr "Tervehtii uusia keskusteluja sähköpostitse, kerran kontaktia kohden ai
 #: src/features/status/ComponentDialogs.tsx
 msgid "Group"
 msgstr "Ryhmä"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Group by"
+msgstr "Ryhmittele"
 
 #: src/features/settings/teams/TeamsPage.tsx
 msgid "Group members, such as billing or support, and give the group its inboxes in one place."
@@ -8208,6 +8252,7 @@ msgstr "Tiedossa vain vastaanottavan palvelimen testiviestin tuloksista."
 
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/text.ts
+#: src/features/reports/TrendsReport.tsx
 msgid "Label"
 msgstr "Tunniste"
 
@@ -8279,17 +8324,31 @@ msgstr "Suurempi kuin tämän palvelimen raja yhdelle viestille"
 msgid "Largest file (MB)"
 msgstr "Suurin tiedosto (Mt)"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Last 12 months"
+msgstr "Viimeiset 12 kuukautta"
+
 #: src/features/home/HomePage.tsx
 msgid "Last 14 days"
 msgstr "Viimeiset 14 päivää"
 
-#: src/features/home/HomePage.tsx
-#: src/features/reports/ReportPages.tsx
-msgid "Last 30 days"
-msgstr "Viimeiset 30 päivää"
+#: src/features/reports/TrendsReport.tsx
+msgid "Last 3 months"
+msgstr "Viimeiset 3 kuukautta"
 
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
+msgid "Last 30 days"
+msgstr "Viimeiset 30 päivää"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Last 6 months"
+msgstr "Viimeiset 6 kuukautta"
+
+#: src/features/home/HomePage.tsx
+#: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Last 7 days"
 msgstr "Viimeiset 7 päivää"
 
@@ -8316,6 +8375,10 @@ msgstr "Viimeksi tarkistettu {last}."
 #: src/features/status/StatusPages.tsx
 msgid "Last incident"
 msgstr "Viimeisin häiriö"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Last month"
+msgstr "Viime kuukausi"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Last name"
@@ -9078,6 +9141,7 @@ msgstr "Media, linkit ja dokumentit"
 msgid "median"
 msgstr "mediaani"
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/status/ResponseChart.tsx
 msgid "Median"
 msgstr "Mediaani"
@@ -9100,6 +9164,7 @@ msgstr "mediaani, ensimmäisestä viestistä sulkemiseen"
 
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Member"
@@ -9342,6 +9407,10 @@ msgstr "Valvonnat"
 #: src/features/status/MonitorsPage.tsx
 msgid "Monitors set the state of a status page component. Create a status page first."
 msgstr "Valvonnat asettavat tilasivun komponentin tilan. Luo ensin tilasivu."
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Months"
+msgstr "Kuukaudet"
 
 #: src/features/contact/ContactDetail.tsx
 msgid "More"
@@ -9591,6 +9660,7 @@ msgstr "Omat näkymäni"
 #: src/features/broadcasts/NewBroadcastDialog.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/inbox/views/ViewDialog.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/automation/RuleDialog.tsx
@@ -10057,6 +10127,10 @@ msgstr "Tunnusta {inboxName} ei ole tallennettu. Henkilön tavoittaa vain sähk�
 msgid "No {provider} account has that subdomain. Check it in your address: acme in acme.zendesk.com."
 msgstr "Millään {provider}-tilillä ei ole tuota aliverkkotunnusta. Tarkista se osoitteestasi: acme osoitteessa acme.zendesk.com."
 
+#: src/features/reports/TrendsReport.tsx
+msgid "No activity in this period"
+msgstr "Ei toimintaa tällä jaksolla"
+
 #: src/features/settings/webhooks/parts.tsx
 msgid "no answer"
 msgstr "ei vastausta"
@@ -10294,6 +10368,10 @@ msgstr "Ei sähköpostikanavaa, joka voi lähettää vahvistus- ja tervetulovies
 #: src/features/status/SubscribersTab.tsx
 msgid "No e-mail subscribers yet"
 msgstr "Ei vielä sähköpostitilaajia"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "No earlier figure"
+msgstr "Ei aiempaa lukua"
 
 #: src/features/conversation/composer/EmojiPanel.tsx
 msgid "No emoji found."
@@ -10692,6 +10770,7 @@ msgstr "Kukaan ei saisi tätä viestiä. Valitse listat, joilla on tilaajia, tai
 #: src/features/contact/MergePreview.tsx
 #: src/features/conversation/Feedback.tsx
 #: src/features/feedback/FeedbackPage.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/slack/SlackPage.tsx
@@ -10924,6 +11003,7 @@ msgstr "Muistiinpanot"
 msgid "Notes where a teammate mentioned you"
 msgstr "Muistiinpanot, joissa tiimiläinen mainitsi sinut"
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/notifications/events.ts
 msgid "Nothing"
 msgstr "Ei mitään"
@@ -11063,6 +11143,14 @@ msgstr "Ei lukemattomia."
 #: src/features/home/HomePage.tsx
 msgid "nothing waiting"
 msgstr "mikään ei odota"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Nothing was measured in this period."
+msgstr "Tällä jaksolla ei mitattu mitään."
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Nothing was opened, replied to or closed here. Try a longer period or other filters."
+msgstr "Täällä ei avattu, vastattu tai suljettu mitään. Kokeile pidempää jaksoa tai muita suodattimia."
 
 #: src/features/status/Notices.tsx
 msgid "Notices to subscribers"
@@ -11779,6 +11867,10 @@ msgstr "avoin, osoitettu"
 msgid "open, unassigned"
 msgstr "avoin, osoittamaton"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Opened"
+msgstr "Avatut"
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "OpenID Connect"
 msgstr "OpenID Connect"
@@ -12253,6 +12345,7 @@ msgstr "Kuukaudessa (30 päivää)"
 
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Period"
 msgstr "Jakso"
 
@@ -12696,6 +12789,7 @@ msgstr "pro, tiimi"
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/channels/AddChannelDialog.tsx
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/status/CreatePageDialog.tsx
@@ -13577,6 +13671,7 @@ msgstr "Vastasi toisen keskustelun ketjussa"
 #: src/features/broadcasts/Report.tsx
 #: src/features/conversation/Feedback.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/channels/email/EmailSections.tsx
 #: src/features/setup/email/EmailLayout.tsx
 msgid "Replies"
@@ -13853,6 +13948,7 @@ msgid "Resolved at {endedAt}"
 msgstr "Ratkaistu {endedAt}"
 
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Resolved in"
 msgstr "Ratkaistu ajassa"
 
@@ -13873,6 +13969,10 @@ msgstr "Vasteaika"
 #: src/features/status/MonitorsPage.tsx
 msgid "Response time, last 24 hours"
 msgstr "Vasteaika, viimeiset 24 tuntia"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Response times"
+msgstr "Vastausajat"
 
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
@@ -14148,6 +14248,10 @@ msgstr "Sandbox (kehitysversiot)"
 #: src/features/contact/ContactSheet.tsx
 msgid "Satisfaction"
 msgstr "Tyytyväisyys"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Satisfied"
+msgstr "Tyytyväiset"
 
 #: src/features/inbox/ChatsPage.tsx
 msgid "satisfied · 👍 {good} 👎 {bad}"
@@ -15536,6 +15640,7 @@ msgid "SLA breaches"
 msgstr "SLA breaches"
 
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "SLA met"
 msgstr "SLA täytetty"
 
@@ -15767,6 +15872,10 @@ msgstr "SPF läpäisee verkkotunnukselle {spfDomain}, ei lähetysverkkotunnuksel
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "SPF passes for {spfDomain}."
 msgstr "SPF läpäisee verkkotunnukselle {spfDomain}."
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Split by"
+msgstr "Jaa"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "Stage"
@@ -16164,6 +16273,7 @@ msgstr "TCP-tarkistus"
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/settings/SettingsColumn.tsx
@@ -16504,6 +16614,10 @@ msgstr "Elementit toimivat näissä osoitteissa; lisää kehityspalvelimesi post
 msgid "The end must be after the start."
 msgstr "Lopun on oltava alun jälkeen."
 
+#: src/features/reports/TrendsReport.tsx
+msgid "The end must not be before the start, and the range can be at most 13 months."
+msgstr "Loppu ei voi olla ennen alkua, ja aikaväli voi olla enintään 13 kuukautta."
+
 #: src/components/common/text.ts
 msgid "The endpoint is disabled. Enable it to send deliveries again."
 msgstr "Päätepiste on poistettu käytöstä. Ota se käyttöön lähettääksesi toimituksia uudelleen."
@@ -16519,6 +16633,10 @@ msgstr "Tarkat sanat, jotka he näkivät valintaruudun tai allekirjoituksen vier
 #: src/features/migrations/DoneStep.tsx
 msgid "The export file"
 msgstr "Vientitiedosto"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "The figures are still being prepared."
+msgstr "Lukuja valmistellaan vielä."
 
 #: src/features/migrations/UploadStep.tsx
 msgid "The file"
@@ -17639,6 +17757,7 @@ msgstr "Tämä jäsen ei ole enää työtilassa."
 msgid "This migration has ended, so nothing more can be uploaded. Start a new one for another file."
 msgstr "Tämä siirto on päättynyt, joten mitään ei voi enää ladata. Aloita uusi toista tiedostoa varten."
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "This month"
 msgstr "Tässä kuussa"
@@ -17841,6 +17960,7 @@ msgid "Tickets come over with their replies, notes, tags, status and assignee. E
 msgstr "Tiketit tulevat mukaan vastauksineen, muistiinpanoineen, tunnisteineen, tiloineen ja vastuuhenkilöineen. Anna tukiosoitteesi yllä."
 
 #: src/features/migrations/ReviewStep.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
 msgid "Time"
 msgstr "Aika"
@@ -17870,6 +17990,7 @@ msgstr "TLS (portti 465)"
 
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "To"
@@ -17887,6 +18008,7 @@ msgstr "Vastaanottaja: {emailTo}"
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/ReportsColumn.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Today"
 msgstr "Tänään"
 
@@ -17951,6 +18073,11 @@ msgstr "Roskakori"
 #: src/features/migrations/text.ts
 msgid "Trash, never imported"
 msgstr "Roskakori, ei koskaan tuotu"
+
+#: src/features/reports/ReportPages.tsx
+#: src/features/reports/ReportsColumn.tsx
+msgid "Trends"
+msgstr "Trendit"
 
 #: src/features/home/HomePage.tsx
 msgid "Triage"
@@ -18373,6 +18500,10 @@ msgstr "Toiminnassa alkaen {upSince}. Ilmoita, että kaikki on kunnossa, kun ole
 #: src/features/broadcasts/Import.tsx
 msgid "Up to {max} and 100,000 rows, with a header row. Excel files in Turkish or Western encodings and columns separated by commas, semicolons or tabs are read as they are."
 msgstr "Enintään {max} ja 100 000 riviä, otsikkorivin kanssa. Excel-tiedostot turkkilaisilla tai länsimaisilla merkistöillä ja pilkuilla, puolipisteillä tai sarkaimilla erotetut sarakkeet luetaan sellaisenaan."
+
+#: src/features/reports/ReportsColumn.tsx
+msgid "Up to 13 months, by group"
+msgstr "Enintään 13 kuukautta, ryhmittäin"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "Update text"
@@ -18971,6 +19102,10 @@ msgstr "Sivustot ja sovellukset"
 #: src/components/common/text.ts
 msgid "Wednesday"
 msgstr "Keskiviikko"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Weeks"
+msgstr "Viikot"
 
 #: src/features/broadcasts/ListForm.tsx
 msgid "Welcome receipt"

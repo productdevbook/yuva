@@ -882,6 +882,10 @@ msgstr "{subscribed} சந்தா செய்தவர்கள்"
 msgid "{subscribed} subscribers"
 msgstr "{subscribed} சந்தாதாரர்கள்"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "{text} vs previous period"
+msgstr "முந்தைய காலத்துடன் ஒப்பிடுகையில் {text}"
+
 #: src/features/docs/PagesTab.tsx
 msgid "{threads} open discussions"
 msgstr "{threads} திறந்த விவாதங்கள்"
@@ -1055,6 +1059,10 @@ msgstr "7 நாட்கள்"
 #: src/features/status/SettingsTab.tsx
 msgid "7 to 90."
 msgstr "7 முதல் 90 வரை."
+
+#: src/features/reports/TrendsReport.tsx
+msgid "90th percentile"
+msgstr "90வது சதவீதம்"
 
 #: src/features/status/ResponseChart.tsx
 msgid "95th percentile"
@@ -2006,6 +2014,7 @@ msgstr "Alertmanager"
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/RunLog.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -3367,6 +3376,10 @@ msgstr "மின்னஞ்சலில்"
 msgid "By e-mail"
 msgstr "மின்னஞ்சல் வழியாக"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "By group"
+msgstr "குழு வாரியாக"
+
 #: src/features/reports/ReportsColumn.tsx
 msgid "By member"
 msgstr "உறுப்பினர் வாரியாக"
@@ -3625,6 +3638,7 @@ msgid "Changing the sending domain turns DKIM signing off until you enable it ag
 msgstr "அனுப்பும் டொமைனை மாற்றினால், புதிய டொமைனுக்கு மீண்டும் இயக்கும் வரை DKIM கையொப்பமிடுதல் அணைந்துவிடும்."
 
 #: src/features/contact/ContactDetails.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/settings/channels/AddChannelDialog.tsx
 #: src/features/settings/channels/ChannelPage.tsx
@@ -4011,6 +4025,7 @@ msgstr "தேடலை மூடு (Esc)"
 #: src/components/common/text.ts
 #: src/features/inbox/ChatList.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Closed"
 msgstr "மூடப்பட்டது"
 
@@ -4535,6 +4550,10 @@ msgstr "உரையாடல்கள்"
 msgid "Conversations"
 msgstr "உரையாடல்கள்"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Conversations and replies"
+msgstr "உரையாடல்களும் பதில்களும்"
+
 #: src/features/migrations/parts.tsx
 msgid "Conversations copied"
 msgstr "உரையாடல்கள் நகலெடுக்கப்பட்டன"
@@ -4900,6 +4919,7 @@ msgstr "Cron"
 msgid "CSV file"
 msgstr "CSV கோப்பு"
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/inboxes/colors.tsx
@@ -4963,6 +4983,10 @@ msgstr "இருண்டதாக்கு"
 msgid "Darken the colours to match the theme"
 msgstr "தீமுக்கு ஏற்ப வண்ணங்களை இருண்டதாக்கு"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Data up to {builtText}"
+msgstr "{builtText} வரையிலான தரவு"
+
 #: src/features/status/IncidentDialog.tsx
 msgid "Database upgrade"
 msgstr "தரவுத்தளம் மேம்படுத்தல்"
@@ -4977,6 +5001,7 @@ msgid "Dates"
 msgstr "தேதிகள்"
 
 #: src/features/broadcasts/Growth.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Days"
 msgstr "நாட்கள்"
@@ -5261,6 +5286,7 @@ msgstr "நீக்கப்பட்ட இன்பாக்ஸ்"
 #: src/components/common/DiscussionAuthor.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Deleted member"
 msgstr "நீக்கப்பட்ட உறுப்பினர்"
@@ -6353,6 +6379,10 @@ msgstr "Expires soon"
 msgid "Export"
 msgstr "ஏற்றுமதி"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Export CSV"
+msgstr "CSV ஏற்றுமதி"
+
 #: src/features/migrations/text.ts
 msgid "Export file"
 msgstr "ஏற்றுமதிக் கோப்பு"
@@ -6490,6 +6520,10 @@ msgstr "குறைந்த திறந்த உரையாடல்கள�
 msgid "Fields"
 msgstr "புலங்கள்"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Figures by group"
+msgstr "குழு வாரியான எண்கள்"
+
 #: src/features/migrations/Wizard.tsx
 msgid "File"
 msgstr "கோப்பு"
@@ -6621,6 +6655,7 @@ msgstr "முதல் பதில்"
 #: src/features/conversation/SlaPopover.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "First reply"
 msgstr "முதல் பதில்"
@@ -6632,6 +6667,10 @@ msgstr "முதல் பதில் {first}"
 #: src/app/TeamMenu.tsx
 msgid "first reply in {first}"
 msgstr "{first}-இல் முதல் பதில்"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "First reply, 90th percentile"
+msgstr "முதல் பதில், 90வது சதவீதம்"
 
 #: src/features/broadcasts/Import.tsx
 msgid "First rows of the file"
@@ -6835,6 +6874,7 @@ msgstr "உங்கள் Sent கோப்புறைகளில் கண�
 msgid "Friday"
 msgstr "வெள்ளிக்கிழமை"
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "From"
@@ -7086,6 +7126,10 @@ msgstr "புதிய உரையாடல்களை மின்னஞ்�
 #: src/features/status/ComponentDialogs.tsx
 msgid "Group"
 msgstr "குழு"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Group by"
+msgstr "குழுவாக்கு"
 
 #: src/features/settings/teams/TeamsPage.tsx
 msgid "Group members, such as billing or support, and give the group its inboxes in one place."
@@ -8208,6 +8252,7 @@ msgstr "சோதனை அஞ்சலுக்குப் பெறும் 
 
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/text.ts
+#: src/features/reports/TrendsReport.tsx
 msgid "Label"
 msgstr "லேபிள்"
 
@@ -8279,17 +8324,31 @@ msgstr "ஒரு செய்திக்கான இந்தச் சேவ
 msgid "Largest file (MB)"
 msgstr "மிகப்பெரிய கோப்பு (MB)"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Last 12 months"
+msgstr "கடந்த 12 மாதங்கள்"
+
 #: src/features/home/HomePage.tsx
 msgid "Last 14 days"
 msgstr "கடந்த 14 நாட்கள்"
 
-#: src/features/home/HomePage.tsx
-#: src/features/reports/ReportPages.tsx
-msgid "Last 30 days"
-msgstr "கடந்த 30 நாட்கள்"
+#: src/features/reports/TrendsReport.tsx
+msgid "Last 3 months"
+msgstr "கடந்த 3 மாதங்கள்"
 
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
+msgid "Last 30 days"
+msgstr "கடந்த 30 நாட்கள்"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Last 6 months"
+msgstr "கடந்த 6 மாதங்கள்"
+
+#: src/features/home/HomePage.tsx
+#: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Last 7 days"
 msgstr "கடந்த 7 நாட்கள்"
 
@@ -8316,6 +8375,10 @@ msgstr "கடைசியாகச் சரிபார்த்தது {las
 #: src/features/status/StatusPages.tsx
 msgid "Last incident"
 msgstr "கடைசி சம்பவம்"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Last month"
+msgstr "கடந்த மாதம்"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Last name"
@@ -9078,6 +9141,7 @@ msgstr "ஊடகம், இணைப்புகள், ஆவணங்கள�
 msgid "median"
 msgstr "நடுநிலை"
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/status/ResponseChart.tsx
 msgid "Median"
 msgstr "இடைநிலை"
@@ -9100,6 +9164,7 @@ msgstr "இடைநிலை, முதல் செய்தி முதல�
 
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Member"
@@ -9342,6 +9407,10 @@ msgstr "கண்காணிப்புகள்"
 #: src/features/status/MonitorsPage.tsx
 msgid "Monitors set the state of a status page component. Create a status page first."
 msgstr "கண்காணிப்புகள் நிலைப் பக்கத்தின் கூறின் நிலையை அமைக்கின்றன. முதலில் நிலைப் பக்கத்தை உருவாக்கவும்."
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Months"
+msgstr "மாதங்கள்"
 
 #: src/features/contact/ContactDetail.tsx
 msgid "More"
@@ -9591,6 +9660,7 @@ msgstr "என் காட்சிகள்"
 #: src/features/broadcasts/NewBroadcastDialog.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/inbox/views/ViewDialog.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/automation/RuleDialog.tsx
@@ -10057,6 +10127,10 @@ msgstr "{inboxName} ஐடி இல்லை. உள்நுழையும்
 msgid "No {provider} account has that subdomain. Check it in your address: acme in acme.zendesk.com."
 msgstr "எந்த {provider} கணக்கிலும் அந்தத் துணை டொமைன் இல்லை. உங்கள் முகவரியில் சரிபாருங்கள்: acme.zendesk.com-இல் acme."
 
+#: src/features/reports/TrendsReport.tsx
+msgid "No activity in this period"
+msgstr "இந்தக் காலத்தில் செயல்பாடு இல்லை"
+
 #: src/features/settings/webhooks/parts.tsx
 msgid "no answer"
 msgstr "பதில் இல்லை"
@@ -10294,6 +10368,10 @@ msgstr "உறுதிப்படுத்தல், வரவேற்பு 
 #: src/features/status/SubscribersTab.tsx
 msgid "No e-mail subscribers yet"
 msgstr "மின்னஞ்சல் சந்தாதாரர்கள் இன்னும் இல்லை"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "No earlier figure"
+msgstr "முந்தைய எண் இல்லை"
 
 #: src/features/conversation/composer/EmojiPanel.tsx
 msgid "No emoji found."
@@ -10692,6 +10770,7 @@ msgstr "இந்த அஞ்சல் யாருக்கும் கிட
 #: src/features/contact/MergePreview.tsx
 #: src/features/conversation/Feedback.tsx
 #: src/features/feedback/FeedbackPage.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/slack/SlackPage.tsx
@@ -10924,6 +11003,7 @@ msgstr "குறிப்புகள்"
 msgid "Notes where a teammate mentioned you"
 msgstr "சக ஊழியர் உங்களைக் குறிப்பிட்ட குறிப்புகள்"
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/notifications/events.ts
 msgid "Nothing"
 msgstr "எதுவுமில்லை"
@@ -11063,6 +11143,14 @@ msgstr "படிக்காதவை இல்லை."
 #: src/features/home/HomePage.tsx
 msgid "nothing waiting"
 msgstr "எதுவும் காத்திருக்கவில்லை"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Nothing was measured in this period."
+msgstr "இந்தக் காலத்தில் எதுவும் அளக்கப்படவில்லை."
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Nothing was opened, replied to or closed here. Try a longer period or other filters."
+msgstr "இங்கே எதுவும் திறக்கப்படவில்லை, பதிலளிக்கப்படவில்லை, மூடப்படவில்லை. நீண்ட காலம் அல்லது வேறு வடிகட்டிகளை முயற்சிக்கவும்."
 
 #: src/features/status/Notices.tsx
 msgid "Notices to subscribers"
@@ -11779,6 +11867,10 @@ msgstr "திறந்தவை, ஒதுக்கப்பட்டவை"
 msgid "open, unassigned"
 msgstr "திறந்தவை, ஒதுக்கப்படாதவை"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Opened"
+msgstr "திறந்தவை"
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "OpenID Connect"
 msgstr "OpenID Connect"
@@ -12253,6 +12345,7 @@ msgstr "மாதத்துக்கு (30 நாட்கள்)"
 
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Period"
 msgstr "காலம்"
 
@@ -12696,6 +12789,7 @@ msgstr "pro, team"
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/channels/AddChannelDialog.tsx
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/status/CreatePageDialog.tsx
@@ -13577,6 +13671,7 @@ msgstr "மற்றொரு உரையாடலின் இழையில�
 #: src/features/broadcasts/Report.tsx
 #: src/features/conversation/Feedback.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/channels/email/EmailSections.tsx
 #: src/features/setup/email/EmailLayout.tsx
 msgid "Replies"
@@ -13853,6 +13948,7 @@ msgid "Resolved at {endedAt}"
 msgstr "{endedAt} மணிக்குத் தீர்க்கப்பட்டது"
 
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Resolved in"
 msgstr "தீர்க்க ஆன நேரம்"
 
@@ -13873,6 +13969,10 @@ msgstr "மறுமொழி நேரம்"
 #: src/features/status/MonitorsPage.tsx
 msgid "Response time, last 24 hours"
 msgstr "பதில் நேரம், கடந்த 24 மணிநேரம்"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Response times"
+msgstr "பதில் நேரங்கள்"
 
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
@@ -14148,6 +14248,10 @@ msgstr "சாண்ட்பாக்ஸ் (மேம்பாட்டு ப
 #: src/features/contact/ContactSheet.tsx
 msgid "Satisfaction"
 msgstr "திருப்தி"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Satisfied"
+msgstr "திருப்தியடைந்தவர்கள்"
 
 #: src/features/inbox/ChatsPage.tsx
 msgid "satisfied · 👍 {good} 👎 {bad}"
@@ -15536,6 +15640,7 @@ msgid "SLA breaches"
 msgstr "SLA breaches"
 
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "SLA met"
 msgstr "SLA நிறைவேறியது"
 
@@ -15767,6 +15872,10 @@ msgstr "SPF {spfDomain}-க்குத் தேர்ச்சி பெறு
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "SPF passes for {spfDomain}."
 msgstr "{spfDomain}-க்கு SPF தேர்ச்சி பெறுகிறது."
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Split by"
+msgstr "இதன்படி பிரி"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "Stage"
@@ -16164,6 +16273,7 @@ msgstr "TCP சோதனை"
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/settings/SettingsColumn.tsx
@@ -16504,6 +16614,10 @@ msgstr "உறுப்புகள் இந்த முகவரிகளி�
 msgid "The end must be after the start."
 msgstr "முடிவு தொடக்கத்துக்குப் பிறகு இருக்க வேண்டும்."
 
+#: src/features/reports/TrendsReport.tsx
+msgid "The end must not be before the start, and the range can be at most 13 months."
+msgstr "முடிவு தொடக்கத்துக்கு முன் இருக்கக்கூடாது, வரம்பு அதிகபட்சம் 13 மாதங்கள்."
+
 #: src/components/common/text.ts
 msgid "The endpoint is disabled. Enable it to send deliveries again."
 msgstr "முனை முடக்கப்பட்டுள்ளது. மீண்டும் விநியோகங்களை அனுப்ப அதை இயக்குங்கள்."
@@ -16519,6 +16633,10 @@ msgstr "தேர்வுப்பெட்டி அல்லது கைய�
 #: src/features/migrations/DoneStep.tsx
 msgid "The export file"
 msgstr "ஏற்றுமதிக் கோப்பு"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "The figures are still being prepared."
+msgstr "எண்கள் இன்னும் தயாராகின்றன."
 
 #: src/features/migrations/UploadStep.tsx
 msgid "The file"
@@ -17639,6 +17757,7 @@ msgstr "இந்த உறுப்பினர் இனி பணியிட
 msgid "This migration has ended, so nothing more can be uploaded. Start a new one for another file."
 msgstr "இந்த இடம்பெயர்வு முடிந்துவிட்டது, எனவே மேலும் எதுவும் பதிவேற்ற முடியாது. வேறு கோப்புக்குப் புதியதைத் தொடங்குங்கள்."
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "This month"
 msgstr "இந்த மாதம்"
@@ -17841,6 +17960,7 @@ msgid "Tickets come over with their replies, notes, tags, status and assignee. E
 msgstr "டிக்கெட்டுகள் அவற்றின் பதில்கள், குறிப்புகள், குறிச்சொற்கள், நிலை, ஒதுக்கப்பட்டவருடன் வரும். மேலே உங்கள் ஆதரவு முகவரியை உள்ளிடுங்கள்."
 
 #: src/features/migrations/ReviewStep.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
 msgid "Time"
 msgstr "நேரம்"
@@ -17870,6 +17990,7 @@ msgstr "TLS (போர்ட் 465)"
 
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "To"
@@ -17887,6 +18008,7 @@ msgstr "To: {emailTo}"
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/ReportsColumn.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Today"
 msgstr "இன்று"
 
@@ -17951,6 +18073,11 @@ msgstr "குப்பை"
 #: src/features/migrations/text.ts
 msgid "Trash, never imported"
 msgstr "குப்பை, ஒருபோதும் இறக்குமதி செய்யப்படவில்லை"
+
+#: src/features/reports/ReportPages.tsx
+#: src/features/reports/ReportsColumn.tsx
+msgid "Trends"
+msgstr "போக்குகள்"
 
 #: src/features/home/HomePage.tsx
 msgid "Triage"
@@ -18373,6 +18500,10 @@ msgstr "{upSince} முதல் இயங்குகிறது. உறு�
 #: src/features/broadcasts/Import.tsx
 msgid "Up to {max} and 100,000 rows, with a header row. Excel files in Turkish or Western encodings and columns separated by commas, semicolons or tabs are read as they are."
 msgstr "{max} மற்றும் 100,000 வரிசைகள் வரை, தலைப்பு வரிசையுடன். துருக்கிய அல்லது மேற்கத்திய குறியாக்கங்களில் Excel கோப்புகளும் காற்புள்ளி, அரைப்புள்ளி அல்லது தாவலால் பிரிக்கப்பட்ட நெடுவரிசைகளும் இருப்பது போலவே படிக்கப்படும்."
+
+#: src/features/reports/ReportsColumn.tsx
+msgid "Up to 13 months, by group"
+msgstr "13 மாதங்கள் வரை, குழு வாரியாக"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "Update text"
@@ -18971,6 +19102,10 @@ msgstr "இணையதளங்களும் ஆப்களும்"
 #: src/components/common/text.ts
 msgid "Wednesday"
 msgstr "புதன்கிழமை"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Weeks"
+msgstr "வாரங்கள்"
 
 #: src/features/broadcasts/ListForm.tsx
 msgid "Welcome receipt"

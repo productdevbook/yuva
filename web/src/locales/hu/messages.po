@@ -882,6 +882,10 @@ msgstr "{subscribed} feliratkozott"
 msgid "{subscribed} subscribers"
 msgstr "{subscribed} feliratkozó"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "{text} vs previous period"
+msgstr "{text} az előző időszakhoz képest"
+
 #: src/features/docs/PagesTab.tsx
 msgid "{threads} open discussions"
 msgstr "{threads} nyitott vita"
@@ -1055,6 +1059,10 @@ msgstr "7 nap"
 #: src/features/status/SettingsTab.tsx
 msgid "7 to 90."
 msgstr "7–90."
+
+#: src/features/reports/TrendsReport.tsx
+msgid "90th percentile"
+msgstr "90. percentilis"
 
 #: src/features/status/ResponseChart.tsx
 msgid "95th percentile"
@@ -2006,6 +2014,7 @@ msgstr "Alertmanager"
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/RunLog.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -3367,6 +3376,10 @@ msgstr "e-mailben"
 msgid "By e-mail"
 msgstr "E-mailben"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "By group"
+msgstr "Csoportok szerint"
+
 #: src/features/reports/ReportsColumn.tsx
 msgid "By member"
 msgstr "Tagok szerint"
@@ -3625,6 +3638,7 @@ msgid "Changing the sending domain turns DKIM signing off until you enable it ag
 msgstr "A küldési domain módosítása kikapcsolja a DKIM-aláírást, amíg újra be nem kapcsolod az új domainhez."
 
 #: src/features/contact/ContactDetails.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/settings/channels/AddChannelDialog.tsx
 #: src/features/settings/channels/ChannelPage.tsx
@@ -4011,6 +4025,7 @@ msgstr "Keresés bezárása (Esc)"
 #: src/components/common/text.ts
 #: src/features/inbox/ChatList.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Closed"
 msgstr "Lezárva"
 
@@ -4535,6 +4550,10 @@ msgstr "beszélgetés"
 msgid "Conversations"
 msgstr "Beszélgetések"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Conversations and replies"
+msgstr "Beszélgetések és válaszok"
+
 #: src/features/migrations/parts.tsx
 msgid "Conversations copied"
 msgstr "Beszélgetések átmásolva"
@@ -4900,6 +4919,7 @@ msgstr "Cron"
 msgid "CSV file"
 msgstr "CSV-fájl"
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/inboxes/colors.tsx
@@ -4963,6 +4983,10 @@ msgstr "Sötétítés"
 msgid "Darken the colours to match the theme"
 msgstr "Színek sötétítése a témához illően"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Data up to {builtText}"
+msgstr "Adatok eddig: {builtText}"
+
 #: src/features/status/IncidentDialog.tsx
 msgid "Database upgrade"
 msgstr "Adatbázis-frissítés"
@@ -4977,6 +5001,7 @@ msgid "Dates"
 msgstr "Dátumok"
 
 #: src/features/broadcasts/Growth.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Days"
 msgstr "Napok"
@@ -5261,6 +5286,7 @@ msgstr "Törölt postafiók"
 #: src/components/common/DiscussionAuthor.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Deleted member"
 msgstr "Törölt tag"
@@ -6353,6 +6379,10 @@ msgstr "Expires soon"
 msgid "Export"
 msgstr "Exportálás"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Export CSV"
+msgstr "CSV exportálása"
+
 #: src/features/migrations/text.ts
 msgid "Export file"
 msgstr "Exportfájl"
@@ -6490,6 +6520,10 @@ msgstr "Legkevesebb nyitott beszélgetés"
 msgid "Fields"
 msgstr "Mezők"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Figures by group"
+msgstr "Számok csoportonként"
+
 #: src/features/migrations/Wizard.tsx
 msgid "File"
 msgstr "Fájl"
@@ -6621,6 +6655,7 @@ msgstr "első válasz"
 #: src/features/conversation/SlaPopover.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "First reply"
 msgstr "Első válasz"
@@ -6632,6 +6667,10 @@ msgstr "Első válasz {first}"
 #: src/app/TeamMenu.tsx
 msgid "first reply in {first}"
 msgstr "első válasz ennyi idő alatt: {first}"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "First reply, 90th percentile"
+msgstr "Első válasz, 90. percentilis"
 
 #: src/features/broadcasts/Import.tsx
 msgid "First rows of the file"
@@ -6835,6 +6874,7 @@ msgstr "A Elküldött mappáidban találtuk"
 msgid "Friday"
 msgstr "Péntek"
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "From"
@@ -7086,6 +7126,10 @@ msgstr "E-mailben üdvözli az új beszélgetéseket, kontaktonként egyszer az 
 #: src/features/status/ComponentDialogs.tsx
 msgid "Group"
 msgstr "Csoport"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Group by"
+msgstr "Csoportosítás"
 
 #: src/features/settings/teams/TeamsPage.tsx
 msgid "Group members, such as billing or support, and give the group its inboxes in one place."
@@ -8208,6 +8252,7 @@ msgstr "Csak a fogadó szerver tesztlevélre adott eredményeiből ismert."
 
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/text.ts
+#: src/features/reports/TrendsReport.tsx
 msgid "Label"
 msgstr "Címke"
 
@@ -8279,17 +8324,31 @@ msgstr "Nagyobb a szerver egy üzenetre vonatkozó korlátjánál"
 msgid "Largest file (MB)"
 msgstr "Legnagyobb fájl (MB)"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Last 12 months"
+msgstr "Elmúlt 12 hónap"
+
 #: src/features/home/HomePage.tsx
 msgid "Last 14 days"
 msgstr "Az elmúlt 14 nap"
 
-#: src/features/home/HomePage.tsx
-#: src/features/reports/ReportPages.tsx
-msgid "Last 30 days"
-msgstr "Elmúlt 30 nap"
+#: src/features/reports/TrendsReport.tsx
+msgid "Last 3 months"
+msgstr "Elmúlt 3 hónap"
 
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
+msgid "Last 30 days"
+msgstr "Elmúlt 30 nap"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Last 6 months"
+msgstr "Elmúlt 6 hónap"
+
+#: src/features/home/HomePage.tsx
+#: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Last 7 days"
 msgstr "Elmúlt 7 nap"
 
@@ -8316,6 +8375,10 @@ msgstr "Utolsó ellenőrzés: {last}."
 #: src/features/status/StatusPages.tsx
 msgid "Last incident"
 msgstr "Legutóbbi incidens"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Last month"
+msgstr "Előző hónap"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Last name"
@@ -9078,6 +9141,7 @@ msgstr "Média, linkek és dokumentumok"
 msgid "median"
 msgstr "medián"
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/status/ResponseChart.tsx
 msgid "Median"
 msgstr "Medián"
@@ -9100,6 +9164,7 @@ msgstr "medián, az első üzenettől a lezárásig"
 
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Member"
@@ -9342,6 +9407,10 @@ msgstr "Figyelők"
 #: src/features/status/MonitorsPage.tsx
 msgid "Monitors set the state of a status page component. Create a status page first."
 msgstr "A figyelők az állapotoldal egy összetevőjének állapotát állítják be. Előbb hozzon létre egy állapotoldalt."
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Months"
+msgstr "Hónapok"
 
 #: src/features/contact/ContactDetail.tsx
 msgid "More"
@@ -9591,6 +9660,7 @@ msgstr "Saját nézeteim"
 #: src/features/broadcasts/NewBroadcastDialog.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/inbox/views/ViewDialog.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/automation/RuleDialog.tsx
@@ -10057,6 +10127,10 @@ msgstr "Nincs mentett {inboxName}-azonosító. Bejelentkezésig csak e-mailben �
 msgid "No {provider} account has that subdomain. Check it in your address: acme in acme.zendesk.com."
 msgstr "Egyetlen {provider}-fiók sem rendelkezik ezzel az aldomainnel. Ellenőrizd a címedben: acme az acme.zendesk.com címben."
 
+#: src/features/reports/TrendsReport.tsx
+msgid "No activity in this period"
+msgstr "Nincs tevékenység ebben az időszakban"
+
 #: src/features/settings/webhooks/parts.tsx
 msgid "no answer"
 msgstr "nincs válasz"
@@ -10294,6 +10368,10 @@ msgstr "Nincs e-mail-csatorna, amely a megerősítő és üdvözlő leveleket el
 #: src/features/status/SubscribersTab.tsx
 msgid "No e-mail subscribers yet"
 msgstr "Még nincsenek e-mail-feliratkozók"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "No earlier figure"
+msgstr "Nincs korábbi szám"
 
 #: src/features/conversation/composer/EmojiPanel.tsx
 msgid "No emoji found."
@@ -10692,6 +10770,7 @@ msgstr "Senki sem kapná meg ezt a levelet. Válassz feliratkozókkal rendelkez�
 #: src/features/contact/MergePreview.tsx
 #: src/features/conversation/Feedback.tsx
 #: src/features/feedback/FeedbackPage.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/slack/SlackPage.tsx
@@ -10924,6 +11003,7 @@ msgstr "Jegyzetek"
 msgid "Notes where a teammate mentioned you"
 msgstr "Jegyzetek, amelyekben egy csapattárs megemlített"
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/notifications/events.ts
 msgid "Nothing"
 msgstr "Semmi"
@@ -11063,6 +11143,14 @@ msgstr "Nincs olvasatlan."
 #: src/features/home/HomePage.tsx
 msgid "nothing waiting"
 msgstr "semmi nem vár"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Nothing was measured in this period."
+msgstr "Ebben az időszakban nem mértek semmit."
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Nothing was opened, replied to or closed here. Try a longer period or other filters."
+msgstr "Itt semmit sem nyitottak meg, válaszoltak meg vagy zártak le. Próbáljon hosszabb időszakot vagy más szűrőket."
 
 #: src/features/status/Notices.tsx
 msgid "Notices to subscribers"
@@ -11779,6 +11867,10 @@ msgstr "nyitott, hozzárendelt"
 msgid "open, unassigned"
 msgstr "nyitott, nem hozzárendelt"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Opened"
+msgstr "Megnyitott"
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "OpenID Connect"
 msgstr "OpenID Connect"
@@ -12253,6 +12345,7 @@ msgstr "Havonta (30 nap)"
 
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Period"
 msgstr "Időszak"
 
@@ -12696,6 +12789,7 @@ msgstr "pro, csapat"
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/channels/AddChannelDialog.tsx
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/status/CreatePageDialog.tsx
@@ -13577,6 +13671,7 @@ msgstr "Válaszolt egy másik beszélgetés szálában"
 #: src/features/broadcasts/Report.tsx
 #: src/features/conversation/Feedback.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/channels/email/EmailSections.tsx
 #: src/features/setup/email/EmailLayout.tsx
 msgid "Replies"
@@ -13853,6 +13948,7 @@ msgid "Resolved at {endedAt}"
 msgstr "Megoldva: {endedAt}"
 
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Resolved in"
 msgstr "Megoldva ennyi idő alatt"
 
@@ -13873,6 +13969,10 @@ msgstr "Válaszidő"
 #: src/features/status/MonitorsPage.tsx
 msgid "Response time, last 24 hours"
 msgstr "Válaszidő, elmúlt 24 óra"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Response times"
+msgstr "Válaszidők"
 
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
@@ -14148,6 +14248,10 @@ msgstr "Sandbox (fejlesztői buildek)"
 #: src/features/contact/ContactSheet.tsx
 msgid "Satisfaction"
 msgstr "Elégedettség"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Satisfied"
+msgstr "Elégedett"
 
 #: src/features/inbox/ChatsPage.tsx
 msgid "satisfied · 👍 {good} 👎 {bad}"
@@ -15536,6 +15640,7 @@ msgid "SLA breaches"
 msgstr "SLA breaches"
 
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "SLA met"
 msgstr "SLA teljesítve"
 
@@ -15767,6 +15872,10 @@ msgstr "Az SPF átmegy a(z) {spfDomain} domainre, nem a(z) {from} küldési doma
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "SPF passes for {spfDomain}."
 msgstr "Az SPF átmegy a(z) {spfDomain} domainre."
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Split by"
+msgstr "Bontás"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "Stage"
@@ -16164,6 +16273,7 @@ msgstr "TCP-ellenőrzés"
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/settings/SettingsColumn.tsx
@@ -16504,6 +16614,10 @@ msgstr "Az elemek ezeken a címeken működnek; add hozzá a fejlesztői szerver
 msgid "The end must be after the start."
 msgstr "A végének a kezdet után kell lennie."
 
+#: src/features/reports/TrendsReport.tsx
+msgid "The end must not be before the start, and the range can be at most 13 months."
+msgstr "A vég nem lehet a kezdet előtt, és a tartomány legfeljebb 13 hónap lehet."
+
 #: src/components/common/text.ts
 msgid "The endpoint is disabled. Enable it to send deliveries again."
 msgstr "A végpont le van tiltva. Engedélyezd, hogy újra küldjön kézbesítéseket."
@@ -16519,6 +16633,10 @@ msgstr "A pontos szavak, amelyeket a jelölőnégyzet vagy az aláírás mellett
 #: src/features/migrations/DoneStep.tsx
 msgid "The export file"
 msgstr "Az exportfájl"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "The figures are still being prepared."
+msgstr "A számok még készülnek."
 
 #: src/features/migrations/UploadStep.tsx
 msgid "The file"
@@ -17639,6 +17757,7 @@ msgstr "Ez a tag már nincs a munkaterületen."
 msgid "This migration has ended, so nothing more can be uploaded. Start a new one for another file."
 msgstr "Ez az átvitel véget ért, így semmi több nem tölthető fel. Másik fájlhoz indíts újat."
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "This month"
 msgstr "Ebben a hónapban"
@@ -17841,6 +17960,7 @@ msgid "Tickets come over with their replies, notes, tags, status and assignee. E
 msgstr "A jegyek a válaszaikkal, jegyzeteikkel, címkéikkel, állapotukkal és felelősükkel együtt jönnek át. Fent add meg a támogatási címed."
 
 #: src/features/migrations/ReviewStep.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
 msgid "Time"
 msgstr "Idő"
@@ -17870,6 +17990,7 @@ msgstr "TLS (465-ös port)"
 
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "To"
@@ -17887,6 +18008,7 @@ msgstr "Címzett: {emailTo}"
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/ReportsColumn.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Today"
 msgstr "Ma"
 
@@ -17951,6 +18073,11 @@ msgstr "Kuka"
 #: src/features/migrations/text.ts
 msgid "Trash, never imported"
 msgstr "Kuka, soha nem importálva"
+
+#: src/features/reports/ReportPages.tsx
+#: src/features/reports/ReportsColumn.tsx
+msgid "Trends"
+msgstr "Trendek"
 
 #: src/features/home/HomePage.tsx
 msgid "Triage"
@@ -18373,6 +18500,10 @@ msgstr "Elérhető ekkortól: {upSince}. Ha biztos benne, tegye közzé, hogy mi
 #: src/features/broadcasts/Import.tsx
 msgid "Up to {max} and 100,000 rows, with a header row. Excel files in Turkish or Western encodings and columns separated by commas, semicolons or tabs are read as they are."
 msgstr "Legfeljebb {max} és 100 000 sor, fejlécsorral. A török vagy nyugati kódolású Excel-fájlok, valamint a vesszővel, pontosvesszővel vagy tabulátorral elválasztott oszlopok úgy olvasódnak, ahogy vannak."
+
+#: src/features/reports/ReportsColumn.tsx
+msgid "Up to 13 months, by group"
+msgstr "Legfeljebb 13 hónap, csoportonként"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "Update text"
@@ -18971,6 +19102,10 @@ msgstr "Webhelyek és alkalmazások"
 #: src/components/common/text.ts
 msgid "Wednesday"
 msgstr "Szerda"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Weeks"
+msgstr "Hetek"
 
 #: src/features/broadcasts/ListForm.tsx
 msgid "Welcome receipt"

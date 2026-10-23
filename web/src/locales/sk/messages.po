@@ -882,6 +882,10 @@ msgstr "Odberateľov: {subscribed}"
 msgid "{subscribed} subscribers"
 msgstr "Odberatelia: {subscribed}"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "{text} vs previous period"
+msgstr "{text} oproti predchádzajúcemu obdobiu"
+
 #: src/features/docs/PagesTab.tsx
 msgid "{threads} open discussions"
 msgstr "Otvorených diskusií: {threads}"
@@ -1055,6 +1059,10 @@ msgstr "7 dní"
 #: src/features/status/SettingsTab.tsx
 msgid "7 to 90."
 msgstr "7 až 90."
+
+#: src/features/reports/TrendsReport.tsx
+msgid "90th percentile"
+msgstr "90. percentil"
 
 #: src/features/status/ResponseChart.tsx
 msgid "95th percentile"
@@ -2006,6 +2014,7 @@ msgstr "Alertmanager"
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/RunLog.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -3367,6 +3376,10 @@ msgstr "e-mailom"
 msgid "By e-mail"
 msgstr "E-mailom"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "By group"
+msgstr "Podľa skupín"
+
 #: src/features/reports/ReportsColumn.tsx
 msgid "By member"
 msgstr "Podľa člena"
@@ -3625,6 +3638,7 @@ msgid "Changing the sending domain turns DKIM signing off until you enable it ag
 msgstr "Zmena odosielacej domény vypne podpisovanie DKIM, kým ho pre novú doménu znova nezapnete."
 
 #: src/features/contact/ContactDetails.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/settings/channels/AddChannelDialog.tsx
 #: src/features/settings/channels/ChannelPage.tsx
@@ -4011,6 +4025,7 @@ msgstr "Zavrieť hľadanie (Esc)"
 #: src/components/common/text.ts
 #: src/features/inbox/ChatList.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Closed"
 msgstr "Uzavreté"
 
@@ -4535,6 +4550,10 @@ msgstr "konverzácií"
 msgid "Conversations"
 msgstr "Konverzácie"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Conversations and replies"
+msgstr "Konverzácie a odpovede"
+
 #: src/features/migrations/parts.tsx
 msgid "Conversations copied"
 msgstr "Konverzácie skopírované"
@@ -4900,6 +4919,7 @@ msgstr "Cron"
 msgid "CSV file"
 msgstr "Súbor CSV"
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/inboxes/colors.tsx
@@ -4963,6 +4983,10 @@ msgstr "Stmaviť"
 msgid "Darken the colours to match the theme"
 msgstr "Stmaviť farby podľa motívu"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Data up to {builtText}"
+msgstr "Údaje do {builtText}"
+
 #: src/features/status/IncidentDialog.tsx
 msgid "Database upgrade"
 msgstr "Upgrade databázy"
@@ -4977,6 +5001,7 @@ msgid "Dates"
 msgstr "Dátumy"
 
 #: src/features/broadcasts/Growth.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Days"
 msgstr "Dni"
@@ -5261,6 +5286,7 @@ msgstr "Odstránená schránka"
 #: src/components/common/DiscussionAuthor.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Deleted member"
 msgstr "Odstránený člen"
@@ -6353,6 +6379,10 @@ msgstr "Expires soon"
 msgid "Export"
 msgstr "Exportovať"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Export CSV"
+msgstr "Exportovať CSV"
+
 #: src/features/migrations/text.ts
 msgid "Export file"
 msgstr "Exportný súbor"
@@ -6490,6 +6520,10 @@ msgstr "Najmenej otvorených konverzácií"
 msgid "Fields"
 msgstr "Polia"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Figures by group"
+msgstr "Čísla podľa skupín"
+
 #: src/features/migrations/Wizard.tsx
 msgid "File"
 msgstr "Súbor"
@@ -6621,6 +6655,7 @@ msgstr "prvá odpoveď"
 #: src/features/conversation/SlaPopover.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "First reply"
 msgstr "Prvá odpoveď"
@@ -6632,6 +6667,10 @@ msgstr "Prvá odpoveď {first}"
 #: src/app/TeamMenu.tsx
 msgid "first reply in {first}"
 msgstr "prvá odpoveď za {first}"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "First reply, 90th percentile"
+msgstr "Prvá odpoveď, 90. percentil"
 
 #: src/features/broadcasts/Import.tsx
 msgid "First rows of the file"
@@ -6835,6 +6874,7 @@ msgstr "Nájdené vo vašich priečinkoch Odoslané"
 msgid "Friday"
 msgstr "Piatok"
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "From"
@@ -7086,6 +7126,10 @@ msgstr "Pozdraví nové konverzácie e-mailom, raz na kontakt v rámci intervalu
 #: src/features/status/ComponentDialogs.tsx
 msgid "Group"
 msgstr "Skupina"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Group by"
+msgstr "Zoskupiť podľa"
 
 #: src/features/settings/teams/TeamsPage.tsx
 msgid "Group members, such as billing or support, and give the group its inboxes in one place."
@@ -8208,6 +8252,7 @@ msgstr "Známe len z výsledkov testovacej správy z prijímajúceho servera."
 
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/text.ts
+#: src/features/reports/TrendsReport.tsx
 msgid "Label"
 msgstr "Štítok"
 
@@ -8279,17 +8324,31 @@ msgstr "Väčšie než limit tohto servera pre jednu správu"
 msgid "Largest file (MB)"
 msgstr "Najväčší súbor (MB)"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Last 12 months"
+msgstr "Posledných 12 mesiacov"
+
 #: src/features/home/HomePage.tsx
 msgid "Last 14 days"
 msgstr "Posledných 14 dní"
 
-#: src/features/home/HomePage.tsx
-#: src/features/reports/ReportPages.tsx
-msgid "Last 30 days"
-msgstr "Posledných 30 dní"
+#: src/features/reports/TrendsReport.tsx
+msgid "Last 3 months"
+msgstr "Posledné 3 mesiace"
 
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
+msgid "Last 30 days"
+msgstr "Posledných 30 dní"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Last 6 months"
+msgstr "Posledných 6 mesiacov"
+
+#: src/features/home/HomePage.tsx
+#: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Last 7 days"
 msgstr "Posledných 7 dní"
 
@@ -8316,6 +8375,10 @@ msgstr "Naposledy skontrolované {last}."
 #: src/features/status/StatusPages.tsx
 msgid "Last incident"
 msgstr "Posledný incident"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Last month"
+msgstr "Minulý mesiac"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Last name"
@@ -9078,6 +9141,7 @@ msgstr "Médiá, odkazy a dokumenty"
 msgid "median"
 msgstr "medián"
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/status/ResponseChart.tsx
 msgid "Median"
 msgstr "Medián"
@@ -9100,6 +9164,7 @@ msgstr "medián, od prvej správy po uzavretie"
 
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Member"
@@ -9342,6 +9407,10 @@ msgstr "Monitory"
 #: src/features/status/MonitorsPage.tsx
 msgid "Monitors set the state of a status page component. Create a status page first."
 msgstr "Monitory nastavujú stav komponentu stránky stavu. Najprv vytvorte stránku stavu."
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Months"
+msgstr "Mesiace"
 
 #: src/features/contact/ContactDetail.tsx
 msgid "More"
@@ -9591,6 +9660,7 @@ msgstr "Moje pohľady"
 #: src/features/broadcasts/NewBroadcastDialog.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/inbox/views/ViewDialog.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/automation/RuleDialog.tsx
@@ -10057,6 +10127,10 @@ msgstr "Nie je uložené žiadne ID {inboxName}. Do prihlásenia sa dá kontakto
 msgid "No {provider} account has that subdomain. Check it in your address: acme in acme.zendesk.com."
 msgstr "Žiadny účet {provider} nemá túto subdoménu. Skontrolujte ju vo svojej adrese: acme v acme.zendesk.com."
 
+#: src/features/reports/TrendsReport.tsx
+msgid "No activity in this period"
+msgstr "V tomto období žiadna aktivita"
+
 #: src/features/settings/webhooks/parts.tsx
 msgid "no answer"
 msgstr "žiadna odpoveď"
@@ -10294,6 +10368,10 @@ msgstr "Žiadny e-mailový kanál, ktorý by mohol odoslať potvrdzovacie a uví
 #: src/features/status/SubscribersTab.tsx
 msgid "No e-mail subscribers yet"
 msgstr "Zatiaľ žiadni e-mailoví odberatelia"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "No earlier figure"
+msgstr "Žiadne skoršie číslo"
 
 #: src/features/conversation/composer/EmojiPanel.tsx
 msgid "No emoji found."
@@ -10692,6 +10770,7 @@ msgstr "Nikto by túto správu nedostal. Vyberte zoznamy s odberateľmi, alebo p
 #: src/features/contact/MergePreview.tsx
 #: src/features/conversation/Feedback.tsx
 #: src/features/feedback/FeedbackPage.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/slack/SlackPage.tsx
@@ -10924,6 +11003,7 @@ msgstr "Poznámky"
 msgid "Notes where a teammate mentioned you"
 msgstr "Poznámky, v ktorých vás spomenul kolega"
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/notifications/events.ts
 msgid "Nothing"
 msgstr "Nič"
@@ -11063,6 +11143,14 @@ msgstr "Nič neprečítané."
 #: src/features/home/HomePage.tsx
 msgid "nothing waiting"
 msgstr "nič nečaká"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Nothing was measured in this period."
+msgstr "V tomto období sa nič nemeralo."
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Nothing was opened, replied to or closed here. Try a longer period or other filters."
+msgstr "Nič sa tu neotvorilo, nezodpovedalo ani neuzavrelo. Skúste dlhšie obdobie alebo iné filtre."
 
 #: src/features/status/Notices.tsx
 msgid "Notices to subscribers"
@@ -11779,6 +11867,10 @@ msgstr "otvorené, pridelené"
 msgid "open, unassigned"
 msgstr "otvorené, nepridelené"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Opened"
+msgstr "Otvorené"
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "OpenID Connect"
 msgstr "OpenID Connect"
@@ -12253,6 +12345,7 @@ msgstr "Za mesiac (30 dní)"
 
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Period"
 msgstr "Obdobie"
 
@@ -12696,6 +12789,7 @@ msgstr "pro, tím"
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/channels/AddChannelDialog.tsx
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/status/CreatePageDialog.tsx
@@ -13577,6 +13671,7 @@ msgstr "Odpovedal(a) vo vlákne inej konverzácie"
 #: src/features/broadcasts/Report.tsx
 #: src/features/conversation/Feedback.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/channels/email/EmailSections.tsx
 #: src/features/setup/email/EmailLayout.tsx
 msgid "Replies"
@@ -13853,6 +13948,7 @@ msgid "Resolved at {endedAt}"
 msgstr "Vyriešené o {endedAt}"
 
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Resolved in"
 msgstr "Vyriešené za"
 
@@ -13873,6 +13969,10 @@ msgstr "Čas odozvy"
 #: src/features/status/MonitorsPage.tsx
 msgid "Response time, last 24 hours"
 msgstr "Čas odozvy, posledných 24 hodín"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Response times"
+msgstr "Časy odpovede"
 
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
@@ -14148,6 +14248,10 @@ msgstr "Sandbox (vývojové zostavenia)"
 #: src/features/contact/ContactSheet.tsx
 msgid "Satisfaction"
 msgstr "Spokojnosť"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Satisfied"
+msgstr "Spokojní"
 
 #: src/features/inbox/ChatsPage.tsx
 msgid "satisfied · 👍 {good} 👎 {bad}"
@@ -15536,6 +15640,7 @@ msgid "SLA breaches"
 msgstr "SLA breaches"
 
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "SLA met"
 msgstr "SLA splnené"
 
@@ -15767,6 +15872,10 @@ msgstr "SPF prechádza pre {spfDomain}, nie pre odosielaciu doménu {from}, tak�
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "SPF passes for {spfDomain}."
 msgstr "SPF prechádza pre {spfDomain}."
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Split by"
+msgstr "Rozdeliť podľa"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "Stage"
@@ -16164,6 +16273,7 @@ msgstr "Kontrola TCP"
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/settings/SettingsColumn.tsx
@@ -16504,6 +16614,10 @@ msgstr "Prvky fungujú na týchto adresách; svoj vývojový server pridajte v n
 msgid "The end must be after the start."
 msgstr "Koniec musí byť po začiatku."
 
+#: src/features/reports/TrendsReport.tsx
+msgid "The end must not be before the start, and the range can be at most 13 months."
+msgstr "Koniec nesmie byť pred začiatkom a rozsah môže byť najviac 13 mesiacov."
+
 #: src/components/common/text.ts
 msgid "The endpoint is disabled. Enable it to send deliveries again."
 msgstr "Koncový bod je vypnutý. Zapnite ho, aby sa doručenia posielali znova."
@@ -16519,6 +16633,10 @@ msgstr "Presné slová, ktoré videli vedľa začiarkavacieho políčka alebo po
 #: src/features/migrations/DoneStep.tsx
 msgid "The export file"
 msgstr "Exportný súbor"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "The figures are still being prepared."
+msgstr "Čísla sa ešte pripravujú."
 
 #: src/features/migrations/UploadStep.tsx
 msgid "The file"
@@ -17639,6 +17757,7 @@ msgstr "Tento člen už v pracovnom priestore nie je."
 msgid "This migration has ended, so nothing more can be uploaded. Start a new one for another file."
 msgstr "Táto migrácia skončila, takže už nemožno nič nahrať. Pre ďalší súbor začnite novú."
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "This month"
 msgstr "Tento mesiac"
@@ -17841,6 +17960,7 @@ msgid "Tickets come over with their replies, notes, tags, status and assignee. E
 msgstr "Tikety prídu s odpoveďami, poznámkami, tagmi, stavom a pridelenou osobou. Vyššie zadajte adresu podpory."
 
 #: src/features/migrations/ReviewStep.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
 msgid "Time"
 msgstr "Čas"
@@ -17870,6 +17990,7 @@ msgstr "TLS (port 465)"
 
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "To"
@@ -17887,6 +18008,7 @@ msgstr "Komu: {emailTo}"
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/ReportsColumn.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Today"
 msgstr "Dnes"
 
@@ -17951,6 +18073,11 @@ msgstr "Kôš"
 #: src/features/migrations/text.ts
 msgid "Trash, never imported"
 msgstr "Kôš, nikdy neimportovaný"
+
+#: src/features/reports/ReportPages.tsx
+#: src/features/reports/ReportsColumn.tsx
+msgid "Trends"
+msgstr "Trendy"
 
 #: src/features/home/HomePage.tsx
 msgid "Triage"
@@ -18373,6 +18500,10 @@ msgstr "V prevádzke od {upSince}. Keď si budete istí, zverejnite oznam, že j
 #: src/features/broadcasts/Import.tsx
 msgid "Up to {max} and 100,000 rows, with a header row. Excel files in Turkish or Western encodings and columns separated by commas, semicolons or tabs are read as they are."
 msgstr "Až {max} a 100 000 riadkov, s riadkom hlavičky. Súbory Excelu v tureckom alebo západnom kódovaní a stĺpce oddelené čiarkami, bodkočiarkami alebo tabulátormi sa čítajú tak, ako sú."
+
+#: src/features/reports/ReportsColumn.tsx
+msgid "Up to 13 months, by group"
+msgstr "Až 13 mesiacov, podľa skupín"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "Update text"
@@ -18971,6 +19102,10 @@ msgstr "Weby a aplikácie"
 #: src/components/common/text.ts
 msgid "Wednesday"
 msgstr "Streda"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Weeks"
+msgstr "Týždne"
 
 #: src/features/broadcasts/ListForm.tsx
 msgid "Welcome receipt"

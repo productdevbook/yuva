@@ -882,6 +882,10 @@ msgstr "{subscribed} ಚಂದಾದಾರರು"
 msgid "{subscribed} subscribers"
 msgstr "{subscribed} ಚಂದಾದಾರರು"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "{text} vs previous period"
+msgstr "ಹಿಂದಿನ ಅವಧಿಗೆ ಹೋಲಿಸಿದರೆ {text}"
+
 #: src/features/docs/PagesTab.tsx
 msgid "{threads} open discussions"
 msgstr "{threads} ತೆರೆದ ಚರ್ಚೆಗಳು"
@@ -1055,6 +1059,10 @@ msgstr "7 ದಿನಗಳು"
 #: src/features/status/SettingsTab.tsx
 msgid "7 to 90."
 msgstr "7 ರಿಂದ 90."
+
+#: src/features/reports/TrendsReport.tsx
+msgid "90th percentile"
+msgstr "೯೦ನೇ ಪರ್ಸೆಂಟೈಲ್"
 
 #: src/features/status/ResponseChart.tsx
 msgid "95th percentile"
@@ -2006,6 +2014,7 @@ msgstr "Alertmanager"
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/RunLog.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -3367,6 +3376,10 @@ msgstr "ಇಮೇಲ್ ಮೂಲಕ"
 msgid "By e-mail"
 msgstr "ಇಮೇಲ್ ಮೂಲಕ"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "By group"
+msgstr "ಗುಂಪಿನ ಪ್ರಕಾರ"
+
 #: src/features/reports/ReportsColumn.tsx
 msgid "By member"
 msgstr "ಸದಸ್ಯರ ಪ್ರಕಾರ"
@@ -3625,6 +3638,7 @@ msgid "Changing the sending domain turns DKIM signing off until you enable it ag
 msgstr "ಕಳುಹಿಸುವ ಡೊಮೇನ್ ಬದಲಾಯಿಸಿದರೆ ಹೊಸ ಡೊಮೇನ್‌ಗಾಗಿ ಮತ್ತೆ ಸಕ್ರಿಯಗೊಳಿಸುವವರೆಗೆ DKIM ಸೈನಿಂಗ್ ಆಫ್ ಆಗುತ್ತದೆ."
 
 #: src/features/contact/ContactDetails.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/settings/channels/AddChannelDialog.tsx
 #: src/features/settings/channels/ChannelPage.tsx
@@ -4011,6 +4025,7 @@ msgstr "ಹುಡುಕಾಟ ಮುಚ್ಚಿ (Esc)"
 #: src/components/common/text.ts
 #: src/features/inbox/ChatList.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Closed"
 msgstr "ಮುಚ್ಚಲಾಗಿದೆ"
 
@@ -4535,6 +4550,10 @@ msgstr "ಸಂಭಾಷಣೆಗಳು"
 msgid "Conversations"
 msgstr "ಸಂಭಾಷಣೆಗಳು"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Conversations and replies"
+msgstr "ಸಂಭಾಷಣೆಗಳು ಮತ್ತು ಉತ್ತರಗಳು"
+
 #: src/features/migrations/parts.tsx
 msgid "Conversations copied"
 msgstr "ಸಂಭಾಷಣೆಗಳನ್ನು ನಕಲಿಸಲಾಗಿದೆ"
@@ -4900,6 +4919,7 @@ msgstr "Cron"
 msgid "CSV file"
 msgstr "CSV ಫೈಲ್"
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/inboxes/colors.tsx
@@ -4963,6 +4983,10 @@ msgstr "ಗಾಢಗೊಳಿಸಿ"
 msgid "Darken the colours to match the theme"
 msgstr "ಥೀಮ್‌ಗೆ ಹೊಂದುವಂತೆ ಬಣ್ಣಗಳನ್ನು ಗಾಢಗೊಳಿಸಿ"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Data up to {builtText}"
+msgstr "{builtText} ವರೆಗಿನ ಡೇಟಾ"
+
 #: src/features/status/IncidentDialog.tsx
 msgid "Database upgrade"
 msgstr "ಡೇಟಾಬೇಸ್ ಅಪ್‌ಗ್ರೇಡ್"
@@ -4977,6 +5001,7 @@ msgid "Dates"
 msgstr "ದಿನಾಂಕಗಳು"
 
 #: src/features/broadcasts/Growth.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Days"
 msgstr "ದಿನಗಳು"
@@ -5261,6 +5286,7 @@ msgstr "ಅಳಿಸಿದ ಇನ್‌ಬಾಕ್ಸ್"
 #: src/components/common/DiscussionAuthor.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Deleted member"
 msgstr "ಅಳಿಸಿದ ಸದಸ್ಯ"
@@ -6353,6 +6379,10 @@ msgstr "Expires soon"
 msgid "Export"
 msgstr "ರಫ್ತು"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Export CSV"
+msgstr "CSV ರಫ್ತು ಮಾಡಿ"
+
 #: src/features/migrations/text.ts
 msgid "Export file"
 msgstr "ರಫ್ತು ಫೈಲ್"
@@ -6490,6 +6520,10 @@ msgstr "ಕಡಿಮೆ ತೆರೆದ ಸಂಭಾಷಣೆಗಳು"
 msgid "Fields"
 msgstr "ಕ್ಷೇತ್ರಗಳು"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Figures by group"
+msgstr "ಗುಂಪಿನ ಪ್ರಕಾರ ಅಂಕಿಗಳು"
+
 #: src/features/migrations/Wizard.tsx
 msgid "File"
 msgstr "ಫೈಲ್"
@@ -6621,6 +6655,7 @@ msgstr "ಮೊದಲ ಉತ್ತರ"
 #: src/features/conversation/SlaPopover.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "First reply"
 msgstr "ಮೊದಲ ಉತ್ತರ"
@@ -6632,6 +6667,10 @@ msgstr "ಮೊದಲ ಉತ್ತರ {first}"
 #: src/app/TeamMenu.tsx
 msgid "first reply in {first}"
 msgstr "{first} ನಲ್ಲಿ ಮೊದಲ ಉತ್ತರ"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "First reply, 90th percentile"
+msgstr "ಮೊದಲ ಉತ್ತರ, ೯೦ನೇ ಪರ್ಸೆಂಟೈಲ್"
 
 #: src/features/broadcasts/Import.tsx
 msgid "First rows of the file"
@@ -6835,6 +6874,7 @@ msgstr "ನಿಮ್ಮ ಕಳುಹಿಸಿದ ಫೋಲ್ಡರ್‌ಗಳ�
 msgid "Friday"
 msgstr "ಶುಕ್ರವಾರ"
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "From"
@@ -7086,6 +7126,10 @@ msgstr "ಹೊಸ ಸಂಭಾಷಣೆಗಳಿಗೆ ಇಮೇಲ್ ಮೂಲ
 #: src/features/status/ComponentDialogs.tsx
 msgid "Group"
 msgstr "ಗುಂಪು"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Group by"
+msgstr "ಗುಂಪು ಮಾಡಿ"
 
 #: src/features/settings/teams/TeamsPage.tsx
 msgid "Group members, such as billing or support, and give the group its inboxes in one place."
@@ -8208,6 +8252,7 @@ msgstr "ಪರೀಕ್ಷಾ ಮೇಲ್‌ಗೆ ಸ್ವೀಕರಿಸು�
 
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/text.ts
+#: src/features/reports/TrendsReport.tsx
 msgid "Label"
 msgstr "ಲೇಬಲ್"
 
@@ -8279,17 +8324,31 @@ msgstr "ಒಂದು ಸಂದೇಶಕ್ಕಾಗಿ ಈ ಸರ್ವರ್‌
 msgid "Largest file (MB)"
 msgstr "ಅತಿ ದೊಡ್ಡ ಫೈಲ್ (MB)"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Last 12 months"
+msgstr "ಕಳೆದ ೧೨ ತಿಂಗಳು"
+
 #: src/features/home/HomePage.tsx
 msgid "Last 14 days"
 msgstr "ಕಳೆದ 14 ದಿನಗಳು"
 
-#: src/features/home/HomePage.tsx
-#: src/features/reports/ReportPages.tsx
-msgid "Last 30 days"
-msgstr "ಕಳೆದ 30 ದಿನಗಳು"
+#: src/features/reports/TrendsReport.tsx
+msgid "Last 3 months"
+msgstr "ಕಳೆದ ೩ ತಿಂಗಳು"
 
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
+msgid "Last 30 days"
+msgstr "ಕಳೆದ 30 ದಿನಗಳು"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Last 6 months"
+msgstr "ಕಳೆದ ೬ ತಿಂಗಳು"
+
+#: src/features/home/HomePage.tsx
+#: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Last 7 days"
 msgstr "ಕಳೆದ 7 ದಿನಗಳು"
 
@@ -8316,6 +8375,10 @@ msgstr "ಕೊನೆಯ ಪರಿಶೀಲನೆ {last}."
 #: src/features/status/StatusPages.tsx
 msgid "Last incident"
 msgstr "ಕೊನೆಯ ಘಟನೆ"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Last month"
+msgstr "ಕಳೆದ ತಿಂಗಳು"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Last name"
@@ -9078,6 +9141,7 @@ msgstr "ಮಾಧ್ಯಮ, ಲಿಂಕ್‌ಗಳು ಮತ್ತು ಡಾ�
 msgid "median"
 msgstr "ಮಧ್ಯಮ"
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/status/ResponseChart.tsx
 msgid "Median"
 msgstr "ಮಧ್ಯಕ"
@@ -9100,6 +9164,7 @@ msgstr "ಮಧ್ಯಮ, ಮೊದಲ ಸಂದೇಶದಿಂದ ಮುಚ್�
 
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Member"
@@ -9342,6 +9407,10 @@ msgstr "ಮಾನಿಟರ್‌ಗಳು"
 #: src/features/status/MonitorsPage.tsx
 msgid "Monitors set the state of a status page component. Create a status page first."
 msgstr "ಮಾನಿಟರ್‌ಗಳು ಸ್ಥಿತಿ ಪುಟದ ಘಟಕದ ಸ್ಥಿತಿಯನ್ನು ನಿಗದಿಪಡಿಸುತ್ತವೆ. ಮೊದಲು ಸ್ಥಿತಿ ಪುಟ ರಚಿಸಿ."
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Months"
+msgstr "ತಿಂಗಳುಗಳು"
 
 #: src/features/contact/ContactDetail.tsx
 msgid "More"
@@ -9591,6 +9660,7 @@ msgstr "ನನ್ನ ವೀಕ್ಷಣೆಗಳು"
 #: src/features/broadcasts/NewBroadcastDialog.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/inbox/views/ViewDialog.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/automation/RuleDialog.tsx
@@ -10057,6 +10127,10 @@ msgstr "{inboxName} ID ಇಲ್ಲ. ಸೈನ್ ಇನ್ ಮಾಡುವವ�
 msgid "No {provider} account has that subdomain. Check it in your address: acme in acme.zendesk.com."
 msgstr "ಯಾವ {provider} ಖಾತೆಗೂ ಆ ಸಬ್‌ಡೊಮೇನ್ ಇಲ್ಲ. ನಿಮ್ಮ ವಿಳಾಸದಲ್ಲಿ ಪರಿಶೀಲಿಸಿ: acme.zendesk.com ನಲ್ಲಿ acme."
 
+#: src/features/reports/TrendsReport.tsx
+msgid "No activity in this period"
+msgstr "ಈ ಅವಧಿಯಲ್ಲಿ ಯಾವ ಚಟುವಟಿಕೆಯೂ ಇಲ್ಲ"
+
 #: src/features/settings/webhooks/parts.tsx
 msgid "no answer"
 msgstr "ಉತ್ತರವಿಲ್ಲ"
@@ -10294,6 +10368,10 @@ msgstr "ದೃಢೀಕರಣ ಮತ್ತು ಸ್ವಾಗತ ಮೇಲ್‌
 #: src/features/status/SubscribersTab.tsx
 msgid "No e-mail subscribers yet"
 msgstr "ಇನ್ನೂ ಇಮೇಲ್ ಚಂದಾದಾರರಿಲ್ಲ"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "No earlier figure"
+msgstr "ಹಿಂದಿನ ಅಂಕಿ ಇಲ್ಲ"
 
 #: src/features/conversation/composer/EmojiPanel.tsx
 msgid "No emoji found."
@@ -10692,6 +10770,7 @@ msgstr "ಈ ಮೇಲ್ ಯಾರಿಗೂ ಸಿಗುವುದಿಲ್ಲ. �
 #: src/features/contact/MergePreview.tsx
 #: src/features/conversation/Feedback.tsx
 #: src/features/feedback/FeedbackPage.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/slack/SlackPage.tsx
@@ -10924,6 +11003,7 @@ msgstr "ಟಿಪ್ಪಣಿಗಳು"
 msgid "Notes where a teammate mentioned you"
 msgstr "ಸಹೋದ್ಯೋಗಿ ನಿಮ್ಮನ್ನು ಉಲ್ಲೇಖಿಸಿದ ಟಿಪ್ಪಣಿಗಳು"
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/notifications/events.ts
 msgid "Nothing"
 msgstr "ಏನೂ ಇಲ್ಲ"
@@ -11063,6 +11143,14 @@ msgstr "ಓದದಿರುವುದು ಏನೂ ಇಲ್ಲ."
 #: src/features/home/HomePage.tsx
 msgid "nothing waiting"
 msgstr "ಏನೂ ಕಾಯುತ್ತಿಲ್ಲ"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Nothing was measured in this period."
+msgstr "ಈ ಅವಧಿಯಲ್ಲಿ ಏನನ್ನೂ ಅಳೆಯಲಾಗಿಲ್ಲ."
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Nothing was opened, replied to or closed here. Try a longer period or other filters."
+msgstr "ಇಲ್ಲಿ ಏನನ್ನೂ ತೆರೆಯಲಾಗಿಲ್ಲ, ಉತ್ತರಿಸಲಾಗಿಲ್ಲ ಅಥವಾ ಮುಚ್ಚಲಾಗಿಲ್ಲ. ದೀರ್ಘ ಅವಧಿ ಅಥವಾ ಇತರ ಫಿಲ್ಟರ್‌ಗಳನ್ನು ಪ್ರಯತ್ನಿಸಿ."
 
 #: src/features/status/Notices.tsx
 msgid "Notices to subscribers"
@@ -11779,6 +11867,10 @@ msgstr "ತೆರೆದಿದೆ, ನಿಯೋಜಿಸಲಾಗಿದೆ"
 msgid "open, unassigned"
 msgstr "ತೆರೆದಿದೆ, ನಿಯೋಜಿಸಿಲ್ಲ"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Opened"
+msgstr "ತೆರೆದ"
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "OpenID Connect"
 msgstr "OpenID Connect"
@@ -12253,6 +12345,7 @@ msgstr "ತಿಂಗಳಿಗೆ (30 ದಿನಗಳು)"
 
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Period"
 msgstr "ಅವಧಿ"
 
@@ -12696,6 +12789,7 @@ msgstr "pro, team"
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/channels/AddChannelDialog.tsx
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/status/CreatePageDialog.tsx
@@ -13577,6 +13671,7 @@ msgstr "ಇನ್ನೊಂದು ಸಂಭಾಷಣೆಯ ಥ್ರೆಡ್‌�
 #: src/features/broadcasts/Report.tsx
 #: src/features/conversation/Feedback.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/channels/email/EmailSections.tsx
 #: src/features/setup/email/EmailLayout.tsx
 msgid "Replies"
@@ -13853,6 +13948,7 @@ msgid "Resolved at {endedAt}"
 msgstr "{endedAt} ಕ್ಕೆ ಪರಿಹಾರವಾಯಿತು"
 
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Resolved in"
 msgstr "ಪರಿಹರಿಸಲು ಬೇಕಾದ ಸಮಯ"
 
@@ -13873,6 +13969,10 @@ msgstr "ಪ್ರತಿಕ್ರಿಯೆ ಸಮಯ"
 #: src/features/status/MonitorsPage.tsx
 msgid "Response time, last 24 hours"
 msgstr "ಪ್ರತಿಕ್ರಿಯೆ ಸಮಯ, ಕಳೆದ 24 ಗಂಟೆಗಳು"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Response times"
+msgstr "ಪ್ರತಿಕ್ರಿಯೆ ಸಮಯ"
 
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
@@ -14148,6 +14248,10 @@ msgstr "ಸ್ಯಾಂಡ್‌ಬಾಕ್ಸ್ (ಅಭಿವೃದ್ಧಿ 
 #: src/features/contact/ContactSheet.tsx
 msgid "Satisfaction"
 msgstr "ತೃಪ್ತಿ"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Satisfied"
+msgstr "ತೃಪ್ತರು"
 
 #: src/features/inbox/ChatsPage.tsx
 msgid "satisfied · 👍 {good} 👎 {bad}"
@@ -15536,6 +15640,7 @@ msgid "SLA breaches"
 msgstr "SLA breaches"
 
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "SLA met"
 msgstr "SLA ಪೂರೈಸಲಾಗಿದೆ"
 
@@ -15767,6 +15872,10 @@ msgstr "{spfDomain} ಗೆ SPF ಪಾಸ್ ಆಗುತ್ತದೆ, ಕಳು�
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "SPF passes for {spfDomain}."
 msgstr "{spfDomain} ಗೆ SPF ಪಾಸ್ ಆಗುತ್ತದೆ."
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Split by"
+msgstr "ಇದರ ಪ್ರಕಾರ ವಿಭಜಿಸಿ"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "Stage"
@@ -16164,6 +16273,7 @@ msgstr "TCP ಪರಿಶೀಲನೆ"
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/settings/SettingsColumn.tsx
@@ -16504,6 +16614,10 @@ msgstr "ಅಂಶಗಳು ಈ ವಿಳಾಸಗಳಲ್ಲಿ ಕೆಲಸ �
 msgid "The end must be after the start."
 msgstr "ಅಂತ್ಯ ಆರಂಭದ ನಂತರ ಇರಬೇಕು."
 
+#: src/features/reports/TrendsReport.tsx
+msgid "The end must not be before the start, and the range can be at most 13 months."
+msgstr "ಅಂತ್ಯವು ಆರಂಭಕ್ಕಿಂತ ಮೊದಲು ಇರಬಾರದು, ಮತ್ತು ವ್ಯಾಪ್ತಿ ಗರಿಷ್ಠ ೧೩ ತಿಂಗಳು ಆಗಿರಬಹುದು."
+
 #: src/components/common/text.ts
 msgid "The endpoint is disabled. Enable it to send deliveries again."
 msgstr "ಎಂಡ್‌ಪಾಯಿಂಟ್ ನಿಷ್ಕ್ರಿಯವಾಗಿದೆ. ವಿತರಣೆಗಳನ್ನು ಮತ್ತೆ ಕಳುಹಿಸಲು ಅದನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಿ."
@@ -16519,6 +16633,10 @@ msgstr "ಚೆಕ್‌ಬಾಕ್ಸ್ ಅಥವಾ ಸಹಿ ಪಕ್ಕದ
 #: src/features/migrations/DoneStep.tsx
 msgid "The export file"
 msgstr "ರಫ್ತು ಫೈಲ್"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "The figures are still being prepared."
+msgstr "ಅಂಕಿಗಳು ಇನ್ನೂ ಸಿದ್ಧವಾಗುತ್ತಿವೆ."
 
 #: src/features/migrations/UploadStep.tsx
 msgid "The file"
@@ -17639,6 +17757,7 @@ msgstr "ಈ ಸದಸ್ಯರು ಇನ್ನು ವರ್ಕ್‌ಸ್ಪೇ
 msgid "This migration has ended, so nothing more can be uploaded. Start a new one for another file."
 msgstr "ಈ ಸ್ಥಳಾಂತರ ಮುಗಿದಿದೆ, ಹಾಗಾಗಿ ಇನ್ನೇನೂ ಅಪ್‌ಲೋಡ್ ಮಾಡಲಾಗದು. ಇನ್ನೊಂದು ಫೈಲ್‌ಗಾಗಿ ಹೊಸದನ್ನು ಆರಂಭಿಸಿ."
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "This month"
 msgstr "ಈ ತಿಂಗಳು"
@@ -17841,6 +17960,7 @@ msgid "Tickets come over with their replies, notes, tags, status and assignee. E
 msgstr "ಟಿಕೆಟ್‌ಗಳು ತಮ್ಮ ಉತ್ತರಗಳು, ಟಿಪ್ಪಣಿಗಳು, ಟ್ಯಾಗ್‌ಗಳು, ಸ್ಥಿತಿ ಮತ್ತು ನಿಯೋಜಿತರೊಂದಿಗೆ ಬರುತ್ತವೆ. ಮೇಲೆ ನಿಮ್ಮ ಬೆಂಬಲ ವಿಳಾಸ ನಮೂದಿಸಿ."
 
 #: src/features/migrations/ReviewStep.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
 msgid "Time"
 msgstr "ಸಮಯ"
@@ -17870,6 +17990,7 @@ msgstr "TLS (ಪೋರ್ಟ್ 465)"
 
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "To"
@@ -17887,6 +18008,7 @@ msgstr "ಇವರಿಗೆ: {emailTo}"
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/ReportsColumn.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Today"
 msgstr "ಇಂದು"
 
@@ -17951,6 +18073,11 @@ msgstr "ಟ್ರ್ಯಾಶ್"
 #: src/features/migrations/text.ts
 msgid "Trash, never imported"
 msgstr "ಟ್ರ್ಯಾಶ್, ಎಂದಿಗೂ ಆಮದು ಮಾಡಿಲ್ಲ"
+
+#: src/features/reports/ReportPages.tsx
+#: src/features/reports/ReportsColumn.tsx
+msgid "Trends"
+msgstr "ಪ್ರವೃತ್ತಿಗಳು"
 
 #: src/features/home/HomePage.tsx
 msgid "Triage"
@@ -18373,6 +18500,10 @@ msgstr "{upSince} ರಿಂದ ಚಾಲನೆಯಲ್ಲಿದೆ. ಖಚಿ�
 #: src/features/broadcasts/Import.tsx
 msgid "Up to {max} and 100,000 rows, with a header row. Excel files in Turkish or Western encodings and columns separated by commas, semicolons or tabs are read as they are."
 msgstr "{max} ವರೆಗೆ ಮತ್ತು 100,000 ಸಾಲುಗಳವರೆಗೆ, ಹೆಡರ್ ಸಾಲಿನೊಂದಿಗೆ. ಟರ್ಕಿಶ್ ಅಥವಾ ಪಾಶ್ಚಾತ್ಯ ಎನ್‌ಕೋಡಿಂಗ್‌ಗಳಲ್ಲಿನ Excel ಫೈಲ್‌ಗಳು ಮತ್ತು ಅಲ್ಪವಿರಾಮ, ಅರ್ಧವಿರಾಮ ಅಥವಾ ಟ್ಯಾಬ್‌ಗಳಿಂದ ಬೇರ್ಪಡಿಸಿದ ಕಾಲಮ್‌ಗಳನ್ನು ಇದ್ದಂತೆಯೇ ಓದಲಾಗುತ್ತದೆ."
+
+#: src/features/reports/ReportsColumn.tsx
+msgid "Up to 13 months, by group"
+msgstr "೧೩ ತಿಂಗಳವರೆಗೆ, ಗುಂಪಿನ ಪ್ರಕಾರ"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "Update text"
@@ -18971,6 +19102,10 @@ msgstr "ವೆಬ್‌ಸೈಟ್‌ಗಳು ಮತ್ತು ಆ್ಯಪ್�
 #: src/components/common/text.ts
 msgid "Wednesday"
 msgstr "ಬುಧವಾರ"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Weeks"
+msgstr "ವಾರಗಳು"
 
 #: src/features/broadcasts/ListForm.tsx
 msgid "Welcome receipt"

@@ -882,6 +882,10 @@ msgstr "{subscribed} מנויים"
 msgid "{subscribed} subscribers"
 msgstr "מנויים: {subscribed}"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "{text} vs previous period"
+msgstr "{text} לעומת התקופה הקודמת"
+
 #: src/features/docs/PagesTab.tsx
 msgid "{threads} open discussions"
 msgstr "{threads} דיונים פתוחים"
@@ -1055,6 +1059,10 @@ msgstr "7 ימים"
 #: src/features/status/SettingsTab.tsx
 msgid "7 to 90."
 msgstr "7 עד 90."
+
+#: src/features/reports/TrendsReport.tsx
+msgid "90th percentile"
+msgstr "האחוזון ה-90"
 
 #: src/features/status/ResponseChart.tsx
 msgid "95th percentile"
@@ -2006,6 +2014,7 @@ msgstr "Alertmanager"
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/RunLog.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -3367,6 +3376,10 @@ msgstr "בדואר"
 msgid "By e-mail"
 msgstr "באימייל"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "By group"
+msgstr "לפי קבוצה"
+
 #: src/features/reports/ReportsColumn.tsx
 msgid "By member"
 msgstr "לפי חבר צוות"
@@ -3625,6 +3638,7 @@ msgid "Changing the sending domain turns DKIM signing off until you enable it ag
 msgstr "שינוי דומיין השליחה מכבה את החתימה ב-DKIM עד שתפעיל אותה שוב עבור הדומיין החדש."
 
 #: src/features/contact/ContactDetails.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/settings/channels/AddChannelDialog.tsx
 #: src/features/settings/channels/ChannelPage.tsx
@@ -4011,6 +4025,7 @@ msgstr "סגירת החיפוש (Esc)"
 #: src/components/common/text.ts
 #: src/features/inbox/ChatList.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Closed"
 msgstr "סגורות"
 
@@ -4535,6 +4550,10 @@ msgstr "שיחות"
 msgid "Conversations"
 msgstr "שיחות"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Conversations and replies"
+msgstr "שיחות ותשובות"
+
 #: src/features/migrations/parts.tsx
 msgid "Conversations copied"
 msgstr "שיחות הועתקו"
@@ -4900,6 +4919,7 @@ msgstr "Cron"
 msgid "CSV file"
 msgstr "קובץ CSV"
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/inboxes/colors.tsx
@@ -4963,6 +4983,10 @@ msgstr "החשכה"
 msgid "Darken the colours to match the theme"
 msgstr "החשך את הצבעים כך שיתאימו לערכת הנושא"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Data up to {builtText}"
+msgstr "נתונים עד {builtText}"
+
 #: src/features/status/IncidentDialog.tsx
 msgid "Database upgrade"
 msgstr "שדרוג מסד הנתונים"
@@ -4977,6 +5001,7 @@ msgid "Dates"
 msgstr "תאריכים"
 
 #: src/features/broadcasts/Growth.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Days"
 msgstr "ימים"
@@ -5261,6 +5286,7 @@ msgstr "תיבת דואר שנמחקה"
 #: src/components/common/DiscussionAuthor.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Deleted member"
 msgstr "חבר צוות שנמחק"
@@ -6353,6 +6379,10 @@ msgstr "Expires soon"
 msgid "Export"
 msgstr "ייצוא"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Export CSV"
+msgstr "ייצוא CSV"
+
 #: src/features/migrations/text.ts
 msgid "Export file"
 msgstr "קובץ ייצוא"
@@ -6490,6 +6520,10 @@ msgstr "הכי פחות שיחות פתוחות"
 msgid "Fields"
 msgstr "שדות"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Figures by group"
+msgstr "מספרים לפי קבוצה"
+
 #: src/features/migrations/Wizard.tsx
 msgid "File"
 msgstr "קובץ"
@@ -6621,6 +6655,7 @@ msgstr "תשובה ראשונה"
 #: src/features/conversation/SlaPopover.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "First reply"
 msgstr "תגובה ראשונה"
@@ -6632,6 +6667,10 @@ msgstr "תגובה ראשונה {first}"
 #: src/app/TeamMenu.tsx
 msgid "first reply in {first}"
 msgstr "תשובה ראשונה תוך {first}"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "First reply, 90th percentile"
+msgstr "תשובה ראשונה, האחוזון ה-90"
 
 #: src/features/broadcasts/Import.tsx
 msgid "First rows of the file"
@@ -6835,6 +6874,7 @@ msgstr "נמצא בתיקיות הדואר שנשלח שלך"
 msgid "Friday"
 msgstr "יום שישי"
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "From"
@@ -7086,6 +7126,10 @@ msgstr "מקבל שיחות חדשות באימייל, פעם אחת לכל אי
 #: src/features/status/ComponentDialogs.tsx
 msgid "Group"
 msgstr "קבוצה"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Group by"
+msgstr "קיבוץ לפי"
 
 #: src/features/settings/teams/TeamsPage.tsx
 msgid "Group members, such as billing or support, and give the group its inboxes in one place."
@@ -8208,6 +8252,7 @@ msgstr "ידוע רק מתוצאות השרת המקבל על הודעת הבד�
 
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/text.ts
+#: src/features/reports/TrendsReport.tsx
 msgid "Label"
 msgstr "תווית"
 
@@ -8279,17 +8324,31 @@ msgstr "גדול ממגבלת השרת הזה להודעה אחת"
 msgid "Largest file (MB)"
 msgstr "הקובץ הגדול ביותר (MB)"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Last 12 months"
+msgstr "12 החודשים האחרונים"
+
 #: src/features/home/HomePage.tsx
 msgid "Last 14 days"
 msgstr "14 הימים האחרונים"
 
-#: src/features/home/HomePage.tsx
-#: src/features/reports/ReportPages.tsx
-msgid "Last 30 days"
-msgstr "30 הימים האחרונים"
+#: src/features/reports/TrendsReport.tsx
+msgid "Last 3 months"
+msgstr "3 החודשים האחרונים"
 
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
+msgid "Last 30 days"
+msgstr "30 הימים האחרונים"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Last 6 months"
+msgstr "6 החודשים האחרונים"
+
+#: src/features/home/HomePage.tsx
+#: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Last 7 days"
 msgstr "7 הימים האחרונים"
 
@@ -8316,6 +8375,10 @@ msgstr "נבדק לאחרונה {last}."
 #: src/features/status/StatusPages.tsx
 msgid "Last incident"
 msgstr "האירוע האחרון"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Last month"
+msgstr "החודש שעבר"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Last name"
@@ -9078,6 +9141,7 @@ msgstr "מדיה, קישורים ומסמכים"
 msgid "median"
 msgstr "חציון"
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/status/ResponseChart.tsx
 msgid "Median"
 msgstr "חציון"
@@ -9100,6 +9164,7 @@ msgstr "חציון, מההודעה הראשונה ועד הסגירה"
 
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Member"
@@ -9342,6 +9407,10 @@ msgstr "מוניטורים"
 #: src/features/status/MonitorsPage.tsx
 msgid "Monitors set the state of a status page component. Create a status page first."
 msgstr "מוניטורים קובעים את מצב הרכיב בדף הסטטוס. צרו קודם דף סטטוס."
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Months"
+msgstr "חודשים"
 
 #: src/features/contact/ContactDetail.tsx
 msgid "More"
@@ -9591,6 +9660,7 @@ msgstr "התצוגות שלי"
 #: src/features/broadcasts/NewBroadcastDialog.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/inbox/views/ViewDialog.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/automation/RuleDialog.tsx
@@ -10057,6 +10127,10 @@ msgstr "אין מזהה של {inboxName}. עד שייכנס לחשבון אפש�
 msgid "No {provider} account has that subdomain. Check it in your address: acme in acme.zendesk.com."
 msgstr "אין חשבון {provider} עם תת-הדומיין הזה. בדוק אותו בכתובת שלך: acme ב-acme.zendesk.com."
 
+#: src/features/reports/TrendsReport.tsx
+msgid "No activity in this period"
+msgstr "אין פעילות בתקופה זו"
+
 #: src/features/settings/webhooks/parts.tsx
 msgid "no answer"
 msgstr "ללא תשובה"
@@ -10294,6 +10368,10 @@ msgstr "אין ערוץ אימייל שיכול לשלוח את אימיילי �
 #: src/features/status/SubscribersTab.tsx
 msgid "No e-mail subscribers yet"
 msgstr "אין עדיין מנויי דוא״ל"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "No earlier figure"
+msgstr "אין מספר קודם"
 
 #: src/features/conversation/composer/EmojiPanel.tsx
 msgid "No emoji found."
@@ -10692,6 +10770,7 @@ msgstr "אף אחד לא יקבל את האימייל הזה. בחר רשימו�
 #: src/features/contact/MergePreview.tsx
 #: src/features/conversation/Feedback.tsx
 #: src/features/feedback/FeedbackPage.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/slack/SlackPage.tsx
@@ -10924,6 +11003,7 @@ msgstr "הערות"
 msgid "Notes where a teammate mentioned you"
 msgstr "הערות שבהן חבר צוות הזכיר אותך"
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/notifications/events.ts
 msgid "Nothing"
 msgstr "כלום"
@@ -11063,6 +11143,14 @@ msgstr "אין דבר שלא נקרא."
 #: src/features/home/HomePage.tsx
 msgid "nothing waiting"
 msgstr "שום דבר לא ממתין"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Nothing was measured in this period."
+msgstr "לא נמדד דבר בתקופה זו."
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Nothing was opened, replied to or closed here. Try a longer period or other filters."
+msgstr "כאן לא נפתח, נענה או נסגר דבר. נסו תקופה ארוכה יותר או מסננים אחרים."
 
 #: src/features/status/Notices.tsx
 msgid "Notices to subscribers"
@@ -11779,6 +11867,10 @@ msgstr "פתוחות, משויכות"
 msgid "open, unassigned"
 msgstr "פתוחות, לא משויכות"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Opened"
+msgstr "נפתחו"
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "OpenID Connect"
 msgstr "OpenID Connect"
@@ -12253,6 +12345,7 @@ msgstr "לחודש (30 יום)"
 
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Period"
 msgstr "תקופה"
 
@@ -12696,6 +12789,7 @@ msgstr "pro, team"
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/channels/AddChannelDialog.tsx
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/status/CreatePageDialog.tsx
@@ -13577,6 +13671,7 @@ msgstr "השיב בשרשור של שיחה אחרת"
 #: src/features/broadcasts/Report.tsx
 #: src/features/conversation/Feedback.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/channels/email/EmailSections.tsx
 #: src/features/setup/email/EmailLayout.tsx
 msgid "Replies"
@@ -13853,6 +13948,7 @@ msgid "Resolved at {endedAt}"
 msgstr "נפתר ב-{endedAt}"
 
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Resolved in"
 msgstr "נפתר תוך"
 
@@ -13873,6 +13969,10 @@ msgstr "זמן תגובה"
 #: src/features/status/MonitorsPage.tsx
 msgid "Response time, last 24 hours"
 msgstr "זמן תגובה, 24 השעות האחרונות"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Response times"
+msgstr "זמני תגובה"
 
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
@@ -14148,6 +14248,10 @@ msgstr "Sandbox (גרסאות פיתוח)"
 #: src/features/contact/ContactSheet.tsx
 msgid "Satisfaction"
 msgstr "שביעות רצון"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Satisfied"
+msgstr "מרוצים"
 
 #: src/features/inbox/ChatsPage.tsx
 msgid "satisfied · 👍 {good} 👎 {bad}"
@@ -15536,6 +15640,7 @@ msgid "SLA breaches"
 msgstr "SLA breaches"
 
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "SLA met"
 msgstr "SLA קוים"
 
@@ -15767,6 +15872,10 @@ msgstr "SPF עובר עבור {spfDomain}, לא עבור דומיין השליח
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "SPF passes for {spfDomain}."
 msgstr "SPF עובר עבור {spfDomain}."
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Split by"
+msgstr "פיצול לפי"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "Stage"
@@ -16164,6 +16273,7 @@ msgstr "בדיקת TCP"
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/settings/SettingsColumn.tsx
@@ -16504,6 +16614,10 @@ msgstr "הרכיבים פועלים בכתובות האלה; הוסף את שר�
 msgid "The end must be after the start."
 msgstr "הסיום חייב להיות אחרי ההתחלה."
 
+#: src/features/reports/TrendsReport.tsx
+msgid "The end must not be before the start, and the range can be at most 13 months."
+msgstr "הסיום לא יכול להיות לפני ההתחלה, והטווח יכול להיות עד 13 חודשים."
+
 #: src/components/common/text.ts
 msgid "The endpoint is disabled. Enable it to send deliveries again."
 msgstr "נקודת הקצה מושבתת. הפעל אותה כדי לשלוח מסירות שוב."
@@ -16519,6 +16633,10 @@ msgstr "המילים המדויקות שראו ליד תיבת הסימון או
 #: src/features/migrations/DoneStep.tsx
 msgid "The export file"
 msgstr "קובץ הייצוא"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "The figures are still being prepared."
+msgstr "המספרים עדיין בהכנה."
 
 #: src/features/migrations/UploadStep.tsx
 msgid "The file"
@@ -17639,6 +17757,7 @@ msgstr "חבר הצוות הזה כבר לא נמצא בסביבת העבודה.
 msgid "This migration has ended, so nothing more can be uploaded. Start a new one for another file."
 msgstr "ההעברה הזאת הסתיימה, ולכן אי אפשר להעלות עוד. התחל חדשה לקובץ אחר."
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "This month"
 msgstr "החודש"
@@ -17841,6 +17960,7 @@ msgid "Tickets come over with their replies, notes, tags, status and assignee. E
 msgstr "כרטיסים מגיעים עם התשובות, ההערות, התגיות, הסטטוס והאחראי שלהם. הזן למעלה את כתובת התמיכה שלך."
 
 #: src/features/migrations/ReviewStep.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
 msgid "Time"
 msgstr "שעה"
@@ -17870,6 +17990,7 @@ msgstr "TLS (פורט 465)"
 
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "To"
@@ -17887,6 +18008,7 @@ msgstr "אל: {emailTo}"
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/ReportsColumn.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Today"
 msgstr "היום"
 
@@ -17951,6 +18073,11 @@ msgstr "פח"
 #: src/features/migrations/text.ts
 msgid "Trash, never imported"
 msgstr "פח, לא יובא מעולם"
+
+#: src/features/reports/ReportPages.tsx
+#: src/features/reports/ReportsColumn.tsx
+msgid "Trends"
+msgstr "מגמות"
 
 #: src/features/home/HomePage.tsx
 msgid "Triage"
@@ -18373,6 +18500,10 @@ msgstr "פועל מאז {upSince}. פרסמו הודעה שהכול תקין כ�
 #: src/features/broadcasts/Import.tsx
 msgid "Up to {max} and 100,000 rows, with a header row. Excel files in Turkish or Western encodings and columns separated by commas, semicolons or tabs are read as they are."
 msgstr "עד {max} ו-100,000 שורות, עם שורת כותרת. קובצי Excel בקידוד טורקי או מערבי ועמודות המופרדות בפסיקים, נקודה-פסיק או טאבים נקראים כפי שהם."
+
+#: src/features/reports/ReportsColumn.tsx
+msgid "Up to 13 months, by group"
+msgstr "עד 13 חודשים, לפי קבוצה"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "Update text"
@@ -18971,6 +19102,10 @@ msgstr "אתרים ואפליקציות"
 #: src/components/common/text.ts
 msgid "Wednesday"
 msgstr "יום רביעי"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Weeks"
+msgstr "שבועות"
 
 #: src/features/broadcasts/ListForm.tsx
 msgid "Welcome receipt"

@@ -882,6 +882,10 @@ msgstr "{subscribed} สมัครรับแล้ว"
 msgid "{subscribed} subscribers"
 msgstr "ผู้ติดตาม {subscribed} คน"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "{text} vs previous period"
+msgstr "{text} เทียบกับช่วงก่อนหน้า"
+
 #: src/features/docs/PagesTab.tsx
 msgid "{threads} open discussions"
 msgstr "{threads} กระทู้ที่เปิดอยู่"
@@ -1055,6 +1059,10 @@ msgstr "7 วัน"
 #: src/features/status/SettingsTab.tsx
 msgid "7 to 90."
 msgstr "7 ถึง 90"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "90th percentile"
+msgstr "เปอร์เซ็นไทล์ที่ 90"
 
 #: src/features/status/ResponseChart.tsx
 msgid "95th percentile"
@@ -2006,6 +2014,7 @@ msgstr "Alertmanager"
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/RunLog.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -3367,6 +3376,10 @@ msgstr "ทางอีเมล"
 msgid "By e-mail"
 msgstr "ทางอีเมล"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "By group"
+msgstr "ตามกลุ่ม"
+
 #: src/features/reports/ReportsColumn.tsx
 msgid "By member"
 msgstr "ตามสมาชิก"
@@ -3625,6 +3638,7 @@ msgid "Changing the sending domain turns DKIM signing off until you enable it ag
 msgstr "การเปลี่ยนโดเมนที่ส่งจะปิดการลงนาม DKIM จนกว่าคุณจะเปิดใหม่สำหรับโดเมนใหม่"
 
 #: src/features/contact/ContactDetails.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/settings/channels/AddChannelDialog.tsx
 #: src/features/settings/channels/ChannelPage.tsx
@@ -4011,6 +4025,7 @@ msgstr "ปิดการค้นหา (Esc)"
 #: src/components/common/text.ts
 #: src/features/inbox/ChatList.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Closed"
 msgstr "ปิดแล้ว"
 
@@ -4535,6 +4550,10 @@ msgstr "การสนทนา"
 msgid "Conversations"
 msgstr "การสนทนา"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Conversations and replies"
+msgstr "การสนทนาและการตอบกลับ"
+
 #: src/features/migrations/parts.tsx
 msgid "Conversations copied"
 msgstr "คัดลอกการสนทนาแล้ว"
@@ -4900,6 +4919,7 @@ msgstr "Cron"
 msgid "CSV file"
 msgstr "ไฟล์ CSV"
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/inboxes/colors.tsx
@@ -4963,6 +4983,10 @@ msgstr "ทำให้เข้มขึ้น"
 msgid "Darken the colours to match the theme"
 msgstr "ทำให้สีเข้มขึ้นให้เข้ากับธีม"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Data up to {builtText}"
+msgstr "ข้อมูลถึง {builtText}"
+
 #: src/features/status/IncidentDialog.tsx
 msgid "Database upgrade"
 msgstr "การอัปเกรดฐานข้อมูล"
@@ -4977,6 +5001,7 @@ msgid "Dates"
 msgstr "วันที่"
 
 #: src/features/broadcasts/Growth.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Days"
 msgstr "วัน"
@@ -5261,6 +5286,7 @@ msgstr "กล่องข้อความที่ลบแล้ว"
 #: src/components/common/DiscussionAuthor.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Deleted member"
 msgstr "สมาชิกที่ถูกลบ"
@@ -6353,6 +6379,10 @@ msgstr "Expires soon"
 msgid "Export"
 msgstr "ส่งออก"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Export CSV"
+msgstr "ส่งออก CSV"
+
 #: src/features/migrations/text.ts
 msgid "Export file"
 msgstr "ไฟล์ส่งออก"
@@ -6490,6 +6520,10 @@ msgstr "มีการสนทนาที่เปิดอยู่น้อ
 msgid "Fields"
 msgstr "ฟิลด์"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Figures by group"
+msgstr "ตัวเลขตามกลุ่ม"
+
 #: src/features/migrations/Wizard.tsx
 msgid "File"
 msgstr "ไฟล์"
@@ -6621,6 +6655,7 @@ msgstr "การตอบกลับครั้งแรก"
 #: src/features/conversation/SlaPopover.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "First reply"
 msgstr "การตอบครั้งแรก"
@@ -6632,6 +6667,10 @@ msgstr "การตอบกลับครั้งแรก {first}"
 #: src/app/TeamMenu.tsx
 msgid "first reply in {first}"
 msgstr "การตอบกลับครั้งแรกใน {first}"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "First reply, 90th percentile"
+msgstr "การตอบกลับครั้งแรก เปอร์เซ็นไทล์ที่ 90"
 
 #: src/features/broadcasts/Import.tsx
 msgid "First rows of the file"
@@ -6835,6 +6874,7 @@ msgstr "พบในโฟลเดอร์ส่งแล้วของคุ
 msgid "Friday"
 msgstr "วันศุกร์"
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "From"
@@ -7086,6 +7126,10 @@ msgstr "ทักทายการสนทนาใหม่ทางอีเ
 #: src/features/status/ComponentDialogs.tsx
 msgid "Group"
 msgstr "กลุ่ม"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Group by"
+msgstr "จัดกลุ่มตาม"
 
 #: src/features/settings/teams/TeamsPage.tsx
 msgid "Group members, such as billing or support, and give the group its inboxes in one place."
@@ -8208,6 +8252,7 @@ msgstr "ทราบจากผลของเซิร์ฟเวอร์ป
 
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/text.ts
+#: src/features/reports/TrendsReport.tsx
 msgid "Label"
 msgstr "ป้ายกำกับ"
 
@@ -8279,17 +8324,31 @@ msgstr "ใหญ่กว่าขีดจำกัดของเซิร์
 msgid "Largest file (MB)"
 msgstr "ไฟล์ที่ใหญ่ที่สุด (MB)"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Last 12 months"
+msgstr "12 เดือนที่ผ่านมา"
+
 #: src/features/home/HomePage.tsx
 msgid "Last 14 days"
 msgstr "14 วันที่ผ่านมา"
 
-#: src/features/home/HomePage.tsx
-#: src/features/reports/ReportPages.tsx
-msgid "Last 30 days"
-msgstr "30 วันที่ผ่านมา"
+#: src/features/reports/TrendsReport.tsx
+msgid "Last 3 months"
+msgstr "3 เดือนที่ผ่านมา"
 
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
+msgid "Last 30 days"
+msgstr "30 วันที่ผ่านมา"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Last 6 months"
+msgstr "6 เดือนที่ผ่านมา"
+
+#: src/features/home/HomePage.tsx
+#: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Last 7 days"
 msgstr "7 วันที่ผ่านมา"
 
@@ -8316,6 +8375,10 @@ msgstr "ตรวจสอบล่าสุด {last}"
 #: src/features/status/StatusPages.tsx
 msgid "Last incident"
 msgstr "เหตุการณ์ล่าสุด"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Last month"
+msgstr "เดือนที่แล้ว"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Last name"
@@ -9078,6 +9141,7 @@ msgstr "สื่อ ลิงก์ และเอกสาร"
 msgid "median"
 msgstr "ค่ามัธยฐาน"
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/status/ResponseChart.tsx
 msgid "Median"
 msgstr "ค่ามัธยฐาน"
@@ -9100,6 +9164,7 @@ msgstr "ค่ามัธยฐาน ตั้งแต่ข้อควา�
 
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Member"
@@ -9342,6 +9407,10 @@ msgstr "มอนิเตอร์"
 #: src/features/status/MonitorsPage.tsx
 msgid "Monitors set the state of a status page component. Create a status page first."
 msgstr "มอนิเตอร์กำหนดสถานะของส่วนประกอบในหน้าสถานะ สร้างหน้าสถานะก่อน"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Months"
+msgstr "เดือน"
 
 #: src/features/contact/ContactDetail.tsx
 msgid "More"
@@ -9591,6 +9660,7 @@ msgstr "มุมมองของฉัน"
 #: src/features/broadcasts/NewBroadcastDialog.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/inbox/views/ViewDialog.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/automation/RuleDialog.tsx
@@ -10057,6 +10127,10 @@ msgstr "ไม่มีรหัสของ {inboxName} จนกว่าจ�
 msgid "No {provider} account has that subdomain. Check it in your address: acme in acme.zendesk.com."
 msgstr "ไม่มีบัญชี {provider} ที่ใช้โดเมนย่อยนั้น ตรวจสอบในที่อยู่ของคุณ: acme ใน acme.zendesk.com"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "No activity in this period"
+msgstr "ไม่มีกิจกรรมในช่วงนี้"
+
 #: src/features/settings/webhooks/parts.tsx
 msgid "no answer"
 msgstr "ไม่มีคำตอบ"
@@ -10294,6 +10368,10 @@ msgstr "ไม่มีช่องทางอีเมลที่ส่งอ
 #: src/features/status/SubscribersTab.tsx
 msgid "No e-mail subscribers yet"
 msgstr "ยังไม่มีผู้สมัครรับอีเมล"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "No earlier figure"
+msgstr "ไม่มีตัวเลขก่อนหน้า"
 
 #: src/features/conversation/composer/EmojiPanel.tsx
 msgid "No emoji found."
@@ -10692,6 +10770,7 @@ msgstr "จะไม่มีใครได้รับอีเมลนี้
 #: src/features/contact/MergePreview.tsx
 #: src/features/conversation/Feedback.tsx
 #: src/features/feedback/FeedbackPage.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/slack/SlackPage.tsx
@@ -10924,6 +11003,7 @@ msgstr "บันทึก"
 msgid "Notes where a teammate mentioned you"
 msgstr "บันทึกที่เพื่อนร่วมทีมกล่าวถึงคุณ"
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/notifications/events.ts
 msgid "Nothing"
 msgstr "ไม่มีอะไร"
@@ -11063,6 +11143,14 @@ msgstr "ไม่มีอะไรที่ยังไม่อ่าน"
 #: src/features/home/HomePage.tsx
 msgid "nothing waiting"
 msgstr "ไม่มีอะไรรออยู่"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Nothing was measured in this period."
+msgstr "ไม่มีสิ่งที่วัดได้ในช่วงนี้"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Nothing was opened, replied to or closed here. Try a longer period or other filters."
+msgstr "ที่นี่ไม่มีอะไรถูกเปิด ตอบ หรือปิด ลองใช้ช่วงเวลาที่ยาวขึ้นหรือตัวกรองอื่น"
 
 #: src/features/status/Notices.tsx
 msgid "Notices to subscribers"
@@ -11779,6 +11867,10 @@ msgstr "เปิดอยู่ มอบหมายแล้ว"
 msgid "open, unassigned"
 msgstr "เปิดอยู่ ยังไม่มอบหมาย"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Opened"
+msgstr "เปิดแล้ว"
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "OpenID Connect"
 msgstr "OpenID Connect"
@@ -12253,6 +12345,7 @@ msgstr "ต่อเดือน (30 วัน)"
 
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Period"
 msgstr "ช่วงเวลา"
 
@@ -12696,6 +12789,7 @@ msgstr "pro, team"
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/channels/AddChannelDialog.tsx
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/status/CreatePageDialog.tsx
@@ -13577,6 +13671,7 @@ msgstr "ตอบกลับในเธรดของการสนทนา
 #: src/features/broadcasts/Report.tsx
 #: src/features/conversation/Feedback.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/channels/email/EmailSections.tsx
 #: src/features/setup/email/EmailLayout.tsx
 msgid "Replies"
@@ -13853,6 +13948,7 @@ msgid "Resolved at {endedAt}"
 msgstr "แก้ไขแล้วเมื่อ {endedAt}"
 
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Resolved in"
 msgstr "แก้ไขเสร็จใน"
 
@@ -13873,6 +13969,10 @@ msgstr "เวลาตอบสนอง"
 #: src/features/status/MonitorsPage.tsx
 msgid "Response time, last 24 hours"
 msgstr "เวลาตอบสนอง 24 ชั่วโมงที่ผ่านมา"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Response times"
+msgstr "เวลาตอบกลับ"
 
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
@@ -14148,6 +14248,10 @@ msgstr "Sandbox (บิลด์สำหรับพัฒนา)"
 #: src/features/contact/ContactSheet.tsx
 msgid "Satisfaction"
 msgstr "ความพึงพอใจ"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Satisfied"
+msgstr "พึงพอใจ"
 
 #: src/features/inbox/ChatsPage.tsx
 msgid "satisfied · 👍 {good} 👎 {bad}"
@@ -15536,6 +15640,7 @@ msgid "SLA breaches"
 msgstr "SLA breaches"
 
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "SLA met"
 msgstr "SLA บรรลุ"
 
@@ -15767,6 +15872,10 @@ msgstr "SPF ผ่านสำหรับ {spfDomain} ไม่ใช่สำ�
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "SPF passes for {spfDomain}."
 msgstr "SPF ผ่านสำหรับ {spfDomain}"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Split by"
+msgstr "แบ่งตาม"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "Stage"
@@ -16164,6 +16273,7 @@ msgstr "การตรวจสอบ TCP"
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/settings/SettingsColumn.tsx
@@ -16504,6 +16614,10 @@ msgstr "องค์ประกอบทำงานบนที่อยู่
 msgid "The end must be after the start."
 msgstr "เวลาสิ้นสุดต้องอยู่หลังเวลาเริ่ม"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "The end must not be before the start, and the range can be at most 13 months."
+msgstr "วันสิ้นสุดต้องไม่ก่อนวันเริ่ม และช่วงเวลาต้องไม่เกิน 13 เดือน"
+
 #: src/components/common/text.ts
 msgid "The endpoint is disabled. Enable it to send deliveries again."
 msgstr "เอนด์พอยต์ถูกปิด เปิดเพื่อส่งการส่งอีกครั้ง"
@@ -16519,6 +16633,10 @@ msgstr "ถ้อยคำที่พวกเขาเห็นข้างช
 #: src/features/migrations/DoneStep.tsx
 msgid "The export file"
 msgstr "ไฟล์ส่งออก"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "The figures are still being prepared."
+msgstr "ตัวเลขยังอยู่ระหว่างเตรียม"
 
 #: src/features/migrations/UploadStep.tsx
 msgid "The file"
@@ -17639,6 +17757,7 @@ msgstr "สมาชิกคนนี้ไม่ได้อยู่ในพ
 msgid "This migration has ended, so nothing more can be uploaded. Start a new one for another file."
 msgstr "การย้ายนี้สิ้นสุดแล้ว จึงอัปโหลดเพิ่มไม่ได้ เริ่มการย้ายใหม่สำหรับไฟล์อื่น"
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "This month"
 msgstr "เดือนนี้"
@@ -17841,6 +17960,7 @@ msgid "Tickets come over with their replies, notes, tags, status and assignee. E
 msgstr "ตั๋วมาพร้อมการตอบกลับ บันทึก แท็ก สถานะ และผู้รับผิดชอบ ใส่ที่อยู่ฝ่ายสนับสนุนของคุณด้านบน"
 
 #: src/features/migrations/ReviewStep.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
 msgid "Time"
 msgstr "เวลา"
@@ -17870,6 +17990,7 @@ msgstr "TLS (พอร์ต 465)"
 
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "To"
@@ -17887,6 +18008,7 @@ msgstr "ถึง: {emailTo}"
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/ReportsColumn.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Today"
 msgstr "วันนี้"
 
@@ -17951,6 +18073,11 @@ msgstr "ถังขยะ"
 #: src/features/migrations/text.ts
 msgid "Trash, never imported"
 msgstr "ถังขยะ ไม่เคยนำเข้า"
+
+#: src/features/reports/ReportPages.tsx
+#: src/features/reports/ReportsColumn.tsx
+msgid "Trends"
+msgstr "แนวโน้ม"
 
 #: src/features/home/HomePage.tsx
 msgid "Triage"
@@ -18373,6 +18500,10 @@ msgstr "ทำงานตั้งแต่ {upSince} เมื่อมั่�
 #: src/features/broadcasts/Import.tsx
 msgid "Up to {max} and 100,000 rows, with a header row. Excel files in Turkish or Western encodings and columns separated by commas, semicolons or tabs are read as they are."
 msgstr "สูงสุด {max} และ 100,000 แถว พร้อมแถวหัวตาราง ไฟล์ Excel ในการเข้ารหัสแบบตุรกีหรือตะวันตก และคอลัมน์ที่คั่นด้วยจุลภาค อัฒภาค หรือแท็บ จะถูกอ่านตามที่เป็น"
+
+#: src/features/reports/ReportsColumn.tsx
+msgid "Up to 13 months, by group"
+msgstr "สูงสุด 13 เดือน ตามกลุ่ม"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "Update text"
@@ -18971,6 +19102,10 @@ msgstr "เว็บไซต์และแอป"
 #: src/components/common/text.ts
 msgid "Wednesday"
 msgstr "วันพุธ"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Weeks"
+msgstr "สัปดาห์"
 
 #: src/features/broadcasts/ListForm.tsx
 msgid "Welcome receipt"

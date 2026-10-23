@@ -882,6 +882,10 @@ msgstr "{subscribed} abonați"
 msgid "{subscribed} subscribers"
 msgstr "{subscribed} abonați"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "{text} vs previous period"
+msgstr "{text} față de perioada anterioară"
+
 #: src/features/docs/PagesTab.tsx
 msgid "{threads} open discussions"
 msgstr "{threads} discuții deschise"
@@ -1055,6 +1059,10 @@ msgstr "7 zile"
 #: src/features/status/SettingsTab.tsx
 msgid "7 to 90."
 msgstr "De la 7 la 90."
+
+#: src/features/reports/TrendsReport.tsx
+msgid "90th percentile"
+msgstr "Percentila 90"
 
 #: src/features/status/ResponseChart.tsx
 msgid "95th percentile"
@@ -2006,6 +2014,7 @@ msgstr "Alertmanager"
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/RunLog.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -3367,6 +3376,10 @@ msgstr "prin e-mail"
 msgid "By e-mail"
 msgstr "Prin e-mail"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "By group"
+msgstr "După grup"
+
 #: src/features/reports/ReportsColumn.tsx
 msgid "By member"
 msgstr "După membru"
@@ -3625,6 +3638,7 @@ msgid "Changing the sending domain turns DKIM signing off until you enable it ag
 msgstr "Schimbarea domeniului de trimitere oprește semnarea DKIM până o reactivezi pentru noul domeniu."
 
 #: src/features/contact/ContactDetails.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/settings/channels/AddChannelDialog.tsx
 #: src/features/settings/channels/ChannelPage.tsx
@@ -4011,6 +4025,7 @@ msgstr "Închide căutarea (Esc)"
 #: src/components/common/text.ts
 #: src/features/inbox/ChatList.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Closed"
 msgstr "Închis"
 
@@ -4535,6 +4550,10 @@ msgstr "conversații"
 msgid "Conversations"
 msgstr "Conversații"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Conversations and replies"
+msgstr "Conversații și răspunsuri"
+
 #: src/features/migrations/parts.tsx
 msgid "Conversations copied"
 msgstr "Conversații copiate"
@@ -4900,6 +4919,7 @@ msgstr "Cron"
 msgid "CSV file"
 msgstr "Fișier CSV"
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/inboxes/colors.tsx
@@ -4963,6 +4983,10 @@ msgstr "Întunecă"
 msgid "Darken the colours to match the theme"
 msgstr "Întunecă culorile ca să se potrivească temei"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Data up to {builtText}"
+msgstr "Date până la {builtText}"
+
 #: src/features/status/IncidentDialog.tsx
 msgid "Database upgrade"
 msgstr "Actualizarea bazei de date"
@@ -4977,6 +5001,7 @@ msgid "Dates"
 msgstr "Date"
 
 #: src/features/broadcasts/Growth.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Days"
 msgstr "Zile"
@@ -5261,6 +5286,7 @@ msgstr "Căsuță ștearsă"
 #: src/components/common/DiscussionAuthor.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Deleted member"
 msgstr "Membru șters"
@@ -6353,6 +6379,10 @@ msgstr "Expires soon"
 msgid "Export"
 msgstr "Exportă"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Export CSV"
+msgstr "Exportă CSV"
+
 #: src/features/migrations/text.ts
 msgid "Export file"
 msgstr "Fișier de export"
@@ -6490,6 +6520,10 @@ msgstr "Cele mai puține conversații deschise"
 msgid "Fields"
 msgstr "Câmpuri"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Figures by group"
+msgstr "Cifre pe grupuri"
+
 #: src/features/migrations/Wizard.tsx
 msgid "File"
 msgstr "Fișier"
@@ -6621,6 +6655,7 @@ msgstr "primul răspuns"
 #: src/features/conversation/SlaPopover.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "First reply"
 msgstr "Primul răspuns"
@@ -6632,6 +6667,10 @@ msgstr "Primul răspuns {first}"
 #: src/app/TeamMenu.tsx
 msgid "first reply in {first}"
 msgstr "primul răspuns în {first}"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "First reply, 90th percentile"
+msgstr "Primul răspuns, percentila 90"
 
 #: src/features/broadcasts/Import.tsx
 msgid "First rows of the file"
@@ -6835,6 +6874,7 @@ msgstr "Găsit în dosarele tale Trimise"
 msgid "Friday"
 msgstr "Vineri"
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "From"
@@ -7086,6 +7126,10 @@ msgstr "Salută conversațiile noi prin e-mail, o dată pe contact în interval.
 #: src/features/status/ComponentDialogs.tsx
 msgid "Group"
 msgstr "Grup"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Group by"
+msgstr "Grupează după"
 
 #: src/features/settings/teams/TeamsPage.tsx
 msgid "Group members, such as billing or support, and give the group its inboxes in one place."
@@ -8208,6 +8252,7 @@ msgstr "Cunoscut doar din rezultatele mesajului de test de la serverul destinata
 
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/text.ts
+#: src/features/reports/TrendsReport.tsx
 msgid "Label"
 msgstr "Etichetă"
 
@@ -8279,17 +8324,31 @@ msgstr "Mai mare decât limita acestui server pentru un mesaj"
 msgid "Largest file (MB)"
 msgstr "Cel mai mare fișier (MB)"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Last 12 months"
+msgstr "Ultimele 12 luni"
+
 #: src/features/home/HomePage.tsx
 msgid "Last 14 days"
 msgstr "Ultimele 14 zile"
 
-#: src/features/home/HomePage.tsx
-#: src/features/reports/ReportPages.tsx
-msgid "Last 30 days"
-msgstr "Ultimele 30 de zile"
+#: src/features/reports/TrendsReport.tsx
+msgid "Last 3 months"
+msgstr "Ultimele 3 luni"
 
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
+msgid "Last 30 days"
+msgstr "Ultimele 30 de zile"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Last 6 months"
+msgstr "Ultimele 6 luni"
+
+#: src/features/home/HomePage.tsx
+#: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Last 7 days"
 msgstr "Ultimele 7 zile"
 
@@ -8316,6 +8375,10 @@ msgstr "Ultima verificare {last}."
 #: src/features/status/StatusPages.tsx
 msgid "Last incident"
 msgstr "Ultimul incident"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Last month"
+msgstr "Luna trecută"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Last name"
@@ -9078,6 +9141,7 @@ msgstr "Media, linkuri și documente"
 msgid "median"
 msgstr "mediană"
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/status/ResponseChart.tsx
 msgid "Median"
 msgstr "Mediana"
@@ -9100,6 +9164,7 @@ msgstr "mediană, de la primul mesaj la închidere"
 
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Member"
@@ -9342,6 +9407,10 @@ msgstr "Monitoare"
 #: src/features/status/MonitorsPage.tsx
 msgid "Monitors set the state of a status page component. Create a status page first."
 msgstr "Monitoarele setează starea unei componente a paginii de stare. Creează mai întâi o pagină de stare."
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Months"
+msgstr "Luni"
 
 #: src/features/contact/ContactDetail.tsx
 msgid "More"
@@ -9591,6 +9660,7 @@ msgstr "Vizualizările mele"
 #: src/features/broadcasts/NewBroadcastDialog.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/inbox/views/ViewDialog.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/automation/RuleDialog.tsx
@@ -10057,6 +10127,10 @@ msgstr "Nu există ID {inboxName}. Poate fi contactat doar prin e-mail până se
 msgid "No {provider} account has that subdomain. Check it in your address: acme in acme.zendesk.com."
 msgstr "Niciun cont {provider} nu are acel subdomeniu. Verifică-l în adresa ta: acme din acme.zendesk.com."
 
+#: src/features/reports/TrendsReport.tsx
+msgid "No activity in this period"
+msgstr "Nicio activitate în această perioadă"
+
 #: src/features/settings/webhooks/parts.tsx
 msgid "no answer"
 msgstr "niciun răspuns"
@@ -10294,6 +10368,10 @@ msgstr "Niciun canal de e-mail care să poată trimite mesajele de confirmare ș
 #: src/features/status/SubscribersTab.tsx
 msgid "No e-mail subscribers yet"
 msgstr "Încă niciun abonat prin e-mail"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "No earlier figure"
+msgstr "Nicio cifră anterioară"
 
 #: src/features/conversation/composer/EmojiPanel.tsx
 msgid "No emoji found."
@@ -10692,6 +10770,7 @@ msgstr "Nimeni nu ar primi acest mesaj. Alege liste cu abonați sau relaxează c
 #: src/features/contact/MergePreview.tsx
 #: src/features/conversation/Feedback.tsx
 #: src/features/feedback/FeedbackPage.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/slack/SlackPage.tsx
@@ -10924,6 +11003,7 @@ msgstr "Note"
 msgid "Notes where a teammate mentioned you"
 msgstr "Note în care un coleg te-a menționat"
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/notifications/events.ts
 msgid "Nothing"
 msgstr "Nimic"
@@ -11063,6 +11143,14 @@ msgstr "Nimic necitit."
 #: src/features/home/HomePage.tsx
 msgid "nothing waiting"
 msgstr "nimic în așteptare"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Nothing was measured in this period."
+msgstr "În această perioadă nu s-a măsurat nimic."
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Nothing was opened, replied to or closed here. Try a longer period or other filters."
+msgstr "Aici nu s-a deschis, nu s-a răspuns și nu s-a închis nimic. Încearcă o perioadă mai lungă sau alte filtre."
 
 #: src/features/status/Notices.tsx
 msgid "Notices to subscribers"
@@ -11779,6 +11867,10 @@ msgstr "deschis, atribuit"
 msgid "open, unassigned"
 msgstr "deschis, neatribuit"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Opened"
+msgstr "Deschise"
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "OpenID Connect"
 msgstr "OpenID Connect"
@@ -12253,6 +12345,7 @@ msgstr "Pe lună (30 de zile)"
 
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Period"
 msgstr "Perioadă"
 
@@ -12696,6 +12789,7 @@ msgstr "pro, echipă"
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/channels/AddChannelDialog.tsx
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/status/CreatePageDialog.tsx
@@ -13577,6 +13671,7 @@ msgstr "A răspuns în firul altei conversații"
 #: src/features/broadcasts/Report.tsx
 #: src/features/conversation/Feedback.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/channels/email/EmailSections.tsx
 #: src/features/setup/email/EmailLayout.tsx
 msgid "Replies"
@@ -13853,6 +13948,7 @@ msgid "Resolved at {endedAt}"
 msgstr "Rezolvat la {endedAt}"
 
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Resolved in"
 msgstr "Rezolvat în"
 
@@ -13873,6 +13969,10 @@ msgstr "Timp de răspuns"
 #: src/features/status/MonitorsPage.tsx
 msgid "Response time, last 24 hours"
 msgstr "Timp de răspuns, ultimele 24 de ore"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Response times"
+msgstr "Timpi de răspuns"
 
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
@@ -14148,6 +14248,10 @@ msgstr "Sandbox (versiuni de dezvoltare)"
 #: src/features/contact/ContactSheet.tsx
 msgid "Satisfaction"
 msgstr "Satisfacție"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Satisfied"
+msgstr "Mulțumiți"
 
 #: src/features/inbox/ChatsPage.tsx
 msgid "satisfied · 👍 {good} 👎 {bad}"
@@ -15536,6 +15640,7 @@ msgid "SLA breaches"
 msgstr "SLA breaches"
 
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "SLA met"
 msgstr "SLA respectat"
 
@@ -15767,6 +15872,10 @@ msgstr "SPF trece pentru {spfDomain}, nu pentru domeniul de trimitere {from}, de
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "SPF passes for {spfDomain}."
 msgstr "SPF trece pentru {spfDomain}."
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Split by"
+msgstr "Împarte după"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "Stage"
@@ -16164,6 +16273,7 @@ msgstr "Verificare TCP"
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/settings/SettingsColumn.tsx
@@ -16504,6 +16614,10 @@ msgstr "Elementele funcționează la aceste adrese; adaugă serverul tău de dez
 msgid "The end must be after the start."
 msgstr "Sfârșitul trebuie să fie după început."
 
+#: src/features/reports/TrendsReport.tsx
+msgid "The end must not be before the start, and the range can be at most 13 months."
+msgstr "Sfârșitul nu poate fi înaintea începutului, iar intervalul poate fi de cel mult 13 luni."
+
 #: src/components/common/text.ts
 msgid "The endpoint is disabled. Enable it to send deliveries again."
 msgstr "Endpointul este dezactivat. Activează-l ca să trimită din nou livrări."
@@ -16519,6 +16633,10 @@ msgstr "Cuvintele exacte pe care le-au văzut lângă caseta de bifat sau semnă
 #: src/features/migrations/DoneStep.tsx
 msgid "The export file"
 msgstr "Fișierul de export"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "The figures are still being prepared."
+msgstr "Cifrele sunt încă în pregătire."
 
 #: src/features/migrations/UploadStep.tsx
 msgid "The file"
@@ -17639,6 +17757,7 @@ msgstr "Acest membru nu mai este în spațiul de lucru."
 msgid "This migration has ended, so nothing more can be uploaded. Start a new one for another file."
 msgstr "Această migrare s-a încheiat, deci nimic nu mai poate fi încărcat. Începe una nouă pentru alt fișier."
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "This month"
 msgstr "Luna aceasta"
@@ -17841,6 +17960,7 @@ msgid "Tickets come over with their replies, notes, tags, status and assignee. E
 msgstr "Tichetele vin cu răspunsurile, notele, tagurile, starea și persoana atribuită. Introdu mai sus adresa ta de suport."
 
 #: src/features/migrations/ReviewStep.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
 msgid "Time"
 msgstr "Oră"
@@ -17870,6 +17990,7 @@ msgstr "TLS (portul 465)"
 
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "To"
@@ -17887,6 +18008,7 @@ msgstr "Către: {emailTo}"
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/ReportsColumn.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Today"
 msgstr "Azi"
 
@@ -17951,6 +18073,11 @@ msgstr "Coș"
 #: src/features/migrations/text.ts
 msgid "Trash, never imported"
 msgstr "Coș, niciodată importat"
+
+#: src/features/reports/ReportPages.tsx
+#: src/features/reports/ReportsColumn.tsx
+msgid "Trends"
+msgstr "Tendințe"
 
 #: src/features/home/HomePage.tsx
 msgid "Triage"
@@ -18373,6 +18500,10 @@ msgstr "Funcțional din {upSince}. Publică anunțul că totul este în regulă 
 #: src/features/broadcasts/Import.tsx
 msgid "Up to {max} and 100,000 rows, with a header row. Excel files in Turkish or Western encodings and columns separated by commas, semicolons or tabs are read as they are."
 msgstr "Până la {max} și 100.000 de rânduri, cu un rând de antet. Fișierele Excel în codări turcești sau occidentale și coloanele separate prin virgule, punct și virgulă sau tabulatori sunt citite așa cum sunt."
+
+#: src/features/reports/ReportsColumn.tsx
+msgid "Up to 13 months, by group"
+msgstr "Până la 13 luni, pe grupuri"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "Update text"
@@ -18971,6 +19102,10 @@ msgstr "Site-uri și aplicații"
 #: src/components/common/text.ts
 msgid "Wednesday"
 msgstr "Miercuri"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Weeks"
+msgstr "Săptămâni"
 
 #: src/features/broadcasts/ListForm.tsx
 msgid "Welcome receipt"

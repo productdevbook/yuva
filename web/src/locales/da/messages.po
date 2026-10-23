@@ -882,6 +882,10 @@ msgstr "{subscribed} tilmeldte"
 msgid "{subscribed} subscribers"
 msgstr "{subscribed} abonnenter"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "{text} vs previous period"
+msgstr "{text} i forhold til forrige periode"
+
 #: src/features/docs/PagesTab.tsx
 msgid "{threads} open discussions"
 msgstr "{threads} åbne diskussioner"
@@ -1055,6 +1059,10 @@ msgstr "7 dage"
 #: src/features/status/SettingsTab.tsx
 msgid "7 to 90."
 msgstr "7 til 90."
+
+#: src/features/reports/TrendsReport.tsx
+msgid "90th percentile"
+msgstr "90. percentil"
 
 #: src/features/status/ResponseChart.tsx
 msgid "95th percentile"
@@ -2006,6 +2014,7 @@ msgstr "Alertmanager"
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/RunLog.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -3367,6 +3376,10 @@ msgstr "på mail"
 msgid "By e-mail"
 msgstr "Via e-mail"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "By group"
+msgstr "Efter gruppe"
+
 #: src/features/reports/ReportsColumn.tsx
 msgid "By member"
 msgstr "Pr. medlem"
@@ -3625,6 +3638,7 @@ msgid "Changing the sending domain turns DKIM signing off until you enable it ag
 msgstr "Hvis du skifter afsenderdomæne, slås DKIM-signering fra, indtil du slår den til igen for det nye domæne."
 
 #: src/features/contact/ContactDetails.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/settings/channels/AddChannelDialog.tsx
 #: src/features/settings/channels/ChannelPage.tsx
@@ -4011,6 +4025,7 @@ msgstr "Luk søgningen (Esc)"
 #: src/components/common/text.ts
 #: src/features/inbox/ChatList.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Closed"
 msgstr "Lukket"
 
@@ -4535,6 +4550,10 @@ msgstr "samtaler"
 msgid "Conversations"
 msgstr "Samtaler"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Conversations and replies"
+msgstr "Samtaler og svar"
+
 #: src/features/migrations/parts.tsx
 msgid "Conversations copied"
 msgstr "Samtaler kopieret"
@@ -4900,6 +4919,7 @@ msgstr "Cron"
 msgid "CSV file"
 msgstr "CSV-fil"
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/inboxes/colors.tsx
@@ -4963,6 +4983,10 @@ msgstr "Gør mørkere"
 msgid "Darken the colours to match the theme"
 msgstr "Gør farverne mørkere, så de passer til temaet"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Data up to {builtText}"
+msgstr "Data til og med {builtText}"
+
 #: src/features/status/IncidentDialog.tsx
 msgid "Database upgrade"
 msgstr "Databaseopgradering"
@@ -4977,6 +5001,7 @@ msgid "Dates"
 msgstr "Datoer"
 
 #: src/features/broadcasts/Growth.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Days"
 msgstr "Dage"
@@ -5261,6 +5286,7 @@ msgstr "Slettet postkasse"
 #: src/components/common/DiscussionAuthor.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Deleted member"
 msgstr "Slettet medlem"
@@ -6353,6 +6379,10 @@ msgstr "Expires soon"
 msgid "Export"
 msgstr "Eksportér"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Export CSV"
+msgstr "Eksportér CSV"
+
 #: src/features/migrations/text.ts
 msgid "Export file"
 msgstr "Eksportfil"
@@ -6490,6 +6520,10 @@ msgstr "Færrest åbne samtaler"
 msgid "Fields"
 msgstr "Felter"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Figures by group"
+msgstr "Tal efter gruppe"
+
 #: src/features/migrations/Wizard.tsx
 msgid "File"
 msgstr "Fil"
@@ -6621,6 +6655,7 @@ msgstr "første svar"
 #: src/features/conversation/SlaPopover.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "First reply"
 msgstr "Første svar"
@@ -6632,6 +6667,10 @@ msgstr "Første svar {first}"
 #: src/app/TeamMenu.tsx
 msgid "first reply in {first}"
 msgstr "første svar inden for {first}"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "First reply, 90th percentile"
+msgstr "Første svar, 90. percentil"
 
 #: src/features/broadcasts/Import.tsx
 msgid "First rows of the file"
@@ -6835,6 +6874,7 @@ msgstr "Fundet i dine mapper med sendt post"
 msgid "Friday"
 msgstr "Fredag"
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "From"
@@ -7086,6 +7126,10 @@ msgstr "Hilser nye samtaler pr. e-mail, én gang pr. kontakt inden for intervall
 #: src/features/status/ComponentDialogs.tsx
 msgid "Group"
 msgstr "Gruppe"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Group by"
+msgstr "Gruppér efter"
 
 #: src/features/settings/teams/TeamsPage.tsx
 msgid "Group members, such as billing or support, and give the group its inboxes in one place."
@@ -8208,6 +8252,7 @@ msgstr "Kun kendt ud fra den modtagende servers resultater for testmailen."
 
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/text.ts
+#: src/features/reports/TrendsReport.tsx
 msgid "Label"
 msgstr "Etiket"
 
@@ -8279,17 +8324,31 @@ msgstr "Større end denne servers grænse for én besked"
 msgid "Largest file (MB)"
 msgstr "Største fil (MB)"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Last 12 months"
+msgstr "Seneste 12 måneder"
+
 #: src/features/home/HomePage.tsx
 msgid "Last 14 days"
 msgstr "Seneste 14 dage"
 
-#: src/features/home/HomePage.tsx
-#: src/features/reports/ReportPages.tsx
-msgid "Last 30 days"
-msgstr "Seneste 30 dage"
+#: src/features/reports/TrendsReport.tsx
+msgid "Last 3 months"
+msgstr "Seneste 3 måneder"
 
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
+msgid "Last 30 days"
+msgstr "Seneste 30 dage"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Last 6 months"
+msgstr "Seneste 6 måneder"
+
+#: src/features/home/HomePage.tsx
+#: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Last 7 days"
 msgstr "Seneste 7 dage"
 
@@ -8316,6 +8375,10 @@ msgstr "Sidst tjekket {last}."
 #: src/features/status/StatusPages.tsx
 msgid "Last incident"
 msgstr "Seneste hændelse"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Last month"
+msgstr "Sidste måned"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Last name"
@@ -9078,6 +9141,7 @@ msgstr "Medier, links og dokumenter"
 msgid "median"
 msgstr "median"
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/status/ResponseChart.tsx
 msgid "Median"
 msgstr "Median"
@@ -9100,6 +9164,7 @@ msgstr "median, fra første besked til lukning"
 
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Member"
@@ -9342,6 +9407,10 @@ msgstr "Monitorer"
 #: src/features/status/MonitorsPage.tsx
 msgid "Monitors set the state of a status page component. Create a status page first."
 msgstr "Monitorer sætter status for en komponent på en statusside. Opret først en statusside."
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Months"
+msgstr "Måneder"
 
 #: src/features/contact/ContactDetail.tsx
 msgid "More"
@@ -9591,6 +9660,7 @@ msgstr "Mine visninger"
 #: src/features/broadcasts/NewBroadcastDialog.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/inbox/views/ViewDialog.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/automation/RuleDialog.tsx
@@ -10057,6 +10127,10 @@ msgstr "Intet {inboxName}-id registreret. De kan kun nås pr. mail, indtil de lo
 msgid "No {provider} account has that subdomain. Check it in your address: acme in acme.zendesk.com."
 msgstr "Ingen {provider}-konto har det underdomæne. Tjek det i din adresse: acme i acme.zendesk.com."
 
+#: src/features/reports/TrendsReport.tsx
+msgid "No activity in this period"
+msgstr "Ingen aktivitet i perioden"
+
 #: src/features/settings/webhooks/parts.tsx
 msgid "no answer"
 msgstr "intet svar"
@@ -10294,6 +10368,10 @@ msgstr "Ingen e-mailkanal, der kan sende sine bekræftelses- og velkomstmails"
 #: src/features/status/SubscribersTab.tsx
 msgid "No e-mail subscribers yet"
 msgstr "Ingen e-mailabonnenter endnu"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "No earlier figure"
+msgstr "Intet tidligere tal"
 
 #: src/features/conversation/composer/EmojiPanel.tsx
 msgid "No emoji found."
@@ -10692,6 +10770,7 @@ msgstr "Ingen ville få denne mail. Vælg lister med abonnenter, eller lempe bet
 #: src/features/contact/MergePreview.tsx
 #: src/features/conversation/Feedback.tsx
 #: src/features/feedback/FeedbackPage.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/slack/SlackPage.tsx
@@ -10924,6 +11003,7 @@ msgstr "Noter"
 msgid "Notes where a teammate mentioned you"
 msgstr "Noter, hvor en kollega nævnte dig"
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/notifications/events.ts
 msgid "Nothing"
 msgstr "Ingenting"
@@ -11063,6 +11143,14 @@ msgstr "Intet ulæst."
 #: src/features/home/HomePage.tsx
 msgid "nothing waiting"
 msgstr "intet venter"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Nothing was measured in this period."
+msgstr "Der blev ikke målt noget i perioden."
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Nothing was opened, replied to or closed here. Try a longer period or other filters."
+msgstr "Intet blev åbnet, besvaret eller lukket her. Prøv en længere periode eller andre filtre."
 
 #: src/features/status/Notices.tsx
 msgid "Notices to subscribers"
@@ -11779,6 +11867,10 @@ msgstr "åbne, tildelt"
 msgid "open, unassigned"
 msgstr "åbne, utildelt"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Opened"
+msgstr "Åbnet"
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "OpenID Connect"
 msgstr "OpenID Connect"
@@ -12253,6 +12345,7 @@ msgstr "Pr. måned (30 dage)"
 
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Period"
 msgstr "Periode"
 
@@ -12696,6 +12789,7 @@ msgstr "pro, team"
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/channels/AddChannelDialog.tsx
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/status/CreatePageDialog.tsx
@@ -13577,6 +13671,7 @@ msgstr "Svarede i en anden samtales tråd"
 #: src/features/broadcasts/Report.tsx
 #: src/features/conversation/Feedback.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/channels/email/EmailSections.tsx
 #: src/features/setup/email/EmailLayout.tsx
 msgid "Replies"
@@ -13853,6 +13948,7 @@ msgid "Resolved at {endedAt}"
 msgstr "Løst kl. {endedAt}"
 
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Resolved in"
 msgstr "Løst på"
 
@@ -13873,6 +13969,10 @@ msgstr "Svartid"
 #: src/features/status/MonitorsPage.tsx
 msgid "Response time, last 24 hours"
 msgstr "Svartid, seneste 24 timer"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Response times"
+msgstr "Svartider"
 
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
@@ -14148,6 +14248,10 @@ msgstr "Sandbox (udviklingsbuilds)"
 #: src/features/contact/ContactSheet.tsx
 msgid "Satisfaction"
 msgstr "Tilfredshed"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Satisfied"
+msgstr "Tilfredse"
 
 #: src/features/inbox/ChatsPage.tsx
 msgid "satisfied · 👍 {good} 👎 {bad}"
@@ -15536,6 +15640,7 @@ msgid "SLA breaches"
 msgstr "SLA breaches"
 
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "SLA met"
 msgstr "SLA opfyldt"
 
@@ -15767,6 +15872,10 @@ msgstr "SPF bestås for {spfDomain}, ikke for afsenderdomænet {from}, så DMARC
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "SPF passes for {spfDomain}."
 msgstr "SPF bestås for {spfDomain}."
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Split by"
+msgstr "Opdel efter"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "Stage"
@@ -16164,6 +16273,7 @@ msgstr "TCP-tjek"
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/settings/SettingsColumn.tsx
@@ -16504,6 +16614,10 @@ msgstr "Elementerne virker på disse adresser; tilføj din udviklingsserver i po
 msgid "The end must be after the start."
 msgstr "Slutningen skal ligge efter starten."
 
+#: src/features/reports/TrendsReport.tsx
+msgid "The end must not be before the start, and the range can be at most 13 months."
+msgstr "Slutningen må ikke ligge før starten, og intervallet må højst være 13 måneder."
+
 #: src/components/common/text.ts
 msgid "The endpoint is disabled. Enable it to send deliveries again."
 msgstr "Endpointet er slået fra. Slå det til for at sende leveringer igen."
@@ -16519,6 +16633,10 @@ msgstr "De præcise ord, de så ved siden af afkrydsningsfeltet eller underskrif
 #: src/features/migrations/DoneStep.tsx
 msgid "The export file"
 msgstr "Eksportfilen"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "The figures are still being prepared."
+msgstr "Tallene er stadig under forberedelse."
 
 #: src/features/migrations/UploadStep.tsx
 msgid "The file"
@@ -17639,6 +17757,7 @@ msgstr "Dette medlem er ikke længere i arbejdsområdet."
 msgid "This migration has ended, so nothing more can be uploaded. Start a new one for another file."
 msgstr "Denne migrering er afsluttet, så der kan ikke uploades mere. Start en ny for en anden fil."
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "This month"
 msgstr "Denne måned"
@@ -17841,6 +17960,7 @@ msgid "Tickets come over with their replies, notes, tags, status and assignee. E
 msgstr "Sager følger med deres svar, noter, tags, status og ansvarlig. Indtast din supportadresse ovenfor."
 
 #: src/features/migrations/ReviewStep.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
 msgid "Time"
 msgstr "Tid"
@@ -17870,6 +17990,7 @@ msgstr "TLS (port 465)"
 
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "To"
@@ -17887,6 +18008,7 @@ msgstr "Til: {emailTo}"
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/ReportsColumn.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Today"
 msgstr "I dag"
 
@@ -17951,6 +18073,11 @@ msgstr "Papirkurv"
 #: src/features/migrations/text.ts
 msgid "Trash, never imported"
 msgstr "Papirkurv, aldrig importeret"
+
+#: src/features/reports/ReportPages.tsx
+#: src/features/reports/ReportsColumn.tsx
+msgid "Trends"
+msgstr "Tendenser"
 
 #: src/features/home/HomePage.tsx
 msgid "Triage"
@@ -18373,6 +18500,10 @@ msgstr "Oppe siden {upSince}. Giv besked om, at alt er i orden, når du er sikke
 #: src/features/broadcasts/Import.tsx
 msgid "Up to {max} and 100,000 rows, with a header row. Excel files in Turkish or Western encodings and columns separated by commas, semicolons or tabs are read as they are."
 msgstr "Op til {max} og 100.000 rækker, med en overskriftsrække. Excel-filer i tyrkisk eller vestlig tegnkodning og kolonner adskilt af kommaer, semikoloner eller tabulatorer læses, som de er."
+
+#: src/features/reports/ReportsColumn.tsx
+msgid "Up to 13 months, by group"
+msgstr "Op til 13 måneder, efter gruppe"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "Update text"
@@ -18971,6 +19102,10 @@ msgstr "Websteder og apps"
 #: src/components/common/text.ts
 msgid "Wednesday"
 msgstr "Onsdag"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Weeks"
+msgstr "Uger"
 
 #: src/features/broadcasts/ListForm.tsx
 msgid "Welcome receipt"

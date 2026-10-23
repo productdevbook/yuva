@@ -256,10 +256,12 @@ export function ReportsPane() {
   const { t } = useLingui()
   const { pathname, search } = useLocation()
   const current = pathname.split("/")[2] ?? "today"
+  const trends = current === "trends"
   const csv = useCsv()
   const [csvOpen, setCsvOpen] = useState(false)
   const tabs = [
     { key: "today", to: { pathname: "/reports/today", search }, label: t`Overview`, testId: "report-tab-today" },
+    { key: "trends", to: { pathname: "/reports/trends", search: "" }, label: t`Trends`, testId: "report-tab-trends" },
     { key: "ratings", to: { pathname: "/reports/ratings", search }, label: t`Ratings`, testId: "report-tab-ratings" },
     { key: "members", to: { pathname: "/reports/members", search }, label: t`Team`, testId: "report-tab-members" },
   ]
@@ -270,18 +272,20 @@ export function ReportsPane() {
         title={<Trans>Reports</Trans>}
         description={<Trans>How fast and how well your team answers</Trans>}
         action={
-          <Button
-            className={headButton.primary}
-            disabled={!csv.ready}
-            onClick={() => setCsvOpen(true)}
-            data-testid="report-export"
-          >
-            <Trans>Download CSV</Trans>
-          </Button>
+          !trends && (
+            <Button
+              className={headButton.primary}
+              disabled={!csv.ready}
+              onClick={() => setCsvOpen(true)}
+              data-testid="report-export"
+            >
+              <Trans>Download CSV</Trans>
+            </Button>
+          )
         }
         tabs={<PageTabs label={t`Reports`} items={tabs} current={current} />}
       />
-      <PeriodBar />
+      {!trends && <PeriodBar />}
       <Outlet />
       {csvOpen && <CsvDialog csv={csv} onClose={() => setCsvOpen(false)} />}
     </Page>

@@ -882,6 +882,10 @@ msgstr "{subscribed} berlangganan"
 msgid "{subscribed} subscribers"
 msgstr "{subscribed} pelanggan"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "{text} vs previous period"
+msgstr "{text} dibanding periode sebelumnya"
+
 #: src/features/docs/PagesTab.tsx
 msgid "{threads} open discussions"
 msgstr "{threads} diskusi terbuka"
@@ -1055,6 +1059,10 @@ msgstr "7 hari"
 #: src/features/status/SettingsTab.tsx
 msgid "7 to 90."
 msgstr "7 sampai 90."
+
+#: src/features/reports/TrendsReport.tsx
+msgid "90th percentile"
+msgstr "Persentil ke-90"
 
 #: src/features/status/ResponseChart.tsx
 msgid "95th percentile"
@@ -2006,6 +2014,7 @@ msgstr "Alertmanager"
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/RunLog.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -3367,6 +3376,10 @@ msgstr "lewat email"
 msgid "By e-mail"
 msgstr "Lewat email"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "By group"
+msgstr "Menurut grup"
+
 #: src/features/reports/ReportsColumn.tsx
 msgid "By member"
 msgstr "Per anggota"
@@ -3625,6 +3638,7 @@ msgid "Changing the sending domain turns DKIM signing off until you enable it ag
 msgstr "Mengubah domain pengiriman menonaktifkan penandatanganan DKIM sampai Anda mengaktifkannya lagi untuk domain baru."
 
 #: src/features/contact/ContactDetails.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/settings/channels/AddChannelDialog.tsx
 #: src/features/settings/channels/ChannelPage.tsx
@@ -4011,6 +4025,7 @@ msgstr "Tutup pencarian (Esc)"
 #: src/components/common/text.ts
 #: src/features/inbox/ChatList.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Closed"
 msgstr "Ditutup"
 
@@ -4535,6 +4550,10 @@ msgstr "percakapan"
 msgid "Conversations"
 msgstr "Percakapan"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Conversations and replies"
+msgstr "Percakapan dan balasan"
+
 #: src/features/migrations/parts.tsx
 msgid "Conversations copied"
 msgstr "Percakapan disalin"
@@ -4900,6 +4919,7 @@ msgstr "Cron"
 msgid "CSV file"
 msgstr "File CSV"
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/inboxes/colors.tsx
@@ -4963,6 +4983,10 @@ msgstr "Gelapkan"
 msgid "Darken the colours to match the theme"
 msgstr "Gelapkan warna agar sesuai tema"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Data up to {builtText}"
+msgstr "Data hingga {builtText}"
+
 #: src/features/status/IncidentDialog.tsx
 msgid "Database upgrade"
 msgstr "Peningkatan versi basis data"
@@ -4977,6 +5001,7 @@ msgid "Dates"
 msgstr "Tanggal"
 
 #: src/features/broadcasts/Growth.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Days"
 msgstr "Hari"
@@ -5261,6 +5286,7 @@ msgstr "Kotak masuk yang dihapus"
 #: src/components/common/DiscussionAuthor.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Deleted member"
 msgstr "Anggota yang dihapus"
@@ -6353,6 +6379,10 @@ msgstr "Expires soon"
 msgid "Export"
 msgstr "Ekspor"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Export CSV"
+msgstr "Ekspor CSV"
+
 #: src/features/migrations/text.ts
 msgid "Export file"
 msgstr "File ekspor"
@@ -6490,6 +6520,10 @@ msgstr "Percakapan terbuka paling sedikit"
 msgid "Fields"
 msgstr "Kolom"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Figures by group"
+msgstr "Angka menurut grup"
+
 #: src/features/migrations/Wizard.tsx
 msgid "File"
 msgstr "File"
@@ -6621,6 +6655,7 @@ msgstr "balasan pertama"
 #: src/features/conversation/SlaPopover.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "First reply"
 msgstr "Balasan pertama"
@@ -6632,6 +6667,10 @@ msgstr "Balasan pertama {first}"
 #: src/app/TeamMenu.tsx
 msgid "first reply in {first}"
 msgstr "balasan pertama dalam {first}"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "First reply, 90th percentile"
+msgstr "Balasan pertama, persentil ke-90"
 
 #: src/features/broadcasts/Import.tsx
 msgid "First rows of the file"
@@ -6835,6 +6874,7 @@ msgstr "Ditemukan di folder Terkirim Anda"
 msgid "Friday"
 msgstr "Jumat"
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "From"
@@ -7086,6 +7126,10 @@ msgstr "Menyapa percakapan baru lewat email, sekali per kontak dalam interval. T
 #: src/features/status/ComponentDialogs.tsx
 msgid "Group"
 msgstr "Grup"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Group by"
+msgstr "Kelompokkan menurut"
 
 #: src/features/settings/teams/TeamsPage.tsx
 msgid "Group members, such as billing or support, and give the group its inboxes in one place."
@@ -8208,6 +8252,7 @@ msgstr "Hanya diketahui dari hasil server penerima untuk email uji."
 
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/text.ts
+#: src/features/reports/TrendsReport.tsx
 msgid "Label"
 msgstr "Label"
 
@@ -8279,17 +8324,31 @@ msgstr "Lebih besar dari batas server ini untuk satu pesan"
 msgid "Largest file (MB)"
 msgstr "File terbesar (MB)"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Last 12 months"
+msgstr "12 bulan terakhir"
+
 #: src/features/home/HomePage.tsx
 msgid "Last 14 days"
 msgstr "14 hari terakhir"
 
-#: src/features/home/HomePage.tsx
-#: src/features/reports/ReportPages.tsx
-msgid "Last 30 days"
-msgstr "30 hari terakhir"
+#: src/features/reports/TrendsReport.tsx
+msgid "Last 3 months"
+msgstr "3 bulan terakhir"
 
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
+msgid "Last 30 days"
+msgstr "30 hari terakhir"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Last 6 months"
+msgstr "6 bulan terakhir"
+
+#: src/features/home/HomePage.tsx
+#: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Last 7 days"
 msgstr "7 hari terakhir"
 
@@ -8316,6 +8375,10 @@ msgstr "Terakhir diperiksa {last}."
 #: src/features/status/StatusPages.tsx
 msgid "Last incident"
 msgstr "Insiden terakhir"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Last month"
+msgstr "Bulan lalu"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Last name"
@@ -9078,6 +9141,7 @@ msgstr "Media, tautan, dan dokumen"
 msgid "median"
 msgstr "median"
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/status/ResponseChart.tsx
 msgid "Median"
 msgstr "Median"
@@ -9100,6 +9164,7 @@ msgstr "median, dari pesan pertama sampai ditutup"
 
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Member"
@@ -9342,6 +9407,10 @@ msgstr "Monitor"
 #: src/features/status/MonitorsPage.tsx
 msgid "Monitors set the state of a status page component. Create a status page first."
 msgstr "Monitor menetapkan status komponen halaman status. Buat halaman status terlebih dahulu."
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Months"
+msgstr "Bulan"
 
 #: src/features/contact/ContactDetail.tsx
 msgid "More"
@@ -9591,6 +9660,7 @@ msgstr "Tampilan saya"
 #: src/features/broadcasts/NewBroadcastDialog.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/inbox/views/ViewDialog.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/automation/RuleDialog.tsx
@@ -10057,6 +10127,10 @@ msgstr "Tidak ada ID {inboxName}. Sampai masuk, orang ini hanya bisa dihubungi l
 msgid "No {provider} account has that subdomain. Check it in your address: acme in acme.zendesk.com."
 msgstr "Tidak ada akun {provider} dengan subdomain itu. Periksa di alamat Anda: acme di acme.zendesk.com."
 
+#: src/features/reports/TrendsReport.tsx
+msgid "No activity in this period"
+msgstr "Tidak ada aktivitas pada periode ini"
+
 #: src/features/settings/webhooks/parts.tsx
 msgid "no answer"
 msgstr "tanpa jawaban"
@@ -10294,6 +10368,10 @@ msgstr "Tidak ada saluran email yang dapat mengirim email konfirmasi dan sambuta
 #: src/features/status/SubscribersTab.tsx
 msgid "No e-mail subscribers yet"
 msgstr "Belum ada pelanggan email"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "No earlier figure"
+msgstr "Tidak ada angka sebelumnya"
 
 #: src/features/conversation/composer/EmojiPanel.tsx
 msgid "No emoji found."
@@ -10692,6 +10770,7 @@ msgstr "Tidak ada yang akan menerima email ini. Pilih milis yang punya pelanggan
 #: src/features/contact/MergePreview.tsx
 #: src/features/conversation/Feedback.tsx
 #: src/features/feedback/FeedbackPage.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/slack/SlackPage.tsx
@@ -10924,6 +11003,7 @@ msgstr "Catatan"
 msgid "Notes where a teammate mentioned you"
 msgstr "Catatan tempat rekan tim menyebut Anda"
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/notifications/events.ts
 msgid "Nothing"
 msgstr "Tidak ada"
@@ -11063,6 +11143,14 @@ msgstr "Tidak ada yang belum dibaca."
 #: src/features/home/HomePage.tsx
 msgid "nothing waiting"
 msgstr "tidak ada yang menunggu"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Nothing was measured in this period."
+msgstr "Tidak ada yang terukur pada periode ini."
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Nothing was opened, replied to or closed here. Try a longer period or other filters."
+msgstr "Tidak ada yang dibuka, dibalas, atau ditutup di sini. Coba periode yang lebih panjang atau filter lain."
 
 #: src/features/status/Notices.tsx
 msgid "Notices to subscribers"
@@ -11779,6 +11867,10 @@ msgstr "terbuka, ditugaskan"
 msgid "open, unassigned"
 msgstr "terbuka, belum ditugaskan"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Opened"
+msgstr "Dibuka"
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "OpenID Connect"
 msgstr "OpenID Connect"
@@ -12253,6 +12345,7 @@ msgstr "Per bulan (30 hari)"
 
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Period"
 msgstr "Periode"
 
@@ -12696,6 +12789,7 @@ msgstr "pro, team"
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/channels/AddChannelDialog.tsx
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/status/CreatePageDialog.tsx
@@ -13577,6 +13671,7 @@ msgstr "Membalas di utas percakapan lain"
 #: src/features/broadcasts/Report.tsx
 #: src/features/conversation/Feedback.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/channels/email/EmailSections.tsx
 #: src/features/setup/email/EmailLayout.tsx
 msgid "Replies"
@@ -13853,6 +13948,7 @@ msgid "Resolved at {endedAt}"
 msgstr "Terselesaikan pada {endedAt}"
 
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Resolved in"
 msgstr "Selesai dalam"
 
@@ -13873,6 +13969,10 @@ msgstr "Waktu respons"
 #: src/features/status/MonitorsPage.tsx
 msgid "Response time, last 24 hours"
 msgstr "Waktu respons, 24 jam terakhir"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Response times"
+msgstr "Waktu respons"
 
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
@@ -14148,6 +14248,10 @@ msgstr "Sandbox (build pengembangan)"
 #: src/features/contact/ContactSheet.tsx
 msgid "Satisfaction"
 msgstr "Kepuasan"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Satisfied"
+msgstr "Puas"
 
 #: src/features/inbox/ChatsPage.tsx
 msgid "satisfied · 👍 {good} 👎 {bad}"
@@ -15536,6 +15640,7 @@ msgid "SLA breaches"
 msgstr "SLA breaches"
 
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "SLA met"
 msgstr "SLA terpenuhi"
 
@@ -15767,6 +15872,10 @@ msgstr "SPF lulus untuk {spfDomain}, bukan untuk domain pengirim {from}, sehingg
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "SPF passes for {spfDomain}."
 msgstr "SPF lulus untuk {spfDomain}."
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Split by"
+msgstr "Pisahkan menurut"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "Stage"
@@ -16164,6 +16273,7 @@ msgstr "Pemeriksaan TCP"
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/settings/SettingsColumn.tsx
@@ -16504,6 +16614,10 @@ msgstr "Elemen berfungsi di alamat ini; tambahkan server dev Anda di pengaturan 
 msgid "The end must be after the start."
 msgstr "Akhir harus setelah awal."
 
+#: src/features/reports/TrendsReport.tsx
+msgid "The end must not be before the start, and the range can be at most 13 months."
+msgstr "Akhir tidak boleh sebelum awal, dan rentang paling lama 13 bulan."
+
 #: src/components/common/text.ts
 msgid "The endpoint is disabled. Enable it to send deliveries again."
 msgstr "Endpoint dinonaktifkan. Aktifkan untuk mengirim pengiriman lagi."
@@ -16519,6 +16633,10 @@ msgstr "Kata-kata persis yang mereka lihat di samping kotak centang atau tanda t
 #: src/features/migrations/DoneStep.tsx
 msgid "The export file"
 msgstr "File ekspor"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "The figures are still being prepared."
+msgstr "Angka masih disiapkan."
 
 #: src/features/migrations/UploadStep.tsx
 msgid "The file"
@@ -17639,6 +17757,7 @@ msgstr "Anggota ini sudah tidak ada di ruang kerja."
 msgid "This migration has ended, so nothing more can be uploaded. Start a new one for another file."
 msgstr "Migrasi ini telah berakhir, jadi tidak ada lagi yang dapat diunggah. Mulai yang baru untuk file lain."
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "This month"
 msgstr "Bulan ini"
@@ -17841,6 +17960,7 @@ msgid "Tickets come over with their replies, notes, tags, status and assignee. E
 msgstr "Tiket ikut dengan balasan, catatan, tag, status, dan penerima tugasnya. Masukkan alamat dukungan Anda di atas."
 
 #: src/features/migrations/ReviewStep.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
 msgid "Time"
 msgstr "Waktu"
@@ -17870,6 +17990,7 @@ msgstr "TLS (port 465)"
 
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "To"
@@ -17887,6 +18008,7 @@ msgstr "Kepada: {emailTo}"
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/ReportsColumn.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Today"
 msgstr "Hari ini"
 
@@ -17951,6 +18073,11 @@ msgstr "Sampah"
 #: src/features/migrations/text.ts
 msgid "Trash, never imported"
 msgstr "Sampah, tidak pernah diimpor"
+
+#: src/features/reports/ReportPages.tsx
+#: src/features/reports/ReportsColumn.tsx
+msgid "Trends"
+msgstr "Tren"
 
 #: src/features/home/HomePage.tsx
 msgid "Triage"
@@ -18373,6 +18500,10 @@ msgstr "Aktif sejak {upSince}. Umumkan bahwa semuanya normal setelah Anda yakin.
 #: src/features/broadcasts/Import.tsx
 msgid "Up to {max} and 100,000 rows, with a header row. Excel files in Turkish or Western encodings and columns separated by commas, semicolons or tabs are read as they are."
 msgstr "Hingga {max} dan 100.000 baris, dengan baris header. File Excel dalam enkode Turki atau Barat dan kolom yang dipisahkan koma, titik koma, atau tab dibaca apa adanya."
+
+#: src/features/reports/ReportsColumn.tsx
+msgid "Up to 13 months, by group"
+msgstr "Hingga 13 bulan, menurut grup"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "Update text"
@@ -18971,6 +19102,10 @@ msgstr "Situs web dan aplikasi"
 #: src/components/common/text.ts
 msgid "Wednesday"
 msgstr "Rabu"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Weeks"
+msgstr "Minggu"
 
 #: src/features/broadcasts/ListForm.tsx
 msgid "Welcome receipt"

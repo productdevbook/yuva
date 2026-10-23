@@ -42,6 +42,7 @@ import { TeamsPage } from "@/features/settings/teams/TeamsPage"
 import { NotificationsPage } from "@/features/settings/notifications/NotificationsPage"
 import { ProfilePage } from "@/features/settings/profile/ProfilePage"
 import { MembersReport, RatingsReport, ReportsPane, TodayReport } from "@/features/reports/ReportPages"
+import { TrendsReport } from "@/features/reports/TrendsReport"
 import { SettingsHome, SettingsPane } from "@/features/settings/SettingsColumn"
 import { AuditLogPage } from "@/features/settings/audit/AuditLogPage"
 import { WebhookPage } from "@/features/settings/webhooks/WebhookPage"
@@ -164,6 +165,7 @@ export function AppRoutes() {
           <Route path="reports" element={<ReportsPane />}>
             <Route index element={<Navigate to="today" replace />} />
             <Route path="today" element={<TodayReport />} />
+            <Route path="trends" element={<TrendsReport />} />
             <Route path="ratings" element={<RatingsReport />} />
             <Route path="members" element={<MembersReport />} />
             <Route path="*" element={<Navigate to="/reports" replace />} />

@@ -1,5 +1,5 @@
 import { Trans, useLingui } from "@lingui/react/macro"
-import { BarChart3Icon, ThumbsUpIcon, UsersIcon } from "lucide-react"
+import { BarChart3Icon, ThumbsUpIcon, TrendingUpIcon, UsersIcon } from "lucide-react"
 
 import { Column, ColumnHeading, ColumnLink } from "@/components/common/Column"
 import { ErrorLine } from "@/components/common"
@@ -27,6 +27,13 @@ export function ReportsColumn() {
       <Trans key="label">Replies and closes</Trans>,
       s ? t`${fmt.format(s.replies)} replies · ${fmt.format(s.closed)} closed` : " ",
       "report-link-today",
+    ],
+    [
+      "trends",
+      <TrendingUpIcon key="icon" />,
+      <Trans key="label">Trends</Trans>,
+      t`Up to 13 months, by group`,
+      "report-link-trends",
     ],
     [
       "ratings",

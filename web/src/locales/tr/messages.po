@@ -882,6 +882,10 @@ msgstr "{subscribed} abone"
 msgid "{subscribed} subscribers"
 msgstr "{subscribed} abone"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "{text} vs previous period"
+msgstr "{text}, önceki döneme göre"
+
 #: src/features/docs/PagesTab.tsx
 msgid "{threads} open discussions"
 msgstr "{threads} açık tartışma"
@@ -1055,6 +1059,10 @@ msgstr "7 gün"
 #: src/features/status/SettingsTab.tsx
 msgid "7 to 90."
 msgstr "7 ile 90 arası."
+
+#: src/features/reports/TrendsReport.tsx
+msgid "90th percentile"
+msgstr "90. yüzdelik"
 
 #: src/features/status/ResponseChart.tsx
 msgid "95th percentile"
@@ -2006,6 +2014,7 @@ msgstr "Alertmanager"
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/RunLog.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -3367,6 +3376,10 @@ msgstr "e-postayla"
 msgid "By e-mail"
 msgstr "E-postayla"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "By group"
+msgstr "Gruba göre"
+
 #: src/features/reports/ReportsColumn.tsx
 msgid "By member"
 msgstr "Üyeye göre"
@@ -3625,6 +3638,7 @@ msgid "Changing the sending domain turns DKIM signing off until you enable it ag
 msgstr "Gönderim alan adını değiştirmek, yeni alan adı için yeniden açana kadar DKIM imzalamayı kapatır."
 
 #: src/features/contact/ContactDetails.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/settings/channels/AddChannelDialog.tsx
 #: src/features/settings/channels/ChannelPage.tsx
@@ -4011,6 +4025,7 @@ msgstr "Aramayı kapat (Esc)"
 #: src/components/common/text.ts
 #: src/features/inbox/ChatList.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Closed"
 msgstr "Kapalı"
 
@@ -4535,6 +4550,10 @@ msgstr "konuşma"
 msgid "Conversations"
 msgstr "Konuşmalar"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Conversations and replies"
+msgstr "Konuşmalar ve yanıtlar"
+
 #: src/features/migrations/parts.tsx
 msgid "Conversations copied"
 msgstr "Kopyalanan konuşmalar"
@@ -4900,6 +4919,7 @@ msgstr "Cron"
 msgid "CSV file"
 msgstr "CSV dosyası"
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/inboxes/colors.tsx
@@ -4963,6 +4983,10 @@ msgstr "Koyulaştır"
 msgid "Darken the colours to match the theme"
 msgstr "Renkleri temaya uyacak şekilde koyulaştır"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Data up to {builtText}"
+msgstr "Verilerin güncel olduğu an: {builtText}"
+
 #: src/features/status/IncidentDialog.tsx
 msgid "Database upgrade"
 msgstr "Veritabanı yükseltmesi"
@@ -4977,6 +5001,7 @@ msgid "Dates"
 msgstr "Tarihler"
 
 #: src/features/broadcasts/Growth.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Days"
 msgstr "Günler"
@@ -5261,6 +5286,7 @@ msgstr "Silinmiş gelen kutusu"
 #: src/components/common/DiscussionAuthor.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Deleted member"
 msgstr "Silinmiş üye"
@@ -6353,6 +6379,10 @@ msgstr "Yakında doluyor"
 msgid "Export"
 msgstr "Dışa aktar"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Export CSV"
+msgstr "CSV olarak dışa aktar"
+
 #: src/features/migrations/text.ts
 msgid "Export file"
 msgstr "Dışa aktarma dosyası"
@@ -6490,6 +6520,10 @@ msgstr "En az açık konuşması olan"
 msgid "Fields"
 msgstr "Alanlar"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Figures by group"
+msgstr "Gruplara göre rakamlar"
+
 #: src/features/migrations/Wizard.tsx
 msgid "File"
 msgstr "Dosya"
@@ -6621,6 +6655,7 @@ msgstr "ilk yanıt"
 #: src/features/conversation/SlaPopover.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "First reply"
 msgstr "İlk yanıt"
@@ -6632,6 +6667,10 @@ msgstr "İlk yanıt {first}"
 #: src/app/TeamMenu.tsx
 msgid "first reply in {first}"
 msgstr "ilk yanıt {first}"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "First reply, 90th percentile"
+msgstr "İlk yanıt, 90. yüzdelik"
 
 #: src/features/broadcasts/Import.tsx
 msgid "First rows of the file"
@@ -6835,6 +6874,7 @@ msgstr "Gönderilenler klasörlerinizde bulunan adresler"
 msgid "Friday"
 msgstr "Cuma"
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "From"
@@ -7086,6 +7126,10 @@ msgstr "Yeni konuşmaları e-postayla karşılar; bu süre içinde her kişiye b
 #: src/features/status/ComponentDialogs.tsx
 msgid "Group"
 msgstr "Grup"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Group by"
+msgstr "Gruplandır"
 
 #: src/features/settings/teams/TeamsPage.tsx
 msgid "Group members, such as billing or support, and give the group its inboxes in one place."
@@ -8208,6 +8252,7 @@ msgstr "Yalnızca alan sunucunun deneme e-postası için verdiği sonuçlardan a
 
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/text.ts
+#: src/features/reports/TrendsReport.tsx
 msgid "Label"
 msgstr "Etiket"
 
@@ -8279,17 +8324,31 @@ msgstr "Bu sunucunun tek mesaj sınırından büyük"
 msgid "Largest file (MB)"
 msgstr "En büyük dosya (MB)"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Last 12 months"
+msgstr "Son 12 ay"
+
 #: src/features/home/HomePage.tsx
 msgid "Last 14 days"
 msgstr "Son 14 gün"
 
-#: src/features/home/HomePage.tsx
-#: src/features/reports/ReportPages.tsx
-msgid "Last 30 days"
-msgstr "Son 30 gün"
+#: src/features/reports/TrendsReport.tsx
+msgid "Last 3 months"
+msgstr "Son 3 ay"
 
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
+msgid "Last 30 days"
+msgstr "Son 30 gün"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Last 6 months"
+msgstr "Son 6 ay"
+
+#: src/features/home/HomePage.tsx
+#: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Last 7 days"
 msgstr "Son 7 gün"
 
@@ -8316,6 +8375,10 @@ msgstr "Son kontrol: {last}."
 #: src/features/status/StatusPages.tsx
 msgid "Last incident"
 msgstr "Son olay"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Last month"
+msgstr "Geçen ay"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Last name"
@@ -9078,6 +9141,7 @@ msgstr "Medya, bağlantılar ve belgeler"
 msgid "median"
 msgstr "medyan"
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/status/ResponseChart.tsx
 msgid "Median"
 msgstr "Medyan"
@@ -9100,6 +9164,7 @@ msgstr "medyan, ilk mesajdan kapanışa"
 
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Member"
@@ -9342,6 +9407,10 @@ msgstr "Monitörler"
 #: src/features/status/MonitorsPage.tsx
 msgid "Monitors set the state of a status page component. Create a status page first."
 msgstr "Monitörler bir durum sayfası bileşeninin durumunu belirler. Önce bir durum sayfası oluşturun."
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Months"
+msgstr "Aylar"
 
 #: src/features/contact/ContactDetail.tsx
 msgid "More"
@@ -9591,6 +9660,7 @@ msgstr "Görünümlerim"
 #: src/features/broadcasts/NewBroadcastDialog.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/inbox/views/ViewDialog.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/automation/RuleDialog.tsx
@@ -10057,6 +10127,10 @@ msgstr "{inboxName} kimliği kayıtlı değil. Oturum açana kadar ona yalnızca
 msgid "No {provider} account has that subdomain. Check it in your address: acme in acme.zendesk.com."
 msgstr "Bu alt alan adına sahip bir {provider} hesabı yok. Adresinizden kontrol edin: acme.zendesk.com içindeki acme."
 
+#: src/features/reports/TrendsReport.tsx
+msgid "No activity in this period"
+msgstr "Bu dönemde hareket yok"
+
 #: src/features/settings/webhooks/parts.tsx
 msgid "no answer"
 msgstr "yanıt yok"
@@ -10294,6 +10368,10 @@ msgstr "Onay ve hoş geldin e-postalarını gönderebilecek bir e-posta kanalı 
 #: src/features/status/SubscribersTab.tsx
 msgid "No e-mail subscribers yet"
 msgstr "Henüz e-posta abonesi yok"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "No earlier figure"
+msgstr "Önceki rakam yok"
 
 #: src/features/conversation/composer/EmojiPanel.tsx
 msgid "No emoji found."
@@ -10692,6 +10770,7 @@ msgstr "Bu e-postayı kimse almayacak. Abonesi olan listeler seçin ya da koşul
 #: src/features/contact/MergePreview.tsx
 #: src/features/conversation/Feedback.tsx
 #: src/features/feedback/FeedbackPage.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/slack/SlackPage.tsx
@@ -10924,6 +11003,7 @@ msgstr "Notlar"
 msgid "Notes where a teammate mentioned you"
 msgstr "Bir ekip arkadaşınızın sizden bahsettiği notlar"
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/notifications/events.ts
 msgid "Nothing"
 msgstr "Hiçbiri"
@@ -11063,6 +11143,14 @@ msgstr "Okunmamış bir şey yok."
 #: src/features/home/HomePage.tsx
 msgid "nothing waiting"
 msgstr "bekleyen yok"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Nothing was measured in this period."
+msgstr "Bu dönemde ölçülen bir şey yok."
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Nothing was opened, replied to or closed here. Try a longer period or other filters."
+msgstr "Burada hiçbir şey açılmadı, yanıtlanmadı veya kapatılmadı. Daha uzun bir dönem veya başka filtreler deneyin."
 
 #: src/features/status/Notices.tsx
 msgid "Notices to subscribers"
@@ -11779,6 +11867,10 @@ msgstr "açık, atanmış"
 msgid "open, unassigned"
 msgstr "açık, atanmamış"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Opened"
+msgstr "Açılan"
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "OpenID Connect"
 msgstr "OpenID Connect"
@@ -12253,6 +12345,7 @@ msgstr "Ayda (30 gün)"
 
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Period"
 msgstr "Dönem"
 
@@ -12696,6 +12789,7 @@ msgstr "pro, ekip"
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/channels/AddChannelDialog.tsx
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/status/CreatePageDialog.tsx
@@ -13577,6 +13671,7 @@ msgstr "Başka bir konuşmanın dizisinde yanıtlandı"
 #: src/features/broadcasts/Report.tsx
 #: src/features/conversation/Feedback.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/channels/email/EmailSections.tsx
 #: src/features/setup/email/EmailLayout.tsx
 msgid "Replies"
@@ -13853,6 +13948,7 @@ msgid "Resolved at {endedAt}"
 msgstr "{endedAt} saatinde çözüldü"
 
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Resolved in"
 msgstr "Çözülme süresi"
 
@@ -13873,6 +13969,10 @@ msgstr "Yanıt süresi"
 #: src/features/status/MonitorsPage.tsx
 msgid "Response time, last 24 hours"
 msgstr "Yanıt süresi, son 24 saat"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Response times"
+msgstr "Yanıt süreleri"
 
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
@@ -14148,6 +14248,10 @@ msgstr "Sandbox (geliştirme sürümleri)"
 #: src/features/contact/ContactSheet.tsx
 msgid "Satisfaction"
 msgstr "Memnuniyet"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Satisfied"
+msgstr "Memnun"
 
 #: src/features/inbox/ChatsPage.tsx
 msgid "satisfied · 👍 {good} 👎 {bad}"
@@ -15536,6 +15640,7 @@ msgid "SLA breaches"
 msgstr "SLA ihlalleri"
 
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "SLA met"
 msgstr "SLA karşılanan"
 
@@ -15767,6 +15872,10 @@ msgstr "SPF gönderen alan adı {from} için değil, {spfDomain} için geçiyor;
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "SPF passes for {spfDomain}."
 msgstr "SPF {spfDomain} için geçiyor."
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Split by"
+msgstr "Dilimle"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "Stage"
@@ -16164,6 +16273,7 @@ msgstr "TCP kontrolü"
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/settings/SettingsColumn.tsx
@@ -16504,6 +16614,10 @@ msgstr "Öğeler şu adreslerde çalışır; geliştirme sunucunuzu gelen kutusu
 msgid "The end must be after the start."
 msgstr "Bitiş, başlangıçtan sonra olmalı."
 
+#: src/features/reports/TrendsReport.tsx
+msgid "The end must not be before the start, and the range can be at most 13 months."
+msgstr "Bitiş başlangıçtan önce olamaz ve aralık en fazla 13 ay olabilir."
+
 #: src/components/common/text.ts
 msgid "The endpoint is disabled. Enable it to send deliveries again."
 msgstr "Uç nokta kapalı. Yeniden göndermek için önce açın."
@@ -16519,6 +16633,10 @@ msgstr "Onay kutusunun ya da imzanın yanında gördükleri metnin aynısı."
 #: src/features/migrations/DoneStep.tsx
 msgid "The export file"
 msgstr "Dışa aktarım dosyası"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "The figures are still being prepared."
+msgstr "Rakamlar hâlâ hazırlanıyor."
 
 #: src/features/migrations/UploadStep.tsx
 msgid "The file"
@@ -17639,6 +17757,7 @@ msgstr "Bu üye artık çalışma alanında değil."
 msgid "This migration has ended, so nothing more can be uploaded. Start a new one for another file."
 msgstr "Bu taşıma sona erdi, artık bir şey yüklenemez. Başka bir dosya için yeni bir taşıma başlatın."
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "This month"
 msgstr "Bu ay"
@@ -17841,6 +17960,7 @@ msgid "Tickets come over with their replies, notes, tags, status and assignee. E
 msgstr "Talepler yanıtları, notları, etiketleri, durumu ve atanan kişiyle birlikte gelir. Destek adresinizi yukarıya girin."
 
 #: src/features/migrations/ReviewStep.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
 msgid "Time"
 msgstr "Zaman"
@@ -17870,6 +17990,7 @@ msgstr "TLS (port 465)"
 
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "To"
@@ -17887,6 +18008,7 @@ msgstr "Kime: {emailTo}"
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/ReportsColumn.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Today"
 msgstr "Bugün"
 
@@ -17951,6 +18073,11 @@ msgstr "Çöp kutusu"
 #: src/features/migrations/text.ts
 msgid "Trash, never imported"
 msgstr "Çöp kutusu, hiç aktarılmaz"
+
+#: src/features/reports/ReportPages.tsx
+#: src/features/reports/ReportsColumn.tsx
+msgid "Trends"
+msgstr "Eğilimler"
 
 #: src/features/home/HomePage.tsx
 msgid "Triage"
@@ -18373,6 +18500,10 @@ msgstr "{upSince} saatinden beri çalışıyor. Emin olduğunuzda sorunun bitti�
 #: src/features/broadcasts/Import.tsx
 msgid "Up to {max} and 100,000 rows, with a header row. Excel files in Turkish or Western encodings and columns separated by commas, semicolons or tabs are read as they are."
 msgstr "En fazla {max} ve 100.000 satır, bir başlık satırıyla. Türkçe ya da Batı dilleri kodlamasındaki Excel dosyaları ve virgül, noktalı virgül ya da sekmeyle ayrılmış sütunlar olduğu gibi okunur."
+
+#: src/features/reports/ReportsColumn.tsx
+msgid "Up to 13 months, by group"
+msgstr "13 aya kadar, gruba göre"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "Update text"
@@ -18971,6 +19102,10 @@ msgstr "Web siteleri ve uygulamalar"
 #: src/components/common/text.ts
 msgid "Wednesday"
 msgstr "Çarşamba"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Weeks"
+msgstr "Haftalar"
 
 #: src/features/broadcasts/ListForm.tsx
 msgid "Welcome receipt"

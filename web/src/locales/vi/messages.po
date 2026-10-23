@@ -882,6 +882,10 @@ msgstr "{subscribed} đã đăng ký"
 msgid "{subscribed} subscribers"
 msgstr "{subscribed} người đăng ký"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "{text} vs previous period"
+msgstr "{text} so với kỳ trước"
+
 #: src/features/docs/PagesTab.tsx
 msgid "{threads} open discussions"
 msgstr "{threads} cuộc thảo luận đang mở"
@@ -1055,6 +1059,10 @@ msgstr "7 ngày"
 #: src/features/status/SettingsTab.tsx
 msgid "7 to 90."
 msgstr "Từ 7 đến 90."
+
+#: src/features/reports/TrendsReport.tsx
+msgid "90th percentile"
+msgstr "Phân vị thứ 90"
 
 #: src/features/status/ResponseChart.tsx
 msgid "95th percentile"
@@ -2006,6 +2014,7 @@ msgstr "Alertmanager"
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/RunLog.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -3367,6 +3376,10 @@ msgstr "qua email"
 msgid "By e-mail"
 msgstr "Qua email"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "By group"
+msgstr "Theo nhóm"
+
 #: src/features/reports/ReportsColumn.tsx
 msgid "By member"
 msgstr "Theo thành viên"
@@ -3625,6 +3638,7 @@ msgid "Changing the sending domain turns DKIM signing off until you enable it ag
 msgstr "Đổi tên miền gửi sẽ tắt ký DKIM cho đến khi bạn bật lại cho tên miền mới."
 
 #: src/features/contact/ContactDetails.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/settings/channels/AddChannelDialog.tsx
 #: src/features/settings/channels/ChannelPage.tsx
@@ -4011,6 +4025,7 @@ msgstr "Đóng tìm kiếm (Esc)"
 #: src/components/common/text.ts
 #: src/features/inbox/ChatList.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Closed"
 msgstr "Đã đóng"
 
@@ -4535,6 +4550,10 @@ msgstr "cuộc trò chuyện"
 msgid "Conversations"
 msgstr "Cuộc trò chuyện"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Conversations and replies"
+msgstr "Hội thoại và phản hồi"
+
 #: src/features/migrations/parts.tsx
 msgid "Conversations copied"
 msgstr "Đã sao chép cuộc trò chuyện"
@@ -4900,6 +4919,7 @@ msgstr "Cron"
 msgid "CSV file"
 msgstr "Tệp CSV"
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/inboxes/colors.tsx
@@ -4963,6 +4983,10 @@ msgstr "Làm tối"
 msgid "Darken the colours to match the theme"
 msgstr "Làm tối màu cho khớp với chủ đề"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Data up to {builtText}"
+msgstr "Dữ liệu đến {builtText}"
+
 #: src/features/status/IncidentDialog.tsx
 msgid "Database upgrade"
 msgstr "Nâng cấp cơ sở dữ liệu"
@@ -4977,6 +5001,7 @@ msgid "Dates"
 msgstr "Ngày"
 
 #: src/features/broadcasts/Growth.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Days"
 msgstr "Ngày"
@@ -5261,6 +5286,7 @@ msgstr "Hộp thư đã xóa"
 #: src/components/common/DiscussionAuthor.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Deleted member"
 msgstr "Thành viên đã xóa"
@@ -6353,6 +6379,10 @@ msgstr "Expires soon"
 msgid "Export"
 msgstr "Xuất"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Export CSV"
+msgstr "Xuất CSV"
+
 #: src/features/migrations/text.ts
 msgid "Export file"
 msgstr "Tệp xuất"
@@ -6490,6 +6520,10 @@ msgstr "Ít cuộc trò chuyện đang mở nhất"
 msgid "Fields"
 msgstr "Trường"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Figures by group"
+msgstr "Số liệu theo nhóm"
+
 #: src/features/migrations/Wizard.tsx
 msgid "File"
 msgstr "Tệp"
@@ -6621,6 +6655,7 @@ msgstr "phản hồi đầu tiên"
 #: src/features/conversation/SlaPopover.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "First reply"
 msgstr "Phản hồi đầu tiên"
@@ -6632,6 +6667,10 @@ msgstr "Phản hồi đầu tiên {first}"
 #: src/app/TeamMenu.tsx
 msgid "first reply in {first}"
 msgstr "phản hồi đầu tiên trong {first}"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "First reply, 90th percentile"
+msgstr "Phản hồi đầu tiên, phân vị thứ 90"
 
 #: src/features/broadcasts/Import.tsx
 msgid "First rows of the file"
@@ -6835,6 +6874,7 @@ msgstr "Tìm thấy trong các thư mục Đã gửi của bạn"
 msgid "Friday"
 msgstr "Thứ Sáu"
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "From"
@@ -7086,6 +7126,10 @@ msgstr "Chào các cuộc trò chuyện mới bằng email, mỗi liên hệ m�
 #: src/features/status/ComponentDialogs.tsx
 msgid "Group"
 msgstr "Nhóm"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Group by"
+msgstr "Nhóm theo"
 
 #: src/features/settings/teams/TeamsPage.tsx
 msgid "Group members, such as billing or support, and give the group its inboxes in one place."
@@ -8208,6 +8252,7 @@ msgstr "Chỉ biết từ kết quả của máy chủ nhận đối với thư 
 
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/text.ts
+#: src/features/reports/TrendsReport.tsx
 msgid "Label"
 msgstr "Nhãn"
 
@@ -8279,17 +8324,31 @@ msgstr "Lớn hơn giới hạn của máy chủ này cho một tin nhắn"
 msgid "Largest file (MB)"
 msgstr "Tệp lớn nhất (MB)"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Last 12 months"
+msgstr "12 tháng qua"
+
 #: src/features/home/HomePage.tsx
 msgid "Last 14 days"
 msgstr "14 ngày qua"
 
-#: src/features/home/HomePage.tsx
-#: src/features/reports/ReportPages.tsx
-msgid "Last 30 days"
-msgstr "30 ngày qua"
+#: src/features/reports/TrendsReport.tsx
+msgid "Last 3 months"
+msgstr "3 tháng qua"
 
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
+msgid "Last 30 days"
+msgstr "30 ngày qua"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Last 6 months"
+msgstr "6 tháng qua"
+
+#: src/features/home/HomePage.tsx
+#: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Last 7 days"
 msgstr "7 ngày qua"
 
@@ -8316,6 +8375,10 @@ msgstr "Kiểm tra lần cuối {last}."
 #: src/features/status/StatusPages.tsx
 msgid "Last incident"
 msgstr "Sự cố gần nhất"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Last month"
+msgstr "Tháng trước"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Last name"
@@ -9078,6 +9141,7 @@ msgstr "Phương tiện, liên kết và tài liệu"
 msgid "median"
 msgstr "trung vị"
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/status/ResponseChart.tsx
 msgid "Median"
 msgstr "Trung vị"
@@ -9100,6 +9164,7 @@ msgstr "trung vị, từ tin nhắn đầu tiên đến khi đóng"
 
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Member"
@@ -9342,6 +9407,10 @@ msgstr "Trình giám sát"
 #: src/features/status/MonitorsPage.tsx
 msgid "Monitors set the state of a status page component. Create a status page first."
 msgstr "Trình giám sát đặt trạng thái cho một thành phần của trang trạng thái. Hãy tạo trang trạng thái trước."
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Months"
+msgstr "Tháng"
 
 #: src/features/contact/ContactDetail.tsx
 msgid "More"
@@ -9591,6 +9660,7 @@ msgstr "Chế độ xem của tôi"
 #: src/features/broadcasts/NewBroadcastDialog.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/inbox/views/ViewDialog.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/automation/RuleDialog.tsx
@@ -10057,6 +10127,10 @@ msgstr "Chưa có ID {inboxName}. Cho đến khi đăng nhập, chỉ có thể 
 msgid "No {provider} account has that subdomain. Check it in your address: acme in acme.zendesk.com."
 msgstr "Không có tài khoản {provider} nào có tên miền phụ đó. Hãy kiểm tra trong địa chỉ của bạn: acme trong acme.zendesk.com."
 
+#: src/features/reports/TrendsReport.tsx
+msgid "No activity in this period"
+msgstr "Không có hoạt động trong kỳ này"
+
 #: src/features/settings/webhooks/parts.tsx
 msgid "no answer"
 msgstr "chưa trả lời"
@@ -10294,6 +10368,10 @@ msgstr "Không có kênh email nào có thể gửi thư xác nhận và chào m
 #: src/features/status/SubscribersTab.tsx
 msgid "No e-mail subscribers yet"
 msgstr "Chưa có người đăng ký qua e-mail"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "No earlier figure"
+msgstr "Không có số liệu trước đó"
 
 #: src/features/conversation/composer/EmojiPanel.tsx
 msgid "No emoji found."
@@ -10692,6 +10770,7 @@ msgstr "Không ai sẽ nhận thư này. Hãy chọn các danh sách có ngườ
 #: src/features/contact/MergePreview.tsx
 #: src/features/conversation/Feedback.tsx
 #: src/features/feedback/FeedbackPage.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/slack/SlackPage.tsx
@@ -10924,6 +11003,7 @@ msgstr "Ghi chú"
 msgid "Notes where a teammate mentioned you"
 msgstr "Ghi chú mà đồng đội nhắc đến bạn"
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/notifications/events.ts
 msgid "Nothing"
 msgstr "Không có gì"
@@ -11063,6 +11143,14 @@ msgstr "Không có gì chưa đọc."
 #: src/features/home/HomePage.tsx
 msgid "nothing waiting"
 msgstr "không có gì đang chờ"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Nothing was measured in this period."
+msgstr "Không có gì được đo trong kỳ này."
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Nothing was opened, replied to or closed here. Try a longer period or other filters."
+msgstr "Ở đây không có gì được mở, trả lời hoặc đóng. Hãy thử kỳ dài hơn hoặc bộ lọc khác."
 
 #: src/features/status/Notices.tsx
 msgid "Notices to subscribers"
@@ -11779,6 +11867,10 @@ msgstr "đang mở, đã giao"
 msgid "open, unassigned"
 msgstr "đang mở, chưa giao"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Opened"
+msgstr "Đã mở"
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "OpenID Connect"
 msgstr "OpenID Connect"
@@ -12253,6 +12345,7 @@ msgstr "Mỗi tháng (30 ngày)"
 
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Period"
 msgstr "Khoảng thời gian"
 
@@ -12696,6 +12789,7 @@ msgstr "pro, team"
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/channels/AddChannelDialog.tsx
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/status/CreatePageDialog.tsx
@@ -13577,6 +13671,7 @@ msgstr "Đã trả lời trong chuỗi của cuộc trò chuyện khác"
 #: src/features/broadcasts/Report.tsx
 #: src/features/conversation/Feedback.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/channels/email/EmailSections.tsx
 #: src/features/setup/email/EmailLayout.tsx
 msgid "Replies"
@@ -13853,6 +13948,7 @@ msgid "Resolved at {endedAt}"
 msgstr "Đã giải quyết lúc {endedAt}"
 
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Resolved in"
 msgstr "Giải quyết trong"
 
@@ -13873,6 +13969,10 @@ msgstr "Thời gian phản hồi"
 #: src/features/status/MonitorsPage.tsx
 msgid "Response time, last 24 hours"
 msgstr "Thời gian phản hồi, 24 giờ qua"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Response times"
+msgstr "Thời gian phản hồi"
 
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
@@ -14148,6 +14248,10 @@ msgstr "Sandbox (bản dựng phát triển)"
 #: src/features/contact/ContactSheet.tsx
 msgid "Satisfaction"
 msgstr "Mức hài lòng"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Satisfied"
+msgstr "Hài lòng"
 
 #: src/features/inbox/ChatsPage.tsx
 msgid "satisfied · 👍 {good} 👎 {bad}"
@@ -15536,6 +15640,7 @@ msgid "SLA breaches"
 msgstr "SLA breaches"
 
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "SLA met"
 msgstr "SLA đạt"
 
@@ -15767,6 +15872,10 @@ msgstr "SPF đạt cho {spfDomain}, không phải cho tên miền gửi {from}, 
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "SPF passes for {spfDomain}."
 msgstr "SPF đạt cho {spfDomain}."
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Split by"
+msgstr "Chia theo"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "Stage"
@@ -16164,6 +16273,7 @@ msgstr "Kiểm tra TCP"
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/settings/SettingsColumn.tsx
@@ -16504,6 +16614,10 @@ msgstr "Các phần tử hoạt động ở các địa chỉ này; hãy thêm m
 msgid "The end must be after the start."
 msgstr "Thời điểm kết thúc phải sau thời điểm bắt đầu."
 
+#: src/features/reports/TrendsReport.tsx
+msgid "The end must not be before the start, and the range can be at most 13 months."
+msgstr "Ngày kết thúc không được trước ngày bắt đầu, và khoảng tối đa là 13 tháng."
+
 #: src/components/common/text.ts
 msgid "The endpoint is disabled. Enable it to send deliveries again."
 msgstr "Endpoint đang bị tắt. Hãy bật để gửi lại các lượt gửi."
@@ -16519,6 +16633,10 @@ msgstr "Nguyên văn họ đã thấy bên cạnh ô tích hoặc chữ ký."
 #: src/features/migrations/DoneStep.tsx
 msgid "The export file"
 msgstr "Tệp xuất"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "The figures are still being prepared."
+msgstr "Số liệu vẫn đang được chuẩn bị."
 
 #: src/features/migrations/UploadStep.tsx
 msgid "The file"
@@ -17639,6 +17757,7 @@ msgstr "Thành viên này không còn trong không gian làm việc."
 msgid "This migration has ended, so nothing more can be uploaded. Start a new one for another file."
 msgstr "Lần di chuyển này đã kết thúc, nên không thể tải lên thêm. Hãy bắt đầu lần mới cho tệp khác."
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "This month"
 msgstr "Tháng này"
@@ -17841,6 +17960,7 @@ msgid "Tickets come over with their replies, notes, tags, status and assignee. E
 msgstr "Phiếu được chuyển sang cùng phản hồi, ghi chú, thẻ, trạng thái và người phụ trách. Hãy nhập địa chỉ hỗ trợ của bạn ở trên."
 
 #: src/features/migrations/ReviewStep.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
 msgid "Time"
 msgstr "Thời gian"
@@ -17870,6 +17990,7 @@ msgstr "TLS (cổng 465)"
 
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "To"
@@ -17887,6 +18008,7 @@ msgstr "Đến: {emailTo}"
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/ReportsColumn.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Today"
 msgstr "Hôm nay"
 
@@ -17951,6 +18073,11 @@ msgstr "Thùng rác"
 #: src/features/migrations/text.ts
 msgid "Trash, never imported"
 msgstr "Thùng rác, không bao giờ được nhập"
+
+#: src/features/reports/ReportPages.tsx
+#: src/features/reports/ReportsColumn.tsx
+msgid "Trends"
+msgstr "Xu hướng"
 
 #: src/features/home/HomePage.tsx
 msgid "Triage"
@@ -18373,6 +18500,10 @@ msgstr "Hoạt động từ {upSince}. Khi chắc chắn, hãy đăng thông bá
 #: src/features/broadcasts/Import.tsx
 msgid "Up to {max} and 100,000 rows, with a header row. Excel files in Turkish or Western encodings and columns separated by commas, semicolons or tabs are read as they are."
 msgstr "Tối đa {max} và 100.000 dòng, có dòng tiêu đề. Tệp Excel mã hóa Thổ Nhĩ Kỳ hoặc phương Tây và các cột phân tách bằng dấu phẩy, dấu chấm phẩy hoặc tab được đọc nguyên trạng."
+
+#: src/features/reports/ReportsColumn.tsx
+msgid "Up to 13 months, by group"
+msgstr "Tối đa 13 tháng, theo nhóm"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "Update text"
@@ -18971,6 +19102,10 @@ msgstr "Trang web và ứng dụng"
 #: src/components/common/text.ts
 msgid "Wednesday"
 msgstr "Thứ Tư"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Weeks"
+msgstr "Tuần"
 
 #: src/features/broadcasts/ListForm.tsx
 msgid "Welcome receipt"

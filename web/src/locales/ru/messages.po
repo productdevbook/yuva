@@ -882,6 +882,10 @@ msgstr "подписаны: {subscribed}"
 msgid "{subscribed} subscribers"
 msgstr "Подписчиков: {subscribed}"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "{text} vs previous period"
+msgstr "{text} к предыдущему периоду"
+
 #: src/features/docs/PagesTab.tsx
 msgid "{threads} open discussions"
 msgstr "Открытых обсуждений: {threads}"
@@ -1055,6 +1059,10 @@ msgstr "7 дней"
 #: src/features/status/SettingsTab.tsx
 msgid "7 to 90."
 msgstr "От 7 до 90."
+
+#: src/features/reports/TrendsReport.tsx
+msgid "90th percentile"
+msgstr "90-й процентиль"
 
 #: src/features/status/ResponseChart.tsx
 msgid "95th percentile"
@@ -2006,6 +2014,7 @@ msgstr "Alertmanager"
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/RunLog.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -3367,6 +3376,10 @@ msgstr "по почте"
 msgid "By e-mail"
 msgstr "По электронной почте"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "By group"
+msgstr "По группам"
+
 #: src/features/reports/ReportsColumn.tsx
 msgid "By member"
 msgstr "По участнику"
@@ -3625,6 +3638,7 @@ msgid "Changing the sending domain turns DKIM signing off until you enable it ag
 msgstr "Смена домена отправки отключает подпись DKIM, пока вы не включите её снова для нового домена."
 
 #: src/features/contact/ContactDetails.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/settings/channels/AddChannelDialog.tsx
 #: src/features/settings/channels/ChannelPage.tsx
@@ -4011,6 +4025,7 @@ msgstr "Закрыть поиск (Esc)"
 #: src/components/common/text.ts
 #: src/features/inbox/ChatList.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Closed"
 msgstr "Закрыто"
 
@@ -4535,6 +4550,10 @@ msgstr "диалоги"
 msgid "Conversations"
 msgstr "Диалоги"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Conversations and replies"
+msgstr "Диалоги и ответы"
+
 #: src/features/migrations/parts.tsx
 msgid "Conversations copied"
 msgstr "Диалоги скопированы"
@@ -4900,6 +4919,7 @@ msgstr "Cron"
 msgid "CSV file"
 msgstr "Файл CSV"
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/inboxes/colors.tsx
@@ -4963,6 +4983,10 @@ msgstr "Затемнить"
 msgid "Darken the colours to match the theme"
 msgstr "Затемнить цвета под тему"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Data up to {builtText}"
+msgstr "Данные до {builtText}"
+
 #: src/features/status/IncidentDialog.tsx
 msgid "Database upgrade"
 msgstr "Обновление базы данных"
@@ -4977,6 +5001,7 @@ msgid "Dates"
 msgstr "Даты"
 
 #: src/features/broadcasts/Growth.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Days"
 msgstr "Дни"
@@ -5261,6 +5286,7 @@ msgstr "Удалённый ящик"
 #: src/components/common/DiscussionAuthor.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Deleted member"
 msgstr "Удалённый участник"
@@ -6353,6 +6379,10 @@ msgstr "Expires soon"
 msgid "Export"
 msgstr "Экспорт"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Export CSV"
+msgstr "Экспорт в CSV"
+
 #: src/features/migrations/text.ts
 msgid "Export file"
 msgstr "Файл экспорта"
@@ -6490,6 +6520,10 @@ msgstr "Меньше всего открытых диалогов"
 msgid "Fields"
 msgstr "Поля"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Figures by group"
+msgstr "Цифры по группам"
+
 #: src/features/migrations/Wizard.tsx
 msgid "File"
 msgstr "Файл"
@@ -6621,6 +6655,7 @@ msgstr "первый ответ"
 #: src/features/conversation/SlaPopover.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "First reply"
 msgstr "Первый ответ"
@@ -6632,6 +6667,10 @@ msgstr "Первый ответ {first}"
 #: src/app/TeamMenu.tsx
 msgid "first reply in {first}"
 msgstr "первый ответ в {first}"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "First reply, 90th percentile"
+msgstr "Первый ответ, 90-й процентиль"
 
 #: src/features/broadcasts/Import.tsx
 msgid "First rows of the file"
@@ -6835,6 +6874,7 @@ msgstr "Найдено в ваших папках «Отправленные»"
 msgid "Friday"
 msgstr "Пятница"
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "From"
@@ -7086,6 +7126,10 @@ msgstr "Приветствует новые диалоги по электрон
 #: src/features/status/ComponentDialogs.tsx
 msgid "Group"
 msgstr "Группа"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Group by"
+msgstr "Группировать по"
 
 #: src/features/settings/teams/TeamsPage.tsx
 msgid "Group members, such as billing or support, and give the group its inboxes in one place."
@@ -8208,6 +8252,7 @@ msgstr "Известно только по результатам тестово
 
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/text.ts
+#: src/features/reports/TrendsReport.tsx
 msgid "Label"
 msgstr "Метка"
 
@@ -8279,17 +8324,31 @@ msgstr "Больше лимита этого сервера для одного 
 msgid "Largest file (MB)"
 msgstr "Самый большой файл (МБ)"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Last 12 months"
+msgstr "Последние 12 месяцев"
+
 #: src/features/home/HomePage.tsx
 msgid "Last 14 days"
 msgstr "Последние 14 дней"
 
-#: src/features/home/HomePage.tsx
-#: src/features/reports/ReportPages.tsx
-msgid "Last 30 days"
-msgstr "Последние 30 дней"
+#: src/features/reports/TrendsReport.tsx
+msgid "Last 3 months"
+msgstr "Последние 3 месяца"
 
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
+msgid "Last 30 days"
+msgstr "Последние 30 дней"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Last 6 months"
+msgstr "Последние 6 месяцев"
+
+#: src/features/home/HomePage.tsx
+#: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Last 7 days"
 msgstr "Последние 7 дней"
 
@@ -8316,6 +8375,10 @@ msgstr "Последняя проверка: {last}."
 #: src/features/status/StatusPages.tsx
 msgid "Last incident"
 msgstr "Последний инцидент"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Last month"
+msgstr "Прошлый месяц"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Last name"
@@ -9078,6 +9141,7 @@ msgstr "Медиа, ссылки и документы"
 msgid "median"
 msgstr "медиана"
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/status/ResponseChart.tsx
 msgid "Median"
 msgstr "Медиана"
@@ -9100,6 +9164,7 @@ msgstr "медиана, от первого сообщения до закрыт
 
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Member"
@@ -9342,6 +9407,10 @@ msgstr "Мониторы"
 #: src/features/status/MonitorsPage.tsx
 msgid "Monitors set the state of a status page component. Create a status page first."
 msgstr "Мониторы задают состояние компонента страницы статуса. Сначала создайте страницу статуса."
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Months"
+msgstr "Месяцы"
 
 #: src/features/contact/ContactDetail.tsx
 msgid "More"
@@ -9591,6 +9660,7 @@ msgstr "Мои представления"
 #: src/features/broadcasts/NewBroadcastDialog.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/inbox/views/ViewDialog.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/automation/RuleDialog.tsx
@@ -10057,6 +10127,10 @@ msgstr "ID для {inboxName} не указан. Пока человек не в
 msgid "No {provider} account has that subdomain. Check it in your address: acme in acme.zendesk.com."
 msgstr "Ни у одного аккаунта {provider} нет такого поддомена. Проверьте его в своём адресе: acme в acme.zendesk.com."
 
+#: src/features/reports/TrendsReport.tsx
+msgid "No activity in this period"
+msgstr "Нет активности за этот период"
+
 #: src/features/settings/webhooks/parts.tsx
 msgid "no answer"
 msgstr "нет ответа"
@@ -10294,6 +10368,10 @@ msgstr "Нет почтового канала, который мог бы от�
 #: src/features/status/SubscribersTab.tsx
 msgid "No e-mail subscribers yet"
 msgstr "Подписчиков по e-mail пока нет"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "No earlier figure"
+msgstr "Нет предыдущего значения"
 
 #: src/features/conversation/composer/EmojiPanel.tsx
 msgid "No emoji found."
@@ -10692,6 +10770,7 @@ msgstr "Это письмо никто не получит. Выберите с�
 #: src/features/contact/MergePreview.tsx
 #: src/features/conversation/Feedback.tsx
 #: src/features/feedback/FeedbackPage.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/slack/SlackPage.tsx
@@ -10924,6 +11003,7 @@ msgstr "Заметки"
 msgid "Notes where a teammate mentioned you"
 msgstr "Заметки, в которых вас упомянул коллега"
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/notifications/events.ts
 msgid "Nothing"
 msgstr "Ничего"
@@ -11063,6 +11143,14 @@ msgstr "Нет непрочитанного."
 #: src/features/home/HomePage.tsx
 msgid "nothing waiting"
 msgstr "никто не ждёт"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Nothing was measured in this period."
+msgstr "За этот период ничего не измерялось."
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Nothing was opened, replied to or closed here. Try a longer period or other filters."
+msgstr "Здесь ничего не открывали, не отвечали и не закрывали. Попробуйте более длинный период или другие фильтры."
 
 #: src/features/status/Notices.tsx
 msgid "Notices to subscribers"
@@ -11779,6 +11867,10 @@ msgstr "открытые, назначенные"
 msgid "open, unassigned"
 msgstr "открытые, неназначенные"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Opened"
+msgstr "Открыто"
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "OpenID Connect"
 msgstr "OpenID Connect"
@@ -12253,6 +12345,7 @@ msgstr "В месяц (30 дней)"
 
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Period"
 msgstr "Период"
 
@@ -12696,6 +12789,7 @@ msgstr "pro, team"
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/channels/AddChannelDialog.tsx
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/status/CreatePageDialog.tsx
@@ -13577,6 +13671,7 @@ msgstr "Ответил(а) в цепочке другого диалога"
 #: src/features/broadcasts/Report.tsx
 #: src/features/conversation/Feedback.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/channels/email/EmailSections.tsx
 #: src/features/setup/email/EmailLayout.tsx
 msgid "Replies"
@@ -13853,6 +13948,7 @@ msgid "Resolved at {endedAt}"
 msgstr "Решено в {endedAt}"
 
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Resolved in"
 msgstr "Решено за"
 
@@ -13873,6 +13969,10 @@ msgstr "Время ответа"
 #: src/features/status/MonitorsPage.tsx
 msgid "Response time, last 24 hours"
 msgstr "Время ответа, последние 24 часа"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Response times"
+msgstr "Время ответа"
 
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
@@ -14148,6 +14248,10 @@ msgstr "Sandbox (сборки для разработки)"
 #: src/features/contact/ContactSheet.tsx
 msgid "Satisfaction"
 msgstr "Удовлетворённость"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Satisfied"
+msgstr "Довольны"
 
 #: src/features/inbox/ChatsPage.tsx
 msgid "satisfied · 👍 {good} 👎 {bad}"
@@ -15536,6 +15640,7 @@ msgid "SLA breaches"
 msgstr "SLA breaches"
 
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "SLA met"
 msgstr "SLA выполнен"
 
@@ -15767,6 +15872,10 @@ msgstr "SPF проходит для {spfDomain}, а не для домена о�
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "SPF passes for {spfDomain}."
 msgstr "SPF проходит для {spfDomain}."
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Split by"
+msgstr "Разбить по"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "Stage"
@@ -16164,6 +16273,7 @@ msgstr "TCP-проверка"
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/settings/SettingsColumn.tsx
@@ -16504,6 +16614,10 @@ msgstr "Элементы работают по этим адресам; доба
 msgid "The end must be after the start."
 msgstr "Конец должен быть позже начала."
 
+#: src/features/reports/TrendsReport.tsx
+msgid "The end must not be before the start, and the range can be at most 13 months."
+msgstr "Конец не может быть раньше начала, а диапазон — не более 13 месяцев."
+
 #: src/components/common/text.ts
 msgid "The endpoint is disabled. Enable it to send deliveries again."
 msgstr "Эндпоинт отключён. Включите его, чтобы доставки снова отправлялись."
@@ -16519,6 +16633,10 @@ msgstr "Точные слова, которые они видели рядом �
 #: src/features/migrations/DoneStep.tsx
 msgid "The export file"
 msgstr "Файл экспорта"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "The figures are still being prepared."
+msgstr "Цифры ещё готовятся."
 
 #: src/features/migrations/UploadStep.tsx
 msgid "The file"
@@ -17639,6 +17757,7 @@ msgstr "Этого участника больше нет в рабочем пр
 msgid "This migration has ended, so nothing more can be uploaded. Start a new one for another file."
 msgstr "Эта миграция завершена, поэтому больше ничего загрузить нельзя. Начните новую для другого файла."
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "This month"
 msgstr "В этом месяце"
@@ -17841,6 +17960,7 @@ msgid "Tickets come over with their replies, notes, tags, status and assignee. E
 msgstr "Тикеты переносятся вместе с ответами, заметками, тегами, статусом и исполнителем. Введите выше свой адрес поддержки."
 
 #: src/features/migrations/ReviewStep.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
 msgid "Time"
 msgstr "Время"
@@ -17870,6 +17990,7 @@ msgstr "TLS (порт 465)"
 
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "To"
@@ -17887,6 +18008,7 @@ msgstr "Кому: {emailTo}"
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/ReportsColumn.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Today"
 msgstr "Сегодня"
 
@@ -17951,6 +18073,11 @@ msgstr "Корзина"
 #: src/features/migrations/text.ts
 msgid "Trash, never imported"
 msgstr "Корзина, никогда не импортируется"
+
+#: src/features/reports/ReportPages.tsx
+#: src/features/reports/ReportsColumn.tsx
+msgid "Trends"
+msgstr "Динамика"
 
 #: src/features/home/HomePage.tsx
 msgid "Triage"
@@ -18373,6 +18500,10 @@ msgstr "Работает с {upSince}. Когда будете уверены, �
 #: src/features/broadcasts/Import.tsx
 msgid "Up to {max} and 100,000 rows, with a header row. Excel files in Turkish or Western encodings and columns separated by commas, semicolons or tabs are read as they are."
 msgstr "До {max} и 100 000 строк, со строкой заголовка. Файлы Excel в турецкой или западной кодировке и столбцы, разделённые запятыми, точками с запятой или табуляцией, читаются как есть."
+
+#: src/features/reports/ReportsColumn.tsx
+msgid "Up to 13 months, by group"
+msgstr "До 13 месяцев, по группам"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "Update text"
@@ -18971,6 +19102,10 @@ msgstr "Сайты и приложения"
 #: src/components/common/text.ts
 msgid "Wednesday"
 msgstr "Среда"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Weeks"
+msgstr "Недели"
 
 #: src/features/broadcasts/ListForm.tsx
 msgid "Welcome receipt"

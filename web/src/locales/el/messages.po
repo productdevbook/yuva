@@ -882,6 +882,10 @@ msgstr "συνδρομητές: {subscribed}"
 msgid "{subscribed} subscribers"
 msgstr "{subscribed} συνδρομητές"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "{text} vs previous period"
+msgstr "{text} σε σχέση με την προηγούμενη περίοδο"
+
 #: src/features/docs/PagesTab.tsx
 msgid "{threads} open discussions"
 msgstr "Ανοιχτές συζητήσεις: {threads}"
@@ -1055,6 +1059,10 @@ msgstr "7 ημέρες"
 #: src/features/status/SettingsTab.tsx
 msgid "7 to 90."
 msgstr "7 έως 90."
+
+#: src/features/reports/TrendsReport.tsx
+msgid "90th percentile"
+msgstr "90ό εκατοστημόριο"
 
 #: src/features/status/ResponseChart.tsx
 msgid "95th percentile"
@@ -2006,6 +2014,7 @@ msgstr "Alertmanager"
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/RunLog.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -3367,6 +3376,10 @@ msgstr "με e-mail"
 msgid "By e-mail"
 msgstr "Με e-mail"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "By group"
+msgstr "Ανά ομάδα"
+
 #: src/features/reports/ReportsColumn.tsx
 msgid "By member"
 msgstr "Ανά μέλος"
@@ -3625,6 +3638,7 @@ msgid "Changing the sending domain turns DKIM signing off until you enable it ag
 msgstr "Η αλλαγή του τομέα αποστολής απενεργοποιεί την υπογραφή DKIM μέχρι να την ενεργοποιήσετε ξανά για τον νέο τομέα."
 
 #: src/features/contact/ContactDetails.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/settings/channels/AddChannelDialog.tsx
 #: src/features/settings/channels/ChannelPage.tsx
@@ -4011,6 +4025,7 @@ msgstr "Κλείσιμο αναζήτησης (Esc)"
 #: src/components/common/text.ts
 #: src/features/inbox/ChatList.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Closed"
 msgstr "Κλειστές"
 
@@ -4535,6 +4550,10 @@ msgstr "συνομιλίες"
 msgid "Conversations"
 msgstr "Συνομιλίες"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Conversations and replies"
+msgstr "Συνομιλίες και απαντήσεις"
+
 #: src/features/migrations/parts.tsx
 msgid "Conversations copied"
 msgstr "Οι συνομιλίες αντιγράφηκαν"
@@ -4900,6 +4919,7 @@ msgstr "Cron"
 msgid "CSV file"
 msgstr "Αρχείο CSV"
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/inboxes/colors.tsx
@@ -4963,6 +4983,10 @@ msgstr "Σκούρυνση"
 msgid "Darken the colours to match the theme"
 msgstr "Σκούρυνση των χρωμάτων ώστε να ταιριάζουν με το θέμα"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Data up to {builtText}"
+msgstr "Δεδομένα έως {builtText}"
+
 #: src/features/status/IncidentDialog.tsx
 msgid "Database upgrade"
 msgstr "Αναβάθμιση βάσης δεδομένων"
@@ -4977,6 +5001,7 @@ msgid "Dates"
 msgstr "Ημερομηνίες"
 
 #: src/features/broadcasts/Growth.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Days"
 msgstr "Ημέρες"
@@ -5261,6 +5286,7 @@ msgstr "Διαγραμμένα εισερχόμενα"
 #: src/components/common/DiscussionAuthor.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Deleted member"
 msgstr "Διαγραμμένο μέλος"
@@ -6353,6 +6379,10 @@ msgstr "Expires soon"
 msgid "Export"
 msgstr "Εξαγωγή"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Export CSV"
+msgstr "Εξαγωγή CSV"
+
 #: src/features/migrations/text.ts
 msgid "Export file"
 msgstr "Αρχείο εξαγωγής"
@@ -6490,6 +6520,10 @@ msgstr "Λιγότερες ανοιχτές συνομιλίες"
 msgid "Fields"
 msgstr "Πεδία"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Figures by group"
+msgstr "Αριθμοί ανά ομάδα"
+
 #: src/features/migrations/Wizard.tsx
 msgid "File"
 msgstr "Αρχείο"
@@ -6621,6 +6655,7 @@ msgstr "πρώτη απάντηση"
 #: src/features/conversation/SlaPopover.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "First reply"
 msgstr "Πρώτη απάντηση"
@@ -6632,6 +6667,10 @@ msgstr "Πρώτη απάντηση {first}"
 #: src/app/TeamMenu.tsx
 msgid "first reply in {first}"
 msgstr "πρώτη απάντηση σε {first}"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "First reply, 90th percentile"
+msgstr "Πρώτη απάντηση, 90ό εκατοστημόριο"
 
 #: src/features/broadcasts/Import.tsx
 msgid "First rows of the file"
@@ -6835,6 +6874,7 @@ msgstr "Βρέθηκε στους φακέλους Απεσταλμένων σα
 msgid "Friday"
 msgstr "Παρασκευή"
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "From"
@@ -7086,6 +7126,10 @@ msgstr "Χαιρετά τις νέες συνομιλίες με e-mail, μία 
 #: src/features/status/ComponentDialogs.tsx
 msgid "Group"
 msgstr "Ομάδα"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Group by"
+msgstr "Ομαδοποίηση κατά"
 
 #: src/features/settings/teams/TeamsPage.tsx
 msgid "Group members, such as billing or support, and give the group its inboxes in one place."
@@ -8208,6 +8252,7 @@ msgstr "Γνωστό μόνο από τα αποτελέσματα του δια
 
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/text.ts
+#: src/features/reports/TrendsReport.tsx
 msgid "Label"
 msgstr "Ετικέτα"
 
@@ -8279,17 +8324,31 @@ msgstr "Μεγαλύτερο από το όριο αυτού του διακομ
 msgid "Largest file (MB)"
 msgstr "Μεγαλύτερο αρχείο (MB)"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Last 12 months"
+msgstr "Τελευταίοι 12 μήνες"
+
 #: src/features/home/HomePage.tsx
 msgid "Last 14 days"
 msgstr "Τελευταίες 14 ημέρες"
 
-#: src/features/home/HomePage.tsx
-#: src/features/reports/ReportPages.tsx
-msgid "Last 30 days"
-msgstr "Τελευταίες 30 ημέρες"
+#: src/features/reports/TrendsReport.tsx
+msgid "Last 3 months"
+msgstr "Τελευταίοι 3 μήνες"
 
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
+msgid "Last 30 days"
+msgstr "Τελευταίες 30 ημέρες"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Last 6 months"
+msgstr "Τελευταίοι 6 μήνες"
+
+#: src/features/home/HomePage.tsx
+#: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Last 7 days"
 msgstr "Τελευταίες 7 ημέρες"
 
@@ -8316,6 +8375,10 @@ msgstr "Τελευταίος έλεγχος {last}."
 #: src/features/status/StatusPages.tsx
 msgid "Last incident"
 msgstr "Τελευταίο περιστατικό"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Last month"
+msgstr "Προηγούμενος μήνας"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Last name"
@@ -9078,6 +9141,7 @@ msgstr "Πολυμέσα, σύνδεσμοι και έγγραφα"
 msgid "median"
 msgstr "διάμεσος"
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/status/ResponseChart.tsx
 msgid "Median"
 msgstr "Διάμεσος"
@@ -9100,6 +9164,7 @@ msgstr "διάμεσος, από το πρώτο μήνυμα έως το κλε
 
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Member"
@@ -9342,6 +9407,10 @@ msgstr "Παρακολουθήσεις"
 #: src/features/status/MonitorsPage.tsx
 msgid "Monitors set the state of a status page component. Create a status page first."
 msgstr "Οι παρακολουθήσεις ορίζουν την κατάσταση ενός στοιχείου της σελίδας κατάστασης. Δημιουργήστε πρώτα μια σελίδα κατάστασης."
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Months"
+msgstr "Μήνες"
 
 #: src/features/contact/ContactDetail.tsx
 msgid "More"
@@ -9591,6 +9660,7 @@ msgstr "Οι προβολές μου"
 #: src/features/broadcasts/NewBroadcastDialog.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/inbox/views/ViewDialog.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/automation/RuleDialog.tsx
@@ -10057,6 +10127,10 @@ msgstr "Δεν υπάρχει ID για το {inboxName}. Μέχρι να συν
 msgid "No {provider} account has that subdomain. Check it in your address: acme in acme.zendesk.com."
 msgstr "Κανένας λογαριασμός {provider} δεν έχει αυτόν τον υποτομέα. Ελέγξτε τον στη διεύθυνσή σας: acme στο acme.zendesk.com."
 
+#: src/features/reports/TrendsReport.tsx
+msgid "No activity in this period"
+msgstr "Καμία δραστηριότητα στην περίοδο"
+
 #: src/features/settings/webhooks/parts.tsx
 msgid "no answer"
 msgstr "χωρίς απάντηση"
@@ -10294,6 +10368,10 @@ msgstr "Κανένα κανάλι e-mail που να μπορεί να στεί�
 #: src/features/status/SubscribersTab.tsx
 msgid "No e-mail subscribers yet"
 msgstr "Δεν υπάρχουν ακόμη συνδρομητές e-mail"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "No earlier figure"
+msgstr "Κανένας προηγούμενος αριθμός"
 
 #: src/features/conversation/composer/EmojiPanel.tsx
 msgid "No emoji found."
@@ -10692,6 +10770,7 @@ msgstr "Κανείς δεν θα λάβει αυτό το e-mail. Επιλέξτ
 #: src/features/contact/MergePreview.tsx
 #: src/features/conversation/Feedback.tsx
 #: src/features/feedback/FeedbackPage.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/slack/SlackPage.tsx
@@ -10924,6 +11003,7 @@ msgstr "Σημειώσεις"
 msgid "Notes where a teammate mentioned you"
 msgstr "Σημειώσεις όπου σας ανέφερε ένα μέλος της ομάδας"
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/notifications/events.ts
 msgid "Nothing"
 msgstr "Τίποτα"
@@ -11063,6 +11143,14 @@ msgstr "Τίποτα αδιάβαστο."
 #: src/features/home/HomePage.tsx
 msgid "nothing waiting"
 msgstr "τίποτα σε αναμονή"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Nothing was measured in this period."
+msgstr "Δεν μετρήθηκε τίποτα σε αυτή την περίοδο."
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Nothing was opened, replied to or closed here. Try a longer period or other filters."
+msgstr "Εδώ δεν άνοιξε, δεν απαντήθηκε και δεν έκλεισε τίποτα. Δοκιμάστε μεγαλύτερη περίοδο ή άλλα φίλτρα."
 
 #: src/features/status/Notices.tsx
 msgid "Notices to subscribers"
@@ -11779,6 +11867,10 @@ msgstr "ανοιχτές, σε ανάθεση"
 msgid "open, unassigned"
 msgstr "ανοιχτές, χωρίς ανάθεση"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Opened"
+msgstr "Ανοιχτές"
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "OpenID Connect"
 msgstr "OpenID Connect"
@@ -12253,6 +12345,7 @@ msgstr "Ανά μήνα (30 ημέρες)"
 
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Period"
 msgstr "Περίοδος"
 
@@ -12696,6 +12789,7 @@ msgstr "pro, team"
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/channels/AddChannelDialog.tsx
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/status/CreatePageDialog.tsx
@@ -13577,6 +13671,7 @@ msgstr "Απάντησε στο νήμα άλλης συνομιλίας"
 #: src/features/broadcasts/Report.tsx
 #: src/features/conversation/Feedback.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/channels/email/EmailSections.tsx
 #: src/features/setup/email/EmailLayout.tsx
 msgid "Replies"
@@ -13853,6 +13948,7 @@ msgid "Resolved at {endedAt}"
 msgstr "Επιλύθηκε στις {endedAt}"
 
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Resolved in"
 msgstr "Επίλυση σε"
 
@@ -13873,6 +13969,10 @@ msgstr "Χρόνος απόκρισης"
 #: src/features/status/MonitorsPage.tsx
 msgid "Response time, last 24 hours"
 msgstr "Χρόνος απόκρισης, τελευταίες 24 ώρες"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Response times"
+msgstr "Χρόνοι απόκρισης"
 
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
@@ -14148,6 +14248,10 @@ msgstr "Sandbox (εκδόσεις ανάπτυξης)"
 #: src/features/contact/ContactSheet.tsx
 msgid "Satisfaction"
 msgstr "Ικανοποίηση"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Satisfied"
+msgstr "Ικανοποιημένοι"
 
 #: src/features/inbox/ChatsPage.tsx
 msgid "satisfied · 👍 {good} 👎 {bad}"
@@ -15536,6 +15640,7 @@ msgid "SLA breaches"
 msgstr "SLA breaches"
 
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "SLA met"
 msgstr "SLA τηρήθηκε"
 
@@ -15767,6 +15872,10 @@ msgstr "Το SPF περνά για το {spfDomain}, όχι για τον τομ
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "SPF passes for {spfDomain}."
 msgstr "Το SPF περνά για το {spfDomain}."
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Split by"
+msgstr "Διαχωρισμός ανά"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "Stage"
@@ -16164,6 +16273,7 @@ msgstr "Έλεγχος TCP"
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/settings/SettingsColumn.tsx
@@ -16504,6 +16614,10 @@ msgstr "Τα στοιχεία λειτουργούν σε αυτές τις δι
 msgid "The end must be after the start."
 msgstr "Η λήξη πρέπει να είναι μετά την έναρξη."
 
+#: src/features/reports/TrendsReport.tsx
+msgid "The end must not be before the start, and the range can be at most 13 months."
+msgstr "Το τέλος δεν μπορεί να είναι πριν από την αρχή και το εύρος μπορεί να είναι έως 13 μήνες."
+
 #: src/components/common/text.ts
 msgid "The endpoint is disabled. Enable it to send deliveries again."
 msgstr "Το endpoint είναι απενεργοποιημένο. Ενεργοποιήστε το για να στέλνονται ξανά παραδόσεις."
@@ -16519,6 +16633,10 @@ msgstr "Τα ακριβή λόγια που είδαν δίπλα στο πλα�
 #: src/features/migrations/DoneStep.tsx
 msgid "The export file"
 msgstr "Το αρχείο εξαγωγής"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "The figures are still being prepared."
+msgstr "Οι αριθμοί ετοιμάζονται ακόμη."
 
 #: src/features/migrations/UploadStep.tsx
 msgid "The file"
@@ -17639,6 +17757,7 @@ msgstr "Αυτό το μέλος δεν είναι πια στον χώρο ερ
 msgid "This migration has ended, so nothing more can be uploaded. Start a new one for another file."
 msgstr "Αυτή η μεταφορά έχει τελειώσει, οπότε δεν μπορεί να ανέβει τίποτα άλλο. Ξεκινήστε νέα για άλλο αρχείο."
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "This month"
 msgstr "Αυτόν τον μήνα"
@@ -17841,6 +17960,7 @@ msgid "Tickets come over with their replies, notes, tags, status and assignee. E
 msgstr "Τα tickets έρχονται με τις απαντήσεις, τις σημειώσεις, τις ετικέτες, την κατάσταση και τον υπεύθυνό τους. Εισαγάγετε παραπάνω τη διεύθυνση υποστήριξής σας."
 
 #: src/features/migrations/ReviewStep.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
 msgid "Time"
 msgstr "Ώρα"
@@ -17870,6 +17990,7 @@ msgstr "TLS (θύρα 465)"
 
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "To"
@@ -17887,6 +18008,7 @@ msgstr "Προς: {emailTo}"
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/ReportsColumn.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Today"
 msgstr "Σήμερα"
 
@@ -17951,6 +18073,11 @@ msgstr "Κάδος"
 #: src/features/migrations/text.ts
 msgid "Trash, never imported"
 msgstr "Κάδος, δεν εισάγεται ποτέ"
+
+#: src/features/reports/ReportPages.tsx
+#: src/features/reports/ReportsColumn.tsx
+msgid "Trends"
+msgstr "Τάσεις"
 
 #: src/features/home/HomePage.tsx
 msgid "Triage"
@@ -18373,6 +18500,10 @@ msgstr "Σε λειτουργία από {upSince}. Δημοσιεύστε τη�
 #: src/features/broadcasts/Import.tsx
 msgid "Up to {max} and 100,000 rows, with a header row. Excel files in Turkish or Western encodings and columns separated by commas, semicolons or tabs are read as they are."
 msgstr "Έως {max} και 100.000 γραμμές, με γραμμή κεφαλίδας. Τα αρχεία Excel σε τουρκική ή δυτική κωδικοποίηση και οι στήλες που χωρίζονται με κόμματα, ερωτηματικά ή tab διαβάζονται ως έχουν."
+
+#: src/features/reports/ReportsColumn.tsx
+msgid "Up to 13 months, by group"
+msgstr "Έως 13 μήνες, ανά ομάδα"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "Update text"
@@ -18971,6 +19102,10 @@ msgstr "Ιστότοποι και εφαρμογές"
 #: src/components/common/text.ts
 msgid "Wednesday"
 msgstr "Τετάρτη"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Weeks"
+msgstr "Εβδομάδες"
 
 #: src/features/broadcasts/ListForm.tsx
 msgid "Welcome receipt"

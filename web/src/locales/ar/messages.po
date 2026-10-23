@@ -882,6 +882,10 @@ msgstr "{subscribed} مشتركون"
 msgid "{subscribed} subscribers"
 msgstr "المشتركون: {subscribed}"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "{text} vs previous period"
+msgstr "{text} مقارنة بالفترة السابقة"
+
 #: src/features/docs/PagesTab.tsx
 msgid "{threads} open discussions"
 msgstr "{threads} نقاشات مفتوحة"
@@ -1055,6 +1059,10 @@ msgstr "7 أيام"
 #: src/features/status/SettingsTab.tsx
 msgid "7 to 90."
 msgstr "من 7 إلى 90."
+
+#: src/features/reports/TrendsReport.tsx
+msgid "90th percentile"
+msgstr "المئين 90"
 
 #: src/features/status/ResponseChart.tsx
 msgid "95th percentile"
@@ -2006,6 +2014,7 @@ msgstr "Alertmanager"
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/RunLog.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -3367,6 +3376,10 @@ msgstr "عبر البريد"
 msgid "By e-mail"
 msgstr "بالبريد الإلكتروني"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "By group"
+msgstr "حسب المجموعة"
+
 #: src/features/reports/ReportsColumn.tsx
 msgid "By member"
 msgstr "حسب العضو"
@@ -3625,6 +3638,7 @@ msgid "Changing the sending domain turns DKIM signing off until you enable it ag
 msgstr "تغيير نطاق الإرسال يوقف توقيع DKIM حتى تفعّله مجددًا للنطاق الجديد."
 
 #: src/features/contact/ContactDetails.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/settings/channels/AddChannelDialog.tsx
 #: src/features/settings/channels/ChannelPage.tsx
@@ -4011,6 +4025,7 @@ msgstr "إغلاق البحث (Esc)"
 #: src/components/common/text.ts
 #: src/features/inbox/ChatList.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Closed"
 msgstr "مغلقة"
 
@@ -4535,6 +4550,10 @@ msgstr "المحادثات"
 msgid "Conversations"
 msgstr "المحادثات"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Conversations and replies"
+msgstr "المحادثات والردود"
+
 #: src/features/migrations/parts.tsx
 msgid "Conversations copied"
 msgstr "تم نسخ المحادثات"
@@ -4900,6 +4919,7 @@ msgstr "Cron"
 msgid "CSV file"
 msgstr "ملف CSV"
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/inboxes/colors.tsx
@@ -4963,6 +4983,10 @@ msgstr "تعتيم"
 msgid "Darken the colours to match the theme"
 msgstr "تعتيم الألوان لتناسب السمة"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Data up to {builtText}"
+msgstr "البيانات حتى {builtText}"
+
 #: src/features/status/IncidentDialog.tsx
 msgid "Database upgrade"
 msgstr "ترقية قاعدة البيانات"
@@ -4977,6 +5001,7 @@ msgid "Dates"
 msgstr "التواريخ"
 
 #: src/features/broadcasts/Growth.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Days"
 msgstr "الأيام"
@@ -5261,6 +5286,7 @@ msgstr "صندوق وارد محذوف"
 #: src/components/common/DiscussionAuthor.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Deleted member"
 msgstr "عضو محذوف"
@@ -6353,6 +6379,10 @@ msgstr "Expires soon"
 msgid "Export"
 msgstr "تصدير"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Export CSV"
+msgstr "تصدير CSV"
+
 #: src/features/migrations/text.ts
 msgid "Export file"
 msgstr "ملف التصدير"
@@ -6490,6 +6520,10 @@ msgstr "أقل عدد من المحادثات المفتوحة"
 msgid "Fields"
 msgstr "الحقول"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Figures by group"
+msgstr "الأرقام حسب المجموعة"
+
 #: src/features/migrations/Wizard.tsx
 msgid "File"
 msgstr "الملف"
@@ -6621,6 +6655,7 @@ msgstr "الرد الأول"
 #: src/features/conversation/SlaPopover.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "First reply"
 msgstr "الرد الأول"
@@ -6632,6 +6667,10 @@ msgstr "الرد الأول {first}"
 #: src/app/TeamMenu.tsx
 msgid "first reply in {first}"
 msgstr "الرد الأول في {first}"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "First reply, 90th percentile"
+msgstr "الرد الأول، المئين 90"
 
 #: src/features/broadcasts/Import.tsx
 msgid "First rows of the file"
@@ -6835,6 +6874,7 @@ msgstr "عُثر عليه في مجلدات المرسَل لديك"
 msgid "Friday"
 msgstr "الجمعة"
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "From"
@@ -7086,6 +7126,10 @@ msgstr "يحيّي المحادثات الجديدة بالبريد الإلكت
 #: src/features/status/ComponentDialogs.tsx
 msgid "Group"
 msgstr "المجموعة"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Group by"
+msgstr "تجميع حسب"
 
 #: src/features/settings/teams/TeamsPage.tsx
 msgid "Group members, such as billing or support, and give the group its inboxes in one place."
@@ -8208,6 +8252,7 @@ msgstr "معروف فقط من نتائج الخادم المستقبِل لرس
 
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/text.ts
+#: src/features/reports/TrendsReport.tsx
 msgid "Label"
 msgstr "الوسم"
 
@@ -8279,17 +8324,31 @@ msgstr "أكبر من حد هذا الخادم لرسالة واحدة"
 msgid "Largest file (MB)"
 msgstr "أكبر ملف (ميغابايت)"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Last 12 months"
+msgstr "آخر 12 شهرًا"
+
 #: src/features/home/HomePage.tsx
 msgid "Last 14 days"
 msgstr "آخر 14 يومًا"
 
-#: src/features/home/HomePage.tsx
-#: src/features/reports/ReportPages.tsx
-msgid "Last 30 days"
-msgstr "آخر 30 يومًا"
+#: src/features/reports/TrendsReport.tsx
+msgid "Last 3 months"
+msgstr "آخر 3 أشهر"
 
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
+msgid "Last 30 days"
+msgstr "آخر 30 يومًا"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Last 6 months"
+msgstr "آخر 6 أشهر"
+
+#: src/features/home/HomePage.tsx
+#: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Last 7 days"
 msgstr "آخر 7 أيام"
 
@@ -8316,6 +8375,10 @@ msgstr "آخر فحص {last}."
 #: src/features/status/StatusPages.tsx
 msgid "Last incident"
 msgstr "آخر حادث"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Last month"
+msgstr "الشهر الماضي"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Last name"
@@ -9078,6 +9141,7 @@ msgstr "الوسائط والروابط والمستندات"
 msgid "median"
 msgstr "الوسيط"
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/status/ResponseChart.tsx
 msgid "Median"
 msgstr "الوسيط"
@@ -9100,6 +9164,7 @@ msgstr "الوسيط، من الرسالة الأولى حتى الإغلاق"
 
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Member"
@@ -9342,6 +9407,10 @@ msgstr "المراقبون"
 #: src/features/status/MonitorsPage.tsx
 msgid "Monitors set the state of a status page component. Create a status page first."
 msgstr "تحدد المراقبات حالة مكوّن في صفحة الحالة. أنشئ صفحة حالة أولًا."
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Months"
+msgstr "أشهر"
 
 #: src/features/contact/ContactDetail.tsx
 msgid "More"
@@ -9591,6 +9660,7 @@ msgstr "عروضي"
 #: src/features/broadcasts/NewBroadcastDialog.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/inbox/views/ViewDialog.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/automation/RuleDialog.tsx
@@ -10057,6 +10127,10 @@ msgstr "لا يوجد معرّف {inboxName}. لا يمكن التواصل مع�
 msgid "No {provider} account has that subdomain. Check it in your address: acme in acme.zendesk.com."
 msgstr "لا يوجد حساب {provider} بهذا النطاق الفرعي. تحقق منه في عنوانك: acme في acme.zendesk.com."
 
+#: src/features/reports/TrendsReport.tsx
+msgid "No activity in this period"
+msgstr "لا نشاط في هذه الفترة"
+
 #: src/features/settings/webhooks/parts.tsx
 msgid "no answer"
 msgstr "بلا إجابة"
@@ -10294,6 +10368,10 @@ msgstr "لا قناة بريد إلكتروني قادرة على إرسال ر�
 #: src/features/status/SubscribersTab.tsx
 msgid "No e-mail subscribers yet"
 msgstr "لا يوجد مشتركون بالبريد الإلكتروني بعد"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "No earlier figure"
+msgstr "لا يوجد رقم سابق"
 
 #: src/features/conversation/composer/EmojiPanel.tsx
 msgid "No emoji found."
@@ -10692,6 +10770,7 @@ msgstr "لن يتلقى أحد هذه الرسالة. اختر قوائم لها
 #: src/features/contact/MergePreview.tsx
 #: src/features/conversation/Feedback.tsx
 #: src/features/feedback/FeedbackPage.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/slack/SlackPage.tsx
@@ -10924,6 +11003,7 @@ msgstr "الملاحظات"
 msgid "Notes where a teammate mentioned you"
 msgstr "ملاحظات ذكرك فيها أحد زملائك"
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/notifications/events.ts
 msgid "Nothing"
 msgstr "لا شيء"
@@ -11063,6 +11143,14 @@ msgstr "لا شيء غير مقروء."
 #: src/features/home/HomePage.tsx
 msgid "nothing waiting"
 msgstr "لا شيء في الانتظار"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Nothing was measured in this period."
+msgstr "لم يُقَس شيء في هذه الفترة."
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Nothing was opened, replied to or closed here. Try a longer period or other filters."
+msgstr "لم يُفتح أو يُرد على أو يُغلق أي شيء هنا. جرّب فترة أطول أو مرشحات أخرى."
 
 #: src/features/status/Notices.tsx
 msgid "Notices to subscribers"
@@ -11779,6 +11867,10 @@ msgstr "مفتوحة، مسندة"
 msgid "open, unassigned"
 msgstr "مفتوحة، غير مسندة"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Opened"
+msgstr "المفتوحة"
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "OpenID Connect"
 msgstr "OpenID Connect"
@@ -12253,6 +12345,7 @@ msgstr "في الشهر (30 يومًا)"
 
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Period"
 msgstr "الفترة"
 
@@ -12696,6 +12789,7 @@ msgstr "pro، team"
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/channels/AddChannelDialog.tsx
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/status/CreatePageDialog.tsx
@@ -13577,6 +13671,7 @@ msgstr "ردّ في سلسلة محادثة أخرى"
 #: src/features/broadcasts/Report.tsx
 #: src/features/conversation/Feedback.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/channels/email/EmailSections.tsx
 #: src/features/setup/email/EmailLayout.tsx
 msgid "Replies"
@@ -13853,6 +13948,7 @@ msgid "Resolved at {endedAt}"
 msgstr "تم الحل في {endedAt}"
 
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Resolved in"
 msgstr "تم الحل خلال"
 
@@ -13873,6 +13969,10 @@ msgstr "زمن الاستجابة"
 #: src/features/status/MonitorsPage.tsx
 msgid "Response time, last 24 hours"
 msgstr "زمن الاستجابة، آخر 24 ساعة"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Response times"
+msgstr "أزمنة الرد"
 
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
@@ -14148,6 +14248,10 @@ msgstr "Sandbox (إصدارات التطوير)"
 #: src/features/contact/ContactSheet.tsx
 msgid "Satisfaction"
 msgstr "الرضا"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Satisfied"
+msgstr "راضون"
 
 #: src/features/inbox/ChatsPage.tsx
 msgid "satisfied · 👍 {good} 👎 {bad}"
@@ -15536,6 +15640,7 @@ msgid "SLA breaches"
 msgstr "SLA breaches"
 
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "SLA met"
 msgstr "SLA متحقق"
 
@@ -15767,6 +15872,10 @@ msgstr "ينجح SPF لـ {spfDomain}، وليس لنطاق الإرسال {from
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "SPF passes for {spfDomain}."
 msgstr "ينجح SPF لـ {spfDomain}."
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Split by"
+msgstr "تقسيم حسب"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "Stage"
@@ -16164,6 +16273,7 @@ msgstr "فحص TCP"
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/settings/SettingsColumn.tsx
@@ -16504,6 +16614,10 @@ msgstr "تعمل العناصر على هذه العناوين؛ أضف خادم
 msgid "The end must be after the start."
 msgstr "يجب أن تكون النهاية بعد البداية."
 
+#: src/features/reports/TrendsReport.tsx
+msgid "The end must not be before the start, and the range can be at most 13 months."
+msgstr "لا يمكن أن تسبق النهاية البداية، ويمكن أن يبلغ النطاق 13 شهرًا كحد أقصى."
+
 #: src/components/common/text.ts
 msgid "The endpoint is disabled. Enable it to send deliveries again."
 msgstr "نقطة النهاية معطلة. فعّلها لإرسال عمليات التسليم مجددًا."
@@ -16519,6 +16633,10 @@ msgstr "الكلمات الدقيقة التي رأوها بجانب مربع ا
 #: src/features/migrations/DoneStep.tsx
 msgid "The export file"
 msgstr "ملف التصدير"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "The figures are still being prepared."
+msgstr "الأرقام ما زالت قيد الإعداد."
 
 #: src/features/migrations/UploadStep.tsx
 msgid "The file"
@@ -17639,6 +17757,7 @@ msgstr "هذا العضو لم يعد في مساحة العمل."
 msgid "This migration has ended, so nothing more can be uploaded. Start a new one for another file."
 msgstr "انتهى هذا النقل، لذا لا يمكن رفع المزيد. ابدأ نقلًا جديدًا لملف آخر."
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "This month"
 msgstr "هذا الشهر"
@@ -17841,6 +17960,7 @@ msgid "Tickets come over with their replies, notes, tags, status and assignee. E
 msgstr "تأتي التذاكر مع ردودها وملاحظاتها ووسومها وحالتها والمُسنَد إليه. أدخل عنوان دعمك أعلاه."
 
 #: src/features/migrations/ReviewStep.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
 msgid "Time"
 msgstr "الوقت"
@@ -17870,6 +17990,7 @@ msgstr "TLS (المنفذ 465)"
 
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "To"
@@ -17887,6 +18008,7 @@ msgstr "إلى: {emailTo}"
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/ReportsColumn.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Today"
 msgstr "اليوم"
 
@@ -17951,6 +18073,11 @@ msgstr "المهملات"
 #: src/features/migrations/text.ts
 msgid "Trash, never imported"
 msgstr "المهملات، لم تُستورد أبدًا"
+
+#: src/features/reports/ReportPages.tsx
+#: src/features/reports/ReportsColumn.tsx
+msgid "Trends"
+msgstr "الاتجاهات"
 
 #: src/features/home/HomePage.tsx
 msgid "Triage"
@@ -18373,6 +18500,10 @@ msgstr "يعمل منذ {upSince}. انشر إشعار عودة الأمور إ�
 #: src/features/broadcasts/Import.tsx
 msgid "Up to {max} and 100,000 rows, with a header row. Excel files in Turkish or Western encodings and columns separated by commas, semicolons or tabs are read as they are."
 msgstr "حتى {max} و100,000 صف، مع صف عناوين. تُقرأ كما هي ملفات Excel بالترميزات التركية أو الغربية والأعمدة المفصولة بفواصل أو فواصل منقوطة أو علامات جدولة."
+
+#: src/features/reports/ReportsColumn.tsx
+msgid "Up to 13 months, by group"
+msgstr "حتى 13 شهرًا، حسب المجموعة"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "Update text"
@@ -18971,6 +19102,10 @@ msgstr "المواقع والتطبيقات"
 #: src/components/common/text.ts
 msgid "Wednesday"
 msgstr "الأربعاء"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Weeks"
+msgstr "أسابيع"
 
 #: src/features/broadcasts/ListForm.tsx
 msgid "Welcome receipt"

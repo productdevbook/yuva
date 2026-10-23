@@ -1,6 +1,14 @@
 import { keepPreviousData, useQueries, useQuery } from "@tanstack/react-query"
 
-import { api, unwrap, type ConversationListItem } from "@/lib/api"
+import {
+  api,
+  unwrap,
+  type ChannelKind,
+  type ConversationListItem,
+  type ReportGranularity,
+  type ReportGroupBy,
+} from "@/lib/api"
+import { saveDownload } from "@/lib/download"
 import { keys } from "@/lib/keys"
 import { useSession } from "@/lib/session"
 
@@ -73,4 +81,57 @@ export function ratedSince(items: ConversationListItem[], since: string) {
 
 export function share(good: number, bad: number) {
   return good + bad > 0 ? good / (good + bad) : undefined
+}
+
+export type ReportQuery = {
+  from: string
+  to: string
+  granularity: ReportGranularity
+  group_by?: ReportGroupBy
+  inbox_id?: string
+  channel_kind?: ChannelKind
+  label_id?: string
+  team_id?: string
+  member_id?: string
+}
+
+function reportParams(q: ReportQuery) {
+  return {
+    ...q,
+    inbox_id: q.inbox_id || undefined,
+    label_id: q.label_id || undefined,
+    team_id: q.team_id || undefined,
+    member_id: q.member_id || undefined,
+    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+  }
+}
+
+export function useReport(q: ReportQuery, enabled = true) {
+  const { workspaceId: ws } = useSession()
+  const query = reportParams(q)
+  return useQuery({
+    queryKey: [...keys.stats(ws), "report", query],
+    queryFn: () => unwrap(api.GET("/v1/reports", { params: { query } })),
+    staleTime: 60_000,
+    placeholderData: keepPreviousData,
+    enabled,
+  })
+}
+
+export function downloadReport(q: ReportQuery) {
+  return saveDownload(
+    api.GET("/v1/reports/export", { params: { query: reportParams(q) }, parseAs: "blob" }),
+    `yuva-report-${q.from}-${q.to}.csv`
+  )
+}
+
+export function addDays(key: string, n: number) {
+  const [y, m, d] = key.split("-").map(Number)
+  return dayKey(new Date(y!, m! - 1, d! + n))
+}
+
+export function daysBetween(from: string, to: string) {
+  const a = new Date(`${from}T00:00:00Z`).getTime()
+  const b = new Date(`${to}T00:00:00Z`).getTime()
+  return Math.round((b - a) / 86400000) + 1
 }

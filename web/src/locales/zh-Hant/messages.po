@@ -882,6 +882,10 @@ msgstr "已訂閱 {subscribed}"
 msgid "{subscribed} subscribers"
 msgstr "{subscribed} 位訂閱者"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "{text} vs previous period"
+msgstr "較上一期間{text}"
+
 #: src/features/docs/PagesTab.tsx
 msgid "{threads} open discussions"
 msgstr "{threads} 個未關閉的討論"
@@ -1055,6 +1059,10 @@ msgstr "7 天"
 #: src/features/status/SettingsTab.tsx
 msgid "7 to 90."
 msgstr "7 到 90。"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "90th percentile"
+msgstr "第 90 百分位"
 
 #: src/features/status/ResponseChart.tsx
 msgid "95th percentile"
@@ -2006,6 +2014,7 @@ msgstr "Alertmanager"
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/RunLog.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -3367,6 +3376,10 @@ msgstr "透過郵件"
 msgid "By e-mail"
 msgstr "透過電子郵件"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "By group"
+msgstr "依群組"
+
 #: src/features/reports/ReportsColumn.tsx
 msgid "By member"
 msgstr "按成員"
@@ -3625,6 +3638,7 @@ msgid "Changing the sending domain turns DKIM signing off until you enable it ag
 msgstr "更改傳送域名會關閉 DKIM 簽名,直到你為新域名重新啟用。"
 
 #: src/features/contact/ContactDetails.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/settings/channels/AddChannelDialog.tsx
 #: src/features/settings/channels/ChannelPage.tsx
@@ -4011,6 +4025,7 @@ msgstr "關閉搜尋(Esc)"
 #: src/components/common/text.ts
 #: src/features/inbox/ChatList.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Closed"
 msgstr "已關閉"
 
@@ -4535,6 +4550,10 @@ msgstr "對話"
 msgid "Conversations"
 msgstr "對話"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Conversations and replies"
+msgstr "對話與回覆"
+
 #: src/features/migrations/parts.tsx
 msgid "Conversations copied"
 msgstr "對話已複製"
@@ -4900,6 +4919,7 @@ msgstr "Cron"
 msgid "CSV file"
 msgstr "CSV 檔案"
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/inboxes/colors.tsx
@@ -4963,6 +4983,10 @@ msgstr "調暗"
 msgid "Darken the colours to match the theme"
 msgstr "調暗顏色以匹配主題"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Data up to {builtText}"
+msgstr "資料截至 {builtText}"
+
 #: src/features/status/IncidentDialog.tsx
 msgid "Database upgrade"
 msgstr "資料庫升級"
@@ -4977,6 +5001,7 @@ msgid "Dates"
 msgstr "日期"
 
 #: src/features/broadcasts/Growth.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Days"
 msgstr "天數"
@@ -5261,6 +5286,7 @@ msgstr "已刪除的收件匣"
 #: src/components/common/DiscussionAuthor.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Deleted member"
 msgstr "已刪除的成員"
@@ -6353,6 +6379,10 @@ msgstr "Expires soon"
 msgid "Export"
 msgstr "匯出"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Export CSV"
+msgstr "匯出 CSV"
+
 #: src/features/migrations/text.ts
 msgid "Export file"
 msgstr "匯出檔案"
@@ -6490,6 +6520,10 @@ msgstr "未結對話最少"
 msgid "Fields"
 msgstr "欄位"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Figures by group"
+msgstr "依群組的數據"
+
 #: src/features/migrations/Wizard.tsx
 msgid "File"
 msgstr "檔案"
@@ -6621,6 +6655,7 @@ msgstr "首次回覆"
 #: src/features/conversation/SlaPopover.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "First reply"
 msgstr "首次回覆"
@@ -6632,6 +6667,10 @@ msgstr "首次回覆 {first}"
 #: src/app/TeamMenu.tsx
 msgid "first reply in {first}"
 msgstr "{first} 內的首次回覆"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "First reply, 90th percentile"
+msgstr "首次回覆，第 90 百分位"
 
 #: src/features/broadcasts/Import.tsx
 msgid "First rows of the file"
@@ -6835,6 +6874,7 @@ msgstr "在你的已傳送資料夾中找到"
 msgid "Friday"
 msgstr "星期五"
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "From"
@@ -7086,6 +7126,10 @@ msgstr "在間隔時間內,對每位聯絡人透過郵件問候新對話一次�
 #: src/features/status/ComponentDialogs.tsx
 msgid "Group"
 msgstr "群組"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Group by"
+msgstr "分組依據"
 
 #: src/features/settings/teams/TeamsPage.tsx
 msgid "Group members, such as billing or support, and give the group its inboxes in one place."
@@ -8208,6 +8252,7 @@ msgstr "只能根據接收伺服器對測試郵件的結果得知。"
 
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/text.ts
+#: src/features/reports/TrendsReport.tsx
 msgid "Label"
 msgstr "標籤"
 
@@ -8279,17 +8324,31 @@ msgstr "超過此伺服器對單封郵件的限制"
 msgid "Largest file (MB)"
 msgstr "最大檔案 (MB)"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Last 12 months"
+msgstr "最近 12 個月"
+
 #: src/features/home/HomePage.tsx
 msgid "Last 14 days"
 msgstr "最近 14 天"
 
-#: src/features/home/HomePage.tsx
-#: src/features/reports/ReportPages.tsx
-msgid "Last 30 days"
-msgstr "最近 30 天"
+#: src/features/reports/TrendsReport.tsx
+msgid "Last 3 months"
+msgstr "最近 3 個月"
 
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
+msgid "Last 30 days"
+msgstr "最近 30 天"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Last 6 months"
+msgstr "最近 6 個月"
+
+#: src/features/home/HomePage.tsx
+#: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Last 7 days"
 msgstr "最近 7 天"
 
@@ -8316,6 +8375,10 @@ msgstr "上次檢查：{last}。"
 #: src/features/status/StatusPages.tsx
 msgid "Last incident"
 msgstr "最近的事件"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Last month"
+msgstr "上個月"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Last name"
@@ -9078,6 +9141,7 @@ msgstr "媒體、連結和文件"
 msgid "median"
 msgstr "中位數"
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/status/ResponseChart.tsx
 msgid "Median"
 msgstr "中位數"
@@ -9100,6 +9164,7 @@ msgstr "中位數，從第一則訊息到關閉"
 
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Member"
@@ -9342,6 +9407,10 @@ msgstr "監控"
 #: src/features/status/MonitorsPage.tsx
 msgid "Monitors set the state of a status page component. Create a status page first."
 msgstr "監控會設定狀態頁元件的狀態。請先建立狀態頁。"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Months"
+msgstr "月"
 
 #: src/features/contact/ContactDetail.tsx
 msgid "More"
@@ -9591,6 +9660,7 @@ msgstr "我的檢視"
 #: src/features/broadcasts/NewBroadcastDialog.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/inbox/views/ViewDialog.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/automation/RuleDialog.tsx
@@ -10057,6 +10127,10 @@ msgstr "沒有 {inboxName} 的 ID。在對方登入之前，只能透過郵件�
 msgid "No {provider} account has that subdomain. Check it in your address: acme in acme.zendesk.com."
 msgstr "沒有 {provider} 帳號使用該子域名。請在你的地址中檢查:acme.zendesk.com 中的 acme。"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "No activity in this period"
+msgstr "此期間沒有活動"
+
 #: src/features/settings/webhooks/parts.tsx
 msgid "no answer"
 msgstr "無回答"
@@ -10294,6 +10368,10 @@ msgstr "沒有可以傳送確認和歡迎郵件的郵件頻道"
 #: src/features/status/SubscribersTab.tsx
 msgid "No e-mail subscribers yet"
 msgstr "尚無電子郵件訂閱者"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "No earlier figure"
+msgstr "沒有可比較的先前數據"
 
 #: src/features/conversation/composer/EmojiPanel.tsx
 msgid "No emoji found."
@@ -10692,6 +10770,7 @@ msgstr "沒有人會收到這封郵件。請選擇有訂閱者的列表,或放�
 #: src/features/contact/MergePreview.tsx
 #: src/features/conversation/Feedback.tsx
 #: src/features/feedback/FeedbackPage.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/slack/SlackPage.tsx
@@ -10924,6 +11003,7 @@ msgstr "備註"
 msgid "Notes where a teammate mentioned you"
 msgstr "同事提及你的備註"
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/notifications/events.ts
 msgid "Nothing"
 msgstr "無"
@@ -11063,6 +11143,14 @@ msgstr "沒有未讀內容。"
 #: src/features/home/HomePage.tsx
 msgid "nothing waiting"
 msgstr "沒有等待中的項目"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Nothing was measured in this period."
+msgstr "此期間沒有量測到任何資料。"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Nothing was opened, replied to or closed here. Try a longer period or other filters."
+msgstr "這裡沒有開啟、回覆或關閉任何內容。請嘗試更長的期間或其他篩選條件。"
 
 #: src/features/status/Notices.tsx
 msgid "Notices to subscribers"
@@ -11779,6 +11867,10 @@ msgstr "未關閉,已指派"
 msgid "open, unassigned"
 msgstr "未關閉,未指派"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "Opened"
+msgstr "已開啟"
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "OpenID Connect"
 msgstr "OpenID Connect"
@@ -12253,6 +12345,7 @@ msgstr "每月(30 天)"
 
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Period"
 msgstr "期間"
 
@@ -12696,6 +12789,7 @@ msgstr "pro、team"
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/channels/AddChannelDialog.tsx
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/status/CreatePageDialog.tsx
@@ -13577,6 +13671,7 @@ msgstr "在另一個對話的對話串中回覆了"
 #: src/features/broadcasts/Report.tsx
 #: src/features/conversation/Feedback.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/channels/email/EmailSections.tsx
 #: src/features/setup/email/EmailLayout.tsx
 msgid "Replies"
@@ -13853,6 +13948,7 @@ msgid "Resolved at {endedAt}"
 msgstr "已於 {endedAt} 解決"
 
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Resolved in"
 msgstr "解決所需時間"
 
@@ -13873,6 +13969,10 @@ msgstr "回應時間"
 #: src/features/status/MonitorsPage.tsx
 msgid "Response time, last 24 hours"
 msgstr "回應時間，最近 24 小時"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Response times"
+msgstr "回應時間"
 
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
@@ -14148,6 +14248,10 @@ msgstr "沙盒（開發版本）"
 #: src/features/contact/ContactSheet.tsx
 msgid "Satisfaction"
 msgstr "滿意度"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Satisfied"
+msgstr "滿意"
 
 #: src/features/inbox/ChatsPage.tsx
 msgid "satisfied · 👍 {good} 👎 {bad}"
@@ -15536,6 +15640,7 @@ msgid "SLA breaches"
 msgstr "SLA breaches"
 
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "SLA met"
 msgstr "SLA 已達成"
 
@@ -15767,6 +15872,10 @@ msgstr "SPF 在 {spfDomain} 上透過,而不是傳送域名 {from},因此 DMARC 
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "SPF passes for {spfDomain}."
 msgstr "{spfDomain} 的 SPF 已透過。"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Split by"
+msgstr "拆分方式"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "Stage"
@@ -16164,6 +16273,7 @@ msgstr "TCP 檢查"
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/settings/SettingsColumn.tsx
@@ -16504,6 +16614,10 @@ msgstr "這些元素在以下地址上有效;請在收件匣設定中新增你�
 msgid "The end must be after the start."
 msgstr "結束時間必須晚於開始時間。"
 
+#: src/features/reports/TrendsReport.tsx
+msgid "The end must not be before the start, and the range can be at most 13 months."
+msgstr "結束日期不能早於開始日期，範圍最多 13 個月。"
+
 #: src/components/common/text.ts
 msgid "The endpoint is disabled. Enable it to send deliveries again."
 msgstr "該端點已停用。啟用後才會再次傳送投遞。"
@@ -16519,6 +16633,10 @@ msgstr "他們在覈取方塊或簽名旁看到的原話。"
 #: src/features/migrations/DoneStep.tsx
 msgid "The export file"
 msgstr "匯出檔案"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "The figures are still being prepared."
+msgstr "數據仍在準備中。"
 
 #: src/features/migrations/UploadStep.tsx
 msgid "The file"
@@ -17639,6 +17757,7 @@ msgstr "此成員已不在工作區中。"
 msgid "This migration has ended, so nothing more can be uploaded. Start a new one for another file."
 msgstr "此遷移已結束,無法再上傳任何內容。要處理另一個檔案,請開始新的遷移。"
 
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "This month"
 msgstr "本月"
@@ -17841,6 +17960,7 @@ msgid "Tickets come over with their replies, notes, tags, status and assignee. E
 msgstr "工單會連同其回覆、備註、標籤、狀態和負責人一起匯入。請在上面輸入你的支援地址。"
 
 #: src/features/migrations/ReviewStep.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
 msgid "Time"
 msgstr "時間"
@@ -17870,6 +17990,7 @@ msgstr "TLS(埠 465)"
 
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "To"
@@ -17887,6 +18008,7 @@ msgstr "收件人:{emailTo}"
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/ReportsColumn.tsx
+#: src/features/reports/TrendsReport.tsx
 msgid "Today"
 msgstr "今天"
 
@@ -17951,6 +18073,11 @@ msgstr "垃圾箱"
 #: src/features/migrations/text.ts
 msgid "Trash, never imported"
 msgstr "垃圾箱,從不匯入"
+
+#: src/features/reports/ReportPages.tsx
+#: src/features/reports/ReportsColumn.tsx
+msgid "Trends"
+msgstr "趨勢"
 
 #: src/features/home/HomePage.tsx
 msgid "Triage"
@@ -18373,6 +18500,10 @@ msgstr "自 {upSince} 起已恢復。確認無誤後請發布恢復正常的通�
 #: src/features/broadcasts/Import.tsx
 msgid "Up to {max} and 100,000 rows, with a header row. Excel files in Turkish or Western encodings and columns separated by commas, semicolons or tabs are read as they are."
 msgstr "最多 {max} 和 100,000 行,帶標題行。土耳其語或西歐編碼的 Excel 檔案,以及用逗號、分號或製表符分隔的列,會按原樣讀取。"
+
+#: src/features/reports/ReportsColumn.tsx
+msgid "Up to 13 months, by group"
+msgstr "最多 13 個月，依群組"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "Update text"
@@ -18971,6 +19102,10 @@ msgstr "網站和應用程式"
 #: src/components/common/text.ts
 msgid "Wednesday"
 msgstr "星期三"
+
+#: src/features/reports/TrendsReport.tsx
+msgid "Weeks"
+msgstr "週"
 
 #: src/features/broadcasts/ListForm.tsx
 msgid "Welcome receipt"
