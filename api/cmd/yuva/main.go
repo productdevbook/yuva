@@ -337,6 +337,9 @@ func serve(ctx context.Context, cfg config.Config, log *slog.Logger, args []stri
 	if cfg.IngressSecret != "" && cfg.IngressAuthservID == "" {
 		log.Warn("YUVA_INGRESS_AUTHSERV_ID is not set; DMARC is treated as unknown for all inbound mail: nothing is marked spam, no greeting, rule reply or rating request is e-mailed to a sender, and abuse reports and mailbox cutover are not accepted")
 	}
+	if err := srv.KeepOptOutKeys(ctx); err != nil {
+		return err
+	}
 	analyticsWorkers := 0
 	if cfg.Analytics.On {
 		analyticsWorkers = cfg.Analytics.Workers

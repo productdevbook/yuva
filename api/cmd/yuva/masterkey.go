@@ -46,28 +46,42 @@ func masterKeyCommand(ctx context.Context, srv *api.Server, args []string, stdou
 	var rep api.MasterKeyReport
 	var err error
 	if rotate {
-		rep, err = srv.RotateMasterKey(ctx, *batch, progress)
+		if _, err = srv.RotateMasterKey(ctx, *batch, progress); err == nil {
+			rep, err = srv.CheckMasterKey(ctx, *batch, nil)
+		}
 	} else {
 		rep, err = srv.CheckMasterKey(ctx, *batch, progress)
 	}
 	if err != nil {
 		return err
 	}
-	if rep.UnkeptOptOutKeys > 0 {
-		fmt.Fprintf(stdout, "workspace opt-out keys not kept yet: %d (yuva master-key rotate keeps them)\n", rep.UnkeptOptOutKeys)
-	}
-	unreadable := 0
+	unreadable, previous := 0, 0
 	for _, c := range rep.Columns {
 		unreadable += len(c.Unreadable)
+		previous += c.Previous
+		if rotate && len(c.Unreadable)+c.Previous > 0 {
+			fmt.Fprintf(stdout, "%s after rotating: %d under the previous key, %d unreadable\n", c.Column, c.Previous, len(c.Unreadable))
+		}
+		for i, row := range c.PreviousRows {
+			if i == masterKeyListed {
+				fmt.Fprintf(stdout, "  … and %d more\n", len(c.PreviousRows)-i)
+				break
+			}
+			fmt.Fprintf(stdout, "  %s under the previous key: %s\n", c.Column, row)
+		}
 	}
 	switch {
 	case unreadable > 0:
 		return fmt.Errorf("%d values open with neither master key: set them again (the listed rows) or delete them; nothing else can read them", unreadable)
-	case rep.UnkeptOptOutKeys > 0 || (!rotate && !rep.Clean()):
+	case rep.UnkeptOptOutKeys > 0:
+		return fmt.Errorf("%d workspaces have opt-outs but no kept opt-out key: %s", rep.UnkeptOptOutKeys, api.UnkeptOptOutsFix)
+	case previous > 0 && rotate:
+		return fmt.Errorf("%d values were written under the previous key while rotating (does a process still run with it as YUVA_MASTER_KEY?); run yuva master-key rotate again", previous)
+	case previous > 0:
 		return errors.New("not everything is under the current master key yet: keep YUVA_MASTER_KEY_PREVIOUS and run yuva master-key rotate")
 	}
 	if rotate {
-		fmt.Fprintln(stdout, "everything is sealed under the current master key; run yuva master-key check, then remove YUVA_MASTER_KEY_PREVIOUS once links in mail sent before the switch may stop working")
+		fmt.Fprintln(stdout, "everything is sealed under the current master key; remove YUVA_MASTER_KEY_PREVIOUS once links in mail sent before the switch may stop working (at once after a leak)")
 	} else {
 		fmt.Fprintln(stdout, "everything opens with the current master key")
 	}

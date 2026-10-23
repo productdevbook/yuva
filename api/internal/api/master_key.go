@@ -61,10 +61,10 @@ type optOutKeyEntry struct {
 }
 
 // optOutKey is the key a workspace's opt-out hashes are made with. The hashes keep no address and
-// cannot be made again under a new master key, so the key is kept, sealed, the first time it is
-// needed for a new opt-out (keep) and survives rotations; until then it is the one derived from the
-// oldest master key in use, which made the hashes recorded before keys were kept. Only a key read
-// back as kept counts as kept in the cache: one kept in the caller's transaction may roll back.
+// cannot be made again under a new master key, so the key is kept, sealed, and survives rotations:
+// KeepOptOutKeys keeps every workspace's at start, and a workspace made later keeps its own with its
+// first opt-out (keep). Only a key read back as kept counts as kept in the cache: one kept in the
+// caller's transaction may roll back.
 func (s *Server) optOutKey(ctx context.Context, q *store.Queries, ws uuid.UUID, keep bool) ([]byte, error) {
 	if e, ok := s.optKeys.Load(ws); ok && (e.(optOutKeyEntry).kept || !keep) {
 		return e.(optOutKeyEntry).key, nil
@@ -72,7 +72,7 @@ func (s *Server) optOutKey(ctx context.Context, q *store.Queries, ws uuid.UUID, 
 	sealed, err := q.GetOptOutKey(ctx, ws)
 	kept := err == nil
 	if store.IsNotFound(err) {
-		key := s.secrets.DeriveFirst(optOutKeyInfo + ws.String())
+		key := s.secrets.Derive(optOutKeyInfo + ws.String())
 		if !keep {
 			s.optKeys.Store(ws, optOutKeyEntry{key: key})
 			return key, nil
@@ -112,6 +112,8 @@ type SealedReport struct {
 	Current    int
 	Previous   int
 	Unreadable []string
+	// PreviousRows lists, for a check, the rows still under the previous key.
+	PreviousRows []string
 }
 
 type MasterKeyReport struct {
@@ -150,23 +152,59 @@ func (s *Server) eachWorkspace(ctx context.Context, fn func(ws uuid.UUID) error)
 	}
 }
 
+const UnkeptOptOutsFix = "start yuva serve once with the key those opt-outs were made under as YUVA_MASTER_KEY and without YUVA_MASTER_KEY_PREVIOUS: it keeps every workspace's opt-out key"
+
+// KeepOptOutKeys runs before the server serves. Without a previous master key it keeps the opt-out
+// key of every workspace that has none, derived from the current key, which made every hash recorded
+// before keys were kept. With one it keeps nothing: it refuses when a workspace has opt-outs but no
+// kept key, since which key made them is then unknown. Either way it refuses when a kept key opens
+// with neither master key, so opt-outs never silently stop matching.
+func (s *Server) KeepOptOutKeys(ctx context.Context) error {
+	var unkept, unreadable []string
+	err := s.eachWorkspace(ctx, func(ws uuid.UUID) error {
+		sealed, err := s.st.GetOptOutKey(ctx, ws)
+		switch {
+		case store.IsNotFound(err) && !s.secrets.HasPrevious():
+			return s.st.KeepOptOutKey(ctx, store.KeepOptOutKeyParams{WorkspaceID: ws, OptoutKey: s.secrets.Seal(s.secrets.Derive(optOutKeyInfo+ws.String()), optOutKeyContext(ws)), Now: s.now()})
+		case store.IsNotFound(err):
+			has, err := s.st.HasOptOutsWithoutKey(ctx, ws)
+			if has {
+				unkept = append(unkept, ws.String())
+			}
+			return err
+		case err != nil:
+			return err
+		}
+		if _, err := s.secrets.Open(sealed, optOutKeyContext(ws)); err != nil {
+			unreadable = append(unreadable, ws.String())
+		}
+		return nil
+	})
+	switch {
+	case err != nil:
+		return err
+	case len(unreadable) > 0:
+		return fmt.Errorf("the opt-out keys of %d workspaces (%s) open with neither master key, so their opt-outs would stop matching: set YUVA_MASTER_KEY_PREVIOUS back to the key they were sealed under until yuva master-key rotate has run",
+			len(unreadable), strings.Join(first(unreadable, 5), ", "))
+	case len(unkept) > 0:
+		return fmt.Errorf("%d workspaces (%s) have opt-outs but no kept opt-out key: %s", len(unkept), strings.Join(first(unkept, 5), ", "), UnkeptOptOutsFix)
+	}
+	return nil
+}
+
+func first(s []string, n int) []string {
+	return s[:min(n, len(s))]
+}
+
 // RotateMasterKey re-seals, workspace by workspace in batches, every value that opens only with the
-// previous master key, after keeping every workspace's opt-out key. A value the server changed
-// meanwhile is left as it is: it is already under the current key. Running it again picks up what is
-// left. progress gets each column's report when the column is done.
+// previous master key. A value the server changed meanwhile is left as it is: it is already under the
+// current key. Running it again picks up what is left. progress gets each column's report when the
+// column is done.
 func (s *Server) RotateMasterKey(ctx context.Context, batch int, progress func(SealedReport)) (MasterKeyReport, error) {
 	if !s.secrets.HasPrevious() {
 		return MasterKeyReport{}, errors.New("YUVA_MASTER_KEY_PREVIOUS is not set: there is no previous master key to re-seal from")
 	}
-	err := s.eachWorkspace(ctx, func(ws uuid.UUID) error {
-		_, err := s.st.GetOptOutKey(ctx, ws)
-		if store.IsNotFound(err) {
-			key := s.secrets.DeriveFirst(optOutKeyInfo + ws.String())
-			err = s.st.KeepOptOutKey(ctx, store.KeepOptOutKeyParams{WorkspaceID: ws, OptoutKey: s.secrets.Seal(key, optOutKeyContext(ws)), Now: s.now()})
-		}
-		return err
-	})
-	if err != nil {
+	if err := s.KeepOptOutKeys(ctx); err != nil {
 		return MasterKeyReport{}, err
 	}
 	return s.scanSealed(ctx, batch, true, progress)
@@ -201,6 +239,7 @@ func (s *Server) scanSealed(ctx context.Context, batch int, write bool, progress
 						rep.Current++
 					case !write:
 						rep.Previous++
+						rep.PreviousRows = append(rep.PreviousRows, "workspace "+ws.String()+" row "+v.ID.String())
 					default:
 						replaced, err := s.st.ReplaceSealed(ctx, c.SealedColumn, ws, v.ID, v.Sealed, next)
 						if err != nil {

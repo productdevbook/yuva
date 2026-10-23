@@ -8,6 +8,7 @@ import (
 	"log/slog"
 	"os"
 	"slices"
+	"strings"
 	"testing"
 	"uuid"
 
@@ -231,6 +232,28 @@ func TestMasterKeyRotation(t *testing.T) {
 	}
 
 	rotating := serverWith(keyB, keyA)
+	if err := rotating.KeepOptOutKeys(ctx); err == nil || !strings.Contains(err.Error(), legacyWS.String()) {
+		t.Errorf("start with a previous key while a workspace's opt-outs have no kept key: %v", err)
+	}
+	if _, err := rotating.RotateMasterKey(ctx, 500, nil); err == nil {
+		t.Error("rotate while a workspace's opt-outs have no kept key")
+	}
+	if err := onlyA.KeepOptOutKeys(ctx); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := st.GetOptOutKey(ctx, legacyWS); err != nil {
+		t.Fatalf("legacy workspace's opt-out key after a start without a previous key: %v", err)
+	}
+	early := serverWith(keyB, "")
+	if err := early.KeepOptOutKeys(ctx); err == nil || !strings.Contains(err.Error(), "YUVA_MASTER_KEY_PREVIOUS") {
+		t.Errorf("start after removing the previous key before rotating: %v", err)
+	}
+	if opted, err := early.optedOut(ctx, st.Queries, legacyWS, "legacy@example.com"); err == nil || opted {
+		t.Errorf("opt-out check with the previous key removed before rotating: %v %v", opted, err)
+	}
+	if err := rotating.KeepOptOutKeys(ctx); err != nil {
+		t.Fatal(err)
+	}
 	readsWith(rotating)
 	if !rotating.anyDerived(verifyCodeInfo, func(k []byte) bool { return slices.Equal(codeHash, verifyCodeHash(k, email, "123456")) }) {
 		t.Error("an address code sent before the rotation is refused during it")
@@ -239,21 +262,23 @@ func TestMasterKeyRotation(t *testing.T) {
 		t.Errorf("proof values during the rotation: %v", v)
 	}
 	rep, err := rotating.CheckMasterKey(ctx, 1, nil)
-	if rep.UnkeptOptOutKeys != 1 || rep.Clean() {
+	if rep.UnkeptOptOutKeys != 0 || rep.Clean() {
 		t.Errorf("check before rotating: %d unkept opt-out keys, clean %v", rep.UnkeptOptOutKeys, rep.Clean())
 	}
+	want := func(name string) int {
+		if name == "workspace_keys.optout_key" {
+			return 2
+		}
+		return 1
+	}
 	for name, c := range report(rep, err) {
-		if c.Previous != 1 || c.Current != 0 || len(c.Unreadable) != 0 {
+		if c.Previous != want(name) || len(c.PreviousRows) != want(name) || c.Current != 0 || len(c.Unreadable) != 0 {
 			t.Errorf("check before rotating, %s: %+v", name, c)
 		}
 	}
 
 	for name, c := range report(rotating.RotateMasterKey(ctx, 1, nil)) {
-		want := SealedReport{Column: name, Previous: 1}
-		if name == "workspace_keys.optout_key" {
-			want.Current = 1
-		}
-		if c.Previous != want.Previous || c.Current != want.Current || len(c.Unreadable) != 0 {
+		if c.Previous != want(name) || c.Current != 0 || len(c.Unreadable) != 0 {
 			t.Errorf("rotate, %s: %+v", name, c)
 		}
 	}
@@ -267,7 +292,16 @@ func TestMasterKeyRotation(t *testing.T) {
 		}
 	}
 
+	back := serverWith(keyA, keyB)
+	if err := back.KeepOptOutKeys(ctx); err != nil {
+		t.Errorf("start rolled back to the old key: %v", err)
+	}
+	readsWith(back)
+
 	onlyB := serverWith(keyB, "")
+	if err := onlyB.KeepOptOutKeys(ctx); err != nil {
+		t.Errorf("start with the new key alone: %v", err)
+	}
 	readsWith(onlyB)
 	rep, err = onlyB.CheckMasterKey(ctx, 500, nil)
 	if err != nil || !rep.Clean() {
@@ -298,9 +332,12 @@ func TestMasterKeyRotation(t *testing.T) {
 		t.Error("rotate without a previous key")
 	}
 	exec(`UPDATE workspace_keys SET optout_key = $2 WHERE workspace_id = $1`, ws, stray.Seal([]byte("lost"), optOutKeyContext(ws)))
-	rep, err = serverWith(randomMasterKey(), keyB).RotateMasterKey(ctx, 500, nil)
-	if c := report(rep, err)["workspace_keys.optout_key"]; len(c.Unreadable) != 1 || c.Previous != 1 {
-		t.Errorf("rotate with an opt-out key under neither key: %+v", c)
+	rep, err = onlyB.CheckMasterKey(ctx, 500, nil)
+	if c := report(rep, err)["workspace_keys.optout_key"]; len(c.Unreadable) != 1 {
+		t.Errorf("check with an opt-out key under neither key: %+v", c)
+	}
+	if _, err := serverWith(randomMasterKey(), keyB).RotateMasterKey(ctx, 500, nil); err == nil || !strings.Contains(err.Error(), ws.String()) {
+		t.Errorf("rotate with an opt-out key under neither key: %v", err)
 	}
 
 	fresh := workspace()

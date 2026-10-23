@@ -134,15 +134,6 @@ func (k *Key) Derived(info string) [][]byte {
 	return out
 }
 
-// DeriveFirst is the key for info under the previous master key while there is one: the key values
-// kept from before the rotation were made with.
-func (k *Key) DeriveFirst(info string) []byte {
-	if k.prev != nil {
-		return k.prev.derive(info)
-	}
-	return k.cur.derive(info)
-}
-
 func (s *single) derive(info string) []byte {
 	out, err := hkdf.Key(sha256.New, s.raw, nil, info, 32)
 	if err != nil {
