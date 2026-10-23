@@ -126,6 +126,7 @@ sunucular içindir; birini aşan bir istek adı belirtilerek `422 hosted_limit` 
 | `YUVA_MIGRATION_AUDIT_DAYS` | `365` | Bir taşımanın etkinliğinin bittikten sonra saklandığı gün sayısı. 1 ile 36500 arası. |
 | `YUVA_MICROSOFT_CLIENT_ID`, `YUVA_MICROSOFT_CLIENT_SECRET` | ayarsız | "Microsoft ile oturum aç" için sunucunun kendi Microsoft Entra uygulaması ([nasıl kaydedilir](migrate-operators.md#microsoft-uygulamasını-kaydetme)). İkisini birlikte ayarlayın ya da hiçbirini. Ayarsızsa ekip, Bağla adımında kendi uygulamasını kaydeder; Outlook.com ve Microsoft 365 yalnızca sunucunun [`YUVA_PUBLIC_URL`](#sunucu) değeri bir HTTPS adresiyse (ya da `localhost` ise) sunulur, çünkü Microsoft yalnızca onu yönlendirme URL'si olarak kabul eder. |
 | `YUVA_MICROSOFT_TENANT` | `common` | Sunucunun Microsoft uygulamasının yetkilisi: her iş, okul ya da kişisel hesabı kabul eden bir uygulama için `common`; bunlarla sınırlı bir uygulama için `organizations`, `consumers`, bir kiracı kimliği ya da doğrulanmış bir alan adı. |
+| `YUVA_AUDIT_DAYS` | `365` | Bir çalışma alanının [denetim günlüğü](operations.md#denetim-günlüğü) kayıtlarının saklandığı gün sayısı; saatlik saklama işi daha eskilerini siler. 1 ile 36500 arası. Çalışma alanının `retention_days` değeri bunu etkilemez. |
 | `YUVA_MIGRATION_ALLOW_PRIVATE` | `false` | Taşımanın özel ya da yerel ağdaki e-posta sunucularına da bağlanmasına izin verir (geliştirme, kendi ağınızdaki sunucular). |
 
 ## Bültenler

@@ -125,6 +125,7 @@ Gereken yetki olmadan yapılan çağrı `403 insufficient_scope` döner.
 | `changelog:read` | [Yenilikler](whats-new.md): değişiklik günlükleri, taslaklı kayıtlar, önizleme |
 | `changelog:write` | Kayıt ve çeviri yazma, görsel yükleme |
 | `changelog:publish` | Değişiklik günlüğü oluşturma, değiştirme ve silme; yayındaki kayıtları yayınlama, zamanlama, yayından kaldırma ve silme. Başka hiçbir yetkiye dahil değildir: adıyla verin. |
+| `audit:read` | `GET /v1/audit-log`, [denetim günlüğü](operations.md#denetim-günlüğü). Başka hiçbir kapsama dahil değildir: adıyla verin. Yalnızca bir sahip anahtara verebilir, gelen kutularına sınırlı bir anahtar bunu tutamaz. Yalnızca anahtarı oluşturan üye hâlâ sahip olduğu sürece çalışır. `yuva api-key create` adını vermezseniz bunu eklemez. |
 | `feedback:write` | `POST /v1/feedback` |
 
 ### Anahtarlar

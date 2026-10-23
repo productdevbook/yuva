@@ -270,6 +270,42 @@ sofort auf zu funktionieren; ein Hintergrundjob löscht danach seine Daten und s
 erhalten. Der einzige Inhaber eines Workspaces muss zuerst die Inhaberschaft übergeben oder den
 Workspace löschen.
 
+## Audit-Log
+
+Das Audit-Log hält fest, wer Zugriff, Zugangsdaten und Daten eines Workspace geändert hat: wer beigetreten
+ist, gegangen ist oder die Rolle gewechselt hat; Einladungen; erstellte oder widerrufene API-Schlüssel und
+verbundene Apps; Webhooks und ihre Geheimnisse; Zugangsdaten und Schlüssel von E-Mail-Kanälen;
+Postfachzugriff und Löschungen; gelöschte Kontakte; Exporte von Einwilligungs- und Analytics-Daten;
+Änderungen der Aufbewahrung; und die Antworten des Betreibers zu Broadcasts. Jeder Eintrag hat den Akteur
+(ein Mitglied, einen API-Schlüssel, ein Mitglied über eine verbundene App oder die Befehlszeile des
+Servers), die Aktion wie `api_key.created`, ihr Ziel, einige Details und die Zeit. Ein Eintrag wird im
+selben Schritt wie die Änderung geschrieben.
+
+Nie enthalten sind Nachrichteninhalte, Geheimnisse, Passwörter, die URL eines Webhooks (nur sein Host) oder
+Name und Adresse eines Kontakts. Das Löschen eines Workspace steht nicht in seinem Log, das mit dem
+Workspace verschwindet; der Digest des Betreibers nennt es, wenn [`YUVA_OPERATOR_EMAIL`](configuration.md)
+gesetzt ist.
+
+Nur Inhaber lesen es: im Panel unter **Settings → Audit log** oder mit `GET /v1/audit-log` (Admins und
+Agents erhalten `403 forbidden`). Ein API-Schlüssel liest es mit dem [Scope](headless.md#scopes)
+`audit:read`, solange das Mitglied, das den Schlüssel erstellt hat, noch Inhaber ist.
+
+```sh
+curl -H "Authorization: Bearer $YUVA_KEY" \
+  "$YUVA_URL/v1/audit-log?action=api_key.created&action=api_key.revoked&since=2026-01-01T00:00:00Z"
+```
+
+Neueste zuerst, 25 Einträge pro Seite (bis 100 mit `limit`), `next_cursor` für die nächste Seite.
+
+| Filter | Zeigt |
+|---|---|
+| `actor_id` | Einträge dieses Mitglieds, Schlüssels oder dieser verbundenen App. Die ID eines Mitglieds passt auch auf das, was es über verbundene Apps getan hat. |
+| `actor_kind` | `member`, `api_key`, `oauth_grant` oder `operator`. |
+| `action` | Diese Aktionen; den Parameter wiederholen oder mit Kommas trennen. |
+| `since`, `until` | Zeitraum: ab `since`, vor `until`. |
+
+Einträge werden [`YUVA_AUDIT_DAYS`](configuration.md) Tage aufbewahrt (standardmäßig 365).
+
 ## Aufbewahrung
 
 Unterhaltungen, Nachrichten und Dateien bleiben, bis ihr Kontakt gelöscht wird (im Panel,
@@ -288,6 +324,7 @@ Yuva räumt einmal pro Stunde auf:
 | Geschlossene Unterhaltungen mit Nachrichten und Dateien (wenn `retention_days` gesetzt ist) | so viele Tage seit ihrer letzten Änderung |
 | Empfänger eines beendeten Broadcasts (seine Zahlen bleiben) | 400 Tage nach seinem Ende |
 | Tägliche Versandsummen hinter den Limits | 90 Tage |
+| [Audit-Log](#audit-log)-Einträge | `YUVA_AUDIT_DAYS` Tage (standardmäßig 365) |
 | Original-`.eml` eingehender E-Mails (wenn `retention_days` gesetzt ist) | so viele Tage; die Nachricht selbst bleibt |
 
 ## Überwachung

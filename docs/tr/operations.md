@@ -262,6 +262,42 @@ siler. Çalışma alanı hemen kullanılamaz hâle gelir; ardından bir arka pla
 `DELETE /v1/me` çağrısıyla ya da `yuva person delete` ile siler. Mesajları yazarsız olarak kalır. Bir
 çalışma alanının tek sahibi önce sahipliği devretmeli ya da çalışma alanını silmelidir.
 
+## Denetim günlüğü
+
+Denetim günlüğü, bir çalışma alanının erişimini, kimlik bilgilerini ve verilerini kimin değiştirdiğini
+kaydeder: kimin katıldığı, ayrıldığı veya rol değiştirdiği; davetler; oluşturulan veya iptal edilen API
+anahtarları ve bağlı uygulamalar; webhook'lar ve gizli anahtarları; e-posta kanalı kimlik bilgileri ve
+anahtarları; gelen kutusu erişimi ve silinmeleri; kişi silmeleri; onay ve analitik verisi dışa
+aktarmaları; saklama değişiklikleri; ve operatörün bültenlerle ilgili yanıtları. Her kayıtta işlemi yapan
+(bir üye, bir API anahtarı, bağlı bir uygulama üzerinden bir üye veya sunucunun komut satırı),
+`api_key.created` gibi eylem, hedefi, birkaç ayrıntı ve zaman bulunur. Kayıt, değişiklikle aynı adımda
+yazılır.
+
+Mesaj içeriği, gizli anahtarlar, parolalar, webhook'un adresi (yalnızca ana makinesi) veya bir kişinin adı
+ya da e-posta adresi kayda girmez. Çalışma alanının silinmesi kendi günlüğünde yoktur, çünkü günlük
+çalışma alanıyla birlikte gider; [`YUVA_OPERATOR_EMAIL`](configuration.md) ayarlıysa operatörün özeti
+bunu bildirir.
+
+Yalnızca sahipler okuyabilir: panelde **Ayarlar → Denetim günlüğü** altında veya `GET /v1/audit-log` ile
+(yöneticiler ve temsilciler `403 forbidden` alır). Bir API anahtarı, onu oluşturan üye hâlâ sahip olduğu
+sürece `audit:read` [kapsamıyla](headless.md#yetkiler) okur.
+
+```sh
+curl -H "Authorization: Bearer $YUVA_KEY" \
+  "$YUVA_URL/v1/audit-log?action=api_key.created&action=api_key.revoked&since=2026-01-01T00:00:00Z"
+```
+
+En yeniden eskiye, sayfada 25 kayıt (`limit` ile 100'e kadar), sonraki sayfa için `next_cursor`.
+
+| Filtre | Gösterir |
+|---|---|
+| `actor_id` | Bu üyenin, anahtarın veya bağlı uygulamanın kayıtları. Üyenin kimliği, bağlı uygulamalar üzerinden yaptıklarıyla da eşleşir. |
+| `actor_kind` | `member`, `api_key`, `oauth_grant` veya `operator`. |
+| `action` | Bu eylemler; parametreyi tekrarlayın veya virgülle ayırın. |
+| `since`, `until` | Zaman aralığı: `since` ve sonrası, `until` öncesi. |
+
+Kayıtlar [`YUVA_AUDIT_DAYS`](configuration.md) gün saklanır (varsayılan 365).
+
 ## Veri saklama
 
 Konuşmalar, mesajlar ve dosyalar, ait oldukları kişi silinene kadar kalır (panelden,
@@ -280,6 +316,7 @@ Yuva saatte bir temizlik yapar:
 | Kapalı konuşmalar, mesajları ve dosyalarıyla (`retention_days` atanmışsa) | son değişiklikten itibaren o kadar gün |
 | Biten bir bültenin alıcıları (sayıları kalır) | bittikten 400 gün sonra |
 | Sınırların dayandığı günlük gönderim toplamları | 90 gün |
+| [Denetim günlüğü](#denetim-günlüğü) kayıtları | `YUVA_AUDIT_DAYS` gün (varsayılan 365) |
 | Gelen e-postaların özgün `.eml` dosyası (`retention_days` atanmışsa) | o kadar gün; mesajın kendisi kalır |
 
 ## Sağlık kontrolleri ve loglar

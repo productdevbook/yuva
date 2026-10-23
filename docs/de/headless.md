@@ -127,6 +127,7 @@ Ein Aufruf ohne den nötigen Scope antwortet mit `403 insufficient_scope`.
 | `changelog:read` | [Neuigkeiten](whats-new.md): Changelogs, Einträge mit Entwürfen, Vorschau |
 | `changelog:write` | Einträge und Übersetzungen schreiben, Bilder hochladen |
 | `changelog:publish` | Changelogs anlegen, ändern und löschen; veröffentlichte Einträge veröffentlichen, planen, zurückziehen und löschen. In keinem anderen Scope enthalten: nennen Sie ihn ausdrücklich. |
+| `audit:read` | `GET /v1/audit-log`, das [Audit-Log](operations.md#audit-log). In keinem anderen Scope enthalten: nennen Sie ihn. Nur ein Inhaber kann ihn einem Schlüssel geben, und ein auf Postfächer begrenzter Schlüssel kann ihn nicht halten. Er gilt nur, solange das Mitglied, das den Schlüssel erstellt hat, noch Inhaber ist. `yuva api-key create` lässt ihn weg, wenn Sie ihn nicht nennen. |
 | `feedback:write` | `POST /v1/feedback` |
 
 ### Schlüssel

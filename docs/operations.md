@@ -263,6 +263,40 @@ keep their accounts.
 `{"email": "<their address>"}`, or with `yuva person delete`. Their messages stay without an
 author. A workspace's only owner must hand over ownership or delete the workspace first.
 
+## Audit log
+
+The audit log records who changed a workspace's access, credentials and data: who joined, left or
+changed role; invites; API keys and connected apps created or revoked; webhooks and their secrets;
+e-mail channel credentials and keys; inbox access and deletions; contact deletions; exports of
+consent data and analytics; retention changes; and the operator's answers about broadcasts. Each
+entry has the actor (a member, an API key, a member through a connected app, or the server's command
+line), the action such as `api_key.created`, its target and a few details, and the time. An entry is
+written in the same step as the change.
+
+It never holds message content, secrets, passwords, a webhook's URL (only its host) or a contact's
+name or address. A workspace's deletion is not in its log, which goes with the workspace; the
+operator's digest names it when [`YUVA_OPERATOR_EMAIL`](configuration.md) is set.
+
+Only owners read it: in the panel under **Settings → Audit log**, or with `GET /v1/audit-log`
+(admins and agents get `403 forbidden`). An API key reads it with the `audit:read`
+[scope](headless.md#scopes), as long as the member who made the key is still an owner.
+
+```sh
+curl -H "Authorization: Bearer $YUVA_KEY" \
+  "$YUVA_URL/v1/audit-log?action=api_key.created&action=api_key.revoked&since=2026-01-01T00:00:00Z"
+```
+
+Newest first, 25 entries a page (up to 100 with `limit`), `next_cursor` for the next page.
+
+| Filter | Shows |
+|---|---|
+| `actor_id` | Entries by this member, key or connected app. A member's id also matches what they did through connected apps. |
+| `actor_kind` | `member`, `api_key`, `oauth_grant` or `operator`. |
+| `action` | These actions; repeat the parameter or separate them with commas. |
+| `since`, `until` | A time range: at or after `since`, before `until`. |
+
+Entries are kept for [`YUVA_AUDIT_DAYS`](configuration.md) days (365 by default).
+
 ## Retention
 
 Conversations, messages and files stay until their contact is deleted (in the panel,
@@ -281,6 +315,7 @@ Yuva cleans up once an hour:
 | Closed conversations, with messages and files (when `retention_days` is set) | that many days since their last change |
 | Recipients of a finished broadcast (its counts stay) | 400 days after it finished |
 | Daily sending totals behind the limits | 90 days |
+| [Audit log](#audit-log) entries | `YUVA_AUDIT_DAYS` days (365 by default) |
 | Original `.eml` of inbound mail (when `retention_days` is set) | that many days; the message itself stays |
 
 ## Monitoring
