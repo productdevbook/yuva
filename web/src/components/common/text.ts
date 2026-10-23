@@ -416,6 +416,7 @@ export function useErrorText() {
     if (err.code === "code_expired") return t`This code has expired. Ask for a new one.`
     if (err.code === "email_undeliverable")
       return t`This e-mail address bounced or complained, so the reply was not sent. Clear it on the contact to send again.`
+    if (err.code === "participants_full") return t`A conversation can copy at most 20 people.`
     if (err.code === "email_not_configured")
       return t`This conversation's e-mail channel has no SMTP account, so the reply was not sent. Add one in the inbox settings.`
     if (err.code === "email_address_taken") return t`Another channel already receives mail at this address.`

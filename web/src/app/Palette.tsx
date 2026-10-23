@@ -87,6 +87,7 @@ function useItems(open: boolean): Item[] {
       act("discussion", t`Turn into a discussion`, SHORTCUTS.discussion)
       act("incident", t`Link to a status incident`, SHORTCUTS.incident)
       act("article", t`Send a help article`, SHORTCUTS.article)
+      act("recipients", t`Cc and Bcc the reply`, SHORTCUTS.recipients)
       act("idea", t`Link to a roadmap idea`, SHORTCUTS.idea)
       if (pathname.startsWith("/feedback/")) {
         act("createIssue", t`Create a GitHub or Linear issue`, SHORTCUTS.createIssue)

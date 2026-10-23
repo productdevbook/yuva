@@ -101,6 +101,11 @@ msgstr "{0} olay"
 msgid "{0} good"
 msgstr "{0} iyi"
 
+#. placeholder {0}: invalid[0]
+#: src/components/common/AddressChips.tsx
+msgid "{0} is not an e-mail address"
+msgstr "{0} bir e-posta adresi değil"
+
 #. placeholder {0}: items.length
 #: src/features/inbox/ChatList.tsx
 msgid "{0} marked as spam · no reply needed"
@@ -1127,6 +1132,10 @@ msgstr "Bir kişi silindi"
 msgid "A conversation"
 msgstr "Bir konuşma"
 
+#: src/components/common/text.ts
+msgid "A conversation can copy at most 20 people."
+msgstr "Bir konuşmada en fazla 20 kişi Cc'ye eklenebilir."
+
 #: src/features/settings/fields/FieldDialog.tsx
 msgid "A conversation cannot be closed until this field has a value. Spam is exempt."
 msgstr "Bu alanın değeri girilmeden görüşme kapatılamaz. Spam bunun dışındadır."
@@ -1616,11 +1625,17 @@ msgstr "Etkinlik"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 #: src/features/contact/ContactDetails.tsx
+#: src/features/conversation/Participants.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Add"
 msgstr "Ekle"
+
+#. placeholder {0}: p.email
+#: src/features/conversation/Participants.tsx
+msgid "Add {0}"
+msgstr "{0} adresini ekle"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Add a block"
@@ -1666,6 +1681,10 @@ msgstr "Monitör ekle"
 msgid "Add a note (optional)"
 msgstr "Not ekle (isteğe bağlı)"
 
+#: src/features/conversation/Participants.tsx
+msgid "Add a participant by e-mail address"
+msgstr "E-posta adresiyle katılımcı ekle"
+
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Add a passkey"
 msgstr "Geçiş anahtarı ekle"
@@ -1707,6 +1726,11 @@ msgstr "Web sitesi ya da uygulama ekle"
 #: src/features/settings/automation/RuleDialog.tsx
 msgid "Add an action"
 msgstr "Eylem ekle"
+
+#: src/components/common/AddressChips.tsx
+#: src/features/conversation/Participants.tsx
+msgid "Add an address"
+msgstr "Adres ekle"
 
 #: src/features/settings/webhooks/WebhookList.tsx
 msgid "Add an address on your server and pick the events Yuva should tell it about."
@@ -1805,6 +1829,10 @@ msgstr "Not ekle"
 #: src/features/settings/ProductsPage.tsx
 msgid "Add one for each product or brand you answer for. Each gets its own branding, hours, team and channels."
 msgstr "Yanıtladığınız her ürün veya marka için bir tane ekleyin. Her birinin kendi markası, çalışma saatleri, ekibi ve kanalları olur."
+
+#: src/features/conversation/Participants.tsx
+msgid "Add participant"
+msgstr "Katılımcı ekle"
 
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Add people on their first sign-in"
@@ -2860,6 +2888,10 @@ msgstr "Asistanlar, bekleyen {drafts} taslak"
 msgid "Async"
 msgstr "Eşzamansız"
 
+#: src/components/common/AddressChips.tsx
+msgid "At most {max} addresses"
+msgstr "En fazla {max} adres"
+
 #: src/features/broadcasts/Pace.tsx
 msgid "At most {n} an hour"
 msgstr "Saatte en çok {n}"
@@ -3043,6 +3075,19 @@ msgstr "Kötü"
 #: src/features/reports/ReportPages.tsx
 msgid "Bad only"
 msgstr "Yalnızca kötü"
+
+#: src/features/conversation/composer/Recipients.tsx
+#: src/features/conversation/messages/Thread.tsx
+msgid "Bcc"
+msgstr "Bcc"
+
+#: src/features/conversation/composer/Recipients.tsx
+msgid "Bcc ({bccCount})"
+msgstr "Bcc ({bccCount})"
+
+#: src/features/conversation/composer/Recipients.tsx
+msgid "Bcc recipients get the mail but are hidden from everyone else, including the contact."
+msgstr "Bcc alıcıları postayı alır ama kişi dahil kimse onları göremez."
 
 #: src/features/status/text.tsx
 msgid "Beat"
@@ -3455,9 +3500,19 @@ msgstr "Kategori"
 msgid "Cause found"
 msgstr "Neden bulundu"
 
+#: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/messages/Thread.tsx
-msgid "Cc: {cc}"
-msgstr "Bilgi: {cc}"
+msgid "Cc"
+msgstr "Cc"
+
+#: src/features/conversation/composer/Recipients.tsx
+msgid "Cc ({ccCount})"
+msgstr "Cc ({ccCount})"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Cc and Bcc the reply"
+msgstr "Yanıtı Cc ve Bcc ile gönder"
 
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Certificate"
@@ -6024,6 +6079,10 @@ msgstr "Ana makineli, kullanıcı adı ve parolasız bir http veya https adresi 
 #: src/features/settings/webhooks/events.tsx
 msgid "Enter an http or https URL without a user name or password."
 msgstr "Kullanıcı adı ve parola içermeyen bir http veya https adresi girin."
+
+#: src/features/conversation/Participants.tsx
+msgid "Enter one valid e-mail address."
+msgstr "Geçerli bir e-posta adresi girin."
 
 #: src/features/migrations/SourceStep.tsx
 msgid "Enter the address of the mailbox you answer from today. Yuva finds its provider; nothing is read until you connect it."
@@ -10546,6 +10605,10 @@ msgstr "Hoş geldin ya da onay e-postası gönderilmez. Her abonelik, beyan etti
 msgid "Nobody else can see this inbox yet."
 msgstr "Bu gelen kutusunu henüz başka kimse göremiyor."
 
+#: src/features/conversation/Participants.tsx
+msgid "Nobody else is copied. Replies go to the contact only."
+msgstr "Başka kimse Cc'de değil. Yanıtlar yalnızca kişiye gider."
+
 #: src/features/inbox/SidePanels.tsx
 msgid "Nobody has mentioned you yet"
 msgstr "Henüz kimse sizden bahsetmedi"
@@ -10794,6 +10857,10 @@ msgstr "Henüz yüklenmedi"
 #: src/features/inbox/SidePanels.tsx
 msgid "Not used yet"
 msgstr "Henüz kullanılmadı"
+
+#: src/features/conversation/Participants.tsx
+msgid "Not verified: the mail did not pass the sender check, so this address may be forged."
+msgstr "Doğrulanmadı: posta gönderen denetimini geçemedi, bu adres sahte olabilir."
 
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/home/HomePage.tsx
@@ -11908,6 +11975,10 @@ msgstr "Parça {part} / {totalParts}"
 #: src/features/status/text.tsx
 msgid "Partial outage"
 msgstr "Kısmi kesinti"
+
+#: src/features/conversation/Participants.tsx
+msgid "Participants"
+msgstr "Katılımcılar"
 
 #: src/features/status/StatusPages.tsx
 msgid "Partly degraded"
@@ -13079,6 +13150,7 @@ msgstr "alıcı"
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
+#: src/features/conversation/messages/Thread.tsx
 msgid "Recipients"
 msgstr "Alıcılar"
 
@@ -13187,9 +13259,10 @@ msgstr "Kaldır"
 
 #. placeholder {0}: a.title
 #. placeholder {0}: f.name
-#. placeholder {0}: p.name
+#. placeholder {0}: p.email
 #: src/features/conversation/composer/MacroChips.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/Participants.tsx
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Remove {0}"
 msgstr "{0} öğesini kaldır"
@@ -13198,6 +13271,10 @@ msgstr "{0} öğesini kaldır"
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Remove {0}?"
 msgstr "{0} kaldırılsın mı?"
+
+#: src/components/common/AddressChips.tsx
+msgid "Remove {email}"
+msgstr "{email} adresini kaldır"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Remove {lang}"
@@ -15914,6 +15991,10 @@ msgstr "Varsa MERSİS numarası, ticaret sicil ya da vergi numarası gibi"
 msgid "Suggested scopes"
 msgstr "Önerilen yetkiler"
 
+#: src/features/conversation/Participants.tsx
+msgid "Suggested, never copied unless you add them"
+msgstr "Önerilenler, siz eklemedikçe asla Cc'ye konmaz"
+
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Suggestion discarded"
 msgstr "Öneri silindi"
@@ -17740,6 +17821,8 @@ msgstr "Başlık"
 msgid "TLS (port 465)"
 msgstr "TLS (port 465)"
 
+#: src/features/conversation/composer/Recipients.tsx
+#: src/features/conversation/messages/Thread.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "To"

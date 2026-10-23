@@ -468,6 +468,7 @@ function Loaded({
     createIssue: () => c.kind === "feedback" && setIssueMode("create"),
     linkIssue: () => c.kind === "feedback" && setIssueMode("link"),
     article: () => reply.current?.article(),
+    recipients: () => reply.current?.recipients(),
     trash: () => canManage && trash(),
   }
   useInsertHandler((choice) => !trashed && reply.current?.insert(choice))
@@ -511,6 +512,7 @@ function Loaded({
           [SHORTCUTS.createIssue]: handlers.createIssue,
           [SHORTCUTS.linkIssue]: handlers.linkIssue,
           [SHORTCUTS.article]: handlers.article,
+          [SHORTCUTS.recipients]: handlers.recipients,
           [SHORTCUTS.trash]: handlers.trash,
         }
   )

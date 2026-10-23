@@ -12,6 +12,7 @@ import { ContactNotes } from "@/features/contact/ContactNotes"
 import { ConversationMedia } from "@/features/contact/ConversationMedia"
 import { ConversationFields, useConversationFieldList } from "@/features/fields/ConversationFields"
 import { MergeContactDialog } from "@/features/contact/MergeContactDialog"
+import { Participants } from "@/features/conversation/Participants"
 import { useContact, useContactPresence } from "@/features/contact/queries"
 import { useContactEntries } from "@/features/contact/entries"
 import { contactName } from "@/features/contact/Section"
@@ -252,6 +253,7 @@ export function ContactAside({
           <ConversationFields conversationId={conversationId} />
         </CardSection>
       )}
+      {conversationId && <Participants conversationId={conversationId} />}
       {c.inboxes.length > 0 && (
         <CardSection title={<Trans>Products</Trans>}>
           <ProductRows contact={c} />

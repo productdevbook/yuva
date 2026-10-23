@@ -644,6 +644,9 @@ export function applyEvent(qc: QueryClient, ctx: LiveContext, event: LiveEvent) 
       applyRead(qc, ctx.ws, event.data)
       refreshMentions(qc, ctx.ws)
       return
+    case "conversation.participants":
+      qc.setQueryData(keys.participants(ctx.ws, event.data.conversation_id), { items: event.data.items })
+      return
     case "conversation.pin":
       if (event.data.member_id === ctx.memberId) applyPin(qc, ctx.ws, event.data)
       return

@@ -101,6 +101,11 @@ msgstr "{0} ఈవెంట్‌లు"
 msgid "{0} good"
 msgstr "{0} మంచివి"
 
+#. placeholder {0}: invalid[0]
+#: src/components/common/AddressChips.tsx
+msgid "{0} is not an e-mail address"
+msgstr "{0} ఇమెయిల్ చిరునామా కాదు"
+
 #. placeholder {0}: items.length
 #: src/features/inbox/ChatList.tsx
 msgid "{0} marked as spam · no reply needed"
@@ -1127,6 +1132,10 @@ msgstr "కాంటాక్ట్ తొలగించబడింది"
 msgid "A conversation"
 msgstr "ఒక సంభాషణ"
 
+#: src/components/common/text.ts
+msgid "A conversation can copy at most 20 people."
+msgstr "ఒక సంభాషణలో గరిష్ఠంగా 20 మందికి కాపీ చేయవచ్చు."
+
 #: src/features/settings/fields/FieldDialog.tsx
 msgid "A conversation cannot be closed until this field has a value. Spam is exempt."
 msgstr "ఈ ఫీల్డ్‌కు విలువ ఉండే వరకు సంభాషణను మూసివేయలేరు. స్పామ్ దీనికి మినహాయింపు."
@@ -1616,11 +1625,17 @@ msgstr "కార్యకలాపం"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 #: src/features/contact/ContactDetails.tsx
+#: src/features/conversation/Participants.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Add"
 msgstr "జోడించండి"
+
+#. placeholder {0}: p.email
+#: src/features/conversation/Participants.tsx
+msgid "Add {0}"
+msgstr "{0} జోడించు"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Add a block"
@@ -1666,6 +1681,10 @@ msgstr "మానిటర్ జోడించండి"
 msgid "Add a note (optional)"
 msgstr "గమనికను జోడించండి (ఐచ్ఛికం)"
 
+#: src/features/conversation/Participants.tsx
+msgid "Add a participant by e-mail address"
+msgstr "ఇమెయిల్ చిరునామాతో పాల్గొనేవారిని జోడించు"
+
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Add a passkey"
 msgstr "పాస్‌కీని జోడించండి"
@@ -1707,6 +1726,11 @@ msgstr "వెబ్‌సైట్ లేదా యాప్‌ను జోడ
 #: src/features/settings/automation/RuleDialog.tsx
 msgid "Add an action"
 msgstr "చర్యను జోడించండి"
+
+#: src/components/common/AddressChips.tsx
+#: src/features/conversation/Participants.tsx
+msgid "Add an address"
+msgstr "చిరునామా జోడించు"
 
 #: src/features/settings/webhooks/WebhookList.tsx
 msgid "Add an address on your server and pick the events Yuva should tell it about."
@@ -1805,6 +1829,10 @@ msgstr "గమనికను జోడించండి"
 #: src/features/settings/ProductsPage.tsx
 msgid "Add one for each product or brand you answer for. Each gets its own branding, hours, team and channels."
 msgstr "మీరు సమాధానం ఇచ్చే ప్రతి ఉత్పత్తి లేదా బ్రాండ్‌కు ఒకటి జోడించండి. ప్రతిదానికీ సొంత బ్రాండింగ్, సమయాలు, బృందం, ఛానెల్‌లు ఉంటాయి."
+
+#: src/features/conversation/Participants.tsx
+msgid "Add participant"
+msgstr "పాల్గొనేవారిని జోడించు"
 
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Add people on their first sign-in"
@@ -2860,6 +2888,10 @@ msgstr "అసిస్టెంట్‌లు, {drafts} డ్రాఫ్ట�
 msgid "Async"
 msgstr "అసింక్"
 
+#: src/components/common/AddressChips.tsx
+msgid "At most {max} addresses"
+msgstr "గరిష్ఠంగా {max} చిరునామాలు"
+
 #: src/features/broadcasts/Pace.tsx
 msgid "At most {n} an hour"
 msgstr "గంటకు గరిష్టంగా {n}"
@@ -3043,6 +3075,19 @@ msgstr "చెడు"
 #: src/features/reports/ReportPages.tsx
 msgid "Bad only"
 msgstr "చెడ్డవి మాత్రమే"
+
+#: src/features/conversation/composer/Recipients.tsx
+#: src/features/conversation/messages/Thread.tsx
+msgid "Bcc"
+msgstr "Bcc"
+
+#: src/features/conversation/composer/Recipients.tsx
+msgid "Bcc ({bccCount})"
+msgstr "Bcc ({bccCount})"
+
+#: src/features/conversation/composer/Recipients.tsx
+msgid "Bcc recipients get the mail but are hidden from everyone else, including the contact."
+msgstr "Bcc గ్రహీతలకు మెయిల్ అందుతుంది, కానీ కాంటాక్ట్‌తో సహా మిగతా అందరి నుండి దాచబడతారు."
 
 #: src/features/status/text.tsx
 msgid "Beat"
@@ -3455,9 +3500,19 @@ msgstr "వర్గం"
 msgid "Cause found"
 msgstr "కారణం దొరికింది"
 
+#: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/messages/Thread.tsx
-msgid "Cc: {cc}"
-msgstr "Cc: {cc}"
+msgid "Cc"
+msgstr "Cc"
+
+#: src/features/conversation/composer/Recipients.tsx
+msgid "Cc ({ccCount})"
+msgstr "Cc ({ccCount})"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Cc and Bcc the reply"
+msgstr "సమాధానాన్ని Cc మరియు Bccకి పంపు"
 
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Certificate"
@@ -6024,6 +6079,10 @@ msgstr "హోస్ట్‌తో ఉన్న, వినియోగదార
 #: src/features/settings/webhooks/events.tsx
 msgid "Enter an http or https URL without a user name or password."
 msgstr "వినియోగదారు పేరు లేదా పాస్‌వర్డ్ లేని http లేదా https URL ను నమోదు చేయండి."
+
+#: src/features/conversation/Participants.tsx
+msgid "Enter one valid e-mail address."
+msgstr "చెల్లుబాటు అయ్యే ఒక ఇమెయిల్ చిరునామాను నమోదు చేయండి."
 
 #: src/features/migrations/SourceStep.tsx
 msgid "Enter the address of the mailbox you answer from today. Yuva finds its provider; nothing is read until you connect it."
@@ -10546,6 +10605,10 @@ msgstr "స్వాగత లేదా నిర్ధారణ మెయిల
 msgid "Nobody else can see this inbox yet."
 msgstr "మరెవరూ ఇంకా ఈ ఇన్‌బాక్స్‌ను చూడలేరు."
 
+#: src/features/conversation/Participants.tsx
+msgid "Nobody else is copied. Replies go to the contact only."
+msgstr "మరెవరూ కాపీలో లేరు. సమాధానాలు కాంటాక్ట్‌కు మాత్రమే వెళ్తాయి."
+
 #: src/features/inbox/SidePanels.tsx
 msgid "Nobody has mentioned you yet"
 msgstr "ఇంకా ఎవరూ మిమ్మల్ని ప్రస్తావించలేదు"
@@ -10794,6 +10857,10 @@ msgstr "ఇంకా అప్‌లోడ్ కాలేదు"
 #: src/features/inbox/SidePanels.tsx
 msgid "Not used yet"
 msgstr "ఇంకా వాడలేదు"
+
+#: src/features/conversation/Participants.tsx
+msgid "Not verified: the mail did not pass the sender check, so this address may be forged."
+msgstr "ధృవీకరించబడలేదు: మెయిల్ పంపినవారి తనిఖీలో విఫలమైంది, కాబట్టి ఈ చిరునామా నకిలీ కావచ్చు."
 
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/home/HomePage.tsx
@@ -11908,6 +11975,10 @@ msgstr "{totalParts} లో భాగం {part}"
 #: src/features/status/text.tsx
 msgid "Partial outage"
 msgstr "పాక్షిక అంతరాయం"
+
+#: src/features/conversation/Participants.tsx
+msgid "Participants"
+msgstr "పాల్గొనేవారు"
 
 #: src/features/status/StatusPages.tsx
 msgid "Partly degraded"
@@ -13079,6 +13150,7 @@ msgstr "గ్రహీతలు"
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
+#: src/features/conversation/messages/Thread.tsx
 msgid "Recipients"
 msgstr "గ్రహీతలు"
 
@@ -13187,9 +13259,10 @@ msgstr "తొలగించండి"
 
 #. placeholder {0}: a.title
 #. placeholder {0}: f.name
-#. placeholder {0}: p.name
+#. placeholder {0}: p.email
 #: src/features/conversation/composer/MacroChips.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/Participants.tsx
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Remove {0}"
 msgstr "{0} ను తొలగించండి"
@@ -13198,6 +13271,10 @@ msgstr "{0} ను తొలగించండి"
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Remove {0}?"
 msgstr "{0} తీసివేయాలా?"
+
+#: src/components/common/AddressChips.tsx
+msgid "Remove {email}"
+msgstr "{email} తీసివేయి"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Remove {lang}"
@@ -15914,6 +15991,10 @@ msgstr "మీకు ఉంటే, MERSİS నంబర్, వాణిజ్�
 msgid "Suggested scopes"
 msgstr "సూచించిన స్కోప్‌లు"
 
+#: src/features/conversation/Participants.tsx
+msgid "Suggested, never copied unless you add them"
+msgstr "సూచించినవి, మీరు జోడిస్తే తప్ప ఎప్పటికీ కాపీ చేయబడవు"
+
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Suggestion discarded"
 msgstr "సూచన విస్మరించబడింది"
@@ -17740,6 +17821,8 @@ msgstr "శీర్షిక"
 msgid "TLS (port 465)"
 msgstr "TLS (పోర్ట్ 465)"
 
+#: src/features/conversation/composer/Recipients.tsx
+#: src/features/conversation/messages/Thread.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "To"

@@ -101,6 +101,11 @@ msgstr "{0} events"
 msgid "{0} good"
 msgstr "{0} good"
 
+#. placeholder {0}: invalid[0]
+#: src/components/common/AddressChips.tsx
+msgid "{0} is not an e-mail address"
+msgstr "{0} is not an e-mail address"
+
 #. placeholder {0}: items.length
 #: src/features/inbox/ChatList.tsx
 msgid "{0} marked as spam · no reply needed"
@@ -1127,6 +1132,10 @@ msgstr "A contact was deleted"
 msgid "A conversation"
 msgstr "A conversation"
 
+#: src/components/common/text.ts
+msgid "A conversation can copy at most 20 people."
+msgstr "A conversation can copy at most 20 people."
+
 #: src/features/settings/fields/FieldDialog.tsx
 msgid "A conversation cannot be closed until this field has a value. Spam is exempt."
 msgstr "A conversation cannot be closed until this field has a value. Spam is exempt."
@@ -1616,11 +1625,17 @@ msgstr "Activity"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 #: src/features/contact/ContactDetails.tsx
+#: src/features/conversation/Participants.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Add"
 msgstr "Add"
+
+#. placeholder {0}: p.email
+#: src/features/conversation/Participants.tsx
+msgid "Add {0}"
+msgstr "Add {0}"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Add a block"
@@ -1666,6 +1681,10 @@ msgstr "Add a monitor"
 msgid "Add a note (optional)"
 msgstr "Add a note (optional)"
 
+#: src/features/conversation/Participants.tsx
+msgid "Add a participant by e-mail address"
+msgstr "Add a participant by e-mail address"
+
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Add a passkey"
 msgstr "Add a passkey"
@@ -1707,6 +1726,11 @@ msgstr "Add a website or app"
 #: src/features/settings/automation/RuleDialog.tsx
 msgid "Add an action"
 msgstr "Add an action"
+
+#: src/components/common/AddressChips.tsx
+#: src/features/conversation/Participants.tsx
+msgid "Add an address"
+msgstr "Add an address"
 
 #: src/features/settings/webhooks/WebhookList.tsx
 msgid "Add an address on your server and pick the events Yuva should tell it about."
@@ -1805,6 +1829,10 @@ msgstr "Add note"
 #: src/features/settings/ProductsPage.tsx
 msgid "Add one for each product or brand you answer for. Each gets its own branding, hours, team and channels."
 msgstr "Add one for each product or brand you answer for. Each gets its own branding, hours, team and channels."
+
+#: src/features/conversation/Participants.tsx
+msgid "Add participant"
+msgstr "Add participant"
 
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Add people on their first sign-in"
@@ -2860,6 +2888,10 @@ msgstr "Assistants, {drafts} drafts waiting"
 msgid "Async"
 msgstr "Async"
 
+#: src/components/common/AddressChips.tsx
+msgid "At most {max} addresses"
+msgstr "At most {max} addresses"
+
 #: src/features/broadcasts/Pace.tsx
 msgid "At most {n} an hour"
 msgstr "At most {n} an hour"
@@ -3043,6 +3075,19 @@ msgstr "Bad"
 #: src/features/reports/ReportPages.tsx
 msgid "Bad only"
 msgstr "Bad only"
+
+#: src/features/conversation/composer/Recipients.tsx
+#: src/features/conversation/messages/Thread.tsx
+msgid "Bcc"
+msgstr "Bcc"
+
+#: src/features/conversation/composer/Recipients.tsx
+msgid "Bcc ({bccCount})"
+msgstr "Bcc ({bccCount})"
+
+#: src/features/conversation/composer/Recipients.tsx
+msgid "Bcc recipients get the mail but are hidden from everyone else, including the contact."
+msgstr "Bcc recipients get the mail but are hidden from everyone else, including the contact."
 
 #: src/features/status/text.tsx
 msgid "Beat"
@@ -3455,9 +3500,19 @@ msgstr "Category"
 msgid "Cause found"
 msgstr "Cause found"
 
+#: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/messages/Thread.tsx
-msgid "Cc: {cc}"
-msgstr "Cc: {cc}"
+msgid "Cc"
+msgstr "Cc"
+
+#: src/features/conversation/composer/Recipients.tsx
+msgid "Cc ({ccCount})"
+msgstr "Cc ({ccCount})"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Cc and Bcc the reply"
+msgstr "Cc and Bcc the reply"
 
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Certificate"
@@ -6024,6 +6079,10 @@ msgstr "Enter an http or https address with a host and without a user name or pa
 #: src/features/settings/webhooks/events.tsx
 msgid "Enter an http or https URL without a user name or password."
 msgstr "Enter an http or https URL without a user name or password."
+
+#: src/features/conversation/Participants.tsx
+msgid "Enter one valid e-mail address."
+msgstr "Enter one valid e-mail address."
 
 #: src/features/migrations/SourceStep.tsx
 msgid "Enter the address of the mailbox you answer from today. Yuva finds its provider; nothing is read until you connect it."
@@ -10546,6 +10605,10 @@ msgstr "No welcome or confirmation mail is sent. Every subscription keeps the co
 msgid "Nobody else can see this inbox yet."
 msgstr "Nobody else can see this inbox yet."
 
+#: src/features/conversation/Participants.tsx
+msgid "Nobody else is copied. Replies go to the contact only."
+msgstr "Nobody else is copied. Replies go to the contact only."
+
 #: src/features/inbox/SidePanels.tsx
 msgid "Nobody has mentioned you yet"
 msgstr "Nobody has mentioned you yet"
@@ -10794,6 +10857,10 @@ msgstr "Not uploaded yet"
 #: src/features/inbox/SidePanels.tsx
 msgid "Not used yet"
 msgstr "Not used yet"
+
+#: src/features/conversation/Participants.tsx
+msgid "Not verified: the mail did not pass the sender check, so this address may be forged."
+msgstr "Not verified: the mail did not pass the sender check, so this address may be forged."
 
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/home/HomePage.tsx
@@ -11908,6 +11975,10 @@ msgstr "Part {part} of {totalParts}"
 #: src/features/status/text.tsx
 msgid "Partial outage"
 msgstr "Partial outage"
+
+#: src/features/conversation/Participants.tsx
+msgid "Participants"
+msgstr "Participants"
 
 #: src/features/status/StatusPages.tsx
 msgid "Partly degraded"
@@ -13079,6 +13150,7 @@ msgstr "recipients"
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
+#: src/features/conversation/messages/Thread.tsx
 msgid "Recipients"
 msgstr "Recipients"
 
@@ -13187,9 +13259,10 @@ msgstr "Remove"
 
 #. placeholder {0}: a.title
 #. placeholder {0}: f.name
-#. placeholder {0}: p.name
+#. placeholder {0}: p.email
 #: src/features/conversation/composer/MacroChips.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/Participants.tsx
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Remove {0}"
 msgstr "Remove {0}"
@@ -13198,6 +13271,10 @@ msgstr "Remove {0}"
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Remove {0}?"
 msgstr "Remove {0}?"
+
+#: src/components/common/AddressChips.tsx
+msgid "Remove {email}"
+msgstr "Remove {email}"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Remove {lang}"
@@ -15914,6 +15991,10 @@ msgstr "Such as a MERSİS number, trade register or VAT id, if you have one"
 msgid "Suggested scopes"
 msgstr "Suggested scopes"
 
+#: src/features/conversation/Participants.tsx
+msgid "Suggested, never copied unless you add them"
+msgstr "Suggested, never copied unless you add them"
+
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Suggestion discarded"
 msgstr "Suggestion discarded"
@@ -17740,6 +17821,8 @@ msgstr "Title"
 msgid "TLS (port 465)"
 msgstr "TLS (port 465)"
 
+#: src/features/conversation/composer/Recipients.tsx
+#: src/features/conversation/messages/Thread.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "To"

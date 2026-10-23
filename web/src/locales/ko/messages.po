@@ -101,6 +101,11 @@ msgstr "이벤트 {0}개"
 msgid "{0} good"
 msgstr "{0}건 좋음"
 
+#. placeholder {0}: invalid[0]
+#: src/components/common/AddressChips.tsx
+msgid "{0} is not an e-mail address"
+msgstr "{0}은(는) 이메일 주소가 아닙니다"
+
 #. placeholder {0}: items.length
 #: src/features/inbox/ChatList.tsx
 msgid "{0} marked as spam · no reply needed"
@@ -1127,6 +1132,10 @@ msgstr "연락처가 삭제되었을 때"
 msgid "A conversation"
 msgstr "대화"
 
+#: src/components/common/text.ts
+msgid "A conversation can copy at most 20 people."
+msgstr "한 대화에서 참조할 수 있는 사람은 최대 20명입니다."
+
 #: src/features/settings/fields/FieldDialog.tsx
 msgid "A conversation cannot be closed until this field has a value. Spam is exempt."
 msgstr "이 필드에 값이 있어야 대화를 닫을 수 있습니다. 스팸은 제외됩니다."
@@ -1616,11 +1625,17 @@ msgstr "활동"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 #: src/features/contact/ContactDetails.tsx
+#: src/features/conversation/Participants.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Add"
 msgstr "추가"
+
+#. placeholder {0}: p.email
+#: src/features/conversation/Participants.tsx
+msgid "Add {0}"
+msgstr "{0} 추가"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Add a block"
@@ -1666,6 +1681,10 @@ msgstr "모니터 추가"
 msgid "Add a note (optional)"
 msgstr "메모 추가(선택)"
 
+#: src/features/conversation/Participants.tsx
+msgid "Add a participant by e-mail address"
+msgstr "이메일 주소로 참가자 추가"
+
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Add a passkey"
 msgstr "패스키 추가"
@@ -1707,6 +1726,11 @@ msgstr "웹사이트 또는 앱 추가"
 #: src/features/settings/automation/RuleDialog.tsx
 msgid "Add an action"
 msgstr "작업 추가"
+
+#: src/components/common/AddressChips.tsx
+#: src/features/conversation/Participants.tsx
+msgid "Add an address"
+msgstr "주소 추가"
 
 #: src/features/settings/webhooks/WebhookList.tsx
 msgid "Add an address on your server and pick the events Yuva should tell it about."
@@ -1805,6 +1829,10 @@ msgstr "메모 추가"
 #: src/features/settings/ProductsPage.tsx
 msgid "Add one for each product or brand you answer for. Each gets its own branding, hours, team and channels."
 msgstr "응대하는 제품이나 브랜드마다 하나씩 추가하세요. 각각 고유한 브랜딩, 운영 시간, 팀, 채널을 가집니다."
+
+#: src/features/conversation/Participants.tsx
+msgid "Add participant"
+msgstr "참가자 추가"
 
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Add people on their first sign-in"
@@ -2860,6 +2888,10 @@ msgstr "어시스턴트, 초안 {drafts}개 대기 중"
 msgid "Async"
 msgstr "비동기"
 
+#: src/components/common/AddressChips.tsx
+msgid "At most {max} addresses"
+msgstr "주소는 최대 {max}개입니다"
+
 #: src/features/broadcasts/Pace.tsx
 msgid "At most {n} an hour"
 msgstr "시간당 최대 {n}건"
@@ -3043,6 +3075,19 @@ msgstr "나쁨"
 #: src/features/reports/ReportPages.tsx
 msgid "Bad only"
 msgstr "나쁨만"
+
+#: src/features/conversation/composer/Recipients.tsx
+#: src/features/conversation/messages/Thread.tsx
+msgid "Bcc"
+msgstr "숨은 참조"
+
+#: src/features/conversation/composer/Recipients.tsx
+msgid "Bcc ({bccCount})"
+msgstr "숨은 참조 ({bccCount})"
+
+#: src/features/conversation/composer/Recipients.tsx
+msgid "Bcc recipients get the mail but are hidden from everyone else, including the contact."
+msgstr "숨은 참조 수신자는 메일을 받지만 연락처를 포함한 다른 모든 사람에게 보이지 않습니다."
 
 #: src/features/status/text.tsx
 msgid "Beat"
@@ -3455,9 +3500,19 @@ msgstr "카테고리"
 msgid "Cause found"
 msgstr "원인 파악됨"
 
+#: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/messages/Thread.tsx
-msgid "Cc: {cc}"
-msgstr "Cc: {cc}"
+msgid "Cc"
+msgstr "참조"
+
+#: src/features/conversation/composer/Recipients.tsx
+msgid "Cc ({ccCount})"
+msgstr "참조 ({ccCount})"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Cc and Bcc the reply"
+msgstr "답장을 참조와 숨은 참조로 보내기"
 
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Certificate"
@@ -6024,6 +6079,10 @@ msgstr "호스트가 있고 사용자 이름과 비밀번호가 없는 http 또�
 #: src/features/settings/webhooks/events.tsx
 msgid "Enter an http or https URL without a user name or password."
 msgstr "사용자 이름과 비밀번호가 없는 http 또는 https URL을 입력하세요."
+
+#: src/features/conversation/Participants.tsx
+msgid "Enter one valid e-mail address."
+msgstr "올바른 이메일 주소 하나를 입력하세요."
 
 #: src/features/migrations/SourceStep.tsx
 msgid "Enter the address of the mailbox you answer from today. Yuva finds its provider; nothing is read until you connect it."
@@ -10546,6 +10605,10 @@ msgstr "환영 메일과 확인 메일은 보내지 않습니다. 모든 구독�
 msgid "Nobody else can see this inbox yet."
 msgstr "아직 이 받은 편지함을 볼 수 있는 사람이 없습니다."
 
+#: src/features/conversation/Participants.tsx
+msgid "Nobody else is copied. Replies go to the contact only."
+msgstr "참조에 다른 사람이 없습니다. 답장은 연락처에게만 갑니다."
+
 #: src/features/inbox/SidePanels.tsx
 msgid "Nobody has mentioned you yet"
 msgstr "아직 아무도 회원님을 언급하지 않았습니다"
@@ -10794,6 +10857,10 @@ msgstr "아직 업로드하지 않음"
 #: src/features/inbox/SidePanels.tsx
 msgid "Not used yet"
 msgstr "아직 사용하지 않음"
+
+#: src/features/conversation/Participants.tsx
+msgid "Not verified: the mail did not pass the sender check, so this address may be forged."
+msgstr "확인되지 않음: 이 메일은 발신자 확인을 통과하지 못해 주소가 위조되었을 수 있습니다."
 
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/home/HomePage.tsx
@@ -11908,6 +11975,10 @@ msgstr "{totalParts}개 중 {part}번째 부분"
 #: src/features/status/text.tsx
 msgid "Partial outage"
 msgstr "부분 중단"
+
+#: src/features/conversation/Participants.tsx
+msgid "Participants"
+msgstr "참가자"
 
 #: src/features/status/StatusPages.tsx
 msgid "Partly degraded"
@@ -13079,6 +13150,7 @@ msgstr "수신자"
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
+#: src/features/conversation/messages/Thread.tsx
 msgid "Recipients"
 msgstr "수신자"
 
@@ -13187,9 +13259,10 @@ msgstr "제거"
 
 #. placeholder {0}: a.title
 #. placeholder {0}: f.name
-#. placeholder {0}: p.name
+#. placeholder {0}: p.email
 #: src/features/conversation/composer/MacroChips.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/Participants.tsx
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Remove {0}"
 msgstr "{0} 제거"
@@ -13198,6 +13271,10 @@ msgstr "{0} 제거"
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Remove {0}?"
 msgstr "{0}을(를) 제거할까요?"
+
+#: src/components/common/AddressChips.tsx
+msgid "Remove {email}"
+msgstr "{email} 제거"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Remove {lang}"
@@ -15914,6 +15991,10 @@ msgstr "MERSİS 번호, 상업 등기 또는 VAT ID 등(있는 경우)"
 msgid "Suggested scopes"
 msgstr "권장 스코프"
 
+#: src/features/conversation/Participants.tsx
+msgid "Suggested, never copied unless you add them"
+msgstr "제안된 주소는 직접 추가하지 않는 한 참조에 넣지 않습니다"
+
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Suggestion discarded"
 msgstr "제안을 버렸습니다"
@@ -17740,6 +17821,8 @@ msgstr "제목"
 msgid "TLS (port 465)"
 msgstr "TLS(포트 465)"
 
+#: src/features/conversation/composer/Recipients.tsx
+#: src/features/conversation/messages/Thread.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "To"

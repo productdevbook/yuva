@@ -101,6 +101,11 @@ msgstr "{0} 個事件"
 msgid "{0} good"
 msgstr "{0} 個良好"
 
+#. placeholder {0}: invalid[0]
+#: src/components/common/AddressChips.tsx
+msgid "{0} is not an e-mail address"
+msgstr "{0} 不是電子郵件地址"
+
 #. placeholder {0}: items.length
 #: src/features/inbox/ChatList.tsx
 msgid "{0} marked as spam · no reply needed"
@@ -1127,6 +1132,10 @@ msgstr "聯絡人被刪除時"
 msgid "A conversation"
 msgstr "一則對話"
 
+#: src/components/common/text.ts
+msgid "A conversation can copy at most 20 people."
+msgstr "一個對話最多可副本 20 人。"
+
 #: src/features/settings/fields/FieldDialog.tsx
 msgid "A conversation cannot be closed until this field has a value. Spam is exempt."
 msgstr "此欄位有值之前，對話無法關閉。垃圾郵件除外。"
@@ -1616,11 +1625,17 @@ msgstr "活動"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 #: src/features/contact/ContactDetails.tsx
+#: src/features/conversation/Participants.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Add"
 msgstr "新增"
+
+#. placeholder {0}: p.email
+#: src/features/conversation/Participants.tsx
+msgid "Add {0}"
+msgstr "新增 {0}"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Add a block"
@@ -1666,6 +1681,10 @@ msgstr "新增監控"
 msgid "Add a note (optional)"
 msgstr "新增備註(可選)"
 
+#: src/features/conversation/Participants.tsx
+msgid "Add a participant by e-mail address"
+msgstr "以電子郵件地址新增參與者"
+
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Add a passkey"
 msgstr "新增通行金鑰"
@@ -1707,6 +1726,11 @@ msgstr "新增網站或應用程式"
 #: src/features/settings/automation/RuleDialog.tsx
 msgid "Add an action"
 msgstr "新增動作"
+
+#: src/components/common/AddressChips.tsx
+#: src/features/conversation/Participants.tsx
+msgid "Add an address"
+msgstr "新增地址"
 
 #: src/features/settings/webhooks/WebhookList.tsx
 msgid "Add an address on your server and pick the events Yuva should tell it about."
@@ -1805,6 +1829,10 @@ msgstr "新增備註"
 #: src/features/settings/ProductsPage.tsx
 msgid "Add one for each product or brand you answer for. Each gets its own branding, hours, team and channels."
 msgstr "為你負責的每個產品或品牌各新增一個。每個都有自己的品牌、營業時間、團隊和頻道。"
+
+#: src/features/conversation/Participants.tsx
+msgid "Add participant"
+msgstr "新增參與者"
 
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Add people on their first sign-in"
@@ -2860,6 +2888,10 @@ msgstr "助手,{drafts} 份草稿等待中"
 msgid "Async"
 msgstr "非同步"
 
+#: src/components/common/AddressChips.tsx
+msgid "At most {max} addresses"
+msgstr "最多 {max} 個地址"
+
 #: src/features/broadcasts/Pace.tsx
 msgid "At most {n} an hour"
 msgstr "每小時最多 {n} 個"
@@ -3043,6 +3075,19 @@ msgstr "差"
 #: src/features/reports/ReportPages.tsx
 msgid "Bad only"
 msgstr "僅負評"
+
+#: src/features/conversation/composer/Recipients.tsx
+#: src/features/conversation/messages/Thread.tsx
+msgid "Bcc"
+msgstr "密件副本"
+
+#: src/features/conversation/composer/Recipients.tsx
+msgid "Bcc ({bccCount})"
+msgstr "密件副本 ({bccCount})"
+
+#: src/features/conversation/composer/Recipients.tsx
+msgid "Bcc recipients get the mail but are hidden from everyone else, including the contact."
+msgstr "密件副本收件者會收到郵件，但對包括聯絡人在內的其他所有人隱藏。"
 
 #: src/features/status/text.tsx
 msgid "Beat"
@@ -3455,9 +3500,19 @@ msgstr "類別"
 msgid "Cause found"
 msgstr "已找到原因"
 
+#: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/messages/Thread.tsx
-msgid "Cc: {cc}"
-msgstr "抄送:{cc}"
+msgid "Cc"
+msgstr "副本"
+
+#: src/features/conversation/composer/Recipients.tsx
+msgid "Cc ({ccCount})"
+msgstr "副本 ({ccCount})"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Cc and Bcc the reply"
+msgstr "將回覆副本與密件副本"
 
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Certificate"
@@ -6024,6 +6079,10 @@ msgstr "請輸入含主機、不含使用者名稱和密碼的 http 或 https �
 #: src/features/settings/webhooks/events.tsx
 msgid "Enter an http or https URL without a user name or password."
 msgstr "請輸入不帶使用者名稱或密碼的 http 或 https URL。"
+
+#: src/features/conversation/Participants.tsx
+msgid "Enter one valid e-mail address."
+msgstr "請輸入一個有效的電子郵件地址。"
 
 #: src/features/migrations/SourceStep.tsx
 msgid "Enter the address of the mailbox you answer from today. Yuva finds its provider; nothing is read until you connect it."
@@ -10546,6 +10605,10 @@ msgstr "不會傳送歡迎或確認郵件。每個訂閱都會保留你宣告的
 msgid "Nobody else can see this inbox yet."
 msgstr "還沒有其他人能看到此收件匣。"
 
+#: src/features/conversation/Participants.tsx
+msgid "Nobody else is copied. Replies go to the contact only."
+msgstr "沒有其他人在副本中。回覆只會寄給聯絡人。"
+
 #: src/features/inbox/SidePanels.tsx
 msgid "Nobody has mentioned you yet"
 msgstr "還沒有人提到過你"
@@ -10794,6 +10857,10 @@ msgstr "尚未上傳"
 #: src/features/inbox/SidePanels.tsx
 msgid "Not used yet"
 msgstr "尚未使用"
+
+#: src/features/conversation/Participants.tsx
+msgid "Not verified: the mail did not pass the sender check, so this address may be forged."
+msgstr "未驗證：這封郵件未通過寄件者檢查，因此這個地址可能是偽造的。"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/home/HomePage.tsx
@@ -11908,6 +11975,10 @@ msgstr "第 {part} 部分,共 {totalParts} 部分"
 #: src/features/status/text.tsx
 msgid "Partial outage"
 msgstr "部分中斷"
+
+#: src/features/conversation/Participants.tsx
+msgid "Participants"
+msgstr "參與者"
 
 #: src/features/status/StatusPages.tsx
 msgid "Partly degraded"
@@ -13079,6 +13150,7 @@ msgstr "收件人"
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
+#: src/features/conversation/messages/Thread.tsx
 msgid "Recipients"
 msgstr "收件人"
 
@@ -13187,9 +13259,10 @@ msgstr "移除"
 
 #. placeholder {0}: a.title
 #. placeholder {0}: f.name
-#. placeholder {0}: p.name
+#. placeholder {0}: p.email
 #: src/features/conversation/composer/MacroChips.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/Participants.tsx
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Remove {0}"
 msgstr "移除 {0}"
@@ -13198,6 +13271,10 @@ msgstr "移除 {0}"
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Remove {0}?"
 msgstr "移除 {0}？"
+
+#: src/components/common/AddressChips.tsx
+msgid "Remove {email}"
+msgstr "移除 {email}"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Remove {lang}"
@@ -15914,6 +15991,10 @@ msgstr "例如 MERSİS 編號、商業登記號或增值稅號(如果有)"
 msgid "Suggested scopes"
 msgstr "建議的許可權範圍"
 
+#: src/features/conversation/Participants.tsx
+msgid "Suggested, never copied unless you add them"
+msgstr "建議的地址，除非你新增，否則不會被副本"
+
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Suggestion discarded"
 msgstr "建議已丟棄"
@@ -17740,6 +17821,8 @@ msgstr "標題"
 msgid "TLS (port 465)"
 msgstr "TLS(埠 465)"
 
+#: src/features/conversation/composer/Recipients.tsx
+#: src/features/conversation/messages/Thread.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "To"

@@ -101,6 +101,11 @@ msgstr "{0} подій"
 msgid "{0} good"
 msgstr "{0} хороших"
 
+#. placeholder {0}: invalid[0]
+#: src/components/common/AddressChips.tsx
+msgid "{0} is not an e-mail address"
+msgstr "{0} не є адресою електронної пошти"
+
 #. placeholder {0}: items.length
 #: src/features/inbox/ChatList.tsx
 msgid "{0} marked as spam · no reply needed"
@@ -1127,6 +1132,10 @@ msgstr "Контакт видалено"
 msgid "A conversation"
 msgstr "Розмова"
 
+#: src/components/common/text.ts
+msgid "A conversation can copy at most 20 people."
+msgstr "У розмові може бути не більше 20 осіб у копії."
+
 #: src/features/settings/fields/FieldDialog.tsx
 msgid "A conversation cannot be closed until this field has a value. Spam is exempt."
 msgstr "Розмову не можна закрити, доки в цьому полі немає значення. Спам виключено."
@@ -1616,11 +1625,17 @@ msgstr "Активність"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 #: src/features/contact/ContactDetails.tsx
+#: src/features/conversation/Participants.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Add"
 msgstr "Додати"
+
+#. placeholder {0}: p.email
+#: src/features/conversation/Participants.tsx
+msgid "Add {0}"
+msgstr "Додати {0}"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Add a block"
@@ -1666,6 +1681,10 @@ msgstr "Додати монітор"
 msgid "Add a note (optional)"
 msgstr "Додати нотатку (необов'язково)"
 
+#: src/features/conversation/Participants.tsx
+msgid "Add a participant by e-mail address"
+msgstr "Додати учасника за адресою електронної пошти"
+
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Add a passkey"
 msgstr "Додати ключ доступу"
@@ -1707,6 +1726,11 @@ msgstr "Додати сайт або застосунок"
 #: src/features/settings/automation/RuleDialog.tsx
 msgid "Add an action"
 msgstr "Додати дію"
+
+#: src/components/common/AddressChips.tsx
+#: src/features/conversation/Participants.tsx
+msgid "Add an address"
+msgstr "Додати адресу"
 
 #: src/features/settings/webhooks/WebhookList.tsx
 msgid "Add an address on your server and pick the events Yuva should tell it about."
@@ -1805,6 +1829,10 @@ msgstr "Додати нотатку"
 #: src/features/settings/ProductsPage.tsx
 msgid "Add one for each product or brand you answer for. Each gets its own branding, hours, team and channels."
 msgstr "Додайте по одному для кожного продукту чи бренду, від імені якого ви відповідаєте. Кожен має власний вигляд, години роботи, команду й канали."
+
+#: src/features/conversation/Participants.tsx
+msgid "Add participant"
+msgstr "Додати учасника"
 
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Add people on their first sign-in"
@@ -2860,6 +2888,10 @@ msgstr "Асистенти, чернеток очікує: {drafts}"
 msgid "Async"
 msgstr "Асинхронно"
 
+#: src/components/common/AddressChips.tsx
+msgid "At most {max} addresses"
+msgstr "Не більше {max} адрес"
+
 #: src/features/broadcasts/Pace.tsx
 msgid "At most {n} an hour"
 msgstr "Не більше {n} на годину"
@@ -3043,6 +3075,19 @@ msgstr "Погано"
 #: src/features/reports/ReportPages.tsx
 msgid "Bad only"
 msgstr "Лише погані"
+
+#: src/features/conversation/composer/Recipients.tsx
+#: src/features/conversation/messages/Thread.tsx
+msgid "Bcc"
+msgstr "Прихована копія"
+
+#: src/features/conversation/composer/Recipients.tsx
+msgid "Bcc ({bccCount})"
+msgstr "Прихована копія ({bccCount})"
+
+#: src/features/conversation/composer/Recipients.tsx
+msgid "Bcc recipients get the mail but are hidden from everyone else, including the contact."
+msgstr "Одержувачі у прихованій копії отримують лист, але приховані від усіх інших, зокрема від контакту."
 
 #: src/features/status/text.tsx
 msgid "Beat"
@@ -3455,9 +3500,19 @@ msgstr "Категорія"
 msgid "Cause found"
 msgstr "Причину знайдено"
 
+#: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/messages/Thread.tsx
-msgid "Cc: {cc}"
-msgstr "Копія: {cc}"
+msgid "Cc"
+msgstr "Копія"
+
+#: src/features/conversation/composer/Recipients.tsx
+msgid "Cc ({ccCount})"
+msgstr "Копія ({ccCount})"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Cc and Bcc the reply"
+msgstr "Надіслати відповідь у копію та приховану копію"
 
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Certificate"
@@ -6024,6 +6079,10 @@ msgstr "Введіть адресу http або https із хостом, без 
 #: src/features/settings/webhooks/events.tsx
 msgid "Enter an http or https URL without a user name or password."
 msgstr "Введіть URL http або https без імені користувача й пароля."
+
+#: src/features/conversation/Participants.tsx
+msgid "Enter one valid e-mail address."
+msgstr "Введіть одну дійсну адресу електронної пошти."
 
 #: src/features/migrations/SourceStep.tsx
 msgid "Enter the address of the mailbox you answer from today. Yuva finds its provider; nothing is read until you connect it."
@@ -10546,6 +10605,10 @@ msgstr "Ні вітальний лист, ні лист із підтвердж�
 msgid "Nobody else can see this inbox yet."
 msgstr "Більше ніхто не бачить цю скриньку."
 
+#: src/features/conversation/Participants.tsx
+msgid "Nobody else is copied. Replies go to the contact only."
+msgstr "Більше ніхто не в копії. Відповіді йдуть лише контакту."
+
 #: src/features/inbox/SidePanels.tsx
 msgid "Nobody has mentioned you yet"
 msgstr "Вас ще ніхто не згадував"
@@ -10794,6 +10857,10 @@ msgstr "Ще не завантажено"
 #: src/features/inbox/SidePanels.tsx
 msgid "Not used yet"
 msgstr "Ще не використовувався"
+
+#: src/features/conversation/Participants.tsx
+msgid "Not verified: the mail did not pass the sender check, so this address may be forged."
+msgstr "Не підтверджено: лист не пройшов перевірку відправника, тож адреса може бути підробленою."
 
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/home/HomePage.tsx
@@ -11908,6 +11975,10 @@ msgstr "Частина {part} із {totalParts}"
 #: src/features/status/text.tsx
 msgid "Partial outage"
 msgstr "Частковий збій"
+
+#: src/features/conversation/Participants.tsx
+msgid "Participants"
+msgstr "Учасники"
 
 #: src/features/status/StatusPages.tsx
 msgid "Partly degraded"
@@ -13079,6 +13150,7 @@ msgstr "отримувачі"
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
+#: src/features/conversation/messages/Thread.tsx
 msgid "Recipients"
 msgstr "Отримувачі"
 
@@ -13187,9 +13259,10 @@ msgstr "Видалити"
 
 #. placeholder {0}: a.title
 #. placeholder {0}: f.name
-#. placeholder {0}: p.name
+#. placeholder {0}: p.email
 #: src/features/conversation/composer/MacroChips.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/Participants.tsx
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Remove {0}"
 msgstr "Видалити {0}"
@@ -13198,6 +13271,10 @@ msgstr "Видалити {0}"
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Remove {0}?"
 msgstr "Видалити {0}?"
+
+#: src/components/common/AddressChips.tsx
+msgid "Remove {email}"
+msgstr "Прибрати {email}"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Remove {lang}"
@@ -15914,6 +15991,10 @@ msgstr "Наприклад, номер MERSİS, торговий реєстр а
 msgid "Suggested scopes"
 msgstr "Запропоновані області доступу"
 
+#: src/features/conversation/Participants.tsx
+msgid "Suggested, never copied unless you add them"
+msgstr "Запропоновані, у копію не потрапляють, доки ви їх не додасте"
+
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Suggestion discarded"
 msgstr "Пропозицію відхилено"
@@ -17740,6 +17821,8 @@ msgstr "Назва"
 msgid "TLS (port 465)"
 msgstr "TLS (порт 465)"
 
+#: src/features/conversation/composer/Recipients.tsx
+#: src/features/conversation/messages/Thread.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "To"

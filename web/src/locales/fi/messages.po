@@ -101,6 +101,11 @@ msgstr "{0} tapahtumaa"
 msgid "{0} good"
 msgstr "{0} hyvää"
 
+#. placeholder {0}: invalid[0]
+#: src/components/common/AddressChips.tsx
+msgid "{0} is not an e-mail address"
+msgstr "{0} ei ole sähköpostiosoite"
+
 #. placeholder {0}: items.length
 #: src/features/inbox/ChatList.tsx
 msgid "{0} marked as spam · no reply needed"
@@ -1127,6 +1132,10 @@ msgstr "Kontakti poistettiin"
 msgid "A conversation"
 msgstr "Keskustelu"
 
+#: src/components/common/text.ts
+msgid "A conversation can copy at most 20 people."
+msgstr "Keskustelussa voi olla enintään 20 henkilöä kopiona."
+
 #: src/features/settings/fields/FieldDialog.tsx
 msgid "A conversation cannot be closed until this field has a value. Spam is exempt."
 msgstr "Keskustelua ei voi sulkea, ennen kuin tällä kentällä on arvo. Roskaposti on poikkeus."
@@ -1616,11 +1625,17 @@ msgstr "Toiminta"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 #: src/features/contact/ContactDetails.tsx
+#: src/features/conversation/Participants.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Add"
 msgstr "Lisää"
+
+#. placeholder {0}: p.email
+#: src/features/conversation/Participants.tsx
+msgid "Add {0}"
+msgstr "Lisää {0}"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Add a block"
@@ -1666,6 +1681,10 @@ msgstr "Lisää valvonta"
 msgid "Add a note (optional)"
 msgstr "Lisää muistiinpano (valinnainen)"
 
+#: src/features/conversation/Participants.tsx
+msgid "Add a participant by e-mail address"
+msgstr "Lisää osallistuja sähköpostiosoitteella"
+
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Add a passkey"
 msgstr "Lisää pääsyavain"
@@ -1707,6 +1726,11 @@ msgstr "Lisää sivusto tai sovellus"
 #: src/features/settings/automation/RuleDialog.tsx
 msgid "Add an action"
 msgstr "Lisää toiminto"
+
+#: src/components/common/AddressChips.tsx
+#: src/features/conversation/Participants.tsx
+msgid "Add an address"
+msgstr "Lisää osoite"
 
 #: src/features/settings/webhooks/WebhookList.tsx
 msgid "Add an address on your server and pick the events Yuva should tell it about."
@@ -1805,6 +1829,10 @@ msgstr "Lisää muistiinpano"
 #: src/features/settings/ProductsPage.tsx
 msgid "Add one for each product or brand you answer for. Each gets its own branding, hours, team and channels."
 msgstr "Lisää yksi jokaista tuotetta tai brändiä kohti, jonka puolesta vastaat. Jokaisella on oma ilmeensä, aukioloaikansa, tiiminsä ja kanavansa."
+
+#: src/features/conversation/Participants.tsx
+msgid "Add participant"
+msgstr "Lisää osallistuja"
 
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Add people on their first sign-in"
@@ -2860,6 +2888,10 @@ msgstr "Avustajat, {drafts} luonnosta odottaa"
 msgid "Async"
 msgstr "Asynkroninen"
 
+#: src/components/common/AddressChips.tsx
+msgid "At most {max} addresses"
+msgstr "Enintään {max} osoitetta"
+
 #: src/features/broadcasts/Pace.tsx
 msgid "At most {n} an hour"
 msgstr "Enintään {n} tunnissa"
@@ -3043,6 +3075,19 @@ msgstr "Huono"
 #: src/features/reports/ReportPages.tsx
 msgid "Bad only"
 msgstr "Vain huonot"
+
+#: src/features/conversation/composer/Recipients.tsx
+#: src/features/conversation/messages/Thread.tsx
+msgid "Bcc"
+msgstr "Piilokopio"
+
+#: src/features/conversation/composer/Recipients.tsx
+msgid "Bcc ({bccCount})"
+msgstr "Piilokopio ({bccCount})"
+
+#: src/features/conversation/composer/Recipients.tsx
+msgid "Bcc recipients get the mail but are hidden from everyone else, including the contact."
+msgstr "Piilokopion saajat saavat viestin, mutta ovat piilossa kaikilta muilta, myös yhteyshenkilöltä."
 
 #: src/features/status/text.tsx
 msgid "Beat"
@@ -3455,9 +3500,19 @@ msgstr "Luokka"
 msgid "Cause found"
 msgstr "Syy löytyi"
 
+#: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/messages/Thread.tsx
-msgid "Cc: {cc}"
-msgstr "Kopio: {cc}"
+msgid "Cc"
+msgstr "Kopio"
+
+#: src/features/conversation/composer/Recipients.tsx
+msgid "Cc ({ccCount})"
+msgstr "Kopio ({ccCount})"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Cc and Bcc the reply"
+msgstr "Lähetä vastaus kopiona ja piilokopiona"
 
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Certificate"
@@ -6024,6 +6079,10 @@ msgstr "Anna http- tai https-osoite, jossa on isäntä mutta ei käyttäjätunnu
 #: src/features/settings/webhooks/events.tsx
 msgid "Enter an http or https URL without a user name or password."
 msgstr "Anna http- tai https-URL ilman käyttäjätunnusta tai salasanaa."
+
+#: src/features/conversation/Participants.tsx
+msgid "Enter one valid e-mail address."
+msgstr "Anna yksi kelvollinen sähköpostiosoite."
 
 #: src/features/migrations/SourceStep.tsx
 msgid "Enter the address of the mailbox you answer from today. Yuva finds its provider; nothing is read until you connect it."
@@ -10546,6 +10605,10 @@ msgstr "Tervetulo- tai vahvistusviestiä ei lähetetä. Jokainen tilaus säilytt
 msgid "Nobody else can see this inbox yet."
 msgstr "Kukaan muu ei vielä näe tätä postilaatikkoa."
 
+#: src/features/conversation/Participants.tsx
+msgid "Nobody else is copied. Replies go to the contact only."
+msgstr "Kukaan muu ei ole kopiona. Vastaukset menevät vain yhteyshenkilölle."
+
 #: src/features/inbox/SidePanels.tsx
 msgid "Nobody has mentioned you yet"
 msgstr "Kukaan ei ole vielä maininnut sinua"
@@ -10794,6 +10857,10 @@ msgstr "Ei vielä ladattu"
 #: src/features/inbox/SidePanels.tsx
 msgid "Not used yet"
 msgstr "Ei vielä käytetty"
+
+#: src/features/conversation/Participants.tsx
+msgid "Not verified: the mail did not pass the sender check, so this address may be forged."
+msgstr "Vahvistamaton: viesti ei läpäissyt lähettäjän tarkistusta, joten osoite voi olla väärennetty."
 
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/home/HomePage.tsx
@@ -11908,6 +11975,10 @@ msgstr "Osa {part} / {totalParts}"
 #: src/features/status/text.tsx
 msgid "Partial outage"
 msgstr "Osittainen katkos"
+
+#: src/features/conversation/Participants.tsx
+msgid "Participants"
+msgstr "Osallistujat"
 
 #: src/features/status/StatusPages.tsx
 msgid "Partly degraded"
@@ -13079,6 +13150,7 @@ msgstr "vastaanottajat"
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
+#: src/features/conversation/messages/Thread.tsx
 msgid "Recipients"
 msgstr "Vastaanottajat"
 
@@ -13187,9 +13259,10 @@ msgstr "Poista"
 
 #. placeholder {0}: a.title
 #. placeholder {0}: f.name
-#. placeholder {0}: p.name
+#. placeholder {0}: p.email
 #: src/features/conversation/composer/MacroChips.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/Participants.tsx
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Remove {0}"
 msgstr "Poista {0}"
@@ -13198,6 +13271,10 @@ msgstr "Poista {0}"
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Remove {0}?"
 msgstr "Poistetaanko {0}?"
+
+#: src/components/common/AddressChips.tsx
+msgid "Remove {email}"
+msgstr "Poista {email}"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Remove {lang}"
@@ -15914,6 +15991,10 @@ msgstr "Esimerkiksi Y-tunnus, kaupparekisteri tai ALV-tunnus, jos sinulla on"
 msgid "Suggested scopes"
 msgstr "Ehdotetut scopet"
 
+#: src/features/conversation/Participants.tsx
+msgid "Suggested, never copied unless you add them"
+msgstr "Ehdotetut, ei koskaan kopiona, ellet lisää niitä"
+
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Suggestion discarded"
 msgstr "Ehdotus hylätty"
@@ -17740,6 +17821,8 @@ msgstr "Otsikko"
 msgid "TLS (port 465)"
 msgstr "TLS (portti 465)"
 
+#: src/features/conversation/composer/Recipients.tsx
+#: src/features/conversation/messages/Thread.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "To"

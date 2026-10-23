@@ -101,6 +101,11 @@ msgstr "{0} esdeveniments"
 msgid "{0} good"
 msgstr "{0} bones"
 
+#. placeholder {0}: invalid[0]
+#: src/components/common/AddressChips.tsx
+msgid "{0} is not an e-mail address"
+msgstr "{0} no és una adreça electrònica"
+
 #. placeholder {0}: items.length
 #: src/features/inbox/ChatList.tsx
 msgid "{0} marked as spam · no reply needed"
@@ -1127,6 +1132,10 @@ msgstr "S'ha eliminat un contacte"
 msgid "A conversation"
 msgstr "Una conversa"
 
+#: src/components/common/text.ts
+msgid "A conversation can copy at most 20 people."
+msgstr "Una conversa pot posar en còpia com a màxim 20 persones."
+
 #: src/features/settings/fields/FieldDialog.tsx
 msgid "A conversation cannot be closed until this field has a value. Spam is exempt."
 msgstr "Una conversa no es pot tancar fins que aquest camp tingui un valor. El correu brossa n’està exempt."
@@ -1616,11 +1625,17 @@ msgstr "Activitat"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 #: src/features/contact/ContactDetails.tsx
+#: src/features/conversation/Participants.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Add"
 msgstr "Afegeix"
+
+#. placeholder {0}: p.email
+#: src/features/conversation/Participants.tsx
+msgid "Add {0}"
+msgstr "Afegeix {0}"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Add a block"
@@ -1666,6 +1681,10 @@ msgstr "Afegeix un monitor"
 msgid "Add a note (optional)"
 msgstr "Afegeix una nota (opcional)"
 
+#: src/features/conversation/Participants.tsx
+msgid "Add a participant by e-mail address"
+msgstr "Afegeix un participant per adreça electrònica"
+
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Add a passkey"
 msgstr "Afegeix una clau d'accés"
@@ -1707,6 +1726,11 @@ msgstr "Afegeix un lloc web o una aplicació"
 #: src/features/settings/automation/RuleDialog.tsx
 msgid "Add an action"
 msgstr "Afegeix una acció"
+
+#: src/components/common/AddressChips.tsx
+#: src/features/conversation/Participants.tsx
+msgid "Add an address"
+msgstr "Afegeix una adreça"
 
 #: src/features/settings/webhooks/WebhookList.tsx
 msgid "Add an address on your server and pick the events Yuva should tell it about."
@@ -1805,6 +1829,10 @@ msgstr "Afegeix una nota"
 #: src/features/settings/ProductsPage.tsx
 msgid "Add one for each product or brand you answer for. Each gets its own branding, hours, team and channels."
 msgstr "Afegeix-ne un per a cada producte o marca de què responguis. Cadascun té la seva pròpia marca, horari, equip i canals."
+
+#: src/features/conversation/Participants.tsx
+msgid "Add participant"
+msgstr "Afegeix un participant"
 
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Add people on their first sign-in"
@@ -2860,6 +2888,10 @@ msgstr "Assistents, {drafts} esborranys esperant"
 msgid "Async"
 msgstr "Asíncron"
 
+#: src/components/common/AddressChips.tsx
+msgid "At most {max} addresses"
+msgstr "Com a màxim {max} adreces"
+
 #: src/features/broadcasts/Pace.tsx
 msgid "At most {n} an hour"
 msgstr "Com a màxim {n} per hora"
@@ -3043,6 +3075,19 @@ msgstr "Dolenta"
 #: src/features/reports/ReportPages.tsx
 msgid "Bad only"
 msgstr "Només dolentes"
+
+#: src/features/conversation/composer/Recipients.tsx
+#: src/features/conversation/messages/Thread.tsx
+msgid "Bcc"
+msgstr "Cco"
+
+#: src/features/conversation/composer/Recipients.tsx
+msgid "Bcc ({bccCount})"
+msgstr "Cco ({bccCount})"
+
+#: src/features/conversation/composer/Recipients.tsx
+msgid "Bcc recipients get the mail but are hidden from everyone else, including the contact."
+msgstr "Els destinataris en Cco reben el correu però queden ocults per a tots els altres, també el contacte."
 
 #: src/features/status/text.tsx
 msgid "Beat"
@@ -3455,9 +3500,19 @@ msgstr "Categoria"
 msgid "Cause found"
 msgstr "Causa trobada"
 
+#: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/messages/Thread.tsx
-msgid "Cc: {cc}"
-msgstr "Cc: {cc}"
+msgid "Cc"
+msgstr "Cc"
+
+#: src/features/conversation/composer/Recipients.tsx
+msgid "Cc ({ccCount})"
+msgstr "Cc ({ccCount})"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Cc and Bcc the reply"
+msgstr "Posa la resposta en Cc i Cco"
 
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Certificate"
@@ -6024,6 +6079,10 @@ msgstr "Introdueix una adreça http o https amb amfitrió i sense nom d’usuari
 #: src/features/settings/webhooks/events.tsx
 msgid "Enter an http or https URL without a user name or password."
 msgstr "Introdueix un URL http o https sense nom d'usuari ni contrasenya."
+
+#: src/features/conversation/Participants.tsx
+msgid "Enter one valid e-mail address."
+msgstr "Introdueix una adreça electrònica vàlida."
 
 #: src/features/migrations/SourceStep.tsx
 msgid "Enter the address of the mailbox you answer from today. Yuva finds its provider; nothing is read until you connect it."
@@ -10546,6 +10605,10 @@ msgstr "No s'envia cap correu de benvinguda ni de confirmació. Cada subscripci�
 msgid "Nobody else can see this inbox yet."
 msgstr "Ningú més pot veure aquesta safata encara."
 
+#: src/features/conversation/Participants.tsx
+msgid "Nobody else is copied. Replies go to the contact only."
+msgstr "Ningú més està en còpia. Les respostes van només al contacte."
+
 #: src/features/inbox/SidePanels.tsx
 msgid "Nobody has mentioned you yet"
 msgstr "Encara ningú t'ha esmentat"
@@ -10794,6 +10857,10 @@ msgstr "Encara no pujat"
 #: src/features/inbox/SidePanels.tsx
 msgid "Not used yet"
 msgstr "Encara no usada"
+
+#: src/features/conversation/Participants.tsx
+msgid "Not verified: the mail did not pass the sender check, so this address may be forged."
+msgstr "Sense verificar: el correu no ha passat la comprovació del remitent, així que l’adreça podria ser falsa."
 
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/home/HomePage.tsx
@@ -11908,6 +11975,10 @@ msgstr "Part {part} de {totalParts}"
 #: src/features/status/text.tsx
 msgid "Partial outage"
 msgstr "Caiguda parcial"
+
+#: src/features/conversation/Participants.tsx
+msgid "Participants"
+msgstr "Participants"
 
 #: src/features/status/StatusPages.tsx
 msgid "Partly degraded"
@@ -13079,6 +13150,7 @@ msgstr "destinataris"
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
+#: src/features/conversation/messages/Thread.tsx
 msgid "Recipients"
 msgstr "Destinataris"
 
@@ -13187,9 +13259,10 @@ msgstr "Elimina"
 
 #. placeholder {0}: a.title
 #. placeholder {0}: f.name
-#. placeholder {0}: p.name
+#. placeholder {0}: p.email
 #: src/features/conversation/composer/MacroChips.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/Participants.tsx
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Remove {0}"
 msgstr "Elimina {0}"
@@ -13198,6 +13271,10 @@ msgstr "Elimina {0}"
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Remove {0}?"
 msgstr "Vols treure {0}?"
+
+#: src/components/common/AddressChips.tsx
+msgid "Remove {email}"
+msgstr "Treu {email}"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Remove {lang}"
@@ -15914,6 +15991,10 @@ msgstr "Com un número MERSİS, registre mercantil o NIF-IVA, si en tens un"
 msgid "Suggested scopes"
 msgstr "Abasts suggerits"
 
+#: src/features/conversation/Participants.tsx
+msgid "Suggested, never copied unless you add them"
+msgstr "Suggerits, mai en còpia tret que els afegeixis"
+
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Suggestion discarded"
 msgstr "Suggeriment descartat"
@@ -17740,6 +17821,8 @@ msgstr "Títol"
 msgid "TLS (port 465)"
 msgstr "TLS (port 465)"
 
+#: src/features/conversation/composer/Recipients.tsx
+#: src/features/conversation/messages/Thread.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "To"

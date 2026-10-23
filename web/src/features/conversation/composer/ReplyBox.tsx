@@ -15,11 +15,12 @@ import {
   useReplyChoices,
   type ReplyChoice,
 } from "@/features/conversation/composer/CannedMenu"
+import { Recipients } from "@/features/conversation/composer/Recipients"
 import { MacroChips } from "@/features/conversation/composer/MacroChips"
 import type { MacroPick } from "@/features/conversation/macros"
 import { MentionMenu, mentionToken } from "@/features/conversation/composer/MentionMenu"
 import { useAuthorName, type ThreadContext } from "@/features/conversation/messages/context"
-import { useDraftActions } from "@/features/conversation/queries"
+import { useDraftActions, useParticipants } from "@/features/conversation/queries"
 import { useHelpCenters } from "@/features/help/queries"
 import type { Conversation, Member, Message } from "@/lib/api"
 import { useSession } from "@/lib/session"
@@ -43,6 +44,7 @@ export type ReplyHandle = {
   article: () => void
   addFiles: (files: File[]) => void
   insert: (choice: ReplyChoice) => void
+  recipients: () => void
 }
 
 const MAX_FILES = 10
@@ -136,6 +138,12 @@ export const ReplyBox = forwardRef<
   const [noting, setNoting] = useState(false)
   const [mentioned, setMentioned] = useState<{ id: string; label: string }[]>([])
   const [error, setError] = useState<unknown>(null)
+  const [ccEdit, setCcEdit] = useState<string[] | undefined>(initial.cc)
+  const [bcc, setBcc] = useState<string[]>(initial.bcc ?? [])
+  const [ccOpen, setCcOpen] = useState(false)
+  const [bccOpen, setBccOpen] = useState(false)
+  const ccInput = useRef<HTMLInputElement>(null)
+  const bccInput = useRef<HTMLInputElement>(null)
   const textarea = useRef<HTMLTextAreaElement>(null)
   const fileInput = useRef<HTMLInputElement>(null)
   const typing = useTypingSender(c.id)
@@ -144,11 +152,17 @@ export const ReplyBox = forwardRef<
   const choices = useReplyChoices()
   const helpCenter = (useHelpCenters().data ?? []).find((h) => h.inbox_id === c.inbox_id)
   const note = mode === "note"
+  const participants = useParticipants(c.id, !!emailTo)
+  const defaultCc = (participants.data?.items ?? []).filter((p) => p.status === "active").map((p) => p.email)
+  const cc = ccEdit ?? defaultCc
   const blocked = !note && !!undeliverable
   const first = firstName(contactName)
   const articleKey = keyLabel(SHORTCUTS.article).join("")
 
-  useEffect(() => writeDraft(c.id, { body, mode, files, articles, macro }), [c.id, body, mode, files, articles, macro])
+  useEffect(
+    () => writeDraft(c.id, { body, mode, files, articles, macro, cc: ccEdit, bcc }),
+    [c.id, body, mode, files, articles, macro, ccEdit, bcc]
+  )
   const stopTyping = typing.stop
   useEffect(() => {
     if (note) stopTyping()
@@ -254,6 +268,11 @@ export const ReplyBox = forwardRef<
       setMode("message")
       insertCanned(r)
     },
+    recipients: () => {
+      if (!emailTo || note || blocked) return
+      setCcOpen(true)
+      requestAnimationFrame(() => ccInput.current?.focus())
+    },
   }))
   const hasContent = body.trim() !== "" || files.length > 0 || articles.length > 0
   const notified = mentioned.filter((x) => body.includes(`@${x.label}`))
@@ -268,13 +287,18 @@ export const ReplyBox = forwardRef<
     setCaret(0)
     setLinked(null)
     setError(null)
+    setCcEdit(undefined)
+    setBcc([])
+    setCcOpen(false)
+    setBccOpen(false)
   }
   const send = (close: boolean) => {
     if (!hasContent || note || blocked) return
     typing.stop()
     const linkedDraft = suggestion && linked === suggestion.id ? suggestion : undefined
     const saved = { body, files, articles, macro }
-    actions.send({ body, files, close, suggestion: linkedDraft, articles, macro })?.catch(() => {
+    const recipients = emailTo ? { cc: ccEdit, bcc: bcc.length ? bcc : undefined } : {}
+    actions.send({ body, files, close, suggestion: linkedDraft, articles, macro, ...recipients })?.catch(() => {
       setBody((b) => b || saved.body)
       setFiles((f) => (f.length ? f : saved.files))
       setArticles((a) => (a.length ? a : saved.articles))
@@ -358,10 +382,13 @@ export const ReplyBox = forwardRef<
     }
   }
 
+  const recipientsShown = !!emailTo && !note && !blocked
   const hint = note
     ? t`The customer does not see this`
     : emailTo
-      ? t`To: ${emailTo}`
+      ? recipientsShown
+        ? ""
+        : t`To: ${emailTo}`
       : via
         ? t`Goes out through ${via}`
         : ""
@@ -387,11 +414,26 @@ export const ReplyBox = forwardRef<
         </Tabs>
         <span
           className="ms-auto min-w-0 truncate pe-2 text-caption text-faint"
-          data-testid={!note && emailTo ? "composer-email-to" : undefined}
+          data-testid={!note && emailTo && !recipientsShown ? "composer-email-to" : undefined}
         >
           {hint}
         </span>
       </div>
+      {recipientsShown && (
+        <Recipients
+          to={emailTo}
+          cc={cc}
+          onCc={setCcEdit}
+          bcc={bcc}
+          onBcc={setBcc}
+          ccOpen={ccOpen}
+          bccOpen={bccOpen}
+          setCcOpen={setCcOpen}
+          setBccOpen={setBccOpen}
+          ccRef={ccInput}
+          bccRef={bccInput}
+        />
+      )}
       {blocked && (
         <p
           className="mx-3 my-2 rounded-lg bg-destructive/6 px-3 py-2.5 text-small text-destructive"

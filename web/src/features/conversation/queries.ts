@@ -1,7 +1,14 @@
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
 import { withRequiredFields } from "@/features/fields/required"
-import { api, unwrap, type ConversationUpdate, type Message, type MessageCreate } from "@/lib/api"
+import {
+  api,
+  unwrap,
+  type ConversationParticipantList,
+  type ConversationUpdate,
+  type Message,
+  type MessageCreate,
+} from "@/lib/api"
 import { keys } from "@/lib/keys"
 import { applyEvent, applyRead } from "@/lib/live"
 import { isLive } from "@/lib/realtime"
@@ -128,8 +135,10 @@ function sendMessage(conversationId: string, { files, ...body }: Outgoing) {
       bodySerializer: () => {
         const form = new FormData()
         for (const [k, v] of Object.entries(body)) {
-          if (Array.isArray(v)) for (const x of v) form.append(k, String(x))
-          else if (k === "then") form.append(k, JSON.stringify(v))
+          if (Array.isArray(v)) {
+            if (v.length === 0 && k === "cc") form.append(k, "")
+            for (const x of v) form.append(k, String(x))
+          } else if (k === "then") form.append(k, JSON.stringify(v))
           else if (v !== undefined && v !== "") form.append(k, String(v))
         }
         for (const f of files) form.append("files", f, f.name)
@@ -162,6 +171,46 @@ export function useRedactMessage() {
       unwrap(api.POST("/v1/messages/{messageId}/redact", { params: { path: { messageId: m.id } } })),
     onSuccess: (data) => applyEvent(qc, live, { type: "message.redacted", data }),
   })
+}
+
+export function useParticipants(conversationId: string | undefined, enabled = true) {
+  const { workspaceId: ws } = useSession()
+  return useQuery({
+    queryKey: keys.participants(ws, conversationId ?? ""),
+    queryFn: () =>
+      unwrap(
+        api.GET("/v1/conversations/{conversationId}/participants", {
+          params: { path: { conversationId: conversationId! } },
+        })
+      ),
+    enabled: enabled && !!conversationId,
+  })
+}
+
+export function useParticipantActions(conversationId: string) {
+  const qc = useQueryClient()
+  const { workspaceId: ws } = useSession()
+  const store = (data: ConversationParticipantList) => qc.setQueryData(keys.participants(ws, conversationId), data)
+  const add = useMutation({
+    mutationFn: (email: string) =>
+      unwrap(
+        api.POST("/v1/conversations/{conversationId}/participants", {
+          params: { path: { conversationId } },
+          body: { email },
+        })
+      ),
+    onSuccess: store,
+  })
+  const remove = useMutation({
+    mutationFn: (email: string) =>
+      unwrap(
+        api.DELETE("/v1/conversations/{conversationId}/participants/{email}", {
+          params: { path: { conversationId, email } },
+        })
+      ),
+    onSuccess: store,
+  })
+  return { add, remove }
 }
 
 export function useDraftActions() {

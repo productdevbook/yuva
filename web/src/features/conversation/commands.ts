@@ -20,6 +20,7 @@ export type CommandName =
   | "discussion"
   | "incident"
   | "article"
+  | "recipients"
   | "idea"
   | "createIssue"
   | "linkIssue"

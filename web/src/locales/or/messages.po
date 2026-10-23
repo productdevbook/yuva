@@ -101,6 +101,11 @@ msgstr "{0} ଇଭେଣ୍ଟ"
 msgid "{0} good"
 msgstr "{0} ଭଲ"
 
+#. placeholder {0}: invalid[0]
+#: src/components/common/AddressChips.tsx
+msgid "{0} is not an e-mail address"
+msgstr "{0} ଏକ ଇମେଲ୍ ଠିକଣା ନୁହେଁ"
+
 #. placeholder {0}: items.length
 #: src/features/inbox/ChatList.tsx
 msgid "{0} marked as spam · no reply needed"
@@ -1127,6 +1132,10 @@ msgstr "ଏକ ଯୋଗାଯୋଗ ଡିଲିଟ୍ ହେଲା"
 msgid "A conversation"
 msgstr "ଗୋଟିଏ କଥାବାର୍ତ୍ତା"
 
+#: src/components/common/text.ts
+msgid "A conversation can copy at most 20 people."
+msgstr "ଗୋଟିଏ କଥାବାର୍ତ୍ତାରେ ସର୍ବାଧିକ 20 ଜଣଙ୍କୁ କପି କରାଯାଇପାରିବ।"
+
 #: src/features/settings/fields/FieldDialog.tsx
 msgid "A conversation cannot be closed until this field has a value. Spam is exempt."
 msgstr "ଏହି ଫିଲ୍ଡରେ ମୂଲ୍ୟ ନଥିବା ପର୍ଯ୍ୟନ୍ତ କଥାବାର୍ତ୍ତା ବନ୍ଦ କରାଯାଇପାରିବ ନାହିଁ। ସ୍ପାମ ଏଥିରୁ ବାଦ୍।"
@@ -1616,11 +1625,17 @@ msgstr "କାର୍ଯ୍ୟକଳାପ"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 #: src/features/contact/ContactDetails.tsx
+#: src/features/conversation/Participants.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Add"
 msgstr "ଯୋଡ଼ନ୍ତୁ"
+
+#. placeholder {0}: p.email
+#: src/features/conversation/Participants.tsx
+msgid "Add {0}"
+msgstr "{0} ଯୋଡନ୍ତୁ"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Add a block"
@@ -1666,6 +1681,10 @@ msgstr "ମନିଟର ଯୋଡ଼ନ୍ତୁ"
 msgid "Add a note (optional)"
 msgstr "ନୋଟ୍ ଯୋଡ଼ନ୍ତୁ (ଐଚ୍ଛିକ)"
 
+#: src/features/conversation/Participants.tsx
+msgid "Add a participant by e-mail address"
+msgstr "ଇମେଲ୍ ଠିକଣା ଦ୍ୱାରା ଅଂଶଗ୍ରହଣକାରୀ ଯୋଡନ୍ତୁ"
+
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Add a passkey"
 msgstr "ପାସ୍କୀ ଯୋଡ଼ନ୍ତୁ"
@@ -1707,6 +1726,11 @@ msgstr "ୱେବସାଇଟ୍ କିମ୍ବା ଆପ୍ ଯୋଡ଼ନ୍
 #: src/features/settings/automation/RuleDialog.tsx
 msgid "Add an action"
 msgstr "କାର୍ଯ୍ୟ ଯୋଡ଼ନ୍ତୁ"
+
+#: src/components/common/AddressChips.tsx
+#: src/features/conversation/Participants.tsx
+msgid "Add an address"
+msgstr "ଠିକଣା ଯୋଡନ୍ତୁ"
 
 #: src/features/settings/webhooks/WebhookList.tsx
 msgid "Add an address on your server and pick the events Yuva should tell it about."
@@ -1805,6 +1829,10 @@ msgstr "ନୋଟ୍ ଯୋଡ଼ନ୍ତୁ"
 #: src/features/settings/ProductsPage.tsx
 msgid "Add one for each product or brand you answer for. Each gets its own branding, hours, team and channels."
 msgstr "ଆପଣ ଯେଉଁ ପ୍ରଡକ୍ଟ ବା ବ୍ରାଣ୍ଡ ପାଇଁ ଉତ୍ତର ଦିଅନ୍ତି ପ୍ରତ୍ୟେକ ପାଇଁ ଗୋଟିଏ ଯୋଡ଼ନ୍ତୁ। ପ୍ରତ୍ୟେକର ନିଜସ୍ୱ ବ୍ରାଣ୍ଡିଂ, ସମୟ, ଦଳ ଓ ଚ୍ୟାନେଲ ଥାଏ।"
+
+#: src/features/conversation/Participants.tsx
+msgid "Add participant"
+msgstr "ଅଂଶଗ୍ରହଣକାରୀ ଯୋଡନ୍ତୁ"
 
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Add people on their first sign-in"
@@ -2860,6 +2888,10 @@ msgstr "ସହାୟକ, {drafts} ଡ୍ରାଫ୍ଟ ଅପେକ୍ଷାର
 msgid "Async"
 msgstr "ଅସିଙ୍କ୍"
 
+#: src/components/common/AddressChips.tsx
+msgid "At most {max} addresses"
+msgstr "ସର୍ବାଧିକ {max}ଟି ଠିକଣା"
+
 #: src/features/broadcasts/Pace.tsx
 msgid "At most {n} an hour"
 msgstr "ଘଣ୍ଟାରେ ସର୍ବାଧିକ {n}"
@@ -3043,6 +3075,19 @@ msgstr "ଖରାପ"
 #: src/features/reports/ReportPages.tsx
 msgid "Bad only"
 msgstr "କେବଳ ଖରାପ"
+
+#: src/features/conversation/composer/Recipients.tsx
+#: src/features/conversation/messages/Thread.tsx
+msgid "Bcc"
+msgstr "Bcc"
+
+#: src/features/conversation/composer/Recipients.tsx
+msgid "Bcc ({bccCount})"
+msgstr "Bcc ({bccCount})"
+
+#: src/features/conversation/composer/Recipients.tsx
+msgid "Bcc recipients get the mail but are hidden from everyone else, including the contact."
+msgstr "Bcc ପ୍ରାପକମାନେ ମେଲ୍ ପାଆନ୍ତି, କିନ୍ତୁ ଯୋଗାଯୋଗ ସମେତ ଅନ୍ୟ ସମସ୍ତଙ୍କଠାରୁ ଲୁଚି ରୁହନ୍ତି।"
 
 #: src/features/status/text.tsx
 msgid "Beat"
@@ -3455,9 +3500,19 @@ msgstr "ବର୍ଗ"
 msgid "Cause found"
 msgstr "କାରଣ ମିଳିଲା"
 
+#: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/messages/Thread.tsx
-msgid "Cc: {cc}"
-msgstr "Cc: {cc}"
+msgid "Cc"
+msgstr "Cc"
+
+#: src/features/conversation/composer/Recipients.tsx
+msgid "Cc ({ccCount})"
+msgstr "Cc ({ccCount})"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Cc and Bcc the reply"
+msgstr "ଉତ୍ତରକୁ Cc ଓ Bcc ରେ ପଠାନ୍ତୁ"
 
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Certificate"
@@ -6024,6 +6079,10 @@ msgstr "ହୋଷ୍ଟ ସହିତ ଏବଂ ଉପଯୋଗକର୍ତ୍ତ
 #: src/features/settings/webhooks/events.tsx
 msgid "Enter an http or https URL without a user name or password."
 msgstr "ଉପଯୋଗକର୍ତ୍ତା ନାମ କିମ୍ବା ପାସୱାର୍ଡ ବିନା ଏକ http କିମ୍ବା https URL ଦିଅନ୍ତୁ।"
+
+#: src/features/conversation/Participants.tsx
+msgid "Enter one valid e-mail address."
+msgstr "ଗୋଟିଏ ବୈଧ ଇମେଲ୍ ଠିକଣା ଦିଅନ୍ତୁ।"
 
 #: src/features/migrations/SourceStep.tsx
 msgid "Enter the address of the mailbox you answer from today. Yuva finds its provider; nothing is read until you connect it."
@@ -10546,6 +10605,10 @@ msgstr "କୌଣସି ସ୍ୱାଗତ କିମ୍ବା ନିଶ୍ଚି
 msgid "Nobody else can see this inbox yet."
 msgstr "ଅନ୍ୟ କେହି ଏପର୍ଯ୍ୟନ୍ତ ଏହି ଇନବକ୍ସ ଦେଖିପାରିବେ ନାହିଁ।"
 
+#: src/features/conversation/Participants.tsx
+msgid "Nobody else is copied. Replies go to the contact only."
+msgstr "ଆଉ କେହି କପିରେ ନାହାଁନ୍ତି। ଉତ୍ତର କେବଳ ଯୋଗାଯୋଗକୁ ଯାଏ।"
+
 #: src/features/inbox/SidePanels.tsx
 msgid "Nobody has mentioned you yet"
 msgstr "ଏପର୍ଯ୍ୟନ୍ତ କେହି ଆପଣଙ୍କୁ ଉଲ୍ଲେଖ କରିନାହାଁନ୍ତି"
@@ -10794,6 +10857,10 @@ msgstr "ଏପର୍ଯ୍ୟନ୍ତ ଅପଲୋଡ୍ ହୋଇନାହି�
 #: src/features/inbox/SidePanels.tsx
 msgid "Not used yet"
 msgstr "ଏପର୍ଯ୍ୟନ୍ତ ବ୍ୟବହୃତ ହୋଇନାହିଁ"
+
+#: src/features/conversation/Participants.tsx
+msgid "Not verified: the mail did not pass the sender check, so this address may be forged."
+msgstr "ଯାଞ୍ଚ ହୋଇନି: ମେଲ୍ ପ୍ରେରକ ଯାଞ୍ଚରେ ଉତ୍ତୀର୍ଣ୍ଣ ହୋଇନି, ତେଣୁ ଏହି ଠିକଣା ନକଲି ହୋଇପାରେ।"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/home/HomePage.tsx
@@ -11908,6 +11975,10 @@ msgstr "{totalParts} ମଧ୍ୟରୁ ଅଂଶ {part}"
 #: src/features/status/text.tsx
 msgid "Partial outage"
 msgstr "ଆଂଶିକ ବାଧା"
+
+#: src/features/conversation/Participants.tsx
+msgid "Participants"
+msgstr "ଅଂଶଗ୍ରହଣକାରୀ"
 
 #: src/features/status/StatusPages.tsx
 msgid "Partly degraded"
@@ -13079,6 +13150,7 @@ msgstr "ପ୍ରାପକ"
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
+#: src/features/conversation/messages/Thread.tsx
 msgid "Recipients"
 msgstr "ପ୍ରାପକ"
 
@@ -13187,9 +13259,10 @@ msgstr "ହଟାନ୍ତୁ"
 
 #. placeholder {0}: a.title
 #. placeholder {0}: f.name
-#. placeholder {0}: p.name
+#. placeholder {0}: p.email
 #: src/features/conversation/composer/MacroChips.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/Participants.tsx
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Remove {0}"
 msgstr "{0} ହଟାନ୍ତୁ"
@@ -13198,6 +13271,10 @@ msgstr "{0} ହଟାନ୍ତୁ"
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Remove {0}?"
 msgstr "{0} ହଟାଇବେ?"
+
+#: src/components/common/AddressChips.tsx
+msgid "Remove {email}"
+msgstr "{email} ହଟାନ୍ତୁ"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Remove {lang}"
@@ -15914,6 +15991,10 @@ msgstr "ଯେପରି MERSİS ନମ୍ବର, ବାଣିଜ୍ୟ ପଞ୍
 msgid "Suggested scopes"
 msgstr "ପରାମର୍ଶିତ ସ୍କୋପ୍"
 
+#: src/features/conversation/Participants.tsx
+msgid "Suggested, never copied unless you add them"
+msgstr "ପ୍ରସ୍ତାବିତ, ଆପଣ ଯୋଡିଲେ ବିନା କେବେ କପି ହେବେ ନାହିଁ"
+
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Suggestion discarded"
 msgstr "ପରାମର୍ଶ ବାତିଲ ହେଲା"
@@ -17740,6 +17821,8 @@ msgstr "ଶୀର୍ଷକ"
 msgid "TLS (port 465)"
 msgstr "TLS (ପୋର୍ଟ 465)"
 
+#: src/features/conversation/composer/Recipients.tsx
+#: src/features/conversation/messages/Thread.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "To"

@@ -101,6 +101,11 @@ msgstr "{0}টি ইভেন্ট"
 msgid "{0} good"
 msgstr "{0}টি ভালো"
 
+#. placeholder {0}: invalid[0]
+#: src/components/common/AddressChips.tsx
+msgid "{0} is not an e-mail address"
+msgstr "{0} একটি ইমেল ঠিকানা নয়"
+
 #. placeholder {0}: items.length
 #: src/features/inbox/ChatList.tsx
 msgid "{0} marked as spam · no reply needed"
@@ -1127,6 +1132,10 @@ msgstr "একটি কনট্যাক্ট মুছে ফেলা হ�
 msgid "A conversation"
 msgstr "একটি কথোপকথন"
 
+#: src/components/common/text.ts
+msgid "A conversation can copy at most 20 people."
+msgstr "একটি কথোপকথনে সর্বোচ্চ ২০ জনকে কপি করা যায়।"
+
 #: src/features/settings/fields/FieldDialog.tsx
 msgid "A conversation cannot be closed until this field has a value. Spam is exempt."
 msgstr "এই ফিল্ডে মান না থাকলে কথোপকথন বন্ধ করা যায় না। স্প্যাম এর বাইরে।"
@@ -1616,11 +1625,17 @@ msgstr "কার্যকলাপ"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 #: src/features/contact/ContactDetails.tsx
+#: src/features/conversation/Participants.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Add"
 msgstr "যোগ করুন"
+
+#. placeholder {0}: p.email
+#: src/features/conversation/Participants.tsx
+msgid "Add {0}"
+msgstr "{0} যোগ করুন"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Add a block"
@@ -1666,6 +1681,10 @@ msgstr "মনিটর যোগ করুন"
 msgid "Add a note (optional)"
 msgstr "নোট যোগ করুন (ঐচ্ছিক)"
 
+#: src/features/conversation/Participants.tsx
+msgid "Add a participant by e-mail address"
+msgstr "ইমেল ঠিকানা দিয়ে অংশগ্রহণকারী যোগ করুন"
+
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Add a passkey"
 msgstr "পাসকি যোগ করুন"
@@ -1707,6 +1726,11 @@ msgstr "একটি ওয়েবসাইট বা অ্যাপ যো�
 #: src/features/settings/automation/RuleDialog.tsx
 msgid "Add an action"
 msgstr "অ্যাকশন যোগ করুন"
+
+#: src/components/common/AddressChips.tsx
+#: src/features/conversation/Participants.tsx
+msgid "Add an address"
+msgstr "একটি ঠিকানা যোগ করুন"
 
 #: src/features/settings/webhooks/WebhookList.tsx
 msgid "Add an address on your server and pick the events Yuva should tell it about."
@@ -1805,6 +1829,10 @@ msgstr "নোট যোগ করুন"
 #: src/features/settings/ProductsPage.tsx
 msgid "Add one for each product or brand you answer for. Each gets its own branding, hours, team and channels."
 msgstr "আপনি যে প্রোডাক্ট বা ব্র্যান্ডের হয়ে উত্তর দেন তার প্রতিটির জন্য একটি করে যোগ করুন। প্রতিটির নিজস্ব ব্র্যান্ডিং, সময়, টিম ও চ্যানেল থাকে।"
+
+#: src/features/conversation/Participants.tsx
+msgid "Add participant"
+msgstr "অংশগ্রহণকারী যোগ করুন"
 
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Add people on their first sign-in"
@@ -2860,6 +2888,10 @@ msgstr "অ্যাসিস্ট্যান্ট, {drafts}টি ড্র�
 msgid "Async"
 msgstr "অ্যাসিঙ্ক"
 
+#: src/components/common/AddressChips.tsx
+msgid "At most {max} addresses"
+msgstr "সর্বোচ্চ {max}টি ঠিকানা"
+
 #: src/features/broadcasts/Pace.tsx
 msgid "At most {n} an hour"
 msgstr "ঘণ্টায় সর্বোচ্চ {n}"
@@ -3043,6 +3075,19 @@ msgstr "খারাপ"
 #: src/features/reports/ReportPages.tsx
 msgid "Bad only"
 msgstr "শুধু খারাপ"
+
+#: src/features/conversation/composer/Recipients.tsx
+#: src/features/conversation/messages/Thread.tsx
+msgid "Bcc"
+msgstr "Bcc"
+
+#: src/features/conversation/composer/Recipients.tsx
+msgid "Bcc ({bccCount})"
+msgstr "Bcc ({bccCount})"
+
+#: src/features/conversation/composer/Recipients.tsx
+msgid "Bcc recipients get the mail but are hidden from everyone else, including the contact."
+msgstr "Bcc প্রাপকেরা মেইল পান, কিন্তু যোগাযোগসহ আর সবার কাছ থেকে লুকানো থাকেন।"
 
 #: src/features/status/text.tsx
 msgid "Beat"
@@ -3455,9 +3500,19 @@ msgstr "বিভাগ"
 msgid "Cause found"
 msgstr "কারণ পাওয়া গেছে"
 
+#: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/messages/Thread.tsx
-msgid "Cc: {cc}"
-msgstr "Cc: {cc}"
+msgid "Cc"
+msgstr "Cc"
+
+#: src/features/conversation/composer/Recipients.tsx
+msgid "Cc ({ccCount})"
+msgstr "Cc ({ccCount})"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Cc and Bcc the reply"
+msgstr "উত্তর Cc ও Bcc-তে পাঠান"
 
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Certificate"
@@ -6024,6 +6079,10 @@ msgstr "হোস্টসহ এবং ব্যবহারকারীর ন
 #: src/features/settings/webhooks/events.tsx
 msgid "Enter an http or https URL without a user name or password."
 msgstr "ইউজারনেম বা পাসওয়ার্ড ছাড়া একটি http বা https URL দিন।"
+
+#: src/features/conversation/Participants.tsx
+msgid "Enter one valid e-mail address."
+msgstr "একটি বৈধ ইমেল ঠিকানা দিন।"
 
 #: src/features/migrations/SourceStep.tsx
 msgid "Enter the address of the mailbox you answer from today. Yuva finds its provider; nothing is read until you connect it."
@@ -10546,6 +10605,10 @@ msgstr "কোনো স্বাগত বা নিশ্চিতকরণ �
 msgid "Nobody else can see this inbox yet."
 msgstr "এখনও আর কেউ এই ইনবক্স দেখতে পায় না।"
 
+#: src/features/conversation/Participants.tsx
+msgid "Nobody else is copied. Replies go to the contact only."
+msgstr "আর কেউ কপিতে নেই। উত্তর শুধু যোগাযোগের কাছে যায়।"
+
 #: src/features/inbox/SidePanels.tsx
 msgid "Nobody has mentioned you yet"
 msgstr "এখনও কেউ আপনাকে উল্লেখ করেনি"
@@ -10794,6 +10857,10 @@ msgstr "এখনও আপলোড হয়নি"
 #: src/features/inbox/SidePanels.tsx
 msgid "Not used yet"
 msgstr "এখনও ব্যবহার হয়নি"
+
+#: src/features/conversation/Participants.tsx
+msgid "Not verified: the mail did not pass the sender check, so this address may be forged."
+msgstr "যাচাই হয়নি: মেইলটি প্রেরক পরীক্ষায় পাস করেনি, তাই ঠিকানাটি জাল হতে পারে।"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/home/HomePage.tsx
@@ -11908,6 +11975,10 @@ msgstr "{totalParts}-এর মধ্যে অংশ {part}"
 #: src/features/status/text.tsx
 msgid "Partial outage"
 msgstr "আংশিক বিভ্রাট"
+
+#: src/features/conversation/Participants.tsx
+msgid "Participants"
+msgstr "অংশগ্রহণকারীরা"
 
 #: src/features/status/StatusPages.tsx
 msgid "Partly degraded"
@@ -13079,6 +13150,7 @@ msgstr "প্রাপক"
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
+#: src/features/conversation/messages/Thread.tsx
 msgid "Recipients"
 msgstr "প্রাপক"
 
@@ -13187,9 +13259,10 @@ msgstr "সরান"
 
 #. placeholder {0}: a.title
 #. placeholder {0}: f.name
-#. placeholder {0}: p.name
+#. placeholder {0}: p.email
 #: src/features/conversation/composer/MacroChips.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/Participants.tsx
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Remove {0}"
 msgstr "{0} সরান"
@@ -13198,6 +13271,10 @@ msgstr "{0} সরান"
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Remove {0}?"
 msgstr "{0} সরাবেন?"
+
+#: src/components/common/AddressChips.tsx
+msgid "Remove {email}"
+msgstr "{email} সরান"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Remove {lang}"
@@ -15914,6 +15991,10 @@ msgstr "যেমন MERSİS নম্বর, বাণিজ্য নিবন
 msgid "Suggested scopes"
 msgstr "প্রস্তাবিত স্কোপ"
 
+#: src/features/conversation/Participants.tsx
+msgid "Suggested, never copied unless you add them"
+msgstr "প্রস্তাবিত, আপনি যোগ না করলে কখনও কপি হবে না"
+
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Suggestion discarded"
 msgstr "প্রস্তাব বাতিল করা হয়েছে"
@@ -17740,6 +17821,8 @@ msgstr "শিরোনাম"
 msgid "TLS (port 465)"
 msgstr "TLS (পোর্ট 465)"
 
+#: src/features/conversation/composer/Recipients.tsx
+#: src/features/conversation/messages/Thread.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "To"

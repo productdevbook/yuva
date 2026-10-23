@@ -101,6 +101,11 @@ msgstr "{0} நிகழ்வுகள்"
 msgid "{0} good"
 msgstr "{0} நல்லவை"
 
+#. placeholder {0}: invalid[0]
+#: src/components/common/AddressChips.tsx
+msgid "{0} is not an e-mail address"
+msgstr "{0} மின்னஞ்சல் முகவரி அல்ல"
+
 #. placeholder {0}: items.length
 #: src/features/inbox/ChatList.tsx
 msgid "{0} marked as spam · no reply needed"
@@ -1127,6 +1132,10 @@ msgstr "ஒரு தொடர்பு நீக்கப்பட்டது"
 msgid "A conversation"
 msgstr "ஒரு உரையாடல்"
 
+#: src/components/common/text.ts
+msgid "A conversation can copy at most 20 people."
+msgstr "ஓர் உரையாடலில் அதிகபட்சம் 20 பேரை நகலிடலாம்."
+
 #: src/features/settings/fields/FieldDialog.tsx
 msgid "A conversation cannot be closed until this field has a value. Spam is exempt."
 msgstr "இந்தப் புலத்தில் மதிப்பு இருக்கும் வரை உரையாடலை மூட முடியாது. ஸ்பேம் விதிவிலக்கு."
@@ -1616,11 +1625,17 @@ msgstr "செயல்பாடு"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 #: src/features/contact/ContactDetails.tsx
+#: src/features/conversation/Participants.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Add"
 msgstr "சேர்"
+
+#. placeholder {0}: p.email
+#: src/features/conversation/Participants.tsx
+msgid "Add {0}"
+msgstr "{0} ஐச் சேர்"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Add a block"
@@ -1666,6 +1681,10 @@ msgstr "கண்காணிப்பைச் சேர்"
 msgid "Add a note (optional)"
 msgstr "குறிப்பைச் சேர் (விருப்பம்)"
 
+#: src/features/conversation/Participants.tsx
+msgid "Add a participant by e-mail address"
+msgstr "மின்னஞ்சல் முகவரி மூலம் பங்கேற்பாளரைச் சேர்"
+
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Add a passkey"
 msgstr "பாஸ்கீ சேர்"
@@ -1707,6 +1726,11 @@ msgstr "இணையதளம் அல்லது ஆப்பைச் சே
 #: src/features/settings/automation/RuleDialog.tsx
 msgid "Add an action"
 msgstr "செயலைச் சேர்"
+
+#: src/components/common/AddressChips.tsx
+#: src/features/conversation/Participants.tsx
+msgid "Add an address"
+msgstr "முகவரியைச் சேர்"
 
 #: src/features/settings/webhooks/WebhookList.tsx
 msgid "Add an address on your server and pick the events Yuva should tell it about."
@@ -1805,6 +1829,10 @@ msgstr "குறிப்பைச் சேர்"
 #: src/features/settings/ProductsPage.tsx
 msgid "Add one for each product or brand you answer for. Each gets its own branding, hours, team and channels."
 msgstr "நீங்கள் பதிலளிக்கும் ஒவ்வொரு தயாரிப்பு அல்லது பிராண்டுக்கும் ஒன்றைச் சேர்க்கவும். ஒவ்வொன்றுக்கும் தனி பிராண்டிங், நேரம், குழு, சேனல்கள் உண்டு."
+
+#: src/features/conversation/Participants.tsx
+msgid "Add participant"
+msgstr "பங்கேற்பாளரைச் சேர்"
 
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Add people on their first sign-in"
@@ -2860,6 +2888,10 @@ msgstr "உதவியாளர்கள், {drafts} வரைவுகள் 
 msgid "Async"
 msgstr "ஒத்திசைவற்றது"
 
+#: src/components/common/AddressChips.tsx
+msgid "At most {max} addresses"
+msgstr "அதிகபட்சம் {max} முகவரிகள்"
+
 #: src/features/broadcasts/Pace.tsx
 msgid "At most {n} an hour"
 msgstr "மணிக்கு அதிகபட்சம் {n}"
@@ -3043,6 +3075,19 @@ msgstr "மோசம்"
 #: src/features/reports/ReportPages.tsx
 msgid "Bad only"
 msgstr "மோசமானவை மட்டும்"
+
+#: src/features/conversation/composer/Recipients.tsx
+#: src/features/conversation/messages/Thread.tsx
+msgid "Bcc"
+msgstr "Bcc"
+
+#: src/features/conversation/composer/Recipients.tsx
+msgid "Bcc ({bccCount})"
+msgstr "Bcc ({bccCount})"
+
+#: src/features/conversation/composer/Recipients.tsx
+msgid "Bcc recipients get the mail but are hidden from everyone else, including the contact."
+msgstr "Bcc பெறுநர்கள் மின்னஞ்சலைப் பெறுவார்கள், ஆனால் தொடர்பு உட்பட மற்ற அனைவரிடமிருந்தும் மறைக்கப்படுவார்கள்."
 
 #: src/features/status/text.tsx
 msgid "Beat"
@@ -3455,9 +3500,19 @@ msgstr "வகை"
 msgid "Cause found"
 msgstr "காரணம் கண்டறியப்பட்டது"
 
+#: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/messages/Thread.tsx
-msgid "Cc: {cc}"
-msgstr "Cc: {cc}"
+msgid "Cc"
+msgstr "Cc"
+
+#: src/features/conversation/composer/Recipients.tsx
+msgid "Cc ({ccCount})"
+msgstr "Cc ({ccCount})"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Cc and Bcc the reply"
+msgstr "பதிலை Cc மற்றும் Bcc க்கு அனுப்பு"
 
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Certificate"
@@ -6024,6 +6079,10 @@ msgstr "ஹோஸ்ட் உடன், பயனர் பெயர் மற�
 #: src/features/settings/webhooks/events.tsx
 msgid "Enter an http or https URL without a user name or password."
 msgstr "பயனர் பெயர் அல்லது கடவுச்சொல் இல்லாத http அல்லது https URL-ஐ உள்ளிடுங்கள்."
+
+#: src/features/conversation/Participants.tsx
+msgid "Enter one valid e-mail address."
+msgstr "ஒரு செல்லுபடியான மின்னஞ்சல் முகவரியை உள்ளிடுக."
 
 #: src/features/migrations/SourceStep.tsx
 msgid "Enter the address of the mailbox you answer from today. Yuva finds its provider; nothing is read until you connect it."
@@ -10546,6 +10605,10 @@ msgstr "வரவேற்பு அல்லது உறுதிப்பட�
 msgid "Nobody else can see this inbox yet."
 msgstr "வேறு யாரும் இன்னும் இந்த இன்பாக்ஸைப் பார்க்க முடியாது."
 
+#: src/features/conversation/Participants.tsx
+msgid "Nobody else is copied. Replies go to the contact only."
+msgstr "வேறு யாரும் நகலில் இல்லை. பதில்கள் தொடர்புக்கு மட்டும் செல்லும்."
+
 #: src/features/inbox/SidePanels.tsx
 msgid "Nobody has mentioned you yet"
 msgstr "இதுவரை யாரும் உங்களைக் குறிப்பிடவில்லை"
@@ -10794,6 +10857,10 @@ msgstr "இன்னும் பதிவேற்றப்படவில்�
 #: src/features/inbox/SidePanels.tsx
 msgid "Not used yet"
 msgstr "இன்னும் பயன்படுத்தப்படவில்லை"
+
+#: src/features/conversation/Participants.tsx
+msgid "Not verified: the mail did not pass the sender check, so this address may be forged."
+msgstr "சரிபார்க்கப்படவில்லை: மின்னஞ்சல் அனுப்புநர் சோதனையில் தேறவில்லை, எனவே இந்த முகவரி போலியாக இருக்கலாம்."
 
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/home/HomePage.tsx
@@ -11908,6 +11975,10 @@ msgstr "{totalParts}-இல் பகுதி {part}"
 #: src/features/status/text.tsx
 msgid "Partial outage"
 msgstr "பகுதி இடையூறு"
+
+#: src/features/conversation/Participants.tsx
+msgid "Participants"
+msgstr "பங்கேற்பாளர்கள்"
 
 #: src/features/status/StatusPages.tsx
 msgid "Partly degraded"
@@ -13079,6 +13150,7 @@ msgstr "பெறுநர்கள்"
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
+#: src/features/conversation/messages/Thread.tsx
 msgid "Recipients"
 msgstr "பெறுநர்கள்"
 
@@ -13187,9 +13259,10 @@ msgstr "அகற்று"
 
 #. placeholder {0}: a.title
 #. placeholder {0}: f.name
-#. placeholder {0}: p.name
+#. placeholder {0}: p.email
 #: src/features/conversation/composer/MacroChips.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/Participants.tsx
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Remove {0}"
 msgstr "{0}-ஐ அகற்று"
@@ -13198,6 +13271,10 @@ msgstr "{0}-ஐ அகற்று"
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Remove {0}?"
 msgstr "{0} ஐ நீக்கவா?"
+
+#: src/components/common/AddressChips.tsx
+msgid "Remove {email}"
+msgstr "{email} ஐ அகற்று"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Remove {lang}"
@@ -15914,6 +15991,10 @@ msgstr "உங்களிடம் இருந்தால், MERSİS எண�
 msgid "Suggested scopes"
 msgstr "பரிந்துரைத்த நோக்கெல்லைகள்"
 
+#: src/features/conversation/Participants.tsx
+msgid "Suggested, never copied unless you add them"
+msgstr "பரிந்துரைக்கப்பட்டவை, நீங்கள் சேர்க்காவிட்டால் ஒருபோதும் நகலிடப்படாது"
+
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Suggestion discarded"
 msgstr "பரிந்துரை நிராகரிக்கப்பட்டது"
@@ -17740,6 +17821,8 @@ msgstr "தலைப்பு"
 msgid "TLS (port 465)"
 msgstr "TLS (போர்ட் 465)"
 
+#: src/features/conversation/composer/Recipients.tsx
+#: src/features/conversation/messages/Thread.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "To"

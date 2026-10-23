@@ -21,6 +21,8 @@ export type ReplyDraft = {
   files: File[]
   articles: HelpPick[]
   macro?: MacroPick
+  cc?: string[]
+  bcc?: string[]
 }
 
 const drafts = new Map<string, ReplyDraft>()
@@ -46,14 +48,16 @@ export function writeDraft(id: string, d: ReplyDraft) {
   if (before !== d.body) draftListeners.forEach((l) => l())
 }
 
-function restoreDraftOf(id: string, body: string, files: File[], articles: HelpPick[] = [], macro?: MacroPick) {
+function restoreDraftOf(id: string, req: SendRequest) {
   const now = readDraft(id)
   writeDraft(id, {
     mode: "message",
-    body: now.body || body,
-    files: now.files.length ? now.files : files,
-    articles: now.articles.length ? now.articles : articles,
-    macro: now.macro ?? macro,
+    body: now.body || req.body,
+    files: now.files.length ? now.files : req.files,
+    articles: now.articles.length ? now.articles : (req.articles ?? []),
+    macro: now.macro ?? req.macro,
+    cc: now.cc ?? req.cc,
+    bcc: now.bcc?.length ? now.bcc : req.bcc,
   })
   revisions.set(id, (revisions.get(id) ?? 0) + 1)
   draftListeners.forEach((l) => l())
@@ -165,6 +169,8 @@ export type SendRequest = {
   suggestion?: Message
   articles?: HelpPick[]
   macro?: MacroPick
+  cc?: string[]
+  bcc?: string[]
 }
 
 export function useConversationActions(c: Conversation, contactName: string) {
@@ -186,7 +192,7 @@ export function useConversationActions(c: Conversation, contactName: string) {
   const addMessage = (m: Message) => applyEvent(qc, ctx, { type: "message.created", data: m })
 
   const deliver = async (
-    { body, files, suggestion, articles = [], macro, close }: SendRequest,
+    { body, files, suggestion, articles = [], macro, close, cc, bcc }: SendRequest,
     clientId = newId(),
     onSent?: () => void
   ) => {
@@ -197,7 +203,9 @@ export function useConversationActions(c: Conversation, contactName: string) {
         await unwrap(
           api.PATCH("/v1/messages/{messageId}", { ...path, body: suggestion.html ? { body, html: null } : { body } })
         )
-      sent = await unwrap(api.POST("/v1/messages/{messageId}/send", path))
+      sent = await unwrap(
+        api.POST("/v1/messages/{messageId}/send", { ...path, body: cc || bcc ? { cc, bcc } : undefined })
+      )
     } else {
       sent = await postMessage(c.id, {
         kind: "message",
@@ -206,6 +214,8 @@ export function useConversationActions(c: Conversation, contactName: string) {
         files,
         article_ids: articles.length ? articles.map((a) => a.id) : undefined,
         macro_id: macro?.macro.id,
+        cc,
+        bcc,
         // oxlint-disable-next-line unicorn/no-thenable -- the API names this field `then`
         then: macro ? macroThen(c, macro, close) : undefined,
       })
@@ -222,7 +232,7 @@ export function useConversationActions(c: Conversation, contactName: string) {
         .catch(() => undefined)
   }
   const notSent = (req: SendRequest, err: unknown) => {
-    restoreDraftOf(c.id, req.body, req.files, req.articles, req.macro)
+    restoreDraftOf(c.id, req)
     toast(t`Your reply to ${first} was not sent. ${errorText(err)}`)
   }
 
@@ -325,7 +335,7 @@ export function useConversationActions(c: Conversation, contactName: string) {
         () => {
           if (cancel(key)) {
             drop()
-            restoreDraftOf(c.id, req.body, req.files, req.articles, req.macro)
+            restoreDraftOf(c.id, req)
           } else {
             patch(revertOf(c)).catch(failed)
           }

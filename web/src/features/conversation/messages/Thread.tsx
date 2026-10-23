@@ -1,5 +1,5 @@
 import { Trans, useLingui } from "@lingui/react/macro"
-import { FileDownIcon, HistoryIcon, LockIcon } from "lucide-react"
+import { ChevronDownIcon, FileDownIcon, HistoryIcon, LockIcon } from "lucide-react"
 import { useEffect, useMemo, useRef, useState } from "react"
 
 import { BotAvatar, ContactAvatar, ErrorLine, Kbd, PersonAvatar, TypingDots } from "@/components/common"
@@ -115,13 +115,57 @@ function EmailTags({ m }: { m: Message }) {
   const { t } = useLingui()
   const e = m.email
   if (!e) return null
+  const [open, setOpen] = useState(false)
+  const to = e.to.join(", ")
   const cc = e.cc?.length ? e.cc.join(", ") : ""
+  const bcc = e.bcc?.length ? e.bcc.join(", ") : ""
   return (
     <>
-      {cc && (
-        <span className="min-w-0 truncate" title={cc} data-testid="email-cc">
-          <Trans>Cc: {cc}</Trans>
-        </span>
+      {(to || cc || bcc) && (
+        <button
+          type="button"
+          aria-expanded={open}
+          onClick={() => setOpen((o) => !o)}
+          className="inline-flex items-center gap-0.5 rounded-md outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+          data-testid="email-recipients-toggle"
+        >
+          <Trans>Recipients</Trans>
+          <ChevronDownIcon className={cn("size-3 transition-transform", open && "rotate-180")} />
+        </button>
+      )}
+      {open && (
+        <dl className="grid basis-full grid-cols-[auto_1fr] gap-x-2 gap-y-0.5" data-testid="email-recipients">
+          {to && (
+            <>
+              <dt>
+                <Trans>To</Trans>
+              </dt>
+              <dd className="min-w-0 break-words text-foreground" data-testid="email-to">
+                {to}
+              </dd>
+            </>
+          )}
+          {cc && (
+            <>
+              <dt>
+                <Trans>Cc</Trans>
+              </dt>
+              <dd className="min-w-0 break-words text-foreground" data-testid="email-cc">
+                {cc}
+              </dd>
+            </>
+          )}
+          {bcc && (
+            <>
+              <dt>
+                <Trans>Bcc</Trans>
+              </dt>
+              <dd className="min-w-0 break-words text-foreground" data-testid="email-bcc">
+                {bcc}
+              </dd>
+            </>
+          )}
+        </dl>
       )}
       {e.auto && (
         <Badge
