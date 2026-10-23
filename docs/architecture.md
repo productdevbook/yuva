@@ -141,6 +141,19 @@ while it is on; a reopened conversation gets no new resolution target.
 - **Revocation takes effect at once.** Every change that alters a member's effective access diffs `member_inbox_access` for the affected members inside the same transaction. It emits one `inbox_access.changed` per `(member, inbox)` whose effective access flipped (existing schema), so open realtime connections reload their inbox set. Removing a member deletes their `team_members` rows by cascade. The heartbeat re-check already closes their connections.
 - **Events and audit.** Events `team.created`, `team.updated` and `team.deleted` (payload carries `member_ids` and `inbox_ids`) go to realtime, to webhooks, and to members named in the payload or who see all inboxes. Audit actions: `team.created`, `team.deleted`, `team.member_added`, `team.member_removed`, `team.inbox_access_granted`, `team.inbox_access_revoked`.
 
+- **As built (#138, migrations 00101 and 00102).** `member_inbox_access` has a fourth column `team_id`
+  (null for a member's own grant), so `ListInboxMembers` reads `via` and `team_ids` from the view and
+  only the grant and revoke queries touch `inbox_members` (`TestNoRawInboxMembersReads` checks
+  queries, later migrations and Go strings). Every access change takes a per-workspace advisory lock
+  first, then diffs; a direct revoke that a team still covers sends no `inbox_access.changed`.
+  Deleting a team or revoking its grant on an inbox clears `team_id` on the affected conversations in
+  the same transaction, one `conversation.updated` each, no timeline entry; wherever a team is set or
+  kept the team row is locked `FOR SHARE` before the conversation, so a team deleted or revoked
+  mid-change answers `422 team_access`. Team payloads list only the `inbox_ids` the receiver sees;
+  `team.updated` carries `removed_member_ids` and reaches removed members. Bulk update and conversation
+  create take no `team_id`; MCP `assign` takes `team_id` or `remove_team`. The assignment columns on
+  `teams` exist and #139 exposes them. `team.updated` is not audited.
+
 **Automatic assignment (#139).**
 - **Settings.** `inboxes.assignment_mode` and `teams.assignment_mode` (`off | round_robin | least_open`), and `assignment_cap` (1–500, null for no cap).
 - **Turn tracking.** `assignment_turns (workspace_id, pool_id, member_id, last_at)` holds round-robin turns. `pool_id` is the inbox id or the team id.
@@ -216,6 +229,14 @@ while it is on; a reopened conversation gets no new resolution target.
 - **Composer.** The `/` menu and the command palette list canned replies and macros together. Choosing a macro fills the composer and holds its actions.
 - **Applying on send.** `MessageCreate` gains `then: ConversationUpdate` plus `macro_id`. The server applies them in the same transaction as the message, so the existing undo hold (which only delays the POST) covers both. The timeline event names the macro.
 - **Unchanged.** Canned replies stay as they are. `then` is also how "send and close" can become atomic later.
+
+- **As built (#142, migration 00100).** Actions are `add_labels`, `remove_labels`, `assignee_id` (null
+  unassigns), `status`, `snooze_minutes` (implies snoozed) and `priority`; members only, no team yet.
+  Shortcuts are unique among shared macros and per member among personal ones. `then` overrides the
+  macro field by field. A macro's assignee who can no longer take the conversation is skipped and the
+  `macro_applied` event says `skipped: ["assignee"]`; an assignee in `then` is still refused. Removing
+  a member clears them from macros, deleting a label strips it, both in the same transaction; saves
+  check labels and the assignee under `FOR SHARE` locks. A repeated `client_id` applies nothing.
 
 **Saved views (#143).**
 - **Table.** `saved_views (workspace_id, id, name, visibility: personal | workspace | team, owner_member_id, team_id, filters jsonb, position, …)`.
