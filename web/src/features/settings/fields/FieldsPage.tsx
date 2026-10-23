@@ -70,6 +70,7 @@ function ObjectSection({
         {fields.length}/{LIMIT}
       </span>
       <Button
+        variant="outline"
         className={headButton.secondary}
         disabled={full}
         onClick={() => onEdit({ field: null, object })}

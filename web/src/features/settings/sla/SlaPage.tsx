@@ -11,6 +11,7 @@ import { Plural, Trans, useLingui } from "@lingui/react/macro"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { ChevronDownIcon, ChevronUpIcon, GripVerticalIcon, PencilIcon, Trash2Icon } from "lucide-react"
 import { useState } from "react"
+import { Navigate } from "react-router"
 
 import { ErrorLine, useConfirm } from "@/components/common"
 import { Button } from "@/components/ui/button"
@@ -40,11 +41,23 @@ function Summary({ p }: { p: SlaPolicy }) {
   const first = p.first_reply_minutes !== undefined ? minutes(p.first_reply_minutes) : undefined
   const next = p.next_reply_minutes !== undefined ? minutes(p.next_reply_minutes) : undefined
   const resolution = p.resolution_minutes !== undefined ? minutes(p.resolution_minutes) : undefined
+  const items = [
+    first && <Trans key="first">First reply {first}</Trans>,
+    next && <Trans key="next">Next reply {next}</Trans>,
+    resolution && <Trans key="resolution">Resolution {resolution}</Trans>,
+  ].filter(Boolean)
   return (
-    <span className="flex flex-wrap gap-x-3 gap-y-0.5">
-      {first && <Trans>First reply {first}</Trans>}
-      {next && <Trans>Next reply {next}</Trans>}
-      {resolution && <Trans>Resolution {resolution}</Trans>}
+    <span className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
+      {items.map((item, i) => (
+        <span key={i} className="flex items-center gap-x-2">
+          {i > 0 && (
+            <span aria-hidden className="text-faint">
+              ·
+            </span>
+          )}
+          <span>{item}</span>
+        </span>
+      ))}
     </span>
   )
 }
@@ -142,7 +155,7 @@ function PolicyRow({
   )
 }
 
-export function SlaPage() {
+function SlaContent() {
   const query = useSlaPolicies()
   const qc = useQueryClient()
   const { workspaceId: ws } = useSession()
@@ -194,6 +207,7 @@ export function SlaPage() {
               {policies.length}/{LIMIT}
             </span>
             <Button
+              variant="outline"
               className={headButton.secondary}
               disabled={full}
               onClick={() => setEditing("new")}
@@ -259,4 +273,10 @@ export function SlaPage() {
       )}
     </>
   )
+}
+
+export function SlaPage() {
+  const { canManage } = useSession()
+  if (!canManage) return <Navigate to="/settings/profile" replace />
+  return <SlaContent />
 }

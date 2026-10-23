@@ -483,7 +483,7 @@ export function TodayReport() {
                 testId="report-resolved"
               />
             </div>
-            <div className="grid grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)] gap-4 max-lg:grid-cols-1">
+            <div className="grid grid-cols-1 gap-4">
               {recent.isPending ? (
                 <Skeleton className="h-60 rounded-xl" />
               ) : (
