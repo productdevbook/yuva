@@ -126,6 +126,8 @@ curl -X PUT https://support.example.com/v1/teams/$TEAM/members/$MEMBER -H "Autho
 | `PUT`, `DELETE /v1/teams/{teamId}/inboxes/{inboxId}` | Grants or revokes an inbox. `204`; repeating it changes nothing. |
 | `GET /v1/inboxes/{inboxId}/members` | Who has access to an inbox. Each member has `via` (`direct`, or `team` when only teams give it) and `team_ids`, the teams that give the inbox. |
 
+A team and an inbox can also hand out conversations by themselves: see [Automatic assignment](assignment.md).
+
 A team has `id`, `name`, `description`, `member_ids`, `inbox_ids` (both in the order added),
 `created_at` and `updated_at`. At most 500 members and 100 inboxes per team (`403 team_limit`); an
 unknown team, member or inbox is `404`.

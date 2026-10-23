@@ -95,7 +95,7 @@ wie sie beim Lauf der Regel ist; eine Regel sieht also, was frühere Regeln geä
 | `assign_member` | `member_id` | Weist ein Mitglied zu, das Zugriff auf den Posteingang hat. |
 | `assign_team` | `team_id` | Weist ein Team zu, dem der Posteingang freigegeben ist. |
 | `unassign` | keine | Entfernt das zugewiesene Mitglied. |
-| `assign_pool` | keine | Wird angenommen, tut aber noch nichts: Der Lauf listet sie als `skipped`. |
+| `assign_pool` | keine | Entfernt das zugewiesene Mitglied; nachdem die Regeln des Auslösers gelaufen sind, wählt die [automatische Zuweisung](assignment.md) jemanden aus dem Pool. |
 | `set_priority` | `priority` | Setzt die Priorität. |
 | `set_status` | `status` | `open`, `pending` oder `closed`. Zum Schließen braucht es die Pflichtfelder der Unterhaltung. |
 | `snooze` | `snooze_minutes` (1 bis 525600) | Stellt die Unterhaltung zurück. |
@@ -165,7 +165,7 @@ Neueste zuerst, mit `limit` und `next_cursor` zum Blättern. `outcome` filtert n
 | `not_matched` | Die Bedingungen trafen nicht zu. Keine Aktionen. |
 
 Jeder Lauf hat `conversation_id`, `trigger` und `actions`: je Aktion ein `type` und `result`. Ein Ergebnis ist
-`applied`, `unchanged` (die Unterhaltung war schon so), `skipped` (`assign_pool`) oder `not_run` (der Lauf schlug fehl).
+`applied`, `unchanged` (die Unterhaltung war schon so), `skipped` (nur in alten Läufen) oder `not_run` (der Lauf schlug fehl).
 
 Häufige `error`-Werte:
 

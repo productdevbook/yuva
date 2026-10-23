@@ -94,7 +94,7 @@ rule runs, so a rule sees what earlier rules changed.
 | `assign_member` | `member_id` | Assigns a member who has access to the inbox. |
 | `assign_team` | `team_id` | Assigns a team that is granted the inbox. |
 | `unassign` | none | Clears the assigned member. |
-| `assign_pool` | none | Accepted, but does nothing yet: the run lists it as `skipped`. |
+| `assign_pool` | none | Clears the assigned member; once the trigger's rules have run, [automatic assignment](assignment.md) picks one from the pool. |
 | `set_priority` | `priority` | Sets the priority. |
 | `set_status` | `status` | `open`, `pending` or `closed`. Closing needs the conversation's required custom fields. |
 | `snooze` | `snooze_minutes` (1 to 525600) | Snoozes the conversation. |
@@ -163,7 +163,7 @@ Newest first, with `limit` and `next_cursor` for paging. `outcome` filters by on
 | `not_matched` | The conditions did not match. No actions. |
 
 Each run has `conversation_id`, `trigger` and `actions`: one `type` and `result` per action. A result is
-`applied`, `unchanged` (the conversation already was that way), `skipped` (`assign_pool`) or `not_run`
+`applied`, `unchanged` (the conversation already was that way), `skipped` (only in old runs) or `not_run`
 (the run failed).
 
 Common `error` values:

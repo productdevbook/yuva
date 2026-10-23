@@ -132,6 +132,8 @@ curl -X PUT https://support.example.com/v1/teams/$TEAM/members/$MEMBER -H "Autho
 | `PUT`, `DELETE /v1/teams/{teamId}/inboxes/{inboxId}` | Gibt einen Posteingang frei oder entzieht ihn. `204`; Wiederholen ändert nichts. |
 | `GET /v1/inboxes/{inboxId}/members` | Wer Zugriff auf einen Posteingang hat. Jedes Mitglied hat `via` (`direct`, oder `team`, wenn nur Teams den Zugriff geben) und `team_ids`, die Teams, die den Posteingang geben. |
 
+Ein Team und ein Posteingang können Unterhaltungen auch selbst verteilen: siehe [Automatische Zuweisung](assignment.md).
+
 Ein Team hat `id`, `name`, `description`, `member_ids`, `inbox_ids` (beide in der Reihenfolge des
 Hinzufügens), `created_at` und `updated_at`. Höchstens 500 Mitglieder und 100 Posteingänge pro Team
 (`403 team_limit`); ein unbekanntes Team, Mitglied oder ein unbekannter Posteingang ergibt `404`.

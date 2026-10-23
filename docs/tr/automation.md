@@ -93,7 +93,7 @@ göre denetlenir; yani bir kural, öncekilerin değiştirdiğini görür.
 | `assign_member` | `member_id` | Gelen kutusuna erişimi olan bir üyeyi atar. |
 | `assign_team` | `team_id` | Gelen kutusuna yetkili bir ekibi atar. |
 | `unassign` | yok | Atanmış üyeyi kaldırır. |
-| `assign_pool` | yok | Kabul edilir ama henüz bir şey yapmaz: çalıştırma onu `skipped` olarak listeler. |
+| `assign_pool` | yok | Atanan üyeyi temizler; tetikleyicinin kuralları çalıştıktan sonra [otomatik atama](assignment.md) havuzdan birini seçer. |
 | `set_priority` | `priority` | Önceliği ayarlar. |
 | `set_status` | `status` | `open`, `pending` ya da `closed`. Kapatmak için konuşmanın zorunlu özel alanları gerekir. |
 | `snooze` | `snooze_minutes` (1 ile 525600) | Konuşmayı erteler. |
@@ -161,7 +161,7 @@ En yeni önce; sayfalama için `limit` ve `next_cursor`. `outcome` tek bir değe
 | `not_matched` | Koşullar eşleşmedi. Eylem yok. |
 
 Her çalıştırmada `conversation_id`, `trigger` ve `actions` vardır: eylem başına bir `type` ve `result`. Sonuç
-`applied`, `unchanged` (konuşma zaten öyleydi), `skipped` (`assign_pool`) ya da `not_run` (çalıştırma başarısız oldu) olur.
+`applied`, `unchanged` (konuşma zaten öyleydi), `skipped` (yalnızca eski çalıştırmalarda) ya da `not_run` (çalıştırma başarısız oldu) olur.
 
 Sık görülen `error` değerleri:
 

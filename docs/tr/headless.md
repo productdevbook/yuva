@@ -130,6 +130,8 @@ curl -X PUT https://support.example.com/v1/teams/$TEAM/members/$MEMBER -H "Autho
 | `PUT`, `DELETE /v1/teams/{teamId}/inboxes/{inboxId}` | Gelen kutusu yetkisi verir veya kaldırır. `204`; tekrarı hiçbir şeyi değiştirmez. |
 | `GET /v1/inboxes/{inboxId}/members` | Bir gelen kutusuna kimlerin erişimi var. Her üyede `via` (`direct`, ya da erişimi yalnızca ekipler veriyorsa `team`) ve gelen kutusunu veren ekipler olan `team_ids` bulunur. |
 
+Bir ekip ve bir gelen kutusu konuşmaları kendiliğinden de dağıtabilir: bkz. [Otomatik atama](assignment.md).
+
 Bir ekipte `id`, `name`, `description`, `member_ids`, `inbox_ids` (ikisi de eklenme sırasıyla),
 `created_at` ve `updated_at` bulunur. Ekip başına en fazla 500 üye ve 100 gelen kutusu (`403 team_limit`);
 bilinmeyen bir ekip, üye veya gelen kutusu `404` verir.
