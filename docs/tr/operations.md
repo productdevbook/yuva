@@ -267,7 +267,7 @@ siler. Çalışma alanı hemen kullanılamaz hâle gelir; ardından bir arka pla
 Denetim günlüğü, bir çalışma alanının erişimini, kimlik bilgilerini ve verilerini kimin değiştirdiğini
 kaydeder: kimin katıldığı, ayrıldığı veya rol değiştirdiği; davetler; oluşturulan veya iptal edilen API
 anahtarları ve bağlı uygulamalar; webhook'lar ve gizli anahtarları; e-posta kanalı kimlik bilgileri ve
-anahtarları; gelen kutusu erişimi ve silinmeleri; Çöp kutusuna taşınan, geri alınan veya silinen konuşmalar; kişi silmeleri; onay ve analitik verisi dışa
+anahtarları; gelen kutusu erişimi ve silinmeleri; Çöp kutusuna taşınan, geri alınan veya silinen konuşmalar; kaldırılan mesajlar (`message.redacted`: konuşma, mesaj mı not mu, kaç dosya; metin asla); kişi silmeleri; onay ve analitik verisi dışa
 aktarmaları; saklama değişiklikleri; ve operatörün bültenlerle ilgili yanıtları. Her kayıtta işlemi yapan
 (bir üye, bir API anahtarı, bağlı bir uygulama üzerinden bir üye veya sunucunun komut satırı),
 `api_key.created` gibi eylem, hedefi, birkaç ayrıntı ve zaman bulunur. Kayıt, değişiklikle aynı adımda

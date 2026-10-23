@@ -46,6 +46,7 @@ eine `webhook-id`, die Sie schon verarbeitet haben, und sortieren Sie nach `time
 | `conversation.trashed`, `conversation.restored` | Eine Unterhaltung wurde in den [Papierkorb](headless.md#unterhaltungen-löschen) gelegt oder wiederhergestellt | `conversation`, `contact` |
 | `conversation.deleted` | Der Papierkorb hat sie 30 Tage nach dem Ablegen endgültig gelöscht | `conversation` nur mit `id`, `inbox_id`, `contact_id` |
 | `message.created` | Eine Nachricht vom oder an den Kontakt; Notizen, wenn aktiviert | `message`, `conversation`, `contact` |
+| `message.redacted` | Ein Mitglied oder ein API-Schlüssel hat [den Inhalt einer Nachricht entfernt](headless.md#eine-nachricht-entfernen); Notizen, wenn aktiviert | `message`, `conversation`, `contact`; die Nachricht hat `redacted_at` und `redacted_by`, einen leeren `body` und kein `html` und keine Anhänge. Löschen Sie Ihre Kopie. |
 | `feedback.created` | Feedback aus einer App oder über `POST /v1/feedback`; Feedback aus einer App kann `feedback.score` (1 bis 5) tragen | `message`, `conversation`, `contact` |
 | `contact.updated` | Ein Kontakt hat sich geändert | `contact` |
 | `contact.deleted` | Ein Kontakt wurde gelöscht oder zusammengeführt (`merged_into_id`) | `contact` |

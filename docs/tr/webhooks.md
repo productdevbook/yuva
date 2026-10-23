@@ -46,6 +46,7 @@ göre sıralayın.
 | `conversation.trashed`, `conversation.restored` | Bir konuşma [Çöp kutusuna](headless.md#konuşmaları-silme) taşındı veya geri alındı | `conversation`, `contact` |
 | `conversation.deleted` | Çöp kutusu onu, taşındıktan 30 gün sonra kalıcı olarak sildi | yalnızca `id`, `inbox_id`, `contact_id` içeren `conversation` |
 | `message.created` | Kişiden gelen ya da kişiye giden bir mesaj; açıksa notlar da | `message`, `conversation`, `contact` |
+| `message.redacted` | Bir üye veya API anahtarı [bir mesajın içeriğini kaldırdı](headless.md#bir-mesajı-kaldırma); açıksa notlar da | `message`, `conversation`, `contact`; mesajda `redacted_at` ve `redacted_by` vardır, `body` boştur, `html` ve ek yoktur. Kopyanızı silin. |
 | `feedback.created` | Bir uygulamadan ya da `POST /v1/feedback` ile gelen geri bildirim; uygulamadan gelende `feedback.score` (1 ile 5) olabilir | `message`, `conversation`, `contact` |
 | `contact.updated` | Bir kişi değişti | `contact` |
 | `contact.deleted` | Bir kişi silindi ya da birleştirildi (`merged_into_id`) | `contact` |

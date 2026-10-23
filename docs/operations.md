@@ -267,7 +267,7 @@ author. A workspace's only owner must hand over ownership or delete the workspac
 
 The audit log records who changed a workspace's access, credentials and data: who joined, left or
 changed role; invites; API keys and connected apps created or revoked; webhooks and their secrets;
-e-mail channel credentials and keys; inbox access and deletions; conversations moved to the Trash, restored or deleted; contact deletions; exports of
+e-mail channel credentials and keys; inbox access and deletions; conversations moved to the Trash, restored or deleted; messages removed (`message.redacted`: the conversation, whether it was a message or note, how many files, never the text); contact deletions; exports of
 consent data and analytics; retention changes; and the operator's answers about broadcasts. Each
 entry has the actor (a member, an API key, a member through a connected app, or the server's command
 line), the action such as `api_key.created`, its target and a few details, and the time. An entry is

@@ -66,6 +66,10 @@ mesaj yeni bir konuşma başlatır; yanıttaki `conversation_id` onu belirtir. K
 `conversationRemoved` olayı (`{ id }`) olarak yayar, React kancaları konuşmayı listeden çıkarır; Swift ve Kotlin
 SDK'ları `YuvaEvent.conversationRemoved(id:)` / `YuvaEvent.ConversationRemoved(id)` gönderir.
 
+Bir üye [bir mesajı kaldırdığında](#bir-mesajı-kaldırma) akış bir `message.redacted` çerçevesi gönderir; `data`,
+`redacted: true`, boş bir `body` ve eksiz mesajdır: mesajı yerinde değiştirin ve "Bu mesaj kaldırıldı" gösterin.
+Aynı mesaj sonraki bir tekrar oynatmada veya listede de `redacted: true` taşır.
+
 Tarayıcı dışında bir `app` kanalının anahtarını kullanın; `chat` kanalları yalnızca izin verilen
 origin'leri kabul eder. React hook'ları `useyuva/react` içinde; tüm seçenekler
 [SDK README](../../sdk/js/README.md)'sinde.
@@ -108,6 +112,7 @@ Gereken yetki olmadan yapılan çağrı `403 insufficient_scope` döner.
 | `conversations:write` | Durum, atanan kişi, erteleme, öncelik, etiketler; konuşmaları taşıma ve toplu güncelleme |
 | `conversations:delete` | Konuşmaları Çöp kutusuna taşıma, geri alma, Çöp kutusunu listeleme. Başka hiçbir yetkiye dahil değildir: adıyla verin. Yalnızca sahiplerin ve yöneticilerin anahtarlarına ve bağlı uygulamalarına sunulur. |
 | `messages:write` | Mesajlar ve taslaklar: oluşturma, düzenleme, atma |
+| `messages:redact` | [Bir mesajın içeriğini kaldırma](#bir-mesajı-kaldırma). Başka hiçbir yetkiye dahil değildir: adıyla verin. |
 | `drafts:send` | `messages:write` ile birlikte taslak gönderme |
 | `notes:write` | Notlar |
 | `contacts:read` | Kişiler, aramalar, çevrimiçi durumu |
@@ -188,6 +193,29 @@ Webhook'lar `conversation.trashed` ve `conversation.restored` (konuşma ve kişi
 yalnızca `id`, `inbox_id` ve `contact_id` taşıyan `conversation.deleted` olayını gönderir.
 [Denetim günlüğü](operations.md#denetim-günlüğü) her konuşmayı kimin Çöp kutusuna taşıdığını veya geri aldığını,
 son silmeyi ise sistemin yaptığını kaydeder.
+
+### Bir mesajı kaldırma
+
+`POST /v1/messages/{messageId}/redact` tek bir mesajın veya notun içeriğini kaldırır ve konuşmada bir satır bırakır:
+zamanıyla birlikte "<ad> tarafından kaldırıldı". Yanıt, mesajla birlikte `200` döner; mesajda `redacted_at`,
+`redacted_by`, boş bir `body` olur, `html`, ek, kart ve bahsetme olmaz. Sahipler ve yöneticiler her mesajı
+kaldırabilir, diğer üyeler yalnızca kendi yazdıkları mesaj ve notları (`403 forbidden`). Anahtarın `messages:redact`
+yetkisi olmalıdır ve görebildiği her mesajı kaldırabilir; `yuva api-key create` yetkiyi siz adlandırmadıkça vermez.
+
+| Kural | Ayrıntı |
+|---|---|
+| Kaldırılan | Metin, HTML, ekler ve saklanan dosyaları; e-postada ayrıca konu, başlıklar ve özgün ileti; hepsi tek adımda. Dosyaları hemen ardından bir iş siler. |
+| Kalan | Yazar, zaman, konuşmadaki yer ve e-postada gönderim durumu. |
+| Diğer kopyalar | Önceki olaylar, saklanan webhook teslimatları ve önizlemeler içeriği kaybeder; mesaj aramadan çıkar. |
+| Kişinin alıntısı | Kişinin sonraki bir e-postası kaldırılan bir e-postayı yanıtlayıp tamamını alıntılıyorsa, alıntı ve o e-postanın özgün hali de kaldırılır; yeni yazdıkları kalır. Kısmi alıntı kalır. |
+| İlk mesaj | Bir geri bildirimin ilk mesajı kaldırılırsa `feedback.text` temizlenir; bir konuşmanın konusunu veren e-posta kaldırılırsa konu temizlenir. İkisi de `conversation.updated` gönderir. |
+| Henüz gönderilmemiş e-posta | Sıradaki e-posta gönderilmez ve `failed` görünür. |
+| Gönderilmiş e-posta | Alıcının posta kutusunda kalır: Yuva onu geri alamaz. |
+| Yeniden | Kaldırılmış bir mesajı yeniden kaldırmak onu değişmeden döndürür. |
+| Kaldırılamayanlar | Taslak (`DELETE` ile atın) ve zaman çizelgesi olayı `409 not_redactable` döner. Çöp kutusundaki bir konuşma `404` döner. |
+
+Webhook'lar eski içerik olmadan [`message.redacted`](webhooks.md#olaylar) gönderir; elinizdeki kopyaları silin.
+[Denetim günlüğü](operations.md#denetim-günlüğü) her kaldırmayı kaydeder, metni asla.
 
 ### Idempotency
 

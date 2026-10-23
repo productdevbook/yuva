@@ -65,6 +65,10 @@ restored, it arrives again as `conversation.created`. `createYuvaClient()` emits
 `conversationRemoved` event (`{ id }`), the React hooks drop the conversation, and the Swift and Kotlin SDKs
 send `YuvaEvent.conversationRemoved(id:)` / `YuvaEvent.ConversationRemoved(id)`.
 
+When a member [removes a message](#removing-a-message), the stream sends a `message.redacted` frame whose
+`data` is the message with `redacted: true`, an empty `body` and no attachments: replace it in place and show
+"This message was removed". The same message in a later replay or list carries `redacted: true` too.
+
 Outside a browser, use an `app` channel's key; `chat` channels accept only their allowed origins.
 React hooks are in `useyuva/react`; every option is in the [SDK README](../sdk/js/README.md).
 
@@ -105,6 +109,7 @@ A call without the needed scope answers `403 insufficient_scope`.
 | `conversations:write` | Status, assignee, snooze, priority, labels; move and bulk-update conversations |
 | `conversations:delete` | Move conversations to the Trash, restore them, list the Trash. Not included in any other scope: name it. Offered only to owners' and admins' keys and tokens. |
 | `messages:write` | Messages and drafts: create, edit, discard |
+| `messages:redact` | [Remove a message's content](#removing-a-message). Not included in any other scope: name it. |
 | `drafts:send` | Send a draft, together with `messages:write` |
 | `notes:write` | Notes |
 | `contacts:read` | Contacts, lookups, presence |
@@ -185,6 +190,29 @@ Webhooks send `conversation.trashed` and `conversation.restored` (the conversati
 30 days, `conversation.deleted` with only `id`, `inbox_id` and `contact_id`. The
 [audit log](operations.md#audit-log) records who trashed or restored each conversation, and the final
 deletion as done by the system.
+
+### Removing a message
+
+`POST /v1/messages/{messageId}/redact` removes the content of one message or note and keeps a line in the
+thread: "Removed by <name>" with the time. It answers `200` with the message, which has `redacted_at`,
+`redacted_by`, an empty `body` and no `html`, attachments, cards or mentions. Owners and admins can remove any
+message, other members only the messages and notes they wrote (`403 forbidden`). A key needs `messages:redact`
+and can remove any message it can see; `yuva api-key create` leaves the scope out unless you name it.
+
+| Rule | Detail |
+|---|---|
+| Removed | The text, HTML, attachments and their stored files, and for e-mail the subject, headers and original message, in one step. The files are deleted by a job right after. |
+| Stays | The author, the time, the position in the thread and, for e-mail, the delivery state. |
+| Other copies | Earlier events, stored webhook deliveries and previews lose the content, and the message leaves search. |
+| Quoted by the contact | If the contact's later e-mail answers a removed e-mail and quotes all of it, the quote and that e-mail's original are removed too; what they wrote new stays. A partial quote stays. |
+| First message | Removing a feedback's first message clears its `feedback.text`; removing the e-mail that gave a conversation its subject clears the subject. Both send `conversation.updated`. |
+| E-mail not yet sent | A queued e-mail is not sent and shows `failed`. |
+| E-mail already sent | It stays in the recipient's mailbox: Yuva cannot take it back. |
+| Again | Removing a removed message answers it unchanged. |
+| Not removable | A draft (discard it with `DELETE`) and a timeline event answer `409 not_redactable`. A conversation in the Trash answers `404`. |
+
+Webhooks send [`message.redacted`](webhooks.md#events) without the old content; delete any copy you keep. The
+[audit log](operations.md#audit-log) records each removal, never the text.
 
 ### Idempotency
 

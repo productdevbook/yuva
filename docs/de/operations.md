@@ -275,7 +275,7 @@ Workspace löschen.
 Das Audit-Log hält fest, wer Zugriff, Zugangsdaten und Daten eines Workspace geändert hat: wer beigetreten
 ist, gegangen ist oder die Rolle gewechselt hat; Einladungen; erstellte oder widerrufene API-Schlüssel und
 verbundene Apps; Webhooks und ihre Geheimnisse; Zugangsdaten und Schlüssel von E-Mail-Kanälen;
-Postfachzugriff und Löschungen; in den Papierkorb gelegte, wiederhergestellte oder gelöschte Unterhaltungen; gelöschte Kontakte; Exporte von Einwilligungs- und Analytics-Daten;
+Postfachzugriff und Löschungen; in den Papierkorb gelegte, wiederhergestellte oder gelöschte Unterhaltungen; entfernte Nachrichten (`message.redacted`: die Unterhaltung, ob Nachricht oder Notiz, wie viele Dateien, nie der Text); gelöschte Kontakte; Exporte von Einwilligungs- und Analytics-Daten;
 Änderungen der Aufbewahrung; und die Antworten des Betreibers zu Broadcasts. Jeder Eintrag hat den Akteur
 (ein Mitglied, einen API-Schlüssel, ein Mitglied über eine verbundene App oder die Befehlszeile des
 Servers), die Aktion wie `api_key.created`, ihr Ziel, einige Details und die Zeit. Ein Eintrag wird im

@@ -44,6 +44,7 @@ or out of order: skip a `webhook-id` you have handled and order by `timestamp`.
 | `conversation.trashed`, `conversation.restored` | A conversation was moved to the [Trash](headless.md#deleting-conversations) or brought back | `conversation`, `contact` |
 | `conversation.deleted` | The Trash deleted it for good, 30 days after it was trashed | `conversation` with only `id`, `inbox_id`, `contact_id` |
 | `message.created` | A message from or to the contact; notes if enabled | `message`, `conversation`, `contact` |
+| `message.redacted` | A member or API key [removed a message's content](headless.md#removing-a-message); notes if enabled | `message`, `conversation`, `contact`; the message has `redacted_at` and `redacted_by`, an empty `body` and no `html` or attachments. Delete your copy. |
 | `feedback.created` | Feedback from an app or `POST /v1/feedback`; app feedback may carry `feedback.score`, 1 to 5 | `message`, `conversation`, `contact` |
 | `contact.updated` | A contact changed | `contact` |
 | `contact.deleted` | A contact was deleted, or merged (`merged_into_id`) | `contact` |

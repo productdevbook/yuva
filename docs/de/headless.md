@@ -68,6 +68,11 @@ Antwort nennt sie. Wird die Unterhaltung wiederhergestellt, kommt sie erneut als
 meldet ihn als `conversationRemoved`-Event (`{ id }`), die React-Hooks entfernen die Unterhaltung, und die Swift-
 und Kotlin-SDKs senden `YuvaEvent.conversationRemoved(id:)` / `YuvaEvent.ConversationRemoved(id)`.
 
+Wenn ein Mitglied [eine Nachricht entfernt](#eine-nachricht-entfernen), sendet der Stream einen `message.redacted`-Frame;
+`data` ist die Nachricht mit `redacted: true`, leerem `body` und ohne Anhänge: ersetzen Sie sie an Ort und Stelle
+und zeigen Sie "Diese Nachricht wurde entfernt". Dieselbe Nachricht trägt auch in einem späteren Replay oder einer
+Liste `redacted: true`.
+
 Außerhalb eines Browsers verwenden Sie den Schlüssel eines `app`-Kanals; `chat`-Kanäle akzeptieren
 nur ihre erlaubten Origins. React-Hooks liegen in `useyuva/react`; alle Optionen stehen in der
 [SDK-README](../../sdk/js/README.md).
@@ -110,6 +115,7 @@ Ein Aufruf ohne den nötigen Scope antwortet mit `403 insufficient_scope`.
 | `conversations:write` | Status, Zuständige, Zurückstellen, Priorität, Labels; Unterhaltungen verschieben und gesammelt ändern |
 | `conversations:delete` | Unterhaltungen in den Papierkorb legen, wiederherstellen, den Papierkorb auflisten. In keinem anderen Scope enthalten: Nennen Sie ihn ausdrücklich. Nur für Schlüssel und verbundene Apps von Inhabern und Admins verfügbar. |
 | `messages:write` | Nachrichten und Entwürfe: anlegen, bearbeiten, verwerfen |
+| `messages:redact` | [Den Inhalt einer Nachricht entfernen](#eine-nachricht-entfernen). In keinem anderen Scope enthalten: Nennen Sie ihn ausdrücklich. |
 | `drafts:send` | Einen Entwurf senden, zusammen mit `messages:write` |
 | `notes:write` | Notizen |
 | `contacts:read` | Kontakte, Suchen, Anwesenheit |
@@ -190,6 +196,30 @@ Webhooks senden `conversation.trashed` und `conversation.restored` (Unterhaltung
 `conversation.deleted` mit nur `id`, `inbox_id` und `contact_id`. Das [Audit-Log](operations.md#audit-log)
 hält fest, wer jede Unterhaltung in den Papierkorb gelegt oder wiederhergestellt hat, und die endgültige
 Löschung als vom System ausgeführt.
+
+### Eine Nachricht entfernen
+
+`POST /v1/messages/{messageId}/redact` entfernt den Inhalt einer einzelnen Nachricht oder Notiz und lässt eine Zeile
+im Verlauf stehen: "Entfernt von <Name>" mit der Uhrzeit. Die Antwort ist `200` mit der Nachricht, die `redacted_at`,
+`redacted_by`, einen leeren `body` und kein `html`, keine Anhänge, Karten oder Erwähnungen hat. Inhaber und Admins
+dürfen jede Nachricht entfernen, andere Mitglieder nur die Nachrichten und Notizen, die sie selbst geschrieben haben
+(`403 forbidden`). Ein Schlüssel braucht `messages:redact` und darf jede Nachricht entfernen, die er sehen kann;
+`yuva api-key create` lässt den Scope weg, solange Sie ihn nicht nennen.
+
+| Regel | Detail |
+|---|---|
+| Entfernt | Text, HTML, Anhänge samt gespeicherten Dateien und bei E-Mail Betreff, Header und Originalnachricht, in einem Schritt. Die Dateien löscht gleich danach ein Job. |
+| Bleibt | Der Autor, die Zeit, die Stelle im Verlauf und bei E-Mail der Zustellstatus. |
+| Andere Kopien | Frühere Ereignisse, gespeicherte Webhook-Zustellungen und Vorschauen verlieren den Inhalt; die Nachricht verschwindet aus der Suche. |
+| Zitiert vom Kontakt | Beantwortet eine spätere E-Mail des Kontakts eine entfernte E-Mail und zitiert sie ganz, werden Zitat und Original dieser E-Mail ebenfalls entfernt; was neu geschrieben wurde, bleibt. Ein Teilzitat bleibt. |
+| Erste Nachricht | Wird die erste Nachricht eines Feedbacks entfernt, wird `feedback.text` geleert; wird die E-Mail entfernt, die der Unterhaltung den Betreff gab, wird der Betreff geleert. Beides sendet `conversation.updated`. |
+| Noch nicht gesendete E-Mail | Eine wartende E-Mail wird nicht gesendet und zeigt `failed`. |
+| Schon gesendete E-Mail | Sie bleibt im Postfach des Empfängers: Yuva kann sie nicht zurückholen. |
+| Nochmal | Eine bereits entfernte Nachricht erneut zu entfernen gibt sie unverändert zurück. |
+| Nicht entfernbar | Ein Entwurf (verwerfen Sie ihn mit `DELETE`) und ein Verlaufsereignis antworten mit `409 not_redactable`. Eine Unterhaltung im Papierkorb antwortet mit `404`. |
+
+Webhooks senden [`message.redacted`](webhooks.md#ereignisse) ohne den alten Inhalt; löschen Sie jede Kopie, die Sie
+aufbewahren. Das [Audit-Log](operations.md#audit-log) hält jede Entfernung fest, nie den Text.
 
 ### Idempotenz
 
