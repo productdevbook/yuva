@@ -1174,6 +1174,7 @@ msgstr "Skica je napisana"
 msgid "A file's content does not match its type. Check the file and try again."
 msgstr "Sadržaj datoteke ne odgovara njezinoj vrsti. Provjerite datoteku i pokušajte ponovno."
 
+#: src/features/conversation/messages/Redacted.tsx
 #: src/features/settings/audit/sentence.ts
 msgid "a former member"
 msgstr "bivši član"
@@ -1237,6 +1238,10 @@ msgstr "Poruka prima najviše 3 članka."
 #: src/components/common/text.ts
 msgid "A message was added"
 msgstr "Poruka je dodana"
+
+#: src/components/common/text.ts
+msgid "A message was removed from a thread"
+msgstr "Poruka je uklonjena iz razgovora"
 
 #: src/features/settings/OwnDomainCard.tsx
 msgid "A name you control, like {example}. Yuva then shows you two DNS records to add, and the page answers on the domain once it has seen them."
@@ -2020,6 +2025,7 @@ msgstr "Analitičko svojstvo pretinca podiglo je upozorenje"
 msgid "An answer was accepted in <0>{title}</0>"
 msgstr "Odgovor je prihvaćen u <0>{title}</0>"
 
+#: src/features/conversation/messages/Redacted.tsx
 #: src/features/conversation/Trash.tsx
 msgid "an API key"
 msgstr "API ključ"
@@ -4944,6 +4950,10 @@ msgstr "Skica:"
 msgid "Drafts"
 msgstr "Skice"
 
+#: src/components/common/text.ts
+msgid "Drafts and timeline events cannot be removed."
+msgstr "Skice i događaji na vremenskoj crti ne mogu se ukloniti."
+
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/inbox/SidePanels.tsx
 msgid "Drafts waiting"
@@ -7046,6 +7056,14 @@ msgstr "Njegovo izvješće i popis primatelja brišu se. Razgovori otvoreni odgo
 msgid "Its settings, credentials and progress are deleted. Imported conversations stay."
 msgstr "Njegove postavke, vjerodajnice i napredak brišu se. Uvezeni razgovori ostaju."
 
+#: src/features/conversation/ChatView.tsx
+msgid "Its text and files are deleted for good and the thread shows that you removed it."
+msgstr "Njezin tekst i datoteke trajno se brišu, a razgovor prikazuje da ste je uklonili."
+
+#: src/features/conversation/ChatView.tsx
+msgid "Its text and files are deleted for good and the thread shows that you removed it. A sent e-mail cannot be taken back from the recipient's mailbox."
+msgstr "Njezin tekst i datoteke trajno se brišu, a razgovor prikazuje da ste je uklonili. Poslana e-pošta ne može se povući iz poštanskog sandučića primatelja."
+
 #: src/features/settings/audit/sentence.ts
 msgid "Joined the workspace as {role}"
 msgstr "Pridružio/la se radnom prostoru kao {role}"
@@ -8003,6 +8021,10 @@ msgstr "Poruka"
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Message copied"
 msgstr "Poruka kopirana"
+
+#: src/components/common/text.ts
+msgid "Message removed"
+msgstr "Poruka uklonjena"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Message type"
@@ -11656,6 +11678,8 @@ msgstr "Ponovno učitaj"
 msgid "Remote images can tell the sender that you opened the mail."
 msgstr "Udaljene slike mogu pošiljatelju reći da ste otvorili poruku."
 
+#: src/features/conversation/ChatView.tsx
+#: src/features/conversation/messages/MessageActions.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
@@ -11740,6 +11764,14 @@ msgstr "Ukloniti uvezenu povijest?"
 msgid "Remove the app password you made for Yuva in {provider}; it is not needed any more."
 msgstr "Uklonite lozinku aplikacije koju ste izradili za Yuvu kod {provider}; više nije potrebna."
 
+#: src/components/common/text.ts
+msgid "Remove the content of messages and notes"
+msgstr "Uklanjanje sadržaja poruka i bilješki"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Remove the message or note you clicked on"
+msgstr "Ukloni poruku ili bilješku na koju ste kliknuli"
+
 #: src/features/settings/channels/sections.tsx
 msgid "Remove this channel?"
 msgstr "Ukloniti ovaj kanal?"
@@ -11752,6 +11784,18 @@ msgstr "Ukloniti ovaj uređaj?"
 msgid "Remove this endpoint?"
 msgstr "Ukloniti ovu krajnju točku?"
 
+#: src/features/conversation/messages/MessageActions.tsx
+msgid "Remove this message (Delete)"
+msgstr "Ukloni ovu poruku (Delete)"
+
+#: src/features/conversation/ChatView.tsx
+msgid "Remove this message?"
+msgstr "Ukloniti ovu poruku?"
+
+#: src/features/conversation/ChatView.tsx
+msgid "Remove this note?"
+msgstr "Ukloniti ovu bilješku?"
+
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Remove this passkey?"
 msgstr "Ukloniti ovaj pristupni ključ?"
@@ -11760,9 +11804,25 @@ msgstr "Ukloniti ovaj pristupni ključ?"
 msgid "Remove Yuva's access in Microsoft"
 msgstr "Ukloni Yuvin pristup u Microsoftu"
 
+#: src/features/conversation/ChatView.tsx
+msgid "Removed"
+msgstr "Uklonjeno"
+
 #: src/features/settings/audit/sentence.ts
 msgid "Removed {person} from the workspace"
 msgstr "Uklonio/la korisnika {person} iz radnog prostora"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed a message from a conversation"
+msgstr "Uklonio/la poruku iz razgovora"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed a note from a conversation"
+msgstr "Uklonio/la bilješku iz razgovora"
+
+#: src/features/conversation/messages/Redacted.tsx
+msgid "Removed by {who}"
+msgstr "Uklonio/la: {who}"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Removes {name} with its products, channels, conversations, contacts, files, labels, webhooks and API keys for everyone. Members keep their accounts."

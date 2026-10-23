@@ -1174,6 +1174,7 @@ msgstr "A draft was written"
 msgid "A file's content does not match its type. Check the file and try again."
 msgstr "A file's content does not match its type. Check the file and try again."
 
+#: src/features/conversation/messages/Redacted.tsx
 #: src/features/settings/audit/sentence.ts
 msgid "a former member"
 msgstr "a former member"
@@ -1237,6 +1238,10 @@ msgstr "A message takes at most 3 articles."
 #: src/components/common/text.ts
 msgid "A message was added"
 msgstr "A message was added"
+
+#: src/components/common/text.ts
+msgid "A message was removed from a thread"
+msgstr "A message was removed from a thread"
 
 #: src/features/settings/OwnDomainCard.tsx
 msgid "A name you control, like {example}. Yuva then shows you two DNS records to add, and the page answers on the domain once it has seen them."
@@ -2020,6 +2025,7 @@ msgstr "An analytics property of the inbox raised an alert"
 msgid "An answer was accepted in <0>{title}</0>"
 msgstr "An answer was accepted in <0>{title}</0>"
 
+#: src/features/conversation/messages/Redacted.tsx
 #: src/features/conversation/Trash.tsx
 msgid "an API key"
 msgstr "an API key"
@@ -4944,6 +4950,10 @@ msgstr "Draft:"
 msgid "Drafts"
 msgstr "Drafts"
 
+#: src/components/common/text.ts
+msgid "Drafts and timeline events cannot be removed."
+msgstr "Drafts and timeline events cannot be removed."
+
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/inbox/SidePanels.tsx
 msgid "Drafts waiting"
@@ -7046,6 +7056,14 @@ msgstr "Its report and the list of recipients are deleted. Conversations opened 
 msgid "Its settings, credentials and progress are deleted. Imported conversations stay."
 msgstr "Its settings, credentials and progress are deleted. Imported conversations stay."
 
+#: src/features/conversation/ChatView.tsx
+msgid "Its text and files are deleted for good and the thread shows that you removed it."
+msgstr "Its text and files are deleted for good and the thread shows that you removed it."
+
+#: src/features/conversation/ChatView.tsx
+msgid "Its text and files are deleted for good and the thread shows that you removed it. A sent e-mail cannot be taken back from the recipient's mailbox."
+msgstr "Its text and files are deleted for good and the thread shows that you removed it. A sent e-mail cannot be taken back from the recipient's mailbox."
+
 #: src/features/settings/audit/sentence.ts
 msgid "Joined the workspace as {role}"
 msgstr "Joined the workspace as {role}"
@@ -8003,6 +8021,10 @@ msgstr "Message"
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Message copied"
 msgstr "Message copied"
+
+#: src/components/common/text.ts
+msgid "Message removed"
+msgstr "Message removed"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Message type"
@@ -11656,6 +11678,8 @@ msgstr "Reload"
 msgid "Remote images can tell the sender that you opened the mail."
 msgstr "Remote images can tell the sender that you opened the mail."
 
+#: src/features/conversation/ChatView.tsx
+#: src/features/conversation/messages/MessageActions.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
@@ -11740,6 +11764,14 @@ msgstr "Remove imported history?"
 msgid "Remove the app password you made for Yuva in {provider}; it is not needed any more."
 msgstr "Remove the app password you made for Yuva in {provider}; it is not needed any more."
 
+#: src/components/common/text.ts
+msgid "Remove the content of messages and notes"
+msgstr "Remove the content of messages and notes"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Remove the message or note you clicked on"
+msgstr "Remove the message or note you clicked on"
+
 #: src/features/settings/channels/sections.tsx
 msgid "Remove this channel?"
 msgstr "Remove this channel?"
@@ -11752,6 +11784,18 @@ msgstr "Remove this device?"
 msgid "Remove this endpoint?"
 msgstr "Remove this endpoint?"
 
+#: src/features/conversation/messages/MessageActions.tsx
+msgid "Remove this message (Delete)"
+msgstr "Remove this message (Delete)"
+
+#: src/features/conversation/ChatView.tsx
+msgid "Remove this message?"
+msgstr "Remove this message?"
+
+#: src/features/conversation/ChatView.tsx
+msgid "Remove this note?"
+msgstr "Remove this note?"
+
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Remove this passkey?"
 msgstr "Remove this passkey?"
@@ -11760,9 +11804,25 @@ msgstr "Remove this passkey?"
 msgid "Remove Yuva's access in Microsoft"
 msgstr "Remove Yuva's access in Microsoft"
 
+#: src/features/conversation/ChatView.tsx
+msgid "Removed"
+msgstr "Removed"
+
 #: src/features/settings/audit/sentence.ts
 msgid "Removed {person} from the workspace"
 msgstr "Removed {person} from the workspace"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed a message from a conversation"
+msgstr "Removed a message from a conversation"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed a note from a conversation"
+msgstr "Removed a note from a conversation"
+
+#: src/features/conversation/messages/Redacted.tsx
+msgid "Removed by {who}"
+msgstr "Removed by {who}"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Removes {name} with its products, channels, conversations, contacts, files, labels, webhooks and API keys for everyone. Members keep their accounts."

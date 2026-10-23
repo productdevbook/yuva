@@ -1174,6 +1174,7 @@ msgstr "Чернетку написано"
 msgid "A file's content does not match its type. Check the file and try again."
 msgstr "Вміст файлу не відповідає його типу. Перевірте файл і спробуйте знову."
 
+#: src/features/conversation/messages/Redacted.tsx
 #: src/features/settings/audit/sentence.ts
 msgid "a former member"
 msgstr "колишній учасник"
@@ -1237,6 +1238,10 @@ msgstr "У повідомлення можна додати щонайбільш
 #: src/components/common/text.ts
 msgid "A message was added"
 msgstr "Повідомлення додано"
+
+#: src/components/common/text.ts
+msgid "A message was removed from a thread"
+msgstr "Повідомлення видалено з розмови"
 
 #: src/features/settings/OwnDomainCard.tsx
 msgid "A name you control, like {example}. Yuva then shows you two DNS records to add, and the page answers on the domain once it has seen them."
@@ -2020,6 +2025,7 @@ msgstr "Ресурс аналітики скриньки спрацював як
 msgid "An answer was accepted in <0>{title}</0>"
 msgstr "У <0>{title}</0> прийнято відповідь"
 
+#: src/features/conversation/messages/Redacted.tsx
 #: src/features/conversation/Trash.tsx
 msgid "an API key"
 msgstr "ключ API"
@@ -4944,6 +4950,10 @@ msgstr "Чернетка:"
 msgid "Drafts"
 msgstr "Чернетки"
 
+#: src/components/common/text.ts
+msgid "Drafts and timeline events cannot be removed."
+msgstr "Чернетки та події хронології видалити не можна."
+
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/inbox/SidePanels.tsx
 msgid "Drafts waiting"
@@ -7046,6 +7056,14 @@ msgstr "Його звіт і список отримувачів видаляю�
 msgid "Its settings, credentials and progress are deleted. Imported conversations stay."
 msgstr "Його налаштування, облікові дані та перебіг видаляються. Імпортовані розмови залишаються."
 
+#: src/features/conversation/ChatView.tsx
+msgid "Its text and files are deleted for good and the thread shows that you removed it."
+msgstr "Текст і файли буде видалено остаточно, а в розмові буде позначено, що ви його видалили."
+
+#: src/features/conversation/ChatView.tsx
+msgid "Its text and files are deleted for good and the thread shows that you removed it. A sent e-mail cannot be taken back from the recipient's mailbox."
+msgstr "Текст і файли буде видалено остаточно, а в розмові буде позначено, що ви його видалили. Надісланий лист не можна відкликати зі скриньки одержувача."
+
 #: src/features/settings/audit/sentence.ts
 msgid "Joined the workspace as {role}"
 msgstr "Приєднався(лась) до робочого простору з роллю {role}"
@@ -8003,6 +8021,10 @@ msgstr "Повідомлення"
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Message copied"
 msgstr "Повідомлення скопійовано"
+
+#: src/components/common/text.ts
+msgid "Message removed"
+msgstr "Повідомлення видалено"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Message type"
@@ -11656,6 +11678,8 @@ msgstr "Перезавантажити"
 msgid "Remote images can tell the sender that you opened the mail."
 msgstr "Віддалені зображення можуть повідомити відправнику, що ви відкрили лист."
 
+#: src/features/conversation/ChatView.tsx
+#: src/features/conversation/messages/MessageActions.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
@@ -11740,6 +11764,14 @@ msgstr "Видалити імпортовану історію?"
 msgid "Remove the app password you made for Yuva in {provider}; it is not needed any more."
 msgstr "Видаліть пароль застосунку, створений для Yuva в {provider}; він більше не потрібен."
 
+#: src/components/common/text.ts
+msgid "Remove the content of messages and notes"
+msgstr "Видаляти вміст повідомлень і нотаток"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Remove the message or note you clicked on"
+msgstr "Видалити повідомлення або нотатку, на яку ви клацнули"
+
 #: src/features/settings/channels/sections.tsx
 msgid "Remove this channel?"
 msgstr "Видалити цей канал?"
@@ -11752,6 +11784,18 @@ msgstr "Видалити цей пристрій?"
 msgid "Remove this endpoint?"
 msgstr "Видалити цей ендпоїнт?"
 
+#: src/features/conversation/messages/MessageActions.tsx
+msgid "Remove this message (Delete)"
+msgstr "Видалити це повідомлення (Delete)"
+
+#: src/features/conversation/ChatView.tsx
+msgid "Remove this message?"
+msgstr "Видалити це повідомлення?"
+
+#: src/features/conversation/ChatView.tsx
+msgid "Remove this note?"
+msgstr "Видалити цю нотатку?"
+
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Remove this passkey?"
 msgstr "Видалити цей ключ доступу?"
@@ -11760,9 +11804,25 @@ msgstr "Видалити цей ключ доступу?"
 msgid "Remove Yuva's access in Microsoft"
 msgstr "Відкличте доступ Yuva в Microsoft"
 
+#: src/features/conversation/ChatView.tsx
+msgid "Removed"
+msgstr "Видалено"
+
 #: src/features/settings/audit/sentence.ts
 msgid "Removed {person} from the workspace"
 msgstr "Видалив(ла) користувача {person} з робочого простору"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed a message from a conversation"
+msgstr "Видалив(ла) повідомлення з розмови"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed a note from a conversation"
+msgstr "Видалив(ла) нотатку з розмови"
+
+#: src/features/conversation/messages/Redacted.tsx
+msgid "Removed by {who}"
+msgstr "Видалено користувачем {who}"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Removes {name} with its products, channels, conversations, contacts, files, labels, webhooks and API keys for everyone. Members keep their accounts."

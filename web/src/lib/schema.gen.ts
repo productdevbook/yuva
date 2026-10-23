@@ -2248,6 +2248,49 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/messages/{messageId}/redact": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Remove a message's content
+         * @description Removes the text, HTML, attachments and their stored files, the cards and mentions of a
+         *     message or note and, for e-mail, its subject, full text, headers and raw source, in one
+         *     transaction; a job deletes the files. The message stays in the thread with `redacted_at`,
+         *     `redacted_by` and no content, so the thread reads "Removed by …". Its earlier events,
+         *     webhook deliveries, answers kept for `Idempotency-Key` and pushes are rewritten or dropped
+         *     without the content, and its search entry and previews go with the text. The contact's
+         *     later e-mails that answer an e-mail we sent (In-Reply-To or References) and quote all of
+         *     its text lose their quoted history and raw source. When it is a feedback's first message,
+         *     `feedback.text` is emptied and `attachment_count` is `0`; when it is the inbound e-mail
+         *     that gave the conversation its subject, the subject becomes empty (later replies are
+         *     titled with the channel's name) and the e-mail subjects in the conversation that repeat it
+         *     are cleared; both emit `conversation.updated`. A queued e-mail is not sent
+         *     (`delivery.state` `failed`); a sent e-mail cannot be taken back from the recipient's
+         *     mailbox, and one already on its way when the redaction comes is recorded as `sent`.
+         *
+         *     Owners and admins may redact any message they can see, and other members their own
+         *     messages and notes (`403 forbidden` otherwise). An API key needs `messages:redact`, an
+         *     OAuth token `messages:redact` and its member's right as above. Drafts are discarded with
+         *     `DELETE`, and timeline events cannot be redacted: both answer `409 not_redactable`. A
+         *     conversation in the trash answers `404`. Redacting a message again answers it unchanged.
+         *     Emits `message.redacted` (realtime, `/client/v1` for messages, webhooks); the audit log
+         *     records `message.redacted` without the content.
+         *
+         *     Scope: `messages:redact`.
+         */
+        post: operations["redactMessage"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/messages/{messageId}/email": {
         parameters: {
             query?: never;
@@ -9429,6 +9472,29 @@ export interface webhooks {
         patch?: never;
         trace?: never;
     };
+    "message.redacted": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * A message's content was removed
+         * @description A member or API key redacted a message (notes only for endpoints with `include_notes`).
+         *     `data.message` has `redacted_at` and `redacted_by`, an empty `body` and no `html` or
+         *     attachments; the removed content is never sent. Delete any copy you keep. Earlier
+         *     deliveries of the message, kept for the delivery log, are rewritten without it.
+         */
+        post: operations["webhookMessageRedacted"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "feedback.created": {
         parameters: {
             query?: never;
@@ -10113,6 +10179,8 @@ export interface components {
          *     - `inbox.identity_secret_rotated`: none. `inbox.deleted`: `name`.
          *     - `conversation.trashed`, `conversation.restored`: `inbox_id`. `conversation.deleted`:
          *       `inbox_id`, by `system` (never the subject or content).
+         *     - `message.redacted`: `conversation_id`, `inbox_id`, `kind` (`message` or `note`),
+         *       `files` (attachments and raw e-mails removed); never the removed content.
          *     - `contact.deleted`: none (no name or address is kept). `contact.consent_exported`: `format`,
          *       `started` (the entry is written when the export starts streaming).
          *     - `list.consent_exported`: `name`, `format`, `started`.
@@ -10131,9 +10199,9 @@ export interface components {
          *     More actions are added over time; show an unknown one by its name.
          * @enum {string}
          */
-        AuditAction: "member.joined" | "member.role_changed" | "member.removed" | "member.inbox_access_granted" | "member.inbox_access_revoked" | "invite.created" | "invite.deleted" | "api_key.created" | "api_key.revoked" | "oauth_grant.created" | "oauth_grant.revoked" | "webhook.created" | "webhook.updated" | "webhook.deleted" | "webhook.secret_rotated" | "channel.credentials_changed" | "channel.key_rotated" | "channel.forwarding_address_rotated" | "channel.dkim_key_created" | "channel.dkim_key_deleted" | "inbox.identity_secret_rotated" | "inbox.deleted" | "conversation.trashed" | "conversation.restored" | "conversation.deleted" | "contact.deleted" | "contact.consent_exported" | "list.consent_exported" | "analytics_export.created" | "workspace.retention_changed" | "workspace.broadcast_approval_requested" | "workspace.broadcasts_approved" | "workspace.broadcasts_denied" | "workspace.broadcasts_suspended" | "workspace.broadcast_limit_changed";
+        AuditAction: "member.joined" | "member.role_changed" | "member.removed" | "member.inbox_access_granted" | "member.inbox_access_revoked" | "invite.created" | "invite.deleted" | "api_key.created" | "api_key.revoked" | "oauth_grant.created" | "oauth_grant.revoked" | "webhook.created" | "webhook.updated" | "webhook.deleted" | "webhook.secret_rotated" | "channel.credentials_changed" | "channel.key_rotated" | "channel.forwarding_address_rotated" | "channel.dkim_key_created" | "channel.dkim_key_deleted" | "inbox.identity_secret_rotated" | "inbox.deleted" | "conversation.trashed" | "conversation.restored" | "conversation.deleted" | "message.redacted" | "contact.deleted" | "contact.consent_exported" | "list.consent_exported" | "analytics_export.created" | "workspace.retention_changed" | "workspace.broadcast_approval_requested" | "workspace.broadcasts_approved" | "workspace.broadcasts_denied" | "workspace.broadcasts_suspended" | "workspace.broadcast_limit_changed";
         /** @enum {string} */
-        AuditTargetType: "workspace" | "member" | "invite" | "inbox" | "channel" | "api_key" | "oauth_grant" | "webhook" | "contact" | "list" | "analytics_export" | "conversation";
+        AuditTargetType: "workspace" | "member" | "invite" | "inbox" | "channel" | "api_key" | "oauth_grant" | "webhook" | "contact" | "list" | "analytics_export" | "conversation" | "message";
         AuditTarget: {
             type: components["schemas"]["AuditTargetType"];
             /**
@@ -10318,6 +10386,9 @@ export interface components {
          *       OAuth tokens also replies to reader threads and their accepted answer.
          *     - `drafts:send`: send a draft (`POST /v1/messages/{id}/send`), together with
          *       `messages:write`.
+         *     - `messages:redact`: remove a message's or note's content (`POST /v1/messages/{id}/redact`).
+         *       An OAuth token redacts only what its member may: owners and admins any message, other
+         *       members their own. Never implied: a key made without naming its scopes does not hold it.
          *     - `notes:write`: notes.
          *     - `contacts:read`: list, look up and get contacts, presence.
          *     - `contacts:write`: create, update, delete and merge contacts.
@@ -10378,10 +10449,10 @@ export interface components {
          *       without an inbox limit; offered only to owners' OAuth tokens. Never implied: a key made
          *       without naming its scopes does not hold it.
          *
-         *     `conversations:delete`, `lists:*`, `broadcasts:*`, `migrations:manage`, `analytics:*`, `status:*`, `help:*`, `roadmap:*`, `changelog:*` and `audit:read` are never added to keys made before they existed.
+         *     `conversations:delete`, `messages:redact`, `lists:*`, `broadcasts:*`, `migrations:manage`, `analytics:*`, `status:*`, `help:*`, `roadmap:*`, `changelog:*` and `audit:read` are never added to keys made before they existed.
          * @enum {string}
          */
-        ApiKeyScope: "conversations:read" | "conversations:write" | "conversations:delete" | "messages:write" | "drafts:send" | "notes:write" | "contacts:read" | "contacts:write" | "inboxes:read" | "inboxes:manage" | "labels:write" | "canned_replies:write" | "webhooks:manage" | "workspace:manage" | "feedback:write" | "lists:read" | "lists:write" | "broadcasts:read" | "broadcasts:write" | "broadcasts:send" | "migrations:manage" | "analytics:read" | "analytics:write" | "analytics:manage" | "status:read" | "status:manage" | "help:read" | "help:write" | "help:publish" | "roadmap:read" | "roadmap:write" | "roadmap:stage" | "changelog:read" | "changelog:write" | "changelog:publish" | "audit:read";
+        ApiKeyScope: "conversations:read" | "conversations:write" | "conversations:delete" | "messages:write" | "messages:redact" | "drafts:send" | "notes:write" | "contacts:read" | "contacts:write" | "inboxes:read" | "inboxes:manage" | "labels:write" | "canned_replies:write" | "webhooks:manage" | "workspace:manage" | "feedback:write" | "lists:read" | "lists:write" | "broadcasts:read" | "broadcasts:write" | "broadcasts:send" | "migrations:manage" | "analytics:read" | "analytics:write" | "analytics:manage" | "status:read" | "status:manage" | "help:read" | "help:write" | "help:publish" | "roadmap:read" | "roadmap:write" | "roadmap:stage" | "changelog:read" | "changelog:write" | "changelog:publish" | "audit:read";
         /**
          * Format: uri
          * @description An `https` image URL.
@@ -11294,7 +11365,7 @@ export interface components {
             count: number;
         };
         /** @enum {string} */
-        WebhookEventType: "conversation.created" | "conversation.updated" | "conversation.rated" | "conversation.trashed" | "conversation.restored" | "conversation.deleted" | "message.created" | "feedback.created" | "contact.updated" | "contact.deleted" | "draft.created" | "draft.updated" | "draft.deleted" | "discussion.created" | "discussion.post_created" | "discussion.answered" | "discussion.updated" | "subscription.created" | "subscription.updated" | "broadcast.updated" | "analytics.alert" | "status.component.updated" | "status.incident.created" | "status.incident.updated" | "status.incident.resolved" | "status.monitor.down" | "status.monitor.up" | "help.article.published" | "help.article.unpublished" | "help.article.deleted" | "discussion.stage_changed" | "changelog.entry.published" | "changelog.entry.unpublished" | "changelog.entry.deleted";
+        WebhookEventType: "conversation.created" | "conversation.updated" | "conversation.rated" | "conversation.trashed" | "conversation.restored" | "conversation.deleted" | "message.created" | "message.redacted" | "feedback.created" | "contact.updated" | "contact.deleted" | "draft.created" | "draft.updated" | "draft.deleted" | "discussion.created" | "discussion.post_created" | "discussion.answered" | "discussion.updated" | "subscription.created" | "subscription.updated" | "broadcast.updated" | "analytics.alert" | "status.component.updated" | "status.incident.created" | "status.incident.updated" | "status.incident.resolved" | "status.monitor.down" | "status.monitor.up" | "help.article.published" | "help.article.unpublished" | "help.article.deleted" | "discussion.stage_changed" | "changelog.entry.published" | "changelog.entry.unpublished" | "changelog.entry.deleted";
         WebhookEndpoint: {
             /** Format: uuid */
             id: string;
@@ -11307,7 +11378,7 @@ export interface components {
             url: string;
             description: string;
             events: components["schemas"]["WebhookEventType"][];
-            /** @description `message.created` also for members' notes. */
+            /** @description `message.created` and `message.redacted` also for members' notes. */
             include_notes: boolean;
             enabled: boolean;
             /** Format: date-time */
@@ -11773,6 +11844,8 @@ export interface components {
             author_type: components["schemas"]["AuthorType"];
             /** @description The plain-text body on one line, cut to 140 characters with `...` when longer. */
             text: string;
+            /** @description `true` when its content was removed; `text` is empty. Absent otherwise. */
+            redacted?: boolean;
             /** Format: date-time */
             created_at: string;
         };
@@ -12429,7 +12502,7 @@ export interface components {
             kind: components["schemas"]["MessageKind"];
             direction?: components["schemas"]["Direction"];
             author: components["schemas"]["MessageAuthor"];
-            /** @description Plain text. */
+            /** @description Plain text; empty once redacted. */
             body: string;
             /** @description Sanitized HTML, when the message has an HTML form. */
             html?: string;
@@ -12460,9 +12533,28 @@ export interface components {
             cards?: components["schemas"]["MessageCard"][];
             /**
              * Format: date-time
+             * @description When its content was removed (`POST /v1/messages/{id}/redact`); absent otherwise. A
+             *     redacted message has an empty `body` and no `html`, attachments, cards or mentions;
+             *     show it as "Removed by" `redacted_by` at this time.
+             */
+            redacted_at?: string;
+            /** @description Who removed its content; absent when it was not redacted. */
+            redacted_by?: components["schemas"]["MessageRedactedBy"];
+            /**
+             * Format: date-time
              * @description For a sent draft, when it was sent.
              */
             created_at: string;
+        };
+        /** @description The member or API key that removed a message's content; empty when it is gone. */
+        MessageRedactedBy: {
+            /**
+             * Format: uuid
+             * @description The member, also when they acted through a connected app.
+             */
+            member_id?: string;
+            /** Format: uuid */
+            api_key_id?: string;
         };
         /** @description Delivery of an outgoing message by e-mail. */
         MessageDelivery: {
@@ -13987,7 +14079,11 @@ export interface components {
             created_at: string;
             data: components["schemas"]["Message"];
         };
-        /** @description A message changed, e.g. its e-mail delivery state. */
+        /**
+         * @description A message changed, e.g. its e-mail delivery state. `message.redacted`: its content was
+         *     removed (`data.redacted_at`, `redacted_by`; empty `body`, no `html` or attachments); show
+         *     it as removed wherever it appears, and drop any copy of its content.
+         */
         MessageUpdatedEvent: {
             /** Format: int64 */
             id: number;
@@ -13995,7 +14091,7 @@ export interface components {
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
              */
-            type: "message.updated";
+            type: "message.updated" | "message.redacted";
             /** Format: uuid */
             workspace_id: string;
             /** Format: uuid */
@@ -16632,6 +16728,8 @@ export interface components {
             author_type: components["schemas"]["AuthorType"];
             /** @description The plain-text body on one line, cut to 140 characters with `...` when longer. */
             text: string;
+            /** @description `true` when its content was removed; `text` is empty. Absent otherwise. */
+            redacted?: boolean;
             /** Format: date-time */
             created_at: string;
         };
@@ -16718,6 +16816,11 @@ export interface components {
              *     none were. The body ends with their titles and URLs either way.
              */
             cards?: components["schemas"]["MessageCard"][];
+            /**
+             * @description `true` when a member removed its content: `body` is empty and it has no `html`,
+             *     attachments or cards. Show it in place as removed. Absent otherwise.
+             */
+            redacted?: boolean;
             /** Format: date-time */
             created_at: string;
         };
@@ -16851,7 +16954,10 @@ export interface components {
             /** Format: uuid */
             id: string;
         };
-        /** @description A message was added or changed. */
+        /**
+         * @description A message was added or changed. `message.redacted`: a member removed its content; `data`
+         *     has `redacted: true`, an empty `body` and no attachments. Show it as removed in place.
+         */
         ClientMessageEvent: {
             /** Format: int64 */
             id: number;
@@ -16859,7 +16965,7 @@ export interface components {
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
              */
-            type: "message.created" | "message.updated";
+            type: "message.created" | "message.updated" | "message.redacted";
             /** Format: uuid */
             conversation_id: string;
             /** Format: date-time */
@@ -25270,6 +25376,37 @@ export interface operations {
         requestBody?: never;
         responses: {
             /** @description The sent message. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Message"];
+                };
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+            409: components["responses"]["Problem"];
+        };
+    };
+    redactMessage: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Makes a retried request return the first response; see "Idempotency". */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                messageId: components["parameters"]["MessageId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The redacted message. */
             200: {
                 headers: {
                     [name: string]: unknown;
@@ -35906,6 +36043,39 @@ export interface operations {
         };
     };
     webhookMessageCreated: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description The delivery's id, the same on every retry; use it to ignore duplicates. */
+                "webhook-id": components["parameters"]["WebhookIdHeader"];
+                /** @description Unix seconds of this attempt. Refuse values far from your clock. */
+                "webhook-timestamp": components["parameters"]["WebhookTimestampHeader"];
+                /**
+                 * @description Space-separated `v1,<base64>` signatures: HMAC-SHA256 over
+                 *     `<webhook-id>.<webhook-timestamp>.<body>` with the base64-decoded part of the
+                 *     `whsec_` secret (Standard Webhooks). Two during a secret rotation.
+                 */
+                "webhook-signature": components["parameters"]["WebhookSignatureHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WebhookMessagePayload"];
+            };
+        };
+        responses: {
+            /** @description Any 2xx answer counts as delivered. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    webhookMessageRedacted: {
         parameters: {
             query?: never;
             header: {

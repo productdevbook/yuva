@@ -57,6 +57,7 @@ import {
   useConversation,
   useMarkRead,
   useMessages,
+  useRedactMessage,
   useMoveConversation,
   useTrashConversation,
   useUpdateConversation,
@@ -189,6 +190,7 @@ function Loaded({
   const updater = useUpdateConversation(c.id)
   const mover = useMoveConversation(c.id)
   const trasher = useTrashConversation(c.id)
+  const redactor = useRedactMessage()
   const [confirm, confirmDialog] = useConfirm()
   const trashed = !!c.trashed_at
   const navigate = useNavigate()
@@ -248,6 +250,32 @@ function Loaded({
       (err) => toast(errorText(err))
     )
   }
+  const canRemove = (m: Message) =>
+    !trashed &&
+    !m.draft &&
+    !m.redacted_at &&
+    (m.kind === "message" || m.kind === "note") &&
+    (canManage || (m.author.type === "member" && m.author.member_id === me))
+  const remove = (m: Message) => {
+    const sentMail = m.kind === "message" && m.direction === "out" && !!(m.email || m.delivery)
+    confirm({
+      title: m.kind === "note" ? <Trans>Remove this note?</Trans> : <Trans>Remove this message?</Trans>,
+      description: sentMail ? (
+        <Trans>
+          Its text and files are deleted for good and the thread shows that you removed it. A sent e-mail cannot be
+          taken back from the recipient's mailbox.
+        </Trans>
+      ) : (
+        <Trans>Its text and files are deleted for good and the thread shows that you removed it.</Trans>
+      ),
+      confirm: <Trans>Remove</Trans>,
+      run: () =>
+        redactor.mutate(m, {
+          onSuccess: () => toast(t`Removed`),
+          onError: (err) => toast(errorText(err)),
+        }),
+    })
+  }
   const ctx: ThreadContext = {
     members,
     contact,
@@ -261,6 +289,8 @@ function Loaded({
     find: q ? { query: findQuery.trim(), current: currentHit } : undefined,
     onQuote: quote,
     onForward: forward,
+    onRemove: remove,
+    canRemove,
   }
   const pageLine = !!conversationPage(c)
   const [discussing, setDiscussing] = useState(false)

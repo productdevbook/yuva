@@ -22,6 +22,7 @@ import {
   type UnsubscribeReason,
   type WebhookDeliveryState,
   type WebhookEventType,
+  type MessagePreview,
   type Weekday,
 } from "@/lib/api"
 
@@ -41,6 +42,7 @@ export const WEBHOOK_EVENTS: WebhookEventType[] = [
   "conversation.restored",
   "conversation.deleted",
   "message.created",
+  "message.redacted",
   "feedback.created",
   "contact.updated",
   "contact.deleted",
@@ -74,6 +76,7 @@ export const API_KEY_SCOPES: ApiKeyScope[] = [
   "conversations:write",
   "conversations:delete",
   "messages:write",
+  "messages:redact",
   "drafts:send",
   "notes:write",
   "contacts:read",
@@ -107,7 +110,7 @@ export const API_KEY_SCOPES: ApiKeyScope[] = [
   "changelog:publish",
   "audit:read",
 ]
-export const OPT_IN_SCOPES: ApiKeyScope[] = ["conversations:delete", "broadcasts:send", "audit:read"]
+export const OPT_IN_SCOPES: ApiKeyScope[] = ["conversations:delete", "messages:redact", "broadcasts:send", "audit:read"]
 export const OWNER_ONLY_SCOPES: ApiKeyScope[] = ["audit:read"]
 export type ApiKeyPreset = "read" | "support" | "everything" | "custom"
 export const API_KEY_PRESET_SCOPES: Record<Exclude<ApiKeyPreset, "custom">, ApiKeyScope[]> = {
@@ -195,6 +198,7 @@ export function useEnumText() {
       "conversation.restored": t`A conversation was restored from the Trash`,
       "conversation.deleted": t`A conversation was deleted for good`,
       "message.created": t`A message was added`,
+      "message.redacted": t`A message was removed from a thread`,
       "feedback.created": t`Feedback arrived`,
       "contact.updated": t`A contact changed`,
       "contact.deleted": t`A contact was deleted`,
@@ -228,6 +232,7 @@ export function useEnumText() {
       "conversations:write": t`Change, move and bulk-update conversations`,
       "conversations:delete": t`Move conversations to the Trash, restore them and read the Trash`,
       "messages:write": t`Write messages and drafts`,
+      "messages:redact": t`Remove the content of messages and notes`,
       "drafts:send": t`Send drafts`,
       "notes:write": t`Write notes`,
       "contacts:read": t`Read contacts`,
@@ -354,6 +359,11 @@ export function useEnumText() {
   }
 }
 
+export function usePreviewText() {
+  const { t } = useLingui()
+  return (m: MessagePreview | undefined) => (m?.redacted ? t`Message removed` : (m?.text ?? ""))
+}
+
 export function useErrorText() {
   const { t } = useLingui()
   return (err: unknown): string => {
@@ -368,6 +378,7 @@ export function useErrorText() {
       return t`The other inbox has no e-mail channel, so this e-mail conversation cannot move there. Add an e-mail channel to it first.`
     if (err.code === "email_no_sender")
       return t`The e-mail channel is a catch-all without a From address, so it has no address to send this conversation from. Set one in the inbox settings.`
+    if (err.code === "not_redactable") return t`Drafts and timeline events cannot be removed.`
     if (err.code === "already_discussed") return t`This conversation is already a discussion.`
     if (err.code === "no_discussion_channel")
       return t`No chat channel of this inbox allows the page's site with discussions on. Turn discussions on in the inbox settings.`

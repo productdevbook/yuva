@@ -32,6 +32,7 @@ export const AUDIT_GROUPS: Record<AuditGroup, AuditAction[]> = {
     "conversation.trashed",
     "conversation.restored",
     "conversation.deleted",
+    "message.redacted",
     "contact.deleted",
     "contact.consent_exported",
     "list.consent_exported",
@@ -144,6 +145,8 @@ export function useAuditSentence() {
         return t`Restored a conversation from the Trash`
       case "conversation.deleted":
         return t`Deleted a conversation for good`
+      case "message.redacted":
+        return d.kind === "note" ? t`Removed a note from a conversation` : t`Removed a message from a conversation`
       case "contact.deleted":
         return t`Deleted a contact`
       case "contact.consent_exported":

@@ -1174,6 +1174,7 @@ msgstr "Ένα πρόχειρο γράφτηκε"
 msgid "A file's content does not match its type. Check the file and try again."
 msgstr "Το περιεχόμενο ενός αρχείου δεν ταιριάζει με τον τύπο του. Ελέγξτε το αρχείο και δοκιμάστε ξανά."
 
+#: src/features/conversation/messages/Redacted.tsx
 #: src/features/settings/audit/sentence.ts
 msgid "a former member"
 msgstr "πρώην μέλος"
@@ -1237,6 +1238,10 @@ msgstr "Ένα μήνυμα δέχεται το πολύ 3 άρθρα."
 #: src/components/common/text.ts
 msgid "A message was added"
 msgstr "Ένα μήνυμα προστέθηκε"
+
+#: src/components/common/text.ts
+msgid "A message was removed from a thread"
+msgstr "Ένα μήνυμα αφαιρέθηκε από τη συζήτηση"
 
 #: src/features/settings/OwnDomainCard.tsx
 msgid "A name you control, like {example}. Yuva then shows you two DNS records to add, and the page answers on the domain once it has seen them."
@@ -2020,6 +2025,7 @@ msgstr "Μια ιδιότητα αναλυτικών στοιχείων των �
 msgid "An answer was accepted in <0>{title}</0>"
 msgstr "Μια απάντηση έγινε αποδεκτή στο <0>{title}</0>"
 
+#: src/features/conversation/messages/Redacted.tsx
 #: src/features/conversation/Trash.tsx
 msgid "an API key"
 msgstr "ένα κλειδί API"
@@ -4944,6 +4950,10 @@ msgstr "Πρόχειρο:"
 msgid "Drafts"
 msgstr "Πρόχειρα"
 
+#: src/components/common/text.ts
+msgid "Drafts and timeline events cannot be removed."
+msgstr "Τα πρόχειρα και τα συμβάντα του χρονολογίου δεν μπορούν να αφαιρεθούν."
+
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/inbox/SidePanels.tsx
 msgid "Drafts waiting"
@@ -7046,6 +7056,14 @@ msgstr "Η αναφορά και η λίστα παραληπτών του δι�
 msgid "Its settings, credentials and progress are deleted. Imported conversations stay."
 msgstr "Οι ρυθμίσεις, τα διαπιστευτήρια και η πρόοδός της διαγράφονται. Οι εισαγμένες συνομιλίες παραμένουν."
 
+#: src/features/conversation/ChatView.tsx
+msgid "Its text and files are deleted for good and the thread shows that you removed it."
+msgstr "Το κείμενο και τα αρχεία διαγράφονται οριστικά και η συζήτηση δείχνει ότι το αφαιρέσατε."
+
+#: src/features/conversation/ChatView.tsx
+msgid "Its text and files are deleted for good and the thread shows that you removed it. A sent e-mail cannot be taken back from the recipient's mailbox."
+msgstr "Το κείμενο και τα αρχεία διαγράφονται οριστικά και η συζήτηση δείχνει ότι το αφαιρέσατε. Ένα email που έχει σταλεί δεν μπορεί να ανακληθεί από το γραμματοκιβώτιο του παραλήπτη."
+
 #: src/features/settings/audit/sentence.ts
 msgid "Joined the workspace as {role}"
 msgstr "Εντάχθηκε στον χώρο εργασίας ως {role}"
@@ -8003,6 +8021,10 @@ msgstr "Μήνυμα"
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Message copied"
 msgstr "Το μήνυμα αντιγράφηκε"
+
+#: src/components/common/text.ts
+msgid "Message removed"
+msgstr "Το μήνυμα αφαιρέθηκε"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Message type"
@@ -11656,6 +11678,8 @@ msgstr "Επαναφόρτωση"
 msgid "Remote images can tell the sender that you opened the mail."
 msgstr "Οι απομακρυσμένες εικόνες μπορούν να πουν στον αποστολέα ότι ανοίξατε το e-mail."
 
+#: src/features/conversation/ChatView.tsx
+#: src/features/conversation/messages/MessageActions.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
@@ -11740,6 +11764,14 @@ msgstr "Αφαίρεση εισαγμένου ιστορικού;"
 msgid "Remove the app password you made for Yuva in {provider}; it is not needed any more."
 msgstr "Αφαιρέστε τον κωδικό εφαρμογής που φτιάξατε για το Yuva στο {provider}· δεν χρειάζεται πια."
 
+#: src/components/common/text.ts
+msgid "Remove the content of messages and notes"
+msgstr "Αφαίρεση του περιεχομένου μηνυμάτων και σημειώσεων"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Remove the message or note you clicked on"
+msgstr "Αφαίρεση του μηνύματος ή της σημείωσης στην οποία κάνατε κλικ"
+
 #: src/features/settings/channels/sections.tsx
 msgid "Remove this channel?"
 msgstr "Αφαίρεση αυτού του καναλιού;"
@@ -11752,6 +11784,18 @@ msgstr "Αφαίρεση αυτής της συσκευής;"
 msgid "Remove this endpoint?"
 msgstr "Αφαίρεση αυτού του endpoint;"
 
+#: src/features/conversation/messages/MessageActions.tsx
+msgid "Remove this message (Delete)"
+msgstr "Αφαίρεση αυτού του μηνύματος (Delete)"
+
+#: src/features/conversation/ChatView.tsx
+msgid "Remove this message?"
+msgstr "Να αφαιρεθεί αυτό το μήνυμα;"
+
+#: src/features/conversation/ChatView.tsx
+msgid "Remove this note?"
+msgstr "Να αφαιρεθεί αυτή η σημείωση;"
+
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Remove this passkey?"
 msgstr "Αφαίρεση αυτού του passkey;"
@@ -11760,9 +11804,25 @@ msgstr "Αφαίρεση αυτού του passkey;"
 msgid "Remove Yuva's access in Microsoft"
 msgstr "Αφαιρέστε την πρόσβαση του Yuva στη Microsoft"
 
+#: src/features/conversation/ChatView.tsx
+msgid "Removed"
+msgstr "Αφαιρέθηκε"
+
 #: src/features/settings/audit/sentence.ts
 msgid "Removed {person} from the workspace"
 msgstr "Αφαίρεσε τον/την {person} από τον χώρο εργασίας"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed a message from a conversation"
+msgstr "Αφαίρεσε ένα μήνυμα από μια συζήτηση"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed a note from a conversation"
+msgstr "Αφαίρεσε μια σημείωση από μια συζήτηση"
+
+#: src/features/conversation/messages/Redacted.tsx
+msgid "Removed by {who}"
+msgstr "Αφαιρέθηκε από {who}"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Removes {name} with its products, channels, conversations, contacts, files, labels, webhooks and API keys for everyone. Members keep their accounts."

@@ -1174,6 +1174,7 @@ msgstr "ഒരു ഡ്രാഫ്റ്റ് എഴുതി"
 msgid "A file's content does not match its type. Check the file and try again."
 msgstr "ഫയലിന്റെ ഉള്ളടക്കം അതിന്റെ തരത്തോട് യോജിക്കുന്നില്ല. ഫയൽ പരിശോധിച്ച് വീണ്ടും ശ്രമിക്കുക."
 
+#: src/features/conversation/messages/Redacted.tsx
 #: src/features/settings/audit/sentence.ts
 msgid "a former member"
 msgstr "മുൻ അംഗം"
@@ -1237,6 +1238,10 @@ msgstr "ഒരു സന്ദേശത്തിൽ പരമാവധി 3 ല�
 #: src/components/common/text.ts
 msgid "A message was added"
 msgstr "ഒരു സന്ദേശം ചേർത്തു"
+
+#: src/components/common/text.ts
+msgid "A message was removed from a thread"
+msgstr "സംഭാഷണത്തിൽ നിന്ന് ഒരു സന്ദേശം നീക്കം ചെയ്തു"
 
 #: src/features/settings/OwnDomainCard.tsx
 msgid "A name you control, like {example}. Yuva then shows you two DNS records to add, and the page answers on the domain once it has seen them."
@@ -2020,6 +2025,7 @@ msgstr "ഇൻബോക്സിന്റെ ഒരു അനലിറ്റി�
 msgid "An answer was accepted in <0>{title}</0>"
 msgstr "<0>{title}</0>-ൽ ഒരു ഉത്തരം അംഗീകരിച്ചു"
 
+#: src/features/conversation/messages/Redacted.tsx
 #: src/features/conversation/Trash.tsx
 msgid "an API key"
 msgstr "ഒരു API കീ"
@@ -4944,6 +4950,10 @@ msgstr "ഡ്രാഫ്റ്റ്:"
 msgid "Drafts"
 msgstr "ഡ്രാഫ്റ്റുകൾ"
 
+#: src/components/common/text.ts
+msgid "Drafts and timeline events cannot be removed."
+msgstr "ഡ്രാഫ്റ്റുകളും ടൈംലൈൻ സംഭവങ്ങളും നീക്കം ചെയ്യാനാകില്ല."
+
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/inbox/SidePanels.tsx
 msgid "Drafts waiting"
@@ -7046,6 +7056,14 @@ msgstr "ഇതിന്റെ റിപ്പോർട്ടും സ്വീ�
 msgid "Its settings, credentials and progress are deleted. Imported conversations stay."
 msgstr "ഇതിന്റെ ക്രമീകരണങ്ങൾ, ക്രെഡൻഷ്യലുകൾ, പുരോഗതി എന്നിവ ഇല്ലാതാക്കപ്പെടും. ഇറക്കുമതി ചെയ്ത സംഭാഷണങ്ങൾ നിലനിൽക്കും."
 
+#: src/features/conversation/ChatView.tsx
+msgid "Its text and files are deleted for good and the thread shows that you removed it."
+msgstr "അതിലെ വാചകവും ഫയലുകളും എന്നെന്നേക്കുമായി ഇല്ലാതാക്കും, നിങ്ങൾ അത് നീക്കം ചെയ്തതായി സംഭാഷണത്തിൽ കാണിക്കും."
+
+#: src/features/conversation/ChatView.tsx
+msgid "Its text and files are deleted for good and the thread shows that you removed it. A sent e-mail cannot be taken back from the recipient's mailbox."
+msgstr "അതിലെ വാചകവും ഫയലുകളും എന്നെന്നേക്കുമായി ഇല്ലാതാക്കും, നിങ്ങൾ അത് നീക്കം ചെയ്തതായി സംഭാഷണത്തിൽ കാണിക്കും. അയച്ചുകഴിഞ്ഞ ഇമെയിൽ സ്വീകർത്താവിന്റെ മെയിൽബോക്സിൽ നിന്ന് തിരിച്ചെടുക്കാനാകില്ല."
+
 #: src/features/settings/audit/sentence.ts
 msgid "Joined the workspace as {role}"
 msgstr "{role} ആയി വർക്ക്‌സ്‌പേസിൽ ചേർന്നു"
@@ -8003,6 +8021,10 @@ msgstr "സന്ദേശം"
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Message copied"
 msgstr "സന്ദേശം പകർത്തി"
+
+#: src/components/common/text.ts
+msgid "Message removed"
+msgstr "സന്ദേശം നീക്കം ചെയ്തു"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Message type"
@@ -11656,6 +11678,8 @@ msgstr "റീലോഡ്"
 msgid "Remote images can tell the sender that you opened the mail."
 msgstr "റിമോട്ട് ചിത്രങ്ങൾക്ക് നിങ്ങൾ മെയിൽ തുറന്നുവെന്ന് അയയ്ക്കുന്നയാളെ അറിയിക്കാൻ കഴിയും."
 
+#: src/features/conversation/ChatView.tsx
+#: src/features/conversation/messages/MessageActions.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
@@ -11740,6 +11764,14 @@ msgstr "ഇറക്കുമതി ചെയ്ത ചരിത്രം നീ
 msgid "Remove the app password you made for Yuva in {provider}; it is not needed any more."
 msgstr "നിങ്ങൾ Yuva-യ്ക്കായി {provider}-ൽ ഉണ്ടാക്കിയ ആപ്പ് പാസ്‌വേഡ് നീക്കം ചെയ്യുക; ഇനി അത് ആവശ്യമില്ല."
 
+#: src/components/common/text.ts
+msgid "Remove the content of messages and notes"
+msgstr "സന്ദേശങ്ങളുടെയും കുറിപ്പുകളുടെയും ഉള്ളടക്കം നീക്കം ചെയ്യുക"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Remove the message or note you clicked on"
+msgstr "നിങ്ങൾ ക്ലിക്ക് ചെയ്ത സന്ദേശമോ കുറിപ്പോ നീക്കം ചെയ്യുക"
+
 #: src/features/settings/channels/sections.tsx
 msgid "Remove this channel?"
 msgstr "ഈ ചാനൽ നീക്കം ചെയ്യണോ?"
@@ -11752,6 +11784,18 @@ msgstr "ഈ ഉപകരണം നീക്കം ചെയ്യണോ?"
 msgid "Remove this endpoint?"
 msgstr "ഈ എൻഡ്‌പോയിന്റ് നീക്കം ചെയ്യണോ?"
 
+#: src/features/conversation/messages/MessageActions.tsx
+msgid "Remove this message (Delete)"
+msgstr "ഈ സന്ദേശം നീക്കം ചെയ്യുക (Delete)"
+
+#: src/features/conversation/ChatView.tsx
+msgid "Remove this message?"
+msgstr "ഈ സന്ദേശം നീക്കം ചെയ്യണോ?"
+
+#: src/features/conversation/ChatView.tsx
+msgid "Remove this note?"
+msgstr "ഈ കുറിപ്പ് നീക്കം ചെയ്യണോ?"
+
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Remove this passkey?"
 msgstr "ഈ പാസ്‌കീ നീക്കം ചെയ്യണോ?"
@@ -11760,9 +11804,25 @@ msgstr "ഈ പാസ്‌കീ നീക്കം ചെയ്യണോ?"
 msgid "Remove Yuva's access in Microsoft"
 msgstr "Microsoft-ൽ Yuva-യുടെ ആക്‌സസ് നീക്കം ചെയ്യുക"
 
+#: src/features/conversation/ChatView.tsx
+msgid "Removed"
+msgstr "നീക്കം ചെയ്തു"
+
 #: src/features/settings/audit/sentence.ts
 msgid "Removed {person} from the workspace"
 msgstr "{person}-നെ വർക്ക്‌സ്‌പേസിൽ നിന്ന് നീക്കി"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed a message from a conversation"
+msgstr "സംഭാഷണത്തിൽ നിന്ന് ഒരു സന്ദേശം നീക്കം ചെയ്തു"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed a note from a conversation"
+msgstr "സംഭാഷണത്തിൽ നിന്ന് ഒരു കുറിപ്പ് നീക്കം ചെയ്തു"
+
+#: src/features/conversation/messages/Redacted.tsx
+msgid "Removed by {who}"
+msgstr "{who} നീക്കം ചെയ്തു"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Removes {name} with its products, channels, conversations, contacts, files, labels, webhooks and API keys for everyone. Members keep their accounts."

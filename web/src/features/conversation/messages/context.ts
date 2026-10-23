@@ -15,6 +15,8 @@ export type ThreadContext = {
   find?: { query: string; current?: string }
   onQuote?: (m: Message) => void
   onForward?: (m: Message, to: Member) => void
+  onRemove?: (m: Message) => void
+  canRemove?: (m: Message) => boolean
 }
 
 function nameOf(a: MessageAuthor, ctx: ThreadContext, t: ReturnType<typeof useLingui>["t"]) {

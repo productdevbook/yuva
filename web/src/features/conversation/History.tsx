@@ -2,7 +2,7 @@ import { Plural, Trans, useLingui } from "@lingui/react/macro"
 import { ClockIcon } from "lucide-react"
 import { useNavigate } from "react-router"
 
-import { formatShort, useEnumText } from "@/components/common/text"
+import { formatShort, useEnumText, usePreviewText } from "@/components/common/text"
 import type { ConversationListItem } from "@/lib/api"
 import { Button } from "@/components/ui/button"
 import { Item } from "@/components/ui/item"
@@ -22,6 +22,7 @@ export function History({
 }) {
   const { t, i18n } = useLingui()
   const text = useEnumText()
+  const previewText = usePreviewText()
   const navigate = useNavigate()
   if (others.length === 0) return null
   const n = others.length
@@ -63,7 +64,7 @@ export function History({
             </span>
             {o.last_message && (
               <span className="line-clamp-2">
-                <span className="text-faint">{who}:</span> {o.last_message.text}
+                <span className="text-faint">{who}:</span> {previewText(o.last_message)}
               </span>
             )}
           </Item>

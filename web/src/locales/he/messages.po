@@ -1174,6 +1174,7 @@ msgstr "טיוטה נכתבה"
 msgid "A file's content does not match its type. Check the file and try again."
 msgstr "תוכן הקובץ אינו תואם לסוג שלו. בדוק את הקובץ ונסה שוב."
 
+#: src/features/conversation/messages/Redacted.tsx
 #: src/features/settings/audit/sentence.ts
 msgid "a former member"
 msgstr "חבר/ה לשעבר"
@@ -1237,6 +1238,10 @@ msgstr "הודעה מקבלת עד 3 מאמרים."
 #: src/components/common/text.ts
 msgid "A message was added"
 msgstr "הודעה נוספה"
+
+#: src/components/common/text.ts
+msgid "A message was removed from a thread"
+msgstr "הודעה הוסרה משיחה"
 
 #: src/features/settings/OwnDomainCard.tsx
 msgid "A name you control, like {example}. Yuva then shows you two DNS records to add, and the page answers on the domain once it has seen them."
@@ -2020,6 +2025,7 @@ msgstr "נכס אנליטיקה של תיבת הדואר העלה התראה"
 msgid "An answer was accepted in <0>{title}</0>"
 msgstr "תשובה אושרה ב-<0>{title}</0>"
 
+#: src/features/conversation/messages/Redacted.tsx
 #: src/features/conversation/Trash.tsx
 msgid "an API key"
 msgstr "מפתח API"
@@ -4944,6 +4950,10 @@ msgstr "טיוטה:"
 msgid "Drafts"
 msgstr "טיוטות"
 
+#: src/components/common/text.ts
+msgid "Drafts and timeline events cannot be removed."
+msgstr "לא ניתן להסיר טיוטות ואירועים בציר הזמן."
+
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/inbox/SidePanels.tsx
 msgid "Drafts waiting"
@@ -7046,6 +7056,14 @@ msgstr "הדוח שלה ורשימת הנמענים נמחקים. שיחות ש�
 msgid "Its settings, credentials and progress are deleted. Imported conversations stay."
 msgstr "ההגדרות, פרטי הגישה וההתקדמות שלו נמחקים. שיחות מיובאות נשארות."
 
+#: src/features/conversation/ChatView.tsx
+msgid "Its text and files are deleted for good and the thread shows that you removed it."
+msgstr "הטקסט והקבצים נמחקים לצמיתות, והשיחה תציג שהסרת אותה."
+
+#: src/features/conversation/ChatView.tsx
+msgid "Its text and files are deleted for good and the thread shows that you removed it. A sent e-mail cannot be taken back from the recipient's mailbox."
+msgstr "הטקסט והקבצים נמחקים לצמיתות, והשיחה תציג שהסרת אותה. אי אפשר לשלוף דוא\"ל שנשלח מתיבת הדואר של הנמען."
+
 #: src/features/settings/audit/sentence.ts
 msgid "Joined the workspace as {role}"
 msgstr "הצטרף/ה לסביבת העבודה בתפקיד {role}"
@@ -8003,6 +8021,10 @@ msgstr "הודעה"
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Message copied"
 msgstr "ההודעה הועתקה"
+
+#: src/components/common/text.ts
+msgid "Message removed"
+msgstr "ההודעה הוסרה"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Message type"
@@ -11656,6 +11678,8 @@ msgstr "טעינה מחדש"
 msgid "Remote images can tell the sender that you opened the mail."
 msgstr "תמונות מרוחקות יכולות לומר לשולח שפתחת את האימייל."
 
+#: src/features/conversation/ChatView.tsx
+#: src/features/conversation/messages/MessageActions.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
@@ -11740,6 +11764,14 @@ msgstr "להסיר היסטוריה מיובאת?"
 msgid "Remove the app password you made for Yuva in {provider}; it is not needed any more."
 msgstr "הסר את סיסמת האפליקציה שיצרת עבור Yuva ב-{provider}; היא כבר לא נחוצה."
 
+#: src/components/common/text.ts
+msgid "Remove the content of messages and notes"
+msgstr "הסרת התוכן של הודעות והערות"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Remove the message or note you clicked on"
+msgstr "הסר את ההודעה או ההערה שלחצת עליה"
+
 #: src/features/settings/channels/sections.tsx
 msgid "Remove this channel?"
 msgstr "להסיר את הערוץ הזה?"
@@ -11752,6 +11784,18 @@ msgstr "להסיר את המכשיר הזה?"
 msgid "Remove this endpoint?"
 msgstr "להסיר את נקודת הקצה הזאת?"
 
+#: src/features/conversation/messages/MessageActions.tsx
+msgid "Remove this message (Delete)"
+msgstr "הסר הודעה זו (Delete)"
+
+#: src/features/conversation/ChatView.tsx
+msgid "Remove this message?"
+msgstr "להסיר את ההודעה הזו?"
+
+#: src/features/conversation/ChatView.tsx
+msgid "Remove this note?"
+msgstr "להסיר את ההערה הזו?"
+
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Remove this passkey?"
 msgstr "להסיר את מפתח הגישה הזה?"
@@ -11760,9 +11804,25 @@ msgstr "להסיר את מפתח הגישה הזה?"
 msgid "Remove Yuva's access in Microsoft"
 msgstr "הסרת הגישה של Yuva ב-Microsoft"
 
+#: src/features/conversation/ChatView.tsx
+msgid "Removed"
+msgstr "הוסר"
+
 #: src/features/settings/audit/sentence.ts
 msgid "Removed {person} from the workspace"
 msgstr "הסיר/ה את {person} מסביבת העבודה"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed a message from a conversation"
+msgstr "הסיר הודעה משיחה"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed a note from a conversation"
+msgstr "הסיר הערה משיחה"
+
+#: src/features/conversation/messages/Redacted.tsx
+msgid "Removed by {who}"
+msgstr "הוסר על ידי {who}"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Removes {name} with its products, channels, conversations, contacts, files, labels, webhooks and API keys for everyone. Members keep their accounts."

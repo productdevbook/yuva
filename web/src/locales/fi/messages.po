@@ -1174,6 +1174,7 @@ msgstr "Luonnos kirjoitettiin"
 msgid "A file's content does not match its type. Check the file and try again."
 msgstr "Tiedoston sisältö ei vastaa sen tyyppiä. Tarkista tiedosto ja yritä uudelleen."
 
+#: src/features/conversation/messages/Redacted.tsx
 #: src/features/settings/audit/sentence.ts
 msgid "a former member"
 msgstr "entinen jäsen"
@@ -1237,6 +1238,10 @@ msgstr "Viestiin voi liittää enintään 3 artikkelia."
 #: src/components/common/text.ts
 msgid "A message was added"
 msgstr "Viesti lisättiin"
+
+#: src/components/common/text.ts
+msgid "A message was removed from a thread"
+msgstr "Viesti poistettiin keskustelusta"
 
 #: src/features/settings/OwnDomainCard.tsx
 msgid "A name you control, like {example}. Yuva then shows you two DNS records to add, and the page answers on the domain once it has seen them."
@@ -2020,6 +2025,7 @@ msgstr "Postilaatikon analytiikkaominaisuus antoi hälytyksen"
 msgid "An answer was accepted in <0>{title}</0>"
 msgstr "Vastaus hyväksyttiin keskustelussa <0>{title}</0>"
 
+#: src/features/conversation/messages/Redacted.tsx
 #: src/features/conversation/Trash.tsx
 msgid "an API key"
 msgstr "API-avain"
@@ -4944,6 +4950,10 @@ msgstr "Luonnos:"
 msgid "Drafts"
 msgstr "Luonnokset"
 
+#: src/components/common/text.ts
+msgid "Drafts and timeline events cannot be removed."
+msgstr "Luonnoksia ja aikajanan tapahtumia ei voi poistaa."
+
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/inbox/SidePanels.tsx
 msgid "Drafts waiting"
@@ -7046,6 +7056,14 @@ msgstr "Sen raportti ja vastaanottajalista poistetaan. Vastausten avaamat keskus
 msgid "Its settings, credentials and progress are deleted. Imported conversations stay."
 msgstr "Sen asetukset, tunnukset ja edistyminen poistetaan. Tuodut keskustelut säilyvät."
 
+#: src/features/conversation/ChatView.tsx
+msgid "Its text and files are deleted for good and the thread shows that you removed it."
+msgstr "Sen teksti ja tiedostot poistetaan pysyvästi, ja keskustelussa näkyy, että poistit sen."
+
+#: src/features/conversation/ChatView.tsx
+msgid "Its text and files are deleted for good and the thread shows that you removed it. A sent e-mail cannot be taken back from the recipient's mailbox."
+msgstr "Sen teksti ja tiedostot poistetaan pysyvästi, ja keskustelussa näkyy, että poistit sen. Lähetettyä sähköpostia ei voi palauttaa vastaanottajan postilaatikosta."
+
 #: src/features/settings/audit/sentence.ts
 msgid "Joined the workspace as {role}"
 msgstr "Liittyi työtilaan roolilla {role}"
@@ -8003,6 +8021,10 @@ msgstr "Viesti"
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Message copied"
 msgstr "Viesti kopioitu"
+
+#: src/components/common/text.ts
+msgid "Message removed"
+msgstr "Viesti poistettu"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Message type"
@@ -11656,6 +11678,8 @@ msgstr "Lataa uudelleen"
 msgid "Remote images can tell the sender that you opened the mail."
 msgstr "Etäkuvat voivat kertoa lähettäjälle, että avasit viestin."
 
+#: src/features/conversation/ChatView.tsx
+#: src/features/conversation/messages/MessageActions.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
@@ -11740,6 +11764,14 @@ msgstr "Poistetaanko tuotu historia?"
 msgid "Remove the app password you made for Yuva in {provider}; it is not needed any more."
 msgstr "Poista sovellussalasana, jonka teit Yuvaa varten palvelussa {provider}; sitä ei enää tarvita."
 
+#: src/components/common/text.ts
+msgid "Remove the content of messages and notes"
+msgstr "Poista viestien ja muistiinpanojen sisältö"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Remove the message or note you clicked on"
+msgstr "Poista viesti tai muistiinpano, jota napsautit"
+
 #: src/features/settings/channels/sections.tsx
 msgid "Remove this channel?"
 msgstr "Poistetaanko tämä kanava?"
@@ -11752,6 +11784,18 @@ msgstr "Poistetaanko tämä laite?"
 msgid "Remove this endpoint?"
 msgstr "Poistetaanko tämä päätepiste?"
 
+#: src/features/conversation/messages/MessageActions.tsx
+msgid "Remove this message (Delete)"
+msgstr "Poista tämä viesti (Delete)"
+
+#: src/features/conversation/ChatView.tsx
+msgid "Remove this message?"
+msgstr "Poistetaanko tämä viesti?"
+
+#: src/features/conversation/ChatView.tsx
+msgid "Remove this note?"
+msgstr "Poistetaanko tämä muistiinpano?"
+
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Remove this passkey?"
 msgstr "Poistetaanko tämä pääsyavain?"
@@ -11760,9 +11804,25 @@ msgstr "Poistetaanko tämä pääsyavain?"
 msgid "Remove Yuva's access in Microsoft"
 msgstr "Poista Yuvan pääsy Microsoftissa"
 
+#: src/features/conversation/ChatView.tsx
+msgid "Removed"
+msgstr "Poistettu"
+
 #: src/features/settings/audit/sentence.ts
 msgid "Removed {person} from the workspace"
 msgstr "Poisti käyttäjän {person} työtilasta"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed a message from a conversation"
+msgstr "Poisti viestin keskustelusta"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed a note from a conversation"
+msgstr "Poisti muistiinpanon keskustelusta"
+
+#: src/features/conversation/messages/Redacted.tsx
+msgid "Removed by {who}"
+msgstr "Poistanut {who}"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Removes {name} with its products, channels, conversations, contacts, files, labels, webhooks and API keys for everyone. Members keep their accounts."

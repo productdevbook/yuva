@@ -1174,6 +1174,7 @@ msgstr "S'ha escrit un esborrany"
 msgid "A file's content does not match its type. Check the file and try again."
 msgstr "El contingut d'un fitxer no coincideix amb el seu tipus. Comprova el fitxer i torna-ho a provar."
 
+#: src/features/conversation/messages/Redacted.tsx
 #: src/features/settings/audit/sentence.ts
 msgid "a former member"
 msgstr "un antic membre"
@@ -1237,6 +1238,10 @@ msgstr "Un missatge admet com a màxim 3 articles."
 #: src/components/common/text.ts
 msgid "A message was added"
 msgstr "S'ha afegit un missatge"
+
+#: src/components/common/text.ts
+msgid "A message was removed from a thread"
+msgstr "S'ha eliminat un missatge d'una conversa"
 
 #: src/features/settings/OwnDomainCard.tsx
 msgid "A name you control, like {example}. Yuva then shows you two DNS records to add, and the page answers on the domain once it has seen them."
@@ -2020,6 +2025,7 @@ msgstr "Una propietat d'analítica de la safata ha generat una alerta"
 msgid "An answer was accepted in <0>{title}</0>"
 msgstr "S'ha acceptat una resposta a <0>{title}</0>"
 
+#: src/features/conversation/messages/Redacted.tsx
 #: src/features/conversation/Trash.tsx
 msgid "an API key"
 msgstr "una clau d’API"
@@ -4944,6 +4950,10 @@ msgstr "Esborrany:"
 msgid "Drafts"
 msgstr "Esborranys"
 
+#: src/components/common/text.ts
+msgid "Drafts and timeline events cannot be removed."
+msgstr "Els esborranys i els esdeveniments de la cronologia no es poden eliminar."
+
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/inbox/SidePanels.tsx
 msgid "Drafts waiting"
@@ -7046,6 +7056,14 @@ msgstr "S'eliminen el seu informe i la llista de destinataris. Les converses obe
 msgid "Its settings, credentials and progress are deleted. Imported conversations stay."
 msgstr "S'eliminen la seva configuració, credencials i progrés. Les converses importades es queden."
 
+#: src/features/conversation/ChatView.tsx
+msgid "Its text and files are deleted for good and the thread shows that you removed it."
+msgstr "El seu text i els fitxers se suprimeixen per sempre i la conversa mostra que l'has eliminat."
+
+#: src/features/conversation/ChatView.tsx
+msgid "Its text and files are deleted for good and the thread shows that you removed it. A sent e-mail cannot be taken back from the recipient's mailbox."
+msgstr "El seu text i els fitxers se suprimeixen per sempre i la conversa mostra que l'has eliminat. Un correu ja enviat no es pot recuperar de la bústia del destinatari."
+
 #: src/features/settings/audit/sentence.ts
 msgid "Joined the workspace as {role}"
 msgstr "S'ha unit a l'espai de treball com a {role}"
@@ -8003,6 +8021,10 @@ msgstr "Missatge"
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Message copied"
 msgstr "Missatge copiat"
+
+#: src/components/common/text.ts
+msgid "Message removed"
+msgstr "Missatge eliminat"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Message type"
@@ -11656,6 +11678,8 @@ msgstr "Recarrega"
 msgid "Remote images can tell the sender that you opened the mail."
 msgstr "Les imatges remotes poden dir al remitent que has obert el correu."
 
+#: src/features/conversation/ChatView.tsx
+#: src/features/conversation/messages/MessageActions.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
@@ -11740,6 +11764,14 @@ msgstr "Elimines l'historial importat?"
 msgid "Remove the app password you made for Yuva in {provider}; it is not needed any more."
 msgstr "Elimina la contrasenya d'aplicació que vas fer per a Yuva a {provider}; ja no cal."
 
+#: src/components/common/text.ts
+msgid "Remove the content of messages and notes"
+msgstr "Eliminar el contingut de missatges i notes"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Remove the message or note you clicked on"
+msgstr "Elimina el missatge o la nota on has fet clic"
+
 #: src/features/settings/channels/sections.tsx
 msgid "Remove this channel?"
 msgstr "Elimines aquest canal?"
@@ -11752,6 +11784,18 @@ msgstr "Elimines aquest dispositiu?"
 msgid "Remove this endpoint?"
 msgstr "Elimines aquest endpoint?"
 
+#: src/features/conversation/messages/MessageActions.tsx
+msgid "Remove this message (Delete)"
+msgstr "Elimina aquest missatge (Supr)"
+
+#: src/features/conversation/ChatView.tsx
+msgid "Remove this message?"
+msgstr "Vols eliminar aquest missatge?"
+
+#: src/features/conversation/ChatView.tsx
+msgid "Remove this note?"
+msgstr "Vols eliminar aquesta nota?"
+
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Remove this passkey?"
 msgstr "Elimines aquesta clau d'accés?"
@@ -11760,9 +11804,25 @@ msgstr "Elimines aquesta clau d'accés?"
 msgid "Remove Yuva's access in Microsoft"
 msgstr "Elimina l'accés de Yuva a Microsoft"
 
+#: src/features/conversation/ChatView.tsx
+msgid "Removed"
+msgstr "Eliminat"
+
 #: src/features/settings/audit/sentence.ts
 msgid "Removed {person} from the workspace"
 msgstr "Ha eliminat {person} de l'espai de treball"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed a message from a conversation"
+msgstr "Ha eliminat un missatge d'una conversa"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed a note from a conversation"
+msgstr "Ha eliminat una nota d'una conversa"
+
+#: src/features/conversation/messages/Redacted.tsx
+msgid "Removed by {who}"
+msgstr "Eliminat per {who}"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Removes {name} with its products, channels, conversations, contacts, files, labels, webhooks and API keys for everyone. Members keep their accounts."

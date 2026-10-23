@@ -273,6 +273,27 @@ function replaceMessage(qc: QueryClient, ctx: LiveContext, m: Message) {
   })
 }
 
+function redactPreview(qc: QueryClient, ws: string, m: Message) {
+  for (const [key, data] of listCaches(qc, ws)) {
+    if (!data?.pages.some((p) => p.items.some((x) => x.last_message?.id === m.id))) continue
+    qc.setQueryData<Lists>(key, (old) =>
+      old
+        ? {
+            ...old,
+            pages: old.pages.map((p) => ({
+              ...p,
+              items: p.items.map((x) =>
+                x.last_message?.id === m.id
+                  ? { ...x, last_message: { ...x.last_message, text: "", redacted: true } }
+                  : x
+              ),
+            })),
+          }
+        : old
+    )
+  }
+}
+
 export function applyRead(qc: QueryClient, ws: string, read: ConversationRead) {
   patchItem(qc, ws, read.conversation_id, { unread: read.unread })
 }
@@ -551,6 +572,11 @@ export function applyEvent(qc: QueryClient, ctx: LiveContext, event: LiveEvent) 
       return
     case "message.updated":
       replaceMessage(qc, ctx, event.data)
+      return
+    case "message.redacted":
+      replaceMessage(qc, ctx, event.data)
+      redactPreview(qc, ctx.ws, event.data)
+      if (event.data.kind === "note") refreshMentions(qc, ctx.ws)
       return
     case "draft.created":
       putMessage(qc, ctx.ws, event.data)

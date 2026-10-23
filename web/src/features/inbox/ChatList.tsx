@@ -41,7 +41,7 @@ import {
   VisitorAvatar,
 } from "@/components/common"
 import { keyLabel, mod, SHORTCUTS } from "@/components/common/ShortcutSheet"
-import { formatDuration, formatShort, useErrorText } from "@/components/common/text"
+import { formatDuration, formatShort, useErrorText, usePreviewText } from "@/components/common/text"
 import { useNow } from "@/hooks/use-now"
 import { useConfirm } from "@/components/common/ConfirmDialog"
 import { Alert } from "@/components/ui/alert"
@@ -156,6 +156,7 @@ function Preview({
   subject?: string
 }) {
   const { t } = useLingui()
+  const previewText = usePreviewText()
   const draft = useDraftText(c.id)
   const typing = useTyping(c.id).some((a) => a.type === "contact")
   if (typing) {
@@ -187,7 +188,7 @@ function Preview({
       {(m.author_type === "member" || m.author_type === "bot") && receipts && (
         <Ticks at={m.created_at} readAt={c.last_read_by_contact_at} />
       )}
-      <span className="truncate">{m.text || c.subject}</span>
+      <span className={cn("truncate", m.redacted && "italic")}>{previewText(m) || c.subject}</span>
     </span>
   )
 }

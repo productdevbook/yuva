@@ -1174,6 +1174,7 @@ msgstr "డ్రాఫ్ట్ రాయబడింది"
 msgid "A file's content does not match its type. Check the file and try again."
 msgstr "ఫైల్ కంటెంట్ దాని రకంతో సరిపోలడం లేదు. ఫైల్‌ను తనిఖీ చేసి మళ్లీ ప్రయత్నించండి."
 
+#: src/features/conversation/messages/Redacted.tsx
 #: src/features/settings/audit/sentence.ts
 msgid "a former member"
 msgstr "మాజీ సభ్యుడు"
@@ -1237,6 +1238,10 @@ msgstr "ఒక సందేశంలో గరిష్ఠంగా 3 కథన�
 #: src/components/common/text.ts
 msgid "A message was added"
 msgstr "సందేశం జోడించబడింది"
+
+#: src/components/common/text.ts
+msgid "A message was removed from a thread"
+msgstr "సంభాషణ నుండి ఒక సందేశం తొలగించబడింది"
 
 #: src/features/settings/OwnDomainCard.tsx
 msgid "A name you control, like {example}. Yuva then shows you two DNS records to add, and the page answers on the domain once it has seen them."
@@ -2020,6 +2025,7 @@ msgstr "ఇన్‌బాక్స్ అనలిటిక్స్ ప్ర�
 msgid "An answer was accepted in <0>{title}</0>"
 msgstr "<0>{title}</0> లో ఒక జవాబు ఆమోదించబడింది"
 
+#: src/features/conversation/messages/Redacted.tsx
 #: src/features/conversation/Trash.tsx
 msgid "an API key"
 msgstr "ఒక API కీ"
@@ -4944,6 +4950,10 @@ msgstr "డ్రాఫ్ట్:"
 msgid "Drafts"
 msgstr "డ్రాఫ్ట్‌లు"
 
+#: src/components/common/text.ts
+msgid "Drafts and timeline events cannot be removed."
+msgstr "డ్రాఫ్ట్‌లు మరియు టైమ్‌లైన్ ఈవెంట్‌లను తొలగించలేరు."
+
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/inbox/SidePanels.tsx
 msgid "Drafts waiting"
@@ -7046,6 +7056,14 @@ msgstr "దాని నివేదిక మరియు గ్రహీతల
 msgid "Its settings, credentials and progress are deleted. Imported conversations stay."
 msgstr "దాని సెట్టింగ్‌లు, ఆధారాలు మరియు పురోగతి తొలగించబడతాయి. దిగుమతి చేసిన సంభాషణలు ఉంటాయి."
 
+#: src/features/conversation/ChatView.tsx
+msgid "Its text and files are deleted for good and the thread shows that you removed it."
+msgstr "దాని టెక్స్ట్ మరియు ఫైళ్లు శాశ్వతంగా తొలగించబడతాయి, మీరు దాన్ని తొలగించినట్లు సంభాషణలో కనిపిస్తుంది."
+
+#: src/features/conversation/ChatView.tsx
+msgid "Its text and files are deleted for good and the thread shows that you removed it. A sent e-mail cannot be taken back from the recipient's mailbox."
+msgstr "దాని టెక్స్ట్ మరియు ఫైళ్లు శాశ్వతంగా తొలగించబడతాయి, మీరు దాన్ని తొలగించినట్లు సంభాషణలో కనిపిస్తుంది. పంపిన ఇమెయిల్‌ను గ్రహీత మెయిల్‌బాక్స్ నుండి వెనక్కి తీసుకోలేరు."
+
 #: src/features/settings/audit/sentence.ts
 msgid "Joined the workspace as {role}"
 msgstr "{role}గా వర్క్‌స్పేస్‌లో చేరారు"
@@ -8003,6 +8021,10 @@ msgstr "సందేశం"
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Message copied"
 msgstr "సందేశం కాపీ అయింది"
+
+#: src/components/common/text.ts
+msgid "Message removed"
+msgstr "సందేశం తొలగించబడింది"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Message type"
@@ -11656,6 +11678,8 @@ msgstr "రీలోడ్ చేయండి"
 msgid "Remote images can tell the sender that you opened the mail."
 msgstr "రిమోట్ చిత్రాలు మీరు మెయిల్‌ను తెరిచినట్లు పంపేవారికి తెలియజేయగలవు."
 
+#: src/features/conversation/ChatView.tsx
+#: src/features/conversation/messages/MessageActions.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
@@ -11740,6 +11764,14 @@ msgstr "దిగుమతి చేసిన చరిత్రను తొల
 msgid "Remove the app password you made for Yuva in {provider}; it is not needed any more."
 msgstr "{provider} లో మీరు Yuva కోసం చేసిన యాప్ పాస్‌వర్డ్‌ను తొలగించండి; ఇకపై అది అవసరం లేదు."
 
+#: src/components/common/text.ts
+msgid "Remove the content of messages and notes"
+msgstr "సందేశాలు మరియు గమనికల కంటెంట్‌ను తొలగించండి"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Remove the message or note you clicked on"
+msgstr "మీరు క్లిక్ చేసిన సందేశం లేదా గమనికను తొలగించండి"
+
 #: src/features/settings/channels/sections.tsx
 msgid "Remove this channel?"
 msgstr "ఈ ఛానెల్‌ను తొలగించాలా?"
@@ -11752,6 +11784,18 @@ msgstr "ఈ పరికరాన్ని తొలగించాలా?"
 msgid "Remove this endpoint?"
 msgstr "ఈ ఎండ్‌పాయింట్‌ను తొలగించాలా?"
 
+#: src/features/conversation/messages/MessageActions.tsx
+msgid "Remove this message (Delete)"
+msgstr "ఈ సందేశాన్ని తొలగించండి (Delete)"
+
+#: src/features/conversation/ChatView.tsx
+msgid "Remove this message?"
+msgstr "ఈ సందేశాన్ని తొలగించాలా?"
+
+#: src/features/conversation/ChatView.tsx
+msgid "Remove this note?"
+msgstr "ఈ గమనికను తొలగించాలా?"
+
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Remove this passkey?"
 msgstr "ఈ పాస్‌కీని తొలగించాలా?"
@@ -11760,9 +11804,25 @@ msgstr "ఈ పాస్‌కీని తొలగించాలా?"
 msgid "Remove Yuva's access in Microsoft"
 msgstr "Microsoft లో Yuva యాక్సెస్‌ను తొలగించండి"
 
+#: src/features/conversation/ChatView.tsx
+msgid "Removed"
+msgstr "తొలగించబడింది"
+
 #: src/features/settings/audit/sentence.ts
 msgid "Removed {person} from the workspace"
 msgstr "{person}ను వర్క్‌స్పేస్ నుండి తీసివేశారు"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed a message from a conversation"
+msgstr "సంభాషణ నుండి ఒక సందేశాన్ని తొలగించారు"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed a note from a conversation"
+msgstr "సంభాషణ నుండి ఒక గమనికను తొలగించారు"
+
+#: src/features/conversation/messages/Redacted.tsx
+msgid "Removed by {who}"
+msgstr "{who} తొలగించారు"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Removes {name} with its products, channels, conversations, contacts, files, labels, webhooks and API keys for everyone. Members keep their accounts."

@@ -40,7 +40,8 @@ export function MessageActions({ m, ctx, className }: { m: Message; ctx: ThreadC
   const { t } = useLingui()
   const { membership } = useSession()
   const mates = useAssignableMembers(ctx.inboxId).filter((x) => x.id !== membership.member_id)
-  if (!ctx.onQuote && !ctx.onForward) return null
+  const removable = !!ctx.onRemove && !!ctx.canRemove?.(m)
+  if (!ctx.onQuote && !ctx.onForward && !removable) return null
   const text = m.body.trim()
   const copy = () =>
     navigator.clipboard.writeText(text).then(
@@ -65,6 +66,17 @@ export function MessageActions({ m, ctx, className }: { m: Message; ctx: ThreadC
       {text && (
         <button type="button" className={link} onClick={copy} data-testid="message-copy">
           <Trans>Copy</Trans>
+        </button>
+      )}
+      {removable && (
+        <button
+          type="button"
+          className={cn(link, "hover:text-destructive")}
+          onClick={() => ctx.onRemove?.(m)}
+          title={t`Remove this message (Delete)`}
+          data-testid="message-remove"
+        >
+          <Trans>Remove</Trans>
         </button>
       )}
       {ctx.onForward && (

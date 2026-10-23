@@ -1174,6 +1174,7 @@ msgstr "ドラフトが作成されたとき"
 msgid "A file's content does not match its type. Check the file and try again."
 msgstr "ファイルの内容が種類と一致しません。ファイルを確認して、もう一度お試しください。"
 
+#: src/features/conversation/messages/Redacted.tsx
 #: src/features/settings/audit/sentence.ts
 msgid "a former member"
 msgstr "元メンバー"
@@ -1237,6 +1238,10 @@ msgstr "1 通のメッセージに付けられる記事は最大 3 件です。"
 #: src/components/common/text.ts
 msgid "A message was added"
 msgstr "メッセージが追加されたとき"
+
+#: src/components/common/text.ts
+msgid "A message was removed from a thread"
+msgstr "スレッドからメッセージが削除されました"
 
 #: src/features/settings/OwnDomainCard.tsx
 msgid "A name you control, like {example}. Yuva then shows you two DNS records to add, and the page answers on the domain once it has seen them."
@@ -2020,6 +2025,7 @@ msgstr "受信トレイのアナリティクスプロパティがアラートを
 msgid "An answer was accepted in <0>{title}</0>"
 msgstr "<0>{title}</0> で回答が承認されました"
 
+#: src/features/conversation/messages/Redacted.tsx
 #: src/features/conversation/Trash.tsx
 msgid "an API key"
 msgstr "API キー"
@@ -4944,6 +4950,10 @@ msgstr "ドラフト:"
 msgid "Drafts"
 msgstr "ドラフト"
 
+#: src/components/common/text.ts
+msgid "Drafts and timeline events cannot be removed."
+msgstr "下書きとタイムラインのイベントは削除できません。"
+
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/inbox/SidePanels.tsx
 msgid "Drafts waiting"
@@ -7046,6 +7056,14 @@ msgstr "レポートと宛先リストが削除されます。返信で始まっ
 msgid "Its settings, credentials and progress are deleted. Imported conversations stay."
 msgstr "設定、認証情報、進捗が削除されます。インポート済みの会話は残ります。"
 
+#: src/features/conversation/ChatView.tsx
+msgid "Its text and files are deleted for good and the thread shows that you removed it."
+msgstr "本文とファイルは完全に削除され、スレッドには削除したことが表示されます。"
+
+#: src/features/conversation/ChatView.tsx
+msgid "Its text and files are deleted for good and the thread shows that you removed it. A sent e-mail cannot be taken back from the recipient's mailbox."
+msgstr "本文とファイルは完全に削除され、スレッドには削除したことが表示されます。 送信済みのメールは、受信者のメールボックスから取り戻すことはできません。"
+
 #: src/features/settings/audit/sentence.ts
 msgid "Joined the workspace as {role}"
 msgstr "{role} としてワークスペースに参加しました"
@@ -8003,6 +8021,10 @@ msgstr "メッセージ"
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Message copied"
 msgstr "メッセージをコピーしました"
+
+#: src/components/common/text.ts
+msgid "Message removed"
+msgstr "メッセージは削除されました"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Message type"
@@ -11656,6 +11678,8 @@ msgstr "再読み込み"
 msgid "Remote images can tell the sender that you opened the mail."
 msgstr "リモート画像により、メールを開いたことが送信者に伝わる場合があります。"
 
+#: src/features/conversation/ChatView.tsx
+#: src/features/conversation/messages/MessageActions.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
@@ -11740,6 +11764,14 @@ msgstr "インポートした履歴を削除しますか?"
 msgid "Remove the app password you made for Yuva in {provider}; it is not needed any more."
 msgstr "Yuva 用に {provider} で作成したアプリパスワードを削除してください。もう必要ありません。"
 
+#: src/components/common/text.ts
+msgid "Remove the content of messages and notes"
+msgstr "メッセージとノートの内容を削除する"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Remove the message or note you clicked on"
+msgstr "クリックしたメッセージまたはノートを削除"
+
 #: src/features/settings/channels/sections.tsx
 msgid "Remove this channel?"
 msgstr "このチャネルを削除しますか?"
@@ -11752,6 +11784,18 @@ msgstr "このデバイスを削除しますか?"
 msgid "Remove this endpoint?"
 msgstr "このエンドポイントを削除しますか?"
 
+#: src/features/conversation/messages/MessageActions.tsx
+msgid "Remove this message (Delete)"
+msgstr "このメッセージを削除 (Delete)"
+
+#: src/features/conversation/ChatView.tsx
+msgid "Remove this message?"
+msgstr "このメッセージを削除しますか？"
+
+#: src/features/conversation/ChatView.tsx
+msgid "Remove this note?"
+msgstr "このノートを削除しますか？"
+
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Remove this passkey?"
 msgstr "このパスキーを削除しますか?"
@@ -11760,9 +11804,25 @@ msgstr "このパスキーを削除しますか?"
 msgid "Remove Yuva's access in Microsoft"
 msgstr "Microsoft で Yuva のアクセスを削除"
 
+#: src/features/conversation/ChatView.tsx
+msgid "Removed"
+msgstr "削除しました"
+
 #: src/features/settings/audit/sentence.ts
 msgid "Removed {person} from the workspace"
 msgstr "{person} をワークスペースから削除しました"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed a message from a conversation"
+msgstr "会話からメッセージを削除しました"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed a note from a conversation"
+msgstr "会話からノートを削除しました"
+
+#: src/features/conversation/messages/Redacted.tsx
+msgid "Removed by {who}"
+msgstr "{who} が削除"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Removes {name} with its products, channels, conversations, contacts, files, labels, webhooks and API keys for everyone. Members keep their accounts."

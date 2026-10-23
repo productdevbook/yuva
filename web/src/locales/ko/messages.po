@@ -1174,6 +1174,7 @@ msgstr "초안이 작성되었을 때"
 msgid "A file's content does not match its type. Check the file and try again."
 msgstr "파일 내용이 형식과 일치하지 않습니다. 파일을 확인하고 다시 시도하세요."
 
+#: src/features/conversation/messages/Redacted.tsx
 #: src/features/settings/audit/sentence.ts
 msgid "a former member"
 msgstr "이전 멤버"
@@ -1237,6 +1238,10 @@ msgstr "메시지 하나에는 문서를 최대 3개까지 넣을 수 있습니�
 #: src/components/common/text.ts
 msgid "A message was added"
 msgstr "메시지가 추가되었을 때"
+
+#: src/components/common/text.ts
+msgid "A message was removed from a thread"
+msgstr "대화에서 메시지가 삭제되었습니다"
 
 #: src/features/settings/OwnDomainCard.tsx
 msgid "A name you control, like {example}. Yuva then shows you two DNS records to add, and the page answers on the domain once it has seen them."
@@ -2020,6 +2025,7 @@ msgstr "받은 편지함의 분석 속성이 경고를 발생시켰을 때"
 msgid "An answer was accepted in <0>{title}</0>"
 msgstr "<0>{title}</0>에서 답변이 채택되었습니다"
 
+#: src/features/conversation/messages/Redacted.tsx
 #: src/features/conversation/Trash.tsx
 msgid "an API key"
 msgstr "API 키"
@@ -4944,6 +4950,10 @@ msgstr "초안:"
 msgid "Drafts"
 msgstr "초안"
 
+#: src/components/common/text.ts
+msgid "Drafts and timeline events cannot be removed."
+msgstr "임시 보관 답장과 타임라인 이벤트는 삭제할 수 없습니다."
+
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/inbox/SidePanels.tsx
 msgid "Drafts waiting"
@@ -7046,6 +7056,14 @@ msgstr "보고서와 수신자 목록이 삭제됩니다. 답장으로 열린 �
 msgid "Its settings, credentials and progress are deleted. Imported conversations stay."
 msgstr "설정, 자격 증명, 진행 상황이 삭제됩니다. 가져온 대화는 유지됩니다."
 
+#: src/features/conversation/ChatView.tsx
+msgid "Its text and files are deleted for good and the thread shows that you removed it."
+msgstr "텍스트와 파일이 영구적으로 삭제되고, 대화에는 삭제한 사실이 표시됩니다."
+
+#: src/features/conversation/ChatView.tsx
+msgid "Its text and files are deleted for good and the thread shows that you removed it. A sent e-mail cannot be taken back from the recipient's mailbox."
+msgstr "텍스트와 파일이 영구적으로 삭제되고, 대화에는 삭제한 사실이 표시됩니다. 이미 보낸 이메일은 받는 사람의 편지함에서 회수할 수 없습니다."
+
 #: src/features/settings/audit/sentence.ts
 msgid "Joined the workspace as {role}"
 msgstr "{role}(으)로 워크스페이스에 참여했습니다"
@@ -8003,6 +8021,10 @@ msgstr "메시지"
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Message copied"
 msgstr "메시지를 복사했습니다"
+
+#: src/components/common/text.ts
+msgid "Message removed"
+msgstr "삭제된 메시지"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Message type"
@@ -11656,6 +11678,8 @@ msgstr "다시 불러오기"
 msgid "Remote images can tell the sender that you opened the mail."
 msgstr "원격 이미지는 보낸 사람에게 메일을 열었음을 알릴 수 있습니다."
 
+#: src/features/conversation/ChatView.tsx
+#: src/features/conversation/messages/MessageActions.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
@@ -11740,6 +11764,14 @@ msgstr "가져온 기록을 제거할까요?"
 msgid "Remove the app password you made for Yuva in {provider}; it is not needed any more."
 msgstr "Yuva용으로 {provider}에서 만든 앱 비밀번호를 제거하세요. 더 이상 필요하지 않습니다."
 
+#: src/components/common/text.ts
+msgid "Remove the content of messages and notes"
+msgstr "메시지와 메모의 내용 삭제"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Remove the message or note you clicked on"
+msgstr "클릭한 메시지 또는 메모 삭제"
+
 #: src/features/settings/channels/sections.tsx
 msgid "Remove this channel?"
 msgstr "이 채널을 제거할까요?"
@@ -11752,6 +11784,18 @@ msgstr "이 기기를 제거할까요?"
 msgid "Remove this endpoint?"
 msgstr "이 엔드포인트를 제거할까요?"
 
+#: src/features/conversation/messages/MessageActions.tsx
+msgid "Remove this message (Delete)"
+msgstr "이 메시지 삭제 (Delete)"
+
+#: src/features/conversation/ChatView.tsx
+msgid "Remove this message?"
+msgstr "이 메시지를 삭제할까요?"
+
+#: src/features/conversation/ChatView.tsx
+msgid "Remove this note?"
+msgstr "이 메모를 삭제할까요?"
+
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Remove this passkey?"
 msgstr "이 패스키를 제거할까요?"
@@ -11760,9 +11804,25 @@ msgstr "이 패스키를 제거할까요?"
 msgid "Remove Yuva's access in Microsoft"
 msgstr "Microsoft에서 Yuva의 접근 권한 제거"
 
+#: src/features/conversation/ChatView.tsx
+msgid "Removed"
+msgstr "삭제됨"
+
 #: src/features/settings/audit/sentence.ts
 msgid "Removed {person} from the workspace"
 msgstr "{person} 님을 워크스페이스에서 제거했습니다"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed a message from a conversation"
+msgstr "대화에서 메시지를 삭제했습니다"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed a note from a conversation"
+msgstr "대화에서 메모를 삭제했습니다"
+
+#: src/features/conversation/messages/Redacted.tsx
+msgid "Removed by {who}"
+msgstr "{who}님이 삭제함"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Removes {name} with its products, channels, conversations, contacts, files, labels, webhooks and API keys for everyone. Members keep their accounts."

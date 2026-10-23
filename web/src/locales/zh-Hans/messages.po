@@ -1174,6 +1174,7 @@ msgstr "草稿被撰写时"
 msgid "A file's content does not match its type. Check the file and try again."
 msgstr "文件内容与其类型不符。请检查文件后重试。"
 
+#: src/features/conversation/messages/Redacted.tsx
 #: src/features/settings/audit/sentence.ts
 msgid "a former member"
 msgstr "前成员"
@@ -1237,6 +1238,10 @@ msgstr "一条消息最多可附 3 篇文章。"
 #: src/components/common/text.ts
 msgid "A message was added"
 msgstr "添加了消息时"
+
+#: src/components/common/text.ts
+msgid "A message was removed from a thread"
+msgstr "一条消息已从对话中移除"
 
 #: src/features/settings/OwnDomainCard.tsx
 msgid "A name you control, like {example}. Yuva then shows you two DNS records to add, and the page answers on the domain once it has seen them."
@@ -2020,6 +2025,7 @@ msgstr "收件箱的分析属性触发了警报时"
 msgid "An answer was accepted in <0>{title}</0>"
 msgstr "<0>{title}</0> 中有回答被采纳"
 
+#: src/features/conversation/messages/Redacted.tsx
 #: src/features/conversation/Trash.tsx
 msgid "an API key"
 msgstr "API 密钥"
@@ -4944,6 +4950,10 @@ msgstr "草稿:"
 msgid "Drafts"
 msgstr "草稿"
 
+#: src/components/common/text.ts
+msgid "Drafts and timeline events cannot be removed."
+msgstr "草稿和时间线事件无法移除。"
+
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/inbox/SidePanels.tsx
 msgid "Drafts waiting"
@@ -7046,6 +7056,14 @@ msgstr "它的报告和收件人列表会被删除。由回复打开的对话会
 msgid "Its settings, credentials and progress are deleted. Imported conversations stay."
 msgstr "它的设置、凭据和进度会被删除。已导入的对话会保留。"
 
+#: src/features/conversation/ChatView.tsx
+msgid "Its text and files are deleted for good and the thread shows that you removed it."
+msgstr "其文字和文件将被永久删除，对话中会显示是你移除的。"
+
+#: src/features/conversation/ChatView.tsx
+msgid "Its text and files are deleted for good and the thread shows that you removed it. A sent e-mail cannot be taken back from the recipient's mailbox."
+msgstr "其文字和文件将被永久删除，对话中会显示是你移除的。 已发送的电子邮件无法从收件人的邮箱中撤回。"
+
 #: src/features/settings/audit/sentence.ts
 msgid "Joined the workspace as {role}"
 msgstr "以{role}身份加入了工作区"
@@ -8003,6 +8021,10 @@ msgstr "消息"
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Message copied"
 msgstr "消息已复制"
+
+#: src/components/common/text.ts
+msgid "Message removed"
+msgstr "消息已移除"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Message type"
@@ -11656,6 +11678,8 @@ msgstr "重新加载"
 msgid "Remote images can tell the sender that you opened the mail."
 msgstr "远程图片可能会让发件人知道你已打开邮件。"
 
+#: src/features/conversation/ChatView.tsx
+#: src/features/conversation/messages/MessageActions.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
@@ -11740,6 +11764,14 @@ msgstr "移除导入的历史记录?"
 msgid "Remove the app password you made for Yuva in {provider}; it is not needed any more."
 msgstr "请在 {provider} 中移除你为 Yuva 创建的应用专用密码;它不再需要了。"
 
+#: src/components/common/text.ts
+msgid "Remove the content of messages and notes"
+msgstr "移除消息和备注的内容"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Remove the message or note you clicked on"
+msgstr "移除你点击的消息或备注"
+
 #: src/features/settings/channels/sections.tsx
 msgid "Remove this channel?"
 msgstr "移除此渠道?"
@@ -11752,6 +11784,18 @@ msgstr "移除此设备?"
 msgid "Remove this endpoint?"
 msgstr "移除此端点?"
 
+#: src/features/conversation/messages/MessageActions.tsx
+msgid "Remove this message (Delete)"
+msgstr "移除此消息 (Delete)"
+
+#: src/features/conversation/ChatView.tsx
+msgid "Remove this message?"
+msgstr "移除这条消息？"
+
+#: src/features/conversation/ChatView.tsx
+msgid "Remove this note?"
+msgstr "移除这条备注？"
+
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Remove this passkey?"
 msgstr "移除此通行密钥?"
@@ -11760,9 +11804,25 @@ msgstr "移除此通行密钥?"
 msgid "Remove Yuva's access in Microsoft"
 msgstr "在 Microsoft 中移除 Yuva 的访问权限"
 
+#: src/features/conversation/ChatView.tsx
+msgid "Removed"
+msgstr "已移除"
+
 #: src/features/settings/audit/sentence.ts
 msgid "Removed {person} from the workspace"
 msgstr "将 {person} 移出了工作区"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed a message from a conversation"
+msgstr "从对话中移除了一条消息"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed a note from a conversation"
+msgstr "从对话中移除了一条备注"
+
+#: src/features/conversation/messages/Redacted.tsx
+msgid "Removed by {who}"
+msgstr "由 {who} 移除"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Removes {name} with its products, channels, conversations, contacts, files, labels, webhooks and API keys for everyone. Members keep their accounts."

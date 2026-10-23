@@ -1174,6 +1174,7 @@ msgstr "Bir taslak yazıldı"
 msgid "A file's content does not match its type. Check the file and try again."
 msgstr "Bir dosyanın içeriği türüyle uyuşmuyor. Dosyayı kontrol edip yeniden deneyin."
 
+#: src/features/conversation/messages/Redacted.tsx
 #: src/features/settings/audit/sentence.ts
 msgid "a former member"
 msgstr "eski bir üye"
@@ -1237,6 +1238,10 @@ msgstr "Bir mesaja en fazla 3 makale eklenebilir."
 #: src/components/common/text.ts
 msgid "A message was added"
 msgstr "Bir mesaj eklendi"
+
+#: src/components/common/text.ts
+msgid "A message was removed from a thread"
+msgstr "Bir ileti konuşmadan kaldırıldı"
 
 #: src/features/settings/OwnDomainCard.tsx
 msgid "A name you control, like {example}. Yuva then shows you two DNS records to add, and the page answers on the domain once it has seen them."
@@ -2020,6 +2025,7 @@ msgstr "Gelen kutusunun bir analitik mülkü uyarı verdi"
 msgid "An answer was accepted in <0>{title}</0>"
 msgstr "<0>{title}</0> tartışmasında bir yanıt kabul edildi"
 
+#: src/features/conversation/messages/Redacted.tsx
 #: src/features/conversation/Trash.tsx
 msgid "an API key"
 msgstr "bir API anahtarı"
@@ -4944,6 +4950,10 @@ msgstr "Taslak:"
 msgid "Drafts"
 msgstr "Taslaklar"
 
+#: src/components/common/text.ts
+msgid "Drafts and timeline events cannot be removed."
+msgstr "Taslaklar ve zaman çizelgesi olayları kaldırılamaz."
+
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/inbox/SidePanels.tsx
 msgid "Drafts waiting"
@@ -7046,6 +7056,14 @@ msgstr "Raporu ve alıcı listesi silinir. Yanıtlarla açılan konuşmalar kal�
 msgid "Its settings, credentials and progress are deleted. Imported conversations stay."
 msgstr "Ayarları, erişim bilgileri ve ilerlemesi silinir. Aktarılan konuşmalar kalır."
 
+#: src/features/conversation/ChatView.tsx
+msgid "Its text and files are deleted for good and the thread shows that you removed it."
+msgstr "Metni ve dosyaları kalıcı olarak silinir ve konuşmada sizin kaldırdığınız görünür."
+
+#: src/features/conversation/ChatView.tsx
+msgid "Its text and files are deleted for good and the thread shows that you removed it. A sent e-mail cannot be taken back from the recipient's mailbox."
+msgstr "Metni ve dosyaları kalıcı olarak silinir ve konuşmada sizin kaldırdığınız görünür. Gönderilmiş bir e-posta alıcının posta kutusundan geri alınamaz."
+
 #: src/features/settings/audit/sentence.ts
 msgid "Joined the workspace as {role}"
 msgstr "Çalışma alanına {role} olarak katıldı"
@@ -8003,6 +8021,10 @@ msgstr "Mesaj"
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Message copied"
 msgstr "Mesaj kopyalandı"
+
+#: src/components/common/text.ts
+msgid "Message removed"
+msgstr "İleti kaldırıldı"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Message type"
@@ -11656,6 +11678,8 @@ msgstr "Yenile"
 msgid "Remote images can tell the sender that you opened the mail."
 msgstr "Uzak görseller, postayı açtığınızı gönderene bildirebilir."
 
+#: src/features/conversation/ChatView.tsx
+#: src/features/conversation/messages/MessageActions.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
@@ -11740,6 +11764,14 @@ msgstr "Aktarılan geçmiş kaldırılsın mı?"
 msgid "Remove the app password you made for Yuva in {provider}; it is not needed any more."
 msgstr "Yuva için oluşturduğunuz uygulama şifresini {provider} içinden kaldırın; artık gerekmiyor."
 
+#: src/components/common/text.ts
+msgid "Remove the content of messages and notes"
+msgstr "İletilerin ve notların içeriğini kaldırma"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Remove the message or note you clicked on"
+msgstr "Tıkladığınız iletiyi veya notu kaldır"
+
 #: src/features/settings/channels/sections.tsx
 msgid "Remove this channel?"
 msgstr "Bu kanal kaldırılsın mı?"
@@ -11752,6 +11784,18 @@ msgstr "Bu cihaz kaldırılsın mı?"
 msgid "Remove this endpoint?"
 msgstr "Bu uç nokta kaldırılsın mı?"
 
+#: src/features/conversation/messages/MessageActions.tsx
+msgid "Remove this message (Delete)"
+msgstr "Bu iletiyi kaldır (Delete)"
+
+#: src/features/conversation/ChatView.tsx
+msgid "Remove this message?"
+msgstr "Bu ileti kaldırılsın mı?"
+
+#: src/features/conversation/ChatView.tsx
+msgid "Remove this note?"
+msgstr "Bu not kaldırılsın mı?"
+
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Remove this passkey?"
 msgstr "Bu geçiş anahtarı kaldırılsın mı?"
@@ -11760,9 +11804,25 @@ msgstr "Bu geçiş anahtarı kaldırılsın mı?"
 msgid "Remove Yuva's access in Microsoft"
 msgstr "Yuva'nın Microsoft'taki erişimini kaldırın"
 
+#: src/features/conversation/ChatView.tsx
+msgid "Removed"
+msgstr "Kaldırıldı"
+
 #: src/features/settings/audit/sentence.ts
 msgid "Removed {person} from the workspace"
 msgstr "{person} kişisini çalışma alanından çıkardı"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed a message from a conversation"
+msgstr "Bir konuşmadan bir ileti kaldırdı"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed a note from a conversation"
+msgstr "Bir konuşmadan bir not kaldırdı"
+
+#: src/features/conversation/messages/Redacted.tsx
+msgid "Removed by {who}"
+msgstr "{who} kaldırdı"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Removes {name} with its products, channels, conversations, contacts, files, labels, webhooks and API keys for everyone. Members keep their accounts."

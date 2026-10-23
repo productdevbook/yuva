@@ -1174,6 +1174,7 @@ msgstr "Et utkast ble skrevet"
 msgid "A file's content does not match its type. Check the file and try again."
 msgstr "Innholdet i en fil stemmer ikke med typen. Sjekk filen og prøv igjen."
 
+#: src/features/conversation/messages/Redacted.tsx
 #: src/features/settings/audit/sentence.ts
 msgid "a former member"
 msgstr "et tidligere medlem"
@@ -1237,6 +1238,10 @@ msgstr "En besked tager højst 3 artikler."
 #: src/components/common/text.ts
 msgid "A message was added"
 msgstr "En melding ble lagt til"
+
+#: src/components/common/text.ts
+msgid "A message was removed from a thread"
+msgstr "En melding ble fjernet fra en samtale"
 
 #: src/features/settings/OwnDomainCard.tsx
 msgid "A name you control, like {example}. Yuva then shows you two DNS records to add, and the page answers on the domain once it has seen them."
@@ -2020,6 +2025,7 @@ msgstr "En analytics-property i postboksen utløste et varsel"
 msgid "An answer was accepted in <0>{title}</0>"
 msgstr "Et svar ble godkjent i <0>{title}</0>"
 
+#: src/features/conversation/messages/Redacted.tsx
 #: src/features/conversation/Trash.tsx
 msgid "an API key"
 msgstr "en API-nøkkel"
@@ -4944,6 +4950,10 @@ msgstr "Utkast:"
 msgid "Drafts"
 msgstr "Utkast"
 
+#: src/components/common/text.ts
+msgid "Drafts and timeline events cannot be removed."
+msgstr "Utkast og hendelser i tidslinjen kan ikke fjernes."
+
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/inbox/SidePanels.tsx
 msgid "Drafts waiting"
@@ -7046,6 +7056,14 @@ msgstr "Rapporten og mottakerlisten slettes. Samtaler åpnet av svar blir væren
 msgid "Its settings, credentials and progress are deleted. Imported conversations stay."
 msgstr "Innstillingene, påloggingsopplysningene og framdriften slettes. Importerte samtaler blir værende."
 
+#: src/features/conversation/ChatView.tsx
+msgid "Its text and files are deleted for good and the thread shows that you removed it."
+msgstr "Teksten og filene slettes for godt, og samtalen viser at du fjernet den."
+
+#: src/features/conversation/ChatView.tsx
+msgid "Its text and files are deleted for good and the thread shows that you removed it. A sent e-mail cannot be taken back from the recipient's mailbox."
+msgstr "Teksten og filene slettes for godt, og samtalen viser at du fjernet den. En sendt e-post kan ikke hentes tilbake fra mottakerens postboks."
+
 #: src/features/settings/audit/sentence.ts
 msgid "Joined the workspace as {role}"
 msgstr "Ble med i arbeidsområdet som {role}"
@@ -8003,6 +8021,10 @@ msgstr "Melding"
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Message copied"
 msgstr "Melding kopiert"
+
+#: src/components/common/text.ts
+msgid "Message removed"
+msgstr "Melding fjernet"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Message type"
@@ -11656,6 +11678,8 @@ msgstr "Last på nytt"
 msgid "Remote images can tell the sender that you opened the mail."
 msgstr "Eksterne bilder kan fortelle avsenderen at du åpnet e-posten."
 
+#: src/features/conversation/ChatView.tsx
+#: src/features/conversation/messages/MessageActions.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
@@ -11740,6 +11764,14 @@ msgstr "Fjerne importert historikk?"
 msgid "Remove the app password you made for Yuva in {provider}; it is not needed any more."
 msgstr "Fjern app-passordet du opprettet for Yuva hos {provider}; det trengs ikke lenger."
 
+#: src/components/common/text.ts
+msgid "Remove the content of messages and notes"
+msgstr "Fjern innholdet i meldinger og notater"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Remove the message or note you clicked on"
+msgstr "Fjern meldingen eller notatet du klikket på"
+
 #: src/features/settings/channels/sections.tsx
 msgid "Remove this channel?"
 msgstr "Fjerne denne kanalen?"
@@ -11752,6 +11784,18 @@ msgstr "Fjerne denne enheten?"
 msgid "Remove this endpoint?"
 msgstr "Fjerne dette endepunktet?"
 
+#: src/features/conversation/messages/MessageActions.tsx
+msgid "Remove this message (Delete)"
+msgstr "Fjern denne meldingen (Delete)"
+
+#: src/features/conversation/ChatView.tsx
+msgid "Remove this message?"
+msgstr "Vil du fjerne denne meldingen?"
+
+#: src/features/conversation/ChatView.tsx
+msgid "Remove this note?"
+msgstr "Vil du fjerne dette notatet?"
+
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Remove this passkey?"
 msgstr "Fjerne denne passkeyen?"
@@ -11760,9 +11804,25 @@ msgstr "Fjerne denne passkeyen?"
 msgid "Remove Yuva's access in Microsoft"
 msgstr "Fjern Yuvas tilgang i Microsoft"
 
+#: src/features/conversation/ChatView.tsx
+msgid "Removed"
+msgstr "Fjernet"
+
 #: src/features/settings/audit/sentence.ts
 msgid "Removed {person} from the workspace"
 msgstr "Fjernet {person} fra arbeidsområdet"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed a message from a conversation"
+msgstr "Fjernet en melding fra en samtale"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed a note from a conversation"
+msgstr "Fjernet et notat fra en samtale"
+
+#: src/features/conversation/messages/Redacted.tsx
+msgid "Removed by {who}"
+msgstr "Fjernet av {who}"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Removes {name} with its products, channels, conversations, contacts, files, labels, webhooks and API keys for everyone. Members keep their accounts."

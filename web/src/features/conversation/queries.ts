@@ -147,6 +147,16 @@ export function useSendMessage(conversationId: string) {
   })
 }
 
+export function useRedactMessage() {
+  const qc = useQueryClient()
+  const live = useLiveContext()
+  return useMutation({
+    mutationFn: (m: Message) =>
+      unwrap(api.POST("/v1/messages/{messageId}/redact", { params: { path: { messageId: m.id } } })),
+    onSuccess: (data) => applyEvent(qc, live, { type: "message.redacted", data }),
+  })
+}
+
 export function useDraftActions() {
   const qc = useQueryClient()
   const live = useLiveContext()

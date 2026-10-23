@@ -1174,6 +1174,7 @@ msgstr "Se escribió un borrador"
 msgid "A file's content does not match its type. Check the file and try again."
 msgstr "El contenido de un archivo no coincide con su tipo. Revisa el archivo y vuelve a intentarlo."
 
+#: src/features/conversation/messages/Redacted.tsx
 #: src/features/settings/audit/sentence.ts
 msgid "a former member"
 msgstr "un antiguo miembro"
@@ -1237,6 +1238,10 @@ msgstr "Un mensaje admite como máximo 3 artículos."
 #: src/components/common/text.ts
 msgid "A message was added"
 msgstr "Se añadió un mensaje"
+
+#: src/components/common/text.ts
+msgid "A message was removed from a thread"
+msgstr "Se quitó un mensaje de una conversación"
 
 #: src/features/settings/OwnDomainCard.tsx
 msgid "A name you control, like {example}. Yuva then shows you two DNS records to add, and the page answers on the domain once it has seen them."
@@ -2020,6 +2025,7 @@ msgstr "Una propiedad de analítica del buzón activó una alerta"
 msgid "An answer was accepted in <0>{title}</0>"
 msgstr "Se aceptó una respuesta en <0>{title}</0>"
 
+#: src/features/conversation/messages/Redacted.tsx
 #: src/features/conversation/Trash.tsx
 msgid "an API key"
 msgstr "una clave de API"
@@ -4944,6 +4950,10 @@ msgstr "Borrador:"
 msgid "Drafts"
 msgstr "Borradores"
 
+#: src/components/common/text.ts
+msgid "Drafts and timeline events cannot be removed."
+msgstr "Los borradores y los eventos de la cronología no se pueden quitar."
+
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/inbox/SidePanels.tsx
 msgid "Drafts waiting"
@@ -7046,6 +7056,14 @@ msgstr "Se eliminan su informe y la lista de destinatarios. Las conversaciones a
 msgid "Its settings, credentials and progress are deleted. Imported conversations stay."
 msgstr "Se eliminan su configuración, credenciales y progreso. Las conversaciones importadas se quedan."
 
+#: src/features/conversation/ChatView.tsx
+msgid "Its text and files are deleted for good and the thread shows that you removed it."
+msgstr "Su texto y sus archivos se eliminan para siempre y la conversación muestra que lo quitaste."
+
+#: src/features/conversation/ChatView.tsx
+msgid "Its text and files are deleted for good and the thread shows that you removed it. A sent e-mail cannot be taken back from the recipient's mailbox."
+msgstr "Su texto y sus archivos se eliminan para siempre y la conversación muestra que lo quitaste. Un correo ya enviado no se puede recuperar del buzón del destinatario."
+
 #: src/features/settings/audit/sentence.ts
 msgid "Joined the workspace as {role}"
 msgstr "Se unió al espacio de trabajo como {role}"
@@ -8003,6 +8021,10 @@ msgstr "Mensaje"
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Message copied"
 msgstr "Mensaje copiado"
+
+#: src/components/common/text.ts
+msgid "Message removed"
+msgstr "Mensaje eliminado"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Message type"
@@ -11656,6 +11678,8 @@ msgstr "Recargar"
 msgid "Remote images can tell the sender that you opened the mail."
 msgstr "Las imágenes remotas pueden decirle al remitente que abriste el correo."
 
+#: src/features/conversation/ChatView.tsx
+#: src/features/conversation/messages/MessageActions.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
@@ -11740,6 +11764,14 @@ msgstr "¿Eliminar el historial importado?"
 msgid "Remove the app password you made for Yuva in {provider}; it is not needed any more."
 msgstr "Quita la contraseña de aplicación que creaste para Yuva en {provider}; ya no hace falta."
 
+#: src/components/common/text.ts
+msgid "Remove the content of messages and notes"
+msgstr "Quitar el contenido de mensajes y notas"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Remove the message or note you clicked on"
+msgstr "Quitar el mensaje o la nota en el que hiciste clic"
+
 #: src/features/settings/channels/sections.tsx
 msgid "Remove this channel?"
 msgstr "¿Quitar este canal?"
@@ -11752,6 +11784,18 @@ msgstr "¿Quitar este dispositivo?"
 msgid "Remove this endpoint?"
 msgstr "¿Quitar este endpoint?"
 
+#: src/features/conversation/messages/MessageActions.tsx
+msgid "Remove this message (Delete)"
+msgstr "Quitar este mensaje (Supr)"
+
+#: src/features/conversation/ChatView.tsx
+msgid "Remove this message?"
+msgstr "¿Quitar este mensaje?"
+
+#: src/features/conversation/ChatView.tsx
+msgid "Remove this note?"
+msgstr "¿Quitar esta nota?"
+
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Remove this passkey?"
 msgstr "¿Quitar esta clave de acceso?"
@@ -11760,9 +11804,25 @@ msgstr "¿Quitar esta clave de acceso?"
 msgid "Remove Yuva's access in Microsoft"
 msgstr "Quitar el acceso de Yuva en Microsoft"
 
+#: src/features/conversation/ChatView.tsx
+msgid "Removed"
+msgstr "Quitado"
+
 #: src/features/settings/audit/sentence.ts
 msgid "Removed {person} from the workspace"
 msgstr "Eliminó a {person} del espacio de trabajo"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed a message from a conversation"
+msgstr "Quitó un mensaje de una conversación"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed a note from a conversation"
+msgstr "Quitó una nota de una conversación"
+
+#: src/features/conversation/messages/Redacted.tsx
+msgid "Removed by {who}"
+msgstr "Quitado por {who}"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Removes {name} with its products, channels, conversations, contacts, files, labels, webhooks and API keys for everyone. Members keep their accounts."

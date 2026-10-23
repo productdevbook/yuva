@@ -256,6 +256,7 @@ export function ShortcutSheet({
         [k(SHORTCUTS.attach), t`Attach files`],
         [["/"], t`Canned replies, in the reply box`],
         [k(SHORTCUTS.leave), t`Leave it to the teammate who is typing`],
+        [["Del"], t`Remove the message or note you clicked on`],
       ],
     },
     {

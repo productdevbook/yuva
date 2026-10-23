@@ -1174,6 +1174,7 @@ msgstr "Egy piszkozatot megírtak"
 msgid "A file's content does not match its type. Check the file and try again."
 msgstr "A fájl tartalma nem egyezik a típusával. Ellenőrizd a fájlt, és próbáld újra."
 
+#: src/features/conversation/messages/Redacted.tsx
 #: src/features/settings/audit/sentence.ts
 msgid "a former member"
 msgstr "egy korábbi tag"
@@ -1237,6 +1238,10 @@ msgstr "Egy üzenet legfeljebb 3 cikket fogad."
 #: src/components/common/text.ts
 msgid "A message was added"
 msgstr "Egy üzenet hozzáadva"
+
+#: src/components/common/text.ts
+msgid "A message was removed from a thread"
+msgstr "Egy üzenetet eltávolítottak a beszélgetésből"
 
 #: src/features/settings/OwnDomainCard.tsx
 msgid "A name you control, like {example}. Yuva then shows you two DNS records to add, and the page answers on the domain once it has seen them."
@@ -2020,6 +2025,7 @@ msgstr "A postafiók egy analitikai tulajdonsága riasztást adott"
 msgid "An answer was accepted in <0>{title}</0>"
 msgstr "Egy választ elfogadtak itt: <0>{title}</0>"
 
+#: src/features/conversation/messages/Redacted.tsx
 #: src/features/conversation/Trash.tsx
 msgid "an API key"
 msgstr "egy API-kulcs"
@@ -4944,6 +4950,10 @@ msgstr "Piszkozat:"
 msgid "Drafts"
 msgstr "Piszkozatok"
 
+#: src/components/common/text.ts
+msgid "Drafts and timeline events cannot be removed."
+msgstr "A piszkozatok és az idővonal eseményei nem távolíthatók el."
+
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/inbox/SidePanels.tsx
 msgid "Drafts waiting"
@@ -7046,6 +7056,14 @@ msgstr "A jelentése és a címzettlistája törlődik. A válaszok által megny
 msgid "Its settings, credentials and progress are deleted. Imported conversations stay."
 msgstr "A beállításai, hitelesítő adatai és előrehaladása törlődik. Az importált beszélgetések megmaradnak."
 
+#: src/features/conversation/ChatView.tsx
+msgid "Its text and files are deleted for good and the thread shows that you removed it."
+msgstr "A szövege és a fájljai véglegesen törlődnek, a beszélgetésben pedig látszik, hogy te távolítottad el."
+
+#: src/features/conversation/ChatView.tsx
+msgid "Its text and files are deleted for good and the thread shows that you removed it. A sent e-mail cannot be taken back from the recipient's mailbox."
+msgstr "A szövege és a fájljai véglegesen törlődnek, a beszélgetésben pedig látszik, hogy te távolítottad el. Egy elküldött e-mailt nem lehet visszahívni a címzett postafiókjából."
+
 #: src/features/settings/audit/sentence.ts
 msgid "Joined the workspace as {role}"
 msgstr "Csatlakozott a munkaterülethez, szerepkör: {role}"
@@ -8003,6 +8021,10 @@ msgstr "Üzenet"
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Message copied"
 msgstr "Üzenet átmásolva"
+
+#: src/components/common/text.ts
+msgid "Message removed"
+msgstr "Üzenet eltávolítva"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Message type"
@@ -11656,6 +11678,8 @@ msgstr "Újratöltés"
 msgid "Remote images can tell the sender that you opened the mail."
 msgstr "A távoli képek elárulhatják a feladónak, hogy megnyitottad a levelet."
 
+#: src/features/conversation/ChatView.tsx
+#: src/features/conversation/messages/MessageActions.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
@@ -11740,6 +11764,14 @@ msgstr "Eltávolítod az importált előzményeket?"
 msgid "Remove the app password you made for Yuva in {provider}; it is not needed any more."
 msgstr "Távolítsd el a Yuvához a(z) {provider} szolgáltatónál létrehozott alkalmazásjelszót; már nincs rá szükség."
 
+#: src/components/common/text.ts
+msgid "Remove the content of messages and notes"
+msgstr "Üzenetek és jegyzetek tartalmának eltávolítása"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Remove the message or note you clicked on"
+msgstr "A rákattintott üzenet vagy jegyzet eltávolítása"
+
 #: src/features/settings/channels/sections.tsx
 msgid "Remove this channel?"
 msgstr "Eltávolítod ezt a csatornát?"
@@ -11752,6 +11784,18 @@ msgstr "Eltávolítod ezt az eszközt?"
 msgid "Remove this endpoint?"
 msgstr "Eltávolítod ezt a végpontot?"
 
+#: src/features/conversation/messages/MessageActions.tsx
+msgid "Remove this message (Delete)"
+msgstr "Üzenet eltávolítása (Delete)"
+
+#: src/features/conversation/ChatView.tsx
+msgid "Remove this message?"
+msgstr "Eltávolítod ezt az üzenetet?"
+
+#: src/features/conversation/ChatView.tsx
+msgid "Remove this note?"
+msgstr "Eltávolítod ezt a jegyzetet?"
+
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Remove this passkey?"
 msgstr "Eltávolítod ezt a hozzáférési kulcsot?"
@@ -11760,9 +11804,25 @@ msgstr "Eltávolítod ezt a hozzáférési kulcsot?"
 msgid "Remove Yuva's access in Microsoft"
 msgstr "A Yuva hozzáférésének eltávolítása a Microsoftban"
 
+#: src/features/conversation/ChatView.tsx
+msgid "Removed"
+msgstr "Eltávolítva"
+
 #: src/features/settings/audit/sentence.ts
 msgid "Removed {person} from the workspace"
 msgstr "Eltávolította {person} felhasználót a munkaterületről"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed a message from a conversation"
+msgstr "Eltávolított egy üzenetet egy beszélgetésből"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed a note from a conversation"
+msgstr "Eltávolított egy jegyzetet egy beszélgetésből"
+
+#: src/features/conversation/messages/Redacted.tsx
+msgid "Removed by {who}"
+msgstr "Eltávolította: {who}"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Removes {name} with its products, channels, conversations, contacts, files, labels, webhooks and API keys for everyone. Members keep their accounts."

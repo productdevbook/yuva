@@ -1174,6 +1174,7 @@ msgstr "Draf ditulis"
 msgid "A file's content does not match its type. Check the file and try again."
 msgstr "Isi file tidak sesuai dengan tipenya. Periksa file lalu coba lagi."
 
+#: src/features/conversation/messages/Redacted.tsx
 #: src/features/settings/audit/sentence.ts
 msgid "a former member"
 msgstr "mantan anggota"
@@ -1237,6 +1238,10 @@ msgstr "Satu pesan menerima paling banyak 3 artikel."
 #: src/components/common/text.ts
 msgid "A message was added"
 msgstr "Pesan ditambahkan"
+
+#: src/components/common/text.ts
+msgid "A message was removed from a thread"
+msgstr "Sebuah pesan dihapus dari percakapan"
 
 #: src/features/settings/OwnDomainCard.tsx
 msgid "A name you control, like {example}. Yuva then shows you two DNS records to add, and the page answers on the domain once it has seen them."
@@ -2020,6 +2025,7 @@ msgstr "Properti analitik kotak masuk memicu peringatan"
 msgid "An answer was accepted in <0>{title}</0>"
 msgstr "Jawaban diterima di <0>{title}</0>"
 
+#: src/features/conversation/messages/Redacted.tsx
 #: src/features/conversation/Trash.tsx
 msgid "an API key"
 msgstr "kunci API"
@@ -4944,6 +4950,10 @@ msgstr "Draf:"
 msgid "Drafts"
 msgstr "Draf"
 
+#: src/components/common/text.ts
+msgid "Drafts and timeline events cannot be removed."
+msgstr "Draf dan peristiwa linimasa tidak dapat dihapus."
+
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/inbox/SidePanels.tsx
 msgid "Drafts waiting"
@@ -7046,6 +7056,14 @@ msgstr "Laporan dan daftar penerimanya dihapus. Percakapan yang dibuka oleh bala
 msgid "Its settings, credentials and progress are deleted. Imported conversations stay."
 msgstr "Pengaturan, kredensial, dan kemajuannya dihapus. Percakapan yang diimpor tetap ada."
 
+#: src/features/conversation/ChatView.tsx
+msgid "Its text and files are deleted for good and the thread shows that you removed it."
+msgstr "Teks dan filenya dihapus permanen, dan percakapan menunjukkan bahwa Anda yang menghapusnya."
+
+#: src/features/conversation/ChatView.tsx
+msgid "Its text and files are deleted for good and the thread shows that you removed it. A sent e-mail cannot be taken back from the recipient's mailbox."
+msgstr "Teks dan filenya dihapus permanen, dan percakapan menunjukkan bahwa Anda yang menghapusnya. Email yang sudah terkirim tidak dapat ditarik dari kotak surat penerima."
+
 #: src/features/settings/audit/sentence.ts
 msgid "Joined the workspace as {role}"
 msgstr "Bergabung ke ruang kerja sebagai {role}"
@@ -8003,6 +8021,10 @@ msgstr "Pesan"
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Message copied"
 msgstr "Pesan disalin"
+
+#: src/components/common/text.ts
+msgid "Message removed"
+msgstr "Pesan dihapus"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Message type"
@@ -11656,6 +11678,8 @@ msgstr "Muat ulang"
 msgid "Remote images can tell the sender that you opened the mail."
 msgstr "Gambar jarak jauh dapat memberi tahu pengirim bahwa Anda membuka email."
 
+#: src/features/conversation/ChatView.tsx
+#: src/features/conversation/messages/MessageActions.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
@@ -11740,6 +11764,14 @@ msgstr "Hapus riwayat impor?"
 msgid "Remove the app password you made for Yuva in {provider}; it is not needed any more."
 msgstr "Hapus kata sandi aplikasi yang Anda buat untuk Yuva di {provider}; tidak diperlukan lagi."
 
+#: src/components/common/text.ts
+msgid "Remove the content of messages and notes"
+msgstr "Hapus isi pesan dan catatan"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Remove the message or note you clicked on"
+msgstr "Hapus pesan atau catatan yang Anda klik"
+
 #: src/features/settings/channels/sections.tsx
 msgid "Remove this channel?"
 msgstr "Hapus saluran ini?"
@@ -11752,6 +11784,18 @@ msgstr "Hapus perangkat ini?"
 msgid "Remove this endpoint?"
 msgstr "Hapus endpoint ini?"
 
+#: src/features/conversation/messages/MessageActions.tsx
+msgid "Remove this message (Delete)"
+msgstr "Hapus pesan ini (Delete)"
+
+#: src/features/conversation/ChatView.tsx
+msgid "Remove this message?"
+msgstr "Hapus pesan ini?"
+
+#: src/features/conversation/ChatView.tsx
+msgid "Remove this note?"
+msgstr "Hapus catatan ini?"
+
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Remove this passkey?"
 msgstr "Hapus passkey ini?"
@@ -11760,9 +11804,25 @@ msgstr "Hapus passkey ini?"
 msgid "Remove Yuva's access in Microsoft"
 msgstr "Cabut akses Yuva di Microsoft"
 
+#: src/features/conversation/ChatView.tsx
+msgid "Removed"
+msgstr "Dihapus"
+
 #: src/features/settings/audit/sentence.ts
 msgid "Removed {person} from the workspace"
 msgstr "Mengeluarkan {person} dari ruang kerja"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed a message from a conversation"
+msgstr "Menghapus sebuah pesan dari percakapan"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed a note from a conversation"
+msgstr "Menghapus sebuah catatan dari percakapan"
+
+#: src/features/conversation/messages/Redacted.tsx
+msgid "Removed by {who}"
+msgstr "Dihapus oleh {who}"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Removes {name} with its products, channels, conversations, contacts, files, labels, webhooks and API keys for everyone. Members keep their accounts."

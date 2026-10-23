@@ -1174,6 +1174,7 @@ msgstr "Một bản nháp đã được viết"
 msgid "A file's content does not match its type. Check the file and try again."
 msgstr "Nội dung của tệp không khớp với loại của nó. Hãy kiểm tra tệp và thử lại."
 
+#: src/features/conversation/messages/Redacted.tsx
 #: src/features/settings/audit/sentence.ts
 msgid "a former member"
 msgstr "một thành viên cũ"
@@ -1237,6 +1238,10 @@ msgstr "Một tin nhắn nhận tối đa 3 bài viết."
 #: src/components/common/text.ts
 msgid "A message was added"
 msgstr "Một tin nhắn đã được thêm"
+
+#: src/components/common/text.ts
+msgid "A message was removed from a thread"
+msgstr "Một tin nhắn đã bị gỡ khỏi cuộc trò chuyện"
 
 #: src/features/settings/OwnDomainCard.tsx
 msgid "A name you control, like {example}. Yuva then shows you two DNS records to add, and the page answers on the domain once it has seen them."
@@ -2020,6 +2025,7 @@ msgstr "Một thuộc tính phân tích của hộp thư đã phát cảnh báo"
 msgid "An answer was accepted in <0>{title}</0>"
 msgstr "Một câu trả lời đã được chấp nhận trong <0>{title}</0>"
 
+#: src/features/conversation/messages/Redacted.tsx
 #: src/features/conversation/Trash.tsx
 msgid "an API key"
 msgstr "một khóa API"
@@ -4944,6 +4950,10 @@ msgstr "Bản nháp:"
 msgid "Drafts"
 msgstr "Bản nháp"
 
+#: src/components/common/text.ts
+msgid "Drafts and timeline events cannot be removed."
+msgstr "Không thể gỡ bản nháp và sự kiện trên dòng thời gian."
+
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/inbox/SidePanels.tsx
 msgid "Drafts waiting"
@@ -7046,6 +7056,14 @@ msgstr "Báo cáo và danh sách người nhận của nó bị xóa. Các cuộ
 msgid "Its settings, credentials and progress are deleted. Imported conversations stay."
 msgstr "Cài đặt, thông tin xác thực và tiến độ của nó bị xóa. Các cuộc trò chuyện đã nhập vẫn còn."
 
+#: src/features/conversation/ChatView.tsx
+msgid "Its text and files are deleted for good and the thread shows that you removed it."
+msgstr "Nội dung và tệp của nó bị xóa vĩnh viễn, và cuộc trò chuyện sẽ hiển thị rằng bạn đã gỡ nó."
+
+#: src/features/conversation/ChatView.tsx
+msgid "Its text and files are deleted for good and the thread shows that you removed it. A sent e-mail cannot be taken back from the recipient's mailbox."
+msgstr "Nội dung và tệp của nó bị xóa vĩnh viễn, và cuộc trò chuyện sẽ hiển thị rằng bạn đã gỡ nó. Email đã gửi không thể thu hồi khỏi hộp thư của người nhận."
+
 #: src/features/settings/audit/sentence.ts
 msgid "Joined the workspace as {role}"
 msgstr "Đã tham gia không gian làm việc với vai trò {role}"
@@ -8003,6 +8021,10 @@ msgstr "Tin nhắn"
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Message copied"
 msgstr "Đã sao chép tin nhắn"
+
+#: src/components/common/text.ts
+msgid "Message removed"
+msgstr "Tin nhắn đã bị gỡ"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Message type"
@@ -11656,6 +11678,8 @@ msgstr "Tải lại"
 msgid "Remote images can tell the sender that you opened the mail."
 msgstr "Hình ảnh từ xa có thể cho người gửi biết bạn đã mở thư."
 
+#: src/features/conversation/ChatView.tsx
+#: src/features/conversation/messages/MessageActions.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
@@ -11740,6 +11764,14 @@ msgstr "Xóa lịch sử đã nhập?"
 msgid "Remove the app password you made for Yuva in {provider}; it is not needed any more."
 msgstr "Hãy gỡ mật khẩu ứng dụng bạn đã tạo cho Yuva trong {provider}; không còn cần nữa."
 
+#: src/components/common/text.ts
+msgid "Remove the content of messages and notes"
+msgstr "Gỡ nội dung của tin nhắn và ghi chú"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Remove the message or note you clicked on"
+msgstr "Gỡ tin nhắn hoặc ghi chú bạn đã nhấp vào"
+
 #: src/features/settings/channels/sections.tsx
 msgid "Remove this channel?"
 msgstr "Gỡ kênh này?"
@@ -11752,6 +11784,18 @@ msgstr "Gỡ thiết bị này?"
 msgid "Remove this endpoint?"
 msgstr "Gỡ endpoint này?"
 
+#: src/features/conversation/messages/MessageActions.tsx
+msgid "Remove this message (Delete)"
+msgstr "Gỡ tin nhắn này (Delete)"
+
+#: src/features/conversation/ChatView.tsx
+msgid "Remove this message?"
+msgstr "Gỡ tin nhắn này?"
+
+#: src/features/conversation/ChatView.tsx
+msgid "Remove this note?"
+msgstr "Gỡ ghi chú này?"
+
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Remove this passkey?"
 msgstr "Gỡ khóa truy cập này?"
@@ -11760,9 +11804,25 @@ msgstr "Gỡ khóa truy cập này?"
 msgid "Remove Yuva's access in Microsoft"
 msgstr "Gỡ quyền truy cập của Yuva trong Microsoft"
 
+#: src/features/conversation/ChatView.tsx
+msgid "Removed"
+msgstr "Đã gỡ"
+
 #: src/features/settings/audit/sentence.ts
 msgid "Removed {person} from the workspace"
 msgstr "Đã xóa {person} khỏi không gian làm việc"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed a message from a conversation"
+msgstr "Đã gỡ một tin nhắn khỏi cuộc trò chuyện"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed a note from a conversation"
+msgstr "Đã gỡ một ghi chú khỏi cuộc trò chuyện"
+
+#: src/features/conversation/messages/Redacted.tsx
+msgid "Removed by {who}"
+msgstr "Gỡ bởi {who}"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Removes {name} with its products, channels, conversations, contacts, files, labels, webhooks and API keys for everyone. Members keep their accounts."

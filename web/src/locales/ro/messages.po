@@ -1174,6 +1174,7 @@ msgstr "O ciornă a fost scrisă"
 msgid "A file's content does not match its type. Check the file and try again."
 msgstr "Conținutul unui fișier nu se potrivește cu tipul său. Verifică fișierul și încearcă din nou."
 
+#: src/features/conversation/messages/Redacted.tsx
 #: src/features/settings/audit/sentence.ts
 msgid "a former member"
 msgstr "un fost membru"
@@ -1237,6 +1238,10 @@ msgstr "Un mesaj primește cel mult 3 articole."
 #: src/components/common/text.ts
 msgid "A message was added"
 msgstr "Un mesaj a fost adăugat"
+
+#: src/components/common/text.ts
+msgid "A message was removed from a thread"
+msgstr "Un mesaj a fost eliminat dintr-o conversație"
 
 #: src/features/settings/OwnDomainCard.tsx
 msgid "A name you control, like {example}. Yuva then shows you two DNS records to add, and the page answers on the domain once it has seen them."
@@ -2020,6 +2025,7 @@ msgstr "O proprietate de analiză a căsuței a declanșat o alertă"
 msgid "An answer was accepted in <0>{title}</0>"
 msgstr "Un răspuns a fost acceptat în <0>{title}</0>"
 
+#: src/features/conversation/messages/Redacted.tsx
 #: src/features/conversation/Trash.tsx
 msgid "an API key"
 msgstr "o cheie API"
@@ -4944,6 +4950,10 @@ msgstr "Ciornă:"
 msgid "Drafts"
 msgstr "Ciorne"
 
+#: src/components/common/text.ts
+msgid "Drafts and timeline events cannot be removed."
+msgstr "Ciornele și evenimentele din cronologie nu pot fi eliminate."
+
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/inbox/SidePanels.tsx
 msgid "Drafts waiting"
@@ -7046,6 +7056,14 @@ msgstr "Raportul ei și lista destinatarilor sunt șterse. Conversațiile deschi
 msgid "Its settings, credentials and progress are deleted. Imported conversations stay."
 msgstr "Setările, credențialele și progresul lui sunt șterse. Conversațiile importate rămân."
 
+#: src/features/conversation/ChatView.tsx
+msgid "Its text and files are deleted for good and the thread shows that you removed it."
+msgstr "Textul și fișierele sunt șterse definitiv, iar conversația arată că l-ai eliminat tu."
+
+#: src/features/conversation/ChatView.tsx
+msgid "Its text and files are deleted for good and the thread shows that you removed it. A sent e-mail cannot be taken back from the recipient's mailbox."
+msgstr "Textul și fișierele sunt șterse definitiv, iar conversația arată că l-ai eliminat tu. Un e-mail trimis nu poate fi retras din căsuța destinatarului."
+
 #: src/features/settings/audit/sentence.ts
 msgid "Joined the workspace as {role}"
 msgstr "S-a alăturat spațiului de lucru ca {role}"
@@ -8003,6 +8021,10 @@ msgstr "Mesaj"
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Message copied"
 msgstr "Mesaj copiat"
+
+#: src/components/common/text.ts
+msgid "Message removed"
+msgstr "Mesaj eliminat"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Message type"
@@ -11656,6 +11678,8 @@ msgstr "Reîncarcă"
 msgid "Remote images can tell the sender that you opened the mail."
 msgstr "Imaginile de la distanță pot spune expeditorului că ai deschis mesajul."
 
+#: src/features/conversation/ChatView.tsx
+#: src/features/conversation/messages/MessageActions.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
@@ -11740,6 +11764,14 @@ msgstr "Elimini istoricul importat?"
 msgid "Remove the app password you made for Yuva in {provider}; it is not needed any more."
 msgstr "Elimină parola de aplicație pe care ai creat-o pentru Yuva la {provider}; nu mai este necesară."
 
+#: src/components/common/text.ts
+msgid "Remove the content of messages and notes"
+msgstr "Elimină conținutul mesajelor și notelor"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Remove the message or note you clicked on"
+msgstr "Elimină mesajul sau nota pe care ai dat clic"
+
 #: src/features/settings/channels/sections.tsx
 msgid "Remove this channel?"
 msgstr "Elimini acest canal?"
@@ -11752,6 +11784,18 @@ msgstr "Elimini acest dispozitiv?"
 msgid "Remove this endpoint?"
 msgstr "Elimini acest endpoint?"
 
+#: src/features/conversation/messages/MessageActions.tsx
+msgid "Remove this message (Delete)"
+msgstr "Elimină acest mesaj (Delete)"
+
+#: src/features/conversation/ChatView.tsx
+msgid "Remove this message?"
+msgstr "Elimini acest mesaj?"
+
+#: src/features/conversation/ChatView.tsx
+msgid "Remove this note?"
+msgstr "Elimini această notă?"
+
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Remove this passkey?"
 msgstr "Elimini această cheie de acces?"
@@ -11760,9 +11804,25 @@ msgstr "Elimini această cheie de acces?"
 msgid "Remove Yuva's access in Microsoft"
 msgstr "Elimină accesul Yuva în Microsoft"
 
+#: src/features/conversation/ChatView.tsx
+msgid "Removed"
+msgstr "Eliminat"
+
 #: src/features/settings/audit/sentence.ts
 msgid "Removed {person} from the workspace"
 msgstr "L-a eliminat pe {person} din spațiul de lucru"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed a message from a conversation"
+msgstr "A eliminat un mesaj dintr-o conversație"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed a note from a conversation"
+msgstr "A eliminat o notă dintr-o conversație"
+
+#: src/features/conversation/messages/Redacted.tsx
+msgid "Removed by {who}"
+msgstr "Eliminat de {who}"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Removes {name} with its products, channels, conversations, contacts, files, labels, webhooks and API keys for everyone. Members keep their accounts."

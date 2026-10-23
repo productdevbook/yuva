@@ -1174,6 +1174,7 @@ msgstr "ฉบับร่างถูกเขียนขึ้น"
 msgid "A file's content does not match its type. Check the file and try again."
 msgstr "เนื้อหาของไฟล์ไม่ตรงกับประเภทของไฟล์ ตรวจสอบไฟล์แล้วลองอีกครั้ง"
 
+#: src/features/conversation/messages/Redacted.tsx
 #: src/features/settings/audit/sentence.ts
 msgid "a former member"
 msgstr "อดีตสมาชิก"
@@ -1237,6 +1238,10 @@ msgstr "หนึ่งข้อความใส่บทความได้
 #: src/components/common/text.ts
 msgid "A message was added"
 msgstr "มีข้อความถูกเพิ่ม"
+
+#: src/components/common/text.ts
+msgid "A message was removed from a thread"
+msgstr "ข้อความถูกลบออกจากการสนทนาแล้ว"
 
 #: src/features/settings/OwnDomainCard.tsx
 msgid "A name you control, like {example}. Yuva then shows you two DNS records to add, and the page answers on the domain once it has seen them."
@@ -2020,6 +2025,7 @@ msgstr "พร็อพเพอร์ตีการวิเคราะห์
 msgid "An answer was accepted in <0>{title}</0>"
 msgstr "คำตอบได้รับการยอมรับใน <0>{title}</0>"
 
+#: src/features/conversation/messages/Redacted.tsx
 #: src/features/conversation/Trash.tsx
 msgid "an API key"
 msgstr "คีย์ API"
@@ -4944,6 +4950,10 @@ msgstr "ฉบับร่าง:"
 msgid "Drafts"
 msgstr "ฉบับร่าง"
 
+#: src/components/common/text.ts
+msgid "Drafts and timeline events cannot be removed."
+msgstr "ไม่สามารถลบฉบับร่างและเหตุการณ์ในไทม์ไลน์ได้"
+
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/inbox/SidePanels.tsx
 msgid "Drafts waiting"
@@ -7046,6 +7056,14 @@ msgstr "รายงานและรายชื่อผู้รับจะ
 msgid "Its settings, credentials and progress are deleted. Imported conversations stay."
 msgstr "การตั้งค่า ข้อมูลรับรอง และความคืบหน้าจะถูกลบ การสนทนาที่นำเข้าแล้วยังอยู่"
 
+#: src/features/conversation/ChatView.tsx
+msgid "Its text and files are deleted for good and the thread shows that you removed it."
+msgstr "ข้อความและไฟล์จะถูกลบถาวร และการสนทนาจะแสดงว่าคุณเป็นผู้ลบ"
+
+#: src/features/conversation/ChatView.tsx
+msgid "Its text and files are deleted for good and the thread shows that you removed it. A sent e-mail cannot be taken back from the recipient's mailbox."
+msgstr "ข้อความและไฟล์จะถูกลบถาวร และการสนทนาจะแสดงว่าคุณเป็นผู้ลบ อีเมลที่ส่งไปแล้วไม่สามารถดึงกลับจากกล่องจดหมายของผู้รับได้"
+
 #: src/features/settings/audit/sentence.ts
 msgid "Joined the workspace as {role}"
 msgstr "เข้าร่วมพื้นที่ทำงานเป็น {role}"
@@ -8003,6 +8021,10 @@ msgstr "ข้อความ"
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Message copied"
 msgstr "คัดลอกข้อความแล้ว"
+
+#: src/components/common/text.ts
+msgid "Message removed"
+msgstr "ลบข้อความแล้ว"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Message type"
@@ -11656,6 +11678,8 @@ msgstr "โหลดใหม่"
 msgid "Remote images can tell the sender that you opened the mail."
 msgstr "รูปภาพระยะไกลอาจบอกผู้ส่งว่าคุณเปิดอีเมลแล้ว"
 
+#: src/features/conversation/ChatView.tsx
+#: src/features/conversation/messages/MessageActions.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
@@ -11740,6 +11764,14 @@ msgstr "ลบประวัติที่นำเข้าไหม"
 msgid "Remove the app password you made for Yuva in {provider}; it is not needed any more."
 msgstr "ลบรหัสผ่านแอปที่คุณสร้างให้ Yuva ใน {provider} ไม่จำเป็นอีกต่อไป"
 
+#: src/components/common/text.ts
+msgid "Remove the content of messages and notes"
+msgstr "ลบเนื้อหาของข้อความและบันทึก"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Remove the message or note you clicked on"
+msgstr "ลบข้อความหรือบันทึกที่คุณคลิก"
+
 #: src/features/settings/channels/sections.tsx
 msgid "Remove this channel?"
 msgstr "นำช่องทางนี้ออกไหม"
@@ -11752,6 +11784,18 @@ msgstr "นำอุปกรณ์นี้ออกไหม"
 msgid "Remove this endpoint?"
 msgstr "นำเอนด์พอยต์นี้ออกไหม"
 
+#: src/features/conversation/messages/MessageActions.tsx
+msgid "Remove this message (Delete)"
+msgstr "ลบข้อความนี้ (Delete)"
+
+#: src/features/conversation/ChatView.tsx
+msgid "Remove this message?"
+msgstr "ลบข้อความนี้ไหม"
+
+#: src/features/conversation/ChatView.tsx
+msgid "Remove this note?"
+msgstr "ลบบันทึกนี้ไหม"
+
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Remove this passkey?"
 msgstr "นำพาสคีย์นี้ออกไหม"
@@ -11760,9 +11804,25 @@ msgstr "นำพาสคีย์นี้ออกไหม"
 msgid "Remove Yuva's access in Microsoft"
 msgstr "ถอนสิทธิ์เข้าถึงของ Yuva ใน Microsoft"
 
+#: src/features/conversation/ChatView.tsx
+msgid "Removed"
+msgstr "ลบแล้ว"
+
 #: src/features/settings/audit/sentence.ts
 msgid "Removed {person} from the workspace"
 msgstr "นำ {person} ออกจากพื้นที่ทำงาน"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed a message from a conversation"
+msgstr "ลบข้อความออกจากการสนทนา"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed a note from a conversation"
+msgstr "ลบบันทึกออกจากการสนทนา"
+
+#: src/features/conversation/messages/Redacted.tsx
+msgid "Removed by {who}"
+msgstr "ลบโดย {who}"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Removes {name} with its products, channels, conversations, contacts, files, labels, webhooks and API keys for everyone. Members keep their accounts."

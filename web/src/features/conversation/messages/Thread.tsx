@@ -37,6 +37,7 @@ import { Attachments } from "@/features/conversation/messages/Attachments"
 import { baseSubject, timeOf, useAuthorName, type ThreadContext } from "@/features/conversation/messages/context"
 import { DeliveryState } from "@/features/conversation/messages/DeliveryState"
 import { MailBody, MailControls, mailSurface, useMail } from "@/features/conversation/messages/EmailBody"
+import { RedactedLine } from "@/features/conversation/messages/Redacted"
 import { EventLine } from "@/features/conversation/messages/EventLine"
 import { Highlight, MessageActions, Ticks } from "@/features/conversation/messages/MessageActions"
 import { useDraftActions } from "@/features/conversation/queries"
@@ -69,7 +70,7 @@ function isMail(m: Message) {
 }
 
 function groupable(m: Message | undefined) {
-  return !!m && m.kind === "message" && !m.draft && !isMail(m)
+  return !!m && m.kind === "message" && !m.draft && !m.redacted_at && !isMail(m)
 }
 
 function sameGroup(a: Message | undefined, b: Message | undefined) {
@@ -908,7 +909,16 @@ function ThreadView({
     [queued, items]
   )
 
+  const removeKey = (m: Message) => (e: React.KeyboardEvent) => {
+    if (e.key !== "Delete" || e.defaultPrevented || e.metaKey || e.ctrlKey || e.altKey) return
+    if ((e.target as HTMLElement).closest("input, textarea, select, [contenteditable]")) return
+    if (!ctx.canRemove?.(m)) return
+    e.preventDefault()
+    ctx.onRemove?.(m)
+  }
+
   const render = (m: Message, i: number) => {
+    if (m.redacted_at) return <RedactedLine m={m} ctx={ctx} />
     if (m.kind === "event" && m.event?.type === "rated") return <Rated m={m} ctx={ctx} name={name} />
     if (m.kind === "event") return <EventLine m={m} ctx={ctx} />
     if (m.kind === "note") return <Note m={m} ctx={ctx} name={name} me={me} />
@@ -941,7 +951,7 @@ function ThreadView({
           ) : (
             rows.map((r) =>
               r.m ? (
-                <Row key={r.key} messageId={r.m.id}>
+                <Row key={r.key} messageId={r.m.id} onKeyDown={removeKey(r.m)}>
                   {render(r.m, r.i)}
                 </Row>
               ) : r.key === IMPORTED_END ? (

@@ -14,7 +14,7 @@ import {
   VisitorAvatar,
 } from "@/components/common"
 import { keyLabel } from "@/components/common/ShortcutSheet"
-import { formatShort, useEnumText } from "@/components/common/text"
+import { formatShort, useEnumText, usePreviewText } from "@/components/common/text"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -62,11 +62,12 @@ function LinkedRow({
 }) {
   const { t, i18n } = useLingui()
   const text = useEnumText()
+  const previewText = usePreviewText()
   const channel = useChannelMap().get(c.channel_id ?? "")
   const contactName = useContactName()
   const visitor = isVisitor(c.contact.name, c.contact.email)
   const name = contactName(c, channel, c.contact.name, c.contact.email)
-  const preview = c.last_message?.text || c.subject
+  const preview = previewText(c.last_message) || c.subject
   return (
     <li className="flex items-center gap-1 pe-2 transition-colors hover:bg-muted/60" data-testid="linked-conversation">
       <Link to={to} className="flex min-w-0 flex-1 items-center gap-3 py-2.5 ps-4 outline-none focus-visible:bg-muted">
