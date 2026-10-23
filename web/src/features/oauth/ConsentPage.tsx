@@ -58,6 +58,7 @@ function Consent({ req, email }: { req: OAuthRequest; email: string }) {
   const offered = API_KEY_SCOPES.filter((s) => workspace?.scopes.includes(s))
   const [scopes, setScopes] = useState(() => defaultScopes(req, offered))
   const chosen = offered.filter((s) => scopes.has(s))
+  const mayAsk = offered.some((s) => s === "messages:write" || s === "drafts:send")
   const unavailable = (req.requested_scopes ?? []).filter((s) => !offered.includes(s as ApiKeyScope))
   const clientName = req.client.name
   const host = req.redirect_host
@@ -134,6 +135,17 @@ function Consent({ req, email }: { req: OAuthRequest; email: string }) {
             <Trans>The full API: MCP, the REST API and live updates, like a member app.</Trans>
           )}
         </Fact>
+        {workspace && mayAsk && (
+          <Fact label={<Trans>Messages to customers</Trans>} testId="consent-sending">
+            {workspace.may_send ? (
+              <Trans>It can send e-mails and chat replies to customers as you, without review.</Trans>
+            ) : (
+              <Trans>
+                It can write drafts only. A member reviews and sends them; this workspace does not let assistants send.
+              </Trans>
+            )}
+          </Fact>
+        )}
       </dl>
 
       {req.workspaces.length === 0 ? (
