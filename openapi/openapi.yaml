@@ -17929,9 +17929,11 @@ paths:
 
         The server pings every 30 seconds; the client sends nothing. Close codes as on
         `/v1/realtime`: 1008 when the session ends or the contact is deleted (start a new session),
-        1013 and 1012 (reconnect with `last_event_id`). A session keeps at most 5 connections open
-        and an address 50 on each server: a newer one closes the oldest with 1013 and the reason
-        `too_many_connections` (reconnect only when that page is in use again). A session opens
+        1013 and 1012 (reconnect with `last_event_id`). A session keeps at most 20 connections open
+        and an address 200 on each server; one more is accepted and closed at once with 1013 and
+        the reason `too_many_connections;retry_after=30` (open connections are never closed for a
+        newer one). Wait at least `retry_after` seconds, keep backing off while it repeats, and
+        reconnect only when the page or app is in use again. A session opens
         at most 30 connections a minute and an address 120 (`429 rate_limited` with
         `Retry-After`).
       tags: [client]

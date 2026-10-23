@@ -106,6 +106,16 @@ func (s *Server) serveClientRealtime(w http.ResponseWriter, r *http.Request) {
 
 func (s *Server) clientStream(conn *websocket.Conn, r *http.Request, cp contactPrincipal, token, addr string, resumeFrom *int64) (websocket.StatusCode, string, error) {
 	ctx := conn.CloseRead(r.Context())
+	sock, first, ok := s.sockets.open(cp.sessionID, cp.contactID, addr)
+	if !ok {
+		return websocket.StatusTryAgainLater, reasonTooManySockets, nil
+	}
+	registered := false
+	defer func() {
+		if !registered {
+			s.sockets.close(sock)
+		}
+	}()
 	sub := s.hub.Subscribe(cp.workspaceID)
 	defer s.hub.Unsubscribe(sub)
 	// Read before the conversations load, so one created in between still arrives through its events.
@@ -122,11 +132,10 @@ func (s *Server) clientStream(conn *websocket.Conn, r *http.Request, cp contactP
 		return websocket.StatusInternalError, "internal", err
 	}
 	connID := newID()
-	sock, first := s.sockets.open(cp.sessionID, cp.contactID, addr)
 	if err := s.st.OpenConnection(ctx, store.OpenConnectionParams{ID: connID, WorkspaceID: cp.workspaceID, ContactID: &cp.contactID, Now: s.now()}); err != nil {
-		s.sockets.close(sock)
 		return websocket.StatusInternalError, "internal", err
 	}
+	registered = true
 	if first {
 		s.contactPresenceChanged(ctx, cp.workspaceID, cp.contactID)
 	}
@@ -241,8 +250,6 @@ func (s *Server) clientStream(conn *websocket.Conn, r *http.Request, cp contactP
 		select {
 		case <-ctx.Done():
 			return 0, "", nil
-		case <-sock.kicked:
-			return websocket.StatusTryAgainLater, reasonTooManySockets, nil
 		case <-sub.Done():
 			switch sub.Reason() {
 			case realtime.ReasonSlowConsumer:

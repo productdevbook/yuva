@@ -9,12 +9,12 @@ import (
 )
 
 const (
-	clientSocketsPerSession = 5
-	clientSocketsPerAddress = 50
+	clientSocketsPerSession = 20
+	clientSocketsPerAddress = 200
 	clientReplayMax         = 1000
 	contactPresenceEvery    = 2 * time.Second
 	presenceGatesMax        = 10000
-	reasonTooManySockets    = "too_many_connections"
+	reasonTooManySockets    = "too_many_connections;retry_after=30"
 )
 
 var (
@@ -22,13 +22,10 @@ var (
 	limitClientRealtimePerIP      = limit{120, time.Minute}
 )
 
-// clientSocket is one open /client/v1/realtime connection of this process. kicked closes when a
-// newer connection of the same session or address pushed it over its cap.
+// clientSocket is one open /client/v1/realtime connection of this process.
 type clientSocket struct {
 	session, contact uuid.UUID
 	addr             string
-	kicked           chan struct{}
-	gone             bool
 }
 
 type presenceGate struct {
@@ -53,34 +50,24 @@ func newClientSockets() *clientSockets {
 	}
 }
 
-// open registers a connection, closes the oldest of its session or address beyond their caps, and
-// says whether it is the contact's first open connection in this process.
-func (c *clientSockets) open(session, contact uuid.UUID, addr string) (*clientSocket, bool) {
-	sock := &clientSocket{session: session, contact: contact, addr: addr, kicked: make(chan struct{})}
+// open registers a connection and says whether it is the contact's first open connection in this
+// process. A session or address at its cap gets no new one (ok false): open connections are never
+// closed for a newer one, since tabs of one session and visitors behind one address would knock
+// each other off in turn.
+func (c *clientSockets) open(session, contact uuid.UUID, addr string) (sock *clientSocket, first, ok bool) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
+	if len(c.bySession[session]) >= clientSocketsPerSession || len(c.byAddr[addr]) >= clientSocketsPerAddress {
+		return nil, false, false
+	}
+	sock = &clientSocket{session: session, contact: contact, addr: addr}
 	c.bySession[session] = append(c.bySession[session], sock)
 	c.byAddr[addr] = append(c.byAddr[addr], sock)
-	for len(c.bySession[session]) > clientSocketsPerSession {
-		c.kick(c.bySession[session][0])
-	}
-	for len(c.byAddr[addr]) > clientSocketsPerAddress {
-		c.kick(c.byAddr[addr][0])
-	}
 	c.contacts[contact]++
-	return sock, c.contacts[contact] == 1
-}
-
-func (c *clientSockets) kick(sock *clientSocket) {
-	c.drop(sock)
-	close(sock.kicked)
+	return sock, c.contacts[contact] == 1, true
 }
 
 func (c *clientSockets) drop(sock *clientSocket) {
-	if sock.gone {
-		return
-	}
-	sock.gone = true
 	without := func(list []*clientSocket) []*clientSocket {
 		return slices.DeleteFunc(list, func(x *clientSocket) bool { return x == sock })
 	}
