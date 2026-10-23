@@ -7,8 +7,11 @@ import (
 	"path/filepath"
 	"regexp"
 	"slices"
+	"strconv"
 	"strings"
 	"testing"
+	"time"
+	"uuid"
 
 	"github.com/productdevbook/yuva/api/internal/api"
 )
@@ -404,10 +407,65 @@ func TestAddressMovesAreReported(t *testing.T) {
 		holder.ws, all, exact).Scan(&via); err != nil || via != "*@"+domain {
 		t.Fatalf("address_lost for mail moving off the catch-all: %q %v", via, err)
 	}
-	notice := h.mail.wait(t, ownerEmail(t, h, holder.ws), 1)
-	if m := notice[len(notice)-1]; !strings.Contains(m.Subject, exact) || !strings.Contains(m.Text, "/channels/"+all) {
-		t.Fatalf("owner notice: %q %q", m.Subject, m.Text)
+	byDNS := func(addr string) {
+		t.Helper()
+		h.unproven = true
+		id := mover.owner.expect(http.StatusCreated, "POST", "/v1/inboxes/"+mover.inbox+"/channels", map[string]any{
+			"kind": "email", "name": addr, "email": map[string]any{"address": addr},
+		}).str("id")
+		h.unproven = false
+		v := verificationOf(t, mover.owner, id)
+		dns.set(v["txt_name"].(string), v["txt_value"].(string))
+		if r := mover.owner.expect(http.StatusOK, "POST", "/v1/channels/"+id+"/verify", nil); !strings.Contains(string(r.raw), `"state":"verified"`) {
+			t.Fatalf("dns proof: %s", r.raw)
+		}
 	}
+	byDNS("sales@" + domain)
+	ctx := context.Background()
+	owner := ownerEmail(t, h, holder.ws)
+	lossMails := func() []string {
+		var out []string
+		for _, m := range h.mail.to(owner) {
+			if strings.Contains(m.Subject, "no longer reaches") {
+				out = append(out, m.Text)
+			}
+		}
+		return out
+	}
+	if next, err := h.srv.SendAddressLossMail(ctx, uuid.MustParse(holder.ws)); err != nil || next != nil {
+		t.Fatalf("first loss mail: %v %v", next, err)
+	}
+	got := lossMails()
+	if len(got) != 1 || !strings.Contains(got[0], exact) || !strings.Contains(got[0], "sales@"+domain) || !strings.Contains(got[0], "/channels/"+all) {
+		t.Fatalf("one mail listing both addresses: %q", got)
+	}
+	byDNS("support@" + domain)
+	if next, err := h.srv.SendAddressLossMail(ctx, uuid.MustParse(holder.ws)); err != nil || next == nil {
+		t.Fatalf("a second loss within a day: %v %v", next, err)
+	}
+	if len(lossMails()) != 1 {
+		t.Fatal("a second loss mail within a day")
+	}
+	h.clock.Advance(25 * time.Hour)
+	if _, err := h.srv.SendAddressLossMail(ctx, uuid.MustParse(holder.ws)); err != nil {
+		t.Fatal(err)
+	}
+	if got := lossMails(); len(got) != 2 || !strings.Contains(got[1], "support@"+domain) || strings.Contains(got[1], exact) {
+		t.Fatalf("the next day's mail: %q", got)
+	}
+}
+
+func TestDNSProofsAreRateLimited(t *testing.T) {
+	t.Parallel()
+	h := newHarnessWith(t, func(d *api.Deps) { d.Status.Resolver = &ssoDNS{txt: map[string][]string{}} })
+	h.unproven = true
+	et := newEmailTeam(t, h, false)
+	for i := range 30 {
+		if r := et.owner.do("POST", "/v1/channels/"+et.channel+"/verify", nil); r.status != http.StatusOK {
+			t.Fatalf("check %d: %d %s", i+1, r.status, r.raw)
+		}
+	}
+	et.owner.expectProblem(http.StatusTooManyRequests, "rate_limited", "POST", "/v1/channels/"+et.channel+"/verify", nil)
 }
 
 func TestAddressCodeCapsOutliveChannels(t *testing.T) {
@@ -424,13 +482,18 @@ func TestAddressCodeCapsOutliveChannels(t *testing.T) {
 		c.expect(http.StatusNoContent, "DELETE", "/v1/channels/"+id, nil)
 		return r
 	}
+	local, domain, _ := strings.Cut(target, "@")
 	for i := range 5 {
-		if r := send(tm.owner, tm.inbox, target); r.status != http.StatusAccepted {
+		addr := target
+		if i > 0 {
+			addr = strings.ToUpper(local) + "+" + strconv.Itoa(i) + "@" + domain
+		}
+		if r := send(tm.owner, tm.inbox, addr); r.status != http.StatusAccepted {
 			t.Fatalf("code %d to a re-created channel: %d %s", i+1, r.status, r.raw)
 		}
 	}
 	other := newTeam(t, h)
-	if r := send(other.owner, other.inbox, target); r.status != http.StatusTooManyRequests {
+	if r := send(other.owner, other.inbox, local+"+other@"+domain); r.status != http.StatusTooManyRequests {
 		t.Fatalf("a sixth code to one address from another workspace: %d %s", r.status, r.raw)
 	}
 	for i := 5; i < 20; i++ {

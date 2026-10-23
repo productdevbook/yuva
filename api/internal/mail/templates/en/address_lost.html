@@ -1,4 +1,4 @@
-{{template "heading" "An address moved to another workspace"}}
-<p style="margin:0 0 16px 0;">Another workspace on this server proved <strong>{{.Address}}</strong>, so mail to it no longer reaches the channel “{{.Channel}}” of <strong>{{.Workspace}}</strong>.</p>
-<p style="margin:0 0 16px 0;">If the address is yours, prove it again in the channel's settings: the code mail or the TXT record takes it back.</p>
-{{template "button" (button .URL "Open the channel")}}
+{{template "heading" "Addresses moved to another workspace"}}
+<p style="margin:0 0 16px 0;">Another workspace on this server proved these addresses, so their mail no longer reaches <strong>{{.Workspace}}</strong>:</p>
+<ul style="margin:0 0 16px 0;padding:0 0 0 20px;">{{range .Items}}<li style="margin:0 0 6px 0;"><a href="{{.URL}}">{{.Address}}</a> (channel “{{.Channel}}”)</li>{{end}}</ul>
+<p style="margin:0;">If an address is yours, prove it again in the channel's settings: the code mail or the TXT record takes it back.</p>

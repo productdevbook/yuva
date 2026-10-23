@@ -1,4 +1,4 @@
-{{template "heading" "Bir adres başka bir çalışma alanına geçti"}}
-<p style="margin:0 0 16px 0;">Bu sunucudaki başka bir çalışma alanı <strong>{{.Address}}</strong> adresini kanıtladı; bu adrese gelen posta artık <strong>{{.Workspace}}</strong> çalışma alanının “{{.Channel}}” kanalına ulaşmıyor.</p>
-<p style="margin:0 0 16px 0;">Adres sizinse kanalın ayarlarından yeniden kanıtlayın: kod e-postası ya da TXT kaydı adresi geri alır.</p>
-{{template "button" (button .URL "Kanalı aç")}}
+{{template "heading" "Adresler başka bir çalışma alanına geçti"}}
+<p style="margin:0 0 16px 0;">Bu sunucudaki başka bir çalışma alanı şu adresleri kanıtladı; bu adreslere gelen posta artık <strong>{{.Workspace}}</strong> çalışma alanına ulaşmıyor:</p>
+<ul style="margin:0 0 16px 0;padding:0 0 0 20px;">{{range .Items}}<li style="margin:0 0 6px 0;"><a href="{{.URL}}">{{.Address}}</a> (“{{.Channel}}” kanalı)</li>{{end}}</ul>
+<p style="margin:0;">Bir adres sizinse kanalın ayarlarından yeniden kanıtlayın: kod e-postası ya da TXT kaydı adresi geri alır.</p>

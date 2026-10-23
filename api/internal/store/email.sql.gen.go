@@ -418,6 +418,20 @@ func (q *Queries) DeleteExpiredConfirmationBounces(ctx context.Context, arg Dele
 	return result.RowsAffected(), nil
 }
 
+const deleteMailedAddressLosses = `-- name: DeleteMailedAddressLosses :exec
+DELETE FROM email_address_losses WHERE workspace_id = $1 AND mailed_at < $2
+`
+
+type DeleteMailedAddressLossesParams struct {
+	WorkspaceID uuid.UUID
+	Before      *time.Time
+}
+
+func (q *Queries) DeleteMailedAddressLosses(ctx context.Context, arg DeleteMailedAddressLossesParams) error {
+	_, err := q.db.Exec(ctx, deleteMailedAddressLosses, arg.WorkspaceID, arg.Before)
+	return err
+}
+
 const emailAddressProvenElsewhere = `-- name: EmailAddressProvenElsewhere :one
 SELECT EXISTS (
   SELECT 1 FROM email_channels WHERE address = $1 AND verified_at IS NOT NULL AND workspace_id <> $2
@@ -1211,6 +1225,17 @@ func (q *Queries) IsWorkspaceEmailAddress(ctx context.Context, arg IsWorkspaceEm
 	return exists, err
 }
 
+const lastAddressLossMail = `-- name: LastAddressLossMail :one
+SELECT coalesce(max(mailed_at), 'epoch'::timestamptz)::timestamptz FROM email_address_losses WHERE workspace_id = $1
+`
+
+func (q *Queries) LastAddressLossMail(ctx context.Context, workspaceID uuid.UUID) (time.Time, error) {
+	row := q.db.QueryRow(ctx, lastAddressLossMail, workspaceID)
+	var column_1 time.Time
+	err := row.Scan(&column_1)
+	return column_1, err
+}
+
 const latestContactConversation = `-- name: LatestContactConversation :one
 SELECT id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id, trashed_at, trashed_by_member_id, trashed_by_api_key_id, push_through, push_sent_at, team_id, fields, sla_due_at, snooze_rule_id, assign_waiting_since, assign_after_rules FROM conversations
 WHERE workspace_id = $1 AND channel_id = $2 AND contact_id = $3 AND trashed_at IS NULL
@@ -1628,6 +1653,54 @@ func (q *Queries) ListMessageEmails(ctx context.Context, arg ListMessageEmailsPa
 	return items, nil
 }
 
+const listUnmailedAddressLosses = `-- name: ListUnmailedAddressLosses :many
+SELECT l.address, l.channel_id, c.name AS channel_name, c.inbox_id FROM email_address_losses l
+LEFT JOIN channels c ON c.workspace_id = l.workspace_id AND c.id = l.channel_id
+WHERE l.workspace_id = $1 AND l.mailed_at IS NULL
+ORDER BY l.lost_at, l.id
+`
+
+type ListUnmailedAddressLossesRow struct {
+	Address     string
+	ChannelID   uuid.UUID
+	ChannelName *string
+	InboxID     *uuid.UUID
+}
+
+func (q *Queries) ListUnmailedAddressLosses(ctx context.Context, workspaceID uuid.UUID) ([]ListUnmailedAddressLossesRow, error) {
+	rows, err := q.db.Query(ctx, listUnmailedAddressLosses, workspaceID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ListUnmailedAddressLossesRow
+	for rows.Next() {
+		var i ListUnmailedAddressLossesRow
+		if err := rows.Scan(
+			&i.Address,
+			&i.ChannelID,
+			&i.ChannelName,
+			&i.InboxID,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const lockAddressLosses = `-- name: LockAddressLosses :exec
+SELECT pg_advisory_xact_lock(hashtextextended('yuva_address_losses:' || $1::uuid::text, 0))
+`
+
+func (q *Queries) LockAddressLosses(ctx context.Context, workspaceID uuid.UUID) error {
+	_, err := q.db.Exec(ctx, lockAddressLosses, workspaceID)
+	return err
+}
+
 const lockEmailAddress = `-- name: LockEmailAddress :exec
 SELECT pg_advisory_xact_lock(hashtextextended('yuva_email_address:' || $1::text, 0))
 `
@@ -1693,6 +1766,20 @@ func (q *Queries) LockEmailChannel(ctx context.Context, arg LockEmailChannelPara
 		&i.VerifySentAt,
 	)
 	return i, err
+}
+
+const markAddressLossesMailed = `-- name: MarkAddressLossesMailed :exec
+UPDATE email_address_losses SET mailed_at = $1 WHERE workspace_id = $2 AND mailed_at IS NULL
+`
+
+type MarkAddressLossesMailedParams struct {
+	Now         *time.Time
+	WorkspaceID uuid.UUID
+}
+
+func (q *Queries) MarkAddressLossesMailed(ctx context.Context, arg MarkAddressLossesMailedParams) error {
+	_, err := q.db.Exec(ctx, markAddressLossesMailed, arg.Now, arg.WorkspaceID)
+	return err
 }
 
 const markEmailChannelVerified = `-- name: MarkEmailChannelVerified :one
@@ -1847,6 +1934,30 @@ func (q *Queries) OperatorEmailChannels(ctx context.Context, arg OperatorEmailCh
 		return nil, err
 	}
 	return items, nil
+}
+
+const recordAddressLoss = `-- name: RecordAddressLoss :exec
+INSERT INTO email_address_losses (workspace_id, id, channel_id, address, lost_at)
+VALUES ($1, $2, $3, $4, $5)
+`
+
+type RecordAddressLossParams struct {
+	WorkspaceID uuid.UUID
+	ID          uuid.UUID
+	ChannelID   uuid.UUID
+	Address     string
+	Now         time.Time
+}
+
+func (q *Queries) RecordAddressLoss(ctx context.Context, arg RecordAddressLossParams) error {
+	_, err := q.db.Exec(ctx, recordAddressLoss,
+		arg.WorkspaceID,
+		arg.ID,
+		arg.ChannelID,
+		arg.Address,
+		arg.Now,
+	)
+	return err
 }
 
 const releaseEmailAddress = `-- name: ReleaseEmailAddress :many

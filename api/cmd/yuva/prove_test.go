@@ -56,10 +56,23 @@ func TestChannelProve(t *testing.T) {
 		t.Fatalf("an address two workspaces claim, without --workspace: %v", err)
 	}
 	out, err := runProve(t, st, "--channel", chA.String())
-	if err == nil || !strings.Contains(out, "would prove") || verified(a.WorkspaceID, chA) != nil {
+	if err == nil || !strings.Contains(out, "would prove") || !strings.Contains(err.Error(), "--address "+address) || verified(a.WorkspaceID, chA) != nil {
 		t.Fatalf("without --yes: %v %q", err, out)
 	}
-	if out, err = runProve(t, st, "--channel", chA.String(), "--yes"); err != nil || !strings.Contains(out, "proved") {
+	if _, err = runProve(t, st, "--channel", chA.String(), "--yes"); err == nil || verified(a.WorkspaceID, chA) != nil {
+		t.Fatalf("--yes by id without --address: %v", err)
+	}
+	swapped := uniqueName("ceo") + "@bank.example"
+	if _, err := st.Pool.Exec(ctx, "UPDATE email_channels SET address = $2 WHERE channel_id = $1", chA, swapped); err != nil {
+		t.Fatal(err)
+	}
+	if _, err = runProve(t, st, "--channel", chA.String(), "--yes", "--address", address); err == nil || verified(a.WorkspaceID, chA) != nil {
+		t.Fatalf("an address swapped after the listing: %v", err)
+	}
+	if _, err := st.Pool.Exec(ctx, "UPDATE email_channels SET address = $2 WHERE channel_id = $1", chA, address); err != nil {
+		t.Fatal(err)
+	}
+	if out, err = runProve(t, st, "--channel", chA.String(), "--yes", "--address", strings.ToUpper(address)); err != nil || !strings.Contains(out, "proved") {
 		t.Fatalf("prove: %v %q", err, out)
 	}
 	if by := verified(a.WorkspaceID, chA); by == nil || *by != "operator" {
@@ -88,13 +101,28 @@ func TestChannelProve(t *testing.T) {
 	if err == nil || !strings.Contains(out, own.String()) || !strings.Contains(out, "refused: a catch-all on a shared mail domain") {
 		t.Fatalf("listing: %v %q", err, out)
 	}
+	plan := strings.Fields(err.Error()[strings.Index(err.Error(), "--plan ")+len("--plan "):])[0]
 	if _, err := runProve(t, st, "--all-unproven"); err == nil {
 		t.Fatal("--all-unproven without --workspace accepted")
 	}
-	if out, err = runProve(t, st, "--all-unproven", "--workspace", nameB, "--yes"); err != nil {
+	if _, err := runProve(t, st, "--all-unproven", "--workspace", nameB, "--yes", "--plan", "000000000000"); err == nil || verified(b.WorkspaceID, own) != nil {
+		t.Fatalf("a wrong plan code: %v", err)
+	}
+	if out, err = runProve(t, st, "--all-unproven", "--workspace", nameB, "--yes", "--plan", plan); err != nil {
 		t.Fatalf("all unproven: %v %q", err, out)
 	}
 	if verified(b.WorkspaceID, own) == nil || verified(b.WorkspaceID, shared) != nil || verified(b.WorkspaceID, chB) != nil {
 		t.Fatalf("after --all-unproven: %q", out)
+	}
+
+	domain := uniqueName("corp") + ".example"
+	holder := email(nameA, "*@"+domain)
+	if _, err := st.Pool.Exec(ctx, "UPDATE email_channels SET verified_at = now(), verified_by = 'dns' WHERE channel_id = $1", holder); err != nil {
+		t.Fatal(err)
+	}
+	jobs := email(nameB, "jobs@"+domain)
+	out, err = runProve(t, st, "--channel", "jobs@"+domain, "--yes")
+	if err == nil || !strings.Contains(out, "refused: would take from workspace "+a.WorkspaceID.String()) || verified(b.WorkspaceID, jobs) != nil {
+		t.Fatalf("mail another workspace's catch-all receives: %v %q", err, out)
 	}
 }

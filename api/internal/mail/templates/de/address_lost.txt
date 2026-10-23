@@ -1,7 +1,8 @@
-Mails an {{.Address}} erreichen {{.Workspace}} nicht mehr
+Mails an {{len .Items}} Adresse{{if ne (len .Items) 1}}n{{end}} erreichen {{.Workspace}} nicht mehr
 
-Ein anderer Workspace auf diesem Server hat {{.Address}} bestätigt, deshalb erreichen Mails an diese Adresse den Kanal „{{.Channel}}“ von {{.Workspace}} nicht mehr.
+Ein anderer Workspace auf diesem Server hat diese Adressen bestätigt, deshalb erreichen ihre Mails {{.Workspace}} nicht mehr:
+{{range .Items}}
+- {{.Address}} (Kanal „{{.Channel}}“): {{.URL}}
+{{- end}}
 
-Wenn die Adresse Ihnen gehört, bestätigen Sie sie in den Einstellungen des Kanals erneut: Die Code-Mail oder der TXT-Eintrag holt sie zurück.
-
-{{.URL}}
+Wenn eine Adresse Ihnen gehört, bestätigen Sie sie in den Einstellungen des Kanals erneut: Die Code-Mail oder der TXT-Eintrag holt sie zurück.

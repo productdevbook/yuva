@@ -23,6 +23,17 @@ var (
 	ErrSharedCatchAll  = errors.New("a catch-all on a shared mail domain (the forwarding domain or a public mail provider) cannot be proven")
 )
 
+// TakeError is a proof the operator may not give: mail to the address reaches another workspace's
+// proven local@ or catch-all channel today.
+type TakeError struct {
+	WorkspaceID uuid.UUID
+	Via         string
+}
+
+func (e *TakeError) Error() string {
+	return fmt.Sprintf("would take from workspace %s, whose %s channel receives this address's mail", e.WorkspaceID, e.Via)
+}
+
 // OperatorEmailChannels finds e-mail channels by id or address, in workspace when it is set, or
 // every unproven channel of workspace with allUnproven.
 func (s *Server) OperatorEmailChannels(ctx context.Context, workspace *uuid.UUID, ref string, allUnproven bool) ([]OperatorChannel, error) {
@@ -62,12 +73,20 @@ func (s *Server) operatorProveCheck(ctx context.Context, q *store.Queries, ws uu
 	if taken {
 		return ErrProvenElsewhere
 	}
+	prev, err := s.previousRoute(ctx, q, address)
+	if err != nil {
+		return err
+	}
+	if prev != nil && prev.WorkspaceID != ws {
+		return &TakeError{WorkspaceID: prev.WorkspaceID, Via: prev.Address}
+	}
 	return nil
 }
 
 // OperatorProveChannel records the operator's word that the channel's address belongs to its
-// workspace, under the same rules as a proof: never a shared catch-all, never an address another
-// workspace proved.
+// workspace, under stricter rules than a proof: never a shared catch-all, never an address
+// another workspace proved, never mail another workspace's channel receives today, and only the
+// address the operator was shown.
 func (s *Server) OperatorProveChannel(ctx context.Context, c OperatorChannel) error {
 	now := s.now()
 	p := principal{workspaceID: c.WorkspaceID}
@@ -79,6 +98,9 @@ func (s *Server) OperatorProveChannel(ctx context.Context, c OperatorChannel) er
 		}
 		if err != nil {
 			return err
+		}
+		if cur.Address != c.Address {
+			return fmt.Errorf("the channel's address changed to %s since it was listed", cur.Address)
 		}
 		if cur.VerifiedAt != nil {
 			return nil

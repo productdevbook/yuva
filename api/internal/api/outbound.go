@@ -301,6 +301,7 @@ func (s *Server) AddWorkers(workers *river.Workers) {
 	river.AddWorker(workers, &presenceSweepWorker{s: s})
 	river.AddWorker(workers, &discussionDigestWorker{s: s})
 	river.AddWorker(workers, &operatorDigestWorker{s: s})
+	river.AddWorker(workers, &addressLossMailWorker{s: s})
 	river.AddWorker(workers, &listMailWorker{s: s})
 	river.AddWorker(workers, &listImportWorker{s: s})
 	river.AddWorker(workers, &helpImportWorker{s: s})

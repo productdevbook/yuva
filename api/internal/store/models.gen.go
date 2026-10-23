@@ -1061,6 +1061,15 @@ type DiscussionVote struct {
 	CreatedAt   time.Time
 }
 
+type EmailAddressLoss struct {
+	WorkspaceID uuid.UUID
+	ID          uuid.UUID
+	ChannelID   uuid.UUID
+	Address     string
+	LostAt      time.Time
+	MailedAt    *time.Time
+}
+
 type EmailAutoReply struct {
 	WorkspaceID uuid.UUID
 	ChannelID   uuid.UUID

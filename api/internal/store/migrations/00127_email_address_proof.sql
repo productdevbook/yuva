@@ -16,6 +16,19 @@ DROP INDEX email_channels_address_key;
 CREATE UNIQUE INDEX email_channels_workspace_address_key ON email_channels (workspace_id, address);
 CREATE UNIQUE INDEX email_channels_verified_address_key ON email_channels (address) WHERE verified_at IS NOT NULL;
 
+-- Addresses a workspace's channels lost to another workspace's proof, mailed to its owners at most
+-- once a day.
+CREATE TABLE email_address_losses (
+    workspace_id uuid NOT NULL REFERENCES workspaces (id) ON DELETE CASCADE,
+    id           uuid NOT NULL,
+    channel_id   uuid NOT NULL,
+    address      text NOT NULL CHECK (length(address) <= 320),
+    lost_at      timestamptz NOT NULL,
+    mailed_at    timestamptz,
+    PRIMARY KEY (workspace_id, id)
+);
+CREATE INDEX email_address_losses_unmailed_idx ON email_address_losses (workspace_id, lost_at) WHERE mailed_at IS NULL;
+
 ALTER TABLE operator_notices
     DROP CONSTRAINT operator_notices_kind_check,
     ADD CONSTRAINT operator_notices_kind_check
@@ -39,6 +52,7 @@ JOIN workspaces w ON w.id = e.workspace_id
 WHERE w.deleted_at IS NULL;
 
 -- +goose Down
+DROP TABLE email_address_losses;
 DELETE FROM operator_notices WHERE kind = 'email_unproven';
 ALTER TABLE operator_notices
     DROP CONSTRAINT operator_notices_kind_check,

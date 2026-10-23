@@ -2,6 +2,8 @@ package main
 
 import (
 	"context"
+	"crypto/sha256"
+	"encoding/hex"
 	"errors"
 	"flag"
 	"fmt"
@@ -33,8 +35,8 @@ const (
 		"         [--smtp-host <host> [--smtp-port <n>] [--tls starttls|tls|none] [--smtp-username <name>] [--smtp-password-file <path|->]]\n" +
 		"       yuva channel create-chat --workspace <id|name> --inbox <id|slug> --name <name> --origin <origin>... [--allow-anonymous] [--ask-email-offline=false] [--greeting <text>]\n" +
 		"       yuva channel list --workspace <id|name> --inbox <id|slug>\n" +
-		"       yuva channel prove --channel <id|address> [--workspace <id|name>] [--yes]\n" +
-		"       yuva channel prove --all-unproven --workspace <id|name> [--yes]   (lists what it proves without --yes)"
+		"       yuva channel prove --channel <id|address> [--workspace <id|name>] [--yes [--address <address>]]   (--address with a channel id)\n" +
+		"       yuva channel prove --all-unproven --workspace <id|name> [--yes --plan <code>]   (lists what it proves and the plan code without --yes)"
 	workspaceUsage = "usage: yuva workspace delete --workspace <id|name> --yes\n" +
 		"       yuva workspace broadcasts approve|deny|suspend --workspace <id|name> [--reason <text>]\n" +
 		"       yuva workspace broadcasts limit --workspace <id|name> --daily <n>   (0 removes the limit)\n" +
@@ -839,6 +841,8 @@ func proveCommand(ctx context.Context, st *store.Store, srv *api.Server, args []
 	channel := fs.String("channel", "", "channel id or address")
 	all := fs.Bool("all-unproven", false, "every unproven e-mail channel of --workspace")
 	yes := fs.Bool("yes", false, "prove them; without it the command only lists them")
+	address := fs.String("address", "", "with --channel <id> and --yes: the address the listing showed")
+	plan := fs.String("plan", "", "with --all-unproven and --yes: the plan code the listing printed")
 	if err := fs.Parse(args); err != nil {
 		return err
 	}
@@ -865,12 +869,32 @@ func proveCommand(ctx context.Context, st *store.Store, srv *api.Server, args []
 			return fmt.Errorf("%d workspaces claim %s; name one with --workspace", len(found), *channel)
 		}
 	}
+	byID := false
+	if _, err := uuid.Parse(*channel); err == nil {
+		byID = true
+	}
+	checks := make([]error, len(found))
+	sum := sha256.New()
+	for i, c := range found {
+		if checks[i] = srv.OperatorProveCheck(ctx, c); checks[i] == nil && !c.Verified {
+			fmt.Fprintf(sum, "%s %s\n", c.ChannelID, c.Address)
+		}
+	}
+	code := hex.EncodeToString(sum.Sum(nil))[:12]
+	if *yes {
+		switch {
+		case byID && !strings.EqualFold(strings.TrimSpace(*address), found[0].Address):
+			return fmt.Errorf("channel %s has the address %s; run again with --address %s to prove it", found[0].ChannelID, found[0].Address, found[0].Address)
+		case *all && *plan != code:
+			return errors.New("the unproven channels are not the ones listed with that plan code; list them again without --yes")
+		}
+	}
 	tw := tabwriter.NewWriter(stdout, 0, 0, 2, ' ', 0)
 	fmt.Fprintln(tw, "CHANNEL\tWORKSPACE\tADDRESS\tNAME\tRESULT")
 	proved, refused, pending := 0, 0, 0
-	for _, c := range found {
+	for i, c := range found {
 		result := "would prove"
-		switch err := srv.OperatorProveCheck(ctx, c); {
+		switch err := checks[i]; {
 		case c.Verified:
 			result = "already proven"
 		case err != nil:
@@ -890,8 +914,12 @@ func proveCommand(ctx context.Context, st *store.Store, srv *api.Server, args []
 		return err
 	}
 	switch {
+	case pending > 0 && *all:
+		return fmt.Errorf("nothing was proven; run again with --yes --plan %s to prove the channels listed as would prove", code)
+	case pending > 0 && byID:
+		return fmt.Errorf("nothing was proven; run again with --yes --address %s to prove it", found[0].Address)
 	case pending > 0:
-		return errors.New("nothing was proven; run again with --yes to prove the channels listed as would prove")
+		return errors.New("nothing was proven; run again with --yes to prove it")
 	case refused > 0 && *channel != "":
 		return errors.New("the channel was not proven")
 	}

@@ -1,7 +1,8 @@
-{{.Address}} adresine gelen posta artık {{.Workspace}} çalışma alanına ulaşmıyor
+{{len .Items}} adrese gelen posta artık {{.Workspace}} çalışma alanına ulaşmıyor
 
-Bu sunucudaki başka bir çalışma alanı {{.Address}} adresini kanıtladı; bu adrese gelen posta artık {{.Workspace}} çalışma alanının "{{.Channel}}" kanalına ulaşmıyor.
+Bu sunucudaki başka bir çalışma alanı şu adresleri kanıtladı; bu adreslere gelen posta artık {{.Workspace}} çalışma alanına ulaşmıyor:
+{{range .Items}}
+- {{.Address}} ("{{.Channel}}" kanalı): {{.URL}}
+{{- end}}
 
-Adres sizinse kanalın ayarlarından yeniden kanıtlayın: kod e-postası ya da TXT kaydı adresi geri alır.
-
-{{.URL}}
+Bir adres sizinse kanalın ayarlarından yeniden kanıtlayın: kod e-postası ya da TXT kaydı adresi geri alır.

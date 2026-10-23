@@ -1,7 +1,8 @@
-Mail to {{.Address}} no longer reaches {{.Workspace}}
+Mail to {{len .Items}} address{{if ne (len .Items) 1}}es{{end}} no longer reaches {{.Workspace}}
 
-Another workspace on this server proved {{.Address}}, so mail to it no longer reaches the channel "{{.Channel}}" of {{.Workspace}}.
+Another workspace on this server proved these addresses, so their mail no longer reaches {{.Workspace}}:
+{{range .Items}}
+- {{.Address}} (channel "{{.Channel}}"): {{.URL}}
+{{- end}}
 
-If the address is yours, prove it again in the channel's settings: the code mail or the TXT record takes it back.
-
-{{.URL}}
+If an address is yours, prove it again in the channel's settings: the code mail or the TXT record takes it back.

@@ -323,3 +323,25 @@ ORDER BY e.address, e.workspace_id;
 SELECT EXISTS (
   SELECT 1 FROM email_channels WHERE address = @address AND verified_at IS NOT NULL AND workspace_id <> @workspace_id
 )::bool;
+
+-- name: RecordAddressLoss :exec
+INSERT INTO email_address_losses (workspace_id, id, channel_id, address, lost_at)
+VALUES (@workspace_id, @id, @channel_id, @address, @now);
+
+-- name: LockAddressLosses :exec
+SELECT pg_advisory_xact_lock(hashtextextended('yuva_address_losses:' || sqlc.arg(workspace_id)::uuid::text, 0));
+
+-- name: ListUnmailedAddressLosses :many
+SELECT l.address, l.channel_id, c.name AS channel_name, c.inbox_id FROM email_address_losses l
+LEFT JOIN channels c ON c.workspace_id = l.workspace_id AND c.id = l.channel_id
+WHERE l.workspace_id = @workspace_id AND l.mailed_at IS NULL
+ORDER BY l.lost_at, l.id;
+
+-- name: LastAddressLossMail :one
+SELECT coalesce(max(mailed_at), 'epoch'::timestamptz)::timestamptz FROM email_address_losses WHERE workspace_id = @workspace_id;
+
+-- name: MarkAddressLossesMailed :exec
+UPDATE email_address_losses SET mailed_at = @now WHERE workspace_id = @workspace_id AND mailed_at IS NULL;
+
+-- name: DeleteMailedAddressLosses :exec
+DELETE FROM email_address_losses WHERE workspace_id = @workspace_id AND mailed_at < @before;

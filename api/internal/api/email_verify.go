@@ -16,6 +16,9 @@ import (
 	"time"
 	"uuid"
 
+	"github.com/riverqueue/river"
+	"github.com/riverqueue/river/rivertype"
+
 	"github.com/productdevbook/yuva/api/internal/email"
 	"github.com/productdevbook/yuva/api/internal/mail"
 	"github.com/productdevbook/yuva/api/internal/oas"
@@ -28,6 +31,8 @@ const (
 	verifyCodeTTL         = time.Hour
 	verifyCodeMaxAttempts = 5
 	verifyCodeGap         = time.Minute
+	addressLossMailGap    = 24 * time.Hour
+	addressLossKeep       = 30 * 24 * time.Hour
 	verifiedByCode        = string(oas.EmailVerifiedByCode)
 	verifiedByDNS         = string(oas.EmailVerifiedByDns)
 	verifiedByOperator    = string(oas.EmailVerifiedByOperator)
@@ -40,6 +45,7 @@ var (
 
 	limitCodesPerWorkspace = limit{20, 24 * time.Hour}
 	limitCodesPerAddress   = limit{5, 24 * time.Hour}
+	limitDNSProofs         = limit{30, time.Hour}
 	errNoAddressToProve    = errValidation("only e-mail channels have an address to prove")
 )
 
@@ -168,7 +174,7 @@ func (s *Server) SendEmailVerificationCode(ctx context.Context, req oas.SendEmai
 		}
 		for _, g := range s.limits.take(ctx, q,
 			rateTake{"address_code:workspace:" + p.workspaceID.String(), limitCodesPerWorkspace, 1},
-			rateTake{"address_code:to:" + cur.Address, limitCodesPerAddress, 1}) {
+			rateTake{"address_code:to:" + rateAddress(cur.Address), limitCodesPerAddress, 1}) {
 			if g.n == 0 {
 				return rateLimited(g.wait)
 			}
@@ -225,6 +231,9 @@ func (s *Server) VerifyEmailChannel(ctx context.Context, req oas.VerifyEmailChan
 	}
 	if code != "" {
 		return s.verifyByCode(ctx, p, c, code)
+	}
+	if ok, wait := s.limits.allowWait(ctx, nil, "address_dns:"+p.workspaceID.String(), limitDNSProofs); !ok {
+		return nil, rateLimited(wait)
 	}
 	domain := email.Domain(e.Address)
 	seen, problemText := s.lookupEmailProof(ctx, domain, s.emailProofValue(p.workspaceID, domain))
@@ -316,7 +325,9 @@ func (s *Server) proveAddress(ctx context.Context, q *store.Queries, p *principa
 		if err := writeSystemAudit(ctx, q, l.WorkspaceID, now, oas.AuditChannelAddressLost, oas.AuditTargetChannel, l.ChannelID, auditDetails{"address": e.Address}); err != nil {
 			return e, err
 		}
-		*losses = append(*losses, addressLoss{workspaceID: l.WorkspaceID, channelID: l.ChannelID, address: e.Address})
+		if err := recordLoss(ctx, q, losses, addressLoss{workspaceID: l.WorkspaceID, channelID: l.ChannelID, address: e.Address}, now); err != nil {
+			return e, err
+		}
 	}
 	if len(lost) == 0 {
 		prev, err := s.previousRoute(ctx, q, e.Address)
@@ -328,7 +339,9 @@ func (s *Server) proveAddress(ctx context.Context, q *store.Queries, p *principa
 				auditDetails{"address": e.Address, "via": prev.Address}); err != nil {
 				return e, err
 			}
-			*losses = append(*losses, addressLoss{workspaceID: prev.WorkspaceID, channelID: prev.ChannelID, address: e.Address})
+			if err := recordLoss(ctx, q, losses, addressLoss{workspaceID: prev.WorkspaceID, channelID: prev.ChannelID, address: e.Address}, now); err != nil {
+				return e, err
+			}
 		}
 	}
 	saved, err := q.MarkEmailChannelVerified(ctx, store.MarkEmailChannelVerifiedParams{
@@ -376,38 +389,118 @@ func (s *Server) previousRoute(ctx context.Context, q *store.Queries, address st
 	return nil, nil
 }
 
-// notifyAddressLost mails the owners of each workspace whose channel lost mail to an address.
+func recordLoss(ctx context.Context, q *store.Queries, losses *[]addressLoss, l addressLoss, now time.Time) error {
+	*losses = append(*losses, l)
+	return q.RecordAddressLoss(ctx, store.RecordAddressLossParams{WorkspaceID: l.workspaceID, ID: newID(), ChannelID: l.channelID, Address: l.address, Now: now})
+}
+
+// AddressLossMailArgs mails a workspace's owners the addresses its channels lost since the last
+// such mail, at most once per addressLossMailGap.
+type AddressLossMailArgs struct {
+	WorkspaceID uuid.UUID `json:"workspace_id"`
+}
+
+func (AddressLossMailArgs) Kind() string { return "address_loss_mail" }
+
+func (AddressLossMailArgs) InsertOpts() river.InsertOpts {
+	return river.InsertOpts{UniqueOpts: river.UniqueOpts{ByArgs: true, ByState: []rivertype.JobState{
+		rivertype.JobStateAvailable, rivertype.JobStatePending, rivertype.JobStateScheduled, rivertype.JobStateRetryable,
+	}}}
+}
+
+type addressLossMailWorker struct {
+	river.WorkerDefaults[AddressLossMailArgs]
+	s *Server
+}
+
+func (w *addressLossMailWorker) Work(ctx context.Context, job *river.Job[AddressLossMailArgs]) error {
+	next, err := w.s.SendAddressLossMail(ctx, job.Args.WorkspaceID)
+	if err != nil || next == nil {
+		return err
+	}
+	_, err = w.s.jobs.Insert(ctx, job.Args, &river.InsertOpts{ScheduledAt: *next})
+	return err
+}
+
+// notifyAddressLost queues the owner mail of each workspace that lost an address.
 func (s *Server) notifyAddressLost(ctx context.Context, losses []addressLoss) {
+	if s.jobs == nil {
+		return
+	}
+	done := map[uuid.UUID]bool{}
 	for _, l := range losses {
-		if err := s.mailAddressLost(ctx, l); err != nil {
-			s.log.ErrorContext(ctx, "address lost notice", slog.Any("error", err))
+		if done[l.workspaceID] {
+			continue
+		}
+		done[l.workspaceID] = true
+		if _, err := s.jobs.Insert(ctx, AddressLossMailArgs{WorkspaceID: l.workspaceID}, nil); err != nil {
+			s.log.ErrorContext(ctx, "address loss mail", slog.Any("error", err))
 		}
 	}
 }
 
-func (s *Server) mailAddressLost(ctx context.Context, l addressLoss) error {
-	w, err := s.st.GetWorkspace(ctx, l.workspaceID)
-	if err != nil {
-		return err
-	}
-	c, err := s.st.GetChannel(ctx, store.GetChannelParams{WorkspaceID: l.workspaceID, ID: l.channelID})
-	if err != nil {
-		return err
-	}
-	owners, err := s.st.ListOwnerAddresses(ctx, l.workspaceID)
-	if err != nil {
-		return err
-	}
-	link := s.auth.PublicURL + "/settings/inboxes/" + c.InboxID.String() + "/channels/" + c.ID.String() + "?workspace=" + l.workspaceID.String()
-	for _, o := range owners {
-		msg, err := mail.Render("address_lost", o.Locale, map[string]any{"Workspace": w.Name, "Channel": c.Name, "Address": l.address, "URL": link})
+// SendAddressLossMail mails the owners the addresses not yet reported, or returns when it may
+// next do so when a mail went out less than addressLossMailGap ago.
+func (s *Server) SendAddressLossMail(ctx context.Context, ws uuid.UUID) (*time.Time, error) {
+	now := s.now()
+	var items []map[string]string
+	var next *time.Time
+	err := s.st.InTx(ctx, func(q *store.Queries) error {
+		if err := q.LockAddressLosses(ctx, ws); err != nil {
+			return err
+		}
+		last, err := q.LastAddressLossMail(ctx, ws)
 		if err != nil {
 			return err
+		}
+		rows, err := q.ListUnmailedAddressLosses(ctx, ws)
+		if err != nil || len(rows) == 0 {
+			return err
+		}
+		if at := last.Add(addressLossMailGap); at.After(now) {
+			next = &at
+			return nil
+		}
+		for _, r := range rows {
+			it := map[string]string{"Address": r.Address, "Channel": deref(r.ChannelName), "URL": s.auth.PublicURL + "/settings?workspace=" + ws.String()}
+			if r.InboxID != nil {
+				it["URL"] = s.auth.PublicURL + "/settings/inboxes/" + r.InboxID.String() + "/channels/" + r.ChannelID.String() + "?workspace=" + ws.String()
+			}
+			items = append(items, it)
+		}
+		if err := q.MarkAddressLossesMailed(ctx, store.MarkAddressLossesMailedParams{WorkspaceID: ws, Now: &now}); err != nil {
+			return err
+		}
+		return q.DeleteMailedAddressLosses(ctx, store.DeleteMailedAddressLossesParams{WorkspaceID: ws, Before: new(now.Add(-addressLossKeep))})
+	})
+	if err != nil || len(items) == 0 {
+		return next, err
+	}
+	w, err := s.st.GetWorkspace(ctx, ws)
+	if err != nil {
+		return nil, err
+	}
+	owners, err := s.st.ListOwnerAddresses(ctx, ws)
+	if err != nil {
+		return nil, err
+	}
+	for _, o := range owners {
+		msg, err := mail.Render("address_lost", o.Locale, map[string]any{"Workspace": w.Name, "Items": items})
+		if err != nil {
+			return nil, err
 		}
 		msg.To = o.Email
 		s.sendMail(ctx, msg)
 	}
-	return nil
+	return nil, nil
+}
+
+// rateAddress is the address a per-recipient limit counts against: lowercase, without a +tag.
+// The #185 branch adds a shared normalisation; use it once it is on main.
+func rateAddress(addr string) string {
+	local, domain, _ := strings.Cut(strings.ToLower(addr), "@")
+	base, _, _ := strings.Cut(local, "+")
+	return base + "@" + domain
 }
 
 func (s *Server) lookupEmailProof(ctx context.Context, domain, value string) (bool, string) {
