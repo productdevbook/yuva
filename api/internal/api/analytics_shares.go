@@ -50,7 +50,7 @@ var (
 	limitSharePerIP       = limit{120, time.Minute}
 	limitUnlockPerIP      = limit{30, time.Minute}
 	limitUnlockPerShareIP = limit{10, time.Minute}
-	limitUnlockPerShare   = limit{60, time.Hour}
+	budgetUnlockPerShare  = budget{limit{60, time.Hour}, limit{1000, time.Hour}}
 )
 
 // shareHashSlots bounds how many password hashes run at once, and so the memory they take.
@@ -530,7 +530,8 @@ func (s *Server) UnlockSharedAnalytics(ctx context.Context, req oas.UnlockShared
 	if err := s.analyticsOn(); err != nil {
 		return nil, err
 	}
-	ip := rateIP(s.clientIP(requestFrom(ctx)))
+	addr := s.clientIP(requestFrom(ctx))
+	ip := rateIP(addr)
 	if err := s.rateLimit(ctx, rateCheck{"share-unlock:ip:" + ip, limitUnlockPerIP}); err != nil {
 		return nil, err
 	}
@@ -541,10 +542,8 @@ func (s *Server) UnlockSharedAnalytics(ctx context.Context, req oas.UnlockShared
 	if sh.PasswordHash == nil {
 		return nil, errShareNoPassword
 	}
-	if err := s.rateLimit(ctx,
-		rateCheck{"share-unlock:" + sh.ID.String() + ":" + ip, limitUnlockPerShareIP},
-		rateCheck{"share-unlock:share:" + sh.ID.String(), limitUnlockPerShare},
-	); err != nil {
+	if err := s.rateLimit(ctx, append([]rateCheck{{"share-unlock:" + sh.ID.String() + ":" + ip, limitUnlockPerShareIP}},
+		sharedChecks(addr, "share-unlock:share:"+sh.ID.String(), budgetUnlockPerShare)...)...); err != nil {
 		return nil, err
 	}
 	select {

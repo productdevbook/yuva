@@ -44,9 +44,10 @@ func TestShareUnlockLimitsAndHash(t *testing.T) {
 	if r := unlock(h.client(), "old horse"); r.status != http.StatusOK {
 		t.Fatalf("a password hashed with the earlier settings: %d %s", r.status, r.raw)
 	}
-	guesses := 1
-	for guesses < 60 {
+	guesses := 0
+	for n := 0; guesses < 60; n++ {
 		c := h.client()
+		c.ip = "10.77.1." + strconv.Itoa(n+1)
 		for range 9 {
 			if guesses == 60 {
 				break
@@ -57,8 +58,12 @@ func TestShareUnlockLimitsAndHash(t *testing.T) {
 			guesses++
 		}
 	}
-	r := unlock(h.client(), "old horse")
-	expectLimited(t, r)
+	neighbour := h.client()
+	neighbour.ip = "10.77.1.200"
+	expectLimited(t, unlock(neighbour, "old horse"))
+	if r := unlock(h.client(), "old horse"); r.status != http.StatusOK {
+		t.Fatalf("another network after one network's 60 tries: %d %s", r.status, r.raw)
+	}
 }
 
 func TestRateLimiterFallsBackLocally(t *testing.T) {

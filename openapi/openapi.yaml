@@ -17749,8 +17749,9 @@ paths:
         Answers an access token for the link's other endpoints, valid for 12 hours or until the
         link expires, is revoked or gets another password. A wrong password answers
         `401 wrong_password`; an IP address may try 10 times a minute per link and 30 times a minute
-        in all, and a link takes 60 tries an hour from everyone (`429 rate_limited`). A link without
-        a password answers `409 no_password`.
+        in all, a network (IPv4 /24, IPv6 /48) 60 times an hour per link, and a link takes 1,000
+        tries an hour in all (`429 rate_limited`). A link without a password answers
+        `409 no_password`.
       tags: [client]
       security: []
       parameters:
