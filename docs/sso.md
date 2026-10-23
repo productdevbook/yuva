@@ -224,7 +224,9 @@ publish the record again and press Verify to clear it.
   answers `sso_required` and the panel sends them to your provider. Sessions that exist when you
   turn it on are refused from the next request. Owners are exempt with any session, so a broken
   provider never locks you out. Connected apps (OAuth, MCP) of these people stop working here until
-  they approve them again after signing in through the provider; API keys are not affected. Needs a
+  they approve them again after signing in through the provider; API keys are not affected. Their
+  replies in Slack threads are refused, and actions they queued without signing in through the
+  provider (replies to linked conversations, issue and roadmap progress) stop. Needs a
   provider and a verified domain; removing the provider or the last verified domain turns it off.
 - **Just-in-time membership** (`jit`, off by default): a person of your domains who signs in
   through the provider and is not a member joins with the default role (`jit_role`: `agent`, or

@@ -42491,7 +42491,11 @@ type ClientInterface interface {
 	// is turned on are refused at once. Signing in with a code or a passkey still works (for
 	// other workspaces and as a reader). Owners are exempt, so a broken identity provider never
 	// locks the workspace out. OAuth grants of covered members work only when they were approved
-	// with such a session; API keys are not affected. Turning it on needs a provider and a
+	// with such a session; API keys are not affected. Replies and notes from Slack threads of a
+	// covered member are refused (Slack cannot sign in through the provider), and their queued
+	// actions (linked replies, issue-link and roadmap progress) run only when they were queued
+	// with such a session or grant: a linked reply's conversation otherwise ends `failed` with
+	// reason `sso_required`. Turning it on needs a provider and a
 	// verified domain (`409 sso_not_ready`). `jit` lets a person of a claimed domain who signs
 	// in through the provider and is not a member join with `jit_role` (`admin` or `agent`,
 	// never `owner`). Owners only, with a member session; recorded as `sso.settings_changed`.
@@ -42510,7 +42514,11 @@ type ClientInterface interface {
 	// is turned on are refused at once. Signing in with a code or a passkey still works (for
 	// other workspaces and as a reader). Owners are exempt, so a broken identity provider never
 	// locks the workspace out. OAuth grants of covered members work only when they were approved
-	// with such a session; API keys are not affected. Turning it on needs a provider and a
+	// with such a session; API keys are not affected. Replies and notes from Slack threads of a
+	// covered member are refused (Slack cannot sign in through the provider), and their queued
+	// actions (linked replies, issue-link and roadmap progress) run only when they were queued
+	// with such a session or grant: a linked reply's conversation otherwise ends `failed` with
+	// reason `sso_required`. Turning it on needs a provider and a
 	// verified domain (`409 sso_not_ready`). `jit` lets a person of a claimed domain who signs
 	// in through the provider and is not a member join with `jit_role` (`admin` or `agent`,
 	// never `owner`). Owners only, with a member session; recorded as `sso.settings_changed`.
@@ -58673,7 +58681,11 @@ func (c *Client) GetSsoSettings(ctx context.Context, params *GetSsoSettingsParam
 // is turned on are refused at once. Signing in with a code or a passkey still works (for
 // other workspaces and as a reader). Owners are exempt, so a broken identity provider never
 // locks the workspace out. OAuth grants of covered members work only when they were approved
-// with such a session; API keys are not affected. Turning it on needs a provider and a
+// with such a session; API keys are not affected. Replies and notes from Slack threads of a
+// covered member are refused (Slack cannot sign in through the provider), and their queued
+// actions (linked replies, issue-link and roadmap progress) run only when they were queued
+// with such a session or grant: a linked reply's conversation otherwise ends `failed` with
+// reason `sso_required`. Turning it on needs a provider and a
 // verified domain (`409 sso_not_ready`). `jit` lets a person of a claimed domain who signs
 // in through the provider and is not a member join with `jit_role` (`admin` or `agent`,
 // never `owner`). Owners only, with a member session; recorded as `sso.settings_changed`.
@@ -58702,7 +58714,11 @@ func (c *Client) UpdateSsoSettingsWithBody(ctx context.Context, params *UpdateSs
 // is turned on are refused at once. Signing in with a code or a passkey still works (for
 // other workspaces and as a reader). Owners are exempt, so a broken identity provider never
 // locks the workspace out. OAuth grants of covered members work only when they were approved
-// with such a session; API keys are not affected. Turning it on needs a provider and a
+// with such a session; API keys are not affected. Replies and notes from Slack threads of a
+// covered member are refused (Slack cannot sign in through the provider), and their queued
+// actions (linked replies, issue-link and roadmap progress) run only when they were queued
+// with such a session or grant: a linked reply's conversation otherwise ends `failed` with
+// reason `sso_required`. Turning it on needs a provider and a
 // verified domain (`409 sso_not_ready`). `jit` lets a person of a claimed domain who signs
 // in through the provider and is not a member join with `jit_role` (`admin` or `agent`,
 // never `owner`). Owners only, with a member session; recorded as `sso.settings_changed`.
@@ -102928,7 +102944,11 @@ type ClientWithResponsesInterface interface {
 	// is turned on are refused at once. Signing in with a code or a passkey still works (for
 	// other workspaces and as a reader). Owners are exempt, so a broken identity provider never
 	// locks the workspace out. OAuth grants of covered members work only when they were approved
-	// with such a session; API keys are not affected. Turning it on needs a provider and a
+	// with such a session; API keys are not affected. Replies and notes from Slack threads of a
+	// covered member are refused (Slack cannot sign in through the provider), and their queued
+	// actions (linked replies, issue-link and roadmap progress) run only when they were queued
+	// with such a session or grant: a linked reply's conversation otherwise ends `failed` with
+	// reason `sso_required`. Turning it on needs a provider and a
 	// verified domain (`409 sso_not_ready`). `jit` lets a person of a claimed domain who signs
 	// in through the provider and is not a member join with `jit_role` (`admin` or `agent`,
 	// never `owner`). Owners only, with a member session; recorded as `sso.settings_changed`.
@@ -102947,7 +102967,11 @@ type ClientWithResponsesInterface interface {
 	// is turned on are refused at once. Signing in with a code or a passkey still works (for
 	// other workspaces and as a reader). Owners are exempt, so a broken identity provider never
 	// locks the workspace out. OAuth grants of covered members work only when they were approved
-	// with such a session; API keys are not affected. Turning it on needs a provider and a
+	// with such a session; API keys are not affected. Replies and notes from Slack threads of a
+	// covered member are refused (Slack cannot sign in through the provider), and their queued
+	// actions (linked replies, issue-link and roadmap progress) run only when they were queued
+	// with such a session or grant: a linked reply's conversation otherwise ends `failed` with
+	// reason `sso_required`. Turning it on needs a provider and a
 	// verified domain (`409 sso_not_ready`). `jit` lets a person of a claimed domain who signs
 	// in through the provider and is not a member join with `jit_role` (`admin` or `agent`,
 	// never `owner`). Owners only, with a member session; recorded as `sso.settings_changed`.
@@ -151916,7 +151940,11 @@ func (c *ClientWithResponses) GetSsoSettingsWithResponse(ctx context.Context, pa
 // is turned on are refused at once. Signing in with a code or a passkey still works (for
 // other workspaces and as a reader). Owners are exempt, so a broken identity provider never
 // locks the workspace out. OAuth grants of covered members work only when they were approved
-// with such a session; API keys are not affected. Turning it on needs a provider and a
+// with such a session; API keys are not affected. Replies and notes from Slack threads of a
+// covered member are refused (Slack cannot sign in through the provider), and their queued
+// actions (linked replies, issue-link and roadmap progress) run only when they were queued
+// with such a session or grant: a linked reply's conversation otherwise ends `failed` with
+// reason `sso_required`. Turning it on needs a provider and a
 // verified domain (`409 sso_not_ready`). `jit` lets a person of a claimed domain who signs
 // in through the provider and is not a member join with `jit_role` (`admin` or `agent`,
 // never `owner`). Owners only, with a member session; recorded as `sso.settings_changed`.
@@ -151941,7 +151969,11 @@ func (c *ClientWithResponses) UpdateSsoSettingsWithBodyWithResponse(ctx context.
 // is turned on are refused at once. Signing in with a code or a passkey still works (for
 // other workspaces and as a reader). Owners are exempt, so a broken identity provider never
 // locks the workspace out. OAuth grants of covered members work only when they were approved
-// with such a session; API keys are not affected. Turning it on needs a provider and a
+// with such a session; API keys are not affected. Replies and notes from Slack threads of a
+// covered member are refused (Slack cannot sign in through the provider), and their queued
+// actions (linked replies, issue-link and roadmap progress) run only when they were queued
+// with such a session or grant: a linked reply's conversation otherwise ends `failed` with
+// reason `sso_required`. Turning it on needs a provider and a
 // verified domain (`409 sso_not_ready`). `jit` lets a person of a claimed domain who signs
 // in through the provider and is not a member join with `jit_role` (`admin` or `agent`,
 // never `owner`). Owners only, with a member session; recorded as `sso.settings_changed`.

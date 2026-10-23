@@ -237,7 +237,10 @@ Prüfen, um das zu beheben.
   Sitzungen, die beim Einschalten bestehen, werden ab der nächsten Anfrage abgelehnt. Eigentümer sind
   mit jeder Sitzung ausgenommen, damit ein defekter Anbieter Sie nie aussperrt. Verbundene Apps
   (OAuth, MCP) dieser Personen funktionieren hier erst wieder, wenn sie sie nach einer Anmeldung über
-  den Anbieter erneut genehmigen; API-Schlüssel sind nicht betroffen. Braucht einen Anbieter und eine
+  den Anbieter erneut genehmigen; API-Schlüssel sind nicht betroffen. Ihre Antworten in
+  Slack-Threads werden abgelehnt, und Aktionen, die sie ohne Anmeldung über den Anbieter in die
+  Warteschlange gestellt haben (Antworten an verknüpfte Unterhaltungen, Fortschritt aus Issue-Trackern
+  und der Roadmap), werden nicht ausgeführt. Braucht einen Anbieter und eine
   verifizierte Domain; das Entfernen des Anbieters oder der letzten verifizierten Domain schaltet es
   aus.
 - **Just-in-time-Mitgliedschaft** (`jit`, standardmäßig aus): Eine Person Ihrer Domains, die sich über

@@ -135,7 +135,7 @@ const deleteIssueLink = `-- name: DeleteIssueLink :one
 DELETE FROM issue_links
 WHERE workspace_id = $1 AND id = $2
   AND conversation_id IS NOT DISTINCT FROM $3::uuid AND idea_id IS NOT DISTINCT FROM $4::uuid
-RETURNING id, workspace_id, issue_id, conversation_id, idea_id, linked_by_member_id, linked_by_api_key_id, linked_by_grant_id, via, applied_progress, created_at
+RETURNING id, workspace_id, issue_id, conversation_id, idea_id, linked_by_member_id, linked_by_api_key_id, linked_by_grant_id, via, applied_progress, created_at, sso_settings_id
 `
 
 type DeleteIssueLinkParams struct {
@@ -165,6 +165,7 @@ func (q *Queries) DeleteIssueLink(ctx context.Context, arg DeleteIssueLinkParams
 		&i.Via,
 		&i.AppliedProgress,
 		&i.CreatedAt,
+		&i.SsoSettingsID,
 	)
 	return i, err
 }
@@ -269,7 +270,7 @@ func (q *Queries) FindIssueIntegration(ctx context.Context, id uuid.UUID) (Issue
 }
 
 const findIssueLink = `-- name: FindIssueLink :one
-SELECT id, workspace_id, issue_id, conversation_id, idea_id, linked_by_member_id, linked_by_api_key_id, linked_by_grant_id, via, applied_progress, created_at FROM issue_links
+SELECT id, workspace_id, issue_id, conversation_id, idea_id, linked_by_member_id, linked_by_api_key_id, linked_by_grant_id, via, applied_progress, created_at, sso_settings_id FROM issue_links
 WHERE workspace_id = $1 AND issue_id = $2
   AND conversation_id IS NOT DISTINCT FROM $3::uuid AND idea_id IS NOT DISTINCT FROM $4::uuid
 `
@@ -301,6 +302,7 @@ func (q *Queries) FindIssueLink(ctx context.Context, arg FindIssueLinkParams) (I
 		&i.Via,
 		&i.AppliedProgress,
 		&i.CreatedAt,
+		&i.SsoSettingsID,
 	)
 	return i, err
 }
@@ -433,11 +435,11 @@ func (q *Queries) GetTrackedIssueByExternal(ctx context.Context, arg GetTrackedI
 
 const insertIssueLink = `-- name: InsertIssueLink :one
 INSERT INTO issue_links (id, workspace_id, issue_id, conversation_id, idea_id, linked_by_member_id, linked_by_api_key_id,
-                         linked_by_grant_id, via, created_at)
+                         linked_by_grant_id, via, created_at, sso_settings_id)
 VALUES ($1, $2, $3, $4, $5, $6,
-        $7, $8, $9, $10)
+        $7, $8, $9, $10, $11)
 ON CONFLICT DO NOTHING
-RETURNING id, workspace_id, issue_id, conversation_id, idea_id, linked_by_member_id, linked_by_api_key_id, linked_by_grant_id, via, applied_progress, created_at
+RETURNING id, workspace_id, issue_id, conversation_id, idea_id, linked_by_member_id, linked_by_api_key_id, linked_by_grant_id, via, applied_progress, created_at, sso_settings_id
 `
 
 type InsertIssueLinkParams struct {
@@ -451,6 +453,7 @@ type InsertIssueLinkParams struct {
 	LinkedByGrantID  *uuid.UUID
 	Via              string
 	Now              time.Time
+	SsoSettingsID    *uuid.UUID
 }
 
 func (q *Queries) InsertIssueLink(ctx context.Context, arg InsertIssueLinkParams) (IssueLink, error) {
@@ -465,6 +468,7 @@ func (q *Queries) InsertIssueLink(ctx context.Context, arg InsertIssueLinkParams
 		arg.LinkedByGrantID,
 		arg.Via,
 		arg.Now,
+		arg.SsoSettingsID,
 	)
 	var i IssueLink
 	err := row.Scan(
@@ -479,6 +483,7 @@ func (q *Queries) InsertIssueLink(ctx context.Context, arg InsertIssueLinkParams
 		&i.Via,
 		&i.AppliedProgress,
 		&i.CreatedAt,
+		&i.SsoSettingsID,
 	)
 	return i, err
 }
@@ -538,7 +543,7 @@ func (q *Queries) InsertTrackedIssue(ctx context.Context, arg InsertTrackedIssue
 }
 
 const issueLinksToApply = `-- name: IssueLinksToApply :many
-SELECT l.id, l.workspace_id, l.issue_id, l.conversation_id, l.idea_id, l.linked_by_member_id, l.linked_by_api_key_id, l.linked_by_grant_id, l.via, l.applied_progress, l.created_at FROM issue_links l
+SELECT l.id, l.workspace_id, l.issue_id, l.conversation_id, l.idea_id, l.linked_by_member_id, l.linked_by_api_key_id, l.linked_by_grant_id, l.via, l.applied_progress, l.created_at, l.sso_settings_id FROM issue_links l
 JOIN tracked_issues t ON t.workspace_id = l.workspace_id AND t.id = l.issue_id
 WHERE l.workspace_id = $1 AND l.issue_id = $2 AND l.applied_progress IS DISTINCT FROM t.progress
 ORDER BY l.created_at, l.id
@@ -570,6 +575,7 @@ func (q *Queries) IssueLinksToApply(ctx context.Context, arg IssueLinksToApplyPa
 			&i.Via,
 			&i.AppliedProgress,
 			&i.CreatedAt,
+			&i.SsoSettingsID,
 		); err != nil {
 			return nil, err
 		}
@@ -621,7 +627,7 @@ func (q *Queries) ListIssueIntegrations(ctx context.Context, workspaceID uuid.UU
 }
 
 const listIssueLinkViews = `-- name: ListIssueLinkViews :many
-SELECT l.id, l.workspace_id, l.issue_id, l.conversation_id, l.idea_id, l.linked_by_member_id, l.linked_by_api_key_id, l.linked_by_grant_id, l.via, l.applied_progress, l.created_at, t.id, t.workspace_id, t.integration_id, t.external_id, t.key, t.url, t.title, t.state, t.progress, t.state_changed_at, t.synced_at, t.next_sync_at, t.sync_failures, t.created_at, i.provider, coalesce(c.inbox_id, d.inbox_id)::uuid AS inbox_id
+SELECT l.id, l.workspace_id, l.issue_id, l.conversation_id, l.idea_id, l.linked_by_member_id, l.linked_by_api_key_id, l.linked_by_grant_id, l.via, l.applied_progress, l.created_at, l.sso_settings_id, t.id, t.workspace_id, t.integration_id, t.external_id, t.key, t.url, t.title, t.state, t.progress, t.state_changed_at, t.synced_at, t.next_sync_at, t.sync_failures, t.created_at, i.provider, coalesce(c.inbox_id, d.inbox_id)::uuid AS inbox_id
 FROM issue_links l
 JOIN tracked_issues t ON t.workspace_id = l.workspace_id AND t.id = l.issue_id
 JOIN issue_integrations i ON i.workspace_id = t.workspace_id AND i.id = t.integration_id
@@ -679,6 +685,7 @@ func (q *Queries) ListIssueLinkViews(ctx context.Context, arg ListIssueLinkViews
 			&i.IssueLink.Via,
 			&i.IssueLink.AppliedProgress,
 			&i.IssueLink.CreatedAt,
+			&i.IssueLink.SsoSettingsID,
 			&i.TrackedIssue.ID,
 			&i.TrackedIssue.WorkspaceID,
 			&i.TrackedIssue.IntegrationID,
@@ -738,7 +745,7 @@ func (q *Queries) LockIssueIntegration(ctx context.Context, arg LockIssueIntegra
 }
 
 const lockIssueLink = `-- name: LockIssueLink :one
-SELECT id, workspace_id, issue_id, conversation_id, idea_id, linked_by_member_id, linked_by_api_key_id, linked_by_grant_id, via, applied_progress, created_at FROM issue_links WHERE workspace_id = $1 AND id = $2 FOR UPDATE
+SELECT id, workspace_id, issue_id, conversation_id, idea_id, linked_by_member_id, linked_by_api_key_id, linked_by_grant_id, via, applied_progress, created_at, sso_settings_id FROM issue_links WHERE workspace_id = $1 AND id = $2 FOR UPDATE
 `
 
 type LockIssueLinkParams struct {
@@ -761,6 +768,7 @@ func (q *Queries) LockIssueLink(ctx context.Context, arg LockIssueLinkParams) (I
 		&i.Via,
 		&i.AppliedProgress,
 		&i.CreatedAt,
+		&i.SsoSettingsID,
 	)
 	return i, err
 }

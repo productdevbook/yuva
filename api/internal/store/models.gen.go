@@ -1480,6 +1480,7 @@ type IssueLink struct {
 	Via              string
 	AppliedProgress  *string
 	CreatedAt        time.Time
+	SsoSettingsID    *uuid.UUID
 }
 
 type Label struct {
@@ -1491,19 +1492,20 @@ type Label struct {
 }
 
 type LinkedReply struct {
-	WorkspaceID uuid.UUID
-	ID          uuid.UUID
-	IncidentID  *uuid.UUID
-	Body        string
-	Close       bool
-	MemberID    *uuid.UUID
-	ApiKeyID    *uuid.UUID
-	GrantID     *uuid.UUID
-	Via         string
-	McpOnly     bool
-	Queued      int32
-	CreatedAt   time.Time
-	IdeaID      *uuid.UUID
+	WorkspaceID   uuid.UUID
+	ID            uuid.UUID
+	IncidentID    *uuid.UUID
+	Body          string
+	Close         bool
+	MemberID      *uuid.UUID
+	ApiKeyID      *uuid.UUID
+	GrantID       *uuid.UUID
+	Via           string
+	McpOnly       bool
+	Queued        int32
+	CreatedAt     time.Time
+	IdeaID        *uuid.UUID
+	SsoSettingsID *uuid.UUID
 }
 
 type LinkedReplyTarget struct {
@@ -2182,6 +2184,7 @@ type RoadmapStageChange struct {
 	ProgressSkipped int32
 	FinishedAt      *time.Time
 	CreatedAt       time.Time
+	SsoSettingsID   *uuid.UUID
 }
 
 type SamlAssertion struct {

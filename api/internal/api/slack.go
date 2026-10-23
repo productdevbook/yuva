@@ -859,6 +859,7 @@ const (
 	slackTextEmpty    = "Yuva did not take this: write the reply after %s."
 	slackTextSent     = "Sent to the customer."
 	slackTextSpam     = "Yuva did not send this: the conversation is marked as spam. A reply without the command is kept as a note."
+	slackTextSSO      = "Yuva did not take this: this workspace requires signing in through your organisation's single sign-on, which Slack cannot do. Sign in through SSO and answer in Yuva."
 )
 
 func (s *Server) slackEphemeral(ctx context.Context, token string, ev slackEvent, text string) {
@@ -899,6 +900,13 @@ func (s *Server) slackThreadReply(ctx context.Context, inst store.SlackInstallat
 		return nil
 	}
 	if err != nil {
+		return err
+	}
+	var gate *apiError
+	if err := s.ssoGate(ctx, ws, m.PersonID, m.Role, nil); errors.As(err, &gate) {
+		s.slackEphemeral(ctx, token, ev, slackTextSSO)
+		return nil
+	} else if err != nil {
 		return err
 	}
 	conv, err := s.st.GetConversation(ctx, store.GetConversationParams{WorkspaceID: ws, ID: thread.ConversationID})

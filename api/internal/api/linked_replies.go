@@ -137,7 +137,7 @@ func (s *Server) createLinkedReply(ctx context.Context, p principal, b *oas.Link
 		}
 		reply, err = q.CreateLinkedReply(ctx, store.CreateLinkedReplyParams{
 			WorkspaceID: p.workspaceID, ID: newID(), IncidentID: t.incident, IdeaID: t.idea, Body: b.Body, Close: closeAfter, MemberID: member,
-			ApiKeyID: key, GrantID: grant, Via: p.via, McpOnly: p.mcpOnly, Queued: int32(len(ids)), CreatedAt: s.now(),
+			ApiKeyID: key, GrantID: grant, Via: p.via, McpOnly: p.mcpOnly, Queued: int32(len(ids)), CreatedAt: s.now(), SsoSettingsID: p.ssoSettings,
 		})
 		if err != nil {
 			return err
@@ -297,55 +297,65 @@ func (s *Server) GetIdeaLinkedReply(ctx context.Context, req oas.GetIdeaLinkedRe
 	return oas.GetIdeaLinkedReply200JSONResponse(out), nil
 }
 
-func (s *Server) callerPrincipal(ctx context.Context, ws uuid.UUID, member, apiKey, grantID *uuid.UUID, via string, mcpOnly bool) (principal, bool, error) {
+// callerPrincipal rebuilds who queued an action, checked again now: refused is reasonRevoked when the
+// key, grant or member is gone, or the code of the sso_required refusal when the workspace now
+// requires single sign-on of a member who did not queue it through a session (or grant) made by its
+// provider.
+func (s *Server) callerPrincipal(ctx context.Context, ws uuid.UUID, member, apiKey, grantID, sso *uuid.UUID, via string, mcpOnly bool) (p principal, refused string, err error) {
 	w, err := s.st.GetWorkspace(ctx, ws)
 	if store.IsNotFound(err) || (err == nil && w.DeletedAt != nil) {
-		return principal{}, false, nil
+		return principal{}, reasonRevoked, nil
 	}
 	if err != nil {
-		return principal{}, false, err
+		return principal{}, "", err
 	}
-	p := principal{workspaceID: ws, via: via, mcpOnly: mcpOnly, botsMaySend: w.BotsMaySend, broadcastsByKeys: w.BroadcastsByKeys}
+	p = principal{workspaceID: ws, via: via, mcpOnly: mcpOnly, botsMaySend: w.BotsMaySend, broadcastsByKeys: w.BroadcastsByKeys}
 	switch {
 	case apiKey != nil:
 		k, err := s.st.GetAPIKey(ctx, store.GetAPIKeyParams{WorkspaceID: ws, ID: *apiKey})
 		if store.IsNotFound(err) {
-			return p, false, nil
+			return p, reasonRevoked, nil
 		}
 		if err != nil {
-			return p, false, err
+			return p, "", err
 		}
 		if k.RevokedAt != nil || (k.ExpiresAt != nil && !s.now().Before(*k.ExpiresAt)) {
-			return p, false, nil
+			return p, reasonRevoked, nil
 		}
 		p.keyID, p.scopes, p.limited = k.ID, k.Scopes, k.InboxLimited
 	case member != nil:
 		m, err := s.st.GetMember(ctx, store.GetMemberParams{WorkspaceID: ws, ID: *member})
 		if store.IsNotFound(err) {
-			return p, false, nil
+			return p, reasonRevoked, nil
 		}
 		if err != nil {
-			return p, false, err
+			return p, "", err
 		}
 		p.memberID, p.role = m.ID, m.Role
 		if grantID != nil {
 			g, err := s.st.GetOAuthGrant(ctx, store.GetOAuthGrantParams{WorkspaceID: ws, ID: *grantID})
 			if store.IsNotFound(err) {
-				return p, false, nil
+				return p, reasonRevoked, nil
 			}
 			if err != nil {
-				return p, false, err
+				return p, "", err
 			}
 			key, err := s.st.GetOAuthGrantClientKey(ctx, store.GetOAuthGrantClientKeyParams{WorkspaceID: ws, ID: g.ID})
 			if err != nil {
-				return p, false, err
+				return p, "", err
 			}
-			p.grantID, p.scopes, p.firstParty = g.ID, g.Scopes, s.firstParty(key)
+			p.grantID, p.scopes, p.firstParty, sso = g.ID, g.Scopes, s.firstParty(key), g.SsoSettingsID
+		}
+		var gate *apiError
+		if err := s.ssoGate(ctx, ws, m.PersonID, m.Role, sso); errors.As(err, &gate) {
+			return p, gate.Code, nil
+		} else if err != nil {
+			return p, "", err
 		}
 	default:
-		return p, false, nil
+		return p, reasonRevoked, nil
 	}
-	return p, true, nil
+	return p, "", nil
 }
 
 func (s *Server) finishLinkedReply(ctx context.Context, a LinkedReplyArgs, outcome, reason string) {
@@ -390,12 +400,15 @@ func (s *Server) sendLinkedReply(ctx context.Context, a LinkedReplyArgs) (outcom
 	if err != nil {
 		return "", "", err
 	}
-	p, ok, err := s.callerPrincipal(ctx, reply.WorkspaceID, reply.MemberID, reply.ApiKeyID, reply.GrantID, reply.Via, reply.McpOnly)
+	p, refused, err := s.callerPrincipal(ctx, reply.WorkspaceID, reply.MemberID, reply.ApiKeyID, reply.GrantID, reply.SsoSettingsID, reply.Via, reply.McpOnly)
 	if err != nil {
 		return "", "", err
 	}
-	if !ok {
+	if refused == reasonRevoked {
 		return outcomeSkipped, reasonRevoked, nil
+	}
+	if refused != "" {
+		return outcomeFailed, refused, nil
 	}
 	source := oas.RoadmapWrite
 	if reply.IncidentID != nil {

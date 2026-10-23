@@ -289,25 +289,26 @@ func (q *Queries) CountStatusIncidentConversations(ctx context.Context, arg Coun
 }
 
 const createLinkedReply = `-- name: CreateLinkedReply :one
-INSERT INTO linked_replies (workspace_id, id, incident_id, idea_id, body, close, member_id, api_key_id, grant_id, via, mcp_only, queued, created_at)
-VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
-RETURNING workspace_id, id, incident_id, body, close, member_id, api_key_id, grant_id, via, mcp_only, queued, created_at, idea_id
+INSERT INTO linked_replies (workspace_id, id, incident_id, idea_id, body, close, member_id, api_key_id, grant_id, via, mcp_only, queued, created_at, sso_settings_id)
+VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
+RETURNING workspace_id, id, incident_id, body, close, member_id, api_key_id, grant_id, via, mcp_only, queued, created_at, idea_id, sso_settings_id
 `
 
 type CreateLinkedReplyParams struct {
-	WorkspaceID uuid.UUID
-	ID          uuid.UUID
-	IncidentID  *uuid.UUID
-	IdeaID      *uuid.UUID
-	Body        string
-	Close       bool
-	MemberID    *uuid.UUID
-	ApiKeyID    *uuid.UUID
-	GrantID     *uuid.UUID
-	Via         string
-	McpOnly     bool
-	Queued      int32
-	CreatedAt   time.Time
+	WorkspaceID   uuid.UUID
+	ID            uuid.UUID
+	IncidentID    *uuid.UUID
+	IdeaID        *uuid.UUID
+	Body          string
+	Close         bool
+	MemberID      *uuid.UUID
+	ApiKeyID      *uuid.UUID
+	GrantID       *uuid.UUID
+	Via           string
+	McpOnly       bool
+	Queued        int32
+	CreatedAt     time.Time
+	SsoSettingsID *uuid.UUID
 }
 
 func (q *Queries) CreateLinkedReply(ctx context.Context, arg CreateLinkedReplyParams) (LinkedReply, error) {
@@ -325,6 +326,7 @@ func (q *Queries) CreateLinkedReply(ctx context.Context, arg CreateLinkedReplyPa
 		arg.McpOnly,
 		arg.Queued,
 		arg.CreatedAt,
+		arg.SsoSettingsID,
 	)
 	var i LinkedReply
 	err := row.Scan(
@@ -341,6 +343,7 @@ func (q *Queries) CreateLinkedReply(ctx context.Context, arg CreateLinkedReplyPa
 		&i.Queued,
 		&i.CreatedAt,
 		&i.IdeaID,
+		&i.SsoSettingsID,
 	)
 	return i, err
 }
@@ -923,7 +926,7 @@ func (q *Queries) FinishLinkedReplyTarget(ctx context.Context, arg FinishLinkedR
 }
 
 const getIdeaLinkedReply = `-- name: GetIdeaLinkedReply :one
-SELECT workspace_id, id, incident_id, body, close, member_id, api_key_id, grant_id, via, mcp_only, queued, created_at, idea_id FROM linked_replies WHERE workspace_id = $1 AND idea_id = $2 AND id = $3
+SELECT workspace_id, id, incident_id, body, close, member_id, api_key_id, grant_id, via, mcp_only, queued, created_at, idea_id, sso_settings_id FROM linked_replies WHERE workspace_id = $1 AND idea_id = $2 AND id = $3
 `
 
 type GetIdeaLinkedReplyParams struct {
@@ -949,6 +952,7 @@ func (q *Queries) GetIdeaLinkedReply(ctx context.Context, arg GetIdeaLinkedReply
 		&i.Queued,
 		&i.CreatedAt,
 		&i.IdeaID,
+		&i.SsoSettingsID,
 	)
 	return i, err
 }
@@ -1009,7 +1013,7 @@ func (q *Queries) GetInboxStatusPage(ctx context.Context, arg GetInboxStatusPage
 }
 
 const getIncidentLinkedReply = `-- name: GetIncidentLinkedReply :one
-SELECT workspace_id, id, incident_id, body, close, member_id, api_key_id, grant_id, via, mcp_only, queued, created_at, idea_id FROM linked_replies WHERE workspace_id = $1 AND incident_id = $2 AND id = $3
+SELECT workspace_id, id, incident_id, body, close, member_id, api_key_id, grant_id, via, mcp_only, queued, created_at, idea_id, sso_settings_id FROM linked_replies WHERE workspace_id = $1 AND incident_id = $2 AND id = $3
 `
 
 type GetIncidentLinkedReplyParams struct {
@@ -1035,12 +1039,13 @@ func (q *Queries) GetIncidentLinkedReply(ctx context.Context, arg GetIncidentLin
 		&i.Queued,
 		&i.CreatedAt,
 		&i.IdeaID,
+		&i.SsoSettingsID,
 	)
 	return i, err
 }
 
 const getLinkedReply = `-- name: GetLinkedReply :one
-SELECT workspace_id, id, incident_id, body, close, member_id, api_key_id, grant_id, via, mcp_only, queued, created_at, idea_id FROM linked_replies WHERE workspace_id = $1 AND id = $2
+SELECT workspace_id, id, incident_id, body, close, member_id, api_key_id, grant_id, via, mcp_only, queued, created_at, idea_id, sso_settings_id FROM linked_replies WHERE workspace_id = $1 AND id = $2
 `
 
 type GetLinkedReplyParams struct {
@@ -1065,6 +1070,7 @@ func (q *Queries) GetLinkedReply(ctx context.Context, arg GetLinkedReplyParams) 
 		&i.Queued,
 		&i.CreatedAt,
 		&i.IdeaID,
+		&i.SsoSettingsID,
 	)
 	return i, err
 }

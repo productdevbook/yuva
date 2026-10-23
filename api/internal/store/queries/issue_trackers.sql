@@ -91,9 +91,9 @@ RETURNING t.workspace_id, t.id;
 
 -- name: InsertIssueLink :one
 INSERT INTO issue_links (id, workspace_id, issue_id, conversation_id, idea_id, linked_by_member_id, linked_by_api_key_id,
-                         linked_by_grant_id, via, created_at)
+                         linked_by_grant_id, via, created_at, sso_settings_id)
 VALUES (@id, @workspace_id, @issue_id, sqlc.narg(conversation_id), sqlc.narg(idea_id), sqlc.narg(linked_by_member_id),
-        sqlc.narg(linked_by_api_key_id), sqlc.narg(linked_by_grant_id), @via, @now)
+        sqlc.narg(linked_by_api_key_id), sqlc.narg(linked_by_grant_id), @via, @now, sqlc.narg(sso_settings_id))
 ON CONFLICT DO NOTHING
 RETURNING *;
 

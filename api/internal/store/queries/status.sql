@@ -279,8 +279,8 @@ SELECT EXISTS (SELECT 1 FROM status_incident_conversations
 SELECT count(*)::int FROM status_incident_conversations WHERE workspace_id = @workspace_id AND incident_id = @incident_id;
 
 -- name: CreateLinkedReply :one
-INSERT INTO linked_replies (workspace_id, id, incident_id, idea_id, body, close, member_id, api_key_id, grant_id, via, mcp_only, queued, created_at)
-VALUES (@workspace_id, @id, sqlc.narg(incident_id), sqlc.narg(idea_id), @body, @close, sqlc.narg(member_id), sqlc.narg(api_key_id), sqlc.narg(grant_id), @via, @mcp_only, @queued, @created_at)
+INSERT INTO linked_replies (workspace_id, id, incident_id, idea_id, body, close, member_id, api_key_id, grant_id, via, mcp_only, queued, created_at, sso_settings_id)
+VALUES (@workspace_id, @id, sqlc.narg(incident_id), sqlc.narg(idea_id), @body, @close, sqlc.narg(member_id), sqlc.narg(api_key_id), sqlc.narg(grant_id), @via, @mcp_only, @queued, @created_at, sqlc.narg(sso_settings_id))
 RETURNING *;
 
 -- name: GetIncidentLinkedReply :one

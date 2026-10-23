@@ -90,9 +90,9 @@ RETURNING *;
 
 -- name: CreateRoadmapStageChange :one
 INSERT INTO roadmap_stage_changes (id, workspace_id, idea_id, from_stage, to_stage, member_id, api_key_id, grant_id, via, comment_post_id,
-    linked, progress, created_at)
+    linked, progress, created_at, sso_settings_id)
 VALUES (@id, @workspace_id, @idea_id, @from_stage, @to_stage, sqlc.narg(member_id), sqlc.narg(api_key_id), sqlc.narg(grant_id), @via,
-    sqlc.narg(comment_post_id), @linked, sqlc.narg(progress), @now)
+    sqlc.narg(comment_post_id), @linked, sqlc.narg(progress), @now, sqlc.narg(sso_settings_id))
 RETURNING *;
 
 -- name: GetRoadmapStageChange :one

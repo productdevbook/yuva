@@ -229,7 +229,9 @@ basarak bunu temizleyin.
   Açtığınız anda var olan oturumlar bir sonraki istekten itibaren reddedilir. Sahipler her oturumla
   muaftır; böylece bozulan bir sağlayıcı sizi asla dışarıda bırakmaz. Bu kişilerin bağlı uygulamaları
   (OAuth, MCP) sağlayıcı üzerinden giriş yapıp onları yeniden onaylayana kadar burada çalışmaz; API
-  anahtarları etkilenmez. Bir sağlayıcı ve doğrulanmış bir alan adı gerekir; sağlayıcıyı ya da son
+  anahtarları etkilenmez. Slack başlıklarındaki yanıtları reddedilir; sağlayıcı üzerinden giriş
+  yapmadan sıraya koydukları işler (bağlı konuşmalara yanıtlar, iş takibi ve yol haritası ilerlemesi)
+  durur. Bir sağlayıcı ve doğrulanmış bir alan adı gerekir; sağlayıcıyı ya da son
   doğrulanmış alan adını kaldırmak onu kapatır.
 - **Anında üyelik** (`jit`, varsayılan kapalı): alan adlarınızdan biri sağlayıcı üzerinden giriş
   yapar ve üye değilse varsayılan rolle katılır (`jit_role`: `agent` ya da `admin`; asla `owner`

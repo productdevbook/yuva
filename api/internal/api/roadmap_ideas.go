@@ -175,7 +175,7 @@ func (s *Server) MoveIdeaStage(ctx context.Context, req oas.MoveIdeaStageRequest
 		target := stageProgress(to)
 		arg := store.CreateRoadmapStageChangeParams{
 			ID: newID(), WorkspaceID: p.workspaceID, IdeaID: t.d.ID, FromStage: from, ToStage: to, Via: p.via, CommentPostID: commentID,
-			Linked: linked, Now: s.now(),
+			Linked: linked, Now: s.now(), SsoSettingsID: p.ssoSettings,
 		}
 		arg.MemberID, arg.ApiKeyID = statusAuthor(p)
 		if p.isGrant() {
@@ -433,11 +433,14 @@ func (s *Server) RunRoadmapProgress(ctx context.Context, a RoadmapProgressArgs) 
 		if latest != ch.ID {
 			break
 		}
-		p, ok, err := s.callerPrincipal(ctx, a.WorkspaceID, ch.MemberID, ch.ApiKeyID, ch.GrantID, ch.Via, false)
+		p, refused, err := s.callerPrincipal(ctx, a.WorkspaceID, ch.MemberID, ch.ApiKeyID, ch.GrantID, ch.SsoSettingsID, ch.Via, false)
 		if err != nil {
 			return err
 		}
-		if !ok || requireScope(p, oas.RoadmapStage) != nil {
+		if refused != "" && refused != reasonRevoked {
+			s.log.WarnContext(ctx, "roadmap progress stopped", slog.String("idea_id", ch.IdeaID.String()), slog.String("code", refused))
+		}
+		if refused != "" || requireScope(p, oas.RoadmapStage) != nil {
 			break
 		}
 		rows, err := s.st.IdeaLinkBatch(ctx, store.IdeaLinkBatchParams{WorkspaceID: a.WorkspaceID, IdeaID: ch.IdeaID, After: after, Lim: int32(roadmapBatchSize)})

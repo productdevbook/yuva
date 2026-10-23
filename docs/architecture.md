@@ -1825,7 +1825,9 @@ its own).
   commands) it is an outgoing message, refused with an ephemeral explanation while the conversation
   is marked spam (a note stays allowed). `client_id` `slack:<channel>:<ts>` makes a retried job
   idempotent. An unlinked user, a member without access to the inbox (or a deleted conversation)
-  and any other refusal get an ephemeral explanation and nothing is written. The text is Slack's
+  and any other refusal get an ephemeral explanation and nothing is written; so does a member
+  covered by the workspace's `sso_required` (#181), since a Slack reply never comes through the
+  identity provider. The text is Slack's
   mrkdwn turned into plain text (links as `label (url)`, entities decoded); it is the member's own
   text, not instructions to anything.
 - **Member links.** `POST /v1/me/slack/link` (member session, 5 an hour per member, DB-backed
@@ -3988,7 +3990,12 @@ and audit; `sso_settings.protocol` (`oidc` or `saml`) says which one, so a works
   session (`oauth_grants.sso_settings_id`); a covered member's grant approved otherwise (for example
   before the rule was on) is refused the same way until it is approved again through the provider.
   API keys are not member sessions and are not affected. Removing the provider or the last verified
-  domain turns the rule off.
+  domain turns the rule off. Slack thread replies of a covered member are refused with an ephemeral
+  message (#181). Actions a member queues (linked replies, issue links, roadmap stage changes)
+  record the `sso_settings_id` of the session that queued them (migration 00123); the job that
+  replays them (`callerPrincipal`) applies the same gate with it, or with the grant's, and stops: a
+  linked reply's target ends `failed` with `sso_required`, issue and roadmap progress is left as it
+  is and the job logs the code.
 - **SAML 2.0** (migration 00105, #161): service-provider-initiated only, with crewjam/saml and
   goxmldsig. `PUT /v1/sso/saml` takes the identity provider's metadata by URL (fetched through the
   outbound checks below) or pasted, refuses any DTD or other directive, and stores its entity id, the

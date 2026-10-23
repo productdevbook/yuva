@@ -271,10 +271,10 @@ func (q *Queries) CreateRoadmapBoard(ctx context.Context, arg CreateRoadmapBoard
 
 const createRoadmapStageChange = `-- name: CreateRoadmapStageChange :one
 INSERT INTO roadmap_stage_changes (id, workspace_id, idea_id, from_stage, to_stage, member_id, api_key_id, grant_id, via, comment_post_id,
-    linked, progress, created_at)
+    linked, progress, created_at, sso_settings_id)
 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9,
-    $10, $11, $12, $13)
-RETURNING id, workspace_id, idea_id, from_stage, to_stage, member_id, api_key_id, grant_id, via, comment_post_id, linked, progress, progress_set, progress_skipped, finished_at, created_at
+    $10, $11, $12, $13, $14)
+RETURNING id, workspace_id, idea_id, from_stage, to_stage, member_id, api_key_id, grant_id, via, comment_post_id, linked, progress, progress_set, progress_skipped, finished_at, created_at, sso_settings_id
 `
 
 type CreateRoadmapStageChangeParams struct {
@@ -291,6 +291,7 @@ type CreateRoadmapStageChangeParams struct {
 	Linked        int32
 	Progress      *string
 	Now           time.Time
+	SsoSettingsID *uuid.UUID
 }
 
 func (q *Queries) CreateRoadmapStageChange(ctx context.Context, arg CreateRoadmapStageChangeParams) (RoadmapStageChange, error) {
@@ -308,6 +309,7 @@ func (q *Queries) CreateRoadmapStageChange(ctx context.Context, arg CreateRoadma
 		arg.Linked,
 		arg.Progress,
 		arg.Now,
+		arg.SsoSettingsID,
 	)
 	var i RoadmapStageChange
 	err := row.Scan(
@@ -327,6 +329,7 @@ func (q *Queries) CreateRoadmapStageChange(ctx context.Context, arg CreateRoadma
 		&i.ProgressSkipped,
 		&i.FinishedAt,
 		&i.CreatedAt,
+		&i.SsoSettingsID,
 	)
 	return i, err
 }
@@ -575,7 +578,7 @@ func (q *Queries) GetRoadmapBoard(ctx context.Context, arg GetRoadmapBoardParams
 }
 
 const getRoadmapStageChange = `-- name: GetRoadmapStageChange :one
-SELECT id, workspace_id, idea_id, from_stage, to_stage, member_id, api_key_id, grant_id, via, comment_post_id, linked, progress, progress_set, progress_skipped, finished_at, created_at FROM roadmap_stage_changes WHERE workspace_id = $1 AND id = $2
+SELECT id, workspace_id, idea_id, from_stage, to_stage, member_id, api_key_id, grant_id, via, comment_post_id, linked, progress, progress_set, progress_skipped, finished_at, created_at, sso_settings_id FROM roadmap_stage_changes WHERE workspace_id = $1 AND id = $2
 `
 
 type GetRoadmapStageChangeParams struct {
@@ -603,6 +606,7 @@ func (q *Queries) GetRoadmapStageChange(ctx context.Context, arg GetRoadmapStage
 		&i.ProgressSkipped,
 		&i.FinishedAt,
 		&i.CreatedAt,
+		&i.SsoSettingsID,
 	)
 	return i, err
 }
@@ -1019,7 +1023,7 @@ func (q *Queries) ListRoadmapBoards(ctx context.Context, arg ListRoadmapBoardsPa
 }
 
 const listRoadmapStageChanges = `-- name: ListRoadmapStageChanges :many
-SELECT id, workspace_id, idea_id, from_stage, to_stage, member_id, api_key_id, grant_id, via, comment_post_id, linked, progress, progress_set, progress_skipped, finished_at, created_at FROM roadmap_stage_changes
+SELECT id, workspace_id, idea_id, from_stage, to_stage, member_id, api_key_id, grant_id, via, comment_post_id, linked, progress, progress_set, progress_skipped, finished_at, created_at, sso_settings_id FROM roadmap_stage_changes
 WHERE workspace_id = $1 AND idea_id = $2
   AND ($3::timestamptz IS NULL
        OR (created_at, id) < ($3::timestamptz, $4::uuid))
@@ -1067,6 +1071,7 @@ func (q *Queries) ListRoadmapStageChanges(ctx context.Context, arg ListRoadmapSt
 			&i.ProgressSkipped,
 			&i.FinishedAt,
 			&i.CreatedAt,
+			&i.SsoSettingsID,
 		); err != nil {
 			return nil, err
 		}

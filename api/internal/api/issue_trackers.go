@@ -733,7 +733,8 @@ func (s *Server) linkIssue(ctx context.Context, p principal, b oas.IssueLinkCrea
 		} else if n >= maxLinksPerIssue {
 			return errTooManyIssueLinks
 		}
-		arg := store.InsertIssueLinkParams{ID: newID(), WorkspaceID: p.workspaceID, IssueID: t.ID, ConversationID: sub.conversation, IdeaID: sub.idea, Via: p.via, Now: s.now()}
+		arg := store.InsertIssueLinkParams{ID: newID(), WorkspaceID: p.workspaceID, IssueID: t.ID, ConversationID: sub.conversation, IdeaID: sub.idea, Via: p.via, Now: s.now(),
+			SsoSettingsID: p.ssoSettings}
 		arg.LinkedByMemberID, arg.LinkedByApiKeyID = statusAuthor(p)
 		if p.isGrant() {
 			arg.LinkedByGrantID = new(p.grantID)
@@ -965,10 +966,14 @@ func (s *Server) applyIssueLinks(ctx context.Context, ws, issueID uuid.UUID) err
 		return err
 	}
 	for _, l := range links {
-		p, ok, err := s.callerPrincipal(ctx, ws, l.LinkedByMemberID, l.LinkedByApiKeyID, l.LinkedByGrantID, l.Via, false)
+		p, refused, err := s.callerPrincipal(ctx, ws, l.LinkedByMemberID, l.LinkedByApiKeyID, l.LinkedByGrantID, l.SsoSettingsID, l.Via, false)
 		if err != nil {
 			return err
 		}
+		if refused != "" && refused != reasonRevoked {
+			s.log.WarnContext(ctx, "issue progress not set", slog.String("issue_link_id", l.ID.String()), slog.String("code", refused))
+		}
+		ok := refused == ""
 		err = s.inTx(ctx, ws, func(q *store.Queries, events *eventBatch) error {
 			cur, err := q.LockIssueLink(ctx, store.LockIssueLinkParams{WorkspaceID: ws, ID: l.ID})
 			if err != nil {
