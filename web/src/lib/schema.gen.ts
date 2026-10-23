@@ -10221,7 +10221,8 @@ export interface paths {
         };
         /**
          * An inbox's Slack channels
-         * @description Which Slack channel gets the inbox's new conversations and which its mentions, and whether
+         * @description Which Slack channel gets the inbox's new conversations, which its mentions and which its SLA
+         *     breaches (`sla_channel_id`; with `sla_warnings` also the warnings), and whether
          *     the posts carry the message text (`include_content`, off by default: a post then carries
          *     only the subject, the contact's name and a link). An inbox never set answers no channels.
          *     API keys and tokens need `inboxes:read`.
@@ -24726,6 +24727,13 @@ export interface components {
             /** @description The channel that gets notes in the inbox that mention members. */
             mentions_channel_id?: string;
             /**
+             * @description The channel that gets a post when a conversation of the inbox breaches an SLA target
+             *     (which target, how late, who has it, the subject, the contact and a link).
+             */
+            sla_channel_id?: string;
+            /** @description Whether `sla_channel_id` also gets a post when a target reaches its warning. */
+            sla_warnings: boolean;
+            /**
              * @description Whether posts carry the start of the message or note (300 characters). Off by default:
              *     a post carries only the subject, the contact's name and a link to the conversation.
              */
@@ -24736,6 +24744,10 @@ export interface components {
         InboxSlackUpdate: {
             new_conversations_channel_id?: string | null;
             mentions_channel_id?: string | null;
+            /** @description Absent keeps the stored channel; `null` clears it. */
+            sla_channel_id?: string | null;
+            /** @description Absent keeps the stored value (`false` for an inbox never set). */
+            sla_warnings?: boolean;
             /** @description Absent is `false`. */
             include_content?: boolean;
         };
