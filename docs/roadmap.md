@@ -541,7 +541,7 @@ before M26.
 
 ## M27 — Scale and safety
 
-Status: planned; items Y-134 to Y-137, Y-178 and Y-179 in `backlog.md`. Part of 0.1.0.
+Status: done on 2026-10-23 (#134–#137, #178, #179); items Y-134 to Y-137, Y-178 and Y-179 in `backlog.md`. Part of 0.1.0.
 
 - Rate limits counted in Postgres so several replicas keep them; a workspace audit log; attachment
   limits per channel; OpenTelemetry tracing; deleting a conversation through a 30-day trash and
