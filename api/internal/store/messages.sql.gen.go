@@ -42,6 +42,140 @@ func (q *Queries) CallerDraftInConversation(ctx context.Context, arg CallerDraft
 	return id, err
 }
 
+const clearConversationSubject = `-- name: ClearConversationSubject :one
+UPDATE conversations SET subject = '', updated_at = $1::timestamptz
+WHERE workspace_id = $2 AND id = $3
+RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id, trashed_at, trashed_by_member_id, trashed_by_api_key_id
+`
+
+type ClearConversationSubjectParams struct {
+	Now         time.Time
+	WorkspaceID uuid.UUID
+	ID          uuid.UUID
+}
+
+func (q *Queries) ClearConversationSubject(ctx context.Context, arg ClearConversationSubjectParams) (Conversation, error) {
+	row := q.db.QueryRow(ctx, clearConversationSubject, arg.Now, arg.WorkspaceID, arg.ID)
+	var i Conversation
+	err := row.Scan(
+		&i.ID,
+		&i.WorkspaceID,
+		&i.InboxID,
+		&i.ContactID,
+		&i.ChannelID,
+		&i.Subject,
+		&i.Status,
+		&i.SnoozeUntil,
+		&i.Priority,
+		&i.AssigneeID,
+		&i.LastMessageAt,
+		&i.LastActivityAt,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.Spam,
+		&i.EmailToken,
+		&i.RelatedConversationID,
+		&i.ContinuityThrough,
+		&i.ContinuitySentAt,
+		&i.Kind,
+		&i.Feedback,
+		&i.EmailAddress,
+		&i.ClosedAt,
+		&i.Rating,
+		&i.RatingComment,
+		&i.RatedAt,
+		&i.RatingRequestedAt,
+		&i.LastReadByContactAt,
+		&i.PageUrl,
+		&i.PageTitle,
+		&i.ChannelKind,
+		&i.BroadcastID,
+		&i.MigrationID,
+		&i.ImportedAt,
+		&i.FeedbackProgress,
+		&i.HelpArticleID,
+		&i.TrashedAt,
+		&i.TrashedByMemberID,
+		&i.TrashedByApiKeyID,
+	)
+	return i, err
+}
+
+const clearEmailSubjects = `-- name: ClearEmailSubjects :exec
+UPDATE message_emails SET subject = ''
+WHERE workspace_id = $1 AND conversation_id = $2 AND strpos(lower(subject), lower($3::text)) > 0
+`
+
+type ClearEmailSubjectsParams struct {
+	WorkspaceID    uuid.UUID
+	ConversationID uuid.UUID
+	Subject        string
+}
+
+func (q *Queries) ClearEmailSubjects(ctx context.Context, arg ClearEmailSubjectsParams) error {
+	_, err := q.db.Exec(ctx, clearEmailSubjects, arg.WorkspaceID, arg.ConversationID, arg.Subject)
+	return err
+}
+
+const clearFeedbackText = `-- name: ClearFeedbackText :one
+UPDATE conversations SET feedback = feedback || '{"text": "", "attachment_count": 0}'::jsonb, updated_at = $1::timestamptz
+WHERE workspace_id = $2 AND id = $3 AND kind = 'feedback'
+RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id, trashed_at, trashed_by_member_id, trashed_by_api_key_id
+`
+
+type ClearFeedbackTextParams struct {
+	Now         time.Time
+	WorkspaceID uuid.UUID
+	ID          uuid.UUID
+}
+
+func (q *Queries) ClearFeedbackText(ctx context.Context, arg ClearFeedbackTextParams) (Conversation, error) {
+	row := q.db.QueryRow(ctx, clearFeedbackText, arg.Now, arg.WorkspaceID, arg.ID)
+	var i Conversation
+	err := row.Scan(
+		&i.ID,
+		&i.WorkspaceID,
+		&i.InboxID,
+		&i.ContactID,
+		&i.ChannelID,
+		&i.Subject,
+		&i.Status,
+		&i.SnoozeUntil,
+		&i.Priority,
+		&i.AssigneeID,
+		&i.LastMessageAt,
+		&i.LastActivityAt,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.Spam,
+		&i.EmailToken,
+		&i.RelatedConversationID,
+		&i.ContinuityThrough,
+		&i.ContinuitySentAt,
+		&i.Kind,
+		&i.Feedback,
+		&i.EmailAddress,
+		&i.ClosedAt,
+		&i.Rating,
+		&i.RatingComment,
+		&i.RatedAt,
+		&i.RatingRequestedAt,
+		&i.LastReadByContactAt,
+		&i.PageUrl,
+		&i.PageTitle,
+		&i.ChannelKind,
+		&i.BroadcastID,
+		&i.MigrationID,
+		&i.ImportedAt,
+		&i.FeedbackProgress,
+		&i.HelpArticleID,
+		&i.TrashedAt,
+		&i.TrashedByMemberID,
+		&i.TrashedByApiKeyID,
+	)
+	return i, err
+}
+
 const countDrafts = `-- name: CountDrafts :one
 SELECT count(*) FROM messages m
 JOIN conversations c ON c.workspace_id = m.workspace_id AND c.id = m.conversation_id
@@ -931,7 +1065,7 @@ func (q *Queries) ListDrafts(ctx context.Context, arg ListDraftsParams) ([]ListD
 }
 
 const listLaterInboundEmails = `-- name: ListLaterInboundEmails :many
-SELECT me.message_id, me.full_text, me.full_html, me.raw_key, m.body, m.html FROM message_emails me
+SELECT me.message_id, me.full_text, me.full_html, me.raw_key, me.in_reply_to, me.references_ids, m.body, m.html FROM message_emails me
 JOIN messages m ON m.workspace_id = me.workspace_id AND m.id = me.message_id
 WHERE me.workspace_id = $1 AND me.conversation_id = $2 AND me.direction = 'in'
   AND me.message_id <> $3 AND me.created_at >= $4::timestamptz AND m.redacted_at IS NULL
@@ -947,12 +1081,14 @@ type ListLaterInboundEmailsParams struct {
 }
 
 type ListLaterInboundEmailsRow struct {
-	MessageID uuid.UUID
-	FullText  string
-	FullHtml  *string
-	RawKey    *string
-	Body      string
-	Html      *string
+	MessageID     uuid.UUID
+	FullText      string
+	FullHtml      *string
+	RawKey        *string
+	InReplyTo     *string
+	ReferencesIds []string
+	Body          string
+	Html          *string
 }
 
 func (q *Queries) ListLaterInboundEmails(ctx context.Context, arg ListLaterInboundEmailsParams) ([]ListLaterInboundEmailsRow, error) {
@@ -974,6 +1110,8 @@ func (q *Queries) ListLaterInboundEmails(ctx context.Context, arg ListLaterInbou
 			&i.FullText,
 			&i.FullHtml,
 			&i.RawKey,
+			&i.InReplyTo,
+			&i.ReferencesIds,
 			&i.Body,
 			&i.Html,
 		); err != nil {
@@ -1325,6 +1463,75 @@ func (q *Queries) LockMessage(ctx context.Context, arg LockMessageParams) (LockM
 	var i LockMessageRow
 	err := row.Scan(&i.ID, &i.ConversationID, &i.Draft)
 	return i, err
+}
+
+const lockMessagesForSend = `-- name: LockMessagesForSend :many
+SELECT id FROM messages WHERE workspace_id = $1 AND id = ANY($2::uuid[])
+ORDER BY id
+FOR UPDATE
+`
+
+type LockMessagesForSendParams struct {
+	WorkspaceID uuid.UUID
+	Ids         []uuid.UUID
+}
+
+func (q *Queries) LockMessagesForSend(ctx context.Context, arg LockMessagesForSendParams) ([]uuid.UUID, error) {
+	rows, err := q.db.Query(ctx, lockMessagesForSend, arg.WorkspaceID, arg.Ids)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []uuid.UUID
+	for rows.Next() {
+		var id uuid.UUID
+		if err := rows.Scan(&id); err != nil {
+			return nil, err
+		}
+		items = append(items, id)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const lockMessagesShared = `-- name: LockMessagesShared :many
+SELECT id, (redacted_at IS NOT NULL)::bool AS redacted FROM messages
+WHERE workspace_id = $1 AND id = ANY($2::uuid[])
+ORDER BY id
+FOR SHARE
+`
+
+type LockMessagesSharedParams struct {
+	WorkspaceID uuid.UUID
+	Ids         []uuid.UUID
+}
+
+type LockMessagesSharedRow struct {
+	ID       uuid.UUID
+	Redacted bool
+}
+
+// Waits for a redaction of these messages in progress, then reports which are redacted.
+func (q *Queries) LockMessagesShared(ctx context.Context, arg LockMessagesSharedParams) ([]LockMessagesSharedRow, error) {
+	rows, err := q.db.Query(ctx, lockMessagesShared, arg.WorkspaceID, arg.Ids)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []LockMessagesSharedRow
+	for rows.Next() {
+		var i LockMessagesSharedRow
+		if err := rows.Scan(&i.ID, &i.Redacted); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const markMentionSeen = `-- name: MarkMentionSeen :execrows

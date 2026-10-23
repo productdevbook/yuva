@@ -9,6 +9,8 @@ import (
 	"net/http"
 	"strings"
 	"testing"
+	"time"
+	"uuid"
 
 	"github.com/productdevbook/yuva/api/internal/api"
 )
@@ -18,6 +20,7 @@ func (h *harness) leaks(ws, text string) map[string]int {
 	h.t.Helper()
 	like := "%" + text + "%"
 	out := map[string]int{
+		"conversations":      h.count("SELECT count(*) FROM conversations WHERE workspace_id = $1 AND (subject LIKE $2 OR feedback::text LIKE $2)", ws, like),
 		"messages":           h.count("SELECT count(*) FROM messages WHERE workspace_id = $1 AND (body LIKE $2 OR html LIKE $2 OR help_cards::text LIKE $2)", ws, like),
 		"message_emails":     h.count("SELECT count(*) FROM message_emails WHERE workspace_id = $1 AND (full_text LIKE $2 OR full_html LIKE $2 OR subject LIKE $2 OR headers::text LIKE $2)", ws, like),
 		"attachments":        h.count("SELECT count(*) FROM attachments WHERE workspace_id = $1 AND filename LIKE $2", ws, like),
@@ -404,4 +407,209 @@ func TestRedactEmail(t *testing.T) {
 	if l := h.leaks(et.ws, "The export is"); len(l) != 0 {
 		t.Fatalf("inbound text left in %v", l)
 	}
+	if c := et.owner.expect(http.StatusOK, "GET", "/v1/conversations/"+conv, nil); c.str("subject") != "" {
+		t.Fatalf("subject of the redacted first e-mail kept: %s", c.raw)
+	}
+	if l := h.leaks(et.ws, "Broken export"); len(l) != 0 {
+		t.Fatalf("subject left in %v", l)
+	}
+	next := et.owner.expect(http.StatusCreated, "POST", "/v1/conversations/"+conv+"/messages", map[string]any{"kind": "message", "body": "Fixed now"})
+	if subj := next.body["email"].(map[string]any)["subject"]; subj != "Acme Support" {
+		t.Fatalf("next reply's subject: %v", subj)
+	}
+}
+
+func TestRedactKeepsRepliesThatDoNotQuoteItWhole(t *testing.T) {
+	t.Parallel()
+	h := newHarness(t)
+	et := newEmailTeam(t, h, false)
+	in := h.ingest(et.address, []byte(fmt.Sprintf(attachmentMail, et.address, newMessageID())), nil)
+	conv := in.str("conversation_id")
+	reply := et.owner.expect(http.StatusCreated, "POST", "/v1/conversations/"+conv+"/messages", map[string]any{"kind": "message", "body": "The code is 1234.\nIt expires at noon."})
+	h.sendQueued(t, et.ws, reply.str("id"))
+	header := reply.body["email"].(map[string]any)["message_id"].(string)
+	partial := h.ingest(et.address, buildMail(mailOpts{
+		from: "newcust@example.net", to: et.address, subject: "Re: Broken export", messageID: newMessageID(),
+		body:    "Which code?\n\n> The code is 1234.\n",
+		headers: map[string]string{"In-Reply-To": "<" + header + ">", "References": "<" + header + ">"},
+	}), nil)
+	note := et.owner.expect(http.StatusCreated, "POST", "/v1/conversations/"+conv+"/messages", map[string]any{"kind": "note", "body": "Which code?"}).str("id")
+	et.owner.expect(http.StatusOK, "POST", "/v1/messages/"+reply.str("id")+"/redact", nil)
+	et.owner.expect(http.StatusOK, "POST", "/v1/messages/"+note+"/redact", nil)
+	et.owner.expect(http.StatusOK, "GET", "/v1/messages/"+partial.str("message_id")+"/raw", nil)
+	if full := et.owner.expect(http.StatusOK, "GET", "/v1/messages/"+partial.str("message_id")+"/email", nil); !strings.Contains(full.str("full_text"), "> The code is 1234.") {
+		t.Fatalf("a reply quoting part of it lost its history: %s", full.raw)
+	}
+	if c := et.owner.expect(http.StatusOK, "GET", "/v1/conversations/"+conv, nil); c.str("subject") != "Broken export" {
+		t.Fatalf("subject changed by redacting a reply: %s", c.raw)
+	}
+}
+
+func TestRedactFeedbackText(t *testing.T) {
+	t.Parallel()
+	h := privateHarness(t)
+	at := newAppTeam(t, h, false)
+	rcv := newReceiver(t)
+	at.owner.expect(http.StatusCreated, "POST", "/v1/webhooks", map[string]any{
+		"url": rcv.srv.URL, "events": []string{"conversation.created", "conversation.updated", "feedback.created", "message.created", "message.redacted"},
+	})
+	secret := "zq" + unique("fb")[3:]
+	cs := at.session(h, "user-1")
+	created := cs.postIdempotentClient("/client/v1/feedback", "fb-1", map[string]any{"category": "bug", "body": "crash when I type " + secret})
+	if created.status != http.StatusCreated {
+		t.Fatalf("feedback: %s", created.raw)
+	}
+	conv := created.body["conversation"].(map[string]any)["id"].(string)
+	msg := created.body["message"].(map[string]any)["id"].(string)
+	if fb := at.owner.expect(http.StatusOK, "GET", "/v1/conversations/"+conv, nil).body["feedback"].(map[string]any); !strings.Contains(fb["text"].(string), secret) {
+		t.Fatalf("feedback text: %v", fb)
+	}
+	h.runWebhooks(at.ws)
+	rcv.take()
+	if l := h.leaks(at.ws, secret); l["conversations"] == 0 || l["events"] == 0 || l["webhook_deliveries"] == 0 || l["idempotency_keys"] == 0 {
+		t.Fatalf("the test does not reach every copy: %v", l)
+	}
+	at.owner.expect(http.StatusOK, "POST", "/v1/messages/"+msg+"/redact", nil)
+	if fb := at.owner.expect(http.StatusOK, "GET", "/v1/conversations/"+conv, nil).body["feedback"].(map[string]any); fb["text"] != "" || fb["attachment_count"] != float64(0) || fb["category"] != "bug" {
+		t.Fatalf("feedback after redaction: %v", fb)
+	}
+	h.runWebhooks(at.ws)
+	var types []string
+	for _, hk := range rcv.take() {
+		types = append(types, hk.typ)
+		if strings.Contains(string(hk.body), secret) {
+			t.Fatalf("webhook carries the text: %s", hk.body)
+		}
+	}
+	if fmt.Sprint(types) != "[message.redacted conversation.updated]" {
+		t.Fatalf("hooks: %v", types)
+	}
+	if replay := cs.postIdempotentClient("/client/v1/feedback", "fb-1", map[string]any{"category": "bug", "body": "crash when I type " + secret}); strings.Contains(string(replay.raw), secret) ||
+		replay.body["message"].(map[string]any)["redacted"] != true {
+		t.Fatalf("replay: %s", replay.raw)
+	}
+	if l := h.leaks(at.ws, secret); len(l) != 0 {
+		t.Fatalf("text left in %v", l)
+	}
+}
+
+func TestRedactedBeforeDeliveryIsSentRedacted(t *testing.T) {
+	t.Parallel()
+	h := privateHarness(t)
+	tm := newTeam(t, h)
+	rcv := newReceiver(t)
+	tm.owner.expect(http.StatusCreated, "POST", "/v1/webhooks", map[string]any{"url": rcv.srv.URL, "events": []string{"message.created"}})
+	secret := "zq" + unique("late")[5:]
+	conv := tm.conversation(tm.owner)
+	key := tm.apiKey(h)
+	msg := key.expect(http.StatusCreated, "POST", "/v1/conversations/"+conv+"/messages", map[string]any{"kind": "message", "direction": "in", "body": "late " + secret}).str("id")
+	for _, j := range h.jobs("webhook_fanout", tm.ws) {
+		var a api.WebhookFanoutArgs
+		if err := json.Unmarshal(j.args, &a); err != nil {
+			t.Fatal(err)
+		}
+		if err := h.srv.FanOutWebhooks(context.Background(), a); err != nil {
+			t.Fatal(err)
+		}
+		h.dropJob(j.id)
+	}
+	tm.owner.expect(http.StatusOK, "POST", "/v1/messages/"+msg+"/redact", nil)
+	stale := fmt.Sprintf(`{"type":"message.created","data":{"message":{"id":%q,"kind":"message","body":"late %s","attachments":[]}}}`, msg, secret)
+	if n := h.count("SELECT count(*) FROM webhook_deliveries WHERE workspace_id = $1", tm.ws); n != 1 {
+		t.Fatalf("%d deliveries", n)
+	}
+	if _, err := h.st.Pool.Exec(context.Background(), "UPDATE webhook_deliveries SET payload = $2 WHERE workspace_id = $1", tm.ws, stale); err != nil {
+		t.Fatal(err)
+	}
+	h.runWebhooks(tm.ws)
+	hooks := rcv.take()
+	if len(hooks) != 1 || strings.Contains(string(hooks[0].body), secret) || hooks[0].data["message"].(map[string]any)["redacted_at"] == nil {
+		t.Fatalf("hooks: %v", hooks)
+	}
+	if l := h.leaks(tm.ws, secret); len(l) != 0 {
+		t.Fatalf("text left in %v", l)
+	}
+}
+
+func TestRedactLastOfBatchSendsTheRest(t *testing.T) {
+	t.Parallel()
+	h := newHarness(t)
+	et := newEmailTeam(t, h, false)
+	in := h.ingest(et.address, []byte(fmt.Sprintf(attachmentMail, et.address, newMessageID())), nil)
+	conv := in.str("conversation_id")
+	a := et.owner.expect(http.StatusCreated, "POST", "/v1/conversations/"+conv+"/messages", map[string]any{"kind": "message", "body": "first part"}).str("id")
+	b := et.owner.expect(http.StatusCreated, "POST", "/v1/conversations/"+conv+"/messages", map[string]any{"kind": "message", "body": "second part"}).str("id")
+	et.owner.expect(http.StatusOK, "POST", "/v1/messages/"+b+"/redact", nil)
+	before := h.smtp.count()
+	if err := h.srv.SendEmails(context.Background(), uuid.MustParse(et.ws), []uuid.UUID{uuid.MustParse(a), uuid.MustParse(b)}, false); err != nil {
+		t.Fatal(err)
+	}
+	if h.smtp.count() != before+1 {
+		t.Fatal("the rest of the batch was not sent")
+	}
+	if !bytes.Contains(h.smtp.sent[len(h.smtp.sent)-1].raw, []byte("first part")) || bytes.Contains(h.smtp.sent[len(h.smtp.sent)-1].raw, []byte("second part")) {
+		t.Fatalf("sent: %s", h.smtp.sent[len(h.smtp.sent)-1].raw)
+	}
+	if d := messageByID(et.owner, conv, a)["delivery"].(map[string]any); d["state"] != "sent" {
+		t.Fatalf("first part: %v", d)
+	}
+	if d := messageByID(et.owner, conv, b)["delivery"].(map[string]any); d["state"] != "failed" {
+		t.Fatalf("redacted part: %v", d)
+	}
+}
+
+func TestSendWaitsForRedactionInProgress(t *testing.T) {
+	t.Parallel()
+	h := newHarness(t)
+	et := newEmailTeam(t, h, false)
+	in := h.ingest(et.address, []byte(fmt.Sprintf(attachmentMail, et.address, newMessageID())), nil)
+	conv := in.str("conversation_id")
+	msg := et.owner.expect(http.StatusCreated, "POST", "/v1/conversations/"+conv+"/messages", map[string]any{"kind": "message", "body": "about to go"}).str("id")
+	ctx := context.Background()
+	tx, err := h.st.Pool.Begin(ctx)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := tx.Exec(ctx, "UPDATE messages SET body = '', redacted_at = now(), delivery_state = 'failed', delivery_updated_at = now() WHERE workspace_id = $1 AND id = $2", et.ws, msg); err != nil {
+		t.Fatal(err)
+	}
+	before := h.smtp.count()
+	done := make(chan error, 1)
+	go func() { done <- h.srv.SendEmail(ctx, uuid.MustParse(et.ws), uuid.MustParse(msg), false) }()
+	select {
+	case err := <-done:
+		t.Fatalf("send did not wait for the redaction: %v", err)
+	case <-time.After(300 * time.Millisecond):
+	}
+	if err := tx.Commit(ctx); err != nil {
+		t.Fatal(err)
+	}
+	if err := <-done; err != nil {
+		t.Fatal(err)
+	}
+	if h.smtp.count() != before {
+		t.Fatal("an e-mail redacted while its send waited went out")
+	}
+}
+
+func (c *client) postIdempotentClient(path, key string, body any) response {
+	c.h.t.Helper()
+	b, _ := json.Marshal(body)
+	req, _ := http.NewRequest("POST", c.h.url+path, bytes.NewReader(b))
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Idempotency-Key", key)
+	req.Header.Set("X-Forwarded-For", c.ip)
+	req.Header.Set("Authorization", "Bearer "+c.bearer)
+	if c.origin != "" {
+		req.Header.Set("Origin", c.origin)
+	}
+	res, err := c.http.Do(req)
+	if err != nil {
+		c.h.t.Fatal(err)
+	}
+	defer res.Body.Close()
+	raw, _ := io.ReadAll(res.Body)
+	out := response{status: res.StatusCode, raw: raw, header: res.Header}
+	_ = json.Unmarshal(raw, &out.body)
+	return out
 }

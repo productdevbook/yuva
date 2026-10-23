@@ -4085,10 +4085,16 @@ paths:
         message or note and, for e-mail, its subject, full text, headers and raw source, in one
         transaction; a job deletes the files. The message stays in the thread with `redacted_at`,
         `redacted_by` and no content, so the thread reads "Removed by …". Its earlier events,
-        webhook deliveries and pushes are rewritten or dropped without the content, its search
-        entry and previews go with the text, and later e-mails from the contact that quote it lose
-        their quoted history and raw source. A queued e-mail is not sent (`delivery.state`
-        `failed`); a sent e-mail cannot be taken back from the recipient's mailbox.
+        webhook deliveries, answers kept for `Idempotency-Key` and pushes are rewritten or dropped
+        without the content, and its search entry and previews go with the text. The contact's
+        later e-mails that answer an e-mail we sent (In-Reply-To or References) and quote all of
+        its text lose their quoted history and raw source. When it is a feedback's first message,
+        `feedback.text` is emptied and `attachment_count` is `0`; when it is the inbound e-mail
+        that gave the conversation its subject, the subject becomes empty (later replies are
+        titled with the channel's name) and the e-mail subjects in the conversation that repeat it
+        are cleared; both emit `conversation.updated`. A queued e-mail is not sent
+        (`delivery.state` `failed`); a sent e-mail cannot be taken back from the recipient's
+        mailbox, and one already on its way when the redaction comes is recorded as `sent`.
 
         Owners and admins may redact any message they can see, and other members their own
         messages and notes (`403 forbidden` otherwise). An API key needs `messages:redact`, an

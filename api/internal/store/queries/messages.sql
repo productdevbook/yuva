@@ -291,7 +291,7 @@ WHERE me.workspace_id = @workspace_id AND me.message_id = @message_id
 RETURNING old.raw_key;
 
 -- name: ListLaterInboundEmails :many
-SELECT me.message_id, me.full_text, me.full_html, me.raw_key, m.body, m.html FROM message_emails me
+SELECT me.message_id, me.full_text, me.full_html, me.raw_key, me.in_reply_to, me.references_ids, m.body, m.html FROM message_emails me
 JOIN messages m ON m.workspace_id = me.workspace_id AND m.id = me.message_id
 WHERE me.workspace_id = @workspace_id AND me.conversation_id = @conversation_id AND me.direction = 'in'
   AND me.message_id <> @message_id AND me.created_at >= @since::timestamptz AND m.redacted_at IS NULL
@@ -301,3 +301,29 @@ ORDER BY me.created_at, me.message_id;
 -- name: DropEmailQuotes :exec
 UPDATE message_emails SET full_text = @full_text, full_html = sqlc.narg(full_html), quoted = false, raw_key = NULL, raw_size = NULL
 WHERE workspace_id = @workspace_id AND message_id = @message_id;
+
+-- name: ClearFeedbackText :one
+UPDATE conversations SET feedback = feedback || '{"text": "", "attachment_count": 0}'::jsonb, updated_at = @now::timestamptz
+WHERE workspace_id = @workspace_id AND id = @id AND kind = 'feedback'
+RETURNING *;
+
+-- name: ClearConversationSubject :one
+UPDATE conversations SET subject = '', updated_at = @now::timestamptz
+WHERE workspace_id = @workspace_id AND id = @id
+RETURNING *;
+
+-- name: ClearEmailSubjects :exec
+UPDATE message_emails SET subject = ''
+WHERE workspace_id = @workspace_id AND conversation_id = @conversation_id AND strpos(lower(subject), lower(@subject::text)) > 0;
+
+-- Waits for a redaction of these messages in progress, then reports which are redacted.
+-- name: LockMessagesShared :many
+SELECT id, (redacted_at IS NOT NULL)::bool AS redacted FROM messages
+WHERE workspace_id = @workspace_id AND id = ANY(@ids::uuid[])
+ORDER BY id
+FOR SHARE;
+
+-- name: LockMessagesForSend :many
+SELECT id FROM messages WHERE workspace_id = @workspace_id AND id = ANY(@ids::uuid[])
+ORDER BY id
+FOR UPDATE;

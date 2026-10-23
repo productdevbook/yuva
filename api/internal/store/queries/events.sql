@@ -34,8 +34,15 @@ SELECT coalesce(min(id), 0)::bigint AS id FROM events WHERE workspace_id = $1;
 DELETE FROM events WHERE workspace_id = @workspace_id AND conversation_id = ANY(@conversation_ids::uuid[])
   AND (NOT @keep_trash::bool OR type NOT IN ('conversation.trashed', 'conversation.restored'));
 
--- name: RedactMessageEvents :execrows
-UPDATE events SET payload = @message::jsonb || jsonb_build_object('draft', coalesce(payload->'draft', 'false'::jsonb))
-WHERE workspace_id = @workspace_id AND conversation_id = @conversation_id
-  AND type IN ('message.created', 'message.updated', 'draft.created', 'draft.updated', 'draft.deleted')
-  AND payload->>'id' = @message_id::text;
+-- name: LockConversationEvents :many
+SELECT id, payload FROM events WHERE workspace_id = @workspace_id AND conversation_id = @conversation_id
+ORDER BY id
+FOR UPDATE;
+
+-- name: SetEventPayload :exec
+UPDATE events SET payload = @payload WHERE workspace_id = @workspace_id AND id = @id;
+
+-- Webhook fan-out reads its event under this lock, so a redaction that rewrites the event waits
+-- for the deliveries it writes and then rewrites them too.
+-- name: LockEventShared :one
+SELECT * FROM events WHERE workspace_id = $1 AND id = $2 FOR SHARE;

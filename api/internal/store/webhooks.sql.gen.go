@@ -604,6 +604,43 @@ func (q *Queries) ListWebhookEndpoints(ctx context.Context, arg ListWebhookEndpo
 	return items, nil
 }
 
+const lockDeliveriesMentioning = `-- name: LockDeliveriesMentioning :many
+SELECT id, payload FROM webhook_deliveries
+WHERE workspace_id = $1 AND EXISTS (SELECT 1 FROM unnest($2::text[]) n WHERE strpos(payload, n) > 0)
+ORDER BY id
+FOR UPDATE
+`
+
+type LockDeliveriesMentioningParams struct {
+	WorkspaceID uuid.UUID
+	Needles     []string
+}
+
+type LockDeliveriesMentioningRow struct {
+	ID      uuid.UUID
+	Payload string
+}
+
+func (q *Queries) LockDeliveriesMentioning(ctx context.Context, arg LockDeliveriesMentioningParams) ([]LockDeliveriesMentioningRow, error) {
+	rows, err := q.db.Query(ctx, lockDeliveriesMentioning, arg.WorkspaceID, arg.Needles)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []LockDeliveriesMentioningRow
+	for rows.Next() {
+		var i LockDeliveriesMentioningRow
+		if err := rows.Scan(&i.ID, &i.Payload); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const lockWebhookEndpoint = `-- name: LockWebhookEndpoint :one
 SELECT id, workspace_id, inbox_id, url, description, events, include_notes, enabled, secret, previous_secret, previous_secret_until, failing_since, disabled_at, disabled_reason, created_at, updated_at FROM webhook_endpoints WHERE workspace_id = $1 AND id = $2 FOR UPDATE
 `
@@ -694,29 +731,6 @@ func (q *Queries) RecordWebhookAttempt(ctx context.Context, arg RecordWebhookAtt
 	return err
 }
 
-const redactMessageWebhookDeliveries = `-- name: RedactMessageWebhookDeliveries :execrows
-UPDATE webhook_deliveries
-SET payload = jsonb_set(payload::jsonb, '{data,message}', $1::jsonb || jsonb_build_object('draft', coalesce(payload::jsonb #> '{data,message,draft}', 'false'::jsonb)))::text
-WHERE workspace_id = $2
-  AND event_type IN ('message.created', 'feedback.created', 'draft.created', 'draft.updated', 'draft.deleted')
-  AND strpos(payload, $3::text) > 0
-  AND payload::jsonb #>> '{data,message,id}' = $3::text
-`
-
-type RedactMessageWebhookDeliveriesParams struct {
-	Message     []byte
-	WorkspaceID uuid.UUID
-	MessageID   string
-}
-
-func (q *Queries) RedactMessageWebhookDeliveries(ctx context.Context, arg RedactMessageWebhookDeliveriesParams) (int64, error) {
-	result, err := q.db.Exec(ctx, redactMessageWebhookDeliveries, arg.Message, arg.WorkspaceID, arg.MessageID)
-	if err != nil {
-		return 0, err
-	}
-	return result.RowsAffected(), nil
-}
-
 const rotateWebhookSecret = `-- name: RotateWebhookSecret :one
 UPDATE webhook_endpoints SET previous_secret = secret, previous_secret_until = $1, secret = $2, updated_at = $3
 WHERE workspace_id = $4 AND id = $5
@@ -759,6 +773,21 @@ func (q *Queries) RotateWebhookSecret(ctx context.Context, arg RotateWebhookSecr
 		&i.UpdatedAt,
 	)
 	return i, err
+}
+
+const setWebhookDeliveryPayload = `-- name: SetWebhookDeliveryPayload :exec
+UPDATE webhook_deliveries SET payload = $1 WHERE workspace_id = $2 AND id = $3
+`
+
+type SetWebhookDeliveryPayloadParams struct {
+	Payload     string
+	WorkspaceID uuid.UUID
+	ID          uuid.UUID
+}
+
+func (q *Queries) SetWebhookDeliveryPayload(ctx context.Context, arg SetWebhookDeliveryPayloadParams) error {
+	_, err := q.db.Exec(ctx, setWebhookDeliveryPayload, arg.Payload, arg.WorkspaceID, arg.ID)
+	return err
 }
 
 const updateWebhookEndpoint = `-- name: UpdateWebhookEndpoint :one

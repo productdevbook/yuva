@@ -24,7 +24,8 @@ DELETE FROM idempotency_keys WHERE workspace_id = @workspace_id AND created_at <
 
 -- name: ListIdempotentRepliesMentioning :many
 SELECT caller_type, caller_id, key, path, body FROM idempotency_keys
-WHERE workspace_id = @workspace_id AND body IS NOT NULL AND position(convert_to(@needle::text, 'UTF8') IN body) > 0
+WHERE workspace_id = @workspace_id AND body IS NOT NULL
+  AND EXISTS (SELECT 1 FROM unnest(@needles::text[]) n WHERE position(convert_to(n, 'UTF8') IN body) > 0)
 FOR UPDATE;
 
 -- name: SetIdempotentReplyBody :exec

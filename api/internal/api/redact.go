@@ -2,10 +2,10 @@ package api
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"log/slog"
 	"net/http"
+	"slices"
 	"strings"
 	"time"
 	"uuid"
@@ -18,8 +18,6 @@ import (
 	"github.com/productdevbook/yuva/api/internal/realtime"
 	"github.com/productdevbook/yuva/api/internal/store"
 )
-
-const quoteProbeRunes = 120
 
 var (
 	errDraftNotRedactable = problem(http.StatusConflict, "not_redactable", "a draft is discarded with DELETE /v1/messages/{id}, not redacted")
@@ -84,6 +82,16 @@ func (s *Server) RedactMessage(ctx context.Context, req oas.RedactMessageRequest
 			out, err = s.oneMessage(ctx, q, messageRow(m))
 			return err
 		}
+		var me *store.MessageEmail
+		if e, err := q.GetMessageEmail(ctx, store.GetMessageEmailParams{WorkspaceID: p.workspaceID, MessageID: m.ID}); err == nil {
+			me = &e
+		} else if !store.IsNotFound(err) {
+			return err
+		}
+		first, err := q.GetFirstPublicMessage(ctx, store.GetFirstPublicMessageParams{WorkspaceID: p.workspaceID, ConversationID: c.ID})
+		if err != nil && !store.IsNotFound(err) {
+			return err
+		}
 		now := s.now()
 		arg := store.RedactMessageParams{WorkspaceID: p.workspaceID, ID: m.ID, Now: now}
 		if p.isKey() {
@@ -108,32 +116,48 @@ func (s *Server) RedactMessage(ctx context.Context, req oas.RedactMessageRequest
 				keys = append(keys, *k)
 			}
 		}
-		quoting, err := dropQuotesOf(ctx, q, p.workspaceID, m)
-		if err != nil {
-			return err
+		if me != nil && me.Direction == string(oas.Out) && m.Kind == string(oas.MessageKindMessage) {
+			quoting, err := dropQuotesOf(ctx, q, p.workspaceID, m, me.HeaderMessageID)
+			if err != nil {
+				return err
+			}
+			keys = append(keys, quoting...)
 		}
-		keys = append(keys, quoting...)
+		red := redaction{messageID: m.ID.String(), convID: c.ID.String()}
+		next := c
+		if c.Kind == string(oas.ConversationKindFeedback) && first == m.ID {
+			if next, err = q.ClearFeedbackText(ctx, store.ClearFeedbackTextParams{WorkspaceID: p.workspaceID, ID: c.ID, Now: now}); err != nil {
+				return err
+			}
+			red.feedback = true
+		}
+		if me != nil && me.Direction == string(oas.In) && first == m.ID && me.Subject != "" && me.Subject == c.Subject {
+			if next, err = q.ClearConversationSubject(ctx, store.ClearConversationSubjectParams{WorkspaceID: p.workspaceID, ID: c.ID, Now: now}); err != nil {
+				return err
+			}
+			if err := q.ClearEmailSubjects(ctx, store.ClearEmailSubjectsParams{WorkspaceID: p.workspaceID, ConversationID: c.ID, Subject: c.Subject}); err != nil {
+				return err
+			}
+			red.subject = c.Subject
+		}
 		if out, err = s.oneMessage(ctx, q, messageRow(r)); err != nil {
 			return err
 		}
-		payload := mustJSON(out)
-		if _, err := q.RedactMessageEvents(ctx, store.RedactMessageEventsParams{
-			WorkspaceID: p.workspaceID, ConversationID: &c.ID, MessageID: m.ID.String(), Message: payload,
-		}); err != nil {
-			return err
-		}
-		if _, err := q.RedactMessageWebhookDeliveries(ctx, store.RedactMessageWebhookDeliveriesParams{
-			WorkspaceID: p.workspaceID, MessageID: m.ID.String(), Message: payload,
-		}); err != nil {
-			return err
-		}
-		if err := redactStoredReplies(ctx, q, p.workspaceID, m.ID.String(), payload); err != nil {
+		red.message = jsonObject(out)
+		if err := red.rewriteCopies(ctx, q, p.workspaceID, c.ID); err != nil {
 			return err
 		}
 		if len(keys) > 0 {
 			events.job(StorageDeleteArgs{WorkspaceID: p.workspaceID, Keys: keys}, nil)
 		}
 		events.conversation(realtime.MessageRedacted, c, out)
+		if red.feedback || red.subject != "" {
+			conv, err := oneConversation(ctx, q, next)
+			if err != nil {
+				return err
+			}
+			events.conversation(realtime.ConversationUpdated, next, conv)
+		}
 		redacted = true
 		return s.audit(ctx, q, p, oas.AuditMessageRedacted, oas.AuditTargetMessage, m.ID, auditDetails{
 			"conversation_id": c.ID, "inbox_id": c.InboxID, "kind": m.Kind, "files": len(keys),
@@ -148,63 +172,6 @@ func (s *Server) RedactMessage(ctx context.Context, req oas.RedactMessageRequest
 	return oas.RedactMessage200JSONResponse(out), nil
 }
 
-// redactStoredReplies rewrites the answers kept for Idempotency-Key replays that show the
-// message, so a retried request answers it redacted instead of with its content or a new copy.
-func redactStoredReplies(ctx context.Context, q *store.Queries, workspaceID uuid.UUID, id string, message []byte) error {
-	rows, err := q.ListIdempotentRepliesMentioning(ctx, store.ListIdempotentRepliesMentioningParams{WorkspaceID: workspaceID, Needle: id})
-	if err != nil {
-		return err
-	}
-	for _, r := range rows {
-		body, ok := redactedReply(r.Body, id, message, strings.HasPrefix(r.Path, "/client/"))
-		if !ok {
-			continue
-		}
-		if err := q.SetIdempotentReplyBody(ctx, store.SetIdempotentReplyBodyParams{
-			WorkspaceID: workspaceID, CallerType: r.CallerType, CallerID: r.CallerID, Key: r.Key, Body: body,
-		}); err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-func redactedReply(body []byte, id string, message []byte, client bool) ([]byte, bool) {
-	var doc map[string]any
-	if json.Unmarshal(body, &doc) != nil {
-		return nil, false
-	}
-	changed := false
-	fix := func(m map[string]any) map[string]any {
-		if m["id"] != id {
-			return m
-		}
-		changed = true
-		if !client {
-			var out map[string]any
-			_ = json.Unmarshal(message, &out)
-			return out
-		}
-		delete(m, "html")
-		delete(m, "cards")
-		m["body"], m["attachments"], m["redacted"] = "", []any{}, true
-		return m
-	}
-	doc = fix(doc)
-	if m, ok := doc["message"].(map[string]any); ok {
-		doc["message"] = fix(m)
-	}
-	if c, ok := doc["conversation"].(map[string]any); ok {
-		if lm, ok := c["last_message"].(map[string]any); ok && lm["id"] == id {
-			lm["text"], lm["redacted"], changed = "", true, true
-		}
-	}
-	if !changed {
-		return nil, false
-	}
-	return mustJSON(doc), true
-}
-
 func (s *Server) oneMessage(ctx context.Context, q *store.Queries, m messageRow) (oas.Message, error) {
 	atts, err := messageAttachments(ctx, q, m.WorkspaceID, []uuid.UUID{m.ID})
 	if err != nil {
@@ -217,12 +184,12 @@ func (s *Server) oneMessage(ctx context.Context, q *store.Queries, m messageRow)
 	return withEmail(messageBody(m, atts[m.ID]), ems[m.ID]), nil
 }
 
-// dropQuotesOf takes the quoted history and raw source from the contact's later e-mails in the
-// conversation that quote the redacted message, keeping only what they newly said; it returns the
-// raw sources to delete.
-func dropQuotesOf(ctx context.Context, q *store.Queries, workspaceID uuid.UUID, m store.GetMessageRow) ([]string, error) {
-	probe := quoteProbe(m.Body)
-	if probe == "" {
+// dropQuotesOf takes the quoted history and raw source from the contact's later e-mails that
+// answer the redacted e-mail (headerID in In-Reply-To or References) and quote all of its text,
+// keeping only what they newly said; it returns the raw sources to delete.
+func dropQuotesOf(ctx context.Context, q *store.Queries, workspaceID uuid.UUID, m store.GetMessageRow, headerID string) ([]string, error) {
+	quoted := quoteText(m.Body)
+	if quoted == "" {
 		return nil, nil
 	}
 	rows, err := q.ListLaterInboundEmails(ctx, store.ListLaterInboundEmailsParams{
@@ -233,7 +200,11 @@ func dropQuotesOf(ctx context.Context, q *store.Queries, workspaceID uuid.UUID, 
 	}
 	var keys []string
 	for _, r := range rows {
-		if !strings.Contains(quoteText(r.FullText), probe) && (r.FullHtml == nil || !strings.Contains(quoteText(htmlText(*r.FullHtml)), probe)) {
+		answers := r.InReplyTo != nil && *r.InReplyTo == headerID || slices.Contains(r.ReferencesIds, headerID)
+		if !answers {
+			continue
+		}
+		if !strings.Contains(quoteText(r.FullText), quoted) && (r.FullHtml == nil || !strings.Contains(quoteText(htmlText(*r.FullHtml)), quoted)) {
 			continue
 		}
 		if err := q.DropEmailQuotes(ctx, store.DropEmailQuotesParams{WorkspaceID: workspaceID, MessageID: r.MessageID, FullText: r.Body, FullHtml: r.Html}); err != nil {
@@ -249,22 +220,6 @@ func dropQuotesOf(ctx context.Context, q *store.Queries, workspaceID uuid.UUID, 
 // quoteText folds what mail clients change when they quote: case, line breaks and the leading '>'.
 func quoteText(s string) string {
 	return strings.Join(strings.Fields(strings.ToLower(strings.ReplaceAll(s, ">", " "))), " ")
-}
-
-// quoteProbe is the start of a message as a later e-mail would quote it.
-func quoteProbe(body string) string {
-	words := strings.Fields(quoteText(body))
-	var b strings.Builder
-	for _, w := range words {
-		if b.Len() > 0 && len([]rune(b.String()))+1+len([]rune(w)) > quoteProbeRunes {
-			break
-		}
-		if b.Len() > 0 {
-			b.WriteByte(' ')
-		}
-		b.WriteString(w)
-	}
-	return b.String()
 }
 
 func htmlText(src string) string {

@@ -134,13 +134,14 @@ func (q *Queries) GetIdempotencyKey(ctx context.Context, arg GetIdempotencyKeyPa
 
 const listIdempotentRepliesMentioning = `-- name: ListIdempotentRepliesMentioning :many
 SELECT caller_type, caller_id, key, path, body FROM idempotency_keys
-WHERE workspace_id = $1 AND body IS NOT NULL AND position(convert_to($2::text, 'UTF8') IN body) > 0
+WHERE workspace_id = $1 AND body IS NOT NULL
+  AND EXISTS (SELECT 1 FROM unnest($2::text[]) n WHERE position(convert_to(n, 'UTF8') IN body) > 0)
 FOR UPDATE
 `
 
 type ListIdempotentRepliesMentioningParams struct {
 	WorkspaceID uuid.UUID
-	Needle      string
+	Needles     []string
 }
 
 type ListIdempotentRepliesMentioningRow struct {
@@ -152,7 +153,7 @@ type ListIdempotentRepliesMentioningRow struct {
 }
 
 func (q *Queries) ListIdempotentRepliesMentioning(ctx context.Context, arg ListIdempotentRepliesMentioningParams) ([]ListIdempotentRepliesMentioningRow, error) {
-	rows, err := q.db.Query(ctx, listIdempotentRepliesMentioning, arg.WorkspaceID, arg.Needle)
+	rows, err := q.db.Query(ctx, listIdempotentRepliesMentioning, arg.WorkspaceID, arg.Needles)
 	if err != nil {
 		return nil, err
 	}

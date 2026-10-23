@@ -203,6 +203,16 @@ func (s *Server) completeIdempotency(ctx context.Context, st *idempotencyState, 
 		Status: new(int32(rec.status)), Headers: mustJSON(headers), Body: rec.body.Bytes(),
 	}); err != nil {
 		s.log.ErrorContext(ctx, "store idempotent response", slog.Any("error", err))
+		return
+	}
+	body, changed, err := s.scrubRedacted(ctx, s.st.Queries, c.workspaceID, rec.body.Bytes())
+	if err == nil && changed {
+		err = s.st.SetIdempotentReplyBody(ctx, store.SetIdempotentReplyBodyParams{
+			WorkspaceID: c.workspaceID, CallerType: c.callerType, CallerID: c.callerID, Key: st.key, Body: body,
+		})
+	}
+	if err != nil {
+		s.log.ErrorContext(ctx, "redact idempotent response", slog.Any("error", err))
 	}
 }
 

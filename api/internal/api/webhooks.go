@@ -803,23 +803,23 @@ func (s *Server) webhookPayloads(ctx context.Context, q *store.Queries, ev store
 // FanOutWebhooks creates one delivery per enabled endpoint that subscribed to the event's
 // webhooks and covers its inbox, and queues the first attempt of each.
 func (s *Server) FanOutWebhooks(ctx context.Context, a WebhookFanoutArgs) error {
-	ev, err := s.st.GetEvent(ctx, store.GetEventParams{WorkspaceID: a.WorkspaceID, ID: a.EventID})
-	if store.IsNotFound(err) {
-		return nil
-	}
-	if err != nil {
-		return err
-	}
 	endpoints, err := s.st.ListEnabledWebhookEndpoints(ctx, a.WorkspaceID)
 	if err != nil || len(endpoints) == 0 {
 		return err
 	}
-	hooks, inboxes, err := s.webhookPayloads(ctx, s.st.Queries, ev, a.Deleted)
-	if err != nil || len(hooks) == 0 {
-		return err
-	}
 	now := s.now()
 	return s.st.InTxRaw(ctx, func(tx pgx.Tx, q *store.Queries) error {
+		ev, err := q.LockEventShared(ctx, store.LockEventSharedParams{WorkspaceID: a.WorkspaceID, ID: a.EventID})
+		if store.IsNotFound(err) {
+			return nil
+		}
+		if err != nil {
+			return err
+		}
+		hooks, inboxes, err := s.webhookPayloads(ctx, q, ev, a.Deleted)
+		if err != nil || len(hooks) == 0 {
+			return err
+		}
 		var jobs []river.InsertManyParams
 		for _, e := range endpoints {
 			if e.InboxID != nil && !slices.Contains(inboxes, *e.InboxID) {
@@ -845,7 +845,7 @@ func (s *Server) FanOutWebhooks(ctx context.Context, a WebhookFanoutArgs) error 
 		if len(jobs) == 0 {
 			return nil
 		}
-		_, err := s.jobs.InsertManyTx(ctx, tx, jobs)
+		_, err = s.jobs.InsertManyTx(ctx, tx, jobs)
 		return err
 	})
 }
@@ -892,6 +892,14 @@ func (s *Server) DeliverWebhook(ctx context.Context, workspaceID, deliveryID uui
 	keys, err := s.webhookKeys(e)
 	if err != nil {
 		return false, err
+	}
+	if b, changed, err := s.scrubRedacted(ctx, s.st.Queries, workspaceID, []byte(d.Payload)); err != nil {
+		return false, err
+	} else if changed {
+		d.Payload = string(b)
+		if err := s.st.SetWebhookDeliveryPayload(ctx, store.SetWebhookDeliveryPayloadParams{WorkspaceID: workspaceID, ID: d.ID, Payload: d.Payload}); err != nil {
+			return false, err
+		}
 	}
 	now := s.now()
 	sendCtx, span := telemetry.Start(ctx, "webhook.deliver", telemetry.WorkspaceKey.String(workspaceID.String()))

@@ -172,6 +172,68 @@ func (q *Queries) ListEventsAfter(ctx context.Context, arg ListEventsAfterParams
 	return items, nil
 }
 
+const lockConversationEvents = `-- name: LockConversationEvents :many
+SELECT id, payload FROM events WHERE workspace_id = $1 AND conversation_id = $2
+ORDER BY id
+FOR UPDATE
+`
+
+type LockConversationEventsParams struct {
+	WorkspaceID    uuid.UUID
+	ConversationID *uuid.UUID
+}
+
+type LockConversationEventsRow struct {
+	ID      int64
+	Payload []byte
+}
+
+func (q *Queries) LockConversationEvents(ctx context.Context, arg LockConversationEventsParams) ([]LockConversationEventsRow, error) {
+	rows, err := q.db.Query(ctx, lockConversationEvents, arg.WorkspaceID, arg.ConversationID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []LockConversationEventsRow
+	for rows.Next() {
+		var i LockConversationEventsRow
+		if err := rows.Scan(&i.ID, &i.Payload); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const lockEventShared = `-- name: LockEventShared :one
+SELECT id, workspace_id, type, inbox_id, conversation_id, payload, created_at FROM events WHERE workspace_id = $1 AND id = $2 FOR SHARE
+`
+
+type LockEventSharedParams struct {
+	WorkspaceID uuid.UUID
+	ID          int64
+}
+
+// Webhook fan-out reads its event under this lock, so a redaction that rewrites the event waits
+// for the deliveries it writes and then rewrites them too.
+func (q *Queries) LockEventShared(ctx context.Context, arg LockEventSharedParams) (Event, error) {
+	row := q.db.QueryRow(ctx, lockEventShared, arg.WorkspaceID, arg.ID)
+	var i Event
+	err := row.Scan(
+		&i.ID,
+		&i.WorkspaceID,
+		&i.Type,
+		&i.InboxID,
+		&i.ConversationID,
+		&i.Payload,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
 const lockEventStream = `-- name: LockEventStream :exec
 SELECT pg_advisory_xact_lock(hashtextextended('yuva_events:' || $1::uuid::text, 0))
 `
@@ -210,29 +272,17 @@ func (q *Queries) NotifySignal(ctx context.Context, arg NotifySignalParams) erro
 	return err
 }
 
-const redactMessageEvents = `-- name: RedactMessageEvents :execrows
-UPDATE events SET payload = $1::jsonb || jsonb_build_object('draft', coalesce(payload->'draft', 'false'::jsonb))
-WHERE workspace_id = $2 AND conversation_id = $3
-  AND type IN ('message.created', 'message.updated', 'draft.created', 'draft.updated', 'draft.deleted')
-  AND payload->>'id' = $4::text
+const setEventPayload = `-- name: SetEventPayload :exec
+UPDATE events SET payload = $1 WHERE workspace_id = $2 AND id = $3
 `
 
-type RedactMessageEventsParams struct {
-	Message        []byte
-	WorkspaceID    uuid.UUID
-	ConversationID *uuid.UUID
-	MessageID      string
+type SetEventPayloadParams struct {
+	Payload     []byte
+	WorkspaceID uuid.UUID
+	ID          int64
 }
 
-func (q *Queries) RedactMessageEvents(ctx context.Context, arg RedactMessageEventsParams) (int64, error) {
-	result, err := q.db.Exec(ctx, redactMessageEvents,
-		arg.Message,
-		arg.WorkspaceID,
-		arg.ConversationID,
-		arg.MessageID,
-	)
-	if err != nil {
-		return 0, err
-	}
-	return result.RowsAffected(), nil
+func (q *Queries) SetEventPayload(ctx context.Context, arg SetEventPayloadParams) error {
+	_, err := q.db.Exec(ctx, setEventPayload, arg.Payload, arg.WorkspaceID, arg.ID)
+	return err
 }

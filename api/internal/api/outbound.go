@@ -315,20 +315,37 @@ func (s *Server) SendEmails(ctx context.Context, workspaceID uuid.UUID, ids []uu
 		return err
 	}
 	var msgs []messageRow
-	for _, id := range ids {
-		msg, err := s.st.GetMessage(ctx, store.GetMessageParams{WorkspaceID: workspaceID, ID: id})
-		if store.IsNotFound(err) {
-			continue
-		}
-		if err != nil {
+	// Read under the messages' locks so a redaction in progress is waited for; a redacted message
+	// is left out of its batch and the others still go. One redacted while the e-mail is on its
+	// way is recorded as sent, as it was.
+	err := s.st.InTx(ctx, func(q *store.Queries) error {
+		if _, err := q.LockMessagesForSend(ctx, store.LockMessagesForSendParams{WorkspaceID: workspaceID, Ids: ids}); err != nil {
 			return err
 		}
-		if msg.DeliveryState != nil && *msg.DeliveryState == deliveryQueued {
-			msgs = append(msgs, messageRow(msg))
+		var last uuid.UUID
+		for _, id := range ids {
+			msg, err := q.GetMessage(ctx, store.GetMessageParams{WorkspaceID: workspaceID, ID: id})
+			if store.IsNotFound(err) {
+				continue
+			}
+			if err != nil {
+				return err
+			}
+			if msg.RedactedAt != nil {
+				continue
+			}
+			last = msg.ID
+			if msg.DeliveryState != nil && *msg.DeliveryState == deliveryQueued {
+				msgs = append(msgs, messageRow(msg))
+			}
 		}
-	}
-	if len(msgs) == 0 || msgs[len(msgs)-1].ID != ids[len(ids)-1] {
+		if len(msgs) == 0 || msgs[len(msgs)-1].ID != last {
+			msgs = nil
+		}
 		return nil
+	})
+	if err != nil || len(msgs) == 0 {
+		return err
 	}
 	set := func(state string, detail *string) error {
 		return s.inTx(ctx, workspaceID, func(q *store.Queries, events *eventBatch) error {
