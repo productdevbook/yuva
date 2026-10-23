@@ -437,8 +437,13 @@ panel (embedded SPA) ─────────► /v1 + WS ──────�
   row per key) holds a fixed window that starts with the key's first request; one upsert per check
   counts and answers, and several keys go in one statement when a batch is checked (analytics server
   events; takes of one key are merged first). Windows and leases are measured by the database's
-  clock (`clock_timestamp()`), never a replica's. A check that fails in the database lets the
-  request through and is logged at most once a minute: a broken limiter must not take the API down.
+  clock (`clock_timestamp()`), never a replica's. When the database check fails (logged at most once
+  a minute), a check for a signed-in member, API key or grant lets the request through, and every
+  other check (anonymous and contact traffic, jobs) counts in the process's own fixed windows with
+  the same limits (at most 100,000 keys; a new key beyond that is refused) (#185). Several keys
+  that must all fit are taken all or nothing (`takeEvery`) in a short transaction of their own:
+  missing windows are opened and locked `FOR UPDATE` in key order and counted only when all fit, so
+  a refused request spends no key; never inside a caller's transaction.
   A check that depends on rows a transaction read (slug changes, idea votes, subscription
   confirmations, new anonymous visitors) runs on that transaction's connection in a savepoint, so it
   never waits for a second pool connection; all other checks run before any transaction opens. Keys
@@ -449,6 +454,28 @@ panel (embedded SPA) ─────────► /v1 + WS ──────�
   exception to the `workspace_id` rule: most limits are per address or token before any workspace is
   known, and the key is a hash. Sign-ups, migration connection tests and list imports count their
   own rows, as before.
+- Budgets that every visitor of one channel, page or centre shares are a `budget{network,
+  ceiling}` (#187): after the per-address limit (IPv4 /32, IPv6 /64), one network (IPv4 /24, IPv6
+  /48, `rateNet`) may use `network` of it, and `ceiling` only caps the total load, so a flood from a
+  few sources never refuses the others. Per network and ceiling: session starts and page ratings or
+  help reactions 120 / 6,000 a minute, contact writes 240 / 12,000, help search 120 / 12,000 per
+  centre, list sign-ups 40 / 6,000 an hour, status sign-ups 40 / 3,000 an hour per page, what's new
+  480 / 24,000 a minute per changelog.
+- Public hardening (#191). The Caddy ask (`GET /status-domains/check`) never limits the proxy's own
+  asks (client address equal to a loopback or trusted TCP peer); other callers get 120 a minute per
+  address and 30 a minute per name memory cannot answer. A live domain and a known miss are
+  answered from the own-domain cache (30 s) without counting, a known page that is not live is
+  looked up each time, so publishing counts at once and workspace deletion reaches the ask within
+  30 s. Analytics share passwords hash with argon2id m=7 MiB, t=5, p=1 (OWASP's equivalent of
+  m=19 MiB, t=2, a third of the memory per guess), at most 4 at once per process; stored hashes
+  keep their settings, above m=64 MiB, t=10 or p=4 refused. Unlocks: 30 a minute per address and
+  10 per address and link count every attempt; only wrong passwords count against the link, 60 an
+  hour per link and network and 1,000 per link, checked without counting before hashing (past
+  either every unlock gets 429; a database failure there answers 500). The analytics property
+  cache remembers unknown keys in a map of their own for a minute, and a key that is not `yuva_ak_`
+  and 24 base64url characters is never looked up. Public page caches (status, help, roadmap,
+  changelog) key by page id and keep at most 200 entries a page in a list-based LRU; a full page or
+  cache drops its expired entries, else its least recently used one, never the whole cache.
 - Realtime: WebSocket (`coder/websocket`). Every change that members see live writes a row to
   `events` in the same transaction, last, under a per-workspace advisory lock, so event ids within
   a workspace follow commit order; the transaction's `NOTIFY` carries the id. One listener per
@@ -464,7 +491,20 @@ panel (embedded SPA) ─────────► /v1 + WS ──────�
   `availability` and whether they are `online`, and a `member.presence` notice reaches the
   workspace's member connections when a member connects, disconnects or changes availability.
   Contacts likewise: a `contact.presence` notice reaches the member connections that can see the
-  contact whenever one of its `/client/v1/realtime` connections opens or closes. When a contact
+  contact when its first `/client/v1/realtime` connection in a process has loaded (`ready`) and when
+  the last loaded one closes, at most once per 2 seconds per contact (a change inside that time is
+  announced once when it ends); continuity and app-push scheduling run on the last close only.
+  Per process a contact session keeps at most 20 client sockets and an address (`rateIP`) 200; a
+  socket beyond either is accepted and closed at once, before any replay, with 1013
+  `too_many_connections;retry_after=30`. The cap bounds one process's memory and fan-out, not the
+  cluster's: a NAT with more than 200 open widgets on one replica loses live updates for the extra
+  ones, which still work over HTTP. Connects are limited cluster-wide before the upgrade: 30 a
+  minute per session and 120 per address (`429 rate_limited`). A client's replay starts at
+  `max(last_event_id, contact_sessions.first_event_id)` (the workspace's newest event when the
+  session was made, migration 00125) and reads at most 1,000 events; past that it gets
+  `resync_required` (#188). `/v1/realtime` records a member connection (presence, automatic
+  assignment) only for member sessions and first-party member-app tokens; keys and assistants
+  stream without making the member present (#192). When a contact
   reads further in the widget or an app, the conversation's `last_read_by_contact_at` moves (kept
   on the conversation row next to `contact_reads`) and a stored `contact.read` event reaches the
   members who can see the conversation; it never goes to webhooks or to contacts.
@@ -730,7 +770,9 @@ ignored (claude.ai lists `jwt-bearer`), and registration answers with the two Yu
   private-use scheme for native apps; matched exactly, except that an `http` URI on a loopback host
   (`127.0.0.1`, `[::1]`, and `localhost`, which Claude Code registers) matches on any port, at
   authorize as RFC 8252 §7.3 and OAuth 2.1 ask (the token request must repeat the URI the
-  authorization request used). `redirect_uri` may be left out only when the client has one.
+  authorization request used: when that request carried `redirect_uri`, the token request must
+  repeat it exactly, else `400 invalid_grant`; `oauth_requests` and `oauth_codes` keep
+  `redirect_uri_sent`). `redirect_uri` may be left out only when the client has one.
   Registration answers `token_endpoint_auth_method: none` whatever was asked, allows 20
   registrations per address and hour, and clients that never got a grant are deleted after 30
   days. Client ids are `yuva_client_<random>`.
@@ -747,8 +789,11 @@ ignored (claude.ai lists `jwt-bearer`), and registration answers with the two Yu
   alone, like API keys. `POST /oauth/revoke` (RFC 7009): a refresh token revokes the grant, an
   access token only itself.
 - Resource indicators (RFC 8707) are required. `<YUVA_PUBLIC_URL>/mcp` gives a token for `/mcp`
-  only; `<YUVA_PUBLIC_URL>` gives one for `/v1`, `/v1/realtime` and `/mcp` (for the planned member apps). A
-  trailing `/` is ignored. A `/mcp`-only token on `/v1` gets `401 token_wrong_resource`; an expired
+  only; `<YUVA_PUBLIC_URL>` gives one for `/v1`, `/v1/realtime` and `/mcp`, and only to the
+  server's own member apps: the client ids (for the apps, their Client ID Metadata Document URLs)
+  listed in `YUVA_OAUTH_FIRST_PARTY_CLIENTS` (comma- or space-separated, matched exactly, empty by
+  default) (#186). Any other client asking for it gets `error=invalid_target` on the redirect, never
+  a silent downgrade to `/mcp`. A trailing `/` is ignored. A `/mcp`-only token on `/v1` gets `401 token_wrong_resource`; an expired
   one `401 token_expired`.
   Accepting a `/v1` token at `/mcp` is intentional: MCP acts as the member with the same scopes.
 - Scopes are the API key scopes. A token acts as its member: what the member's role and inbox access
@@ -772,9 +817,14 @@ ignored (claude.ai lists `jwt-bearer`), and registration answers with the two Yu
 **Writes through a client.** Everything a token writes records the client: messages, notes,
 drafts and conversation events get `via` (the client name at the time), and the timeline shows
 "Ayşe via Claude Code". `via` is on the message's `author`, and a draft sent with a token also gets
-it on `sent_by`. Delivery from a `/mcp`-only token follows `bots_may_send` like an API key:
-off, an outgoing message must be a draft. A `<YUVA_PUBLIC_URL>` token (for the planned member apps) sends
-as the member.
+it on `sent_by`. Delivery from every OAuth token follows `bots_may_send` like an API key (off, an
+outgoing message must be a draft), except a `<YUVA_PUBLIC_URL>` token of a first-party client,
+which sends as the member (`deliversAsBot`: an API key, a `/mcp`-only token, or a grant whose client
+is not first-party). This covers every sending path (REST sends and draft sends, forwards, linked
+replies, re-read on replay, MCP `send_reply`, `send_draft`, `forward_conversation`, discussion
+replies), and grants for `<YUVA_PUBLIC_URL>` made before the list existed keep `/v1` but deliver as
+drafts. The consent request (`GET /v1/oauth/requests/{id}`) carries `first_party` and, per
+workspace, `may_send`.
 
 **MCP endpoint.** `/mcp` in the same binary, Streamable HTTP, MCP specification 2026-07-28, built
 on `github.com/modelcontextprotocol/go-sdk` (MIT/Apache-2.0). Bearer is an OAuth token or a scoped
@@ -970,10 +1020,20 @@ the inbox that issued it. When the same browser later sends an identity token wi
 the visitor's conversations move to the identified contact (or, for a contact Yuva has not seen
 yet, the visitor becomes it) and the visitor id ends. E-mail addresses are matched to contacts only
 when they arrive by e-mail or inside a valid identity token: an address a visitor types in the
-widget is kept apart (`typed_email`) and used only to e-mail them replies; it becomes one of their
-addresses only when someone opens the confirmation link Yuva mails to it and confirms there. The
-link (`/email/confirm?token=…`, valid 24 hours, at most 3 per contact and hour, not sent for an
-address a contact already has) opens a page whose button posts the token, so a mail scanner that
+widget or the feedback form is kept apart (`typed_email`), and nothing but its confirmation link is
+mailed to it: replies (continuity mail) go only to the contact's own addresses. It becomes one of
+their addresses only when someone opens the confirmation link Yuva mails to it and confirms there.
+The link (`/email/confirm?token=…`, valid 24 hours, not sent for an address a contact already has)
+is limited (#185) to 3 rows per contact and hour and, taken all or nothing after the transaction
+commits when a mail is due, 3 a day per normalized address and caller network (IPv4 /24, IPv6 /48),
+10 a day per normalized address across the server, 6 a day per contact, 30 a day per workspace and
+network, and 2,000 a day per workspace (no per-channel cap: outsiders could silence a channel).
+Addresses are normalized for these keys: lowercase, `+tag` stripped, the domain in IDNA ASCII,
+`googlemail.com` as `gmail.com` and dots removed for `gmail.com`. A mail held back sets
+`email_confirmations.held_at` and the state `limited` (no `expires_at`) until the row expires. An
+unverified identity-token `email` gets one link per contact and address (none while the contact's
+latest confirmation is for it), under the same limits. The mail shows the inbox name as one line of
+at most 60 characters. The link opens a page whose button posts the token, so a mail scanner that
 fetches links confirms nothing; the mail names the inbox and never repeats visitor text. Answering
 a reply e-mail does not confirm the address. Such an answer (from the typed address, naming the
 visitor's thread, while no contact has the address and DMARC does not fail) joins the visitor's
@@ -1023,8 +1083,8 @@ Inbound:
    `Content-Length`, checked with the timestamp (within 5 minutes) before a byte of the body is
    read, so an unauthenticated request never makes the server buffer a body; and one that adds the
    body, checked once it is read. The body must arrive within 30 seconds. The older `v2`, a single
-   MAC over the timestamp, both envelope addresses and the body, is accepted while
-   `YUVA_INGRESS_ACCEPT_V2` is on (the default until Workers have moved to `v3`); the oldest `v1`,
+   MAC over the timestamp, both envelope addresses and the body, is accepted only while
+   `YUVA_INGRESS_ACCEPT_V2` is on (off by default; for a Worker not yet redeployed); the oldest `v1`,
    which leaves the envelope sender out, only with `YUVA_INGRESS_ACCEPT_V1`, and then the envelope
    sender is not trusted (an empty one marks nothing as a delivery report or automatic). At most
    `YUVA_INGRESS_MAX_CONCURRENT` (8) messages are processed at once per process, counted from the
@@ -1035,11 +1095,12 @@ Inbound:
    bounce. Any other MTA can do the same; the endpoint is not tied to
    Cloudflare. An MTA that pipes into a command uses `yuva ingest-email --to <address>`, which
    exits with sysexits codes (67 unknown recipient, 77 refused, 75 try later).
-2. The recipient selects the channel: an e-mail address belongs to one channel of the whole server
-   (case-insensitive; `local+tag@` falls back to `local@`), because the request names nothing
-   else. A channel with the address `*@domain` is the domain's catch-all (one per domain, unique on
-   the server like any address): it receives mail to every address of the domain that no channel
-   has exactly. Its conversations remember the address the contact wrote to, and replies go out
+2. The recipient selects the channel, but only through an address its workspace has proven
+   (below): the forwarding token first (any channel, proven or not: the secret token names nobody's
+   address), then the proven exact address (case-insensitive), the proven `local@` for
+   `local+tag@`, and the proven catch-all of the domain. A channel with the address `*@domain` is
+   the domain's catch-all: it receives mail to every address of the domain that no channel holds
+   exactly. Its conversations remember the address the contact wrote to, and replies go out
    from that address (`From` and `Reply-To`), so its SMTP account must be allowed to send from the
    whole domain; its `from_address` is used only for a conversation without such an address
    (a chat that continues by e-mail), and without either the reply is refused (`email_no_sender`).
@@ -1067,8 +1128,10 @@ Inbound:
    `conversation_participants` rows (workspace, conversation, lowercased address, role `cc`, status,
    first seen; the contact is found by address when there is one, else the row is a bare address),
    at most 20 per conversation. Never kept: the sender, the conversation contact's own addresses,
-   and any address this server receives or sends mail for in any workspace (channel addresses with
-   tags and catch-alls, forwarding addresses, `from_address`, `YUVA_SMTP_FROM`). Mail that fails
+   any forwarding address, `YUVA_SMTP_FROM`, and the same workspace's channel addresses (with tags),
+   catch-all domains (not shared ones) and `from_address`, proven or not: proof decides routing and
+   other workspaces, never what a workspace counts as its own. Other workspaces' addresses are
+   ordinary addresses. Mail that fails
    DMARC or is automatic adds no one. `From` can be forged wherever DMARC is not enforced (a domain
    without a DMARC record, or an install without `YUVA_INGRESS_AUTHSERV_ID`), and a forged mail
    "from" the customer could otherwise name an attacker in `Cc` and have every reply copied to them;
@@ -1088,13 +1151,60 @@ Inbound:
    status. A participant's role is `cc`, or `forwarded` for the recipient of a forward (below) and
    the addresses their mail names; a `forwarded` participant is never copied by default, and their
    mail joins only as a members-only `forward`. A member naming one in `cc` or adding them, or a
-   verified mail from the contact copying them, makes them `cc`. The add endpoint answers an address of this server like an invalid one
-   (`400 validation_failed`, same text), as do `cc` and `bcc`, so nobody learns another workspace's
-   addresses.
+   verified mail from the contact copying them, makes them `cc`. The add endpoint answers an address
+   the workspace counts as its own (as above) like an invalid one (`400 validation_failed`, same
+   text), as do `cc` and `bcc`.
    Every e-mail channel also has a forwarding address, `<token>@<YUVA_FORWARDING_DOMAIN>` (16 random
    characters, rotatable), for mailboxes that forward to Yuva instead of moving their MX; ingress
    resolves a recipient on that domain by token before the address lookup. Without the setting there
    is none.
+   Address proof (#182): `email_channels.verified_at` and `verified_by` (`code`, `dns`, `operator`).
+   An unproven channel receives only at its forwarding address and still sends through its own SMTP
+   account (the relay decides who may send as which address). **Code**, for an exact address not on
+   the forwarding domain: `POST /v1/channels/{id}/verification-code` mails an 8-digit code through
+   the server mailer (`address_code`, naming neither workspace nor inbox), valid 1 hour and 5 tries,
+   a new one replacing it; at most one a minute per channel, 20 a day per workspace and 5 a day to
+   one address across the server (lowercased, without `+tag`; `429 rate_limited`), and
+   `POST /v1/channels/{id}/verify` with `code` proves it. A code mail that comes back through the
+   channel's own forwarding address (our Message-ID or the relay's) proves the channel itself and is
+   dropped; one that arrives directly (MX) is never taken, since anyone could claim an address whose
+   MX is this server. **DNS**, any address and the only proof of a catch-all or of an address on the
+   forwarding domain: the TXT record `_yuva-mail.<domain>` holding `yuva-mail-verify=<hex>`, an HMAC
+   of the workspace id and the domain under a key derived from the master key, so one record proves
+   every channel of that workspace on the domain and nothing is stored or rotated; `POST …/verify`
+   without `code` looks it up (10 s; 30 checks an hour per workspace) and a miss leaves `problem`.
+   Owners, admins and keys with `inboxes:manage` prove; MCP does not (proof is access, like rotating
+   secrets). Any number of workspaces may claim an address (`UNIQUE (workspace_id, address)`) and one
+   holds it (a partial unique index on `address` where `verified_at` is set). The latest prover
+   wins: under an advisory lock on the address a proof clears the previous holder (problem `taken`,
+   `channel.address_lost` by `system` in its workspace, the one write across workspaces, keyed by
+   the address like the ingress lookup) and records `channel.address_verified`; when no channel held
+   the exact address, the other workspace's proven `local@` or catch-all that received its mail gets
+   `channel.address_lost` with `via`. Losses are kept in `email_address_losses` (mailed rows for 30
+   days) and the River job `address_loss_mail` mails the losing workspace's owners at most once a
+   day. A proof shows control now; domains and mailboxes change hands, so a stale holder must not
+   block the owner, and pending claims block nobody (`409 email_address_taken` answers only the same
+   address twice in one workspace). Changing a channel's address starts its proof over. A catch-all
+   on a shared domain (`YUVA_FORWARDING_DOMAIN`, or a public mail provider from
+   `email.PublicMailDomain`) is refused on save and on verify and never looked up, so mail to an
+   unknown or rotated forwarding token answers 404. Nothing is grandfathered (migration 00127):
+   stored mail cannot tell delivery by MX from delivery through a forwarding address, which anyone
+   can send to themselves, so every existing channel starts unproven and the migration writes one
+   operator notice `email_unproven` per channel of a live workspace, naming the command that vouches
+   for it (without `YUVA_OPERATOR_EMAIL`, logged once at warn level).
+   `yuva channel prove --channel <id|address> [--workspace <ws>] [--yes [--address <address>]]` and
+   `yuva channel prove --all-unproven --workspace <ws> [--yes --plan <code>]` let the operator vouch
+   (`verified_by` `operator`, audit `channel.address_proven` with actor `operator`). Without `--yes`
+   it lists channel, workspace, address and result and exits non-zero while anything would be
+   proven. The proof is bound to what was listed: by channel id `--address` must equal the listed
+   address, `--all-unproven` needs the plan code the listing printed (a hash of the channel ids and
+   addresses), and each proof refuses when the address changed since it was read. It never takes
+   from another workspace: it refuses an address another workspace proved and one whose mail reaches
+   another workspace's proven `local@` or catch-all today, so it never causes
+   `channel.address_lost`; shared-domain catch-alls are refused as for any proof, and an address
+   several workspaces claim needs `--workspace`. Its lookup across workspaces
+   (`OperatorEmailChannels`) and the "proven elsewhere" check are exceptions to the `workspace_id`
+   rule, like the ingress lookup.
 3. MIME parsing with enmime; visible text with quotes and signatures stripped (our own Go
    implementation in `api/internal/email/reply`, tested against a fixture corpus, which scans only
    the first 64 KiB of the text: when nothing is hidden there the whole text is shown); the quoted
@@ -1109,14 +1219,23 @@ Inbound:
 4. Loops: messages with `Auto-Submitted` other than `no`, `Precedence: bulk|junk|list|auto_reply`,
    `X-Autoreply`, `X-Autorespond`, `X-Auto-Response-Suppress` (other than `None`), `List-Id`, a
    null sender, a delivery report, or our own Message-ID domain are stored but never trigger an
-   automatic message. Mail from an address the server sends from (any channel's address or
-   `from_address`, and `YUVA_SMTP_FROM`) is dropped, so notifications and replies that reach a
-   catch-all never loop. Volume never loses mail: a sender opens at most 20 new conversations per
+   automatic message. Mail from the receiving channel's own address or `from_address`, from
+   `YUVA_SMTP_FROM`, or from any channel address or `from_address` of the same workspace (proven or
+   not) is dropped, so notifications and replies that reach a catch-all never loop; another
+   workspace's addresses never drop mail. Volume never loses mail: a sender opens at most 20 new conversations per
    channel and hour, and further mail in that hour is added to the sender's latest conversation on
    the channel (reopened if needed, no greeting) instead of opening a new one. We chose this over a
    separate "bulk" state because it needs no new view and keeps every message in front of a member.
    Only a sender over a hard cap of inbound mails per hour in the workspace
-   (`YUVA_EMAIL_SENDER_HOURLY_CAP`, default 500) is refused (429 `rate_limited`). Cloudflare Email
+   (`YUVA_EMAIL_SENDER_HOURLY_CAP`, default 500) is refused (429 `rate_limited`). Mail that passed
+   DMARC and other mail are counted separately (#190), so forged mail in a customer's name fills only
+   the unauthenticated count (a domain without DMARC shares it with forgeries of its addresses).
+   Before the body is parsed, `/ingress/email` reads only From and Authentication-Results
+   (`email.HeaderSender`, after the 25 MiB size check) and refuses an existing contact over the cap;
+   the check in the ingest transaction is the one that counts. enmime's HTML-to-text conversion is
+   off: for a message without a text part the server converts at most the first 1 MiB of HTML, and
+   HTML over 2 MiB (`maxFullHTMLBytes`) is neither quote-stripped nor sanitised (the message keeps
+   its text and the raw `.eml`, no `html`, `full_html` or `original_html`). Cloudflare Email
    Workers can only refuse a message permanently (`setReject`; a temporary failure is not
    documented), so that refusal is permanent and its text says the message was not accepted.
 5. Spam: the receiving server's verdict (the topmost `Authentication-Results`) is stored and
@@ -1130,7 +1249,25 @@ Inbound:
    edge Worker cannot do better, since it sees the same headers and observes no verdict itself. A new
    conversation whose first mail fails DMARC is flagged `spam`, which keeps it out of
    lists and counts (they have a spam view) and away from automatic replies; contacts can be
-   blocked.
+   blocked. The trusted header is parsed per RFC 8601 (#183): split into resinfo at `;`
+   outside comments (nested, with quoted-pairs) and quoted strings, comments dropped and quoted
+   strings never matching; each resinfo must be `method[/version]=result`, at most one
+   `reason=value`, then only `ptype.property=pvalue`, and only that leading methodspec is read, so a
+   `dmarc=pass` inside an address, a DKIM identity or a reason never counts. An open comment or
+   quote, or any resinfo of another shape, makes the header `unknown`; several `dmarc` results give
+   `fail` if one fails, their common result if all agree, else `unknown`. A `pass` counts only for a
+   message with exactly one From address in one From header (RFC 7489 §6.6.1), else it is `unknown`.
+   Only mail through our own receiver (`/ingress/email`, `yuva ingest-email`) is believed: the
+   migration sync and imports store DMARC `unknown` whatever the headers say. Automatic mail goes
+   only to senders that passed: the greeting only for a new conversation whose first mail passed, a
+   rule's `send_reply` is refused with `auto_reply` when the triggering contact message is an e-mail
+   that did not pass (chat and API messages are unaffected), and a rating request is e-mailed only
+   when the latest contact message is not such an e-mail. Without `YUVA_INGRESS_AUTHSERV_ID` none of
+   them reach e-mail senders, and the startup warning says so. The greeting's subject is `Re: ` and
+   the sender's subject with control and format characters (Unicode Cc and Cf) turned into spaces,
+   whitespace collapsed and cut to 60 characters at a word break past the 30th with `…`; it is not
+   fixed because clients that thread by subject would split it from the customer's mail, and only a
+   DMARC-passing sender reads their own text.
 
 Outbound: SMTP per channel (works with SES, Postmark, any relay); the password is stored
 encrypted under the master key and never returned, and it is only sent over TLS. The SMTP host is
@@ -1290,8 +1427,8 @@ inline thread inside a product's own panel.
   channel, so the panel can show a live widget (the setup page's preview) without changing the
   channel; a same-origin request without `Origin` counts as that origin only when it carries
   `Sec-Fetch-Site: same-origin`. Session starts and contact writes are rate limited per IP address (per /64
-  for IPv6) and per channel, counted in each process; finished windows are swept every minute and
-  at most 100,000 are open at once (new keys beyond that are refused until a sweep). An IP address
+  for IPv6) and from a per-channel budget (see Server (`api/`), budgets: 120 session starts and 240
+  writes a minute per network, ceilings 6,000 and 12,000). An IP address
   starts at most `YUVA_ANONYMOUS_CONTACTS_PER_HOUR` (20) new anonymous visitors per channel and
   hour (`429 anonymous_limit`); resuming a visitor does not count.
 - Contacts see their own conversations of the inbox, messages only (no notes, no internal events),
@@ -1313,8 +1450,8 @@ inline thread inside a product's own panel.
   is that old and the contact has been gone that long, go out as one e-mail through the inbox's
   e-mail channel, threaded so an answer finds the conversation, at most one e-mail per delay. Notes
   are never sent. The subject is the inbox name and a fixed "new reply" phrase in the contact's
-  language (else the inbox's), never visitor text: the e-mail may go to an address nobody has
-  confirmed. The contact's last seen time is saved before their connection is removed, so a check
+  language (else the inbox's), never visitor text, and it goes only to the contact's own addresses,
+  never to an unconfirmed typed one. The contact's last seen time is saved before their connection is removed, so a check
   never finds them both disconnected and not recently seen.
 
 ### In-app messaging (mobile)
@@ -1407,8 +1544,9 @@ link-local (cloud metadata included), CGNAT, multicast or otherwise reserved, an
 goes to that resolved address only. No proxy, no redirects (a 3xx is a failure), a 10 second
 timeout and at most 64 KiB of the answer read. `YUVA_WEBHOOK_ALLOW_PRIVATE=true` lifts the address
 check for development (the dev compose file sets it); never set it on a shared server. Link-local
-and cloud metadata addresses (169.254.0.0/16, fe80::/10, fd00:ec2::254, IPv4-mapped forms
-included) are refused even then, when the endpoint is saved and on every attempt.
+and cloud metadata addresses (169.254.0.0/16, fe80::/10, fd00:ec2::254, Azure's 168.63.129.16,
+Alibaba's 100.100.100.200, IPv4-mapped forms included) are refused even then, when the endpoint is
+saved and on every attempt; every outbound client shares this list (`webhook.NeverAllowed`).
 
 `sdk/go/webhook` verifies the signatures for Go backends.
 
@@ -1645,6 +1783,11 @@ remote images, http(s)):
   signing secret, deliveries, attempts, how to verify and remove, each saved on its own.
 - Installable PWA with Web Push (VAPID), so members get notifications on phones without a native
   app. E-mail notifications as a fallback (see Member notifications).
+- Sign-in sessions (#192): `sessions.user_agent` (migration 00119) names the device.
+  `GET /v1/me/sessions` lists the person's sessions (method, `current`, device, created, last seen,
+  expiry), most recently seen first; `DELETE /v1/me/sessions` ends every other session with its
+  push subscriptions and reader tokens (their realtime streams close at the next 30 s re-check), and
+  removing a passkey does the same in its transaction. Both need a member session.
 - Sign-in with an e-mailed one-time code and passkeys. Sign-up is a server setting,
   `YUVA_SIGNUP`, reported to the panel without sign-in on `GET /v1/version` (`signup`). `invite`
   (the default): the first owner is created with `yuva bootstrap`, everyone else is invited, and
@@ -2557,10 +2700,10 @@ in six steps (M15.1–M15.6 in the roadmap). Decisions:
   DNT and GPC requests before sending and retries 429, 5xx and network errors with backoff that honours
   `Retry-After`.
 - **Sharing and export (M15.5).** `analytics_shares` keep a SHA-256 of the link token (`yuva_sh_…`, shown
-  once) and an argon2id password hash (m=19 MiB, t=2, p=1); unlocking gives a 12-hour `yuva_sa_` token
+  once) and an argon2id password hash (m=7 MiB, t=5, p=1; see Server (`api/`), public hardening); unlocking gives a 12-hour `yuva_sa_` token
   HMAC-signed over the link id, its expiry and the password hash, so a new password ends every token;
-  revoke and expiry stop a link at once. 50 links per property; 120 requests a minute per address, 10
-  unlocks a minute per address and link, 30 in all. A link lists its views (`overview`, `realtime`,
+  revoke and expiry stop a link at once. 50 links per property; 120 requests a minute per address;
+  unlock limits as in Server (`api/`), public hardening. A link lists its views (`overview`, `realtime`,
   `pages`, `sources`, `locations`, `devices`, `events`, `goals`): totals and time grains come with every
   view, other dimensions, filters and event or goal metrics only with theirs, saved segments never; its
   queries share the workspace's query slots and cache. The server serves the panel at `/share/{token}`
@@ -2815,9 +2958,8 @@ incident before a customer writes, and the conversations an outage brings are an
       `GET /status-domains/check?domain=` on the same server (the Caddy `on_demand_tls` `ask` form).
       It answers `200` only for the verified domain of a published status page, help center or changelog,
       or a public roadmap board (its feature not off on the server), in a live workspace, and `404`
-      otherwise (also in the other modes); it is public, rate-limited like the other public status
-      routes (120 a minute per address, `429`), and reveals only domains that already serve public
-      pages. `deploy/caddy/Caddyfile` documents Caddy.
+      otherwise (also in the other modes); it is public, limited as in Server (`api/`), public hardening (the
+      proxy's own asks never), and reveals only domains that already serve public pages. `deploy/caddy/Caddyfile` documents Caddy.
     - `cloudflare`: the server registers each verified domain as a Cloudflare for SaaS custom hostname
       in `YUVA_CLOUDFLARE_ZONE_ID` (token `YUVA_CLOUDFLARE_API_TOKEN`, permission SSL and Certificates
       edit) with HTTP validation, so Cloudflare issues and renews the certificate once the CNAME points
@@ -4210,8 +4352,9 @@ they belong to no channel. (#136, migration 00095)
   Trashing or restoring twice answers the conversation unchanged, without an event or entry.
 - A trashed conversation is read-only and left out of every list, count, search, stat, Home
   figure, contact summary, docs and analytics support figure, linked replies and roadmap link
-  counts, drafts, mentions, rating links, chat continuity mail, MCP and all of `/client/v1`.
-  The Trash view is `GET /v1/conversations?trashed=true` (owners, admins, `conversations:delete`);
+  counts, drafts, mentions, rating links, chat continuity mail, the automation run log
+  (`GET /v1/automation-rules/{id}/runs`; a restore brings its runs back), MCP and all of
+  `/client/v1`. The Trash view is `GET /v1/conversations?trashed=true` (owners, admins, `conversations:delete`);
   those callers can also `GET` the conversation, its messages, attachments, e-mail and raw
   source; everyone else gets `404`.
 - A new message from the contact never joins a trashed conversation: e-mail threading
@@ -4310,6 +4453,10 @@ they belong to no channel. (#136, migration 00095)
   `channel.dkim_key_deleted`, `inbox.identity_secret_rotated`, `inbox.deleted`, `contact.deleted`,
   `contact.consent_exported` and `list.consent_exported` (written when the export starts streaming,
   `started: true`), `analytics_export.created`, `workspace.retention_changed`,
+  `workspace.bots_may_send_changed` and `workspace.broadcasts_by_keys_changed` (`from`, `to`,
+  written only when the value changes), `channel.address_verified` (`address`, `method`),
+  `channel.address_proven` (actor `operator`) and `channel.address_lost` (actor `system`, `via`
+  when mail moved off a catch-all or `local@` channel),
   `workspace.broadcast_approval_requested`, and the operator's `workspace.broadcasts_approved`,
   `workspace.broadcasts_denied`, `workspace.broadcasts_suspended` and
   `workspace.broadcast_limit_changed`; `conversation.trashed`, `conversation.restored`,
@@ -4367,6 +4514,29 @@ they belong to no channel. (#136, migration 00095)
   `GET /v1/contacts/{id}/participations` lists the other contacts' conversations that hold one of
   the contact's addresses as a participant or in a stored recipient list; someone only copied gets
   a contact with their address first.
+- Deleting conversations for good (contact deletion, inbox deletion, retention, the trash purge,
+  migration cutover) deletes in the same transaction their stored events and webhook deliveries,
+  pending or kept, by index, never by searching payloads (#189): migration 00122 adds
+  `events.contact_id` (the contact an event is about) and `webhook_deliveries.conversation_id` and
+  `contact_id` (copied from the event at fan-out). Contact deletion also deletes them by
+  `contact_id`; merging contacts (API merge and widget identify) deletes the source's contact-level
+  ones and moves the rest to the target; workspace purge leaves them to the workspace row's cascade.
+  The conversations are locked `FOR UPDATE` in id order, after the contact or inbox and before the
+  events, so a reply in progress commits its event first and goes too. `/v1/events`, realtime
+  replay and the delivery log stop showing the content at once; a deleted delivery is not retried
+  and `GET` or `POST …/redeliver` on it answers `404 not_found`. Copies written before 00122 match
+  only by conversation (events) or not at all (deliveries) and expire within 7 days. Replies kept
+  for `Idempotency-Key` stay their 24 hours: only the caller that made the request reads them.
+- Stored files (attachments, raw e-mails, e-mail images, list-import and migration uploads) are
+  deleted by the retried `storage_delete` job, queued in the transaction that deletes their rows
+  (up to 500 keys a job), on every deletion path, so a failing store retries instead of leaving
+  files nothing points to.
+- Logs keep only the domain of an e-mail address (`*@example.com`): skipped and failed sends, SMTP
+  errors returned to the job queue, and the server mailer's trace. Without `YUVA_SMTP_HOST` the log
+  mailer writes a sign-in code as one line (`sign-in code (log mailer, not sent)`, recipient
+  redacted) and every other mail as its recipient's domain and sizes; `YUVA_MAIL_LOG=full` writes
+  whole mails and is refused unless `YUVA_PUBLIC_URL` is a localhost or loopback URL. The delivery
+  error shown on a failed message in the panel keeps the server's full answer.
 - Analytics keeps no IP address and puts nothing on a visitor's device by default (see "Analytics"). Raw
   visits and events are kept `YUVA_ANALYTICS_RAW_DAYS` (90), rollups the property's `retention_months`
   (25); salts are deleted two hours after their day. Members delete a property's data for a range or in
