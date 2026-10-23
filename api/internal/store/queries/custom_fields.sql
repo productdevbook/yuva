@@ -38,16 +38,19 @@ WHERE workspace_id = @workspace_id AND id = @id
 RETURNING *;
 
 -- ClearConversationField removes the values of a deleted field (option null) or of a select
--- option no longer offered, a batch at a time, while that is still so.
+-- option no longer offered, a batch at a time in id order after @after (the (workspace_id, id)
+-- unique index walks it), while that is still so.
 -- name: ClearConversationField :many
-UPDATE conversations c SET fields = c.fields - @key::text, updated_at = @now
-WHERE c.workspace_id = @workspace_id AND c.id IN (
+WITH batch AS (
     SELECT x.id FROM conversations x
-    WHERE x.workspace_id = @workspace_id AND x.fields ? @key::text
+    WHERE x.workspace_id = @workspace_id AND x.id > @after AND x.fields ? @key::text
       AND (sqlc.narg(option)::text IS NULL OR (x.fields ->> sqlc.arg(key)::text) = sqlc.narg(option)::text)
     ORDER BY x.id
     LIMIT @lim
     FOR UPDATE)
+UPDATE conversations c SET fields = c.fields - @key::text, updated_at = @now
+FROM batch
+WHERE c.workspace_id = @workspace_id AND c.id = batch.id
   AND CASE WHEN sqlc.narg(option)::text IS NULL THEN NOT EXISTS (
           SELECT 1 FROM custom_fields cf
           WHERE cf.workspace_id = c.workspace_id AND cf.object = 'conversation' AND cf.key = @key::text)

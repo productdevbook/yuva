@@ -13,14 +13,16 @@ import (
 )
 
 const clearConversationField = `-- name: ClearConversationField :many
-UPDATE conversations c SET fields = c.fields - $1::text, updated_at = $2
-WHERE c.workspace_id = $3 AND c.id IN (
+WITH batch AS (
     SELECT x.id FROM conversations x
-    WHERE x.workspace_id = $3 AND x.fields ? $1::text
+    WHERE x.workspace_id = $3 AND x.id > $5 AND x.fields ? $1::text
       AND ($4::text IS NULL OR (x.fields ->> $1::text) = $4::text)
     ORDER BY x.id
-    LIMIT $5
+    LIMIT $6
     FOR UPDATE)
+UPDATE conversations c SET fields = c.fields - $1::text, updated_at = $2
+FROM batch
+WHERE c.workspace_id = $3 AND c.id = batch.id
   AND CASE WHEN $4::text IS NULL THEN NOT EXISTS (
           SELECT 1 FROM custom_fields cf
           WHERE cf.workspace_id = c.workspace_id AND cf.object = 'conversation' AND cf.key = $1::text)
@@ -36,17 +38,20 @@ type ClearConversationFieldParams struct {
 	Now         time.Time
 	WorkspaceID uuid.UUID
 	Option      *string
+	After       uuid.UUID
 	Lim         int32
 }
 
 // ClearConversationField removes the values of a deleted field (option null) or of a select
-// option no longer offered, a batch at a time, while that is still so.
+// option no longer offered, a batch at a time in id order after @after (the (workspace_id, id)
+// unique index walks it), while that is still so.
 func (q *Queries) ClearConversationField(ctx context.Context, arg ClearConversationFieldParams) ([]Conversation, error) {
 	rows, err := q.db.Query(ctx, clearConversationField,
 		arg.Key,
 		arg.Now,
 		arg.WorkspaceID,
 		arg.Option,
+		arg.After,
 		arg.Lim,
 	)
 	if err != nil {

@@ -197,7 +197,8 @@ func conversationFieldDefs(ctx context.Context, q *store.Queries, workspaceID uu
 // applyFieldChange sets next.Fields from upd and refuses a close without a required field; the
 // shared lock keeps a definition from being deleted while values for it are written.
 func applyFieldChange(ctx context.Context, q *store.Queries, workspaceID uuid.UUID, cur store.Conversation, next *store.Conversation, upd *oas.CustomFieldValuesUpdate) error {
-	closing := next.Status == string(oas.ConversationStatusClosed) && cur.Status != next.Status && !next.Spam
+	closed := string(oas.ConversationStatusClosed)
+	closing := next.Status == closed && !next.Spam && (cur.Status != closed || cur.Spam)
 	if upd == nil && !closing {
 		return nil
 	}
@@ -443,7 +444,8 @@ func (s *Server) CreateCustomField(ctx context.Context, req oas.CreateCustomFiel
 		return nil, errValidation("required_on_close is only for conversation fields")
 	}
 	var out store.CustomField
-	err = s.inTx(ctx, p.workspaceID, func(q *store.Queries, _ *eventBatch) error {
+	var clearing bool
+	err = s.inTx(ctx, p.workspaceID, func(q *store.Queries, events *eventBatch) error {
 		if err := q.LockCustomFields(ctx, p.workspaceID); err != nil {
 			return err
 		}
@@ -460,7 +462,9 @@ func (s *Server) CreateCustomField(ctx context.Context, req oas.CreateCustomFiel
 				return err
 			}
 			if held {
-				return errFieldClearing
+				clearing = true
+				events.job(CustomFieldClearArgs{WorkspaceID: p.workspaceID, Key: b.Key, Run: newID()}, nil)
+				return nil
 			}
 		}
 		out, err = q.CreateCustomField(ctx, store.CreateCustomFieldParams{
@@ -474,6 +478,9 @@ func (s *Server) CreateCustomField(ctx context.Context, req oas.CreateCustomFiel
 	}
 	if err != nil {
 		return nil, err
+	}
+	if clearing {
+		return nil, errFieldClearing
 	}
 	return oas.CreateCustomField201JSONResponse(customFieldBody(out)), nil
 }
@@ -534,7 +541,7 @@ func (s *Server) UpdateCustomField(ctx context.Context, req oas.UpdateCustomFiel
 		}
 		if cur.Object == fieldObjectConv {
 			for _, o := range removed {
-				events.job(CustomFieldClearArgs{WorkspaceID: p.workspaceID, Key: cur.Key, Option: new(o)}, nil)
+				events.job(CustomFieldClearArgs{WorkspaceID: p.workspaceID, FieldID: &cur.ID, Key: cur.Key, Option: new(o), Run: newID()}, nil)
 			}
 		}
 		return nil
@@ -562,7 +569,7 @@ func (s *Server) DeleteCustomField(ctx context.Context, req oas.DeleteCustomFiel
 			return err
 		}
 		if f.Object == fieldObjectConv {
-			events.job(CustomFieldClearArgs{WorkspaceID: p.workspaceID, Key: f.Key}, nil)
+			events.job(CustomFieldClearArgs{WorkspaceID: p.workspaceID, FieldID: &f.ID, Key: f.Key, Run: newID()}, nil)
 		}
 		return nil
 	})
@@ -573,17 +580,21 @@ func (s *Server) DeleteCustomField(ctx context.Context, req oas.DeleteCustomFiel
 }
 
 // CustomFieldClearArgs clears the conversation values of a deleted field, or of a select option
-// the field no longer offers (Option set).
+// the field no longer offers (Option set). Run makes every deletion its own job: a unique job would
+// be skipped while an earlier one for the same key is kept as completed. A create refused with
+// field_clearing queues one without FieldID, so values a discarded job left are cleared too.
 type CustomFieldClearArgs struct {
-	WorkspaceID uuid.UUID `json:"workspace_id"`
-	Key         string    `json:"key"`
-	Option      *string   `json:"option,omitempty"`
+	WorkspaceID uuid.UUID  `json:"workspace_id"`
+	FieldID     *uuid.UUID `json:"field_id,omitempty"`
+	Key         string     `json:"key"`
+	Option      *string    `json:"option,omitempty"`
+	Run         uuid.UUID  `json:"run"`
 }
 
 func (CustomFieldClearArgs) Kind() string { return customFieldClearKind }
 
 func (CustomFieldClearArgs) InsertOpts() river.InsertOpts {
-	return river.InsertOpts{MaxAttempts: customFieldClearTries, UniqueOpts: river.UniqueOpts{ByArgs: true}}
+	return river.InsertOpts{MaxAttempts: customFieldClearTries}
 }
 
 type customFieldClearWorker struct {
@@ -611,16 +622,22 @@ func (w *customFieldClearWorker) Work(ctx context.Context, job *river.Job[Custom
 func (s *Server) ClearCustomFieldValues(ctx context.Context, a CustomFieldClearArgs, budget time.Duration) (bool, error) {
 	start := time.Now()
 	total := 0
+	after := uuid.Nil()
 	for {
 		var n int
 		err := s.inTx(ctx, a.WorkspaceID, func(q *store.Queries, events *eventBatch) error {
 			rows, err := q.ClearConversationField(ctx, store.ClearConversationFieldParams{
-				WorkspaceID: a.WorkspaceID, Key: a.Key, Option: a.Option, Lim: fieldClearBatch, Now: s.now(),
+				WorkspaceID: a.WorkspaceID, Key: a.Key, Option: a.Option, After: after, Lim: fieldClearBatch, Now: s.now(),
 			})
 			if err != nil {
 				return err
 			}
 			n = len(rows)
+			for _, r := range rows {
+				if r.ID.Compare(after) > 0 {
+					after = r.ID
+				}
+			}
 			return conversationsUpdated(ctx, q, events, a.WorkspaceID, rows)
 		})
 		if err != nil {

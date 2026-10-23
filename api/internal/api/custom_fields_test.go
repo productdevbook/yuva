@@ -429,3 +429,89 @@ func TestCustomFieldsMCP(t *testing.T) {
 		t.Fatalf("get_conversation %v %q", got, errText)
 	}
 }
+
+func TestCustomFieldClearsRepeat(t *testing.T) {
+	t.Parallel()
+	h := newHarness(t)
+	tm := newTeam(t, h)
+	conv := tm.conversation(tm.owner)
+	path := "/v1/conversations/" + conv
+	for round := range 3 {
+		id := tm.newField(map[string]any{"object": "conversation", "key": "plan", "name": "Plan", "type": "text"})
+		tm.owner.expect(http.StatusOK, "PATCH", path, map[string]any{"fields": map[string]any{"plan": fmt.Sprint("r", round)}})
+		tm.owner.expect(http.StatusNoContent, "DELETE", "/v1/custom-fields/"+id, nil)
+		if jobs := h.jobs("custom_field_clear", tm.ws); len(jobs) != 1 {
+			t.Fatalf("round %d queued %d clears", round, len(jobs))
+		}
+		h.runFieldClears(tm.ws)
+		if f := convFields(tm.owner.expect(http.StatusOK, "GET", path, nil)); len(f) != 0 {
+			t.Fatalf("round %d left %v", round, f)
+		}
+	}
+
+	sel := tm.newField(map[string]any{"object": "conversation", "key": "tier", "name": "Tier", "type": "select", "options": []string{"a", "b"}})
+	for round := range 3 {
+		tm.owner.expect(http.StatusOK, "PATCH", "/v1/custom-fields/"+sel, map[string]any{"options": []string{"a", "b"}})
+		tm.owner.expect(http.StatusOK, "PATCH", path, map[string]any{"fields": map[string]any{"tier": "b"}})
+		tm.owner.expect(http.StatusOK, "PATCH", "/v1/custom-fields/"+sel, map[string]any{"options": []string{"a"}})
+		h.runFieldClears(tm.ws)
+		if f := convFields(tm.owner.expect(http.StatusOK, "GET", path, nil)); f["tier"] != nil {
+			t.Fatalf("option round %d left %v", round, f)
+		}
+	}
+
+	id := tm.newField(map[string]any{"object": "conversation", "key": "lost", "name": "Lost", "type": "text"})
+	tm.owner.expect(http.StatusOK, "PATCH", path, map[string]any{"fields": map[string]any{"lost": "x"}})
+	tm.owner.expect(http.StatusNoContent, "DELETE", "/v1/custom-fields/"+id, nil)
+	for _, j := range h.jobs("custom_field_clear", tm.ws) {
+		h.dropJob(j.id)
+	}
+	tm.owner.expectProblem(http.StatusConflict, "field_clearing", "POST", "/v1/custom-fields", map[string]any{"object": "conversation", "key": "lost", "name": "Lost", "type": "text"})
+	if jobs := h.jobs("custom_field_clear", tm.ws); len(jobs) != 1 {
+		t.Fatalf("a refused create queued %d clears", len(jobs))
+	}
+	h.runFieldClears(tm.ws)
+	tm.newField(map[string]any{"object": "conversation", "key": "lost", "name": "Lost", "type": "text"})
+}
+
+func TestCustomFieldClearWalksBatches(t *testing.T) {
+	t.Parallel()
+	h := newHarness(t)
+	tm := newTeam(t, h)
+	id := tm.newField(map[string]any{"object": "conversation", "key": "bulk", "name": "Bulk", "type": "text"})
+	conv := tm.conversation(tm.owner)
+	tm.owner.expect(http.StatusOK, "PATCH", "/v1/conversations/"+conv, map[string]any{"fields": map[string]any{"bulk": "x"}})
+	ctx := context.Background()
+	if _, err := h.st.Pool.Exec(ctx, `INSERT INTO conversations
+		SELECT (jsonb_populate_record(c, jsonb_build_object('id', gen_random_uuid(), 'email_token', null))).*
+		FROM conversations c, generate_series(1, 1200) WHERE c.id = $1`, conv); err != nil {
+		t.Fatal(err)
+	}
+	tm.owner.expect(http.StatusNoContent, "DELETE", "/v1/custom-fields/"+id, nil)
+	h.runFieldClears(tm.ws)
+	var left int
+	if err := h.st.Pool.QueryRow(ctx, "SELECT count(*) FROM conversations WHERE workspace_id = $1 AND fields ? 'bulk'", tm.ws).Scan(&left); err != nil {
+		t.Fatal(err)
+	}
+	if left != 0 {
+		t.Fatalf("%d conversations keep the value", left)
+	}
+}
+
+func TestRequiredOnCloseWhenSpamIsLifted(t *testing.T) {
+	t.Parallel()
+	h := newHarness(t)
+	tm := newTeam(t, h)
+	tm.newField(map[string]any{"object": "conversation", "key": "reason", "name": "Reason", "type": "text", "required_on_close": true})
+	conv := tm.conversation(tm.owner)
+	path := "/v1/conversations/" + conv
+	tm.owner.expect(http.StatusOK, "PATCH", path, map[string]any{"spam": true, "status": "closed"})
+	expectField(t, tm.owner.do("PATCH", path, map[string]any{"spam": false}), http.StatusConflict, "field_required", "reason")
+	expectField(t, tm.owner.do("POST", path+"/messages", map[string]any{"kind": "note", "body": "not spam", "then": map[string]any{"spam": false}}), http.StatusConflict, "field_required", "reason")
+	if got := tm.owner.expect(http.StatusOK, "GET", path, nil); got.body["spam"] != true || got.str("status") != "closed" {
+		t.Fatalf("refused unspam changed %s", got.raw)
+	}
+	tm.owner.expect(http.StatusOK, "PATCH", path, map[string]any{"spam": false, "status": "open"})
+	tm.owner.expect(http.StatusOK, "PATCH", path, map[string]any{"spam": true, "status": "closed"})
+	tm.owner.expect(http.StatusOK, "PATCH", path, map[string]any{"spam": false, "fields": map[string]any{"reason": "ok"}})
+}
