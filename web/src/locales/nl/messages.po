@@ -297,8 +297,8 @@ msgid "{d, plural, one {# day} other {# days}}"
 msgstr "{d, plural, one {# dag} other {# dagen}}"
 
 #: src/features/home/HomePage.tsx
-msgid "{days, plural, one {{shown}{more} in # day · by product} other {{shown}{more} in # days · by product}}"
-msgstr "{days, plural, one {{shown}{more} in # dag · per product} other {{shown}{more} in # dagen · per product}}"
+msgid "{days, plural, one {{shown} in # day · by product} other {{shown} in # days · by product}}"
+msgstr "{days, plural, one {{shown} in # dag · per product} other {{shown} in # dagen · per product}}"
 
 #: src/features/status/StatusPages.tsx
 msgid "{days, plural, one {# day} other {# days}}"
@@ -1480,6 +1480,10 @@ msgstr "Abonnee toevoegen aan {listName}"
 #: src/features/broadcasts/FormSnippets.tsx
 msgid "Add a website chat in the inbox settings"
 msgstr "Websitechat toevoegen in de mailboxinstellingen"
+
+#: src/features/home/HomePage.tsx
+msgid "Add a website or app"
+msgstr "Website of app toevoegen"
 
 #: src/features/settings/webhooks/WebhookList.tsx
 msgid "Add an address on your server and pick the events Yuva should tell it about."
@@ -3289,6 +3293,10 @@ msgstr "Klikken tellen"
 msgid "Click tracking"
 msgstr "Klikregistratie"
 
+#: src/features/home/HomePage.tsx
+msgid "clicked"
+msgstr "heeft geklikt"
+
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/Report.tsx
 msgid "Clicked"
@@ -3297,6 +3305,10 @@ msgstr "Heeft geklikt"
 #: src/features/broadcasts/Report.tsx
 msgid "clicked a link, roughly"
 msgstr "heeft op een link geklikt, bij benadering"
+
+#: src/features/home/HomePage.tsx
+msgid "clicks not tracked"
+msgstr "klikken niet geregistreerd"
 
 #: src/features/broadcasts/Overview.tsx
 msgid "Clicks not tracked"
@@ -6916,6 +6928,10 @@ msgstr "Afgelopen 7 dagen"
 msgid "Last attempt"
 msgstr "Laatste poging"
 
+#: src/features/home/HomePage.tsx
+msgid "Last broadcast"
+msgstr "Laatste mailing"
+
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Last check"
 msgstr "Laatste controle"
@@ -8438,6 +8454,10 @@ msgstr "Nog geen poging."
 msgid "No attempts yet."
 msgstr "Nog geen pogingen."
 
+#: src/features/home/HomePage.tsx
+msgid "No broadcast has gone out yet. When one has, its recipients, clicks and replies show up here."
+msgstr "Er is nog geen mailing uitgegaan. Als er een uitgaat, verschijnen zijn ontvangers, klikken en antwoorden hier."
+
 #: src/features/broadcasts/Overview.tsx
 msgid "No broadcast is scheduled."
 msgstr "Er staat geen broadcast gepland."
@@ -8877,6 +8897,10 @@ msgstr "Nog geen bezoeken."
 #: src/features/feedback/FeedbackFormDialog.tsx
 msgid "No website chat or app is set up yet."
 msgstr "Er is nog geen websitechat of app ingesteld."
+
+#: src/features/home/HomePage.tsx
+msgid "No website or app is counted yet. Add one to see its visitors here every day, without cookies."
+msgstr "Er wordt nog geen website of app geteld. Voeg er een toe om zijn bezoekers hier elke dag te zien, zonder cookies."
 
 #: src/features/broadcasts/Import.tsx
 msgid "No welcome mail is sent. Each new address waits for confirmation and joins after clicking the link in the mail."
@@ -9661,6 +9685,10 @@ msgstr "Een incident openen"
 msgid "Open an incident ({incidentKey})"
 msgstr "Incident openen ({incidentKey})"
 
+#: src/features/home/HomePage.tsx
+msgid "Open analytics →"
+msgstr "Analytics openen →"
+
 #: src/features/migrations/text.ts
 msgid "Open App passwords"
 msgstr "App-wachtwoorden openen"
@@ -9677,6 +9705,10 @@ msgstr "App-registraties openen"
 #: src/features/migrations/DoneStep.tsx
 msgid "Open Apps and services"
 msgstr "Apps en services openen"
+
+#: src/features/home/HomePage.tsx
+msgid "Open broadcasts →"
+msgstr "Open mailings →"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/ProductsPage.tsx
@@ -11161,6 +11193,10 @@ msgstr "Recente bezoeken"
 msgid "Recently active"
 msgstr "Recent actief"
 
+#: src/features/home/HomePage.tsx
+msgid "recipients"
+msgstr "ontvangers"
+
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/Overview.tsx
@@ -11381,6 +11417,7 @@ msgid "Replace"
 msgstr "Vervangen"
 
 #: src/features/broadcasts/Report.tsx
+#: src/features/home/HomePage.tsx
 msgid "replied"
 msgstr "heeft geantwoord"
 
@@ -12442,6 +12479,7 @@ msgid "sends through {0}"
 msgstr "verzendt via {0}"
 
 #: src/features/broadcasts/Report.tsx
+#: src/features/home/HomePage.tsx
 msgid "sent"
 msgstr "verzonden"
 
@@ -12467,6 +12505,10 @@ msgstr "Verzonden"
 #: src/features/migrations/MapStep.tsx
 msgid "Sent {count} messages from this address"
 msgstr "{count} berichten vanaf dit adres verzonden"
+
+#: src/features/home/HomePage.tsx
+msgid "Sent {sentAt}"
+msgstr "Verzonden {sentAt}"
 
 #: src/features/migrations/SwitchStep.tsx
 msgid "Sent {sentAt}. Waiting for it to arrive…"
@@ -15961,6 +16003,10 @@ msgstr "Websitechat"
 msgid "Website chat channel"
 msgstr "Websitechatkanaal"
 
+#: src/features/home/HomePage.tsx
+msgid "Websites and apps"
+msgstr "Websites en apps"
+
 #: src/components/common/text.ts
 msgid "Wednesday"
 msgstr "Woensdag"
@@ -16336,6 +16382,10 @@ msgstr "Werkruimte: {name}"
 #: src/app/Sidebar.tsx
 msgid "Workspaces"
 msgstr "Werkruimtes"
+
+#: src/features/home/HomePage.tsx
+msgid "Write a broadcast"
+msgstr "Een mailing schrijven"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/setup/previews.tsx

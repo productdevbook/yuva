@@ -297,8 +297,8 @@ msgid "{d, plural, one {# day} other {# days}}"
 msgstr "{d, plural, one {# den} few {# dny} many {# dne} other {# dní}}"
 
 #: src/features/home/HomePage.tsx
-msgid "{days, plural, one {{shown}{more} in # day · by product} other {{shown}{more} in # days · by product}}"
-msgstr "{days, plural, one {{shown}{more} za # den · podle produktů} few {{shown}{more} za # dny · podle produktů} many {{shown}{more} za # dne · podle produktů} other {{shown}{more} za # dní · podle produktů}}"
+msgid "{days, plural, one {{shown} in # day · by product} other {{shown} in # days · by product}}"
+msgstr "{days, plural, one {{shown} za # den · podle produktů} few {{shown} za # dny · podle produktů} many {{shown} za # dne · podle produktů} other {{shown} za # dní · podle produktů}}"
 
 #: src/features/status/StatusPages.tsx
 msgid "{days, plural, one {# day} other {# days}}"
@@ -1480,6 +1480,10 @@ msgstr "Přidat odběratele do {listName}"
 #: src/features/broadcasts/FormSnippets.tsx
 msgid "Add a website chat in the inbox settings"
 msgstr "Přidejte chat na web v nastavení schránky"
+
+#: src/features/home/HomePage.tsx
+msgid "Add a website or app"
+msgstr "Přidat web nebo aplikaci"
 
 #: src/features/settings/webhooks/WebhookList.tsx
 msgid "Add an address on your server and pick the events Yuva should tell it about."
@@ -3289,6 +3293,10 @@ msgstr "Počítání kliknutí"
 msgid "Click tracking"
 msgstr "Sledování kliknutí"
 
+#: src/features/home/HomePage.tsx
+msgid "clicked"
+msgstr "kliklo"
+
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/Report.tsx
 msgid "Clicked"
@@ -3297,6 +3305,10 @@ msgstr "Kliknuto"
 #: src/features/broadcasts/Report.tsx
 msgid "clicked a link, roughly"
 msgstr "kliklo na odkaz, zhruba"
+
+#: src/features/home/HomePage.tsx
+msgid "clicks not tracked"
+msgstr "kliknutí se nesledují"
 
 #: src/features/broadcasts/Overview.tsx
 msgid "Clicks not tracked"
@@ -6916,6 +6928,10 @@ msgstr "Posledních 7 dní"
 msgid "Last attempt"
 msgstr "Poslední pokus"
 
+#: src/features/home/HomePage.tsx
+msgid "Last broadcast"
+msgstr "Poslední hromadná zpráva"
+
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Last check"
 msgstr "Poslední kontrola"
@@ -8438,6 +8454,10 @@ msgstr "Zatím žádný pokus."
 msgid "No attempts yet."
 msgstr "Zatím žádné pokusy."
 
+#: src/features/home/HomePage.tsx
+msgid "No broadcast has gone out yet. When one has, its recipients, clicks and replies show up here."
+msgstr "Zatím nebyla odeslána žádná hromadná zpráva. Až nějaká odejde, zobrazí se zde její příjemci, kliknutí a odpovědi."
+
 #: src/features/broadcasts/Overview.tsx
 msgid "No broadcast is scheduled."
 msgstr "Žádné rozeslání není naplánované."
@@ -8877,6 +8897,10 @@ msgstr "Zatím žádné návštěvy."
 #: src/features/feedback/FeedbackFormDialog.tsx
 msgid "No website chat or app is set up yet."
 msgstr "Zatím není nastaven webový chat ani aplikace."
+
+#: src/features/home/HomePage.tsx
+msgid "No website or app is counted yet. Add one to see its visitors here every day, without cookies."
+msgstr "Zatím se nepočítá žádný web ani aplikace. Přidejte jeden, abyste zde každý den viděli jeho návštěvníky, bez cookies."
 
 #: src/features/broadcasts/Import.tsx
 msgid "No welcome mail is sent. Each new address waits for confirmation and joins after clicking the link in the mail."
@@ -9661,6 +9685,10 @@ msgstr "Otevřít incident"
 msgid "Open an incident ({incidentKey})"
 msgstr "Otevřít incident ({incidentKey})"
 
+#: src/features/home/HomePage.tsx
+msgid "Open analytics →"
+msgstr "Otevřít analytiku →"
+
 #: src/features/migrations/text.ts
 msgid "Open App passwords"
 msgstr "Otevřít Hesla aplikací"
@@ -9677,6 +9705,10 @@ msgstr "Otevřít App registrations"
 #: src/features/migrations/DoneStep.tsx
 msgid "Open Apps and services"
 msgstr "Otevřít Apps and services"
+
+#: src/features/home/HomePage.tsx
+msgid "Open broadcasts →"
+msgstr "Otevřené hromadné zprávy →"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/ProductsPage.tsx
@@ -11161,6 +11193,10 @@ msgstr "Nedávné návštěvy"
 msgid "Recently active"
 msgstr "Nedávno aktivní"
 
+#: src/features/home/HomePage.tsx
+msgid "recipients"
+msgstr "příjemci"
+
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/Overview.tsx
@@ -11381,6 +11417,7 @@ msgid "Replace"
 msgstr "Nahradit"
 
 #: src/features/broadcasts/Report.tsx
+#: src/features/home/HomePage.tsx
 msgid "replied"
 msgstr "odpověděl(a)"
 
@@ -12442,6 +12479,7 @@ msgid "sends through {0}"
 msgstr "odesílá přes {0}"
 
 #: src/features/broadcasts/Report.tsx
+#: src/features/home/HomePage.tsx
 msgid "sent"
 msgstr "odesláno"
 
@@ -12467,6 +12505,10 @@ msgstr "Odesláno"
 #: src/features/migrations/MapStep.tsx
 msgid "Sent {count} messages from this address"
 msgstr "Odesláno zpráv z této adresy: {count}"
+
+#: src/features/home/HomePage.tsx
+msgid "Sent {sentAt}"
+msgstr "Odesláno {sentAt}"
 
 #: src/features/migrations/SwitchStep.tsx
 msgid "Sent {sentAt}. Waiting for it to arrive…"
@@ -15961,6 +16003,10 @@ msgstr "Chat na webu"
 msgid "Website chat channel"
 msgstr "Chatovací kanál webu"
 
+#: src/features/home/HomePage.tsx
+msgid "Websites and apps"
+msgstr "Weby a aplikace"
+
 #: src/components/common/text.ts
 msgid "Wednesday"
 msgstr "Středa"
@@ -16336,6 +16382,10 @@ msgstr "Pracovní prostor: {name}"
 #: src/app/Sidebar.tsx
 msgid "Workspaces"
 msgstr "Pracovní prostory"
+
+#: src/features/home/HomePage.tsx
+msgid "Write a broadcast"
+msgstr "Napsat hromadnou zprávu"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/setup/previews.tsx

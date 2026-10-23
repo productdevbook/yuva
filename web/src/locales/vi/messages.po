@@ -297,8 +297,8 @@ msgid "{d, plural, one {# day} other {# days}}"
 msgstr "{d, plural, other {# ngày}}"
 
 #: src/features/home/HomePage.tsx
-msgid "{days, plural, one {{shown}{more} in # day · by product} other {{shown}{more} in # days · by product}}"
-msgstr "{days, plural, other {{shown}{more} trong # ngày · theo sản phẩm}}"
+msgid "{days, plural, one {{shown} in # day · by product} other {{shown} in # days · by product}}"
+msgstr "{days, plural, other {{shown} trong # ngày · theo sản phẩm}}"
 
 #: src/features/status/StatusPages.tsx
 msgid "{days, plural, one {# day} other {# days}}"
@@ -1480,6 +1480,10 @@ msgstr "Thêm người đăng ký vào {listName}"
 #: src/features/broadcasts/FormSnippets.tsx
 msgid "Add a website chat in the inbox settings"
 msgstr "Thêm chat trên trang web trong cài đặt hộp thư"
+
+#: src/features/home/HomePage.tsx
+msgid "Add a website or app"
+msgstr "Thêm trang web hoặc ứng dụng"
 
 #: src/features/settings/webhooks/WebhookList.tsx
 msgid "Add an address on your server and pick the events Yuva should tell it about."
@@ -3289,6 +3293,10 @@ msgstr "Đếm lượt nhấp"
 msgid "Click tracking"
 msgstr "Theo dõi lượt nhấp"
 
+#: src/features/home/HomePage.tsx
+msgid "clicked"
+msgstr "đã nhấp"
+
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/Report.tsx
 msgid "Clicked"
@@ -3297,6 +3305,10 @@ msgstr "Đã nhấp"
 #: src/features/broadcasts/Report.tsx
 msgid "clicked a link, roughly"
 msgstr "đã nhấp vào một liên kết, ước chừng"
+
+#: src/features/home/HomePage.tsx
+msgid "clicks not tracked"
+msgstr "không theo dõi lượt nhấp"
 
 #: src/features/broadcasts/Overview.tsx
 msgid "Clicks not tracked"
@@ -6916,6 +6928,10 @@ msgstr "7 ngày qua"
 msgid "Last attempt"
 msgstr "Lần thử cuối"
 
+#: src/features/home/HomePage.tsx
+msgid "Last broadcast"
+msgstr "Thư hàng loạt gần nhất"
+
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Last check"
 msgstr "Lần kiểm tra cuối"
@@ -8438,6 +8454,10 @@ msgstr "Chưa có lần thử nào."
 msgid "No attempts yet."
 msgstr "Chưa có lần thử nào."
 
+#: src/features/home/HomePage.tsx
+msgid "No broadcast has gone out yet. When one has, its recipients, clicks and replies show up here."
+msgstr "Chưa có thư hàng loạt nào được gửi. Khi có, người nhận, lượt nhấp và phản hồi của nó sẽ hiện ở đây."
+
 #: src/features/broadcasts/Overview.tsx
 msgid "No broadcast is scheduled."
 msgstr "Không có bản tin nào được lên lịch."
@@ -8877,6 +8897,10 @@ msgstr "Chưa có lượt truy cập."
 #: src/features/feedback/FeedbackFormDialog.tsx
 msgid "No website chat or app is set up yet."
 msgstr "Chưa thiết lập chat trên trang web hay ứng dụng nào."
+
+#: src/features/home/HomePage.tsx
+msgid "No website or app is counted yet. Add one to see its visitors here every day, without cookies."
+msgstr "Chưa có trang web hay ứng dụng nào được đếm. Hãy thêm một cái để xem khách truy cập của nó ở đây mỗi ngày, không dùng cookie."
 
 #: src/features/broadcasts/Import.tsx
 msgid "No welcome mail is sent. Each new address waits for confirmation and joins after clicking the link in the mail."
@@ -9661,6 +9685,10 @@ msgstr "Mở sự cố"
 msgid "Open an incident ({incidentKey})"
 msgstr "Mở sự cố ({incidentKey})"
 
+#: src/features/home/HomePage.tsx
+msgid "Open analytics →"
+msgstr "Mở phân tích →"
+
 #: src/features/migrations/text.ts
 msgid "Open App passwords"
 msgstr "Mở App passwords"
@@ -9677,6 +9705,10 @@ msgstr "Mở App registrations"
 #: src/features/migrations/DoneStep.tsx
 msgid "Open Apps and services"
 msgstr "Mở Apps and services"
+
+#: src/features/home/HomePage.tsx
+msgid "Open broadcasts →"
+msgstr "Mở thư hàng loạt →"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/ProductsPage.tsx
@@ -11161,6 +11193,10 @@ msgstr "Lượt truy cập gần đây"
 msgid "Recently active"
 msgstr "Hoạt động gần đây"
 
+#: src/features/home/HomePage.tsx
+msgid "recipients"
+msgstr "người nhận"
+
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/Overview.tsx
@@ -11381,6 +11417,7 @@ msgid "Replace"
 msgstr "Thay thế"
 
 #: src/features/broadcasts/Report.tsx
+#: src/features/home/HomePage.tsx
 msgid "replied"
 msgstr "đã trả lời"
 
@@ -12442,6 +12479,7 @@ msgid "sends through {0}"
 msgstr "gửi qua {0}"
 
 #: src/features/broadcasts/Report.tsx
+#: src/features/home/HomePage.tsx
 msgid "sent"
 msgstr "đã gửi"
 
@@ -12467,6 +12505,10 @@ msgstr "Đã gửi"
 #: src/features/migrations/MapStep.tsx
 msgid "Sent {count} messages from this address"
 msgstr "Đã gửi {count} tin nhắn từ địa chỉ này"
+
+#: src/features/home/HomePage.tsx
+msgid "Sent {sentAt}"
+msgstr "Đã gửi {sentAt}"
 
 #: src/features/migrations/SwitchStep.tsx
 msgid "Sent {sentAt}. Waiting for it to arrive…"
@@ -15961,6 +16003,10 @@ msgstr "Chat trên trang web"
 msgid "Website chat channel"
 msgstr "Kênh chat trang web"
 
+#: src/features/home/HomePage.tsx
+msgid "Websites and apps"
+msgstr "Trang web và ứng dụng"
+
 #: src/components/common/text.ts
 msgid "Wednesday"
 msgstr "Thứ Tư"
@@ -16336,6 +16382,10 @@ msgstr "Không gian làm việc: {name}"
 #: src/app/Sidebar.tsx
 msgid "Workspaces"
 msgstr "Không gian làm việc"
+
+#: src/features/home/HomePage.tsx
+msgid "Write a broadcast"
+msgstr "Viết thư hàng loạt"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/setup/previews.tsx

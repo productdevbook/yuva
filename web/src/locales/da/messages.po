@@ -297,8 +297,8 @@ msgid "{d, plural, one {# day} other {# days}}"
 msgstr "{d, plural, one {# dag} other {# dage}}"
 
 #: src/features/home/HomePage.tsx
-msgid "{days, plural, one {{shown}{more} in # day · by product} other {{shown}{more} in # days · by product}}"
-msgstr "{days, plural, one {{shown}{more} på # dag · pr. produkt} other {{shown}{more} på # dage · pr. produkt}}"
+msgid "{days, plural, one {{shown} in # day · by product} other {{shown} in # days · by product}}"
+msgstr "{days, plural, one {{shown} på # dag · pr. produkt} other {{shown} på # dage · pr. produkt}}"
 
 #: src/features/status/StatusPages.tsx
 msgid "{days, plural, one {# day} other {# days}}"
@@ -1480,6 +1480,10 @@ msgstr "Tilføj en abonnent til {listName}"
 #: src/features/broadcasts/FormSnippets.tsx
 msgid "Add a website chat in the inbox settings"
 msgstr "Tilføj en webstedschat i postkassens indstillinger"
+
+#: src/features/home/HomePage.tsx
+msgid "Add a website or app"
+msgstr "Tilføj et websted eller en app"
 
 #: src/features/settings/webhooks/WebhookList.tsx
 msgid "Add an address on your server and pick the events Yuva should tell it about."
@@ -3289,6 +3293,10 @@ msgstr "Klikoptælling"
 msgid "Click tracking"
 msgstr "Klikregistrering"
 
+#: src/features/home/HomePage.tsx
+msgid "clicked"
+msgstr "klikkede"
+
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/Report.tsx
 msgid "Clicked"
@@ -3297,6 +3305,10 @@ msgstr "Klikkede"
 #: src/features/broadcasts/Report.tsx
 msgid "clicked a link, roughly"
 msgstr "klikkede på et link, nogenlunde"
+
+#: src/features/home/HomePage.tsx
+msgid "clicks not tracked"
+msgstr "klik registreres ikke"
 
 #: src/features/broadcasts/Overview.tsx
 msgid "Clicks not tracked"
@@ -6916,6 +6928,10 @@ msgstr "Seneste 7 dage"
 msgid "Last attempt"
 msgstr "Seneste forsøg"
 
+#: src/features/home/HomePage.tsx
+msgid "Last broadcast"
+msgstr "Seneste udsendelse"
+
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Last check"
 msgstr "Seneste tjek"
@@ -8438,6 +8454,10 @@ msgstr "Intet forsøg endnu."
 msgid "No attempts yet."
 msgstr "Ingen forsøg endnu."
 
+#: src/features/home/HomePage.tsx
+msgid "No broadcast has gone out yet. When one has, its recipients, clicks and replies show up here."
+msgstr "Ingen udsendelse er gået ud endnu. Når en er, vises dens modtagere, klik og svar her."
+
 #: src/features/broadcasts/Overview.tsx
 msgid "No broadcast is scheduled."
 msgstr "Ingen udsendelse er planlagt."
@@ -8877,6 +8897,10 @@ msgstr "Ingen besøg endnu."
 #: src/features/feedback/FeedbackFormDialog.tsx
 msgid "No website chat or app is set up yet."
 msgstr "Ingen webchat eller app er sat op endnu."
+
+#: src/features/home/HomePage.tsx
+msgid "No website or app is counted yet. Add one to see its visitors here every day, without cookies."
+msgstr "Intet websted eller ingen app tælles endnu. Tilføj et for at se dets besøgende her hver dag, uden cookies."
 
 #: src/features/broadcasts/Import.tsx
 msgid "No welcome mail is sent. Each new address waits for confirmation and joins after clicking the link in the mail."
@@ -9661,6 +9685,10 @@ msgstr "Åbn en hændelse"
 msgid "Open an incident ({incidentKey})"
 msgstr "Åbn en hændelse ({incidentKey})"
 
+#: src/features/home/HomePage.tsx
+msgid "Open analytics →"
+msgstr "Åbn analytics →"
+
 #: src/features/migrations/text.ts
 msgid "Open App passwords"
 msgstr "Åbn App-adgangskoder"
@@ -9677,6 +9705,10 @@ msgstr "Åbn Appregistreringer"
 #: src/features/migrations/DoneStep.tsx
 msgid "Open Apps and services"
 msgstr "Åbn Apps og tjenester"
+
+#: src/features/home/HomePage.tsx
+msgid "Open broadcasts →"
+msgstr "Åbne udsendelser →"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/ProductsPage.tsx
@@ -11161,6 +11193,10 @@ msgstr "Seneste besøg"
 msgid "Recently active"
 msgstr "Nylig aktive"
 
+#: src/features/home/HomePage.tsx
+msgid "recipients"
+msgstr "modtagere"
+
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/Overview.tsx
@@ -11381,6 +11417,7 @@ msgid "Replace"
 msgstr "Erstat"
 
 #: src/features/broadcasts/Report.tsx
+#: src/features/home/HomePage.tsx
 msgid "replied"
 msgstr "svarede"
 
@@ -12442,6 +12479,7 @@ msgid "sends through {0}"
 msgstr "sender via {0}"
 
 #: src/features/broadcasts/Report.tsx
+#: src/features/home/HomePage.tsx
 msgid "sent"
 msgstr "sendt"
 
@@ -12467,6 +12505,10 @@ msgstr "Sendt"
 #: src/features/migrations/MapStep.tsx
 msgid "Sent {count} messages from this address"
 msgstr "Sendte {count} beskeder fra denne adresse"
+
+#: src/features/home/HomePage.tsx
+msgid "Sent {sentAt}"
+msgstr "Sendt {sentAt}"
 
 #: src/features/migrations/SwitchStep.tsx
 msgid "Sent {sentAt}. Waiting for it to arrive…"
@@ -15961,6 +16003,10 @@ msgstr "Webstedschat"
 msgid "Website chat channel"
 msgstr "Webstedschatkanal"
 
+#: src/features/home/HomePage.tsx
+msgid "Websites and apps"
+msgstr "Websteder og apps"
+
 #: src/components/common/text.ts
 msgid "Wednesday"
 msgstr "Onsdag"
@@ -16336,6 +16382,10 @@ msgstr "Arbejdsområde: {name}"
 #: src/app/Sidebar.tsx
 msgid "Workspaces"
 msgstr "Arbejdsområder"
+
+#: src/features/home/HomePage.tsx
+msgid "Write a broadcast"
+msgstr "Skriv en udsendelse"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/setup/previews.tsx

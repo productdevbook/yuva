@@ -297,8 +297,8 @@ msgid "{d, plural, one {# day} other {# days}}"
 msgstr "{d, plural, one {# ημέρα} other {# ημέρες}}"
 
 #: src/features/home/HomePage.tsx
-msgid "{days, plural, one {{shown}{more} in # day · by product} other {{shown}{more} in # days · by product}}"
-msgstr "{days, plural, one {{shown}{more} σε # ημέρα · ανά προϊόν} other {{shown}{more} σε # ημέρες · ανά προϊόν}}"
+msgid "{days, plural, one {{shown} in # day · by product} other {{shown} in # days · by product}}"
+msgstr "{days, plural, one {{shown} σε # ημέρα · ανά προϊόν} other {{shown} σε # ημέρες · ανά προϊόν}}"
 
 #: src/features/status/StatusPages.tsx
 msgid "{days, plural, one {# day} other {# days}}"
@@ -1480,6 +1480,10 @@ msgstr "Προσθήκη συνδρομητή στη λίστα {listName}"
 #: src/features/broadcasts/FormSnippets.tsx
 msgid "Add a website chat in the inbox settings"
 msgstr "Προσθέστε συνομιλία ιστότοπου στις ρυθμίσεις των εισερχομένων"
+
+#: src/features/home/HomePage.tsx
+msgid "Add a website or app"
+msgstr "Προσθήκη ιστότοπου ή εφαρμογής"
 
 #: src/features/settings/webhooks/WebhookList.tsx
 msgid "Add an address on your server and pick the events Yuva should tell it about."
@@ -3289,6 +3293,10 @@ msgstr "Καταμέτρηση κλικ"
 msgid "Click tracking"
 msgstr "Παρακολούθηση κλικ"
 
+#: src/features/home/HomePage.tsx
+msgid "clicked"
+msgstr "έκαναν κλικ"
+
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/Report.tsx
 msgid "Clicked"
@@ -3297,6 +3305,10 @@ msgstr "Έκαναν κλικ"
 #: src/features/broadcasts/Report.tsx
 msgid "clicked a link, roughly"
 msgstr "έκαναν κλικ σε σύνδεσμο, χονδρικά"
+
+#: src/features/home/HomePage.tsx
+msgid "clicks not tracked"
+msgstr "τα κλικ δεν παρακολουθούνται"
 
 #: src/features/broadcasts/Overview.tsx
 msgid "Clicks not tracked"
@@ -6916,6 +6928,10 @@ msgstr "Τελευταίες 7 ημέρες"
 msgid "Last attempt"
 msgstr "Τελευταία προσπάθεια"
 
+#: src/features/home/HomePage.tsx
+msgid "Last broadcast"
+msgstr "Τελευταία μαζική αποστολή"
+
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Last check"
 msgstr "Τελευταίος έλεγχος"
@@ -8438,6 +8454,10 @@ msgstr "Καμία προσπάθεια ακόμη."
 msgid "No attempts yet."
 msgstr "Καμία προσπάθεια ακόμη."
 
+#: src/features/home/HomePage.tsx
+msgid "No broadcast has gone out yet. When one has, its recipients, clicks and replies show up here."
+msgstr "Καμία μαζική αποστολή δεν έχει φύγει ακόμη. Όταν φύγει, οι παραλήπτες, τα κλικ και οι απαντήσεις της θα εμφανίζονται εδώ."
+
 #: src/features/broadcasts/Overview.tsx
 msgid "No broadcast is scheduled."
 msgstr "Καμία αποστολή δεν είναι προγραμματισμένη."
@@ -8877,6 +8897,10 @@ msgstr "Δεν υπάρχουν ακόμη επισκέψεις."
 #: src/features/feedback/FeedbackFormDialog.tsx
 msgid "No website chat or app is set up yet."
 msgstr "Δεν έχει ρυθμιστεί ακόμη chat ιστότοπου ή εφαρμογή."
+
+#: src/features/home/HomePage.tsx
+msgid "No website or app is counted yet. Add one to see its visitors here every day, without cookies."
+msgstr "Κανένας ιστότοπος ή εφαρμογή δεν καταμετράται ακόμη. Προσθέστε έναν για να βλέπετε τους επισκέπτες του εδώ κάθε ημέρα, χωρίς cookies."
 
 #: src/features/broadcasts/Import.tsx
 msgid "No welcome mail is sent. Each new address waits for confirmation and joins after clicking the link in the mail."
@@ -9661,6 +9685,10 @@ msgstr "Άνοιγμα περιστατικού"
 msgid "Open an incident ({incidentKey})"
 msgstr "Άνοιγμα περιστατικού ({incidentKey})"
 
+#: src/features/home/HomePage.tsx
+msgid "Open analytics →"
+msgstr "Άνοιγμα αναλυτικών στοιχείων →"
+
 #: src/features/migrations/text.ts
 msgid "Open App passwords"
 msgstr "Άνοιγμα κωδικών εφαρμογών"
@@ -9677,6 +9705,10 @@ msgstr "Άνοιγμα App registrations"
 #: src/features/migrations/DoneStep.tsx
 msgid "Open Apps and services"
 msgstr "Άνοιγμα Εφαρμογών και υπηρεσιών"
+
+#: src/features/home/HomePage.tsx
+msgid "Open broadcasts →"
+msgstr "Ανοιχτές μαζικές αποστολές →"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/ProductsPage.tsx
@@ -11161,6 +11193,10 @@ msgstr "Πρόσφατες επισκέψεις"
 msgid "Recently active"
 msgstr "Ενεργοί πρόσφατα"
 
+#: src/features/home/HomePage.tsx
+msgid "recipients"
+msgstr "παραλήπτες"
+
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/Overview.tsx
@@ -11381,6 +11417,7 @@ msgid "Replace"
 msgstr "Αντικατάσταση"
 
 #: src/features/broadcasts/Report.tsx
+#: src/features/home/HomePage.tsx
 msgid "replied"
 msgstr "απάντησαν"
 
@@ -12442,6 +12479,7 @@ msgid "sends through {0}"
 msgstr "στέλνει μέσω {0}"
 
 #: src/features/broadcasts/Report.tsx
+#: src/features/home/HomePage.tsx
 msgid "sent"
 msgstr "στάλθηκε"
 
@@ -12467,6 +12505,10 @@ msgstr "Στάλθηκε"
 #: src/features/migrations/MapStep.tsx
 msgid "Sent {count} messages from this address"
 msgstr "Στάλθηκαν {count} μηνύματα από αυτή τη διεύθυνση"
+
+#: src/features/home/HomePage.tsx
+msgid "Sent {sentAt}"
+msgstr "Στάλθηκε {sentAt}"
 
 #: src/features/migrations/SwitchStep.tsx
 msgid "Sent {sentAt}. Waiting for it to arrive…"
@@ -15961,6 +16003,10 @@ msgstr "Συνομιλία ιστότοπου"
 msgid "Website chat channel"
 msgstr "Κανάλι συνομιλίας ιστότοπου"
 
+#: src/features/home/HomePage.tsx
+msgid "Websites and apps"
+msgstr "Ιστότοποι και εφαρμογές"
+
 #: src/components/common/text.ts
 msgid "Wednesday"
 msgstr "Τετάρτη"
@@ -16336,6 +16382,10 @@ msgstr "Χώρος εργασίας: {name}"
 #: src/app/Sidebar.tsx
 msgid "Workspaces"
 msgstr "Χώροι εργασίας"
+
+#: src/features/home/HomePage.tsx
+msgid "Write a broadcast"
+msgstr "Σύνταξη μαζικής αποστολής"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/setup/previews.tsx

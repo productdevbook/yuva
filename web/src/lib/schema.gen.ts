@@ -733,7 +733,9 @@ export interface paths {
          *     `approval_requested` until the operator answers. `409 invalid_state` unless the status is
          *     `approval_required`.
          *
-         *     Owners only, with a member session.
+         *     Owners only, with a member session or an OAuth token with `workspace:manage` (a person stands
+         *     behind both); API keys are refused (`403 member_session_required`). The answers come from
+         *     the owner, never from an assistant.
          */
         post: operations["requestBroadcastApproval"];
         delete?: never;
@@ -1652,14 +1654,38 @@ export interface paths {
          * Everything the workspace has today, in one answer
          * @description The panel's Home page in one request, for the calling member and only what they may see.
          *     Member sessions only (API keys and OAuth tokens answer `403 member_session_required`).
-         *     Every block is read from the counters and rollups the server keeps; none of it spends the
-         *     workspace's analytics query slots.
+         *     Every block is read from the counters, rollups and indexed tables the server keeps, in a
+         *     fixed number of queries whatever the workspace's size; none of it spends the workspace's
+         *     analytics query slots.
          *
+         *     `days` (7, 14 or 30) sets the period: today and the days before it in `timezone`, and the
+         *     same number of days before that as the previous period. `inbox_id` narrows every block
+         *     except `setup` to one inbox (`404` when the caller cannot see it).
+         *
+         *     - `period`: the period and the previous one.
          *     - `inbox` (every member): open, unassigned and waiting conversations in the inboxes the
          *       member can see, counted as `GET /v1/conversations/counts` counts them (spam left out),
-         *       and the conversation that has waited longest. A conversation waits while the contact's
-         *       last message has no reply from a member or bot after it; `since` is the contact's first
-         *       message after the last reply.
+         *       open feedback (`feedback` in the counts) and the five conversations that have waited
+         *       longest, oldest first (`oldest_waiting` is the first). A conversation waits while the
+         *       contact's last message has no reply from a member or bot after it; `since` is the
+         *       contact's first message after the last reply.
+         *     - `activity` (every member): conversations started, first replies with their median time,
+         *       and ratings, for the period, the previous period and each day of the period, with the
+         *       conversations of each day per inbox. Counted as `GET /v1/stats` counts first replies and
+         *       ratings.
+         *     - `products` (every member): each inbox the member can see, by name, with its open
+         *       conversations and the conversations and ratings of the period.
+         *     - `team` (every member): open conversations per assignee in those inboxes; members with
+         *       none are left out. Names and presence are `GET /v1/members`.
+         *     - `status_pages` (every member): the status page of each inbox the member can see, with
+         *       its state and its components' worst state and uptime per day of the period, in the
+         *       page's time zone. Hidden components are left out.
+         *     - `ideas` (when the server has roadmaps): the five published ideas with the most votes
+         *       that are not shipped or closed.
+         *     - `upcoming`: the next five of scheduled broadcasts (when the server sends broadcasts),
+         *       open incidents and maintenance that is not completed, and scheduled what's new entries
+         *       (when the server has what's new), soonest first; an incident that has started sorts by
+         *       its start.
          *     - `analytics` (when the server collects analytics): the properties the member can see, as
          *       `GET /v1/analytics/properties` lists them, each with visitors today, visitors in the last
          *       30 minutes (as `GET /v1/analytics/properties/{id}/realtime` counts them) and visitors per
@@ -1667,7 +1693,7 @@ export interface paths {
          *     - `broadcasts` (when the server sends broadcasts): the last sent broadcast of the inboxes
          *       the member can see. There is no open tracking, so there are no opens.
          *     - `setup` (owners and admins): the setup checklist, built from the same state as the MCP
-         *       `get_setup_state` tool.
+         *       `get_setup_state` tool. Not narrowed by `inbox_id`.
          */
         get: operations["getHome"];
         put?: never;
@@ -2498,7 +2524,12 @@ export interface paths {
          * Reply as a member
          * @description A reply to the thread (`parent_post_id` absent) or to one of its replies, published at once,
          *     also in locked threads. Replies are one level deep: a reply to a reply answers
-         *     `400 validation_failed`. Followers are notified. Member sessions only.
+         *     `400 validation_failed`. Followers are notified.
+         *
+         *     Members, and OAuth tokens with `messages:write`, which reply as their member; the post's
+         *     `author.via` names the client. A token issued for `/mcp` replies only while the
+         *     workspace's `bots_may_send` is on (`403 bot_sending_disabled`). API keys are refused
+         *     (`403 member_session_required`): a post has no bot author.
          */
         post: operations["createDiscussionPost"];
         delete?: never;
@@ -2520,13 +2551,17 @@ export interface paths {
          * @description Marks a published reply to the thread itself (not a reply to a reply, not the opening post)
          *     as its answer, replacing an earlier one (`400 validation_failed` otherwise), also in locked
          *     threads. Followers are told once (`discussion.answered`). Ideas have no accepted answer
-         *     (`409 not_supported`). Member sessions only.
+         *     (`409 not_supported`). Marking the reply that is already the answer changes nothing.
+         *     Members and OAuth tokens with `messages:write`, as for `createDiscussionPost`; API keys are
+         *     refused (`403 member_session_required`).
          */
         put: operations["acceptDiscussionAnswer"];
         post?: never;
         /**
          * Clear the accepted answer
-         * @description Member sessions only.
+         * @description Clearing a thread without an answer changes nothing. Members and OAuth tokens with
+         *     `messages:write`, as for `createDiscussionPost`; API keys are refused
+         *     (`403 member_session_required`).
          */
         delete: operations["clearDiscussionAnswer"];
         options?: never;
@@ -10001,7 +10036,8 @@ export interface components {
          *       message e-mail and raw source; list labels and canned replies.
          *     - `conversations:write`: create, update (status, assignee, snooze, priority, labels), move
          *       and bulk-update conversations.
-         *     - `messages:write`: outgoing and incoming messages, drafts: create, edit, discard.
+         *     - `messages:write`: outgoing and incoming messages, drafts: create, edit, discard; for
+         *       OAuth tokens also replies to reader threads and their accepted answer.
          *     - `drafts:send`: send a draft (`POST /v1/messages/{id}/send`), together with
          *       `messages:write`.
          *     - `notes:write`: notes.
@@ -10013,7 +10049,8 @@ export interface components {
          *     - `labels:write`: create, update and delete labels.
          *     - `canned_replies:write`: create, update and delete canned replies.
          *     - `webhooks:manage`: webhooks, their deliveries and attempts.
-         *     - `workspace:manage`: update the workspace, usage.
+         *     - `workspace:manage`: update the workspace, usage; for an owner's OAuth token also asking
+         *       the operator to allow broadcasts.
          *     - `feedback:write`: feedback.
          *     - `lists:read`: mailing lists, subscriptions, growth, consent exports.
          *     - `lists:write`: create, change and delete lists; add, unsubscribe and delete
@@ -11552,10 +11589,36 @@ export interface components {
         };
         /** @description The Home blocks; a block the member may not see is absent. */
         Home: {
+            period: components["schemas"]["HomePeriod"];
             inbox: components["schemas"]["HomeInbox"];
+            activity: components["schemas"]["HomeActivity"];
+            products: components["schemas"]["HomeProduct"][];
+            team: components["schemas"]["HomeTeam"];
+            status_pages: components["schemas"]["HomeStatusPage"][];
+            ideas?: components["schemas"]["HomeIdea"][];
+            upcoming: components["schemas"]["HomeUpcoming"][];
             analytics?: components["schemas"]["HomeAnalytics"];
             broadcasts?: components["schemas"]["HomeBroadcasts"];
             setup?: components["schemas"]["HomeSetup"];
+        };
+        HomePeriod: {
+            days: number;
+            timezone: string;
+            /**
+             * Format: date-time
+             * @description Start of the period, the start of its first day.
+             */
+            since: string;
+            /**
+             * Format: date-time
+             * @description End of the period, now.
+             */
+            until: string;
+            /**
+             * Format: date-time
+             * @description Start of the previous period, which ends at `since`.
+             */
+            previous_since: string;
         };
         HomeInbox: {
             /**
@@ -11570,7 +11633,14 @@ export interface components {
              * @description Open conversations whose contact waits for a reply.
              */
             waiting: number;
+            /**
+             * Format: int64
+             * @description Open feedback, spam left out (`feedback` in the conversation counts).
+             */
+            feedback: number;
             oldest_waiting?: components["schemas"]["HomeWaitingConversation"];
+            /** @description The five conversations that have waited longest, oldest first. */
+            waiting_conversations: components["schemas"]["HomeWaitingConversation"][];
         };
         /** @description The open conversation that has waited longest; absent when none waits. */
         HomeWaitingConversation: {
@@ -11579,6 +11649,9 @@ export interface components {
             /** Format: uuid */
             inbox_id: string;
             subject: string;
+            channel_kind?: components["schemas"]["ChannelKind"];
+            /** @description The contact's last message, shortened. */
+            preview: string;
             contact: components["schemas"]["HomeContact"];
             /**
              * Format: date-time
@@ -11596,6 +11669,170 @@ export interface components {
              * @description The contact's first address, when it has one.
              */
             email?: string;
+        };
+        HomeActivityTotals: {
+            /**
+             * Format: int64
+             * @description Conversations started, spam left out.
+             */
+            conversations: number;
+            /**
+             * Format: int64
+             * @description Conversations whose first member reply falls in the span.
+             */
+            first_replies: number;
+            /**
+             * Format: int64
+             * @description Median time from the contact's first message to that reply; absent without first replies.
+             */
+            median_first_reply_seconds?: number;
+            /** Format: int64 */
+            good: number;
+            /** Format: int64 */
+            bad: number;
+        };
+        HomeActivity: {
+            /**
+             * Format: int64
+             * @description Conversations started in the period, spam left out.
+             */
+            conversations: number;
+            /** Format: int64 */
+            first_replies: number;
+            /** Format: int64 */
+            median_first_reply_seconds?: number;
+            /** Format: int64 */
+            good: number;
+            /** Format: int64 */
+            bad: number;
+            previous: components["schemas"]["HomeActivityTotals"];
+            /** @description Each day of the period, oldest first; the last one is today. */
+            days: components["schemas"]["HomeActivityDay"][];
+        };
+        HomeActivityDay: {
+            /** Format: date */
+            day: string;
+            /** Format: int64 */
+            conversations: number;
+            /** Format: int64 */
+            first_replies: number;
+            /** Format: int64 */
+            median_first_reply_seconds?: number;
+            /** Format: int64 */
+            good: number;
+            /** Format: int64 */
+            bad: number;
+            /** @description Conversations started that day per inbox; inboxes without any are left out. */
+            inboxes: components["schemas"]["HomeInboxConversations"][];
+        };
+        HomeInboxConversations: {
+            /** Format: uuid */
+            inbox_id: string;
+            /** Format: int64 */
+            conversations: number;
+        };
+        HomeProduct: {
+            /** Format: uuid */
+            inbox_id: string;
+            /**
+             * Format: int64
+             * @description Open conversations, spam left out.
+             */
+            open: number;
+            /**
+             * Format: int64
+             * @description Conversations started in the period.
+             */
+            conversations: number;
+            /**
+             * Format: int64
+             * @description Good ratings in the period.
+             */
+            good: number;
+            /** Format: int64 */
+            bad: number;
+        };
+        HomeTeam: {
+            members: components["schemas"]["HomeMemberLoad"][];
+        };
+        HomeMemberLoad: {
+            /** Format: uuid */
+            member_id: string;
+            /**
+             * Format: int64
+             * @description Open conversations assigned to the member, spam left out.
+             */
+            open: number;
+        };
+        HomeStatusPage: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            inbox_id: string;
+            name: string;
+            published: boolean;
+            /** @description The worst state of the page's visible components. */
+            state: components["schemas"]["StatusComponentStateValue"];
+            /**
+             * @description The days of the period in the page's time zone, oldest first, each with the worst state of
+             *     any component and the uptime over all of them; days without any state are left out.
+             */
+            days: components["schemas"]["PublicStatusDay"][];
+            components: components["schemas"]["HomeStatusComponent"][];
+        };
+        HomeStatusComponent: {
+            /** Format: uuid */
+            id: string;
+            name: string;
+            state: components["schemas"]["StatusComponentStateValue"];
+            /** @description The days of the period as the status page shows them; days without any state are left out. */
+            days: components["schemas"]["PublicStatusDay"][];
+        };
+        HomeIdea: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            inbox_id: string;
+            title: string;
+            /** Format: int64 */
+            votes: number;
+            stage: components["schemas"]["IdeaStage"];
+        };
+        HomeUpcoming: {
+            /** @enum {string} */
+            kind: "broadcast" | "incident" | "maintenance" | "whats_new";
+            /**
+             * Format: uuid
+             * @description The broadcast, incident or what's new entry.
+             */
+            id: string;
+            /** Format: uuid */
+            inbox_id: string;
+            /**
+             * Format: date-time
+             * @description When it happens: a broadcast's `scheduled_at`, a maintenance's `scheduled_start`, an
+             *     incident's start (or when it was published or created), an entry's `publish_at`.
+             */
+            at: string;
+            /** @description A broadcast's name, an incident's title, an entry's title in its changelog's default locale. */
+            title: string;
+            /**
+             * Format: uuid
+             * @description Incidents and maintenance.
+             */
+            status_page_id?: string;
+            /**
+             * Format: uuid
+             * @description What's new entries.
+             */
+            changelog_id?: string;
+            /** @description What's new entries, the changelog's default locale. */
+            locale?: string;
+            /**
+             * Format: int64
+             * @description Broadcasts: `counts.recipients` as `GET /v1/broadcasts` lists it.
+             */
+            recipients?: number;
         };
         HomeAnalytics: {
             properties: components["schemas"]["HomeProperty"][];
@@ -13874,6 +14111,11 @@ export interface components {
             member_id?: string;
             /** Format: uuid */
             contact_id?: string;
+            /**
+             * @description The OAuth client a member wrote this with (its name at the time), as in
+             *     "Ayşe via Claude Code"; absent for the panel and on `/client/v1`.
+             */
+            via?: string;
         };
         /**
          * @description A thread on a documentation page (`kind: page`) or a roadmap idea (`kind: idea`). Its
@@ -23626,7 +23868,14 @@ export interface operations {
     };
     getHome: {
         parameters: {
-            query?: never;
+            query?: {
+                /** @description Length of the period in days, today included. */
+                days?: 7 | 14 | 30;
+                /** @description Only this inbox (`404` when the caller cannot see it). */
+                inbox_id?: string;
+                /** @description IANA time zone that defines the days of the period. */
+                timezone?: string;
+            };
             header?: {
                 /** @description The workspace to act on; see "Workspace selection". */
                 "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
@@ -23645,8 +23894,10 @@ export interface operations {
                     "application/json": components["schemas"]["Home"];
                 };
             };
+            400: components["responses"]["Problem"];
             401: components["responses"]["Problem"];
             403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
         };
     };
     getStats: {

@@ -297,8 +297,8 @@ msgid "{d, plural, one {# day} other {# days}}"
 msgstr "{d, plural, other {# 天}}"
 
 #: src/features/home/HomePage.tsx
-msgid "{days, plural, one {{shown}{more} in # day · by product} other {{shown}{more} in # days · by product}}"
-msgstr "{days, plural, other {{shown}{more}，# 天內 · 依產品}}"
+msgid "{days, plural, one {{shown} in # day · by product} other {{shown} in # days · by product}}"
+msgstr "{days, plural, other {{shown}，# 天內 · 依產品}}"
 
 #: src/features/status/StatusPages.tsx
 msgid "{days, plural, one {# day} other {# days}}"
@@ -1480,6 +1480,10 @@ msgstr "向 {listName} 新增訂閱者"
 #: src/features/broadcasts/FormSnippets.tsx
 msgid "Add a website chat in the inbox settings"
 msgstr "在收件匣設定中新增網站聊天"
+
+#: src/features/home/HomePage.tsx
+msgid "Add a website or app"
+msgstr "新增網站或應用程式"
 
 #: src/features/settings/webhooks/WebhookList.tsx
 msgid "Add an address on your server and pick the events Yuva should tell it about."
@@ -3289,6 +3293,10 @@ msgstr "點選計數"
 msgid "Click tracking"
 msgstr "點選跟蹤"
 
+#: src/features/home/HomePage.tsx
+msgid "clicked"
+msgstr "已點選"
+
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/Report.tsx
 msgid "Clicked"
@@ -3297,6 +3305,10 @@ msgstr "已點選"
 #: src/features/broadcasts/Report.tsx
 msgid "clicked a link, roughly"
 msgstr "點選過連結(大致)"
+
+#: src/features/home/HomePage.tsx
+msgid "clicks not tracked"
+msgstr "未跟蹤點選"
 
 #: src/features/broadcasts/Overview.tsx
 msgid "Clicks not tracked"
@@ -6916,6 +6928,10 @@ msgstr "最近 7 天"
 msgid "Last attempt"
 msgstr "最近一次嘗試"
 
+#: src/features/home/HomePage.tsx
+msgid "Last broadcast"
+msgstr "最近一次群發"
+
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Last check"
 msgstr "最近檢查"
@@ -8438,6 +8454,10 @@ msgstr "還沒有嘗試。"
 msgid "No attempts yet."
 msgstr "還沒有嘗試。"
 
+#: src/features/home/HomePage.tsx
+msgid "No broadcast has gone out yet. When one has, its recipients, clicks and replies show up here."
+msgstr "還沒有發出過群發。發出後,其收件人、點選和回覆會顯示在這裡。"
+
 #: src/features/broadcasts/Overview.tsx
 msgid "No broadcast is scheduled."
 msgstr "沒有已排程的群發。"
@@ -8877,6 +8897,10 @@ msgstr "尚無造訪紀錄。"
 #: src/features/feedback/FeedbackFormDialog.tsx
 msgid "No website chat or app is set up yet."
 msgstr "尚未設定網站聊天或應用程式。"
+
+#: src/features/home/HomePage.tsx
+msgid "No website or app is counted yet. Add one to see its visitors here every day, without cookies."
+msgstr "還沒有統計任何網站或應用程式。新增一個,即可每天在這裡無 Cookie 地檢視其訪客。"
 
 #: src/features/broadcasts/Import.tsx
 msgid "No welcome mail is sent. Each new address waits for confirmation and joins after clicking the link in the mail."
@@ -9661,6 +9685,10 @@ msgstr "開啟事件"
 msgid "Open an incident ({incidentKey})"
 msgstr "建立事件 ({incidentKey})"
 
+#: src/features/home/HomePage.tsx
+msgid "Open analytics →"
+msgstr "開啟分析 →"
+
 #: src/features/migrations/text.ts
 msgid "Open App passwords"
 msgstr "開啟應用程式專用密碼"
@@ -9677,6 +9705,10 @@ msgstr "開啟應用程式註冊"
 #: src/features/migrations/DoneStep.tsx
 msgid "Open Apps and services"
 msgstr "開啟應用程式和服務"
+
+#: src/features/home/HomePage.tsx
+msgid "Open broadcasts →"
+msgstr "開啟群發 →"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/ProductsPage.tsx
@@ -11161,6 +11193,10 @@ msgstr "最近存取"
 msgid "Recently active"
 msgstr "最近活躍"
 
+#: src/features/home/HomePage.tsx
+msgid "recipients"
+msgstr "收件人"
+
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/Overview.tsx
@@ -11381,6 +11417,7 @@ msgid "Replace"
 msgstr "替換"
 
 #: src/features/broadcasts/Report.tsx
+#: src/features/home/HomePage.tsx
 msgid "replied"
 msgstr "已回覆"
 
@@ -12442,6 +12479,7 @@ msgid "sends through {0}"
 msgstr "透過 {0} 傳送"
 
 #: src/features/broadcasts/Report.tsx
+#: src/features/home/HomePage.tsx
 msgid "sent"
 msgstr "已傳送"
 
@@ -12467,6 +12505,10 @@ msgstr "已傳送"
 #: src/features/migrations/MapStep.tsx
 msgid "Sent {count} messages from this address"
 msgstr "已從此地址傳送 {count} 條訊息"
+
+#: src/features/home/HomePage.tsx
+msgid "Sent {sentAt}"
+msgstr "{sentAt} 傳送"
 
 #: src/features/migrations/SwitchStep.tsx
 msgid "Sent {sentAt}. Waiting for it to arrive…"
@@ -15961,6 +16003,10 @@ msgstr "網站聊天"
 msgid "Website chat channel"
 msgstr "網站聊天頻道"
 
+#: src/features/home/HomePage.tsx
+msgid "Websites and apps"
+msgstr "網站和應用程式"
+
 #: src/components/common/text.ts
 msgid "Wednesday"
 msgstr "星期三"
@@ -16336,6 +16382,10 @@ msgstr "工作區：{name}"
 #: src/app/Sidebar.tsx
 msgid "Workspaces"
 msgstr "工作區"
+
+#: src/features/home/HomePage.tsx
+msgid "Write a broadcast"
+msgstr "撰寫群發"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/setup/previews.tsx

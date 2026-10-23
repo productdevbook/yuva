@@ -297,8 +297,8 @@ msgid "{d, plural, one {# day} other {# days}}"
 msgstr "{d, plural, one {# દિવસ} other {# દિવસ}}"
 
 #: src/features/home/HomePage.tsx
-msgid "{days, plural, one {{shown}{more} in # day · by product} other {{shown}{more} in # days · by product}}"
-msgstr "{days, plural, one {{shown}{more}, # દિવસમાં · પ્રોડક્ટ પ્રમાણે} other {{shown}{more}, # દિવસમાં · પ્રોડક્ટ પ્રમાણે}}"
+msgid "{days, plural, one {{shown} in # day · by product} other {{shown} in # days · by product}}"
+msgstr "{days, plural, one {{shown}, # દિવસમાં · પ્રોડક્ટ પ્રમાણે} other {{shown}, # દિવસમાં · પ્રોડક્ટ પ્રમાણે}}"
 
 #: src/features/status/StatusPages.tsx
 msgid "{days, plural, one {# day} other {# days}}"
@@ -1480,6 +1480,10 @@ msgstr "{listName} માં સબ્સ્ક્રાઇબર ઉમેર�
 #: src/features/broadcasts/FormSnippets.tsx
 msgid "Add a website chat in the inbox settings"
 msgstr "ઇનબૉક્સ સેટિંગ્સમાં વેબસાઇટ ચૅટ ઉમેરો"
+
+#: src/features/home/HomePage.tsx
+msgid "Add a website or app"
+msgstr "વેબસાઇટ અથવા ઍપ ઉમેરો"
 
 #: src/features/settings/webhooks/WebhookList.tsx
 msgid "Add an address on your server and pick the events Yuva should tell it about."
@@ -3289,6 +3293,10 @@ msgstr "ક્લિક ગણતરી"
 msgid "Click tracking"
 msgstr "ક્લિક ટ્રૅકિંગ"
 
+#: src/features/home/HomePage.tsx
+msgid "clicked"
+msgstr "ક્લિક કર્યું"
+
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/Report.tsx
 msgid "Clicked"
@@ -3297,6 +3305,10 @@ msgstr "ક્લિક કર્યું"
 #: src/features/broadcasts/Report.tsx
 msgid "clicked a link, roughly"
 msgstr "લિંક પર ક્લિક કર્યું, લગભગ"
+
+#: src/features/home/HomePage.tsx
+msgid "clicks not tracked"
+msgstr "ક્લિક ટ્રૅક થતા નથી"
 
 #: src/features/broadcasts/Overview.tsx
 msgid "Clicks not tracked"
@@ -6916,6 +6928,10 @@ msgstr "છેલ્લા 7 દિવસ"
 msgid "Last attempt"
 msgstr "છેલ્લો પ્રયાસ"
 
+#: src/features/home/HomePage.tsx
+msgid "Last broadcast"
+msgstr "છેલ્લું બ્રૉડકાસ્ટ"
+
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Last check"
 msgstr "છેલ્લી તપાસ"
@@ -8438,6 +8454,10 @@ msgstr "હજી કોઈ પ્રયાસ નથી."
 msgid "No attempts yet."
 msgstr "હજી કોઈ પ્રયાસ નથી."
 
+#: src/features/home/HomePage.tsx
+msgid "No broadcast has gone out yet. When one has, its recipients, clicks and replies show up here."
+msgstr "હજી કોઈ બ્રૉડકાસ્ટ ગયું નથી. જાય ત્યારે તેના પ્રાપ્તકર્તા, ક્લિક અને જવાબો અહીં દેખાશે."
+
 #: src/features/broadcasts/Overview.tsx
 msgid "No broadcast is scheduled."
 msgstr "કોઈ બ્રોડકાસ્ટ શેડ્યૂલ કરેલું નથી."
@@ -8877,6 +8897,10 @@ msgstr "હજી કોઈ મુલાકાત નથી."
 #: src/features/feedback/FeedbackFormDialog.tsx
 msgid "No website chat or app is set up yet."
 msgstr "હજી કોઈ વેબસાઇટ ચેટ કે એપ સેટ કરી નથી."
+
+#: src/features/home/HomePage.tsx
+msgid "No website or app is counted yet. Add one to see its visitors here every day, without cookies."
+msgstr "હજી કોઈ વેબસાઇટ કે ઍપ ગણાતી નથી. તેના મુલાકાતીઓ અહીં દરરોજ, કૂકી વિના જોવા એક ઉમેરો."
 
 #: src/features/broadcasts/Import.tsx
 msgid "No welcome mail is sent. Each new address waits for confirmation and joins after clicking the link in the mail."
@@ -9661,6 +9685,10 @@ msgstr "ઘટના ખોલો"
 msgid "Open an incident ({incidentKey})"
 msgstr "ઘટના ખોલો ({incidentKey})"
 
+#: src/features/home/HomePage.tsx
+msgid "Open analytics →"
+msgstr "ઍનાલિટિક્સ ખોલો →"
+
 #: src/features/migrations/text.ts
 msgid "Open App passwords"
 msgstr "App passwords ખોલો"
@@ -9677,6 +9705,10 @@ msgstr "App registrations ખોલો"
 #: src/features/migrations/DoneStep.tsx
 msgid "Open Apps and services"
 msgstr "Apps and services ખોલો"
+
+#: src/features/home/HomePage.tsx
+msgid "Open broadcasts →"
+msgstr "બ્રૉડકાસ્ટ ખોલો →"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/ProductsPage.tsx
@@ -11161,6 +11193,10 @@ msgstr "તાજેતરની મુલાકાતો"
 msgid "Recently active"
 msgstr "તાજેતરમાં સક્રિય"
 
+#: src/features/home/HomePage.tsx
+msgid "recipients"
+msgstr "પ્રાપ્તકર્તાઓ"
+
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/Overview.tsx
@@ -11381,6 +11417,7 @@ msgid "Replace"
 msgstr "બદલો"
 
 #: src/features/broadcasts/Report.tsx
+#: src/features/home/HomePage.tsx
 msgid "replied"
 msgstr "જવાબ આપ્યો"
 
@@ -12442,6 +12479,7 @@ msgid "sends through {0}"
 msgstr "{0} દ્વારા મોકલે છે"
 
 #: src/features/broadcasts/Report.tsx
+#: src/features/home/HomePage.tsx
 msgid "sent"
 msgstr "મોકલ્યું"
 
@@ -12467,6 +12505,10 @@ msgstr "મોકલ્યું"
 #: src/features/migrations/MapStep.tsx
 msgid "Sent {count} messages from this address"
 msgstr "આ સરનામેથી {count} સંદેશા મોકલ્યા"
+
+#: src/features/home/HomePage.tsx
+msgid "Sent {sentAt}"
+msgstr "{sentAt} મોકલ્યું"
 
 #: src/features/migrations/SwitchStep.tsx
 msgid "Sent {sentAt}. Waiting for it to arrive…"
@@ -15961,6 +16003,10 @@ msgstr "વેબસાઇટ ચૅટ"
 msgid "Website chat channel"
 msgstr "વેબસાઇટ ચૅટ ચૅનલ"
 
+#: src/features/home/HomePage.tsx
+msgid "Websites and apps"
+msgstr "વેબસાઇટ્સ અને ઍપ"
+
 #: src/components/common/text.ts
 msgid "Wednesday"
 msgstr "બુધવાર"
@@ -16336,6 +16382,10 @@ msgstr "વર્કસ્પેસ: {name}"
 #: src/app/Sidebar.tsx
 msgid "Workspaces"
 msgstr "વર્કસ્પેસ"
+
+#: src/features/home/HomePage.tsx
+msgid "Write a broadcast"
+msgstr "બ્રૉડકાસ્ટ લખો"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/setup/previews.tsx

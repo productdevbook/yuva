@@ -297,8 +297,8 @@ msgid "{d, plural, one {# day} other {# days}}"
 msgstr "{d, plural, one {# nap} other {# nap}}"
 
 #: src/features/home/HomePage.tsx
-msgid "{days, plural, one {{shown}{more} in # day · by product} other {{shown}{more} in # days · by product}}"
-msgstr "{days, plural, one {{shown}{more} # nap alatt · termékenként} other {{shown}{more} # nap alatt · termékenként}}"
+msgid "{days, plural, one {{shown} in # day · by product} other {{shown} in # days · by product}}"
+msgstr "{days, plural, one {{shown} # nap alatt · termékenként} other {{shown} # nap alatt · termékenként}}"
 
 #: src/features/status/StatusPages.tsx
 msgid "{days, plural, one {# day} other {# days}}"
@@ -1480,6 +1480,10 @@ msgstr "Feliratkozó hozzáadása ehhez: {listName}"
 #: src/features/broadcasts/FormSnippets.tsx
 msgid "Add a website chat in the inbox settings"
 msgstr "Adj hozzá webhelycsevegést a postafiók beállításaiban"
+
+#: src/features/home/HomePage.tsx
+msgid "Add a website or app"
+msgstr "Webhely vagy alkalmazás hozzáadása"
 
 #: src/features/settings/webhooks/WebhookList.tsx
 msgid "Add an address on your server and pick the events Yuva should tell it about."
@@ -3289,6 +3293,10 @@ msgstr "Kattintásszámlálás"
 msgid "Click tracking"
 msgstr "Kattintáskövetés"
 
+#: src/features/home/HomePage.tsx
+msgid "clicked"
+msgstr "kattintott"
+
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/Report.tsx
 msgid "Clicked"
@@ -3297,6 +3305,10 @@ msgstr "Kattintott"
 #: src/features/broadcasts/Report.tsx
 msgid "clicked a link, roughly"
 msgstr "rákattintott egy linkre, nagyjából"
+
+#: src/features/home/HomePage.tsx
+msgid "clicks not tracked"
+msgstr "a kattintásokat nem követjük"
 
 #: src/features/broadcasts/Overview.tsx
 msgid "Clicks not tracked"
@@ -6916,6 +6928,10 @@ msgstr "Elmúlt 7 nap"
 msgid "Last attempt"
 msgstr "Utolsó kísérlet"
 
+#: src/features/home/HomePage.tsx
+msgid "Last broadcast"
+msgstr "Utolsó tömeges levél"
+
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Last check"
 msgstr "Utolsó ellenőrzés"
@@ -8438,6 +8454,10 @@ msgstr "Még nincs kísérlet."
 msgid "No attempts yet."
 msgstr "Még nincsenek kísérletek."
 
+#: src/features/home/HomePage.tsx
+msgid "No broadcast has gone out yet. When one has, its recipients, clicks and replies show up here."
+msgstr "Még egy tömeges levél sem ment ki. Ha lesz, a címzettjei, kattintásai és válaszai itt jelennek meg."
+
 #: src/features/broadcasts/Overview.tsx
 msgid "No broadcast is scheduled."
 msgstr "Nincs ütemezett kiküldés."
@@ -8877,6 +8897,10 @@ msgstr "Még nincs látogatás."
 #: src/features/feedback/FeedbackFormDialog.tsx
 msgid "No website chat or app is set up yet."
 msgstr "Még nincs beállítva weboldali chat vagy alkalmazás."
+
+#: src/features/home/HomePage.tsx
+msgid "No website or app is counted yet. Add one to see its visitors here every day, without cookies."
+msgstr "Még egy webhely vagy alkalmazás sincs számolva. Adj hozzá egyet, hogy itt minden nap lásd a látogatóit, sütik nélkül."
 
 #: src/features/broadcasts/Import.tsx
 msgid "No welcome mail is sent. Each new address waits for confirmation and joins after clicking the link in the mail."
@@ -9661,6 +9685,10 @@ msgstr "Incidens megnyitása"
 msgid "Open an incident ({incidentKey})"
 msgstr "Incidens megnyitása ({incidentKey})"
 
+#: src/features/home/HomePage.tsx
+msgid "Open analytics →"
+msgstr "Analitika megnyitása →"
+
 #: src/features/migrations/text.ts
 msgid "Open App passwords"
 msgstr "Alkalmazásjelszavak megnyitása"
@@ -9677,6 +9705,10 @@ msgstr "App registrations megnyitása"
 #: src/features/migrations/DoneStep.tsx
 msgid "Open Apps and services"
 msgstr "Apps and services megnyitása"
+
+#: src/features/home/HomePage.tsx
+msgid "Open broadcasts →"
+msgstr "Nyitott tömeges levelek →"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/ProductsPage.tsx
@@ -11161,6 +11193,10 @@ msgstr "Legutóbbi látogatások"
 msgid "Recently active"
 msgstr "Nemrég aktívak"
 
+#: src/features/home/HomePage.tsx
+msgid "recipients"
+msgstr "címzettek"
+
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/Overview.tsx
@@ -11381,6 +11417,7 @@ msgid "Replace"
 msgstr "Csere"
 
 #: src/features/broadcasts/Report.tsx
+#: src/features/home/HomePage.tsx
 msgid "replied"
 msgstr "válaszolt"
 
@@ -12442,6 +12479,7 @@ msgid "sends through {0}"
 msgstr "ezen keresztül küld: {0}"
 
 #: src/features/broadcasts/Report.tsx
+#: src/features/home/HomePage.tsx
 msgid "sent"
 msgstr "elküldve"
 
@@ -12467,6 +12505,10 @@ msgstr "Elküldve"
 #: src/features/migrations/MapStep.tsx
 msgid "Sent {count} messages from this address"
 msgstr "{count} üzenetet küldött erről a címről"
+
+#: src/features/home/HomePage.tsx
+msgid "Sent {sentAt}"
+msgstr "Elküldve: {sentAt}"
 
 #: src/features/migrations/SwitchStep.tsx
 msgid "Sent {sentAt}. Waiting for it to arrive…"
@@ -15961,6 +16003,10 @@ msgstr "Webhelycsevegés"
 msgid "Website chat channel"
 msgstr "Webhelycsevegő-csatorna"
 
+#: src/features/home/HomePage.tsx
+msgid "Websites and apps"
+msgstr "Webhelyek és alkalmazások"
+
 #: src/components/common/text.ts
 msgid "Wednesday"
 msgstr "Szerda"
@@ -16336,6 +16382,10 @@ msgstr "Munkaterület: {name}"
 #: src/app/Sidebar.tsx
 msgid "Workspaces"
 msgstr "Munkaterületek"
+
+#: src/features/home/HomePage.tsx
+msgid "Write a broadcast"
+msgstr "Tömeges levél írása"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/setup/previews.tsx

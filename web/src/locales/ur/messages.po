@@ -297,8 +297,8 @@ msgid "{d, plural, one {# day} other {# days}}"
 msgstr "{d, plural, one {# دن} other {# دن}}"
 
 #: src/features/home/HomePage.tsx
-msgid "{days, plural, one {{shown}{more} in # day · by product} other {{shown}{more} in # days · by product}}"
-msgstr "{days, plural, one {{shown}{more}، # دن میں · پروڈکٹ کے مطابق} other {{shown}{more}، # دنوں میں · پروڈکٹ کے مطابق}}"
+msgid "{days, plural, one {{shown} in # day · by product} other {{shown} in # days · by product}}"
+msgstr "{days, plural, one {{shown}، # دن میں · پروڈکٹ کے مطابق} other {{shown}، # دنوں میں · پروڈکٹ کے مطابق}}"
 
 #: src/features/status/StatusPages.tsx
 msgid "{days, plural, one {# day} other {# days}}"
@@ -1480,6 +1480,10 @@ msgstr "{listName} میں سبسکرائبر شامل کریں"
 #: src/features/broadcasts/FormSnippets.tsx
 msgid "Add a website chat in the inbox settings"
 msgstr "ان باکس کی ترتیبات میں ویب سائٹ چیٹ شامل کریں"
+
+#: src/features/home/HomePage.tsx
+msgid "Add a website or app"
+msgstr "ویب سائٹ یا ایپ شامل کریں"
 
 #: src/features/settings/webhooks/WebhookList.tsx
 msgid "Add an address on your server and pick the events Yuva should tell it about."
@@ -3289,6 +3293,10 @@ msgstr "کلکس کی گنتی"
 msgid "Click tracking"
 msgstr "کلکس کی ٹریکنگ"
 
+#: src/features/home/HomePage.tsx
+msgid "clicked"
+msgstr "کلک کیا"
+
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/Report.tsx
 msgid "Clicked"
@@ -3297,6 +3305,10 @@ msgstr "کلک کیا"
 #: src/features/broadcasts/Report.tsx
 msgid "clicked a link, roughly"
 msgstr "لنک پر کلک کیا، تقریباً"
+
+#: src/features/home/HomePage.tsx
+msgid "clicks not tracked"
+msgstr "کلکس ٹریک نہیں ہوتے"
 
 #: src/features/broadcasts/Overview.tsx
 msgid "Clicks not tracked"
@@ -6916,6 +6928,10 @@ msgstr "پچھلے 7 دن"
 msgid "Last attempt"
 msgstr "آخری کوشش"
 
+#: src/features/home/HomePage.tsx
+msgid "Last broadcast"
+msgstr "آخری براڈکاسٹ"
+
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Last check"
 msgstr "آخری جانچ"
@@ -8438,6 +8454,10 @@ msgstr "ابھی کوئی کوشش نہیں۔"
 msgid "No attempts yet."
 msgstr "ابھی کوئی کوشش نہیں۔"
 
+#: src/features/home/HomePage.tsx
+msgid "No broadcast has gone out yet. When one has, its recipients, clicks and replies show up here."
+msgstr "ابھی کوئی براڈکاسٹ نہیں گیا۔ جب جائے گا تو اس کے وصول کنندگان، کلکس اور جوابات یہاں دکھائی دیں گے۔"
+
 #: src/features/broadcasts/Overview.tsx
 msgid "No broadcast is scheduled."
 msgstr "کوئی براڈکاسٹ شیڈول نہیں ہے۔"
@@ -8877,6 +8897,10 @@ msgstr "ابھی کوئی وزٹ نہیں۔"
 #: src/features/feedback/FeedbackFormDialog.tsx
 msgid "No website chat or app is set up yet."
 msgstr "ابھی ویب سائٹ چیٹ یا ایپ سیٹ اپ نہیں ہے۔"
+
+#: src/features/home/HomePage.tsx
+msgid "No website or app is counted yet. Add one to see its visitors here every day, without cookies."
+msgstr "ابھی کوئی ویب سائٹ یا ایپ نہیں گنی جا رہی۔ ایک شامل کریں تاکہ اس کے وزیٹرز یہاں ہر روز، بغیر کوکیز کے، دکھائی دیں۔"
 
 #: src/features/broadcasts/Import.tsx
 msgid "No welcome mail is sent. Each new address waits for confirmation and joins after clicking the link in the mail."
@@ -9661,6 +9685,10 @@ msgstr "واقعہ کھولیں"
 msgid "Open an incident ({incidentKey})"
 msgstr "واقعہ کھولیں ({incidentKey})"
 
+#: src/features/home/HomePage.tsx
+msgid "Open analytics →"
+msgstr "اینالیٹکس کھولیں ←"
+
 #: src/features/migrations/text.ts
 msgid "Open App passwords"
 msgstr "App passwords کھولیں"
@@ -9677,6 +9705,10 @@ msgstr "App registrations کھولیں"
 #: src/features/migrations/DoneStep.tsx
 msgid "Open Apps and services"
 msgstr "Apps and services کھولیں"
+
+#: src/features/home/HomePage.tsx
+msgid "Open broadcasts →"
+msgstr "براڈکاسٹس کھولیں ←"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/ProductsPage.tsx
@@ -11161,6 +11193,10 @@ msgstr "حالیہ وزٹس"
 msgid "Recently active"
 msgstr "حال ہی میں فعال"
 
+#: src/features/home/HomePage.tsx
+msgid "recipients"
+msgstr "وصول کنندگان"
+
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/Overview.tsx
@@ -11381,6 +11417,7 @@ msgid "Replace"
 msgstr "بدلیں"
 
 #: src/features/broadcasts/Report.tsx
+#: src/features/home/HomePage.tsx
 msgid "replied"
 msgstr "جواب دیا"
 
@@ -12442,6 +12479,7 @@ msgid "sends through {0}"
 msgstr "{0} کے ذریعے بھیجتا ہے"
 
 #: src/features/broadcasts/Report.tsx
+#: src/features/home/HomePage.tsx
 msgid "sent"
 msgstr "بھیجا گیا"
 
@@ -12467,6 +12505,10 @@ msgstr "بھیجی گئی"
 #: src/features/migrations/MapStep.tsx
 msgid "Sent {count} messages from this address"
 msgstr "اس پتے سے {count} پیغامات بھیجے گئے"
+
+#: src/features/home/HomePage.tsx
+msgid "Sent {sentAt}"
+msgstr "{sentAt} کو بھیجا گیا"
 
 #: src/features/migrations/SwitchStep.tsx
 msgid "Sent {sentAt}. Waiting for it to arrive…"
@@ -15961,6 +16003,10 @@ msgstr "ویب سائٹ چیٹ"
 msgid "Website chat channel"
 msgstr "ویب سائٹ چیٹ چینل"
 
+#: src/features/home/HomePage.tsx
+msgid "Websites and apps"
+msgstr "ویب سائٹس اور ایپس"
+
 #: src/components/common/text.ts
 msgid "Wednesday"
 msgstr "بدھ"
@@ -16336,6 +16382,10 @@ msgstr "ورک اسپیس: {name}"
 #: src/app/Sidebar.tsx
 msgid "Workspaces"
 msgstr "ورک اسپیسز"
+
+#: src/features/home/HomePage.tsx
+msgid "Write a broadcast"
+msgstr "براڈکاسٹ لکھیں"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/setup/previews.tsx
