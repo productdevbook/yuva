@@ -132,6 +132,21 @@ a withdrawn item stays here marked withdrawn. Work before `Y-117` is tracked in 
   - The M23 Accept on a fresh throwaway workspace, test mail to simulator addresses only; the
     workspace is deleted afterwards.
 
+### Y-162 · Home shows each site's visitors and the last broadcast from one request
+
+- **Area** web · **Owner** yuva-panel · **Priority** P0 · **Depends on** – · **Chapters** architecture
+- **Acceptance**
+  - Found by Y-127: the panel redesign (`513aa3bb`) dropped `PropertyCard` and the last-broadcast
+    block from Home, and Home fetches about 20 endpoints next to `GET /v1/home`.
+  - Home shows, in the redesigned layout, visitors today, in the last 30 minutes and per day for
+    seven days for each property in `home.analytics`, and the last sent broadcast's recipients,
+    sent, clicked and replied from `home.broadcasts`.
+  - Home's own content reads only `GET /v1/home`; requests the sidebar and top bar make on every
+    page stay. The network log on `/` lists them and nothing else.
+  - An agent's `/` is unchanged (the inbox).
+  - The `web/` check passes; screenshots of Home for an owner with two properties and a sent
+    broadcast, light and dark.
+
 ## M26 — Release 0.1.0
 
 ### Y-129 · Security review since 0.0.1
