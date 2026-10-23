@@ -243,13 +243,15 @@ func (s *Server) PurgeWorkspace(ctx context.Context, workspaceID uuid.UUID, budg
 	for {
 		var keys []string
 		live := false
-		err := s.st.InTx(ctx, func(q *store.Queries) error {
+		err := s.st.InTxRaw(ctx, func(tx pgx.Tx, q *store.Queries) error {
 			var err error
 			if live, err = lockWorkspaceRows(ctx, q, workspaceID); err != nil || !live {
 				return err
 			}
-			keys, err = q.DeleteWorkspaceEmailImages(ctx, store.DeleteWorkspaceEmailImagesParams{WorkspaceID: workspaceID, Lim: purgeContactBatch})
-			return err
+			if keys, err = q.DeleteWorkspaceEmailImages(ctx, store.DeleteWorkspaceEmailImagesParams{WorkspaceID: workspaceID, Lim: purgeContactBatch}); err != nil {
+				return err
+			}
+			return s.deleteStoredTx(ctx, tx, workspaceID, keys)
 		})
 		if err != nil {
 			return out, err
@@ -258,7 +260,6 @@ func (s *Server) PurgeWorkspace(ctx context.Context, workspaceID uuid.UUID, budg
 			out.Done = true
 			return out, nil
 		}
-		s.deleteObjects(ctx, keys)
 		out.Files += len(keys)
 		if len(keys) < purgeContactBatch {
 			break
@@ -270,19 +271,24 @@ func (s *Server) PurgeWorkspace(ctx context.Context, workspaceID uuid.UUID, budg
 	if done, err := s.purgeWorkspaceAnalytics(ctx, workspaceID, deadline); err != nil || !done {
 		return out, err
 	}
-	uploads, err := s.st.ListImportStorageKeys(ctx, store.ListImportStorageKeysParams{WorkspaceID: workspaceID})
+	err := s.st.InTxRaw(ctx, func(tx pgx.Tx, q *store.Queries) error {
+		uploads, err := q.ListImportStorageKeys(ctx, store.ListImportStorageKeysParams{WorkspaceID: workspaceID})
+		if err != nil {
+			return err
+		}
+		parts, err := q.ListWorkspaceMigrationUploadKeys(ctx, workspaceID)
+		if err != nil {
+			return err
+		}
+		keys := append(uploads, parts...)
+		if err := s.deleteStoredTx(ctx, tx, workspaceID, keys); err != nil {
+			return err
+		}
+		out.Files += len(keys)
+		_, err = q.PurgeWorkspace(ctx, workspaceID)
+		return err
+	})
 	if err != nil {
-		return out, err
-	}
-	s.deleteObjects(ctx, uploads)
-	out.Files += len(uploads)
-	parts, err := s.st.ListWorkspaceMigrationUploadKeys(ctx, workspaceID)
-	if err != nil {
-		return out, err
-	}
-	s.deleteObjects(ctx, parts)
-	out.Files += len(parts)
-	if _, err := s.st.PurgeWorkspace(ctx, workspaceID); err != nil {
 		return out, err
 	}
 	out.Done = true
@@ -328,13 +334,15 @@ func (s *Server) deleteConversationBatch(ctx context.Context, workspaceID uuid.U
 			return err
 		}
 		keys = append(keys, raw...)
-		_, err = q.DeleteConversations(ctx, store.DeleteConversationsParams{WorkspaceID: workspaceID, Ids: ids})
-		return err
+		if _, err = q.DeleteConversations(ctx, store.DeleteConversationsParams{WorkspaceID: workspaceID, Ids: ids}); err != nil {
+			return err
+		}
+		events.deleteStored(workspaceID, keys)
+		return nil
 	})
 	if err != nil {
 		return 0, 0, err
 	}
-	s.deleteObjects(ctx, keys)
 	return n, len(keys), nil
 }
 

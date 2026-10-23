@@ -330,11 +330,7 @@ func TestTrashDeletedAfterThirtyDays(t *testing.T) {
 	}
 	key.expectProblem(http.StatusNotFound, "not_found", "GET", "/v1/conversations/"+conv, nil)
 	key.expectProblem(http.StatusNotFound, "not_found", "POST", "/v1/conversations/"+conv+"/restore", nil)
-	for _, k := range keys {
-		if h.stored(k) {
-			t.Fatalf("file %s still stored", k)
-		}
-	}
+	h.checkDeletesQueued(et.ws, keys)
 	if n := h.count("SELECT count(*) FROM messages WHERE workspace_id = $1 AND conversation_id = $2", et.ws, conv); n != 0 {
 		t.Fatalf("%d messages left", n)
 	}

@@ -58,7 +58,7 @@ func operatorCLI(ctx context.Context, cfg config.Config, cmd string, args []stri
 	}
 	defer st.Close()
 	log := slog.Default()
-	srv := api.New(api.Deps{Log: log, Store: st, Version: cfg.Version, Mailer: mail.Log{Log: log}, Secrets: masterKey,
+	srv := api.New(api.Deps{Log: log, Store: st, Version: cfg.Version, Mailer: mail.Log{Log: log, Full: cfg.MailLogFull}, Secrets: masterKey,
 		Broadcasts: api.BroadcastSettings{Mode: cfg.Broadcasts, DailyRecipients: cfg.BroadcastDailyRecipients, LinkURL: cfg.MailLinkURL},
 		Analytics:  analyticsSettings(cfg), SES: sesSettings(cfg), Auth: api.AuthSettings{PublicURL: cfg.PublicURL}})
 	switch cmd {

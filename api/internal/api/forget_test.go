@@ -118,7 +118,7 @@ func TestDeletionForgetsEventsAndWebhookCopies(t *testing.T) {
 		ds := f.deliveries(t)
 		f.tm.owner.expect(http.StatusOK, "PATCH", "/v1/conversations/"+f.conv, map[string]any{"status": "closed"})
 		f.tm.owner.expect(http.StatusOK, "PATCH", "/v1/workspace", map[string]any{"retention_days": 1})
-		h.clock.Advance(25 * time.Hour)
+		h.clock.Advance(26 * time.Hour)
 		if err := h.srv.ApplyRetention(context.Background()); err != nil {
 			t.Fatal(err)
 		}

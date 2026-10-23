@@ -10,6 +10,7 @@ import (
 	"time"
 	"uuid"
 
+	"github.com/jackc/pgx/v5"
 	"github.com/riverqueue/river"
 	"github.com/riverqueue/river/rivertype"
 	"golang.org/x/net/html"
@@ -147,9 +148,7 @@ func (s *Server) RedactMessage(ctx context.Context, req oas.RedactMessageRequest
 		if err := red.rewriteCopies(ctx, q, p.workspaceID, c.ID); err != nil {
 			return err
 		}
-		if len(keys) > 0 {
-			events.job(StorageDeleteArgs{WorkspaceID: p.workspaceID, Keys: keys}, nil)
-		}
+		events.deleteStored(p.workspaceID, keys)
 		if err := s.scrubSlackMessage(ctx, q, events, p.workspaceID, c.ID, m.ID); err != nil {
 			return err
 		}
@@ -270,6 +269,31 @@ type StorageDeleteArgs struct {
 }
 
 func (StorageDeleteArgs) Kind() string { return "storage_delete" }
+
+const storageDeleteChunk = 500
+
+// storageDeleteJobs are the retried jobs that delete stored files whose rows the same transaction
+// deletes, so a failing store neither loses a file nor keeps one nothing points to any more.
+func storageDeleteJobs(workspaceID uuid.UUID, keys []string) []river.InsertManyParams {
+	var out []river.InsertManyParams
+	for c := range slices.Chunk(keys, storageDeleteChunk) {
+		out = append(out, river.InsertManyParams{Args: StorageDeleteArgs{WorkspaceID: workspaceID, Keys: c}})
+	}
+	return out
+}
+
+func (b *eventBatch) deleteStored(workspaceID uuid.UUID, keys []string) {
+	b.jobs = append(b.jobs, storageDeleteJobs(workspaceID, keys)...)
+}
+
+func (s *Server) deleteStoredTx(ctx context.Context, tx pgx.Tx, workspaceID uuid.UUID, keys []string) error {
+	jobs := storageDeleteJobs(workspaceID, keys)
+	if len(jobs) == 0 {
+		return nil
+	}
+	_, err := s.jobs.InsertManyTx(ctx, tx, jobs)
+	return err
+}
 
 type storageDeleteWorker struct {
 	river.WorkerDefaults[StorageDeleteArgs]

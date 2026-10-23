@@ -231,11 +231,14 @@ func serve(ctx context.Context, cfg config.Config, log *slog.Logger, args []stri
 	if err != nil {
 		return fmt.Errorf("webauthn: %w", err)
 	}
-	var mailer mail.Mailer = mail.Log{Log: log}
-	if cfg.SMTP.Enabled() {
+	var mailer mail.Mailer = mail.Log{Log: log, Full: cfg.MailLogFull}
+	switch {
+	case cfg.SMTP.Enabled():
 		mailer = mail.SMTP{Config: cfg.SMTP}
-	} else {
-		log.Warn("YUVA_SMTP_HOST is not set; e-mails are written to the log instead of being sent")
+	case cfg.MailLogFull:
+		log.Warn("YUVA_SMTP_HOST is not set; e-mails, sign-in codes included, are written to the log instead of being sent")
+	default:
+		log.Warn("YUVA_SMTP_HOST is not set; e-mails are not sent, and the log names only their recipients' domains (YUVA_MAIL_LOG=full on a localhost instance writes them whole)")
 	}
 	srv := api.New(api.Deps{
 		Log:      log,
@@ -544,7 +547,7 @@ func ingestEmail(ctx context.Context, cfg config.Config, log *slog.Logger, args 
 	}
 	defer st.Close()
 	srv := api.New(api.Deps{
-		Log: log, Store: st, Version: cfg.Version, Mailer: mail.Log{Log: log}, Secrets: masterKey, Storage: objects,
+		Log: log, Store: st, Version: cfg.Version, Mailer: mail.Log{Log: log, Full: cfg.MailLogFull}, Secrets: masterKey, Storage: objects,
 		Attachments: api.AttachmentSettings{MaxBytes: cfg.Attachments.MaxBytes, Types: cfg.Attachments.Types},
 		Ingress:     ingressSettings(cfg),
 	})

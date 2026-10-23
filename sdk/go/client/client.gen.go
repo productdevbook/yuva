@@ -1169,9 +1169,11 @@ const (
 	AuditWebhookDeleted                      AuditAction = "webhook.deleted"
 	AuditWebhookSecretRotated                AuditAction = "webhook.secret_rotated"
 	AuditWebhookUpdated                      AuditAction = "webhook.updated"
+	AuditWorkspaceBotsMaySendChanged         AuditAction = "workspace.bots_may_send_changed"
 	AuditWorkspaceBroadcastApprovalRequested AuditAction = "workspace.broadcast_approval_requested"
 	AuditWorkspaceBroadcastLimitChanged      AuditAction = "workspace.broadcast_limit_changed"
 	AuditWorkspaceBroadcastsApproved         AuditAction = "workspace.broadcasts_approved"
+	AuditWorkspaceBroadcastsByKeysChanged    AuditAction = "workspace.broadcasts_by_keys_changed"
 	AuditWorkspaceBroadcastsDenied           AuditAction = "workspace.broadcasts_denied"
 	AuditWorkspaceBroadcastsSuspended        AuditAction = "workspace.broadcasts_suspended"
 	AuditWorkspaceRetentionChanged           AuditAction = "workspace.retention_changed"
@@ -1290,11 +1292,15 @@ func (e AuditAction) Valid() bool {
 		return true
 	case AuditWebhookUpdated:
 		return true
+	case AuditWorkspaceBotsMaySendChanged:
+		return true
 	case AuditWorkspaceBroadcastApprovalRequested:
 		return true
 	case AuditWorkspaceBroadcastLimitChanged:
 		return true
 	case AuditWorkspaceBroadcastsApproved:
+		return true
+	case AuditWorkspaceBroadcastsByKeysChanged:
 		return true
 	case AuditWorkspaceBroadcastsDenied:
 		return true
@@ -9936,6 +9942,8 @@ type Attributes map[string]interface{}
 //   - `list.consent_exported`: `name`, `format`, `started`.
 //   - `analytics_export.created`: `property_id`, `kind`, `format`.
 //   - `workspace.retention_changed`: `from`, `to` (days; `null` keeps everything).
+//   - `workspace.bots_may_send_changed`, `workspace.broadcasts_by_keys_changed`: `from`, `to`
+//     (booleans).
 //   - `workspace.broadcast_approval_requested`: none. `workspace.broadcasts_approved`,
 //     `workspace.broadcasts_denied`: `reason` when the operator gave one.
 //     `workspace.broadcasts_suspended`: `reason`, `paused_broadcasts` (by the operator).
@@ -10045,6 +10053,8 @@ type AuditEntry struct {
 	// - `list.consent_exported`: `name`, `format`, `started`.
 	// - `analytics_export.created`: `property_id`, `kind`, `format`.
 	// - `workspace.retention_changed`: `from`, `to` (days; `null` keeps everything).
+	// - `workspace.bots_may_send_changed`, `workspace.broadcasts_by_keys_changed`: `from`, `to`
+	//   (booleans).
 	// - `workspace.broadcast_approval_requested`: none. `workspace.broadcasts_approved`,
 	//   `workspace.broadcasts_denied`: `reason` when the operator gave one.
 	//   `workspace.broadcasts_suspended`: `reason`, `paused_broadcasts` (by the operator).

@@ -211,11 +211,28 @@ func RenderAs(b Brand, name, locale string, data any) (Message, error) {
 	return m, nil
 }
 
-type Log struct{ Log *slog.Logger }
+var addressRe = regexp.MustCompile(`[^\s<>"'(),;:@\[\]]+@([A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*)`)
+
+// RedactAddresses keeps only the domain of every e-mail address in s, for logs.
+func RedactAddresses(s string) string {
+	return addressRe.ReplaceAllString(s, "*@$1")
+}
+
+// Log writes mail to the log instead of sending it. Only Full, for development on a local
+// instance, writes the subject and text, which hold sign-in codes and customers' names.
+type Log struct {
+	Log  *slog.Logger
+	Full bool
+}
 
 func (l Log) Send(ctx context.Context, m Message) error {
+	if l.Full {
+		l.Log.InfoContext(ctx, "mail (log mailer, not sent)",
+			slog.String("to", m.To), slog.String("subject", m.Subject), slog.String("text", m.Text), slog.Int("html_bytes", len(m.HTML)))
+		return nil
+	}
 	l.Log.InfoContext(ctx, "mail (log mailer, not sent)",
-		slog.String("to", m.To), slog.String("subject", m.Subject), slog.String("text", m.Text), slog.Int("html_bytes", len(m.HTML)))
+		slog.String("to", RedactAddresses(m.To)), slog.Int("text_bytes", len(m.Text)), slog.Int("html_bytes", len(m.HTML)))
 	return nil
 }
 
@@ -231,7 +248,7 @@ func (a Async) Send(ctx context.Context, m Message) error {
 		ctx, cancel := context.WithTimeout(ctx, a.Timeout)
 		defer cancel()
 		if err := a.Mailer.Send(ctx, m); err != nil {
-			a.Log.ErrorContext(ctx, "mail not sent", slog.String("to", m.To), slog.Any("error", err))
+			a.Log.ErrorContext(ctx, "mail not sent", slog.String("to", RedactAddresses(m.To)), slog.String("error", RedactAddresses(err.Error())))
 		}
 	}()
 	return nil

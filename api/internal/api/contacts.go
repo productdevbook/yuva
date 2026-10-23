@@ -689,15 +689,12 @@ func (s *Server) deleteContact(ctx context.Context, p principal, id uuid.UUID) e
 		if err := s.audit(ctx, q, p, oas.AuditContactDeleted, oas.AuditTargetContact, id, nil); err != nil {
 			return err
 		}
+		events.deleteStored(p.workspaceID, keys)
 		events.add(realtime.ContactDeleted, nil, nil, oas.ContactRef{Id: id})
 		events.items[len(events.items)-1].deleted = snap
 		return nil
 	})
-	if err != nil {
-		return err
-	}
-	s.deleteObjects(ctx, keys)
-	return nil
+	return err
 }
 
 func (s *Server) MergeContact(ctx context.Context, req oas.MergeContactRequestObject) (oas.MergeContactResponseObject, error) {

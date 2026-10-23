@@ -72,7 +72,7 @@ UPDATE automation_runs SET actions = @actions WHERE workspace_id = @workspace_id
 -- name: ListAutomationRuns :many
 SELECT r.* FROM automation_runs r
 JOIN conversations c ON c.workspace_id = r.workspace_id AND c.id = r.conversation_id
-WHERE r.workspace_id = @workspace_id AND r.rule_id = @rule_id
+WHERE r.workspace_id = @workspace_id AND r.rule_id = @rule_id AND c.trashed_at IS NULL
   AND (sqlc.narg(outcome)::text IS NULL OR r.outcome = sqlc.narg(outcome)::text)
   AND (@all_inboxes::bool OR c.inbox_id = ANY(@inbox_ids::uuid[]))
   AND (sqlc.narg(cursor_at)::timestamptz IS NULL

@@ -442,6 +442,7 @@ func (s *Server) DeleteInbox(ctx context.Context, req oas.DeleteInboxRequestObje
 			return err
 		}
 		id := req.InboxId
+		events.deleteStored(p.workspaceID, keys)
 		events.add(realtime.InboxDeleted, &id, nil, oas.InboxRef{Id: id})
 		return nil
 	})
@@ -451,7 +452,6 @@ func (s *Server) DeleteInbox(ctx context.Context, req oas.DeleteInboxRequestObje
 	for _, page := range pages {
 		s.statusDomainCache.forget(page)
 	}
-	s.deleteObjects(ctx, keys)
 	return oas.DeleteInbox204Response{}, nil
 }
 

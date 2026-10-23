@@ -7,6 +7,7 @@ import (
 	"time"
 	"uuid"
 
+	"github.com/jackc/pgx/v5"
 	"github.com/riverqueue/river"
 
 	"github.com/productdevbook/yuva/api/internal/jobs"
@@ -64,14 +65,26 @@ func (s *Server) UpdateWorkspace(ctx context.Context, req oas.UpdateWorkspaceReq
 			}
 		}
 		if b.BotsMaySend != nil {
+			from := w.BotsMaySend
 			if w, err = q.SetWorkspaceBotsMaySend(ctx, store.SetWorkspaceBotsMaySendParams{ID: p.workspaceID, BotsMaySend: *b.BotsMaySend}); err != nil {
 				return err
 			}
+			if from != w.BotsMaySend {
+				if err := s.audit(ctx, q, p, oas.AuditWorkspaceBotsMaySendChanged, oas.AuditTargetWorkspace, p.workspaceID, auditDetails{"from": from, "to": w.BotsMaySend}); err != nil {
+					return err
+				}
+			}
 		}
 		if b.BroadcastsByKeys != nil {
-			w, err = q.SetWorkspaceBroadcastsByKeys(ctx, store.SetWorkspaceBroadcastsByKeysParams{ID: p.workspaceID, ByKeys: *b.BroadcastsByKeys})
+			from := w.BroadcastsByKeys
+			if w, err = q.SetWorkspaceBroadcastsByKeys(ctx, store.SetWorkspaceBroadcastsByKeysParams{ID: p.workspaceID, ByKeys: *b.BroadcastsByKeys}); err != nil {
+				return err
+			}
+			if from != w.BroadcastsByKeys {
+				return s.audit(ctx, q, p, oas.AuditWorkspaceBroadcastsByKeysChanged, oas.AuditTargetWorkspace, p.workspaceID, auditDetails{"from": from, "to": w.BroadcastsByKeys})
+			}
 		}
-		return err
+		return nil
 	})
 	if err != nil {
 		return nil, err
@@ -178,17 +191,20 @@ func (s *Server) expireConversations(ctx context.Context, workspaceID uuid.UUID,
 
 func (s *Server) expireRawEmails(ctx context.Context, workspaceID uuid.UUID, before time.Time) error {
 	for {
-		keys, err := s.st.ListExpiredRawKeys(ctx, store.ListExpiredRawKeysParams{WorkspaceID: workspaceID, Before: before, MaxRows: retentionBatch})
-		if err != nil {
+		var keys []string
+		err := s.st.InTxRaw(ctx, func(tx pgx.Tx, q *store.Queries) error {
+			var err error
+			if keys, err = q.ListExpiredRawKeys(ctx, store.ListExpiredRawKeysParams{WorkspaceID: workspaceID, Before: before, MaxRows: retentionBatch}); err != nil || len(keys) == 0 {
+				return err
+			}
+			if _, err := q.ClearRawKeys(ctx, store.ClearRawKeysParams{WorkspaceID: workspaceID, Keys: keys}); err != nil {
+				return err
+			}
+			return s.deleteStoredTx(ctx, tx, workspaceID, keys)
+		})
+		if err != nil || len(keys) == 0 {
 			return err
 		}
-		if len(keys) == 0 {
-			return nil
-		}
-		if _, err := s.st.ClearRawKeys(ctx, store.ClearRawKeysParams{WorkspaceID: workspaceID, Keys: keys}); err != nil {
-			return err
-		}
-		s.deleteObjects(ctx, keys)
 		if len(keys) < retentionBatch {
 			return nil
 		}

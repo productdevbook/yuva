@@ -192,11 +192,7 @@ func TestDeleteWorkspace(t *testing.T) {
 			t.Fatalf("%d rows left in %s", n, table)
 		}
 	}
-	for _, k := range keys {
-		if h.stored(k) {
-			t.Fatalf("%s is still stored", k)
-		}
-	}
+	h.checkDeletesQueued(ct.ws, keys)
 	if n := h.count("SELECT count(*) FROM people WHERE email = ANY($1)", []string{ownerEmail, agentEmail}); n != 2 {
 		t.Fatalf("%d people left, want 2", n)
 	}

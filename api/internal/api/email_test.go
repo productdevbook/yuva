@@ -534,10 +534,12 @@ func TestOutboundFailuresAndRefusals(t *testing.T) {
 		t.Fatalf("permanent failure: %v", d)
 	}
 
-	h.smtp.fail = errors.New("connection refused")
+	h.smtp.fail = errors.New("451 <fail@example.net>: try again later")
 	retry := et.owner.expect(http.StatusCreated, "POST", "/v1/conversations/"+conv+"/messages", map[string]any{"kind": "message", "body": "B."})
 	if err := h.srv.SendEmail(context.Background(), uuid.MustParse(et.ws), uuid.MustParse(retry.str("id")), false); err == nil {
 		t.Fatal("a temporary failure was not returned for a retry")
+	} else if strings.Contains(err.Error(), "fail@") || !strings.Contains(err.Error(), "*@example.net") {
+		t.Fatalf("the retried error keeps the address: %v", err)
 	}
 	if err := h.srv.SendEmail(context.Background(), uuid.MustParse(et.ws), uuid.MustParse(retry.str("id")), true); err != nil {
 		t.Fatal(err)

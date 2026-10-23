@@ -35,3 +35,25 @@ func TestDevVAPIDKeyRejectedOnPublicHost(t *testing.T) {
 		t.Fatal("dev VAPID private key accepted on a public host")
 	}
 }
+
+func TestFullMailLogOnlyOnLoopback(t *testing.T) {
+	cases := []struct {
+		url, mode string
+		ok, full  bool
+	}{
+		{"http://localhost:8080", "", true, false},
+		{"http://localhost:8080", "full", true, true},
+		{"http://127.0.0.1:8080", "FULL", true, true},
+		{"https://help.example.com", "redacted", true, false},
+		{"https://help.example.com", "full", false, false},
+		{"http://localhost:8080", "everything", false, false},
+	}
+	for _, tc := range cases {
+		t.Setenv("YUVA_PUBLIC_URL", tc.url)
+		t.Setenv("YUVA_MAIL_LOG", tc.mode)
+		c, err := Load("test")
+		if (err == nil) != tc.ok || (err == nil && c.MailLogFull != tc.full) {
+			t.Errorf("%s YUVA_MAIL_LOG=%q: full = %v, err = %v; want ok=%v full=%v", tc.url, tc.mode, c.MailLogFull, err, tc.ok, tc.full)
+		}
+	}
+}

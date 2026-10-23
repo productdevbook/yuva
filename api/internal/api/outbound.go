@@ -19,6 +19,7 @@ import (
 
 	"github.com/productdevbook/yuva/api/internal/email"
 	"github.com/productdevbook/yuva/api/internal/jobs"
+	"github.com/productdevbook/yuva/api/internal/mail"
 	"github.com/productdevbook/yuva/api/internal/oas"
 	"github.com/productdevbook/yuva/api/internal/realtime"
 	"github.com/productdevbook/yuva/api/internal/store"
@@ -429,8 +430,9 @@ func (s *Server) SendEmails(ctx context.Context, workspaceID uuid.UUID, ids []uu
 		})
 	}
 	if !email.IsPermanent(sendErr) && !lastAttempt {
-		s.log.WarnContext(ctx, "email send failed, retrying", slog.String("message_id", ids[len(ids)-1].String()), slog.Any("error", sendErr))
-		return sendErr
+		redacted := mail.RedactAddresses(sendErr.Error())
+		s.log.WarnContext(ctx, "email send failed, retrying", slog.String("message_id", ids[len(ids)-1].String()), slog.String("error", redacted))
+		return errors.New(redacted)
 	}
 	detail := truncateRunes(sendErr.Error(), maxDeliveryError)
 	return set(deliveryFailed, &detail)

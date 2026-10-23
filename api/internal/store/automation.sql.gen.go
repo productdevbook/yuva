@@ -355,7 +355,7 @@ func (q *Queries) ListAutomationRules(ctx context.Context, workspaceID uuid.UUID
 const listAutomationRuns = `-- name: ListAutomationRuns :many
 SELECT r.id, r.workspace_id, r.rule_id, r.conversation_id, r.trigger, r.trigger_key, r.outcome, r.error, r.detail, r.actions, r.created_at FROM automation_runs r
 JOIN conversations c ON c.workspace_id = r.workspace_id AND c.id = r.conversation_id
-WHERE r.workspace_id = $1 AND r.rule_id = $2
+WHERE r.workspace_id = $1 AND r.rule_id = $2 AND c.trashed_at IS NULL
   AND ($3::text IS NULL OR r.outcome = $3::text)
   AND ($4::bool OR c.inbox_id = ANY($5::uuid[]))
   AND ($6::timestamptz IS NULL

@@ -21,6 +21,7 @@ import (
 
 	"github.com/productdevbook/yuva/api/internal/email"
 	"github.com/productdevbook/yuva/api/internal/jobs"
+	"github.com/productdevbook/yuva/api/internal/mail"
 	"github.com/productdevbook/yuva/api/internal/mail/design"
 	"github.com/productdevbook/yuva/api/internal/metrics"
 	"github.com/productdevbook/yuva/api/internal/oas"
@@ -1189,7 +1190,7 @@ func (s *Server) senderDown(ctx context.Context, ws, id uuid.UUID, cause error) 
 	if err != nil {
 		return err
 	}
-	s.log.WarnContext(ctx, "broadcast SMTP server unreachable", slog.String("broadcast_id", id.String()), slog.Any("error", cause))
+	s.log.WarnContext(ctx, "broadcast SMTP server unreachable", slog.String("broadcast_id", id.String()), slog.String("error", mail.RedactAddresses(cause.Error())))
 	if s.now().Sub(since) >= senderDownPause {
 		return s.pauseForSender(ctx, ws, id, "the SMTP server could not be reached for 30 minutes: "+cause.Error())
 	}

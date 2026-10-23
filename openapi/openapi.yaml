@@ -20720,6 +20720,8 @@ components:
         - `list.consent_exported`: `name`, `format`, `started`.
         - `analytics_export.created`: `property_id`, `kind`, `format`.
         - `workspace.retention_changed`: `from`, `to` (days; `null` keeps everything).
+        - `workspace.bots_may_send_changed`, `workspace.broadcasts_by_keys_changed`: `from`, `to`
+          (booleans).
         - `workspace.broadcast_approval_requested`: none. `workspace.broadcasts_approved`,
           `workspace.broadcasts_denied`: `reason` when the operator gave one.
           `workspace.broadcasts_suspended`: `reason`, `paused_broadcasts` (by the operator).
@@ -20795,6 +20797,8 @@ components:
         - list.consent_exported
         - analytics_export.created
         - workspace.retention_changed
+        - workspace.bots_may_send_changed
+        - workspace.broadcasts_by_keys_changed
         - workspace.broadcast_approval_requested
         - workspace.broadcasts_approved
         - workspace.broadcasts_denied
@@ -20826,7 +20830,7 @@ components:
         - automation_rule.created
         - automation_rule.updated
         - automation_rule.deleted
-      x-enum-varnames: [AuditMemberJoined, AuditMemberRoleChanged, AuditMemberRemoved, AuditMemberInboxAccessGranted, AuditMemberInboxAccessRevoked, AuditInviteCreated, AuditInviteDeleted, AuditApiKeyCreated, AuditApiKeyRevoked, AuditOAuthGrantCreated, AuditOAuthGrantRevoked, AuditWebhookCreated, AuditWebhookUpdated, AuditWebhookDeleted, AuditWebhookSecretRotated, AuditChannelCredentialsChanged, AuditChannelKeyRotated, AuditChannelForwardingAddressRotated, AuditChannelDkimKeyCreated, AuditChannelDkimKeyDeleted, AuditInboxIdentitySecretRotated, AuditInboxDeleted, AuditConversationTrashed, AuditConversationRestored, AuditConversationDeleted, AuditMessageRedacted, AuditContactDeleted, AuditContactConsentExported, AuditListConsentExported, AuditAnalyticsExportCreated, AuditWorkspaceRetentionChanged, AuditWorkspaceBroadcastApprovalRequested, AuditWorkspaceBroadcastsApproved, AuditWorkspaceBroadcastsDenied, AuditWorkspaceBroadcastsSuspended, AuditWorkspaceBroadcastLimitChanged, AuditTeamCreated, AuditTeamDeleted, AuditTeamMemberAdded, AuditTeamMemberRemoved, AuditTeamInboxAccessGranted, AuditTeamInboxAccessRevoked, AuditWorkspaceSlackConnected, AuditWorkspaceSlackDisconnected, AuditMemberSlackLinked, AuditMemberSlackUnlinked, AuditSsoProviderCreated, AuditSsoProviderUpdated, AuditSsoProviderDeleted, AuditSsoSettingsChanged, AuditSsoSignedIn, AuditSsoSignInRefused, AuditSsoDomainAdded, AuditSsoDomainVerified, AuditSsoDomainDeleted, AuditIssueIntegrationConnected, AuditIssueIntegrationUpdated, AuditIssueIntegrationDisconnected, AuditIssueIntegrationSecretRotated, AuditAutomationRuleCreated, AuditAutomationRuleUpdated, AuditAutomationRuleDeleted]
+      x-enum-varnames: [AuditMemberJoined, AuditMemberRoleChanged, AuditMemberRemoved, AuditMemberInboxAccessGranted, AuditMemberInboxAccessRevoked, AuditInviteCreated, AuditInviteDeleted, AuditApiKeyCreated, AuditApiKeyRevoked, AuditOAuthGrantCreated, AuditOAuthGrantRevoked, AuditWebhookCreated, AuditWebhookUpdated, AuditWebhookDeleted, AuditWebhookSecretRotated, AuditChannelCredentialsChanged, AuditChannelKeyRotated, AuditChannelForwardingAddressRotated, AuditChannelDkimKeyCreated, AuditChannelDkimKeyDeleted, AuditInboxIdentitySecretRotated, AuditInboxDeleted, AuditConversationTrashed, AuditConversationRestored, AuditConversationDeleted, AuditMessageRedacted, AuditContactDeleted, AuditContactConsentExported, AuditListConsentExported, AuditAnalyticsExportCreated, AuditWorkspaceRetentionChanged, AuditWorkspaceBotsMaySendChanged, AuditWorkspaceBroadcastsByKeysChanged, AuditWorkspaceBroadcastApprovalRequested, AuditWorkspaceBroadcastsApproved, AuditWorkspaceBroadcastsDenied, AuditWorkspaceBroadcastsSuspended, AuditWorkspaceBroadcastLimitChanged, AuditTeamCreated, AuditTeamDeleted, AuditTeamMemberAdded, AuditTeamMemberRemoved, AuditTeamInboxAccessGranted, AuditTeamInboxAccessRevoked, AuditWorkspaceSlackConnected, AuditWorkspaceSlackDisconnected, AuditMemberSlackLinked, AuditMemberSlackUnlinked, AuditSsoProviderCreated, AuditSsoProviderUpdated, AuditSsoProviderDeleted, AuditSsoSettingsChanged, AuditSsoSignedIn, AuditSsoSignInRefused, AuditSsoDomainAdded, AuditSsoDomainVerified, AuditSsoDomainDeleted, AuditIssueIntegrationConnected, AuditIssueIntegrationUpdated, AuditIssueIntegrationDisconnected, AuditIssueIntegrationSecretRotated, AuditAutomationRuleCreated, AuditAutomationRuleUpdated, AuditAutomationRuleDeleted]
     AuditTargetType:
       type: string
       enum: [workspace, member, invite, inbox, channel, api_key, oauth_grant, webhook, contact, list, analytics_export, conversation, message, team, sso, sso_domain, issue_integration, automation_rule]

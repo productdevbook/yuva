@@ -41,6 +41,8 @@ type Config struct {
 	OperatorEmails []string
 
 	SMTP SMTP
+	// MailLogFull writes whole mails, sign-in codes included, to the log when SMTP is not set.
+	MailLogFull bool
 
 	MasterKey string
 
@@ -422,6 +424,16 @@ func Load(version string) (Config, error) {
 	}
 	if err := c.rejectDevSecrets(public.Hostname()); err != nil {
 		return c, err
+	}
+	switch strings.ToLower(env("YUVA_MAIL_LOG", "redacted")) {
+	case "redacted":
+	case "full":
+		if !loopbackHost(public.Hostname()) {
+			return c, errors.New("YUVA_MAIL_LOG=full writes sign-in codes to the log and is for development only; serve from localhost or set YUVA_SMTP_HOST")
+		}
+		c.MailLogFull = true
+	default:
+		return c, errors.New("YUVA_MAIL_LOG must be redacted or full")
 	}
 	if err := c.loadMigrations(); err != nil {
 		return c, err
@@ -840,11 +852,16 @@ var devSecrets = map[string]string{
 	"YUVA_VAPID_PRIVATE_KEY": "151tODJ-wlzzEOSc3wpPlKPbCSxI8fEO8P6IKs-EPeg",
 }
 
-func (c Config) rejectDevSecrets(host string) error {
+func loopbackHost(host string) bool {
 	if host == "localhost" || strings.HasSuffix(host, ".localhost") {
-		return nil
+		return true
 	}
-	if ip, err := netip.ParseAddr(host); err == nil && ip.IsLoopback() {
+	ip, err := netip.ParseAddr(host)
+	return err == nil && ip.IsLoopback()
+}
+
+func (c Config) rejectDevSecrets(host string) error {
+	if loopbackHost(host) {
 		return nil
 	}
 	set := map[string]string{
