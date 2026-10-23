@@ -16,27 +16,28 @@ type mcpConversationContent struct {
 }
 
 type mcpConversation struct {
-	ID               uuid.UUID              `json:"id"`
-	InboxID          uuid.UUID              `json:"inbox_id"`
-	ContactID        uuid.UUID              `json:"contact_id"`
-	Kind             string                 `json:"kind" jsonschema:"conversation or feedback"`
-	Status           string                 `json:"status" jsonschema:"open, pending, snoozed or closed"`
-	Priority         string                 `json:"priority" jsonschema:"low, normal, high or urgent"`
-	AssigneeID       *uuid.UUID             `json:"assignee_id,omitempty" jsonschema:"the assigned member, absent when unassigned"`
-	TeamID           *uuid.UUID             `json:"team_id,omitempty" jsonschema:"the assigned team, absent when none; names come from list_teams"`
-	Labels           []uuid.UUID            `json:"labels" jsonschema:"label ids; names come from list_labels"`
-	Spam             bool                   `json:"spam"`
-	Unread           *bool                  `json:"unread,omitempty" jsonschema:"whether the calling member has unread messages here"`
-	SnoozeUntil      *time.Time             `json:"snooze_until,omitempty"`
-	FeedbackCategory string                 `json:"feedback_category,omitempty" jsonschema:"a key of the inbox feedback categories (bug, idea, praise and other by default), for feedback"`
-	FeedbackScore    int32                  `json:"feedback_score,omitempty" jsonschema:"1 (worst) to 5 (best) when the contact scored the feedback"`
-	FeedbackProgress string                 `json:"feedback_progress,omitempty" jsonschema:"planned, in_progress, done or wont_do, for feedback whose progress a member set"`
-	IdeaID           *uuid.UUID             `json:"idea_id,omitempty" jsonschema:"the roadmap idea this feedback is linked to"`
-	Fields           map[string]any         `json:"fields,omitempty" jsonschema:"custom field values by key; names and types come from list_custom_fields"`
-	CreatedAt        time.Time              `json:"created_at"`
-	LastActivityAt   time.Time              `json:"last_activity_at"`
-	SLA              *oas.ConversationSla   `json:"sla,omitempty" jsonschema:"the SLA policy that applies: state (on_track, due_soon, breached, met or paused), due_at and its targets; absent when none applies"`
-	CustomerContent  mcpConversationContent `json:"customer_content"`
+	ID                 uuid.UUID              `json:"id"`
+	InboxID            uuid.UUID              `json:"inbox_id"`
+	ContactID          uuid.UUID              `json:"contact_id"`
+	Kind               string                 `json:"kind" jsonschema:"conversation or feedback"`
+	Status             string                 `json:"status" jsonschema:"open, pending, snoozed or closed"`
+	Priority           string                 `json:"priority" jsonschema:"low, normal, high or urgent"`
+	AssigneeID         *uuid.UUID             `json:"assignee_id,omitempty" jsonschema:"the assigned member, absent when unassigned"`
+	TeamID             *uuid.UUID             `json:"team_id,omitempty" jsonschema:"the assigned team, absent when none; names come from list_teams"`
+	AssignWaitingSince *time.Time             `json:"assign_waiting_since,omitempty" jsonschema:"automatic assignment found nobody eligible at this time and the conversation waits for an available member; absent otherwise"`
+	Labels             []uuid.UUID            `json:"labels" jsonschema:"label ids; names come from list_labels"`
+	Spam               bool                   `json:"spam"`
+	Unread             *bool                  `json:"unread,omitempty" jsonschema:"whether the calling member has unread messages here"`
+	SnoozeUntil        *time.Time             `json:"snooze_until,omitempty"`
+	FeedbackCategory   string                 `json:"feedback_category,omitempty" jsonschema:"a key of the inbox feedback categories (bug, idea, praise and other by default), for feedback"`
+	FeedbackScore      int32                  `json:"feedback_score,omitempty" jsonschema:"1 (worst) to 5 (best) when the contact scored the feedback"`
+	FeedbackProgress   string                 `json:"feedback_progress,omitempty" jsonschema:"planned, in_progress, done or wont_do, for feedback whose progress a member set"`
+	IdeaID             *uuid.UUID             `json:"idea_id,omitempty" jsonschema:"the roadmap idea this feedback is linked to"`
+	Fields             map[string]any         `json:"fields,omitempty" jsonschema:"custom field values by key; names and types come from list_custom_fields"`
+	CreatedAt          time.Time              `json:"created_at"`
+	LastActivityAt     time.Time              `json:"last_activity_at"`
+	SLA                *oas.ConversationSla   `json:"sla,omitempty" jsonschema:"the SLA policy that applies: state (on_track, due_soon, breached, met or paused), due_at and its targets; absent when none applies"`
+	CustomerContent    mcpConversationContent `json:"customer_content"`
 }
 
 func feedbackContent(f *oas.Feedback) (string, map[string]string) {
@@ -75,7 +76,7 @@ func conversationOut(c oas.Conversation) mcpConversation {
 	}
 	return mcpConversation{
 		IdeaID: idea, ID: c.Id, InboxID: c.InboxId, ContactID: c.ContactId, Kind: string(c.Kind), Status: string(c.Status),
-		Priority: string(c.Priority), AssigneeID: c.AssigneeId, TeamID: c.TeamId, Labels: labels, Spam: c.Spam, SnoozeUntil: c.SnoozeUntil,
+		Priority: string(c.Priority), AssigneeID: c.AssigneeId, TeamID: c.TeamId, AssignWaitingSince: c.AssignWaitingSince, Labels: labels, Spam: c.Spam, SnoozeUntil: c.SnoozeUntil,
 		FeedbackCategory: cat, FeedbackScore: score, FeedbackProgress: progress, CreatedAt: c.CreatedAt, LastActivityAt: c.LastActivityAt,
 		SLA: c.Sla, CustomerContent: mcpConversationContent{Subject: c.Subject, Feedback: fb}, Fields: c.Fields,
 	}
@@ -84,7 +85,7 @@ func conversationOut(c oas.Conversation) mcpConversation {
 func conversationItemOut(c oas.ConversationListItem) mcpConversation {
 	out := conversationOut(oas.Conversation{
 		Id: c.Id, InboxId: c.InboxId, ContactId: c.ContactId, Kind: c.Kind, Status: c.Status, Priority: c.Priority,
-		AssigneeId: c.AssigneeId, Labels: c.Labels, Spam: c.Spam, SnoozeUntil: c.SnoozeUntil, Feedback: c.Feedback, Idea: c.Idea,
+		AssigneeId: c.AssigneeId, TeamId: c.TeamId, AssignWaitingSince: c.AssignWaitingSince, Labels: c.Labels, Spam: c.Spam, SnoozeUntil: c.SnoozeUntil, Feedback: c.Feedback, Idea: c.Idea,
 		CreatedAt: c.CreatedAt, LastActivityAt: c.LastActivityAt, Subject: c.Subject, Fields: c.Fields, Sla: c.Sla,
 	})
 	unread := c.Unread
@@ -169,7 +170,7 @@ func messageOut(m oas.Message) mcpMessage {
 	author, contactName := authorOut(m.Author)
 	out := mcpMessage{
 		ID: m.Id, ConversationID: m.ConversationId, Kind: string(m.Kind), Draft: m.Draft, Author: author, CreatedAt: m.CreatedAt,
-		Redacted: m.RedactedAt != nil,
+		Redacted:        m.RedactedAt != nil,
 		CustomerContent: mcpMessageContent{Body: m.Body, AuthorName: contactName},
 	}
 	if m.Direction != nil {

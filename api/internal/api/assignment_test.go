@@ -253,6 +253,19 @@ func TestAutoAssignWaitsForMembersAndCap(t *testing.T) {
 	if got.body["assignee_id"] != nil || got.body["assign_waiting_since"] == nil {
 		t.Fatalf("nobody online: %s", got.raw)
 	}
+	since := got.body["assign_waiting_since"]
+	list := tm.owner.expect(http.StatusOK, "GET", "/v1/conversations?inbox_id="+tm.inbox, nil)
+	if items := list.body["items"].([]any); len(items) != 1 || items[0].(map[string]any)["assign_waiting_since"] != since {
+		t.Fatalf("list item waiting since, want %v: %s", since, list.raw)
+	}
+	session := h.mcpSession(h.oauthToken(tm.owner, tm.ws, "Claude Code", testOrigin+"/mcp", []string{"conversations:read", "inboxes:read"}))
+	found, errText := callTool(t, session, "search_conversations", nil)
+	if errText != "" {
+		t.Fatal(errText)
+	}
+	if items := found["items"].([]any); len(items) != 1 || items[0].(map[string]any)["assign_waiting_since"] != since {
+		t.Fatalf("search_conversations waiting since, want %v: %v", since, found)
+	}
 
 	ws := tm.agent.dial("")
 	ws.ready()
