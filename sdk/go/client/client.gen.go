@@ -33778,7 +33778,8 @@ type ClientInterface interface {
 	// Answers an access token for the link's other endpoints, valid for 12 hours or until the
 	// link expires, is revoked or gets another password. A wrong password answers
 	// `401 wrong_password`; an IP address may try 10 times a minute per link and 30 times a minute
-	// in all (`429 rate_limited`). A link without a password answers `409 no_password`.
+	// in all, and a link takes 60 tries an hour from everyone (`429 rate_limited`). A link without
+	// a password answers `409 no_password`.
 	//
 	// Takes any type of body and a specified content type.
 	//
@@ -33790,7 +33791,8 @@ type ClientInterface interface {
 	// Answers an access token for the link's other endpoints, valid for 12 hours or until the
 	// link expires, is revoked or gets another password. A wrong password answers
 	// `401 wrong_password`; an IP address may try 10 times a minute per link and 30 times a minute
-	// in all (`429 rate_limited`). A link without a password answers `409 no_password`.
+	// in all, and a link takes 60 tries an hour from everyone (`429 rate_limited`). A link without
+	// a password answers `409 no_password`.
 	//
 	// Takes a body of the `application/json` content type.
 	//
@@ -34148,7 +34150,8 @@ type ClientInterface interface {
 	//
 	// Send `final=true` once the visitor settled on the query (Enter, a result opened, or 1.5
 	// seconds without typing); only those are counted in the report. 30 searches a minute per
-	// address and channel, and 1,200 per center (`429 rate_limited` with `Retry-After`). Sent with
+	// address and channel, 120 per network (IPv4 /24, IPv6 /48) and center, and 12,000 per center
+	// (`429 rate_limited` with `Retry-After`). Sent with
 	// `Cache-Control: public, max-age=60`. `404 help_off` without a published center.
 	//
 	// Corresponds with GET /client/v1/channels/{channel_key}/help/search (the `SearchClientHelp` operationId).
@@ -34266,8 +34269,8 @@ type ClientInterface interface {
 	// after it was issued (`400 form_token`); `website` is a honeypot that must stay empty
 	// (a filled one is answered `202` and ignored); `list_ids` must be public lists of the
 	// channel's inbox (`404 list_not_found`); `400 invalid_email`. At most 10 requests per IP
-	// address and hour and 600 per channel and hour (`429 rate_limited` with `Retry-After`, the
-	// seconds until the hour ends); confirmation mails are
+	// address and hour, 40 per network (IPv4 /24, IPv6 /48) and channel and hour, and 6,000 per
+	// channel and hour (`429 rate_limited` with `Retry-After`, the seconds until the hour ends); confirmation mails are
 	// capped per address (3 a day, 1 per list in 10 minutes) and per channel (1,000 a day)
 	// without changing the answer.
 	//
@@ -34301,8 +34304,8 @@ type ClientInterface interface {
 	// after it was issued (`400 form_token`); `website` is a honeypot that must stay empty
 	// (a filled one is answered `202` and ignored); `list_ids` must be public lists of the
 	// channel's inbox (`404 list_not_found`); `400 invalid_email`. At most 10 requests per IP
-	// address and hour and 600 per channel and hour (`429 rate_limited` with `Retry-After`, the
-	// seconds until the hour ends); confirmation mails are
+	// address and hour, 40 per network (IPv4 /24, IPv6 /48) and channel and hour, and 6,000 per
+	// channel and hour (`429 rate_limited` with `Retry-After`, the seconds until the hour ends); confirmation mails are
 	// capped per address (3 a day, 1 per list in 10 minutes) and per channel (1,000 a day)
 	// without changing the answer.
 	//
@@ -34322,7 +34325,8 @@ type ClientInterface interface {
 	// comes in the default locale with `fallback: true`). Cursor-paged. Needs no session and
 	// creates no contact; a browser must come from an allowed origin. `404 whats_new_off`
 	// without a published changelog, and on a server with `YUVA_WHATS_NEW=off`. 120 reads a
-	// minute per address and channel, and 2,400 per changelog (`429 rate_limited` with
+	// minute per address and channel, 480 per network (IPv4 /24, IPv6 /48) and changelog, and
+	// 24,000 per changelog (`429 rate_limited` with
 	// `Retry-After`). Sent with `Cache-Control: public, max-age=60`.
 	//
 	// Corresponds with GET /client/v1/channels/{channel_key}/whats-new (the `GetClientWhatsNew` operationId).
@@ -34339,11 +34343,13 @@ type ClientInterface interface {
 	// SetClientContactEmailWithBody Leave an e-mail address for replies
 	//
 	// Stores the address the contact typed (e.g. when nobody is available), so replies they have
-	// not read can be e-mailed to them. A typed address is never used to find or merge an
+	// not read can be e-mailed to them once they confirm it: anyone can type any address, so
+	// nothing but the confirmation link goes to it before. A typed address is never used to find or merge an
 	// existing contact; it is used only while the contact has no address from an identity token
 	// or from their own mail. Yuva mails the address a confirmation link (unless a contact already
-	// has it; at most 3 per hour); it becomes one of the contact's addresses only once that link
-	// is confirmed. `email_confirmation` on the answer says whether a link went out, and a
+	// has it; at most 3 per contact and hour, 3 per address and day on the server, and a daily
+	// number per channel and workspace; a link held back by these limits still shows `sent`); it
+	// becomes one of the contact's addresses only once that link is confirmed. `email_confirmation` on the answer says whether a link went out, and a
 	// `contact.updated` frame on `/client/v1/realtime` brings its bounce or confirmation. An
 	// address that bounced before is stored but not mailed and shows `undeliverable`: ask for
 	// another one.
@@ -34357,11 +34363,13 @@ type ClientInterface interface {
 	// SetClientContactEmail Leave an e-mail address for replies
 	//
 	// Stores the address the contact typed (e.g. when nobody is available), so replies they have
-	// not read can be e-mailed to them. A typed address is never used to find or merge an
+	// not read can be e-mailed to them once they confirm it: anyone can type any address, so
+	// nothing but the confirmation link goes to it before. A typed address is never used to find or merge an
 	// existing contact; it is used only while the contact has no address from an identity token
 	// or from their own mail. Yuva mails the address a confirmation link (unless a contact already
-	// has it; at most 3 per hour); it becomes one of the contact's addresses only once that link
-	// is confirmed. `email_confirmation` on the answer says whether a link went out, and a
+	// has it; at most 3 per contact and hour, 3 per address and day on the server, and a daily
+	// number per channel and workspace; a link held back by these limits still shows `sent`); it
+	// becomes one of the contact's addresses only once that link is confirmed. `email_confirmation` on the answer says whether a link went out, and a
 	// `contact.updated` frame on `/client/v1/realtime` brings its bounce or confirmation. An
 	// address that bounced before is stored but not mailed and shows `undeliverable`: ask for
 	// another one.
@@ -34721,8 +34729,8 @@ type ClientInterface interface {
 	// `allow_email: true` lets members' replies the contact has not read in the app be e-mailed
 	// to them (after the same delay as chat replies); `email` is the address to use while the
 	// contact has no address from an identity token or their own mail, kept like
-	// `PUT /client/v1/contact/email`. Without `allow_email`, replies reach the contact only in
-	// the app.
+	// `PUT /client/v1/contact/email`: it gets replies only once its confirmation link is
+	// confirmed. Without `allow_email`, replies reach the contact only in the app.
 	//
 	// Send `multipart/form-data` to attach screenshots (the other fields as form fields and up to
 	// 10 `files` parts), within the session channel's limits (`attachments` on `ClientInbox`) like
@@ -34751,8 +34759,8 @@ type ClientInterface interface {
 	// `allow_email: true` lets members' replies the contact has not read in the app be e-mailed
 	// to them (after the same delay as chat replies); `email` is the address to use while the
 	// contact has no address from an identity token or their own mail, kept like
-	// `PUT /client/v1/contact/email`. Without `allow_email`, replies reach the contact only in
-	// the app.
+	// `PUT /client/v1/contact/email`: it gets replies only once its confirmation link is
+	// confirmed. Without `allow_email`, replies reach the contact only in the app.
 	//
 	// Send `multipart/form-data` to attach screenshots (the other fields as form fields and up to
 	// 10 `files` parts), within the session channel's limits (`attachments` on `ClientInbox`) like
@@ -34853,7 +34861,8 @@ type ClientInterface interface {
 	//
 	// For a `chat` channel, browsers must call from one of the channel's allowed origins
 	// (`403 origin_not_allowed`, also without an `Origin` header); an `app` channel's key needs no
-	// origin. Requests are rate limited per IP address and per channel (`429 rate_limited`), and an
+	// origin. Requests are rate limited per IP address (IPv6 per /64), per network (IPv4 /24, IPv6 /48)
+	// and channel, and with a far higher ceiling per channel (`429 rate_limited`), and an
 	// IP address starts at most `YUVA_ANONYMOUS_CONTACTS_PER_HOUR` new anonymous visitors per
 	// channel and hour (default 20; `429 anonymous_limit`; resuming a visitor does not count). A
 	// blocked contact answers `403 contact_blocked`.
@@ -34886,7 +34895,8 @@ type ClientInterface interface {
 	//
 	// For a `chat` channel, browsers must call from one of the channel's allowed origins
 	// (`403 origin_not_allowed`, also without an `Origin` header); an `app` channel's key needs no
-	// origin. Requests are rate limited per IP address and per channel (`429 rate_limited`), and an
+	// origin. Requests are rate limited per IP address (IPv6 per /64), per network (IPv4 /24, IPv6 /48)
+	// and channel, and with a far higher ceiling per channel (`429 rate_limited`), and an
 	// IP address starts at most `YUVA_ANONYMOUS_CONTACTS_PER_HOUR` new anonymous visitors per
 	// channel and hour (default 20; `429 anonymous_limit`; resuming a visitor does not count). A
 	// blocked contact answers `403 contact_blocked`.
@@ -35152,8 +35162,9 @@ type ClientInterface interface {
 	// `200` when `domain` is the verified own domain of a published status page, help center or
 	// changelog or a public roadmap board in a live workspace (and that feature is not off on the
 	// server), `404` otherwise, also when the server's `YUVA_STATUS_DOMAINS` is not `ask`. It is public and
-	// reveals only domains that already serve public pages. Up to 120 requests a minute per IP
-	// address (`429 rate_limited`).
+	// reveals only domains that already serve public pages. The proxy asks from one address for
+	// every name a handshake brings, so a name known not to be an own domain is answered from
+	// memory and the limit is per name asked: up to 30 lookups a minute (`429 rate_limited`).
 	//
 	// Corresponds with GET /status-domains/check (the `CheckStatusDomain` operationId).
 	CheckStatusDomain(ctx context.Context, params *CheckStatusDomainParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -44041,7 +44052,8 @@ func (c *Client) GetSharedAnalytics(ctx context.Context, token AnalyticsShareTok
 // Answers an access token for the link's other endpoints, valid for 12 hours or until the
 // link expires, is revoked or gets another password. A wrong password answers
 // `401 wrong_password`; an IP address may try 10 times a minute per link and 30 times a minute
-// in all (`429 rate_limited`). A link without a password answers `409 no_password`.
+// in all, and a link takes 60 tries an hour from everyone (`429 rate_limited`). A link without
+// a password answers `409 no_password`.
 //
 // Takes any type of body and a specified content type.
 //
@@ -44063,7 +44075,8 @@ func (c *Client) UnlockSharedAnalyticsWithBody(ctx context.Context, token Analyt
 // Answers an access token for the link's other endpoints, valid for 12 hours or until the
 // link expires, is revoked or gets another password. A wrong password answers
 // `401 wrong_password`; an IP address may try 10 times a minute per link and 30 times a minute
-// in all (`429 rate_limited`). A link without a password answers `409 no_password`.
+// in all, and a link takes 60 tries an hour from everyone (`429 rate_limited`). A link without
+// a password answers `409 no_password`.
 //
 // Takes a body of the `application/json` content type.
 //
@@ -44581,7 +44594,8 @@ func (c *Client) GetClientHelpCollection(ctx context.Context, channelKey ClientH
 //
 // Send `final=true` once the visitor settled on the query (Enter, a result opened, or 1.5
 // seconds without typing); only those are counted in the report. 30 searches a minute per
-// address and channel, and 1,200 per center (`429 rate_limited` with `Retry-After`). Sent with
+// address and channel, 120 per network (IPv4 /24, IPv6 /48) and center, and 12,000 per center
+// (`429 rate_limited` with `Retry-After`). Sent with
 // `Cache-Control: public, max-age=60`. `404 help_off` without a published center.
 //
 // Corresponds with GET /client/v1/channels/{channel_key}/help/search (the `SearchClientHelp` operationId).
@@ -44769,8 +44783,8 @@ func (c *Client) GetClientRoadmap(ctx context.Context, channelKey ChannelKey, re
 // after it was issued (`400 form_token`); `website` is a honeypot that must stay empty
 // (a filled one is answered `202` and ignored); `list_ids` must be public lists of the
 // channel's inbox (`404 list_not_found`); `400 invalid_email`. At most 10 requests per IP
-// address and hour and 600 per channel and hour (`429 rate_limited` with `Retry-After`, the
-// seconds until the hour ends); confirmation mails are
+// address and hour, 40 per network (IPv4 /24, IPv6 /48) and channel and hour, and 6,000 per
+// channel and hour (`429 rate_limited` with `Retry-After`, the seconds until the hour ends); confirmation mails are
 // capped per address (3 a day, 1 per list in 10 minutes) and per channel (1,000 a day)
 // without changing the answer.
 //
@@ -44814,8 +44828,8 @@ func (c *Client) CreateClientSubscriptionWithBody(ctx context.Context, channelKe
 // after it was issued (`400 form_token`); `website` is a honeypot that must stay empty
 // (a filled one is answered `202` and ignored); `list_ids` must be public lists of the
 // channel's inbox (`404 list_not_found`); `400 invalid_email`. At most 10 requests per IP
-// address and hour and 600 per channel and hour (`429 rate_limited` with `Retry-After`, the
-// seconds until the hour ends); confirmation mails are
+// address and hour, 40 per network (IPv4 /24, IPv6 /48) and channel and hour, and 6,000 per
+// channel and hour (`429 rate_limited` with `Retry-After`, the seconds until the hour ends); confirmation mails are
 // capped per address (3 a day, 1 per list in 10 minutes) and per channel (1,000 a day)
 // without changing the answer.
 //
@@ -44845,7 +44859,8 @@ func (c *Client) CreateClientSubscription(ctx context.Context, channelKey Channe
 // comes in the default locale with `fallback: true`). Cursor-paged. Needs no session and
 // creates no contact; a browser must come from an allowed origin. `404 whats_new_off`
 // without a published changelog, and on a server with `YUVA_WHATS_NEW=off`. 120 reads a
-// minute per address and channel, and 2,400 per changelog (`429 rate_limited` with
+// minute per address and channel, 480 per network (IPv4 /24, IPv6 /48) and changelog, and
+// 24,000 per changelog (`429 rate_limited` with
 // `Retry-After`). Sent with `Cache-Control: public, max-age=60`.
 //
 // Corresponds with GET /client/v1/channels/{channel_key}/whats-new (the `GetClientWhatsNew` operationId).
@@ -44882,11 +44897,13 @@ func (c *Client) GetClientWhatsNewEntry(ctx context.Context, channelKey ClientWh
 // SetClientContactEmailWithBody Leave an e-mail address for replies
 //
 // Stores the address the contact typed (e.g. when nobody is available), so replies they have
-// not read can be e-mailed to them. A typed address is never used to find or merge an
+// not read can be e-mailed to them once they confirm it: anyone can type any address, so
+// nothing but the confirmation link goes to it before. A typed address is never used to find or merge an
 // existing contact; it is used only while the contact has no address from an identity token
 // or from their own mail. Yuva mails the address a confirmation link (unless a contact already
-// has it; at most 3 per hour); it becomes one of the contact's addresses only once that link
-// is confirmed. `email_confirmation` on the answer says whether a link went out, and a
+// has it; at most 3 per contact and hour, 3 per address and day on the server, and a daily
+// number per channel and workspace; a link held back by these limits still shows `sent`); it
+// becomes one of the contact's addresses only once that link is confirmed. `email_confirmation` on the answer says whether a link went out, and a
 // `contact.updated` frame on `/client/v1/realtime` brings its bounce or confirmation. An
 // address that bounced before is stored but not mailed and shows `undeliverable`: ask for
 // another one.
@@ -44910,11 +44927,13 @@ func (c *Client) SetClientContactEmailWithBody(ctx context.Context, contentType 
 // SetClientContactEmail Leave an e-mail address for replies
 //
 // Stores the address the contact typed (e.g. when nobody is available), so replies they have
-// not read can be e-mailed to them. A typed address is never used to find or merge an
+// not read can be e-mailed to them once they confirm it: anyone can type any address, so
+// nothing but the confirmation link goes to it before. A typed address is never used to find or merge an
 // existing contact; it is used only while the contact has no address from an identity token
 // or from their own mail. Yuva mails the address a confirmation link (unless a contact already
-// has it; at most 3 per hour); it becomes one of the contact's addresses only once that link
-// is confirmed. `email_confirmation` on the answer says whether a link went out, and a
+// has it; at most 3 per contact and hour, 3 per address and day on the server, and a daily
+// number per channel and workspace; a link held back by these limits still shows `sent`); it
+// becomes one of the contact's addresses only once that link is confirmed. `email_confirmation` on the answer says whether a link went out, and a
 // `contact.updated` frame on `/client/v1/realtime` brings its bounce or confirmation. An
 // address that bounced before is stored but not mailed and shows `undeliverable`: ask for
 // another one.
@@ -45554,8 +45573,8 @@ func (c *Client) CreateClientDiscussionPost(ctx context.Context, discussionId Di
 // `allow_email: true` lets members' replies the contact has not read in the app be e-mailed
 // to them (after the same delay as chat replies); `email` is the address to use while the
 // contact has no address from an identity token or their own mail, kept like
-// `PUT /client/v1/contact/email`. Without `allow_email`, replies reach the contact only in
-// the app.
+// `PUT /client/v1/contact/email`: it gets replies only once its confirmation link is
+// confirmed. Without `allow_email`, replies reach the contact only in the app.
 //
 // Send `multipart/form-data` to attach screenshots (the other fields as form fields and up to
 // 10 `files` parts), within the session channel's limits (`attachments` on `ClientInbox`) like
@@ -45594,8 +45613,8 @@ func (c *Client) CreateClientFeedbackWithBody(ctx context.Context, params *Creat
 // `allow_email: true` lets members' replies the contact has not read in the app be e-mailed
 // to them (after the same delay as chat replies); `email` is the address to use while the
 // contact has no address from an identity token or their own mail, kept like
-// `PUT /client/v1/contact/email`. Without `allow_email`, replies reach the contact only in
-// the app.
+// `PUT /client/v1/contact/email`: it gets replies only once its confirmation link is
+// confirmed. Without `allow_email`, replies reach the contact only in the app.
 //
 // Send `multipart/form-data` to attach screenshots (the other fields as form fields and up to
 // 10 `files` parts), within the session channel's limits (`attachments` on `ClientInbox`) like
@@ -45766,7 +45785,8 @@ func (c *Client) GetClientSession(ctx context.Context, reqEditors ...RequestEdit
 //
 // For a `chat` channel, browsers must call from one of the channel's allowed origins
 // (`403 origin_not_allowed`, also without an `Origin` header); an `app` channel's key needs no
-// origin. Requests are rate limited per IP address and per channel (`429 rate_limited`), and an
+// origin. Requests are rate limited per IP address (IPv6 per /64), per network (IPv4 /24, IPv6 /48)
+// and channel, and with a far higher ceiling per channel (`429 rate_limited`), and an
 // IP address starts at most `YUVA_ANONYMOUS_CONTACTS_PER_HOUR` new anonymous visitors per
 // channel and hour (default 20; `429 anonymous_limit`; resuming a visitor does not count). A
 // blocked contact answers `403 contact_blocked`.
@@ -45809,7 +45829,8 @@ func (c *Client) CreateClientSessionWithBody(ctx context.Context, contentType st
 //
 // For a `chat` channel, browsers must call from one of the channel's allowed origins
 // (`403 origin_not_allowed`, also without an `Origin` header); an `app` channel's key needs no
-// origin. Requests are rate limited per IP address and per channel (`429 rate_limited`), and an
+// origin. Requests are rate limited per IP address (IPv6 per /64), per network (IPv4 /24, IPv6 /48)
+// and channel, and with a far higher ceiling per channel (`429 rate_limited`), and an
 // IP address starts at most `YUVA_ANONYMOUS_CONTACTS_PER_HOUR` new anonymous visitors per
 // channel and hour (default 20; `429 anonymous_limit`; resuming a visitor does not count). A
 // blocked contact answers `403 contact_blocked`.
@@ -46265,8 +46286,9 @@ func (c *Client) SlackOAuthCallback(ctx context.Context, params *SlackOAuthCallb
 // `200` when `domain` is the verified own domain of a published status page, help center or
 // changelog or a public roadmap board in a live workspace (and that feature is not off on the
 // server), `404` otherwise, also when the server's `YUVA_STATUS_DOMAINS` is not `ask`. It is public and
-// reveals only domains that already serve public pages. Up to 120 requests a minute per IP
-// address (`429 rate_limited`).
+// reveals only domains that already serve public pages. The proxy asks from one address for
+// every name a handshake brings, so a name known not to be an own domain is answered from
+// memory and the limit is per name asked: up to 30 lookups a minute (`429 rate_limited`).
 //
 // Corresponds with GET /status-domains/check (the `CheckStatusDomain` operationId).
 func (c *Client) CheckStatusDomain(ctx context.Context, params *CheckStatusDomainParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
@@ -93737,7 +93759,8 @@ type ClientWithResponsesInterface interface {
 	// Answers an access token for the link's other endpoints, valid for 12 hours or until the
 	// link expires, is revoked or gets another password. A wrong password answers
 	// `401 wrong_password`; an IP address may try 10 times a minute per link and 30 times a minute
-	// in all (`429 rate_limited`). A link without a password answers `409 no_password`.
+	// in all, and a link takes 60 tries an hour from everyone (`429 rate_limited`). A link without
+	// a password answers `409 no_password`.
 	//
 	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
 	//
@@ -93749,7 +93772,8 @@ type ClientWithResponsesInterface interface {
 	// Answers an access token for the link's other endpoints, valid for 12 hours or until the
 	// link expires, is revoked or gets another password. A wrong password answers
 	// `401 wrong_password`; an IP address may try 10 times a minute per link and 30 times a minute
-	// in all (`429 rate_limited`). A link without a password answers `409 no_password`.
+	// in all, and a link takes 60 tries an hour from everyone (`429 rate_limited`). A link without
+	// a password answers `409 no_password`.
 	//
 	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
 	//
@@ -94123,7 +94147,8 @@ type ClientWithResponsesInterface interface {
 	//
 	// Send `final=true` once the visitor settled on the query (Enter, a result opened, or 1.5
 	// seconds without typing); only those are counted in the report. 30 searches a minute per
-	// address and channel, and 1,200 per center (`429 rate_limited` with `Retry-After`). Sent with
+	// address and channel, 120 per network (IPv4 /24, IPv6 /48) and center, and 12,000 per center
+	// (`429 rate_limited` with `Retry-After`). Sent with
 	// `Cache-Control: public, max-age=60`. `404 help_off` without a published center.
 	//
 	// Returns a wrapper object for the known response body format(s).
@@ -94247,8 +94272,8 @@ type ClientWithResponsesInterface interface {
 	// after it was issued (`400 form_token`); `website` is a honeypot that must stay empty
 	// (a filled one is answered `202` and ignored); `list_ids` must be public lists of the
 	// channel's inbox (`404 list_not_found`); `400 invalid_email`. At most 10 requests per IP
-	// address and hour and 600 per channel and hour (`429 rate_limited` with `Retry-After`, the
-	// seconds until the hour ends); confirmation mails are
+	// address and hour, 40 per network (IPv4 /24, IPv6 /48) and channel and hour, and 6,000 per
+	// channel and hour (`429 rate_limited` with `Retry-After`, the seconds until the hour ends); confirmation mails are
 	// capped per address (3 a day, 1 per list in 10 minutes) and per channel (1,000 a day)
 	// without changing the answer.
 	//
@@ -94282,8 +94307,8 @@ type ClientWithResponsesInterface interface {
 	// after it was issued (`400 form_token`); `website` is a honeypot that must stay empty
 	// (a filled one is answered `202` and ignored); `list_ids` must be public lists of the
 	// channel's inbox (`404 list_not_found`); `400 invalid_email`. At most 10 requests per IP
-	// address and hour and 600 per channel and hour (`429 rate_limited` with `Retry-After`, the
-	// seconds until the hour ends); confirmation mails are
+	// address and hour, 40 per network (IPv4 /24, IPv6 /48) and channel and hour, and 6,000 per
+	// channel and hour (`429 rate_limited` with `Retry-After`, the seconds until the hour ends); confirmation mails are
 	// capped per address (3 a day, 1 per list in 10 minutes) and per channel (1,000 a day)
 	// without changing the answer.
 	//
@@ -94303,7 +94328,8 @@ type ClientWithResponsesInterface interface {
 	// comes in the default locale with `fallback: true`). Cursor-paged. Needs no session and
 	// creates no contact; a browser must come from an allowed origin. `404 whats_new_off`
 	// without a published changelog, and on a server with `YUVA_WHATS_NEW=off`. 120 reads a
-	// minute per address and channel, and 2,400 per changelog (`429 rate_limited` with
+	// minute per address and channel, 480 per network (IPv4 /24, IPv6 /48) and changelog, and
+	// 24,000 per changelog (`429 rate_limited` with
 	// `Retry-After`). Sent with `Cache-Control: public, max-age=60`.
 	//
 	// Returns a wrapper object for the known response body format(s).
@@ -94324,11 +94350,13 @@ type ClientWithResponsesInterface interface {
 	// SetClientContactEmailWithBodyWithResponse Leave an e-mail address for replies
 	//
 	// Stores the address the contact typed (e.g. when nobody is available), so replies they have
-	// not read can be e-mailed to them. A typed address is never used to find or merge an
+	// not read can be e-mailed to them once they confirm it: anyone can type any address, so
+	// nothing but the confirmation link goes to it before. A typed address is never used to find or merge an
 	// existing contact; it is used only while the contact has no address from an identity token
 	// or from their own mail. Yuva mails the address a confirmation link (unless a contact already
-	// has it; at most 3 per hour); it becomes one of the contact's addresses only once that link
-	// is confirmed. `email_confirmation` on the answer says whether a link went out, and a
+	// has it; at most 3 per contact and hour, 3 per address and day on the server, and a daily
+	// number per channel and workspace; a link held back by these limits still shows `sent`); it
+	// becomes one of the contact's addresses only once that link is confirmed. `email_confirmation` on the answer says whether a link went out, and a
 	// `contact.updated` frame on `/client/v1/realtime` brings its bounce or confirmation. An
 	// address that bounced before is stored but not mailed and shows `undeliverable`: ask for
 	// another one.
@@ -94342,11 +94370,13 @@ type ClientWithResponsesInterface interface {
 	// SetClientContactEmailWithResponse Leave an e-mail address for replies
 	//
 	// Stores the address the contact typed (e.g. when nobody is available), so replies they have
-	// not read can be e-mailed to them. A typed address is never used to find or merge an
+	// not read can be e-mailed to them once they confirm it: anyone can type any address, so
+	// nothing but the confirmation link goes to it before. A typed address is never used to find or merge an
 	// existing contact; it is used only while the contact has no address from an identity token
 	// or from their own mail. Yuva mails the address a confirmation link (unless a contact already
-	// has it; at most 3 per hour); it becomes one of the contact's addresses only once that link
-	// is confirmed. `email_confirmation` on the answer says whether a link went out, and a
+	// has it; at most 3 per contact and hour, 3 per address and day on the server, and a daily
+	// number per channel and workspace; a link held back by these limits still shows `sent`); it
+	// becomes one of the contact's addresses only once that link is confirmed. `email_confirmation` on the answer says whether a link went out, and a
 	// `contact.updated` frame on `/client/v1/realtime` brings its bounce or confirmation. An
 	// address that bounced before is stored but not mailed and shows `undeliverable`: ask for
 	// another one.
@@ -94724,8 +94754,8 @@ type ClientWithResponsesInterface interface {
 	// `allow_email: true` lets members' replies the contact has not read in the app be e-mailed
 	// to them (after the same delay as chat replies); `email` is the address to use while the
 	// contact has no address from an identity token or their own mail, kept like
-	// `PUT /client/v1/contact/email`. Without `allow_email`, replies reach the contact only in
-	// the app.
+	// `PUT /client/v1/contact/email`: it gets replies only once its confirmation link is
+	// confirmed. Without `allow_email`, replies reach the contact only in the app.
 	//
 	// Send `multipart/form-data` to attach screenshots (the other fields as form fields and up to
 	// 10 `files` parts), within the session channel's limits (`attachments` on `ClientInbox`) like
@@ -94754,8 +94784,8 @@ type ClientWithResponsesInterface interface {
 	// `allow_email: true` lets members' replies the contact has not read in the app be e-mailed
 	// to them (after the same delay as chat replies); `email` is the address to use while the
 	// contact has no address from an identity token or their own mail, kept like
-	// `PUT /client/v1/contact/email`. Without `allow_email`, replies reach the contact only in
-	// the app.
+	// `PUT /client/v1/contact/email`: it gets replies only once its confirmation link is
+	// confirmed. Without `allow_email`, replies reach the contact only in the app.
 	//
 	// Send `multipart/form-data` to attach screenshots (the other fields as form fields and up to
 	// 10 `files` parts), within the session channel's limits (`attachments` on `ClientInbox`) like
@@ -94864,7 +94894,8 @@ type ClientWithResponsesInterface interface {
 	//
 	// For a `chat` channel, browsers must call from one of the channel's allowed origins
 	// (`403 origin_not_allowed`, also without an `Origin` header); an `app` channel's key needs no
-	// origin. Requests are rate limited per IP address and per channel (`429 rate_limited`), and an
+	// origin. Requests are rate limited per IP address (IPv6 per /64), per network (IPv4 /24, IPv6 /48)
+	// and channel, and with a far higher ceiling per channel (`429 rate_limited`), and an
 	// IP address starts at most `YUVA_ANONYMOUS_CONTACTS_PER_HOUR` new anonymous visitors per
 	// channel and hour (default 20; `429 anonymous_limit`; resuming a visitor does not count). A
 	// blocked contact answers `403 contact_blocked`.
@@ -94897,7 +94928,8 @@ type ClientWithResponsesInterface interface {
 	//
 	// For a `chat` channel, browsers must call from one of the channel's allowed origins
 	// (`403 origin_not_allowed`, also without an `Origin` header); an `app` channel's key needs no
-	// origin. Requests are rate limited per IP address and per channel (`429 rate_limited`), and an
+	// origin. Requests are rate limited per IP address (IPv6 per /64), per network (IPv4 /24, IPv6 /48)
+	// and channel, and with a far higher ceiling per channel (`429 rate_limited`), and an
 	// IP address starts at most `YUVA_ANONYMOUS_CONTACTS_PER_HOUR` new anonymous visitors per
 	// channel and hour (default 20; `429 anonymous_limit`; resuming a visitor does not count). A
 	// blocked contact answers `403 contact_blocked`.
@@ -95183,8 +95215,9 @@ type ClientWithResponsesInterface interface {
 	// `200` when `domain` is the verified own domain of a published status page, help center or
 	// changelog or a public roadmap board in a live workspace (and that feature is not off on the
 	// server), `404` otherwise, also when the server's `YUVA_STATUS_DOMAINS` is not `ask`. It is public and
-	// reveals only domains that already serve public pages. Up to 120 requests a minute per IP
-	// address (`429 rate_limited`).
+	// reveals only domains that already serve public pages. The proxy asks from one address for
+	// every name a handshake brings, so a name known not to be an own domain is answered from
+	// memory and the limit is per name asked: up to 30 lookups a minute (`429 rate_limited`).
 	//
 	// Returns a wrapper object for the known response body format(s).
 	//
@@ -139225,7 +139258,8 @@ func (c *ClientWithResponses) GetSharedAnalyticsWithResponse(ctx context.Context
 // Answers an access token for the link's other endpoints, valid for 12 hours or until the
 // link expires, is revoked or gets another password. A wrong password answers
 // `401 wrong_password`; an IP address may try 10 times a minute per link and 30 times a minute
-// in all (`429 rate_limited`). A link without a password answers `409 no_password`.
+// in all, and a link takes 60 tries an hour from everyone (`429 rate_limited`). A link without
+// a password answers `409 no_password`.
 //
 // Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
 //
@@ -139243,7 +139277,8 @@ func (c *ClientWithResponses) UnlockSharedAnalyticsWithBodyWithResponse(ctx cont
 // Answers an access token for the link's other endpoints, valid for 12 hours or until the
 // link expires, is revoked or gets another password. A wrong password answers
 // `401 wrong_password`; an IP address may try 10 times a minute per link and 30 times a minute
-// in all (`429 rate_limited`). A link without a password answers `409 no_password`.
+// in all, and a link takes 60 tries an hour from everyone (`429 rate_limited`). A link without
+// a password answers `409 no_password`.
 //
 // Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
 //
@@ -139713,7 +139748,8 @@ func (c *ClientWithResponses) GetClientHelpCollectionWithResponse(ctx context.Co
 //
 // Send `final=true` once the visitor settled on the query (Enter, a result opened, or 1.5
 // seconds without typing); only those are counted in the report. 30 searches a minute per
-// address and channel, and 1,200 per center (`429 rate_limited` with `Retry-After`). Sent with
+// address and channel, 120 per network (IPv4 /24, IPv6 /48) and center, and 12,000 per center
+// (`429 rate_limited` with `Retry-After`). Sent with
 // `Cache-Control: public, max-age=60`. `404 help_off` without a published center.
 //
 // Returns a wrapper object for the known response body format(s).
@@ -139879,8 +139915,8 @@ func (c *ClientWithResponses) GetClientRoadmapWithResponse(ctx context.Context, 
 // after it was issued (`400 form_token`); `website` is a honeypot that must stay empty
 // (a filled one is answered `202` and ignored); `list_ids` must be public lists of the
 // channel's inbox (`404 list_not_found`); `400 invalid_email`. At most 10 requests per IP
-// address and hour and 600 per channel and hour (`429 rate_limited` with `Retry-After`, the
-// seconds until the hour ends); confirmation mails are
+// address and hour, 40 per network (IPv4 /24, IPv6 /48) and channel and hour, and 6,000 per
+// channel and hour (`429 rate_limited` with `Retry-After`, the seconds until the hour ends); confirmation mails are
 // capped per address (3 a day, 1 per list in 10 minutes) and per channel (1,000 a day)
 // without changing the answer.
 //
@@ -139920,8 +139956,8 @@ func (c *ClientWithResponses) CreateClientSubscriptionWithBodyWithResponse(ctx c
 // after it was issued (`400 form_token`); `website` is a honeypot that must stay empty
 // (a filled one is answered `202` and ignored); `list_ids` must be public lists of the
 // channel's inbox (`404 list_not_found`); `400 invalid_email`. At most 10 requests per IP
-// address and hour and 600 per channel and hour (`429 rate_limited` with `Retry-After`, the
-// seconds until the hour ends); confirmation mails are
+// address and hour, 40 per network (IPv4 /24, IPv6 /48) and channel and hour, and 6,000 per
+// channel and hour (`429 rate_limited` with `Retry-After`, the seconds until the hour ends); confirmation mails are
 // capped per address (3 a day, 1 per list in 10 minutes) and per channel (1,000 a day)
 // without changing the answer.
 //
@@ -139947,7 +139983,8 @@ func (c *ClientWithResponses) CreateClientSubscriptionWithResponse(ctx context.C
 // comes in the default locale with `fallback: true`). Cursor-paged. Needs no session and
 // creates no contact; a browser must come from an allowed origin. `404 whats_new_off`
 // without a published changelog, and on a server with `YUVA_WHATS_NEW=off`. 120 reads a
-// minute per address and channel, and 2,400 per changelog (`429 rate_limited` with
+// minute per address and channel, 480 per network (IPv4 /24, IPv6 /48) and changelog, and
+// 24,000 per changelog (`429 rate_limited` with
 // `Retry-After`). Sent with `Cache-Control: public, max-age=60`.
 //
 // Returns a wrapper object for the known response body format(s).
@@ -139980,11 +140017,13 @@ func (c *ClientWithResponses) GetClientWhatsNewEntryWithResponse(ctx context.Con
 // SetClientContactEmailWithBodyWithResponse Leave an e-mail address for replies
 //
 // Stores the address the contact typed (e.g. when nobody is available), so replies they have
-// not read can be e-mailed to them. A typed address is never used to find or merge an
+// not read can be e-mailed to them once they confirm it: anyone can type any address, so
+// nothing but the confirmation link goes to it before. A typed address is never used to find or merge an
 // existing contact; it is used only while the contact has no address from an identity token
 // or from their own mail. Yuva mails the address a confirmation link (unless a contact already
-// has it; at most 3 per hour); it becomes one of the contact's addresses only once that link
-// is confirmed. `email_confirmation` on the answer says whether a link went out, and a
+// has it; at most 3 per contact and hour, 3 per address and day on the server, and a daily
+// number per channel and workspace; a link held back by these limits still shows `sent`); it
+// becomes one of the contact's addresses only once that link is confirmed. `email_confirmation` on the answer says whether a link went out, and a
 // `contact.updated` frame on `/client/v1/realtime` brings its bounce or confirmation. An
 // address that bounced before is stored but not mailed and shows `undeliverable`: ask for
 // another one.
@@ -140004,11 +140043,13 @@ func (c *ClientWithResponses) SetClientContactEmailWithBodyWithResponse(ctx cont
 // SetClientContactEmailWithResponse Leave an e-mail address for replies
 //
 // Stores the address the contact typed (e.g. when nobody is available), so replies they have
-// not read can be e-mailed to them. A typed address is never used to find or merge an
+// not read can be e-mailed to them once they confirm it: anyone can type any address, so
+// nothing but the confirmation link goes to it before. A typed address is never used to find or merge an
 // existing contact; it is used only while the contact has no address from an identity token
 // or from their own mail. Yuva mails the address a confirmation link (unless a contact already
-// has it; at most 3 per hour); it becomes one of the contact's addresses only once that link
-// is confirmed. `email_confirmation` on the answer says whether a link went out, and a
+// has it; at most 3 per contact and hour, 3 per address and day on the server, and a daily
+// number per channel and workspace; a link held back by these limits still shows `sent`); it
+// becomes one of the contact's addresses only once that link is confirmed. `email_confirmation` on the answer says whether a link went out, and a
 // `contact.updated` frame on `/client/v1/realtime` brings its bounce or confirmation. An
 // address that bounced before is stored but not mailed and shows `undeliverable`: ask for
 // another one.
@@ -140554,8 +140595,8 @@ func (c *ClientWithResponses) CreateClientDiscussionPostWithResponse(ctx context
 // `allow_email: true` lets members' replies the contact has not read in the app be e-mailed
 // to them (after the same delay as chat replies); `email` is the address to use while the
 // contact has no address from an identity token or their own mail, kept like
-// `PUT /client/v1/contact/email`. Without `allow_email`, replies reach the contact only in
-// the app.
+// `PUT /client/v1/contact/email`: it gets replies only once its confirmation link is
+// confirmed. Without `allow_email`, replies reach the contact only in the app.
 //
 // Send `multipart/form-data` to attach screenshots (the other fields as form fields and up to
 // 10 `files` parts), within the session channel's limits (`attachments` on `ClientInbox`) like
@@ -140590,8 +140631,8 @@ func (c *ClientWithResponses) CreateClientFeedbackWithBodyWithResponse(ctx conte
 // `allow_email: true` lets members' replies the contact has not read in the app be e-mailed
 // to them (after the same delay as chat replies); `email` is the address to use while the
 // contact has no address from an identity token or their own mail, kept like
-// `PUT /client/v1/contact/email`. Without `allow_email`, replies reach the contact only in
-// the app.
+// `PUT /client/v1/contact/email`: it gets replies only once its confirmation link is
+// confirmed. Without `allow_email`, replies reach the contact only in the app.
 //
 // Send `multipart/form-data` to attach screenshots (the other fields as form fields and up to
 // 10 `files` parts), within the session channel's limits (`attachments` on `ClientInbox`) like
@@ -140742,7 +140783,8 @@ func (c *ClientWithResponses) GetClientSessionWithResponse(ctx context.Context, 
 //
 // For a `chat` channel, browsers must call from one of the channel's allowed origins
 // (`403 origin_not_allowed`, also without an `Origin` header); an `app` channel's key needs no
-// origin. Requests are rate limited per IP address and per channel (`429 rate_limited`), and an
+// origin. Requests are rate limited per IP address (IPv6 per /64), per network (IPv4 /24, IPv6 /48)
+// and channel, and with a far higher ceiling per channel (`429 rate_limited`), and an
 // IP address starts at most `YUVA_ANONYMOUS_CONTACTS_PER_HOUR` new anonymous visitors per
 // channel and hour (default 20; `429 anonymous_limit`; resuming a visitor does not count). A
 // blocked contact answers `403 contact_blocked`.
@@ -140781,7 +140823,8 @@ func (c *ClientWithResponses) CreateClientSessionWithBodyWithResponse(ctx contex
 //
 // For a `chat` channel, browsers must call from one of the channel's allowed origins
 // (`403 origin_not_allowed`, also without an `Origin` header); an `app` channel's key needs no
-// origin. Requests are rate limited per IP address and per channel (`429 rate_limited`), and an
+// origin. Requests are rate limited per IP address (IPv6 per /64), per network (IPv4 /24, IPv6 /48)
+// and channel, and with a far higher ceiling per channel (`429 rate_limited`), and an
 // IP address starts at most `YUVA_ANONYMOUS_CONTACTS_PER_HOUR` new anonymous visitors per
 // channel and hour (default 20; `429 anonymous_limit`; resuming a visitor does not count). A
 // blocked contact answers `403 contact_blocked`.
@@ -141181,8 +141224,9 @@ func (c *ClientWithResponses) SlackOAuthCallbackWithResponse(ctx context.Context
 // `200` when `domain` is the verified own domain of a published status page, help center or
 // changelog or a public roadmap board in a live workspace (and that feature is not off on the
 // server), `404` otherwise, also when the server's `YUVA_STATUS_DOMAINS` is not `ask`. It is public and
-// reveals only domains that already serve public pages. Up to 120 requests a minute per IP
-// address (`429 rate_limited`).
+// reveals only domains that already serve public pages. The proxy asks from one address for
+// every name a handshake brings, so a name known not to be an own domain is answered from
+// memory and the limit is per name asked: up to 30 lookups a minute (`429 rate_limited`).
 //
 // Returns a wrapper object for the known response body format(s).
 //

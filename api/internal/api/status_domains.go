@@ -811,15 +811,24 @@ func (s *Server) addStatusDomainWorkers(workers *river.Workers) {
 }
 
 func (s *Server) CheckStatusDomain(ctx context.Context, req oas.CheckStatusDomainRequestObject) (oas.CheckStatusDomainResponseObject, error) {
-	if err := s.rateLimit(ctx, rateCheck{"status-domain-check:ip:" + rateIP(s.clientIP(requestFrom(ctx))), limitStatusPerIP}); err != nil {
-		return nil, err
-	}
 	d := spelledDomain(req.Params.Domain)
 	if s.statusDomainsMode() != statusDomainsAsk || !domainSyntax(d) {
 		return nil, errNotFound
 	}
+	// Caddy asks from one address for every name a TLS handshake brings: a name known not to be an
+	// own domain is answered from memory, and the limit is per name asked, so random names never
+	// hold up a verified one.
+	now := time.Now()
+	_, known, cached, gen := s.statusDomainCache.get(d, now)
+	if cached && !known {
+		return nil, errNotFound
+	}
+	if err := s.rateLimit(ctx, rateCheck{"status-domain-check:host:" + d, limitDomainCheckPerHost}); err != nil {
+		return nil, err
+	}
 	hit, err := s.st.FindOwnDomain(ctx, d)
 	if store.IsNotFound(err) {
+		s.statusDomainCache.put(d, statusDomainHit{at: now}, false, gen)
 		return nil, errNotFound
 	}
 	if err != nil {
@@ -837,6 +846,8 @@ type statusDomainHit struct {
 	slug            string
 	at              time.Time
 }
+
+var limitDomainCheckPerHost = limit{30, time.Minute}
 
 // statusDomainCache keeps the verified own domains apart from the hosts that are not one, so requests on
 // arbitrary hosts never push a verified domain out.

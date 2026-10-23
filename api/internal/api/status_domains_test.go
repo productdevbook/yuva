@@ -625,24 +625,33 @@ func TestStatusDomainAsk(t *testing.T) {
 			t.Fatalf("%q: %d", bad, code)
 		}
 	}
-	if _, err := h.st.Pool.Exec(context.Background(), "UPDATE workspaces SET deleted_at = now() WHERE id = $1", st.ws); err != nil {
-		t.Fatal(err)
+	for i := range 200 {
+		if code := ask(unique("random") + ".example.net"); code != http.StatusNotFound {
+			t.Fatalf("random name %d: %d", i+1, code)
+		}
 	}
-	if code := ask(name); code != http.StatusNotFound {
-		t.Fatalf("deleted workspace: %d", code)
+	if code := ask(name); code != http.StatusOK {
+		t.Fatalf("the verified domain after 200 random names from the same address: %d", code)
 	}
 	limited := false
-	for range 130 {
+	for range 40 {
 		if code := ask(name); code == http.StatusTooManyRequests {
 			limited = true
 			break
 		}
 	}
 	if !limited {
-		t.Fatal("no rate limit on the check")
+		t.Fatal("no rate limit on asking for one name")
 	}
-	if code := h.client().do("GET", "/status-domains/check?domain="+name, nil).status; code != http.StatusNotFound {
-		t.Fatalf("another address: %d", code)
+	if code := ask(unique("other") + ".example.net"); code != http.StatusNotFound {
+		t.Fatalf("another name: %d", code)
+	}
+	h.clock.Advance(time.Minute)
+	if _, err := h.st.Pool.Exec(context.Background(), "UPDATE workspaces SET deleted_at = now() WHERE id = $1", st.ws); err != nil {
+		t.Fatal(err)
+	}
+	if code := ask(name); code != http.StatusNotFound {
+		t.Fatalf("deleted workspace: %d", code)
 	}
 }
 

@@ -120,7 +120,7 @@ func (s *Server) newAnalytics(d Deps) *analyticsState {
 	set := analyticsSettings(d.Analytics)
 	st := &analytics.PGStore{Pool: d.Store.Pool}
 	a := &analyticsState{
-		settings: set, store: st, buffer: analytics.NewBuffer(set.Buffer), props: &propertyCache{m: map[string]*cachedProperty{}},
+		settings: set, store: st, buffer: analytics.NewBuffer(set.Buffer), props: newPropertyCache(),
 		usage: &usageCache{m: map[uuid.UUID]*usageEntry{}}, slots: querySlots{limits: s.limits},
 		resolver: &analytics.Resolver{Store: st, Salts: analytics.NewSalts(st), Visits: analytics.NewVisits(set.VisitCache), Grace: set.SaltGrace},
 	}
@@ -226,27 +226,52 @@ type cachedProperty struct {
 	keyErr  error
 }
 
-// propertyCache finds properties by public key for a minute; an unknown key is remembered too, so
-// a flood of made-up keys does not reach the database on every request.
+// propertyCache finds properties by public key for a minute. An unknown key is remembered too, apart
+// from the known ones, so a flood of made-up keys neither reaches the database on every request nor
+// pushes a real property out; a key that cannot be one is never looked up.
 type propertyCache struct {
-	mu  sync.Mutex
-	m   map[string]*cachedProperty
-	gen uint64
+	mu     sync.Mutex
+	m      map[string]*cachedProperty
+	misses map[string]time.Time
+	gen    uint64
+}
+
+func newPropertyCache() *propertyCache {
+	return &propertyCache{m: map[string]*cachedProperty{}, misses: map[string]time.Time{}}
+}
+
+func fresh(at, now time.Time) bool {
+	return now.Sub(at) < propertyCacheTTL && now.After(at.Add(-time.Second))
+}
+
+func analyticsKeyShape(key string) bool {
+	rest, ok := strings.CutPrefix(key, analyticsKeyPrefix)
+	if !ok || len(rest) != 24 {
+		return false
+	}
+	for _, r := range rest {
+		if !(r >= 'a' && r <= 'z' || r >= 'A' && r <= 'Z' || r >= '0' && r <= '9' || r == '-' || r == '_') {
+			return false
+		}
+	}
+	return true
 }
 
 func (c *propertyCache) get(ctx context.Context, st *store.Store, key string, now time.Time) (*cachedProperty, error) {
-	c.mu.Lock()
-	e, ok := c.m[key]
-	c.mu.Unlock()
-	if ok && now.Sub(e.at) < propertyCacheTTL && now.After(e.at.Add(-time.Second)) {
-		if e.prop.ID == uuid.Nil() {
-			return nil, nil
-		}
-		return e, nil
+	if !analyticsKeyShape(key) {
+		return nil, nil
 	}
 	c.mu.Lock()
+	e, ok := c.m[key]
+	missed, miss := c.misses[key]
 	gen := c.gen
 	c.mu.Unlock()
+	if ok && fresh(e.at, now) {
+		return e, nil
+	}
+	if miss && fresh(missed, now) {
+		return nil, nil
+	}
 	e = &cachedProperty{at: now}
 	prop, err := st.FindAnalyticsPropertyByKey(ctx, store.FindAnalyticsPropertyByKeyParams{Key: key, Now: new(now)})
 	switch {
@@ -257,13 +282,40 @@ func (c *propertyCache) get(ctx context.Context, st *store.Store, key string, no
 		e.prop, e.loc, e.rules = prop, propertyLocation(prop.Timezone), pathRules(prop.PathRules)
 	}
 	c.mu.Lock()
+	defer c.mu.Unlock()
+	if c.gen != gen {
+		return e.found()
+	}
+	if e.prop.ID == uuid.Nil() {
+		if len(c.misses) >= maxCachedKeys {
+			for k, at := range c.misses {
+				if !fresh(at, now) {
+					delete(c.misses, k)
+				}
+			}
+			if len(c.misses) >= maxCachedKeys {
+				c.misses = map[string]time.Time{}
+			}
+		}
+		c.misses[key] = now
+		return nil, nil
+	}
+	delete(c.misses, key)
 	if len(c.m) >= maxCachedKeys {
-		c.m = map[string]*cachedProperty{}
+		for k, old := range c.m {
+			if !fresh(old.at, now) {
+				delete(c.m, k)
+			}
+		}
+		if len(c.m) >= maxCachedKeys {
+			c.m = map[string]*cachedProperty{}
+		}
 	}
-	if c.gen == gen {
-		c.m[key] = e
-	}
-	c.mu.Unlock()
+	c.m[key] = e
+	return e, nil
+}
+
+func (e *cachedProperty) found() (*cachedProperty, error) {
 	if e.prop.ID == uuid.Nil() {
 		return nil, nil
 	}
@@ -274,7 +326,7 @@ func (c *propertyCache) forgetAll() {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 	c.gen++
-	c.m = map[string]*cachedProperty{}
+	c.m, c.misses = map[string]*cachedProperty{}, map[string]time.Time{}
 }
 
 func (c *propertyCache) forgetWorkspace(ws uuid.UUID) {

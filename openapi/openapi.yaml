@@ -653,8 +653,9 @@ paths:
         `200` when `domain` is the verified own domain of a published status page, help center or
         changelog or a public roadmap board in a live workspace (and that feature is not off on the
         server), `404` otherwise, also when the server's `YUVA_STATUS_DOMAINS` is not `ask`. It is public and
-        reveals only domains that already serve public pages. Up to 120 requests a minute per IP
-        address (`429 rate_limited`).
+        reveals only domains that already serve public pages. The proxy asks from one address for
+        every name a handshake brings, so a name known not to be an own domain is answered from
+        memory and the limit is per name asked: up to 30 lookups a minute (`429 rate_limited`).
       tags: [status]
       security: []
       parameters:
@@ -17441,8 +17442,8 @@ paths:
         `allow_email: true` lets members' replies the contact has not read in the app be e-mailed
         to them (after the same delay as chat replies); `email` is the address to use while the
         contact has no address from an identity token or their own mail, kept like
-        `PUT /client/v1/contact/email`. Without `allow_email`, replies reach the contact only in
-        the app.
+        `PUT /client/v1/contact/email`: it gets replies only once its confirmation link is
+        confirmed. Without `allow_email`, replies reach the contact only in the app.
 
         Send `multipart/form-data` to attach screenshots (the other fields as form fields and up to
         10 `files` parts), within the session channel's limits (`attachments` on `ClientInbox`) like
@@ -17493,7 +17494,8 @@ paths:
       summary: Leave an e-mail address for replies
       description: |
         Stores the address the contact typed (e.g. when nobody is available), so replies they have
-        not read can be e-mailed to them. A typed address is never used to find or merge an
+        not read can be e-mailed to them once they confirm it: anyone can type any address, so
+        nothing but the confirmation link goes to it before. A typed address is never used to find or merge an
         existing contact; it is used only while the contact has no address from an identity token
         or from their own mail. Yuva mails the address a confirmation link (unless a contact already
         has it; at most 3 per contact and hour, 3 per address and day on the server, and a daily
@@ -17747,7 +17749,8 @@ paths:
         Answers an access token for the link's other endpoints, valid for 12 hours or until the
         link expires, is revoked or gets another password. A wrong password answers
         `401 wrong_password`; an IP address may try 10 times a minute per link and 30 times a minute
-        in all (`429 rate_limited`). A link without a password answers `409 no_password`.
+        in all, and a link takes 60 tries an hour from everyone (`429 rate_limited`). A link without
+        a password answers `409 no_password`.
       tags: [client]
       security: []
       parameters:

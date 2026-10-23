@@ -218,8 +218,11 @@ func TestRateLimitFailsOpen(t *testing.T) {
 		t.Fatal("the transaction did not fail")
 	}
 	key := unique("broken")
-	if got, _ := h.srv.TakeRates(ctx, h.st.WithTx(tx), api.RateTake{Key: key, N: 3, Lim: 1, Window: time.Minute}); got[0] != 3 {
-		t.Fatalf("a failing check let %d of 3 through, want all", got[0])
+	if got, _ := h.srv.TakeRates(api.MemberTraffic(ctx), h.st.WithTx(tx), api.RateTake{Key: key, N: 3, Lim: 1, Window: time.Minute}); got[0] != 3 {
+		t.Fatalf("a failing check let %d of 3 member requests through, want all", got[0])
+	}
+	if got, _ := h.srv.TakeRates(ctx, h.st.WithTx(tx), api.RateTake{Key: key, N: 3, Lim: 1, Window: time.Minute}); got[0] != 1 {
+		t.Fatalf("a failing check let %d of 3 anonymous requests through, want the local limit's 1", got[0])
 	}
 }
 

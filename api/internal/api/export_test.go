@@ -97,3 +97,43 @@ func SetIssueSweepLimits(batch, perIntegration int) (restore func()) {
 	issueSweepBatch, issueSweepPerIntegration = batch, perIntegration
 	return func() { issueSweepBatch, issueSweepPerIntegration = oldBatch, oldPer }
 }
+
+func MemberTraffic(ctx context.Context) context.Context { return memberTraffic(ctx) }
+
+// BreakRateLimits makes every database rate limit check fail with err.
+func (s *Server) BreakRateLimits(err error) { s.limits.broken = func() error { return err } }
+
+// TakeRateAs counts n requests against key as member traffic or as anonymous traffic.
+func (s *Server) TakeRateAs(member bool, key string, n, lim int, window time.Duration) int {
+	ctx := context.Background()
+	if member {
+		ctx = memberTraffic(ctx)
+	}
+	return s.limits.take(ctx, nil, rateTake{key, limit{lim, window}, n})[0].n
+}
+
+func (s *Server) AnalyticsKeyKnown(ctx context.Context, key string) (bool, error) {
+	cp, err := s.analytics.props.get(ctx, s.st, key, s.now())
+	return cp != nil, err
+}
+
+func NewAnalyticsKey() string { return newAnalyticsKey() }
+
+const PublicCachePerPage = publicCachePerPage
+
+type PublicCache struct{ c *publicCache }
+
+func NewPublicCache(max int) PublicCache { return PublicCache{newPublicCache(time.Hour, max)} }
+
+func (p PublicCache) Put(key string, at time.Time) { p.c.put(key, publicEntry{at: at}) }
+
+func (p PublicCache) Has(key string, now time.Time) bool {
+	_, ok := p.c.get(key, time.Time{}, now)
+	return ok
+}
+
+func (p PublicCache) Len() int {
+	p.c.mu.Lock()
+	defer p.c.mu.Unlock()
+	return len(p.c.entries)
+}

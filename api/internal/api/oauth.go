@@ -149,7 +149,7 @@ func (s *Server) meterBearer(ctx context.Context, p principal) error {
 		key = "bearer:" + p.grantID.String()
 	}
 	now := s.now()
-	if ok, wait := s.limits.allowWait(ctx, nil, key, limitBearer); !ok {
+	if ok, wait := s.limits.allowWait(memberTraffic(ctx), nil, key, limitBearer); !ok {
 		return rateLimited(wait)
 	}
 	if !p.isGrant() {

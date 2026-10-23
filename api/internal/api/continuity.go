@@ -190,23 +190,17 @@ func continuitySubject(ctx context.Context, q *store.Queries, c store.Conversati
 	return msg.Subject, nil
 }
 
-// continuityAddress is a verified address of the conversation's contact, else the address they
-// typed in the widget.
+// continuityAddress is a verified address of the conversation's contact. An address typed in the
+// widget gets replies only once it is confirmed, when it becomes one of the contact's: anyone can
+// type anyone's address.
 func continuityAddress(ctx context.Context, q *store.Queries, c store.Conversation) (string, error) {
 	to, err := q.ContactReplyAddress(ctx, store.ContactReplyAddressParams{WorkspaceID: c.WorkspaceID, ConversationID: c.ID})
 	if err == nil || !store.IsNotFound(err) {
 		return to, err
 	}
 	emails, err := q.ListContactEmails(ctx, store.ListContactEmailsParams{WorkspaceID: c.WorkspaceID, ContactIds: []uuid.UUID{c.ContactID}})
-	if err != nil {
+	if err != nil || len(emails) == 0 {
 		return "", err
 	}
-	if len(emails) > 0 {
-		return emails[0].Email, nil
-	}
-	ct, err := q.GetContact(ctx, store.GetContactParams{WorkspaceID: c.WorkspaceID, ID: c.ContactID})
-	if err != nil || ct.TypedEmail == nil {
-		return "", err
-	}
-	return *ct.TypedEmail, nil
+	return emails[0].Email, nil
 }

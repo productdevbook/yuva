@@ -935,6 +935,14 @@ func TestChatEmailContinuity(t *testing.T) {
 	}
 	before := h.smtp.count()
 	sendBatch()
+	if h.smtp.count() != before {
+		t.Fatalf("%d replies mailed to a typed address nobody confirmed", h.smtp.count()-before)
+	}
+	confirmTypedEmail(t, h, confirmLink(t, h.mail.wait(t, typed, 1)[0].Text))
+	if next := check(conv); next != nil {
+		t.Fatalf("due once confirmed: next %v", next)
+	}
+	sendBatch()
 	if h.smtp.count() != before+1 {
 		t.Fatalf("want one e-mail for both replies, got %d", h.smtp.count()-before)
 	}
@@ -1042,6 +1050,9 @@ func TestChatEmailContinuity(t *testing.T) {
 		}
 		return n
 	}
+	first := typed
+	typed = unique("retyped") + "@example.com"
+	cs.expect(http.StatusOK, "PUT", "/client/v1/contact/email", map[string]any{"email": typed})
 	early := h.ingest(addr, replyMail("Is anyone reading this?"), nil)
 	if early.status != http.StatusAccepted || early.str("conversation_id") != conv {
 		t.Fatalf("a reply from the unconfirmed typed address did not continue the chat: %d %v", early.status, early.body)
@@ -1049,7 +1060,7 @@ func TestChatEmailContinuity(t *testing.T) {
 	if unverified(early.str("message_id")) != true || owners() != 0 {
 		t.Fatalf("unconfirmed reply: unverified %v, %d contacts own the address", unverified(early.str("message_id")), owners())
 	}
-	if len(ct.owner.expect(http.StatusOK, "GET", "/v1/contacts/"+cs.contactID, nil).body["emails"].([]any)) != 0 {
+	if len(ct.owner.expect(http.StatusOK, "GET", "/v1/contacts/"+cs.contactID, nil).body["emails"].([]any)) != 1 {
 		t.Fatal("a reply linked the unconfirmed address")
 	}
 
@@ -1058,7 +1069,7 @@ func TestChatEmailContinuity(t *testing.T) {
 	if unverified(early.str("message_id")) != false {
 		t.Fatal("the earlier reply is still from an unverified address after confirmation")
 	}
-	if evs := contactEvents(); !strings.Contains(evs[len(evs)-1], `"emails": ["`+typed+`"]`) {
+	if evs := contactEvents(); !strings.Contains(evs[len(evs)-1], `"emails": ["`+first+`", "`+typed+`"]`) {
 		t.Fatalf("confirming the typed address: contact.updated events %v", evs)
 	}
 	res := h.ingest(addr, replyMail("Thanks, that helped."), nil)
@@ -1066,7 +1077,7 @@ func TestChatEmailContinuity(t *testing.T) {
 		t.Fatalf("the e-mail answer did not continue the chat: %v", res.body)
 	}
 	c := ct.owner.expect(http.StatusOK, "GET", "/v1/contacts/"+cs.contactID, nil)
-	if len(c.body["emails"].([]any)) != 1 || c.body["emails"].([]any)[0] != typed {
+	if len(c.body["emails"].([]any)) != 2 || c.body["emails"].([]any)[1] != typed {
 		t.Fatalf("confirmed typed address is the contact's: %s", c.raw)
 	}
 	found := false

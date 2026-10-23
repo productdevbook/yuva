@@ -35,17 +35,26 @@ const (
 	shareTouchEvery      = time.Minute
 	maxEmbedOrigins      = 20
 
-	argonTime    = 2
-	argonMemory  = 19 * 1024
+	// OWASP's argon2id settings of equal strength trade memory for passes; the 7 MiB one keeps
+	// concurrent unlocks cheap in memory on a host without swap.
+	argonTime    = 5
+	argonMemory  = 7 * 1024
 	argonThreads = 1
 	argonKeyLen  = 32
+	argonMaxTime = 10
+	argonMaxMem  = 64 * 1024
+	shareHashers = 4
 )
 
 var (
 	limitSharePerIP       = limit{120, time.Minute}
 	limitUnlockPerIP      = limit{30, time.Minute}
 	limitUnlockPerShareIP = limit{10, time.Minute}
+	limitUnlockPerShare   = limit{60, time.Hour}
 )
+
+// shareHashSlots bounds how many password hashes run at once, and so the memory they take.
+var shareHashSlots = make(chan struct{}, shareHashers)
 
 var (
 	errShareGone             = problem(http.StatusNotFound, "not_found", "no such share link")
@@ -84,7 +93,7 @@ func checkSharePassword(encoded, pw string) bool {
 	}
 	var m, t uint32
 	var p uint8
-	if _, err := fmt.Sscanf(parts[3], "m=%d,t=%d,p=%d", &m, &t, &p); err != nil {
+	if _, err := fmt.Sscanf(parts[3], "m=%d,t=%d,p=%d", &m, &t, &p); err != nil || m > argonMaxMem || t > argonMaxTime || p == 0 || p > 4 {
 		return false
 	}
 	salt, err := base64.RawStdEncoding.DecodeString(parts[4])
@@ -532,10 +541,20 @@ func (s *Server) UnlockSharedAnalytics(ctx context.Context, req oas.UnlockShared
 	if sh.PasswordHash == nil {
 		return nil, errShareNoPassword
 	}
-	if err := s.rateLimit(ctx, rateCheck{"share-unlock:" + sh.ID.String() + ":" + ip, limitUnlockPerShareIP}); err != nil {
+	if err := s.rateLimit(ctx,
+		rateCheck{"share-unlock:" + sh.ID.String() + ":" + ip, limitUnlockPerShareIP},
+		rateCheck{"share-unlock:share:" + sh.ID.String(), limitUnlockPerShare},
+	); err != nil {
 		return nil, err
 	}
-	if !checkSharePassword(*sh.PasswordHash, req.Body.Password) {
+	select {
+	case shareHashSlots <- struct{}{}:
+	case <-ctx.Done():
+		return nil, ctx.Err()
+	}
+	ok := checkSharePassword(*sh.PasswordHash, req.Body.Password)
+	<-shareHashSlots
+	if !ok {
 		return nil, errShareWrongPassword
 	}
 	token, exp := s.shareAccessToken(sh)

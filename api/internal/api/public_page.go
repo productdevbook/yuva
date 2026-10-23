@@ -68,46 +68,110 @@ type publicEntry struct {
 	body        []byte
 }
 
+const publicCachePerPage = 200
+
+type publicSlot struct {
+	publicEntry
+	used time.Time
+}
+
 // publicCache keeps rendered public answers per page, view and language; an entry is used only
-// while the page's changed_at is the one it was made from and for at most ttl.
+// while the page's changed_at is the one it was made from and for at most ttl. Keys start with the
+// page ("<page>|…"). Visitors choose part of a key (a cursor, search words, a filter), so a page
+// holds at most publicCachePerPage entries and a full cache or page lets go of its least recently
+// used one: answers asked once never push out the ones that are read.
 type publicCache struct {
 	mu      sync.Mutex
-	entries map[string]publicEntry
+	entries map[string]*publicSlot
+	pages   map[string]map[string]struct{}
 	ttl     time.Duration
 	max     int
 }
 
 func newPublicCache(ttl time.Duration, max int) *publicCache {
-	return &publicCache{entries: map[string]publicEntry{}, ttl: ttl, max: max}
+	return &publicCache{entries: map[string]*publicSlot{}, pages: map[string]map[string]struct{}{}, ttl: ttl, max: max}
+}
+
+func publicCachePage(key string) string {
+	page, _, _ := strings.Cut(key, "|")
+	return page
 }
 
 func (c *publicCache) get(key string, changed, now time.Time) (publicEntry, bool) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 	e, ok := c.entries[key]
-	if !ok || !e.changed.Equal(changed) || now.Sub(e.at) >= c.ttl || now.Before(e.at) {
-		return e, false
+	if !ok {
+		return publicEntry{}, false
 	}
-	return e, true
+	if !e.changed.Equal(changed) || now.Sub(e.at) >= c.ttl || now.Before(e.at) {
+		return e.publicEntry, false
+	}
+	e.used = now
+	return e.publicEntry, true
 }
 
 func (c *publicCache) put(key string, e publicEntry) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
-	if len(c.entries) >= c.max {
-		c.entries = map[string]publicEntry{}
+	if old, ok := c.entries[key]; ok {
+		old.publicEntry, old.used = e, e.at
+		return
 	}
-	c.entries[key] = e
+	page := publicCachePage(key)
+	if keys := c.pages[page]; len(keys) >= publicCachePerPage {
+		c.evict(keys, e.at)
+	}
+	if len(c.entries) >= c.max {
+		all := make(map[string]struct{}, len(c.entries))
+		for k := range c.entries {
+			all[k] = struct{}{}
+		}
+		c.evict(all, e.at)
+	}
+	c.entries[key] = &publicSlot{publicEntry: e, used: e.at}
+	if c.pages[page] == nil {
+		c.pages[page] = map[string]struct{}{}
+	}
+	c.pages[page][key] = struct{}{}
+}
+
+// evict drops the expired entries among keys, or the least recently used of them when none is.
+func (c *publicCache) evict(keys map[string]struct{}, now time.Time) {
+	var lru string
+	var lruAt time.Time
+	dropped := false
+	for k := range keys {
+		e := c.entries[k]
+		if now.Sub(e.at) >= c.ttl {
+			c.remove(k)
+			dropped = true
+			continue
+		}
+		if lru == "" || e.used.Before(lruAt) {
+			lru, lruAt = k, e.used
+		}
+	}
+	if !dropped && lru != "" {
+		c.remove(lru)
+	}
+}
+
+func (c *publicCache) remove(key string) {
+	delete(c.entries, key)
+	page := publicCachePage(key)
+	if keys := c.pages[page]; keys != nil {
+		if delete(keys, key); len(keys) == 0 {
+			delete(c.pages, page)
+		}
+	}
 }
 
 func (c *publicCache) forget(page uuid.UUID) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
-	prefix := page.String() + "|"
-	for k := range c.entries {
-		if strings.HasPrefix(k, prefix) {
-			delete(c.entries, k)
-		}
+	for k := range c.pages[page.String()] {
+		c.remove(k)
 	}
 }
 

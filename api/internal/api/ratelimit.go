@@ -10,6 +10,7 @@ import (
 	"math/rand/v2"
 	"net/http"
 	"net/netip"
+	"sync"
 	"sync/atomic"
 	"time"
 	"uuid"
@@ -79,13 +80,15 @@ const (
 	rateSlotFirstPoll               = 25 * time.Millisecond
 	rateSlotMaxPoll                 = 400 * time.Millisecond
 	rateFailureLogEvery             = time.Minute
+	localWindowsMax                 = 100_000
 )
 
 // rateLimiter counts requests per key in fixed windows that start with a key's first request, in
 // Postgres and by the database's clock, so every replica counts against the same windows. Keys are
-// stored as a keyed hash: they hold client addresses. When the database fails, a check lets the
-// request through and the failure is logged at most once a minute. Finished windows are deleted
-// by the rate limit sweep.
+// stored as a keyed hash: they hold client addresses. When the database fails, a check for a
+// signed-in member, API key or grant lets the request through; every other check (anonymous and
+// contact traffic, jobs) counts in this process's own windows instead, with the same limits. The
+// failure is logged at most once a minute. Finished windows are deleted by the rate limit sweep.
 type rateLimiter struct {
 	st     *store.Store
 	mac    []byte
@@ -93,6 +96,62 @@ type rateLimiter struct {
 	clock  func() time.Time
 	sleep  func(ctx context.Context, d time.Duration) error
 	logged atomic.Int64
+	local  localWindows
+	broken func() error
+}
+
+type localWindow struct {
+	ends time.Time
+	n    int
+}
+
+// localWindows are the fixed windows a rateLimiter counts in while the database fails. When full,
+// ended windows go; a key that still finds no room is refused.
+type localWindows struct {
+	mu sync.Mutex
+	m  map[string]*localWindow
+}
+
+func (lw *localWindows) take(key string, lim limit, n int, now time.Time) (int, time.Duration) {
+	lw.mu.Lock()
+	defer lw.mu.Unlock()
+	if lw.m == nil {
+		lw.m = map[string]*localWindow{}
+	}
+	w := lw.m[key]
+	if w == nil || !now.Before(w.ends) {
+		if w == nil && len(lw.m) >= localWindowsMax {
+			for k, old := range lw.m {
+				if !now.Before(old.ends) {
+					delete(lw.m, k)
+				}
+			}
+			if len(lw.m) >= localWindowsMax {
+				return 0, lim.window
+			}
+		}
+		w = &localWindow{ends: now.Add(lim.window)}
+		lw.m[key] = w
+	}
+	got := min(n, max(lim.n-w.n, 0))
+	w.n += got
+	return got, w.ends.Sub(now)
+}
+
+type memberTrafficKey struct{}
+
+// memberTraffic marks ctx as a signed-in member's, an API key's or a grant's before the principal
+// is in it, so a failing limiter lets it through.
+func memberTraffic(ctx context.Context) context.Context {
+	return context.WithValue(ctx, memberTrafficKey{}, true)
+}
+
+func failsOpen(ctx context.Context) bool {
+	if ctx.Value(memberTrafficKey{}) != nil {
+		return true
+	}
+	p := principalFrom(ctx)
+	return p.personID != uuid.Nil() || p.workspaceID != uuid.Nil() || p.keyID != uuid.Nil()
 }
 
 func newRateLimiter(st *store.Store, secrets *secret.Key, log *slog.Logger, clock func() time.Time, sleep func(ctx context.Context, d time.Duration) error) *rateLimiter {
@@ -127,7 +186,14 @@ func (l *rateLimiter) failed(ctx context.Context, err error) {
 	if now-last < int64(rateFailureLogEvery) || !l.logged.CompareAndSwap(last, now) {
 		return
 	}
-	l.log.ErrorContext(ctx, "rate limit check failed; letting requests through", slog.Any("error", err))
+	l.log.ErrorContext(ctx, "rate limit check failed; counting anonymous requests in this process", slog.Any("error", err))
+}
+
+func (l *rateLimiter) now() time.Time {
+	if l.clock == nil {
+		return time.Now()
+	}
+	return l.clock()
 }
 
 func (l *rateLimiter) queries(q *store.Queries) *store.Queries {
@@ -170,14 +236,27 @@ func (l *rateLimiter) take(ctx context.Context, q *store.Queries, takes ...rateT
 	}
 	var rows []store.TakeRateLimitsRow
 	err := l.queries(q).Savepoint(ctx, func(q *store.Queries) error {
+		if l.broken != nil {
+			if err := l.broken(); err != nil {
+				return err
+			}
+		}
 		var err error
 		rows, err = q.TakeRateLimits(ctx, p)
 		return err
 	})
 	if err != nil {
 		l.failed(ctx, err)
+		open, now := failsOpen(ctx), l.now()
 		for i, t := range takes {
-			out[i].n = t.n
+			if open {
+				out[i].n = t.n
+				continue
+			}
+			out[i].n, out[i].wait = l.local.take(string(l.hash(t.key)), t.lim, t.n, now)
+			if out[i].n < t.n {
+				out[i].wait = min(max(out[i].wait, time.Second), t.lim.window)
+			}
 		}
 		return out
 	}
