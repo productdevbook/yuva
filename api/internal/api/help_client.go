@@ -193,10 +193,9 @@ func (s *Server) SearchClientHelp(ctx context.Context, req oas.SearchClientHelpR
 	if len(words) == 0 {
 		return nil, errHelpQueryEmpty
 	}
-	if err := s.rateLimit(ctx,
-		rateCheck{"help-search:ip:" + rateIP(s.clientIP(requestFrom(ctx))) + ":" + ch.ChannelID.String(), limitHelpSearchPerIP},
-		rateCheck{"help-search:center:" + c.ID.String(), limitHelpSearchCenter},
-	); err != nil {
+	ip := s.clientIP(requestFrom(ctx))
+	if err := s.rateLimit(ctx, append([]rateCheck{{"help-search:ip:" + rateIP(ip) + ":" + ch.ChannelID.String(), limitHelpSearchPerIP}},
+		sharedChecks(ip, "help-search:center:"+c.ID.String(), budgetHelpSearch)...)...); err != nil {
 		return nil, err
 	}
 	lim := int32(helpClientSearchLimit)
@@ -308,7 +307,7 @@ func (s *Server) CreateClientHelpReaction(ctx context.Context, req oas.CreateCli
 	if err != nil {
 		return nil, err
 	}
-	if err := s.rateLimit(ctx, rateCheck{"help-reaction:channel:" + ch.ChannelID.String(), limitSessionPerChannel}); err != nil {
+	if err := s.rateLimit(ctx, sharedChecks(s.clientIP(requestFrom(ctx)), "help-reaction:channel:"+ch.ChannelID.String(), budgetSessions)...); err != nil {
 		return nil, err
 	}
 	if err := offersLocale(c, b.Locale); err != nil {

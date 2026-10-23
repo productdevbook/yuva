@@ -18,10 +18,10 @@ import (
 )
 
 var (
-	limitHelpViewPerHour  = limit{1, time.Hour}
-	limitHelpSearchPerIP  = limit{30, time.Minute}
-	limitHelpSearchCenter = limit{1200, time.Minute}
-	limitHelpClickPerIP   = limit{60, time.Minute}
+	limitHelpViewPerHour = limit{1, time.Hour}
+	limitHelpSearchPerIP = limit{30, time.Minute}
+	budgetHelpSearch     = budget{limit{120, time.Minute}, limit{12000, time.Minute}}
+	limitHelpClickPerIP  = limit{60, time.Minute}
 
 	helpNumberSlugPattern = regexp.MustCompile(`^([0-9]{1,9})(?:-(.*))?$`)
 )
@@ -320,11 +320,9 @@ func (s *Server) helpSearchAnswer(ctx context.Context, r *http.Request, c store.
 		})
 		return e, csp, err
 	}
-	ip := rateIP(s.clientIP(r))
-	if err := s.rateLimit(ctx,
-		rateCheck{"help-search:ip:" + ip + ":" + c.ID.String(), limitHelpSearchPerIP},
-		rateCheck{"help-search:center:" + c.ID.String(), limitHelpSearchCenter},
-	); err != nil {
+	ip := s.clientIP(r)
+	if err := s.rateLimit(ctx, append([]rateCheck{{"help-search:ip:" + rateIP(ip) + ":" + c.ID.String(), limitHelpSearchPerIP}},
+		sharedChecks(ip, "help-search:center:"+c.ID.String(), budgetHelpSearch)...)...); err != nil {
 		return publicEntry{}, "", err
 	}
 	now := s.now()
@@ -378,11 +376,9 @@ func (s *Server) serveHelpPost(w http.ResponseWriter, r *http.Request) {
 		writeProblem(w, errValidation("rating and previous must be up or down"))
 		return
 	}
-	ip := rateIP(s.clientIP(r))
-	if err := s.rateLimit(ctx,
-		rateCheck{"help-reaction:ip:" + ip, limitSessionPerIP},
-		rateCheck{"help-reaction:center:" + c.ID.String(), limitSessionPerChannel},
-	); err != nil {
+	ip := s.clientIP(r)
+	if err := s.rateLimit(ctx, append([]rateCheck{{"help-reaction:ip:" + rateIP(ip), limitSessionPerIP}},
+		sharedChecks(ip, "help-reaction:center:"+c.ID.String(), budgetSessions)...)...); err != nil {
 		s.writeError(w, r, err)
 		return
 	}

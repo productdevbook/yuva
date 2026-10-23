@@ -18,7 +18,7 @@ import (
 var (
 	statusSubscribeContext   = []byte("yuva status subscribe v1")
 	limitStatusSubscribeIP   = limit{10, time.Hour}
-	limitStatusSubscribePage = limit{300, time.Hour}
+	budgetStatusSubscribe    = budget{limit{40, time.Hour}, limit{3000, time.Hour}}
 	errStatusSubscribersFull = errors.New("the page takes no more subscribers")
 	statusSubscribeHoneypot  = "website"
 )
@@ -83,8 +83,9 @@ func (s *Server) serveStatusSubscribe(w http.ResponseWriter, r *http.Request) {
 		s.statusSubscribeFormPage(w, r, f, words, http.StatusOK, note, "", formLists(r.URL.Query()["components"]))
 		return
 	}
-	if err := s.rateLimit(ctx, rateCheck{"status-subscribe:ip:" + rateIP(s.clientIP(r)), limitStatusSubscribeIP},
-		rateCheck{"status-subscribe:page:" + pg.ID.String(), limitStatusSubscribePage}); err != nil {
+	ip := s.clientIP(r)
+	if err := s.rateLimit(ctx, append([]rateCheck{{"status-subscribe:ip:" + rateIP(ip), limitStatusSubscribeIP}},
+		sharedChecks(ip, "status-subscribe:page:"+pg.ID.String(), budgetStatusSubscribe)...)...); err != nil {
 		var ae *apiError
 		if errors.As(err, &ae) && ae.RetryAfter > 0 {
 			w.Header().Set("Retry-After", strconv.Itoa(ae.RetryAfter))

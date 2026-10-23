@@ -16046,7 +16046,8 @@ paths:
 
         For a `chat` channel, browsers must call from one of the channel's allowed origins
         (`403 origin_not_allowed`, also without an `Origin` header); an `app` channel's key needs no
-        origin. Requests are rate limited per IP address and per channel (`429 rate_limited`), and an
+        origin. Requests are rate limited per IP address (IPv6 per /64), per network (IPv4 /24, IPv6 /48)
+        and channel, and with a far higher ceiling per channel (`429 rate_limited`), and an
         IP address starts at most `YUVA_ANONYMOUS_CONTACTS_PER_HOUR` new anonymous visitors per
         channel and hour (default 20; `429 anonymous_limit`; resuming a visitor does not count). A
         blocked contact answers `403 contact_blocked`.
@@ -16321,7 +16322,8 @@ paths:
         comes in the default locale with `fallback: true`). Cursor-paged. Needs no session and
         creates no contact; a browser must come from an allowed origin. `404 whats_new_off`
         without a published changelog, and on a server with `YUVA_WHATS_NEW=off`. 120 reads a
-        minute per address and channel, and 2,400 per changelog (`429 rate_limited` with
+        minute per address and channel, 480 per network (IPv4 /24, IPv6 /48) and changelog, and
+        24,000 per changelog (`429 rate_limited` with
         `Retry-After`). Sent with `Cache-Control: public, max-age=60`.
       tags: [client]
       security: []
@@ -16474,8 +16476,8 @@ paths:
         after it was issued (`400 form_token`); `website` is a honeypot that must stay empty
         (a filled one is answered `202` and ignored); `list_ids` must be public lists of the
         channel's inbox (`404 list_not_found`); `400 invalid_email`. At most 10 requests per IP
-        address and hour and 600 per channel and hour (`429 rate_limited` with `Retry-After`, the
-        seconds until the hour ends); confirmation mails are
+        address and hour, 40 per network (IPv4 /24, IPv6 /48) and channel and hour, and 6,000 per
+        channel and hour (`429 rate_limited` with `Retry-After`, the seconds until the hour ends); confirmation mails are
         capped per address (3 a day, 1 per list in 10 minutes) and per channel (1,000 a day)
         without changing the answer.
 
@@ -16559,7 +16561,8 @@ paths:
 
         Send `final=true` once the visitor settled on the query (Enter, a result opened, or 1.5
         seconds without typing); only those are counted in the report. 30 searches a minute per
-        address and channel, and 1,200 per center (`429 rate_limited` with `Retry-After`). Sent with
+        address and channel, 120 per network (IPv4 /24, IPv6 /48) and center, and 12,000 per center
+        (`429 rate_limited` with `Retry-After`). Sent with
         `Cache-Control: public, max-age=60`. `404 help_off` without a published center.
       tags: [client]
       security: []

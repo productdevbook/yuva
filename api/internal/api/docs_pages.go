@@ -107,7 +107,7 @@ func utcDay(t time.Time) time.Time {
 
 // docsChannel finds a chat channel by its public key for the session-less page endpoints and
 // checks the browser's origin against it.
-func (s *Server) docsChannel(ctx context.Context, key string, perChannel *limit) (store.FindChatChannelByKeyRow, error) {
+func (s *Server) docsChannel(ctx context.Context, key string, perChannel *budget) (store.FindChatChannelByKeyRow, error) {
 	key = strings.TrimSpace(key)
 	if key == "" || len(key) > 200 {
 		return store.FindChatChannelByKeyRow{}, errUnknownChannelKey
@@ -120,7 +120,7 @@ func (s *Server) docsChannel(ctx context.Context, key string, perChannel *limit)
 		return ch, err
 	}
 	if perChannel != nil {
-		if err := s.rateLimit(ctx, rateCheck{"page-rating:channel:" + ch.ChannelID.String(), *perChannel}); err != nil {
+		if err := s.rateLimit(ctx, sharedChecks(s.clientIP(requestFrom(ctx)), "page-rating:channel:"+ch.ChannelID.String(), *perChannel)...); err != nil {
 			return ch, err
 		}
 	}
@@ -134,7 +134,7 @@ func (s *Server) CreatePageRating(ctx context.Context, req oas.CreatePageRatingR
 	if err := s.rateLimit(ctx, rateCheck{"page-rating:ip:" + rateIP(s.clientIP(requestFrom(ctx))), limitSessionPerIP}); err != nil {
 		return nil, err
 	}
-	ch, err := s.docsChannel(ctx, req.ChannelKey, &limitSessionPerChannel)
+	ch, err := s.docsChannel(ctx, req.ChannelKey, &budgetSessions)
 	if err != nil {
 		return nil, err
 	}

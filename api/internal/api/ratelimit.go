@@ -49,16 +49,30 @@ type limit struct {
 }
 
 var (
-	limitSessionPerIP      = limit{30, time.Minute}
-	limitChannelPerIP      = limit{120, time.Minute}
-	limitSessionPerChannel = limit{600, time.Minute}
-	limitWritePerIP        = limit{60, time.Minute}
-	limitWritePerChannel   = limit{1200, time.Minute}
-	limitTypingPerSession  = limit{60, time.Minute}
-	limitBearer            = limit{600, time.Minute}
-	limitRegisterPerIP     = limit{20, time.Hour}
-	limitAuthorizePerIP    = limit{60, time.Minute}
+	limitSessionPerIP     = limit{30, time.Minute}
+	limitChannelPerIP     = limit{120, time.Minute}
+	limitWritePerIP       = limit{60, time.Minute}
+	limitTypingPerSession = limit{60, time.Minute}
+	limitBearer           = limit{600, time.Minute}
+	limitRegisterPerIP    = limit{20, time.Hour}
+	limitAuthorizePerIP   = limit{60, time.Minute}
 )
+
+// budget is a limit that every visitor of one channel, page or centre shares. One network
+// (rateNet) may use `network` of it, and `ceiling` only caps the total load: it is far above what a
+// few networks reach, so a flood from some sources never locks the others out.
+type budget struct{ network, ceiling limit }
+
+var (
+	budgetSessions = budget{limit{120, time.Minute}, limit{6000, time.Minute}}
+	budgetWrites   = budget{limit{240, time.Minute}, limit{12000, time.Minute}}
+)
+
+// sharedChecks are the checks for a request from address ip against the budget named key; the
+// caller checks the address's own limit first.
+func sharedChecks(ip, key string, b budget) []rateCheck {
+	return []rateCheck{{key + ":net:" + rateNet(ip), b.network}, {key, b.ceiling}}
+}
 
 const (
 	defaultAnonymousContactsPerHour = 20
@@ -281,6 +295,20 @@ func rateIP(ip string) string {
 		return netip.PrefixFrom(a, 64).Masked().String()
 	}
 	return a.String()
+}
+
+// rateNet is the network a client address belongs to: a /24 for IPv4 and a /48 for IPv6, what one
+// site or customer usually holds, so the cheap addresses of one provider count together.
+func rateNet(ip string) string {
+	a, err := netip.ParseAddr(ip)
+	if err != nil {
+		return ip
+	}
+	bits := 48
+	if a = a.Unmap(); a.Is4() {
+		bits = 24
+	}
+	return netip.PrefixFrom(a, bits).Masked().String()
 }
 
 // rateLimit counts the request against each check in turn and stops at the first that refuses, so

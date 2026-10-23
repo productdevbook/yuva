@@ -28,8 +28,8 @@ func identitySecretContext(workspaceID, inboxID uuid.UUID) []byte {
 
 func (s *Server) CreateClientSession(ctx context.Context, req oas.CreateClientSessionRequestObject) (oas.CreateClientSessionResponseObject, error) {
 	b := req.Body
-	ip := rateIP(s.clientIP(requestFrom(ctx)))
-	if err := s.rateLimit(ctx, rateCheck{"session:ip:" + ip, limitSessionPerIP}); err != nil {
+	addr := s.clientIP(requestFrom(ctx))
+	if err := s.rateLimit(ctx, rateCheck{"session:ip:" + rateIP(addr), limitSessionPerIP}); err != nil {
 		return nil, err
 	}
 	key := strings.TrimSpace(b.ChannelKey)
@@ -43,7 +43,7 @@ func (s *Server) CreateClientSession(ctx context.Context, req oas.CreateClientSe
 	if err != nil {
 		return nil, err
 	}
-	if err := s.rateLimit(ctx, rateCheck{"session:channel:" + ch.ChannelID.String(), limitSessionPerChannel}); err != nil {
+	if err := s.rateLimit(ctx, sharedChecks(addr, "session:channel:"+ch.ChannelID.String(), budgetSessions)...); err != nil {
 		return nil, err
 	}
 	if !s.originAllowedFor(ctx, ch.WorkspaceID, originFrom(ctx), ch.Kind, ch.AllowedOrigins) {
@@ -569,8 +569,6 @@ func (s *Server) confirmTypedEmail(ctx context.Context, q *store.Queries, cp con
 }
 
 func (s *Server) writeChecks(ctx context.Context, cp contactPrincipal) []rateCheck {
-	return []rateCheck{
-		{"write:ip:" + rateIP(s.clientIP(requestFrom(ctx))), limitWritePerIP},
-		{"write:channel:" + cp.channelID.String(), limitWritePerChannel},
-	}
+	ip := s.clientIP(requestFrom(ctx))
+	return append([]rateCheck{{"write:ip:" + rateIP(ip), limitWritePerIP}}, sharedChecks(ip, "write:channel:"+cp.channelID.String(), budgetWrites)...)
 }

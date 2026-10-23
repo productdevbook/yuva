@@ -295,3 +295,45 @@ func TestRateLimitSweep(t *testing.T) {
 		t.Fatal("an ended lease was kept")
 	}
 }
+
+func TestChannelBudgetSurvivesAFlood(t *testing.T) {
+	t.Parallel()
+	h := newHarness(t)
+	ct := newChatTeam(t, h, "live", false)
+	start := func(ip string, identified bool) response {
+		c := h.client()
+		c.ip, c.origin = ip, ct.origin
+		req := map[string]any{"channel_key": ct.key}
+		if identified {
+			req["identity_token"] = ct.token(h, map[string]any{"sub": unique("user")})
+		}
+		return c.do("POST", "/client/v1/session", req)
+	}
+	refused := 0
+	for i := range 5 {
+		ip := "2001:db8:1:" + strconv.Itoa(i) + "::1"
+		for range 30 {
+			if start(ip, false).status == http.StatusTooManyRequests {
+				refused++
+			}
+		}
+	}
+	if refused != 30 {
+		t.Fatalf("five /64s of one /48 had %d of 150 session starts refused, want the 30 over the network's 120", refused)
+	}
+	for i := range 20 {
+		ip := "2001:db8:" + strconv.Itoa(100+i) + "::1"
+		for j := range 30 {
+			if r := start(ip, false); r.status == http.StatusTooManyRequests {
+				t.Fatalf("source %d, start %d: %d %s", i+1, j+1, r.status, r.raw)
+			}
+		}
+		expectLimited(t, start(ip, false))
+	}
+	if r := start("203.0.113.9", true); r.status != http.StatusCreated {
+		t.Fatalf("a 21st source after the flood: %d %s", r.status, r.raw)
+	}
+	if r := start("2001:db8:1:99::1", true); r.status != http.StatusTooManyRequests {
+		t.Fatalf("a new /64 in the flooding /48: %d %s", r.status, r.raw)
+	}
+}

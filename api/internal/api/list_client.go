@@ -24,8 +24,8 @@ var (
 	errIdentityRequired = problem(http.StatusForbidden, "identity_required", "only signed-in users subscribe here; visitors use the subscribe form")
 	errNoEmail          = problem(http.StatusConflict, "no_email", "the contact has no e-mail address")
 
-	limitSubscribePerIP      = limit{10, time.Hour}
-	limitSubscribePerChannel = limit{600, time.Hour}
+	limitSubscribePerIP = limit{10, time.Hour}
+	budgetSubscribe     = budget{limit{40, time.Hour}, limit{6000, time.Hour}}
 )
 
 func clientList(l store.MailingList) oas.ClientMailingList {
@@ -86,7 +86,7 @@ func (s *Server) CreateClientSubscription(ctx context.Context, req oas.CreateCli
 	if err != nil {
 		return nil, err
 	}
-	if err := s.rateLimit(ctx, rateCheck{"subscribe:channel:" + ch.ChannelID.String(), limitSubscribePerChannel}); err != nil {
+	if err := s.rateLimit(ctx, sharedChecks(s.clientIP(r), "subscribe:channel:"+ch.ChannelID.String(), budgetSubscribe)...); err != nil {
 		return nil, err
 	}
 	b := req.Body

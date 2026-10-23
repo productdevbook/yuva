@@ -17,8 +17,8 @@ const (
 )
 
 var (
-	limitWhatsNewPerIP        = limit{120, time.Minute}
-	limitWhatsNewPerChangelog = limit{2400, time.Minute}
+	limitWhatsNewPerIP = limit{120, time.Minute}
+	budgetWhatsNew     = budget{limit{480, time.Minute}, limit{24000, time.Minute}}
 )
 
 type (
@@ -43,7 +43,8 @@ func (s *Server) whatsNewClientChangelog(ctx context.Context, key string) (store
 	if key == "" || len(key) > 200 {
 		return none, errUnknownChannelKey
 	}
-	ip := rateIP(s.clientIP(requestFrom(ctx)))
+	addr := s.clientIP(requestFrom(ctx))
+	ip := rateIP(addr)
 	if err := s.rateLimit(ctx, rateCheck{"whats-new-ip:" + ip, limitChannelPerIP}); err != nil {
 		return none, err
 	}
@@ -64,10 +65,8 @@ func (s *Server) whatsNewClientChangelog(ctx context.Context, key string) (store
 	if err != nil {
 		return none, err
 	}
-	err = s.rateLimit(ctx,
-		rateCheck{"whats-new:" + ip + ":" + ch.ChannelID.String(), limitWhatsNewPerIP},
-		rateCheck{"whats-new:changelog:" + c.ID.String(), limitWhatsNewPerChangelog},
-	)
+	err = s.rateLimit(ctx, append([]rateCheck{{"whats-new:" + ip + ":" + ch.ChannelID.String(), limitWhatsNewPerIP}},
+		sharedChecks(addr, "whats-new:changelog:"+c.ID.String(), budgetWhatsNew)...)...)
 	return c, err
 }
 
