@@ -415,7 +415,7 @@ func (AddressLossMailArgs) Kind() string { return "address_loss_mail" }
 
 func (AddressLossMailArgs) InsertOpts() river.InsertOpts {
 	return river.InsertOpts{UniqueOpts: river.UniqueOpts{ByArgs: true, ByState: []rivertype.JobState{
-		rivertype.JobStateAvailable, rivertype.JobStatePending, rivertype.JobStateScheduled, rivertype.JobStateRetryable,
+		rivertype.JobStateAvailable, rivertype.JobStatePending, rivertype.JobStateRunning, rivertype.JobStateScheduled, rivertype.JobStateRetryable,
 	}}}
 }
 
@@ -429,8 +429,7 @@ func (w *addressLossMailWorker) Work(ctx context.Context, job *river.Job[Address
 	if err != nil || next == nil {
 		return err
 	}
-	_, err = w.s.jobs.Insert(ctx, job.Args, &river.InsertOpts{ScheduledAt: *next})
-	return err
+	return river.JobSnooze(max(next.Sub(w.s.now()), time.Second))
 }
 
 // notifyAddressLost queues the owner mail of each workspace that lost an address.

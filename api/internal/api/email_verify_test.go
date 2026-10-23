@@ -2,6 +2,7 @@ package api_test
 
 import (
 	"context"
+	"log/slog"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -13,7 +14,13 @@ import (
 	"time"
 	"uuid"
 
+	"github.com/riverqueue/river"
+	"github.com/riverqueue/river/riverdriver/riverpgxv5"
+	"github.com/riverqueue/river/rivermigrate"
+
 	"github.com/productdevbook/yuva/api/internal/api"
+	"github.com/productdevbook/yuva/api/internal/jobs"
+	"github.com/productdevbook/yuva/api/internal/store"
 )
 
 var addressCodePattern = regexp.MustCompile(`\b\d{8}\b`)
@@ -503,5 +510,90 @@ func TestAddressCodeCapsOutliveChannels(t *testing.T) {
 	}
 	if r := send(tm.owner, tm.inbox, unique("x")+"@example.org"); r.status != http.StatusTooManyRequests {
 		t.Fatalf("a 21st code in a day from one workspace: %d %s", r.status, r.raw)
+	}
+}
+
+func TestAddressLossMailIsQueuedAndSent(t *testing.T) {
+	t.Parallel()
+	ctx := context.Background()
+	schema := strings.ReplaceAll(unique("river"), "-", "_")
+	dns := &ssoDNS{txt: map[string][]string{}}
+	var queued *store.Store
+	h := newHarnessWith(t, func(d *api.Deps) {
+		d.Status.Resolver = dns
+		if _, err := d.Store.Pool.Exec(ctx, "CREATE SCHEMA "+schema); err != nil {
+			t.Fatal(err)
+		}
+		t.Cleanup(func() { _, _ = d.Store.Pool.Exec(context.Background(), "DROP SCHEMA "+schema+" CASCADE") })
+		m, err := rivermigrate.New(riverpgxv5.New(d.Store.Pool), &rivermigrate.Config{Schema: schema, Logger: slog.New(slog.DiscardHandler)})
+		if err != nil {
+			t.Fatal(err)
+		}
+		if _, err := m.Migrate(ctx, rivermigrate.DirectionUp, nil); err != nil {
+			t.Fatal(err)
+		}
+		dsn := os.Getenv("YUVA_TEST_DATABASE_URL")
+		sep := "?"
+		if strings.Contains(dsn, "?") {
+			sep = "&"
+		}
+		if queued, err = store.Open(ctx, dsn+sep+"search_path="+schema+",public"); err != nil {
+			t.Fatal(err)
+		}
+		t.Cleanup(queued.Close)
+		d.Store = queued
+	})
+	workers := river.NewWorkers()
+	h.srv.AddWorkers(workers)
+	client, err := river.NewClient(riverpgxv5.New(queued.Pool), &river.Config{
+		Logger: slog.New(slog.DiscardHandler), Queues: jobs.Queues(2, 0, 0), Workers: workers,
+		FetchCooldown: 10 * time.Millisecond, FetchPollInterval: 50 * time.Millisecond,
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := client.Start(ctx); err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() {
+		stopCtx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
+		defer cancel()
+		_ = client.StopAndCancel(stopCtx)
+	})
+
+	holder := newTeam(t, h)
+	domain := unique("corp") + ".example"
+	lost := "help@" + domain
+	holder.owner.expect(http.StatusCreated, "POST", "/v1/inboxes/"+holder.inbox+"/channels", map[string]any{
+		"kind": "email", "name": "Help", "email": map[string]any{"address": lost},
+	})
+	mover := newTeam(t, h)
+	h.unproven = true
+	id := mover.owner.expect(http.StatusCreated, "POST", "/v1/inboxes/"+mover.inbox+"/channels", map[string]any{
+		"kind": "email", "name": "Help", "email": map[string]any{"address": lost},
+	}).str("id")
+	h.unproven = false
+	v := verificationOf(t, mover.owner, id)
+	dns.set(v["txt_name"].(string), v["txt_value"].(string))
+	if r := mover.owner.expect(http.StatusOK, "POST", "/v1/channels/"+id+"/verify", nil); !strings.Contains(string(r.raw), `"state":"verified"`) {
+		t.Fatalf("dns proof: %s", r.raw)
+	}
+
+	owner := ownerEmail(t, h, holder.ws)
+	deadline := time.Now().Add(15 * time.Second)
+	for {
+		var got []string
+		for _, m := range h.mail.to(owner) {
+			if strings.Contains(m.Subject, "no longer reaches") {
+				got = append(got, m.Text)
+			}
+		}
+		if len(got) == 1 && strings.Contains(got[0], lost) {
+			return
+		}
+		if time.Now().After(deadline) {
+			t.Fatalf("the previous holder was not mailed: %q", got)
+		}
+		time.Sleep(50 * time.Millisecond)
 	}
 }
