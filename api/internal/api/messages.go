@@ -67,9 +67,11 @@ type messageInput struct {
 	files     []*upload
 	macroID   *uuid.UUID
 	then      *oas.ConversationUpdate
+	cc        copyList
+	bcc       copyList
 }
 
-var memberFormFields = []string{"kind", "direction", "body", "html", "client_id", "draft", "mentions", "article_ids", "macro_id", "then"}
+var memberFormFields = []string{"kind", "direction", "body", "html", "client_id", "draft", "mentions", "article_ids", "macro_id", "then", "cc", "bcc"}
 
 func (in *messageInput) close() {
 	for _, f := range in.files {
@@ -132,6 +134,15 @@ func (s *Server) validateMessage(p principal, in *messageInput) error {
 	}
 	if len([]rune(in.body)) > maxMessageBodyRunes {
 		return errValidation("body must be at most 65536 characters")
+	}
+	if in.hasCopies() && (in.kind != string(oas.MessageKindMessage) || in.direction != string(oas.Out)) {
+		return errCopiesNotEmailed
+	}
+	if in.hasCopies() && in.draft {
+		return errValidation("cc and bcc are set when the draft is sent")
+	}
+	if len(in.cc.addrs) > maxCopies || len(in.bcc.addrs) > maxCopies {
+		return errValidation("cc and bcc can name at most 20 addresses each")
 	}
 	if strings.TrimSpace(in.body) == "" && len(in.files) == 0 && len(in.articles) == 0 {
 		return errValidation("body is required unless files or articles are attached")
@@ -299,6 +310,15 @@ func (s *Server) readMultipart(r *multipart.Reader, workspaceID uuid.UUID, field
 			in.articles = append(in.articles, id)
 		case "subject":
 			in.subject = &v
+		case "cc", "bcc":
+			list := &in.cc
+			if part.FormName() == "bcc" {
+				list = &in.bcc
+			}
+			list.set = true
+			if v = strings.TrimSpace(v); v != "" {
+				list.addrs = append(list.addrs, v)
+			}
 		default:
 			if in.extra == nil {
 				in.extra = map[string]string{}
@@ -469,7 +489,7 @@ func (s *Server) ListMessages(ctx context.Context, req oas.ListMessagesRequestOb
 	}
 	out := oas.ListMessages200JSONResponse{Items: make([]oas.Message, len(rows)), NextCursor: next}
 	for i, r := range rows {
-		out.Items[i] = withEmail(messageBody(messageRow(r), atts[r.ID]), emails[r.ID])
+		out.Items[i] = withBcc(withEmail(messageBody(messageRow(r), atts[r.ID]), emails[r.ID]), emails[r.ID])
 	}
 	return out, nil
 }
@@ -498,6 +518,7 @@ func (s *Server) CreateMessage(ctx context.Context, req oas.CreateMessageRequest
 			in.articles = *b.ArticleIds
 		}
 		in.macroID, in.then = b.MacroId, b.Then
+		in.cc, in.bcc = copiesOf(b.Cc), copiesOf(b.Bcc)
 	case req.MultipartBody != nil:
 		limits, err := s.channelLimits(ctx, s.st.Queries, p.workspaceID, conv.ChannelID)
 		if err != nil {
@@ -587,6 +608,14 @@ func (s *Server) CreateMessage(ctx context.Context, req oas.CreateMessageRequest
 			if plan, err = s.planEmail(ctx, q, c); err != nil {
 				return err
 			}
+			if plan != nil {
+				if err := s.setCopies(ctx, q, c, plan, in.cc, in.bcc); err != nil {
+					return err
+				}
+			}
+		}
+		if plan == nil && in.hasCopies() {
+			return errCopiesNotEmailed
 		}
 		for _, id := range in.mentions {
 			ok, err := memberHasInbox(ctx, q, p.workspaceID, c.InboxID, id)
@@ -631,6 +660,9 @@ func (s *Server) CreateMessage(ctx context.Context, req oas.CreateMessageRequest
 			if summary, err = s.dispatchOutgoing(ctx, q, events, p, c, plan, msg, now); err != nil {
 				return err
 			}
+			if err := keepCopiesAsParticipants(ctx, q, events, c, plan, now); err != nil {
+				return err
+			}
 		}
 		var total int64
 		for _, f := range in.files {
@@ -671,12 +703,12 @@ func (s *Server) CreateMessage(ctx context.Context, req oas.CreateMessageRequest
 		return nil, err
 	}
 	if !created {
-		return oas.CreateMessage200JSONResponse(withEmail(messageBody(msg, atts), summary)), nil
+		return oas.CreateMessage200JSONResponse(withBcc(withEmail(messageBody(msg, atts), summary), summary)), nil
 	}
 	if !in.draft {
 		s.countHelpSent(ctx, p.workspaceID, inbox, cards)
 	}
-	return oas.CreateMessage201JSONResponse(withEmail(messageBody(msg, atts), summary)), nil
+	return oas.CreateMessage201JSONResponse(withBcc(withEmail(messageBody(msg, atts), summary), summary)), nil
 }
 
 func (s *Server) DownloadAttachment(ctx context.Context, req oas.DownloadAttachmentRequestObject) (oas.DownloadAttachmentResponseObject, error) {

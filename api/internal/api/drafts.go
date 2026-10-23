@@ -168,6 +168,17 @@ func (s *Server) SendMessage(ctx context.Context, req oas.SendMessageRequestObje
 		if err != nil {
 			return err
 		}
+		var cc, bcc copyList
+		if req.Body != nil {
+			cc, bcc = copiesOf(req.Body.Cc), copiesOf(req.Body.Bcc)
+		}
+		if plan != nil {
+			if err := s.setCopies(ctx, q, c, plan, cc, bcc); err != nil {
+				return err
+			}
+		} else if cc.set || bcc.set {
+			return errCopiesNotEmailed
+		}
 		now := s.now()
 		arg := store.SendDraftParams{WorkspaceID: p.workspaceID, ID: req.MessageId, Now: now, SentVia: p.viaClient()}
 		if p.isKey() {
@@ -188,6 +199,9 @@ func (s *Server) SendMessage(ctx context.Context, req oas.SendMessageRequestObje
 		if err != nil {
 			return err
 		}
+		if err := keepCopiesAsParticipants(ctx, q, events, c, plan, now); err != nil {
+			return err
+		}
 		atts, err := q.ListAttachmentsOfMessage(ctx, store.ListAttachmentsOfMessageParams{WorkspaceID: p.workspaceID, MessageID: msg.ID})
 		if err != nil {
 			return err
@@ -204,6 +218,7 @@ func (s *Server) SendMessage(ctx context.Context, req oas.SendMessageRequestObje
 		}
 		out = withEmail(messageBody(msg, atts), summary)
 		events.conversation(realtime.MessageCreated, c, out)
+		out = withBcc(out, summary)
 		if !p.isKey() {
 			if _, err := s.moveReadCursor(ctx, q, events, p.workspaceID, p.memberID, c, msg.ID, msg.CreatedAt); err != nil {
 				return err

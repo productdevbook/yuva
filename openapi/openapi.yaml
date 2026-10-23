@@ -3914,6 +3914,40 @@ paths:
           $ref: "#/components/responses/Problem"
         "404":
           $ref: "#/components/responses/Problem"
+  /v1/contacts/{contactId}/participations:
+    get:
+      operationId: listContactParticipations
+      summary: List conversations a contact was copied on
+      description: |
+        Conversations of other contacts, in the inboxes the caller can see, where one of the
+        contact's addresses is a participant or appears in the `to`, `cc` or `bcc` of a stored
+        e-mail; newest first. With the contact's own conversations this answers an access request
+        (GDPR Art. 15, KVKK Art. 11) for someone who was only copied. Deleting the contact removes
+        those participants and its addresses from the stored lists. Someone copied who never
+        wrote has no contact: create one with their address first.
+
+        Scope: `contacts:read` and `conversations:read`.
+      tags: [contacts]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/ContactId"
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: A page of conversations.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ContactParticipationPage"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
   /v1/contacts/{contactId}/presence:
     get:
       operationId: getContactPresence
@@ -4797,6 +4831,20 @@ paths:
         address the contact wrote to; when the conversation has none and the channel has no
         `from_address`, the reply is refused with `409 email_no_sender`.
 
+        An e-mailed reply goes `To` the contact and, unless `cc` is sent, `Cc` the conversation's
+        `active` participants (`GET /v1/conversations/{id}/participants`), leaving out those whose
+        address bounced or complained; `suggested` ones are copied only when named in `cc`. `cc` replaces that list (`[]` copies no one) and `bcc` adds hidden
+        recipients, at most 20 addresses each: they receive the mail as envelope recipients only and
+        never appear in its headers. Addresses in `cc` become participants; `bcc` never does. Each
+        address must be a valid address that this server neither receives nor sends mail for
+        (`400 validation_failed`, the same answer for both); one that bounced or complained is refused with
+        `409 email_undeliverable`, while an unsubscribe from broadcasts does not stop a reply. The
+        contact's own address is dropped from both, and an address in both stays in `cc`. `cc` and
+        `bcc` are refused (`400 validation_failed`) on notes, `in` messages, drafts (send them with
+        `POST /v1/messages/{id}/send`) and replies that are not e-mailed. `bcc` is returned on the
+        message's `email` to members and keys only in answers to `/v1` requests, never in events,
+        webhooks or on `/client/v1`.
+
         `macro_id` applies a macro's actions and `then` applies a `ConversationUpdate`, in the same
         transaction as the message: when either is refused (an assignee of `then` without access
         to the inbox, a snooze without a future time) nothing is written, and when the message is
@@ -4847,6 +4895,108 @@ paths:
         "413":
           $ref: "#/components/responses/Problem"
         "415":
+          $ref: "#/components/responses/Problem"
+  /v1/conversations/{conversationId}/participants:
+    get:
+      operationId: listConversationParticipants
+      summary: List a conversation's participants
+      description: |
+        The people copied on the conversation's e-mail besides its contact, oldest first, at most
+        20 per conversation. The `To` and `Cc` addresses of inbound mail that are not addresses of
+        this server (any channel's address, sending address or forwarding address) are `active`
+        when the mail passed DMARC (`email.dmarc` `pass`) and `suggested` otherwise, since `From`
+        can be forged; automatic mail and mail that failed DMARC add no one. Addresses a member
+        names in a reply's `cc` or adds here are `active`. Replies copy `active` participants by
+        default, and mail that passes DMARC from an `active` participant's address and answers the
+        conversation joins it as a message from that participant's contact; anything else from
+        them opens a new conversation. `suggested` addresses are never copied unless a member adds
+        them. Changes emit `conversation.participants` on `/v1/realtime` and `/v1/events`.
+
+        Scope: `conversations:read`.
+      tags: [conversations]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/ConversationId"
+      responses:
+        "200":
+          description: The participants.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ConversationParticipantList"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+    post:
+      operationId: addConversationParticipant
+      summary: Add a participant
+      description: |
+        Adds an address as an `active` participant, or makes a `suggested` one `active`. The
+        address must be valid and not one this server receives or sends mail for
+        (`400 validation_failed`, the same answer for both); a conversation holds at most 20
+        (`409 participants_full`). Whoever can see the conversation may; API keys and OAuth tokens
+        need `conversations:write`.
+      tags: [conversations]
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/ConversationId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ConversationParticipantCreate"
+      responses:
+        "200":
+          description: The participants after the change.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ConversationParticipantList"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+        "409":
+          $ref: "#/components/responses/Problem"
+  /v1/conversations/{conversationId}/participants/{email}:
+    delete:
+      operationId: removeConversationParticipant
+      summary: Remove a participant
+      description: |
+        Removes an address from the participants: replies stop copying it and its mail no longer
+        joins the conversation. Later inbound mail that names it adds it again. Whoever can see the
+        conversation may; API keys and OAuth tokens need `conversations:write`. An address that is
+        not a participant is `404`.
+      tags: [conversations]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/ConversationId"
+        - name: email
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/Email"
+      responses:
+        "200":
+          description: The participants after the change.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ConversationParticipantList"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
           $ref: "#/components/responses/Problem"
   /v1/conversations/{conversationId}/read:
     post:
@@ -5283,7 +5433,8 @@ paths:
         Delivers a draft like a new outgoing message: its time becomes now, `sent_by` names who
         sent it, the author stays the draft's author, and `message.created` is emitted (an e-mail
         conversation e-mails it, as in `createMessage`). Anything that is not a draft answers
-        `409 not_a_draft`.
+        `409 not_a_draft`. `cc` and `bcc` follow the rules of `createMessage`; without them the
+        e-mail copies the conversation's participants.
 
         Members always may. An API key needs `drafts:send` and `messages:write`, and the
         workspace's `bots_may_send` (`403 bot_sending_disabled`).
@@ -5292,6 +5443,12 @@ paths:
         - $ref: "#/components/parameters/IdempotencyKey"
         - $ref: "#/components/parameters/WorkspaceHeader"
         - $ref: "#/components/parameters/MessageId"
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MessageSend"
       responses:
         "200":
           description: The sent message.
@@ -5299,6 +5456,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Message"
+        "400":
+          $ref: "#/components/responses/Problem"
         "401":
           $ref: "#/components/responses/Problem"
         "403":
@@ -22371,6 +22530,120 @@ components:
             $ref: "#/components/schemas/ContactNote"
         next_cursor:
           type: string
+    ConversationParticipant:
+      type: object
+      required: [email, role, status, created_at]
+      properties:
+        email:
+          $ref: "#/components/schemas/Email"
+        status:
+          type: string
+          enum: [active, suggested]
+          description: |
+            `active` addresses are copied on replies and may answer into the conversation;
+            `suggested` ones came from mail that did not pass DMARC and are only shown.
+        contact_id:
+          type: string
+          format: uuid
+          description: The contact with this address, when there is one.
+        name:
+          type: string
+          description: That contact's name.
+        role:
+          type: string
+          enum: [cc]
+        created_at:
+          type: string
+          format: date-time
+          description: When the address was first seen on the conversation.
+    ConversationParticipantList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          maxItems: 20
+          items:
+            $ref: "#/components/schemas/ConversationParticipant"
+    ConversationParticipantCreate:
+      type: object
+      required: [email]
+      properties:
+        email:
+          $ref: "#/components/schemas/Email"
+    ConversationParticipantsChange:
+      type: object
+      required: [conversation_id, items]
+      properties:
+        conversation_id:
+          type: string
+          format: uuid
+        items:
+          type: array
+          maxItems: 20
+          items:
+            $ref: "#/components/schemas/ConversationParticipant"
+    ConversationParticipantsEvent:
+      type: object
+      description: |
+        The participants of a conversation changed (inbound mail, a reply's `cc`, or a member). Only
+        on `/v1/realtime` and `/v1/events`; never a webhook and never on `/client/v1`.
+      required: [id, type, workspace_id, inbox_id, conversation_id, created_at, data]
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+          enum: [conversation.participants]
+        workspace_id:
+          type: string
+          format: uuid
+        inbox_id:
+          type: string
+          format: uuid
+        conversation_id:
+          type: string
+          format: uuid
+        created_at:
+          type: string
+          format: date-time
+        data:
+          $ref: "#/components/schemas/ConversationParticipantsChange"
+    ContactParticipation:
+      type: object
+      required: [conversation_id, inbox_id, subject, emails, participant, created_at]
+      properties:
+        conversation_id:
+          type: string
+          format: uuid
+        inbox_id:
+          type: string
+          format: uuid
+        subject:
+          type: string
+        emails:
+          type: array
+          description: The contact's addresses that the conversation holds.
+          items:
+            $ref: "#/components/schemas/Email"
+        participant:
+          type: boolean
+          description: One of them is a participant; otherwise they appear only in stored e-mail.
+        created_at:
+          type: string
+          format: date-time
+          description: When the conversation started.
+    ContactParticipationPage:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/ContactParticipation"
+        next_cursor:
+          type: string
     ContactSummary:
       type: object
       description: |
@@ -24334,7 +24607,14 @@ components:
             $ref: "#/components/schemas/Email"
         cc:
           type: array
-          description: The `Cc` of an inbound mail, as received. Replies go to the contact only and copy no one.
+          description: The `Cc` of an inbound mail as received, or the addresses a reply copied.
+          items:
+            $ref: "#/components/schemas/Email"
+        bcc:
+          type: array
+          description: |
+            The hidden recipients of a reply. Only in answers to `/v1` requests (members and keys);
+            never in events, webhooks, the sent headers or on `/client/v1`.
           items:
             $ref: "#/components/schemas/Email"
         subject:
@@ -24459,6 +24739,38 @@ components:
         then:
           $ref: "#/components/schemas/ConversationUpdate"
           description: Changes to the conversation applied with the message; see the operation.
+        cc:
+          type: array
+          maxItems: 20
+          description: |
+            E-mailed replies only: the addresses to copy, in place of the conversation's
+            participants; `[]` copies no one. See `createMessage`.
+          items:
+            $ref: "#/components/schemas/Email"
+        bcc:
+          type: array
+          maxItems: 20
+          description: E-mailed replies only, hidden recipients. See `createMessage`.
+          items:
+            $ref: "#/components/schemas/Email"
+    MessageSend:
+      type: object
+      description: Recipients of a draft's e-mail; see `createMessage`.
+      properties:
+        cc:
+          type: array
+          maxItems: 20
+          description: |
+            E-mailed replies only: the addresses to copy, in place of the conversation's
+            participants; `[]` copies no one. See `createMessage`.
+          items:
+            $ref: "#/components/schemas/Email"
+        bcc:
+          type: array
+          maxItems: 20
+          description: E-mailed replies only, hidden recipients. See `createMessage`.
+          items:
+            $ref: "#/components/schemas/Email"
     MessageCreateMultipart:
       type: object
       required: [kind]
@@ -24501,6 +24813,19 @@ components:
           type: string
           maxLength: 65536
           description: A `ConversationUpdate` as JSON.
+        cc:
+          type: array
+          maxItems: 20
+          description: Repeat the field once per address; one empty `cc` field copies no one.
+          items:
+            type: string
+            maxLength: 320
+        bcc:
+          type: array
+          maxItems: 20
+          description: Repeat the field once per address.
+          items:
+            $ref: "#/components/schemas/Email"
         files:
           type: array
           maxItems: 10
@@ -27976,6 +28301,7 @@ components:
         - $ref: "#/components/schemas/ConversationReadEvent"
         - $ref: "#/components/schemas/ContactReadEvent"
         - $ref: "#/components/schemas/ConversationPinEvent"
+        - $ref: "#/components/schemas/ConversationParticipantsEvent"
         - $ref: "#/components/schemas/DiscussionEvent"
         - $ref: "#/components/schemas/DiscussionStageEvent"
         - $ref: "#/components/schemas/IssueLinkEvent"
@@ -28017,6 +28343,7 @@ components:
           conversation.read: "#/components/schemas/ConversationReadEvent"
           contact.read: "#/components/schemas/ContactReadEvent"
           conversation.pin: "#/components/schemas/ConversationPinEvent"
+          conversation.participants: "#/components/schemas/ConversationParticipantsEvent"
           discussion.created: "#/components/schemas/DiscussionEvent"
           discussion.post_created: "#/components/schemas/DiscussionEvent"
           discussion.answered: "#/components/schemas/DiscussionEvent"
@@ -28085,6 +28412,7 @@ components:
         - $ref: "#/components/schemas/ConversationReadEvent"
         - $ref: "#/components/schemas/ContactReadEvent"
         - $ref: "#/components/schemas/ConversationPinEvent"
+        - $ref: "#/components/schemas/ConversationParticipantsEvent"
         - $ref: "#/components/schemas/DiscussionEvent"
         - $ref: "#/components/schemas/DiscussionStageEvent"
         - $ref: "#/components/schemas/IssueLinkEvent"
@@ -28146,6 +28474,7 @@ components:
           conversation.read: "#/components/schemas/ConversationReadEvent"
           contact.read: "#/components/schemas/ContactReadEvent"
           conversation.pin: "#/components/schemas/ConversationPinEvent"
+          conversation.participants: "#/components/schemas/ConversationParticipantsEvent"
           discussion.created: "#/components/schemas/DiscussionEvent"
           discussion.post_created: "#/components/schemas/DiscussionEvent"
           discussion.answered: "#/components/schemas/DiscussionEvent"

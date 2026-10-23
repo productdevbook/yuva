@@ -122,7 +122,9 @@ func (q *Queries) CountRecentConversations(ctx context.Context, arg CountRecentC
 const countRecentInboundEmails = `-- name: CountRecentInboundEmails :one
 SELECT count(*) FROM message_emails e
 JOIN conversations c ON c.workspace_id = e.workspace_id AND c.id = e.conversation_id
-WHERE e.workspace_id = $1 AND c.contact_id = $2 AND e.direction = 'in' AND e.created_at > $3
+JOIN messages m ON m.workspace_id = e.workspace_id AND m.id = e.message_id
+WHERE e.workspace_id = $1 AND coalesce(m.author_contact_id, c.contact_id) = $2::uuid
+  AND e.direction = 'in' AND e.created_at > $3
 `
 
 type CountRecentInboundEmailsParams struct {
@@ -742,7 +744,7 @@ func (q *Queries) FindInboundEmailByHeader(ctx context.Context, arg FindInboundE
 }
 
 const findOutboundEmailAnyWorkspace = `-- name: FindOutboundEmailAnyWorkspace :one
-SELECT e.workspace_id, e.message_id, e.conversation_id, e.to_addresses, e.channel_id FROM message_emails e
+SELECT e.workspace_id, e.message_id, e.conversation_id, e.to_addresses, e.cc_addresses, e.bcc_addresses, e.channel_id FROM message_emails e
 JOIN workspaces w ON w.id = e.workspace_id
 WHERE e.direction = 'out' AND e.imported_at IS NULL AND e.header_message_id = $1 AND w.deleted_at IS NULL
 LIMIT 1
@@ -753,6 +755,8 @@ type FindOutboundEmailAnyWorkspaceRow struct {
 	MessageID      uuid.UUID
 	ConversationID uuid.UUID
 	ToAddresses    []string
+	CcAddresses    []string
+	BccAddresses   []string
 	ChannelID      *uuid.UUID
 }
 
@@ -766,13 +770,15 @@ func (q *Queries) FindOutboundEmailAnyWorkspace(ctx context.Context, headerMessa
 		&i.MessageID,
 		&i.ConversationID,
 		&i.ToAddresses,
+		&i.CcAddresses,
+		&i.BccAddresses,
 		&i.ChannelID,
 	)
 	return i, err
 }
 
 const findOutboundEmailByHeader = `-- name: FindOutboundEmailByHeader :one
-SELECT e.message_id, e.conversation_id, e.header_message_id, e.relay_message_id, e.to_addresses, e.cc_addresses FROM message_emails e
+SELECT e.message_id, e.conversation_id, e.header_message_id, e.relay_message_id, e.to_addresses, e.cc_addresses, e.bcc_addresses, e.shared FROM message_emails e
 WHERE e.workspace_id = $1 AND e.direction = 'out' AND e.imported_at IS NULL
   AND (e.header_message_id = $2 OR e.relay_message_id = $2)
 LIMIT 1
@@ -790,6 +796,8 @@ type FindOutboundEmailByHeaderRow struct {
 	RelayMessageID  *string
 	ToAddresses     []string
 	CcAddresses     []string
+	BccAddresses    []string
+	Shared          bool
 }
 
 func (q *Queries) FindOutboundEmailByHeader(ctx context.Context, arg FindOutboundEmailByHeaderParams) (FindOutboundEmailByHeaderRow, error) {
@@ -802,6 +810,8 @@ func (q *Queries) FindOutboundEmailByHeader(ctx context.Context, arg FindOutboun
 		&i.RelayMessageID,
 		&i.ToAddresses,
 		&i.CcAddresses,
+		&i.BccAddresses,
+		&i.Shared,
 	)
 	return i, err
 }
@@ -959,7 +969,7 @@ func (q *Queries) GetIngestChannel(ctx context.Context, arg GetIngestChannelPara
 }
 
 const getMessageEmail = `-- name: GetMessageEmail :one
-SELECT workspace_id, message_id, conversation_id, channel_id, direction, header_message_id, in_reply_to, references_ids, from_address, to_addresses, cc_addresses, subject, full_text, full_html, quoted, headers, raw_key, raw_size, authentication_results, dmarc, auto, created_at, imported_at, relay_message_id FROM message_emails WHERE workspace_id = $1 AND message_id = $2
+SELECT workspace_id, message_id, conversation_id, channel_id, direction, header_message_id, in_reply_to, references_ids, from_address, to_addresses, cc_addresses, subject, full_text, full_html, quoted, headers, raw_key, raw_size, authentication_results, dmarc, auto, created_at, imported_at, relay_message_id, bcc_addresses, shared FROM message_emails WHERE workspace_id = $1 AND message_id = $2
 `
 
 type GetMessageEmailParams struct {
@@ -995,6 +1005,8 @@ func (q *Queries) GetMessageEmail(ctx context.Context, arg GetMessageEmailParams
 		&i.CreatedAt,
 		&i.ImportedAt,
 		&i.RelayMessageID,
+		&i.BccAddresses,
+		&i.Shared,
 	)
 	return i, err
 }
@@ -1361,7 +1373,7 @@ func (q *Queries) ListInboxRawKeys(ctx context.Context, arg ListInboxRawKeysPara
 }
 
 const listMessageEmails = `-- name: ListMessageEmails :many
-SELECT e.message_id, e.direction, e.header_message_id, e.from_address, e.to_addresses, e.cc_addresses, e.subject, e.quoted,
+SELECT e.message_id, e.direction, e.header_message_id, e.from_address, e.to_addresses, e.cc_addresses, e.bcc_addresses, e.subject, e.quoted,
        (e.raw_key IS NOT NULL)::bool AS has_raw, e.auto, e.dmarc,
        (e.direction = 'in' AND NOT EXISTS (
            SELECT 1 FROM contact_emails ce
@@ -1386,6 +1398,7 @@ type ListMessageEmailsRow struct {
 	FromAddress      string
 	ToAddresses      []string
 	CcAddresses      []string
+	BccAddresses     []string
 	Subject          string
 	Quoted           bool
 	HasRaw           bool
@@ -1410,6 +1423,7 @@ func (q *Queries) ListMessageEmails(ctx context.Context, arg ListMessageEmailsPa
 			&i.FromAddress,
 			&i.ToAddresses,
 			&i.CcAddresses,
+			&i.BccAddresses,
 			&i.Subject,
 			&i.Quoted,
 			&i.HasRaw,
@@ -1433,8 +1447,8 @@ SELECT EXISTS (
   WHERE e.workspace_id = $1
     AND (e.in_reply_to = ANY($2::text[]) OR e.references_ids && $2::text[])
     AND CASE WHEN e.direction = 'out'
-      THEN e.to_addresses <> ARRAY[$3::text] OR cardinality(e.cc_addresses) > 0
-      ELSE NOT e.auto AND (e.from_address <> $3::text OR cardinality(e.to_addresses) > 1 OR cardinality(e.cc_addresses) > 0)
+      THEN e.shared OR e.to_addresses <> ARRAY[$3::text] OR cardinality(e.cc_addresses) > 0 OR cardinality(e.bcc_addresses) > 0
+      ELSE NOT e.auto AND (e.shared OR e.from_address <> $3::text OR cardinality(e.to_addresses) > 1 OR cardinality(e.cc_addresses) > 0)
     END
 )::bool AS shared
 `

@@ -977,14 +977,39 @@ Inbound:
    subject of the mail. A closed, pending or snoozed conversation that gets a reply is reopened.
    The sender is matched to a contact by address or becomes a new contact; mail from a blocked
    contact is refused, mail from the channel's own address is dropped. A thread joins only a
-   conversation of the sender's own contact: anyone who holds one of our Message-IDs (a CC'd
-   colleague, a forward) could otherwise write into a customer's conversation. Mail that names the
+   conversation of the sender's own contact, or, for mail that passed DMARC, one whose active
+   participants include the sender's address (below): anyone else who holds one of our Message-IDs (a Bcc recipient, a forward) could
+   otherwise write into a customer's conversation. Mail that names the
    thread of another contact's conversation opens a new conversation for its sender, counted
    against the hourly limit, with `related_conversation_id` pointing to the conversation it named;
    the panel shows that link, and nothing is added to the other conversation. `From` can be
    forged, so a reply whose trusted DMARC result fails never joins a conversation that is not
-   flagged spam either: it opens a new spam conversation with `related_conversation_id`. The `Cc` of inbound
-   mail is recorded and shown; nobody is copied automatically on replies.
+   flagged spam either: it opens a new spam conversation with `related_conversation_id`.
+   Participants: the `To` and `Cc` of inbound mail (and the `cc` of members' replies) are kept as
+   `conversation_participants` rows (workspace, conversation, lowercased address, role `cc`, status,
+   first seen; the contact is found by address when there is one, else the row is a bare address),
+   at most 20 per conversation. Never kept: the sender, the conversation contact's own addresses,
+   and any address this server receives or sends mail for in any workspace (channel addresses with
+   tags and catch-alls, forwarding addresses, `from_address`, `YUVA_SMTP_FROM`). Mail that fails
+   DMARC or is automatic adds no one. `From` can be forged wherever DMARC is not enforced (a domain
+   without a DMARC record, or an install without `YUVA_INGRESS_AUTHSERV_ID`), and a forged mail
+   "from" the customer could otherwise name an attacker in `Cc` and have every reply copied to them;
+   so header addresses are `active` only when the mail's trusted DMARC result is `pass`, and
+   `suggested` otherwise: shown to members, never copied, never allowed to answer into the
+   conversation. A later mail that passes makes a suggested address active. Addresses a member names
+   in a reply's `cc` or adds with `POST /v1/conversations/{id}/participants` are active;
+   `DELETE /v1/conversations/{id}/participants/{email}` removes one (a later inbound mail naming it
+   adds it again). Changes emit `conversation.participants` (data: the conversation id and the full
+   list) on realtime and `/v1/events` only: no webhook, nothing on the contact's stream. Mail that
+   passes DMARC from an active participant's address and names the thread joins the conversation as
+   a message from the participant's contact (created by address like any sender); the
+   conversation's contact stays. It passes the same rules as the contact's own mail: blocked
+   senders, loop and auto-reply handling, and the hourly sender cap, which counts inbound mail by
+   its author. Any other mail from them, and answers from Bcc recipients (never participants), opens
+   a new related conversation. `GET /v1/conversations/{id}/participants` lists them with their
+   status. The add endpoint answers an address of this server like an invalid one
+   (`400 validation_failed`, same text), as do `cc` and `bcc`, so nobody learns another workspace's
+   addresses.
    Every e-mail channel also has a forwarding address, `<token>@<YUVA_FORWARDING_DOMAIN>` (16 random
    characters, rotatable), for mailboxes that forward to Yuva instead of moving their MX; ingress
    resolves a recipient on that domain by token before the address lookup. Without the setting there
@@ -1035,9 +1060,26 @@ that would be refused is already refused when the channel is saved. A member's r
 in a conversation that started on an e-mail channel goes out through a River job: `From` is the
 channel address (or its per-channel sending address) with its display name, `Reply-To` the channel
 address, `To` the address the conversation's contact last wrote from among the contact's own
-addresses (or the contact's first address) and never another sender in the thread, no `Cc`,
-`Subject` `Re: …`, and `In-Reply-To` and
-`References` keep the thread. Notes are never sent. The message carries its delivery state
+addresses (or the contact's first address) and never another sender in the thread, `Cc` the
+conversation's active participants unless the reply names its own `cc` (`[]` copies no one), `Bcc` never
+as a header, `Subject` `Re: …`, and `In-Reply-To` and
+`References` keep the thread. A reply (`createMessage`, `sendMessage` for a draft, MCP
+`send_reply` and `send_draft`, so members, keys with send rights and assistants while sending is
+allowed) may set `cc` and `bcc`, at most 20 addresses each. Each address is validated, may not be
+an address of this server (answered like an invalid address), and is refused with `409 email_undeliverable` when it has a suppression
+of scope `all` (a hard bounce, or a complaint about transactional mail); a broadcast-only
+suppression (a complaint about or unsubscribe from a broadcast) does not stop a reply, since the
+person is part of a conversation, not a list. Default participants with a suppression are left out
+silently. The contact's address is dropped from both lists and an address in both stays in `cc`.
+Addresses in `cc` become participants. `bcc` is stored on the message's e-mail row for members:
+it is in the message's `email.bcc` only in answers to `/v1` requests (message list, create, send),
+never in events (so never in `/v1/events`, realtime, webhooks or the contact's stream), never on
+`/client/v1` and never in the stored or sent headers; the sender passes `To`, `Cc` and `Bcc` as
+envelope recipients (suppressions are checked again at send time and drop a copy, not the
+reply), and a relay that refuses one recipient fails the whole send. The stored e-mail keeps
+`to`, `cc` and `bcc` for the thread view. Automatic mail copies no one: greetings, rating
+requests, chat continuity and automation rule replies, since an automatic Cc to addresses taken
+from inbound headers would turn every rule into a way to send mail to strangers. `Reply-To` stays the channel address. Notes are never sent. The message carries its delivery state
 (`queued`, `sent`, `failed` with the error), reported live as `message.updated`; temporary SMTP
 errors are retried, 5xx replies fail at once. An e-mail channel can greet new conversations once
 per contact within a set interval; the greeting is a `system` message with
@@ -1060,7 +1102,7 @@ complaints arrive at `/ingress/ses` through SNS: the SNS signature is checked ag
 certificate, only topics listed in `YUVA_SES_TOPIC_ARNS` are accepted, a subscription is confirmed
 only on an `sns.<region>.amazonaws.com` URL, a notification whose `Timestamp` is more than an hour
 old (or ahead) is refused as a replay, and a notification counts only for a message we sent
-and for its recipients. Suppressions have a scope: a hard bounce or a complaint about a reply
+and for its recipients (`To`, `Cc` and `Bcc`; only a `To` recipient fails the message). Suppressions have a scope: a hard bounce or a complaint about a reply
 stops all mail to the address; a complaint about a broadcast stops broadcasts only (see Broadcasts).
 Undeliverable addresses are shown on the
 contact, replies to them are refused until a member clears them.
@@ -4101,7 +4143,17 @@ they belong to no channel. (#136, migration 00095)
   a user who deleted their account with `DELETE /v1/contacts/by-external-id?inbox_id=&external_id=`
   (an API key or an owner or admin): the contact goes with all their conversations, messages,
   attachments, sessions and addresses in every inbox, the stored files are removed, and
-  `contact.deleted` tells the other endpoints which external ids are gone.
+  `contact.deleted` tells the other endpoints which external ids are gone. Their addresses are
+  removed from other conversations' participants and from the `to`, `cc` and `bcc` lists of the
+  stored e-mails that remain (other people's raw sources and full text keep them, as with
+  redaction); their messages as a participant go with them. Before the lists are cut, a row that
+  went to or came with more than one address gets `shared = true`, a flag that names no one, and
+  the one-recipient rule for delivery reports and complaints (`soleRecipient`,
+  `MessageIDSharedBeyond`) treats a shared row as having several recipients, so the deleted person
+  cannot later forge a report that suppresses the customer. Export:
+  `GET /v1/contacts/{id}/participations` lists the other contacts' conversations that hold one of
+  the contact's addresses as a participant or in a stored recipient list; someone only copied gets
+  a contact with their address first.
 - Analytics keeps no IP address and puts nothing on a visitor's device by default (see "Analytics"). Raw
   visits and events are kept `YUVA_ANALYTICS_RAW_DAYS` (90), rollups the property's `retention_months`
   (25); salts are deleted two hours after their day. Members delete a property's data for a range or in

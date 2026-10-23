@@ -670,6 +670,9 @@ func (s *Server) deleteContact(ctx context.Context, p principal, id uuid.UUID) e
 		if err := deleteContactAnalytics(ctx, q, p.workspaceID, id); err != nil {
 			return err
 		}
+		if err := forgetContactAddresses(ctx, q, p.workspaceID, id); err != nil {
+			return err
+		}
 		if _, err = q.DeleteContact(ctx, store.DeleteContactParams{WorkspaceID: p.workspaceID, ID: id}); err != nil {
 			return err
 		}

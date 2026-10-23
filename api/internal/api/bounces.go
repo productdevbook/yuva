@@ -125,7 +125,7 @@ func (s *Server) applyDSN(ctx context.Context, ch store.FindEmailChannelByAddres
 }
 
 func soleRecipient(sent store.FindOutboundEmailByHeaderRow) string {
-	if len(sent.ToAddresses) != 1 || len(sent.CcAddresses) != 0 {
+	if sent.Shared || len(sent.ToAddresses) != 1 || len(sent.CcAddresses) != 0 || len(sent.BccAddresses) != 0 {
 		return ""
 	}
 	return sent.ToAddresses[0]
@@ -336,11 +336,14 @@ func (s *Server) applySES(ctx context.Context, payload string) error {
 		s.log.WarnContext(ctx, "ses notification of another tenant dropped", slog.String("message_id", id), slog.String("tenant", tenant))
 		return nil
 	}
-	recipients = slices.DeleteFunc(recipients, func(r bounced) bool { return !slices.Contains(row.ToAddresses, r.email) })
+	recipients = slices.DeleteFunc(recipients, func(r bounced) bool {
+		return !slices.Contains(row.ToAddresses, r.email) && !slices.Contains(row.CcAddresses, r.email) && !slices.Contains(row.BccAddresses, r.email)
+	})
 	if len(recipients) == 0 {
 		s.log.InfoContext(ctx, "ses notification names no recipient of the message", slog.String("message_id", id))
 		return nil
 	}
+	failMessage = failMessage && slices.ContainsFunc(recipients, func(r bounced) bool { return slices.Contains(row.ToAddresses, r.email) })
 	return s.recordBounce(ctx, row.WorkspaceID, &row.MessageID, recipients, failMessage)
 }
 

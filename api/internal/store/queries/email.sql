@@ -56,7 +56,7 @@ VALUES (@workspace_id, @message_id, @conversation_id, @channel_id, @direction, @
 SELECT * FROM message_emails WHERE workspace_id = $1 AND message_id = $2;
 
 -- name: ListMessageEmails :many
-SELECT e.message_id, e.direction, e.header_message_id, e.from_address, e.to_addresses, e.cc_addresses, e.subject, e.quoted,
+SELECT e.message_id, e.direction, e.header_message_id, e.from_address, e.to_addresses, e.cc_addresses, e.bcc_addresses, e.subject, e.quoted,
        (e.raw_key IS NOT NULL)::bool AS has_raw, e.auto, e.dmarc,
        (e.direction = 'in' AND NOT EXISTS (
            SELECT 1 FROM contact_emails ce
@@ -111,7 +111,7 @@ UPDATE message_emails SET relay_message_id = @relay_message_id
 WHERE workspace_id = @workspace_id AND message_id = @message_id AND direction = 'out';
 
 -- name: FindOutboundEmailByHeader :one
-SELECT e.message_id, e.conversation_id, e.header_message_id, e.relay_message_id, e.to_addresses, e.cc_addresses FROM message_emails e
+SELECT e.message_id, e.conversation_id, e.header_message_id, e.relay_message_id, e.to_addresses, e.cc_addresses, e.bcc_addresses, e.shared FROM message_emails e
 WHERE e.workspace_id = @workspace_id AND e.direction = 'out' AND e.imported_at IS NULL
   AND (e.header_message_id = @header_message_id OR e.relay_message_id = @header_message_id)
 LIMIT 1;
@@ -123,15 +123,15 @@ SELECT EXISTS (
   WHERE e.workspace_id = @workspace_id
     AND (e.in_reply_to = ANY(@ids::text[]) OR e.references_ids && @ids::text[])
     AND CASE WHEN e.direction = 'out'
-      THEN e.to_addresses <> ARRAY[@email::text] OR cardinality(e.cc_addresses) > 0
-      ELSE NOT e.auto AND (e.from_address <> @email::text OR cardinality(e.to_addresses) > 1 OR cardinality(e.cc_addresses) > 0)
+      THEN e.shared OR e.to_addresses <> ARRAY[@email::text] OR cardinality(e.cc_addresses) > 0 OR cardinality(e.bcc_addresses) > 0
+      ELSE NOT e.auto AND (e.shared OR e.from_address <> @email::text OR cardinality(e.to_addresses) > 1 OR cardinality(e.cc_addresses) > 0)
     END
 )::bool AS shared;
 
 -- SES reports name only our Message-ID, so the message is found before the workspace is known
 -- (see "Hosting for others later" in docs/architecture.md).
 -- name: FindOutboundEmailAnyWorkspace :one
-SELECT e.workspace_id, e.message_id, e.conversation_id, e.to_addresses, e.channel_id FROM message_emails e
+SELECT e.workspace_id, e.message_id, e.conversation_id, e.to_addresses, e.cc_addresses, e.bcc_addresses, e.channel_id FROM message_emails e
 JOIN workspaces w ON w.id = e.workspace_id
 WHERE e.direction = 'out' AND e.imported_at IS NULL AND e.header_message_id = $1 AND w.deleted_at IS NULL
 LIMIT 1;
@@ -149,7 +149,9 @@ LIMIT 1;
 -- name: CountRecentInboundEmails :one
 SELECT count(*) FROM message_emails e
 JOIN conversations c ON c.workspace_id = e.workspace_id AND c.id = e.conversation_id
-WHERE e.workspace_id = @workspace_id AND c.contact_id = @contact_id AND e.direction = 'in' AND e.created_at > @since;
+JOIN messages m ON m.workspace_id = e.workspace_id AND m.id = e.message_id
+WHERE e.workspace_id = @workspace_id AND coalesce(m.author_contact_id, c.contact_id) = @contact_id::uuid
+  AND e.direction = 'in' AND e.created_at > @since;
 
 -- Mail from an address the server sends from is dropped, whichever workspace it belongs to.
 -- name: IsEmailChannelSender :one

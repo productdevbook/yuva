@@ -1142,7 +1142,7 @@ export interface paths {
          * Create an API key
          * @description Owners and admins only, with a member session. The secret is returned once and stored
          *     only as a hash. A key limited to inboxes cannot hold `inboxes:manage`, `webhooks:manage`,
-         *     `workspace:manage`, `fields:manage` or `audit:read` (`400 validation_failed`); only an owner gives a key
+         *     `workspace:manage`, `fields:manage`, `automations:manage` or `audit:read` (`400 validation_failed`); only an owner gives a key
          *     `audit:read` (`403 forbidden`).
          */
         post: operations["createApiKey"];
@@ -1545,6 +1545,127 @@ export interface paths {
          *     Scope: `inboxes:manage`.
          */
         patch: operations["updateSlaPolicy"];
+        trace?: never;
+    };
+    "/v1/automation-rules": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List automation rules
+         * @description In `position` order. Callers limited to some inboxes (agents, inbox-limited keys) see the
+         *     workspace rules and the rules of their inboxes.
+         *
+         *     Scope: `automations:read`.
+         */
+        get: operations["listAutomationRules"];
+        put?: never;
+        /**
+         * Create an automation rule
+         * @description Owners, admins and API keys not limited to inboxes. The rule goes last in the order and
+         *     runs for triggers that happen after it is saved. A workspace holds at most 100 rules
+         *     (`403 automation_rule_limit`). Every label, member, team, canned reply, webhook endpoint,
+         *     custom field and the inbox a rule names must exist in the workspace (`400
+         *     validation_failed`); one deleted later makes the actions that need it fail.
+         *
+         *     Scope: `automations:manage`.
+         */
+        post: operations["createAutomationRule"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/automation-rules/order": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Reorder automation rules
+         * @description Owners, admins and API keys not limited to inboxes. `ids` names every rule of the workspace
+         *     once, in the new order (`400 validation_failed` otherwise).
+         *
+         *     Scope: `automations:manage`.
+         */
+        put: operations["orderAutomationRules"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/automation-rules/{automationRuleId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get an automation rule
+         * @description A rule the caller does not see (see `GET /v1/automation-rules`) answers `404`.
+         *
+         *     Scope: `automations:read`.
+         */
+        get: operations["getAutomationRule"];
+        put?: never;
+        post?: never;
+        /**
+         * Delete an automation rule
+         * @description Owners, admins and API keys not limited to inboxes. Its log goes with it; what it already
+         *     changed stays.
+         *
+         *     Scope: `automations:manage`.
+         */
+        delete: operations["deleteAutomationRule"];
+        options?: never;
+        head?: never;
+        /**
+         * Update an automation rule
+         * @description Owners, admins and API keys not limited to inboxes. Only what is sent changes;
+         *     `conditions` and `actions` are replaced whole. The caller becomes the rule's `saved_by`
+         *     when the change alters `trigger`, `idle_minutes`, `inbox_id`, `conditions`, `actions` or
+         *     `enabled` (not a rename), which decides whether its replies may go out while
+         *     `bots_may_send` is off. Runs already queued use the rule as it is when they run.
+         *
+         *     Scope: `automations:manage`.
+         */
+        patch: operations["updateAutomationRule"];
+        trace?: never;
+    };
+    "/v1/automation-rules/{automationRuleId}/runs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * A rule's log
+         * @description The rule's runs of the last 30 days, newest first: one per trigger it was evaluated for,
+         *     `applied`, `failed` with the reason, or `not_matched` when its conditions did not match.
+         *     An idle trigger whose conversation is no longer quiet or no longer open or pending when the
+         *     rule would run leaves no run. Callers limited to some inboxes see the runs on
+         *     conversations of their inboxes.
+         *
+         *     Scope: `automations:read`.
+         */
+        get: operations["listAutomationRuns"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/v1/inboxes/{inboxId}/channels": {
@@ -1968,6 +2089,33 @@ export interface paths {
          *     Scope: `contacts:read` and `conversations:read`.
          */
         get: operations["getContactSummary"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/contacts/{contactId}/participations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List conversations a contact was copied on
+         * @description Conversations of other contacts, in the inboxes the caller can see, where one of the
+         *     contact's addresses is a participant or appears in the `to`, `cc` or `bcc` of a stored
+         *     e-mail; newest first. With the contact's own conversations this answers an access request
+         *     (GDPR Art. 15, KVKK Art. 11) for someone who was only copied. Deleting the contact removes
+         *     those participants and its addresses from the stored lists. Someone copied who never
+         *     wrote has no contact: create one with their address first.
+         *
+         *     Scope: `contacts:read` and `conversations:read`.
+         */
+        get: operations["listContactParticipations"];
         put?: never;
         post?: never;
         delete?: never;
@@ -2478,6 +2626,20 @@ export interface paths {
          *     address the contact wrote to; when the conversation has none and the channel has no
          *     `from_address`, the reply is refused with `409 email_no_sender`.
          *
+         *     An e-mailed reply goes `To` the contact and, unless `cc` is sent, `Cc` the conversation's
+         *     `active` participants (`GET /v1/conversations/{id}/participants`), leaving out those whose
+         *     address bounced or complained; `suggested` ones are copied only when named in `cc`. `cc` replaces that list (`[]` copies no one) and `bcc` adds hidden
+         *     recipients, at most 20 addresses each: they receive the mail as envelope recipients only and
+         *     never appear in its headers. Addresses in `cc` become participants; `bcc` never does. Each
+         *     address must be a valid address that this server neither receives nor sends mail for
+         *     (`400 validation_failed`, the same answer for both); one that bounced or complained is refused with
+         *     `409 email_undeliverable`, while an unsubscribe from broadcasts does not stop a reply. The
+         *     contact's own address is dropped from both, and an address in both stays in `cc`. `cc` and
+         *     `bcc` are refused (`400 validation_failed`) on notes, `in` messages, drafts (send them with
+         *     `POST /v1/messages/{id}/send`) and replies that are not e-mailed. `bcc` is returned on the
+         *     message's `email` to members and keys only in answers to `/v1` requests, never in events,
+         *     webhooks or on `/client/v1`.
+         *
          *     `macro_id` applies a macro's actions and `then` applies a `ConversationUpdate`, in the same
          *     transaction as the message: when either is refused (an assignee of `then` without access
          *     to the inbox, a snooze without a future time) nothing is written, and when the message is
@@ -2491,6 +2653,68 @@ export interface paths {
          */
         post: operations["createMessage"];
         delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/conversations/{conversationId}/participants": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List a conversation's participants
+         * @description The people copied on the conversation's e-mail besides its contact, oldest first, at most
+         *     20 per conversation. The `To` and `Cc` addresses of inbound mail that are not addresses of
+         *     this server (any channel's address, sending address or forwarding address) are `active`
+         *     when the mail passed DMARC (`email.dmarc` `pass`) and `suggested` otherwise, since `From`
+         *     can be forged; automatic mail and mail that failed DMARC add no one. Addresses a member
+         *     names in a reply's `cc` or adds here are `active`. Replies copy `active` participants by
+         *     default, and mail that passes DMARC from an `active` participant's address and answers the
+         *     conversation joins it as a message from that participant's contact; anything else from
+         *     them opens a new conversation. `suggested` addresses are never copied unless a member adds
+         *     them. Changes emit `conversation.participants` on `/v1/realtime` and `/v1/events`.
+         *
+         *     Scope: `conversations:read`.
+         */
+        get: operations["listConversationParticipants"];
+        put?: never;
+        /**
+         * Add a participant
+         * @description Adds an address as an `active` participant, or makes a `suggested` one `active`. The
+         *     address must be valid and not one this server receives or sends mail for
+         *     (`400 validation_failed`, the same answer for both); a conversation holds at most 20
+         *     (`409 participants_full`). Whoever can see the conversation may; API keys and OAuth tokens
+         *     need `conversations:write`.
+         */
+        post: operations["addConversationParticipant"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/conversations/{conversationId}/participants/{email}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Remove a participant
+         * @description Removes an address from the participants: replies stop copying it and its mail no longer
+         *     joins the conversation. Later inbound mail that names it adds it again. Whoever can see the
+         *     conversation may; API keys and OAuth tokens need `conversations:write`. An address that is
+         *     not a participant is `404`.
+         */
+        delete: operations["removeConversationParticipant"];
         options?: never;
         head?: never;
         patch?: never;
@@ -2782,7 +3006,8 @@ export interface paths {
          * @description Delivers a draft like a new outgoing message: its time becomes now, `sent_by` names who
          *     sent it, the author stays the draft's author, and `message.created` is emitted (an e-mail
          *     conversation e-mails it, as in `createMessage`). Anything that is not a draft answers
-         *     `409 not_a_draft`.
+         *     `409 not_a_draft`. `cc` and `bcc` follow the rules of `createMessage`; without them the
+         *     e-mail copies the conversation's participants.
          *
          *     Members always may. An API key needs `drafts:send` and `messages:write`, and the
          *     workspace's `bots_may_send` (`403 bot_sending_disabled`).
@@ -3057,6 +3282,111 @@ export interface paths {
          *     macro instead.
          */
         patch: operations["updateMacro"];
+        trace?: never;
+    };
+    "/v1/views": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List saved views
+         * @description The rail: the caller's own personal views, the workspace's views and the views of the
+         *     teams the caller is a member of, all of them. Personal first, then team, then workspace,
+         *     each by `position` and name. API keys have no personal views and belong to no team.
+         *
+         *     With `team_id`, only that team's views instead: for its members, owners, admins and API
+         *     keys not limited to inboxes (others `404`), so owners can manage the views of teams they
+         *     are not in without every team's views in their rail.
+         *
+         *     Each view carries `count`: its open conversations, counted with the view's filters under
+         *     the caller's own inbox access, so a shared view never counts what the caller cannot see.
+         *     `count` stops at 1000 (`count_capped`). It is absent when the filters do not apply to the
+         *     caller, for example `assignee=me` for an API key or an inbox the caller cannot see, and
+         *     when counting took longer than a second (`count_unavailable`).
+         *
+         *     Scope: `conversations:read`.
+         */
+        get: operations["listViews"];
+        put?: never;
+        /**
+         * Save a view
+         * @description A `personal` view belongs to the calling member: any member with a session, or an OAuth
+         *     token with `views:write`; API keys are refused with `403 member_session_required`.
+         *     `workspace` and `team` views are created by owners and admins (with `views:write` on an
+         *     OAuth token) and API keys with `views:write`; agents get `403 forbidden`, and keys limited
+         *     to inboxes get it for `team` views. A `team` view names its `team_id` and is seen by that
+         *     team's members, owners, admins and keys not limited to inboxes; deleting the team deletes
+         *     its views. Writing a view of any kind also needs `conversations:read`, since the answer
+         *     carries its count.
+         *
+         *     `filters` are checked as `GET /v1/conversations` checks its query parameters, for the
+         *     caller: an unknown parameter, `cursor`, `limit`, or a value the list refuses answers
+         *     `400 validation_failed` with `field` naming the parameter. A member keeps at most 50
+         *     personal views, a workspace 50 workspace views and each team 50 team views
+         *     (`403 view_limit`).
+         */
+        post: operations["createView"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/views/order": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Reorder saved views
+         * @description Sets each named view's `position` to its index in `ids`. Every view must be one the caller
+         *     sees and may change (same permissions as updating it); otherwise `404` or `403` and
+         *     nothing moves. Views not named keep their position.
+         */
+        put: operations["reorderViews"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/views/{viewId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get a saved view
+         * @description A view the caller sees, with its `count` as in the list; any other is `404`.
+         *
+         *     Scope: `conversations:read`.
+         */
+        get: operations["getView"];
+        put?: never;
+        post?: never;
+        /**
+         * Delete a saved view
+         * @description Same permissions as creating one of its visibility.
+         */
+        delete: operations["deleteView"];
+        options?: never;
+        head?: never;
+        /**
+         * Update a saved view
+         * @description Same permissions as creating one of its visibility; members of a team see its views but
+         *     do not change them. `filters` replaces the filters as a whole and is checked as on create.
+         *     The visibility and team do not change; save a new view instead.
+         */
+        patch: operations["updateView"];
         trace?: never;
     };
     "/v1/custom-fields": {
@@ -11520,6 +11850,28 @@ export interface webhooks {
         patch?: never;
         trace?: never;
     };
+    "automation.triggered": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * An automation rule sent a conversation
+         * @description Sent only by a rule's `send_webhook` action, to the endpoint it names, whatever events the
+         *     endpoint lists; never through a subscription. An endpoint limited to another inbox, or
+         *     turned off, makes the action fail.
+         */
+        post: operations["webhookAutomationTriggered"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export interface components {
     schemas: {
@@ -11688,6 +12040,11 @@ export interface components {
          *       `account`, and `host` for a GitHub Enterprise Server. `issue_integration.updated`:
          *       `fields` among `name`, `token`, `default_target` and `webhook_secret`; never a token or
          *       secret. `issue_integration.secret_rotated`: none.
+         *     - `automation_rule.created`, `automation_rule.deleted`: `name`, `trigger`, `inbox_id`
+         *       when set, `action_types`, and `webhook_hosts` (the hosts of the endpoints its
+         *       `send_webhook` actions name, never their URLs). `automation_rule.updated`: `fields`
+         *       among `name`, `enabled`, `inbox_id`, `trigger`, `idle_minutes`, `conditions` and
+         *       `actions`, with the same `name`, `trigger`, `action_types` and `webhook_hosts`.
          *
          *     Details never make an action fail: when they would be too long, lists are replaced by
          *     `<name>_count` and `truncated` is `true`.
@@ -11697,9 +12054,9 @@ export interface components {
          *     More actions are added over time; show an unknown one by its name.
          * @enum {string}
          */
-        AuditAction: "member.joined" | "member.role_changed" | "member.removed" | "member.inbox_access_granted" | "member.inbox_access_revoked" | "invite.created" | "invite.deleted" | "api_key.created" | "api_key.revoked" | "oauth_grant.created" | "oauth_grant.revoked" | "webhook.created" | "webhook.updated" | "webhook.deleted" | "webhook.secret_rotated" | "channel.credentials_changed" | "channel.key_rotated" | "channel.forwarding_address_rotated" | "channel.dkim_key_created" | "channel.dkim_key_deleted" | "inbox.identity_secret_rotated" | "inbox.deleted" | "conversation.trashed" | "conversation.restored" | "conversation.deleted" | "message.redacted" | "contact.deleted" | "contact.consent_exported" | "list.consent_exported" | "analytics_export.created" | "workspace.retention_changed" | "workspace.broadcast_approval_requested" | "workspace.broadcasts_approved" | "workspace.broadcasts_denied" | "workspace.broadcasts_suspended" | "workspace.broadcast_limit_changed" | "team.created" | "team.deleted" | "team.member_added" | "team.member_removed" | "team.inbox_access_granted" | "team.inbox_access_revoked" | "workspace.slack_connected" | "workspace.slack_disconnected" | "member.slack_linked" | "member.slack_unlinked" | "sso.provider_created" | "sso.provider_updated" | "sso.provider_deleted" | "sso.settings_changed" | "sso.signed_in" | "sso.sign_in_refused" | "sso_domain.added" | "sso_domain.verified" | "sso_domain.deleted" | "issue_integration.connected" | "issue_integration.updated" | "issue_integration.disconnected" | "issue_integration.secret_rotated";
+        AuditAction: "member.joined" | "member.role_changed" | "member.removed" | "member.inbox_access_granted" | "member.inbox_access_revoked" | "invite.created" | "invite.deleted" | "api_key.created" | "api_key.revoked" | "oauth_grant.created" | "oauth_grant.revoked" | "webhook.created" | "webhook.updated" | "webhook.deleted" | "webhook.secret_rotated" | "channel.credentials_changed" | "channel.key_rotated" | "channel.forwarding_address_rotated" | "channel.dkim_key_created" | "channel.dkim_key_deleted" | "inbox.identity_secret_rotated" | "inbox.deleted" | "conversation.trashed" | "conversation.restored" | "conversation.deleted" | "message.redacted" | "contact.deleted" | "contact.consent_exported" | "list.consent_exported" | "analytics_export.created" | "workspace.retention_changed" | "workspace.broadcast_approval_requested" | "workspace.broadcasts_approved" | "workspace.broadcasts_denied" | "workspace.broadcasts_suspended" | "workspace.broadcast_limit_changed" | "team.created" | "team.deleted" | "team.member_added" | "team.member_removed" | "team.inbox_access_granted" | "team.inbox_access_revoked" | "workspace.slack_connected" | "workspace.slack_disconnected" | "member.slack_linked" | "member.slack_unlinked" | "sso.provider_created" | "sso.provider_updated" | "sso.provider_deleted" | "sso.settings_changed" | "sso.signed_in" | "sso.sign_in_refused" | "sso_domain.added" | "sso_domain.verified" | "sso_domain.deleted" | "issue_integration.connected" | "issue_integration.updated" | "issue_integration.disconnected" | "issue_integration.secret_rotated" | "automation_rule.created" | "automation_rule.updated" | "automation_rule.deleted";
         /** @enum {string} */
-        AuditTargetType: "workspace" | "member" | "invite" | "inbox" | "channel" | "api_key" | "oauth_grant" | "webhook" | "contact" | "list" | "analytics_export" | "conversation" | "message" | "team" | "sso" | "sso_domain" | "issue_integration";
+        AuditTargetType: "workspace" | "member" | "invite" | "inbox" | "channel" | "api_key" | "oauth_grant" | "webhook" | "contact" | "list" | "analytics_export" | "conversation" | "message" | "team" | "sso" | "sso_domain" | "issue_integration" | "automation_rule";
         AuditTarget: {
             type: components["schemas"]["AuditTargetType"];
             /**
@@ -12132,15 +12489,25 @@ export interface components {
          *     - `issues:write`: create, link and unlink GitHub and Linear issues on feedback and ideas,
          *       together with `conversations:read`.
          *
+         *     - `views:write`: save, change, reorder and delete saved views, together with
+         *       `conversations:read`: personal ones for OAuth tokens, workspace and team ones for owners'
+         *       and admins' tokens and for API keys (team ones only without an inbox limit).
+         *
          *     - `fields:manage`: create, change and delete custom field definitions. Owners and admins
          *       only; never offered to agents' tokens, refused for keys limited to inboxes. Never
          *       implied: a key made without naming its scopes does not hold it. Writing values needs
          *       `conversations:write` or `contacts:write`.
          *
-         *     `conversations:delete`, `messages:redact`, `lists:*`, `broadcasts:*`, `migrations:manage`, `analytics:*`, `status:*`, `help:*`, `roadmap:*`, `changelog:*`, `audit:read`, `integrations:*`, `issues:write` and `fields:manage` are never added to keys made before they existed.
+         *     - `automations:read`: automation rules and their logs.
+         *     - `automations:manage`: create, change, reorder and delete automation rules. Owners and
+         *       admins only; never offered to agents' tokens, refused for keys limited to inboxes. Never
+         *       implied: a key made without naming its scopes does not hold it. A rule acts on every
+         *       inbox it covers with the workspace's power.
+         *
+         *     `conversations:delete`, `messages:redact`, `lists:*`, `broadcasts:*`, `migrations:manage`, `analytics:*`, `status:*`, `help:*`, `roadmap:*`, `changelog:*`, `audit:read`, `integrations:*`, `issues:write`, `fields:manage`, `views:write` and `automations:*` are never added to keys made before they existed.
          * @enum {string}
          */
-        ApiKeyScope: "conversations:read" | "conversations:write" | "conversations:delete" | "messages:write" | "messages:redact" | "drafts:send" | "notes:write" | "contacts:read" | "contacts:write" | "inboxes:read" | "inboxes:manage" | "labels:write" | "canned_replies:write" | "webhooks:manage" | "workspace:manage" | "feedback:write" | "lists:read" | "lists:write" | "broadcasts:read" | "broadcasts:write" | "broadcasts:send" | "migrations:manage" | "analytics:read" | "analytics:write" | "analytics:manage" | "status:read" | "status:manage" | "help:read" | "help:write" | "help:publish" | "roadmap:read" | "roadmap:write" | "roadmap:stage" | "changelog:read" | "changelog:write" | "changelog:publish" | "audit:read" | "integrations:read" | "integrations:manage" | "issues:write" | "fields:manage";
+        ApiKeyScope: "conversations:read" | "conversations:write" | "conversations:delete" | "messages:write" | "messages:redact" | "drafts:send" | "notes:write" | "contacts:read" | "contacts:write" | "inboxes:read" | "inboxes:manage" | "labels:write" | "canned_replies:write" | "webhooks:manage" | "workspace:manage" | "feedback:write" | "lists:read" | "lists:write" | "broadcasts:read" | "broadcasts:write" | "broadcasts:send" | "migrations:manage" | "analytics:read" | "analytics:write" | "analytics:manage" | "status:read" | "status:manage" | "help:read" | "help:write" | "help:publish" | "roadmap:read" | "roadmap:write" | "roadmap:stage" | "changelog:read" | "changelog:write" | "changelog:publish" | "audit:read" | "integrations:read" | "integrations:manage" | "issues:write" | "fields:manage" | "views:write" | "automations:read" | "automations:manage";
         /**
          * Format: uri
          * @description An `https` image URL.
@@ -12999,6 +13366,82 @@ export interface components {
             items: components["schemas"]["ContactNote"][];
             next_cursor?: string;
         };
+        ConversationParticipant: {
+            email: components["schemas"]["Email"];
+            /**
+             * @description `active` addresses are copied on replies and may answer into the conversation;
+             *     `suggested` ones came from mail that did not pass DMARC and are only shown.
+             * @enum {string}
+             */
+            status: "active" | "suggested";
+            /**
+             * Format: uuid
+             * @description The contact with this address, when there is one.
+             */
+            contact_id?: string;
+            /** @description That contact's name. */
+            name?: string;
+            /** @enum {string} */
+            role: "cc";
+            /**
+             * Format: date-time
+             * @description When the address was first seen on the conversation.
+             */
+            created_at: string;
+        };
+        ConversationParticipantList: {
+            items: components["schemas"]["ConversationParticipant"][];
+        };
+        ConversationParticipantCreate: {
+            email: components["schemas"]["Email"];
+        };
+        ConversationParticipantsChange: {
+            /** Format: uuid */
+            conversation_id: string;
+            items: components["schemas"]["ConversationParticipant"][];
+        };
+        /**
+         * @description The participants of a conversation changed (inbound mail, a reply's `cc`, or a member). Only
+         *     on `/v1/realtime` and `/v1/events`; never a webhook and never on `/client/v1`.
+         */
+        ConversationParticipantsEvent: {
+            /** Format: int64 */
+            id: number;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "conversation.participants";
+            /** Format: uuid */
+            workspace_id: string;
+            /** Format: uuid */
+            inbox_id: string;
+            /** Format: uuid */
+            conversation_id: string;
+            /** Format: date-time */
+            created_at: string;
+            data: components["schemas"]["ConversationParticipantsChange"];
+        };
+        ContactParticipation: {
+            /** Format: uuid */
+            conversation_id: string;
+            /** Format: uuid */
+            inbox_id: string;
+            subject: string;
+            /** @description The contact's addresses that the conversation holds. */
+            emails: components["schemas"]["Email"][];
+            /** @description One of them is a participant; otherwise they appear only in stored e-mail. */
+            participant: boolean;
+            /**
+             * Format: date-time
+             * @description When the conversation started.
+             */
+            created_at: string;
+        };
+        ContactParticipationPage: {
+            items: components["schemas"]["ContactParticipation"][];
+            next_cursor?: string;
+        };
         /**
          * @description How the team has served the contact, over all their conversations the caller can see (spam
          *     left out).
@@ -13060,8 +13503,12 @@ export interface components {
             /** Format: int64 */
             count: number;
         };
-        /** @enum {string} */
-        WebhookEventType: "conversation.created" | "conversation.updated" | "conversation.rated" | "conversation.trashed" | "conversation.restored" | "conversation.deleted" | "message.created" | "message.redacted" | "feedback.created" | "contact.updated" | "contact.deleted" | "draft.created" | "draft.updated" | "draft.deleted" | "discussion.created" | "discussion.post_created" | "discussion.answered" | "discussion.updated" | "subscription.created" | "subscription.updated" | "broadcast.updated" | "analytics.alert" | "status.component.updated" | "status.incident.created" | "status.incident.updated" | "status.incident.resolved" | "status.monitor.down" | "status.monitor.up" | "help.article.published" | "help.article.unpublished" | "help.article.deleted" | "discussion.stage_changed" | "changelog.entry.published" | "changelog.entry.unpublished" | "changelog.entry.deleted" | "team.created" | "team.updated" | "team.deleted" | "issue_link.created" | "issue_link.updated" | "issue_link.deleted" | "conversation.sla_warning" | "conversation.sla_breached";
+        /**
+         * @description `automation.triggered` cannot be listed in an endpoint's `events`: it is sent only to the
+         *     endpoint a rule's `send_webhook` action names.
+         * @enum {string}
+         */
+        WebhookEventType: "conversation.created" | "conversation.updated" | "conversation.rated" | "conversation.trashed" | "conversation.restored" | "conversation.deleted" | "message.created" | "message.redacted" | "feedback.created" | "contact.updated" | "contact.deleted" | "draft.created" | "draft.updated" | "draft.deleted" | "discussion.created" | "discussion.post_created" | "discussion.answered" | "discussion.updated" | "subscription.created" | "subscription.updated" | "broadcast.updated" | "analytics.alert" | "status.component.updated" | "status.incident.created" | "status.incident.updated" | "status.incident.resolved" | "status.monitor.down" | "status.monitor.up" | "help.article.published" | "help.article.unpublished" | "help.article.deleted" | "discussion.stage_changed" | "changelog.entry.published" | "changelog.entry.unpublished" | "changelog.entry.deleted" | "team.created" | "team.updated" | "team.deleted" | "issue_link.created" | "issue_link.updated" | "issue_link.deleted" | "conversation.sla_warning" | "conversation.sla_breached" | "automation.triggered";
         WebhookEndpoint: {
             /** Format: uuid */
             id: string;
@@ -14158,7 +14605,7 @@ export interface components {
             via?: string;
         };
         /** @enum {string} */
-        EventType: "assigned" | "unassigned" | "status_changed" | "labels_changed" | "moved" | "rated" | "broadcast_reply" | "feedback_progress" | "macro_applied";
+        EventType: "assigned" | "unassigned" | "status_changed" | "labels_changed" | "moved" | "rated" | "broadcast_reply" | "feedback_progress" | "macro_applied" | "rule_applied";
         MessageEvent: {
             type: components["schemas"]["EventType"];
             /**
@@ -14211,6 +14658,11 @@ export interface components {
              *     sent and the rest applied.
              */
             skipped?: components["schemas"]["MacroSkipped"][];
+            /**
+             * @description `rule_applied` only: what the rule did, after the timeline events of its changes; the
+             *     message's `rule` names the rule.
+             */
+            actions?: components["schemas"]["AutomationRunAction"][];
         };
         Attachment: {
             /**
@@ -14279,6 +14731,11 @@ export interface components {
             /** @description Who removed its content; absent when it was not redacted. */
             redacted_by?: components["schemas"]["MessageRedactedBy"];
             /**
+             * @description The automation rule that wrote it (author `system`): its notes, replies and the timeline
+             *     events of its changes. Absent for everything else.
+             */
+            rule?: components["schemas"]["AutomationRuleRef"];
+            /**
              * Format: date-time
              * @description For a sent draft, when it was sent.
              */
@@ -14315,8 +14772,13 @@ export interface components {
             message_id: string;
             from: components["schemas"]["Email"];
             to: components["schemas"]["Email"][];
-            /** @description The `Cc` of an inbound mail, as received. Replies go to the contact only and copy no one. */
+            /** @description The `Cc` of an inbound mail as received, or the addresses a reply copied. */
             cc?: components["schemas"]["Email"][];
+            /**
+             * @description The hidden recipients of a reply. Only in answers to `/v1` requests (members and keys);
+             *     never in events, webhooks, the sent headers or on `/client/v1`.
+             */
+            bcc?: components["schemas"]["Email"][];
             subject?: string;
             quoted: boolean;
             /** @description The original is kept; download it from `/v1/messages/{id}/raw`. */
@@ -14401,6 +14863,23 @@ export interface components {
             macro_id?: string;
             /** @description Changes to the conversation applied with the message; see the operation. */
             then?: components["schemas"]["ConversationUpdate"];
+            /**
+             * @description E-mailed replies only: the addresses to copy, in place of the conversation's
+             *     participants; `[]` copies no one. See `createMessage`.
+             */
+            cc?: components["schemas"]["Email"][];
+            /** @description E-mailed replies only, hidden recipients. See `createMessage`. */
+            bcc?: components["schemas"]["Email"][];
+        };
+        /** @description Recipients of a draft's e-mail; see `createMessage`. */
+        MessageSend: {
+            /**
+             * @description E-mailed replies only: the addresses to copy, in place of the conversation's
+             *     participants; `[]` copies no one. See `createMessage`.
+             */
+            cc?: components["schemas"]["Email"][];
+            /** @description E-mailed replies only, hidden recipients. See `createMessage`. */
+            bcc?: components["schemas"]["Email"][];
         };
         MessageCreateMultipart: {
             /** @enum {string} */
@@ -14418,6 +14897,10 @@ export interface components {
             macro_id?: string;
             /** @description A `ConversationUpdate` as JSON. */
             then?: string;
+            /** @description Repeat the field once per address; one empty `cc` field copies no one. */
+            cc?: string[];
+            /** @description Repeat the field once per address. */
+            bcc?: components["schemas"]["Email"][];
             files?: string[];
         };
         /** @description Only the fields sent change. */
@@ -14457,6 +14940,11 @@ export interface components {
             shortcut: components["schemas"]["Slug"];
             title: string;
             body: string;
+            /**
+             * @description Who last set its text; absent for replies last saved before this was recorded, which
+             *     automation rules send only while `bots_may_send` is on.
+             */
+            saved_by?: components["schemas"]["AutomationRuleAuthor"];
             /** Format: date-time */
             created_at: string;
             /** Format: date-time */
@@ -14622,6 +15110,79 @@ export interface components {
             id: string;
             /** @description The macro's name when it was applied. */
             name: string;
+        };
+        /**
+         * @description `personal`: only its owner sees it. `workspace`: every member. `team`: the team's members,
+         *     owners and admins.
+         * @enum {string}
+         */
+        SavedViewVisibility: "personal" | "workspace" | "team";
+        /**
+         * @description Query parameters of `GET /v1/conversations`, by name, each with its value as it would
+         *     appear in the query string (lists comma-separated), e.g.
+         *     `{"status": "open,pending", "label_id": "…", "field.plan": "pro"}`. `cursor` and `limit`
+         *     are not filters. Ids are kept, so a renamed label, team or field changes nothing; a
+         *     deleted label, team or conversation field drops out of every view's filters.
+         */
+        SavedViewFilters: {
+            [key: string]: string;
+        };
+        SavedView: {
+            /** Format: uuid */
+            id: string;
+            visibility: components["schemas"]["SavedViewVisibility"];
+            /**
+             * Format: uuid
+             * @description The member a `personal` view belongs to.
+             */
+            owner_member_id?: string;
+            /**
+             * Format: uuid
+             * @description The team a `team` view is shared with.
+             */
+            team_id?: string;
+            name: string;
+            filters: components["schemas"]["SavedViewFilters"];
+            /** Format: int32 */
+            position: number;
+            /**
+             * Format: int32
+             * @description Open conversations under the filters that the caller sees, at most 1000. Absent when
+             *     the filters do not apply to the caller.
+             */
+            count?: number;
+            /** @description `true` when more than 1000 conversations match; `count` is then 1000. */
+            count_capped?: boolean;
+            /** @description `true` when counting took longer than a second; `count` is then absent. */
+            count_unavailable?: boolean;
+            /** Format: date-time */
+            created_at: string;
+            /** Format: date-time */
+            updated_at: string;
+        };
+        SavedViewCreate: {
+            visibility: components["schemas"]["SavedViewVisibility"];
+            /**
+             * Format: uuid
+             * @description Required for a `team` view, refused for the others.
+             */
+            team_id?: string;
+            name: string;
+            filters: components["schemas"]["SavedViewFilters"];
+            /** Format: int32 */
+            position?: number;
+        };
+        SavedViewUpdate: {
+            name?: string;
+            filters?: components["schemas"]["SavedViewFilters"];
+            /** Format: int32 */
+            position?: number;
+        };
+        SavedViewList: {
+            items: components["schemas"]["SavedView"][];
+        };
+        SavedViewOrder: {
+            ids: string[];
         };
         UsageMonth: {
             /** @example 2026-10 */
@@ -16327,6 +16888,229 @@ export interface components {
         SlaPolicyOrder: {
             ids: string[];
         };
+        /**
+         * @description `conversation_created`: a conversation was created (by a contact, a member or a key).
+         *     `message_received`: the contact wrote (not imported messages or drafts). `status_changed`:
+         *     the status changed, also when a contact's message or the snooze time reopened it.
+         *     `idle`: nothing was written in an open or pending conversation for `idle_minutes`
+         *     (checked every 5 minutes; once per quiet period).
+         * @enum {string}
+         */
+        AutomationTrigger: "conversation_created" | "message_received" | "status_changed" | "idle";
+        /**
+         * @description What a condition tests, and the operators it takes:
+         *     - `channel_kind` (`in`, `not_in`; `ChannelKind` values), `kind` (`ConversationKind`),
+         *       `feedback_category` (category keys), `priority` (`Priority`), `status`
+         *       (`ConversationStatus`).
+         *     - `subject`, `body` (`contains`, `not_contains`; case-insensitive): `body` is the
+         *       triggering contact message, or the contact's latest message for other triggers.
+         *     - `contact_attribute`, `custom_field` (`equals`, `not_equals`, `contains`,
+         *       `not_contains`, `is_set`, `is_not_set`) with `key`: a contact attribute, or a conversation
+         *       custom field (`CustomField.key`). Numbers, checkboxes and dates compare as their JSON
+         *       text (`42`, `true`, `2026-01-31`).
+         *     - `label` (`in`: has any of the labels, `not_in`: has none of them), `team` (`in`, `not_in`
+         *       with team ids, `is_set`, `is_not_set`), `assignee` (`is_set`, `is_not_set`).
+         *     - `business_hours` (`equals` `inside` or `outside`): the inbox's business hours now; an
+         *       inbox without hours is always inside.
+         * @enum {string}
+         */
+        AutomationConditionField: "channel_kind" | "kind" | "feedback_category" | "priority" | "status" | "subject" | "body" | "contact_attribute" | "custom_field" | "label" | "team" | "assignee" | "business_hours";
+        /** @enum {string} */
+        AutomationConditionOperator: "in" | "not_in" | "equals" | "not_equals" | "contains" | "not_contains" | "is_set" | "is_not_set";
+        /**
+         * @description `in` and `not_in` take `values`; `equals`, `not_equals`, `contains` and `not_contains`
+         *     take `value`; `is_set` and `is_not_set` take neither (`400 validation_failed` otherwise).
+         */
+        AutomationCondition: {
+            field: components["schemas"]["AutomationConditionField"];
+            operator: components["schemas"]["AutomationConditionOperator"];
+            /** @description `contact_attribute` and `custom_field` only. */
+            key?: string;
+            value?: string;
+            values?: string[];
+        };
+        /**
+         * @description - `add_labels`, `remove_labels` (`label_ids`).
+         *     - `assign_member` (`member_id`, a member with access to the conversation's inbox when the
+         *       rule runs), `assign_team` (`team_id`, a team granted the inbox), `unassign` (clears the
+         *       member). `assign_pool` leaves the conversation to automatic assignment; until automatic
+         *       assignment exists it does nothing and the run lists it as `skipped`.
+         *     - `set_priority` (`priority`), `set_status` (`status`: `open`, `pending` or `closed`;
+         *       closing needs the conversation's required custom fields), `snooze` (`snooze_minutes`).
+         *     - `add_note` (`body`): an internal note.
+         *     - `send_reply` (`canned_reply_id`): the canned reply's text to the contact, as an
+         *       automatic reply (`Auto-Submitted: auto-replied` by e-mail); see `AutomationRuleAuthor`
+         *       for `bots_may_send`.
+         *     - `send_webhook` (`webhook_id`): `automation.triggered` to that endpoint.
+         * @enum {string}
+         */
+        AutomationActionType: "add_labels" | "remove_labels" | "assign_member" | "assign_team" | "assign_pool" | "unassign" | "set_priority" | "set_status" | "snooze" | "add_note" | "send_reply" | "send_webhook";
+        /**
+         * @description Each type at most once per rule, and only the fields its type uses (`400
+         *     validation_failed` otherwise); `set_status` and `snooze` exclude each other, as do
+         *     `assign_member`, `assign_pool` and `unassign`, and `add_labels` and `remove_labels` share
+         *     no label.
+         */
+        AutomationAction: {
+            type: components["schemas"]["AutomationActionType"];
+            label_ids?: string[];
+            /** Format: uuid */
+            member_id?: string;
+            /** Format: uuid */
+            team_id?: string;
+            priority?: components["schemas"]["Priority"];
+            status?: components["schemas"]["ConversationStatus"];
+            /** Format: int32 */
+            snooze_minutes?: number;
+            body?: string;
+            /** Format: uuid */
+            canned_reply_id?: string;
+            /** Format: uuid */
+            webhook_id?: string;
+        };
+        /** @enum {string} */
+        AutomationRuleAuthorType: "member" | "api_key" | "oauth_grant";
+        /**
+         * @description Who last changed what a rule does (its trigger, scope, conditions, actions or `enabled`), or
+         *     a canned reply's text. A rule's reply goes out while `bots_may_send` is off only when both
+         *     the rule's and the canned reply's are a member who is still an owner or admin when the rule
+         *     runs.
+         */
+        AutomationRuleAuthor: {
+            type: components["schemas"]["AutomationRuleAuthorType"];
+            /**
+             * Format: uuid
+             * @description `member` and `oauth_grant`.
+             */
+            member_id?: string;
+            /**
+             * Format: uuid
+             * @description `api_key`.
+             */
+            api_key_id?: string;
+        };
+        AutomationRule: {
+            /** Format: uuid */
+            id: string;
+            name: string;
+            enabled: boolean;
+            /**
+             * Format: int32
+             * @description Its place in the workspace's one list, from 0.
+             */
+            position: number;
+            /**
+             * Format: uuid
+             * @description Absent for a workspace rule; an inbox rule acts only on that inbox's conversations.
+             */
+            inbox_id?: string;
+            trigger: components["schemas"]["AutomationTrigger"];
+            /**
+             * Format: int32
+             * @description `idle` only.
+             */
+            idle_minutes?: number;
+            /** @description All of them must match; empty matches every conversation. */
+            conditions: components["schemas"]["AutomationCondition"][];
+            actions: components["schemas"]["AutomationAction"][];
+            saved_by: components["schemas"]["AutomationRuleAuthor"];
+            /** Format: date-time */
+            created_at: string;
+            /** Format: date-time */
+            updated_at: string;
+        };
+        AutomationRuleCreate: {
+            name: string;
+            /** @default true */
+            enabled: boolean;
+            /** Format: uuid */
+            inbox_id?: string;
+            trigger: components["schemas"]["AutomationTrigger"];
+            /**
+             * Format: int32
+             * @description Required for `idle`, refused for other triggers.
+             */
+            idle_minutes?: number;
+            conditions?: components["schemas"]["AutomationCondition"][];
+            actions: components["schemas"]["AutomationAction"][];
+        };
+        AutomationRuleUpdate: {
+            name?: string;
+            enabled?: boolean;
+            /**
+             * Format: uuid
+             * @description `null` makes it a workspace rule.
+             */
+            inbox_id?: string | null;
+            trigger?: components["schemas"]["AutomationTrigger"];
+            /** Format: int32 */
+            idle_minutes?: number | null;
+            conditions?: components["schemas"]["AutomationCondition"][];
+            actions?: components["schemas"]["AutomationAction"][];
+        };
+        AutomationRuleList: {
+            items: components["schemas"]["AutomationRule"][];
+        };
+        AutomationRuleOrder: {
+            ids: string[];
+        };
+        AutomationRuleRef: {
+            /** Format: uuid */
+            id: string;
+            /** @description The rule's name when it acted. */
+            name: string;
+        };
+        /** @enum {string} */
+        AutomationRunOutcome: "applied" | "failed" | "not_matched";
+        AutomationRunAction: {
+            type: components["schemas"]["AutomationActionType"];
+            /**
+             * @description `applied`; `unchanged` when the conversation already was that way; `skipped` for
+             *     `assign_pool`; `not_run` in a failed run.
+             * @enum {string}
+             */
+            result: "applied" | "unchanged" | "skipped" | "not_run";
+        };
+        AutomationRun: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            rule_id: string;
+            /** Format: uuid */
+            conversation_id: string;
+            trigger: components["schemas"]["AutomationTrigger"];
+            outcome: components["schemas"]["AutomationRunOutcome"];
+            /**
+             * @description `failed` only: the problem code the action met, as the same change through `/v1`
+             *     would answer it (`field_required`, `team_access`, `validation_failed`,
+             *     `email_undeliverable`, …), or `auto_reply` when a reply was refused to protect the
+             *     customer (an automatic reply or bounce, a blocked contact, spam, a rule reply in
+             *     the last hour or three in the last day), `bot_sending_disabled` (see
+             *     `AutomationRuleAuthor`), `label_gone`,
+             *     `canned_reply_gone`, `webhook_unavailable`.
+             */
+            error?: string;
+            /** @description `failed` only: a sentence for people. */
+            detail?: string;
+            actions: components["schemas"]["AutomationRunAction"][];
+            /** Format: date-time */
+            created_at: string;
+        };
+        AutomationRunPage: {
+            items: components["schemas"]["AutomationRun"][];
+            /** @description Absent on the last page. */
+            next_cursor?: string;
+        };
+        WebhookAutomationTriggeredData: {
+            rule: components["schemas"]["AutomationRuleRef"];
+            trigger: components["schemas"]["AutomationTrigger"];
+            /** @description After the rule's other actions. */
+            conversation: components["schemas"]["Conversation"];
+            contact: components["schemas"]["WebhookContact"];
+        };
+        WebhookAutomationTriggeredPayload: components["schemas"]["WebhookPayloadBase"] & {
+            data: components["schemas"]["WebhookAutomationTriggeredData"];
+        };
         ConversationSla: {
             /** Format: uuid */
             policy_id: string;
@@ -16502,7 +17286,7 @@ export interface components {
             type: "resync_required";
         };
         /** @description An event as `GET /v1/events` returns it, told apart by `type`; the same objects realtime and webhooks carry. */
-        StoredEvent: components["schemas"]["ConversationEvent"] | components["schemas"]["ConversationDeletedEvent"] | components["schemas"]["ConversationMovedEvent"] | components["schemas"]["MessageCreatedEvent"] | components["schemas"]["MessageUpdatedEvent"] | components["schemas"]["DraftEvent"] | components["schemas"]["ContactUpdatedEvent"] | components["schemas"]["ContactDeletedEvent"] | components["schemas"]["InboxCreatedEvent"] | components["schemas"]["InboxUpdatedEvent"] | components["schemas"]["InboxDeletedEvent"] | components["schemas"]["InboxAccessChangedEvent"] | components["schemas"]["TeamEvent"] | components["schemas"]["ConversationSlaEvent"] | components["schemas"]["ConversationReadEvent"] | components["schemas"]["ContactReadEvent"] | components["schemas"]["ConversationPinEvent"] | components["schemas"]["DiscussionEvent"] | components["schemas"]["DiscussionStageEvent"] | components["schemas"]["IssueLinkEvent"] | components["schemas"]["SubscriptionEvent"] | components["schemas"]["BroadcastEvent"] | components["schemas"]["MigrationEvent"] | components["schemas"]["AnalyticsAlertEvent"] | components["schemas"]["StatusComponentEvent"] | components["schemas"]["StatusIncidentEvent"] | components["schemas"]["StatusMonitorEvent"] | components["schemas"]["HelpArticleEvent"] | components["schemas"]["ChangelogEntryEvent"];
+        StoredEvent: components["schemas"]["ConversationEvent"] | components["schemas"]["ConversationDeletedEvent"] | components["schemas"]["ConversationMovedEvent"] | components["schemas"]["MessageCreatedEvent"] | components["schemas"]["MessageUpdatedEvent"] | components["schemas"]["DraftEvent"] | components["schemas"]["ContactUpdatedEvent"] | components["schemas"]["ContactDeletedEvent"] | components["schemas"]["InboxCreatedEvent"] | components["schemas"]["InboxUpdatedEvent"] | components["schemas"]["InboxDeletedEvent"] | components["schemas"]["InboxAccessChangedEvent"] | components["schemas"]["TeamEvent"] | components["schemas"]["ConversationSlaEvent"] | components["schemas"]["ConversationReadEvent"] | components["schemas"]["ContactReadEvent"] | components["schemas"]["ConversationPinEvent"] | components["schemas"]["ConversationParticipantsEvent"] | components["schemas"]["DiscussionEvent"] | components["schemas"]["DiscussionStageEvent"] | components["schemas"]["IssueLinkEvent"] | components["schemas"]["SubscriptionEvent"] | components["schemas"]["BroadcastEvent"] | components["schemas"]["MigrationEvent"] | components["schemas"]["AnalyticsAlertEvent"] | components["schemas"]["StatusComponentEvent"] | components["schemas"]["StatusIncidentEvent"] | components["schemas"]["StatusMonitorEvent"] | components["schemas"]["HelpArticleEvent"] | components["schemas"]["ChangelogEntryEvent"];
         EventPage: {
             events: components["schemas"]["StoredEvent"][];
             /**
@@ -16521,7 +17305,7 @@ export interface components {
             id: number;
         };
         /** @description One server message on `/v1/realtime`, told apart by `type`. */
-        RealtimeMessage: components["schemas"]["ConversationEvent"] | components["schemas"]["ConversationDeletedEvent"] | components["schemas"]["ConversationMovedEvent"] | components["schemas"]["MessageCreatedEvent"] | components["schemas"]["MessageUpdatedEvent"] | components["schemas"]["DraftEvent"] | components["schemas"]["ContactUpdatedEvent"] | components["schemas"]["ContactDeletedEvent"] | components["schemas"]["InboxCreatedEvent"] | components["schemas"]["InboxUpdatedEvent"] | components["schemas"]["InboxDeletedEvent"] | components["schemas"]["InboxAccessChangedEvent"] | components["schemas"]["TeamEvent"] | components["schemas"]["ConversationSlaEvent"] | components["schemas"]["ConversationReadEvent"] | components["schemas"]["ContactReadEvent"] | components["schemas"]["ConversationPinEvent"] | components["schemas"]["DiscussionEvent"] | components["schemas"]["DiscussionStageEvent"] | components["schemas"]["IssueLinkEvent"] | components["schemas"]["SubscriptionEvent"] | components["schemas"]["BroadcastEvent"] | components["schemas"]["MigrationEvent"] | components["schemas"]["AnalyticsAlertEvent"] | components["schemas"]["StatusComponentEvent"] | components["schemas"]["StatusIncidentEvent"] | components["schemas"]["StatusMonitorEvent"] | components["schemas"]["MigrationProgressEvent"] | components["schemas"]["MigrationForwardingConfirmationEvent"] | components["schemas"]["BroadcastProgressEvent"] | components["schemas"]["StatusNoticeEvent"] | components["schemas"]["StatusPageEvent"] | components["schemas"]["HelpArticleEvent"] | components["schemas"]["HelpArticleSignal"] | components["schemas"]["ChangelogEntryEvent"] | components["schemas"]["ChangelogEntrySignal"] | components["schemas"]["RoadmapBoardSignal"] | components["schemas"]["HelpImportEvent"] | components["schemas"]["HelpImportProgressEvent"] | components["schemas"]["HelpCenterSignal"] | components["schemas"]["ChangelogSignal"] | components["schemas"]["ListImportEvent"] | components["schemas"]["ListImportProgressEvent"] | components["schemas"]["TypingEvent"] | components["schemas"]["MemberPresenceEvent"] | components["schemas"]["ContactPresenceEvent"] | components["schemas"]["ViewingEvent"] | components["schemas"]["RealtimeReady"] | components["schemas"]["RealtimeResyncRequired"];
+        RealtimeMessage: components["schemas"]["ConversationEvent"] | components["schemas"]["ConversationDeletedEvent"] | components["schemas"]["ConversationMovedEvent"] | components["schemas"]["MessageCreatedEvent"] | components["schemas"]["MessageUpdatedEvent"] | components["schemas"]["DraftEvent"] | components["schemas"]["ContactUpdatedEvent"] | components["schemas"]["ContactDeletedEvent"] | components["schemas"]["InboxCreatedEvent"] | components["schemas"]["InboxUpdatedEvent"] | components["schemas"]["InboxDeletedEvent"] | components["schemas"]["InboxAccessChangedEvent"] | components["schemas"]["TeamEvent"] | components["schemas"]["ConversationSlaEvent"] | components["schemas"]["ConversationReadEvent"] | components["schemas"]["ContactReadEvent"] | components["schemas"]["ConversationPinEvent"] | components["schemas"]["ConversationParticipantsEvent"] | components["schemas"]["DiscussionEvent"] | components["schemas"]["DiscussionStageEvent"] | components["schemas"]["IssueLinkEvent"] | components["schemas"]["SubscriptionEvent"] | components["schemas"]["BroadcastEvent"] | components["schemas"]["MigrationEvent"] | components["schemas"]["AnalyticsAlertEvent"] | components["schemas"]["StatusComponentEvent"] | components["schemas"]["StatusIncidentEvent"] | components["schemas"]["StatusMonitorEvent"] | components["schemas"]["MigrationProgressEvent"] | components["schemas"]["MigrationForwardingConfirmationEvent"] | components["schemas"]["BroadcastProgressEvent"] | components["schemas"]["StatusNoticeEvent"] | components["schemas"]["StatusPageEvent"] | components["schemas"]["HelpArticleEvent"] | components["schemas"]["HelpArticleSignal"] | components["schemas"]["ChangelogEntryEvent"] | components["schemas"]["ChangelogEntrySignal"] | components["schemas"]["RoadmapBoardSignal"] | components["schemas"]["HelpImportEvent"] | components["schemas"]["HelpImportProgressEvent"] | components["schemas"]["HelpCenterSignal"] | components["schemas"]["ChangelogSignal"] | components["schemas"]["ListImportEvent"] | components["schemas"]["ListImportProgressEvent"] | components["schemas"]["TypingEvent"] | components["schemas"]["MemberPresenceEvent"] | components["schemas"]["ContactPresenceEvent"] | components["schemas"]["ViewingEvent"] | components["schemas"]["RealtimeReady"] | components["schemas"]["RealtimeResyncRequired"];
         /**
          * @description `auto`: available in `live` inboxes while connected to `/v1/realtime` within business
          *     hours. `away`: never shown as available.
@@ -24467,7 +25251,8 @@ export interface components {
              */
             scope?: string;
             /**
-             * @description `field_invalid` and `field_required` only: the key of the custom field.
+             * @description `field_invalid` and `field_required`: the key of the custom field. `validation_failed`
+             *     on saved views: the filter parameter refused.
              * @example order_id
              */
             field?: string;
@@ -24704,9 +25489,11 @@ export interface components {
         MessageId: string;
         TeamId: string;
         SlaPolicyId: string;
+        AutomationRuleId: string;
         LabelId: string;
         CannedReplyId: string;
         MacroId: string;
+        ViewId: string;
         CustomFieldId: string;
         /** @description The chat channel's public key. */
         ChannelKey: string;
@@ -27149,6 +27936,216 @@ export interface operations {
             404: components["responses"]["Problem"];
         };
     };
+    listAutomationRules: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The rules. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AutomationRuleList"];
+                };
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+        };
+    };
+    createAutomationRule: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Makes a retried request return the first response; see "Idempotency". */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AutomationRuleCreate"];
+            };
+        };
+        responses: {
+            /** @description The rule. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AutomationRule"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+        };
+    };
+    orderAutomationRules: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AutomationRuleOrder"];
+            };
+        };
+        responses: {
+            /** @description The rules in their new order. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AutomationRuleList"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+        };
+    };
+    getAutomationRule: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                automationRuleId: components["parameters"]["AutomationRuleId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The rule. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AutomationRule"];
+                };
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    deleteAutomationRule: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                automationRuleId: components["parameters"]["AutomationRuleId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Deleted. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    updateAutomationRule: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                automationRuleId: components["parameters"]["AutomationRuleId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AutomationRuleUpdate"];
+            };
+        };
+        responses: {
+            /** @description The updated rule. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AutomationRule"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    listAutomationRuns: {
+        parameters: {
+            query?: {
+                /** @description Only runs with this outcome. */
+                outcome?: components["schemas"]["AutomationRunOutcome"];
+                /** @description The `next_cursor` of the previous page. */
+                cursor?: components["parameters"]["Cursor"];
+                /** @description Page size, 1 to 100; 25 by default. */
+                limit?: components["parameters"]["Limit"];
+            };
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                automationRuleId: components["parameters"]["AutomationRuleId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The runs. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AutomationRunPage"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
     listChannels: {
         parameters: {
             query?: never;
@@ -27870,6 +28867,40 @@ export interface operations {
             404: components["responses"]["Problem"];
         };
     };
+    listContactParticipations: {
+        parameters: {
+            query?: {
+                /** @description The `next_cursor` of the previous page. */
+                cursor?: components["parameters"]["Cursor"];
+                /** @description Page size, 1 to 100; 25 by default. */
+                limit?: components["parameters"]["Limit"];
+            };
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                contactId: components["parameters"]["ContactId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description A page of conversations. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContactParticipationPage"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
     getContactPresence: {
         parameters: {
             query?: never;
@@ -28548,6 +29579,99 @@ export interface operations {
             415: components["responses"]["Problem"];
         };
     };
+    listConversationParticipants: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                conversationId: components["parameters"]["ConversationId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The participants. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConversationParticipantList"];
+                };
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    addConversationParticipant: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Makes a retried request return the first response; see "Idempotency". */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                conversationId: components["parameters"]["ConversationId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ConversationParticipantCreate"];
+            };
+        };
+        responses: {
+            /** @description The participants after the change. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConversationParticipantList"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+            409: components["responses"]["Problem"];
+        };
+    };
+    removeConversationParticipant: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                conversationId: components["parameters"]["ConversationId"];
+                email: components["schemas"]["Email"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The participants after the change. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConversationParticipantList"];
+                };
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
     markConversationRead: {
         parameters: {
             query?: never;
@@ -28976,7 +30100,11 @@ export interface operations {
             };
             cookie?: never;
         };
-        requestBody?: never;
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["MessageSend"];
+            };
+        };
         responses: {
             /** @description The sent message. */
             200: {
@@ -28987,6 +30115,7 @@ export interface operations {
                     "application/json": components["schemas"]["Message"];
                 };
             };
+            400: components["responses"]["Problem"];
             401: components["responses"]["Problem"];
             403: components["responses"]["Problem"];
             404: components["responses"]["Problem"];
@@ -29466,6 +30595,182 @@ export interface operations {
             403: components["responses"]["Problem"];
             404: components["responses"]["Problem"];
             409: components["responses"]["Problem"];
+        };
+    };
+    listViews: {
+        parameters: {
+            query?: {
+                /** @description Only this team's views. */
+                team_id?: string;
+            };
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The views. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SavedViewList"];
+                };
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+        };
+    };
+    createView: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Makes a retried request return the first response; see "Idempotency". */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SavedViewCreate"];
+            };
+        };
+        responses: {
+            /** @description The view, with its count for the caller. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SavedView"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+        };
+    };
+    reorderViews: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SavedViewOrder"];
+            };
+        };
+        responses: {
+            /** @description Reordered. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    getView: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                viewId: components["parameters"]["ViewId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The view. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SavedView"];
+                };
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    deleteView: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                viewId: components["parameters"]["ViewId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Deleted. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    updateView: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                viewId: components["parameters"]["ViewId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SavedViewUpdate"];
+            };
+        };
+        responses: {
+            /** @description The updated view, with its count for the caller. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SavedView"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
         };
     };
     listCustomFields: {
@@ -42072,6 +43377,39 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": components["schemas"]["WebhookConversationSlaPayload"];
+            };
+        };
+        responses: {
+            /** @description Any 2xx answer counts as delivered. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    webhookAutomationTriggered: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description The delivery's id, the same on every retry; use it to ignore duplicates. */
+                "webhook-id": components["parameters"]["WebhookIdHeader"];
+                /** @description Unix seconds of this attempt. Refuse values far from your clock. */
+                "webhook-timestamp": components["parameters"]["WebhookTimestampHeader"];
+                /**
+                 * @description Space-separated `v1,<base64>` signatures: HMAC-SHA256 over
+                 *     `<webhook-id>.<webhook-timestamp>.<body>` with the base64-decoded part of the
+                 *     `whsec_` secret (Standard Webhooks). Two during a secret rotation.
+                 */
+                "webhook-signature": components["parameters"]["WebhookSignatureHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WebhookAutomationTriggeredPayload"];
             };
         };
         responses: {

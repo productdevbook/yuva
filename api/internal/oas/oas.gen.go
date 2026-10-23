@@ -2507,6 +2507,54 @@ func (e ConversationMovedEventType) Valid() bool {
 	}
 }
 
+// Defines values for ConversationParticipantRole.
+const (
+	Cc ConversationParticipantRole = "cc"
+)
+
+// Valid indicates whether the value is a known member of the ConversationParticipantRole enum.
+func (e ConversationParticipantRole) Valid() bool {
+	switch e {
+	case Cc:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ConversationParticipantStatus.
+const (
+	Active    ConversationParticipantStatus = "active"
+	Suggested ConversationParticipantStatus = "suggested"
+)
+
+// Valid indicates whether the value is a known member of the ConversationParticipantStatus enum.
+func (e ConversationParticipantStatus) Valid() bool {
+	switch e {
+	case Active:
+		return true
+	case Suggested:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ConversationParticipantsEventType.
+const (
+	ConversationParticipants ConversationParticipantsEventType = "conversation.participants"
+)
+
+// Valid indicates whether the value is a known member of the ConversationParticipantsEventType enum.
+func (e ConversationParticipantsEventType) Valid() bool {
+	switch e {
+	case ConversationParticipants:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for ConversationPinEventType.
 const (
 	ConversationPinEventTypeConversationPin ConversationPinEventType = "conversation.pin"
@@ -12761,6 +12809,28 @@ type ContactPage struct {
 	NextCursor *string `json:"next_cursor,omitempty"`
 }
 
+// ContactParticipation defines model for ContactParticipation.
+type ContactParticipation struct {
+	ConversationId uuid.UUID `json:"conversation_id"`
+
+	// CreatedAt When the conversation started.
+	CreatedAt time.Time `json:"created_at"`
+
+	// Emails The contact's addresses that the conversation holds.
+	Emails  []Email   `json:"emails"`
+	InboxId uuid.UUID `json:"inbox_id"`
+
+	// Participant One of them is a participant; otherwise they appear only in stored e-mail.
+	Participant bool   `json:"participant"`
+	Subject     string `json:"subject"`
+}
+
+// ContactParticipationPage defines model for ContactParticipationPage.
+type ContactParticipationPage struct {
+	Items      []ContactParticipation `json:"items"`
+	NextCursor *string                `json:"next_cursor,omitempty"`
+}
+
 // ContactPresence defines model for ContactPresence.
 type ContactPresence struct {
 	ContactId uuid.UUID `json:"contact_id"`
@@ -13342,6 +13412,65 @@ type ConversationPage struct {
 	// NextCursor Absent on the last page.
 	NextCursor *string `json:"next_cursor,omitempty"`
 }
+
+// ConversationParticipant defines model for ConversationParticipant.
+type ConversationParticipant struct {
+	// ContactId The contact with this address, when there is one.
+	ContactId *uuid.UUID `json:"contact_id,omitempty"`
+
+	// CreatedAt When the address was first seen on the conversation.
+	CreatedAt time.Time `json:"created_at"`
+
+	// Email Examples: owner@example.com
+	Email Email `json:"email"`
+
+	// Name That contact's name.
+	Name *string                     `json:"name,omitempty"`
+	Role ConversationParticipantRole `json:"role"`
+
+	// Status `active` addresses are copied on replies and may answer into the conversation;
+	// `suggested` ones came from mail that did not pass DMARC and are only shown.
+	Status ConversationParticipantStatus `json:"status"`
+}
+
+// ConversationParticipantRole defines model for ConversationParticipant.Role.
+type ConversationParticipantRole string
+
+// ConversationParticipantStatus `active` addresses are copied on replies and may answer into the conversation;
+// `suggested` ones came from mail that did not pass DMARC and are only shown.
+type ConversationParticipantStatus string
+
+// ConversationParticipantCreate defines model for ConversationParticipantCreate.
+type ConversationParticipantCreate struct {
+	// Email Examples: owner@example.com
+	Email Email `json:"email"`
+}
+
+// ConversationParticipantList defines model for ConversationParticipantList.
+type ConversationParticipantList struct {
+	Items []ConversationParticipant `json:"items"`
+}
+
+// ConversationParticipantsChange defines model for ConversationParticipantsChange.
+type ConversationParticipantsChange struct {
+	ConversationId uuid.UUID                 `json:"conversation_id"`
+	Items          []ConversationParticipant `json:"items"`
+}
+
+// ConversationParticipantsEvent The participants of a conversation changed (inbound mail, a reply's `cc`, or a member). Only
+// on `/v1/realtime` and `/v1/events`; never a webhook and never on `/client/v1`.
+type ConversationParticipantsEvent struct {
+	ConversationId uuid.UUID                         `json:"conversation_id"`
+	CreatedAt      time.Time                         `json:"created_at"`
+	Data           ConversationParticipantsChange    `json:"data"`
+	Id             int64                             `json:"id"`
+	InboxId        uuid.UUID                         `json:"inbox_id"`
+	Type           ConversationParticipantsEventType `json:"type"`
+	WorkspaceId    uuid.UUID                         `json:"workspace_id"`
+}
+
+// ConversationParticipantsEventType defines model for ConversationParticipantsEvent.Type.
+type ConversationParticipantsEventType string
 
 // ConversationPin Whether a member pinned a conversation to the top of their lists.
 type ConversationPin struct {
@@ -17982,8 +18111,15 @@ type MessageCreate struct {
 	// article's title and URL as its last lines.
 	ArticleIds *[]uuid.UUID `json:"article_ids,omitempty"`
 
+	// Bcc E-mailed replies only, hidden recipients. See `createMessage`.
+	Bcc *[]Email `json:"bcc,omitempty"`
+
 	// Body Required unless files are attached.
 	Body *string `json:"body,omitempty"`
+
+	// Cc E-mailed replies only: the addresses to copy, in place of the conversation's
+	// participants; `[]` copies no one. See `createMessage`.
+	Cc *[]Email `json:"cc,omitempty"`
 
 	// ClientId Makes the request idempotent within the conversation.
 	ClientId  *string    `json:"client_id,omitempty"`
@@ -18016,15 +18152,21 @@ type MessageCreateKind string
 // MessageCreateMultipart defines model for MessageCreateMultipart.
 type MessageCreateMultipart struct {
 	// ArticleIds Outgoing messages only; repeat the field once per article id.
-	ArticleIds *[]uuid.UUID               `json:"article_ids,omitempty"`
-	Body       *string                    `json:"body,omitempty"`
-	ClientId   *string                    `json:"client_id,omitempty"`
-	Direction  *Direction                 `json:"direction,omitempty"`
-	Draft      *bool                      `json:"draft,omitempty"`
-	Files      *[]openapi_types.File      `json:"files,omitempty"`
-	Html       *string                    `json:"html,omitempty"`
-	Kind       MessageCreateMultipartKind `json:"kind"`
-	MacroId    *uuid.UUID                 `json:"macro_id,omitempty"`
+	ArticleIds *[]uuid.UUID `json:"article_ids,omitempty"`
+
+	// Bcc Repeat the field once per address.
+	Bcc  *[]Email `json:"bcc,omitempty"`
+	Body *string  `json:"body,omitempty"`
+
+	// Cc Repeat the field once per address; one empty `cc` field copies no one.
+	Cc        *[]string                  `json:"cc,omitempty"`
+	ClientId  *string                    `json:"client_id,omitempty"`
+	Direction *Direction                 `json:"direction,omitempty"`
+	Draft     *bool                      `json:"draft,omitempty"`
+	Files     *[]openapi_types.File      `json:"files,omitempty"`
+	Html      *string                    `json:"html,omitempty"`
+	Kind      MessageCreateMultipartKind `json:"kind"`
+	MacroId   *uuid.UUID                 `json:"macro_id,omitempty"`
 
 	// Mentions Notes only; repeat the field once per member id.
 	Mentions *[]uuid.UUID `json:"mentions,omitempty"`
@@ -18073,7 +18215,11 @@ type MessageEmail struct {
 	// Auto Automatic mail (auto-reply, list, bulk) or our own automatic message.
 	Auto bool `json:"auto"`
 
-	// Cc The `Cc` of an inbound mail, as received. Replies go to the contact only and copy no one.
+	// Bcc The hidden recipients of a reply. Only in answers to `/v1` requests (members and keys);
+	// never in events, webhooks, the sent headers or on `/client/v1`.
+	Bcc *[]Email `json:"bcc,omitempty"`
+
+	// Cc The `Cc` of an inbound mail as received, or the addresses a reply copied.
 	Cc *[]Email `json:"cc,omitempty"`
 
 	// Dmarc The DMARC result from the topmost `Authentication-Results`, only when its authserv-id is
@@ -18221,6 +18367,16 @@ type MessageRedactedBy struct {
 
 	// MemberId The member, also when they acted through a connected app.
 	MemberId *uuid.UUID `json:"member_id,omitempty"`
+}
+
+// MessageSend Recipients of a draft's e-mail; see `createMessage`.
+type MessageSend struct {
+	// Bcc E-mailed replies only, hidden recipients. See `createMessage`.
+	Bcc *[]Email `json:"bcc,omitempty"`
+
+	// Cc E-mailed replies only: the addresses to copy, in place of the conversation's
+	// participants; `[]` copies no one. See `createMessage`.
+	Cc *[]Email `json:"cc,omitempty"`
 }
 
 // MessageUpdate Only the fields sent change.
@@ -24732,6 +24888,18 @@ type DeleteContactNoteParams struct {
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
 
+// ListContactParticipationsParams defines parameters for ListContactParticipations.
+type ListContactParticipationsParams struct {
+	// Cursor The `next_cursor` of the previous page.
+	Cursor *Cursor `form:"cursor,omitempty" json:"cursor,omitempty"`
+
+	// Limit Page size, 1 to 100; 25 by default.
+	Limit *Limit `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
 // GetContactPresenceParams defines parameters for GetContactPresence.
 type GetContactPresenceParams struct {
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
@@ -24975,6 +25143,27 @@ type MoveConversationParams struct {
 	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// ListConversationParticipantsParams defines parameters for ListConversationParticipants.
+type ListConversationParticipantsParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// AddConversationParticipantParams defines parameters for AddConversationParticipant.
+type AddConversationParticipantParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// RemoveConversationParticipantParams defines parameters for RemoveConversationParticipant.
+type RemoveConversationParticipantParams struct {
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
@@ -28095,6 +28284,9 @@ type CreateMessageMultipartRequestBody = MessageCreateMultipart
 // MoveConversationJSONRequestBody defines body for MoveConversation for application/json ContentType.
 type MoveConversationJSONRequestBody = ConversationMove
 
+// AddConversationParticipantJSONRequestBody defines body for AddConversationParticipant for application/json ContentType.
+type AddConversationParticipantJSONRequestBody = ConversationParticipantCreate
+
 // MarkConversationReadJSONRequestBody defines body for MarkConversationRead for application/json ContentType.
 type MarkConversationReadJSONRequestBody = ConversationReadCreate
 
@@ -28271,6 +28463,9 @@ type UpdateMemberJSONRequestBody = MemberUpdate
 
 // UpdateMessageJSONRequestBody defines body for UpdateMessage for application/json ContentType.
 type UpdateMessageJSONRequestBody = MessageUpdate
+
+// SendMessageJSONRequestBody defines body for SendMessage for application/json ContentType.
+type SendMessageJSONRequestBody = MessageSend
 
 // CreateMigrationJSONRequestBody defines body for CreateMigration for application/json ContentType.
 type CreateMigrationJSONRequestBody = MigrationCreate
@@ -30684,6 +30879,32 @@ func (t *RealtimeMessage) MergeConversationPinEvent(v ConversationPinEvent) erro
 	return err
 }
 
+// AsConversationParticipantsEvent returns the union data inside the RealtimeMessage as a ConversationParticipantsEvent
+func (t RealtimeMessage) AsConversationParticipantsEvent() (ConversationParticipantsEvent, error) {
+	var body ConversationParticipantsEvent
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromConversationParticipantsEvent overwrites any union data inside the RealtimeMessage as the provided ConversationParticipantsEvent
+func (t *RealtimeMessage) FromConversationParticipantsEvent(v ConversationParticipantsEvent) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeConversationParticipantsEvent performs a merge with any union data inside the RealtimeMessage, using the provided ConversationParticipantsEvent
+func (t *RealtimeMessage) MergeConversationParticipantsEvent(v ConversationParticipantsEvent) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
 // AsDiscussionEvent returns the union data inside the RealtimeMessage as a DiscussionEvent
 func (t RealtimeMessage) AsDiscussionEvent() (DiscussionEvent, error) {
 	var body DiscussionEvent
@@ -31560,6 +31781,8 @@ func (t RealtimeMessage) ValueByDiscriminator() (interface{}, error) {
 		return t.AsConversationDeletedEvent()
 	case "conversation.moved":
 		return t.AsConversationMovedEvent()
+	case "conversation.participants":
+		return t.AsConversationParticipantsEvent()
 	case "conversation.pin":
 		return t.AsConversationPinEvent()
 	case "conversation.read":
@@ -32129,6 +32352,32 @@ func (t *StoredEvent) MergeConversationPinEvent(v ConversationPinEvent) error {
 	return err
 }
 
+// AsConversationParticipantsEvent returns the union data inside the StoredEvent as a ConversationParticipantsEvent
+func (t StoredEvent) AsConversationParticipantsEvent() (ConversationParticipantsEvent, error) {
+	var body ConversationParticipantsEvent
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromConversationParticipantsEvent overwrites any union data inside the StoredEvent as the provided ConversationParticipantsEvent
+func (t *StoredEvent) FromConversationParticipantsEvent(v ConversationParticipantsEvent) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeConversationParticipantsEvent performs a merge with any union data inside the StoredEvent, using the provided ConversationParticipantsEvent
+func (t *StoredEvent) MergeConversationParticipantsEvent(v ConversationParticipantsEvent) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
 // AsDiscussionEvent returns the union data inside the StoredEvent as a DiscussionEvent
 func (t StoredEvent) AsDiscussionEvent() (DiscussionEvent, error) {
 	var body DiscussionEvent
@@ -32477,6 +32726,8 @@ func (t StoredEvent) ValueByDiscriminator() (interface{}, error) {
 		return t.AsConversationDeletedEvent()
 	case "conversation.moved":
 		return t.AsConversationMovedEvent()
+	case "conversation.participants":
+		return t.AsConversationParticipantsEvent()
 	case "conversation.pin":
 		return t.AsConversationPinEvent()
 	case "conversation.read":
@@ -33123,6 +33374,9 @@ type ServerInterface interface {
 	// DeleteContactNote Delete a note about a contact
 	// (DELETE /v1/contacts/{contactId}/notes/{noteId})
 	DeleteContactNote(w http.ResponseWriter, r *http.Request, contactId ContactId, noteId uuid.UUID, params DeleteContactNoteParams)
+	// ListContactParticipations List conversations a contact was copied on
+	// (GET /v1/contacts/{contactId}/participations)
+	ListContactParticipations(w http.ResponseWriter, r *http.Request, contactId ContactId, params ListContactParticipationsParams)
 	// GetContactPresence Whether a contact is connected
 	// (GET /v1/contacts/{contactId}/presence)
 	GetContactPresence(w http.ResponseWriter, r *http.Request, contactId ContactId, params GetContactPresenceParams)
@@ -33180,6 +33434,15 @@ type ServerInterface interface {
 	// MoveConversation Move a conversation to another inbox
 	// (POST /v1/conversations/{conversationId}/move)
 	MoveConversation(w http.ResponseWriter, r *http.Request, conversationId ConversationId, params MoveConversationParams)
+	// ListConversationParticipants List a conversation's participants
+	// (GET /v1/conversations/{conversationId}/participants)
+	ListConversationParticipants(w http.ResponseWriter, r *http.Request, conversationId ConversationId, params ListConversationParticipantsParams)
+	// AddConversationParticipant Add a participant
+	// (POST /v1/conversations/{conversationId}/participants)
+	AddConversationParticipant(w http.ResponseWriter, r *http.Request, conversationId ConversationId, params AddConversationParticipantParams)
+	// RemoveConversationParticipant Remove a participant
+	// (DELETE /v1/conversations/{conversationId}/participants/{email})
+	RemoveConversationParticipant(w http.ResponseWriter, r *http.Request, conversationId ConversationId, email Email, params RemoveConversationParticipantParams)
 	// UnpinConversation Unpin a conversation
 	// (DELETE /v1/conversations/{conversationId}/pin)
 	UnpinConversation(w http.ResponseWriter, r *http.Request, conversationId ConversationId, params UnpinConversationParams)
@@ -43493,6 +43756,82 @@ func (siw *ServerInterfaceWrapper) DeleteContactNote(w http.ResponseWriter, r *h
 	handler.ServeHTTP(w, r)
 }
 
+// ListContactParticipations operation middleware
+func (siw *ServerInterfaceWrapper) ListContactParticipations(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "contactId" -------------
+	var contactId ContactId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "contactId", r.PathValue("contactId"), &contactId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "contactId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListContactParticipationsParams
+
+	// ------------- Optional query parameter "cursor" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "cursor", r.URL.Query(), &params.Cursor, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "cursor"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "cursor", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "limit" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "limit", r.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: "int32"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "limit"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "limit", Err: err})
+		}
+		return
+	}
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListContactParticipations(w, r, contactId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // GetContactPresence operation middleware
 func (siw *ServerInterfaceWrapper) GetContactPresence(w http.ResponseWriter, r *http.Request) {
 
@@ -44898,6 +45237,184 @@ func (siw *ServerInterfaceWrapper) MoveConversation(w http.ResponseWriter, r *ht
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.MoveConversation(w, r, conversationId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListConversationParticipants operation middleware
+func (siw *ServerInterfaceWrapper) ListConversationParticipants(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "conversationId" -------------
+	var conversationId ConversationId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "conversationId", r.PathValue("conversationId"), &conversationId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "conversationId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListConversationParticipantsParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListConversationParticipants(w, r, conversationId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// AddConversationParticipant operation middleware
+func (siw *ServerInterfaceWrapper) AddConversationParticipant(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "conversationId" -------------
+	var conversationId ConversationId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "conversationId", r.PathValue("conversationId"), &conversationId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "conversationId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params AddConversationParticipantParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.AddConversationParticipant(w, r, conversationId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// RemoveConversationParticipant operation middleware
+func (siw *ServerInterfaceWrapper) RemoveConversationParticipant(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "conversationId" -------------
+	var conversationId ConversationId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "conversationId", r.PathValue("conversationId"), &conversationId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "conversationId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "email" -------------
+	var email Email
+
+	err = runtime.BindStyledParameterWithOptions("simple", "email", r.PathValue("email"), &email, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "email", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "email", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params RemoveConversationParticipantParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.RemoveConversationParticipant(w, r, conversationId, email, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -62617,6 +63134,7 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/contacts/{contactId}/notes", wrapper.CreateContactNote)
 	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/contacts/{contactId}/notes/{noteId}", wrapper.DeleteContactNote)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/contacts/{contactId}/summary", wrapper.GetContactSummary)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/contacts/{contactId}/participations", wrapper.ListContactParticipations)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/contacts/{contactId}/presence", wrapper.GetContactPresence)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/contacts/{contactId}/visits", wrapper.ListContactVisits)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/contacts/{contactId}/subscriptions", wrapper.ListContactSubscriptions)
@@ -62635,6 +63153,9 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/conversations/{conversationId}/discussion", wrapper.CreateDiscussionFromConversation)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/conversations/{conversationId}/messages", wrapper.ListMessages)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/conversations/{conversationId}/messages", wrapper.CreateMessage)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/conversations/{conversationId}/participants", wrapper.ListConversationParticipants)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/conversations/{conversationId}/participants", wrapper.AddConversationParticipant)
+	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/conversations/{conversationId}/participants/{email}", wrapper.RemoveConversationParticipant)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/conversations/{conversationId}/read", wrapper.MarkConversationRead)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/conversations/{conversationId}/unread", wrapper.MarkConversationUnread)
 	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/conversations/{conversationId}/pin", wrapper.UnpinConversation)
@@ -81435,6 +81956,87 @@ func (response DeleteContactNote404ApplicationProblemPlusJSONResponse) VisitDele
 	return err
 }
 
+type ListContactParticipationsRequestObject struct {
+	ContactId ContactId `json:"contactId"`
+	Params    ListContactParticipationsParams
+}
+
+type ListContactParticipationsResponseObject interface {
+	VisitListContactParticipationsResponse(w http.ResponseWriter) error
+}
+
+type ListContactParticipations200JSONResponse ContactParticipationPage
+
+func (response ListContactParticipations200JSONResponse) VisitListContactParticipationsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListContactParticipations400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response ListContactParticipations400ApplicationProblemPlusJSONResponse) VisitListContactParticipationsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListContactParticipations401ApplicationProblemPlusJSONResponse Problem
+
+func (response ListContactParticipations401ApplicationProblemPlusJSONResponse) VisitListContactParticipationsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListContactParticipations403ApplicationProblemPlusJSONResponse Problem
+
+func (response ListContactParticipations403ApplicationProblemPlusJSONResponse) VisitListContactParticipationsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListContactParticipations404ApplicationProblemPlusJSONResponse Problem
+
+func (response ListContactParticipations404ApplicationProblemPlusJSONResponse) VisitListContactParticipationsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
 type GetContactPresenceRequestObject struct {
 	ContactId ContactId `json:"contactId"`
 	Params    GetContactPresenceParams
@@ -82983,6 +83585,237 @@ func (response MoveConversation409ApplicationProblemPlusJSONResponse) VisitMoveC
 	}
 	w.Header().Set("Content-Type", "application/problem+json")
 	w.WriteHeader(409)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListConversationParticipantsRequestObject struct {
+	ConversationId ConversationId `json:"conversationId"`
+	Params         ListConversationParticipantsParams
+}
+
+type ListConversationParticipantsResponseObject interface {
+	VisitListConversationParticipantsResponse(w http.ResponseWriter) error
+}
+
+type ListConversationParticipants200JSONResponse ConversationParticipantList
+
+func (response ListConversationParticipants200JSONResponse) VisitListConversationParticipantsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListConversationParticipants401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response ListConversationParticipants401ApplicationProblemPlusJSONResponse) VisitListConversationParticipantsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListConversationParticipants403ApplicationProblemPlusJSONResponse Problem
+
+func (response ListConversationParticipants403ApplicationProblemPlusJSONResponse) VisitListConversationParticipantsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListConversationParticipants404ApplicationProblemPlusJSONResponse Problem
+
+func (response ListConversationParticipants404ApplicationProblemPlusJSONResponse) VisitListConversationParticipantsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AddConversationParticipantRequestObject struct {
+	ConversationId ConversationId `json:"conversationId"`
+	Params         AddConversationParticipantParams
+	Body           *AddConversationParticipantJSONRequestBody
+}
+
+type AddConversationParticipantResponseObject interface {
+	VisitAddConversationParticipantResponse(w http.ResponseWriter) error
+}
+
+type AddConversationParticipant200JSONResponse ConversationParticipantList
+
+func (response AddConversationParticipant200JSONResponse) VisitAddConversationParticipantResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AddConversationParticipant400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response AddConversationParticipant400ApplicationProblemPlusJSONResponse) VisitAddConversationParticipantResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AddConversationParticipant401ApplicationProblemPlusJSONResponse Problem
+
+func (response AddConversationParticipant401ApplicationProblemPlusJSONResponse) VisitAddConversationParticipantResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AddConversationParticipant403ApplicationProblemPlusJSONResponse Problem
+
+func (response AddConversationParticipant403ApplicationProblemPlusJSONResponse) VisitAddConversationParticipantResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AddConversationParticipant404ApplicationProblemPlusJSONResponse Problem
+
+func (response AddConversationParticipant404ApplicationProblemPlusJSONResponse) VisitAddConversationParticipantResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AddConversationParticipant409ApplicationProblemPlusJSONResponse Problem
+
+func (response AddConversationParticipant409ApplicationProblemPlusJSONResponse) VisitAddConversationParticipantResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(409)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type RemoveConversationParticipantRequestObject struct {
+	ConversationId ConversationId `json:"conversationId"`
+	Email          Email          `json:"email"`
+	Params         RemoveConversationParticipantParams
+}
+
+type RemoveConversationParticipantResponseObject interface {
+	VisitRemoveConversationParticipantResponse(w http.ResponseWriter) error
+}
+
+type RemoveConversationParticipant200JSONResponse ConversationParticipantList
+
+func (response RemoveConversationParticipant200JSONResponse) VisitRemoveConversationParticipantResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type RemoveConversationParticipant401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response RemoveConversationParticipant401ApplicationProblemPlusJSONResponse) VisitRemoveConversationParticipantResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type RemoveConversationParticipant403ApplicationProblemPlusJSONResponse Problem
+
+func (response RemoveConversationParticipant403ApplicationProblemPlusJSONResponse) VisitRemoveConversationParticipantResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type RemoveConversationParticipant404ApplicationProblemPlusJSONResponse Problem
+
+func (response RemoveConversationParticipant404ApplicationProblemPlusJSONResponse) VisitRemoveConversationParticipantResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
 	_, err := buf.WriteTo(w)
 	return err
 }
@@ -96420,6 +97253,7 @@ func (response RedactMessage409ApplicationProblemPlusJSONResponse) VisitRedactMe
 type SendMessageRequestObject struct {
 	MessageId MessageId `json:"messageId"`
 	Params    SendMessageParams
+	Body      *SendMessageJSONRequestBody
 }
 
 type SendMessageResponseObject interface {
@@ -96440,9 +97274,23 @@ func (response SendMessage200JSONResponse) VisitSendMessageResponse(w http.Respo
 	return err
 }
 
-type SendMessage401ApplicationProblemPlusJSONResponse struct {
+type SendMessage400ApplicationProblemPlusJSONResponse struct {
 	ProblemApplicationProblemPlusJSONResponse
 }
+
+func (response SendMessage400ApplicationProblemPlusJSONResponse) VisitSendMessageResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type SendMessage401ApplicationProblemPlusJSONResponse Problem
 
 func (response SendMessage401ApplicationProblemPlusJSONResponse) VisitSendMessageResponse(w http.ResponseWriter) error {
 
@@ -106790,6 +107638,9 @@ type StrictServerInterface interface {
 	// DeleteContactNote Delete a note about a contact
 	// (DELETE /v1/contacts/{contactId}/notes/{noteId})
 	DeleteContactNote(ctx context.Context, request DeleteContactNoteRequestObject) (DeleteContactNoteResponseObject, error)
+	// ListContactParticipations List conversations a contact was copied on
+	// (GET /v1/contacts/{contactId}/participations)
+	ListContactParticipations(ctx context.Context, request ListContactParticipationsRequestObject) (ListContactParticipationsResponseObject, error)
 	// GetContactPresence Whether a contact is connected
 	// (GET /v1/contacts/{contactId}/presence)
 	GetContactPresence(ctx context.Context, request GetContactPresenceRequestObject) (GetContactPresenceResponseObject, error)
@@ -106847,6 +107698,15 @@ type StrictServerInterface interface {
 	// MoveConversation Move a conversation to another inbox
 	// (POST /v1/conversations/{conversationId}/move)
 	MoveConversation(ctx context.Context, request MoveConversationRequestObject) (MoveConversationResponseObject, error)
+	// ListConversationParticipants List a conversation's participants
+	// (GET /v1/conversations/{conversationId}/participants)
+	ListConversationParticipants(ctx context.Context, request ListConversationParticipantsRequestObject) (ListConversationParticipantsResponseObject, error)
+	// AddConversationParticipant Add a participant
+	// (POST /v1/conversations/{conversationId}/participants)
+	AddConversationParticipant(ctx context.Context, request AddConversationParticipantRequestObject) (AddConversationParticipantResponseObject, error)
+	// RemoveConversationParticipant Remove a participant
+	// (DELETE /v1/conversations/{conversationId}/participants/{email})
+	RemoveConversationParticipant(ctx context.Context, request RemoveConversationParticipantRequestObject) (RemoveConversationParticipantResponseObject, error)
 	// UnpinConversation Unpin a conversation
 	// (DELETE /v1/conversations/{conversationId}/pin)
 	UnpinConversation(ctx context.Context, request UnpinConversationRequestObject) (UnpinConversationResponseObject, error)
@@ -113203,6 +114063,33 @@ func (sh *strictHandler) DeleteContactNote(w http.ResponseWriter, r *http.Reques
 	}
 }
 
+// ListContactParticipations operation middleware
+func (sh *strictHandler) ListContactParticipations(w http.ResponseWriter, r *http.Request, contactId ContactId, params ListContactParticipationsParams) {
+	var request ListContactParticipationsRequestObject
+
+	request.ContactId = contactId
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.ListContactParticipations(ctx, request.(ListContactParticipationsRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "ListContactParticipations")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(ListContactParticipationsResponseObject); ok {
+		if err := validResponse.VisitListContactParticipationsResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
 // GetContactPresence operation middleware
 func (sh *strictHandler) GetContactPresence(w http.ResponseWriter, r *http.Request, contactId ContactId, params GetContactPresenceParams) {
 	var request GetContactPresenceRequestObject
@@ -113766,6 +114653,95 @@ func (sh *strictHandler) MoveConversation(w http.ResponseWriter, r *http.Request
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
 	} else if validResponse, ok := response.(MoveConversationResponseObject); ok {
 		if err := validResponse.VisitMoveConversationResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// ListConversationParticipants operation middleware
+func (sh *strictHandler) ListConversationParticipants(w http.ResponseWriter, r *http.Request, conversationId ConversationId, params ListConversationParticipantsParams) {
+	var request ListConversationParticipantsRequestObject
+
+	request.ConversationId = conversationId
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.ListConversationParticipants(ctx, request.(ListConversationParticipantsRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "ListConversationParticipants")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(ListConversationParticipantsResponseObject); ok {
+		if err := validResponse.VisitListConversationParticipantsResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// AddConversationParticipant operation middleware
+func (sh *strictHandler) AddConversationParticipant(w http.ResponseWriter, r *http.Request, conversationId ConversationId, params AddConversationParticipantParams) {
+	var request AddConversationParticipantRequestObject
+
+	request.ConversationId = conversationId
+	request.Params = params
+
+	var body AddConversationParticipantJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.AddConversationParticipant(ctx, request.(AddConversationParticipantRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "AddConversationParticipant")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(AddConversationParticipantResponseObject); ok {
+		if err := validResponse.VisitAddConversationParticipantResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// RemoveConversationParticipant operation middleware
+func (sh *strictHandler) RemoveConversationParticipant(w http.ResponseWriter, r *http.Request, conversationId ConversationId, email Email, params RemoveConversationParticipantParams) {
+	var request RemoveConversationParticipantRequestObject
+
+	request.ConversationId = conversationId
+	request.Email = email
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.RemoveConversationParticipant(ctx, request.(RemoveConversationParticipantRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "RemoveConversationParticipant")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(RemoveConversationParticipantResponseObject); ok {
+		if err := validResponse.VisitRemoveConversationParticipantResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {
@@ -118792,6 +119768,16 @@ func (sh *strictHandler) SendMessage(w http.ResponseWriter, r *http.Request, mes
 
 	request.MessageId = messageId
 	request.Params = params
+
+	var body SendMessageJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		if !errors.Is(err, io.EOF) {
+			sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+			return
+		}
+	} else {
+		request.Body = &body
+	}
 
 	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
 		return sh.ssi.SendMessage(ctx, request.(SendMessageRequestObject))

@@ -8,6 +8,7 @@ import (
 	"io"
 	"log/slog"
 	"net/http"
+	"slices"
 	"strings"
 	"time"
 	"unicode/utf8"
@@ -43,6 +44,8 @@ type emailPlan struct {
 	channelID  uuid.UUID
 	from       email.Address
 	to         string
+	cc         []string
+	bcc        []string
 	subject    string
 	headerID   string
 	inReplyTo  *string
@@ -157,13 +160,19 @@ func (s *Server) recordOutboundEmail(ctx context.Context, q *store.Queries, plan
 		refs = []string{}
 	}
 	chID := plan.channelID
-	return q.CreateMessageEmail(ctx, store.CreateMessageEmailParams{
+	if err := q.CreateMessageEmail(ctx, store.CreateMessageEmailParams{
 		WorkspaceID: msg.WorkspaceID, MessageID: msg.ID, ConversationID: msg.ConversationID, ChannelID: &chID,
 		Direction: string(oas.Out), HeaderMessageID: plan.headerID, InReplyTo: plan.inReplyTo, ReferencesIds: refs,
-		FromAddress: plan.from.Email, ToAddresses: []string{plan.to}, CcAddresses: []string{}, Subject: plan.subject,
+		FromAddress: plan.from.Email, ToAddresses: []string{plan.to}, CcAddresses: nonNil(plan.cc), Subject: plan.subject,
 		FullText: msg.Body, FullHtml: msg.Html, Headers: []byte("{}"), Dmarc: email.DMARCUnknown, Auto: plan.auto,
 		CreatedAt: msg.CreatedAt,
-	})
+	}); err != nil {
+		return err
+	}
+	if len(plan.bcc) == 0 {
+		return nil
+	}
+	return q.SetMessageEmailBcc(ctx, store.SetMessageEmailBccParams{WorkspaceID: msg.WorkspaceID, MessageID: msg.ID, BccAddresses: plan.bcc})
 }
 
 func (s *Server) queueEmail(ctx context.Context, q *store.Queries, events *eventBatch, plan *emailPlan, msg messageRow) (*store.ListMessageEmailsRow, error) {
@@ -173,7 +182,8 @@ func (s *Server) queueEmail(ctx context.Context, q *store.Queries, events *event
 	events.job(EmailSendArgs{WorkspaceID: msg.WorkspaceID, MessageID: msg.ID}, &river.InsertOpts{MaxAttempts: emailSendAttempts})
 	return &store.ListMessageEmailsRow{
 		MessageID: msg.ID, Direction: string(oas.Out), HeaderMessageID: plan.headerID, FromAddress: plan.from.Email,
-		ToAddresses: []string{plan.to}, Subject: plan.subject, Auto: plan.auto, Dmarc: email.DMARCUnknown,
+		ToAddresses: []string{plan.to}, CcAddresses: plan.cc, BccAddresses: plan.bcc, Subject: plan.subject, Auto: plan.auto,
+		Dmarc: email.DMARCUnknown,
 	}, nil
 }
 
@@ -218,6 +228,19 @@ func withEmail(m oas.Message, e *store.ListMessageEmailsRow) oas.Message {
 		out.Subject = &subject
 	}
 	m.Email = out
+	return m
+}
+
+// withBcc adds the hidden recipients, which only answers to /v1 requests carry: events feed
+// webhooks and the contact's stream, and must never show them.
+func withBcc(m oas.Message, e *store.ListMessageEmailsRow) oas.Message {
+	if e == nil || m.Email == nil || len(e.BccAddresses) == 0 {
+		return m
+	}
+	bcc := emailList(e.BccAddresses)
+	out := *m.Email
+	out.Bcc = &bcc
+	m.Email = &out
 	return m
 }
 
@@ -427,6 +450,26 @@ func (s *Server) sendQueued(ctx context.Context, workspaceID uuid.UUID, msgs []m
 	if suppressed {
 		return "", &email.PermanentError{Err: errors.New("the recipient address is undeliverable")}
 	}
+	rcpts := []string{to}
+	var cc []email.Address
+	for i, list := range [][]string{me.CcAddresses, me.BccAddresses} {
+		for _, addr := range list {
+			if slices.Contains(rcpts, addr) {
+				continue
+			}
+			suppressed, err := s.st.IsEmailSuppressed(ctx, store.IsEmailSuppressedParams{WorkspaceID: workspaceID, Email: addr})
+			if err != nil {
+				return "", err
+			}
+			if suppressed {
+				continue
+			}
+			rcpts = append(rcpts, addr)
+			if i == 0 {
+				cc = append(cc, email.Address{Email: addr})
+			}
+		}
+	}
 	var password string
 	if len(ch.SmtpPassword) > 0 {
 		plain, err := s.secrets.Open(ch.SmtpPassword, smtpSecretContext(workspaceID, ch.ChannelID))
@@ -461,6 +504,7 @@ func (s *Server) sendQueued(ctx context.Context, workspaceID uuid.UUID, msgs []m
 		From:          email.Address{Name: fromName, Email: me.FromAddress},
 		ReplyTo:       email.Address{Name: channelName, Email: replyTo},
 		To:            email.Address{Name: toName, Email: to},
+		Cc:            cc,
 		Subject:       me.Subject,
 		MessageID:     me.HeaderMessageID,
 		Text:          batchText(msgs, false),
@@ -504,8 +548,8 @@ func (s *Server) sendQueued(ctx context.Context, workspaceID uuid.UUID, msgs []m
 	sendCtx, cancel := context.WithTimeout(ctx, time.Minute)
 	defer cancel()
 	sendCtx, span := telemetry.Start(sendCtx, "mail.send", telemetry.WorkspaceKey.String(workspaceID.String()), telemetry.InboxKey.String(conv.InboxID.String()),
-		attribute.Int("yuva.recipients", 1), attribute.Int("yuva.message_bytes", len(raw)))
-	relayID, err := email.SendRelayed(sendCtx, s.sender, cfg, me.FromAddress, []string{to}, raw)
+		attribute.Int("yuva.recipients", len(rcpts)), attribute.Int("yuva.message_bytes", len(raw)))
+	relayID, err := email.SendRelayed(sendCtx, s.sender, cfg, me.FromAddress, rcpts, raw)
 	telemetry.End(span, err)
 	return relayID, err
 }

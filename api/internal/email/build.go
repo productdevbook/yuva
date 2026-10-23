@@ -14,6 +14,7 @@ type Outgoing struct {
 	From          Address
 	ReplyTo       Address
 	To            Address
+	Cc            []Address
 	Subject       string
 	MessageID     string
 	InReplyTo     string
@@ -138,6 +139,13 @@ func Build(o Outgoing) ([]byte, error) {
 	}
 	root.Header.Set("From", FormatAddress(o.From))
 	root.Header.Set("To", FormatAddress(o.To))
+	if len(o.Cc) > 0 {
+		cc := make([]string, len(o.Cc))
+		for i, c := range o.Cc {
+			cc[i] = FormatAddress(c)
+		}
+		root.Header.Set("Cc", strings.Join(cc, ", "))
+	}
 	if o.ReplyTo.Email != "" {
 		root.Header.Set("Reply-To", FormatAddress(o.ReplyTo))
 	}

@@ -2505,6 +2505,54 @@ func (e ConversationMovedEventType) Valid() bool {
 	}
 }
 
+// Defines values for ConversationParticipantRole.
+const (
+	Cc ConversationParticipantRole = "cc"
+)
+
+// Valid indicates whether the value is a known member of the ConversationParticipantRole enum.
+func (e ConversationParticipantRole) Valid() bool {
+	switch e {
+	case Cc:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ConversationParticipantStatus.
+const (
+	Active    ConversationParticipantStatus = "active"
+	Suggested ConversationParticipantStatus = "suggested"
+)
+
+// Valid indicates whether the value is a known member of the ConversationParticipantStatus enum.
+func (e ConversationParticipantStatus) Valid() bool {
+	switch e {
+	case Active:
+		return true
+	case Suggested:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ConversationParticipantsEventType.
+const (
+	ConversationParticipants ConversationParticipantsEventType = "conversation.participants"
+)
+
+// Valid indicates whether the value is a known member of the ConversationParticipantsEventType enum.
+func (e ConversationParticipantsEventType) Valid() bool {
+	switch e {
+	case ConversationParticipants:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for ConversationPinEventType.
 const (
 	ConversationPinEventTypeConversationPin ConversationPinEventType = "conversation.pin"
@@ -12807,6 +12855,28 @@ type ContactPage struct {
 	NextCursor *string `json:"next_cursor,omitempty"`
 }
 
+// ContactParticipation defines model for ContactParticipation.
+type ContactParticipation struct {
+	ConversationId uuid.UUID `json:"conversation_id"`
+
+	// CreatedAt When the conversation started.
+	CreatedAt time.Time `json:"created_at"`
+
+	// Emails The contact's addresses that the conversation holds.
+	Emails  []Email   `json:"emails"`
+	InboxId uuid.UUID `json:"inbox_id"`
+
+	// Participant One of them is a participant; otherwise they appear only in stored e-mail.
+	Participant bool   `json:"participant"`
+	Subject     string `json:"subject"`
+}
+
+// ContactParticipationPage defines model for ContactParticipationPage.
+type ContactParticipationPage struct {
+	Items      []ContactParticipation `json:"items"`
+	NextCursor *string                `json:"next_cursor,omitempty"`
+}
+
 // ContactPresence defines model for ContactPresence.
 type ContactPresence struct {
 	ContactId uuid.UUID `json:"contact_id"`
@@ -13388,6 +13458,65 @@ type ConversationPage struct {
 	// NextCursor Absent on the last page.
 	NextCursor *string `json:"next_cursor,omitempty"`
 }
+
+// ConversationParticipant defines model for ConversationParticipant.
+type ConversationParticipant struct {
+	// ContactId The contact with this address, when there is one.
+	ContactId *uuid.UUID `json:"contact_id,omitempty"`
+
+	// CreatedAt When the address was first seen on the conversation.
+	CreatedAt time.Time `json:"created_at"`
+
+	// Email Examples: owner@example.com
+	Email Email `json:"email"`
+
+	// Name That contact's name.
+	Name *string                     `json:"name,omitempty"`
+	Role ConversationParticipantRole `json:"role"`
+
+	// Status `active` addresses are copied on replies and may answer into the conversation;
+	// `suggested` ones came from mail that did not pass DMARC and are only shown.
+	Status ConversationParticipantStatus `json:"status"`
+}
+
+// ConversationParticipantRole defines model for ConversationParticipant.Role.
+type ConversationParticipantRole string
+
+// ConversationParticipantStatus `active` addresses are copied on replies and may answer into the conversation;
+// `suggested` ones came from mail that did not pass DMARC and are only shown.
+type ConversationParticipantStatus string
+
+// ConversationParticipantCreate defines model for ConversationParticipantCreate.
+type ConversationParticipantCreate struct {
+	// Email Examples: owner@example.com
+	Email Email `json:"email"`
+}
+
+// ConversationParticipantList defines model for ConversationParticipantList.
+type ConversationParticipantList struct {
+	Items []ConversationParticipant `json:"items"`
+}
+
+// ConversationParticipantsChange defines model for ConversationParticipantsChange.
+type ConversationParticipantsChange struct {
+	ConversationId uuid.UUID                 `json:"conversation_id"`
+	Items          []ConversationParticipant `json:"items"`
+}
+
+// ConversationParticipantsEvent The participants of a conversation changed (inbound mail, a reply's `cc`, or a member). Only
+// on `/v1/realtime` and `/v1/events`; never a webhook and never on `/client/v1`.
+type ConversationParticipantsEvent struct {
+	ConversationId uuid.UUID                         `json:"conversation_id"`
+	CreatedAt      time.Time                         `json:"created_at"`
+	Data           ConversationParticipantsChange    `json:"data"`
+	Id             int64                             `json:"id"`
+	InboxId        uuid.UUID                         `json:"inbox_id"`
+	Type           ConversationParticipantsEventType `json:"type"`
+	WorkspaceId    uuid.UUID                         `json:"workspace_id"`
+}
+
+// ConversationParticipantsEventType defines model for ConversationParticipantsEvent.Type.
+type ConversationParticipantsEventType string
 
 // ConversationPin Whether a member pinned a conversation to the top of their lists.
 type ConversationPin struct {
@@ -18028,8 +18157,15 @@ type MessageCreate struct {
 	// article's title and URL as its last lines.
 	ArticleIds *[]uuid.UUID `json:"article_ids,omitempty"`
 
+	// Bcc E-mailed replies only, hidden recipients. See `createMessage`.
+	Bcc *[]Email `json:"bcc,omitempty"`
+
 	// Body Required unless files are attached.
 	Body *string `json:"body,omitempty"`
+
+	// Cc E-mailed replies only: the addresses to copy, in place of the conversation's
+	// participants; `[]` copies no one. See `createMessage`.
+	Cc *[]Email `json:"cc,omitempty"`
 
 	// ClientId Makes the request idempotent within the conversation.
 	ClientId  *string    `json:"client_id,omitempty"`
@@ -18062,15 +18198,21 @@ type MessageCreateKind string
 // MessageCreateMultipart defines model for MessageCreateMultipart.
 type MessageCreateMultipart struct {
 	// ArticleIds Outgoing messages only; repeat the field once per article id.
-	ArticleIds *[]uuid.UUID               `json:"article_ids,omitempty"`
-	Body       *string                    `json:"body,omitempty"`
-	ClientId   *string                    `json:"client_id,omitempty"`
-	Direction  *Direction                 `json:"direction,omitempty"`
-	Draft      *bool                      `json:"draft,omitempty"`
-	Files      *[]openapi_types.File      `json:"files,omitempty"`
-	Html       *string                    `json:"html,omitempty"`
-	Kind       MessageCreateMultipartKind `json:"kind"`
-	MacroId    *uuid.UUID                 `json:"macro_id,omitempty"`
+	ArticleIds *[]uuid.UUID `json:"article_ids,omitempty"`
+
+	// Bcc Repeat the field once per address.
+	Bcc  *[]Email `json:"bcc,omitempty"`
+	Body *string  `json:"body,omitempty"`
+
+	// Cc Repeat the field once per address; one empty `cc` field copies no one.
+	Cc        *[]string                  `json:"cc,omitempty"`
+	ClientId  *string                    `json:"client_id,omitempty"`
+	Direction *Direction                 `json:"direction,omitempty"`
+	Draft     *bool                      `json:"draft,omitempty"`
+	Files     *[]openapi_types.File      `json:"files,omitempty"`
+	Html      *string                    `json:"html,omitempty"`
+	Kind      MessageCreateMultipartKind `json:"kind"`
+	MacroId   *uuid.UUID                 `json:"macro_id,omitempty"`
 
 	// Mentions Notes only; repeat the field once per member id.
 	Mentions *[]uuid.UUID `json:"mentions,omitempty"`
@@ -18119,7 +18261,11 @@ type MessageEmail struct {
 	// Auto Automatic mail (auto-reply, list, bulk) or our own automatic message.
 	Auto bool `json:"auto"`
 
-	// Cc The `Cc` of an inbound mail, as received. Replies go to the contact only and copy no one.
+	// Bcc The hidden recipients of a reply. Only in answers to `/v1` requests (members and keys);
+	// never in events, webhooks, the sent headers or on `/client/v1`.
+	Bcc *[]Email `json:"bcc,omitempty"`
+
+	// Cc The `Cc` of an inbound mail as received, or the addresses a reply copied.
 	Cc *[]Email `json:"cc,omitempty"`
 
 	// Dmarc The DMARC result from the topmost `Authentication-Results`, only when its authserv-id is
@@ -18267,6 +18413,16 @@ type MessageRedactedBy struct {
 
 	// MemberId The member, also when they acted through a connected app.
 	MemberId *uuid.UUID `json:"member_id,omitempty"`
+}
+
+// MessageSend Recipients of a draft's e-mail; see `createMessage`.
+type MessageSend struct {
+	// Bcc E-mailed replies only, hidden recipients. See `createMessage`.
+	Bcc *[]Email `json:"bcc,omitempty"`
+
+	// Cc E-mailed replies only: the addresses to copy, in place of the conversation's
+	// participants; `[]` copies no one. See `createMessage`.
+	Cc *[]Email `json:"cc,omitempty"`
 }
 
 // MessageUpdate Only the fields sent change.
@@ -24832,6 +24988,18 @@ type DeleteContactNoteParams struct {
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
 
+// ListContactParticipationsParams defines parameters for ListContactParticipations.
+type ListContactParticipationsParams struct {
+	// Cursor The `next_cursor` of the previous page.
+	Cursor *Cursor `form:"cursor,omitempty" json:"cursor,omitempty"`
+
+	// Limit Page size, 1 to 100; 25 by default.
+	Limit *Limit `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
 // GetContactPresenceParams defines parameters for GetContactPresence.
 type GetContactPresenceParams struct {
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
@@ -25075,6 +25243,27 @@ type MoveConversationParams struct {
 	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// ListConversationParticipantsParams defines parameters for ListConversationParticipants.
+type ListConversationParticipantsParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// AddConversationParticipantParams defines parameters for AddConversationParticipant.
+type AddConversationParticipantParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// RemoveConversationParticipantParams defines parameters for RemoveConversationParticipant.
+type RemoveConversationParticipantParams struct {
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
@@ -28210,6 +28399,9 @@ type CreateMessageMultipartRequestBody = MessageCreateMultipart
 // MoveConversationJSONRequestBody defines body for MoveConversation for application/json ContentType.
 type MoveConversationJSONRequestBody = ConversationMove
 
+// AddConversationParticipantJSONRequestBody defines body for AddConversationParticipant for application/json ContentType.
+type AddConversationParticipantJSONRequestBody = ConversationParticipantCreate
+
 // MarkConversationReadJSONRequestBody defines body for MarkConversationRead for application/json ContentType.
 type MarkConversationReadJSONRequestBody = ConversationReadCreate
 
@@ -28386,6 +28578,9 @@ type UpdateMemberJSONRequestBody = MemberUpdate
 
 // UpdateMessageJSONRequestBody defines body for UpdateMessage for application/json ContentType.
 type UpdateMessageJSONRequestBody = MessageUpdate
+
+// SendMessageJSONRequestBody defines body for SendMessage for application/json ContentType.
+type SendMessageJSONRequestBody = MessageSend
 
 // CreateMigrationJSONRequestBody defines body for CreateMigration for application/json ContentType.
 type CreateMigrationJSONRequestBody = MigrationCreate
@@ -30799,6 +30994,32 @@ func (t *RealtimeMessage) MergeConversationPinEvent(v ConversationPinEvent) erro
 	return err
 }
 
+// AsConversationParticipantsEvent returns the union data inside the RealtimeMessage as a ConversationParticipantsEvent
+func (t RealtimeMessage) AsConversationParticipantsEvent() (ConversationParticipantsEvent, error) {
+	var body ConversationParticipantsEvent
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromConversationParticipantsEvent overwrites any union data inside the RealtimeMessage as the provided ConversationParticipantsEvent
+func (t *RealtimeMessage) FromConversationParticipantsEvent(v ConversationParticipantsEvent) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeConversationParticipantsEvent performs a merge with any union data inside the RealtimeMessage, using the provided ConversationParticipantsEvent
+func (t *RealtimeMessage) MergeConversationParticipantsEvent(v ConversationParticipantsEvent) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
 // AsDiscussionEvent returns the union data inside the RealtimeMessage as a DiscussionEvent
 func (t RealtimeMessage) AsDiscussionEvent() (DiscussionEvent, error) {
 	var body DiscussionEvent
@@ -31675,6 +31896,8 @@ func (t RealtimeMessage) ValueByDiscriminator() (interface{}, error) {
 		return t.AsConversationDeletedEvent()
 	case "conversation.moved":
 		return t.AsConversationMovedEvent()
+	case "conversation.participants":
+		return t.AsConversationParticipantsEvent()
 	case "conversation.pin":
 		return t.AsConversationPinEvent()
 	case "conversation.read":
@@ -32244,6 +32467,32 @@ func (t *StoredEvent) MergeConversationPinEvent(v ConversationPinEvent) error {
 	return err
 }
 
+// AsConversationParticipantsEvent returns the union data inside the StoredEvent as a ConversationParticipantsEvent
+func (t StoredEvent) AsConversationParticipantsEvent() (ConversationParticipantsEvent, error) {
+	var body ConversationParticipantsEvent
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromConversationParticipantsEvent overwrites any union data inside the StoredEvent as the provided ConversationParticipantsEvent
+func (t *StoredEvent) FromConversationParticipantsEvent(v ConversationParticipantsEvent) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeConversationParticipantsEvent performs a merge with any union data inside the StoredEvent, using the provided ConversationParticipantsEvent
+func (t *StoredEvent) MergeConversationParticipantsEvent(v ConversationParticipantsEvent) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
 // AsDiscussionEvent returns the union data inside the StoredEvent as a DiscussionEvent
 func (t StoredEvent) AsDiscussionEvent() (DiscussionEvent, error) {
 	var body DiscussionEvent
@@ -32592,6 +32841,8 @@ func (t StoredEvent) ValueByDiscriminator() (interface{}, error) {
 		return t.AsConversationDeletedEvent()
 	case "conversation.moved":
 		return t.AsConversationMovedEvent()
+	case "conversation.participants":
+		return t.AsConversationParticipantsEvent()
 	case "conversation.pin":
 		return t.AsConversationPinEvent()
 	case "conversation.read":
@@ -36681,6 +36932,20 @@ type ClientInterface interface {
 	// Corresponds with DELETE /v1/contacts/{contactId}/notes/{noteId} (the `DeleteContactNote` operationId).
 	DeleteContactNote(ctx context.Context, contactId ContactId, noteId uuid.UUID, params *DeleteContactNoteParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// ListContactParticipations List conversations a contact was copied on
+	//
+	// Conversations of other contacts, in the inboxes the caller can see, where one of the
+	// contact's addresses is a participant or appears in the `to`, `cc` or `bcc` of a stored
+	// e-mail; newest first. With the contact's own conversations this answers an access request
+	// (GDPR Art. 15, KVKK Art. 11) for someone who was only copied. Deleting the contact removes
+	// those participants and its addresses from the stored lists. Someone copied who never
+	// wrote has no contact: create one with their address first.
+	//
+	// Scope: `contacts:read` and `conversations:read`.
+	//
+	// Corresponds with GET /v1/contacts/{contactId}/participations (the `ListContactParticipations` operationId).
+	ListContactParticipations(ctx context.Context, contactId ContactId, params *ListContactParticipationsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// GetContactPresence Whether a contact is connected
 	//
 	// Whether the contact has a live `/client/v1/realtime` connection (widget or app in the
@@ -37087,6 +37352,20 @@ type ClientInterface interface {
 	// address the contact wrote to; when the conversation has none and the channel has no
 	// `from_address`, the reply is refused with `409 email_no_sender`.
 	//
+	// An e-mailed reply goes `To` the contact and, unless `cc` is sent, `Cc` the conversation's
+	// `active` participants (`GET /v1/conversations/{id}/participants`), leaving out those whose
+	// address bounced or complained; `suggested` ones are copied only when named in `cc`. `cc` replaces that list (`[]` copies no one) and `bcc` adds hidden
+	// recipients, at most 20 addresses each: they receive the mail as envelope recipients only and
+	// never appear in its headers. Addresses in `cc` become participants; `bcc` never does. Each
+	// address must be a valid address that this server neither receives nor sends mail for
+	// (`400 validation_failed`, the same answer for both); one that bounced or complained is refused with
+	// `409 email_undeliverable`, while an unsubscribe from broadcasts does not stop a reply. The
+	// contact's own address is dropped from both, and an address in both stays in `cc`. `cc` and
+	// `bcc` are refused (`400 validation_failed`) on notes, `in` messages, drafts (send them with
+	// `POST /v1/messages/{id}/send`) and replies that are not e-mailed. `bcc` is returned on the
+	// message's `email` to members and keys only in answers to `/v1` requests, never in events,
+	// webhooks or on `/client/v1`.
+	//
 	// `macro_id` applies a macro's actions and `then` applies a `ConversationUpdate`, in the same
 	// transaction as the message: when either is refused (an assignee of `then` without access
 	// to the inbox, a snooze without a future time) nothing is written, and when the message is
@@ -37142,6 +37421,20 @@ type ClientInterface interface {
 	// address the contact wrote to; when the conversation has none and the channel has no
 	// `from_address`, the reply is refused with `409 email_no_sender`.
 	//
+	// An e-mailed reply goes `To` the contact and, unless `cc` is sent, `Cc` the conversation's
+	// `active` participants (`GET /v1/conversations/{id}/participants`), leaving out those whose
+	// address bounced or complained; `suggested` ones are copied only when named in `cc`. `cc` replaces that list (`[]` copies no one) and `bcc` adds hidden
+	// recipients, at most 20 addresses each: they receive the mail as envelope recipients only and
+	// never appear in its headers. Addresses in `cc` become participants; `bcc` never does. Each
+	// address must be a valid address that this server neither receives nor sends mail for
+	// (`400 validation_failed`, the same answer for both); one that bounced or complained is refused with
+	// `409 email_undeliverable`, while an unsubscribe from broadcasts does not stop a reply. The
+	// contact's own address is dropped from both, and an address in both stays in `cc`. `cc` and
+	// `bcc` are refused (`400 validation_failed`) on notes, `in` messages, drafts (send them with
+	// `POST /v1/messages/{id}/send`) and replies that are not e-mailed. `bcc` is returned on the
+	// message's `email` to members and keys only in answers to `/v1` requests, never in events,
+	// webhooks or on `/client/v1`.
+	//
 	// `macro_id` applies a macro's actions and `then` applies a `ConversationUpdate`, in the same
 	// transaction as the message: when either is refused (an assignee of `then` without access
 	// to the inbox, a snooze without a future time) nothing is written, and when the message is
@@ -37195,6 +37488,60 @@ type ClientInterface interface {
 	//
 	// Corresponds with POST /v1/conversations/{conversationId}/move (the `MoveConversation` operationId).
 	MoveConversation(ctx context.Context, conversationId ConversationId, params *MoveConversationParams, body MoveConversationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListConversationParticipants List a conversation's participants
+	//
+	// The people copied on the conversation's e-mail besides its contact, oldest first, at most
+	// 20 per conversation. The `To` and `Cc` addresses of inbound mail that are not addresses of
+	// this server (any channel's address, sending address or forwarding address) are `active`
+	// when the mail passed DMARC (`email.dmarc` `pass`) and `suggested` otherwise, since `From`
+	// can be forged; automatic mail and mail that failed DMARC add no one. Addresses a member
+	// names in a reply's `cc` or adds here are `active`. Replies copy `active` participants by
+	// default, and mail that passes DMARC from an `active` participant's address and answers the
+	// conversation joins it as a message from that participant's contact; anything else from
+	// them opens a new conversation. `suggested` addresses are never copied unless a member adds
+	// them. Changes emit `conversation.participants` on `/v1/realtime` and `/v1/events`.
+	//
+	// Scope: `conversations:read`.
+	//
+	// Corresponds with GET /v1/conversations/{conversationId}/participants (the `ListConversationParticipants` operationId).
+	ListConversationParticipants(ctx context.Context, conversationId ConversationId, params *ListConversationParticipantsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// AddConversationParticipantWithBody Add a participant
+	//
+	// Adds an address as an `active` participant, or makes a `suggested` one `active`. The
+	// address must be valid and not one this server receives or sends mail for
+	// (`400 validation_failed`, the same answer for both); a conversation holds at most 20
+	// (`409 participants_full`). Whoever can see the conversation may; API keys and OAuth tokens
+	// need `conversations:write`.
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /v1/conversations/{conversationId}/participants (the `AddConversationParticipant` operationId).
+	AddConversationParticipantWithBody(ctx context.Context, conversationId ConversationId, params *AddConversationParticipantParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// AddConversationParticipant Add a participant
+	//
+	// Adds an address as an `active` participant, or makes a `suggested` one `active`. The
+	// address must be valid and not one this server receives or sends mail for
+	// (`400 validation_failed`, the same answer for both); a conversation holds at most 20
+	// (`409 participants_full`). Whoever can see the conversation may; API keys and OAuth tokens
+	// need `conversations:write`.
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /v1/conversations/{conversationId}/participants (the `AddConversationParticipant` operationId).
+	AddConversationParticipant(ctx context.Context, conversationId ConversationId, params *AddConversationParticipantParams, body AddConversationParticipantJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// RemoveConversationParticipant Remove a participant
+	//
+	// Removes an address from the participants: replies stop copying it and its mail no longer
+	// joins the conversation. Later inbound mail that names it adds it again. Whoever can see the
+	// conversation may; API keys and OAuth tokens need `conversations:write`. An address that is
+	// not a participant is `404`.
+	//
+	// Corresponds with DELETE /v1/conversations/{conversationId}/participants/{email} (the `RemoveConversationParticipant` operationId).
+	RemoveConversationParticipant(ctx context.Context, conversationId ConversationId, email Email, params *RemoveConversationParticipantParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// UnpinConversation Unpin a conversation
 	//
@@ -40207,18 +40554,37 @@ type ClientInterface interface {
 	// Corresponds with POST /v1/messages/{messageId}/redact (the `RedactMessage` operationId).
 	RedactMessage(ctx context.Context, messageId MessageId, params *RedactMessageParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// SendMessageWithBody Send a draft
+	//
+	// Delivers a draft like a new outgoing message: its time becomes now, `sent_by` names who
+	// sent it, the author stays the draft's author, and `message.created` is emitted (an e-mail
+	// conversation e-mails it, as in `createMessage`). Anything that is not a draft answers
+	// `409 not_a_draft`. `cc` and `bcc` follow the rules of `createMessage`; without them the
+	// e-mail copies the conversation's participants.
+	//
+	// Members always may. An API key needs `drafts:send` and `messages:write`, and the
+	// workspace's `bots_may_send` (`403 bot_sending_disabled`).
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /v1/messages/{messageId}/send (the `SendMessage` operationId).
+	SendMessageWithBody(ctx context.Context, messageId MessageId, params *SendMessageParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// SendMessage Send a draft
 	//
 	// Delivers a draft like a new outgoing message: its time becomes now, `sent_by` names who
 	// sent it, the author stays the draft's author, and `message.created` is emitted (an e-mail
 	// conversation e-mails it, as in `createMessage`). Anything that is not a draft answers
-	// `409 not_a_draft`.
+	// `409 not_a_draft`. `cc` and `bcc` follow the rules of `createMessage`; without them the
+	// e-mail copies the conversation's participants.
 	//
 	// Members always may. An API key needs `drafts:send` and `messages:write`, and the
 	// workspace's `bots_may_send` (`403 bot_sending_disabled`).
 	//
+	// Takes a body of the `application/json` content type.
+	//
 	// Corresponds with POST /v1/messages/{messageId}/send (the `SendMessage` operationId).
-	SendMessage(ctx context.Context, messageId MessageId, params *SendMessageParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+	SendMessage(ctx context.Context, messageId MessageId, params *SendMessageParams, body SendMessageJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ListMigrations List migrations
 	//
@@ -49247,6 +49613,30 @@ func (c *Client) DeleteContactNote(ctx context.Context, contactId ContactId, not
 	return c.Client.Do(req)
 }
 
+// ListContactParticipations List conversations a contact was copied on
+//
+// Conversations of other contacts, in the inboxes the caller can see, where one of the
+// contact's addresses is a participant or appears in the `to`, `cc` or `bcc` of a stored
+// e-mail; newest first. With the contact's own conversations this answers an access request
+// (GDPR Art. 15, KVKK Art. 11) for someone who was only copied. Deleting the contact removes
+// those participants and its addresses from the stored lists. Someone copied who never
+// wrote has no contact: create one with their address first.
+//
+// Scope: `contacts:read` and `conversations:read`.
+//
+// Corresponds with GET /v1/contacts/{contactId}/participations (the `ListContactParticipations` operationId).
+func (c *Client) ListContactParticipations(ctx context.Context, contactId ContactId, params *ListContactParticipationsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListContactParticipationsRequest(c.Server, contactId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 // GetContactPresence Whether a contact is connected
 //
 // Whether the contact has a live `/client/v1/realtime` connection (widget or app in the
@@ -49873,6 +50263,20 @@ func (c *Client) ListMessages(ctx context.Context, conversationId ConversationId
 // address the contact wrote to; when the conversation has none and the channel has no
 // `from_address`, the reply is refused with `409 email_no_sender`.
 //
+// An e-mailed reply goes `To` the contact and, unless `cc` is sent, `Cc` the conversation's
+// `active` participants (`GET /v1/conversations/{id}/participants`), leaving out those whose
+// address bounced or complained; `suggested` ones are copied only when named in `cc`. `cc` replaces that list (`[]` copies no one) and `bcc` adds hidden
+// recipients, at most 20 addresses each: they receive the mail as envelope recipients only and
+// never appear in its headers. Addresses in `cc` become participants; `bcc` never does. Each
+// address must be a valid address that this server neither receives nor sends mail for
+// (`400 validation_failed`, the same answer for both); one that bounced or complained is refused with
+// `409 email_undeliverable`, while an unsubscribe from broadcasts does not stop a reply. The
+// contact's own address is dropped from both, and an address in both stays in `cc`. `cc` and
+// `bcc` are refused (`400 validation_failed`) on notes, `in` messages, drafts (send them with
+// `POST /v1/messages/{id}/send`) and replies that are not e-mailed. `bcc` is returned on the
+// message's `email` to members and keys only in answers to `/v1` requests, never in events,
+// webhooks or on `/client/v1`.
+//
 // `macro_id` applies a macro's actions and `then` applies a `ConversationUpdate`, in the same
 // transaction as the message: when either is refused (an assignee of `then` without access
 // to the inbox, a snooze without a future time) nothing is written, and when the message is
@@ -49937,6 +50341,20 @@ func (c *Client) CreateMessageWithBody(ctx context.Context, conversationId Conve
 // SMTP account, with `409 email_not_configured`. A catch-all channel (`*@domain`) sends from the
 // address the contact wrote to; when the conversation has none and the channel has no
 // `from_address`, the reply is refused with `409 email_no_sender`.
+//
+// An e-mailed reply goes `To` the contact and, unless `cc` is sent, `Cc` the conversation's
+// `active` participants (`GET /v1/conversations/{id}/participants`), leaving out those whose
+// address bounced or complained; `suggested` ones are copied only when named in `cc`. `cc` replaces that list (`[]` copies no one) and `bcc` adds hidden
+// recipients, at most 20 addresses each: they receive the mail as envelope recipients only and
+// never appear in its headers. Addresses in `cc` become participants; `bcc` never does. Each
+// address must be a valid address that this server neither receives nor sends mail for
+// (`400 validation_failed`, the same answer for both); one that bounced or complained is refused with
+// `409 email_undeliverable`, while an unsubscribe from broadcasts does not stop a reply. The
+// contact's own address is dropped from both, and an address in both stays in `cc`. `cc` and
+// `bcc` are refused (`400 validation_failed`) on notes, `in` messages, drafts (send them with
+// `POST /v1/messages/{id}/send`) and replies that are not e-mailed. `bcc` is returned on the
+// message's `email` to members and keys only in answers to `/v1` requests, never in events,
+// webhooks or on `/client/v1`.
 //
 // `macro_id` applies a macro's actions and `then` applies a `ConversationUpdate`, in the same
 // transaction as the message: when either is refused (an assignee of `then` without access
@@ -50012,6 +50430,100 @@ func (c *Client) MoveConversationWithBody(ctx context.Context, conversationId Co
 // Corresponds with POST /v1/conversations/{conversationId}/move (the `MoveConversation` operationId).
 func (c *Client) MoveConversation(ctx context.Context, conversationId ConversationId, params *MoveConversationParams, body MoveConversationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewMoveConversationRequest(c.Server, conversationId, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// ListConversationParticipants List a conversation's participants
+//
+// The people copied on the conversation's e-mail besides its contact, oldest first, at most
+// 20 per conversation. The `To` and `Cc` addresses of inbound mail that are not addresses of
+// this server (any channel's address, sending address or forwarding address) are `active`
+// when the mail passed DMARC (`email.dmarc` `pass`) and `suggested` otherwise, since `From`
+// can be forged; automatic mail and mail that failed DMARC add no one. Addresses a member
+// names in a reply's `cc` or adds here are `active`. Replies copy `active` participants by
+// default, and mail that passes DMARC from an `active` participant's address and answers the
+// conversation joins it as a message from that participant's contact; anything else from
+// them opens a new conversation. `suggested` addresses are never copied unless a member adds
+// them. Changes emit `conversation.participants` on `/v1/realtime` and `/v1/events`.
+//
+// Scope: `conversations:read`.
+//
+// Corresponds with GET /v1/conversations/{conversationId}/participants (the `ListConversationParticipants` operationId).
+func (c *Client) ListConversationParticipants(ctx context.Context, conversationId ConversationId, params *ListConversationParticipantsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListConversationParticipantsRequest(c.Server, conversationId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// AddConversationParticipantWithBody Add a participant
+//
+// Adds an address as an `active` participant, or makes a `suggested` one `active`. The
+// address must be valid and not one this server receives or sends mail for
+// (`400 validation_failed`, the same answer for both); a conversation holds at most 20
+// (`409 participants_full`). Whoever can see the conversation may; API keys and OAuth tokens
+// need `conversations:write`.
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /v1/conversations/{conversationId}/participants (the `AddConversationParticipant` operationId).
+func (c *Client) AddConversationParticipantWithBody(ctx context.Context, conversationId ConversationId, params *AddConversationParticipantParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAddConversationParticipantRequestWithBody(c.Server, conversationId, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// AddConversationParticipant Add a participant
+//
+// Adds an address as an `active` participant, or makes a `suggested` one `active`. The
+// address must be valid and not one this server receives or sends mail for
+// (`400 validation_failed`, the same answer for both); a conversation holds at most 20
+// (`409 participants_full`). Whoever can see the conversation may; API keys and OAuth tokens
+// need `conversations:write`.
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /v1/conversations/{conversationId}/participants (the `AddConversationParticipant` operationId).
+func (c *Client) AddConversationParticipant(ctx context.Context, conversationId ConversationId, params *AddConversationParticipantParams, body AddConversationParticipantJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAddConversationParticipantRequest(c.Server, conversationId, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// RemoveConversationParticipant Remove a participant
+//
+// Removes an address from the participants: replies stop copying it and its mail no longer
+// joins the conversation. Later inbound mail that names it adds it again. Whoever can see the
+// conversation may; API keys and OAuth tokens need `conversations:write`. An address that is
+// not a participant is `404`.
+//
+// Corresponds with DELETE /v1/conversations/{conversationId}/participants/{email} (the `RemoveConversationParticipant` operationId).
+func (c *Client) RemoveConversationParticipant(ctx context.Context, conversationId ConversationId, email Email, params *RemoveConversationParticipantParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRemoveConversationParticipantRequest(c.Server, conversationId, email, params)
 	if err != nil {
 		return nil, err
 	}
@@ -55303,19 +55815,48 @@ func (c *Client) RedactMessage(ctx context.Context, messageId MessageId, params 
 	return c.Client.Do(req)
 }
 
+// SendMessageWithBody Send a draft
+//
+// Delivers a draft like a new outgoing message: its time becomes now, `sent_by` names who
+// sent it, the author stays the draft's author, and `message.created` is emitted (an e-mail
+// conversation e-mails it, as in `createMessage`). Anything that is not a draft answers
+// `409 not_a_draft`. `cc` and `bcc` follow the rules of `createMessage`; without them the
+// e-mail copies the conversation's participants.
+//
+// Members always may. An API key needs `drafts:send` and `messages:write`, and the
+// workspace's `bots_may_send` (`403 bot_sending_disabled`).
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /v1/messages/{messageId}/send (the `SendMessage` operationId).
+func (c *Client) SendMessageWithBody(ctx context.Context, messageId MessageId, params *SendMessageParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSendMessageRequestWithBody(c.Server, messageId, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 // SendMessage Send a draft
 //
 // Delivers a draft like a new outgoing message: its time becomes now, `sent_by` names who
 // sent it, the author stays the draft's author, and `message.created` is emitted (an e-mail
 // conversation e-mails it, as in `createMessage`). Anything that is not a draft answers
-// `409 not_a_draft`.
+// `409 not_a_draft`. `cc` and `bcc` follow the rules of `createMessage`; without them the
+// e-mail copies the conversation's participants.
 //
 // Members always may. An API key needs `drafts:send` and `messages:write`, and the
 // workspace's `bots_may_send` (`403 bot_sending_disabled`).
 //
+// Takes a body of the `application/json` content type.
+//
 // Corresponds with POST /v1/messages/{messageId}/send (the `SendMessage` operationId).
-func (c *Client) SendMessage(ctx context.Context, messageId MessageId, params *SendMessageParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewSendMessageRequest(c.Server, messageId, params)
+func (c *Client) SendMessage(ctx context.Context, messageId MessageId, params *SendMessageParams, body SendMessageJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSendMessageRequest(c.Server, messageId, params, body)
 	if err != nil {
 		return nil, err
 	}
@@ -70934,6 +71475,94 @@ func NewDeleteContactNoteRequest(server string, contactId ContactId, noteId uuid
 	return req, nil
 }
 
+// NewListContactParticipationsRequest constructs an http.Request for the ListContactParticipations method
+func NewListContactParticipationsRequest(server string, contactId ContactId, params *ListContactParticipationsParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "contactId", contactId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/contacts/%s/participations", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if params.Cursor != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "cursor", *params.Cursor, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "limit", *params.Limit, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: "int32"}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
 // NewGetContactPresenceRequest constructs an http.Request for the GetContactPresence method
 func NewGetContactPresenceRequest(server string, contactId ContactId, params *GetContactPresenceParams) (*http.Request, error) {
 	var err error
@@ -72402,6 +73031,184 @@ func NewMoveConversationRequestWithBody(server string, conversationId Conversati
 			}
 
 			req.Header.Set("Yuva-Workspace", headerParam1)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewListConversationParticipantsRequest constructs an http.Request for the ListConversationParticipants method
+func NewListConversationParticipantsRequest(server string, conversationId ConversationId, params *ListConversationParticipantsParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "conversationId", conversationId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/conversations/%s/participants", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewAddConversationParticipantRequest calls the generic AddConversationParticipant builder with application/json body
+func NewAddConversationParticipantRequest(server string, conversationId ConversationId, params *AddConversationParticipantParams, body AddConversationParticipantJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewAddConversationParticipantRequestWithBody(server, conversationId, params, "application/json", bodyReader)
+}
+
+// NewAddConversationParticipantRequestWithBody constructs an http.Request for the AddConversationParticipant method, with any body, and a specified content type
+func NewAddConversationParticipantRequestWithBody(server string, conversationId ConversationId, params *AddConversationParticipantParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "conversationId", conversationId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/conversations/%s/participants", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.IdempotencyKey != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Idempotency-Key", *params.IdempotencyKey, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Idempotency-Key", headerParam0)
+		}
+
+		if params.YuvaWorkspace != nil {
+			var headerParam1 string
+
+			headerParam1, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam1)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewRemoveConversationParticipantRequest constructs an http.Request for the RemoveConversationParticipant method
+func NewRemoveConversationParticipantRequest(server string, conversationId ConversationId, email Email, params *RemoveConversationParticipantParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "conversationId", conversationId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "email", email, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "email"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/conversations/%s/participants/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodDelete, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
 		}
 
 	}
@@ -83252,8 +84059,19 @@ func NewRedactMessageRequest(server string, messageId MessageId, params *RedactM
 	return req, nil
 }
 
-// NewSendMessageRequest constructs an http.Request for the SendMessage method
-func NewSendMessageRequest(server string, messageId MessageId, params *SendMessageParams) (*http.Request, error) {
+// NewSendMessageRequest calls the generic SendMessage builder with application/json body
+func NewSendMessageRequest(server string, messageId MessageId, params *SendMessageParams, body SendMessageJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewSendMessageRequestWithBody(server, messageId, params, "application/json", bodyReader)
+}
+
+// NewSendMessageRequestWithBody constructs an http.Request for the SendMessage method, with any body, and a specified content type
+func NewSendMessageRequestWithBody(server string, messageId MessageId, params *SendMessageParams, contentType string, body io.Reader) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -83278,10 +84096,12 @@ func NewSendMessageRequest(server string, messageId MessageId, params *SendMessa
 		return nil, err
 	}
 
-	req, err := http.NewRequest(http.MethodPost, queryURL.String(), nil)
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
 	if err != nil {
 		return nil, err
 	}
+
+	req.Header.Add("Content-Type", contentType)
 
 	if params != nil {
 
@@ -95270,6 +96090,22 @@ type ClientWithResponsesInterface interface {
 	// Corresponds with DELETE /v1/contacts/{contactId}/notes/{noteId} (the `DeleteContactNote` operationId).
 	DeleteContactNoteWithResponse(ctx context.Context, contactId ContactId, noteId uuid.UUID, params *DeleteContactNoteParams, reqEditors ...RequestEditorFn) (*DeleteContactNoteResponse, error)
 
+	// ListContactParticipationsWithResponse List conversations a contact was copied on
+	//
+	// Conversations of other contacts, in the inboxes the caller can see, where one of the
+	// contact's addresses is a participant or appears in the `to`, `cc` or `bcc` of a stored
+	// e-mail; newest first. With the contact's own conversations this answers an access request
+	// (GDPR Art. 15, KVKK Art. 11) for someone who was only copied. Deleting the contact removes
+	// those participants and its addresses from the stored lists. Someone copied who never
+	// wrote has no contact: create one with their address first.
+	//
+	// Scope: `contacts:read` and `conversations:read`.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /v1/contacts/{contactId}/participations (the `ListContactParticipations` operationId).
+	ListContactParticipationsWithResponse(ctx context.Context, contactId ContactId, params *ListContactParticipationsParams, reqEditors ...RequestEditorFn) (*ListContactParticipationsResponse, error)
+
 	// GetContactPresenceWithResponse Whether a contact is connected
 	//
 	// Whether the contact has a live `/client/v1/realtime` connection (widget or app in the
@@ -95700,6 +96536,20 @@ type ClientWithResponsesInterface interface {
 	// address the contact wrote to; when the conversation has none and the channel has no
 	// `from_address`, the reply is refused with `409 email_no_sender`.
 	//
+	// An e-mailed reply goes `To` the contact and, unless `cc` is sent, `Cc` the conversation's
+	// `active` participants (`GET /v1/conversations/{id}/participants`), leaving out those whose
+	// address bounced or complained; `suggested` ones are copied only when named in `cc`. `cc` replaces that list (`[]` copies no one) and `bcc` adds hidden
+	// recipients, at most 20 addresses each: they receive the mail as envelope recipients only and
+	// never appear in its headers. Addresses in `cc` become participants; `bcc` never does. Each
+	// address must be a valid address that this server neither receives nor sends mail for
+	// (`400 validation_failed`, the same answer for both); one that bounced or complained is refused with
+	// `409 email_undeliverable`, while an unsubscribe from broadcasts does not stop a reply. The
+	// contact's own address is dropped from both, and an address in both stays in `cc`. `cc` and
+	// `bcc` are refused (`400 validation_failed`) on notes, `in` messages, drafts (send them with
+	// `POST /v1/messages/{id}/send`) and replies that are not e-mailed. `bcc` is returned on the
+	// message's `email` to members and keys only in answers to `/v1` requests, never in events,
+	// webhooks or on `/client/v1`.
+	//
 	// `macro_id` applies a macro's actions and `then` applies a `ConversationUpdate`, in the same
 	// transaction as the message: when either is refused (an assignee of `then` without access
 	// to the inbox, a snooze without a future time) nothing is written, and when the message is
@@ -95755,6 +96605,20 @@ type ClientWithResponsesInterface interface {
 	// address the contact wrote to; when the conversation has none and the channel has no
 	// `from_address`, the reply is refused with `409 email_no_sender`.
 	//
+	// An e-mailed reply goes `To` the contact and, unless `cc` is sent, `Cc` the conversation's
+	// `active` participants (`GET /v1/conversations/{id}/participants`), leaving out those whose
+	// address bounced or complained; `suggested` ones are copied only when named in `cc`. `cc` replaces that list (`[]` copies no one) and `bcc` adds hidden
+	// recipients, at most 20 addresses each: they receive the mail as envelope recipients only and
+	// never appear in its headers. Addresses in `cc` become participants; `bcc` never does. Each
+	// address must be a valid address that this server neither receives nor sends mail for
+	// (`400 validation_failed`, the same answer for both); one that bounced or complained is refused with
+	// `409 email_undeliverable`, while an unsubscribe from broadcasts does not stop a reply. The
+	// contact's own address is dropped from both, and an address in both stays in `cc`. `cc` and
+	// `bcc` are refused (`400 validation_failed`) on notes, `in` messages, drafts (send them with
+	// `POST /v1/messages/{id}/send`) and replies that are not e-mailed. `bcc` is returned on the
+	// message's `email` to members and keys only in answers to `/v1` requests, never in events,
+	// webhooks or on `/client/v1`.
+	//
 	// `macro_id` applies a macro's actions and `then` applies a `ConversationUpdate`, in the same
 	// transaction as the message: when either is refused (an assignee of `then` without access
 	// to the inbox, a snooze without a future time) nothing is written, and when the message is
@@ -95808,6 +96672,64 @@ type ClientWithResponsesInterface interface {
 	//
 	// Corresponds with POST /v1/conversations/{conversationId}/move (the `MoveConversation` operationId).
 	MoveConversationWithResponse(ctx context.Context, conversationId ConversationId, params *MoveConversationParams, body MoveConversationJSONRequestBody, reqEditors ...RequestEditorFn) (*MoveConversationResponse, error)
+
+	// ListConversationParticipantsWithResponse List a conversation's participants
+	//
+	// The people copied on the conversation's e-mail besides its contact, oldest first, at most
+	// 20 per conversation. The `To` and `Cc` addresses of inbound mail that are not addresses of
+	// this server (any channel's address, sending address or forwarding address) are `active`
+	// when the mail passed DMARC (`email.dmarc` `pass`) and `suggested` otherwise, since `From`
+	// can be forged; automatic mail and mail that failed DMARC add no one. Addresses a member
+	// names in a reply's `cc` or adds here are `active`. Replies copy `active` participants by
+	// default, and mail that passes DMARC from an `active` participant's address and answers the
+	// conversation joins it as a message from that participant's contact; anything else from
+	// them opens a new conversation. `suggested` addresses are never copied unless a member adds
+	// them. Changes emit `conversation.participants` on `/v1/realtime` and `/v1/events`.
+	//
+	// Scope: `conversations:read`.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /v1/conversations/{conversationId}/participants (the `ListConversationParticipants` operationId).
+	ListConversationParticipantsWithResponse(ctx context.Context, conversationId ConversationId, params *ListConversationParticipantsParams, reqEditors ...RequestEditorFn) (*ListConversationParticipantsResponse, error)
+
+	// AddConversationParticipantWithBodyWithResponse Add a participant
+	//
+	// Adds an address as an `active` participant, or makes a `suggested` one `active`. The
+	// address must be valid and not one this server receives or sends mail for
+	// (`400 validation_failed`, the same answer for both); a conversation holds at most 20
+	// (`409 participants_full`). Whoever can see the conversation may; API keys and OAuth tokens
+	// need `conversations:write`.
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /v1/conversations/{conversationId}/participants (the `AddConversationParticipant` operationId).
+	AddConversationParticipantWithBodyWithResponse(ctx context.Context, conversationId ConversationId, params *AddConversationParticipantParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AddConversationParticipantResponse, error)
+
+	// AddConversationParticipantWithResponse Add a participant
+	//
+	// Adds an address as an `active` participant, or makes a `suggested` one `active`. The
+	// address must be valid and not one this server receives or sends mail for
+	// (`400 validation_failed`, the same answer for both); a conversation holds at most 20
+	// (`409 participants_full`). Whoever can see the conversation may; API keys and OAuth tokens
+	// need `conversations:write`.
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /v1/conversations/{conversationId}/participants (the `AddConversationParticipant` operationId).
+	AddConversationParticipantWithResponse(ctx context.Context, conversationId ConversationId, params *AddConversationParticipantParams, body AddConversationParticipantJSONRequestBody, reqEditors ...RequestEditorFn) (*AddConversationParticipantResponse, error)
+
+	// RemoveConversationParticipantWithResponse Remove a participant
+	//
+	// Removes an address from the participants: replies stop copying it and its mail no longer
+	// joins the conversation. Later inbound mail that names it adds it again. Whoever can see the
+	// conversation may; API keys and OAuth tokens need `conversations:write`. An address that is
+	// not a participant is `404`.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with DELETE /v1/conversations/{conversationId}/participants/{email} (the `RemoveConversationParticipant` operationId).
+	RemoveConversationParticipantWithResponse(ctx context.Context, conversationId ConversationId, email Email, params *RemoveConversationParticipantParams, reqEditors ...RequestEditorFn) (*RemoveConversationParticipantResponse, error)
 
 	// UnpinConversationWithResponse Unpin a conversation
 	//
@@ -99044,20 +99966,37 @@ type ClientWithResponsesInterface interface {
 	// Corresponds with POST /v1/messages/{messageId}/redact (the `RedactMessage` operationId).
 	RedactMessageWithResponse(ctx context.Context, messageId MessageId, params *RedactMessageParams, reqEditors ...RequestEditorFn) (*RedactMessageResponse, error)
 
+	// SendMessageWithBodyWithResponse Send a draft
+	//
+	// Delivers a draft like a new outgoing message: its time becomes now, `sent_by` names who
+	// sent it, the author stays the draft's author, and `message.created` is emitted (an e-mail
+	// conversation e-mails it, as in `createMessage`). Anything that is not a draft answers
+	// `409 not_a_draft`. `cc` and `bcc` follow the rules of `createMessage`; without them the
+	// e-mail copies the conversation's participants.
+	//
+	// Members always may. An API key needs `drafts:send` and `messages:write`, and the
+	// workspace's `bots_may_send` (`403 bot_sending_disabled`).
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /v1/messages/{messageId}/send (the `SendMessage` operationId).
+	SendMessageWithBodyWithResponse(ctx context.Context, messageId MessageId, params *SendMessageParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SendMessageResponse, error)
+
 	// SendMessageWithResponse Send a draft
 	//
 	// Delivers a draft like a new outgoing message: its time becomes now, `sent_by` names who
 	// sent it, the author stays the draft's author, and `message.created` is emitted (an e-mail
 	// conversation e-mails it, as in `createMessage`). Anything that is not a draft answers
-	// `409 not_a_draft`.
+	// `409 not_a_draft`. `cc` and `bcc` follow the rules of `createMessage`; without them the
+	// e-mail copies the conversation's participants.
 	//
 	// Members always may. An API key needs `drafts:send` and `messages:write`, and the
 	// workspace's `bots_may_send` (`403 bot_sending_disabled`).
 	//
-	// Returns a wrapper object for the known response body format(s).
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
 	//
 	// Corresponds with POST /v1/messages/{messageId}/send (the `SendMessage` operationId).
-	SendMessageWithResponse(ctx context.Context, messageId MessageId, params *SendMessageParams, reqEditors ...RequestEditorFn) (*SendMessageResponse, error)
+	SendMessageWithResponse(ctx context.Context, messageId MessageId, params *SendMessageParams, body SendMessageJSONRequestBody, reqEditors ...RequestEditorFn) (*SendMessageResponse, error)
 
 	// ListMigrationsWithResponse List migrations
 	//
@@ -114421,6 +115360,75 @@ func (r DeleteContactNoteResponse) ContentType() string {
 	return ""
 }
 
+type ListContactParticipationsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *ContactParticipationPage
+	// ApplicationproblemJSON400 the response for an HTTP 400 `application/problem+json` response
+	ApplicationproblemJSON400 *Problem
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r ListContactParticipationsResponse) GetJSON200() *ContactParticipationPage {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON400 returns the response for an HTTP 400 `application/problem+json` response
+func (r ListContactParticipationsResponse) GetApplicationproblemJSON400() *Problem {
+	return r.ApplicationproblemJSON400
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r ListContactParticipationsResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r ListContactParticipationsResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r ListContactParticipationsResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetBody returns the raw response body bytes
+func (r ListContactParticipationsResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r ListContactParticipationsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListContactParticipationsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ListContactParticipationsResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type GetContactPresenceResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -115726,6 +116734,206 @@ func (r MoveConversationResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r MoveConversationResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type ListConversationParticipantsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *ConversationParticipantList
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r ListConversationParticipantsResponse) GetJSON200() *ConversationParticipantList {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r ListConversationParticipantsResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r ListConversationParticipantsResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r ListConversationParticipantsResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetBody returns the raw response body bytes
+func (r ListConversationParticipantsResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r ListConversationParticipantsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListConversationParticipantsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ListConversationParticipantsResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type AddConversationParticipantResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *ConversationParticipantList
+	// ApplicationproblemJSON400 the response for an HTTP 400 `application/problem+json` response
+	ApplicationproblemJSON400 *Problem
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+	// ApplicationproblemJSON409 the response for an HTTP 409 `application/problem+json` response
+	ApplicationproblemJSON409 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r AddConversationParticipantResponse) GetJSON200() *ConversationParticipantList {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON400 returns the response for an HTTP 400 `application/problem+json` response
+func (r AddConversationParticipantResponse) GetApplicationproblemJSON400() *Problem {
+	return r.ApplicationproblemJSON400
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r AddConversationParticipantResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r AddConversationParticipantResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r AddConversationParticipantResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetApplicationproblemJSON409 returns the response for an HTTP 409 `application/problem+json` response
+func (r AddConversationParticipantResponse) GetApplicationproblemJSON409() *Problem {
+	return r.ApplicationproblemJSON409
+}
+
+// GetBody returns the raw response body bytes
+func (r AddConversationParticipantResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r AddConversationParticipantResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r AddConversationParticipantResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r AddConversationParticipantResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type RemoveConversationParticipantResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *ConversationParticipantList
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r RemoveConversationParticipantResponse) GetJSON200() *ConversationParticipantList {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r RemoveConversationParticipantResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r RemoveConversationParticipantResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r RemoveConversationParticipantResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetBody returns the raw response body bytes
+func (r RemoveConversationParticipantResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r RemoveConversationParticipantResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r RemoveConversationParticipantResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r RemoveConversationParticipantResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -127138,6 +128346,8 @@ type SendMessageResponse struct {
 	HTTPResponse *http.Response
 	// JSON200 the response for an HTTP 200 `application/json` response
 	JSON200 *Message
+	// ApplicationproblemJSON400 the response for an HTTP 400 `application/problem+json` response
+	ApplicationproblemJSON400 *Problem
 	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
 	ApplicationproblemJSON401 *Problem
 	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
@@ -127151,6 +128361,11 @@ type SendMessageResponse struct {
 // GetJSON200 returns the response for an HTTP 200 `application/json` response
 func (r SendMessageResponse) GetJSON200() *Message {
 	return r.JSON200
+}
+
+// GetApplicationproblemJSON400 returns the response for an HTTP 400 `application/problem+json` response
+func (r SendMessageResponse) GetApplicationproblemJSON400() *Problem {
+	return r.ApplicationproblemJSON400
 }
 
 // GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
@@ -141308,6 +142523,28 @@ func (c *ClientWithResponses) DeleteContactNoteWithResponse(ctx context.Context,
 	return ParseDeleteContactNoteResponse(rsp)
 }
 
+// ListContactParticipationsWithResponse List conversations a contact was copied on
+//
+// Conversations of other contacts, in the inboxes the caller can see, where one of the
+// contact's addresses is a participant or appears in the `to`, `cc` or `bcc` of a stored
+// e-mail; newest first. With the contact's own conversations this answers an access request
+// (GDPR Art. 15, KVKK Art. 11) for someone who was only copied. Deleting the contact removes
+// those participants and its addresses from the stored lists. Someone copied who never
+// wrote has no contact: create one with their address first.
+//
+// Scope: `contacts:read` and `conversations:read`.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /v1/contacts/{contactId}/participations (the `ListContactParticipations` operationId).
+func (c *ClientWithResponses) ListContactParticipationsWithResponse(ctx context.Context, contactId ContactId, params *ListContactParticipationsParams, reqEditors ...RequestEditorFn) (*ListContactParticipationsResponse, error) {
+	rsp, err := c.ListContactParticipations(ctx, contactId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListContactParticipationsResponse(rsp)
+}
+
 // GetContactPresenceWithResponse Whether a contact is connected
 //
 // Whether the contact has a live `/client/v1/realtime` connection (widget or app in the
@@ -141870,6 +143107,20 @@ func (c *ClientWithResponses) ListMessagesWithResponse(ctx context.Context, conv
 // address the contact wrote to; when the conversation has none and the channel has no
 // `from_address`, the reply is refused with `409 email_no_sender`.
 //
+// An e-mailed reply goes `To` the contact and, unless `cc` is sent, `Cc` the conversation's
+// `active` participants (`GET /v1/conversations/{id}/participants`), leaving out those whose
+// address bounced or complained; `suggested` ones are copied only when named in `cc`. `cc` replaces that list (`[]` copies no one) and `bcc` adds hidden
+// recipients, at most 20 addresses each: they receive the mail as envelope recipients only and
+// never appear in its headers. Addresses in `cc` become participants; `bcc` never does. Each
+// address must be a valid address that this server neither receives nor sends mail for
+// (`400 validation_failed`, the same answer for both); one that bounced or complained is refused with
+// `409 email_undeliverable`, while an unsubscribe from broadcasts does not stop a reply. The
+// contact's own address is dropped from both, and an address in both stays in `cc`. `cc` and
+// `bcc` are refused (`400 validation_failed`) on notes, `in` messages, drafts (send them with
+// `POST /v1/messages/{id}/send`) and replies that are not e-mailed. `bcc` is returned on the
+// message's `email` to members and keys only in answers to `/v1` requests, never in events,
+// webhooks or on `/client/v1`.
+//
 // `macro_id` applies a macro's actions and `then` applies a `ConversationUpdate`, in the same
 // transaction as the message: when either is refused (an assignee of `then` without access
 // to the inbox, a snooze without a future time) nothing is written, and when the message is
@@ -141930,6 +143181,20 @@ func (c *ClientWithResponses) CreateMessageWithBodyWithResponse(ctx context.Cont
 // SMTP account, with `409 email_not_configured`. A catch-all channel (`*@domain`) sends from the
 // address the contact wrote to; when the conversation has none and the channel has no
 // `from_address`, the reply is refused with `409 email_no_sender`.
+//
+// An e-mailed reply goes `To` the contact and, unless `cc` is sent, `Cc` the conversation's
+// `active` participants (`GET /v1/conversations/{id}/participants`), leaving out those whose
+// address bounced or complained; `suggested` ones are copied only when named in `cc`. `cc` replaces that list (`[]` copies no one) and `bcc` adds hidden
+// recipients, at most 20 addresses each: they receive the mail as envelope recipients only and
+// never appear in its headers. Addresses in `cc` become participants; `bcc` never does. Each
+// address must be a valid address that this server neither receives nor sends mail for
+// (`400 validation_failed`, the same answer for both); one that bounced or complained is refused with
+// `409 email_undeliverable`, while an unsubscribe from broadcasts does not stop a reply. The
+// contact's own address is dropped from both, and an address in both stays in `cc`. `cc` and
+// `bcc` are refused (`400 validation_failed`) on notes, `in` messages, drafts (send them with
+// `POST /v1/messages/{id}/send`) and replies that are not e-mailed. `bcc` is returned on the
+// message's `email` to members and keys only in answers to `/v1` requests, never in events,
+// webhooks or on `/client/v1`.
 //
 // `macro_id` applies a macro's actions and `then` applies a `ConversationUpdate`, in the same
 // transaction as the message: when either is refused (an assignee of `then` without access
@@ -142001,6 +143266,88 @@ func (c *ClientWithResponses) MoveConversationWithResponse(ctx context.Context, 
 		return nil, err
 	}
 	return ParseMoveConversationResponse(rsp)
+}
+
+// ListConversationParticipantsWithResponse List a conversation's participants
+//
+// The people copied on the conversation's e-mail besides its contact, oldest first, at most
+// 20 per conversation. The `To` and `Cc` addresses of inbound mail that are not addresses of
+// this server (any channel's address, sending address or forwarding address) are `active`
+// when the mail passed DMARC (`email.dmarc` `pass`) and `suggested` otherwise, since `From`
+// can be forged; automatic mail and mail that failed DMARC add no one. Addresses a member
+// names in a reply's `cc` or adds here are `active`. Replies copy `active` participants by
+// default, and mail that passes DMARC from an `active` participant's address and answers the
+// conversation joins it as a message from that participant's contact; anything else from
+// them opens a new conversation. `suggested` addresses are never copied unless a member adds
+// them. Changes emit `conversation.participants` on `/v1/realtime` and `/v1/events`.
+//
+// Scope: `conversations:read`.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /v1/conversations/{conversationId}/participants (the `ListConversationParticipants` operationId).
+func (c *ClientWithResponses) ListConversationParticipantsWithResponse(ctx context.Context, conversationId ConversationId, params *ListConversationParticipantsParams, reqEditors ...RequestEditorFn) (*ListConversationParticipantsResponse, error) {
+	rsp, err := c.ListConversationParticipants(ctx, conversationId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListConversationParticipantsResponse(rsp)
+}
+
+// AddConversationParticipantWithBodyWithResponse Add a participant
+//
+// Adds an address as an `active` participant, or makes a `suggested` one `active`. The
+// address must be valid and not one this server receives or sends mail for
+// (`400 validation_failed`, the same answer for both); a conversation holds at most 20
+// (`409 participants_full`). Whoever can see the conversation may; API keys and OAuth tokens
+// need `conversations:write`.
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /v1/conversations/{conversationId}/participants (the `AddConversationParticipant` operationId).
+func (c *ClientWithResponses) AddConversationParticipantWithBodyWithResponse(ctx context.Context, conversationId ConversationId, params *AddConversationParticipantParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AddConversationParticipantResponse, error) {
+	rsp, err := c.AddConversationParticipantWithBody(ctx, conversationId, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAddConversationParticipantResponse(rsp)
+}
+
+// AddConversationParticipantWithResponse Add a participant
+//
+// Adds an address as an `active` participant, or makes a `suggested` one `active`. The
+// address must be valid and not one this server receives or sends mail for
+// (`400 validation_failed`, the same answer for both); a conversation holds at most 20
+// (`409 participants_full`). Whoever can see the conversation may; API keys and OAuth tokens
+// need `conversations:write`.
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /v1/conversations/{conversationId}/participants (the `AddConversationParticipant` operationId).
+func (c *ClientWithResponses) AddConversationParticipantWithResponse(ctx context.Context, conversationId ConversationId, params *AddConversationParticipantParams, body AddConversationParticipantJSONRequestBody, reqEditors ...RequestEditorFn) (*AddConversationParticipantResponse, error) {
+	rsp, err := c.AddConversationParticipant(ctx, conversationId, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAddConversationParticipantResponse(rsp)
+}
+
+// RemoveConversationParticipantWithResponse Remove a participant
+//
+// Removes an address from the participants: replies stop copying it and its mail no longer
+// joins the conversation. Later inbound mail that names it adds it again. Whoever can see the
+// conversation may; API keys and OAuth tokens need `conversations:write`. An address that is
+// not a participant is `404`.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with DELETE /v1/conversations/{conversationId}/participants/{email} (the `RemoveConversationParticipant` operationId).
+func (c *ClientWithResponses) RemoveConversationParticipantWithResponse(ctx context.Context, conversationId ConversationId, email Email, params *RemoveConversationParticipantParams, reqEditors ...RequestEditorFn) (*RemoveConversationParticipantResponse, error) {
+	rsp, err := c.RemoveConversationParticipant(ctx, conversationId, email, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRemoveConversationParticipantResponse(rsp)
 }
 
 // UnpinConversationWithResponse Unpin a conversation
@@ -146600,21 +147947,44 @@ func (c *ClientWithResponses) RedactMessageWithResponse(ctx context.Context, mes
 	return ParseRedactMessageResponse(rsp)
 }
 
+// SendMessageWithBodyWithResponse Send a draft
+//
+// Delivers a draft like a new outgoing message: its time becomes now, `sent_by` names who
+// sent it, the author stays the draft's author, and `message.created` is emitted (an e-mail
+// conversation e-mails it, as in `createMessage`). Anything that is not a draft answers
+// `409 not_a_draft`. `cc` and `bcc` follow the rules of `createMessage`; without them the
+// e-mail copies the conversation's participants.
+//
+// Members always may. An API key needs `drafts:send` and `messages:write`, and the
+// workspace's `bots_may_send` (`403 bot_sending_disabled`).
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /v1/messages/{messageId}/send (the `SendMessage` operationId).
+func (c *ClientWithResponses) SendMessageWithBodyWithResponse(ctx context.Context, messageId MessageId, params *SendMessageParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SendMessageResponse, error) {
+	rsp, err := c.SendMessageWithBody(ctx, messageId, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSendMessageResponse(rsp)
+}
+
 // SendMessageWithResponse Send a draft
 //
 // Delivers a draft like a new outgoing message: its time becomes now, `sent_by` names who
 // sent it, the author stays the draft's author, and `message.created` is emitted (an e-mail
 // conversation e-mails it, as in `createMessage`). Anything that is not a draft answers
-// `409 not_a_draft`.
+// `409 not_a_draft`. `cc` and `bcc` follow the rules of `createMessage`; without them the
+// e-mail copies the conversation's participants.
 //
 // Members always may. An API key needs `drafts:send` and `messages:write`, and the
 // workspace's `bots_may_send` (`403 bot_sending_disabled`).
 //
-// Returns a wrapper object for the known response body format(s).
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
 //
 // Corresponds with POST /v1/messages/{messageId}/send (the `SendMessage` operationId).
-func (c *ClientWithResponses) SendMessageWithResponse(ctx context.Context, messageId MessageId, params *SendMessageParams, reqEditors ...RequestEditorFn) (*SendMessageResponse, error) {
-	rsp, err := c.SendMessage(ctx, messageId, params, reqEditors...)
+func (c *ClientWithResponses) SendMessageWithResponse(ctx context.Context, messageId MessageId, params *SendMessageParams, body SendMessageJSONRequestBody, reqEditors ...RequestEditorFn) (*SendMessageResponse, error) {
+	rsp, err := c.SendMessage(ctx, messageId, params, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
@@ -160380,6 +161750,60 @@ func ParseDeleteContactNoteResponse(rsp *http.Response) (*DeleteContactNoteRespo
 	return response, nil
 }
 
+// ParseListContactParticipationsResponse parses an HTTP response from a ListContactParticipationsWithResponse call
+func ParseListContactParticipationsResponse(rsp *http.Response) (*ListContactParticipationsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListContactParticipationsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ContactParticipationPage
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseGetContactPresenceResponse parses an HTTP response from a GetContactPresenceWithResponse call
 func ParseGetContactPresenceResponse(rsp *http.Response) (*GetContactPresenceResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -161403,6 +162827,161 @@ func ParseMoveConversationResponse(rsp *http.Response) (*MoveConversationRespons
 			return nil, err
 		}
 		response.ApplicationproblemJSON409 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListConversationParticipantsResponse parses an HTTP response from a ListConversationParticipantsWithResponse call
+func ParseListConversationParticipantsResponse(rsp *http.Response) (*ListConversationParticipantsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListConversationParticipantsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ConversationParticipantList
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseAddConversationParticipantResponse parses an HTTP response from a AddConversationParticipantWithResponse call
+func ParseAddConversationParticipantResponse(rsp *http.Response) (*AddConversationParticipantResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &AddConversationParticipantResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ConversationParticipantList
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON409 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseRemoveConversationParticipantResponse parses an HTTP response from a RemoveConversationParticipantWithResponse call
+func ParseRemoveConversationParticipantResponse(rsp *http.Response) (*RemoveConversationParticipantResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &RemoveConversationParticipantResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ConversationParticipantList
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
 
 	}
 
@@ -170397,6 +171976,13 @@ func ParseSendMessageResponse(rsp *http.Response) (*SendMessageResponse, error) 
 			return nil, err
 		}
 		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON400 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest Problem

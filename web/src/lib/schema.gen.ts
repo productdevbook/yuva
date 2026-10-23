@@ -2097,6 +2097,33 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/contacts/{contactId}/participations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List conversations a contact was copied on
+         * @description Conversations of other contacts, in the inboxes the caller can see, where one of the
+         *     contact's addresses is a participant or appears in the `to`, `cc` or `bcc` of a stored
+         *     e-mail; newest first. With the contact's own conversations this answers an access request
+         *     (GDPR Art. 15, KVKK Art. 11) for someone who was only copied. Deleting the contact removes
+         *     those participants and its addresses from the stored lists. Someone copied who never
+         *     wrote has no contact: create one with their address first.
+         *
+         *     Scope: `contacts:read` and `conversations:read`.
+         */
+        get: operations["listContactParticipations"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/contacts/{contactId}/presence": {
         parameters: {
             query?: never;
@@ -2599,6 +2626,20 @@ export interface paths {
          *     address the contact wrote to; when the conversation has none and the channel has no
          *     `from_address`, the reply is refused with `409 email_no_sender`.
          *
+         *     An e-mailed reply goes `To` the contact and, unless `cc` is sent, `Cc` the conversation's
+         *     `active` participants (`GET /v1/conversations/{id}/participants`), leaving out those whose
+         *     address bounced or complained; `suggested` ones are copied only when named in `cc`. `cc` replaces that list (`[]` copies no one) and `bcc` adds hidden
+         *     recipients, at most 20 addresses each: they receive the mail as envelope recipients only and
+         *     never appear in its headers. Addresses in `cc` become participants; `bcc` never does. Each
+         *     address must be a valid address that this server neither receives nor sends mail for
+         *     (`400 validation_failed`, the same answer for both); one that bounced or complained is refused with
+         *     `409 email_undeliverable`, while an unsubscribe from broadcasts does not stop a reply. The
+         *     contact's own address is dropped from both, and an address in both stays in `cc`. `cc` and
+         *     `bcc` are refused (`400 validation_failed`) on notes, `in` messages, drafts (send them with
+         *     `POST /v1/messages/{id}/send`) and replies that are not e-mailed. `bcc` is returned on the
+         *     message's `email` to members and keys only in answers to `/v1` requests, never in events,
+         *     webhooks or on `/client/v1`.
+         *
          *     `macro_id` applies a macro's actions and `then` applies a `ConversationUpdate`, in the same
          *     transaction as the message: when either is refused (an assignee of `then` without access
          *     to the inbox, a snooze without a future time) nothing is written, and when the message is
@@ -2612,6 +2653,68 @@ export interface paths {
          */
         post: operations["createMessage"];
         delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/conversations/{conversationId}/participants": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List a conversation's participants
+         * @description The people copied on the conversation's e-mail besides its contact, oldest first, at most
+         *     20 per conversation. The `To` and `Cc` addresses of inbound mail that are not addresses of
+         *     this server (any channel's address, sending address or forwarding address) are `active`
+         *     when the mail passed DMARC (`email.dmarc` `pass`) and `suggested` otherwise, since `From`
+         *     can be forged; automatic mail and mail that failed DMARC add no one. Addresses a member
+         *     names in a reply's `cc` or adds here are `active`. Replies copy `active` participants by
+         *     default, and mail that passes DMARC from an `active` participant's address and answers the
+         *     conversation joins it as a message from that participant's contact; anything else from
+         *     them opens a new conversation. `suggested` addresses are never copied unless a member adds
+         *     them. Changes emit `conversation.participants` on `/v1/realtime` and `/v1/events`.
+         *
+         *     Scope: `conversations:read`.
+         */
+        get: operations["listConversationParticipants"];
+        put?: never;
+        /**
+         * Add a participant
+         * @description Adds an address as an `active` participant, or makes a `suggested` one `active`. The
+         *     address must be valid and not one this server receives or sends mail for
+         *     (`400 validation_failed`, the same answer for both); a conversation holds at most 20
+         *     (`409 participants_full`). Whoever can see the conversation may; API keys and OAuth tokens
+         *     need `conversations:write`.
+         */
+        post: operations["addConversationParticipant"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/conversations/{conversationId}/participants/{email}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Remove a participant
+         * @description Removes an address from the participants: replies stop copying it and its mail no longer
+         *     joins the conversation. Later inbound mail that names it adds it again. Whoever can see the
+         *     conversation may; API keys and OAuth tokens need `conversations:write`. An address that is
+         *     not a participant is `404`.
+         */
+        delete: operations["removeConversationParticipant"];
         options?: never;
         head?: never;
         patch?: never;
@@ -2903,7 +3006,8 @@ export interface paths {
          * @description Delivers a draft like a new outgoing message: its time becomes now, `sent_by` names who
          *     sent it, the author stays the draft's author, and `message.created` is emitted (an e-mail
          *     conversation e-mails it, as in `createMessage`). Anything that is not a draft answers
-         *     `409 not_a_draft`.
+         *     `409 not_a_draft`. `cc` and `bcc` follow the rules of `createMessage`; without them the
+         *     e-mail copies the conversation's participants.
          *
          *     Members always may. An API key needs `drafts:send` and `messages:write`, and the
          *     workspace's `bots_may_send` (`403 bot_sending_disabled`).
@@ -13262,6 +13366,82 @@ export interface components {
             items: components["schemas"]["ContactNote"][];
             next_cursor?: string;
         };
+        ConversationParticipant: {
+            email: components["schemas"]["Email"];
+            /**
+             * @description `active` addresses are copied on replies and may answer into the conversation;
+             *     `suggested` ones came from mail that did not pass DMARC and are only shown.
+             * @enum {string}
+             */
+            status: "active" | "suggested";
+            /**
+             * Format: uuid
+             * @description The contact with this address, when there is one.
+             */
+            contact_id?: string;
+            /** @description That contact's name. */
+            name?: string;
+            /** @enum {string} */
+            role: "cc";
+            /**
+             * Format: date-time
+             * @description When the address was first seen on the conversation.
+             */
+            created_at: string;
+        };
+        ConversationParticipantList: {
+            items: components["schemas"]["ConversationParticipant"][];
+        };
+        ConversationParticipantCreate: {
+            email: components["schemas"]["Email"];
+        };
+        ConversationParticipantsChange: {
+            /** Format: uuid */
+            conversation_id: string;
+            items: components["schemas"]["ConversationParticipant"][];
+        };
+        /**
+         * @description The participants of a conversation changed (inbound mail, a reply's `cc`, or a member). Only
+         *     on `/v1/realtime` and `/v1/events`; never a webhook and never on `/client/v1`.
+         */
+        ConversationParticipantsEvent: {
+            /** Format: int64 */
+            id: number;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "conversation.participants";
+            /** Format: uuid */
+            workspace_id: string;
+            /** Format: uuid */
+            inbox_id: string;
+            /** Format: uuid */
+            conversation_id: string;
+            /** Format: date-time */
+            created_at: string;
+            data: components["schemas"]["ConversationParticipantsChange"];
+        };
+        ContactParticipation: {
+            /** Format: uuid */
+            conversation_id: string;
+            /** Format: uuid */
+            inbox_id: string;
+            subject: string;
+            /** @description The contact's addresses that the conversation holds. */
+            emails: components["schemas"]["Email"][];
+            /** @description One of them is a participant; otherwise they appear only in stored e-mail. */
+            participant: boolean;
+            /**
+             * Format: date-time
+             * @description When the conversation started.
+             */
+            created_at: string;
+        };
+        ContactParticipationPage: {
+            items: components["schemas"]["ContactParticipation"][];
+            next_cursor?: string;
+        };
         /**
          * @description How the team has served the contact, over all their conversations the caller can see (spam
          *     left out).
@@ -14592,8 +14772,13 @@ export interface components {
             message_id: string;
             from: components["schemas"]["Email"];
             to: components["schemas"]["Email"][];
-            /** @description The `Cc` of an inbound mail, as received. Replies go to the contact only and copy no one. */
+            /** @description The `Cc` of an inbound mail as received, or the addresses a reply copied. */
             cc?: components["schemas"]["Email"][];
+            /**
+             * @description The hidden recipients of a reply. Only in answers to `/v1` requests (members and keys);
+             *     never in events, webhooks, the sent headers or on `/client/v1`.
+             */
+            bcc?: components["schemas"]["Email"][];
             subject?: string;
             quoted: boolean;
             /** @description The original is kept; download it from `/v1/messages/{id}/raw`. */
@@ -14678,6 +14863,23 @@ export interface components {
             macro_id?: string;
             /** @description Changes to the conversation applied with the message; see the operation. */
             then?: components["schemas"]["ConversationUpdate"];
+            /**
+             * @description E-mailed replies only: the addresses to copy, in place of the conversation's
+             *     participants; `[]` copies no one. See `createMessage`.
+             */
+            cc?: components["schemas"]["Email"][];
+            /** @description E-mailed replies only, hidden recipients. See `createMessage`. */
+            bcc?: components["schemas"]["Email"][];
+        };
+        /** @description Recipients of a draft's e-mail; see `createMessage`. */
+        MessageSend: {
+            /**
+             * @description E-mailed replies only: the addresses to copy, in place of the conversation's
+             *     participants; `[]` copies no one. See `createMessage`.
+             */
+            cc?: components["schemas"]["Email"][];
+            /** @description E-mailed replies only, hidden recipients. See `createMessage`. */
+            bcc?: components["schemas"]["Email"][];
         };
         MessageCreateMultipart: {
             /** @enum {string} */
@@ -14695,6 +14897,10 @@ export interface components {
             macro_id?: string;
             /** @description A `ConversationUpdate` as JSON. */
             then?: string;
+            /** @description Repeat the field once per address; one empty `cc` field copies no one. */
+            cc?: string[];
+            /** @description Repeat the field once per address. */
+            bcc?: components["schemas"]["Email"][];
             files?: string[];
         };
         /** @description Only the fields sent change. */
@@ -17080,7 +17286,7 @@ export interface components {
             type: "resync_required";
         };
         /** @description An event as `GET /v1/events` returns it, told apart by `type`; the same objects realtime and webhooks carry. */
-        StoredEvent: components["schemas"]["ConversationEvent"] | components["schemas"]["ConversationDeletedEvent"] | components["schemas"]["ConversationMovedEvent"] | components["schemas"]["MessageCreatedEvent"] | components["schemas"]["MessageUpdatedEvent"] | components["schemas"]["DraftEvent"] | components["schemas"]["ContactUpdatedEvent"] | components["schemas"]["ContactDeletedEvent"] | components["schemas"]["InboxCreatedEvent"] | components["schemas"]["InboxUpdatedEvent"] | components["schemas"]["InboxDeletedEvent"] | components["schemas"]["InboxAccessChangedEvent"] | components["schemas"]["TeamEvent"] | components["schemas"]["ConversationSlaEvent"] | components["schemas"]["ConversationReadEvent"] | components["schemas"]["ContactReadEvent"] | components["schemas"]["ConversationPinEvent"] | components["schemas"]["DiscussionEvent"] | components["schemas"]["DiscussionStageEvent"] | components["schemas"]["IssueLinkEvent"] | components["schemas"]["SubscriptionEvent"] | components["schemas"]["BroadcastEvent"] | components["schemas"]["MigrationEvent"] | components["schemas"]["AnalyticsAlertEvent"] | components["schemas"]["StatusComponentEvent"] | components["schemas"]["StatusIncidentEvent"] | components["schemas"]["StatusMonitorEvent"] | components["schemas"]["HelpArticleEvent"] | components["schemas"]["ChangelogEntryEvent"];
+        StoredEvent: components["schemas"]["ConversationEvent"] | components["schemas"]["ConversationDeletedEvent"] | components["schemas"]["ConversationMovedEvent"] | components["schemas"]["MessageCreatedEvent"] | components["schemas"]["MessageUpdatedEvent"] | components["schemas"]["DraftEvent"] | components["schemas"]["ContactUpdatedEvent"] | components["schemas"]["ContactDeletedEvent"] | components["schemas"]["InboxCreatedEvent"] | components["schemas"]["InboxUpdatedEvent"] | components["schemas"]["InboxDeletedEvent"] | components["schemas"]["InboxAccessChangedEvent"] | components["schemas"]["TeamEvent"] | components["schemas"]["ConversationSlaEvent"] | components["schemas"]["ConversationReadEvent"] | components["schemas"]["ContactReadEvent"] | components["schemas"]["ConversationPinEvent"] | components["schemas"]["ConversationParticipantsEvent"] | components["schemas"]["DiscussionEvent"] | components["schemas"]["DiscussionStageEvent"] | components["schemas"]["IssueLinkEvent"] | components["schemas"]["SubscriptionEvent"] | components["schemas"]["BroadcastEvent"] | components["schemas"]["MigrationEvent"] | components["schemas"]["AnalyticsAlertEvent"] | components["schemas"]["StatusComponentEvent"] | components["schemas"]["StatusIncidentEvent"] | components["schemas"]["StatusMonitorEvent"] | components["schemas"]["HelpArticleEvent"] | components["schemas"]["ChangelogEntryEvent"];
         EventPage: {
             events: components["schemas"]["StoredEvent"][];
             /**
@@ -17099,7 +17305,7 @@ export interface components {
             id: number;
         };
         /** @description One server message on `/v1/realtime`, told apart by `type`. */
-        RealtimeMessage: components["schemas"]["ConversationEvent"] | components["schemas"]["ConversationDeletedEvent"] | components["schemas"]["ConversationMovedEvent"] | components["schemas"]["MessageCreatedEvent"] | components["schemas"]["MessageUpdatedEvent"] | components["schemas"]["DraftEvent"] | components["schemas"]["ContactUpdatedEvent"] | components["schemas"]["ContactDeletedEvent"] | components["schemas"]["InboxCreatedEvent"] | components["schemas"]["InboxUpdatedEvent"] | components["schemas"]["InboxDeletedEvent"] | components["schemas"]["InboxAccessChangedEvent"] | components["schemas"]["TeamEvent"] | components["schemas"]["ConversationSlaEvent"] | components["schemas"]["ConversationReadEvent"] | components["schemas"]["ContactReadEvent"] | components["schemas"]["ConversationPinEvent"] | components["schemas"]["DiscussionEvent"] | components["schemas"]["DiscussionStageEvent"] | components["schemas"]["IssueLinkEvent"] | components["schemas"]["SubscriptionEvent"] | components["schemas"]["BroadcastEvent"] | components["schemas"]["MigrationEvent"] | components["schemas"]["AnalyticsAlertEvent"] | components["schemas"]["StatusComponentEvent"] | components["schemas"]["StatusIncidentEvent"] | components["schemas"]["StatusMonitorEvent"] | components["schemas"]["MigrationProgressEvent"] | components["schemas"]["MigrationForwardingConfirmationEvent"] | components["schemas"]["BroadcastProgressEvent"] | components["schemas"]["StatusNoticeEvent"] | components["schemas"]["StatusPageEvent"] | components["schemas"]["HelpArticleEvent"] | components["schemas"]["HelpArticleSignal"] | components["schemas"]["ChangelogEntryEvent"] | components["schemas"]["ChangelogEntrySignal"] | components["schemas"]["RoadmapBoardSignal"] | components["schemas"]["HelpImportEvent"] | components["schemas"]["HelpImportProgressEvent"] | components["schemas"]["HelpCenterSignal"] | components["schemas"]["ChangelogSignal"] | components["schemas"]["ListImportEvent"] | components["schemas"]["ListImportProgressEvent"] | components["schemas"]["TypingEvent"] | components["schemas"]["MemberPresenceEvent"] | components["schemas"]["ContactPresenceEvent"] | components["schemas"]["ViewingEvent"] | components["schemas"]["RealtimeReady"] | components["schemas"]["RealtimeResyncRequired"];
+        RealtimeMessage: components["schemas"]["ConversationEvent"] | components["schemas"]["ConversationDeletedEvent"] | components["schemas"]["ConversationMovedEvent"] | components["schemas"]["MessageCreatedEvent"] | components["schemas"]["MessageUpdatedEvent"] | components["schemas"]["DraftEvent"] | components["schemas"]["ContactUpdatedEvent"] | components["schemas"]["ContactDeletedEvent"] | components["schemas"]["InboxCreatedEvent"] | components["schemas"]["InboxUpdatedEvent"] | components["schemas"]["InboxDeletedEvent"] | components["schemas"]["InboxAccessChangedEvent"] | components["schemas"]["TeamEvent"] | components["schemas"]["ConversationSlaEvent"] | components["schemas"]["ConversationReadEvent"] | components["schemas"]["ContactReadEvent"] | components["schemas"]["ConversationPinEvent"] | components["schemas"]["ConversationParticipantsEvent"] | components["schemas"]["DiscussionEvent"] | components["schemas"]["DiscussionStageEvent"] | components["schemas"]["IssueLinkEvent"] | components["schemas"]["SubscriptionEvent"] | components["schemas"]["BroadcastEvent"] | components["schemas"]["MigrationEvent"] | components["schemas"]["AnalyticsAlertEvent"] | components["schemas"]["StatusComponentEvent"] | components["schemas"]["StatusIncidentEvent"] | components["schemas"]["StatusMonitorEvent"] | components["schemas"]["MigrationProgressEvent"] | components["schemas"]["MigrationForwardingConfirmationEvent"] | components["schemas"]["BroadcastProgressEvent"] | components["schemas"]["StatusNoticeEvent"] | components["schemas"]["StatusPageEvent"] | components["schemas"]["HelpArticleEvent"] | components["schemas"]["HelpArticleSignal"] | components["schemas"]["ChangelogEntryEvent"] | components["schemas"]["ChangelogEntrySignal"] | components["schemas"]["RoadmapBoardSignal"] | components["schemas"]["HelpImportEvent"] | components["schemas"]["HelpImportProgressEvent"] | components["schemas"]["HelpCenterSignal"] | components["schemas"]["ChangelogSignal"] | components["schemas"]["ListImportEvent"] | components["schemas"]["ListImportProgressEvent"] | components["schemas"]["TypingEvent"] | components["schemas"]["MemberPresenceEvent"] | components["schemas"]["ContactPresenceEvent"] | components["schemas"]["ViewingEvent"] | components["schemas"]["RealtimeReady"] | components["schemas"]["RealtimeResyncRequired"];
         /**
          * @description `auto`: available in `live` inboxes while connected to `/v1/realtime` within business
          *     hours. `away`: never shown as available.
@@ -28661,6 +28867,40 @@ export interface operations {
             404: components["responses"]["Problem"];
         };
     };
+    listContactParticipations: {
+        parameters: {
+            query?: {
+                /** @description The `next_cursor` of the previous page. */
+                cursor?: components["parameters"]["Cursor"];
+                /** @description Page size, 1 to 100; 25 by default. */
+                limit?: components["parameters"]["Limit"];
+            };
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                contactId: components["parameters"]["ContactId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description A page of conversations. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContactParticipationPage"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
     getContactPresence: {
         parameters: {
             query?: never;
@@ -29339,6 +29579,99 @@ export interface operations {
             415: components["responses"]["Problem"];
         };
     };
+    listConversationParticipants: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                conversationId: components["parameters"]["ConversationId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The participants. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConversationParticipantList"];
+                };
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    addConversationParticipant: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Makes a retried request return the first response; see "Idempotency". */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                conversationId: components["parameters"]["ConversationId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ConversationParticipantCreate"];
+            };
+        };
+        responses: {
+            /** @description The participants after the change. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConversationParticipantList"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+            409: components["responses"]["Problem"];
+        };
+    };
+    removeConversationParticipant: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                conversationId: components["parameters"]["ConversationId"];
+                email: components["schemas"]["Email"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The participants after the change. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConversationParticipantList"];
+                };
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
     markConversationRead: {
         parameters: {
             query?: never;
@@ -29767,7 +30100,11 @@ export interface operations {
             };
             cookie?: never;
         };
-        requestBody?: never;
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["MessageSend"];
+            };
+        };
         responses: {
             /** @description The sent message. */
             200: {
@@ -29778,6 +30115,7 @@ export interface operations {
                     "application/json": components["schemas"]["Message"];
                 };
             };
+            400: components["responses"]["Problem"];
             401: components["responses"]["Problem"];
             403: components["responses"]["Problem"];
             404: components["responses"]["Problem"];

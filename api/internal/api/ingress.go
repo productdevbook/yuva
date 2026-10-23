@@ -456,9 +456,15 @@ func (s *Server) ingestToChannel(ctx context.Context, ch store.FindEmailChannelB
 		if isCatchAll(ch.Address) {
 			convAddress = &recipient
 		}
-		conv, isNew, err := s.threadFor(ctx, q, events, ch, m, contact.ID, subject, spam, convAddress, now)
+		verified := dmarc == email.DMARCPass
+		conv, isNew, err := s.threadFor(ctx, q, events, ch, m, contact.ID, sender, subject, spam, verified, convAddress, now)
 		if err != nil {
 			return err
+		}
+		if !auto && !spam {
+			if err := s.addParticipants(ctx, q, events, conv, m, sender, verified, now); err != nil {
+				return err
+			}
 		}
 		direction := string(oas.In)
 		msg, err := q.CreateMessage(ctx, store.CreateMessageParams{
@@ -642,16 +648,25 @@ func (s *Server) contactForMail(ctx context.Context, q *store.Queries, ch store.
 }
 
 // threadFor finds the conversation a reply belongs to (threadOf), or starts a new one. A thread
-// that belongs to another contact is never joined, and mail that fails DMARC never joins a
-// conversation not flagged spam: the sender gets its own conversation that points to it.
-func (s *Server) threadFor(ctx context.Context, q *store.Queries, events *eventBatch, ch store.FindEmailChannelByAddressRow, m *email.Message, contactID uuid.UUID, subject string, spam bool, address *string, now time.Time) (store.Conversation, bool, error) {
+// that belongs to another contact is joined only by mail that passed DMARC (verified) from one of
+// its active participants' addresses, and mail that fails DMARC never joins a conversation not
+// flagged spam: the sender gets its own conversation that points to it.
+func (s *Server) threadFor(ctx context.Context, q *store.Queries, events *eventBatch, ch store.FindEmailChannelByAddressRow, m *email.Message, contactID uuid.UUID, sender, subject string, spam, verified bool, address *string, now time.Time) (store.Conversation, bool, error) {
 	ws := ch.WorkspaceID
 	found, err := threadOf(ctx, q, ch, m, contactID)
 	if err != nil {
 		return store.Conversation{}, false, err
 	}
+	joins := found != nil && found.ContactID == contactID
+	if found != nil && !joins && verified {
+		if joins, err = q.IsConversationParticipant(ctx, store.IsConversationParticipantParams{
+			WorkspaceID: ws, ConversationID: found.ID, Email: strings.ToLower(sender),
+		}); err != nil {
+			return store.Conversation{}, false, err
+		}
+	}
 	var related *uuid.UUID
-	if found != nil && (found.ContactID != contactID || (spam && !found.Spam)) {
+	if found != nil && (!joins || (spam && !found.Spam)) {
 		related = &found.ID
 		found = nil
 	}

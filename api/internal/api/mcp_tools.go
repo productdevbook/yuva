@@ -373,6 +373,36 @@ type draftReplyIn struct {
 
 type sendDraftIn struct {
 	MessageID uuid.UUID `json:"message_id" jsonschema:"the id draft_reply returned"`
+	mcpCopies
+}
+
+type sendReplyIn struct {
+	ConversationID uuid.UUID `json:"conversation_id"`
+	Body           string    `json:"body" jsonschema:"plain text"`
+	mcpCopies
+}
+
+type mcpCopies struct {
+	Cc  *[]string `json:"cc,omitempty" jsonschema:"e-mail only: up to 20 addresses to copy instead of the conversation's participants; an empty list copies no one"`
+	Bcc []string  `json:"bcc,omitempty" jsonschema:"e-mail only: up to 20 hidden recipients"`
+}
+
+func (c mcpCopies) lists() (cc, bcc *[]oas.Email) {
+	if c.Cc != nil {
+		list := make([]oas.Email, len(*c.Cc))
+		for i, v := range *c.Cc {
+			list[i] = oas.Email(v)
+		}
+		cc = &list
+	}
+	if len(c.Bcc) > 0 {
+		list := make([]oas.Email, len(c.Bcc))
+		for i, v := range c.Bcc {
+			list[i] = oas.Email(v)
+		}
+		bcc = &list
+	}
+	return cc, bcc
 }
 
 type assignIn struct {
@@ -690,21 +720,23 @@ var mcpTools = append([]mcpTool{
 			return c.createMessage(ctx, in.ConversationID, b)
 		}),
 	defineTool("send_reply", "Send a reply",
-		"Sends a new reply to the contact now, by e-mail or chat. Prefer draft_reply unless the person you work for asked to send; to send a draft that exists, use send_draft. Maps to POST /v1/conversations/{id}/messages.",
+		"Sends a new reply to the contact now, by e-mail or chat. Prefer draft_reply unless the person you work for asked to send; to send a draft that exists, use send_draft. An e-mail copies the conversation's participants unless cc is given; bcc adds hidden recipients. Maps to POST /v1/conversations/{id}/messages.",
 		delivering, nil, mcpTool{ops: []string{"CreateMessage"}, scopes: []oas.ApiKeyScope{oas.MessagesWrite}, allow: mayDeliver, denied: errBotSendingDisabled},
-		func(ctx context.Context, c *mcpCall, in replyIn) (mcpMessage, error) {
+		func(ctx context.Context, c *mcpCall, in sendReplyIn) (mcpMessage, error) {
 			if err := c.noPendingDraft(ctx, in.ConversationID); err != nil {
 				return mcpMessage{}, err
 			}
+			cc, bcc := in.lists()
 			return c.createMessage(ctx, in.ConversationID, oas.MessageCreate{
-				Kind: oas.MessageCreateKindMessage, Direction: new(oas.Out), Body: &in.Body,
+				Kind: oas.MessageCreateKindMessage, Direction: new(oas.Out), Body: &in.Body, Cc: cc, Bcc: bcc,
 			})
 		}),
 	defineTool("send_draft", "Send a draft",
 		"Delivers a draft that already exists, by e-mail or chat, so the conversation keeps one message instead of the draft and a copy. Use it when the person you work for asks to send a draft from draft_reply; never send_reply with the same text. Maps to POST /v1/messages/{id}/send.",
 		delivering, nil, mcpTool{ops: []string{"SendMessage"}, allow: mayDeliver, denied: errBotSendingDisabled},
 		func(ctx context.Context, c *mcpCall, in sendDraftIn) (mcpMessage, error) {
-			res, err := c.s.SendMessage(ctx, oas.SendMessageRequestObject{MessageId: in.MessageID})
+			cc, bcc := in.lists()
+			res, err := c.s.SendMessage(ctx, oas.SendMessageRequestObject{MessageId: in.MessageID, Body: &oas.MessageSend{Cc: cc, Bcc: bcc}})
 			if err != nil {
 				return mcpMessage{}, err
 			}

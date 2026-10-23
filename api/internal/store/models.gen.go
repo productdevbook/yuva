@@ -893,6 +893,15 @@ type ConversationMemberState struct {
 	MarkedUnreadAt *time.Time
 }
 
+type ConversationParticipant struct {
+	WorkspaceID    uuid.UUID
+	ConversationID uuid.UUID
+	Email          string
+	Role           string
+	Status         string
+	CreatedAt      time.Time
+}
+
 type ConversationRead struct {
 	WorkspaceID       uuid.UUID
 	MemberID          uuid.UUID
@@ -1705,6 +1714,8 @@ type MessageEmail struct {
 	CreatedAt             time.Time
 	ImportedAt            *time.Time
 	RelayMessageID        *string
+	BccAddresses          []string
+	Shared                bool
 }
 
 type Migration struct {

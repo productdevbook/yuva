@@ -54,6 +54,8 @@ const (
 	StatusHint           = "status.hint"
 )
 
+const ConversationParticipants = "conversation.participants"
+
 type Event struct {
 	ID             int64           `json:"id,omitempty"`
 	Type           string          `json:"type"`

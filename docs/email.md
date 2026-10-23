@@ -200,6 +200,8 @@ yuva channel create-email --workspace Example --inbox support --name "Everything
 |---|---|
 | Channel | The envelope recipient's channel; `local+tag@domain` falls back to `local@domain`. Unknown addresses are rejected. |
 | Threading | By `In-Reply-To` and `References`; anything else starts a new conversation. A reply reopens the conversation. |
+| Cc and participants | The `To` and `Cc` addresses of a mail that are not Yuva's own become the conversation's participants (at most 20). They are active only when the mail passed DMARC (which needs `YUVA_INGRESS_AUTHSERV_ID`); otherwise they are suggested, shown to members but never copied. A member can add or remove participants. An active participant's reply that passes DMARC joins the conversation as their message; anyone else who answers the thread starts a new conversation that links to it. Mail that fails DMARC or is automatic adds no one. |
+| Replies | Go `To` the contact and `Cc` the active participants; automatic mail (greetings, rules) copies no one. Each reply can replace the `Cc` and add `Bcc` (20 addresses each); `Bcc` recipients get the mail but never appear in it, and only members see them. An address that bounced or complained is refused or, as a participant, left out; an unsubscribe from broadcasts does not stop replies. |
 | Automatic mail | Auto-replies, bulk mail and delivery reports are stored, never answered. Mail from Yuva's own addresses is dropped. |
 | DMARC | Used only with `YUVA_INGRESS_AUTHSERV_ID`, from the topmost `Authentication-Results` when it carries that authserv-id. Several headers carrying it mean the sender added one: a `fail` among them counts, a `pass` does not. A failing new conversation is marked spam; a failing reply starts a new one. |
 
