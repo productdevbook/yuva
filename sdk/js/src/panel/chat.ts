@@ -1790,7 +1790,11 @@ export class Chat implements PanelController {
       this.#email.className = "mail ok"
       this.#email.innerHTML = icons.check
       const known = address
-      this.#email.append(this.#t(msg`Thanks! We'll e-mail you at ${known} if you're gone when we reply.`))
+      this.#email.append(
+        this.#contact?.email
+          ? this.#t(msg`Thanks! We'll e-mail you at ${known} if you're gone when we reply.`)
+          : this.#t(msg`Thanks! Once you confirm ${known}, we'll e-mail you if you're gone when we reply.`)
+      )
     } else {
       this.#email.className = "card"
       const cancel = this.#emailEditing

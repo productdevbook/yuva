@@ -7,12 +7,25 @@ export interface RealtimeHandlers {
   reconnecting(attempt: number): void
 }
 
+const stableAfter = 60_000
+const maxDelay = 180_000
+const maxRetryAfter = 300_000
+const kicked = 1013
+
+function retryAfter(reason: string): number {
+  const found = /retry_after\D{0,4}(\d+(?:\.\d+)?)/.exec(reason)
+  return found ? Math.min(Number(found[1]) * 1000, maxRetryAfter) : 0
+}
+
 export class Realtime {
   #socket: WebSocket | null = null
   #lastEventId = 0
   #attempt = 0
   #timer: ReturnType<typeof setTimeout> | null = null
   #stopped = true
+  #readyAt = 0
+  #notBefore = 0
+  #heldHidden = false
 
   constructor(
     readonly server: string,
@@ -33,6 +46,9 @@ export class Realtime {
     this.#stopped = true
     if (this.#timer) clearTimeout(this.#timer)
     this.#timer = null
+    this.#heldHidden = false
+    this.#notBefore = 0
+    globalThis.document?.removeEventListener("visibilitychange", this.#visible)
     const socket = this.#socket
     this.#socket = null
     socket?.close(1000)
@@ -44,9 +60,26 @@ export class Realtime {
 
   nudge(): void {
     if (this.#stopped || this.#socket) return
+    if (this.#timer && Date.now() < this.#notBefore) return
+    if (this.#heldHidden) {
+      if (this.#hidden()) return
+      this.#heldHidden = false
+      globalThis.document?.removeEventListener("visibilitychange", this.#visible)
+    }
     if (this.#timer) clearTimeout(this.#timer)
     this.#timer = null
     this.#connect()
+  }
+
+  #visible = (): void => {
+    if (globalThis.document?.visibilityState !== "visible" || !this.#heldHidden) return
+    this.#heldHidden = false
+    globalThis.document.removeEventListener("visibilitychange", this.#visible)
+    this.#delay(Math.random() * 2000)
+  }
+
+  #hidden(): boolean {
+    return globalThis.document?.visibilityState === "hidden"
   }
 
   #connect(): void {
@@ -70,8 +103,10 @@ export class Realtime {
       } catch {
         return
       }
-      if (message.type === "ready") {
-        this.#attempt = 0
+      if (message.type === "resync_required") {
+        this.#lastEventId = 0
+      } else if (message.type === "ready") {
+        this.#readyAt = Date.now()
         this.#lastEventId = Math.max(this.#lastEventId, message.last_event_id)
       } else if ("id" in message && typeof message.id === "number") {
         this.#lastEventId = Math.max(this.#lastEventId, message.id)
@@ -87,18 +122,31 @@ export class Realtime {
         this.handlers.sessionEnded()
         return
       }
-      this.#schedule()
+      this.#schedule(event.code === kicked ? String(event.reason ?? "") : null)
     }
   }
 
-  #schedule(): void {
-    if (this.#stopped || this.#timer) return
+  #schedule(kickReason: string | null = null): void {
+    if (this.#stopped || this.#timer || this.#heldHidden) return
+    if (this.#readyAt && Date.now() - this.#readyAt >= stableAfter) this.#attempt = 0
+    this.#readyAt = 0
     const attempt = this.#attempt++
     this.handlers.reconnecting(attempt)
-    const delay = Math.min(30_000, 1000 * 2 ** attempt) * (0.75 + Math.random() * 0.5)
+    if (kickReason !== null && this.#hidden()) {
+      this.#heldHidden = true
+      globalThis.document.addEventListener("visibilitychange", this.#visible)
+      return
+    }
+    const backoff = Math.min(maxDelay, 1000 * 2 ** attempt) * (0.75 + Math.random() * 0.5)
+    const wait = kickReason === null ? backoff : Math.max(backoff, retryAfter(kickReason))
+    this.#notBefore = Date.now() + (kickReason === null ? 0 : wait)
+    this.#delay(wait)
+  }
+
+  #delay(wait: number): void {
     this.#timer = setTimeout(() => {
       this.#timer = null
       this.#connect()
-    }, delay)
+    }, wait)
   }
 }
