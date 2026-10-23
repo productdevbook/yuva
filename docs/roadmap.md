@@ -83,8 +83,7 @@ Accept: a new conversation in a `live` inbox notifies a member's phone within se
 
 ## M6.1 — Satisfaction ratings
 
-Status: built in the API, the widget, the Swift and Kotlin SDKs and the panel; acceptance on a running
-instance pending (#126). Decisions in `architecture.md` › Satisfaction ratings.
+Status: done; every Accept item verified on 2026-10-23 at `bafdcc9` (#126). Decisions in `architecture.md` › Satisfaction ratings.
 
 - An inbox setting; contacts rate a closed conversation `good` or `bad` with an optional comment,
   once per close, in the widget, the mobile SDKs and through two links in an e-mail.

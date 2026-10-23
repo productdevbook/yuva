@@ -1299,7 +1299,9 @@ turning it on never offers old conversations. Ratings are not stored for spam.
 - `/r/{token}` is a page the server renders itself: no scripts or external assets, the inbox's
   name and branding colour, English, Turkish or German by the inbox's language. Opening it stores
   nothing, since mail scanners open links: it shows the chosen rating preselected and a comment
-  field, and only its POST rates.
+  field, and only its POST rates. A POST for a close that is already rated stores nothing and
+  answers the same page with "already rated" (`200`, since it is a browser form); the client API
+  answers `409 already_rated`.
 
 ### Documentation pages
 
