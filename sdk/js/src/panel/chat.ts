@@ -36,10 +36,12 @@ import {
   iconButton,
   initialsOf,
   isImage,
+  limitSize,
   sameDay,
   textButton,
   time,
 } from "./helpers"
+import { acceptAttribute, allowsType, canAttach, fileProblem } from "../attachments"
 import { canCapture, captureScreen } from "./capture"
 import { countUpdates } from "../updates"
 import { appTitle, buildHome } from "./home"
@@ -158,6 +160,7 @@ export class Chat implements PanelController {
   #emailInput = el("input", "field")
   #composer = el("div", "sec composer")
   #chips = el("div", "chips")
+  #fileNote = el("p", "error")
   #textarea = el("textarea")
   #fileInput = el("input")
   #sendButton: HTMLButtonElement
@@ -244,8 +247,10 @@ export class Chat implements PanelController {
       event.preventDefault()
       void this.#send()
     })
+    this.#fileNote.hidden = true
+    this.#fileNote.setAttribute("role", "alert")
     box.append(this.#chips, this.#textarea, tools)
-    this.#composer.append(this.#jump, box)
+    this.#composer.append(this.#jump, this.#fileNote, box)
 
     this.#emailInput.type = "email"
     this.#emailInput.required = true
@@ -431,6 +436,7 @@ export class Chat implements PanelController {
   #setInbox(inbox: ClientInbox): void {
     const { channel } = this.#host.config()
     this.#inbox = inbox
+    this.#syncAttach()
     const launcher = launcherOf(inbox)
     this.#host.setLauncher(launcher)
     if (!channel) return
@@ -757,7 +763,22 @@ export class Chat implements PanelController {
   }
 
   #addFiles(files: File[]): void {
-    this.#files = [...this.#files, ...files].slice(0, maxFiles)
+    const limits = this.#inbox?.attachments
+    const { locale } = this.#host.config()
+    let note = ""
+    const accepted = limits
+      ? files.filter((file) => {
+          const problem = fileProblem(limits, file)
+          const name = file.name || "image"
+          const limit = limitSize(locale, limits.max_bytes)
+          if (problem === "size") note ||= this.#t(msg`${name} is too large. The limit is ${limit}.`)
+          else if (problem === "type") note ||= this.#t(msg`${name} is not an accepted file type.`)
+          return !problem
+        })
+      : files
+    this.#fileNote.textContent = note
+    this.#fileNote.hidden = !note
+    this.#files = [...this.#files, ...accepted].slice(0, maxFiles)
     this.#renderChips()
     this.#syncSend()
     this.#textarea.focus()
@@ -809,6 +830,7 @@ export class Chat implements PanelController {
     if (!body && files.length === 0) return
     if (this.#view.id === null && this.#pending.some((p) => p.conversation === null)) return
     this.#stopTyping()
+    this.#fileNote.hidden = true
     this.#textarea.value = ""
     this.#files = []
     this.#autosize()
@@ -975,9 +997,19 @@ export class Chat implements PanelController {
     this.#jump.append(count > 0 ? this.#t(msg`${count} new`) : this.#t(msg`Jump to latest`))
   }
 
+  #syncAttach(): void {
+    const limits = this.#inbox?.attachments
+    const attach = !limits || canAttach(limits)
+    this.#attachButton.hidden = !attach
+    this.#shotButton.hidden = !canCapture() || !attach || (!!limits && !allowsType(limits, "image/png"))
+    if (limits) this.#fileInput.accept = acceptAttribute(limits)
+    else this.#fileInput.removeAttribute("accept")
+  }
+
   #renderAll(): void {
     this.#textarea.placeholder = this.#t(msg`Write a message…`)
     this.#textarea.setAttribute("aria-label", this.#t(msg`Message`))
+    this.#syncAttach()
     this.#attachButton.setAttribute("aria-label", this.#t(msg`Attach files`))
     this.#attachButton.title = this.#t(msg`Attach files`)
     this.#shotButton.setAttribute("aria-label", this.#t(msg`Take a screenshot`))

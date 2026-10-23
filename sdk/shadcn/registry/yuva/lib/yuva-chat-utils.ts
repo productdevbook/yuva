@@ -46,6 +46,8 @@ export interface YuvaChatLabels {
   placeholder: string
   attach: string
   screenshot: string
+  fileTooLarge: (name: string, limit: string) => string
+  fileTypeNotAccepted: (name: string) => string
   send: string
   enterKey: string
   toSend: string
@@ -113,6 +115,8 @@ export const defaultYuvaChatLabels: YuvaChatLabels = {
   placeholder: "Write a message",
   attach: "Attach a file",
   screenshot: "Take a screenshot",
+  fileTooLarge: (name, limit) => `${name} is too large. The limit is ${limit}.`,
+  fileTypeNotAccepted: (name) => `${name} is not an accepted file type.`,
   send: "Send",
   enterKey: "Enter",
   toSend: "to send",

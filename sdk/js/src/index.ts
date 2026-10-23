@@ -19,11 +19,13 @@ export {
   type YuvaClientOptions,
   type YuvaStorage,
 } from "./client/client"
+export { acceptAttribute, allowsType, canAttach, fileProblem } from "./attachments"
 export { openReaderPopup, readerConnectUrl, type ReaderSession, type ReaderSignInOptions } from "./client/reader"
 export {
   ApiError,
   type Fetch,
   type ClientAttachment,
+  type ClientAttachmentLimits,
   type ClientChatSettings,
   type ClientContact,
   type ClientConversation,

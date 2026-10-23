@@ -21,6 +21,7 @@ import {
   type ClientHelpReaction,
   type ClientHelpSearchClick,
   type ClientHelpSearchResults,
+  type ClientAttachmentLimits,
   type ClientInbox,
   type ClientRoadmap,
   type ClientWhatsNew,
@@ -258,6 +259,10 @@ export class YuvaClient {
     return this.#session
   }
 
+  get attachments(): ClientAttachmentLimits | null {
+    return this.#session?.inbox.attachments ?? null
+  }
+
   get token(): string | null {
     return this.#token
   }
@@ -373,6 +378,7 @@ export class YuvaClient {
       token: () => this.#token,
       event: (message) => {
         if (message.type === "ready") this.#emit("connection", { state: "open", attempt: 0 })
+        if (message.type === "inbox.updated" && this.#session) this.#session = { ...this.#session, inbox: message.data }
         this.#emit("event", message)
         if (message.type === "conversation.removed") this.#emit("conversationRemoved", { id: message.data.id })
       },

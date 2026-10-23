@@ -180,6 +180,7 @@ describe("<yuva-chat> realtime", () => {
     feedback_categories: [],
     feedback_category_items: [],
     ask_for_rating: false,
+    attachments: { max_bytes: 2 * 1024 * 1024, types: ["image/*", "application/pdf"] },
   }
   const session: ClientSession = {
     token: "t1",
@@ -532,6 +533,59 @@ describe("<yuva-chat> realtime", () => {
       await until(() => panel(element).querySelector(".home .item") === null)
       expect(panel(element).querySelector(".home .item")).toBeNull()
       expect(panel(element).querySelector<HTMLElement>(".banner")!.hidden).toBe(true)
+    })
+  })
+  describe("attachment limits", () => {
+    async function composer(limited: ClientInbox): Promise<YuvaChatElement> {
+      globalThis.fetch = (async (input: RequestInfo | URL, init?: RequestInit) => {
+        const route = `${init?.method ?? "GET"} ${new URL(String(input)).pathname}`
+        const reply = (status: number, body: unknown) =>
+          new Response(JSON.stringify(body), { status, headers: { "content-type": "application/json" } })
+        if (route === "GET /client/v1/channels/pk_test") return reply(200, limited)
+        if (route === "POST /client/v1/session") return reply(201, { ...session, inbox: limited })
+        if (route === "GET /client/v1/conversations") return reply(200, { items: [] })
+        return reply(204, {})
+      }) as typeof fetch
+      globalThis.WebSocket = FakeSocket as unknown as typeof WebSocket
+      const element = mount({ layout: "embedded", channel: "pk_test", server: "http://yuva.test", locale: "en" })
+      await compose(element)
+      return element
+    }
+
+    const picker = (element: YuvaChatElement) => panel(element).querySelector<HTMLInputElement>('input[type="file"]')!
+    const attachButton = (element: YuvaChatElement) =>
+      panel(element).querySelector<HTMLButtonElement>('.tools button[aria-label="Attach files"]')!
+    const pick = (element: YuvaChatElement, files: File[]) => {
+      Object.defineProperty(picker(element), "files", { value: files, configurable: true })
+      picker(element).dispatchEvent(new Event("change"))
+    }
+
+    test("sets accept and refuses a file that is too big before uploading it", async () => {
+      const element = await composer(inbox)
+      expect(picker(element).accept).toBe("image/*,application/pdf")
+      expect(attachButton(element).hidden).toBe(false)
+
+      pick(element, [new File([new Uint8Array(3 * 1024 * 1024)], "huge.png", { type: "image/png" })])
+      const note = panel(element).querySelector<HTMLElement>(".error")!
+      expect(note.hidden).toBe(false)
+      expect(note.textContent).toBe("huge.png is too large. The limit is 2 MB.")
+      expect(panel(element).querySelectorAll(".chip")).toHaveLength(0)
+
+      pick(element, [new File(["x"], "ok.png", { type: "image/png" })])
+      expect(note.hidden).toBe(true)
+      expect(panel(element).querySelectorAll(".chip")).toHaveLength(1)
+    })
+
+    test("refuses a type the channel does not accept", async () => {
+      const element = await composer(inbox)
+      pick(element, [new File(["x"], "run.exe", { type: "application/x-msdownload" })])
+      expect(panel(element).querySelector(".error")?.textContent).toBe("run.exe is not an accepted file type.")
+      expect(panel(element).querySelectorAll(".chip")).toHaveLength(0)
+    })
+
+    test("hides the attach button when no type is allowed", async () => {
+      const element = await composer({ ...inbox, attachments: { max_bytes: 1024, types: [] } })
+      expect(attachButton(element).hidden).toBe(true)
     })
   })
 })

@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { acceptAttribute, allowsType, canAttach, fileProblem } from "useyuva"
 import { ArrowUpIcon, FileIcon, ImageIcon, PaperclipIcon, ScanIcon, XIcon } from "lucide-react"
 import {
   Attachment,
@@ -48,7 +49,24 @@ export function YuvaChatComposer({
   const picker = React.useRef<HTMLInputElement>(null)
   const field = React.useRef<HTMLTextAreaElement>(null)
   const [capturing, setCapturing] = React.useState(false)
+  const [fileNote, setFileNote] = React.useState("")
   const empty = body.trim() === "" && files.length === 0
+  const limits = chat.inbox?.attachments
+
+  const addFiles = (incoming: File[]) => {
+    let note = ""
+    const accepted = limits
+      ? incoming.filter((file) => {
+          const problem = fileProblem(limits, file)
+          const name = file.name || "image"
+          if (problem === "size") note ||= labels.fileTooLarge(name, sizeLabel(limits.max_bytes, locale))
+          else if (problem === "type") note ||= labels.fileTypeNotAccepted(name)
+          return !problem
+        })
+      : incoming
+    setFileNote(note)
+    setFiles((list) => [...list, ...accepted])
+  }
 
   const submit = async () => {
     if (empty || disabled) return
@@ -56,6 +74,7 @@ export function YuvaChatComposer({
     setBody("")
     setFiles([])
     setError(null)
+    setFileNote("")
     chat.setTyping(false)
     field.current?.focus()
     try {
@@ -72,7 +91,7 @@ export function YuvaChatComposer({
     setCapturing(true)
     try {
       const shot = await onCapture()
-      if (shot) setFiles((list) => [...list, shot])
+      if (shot) addFiles([shot])
     } catch (failure) {
       setError(failure)
     } finally {
@@ -138,21 +157,24 @@ export function YuvaChatComposer({
             type="file"
             multiple
             hidden
+            accept={limits ? acceptAttribute(limits) : undefined}
             onChange={(event) => {
               const picked = Array.from(event.target.files ?? [])
               event.target.value = ""
-              setFiles((list) => [...list, ...picked])
+              addFiles(picked)
             }}
           />
-          <InputGroupButton
-            size="icon-sm"
-            aria-label={labels.attach}
-            disabled={disabled}
-            onClick={() => picker.current?.click()}
-          >
-            <PaperclipIcon />
-          </InputGroupButton>
-          {onCapture && (
+          {(!limits || canAttach(limits)) && (
+            <InputGroupButton
+              size="icon-sm"
+              aria-label={labels.attach}
+              disabled={disabled}
+              onClick={() => picker.current?.click()}
+            >
+              <PaperclipIcon />
+            </InputGroupButton>
+          )}
+          {onCapture && (!limits || (canAttach(limits) && allowsType(limits, "image/png"))) && (
             <InputGroupButton
               size="icon-sm"
               aria-label={labels.screenshot}
@@ -178,6 +200,11 @@ export function YuvaChatComposer({
           </InputGroupButton>
         </InputGroupAddon>
       </InputGroup>
+      {fileNote && (
+        <p role="alert" className="text-xs text-destructive">
+          {fileNote}
+        </p>
+      )}
       {error !== null && (
         <p role="alert" className="text-xs text-destructive">
           {chatErrorText(error, labels)}

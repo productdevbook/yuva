@@ -1,7 +1,8 @@
 import { msg } from "@lingui/core/macro"
 import { ApiError } from "../client/api"
+import { acceptAttribute, allowsType, canAttach, fileProblem } from "../attachments"
 import { canCapture, captureScreen } from "../panel/capture"
-import { el, fileSize, iconButton, textButton } from "../panel/helpers"
+import { el, fileSize, iconButton, limitSize, textButton } from "../panel/helpers"
 import { categoryIcon, icons } from "../panel/icons"
 import type { AppContext } from "../types"
 import type { Translate } from "./apps"
@@ -51,7 +52,18 @@ export function feedbackApp(context: AppContext, t: Translate, root: HTMLElement
   send.addEventListener("click", () => void submit())
 
   function add(more: File[]): void {
-    files = [...files, ...more].slice(0, maxFiles)
+    const limits = context.inbox.attachments
+    let note = ""
+    const accepted = more.filter((file) => {
+      const problem = fileProblem(limits, file)
+      const name = file.name || "image"
+      const limit = limitSize(context.locale, limits.max_bytes)
+      if (problem === "size") note ||= t(msg`${name} is too large. The limit is ${limit}.`)
+      else if (problem === "type") note ||= t(msg`${name} is not an accepted file type.`)
+      return !problem
+    })
+    files = [...files, ...accepted].slice(0, maxFiles)
+    error = note
     render()
   }
 
@@ -179,9 +191,12 @@ export function feedbackApp(context: AppContext, t: Translate, root: HTMLElement
       )
       chips.append(chip)
     })
-    const attachButton = iconButton(icons.attach, t(msg`Attach files`), () => picker.click(), "icon tool")
-    attach.append(chips, attachButton)
-    if (canCapture()) {
+    const limits = context.inbox.attachments
+    picker.accept = acceptAttribute(limits)
+    attach.append(chips)
+    if (canAttach(limits))
+      attach.append(iconButton(icons.attach, t(msg`Attach files`), () => picker.click(), "icon tool"))
+    if (canCapture() && allowsType(limits, "image/png")) {
       attach.append(
         iconButton(
           icons.shot,

@@ -79,6 +79,18 @@ export function fileSize(locale: string, bytes: number): string {
   )
 }
 
+export function limitSize(locale: string, bytes: number): string {
+  const [value, unit] =
+    bytes >= 1024 ** 3
+      ? [bytes / 1024 ** 3, "gigabyte"]
+      : bytes >= 1024 ** 2
+        ? [bytes / 1024 ** 2, "megabyte"]
+        : [bytes / 1024, "kilobyte"]
+  return new Intl.NumberFormat(locale, { style: "unit", unit, unitDisplay: "short", maximumFractionDigits: 1 }).format(
+    value
+  )
+}
+
 export function dayLabel(locale: string, value: string): string {
   const date = new Date(value)
   const now = new Date()
