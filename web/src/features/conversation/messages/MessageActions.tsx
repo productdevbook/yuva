@@ -1,13 +1,15 @@
 import { Trans, useLingui } from "@lingui/react/macro"
 import { CheckCheckIcon, CheckIcon } from "lucide-react"
 
-import { MemberAvatar, toast } from "@/components/common"
+import { Kbd, MemberAvatar, toast } from "@/components/common"
+import { SHORTCUTS } from "@/components/common/ShortcutSheet"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import type { ThreadContext } from "@/features/conversation/messages/context"
@@ -41,7 +43,8 @@ export function MessageActions({ m, ctx, className }: { m: Message; ctx: ThreadC
   const { membership } = useSession()
   const mates = useAssignableMembers(ctx.inboxId).filter((x) => x.id !== membership.member_id)
   const removable = !!ctx.onRemove && !!ctx.canRemove?.(m)
-  if (!ctx.onQuote && !ctx.onForward && !removable) return null
+  const mail = !!ctx.onForwardMail && m.kind === "message"
+  if (!ctx.onQuote && !ctx.onForward && !mail && !removable) return null
   const text = m.body.trim()
   const copy = () =>
     navigator.clipboard.writeText(text).then(
@@ -79,37 +82,50 @@ export function MessageActions({ m, ctx, className }: { m: Message; ctx: ThreadC
           <Trans>Remove</Trans>
         </button>
       )}
-      {ctx.onForward && (
+      {(ctx.onForward || mail) && (
         <DropdownMenu>
           <DropdownMenuTrigger
             render={<button type="button" className={link} />}
-            title={t`Forward to a teammate`}
+            title={t`Forward`}
             data-testid="message-forward"
           >
             <Trans>Forward</Trans>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="max-h-72 w-60 overflow-y-auto">
-            <DropdownMenuGroup>
-              <DropdownMenuLabel>
-                <Trans>Forward as a note mentioning</Trans>
-              </DropdownMenuLabel>
-              {mates.length === 0 && (
-                <DropdownMenuItem disabled data-testid="forward-none">
-                  <Trans>No teammate can see this inbox</Trans>
+            {mail && (
+              <DropdownMenuGroup>
+                <DropdownMenuItem onClick={() => ctx.onForwardMail?.(m)} data-testid="forward-mail">
+                  <span className="flex-1">
+                    <Trans>Forward by e-mail…</Trans>
+                  </span>
+                  <Kbd>{SHORTCUTS.forward}</Kbd>
                 </DropdownMenuItem>
-              )}
-              {mates.map((x) => (
-                <DropdownMenuItem key={x.id} onClick={() => ctx.onForward?.(m, x)} data-testid="forward-to">
-                  <MemberAvatar
-                    name={x.name || x.email}
-                    online={x.online}
-                    away={x.availability === "away"}
-                    className="size-5"
-                  />
-                  <span className="truncate">{x.name || x.email}</span>
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuGroup>
+              </DropdownMenuGroup>
+            )}
+            {mail && ctx.onForward && <DropdownMenuSeparator />}
+            {ctx.onForward && (
+              <DropdownMenuGroup>
+                <DropdownMenuLabel>
+                  <Trans>Forward as a note mentioning</Trans>
+                </DropdownMenuLabel>
+                {mates.length === 0 && (
+                  <DropdownMenuItem disabled data-testid="forward-none">
+                    <Trans>No teammate can see this inbox</Trans>
+                  </DropdownMenuItem>
+                )}
+                {mates.map((x) => (
+                  <DropdownMenuItem key={x.id} onClick={() => ctx.onForward?.(m, x)} data-testid="forward-to">
+                    <MemberAvatar
+                      name={x.name || x.email}
+                      online={x.online}
+                      away={x.availability === "away"}
+                      className="size-5"
+                    />
+                    <span className="truncate">{x.name || x.email}</span>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuGroup>
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
       )}

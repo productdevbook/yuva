@@ -213,6 +213,14 @@ msgstr "{actor} hat den Status auf {status} gesetzt"
 msgid "{added} added · {out} left out"
 msgstr "{added} hinzugefügt · {out} ausgelassen"
 
+#: src/features/conversation/ForwardDialog.tsx
+msgid "{address} bounced or complained before. Remove it here, or clear it on the contact to forward there."
+msgstr "{address} ist früher zurückgewiesen worden oder hat sich beschwert. Entferne die Adresse hier oder lösche sie beim Kontakt, um dorthin weiterzuleiten."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "{address} cannot be a recipient. It may be the conversation's contact, an address already copied on it, an address of this server, or not valid."
+msgstr "{address} kann kein Empfänger sein. Es kann der Kontakt der Unterhaltung sein, eine Adresse, die bereits in Kopie steht, eine Adresse dieses Servers oder ungültig."
+
 #: src/features/migrations/DoneStep.tsx
 msgid "{address} is in Yuva"
 msgstr "{address} ist in Yuva"
@@ -2544,6 +2552,10 @@ msgstr "Unterhaltungen beantworten und organisieren, Notizen schreiben, Kontakte
 msgid "Answer cleared"
 msgstr "Antwort entfernt"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "Answer to a forward from {author}"
+msgstr "Antwort auf eine Weiterleitung von {author}"
+
 #: src/features/feedback/FeedbackList.tsx
 msgid "answered"
 msgstr "beantwortet"
@@ -3415,6 +3427,7 @@ msgstr "Kampagnenname"
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactNotes.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/docs/discussions/FromConversation.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
@@ -6828,6 +6841,18 @@ msgstr "Leiten Sie die gesamte eingehende Mail an die Adresse unten weiter und b
 msgid "Forward as a note mentioning"
 msgstr "Als Notiz weiterleiten mit Erwähnung von"
 
+#: src/app/Palette.tsx
+#: src/features/conversation/ConversationMenu.tsx
+#: src/features/conversation/messages/MessageActions.tsx
+msgid "Forward by e-mail…"
+msgstr "Per E-Mail weiterleiten…"
+
+#: src/features/conversation/messages/Thread.tsx
+#: src/features/inbox/AssistantsPage.tsx
+#: src/features/inbox/SidePanels.tsx
+msgid "Forward draft by {author}"
+msgstr "Weiterleitungsentwurf von {author}"
+
 #: src/features/setup/email/EmailReceiveStep.tsx
 msgid "Forward from your mailbox"
 msgstr "Aus Ihrem Postfach weiterleiten"
@@ -6836,13 +6861,37 @@ msgstr "Aus Ihrem Postfach weiterleiten"
 msgid "Forward mail for this address to the Cloudflare Email Worker in edge/ of the Yuva repository, or to any mail server that posts each message to this server's ingress URL, signed with YUVA_INGRESS_SECRET:"
 msgstr "Leiten Sie Mail für diese Adresse an den Cloudflare Email Worker in edge/ des Yuva-Repositorys weiter oder an einen beliebigen Mailserver, der jede Nachricht an die Ingress-URL dieses Servers postet, signiert mit YUVA_INGRESS_SECRET:"
 
-#: src/features/conversation/messages/MessageActions.tsx
-msgid "Forward to a teammate"
-msgstr "An ein Teammitglied weiterleiten"
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Forward saved as a draft"
+msgstr "Weiterleitung als Entwurf gespeichert"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Forward the conversation"
+msgstr "Unterhaltung weiterleiten"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Forward the conversation by e-mail, or the focused message"
+msgstr "Die Unterhaltung oder die fokussierte Nachricht per E-Mail weiterleiten"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Forward this message"
+msgstr "Diese Nachricht weiterleiten"
+
+#: src/features/conversation/messages/Thread.tsx
+msgid "Forwarded by {author}"
+msgstr "Weitergeleitet von {author}"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Forwarded by e-mail"
+msgstr "Per E-Mail weitergeleitet"
 
 #: src/features/conversation/ChatView.tsx
 msgid "Forwarded to {label} as a note"
 msgstr "Als Notiz an {label} weitergeleitet"
+
+#: src/features/conversation/Participants.tsx
+msgid "Forwarded: answered a forward, not copied on replies"
+msgstr "Weitergeleitet: hat auf eine Weiterleitung geantwortet, steht bei Antworten nicht in Kopie"
 
 #: src/features/migrations/SwitchStep.tsx
 msgid "Forwarding"
@@ -7831,6 +7880,10 @@ msgstr "Vorfälle"
 #: src/features/status/IncidentsPage.tsx
 msgid "Incidents live on a status page. Create one first."
 msgstr "Vorfälle gehören zu einer Statusseite. Legen Sie zuerst eine an."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Include attachments"
+msgstr "Anhänge einschließen"
 
 #: src/features/settings/slack/SlackPage.tsx
 msgid "Include message text for {name}"
@@ -9189,6 +9242,10 @@ msgstr "Mitglieder"
 msgid "Members and invitations"
 msgstr "Mitglieder und Einladungen"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "Members only"
+msgstr "Nur für Mitglieder"
+
 #: src/features/conversation/composer/MentionMenu.tsx
 msgid "Mention a teammate"
 msgstr "Teammitglied erwähnen"
@@ -10520,6 +10577,10 @@ msgstr "Noch kein Monitor überwacht diese Seite"
 msgid "No monitors yet. Add one to let a check, a job or your monitoring set a component’s state."
 msgstr "Noch keine Monitore. Fügen Sie einen hinzu, damit eine Prüfung, ein Job oder Ihr Monitoring den Status einer Komponente setzt."
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "No note"
+msgstr "Keine Notiz"
+
 #: src/features/account/AccountPage.tsx
 msgid "No notifications in the last 90 days."
 msgstr "Keine Benachrichtigungen in den letzten 90 Tagen."
@@ -10985,6 +11046,10 @@ msgstr "Nicht verifiziert: Die Mail hat die Absenderprüfung nicht bestanden, di
 msgid "Note"
 msgstr "Notiz"
 
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Note (optional)"
+msgstr "Notiz (optional)"
+
 #: src/features/contact/ContactNotes.tsx
 msgid "Note about this contact"
 msgstr "Notiz zu diesem Kontakt"
@@ -11002,6 +11067,10 @@ msgstr "Notiz, nur das Team sieht sie"
 #: src/features/contact/ContactSheet.tsx
 msgid "Notes"
 msgstr "Notizen"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Notes are never forwarded. The contact does not see the forward or the answers; only your team does."
+msgstr "Notizen werden nie weitergeleitet. Der Kontakt sieht weder die Weiterleitung noch die Antworten; nur dein Team sieht sie."
 
 #: src/features/inbox/SidePanels.tsx
 msgid "Notes where a teammate mentioned you"
@@ -12612,6 +12681,10 @@ msgstr "Oben in Ihrer Liste angeheftet"
 #: src/features/status/IncidentDialog.tsx
 msgid "Plain text with links and line breaks, at most 5,000 characters."
 msgstr "Reiner Text mit Links und Zeilenumbrüchen, höchstens 5.000 Zeichen."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Plain text, shown above the forwarded mail."
+msgstr "Reiner Text, steht über der weitergeleiteten Mail."
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentDialog.tsx
@@ -14315,6 +14388,7 @@ msgstr "Als Ansicht speichern"
 msgid "Save changes"
 msgstr "Änderungen speichern"
 
+#: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 msgid "Save draft"
 msgstr "Entwurf speichern"
@@ -14633,6 +14707,7 @@ msgid "semicolons"
 msgstr "Semikolons"
 
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 msgid "Send"
 msgstr "Senden"
@@ -14916,6 +14991,14 @@ msgstr "Sendet seine Mail von"
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Sends on {local}"
 msgstr "Sendet am {local}"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Sends the latest messages of this conversation by e-mail to people outside Yuva."
+msgstr "Sendet die neuesten Nachrichten dieser Unterhaltung per E-Mail an Personen außerhalb von Yuva."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Sends this message by e-mail to people outside Yuva."
+msgstr "Sendet diese Nachricht per E-Mail an Personen außerhalb von Yuva."
 
 #. placeholder {0}: ch.email.smtp.host
 #: src/features/settings/channels/ChannelSummary.tsx
@@ -16550,6 +16633,10 @@ msgstr "Der Kontakt wurde gelöscht"
 msgid "The contact writes a message"
 msgstr "Der Kontakt schreibt eine Nachricht"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "The conversation"
+msgstr "Die Unterhaltung"
+
 #: src/components/common/Linked.tsx
 msgid "The conversations stay open. Customers get it right away and it cannot be recalled."
 msgstr "Die Unterhaltungen bleiben offen. Kunden erhalten die Antwort sofort, und sie lässt sich nicht zurückholen."
@@ -16693,6 +16780,10 @@ msgstr "Die Datei wurde abgelehnt."
 #: src/features/migrations/UploadStep.tsx
 msgid "The file's parts were deleted. Pick a corrected file to upload."
 msgstr "Die Teile der Datei wurden gelöscht. Wählen Sie eine korrigierte Datei zum Hochladen."
+
+#: src/components/common/text.ts
+msgid "The files of the forwarded messages are larger than 20 MiB together. Forward without attachments."
+msgstr "Die Dateien der weitergeleiteten Nachrichten sind zusammen größer als 20 MiB. Leite ohne Anhänge weiter."
 
 #: src/features/broadcasts/Composer.tsx
 msgid "The first line of the mail shows here when there is no preview text."
@@ -17761,6 +17852,10 @@ msgstr "Dieses Postfach verbindet sich nur über „Mit Microsoft anmelden“, d
 msgid "This member is not in the workspace any more."
 msgstr "Dieses Mitglied gehört nicht mehr zum Workspace."
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "This message"
+msgstr "Diese Nachricht"
+
 #: src/features/migrations/UploadStep.tsx
 msgid "This migration has ended, so nothing more can be uploaded. Start a new one for another file."
 msgstr "Diese Migration ist beendet, daher kann nichts mehr hochgeladen werden. Starten Sie eine neue für eine andere Datei."
@@ -17997,6 +18092,7 @@ msgid "TLS (port 465)"
 msgstr "TLS (Port 465)"
 
 #: src/features/conversation/composer/Recipients.tsx
+#: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
@@ -18508,6 +18604,10 @@ msgstr "Erreichbar seit {upSince}. Geben Sie Entwarnung, wenn Sie sicher sind."
 #: src/features/broadcasts/Import.tsx
 msgid "Up to {max} and 100,000 rows, with a header row. Excel files in Turkish or Western encodings and columns separated by commas, semicolons or tabs are read as they are."
 msgstr "Bis zu {max} und 100.000 Zeilen, mit Kopfzeile. Excel-Dateien in türkischer oder westlicher Kodierung und durch Kommas, Semikolons oder Tabs getrennte Spalten werden unverändert gelesen."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Up to 10 addresses. Press Enter after each one."
+msgstr "Bis zu 10 Adressen. Drücke nach jeder die Eingabetaste."
 
 #: src/features/reports/ReportsColumn.tsx
 msgid "Up to 13 months, by group"
@@ -19438,6 +19538,10 @@ msgstr "Windows-1254 (türkisches Excel)"
 msgid "With {name}"
 msgstr "Mit {name}"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "with attachments"
+msgstr "mit Anhängen"
+
 #: src/features/setup/email/EmailReceiveStep.tsx
 msgid "With Cloudflare Email Routing, deploy the Email Worker from edge/ of the Yuva repository and add a routing rule for the address with the action Send to a Worker. Any other mail server can post each message, signed with YUVA_INGRESS_SECRET, to:"
 msgstr "Stellen Sie bei Cloudflare Email Routing den Email Worker aus edge/ des Yuva-Repositorys bereit und fügen Sie eine Routing-Regel für die Adresse mit der Aktion „An einen Worker senden“ hinzu. Jeder andere Mailserver kann jede Nachricht, signiert mit YUVA_INGRESS_SECRET, posten an:"
@@ -19486,6 +19590,10 @@ msgstr "Innerhalb von Minuten"
 #: src/features/broadcasts/ListForm.tsx
 msgid "Without a confirmation anyone can type someone else's address into your form, and you cannot show that the owner of the address agreed. Keep it on unless your forms are only shown to people whose address you have already verified."
 msgstr "Ohne Bestätigung kann jeder die Adresse eines anderen in Ihr Formular eintippen, und Sie können nicht zeigen, dass der Inhaber der Adresse zugestimmt hat. Lassen Sie sie an, es sei denn, Ihre Formulare werden nur Personen gezeigt, deren Adresse Sie bereits verifiziert haben."
+
+#: src/features/conversation/messages/Thread.tsx
+msgid "without attachments"
+msgstr "ohne Anhänge"
 
 #: src/components/common/text.ts
 msgid "Won't do"

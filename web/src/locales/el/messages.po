@@ -213,6 +213,14 @@ msgstr "Ο/Η {actor} όρισε την κατάσταση σε {status}"
 msgid "{added} added · {out} left out"
 msgstr "Προστέθηκαν: {added} · παραλείφθηκαν: {out}"
 
+#: src/features/conversation/ForwardDialog.tsx
+msgid "{address} bounced or complained before. Remove it here, or clear it on the contact to forward there."
+msgstr "Η διεύθυνση {address} έχει επιστρέψει ή αναφερθεί ως ανεπιθύμητη στο παρελθόν. Αφαίρεσέ την εδώ ή καθάρισέ την από την επαφή για να προωθήσεις εκεί."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "{address} cannot be a recipient. It may be the conversation's contact, an address already copied on it, an address of this server, or not valid."
+msgstr "Η διεύθυνση {address} δεν μπορεί να είναι παραλήπτης. Μπορεί να είναι η επαφή της συνομιλίας, διεύθυνση που ήδη βρίσκεται σε κοινοποίηση, διεύθυνση αυτού του διακομιστή ή μη έγκυρη."
+
 #: src/features/migrations/DoneStep.tsx
 msgid "{address} is in Yuva"
 msgstr "Το {address} είναι ήδη στο Yuva"
@@ -2544,6 +2552,10 @@ msgstr "Απαντήστε και οργανώστε συνομιλίες, γρ�
 msgid "Answer cleared"
 msgstr "Η απάντηση διαγράφηκε"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "Answer to a forward from {author}"
+msgstr "Απάντηση σε προώθηση από {author}"
+
 #: src/features/feedback/FeedbackList.tsx
 msgid "answered"
 msgstr "απαντήθηκε"
@@ -3415,6 +3427,7 @@ msgstr "Όνομα καμπάνιας"
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactNotes.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/docs/discussions/FromConversation.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
@@ -6828,6 +6841,18 @@ msgstr "Προωθήστε όλη την εισερχόμενη αλληλογρ
 msgid "Forward as a note mentioning"
 msgstr "Προώθηση ως σημείωση με αναφορά στον/στην"
 
+#: src/app/Palette.tsx
+#: src/features/conversation/ConversationMenu.tsx
+#: src/features/conversation/messages/MessageActions.tsx
+msgid "Forward by e-mail…"
+msgstr "Προώθηση με e-mail…"
+
+#: src/features/conversation/messages/Thread.tsx
+#: src/features/inbox/AssistantsPage.tsx
+#: src/features/inbox/SidePanels.tsx
+msgid "Forward draft by {author}"
+msgstr "Πρόχειρο προώθησης από {author}"
+
 #: src/features/setup/email/EmailReceiveStep.tsx
 msgid "Forward from your mailbox"
 msgstr "Προώθηση από το γραμματοκιβώτιό σας"
@@ -6836,13 +6861,37 @@ msgstr "Προώθηση από το γραμματοκιβώτιό σας"
 msgid "Forward mail for this address to the Cloudflare Email Worker in edge/ of the Yuva repository, or to any mail server that posts each message to this server's ingress URL, signed with YUVA_INGRESS_SECRET:"
 msgstr "Προωθήστε την αλληλογραφία για αυτή τη διεύθυνση στο Cloudflare Email Worker στο edge/ του αποθετηρίου του Yuva ή σε οποιονδήποτε διακομιστή αλληλογραφίας που στέλνει κάθε μήνυμα στη διεύθυνση παραλαβής αυτού του διακομιστή, υπογεγραμμένο με YUVA_INGRESS_SECRET:"
 
-#: src/features/conversation/messages/MessageActions.tsx
-msgid "Forward to a teammate"
-msgstr "Προώθηση σε συνάδελφο"
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Forward saved as a draft"
+msgstr "Η προώθηση αποθηκεύτηκε ως πρόχειρο"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Forward the conversation"
+msgstr "Προώθηση της συνομιλίας"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Forward the conversation by e-mail, or the focused message"
+msgstr "Προώθηση της συνομιλίας ή του επιλεγμένου μηνύματος με e-mail"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Forward this message"
+msgstr "Προώθηση αυτού του μηνύματος"
+
+#: src/features/conversation/messages/Thread.tsx
+msgid "Forwarded by {author}"
+msgstr "Προωθήθηκε από {author}"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Forwarded by e-mail"
+msgstr "Προωθήθηκε με e-mail"
 
 #: src/features/conversation/ChatView.tsx
 msgid "Forwarded to {label} as a note"
 msgstr "Προωθήθηκε στον/στην {label} ως σημείωση"
+
+#: src/features/conversation/Participants.tsx
+msgid "Forwarded: answered a forward, not copied on replies"
+msgstr "Προωθήθηκε: απάντησε σε προώθηση, δεν κοινοποιείται στις απαντήσεις"
 
 #: src/features/migrations/SwitchStep.tsx
 msgid "Forwarding"
@@ -7831,6 +7880,10 @@ msgstr "Περιστατικά"
 #: src/features/status/IncidentsPage.tsx
 msgid "Incidents live on a status page. Create one first."
 msgstr "Τα περιστατικά ζουν σε μια σελίδα κατάστασης. Δημιουργήστε πρώτα μία."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Include attachments"
+msgstr "Συμπερίληψη συνημμένων"
 
 #: src/features/settings/slack/SlackPage.tsx
 msgid "Include message text for {name}"
@@ -9189,6 +9242,10 @@ msgstr "Μέλη"
 msgid "Members and invitations"
 msgstr "Μέλη και προσκλήσεις"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "Members only"
+msgstr "Μόνο για μέλη"
+
 #: src/features/conversation/composer/MentionMenu.tsx
 msgid "Mention a teammate"
 msgstr "Αναφορά σε συνάδελφο"
@@ -10520,6 +10577,10 @@ msgstr "Καμία παρακολούθηση δεν παρακολουθεί α
 msgid "No monitors yet. Add one to let a check, a job or your monitoring set a component’s state."
 msgstr "Δεν υπάρχουν ακόμη παρακολουθήσεις. Προσθέστε μία ώστε ένας έλεγχος, μια εργασία ή η δική σας παρακολούθηση να ορίζει την κατάσταση ενός στοιχείου."
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "No note"
+msgstr "Χωρίς σημείωση"
+
 #: src/features/account/AccountPage.tsx
 msgid "No notifications in the last 90 days."
 msgstr "Καμία ειδοποίηση τις τελευταίες 90 ημέρες."
@@ -10985,6 +11046,10 @@ msgstr "Μη επαληθευμένη: το μήνυμα δεν πέρασε τ�
 msgid "Note"
 msgstr "Σημείωση"
 
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Note (optional)"
+msgstr "Σημείωση (προαιρετική)"
+
 #: src/features/contact/ContactNotes.tsx
 msgid "Note about this contact"
 msgstr "Σημείωση για αυτή την επαφή"
@@ -11002,6 +11067,10 @@ msgstr "Σημείωση, την βλέπει μόνο η ομάδα"
 #: src/features/contact/ContactSheet.tsx
 msgid "Notes"
 msgstr "Σημειώσεις"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Notes are never forwarded. The contact does not see the forward or the answers; only your team does."
+msgstr "Οι σημειώσεις δεν προωθούνται ποτέ. Η επαφή δεν βλέπει την προώθηση ούτε τις απαντήσεις· τις βλέπει μόνο η ομάδα σου."
 
 #: src/features/inbox/SidePanels.tsx
 msgid "Notes where a teammate mentioned you"
@@ -12612,6 +12681,10 @@ msgstr "Καρφιτσωμένο στην κορυφή της λίστας σα�
 #: src/features/status/IncidentDialog.tsx
 msgid "Plain text with links and line breaks, at most 5,000 characters."
 msgstr "Απλό κείμενο με συνδέσμους και αλλαγές γραμμής, έως 5.000 χαρακτήρες."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Plain text, shown above the forwarded mail."
+msgstr "Απλό κείμενο, εμφανίζεται πάνω από το προωθημένο μήνυμα."
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentDialog.tsx
@@ -14315,6 +14388,7 @@ msgstr "Αποθήκευση ως προβολή"
 msgid "Save changes"
 msgstr "Αποθήκευση αλλαγών"
 
+#: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 msgid "Save draft"
 msgstr "Αποθήκευση πρόχειρου"
@@ -14633,6 +14707,7 @@ msgid "semicolons"
 msgstr "ερωτηματικά"
 
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 msgid "Send"
 msgstr "Αποστολή"
@@ -14916,6 +14991,14 @@ msgstr "Στέλνει την αλληλογραφία του από"
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Sends on {local}"
 msgstr "Στέλνεται στις {local}"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Sends the latest messages of this conversation by e-mail to people outside Yuva."
+msgstr "Στέλνει τα πιο πρόσφατα μηνύματα αυτής της συνομιλίας με e-mail σε άτομα εκτός Yuva."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Sends this message by e-mail to people outside Yuva."
+msgstr "Στέλνει αυτό το μήνυμα με e-mail σε άτομα εκτός Yuva."
 
 #. placeholder {0}: ch.email.smtp.host
 #: src/features/settings/channels/ChannelSummary.tsx
@@ -16550,6 +16633,10 @@ msgstr "Η επαφή διαγράφηκε"
 msgid "The contact writes a message"
 msgstr "Η επαφή γράφει ένα μήνυμα"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "The conversation"
+msgstr "Η συνομιλία"
+
 #: src/components/common/Linked.tsx
 msgid "The conversations stay open. Customers get it right away and it cannot be recalled."
 msgstr "Οι συνομιλίες μένουν ανοιχτές. Οι πελάτες λαμβάνουν την απάντηση αμέσως και δεν μπορεί να ανακληθεί."
@@ -16693,6 +16780,10 @@ msgstr "Το αρχείο απορρίφθηκε."
 #: src/features/migrations/UploadStep.tsx
 msgid "The file's parts were deleted. Pick a corrected file to upload."
 msgstr "Τα μέρη του αρχείου διαγράφηκαν. Επιλέξτε διορθωμένο αρχείο για μεταφόρτωση."
+
+#: src/components/common/text.ts
+msgid "The files of the forwarded messages are larger than 20 MiB together. Forward without attachments."
+msgstr "Τα αρχεία των προωθούμενων μηνυμάτων ξεπερνούν μαζί τα 20 MiB. Προώθησε χωρίς συνημμένα."
 
 #: src/features/broadcasts/Composer.tsx
 msgid "The first line of the mail shows here when there is no preview text."
@@ -17761,6 +17852,10 @@ msgstr "Αυτό το γραμματοκιβώτιο συνδέεται μόνο
 msgid "This member is not in the workspace any more."
 msgstr "Αυτό το μέλος δεν είναι πια στον χώρο εργασίας."
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "This message"
+msgstr "Αυτό το μήνυμα"
+
 #: src/features/migrations/UploadStep.tsx
 msgid "This migration has ended, so nothing more can be uploaded. Start a new one for another file."
 msgstr "Αυτή η μεταφορά έχει τελειώσει, οπότε δεν μπορεί να ανέβει τίποτα άλλο. Ξεκινήστε νέα για άλλο αρχείο."
@@ -17997,6 +18092,7 @@ msgid "TLS (port 465)"
 msgstr "TLS (θύρα 465)"
 
 #: src/features/conversation/composer/Recipients.tsx
+#: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
@@ -18508,6 +18604,10 @@ msgstr "Σε λειτουργία από {upSince}. Δημοσιεύστε τη�
 #: src/features/broadcasts/Import.tsx
 msgid "Up to {max} and 100,000 rows, with a header row. Excel files in Turkish or Western encodings and columns separated by commas, semicolons or tabs are read as they are."
 msgstr "Έως {max} και 100.000 γραμμές, με γραμμή κεφαλίδας. Τα αρχεία Excel σε τουρκική ή δυτική κωδικοποίηση και οι στήλες που χωρίζονται με κόμματα, ερωτηματικά ή tab διαβάζονται ως έχουν."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Up to 10 addresses. Press Enter after each one."
+msgstr "Έως 10 διευθύνσεις. Πάτα Enter μετά από κάθε μία."
 
 #: src/features/reports/ReportsColumn.tsx
 msgid "Up to 13 months, by group"
@@ -19438,6 +19538,10 @@ msgstr "Windows-1254 (τουρκικό Excel)"
 msgid "With {name}"
 msgstr "Με τον/την {name}"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "with attachments"
+msgstr "με συνημμένα"
+
 #: src/features/setup/email/EmailReceiveStep.tsx
 msgid "With Cloudflare Email Routing, deploy the Email Worker from edge/ of the Yuva repository and add a routing rule for the address with the action Send to a Worker. Any other mail server can post each message, signed with YUVA_INGRESS_SECRET, to:"
 msgstr "Με το Cloudflare Email Routing, αναπτύξτε το Email Worker από το edge/ του αποθετηρίου του Yuva και προσθέστε κανόνα δρομολόγησης για τη διεύθυνση με ενέργεια Send to a Worker. Οποιοσδήποτε άλλος διακομιστής αλληλογραφίας μπορεί να στέλνει κάθε μήνυμα, υπογεγραμμένο με YUVA_INGRESS_SECRET, στο:"
@@ -19486,6 +19590,10 @@ msgstr "Εντός λεπτών"
 #: src/features/broadcasts/ListForm.tsx
 msgid "Without a confirmation anyone can type someone else's address into your form, and you cannot show that the owner of the address agreed. Keep it on unless your forms are only shown to people whose address you have already verified."
 msgstr "Χωρίς επιβεβαίωση, οποιοσδήποτε μπορεί να πληκτρολογήσει τη διεύθυνση κάποιου άλλου στη φόρμα σας και δεν μπορείτε να δείξετε ότι ο κάτοχος της διεύθυνσης συμφώνησε. Κρατήστε την ενεργή εκτός αν οι φόρμες σας εμφανίζονται μόνο σε άτομα των οποίων έχετε ήδη επαληθεύσει τη διεύθυνση."
+
+#: src/features/conversation/messages/Thread.tsx
+msgid "without attachments"
+msgstr "χωρίς συνημμένα"
 
 #: src/components/common/text.ts
 msgid "Won't do"

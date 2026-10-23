@@ -213,6 +213,14 @@ msgstr "{actor} az állapotot erre állította: {status}"
 msgid "{added} added · {out} left out"
 msgstr "Hozzáadva: {added} · kihagyva: {out}"
 
+#: src/features/conversation/ForwardDialog.tsx
+msgid "{address} bounced or complained before. Remove it here, or clear it on the contact to forward there."
+msgstr "A(z) {address} cím korábban visszapattant vagy panaszt kapott. Távolítsd el innen, vagy töröld a kapcsolatnál, hogy oda továbbíthass."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "{address} cannot be a recipient. It may be the conversation's contact, an address already copied on it, an address of this server, or not valid."
+msgstr "A(z) {address} nem lehet címzett. Lehet a beszélgetés kapcsolata, egy már másolatban lévő cím, e szerver címe, vagy érvénytelen."
+
 #: src/features/migrations/DoneStep.tsx
 msgid "{address} is in Yuva"
 msgstr "{address} már a Yuvában van"
@@ -2544,6 +2552,10 @@ msgstr "Válaszolj a beszélgetésekre és rendezd őket, írj jegyzeteket, tart
 msgid "Answer cleared"
 msgstr "Válasz törölve"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "Answer to a forward from {author}"
+msgstr "Válasz {author} továbbítására"
+
 #: src/features/feedback/FeedbackList.tsx
 msgid "answered"
 msgstr "megválaszolva"
@@ -3415,6 +3427,7 @@ msgstr "Kampány neve"
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactNotes.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/docs/discussions/FromConversation.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
@@ -6828,6 +6841,18 @@ msgstr "Irányítsd át az összes bejövő levelet az alábbi címre, és tarts
 msgid "Forward as a note mentioning"
 msgstr "Továbbítás megjegyzésként említéssel"
 
+#: src/app/Palette.tsx
+#: src/features/conversation/ConversationMenu.tsx
+#: src/features/conversation/messages/MessageActions.tsx
+msgid "Forward by e-mail…"
+msgstr "Továbbítás e-mailben…"
+
+#: src/features/conversation/messages/Thread.tsx
+#: src/features/inbox/AssistantsPage.tsx
+#: src/features/inbox/SidePanels.tsx
+msgid "Forward draft by {author}"
+msgstr "{author} továbbítási piszkozata"
+
 #: src/features/setup/email/EmailReceiveStep.tsx
 msgid "Forward from your mailbox"
 msgstr "Átirányítás a postafiókodból"
@@ -6836,13 +6861,37 @@ msgstr "Átirányítás a postafiókodból"
 msgid "Forward mail for this address to the Cloudflare Email Worker in edge/ of the Yuva repository, or to any mail server that posts each message to this server's ingress URL, signed with YUVA_INGRESS_SECRET:"
 msgstr "Irányítsd át a cím leveleit a Yuva-tárház edge/ mappájában lévő Cloudflare Email Workerre, vagy bármely levelezőszerverre, amely minden üzenetet YUVA_INGRESS_SECRET-tel aláírva ennek a szervernek az ingress URL-jére küld:"
 
-#: src/features/conversation/messages/MessageActions.tsx
-msgid "Forward to a teammate"
-msgstr "Továbbítás kollégának"
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Forward saved as a draft"
+msgstr "A továbbítás piszkozatként mentve"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Forward the conversation"
+msgstr "Beszélgetés továbbítása"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Forward the conversation by e-mail, or the focused message"
+msgstr "A beszélgetés vagy a kijelölt üzenet továbbítása e-mailben"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Forward this message"
+msgstr "Az üzenet továbbítása"
+
+#: src/features/conversation/messages/Thread.tsx
+msgid "Forwarded by {author}"
+msgstr "Továbbította: {author}"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Forwarded by e-mail"
+msgstr "Továbbítva e-mailben"
 
 #: src/features/conversation/ChatView.tsx
 msgid "Forwarded to {label} as a note"
 msgstr "Megjegyzésként továbbítva ide: {label}"
+
+#: src/features/conversation/Participants.tsx
+msgid "Forwarded: answered a forward, not copied on replies"
+msgstr "Továbbítva: válaszolt egy továbbításra, a válaszok másolatát nem kapja"
 
 #: src/features/migrations/SwitchStep.tsx
 msgid "Forwarding"
@@ -7831,6 +7880,10 @@ msgstr "Incidensek"
 #: src/features/status/IncidentsPage.tsx
 msgid "Incidents live on a status page. Create one first."
 msgstr "Az incidensek egy állapotoldalon élnek. Előbb hozzon létre egyet."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Include attachments"
+msgstr "Mellékletekkel együtt"
 
 #: src/features/settings/slack/SlackPage.tsx
 msgid "Include message text for {name}"
@@ -9189,6 +9242,10 @@ msgstr "Tagok"
 msgid "Members and invitations"
 msgstr "Tagok és meghívók"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "Members only"
+msgstr "Csak tagoknak"
+
 #: src/features/conversation/composer/MentionMenu.tsx
 msgid "Mention a teammate"
 msgstr "Kolléga megemlítése"
@@ -10520,6 +10577,10 @@ msgstr "Ezt az oldalt még nem figyeli figyelő"
 msgid "No monitors yet. Add one to let a check, a job or your monitoring set a component’s state."
 msgstr "Még nincs figyelő. Adjon hozzá egyet, hogy egy ellenőrzés, egy feladat vagy a saját megfigyelése állítsa egy komponens állapotát."
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "No note"
+msgstr "Nincs jegyzet"
+
 #: src/features/account/AccountPage.tsx
 msgid "No notifications in the last 90 days."
 msgstr "Az elmúlt 90 napban nincs értesítés."
@@ -10985,6 +11046,10 @@ msgstr "Nem ellenőrzött: a levél nem ment át a feladó-ellenőrzésen, ezér
 msgid "Note"
 msgstr "Jegyzet"
 
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Note (optional)"
+msgstr "Jegyzet (nem kötelező)"
+
 #: src/features/contact/ContactNotes.tsx
 msgid "Note about this contact"
 msgstr "Megjegyzés erről a kontaktról"
@@ -11002,6 +11067,10 @@ msgstr "Megjegyzés, csak a csapat látja"
 #: src/features/contact/ContactSheet.tsx
 msgid "Notes"
 msgstr "Jegyzetek"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Notes are never forwarded. The contact does not see the forward or the answers; only your team does."
+msgstr "A jegyzeteket soha nem továbbítjuk. A kapcsolat nem látja a továbbítást és a válaszokat; csak a csapatod."
 
 #: src/features/inbox/SidePanels.tsx
 msgid "Notes where a teammate mentioned you"
@@ -12612,6 +12681,10 @@ msgstr "A listád tetejére rögzítve"
 #: src/features/status/IncidentDialog.tsx
 msgid "Plain text with links and line breaks, at most 5,000 characters."
 msgstr "Sima szöveg hivatkozásokkal és sortörésekkel, legfeljebb 5000 karakter."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Plain text, shown above the forwarded mail."
+msgstr "Egyszerű szöveg, a továbbított levél fölött jelenik meg."
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentDialog.tsx
@@ -14315,6 +14388,7 @@ msgstr "Mentés nézetként"
 msgid "Save changes"
 msgstr "Módosítások mentése"
 
+#: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 msgid "Save draft"
 msgstr "Piszkozat mentése"
@@ -14633,6 +14707,7 @@ msgid "semicolons"
 msgstr "pontosvesszők"
 
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 msgid "Send"
 msgstr "Küldés"
@@ -14916,6 +14991,14 @@ msgstr "Leveleit innen küldi:"
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Sends on {local}"
 msgstr "Küldés: {local}"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Sends the latest messages of this conversation by e-mail to people outside Yuva."
+msgstr "A beszélgetés legutóbbi üzeneteit e-mailben elküldi a Yuván kívüli embereknek."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Sends this message by e-mail to people outside Yuva."
+msgstr "Az üzenetet e-mailben elküldi a Yuván kívüli embereknek."
 
 #. placeholder {0}: ch.email.smtp.host
 #: src/features/settings/channels/ChannelSummary.tsx
@@ -16550,6 +16633,10 @@ msgstr "A kontaktot törölték"
 msgid "The contact writes a message"
 msgstr "A kapcsolattartó üzenetet ír"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "The conversation"
+msgstr "A beszélgetés"
+
 #: src/components/common/Linked.tsx
 msgid "The conversations stay open. Customers get it right away and it cannot be recalled."
 msgstr "A beszélgetések nyitva maradnak. Az ügyfelek azonnal megkapják a választ, és nem vonható vissza."
@@ -16693,6 +16780,10 @@ msgstr "A fájlt elutasították."
 #: src/features/migrations/UploadStep.tsx
 msgid "The file's parts were deleted. Pick a corrected file to upload."
 msgstr "A fájl részeit törölték. Válassz egy javított fájlt a feltöltéshez."
+
+#: src/components/common/text.ts
+msgid "The files of the forwarded messages are larger than 20 MiB together. Forward without attachments."
+msgstr "A továbbított üzenetek fájljai együtt nagyobbak 20 MiB-nál. Továbbítsd melléklet nélkül."
 
 #: src/features/broadcasts/Composer.tsx
 msgid "The first line of the mail shows here when there is no preview text."
@@ -17761,6 +17852,10 @@ msgstr "Ez a postafiók csak a „Bejelentkezés Microsofttal” módon csatlako
 msgid "This member is not in the workspace any more."
 msgstr "Ez a tag már nincs a munkaterületen."
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "This message"
+msgstr "Ez az üzenet"
+
 #: src/features/migrations/UploadStep.tsx
 msgid "This migration has ended, so nothing more can be uploaded. Start a new one for another file."
 msgstr "Ez az átvitel véget ért, így semmi több nem tölthető fel. Másik fájlhoz indíts újat."
@@ -17997,6 +18092,7 @@ msgid "TLS (port 465)"
 msgstr "TLS (465-ös port)"
 
 #: src/features/conversation/composer/Recipients.tsx
+#: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
@@ -18508,6 +18604,10 @@ msgstr "Elérhető ekkortól: {upSince}. Ha biztos benne, tegye közzé, hogy mi
 #: src/features/broadcasts/Import.tsx
 msgid "Up to {max} and 100,000 rows, with a header row. Excel files in Turkish or Western encodings and columns separated by commas, semicolons or tabs are read as they are."
 msgstr "Legfeljebb {max} és 100 000 sor, fejlécsorral. A török vagy nyugati kódolású Excel-fájlok, valamint a vesszővel, pontosvesszővel vagy tabulátorral elválasztott oszlopok úgy olvasódnak, ahogy vannak."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Up to 10 addresses. Press Enter after each one."
+msgstr "Legfeljebb 10 cím. Mindegyik után nyomj Entert."
 
 #: src/features/reports/ReportsColumn.tsx
 msgid "Up to 13 months, by group"
@@ -19438,6 +19538,10 @@ msgstr "Windows-1254 (török Excel)"
 msgid "With {name}"
 msgstr "Vele: {name}"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "with attachments"
+msgstr "mellékletekkel"
+
 #: src/features/setup/email/EmailReceiveStep.tsx
 msgid "With Cloudflare Email Routing, deploy the Email Worker from edge/ of the Yuva repository and add a routing rule for the address with the action Send to a Worker. Any other mail server can post each message, signed with YUVA_INGRESS_SECRET, to:"
 msgstr "A Cloudflare Email Routinggal telepítsd az Email Workert a Yuva-tárház edge/ mappájából, és adj hozzá útválasztási szabályt a címhez a Send to a Worker művelettel. Bármely más levelezőszerver elküldheti az egyes üzeneteket, YUVA_INGRESS_SECRET-tel aláírva, ide:"
@@ -19486,6 +19590,10 @@ msgstr "Percek alatt"
 #: src/features/broadcasts/ListForm.tsx
 msgid "Without a confirmation anyone can type someone else's address into your form, and you cannot show that the owner of the address agreed. Keep it on unless your forms are only shown to people whose address you have already verified."
 msgstr "Megerősítés nélkül bárki beírhatja valaki más címét az űrlapodba, és nem tudod bizonyítani, hogy a cím tulajdonosa beleegyezett. Hagyd bekapcsolva, hacsak az űrlapjaidat nem csak olyan embereknek mutatod, akiknek a címét már ellenőrizted."
+
+#: src/features/conversation/messages/Thread.tsx
+msgid "without attachments"
+msgstr "melléklet nélkül"
 
 #: src/components/common/text.ts
 msgid "Won't do"

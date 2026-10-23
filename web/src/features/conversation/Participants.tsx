@@ -32,6 +32,11 @@ function Row({
         <span className={p.name ? "truncate text-caption text-muted-foreground" : "truncate"} title={p.email}>
           {p.email}
         </span>
+        {p.role === "forwarded" && (
+          <span className="text-caption text-note-ink" data-testid="participant-forwarded">
+            <Trans>Forwarded: answered a forward, not copied on replies</Trans>
+          </span>
+        )}
         {suggested && (
           <span className="text-caption text-warning" data-testid="participant-unverified">
             <Trans>Not verified: the mail did not pass the sender check, so this address may be forged.</Trans>

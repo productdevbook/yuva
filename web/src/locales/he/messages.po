@@ -213,6 +213,14 @@ msgstr "{actor} שינה/תה את הסטטוס ל{status}"
 msgid "{added} added · {out} left out"
 msgstr "נוספו {added} · דולגו {out}"
 
+#: src/features/conversation/ForwardDialog.tsx
+msgid "{address} bounced or complained before. Remove it here, or clear it on the contact to forward there."
+msgstr "הכתובת {address} החזירה הודעה או התלוננה בעבר. הסירו אותה כאן, או נקו אותה אצל איש הקשר כדי להעביר אליה."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "{address} cannot be a recipient. It may be the conversation's contact, an address already copied on it, an address of this server, or not valid."
+msgstr "הכתובת {address} לא יכולה להיות נמענת. ייתכן שזהו איש הקשר של השיחה, כתובת שכבר מועתקת בה, כתובת של השרת הזה, או כתובת לא תקינה."
+
 #: src/features/migrations/DoneStep.tsx
 msgid "{address} is in Yuva"
 msgstr "{address} כבר ב-Yuva"
@@ -2544,6 +2552,10 @@ msgstr "ענה על שיחות וארגן אותן, כתוב הערות, ועד�
 msgid "Answer cleared"
 msgstr "התשובה נוקתה"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "Answer to a forward from {author}"
+msgstr "תשובה להעברה מאת {author}"
+
 #: src/features/feedback/FeedbackList.tsx
 msgid "answered"
 msgstr "נענתה"
@@ -3415,6 +3427,7 @@ msgstr "שם הקמפיין"
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactNotes.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/docs/discussions/FromConversation.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
@@ -6828,6 +6841,18 @@ msgstr "העבר את כל הדואר הנכנס לכתובת שלמטה ושמ�
 msgid "Forward as a note mentioning"
 msgstr "העברה כהערה עם אזכור של"
 
+#: src/app/Palette.tsx
+#: src/features/conversation/ConversationMenu.tsx
+#: src/features/conversation/messages/MessageActions.tsx
+msgid "Forward by e-mail…"
+msgstr "העברה בדוא״ל…"
+
+#: src/features/conversation/messages/Thread.tsx
+#: src/features/inbox/AssistantsPage.tsx
+#: src/features/inbox/SidePanels.tsx
+msgid "Forward draft by {author}"
+msgstr "טיוטת העברה מאת {author}"
+
 #: src/features/setup/email/EmailReceiveStep.tsx
 msgid "Forward from your mailbox"
 msgstr "העברה מתיבת הדואר שלך"
@@ -6836,13 +6861,37 @@ msgstr "העברה מתיבת הדואר שלך"
 msgid "Forward mail for this address to the Cloudflare Email Worker in edge/ of the Yuva repository, or to any mail server that posts each message to this server's ingress URL, signed with YUVA_INGRESS_SECRET:"
 msgstr "העבר דואר של הכתובת הזאת ל-Cloudflare Email Worker שבתיקיית edge/ במאגר של Yuva, או לכל שרת דואר ששולח כל הודעה לכתובת הקליטה של השרת הזה, חתומה עם YUVA_INGRESS_SECRET:"
 
-#: src/features/conversation/messages/MessageActions.tsx
-msgid "Forward to a teammate"
-msgstr "העברה לחבר צוות"
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Forward saved as a draft"
+msgstr "ההעברה נשמרה כטיוטה"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Forward the conversation"
+msgstr "העברת השיחה"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Forward the conversation by e-mail, or the focused message"
+msgstr "העברת השיחה או ההודעה הממוקדת בדוא״ל"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Forward this message"
+msgstr "העברת ההודעה הזאת"
+
+#: src/features/conversation/messages/Thread.tsx
+msgid "Forwarded by {author}"
+msgstr "הועבר על ידי {author}"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Forwarded by e-mail"
+msgstr "הועבר בדוא״ל"
 
 #: src/features/conversation/ChatView.tsx
 msgid "Forwarded to {label} as a note"
 msgstr "הועבר ל-{label} כהערה"
+
+#: src/features/conversation/Participants.tsx
+msgid "Forwarded: answered a forward, not copied on replies"
+msgstr "הועבר: השיב להעברה, לא מועתק בתשובות"
 
 #: src/features/migrations/SwitchStep.tsx
 msgid "Forwarding"
@@ -7831,6 +7880,10 @@ msgstr "אירועים"
 #: src/features/status/IncidentsPage.tsx
 msgid "Incidents live on a status page. Create one first."
 msgstr "אירועים שייכים לדף סטטוס. צרו אחד קודם."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Include attachments"
+msgstr "לכלול קבצים מצורפים"
 
 #: src/features/settings/slack/SlackPage.tsx
 msgid "Include message text for {name}"
@@ -9189,6 +9242,10 @@ msgstr "חברי צוות"
 msgid "Members and invitations"
 msgstr "חברים והזמנות"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "Members only"
+msgstr "לחברי הצוות בלבד"
+
 #: src/features/conversation/composer/MentionMenu.tsx
 msgid "Mention a teammate"
 msgstr "תיוג חבר צוות"
@@ -10520,6 +10577,10 @@ msgstr "עדיין אין מוניטור שמנטר את הדף הזה"
 msgid "No monitors yet. Add one to let a check, a job or your monitoring set a component’s state."
 msgstr "עדיין אין מוניטורים. הוסיפו אחד כדי שבדיקה, משימה או הניטור שלכם יקבעו את מצב הרכיב."
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "No note"
+msgstr "ללא הערה"
+
 #: src/features/account/AccountPage.tsx
 msgid "No notifications in the last 90 days."
 msgstr "אין התראות ב-90 הימים האחרונים."
@@ -10985,6 +11046,10 @@ msgstr "לא מאומת: ההודעה לא עברה את בדיקת השולח, 
 msgid "Note"
 msgstr "הערה"
 
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Note (optional)"
+msgstr "הערה (אופציונלי)"
+
 #: src/features/contact/ContactNotes.tsx
 msgid "Note about this contact"
 msgstr "הערה על איש הקשר הזה"
@@ -11002,6 +11067,10 @@ msgstr "הערה, רק הצוות רואה אותה"
 #: src/features/contact/ContactSheet.tsx
 msgid "Notes"
 msgstr "הערות"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Notes are never forwarded. The contact does not see the forward or the answers; only your team does."
+msgstr "הערות לעולם לא מועברות. איש הקשר לא רואה את ההעברה או את התשובות; רק הצוות שלכם רואה."
 
 #: src/features/inbox/SidePanels.tsx
 msgid "Notes where a teammate mentioned you"
@@ -12612,6 +12681,10 @@ msgstr "מוצמד לראש הרשימה שלך"
 #: src/features/status/IncidentDialog.tsx
 msgid "Plain text with links and line breaks, at most 5,000 characters."
 msgstr "טקסט רגיל עם קישורים ושבירות שורה, עד 5,000 תווים."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Plain text, shown above the forwarded mail."
+msgstr "טקסט פשוט, מוצג מעל ההודעה המועברת."
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentDialog.tsx
@@ -14315,6 +14388,7 @@ msgstr "שמירה כתצוגה"
 msgid "Save changes"
 msgstr "שמירת שינויים"
 
+#: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 msgid "Save draft"
 msgstr "שמירת טיוטה"
@@ -14633,6 +14707,7 @@ msgid "semicolons"
 msgstr "נקודה-פסיק"
 
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 msgid "Send"
 msgstr "שליחה"
@@ -14916,6 +14991,14 @@ msgstr "שולח את הדואר שלו מ"
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Sends on {local}"
 msgstr "נשלח ב-{local}"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Sends the latest messages of this conversation by e-mail to people outside Yuva."
+msgstr "שולח בדוא״ל את ההודעות האחרונות בשיחה הזאת לאנשים מחוץ ל-Yuva."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Sends this message by e-mail to people outside Yuva."
+msgstr "שולח בדוא״ל את ההודעה הזאת לאנשים מחוץ ל-Yuva."
 
 #. placeholder {0}: ch.email.smtp.host
 #: src/features/settings/channels/ChannelSummary.tsx
@@ -16550,6 +16633,10 @@ msgstr "איש הקשר נמחק"
 msgid "The contact writes a message"
 msgstr "איש הקשר כותב הודעה"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "The conversation"
+msgstr "השיחה"
+
 #: src/components/common/Linked.tsx
 msgid "The conversations stay open. Customers get it right away and it cannot be recalled."
 msgstr "השיחות נשארות פתוחות. הלקוחות מקבלים את התשובה מיד ואי אפשר לבטל אותה."
@@ -16693,6 +16780,10 @@ msgstr "הקובץ נדחה."
 #: src/features/migrations/UploadStep.tsx
 msgid "The file's parts were deleted. Pick a corrected file to upload."
 msgstr "חלקי הקובץ נמחקו. בחר קובץ מתוקן להעלאה."
+
+#: src/components/common/text.ts
+msgid "The files of the forwarded messages are larger than 20 MiB together. Forward without attachments."
+msgstr "הקבצים של ההודעות המועברות גדולים יחד מ-20 MiB. העבירו בלי קבצים מצורפים."
 
 #: src/features/broadcasts/Composer.tsx
 msgid "The first line of the mail shows here when there is no preview text."
@@ -17761,6 +17852,10 @@ msgstr "תיבת הדואר הזאת מתחברת רק עם „כניסה עם M
 msgid "This member is not in the workspace any more."
 msgstr "חבר הצוות הזה כבר לא נמצא בסביבת העבודה."
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "This message"
+msgstr "ההודעה הזאת"
+
 #: src/features/migrations/UploadStep.tsx
 msgid "This migration has ended, so nothing more can be uploaded. Start a new one for another file."
 msgstr "ההעברה הזאת הסתיימה, ולכן אי אפשר להעלות עוד. התחל חדשה לקובץ אחר."
@@ -17997,6 +18092,7 @@ msgid "TLS (port 465)"
 msgstr "TLS (פורט 465)"
 
 #: src/features/conversation/composer/Recipients.tsx
+#: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
@@ -18508,6 +18604,10 @@ msgstr "פועל מאז {upSince}. פרסמו הודעה שהכול תקין כ�
 #: src/features/broadcasts/Import.tsx
 msgid "Up to {max} and 100,000 rows, with a header row. Excel files in Turkish or Western encodings and columns separated by commas, semicolons or tabs are read as they are."
 msgstr "עד {max} ו-100,000 שורות, עם שורת כותרת. קובצי Excel בקידוד טורקי או מערבי ועמודות המופרדות בפסיקים, נקודה-פסיק או טאבים נקראים כפי שהם."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Up to 10 addresses. Press Enter after each one."
+msgstr "עד 10 כתובות. לחצו Enter אחרי כל אחת."
 
 #: src/features/reports/ReportsColumn.tsx
 msgid "Up to 13 months, by group"
@@ -19438,6 +19538,10 @@ msgstr "Windows-1254 (Excel טורקי)"
 msgid "With {name}"
 msgstr "עם {name}"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "with attachments"
+msgstr "עם קבצים מצורפים"
+
 #: src/features/setup/email/EmailReceiveStep.tsx
 msgid "With Cloudflare Email Routing, deploy the Email Worker from edge/ of the Yuva repository and add a routing rule for the address with the action Send to a Worker. Any other mail server can post each message, signed with YUVA_INGRESS_SECRET, to:"
 msgstr "עם Cloudflare Email Routing, פרוס את ה-Email Worker מ-edge/ במאגר של Yuva והוסף כלל ניתוב לכתובת עם הפעולה Send to a Worker. כל שרת דואר אחר יכול לשלוח כל הודעה, חתומה עם YUVA_INGRESS_SECRET, אל:"
@@ -19486,6 +19590,10 @@ msgstr "תוך דקות"
 #: src/features/broadcasts/ListForm.tsx
 msgid "Without a confirmation anyone can type someone else's address into your form, and you cannot show that the owner of the address agreed. Keep it on unless your forms are only shown to people whose address you have already verified."
 msgstr "בלי אישור כל אחד יכול להקליד כתובת של מישהו אחר בטופס שלך, ואי אפשר להראות שבעל הכתובת הסכים. השאר מופעל אלא אם הטפסים שלך מוצגים רק לאנשים שכבר אימתת את הכתובת שלהם."
+
+#: src/features/conversation/messages/Thread.tsx
+msgid "without attachments"
+msgstr "בלי קבצים מצורפים"
 
 #: src/components/common/text.ts
 msgid "Won't do"

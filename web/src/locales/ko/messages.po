@@ -213,6 +213,14 @@ msgstr "{actor}님이 상태를 {status}(으)로 변경했습니다"
 msgid "{added} added · {out} left out"
 msgstr "{added}개 추가 · {out}개 제외"
 
+#: src/features/conversation/ForwardDialog.tsx
+msgid "{address} bounced or complained before. Remove it here, or clear it on the contact to forward there."
+msgstr "{address} 주소는 이전에 반송되었거나 신고된 적이 있습니다. 여기서 제거하거나, 연락처에서 지우면 그 주소로 전달할 수 있습니다."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "{address} cannot be a recipient. It may be the conversation's contact, an address already copied on it, an address of this server, or not valid."
+msgstr "{address} 주소는 수신자가 될 수 없습니다. 대화의 연락처, 이미 참조에 들어 있는 주소, 이 서버의 주소이거나 올바르지 않은 주소일 수 있습니다."
+
 #: src/features/migrations/DoneStep.tsx
 msgid "{address} is in Yuva"
 msgstr "{address}이(가) Yuva에 있습니다"
@@ -2544,6 +2552,10 @@ msgstr "대화에 답하고 정리하고, 메모를 쓰고, 연락처와 레이�
 msgid "Answer cleared"
 msgstr "답변을 해제했습니다"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "Answer to a forward from {author}"
+msgstr "{author} 님의 전달에 대한 답장"
+
 #: src/features/feedback/FeedbackList.tsx
 msgid "answered"
 msgstr "답변함"
@@ -3415,6 +3427,7 @@ msgstr "캠페인 이름"
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactNotes.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/docs/discussions/FromConversation.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
@@ -6828,6 +6841,18 @@ msgstr "수신 메일을 모두 아래 주소로 전달하고 메일함에도 �
 msgid "Forward as a note mentioning"
 msgstr "멘션이 포함된 메모로 전달"
 
+#: src/app/Palette.tsx
+#: src/features/conversation/ConversationMenu.tsx
+#: src/features/conversation/messages/MessageActions.tsx
+msgid "Forward by e-mail…"
+msgstr "이메일로 전달…"
+
+#: src/features/conversation/messages/Thread.tsx
+#: src/features/inbox/AssistantsPage.tsx
+#: src/features/inbox/SidePanels.tsx
+msgid "Forward draft by {author}"
+msgstr "{author} 님의 전달 임시 저장본"
+
 #: src/features/setup/email/EmailReceiveStep.tsx
 msgid "Forward from your mailbox"
 msgstr "메일함에서 전달"
@@ -6836,13 +6861,37 @@ msgstr "메일함에서 전달"
 msgid "Forward mail for this address to the Cloudflare Email Worker in edge/ of the Yuva repository, or to any mail server that posts each message to this server's ingress URL, signed with YUVA_INGRESS_SECRET:"
 msgstr "이 주소의 메일을 Yuva 저장소의 edge/에 있는 Cloudflare Email Worker로, 또는 각 메시지를 YUVA_INGRESS_SECRET으로 서명해 이 서버의 ingress URL로 보내는 메일 서버로 전달하세요."
 
-#: src/features/conversation/messages/MessageActions.tsx
-msgid "Forward to a teammate"
-msgstr "팀원에게 전달"
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Forward saved as a draft"
+msgstr "전달을 임시 저장본으로 저장했습니다"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Forward the conversation"
+msgstr "대화 전달"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Forward the conversation by e-mail, or the focused message"
+msgstr "대화 또는 선택한 메시지를 이메일로 전달"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Forward this message"
+msgstr "이 메시지 전달"
+
+#: src/features/conversation/messages/Thread.tsx
+msgid "Forwarded by {author}"
+msgstr "{author} 님이 전달함"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Forwarded by e-mail"
+msgstr "이메일로 전달했습니다"
 
 #: src/features/conversation/ChatView.tsx
 msgid "Forwarded to {label} as a note"
 msgstr "메모로 {label}에게 전달했습니다"
+
+#: src/features/conversation/Participants.tsx
+msgid "Forwarded: answered a forward, not copied on replies"
+msgstr "전달 대상: 전달에 답장함, 답장에는 참조되지 않음"
 
 #: src/features/migrations/SwitchStep.tsx
 msgid "Forwarding"
@@ -7831,6 +7880,10 @@ msgstr "인시던트"
 #: src/features/status/IncidentsPage.tsx
 msgid "Incidents live on a status page. Create one first."
 msgstr "인시던트는 상태 페이지에서 관리됩니다. 먼저 상태 페이지를 만드세요."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Include attachments"
+msgstr "첨부 파일 포함"
 
 #: src/features/settings/slack/SlackPage.tsx
 msgid "Include message text for {name}"
@@ -9189,6 +9242,10 @@ msgstr "멤버"
 msgid "Members and invitations"
 msgstr "멤버 및 초대"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "Members only"
+msgstr "멤버 전용"
+
 #: src/features/conversation/composer/MentionMenu.tsx
 msgid "Mention a teammate"
 msgstr "팀원 멘션"
@@ -10520,6 +10577,10 @@ msgstr "이 페이지를 감시하는 모니터가 아직 없습니다"
 msgid "No monitors yet. Add one to let a check, a job or your monitoring set a component’s state."
 msgstr "아직 모니터가 없습니다. 확인, 작업 또는 자체 모니터링이 구성 요소의 상태를 설정하도록 모니터를 추가하세요."
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "No note"
+msgstr "메모 없음"
+
 #: src/features/account/AccountPage.tsx
 msgid "No notifications in the last 90 days."
 msgstr "최근 90일간 알림이 없습니다."
@@ -10985,6 +11046,10 @@ msgstr "확인되지 않음: 이 메일은 발신자 확인을 통과하지 못�
 msgid "Note"
 msgstr "메모"
 
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Note (optional)"
+msgstr "메모(선택)"
+
 #: src/features/contact/ContactNotes.tsx
 msgid "Note about this contact"
 msgstr "이 연락처에 대한 메모"
@@ -11002,6 +11067,10 @@ msgstr "메모, 팀만 볼 수 있음"
 #: src/features/contact/ContactSheet.tsx
 msgid "Notes"
 msgstr "메모"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Notes are never forwarded. The contact does not see the forward or the answers; only your team does."
+msgstr "메모는 절대 전달되지 않습니다. 연락처는 전달과 답장을 볼 수 없고, 팀만 볼 수 있습니다."
 
 #: src/features/inbox/SidePanels.tsx
 msgid "Notes where a teammate mentioned you"
@@ -12612,6 +12681,10 @@ msgstr "목록 맨 위에 고정됨"
 #: src/features/status/IncidentDialog.tsx
 msgid "Plain text with links and line breaks, at most 5,000 characters."
 msgstr "링크와 줄바꿈을 쓸 수 있는 일반 텍스트, 최대 5,000자."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Plain text, shown above the forwarded mail."
+msgstr "일반 텍스트이며, 전달하는 메일 위에 표시됩니다."
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentDialog.tsx
@@ -14315,6 +14388,7 @@ msgstr "보기로 저장"
 msgid "Save changes"
 msgstr "변경 사항 저장"
 
+#: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 msgid "Save draft"
 msgstr "초안 저장"
@@ -14633,6 +14707,7 @@ msgid "semicolons"
 msgstr "세미콜론"
 
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 msgid "Send"
 msgstr "보내기"
@@ -14916,6 +14991,14 @@ msgstr "메일 발송 주소"
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Sends on {local}"
 msgstr "{local}에 발송"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Sends the latest messages of this conversation by e-mail to people outside Yuva."
+msgstr "이 대화의 최근 메시지를 Yuva 밖의 사람들에게 이메일로 보냅니다."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Sends this message by e-mail to people outside Yuva."
+msgstr "이 메시지를 Yuva 밖의 사람들에게 이메일로 보냅니다."
 
 #. placeholder {0}: ch.email.smtp.host
 #: src/features/settings/channels/ChannelSummary.tsx
@@ -16550,6 +16633,10 @@ msgstr "연락처가 삭제되었습니다"
 msgid "The contact writes a message"
 msgstr "연락처가 메시지를 보낼 때"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "The conversation"
+msgstr "대화"
+
 #: src/components/common/Linked.tsx
 msgid "The conversations stay open. Customers get it right away and it cannot be recalled."
 msgstr "대화는 열린 채로 유지됩니다. 고객은 답장을 바로 받으며 회수할 수 없습니다."
@@ -16693,6 +16780,10 @@ msgstr "파일이 거부되었습니다."
 #: src/features/migrations/UploadStep.tsx
 msgid "The file's parts were deleted. Pick a corrected file to upload."
 msgstr "파일의 부분이 삭제되었습니다. 수정된 파일을 선택해 업로드하세요."
+
+#: src/components/common/text.ts
+msgid "The files of the forwarded messages are larger than 20 MiB together. Forward without attachments."
+msgstr "전달할 메시지의 파일이 합쳐서 20 MiB를 넘습니다. 첨부 파일 없이 전달하세요."
 
 #: src/features/broadcasts/Composer.tsx
 msgid "The first line of the mail shows here when there is no preview text."
@@ -17761,6 +17852,10 @@ msgstr "이 메일함은 \"Microsoft로 로그인\"으로만 연결되는데 이
 msgid "This member is not in the workspace any more."
 msgstr "이 멤버는 더 이상 워크스페이스에 없습니다."
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "This message"
+msgstr "이 메시지"
+
 #: src/features/migrations/UploadStep.tsx
 msgid "This migration has ended, so nothing more can be uploaded. Start a new one for another file."
 msgstr "이 이전은 종료되어 더 이상 업로드할 수 없습니다. 다른 파일은 새 이전을 시작하세요."
@@ -17997,6 +18092,7 @@ msgid "TLS (port 465)"
 msgstr "TLS(포트 465)"
 
 #: src/features/conversation/composer/Recipients.tsx
+#: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
@@ -18508,6 +18604,10 @@ msgstr "{upSince}부터 정상 작동 중입니다. 확신이 서면 정상화 �
 #: src/features/broadcasts/Import.tsx
 msgid "Up to {max} and 100,000 rows, with a header row. Excel files in Turkish or Western encodings and columns separated by commas, semicolons or tabs are read as they are."
 msgstr "최대 {max}, 100,000행, 헤더 행 포함. 터키어 또는 서유럽 인코딩의 Excel 파일과 쉼표, 세미콜론, 탭으로 구분된 열은 그대로 읽습니다."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Up to 10 addresses. Press Enter after each one."
+msgstr "주소는 최대 10개입니다. 하나 입력할 때마다 Enter를 누르세요."
 
 #: src/features/reports/ReportsColumn.tsx
 msgid "Up to 13 months, by group"
@@ -19438,6 +19538,10 @@ msgstr "Windows-1254(터키어 Excel)"
 msgid "With {name}"
 msgstr "{name}님과"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "with attachments"
+msgstr "첨부 파일 포함"
+
 #: src/features/setup/email/EmailReceiveStep.tsx
 msgid "With Cloudflare Email Routing, deploy the Email Worker from edge/ of the Yuva repository and add a routing rule for the address with the action Send to a Worker. Any other mail server can post each message, signed with YUVA_INGRESS_SECRET, to:"
 msgstr "Cloudflare Email Routing에서는 Yuva 저장소의 edge/에서 Email Worker를 배포하고, 그 주소에 \"Worker로 보내기\" 동작의 라우팅 규칙을 추가하세요. 다른 메일 서버는 각 메시지를 YUVA_INGRESS_SECRET으로 서명해 다음 주소로 보낼 수 있습니다:"
@@ -19486,6 +19590,10 @@ msgstr "몇 분 이내"
 #: src/features/broadcasts/ListForm.tsx
 msgid "Without a confirmation anyone can type someone else's address into your form, and you cannot show that the owner of the address agreed. Keep it on unless your forms are only shown to people whose address you have already verified."
 msgstr "확인 없이는 누구나 다른 사람의 주소를 양식에 입력할 수 있으며, 그 주소의 주인이 동의했음을 보여 줄 수 없습니다. 양식을 주소를 이미 확인한 사람에게만 보여 주는 경우가 아니라면 켜 두세요."
+
+#: src/features/conversation/messages/Thread.tsx
+msgid "without attachments"
+msgstr "첨부 파일 없음"
 
 #: src/components/common/text.ts
 msgid "Won't do"

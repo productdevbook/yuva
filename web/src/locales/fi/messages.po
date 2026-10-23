@@ -213,6 +213,14 @@ msgstr "{actor} asetti tilaksi {status}"
 msgid "{added} added · {out} left out"
 msgstr "{added} lisätty · {out} jätetty pois"
 
+#: src/features/conversation/ForwardDialog.tsx
+msgid "{address} bounced or complained before. Remove it here, or clear it on the contact to forward there."
+msgstr "{address} on aiemmin palautunut tai siitä on valitettu. Poista se tästä tai tyhjennä se yhteystiedosta, jotta voit välittää sinne."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "{address} cannot be a recipient. It may be the conversation's contact, an address already copied on it, an address of this server, or not valid."
+msgstr "{address} ei voi olla vastaanottaja. Se voi olla keskustelun yhteyshenkilö, jo kopiona oleva osoite, tämän palvelimen osoite tai virheellinen."
+
 #: src/features/migrations/DoneStep.tsx
 msgid "{address} is in Yuva"
 msgstr "{address} on Yuvassa"
@@ -2544,6 +2552,10 @@ msgstr "Vastaa keskusteluihin ja järjestä niitä, kirjoita muistiinpanoja, pid
 msgid "Answer cleared"
 msgstr "Vastaus tyhjennetty"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "Answer to a forward from {author}"
+msgstr "Vastaus henkilön {author} välitykseen"
+
 #: src/features/feedback/FeedbackList.tsx
 msgid "answered"
 msgstr "vastattu"
@@ -3415,6 +3427,7 @@ msgstr "Kampanjan nimi"
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactNotes.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/docs/discussions/FromConversation.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
@@ -6828,6 +6841,18 @@ msgstr "Ohjaa kaikki saapuva posti alla olevaan osoitteeseen ja säilytä kopio 
 msgid "Forward as a note mentioning"
 msgstr "Välitä muistiinpanona maininnalla"
 
+#: src/app/Palette.tsx
+#: src/features/conversation/ConversationMenu.tsx
+#: src/features/conversation/messages/MessageActions.tsx
+msgid "Forward by e-mail…"
+msgstr "Välitä sähköpostilla…"
+
+#: src/features/conversation/messages/Thread.tsx
+#: src/features/inbox/AssistantsPage.tsx
+#: src/features/inbox/SidePanels.tsx
+msgid "Forward draft by {author}"
+msgstr "Henkilön {author} välitysluonnos"
+
 #: src/features/setup/email/EmailReceiveStep.tsx
 msgid "Forward from your mailbox"
 msgstr "Ohjaa postilaatikostasi"
@@ -6836,13 +6861,37 @@ msgstr "Ohjaa postilaatikostasi"
 msgid "Forward mail for this address to the Cloudflare Email Worker in edge/ of the Yuva repository, or to any mail server that posts each message to this server's ingress URL, signed with YUVA_INGRESS_SECRET:"
 msgstr "Ohjaa tämän osoitteen posti Cloudflare Email Workerille Yuva-repositorion kansiossa edge/ tai mille tahansa postipalvelimelle, joka lähettää jokaisen viestin tämän palvelimen ingress-URL-osoitteeseen allekirjoitettuna YUVA_INGRESS_SECRETillä:"
 
-#: src/features/conversation/messages/MessageActions.tsx
-msgid "Forward to a teammate"
-msgstr "Välitä tiimiläiselle"
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Forward saved as a draft"
+msgstr "Välitys tallennettu luonnoksena"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Forward the conversation"
+msgstr "Välitä keskustelu"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Forward the conversation by e-mail, or the focused message"
+msgstr "Välitä keskustelu tai valittu viesti sähköpostilla"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Forward this message"
+msgstr "Välitä tämä viesti"
+
+#: src/features/conversation/messages/Thread.tsx
+msgid "Forwarded by {author}"
+msgstr "Välittäjä {author}"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Forwarded by e-mail"
+msgstr "Välitetty sähköpostilla"
 
 #: src/features/conversation/ChatView.tsx
 msgid "Forwarded to {label} as a note"
 msgstr "Välitetty henkilölle {label} muistiinpanona"
+
+#: src/features/conversation/Participants.tsx
+msgid "Forwarded: answered a forward, not copied on replies"
+msgstr "Välitetty: vastasi välitykseen, ei kopiona vastauksissa"
 
 #: src/features/migrations/SwitchStep.tsx
 msgid "Forwarding"
@@ -7831,6 +7880,10 @@ msgstr "Häiriöt"
 #: src/features/status/IncidentsPage.tsx
 msgid "Incidents live on a status page. Create one first."
 msgstr "Häiriöt näkyvät tilasivulla. Luo ensin sellainen."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Include attachments"
+msgstr "Sisällytä liitteet"
 
 #: src/features/settings/slack/SlackPage.tsx
 msgid "Include message text for {name}"
@@ -9189,6 +9242,10 @@ msgstr "Jäsenet"
 msgid "Members and invitations"
 msgstr "Jäsenet ja kutsut"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "Members only"
+msgstr "Vain jäsenille"
+
 #: src/features/conversation/composer/MentionMenu.tsx
 msgid "Mention a teammate"
 msgstr "Mainitse tiimiläinen"
@@ -10520,6 +10577,10 @@ msgstr "Mikään valvonta ei vielä seuraa tätä sivua"
 msgid "No monitors yet. Add one to let a check, a job or your monitoring set a component’s state."
 msgstr "Ei vielä valvontoja. Lisää yksi, jotta tarkistus, työ tai oma valvontasi asettaa komponentin tilan."
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "No note"
+msgstr "Ei muistiinpanoa"
+
 #: src/features/account/AccountPage.tsx
 msgid "No notifications in the last 90 days."
 msgstr "Ei ilmoituksia viimeisen 90 päivän aikana."
@@ -10985,6 +11046,10 @@ msgstr "Vahvistamaton: viesti ei läpäissyt lähettäjän tarkistusta, joten os
 msgid "Note"
 msgstr "Muistiinpano"
 
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Note (optional)"
+msgstr "Muistiinpano (valinnainen)"
+
 #: src/features/contact/ContactNotes.tsx
 msgid "Note about this contact"
 msgstr "Muistiinpano tästä kontaktista"
@@ -11002,6 +11067,10 @@ msgstr "Muistiinpano, vain tiimi näkee sen"
 #: src/features/contact/ContactSheet.tsx
 msgid "Notes"
 msgstr "Muistiinpanot"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Notes are never forwarded. The contact does not see the forward or the answers; only your team does."
+msgstr "Muistiinpanoja ei koskaan välitetä. Yhteyshenkilö ei näe välitystä eikä vastauksia; vain tiimisi näkee."
 
 #: src/features/inbox/SidePanels.tsx
 msgid "Notes where a teammate mentioned you"
@@ -12612,6 +12681,10 @@ msgstr "Kiinnitetty listasi ylälaitaan"
 #: src/features/status/IncidentDialog.tsx
 msgid "Plain text with links and line breaks, at most 5,000 characters."
 msgstr "Pelkkää tekstiä linkeillä ja rivinvaihdoilla, enintään 5 000 merkkiä."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Plain text, shown above the forwarded mail."
+msgstr "Pelkkää tekstiä, näkyy välitetyn viestin yläpuolella."
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentDialog.tsx
@@ -14315,6 +14388,7 @@ msgstr "Tallenna näkymäksi"
 msgid "Save changes"
 msgstr "Tallenna muutokset"
 
+#: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 msgid "Save draft"
 msgstr "Tallenna luonnos"
@@ -14633,6 +14707,7 @@ msgid "semicolons"
 msgstr "puolipisteet"
 
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 msgid "Send"
 msgstr "Lähetä"
@@ -14916,6 +14991,14 @@ msgstr "Lähettää viestinsä osoitteesta"
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Sends on {local}"
 msgstr "Lähtee {local}"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Sends the latest messages of this conversation by e-mail to people outside Yuva."
+msgstr "Lähettää tämän keskustelun viimeisimmät viestit sähköpostilla Yuvan ulkopuolisille."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Sends this message by e-mail to people outside Yuva."
+msgstr "Lähettää tämän viestin sähköpostilla Yuvan ulkopuolisille."
 
 #. placeholder {0}: ch.email.smtp.host
 #: src/features/settings/channels/ChannelSummary.tsx
@@ -16550,6 +16633,10 @@ msgstr "Kontakti poistettiin"
 msgid "The contact writes a message"
 msgstr "Yhteystieto kirjoittaa viestin"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "The conversation"
+msgstr "Keskustelu"
+
 #: src/components/common/Linked.tsx
 msgid "The conversations stay open. Customers get it right away and it cannot be recalled."
 msgstr "Keskustelut pysyvät avoimina. Asiakkaat saavat vastauksen heti, eikä sitä voi peruuttaa."
@@ -16693,6 +16780,10 @@ msgstr "Tiedosto hylättiin."
 #: src/features/migrations/UploadStep.tsx
 msgid "The file's parts were deleted. Pick a corrected file to upload."
 msgstr "Tiedoston osat poistettiin. Valitse korjattu tiedosto ladattavaksi."
+
+#: src/components/common/text.ts
+msgid "The files of the forwarded messages are larger than 20 MiB together. Forward without attachments."
+msgstr "Välitettävien viestien tiedostot ovat yhteensä yli 20 MiB. Välitä ilman liitteitä."
 
 #: src/features/broadcasts/Composer.tsx
 msgid "The first line of the mail shows here when there is no preview text."
@@ -17761,6 +17852,10 @@ msgstr "Tämä postilaatikko yhdistyy vain ”Kirjaudu Microsoftilla” -tavalla
 msgid "This member is not in the workspace any more."
 msgstr "Tämä jäsen ei ole enää työtilassa."
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "This message"
+msgstr "Tämä viesti"
+
 #: src/features/migrations/UploadStep.tsx
 msgid "This migration has ended, so nothing more can be uploaded. Start a new one for another file."
 msgstr "Tämä siirto on päättynyt, joten mitään ei voi enää ladata. Aloita uusi toista tiedostoa varten."
@@ -17997,6 +18092,7 @@ msgid "TLS (port 465)"
 msgstr "TLS (portti 465)"
 
 #: src/features/conversation/composer/Recipients.tsx
+#: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
@@ -18508,6 +18604,10 @@ msgstr "Toiminnassa alkaen {upSince}. Ilmoita, että kaikki on kunnossa, kun ole
 #: src/features/broadcasts/Import.tsx
 msgid "Up to {max} and 100,000 rows, with a header row. Excel files in Turkish or Western encodings and columns separated by commas, semicolons or tabs are read as they are."
 msgstr "Enintään {max} ja 100 000 riviä, otsikkorivin kanssa. Excel-tiedostot turkkilaisilla tai länsimaisilla merkistöillä ja pilkuilla, puolipisteillä tai sarkaimilla erotetut sarakkeet luetaan sellaisenaan."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Up to 10 addresses. Press Enter after each one."
+msgstr "Enintään 10 osoitetta. Paina Enter jokaisen jälkeen."
 
 #: src/features/reports/ReportsColumn.tsx
 msgid "Up to 13 months, by group"
@@ -19438,6 +19538,10 @@ msgstr "Windows-1254 (turkkilainen Excel)"
 msgid "With {name}"
 msgstr "Kanssa: {name}"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "with attachments"
+msgstr "liitteineen"
+
 #: src/features/setup/email/EmailReceiveStep.tsx
 msgid "With Cloudflare Email Routing, deploy the Email Worker from edge/ of the Yuva repository and add a routing rule for the address with the action Send to a Worker. Any other mail server can post each message, signed with YUVA_INGRESS_SECRET, to:"
 msgstr "Cloudflare Email Routingilla ota käyttöön Email Worker Yuva-repositorion kansiosta edge/ ja lisää osoitteelle reititysääntö toiminnolla Send to a Worker. Mikä tahansa muu postipalvelin voi lähettää jokaisen viestin, allekirjoitettuna YUVA_INGRESS_SECRETillä, osoitteeseen:"
@@ -19486,6 +19590,10 @@ msgstr "Minuuttien sisällä"
 #: src/features/broadcasts/ListForm.tsx
 msgid "Without a confirmation anyone can type someone else's address into your form, and you cannot show that the owner of the address agreed. Keep it on unless your forms are only shown to people whose address you have already verified."
 msgstr "Ilman vahvistusta kuka tahansa voi kirjoittaa lomakkeeseesi jonkun toisen osoitteen, etkä voi osoittaa, että osoitteen omistaja suostui. Pidä se päällä, ellei lomakkeitasi näytetä vain ihmisille, joiden osoite olet jo vahvistanut."
+
+#: src/features/conversation/messages/Thread.tsx
+msgid "without attachments"
+msgstr "ilman liitteitä"
 
 #: src/components/common/text.ts
 msgid "Won't do"

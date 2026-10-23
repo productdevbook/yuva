@@ -213,6 +213,14 @@ msgstr "{actor} mengatur status ke {status}"
 msgid "{added} added · {out} left out"
 msgstr "{added} ditambahkan · {out} dilewati"
 
+#: src/features/conversation/ForwardDialog.tsx
+msgid "{address} bounced or complained before. Remove it here, or clear it on the contact to forward there."
+msgstr "{address} pernah memantul atau dilaporkan. Hapus di sini, atau bersihkan di kontak untuk bisa meneruskan ke sana."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "{address} cannot be a recipient. It may be the conversation's contact, an address already copied on it, an address of this server, or not valid."
+msgstr "{address} tidak dapat menjadi penerima. Mungkin itu kontak percakapan, alamat yang sudah ditembuskan, alamat server ini, atau tidak valid."
+
 #: src/features/migrations/DoneStep.tsx
 msgid "{address} is in Yuva"
 msgstr "{address} sudah ada di Yuva"
@@ -2544,6 +2552,10 @@ msgstr "Jawab dan atur percakapan, tulis catatan, jaga kontak dan label tetap mu
 msgid "Answer cleared"
 msgstr "Jawaban dihapus"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "Answer to a forward from {author}"
+msgstr "Balasan atas penerusan dari {author}"
+
 #: src/features/feedback/FeedbackList.tsx
 msgid "answered"
 msgstr "terjawab"
@@ -3415,6 +3427,7 @@ msgstr "Nama kampanye"
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactNotes.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/docs/discussions/FromConversation.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
@@ -6828,6 +6841,18 @@ msgstr "Teruskan semua email masuk ke alamat di bawah dan simpan salinan di kota
 msgid "Forward as a note mentioning"
 msgstr "Teruskan sebagai catatan yang menyebut"
 
+#: src/app/Palette.tsx
+#: src/features/conversation/ConversationMenu.tsx
+#: src/features/conversation/messages/MessageActions.tsx
+msgid "Forward by e-mail…"
+msgstr "Teruskan lewat email…"
+
+#: src/features/conversation/messages/Thread.tsx
+#: src/features/inbox/AssistantsPage.tsx
+#: src/features/inbox/SidePanels.tsx
+msgid "Forward draft by {author}"
+msgstr "Draf penerusan dari {author}"
+
 #: src/features/setup/email/EmailReceiveStep.tsx
 msgid "Forward from your mailbox"
 msgstr "Teruskan dari kotak surat Anda"
@@ -6836,13 +6861,37 @@ msgstr "Teruskan dari kotak surat Anda"
 msgid "Forward mail for this address to the Cloudflare Email Worker in edge/ of the Yuva repository, or to any mail server that posts each message to this server's ingress URL, signed with YUVA_INGRESS_SECRET:"
 msgstr "Teruskan email untuk alamat ini ke Cloudflare Email Worker di edge/ pada repositori Yuva, atau ke server email mana pun yang memposting setiap pesan ke URL ingress server ini, ditandatangani dengan YUVA_INGRESS_SECRET:"
 
-#: src/features/conversation/messages/MessageActions.tsx
-msgid "Forward to a teammate"
-msgstr "Teruskan ke rekan tim"
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Forward saved as a draft"
+msgstr "Penerusan disimpan sebagai draf"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Forward the conversation"
+msgstr "Teruskan percakapan"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Forward the conversation by e-mail, or the focused message"
+msgstr "Teruskan percakapan atau pesan yang dipilih lewat email"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Forward this message"
+msgstr "Teruskan pesan ini"
+
+#: src/features/conversation/messages/Thread.tsx
+msgid "Forwarded by {author}"
+msgstr "Diteruskan oleh {author}"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Forwarded by e-mail"
+msgstr "Diteruskan lewat email"
 
 #: src/features/conversation/ChatView.tsx
 msgid "Forwarded to {label} as a note"
 msgstr "Diteruskan ke {label} sebagai catatan"
+
+#: src/features/conversation/Participants.tsx
+msgid "Forwarded: answered a forward, not copied on replies"
+msgstr "Diteruskan: membalas penerusan, tidak ditembuskan pada balasan"
 
 #: src/features/migrations/SwitchStep.tsx
 msgid "Forwarding"
@@ -7831,6 +7880,10 @@ msgstr "Insiden"
 #: src/features/status/IncidentsPage.tsx
 msgid "Incidents live on a status page. Create one first."
 msgstr "Insiden berada di halaman status. Buat satu terlebih dahulu."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Include attachments"
+msgstr "Sertakan lampiran"
 
 #: src/features/settings/slack/SlackPage.tsx
 msgid "Include message text for {name}"
@@ -9189,6 +9242,10 @@ msgstr "Anggota"
 msgid "Members and invitations"
 msgstr "Anggota dan undangan"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "Members only"
+msgstr "Khusus anggota"
+
 #: src/features/conversation/composer/MentionMenu.tsx
 msgid "Mention a teammate"
 msgstr "Sebut rekan tim"
@@ -10520,6 +10577,10 @@ msgstr "Belum ada monitor yang memantau halaman ini"
 msgid "No monitors yet. Add one to let a check, a job or your monitoring set a component’s state."
 msgstr "Belum ada monitor. Tambahkan satu agar pemeriksaan, tugas, atau pemantauan Anda menetapkan status komponen."
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "No note"
+msgstr "Tanpa catatan"
+
 #: src/features/account/AccountPage.tsx
 msgid "No notifications in the last 90 days."
 msgstr "Tidak ada notifikasi dalam 90 hari terakhir."
@@ -10985,6 +11046,10 @@ msgstr "Belum diverifikasi: e-mail tidak lolos pemeriksaan pengirim, jadi alamat
 msgid "Note"
 msgstr "Catatan"
 
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Note (optional)"
+msgstr "Catatan (opsional)"
+
 #: src/features/contact/ContactNotes.tsx
 msgid "Note about this contact"
 msgstr "Catatan tentang kontak ini"
@@ -11002,6 +11067,10 @@ msgstr "Catatan, hanya tim yang melihatnya"
 #: src/features/contact/ContactSheet.tsx
 msgid "Notes"
 msgstr "Catatan"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Notes are never forwarded. The contact does not see the forward or the answers; only your team does."
+msgstr "Catatan tidak pernah diteruskan. Kontak tidak melihat penerusan maupun jawabannya; hanya tim Anda."
 
 #: src/features/inbox/SidePanels.tsx
 msgid "Notes where a teammate mentioned you"
@@ -12612,6 +12681,10 @@ msgstr "Disematkan di atas daftar Anda"
 #: src/features/status/IncidentDialog.tsx
 msgid "Plain text with links and line breaks, at most 5,000 characters."
 msgstr "Teks biasa dengan tautan dan jeda baris, paling banyak 5.000 karakter."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Plain text, shown above the forwarded mail."
+msgstr "Teks biasa, ditampilkan di atas email yang diteruskan."
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentDialog.tsx
@@ -14315,6 +14388,7 @@ msgstr "Simpan sebagai tampilan"
 msgid "Save changes"
 msgstr "Simpan perubahan"
 
+#: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 msgid "Save draft"
 msgstr "Simpan draf"
@@ -14633,6 +14707,7 @@ msgid "semicolons"
 msgstr "titik koma"
 
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 msgid "Send"
 msgstr "Kirim"
@@ -14916,6 +14991,14 @@ msgstr "Mengirim emailnya dari"
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Sends on {local}"
 msgstr "Dikirim pada {local}"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Sends the latest messages of this conversation by e-mail to people outside Yuva."
+msgstr "Mengirim pesan terbaru percakapan ini lewat email ke orang di luar Yuva."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Sends this message by e-mail to people outside Yuva."
+msgstr "Mengirim pesan ini lewat email ke orang di luar Yuva."
 
 #. placeholder {0}: ch.email.smtp.host
 #: src/features/settings/channels/ChannelSummary.tsx
@@ -16550,6 +16633,10 @@ msgstr "Kontak dihapus"
 msgid "The contact writes a message"
 msgstr "Kontak menulis pesan"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "The conversation"
+msgstr "Percakapan"
+
 #: src/components/common/Linked.tsx
 msgid "The conversations stay open. Customers get it right away and it cannot be recalled."
 msgstr "Percakapan tetap terbuka. Pelanggan menerima balasan seketika dan balasan tidak dapat ditarik kembali."
@@ -16693,6 +16780,10 @@ msgstr "File ditolak."
 #: src/features/migrations/UploadStep.tsx
 msgid "The file's parts were deleted. Pick a corrected file to upload."
 msgstr "Bagian file dihapus. Pilih file yang sudah diperbaiki untuk diunggah."
+
+#: src/components/common/text.ts
+msgid "The files of the forwarded messages are larger than 20 MiB together. Forward without attachments."
+msgstr "Berkas pesan yang diteruskan berukuran lebih dari 20 MiB jika digabung. Teruskan tanpa lampiran."
 
 #: src/features/broadcasts/Composer.tsx
 msgid "The first line of the mail shows here when there is no preview text."
@@ -17761,6 +17852,10 @@ msgstr "Kotak surat ini hanya terhubung dengan “Masuk dengan Microsoft”, yan
 msgid "This member is not in the workspace any more."
 msgstr "Anggota ini sudah tidak ada di ruang kerja."
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "This message"
+msgstr "Pesan ini"
+
 #: src/features/migrations/UploadStep.tsx
 msgid "This migration has ended, so nothing more can be uploaded. Start a new one for another file."
 msgstr "Migrasi ini telah berakhir, jadi tidak ada lagi yang dapat diunggah. Mulai yang baru untuk file lain."
@@ -17997,6 +18092,7 @@ msgid "TLS (port 465)"
 msgstr "TLS (port 465)"
 
 #: src/features/conversation/composer/Recipients.tsx
+#: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
@@ -18508,6 +18604,10 @@ msgstr "Aktif sejak {upSince}. Umumkan bahwa semuanya normal setelah Anda yakin.
 #: src/features/broadcasts/Import.tsx
 msgid "Up to {max} and 100,000 rows, with a header row. Excel files in Turkish or Western encodings and columns separated by commas, semicolons or tabs are read as they are."
 msgstr "Hingga {max} dan 100.000 baris, dengan baris header. File Excel dalam enkode Turki atau Barat dan kolom yang dipisahkan koma, titik koma, atau tab dibaca apa adanya."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Up to 10 addresses. Press Enter after each one."
+msgstr "Hingga 10 alamat. Tekan Enter setelah tiap alamat."
 
 #: src/features/reports/ReportsColumn.tsx
 msgid "Up to 13 months, by group"
@@ -19438,6 +19538,10 @@ msgstr "Windows-1254 (Excel Turki)"
 msgid "With {name}"
 msgstr "Dengan {name}"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "with attachments"
+msgstr "dengan lampiran"
+
 #: src/features/setup/email/EmailReceiveStep.tsx
 msgid "With Cloudflare Email Routing, deploy the Email Worker from edge/ of the Yuva repository and add a routing rule for the address with the action Send to a Worker. Any other mail server can post each message, signed with YUVA_INGRESS_SECRET, to:"
 msgstr "Dengan Cloudflare Email Routing, deploy Email Worker dari edge/ di repositori Yuva dan tambahkan aturan perutean untuk alamat dengan tindakan Send to a Worker. Server email lain mana pun dapat memposting setiap pesan, ditandatangani dengan YUVA_INGRESS_SECRET, ke:"
@@ -19486,6 +19590,10 @@ msgstr "Dalam hitungan menit"
 #: src/features/broadcasts/ListForm.tsx
 msgid "Without a confirmation anyone can type someone else's address into your form, and you cannot show that the owner of the address agreed. Keep it on unless your forms are only shown to people whose address you have already verified."
 msgstr "Tanpa konfirmasi, siapa pun dapat mengetik alamat orang lain di formulir Anda, dan Anda tidak dapat menunjukkan bahwa pemilik alamat setuju. Biarkan aktif kecuali formulir Anda hanya ditampilkan kepada orang yang alamatnya sudah Anda verifikasi."
+
+#: src/features/conversation/messages/Thread.tsx
+msgid "without attachments"
+msgstr "tanpa lampiran"
 
 #: src/components/common/text.ts
 msgid "Won't do"

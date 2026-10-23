@@ -213,6 +213,14 @@ msgstr "{actor} je postavio/la status na {status}"
 msgid "{added} added · {out} left out"
 msgstr "Dodano {added} · izostavljeno {out}"
 
+#: src/features/conversation/ForwardDialog.tsx
+msgid "{address} bounced or complained before. Remove it here, or clear it on the contact to forward there."
+msgstr "{address} je ranije vratila poruku ili se požalila. Ukloni je ovdje ili je očisti na kontaktu kako bi mogao proslijediti na nju."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "{address} cannot be a recipient. It may be the conversation's contact, an address already copied on it, an address of this server, or not valid."
+msgstr "{address} ne može biti primatelj. To može biti kontakt razgovora, adresa koja je već u kopiji, adresa ovog poslužitelja ili nevažeća adresa."
+
 #: src/features/migrations/DoneStep.tsx
 msgid "{address} is in Yuva"
 msgstr "{address} je u Yuvi"
@@ -2544,6 +2552,10 @@ msgstr "Odgovarajte na razgovore i organizirajte ih, pišite bilješke, održava
 msgid "Answer cleared"
 msgstr "Odgovor očišćen"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "Answer to a forward from {author}"
+msgstr "Odgovor na prosljeđivanje korisnika {author}"
+
 #: src/features/feedback/FeedbackList.tsx
 msgid "answered"
 msgstr "odgovoreno"
@@ -3415,6 +3427,7 @@ msgstr "Naziv kampanje"
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactNotes.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/docs/discussions/FromConversation.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
@@ -6828,6 +6841,18 @@ msgstr "Proslijedite svu dolaznu poštu na donju adresu i zadržite kopiju u pre
 msgid "Forward as a note mentioning"
 msgstr "Proslijedi kao bilješku sa spominjanjem"
 
+#: src/app/Palette.tsx
+#: src/features/conversation/ConversationMenu.tsx
+#: src/features/conversation/messages/MessageActions.tsx
+msgid "Forward by e-mail…"
+msgstr "Proslijedi e-poštom…"
+
+#: src/features/conversation/messages/Thread.tsx
+#: src/features/inbox/AssistantsPage.tsx
+#: src/features/inbox/SidePanels.tsx
+msgid "Forward draft by {author}"
+msgstr "Skica prosljeđivanja korisnika {author}"
+
 #: src/features/setup/email/EmailReceiveStep.tsx
 msgid "Forward from your mailbox"
 msgstr "Preusmjeri iz svog pretinca"
@@ -6836,13 +6861,37 @@ msgstr "Preusmjeri iz svog pretinca"
 msgid "Forward mail for this address to the Cloudflare Email Worker in edge/ of the Yuva repository, or to any mail server that posts each message to this server's ingress URL, signed with YUVA_INGRESS_SECRET:"
 msgstr "Preusmjerite poštu za ovu adresu na Cloudflare Email Worker u edge/ repozitorija Yuve ili na bilo koji poštanski poslužitelj koji svaku poruku šalje na URL ingress ovog poslužitelja, potpisanu s YUVA_INGRESS_SECRET:"
 
-#: src/features/conversation/messages/MessageActions.tsx
-msgid "Forward to a teammate"
-msgstr "Proslijedi kolegi"
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Forward saved as a draft"
+msgstr "Prosljeđivanje spremljeno kao skica"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Forward the conversation"
+msgstr "Proslijedi razgovor"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Forward the conversation by e-mail, or the focused message"
+msgstr "Proslijedi razgovor ili označenu poruku e-poštom"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Forward this message"
+msgstr "Proslijedi ovu poruku"
+
+#: src/features/conversation/messages/Thread.tsx
+msgid "Forwarded by {author}"
+msgstr "Proslijedio/la {author}"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Forwarded by e-mail"
+msgstr "Proslijeđeno e-poštom"
 
 #: src/features/conversation/ChatView.tsx
 msgid "Forwarded to {label} as a note"
 msgstr "Proslijeđeno korisniku {label} kao bilješka"
+
+#: src/features/conversation/Participants.tsx
+msgid "Forwarded: answered a forward, not copied on replies"
+msgstr "Proslijeđeno: odgovorio/la na prosljeđivanje, nije u kopiji odgovora"
 
 #: src/features/migrations/SwitchStep.tsx
 msgid "Forwarding"
@@ -7831,6 +7880,10 @@ msgstr "Incidenti"
 #: src/features/status/IncidentsPage.tsx
 msgid "Incidents live on a status page. Create one first."
 msgstr "Incidenti žive na stranici statusa. Najprije je izradite."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Include attachments"
+msgstr "Uključi privitke"
 
 #: src/features/settings/slack/SlackPage.tsx
 msgid "Include message text for {name}"
@@ -9189,6 +9242,10 @@ msgstr "Članovi"
 msgid "Members and invitations"
 msgstr "Članovi i pozivnice"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "Members only"
+msgstr "Samo za članove"
+
 #: src/features/conversation/composer/MentionMenu.tsx
 msgid "Mention a teammate"
 msgstr "Spomeni kolegu"
@@ -10520,6 +10577,10 @@ msgstr "Ovu stranicu još ne prati nijedan monitor"
 msgid "No monitors yet. Add one to let a check, a job or your monitoring set a component’s state."
 msgstr "Još nema monitora. Dodajte jedan da stanje komponente postavlja provjera, zadatak ili vaše praćenje."
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "No note"
+msgstr "Bez bilješke"
+
 #: src/features/account/AccountPage.tsx
 msgid "No notifications in the last 90 days."
 msgstr "Nema obavijesti u zadnjih 90 dana."
@@ -10985,6 +11046,10 @@ msgstr "Neprovjereno: poruka nije prošla provjeru pošiljatelja pa adresa može
 msgid "Note"
 msgstr "Bilješka"
 
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Note (optional)"
+msgstr "Bilješka (neobavezno)"
+
 #: src/features/contact/ContactNotes.tsx
 msgid "Note about this contact"
 msgstr "Bilješka o ovom kontaktu"
@@ -11002,6 +11067,10 @@ msgstr "Bilješka, vidi je samo tim"
 #: src/features/contact/ContactSheet.tsx
 msgid "Notes"
 msgstr "Bilješke"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Notes are never forwarded. The contact does not see the forward or the answers; only your team does."
+msgstr "Bilješke se nikada ne prosljeđuju. Kontakt ne vidi prosljeđivanje ni odgovore; vidi ih samo vaš tim."
 
 #: src/features/inbox/SidePanels.tsx
 msgid "Notes where a teammate mentioned you"
@@ -12612,6 +12681,10 @@ msgstr "Prikvačeno na vrh vašeg popisa"
 #: src/features/status/IncidentDialog.tsx
 msgid "Plain text with links and line breaks, at most 5,000 characters."
 msgstr "Običan tekst s poveznicama i prijelomima redaka, najviše 5000 znakova."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Plain text, shown above the forwarded mail."
+msgstr "Običan tekst, prikazuje se iznad proslijeđene poruke."
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentDialog.tsx
@@ -14315,6 +14388,7 @@ msgstr "Spremi kao prikaz"
 msgid "Save changes"
 msgstr "Spremi promjene"
 
+#: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 msgid "Save draft"
 msgstr "Spremi skicu"
@@ -14633,6 +14707,7 @@ msgid "semicolons"
 msgstr "točke sa zarezom"
 
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 msgid "Send"
 msgstr "Pošalji"
@@ -14916,6 +14991,14 @@ msgstr "Šalje svoju poštu s"
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Sends on {local}"
 msgstr "Šalje se {local}"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Sends the latest messages of this conversation by e-mail to people outside Yuva."
+msgstr "Šalje najnovije poruke ovog razgovora e-poštom osobama izvan Yuve."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Sends this message by e-mail to people outside Yuva."
+msgstr "Šalje ovu poruku e-poštom osobama izvan Yuve."
 
 #. placeholder {0}: ch.email.smtp.host
 #: src/features/settings/channels/ChannelSummary.tsx
@@ -16550,6 +16633,10 @@ msgstr "Kontakt je izbrisan"
 msgid "The contact writes a message"
 msgstr "Kontakt napiše poruku"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "The conversation"
+msgstr "Razgovor"
+
 #: src/components/common/Linked.tsx
 msgid "The conversations stay open. Customers get it right away and it cannot be recalled."
 msgstr "Razgovori ostaju otvoreni. Klijenti odgovor dobivaju odmah i ne može se povući."
@@ -16693,6 +16780,10 @@ msgstr "Datoteka je odbijena."
 #: src/features/migrations/UploadStep.tsx
 msgid "The file's parts were deleted. Pick a corrected file to upload."
 msgstr "Dijelovi datoteke su izbrisani. Odaberite ispravljenu datoteku za učitavanje."
+
+#: src/components/common/text.ts
+msgid "The files of the forwarded messages are larger than 20 MiB together. Forward without attachments."
+msgstr "Datoteke proslijeđenih poruka zajedno su veće od 20 MiB. Proslijedi bez privitaka."
 
 #: src/features/broadcasts/Composer.tsx
 msgid "The first line of the mail shows here when there is no preview text."
@@ -17761,6 +17852,10 @@ msgstr "Ovaj pretinac povezuje se samo putem „Prijava s Microsoftom”, što o
 msgid "This member is not in the workspace any more."
 msgstr "Ovaj član više nije u radnom prostoru."
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "This message"
+msgstr "Ova poruka"
+
 #: src/features/migrations/UploadStep.tsx
 msgid "This migration has ended, so nothing more can be uploaded. Start a new one for another file."
 msgstr "Ova migracija je završila pa se ništa više ne može učitati. Za drugu datoteku započnite novu."
@@ -17997,6 +18092,7 @@ msgid "TLS (port 465)"
 msgstr "TLS (port 465)"
 
 #: src/features/conversation/composer/Recipients.tsx
+#: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
@@ -18508,6 +18604,10 @@ msgstr "Radi od {upSince}. Kad budete sigurni, objavite da je sve u redu."
 #: src/features/broadcasts/Import.tsx
 msgid "Up to {max} and 100,000 rows, with a header row. Excel files in Turkish or Western encodings and columns separated by commas, semicolons or tabs are read as they are."
 msgstr "Do {max} i 100.000 redaka, s retkom zaglavlja. Excel datoteke u turskom ili zapadnom kodiranju i stupci odvojeni zarezima, točkama sa zarezom ili tabulatorima čitaju se kakvi jesu."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Up to 10 addresses. Press Enter after each one."
+msgstr "Do 10 adresa. Pritisni Enter nakon svake."
 
 #: src/features/reports/ReportsColumn.tsx
 msgid "Up to 13 months, by group"
@@ -19438,6 +19538,10 @@ msgstr "Windows-1254 (turski Excel)"
 msgid "With {name}"
 msgstr "S {name}"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "with attachments"
+msgstr "s privicima"
+
 #: src/features/setup/email/EmailReceiveStep.tsx
 msgid "With Cloudflare Email Routing, deploy the Email Worker from edge/ of the Yuva repository and add a routing rule for the address with the action Send to a Worker. Any other mail server can post each message, signed with YUVA_INGRESS_SECRET, to:"
 msgstr "S Cloudflare Email Routingom implementirajte Email Worker iz edge/ repozitorija Yuve i dodajte pravilo usmjeravanja za adresu s radnjom Send to a Worker. Bilo koji drugi poštanski poslužitelj može poslati svaku poruku, potpisanu s YUVA_INGRESS_SECRET, na:"
@@ -19486,6 +19590,10 @@ msgstr "Unutar nekoliko minuta"
 #: src/features/broadcasts/ListForm.tsx
 msgid "Without a confirmation anyone can type someone else's address into your form, and you cannot show that the owner of the address agreed. Keep it on unless your forms are only shown to people whose address you have already verified."
 msgstr "Bez potvrde svatko može upisati tuđu adresu u vaš obrazac, a vi ne možete pokazati da je vlasnik adrese pristao. Ostavite uključeno osim ako se vaši obrasci prikazuju samo ljudima čiju ste adresu već potvrdili."
+
+#: src/features/conversation/messages/Thread.tsx
+msgid "without attachments"
+msgstr "bez privitaka"
 
 #: src/components/common/text.ts
 msgid "Won't do"

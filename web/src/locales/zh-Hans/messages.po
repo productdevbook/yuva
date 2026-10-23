@@ -213,6 +213,14 @@ msgstr "{actor} 将状态设为 {status}"
 msgid "{added} added · {out} left out"
 msgstr "已添加 {added} 个 · 排除 {out} 个"
 
+#: src/features/conversation/ForwardDialog.tsx
+msgid "{address} bounced or complained before. Remove it here, or clear it on the contact to forward there."
+msgstr "{address} 之前退信或被投诉过。请在此移除它，或在联系人中清除后再转发到该地址。"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "{address} cannot be a recipient. It may be the conversation's contact, an address already copied on it, an address of this server, or not valid."
+msgstr "{address} 不能作为收件人。它可能是会话的联系人、已在抄送中的地址、本服务器的地址，或格式无效。"
+
 #: src/features/migrations/DoneStep.tsx
 msgid "{address} is in Yuva"
 msgstr "{address} 已在 Yuva 中"
@@ -2544,6 +2552,10 @@ msgstr "回答并整理对话、撰写备注、保持联系人和标签最新。
 msgid "Answer cleared"
 msgstr "已清除回答"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "Answer to a forward from {author}"
+msgstr "对 {author} 转发的回复"
+
 #: src/features/feedback/FeedbackList.tsx
 msgid "answered"
 msgstr "已回复"
@@ -3415,6 +3427,7 @@ msgstr "活动名称"
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactNotes.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/docs/discussions/FromConversation.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
@@ -6828,6 +6841,18 @@ msgstr "把所有收到的邮件转发到下面的地址,并在邮箱中保留�
 msgid "Forward as a note mentioning"
 msgstr "作为备注转发并提及"
 
+#: src/app/Palette.tsx
+#: src/features/conversation/ConversationMenu.tsx
+#: src/features/conversation/messages/MessageActions.tsx
+msgid "Forward by e-mail…"
+msgstr "通过电子邮件转发…"
+
+#: src/features/conversation/messages/Thread.tsx
+#: src/features/inbox/AssistantsPage.tsx
+#: src/features/inbox/SidePanels.tsx
+msgid "Forward draft by {author}"
+msgstr "{author} 的转发草稿"
+
 #: src/features/setup/email/EmailReceiveStep.tsx
 msgid "Forward from your mailbox"
 msgstr "从你的邮箱转发"
@@ -6836,13 +6861,37 @@ msgstr "从你的邮箱转发"
 msgid "Forward mail for this address to the Cloudflare Email Worker in edge/ of the Yuva repository, or to any mail server that posts each message to this server's ingress URL, signed with YUVA_INGRESS_SECRET:"
 msgstr "把此地址的邮件转发到 Yuva 仓库 edge/ 中的 Cloudflare Email Worker,或任何会把每封邮件用 YUVA_INGRESS_SECRET 签名后发送到此服务器 ingress URL 的邮件服务器:"
 
-#: src/features/conversation/messages/MessageActions.tsx
-msgid "Forward to a teammate"
-msgstr "转发给团队成员"
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Forward saved as a draft"
+msgstr "转发已保存为草稿"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Forward the conversation"
+msgstr "转发会话"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Forward the conversation by e-mail, or the focused message"
+msgstr "通过电子邮件转发会话或当前选中的消息"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Forward this message"
+msgstr "转发此消息"
+
+#: src/features/conversation/messages/Thread.tsx
+msgid "Forwarded by {author}"
+msgstr "由 {author} 转发"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Forwarded by e-mail"
+msgstr "已通过电子邮件转发"
 
 #: src/features/conversation/ChatView.tsx
 msgid "Forwarded to {label} as a note"
 msgstr "已作为备注转发给 {label}"
+
+#: src/features/conversation/Participants.tsx
+msgid "Forwarded: answered a forward, not copied on replies"
+msgstr "已转发：回复了转发，不会被抄送回复"
 
 #: src/features/migrations/SwitchStep.tsx
 msgid "Forwarding"
@@ -7831,6 +7880,10 @@ msgstr "事件"
 #: src/features/status/IncidentsPage.tsx
 msgid "Incidents live on a status page. Create one first."
 msgstr "事件属于某个状态页。请先创建一个。"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Include attachments"
+msgstr "包含附件"
 
 #: src/features/settings/slack/SlackPage.tsx
 msgid "Include message text for {name}"
@@ -9189,6 +9242,10 @@ msgstr "成员"
 msgid "Members and invitations"
 msgstr "成员和邀请"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "Members only"
+msgstr "仅成员可见"
+
 #: src/features/conversation/composer/MentionMenu.tsx
 msgid "Mention a teammate"
 msgstr "提及团队成员"
@@ -10520,6 +10577,10 @@ msgstr "还没有监控在监视此页面"
 msgid "No monitors yet. Add one to let a check, a job or your monitoring set a component’s state."
 msgstr "还没有监控项。添加一个,让检查、任务或你自己的监控来设置组件的状态。"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "No note"
+msgstr "无备注"
+
 #: src/features/account/AccountPage.tsx
 msgid "No notifications in the last 90 days."
 msgstr "最近 90 天没有通知。"
@@ -10985,6 +11046,10 @@ msgstr "未验证：该邮件未通过发件人检查，因此这个地址可能
 msgid "Note"
 msgstr "备注"
 
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Note (optional)"
+msgstr "备注（可选）"
+
 #: src/features/contact/ContactNotes.tsx
 msgid "Note about this contact"
 msgstr "关于此联系人的备注"
@@ -11002,6 +11067,10 @@ msgstr "备注,仅团队可见"
 #: src/features/contact/ContactSheet.tsx
 msgid "Notes"
 msgstr "备注"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Notes are never forwarded. The contact does not see the forward or the answers; only your team does."
+msgstr "备注永远不会被转发。联系人看不到转发和回复，只有你的团队可见。"
 
 #: src/features/inbox/SidePanels.tsx
 msgid "Notes where a teammate mentioned you"
@@ -12612,6 +12681,10 @@ msgstr "已置顶到你的列表顶部"
 #: src/features/status/IncidentDialog.tsx
 msgid "Plain text with links and line breaks, at most 5,000 characters."
 msgstr "纯文本，可包含链接和换行，最多 5,000 个字符。"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Plain text, shown above the forwarded mail."
+msgstr "纯文本，显示在转发邮件上方。"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentDialog.tsx
@@ -14315,6 +14388,7 @@ msgstr "保存为视图"
 msgid "Save changes"
 msgstr "保存更改"
 
+#: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 msgid "Save draft"
 msgstr "保存草稿"
@@ -14633,6 +14707,7 @@ msgid "semicolons"
 msgstr "分号"
 
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 msgid "Send"
 msgstr "发送"
@@ -14916,6 +14991,14 @@ msgstr "邮件发送自"
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Sends on {local}"
 msgstr "在 {local} 发送"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Sends the latest messages of this conversation by e-mail to people outside Yuva."
+msgstr "将此会话的最新消息通过电子邮件发送给 Yuva 之外的人。"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Sends this message by e-mail to people outside Yuva."
+msgstr "将此消息通过电子邮件发送给 Yuva 之外的人。"
 
 #. placeholder {0}: ch.email.smtp.host
 #: src/features/settings/channels/ChannelSummary.tsx
@@ -16550,6 +16633,10 @@ msgstr "联系人已被删除"
 msgid "The contact writes a message"
 msgstr "联系人发来消息"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "The conversation"
+msgstr "会话"
+
 #: src/components/common/Linked.tsx
 msgid "The conversations stay open. Customers get it right away and it cannot be recalled."
 msgstr "对话保持打开。客户会立即收到回复，且无法撤回。"
@@ -16693,6 +16780,10 @@ msgstr "文件被拒绝。"
 #: src/features/migrations/UploadStep.tsx
 msgid "The file's parts were deleted. Pick a corrected file to upload."
 msgstr "该文件的各部分已被删除。请选择修正后的文件重新上传。"
+
+#: src/components/common/text.ts
+msgid "The files of the forwarded messages are larger than 20 MiB together. Forward without attachments."
+msgstr "转发消息的文件合计超过 20 MiB。请不带附件转发。"
 
 #: src/features/broadcasts/Composer.tsx
 msgid "The first line of the mail shows here when there is no preview text."
@@ -17761,6 +17852,10 @@ msgstr "此邮箱只能通过“使用 Microsoft 登录”连接,而此 Yuva 服
 msgid "This member is not in the workspace any more."
 msgstr "此成员已不在工作区中。"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "This message"
+msgstr "此消息"
+
 #: src/features/migrations/UploadStep.tsx
 msgid "This migration has ended, so nothing more can be uploaded. Start a new one for another file."
 msgstr "此迁移已结束,无法再上传任何内容。要处理另一个文件,请开始新的迁移。"
@@ -17997,6 +18092,7 @@ msgid "TLS (port 465)"
 msgstr "TLS(端口 465)"
 
 #: src/features/conversation/composer/Recipients.tsx
+#: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
@@ -18508,6 +18604,10 @@ msgstr "自 {upSince} 起已恢复。确认无误后请发布恢复正常的通�
 #: src/features/broadcasts/Import.tsx
 msgid "Up to {max} and 100,000 rows, with a header row. Excel files in Turkish or Western encodings and columns separated by commas, semicolons or tabs are read as they are."
 msgstr "最多 {max} 和 100,000 行,带标题行。土耳其语或西欧编码的 Excel 文件,以及用逗号、分号或制表符分隔的列,会按原样读取。"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Up to 10 addresses. Press Enter after each one."
+msgstr "最多 10 个地址。每输入一个后按 Enter。"
 
 #: src/features/reports/ReportsColumn.tsx
 msgid "Up to 13 months, by group"
@@ -19438,6 +19538,10 @@ msgstr "Windows-1254(土耳其语 Excel)"
 msgid "With {name}"
 msgstr "与 {name}"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "with attachments"
+msgstr "含附件"
+
 #: src/features/setup/email/EmailReceiveStep.tsx
 msgid "With Cloudflare Email Routing, deploy the Email Worker from edge/ of the Yuva repository and add a routing rule for the address with the action Send to a Worker. Any other mail server can post each message, signed with YUVA_INGRESS_SECRET, to:"
 msgstr "使用 Cloudflare Email Routing 时,部署 Yuva 仓库 edge/ 中的 Email Worker,并为该地址添加一条动作为“发送到 Worker”的路由规则。任何其他邮件服务器也可以把每封邮件用 YUVA_INGRESS_SECRET 签名后发送到:"
@@ -19486,6 +19590,10 @@ msgstr "几分钟内"
 #: src/features/broadcasts/ListForm.tsx
 msgid "Without a confirmation anyone can type someone else's address into your form, and you cannot show that the owner of the address agreed. Keep it on unless your forms are only shown to people whose address you have already verified."
 msgstr "没有确认,任何人都可以在你的表单中输入别人的地址,而你无法证明该地址的所有者同意过。除非你的表单只展示给你已验证过地址的人,否则请保持开启。"
+
+#: src/features/conversation/messages/Thread.tsx
+msgid "without attachments"
+msgstr "不含附件"
 
 #: src/components/common/text.ts
 msgid "Won't do"

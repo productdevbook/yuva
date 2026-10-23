@@ -42,6 +42,7 @@ import { ConversationMenu, type MenuView } from "@/features/conversation/Convers
 import { TrashBanner } from "@/features/conversation/Trash"
 import { CategoryChip, ProgressStrip } from "@/features/conversation/Feedback"
 import { IdeaChip } from "@/features/conversation/IdeaChip"
+import { ForwardDialog } from "@/features/conversation/ForwardDialog"
 import { feedbackDraft } from "@/features/issues/draft"
 import { IssueChips } from "@/features/issues/IssueChips"
 import { IssueDialogs, IssueMenu, type IssueMode } from "@/features/issues/IssueMenu"
@@ -242,7 +243,7 @@ function Loaded({
   useEffect(() => {
     if (focusMissing && hasNextPage && !isFetchingNextPage) void fetchNextPage()
   }, [focusMissing, hasNextPage, isFetchingNextPage, fetchNextPage])
-  const suggestion = items.findLast((m) => m.draft)
+  const suggestion = items.findLast((m) => m.draft && m.kind !== "forward")
   const shown = items.filter((m) => m !== suggestion)
   const inbound = shown.filter((m) => m.kind === "message" && m.direction !== "out")
   const lastInbound = inbound.at(-1)
@@ -301,11 +302,13 @@ function Loaded({
     find: q ? { query: findQuery.trim(), current: currentHit } : undefined,
     onQuote: quote,
     onForward: forward,
+    onForwardMail: (m) => setForwarding({ target: m }),
     onRemove: remove,
     canRemove,
   }
   const pageLine = !!conversationPage(c)
   const [discussing, setDiscussing] = useState(false)
+  const [forwarding, setForwarding] = useState<{ target?: Message } | null>(null)
   const [linking, setLinking] = useState(false)
   const [ideaLinking, setIdeaLinking] = useState(false)
   const [issueMode, setIssueMode] = useState<IssueMode | null>(null)
@@ -464,6 +467,13 @@ function Loaded({
     history: () => setHistoryOpen((o) => !o),
     discussion: () => setDiscussing(true),
     incident: () => setLinking(true),
+    forward: () => {
+      const id = document.activeElement?.closest("[data-message-id]")?.getAttribute("data-message-id")
+      const focused = id ? items.find((m) => m.id === id) : undefined
+      setForwarding({
+        target: focused?.kind === "message" && !focused.draft && !focused.redacted_at ? focused : undefined,
+      })
+    },
     idea: () => c.kind === "feedback" && setIdeaLinking(true),
     createIssue: () => c.kind === "feedback" && setIssueMode("create"),
     linkIssue: () => c.kind === "feedback" && setIssueMode("link"),
@@ -508,6 +518,7 @@ function Loaded({
           [SHORTCUTS.unread]: markUnread,
           [SHORTCUTS.discussion]: handlers.discussion,
           [SHORTCUTS.incident]: handlers.incident,
+          [SHORTCUTS.forward]: handlers.forward,
           [SHORTCUTS.idea]: handlers.idea,
           [SHORTCUTS.createIssue]: handlers.createIssue,
           [SHORTCUTS.linkIssue]: handlers.linkIssue,
@@ -684,6 +695,7 @@ function Loaded({
                 onUnread={markUnread}
                 onDiscussion={handlers.discussion}
                 onIncident={handlers.incident}
+                onForward={() => setForwarding({})}
                 onIdea={handlers.idea}
                 onFind={() => (finding ? closeFind() : openFind())}
                 onTrash={canManage ? trash : undefined}
@@ -893,6 +905,9 @@ function Loaded({
         draft={feedbackDraft(c)}
         onClose={() => setIssueMode(null)}
       />
+      {forwarding && (
+        <ForwardDialog c={c} target={forwarding.target} messages={shown} onClose={() => setForwarding(null)} />
+      )}
       {discussing && <FromConversationDialog c={c} messages={shown} onClose={() => setDiscussing(false)} />}
       {!inlinePanel && (
         <ContactSheet contactId={c.contact_id} conversationId={c.id} open={sheet} onOpenChange={setSheet} />

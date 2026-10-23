@@ -213,6 +213,14 @@ msgstr "{actor} đã đặt trạng thái là {status}"
 msgid "{added} added · {out} left out"
 msgstr "Đã thêm {added} · bỏ qua {out}"
 
+#: src/features/conversation/ForwardDialog.tsx
+msgid "{address} bounced or complained before. Remove it here, or clear it on the contact to forward there."
+msgstr "{address} từng bị trả về hoặc bị báo cáo. Hãy xóa nó ở đây, hoặc xóa khỏi liên hệ để có thể chuyển tiếp tới đó."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "{address} cannot be a recipient. It may be the conversation's contact, an address already copied on it, an address of this server, or not valid."
+msgstr "{address} không thể là người nhận. Đó có thể là liên hệ của cuộc trò chuyện, một địa chỉ đã được đồng gửi, địa chỉ của máy chủ này, hoặc không hợp lệ."
+
 #: src/features/migrations/DoneStep.tsx
 msgid "{address} is in Yuva"
 msgstr "{address} đã có trong Yuva"
@@ -2544,6 +2552,10 @@ msgstr "Trả lời và sắp xếp các cuộc trò chuyện, viết ghi chú, 
 msgid "Answer cleared"
 msgstr "Đã xóa câu trả lời"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "Answer to a forward from {author}"
+msgstr "Phản hồi cho thư chuyển tiếp từ {author}"
+
 #: src/features/feedback/FeedbackList.tsx
 msgid "answered"
 msgstr "đã trả lời"
@@ -3415,6 +3427,7 @@ msgstr "Tên chiến dịch"
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactNotes.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/docs/discussions/FromConversation.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
@@ -6828,6 +6841,18 @@ msgstr "Chuyển tiếp mọi thư đến tới địa chỉ bên dưới và gi
 msgid "Forward as a note mentioning"
 msgstr "Chuyển tiếp dưới dạng ghi chú nhắc đến"
 
+#: src/app/Palette.tsx
+#: src/features/conversation/ConversationMenu.tsx
+#: src/features/conversation/messages/MessageActions.tsx
+msgid "Forward by e-mail…"
+msgstr "Chuyển tiếp qua e-mail…"
+
+#: src/features/conversation/messages/Thread.tsx
+#: src/features/inbox/AssistantsPage.tsx
+#: src/features/inbox/SidePanels.tsx
+msgid "Forward draft by {author}"
+msgstr "Bản nháp chuyển tiếp của {author}"
+
 #: src/features/setup/email/EmailReceiveStep.tsx
 msgid "Forward from your mailbox"
 msgstr "Chuyển tiếp từ hộp thư của bạn"
@@ -6836,13 +6861,37 @@ msgstr "Chuyển tiếp từ hộp thư của bạn"
 msgid "Forward mail for this address to the Cloudflare Email Worker in edge/ of the Yuva repository, or to any mail server that posts each message to this server's ingress URL, signed with YUVA_INGRESS_SECRET:"
 msgstr "Chuyển tiếp thư của địa chỉ này tới Cloudflare Email Worker trong edge/ của kho lưu trữ Yuva, hoặc tới bất kỳ máy chủ thư nào đăng từng thư lên URL ingress của máy chủ này, ký bằng YUVA_INGRESS_SECRET:"
 
-#: src/features/conversation/messages/MessageActions.tsx
-msgid "Forward to a teammate"
-msgstr "Chuyển cho đồng nghiệp"
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Forward saved as a draft"
+msgstr "Đã lưu chuyển tiếp dưới dạng bản nháp"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Forward the conversation"
+msgstr "Chuyển tiếp cuộc trò chuyện"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Forward the conversation by e-mail, or the focused message"
+msgstr "Chuyển tiếp cuộc trò chuyện hoặc tin nhắn đang chọn qua e-mail"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Forward this message"
+msgstr "Chuyển tiếp tin nhắn này"
+
+#: src/features/conversation/messages/Thread.tsx
+msgid "Forwarded by {author}"
+msgstr "{author} đã chuyển tiếp"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Forwarded by e-mail"
+msgstr "Đã chuyển tiếp qua e-mail"
 
 #: src/features/conversation/ChatView.tsx
 msgid "Forwarded to {label} as a note"
 msgstr "Đã chuyển tiếp cho {label} dưới dạng ghi chú"
+
+#: src/features/conversation/Participants.tsx
+msgid "Forwarded: answered a forward, not copied on replies"
+msgstr "Đã chuyển tiếp: đã trả lời thư chuyển tiếp, không được đồng gửi trong các phản hồi"
 
 #: src/features/migrations/SwitchStep.tsx
 msgid "Forwarding"
@@ -7831,6 +7880,10 @@ msgstr "Sự cố"
 #: src/features/status/IncidentsPage.tsx
 msgid "Incidents live on a status page. Create one first."
 msgstr "Sự cố nằm trên một trang trạng thái. Hãy tạo trang trước."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Include attachments"
+msgstr "Bao gồm tệp đính kèm"
 
 #: src/features/settings/slack/SlackPage.tsx
 msgid "Include message text for {name}"
@@ -9189,6 +9242,10 @@ msgstr "Thành viên"
 msgid "Members and invitations"
 msgstr "Thành viên và lời mời"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "Members only"
+msgstr "Chỉ dành cho thành viên"
+
 #: src/features/conversation/composer/MentionMenu.tsx
 msgid "Mention a teammate"
 msgstr "Nhắc đến một đồng nghiệp"
@@ -10520,6 +10577,10 @@ msgstr "Chưa có trình giám sát nào theo dõi trang này"
 msgid "No monitors yet. Add one to let a check, a job or your monitoring set a component’s state."
 msgstr "Chưa có trình giám sát nào. Hãy thêm một cái để một lần kiểm tra, một tác vụ hoặc hệ thống giám sát của bạn đặt trạng thái cho thành phần."
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "No note"
+msgstr "Không có ghi chú"
+
 #: src/features/account/AccountPage.tsx
 msgid "No notifications in the last 90 days."
 msgstr "Không có thông báo nào trong 90 ngày qua."
@@ -10985,6 +11046,10 @@ msgstr "Chưa xác minh: thư không qua được bước kiểm tra người g�
 msgid "Note"
 msgstr "Ghi chú"
 
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Note (optional)"
+msgstr "Ghi chú (không bắt buộc)"
+
 #: src/features/contact/ContactNotes.tsx
 msgid "Note about this contact"
 msgstr "Ghi chú về liên hệ này"
@@ -11002,6 +11067,10 @@ msgstr "Ghi chú, chỉ nhóm thấy"
 #: src/features/contact/ContactSheet.tsx
 msgid "Notes"
 msgstr "Ghi chú"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Notes are never forwarded. The contact does not see the forward or the answers; only your team does."
+msgstr "Ghi chú không bao giờ được chuyển tiếp. Liên hệ không thấy thư chuyển tiếp hay các phản hồi; chỉ nhóm của bạn thấy."
 
 #: src/features/inbox/SidePanels.tsx
 msgid "Notes where a teammate mentioned you"
@@ -12612,6 +12681,10 @@ msgstr "Được ghim lên đầu danh sách của bạn"
 #: src/features/status/IncidentDialog.tsx
 msgid "Plain text with links and line breaks, at most 5,000 characters."
 msgstr "Văn bản thuần có liên kết và xuống dòng, tối đa 5.000 ký tự."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Plain text, shown above the forwarded mail."
+msgstr "Văn bản thuần, hiển thị phía trên thư được chuyển tiếp."
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentDialog.tsx
@@ -14315,6 +14388,7 @@ msgstr "Lưu thành chế độ xem"
 msgid "Save changes"
 msgstr "Lưu thay đổi"
 
+#: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 msgid "Save draft"
 msgstr "Lưu bản nháp"
@@ -14633,6 +14707,7 @@ msgid "semicolons"
 msgstr "dấu chấm phẩy"
 
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 msgid "Send"
 msgstr "Gửi"
@@ -14916,6 +14991,14 @@ msgstr "Gửi thư từ"
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Sends on {local}"
 msgstr "Gửi vào {local}"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Sends the latest messages of this conversation by e-mail to people outside Yuva."
+msgstr "Gửi các tin nhắn mới nhất của cuộc trò chuyện này qua e-mail cho những người ngoài Yuva."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Sends this message by e-mail to people outside Yuva."
+msgstr "Gửi tin nhắn này qua e-mail cho những người ngoài Yuva."
 
 #. placeholder {0}: ch.email.smtp.host
 #: src/features/settings/channels/ChannelSummary.tsx
@@ -16550,6 +16633,10 @@ msgstr "Liên hệ đã bị xóa"
 msgid "The contact writes a message"
 msgstr "Người liên hệ viết một tin nhắn"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "The conversation"
+msgstr "Cuộc trò chuyện"
+
 #: src/components/common/Linked.tsx
 msgid "The conversations stay open. Customers get it right away and it cannot be recalled."
 msgstr "Các cuộc trò chuyện vẫn mở. Khách hàng nhận câu trả lời ngay và không thể thu hồi."
@@ -16693,6 +16780,10 @@ msgstr "Tệp bị từ chối."
 #: src/features/migrations/UploadStep.tsx
 msgid "The file's parts were deleted. Pick a corrected file to upload."
 msgstr "Các phần của tệp đã bị xóa. Hãy chọn một tệp đã sửa để tải lên."
+
+#: src/components/common/text.ts
+msgid "The files of the forwarded messages are larger than 20 MiB together. Forward without attachments."
+msgstr "Các tệp của tin nhắn được chuyển tiếp cộng lại lớn hơn 20 MiB. Hãy chuyển tiếp không kèm tệp đính kèm."
 
 #: src/features/broadcasts/Composer.tsx
 msgid "The first line of the mail shows here when there is no preview text."
@@ -17761,6 +17852,10 @@ msgstr "Hộp thư này chỉ kết nối bằng “Đăng nhập bằng Microso
 msgid "This member is not in the workspace any more."
 msgstr "Thành viên này không còn trong không gian làm việc."
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "This message"
+msgstr "Tin nhắn này"
+
 #: src/features/migrations/UploadStep.tsx
 msgid "This migration has ended, so nothing more can be uploaded. Start a new one for another file."
 msgstr "Lần di chuyển này đã kết thúc, nên không thể tải lên thêm. Hãy bắt đầu lần mới cho tệp khác."
@@ -17997,6 +18092,7 @@ msgid "TLS (port 465)"
 msgstr "TLS (cổng 465)"
 
 #: src/features/conversation/composer/Recipients.tsx
+#: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
@@ -18508,6 +18604,10 @@ msgstr "Hoạt động từ {upSince}. Khi chắc chắn, hãy đăng thông bá
 #: src/features/broadcasts/Import.tsx
 msgid "Up to {max} and 100,000 rows, with a header row. Excel files in Turkish or Western encodings and columns separated by commas, semicolons or tabs are read as they are."
 msgstr "Tối đa {max} và 100.000 dòng, có dòng tiêu đề. Tệp Excel mã hóa Thổ Nhĩ Kỳ hoặc phương Tây và các cột phân tách bằng dấu phẩy, dấu chấm phẩy hoặc tab được đọc nguyên trạng."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Up to 10 addresses. Press Enter after each one."
+msgstr "Tối đa 10 địa chỉ. Nhấn Enter sau mỗi địa chỉ."
 
 #: src/features/reports/ReportsColumn.tsx
 msgid "Up to 13 months, by group"
@@ -19438,6 +19538,10 @@ msgstr "Windows-1254 (Excel Thổ Nhĩ Kỳ)"
 msgid "With {name}"
 msgstr "Với {name}"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "with attachments"
+msgstr "có tệp đính kèm"
+
 #: src/features/setup/email/EmailReceiveStep.tsx
 msgid "With Cloudflare Email Routing, deploy the Email Worker from edge/ of the Yuva repository and add a routing rule for the address with the action Send to a Worker. Any other mail server can post each message, signed with YUVA_INGRESS_SECRET, to:"
 msgstr "Với Cloudflare Email Routing, hãy triển khai Email Worker từ edge/ của kho lưu trữ Yuva và thêm quy tắc định tuyến cho địa chỉ với hành động Send to a Worker. Bất kỳ máy chủ thư nào khác có thể đăng từng thư, ký bằng YUVA_INGRESS_SECRET, tới:"
@@ -19486,6 +19590,10 @@ msgstr "Trong vài phút"
 #: src/features/broadcasts/ListForm.tsx
 msgid "Without a confirmation anyone can type someone else's address into your form, and you cannot show that the owner of the address agreed. Keep it on unless your forms are only shown to people whose address you have already verified."
 msgstr "Không có xác nhận, bất kỳ ai cũng có thể gõ địa chỉ của người khác vào biểu mẫu của bạn, và bạn không thể chứng minh chủ địa chỉ đã đồng ý. Hãy giữ bật trừ khi biểu mẫu của bạn chỉ hiện cho những người có địa chỉ bạn đã xác minh."
+
+#: src/features/conversation/messages/Thread.tsx
+msgid "without attachments"
+msgstr "không có tệp đính kèm"
 
 #: src/components/common/text.ts
 msgid "Won't do"

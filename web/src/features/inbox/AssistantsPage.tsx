@@ -66,10 +66,12 @@ function DraftCard({ item }: { item: DraftItem }) {
         <div className="flex flex-col gap-1.5 rounded-xl border border-dashed border-brand bg-brand-wash px-3.5 py-3">
           <span className="flex items-center gap-1.5 text-caption font-semibold text-brand">
             <SparklesIcon className="size-3.5" />
-            <Trans>Draft by {author}</Trans>
+            {d.kind === "forward" ? <Trans>Forward draft by {author}</Trans> : <Trans>Draft by {author}</Trans>}
             <KindTag kind={d.author.type === "bot" ? "bot" : d.author.via ? "assistant" : "member"} />
           </span>
-          <p className={cn("whitespace-pre-line", long && !open && "line-clamp-2")}>{d.body}</p>
+          <p className={cn("whitespace-pre-line", long && !open && "line-clamp-2")}>
+            {d.kind === "forward" ? [d.forward?.to.join(", "), d.body].filter(Boolean).join("\n") : d.body}
+          </p>
           {long && (
             <button
               type="button"

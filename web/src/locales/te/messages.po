@@ -213,6 +213,14 @@ msgstr "{actor} స్థితిని {status} కు సెట్ చేశ�
 msgid "{added} added · {out} left out"
 msgstr "{added} జోడించబడ్డాయి · {out} మినహాయించబడ్డాయి"
 
+#: src/features/conversation/ForwardDialog.tsx
+msgid "{address} bounced or complained before. Remove it here, or clear it on the contact to forward there."
+msgstr "{address} ఇంతకుముందు బౌన్స్ అయింది లేదా ఫిర్యాదు చేయబడింది. దీన్ని ఇక్కడ తొలగించండి, లేదా అక్కడికి ఫార్వర్డ్ చేయడానికి కాంటాక్ట్‌లో క్లియర్ చేయండి."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "{address} cannot be a recipient. It may be the conversation's contact, an address already copied on it, an address of this server, or not valid."
+msgstr "{address} గ్రహీత కాలేదు. ఇది సంభాషణ కాంటాక్ట్, ఇప్పటికే కాపీలో ఉన్న చిరునామా, ఈ సర్వర్ చిరునామా లేదా చెల్లని చిరునామా కావచ్చు."
+
 #: src/features/migrations/DoneStep.tsx
 msgid "{address} is in Yuva"
 msgstr "{address} Yuva లో ఉంది"
@@ -2544,6 +2552,10 @@ msgstr "సంభాషణలకు జవాబివ్వండి మరి�
 msgid "Answer cleared"
 msgstr "జవాబు తొలగించబడింది"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "Answer to a forward from {author}"
+msgstr "{author} ఫార్వర్డ్‌కు సమాధానం"
+
 #: src/features/feedback/FeedbackList.tsx
 msgid "answered"
 msgstr "జవాబు ఇచ్చారు"
@@ -3415,6 +3427,7 @@ msgstr "ప్రచారం పేరు"
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactNotes.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/docs/discussions/FromConversation.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
@@ -6828,6 +6841,18 @@ msgstr "ఇన్‌కమింగ్ మెయిల్ అంతటినీ 
 msgid "Forward as a note mentioning"
 msgstr "ప్రస్తావిస్తూ గమనికగా ఫార్వర్డ్ చేయండి"
 
+#: src/app/Palette.tsx
+#: src/features/conversation/ConversationMenu.tsx
+#: src/features/conversation/messages/MessageActions.tsx
+msgid "Forward by e-mail…"
+msgstr "ఇమెయిల్ ద్వారా ఫార్వర్డ్ చేయండి…"
+
+#: src/features/conversation/messages/Thread.tsx
+#: src/features/inbox/AssistantsPage.tsx
+#: src/features/inbox/SidePanels.tsx
+msgid "Forward draft by {author}"
+msgstr "{author} ఫార్వర్డ్ డ్రాఫ్ట్"
+
 #: src/features/setup/email/EmailReceiveStep.tsx
 msgid "Forward from your mailbox"
 msgstr "మీ మెయిల్‌బాక్స్ నుండి ఫార్వర్డ్ చేయండి"
@@ -6836,13 +6861,37 @@ msgstr "మీ మెయిల్‌బాక్స్ నుండి ఫార
 msgid "Forward mail for this address to the Cloudflare Email Worker in edge/ of the Yuva repository, or to any mail server that posts each message to this server's ingress URL, signed with YUVA_INGRESS_SECRET:"
 msgstr "ఈ చిరునామా మెయిల్‌ను Yuva రిపోజిటరీలోని edge/ లో ఉన్న Cloudflare Email Worker కు, లేదా ప్రతి సందేశాన్ని YUVA_INGRESS_SECRET తో సైన్ చేసి ఈ సర్వర్ ingress URL కు పోస్ట్ చేసే ఏ మెయిల్ సర్వర్‌కైనా ఫార్వర్డ్ చేయండి:"
 
-#: src/features/conversation/messages/MessageActions.tsx
-msgid "Forward to a teammate"
-msgstr "సహచరుడికి ఫార్వర్డ్ చేయండి"
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Forward saved as a draft"
+msgstr "ఫార్వర్డ్ డ్రాఫ్ట్‌గా సేవ్ చేయబడింది"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Forward the conversation"
+msgstr "సంభాషణను ఫార్వర్డ్ చేయండి"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Forward the conversation by e-mail, or the focused message"
+msgstr "సంభాషణను లేదా ఎంచుకున్న సందేశాన్ని ఇమెయిల్ ద్వారా ఫార్వర్డ్ చేయండి"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Forward this message"
+msgstr "ఈ సందేశాన్ని ఫార్వర్డ్ చేయండి"
+
+#: src/features/conversation/messages/Thread.tsx
+msgid "Forwarded by {author}"
+msgstr "{author} ఫార్వర్డ్ చేశారు"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Forwarded by e-mail"
+msgstr "ఇమెయిల్ ద్వారా ఫార్వర్డ్ చేయబడింది"
 
 #: src/features/conversation/ChatView.tsx
 msgid "Forwarded to {label} as a note"
 msgstr "{label} కు గమనికగా ఫార్వర్డ్ చేయబడింది"
+
+#: src/features/conversation/Participants.tsx
+msgid "Forwarded: answered a forward, not copied on replies"
+msgstr "ఫార్వర్డ్ చేసినది: ఫార్వర్డ్‌కు సమాధానం ఇచ్చారు, సమాధానాల్లో కాపీ కారు"
 
 #: src/features/migrations/SwitchStep.tsx
 msgid "Forwarding"
@@ -7831,6 +7880,10 @@ msgstr "ఘటనలు"
 #: src/features/status/IncidentsPage.tsx
 msgid "Incidents live on a status page. Create one first."
 msgstr "ఘటనలు స్టేటస్ పేజీలో ఉంటాయి. ముందుగా ఒకదాన్ని సృష్టించండి."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Include attachments"
+msgstr "అటాచ్‌మెంట్‌లను చేర్చండి"
 
 #: src/features/settings/slack/SlackPage.tsx
 msgid "Include message text for {name}"
@@ -9189,6 +9242,10 @@ msgstr "సభ్యులు"
 msgid "Members and invitations"
 msgstr "సభ్యులు మరియు ఆహ్వానాలు"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "Members only"
+msgstr "సభ్యులకు మాత్రమే"
+
 #: src/features/conversation/composer/MentionMenu.tsx
 msgid "Mention a teammate"
 msgstr "సహచరుడిని ప్రస్తావించండి"
@@ -10520,6 +10577,10 @@ msgstr "ఈ పేజీని ఇంకా ఏ మానిటర్ గమన�
 msgid "No monitors yet. Add one to let a check, a job or your monitoring set a component’s state."
 msgstr "ఇంకా మానిటర్లు లేవు. ఒక తనిఖీ, జాబ్ లేదా మీ స్వంత మానిటరింగ్ ఒక భాగం స్థితిని నిర్ణయించేలా ఒకదాన్ని జోడించండి."
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "No note"
+msgstr "గమనిక లేదు"
+
 #: src/features/account/AccountPage.tsx
 msgid "No notifications in the last 90 days."
 msgstr "గత 90 రోజుల్లో నోటిఫికేషన్‌లు లేవు."
@@ -10985,6 +11046,10 @@ msgstr "ధృవీకరించబడలేదు: మెయిల్ పం
 msgid "Note"
 msgstr "గమనిక"
 
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Note (optional)"
+msgstr "గమనిక (ఐచ్ఛికం)"
+
 #: src/features/contact/ContactNotes.tsx
 msgid "Note about this contact"
 msgstr "ఈ కాంటాక్ట్ గురించి గమనిక"
@@ -11002,6 +11067,10 @@ msgstr "గమనిక, బృందం మాత్రమే చూస్త�
 #: src/features/contact/ContactSheet.tsx
 msgid "Notes"
 msgstr "గమనికలు"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Notes are never forwarded. The contact does not see the forward or the answers; only your team does."
+msgstr "గమనికలు ఎప్పుడూ ఫార్వర్డ్ చేయబడవు. కాంటాక్ట్‌కు ఫార్వర్డ్ లేదా సమాధానాలు కనిపించవు; మీ బృందానికి మాత్రమే కనిపిస్తాయి."
 
 #: src/features/inbox/SidePanels.tsx
 msgid "Notes where a teammate mentioned you"
@@ -12612,6 +12681,10 @@ msgstr "మీ లిస్ట్ పైన పిన్ చేయబడిం�
 #: src/features/status/IncidentDialog.tsx
 msgid "Plain text with links and line breaks, at most 5,000 characters."
 msgstr "లింక్‌లు మరియు లైన్ బ్రేక్‌లతో సాదా వచనం, గరిష్టంగా 5,000 అక్షరాలు."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Plain text, shown above the forwarded mail."
+msgstr "సాదా వచనం, ఫార్వర్డ్ చేసిన మెయిల్ పైన చూపబడుతుంది."
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentDialog.tsx
@@ -14315,6 +14388,7 @@ msgstr "వీక్షణగా సేవ్ చేయి"
 msgid "Save changes"
 msgstr "మార్పులను సేవ్ చేయండి"
 
+#: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 msgid "Save draft"
 msgstr "డ్రాఫ్ట్‌ను సేవ్ చేయండి"
@@ -14633,6 +14707,7 @@ msgid "semicolons"
 msgstr "సెమీకోలన్‌లు"
 
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 msgid "Send"
 msgstr "పంపండి"
@@ -14916,6 +14991,14 @@ msgstr "దాని మెయిల్‌ను దీని నుండి �
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Sends on {local}"
 msgstr "{local} న పంపుతుంది"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Sends the latest messages of this conversation by e-mail to people outside Yuva."
+msgstr "ఈ సంభాషణలోని తాజా సందేశాలను Yuva వెలుపలి వ్యక్తులకు ఇమెయిల్ ద్వారా పంపుతుంది."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Sends this message by e-mail to people outside Yuva."
+msgstr "ఈ సందేశాన్ని Yuva వెలుపలి వ్యక్తులకు ఇమెయిల్ ద్వారా పంపుతుంది."
 
 #. placeholder {0}: ch.email.smtp.host
 #: src/features/settings/channels/ChannelSummary.tsx
@@ -16550,6 +16633,10 @@ msgstr "కాంటాక్ట్ తొలగించబడింది"
 msgid "The contact writes a message"
 msgstr "సంప్రదింపు సందేశం రాస్తుంది"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "The conversation"
+msgstr "సంభాషణ"
+
 #: src/components/common/Linked.tsx
 msgid "The conversations stay open. Customers get it right away and it cannot be recalled."
 msgstr "సంభాషణలు తెరిచే ఉంటాయి. కస్టమర్లకు జవాబు వెంటనే చేరుతుంది, వెనక్కి తీసుకోలేరు."
@@ -16693,6 +16780,10 @@ msgstr "ఫైల్ తిరస్కరించబడింది."
 #: src/features/migrations/UploadStep.tsx
 msgid "The file's parts were deleted. Pick a corrected file to upload."
 msgstr "ఫైల్ భాగాలు తొలగించబడ్డాయి. అప్‌లోడ్ చేయడానికి సరిచేసిన ఫైల్‌ను ఎంచుకోండి."
+
+#: src/components/common/text.ts
+msgid "The files of the forwarded messages are larger than 20 MiB together. Forward without attachments."
+msgstr "ఫార్వర్డ్ చేసే సందేశాల ఫైల్‌లు కలిపి 20 MiB కంటే పెద్దవి. అటాచ్‌మెంట్‌లు లేకుండా ఫార్వర్డ్ చేయండి."
 
 #: src/features/broadcasts/Composer.tsx
 msgid "The first line of the mail shows here when there is no preview text."
@@ -17761,6 +17852,10 @@ msgstr "ఈ మెయిల్‌బాక్స్ “Microsoft తో సై�
 msgid "This member is not in the workspace any more."
 msgstr "ఈ సభ్యుడు ఇకపై వర్క్‌స్పేస్‌లో లేరు."
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "This message"
+msgstr "ఈ సందేశం"
+
 #: src/features/migrations/UploadStep.tsx
 msgid "This migration has ended, so nothing more can be uploaded. Start a new one for another file."
 msgstr "ఈ మైగ్రేషన్ ముగిసింది, కాబట్టి ఇంకేమీ అప్‌లోడ్ చేయలేరు. మరో ఫైల్ కోసం కొత్తది ప్రారంభించండి."
@@ -17997,6 +18092,7 @@ msgid "TLS (port 465)"
 msgstr "TLS (పోర్ట్ 465)"
 
 #: src/features/conversation/composer/Recipients.tsx
+#: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
@@ -18508,6 +18604,10 @@ msgstr "{upSince} నుండి పని చేస్తోంది. ఖచ�
 #: src/features/broadcasts/Import.tsx
 msgid "Up to {max} and 100,000 rows, with a header row. Excel files in Turkish or Western encodings and columns separated by commas, semicolons or tabs are read as they are."
 msgstr "{max} మరియు 100,000 అడ్డు వరుసల వరకు, హెడర్ అడ్డు వరుసతో. టర్కిష్ లేదా పాశ్చాత్య ఎన్‌కోడింగ్‌లలో Excel ఫైల్‌లు మరియు కామాలు, సెమీకోలన్‌లు లేదా ట్యాబ్‌లతో వేరు చేసిన నిలువు వరుసలు ఉన్నట్లే చదవబడతాయి."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Up to 10 addresses. Press Enter after each one."
+msgstr "గరిష్ఠంగా 10 చిరునామాలు. ప్రతిదాని తర్వాత Enter నొక్కండి."
 
 #: src/features/reports/ReportsColumn.tsx
 msgid "Up to 13 months, by group"
@@ -19438,6 +19538,10 @@ msgstr "Windows-1254 (టర్కిష్ Excel)"
 msgid "With {name}"
 msgstr "{name} తో"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "with attachments"
+msgstr "అటాచ్‌మెంట్‌లతో"
+
 #: src/features/setup/email/EmailReceiveStep.tsx
 msgid "With Cloudflare Email Routing, deploy the Email Worker from edge/ of the Yuva repository and add a routing rule for the address with the action Send to a Worker. Any other mail server can post each message, signed with YUVA_INGRESS_SECRET, to:"
 msgstr "Cloudflare Email Routing తో, Yuva రిపోజిటరీ edge/ నుండి Email Worker ను డిప్లాయ్ చేసి, చిరునామా కోసం Send to a Worker చర్యతో రూటింగ్ నియమాన్ని జోడించండి. ఏ ఇతర మెయిల్ సర్వర్ అయినా ప్రతి సందేశాన్ని YUVA_INGRESS_SECRET తో సైన్ చేసి దీనికి పోస్ట్ చేయవచ్చు:"
@@ -19486,6 +19590,10 @@ msgstr "నిమిషాల్లో"
 #: src/features/broadcasts/ListForm.tsx
 msgid "Without a confirmation anyone can type someone else's address into your form, and you cannot show that the owner of the address agreed. Keep it on unless your forms are only shown to people whose address you have already verified."
 msgstr "నిర్ధారణ లేకుండా ఎవరైనా మీ ఫారమ్‌లో మరొకరి చిరునామాను టైప్ చేయవచ్చు, మరియు చిరునామా యజమాని అంగీకరించారని మీరు చూపలేరు. మీ ఫారమ్‌లు ఇప్పటికే చిరునామాను ధృవీకరించిన వారికి మాత్రమే చూపబడితే తప్ప, దీన్ని ఆన్‌లో ఉంచండి."
+
+#: src/features/conversation/messages/Thread.tsx
+msgid "without attachments"
+msgstr "అటాచ్‌మెంట్‌లు లేకుండా"
 
 #: src/components/common/text.ts
 msgid "Won't do"

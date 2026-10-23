@@ -153,7 +153,9 @@ export const ReplyBox = forwardRef<
   const helpCenter = (useHelpCenters().data ?? []).find((h) => h.inbox_id === c.inbox_id)
   const note = mode === "note"
   const participants = useParticipants(c.id, !!emailTo)
-  const defaultCc = (participants.data?.items ?? []).filter((p) => p.status === "active").map((p) => p.email)
+  const defaultCc = (participants.data?.items ?? [])
+    .filter((p) => p.status === "active" && p.role === "cc")
+    .map((p) => p.email)
   const cc = ccEdit ?? defaultCc
   const blocked = !note && !!undeliverable
   const first = firstName(contactName)

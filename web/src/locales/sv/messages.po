@@ -213,6 +213,14 @@ msgstr "{actor} satte statusen till {status}"
 msgid "{added} added · {out} left out"
 msgstr "{added} tillagda · {out} utelämnade"
 
+#: src/features/conversation/ForwardDialog.tsx
+msgid "{address} bounced or complained before. Remove it here, or clear it on the contact to forward there."
+msgstr "{address} har tidigare studsat eller anmälts. Ta bort den här, eller rensa den på kontakten för att kunna vidarebefordra dit."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "{address} cannot be a recipient. It may be the conversation's contact, an address already copied on it, an address of this server, or not valid."
+msgstr "{address} kan inte vara mottagare. Det kan vara konversationens kontakt, en adress som redan är i kopia, en adress på den här servern eller ogiltig."
+
 #: src/features/migrations/DoneStep.tsx
 msgid "{address} is in Yuva"
 msgstr "{address} finns i Yuva"
@@ -2544,6 +2552,10 @@ msgstr "Svara på och organisera konversationer, skriv anteckningar, håll konta
 msgid "Answer cleared"
 msgstr "Svar rensat"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "Answer to a forward from {author}"
+msgstr "Svar på en vidarebefordran från {author}"
+
 #: src/features/feedback/FeedbackList.tsx
 msgid "answered"
 msgstr "besvarad"
@@ -3415,6 +3427,7 @@ msgstr "Kampanjnamn"
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactNotes.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/docs/discussions/FromConversation.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
@@ -6828,6 +6841,18 @@ msgstr "Vidarebefordra all inkommande e-post till adressen nedan och behåll en 
 msgid "Forward as a note mentioning"
 msgstr "Vidarebefordra som anteckning och nämn"
 
+#: src/app/Palette.tsx
+#: src/features/conversation/ConversationMenu.tsx
+#: src/features/conversation/messages/MessageActions.tsx
+msgid "Forward by e-mail…"
+msgstr "Vidarebefordra med e-post…"
+
+#: src/features/conversation/messages/Thread.tsx
+#: src/features/inbox/AssistantsPage.tsx
+#: src/features/inbox/SidePanels.tsx
+msgid "Forward draft by {author}"
+msgstr "Utkast till vidarebefordran av {author}"
+
 #: src/features/setup/email/EmailReceiveStep.tsx
 msgid "Forward from your mailbox"
 msgstr "Vidarebefordra från din brevlåda"
@@ -6836,13 +6861,37 @@ msgstr "Vidarebefordra från din brevlåda"
 msgid "Forward mail for this address to the Cloudflare Email Worker in edge/ of the Yuva repository, or to any mail server that posts each message to this server's ingress URL, signed with YUVA_INGRESS_SECRET:"
 msgstr "Vidarebefordra e-post för den här adressen till Cloudflare Email Worker i edge/ i Yuva-repot, eller till valfri e-postserver som postar varje meddelande till den här serverns ingress-URL, signerat med YUVA_INGRESS_SECRET:"
 
-#: src/features/conversation/messages/MessageActions.tsx
-msgid "Forward to a teammate"
-msgstr "Vidarebefordra till en lagkamrat"
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Forward saved as a draft"
+msgstr "Vidarebefordran sparad som utkast"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Forward the conversation"
+msgstr "Vidarebefordra konversationen"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Forward the conversation by e-mail, or the focused message"
+msgstr "Vidarebefordra konversationen eller det markerade meddelandet med e-post"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Forward this message"
+msgstr "Vidarebefordra det här meddelandet"
+
+#: src/features/conversation/messages/Thread.tsx
+msgid "Forwarded by {author}"
+msgstr "Vidarebefordrat av {author}"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Forwarded by e-mail"
+msgstr "Vidarebefordrat med e-post"
 
 #: src/features/conversation/ChatView.tsx
 msgid "Forwarded to {label} as a note"
 msgstr "Vidarebefordrad till {label} som anteckning"
+
+#: src/features/conversation/Participants.tsx
+msgid "Forwarded: answered a forward, not copied on replies"
+msgstr "Vidarebefordrat: svarade på en vidarebefordran, får inte kopia av svar"
 
 #: src/features/migrations/SwitchStep.tsx
 msgid "Forwarding"
@@ -7831,6 +7880,10 @@ msgstr "Incidenter"
 #: src/features/status/IncidentsPage.tsx
 msgid "Incidents live on a status page. Create one first."
 msgstr "Incidenter finns på en statussida. Skapa en först."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Include attachments"
+msgstr "Ta med bilagor"
 
 #: src/features/settings/slack/SlackPage.tsx
 msgid "Include message text for {name}"
@@ -9189,6 +9242,10 @@ msgstr "Medlemmar"
 msgid "Members and invitations"
 msgstr "Medlemmar och inbjudningar"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "Members only"
+msgstr "Endast för medlemmar"
+
 #: src/features/conversation/composer/MentionMenu.tsx
 msgid "Mention a teammate"
 msgstr "Nämn en lagkamrat"
@@ -10520,6 +10577,10 @@ msgstr "Ingen monitor bevakar sidan än"
 msgid "No monitors yet. Add one to let a check, a job or your monitoring set a component’s state."
 msgstr "Inga övervakare än. Lägg till en så att en kontroll, ett jobb eller din övervakning sätter en komponents status."
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "No note"
+msgstr "Ingen anteckning"
+
 #: src/features/account/AccountPage.tsx
 msgid "No notifications in the last 90 days."
 msgstr "Inga aviseringar de senaste 90 dagarna."
@@ -10985,6 +11046,10 @@ msgstr "Inte verifierad: mejlet klarade inte avsändarkontrollen, så adressen k
 msgid "Note"
 msgstr "Anteckning"
 
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Note (optional)"
+msgstr "Anteckning (valfri)"
+
 #: src/features/contact/ContactNotes.tsx
 msgid "Note about this contact"
 msgstr "Anteckning om den här kontakten"
@@ -11002,6 +11067,10 @@ msgstr "Anteckning, bara teamet ser den"
 #: src/features/contact/ContactSheet.tsx
 msgid "Notes"
 msgstr "Anteckningar"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Notes are never forwarded. The contact does not see the forward or the answers; only your team does."
+msgstr "Anteckningar vidarebefordras aldrig. Kontakten ser varken vidarebefordran eller svaren; bara ditt team gör det."
 
 #: src/features/inbox/SidePanels.tsx
 msgid "Notes where a teammate mentioned you"
@@ -12612,6 +12681,10 @@ msgstr "Fäst överst i din lista"
 #: src/features/status/IncidentDialog.tsx
 msgid "Plain text with links and line breaks, at most 5,000 characters."
 msgstr "Ren text med länkar och radbrytningar, högst 5 000 tecken."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Plain text, shown above the forwarded mail."
+msgstr "Oformaterad text, visas ovanför det vidarebefordrade mejlet."
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentDialog.tsx
@@ -14315,6 +14388,7 @@ msgstr "Spara som vy"
 msgid "Save changes"
 msgstr "Spara ändringar"
 
+#: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 msgid "Save draft"
 msgstr "Spara utkast"
@@ -14633,6 +14707,7 @@ msgid "semicolons"
 msgstr "semikolon"
 
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 msgid "Send"
 msgstr "Skicka"
@@ -14916,6 +14991,14 @@ msgstr "Skickar sin e-post från"
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Sends on {local}"
 msgstr "Skickas {local}"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Sends the latest messages of this conversation by e-mail to people outside Yuva."
+msgstr "Skickar konversationens senaste meddelanden med e-post till personer utanför Yuva."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Sends this message by e-mail to people outside Yuva."
+msgstr "Skickar det här meddelandet med e-post till personer utanför Yuva."
 
 #. placeholder {0}: ch.email.smtp.host
 #: src/features/settings/channels/ChannelSummary.tsx
@@ -16550,6 +16633,10 @@ msgstr "Kontakten raderades"
 msgid "The contact writes a message"
 msgstr "Kontakten skriver ett meddelande"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "The conversation"
+msgstr "Konversationen"
+
 #: src/components/common/Linked.tsx
 msgid "The conversations stay open. Customers get it right away and it cannot be recalled."
 msgstr "Konversationerna förblir öppna. Kunderna får svaret direkt och det kan inte tas tillbaka."
@@ -16693,6 +16780,10 @@ msgstr "Filen avvisades."
 #: src/features/migrations/UploadStep.tsx
 msgid "The file's parts were deleted. Pick a corrected file to upload."
 msgstr "Filens delar raderades. Välj en korrigerad fil att ladda upp."
+
+#: src/components/common/text.ts
+msgid "The files of the forwarded messages are larger than 20 MiB together. Forward without attachments."
+msgstr "Filerna i de vidarebefordrade meddelandena är tillsammans större än 20 MiB. Vidarebefordra utan bilagor."
 
 #: src/features/broadcasts/Composer.tsx
 msgid "The first line of the mail shows here when there is no preview text."
@@ -17761,6 +17852,10 @@ msgstr "Den här brevlådan ansluter bara med ”Logga in med Microsoft”, som 
 msgid "This member is not in the workspace any more."
 msgstr "Den här medlemmen finns inte längre i arbetsytan."
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "This message"
+msgstr "Det här meddelandet"
+
 #: src/features/migrations/UploadStep.tsx
 msgid "This migration has ended, so nothing more can be uploaded. Start a new one for another file."
 msgstr "Den här migreringen har avslutats, så inget mer kan laddas upp. Starta en ny för en annan fil."
@@ -17997,6 +18092,7 @@ msgid "TLS (port 465)"
 msgstr "TLS (port 465)"
 
 #: src/features/conversation/composer/Recipients.tsx
+#: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
@@ -18508,6 +18604,10 @@ msgstr "Uppe sedan {upSince}. Meddela att allt är lugnt när du är säker."
 #: src/features/broadcasts/Import.tsx
 msgid "Up to {max} and 100,000 rows, with a header row. Excel files in Turkish or Western encodings and columns separated by commas, semicolons or tabs are read as they are."
 msgstr "Upp till {max} och 100 000 rader, med rubrikrad. Excel-filer i turkisk eller västerländsk teckenkodning och kolumner åtskilda av kommatecken, semikolon eller tabbar läses som de är."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Up to 10 addresses. Press Enter after each one."
+msgstr "Upp till 10 adresser. Tryck på Enter efter varje."
 
 #: src/features/reports/ReportsColumn.tsx
 msgid "Up to 13 months, by group"
@@ -19438,6 +19538,10 @@ msgstr "Windows-1254 (turkisk Excel)"
 msgid "With {name}"
 msgstr "Med {name}"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "with attachments"
+msgstr "med bilagor"
+
 #: src/features/setup/email/EmailReceiveStep.tsx
 msgid "With Cloudflare Email Routing, deploy the Email Worker from edge/ of the Yuva repository and add a routing rule for the address with the action Send to a Worker. Any other mail server can post each message, signed with YUVA_INGRESS_SECRET, to:"
 msgstr "Med Cloudflare Email Routing, distribuera Email Worker från edge/ i Yuva-repot och lägg till en routingregel för adressen med åtgärden Send to a Worker. Vilken annan e-postserver som helst kan posta varje meddelande, signerat med YUVA_INGRESS_SECRET, till:"
@@ -19486,6 +19590,10 @@ msgstr "Inom minuter"
 #: src/features/broadcasts/ListForm.tsx
 msgid "Without a confirmation anyone can type someone else's address into your form, and you cannot show that the owner of the address agreed. Keep it on unless your forms are only shown to people whose address you have already verified."
 msgstr "Utan bekräftelse kan vem som helst skriva någon annans adress i ditt formulär, och du kan inte visa att adressens ägare gick med på det. Behåll den på om inte dina formulär bara visas för personer vars adress du redan har verifierat."
+
+#: src/features/conversation/messages/Thread.tsx
+msgid "without attachments"
+msgstr "utan bilagor"
 
 #: src/components/common/text.ts
 msgid "Won't do"

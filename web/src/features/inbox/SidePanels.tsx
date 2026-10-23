@@ -202,10 +202,12 @@ function DraftRow({ item }: { item: DraftItem }) {
             </time>
           </span>
           <small className="block truncate text-caption text-faint">
-            <Trans>Draft by {author}</Trans>
+            {d.kind === "forward" ? <Trans>Forward draft by {author}</Trans> : <Trans>Draft by {author}</Trans>}
             {item.conversation.subject && ` · ${item.conversation.subject}`}
           </small>
-          <span className="line-clamp-2 text-small text-muted-foreground">{d.body}</span>
+          <span className="line-clamp-2 text-small text-muted-foreground">
+            {d.kind === "forward" ? [d.forward?.to.join(", "), d.body].filter(Boolean).join(" · ") : d.body}
+          </span>
         </span>
       </Item>
     </li>

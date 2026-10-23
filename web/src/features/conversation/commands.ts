@@ -19,6 +19,7 @@ export type CommandName =
   | "history"
   | "discussion"
   | "incident"
+  | "forward"
   | "article"
   | "recipients"
   | "idea"

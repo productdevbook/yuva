@@ -4,6 +4,7 @@ import { withRequiredFields } from "@/features/fields/required"
 import {
   api,
   unwrap,
+  type ConversationForward,
   type ConversationParticipantList,
   type ConversationUpdate,
   type Message,
@@ -231,4 +232,14 @@ export function useDraftActions() {
     onSuccess: (data) => applyEvent(qc, live, { type: "draft.deleted", data }),
   })
   return { send, save, discard }
+}
+
+export function useForward(conversationId: string) {
+  const qc = useQueryClient()
+  const live = useLiveContext()
+  return useMutation({
+    mutationFn: (body: ConversationForward) =>
+      unwrap(api.POST("/v1/conversations/{conversationId}/forward", { params: { path: { conversationId } }, body })),
+    onSuccess: (data) => applyEvent(qc, live, { type: data.draft ? "draft.created" : "message.created", data }),
+  })
 }

@@ -213,6 +213,14 @@ msgstr "{actor} durumu {status} olarak değiştirdi"
 msgid "{added} added · {out} left out"
 msgstr "{added} eklendi · {out} dışarıda kaldı"
 
+#: src/features/conversation/ForwardDialog.tsx
+msgid "{address} bounced or complained before. Remove it here, or clear it on the contact to forward there."
+msgstr "{address} daha önce geri döndü ya da şikâyet edildi. Buradan kaldır ya da oraya iletebilmek için kişiden temizle."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "{address} cannot be a recipient. It may be the conversation's contact, an address already copied on it, an address of this server, or not valid."
+msgstr "{address} alıcı olamaz. Konuşmanın kişisi, zaten kopyada olan bir adres, bu sunucunun bir adresi olabilir ya da geçerli değildir."
+
 #: src/features/migrations/DoneStep.tsx
 msgid "{address} is in Yuva"
 msgstr "{address} artık Yuva'da"
@@ -2544,6 +2552,10 @@ msgstr "Konuşmaları yanıtlar ve düzenler, not yazar, kişileri ve etiketleri
 msgid "Answer cleared"
 msgstr "Kabul edilen yanıt kaldırıldı"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "Answer to a forward from {author}"
+msgstr "{author} tarafından iletilene yanıt"
+
 #: src/features/feedback/FeedbackList.tsx
 msgid "answered"
 msgstr "yanıtlandı"
@@ -3415,6 +3427,7 @@ msgstr "Kampanya adı"
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactNotes.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/docs/discussions/FromConversation.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
@@ -6828,6 +6841,18 @@ msgstr "Gelen tüm e-postaları aşağıdaki adrese yönlendirin ve posta kutusu
 msgid "Forward as a note mentioning"
 msgstr "Not olarak ilet ve etiketle:"
 
+#: src/app/Palette.tsx
+#: src/features/conversation/ConversationMenu.tsx
+#: src/features/conversation/messages/MessageActions.tsx
+msgid "Forward by e-mail…"
+msgstr "E-postayla ilet…"
+
+#: src/features/conversation/messages/Thread.tsx
+#: src/features/inbox/AssistantsPage.tsx
+#: src/features/inbox/SidePanels.tsx
+msgid "Forward draft by {author}"
+msgstr "{author} tarafından iletme taslağı"
+
 #: src/features/setup/email/EmailReceiveStep.tsx
 msgid "Forward from your mailbox"
 msgstr "Posta kutunuzdan yönlendirin"
@@ -6836,13 +6861,37 @@ msgstr "Posta kutunuzdan yönlendirin"
 msgid "Forward mail for this address to the Cloudflare Email Worker in edge/ of the Yuva repository, or to any mail server that posts each message to this server's ingress URL, signed with YUVA_INGRESS_SECRET:"
 msgstr "Bu adrese gelen postayı Yuva deposundaki edge/ içindeki Cloudflare Email Worker'a ya da her iletiyi YUVA_INGRESS_SECRET ile imzalayıp bu sunucunun giriş adresine gönderen herhangi bir posta sunucusuna yönlendirin:"
 
-#: src/features/conversation/messages/MessageActions.tsx
-msgid "Forward to a teammate"
-msgstr "Bir ekip arkadaşına ilet"
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Forward saved as a draft"
+msgstr "İletme taslak olarak kaydedildi"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Forward the conversation"
+msgstr "Konuşmayı ilet"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Forward the conversation by e-mail, or the focused message"
+msgstr "Konuşmayı ya da odaktaki iletiyi e-postayla ilet"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Forward this message"
+msgstr "Bu iletiyi ilet"
+
+#: src/features/conversation/messages/Thread.tsx
+msgid "Forwarded by {author}"
+msgstr "{author} iletti"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Forwarded by e-mail"
+msgstr "E-postayla iletildi"
 
 #: src/features/conversation/ChatView.tsx
 msgid "Forwarded to {label} as a note"
 msgstr "{label} kişisine not olarak iletildi"
+
+#: src/features/conversation/Participants.tsx
+msgid "Forwarded: answered a forward, not copied on replies"
+msgstr "İletildi: bir iletiye yanıt verdi, yanıtlarda kopyada değil"
 
 #: src/features/migrations/SwitchStep.tsx
 msgid "Forwarding"
@@ -7831,6 +7880,10 @@ msgstr "Olaylar"
 #: src/features/status/IncidentsPage.tsx
 msgid "Incidents live on a status page. Create one first."
 msgstr "Olaylar bir durum sayfasında yer alır. Önce bir tane oluşturun."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Include attachments"
+msgstr "Ekleri dahil et"
 
 #: src/features/settings/slack/SlackPage.tsx
 msgid "Include message text for {name}"
@@ -9189,6 +9242,10 @@ msgstr "Üyeler"
 msgid "Members and invitations"
 msgstr "Üyeler ve davetler"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "Members only"
+msgstr "Yalnızca üyelere"
+
 #: src/features/conversation/composer/MentionMenu.tsx
 msgid "Mention a teammate"
 msgstr "Ekip arkadaşını an"
@@ -10520,6 +10577,10 @@ msgstr "Bu sayfayı henüz izleyen bir monitör yok"
 msgid "No monitors yet. Add one to let a check, a job or your monitoring set a component’s state."
 msgstr "Henüz izleyici yok. Bir bileşenin durumunu bir kontrolün, bir işin veya izleme sisteminizin belirlemesi için ekleyin."
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "No note"
+msgstr "Not yok"
+
 #: src/features/account/AccountPage.tsx
 msgid "No notifications in the last 90 days."
 msgstr "Son 90 günde bildirim yok."
@@ -10985,6 +11046,10 @@ msgstr "Doğrulanmadı: posta gönderen denetimini geçemedi, bu adres sahte ola
 msgid "Note"
 msgstr "Not"
 
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Note (optional)"
+msgstr "Not (isteğe bağlı)"
+
 #: src/features/contact/ContactNotes.tsx
 msgid "Note about this contact"
 msgstr "Kişi hakkında not"
@@ -11002,6 +11067,10 @@ msgstr "Not, yalnızca ekip görür"
 #: src/features/contact/ContactSheet.tsx
 msgid "Notes"
 msgstr "Notlar"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Notes are never forwarded. The contact does not see the forward or the answers; only your team does."
+msgstr "Notlar asla iletilmez. Kişi iletiyi ve yanıtları görmez; yalnızca ekibin görür."
 
 #: src/features/inbox/SidePanels.tsx
 msgid "Notes where a teammate mentioned you"
@@ -12612,6 +12681,10 @@ msgstr "Listenizin en üstüne sabitlendi"
 #: src/features/status/IncidentDialog.tsx
 msgid "Plain text with links and line breaks, at most 5,000 characters."
 msgstr "Bağlantılı ve satır sonlu düz metin, en fazla 5.000 karakter."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Plain text, shown above the forwarded mail."
+msgstr "Düz metin, iletilen e-postanın üstünde gösterilir."
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentDialog.tsx
@@ -14315,6 +14388,7 @@ msgstr "Görünüm olarak kaydet"
 msgid "Save changes"
 msgstr "Değişiklikleri kaydet"
 
+#: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 msgid "Save draft"
 msgstr "Taslağı kaydet"
@@ -14633,6 +14707,7 @@ msgid "semicolons"
 msgstr "noktalı virgül"
 
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 msgid "Send"
 msgstr "Gönder"
@@ -14916,6 +14991,14 @@ msgstr "E-postalarını gönderen kanal"
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Sends on {local}"
 msgstr "{local} tarihinde gönderilecek"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Sends the latest messages of this conversation by e-mail to people outside Yuva."
+msgstr "Bu konuşmanın son iletilerini Yuva dışındaki kişilere e-postayla gönderir."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Sends this message by e-mail to people outside Yuva."
+msgstr "Bu iletiyi Yuva dışındaki kişilere e-postayla gönderir."
 
 #. placeholder {0}: ch.email.smtp.host
 #: src/features/settings/channels/ChannelSummary.tsx
@@ -16550,6 +16633,10 @@ msgstr "Kişi silindi"
 msgid "The contact writes a message"
 msgstr "Kişi bir mesaj yazar"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "The conversation"
+msgstr "Konuşma"
+
 #: src/components/common/Linked.tsx
 msgid "The conversations stay open. Customers get it right away and it cannot be recalled."
 msgstr "Konuşmalar açık kalır. Müşteriler yanıtı hemen alır ve geri çağrılamaz."
@@ -16693,6 +16780,10 @@ msgstr "Dosya reddedildi."
 #: src/features/migrations/UploadStep.tsx
 msgid "The file's parts were deleted. Pick a corrected file to upload."
 msgstr "Dosyanın parçaları silindi. Yüklemek için düzeltilmiş bir dosya seçin."
+
+#: src/components/common/text.ts
+msgid "The files of the forwarded messages are larger than 20 MiB together. Forward without attachments."
+msgstr "İletilen iletilerin dosyaları birlikte 20 MiB’den büyük. Eksiz ilet."
 
 #: src/features/broadcasts/Composer.tsx
 msgid "The first line of the mail shows here when there is no preview text."
@@ -17761,6 +17852,10 @@ msgstr "Bu posta kutusu yalnızca “Microsoft ile oturum aç” ile bağlanır 
 msgid "This member is not in the workspace any more."
 msgstr "Bu üye artık çalışma alanında değil."
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "This message"
+msgstr "Bu ileti"
+
 #: src/features/migrations/UploadStep.tsx
 msgid "This migration has ended, so nothing more can be uploaded. Start a new one for another file."
 msgstr "Bu taşıma sona erdi, artık bir şey yüklenemez. Başka bir dosya için yeni bir taşıma başlatın."
@@ -17997,6 +18092,7 @@ msgid "TLS (port 465)"
 msgstr "TLS (port 465)"
 
 #: src/features/conversation/composer/Recipients.tsx
+#: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
@@ -18508,6 +18604,10 @@ msgstr "{upSince} saatinden beri çalışıyor. Emin olduğunuzda sorunun bitti�
 #: src/features/broadcasts/Import.tsx
 msgid "Up to {max} and 100,000 rows, with a header row. Excel files in Turkish or Western encodings and columns separated by commas, semicolons or tabs are read as they are."
 msgstr "En fazla {max} ve 100.000 satır, bir başlık satırıyla. Türkçe ya da Batı dilleri kodlamasındaki Excel dosyaları ve virgül, noktalı virgül ya da sekmeyle ayrılmış sütunlar olduğu gibi okunur."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Up to 10 addresses. Press Enter after each one."
+msgstr "En fazla 10 adres. Her birinden sonra Enter’a bas."
 
 #: src/features/reports/ReportsColumn.tsx
 msgid "Up to 13 months, by group"
@@ -19438,6 +19538,10 @@ msgstr "Windows-1254 (Türkçe Excel)"
 msgid "With {name}"
 msgstr "{name} ilgileniyor"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "with attachments"
+msgstr "eklerle birlikte"
+
 #: src/features/setup/email/EmailReceiveStep.tsx
 msgid "With Cloudflare Email Routing, deploy the Email Worker from edge/ of the Yuva repository and add a routing rule for the address with the action Send to a Worker. Any other mail server can post each message, signed with YUVA_INGRESS_SECRET, to:"
 msgstr "Cloudflare Email Routing kullanıyorsanız Yuva deposundaki edge/ klasöründen Email Worker'ı yayınlayın ve bu adres için eylemi Send to a Worker olan bir yönlendirme kuralı ekleyin. Başka bir posta sunucusu da her iletiyi YUVA_INGRESS_SECRET ile imzalayıp şu adrese gönderebilir:"
@@ -19486,6 +19590,10 @@ msgstr "Birkaç dakika içinde"
 #: src/features/broadcasts/ListForm.tsx
 msgid "Without a confirmation anyone can type someone else's address into your form, and you cannot show that the owner of the address agreed. Keep it on unless your forms are only shown to people whose address you have already verified."
 msgstr "Onay olmadan herkes formunuza başkasının adresini yazabilir ve adresin sahibinin izin verdiğini gösteremezsiniz. Formlarınızı yalnızca adresini zaten doğruladığınız kişiler görmüyorsa açık bırakın."
+
+#: src/features/conversation/messages/Thread.tsx
+msgid "without attachments"
+msgstr "ek olmadan"
 
 #: src/components/common/text.ts
 msgid "Won't do"

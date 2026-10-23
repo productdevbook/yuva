@@ -15,6 +15,7 @@ export type ThreadContext = {
   find?: { query: string; current?: string }
   onQuote?: (m: Message) => void
   onForward?: (m: Message, to: Member) => void
+  onForwardMail?: (m: Message) => void
   onRemove?: (m: Message) => void
   canRemove?: (m: Message) => boolean
 }

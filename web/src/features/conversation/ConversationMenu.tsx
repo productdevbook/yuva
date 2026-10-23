@@ -13,6 +13,7 @@ import {
   PinIcon,
   PinOffIcon,
   RotateCcwIcon,
+  SendIcon,
   SearchIcon,
   ShieldAlertIcon,
   ShieldCheckIcon,
@@ -53,6 +54,7 @@ export function ConversationMenu({
   onUnread,
   onDiscussion,
   onIncident,
+  onForward,
   onIdea,
   onFind,
   onTrash,
@@ -69,6 +71,7 @@ export function ConversationMenu({
   onUnread: () => void
   onDiscussion: () => void
   onIncident: () => void
+  onForward: () => void
   onIdea: () => void
   onFind: () => void
   onTrash?: () => void
@@ -166,6 +169,13 @@ export function ConversationMenu({
                 <Trans>Link to an incident</Trans>
               </span>
               <Kbd>{SHORTCUTS.incident}</Kbd>
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={onForward} data-testid="header-forward">
+              <SendIcon className="rtl:-scale-x-100" />
+              <span className="flex-1">
+                <Trans>Forward by e-mail…</Trans>
+              </span>
+              <Kbd>{SHORTCUTS.forward}</Kbd>
             </DropdownMenuItem>
             <DropdownMenuItem onClick={onDiscussion} data-testid="header-discussion">
               <MessagesSquareIcon />

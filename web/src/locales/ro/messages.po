@@ -213,6 +213,14 @@ msgstr "{actor} a setat starea la {status}"
 msgid "{added} added · {out} left out"
 msgstr "{added} adăugate · {out} omise"
 
+#: src/features/conversation/ForwardDialog.tsx
+msgid "{address} bounced or complained before. Remove it here, or clear it on the contact to forward there."
+msgstr "Adresa {address} a returnat sau a raportat mesaje înainte. Elimin-o de aici sau șterge-o de la contact pentru a putea redirecționa către ea."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "{address} cannot be a recipient. It may be the conversation's contact, an address already copied on it, an address of this server, or not valid."
+msgstr "Adresa {address} nu poate fi destinatar. Poate fi contactul conversației, o adresă deja în copie, o adresă a acestui server sau una nevalidă."
+
 #: src/features/migrations/DoneStep.tsx
 msgid "{address} is in Yuva"
 msgstr "{address} este în Yuva"
@@ -2544,6 +2552,10 @@ msgstr "Răspunde la conversații și organizează-le, scrie note, ține la zi c
 msgid "Answer cleared"
 msgstr "Răspuns șters"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "Answer to a forward from {author}"
+msgstr "Răspuns la o redirecționare de la {author}"
+
 #: src/features/feedback/FeedbackList.tsx
 msgid "answered"
 msgstr "cu răspuns"
@@ -3415,6 +3427,7 @@ msgstr "Nume campanie"
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactNotes.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/docs/discussions/FromConversation.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
@@ -6828,6 +6841,18 @@ msgstr "Redirecționează tot e-mailul primit la adresa de mai jos și păstreaz
 msgid "Forward as a note mentioning"
 msgstr "Redirecționează ca notă cu mențiune"
 
+#: src/app/Palette.tsx
+#: src/features/conversation/ConversationMenu.tsx
+#: src/features/conversation/messages/MessageActions.tsx
+msgid "Forward by e-mail…"
+msgstr "Redirecționează prin e-mail…"
+
+#: src/features/conversation/messages/Thread.tsx
+#: src/features/inbox/AssistantsPage.tsx
+#: src/features/inbox/SidePanels.tsx
+msgid "Forward draft by {author}"
+msgstr "Ciornă de redirecționare de la {author}"
+
 #: src/features/setup/email/EmailReceiveStep.tsx
 msgid "Forward from your mailbox"
 msgstr "Redirecționează din căsuța ta"
@@ -6836,13 +6861,37 @@ msgstr "Redirecționează din căsuța ta"
 msgid "Forward mail for this address to the Cloudflare Email Worker in edge/ of the Yuva repository, or to any mail server that posts each message to this server's ingress URL, signed with YUVA_INGRESS_SECRET:"
 msgstr "Redirecționează e-mailul pentru această adresă către Cloudflare Email Worker din edge/ al depozitului Yuva sau către orice server de e-mail care trimite fiecare mesaj la URL-ul ingress al acestui server, semnat cu YUVA_INGRESS_SECRET:"
 
-#: src/features/conversation/messages/MessageActions.tsx
-msgid "Forward to a teammate"
-msgstr "Redirecționează unui coleg"
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Forward saved as a draft"
+msgstr "Redirecționarea a fost salvată ca ciornă"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Forward the conversation"
+msgstr "Redirecționează conversația"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Forward the conversation by e-mail, or the focused message"
+msgstr "Redirecționează prin e-mail conversația sau mesajul selectat"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Forward this message"
+msgstr "Redirecționează acest mesaj"
+
+#: src/features/conversation/messages/Thread.tsx
+msgid "Forwarded by {author}"
+msgstr "Redirecționat de {author}"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Forwarded by e-mail"
+msgstr "Redirecționat prin e-mail"
 
 #: src/features/conversation/ChatView.tsx
 msgid "Forwarded to {label} as a note"
 msgstr "Redirecționat către {label} ca notă"
+
+#: src/features/conversation/Participants.tsx
+msgid "Forwarded: answered a forward, not copied on replies"
+msgstr "Redirecționat: a răspuns la o redirecționare, nu primește copie a răspunsurilor"
 
 #: src/features/migrations/SwitchStep.tsx
 msgid "Forwarding"
@@ -7831,6 +7880,10 @@ msgstr "Incidente"
 #: src/features/status/IncidentsPage.tsx
 msgid "Incidents live on a status page. Create one first."
 msgstr "Incidentele trăiesc pe o pagină de stare. Creează mai întâi una."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Include attachments"
+msgstr "Include atașamentele"
 
 #: src/features/settings/slack/SlackPage.tsx
 msgid "Include message text for {name}"
@@ -9189,6 +9242,10 @@ msgstr "Membri"
 msgid "Members and invitations"
 msgstr "Membri și invitații"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "Members only"
+msgstr "Doar pentru membri"
+
 #: src/features/conversation/composer/MentionMenu.tsx
 msgid "Mention a teammate"
 msgstr "Menționează un coleg"
@@ -10520,6 +10577,10 @@ msgstr "Niciun monitor nu urmărește încă această pagină"
 msgid "No monitors yet. Add one to let a check, a job or your monitoring set a component’s state."
 msgstr "Încă nu există monitoare. Adaugă unul ca o verificare, un job sau monitorizarea ta să seteze starea unei componente."
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "No note"
+msgstr "Fără notă"
+
 #: src/features/account/AccountPage.tsx
 msgid "No notifications in the last 90 days."
 msgstr "Nicio notificare în ultimele 90 de zile."
@@ -10985,6 +11046,10 @@ msgstr "Neverificat: mesajul nu a trecut verificarea expeditorului, deci adresa 
 msgid "Note"
 msgstr "Notă"
 
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Note (optional)"
+msgstr "Notă (opțională)"
+
 #: src/features/contact/ContactNotes.tsx
 msgid "Note about this contact"
 msgstr "Notă despre acest contact"
@@ -11002,6 +11067,10 @@ msgstr "Notă, o vede doar echipa"
 #: src/features/contact/ContactSheet.tsx
 msgid "Notes"
 msgstr "Note"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Notes are never forwarded. The contact does not see the forward or the answers; only your team does."
+msgstr "Notele nu sunt redirecționate niciodată. Contactul nu vede redirecționarea și nici răspunsurile; le vede doar echipa ta."
 
 #: src/features/inbox/SidePanels.tsx
 msgid "Notes where a teammate mentioned you"
@@ -12612,6 +12681,10 @@ msgstr "Fixat în partea de sus a listei tale"
 #: src/features/status/IncidentDialog.tsx
 msgid "Plain text with links and line breaks, at most 5,000 characters."
 msgstr "Text simplu cu linkuri și întreruperi de rând, cel mult 5.000 de caractere."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Plain text, shown above the forwarded mail."
+msgstr "Text simplu, afișat deasupra mesajului redirecționat."
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentDialog.tsx
@@ -14315,6 +14388,7 @@ msgstr "Salvează ca vizualizare"
 msgid "Save changes"
 msgstr "Salvează modificările"
 
+#: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 msgid "Save draft"
 msgstr "Salvează ciorna"
@@ -14633,6 +14707,7 @@ msgid "semicolons"
 msgstr "punct și virgulă"
 
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 msgid "Send"
 msgstr "Trimite"
@@ -14916,6 +14991,14 @@ msgstr "Își trimite e-mailul de la"
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Sends on {local}"
 msgstr "Trimite {local}"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Sends the latest messages of this conversation by e-mail to people outside Yuva."
+msgstr "Trimite prin e-mail ultimele mesaje ale acestei conversații către persoane din afara Yuva."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Sends this message by e-mail to people outside Yuva."
+msgstr "Trimite acest mesaj prin e-mail către persoane din afara Yuva."
 
 #. placeholder {0}: ch.email.smtp.host
 #: src/features/settings/channels/ChannelSummary.tsx
@@ -16550,6 +16633,10 @@ msgstr "Contactul a fost șters"
 msgid "The contact writes a message"
 msgstr "Contactul scrie un mesaj"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "The conversation"
+msgstr "Conversația"
+
 #: src/components/common/Linked.tsx
 msgid "The conversations stay open. Customers get it right away and it cannot be recalled."
 msgstr "Conversațiile rămân deschise. Clienții primesc răspunsul imediat și nu poate fi retras."
@@ -16693,6 +16780,10 @@ msgstr "Fișierul a fost refuzat."
 #: src/features/migrations/UploadStep.tsx
 msgid "The file's parts were deleted. Pick a corrected file to upload."
 msgstr "Părțile fișierului au fost șterse. Alege un fișier corectat pentru încărcare."
+
+#: src/components/common/text.ts
+msgid "The files of the forwarded messages are larger than 20 MiB together. Forward without attachments."
+msgstr "Fișierele mesajelor redirecționate depășesc împreună 20 MiB. Redirecționează fără atașamente."
 
 #: src/features/broadcasts/Composer.tsx
 msgid "The first line of the mail shows here when there is no preview text."
@@ -17761,6 +17852,10 @@ msgstr "Această căsuță se conectează doar cu „Conectează-te cu Microsoft
 msgid "This member is not in the workspace any more."
 msgstr "Acest membru nu mai este în spațiul de lucru."
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "This message"
+msgstr "Acest mesaj"
+
 #: src/features/migrations/UploadStep.tsx
 msgid "This migration has ended, so nothing more can be uploaded. Start a new one for another file."
 msgstr "Această migrare s-a încheiat, deci nimic nu mai poate fi încărcat. Începe una nouă pentru alt fișier."
@@ -17997,6 +18092,7 @@ msgid "TLS (port 465)"
 msgstr "TLS (portul 465)"
 
 #: src/features/conversation/composer/Recipients.tsx
+#: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
@@ -18508,6 +18604,10 @@ msgstr "Funcțional din {upSince}. Publică anunțul că totul este în regulă 
 #: src/features/broadcasts/Import.tsx
 msgid "Up to {max} and 100,000 rows, with a header row. Excel files in Turkish or Western encodings and columns separated by commas, semicolons or tabs are read as they are."
 msgstr "Până la {max} și 100.000 de rânduri, cu un rând de antet. Fișierele Excel în codări turcești sau occidentale și coloanele separate prin virgule, punct și virgulă sau tabulatori sunt citite așa cum sunt."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Up to 10 addresses. Press Enter after each one."
+msgstr "Până la 10 adrese. Apasă Enter după fiecare."
 
 #: src/features/reports/ReportsColumn.tsx
 msgid "Up to 13 months, by group"
@@ -19438,6 +19538,10 @@ msgstr "Windows-1254 (Excel turcesc)"
 msgid "With {name}"
 msgstr "Cu {name}"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "with attachments"
+msgstr "cu atașamente"
+
 #: src/features/setup/email/EmailReceiveStep.tsx
 msgid "With Cloudflare Email Routing, deploy the Email Worker from edge/ of the Yuva repository and add a routing rule for the address with the action Send to a Worker. Any other mail server can post each message, signed with YUVA_INGRESS_SECRET, to:"
 msgstr "Cu Cloudflare Email Routing, implementează Email Worker din edge/ al depozitului Yuva și adaugă o regulă de rutare pentru adresă cu acțiunea Send to a Worker. Orice alt server de e-mail poate posta fiecare mesaj, semnat cu YUVA_INGRESS_SECRET, la:"
@@ -19486,6 +19590,10 @@ msgstr "În câteva minute"
 #: src/features/broadcasts/ListForm.tsx
 msgid "Without a confirmation anyone can type someone else's address into your form, and you cannot show that the owner of the address agreed. Keep it on unless your forms are only shown to people whose address you have already verified."
 msgstr "Fără o confirmare, oricine poate tasta adresa altcuiva în formularul tău și nu poți arăta că proprietarul adresei a fost de acord. Păstrează-o activată, cu excepția cazului în care formularele tale sunt arătate doar persoanelor a căror adresă ai verificat-o deja."
+
+#: src/features/conversation/messages/Thread.tsx
+msgid "without attachments"
+msgstr "fără atașamente"
 
 #: src/components/common/text.ts
 msgid "Won't do"

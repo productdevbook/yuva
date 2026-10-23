@@ -86,6 +86,7 @@ function useItems(open: boolean): Item[] {
       act("more", t`Priority, inbox, spam and more`, SHORTCUTS.more)
       act("discussion", t`Turn into a discussion`, SHORTCUTS.discussion)
       act("incident", t`Link to a status incident`, SHORTCUTS.incident)
+      act("forward", t`Forward by e-mail…`, SHORTCUTS.forward)
       act("article", t`Send a help article`, SHORTCUTS.article)
       act("recipients", t`Cc and Bcc the reply`, SHORTCUTS.recipients)
       act("idea", t`Link to a roadmap idea`, SHORTCUTS.idea)

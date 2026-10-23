@@ -1,5 +1,5 @@
 import { Trans, useLingui } from "@lingui/react/macro"
-import { ChevronDownIcon, FileDownIcon, HistoryIcon, LockIcon } from "lucide-react"
+import { ChevronDownIcon, FileDownIcon, HistoryIcon, LockIcon, SendIcon } from "lucide-react"
 import { useEffect, useMemo, useRef, useState } from "react"
 
 import { BotAvatar, ContactAvatar, ErrorLine, Kbd, PersonAvatar, TypingDots } from "@/components/common"
@@ -573,6 +573,143 @@ function Note({ m, ctx, name, me }: { m: Message; ctx: ThreadContext; name: stri
   )
 }
 
+function ForwardFacts({ m }: { m: Message }) {
+  const f = m.forward
+  if (!f) return null
+  const to = f.to.join(", ")
+  return (
+    <dl className="grid gap-x-2 gap-y-0.5 text-caption text-muted-foreground" data-testid="forward-facts">
+      <div className="flex min-w-0 gap-1.5">
+        <dt className="shrink-0 text-faint">
+          <Trans>To</Trans>
+        </dt>
+        <dd className="min-w-0 break-words" dir="ltr">
+          {to}
+        </dd>
+      </div>
+      <div className="flex min-w-0 flex-wrap gap-x-1.5">
+        <dd data-testid="forward-scope">
+          {f.scope === "message" ? <Trans>This message</Trans> : <Trans>The conversation</Trans>}
+        </dd>
+        <dd>· {f.attachments ? <Trans>with attachments</Trans> : <Trans>without attachments</Trans>}</dd>
+      </div>
+    </dl>
+  )
+}
+
+function MembersOnly() {
+  return (
+    <Badge variant="outline" className="gap-1 border-note-border text-note-ink" data-testid="members-only">
+      <LockIcon className="size-3" />
+      <Trans>Members only</Trans>
+    </Badge>
+  )
+}
+
+function Forward({ m, ctx }: { m: Message; ctx: ThreadContext }) {
+  const incoming = m.direction === "in"
+  const align = incoming ? "start" : "end"
+  const named = useAuthorName(m, ctx)
+  const author = incoming && m.email?.from ? m.email.from : named
+  return (
+    <MessageFrame
+      align={align}
+      tabIndex={-1}
+      className="pb-2 outline-none pointer-coarse:flex-wrap pointer-coarse:gap-y-1"
+      data-testid={incoming ? "forward-answer" : "forward"}
+      data-message-id={m.id}
+    >
+      <MessageContent className="w-auto max-w-[80%] gap-1 phone:max-w-[88%]">
+        <MessageHeader className={cn(headerClass, incoming ? "justify-start" : "justify-end", "items-center")}>
+          <SendIcon className="size-3 rtl:-scale-x-100" />
+          <span>
+            {incoming ? <Trans>Answer to a forward from {author}</Trans> : <Trans>Forwarded by {author}</Trans>}
+          </span>
+          <MembersOnly />
+        </MessageHeader>
+        <Bubble
+          variant="outline"
+          align={align}
+          className="max-w-full *:data-[slot=bubble-content]:border-dashed *:data-[slot=bubble-content]:border-note-border *:data-[slot=bubble-content]:bg-note"
+        >
+          <BubbleContent
+            className={cn(
+              "flex flex-col gap-2 rounded-2xl text-reading",
+              incoming ? "rounded-es-md" : "rounded-ee-md",
+              ctx.find?.current === m.id && hitRing
+            )}
+          >
+            {!incoming && <ForwardFacts m={m} />}
+            {m.body.trim() ? (
+              <div className="break-words whitespace-pre-wrap">
+                <Highlight text={m.body} query={ctx.find?.query} />
+              </div>
+            ) : (
+              !incoming && (
+                <span className="text-caption text-faint">
+                  <Trans>No note</Trans>
+                </span>
+              )
+            )}
+          </BubbleContent>
+        </Bubble>
+        <Attachments items={m.attachments} outgoing={!incoming} />
+        <Delivery m={m} />
+        <MessageFooter className={cn(footerClass, "gap-1 text-note-ink")}>
+          <LockIcon className="size-3" />
+          <span>
+            <Trans>Only the team sees this</Trans> · <Time iso={m.created_at} />
+          </span>
+        </MessageFooter>
+      </MessageContent>
+    </MessageFrame>
+  )
+}
+
+function ForwardDraft({ m, ctx }: { m: Message; ctx: ThreadContext }) {
+  const author = useAuthorName(m, ctx)
+  const { send, discard } = useDraftActions()
+  const busy = send.isPending || discard.isPending
+  return (
+    <MessageFrame align="end" className="pb-2" data-testid="forward-draft" data-message-id={m.id}>
+      <MessageContent className="max-w-[88%] gap-1.5 phone:max-w-[94%]">
+        <MessageHeader className={cn(headerClass, "items-center justify-end")}>
+          <SendIcon className="size-3 rtl:-scale-x-100" />
+          <span>
+            <Trans>Forward draft by {author}</Trans>
+          </span>
+          <MembersOnly />
+        </MessageHeader>
+        <Bubble
+          variant="outline"
+          align="end"
+          className="max-w-full *:data-[slot=bubble-content]:border-dashed *:data-[slot=bubble-content]:border-warning/50 *:data-[slot=bubble-content]:bg-warning/5"
+        >
+          <BubbleContent className="flex flex-col gap-2 rounded-2xl rounded-ee-md text-reading">
+            <ForwardFacts m={m} />
+            {m.body.trim() && <div className="break-words whitespace-pre-wrap">{m.body}</div>}
+          </BubbleContent>
+        </Bubble>
+        <div className="flex gap-1" data-slot="draft-actions" data-testid="draft-actions">
+          <Button size="sm" onClick={() => send.mutate(m)} disabled={busy} data-testid="draft-send">
+            <Trans>Send</Trans>
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => discard.mutate(m)}
+            disabled={busy}
+            data-testid="draft-discard"
+          >
+            <Trans>Discard</Trans>
+          </Button>
+        </div>
+        <ErrorLine error={send.error ?? discard.error} className="text-caption" />
+      </MessageContent>
+    </MessageFrame>
+  )
+}
+
 const mod = typeof navigator !== "undefined" && /Mac|iPhone|iPad/.test(navigator.platform) ? "⌘" : "Ctrl"
 
 function Draft({ m, ctx }: { m: Message; ctx: ThreadContext }) {
@@ -970,6 +1107,7 @@ function ThreadView({
     if (m.kind === "event" && m.event?.type === "rated") return <Rated m={m} ctx={ctx} name={name} />
     if (m.kind === "event") return <EventLine m={m} ctx={ctx} />
     if (m.kind === "note") return <Note m={m} ctx={ctx} name={name} me={me} />
+    if (m.kind === "forward") return m.draft ? <ForwardDraft m={m} ctx={ctx} /> : <Forward m={m} ctx={ctx} />
     if (m.draft) return <Draft m={m} ctx={ctx} />
     if (m.id === feedbackId && conversation.feedback)
       return <FeedbackMessage m={m} ctx={ctx} name={name} feedback={conversation.feedback} />

@@ -213,6 +213,14 @@ msgstr "{actor} ตั้งสถานะเป็น {status}"
 msgid "{added} added · {out} left out"
 msgstr "เพิ่ม {added} · ข้าม {out}"
 
+#: src/features/conversation/ForwardDialog.tsx
+msgid "{address} bounced or complained before. Remove it here, or clear it on the contact to forward there."
+msgstr "{address} เคยตีกลับหรือถูกร้องเรียนมาก่อน ลบออกที่นี่ หรือล้างที่ผู้ติดต่อเพื่อให้ส่งต่อไปที่นั่นได้"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "{address} cannot be a recipient. It may be the conversation's contact, an address already copied on it, an address of this server, or not valid."
+msgstr "{address} เป็นผู้รับไม่ได้ อาจเป็นผู้ติดต่อของการสนทนา ที่อยู่ที่อยู่ในสำเนาแล้ว ที่อยู่ของเซิร์ฟเวอร์นี้ หรือไม่ถูกต้อง"
+
 #: src/features/migrations/DoneStep.tsx
 msgid "{address} is in Yuva"
 msgstr "{address} อยู่ใน Yuva แล้ว"
@@ -2544,6 +2552,10 @@ msgstr "ตอบและจัดระเบียบการสนทนา
 msgid "Answer cleared"
 msgstr "ล้างคำตอบแล้ว"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "Answer to a forward from {author}"
+msgstr "ตอบกลับการส่งต่อจาก {author}"
+
 #: src/features/feedback/FeedbackList.tsx
 msgid "answered"
 msgstr "ตอบแล้ว"
@@ -3415,6 +3427,7 @@ msgstr "ชื่อแคมเปญ"
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactNotes.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/docs/discussions/FromConversation.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
@@ -6828,6 +6841,18 @@ msgstr "ส่งต่ออีเมลที่เข้ามาทั้ง
 msgid "Forward as a note mentioning"
 msgstr "ส่งต่อเป็นบันทึกที่กล่าวถึง"
 
+#: src/app/Palette.tsx
+#: src/features/conversation/ConversationMenu.tsx
+#: src/features/conversation/messages/MessageActions.tsx
+msgid "Forward by e-mail…"
+msgstr "ส่งต่อทางอีเมล…"
+
+#: src/features/conversation/messages/Thread.tsx
+#: src/features/inbox/AssistantsPage.tsx
+#: src/features/inbox/SidePanels.tsx
+msgid "Forward draft by {author}"
+msgstr "ฉบับร่างการส่งต่อโดย {author}"
+
 #: src/features/setup/email/EmailReceiveStep.tsx
 msgid "Forward from your mailbox"
 msgstr "ส่งต่อจากกล่องจดหมายของคุณ"
@@ -6836,13 +6861,37 @@ msgstr "ส่งต่อจากกล่องจดหมายของค
 msgid "Forward mail for this address to the Cloudflare Email Worker in edge/ of the Yuva repository, or to any mail server that posts each message to this server's ingress URL, signed with YUVA_INGRESS_SECRET:"
 msgstr "ส่งต่ออีเมลของที่อยู่นี้ไปยัง Cloudflare Email Worker ใน edge/ ของที่เก็บ Yuva หรือไปยังเซิร์ฟเวอร์อีเมลใดก็ได้ที่โพสต์แต่ละข้อความไปยัง URL ingress ของเซิร์ฟเวอร์นี้ ลงนามด้วย YUVA_INGRESS_SECRET:"
 
-#: src/features/conversation/messages/MessageActions.tsx
-msgid "Forward to a teammate"
-msgstr "ส่งต่อให้เพื่อนร่วมทีม"
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Forward saved as a draft"
+msgstr "บันทึกการส่งต่อเป็นฉบับร่างแล้ว"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Forward the conversation"
+msgstr "ส่งต่อการสนทนา"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Forward the conversation by e-mail, or the focused message"
+msgstr "ส่งต่อการสนทนาหรือข้อความที่เลือกทางอีเมล"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Forward this message"
+msgstr "ส่งต่อข้อความนี้"
+
+#: src/features/conversation/messages/Thread.tsx
+msgid "Forwarded by {author}"
+msgstr "ส่งต่อโดย {author}"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Forwarded by e-mail"
+msgstr "ส่งต่อทางอีเมลแล้ว"
 
 #: src/features/conversation/ChatView.tsx
 msgid "Forwarded to {label} as a note"
 msgstr "ส่งต่อให้ {label} เป็นบันทึกแล้ว"
+
+#: src/features/conversation/Participants.tsx
+msgid "Forwarded: answered a forward, not copied on replies"
+msgstr "ส่งต่อแล้ว: ตอบกลับการส่งต่อ ไม่ได้อยู่ในสำเนาของการตอบกลับ"
 
 #: src/features/migrations/SwitchStep.tsx
 msgid "Forwarding"
@@ -7831,6 +7880,10 @@ msgstr "เหตุการณ์"
 #: src/features/status/IncidentsPage.tsx
 msgid "Incidents live on a status page. Create one first."
 msgstr "เหตุการณ์อยู่บนหน้าสถานะ สร้างหน้าสถานะก่อน"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Include attachments"
+msgstr "รวมไฟล์แนบ"
 
 #: src/features/settings/slack/SlackPage.tsx
 msgid "Include message text for {name}"
@@ -9189,6 +9242,10 @@ msgstr "สมาชิก"
 msgid "Members and invitations"
 msgstr "สมาชิกและคำเชิญ"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "Members only"
+msgstr "เฉพาะสมาชิก"
+
 #: src/features/conversation/composer/MentionMenu.tsx
 msgid "Mention a teammate"
 msgstr "กล่าวถึงเพื่อนร่วมทีม"
@@ -10520,6 +10577,10 @@ msgstr "ยังไม่มีมอนิเตอร์เฝ้าดูห
 msgid "No monitors yet. Add one to let a check, a job or your monitoring set a component’s state."
 msgstr "ยังไม่มีมอนิเตอร์ เพิ่มหนึ่งตัวเพื่อให้การตรวจสอบ งาน หรือระบบมอนิเตอร์ของคุณตั้งสถานะของคอมโพเนนต์"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "No note"
+msgstr "ไม่มีบันทึก"
+
 #: src/features/account/AccountPage.tsx
 msgid "No notifications in the last 90 days."
 msgstr "ไม่มีการแจ้งเตือนใน 90 วันที่ผ่านมา"
@@ -10985,6 +11046,10 @@ msgstr "ยังไม่ยืนยัน: อีเมลไม่ผ่า�
 msgid "Note"
 msgstr "บันทึก"
 
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Note (optional)"
+msgstr "บันทึก (ไม่บังคับ)"
+
 #: src/features/contact/ContactNotes.tsx
 msgid "Note about this contact"
 msgstr "บันทึกเกี่ยวกับผู้ติดต่อนี้"
@@ -11002,6 +11067,10 @@ msgstr "บันทึก เห็นเฉพาะทีม"
 #: src/features/contact/ContactSheet.tsx
 msgid "Notes"
 msgstr "บันทึก"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Notes are never forwarded. The contact does not see the forward or the answers; only your team does."
+msgstr "บันทึกจะไม่ถูกส่งต่อเลย ผู้ติดต่อจะไม่เห็นการส่งต่อหรือคำตอบ เห็นเฉพาะทีมของคุณ"
 
 #: src/features/inbox/SidePanels.tsx
 msgid "Notes where a teammate mentioned you"
@@ -12612,6 +12681,10 @@ msgstr "ปักหมุดไว้ด้านบนของรายกา
 #: src/features/status/IncidentDialog.tsx
 msgid "Plain text with links and line breaks, at most 5,000 characters."
 msgstr "ข้อความธรรมดาที่มีลิงก์และการขึ้นบรรทัดใหม่ ไม่เกิน 5,000 ตัวอักษร"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Plain text, shown above the forwarded mail."
+msgstr "ข้อความธรรมดา แสดงเหนืออีเมลที่ส่งต่อ"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentDialog.tsx
@@ -14315,6 +14388,7 @@ msgstr "บันทึกเป็นมุมมอง"
 msgid "Save changes"
 msgstr "บันทึกการเปลี่ยนแปลง"
 
+#: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 msgid "Save draft"
 msgstr "บันทึกฉบับร่าง"
@@ -14633,6 +14707,7 @@ msgid "semicolons"
 msgstr "อัฒภาค"
 
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 msgid "Send"
 msgstr "ส่ง"
@@ -14916,6 +14991,14 @@ msgstr "ส่งอีเมลจาก"
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Sends on {local}"
 msgstr "ส่งเมื่อ {local}"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Sends the latest messages of this conversation by e-mail to people outside Yuva."
+msgstr "ส่งข้อความล่าสุดของการสนทนานี้ทางอีเมลถึงบุคคลนอก Yuva"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Sends this message by e-mail to people outside Yuva."
+msgstr "ส่งข้อความนี้ทางอีเมลถึงบุคคลนอก Yuva"
 
 #. placeholder {0}: ch.email.smtp.host
 #: src/features/settings/channels/ChannelSummary.tsx
@@ -16550,6 +16633,10 @@ msgstr "ลบผู้ติดต่อแล้ว"
 msgid "The contact writes a message"
 msgstr "ผู้ติดต่อเขียนข้อความ"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "The conversation"
+msgstr "การสนทนา"
+
 #: src/components/common/Linked.tsx
 msgid "The conversations stay open. Customers get it right away and it cannot be recalled."
 msgstr "การสนทนายังคงเปิดอยู่ ลูกค้าจะได้รับการตอบกลับทันทีและเรียกคืนไม่ได้"
@@ -16693,6 +16780,10 @@ msgstr "ไฟล์ถูกปฏิเสธ"
 #: src/features/migrations/UploadStep.tsx
 msgid "The file's parts were deleted. Pick a corrected file to upload."
 msgstr "ส่วนของไฟล์ถูกลบแล้ว เลือกไฟล์ที่แก้ไขแล้วเพื่ออัปโหลด"
+
+#: src/components/common/text.ts
+msgid "The files of the forwarded messages are larger than 20 MiB together. Forward without attachments."
+msgstr "ไฟล์ของข้อความที่ส่งต่อรวมกันใหญ่กว่า 20 MiB ส่งต่อโดยไม่มีไฟล์แนบ"
 
 #: src/features/broadcasts/Composer.tsx
 msgid "The first line of the mail shows here when there is no preview text."
@@ -17761,6 +17852,10 @@ msgstr "กล่องจดหมายนี้เชื่อมต่อไ
 msgid "This member is not in the workspace any more."
 msgstr "สมาชิกคนนี้ไม่ได้อยู่ในพื้นที่ทำงานอีกต่อไป"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "This message"
+msgstr "ข้อความนี้"
+
 #: src/features/migrations/UploadStep.tsx
 msgid "This migration has ended, so nothing more can be uploaded. Start a new one for another file."
 msgstr "การย้ายนี้สิ้นสุดแล้ว จึงอัปโหลดเพิ่มไม่ได้ เริ่มการย้ายใหม่สำหรับไฟล์อื่น"
@@ -17997,6 +18092,7 @@ msgid "TLS (port 465)"
 msgstr "TLS (พอร์ต 465)"
 
 #: src/features/conversation/composer/Recipients.tsx
+#: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
@@ -18508,6 +18604,10 @@ msgstr "ทำงานตั้งแต่ {upSince} เมื่อมั่�
 #: src/features/broadcasts/Import.tsx
 msgid "Up to {max} and 100,000 rows, with a header row. Excel files in Turkish or Western encodings and columns separated by commas, semicolons or tabs are read as they are."
 msgstr "สูงสุด {max} และ 100,000 แถว พร้อมแถวหัวตาราง ไฟล์ Excel ในการเข้ารหัสแบบตุรกีหรือตะวันตก และคอลัมน์ที่คั่นด้วยจุลภาค อัฒภาค หรือแท็บ จะถูกอ่านตามที่เป็น"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Up to 10 addresses. Press Enter after each one."
+msgstr "สูงสุด 10 ที่อยู่ กด Enter หลังแต่ละที่อยู่"
 
 #: src/features/reports/ReportsColumn.tsx
 msgid "Up to 13 months, by group"
@@ -19438,6 +19538,10 @@ msgstr "Windows-1254 (Excel ตุรกี)"
 msgid "With {name}"
 msgstr "กับ {name}"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "with attachments"
+msgstr "พร้อมไฟล์แนบ"
+
 #: src/features/setup/email/EmailReceiveStep.tsx
 msgid "With Cloudflare Email Routing, deploy the Email Worker from edge/ of the Yuva repository and add a routing rule for the address with the action Send to a Worker. Any other mail server can post each message, signed with YUVA_INGRESS_SECRET, to:"
 msgstr "ด้วย Cloudflare Email Routing ติดตั้ง Email Worker จาก edge/ ของที่เก็บ Yuva และเพิ่มกฎการกำหนดเส้นทางสำหรับที่อยู่โดยมีการดำเนินการ Send to a Worker เซิร์ฟเวอร์อีเมลอื่นใดก็โพสต์แต่ละข้อความ ลงนามด้วย YUVA_INGRESS_SECRET ไปที่:"
@@ -19486,6 +19590,10 @@ msgstr "ภายในไม่กี่นาที"
 #: src/features/broadcasts/ListForm.tsx
 msgid "Without a confirmation anyone can type someone else's address into your form, and you cannot show that the owner of the address agreed. Keep it on unless your forms are only shown to people whose address you have already verified."
 msgstr "หากไม่มีการยืนยัน ใครก็พิมพ์ที่อยู่ของคนอื่นลงในแบบฟอร์มของคุณได้ และคุณแสดงไม่ได้ว่าเจ้าของที่อยู่ยินยอม ควรเปิดไว้ เว้นแต่แบบฟอร์มของคุณแสดงเฉพาะกับผู้ที่คุณตรวจสอบที่อยู่แล้ว"
+
+#: src/features/conversation/messages/Thread.tsx
+msgid "without attachments"
+msgstr "ไม่มีไฟล์แนบ"
 
 #: src/components/common/text.ts
 msgid "Won't do"

@@ -213,6 +213,14 @@ msgstr "{actor} ने स्टेटस {status} वर सेट केले
 msgid "{added} added · {out} left out"
 msgstr "{added} जोडले · {out} वगळले"
 
+#: src/features/conversation/ForwardDialog.tsx
+msgid "{address} bounced or complained before. Remove it here, or clear it on the contact to forward there."
+msgstr "{address} पूर्वी बाउन्स झाला आहे किंवा त्याची तक्रार झाली आहे. तो येथून काढा, किंवा तिथे फॉरवर्ड करण्यासाठी संपर्कातून साफ करा."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "{address} cannot be a recipient. It may be the conversation's contact, an address already copied on it, an address of this server, or not valid."
+msgstr "{address} प्राप्तकर्ता असू शकत नाही. तो संभाषणाचा संपर्क, आधीच प्रतीत असलेला पत्ता, या सर्व्हरचा पत्ता किंवा अवैध असू शकतो."
+
 #: src/features/migrations/DoneStep.tsx
 msgid "{address} is in Yuva"
 msgstr "{address} Yuva मध्ये आहे"
@@ -2544,6 +2552,10 @@ msgstr "संभाषणांना उत्तर द्या आणि �
 msgid "Answer cleared"
 msgstr "उत्तर काढले"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "Answer to a forward from {author}"
+msgstr "{author} यांच्या फॉरवर्डला उत्तर"
+
 #: src/features/feedback/FeedbackList.tsx
 msgid "answered"
 msgstr "उत्तर दिले"
@@ -3415,6 +3427,7 @@ msgstr "कॅम्पेनचे नाव"
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactNotes.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/docs/discussions/FromConversation.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
@@ -6828,6 +6841,18 @@ msgstr "येणारा सर्व मेल खालील पत्त�
 msgid "Forward as a note mentioning"
 msgstr "उल्लेख करून नोट म्हणून फॉरवर्ड करा"
 
+#: src/app/Palette.tsx
+#: src/features/conversation/ConversationMenu.tsx
+#: src/features/conversation/messages/MessageActions.tsx
+msgid "Forward by e-mail…"
+msgstr "ईमेलने फॉरवर्ड करा…"
+
+#: src/features/conversation/messages/Thread.tsx
+#: src/features/inbox/AssistantsPage.tsx
+#: src/features/inbox/SidePanels.tsx
+msgid "Forward draft by {author}"
+msgstr "{author} यांचा फॉरवर्ड मसुदा"
+
 #: src/features/setup/email/EmailReceiveStep.tsx
 msgid "Forward from your mailbox"
 msgstr "तुमच्या मेलबॉक्समधून फॉरवर्ड करा"
@@ -6836,13 +6861,37 @@ msgstr "तुमच्या मेलबॉक्समधून फॉरव�
 msgid "Forward mail for this address to the Cloudflare Email Worker in edge/ of the Yuva repository, or to any mail server that posts each message to this server's ingress URL, signed with YUVA_INGRESS_SECRET:"
 msgstr "या पत्त्याचा मेल Yuva रिपॉझिटरीच्या edge/ मधील Cloudflare Email Worker कडे फॉरवर्ड करा, किंवा प्रत्येक संदेश YUVA_INGRESS_SECRET ने साइन करून या सर्व्हरच्या इन्ग्रेस URL वर पोस्ट करणाऱ्या कोणत्याही मेल सर्व्हरकडे:"
 
-#: src/features/conversation/messages/MessageActions.tsx
-msgid "Forward to a teammate"
-msgstr "टीममेटला फॉरवर्ड करा"
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Forward saved as a draft"
+msgstr "फॉरवर्ड मसुदा म्हणून जतन केला"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Forward the conversation"
+msgstr "संभाषण फॉरवर्ड करा"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Forward the conversation by e-mail, or the focused message"
+msgstr "संभाषण किंवा निवडलेला संदेश ईमेलने फॉरवर्ड करा"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Forward this message"
+msgstr "हा संदेश फॉरवर्ड करा"
+
+#: src/features/conversation/messages/Thread.tsx
+msgid "Forwarded by {author}"
+msgstr "{author} यांनी फॉरवर्ड केले"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Forwarded by e-mail"
+msgstr "ईमेलने फॉरवर्ड केले"
 
 #: src/features/conversation/ChatView.tsx
 msgid "Forwarded to {label} as a note"
 msgstr "{label} ला नोट म्हणून फॉरवर्ड केले"
+
+#: src/features/conversation/Participants.tsx
+msgid "Forwarded: answered a forward, not copied on replies"
+msgstr "फॉरवर्ड केलेले: फॉरवर्डला उत्तर दिले, उत्तरांमध्ये प्रतीत नाही"
 
 #: src/features/migrations/SwitchStep.tsx
 msgid "Forwarding"
@@ -7831,6 +7880,10 @@ msgstr "घटना"
 #: src/features/status/IncidentsPage.tsx
 msgid "Incidents live on a status page. Create one first."
 msgstr "घटना स्टेटस पेजवर असतात. आधी एक तयार करा."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Include attachments"
+msgstr "अटॅचमेंट समाविष्ट करा"
 
 #: src/features/settings/slack/SlackPage.tsx
 msgid "Include message text for {name}"
@@ -9189,6 +9242,10 @@ msgstr "सदस्य"
 msgid "Members and invitations"
 msgstr "सदस्य आणि आमंत्रणे"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "Members only"
+msgstr "फक्त सदस्यांसाठी"
+
 #: src/features/conversation/composer/MentionMenu.tsx
 msgid "Mention a teammate"
 msgstr "टीममेटचा उल्लेख करा"
@@ -10520,6 +10577,10 @@ msgstr "या पेजवर अजून कोणताही मॉनि�
 msgid "No monitors yet. Add one to let a check, a job or your monitoring set a component’s state."
 msgstr "अजून एकही मॉनिटर नाही. एखादी तपासणी, जॉब किंवा तुमचे स्वतःचे मॉनिटरिंग घटकाची स्थिती ठरवावी म्हणून एक जोडा."
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "No note"
+msgstr "नोंद नाही"
+
 #: src/features/account/AccountPage.tsx
 msgid "No notifications in the last 90 days."
 msgstr "गेल्या 90 दिवसांत नोटिफिकेशन नाहीत."
@@ -10985,6 +11046,10 @@ msgstr "पडताळलेले नाही: मेल प्रेषक�
 msgid "Note"
 msgstr "नोट"
 
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Note (optional)"
+msgstr "नोंद (ऐच्छिक)"
+
 #: src/features/contact/ContactNotes.tsx
 msgid "Note about this contact"
 msgstr "या कॉन्टॅक्टबद्दल नोट"
@@ -11002,6 +11067,10 @@ msgstr "नोट, फक्त टीमला दिसते"
 #: src/features/contact/ContactSheet.tsx
 msgid "Notes"
 msgstr "नोट्स"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Notes are never forwarded. The contact does not see the forward or the answers; only your team does."
+msgstr "नोंदी कधीही फॉरवर्ड केल्या जात नाहीत. संपर्काला फॉरवर्ड किंवा उत्तरे दिसत नाहीत; फक्त तुमच्या टीमला दिसतात."
 
 #: src/features/inbox/SidePanels.tsx
 msgid "Notes where a teammate mentioned you"
@@ -12612,6 +12681,10 @@ msgstr "तुमच्या यादीच्या वर पिन के�
 #: src/features/status/IncidentDialog.tsx
 msgid "Plain text with links and line breaks, at most 5,000 characters."
 msgstr "लिंक आणि ओळी-खंडांसह साधा मजकूर, जास्तीत जास्त ५,००० अक्षरे."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Plain text, shown above the forwarded mail."
+msgstr "साधा मजकूर, फॉरवर्ड केलेल्या मेलच्या वर दिसतो."
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentDialog.tsx
@@ -14315,6 +14388,7 @@ msgstr "व्ह्यू म्हणून जतन करा"
 msgid "Save changes"
 msgstr "बदल सेव्ह करा"
 
+#: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 msgid "Save draft"
 msgstr "ड्राफ्ट सेव्ह करा"
@@ -14633,6 +14707,7 @@ msgid "semicolons"
 msgstr "सेमीकोलन"
 
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 msgid "Send"
 msgstr "पाठवा"
@@ -14916,6 +14991,14 @@ msgstr "त्याचा मेल येथून पाठवते"
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Sends on {local}"
 msgstr "{local} ला पाठवते"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Sends the latest messages of this conversation by e-mail to people outside Yuva."
+msgstr "या संभाषणातील अलीकडील संदेश Yuva बाहेरच्या लोकांना ईमेलने पाठवते."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Sends this message by e-mail to people outside Yuva."
+msgstr "हा संदेश Yuva बाहेरच्या लोकांना ईमेलने पाठवते."
 
 #. placeholder {0}: ch.email.smtp.host
 #: src/features/settings/channels/ChannelSummary.tsx
@@ -16550,6 +16633,10 @@ msgstr "कॉन्टॅक्ट हटवला गेला"
 msgid "The contact writes a message"
 msgstr "संपर्क संदेश लिहितो"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "The conversation"
+msgstr "संभाषण"
+
 #: src/components/common/Linked.tsx
 msgid "The conversations stay open. Customers get it right away and it cannot be recalled."
 msgstr "संभाषणे खुली राहतात. ग्राहकांना उत्तर लगेच मिळते आणि परत घेता येत नाही."
@@ -16693,6 +16780,10 @@ msgstr "फाइल नाकारली गेली."
 #: src/features/migrations/UploadStep.tsx
 msgid "The file's parts were deleted. Pick a corrected file to upload."
 msgstr "फाइलचे भाग हटवले गेले. अपलोडसाठी दुरुस्त केलेली फाइल निवडा."
+
+#: src/components/common/text.ts
+msgid "The files of the forwarded messages are larger than 20 MiB together. Forward without attachments."
+msgstr "फॉरवर्ड केलेल्या संदेशांच्या फाइल्स मिळून 20 MiB पेक्षा मोठ्या आहेत. अटॅचमेंटशिवाय फॉरवर्ड करा."
 
 #: src/features/broadcasts/Composer.tsx
 msgid "The first line of the mail shows here when there is no preview text."
@@ -17761,6 +17852,10 @@ msgstr "हा मेलबॉक्स फक्त “Microsoft ने सा�
 msgid "This member is not in the workspace any more."
 msgstr "हा सदस्य आता वर्कस्पेसमध्ये नाही."
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "This message"
+msgstr "हा संदेश"
+
 #: src/features/migrations/UploadStep.tsx
 msgid "This migration has ended, so nothing more can be uploaded. Start a new one for another file."
 msgstr "हे मायग्रेशन संपले आहे, म्हणून आणखी काही अपलोड करता येत नाही. दुसऱ्या फाइलसाठी नवीन सुरू करा."
@@ -17997,6 +18092,7 @@ msgid "TLS (port 465)"
 msgstr "TLS (पोर्ट 465)"
 
 #: src/features/conversation/composer/Recipients.tsx
+#: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
@@ -18508,6 +18604,10 @@ msgstr "{upSince} पासून सुरू आहे. खात्री झ
 #: src/features/broadcasts/Import.tsx
 msgid "Up to {max} and 100,000 rows, with a header row. Excel files in Turkish or Western encodings and columns separated by commas, semicolons or tabs are read as they are."
 msgstr "{max} आणि 100,000 पंक्तींपर्यंत, हेडर पंक्तीसह. तुर्की किंवा पाश्चात्य एन्कोडिंगमधील Excel फाइल्स आणि स्वल्पविराम, अर्धविराम किंवा टॅबने विभक्त कॉलम जसे आहेत तसे वाचले जातात."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Up to 10 addresses. Press Enter after each one."
+msgstr "जास्तीत जास्त 10 पत्ते. प्रत्येकानंतर Enter दाबा."
 
 #: src/features/reports/ReportsColumn.tsx
 msgid "Up to 13 months, by group"
@@ -19438,6 +19538,10 @@ msgstr "Windows-1254 (तुर्की Excel)"
 msgid "With {name}"
 msgstr "{name} सह"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "with attachments"
+msgstr "अटॅचमेंटसह"
+
 #: src/features/setup/email/EmailReceiveStep.tsx
 msgid "With Cloudflare Email Routing, deploy the Email Worker from edge/ of the Yuva repository and add a routing rule for the address with the action Send to a Worker. Any other mail server can post each message, signed with YUVA_INGRESS_SECRET, to:"
 msgstr "Cloudflare Email Routing सह, Yuva रिपॉझिटरीच्या edge/ मधून Email Worker डिप्लॉय करा आणि पत्त्यासाठी Send to a Worker कृती असलेला रूटिंग नियम जोडा. इतर कोणताही मेल सर्व्हर प्रत्येक संदेश YUVA_INGRESS_SECRET ने साइन करून येथे पोस्ट करू शकतो:"
@@ -19486,6 +19590,10 @@ msgstr "काही मिनिटांत"
 #: src/features/broadcasts/ListForm.tsx
 msgid "Without a confirmation anyone can type someone else's address into your form, and you cannot show that the owner of the address agreed. Keep it on unless your forms are only shown to people whose address you have already verified."
 msgstr "पुष्टीशिवाय कोणीही तुमच्या फॉर्ममध्ये दुसऱ्याचा पत्ता टाइप करू शकतो, आणि पत्त्याच्या मालकाने सहमती दिली हे तुम्ही दाखवू शकत नाही. ते चालू ठेवा, जोपर्यंत तुमचे फॉर्म फक्त ज्यांचा पत्ता तुम्ही आधीच सत्यापित केला आहे त्यांनाच दाखवले जात नाहीत."
+
+#: src/features/conversation/messages/Thread.tsx
+msgid "without attachments"
+msgstr "अटॅचमेंटशिवाय"
 
 #: src/components/common/text.ts
 msgid "Won't do"

@@ -213,6 +213,14 @@ msgstr "{actor} ha impostato lo stato su {status}"
 msgid "{added} added · {out} left out"
 msgstr "{added} aggiunti · {out} esclusi"
 
+#: src/features/conversation/ForwardDialog.tsx
+msgid "{address} bounced or complained before. Remove it here, or clear it on the contact to forward there."
+msgstr "{address} ha già respinto la posta o ha segnalato un messaggio. Rimuovila qui, oppure cancellala dal contatto per poter inoltrare a lei."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "{address} cannot be a recipient. It may be the conversation's contact, an address already copied on it, an address of this server, or not valid."
+msgstr "{address} non può essere destinatario. Potrebbe essere il contatto della conversazione, un indirizzo già in copia, un indirizzo di questo server o non essere valido."
+
 #: src/features/migrations/DoneStep.tsx
 msgid "{address} is in Yuva"
 msgstr "{address} è su Yuva"
@@ -2544,6 +2552,10 @@ msgstr "Rispondi e organizza le conversazioni, scrivi note, tieni aggiornati con
 msgid "Answer cleared"
 msgstr "Risposta rimossa"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "Answer to a forward from {author}"
+msgstr "Risposta a un inoltro di {author}"
+
 #: src/features/feedback/FeedbackList.tsx
 msgid "answered"
 msgstr "risposto"
@@ -3415,6 +3427,7 @@ msgstr "Nome della campagna"
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactNotes.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/docs/discussions/FromConversation.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
@@ -6828,6 +6841,18 @@ msgstr "Inoltra tutta la posta in arrivo all’indirizzo qui sotto e tieni una c
 msgid "Forward as a note mentioning"
 msgstr "Inoltra come nota menzionando"
 
+#: src/app/Palette.tsx
+#: src/features/conversation/ConversationMenu.tsx
+#: src/features/conversation/messages/MessageActions.tsx
+msgid "Forward by e-mail…"
+msgstr "Inoltra via e-mail…"
+
+#: src/features/conversation/messages/Thread.tsx
+#: src/features/inbox/AssistantsPage.tsx
+#: src/features/inbox/SidePanels.tsx
+msgid "Forward draft by {author}"
+msgstr "Bozza di inoltro di {author}"
+
 #: src/features/setup/email/EmailReceiveStep.tsx
 msgid "Forward from your mailbox"
 msgstr "Inoltra dalla tua casella"
@@ -6836,13 +6861,37 @@ msgstr "Inoltra dalla tua casella"
 msgid "Forward mail for this address to the Cloudflare Email Worker in edge/ of the Yuva repository, or to any mail server that posts each message to this server's ingress URL, signed with YUVA_INGRESS_SECRET:"
 msgstr "Inoltra la posta di questo indirizzo al Cloudflare Email Worker in edge/ del repository di Yuva, o a qualsiasi server di posta che invii ogni messaggio all’URL di ingresso di questo server, firmato con YUVA_INGRESS_SECRET:"
 
-#: src/features/conversation/messages/MessageActions.tsx
-msgid "Forward to a teammate"
-msgstr "Inoltra a un collega"
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Forward saved as a draft"
+msgstr "Inoltro salvato come bozza"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Forward the conversation"
+msgstr "Inoltra la conversazione"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Forward the conversation by e-mail, or the focused message"
+msgstr "Inoltra via e-mail la conversazione o il messaggio selezionato"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Forward this message"
+msgstr "Inoltra questo messaggio"
+
+#: src/features/conversation/messages/Thread.tsx
+msgid "Forwarded by {author}"
+msgstr "Inoltrato da {author}"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Forwarded by e-mail"
+msgstr "Inoltrato via e-mail"
 
 #: src/features/conversation/ChatView.tsx
 msgid "Forwarded to {label} as a note"
 msgstr "Inoltrato a {label} come nota"
+
+#: src/features/conversation/Participants.tsx
+msgid "Forwarded: answered a forward, not copied on replies"
+msgstr "Inoltrato: ha risposto a un inoltro, non è in copia alle risposte"
 
 #: src/features/migrations/SwitchStep.tsx
 msgid "Forwarding"
@@ -7831,6 +7880,10 @@ msgstr "Incidenti"
 #: src/features/status/IncidentsPage.tsx
 msgid "Incidents live on a status page. Create one first."
 msgstr "Gli incidenti vivono su una pagina di stato. Creane prima una."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Include attachments"
+msgstr "Includi gli allegati"
 
 #: src/features/settings/slack/SlackPage.tsx
 msgid "Include message text for {name}"
@@ -9189,6 +9242,10 @@ msgstr "Membri"
 msgid "Members and invitations"
 msgstr "Membri e inviti"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "Members only"
+msgstr "Solo per i membri"
+
 #: src/features/conversation/composer/MentionMenu.tsx
 msgid "Mention a teammate"
 msgstr "Menziona un collega"
@@ -10520,6 +10577,10 @@ msgstr "Nessun monitor controlla ancora questa pagina"
 msgid "No monitors yet. Add one to let a check, a job or your monitoring set a component’s state."
 msgstr "Ancora nessun monitor. Aggiungine uno perché un controllo, un job o il tuo monitoraggio imposti lo stato di un componente."
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "No note"
+msgstr "Nessuna nota"
+
 #: src/features/account/AccountPage.tsx
 msgid "No notifications in the last 90 days."
 msgstr "Nessuna notifica negli ultimi 90 giorni."
@@ -10985,6 +11046,10 @@ msgstr "Non verificato: il messaggio non ha superato il controllo del mittente, 
 msgid "Note"
 msgstr "Nota"
 
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Note (optional)"
+msgstr "Nota (facoltativa)"
+
 #: src/features/contact/ContactNotes.tsx
 msgid "Note about this contact"
 msgstr "Nota su questo contatto"
@@ -11002,6 +11067,10 @@ msgstr "Nota, la vede solo il team"
 #: src/features/contact/ContactSheet.tsx
 msgid "Notes"
 msgstr "Note"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Notes are never forwarded. The contact does not see the forward or the answers; only your team does."
+msgstr "Le note non vengono mai inoltrate. Il contatto non vede né l’inoltro né le risposte; le vede solo il tuo team."
 
 #: src/features/inbox/SidePanels.tsx
 msgid "Notes where a teammate mentioned you"
@@ -12612,6 +12681,10 @@ msgstr "Fissata in cima alla tua lista"
 #: src/features/status/IncidentDialog.tsx
 msgid "Plain text with links and line breaks, at most 5,000 characters."
 msgstr "Testo semplice con link e a capo, al massimo 5.000 caratteri."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Plain text, shown above the forwarded mail."
+msgstr "Testo semplice, mostrato sopra il messaggio inoltrato."
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentDialog.tsx
@@ -14315,6 +14388,7 @@ msgstr "Salva come vista"
 msgid "Save changes"
 msgstr "Salva le modifiche"
 
+#: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 msgid "Save draft"
 msgstr "Salva bozza"
@@ -14633,6 +14707,7 @@ msgid "semicolons"
 msgstr "punti e virgola"
 
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 msgid "Send"
 msgstr "Invia"
@@ -14916,6 +14991,14 @@ msgstr "Invia la sua posta da"
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Sends on {local}"
 msgstr "Invia il {local}"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Sends the latest messages of this conversation by e-mail to people outside Yuva."
+msgstr "Invia via e-mail gli ultimi messaggi di questa conversazione a persone esterne a Yuva."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Sends this message by e-mail to people outside Yuva."
+msgstr "Invia questo messaggio via e-mail a persone esterne a Yuva."
 
 #. placeholder {0}: ch.email.smtp.host
 #: src/features/settings/channels/ChannelSummary.tsx
@@ -16550,6 +16633,10 @@ msgstr "Il contatto è stato eliminato"
 msgid "The contact writes a message"
 msgstr "Il contatto scrive un messaggio"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "The conversation"
+msgstr "La conversazione"
+
 #: src/components/common/Linked.tsx
 msgid "The conversations stay open. Customers get it right away and it cannot be recalled."
 msgstr "Le conversazioni restano aperte. I clienti ricevono la risposta subito e non può essere ritirata."
@@ -16693,6 +16780,10 @@ msgstr "Il file è stato rifiutato."
 #: src/features/migrations/UploadStep.tsx
 msgid "The file's parts were deleted. Pick a corrected file to upload."
 msgstr "Le parti del file sono state eliminate. Scegli un file corretto da caricare."
+
+#: src/components/common/text.ts
+msgid "The files of the forwarded messages are larger than 20 MiB together. Forward without attachments."
+msgstr "I file dei messaggi inoltrati superano insieme i 20 MiB. Inoltra senza allegati."
 
 #: src/features/broadcasts/Composer.tsx
 msgid "The first line of the mail shows here when there is no preview text."
@@ -17761,6 +17852,10 @@ msgstr "Questa casella si connette solo con «Accedi con Microsoft», che questo
 msgid "This member is not in the workspace any more."
 msgstr "Questo membro non è più nello spazio di lavoro."
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "This message"
+msgstr "Questo messaggio"
+
 #: src/features/migrations/UploadStep.tsx
 msgid "This migration has ended, so nothing more can be uploaded. Start a new one for another file."
 msgstr "Questa migrazione è terminata, quindi non si può caricare altro. Avviane una nuova per un altro file."
@@ -17997,6 +18092,7 @@ msgid "TLS (port 465)"
 msgstr "TLS (porta 465)"
 
 #: src/features/conversation/composer/Recipients.tsx
+#: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
@@ -18508,6 +18604,10 @@ msgstr "Attivo dalle {upSince}. Pubblica il cessato allarme quando sei sicuro."
 #: src/features/broadcasts/Import.tsx
 msgid "Up to {max} and 100,000 rows, with a header row. Excel files in Turkish or Western encodings and columns separated by commas, semicolons or tabs are read as they are."
 msgstr "Fino a {max} e 100.000 righe, con riga di intestazione. I file Excel in codifica turca o occidentale e le colonne separate da virgole, punti e virgola o tabulazioni vengono letti così come sono."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Up to 10 addresses. Press Enter after each one."
+msgstr "Fino a 10 indirizzi. Premi Invio dopo ciascuno."
 
 #: src/features/reports/ReportsColumn.tsx
 msgid "Up to 13 months, by group"
@@ -19438,6 +19538,10 @@ msgstr "Windows-1254 (Excel turco)"
 msgid "With {name}"
 msgstr "Con {name}"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "with attachments"
+msgstr "con allegati"
+
 #: src/features/setup/email/EmailReceiveStep.tsx
 msgid "With Cloudflare Email Routing, deploy the Email Worker from edge/ of the Yuva repository and add a routing rule for the address with the action Send to a Worker. Any other mail server can post each message, signed with YUVA_INGRESS_SECRET, to:"
 msgstr "Con Cloudflare Email Routing, distribuisci l’Email Worker da edge/ del repository di Yuva e aggiungi una regola di instradamento per l’indirizzo con l’azione Send to a Worker. Qualsiasi altro server di posta può inviare ogni messaggio, firmato con YUVA_INGRESS_SECRET, a:"
@@ -19486,6 +19590,10 @@ msgstr "Entro pochi minuti"
 #: src/features/broadcasts/ListForm.tsx
 msgid "Without a confirmation anyone can type someone else's address into your form, and you cannot show that the owner of the address agreed. Keep it on unless your forms are only shown to people whose address you have already verified."
 msgstr "Senza conferma, chiunque può digitare l’indirizzo di un altro nel tuo modulo, e non puoi mostrare che il titolare dell’indirizzo ha accettato. Tienila attiva a meno che i tuoi moduli siano mostrati solo a persone il cui indirizzo hai già verificato."
+
+#: src/features/conversation/messages/Thread.tsx
+msgid "without attachments"
+msgstr "senza allegati"
 
 #: src/components/common/text.ts
 msgid "Won't do"

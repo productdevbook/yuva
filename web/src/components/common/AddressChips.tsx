@@ -32,15 +32,21 @@ export const AddressChips = forwardRef<
     onType?: (text: string) => void
     testId?: string
     className?: string
+    max?: number
+    flagged?: string[]
+    below?: boolean
   }
->(function AddressChips({ label, value, onChange, options = [], onType, testId, className }, ref) {
+>(function AddressChips(
+  { label, value, onChange, options = [], onType, testId, className, max = MAX_ADDRESSES, flagged = [], below },
+  ref
+) {
   const { t } = useLingui()
   const id = useId()
   const [text, setText] = useState("")
   const [error, setError] = useState("")
   const [active, setActive] = useState(-1)
   const [open, setOpen] = useState(false)
-  const full = value.length >= MAX_ADDRESSES
+  const full = value.length >= max
   const shown = options.filter((o) => !value.includes(o.email.toLowerCase())).slice(0, 6)
   const listed = open && shown.length > 0 && text.trim() !== ""
 
@@ -54,15 +60,14 @@ export const AddressChips = forwardRef<
   const add = (raw: string) => {
     const { valid, invalid } = parseAddresses(raw)
     const merged = [...value]
-    for (const a of valid) if (!merged.includes(a) && merged.length < MAX_ADDRESSES) merged.push(a)
+    for (const a of valid) if (!merged.includes(a) && merged.length < max) merged.push(a)
     if (merged.length !== value.length) onChange(merged)
     if (invalid.length > 0) {
       setText(invalid.join(" "))
       setError(t`${invalid[0]} is not an e-mail address`)
       return false
     }
-    if (valid.length > 0 && merged.length >= MAX_ADDRESSES && valid.some((a) => !merged.includes(a))) {
-      const max = MAX_ADDRESSES
+    if (valid.length > 0 && merged.length >= max && valid.some((a) => !merged.includes(a))) {
       setError(t`At most ${max} addresses`)
     }
     setText("")
@@ -81,7 +86,11 @@ export const AddressChips = forwardRef<
         {value.map((email) => (
           <span
             key={email}
-            className="flex max-w-full items-center gap-0.5 rounded-md bg-muted ps-2 text-caption"
+            className={cn(
+              "flex max-w-full items-center gap-0.5 rounded-md bg-muted ps-2 text-caption",
+              flagged.includes(email) && "bg-destructive/10 text-destructive"
+            )}
+            data-flagged={flagged.includes(email) || undefined}
             data-testid="address-chip"
           >
             <span className="max-w-56 truncate">{email}</span>
@@ -173,7 +182,10 @@ export const AddressChips = forwardRef<
           id={`${id}-list`}
           role="listbox"
           aria-label={label}
-          className="absolute start-0 bottom-full z-20 mb-1 max-h-56 w-[min(360px,100%)] overflow-y-auto rounded-xl border bg-popover p-1 shadow-md"
+          className={cn(
+            "absolute start-0 z-20 max-h-56 w-[min(360px,100%)] overflow-y-auto rounded-xl border bg-popover p-1 shadow-md",
+            below ? "top-full mt-1" : "bottom-full mb-1"
+          )}
         >
           {shown.map((o, i) => (
             <li

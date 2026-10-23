@@ -213,6 +213,14 @@ msgstr "{actor} സ്റ്റാറ്റസ് {status} ആക്കി"
 msgid "{added} added · {out} left out"
 msgstr "{added} ചേർത്തു · {out} ഒഴിവാക്കി"
 
+#: src/features/conversation/ForwardDialog.tsx
+msgid "{address} bounced or complained before. Remove it here, or clear it on the contact to forward there."
+msgstr "{address} മുമ്പ് ബൗൺസ് ആയിട്ടുണ്ട് അല്ലെങ്കിൽ പരാതിപ്പെട്ടിട്ടുണ്ട്. ഇവിടെ നിന്ന് നീക്കുക, അല്ലെങ്കിൽ അവിടേക്ക് ഫോർവേഡ് ചെയ്യാൻ കോൺടാക്റ്റിൽ നിന്ന് മായ്ക്കുക."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "{address} cannot be a recipient. It may be the conversation's contact, an address already copied on it, an address of this server, or not valid."
+msgstr "{address} സ്വീകർത്താവാകാൻ പാടില്ല. ഇത് സംഭാഷണത്തിന്റെ കോൺടാക്റ്റ്, ഇതിനകം പകർപ്പിലുള്ള വിലാസം, ഈ സെർവറിന്റെ വിലാസം, അല്ലെങ്കിൽ അസാധുവായത് ആകാം."
+
 #: src/features/migrations/DoneStep.tsx
 msgid "{address} is in Yuva"
 msgstr "{address} Yuva-യിലുണ്ട്"
@@ -2544,6 +2552,10 @@ msgstr "സംഭാഷണങ്ങൾക്ക് മറുപടി നൽക�
 msgid "Answer cleared"
 msgstr "ഉത്തരം മായ്ച്ചു"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "Answer to a forward from {author}"
+msgstr "{author} ചെയ്ത ഫോർവേഡിനുള്ള മറുപടി"
+
 #: src/features/feedback/FeedbackList.tsx
 msgid "answered"
 msgstr "മറുപടി നൽകി"
@@ -3415,6 +3427,7 @@ msgstr "ക്യാമ്പെയ്ൻ പേര്"
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactNotes.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/docs/discussions/FromConversation.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
@@ -6828,6 +6841,18 @@ msgstr "വരുന്ന എല്ലാ മെയിലും താഴെയ
 msgid "Forward as a note mentioning"
 msgstr "പരാമർശിക്കുന്ന കുറിപ്പായി ഫോർവേഡ് ചെയ്യുക"
 
+#: src/app/Palette.tsx
+#: src/features/conversation/ConversationMenu.tsx
+#: src/features/conversation/messages/MessageActions.tsx
+msgid "Forward by e-mail…"
+msgstr "ഇമെയിലിൽ ഫോർവേഡ് ചെയ്യുക…"
+
+#: src/features/conversation/messages/Thread.tsx
+#: src/features/inbox/AssistantsPage.tsx
+#: src/features/inbox/SidePanels.tsx
+msgid "Forward draft by {author}"
+msgstr "{author} ന്റെ ഫോർവേഡ് ഡ്രാഫ്റ്റ്"
+
 #: src/features/setup/email/EmailReceiveStep.tsx
 msgid "Forward from your mailbox"
 msgstr "നിങ്ങളുടെ മെയിൽബോക്സിൽ നിന്ന് ഫോർവേഡ് ചെയ്യുക"
@@ -6836,13 +6861,37 @@ msgstr "നിങ്ങളുടെ മെയിൽബോക്സിൽ നി�
 msgid "Forward mail for this address to the Cloudflare Email Worker in edge/ of the Yuva repository, or to any mail server that posts each message to this server's ingress URL, signed with YUVA_INGRESS_SECRET:"
 msgstr "ഈ വിലാസത്തിന്റെ മെയിൽ Yuva റിപ്പോസിറ്ററിയിലെ edge/-ലുള്ള Cloudflare Email Worker-ലേക്ക്, അല്ലെങ്കിൽ ഓരോ സന്ദേശവും YUVA_INGRESS_SECRET ഉപയോഗിച്ച് സൈൻ ചെയ്ത് ഈ സെർവറിന്റെ ഇൻഗ്രെസ് URL-ലേക്ക് പോസ്റ്റ് ചെയ്യുന്ന ഏതെങ്കിലും മെയിൽ സെർവറിലേക്ക് ഫോർവേഡ് ചെയ്യുക:"
 
-#: src/features/conversation/messages/MessageActions.tsx
-msgid "Forward to a teammate"
-msgstr "ഒരു സഹപ്രവർത്തകന് ഫോർവേഡ് ചെയ്യുക"
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Forward saved as a draft"
+msgstr "ഫോർവേഡ് ഡ്രാഫ്റ്റായി സേവ് ചെയ്തു"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Forward the conversation"
+msgstr "സംഭാഷണം ഫോർവേഡ് ചെയ്യുക"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Forward the conversation by e-mail, or the focused message"
+msgstr "സംഭാഷണമോ തിരഞ്ഞെടുത്ത സന്ദേശമോ ഇമെയിലിൽ ഫോർവേഡ് ചെയ്യുക"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Forward this message"
+msgstr "ഈ സന്ദേശം ഫോർവേഡ് ചെയ്യുക"
+
+#: src/features/conversation/messages/Thread.tsx
+msgid "Forwarded by {author}"
+msgstr "{author} ഫോർവേഡ് ചെയ്തു"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Forwarded by e-mail"
+msgstr "ഇമെയിലിൽ ഫോർവേഡ് ചെയ്തു"
 
 #: src/features/conversation/ChatView.tsx
 msgid "Forwarded to {label} as a note"
 msgstr "{label}-ലേക്ക് കുറിപ്പായി ഫോർവേഡ് ചെയ്തു"
+
+#: src/features/conversation/Participants.tsx
+msgid "Forwarded: answered a forward, not copied on replies"
+msgstr "ഫോർവേഡ് ചെയ്തത്: ഫോർവേഡിന് മറുപടി നൽകി, മറുപടികളിൽ പകർപ്പില്ല"
 
 #: src/features/migrations/SwitchStep.tsx
 msgid "Forwarding"
@@ -7831,6 +7880,10 @@ msgstr "സംഭവങ്ങൾ"
 #: src/features/status/IncidentsPage.tsx
 msgid "Incidents live on a status page. Create one first."
 msgstr "സംഭവങ്ങൾ ഒരു സ്റ്റാറ്റസ് പേജിലാണ്. ആദ്യം ഒന്ന് സൃഷ്ടിക്കുക."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Include attachments"
+msgstr "അറ്റാച്ച്മെന്റുകൾ ഉൾപ്പെടുത്തുക"
 
 #: src/features/settings/slack/SlackPage.tsx
 msgid "Include message text for {name}"
@@ -9189,6 +9242,10 @@ msgstr "അംഗങ്ങൾ"
 msgid "Members and invitations"
 msgstr "അംഗങ്ങളും ക്ഷണങ്ങളും"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "Members only"
+msgstr "അംഗങ്ങൾക്ക് മാത്രം"
+
 #: src/features/conversation/composer/MentionMenu.tsx
 msgid "Mention a teammate"
 msgstr "ഒരു സഹപ്രവർത്തകനെ പരാമർശിക്കുക"
@@ -10520,6 +10577,10 @@ msgstr "ഈ പേജ് ഇതുവരെ ഒരു മോണിറ്ററ�
 msgid "No monitors yet. Add one to let a check, a job or your monitoring set a component’s state."
 msgstr "ഇതുവരെ മോണിറ്ററുകളില്ല. ഒരു പരിശോധനയോ ജോലിയോ നിങ്ങളുടെ സ്വന്തം നിരീക്ഷണമോ ഘടകത്തിൻ്റെ അവസ്ഥ നിശ്ചയിക്കാൻ ഒന്ന് ചേർക്കുക."
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "No note"
+msgstr "കുറിപ്പില്ല"
+
 #: src/features/account/AccountPage.tsx
 msgid "No notifications in the last 90 days."
 msgstr "കഴിഞ്ഞ 90 ദിവസത്തിൽ അറിയിപ്പുകളില്ല."
@@ -10985,6 +11046,10 @@ msgstr "പരിശോധിച്ചിട്ടില്ല: മെയിൽ 
 msgid "Note"
 msgstr "കുറിപ്പ്"
 
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Note (optional)"
+msgstr "കുറിപ്പ് (ഓപ്ഷണൽ)"
+
 #: src/features/contact/ContactNotes.tsx
 msgid "Note about this contact"
 msgstr "ഈ കോൺടാക്റ്റിനെക്കുറിച്ചുള്ള കുറിപ്പ്"
@@ -11002,6 +11067,10 @@ msgstr "കുറിപ്പ്, ടീമിന് മാത്രം കാ�
 #: src/features/contact/ContactSheet.tsx
 msgid "Notes"
 msgstr "കുറിപ്പുകൾ"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Notes are never forwarded. The contact does not see the forward or the answers; only your team does."
+msgstr "കുറിപ്പുകൾ ഒരിക്കലും ഫോർവേഡ് ചെയ്യില്ല. കോൺടാക്റ്റിന് ഫോർവേഡും മറുപടികളും കാണാനാകില്ല; നിങ്ങളുടെ ടീമിന് മാത്രം കാണാം."
 
 #: src/features/inbox/SidePanels.tsx
 msgid "Notes where a teammate mentioned you"
@@ -12612,6 +12681,10 @@ msgstr "നിങ്ങളുടെ ലിസ്റ്റിന്റെ മു�
 #: src/features/status/IncidentDialog.tsx
 msgid "Plain text with links and line breaks, at most 5,000 characters."
 msgstr "ലിങ്കുകളും വരി മുറിവുകളുമുള്ള ലളിതമായ വാചകം, പരമാവധി 5,000 അക്ഷരങ്ങൾ."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Plain text, shown above the forwarded mail."
+msgstr "സാധാരണ ടെക്സ്റ്റ്, ഫോർവേഡ് ചെയ്ത മെയിലിന് മുകളിൽ കാണിക്കും."
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentDialog.tsx
@@ -14315,6 +14388,7 @@ msgstr "കാഴ്ചയായി സേവ് ചെയ്യുക"
 msgid "Save changes"
 msgstr "മാറ്റങ്ങൾ സേവ് ചെയ്യുക"
 
+#: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 msgid "Save draft"
 msgstr "ഡ്രാഫ്റ്റ് സേവ് ചെയ്യുക"
@@ -14633,6 +14707,7 @@ msgid "semicolons"
 msgstr "അർദ്ധവിരാമങ്ങൾ"
 
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 msgid "Send"
 msgstr "അയയ്ക്കുക"
@@ -14916,6 +14991,14 @@ msgstr "അതിന്റെ മെയിൽ ഇതിൽ നിന്ന് �
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Sends on {local}"
 msgstr "{local}-ന് അയയ്ക്കുന്നു"
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Sends the latest messages of this conversation by e-mail to people outside Yuva."
+msgstr "ഈ സംഭാഷണത്തിലെ ഏറ്റവും പുതിയ സന്ദേശങ്ങൾ Yuva-യ്ക്ക് പുറത്തുള്ളവർക്ക് ഇമെയിലിൽ അയയ്ക്കുന്നു."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Sends this message by e-mail to people outside Yuva."
+msgstr "ഈ സന്ദേശം Yuva-യ്ക്ക് പുറത്തുള്ളവർക്ക് ഇമെയിലിൽ അയയ്ക്കുന്നു."
 
 #. placeholder {0}: ch.email.smtp.host
 #: src/features/settings/channels/ChannelSummary.tsx
@@ -16550,6 +16633,10 @@ msgstr "കോൺടാക്റ്റ് ഇല്ലാതാക്കി"
 msgid "The contact writes a message"
 msgstr "കോൺടാക്റ്റ് ഒരു സന്ദേശം എഴുതുന്നു"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "The conversation"
+msgstr "സംഭാഷണം"
+
 #: src/components/common/Linked.tsx
 msgid "The conversations stay open. Customers get it right away and it cannot be recalled."
 msgstr "സംഭാഷണങ്ങൾ തുറന്നുതന്നെ നിൽക്കും. ഉപഭോക്താക്കൾക്ക് മറുപടി ഉടൻ ലഭിക്കും, തിരിച്ചെടുക്കാനാകില്ല."
@@ -16693,6 +16780,10 @@ msgstr "ഫയൽ നിരസിച്ചു."
 #: src/features/migrations/UploadStep.tsx
 msgid "The file's parts were deleted. Pick a corrected file to upload."
 msgstr "ഫയലിന്റെ ഭാഗങ്ങൾ ഇല്ലാതാക്കി. അപ്‌ലോഡ് ചെയ്യാൻ തിരുത്തിയ ഫയൽ തിരഞ്ഞെടുക്കുക."
+
+#: src/components/common/text.ts
+msgid "The files of the forwarded messages are larger than 20 MiB together. Forward without attachments."
+msgstr "ഫോർവേഡ് ചെയ്യുന്ന സന്ദേശങ്ങളുടെ ഫയലുകൾ ചേർന്ന് 20 MiB-ൽ കൂടുതലാണ്. അറ്റാച്ച്മെന്റുകളില്ലാതെ ഫോർവേഡ് ചെയ്യുക."
 
 #: src/features/broadcasts/Composer.tsx
 msgid "The first line of the mail shows here when there is no preview text."
@@ -17761,6 +17852,10 @@ msgstr "ഈ മെയിൽബോക്സ് “Microsoft ഉപയോഗിച
 msgid "This member is not in the workspace any more."
 msgstr "ഈ അംഗം ഇനി വർക്ക്സ്പേസിൽ ഇല്ല."
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "This message"
+msgstr "ഈ സന്ദേശം"
+
 #: src/features/migrations/UploadStep.tsx
 msgid "This migration has ended, so nothing more can be uploaded. Start a new one for another file."
 msgstr "ഈ മൈഗ്രേഷൻ അവസാനിച്ചു, അതിനാൽ ഇനി ഒന്നും അപ്‌ലോഡ് ചെയ്യാൻ കഴിയില്ല. മറ്റൊരു ഫയലിനായി പുതിയത് ആരംഭിക്കുക."
@@ -17997,6 +18092,7 @@ msgid "TLS (port 465)"
 msgstr "TLS (പോർട്ട് 465)"
 
 #: src/features/conversation/composer/Recipients.tsx
+#: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
@@ -18508,6 +18604,10 @@ msgstr "{upSince} മുതൽ പ്രവർത്തിക്കുന്ന�
 #: src/features/broadcasts/Import.tsx
 msgid "Up to {max} and 100,000 rows, with a header row. Excel files in Turkish or Western encodings and columns separated by commas, semicolons or tabs are read as they are."
 msgstr "{max} വരെയും 100,000 വരികൾ വരെയും, ഹെഡർ വരിയോടെ. ടർക്കിഷ് അല്ലെങ്കിൽ പാശ്ചാത്യ എൻകോഡിംഗുകളിലെ Excel ഫയലുകളും കോമ, അർദ്ധവിരാമം അല്ലെങ്കിൽ ടാബ് കൊണ്ട് വേർതിരിച്ച കോളങ്ങളും ഉള്ളതുപോലെ വായിക്കുന്നു."
+
+#: src/features/conversation/ForwardDialog.tsx
+msgid "Up to 10 addresses. Press Enter after each one."
+msgstr "പരമാവധി 10 വിലാസങ്ങൾ. ഓരോന്നിനും ശേഷം Enter അമർത്തുക."
 
 #: src/features/reports/ReportsColumn.tsx
 msgid "Up to 13 months, by group"
@@ -19438,6 +19538,10 @@ msgstr "Windows-1254 (ടർക്കിഷ് Excel)"
 msgid "With {name}"
 msgstr "{name}-നൊപ്പം"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "with attachments"
+msgstr "അറ്റാച്ച്മെന്റുകളോടെ"
+
 #: src/features/setup/email/EmailReceiveStep.tsx
 msgid "With Cloudflare Email Routing, deploy the Email Worker from edge/ of the Yuva repository and add a routing rule for the address with the action Send to a Worker. Any other mail server can post each message, signed with YUVA_INGRESS_SECRET, to:"
 msgstr "Cloudflare Email Routing ഉപയോഗിച്ച്, Yuva റിപ്പോസിറ്ററിയുടെ edge/-ൽ നിന്ന് Email Worker വിന്യസിക്കുകയും വിലാസത്തിന് Send to a Worker പ്രവർത്തനത്തോടെ ഒരു റൂട്ടിംഗ് റൂൾ ചേർക്കുകയും ചെയ്യുക. മറ്റേതൊരു മെയിൽ സെർവറിനും ഓരോ സന്ദേശവും YUVA_INGRESS_SECRET ഉപയോഗിച്ച് സൈൻ ചെയ്ത് ഇവിടേക്ക് പോസ്റ്റ് ചെയ്യാം:"
@@ -19486,6 +19590,10 @@ msgstr "മിനിറ്റുകൾക്കുള്ളിൽ"
 #: src/features/broadcasts/ListForm.tsx
 msgid "Without a confirmation anyone can type someone else's address into your form, and you cannot show that the owner of the address agreed. Keep it on unless your forms are only shown to people whose address you have already verified."
 msgstr "സ്ഥിരീകരണം ഇല്ലെങ്കിൽ ആർക്കും മറ്റൊരാളുടെ വിലാസം നിങ്ങളുടെ ഫോമിൽ ടൈപ്പ് ചെയ്യാം, വിലാസത്തിന്റെ ഉടമ സമ്മതിച്ചുവെന്ന് നിങ്ങൾക്ക് കാണിക്കാനും കഴിയില്ല. നിങ്ങളുടെ ഫോമുകൾ നിങ്ങൾ ഇതിനകം വിലാസം പരിശോധിച്ച ആളുകൾക്ക് മാത്രം കാണിക്കുന്നില്ലെങ്കിൽ ഇത് ഓണാക്കി വയ്ക്കുക."
+
+#: src/features/conversation/messages/Thread.tsx
+msgid "without attachments"
+msgstr "അറ്റാച്ച്മെന്റുകളില്ലാതെ"
 
 #: src/components/common/text.ts
 msgid "Won't do"

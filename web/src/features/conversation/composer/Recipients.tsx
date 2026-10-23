@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import { AddressChips, type AddressOption } from "@/components/common/AddressChips"
 import { useContactSearch } from "@/features/contact/queries"
 
-function useSuggestions() {
+export function useSuggestions() {
   const [text, setText] = useState("")
   const [query, setQuery] = useState("")
   useEffect(() => {
