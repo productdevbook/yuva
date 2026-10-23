@@ -13,10 +13,12 @@ import (
 
 	"github.com/jackc/pgx/v5"
 	"github.com/riverqueue/river"
+	"go.opentelemetry.io/otel/attribute"
 
 	"github.com/productdevbook/yuva/api/internal/oas"
 	"github.com/productdevbook/yuva/api/internal/realtime"
 	"github.com/productdevbook/yuva/api/internal/store"
+	"github.com/productdevbook/yuva/api/internal/telemetry"
 	"github.com/productdevbook/yuva/api/internal/webhook"
 )
 
@@ -842,9 +844,12 @@ func (s *Server) DeliverWebhook(ctx context.Context, workspaceID, deliveryID uui
 		return false, err
 	}
 	now := s.now()
-	res := s.hooks.Send(ctx, webhook.Request{
+	sendCtx, span := telemetry.Start(ctx, "webhook.deliver", telemetry.WorkspaceKey.String(workspaceID.String()))
+	res := s.hooks.Send(sendCtx, webhook.Request{
 		URL: e.Url, MessageID: d.MessageID, Timestamp: now, Body: []byte(d.Payload), Keys: keys, UserAgent: "Yuva-Webhooks/" + s.version,
 	})
+	span.SetAttributes(attribute.Int("http.response.status_code", res.StatusCode))
+	telemetry.End(span, res.Err)
 	ok := res.OK()
 	var errText *string
 	if !ok {

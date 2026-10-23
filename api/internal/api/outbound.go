@@ -19,6 +19,7 @@ import (
 	"github.com/productdevbook/yuva/api/internal/oas"
 	"github.com/productdevbook/yuva/api/internal/realtime"
 	"github.com/productdevbook/yuva/api/internal/store"
+	"github.com/productdevbook/yuva/api/internal/telemetry"
 )
 
 const (
@@ -467,7 +468,10 @@ func (s *Server) sendQueued(ctx context.Context, workspaceID uuid.UUID, msgs []m
 	}
 	sendCtx, cancel := context.WithTimeout(ctx, time.Minute)
 	defer cancel()
-	return email.SendRelayed(sendCtx, s.sender, cfg, me.FromAddress, []string{to}, raw)
+	sendCtx, span := telemetry.Start(sendCtx, "mail.send", telemetry.WorkspaceKey.String(workspaceID.String()), telemetry.InboxKey.String(conv.InboxID.String()))
+	relayID, err := email.SendRelayed(sendCtx, s.sender, cfg, me.FromAddress, []string{to}, raw)
+	telemetry.End(span, err)
+	return relayID, err
 }
 
 // batchText joins the messages' bodies; plain leaves out the article lines that the HTML part draws as cards.

@@ -7,14 +7,18 @@ import (
 	"fmt"
 	"io/fs"
 	"log/slog"
+	"strings"
 	"time"
 
+	"github.com/exaring/otelpgx"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/jackc/pgx/v5/stdlib"
 	"github.com/pressly/goose/v3"
 	"github.com/pressly/goose/v3/lock"
+
+	"github.com/productdevbook/yuva/api/internal/telemetry"
 )
 
 //go:embed migrations/*.sql
@@ -31,6 +35,13 @@ func Open(ctx context.Context, url string) (*Store, error) {
 		return nil, fmt.Errorf("parse database url: %w", err)
 	}
 	cfg.MaxConnLifetime = time.Hour
+	if telemetry.Enabled() {
+		cfg.ConnConfig.Tracer = otelpgx.NewTracer(
+			otelpgx.WithDisableSQLStatementInAttributes(),
+			otelpgx.WithDisableConnectionDetailsInAttributes(),
+			otelpgx.WithSpanNameFunc(spanName),
+		)
+	}
 	pool, err := pgxpool.NewWithConfig(ctx, cfg)
 	if err != nil {
 		return nil, fmt.Errorf("open database: %w", err)
@@ -142,4 +153,18 @@ func IsQueryCanceled(err error) bool {
 func IsForeignKeyViolation(err error) bool {
 	var pgErr *pgconn.PgError
 	return errors.As(err, &pgErr) && pgErr.Code == "23503"
+}
+
+// spanName is the sqlc query name from the leading "-- name:" comment, else the statement's
+// first word; the statement text and its arguments never reach a span.
+func spanName(stmt string) string {
+	if rest, ok := strings.CutPrefix(stmt, "-- name: "); ok {
+		if name, _, _ := strings.Cut(rest, " "); name != "" {
+			return name
+		}
+	}
+	if f := strings.Fields(stmt); len(f) > 0 && !strings.HasPrefix(f[0], "--") {
+		return strings.ToUpper(f[0])
+	}
+	return "QUERY"
 }

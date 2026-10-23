@@ -31,6 +31,7 @@ import (
 	"github.com/productdevbook/yuva/api/internal/secret"
 	"github.com/productdevbook/yuva/api/internal/storage"
 	"github.com/productdevbook/yuva/api/internal/store"
+	"github.com/productdevbook/yuva/api/internal/telemetry"
 	"github.com/productdevbook/yuva/api/internal/ui"
 	"github.com/productdevbook/yuva/api/internal/webhook"
 	"github.com/productdevbook/yuva/api/internal/widget"
@@ -433,7 +434,7 @@ func (s *Server) Handler() http.Handler {
 		}
 		panel.ServeHTTP(w, r)
 	})
-	return s.recoverer(s.logRequests(noSniff(s.helpHost(s.statusHost(s.linkHost(oauthCORS(s.clientCORS(s.guardCookieWrites(s.limitBody(s.idempotency(mux)))))))))))
+	return telemetry.Middleware(s.recoverer(s.logRequests(noSniff(s.helpHost(s.statusHost(s.linkHost(oauthCORS(s.clientCORS(s.guardCookieWrites(s.limitBody(s.idempotency(telemetry.Route(mux)))))))))))))
 }
 
 var mailLinkPrefixes = []string{managePathPrefix, confirmPathPrefix, clickPathPrefix, emailImagePathPrefix}
@@ -527,7 +528,7 @@ func (s *Server) logRequests(next http.Handler) http.Handler {
 		if strings.HasPrefix(r.URL.Path, emailImagePathPrefix) {
 			return
 		}
-		s.log.Info("request", slog.String("method", r.Method), slog.String("path", loggedPath(r.URL.Path)),
+		s.log.InfoContext(r.Context(), "request", slog.String("method", r.Method), slog.String("path", loggedPath(r.URL.Path)),
 			slog.Int("status", rec.status), slog.Duration("duration", took))
 	})
 }

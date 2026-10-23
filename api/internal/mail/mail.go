@@ -24,9 +24,12 @@ import (
 	"text/template"
 	"time"
 
+	"go.opentelemetry.io/otel/attribute"
+
 	"github.com/productdevbook/yuva/api/internal/config"
 	"github.com/productdevbook/yuva/api/internal/email"
 	"github.com/productdevbook/yuva/api/internal/mail/style"
+	"github.com/productdevbook/yuva/api/internal/telemetry"
 )
 
 type Message struct {
@@ -236,7 +239,9 @@ func (a Async) Send(ctx context.Context, m Message) error {
 
 type SMTP struct{ Config config.SMTP }
 
-func (s SMTP) Send(ctx context.Context, m Message) error {
+func (s SMTP) Send(ctx context.Context, m Message) (err error) {
+	ctx, span := telemetry.Start(ctx, "smtp.send", attribute.Int("yuva.recipients", 1), attribute.Int("yuva.message_bytes", len(m.Text)+len(m.HTML)))
+	defer func() { telemetry.End(span, err) }()
 	if err := checkHeaders(m); err != nil {
 		return err
 	}

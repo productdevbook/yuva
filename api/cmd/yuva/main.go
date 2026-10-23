@@ -32,6 +32,7 @@ import (
 	"github.com/productdevbook/yuva/api/internal/secret"
 	"github.com/productdevbook/yuva/api/internal/storage"
 	"github.com/productdevbook/yuva/api/internal/store"
+	"github.com/productdevbook/yuva/api/internal/telemetry"
 )
 
 var version = ""
@@ -69,7 +70,7 @@ const usageText = `usage:
   yuva mcp stdio --url <server> --key <key>   (bridges stdio to the server's /mcp; or YUVA_URL, YUVA_API_KEY)`
 
 func main() {
-	log := slog.New(slog.NewJSONHandler(os.Stderr, nil))
+	log := slog.New(telemetry.Handler{Handler: slog.NewJSONHandler(os.Stderr, nil)})
 	slog.SetDefault(log)
 	if len(os.Args) < 2 {
 		fmt.Fprintln(os.Stderr, usageText)
@@ -192,6 +193,20 @@ func serve(ctx context.Context, cfg config.Config, log *slog.Logger, args []stri
 		}
 	} else {
 		log.Warn("YUVA_VAPID_PUBLIC_KEY is not set; Web Push notifications are off (yuva vapid-keys makes a pair)")
+	}
+	stopTelemetry, err := telemetry.Setup(ctx, cfg.Version)
+	if err != nil {
+		return fmt.Errorf("OTEL_EXPORTER_OTLP_ENDPOINT: %w", err)
+	}
+	defer func() {
+		flushCtx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancel()
+		if err := stopTelemetry(flushCtx); err != nil {
+			log.Warn("traces not flushed", slog.Any("error", err))
+		}
+	}()
+	if telemetry.Enabled() {
+		log.Info("OpenTelemetry traces are on")
 	}
 	st, err := openStore(ctx, cfg)
 	if err != nil {

@@ -15,6 +15,7 @@ import (
 
 	"github.com/productdevbook/yuva/api/internal/oas"
 	"github.com/productdevbook/yuva/api/internal/store"
+	"github.com/productdevbook/yuva/api/internal/telemetry"
 )
 
 const (
@@ -261,6 +262,7 @@ func (s *Server) authenticate(next oas.StrictHandlerFunc, operationID string) oa
 			if replayed, err := s.claimIdempotency(ctx, w, r, c.workspaceID, callerContact, c.contactID); err != nil || replayed {
 				return nil, err
 			}
+			telemetry.Workspace(ctx, c.workspaceID.String())
 			return next(context.WithValue(ctx, contactKey, c), w, r, request)
 		}
 		if kind == accessDiscussant {
@@ -319,6 +321,9 @@ func (s *Server) authenticate(next oas.StrictHandlerFunc, operationID string) oa
 			if replayed, err := s.claimIdempotency(ctx, w, r, p.workspaceID, callerType, callerID); err != nil || replayed {
 				return nil, err
 			}
+		}
+		if p.workspaceID != (uuid.UUID{}) {
+			telemetry.Workspace(ctx, p.workspaceID.String())
 		}
 		return next(context.WithValue(ctx, principalKey, p), w, r, request)
 	}

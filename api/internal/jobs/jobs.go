@@ -13,8 +13,10 @@ import (
 	"github.com/riverqueue/river/riverdriver/riverpgxv5"
 	"github.com/riverqueue/river/rivermigrate"
 	"github.com/riverqueue/river/rivertype"
+	"github.com/riverqueue/rivercontrib/otelriver"
 
 	"github.com/productdevbook/yuva/api/internal/store"
+	"github.com/productdevbook/yuva/api/internal/telemetry"
 )
 
 func Migrate(ctx context.Context, pool *pgxpool.Pool, log *slog.Logger) error {
@@ -168,8 +170,16 @@ func New(pool *pgxpool.Pool, q *store.Queries, log *slog.Logger, broadcastWorker
 			}, &river.PeriodicJobOpts{ID: "analytics_reports", RunOnStart: true}),
 		)
 	}
+	var middleware []rivertype.Middleware
+	if telemetry.Enabled() {
+		middleware = append(middleware, otelriver.NewMiddleware(&otelriver.MiddlewareConfig{
+			EnableTracePropagation:      true,
+			EnableWorkSpanJobKindSuffix: true,
+		}))
+	}
 	return river.NewClient(riverpgxv5.New(pool), &river.Config{
 		Logger:       log,
+		Middleware:   middleware,
 		Queues:       queues,
 		Workers:      workers,
 		PeriodicJobs: periodic,

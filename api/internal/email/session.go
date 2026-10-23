@@ -10,6 +10,10 @@ import (
 	"regexp"
 	"strings"
 	"time"
+
+	"go.opentelemetry.io/otel/attribute"
+
+	"github.com/productdevbook/yuva/api/internal/telemetry"
 )
 
 // Session sends several messages over one SMTP connection. Send returns the Message-ID the relay
@@ -103,7 +107,9 @@ type smtpSession struct {
 	host string
 }
 
-func (s *smtpSession) Send(ctx context.Context, from string, to []string, msg []byte) (string, error) {
+func (s *smtpSession) Send(ctx context.Context, from string, to []string, msg []byte) (id string, err error) {
+	_, span := telemetry.Start(ctx, "smtp.send", attribute.Int("yuva.recipients", len(to)), attribute.Int("yuva.message_bytes", len(msg)))
+	defer func() { telemetry.End(span, err) }()
 	deadline := time.Now().Add(time.Minute)
 	if d, ok := ctx.Deadline(); ok && d.Before(deadline) {
 		deadline = d
