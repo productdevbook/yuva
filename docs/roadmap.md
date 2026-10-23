@@ -520,7 +520,7 @@ naming it. `start_conversation` with `send: true` leaves a draft while `bots_may
 
 ## M24 — Tidy for 0.1.0
 
-Status: in progress; items Y-117 to Y-125 and Y-133 in `backlog.md`.
+Status: done on 2026-10-23; items Y-117 to Y-125 and Y-133 in `backlog.md` (Y-124 withdrawn).
 
 - The roadmap, `architecture.md`, `CLAUDE.md` and the guides say what the code does today; nothing
   internal in the repository.
