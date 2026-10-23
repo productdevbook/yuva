@@ -665,7 +665,7 @@ func (s *Server) threadFor(ctx context.Context, q *store.Queries, events *eventB
 		}
 		if notice != nil && notice.ContactID == contactID && notice.ConversationID != nil {
 			c, err := q.GetConversation(ctx, store.GetConversationParams{WorkspaceID: ws, ID: *notice.ConversationID})
-			if err == nil && c.ContactID == contactID && c.InboxID == ch.InboxID {
+			if err == nil && c.ContactID == contactID && c.InboxID == ch.InboxID && c.TrashedAt == nil {
 				found, notice = &c, nil
 			} else if err != nil && !store.IsNotFound(err) {
 				return c, false, err
@@ -673,7 +673,7 @@ func (s *Server) threadFor(ctx context.Context, q *store.Queries, events *eventB
 		}
 		if delivery != nil && delivery.ContactID == contactID && delivery.ConversationID != nil {
 			c, err := q.GetConversation(ctx, store.GetConversationParams{WorkspaceID: ws, ID: *delivery.ConversationID})
-			if err == nil && c.ContactID == contactID && c.InboxID == ch.InboxID {
+			if err == nil && c.ContactID == contactID && c.InboxID == ch.InboxID && c.TrashedAt == nil {
 				found, delivery = &c, nil
 			} else if err != nil && !store.IsNotFound(err) {
 				return c, false, err

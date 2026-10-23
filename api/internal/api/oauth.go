@@ -54,7 +54,7 @@ var (
 // are for API keys only and offered to nobody.
 var (
 	ownerScopes    = []oas.ApiKeyScope{oas.AuditRead}
-	managerScopes  = []oas.ApiKeyScope{oas.InboxesManage, oas.LabelsWrite, oas.CannedRepliesWrite, oas.WebhooksManage, oas.WorkspaceManage, oas.ListsWrite, oas.BroadcastsWrite, oas.BroadcastsSend, oas.MigrationsManage, oas.AnalyticsManage}
+	managerScopes  = []oas.ApiKeyScope{oas.ConversationsDelete, oas.InboxesManage, oas.LabelsWrite, oas.CannedRepliesWrite, oas.WebhooksManage, oas.WorkspaceManage, oas.ListsWrite, oas.BroadcastsWrite, oas.BroadcastsSend, oas.MigrationsManage, oas.AnalyticsManage}
 	keyOnlyScopes  = []oas.ApiKeyScope{oas.FeedbackWrite, oas.AnalyticsWrite, oas.HelpPublish, oas.ChangelogPublish}
 	privateSchemeR = regexp.MustCompile(`^[a-z][a-z0-9+.-]*$`)
 	refusedSchemes = []string{"javascript", "data", "file", "vbscript", "about", "blob", "ftp", "ws", "wss", "mailto", "tel", "http", "https"}

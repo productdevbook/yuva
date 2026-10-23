@@ -392,4 +392,4 @@ WHERE m.workspace_id = @workspace_id AND m.id = ANY(@ids::uuid[]);
 
 -- name: CountBroadcastReplyConversations :one
 SELECT count(*) FROM conversations
-WHERE workspace_id = @workspace_id AND broadcast_id = @broadcast_id AND created_at >= @since AND created_at < @until;
+WHERE workspace_id = @workspace_id AND broadcast_id = @broadcast_id AND created_at >= @since AND created_at < @until AND trashed_at IS NULL;

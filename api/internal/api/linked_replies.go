@@ -407,7 +407,7 @@ func (s *Server) sendLinkedReply(ctx context.Context, a LinkedReplyArgs) (outcom
 		}
 	}
 	c, err := s.st.GetConversation(ctx, store.GetConversationParams{WorkspaceID: a.WorkspaceID, ID: a.ConversationID})
-	if store.IsNotFound(err) {
+	if store.IsNotFound(err) || (err == nil && c.TrashedAt != nil) {
 		return outcomeSkipped, reasonConvDeleted, nil
 	}
 	if err != nil {

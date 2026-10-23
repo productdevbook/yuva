@@ -243,7 +243,7 @@ WHERE workspace_id = @workspace_id AND incident_id = @incident_id AND conversati
 -- name: ListStatusIncidentConversations :many
 SELECT sqlc.embed(c), l.linked_at FROM status_incident_conversations l
 JOIN conversations c ON c.workspace_id = l.workspace_id AND c.id = l.conversation_id
-WHERE l.workspace_id = @workspace_id AND l.incident_id = @incident_id
+WHERE l.workspace_id = @workspace_id AND l.incident_id = @incident_id AND c.trashed_at IS NULL
   AND (@all_inboxes::bool OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = @viewer_id))
@@ -255,7 +255,7 @@ LIMIT @lim;
 -- name: ListStatusReplyTargets :many
 SELECT c.id FROM status_incident_conversations l
 JOIN conversations c ON c.workspace_id = l.workspace_id AND c.id = l.conversation_id
-WHERE l.workspace_id = @workspace_id AND l.incident_id = @incident_id AND c.status <> 'closed' AND NOT c.spam
+WHERE l.workspace_id = @workspace_id AND l.incident_id = @incident_id AND c.status <> 'closed' AND NOT c.spam AND c.trashed_at IS NULL
   AND (@all_inboxes::bool OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = @viewer_id))

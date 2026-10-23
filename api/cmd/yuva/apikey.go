@@ -37,7 +37,7 @@ func apiKey(ctx context.Context, st *store.Store, args []string, stdout, stderr 
 	case "create":
 		name := fs.String("name", "", "name of the key")
 		var scopes, inboxes repeated
-		fs.Var(&scopes, "scope", "a scope the key holds (repeatable; default every scope but broadcasts:send, status:manage, help:publish, roadmap:stage, changelog:publish and audit:read)")
+		fs.Var(&scopes, "scope", "a scope the key holds (repeatable; default every scope but conversations:delete, broadcasts:send, status:manage, help:publish, roadmap:stage, changelog:publish and audit:read)")
 		fs.Var(&inboxes, "inbox", "an inbox id the key is limited to (repeatable; default every inbox)")
 		if err := fs.Parse(args[1:]); err != nil {
 			return err

@@ -193,7 +193,7 @@ func (s *Server) PurgeWorkspace(ctx context.Context, workspaceID uuid.UUID, budg
 	}
 	deadline := time.Now().Add(budget)
 	for {
-		n, files, err := s.deleteConversationBatch(ctx, workspaceID, func(q *store.Queries) ([]uuid.UUID, error) {
+		n, files, err := s.deleteConversationBatch(ctx, workspaceID, func(q *store.Queries, _ *eventBatch) ([]uuid.UUID, error) {
 			return q.ListWorkspaceConversationIDs(ctx, store.ListWorkspaceConversationIDsParams{WorkspaceID: workspaceID, MaxRows: purgeConversationBatch})
 		})
 		if err != nil {
@@ -298,14 +298,14 @@ func lockWorkspaceRows(ctx context.Context, q *store.Queries, workspaceID uuid.U
 // deleteConversationBatch deletes the conversations list returns, with their messages and
 // attachments, and then their stored files. It returns how many conversations and files went;
 // none once the workspace row is gone.
-func (s *Server) deleteConversationBatch(ctx context.Context, workspaceID uuid.UUID, list func(q *store.Queries) ([]uuid.UUID, error)) (int, int, error) {
+func (s *Server) deleteConversationBatch(ctx context.Context, workspaceID uuid.UUID, list func(q *store.Queries, events *eventBatch) ([]uuid.UUID, error)) (int, int, error) {
 	var keys []string
 	var n int
-	err := s.st.InTx(ctx, func(q *store.Queries) error {
+	err := s.inTx(ctx, workspaceID, func(q *store.Queries, events *eventBatch) error {
 		if live, err := lockWorkspaceRows(ctx, q, workspaceID); err != nil || !live {
 			return err
 		}
-		ids, err := list(q)
+		ids, err := list(q, events)
 		if err != nil || len(ids) == 0 {
 			return err
 		}

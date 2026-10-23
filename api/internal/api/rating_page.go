@@ -101,7 +101,7 @@ func (s *Server) RequestRating(ctx context.Context, workspaceID, conversationID 
 	}
 	return s.inTx(ctx, workspaceID, func(q *store.Queries, events *eventBatch) error {
 		c, err := q.LockConversation(ctx, store.LockConversationParams{WorkspaceID: workspaceID, ID: conversationID})
-		if store.IsNotFound(err) {
+		if store.IsNotFound(err) || (err == nil && c.TrashedAt != nil) {
 			return nil
 		}
 		if err != nil {
@@ -274,7 +274,7 @@ func (s *Server) ratingTarget(ctx context.Context, q *store.Queries, token strin
 		}
 	}
 	c, err := get(ctx, store.GetConversationParams{WorkspaceID: ref.workspaceID, ID: ref.conversationID})
-	if store.IsNotFound(err) {
+	if store.IsNotFound(err) || (err == nil && c.TrashedAt != nil) {
 		return c, store.Inbox{}, false, nil
 	}
 	if err != nil {

@@ -311,7 +311,8 @@ func (w *mcpWatcher) matching(e realtime.Event) []string {
 	}
 	if e.InboxID != nil {
 		switch e.Type {
-		case realtime.InboxUpdated, realtime.InboxDeleted, realtime.ConversationCreated, realtime.ConversationUpdated, realtime.ConversationMoved:
+		case realtime.InboxUpdated, realtime.InboxDeleted, realtime.ConversationCreated, realtime.ConversationUpdated, realtime.ConversationMoved,
+			realtime.ConversationTrashed, realtime.ConversationRestored, realtime.ConversationDeleted:
 			uris = append(uris, mcpInboxPrefix+e.InboxID.String())
 		}
 	}

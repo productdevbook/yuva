@@ -439,7 +439,12 @@ func (f *clientFilter) transform(ctx context.Context, e realtime.Event) ([]any, 
 	}
 	frame := func(data any) []any { return frameAs(e.Type, data) }
 	switch e.Type {
-	case realtime.ConversationCreated, realtime.ConversationUpdated:
+	case realtime.ConversationTrashed, realtime.ConversationDeleted:
+		if e.ConversationID != nil {
+			delete(f.convs, *e.ConversationID)
+		}
+		return nil, nil
+	case realtime.ConversationCreated, realtime.ConversationUpdated, realtime.ConversationRestored:
 		var c oas.Conversation
 		if err := json.Unmarshal(e.Data, &c); err != nil {
 			return nil, err

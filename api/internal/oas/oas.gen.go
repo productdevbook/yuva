@@ -913,41 +913,42 @@ func (e AnalyticsShareView) Valid() bool {
 
 // Defines values for ApiKeyScope.
 const (
-	AnalyticsManage    ApiKeyScope = "analytics:manage"
-	AnalyticsRead      ApiKeyScope = "analytics:read"
-	AnalyticsWrite     ApiKeyScope = "analytics:write"
-	AuditRead          ApiKeyScope = "audit:read"
-	BroadcastsRead     ApiKeyScope = "broadcasts:read"
-	BroadcastsSend     ApiKeyScope = "broadcasts:send"
-	BroadcastsWrite    ApiKeyScope = "broadcasts:write"
-	CannedRepliesWrite ApiKeyScope = "canned_replies:write"
-	ChangelogPublish   ApiKeyScope = "changelog:publish"
-	ChangelogRead      ApiKeyScope = "changelog:read"
-	ChangelogWrite     ApiKeyScope = "changelog:write"
-	ContactsRead       ApiKeyScope = "contacts:read"
-	ContactsWrite      ApiKeyScope = "contacts:write"
-	ConversationsRead  ApiKeyScope = "conversations:read"
-	ConversationsWrite ApiKeyScope = "conversations:write"
-	DraftsSend         ApiKeyScope = "drafts:send"
-	FeedbackWrite      ApiKeyScope = "feedback:write"
-	HelpPublish        ApiKeyScope = "help:publish"
-	HelpRead           ApiKeyScope = "help:read"
-	HelpWrite          ApiKeyScope = "help:write"
-	InboxesManage      ApiKeyScope = "inboxes:manage"
-	InboxesRead        ApiKeyScope = "inboxes:read"
-	LabelsWrite        ApiKeyScope = "labels:write"
-	ListsRead          ApiKeyScope = "lists:read"
-	ListsWrite         ApiKeyScope = "lists:write"
-	MessagesWrite      ApiKeyScope = "messages:write"
-	MigrationsManage   ApiKeyScope = "migrations:manage"
-	NotesWrite         ApiKeyScope = "notes:write"
-	RoadmapRead        ApiKeyScope = "roadmap:read"
-	RoadmapStage       ApiKeyScope = "roadmap:stage"
-	RoadmapWrite       ApiKeyScope = "roadmap:write"
-	StatusManage       ApiKeyScope = "status:manage"
-	StatusRead         ApiKeyScope = "status:read"
-	WebhooksManage     ApiKeyScope = "webhooks:manage"
-	WorkspaceManage    ApiKeyScope = "workspace:manage"
+	AnalyticsManage     ApiKeyScope = "analytics:manage"
+	AnalyticsRead       ApiKeyScope = "analytics:read"
+	AnalyticsWrite      ApiKeyScope = "analytics:write"
+	AuditRead           ApiKeyScope = "audit:read"
+	BroadcastsRead      ApiKeyScope = "broadcasts:read"
+	BroadcastsSend      ApiKeyScope = "broadcasts:send"
+	BroadcastsWrite     ApiKeyScope = "broadcasts:write"
+	CannedRepliesWrite  ApiKeyScope = "canned_replies:write"
+	ChangelogPublish    ApiKeyScope = "changelog:publish"
+	ChangelogRead       ApiKeyScope = "changelog:read"
+	ChangelogWrite      ApiKeyScope = "changelog:write"
+	ContactsRead        ApiKeyScope = "contacts:read"
+	ContactsWrite       ApiKeyScope = "contacts:write"
+	ConversationsDelete ApiKeyScope = "conversations:delete"
+	ConversationsRead   ApiKeyScope = "conversations:read"
+	ConversationsWrite  ApiKeyScope = "conversations:write"
+	DraftsSend          ApiKeyScope = "drafts:send"
+	FeedbackWrite       ApiKeyScope = "feedback:write"
+	HelpPublish         ApiKeyScope = "help:publish"
+	HelpRead            ApiKeyScope = "help:read"
+	HelpWrite           ApiKeyScope = "help:write"
+	InboxesManage       ApiKeyScope = "inboxes:manage"
+	InboxesRead         ApiKeyScope = "inboxes:read"
+	LabelsWrite         ApiKeyScope = "labels:write"
+	ListsRead           ApiKeyScope = "lists:read"
+	ListsWrite          ApiKeyScope = "lists:write"
+	MessagesWrite       ApiKeyScope = "messages:write"
+	MigrationsManage    ApiKeyScope = "migrations:manage"
+	NotesWrite          ApiKeyScope = "notes:write"
+	RoadmapRead         ApiKeyScope = "roadmap:read"
+	RoadmapStage        ApiKeyScope = "roadmap:stage"
+	RoadmapWrite        ApiKeyScope = "roadmap:write"
+	StatusManage        ApiKeyScope = "status:manage"
+	StatusRead          ApiKeyScope = "status:read"
+	WebhooksManage      ApiKeyScope = "webhooks:manage"
+	WorkspaceManage     ApiKeyScope = "workspace:manage"
 )
 
 // Valid indicates whether the value is a known member of the ApiKeyScope enum.
@@ -978,6 +979,8 @@ func (e ApiKeyScope) Valid() bool {
 	case ContactsRead:
 		return true
 	case ContactsWrite:
+		return true
+	case ConversationsDelete:
 		return true
 	case ConversationsRead:
 		return true
@@ -1058,6 +1061,9 @@ const (
 	AuditChannelKeyRotated                   AuditAction = "channel.key_rotated"
 	AuditContactConsentExported              AuditAction = "contact.consent_exported"
 	AuditContactDeleted                      AuditAction = "contact.deleted"
+	AuditConversationDeleted                 AuditAction = "conversation.deleted"
+	AuditConversationRestored                AuditAction = "conversation.restored"
+	AuditConversationTrashed                 AuditAction = "conversation.trashed"
 	AuditInboxDeleted                        AuditAction = "inbox.deleted"
 	AuditInboxIdentitySecretRotated          AuditAction = "inbox.identity_secret_rotated"
 	AuditInviteCreated                       AuditAction = "invite.created"
@@ -1104,6 +1110,12 @@ func (e AuditAction) Valid() bool {
 	case AuditContactConsentExported:
 		return true
 	case AuditContactDeleted:
+		return true
+	case AuditConversationDeleted:
+		return true
+	case AuditConversationRestored:
+		return true
+	case AuditConversationTrashed:
 		return true
 	case AuditInboxDeleted:
 		return true
@@ -1160,6 +1172,7 @@ const (
 	AuditActorMember     AuditActorKind = "member"
 	AuditActorOAuthGrant AuditActorKind = "oauth_grant"
 	AuditActorOperator   AuditActorKind = "operator"
+	AuditActorSystem     AuditActorKind = "system"
 )
 
 // Valid indicates whether the value is a known member of the AuditActorKind enum.
@@ -1173,6 +1186,8 @@ func (e AuditActorKind) Valid() bool {
 		return true
 	case AuditActorOperator:
 		return true
+	case AuditActorSystem:
+		return true
 	default:
 		return false
 	}
@@ -1184,6 +1199,7 @@ const (
 	AuditTargetApiKey          AuditTargetType = "api_key"
 	AuditTargetChannel         AuditTargetType = "channel"
 	AuditTargetContact         AuditTargetType = "contact"
+	AuditTargetConversation    AuditTargetType = "conversation"
 	AuditTargetInbox           AuditTargetType = "inbox"
 	AuditTargetInvite          AuditTargetType = "invite"
 	AuditTargetList            AuditTargetType = "list"
@@ -1203,6 +1219,8 @@ func (e AuditTargetType) Valid() bool {
 	case AuditTargetChannel:
 		return true
 	case AuditTargetContact:
+		return true
+	case AuditTargetConversation:
 		return true
 	case AuditTargetInbox:
 		return true
@@ -2033,16 +2051,37 @@ func (e ContactUpdatedEventType) Valid() bool {
 	}
 }
 
+// Defines values for ConversationDeletedEventType.
+const (
+	ConversationDeletedEventTypeConversationDeleted ConversationDeletedEventType = "conversation.deleted"
+)
+
+// Valid indicates whether the value is a known member of the ConversationDeletedEventType enum.
+func (e ConversationDeletedEventType) Valid() bool {
+	switch e {
+	case ConversationDeletedEventTypeConversationDeleted:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for ConversationEventType.
 const (
-	ConversationEventTypeConversationCreated ConversationEventType = "conversation.created"
-	ConversationEventTypeConversationUpdated ConversationEventType = "conversation.updated"
+	ConversationEventTypeConversationCreated  ConversationEventType = "conversation.created"
+	ConversationEventTypeConversationRestored ConversationEventType = "conversation.restored"
+	ConversationEventTypeConversationTrashed  ConversationEventType = "conversation.trashed"
+	ConversationEventTypeConversationUpdated  ConversationEventType = "conversation.updated"
 )
 
 // Valid indicates whether the value is a known member of the ConversationEventType enum.
 func (e ConversationEventType) Valid() bool {
 	switch e {
 	case ConversationEventTypeConversationCreated:
+		return true
+	case ConversationEventTypeConversationRestored:
+		return true
+	case ConversationEventTypeConversationTrashed:
 		return true
 	case ConversationEventTypeConversationUpdated:
 		return true
@@ -6066,7 +6105,10 @@ const (
 	WebhookEventTypeContactDeleted            WebhookEventType = "contact.deleted"
 	WebhookEventTypeContactUpdated            WebhookEventType = "contact.updated"
 	WebhookEventTypeConversationCreated       WebhookEventType = "conversation.created"
+	WebhookEventTypeConversationDeleted       WebhookEventType = "conversation.deleted"
 	WebhookEventTypeConversationRated         WebhookEventType = "conversation.rated"
+	WebhookEventTypeConversationRestored      WebhookEventType = "conversation.restored"
+	WebhookEventTypeConversationTrashed       WebhookEventType = "conversation.trashed"
 	WebhookEventTypeConversationUpdated       WebhookEventType = "conversation.updated"
 	WebhookEventTypeDiscussionAnswered        WebhookEventType = "discussion.answered"
 	WebhookEventTypeDiscussionCreated         WebhookEventType = "discussion.created"
@@ -6110,7 +6152,13 @@ func (e WebhookEventType) Valid() bool {
 		return true
 	case WebhookEventTypeConversationCreated:
 		return true
+	case WebhookEventTypeConversationDeleted:
+		return true
 	case WebhookEventTypeConversationRated:
+		return true
+	case WebhookEventTypeConversationRestored:
+		return true
+	case WebhookEventTypeConversationTrashed:
 		return true
 	case WebhookEventTypeConversationUpdated:
 		return true
@@ -8326,6 +8374,9 @@ type ApiKeyList struct {
 //		message e-mail and raw source; list labels and canned replies.
 //	  - `conversations:write`: create, update (status, assignee, snooze, priority, labels), move
 //	    and bulk-update conversations.
+//	  - `conversations:delete`: move conversations to the trash, restore them, and list the
+//	    trash. For owners and admins: never offered to agents' tokens. Never implied: a key made
+//	    without naming its scopes does not hold it.
 //	  - `messages:write`: outgoing and incoming messages, drafts: create, edit, discard; for
 //	    OAuth tokens also replies to reader threads and their accepted answer.
 //	  - `drafts:send`: send a draft (`POST /v1/messages/{id}/send`), together with
@@ -8390,7 +8441,7 @@ type ApiKeyList struct {
 //	    without an inbox limit; offered only to owners' OAuth tokens. Never implied: a key made
 //	    without naming its scopes does not hold it.
 //
-// `lists:*`, `broadcasts:*`, `migrations:manage`, `analytics:*`, `status:*`, `help:*`, `roadmap:*`, `changelog:*` and `audit:read` are never added to keys made before they existed.
+// `conversations:delete`, `lists:*`, `broadcasts:*`, `migrations:manage`, `analytics:*`, `status:*`, `help:*`, `roadmap:*`, `changelog:*` and `audit:read` are never added to keys made before they existed.
 type ApiKeyScope string
 
 // ApiKeyUpdate Only the fields sent change. Scopes, inbox limit and expiry cannot change.
@@ -8466,6 +8517,8 @@ type Attributes map[string]interface{}
 //   - `channel.key_rotated`, `channel.forwarding_address_rotated`, `channel.dkim_key_deleted`:
 //     none. `channel.dkim_key_created`: `selector`.
 //   - `inbox.identity_secret_rotated`: none. `inbox.deleted`: `name`.
+//   - `conversation.trashed`, `conversation.restored`: `inbox_id`. `conversation.deleted`:
+//     `inbox_id`, by `system` (never the subject or content).
 //   - `contact.deleted`: none (no name or address is kept). `contact.consent_exported`: `format`,
 //     `started` (the entry is written when the export starts streaming).
 //   - `list.consent_exported`: `name`, `format`, `started`.
@@ -8486,7 +8539,7 @@ type AuditAction string
 
 // AuditActor defines model for AuditActor.
 type AuditActor struct {
-	// Id The member, API key or connected app (grant). Absent for `operator`.
+	// Id The member, API key or connected app (grant). Absent for `operator` and `system`.
 	Id *uuid.UUID `json:"id,omitempty"`
 
 	// Kind - `member`: a member with a session.
@@ -8494,12 +8547,14 @@ type AuditActor struct {
 	// - `oauth_grant`: a member through a connected app (OAuth or MCP); `member_id` is the member
 	//   and `via` the app's name.
 	// - `operator`: the server's operator on the command line; no `id` or `name`.
+	// - `system`: Yuva itself, such as the retention job deleting a conversation 30 days after
+	//   it went to the trash; no `id` or `name`.
 	Kind AuditActorKind `json:"kind"`
 
 	// MemberId For `member` and `oauth_grant`, the member.
 	MemberId *uuid.UUID `json:"member_id,omitempty"`
 
-	// Name The display name at the time, kept after the actor is gone. Absent for `operator`.
+	// Name The display name at the time, kept after the actor is gone. Absent for `operator` and `system`.
 	Name *string `json:"name,omitempty"`
 
 	// Via For `oauth_grant`, the connected app's name.
@@ -8511,6 +8566,8 @@ type AuditActor struct {
 //   - `oauth_grant`: a member through a connected app (OAuth or MCP); `member_id` is the member
 //     and `via` the app's name.
 //   - `operator`: the server's operator on the command line; no `id` or `name`.
+//   - `system`: Yuva itself, such as the retention job deleting a conversation 30 days after
+//     it went to the trash; no `id` or `name`.
 type AuditActorKind string
 
 // AuditEntry defines model for AuditEntry.
@@ -8532,6 +8589,8 @@ type AuditEntry struct {
 	// - `channel.key_rotated`, `channel.forwarding_address_rotated`, `channel.dkim_key_deleted`:
 	//   none. `channel.dkim_key_created`: `selector`.
 	// - `inbox.identity_secret_rotated`: none. `inbox.deleted`: `name`.
+	// - `conversation.trashed`, `conversation.restored`: `inbox_id`. `conversation.deleted`:
+	//   `inbox_id`, by `system` (never the subject or content).
 	// - `contact.deleted`: none (no name or address is kept). `contact.consent_exported`: `format`,
 	//   `started` (the entry is written when the export starts streaming).
 	// - `list.consent_exported`: `name`, `format`, `started`.
@@ -11241,6 +11300,10 @@ type Conversation struct {
 	ContactId uuid.UUID  `json:"contact_id"`
 	CreatedAt time.Time  `json:"created_at"`
 
+	// DeletesAt In the trash only: when the retention job deletes it for good, 30 days after
+	// `trashed_at`. It can be restored until then.
+	DeletesAt *time.Time `json:"deletes_at,omitempty"`
+
 	// Feedback `feedback` conversations only: category and what the app sent with it.
 	Feedback *Feedback `json:"feedback,omitempty"`
 
@@ -11293,10 +11356,16 @@ type Conversation struct {
 
 	// Spam Flagged as spam, e.g. because the first e-mail failed DMARC. Spam is left out of lists
 	// and counts unless asked for, and gets no automatic reply.
-	Spam      bool               `json:"spam"`
-	Status    ConversationStatus `json:"status"`
-	Subject   string             `json:"subject"`
-	UpdatedAt time.Time          `json:"updated_at"`
+	Spam    bool               `json:"spam"`
+	Status  ConversationStatus `json:"status"`
+	Subject string             `json:"subject"`
+
+	// TrashedAt When it went to the trash; absent when it is not in the trash.
+	TrashedAt *time.Time `json:"trashed_at,omitempty"`
+
+	// TrashedBy Who moved it to the trash; absent when it is not in the trash.
+	TrashedBy *ConversationTrashedBy `json:"trashed_by,omitempty"`
+	UpdatedAt time.Time              `json:"updated_at"`
 }
 
 // ConversationBulkFailure defines model for ConversationBulkFailure.
@@ -11313,7 +11382,7 @@ type ConversationBulkFailure struct {
 type ConversationBulkResult struct {
 	Failed []ConversationBulkFailure `json:"failed"`
 
-	// Updated The conversations after the change, in request order.
+	// Updated The conversations after the change, in request order (with `trashed_at` when trashed).
 	Updated []Conversation `json:"updated"`
 }
 
@@ -11329,6 +11398,10 @@ type ConversationBulkUpdate struct {
 	// SnoozeUntil Required with status `snoozed`.
 	SnoozeUntil *time.Time          `json:"snooze_until,omitempty"`
 	Status      *ConversationStatus `json:"status,omitempty"`
+
+	// Trashed `true` moves the conversations to the trash, `false` restores them. Alone, without
+	// other changes. Owners, admins and keys and tokens with `conversations:delete`.
+	Trashed *bool `json:"trashed,omitempty"`
 }
 
 // ConversationContact The conversation's contact, enough for a list row.
@@ -11381,7 +11454,32 @@ type ConversationCreate struct {
 	Subject   *string      `json:"subject,omitempty"`
 }
 
-// ConversationEvent A conversation was created, or its status, snooze, assignee, priority, labels or subject changed.
+// ConversationDeleted A conversation deleted for good; nothing else of it is kept.
+type ConversationDeleted struct {
+	ContactId uuid.UUID `json:"contact_id"`
+	Id        uuid.UUID `json:"id"`
+	InboxId   uuid.UUID `json:"inbox_id"`
+}
+
+// ConversationDeletedEvent A conversation was deleted for good, 30 days after it went to the trash.
+type ConversationDeletedEvent struct {
+	ConversationId uuid.UUID `json:"conversation_id"`
+	CreatedAt      time.Time `json:"created_at"`
+
+	// Data A conversation deleted for good; nothing else of it is kept.
+	Data        ConversationDeleted          `json:"data"`
+	Id          int64                        `json:"id"`
+	InboxId     uuid.UUID                    `json:"inbox_id"`
+	Type        ConversationDeletedEventType `json:"type"`
+	WorkspaceId uuid.UUID                    `json:"workspace_id"`
+}
+
+// ConversationDeletedEventType defines model for ConversationDeletedEvent.Type.
+type ConversationDeletedEventType string
+
+// ConversationEvent A conversation was created, or its status, snooze, assignee, priority, labels or subject
+// changed. `conversation.trashed`: it went to the trash, so drop it from every list but the
+// Trash view; `conversation.restored`: it came back.
 type ConversationEvent struct {
 	ConversationId uuid.UUID             `json:"conversation_id"`
 	CreatedAt      time.Time             `json:"created_at"`
@@ -11462,6 +11560,10 @@ type ConversationListItem struct {
 	ContactId uuid.UUID           `json:"contact_id"`
 	CreatedAt time.Time           `json:"created_at"`
 
+	// DeletesAt In the trash only: when the retention job deletes it for good, 30 days after
+	// `trashed_at`. It can be restored until then.
+	DeletesAt *time.Time `json:"deletes_at,omitempty"`
+
 	// Feedback `feedback` conversations only: category and what the app sent with it.
 	Feedback *Feedback `json:"feedback,omitempty"`
 
@@ -11523,6 +11625,12 @@ type ConversationListItem struct {
 	Spam    bool               `json:"spam"`
 	Status  ConversationStatus `json:"status"`
 	Subject string             `json:"subject"`
+
+	// TrashedAt When it went to the trash; absent when it is not in the trash.
+	TrashedAt *time.Time `json:"trashed_at,omitempty"`
+
+	// TrashedBy Who moved it to the trash; absent when it is not in the trash.
+	TrashedBy *ConversationTrashedBy `json:"trashed_by,omitempty"`
 
 	// Unread A message or note from someone other than the calling member is newer than the
 	// member's read cursor, or the member marked it unread. Always `false` for API keys.
@@ -11646,6 +11754,14 @@ type ConversationSummary struct {
 	InboxId uuid.UUID           `json:"inbox_id"`
 	Status  ConversationStatus  `json:"status"`
 	Subject string              `json:"subject"`
+}
+
+// ConversationTrashedBy The member or API key that moved the conversation to the trash; empty when it is gone.
+type ConversationTrashedBy struct {
+	ApiKeyId *uuid.UUID `json:"api_key_id,omitempty"`
+
+	// MemberId The member, also when they acted through a connected app.
+	MemberId *uuid.UUID `json:"member_id,omitempty"`
 }
 
 // ConversationUpdate defines model for ConversationUpdate.
@@ -18339,6 +18455,10 @@ type StatusIncidentConversation struct {
 	ContactId uuid.UUID           `json:"contact_id"`
 	CreatedAt time.Time           `json:"created_at"`
 
+	// DeletesAt In the trash only: when the retention job deletes it for good, 30 days after
+	// `trashed_at`. It can be restored until then.
+	DeletesAt *time.Time `json:"deletes_at,omitempty"`
+
 	// Feedback `feedback` conversations only: category and what the app sent with it.
 	Feedback *Feedback `json:"feedback,omitempty"`
 
@@ -18401,6 +18521,12 @@ type StatusIncidentConversation struct {
 	Spam    bool               `json:"spam"`
 	Status  ConversationStatus `json:"status"`
 	Subject string             `json:"subject"`
+
+	// TrashedAt When it went to the trash; absent when it is not in the trash.
+	TrashedAt *time.Time `json:"trashed_at,omitempty"`
+
+	// TrashedBy Who moved it to the trash; absent when it is not in the trash.
+	TrashedBy *ConversationTrashedBy `json:"trashed_by,omitempty"`
 
 	// Unread A message or note from someone other than the calling member is newer than the
 	// member's read cursor, or the member marked it unread. Always `false` for API keys.
@@ -19640,6 +19766,25 @@ type WebhookConversationData struct {
 	// Contact The contact as a host backend needs it.
 	Contact      WebhookContact `json:"contact"`
 	Conversation Conversation   `json:"conversation"`
+}
+
+// WebhookConversationDeletedData defines model for WebhookConversationDeletedData.
+type WebhookConversationDeletedData struct {
+	// Conversation A conversation deleted for good; nothing else of it is kept.
+	Conversation ConversationDeleted `json:"conversation"`
+}
+
+// WebhookConversationDeletedPayload defines model for WebhookConversationDeletedPayload.
+type WebhookConversationDeletedPayload struct {
+	Data WebhookConversationDeletedData `json:"data"`
+
+	// InboxId The conversation's inbox; absent for contact events.
+	InboxId *uuid.UUID `json:"inbox_id,omitempty"`
+
+	// Timestamp When the event happened (not when it was sent).
+	Timestamp   time.Time        `json:"timestamp"`
+	Type        WebhookEventType `json:"type"`
+	WorkspaceId uuid.UUID        `json:"workspace_id"`
 }
 
 // WebhookConversationPayload defines model for WebhookConversationPayload.
@@ -21360,9 +21505,15 @@ type ListConversationsParams struct {
 	Assignee *string    `form:"assignee,omitempty" json:"assignee,omitempty"`
 	LabelId  *uuid.UUID `form:"label_id,omitempty" json:"label_id,omitempty"`
 
-	// Spam `true` lists only conversations flagged as spam (the spam view); without it, or with
-	// `false`, spam is left out.
+	// Spam `true` lists only conversations flagged as spam (the spam view); `false` leaves spam
+	// out. Without it spam is left out, except with `trashed=true`, which lists both.
 	Spam *bool `form:"spam,omitempty" json:"spam,omitempty"`
+
+	// Trashed `true` lists only the conversations in the trash (the Trash view), which every other
+	// list, count and search leaves out. Owners and admins, and keys and tokens with
+	// `conversations:delete`; agents get `403 forbidden`. `false` or absent lists what is not
+	// in the trash.
+	Trashed *bool `form:"trashed,omitempty" json:"trashed,omitempty"`
 
 	// Kind Only conversations of these kinds, e.g. `feedback` for the feedback view. Repeat the
 	// parameter (`kind=feedback&kind=conversation`) or give a comma-separated list
@@ -21441,6 +21592,12 @@ type GetConversationCountsParams struct {
 	// (`kind=feedback,conversation`).
 	Kind *ConversationKinds `form:"kind,omitempty" json:"kind,omitempty"`
 
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// TrashConversationParams defines parameters for TrashConversation.
+type TrashConversationParams struct {
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
@@ -21524,6 +21681,12 @@ type MarkConversationReadParams struct {
 	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// RestoreConversationParams defines parameters for RestoreConversation.
+type RestoreConversationParams struct {
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
@@ -23414,8 +23577,50 @@ type WebhookConversationCreatedParams struct {
 	WebhookSignature WebhookSignatureHeader `json:"webhook-signature"`
 }
 
+// WebhookConversationDeletedParams defines parameters for WebhookConversationDeleted.
+type WebhookConversationDeletedParams struct {
+	// WebhookId The delivery's id, the same on every retry; use it to ignore duplicates.
+	WebhookId WebhookIdHeader `json:"webhook-id"`
+
+	// WebhookTimestamp Unix seconds of this attempt. Refuse values far from your clock.
+	WebhookTimestamp WebhookTimestampHeader `json:"webhook-timestamp"`
+
+	// WebhookSignature Space-separated `v1,<base64>` signatures: HMAC-SHA256 over
+	// `<webhook-id>.<webhook-timestamp>.<body>` with the base64-decoded part of the
+	// `whsec_` secret (Standard Webhooks). Two during a secret rotation.
+	WebhookSignature WebhookSignatureHeader `json:"webhook-signature"`
+}
+
 // WebhookConversationRatedParams defines parameters for WebhookConversationRated.
 type WebhookConversationRatedParams struct {
+	// WebhookId The delivery's id, the same on every retry; use it to ignore duplicates.
+	WebhookId WebhookIdHeader `json:"webhook-id"`
+
+	// WebhookTimestamp Unix seconds of this attempt. Refuse values far from your clock.
+	WebhookTimestamp WebhookTimestampHeader `json:"webhook-timestamp"`
+
+	// WebhookSignature Space-separated `v1,<base64>` signatures: HMAC-SHA256 over
+	// `<webhook-id>.<webhook-timestamp>.<body>` with the base64-decoded part of the
+	// `whsec_` secret (Standard Webhooks). Two during a secret rotation.
+	WebhookSignature WebhookSignatureHeader `json:"webhook-signature"`
+}
+
+// WebhookConversationRestoredParams defines parameters for WebhookConversationRestored.
+type WebhookConversationRestoredParams struct {
+	// WebhookId The delivery's id, the same on every retry; use it to ignore duplicates.
+	WebhookId WebhookIdHeader `json:"webhook-id"`
+
+	// WebhookTimestamp Unix seconds of this attempt. Refuse values far from your clock.
+	WebhookTimestamp WebhookTimestampHeader `json:"webhook-timestamp"`
+
+	// WebhookSignature Space-separated `v1,<base64>` signatures: HMAC-SHA256 over
+	// `<webhook-id>.<webhook-timestamp>.<body>` with the base64-decoded part of the
+	// `whsec_` secret (Standard Webhooks). Two during a secret rotation.
+	WebhookSignature WebhookSignatureHeader `json:"webhook-signature"`
+}
+
+// WebhookConversationTrashedParams defines parameters for WebhookConversationTrashed.
+type WebhookConversationTrashedParams struct {
 	// WebhookId The delivery's id, the same on every retry; use it to ignore duplicates.
 	WebhookId WebhookIdHeader `json:"webhook-id"`
 
@@ -24231,8 +24436,17 @@ type WebhookContactUpdatedJSONRequestBody = WebhookContactPayload
 // WebhookConversationCreatedJSONRequestBody defines body for WebhookConversationCreated for application/json ContentType.
 type WebhookConversationCreatedJSONRequestBody = WebhookConversationPayload
 
+// WebhookConversationDeletedJSONRequestBody defines body for WebhookConversationDeleted for application/json ContentType.
+type WebhookConversationDeletedJSONRequestBody = WebhookConversationDeletedPayload
+
 // WebhookConversationRatedJSONRequestBody defines body for WebhookConversationRated for application/json ContentType.
 type WebhookConversationRatedJSONRequestBody = WebhookConversationPayload
+
+// WebhookConversationRestoredJSONRequestBody defines body for WebhookConversationRestored for application/json ContentType.
+type WebhookConversationRestoredJSONRequestBody = WebhookConversationPayload
+
+// WebhookConversationTrashedJSONRequestBody defines body for WebhookConversationTrashed for application/json ContentType.
+type WebhookConversationTrashedJSONRequestBody = WebhookConversationPayload
 
 // WebhookConversationUpdatedJSONRequestBody defines body for WebhookConversationUpdated for application/json ContentType.
 type WebhookConversationUpdatedJSONRequestBody = WebhookConversationPayload
@@ -25996,6 +26210,32 @@ func (t *RealtimeMessage) MergeConversationEvent(v ConversationEvent) error {
 	return err
 }
 
+// AsConversationDeletedEvent returns the union data inside the RealtimeMessage as a ConversationDeletedEvent
+func (t RealtimeMessage) AsConversationDeletedEvent() (ConversationDeletedEvent, error) {
+	var body ConversationDeletedEvent
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromConversationDeletedEvent overwrites any union data inside the RealtimeMessage as the provided ConversationDeletedEvent
+func (t *RealtimeMessage) FromConversationDeletedEvent(v ConversationDeletedEvent) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeConversationDeletedEvent performs a merge with any union data inside the RealtimeMessage, using the provided ConversationDeletedEvent
+func (t *RealtimeMessage) MergeConversationDeletedEvent(v ConversationDeletedEvent) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
 // AsConversationMovedEvent returns the union data inside the RealtimeMessage as a ConversationMovedEvent
 func (t RealtimeMessage) AsConversationMovedEvent() (ConversationMovedEvent, error) {
 	var body ConversationMovedEvent
@@ -27128,12 +27368,18 @@ func (t RealtimeMessage) ValueByDiscriminator() (interface{}, error) {
 		return t.AsContactUpdatedEvent()
 	case "conversation.created":
 		return t.AsConversationEvent()
+	case "conversation.deleted":
+		return t.AsConversationDeletedEvent()
 	case "conversation.moved":
 		return t.AsConversationMovedEvent()
 	case "conversation.pin":
 		return t.AsConversationPinEvent()
 	case "conversation.read":
 		return t.AsConversationReadEvent()
+	case "conversation.restored":
+		return t.AsConversationEvent()
+	case "conversation.trashed":
+		return t.AsConversationEvent()
 	case "conversation.updated":
 		return t.AsConversationEvent()
 	case "discussion.answered":
@@ -27247,6 +27493,32 @@ func (t *StoredEvent) FromConversationEvent(v ConversationEvent) error {
 
 // MergeConversationEvent performs a merge with any union data inside the StoredEvent, using the provided ConversationEvent
 func (t *StoredEvent) MergeConversationEvent(v ConversationEvent) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsConversationDeletedEvent returns the union data inside the StoredEvent as a ConversationDeletedEvent
+func (t StoredEvent) AsConversationDeletedEvent() (ConversationDeletedEvent, error) {
+	var body ConversationDeletedEvent
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromConversationDeletedEvent overwrites any union data inside the StoredEvent as the provided ConversationDeletedEvent
+func (t *StoredEvent) FromConversationDeletedEvent(v ConversationDeletedEvent) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeConversationDeletedEvent performs a merge with any union data inside the StoredEvent, using the provided ConversationDeletedEvent
+func (t *StoredEvent) MergeConversationDeletedEvent(v ConversationDeletedEvent) error {
 	b, err := json.Marshal(v)
 	if err != nil {
 		return err
@@ -27913,12 +28185,18 @@ func (t StoredEvent) ValueByDiscriminator() (interface{}, error) {
 		return t.AsContactUpdatedEvent()
 	case "conversation.created":
 		return t.AsConversationEvent()
+	case "conversation.deleted":
+		return t.AsConversationDeletedEvent()
 	case "conversation.moved":
 		return t.AsConversationMovedEvent()
 	case "conversation.pin":
 		return t.AsConversationPinEvent()
 	case "conversation.read":
 		return t.AsConversationReadEvent()
+	case "conversation.restored":
+		return t.AsConversationEvent()
+	case "conversation.trashed":
+		return t.AsConversationEvent()
 	case "conversation.updated":
 		return t.AsConversationEvent()
 	case "discussion.answered":
@@ -28533,6 +28811,9 @@ type ServerInterface interface {
 	// GetConversationCounts Count open conversations
 	// (GET /v1/conversations/counts)
 	GetConversationCounts(w http.ResponseWriter, r *http.Request, params GetConversationCountsParams)
+	// TrashConversation Move a conversation to the trash
+	// (DELETE /v1/conversations/{conversationId})
+	TrashConversation(w http.ResponseWriter, r *http.Request, conversationId ConversationId, params TrashConversationParams)
 	// GetConversation Get a conversation
 	// (GET /v1/conversations/{conversationId})
 	GetConversation(w http.ResponseWriter, r *http.Request, conversationId ConversationId, params GetConversationParams)
@@ -28563,6 +28844,9 @@ type ServerInterface interface {
 	// MarkConversationRead Mark a conversation read
 	// (POST /v1/conversations/{conversationId}/read)
 	MarkConversationRead(w http.ResponseWriter, r *http.Request, conversationId ConversationId, params MarkConversationReadParams)
+	// RestoreConversation Bring a conversation back from the trash
+	// (POST /v1/conversations/{conversationId}/restore)
+	RestoreConversation(w http.ResponseWriter, r *http.Request, conversationId ConversationId, params RestoreConversationParams)
 	// SetMemberTyping Tell others you are typing
 	// (POST /v1/conversations/{conversationId}/typing)
 	SetMemberTyping(w http.ResponseWriter, r *http.Request, conversationId ConversationId, params SetMemberTypingParams)
@@ -38541,6 +38825,19 @@ func (siw *ServerInterfaceWrapper) ListConversations(w http.ResponseWriter, r *h
 		return
 	}
 
+	// ------------- Optional query parameter "trashed" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "trashed", r.URL.Query(), &params.Trashed, runtime.BindQueryParameterOptions{Type: "boolean", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "trashed"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "trashed", Err: err})
+		}
+		return
+	}
+
 	// ------------- Optional query parameter "kind" -------------
 
 	err = runtime.BindQueryParameterWithOptions("form", true, false, "kind", r.URL.Query(), &params.Kind, runtime.BindQueryParameterOptions{Type: "array", Format: ""})
@@ -38894,6 +39191,56 @@ func (siw *ServerInterfaceWrapper) GetConversationCounts(w http.ResponseWriter, 
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.GetConversationCounts(w, r, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// TrashConversation operation middleware
+func (siw *ServerInterfaceWrapper) TrashConversation(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "conversationId" -------------
+	var conversationId ConversationId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "conversationId", r.PathValue("conversationId"), &conversationId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "conversationId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params TrashConversationParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.TrashConversation(w, r, conversationId, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -39509,6 +39856,56 @@ func (siw *ServerInterfaceWrapper) MarkConversationRead(w http.ResponseWriter, r
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.MarkConversationRead(w, r, conversationId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// RestoreConversation operation middleware
+func (siw *ServerInterfaceWrapper) RestoreConversation(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "conversationId" -------------
+	var conversationId ConversationId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "conversationId", r.PathValue("conversationId"), &conversationId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "conversationId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params RestoreConversationParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.RestoreConversation(w, r, conversationId, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -53539,8 +53936,10 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/home", wrapper.GetHome)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/stats", wrapper.GetStats)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/conversations/bulk", wrapper.BulkUpdateConversations)
+	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/conversations/{conversationId}", wrapper.TrashConversation)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/conversations/{conversationId}", wrapper.GetConversation)
 	m.HandleFunc(http.MethodPatch+" "+options.BaseURL+"/v1/conversations/{conversationId}", wrapper.UpdateConversation)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/conversations/{conversationId}/restore", wrapper.RestoreConversation)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/conversations/{conversationId}/move", wrapper.MoveConversation)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/conversations/{conversationId}/discussion", wrapper.CreateDiscussionFromConversation)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/conversations/{conversationId}/messages", wrapper.ListMessages)
@@ -53900,9 +54299,18 @@ type WebhookReceiverInterface interface {
 	// A conversation started
 	// HandleWebhookConversationCreatedWebhook handles the POST webhook for conversation.created.
 	HandleWebhookConversationCreatedWebhook(w http.ResponseWriter, r *http.Request, params WebhookConversationCreatedParams)
+	// A conversation was deleted for good
+	// HandleWebhookConversationDeletedWebhook handles the POST webhook for conversation.deleted.
+	HandleWebhookConversationDeletedWebhook(w http.ResponseWriter, r *http.Request, params WebhookConversationDeletedParams)
 	// A contact rated a conversation
 	// HandleWebhookConversationRatedWebhook handles the POST webhook for conversation.rated.
 	HandleWebhookConversationRatedWebhook(w http.ResponseWriter, r *http.Request, params WebhookConversationRatedParams)
+	// A conversation came back from the trash
+	// HandleWebhookConversationRestoredWebhook handles the POST webhook for conversation.restored.
+	HandleWebhookConversationRestoredWebhook(w http.ResponseWriter, r *http.Request, params WebhookConversationRestoredParams)
+	// A conversation went to the trash
+	// HandleWebhookConversationTrashedWebhook handles the POST webhook for conversation.trashed.
+	HandleWebhookConversationTrashedWebhook(w http.ResponseWriter, r *http.Request, params WebhookConversationTrashedParams)
 	// A conversation changed
 	// HandleWebhookConversationUpdatedWebhook handles the POST webhook for conversation.updated.
 	HandleWebhookConversationUpdatedWebhook(w http.ResponseWriter, r *http.Request, params WebhookConversationUpdatedParams)
@@ -54711,6 +55119,98 @@ func WebhookConversationCreatedWebhookHandler(si WebhookReceiverInterface, errHa
 	return h
 }
 
+// WebhookConversationDeletedWebhookHandler returns the http.Handler for the conversation.deleted webhook.
+// Mount this at the URL path advertised to webhook senders. errHandler
+// may be nil; if so, parameter-binding errors return 400 with the error
+// message. Middlewares are applied in the order provided -- the last
+// argument becomes the outermost wrapper.
+func WebhookConversationDeletedWebhookHandler(si WebhookReceiverInterface, errHandler func(w http.ResponseWriter, r *http.Request, err error), middlewares ...WebhookReceiverMiddlewareFunc) http.Handler {
+	if errHandler == nil {
+		errHandler = func(w http.ResponseWriter, r *http.Request, err error) {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+		}
+	}
+	var h http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		var err error
+		_ = err
+
+		// Parameter object where we will unmarshal all parameters from the request.
+		var params WebhookConversationDeletedParams
+
+		// ------------- Required header parameter "webhook-id" -------------
+		if valueList, found := r.Header[http.CanonicalHeaderKey("webhook-id")]; found {
+			var WebhookId WebhookIdHeader
+			n := len(valueList)
+			if n != 1 {
+				errHandler(w, r, &TooManyValuesForParamError{ParamName: "webhook-id", Count: n})
+				return
+			}
+
+			err = runtime.BindStyledParameterWithOptions("simple", "webhook-id", valueList[0], &WebhookId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
+			if err != nil {
+				errHandler(w, r, &InvalidParamFormatError{ParamName: "webhook-id", Err: err})
+				return
+			}
+			params.WebhookId = WebhookId
+
+		} else {
+			err := fmt.Errorf("Header parameter webhook-id is required, but not found")
+			errHandler(w, r, &RequiredHeaderError{ParamName: "webhook-id", Err: err})
+			return
+		}
+
+		// ------------- Required header parameter "webhook-timestamp" -------------
+		if valueList, found := r.Header[http.CanonicalHeaderKey("webhook-timestamp")]; found {
+			var WebhookTimestamp WebhookTimestampHeader
+			n := len(valueList)
+			if n != 1 {
+				errHandler(w, r, &TooManyValuesForParamError{ParamName: "webhook-timestamp", Count: n})
+				return
+			}
+
+			err = runtime.BindStyledParameterWithOptions("simple", "webhook-timestamp", valueList[0], &WebhookTimestamp, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
+			if err != nil {
+				errHandler(w, r, &InvalidParamFormatError{ParamName: "webhook-timestamp", Err: err})
+				return
+			}
+			params.WebhookTimestamp = WebhookTimestamp
+
+		} else {
+			err := fmt.Errorf("Header parameter webhook-timestamp is required, but not found")
+			errHandler(w, r, &RequiredHeaderError{ParamName: "webhook-timestamp", Err: err})
+			return
+		}
+
+		// ------------- Required header parameter "webhook-signature" -------------
+		if valueList, found := r.Header[http.CanonicalHeaderKey("webhook-signature")]; found {
+			var WebhookSignature WebhookSignatureHeader
+			n := len(valueList)
+			if n != 1 {
+				errHandler(w, r, &TooManyValuesForParamError{ParamName: "webhook-signature", Count: n})
+				return
+			}
+
+			err = runtime.BindStyledParameterWithOptions("simple", "webhook-signature", valueList[0], &WebhookSignature, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
+			if err != nil {
+				errHandler(w, r, &InvalidParamFormatError{ParamName: "webhook-signature", Err: err})
+				return
+			}
+			params.WebhookSignature = WebhookSignature
+
+		} else {
+			err := fmt.Errorf("Header parameter webhook-signature is required, but not found")
+			errHandler(w, r, &RequiredHeaderError{ParamName: "webhook-signature", Err: err})
+			return
+		}
+
+		si.HandleWebhookConversationDeletedWebhook(w, r, params)
+	})
+	for _, mw := range middlewares {
+		h = mw(h)
+	}
+	return h
+}
+
 // WebhookConversationRatedWebhookHandler returns the http.Handler for the conversation.rated webhook.
 // Mount this at the URL path advertised to webhook senders. errHandler
 // may be nil; if so, parameter-binding errors return 400 with the error
@@ -54796,6 +55296,190 @@ func WebhookConversationRatedWebhookHandler(si WebhookReceiverInterface, errHand
 		}
 
 		si.HandleWebhookConversationRatedWebhook(w, r, params)
+	})
+	for _, mw := range middlewares {
+		h = mw(h)
+	}
+	return h
+}
+
+// WebhookConversationRestoredWebhookHandler returns the http.Handler for the conversation.restored webhook.
+// Mount this at the URL path advertised to webhook senders. errHandler
+// may be nil; if so, parameter-binding errors return 400 with the error
+// message. Middlewares are applied in the order provided -- the last
+// argument becomes the outermost wrapper.
+func WebhookConversationRestoredWebhookHandler(si WebhookReceiverInterface, errHandler func(w http.ResponseWriter, r *http.Request, err error), middlewares ...WebhookReceiverMiddlewareFunc) http.Handler {
+	if errHandler == nil {
+		errHandler = func(w http.ResponseWriter, r *http.Request, err error) {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+		}
+	}
+	var h http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		var err error
+		_ = err
+
+		// Parameter object where we will unmarshal all parameters from the request.
+		var params WebhookConversationRestoredParams
+
+		// ------------- Required header parameter "webhook-id" -------------
+		if valueList, found := r.Header[http.CanonicalHeaderKey("webhook-id")]; found {
+			var WebhookId WebhookIdHeader
+			n := len(valueList)
+			if n != 1 {
+				errHandler(w, r, &TooManyValuesForParamError{ParamName: "webhook-id", Count: n})
+				return
+			}
+
+			err = runtime.BindStyledParameterWithOptions("simple", "webhook-id", valueList[0], &WebhookId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
+			if err != nil {
+				errHandler(w, r, &InvalidParamFormatError{ParamName: "webhook-id", Err: err})
+				return
+			}
+			params.WebhookId = WebhookId
+
+		} else {
+			err := fmt.Errorf("Header parameter webhook-id is required, but not found")
+			errHandler(w, r, &RequiredHeaderError{ParamName: "webhook-id", Err: err})
+			return
+		}
+
+		// ------------- Required header parameter "webhook-timestamp" -------------
+		if valueList, found := r.Header[http.CanonicalHeaderKey("webhook-timestamp")]; found {
+			var WebhookTimestamp WebhookTimestampHeader
+			n := len(valueList)
+			if n != 1 {
+				errHandler(w, r, &TooManyValuesForParamError{ParamName: "webhook-timestamp", Count: n})
+				return
+			}
+
+			err = runtime.BindStyledParameterWithOptions("simple", "webhook-timestamp", valueList[0], &WebhookTimestamp, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
+			if err != nil {
+				errHandler(w, r, &InvalidParamFormatError{ParamName: "webhook-timestamp", Err: err})
+				return
+			}
+			params.WebhookTimestamp = WebhookTimestamp
+
+		} else {
+			err := fmt.Errorf("Header parameter webhook-timestamp is required, but not found")
+			errHandler(w, r, &RequiredHeaderError{ParamName: "webhook-timestamp", Err: err})
+			return
+		}
+
+		// ------------- Required header parameter "webhook-signature" -------------
+		if valueList, found := r.Header[http.CanonicalHeaderKey("webhook-signature")]; found {
+			var WebhookSignature WebhookSignatureHeader
+			n := len(valueList)
+			if n != 1 {
+				errHandler(w, r, &TooManyValuesForParamError{ParamName: "webhook-signature", Count: n})
+				return
+			}
+
+			err = runtime.BindStyledParameterWithOptions("simple", "webhook-signature", valueList[0], &WebhookSignature, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
+			if err != nil {
+				errHandler(w, r, &InvalidParamFormatError{ParamName: "webhook-signature", Err: err})
+				return
+			}
+			params.WebhookSignature = WebhookSignature
+
+		} else {
+			err := fmt.Errorf("Header parameter webhook-signature is required, but not found")
+			errHandler(w, r, &RequiredHeaderError{ParamName: "webhook-signature", Err: err})
+			return
+		}
+
+		si.HandleWebhookConversationRestoredWebhook(w, r, params)
+	})
+	for _, mw := range middlewares {
+		h = mw(h)
+	}
+	return h
+}
+
+// WebhookConversationTrashedWebhookHandler returns the http.Handler for the conversation.trashed webhook.
+// Mount this at the URL path advertised to webhook senders. errHandler
+// may be nil; if so, parameter-binding errors return 400 with the error
+// message. Middlewares are applied in the order provided -- the last
+// argument becomes the outermost wrapper.
+func WebhookConversationTrashedWebhookHandler(si WebhookReceiverInterface, errHandler func(w http.ResponseWriter, r *http.Request, err error), middlewares ...WebhookReceiverMiddlewareFunc) http.Handler {
+	if errHandler == nil {
+		errHandler = func(w http.ResponseWriter, r *http.Request, err error) {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+		}
+	}
+	var h http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		var err error
+		_ = err
+
+		// Parameter object where we will unmarshal all parameters from the request.
+		var params WebhookConversationTrashedParams
+
+		// ------------- Required header parameter "webhook-id" -------------
+		if valueList, found := r.Header[http.CanonicalHeaderKey("webhook-id")]; found {
+			var WebhookId WebhookIdHeader
+			n := len(valueList)
+			if n != 1 {
+				errHandler(w, r, &TooManyValuesForParamError{ParamName: "webhook-id", Count: n})
+				return
+			}
+
+			err = runtime.BindStyledParameterWithOptions("simple", "webhook-id", valueList[0], &WebhookId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
+			if err != nil {
+				errHandler(w, r, &InvalidParamFormatError{ParamName: "webhook-id", Err: err})
+				return
+			}
+			params.WebhookId = WebhookId
+
+		} else {
+			err := fmt.Errorf("Header parameter webhook-id is required, but not found")
+			errHandler(w, r, &RequiredHeaderError{ParamName: "webhook-id", Err: err})
+			return
+		}
+
+		// ------------- Required header parameter "webhook-timestamp" -------------
+		if valueList, found := r.Header[http.CanonicalHeaderKey("webhook-timestamp")]; found {
+			var WebhookTimestamp WebhookTimestampHeader
+			n := len(valueList)
+			if n != 1 {
+				errHandler(w, r, &TooManyValuesForParamError{ParamName: "webhook-timestamp", Count: n})
+				return
+			}
+
+			err = runtime.BindStyledParameterWithOptions("simple", "webhook-timestamp", valueList[0], &WebhookTimestamp, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
+			if err != nil {
+				errHandler(w, r, &InvalidParamFormatError{ParamName: "webhook-timestamp", Err: err})
+				return
+			}
+			params.WebhookTimestamp = WebhookTimestamp
+
+		} else {
+			err := fmt.Errorf("Header parameter webhook-timestamp is required, but not found")
+			errHandler(w, r, &RequiredHeaderError{ParamName: "webhook-timestamp", Err: err})
+			return
+		}
+
+		// ------------- Required header parameter "webhook-signature" -------------
+		if valueList, found := r.Header[http.CanonicalHeaderKey("webhook-signature")]; found {
+			var WebhookSignature WebhookSignatureHeader
+			n := len(valueList)
+			if n != 1 {
+				errHandler(w, r, &TooManyValuesForParamError{ParamName: "webhook-signature", Count: n})
+				return
+			}
+
+			err = runtime.BindStyledParameterWithOptions("simple", "webhook-signature", valueList[0], &WebhookSignature, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
+			if err != nil {
+				errHandler(w, r, &InvalidParamFormatError{ParamName: "webhook-signature", Err: err})
+				return
+			}
+			params.WebhookSignature = WebhookSignature
+
+		} else {
+			err := fmt.Errorf("Header parameter webhook-signature is required, but not found")
+			errHandler(w, r, &RequiredHeaderError{ParamName: "webhook-signature", Err: err})
+			return
+		}
+
+		si.HandleWebhookConversationTrashedWebhook(w, r, params)
 	})
 	for _, mw := range middlewares {
 		h = mw(h)
@@ -70945,6 +71629,73 @@ func (response GetConversationCounts403ApplicationProblemPlusJSONResponse) Visit
 	return err
 }
 
+type TrashConversationRequestObject struct {
+	ConversationId ConversationId `json:"conversationId"`
+	Params         TrashConversationParams
+}
+
+type TrashConversationResponseObject interface {
+	VisitTrashConversationResponse(w http.ResponseWriter) error
+}
+
+type TrashConversation200JSONResponse Conversation
+
+func (response TrashConversation200JSONResponse) VisitTrashConversationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type TrashConversation401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response TrashConversation401ApplicationProblemPlusJSONResponse) VisitTrashConversationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type TrashConversation403ApplicationProblemPlusJSONResponse Problem
+
+func (response TrashConversation403ApplicationProblemPlusJSONResponse) VisitTrashConversationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type TrashConversation404ApplicationProblemPlusJSONResponse Problem
+
+func (response TrashConversation404ApplicationProblemPlusJSONResponse) VisitTrashConversationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
 type GetConversationRequestObject struct {
 	ConversationId ConversationId `json:"conversationId"`
 	Params         GetConversationParams
@@ -71813,6 +72564,87 @@ func (response MarkConversationRead404ApplicationProblemPlusJSONResponse) VisitM
 	}
 	w.Header().Set("Content-Type", "application/problem+json")
 	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type RestoreConversationRequestObject struct {
+	ConversationId ConversationId `json:"conversationId"`
+	Params         RestoreConversationParams
+}
+
+type RestoreConversationResponseObject interface {
+	VisitRestoreConversationResponse(w http.ResponseWriter) error
+}
+
+type RestoreConversation200JSONResponse Conversation
+
+func (response RestoreConversation200JSONResponse) VisitRestoreConversationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type RestoreConversation401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response RestoreConversation401ApplicationProblemPlusJSONResponse) VisitRestoreConversationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type RestoreConversation403ApplicationProblemPlusJSONResponse Problem
+
+func (response RestoreConversation403ApplicationProblemPlusJSONResponse) VisitRestoreConversationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type RestoreConversation404ApplicationProblemPlusJSONResponse Problem
+
+func (response RestoreConversation404ApplicationProblemPlusJSONResponse) VisitRestoreConversationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type RestoreConversation409ApplicationProblemPlusJSONResponse Problem
+
+func (response RestoreConversation409ApplicationProblemPlusJSONResponse) VisitRestoreConversationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(409)
 	_, err := buf.WriteTo(w)
 	return err
 }
@@ -90471,6 +91303,9 @@ type StrictServerInterface interface {
 	// GetConversationCounts Count open conversations
 	// (GET /v1/conversations/counts)
 	GetConversationCounts(ctx context.Context, request GetConversationCountsRequestObject) (GetConversationCountsResponseObject, error)
+	// TrashConversation Move a conversation to the trash
+	// (DELETE /v1/conversations/{conversationId})
+	TrashConversation(ctx context.Context, request TrashConversationRequestObject) (TrashConversationResponseObject, error)
 	// GetConversation Get a conversation
 	// (GET /v1/conversations/{conversationId})
 	GetConversation(ctx context.Context, request GetConversationRequestObject) (GetConversationResponseObject, error)
@@ -90501,6 +91336,9 @@ type StrictServerInterface interface {
 	// MarkConversationRead Mark a conversation read
 	// (POST /v1/conversations/{conversationId}/read)
 	MarkConversationRead(ctx context.Context, request MarkConversationReadRequestObject) (MarkConversationReadResponseObject, error)
+	// RestoreConversation Bring a conversation back from the trash
+	// (POST /v1/conversations/{conversationId}/restore)
+	RestoreConversation(ctx context.Context, request RestoreConversationRequestObject) (RestoreConversationResponseObject, error)
 	// SetMemberTyping Tell others you are typing
 	// (POST /v1/conversations/{conversationId}/typing)
 	SetMemberTyping(ctx context.Context, request SetMemberTypingRequestObject) (SetMemberTypingResponseObject, error)
@@ -96575,6 +97413,33 @@ func (sh *strictHandler) GetConversationCounts(w http.ResponseWriter, r *http.Re
 	}
 }
 
+// TrashConversation operation middleware
+func (sh *strictHandler) TrashConversation(w http.ResponseWriter, r *http.Request, conversationId ConversationId, params TrashConversationParams) {
+	var request TrashConversationRequestObject
+
+	request.ConversationId = conversationId
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.TrashConversation(ctx, request.(TrashConversationRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "TrashConversation")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(TrashConversationResponseObject); ok {
+		if err := validResponse.VisitTrashConversationResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
 // GetConversation operation middleware
 func (sh *strictHandler) GetConversation(w http.ResponseWriter, r *http.Request, conversationId ConversationId, params GetConversationParams) {
 	var request GetConversationRequestObject
@@ -96887,6 +97752,33 @@ func (sh *strictHandler) MarkConversationRead(w http.ResponseWriter, r *http.Req
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
 	} else if validResponse, ok := response.(MarkConversationReadResponseObject); ok {
 		if err := validResponse.VisitMarkConversationReadResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// RestoreConversation operation middleware
+func (sh *strictHandler) RestoreConversation(w http.ResponseWriter, r *http.Request, conversationId ConversationId, params RestoreConversationParams) {
+	var request RestoreConversationRequestObject
+
+	request.ConversationId = conversationId
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.RestoreConversation(ctx, request.(RestoreConversationRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "RestoreConversation")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(RestoreConversationResponseObject); ok {
+		if err := validResponse.VisitRestoreConversationResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {

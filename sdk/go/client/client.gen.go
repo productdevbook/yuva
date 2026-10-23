@@ -911,41 +911,42 @@ func (e AnalyticsShareView) Valid() bool {
 
 // Defines values for ApiKeyScope.
 const (
-	AnalyticsManage    ApiKeyScope = "analytics:manage"
-	AnalyticsRead      ApiKeyScope = "analytics:read"
-	AnalyticsWrite     ApiKeyScope = "analytics:write"
-	AuditRead          ApiKeyScope = "audit:read"
-	BroadcastsRead     ApiKeyScope = "broadcasts:read"
-	BroadcastsSend     ApiKeyScope = "broadcasts:send"
-	BroadcastsWrite    ApiKeyScope = "broadcasts:write"
-	CannedRepliesWrite ApiKeyScope = "canned_replies:write"
-	ChangelogPublish   ApiKeyScope = "changelog:publish"
-	ChangelogRead      ApiKeyScope = "changelog:read"
-	ChangelogWrite     ApiKeyScope = "changelog:write"
-	ContactsRead       ApiKeyScope = "contacts:read"
-	ContactsWrite      ApiKeyScope = "contacts:write"
-	ConversationsRead  ApiKeyScope = "conversations:read"
-	ConversationsWrite ApiKeyScope = "conversations:write"
-	DraftsSend         ApiKeyScope = "drafts:send"
-	FeedbackWrite      ApiKeyScope = "feedback:write"
-	HelpPublish        ApiKeyScope = "help:publish"
-	HelpRead           ApiKeyScope = "help:read"
-	HelpWrite          ApiKeyScope = "help:write"
-	InboxesManage      ApiKeyScope = "inboxes:manage"
-	InboxesRead        ApiKeyScope = "inboxes:read"
-	LabelsWrite        ApiKeyScope = "labels:write"
-	ListsRead          ApiKeyScope = "lists:read"
-	ListsWrite         ApiKeyScope = "lists:write"
-	MessagesWrite      ApiKeyScope = "messages:write"
-	MigrationsManage   ApiKeyScope = "migrations:manage"
-	NotesWrite         ApiKeyScope = "notes:write"
-	RoadmapRead        ApiKeyScope = "roadmap:read"
-	RoadmapStage       ApiKeyScope = "roadmap:stage"
-	RoadmapWrite       ApiKeyScope = "roadmap:write"
-	StatusManage       ApiKeyScope = "status:manage"
-	StatusRead         ApiKeyScope = "status:read"
-	WebhooksManage     ApiKeyScope = "webhooks:manage"
-	WorkspaceManage    ApiKeyScope = "workspace:manage"
+	AnalyticsManage     ApiKeyScope = "analytics:manage"
+	AnalyticsRead       ApiKeyScope = "analytics:read"
+	AnalyticsWrite      ApiKeyScope = "analytics:write"
+	AuditRead           ApiKeyScope = "audit:read"
+	BroadcastsRead      ApiKeyScope = "broadcasts:read"
+	BroadcastsSend      ApiKeyScope = "broadcasts:send"
+	BroadcastsWrite     ApiKeyScope = "broadcasts:write"
+	CannedRepliesWrite  ApiKeyScope = "canned_replies:write"
+	ChangelogPublish    ApiKeyScope = "changelog:publish"
+	ChangelogRead       ApiKeyScope = "changelog:read"
+	ChangelogWrite      ApiKeyScope = "changelog:write"
+	ContactsRead        ApiKeyScope = "contacts:read"
+	ContactsWrite       ApiKeyScope = "contacts:write"
+	ConversationsDelete ApiKeyScope = "conversations:delete"
+	ConversationsRead   ApiKeyScope = "conversations:read"
+	ConversationsWrite  ApiKeyScope = "conversations:write"
+	DraftsSend          ApiKeyScope = "drafts:send"
+	FeedbackWrite       ApiKeyScope = "feedback:write"
+	HelpPublish         ApiKeyScope = "help:publish"
+	HelpRead            ApiKeyScope = "help:read"
+	HelpWrite           ApiKeyScope = "help:write"
+	InboxesManage       ApiKeyScope = "inboxes:manage"
+	InboxesRead         ApiKeyScope = "inboxes:read"
+	LabelsWrite         ApiKeyScope = "labels:write"
+	ListsRead           ApiKeyScope = "lists:read"
+	ListsWrite          ApiKeyScope = "lists:write"
+	MessagesWrite       ApiKeyScope = "messages:write"
+	MigrationsManage    ApiKeyScope = "migrations:manage"
+	NotesWrite          ApiKeyScope = "notes:write"
+	RoadmapRead         ApiKeyScope = "roadmap:read"
+	RoadmapStage        ApiKeyScope = "roadmap:stage"
+	RoadmapWrite        ApiKeyScope = "roadmap:write"
+	StatusManage        ApiKeyScope = "status:manage"
+	StatusRead          ApiKeyScope = "status:read"
+	WebhooksManage      ApiKeyScope = "webhooks:manage"
+	WorkspaceManage     ApiKeyScope = "workspace:manage"
 )
 
 // Valid indicates whether the value is a known member of the ApiKeyScope enum.
@@ -976,6 +977,8 @@ func (e ApiKeyScope) Valid() bool {
 	case ContactsRead:
 		return true
 	case ContactsWrite:
+		return true
+	case ConversationsDelete:
 		return true
 	case ConversationsRead:
 		return true
@@ -1056,6 +1059,9 @@ const (
 	AuditChannelKeyRotated                   AuditAction = "channel.key_rotated"
 	AuditContactConsentExported              AuditAction = "contact.consent_exported"
 	AuditContactDeleted                      AuditAction = "contact.deleted"
+	AuditConversationDeleted                 AuditAction = "conversation.deleted"
+	AuditConversationRestored                AuditAction = "conversation.restored"
+	AuditConversationTrashed                 AuditAction = "conversation.trashed"
 	AuditInboxDeleted                        AuditAction = "inbox.deleted"
 	AuditInboxIdentitySecretRotated          AuditAction = "inbox.identity_secret_rotated"
 	AuditInviteCreated                       AuditAction = "invite.created"
@@ -1102,6 +1108,12 @@ func (e AuditAction) Valid() bool {
 	case AuditContactConsentExported:
 		return true
 	case AuditContactDeleted:
+		return true
+	case AuditConversationDeleted:
+		return true
+	case AuditConversationRestored:
+		return true
+	case AuditConversationTrashed:
 		return true
 	case AuditInboxDeleted:
 		return true
@@ -1158,6 +1170,7 @@ const (
 	AuditActorMember     AuditActorKind = "member"
 	AuditActorOAuthGrant AuditActorKind = "oauth_grant"
 	AuditActorOperator   AuditActorKind = "operator"
+	AuditActorSystem     AuditActorKind = "system"
 )
 
 // Valid indicates whether the value is a known member of the AuditActorKind enum.
@@ -1171,6 +1184,8 @@ func (e AuditActorKind) Valid() bool {
 		return true
 	case AuditActorOperator:
 		return true
+	case AuditActorSystem:
+		return true
 	default:
 		return false
 	}
@@ -1182,6 +1197,7 @@ const (
 	AuditTargetApiKey          AuditTargetType = "api_key"
 	AuditTargetChannel         AuditTargetType = "channel"
 	AuditTargetContact         AuditTargetType = "contact"
+	AuditTargetConversation    AuditTargetType = "conversation"
 	AuditTargetInbox           AuditTargetType = "inbox"
 	AuditTargetInvite          AuditTargetType = "invite"
 	AuditTargetList            AuditTargetType = "list"
@@ -1201,6 +1217,8 @@ func (e AuditTargetType) Valid() bool {
 	case AuditTargetChannel:
 		return true
 	case AuditTargetContact:
+		return true
+	case AuditTargetConversation:
 		return true
 	case AuditTargetInbox:
 		return true
@@ -2031,16 +2049,37 @@ func (e ContactUpdatedEventType) Valid() bool {
 	}
 }
 
+// Defines values for ConversationDeletedEventType.
+const (
+	ConversationDeletedEventTypeConversationDeleted ConversationDeletedEventType = "conversation.deleted"
+)
+
+// Valid indicates whether the value is a known member of the ConversationDeletedEventType enum.
+func (e ConversationDeletedEventType) Valid() bool {
+	switch e {
+	case ConversationDeletedEventTypeConversationDeleted:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for ConversationEventType.
 const (
-	ConversationEventTypeConversationCreated ConversationEventType = "conversation.created"
-	ConversationEventTypeConversationUpdated ConversationEventType = "conversation.updated"
+	ConversationEventTypeConversationCreated  ConversationEventType = "conversation.created"
+	ConversationEventTypeConversationRestored ConversationEventType = "conversation.restored"
+	ConversationEventTypeConversationTrashed  ConversationEventType = "conversation.trashed"
+	ConversationEventTypeConversationUpdated  ConversationEventType = "conversation.updated"
 )
 
 // Valid indicates whether the value is a known member of the ConversationEventType enum.
 func (e ConversationEventType) Valid() bool {
 	switch e {
 	case ConversationEventTypeConversationCreated:
+		return true
+	case ConversationEventTypeConversationRestored:
+		return true
+	case ConversationEventTypeConversationTrashed:
 		return true
 	case ConversationEventTypeConversationUpdated:
 		return true
@@ -6064,7 +6103,10 @@ const (
 	WebhookEventTypeContactDeleted            WebhookEventType = "contact.deleted"
 	WebhookEventTypeContactUpdated            WebhookEventType = "contact.updated"
 	WebhookEventTypeConversationCreated       WebhookEventType = "conversation.created"
+	WebhookEventTypeConversationDeleted       WebhookEventType = "conversation.deleted"
 	WebhookEventTypeConversationRated         WebhookEventType = "conversation.rated"
+	WebhookEventTypeConversationRestored      WebhookEventType = "conversation.restored"
+	WebhookEventTypeConversationTrashed       WebhookEventType = "conversation.trashed"
 	WebhookEventTypeConversationUpdated       WebhookEventType = "conversation.updated"
 	WebhookEventTypeDiscussionAnswered        WebhookEventType = "discussion.answered"
 	WebhookEventTypeDiscussionCreated         WebhookEventType = "discussion.created"
@@ -6108,7 +6150,13 @@ func (e WebhookEventType) Valid() bool {
 		return true
 	case WebhookEventTypeConversationCreated:
 		return true
+	case WebhookEventTypeConversationDeleted:
+		return true
 	case WebhookEventTypeConversationRated:
+		return true
+	case WebhookEventTypeConversationRestored:
+		return true
+	case WebhookEventTypeConversationTrashed:
 		return true
 	case WebhookEventTypeConversationUpdated:
 		return true
@@ -8372,6 +8420,9 @@ type ApiKeyList struct {
 //		message e-mail and raw source; list labels and canned replies.
 //	  - `conversations:write`: create, update (status, assignee, snooze, priority, labels), move
 //	    and bulk-update conversations.
+//	  - `conversations:delete`: move conversations to the trash, restore them, and list the
+//	    trash. For owners and admins: never offered to agents' tokens. Never implied: a key made
+//	    without naming its scopes does not hold it.
 //	  - `messages:write`: outgoing and incoming messages, drafts: create, edit, discard; for
 //	    OAuth tokens also replies to reader threads and their accepted answer.
 //	  - `drafts:send`: send a draft (`POST /v1/messages/{id}/send`), together with
@@ -8436,7 +8487,7 @@ type ApiKeyList struct {
 //	    without an inbox limit; offered only to owners' OAuth tokens. Never implied: a key made
 //	    without naming its scopes does not hold it.
 //
-// `lists:*`, `broadcasts:*`, `migrations:manage`, `analytics:*`, `status:*`, `help:*`, `roadmap:*`, `changelog:*` and `audit:read` are never added to keys made before they existed.
+// `conversations:delete`, `lists:*`, `broadcasts:*`, `migrations:manage`, `analytics:*`, `status:*`, `help:*`, `roadmap:*`, `changelog:*` and `audit:read` are never added to keys made before they existed.
 type ApiKeyScope string
 
 // ApiKeyUpdate Only the fields sent change. Scopes, inbox limit and expiry cannot change.
@@ -8512,6 +8563,8 @@ type Attributes map[string]interface{}
 //   - `channel.key_rotated`, `channel.forwarding_address_rotated`, `channel.dkim_key_deleted`:
 //     none. `channel.dkim_key_created`: `selector`.
 //   - `inbox.identity_secret_rotated`: none. `inbox.deleted`: `name`.
+//   - `conversation.trashed`, `conversation.restored`: `inbox_id`. `conversation.deleted`:
+//     `inbox_id`, by `system` (never the subject or content).
 //   - `contact.deleted`: none (no name or address is kept). `contact.consent_exported`: `format`,
 //     `started` (the entry is written when the export starts streaming).
 //   - `list.consent_exported`: `name`, `format`, `started`.
@@ -8532,7 +8585,7 @@ type AuditAction string
 
 // AuditActor defines model for AuditActor.
 type AuditActor struct {
-	// Id The member, API key or connected app (grant). Absent for `operator`.
+	// Id The member, API key or connected app (grant). Absent for `operator` and `system`.
 	Id *uuid.UUID `json:"id,omitempty"`
 
 	// Kind - `member`: a member with a session.
@@ -8540,12 +8593,14 @@ type AuditActor struct {
 	// - `oauth_grant`: a member through a connected app (OAuth or MCP); `member_id` is the member
 	//   and `via` the app's name.
 	// - `operator`: the server's operator on the command line; no `id` or `name`.
+	// - `system`: Yuva itself, such as the retention job deleting a conversation 30 days after
+	//   it went to the trash; no `id` or `name`.
 	Kind AuditActorKind `json:"kind"`
 
 	// MemberId For `member` and `oauth_grant`, the member.
 	MemberId *uuid.UUID `json:"member_id,omitempty"`
 
-	// Name The display name at the time, kept after the actor is gone. Absent for `operator`.
+	// Name The display name at the time, kept after the actor is gone. Absent for `operator` and `system`.
 	Name *string `json:"name,omitempty"`
 
 	// Via For `oauth_grant`, the connected app's name.
@@ -8557,6 +8612,8 @@ type AuditActor struct {
 //   - `oauth_grant`: a member through a connected app (OAuth or MCP); `member_id` is the member
 //     and `via` the app's name.
 //   - `operator`: the server's operator on the command line; no `id` or `name`.
+//   - `system`: Yuva itself, such as the retention job deleting a conversation 30 days after
+//     it went to the trash; no `id` or `name`.
 type AuditActorKind string
 
 // AuditEntry defines model for AuditEntry.
@@ -8578,6 +8635,8 @@ type AuditEntry struct {
 	// - `channel.key_rotated`, `channel.forwarding_address_rotated`, `channel.dkim_key_deleted`:
 	//   none. `channel.dkim_key_created`: `selector`.
 	// - `inbox.identity_secret_rotated`: none. `inbox.deleted`: `name`.
+	// - `conversation.trashed`, `conversation.restored`: `inbox_id`. `conversation.deleted`:
+	//   `inbox_id`, by `system` (never the subject or content).
 	// - `contact.deleted`: none (no name or address is kept). `contact.consent_exported`: `format`,
 	//   `started` (the entry is written when the export starts streaming).
 	// - `list.consent_exported`: `name`, `format`, `started`.
@@ -11287,6 +11346,10 @@ type Conversation struct {
 	ContactId uuid.UUID  `json:"contact_id"`
 	CreatedAt time.Time  `json:"created_at"`
 
+	// DeletesAt In the trash only: when the retention job deletes it for good, 30 days after
+	// `trashed_at`. It can be restored until then.
+	DeletesAt *time.Time `json:"deletes_at,omitempty"`
+
 	// Feedback `feedback` conversations only: category and what the app sent with it.
 	Feedback *Feedback `json:"feedback,omitempty"`
 
@@ -11339,10 +11402,16 @@ type Conversation struct {
 
 	// Spam Flagged as spam, e.g. because the first e-mail failed DMARC. Spam is left out of lists
 	// and counts unless asked for, and gets no automatic reply.
-	Spam      bool               `json:"spam"`
-	Status    ConversationStatus `json:"status"`
-	Subject   string             `json:"subject"`
-	UpdatedAt time.Time          `json:"updated_at"`
+	Spam    bool               `json:"spam"`
+	Status  ConversationStatus `json:"status"`
+	Subject string             `json:"subject"`
+
+	// TrashedAt When it went to the trash; absent when it is not in the trash.
+	TrashedAt *time.Time `json:"trashed_at,omitempty"`
+
+	// TrashedBy Who moved it to the trash; absent when it is not in the trash.
+	TrashedBy *ConversationTrashedBy `json:"trashed_by,omitempty"`
+	UpdatedAt time.Time              `json:"updated_at"`
 }
 
 // ConversationBulkFailure defines model for ConversationBulkFailure.
@@ -11359,7 +11428,7 @@ type ConversationBulkFailure struct {
 type ConversationBulkResult struct {
 	Failed []ConversationBulkFailure `json:"failed"`
 
-	// Updated The conversations after the change, in request order.
+	// Updated The conversations after the change, in request order (with `trashed_at` when trashed).
 	Updated []Conversation `json:"updated"`
 }
 
@@ -11375,6 +11444,10 @@ type ConversationBulkUpdate struct {
 	// SnoozeUntil Required with status `snoozed`.
 	SnoozeUntil *time.Time          `json:"snooze_until,omitempty"`
 	Status      *ConversationStatus `json:"status,omitempty"`
+
+	// Trashed `true` moves the conversations to the trash, `false` restores them. Alone, without
+	// other changes. Owners, admins and keys and tokens with `conversations:delete`.
+	Trashed *bool `json:"trashed,omitempty"`
 }
 
 // ConversationContact The conversation's contact, enough for a list row.
@@ -11427,7 +11500,32 @@ type ConversationCreate struct {
 	Subject   *string      `json:"subject,omitempty"`
 }
 
-// ConversationEvent A conversation was created, or its status, snooze, assignee, priority, labels or subject changed.
+// ConversationDeleted A conversation deleted for good; nothing else of it is kept.
+type ConversationDeleted struct {
+	ContactId uuid.UUID `json:"contact_id"`
+	Id        uuid.UUID `json:"id"`
+	InboxId   uuid.UUID `json:"inbox_id"`
+}
+
+// ConversationDeletedEvent A conversation was deleted for good, 30 days after it went to the trash.
+type ConversationDeletedEvent struct {
+	ConversationId uuid.UUID `json:"conversation_id"`
+	CreatedAt      time.Time `json:"created_at"`
+
+	// Data A conversation deleted for good; nothing else of it is kept.
+	Data        ConversationDeleted          `json:"data"`
+	Id          int64                        `json:"id"`
+	InboxId     uuid.UUID                    `json:"inbox_id"`
+	Type        ConversationDeletedEventType `json:"type"`
+	WorkspaceId uuid.UUID                    `json:"workspace_id"`
+}
+
+// ConversationDeletedEventType defines model for ConversationDeletedEvent.Type.
+type ConversationDeletedEventType string
+
+// ConversationEvent A conversation was created, or its status, snooze, assignee, priority, labels or subject
+// changed. `conversation.trashed`: it went to the trash, so drop it from every list but the
+// Trash view; `conversation.restored`: it came back.
 type ConversationEvent struct {
 	ConversationId uuid.UUID             `json:"conversation_id"`
 	CreatedAt      time.Time             `json:"created_at"`
@@ -11508,6 +11606,10 @@ type ConversationListItem struct {
 	ContactId uuid.UUID           `json:"contact_id"`
 	CreatedAt time.Time           `json:"created_at"`
 
+	// DeletesAt In the trash only: when the retention job deletes it for good, 30 days after
+	// `trashed_at`. It can be restored until then.
+	DeletesAt *time.Time `json:"deletes_at,omitempty"`
+
 	// Feedback `feedback` conversations only: category and what the app sent with it.
 	Feedback *Feedback `json:"feedback,omitempty"`
 
@@ -11569,6 +11671,12 @@ type ConversationListItem struct {
 	Spam    bool               `json:"spam"`
 	Status  ConversationStatus `json:"status"`
 	Subject string             `json:"subject"`
+
+	// TrashedAt When it went to the trash; absent when it is not in the trash.
+	TrashedAt *time.Time `json:"trashed_at,omitempty"`
+
+	// TrashedBy Who moved it to the trash; absent when it is not in the trash.
+	TrashedBy *ConversationTrashedBy `json:"trashed_by,omitempty"`
 
 	// Unread A message or note from someone other than the calling member is newer than the
 	// member's read cursor, or the member marked it unread. Always `false` for API keys.
@@ -11692,6 +11800,14 @@ type ConversationSummary struct {
 	InboxId uuid.UUID           `json:"inbox_id"`
 	Status  ConversationStatus  `json:"status"`
 	Subject string              `json:"subject"`
+}
+
+// ConversationTrashedBy The member or API key that moved the conversation to the trash; empty when it is gone.
+type ConversationTrashedBy struct {
+	ApiKeyId *uuid.UUID `json:"api_key_id,omitempty"`
+
+	// MemberId The member, also when they acted through a connected app.
+	MemberId *uuid.UUID `json:"member_id,omitempty"`
 }
 
 // ConversationUpdate defines model for ConversationUpdate.
@@ -18385,6 +18501,10 @@ type StatusIncidentConversation struct {
 	ContactId uuid.UUID           `json:"contact_id"`
 	CreatedAt time.Time           `json:"created_at"`
 
+	// DeletesAt In the trash only: when the retention job deletes it for good, 30 days after
+	// `trashed_at`. It can be restored until then.
+	DeletesAt *time.Time `json:"deletes_at,omitempty"`
+
 	// Feedback `feedback` conversations only: category and what the app sent with it.
 	Feedback *Feedback `json:"feedback,omitempty"`
 
@@ -18447,6 +18567,12 @@ type StatusIncidentConversation struct {
 	Spam    bool               `json:"spam"`
 	Status  ConversationStatus `json:"status"`
 	Subject string             `json:"subject"`
+
+	// TrashedAt When it went to the trash; absent when it is not in the trash.
+	TrashedAt *time.Time `json:"trashed_at,omitempty"`
+
+	// TrashedBy Who moved it to the trash; absent when it is not in the trash.
+	TrashedBy *ConversationTrashedBy `json:"trashed_by,omitempty"`
 
 	// Unread A message or note from someone other than the calling member is newer than the
 	// member's read cursor, or the member marked it unread. Always `false` for API keys.
@@ -19686,6 +19812,25 @@ type WebhookConversationData struct {
 	// Contact The contact as a host backend needs it.
 	Contact      WebhookContact `json:"contact"`
 	Conversation Conversation   `json:"conversation"`
+}
+
+// WebhookConversationDeletedData defines model for WebhookConversationDeletedData.
+type WebhookConversationDeletedData struct {
+	// Conversation A conversation deleted for good; nothing else of it is kept.
+	Conversation ConversationDeleted `json:"conversation"`
+}
+
+// WebhookConversationDeletedPayload defines model for WebhookConversationDeletedPayload.
+type WebhookConversationDeletedPayload struct {
+	Data WebhookConversationDeletedData `json:"data"`
+
+	// InboxId The conversation's inbox; absent for contact events.
+	InboxId *uuid.UUID `json:"inbox_id,omitempty"`
+
+	// Timestamp When the event happened (not when it was sent).
+	Timestamp   time.Time        `json:"timestamp"`
+	Type        WebhookEventType `json:"type"`
+	WorkspaceId uuid.UUID        `json:"workspace_id"`
 }
 
 // WebhookConversationPayload defines model for WebhookConversationPayload.
@@ -21429,9 +21574,15 @@ type ListConversationsParams struct {
 	Assignee *string    `form:"assignee,omitempty" json:"assignee,omitempty"`
 	LabelId  *uuid.UUID `form:"label_id,omitempty" json:"label_id,omitempty"`
 
-	// Spam `true` lists only conversations flagged as spam (the spam view); without it, or with
-	// `false`, spam is left out.
+	// Spam `true` lists only conversations flagged as spam (the spam view); `false` leaves spam
+	// out. Without it spam is left out, except with `trashed=true`, which lists both.
 	Spam *bool `form:"spam,omitempty" json:"spam,omitempty"`
+
+	// Trashed `true` lists only the conversations in the trash (the Trash view), which every other
+	// list, count and search leaves out. Owners and admins, and keys and tokens with
+	// `conversations:delete`; agents get `403 forbidden`. `false` or absent lists what is not
+	// in the trash.
+	Trashed *bool `form:"trashed,omitempty" json:"trashed,omitempty"`
 
 	// Kind Only conversations of these kinds, e.g. `feedback` for the feedback view. Repeat the
 	// parameter (`kind=feedback&kind=conversation`) or give a comma-separated list
@@ -21510,6 +21661,12 @@ type GetConversationCountsParams struct {
 	// (`kind=feedback,conversation`).
 	Kind *ConversationKinds `form:"kind,omitempty" json:"kind,omitempty"`
 
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// TrashConversationParams defines parameters for TrashConversation.
+type TrashConversationParams struct {
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
@@ -21593,6 +21750,12 @@ type MarkConversationReadParams struct {
 	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// RestoreConversationParams defines parameters for RestoreConversation.
+type RestoreConversationParams struct {
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
@@ -23483,8 +23646,50 @@ type WebhookConversationCreatedParams struct {
 	WebhookSignature WebhookSignatureHeader `json:"webhook-signature"`
 }
 
+// WebhookConversationDeletedParams defines parameters for WebhookConversationDeleted.
+type WebhookConversationDeletedParams struct {
+	// WebhookId The delivery's id, the same on every retry; use it to ignore duplicates.
+	WebhookId WebhookIdHeader `json:"webhook-id"`
+
+	// WebhookTimestamp Unix seconds of this attempt. Refuse values far from your clock.
+	WebhookTimestamp WebhookTimestampHeader `json:"webhook-timestamp"`
+
+	// WebhookSignature Space-separated `v1,<base64>` signatures: HMAC-SHA256 over
+	// `<webhook-id>.<webhook-timestamp>.<body>` with the base64-decoded part of the
+	// `whsec_` secret (Standard Webhooks). Two during a secret rotation.
+	WebhookSignature WebhookSignatureHeader `json:"webhook-signature"`
+}
+
 // WebhookConversationRatedParams defines parameters for WebhookConversationRated.
 type WebhookConversationRatedParams struct {
+	// WebhookId The delivery's id, the same on every retry; use it to ignore duplicates.
+	WebhookId WebhookIdHeader `json:"webhook-id"`
+
+	// WebhookTimestamp Unix seconds of this attempt. Refuse values far from your clock.
+	WebhookTimestamp WebhookTimestampHeader `json:"webhook-timestamp"`
+
+	// WebhookSignature Space-separated `v1,<base64>` signatures: HMAC-SHA256 over
+	// `<webhook-id>.<webhook-timestamp>.<body>` with the base64-decoded part of the
+	// `whsec_` secret (Standard Webhooks). Two during a secret rotation.
+	WebhookSignature WebhookSignatureHeader `json:"webhook-signature"`
+}
+
+// WebhookConversationRestoredParams defines parameters for WebhookConversationRestored.
+type WebhookConversationRestoredParams struct {
+	// WebhookId The delivery's id, the same on every retry; use it to ignore duplicates.
+	WebhookId WebhookIdHeader `json:"webhook-id"`
+
+	// WebhookTimestamp Unix seconds of this attempt. Refuse values far from your clock.
+	WebhookTimestamp WebhookTimestampHeader `json:"webhook-timestamp"`
+
+	// WebhookSignature Space-separated `v1,<base64>` signatures: HMAC-SHA256 over
+	// `<webhook-id>.<webhook-timestamp>.<body>` with the base64-decoded part of the
+	// `whsec_` secret (Standard Webhooks). Two during a secret rotation.
+	WebhookSignature WebhookSignatureHeader `json:"webhook-signature"`
+}
+
+// WebhookConversationTrashedParams defines parameters for WebhookConversationTrashed.
+type WebhookConversationTrashedParams struct {
 	// WebhookId The delivery's id, the same on every retry; use it to ignore duplicates.
 	WebhookId WebhookIdHeader `json:"webhook-id"`
 
@@ -24309,8 +24514,17 @@ type WebhookContactUpdatedJSONRequestBody = WebhookContactPayload
 // WebhookConversationCreatedJSONRequestBody defines body for WebhookConversationCreated for application/json ContentType.
 type WebhookConversationCreatedJSONRequestBody = WebhookConversationPayload
 
+// WebhookConversationDeletedJSONRequestBody defines body for WebhookConversationDeleted for application/json ContentType.
+type WebhookConversationDeletedJSONRequestBody = WebhookConversationDeletedPayload
+
 // WebhookConversationRatedJSONRequestBody defines body for WebhookConversationRated for application/json ContentType.
 type WebhookConversationRatedJSONRequestBody = WebhookConversationPayload
+
+// WebhookConversationRestoredJSONRequestBody defines body for WebhookConversationRestored for application/json ContentType.
+type WebhookConversationRestoredJSONRequestBody = WebhookConversationPayload
+
+// WebhookConversationTrashedJSONRequestBody defines body for WebhookConversationTrashed for application/json ContentType.
+type WebhookConversationTrashedJSONRequestBody = WebhookConversationPayload
 
 // WebhookConversationUpdatedJSONRequestBody defines body for WebhookConversationUpdated for application/json ContentType.
 type WebhookConversationUpdatedJSONRequestBody = WebhookConversationPayload
@@ -26074,6 +26288,32 @@ func (t *RealtimeMessage) MergeConversationEvent(v ConversationEvent) error {
 	return err
 }
 
+// AsConversationDeletedEvent returns the union data inside the RealtimeMessage as a ConversationDeletedEvent
+func (t RealtimeMessage) AsConversationDeletedEvent() (ConversationDeletedEvent, error) {
+	var body ConversationDeletedEvent
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromConversationDeletedEvent overwrites any union data inside the RealtimeMessage as the provided ConversationDeletedEvent
+func (t *RealtimeMessage) FromConversationDeletedEvent(v ConversationDeletedEvent) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeConversationDeletedEvent performs a merge with any union data inside the RealtimeMessage, using the provided ConversationDeletedEvent
+func (t *RealtimeMessage) MergeConversationDeletedEvent(v ConversationDeletedEvent) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
 // AsConversationMovedEvent returns the union data inside the RealtimeMessage as a ConversationMovedEvent
 func (t RealtimeMessage) AsConversationMovedEvent() (ConversationMovedEvent, error) {
 	var body ConversationMovedEvent
@@ -27206,12 +27446,18 @@ func (t RealtimeMessage) ValueByDiscriminator() (interface{}, error) {
 		return t.AsContactUpdatedEvent()
 	case "conversation.created":
 		return t.AsConversationEvent()
+	case "conversation.deleted":
+		return t.AsConversationDeletedEvent()
 	case "conversation.moved":
 		return t.AsConversationMovedEvent()
 	case "conversation.pin":
 		return t.AsConversationPinEvent()
 	case "conversation.read":
 		return t.AsConversationReadEvent()
+	case "conversation.restored":
+		return t.AsConversationEvent()
+	case "conversation.trashed":
+		return t.AsConversationEvent()
 	case "conversation.updated":
 		return t.AsConversationEvent()
 	case "discussion.answered":
@@ -27325,6 +27571,32 @@ func (t *StoredEvent) FromConversationEvent(v ConversationEvent) error {
 
 // MergeConversationEvent performs a merge with any union data inside the StoredEvent, using the provided ConversationEvent
 func (t *StoredEvent) MergeConversationEvent(v ConversationEvent) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsConversationDeletedEvent returns the union data inside the StoredEvent as a ConversationDeletedEvent
+func (t StoredEvent) AsConversationDeletedEvent() (ConversationDeletedEvent, error) {
+	var body ConversationDeletedEvent
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromConversationDeletedEvent overwrites any union data inside the StoredEvent as the provided ConversationDeletedEvent
+func (t *StoredEvent) FromConversationDeletedEvent(v ConversationDeletedEvent) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeConversationDeletedEvent performs a merge with any union data inside the StoredEvent, using the provided ConversationDeletedEvent
+func (t *StoredEvent) MergeConversationDeletedEvent(v ConversationDeletedEvent) error {
 	b, err := json.Marshal(v)
 	if err != nil {
 		return err
@@ -27991,12 +28263,18 @@ func (t StoredEvent) ValueByDiscriminator() (interface{}, error) {
 		return t.AsContactUpdatedEvent()
 	case "conversation.created":
 		return t.AsConversationEvent()
+	case "conversation.deleted":
+		return t.AsConversationDeletedEvent()
 	case "conversation.moved":
 		return t.AsConversationMovedEvent()
 	case "conversation.pin":
 		return t.AsConversationPinEvent()
 	case "conversation.read":
 		return t.AsConversationReadEvent()
+	case "conversation.restored":
+		return t.AsConversationEvent()
+	case "conversation.trashed":
+		return t.AsConversationEvent()
 	case "conversation.updated":
 		return t.AsConversationEvent()
 	case "discussion.answered":
@@ -28851,6 +29129,8 @@ type ClientInterface interface {
 	// The contact's conversations in the session's inbox, on any channel, latest message first.
 	// Members' notes and internal events are never shown to contacts. `kind` keeps only
 	// conversations of those kinds, e.g. `kind=feedback` for the feedback the contact sent.
+	// A conversation a member moved to the trash is never listed and answers `404` everywhere
+	// under `/client/v1`.
 	//
 	// Corresponds with GET /client/v1/conversations (the `ListClientConversations` operationId).
 	ListClientConversations(ctx context.Context, params *ListClientConversationsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -28910,6 +29190,8 @@ type ClientInterface interface {
 	//
 	// Adds the contact's message. A closed, pending or snoozed conversation is reopened. A
 	// repeated `client_id` in the same conversation returns the stored message with `200`.
+	// Into a conversation a member moved to the trash, the message starts a new conversation:
+	// the answer's `conversation_id` names it, and `conversation.created` announces it.
 	// Send `multipart/form-data` to attach files, as for starting a conversation. Rate limited
 	// per IP address and per channel.
 	//
@@ -28922,6 +29204,8 @@ type ClientInterface interface {
 	//
 	// Adds the contact's message. A closed, pending or snoozed conversation is reopened. A
 	// repeated `client_id` in the same conversation returns the stored message with `200`.
+	// Into a conversation a member moved to the trash, the message starts a new conversation:
+	// the answer's `conversation_id` names it, and `conversation.created` announces it.
 	// Send `multipart/form-data` to attach files, as for starting a conversation. Rate limited
 	// per IP address and per channel.
 	//
@@ -31762,8 +32046,9 @@ type ClientInterface interface {
 	// Most recent activity (message or note) first, in the inboxes the caller can see. `q` is a
 	// full-text search over the subject, the messages and notes, and the contact; a negated term
 	// (`-word`, `-"some phrase"`) excludes every conversation in which any of those contains it.
+	// Conversations in the trash are listed only with `trashed=true`.
 	//
-	// Scope: `conversations:read`.
+	// Scope: `conversations:read`; with `trashed=true` also `conversations:delete`.
 	//
 	// Each item carries the contact (id, name, first e-mail address), a preview of the last
 	// `message` (notes and events are not previewed), and `unread` and `pinned_at` for the
@@ -31801,7 +32086,14 @@ type ClientInterface interface {
 	// `validation_failed`. A request that is invalid as a whole (no change, an unknown label or
 	// member, a past `snooze_until`) is refused with `400` and changes nothing.
 	//
-	// Scope: `conversations:write`.
+	// `trashed` moves the conversations to the trash (`true`) or restores them (`false`), as
+	// `DELETE /v1/conversations/{conversationId}` and `POST .../restore` do, and goes alone,
+	// without other changes. Only owners and admins, and keys and tokens with
+	// `conversations:delete`; agents get `403 forbidden` for the whole request. A conversation in
+	// the trash is listed in `failed` with `not_found` for every other change, and one whose 30
+	// days in the trash are over with `trash_expired` when restored.
+	//
+	// Scope: `conversations:write`; with `trashed` also `conversations:delete`.
 	//
 	// Takes any type of body and a specified content type.
 	//
@@ -31819,7 +32111,14 @@ type ClientInterface interface {
 	// `validation_failed`. A request that is invalid as a whole (no change, an unknown label or
 	// member, a past `snooze_until`) is refused with `400` and changes nothing.
 	//
-	// Scope: `conversations:write`.
+	// `trashed` moves the conversations to the trash (`true`) or restores them (`false`), as
+	// `DELETE /v1/conversations/{conversationId}` and `POST .../restore` do, and goes alone,
+	// without other changes. Only owners and admins, and keys and tokens with
+	// `conversations:delete`; agents get `403 forbidden` for the whole request. A conversation in
+	// the trash is listed in `failed` with `not_found` for every other change, and one whose 30
+	// days in the trash are over with `trash_expired` when restored.
+	//
+	// Scope: `conversations:write`; with `trashed` also `conversations:delete`.
 	//
 	// Takes a body of the `application/json` content type.
 	//
@@ -31842,7 +32141,29 @@ type ClientInterface interface {
 	// Corresponds with GET /v1/conversations/counts (the `GetConversationCounts` operationId).
 	GetConversationCounts(ctx context.Context, params *GetConversationCountsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// TrashConversation Move a conversation to the trash
+	//
+	// Sets `trashed_at` and `trashed_by`. From then on the conversation is left out of every
+	// list, count, search, stat and Home figure, `/client/v1` and MCP, and nobody can change it;
+	// only the Trash view (`GET /v1/conversations?trashed=true`) lists it. A new message from
+	// the contact (e-mail, widget, SDK) starts a new conversation. `POST .../restore` brings it
+	// back within 30 days (`deletes_at`); after that the retention job deletes it for good with
+	// its messages, attachments, raw e-mails and stored files.
+	//
+	// Only owners and admins, and keys and tokens with `conversations:delete`; agents get
+	// `403 forbidden`, so a mistake cannot be hidden. Trashing a conversation already in the
+	// trash answers it unchanged. Emits `conversation.trashed`; the audit log records
+	// `conversation.trashed`.
+	//
+	// Scope: `conversations:delete`.
+	//
+	// Corresponds with DELETE /v1/conversations/{conversationId} (the `TrashConversation` operationId).
+	TrashConversation(ctx context.Context, conversationId ConversationId, params *TrashConversationParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// GetConversation Get a conversation
+	//
+	// A conversation in the trash answers `404` except to those who may see the trash (owners,
+	// admins, keys and tokens with `conversations:delete`), who get it with `trashed_at`.
 	//
 	// Scope: `conversations:read`.
 	//
@@ -31949,7 +32270,8 @@ type ClientInterface interface {
 	//
 	// Messages, notes and events, oldest first by default. With `order=desc` the newest come
 	// first and `next_cursor` pages backward, so a thread can load its latest page and then
-	// older ones.
+	// older ones. A conversation in the trash answers `404` except to those who may see the
+	// trash; its attachments and raw e-mails answer `404` to everyone until it is restored.
 	//
 	// Scope: `conversations:read`.
 	//
@@ -32121,6 +32443,19 @@ type ClientInterface interface {
 	//
 	// Corresponds with POST /v1/conversations/{conversationId}/read (the `MarkConversationRead` operationId).
 	MarkConversationRead(ctx context.Context, conversationId ConversationId, params *MarkConversationReadParams, body MarkConversationReadJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// RestoreConversation Bring a conversation back from the trash
+	//
+	// Clears `trashed_at` and `trashed_by`; the conversation is where it was, with its status,
+	// assignee and labels. A conversation whose 30 days are over answers `409 trash_expired`
+	// until the retention job deletes it. Restoring a conversation that is not in the trash
+	// answers it unchanged. Who may, as for `DELETE`. Emits `conversation.restored`; the audit
+	// log records `conversation.restored`.
+	//
+	// Scope: `conversations:delete`.
+	//
+	// Corresponds with POST /v1/conversations/{conversationId}/restore (the `RestoreConversation` operationId).
+	RestoreConversation(ctx context.Context, conversationId ConversationId, params *RestoreConversationParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// SetMemberTypingWithBody Tell others you are typing
 	//
@@ -37318,6 +37653,8 @@ func (c *Client) SetClientContactEmail(ctx context.Context, body SetClientContac
 // The contact's conversations in the session's inbox, on any channel, latest message first.
 // Members' notes and internal events are never shown to contacts. `kind` keeps only
 // conversations of those kinds, e.g. `kind=feedback` for the feedback the contact sent.
+// A conversation a member moved to the trash is never listed and answers `404` everywhere
+// under `/client/v1`.
 //
 // Corresponds with GET /client/v1/conversations (the `ListClientConversations` operationId).
 func (c *Client) ListClientConversations(ctx context.Context, params *ListClientConversationsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
@@ -37427,6 +37764,8 @@ func (c *Client) ListClientMessages(ctx context.Context, conversationId Conversa
 //
 // Adds the contact's message. A closed, pending or snoozed conversation is reopened. A
 // repeated `client_id` in the same conversation returns the stored message with `200`.
+// Into a conversation a member moved to the trash, the message starts a new conversation:
+// the answer's `conversation_id` names it, and `conversation.created` announces it.
 // Send `multipart/form-data` to attach files, as for starting a conversation. Rate limited
 // per IP address and per channel.
 //
@@ -37449,6 +37788,8 @@ func (c *Client) CreateClientMessageWithBody(ctx context.Context, conversationId
 //
 // Adds the contact's message. A closed, pending or snoozed conversation is reopened. A
 // repeated `client_id` in the same conversation returns the stored message with `200`.
+// Into a conversation a member moved to the trash, the message starts a new conversation:
+// the answer's `conversation_id` names it, and `conversation.created` announces it.
 // Send `multipart/form-data` to attach files, as for starting a conversation. Rate limited
 // per IP address and per channel.
 //
@@ -42429,8 +42770,9 @@ func (c *Client) ListContactVisits(ctx context.Context, contactId ContactId, par
 // Most recent activity (message or note) first, in the inboxes the caller can see. `q` is a
 // full-text search over the subject, the messages and notes, and the contact; a negated term
 // (`-word`, `-"some phrase"`) excludes every conversation in which any of those contains it.
+// Conversations in the trash are listed only with `trashed=true`.
 //
-// Scope: `conversations:read`.
+// Scope: `conversations:read`; with `trashed=true` also `conversations:delete`.
 //
 // Each item carries the contact (id, name, first e-mail address), a preview of the last
 // `message` (notes and events are not previewed), and `unread` and `pinned_at` for the
@@ -42498,7 +42840,14 @@ func (c *Client) CreateConversation(ctx context.Context, params *CreateConversat
 // `validation_failed`. A request that is invalid as a whole (no change, an unknown label or
 // member, a past `snooze_until`) is refused with `400` and changes nothing.
 //
-// Scope: `conversations:write`.
+// `trashed` moves the conversations to the trash (`true`) or restores them (`false`), as
+// `DELETE /v1/conversations/{conversationId}` and `POST .../restore` do, and goes alone,
+// without other changes. Only owners and admins, and keys and tokens with
+// `conversations:delete`; agents get `403 forbidden` for the whole request. A conversation in
+// the trash is listed in `failed` with `not_found` for every other change, and one whose 30
+// days in the trash are over with `trash_expired` when restored.
+//
+// Scope: `conversations:write`; with `trashed` also `conversations:delete`.
 //
 // Takes any type of body and a specified content type.
 //
@@ -42526,7 +42875,14 @@ func (c *Client) BulkUpdateConversationsWithBody(ctx context.Context, params *Bu
 // `validation_failed`. A request that is invalid as a whole (no change, an unknown label or
 // member, a past `snooze_until`) is refused with `400` and changes nothing.
 //
-// Scope: `conversations:write`.
+// `trashed` moves the conversations to the trash (`true`) or restores them (`false`), as
+// `DELETE /v1/conversations/{conversationId}` and `POST .../restore` do, and goes alone,
+// without other changes. Only owners and admins, and keys and tokens with
+// `conversations:delete`; agents get `403 forbidden` for the whole request. A conversation in
+// the trash is listed in `failed` with `not_found` for every other change, and one whose 30
+// days in the trash are over with `trash_expired` when restored.
+//
+// Scope: `conversations:write`; with `trashed` also `conversations:delete`.
 //
 // Takes a body of the `application/json` content type.
 //
@@ -42569,7 +42925,39 @@ func (c *Client) GetConversationCounts(ctx context.Context, params *GetConversat
 	return c.Client.Do(req)
 }
 
+// TrashConversation Move a conversation to the trash
+//
+// Sets `trashed_at` and `trashed_by`. From then on the conversation is left out of every
+// list, count, search, stat and Home figure, `/client/v1` and MCP, and nobody can change it;
+// only the Trash view (`GET /v1/conversations?trashed=true`) lists it. A new message from
+// the contact (e-mail, widget, SDK) starts a new conversation. `POST .../restore` brings it
+// back within 30 days (`deletes_at`); after that the retention job deletes it for good with
+// its messages, attachments, raw e-mails and stored files.
+//
+// Only owners and admins, and keys and tokens with `conversations:delete`; agents get
+// `403 forbidden`, so a mistake cannot be hidden. Trashing a conversation already in the
+// trash answers it unchanged. Emits `conversation.trashed`; the audit log records
+// `conversation.trashed`.
+//
+// Scope: `conversations:delete`.
+//
+// Corresponds with DELETE /v1/conversations/{conversationId} (the `TrashConversation` operationId).
+func (c *Client) TrashConversation(ctx context.Context, conversationId ConversationId, params *TrashConversationParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewTrashConversationRequest(c.Server, conversationId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 // GetConversation Get a conversation
+//
+// A conversation in the trash answers `404` except to those who may see the trash (owners,
+// admins, keys and tokens with `conversations:delete`), who get it with `trashed_at`.
 //
 // Scope: `conversations:read`.
 //
@@ -42736,7 +43124,8 @@ func (c *Client) ListConversationIncidents(ctx context.Context, conversationId C
 //
 // Messages, notes and events, oldest first by default. With `order=desc` the newest come
 // first and `next_cursor` pages backward, so a thread can load its latest page and then
-// older ones.
+// older ones. A conversation in the trash answers `404` except to those who may see the
+// trash; its attachments and raw e-mails answer `404` to everyone until it is restored.
 //
 // Scope: `conversations:read`.
 //
@@ -42989,6 +43378,29 @@ func (c *Client) MarkConversationReadWithBody(ctx context.Context, conversationI
 // Corresponds with POST /v1/conversations/{conversationId}/read (the `MarkConversationRead` operationId).
 func (c *Client) MarkConversationRead(ctx context.Context, conversationId ConversationId, params *MarkConversationReadParams, body MarkConversationReadJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewMarkConversationReadRequest(c.Server, conversationId, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// RestoreConversation Bring a conversation back from the trash
+//
+// Clears `trashed_at` and `trashed_by`; the conversation is where it was, with its status,
+// assignee and labels. A conversation whose 30 days are over answers `409 trash_expired`
+// until the retention job deletes it. Restoring a conversation that is not in the trash
+// answers it unchanged. Who may, as for `DELETE`. Emits `conversation.restored`; the audit
+// log records `conversation.restored`.
+//
+// Scope: `conversations:delete`.
+//
+// Corresponds with POST /v1/conversations/{conversationId}/restore (the `RestoreConversation` operationId).
+func (c *Client) RestoreConversation(ctx context.Context, conversationId ConversationId, params *RestoreConversationParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRestoreConversationRequest(c.Server, conversationId, params)
 	if err != nil {
 		return nil, err
 	}
@@ -61239,6 +61651,18 @@ func NewListConversationsRequest(server string, params *ListConversationsParams)
 
 		}
 
+		if params.Trashed != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "trashed", *params.Trashed, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "boolean", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
 		if params.Kind != nil {
 
 			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "kind", *params.Kind, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "array", Format: ""}); err != nil {
@@ -61591,6 +62015,55 @@ func NewGetConversationCountsRequest(server string, params *GetConversationCount
 	}
 
 	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewTrashConversationRequest constructs an http.Request for the TrashConversation method
+func NewTrashConversationRequest(server string, conversationId ConversationId, params *TrashConversationParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "conversationId", conversationId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/conversations/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodDelete, queryURL.String(), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -62256,6 +62729,55 @@ func NewMarkConversationReadRequestWithBody(server string, conversationId Conver
 			}
 
 			req.Header.Set("Yuva-Workspace", headerParam1)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewRestoreConversationRequest constructs an http.Request for the RestoreConversation method
+func NewRestoreConversationRequest(server string, conversationId ConversationId, params *RestoreConversationParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "conversationId", conversationId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/conversations/%s/restore", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
 		}
 
 	}
@@ -77788,6 +78310,8 @@ type ClientWithResponsesInterface interface {
 	// The contact's conversations in the session's inbox, on any channel, latest message first.
 	// Members' notes and internal events are never shown to contacts. `kind` keeps only
 	// conversations of those kinds, e.g. `kind=feedback` for the feedback the contact sent.
+	// A conversation a member moved to the trash is never listed and answers `404` everywhere
+	// under `/client/v1`.
 	//
 	// Returns a wrapper object for the known response body format(s).
 	//
@@ -77853,6 +78377,8 @@ type ClientWithResponsesInterface interface {
 	//
 	// Adds the contact's message. A closed, pending or snoozed conversation is reopened. A
 	// repeated `client_id` in the same conversation returns the stored message with `200`.
+	// Into a conversation a member moved to the trash, the message starts a new conversation:
+	// the answer's `conversation_id` names it, and `conversation.created` announces it.
 	// Send `multipart/form-data` to attach files, as for starting a conversation. Rate limited
 	// per IP address and per channel.
 	//
@@ -77865,6 +78391,8 @@ type ClientWithResponsesInterface interface {
 	//
 	// Adds the contact's message. A closed, pending or snoozed conversation is reopened. A
 	// repeated `client_id` in the same conversation returns the stored message with `200`.
+	// Into a conversation a member moved to the trash, the message starts a new conversation:
+	// the answer's `conversation_id` names it, and `conversation.created` announces it.
 	// Send `multipart/form-data` to attach files, as for starting a conversation. Rate limited
 	// per IP address and per channel.
 	//
@@ -80901,8 +81429,9 @@ type ClientWithResponsesInterface interface {
 	// Most recent activity (message or note) first, in the inboxes the caller can see. `q` is a
 	// full-text search over the subject, the messages and notes, and the contact; a negated term
 	// (`-word`, `-"some phrase"`) excludes every conversation in which any of those contains it.
+	// Conversations in the trash are listed only with `trashed=true`.
 	//
-	// Scope: `conversations:read`.
+	// Scope: `conversations:read`; with `trashed=true` also `conversations:delete`.
 	//
 	// Each item carries the contact (id, name, first e-mail address), a preview of the last
 	// `message` (notes and events are not previewed), and `unread` and `pinned_at` for the
@@ -80942,7 +81471,14 @@ type ClientWithResponsesInterface interface {
 	// `validation_failed`. A request that is invalid as a whole (no change, an unknown label or
 	// member, a past `snooze_until`) is refused with `400` and changes nothing.
 	//
-	// Scope: `conversations:write`.
+	// `trashed` moves the conversations to the trash (`true`) or restores them (`false`), as
+	// `DELETE /v1/conversations/{conversationId}` and `POST .../restore` do, and goes alone,
+	// without other changes. Only owners and admins, and keys and tokens with
+	// `conversations:delete`; agents get `403 forbidden` for the whole request. A conversation in
+	// the trash is listed in `failed` with `not_found` for every other change, and one whose 30
+	// days in the trash are over with `trash_expired` when restored.
+	//
+	// Scope: `conversations:write`; with `trashed` also `conversations:delete`.
 	//
 	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
 	//
@@ -80960,7 +81496,14 @@ type ClientWithResponsesInterface interface {
 	// `validation_failed`. A request that is invalid as a whole (no change, an unknown label or
 	// member, a past `snooze_until`) is refused with `400` and changes nothing.
 	//
-	// Scope: `conversations:write`.
+	// `trashed` moves the conversations to the trash (`true`) or restores them (`false`), as
+	// `DELETE /v1/conversations/{conversationId}` and `POST .../restore` do, and goes alone,
+	// without other changes. Only owners and admins, and keys and tokens with
+	// `conversations:delete`; agents get `403 forbidden` for the whole request. A conversation in
+	// the trash is listed in `failed` with `not_found` for every other change, and one whose 30
+	// days in the trash are over with `trash_expired` when restored.
+	//
+	// Scope: `conversations:write`; with `trashed` also `conversations:delete`.
 	//
 	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
 	//
@@ -80985,7 +81528,31 @@ type ClientWithResponsesInterface interface {
 	// Corresponds with GET /v1/conversations/counts (the `GetConversationCounts` operationId).
 	GetConversationCountsWithResponse(ctx context.Context, params *GetConversationCountsParams, reqEditors ...RequestEditorFn) (*GetConversationCountsResponse, error)
 
+	// TrashConversationWithResponse Move a conversation to the trash
+	//
+	// Sets `trashed_at` and `trashed_by`. From then on the conversation is left out of every
+	// list, count, search, stat and Home figure, `/client/v1` and MCP, and nobody can change it;
+	// only the Trash view (`GET /v1/conversations?trashed=true`) lists it. A new message from
+	// the contact (e-mail, widget, SDK) starts a new conversation. `POST .../restore` brings it
+	// back within 30 days (`deletes_at`); after that the retention job deletes it for good with
+	// its messages, attachments, raw e-mails and stored files.
+	//
+	// Only owners and admins, and keys and tokens with `conversations:delete`; agents get
+	// `403 forbidden`, so a mistake cannot be hidden. Trashing a conversation already in the
+	// trash answers it unchanged. Emits `conversation.trashed`; the audit log records
+	// `conversation.trashed`.
+	//
+	// Scope: `conversations:delete`.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with DELETE /v1/conversations/{conversationId} (the `TrashConversation` operationId).
+	TrashConversationWithResponse(ctx context.Context, conversationId ConversationId, params *TrashConversationParams, reqEditors ...RequestEditorFn) (*TrashConversationResponse, error)
+
 	// GetConversationWithResponse Get a conversation
+	//
+	// A conversation in the trash answers `404` except to those who may see the trash (owners,
+	// admins, keys and tokens with `conversations:delete`), who get it with `trashed_at`.
 	//
 	// Scope: `conversations:read`.
 	//
@@ -81096,7 +81663,8 @@ type ClientWithResponsesInterface interface {
 	//
 	// Messages, notes and events, oldest first by default. With `order=desc` the newest come
 	// first and `next_cursor` pages backward, so a thread can load its latest page and then
-	// older ones.
+	// older ones. A conversation in the trash answers `404` except to those who may see the
+	// trash; its attachments and raw e-mails answer `404` to everyone until it is restored.
 	//
 	// Scope: `conversations:read`.
 	//
@@ -81274,6 +81842,21 @@ type ClientWithResponsesInterface interface {
 	//
 	// Corresponds with POST /v1/conversations/{conversationId}/read (the `MarkConversationRead` operationId).
 	MarkConversationReadWithResponse(ctx context.Context, conversationId ConversationId, params *MarkConversationReadParams, body MarkConversationReadJSONRequestBody, reqEditors ...RequestEditorFn) (*MarkConversationReadResponse, error)
+
+	// RestoreConversationWithResponse Bring a conversation back from the trash
+	//
+	// Clears `trashed_at` and `trashed_by`; the conversation is where it was, with its status,
+	// assignee and labels. A conversation whose 30 days are over answers `409 trash_expired`
+	// until the retention job deletes it. Restoring a conversation that is not in the trash
+	// answers it unchanged. Who may, as for `DELETE`. Emits `conversation.restored`; the audit
+	// log records `conversation.restored`.
+	//
+	// Scope: `conversations:delete`.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /v1/conversations/{conversationId}/restore (the `RestoreConversation` operationId).
+	RestoreConversationWithResponse(ctx context.Context, conversationId ConversationId, params *RestoreConversationParams, reqEditors ...RequestEditorFn) (*RestoreConversationResponse, error)
 
 	// SetMemberTypingWithBodyWithResponse Tell others you are typing
 	//
@@ -98241,6 +98824,68 @@ func (r GetConversationCountsResponse) ContentType() string {
 	return ""
 }
 
+type TrashConversationResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *Conversation
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r TrashConversationResponse) GetJSON200() *Conversation {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r TrashConversationResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r TrashConversationResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r TrashConversationResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetBody returns the raw response body bytes
+func (r TrashConversationResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r TrashConversationResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r TrashConversationResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r TrashConversationResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type GetConversationResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -98953,6 +99598,75 @@ func (r MarkConversationReadResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r MarkConversationReadResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type RestoreConversationResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *Conversation
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+	// ApplicationproblemJSON409 the response for an HTTP 409 `application/problem+json` response
+	ApplicationproblemJSON409 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r RestoreConversationResponse) GetJSON200() *Conversation {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r RestoreConversationResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r RestoreConversationResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r RestoreConversationResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetApplicationproblemJSON409 returns the response for an HTTP 409 `application/problem+json` response
+func (r RestoreConversationResponse) GetApplicationproblemJSON409() *Problem {
+	return r.ApplicationproblemJSON409
+}
+
+// GetBody returns the raw response body bytes
+func (r RestoreConversationResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r RestoreConversationResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r RestoreConversationResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r RestoreConversationResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -115190,6 +115904,8 @@ func (c *ClientWithResponses) SetClientContactEmailWithResponse(ctx context.Cont
 // The contact's conversations in the session's inbox, on any channel, latest message first.
 // Members' notes and internal events are never shown to contacts. `kind` keeps only
 // conversations of those kinds, e.g. `kind=feedback` for the feedback the contact sent.
+// A conversation a member moved to the trash is never listed and answers `404` everywhere
+// under `/client/v1`.
 //
 // Returns a wrapper object for the known response body format(s).
 //
@@ -115285,6 +116001,8 @@ func (c *ClientWithResponses) ListClientMessagesWithResponse(ctx context.Context
 //
 // Adds the contact's message. A closed, pending or snoozed conversation is reopened. A
 // repeated `client_id` in the same conversation returns the stored message with `200`.
+// Into a conversation a member moved to the trash, the message starts a new conversation:
+// the answer's `conversation_id` names it, and `conversation.created` announces it.
 // Send `multipart/form-data` to attach files, as for starting a conversation. Rate limited
 // per IP address and per channel.
 //
@@ -115303,6 +116021,8 @@ func (c *ClientWithResponses) CreateClientMessageWithBodyWithResponse(ctx contex
 //
 // Adds the contact's message. A closed, pending or snoozed conversation is reopened. A
 // repeated `client_id` in the same conversation returns the stored message with `200`.
+// Into a conversation a member moved to the trash, the message starts a new conversation:
+// the answer's `conversation_id` names it, and `conversation.created` announces it.
 // Send `multipart/form-data` to attach files, as for starting a conversation. Rate limited
 // per IP address and per channel.
 //
@@ -119623,8 +120343,9 @@ func (c *ClientWithResponses) ListContactVisitsWithResponse(ctx context.Context,
 // Most recent activity (message or note) first, in the inboxes the caller can see. `q` is a
 // full-text search over the subject, the messages and notes, and the contact; a negated term
 // (`-word`, `-"some phrase"`) excludes every conversation in which any of those contains it.
+// Conversations in the trash are listed only with `trashed=true`.
 //
-// Scope: `conversations:read`.
+// Scope: `conversations:read`; with `trashed=true` also `conversations:delete`.
 //
 // Each item carries the contact (id, name, first e-mail address), a preview of the last
 // `message` (notes and events are not previewed), and `unread` and `pinned_at` for the
@@ -119682,7 +120403,14 @@ func (c *ClientWithResponses) CreateConversationWithResponse(ctx context.Context
 // `validation_failed`. A request that is invalid as a whole (no change, an unknown label or
 // member, a past `snooze_until`) is refused with `400` and changes nothing.
 //
-// Scope: `conversations:write`.
+// `trashed` moves the conversations to the trash (`true`) or restores them (`false`), as
+// `DELETE /v1/conversations/{conversationId}` and `POST .../restore` do, and goes alone,
+// without other changes. Only owners and admins, and keys and tokens with
+// `conversations:delete`; agents get `403 forbidden` for the whole request. A conversation in
+// the trash is listed in `failed` with `not_found` for every other change, and one whose 30
+// days in the trash are over with `trash_expired` when restored.
+//
+// Scope: `conversations:write`; with `trashed` also `conversations:delete`.
 //
 // Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
 //
@@ -119706,7 +120434,14 @@ func (c *ClientWithResponses) BulkUpdateConversationsWithBodyWithResponse(ctx co
 // `validation_failed`. A request that is invalid as a whole (no change, an unknown label or
 // member, a past `snooze_until`) is refused with `400` and changes nothing.
 //
-// Scope: `conversations:write`.
+// `trashed` moves the conversations to the trash (`true`) or restores them (`false`), as
+// `DELETE /v1/conversations/{conversationId}` and `POST .../restore` do, and goes alone,
+// without other changes. Only owners and admins, and keys and tokens with
+// `conversations:delete`; agents get `403 forbidden` for the whole request. A conversation in
+// the trash is listed in `failed` with `not_found` for every other change, and one whose 30
+// days in the trash are over with `trash_expired` when restored.
+//
+// Scope: `conversations:write`; with `trashed` also `conversations:delete`.
 //
 // Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
 //
@@ -119743,7 +120478,37 @@ func (c *ClientWithResponses) GetConversationCountsWithResponse(ctx context.Cont
 	return ParseGetConversationCountsResponse(rsp)
 }
 
+// TrashConversationWithResponse Move a conversation to the trash
+//
+// Sets `trashed_at` and `trashed_by`. From then on the conversation is left out of every
+// list, count, search, stat and Home figure, `/client/v1` and MCP, and nobody can change it;
+// only the Trash view (`GET /v1/conversations?trashed=true`) lists it. A new message from
+// the contact (e-mail, widget, SDK) starts a new conversation. `POST .../restore` brings it
+// back within 30 days (`deletes_at`); after that the retention job deletes it for good with
+// its messages, attachments, raw e-mails and stored files.
+//
+// Only owners and admins, and keys and tokens with `conversations:delete`; agents get
+// `403 forbidden`, so a mistake cannot be hidden. Trashing a conversation already in the
+// trash answers it unchanged. Emits `conversation.trashed`; the audit log records
+// `conversation.trashed`.
+//
+// Scope: `conversations:delete`.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with DELETE /v1/conversations/{conversationId} (the `TrashConversation` operationId).
+func (c *ClientWithResponses) TrashConversationWithResponse(ctx context.Context, conversationId ConversationId, params *TrashConversationParams, reqEditors ...RequestEditorFn) (*TrashConversationResponse, error) {
+	rsp, err := c.TrashConversation(ctx, conversationId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseTrashConversationResponse(rsp)
+}
+
 // GetConversationWithResponse Get a conversation
+//
+// A conversation in the trash answers `404` except to those who may see the trash (owners,
+// admins, keys and tokens with `conversations:delete`), who get it with `trashed_at`.
 //
 // Scope: `conversations:read`.
 //
@@ -119890,7 +120655,8 @@ func (c *ClientWithResponses) ListConversationIncidentsWithResponse(ctx context.
 //
 // Messages, notes and events, oldest first by default. With `order=desc` the newest come
 // first and `next_cursor` pages backward, so a thread can load its latest page and then
-// older ones.
+// older ones. A conversation in the trash answers `404` except to those who may see the
+// trash; its attachments and raw e-mails answer `404` to everyone until it is restored.
 //
 // Scope: `conversations:read`.
 //
@@ -120121,6 +120887,27 @@ func (c *ClientWithResponses) MarkConversationReadWithResponse(ctx context.Conte
 		return nil, err
 	}
 	return ParseMarkConversationReadResponse(rsp)
+}
+
+// RestoreConversationWithResponse Bring a conversation back from the trash
+//
+// Clears `trashed_at` and `trashed_by`; the conversation is where it was, with its status,
+// assignee and labels. A conversation whose 30 days are over answers `409 trash_expired`
+// until the retention job deletes it. Restoring a conversation that is not in the trash
+// answers it unchanged. Who may, as for `DELETE`. Emits `conversation.restored`; the audit
+// log records `conversation.restored`.
+//
+// Scope: `conversations:delete`.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /v1/conversations/{conversationId}/restore (the `RestoreConversation` operationId).
+func (c *ClientWithResponses) RestoreConversationWithResponse(ctx context.Context, conversationId ConversationId, params *RestoreConversationParams, reqEditors ...RequestEditorFn) (*RestoreConversationResponse, error) {
+	rsp, err := c.RestoreConversation(ctx, conversationId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRestoreConversationResponse(rsp)
 }
 
 // SetMemberTypingWithBodyWithResponse Tell others you are typing
@@ -136332,6 +137119,53 @@ func ParseGetConversationCountsResponse(rsp *http.Response) (*GetConversationCou
 	return response, nil
 }
 
+// ParseTrashConversationResponse parses an HTTP response from a TrashConversationWithResponse call
+func ParseTrashConversationResponse(rsp *http.Response) (*TrashConversationResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &TrashConversationResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest Conversation
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseGetConversationResponse parses an HTTP response from a GetConversationWithResponse call
 func ParseGetConversationResponse(rsp *http.Response) (*GetConversationResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -136894,6 +137728,60 @@ func ParseMarkConversationReadResponse(rsp *http.Response) (*MarkConversationRea
 			return nil, err
 		}
 		response.ApplicationproblemJSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseRestoreConversationResponse parses an HTTP response from a RestoreConversationWithResponse call
+func ParseRestoreConversationResponse(rsp *http.Response) (*RestoreConversationResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &RestoreConversationResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest Conversation
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON409 = &dest
 
 	}
 
@@ -149082,10 +149970,25 @@ type WebhookInitiatorInterface interface {
 
 	WebhookConversationCreated(ctx context.Context, targetURL string, params *WebhookConversationCreatedParams, body WebhookConversationCreatedJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// WebhookConversationDeletedWithBody fires the conversation.deleted webhook with any body
+	WebhookConversationDeletedWithBody(ctx context.Context, targetURL string, params *WebhookConversationDeletedParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	WebhookConversationDeleted(ctx context.Context, targetURL string, params *WebhookConversationDeletedParams, body WebhookConversationDeletedJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// WebhookConversationRatedWithBody fires the conversation.rated webhook with any body
 	WebhookConversationRatedWithBody(ctx context.Context, targetURL string, params *WebhookConversationRatedParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	WebhookConversationRated(ctx context.Context, targetURL string, params *WebhookConversationRatedParams, body WebhookConversationRatedJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// WebhookConversationRestoredWithBody fires the conversation.restored webhook with any body
+	WebhookConversationRestoredWithBody(ctx context.Context, targetURL string, params *WebhookConversationRestoredParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	WebhookConversationRestored(ctx context.Context, targetURL string, params *WebhookConversationRestoredParams, body WebhookConversationRestoredJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// WebhookConversationTrashedWithBody fires the conversation.trashed webhook with any body
+	WebhookConversationTrashedWithBody(ctx context.Context, targetURL string, params *WebhookConversationTrashedParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	WebhookConversationTrashed(ctx context.Context, targetURL string, params *WebhookConversationTrashedParams, body WebhookConversationTrashedJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// WebhookConversationUpdatedWithBody fires the conversation.updated webhook with any body
 	WebhookConversationUpdatedWithBody(ctx context.Context, targetURL string, params *WebhookConversationUpdatedParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -149390,6 +150293,30 @@ func (p *WebhookInitiator) WebhookConversationCreated(ctx context.Context, targe
 	return p.Client.Do(req)
 }
 
+func (p *WebhookInitiator) WebhookConversationDeletedWithBody(ctx context.Context, targetURL string, params *WebhookConversationDeletedParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewWebhookConversationDeletedWebhookRequestWithBody(targetURL, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := p.applyWebhookEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return p.Client.Do(req)
+}
+
+func (p *WebhookInitiator) WebhookConversationDeleted(ctx context.Context, targetURL string, params *WebhookConversationDeletedParams, body WebhookConversationDeletedJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewWebhookConversationDeletedWebhookRequest(targetURL, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := p.applyWebhookEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return p.Client.Do(req)
+}
+
 func (p *WebhookInitiator) WebhookConversationRatedWithBody(ctx context.Context, targetURL string, params *WebhookConversationRatedParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewWebhookConversationRatedWebhookRequestWithBody(targetURL, params, contentType, body)
 	if err != nil {
@@ -149404,6 +150331,54 @@ func (p *WebhookInitiator) WebhookConversationRatedWithBody(ctx context.Context,
 
 func (p *WebhookInitiator) WebhookConversationRated(ctx context.Context, targetURL string, params *WebhookConversationRatedParams, body WebhookConversationRatedJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewWebhookConversationRatedWebhookRequest(targetURL, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := p.applyWebhookEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return p.Client.Do(req)
+}
+
+func (p *WebhookInitiator) WebhookConversationRestoredWithBody(ctx context.Context, targetURL string, params *WebhookConversationRestoredParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewWebhookConversationRestoredWebhookRequestWithBody(targetURL, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := p.applyWebhookEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return p.Client.Do(req)
+}
+
+func (p *WebhookInitiator) WebhookConversationRestored(ctx context.Context, targetURL string, params *WebhookConversationRestoredParams, body WebhookConversationRestoredJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewWebhookConversationRestoredWebhookRequest(targetURL, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := p.applyWebhookEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return p.Client.Do(req)
+}
+
+func (p *WebhookInitiator) WebhookConversationTrashedWithBody(ctx context.Context, targetURL string, params *WebhookConversationTrashedParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewWebhookConversationTrashedWebhookRequestWithBody(targetURL, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := p.applyWebhookEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return p.Client.Do(req)
+}
+
+func (p *WebhookInitiator) WebhookConversationTrashed(ctx context.Context, targetURL string, params *WebhookConversationTrashedParams, body WebhookConversationTrashedJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewWebhookConversationTrashedWebhookRequest(targetURL, params, body)
 	if err != nil {
 		return nil, err
 	}
@@ -150430,6 +151405,67 @@ func NewWebhookConversationCreatedWebhookRequestWithBody(targetURL string, param
 	return req, nil
 }
 
+// NewWebhookConversationDeletedWebhookRequest builds a application/json POST request for the conversation.deleted webhook
+func NewWebhookConversationDeletedWebhookRequest(targetURL string, params *WebhookConversationDeletedParams, body WebhookConversationDeletedJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewWebhookConversationDeletedWebhookRequestWithBody(targetURL, params, "application/json", bodyReader)
+}
+
+// NewWebhookConversationDeletedWebhookRequestWithBody builds a POST request for the conversation.deleted webhook with any body
+func NewWebhookConversationDeletedWebhookRequestWithBody(targetURL string, params *WebhookConversationDeletedParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+	_ = err
+
+	reqURL, err := url.Parse(targetURL)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, reqURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		var headerParam0 string
+
+		headerParam0, err = runtime.StyleParamWithOptions("simple", false, "webhook-id", params.WebhookId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+		if err != nil {
+			return nil, err
+		}
+
+		req.Header.Set("webhook-id", headerParam0)
+
+		var headerParam1 string
+
+		headerParam1, err = runtime.StyleParamWithOptions("simple", false, "webhook-timestamp", params.WebhookTimestamp, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+		if err != nil {
+			return nil, err
+		}
+
+		req.Header.Set("webhook-timestamp", headerParam1)
+
+		var headerParam2 string
+
+		headerParam2, err = runtime.StyleParamWithOptions("simple", false, "webhook-signature", params.WebhookSignature, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+		if err != nil {
+			return nil, err
+		}
+
+		req.Header.Set("webhook-signature", headerParam2)
+
+	}
+	return req, nil
+}
+
 // NewWebhookConversationRatedWebhookRequest builds a application/json POST request for the conversation.rated webhook
 func NewWebhookConversationRatedWebhookRequest(targetURL string, params *WebhookConversationRatedParams, body WebhookConversationRatedJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
@@ -150443,6 +151479,128 @@ func NewWebhookConversationRatedWebhookRequest(targetURL string, params *Webhook
 
 // NewWebhookConversationRatedWebhookRequestWithBody builds a POST request for the conversation.rated webhook with any body
 func NewWebhookConversationRatedWebhookRequestWithBody(targetURL string, params *WebhookConversationRatedParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+	_ = err
+
+	reqURL, err := url.Parse(targetURL)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, reqURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		var headerParam0 string
+
+		headerParam0, err = runtime.StyleParamWithOptions("simple", false, "webhook-id", params.WebhookId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+		if err != nil {
+			return nil, err
+		}
+
+		req.Header.Set("webhook-id", headerParam0)
+
+		var headerParam1 string
+
+		headerParam1, err = runtime.StyleParamWithOptions("simple", false, "webhook-timestamp", params.WebhookTimestamp, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+		if err != nil {
+			return nil, err
+		}
+
+		req.Header.Set("webhook-timestamp", headerParam1)
+
+		var headerParam2 string
+
+		headerParam2, err = runtime.StyleParamWithOptions("simple", false, "webhook-signature", params.WebhookSignature, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+		if err != nil {
+			return nil, err
+		}
+
+		req.Header.Set("webhook-signature", headerParam2)
+
+	}
+	return req, nil
+}
+
+// NewWebhookConversationRestoredWebhookRequest builds a application/json POST request for the conversation.restored webhook
+func NewWebhookConversationRestoredWebhookRequest(targetURL string, params *WebhookConversationRestoredParams, body WebhookConversationRestoredJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewWebhookConversationRestoredWebhookRequestWithBody(targetURL, params, "application/json", bodyReader)
+}
+
+// NewWebhookConversationRestoredWebhookRequestWithBody builds a POST request for the conversation.restored webhook with any body
+func NewWebhookConversationRestoredWebhookRequestWithBody(targetURL string, params *WebhookConversationRestoredParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+	_ = err
+
+	reqURL, err := url.Parse(targetURL)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, reqURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		var headerParam0 string
+
+		headerParam0, err = runtime.StyleParamWithOptions("simple", false, "webhook-id", params.WebhookId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+		if err != nil {
+			return nil, err
+		}
+
+		req.Header.Set("webhook-id", headerParam0)
+
+		var headerParam1 string
+
+		headerParam1, err = runtime.StyleParamWithOptions("simple", false, "webhook-timestamp", params.WebhookTimestamp, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+		if err != nil {
+			return nil, err
+		}
+
+		req.Header.Set("webhook-timestamp", headerParam1)
+
+		var headerParam2 string
+
+		headerParam2, err = runtime.StyleParamWithOptions("simple", false, "webhook-signature", params.WebhookSignature, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+		if err != nil {
+			return nil, err
+		}
+
+		req.Header.Set("webhook-signature", headerParam2)
+
+	}
+	return req, nil
+}
+
+// NewWebhookConversationTrashedWebhookRequest builds a application/json POST request for the conversation.trashed webhook
+func NewWebhookConversationTrashedWebhookRequest(targetURL string, params *WebhookConversationTrashedParams, body WebhookConversationTrashedJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewWebhookConversationTrashedWebhookRequestWithBody(targetURL, params, "application/json", bodyReader)
+}
+
+// NewWebhookConversationTrashedWebhookRequestWithBody builds a POST request for the conversation.trashed webhook with any body
+func NewWebhookConversationTrashedWebhookRequestWithBody(targetURL string, params *WebhookConversationTrashedParams, contentType string, body io.Reader) (*http.Request, error) {
 	var err error
 	_ = err
 

@@ -2988,8 +2988,9 @@ paths:
         Most recent activity (message or note) first, in the inboxes the caller can see. `q` is a
         full-text search over the subject, the messages and notes, and the contact; a negated term
         (`-word`, `-"some phrase"`) excludes every conversation in which any of those contains it.
+        Conversations in the trash are listed only with `trashed=true`.
 
-        Scope: `conversations:read`.
+        Scope: `conversations:read`; with `trashed=true` also `conversations:delete`.
 
         Each item carries the contact (id, name, first e-mail address), a preview of the last
         `message` (notes and events are not previewed), and `unread` and `pinned_at` for the
@@ -3032,8 +3033,17 @@ paths:
         - name: spam
           in: query
           description: |
-            `true` lists only conversations flagged as spam (the spam view); without it, or with
-            `false`, spam is left out.
+            `true` lists only conversations flagged as spam (the spam view); `false` leaves spam
+            out. Without it spam is left out, except with `trashed=true`, which lists both.
+          schema:
+            type: boolean
+        - name: trashed
+          in: query
+          description: |
+            `true` lists only the conversations in the trash (the Trash view), which every other
+            list, count and search leaves out. Owners and admins, and keys and tokens with
+            `conversations:delete`; agents get `403 forbidden`. `false` or absent lists what is not
+            in the trash.
           schema:
             type: boolean
             default: false
@@ -3331,7 +3341,14 @@ paths:
         `validation_failed`. A request that is invalid as a whole (no change, an unknown label or
         member, a past `snooze_until`) is refused with `400` and changes nothing.
 
-        Scope: `conversations:write`.
+        `trashed` moves the conversations to the trash (`true`) or restores them (`false`), as
+        `DELETE /v1/conversations/{conversationId}` and `POST .../restore` do, and goes alone,
+        without other changes. Only owners and admins, and keys and tokens with
+        `conversations:delete`; agents get `403 forbidden` for the whole request. A conversation in
+        the trash is listed in `failed` with `not_found` for every other change, and one whose 30
+        days in the trash are over with `trash_expired` when restored.
+
+        Scope: `conversations:write`; with `trashed` also `conversations:delete`.
       tags: [conversations]
       parameters:
         - $ref: "#/components/parameters/IdempotencyKey"
@@ -3359,7 +3376,11 @@ paths:
     get:
       operationId: getConversation
       summary: Get a conversation
-      description: "Scope: `conversations:read`."
+      description: |
+        A conversation in the trash answers `404` except to those who may see the trash (owners,
+        admins, keys and tokens with `conversations:delete`), who get it with `trashed_at`.
+
+        Scope: `conversations:read`.
       tags: [conversations]
       parameters:
         - $ref: "#/components/parameters/WorkspaceHeader"
@@ -3406,6 +3427,71 @@ paths:
                 $ref: "#/components/schemas/Conversation"
         "400":
           $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+        "409":
+          $ref: "#/components/responses/Problem"
+    delete:
+      operationId: trashConversation
+      summary: Move a conversation to the trash
+      description: |
+        Sets `trashed_at` and `trashed_by`. From then on the conversation is left out of every
+        list, count, search, stat and Home figure, `/client/v1` and MCP, and nobody can change it;
+        only the Trash view (`GET /v1/conversations?trashed=true`) lists it. A new message from
+        the contact (e-mail, widget, SDK) starts a new conversation. `POST .../restore` brings it
+        back within 30 days (`deletes_at`); after that the retention job deletes it for good with
+        its messages, attachments, raw e-mails and stored files.
+
+        Only owners and admins, and keys and tokens with `conversations:delete`; agents get
+        `403 forbidden`, so a mistake cannot be hidden. Trashing a conversation already in the
+        trash answers it unchanged. Emits `conversation.trashed`; the audit log records
+        `conversation.trashed`.
+
+        Scope: `conversations:delete`.
+      tags: [conversations]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/ConversationId"
+      responses:
+        "200":
+          description: The conversation in the trash.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Conversation"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+  /v1/conversations/{conversationId}/restore:
+    post:
+      operationId: restoreConversation
+      summary: Bring a conversation back from the trash
+      description: |
+        Clears `trashed_at` and `trashed_by`; the conversation is where it was, with its status,
+        assignee and labels. A conversation whose 30 days are over answers `409 trash_expired`
+        until the retention job deletes it. Restoring a conversation that is not in the trash
+        answers it unchanged. Who may, as for `DELETE`. Emits `conversation.restored`; the audit
+        log records `conversation.restored`.
+
+        Scope: `conversations:delete`.
+      tags: [conversations]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/ConversationId"
+      responses:
+        "200":
+          description: The restored conversation.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Conversation"
         "401":
           $ref: "#/components/responses/Problem"
         "403":
@@ -3522,7 +3608,8 @@ paths:
       description: |
         Messages, notes and events, oldest first by default. With `order=desc` the newest come
         first and `next_cursor` pages backward, so a thread can load its latest page and then
-        older ones.
+        older ones. A conversation in the trash answers `404` except to those who may see the
+        trash; its attachments and raw e-mails answer `404` to everyone until it is restored.
 
         Scope: `conversations:read`.
       tags: [messages]
@@ -14335,6 +14422,8 @@ paths:
         The contact's conversations in the session's inbox, on any channel, latest message first.
         Members' notes and internal events are never shown to contacts. `kind` keeps only
         conversations of those kinds, e.g. `kind=feedback` for the feedback the contact sent.
+        A conversation a member moved to the trash is never listed and answers `404` everywhere
+        under `/client/v1`.
       tags: [client]
       security:
         - contactSession: []
@@ -14466,6 +14555,8 @@ paths:
       description: |
         Adds the contact's message. A closed, pending or snoozed conversation is reopened. A
         repeated `client_id` in the same conversation returns the stored message with `200`.
+        Into a conversation a member moved to the trash, the message starts a new conversation:
+        the answer's `conversation_id` names it, and `conversation.created` announces it.
         Send `multipart/form-data` to attach files, as for starting a conversation. Rate limited
         per IP address and per channel.
       tags: [client]
@@ -15619,6 +15710,69 @@ webhooks:
           application/json:
             schema:
               $ref: "#/components/schemas/WebhookConversationPayload"
+      responses:
+        "200":
+          description: Any 2xx answer counts as delivered.
+  conversation.trashed:
+    post:
+      operationId: webhookConversationTrashed
+      summary: A conversation went to the trash
+      description: |
+        `data.conversation.trashed_at` and `deletes_at` are set. It can be restored until then
+        (`conversation.restored`); after that `conversation.deleted` follows.
+      tags: [webhooks]
+      security: []
+      parameters:
+        - $ref: "#/components/parameters/WebhookIdHeader"
+        - $ref: "#/components/parameters/WebhookTimestampHeader"
+        - $ref: "#/components/parameters/WebhookSignatureHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WebhookConversationPayload"
+      responses:
+        "200":
+          description: Any 2xx answer counts as delivered.
+  conversation.restored:
+    post:
+      operationId: webhookConversationRestored
+      summary: A conversation came back from the trash
+      tags: [webhooks]
+      security: []
+      parameters:
+        - $ref: "#/components/parameters/WebhookIdHeader"
+        - $ref: "#/components/parameters/WebhookTimestampHeader"
+        - $ref: "#/components/parameters/WebhookSignatureHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WebhookConversationPayload"
+      responses:
+        "200":
+          description: Any 2xx answer counts as delivered.
+  conversation.deleted:
+    post:
+      operationId: webhookConversationDeleted
+      summary: A conversation was deleted for good
+      description: |
+        30 days after it went to the trash, with its messages and files. Only its id, inbox and
+        contact are sent.
+      tags: [webhooks]
+      security: []
+      parameters:
+        - $ref: "#/components/parameters/WebhookIdHeader"
+        - $ref: "#/components/parameters/WebhookTimestampHeader"
+        - $ref: "#/components/parameters/WebhookSignatureHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WebhookConversationDeletedPayload"
       responses:
         "200":
           description: Any 2xx answer counts as delivered.
@@ -16994,8 +17148,10 @@ components:
         - `oauth_grant`: a member through a connected app (OAuth or MCP); `member_id` is the member
           and `via` the app's name.
         - `operator`: the server's operator on the command line; no `id` or `name`.
-      enum: [member, api_key, oauth_grant, operator]
-      x-enum-varnames: [AuditActorMember, AuditActorApiKey, AuditActorOAuthGrant, AuditActorOperator]
+        - `system`: Yuva itself, such as the retention job deleting a conversation 30 days after
+          it went to the trash; no `id` or `name`.
+      enum: [member, api_key, oauth_grant, operator, system]
+      x-enum-varnames: [AuditActorMember, AuditActorApiKey, AuditActorOAuthGrant, AuditActorOperator, AuditActorSystem]
     AuditActor:
       type: object
       required: [kind]
@@ -17005,10 +17161,10 @@ components:
         id:
           type: string
           format: uuid
-          description: The member, API key or connected app (grant). Absent for `operator`.
+          description: The member, API key or connected app (grant). Absent for `operator` and `system`.
         name:
           type: string
-          description: The display name at the time, kept after the actor is gone. Absent for `operator`.
+          description: The display name at the time, kept after the actor is gone. Absent for `operator` and `system`.
         member_id:
           type: string
           format: uuid
@@ -17036,6 +17192,8 @@ components:
         - `channel.key_rotated`, `channel.forwarding_address_rotated`, `channel.dkim_key_deleted`:
           none. `channel.dkim_key_created`: `selector`.
         - `inbox.identity_secret_rotated`: none. `inbox.deleted`: `name`.
+        - `conversation.trashed`, `conversation.restored`: `inbox_id`. `conversation.deleted`:
+          `inbox_id`, by `system` (never the subject or content).
         - `contact.deleted`: none (no name or address is kept). `contact.consent_exported`: `format`,
           `started` (the entry is written when the export starts streaming).
         - `list.consent_exported`: `name`, `format`, `started`.
@@ -17075,6 +17233,9 @@ components:
         - channel.dkim_key_deleted
         - inbox.identity_secret_rotated
         - inbox.deleted
+        - conversation.trashed
+        - conversation.restored
+        - conversation.deleted
         - contact.deleted
         - contact.consent_exported
         - list.consent_exported
@@ -17085,11 +17246,11 @@ components:
         - workspace.broadcasts_denied
         - workspace.broadcasts_suspended
         - workspace.broadcast_limit_changed
-      x-enum-varnames: [AuditMemberJoined, AuditMemberRoleChanged, AuditMemberRemoved, AuditMemberInboxAccessGranted, AuditMemberInboxAccessRevoked, AuditInviteCreated, AuditInviteDeleted, AuditApiKeyCreated, AuditApiKeyRevoked, AuditOAuthGrantCreated, AuditOAuthGrantRevoked, AuditWebhookCreated, AuditWebhookUpdated, AuditWebhookDeleted, AuditWebhookSecretRotated, AuditChannelCredentialsChanged, AuditChannelKeyRotated, AuditChannelForwardingAddressRotated, AuditChannelDkimKeyCreated, AuditChannelDkimKeyDeleted, AuditInboxIdentitySecretRotated, AuditInboxDeleted, AuditContactDeleted, AuditContactConsentExported, AuditListConsentExported, AuditAnalyticsExportCreated, AuditWorkspaceRetentionChanged, AuditWorkspaceBroadcastApprovalRequested, AuditWorkspaceBroadcastsApproved, AuditWorkspaceBroadcastsDenied, AuditWorkspaceBroadcastsSuspended, AuditWorkspaceBroadcastLimitChanged]
+      x-enum-varnames: [AuditMemberJoined, AuditMemberRoleChanged, AuditMemberRemoved, AuditMemberInboxAccessGranted, AuditMemberInboxAccessRevoked, AuditInviteCreated, AuditInviteDeleted, AuditApiKeyCreated, AuditApiKeyRevoked, AuditOAuthGrantCreated, AuditOAuthGrantRevoked, AuditWebhookCreated, AuditWebhookUpdated, AuditWebhookDeleted, AuditWebhookSecretRotated, AuditChannelCredentialsChanged, AuditChannelKeyRotated, AuditChannelForwardingAddressRotated, AuditChannelDkimKeyCreated, AuditChannelDkimKeyDeleted, AuditInboxIdentitySecretRotated, AuditInboxDeleted, AuditConversationTrashed, AuditConversationRestored, AuditConversationDeleted, AuditContactDeleted, AuditContactConsentExported, AuditListConsentExported, AuditAnalyticsExportCreated, AuditWorkspaceRetentionChanged, AuditWorkspaceBroadcastApprovalRequested, AuditWorkspaceBroadcastsApproved, AuditWorkspaceBroadcastsDenied, AuditWorkspaceBroadcastsSuspended, AuditWorkspaceBroadcastLimitChanged]
     AuditTargetType:
       type: string
-      enum: [workspace, member, invite, inbox, channel, api_key, oauth_grant, webhook, contact, list, analytics_export]
-      x-enum-varnames: [AuditTargetWorkspace, AuditTargetMember, AuditTargetInvite, AuditTargetInbox, AuditTargetChannel, AuditTargetApiKey, AuditTargetOAuthGrant, AuditTargetWebhook, AuditTargetContact, AuditTargetList, AuditTargetAnalyticsExport]
+      enum: [workspace, member, invite, inbox, channel, api_key, oauth_grant, webhook, contact, list, analytics_export, conversation]
+      x-enum-varnames: [AuditTargetWorkspace, AuditTargetMember, AuditTargetInvite, AuditTargetInbox, AuditTargetChannel, AuditTargetApiKey, AuditTargetOAuthGrant, AuditTargetWebhook, AuditTargetContact, AuditTargetList, AuditTargetAnalyticsExport, AuditTargetConversation]
     AuditTarget:
       type: object
       required: [type, id]
@@ -17359,6 +17520,9 @@ components:
           message e-mail and raw source; list labels and canned replies.
         - `conversations:write`: create, update (status, assignee, snooze, priority, labels), move
           and bulk-update conversations.
+        - `conversations:delete`: move conversations to the trash, restore them, and list the
+          trash. For owners and admins: never offered to agents' tokens. Never implied: a key made
+          without naming its scopes does not hold it.
         - `messages:write`: outgoing and incoming messages, drafts: create, edit, discard; for
           OAuth tokens also replies to reader threads and their accepted answer.
         - `drafts:send`: send a draft (`POST /v1/messages/{id}/send`), together with
@@ -17423,10 +17587,11 @@ components:
           without an inbox limit; offered only to owners' OAuth tokens. Never implied: a key made
           without naming its scopes does not hold it.
 
-        `lists:*`, `broadcasts:*`, `migrations:manage`, `analytics:*`, `status:*`, `help:*`, `roadmap:*`, `changelog:*` and `audit:read` are never added to keys made before they existed.
+        `conversations:delete`, `lists:*`, `broadcasts:*`, `migrations:manage`, `analytics:*`, `status:*`, `help:*`, `roadmap:*`, `changelog:*` and `audit:read` are never added to keys made before they existed.
       enum:
         - conversations:read
         - conversations:write
+        - conversations:delete
         - messages:write
         - drafts:send
         - notes:write
@@ -18827,7 +18992,7 @@ components:
           format: int64
     WebhookEventType:
       type: string
-      enum: [conversation.created, conversation.updated, conversation.rated, message.created, feedback.created, contact.updated, contact.deleted, draft.created, draft.updated, draft.deleted, discussion.created, discussion.post_created, discussion.answered, discussion.updated, subscription.created, subscription.updated, broadcast.updated, analytics.alert, status.component.updated, status.incident.created, status.incident.updated, status.incident.resolved, status.monitor.down, status.monitor.up, help.article.published, help.article.unpublished, help.article.deleted, discussion.stage_changed, changelog.entry.published, changelog.entry.unpublished, changelog.entry.deleted]
+      enum: [conversation.created, conversation.updated, conversation.rated, conversation.trashed, conversation.restored, conversation.deleted, message.created, feedback.created, contact.updated, contact.deleted, draft.created, draft.updated, draft.deleted, discussion.created, discussion.post_created, discussion.answered, discussion.updated, subscription.created, subscription.updated, broadcast.updated, analytics.alert, status.component.updated, status.incident.created, status.incident.updated, status.incident.resolved, status.monitor.down, status.monitor.up, help.article.published, help.article.unpublished, help.article.deleted, discussion.stage_changed, changelog.entry.published, changelog.entry.unpublished, changelog.entry.deleted]
     WebhookEndpoint:
       type: object
       required: [id, url, description, events, include_notes, enabled, created_at, updated_at]
@@ -19171,6 +19336,20 @@ components:
           properties:
             data:
               $ref: "#/components/schemas/WebhookContactDeletedData"
+    WebhookConversationDeletedData:
+      type: object
+      required: [conversation]
+      properties:
+        conversation:
+          $ref: "#/components/schemas/ConversationDeleted"
+    WebhookConversationDeletedPayload:
+      allOf:
+        - $ref: "#/components/schemas/WebhookPayloadBase"
+        - type: object
+          required: [data]
+          properties:
+            data:
+              $ref: "#/components/schemas/WebhookConversationDeletedData"
     ContactCreate:
       type: object
       properties:
@@ -19347,12 +19526,50 @@ components:
             an app (`POST /client/v1/conversations/{id}/read`). Absent until the contact has read
             anything, and in conversations the contact only reaches by e-mail. A `contact.read`
             event tells when it moves.
+        trashed_at:
+          type: string
+          format: date-time
+          description: When it went to the trash; absent when it is not in the trash.
+        trashed_by:
+          $ref: "#/components/schemas/ConversationTrashedBy"
+          description: Who moved it to the trash; absent when it is not in the trash.
+        deletes_at:
+          type: string
+          format: date-time
+          description: |
+            In the trash only: when the retention job deletes it for good, 30 days after
+            `trashed_at`. It can be restored until then.
         created_at:
           type: string
           format: date-time
         updated_at:
           type: string
           format: date-time
+    ConversationTrashedBy:
+      type: object
+      description: The member or API key that moved the conversation to the trash; empty when it is gone.
+      properties:
+        member_id:
+          type: string
+          format: uuid
+          description: The member, also when they acted through a connected app.
+        api_key_id:
+          type: string
+          format: uuid
+    ConversationDeleted:
+      type: object
+      description: A conversation deleted for good; nothing else of it is kept.
+      required: [id, inbox_id, contact_id]
+      properties:
+        id:
+          type: string
+          format: uuid
+        inbox_id:
+          type: string
+          format: uuid
+        contact_id:
+          type: string
+          format: uuid
     ConversationRating:
       type: object
       description: |
@@ -19470,6 +19687,11 @@ components:
           items:
             type: string
             format: uuid
+        trashed:
+          type: boolean
+          description: |
+            `true` moves the conversations to the trash, `false` restores them. Alone, without
+            other changes. Owners, admins and keys and tokens with `conversations:delete`.
     ConversationBulkFailure:
       type: object
       required: [id, status, code]
@@ -19491,7 +19713,7 @@ components:
       properties:
         updated:
           type: array
-          description: The conversations after the change, in request order.
+          description: The conversations after the change, in request order (with `trashed_at` when trashed).
           items:
             $ref: "#/components/schemas/Conversation"
         failed:
@@ -22427,7 +22649,10 @@ components:
           type: string
     ConversationEvent:
       type: object
-      description: A conversation was created, or its status, snooze, assignee, priority, labels or subject changed.
+      description: |
+        A conversation was created, or its status, snooze, assignee, priority, labels or subject
+        changed. `conversation.trashed`: it went to the trash, so drop it from every list but the
+        Trash view; `conversation.restored`: it came back.
       required: [id, type, workspace_id, inbox_id, conversation_id, created_at, data]
       properties:
         id:
@@ -22435,7 +22660,7 @@ components:
           format: int64
         type:
           type: string
-          enum: [conversation.created, conversation.updated]
+          enum: [conversation.created, conversation.updated, conversation.trashed, conversation.restored]
         workspace_id:
           type: string
           format: uuid
@@ -22450,6 +22675,31 @@ components:
           format: date-time
         data:
           $ref: "#/components/schemas/Conversation"
+    ConversationDeletedEvent:
+      type: object
+      description: A conversation was deleted for good, 30 days after it went to the trash.
+      required: [id, type, workspace_id, inbox_id, conversation_id, created_at, data]
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+          enum: [conversation.deleted]
+        workspace_id:
+          type: string
+          format: uuid
+        inbox_id:
+          type: string
+          format: uuid
+        conversation_id:
+          type: string
+          format: uuid
+        created_at:
+          type: string
+          format: date-time
+        data:
+          $ref: "#/components/schemas/ConversationDeleted"
     ConversationMovedEvent:
       type: object
       description: |
@@ -22837,6 +23087,7 @@ components:
       description: An event as `GET /v1/events` returns it, told apart by `type`; the same objects realtime and webhooks carry.
       oneOf:
         - $ref: "#/components/schemas/ConversationEvent"
+        - $ref: "#/components/schemas/ConversationDeletedEvent"
         - $ref: "#/components/schemas/ConversationMovedEvent"
         - $ref: "#/components/schemas/MessageCreatedEvent"
         - $ref: "#/components/schemas/MessageUpdatedEvent"
@@ -22866,6 +23117,9 @@ components:
         mapping:
           conversation.created: "#/components/schemas/ConversationEvent"
           conversation.updated: "#/components/schemas/ConversationEvent"
+          conversation.trashed: "#/components/schemas/ConversationEvent"
+          conversation.restored: "#/components/schemas/ConversationEvent"
+          conversation.deleted: "#/components/schemas/ConversationDeletedEvent"
           conversation.moved: "#/components/schemas/ConversationMovedEvent"
           message.created: "#/components/schemas/MessageCreatedEvent"
           message.updated: "#/components/schemas/MessageUpdatedEvent"
@@ -22930,6 +23184,7 @@ components:
       description: One server message on `/v1/realtime`, told apart by `type`.
       oneOf:
         - $ref: "#/components/schemas/ConversationEvent"
+        - $ref: "#/components/schemas/ConversationDeletedEvent"
         - $ref: "#/components/schemas/ConversationMovedEvent"
         - $ref: "#/components/schemas/MessageCreatedEvent"
         - $ref: "#/components/schemas/MessageUpdatedEvent"
@@ -22977,6 +23232,9 @@ components:
         mapping:
           conversation.created: "#/components/schemas/ConversationEvent"
           conversation.updated: "#/components/schemas/ConversationEvent"
+          conversation.trashed: "#/components/schemas/ConversationEvent"
+          conversation.restored: "#/components/schemas/ConversationEvent"
+          conversation.deleted: "#/components/schemas/ConversationDeletedEvent"
           conversation.moved: "#/components/schemas/ConversationMovedEvent"
           message.created: "#/components/schemas/MessageCreatedEvent"
           message.updated: "#/components/schemas/MessageUpdatedEvent"

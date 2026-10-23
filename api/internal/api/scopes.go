@@ -8,7 +8,7 @@ import (
 )
 
 var allScopes = []oas.ApiKeyScope{
-	oas.ConversationsRead, oas.ConversationsWrite, oas.MessagesWrite, oas.DraftsSend, oas.NotesWrite,
+	oas.ConversationsRead, oas.ConversationsWrite, oas.ConversationsDelete, oas.MessagesWrite, oas.DraftsSend, oas.NotesWrite,
 	oas.ContactsRead, oas.ContactsWrite, oas.InboxesRead, oas.InboxesManage, oas.LabelsWrite,
 	oas.CannedRepliesWrite, oas.WebhooksManage, oas.WorkspaceManage, oas.FeedbackWrite, oas.ListsRead, oas.ListsWrite,
 	oas.BroadcastsRead, oas.BroadcastsWrite, oas.BroadcastsSend, oas.MigrationsManage,
@@ -18,7 +18,7 @@ var allScopes = []oas.ApiKeyScope{
 }
 
 // notImpliedScopes are left out of a key made without naming its scopes.
-var notImpliedScopes = []oas.ApiKeyScope{oas.BroadcastsSend, oas.StatusManage, oas.HelpPublish, oas.RoadmapStage, oas.ChangelogPublish, oas.AuditRead}
+var notImpliedScopes = []oas.ApiKeyScope{oas.ConversationsDelete, oas.BroadcastsSend, oas.StatusManage, oas.HelpPublish, oas.RoadmapStage, oas.ChangelogPublish, oas.AuditRead}
 
 var unlimitedOnlyScopes = []oas.ApiKeyScope{oas.InboxesManage, oas.WebhooksManage, oas.WorkspaceManage, oas.MigrationsManage, oas.AnalyticsManage, oas.AuditRead}
 
@@ -102,6 +102,8 @@ var operationScopes = map[string][]oas.ApiKeyScope{
 	"UpdateConversation":      {oas.ConversationsWrite},
 	"MoveConversation":        {oas.ConversationsWrite},
 	"BulkUpdateConversations": {oas.ConversationsWrite},
+	"TrashConversation":       {oas.ConversationsDelete},
+	"RestoreConversation":     {oas.ConversationsDelete},
 
 	"CreateMessage": nil,
 	"UpdateMessage": {oas.MessagesWrite},

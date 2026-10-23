@@ -82,7 +82,7 @@ func (s *Server) CheckContinuity(ctx context.Context, workspaceID, conversationI
 	var next *time.Time
 	err := s.inTx(ctx, workspaceID, func(q *store.Queries, events *eventBatch) error {
 		c, err := q.LockConversation(ctx, store.LockConversationParams{WorkspaceID: workspaceID, ID: conversationID})
-		if store.IsNotFound(err) || (err == nil && c.ChannelID == nil) {
+		if store.IsNotFound(err) || (err == nil && (c.ChannelID == nil || c.TrashedAt != nil)) {
 			return nil
 		}
 		if err != nil {

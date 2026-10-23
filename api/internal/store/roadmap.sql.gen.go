@@ -64,7 +64,9 @@ func (q *Queries) ChannelRoadmapBoard(ctx context.Context, arg ChannelRoadmapBoa
 }
 
 const countIdeaLinks = `-- name: CountIdeaLinks :one
-SELECT count(*)::int FROM roadmap_idea_conversations WHERE workspace_id = $1 AND idea_id = $2
+SELECT count(*)::int FROM roadmap_idea_conversations l
+JOIN conversations c ON c.workspace_id = l.workspace_id AND c.id = l.conversation_id
+WHERE l.workspace_id = $1 AND l.idea_id = $2 AND c.trashed_at IS NULL
 `
 
 type CountIdeaLinksParams struct {
@@ -80,9 +82,10 @@ func (q *Queries) CountIdeaLinks(ctx context.Context, arg CountIdeaLinksParams) 
 }
 
 const countIdeaLinksByIdeas = `-- name: CountIdeaLinksByIdeas :many
-SELECT idea_id, count(*)::int AS n FROM roadmap_idea_conversations
-WHERE workspace_id = $1 AND idea_id = ANY($2::uuid[])
-GROUP BY idea_id
+SELECT l.idea_id, count(*)::int AS n FROM roadmap_idea_conversations l
+JOIN conversations c ON c.workspace_id = l.workspace_id AND c.id = l.conversation_id
+WHERE l.workspace_id = $1 AND l.idea_id = ANY($2::uuid[]) AND c.trashed_at IS NULL
+GROUP BY l.idea_id
 `
 
 type CountIdeaLinksByIdeasParams struct {
@@ -118,7 +121,7 @@ func (q *Queries) CountIdeaLinksByIdeas(ctx context.Context, arg CountIdeaLinksB
 const countIdeaLinksToChange = `-- name: CountIdeaLinksToChange :one
 SELECT count(*)::int FROM roadmap_idea_conversations l
 JOIN conversations c ON c.workspace_id = l.workspace_id AND c.id = l.conversation_id
-WHERE l.workspace_id = $1 AND l.idea_id = $2 AND c.feedback_progress IS DISTINCT FROM $3::text
+WHERE l.workspace_id = $1 AND l.idea_id = $2 AND c.feedback_progress IS DISTINCT FROM $3::text AND c.trashed_at IS NULL
 `
 
 type CountIdeaLinksToChangeParams struct {
@@ -625,7 +628,7 @@ func (q *Queries) IdeaConversationLinked(ctx context.Context, arg IdeaConversati
 const ideaLinkBatch = `-- name: IdeaLinkBatch :many
 SELECT l.conversation_id, c.feedback_progress FROM roadmap_idea_conversations l
 JOIN conversations c ON c.workspace_id = l.workspace_id AND c.id = l.conversation_id
-WHERE l.workspace_id = $1 AND l.idea_id = $2 AND l.conversation_id > $3::uuid
+WHERE l.workspace_id = $1 AND l.idea_id = $2 AND l.conversation_id > $3::uuid AND c.trashed_at IS NULL
 ORDER BY l.conversation_id
 LIMIT $4
 `
@@ -841,7 +844,7 @@ func (q *Queries) ListConversationIdeas(ctx context.Context, arg ListConversatio
 const listIdeaReplyTargets = `-- name: ListIdeaReplyTargets :many
 SELECT c.id FROM roadmap_idea_conversations l
 JOIN conversations c ON c.workspace_id = l.workspace_id AND c.id = l.conversation_id
-WHERE l.workspace_id = $1 AND l.idea_id = $2 AND c.status <> 'closed' AND NOT c.spam
+WHERE l.workspace_id = $1 AND l.idea_id = $2 AND c.status <> 'closed' AND NOT c.spam AND c.trashed_at IS NULL
   AND ($3::bool OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = $4))

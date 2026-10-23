@@ -75,13 +75,14 @@ WHERE workspace_id = $1 AND channel_id = $2 AND direction = 'in' AND header_mess
 -- name: FindConversationByHeaders :one
 SELECT c.* FROM message_emails e
 JOIN conversations c ON c.workspace_id = e.workspace_id AND c.id = e.conversation_id
-WHERE e.workspace_id = @workspace_id AND c.inbox_id = @inbox_id
+WHERE e.workspace_id = @workspace_id AND c.inbox_id = @inbox_id AND c.trashed_at IS NULL
   AND (e.header_message_id = ANY(@ids::text[]) OR e.relay_message_id = ANY(@ids::text[]))
 ORDER BY (c.contact_id = @contact_id) DESC, e.created_at DESC, e.message_id DESC
 LIMIT 1;
 
 -- name: FindConversationByEmailToken :one
 SELECT * FROM conversations WHERE workspace_id = @workspace_id AND inbox_id = @inbox_id AND email_token = ANY(@tokens::text[])
+  AND trashed_at IS NULL
 ORDER BY (contact_id = @contact_id) DESC, created_at DESC
 LIMIT 1;
 
@@ -137,11 +138,11 @@ LIMIT 1;
 
 -- name: CountRecentConversations :one
 SELECT count(*) FROM conversations
-WHERE workspace_id = @workspace_id AND channel_id = @channel_id AND contact_id = @contact_id AND created_at > @since;
+WHERE workspace_id = @workspace_id AND channel_id = @channel_id AND contact_id = @contact_id AND created_at > @since AND trashed_at IS NULL;
 
 -- name: LatestContactConversation :one
 SELECT * FROM conversations
-WHERE workspace_id = @workspace_id AND channel_id = @channel_id AND contact_id = @contact_id
+WHERE workspace_id = @workspace_id AND channel_id = @channel_id AND contact_id = @contact_id AND trashed_at IS NULL
 ORDER BY created_at DESC, id DESC
 LIMIT 1;
 

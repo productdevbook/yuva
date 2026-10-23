@@ -204,7 +204,11 @@ func (c *mcpCall) conversation(ctx context.Context, id uuid.UUID, cursor string,
 	if err != nil {
 		return out, err
 	}
-	out.Conversation = conversationOut(oas.Conversation(res.(oas.GetConversation200JSONResponse)))
+	conv := oas.Conversation(res.(oas.GetConversation200JSONResponse))
+	if conv.TrashedAt != nil {
+		return out, errConversationGone
+	}
+	out.Conversation = conversationOut(conv)
 	if limit == 0 {
 		limit = 50
 	}

@@ -2,7 +2,7 @@
 WITH open AS (
     SELECT c.id, c.inbox_id, c.subject, c.contact_id, c.assignee_id, c.channel_kind
     FROM conversations c
-    WHERE c.workspace_id = @workspace_id AND c.status = 'open' AND NOT c.spam
+    WHERE c.workspace_id = @workspace_id AND c.status = 'open' AND NOT c.spam AND c.trashed_at IS NULL
       AND (sqlc.narg(inbox_id)::uuid IS NULL OR c.inbox_id = sqlc.narg(inbox_id)::uuid)
       AND (@all_inboxes::bool OR EXISTS (
           SELECT 1 FROM inbox_viewers iv
@@ -43,7 +43,7 @@ ORDER BY o.since, o.id;
 -- name: HomeOpenLoad :many
 SELECT i.id AS inbox_id, c.assignee_id, coalesce(c.kind = 'feedback', false)::bool AS feedback, count(c.id) AS n
 FROM inboxes i
-LEFT JOIN conversations c ON c.workspace_id = i.workspace_id AND c.inbox_id = i.id AND c.status = 'open' AND NOT c.spam
+LEFT JOIN conversations c ON c.workspace_id = i.workspace_id AND c.inbox_id = i.id AND c.status = 'open' AND NOT c.spam AND c.trashed_at IS NULL
 WHERE i.workspace_id = @workspace_id
   AND (sqlc.narg(inbox_id)::uuid IS NULL OR i.id = sqlc.narg(inbox_id)::uuid)
   AND (@all_inboxes::bool OR EXISTS (
@@ -56,7 +56,7 @@ ORDER BY i.name, i.id;
 SELECT c.inbox_id, (c.created_at AT TIME ZONE @timezone::text)::date AS day, count(*) AS n
 FROM conversations c
 WHERE c.workspace_id = @workspace_id AND c.last_activity_at >= @since::timestamptz
-  AND c.created_at >= @since::timestamptz AND c.created_at <= @until::timestamptz AND NOT c.spam
+  AND c.created_at >= @since::timestamptz AND c.created_at <= @until::timestamptz AND NOT c.spam AND c.trashed_at IS NULL
   AND (sqlc.narg(inbox_id)::uuid IS NULL OR c.inbox_id = sqlc.narg(inbox_id)::uuid)
   AND (@all_inboxes::bool OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
@@ -67,7 +67,7 @@ GROUP BY 1, 2;
 SELECT c.inbox_id, (c.rated_at AT TIME ZONE @timezone::text)::date AS day, c.rating::text AS rating, count(*) AS n
 FROM conversations c
 WHERE c.workspace_id = @workspace_id AND c.rated_at >= @since::timestamptz AND c.rated_at <= @until::timestamptz
-  AND NOT c.spam AND c.kind <> 'feedback'
+  AND NOT c.spam AND c.kind <> 'feedback' AND c.trashed_at IS NULL
   AND (sqlc.narg(inbox_id)::uuid IS NULL OR c.inbox_id = sqlc.narg(inbox_id)::uuid)
   AND (@all_inboxes::bool OR EXISTS (
       SELECT 1 FROM inbox_viewers iv

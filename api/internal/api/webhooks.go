@@ -45,6 +45,7 @@ var (
 
 var webhookEventTypes = []oas.WebhookEventType{
 	oas.WebhookEventTypeConversationCreated, oas.WebhookEventTypeConversationUpdated, oas.WebhookEventTypeConversationRated,
+	oas.WebhookEventTypeConversationTrashed, oas.WebhookEventTypeConversationRestored, oas.WebhookEventTypeConversationDeleted,
 	oas.WebhookEventTypeMessageCreated,
 	oas.WebhookEventTypeFeedbackCreated, oas.WebhookEventTypeContactUpdated, oas.WebhookEventTypeContactDeleted,
 	oas.WebhookEventTypeDraftCreated, oas.WebhookEventTypeDraftUpdated, oas.WebhookEventTypeDraftDeleted,
@@ -497,6 +498,7 @@ func (s *Server) ListWebhookAttempts(ctx context.Context, req oas.ListWebhookAtt
 func webhookSource(e pendingEvent) bool {
 	switch e.typ {
 	case realtime.ConversationCreated, realtime.ConversationUpdated, realtime.MessageCreated, realtime.ContactUpdated,
+		realtime.ConversationTrashed, realtime.ConversationRestored, realtime.ConversationDeleted,
 		realtime.DraftCreated, realtime.DraftUpdated, realtime.DraftDeleted,
 		eventDiscussionCreated, eventDiscussionPostCreated, eventDiscussionAnswered, eventDiscussionUpdated, eventDiscussionStageChanged,
 		eventSubscriptionCreated, eventSubscriptionUpdated, eventBroadcastUpdated, eventAnalyticsAlert,
@@ -655,7 +657,14 @@ func (s *Server) webhookPayloads(ctx context.Context, q *store.Queries, ev store
 		return mustJSON(webhookPayload{Type: typ, Timestamp: ev.CreatedAt.UTC(), WorkspaceID: ws, InboxID: inbox, Data: data})
 	}
 	switch ev.Type {
-	case realtime.ConversationCreated, realtime.ConversationUpdated:
+	case realtime.ConversationDeleted:
+		var d oas.ConversationDeleted
+		if err := json.Unmarshal(ev.Payload, &d); err != nil {
+			return nil, nil, err
+		}
+		inbox := d.InboxId
+		return []webhookOut{{typ: ev.Type, body: payload(ev.Type, &inbox, oas.WebhookConversationDeletedData{Conversation: d})}}, []uuid.UUID{inbox}, nil
+	case realtime.ConversationCreated, realtime.ConversationUpdated, realtime.ConversationTrashed, realtime.ConversationRestored:
 		var conv oas.Conversation
 		if err := json.Unmarshal(ev.Payload, &conv); err != nil {
 			return nil, nil, err

@@ -39,7 +39,8 @@ WHERE c.workspace_id = @workspace_id
   AND (sqlc.narg(inbox_id)::uuid IS NULL OR c.inbox_id = sqlc.narg(inbox_id)::uuid)
   AND (sqlc.narg(contact_id)::uuid IS NULL OR c.contact_id = sqlc.narg(contact_id)::uuid)
   AND (sqlc.narg(broadcast_id)::uuid IS NULL OR c.broadcast_id = sqlc.narg(broadcast_id)::uuid)
-  AND c.spam = @spam::bool
+  AND (sqlc.narg(spam)::bool IS NULL OR c.spam = sqlc.narg(spam)::bool)
+  AND (c.trashed_at IS NOT NULL) = @trashed::bool
   AND (sqlc.narg(kinds)::text[] IS NULL OR c.kind = ANY(sqlc.narg(kinds)::text[]))
   AND (sqlc.narg(channel_kinds)::text[] IS NULL OR c.channel_kind = ANY(sqlc.narg(channel_kinds)::text[]))
   AND (sqlc.narg(site)::text IS NULL OR left(c.page_url, length(sqlc.narg(site)::text) + 1) = sqlc.narg(site)::text || '/')
@@ -111,7 +112,7 @@ WHERE c.workspace_id = @workspace_id AND c.id = ANY(@conversation_ids::uuid[]);
 -- name: CountOpenConversations :many
 SELECT c.inbox_id, c.assignee_id, c.spam, count(*) AS n
 FROM conversations c
-WHERE c.workspace_id = @workspace_id AND c.status = 'open'
+WHERE c.workspace_id = @workspace_id AND c.status = 'open' AND c.trashed_at IS NULL
   AND (@all_inboxes::bool OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = @viewer_id::uuid))
@@ -122,7 +123,7 @@ GROUP BY 1, 2, 3;
 SELECT cl.label_id, count(*) AS n
 FROM conversations c
 JOIN conversation_labels cl ON cl.workspace_id = c.workspace_id AND cl.conversation_id = c.id
-WHERE c.workspace_id = @workspace_id AND c.status = 'open' AND NOT c.spam
+WHERE c.workspace_id = @workspace_id AND c.status = 'open' AND c.trashed_at IS NULL AND NOT c.spam
   AND (@all_inboxes::bool OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = @viewer_id::uuid))
@@ -133,7 +134,7 @@ ORDER BY cl.label_id;
 -- name: CountOpenFeedback :many
 SELECT (c.feedback->>'category')::text AS category, count(*) AS n
 FROM conversations c
-WHERE c.workspace_id = @workspace_id AND c.status = 'open' AND NOT c.spam AND c.kind = 'feedback'
+WHERE c.workspace_id = @workspace_id AND c.status = 'open' AND c.trashed_at IS NULL AND NOT c.spam AND c.kind = 'feedback'
   AND (@all_inboxes::bool OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = @viewer_id::uuid))
@@ -177,3 +178,27 @@ UPDATE conversations c SET feedback = c.feedback || jsonb_build_object(
     'attachment_count', (SELECT count(*) FROM attachments a WHERE a.workspace_id = c.workspace_id AND a.message_id = @message_id::uuid))
 WHERE c.workspace_id = @workspace_id AND c.id = @id AND c.kind = 'feedback'
 RETURNING *;
+
+-- name: TrashConversation :one
+UPDATE conversations SET trashed_at = @now::timestamptz, trashed_by_member_id = sqlc.narg(member_id), trashed_by_api_key_id = sqlc.narg(api_key_id), updated_at = @now::timestamptz
+WHERE workspace_id = @workspace_id AND id = @id AND trashed_at IS NULL
+RETURNING *;
+
+-- name: RestoreConversation :one
+UPDATE conversations SET trashed_at = NULL, trashed_by_member_id = NULL, trashed_by_api_key_id = NULL, updated_at = @now
+WHERE workspace_id = @workspace_id AND id = @id AND trashed_at IS NOT NULL
+RETURNING *;
+
+-- Locked, so a restore that commits first keeps its conversation and one that comes later finds it gone.
+-- name: ListExpiredTrash :many
+SELECT id, inbox_id, contact_id FROM conversations
+WHERE workspace_id = @workspace_id AND trashed_at <= @before::timestamptz
+ORDER BY trashed_at, id
+LIMIT @max_rows
+FOR UPDATE;
+
+-- name: ListWorkspacesWithExpiredTrash :many
+SELECT w.id FROM workspaces w
+WHERE w.deleted_at IS NULL
+  AND EXISTS (SELECT 1 FROM conversations c WHERE c.workspace_id = w.id AND c.trashed_at <= @before::timestamptz)
+ORDER BY w.id;

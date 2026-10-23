@@ -87,7 +87,17 @@ func clientConversationBody(c store.Conversation) oas.ClientConversation {
 	}
 }
 
+// clientConversation is one of the contact's conversations in the session's inbox that is not in
+// the trash.
 func clientConversation(ctx context.Context, q *store.Queries, cp contactPrincipal, id uuid.UUID, lock bool) (store.Conversation, error) {
+	c, err := clientConversationOrTrashed(ctx, q, cp, id, lock)
+	if err == nil && c.TrashedAt != nil {
+		return c, errConversationGone
+	}
+	return c, err
+}
+
+func clientConversationOrTrashed(ctx context.Context, q *store.Queries, cp contactPrincipal, id uuid.UUID, lock bool) (store.Conversation, error) {
 	var (
 		c   store.Conversation
 		err error
@@ -516,7 +526,7 @@ func (s *Server) CreateClientMessage(ctx context.Context, req oas.CreateClientMe
 	if err := s.rateLimit(ctx, s.writeChecks(ctx, cp)...); err != nil {
 		return nil, err
 	}
-	if _, err := clientConversation(ctx, s.st.Queries, cp, req.ConversationId, false); err != nil {
+	if _, err := clientConversationOrTrashed(ctx, s.st.Queries, cp, req.ConversationId, false); err != nil {
 		return nil, err
 	}
 	var in *messageInput
@@ -549,9 +559,15 @@ func (s *Server) CreateClientMessage(ctx context.Context, req oas.CreateClientMe
 		created = true
 	)
 	err = s.inTx(ctx, cp.workspaceID, func(q *store.Queries, events *eventBatch) error {
-		c, err := clientConversation(ctx, q, cp, req.ConversationId, true)
+		c, err := clientConversationOrTrashed(ctx, q, cp, req.ConversationId, true)
 		if err != nil {
 			return err
+		}
+		isNew := false
+		if c.TrashedAt != nil {
+			if c, isNew, err = s.replaceTrashedConversation(ctx, q, events, cp, in); err != nil {
+				return err
+			}
 		}
 		if in.clientID != nil {
 			prev, err := q.GetMessageByClientID(ctx, store.GetMessageByClientIDParams{WorkspaceID: cp.workspaceID, ConversationID: c.ID, ClientID: in.clientID})
@@ -565,7 +581,7 @@ func (s *Server) CreateClientMessage(ctx context.Context, req oas.CreateClientMe
 				return err
 			}
 		}
-		msg, atts, err = s.addContactMessage(ctx, q, events, cp, c, in, false)
+		msg, atts, err = s.addContactMessage(ctx, q, events, cp, c, in, isNew)
 		return err
 	})
 	if err != nil || !created {
@@ -579,6 +595,33 @@ func (s *Server) CreateClientMessage(ctx context.Context, req oas.CreateClientMe
 		return oas.CreateClientMessage200JSONResponse(body), nil
 	}
 	return oas.CreateClientMessage201JSONResponse(body), nil
+}
+
+// replaceTrashedConversation is where a message to a conversation in the trash goes: the
+// conversation a retry with the same client_id already started, or a new one.
+func (s *Server) replaceTrashedConversation(ctx context.Context, q *store.Queries, events *eventBatch, cp contactPrincipal, in *messageInput) (store.Conversation, bool, error) {
+	if in.clientID != nil {
+		prev, err := q.FindContactMessageByClientID(ctx, store.FindContactMessageByClientIDParams{
+			WorkspaceID: cp.workspaceID, InboxID: cp.inboxID, ContactID: cp.contactID, ClientID: *in.clientID,
+		})
+		if err == nil {
+			c, err := clientConversation(ctx, q, cp, prev.ConversationID, true)
+			return c, false, err
+		}
+		if !store.IsNotFound(err) {
+			return store.Conversation{}, false, err
+		}
+	}
+	channelID := cp.channelID
+	c, err := q.CreateConversation(ctx, store.CreateConversationParams{
+		ID: newID(), WorkspaceID: cp.workspaceID, InboxID: cp.inboxID, ContactID: cp.contactID, ChannelID: &channelID,
+		Priority: string(oas.Normal), Now: s.now(),
+	})
+	if err != nil {
+		return c, false, err
+	}
+	events.conversation(realtime.ConversationCreated, c, conversationBody(c, nil))
+	return c, true, nil
 }
 
 func (s *Server) MarkClientConversationRead(ctx context.Context, req oas.MarkClientConversationReadRequestObject) (oas.MarkClientConversationReadResponseObject, error) {

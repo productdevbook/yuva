@@ -812,6 +812,9 @@ type Conversation struct {
 	ImportedAt            *time.Time
 	FeedbackProgress      *string
 	HelpArticleID         *uuid.UUID
+	TrashedAt             *time.Time
+	TrashedByMemberID     *uuid.UUID
+	TrashedByApiKeyID     *uuid.UUID
 }
 
 type ConversationLabel struct {

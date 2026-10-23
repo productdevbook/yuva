@@ -132,6 +132,9 @@ func (w *retentionWorker) Work(ctx context.Context, _ *river.Job[jobs.RetentionA
 	if err := w.s.CleanAudit(ctx); err != nil {
 		w.s.log.ErrorContext(ctx, "audit log retention", slog.Any("error", err))
 	}
+	if err := w.s.PurgeTrash(ctx); err != nil {
+		return err
+	}
 	return w.s.ApplyRetention(ctx)
 }
 
@@ -156,7 +159,7 @@ func (s *Server) ApplyRetention(ctx context.Context) error {
 
 func (s *Server) expireConversations(ctx context.Context, workspaceID uuid.UUID, before time.Time) error {
 	for {
-		n, _, err := s.deleteConversationBatch(ctx, workspaceID, func(q *store.Queries) ([]uuid.UUID, error) {
+		n, _, err := s.deleteConversationBatch(ctx, workspaceID, func(q *store.Queries, _ *eventBatch) ([]uuid.UUID, error) {
 			return q.ListExpiredConversationIDs(ctx, store.ListExpiredConversationIDsParams{
 				WorkspaceID: workspaceID, Before: before, MaxRows: retentionBatch,
 			})

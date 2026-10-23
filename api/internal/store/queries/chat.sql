@@ -130,7 +130,7 @@ SELECT count(*) FROM contact_emails WHERE workspace_id = $1 AND contact_id = $2;
 
 -- name: ListContactConversations :many
 SELECT c.* FROM conversations c
-WHERE c.workspace_id = @workspace_id AND c.inbox_id = @inbox_id AND c.contact_id = @contact_id
+WHERE c.workspace_id = @workspace_id AND c.inbox_id = @inbox_id AND c.contact_id = @contact_id AND c.trashed_at IS NULL
   AND (sqlc.narg(kinds)::text[] IS NULL OR c.kind = ANY(sqlc.narg(kinds)::text[]))
   AND (sqlc.narg(cursor_at)::timestamptz IS NULL
        OR (coalesce(c.last_message_at, c.created_at), c.id) < (sqlc.narg(cursor_at)::timestamptz, sqlc.narg(cursor_id)::uuid))
@@ -138,7 +138,7 @@ ORDER BY coalesce(c.last_message_at, c.created_at) DESC, c.id DESC
 LIMIT @lim;
 
 -- name: ListContactConversationIDs :many
-SELECT id, status, feedback_progress FROM conversations WHERE workspace_id = $1 AND inbox_id = $2 AND contact_id = $3;
+SELECT id, status, feedback_progress FROM conversations WHERE workspace_id = $1 AND inbox_id = $2 AND contact_id = $3 AND trashed_at IS NULL;
 
 -- name: ListUnreadForContact :many
 SELECT c.id FROM conversations c
@@ -215,7 +215,7 @@ SELECT a.* FROM attachments a
 JOIN messages m ON m.workspace_id = a.workspace_id AND m.id = a.message_id
 JOIN conversations c ON c.workspace_id = a.workspace_id AND c.id = a.conversation_id
 WHERE a.workspace_id = @workspace_id AND a.id = @id AND m.kind = 'message' AND NOT m.draft
-  AND c.inbox_id = @inbox_id AND c.contact_id = @contact_id;
+  AND c.inbox_id = @inbox_id AND c.contact_id = @contact_id AND c.trashed_at IS NULL;
 
 -- name: ListMemberNames :many
 SELECT m.id, p.name FROM members m JOIN people p ON p.id = m.person_id
@@ -264,7 +264,7 @@ LIMIT 50;
 SELECT DISTINCT c.id FROM conversations c
 JOIN messages m ON m.workspace_id = c.workspace_id AND m.conversation_id = c.id
 LEFT JOIN contact_reads r ON r.workspace_id = c.workspace_id AND r.conversation_id = c.id
-WHERE c.workspace_id = @workspace_id AND c.contact_id = @contact_id
+WHERE c.workspace_id = @workspace_id AND c.contact_id = @contact_id AND c.trashed_at IS NULL
   AND m.kind = 'message' AND m.direction = 'out' AND m.author_type = 'member' AND m.delivery_state IS NULL AND NOT m.draft
   AND (r.last_read_at IS NULL OR (m.created_at, m.id) > (r.last_read_at, r.last_read_message_id))
   AND (c.continuity_through IS NULL OR m.created_at > c.continuity_through);
@@ -290,7 +290,7 @@ UPDATE people SET availability = $2 WHERE id = $1;
 -- name: FindContactMessageByClientID :one
 SELECT m.id, m.conversation_id FROM messages m
 JOIN conversations c ON c.workspace_id = m.workspace_id AND c.id = m.conversation_id
-WHERE m.workspace_id = @workspace_id AND c.inbox_id = @inbox_id AND c.contact_id = @contact_id
+WHERE m.workspace_id = @workspace_id AND c.inbox_id = @inbox_id AND c.contact_id = @contact_id AND c.trashed_at IS NULL
   AND m.author_contact_id = @contact_id AND m.client_id = @client_id::text
 ORDER BY m.created_at DESC
 LIMIT 1;

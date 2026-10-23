@@ -416,7 +416,7 @@ func (s *Server) ListMessages(ctx context.Context, req oas.ListMessagesRequestOb
 	if err != nil {
 		return nil, err
 	}
-	c, err := visibleConversation(ctx, s.st.Queries, p, req.ConversationId, false)
+	c, err := readableConversation(ctx, s.st.Queries, p, req.ConversationId)
 	if err != nil {
 		return nil, err
 	}

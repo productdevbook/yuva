@@ -132,12 +132,15 @@ WHERE workspace_id = @workspace_id AND idea_id = @idea_id AND conversation_id = 
 SELECT idea_id FROM roadmap_idea_conversations WHERE workspace_id = @workspace_id AND conversation_id = @conversation_id;
 
 -- name: CountIdeaLinks :one
-SELECT count(*)::int FROM roadmap_idea_conversations WHERE workspace_id = @workspace_id AND idea_id = @idea_id;
+SELECT count(*)::int FROM roadmap_idea_conversations l
+JOIN conversations c ON c.workspace_id = l.workspace_id AND c.id = l.conversation_id
+WHERE l.workspace_id = @workspace_id AND l.idea_id = @idea_id AND c.trashed_at IS NULL;
 
 -- name: CountIdeaLinksByIdeas :many
-SELECT idea_id, count(*)::int AS n FROM roadmap_idea_conversations
-WHERE workspace_id = @workspace_id AND idea_id = ANY(@idea_ids::uuid[])
-GROUP BY idea_id;
+SELECT l.idea_id, count(*)::int AS n FROM roadmap_idea_conversations l
+JOIN conversations c ON c.workspace_id = l.workspace_id AND c.id = l.conversation_id
+WHERE l.workspace_id = @workspace_id AND l.idea_id = ANY(@idea_ids::uuid[]) AND c.trashed_at IS NULL
+GROUP BY l.idea_id;
 
 -- name: ListConversationIdeas :many
 SELECT l.conversation_id, d.id, d.title, d.stage::text AS stage FROM roadmap_idea_conversations l
@@ -147,14 +150,14 @@ WHERE l.workspace_id = @workspace_id AND l.conversation_id = ANY(@conversation_i
 -- name: IdeaLinkBatch :many
 SELECT l.conversation_id, c.feedback_progress FROM roadmap_idea_conversations l
 JOIN conversations c ON c.workspace_id = l.workspace_id AND c.id = l.conversation_id
-WHERE l.workspace_id = @workspace_id AND l.idea_id = @idea_id AND l.conversation_id > @after::uuid
+WHERE l.workspace_id = @workspace_id AND l.idea_id = @idea_id AND l.conversation_id > @after::uuid AND c.trashed_at IS NULL
 ORDER BY l.conversation_id
 LIMIT @lim;
 
 -- name: ListIdeaReplyTargets :many
 SELECT c.id FROM roadmap_idea_conversations l
 JOIN conversations c ON c.workspace_id = l.workspace_id AND c.id = l.conversation_id
-WHERE l.workspace_id = @workspace_id AND l.idea_id = @idea_id AND c.status <> 'closed' AND NOT c.spam
+WHERE l.workspace_id = @workspace_id AND l.idea_id = @idea_id AND c.status <> 'closed' AND NOT c.spam AND c.trashed_at IS NULL
   AND (@all_inboxes::bool OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = @viewer_id))
@@ -203,4 +206,4 @@ LIMIT @lim;
 -- name: CountIdeaLinksToChange :one
 SELECT count(*)::int FROM roadmap_idea_conversations l
 JOIN conversations c ON c.workspace_id = l.workspace_id AND c.id = l.conversation_id
-WHERE l.workspace_id = @workspace_id AND l.idea_id = @idea_id AND c.feedback_progress IS DISTINCT FROM @progress::text;
+WHERE l.workspace_id = @workspace_id AND l.idea_id = @idea_id AND c.feedback_progress IS DISTINCT FROM @progress::text AND c.trashed_at IS NULL;

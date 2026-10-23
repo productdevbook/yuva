@@ -457,7 +457,7 @@ func (r *migrationRun) remove(ctx context.Context) (MigrationSlice, error) {
 		if err != nil || !ok {
 			return MigrationSlice{Done: true}, err
 		}
-		n, _, err := s.deleteConversationBatch(ctx, m.WorkspaceID, func(q *store.Queries) ([]uuid.UUID, error) {
+		n, _, err := s.deleteConversationBatch(ctx, m.WorkspaceID, func(q *store.Queries, _ *eventBatch) ([]uuid.UUID, error) {
 			return q.ListRemovableMigrationConversations(ctx, store.ListRemovableMigrationConversationsParams{WorkspaceID: m.WorkspaceID, MigrationID: &m.ID, MaxRows: removeBatch})
 		})
 		if err != nil {

@@ -35,6 +35,7 @@ VALUES ($1, $2, $3, $4, $5,
     left(coalesce(CASE $3::text
         WHEN 'api_key' THEN (SELECT coalesce(k.bot_name, k.name) FROM api_keys k WHERE k.workspace_id = $2 AND k.id = $4)
         WHEN 'operator' THEN ''
+        WHEN 'system' THEN ''
         ELSE (SELECT coalesce(nullif(pe.name, ''), pe.email) FROM members m JOIN people pe ON pe.id = m.person_id
               WHERE m.workspace_id = $2 AND m.id = $5)
     END, ''), 400),

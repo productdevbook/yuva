@@ -56,7 +56,7 @@ func (src SupportSource) fromInbox(ctx context.Context, q querier, from, to time
 		SELECT page_url AS page, (created_at AT TIME ZONE $3)::date AS day, count(*) FILTER (WHERE kind <> 'feedback') AS c,
 			count(*) FILTER (WHERE kind = 'feedback') AS f, 0::bigint AS up, 0::bigint AS down, 0::bigint AS d
 		FROM conversations
-		WHERE workspace_id = $1 AND inbox_id = $2 AND page_url IS NOT NULL AND NOT spam AND created_at >= $6 AND created_at < $7
+		WHERE workspace_id = $1 AND inbox_id = $2 AND page_url IS NOT NULL AND NOT spam AND trashed_at IS NULL AND created_at >= $6 AND created_at < $7
 		GROUP BY 1, 2
 		UNION ALL
 		SELECT page, day, 0, 0, sum(up), sum(down), 0 FROM page_ratings

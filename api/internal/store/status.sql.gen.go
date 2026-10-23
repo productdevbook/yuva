@@ -1689,9 +1689,9 @@ func (q *Queries) ListStatusIncidentComponents(ctx context.Context, arg ListStat
 }
 
 const listStatusIncidentConversations = `-- name: ListStatusIncidentConversations :many
-SELECT c.id, c.workspace_id, c.inbox_id, c.contact_id, c.channel_id, c.subject, c.status, c.snooze_until, c.priority, c.assignee_id, c.last_message_at, c.last_activity_at, c.created_at, c.updated_at, c.spam, c.email_token, c.related_conversation_id, c.continuity_through, c.continuity_sent_at, c.kind, c.feedback, c.email_address, c.closed_at, c.rating, c.rating_comment, c.rated_at, c.rating_requested_at, c.last_read_by_contact_at, c.page_url, c.page_title, c.channel_kind, c.broadcast_id, c.migration_id, c.imported_at, c.feedback_progress, c.help_article_id, l.linked_at FROM status_incident_conversations l
+SELECT c.id, c.workspace_id, c.inbox_id, c.contact_id, c.channel_id, c.subject, c.status, c.snooze_until, c.priority, c.assignee_id, c.last_message_at, c.last_activity_at, c.created_at, c.updated_at, c.spam, c.email_token, c.related_conversation_id, c.continuity_through, c.continuity_sent_at, c.kind, c.feedback, c.email_address, c.closed_at, c.rating, c.rating_comment, c.rated_at, c.rating_requested_at, c.last_read_by_contact_at, c.page_url, c.page_title, c.channel_kind, c.broadcast_id, c.migration_id, c.imported_at, c.feedback_progress, c.help_article_id, c.trashed_at, c.trashed_by_member_id, c.trashed_by_api_key_id, l.linked_at FROM status_incident_conversations l
 JOIN conversations c ON c.workspace_id = l.workspace_id AND c.id = l.conversation_id
-WHERE l.workspace_id = $1 AND l.incident_id = $2
+WHERE l.workspace_id = $1 AND l.incident_id = $2 AND c.trashed_at IS NULL
   AND ($3::bool OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = $4))
@@ -1770,6 +1770,9 @@ func (q *Queries) ListStatusIncidentConversations(ctx context.Context, arg ListS
 			&i.Conversation.ImportedAt,
 			&i.Conversation.FeedbackProgress,
 			&i.Conversation.HelpArticleID,
+			&i.Conversation.TrashedAt,
+			&i.Conversation.TrashedByMemberID,
+			&i.Conversation.TrashedByApiKeyID,
 			&i.LinkedAt,
 		); err != nil {
 			return nil, err
@@ -2054,7 +2057,7 @@ func (q *Queries) ListStatusPagesByLists(ctx context.Context, arg ListStatusPage
 const listStatusReplyTargets = `-- name: ListStatusReplyTargets :many
 SELECT c.id FROM status_incident_conversations l
 JOIN conversations c ON c.workspace_id = l.workspace_id AND c.id = l.conversation_id
-WHERE l.workspace_id = $1 AND l.incident_id = $2 AND c.status <> 'closed' AND NOT c.spam
+WHERE l.workspace_id = $1 AND l.incident_id = $2 AND c.status <> 'closed' AND NOT c.spam AND c.trashed_at IS NULL
   AND ($3::bool OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = $4))

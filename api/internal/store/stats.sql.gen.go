@@ -18,7 +18,7 @@ FROM messages m
 JOIN conversations c ON c.workspace_id = m.workspace_id AND c.id = m.conversation_id
 WHERE m.workspace_id = $1 AND m.created_at >= $2 AND m.created_at <= $3
   AND m.kind = 'event' AND m.event->>'type' = 'status_changed' AND m.event->>'status' = 'closed' AND m.imported_at IS NULL
-  AND ($4::uuid IS NULL OR c.inbox_id = $4::uuid)
+  AND ($4::uuid IS NULL OR c.inbox_id = $4::uuid) AND c.trashed_at IS NULL
   AND ($5::bool OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = $6::uuid))
@@ -79,7 +79,7 @@ FROM (
           WHERE m.workspace_id = $1 AND m.created_at >= $2 AND m.created_at <= $3
             AND m.kind = 'message' AND m.direction = 'out' AND NOT m.draft AND m.imported_at IS NULL
             AND (m.author_type = 'member' OR m.sent_by_member_id IS NOT NULL)
-            AND ($4::uuid IS NULL OR c.inbox_id = $4::uuid)
+            AND ($4::uuid IS NULL OR c.inbox_id = $4::uuid) AND c.trashed_at IS NULL
             AND ($5::bool OR EXISTS (
                 SELECT 1 FROM inbox_viewers iv
                 WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = $6::uuid)))
@@ -141,7 +141,7 @@ JOIN conversations c ON c.workspace_id = m.workspace_id AND c.id = m.conversatio
 WHERE m.workspace_id = $1 AND m.created_at >= $2 AND m.created_at <= $3
   AND m.kind = 'message' AND m.direction = 'out' AND NOT m.draft AND m.imported_at IS NULL
   AND (m.author_type = 'member' OR m.sent_by_member_id IS NOT NULL)
-  AND ($4::uuid IS NULL OR c.inbox_id = $4::uuid)
+  AND ($4::uuid IS NULL OR c.inbox_id = $4::uuid) AND c.trashed_at IS NULL
   AND ($5::bool OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = $6::uuid))
@@ -198,7 +198,7 @@ FROM (
     JOIN conversations c ON c.workspace_id = m.workspace_id AND c.id = m.conversation_id
     WHERE m.workspace_id = $1 AND m.created_at >= $2 AND m.created_at <= $3
       AND m.kind = 'event' AND m.event->>'type' = 'status_changed' AND m.event->>'status' = 'closed' AND m.imported_at IS NULL
-      AND ($4::uuid IS NULL OR c.inbox_id = $4::uuid)
+      AND ($4::uuid IS NULL OR c.inbox_id = $4::uuid) AND c.trashed_at IS NULL
       AND ($5::bool OR EXISTS (
           SELECT 1 FROM inbox_viewers iv
           WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = $6::uuid))

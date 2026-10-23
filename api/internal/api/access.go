@@ -71,7 +71,16 @@ func visibleInbox(ctx context.Context, q *store.Queries, p principal, id uuid.UU
 	return in, nil
 }
 
+// visibleConversation is a conversation of an inbox the caller can see that is not in the trash.
 func visibleConversation(ctx context.Context, q *store.Queries, p principal, id uuid.UUID, lock bool) (store.Conversation, error) {
+	c, err := visibleConversationOrTrashed(ctx, q, p, id, lock)
+	if err == nil && c.TrashedAt != nil {
+		return c, errConversationGone
+	}
+	return c, err
+}
+
+func visibleConversationOrTrashed(ctx context.Context, q *store.Queries, p principal, id uuid.UUID, lock bool) (store.Conversation, error) {
 	get := q.GetConversation
 	if lock {
 		get = func(ctx context.Context, arg store.GetConversationParams) (store.Conversation, error) {

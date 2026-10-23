@@ -36,7 +36,7 @@ WITH visible AS (
            count(*)::bigint AS open_feedback
     FROM conversations c
     WHERE c.workspace_id = @workspace_id AND c.inbox_id IN (SELECT id FROM visible)
-      AND c.page_url IS NOT NULL AND c.kind = 'feedback' AND c.status = 'open' AND NOT c.spam
+      AND c.page_url IS NOT NULL AND c.kind = 'feedback' AND c.status = 'open' AND NOT c.spam AND c.trashed_at IS NULL
       AND (sqlc.narg(page)::text IS NULL OR c.page_url = sqlc.narg(page)::text)
       AND (sqlc.narg(site)::text IS NULL OR left(c.page_url, length(sqlc.narg(site)::text) + 1) = sqlc.narg(site)::text || '/')
     GROUP BY c.inbox_id, c.page_url
@@ -118,7 +118,7 @@ WITH visible AS (
            count(*)::bigint AS feedback
     FROM conversations c
     WHERE c.workspace_id = @workspace_id AND c.inbox_id IN (SELECT id FROM visible)
-      AND c.page_url IS NOT NULL AND c.kind = 'feedback' AND NOT c.spam AND c.created_at >= @since_at::timestamptz
+      AND c.page_url IS NOT NULL AND c.kind = 'feedback' AND NOT c.spam AND c.created_at >= @since_at::timestamptz AND c.trashed_at IS NULL
       AND (sqlc.narg(site)::text IS NULL OR left(c.page_url, length(sqlc.narg(site)::text) + 1) = sqlc.narg(site)::text || '/')
     GROUP BY 1
 ), started AS (
@@ -175,7 +175,7 @@ WITH visible AS (
            count(*)::bigint AS open_feedback
     FROM conversations c
     WHERE c.workspace_id = @workspace_id AND c.inbox_id IN (SELECT id FROM visible)
-      AND c.page_url IS NOT NULL AND c.kind = 'feedback' AND c.status = 'open' AND NOT c.spam
+      AND c.page_url IS NOT NULL AND c.kind = 'feedback' AND c.status = 'open' AND NOT c.spam AND c.trashed_at IS NULL
     GROUP BY c.inbox_id, c.page_url
 ), threads AS (
     SELECT d.inbox_id, d.page,

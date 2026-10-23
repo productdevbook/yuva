@@ -31,7 +31,7 @@ func (q *Queries) AddConversationLabel(ctx context.Context, arg AddConversationL
 const countOpenConversations = `-- name: CountOpenConversations :many
 SELECT c.inbox_id, c.assignee_id, c.spam, count(*) AS n
 FROM conversations c
-WHERE c.workspace_id = $1 AND c.status = 'open'
+WHERE c.workspace_id = $1 AND c.status = 'open' AND c.trashed_at IS NULL
   AND ($2::bool OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = $3::uuid))
@@ -87,7 +87,7 @@ const countOpenConversationsByLabel = `-- name: CountOpenConversationsByLabel :m
 SELECT cl.label_id, count(*) AS n
 FROM conversations c
 JOIN conversation_labels cl ON cl.workspace_id = c.workspace_id AND cl.conversation_id = c.id
-WHERE c.workspace_id = $1 AND c.status = 'open' AND NOT c.spam
+WHERE c.workspace_id = $1 AND c.status = 'open' AND c.trashed_at IS NULL AND NOT c.spam
   AND ($2::bool OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = $3::uuid))
@@ -136,7 +136,7 @@ func (q *Queries) CountOpenConversationsByLabel(ctx context.Context, arg CountOp
 const countOpenFeedback = `-- name: CountOpenFeedback :many
 SELECT (c.feedback->>'category')::text AS category, count(*) AS n
 FROM conversations c
-WHERE c.workspace_id = $1 AND c.status = 'open' AND NOT c.spam AND c.kind = 'feedback'
+WHERE c.workspace_id = $1 AND c.status = 'open' AND c.trashed_at IS NULL AND NOT c.spam AND c.kind = 'feedback'
   AND ($2::bool OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = $3::uuid))
@@ -192,7 +192,7 @@ VALUES ($1, $2, $3, $4, $5, $6, $7,
         $15, $16, $17,
         (SELECT ch.kind FROM channels ch WHERE ch.workspace_id = $2 AND ch.id = $5),
         $18, $18, $18)
-RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id
+RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id, trashed_at, trashed_by_member_id, trashed_by_api_key_id
 `
 
 type CreateConversationParams struct {
@@ -275,6 +275,9 @@ func (q *Queries) CreateConversation(ctx context.Context, arg CreateConversation
 		&i.ImportedAt,
 		&i.FeedbackProgress,
 		&i.HelpArticleID,
+		&i.TrashedAt,
+		&i.TrashedByMemberID,
+		&i.TrashedByApiKeyID,
 	)
 	return i, err
 }
@@ -297,7 +300,7 @@ func (q *Queries) DeleteConversations(ctx context.Context, arg DeleteConversatio
 }
 
 const getConversation = `-- name: GetConversation :one
-SELECT id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id FROM conversations WHERE workspace_id = $1 AND id = $2
+SELECT id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id, trashed_at, trashed_by_member_id, trashed_by_api_key_id FROM conversations WHERE workspace_id = $1 AND id = $2
 `
 
 type GetConversationParams struct {
@@ -345,6 +348,9 @@ func (q *Queries) GetConversation(ctx context.Context, arg GetConversationParams
 		&i.ImportedAt,
 		&i.FeedbackProgress,
 		&i.HelpArticleID,
+		&i.TrashedAt,
+		&i.TrashedByMemberID,
+		&i.TrashedByApiKeyID,
 	)
 	return i, err
 }
@@ -508,7 +514,7 @@ func (q *Queries) ListConversationPreviews(ctx context.Context, arg ListConversa
 }
 
 const listConversations = `-- name: ListConversations :many
-SELECT c.id, c.workspace_id, c.inbox_id, c.contact_id, c.channel_id, c.subject, c.status, c.snooze_until, c.priority, c.assignee_id, c.last_message_at, c.last_activity_at, c.created_at, c.updated_at, c.spam, c.email_token, c.related_conversation_id, c.continuity_through, c.continuity_sent_at, c.kind, c.feedback, c.email_address, c.closed_at, c.rating, c.rating_comment, c.rated_at, c.rating_requested_at, c.last_read_by_contact_at, c.page_url, c.page_title, c.channel_kind, c.broadcast_id, c.migration_id, c.imported_at, c.feedback_progress, c.help_article_id FROM conversations c
+SELECT c.id, c.workspace_id, c.inbox_id, c.contact_id, c.channel_id, c.subject, c.status, c.snooze_until, c.priority, c.assignee_id, c.last_message_at, c.last_activity_at, c.created_at, c.updated_at, c.spam, c.email_token, c.related_conversation_id, c.continuity_through, c.continuity_sent_at, c.kind, c.feedback, c.email_address, c.closed_at, c.rating, c.rating_comment, c.rated_at, c.rating_requested_at, c.last_read_by_contact_at, c.page_url, c.page_title, c.channel_kind, c.broadcast_id, c.migration_id, c.imported_at, c.feedback_progress, c.help_article_id, c.trashed_at, c.trashed_by_member_id, c.trashed_by_api_key_id FROM conversations c
 WHERE c.workspace_id = $1
   AND ($2::bool OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
@@ -516,39 +522,30 @@ WHERE c.workspace_id = $1
   AND ($4::uuid IS NULL OR c.inbox_id = $4::uuid)
   AND ($5::uuid IS NULL OR c.contact_id = $5::uuid)
   AND ($6::uuid IS NULL OR c.broadcast_id = $6::uuid)
-  AND c.spam = $7::bool
-  AND ($8::text[] IS NULL OR c.kind = ANY($8::text[]))
-  AND ($9::text[] IS NULL OR c.channel_kind = ANY($9::text[]))
-  AND ($10::text IS NULL OR left(c.page_url, length($10::text) + 1) = $10::text || '/')
-  AND ($11::text IS NULL OR c.feedback->>'category' = $11::text)
-  AND ($12::text IS NULL OR c.page_url = $12::text)
-  AND ($13::text[] IS NULL OR c.status = ANY($13::text[]))
-  AND ($14::uuid IS NULL OR EXISTS (
+  AND ($7::bool IS NULL OR c.spam = $7::bool)
+  AND (c.trashed_at IS NOT NULL) = $8::bool
+  AND ($9::text[] IS NULL OR c.kind = ANY($9::text[]))
+  AND ($10::text[] IS NULL OR c.channel_kind = ANY($10::text[]))
+  AND ($11::text IS NULL OR left(c.page_url, length($11::text) + 1) = $11::text || '/')
+  AND ($12::text IS NULL OR c.feedback->>'category' = $12::text)
+  AND ($13::text IS NULL OR c.page_url = $13::text)
+  AND ($14::text[] IS NULL OR c.status = ANY($14::text[]))
+  AND ($15::uuid IS NULL OR EXISTS (
       SELECT 1 FROM roadmap_idea_conversations ri
-      WHERE ri.workspace_id = c.workspace_id AND ri.conversation_id = c.id AND ri.idea_id = $14::uuid))
-  AND (NOT $15::bool OR (c.kind = 'feedback' AND NOT EXISTS (
+      WHERE ri.workspace_id = c.workspace_id AND ri.conversation_id = c.id AND ri.idea_id = $15::uuid))
+  AND (NOT $16::bool OR (c.kind = 'feedback' AND NOT EXISTS (
       SELECT 1 FROM roadmap_idea_conversations ri
       WHERE ri.workspace_id = c.workspace_id AND ri.conversation_id = c.id)))
-  AND (NOT $16::bool OR c.assignee_id IS NULL)
-  AND ($17::uuid IS NULL OR c.assignee_id = $17::uuid)
-  AND ($18::uuid IS NULL OR EXISTS (
+  AND (NOT $17::bool OR c.assignee_id IS NULL)
+  AND ($18::uuid IS NULL OR c.assignee_id = $18::uuid)
+  AND ($19::uuid IS NULL OR EXISTS (
       SELECT 1 FROM conversation_labels cl
-      WHERE cl.workspace_id = c.workspace_id AND cl.conversation_id = c.id AND cl.label_id = $18::uuid))
-  AND ($19::bool IS NULL OR $19::bool = EXISTS (
+      WHERE cl.workspace_id = c.workspace_id AND cl.conversation_id = c.id AND cl.label_id = $19::uuid))
+  AND ($20::bool IS NULL OR $20::bool = EXISTS (
       SELECT 1 FROM conversation_member_states s
       WHERE s.workspace_id = c.workspace_id AND s.conversation_id = c.id
-        AND s.member_id = $20::uuid AND s.pinned_at IS NOT NULL))
-  AND ($21::text IS NULL OR (
-      to_tsvector('simple', translate(c.subject, 'İı', 'ii')) @@ websearch_to_tsquery('simple', translate($21::text, 'İı', 'ii'))
-      OR EXISTS (
-          SELECT 1 FROM messages m
-          WHERE m.workspace_id = c.workspace_id AND m.conversation_id = c.id AND NOT m.draft
-            AND m.search @@ websearch_to_tsquery('simple', translate($21::text, 'İı', 'ii')))
-      OR EXISTS (
-          SELECT 1 FROM contacts ct
-          WHERE ct.workspace_id = c.workspace_id AND ct.id = c.contact_id
-            AND ct.search @@ websearch_to_tsquery('simple', translate($21::text, 'İı', 'ii')))))
-  AND ($22::text IS NULL OR NOT (
+        AND s.member_id = $21::uuid AND s.pinned_at IS NOT NULL))
+  AND ($22::text IS NULL OR (
       to_tsvector('simple', translate(c.subject, 'İı', 'ii')) @@ websearch_to_tsquery('simple', translate($22::text, 'İı', 'ii'))
       OR EXISTS (
           SELECT 1 FROM messages m
@@ -558,10 +555,20 @@ WHERE c.workspace_id = $1
           SELECT 1 FROM contacts ct
           WHERE ct.workspace_id = c.workspace_id AND ct.id = c.contact_id
             AND ct.search @@ websearch_to_tsquery('simple', translate($22::text, 'İı', 'ii')))))
-  AND ($23::timestamptz IS NULL
-       OR (c.last_activity_at, c.id) < ($23::timestamptz, $24::uuid))
+  AND ($23::text IS NULL OR NOT (
+      to_tsvector('simple', translate(c.subject, 'İı', 'ii')) @@ websearch_to_tsquery('simple', translate($23::text, 'İı', 'ii'))
+      OR EXISTS (
+          SELECT 1 FROM messages m
+          WHERE m.workspace_id = c.workspace_id AND m.conversation_id = c.id AND NOT m.draft
+            AND m.search @@ websearch_to_tsquery('simple', translate($23::text, 'İı', 'ii')))
+      OR EXISTS (
+          SELECT 1 FROM contacts ct
+          WHERE ct.workspace_id = c.workspace_id AND ct.id = c.contact_id
+            AND ct.search @@ websearch_to_tsquery('simple', translate($23::text, 'İı', 'ii')))))
+  AND ($24::timestamptz IS NULL
+       OR (c.last_activity_at, c.id) < ($24::timestamptz, $25::uuid))
 ORDER BY c.last_activity_at DESC, c.id DESC
-LIMIT $25
+LIMIT $26
 `
 
 type ListConversationsParams struct {
@@ -571,7 +578,8 @@ type ListConversationsParams struct {
 	InboxID      *uuid.UUID
 	ContactID    *uuid.UUID
 	BroadcastID  *uuid.UUID
-	Spam         bool
+	Spam         *bool
+	Trashed      bool
 	Kinds        []string
 	ChannelKinds []string
 	Site         *string
@@ -601,6 +609,7 @@ func (q *Queries) ListConversations(ctx context.Context, arg ListConversationsPa
 		arg.ContactID,
 		arg.BroadcastID,
 		arg.Spam,
+		arg.Trashed,
 		arg.Kinds,
 		arg.ChannelKinds,
 		arg.Site,
@@ -664,6 +673,9 @@ func (q *Queries) ListConversations(ctx context.Context, arg ListConversationsPa
 			&i.ImportedAt,
 			&i.FeedbackProgress,
 			&i.HelpArticleID,
+			&i.TrashedAt,
+			&i.TrashedByMemberID,
+			&i.TrashedByApiKeyID,
 		); err != nil {
 			return nil, err
 		}
@@ -738,8 +750,76 @@ func (q *Queries) ListExpiredConversationIDs(ctx context.Context, arg ListExpire
 	return items, nil
 }
 
+const listExpiredTrash = `-- name: ListExpiredTrash :many
+SELECT id, inbox_id, contact_id FROM conversations
+WHERE workspace_id = $1 AND trashed_at <= $2::timestamptz
+ORDER BY trashed_at, id
+LIMIT $3
+FOR UPDATE
+`
+
+type ListExpiredTrashParams struct {
+	WorkspaceID uuid.UUID
+	Before      time.Time
+	MaxRows     int32
+}
+
+type ListExpiredTrashRow struct {
+	ID        uuid.UUID
+	InboxID   uuid.UUID
+	ContactID uuid.UUID
+}
+
+// Locked, so a restore that commits first keeps its conversation and one that comes later finds it gone.
+func (q *Queries) ListExpiredTrash(ctx context.Context, arg ListExpiredTrashParams) ([]ListExpiredTrashRow, error) {
+	rows, err := q.db.Query(ctx, listExpiredTrash, arg.WorkspaceID, arg.Before, arg.MaxRows)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ListExpiredTrashRow
+	for rows.Next() {
+		var i ListExpiredTrashRow
+		if err := rows.Scan(&i.ID, &i.InboxID, &i.ContactID); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listWorkspacesWithExpiredTrash = `-- name: ListWorkspacesWithExpiredTrash :many
+SELECT w.id FROM workspaces w
+WHERE w.deleted_at IS NULL
+  AND EXISTS (SELECT 1 FROM conversations c WHERE c.workspace_id = w.id AND c.trashed_at <= $1::timestamptz)
+ORDER BY w.id
+`
+
+func (q *Queries) ListWorkspacesWithExpiredTrash(ctx context.Context, before time.Time) ([]uuid.UUID, error) {
+	rows, err := q.db.Query(ctx, listWorkspacesWithExpiredTrash, before)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []uuid.UUID
+	for rows.Next() {
+		var id uuid.UUID
+		if err := rows.Scan(&id); err != nil {
+			return nil, err
+		}
+		items = append(items, id)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const lockConversation = `-- name: LockConversation :one
-SELECT id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id FROM conversations WHERE workspace_id = $1 AND id = $2 FOR UPDATE
+SELECT id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id, trashed_at, trashed_by_member_id, trashed_by_api_key_id FROM conversations WHERE workspace_id = $1 AND id = $2 FOR UPDATE
 `
 
 type LockConversationParams struct {
@@ -787,6 +867,9 @@ func (q *Queries) LockConversation(ctx context.Context, arg LockConversationPara
 		&i.ImportedAt,
 		&i.FeedbackProgress,
 		&i.HelpArticleID,
+		&i.TrashedAt,
+		&i.TrashedByMemberID,
+		&i.TrashedByApiKeyID,
 	)
 	return i, err
 }
@@ -794,7 +877,7 @@ func (q *Queries) LockConversation(ctx context.Context, arg LockConversationPara
 const moveConversation = `-- name: MoveConversation :one
 UPDATE conversations SET inbox_id = $1, channel_id = $2, assignee_id = $3, updated_at = $4
 WHERE workspace_id = $5 AND id = $6
-RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id
+RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id, trashed_at, trashed_by_member_id, trashed_by_api_key_id
 `
 
 type MoveConversationParams struct {
@@ -853,6 +936,9 @@ func (q *Queries) MoveConversation(ctx context.Context, arg MoveConversationPara
 		&i.ImportedAt,
 		&i.FeedbackProgress,
 		&i.HelpArticleID,
+		&i.TrashedAt,
+		&i.TrashedByMemberID,
+		&i.TrashedByApiKeyID,
 	)
 	return i, err
 }
@@ -872,12 +958,71 @@ func (q *Queries) RemoveConversationLabel(ctx context.Context, arg RemoveConvers
 	return err
 }
 
+const restoreConversation = `-- name: RestoreConversation :one
+UPDATE conversations SET trashed_at = NULL, trashed_by_member_id = NULL, trashed_by_api_key_id = NULL, updated_at = $1
+WHERE workspace_id = $2 AND id = $3 AND trashed_at IS NOT NULL
+RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id, trashed_at, trashed_by_member_id, trashed_by_api_key_id
+`
+
+type RestoreConversationParams struct {
+	Now         time.Time
+	WorkspaceID uuid.UUID
+	ID          uuid.UUID
+}
+
+func (q *Queries) RestoreConversation(ctx context.Context, arg RestoreConversationParams) (Conversation, error) {
+	row := q.db.QueryRow(ctx, restoreConversation, arg.Now, arg.WorkspaceID, arg.ID)
+	var i Conversation
+	err := row.Scan(
+		&i.ID,
+		&i.WorkspaceID,
+		&i.InboxID,
+		&i.ContactID,
+		&i.ChannelID,
+		&i.Subject,
+		&i.Status,
+		&i.SnoozeUntil,
+		&i.Priority,
+		&i.AssigneeID,
+		&i.LastMessageAt,
+		&i.LastActivityAt,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.Spam,
+		&i.EmailToken,
+		&i.RelatedConversationID,
+		&i.ContinuityThrough,
+		&i.ContinuitySentAt,
+		&i.Kind,
+		&i.Feedback,
+		&i.EmailAddress,
+		&i.ClosedAt,
+		&i.Rating,
+		&i.RatingComment,
+		&i.RatedAt,
+		&i.RatingRequestedAt,
+		&i.LastReadByContactAt,
+		&i.PageUrl,
+		&i.PageTitle,
+		&i.ChannelKind,
+		&i.BroadcastID,
+		&i.MigrationID,
+		&i.ImportedAt,
+		&i.FeedbackProgress,
+		&i.HelpArticleID,
+		&i.TrashedAt,
+		&i.TrashedByMemberID,
+		&i.TrashedByApiKeyID,
+	)
+	return i, err
+}
+
 const setFeedbackFirstMessage = `-- name: SetFeedbackFirstMessage :one
 UPDATE conversations c SET feedback = c.feedback || jsonb_build_object(
     'text', $1::text,
     'attachment_count', (SELECT count(*) FROM attachments a WHERE a.workspace_id = c.workspace_id AND a.message_id = $2::uuid))
 WHERE c.workspace_id = $3 AND c.id = $4 AND c.kind = 'feedback'
-RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id
+RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id, trashed_at, trashed_by_member_id, trashed_by_api_key_id
 `
 
 type SetFeedbackFirstMessageParams struct {
@@ -932,6 +1077,9 @@ func (q *Queries) SetFeedbackFirstMessage(ctx context.Context, arg SetFeedbackFi
 		&i.ImportedAt,
 		&i.FeedbackProgress,
 		&i.HelpArticleID,
+		&i.TrashedAt,
+		&i.TrashedByMemberID,
+		&i.TrashedByApiKeyID,
 	)
 	return i, err
 }
@@ -961,12 +1109,79 @@ func (q *Queries) TouchConversation(ctx context.Context, arg TouchConversationPa
 	return err
 }
 
+const trashConversation = `-- name: TrashConversation :one
+UPDATE conversations SET trashed_at = $1::timestamptz, trashed_by_member_id = $2, trashed_by_api_key_id = $3, updated_at = $1::timestamptz
+WHERE workspace_id = $4 AND id = $5 AND trashed_at IS NULL
+RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id, trashed_at, trashed_by_member_id, trashed_by_api_key_id
+`
+
+type TrashConversationParams struct {
+	Now         time.Time
+	MemberID    *uuid.UUID
+	ApiKeyID    *uuid.UUID
+	WorkspaceID uuid.UUID
+	ID          uuid.UUID
+}
+
+func (q *Queries) TrashConversation(ctx context.Context, arg TrashConversationParams) (Conversation, error) {
+	row := q.db.QueryRow(ctx, trashConversation,
+		arg.Now,
+		arg.MemberID,
+		arg.ApiKeyID,
+		arg.WorkspaceID,
+		arg.ID,
+	)
+	var i Conversation
+	err := row.Scan(
+		&i.ID,
+		&i.WorkspaceID,
+		&i.InboxID,
+		&i.ContactID,
+		&i.ChannelID,
+		&i.Subject,
+		&i.Status,
+		&i.SnoozeUntil,
+		&i.Priority,
+		&i.AssigneeID,
+		&i.LastMessageAt,
+		&i.LastActivityAt,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.Spam,
+		&i.EmailToken,
+		&i.RelatedConversationID,
+		&i.ContinuityThrough,
+		&i.ContinuitySentAt,
+		&i.Kind,
+		&i.Feedback,
+		&i.EmailAddress,
+		&i.ClosedAt,
+		&i.Rating,
+		&i.RatingComment,
+		&i.RatedAt,
+		&i.RatingRequestedAt,
+		&i.LastReadByContactAt,
+		&i.PageUrl,
+		&i.PageTitle,
+		&i.ChannelKind,
+		&i.BroadcastID,
+		&i.MigrationID,
+		&i.ImportedAt,
+		&i.FeedbackProgress,
+		&i.HelpArticleID,
+		&i.TrashedAt,
+		&i.TrashedByMemberID,
+		&i.TrashedByApiKeyID,
+	)
+	return i, err
+}
+
 const updateConversation = `-- name: UpdateConversation :one
 UPDATE conversations SET subject = $1, status = $2, snooze_until = $3,
     priority = $4, assignee_id = $5, spam = $6, feedback_progress = $7, updated_at = $8,
     closed_at = CASE WHEN $2 = 'closed' AND status <> 'closed' THEN $8 ELSE closed_at END
 WHERE workspace_id = $9 AND id = $10
-RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id
+RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id, trashed_at, trashed_by_member_id, trashed_by_api_key_id
 `
 
 type UpdateConversationParams struct {
@@ -1033,6 +1248,9 @@ func (q *Queries) UpdateConversation(ctx context.Context, arg UpdateConversation
 		&i.ImportedAt,
 		&i.FeedbackProgress,
 		&i.HelpArticleID,
+		&i.TrashedAt,
+		&i.TrashedByMemberID,
+		&i.TrashedByApiKeyID,
 	)
 	return i, err
 }

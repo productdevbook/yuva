@@ -86,7 +86,7 @@ ORDER BY message_id, created_at, id;
 -- name: GetAttachment :one
 SELECT a.*, c.inbox_id FROM attachments a
 JOIN conversations c ON c.workspace_id = a.workspace_id AND c.id = a.conversation_id
-WHERE a.workspace_id = $1 AND a.id = $2;
+WHERE a.workspace_id = $1 AND a.id = $2 AND c.trashed_at IS NULL;
 
 -- name: GetMessage :one
 SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
@@ -172,7 +172,7 @@ FROM messages m
 JOIN conversations c ON c.workspace_id = m.workspace_id AND c.id = m.conversation_id
 LEFT JOIN api_keys ak ON ak.workspace_id = m.workspace_id AND ak.id = m.author_api_key_id
 LEFT JOIN api_keys sk ON sk.workspace_id = m.workspace_id AND sk.id = m.sent_by_api_key_id
-WHERE m.workspace_id = @workspace_id AND m.draft
+WHERE m.workspace_id = @workspace_id AND m.draft AND c.trashed_at IS NULL
   AND (@all_inboxes::bool OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = @viewer_id))
@@ -189,7 +189,7 @@ LIMIT @lim;
 -- name: CountDrafts :one
 SELECT count(*) FROM messages m
 JOIN conversations c ON c.workspace_id = m.workspace_id AND c.id = m.conversation_id
-WHERE m.workspace_id = @workspace_id AND m.draft
+WHERE m.workspace_id = @workspace_id AND m.draft AND c.trashed_at IS NULL
   AND (@all_inboxes::bool OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = @viewer_id))

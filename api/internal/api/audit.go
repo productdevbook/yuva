@@ -45,6 +45,14 @@ func writeAudit(ctx context.Context, q *store.Queries, p principal, now time.Tim
 	return q.AddAuditEntry(ctx, arg)
 }
 
+// writeSystemAudit records an action Yuva took by itself, such as a scheduled deletion.
+func writeSystemAudit(ctx context.Context, q *store.Queries, workspaceID uuid.UUID, now time.Time, action oas.AuditAction, target oas.AuditTargetType, targetID uuid.UUID, details auditDetails) error {
+	return q.AddAuditEntry(ctx, store.AddAuditEntryParams{
+		ID: newID(), WorkspaceID: workspaceID, ActorKind: string(oas.AuditActorSystem), Action: string(action), TargetType: string(target),
+		TargetID: targetID, Details: boundedDetails(details), Now: now,
+	})
+}
+
 func (p principal) isOperator() bool { return !p.isKey() && !p.isGrant() && p.memberID == uuid.Nil() }
 
 // boundedDetails never lets an entry's size fail the action it records: lists become their
@@ -126,7 +134,7 @@ func (s *Server) ListAuditLog(ctx context.Context, req oas.ListAuditLogRequestOb
 	}
 	if k := req.Params.ActorKind; k != nil {
 		if !k.Valid() {
-			return nil, errValidation("actor_kind must be member, api_key, oauth_grant or operator")
+			return nil, errValidation("actor_kind must be member, api_key, oauth_grant, operator or system")
 		}
 		arg.ActorKind = new(string(*k))
 	}
@@ -158,7 +166,7 @@ func auditEntryBody(r store.AuditLog) (oas.AuditEntry, error) {
 		Actor:  oas.AuditActor{Kind: oas.AuditActorKind(r.ActorKind), Id: r.ActorID, MemberId: r.ActorMemberID, Via: r.Via},
 		Target: oas.AuditTarget{Type: oas.AuditTargetType(r.TargetType), Id: r.TargetID},
 	}
-	if r.ActorKind != string(oas.AuditActorOperator) {
+	if r.ActorKind != string(oas.AuditActorOperator) && r.ActorKind != string(oas.AuditActorSystem) {
 		out.Actor.Name = new(r.ActorName)
 	}
 	if err := json.Unmarshal(r.Details, &out.Details); err != nil {

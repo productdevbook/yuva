@@ -5,7 +5,7 @@ JOIN conversations c ON c.workspace_id = m.workspace_id AND c.id = m.conversatio
 WHERE m.workspace_id = @workspace_id AND m.created_at >= @since AND m.created_at <= @until
   AND m.kind = 'message' AND m.direction = 'out' AND NOT m.draft AND m.imported_at IS NULL
   AND (m.author_type = 'member' OR m.sent_by_member_id IS NOT NULL)
-  AND (sqlc.narg(inbox_id)::uuid IS NULL OR c.inbox_id = sqlc.narg(inbox_id)::uuid)
+  AND (sqlc.narg(inbox_id)::uuid IS NULL OR c.inbox_id = sqlc.narg(inbox_id)::uuid) AND c.trashed_at IS NULL
   AND (@all_inboxes::bool OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = @viewer_id::uuid))
@@ -17,7 +17,7 @@ FROM messages m
 JOIN conversations c ON c.workspace_id = m.workspace_id AND c.id = m.conversation_id
 WHERE m.workspace_id = @workspace_id AND m.created_at >= @since AND m.created_at <= @until
   AND m.kind = 'event' AND m.event->>'type' = 'status_changed' AND m.event->>'status' = 'closed' AND m.imported_at IS NULL
-  AND (sqlc.narg(inbox_id)::uuid IS NULL OR c.inbox_id = sqlc.narg(inbox_id)::uuid)
+  AND (sqlc.narg(inbox_id)::uuid IS NULL OR c.inbox_id = sqlc.narg(inbox_id)::uuid) AND c.trashed_at IS NULL
   AND (@all_inboxes::bool OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = @viewer_id::uuid))
@@ -36,7 +36,7 @@ FROM (
           WHERE m.workspace_id = @workspace_id AND m.created_at >= @since AND m.created_at <= @until
             AND m.kind = 'message' AND m.direction = 'out' AND NOT m.draft AND m.imported_at IS NULL
             AND (m.author_type = 'member' OR m.sent_by_member_id IS NOT NULL)
-            AND (sqlc.narg(inbox_id)::uuid IS NULL OR c.inbox_id = sqlc.narg(inbox_id)::uuid)
+            AND (sqlc.narg(inbox_id)::uuid IS NULL OR c.inbox_id = sqlc.narg(inbox_id)::uuid) AND c.trashed_at IS NULL
             AND (@all_inboxes::bool OR EXISTS (
                 SELECT 1 FROM inbox_viewers iv
                 WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = @viewer_id::uuid)))
@@ -57,7 +57,7 @@ FROM (
     JOIN conversations c ON c.workspace_id = m.workspace_id AND c.id = m.conversation_id
     WHERE m.workspace_id = @workspace_id AND m.created_at >= @since AND m.created_at <= @until
       AND m.kind = 'event' AND m.event->>'type' = 'status_changed' AND m.event->>'status' = 'closed' AND m.imported_at IS NULL
-      AND (sqlc.narg(inbox_id)::uuid IS NULL OR c.inbox_id = sqlc.narg(inbox_id)::uuid)
+      AND (sqlc.narg(inbox_id)::uuid IS NULL OR c.inbox_id = sqlc.narg(inbox_id)::uuid) AND c.trashed_at IS NULL
       AND (@all_inboxes::bool OR EXISTS (
           SELECT 1 FROM inbox_viewers iv
           WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = @viewer_id::uuid))

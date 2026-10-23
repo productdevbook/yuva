@@ -17,7 +17,7 @@ UPDATE conversations SET rating_requested_at = $1::timestamptz
 WHERE workspace_id = $2 AND id = $3 AND status = 'closed' AND closed_at = $4 AND NOT spam
   AND (rating_requested_at IS NULL OR rating_requested_at < closed_at)
   AND (rated_at IS NULL OR rated_at < closed_at)
-RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id
+RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id, trashed_at, trashed_by_member_id, trashed_by_api_key_id
 `
 
 type ClaimRatingRequestParams struct {
@@ -72,6 +72,9 @@ func (q *Queries) ClaimRatingRequest(ctx context.Context, arg ClaimRatingRequest
 		&i.ImportedAt,
 		&i.FeedbackProgress,
 		&i.HelpArticleID,
+		&i.TrashedAt,
+		&i.TrashedByMemberID,
+		&i.TrashedByApiKeyID,
 	)
 	return i, err
 }
@@ -100,7 +103,7 @@ const rateConversation = `-- name: RateConversation :one
 UPDATE conversations SET rating = $1::text, rating_comment = $2, rated_at = $3::timestamptz, updated_at = $3::timestamptz
 WHERE workspace_id = $4 AND id = $5 AND status = 'closed' AND closed_at = $6
   AND (rated_at IS NULL OR rated_at < closed_at)
-RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id
+RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id, trashed_at, trashed_by_member_id, trashed_by_api_key_id
 `
 
 type RateConversationParams struct {
@@ -159,6 +162,9 @@ func (q *Queries) RateConversation(ctx context.Context, arg RateConversationPara
 		&i.ImportedAt,
 		&i.FeedbackProgress,
 		&i.HelpArticleID,
+		&i.TrashedAt,
+		&i.TrashedByMemberID,
+		&i.TrashedByApiKeyID,
 	)
 	return i, err
 }
@@ -166,7 +172,7 @@ func (q *Queries) RateConversation(ctx context.Context, arg RateConversationPara
 const statsRatings = `-- name: StatsRatings :many
 SELECT c.inbox_id, c.rating::text AS rating, count(*) AS n
 FROM conversations c
-WHERE c.workspace_id = $1 AND c.rated_at >= $2::timestamptz AND c.rated_at <= $3::timestamptz AND NOT c.spam AND c.kind <> 'feedback'
+WHERE c.workspace_id = $1 AND c.rated_at >= $2::timestamptz AND c.rated_at <= $3::timestamptz AND NOT c.spam AND c.kind <> 'feedback' AND c.trashed_at IS NULL
   AND ($4::uuid IS NULL OR c.inbox_id = $4::uuid)
   AND ($5::bool OR EXISTS (
       SELECT 1 FROM inbox_viewers iv

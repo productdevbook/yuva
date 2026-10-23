@@ -16,7 +16,7 @@ const homeConversationsByDay = `-- name: HomeConversationsByDay :many
 SELECT c.inbox_id, (c.created_at AT TIME ZONE $1::text)::date AS day, count(*) AS n
 FROM conversations c
 WHERE c.workspace_id = $2 AND c.last_activity_at >= $3::timestamptz
-  AND c.created_at >= $3::timestamptz AND c.created_at <= $4::timestamptz AND NOT c.spam
+  AND c.created_at >= $3::timestamptz AND c.created_at <= $4::timestamptz AND NOT c.spam AND c.trashed_at IS NULL
   AND ($5::uuid IS NULL OR c.inbox_id = $5::uuid)
   AND ($6::bool OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
@@ -132,7 +132,7 @@ const homeInbox = `-- name: HomeInbox :many
 WITH open AS (
     SELECT c.id, c.inbox_id, c.subject, c.contact_id, c.assignee_id, c.channel_kind
     FROM conversations c
-    WHERE c.workspace_id = $1 AND c.status = 'open' AND NOT c.spam
+    WHERE c.workspace_id = $1 AND c.status = 'open' AND NOT c.spam AND c.trashed_at IS NULL
       AND ($2::uuid IS NULL OR c.inbox_id = $2::uuid)
       AND ($3::bool OR EXISTS (
           SELECT 1 FROM inbox_viewers iv
@@ -304,7 +304,7 @@ func (q *Queries) HomeLastBroadcast(ctx context.Context, arg HomeLastBroadcastPa
 const homeOpenLoad = `-- name: HomeOpenLoad :many
 SELECT i.id AS inbox_id, c.assignee_id, coalesce(c.kind = 'feedback', false)::bool AS feedback, count(c.id) AS n
 FROM inboxes i
-LEFT JOIN conversations c ON c.workspace_id = i.workspace_id AND c.inbox_id = i.id AND c.status = 'open' AND NOT c.spam
+LEFT JOIN conversations c ON c.workspace_id = i.workspace_id AND c.inbox_id = i.id AND c.status = 'open' AND NOT c.spam AND c.trashed_at IS NULL
 WHERE i.workspace_id = $1
   AND ($2::uuid IS NULL OR i.id = $2::uuid)
   AND ($3::bool OR EXISTS (
@@ -362,7 +362,7 @@ const homeRatingsByDay = `-- name: HomeRatingsByDay :many
 SELECT c.inbox_id, (c.rated_at AT TIME ZONE $1::text)::date AS day, c.rating::text AS rating, count(*) AS n
 FROM conversations c
 WHERE c.workspace_id = $2 AND c.rated_at >= $3::timestamptz AND c.rated_at <= $4::timestamptz
-  AND NOT c.spam AND c.kind <> 'feedback'
+  AND NOT c.spam AND c.kind <> 'feedback' AND c.trashed_at IS NULL
   AND ($5::uuid IS NULL OR c.inbox_id = $5::uuid)
   AND ($6::bool OR EXISTS (
       SELECT 1 FROM inbox_viewers iv

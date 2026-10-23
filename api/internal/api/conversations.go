@@ -185,6 +185,7 @@ func (s *Server) listItems(ctx context.Context, p principal, rows []store.Conver
 			LastMessageAt: c.LastMessageAt, LastActivityAt: c.LastActivityAt, CreatedAt: c.CreatedAt, UpdatedAt: c.UpdatedAt,
 			RelatedConversationId: c.RelatedConversationId, ClosedAt: c.ClosedAt, Rating: c.Rating, LastReadByContactAt: c.LastReadByContactAt, BroadcastId: c.BroadcastId,
 			Imported: c.Imported, HelpArticleId: c.HelpArticleId, Idea: c.Idea, Contact: contacts[r.ContactID], LastMessage: previews[r.ID], Unread: unread[r.ID], PinnedAt: pinned[r.ID],
+			TrashedAt: c.TrashedAt, TrashedBy: c.TrashedBy, DeletesAt: c.DeletesAt,
 		}
 	}
 	return out, nil
@@ -194,14 +195,19 @@ func conversationBody(c store.Conversation, labels []uuid.UUID) oas.Conversation
 	if labels == nil {
 		labels = []uuid.UUID{}
 	}
-	return oas.Conversation{
+	out := oas.Conversation{
 		Id: c.ID, InboxId: c.InboxID, ContactId: c.ContactID, ChannelId: c.ChannelID, ChannelKind: (*oas.ChannelKind)(c.ChannelKind), Subject: c.Subject,
 		Kind: oas.ConversationKind(c.Kind), Feedback: conversationFeedback(c), Page: conversationPage(c), Status: oas.ConversationStatus(c.Status), SnoozeUntil: c.SnoozeUntil, Priority: oas.Priority(c.Priority), Spam: c.Spam,
 		AssigneeId: c.AssigneeID, Labels: labels, LastMessageAt: c.LastMessageAt, LastActivityAt: c.LastActivityAt,
 		CreatedAt: c.CreatedAt, UpdatedAt: c.UpdatedAt, RelatedConversationId: c.RelatedConversationID, BroadcastId: c.BroadcastID,
 		ClosedAt: c.ClosedAt, Rating: conversationRating(c), LastReadByContactAt: c.LastReadByContactAt, Imported: conversationImport(c),
-		HelpArticleId: c.HelpArticleID,
+		HelpArticleId: c.HelpArticleID, TrashedAt: c.TrashedAt,
 	}
+	if c.TrashedAt != nil {
+		out.TrashedBy = &oas.ConversationTrashedBy{MemberId: c.TrashedByMemberID, ApiKeyId: c.TrashedByApiKeyID}
+		out.DeletesAt = new(trashExpiry(*c.TrashedAt))
+	}
+	return out
 }
 
 func conversationImport(c store.Conversation) *oas.ConversationImport {
@@ -393,7 +399,14 @@ func (s *Server) ListConversations(ctx context.Context, req oas.ListConversation
 	arg := store.ListConversationsParams{
 		WorkspaceID: p.workspaceID, AllInboxes: p.seesAllInboxes(), ViewerID: p.viewerID(),
 		InboxID: prm.InboxId, ContactID: prm.ContactId, BroadcastID: prm.BroadcastId, LabelID: prm.LabelId, Q: pos, QNot: neg,
-		CursorAt: at, CursorID: cid, Lim: lim + 1, Spam: prm.Spam != nil && *prm.Spam,
+		CursorAt: at, CursorID: cid, Lim: lim + 1, Spam: prm.Spam, Trashed: prm.Trashed != nil && *prm.Trashed,
+	}
+	if arg.Trashed {
+		if err := requireTrashManager(p); err != nil {
+			return nil, err
+		}
+	} else if arg.Spam == nil {
+		arg.Spam = new(false)
 	}
 	if arg.Kinds, err = enumList(prm.Kind, "kind must be conversation or feedback"); err != nil {
 		return nil, err
@@ -641,7 +654,7 @@ func (s *Server) CreateConversation(ctx context.Context, req oas.CreateConversat
 
 func (s *Server) GetConversation(ctx context.Context, req oas.GetConversationRequestObject) (oas.GetConversationResponseObject, error) {
 	p := principalFrom(ctx)
-	c, err := visibleConversation(ctx, s.st.Queries, p, req.ConversationId, false)
+	c, err := readableConversation(ctx, s.st.Queries, p, req.ConversationId)
 	if err != nil {
 		return nil, err
 	}

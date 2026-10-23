@@ -22,8 +22,17 @@ func (s *Server) BulkUpdateConversations(ctx context.Context, req oas.BulkUpdate
 	if len(b.ConversationIds) == 0 || len(b.ConversationIds) > maxBulkConversations {
 		return nil, errValidation("conversation_ids must name 1 to 100 conversations")
 	}
+	if b.Trashed != nil {
+		if b.Status != nil || b.SnoozeUntil != nil || b.AssigneeId.IsSpecified() || b.AddLabels != nil || b.RemoveLabels != nil {
+			return nil, errValidation("trashed goes alone, without other changes")
+		}
+		if err := requireTrashManager(p); err != nil {
+			return nil, err
+		}
+		return s.bulkTrash(ctx, p, b.ConversationIds, *b.Trashed)
+	}
 	if b.Status == nil && b.SnoozeUntil == nil && !b.AssigneeId.IsSpecified() && b.AddLabels == nil && b.RemoveLabels == nil {
-		return nil, errValidation("name at least one change: status, assignee_id, add_labels or remove_labels")
+		return nil, errValidation("name at least one change: status, assignee_id, add_labels, remove_labels or trashed")
 	}
 	upd := oas.ConversationUpdate{Status: b.Status, SnoozeUntil: b.SnoozeUntil, AssigneeId: b.AssigneeId}
 	if b.Status != nil && !b.Status.Valid() {
@@ -58,9 +67,23 @@ func (s *Server) BulkUpdateConversations(ctx context.Context, req oas.BulkUpdate
 	if slices.ContainsFunc(add, func(l uuid.UUID) bool { return slices.Contains(remove, l) }) {
 		return nil, errValidation("a label cannot be both added and removed")
 	}
+	return s.bulkEach(ctx, p, b.ConversationIds, func(q *store.Queries, events *eventBatch, id uuid.UUID) (oas.Conversation, error) {
+		return s.changeConversation(ctx, q, events, p, id, upd, add, remove)
+	})
+}
+
+func (s *Server) bulkTrash(ctx context.Context, p principal, ids []uuid.UUID, trash bool) (oas.BulkUpdateConversationsResponseObject, error) {
+	return s.bulkEach(ctx, p, ids, func(q *store.Queries, events *eventBatch, id uuid.UUID) (oas.Conversation, error) {
+		return s.setTrashed(ctx, q, events, p, id, trash)
+	})
+}
+
+// bulkEach applies change to each conversation in its own transaction; a refusal lists the
+// conversation in failed and the others go on.
+func (s *Server) bulkEach(ctx context.Context, p principal, ids []uuid.UUID, change func(q *store.Queries, events *eventBatch, id uuid.UUID) (oas.Conversation, error)) (oas.BulkUpdateConversationsResponseObject, error) {
 	out := oas.ConversationBulkResult{Updated: []oas.Conversation{}, Failed: []oas.ConversationBulkFailure{}}
 	seen := map[uuid.UUID]bool{}
-	for _, id := range b.ConversationIds {
+	for _, id := range ids {
 		if seen[id] {
 			continue
 		}
@@ -68,7 +91,7 @@ func (s *Server) BulkUpdateConversations(ctx context.Context, req oas.BulkUpdate
 		var c oas.Conversation
 		err := s.inTx(ctx, p.workspaceID, func(q *store.Queries, events *eventBatch) error {
 			var err error
-			c, err = s.changeConversation(ctx, q, events, p, id, upd, add, remove)
+			c, err = change(q, events, id)
 			return err
 		})
 		var ae *apiError

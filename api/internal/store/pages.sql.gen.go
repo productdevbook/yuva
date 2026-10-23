@@ -113,7 +113,7 @@ WITH visible AS (
            count(*)::bigint AS open_feedback
     FROM conversations c
     WHERE c.workspace_id = $1 AND c.inbox_id IN (SELECT id FROM visible)
-      AND c.page_url IS NOT NULL AND c.kind = 'feedback' AND c.status = 'open' AND NOT c.spam
+      AND c.page_url IS NOT NULL AND c.kind = 'feedback' AND c.status = 'open' AND NOT c.spam AND c.trashed_at IS NULL
       AND ($10::text IS NULL OR c.page_url = $10::text)
       AND ($11::text IS NULL OR left(c.page_url, length($11::text) + 1) = $11::text || '/')
     GROUP BY c.inbox_id, c.page_url
@@ -254,7 +254,7 @@ WITH visible AS (
            count(*)::bigint AS open_feedback
     FROM conversations c
     WHERE c.workspace_id = $1 AND c.inbox_id IN (SELECT id FROM visible)
-      AND c.page_url IS NOT NULL AND c.kind = 'feedback' AND c.status = 'open' AND NOT c.spam
+      AND c.page_url IS NOT NULL AND c.kind = 'feedback' AND c.status = 'open' AND NOT c.spam AND c.trashed_at IS NULL
     GROUP BY c.inbox_id, c.page_url
 ), threads AS (
     SELECT d.inbox_id, d.page,
@@ -387,7 +387,7 @@ WITH visible AS (
            count(*)::bigint AS feedback
     FROM conversations c
     WHERE c.workspace_id = $1 AND c.inbox_id IN (SELECT id FROM visible)
-      AND c.page_url IS NOT NULL AND c.kind = 'feedback' AND NOT c.spam AND c.created_at >= $8::timestamptz
+      AND c.page_url IS NOT NULL AND c.kind = 'feedback' AND NOT c.spam AND c.created_at >= $8::timestamptz AND c.trashed_at IS NULL
       AND ($7::text IS NULL OR left(c.page_url, length($7::text) + 1) = $7::text || '/')
     GROUP BY 1
 ), started AS (

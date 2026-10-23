@@ -76,7 +76,7 @@ FROM (
     SELECT i.conversation_id, min(i.created_at) AS asked_at
     FROM messages i
     JOIN conversations cv ON cv.workspace_id = i.workspace_id AND cv.id = i.conversation_id
-    WHERE i.workspace_id = $1 AND cv.contact_id = $2 AND NOT cv.spam
+    WHERE i.workspace_id = $1 AND cv.contact_id = $2 AND NOT cv.spam AND cv.trashed_at IS NULL
       AND i.kind = 'message' AND i.direction = 'in'
       AND ($3::bool OR EXISTS (
           SELECT 1 FROM inbox_viewers iv
@@ -130,7 +130,7 @@ func (q *Queries) ContactFirstReplies(ctx context.Context, arg ContactFirstRepli
 const contactRatings = `-- name: ContactRatings :many
 SELECT cv.rating::text AS rating, count(*) AS n
 FROM conversations cv
-WHERE cv.workspace_id = $1 AND cv.contact_id = $2 AND NOT cv.spam AND cv.kind <> 'feedback' AND cv.rating IS NOT NULL
+WHERE cv.workspace_id = $1 AND cv.contact_id = $2 AND NOT cv.spam AND cv.kind <> 'feedback' AND cv.rating IS NOT NULL AND cv.trashed_at IS NULL
   AND ($3::bool OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = cv.workspace_id AND iv.inbox_id = cv.inbox_id AND iv.viewer_id = $4::uuid))
@@ -359,7 +359,7 @@ SELECT c.id, c.last_active_at, count(cv.id) AS conversations,
        count(cv.id) FILTER (WHERE cv.status = 'open') AS open_conversations,
        coalesce(max(coalesce(cv.last_message_at, cv.created_at)), c.created_at)::timestamptz AS last_conversation_at
 FROM contacts c
-LEFT JOIN conversations cv ON cv.workspace_id = c.workspace_id AND cv.contact_id = c.id AND NOT cv.spam
+LEFT JOIN conversations cv ON cv.workspace_id = c.workspace_id AND cv.contact_id = c.id AND NOT cv.spam AND cv.trashed_at IS NULL
   AND ($1::bool OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = cv.workspace_id AND iv.inbox_id = cv.inbox_id AND iv.viewer_id = $2::uuid))
@@ -634,7 +634,7 @@ WHERE c.workspace_id = $1
       OR EXISTS (SELECT 1 FROM contact_external_ids x WHERE x.workspace_id = c.workspace_id AND x.contact_id = c.id)))
   AND ($5::bool IS NULL OR $5::bool = EXISTS (
       SELECT 1 FROM conversations cv
-      WHERE cv.workspace_id = c.workspace_id AND cv.contact_id = c.id AND cv.status = 'open' AND NOT cv.spam
+      WHERE cv.workspace_id = c.workspace_id AND cv.contact_id = c.id AND cv.status = 'open' AND NOT cv.spam AND cv.trashed_at IS NULL
         AND ($2::uuid IS NULL OR EXISTS (
             SELECT 1 FROM inbox_viewers iv
             WHERE iv.workspace_id = cv.workspace_id AND iv.inbox_id = cv.inbox_id AND iv.viewer_id = $2::uuid))))
@@ -732,7 +732,7 @@ WHERE c.workspace_id = $1
       OR EXISTS (SELECT 1 FROM contact_external_ids x WHERE x.workspace_id = c.workspace_id AND x.contact_id = c.id)))
   AND ($5::bool IS NULL OR $5::bool = EXISTS (
       SELECT 1 FROM conversations cv
-      WHERE cv.workspace_id = c.workspace_id AND cv.contact_id = c.id AND cv.status = 'open' AND NOT cv.spam
+      WHERE cv.workspace_id = c.workspace_id AND cv.contact_id = c.id AND cv.status = 'open' AND NOT cv.spam AND cv.trashed_at IS NULL
         AND ($2::uuid IS NULL OR EXISTS (
             SELECT 1 FROM inbox_viewers iv
             WHERE iv.workspace_id = cv.workspace_id AND iv.inbox_id = cv.inbox_id AND iv.viewer_id = $2::uuid))))

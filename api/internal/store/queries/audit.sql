@@ -4,6 +4,7 @@ VALUES (@id, @workspace_id, @actor_kind, sqlc.narg(actor_id), sqlc.narg(actor_me
     left(coalesce(CASE @actor_kind::text
         WHEN 'api_key' THEN (SELECT coalesce(k.bot_name, k.name) FROM api_keys k WHERE k.workspace_id = @workspace_id AND k.id = sqlc.narg(actor_id))
         WHEN 'operator' THEN ''
+        WHEN 'system' THEN ''
         ELSE (SELECT coalesce(nullif(pe.name, ''), pe.email) FROM members m JOIN people pe ON pe.id = m.person_id
               WHERE m.workspace_id = @workspace_id AND m.id = sqlc.narg(actor_member_id))
     END, ''), 400),
