@@ -521,7 +521,7 @@ naming it. `start_conversation` with `send: true` leaves a draft while `bots_may
 
 ## M24 — Tidy for 0.1.0
 
-Status: planned; items Y-117 to Y-125 in `backlog.md`.
+Status: in progress; items Y-117 to Y-125 and Y-133 in `backlog.md`.
 
 - The roadmap, `architecture.md`, `CLAUDE.md` and the guides say what the code does today; nothing
   internal in the repository.
@@ -559,6 +559,6 @@ entry all report `0.1.0`; a fresh install from `docs/install.md` works on a clea
 
 | Milestone | Items | IDs | api | web | sdk | docs | verify | release |
 |---|---|---|---|---|---|---|---|---|
-| M24 Tidy | 8 (+1 withdrawn) | Y-117–Y-125 | 1 | – | 1 | 6 | – | – |
+| M24 Tidy | 9 (+1 withdrawn) | Y-117–Y-125, Y-133 | 1 | – | 2 | 6 | – | – |
 | M25 Acceptance | 3 | Y-126–Y-128 | – | – | – | – | 3 | – |
 | M26 Release | 4 | Y-129–Y-132 | 1 | – | – | 1 | – | 2 |

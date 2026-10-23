@@ -37,6 +37,9 @@ a withdrawn item stays here marked withdrawn. Work before `Y-117` is tracked in 
   - The `CLAUDE.md` check table covers what CI runs: govulncheck, the generated-code diff, Helm lint
     and kind install, the `examples/*` builds and the Dovecot migration tests.
   - `git grep -nE '/srv/|/Users/|server1'` outside test fixtures finds nothing.
+- **As built**
+  - `.claude/agents/yuva-video.md` is excluded in `.git/info/exclude` and was never in the
+    repository, so it keeps its paths and stays out of the public agent list.
 
 ### Y-120 · Configuration reference covers every server setting
 
@@ -76,6 +79,8 @@ a withdrawn item stays here marked withdrawn. Work before `Y-117` is tracked in 
     `TouchRoadmapBoard`, `TrimAnalyticsDaily`; a query that turns out to be needed is used instead.
   - The empty `sdk/go/health/` directory is gone.
   - The `api/` and `sdk/go/` checks pass.
+- **As built**
+  - `TrimAnalyticsDaily` stays: the analytics retention job calls it through a function list.
 
 ### Y-124 · Unused shadcn primitives in the panel (withdrawn)
 
@@ -89,6 +94,18 @@ a withdrawn item stays here marked withdrawn. Work before `Y-117` is tracked in 
   - `SECURITY.md`, `site/src/copy/contact.ts` and the README use the stage the owner chose for
     0.1.0 instead of "pre-alpha", in `en`, `tr` and `de`.
   - `SECURITY.md` › Supported versions names the latest 0.1.x.
+
+### Y-133 · Mobile SDK strings in every locale
+
+- **Area** sdk · **Owner** yuva-mobile · **Priority** P1 · **Depends on** Y-122 · **Chapters** –
+- **Acceptance**
+  - Every key in `sdk/swift/Sources/YuvaKit/Resources/Localizable.xcstrings` has a value in all 47
+    locales (now 15 keys missing in each of 45).
+  - No string in `sdk/kotlin/yuva/src/main/res/values-*/strings.xml` repeats the English text unless
+    the word is the same in that language (e.g. "Feedback" in German); the Messages tab, feedback
+    states, notes and "View feedback" are translated in all 45.
+  - Swift and Kotlin use the same wording per locale.
+  - The `sdk/swift` and `sdk/kotlin` checks pass on the Mac.
 
 ## M25 — Acceptance for 0.1.0
 
