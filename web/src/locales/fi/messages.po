@@ -293,6 +293,7 @@ msgstr "{created, plural, one {# uusi} other {# uutta}}"
 
 #: src/features/broadcasts/Growth.tsx
 #: src/features/docs/Toolbar.tsx
+#: src/features/settings/audit/sentence.ts
 msgid "{d, plural, one {# day} other {# days}}"
 msgstr "{d, plural, one {# päivä} other {# päivää}}"
 
@@ -481,6 +482,10 @@ msgstr "{n, plural, one {# muu keskustelu} other {# muuta keskustelua}}"
 msgid "{n, plural, one {# person} other {# people}}"
 msgstr "{n, plural, one {# henkilö} other {# henkilöä}}"
 
+#: src/features/settings/audit/sentence.ts
+msgid "{n, plural, one {# recipient a day} other {# recipients a day}}"
+msgstr "{n, plural, one {# vastaanottaja päivässä} other {# vastaanottajaa päivässä}}"
+
 #: src/features/setup/SetupHub.tsx
 msgid "{n, plural, one {# website chat} other {# website chats}}"
 msgstr "{n, plural, one {# verkkosivuston chat} other {# verkkosivuston chattia}}"
@@ -664,6 +669,10 @@ msgstr "{percent} %, {doneText} / {total}"
 #: src/features/migrations/UploadStep.tsx
 msgid "{percent}%, {sent} of {size}"
 msgstr "{percent} %, {sent} / {size}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "{person} left the workspace by deleting their account"
+msgstr "{person} poistui työtilasta poistamalla tilinsä"
 
 #: src/features/inbox/ChatsPage.tsx
 msgid "{product}’s conversations"
@@ -1137,6 +1146,10 @@ msgstr "Luonnos kirjoitettiin"
 #: src/components/common/text.ts
 msgid "A file's content does not match its type. Check the file and try again."
 msgstr "Tiedoston sisältö ei vastaa sen tyyppiä. Tarkista tiedosto ja yritä uudelleen."
+
+#: src/features/settings/audit/sentence.ts
+msgid "a former member"
+msgstr "entinen jäsen"
 
 #: src/features/contact/ContactNotes.tsx
 msgid "A former teammate"
@@ -1632,6 +1645,10 @@ msgstr "Lisätty {created}, viimeksi toimitettu {delivered}"
 msgid "Added {created}, last used {used}"
 msgstr "Lisätty {created}, viimeksi käytetty {used}"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Added a webhook to {host}"
+msgstr "Lisäsi webhookin osoitteeseen {host}"
+
 #: src/components/common/text.ts
 msgid "Added by the team"
 msgstr "Tiimin lisäämä"
@@ -1833,6 +1850,10 @@ msgstr "Sallittu"
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Allowed origins"
 msgstr "Sallitut originit"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Allowed the workspace to send broadcasts"
+msgstr "Antoi työtilalle luvan lähettää joukkolähetyksiä"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Already earlier in the file"
@@ -2201,11 +2222,13 @@ msgstr "API ja MCP"
 msgid "API channel"
 msgstr "API-kanava"
 
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/status/IncidentDetail.tsx
 msgid "API key"
 msgstr "API-avain"
 
 #: src/app/Palette.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/channels/ChannelPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
@@ -2370,6 +2393,10 @@ msgstr "Pyydä sähköpostipalvelimesi ylläpitäjää ohjaamaan {address} alla 
 msgid "asked after closing"
 msgstr "kysytty sulkemisen jälkeen"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Asked to be allowed to send broadcasts"
+msgstr "Pyysi lupaa joukkolähetysten lähettämiseen"
+
 #: src/components/common/text.ts
 msgid "Asked to subscribe"
 msgstr "Kutsuttu tilaamaan"
@@ -2514,6 +2541,12 @@ msgstr "Attribuutit"
 #: src/features/broadcasts/Composer.tsx
 msgid "Audience"
 msgstr "Yleisö"
+
+#: src/app/Palette.tsx
+#: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Audit log"
+msgstr "Tarkistusloki"
 
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Authorization"
@@ -2947,6 +2980,10 @@ msgstr "Peruutetaanko tämä tuonti?"
 msgid "Cancelled"
 msgstr "Peruutettu"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Cancelled an invitation"
+msgstr "Peruutti kutsun"
+
 #: src/features/broadcasts/Import.tsx
 msgid "Cancelled. What was added before stays."
 msgstr "Peruutettu. Ennen sitä lisätty säilyy."
@@ -3038,6 +3075,26 @@ msgstr "Muuta, poista ja yhdistä kontakteja"
 msgid "Change, move and bulk-update conversations"
 msgstr "Muuta, siirrä ja päivitä keskusteluja joukkona"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Changed how long conversations are kept from {from} to {to}"
+msgstr "Muutti keskustelujen säilytysajan arvosta {from} arvoon {to}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the daily broadcast limit from {from} to {to}"
+msgstr "Muutti päivittäisen joukkolähetysrajan arvosta {from} arvoon {to}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the mail account or password of a channel"
+msgstr "Muutti kanavan sähköpostitiliä tai salasanaa"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the role of {person} from {from} to {to}"
+msgstr "Muutti käyttäjän {person} roolin roolista {from} rooliin {to}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the webhook to {host}"
+msgstr "Muutti osoitteen {host} webhookia"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Changelog settings"
 msgstr "Muutoslokin asetukset"
@@ -3045,6 +3102,10 @@ msgstr "Muutoslokin asetukset"
 #: src/features/migrations/Wizard.tsx
 msgid "Changes made to {provider}: none"
 msgstr "Palveluun {provider} tehdyt muutokset: ei yhtään"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Changes to members, keys, webhooks and other sensitive settings show up here."
+msgstr "Jäsenten, avainten, webhookien ja muiden arkaluonteisten asetusten muutokset näkyvät tässä."
 
 #: src/features/settings/channels/email/EmailSections.tsx
 msgid "Changing the sending domain turns DKIM signing off until you enable it again for the new domain."
@@ -3076,6 +3137,10 @@ msgstr "Kanavan asetukset"
 #: src/features/settings/ProductsPage.tsx
 msgid "Channels"
 msgstr "Kanavat"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Channels and inboxes"
+msgstr "Kanavat ja postilaatikot"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Chat"
@@ -3613,6 +3678,10 @@ msgstr "Yhdistä palvelimesi ja bottisi Yuvaan"
 msgid "Connected"
 msgstr "Yhdistetty"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Connected {client}"
+msgstr "Yhdisti sovelluksen {client}"
+
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Connected {created}"
 msgstr "Yhdistetty {created}"
@@ -3622,6 +3691,7 @@ msgstr "Yhdistetty {created}"
 #: src/components/common/SettingsStrip.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/inbox/SidePanels.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
 msgid "Connected apps"
@@ -3733,6 +3803,10 @@ msgstr "Kontakti {since} lähtien"
 #: src/features/settings/webhooks/events.tsx
 msgid "Contacts"
 msgstr "Kontaktit"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Contacts and exports"
+msgstr "Yhteystiedot ja viennit"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "contains"
@@ -4053,6 +4127,18 @@ msgstr "Luo Yuva-tilisi"
 msgid "Created"
 msgstr "Luotu"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Created an analytics export"
+msgstr "Loi analytiikkaviennin"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Created the API key {name}"
+msgstr "Loi API-avaimen {name}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Created the DKIM key {selector}"
+msgstr "Loi DKIM-avaimen {selector}"
+
 #: src/features/migrations/DoneStep.tsx
 msgid "Credentials deleted {deletedAt}. Yuva can no longer read {address}."
 msgstr "Tunnukset poistettu {deletedAt}. Yuva ei voi enää lukea osoitetta {address}."
@@ -4154,6 +4240,10 @@ msgstr "Historian päivät"
 #: src/features/setup/InstallStep.tsx
 msgid "Decide who may write in discussions"
 msgstr "Päätä, kuka saa kirjoittaa keskusteluihin"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Declined the request to send broadcasts"
+msgstr "Hylkäsi joukkolähetysten lähetyspyynnön"
 
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "Default: {fallback}"
@@ -4336,6 +4426,14 @@ msgstr "Poista tilisi"
 msgid "Delete your account?"
 msgstr "Poistetaanko tilisi?"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted a contact"
+msgstr "Poisti yhteystiedon"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted a DKIM key"
+msgstr "Poisti DKIM-avaimen"
+
 #: src/features/contact/MergeContactDialog.tsx
 msgid "deleted afterwards"
 msgstr "poistetaan sen jälkeen"
@@ -4362,6 +4460,14 @@ msgstr "Poistettu jäsen"
 #: src/components/common/DiscussionAuthor.tsx
 msgid "Deleted reader"
 msgstr "Poistettu lukija"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted the inbox {name}"
+msgstr "Poisti postilaatikon {name}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted the webhook to {host}"
+msgstr "Poisti osoitteen {host} webhookin"
 
 #: src/features/settings/inboxes/InboxSecurity.tsx
 msgid "Deletes its channels, conversations, messages and attachments. This cannot be undone."
@@ -4474,6 +4580,10 @@ msgstr "Hylkää muutokset"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Discard the suggested reply"
 msgstr "Hylkää ehdotettu vastaus"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Disconnected {client}"
+msgstr "Katkaisi sovelluksen {client} yhteyden"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/DocsPage.tsx
@@ -5156,8 +5266,8 @@ msgid "Every request to this endpoint, newest first. The newest 100 are kept."
 msgstr "Jokainen tähän päätepisteeseen tehty pyyntö, uusin ensin. Uusimmat 100 säilytetään."
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-msgid "Every scope except sending broadcasts."
-msgstr "Kaikki scopet paitsi joukkolähetysten lähettäminen."
+msgid "Every scope except sending broadcasts and reading the audit log."
+msgstr "Kaikki oikeudet paitsi joukkolähetysten lähettäminen ja tarkistusloki."
 
 #: src/features/inbox/SourceFilter.tsx
 msgid "Every site"
@@ -5174,6 +5284,10 @@ msgstr "Jokainen tyyppi"
 #: src/features/setup/SetupHub.tsx
 msgid "Every website and app shows its visitors on Home and in Analytics."
 msgstr "Jokainen verkkosivusto ja sovellus näyttää kävijänsä Etusivulla ja Analytiikassa."
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Everyone"
+msgstr "Kaikki"
 
 #: src/features/inbox/ChatsPage.tsx
 msgid "Everyone has been answered."
@@ -5203,6 +5317,7 @@ msgstr "Kaikkien viestit julkaistaan heti, paitsi niiden tekijöiden, jotka merk
 #: src/features/migrations/Wizard.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 msgid "Everything"
 msgstr "Kaikki"
 
@@ -5276,6 +5391,14 @@ msgstr "Vientitiedosto"
 #: src/features/migrations/text.ts
 msgid "Export once as a .zip file. Google mails you a link when it is ready; for a large mailbox that can take a day or more."
 msgstr "Vie kerran .zip-tiedostona. Google lähettää sinulle linkin sähköpostitse, kun se on valmis; suurelle postilaatikolle se voi kestää päivän tai kauemmin."
+
+#: src/features/settings/audit/sentence.ts
+msgid "Exported the consent records of contacts"
+msgstr "Vei yhteystietojen suostumustiedot"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Exported the consent records of the list {name}"
+msgstr "Vei listan {name} suostumustiedot"
 
 #: src/features/broadcasts/Import.tsx
 msgid "External id"
@@ -5603,6 +5726,10 @@ msgstr "Kirjautuneille käyttäjille taustajärjestelmäsi allekirjoittaa identi
 msgid "For signed-in users: the identity secret, shown only now"
 msgstr "Kirjautuneille käyttäjille: identiteettisalaisuus, näytetään vain nyt"
 
+#: src/features/settings/audit/sentence.ts
+msgid "forever"
+msgstr "ikuisesti"
+
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/ListPage.tsx
 msgid "Form"
@@ -5678,6 +5805,7 @@ msgstr "Löytyi Lähetetyt-kansioistasi"
 msgid "Friday"
 msgstr "Perjantai"
 
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "From"
 msgstr "Lähettäjä"
@@ -5761,6 +5889,10 @@ msgstr "Saman viestin muut kopiot"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Gallery"
 msgstr "Galleria"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Gave {person} access to {inbox}"
+msgstr "Antoi käyttäjälle {person} pääsyn kohteeseen {inbox}"
 
 #: src/app/Sidebar.tsx
 #: src/components/common/SettingsStrip.tsx
@@ -6590,6 +6722,10 @@ msgstr "Kutsun kieli"
 msgid "Invite your team"
 msgstr "Kutsu tiimisi"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Invited {email} as {role}"
+msgstr "Kutsui osoitteen {email} rooliin {role}"
+
 #: src/features/team/TeamPage.tsx
 msgid "Invites"
 msgstr "Kutsut"
@@ -6758,6 +6894,10 @@ msgstr "Sen raportti ja vastaanottajalista poistetaan. Vastausten avaamat keskus
 msgid "Its settings, credentials and progress are deleted. Imported conversations stay."
 msgstr "Sen asetukset, tunnukset ja edistyminen poistetaan. Tuodut keskustelut säilyvät."
 
+#: src/features/settings/audit/sentence.ts
+msgid "Joined the workspace as {role}"
+msgstr "Liittyi työtilaan roolilla {role}"
+
 #: src/features/conversation/ConversationStatus.tsx
 msgid "Just wrote"
 msgstr "Kirjoitti juuri"
@@ -6817,6 +6957,10 @@ msgstr "Avaimet ja avustajat eivät saa ajastaa joukkolähetyksiä tässä työt
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "Keys and assistants may send broadcasts"
 msgstr "Avaimet ja avustajat saavat lähettää joukkolähetyksiä"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Keys and connected apps"
+msgstr "Avaimet ja yhdistetyt sovellukset"
 
 #: src/features/settings/channels/ChannelPage.tsx
 msgid "Keys that can reach this product. Create and revoke them under API & MCP."
@@ -7245,6 +7389,7 @@ msgstr "Lataa kuvat"
 #: src/features/contact/ContactsPage.tsx
 #: src/features/docs/discussions/parts.tsx
 #: src/features/docs/PagesTab.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
 #: src/features/status/LinkConversationsDialog.tsx
 #: src/features/status/MonitorChecks.tsx
@@ -7628,6 +7773,10 @@ msgstr "Jäsen"
 #: src/features/team/TeamPage.tsx
 msgid "Members"
 msgstr "Jäsenet"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Members and invitations"
+msgstr "Jäsenet ja kutsut"
 
 #: src/features/conversation/composer/MentionMenu.tsx
 msgid "Mention a teammate"
@@ -8652,6 +8801,10 @@ msgstr "Ei vielä päätepisteitä"
 msgid "No endpoints yet."
 msgstr "Ei vielä päätepisteitä."
 
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "No entry matches these filters."
+msgstr "Mikään merkintä ei vastaa näitä suodattimia."
+
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "No events recorded."
 msgstr "Ei tallennettuja tapahtumia."
@@ -8705,6 +8858,10 @@ msgstr "Ei vielä tunnisteita"
 #: src/features/inbox/ChatList.tsx
 msgid "No labels yet. Add them in settings."
 msgstr "Ei vielä tunnisteita. Lisää niitä asetuksissa."
+
+#: src/features/settings/audit/sentence.ts
+msgid "no limit"
+msgstr "ei rajaa"
 
 #: src/features/broadcasts/Pace.tsx
 msgid "No limit"
@@ -9197,6 +9354,10 @@ msgstr "Mitään ei ole vielä ratkaistu."
 #: src/features/broadcasts/Report.tsx
 msgid "Nothing has happened yet."
 msgstr "Mitään ei ole vielä tapahtunut."
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Nothing here"
+msgstr "Täällä ei ole vielä mitään"
 
 #: src/features/broadcasts/Overview.tsx
 msgid "Nothing here."
@@ -9963,6 +10124,10 @@ msgstr "Toiminnassa"
 #: src/features/status/MonitorToken.tsx
 msgid "operational recovers; degraded, partial_outage and major_outage fail."
 msgstr "operational palauttaa; degraded, partial_outage ja major_outage kaatavat."
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Operator"
+msgstr "Operaattori"
 
 #: src/features/status/ComponentDialogs.tsx
 msgid "Optional. Shown on the public page."
@@ -11090,6 +11255,10 @@ msgstr "Lue tiekarttatauluja, ideoita ja vaiheiden historiaa"
 msgid "Read status pages, components and incidents"
 msgstr "Lue tilasivuja, komponentteja ja häiriöitä"
 
+#: src/components/common/text.ts
+msgid "Read the audit log (owners only)"
+msgstr "Lue tarkistusloki (vain omistajat)"
+
 #: src/features/migrations/text.ts
 msgid "Read the folders"
 msgstr "Lue kansiot"
@@ -11373,6 +11542,10 @@ msgstr "Poistetaanko tämä pääsyavain?"
 #: src/features/migrations/DoneStep.tsx
 msgid "Remove Yuva's access in Microsoft"
 msgstr "Poista Yuvan pääsy Microsoftissa"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed {person} from the workspace"
+msgstr "Poisti käyttäjän {person} työtilasta"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Removes {name} with its products, channels, conversations, contacts, files, labels, webhooks and API keys for everyone. Members keep their accounts."
@@ -11789,6 +11962,10 @@ msgstr "Perutaanko {keyName}?"
 msgid "Revoked"
 msgstr "Peruttu"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Revoked the API key {name}"
+msgstr "Mitätöi API-avaimen {name}"
+
 #: src/features/broadcasts/ListForm.tsx
 msgid "Right after subscribing, people get a short mail that confirms it, with an unsubscribe link."
 msgstr "Heti tilauksen jälkeen ihmiset saavat lyhyen viestin, joka vahvistaa sen ja jossa on poistumislinkki."
@@ -11839,6 +12016,22 @@ msgstr "Kierrätetäänkö julkinen avain?"
 #: src/features/settings/webhooks/sections.tsx
 msgid "Rotate the signing secret?"
 msgstr "Kierrätetäänkö allekirjoitussalaisuus?"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the forwarding address of a channel"
+msgstr "Uusi kanavan edelleenlähetysosoitteen"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the identity secret of an inbox"
+msgstr "Uusi postilaatikon identiteettisalaisuuden"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the key of a channel"
+msgstr "Uusi kanavan avaimen"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the signing secret of a webhook"
+msgstr "Uusi webhookin allekirjoitussalaisuuden"
 
 #: src/features/setup/email/EmailReceiveStep.tsx
 msgid "Route your domain"
@@ -13534,6 +13727,10 @@ msgstr "support@yrityksesi.fi"
 msgid "Suspended"
 msgstr "Jäädytetty"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Suspended broadcasts"
+msgstr "Keskeytti joukkolähetykset"
+
 #: src/features/migrations/Wizard.tsx
 msgid "Switch"
 msgstr "Vaihda"
@@ -14054,8 +14251,8 @@ msgid "The key is ready"
 msgstr "Avain on valmis"
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-msgid "The key sees only these inboxes and cannot manage inboxes, webhooks or the workspace."
-msgstr "Avain näkee vain nämä postilaatikot eikä voi hallita postilaatikoita, webhookeja tai työtilaa."
+msgid "The key sees only these inboxes and cannot manage inboxes, webhooks or the workspace, or read the audit log."
+msgstr "Avain näkee vain nämä postilaatikot, eikä se voi hallita postilaatikoita, webhookeja tai työtilaa eikä lukea tarkistuslokia."
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "The key stops working at the end of this day."
@@ -14522,8 +14719,8 @@ msgid "The What’s new count shows on the chat button while no messages are unr
 msgstr "Uutuuksien määrä näkyy chat-painikkeessa, kun lukemattomia viestejä ei ole. Widgetin etusivu näyttää sen aina."
 
 #: src/features/settings/GeneralTabs.tsx
-msgid "The workspace itself: name, retention, labels, canned replies and moving in"
-msgstr "Itse työtila: nimi, säilytys, tunnisteet, valmiit vastaukset ja siirto"
+msgid "The workspace itself: name, retention, labels, canned replies, moving in and the audit log"
+msgstr "Itse työtila: nimi, säilytys, tunnisteet, valmiit vastaukset, siirto ja tarkistusloki"
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The workspace may not send broadcasts for now."
@@ -15062,6 +15259,7 @@ msgstr "Otsikko"
 msgid "TLS (port 465)"
 msgstr "TLS (portti 465)"
 
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "To"
 msgstr "Vastaanottaja"
@@ -15112,6 +15310,10 @@ msgstr "Liian monta yritystä. Odota hetki ja yritä uudelleen."
 #: src/features/auth/CreateWorkspace.tsx
 msgid "Too many workspaces were created from your network today. Try again tomorrow."
 msgstr "Verkostasi luotiin tänään liian monta työtilaa. Yritä uudelleen huomenna."
+
+#: src/features/settings/audit/sentence.ts
+msgid "Took away the access of {person} to {inbox}"
+msgstr "Poisti käyttäjän {person} pääsyn kohteeseen {inbox}"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "tr, en-GB"
@@ -15755,6 +15957,10 @@ msgstr "Versiot"
 msgid "Very large mailbox? Start with a Google Takeout file"
 msgstr "Erittäin suuri postilaatikko? Aloita Google Takeout -tiedostolla"
 
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "via {via}"
+msgstr "{via} kautta"
+
 #: src/features/home/HomePage.tsx
 msgid "View"
 msgstr "Näytä"
@@ -15970,6 +16176,7 @@ msgid "Webhook endpoint"
 msgstr "Webhook-päätepiste"
 
 #: src/app/Palette.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
@@ -16014,6 +16221,10 @@ msgstr "Keskiviikko"
 #: src/features/broadcasts/ListForm.tsx
 msgid "Welcome receipt"
 msgstr "Tervetuloviesti"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "What"
+msgstr "Mitä"
 
 #: src/features/broadcasts/Import.tsx
 msgid "What {header} holds"
@@ -16245,6 +16456,10 @@ msgstr "Kun pois, toimituksia ei tehdä."
 msgid "While your status is Away, only new messages in conversations assigned to you and new assignments notify you. A conversation you have open in the panel never notifies you."
 msgstr "Kun tilasi on Poissa, saat ilmoituksen vain sinulle osoitetuista keskusteluista tulevista uusista viesteistä ja uusista osoituksista. Paneelissa avoinna olevasta keskustelusta et koskaan saa ilmoitusta."
 
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Who"
+msgstr "Kuka"
+
 #: src/features/broadcasts/ListsHome.tsx
 msgid "Who agreed to hear from you, with consent recorded"
 msgstr "Ketkä ovat suostuneet saamaan viestejäsi, suostumus tallennettuna"
@@ -16256,6 +16471,14 @@ msgstr "Kuka vastaa, missä, ja ketkä ovat paikalla"
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Who can reply"
 msgstr "Kuka voi vastata"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Who changed access, keys and data"
+msgstr "Kuka muutti käyttöoikeuksia, avaimia ja tietoja"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Who changed members, access, keys, webhooks, mail accounts, retention and exports, newest first. Only owners see this."
+msgstr "Kuka muutti jäseniä, käyttöoikeuksia, avaimia, webhookeja, sähköpostitilejä, säilytystä ja vientejä, uusin ensin. Vain omistajat näkevät tämän."
 
 #: src/features/team/TeamPage.tsx
 msgid "Who is here"
@@ -16366,6 +16589,10 @@ msgstr "Työstetään …"
 #: src/features/settings/workspace/RetentionForm.tsx
 msgid "Workspace"
 msgstr "Työtila"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Workspace and broadcasts"
+msgstr "Työtila ja joukkolähetykset"
 
 #: src/features/auth/CreateWorkspace.tsx
 msgid "Workspace name"

@@ -10,6 +10,7 @@ import {
   PlugIcon,
   PlusIcon,
   QuoteIcon,
+  ScrollTextIcon,
   TagIcon,
   UsersIcon,
 } from "lucide-react"
@@ -96,7 +97,7 @@ export function useInboxChannels() {
 export function SettingsColumn() {
   const { t } = useLingui()
   const text = useEnumText()
-  const { me, membership, canManage, workspaceId: ws } = useSession()
+  const { me, membership, canManage, isOwner, workspaceId: ws } = useSession()
   const inboxes = useInboxChannels()
   const members = useMembers().data
   const canned = useCannedReplies().data
@@ -224,6 +225,14 @@ export function SettingsColumn() {
               title={<Trans>Move to Yuva</Trans>}
               detail={<Trans>Bring a mailbox's history from Gmail, Yandex or any IMAP server</Trans>}
             />
+          </NavRow>
+        )}
+        {isOwner && (
+          <NavRow to="/settings/audit-log" testId="settings-audit-log">
+            <RowIcon>
+              <ScrollTextIcon />
+            </RowIcon>
+            <RowText title={<Trans>Audit log</Trans>} detail={<Trans>Who changed access, keys and data</Trans>} />
           </NavRow>
         )}
       </Group>

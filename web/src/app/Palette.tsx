@@ -32,7 +32,7 @@ function useItems(open: boolean): Item[] {
   const text = useEnumText()
   const navigate = useNavigate()
   const { pathname } = useLocation()
-  const { canManage } = useSession()
+  const { canManage, isOwner } = useSession()
   const analytics = useAnalyticsVisible()
   const { openShortcuts } = useShell()
   const inboxList = useInboxes().data
@@ -127,6 +127,7 @@ function useItems(open: boolean): Item[] {
       go(t`Webhooks`, "/settings/webhooks")
       go(t`Workspace`, "/settings/workspace")
     }
+    if (isOwner) go(t`Audit log`, "/settings/audit-log")
     list.push({ group: t`Go to`, label: t`Keyboard shortcuts`, keys: [SHORTCUTS.help], run: openShortcuts })
     list.push({ group: t`Appearance`, label: t`Light appearance`, run: () => setTheme("light") })
     list.push({ group: t`Appearance`, label: t`Dark appearance`, run: () => setTheme("dark") })
@@ -144,6 +145,7 @@ function useItems(open: boolean): Item[] {
     openShortcuts,
     setFilter,
     canManage,
+    isOwner,
     analytics,
     pathname,
   ])

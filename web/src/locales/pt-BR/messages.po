@@ -293,6 +293,7 @@ msgstr "{created, plural, one {# nova} other {# novas}}"
 
 #: src/features/broadcasts/Growth.tsx
 #: src/features/docs/Toolbar.tsx
+#: src/features/settings/audit/sentence.ts
 msgid "{d, plural, one {# day} other {# days}}"
 msgstr "{d, plural, one {# dia} other {# dias}}"
 
@@ -481,6 +482,10 @@ msgstr "{n, plural, one {# outra conversa} other {# outras conversas}}"
 msgid "{n, plural, one {# person} other {# people}}"
 msgstr "{n, plural, one {# pessoa} other {# pessoas}}"
 
+#: src/features/settings/audit/sentence.ts
+msgid "{n, plural, one {# recipient a day} other {# recipients a day}}"
+msgstr "{n, plural, one {# destinatário por dia} other {# destinatários por dia}}"
+
 #: src/features/setup/SetupHub.tsx
 msgid "{n, plural, one {# website chat} other {# website chats}}"
 msgstr "{n, plural, one {# chat do site} other {# chats do site}}"
@@ -664,6 +669,10 @@ msgstr "{percent}%, {doneText} de {total}"
 #: src/features/migrations/UploadStep.tsx
 msgid "{percent}%, {sent} of {size}"
 msgstr "{percent}%, {sent} de {size}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "{person} left the workspace by deleting their account"
+msgstr "{person} saiu do espaço de trabalho ao excluir a conta"
 
 #: src/features/inbox/ChatsPage.tsx
 msgid "{product}’s conversations"
@@ -1137,6 +1146,10 @@ msgstr "Um rascunho foi escrito"
 #: src/components/common/text.ts
 msgid "A file's content does not match its type. Check the file and try again."
 msgstr "O conteúdo de um arquivo não corresponde ao tipo. Confira o arquivo e tente de novo."
+
+#: src/features/settings/audit/sentence.ts
+msgid "a former member"
+msgstr "um ex-membro"
 
 #: src/features/contact/ContactNotes.tsx
 msgid "A former teammate"
@@ -1632,6 +1645,10 @@ msgstr "Adicionado {created}, última entrega {delivered}"
 msgid "Added {created}, last used {used}"
 msgstr "Adicionado {created}, último uso {used}"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Added a webhook to {host}"
+msgstr "Adicionou um webhook para {host}"
+
 #: src/components/common/text.ts
 msgid "Added by the team"
 msgstr "Adicionado pela equipe"
@@ -1833,6 +1850,10 @@ msgstr "Permitido"
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Allowed origins"
 msgstr "Origens permitidas"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Allowed the workspace to send broadcasts"
+msgstr "Permitiu que o espaço de trabalho envie transmissões"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Already earlier in the file"
@@ -2201,11 +2222,13 @@ msgstr "API e MCP"
 msgid "API channel"
 msgstr "Canal de API"
 
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/status/IncidentDetail.tsx
 msgid "API key"
 msgstr "Chave de API"
 
 #: src/app/Palette.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/channels/ChannelPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
@@ -2370,6 +2393,10 @@ msgstr "Peça ao administrador do seu servidor de e-mail para encaminhar {addres
 msgid "asked after closing"
 msgstr "perguntado após o fechamento"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Asked to be allowed to send broadcasts"
+msgstr "Pediu permissão para enviar transmissões"
+
 #: src/components/common/text.ts
 msgid "Asked to subscribe"
 msgstr "Convidado a se inscrever"
@@ -2514,6 +2541,12 @@ msgstr "Atributos"
 #: src/features/broadcasts/Composer.tsx
 msgid "Audience"
 msgstr "Público"
+
+#: src/app/Palette.tsx
+#: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Audit log"
+msgstr "Registro de auditoria"
 
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Authorization"
@@ -2947,6 +2980,10 @@ msgstr "Cancelar esta importação?"
 msgid "Cancelled"
 msgstr "Cancelado"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Cancelled an invitation"
+msgstr "Cancelou um convite"
+
 #: src/features/broadcasts/Import.tsx
 msgid "Cancelled. What was added before stays."
 msgstr "Cancelado. O que foi adicionado antes permanece."
@@ -3038,6 +3075,26 @@ msgstr "Alterar, excluir e mesclar contatos"
 msgid "Change, move and bulk-update conversations"
 msgstr "Alterar, mover e atualizar conversas em massa"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Changed how long conversations are kept from {from} to {to}"
+msgstr "Alterou o tempo de retenção das conversas de {from} para {to}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the daily broadcast limit from {from} to {to}"
+msgstr "Alterou o limite diário de transmissões de {from} para {to}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the mail account or password of a channel"
+msgstr "Alterou a conta de e-mail ou a senha de um canal"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the role of {person} from {from} to {to}"
+msgstr "Alterou o papel de {person} de {from} para {to}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the webhook to {host}"
+msgstr "Alterou o webhook para {host}"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Changelog settings"
 msgstr "Configurações do changelog"
@@ -3045,6 +3102,10 @@ msgstr "Configurações do changelog"
 #: src/features/migrations/Wizard.tsx
 msgid "Changes made to {provider}: none"
 msgstr "Alterações feitas no {provider}: nenhuma"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Changes to members, keys, webhooks and other sensitive settings show up here."
+msgstr "As alterações em membros, chaves, webhooks e outras configurações sensíveis aparecem aqui."
 
 #: src/features/settings/channels/email/EmailSections.tsx
 msgid "Changing the sending domain turns DKIM signing off until you enable it again for the new domain."
@@ -3076,6 +3137,10 @@ msgstr "Configurações do canal"
 #: src/features/settings/ProductsPage.tsx
 msgid "Channels"
 msgstr "Canais"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Channels and inboxes"
+msgstr "Canais e caixas de entrada"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Chat"
@@ -3613,6 +3678,10 @@ msgstr "Conecte seus servidores e bots ao Yuva"
 msgid "Connected"
 msgstr "Conectado"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Connected {client}"
+msgstr "Conectou {client}"
+
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Connected {created}"
 msgstr "Conectado {created}"
@@ -3622,6 +3691,7 @@ msgstr "Conectado {created}"
 #: src/components/common/SettingsStrip.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/inbox/SidePanels.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
 msgid "Connected apps"
@@ -3733,6 +3803,10 @@ msgstr "Contato desde {since}"
 #: src/features/settings/webhooks/events.tsx
 msgid "Contacts"
 msgstr "Contatos"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Contacts and exports"
+msgstr "Contatos e exportações"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "contains"
@@ -4053,6 +4127,18 @@ msgstr "Crie sua conta do Yuva"
 msgid "Created"
 msgstr "Criado"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Created an analytics export"
+msgstr "Criou uma exportação de análises"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Created the API key {name}"
+msgstr "Criou a chave de API {name}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Created the DKIM key {selector}"
+msgstr "Criou a chave DKIM {selector}"
+
 #: src/features/migrations/DoneStep.tsx
 msgid "Credentials deleted {deletedAt}. Yuva can no longer read {address}."
 msgstr "Credenciais excluídas {deletedAt}. O Yuva não consegue mais ler {address}."
@@ -4154,6 +4240,10 @@ msgstr "Dias de histórico"
 #: src/features/setup/InstallStep.tsx
 msgid "Decide who may write in discussions"
 msgstr "Decida quem pode escrever nas discussões"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Declined the request to send broadcasts"
+msgstr "Recusou o pedido para enviar transmissões"
 
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "Default: {fallback}"
@@ -4336,6 +4426,14 @@ msgstr "Excluir sua conta"
 msgid "Delete your account?"
 msgstr "Excluir sua conta?"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted a contact"
+msgstr "Excluiu um contato"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted a DKIM key"
+msgstr "Excluiu uma chave DKIM"
+
 #: src/features/contact/MergeContactDialog.tsx
 msgid "deleted afterwards"
 msgstr "excluído depois"
@@ -4362,6 +4460,14 @@ msgstr "Membro excluído"
 #: src/components/common/DiscussionAuthor.tsx
 msgid "Deleted reader"
 msgstr "Leitor excluído"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted the inbox {name}"
+msgstr "Excluiu a caixa de entrada {name}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted the webhook to {host}"
+msgstr "Excluiu o webhook para {host}"
 
 #: src/features/settings/inboxes/InboxSecurity.tsx
 msgid "Deletes its channels, conversations, messages and attachments. This cannot be undone."
@@ -4474,6 +4580,10 @@ msgstr "Descartar alterações"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Discard the suggested reply"
 msgstr "Descartar a resposta sugerida"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Disconnected {client}"
+msgstr "Desconectou {client}"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/DocsPage.tsx
@@ -5156,8 +5266,8 @@ msgid "Every request to this endpoint, newest first. The newest 100 are kept."
 msgstr "Todas as requisições a este endpoint, as mais recentes primeiro. As 100 mais recentes são mantidas."
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-msgid "Every scope except sending broadcasts."
-msgstr "Todos os escopos, exceto enviar envios."
+msgid "Every scope except sending broadcasts and reading the audit log."
+msgstr "Todas as permissões, exceto enviar transmissões e ler o registro de auditoria."
 
 #: src/features/inbox/SourceFilter.tsx
 msgid "Every site"
@@ -5174,6 +5284,10 @@ msgstr "Todos os tipos"
 #: src/features/setup/SetupHub.tsx
 msgid "Every website and app shows its visitors on Home and in Analytics."
 msgstr "Cada site e app mostra seus visitantes em Início e em Analytics."
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Everyone"
+msgstr "Todos"
 
 #: src/features/inbox/ChatsPage.tsx
 msgid "Everyone has been answered."
@@ -5203,6 +5317,7 @@ msgstr "As publicações de todos são publicadas na hora, exceto as de autores 
 #: src/features/migrations/Wizard.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 msgid "Everything"
 msgstr "Tudo"
 
@@ -5276,6 +5391,14 @@ msgstr "Arquivo de exportação"
 #: src/features/migrations/text.ts
 msgid "Export once as a .zip file. Google mails you a link when it is ready; for a large mailbox that can take a day or more."
 msgstr "Exporte uma vez como arquivo .zip. O Google envia um link por e-mail quando estiver pronto; para uma caixa grande, pode levar um dia ou mais."
+
+#: src/features/settings/audit/sentence.ts
+msgid "Exported the consent records of contacts"
+msgstr "Exportou os registros de consentimento dos contatos"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Exported the consent records of the list {name}"
+msgstr "Exportou os registros de consentimento da lista {name}"
 
 #: src/features/broadcasts/Import.tsx
 msgid "External id"
@@ -5603,6 +5726,10 @@ msgstr "Para usuários conectados, seu backend assina um token de identidade com
 msgid "For signed-in users: the identity secret, shown only now"
 msgstr "Para usuários conectados: o segredo de identidade, mostrado só agora"
 
+#: src/features/settings/audit/sentence.ts
+msgid "forever"
+msgstr "para sempre"
+
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/ListPage.tsx
 msgid "Form"
@@ -5678,6 +5805,7 @@ msgstr "Encontrado nas suas pastas de enviados"
 msgid "Friday"
 msgstr "Sexta-feira"
 
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "From"
 msgstr "De"
@@ -5761,6 +5889,10 @@ msgstr "Outras cópias da mesma mensagem"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Gallery"
 msgstr "Galeria"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Gave {person} access to {inbox}"
+msgstr "Deu a {person} acesso a {inbox}"
 
 #: src/app/Sidebar.tsx
 #: src/components/common/SettingsStrip.tsx
@@ -6590,6 +6722,10 @@ msgstr "Idioma do convite"
 msgid "Invite your team"
 msgstr "Convide sua equipe"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Invited {email} as {role}"
+msgstr "Convidou {email} como {role}"
+
 #: src/features/team/TeamPage.tsx
 msgid "Invites"
 msgstr "Convites"
@@ -6758,6 +6894,10 @@ msgstr "O relatório e a lista de destinatários são excluídos. As conversas a
 msgid "Its settings, credentials and progress are deleted. Imported conversations stay."
 msgstr "As configurações, credenciais e o progresso são excluídos. As conversas importadas permanecem."
 
+#: src/features/settings/audit/sentence.ts
+msgid "Joined the workspace as {role}"
+msgstr "Entrou no espaço de trabalho como {role}"
+
 #: src/features/conversation/ConversationStatus.tsx
 msgid "Just wrote"
 msgstr "Acabou de escrever"
@@ -6817,6 +6957,10 @@ msgstr "Chaves e assistentes não podem agendar envios neste espaço de trabalho
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "Keys and assistants may send broadcasts"
 msgstr "Chaves e assistentes podem enviar"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Keys and connected apps"
+msgstr "Chaves e apps conectados"
 
 #: src/features/settings/channels/ChannelPage.tsx
 msgid "Keys that can reach this product. Create and revoke them under API & MCP."
@@ -7245,6 +7389,7 @@ msgstr "Carregar imagens"
 #: src/features/contact/ContactsPage.tsx
 #: src/features/docs/discussions/parts.tsx
 #: src/features/docs/PagesTab.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
 #: src/features/status/LinkConversationsDialog.tsx
 #: src/features/status/MonitorChecks.tsx
@@ -7628,6 +7773,10 @@ msgstr "Membro"
 #: src/features/team/TeamPage.tsx
 msgid "Members"
 msgstr "Membros"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Members and invitations"
+msgstr "Membros e convites"
 
 #: src/features/conversation/composer/MentionMenu.tsx
 msgid "Mention a teammate"
@@ -8652,6 +8801,10 @@ msgstr "Ainda não há endpoints"
 msgid "No endpoints yet."
 msgstr "Ainda não há endpoints."
 
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "No entry matches these filters."
+msgstr "Nenhuma entrada corresponde a esses filtros."
+
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "No events recorded."
 msgstr "Nenhum evento registrado."
@@ -8705,6 +8858,10 @@ msgstr "Ainda não há rótulos"
 #: src/features/inbox/ChatList.tsx
 msgid "No labels yet. Add them in settings."
 msgstr "Ainda não há rótulos. Adicione nas configurações."
+
+#: src/features/settings/audit/sentence.ts
+msgid "no limit"
+msgstr "sem limite"
 
 #: src/features/broadcasts/Pace.tsx
 msgid "No limit"
@@ -9197,6 +9354,10 @@ msgstr "Nada foi resolvido ainda."
 #: src/features/broadcasts/Report.tsx
 msgid "Nothing has happened yet."
 msgstr "Nada aconteceu ainda."
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Nothing here"
+msgstr "Nada aqui ainda"
 
 #: src/features/broadcasts/Overview.tsx
 msgid "Nothing here."
@@ -9963,6 +10124,10 @@ msgstr "Operacional"
 #: src/features/status/MonitorToken.tsx
 msgid "operational recovers; degraded, partial_outage and major_outage fail."
 msgstr "operational recupera; degraded, partial_outage e major_outage derrubam."
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Operator"
+msgstr "Operador"
 
 #: src/features/status/ComponentDialogs.tsx
 msgid "Optional. Shown on the public page."
@@ -11090,6 +11255,10 @@ msgstr "Ler os quadros do roadmap, as ideias e o histórico de etapas"
 msgid "Read status pages, components and incidents"
 msgstr "Ler páginas de status, componentes e incidentes"
 
+#: src/components/common/text.ts
+msgid "Read the audit log (owners only)"
+msgstr "Ler o registro de auditoria (somente proprietários)"
+
 #: src/features/migrations/text.ts
 msgid "Read the folders"
 msgstr "Ler as pastas"
@@ -11373,6 +11542,10 @@ msgstr "Remover esta passkey?"
 #: src/features/migrations/DoneStep.tsx
 msgid "Remove Yuva's access in Microsoft"
 msgstr "Remover o acesso do Yuva na Microsoft"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed {person} from the workspace"
+msgstr "Removeu {person} do espaço de trabalho"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Removes {name} with its products, channels, conversations, contacts, files, labels, webhooks and API keys for everyone. Members keep their accounts."
@@ -11789,6 +11962,10 @@ msgstr "Revogar {keyName}?"
 msgid "Revoked"
 msgstr "Revogada"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Revoked the API key {name}"
+msgstr "Revogou a chave de API {name}"
+
 #: src/features/broadcasts/ListForm.tsx
 msgid "Right after subscribing, people get a short mail that confirms it, with an unsubscribe link."
 msgstr "Logo depois de se inscrever, as pessoas recebem um e-mail curto que confirma, com um link de cancelamento."
@@ -11839,6 +12016,22 @@ msgstr "Girar a chave pública?"
 #: src/features/settings/webhooks/sections.tsx
 msgid "Rotate the signing secret?"
 msgstr "Girar o segredo de assinatura?"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the forwarding address of a channel"
+msgstr "Renovou o endereço de encaminhamento de um canal"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the identity secret of an inbox"
+msgstr "Renovou o segredo de identidade de uma caixa de entrada"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the key of a channel"
+msgstr "Renovou a chave de um canal"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the signing secret of a webhook"
+msgstr "Renovou o segredo de assinatura de um webhook"
 
 #: src/features/setup/email/EmailReceiveStep.tsx
 msgid "Route your domain"
@@ -13534,6 +13727,10 @@ msgstr "support@sua-empresa.com"
 msgid "Suspended"
 msgstr "Suspenso"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Suspended broadcasts"
+msgstr "Suspendeu as transmissões"
+
 #: src/features/migrations/Wizard.tsx
 msgid "Switch"
 msgstr "Trocar"
@@ -14054,8 +14251,8 @@ msgid "The key is ready"
 msgstr "A chave está pronta"
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-msgid "The key sees only these inboxes and cannot manage inboxes, webhooks or the workspace."
-msgstr "A chave vê só estas caixas e não pode gerenciar caixas, webhooks nem o espaço de trabalho."
+msgid "The key sees only these inboxes and cannot manage inboxes, webhooks or the workspace, or read the audit log."
+msgstr "A chave vê apenas estas caixas de entrada e não pode gerenciar caixas, webhooks ou o espaço de trabalho, nem ler o registro de auditoria."
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "The key stops working at the end of this day."
@@ -14522,8 +14719,8 @@ msgid "The What’s new count shows on the chat button while no messages are unr
 msgstr "O número de novidades aparece no botão do chat enquanto não houver mensagens não lidas. O início do widget sempre o mostra."
 
 #: src/features/settings/GeneralTabs.tsx
-msgid "The workspace itself: name, retention, labels, canned replies and moving in"
-msgstr "O próprio espaço de trabalho: nome, retenção, rótulos, respostas prontas e mudança"
+msgid "The workspace itself: name, retention, labels, canned replies, moving in and the audit log"
+msgstr "O próprio espaço de trabalho: nome, retenção, etiquetas, respostas prontas, mudança e registro de auditoria"
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The workspace may not send broadcasts for now."
@@ -15062,6 +15259,7 @@ msgstr "Título"
 msgid "TLS (port 465)"
 msgstr "TLS (porta 465)"
 
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "To"
 msgstr "Para"
@@ -15112,6 +15310,10 @@ msgstr "Tentativas demais. Espere um pouco e tente de novo."
 #: src/features/auth/CreateWorkspace.tsx
 msgid "Too many workspaces were created from your network today. Try again tomorrow."
 msgstr "Espaços de trabalho demais foram criados a partir da sua rede hoje. Tente de novo amanhã."
+
+#: src/features/settings/audit/sentence.ts
+msgid "Took away the access of {person} to {inbox}"
+msgstr "Removeu o acesso de {person} a {inbox}"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "tr, en-GB"
@@ -15755,6 +15957,10 @@ msgstr "Versões"
 msgid "Very large mailbox? Start with a Google Takeout file"
 msgstr "Caixa muito grande? Comece com um arquivo do Google Takeout"
 
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "via {via}"
+msgstr "via {via}"
+
 #: src/features/home/HomePage.tsx
 msgid "View"
 msgstr "Ver"
@@ -15970,6 +16176,7 @@ msgid "Webhook endpoint"
 msgstr "Endpoint de webhook"
 
 #: src/app/Palette.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
@@ -16014,6 +16221,10 @@ msgstr "Quarta-feira"
 #: src/features/broadcasts/ListForm.tsx
 msgid "Welcome receipt"
 msgstr "Recibo de boas-vindas"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "What"
+msgstr "O quê"
 
 #: src/features/broadcasts/Import.tsx
 msgid "What {header} holds"
@@ -16245,6 +16456,10 @@ msgstr "Enquanto estiver desativado, nenhuma entrega é feita."
 msgid "While your status is Away, only new messages in conversations assigned to you and new assignments notify you. A conversation you have open in the panel never notifies you."
 msgstr "Enquanto seu status é Ausente, só novas mensagens em conversas atribuídas a você e novas atribuições avisam você. Uma conversa aberta no painel nunca avisa você."
 
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Who"
+msgstr "Quem"
+
 #: src/features/broadcasts/ListsHome.tsx
 msgid "Who agreed to hear from you, with consent recorded"
 msgstr "Quem concordou em receber suas mensagens, com o consentimento registrado"
@@ -16256,6 +16471,14 @@ msgstr "Quem responde, onde, e quem está online"
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Who can reply"
 msgstr "Quem pode responder"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Who changed access, keys and data"
+msgstr "Quem alterou acessos, chaves e dados"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Who changed members, access, keys, webhooks, mail accounts, retention and exports, newest first. Only owners see this."
+msgstr "Quem alterou membros, acessos, chaves, webhooks, contas de e-mail, retenção e exportações, do mais recente ao mais antigo. Somente proprietários veem isto."
 
 #: src/features/team/TeamPage.tsx
 msgid "Who is here"
@@ -16366,6 +16589,10 @@ msgstr "Trabalhando…"
 #: src/features/settings/workspace/RetentionForm.tsx
 msgid "Workspace"
 msgstr "Espaço de trabalho"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Workspace and broadcasts"
+msgstr "Espaço de trabalho e transmissões"
 
 #: src/features/auth/CreateWorkspace.tsx
 msgid "Workspace name"

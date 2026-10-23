@@ -293,6 +293,7 @@ msgstr "{created, plural, one {# ಹೊಸದು} other {# ಹೊಸವು}}"
 
 #: src/features/broadcasts/Growth.tsx
 #: src/features/docs/Toolbar.tsx
+#: src/features/settings/audit/sentence.ts
 msgid "{d, plural, one {# day} other {# days}}"
 msgstr "{d, plural, one {# ದಿನ} other {# ದಿನಗಳು}}"
 
@@ -481,6 +482,10 @@ msgstr "{n, plural, one {# ಇತರ ಸಂಭಾಷಣೆ} other {# ಇತರ �
 msgid "{n, plural, one {# person} other {# people}}"
 msgstr "{n, plural, one {# ವ್ಯಕ್ತಿ} other {# ಜನರು}}"
 
+#: src/features/settings/audit/sentence.ts
+msgid "{n, plural, one {# recipient a day} other {# recipients a day}}"
+msgstr "{n, plural, one {ದಿನಕ್ಕೆ # ಸ್ವೀಕರಿಸುವವರು} other {ದಿನಕ್ಕೆ # ಸ್ವೀಕರಿಸುವವರು}}"
+
 #: src/features/setup/SetupHub.tsx
 msgid "{n, plural, one {# website chat} other {# website chats}}"
 msgstr "{n, plural, one {# ವೆಬ್‌ಸೈಟ್ ಚಾಟ್} other {# ವೆಬ್‌ಸೈಟ್ ಚಾಟ್‌ಗಳು}}"
@@ -664,6 +669,10 @@ msgstr "{percent}%, {total} ರಲ್ಲಿ {doneText}"
 #: src/features/migrations/UploadStep.tsx
 msgid "{percent}%, {sent} of {size}"
 msgstr "{percent}%, {size} ರಲ್ಲಿ {sent}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "{person} left the workspace by deleting their account"
+msgstr "{person} ಖಾತೆಯನ್ನು ಅಳಿಸಿ ವರ್ಕ್‌ಸ್ಪೇಸ್ ಬಿಟ್ಟರು"
 
 #: src/features/inbox/ChatsPage.tsx
 msgid "{product}’s conversations"
@@ -1137,6 +1146,10 @@ msgstr "ಒಂದು ಡ್ರಾಫ್ಟ್ ಬರೆಯಲಾಯಿತು"
 #: src/components/common/text.ts
 msgid "A file's content does not match its type. Check the file and try again."
 msgstr "ಫೈಲ್‌ನ ವಿಷಯ ಅದರ ಪ್ರಕಾರಕ್ಕೆ ಹೊಂದುವುದಿಲ್ಲ. ಫೈಲ್ ಪರಿಶೀಲಿಸಿ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ."
+
+#: src/features/settings/audit/sentence.ts
+msgid "a former member"
+msgstr "ಹಿಂದಿನ ಸದಸ್ಯ"
 
 #: src/features/contact/ContactNotes.tsx
 msgid "A former teammate"
@@ -1632,6 +1645,10 @@ msgstr "{created} ಸೇರಿಸಲಾಗಿದೆ, ಕೊನೆಯ ವಿತ�
 msgid "Added {created}, last used {used}"
 msgstr "{created} ಸೇರಿಸಲಾಗಿದೆ, ಕೊನೆಯ ಬಳಕೆ {used}"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Added a webhook to {host}"
+msgstr "{host} ಗೆ ವೆಬ್‌ಹುಕ್ ಸೇರಿಸಿದರು"
+
 #: src/components/common/text.ts
 msgid "Added by the team"
 msgstr "ತಂಡದಿಂದ ಸೇರಿಸಲಾಗಿದೆ"
@@ -1833,6 +1850,10 @@ msgstr "ಅನುಮತಿಸಲಾಗಿದೆ"
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Allowed origins"
 msgstr "ಅನುಮತಿಸಿದ ಆರಿಜಿನ್‌ಗಳು"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Allowed the workspace to send broadcasts"
+msgstr "ವರ್ಕ್‌ಸ್ಪೇಸ್‌ಗೆ ಬ್ರಾಡ್‌ಕಾಸ್ಟ್ ಕಳುಹಿಸಲು ಅನುಮತಿ ನೀಡಿದರು"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Already earlier in the file"
@@ -2201,11 +2222,13 @@ msgstr "API ಮತ್ತು MCP"
 msgid "API channel"
 msgstr "API ಚಾನೆಲ್"
 
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/status/IncidentDetail.tsx
 msgid "API key"
 msgstr "API ಕೀ"
 
 #: src/app/Palette.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/channels/ChannelPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
@@ -2370,6 +2393,10 @@ msgstr "{address} ಅನ್ನು ಸರ್ವರ್‌ನಲ್ಲಿ ಕೆಳ
 msgid "asked after closing"
 msgstr "ಮುಚ್ಚಿದ ನಂತರ ಕೇಳಲಾಗಿದೆ"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Asked to be allowed to send broadcasts"
+msgstr "ಬ್ರಾಡ್‌ಕಾಸ್ಟ್ ಕಳುಹಿಸಲು ಅನುಮತಿ ಕೇಳಿದರು"
+
 #: src/components/common/text.ts
 msgid "Asked to subscribe"
 msgstr "ಚಂದಾದಾರರಾಗಲು ಕೇಳಲಾಗಿದೆ"
@@ -2514,6 +2541,12 @@ msgstr "ಗುಣಲಕ್ಷಣಗಳು"
 #: src/features/broadcasts/Composer.tsx
 msgid "Audience"
 msgstr "ಪ್ರೇಕ್ಷಕರು"
+
+#: src/app/Palette.tsx
+#: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Audit log"
+msgstr "ಆಡಿಟ್ ಲಾಗ್"
 
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Authorization"
@@ -2947,6 +2980,10 @@ msgstr "ಈ ಆಮದನ್ನು ರದ್ದುಪಡಿಸಬೇಕೇ?"
 msgid "Cancelled"
 msgstr "ರದ್ದುಪಡಿಸಲಾಗಿದೆ"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Cancelled an invitation"
+msgstr "ಆಹ್ವಾನವನ್ನು ರದ್ದುಪಡಿಸಿದರು"
+
 #: src/features/broadcasts/Import.tsx
 msgid "Cancelled. What was added before stays."
 msgstr "ರದ್ದುಪಡಿಸಲಾಗಿದೆ. ಮೊದಲು ಸೇರಿಸಿದ್ದು ಉಳಿಯುತ್ತದೆ."
@@ -3038,6 +3075,26 @@ msgstr "ಸಂಪರ್ಕಗಳನ್ನು ಬದಲಾಯಿಸಿ, ಅಳಿ
 msgid "Change, move and bulk-update conversations"
 msgstr "ಸಂಭಾಷಣೆಗಳನ್ನು ಬದಲಾಯಿಸಿ, ಸರಿಸಿ ಮತ್ತು ಬೃಹತ್ ನವೀಕರಣ ಮಾಡಿ"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Changed how long conversations are kept from {from} to {to}"
+msgstr "ಸಂಭಾಷಣೆ ಉಳಿಸುವ ಅವಧಿಯನ್ನು {from} ನಿಂದ {to} ಗೆ ಬದಲಾಯಿಸಿದರು"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the daily broadcast limit from {from} to {to}"
+msgstr "ದೈನಿಕ ಬ್ರಾಡ್‌ಕಾಸ್ಟ್ ಮಿತಿಯನ್ನು {from} ನಿಂದ {to} ಗೆ ಬದಲಾಯಿಸಿದರು"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the mail account or password of a channel"
+msgstr "ಚಾನೆಲ್‌ನ ಮೇಲ್ ಖಾತೆ ಅಥವಾ ಪಾಸ್‌ವರ್ಡ್ ಬದಲಾಯಿಸಿದರು"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the role of {person} from {from} to {to}"
+msgstr "{person} ಅವರ ಪಾತ್ರವನ್ನು {from} ನಿಂದ {to} ಗೆ ಬದಲಾಯಿಸಿದರು"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the webhook to {host}"
+msgstr "{host} ನ ವೆಬ್‌ಹುಕ್ ಬದಲಾಯಿಸಿದರು"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Changelog settings"
 msgstr "ಚೇಂಜ್‌ಲಾಗ್ ಸೆಟ್ಟಿಂಗ್‌ಗಳು"
@@ -3045,6 +3102,10 @@ msgstr "ಚೇಂಜ್‌ಲಾಗ್ ಸೆಟ್ಟಿಂಗ್‌ಗಳು"
 #: src/features/migrations/Wizard.tsx
 msgid "Changes made to {provider}: none"
 msgstr "{provider} ನಲ್ಲಿ ಮಾಡಿದ ಬದಲಾವಣೆಗಳು: ಇಲ್ಲ"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Changes to members, keys, webhooks and other sensitive settings show up here."
+msgstr "ಸದಸ್ಯರು, ಕೀಗಳು, ವೆಬ್‌ಹುಕ್‌ಗಳು ಮತ್ತು ಇತರ ಸೂಕ್ಷ್ಮ ಸೆಟ್ಟಿಂಗ್‌ಗಳ ಬದಲಾವಣೆಗಳು ಇಲ್ಲಿ ಕಾಣಿಸುತ್ತವೆ."
 
 #: src/features/settings/channels/email/EmailSections.tsx
 msgid "Changing the sending domain turns DKIM signing off until you enable it again for the new domain."
@@ -3076,6 +3137,10 @@ msgstr "ಚಾನಲ್ ಸೆಟ್ಟಿಂಗ್‌ಗಳು"
 #: src/features/settings/ProductsPage.tsx
 msgid "Channels"
 msgstr "ಚಾನಲ್‌ಗಳು"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Channels and inboxes"
+msgstr "ಚಾನೆಲ್‌ಗಳು ಮತ್ತು ಇನ್‌ಬಾಕ್ಸ್‌ಗಳು"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Chat"
@@ -3613,6 +3678,10 @@ msgstr "ನಿಮ್ಮ ಸರ್ವರ್‌ಗಳು ಮತ್ತು ಬಾಟ
 msgid "Connected"
 msgstr "ಸಂಪರ್ಕಗೊಂಡಿದೆ"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Connected {client}"
+msgstr "{client} ಸಂಪರ್ಕಿಸಿದರು"
+
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Connected {created}"
 msgstr "{created} ಸಂಪರ್ಕಗೊಂಡಿದೆ"
@@ -3622,6 +3691,7 @@ msgstr "{created} ಸಂಪರ್ಕಗೊಂಡಿದೆ"
 #: src/components/common/SettingsStrip.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/inbox/SidePanels.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
 msgid "Connected apps"
@@ -3733,6 +3803,10 @@ msgstr "{since} ರಿಂದ ಸಂಪರ್ಕ"
 #: src/features/settings/webhooks/events.tsx
 msgid "Contacts"
 msgstr "ಸಂಪರ್ಕಗಳು"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Contacts and exports"
+msgstr "ಸಂಪರ್ಕಗಳು ಮತ್ತು ರಫ್ತುಗಳು"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "contains"
@@ -4053,6 +4127,18 @@ msgstr "ನಿಮ್ಮ Yuva ಖಾತೆ ರಚಿಸಿ"
 msgid "Created"
 msgstr "ರಚಿಸಲಾಗಿದೆ"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Created an analytics export"
+msgstr "ವಿಶ್ಲೇಷಣೆ ರಫ್ತು ರಚಿಸಿದರು"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Created the API key {name}"
+msgstr "API ಕೀ {name} ರಚಿಸಿದರು"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Created the DKIM key {selector}"
+msgstr "DKIM ಕೀ {selector} ರಚಿಸಿದರು"
+
 #: src/features/migrations/DoneStep.tsx
 msgid "Credentials deleted {deletedAt}. Yuva can no longer read {address}."
 msgstr "{deletedAt} ರಂದು ರುಜುವಾತುಗಳನ್ನು ಅಳಿಸಲಾಗಿದೆ. Yuva ಗೆ ಇನ್ನು {address} ಓದಲು ಸಾಧ್ಯವಿಲ್ಲ."
@@ -4154,6 +4240,10 @@ msgstr "ಇತಿಹಾಸದ ದಿನಗಳು"
 #: src/features/setup/InstallStep.tsx
 msgid "Decide who may write in discussions"
 msgstr "ಚರ್ಚೆಗಳಲ್ಲಿ ಯಾರು ಬರೆಯಬಹುದು ಎಂದು ನಿರ್ಧರಿಸಿ"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Declined the request to send broadcasts"
+msgstr "ಬ್ರಾಡ್‌ಕಾಸ್ಟ್ ಕಳುಹಿಸುವ ವಿನಂತಿಯನ್ನು ತಿರಸ್ಕರಿಸಿದರು"
 
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "Default: {fallback}"
@@ -4336,6 +4426,14 @@ msgstr "ನಿಮ್ಮ ಖಾತೆಯನ್ನು ಅಳಿಸಿ"
 msgid "Delete your account?"
 msgstr "ನಿಮ್ಮ ಖಾತೆಯನ್ನು ಅಳಿಸಬೇಕೇ?"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted a contact"
+msgstr "ಒಂದು ಸಂಪರ್ಕವನ್ನು ಅಳಿಸಿದರು"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted a DKIM key"
+msgstr "ಒಂದು DKIM ಕೀ ಅಳಿಸಿದರು"
+
 #: src/features/contact/MergeContactDialog.tsx
 msgid "deleted afterwards"
 msgstr "ನಂತರ ಅಳಿಸಲಾಗುತ್ತದೆ"
@@ -4362,6 +4460,14 @@ msgstr "ಅಳಿಸಿದ ಸದಸ್ಯ"
 #: src/components/common/DiscussionAuthor.tsx
 msgid "Deleted reader"
 msgstr "ಅಳಿಸಿದ ಓದುಗ"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted the inbox {name}"
+msgstr "ಇನ್‌ಬಾಕ್ಸ್ {name} ಅಳಿಸಿದರು"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted the webhook to {host}"
+msgstr "{host} ನ ವೆಬ್‌ಹುಕ್ ಅಳಿಸಿದರು"
 
 #: src/features/settings/inboxes/InboxSecurity.tsx
 msgid "Deletes its channels, conversations, messages and attachments. This cannot be undone."
@@ -4474,6 +4580,10 @@ msgstr "ಬದಲಾವಣೆಗಳನ್ನು ತ್ಯಜಿಸಿ"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Discard the suggested reply"
 msgstr "ಸೂಚಿಸಿದ ಉತ್ತರವನ್ನು ತಿರಸ್ಕರಿಸಿ"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Disconnected {client}"
+msgstr "{client} ಸಂಪರ್ಕ ಕಡಿತಗೊಳಿಸಿದರು"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/DocsPage.tsx
@@ -5156,8 +5266,8 @@ msgid "Every request to this endpoint, newest first. The newest 100 are kept."
 msgstr "ಈ ಎಂಡ್‌ಪಾಯಿಂಟ್‌ಗೆ ಬಂದ ಪ್ರತಿ ವಿನಂತಿ, ಹೊಸದು ಮೊದಲು. ಹೊಸ 100 ಅನ್ನು ಉಳಿಸಲಾಗುತ್ತದೆ."
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-msgid "Every scope except sending broadcasts."
-msgstr "ಬ್ರಾಡ್‌ಕಾಸ್ಟ್ ಕಳುಹಿಸುವುದನ್ನು ಹೊರತುಪಡಿಸಿ ಪ್ರತಿ ಸ್ಕೋಪ್."
+msgid "Every scope except sending broadcasts and reading the audit log."
+msgstr "ಬ್ರಾಡ್‌ಕಾಸ್ಟ್ ಕಳುಹಿಸುವುದು ಮತ್ತು ಆಡಿಟ್ ಲಾಗ್ ಓದುವುದನ್ನು ಬಿಟ್ಟು ಎಲ್ಲಾ ಅನುಮತಿಗಳು."
 
 #: src/features/inbox/SourceFilter.tsx
 msgid "Every site"
@@ -5174,6 +5284,10 @@ msgstr "ಪ್ರತಿ ಪ್ರಕಾರ"
 #: src/features/setup/SetupHub.tsx
 msgid "Every website and app shows its visitors on Home and in Analytics."
 msgstr "ಪ್ರತಿ ವೆಬ್‌ಸೈಟ್ ಮತ್ತು ಆ್ಯಪ್ ತನ್ನ ಸಂದರ್ಶಕರನ್ನು ಮುಖಪುಟ ಮತ್ತು ಅನಾಲಿಟಿಕ್ಸ್‌ನಲ್ಲಿ ತೋರಿಸುತ್ತದೆ."
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Everyone"
+msgstr "ಎಲ್ಲರೂ"
 
 #: src/features/inbox/ChatsPage.tsx
 msgid "Everyone has been answered."
@@ -5203,6 +5317,7 @@ msgstr "ನೀವು ಸ್ಪ್ಯಾಮ್ ಎಂದು ಗುರುತಿಸ
 #: src/features/migrations/Wizard.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 msgid "Everything"
 msgstr "ಎಲ್ಲವೂ"
 
@@ -5276,6 +5391,14 @@ msgstr "ರಫ್ತು ಫೈಲ್"
 #: src/features/migrations/text.ts
 msgid "Export once as a .zip file. Google mails you a link when it is ready; for a large mailbox that can take a day or more."
 msgstr ".zip ಫೈಲ್ ಆಗಿ ಒಮ್ಮೆ ರಫ್ತು ಮಾಡಿ. ಅದು ಸಿದ್ಧವಾದಾಗ Google ನಿಮಗೆ ಲಿಂಕ್ ಮೇಲ್ ಮಾಡುತ್ತದೆ; ದೊಡ್ಡ ಮೇಲ್‌ಬಾಕ್ಸ್‌ಗೆ ಅದು ಒಂದು ದಿನ ಅಥವಾ ಹೆಚ್ಚು ತೆಗೆದುಕೊಳ್ಳಬಹುದು."
+
+#: src/features/settings/audit/sentence.ts
+msgid "Exported the consent records of contacts"
+msgstr "ಸಂಪರ್ಕಗಳ ಒಪ್ಪಿಗೆ ದಾಖಲೆಗಳನ್ನು ರಫ್ತು ಮಾಡಿದರು"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Exported the consent records of the list {name}"
+msgstr "ಪಟ್ಟಿ {name} ನ ಒಪ್ಪಿಗೆ ದಾಖಲೆಗಳನ್ನು ರಫ್ತು ಮಾಡಿದರು"
 
 #: src/features/broadcasts/Import.tsx
 msgid "External id"
@@ -5603,6 +5726,10 @@ msgstr "ಸೈನ್ ಇನ್ ಆದ ಬಳಕೆದಾರರಿಗೆ, ನಿ�
 msgid "For signed-in users: the identity secret, shown only now"
 msgstr "ಸೈನ್ ಇನ್ ಆದ ಬಳಕೆದಾರರಿಗೆ: ಐಡೆಂಟಿಟಿ ಸೀಕ್ರೆಟ್, ಈಗ ಮಾತ್ರ ತೋರಿಸಲಾಗುತ್ತದೆ"
 
+#: src/features/settings/audit/sentence.ts
+msgid "forever"
+msgstr "ಶಾಶ್ವತವಾಗಿ"
+
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/ListPage.tsx
 msgid "Form"
@@ -5678,6 +5805,7 @@ msgstr "ನಿಮ್ಮ ಕಳುಹಿಸಿದ ಫೋಲ್ಡರ್‌ಗಳ�
 msgid "Friday"
 msgstr "ಶುಕ್ರವಾರ"
 
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "From"
 msgstr "ಇವರಿಂದ"
@@ -5761,6 +5889,10 @@ msgstr "ಅದೇ ಸಂದೇಶದ ಹೆಚ್ಚುವರಿ ಪ್ರತಿ
 #: src/components/common/ShortcutSheet.tsx
 msgid "Gallery"
 msgstr "ಗ್ಯಾಲರಿ"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Gave {person} access to {inbox}"
+msgstr "{person} ಅವರಿಗೆ {inbox} ಪ್ರವೇಶ ನೀಡಿದರು"
 
 #: src/app/Sidebar.tsx
 #: src/components/common/SettingsStrip.tsx
@@ -6590,6 +6722,10 @@ msgstr "ಆಹ್ವಾನದ ಭಾಷೆ"
 msgid "Invite your team"
 msgstr "ನಿಮ್ಮ ತಂಡವನ್ನು ಆಹ್ವಾನಿಸಿ"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Invited {email} as {role}"
+msgstr "{email} ಅವರನ್ನು {role} ಆಗಿ ಆಹ್ವಾನಿಸಿದರು"
+
 #: src/features/team/TeamPage.tsx
 msgid "Invites"
 msgstr "ಆಹ್ವಾನಗಳು"
@@ -6758,6 +6894,10 @@ msgstr "ಅದರ ವರದಿ ಮತ್ತು ಸ್ವೀಕರಿಸುವವ
 msgid "Its settings, credentials and progress are deleted. Imported conversations stay."
 msgstr "ಅದರ ಸೆಟ್ಟಿಂಗ್‌ಗಳು, ರುಜುವಾತುಗಳು ಮತ್ತು ಪ್ರಗತಿಯನ್ನು ಅಳಿಸಲಾಗುತ್ತದೆ. ಆಮದು ಮಾಡಿದ ಸಂಭಾಷಣೆಗಳು ಉಳಿಯುತ್ತವೆ."
 
+#: src/features/settings/audit/sentence.ts
+msgid "Joined the workspace as {role}"
+msgstr "{role} ಆಗಿ ವರ್ಕ್‌ಸ್ಪೇಸ್‌ಗೆ ಸೇರಿದರು"
+
 #: src/features/conversation/ConversationStatus.tsx
 msgid "Just wrote"
 msgstr "ಈಗಷ್ಟೇ ಬರೆದಿದ್ದಾರೆ"
@@ -6817,6 +6957,10 @@ msgstr "ಈ ವರ್ಕ್‌ಸ್ಪೇಸ್‌ನಲ್ಲಿ ಕೀಲಿ�
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "Keys and assistants may send broadcasts"
 msgstr "ಕೀಲಿಗಳು ಮತ್ತು ಸಹಾಯಕರು ಬ್ರಾಡ್‌ಕಾಸ್ಟ್‌ಗಳನ್ನು ಕಳುಹಿಸಬಹುದು"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Keys and connected apps"
+msgstr "ಕೀಗಳು ಮತ್ತು ಸಂಪರ್ಕಿತ ಆ್ಯಪ್‌ಗಳು"
 
 #: src/features/settings/channels/ChannelPage.tsx
 msgid "Keys that can reach this product. Create and revoke them under API & MCP."
@@ -7245,6 +7389,7 @@ msgstr "ಚಿತ್ರಗಳನ್ನು ಲೋಡ್ ಮಾಡಿ"
 #: src/features/contact/ContactsPage.tsx
 #: src/features/docs/discussions/parts.tsx
 #: src/features/docs/PagesTab.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
 #: src/features/status/LinkConversationsDialog.tsx
 #: src/features/status/MonitorChecks.tsx
@@ -7628,6 +7773,10 @@ msgstr "ಸದಸ್ಯ"
 #: src/features/team/TeamPage.tsx
 msgid "Members"
 msgstr "ಸದಸ್ಯರು"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Members and invitations"
+msgstr "ಸದಸ್ಯರು ಮತ್ತು ಆಹ್ವಾನಗಳು"
 
 #: src/features/conversation/composer/MentionMenu.tsx
 msgid "Mention a teammate"
@@ -8652,6 +8801,10 @@ msgstr "ಇನ್ನೂ ಎಂಡ್‌ಪಾಯಿಂಟ್‌ಗಳಿಲ್�
 msgid "No endpoints yet."
 msgstr "ಇನ್ನೂ ಎಂಡ್‌ಪಾಯಿಂಟ್‌ಗಳಿಲ್ಲ."
 
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "No entry matches these filters."
+msgstr "ಈ ಫಿಲ್ಟರ್‌ಗಳಿಗೆ ಹೊಂದುವ ನಮೂದುಗಳಿಲ್ಲ."
+
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "No events recorded."
 msgstr "ಯಾವ ಈವೆಂಟ್‌ಗಳೂ ದಾಖಲಾಗಿಲ್ಲ."
@@ -8705,6 +8858,10 @@ msgstr "ಇನ್ನೂ ಲೇಬಲ್‌ಗಳಿಲ್ಲ"
 #: src/features/inbox/ChatList.tsx
 msgid "No labels yet. Add them in settings."
 msgstr "ಇನ್ನೂ ಲೇಬಲ್‌ಗಳಿಲ್ಲ. ಸೆಟ್ಟಿಂಗ್‌ಗಳಲ್ಲಿ ಸೇರಿಸಿ."
+
+#: src/features/settings/audit/sentence.ts
+msgid "no limit"
+msgstr "ಮಿತಿ ಇಲ್ಲ"
 
 #: src/features/broadcasts/Pace.tsx
 msgid "No limit"
@@ -9197,6 +9354,10 @@ msgstr "ಇನ್ನೂ ಏನೂ ಪರಿಹಾರವಾಗಿಲ್ಲ."
 #: src/features/broadcasts/Report.tsx
 msgid "Nothing has happened yet."
 msgstr "ಇನ್ನೂ ಏನೂ ಆಗಿಲ್ಲ."
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Nothing here"
+msgstr "ಇಲ್ಲಿ ಇನ್ನೂ ಏನೂ ಇಲ್ಲ"
 
 #: src/features/broadcasts/Overview.tsx
 msgid "Nothing here."
@@ -9963,6 +10124,10 @@ msgstr "ಕಾರ್ಯನಿರ್ವಹಿಸುತ್ತಿದೆ"
 #: src/features/status/MonitorToken.tsx
 msgid "operational recovers; degraded, partial_outage and major_outage fail."
 msgstr "operational ಮರುಸ್ಥಾಪಿಸುತ್ತದೆ; degraded, partial_outage ಮತ್ತು major_outage ವಿಫಲಗೊಳಿಸುತ್ತವೆ."
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Operator"
+msgstr "ಆಪರೇಟರ್"
 
 #: src/features/status/ComponentDialogs.tsx
 msgid "Optional. Shown on the public page."
@@ -11090,6 +11255,10 @@ msgstr "ರೋಡ್‌ಮ್ಯಾಪ್ ಬೋರ್ಡ್‌ಗಳು, ಆಲ
 msgid "Read status pages, components and incidents"
 msgstr "ಸ್ಥಿತಿ ಪುಟಗಳು, ಘಟಕಗಳು ಮತ್ತು ಘಟನೆಗಳನ್ನು ಓದಿ"
 
+#: src/components/common/text.ts
+msgid "Read the audit log (owners only)"
+msgstr "ಆಡಿಟ್ ಲಾಗ್ ಓದಿ (ಮಾಲೀಕರಿಗೆ ಮಾತ್ರ)"
+
 #: src/features/migrations/text.ts
 msgid "Read the folders"
 msgstr "ಫೋಲ್ಡರ್‌ಗಳನ್ನು ಓದಿ"
@@ -11373,6 +11542,10 @@ msgstr "ಈ ಪಾಸ್‌ಕೀ ತೆಗೆದುಹಾಕಬೇಕೇ?"
 #: src/features/migrations/DoneStep.tsx
 msgid "Remove Yuva's access in Microsoft"
 msgstr "Microsoft ನಲ್ಲಿ Yuva ದ ಪ್ರವೇಶ ತೆಗೆದುಹಾಕಿ"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed {person} from the workspace"
+msgstr "{person} ಅವರನ್ನು ವರ್ಕ್‌ಸ್ಪೇಸ್‌ನಿಂದ ತೆಗೆದರು"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Removes {name} with its products, channels, conversations, contacts, files, labels, webhooks and API keys for everyone. Members keep their accounts."
@@ -11789,6 +11962,10 @@ msgstr "{keyName} ರದ್ದುಪಡಿಸಬೇಕೇ?"
 msgid "Revoked"
 msgstr "ರದ್ದುಪಡಿಸಲಾಗಿದೆ"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Revoked the API key {name}"
+msgstr "API ಕೀ {name} ರದ್ದುಪಡಿಸಿದರು"
+
 #: src/features/broadcasts/ListForm.tsx
 msgid "Right after subscribing, people get a short mail that confirms it, with an unsubscribe link."
 msgstr "ಚಂದಾದಾರರಾದ ತಕ್ಷಣ, ಜನರಿಗೆ ಅದನ್ನು ದೃಢೀಕರಿಸುವ, ಚಂದಾದಾರಿಕೆ ರದ್ದತಿ ಲಿಂಕ್‌ವುಳ್ಳ ಚಿಕ್ಕ ಮೇಲ್ ಸಿಗುತ್ತದೆ."
@@ -11839,6 +12016,22 @@ msgstr "ಸಾರ್ವಜನಿಕ ಕೀಲಿ ತಿರುಗಿಸಬೇಕ�
 #: src/features/settings/webhooks/sections.tsx
 msgid "Rotate the signing secret?"
 msgstr "ಸೈನಿಂಗ್ ಸೀಕ್ರೆಟ್ ತಿರುಗಿಸಬೇಕೇ?"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the forwarding address of a channel"
+msgstr "ಚಾನೆಲ್‌ನ ಫಾರ್ವರ್ಡಿಂಗ್ ವಿಳಾಸವನ್ನು ನವೀಕರಿಸಿದರು"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the identity secret of an inbox"
+msgstr "ಇನ್‌ಬಾಕ್ಸ್‌ನ ಗುರುತಿನ ಸೀಕ್ರೆಟ್ ನವೀಕರಿಸಿದರು"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the key of a channel"
+msgstr "ಚಾನೆಲ್‌ನ ಕೀ ನವೀಕರಿಸಿದರು"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the signing secret of a webhook"
+msgstr "ವೆಬ್‌ಹುಕ್‌ನ ಸಹಿ ಸೀಕ್ರೆಟ್ ನವೀಕರಿಸಿದರು"
 
 #: src/features/setup/email/EmailReceiveStep.tsx
 msgid "Route your domain"
@@ -13534,6 +13727,10 @@ msgstr "support@your-company.com"
 msgid "Suspended"
 msgstr "ಅಮಾನತುಗೊಳಿಸಲಾಗಿದೆ"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Suspended broadcasts"
+msgstr "ಬ್ರಾಡ್‌ಕಾಸ್ಟ್‌ಗಳನ್ನು ತಡೆಹಿಡಿದರು"
+
 #: src/features/migrations/Wizard.tsx
 msgid "Switch"
 msgstr "ಬದಲಾಯಿಸಿ"
@@ -14054,8 +14251,8 @@ msgid "The key is ready"
 msgstr "ಕೀಲಿ ಸಿದ್ಧವಾಗಿದೆ"
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-msgid "The key sees only these inboxes and cannot manage inboxes, webhooks or the workspace."
-msgstr "ಕೀಲಿ ಈ ಇನ್‌ಬಾಕ್ಸ್‌ಗಳನ್ನು ಮಾತ್ರ ನೋಡುತ್ತದೆ ಮತ್ತು ಇನ್‌ಬಾಕ್ಸ್‌ಗಳು, ವೆಬ್‌ಹುಕ್‌ಗಳು ಅಥವಾ ವರ್ಕ್‌ಸ್ಪೇಸ್ ಅನ್ನು ನಿರ್ವಹಿಸಲಾಗದು."
+msgid "The key sees only these inboxes and cannot manage inboxes, webhooks or the workspace, or read the audit log."
+msgstr "ಈ ಕೀ ಈ ಇನ್‌ಬಾಕ್ಸ್‌ಗಳನ್ನು ಮಾತ್ರ ನೋಡುತ್ತದೆ; ಇನ್‌ಬಾಕ್ಸ್, ವೆಬ್‌ಹುಕ್ ಅಥವಾ ವರ್ಕ್‌ಸ್ಪೇಸ್ ನಿರ್ವಹಿಸಲು ಅಥವಾ ಆಡಿಟ್ ಲಾಗ್ ಓದಲು ಸಾಧ್ಯವಿಲ್ಲ."
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "The key stops working at the end of this day."
@@ -14522,8 +14719,8 @@ msgid "The What’s new count shows on the chat button while no messages are unr
 msgstr "ಓದದ ಸಂದೇಶಗಳು ಇಲ್ಲದಿರುವವರೆಗೆ ಚಾಟ್ ಬಟನ್‌ನಲ್ಲಿ ಹೊಸ ಅಪ್‌ಡೇಟ್‌ಗಳ ಸಂಖ್ಯೆ ಕಾಣಿಸುತ್ತದೆ. ವಿಜೆಟ್‌ನ ಮುಖಪುಟ ಅದನ್ನು ಯಾವಾಗಲೂ ತೋರಿಸುತ್ತದೆ."
 
 #: src/features/settings/GeneralTabs.tsx
-msgid "The workspace itself: name, retention, labels, canned replies and moving in"
-msgstr "ವರ್ಕ್‌ಸ್ಪೇಸ್ ಸ್ವತಃ: ಹೆಸರು, ಉಳಿಸಿಕೊಳ್ಳುವಿಕೆ, ಲೇಬಲ್‌ಗಳು, ಸಿದ್ಧ ಉತ್ತರಗಳು ಮತ್ತು ಸ್ಥಳಾಂತರ"
+msgid "The workspace itself: name, retention, labels, canned replies, moving in and the audit log"
+msgstr "ವರ್ಕ್‌ಸ್ಪೇಸ್ ಸ್ವತಃ: ಹೆಸರು, ಉಳಿಸುವಿಕೆ, ಲೇಬಲ್‌ಗಳು, ಸಿದ್ಧ ಉತ್ತರಗಳು, ಸ್ಥಳಾಂತರ ಮತ್ತು ಆಡಿಟ್ ಲಾಗ್"
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The workspace may not send broadcasts for now."
@@ -15062,6 +15259,7 @@ msgstr "ಶೀರ್ಷಿಕೆ"
 msgid "TLS (port 465)"
 msgstr "TLS (ಪೋರ್ಟ್ 465)"
 
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "To"
 msgstr "ಇವರಿಗೆ"
@@ -15112,6 +15310,10 @@ msgstr "ತುಂಬಾ ಪ್ರಯತ್ನಗಳು. ಸ್ವಲ್ಪ ಕ�
 #: src/features/auth/CreateWorkspace.tsx
 msgid "Too many workspaces were created from your network today. Try again tomorrow."
 msgstr "ಇಂದು ನಿಮ್ಮ ನೆಟ್‌ವರ್ಕ್‌ನಿಂದ ತುಂಬಾ ವರ್ಕ್‌ಸ್ಪೇಸ್‌ಗಳನ್ನು ರಚಿಸಲಾಗಿದೆ. ನಾಳೆ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ."
+
+#: src/features/settings/audit/sentence.ts
+msgid "Took away the access of {person} to {inbox}"
+msgstr "{person} ಅವರ {inbox} ಪ್ರವೇಶವನ್ನು ಹಿಂಪಡೆದರು"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "tr, en-GB"
@@ -15755,6 +15957,10 @@ msgstr "ಆವೃತ್ತಿಗಳು"
 msgid "Very large mailbox? Start with a Google Takeout file"
 msgstr "ಬಹಳ ದೊಡ್ಡ ಮೇಲ್‌ಬಾಕ್ಸ್? Google Takeout ಫೈಲ್‌ನಿಂದ ಆರಂಭಿಸಿ"
 
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "via {via}"
+msgstr "{via} ಮೂಲಕ"
+
 #: src/features/home/HomePage.tsx
 msgid "View"
 msgstr "ವೀಕ್ಷಿಸಿ"
@@ -15970,6 +16176,7 @@ msgid "Webhook endpoint"
 msgstr "ವೆಬ್‌ಹುಕ್ ಎಂಡ್‌ಪಾಯಿಂಟ್"
 
 #: src/app/Palette.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
@@ -16014,6 +16221,10 @@ msgstr "ಬುಧವಾರ"
 #: src/features/broadcasts/ListForm.tsx
 msgid "Welcome receipt"
 msgstr "ಸ್ವಾಗತ ರಶೀದಿ"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "What"
+msgstr "ಏನು"
 
 #: src/features/broadcasts/Import.tsx
 msgid "What {header} holds"
@@ -16245,6 +16456,10 @@ msgstr "ಆಫ್ ಇರುವಾಗ, ಯಾವ ವಿತರಣೆಗಳೂ ನ�
 msgid "While your status is Away, only new messages in conversations assigned to you and new assignments notify you. A conversation you have open in the panel never notifies you."
 msgstr "ನಿಮ್ಮ ಸ್ಥಿತಿ ದೂರವಿದ್ದಾರೆ ಆಗಿರುವಾಗ, ನಿಮಗೆ ನಿಯೋಜಿತ ಸಂಭಾಷಣೆಗಳಲ್ಲಿನ ಹೊಸ ಸಂದೇಶಗಳು ಮತ್ತು ಹೊಸ ನಿಯೋಜನೆಗಳು ಮಾತ್ರ ನಿಮಗೆ ಸೂಚಿಸುತ್ತವೆ. ನೀವು ಪ್ಯಾನೆಲ್‌ನಲ್ಲಿ ತೆರೆದಿರುವ ಸಂಭಾಷಣೆ ಎಂದಿಗೂ ಸೂಚಿಸುವುದಿಲ್ಲ."
 
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Who"
+msgstr "ಯಾರು"
+
 #: src/features/broadcasts/ListsHome.tsx
 msgid "Who agreed to hear from you, with consent recorded"
 msgstr "ನಿಮ್ಮಿಂದ ಕೇಳಲು ಯಾರು ಒಪ್ಪಿದ್ದಾರೆ, ದಾಖಲಾದ ಒಪ್ಪಿಗೆಯೊಂದಿಗೆ"
@@ -16256,6 +16471,14 @@ msgstr "ಯಾರು, ಎಲ್ಲಿ ಉತ್ತರಿಸುತ್ತಾರೆ
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Who can reply"
 msgstr "ಯಾರು ಉತ್ತರಿಸಬಹುದು"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Who changed access, keys and data"
+msgstr "ಪ್ರವೇಶ, ಕೀಗಳು ಮತ್ತು ಡೇಟಾವನ್ನು ಯಾರು ಬದಲಾಯಿಸಿದರು"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Who changed members, access, keys, webhooks, mail accounts, retention and exports, newest first. Only owners see this."
+msgstr "ಸದಸ್ಯರು, ಪ್ರವೇಶ, ಕೀಗಳು, ವೆಬ್‌ಹುಕ್‌ಗಳು, ಮೇಲ್ ಖಾತೆಗಳು, ಉಳಿಸುವಿಕೆ ಮತ್ತು ರಫ್ತುಗಳನ್ನು ಯಾರು ಬದಲಾಯಿಸಿದರು, ಹೊಸದು ಮೊದಲು. ಇದನ್ನು ಮಾಲೀಕರು ಮಾತ್ರ ನೋಡುತ್ತಾರೆ."
 
 #: src/features/team/TeamPage.tsx
 msgid "Who is here"
@@ -16366,6 +16589,10 @@ msgstr "ಕೆಲಸ ಮಾಡುತ್ತಿದೆ…"
 #: src/features/settings/workspace/RetentionForm.tsx
 msgid "Workspace"
 msgstr "ವರ್ಕ್‌ಸ್ಪೇಸ್"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Workspace and broadcasts"
+msgstr "ವರ್ಕ್‌ಸ್ಪೇಸ್ ಮತ್ತು ಬ್ರಾಡ್‌ಕಾಸ್ಟ್‌ಗಳು"
 
 #: src/features/auth/CreateWorkspace.tsx
 msgid "Workspace name"

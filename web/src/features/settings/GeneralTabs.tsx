@@ -6,11 +6,11 @@ import { PageHeader, PageTabs } from "@/features/settings/ui"
 import { useSession } from "@/lib/session"
 import { useCannedReplies, useLabels } from "@/lib/workspace"
 
-type Tab = "workspace" | "labels" | "canned-replies" | "migrations"
+type Tab = "workspace" | "labels" | "canned-replies" | "migrations" | "audit-log"
 
 export function GeneralTabs({ current }: { current: Tab }) {
   const { t } = useLingui()
-  const { canManage } = useSession()
+  const { canManage, isOwner } = useSession()
   const labels = useLabels().data
   const canned = useCannedReplies().data
   const moves = useMigrations().data?.pages[0]?.items
@@ -45,6 +45,9 @@ export function GeneralTabs({ current }: { current: Tab }) {
               },
             ]
           : []),
+        ...(isOwner
+          ? [{ key: "audit-log", to: "/settings/audit-log", label: t`Audit log`, testId: "general-tab-audit-log" }]
+          : []),
       ]}
     />
   )
@@ -55,7 +58,9 @@ export function GeneralHeader({ current }: { current: Tab }) {
     <>
       <PageHeader
         title={<Trans>General</Trans>}
-        description={<Trans>The workspace itself: name, retention, labels, canned replies and moving in</Trans>}
+        description={
+          <Trans>The workspace itself: name, retention, labels, canned replies, moving in and the audit log</Trans>
+        }
         tabs={<GeneralTabs current={current} />}
       />
       <SettingsStrip current="general" />

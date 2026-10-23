@@ -293,6 +293,7 @@ msgstr "{created, plural, one {# புதியது} other {# புதிய
 
 #: src/features/broadcasts/Growth.tsx
 #: src/features/docs/Toolbar.tsx
+#: src/features/settings/audit/sentence.ts
 msgid "{d, plural, one {# day} other {# days}}"
 msgstr "{d, plural, one {# நாள்} other {# நாட்கள்}}"
 
@@ -481,6 +482,10 @@ msgstr "{n, plural, one {# பிற உரையாடல்} other {# பி�
 msgid "{n, plural, one {# person} other {# people}}"
 msgstr "{n, plural, one {# நபர்} other {# நபர்கள்}}"
 
+#: src/features/settings/audit/sentence.ts
+msgid "{n, plural, one {# recipient a day} other {# recipients a day}}"
+msgstr "{n, plural, one {தினமும் # பெறுநர்} other {தினமும் # பெறுநர்கள்}}"
+
 #: src/features/setup/SetupHub.tsx
 msgid "{n, plural, one {# website chat} other {# website chats}}"
 msgstr "{n, plural, one {# இணையதள அரட்டை} other {# இணையதள அரட்டைகள்}}"
@@ -664,6 +669,10 @@ msgstr "{percent}%, {total}-இல் {doneText}"
 #: src/features/migrations/UploadStep.tsx
 msgid "{percent}%, {sent} of {size}"
 msgstr "{percent}%, {size}-இல் {sent}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "{person} left the workspace by deleting their account"
+msgstr "{person} கணக்கை நீக்கி பணியிடத்தை விட்டு வெளியேறினார்"
 
 #: src/features/inbox/ChatsPage.tsx
 msgid "{product}’s conversations"
@@ -1137,6 +1146,10 @@ msgstr "ஒரு வரைவு எழுதப்பட்டது"
 #: src/components/common/text.ts
 msgid "A file's content does not match its type. Check the file and try again."
 msgstr "கோப்பின் உள்ளடக்கம் அதன் வகையுடன் பொருந்தவில்லை. கோப்பைச் சரிபார்த்து மீண்டும் முயலுங்கள்."
+
+#: src/features/settings/audit/sentence.ts
+msgid "a former member"
+msgstr "முன்னாள் உறுப்பினர்"
 
 #: src/features/contact/ContactNotes.tsx
 msgid "A former teammate"
@@ -1632,6 +1645,10 @@ msgstr "{created} சேர்க்கப்பட்டது, கடைசி
 msgid "Added {created}, last used {used}"
 msgstr "{created} சேர்க்கப்பட்டது, கடைசியாக {used} பயன்படுத்தப்பட்டது"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Added a webhook to {host}"
+msgstr "{host}-க்கு ஒரு வெப்ஹுக்கைச் சேர்த்தார்"
+
 #: src/components/common/text.ts
 msgid "Added by the team"
 msgstr "குழுவால் சேர்க்கப்பட்டது"
@@ -1833,6 +1850,10 @@ msgstr "அனுமதிக்கப்பட்டது"
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Allowed origins"
 msgstr "அனுமதிக்கப்பட்ட மூலங்கள்"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Allowed the workspace to send broadcasts"
+msgstr "பணியிடம் ஒளிபரப்புகளை அனுப்ப அனுமதித்தார்"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Already earlier in the file"
@@ -2201,11 +2222,13 @@ msgstr "API மற்றும் MCP"
 msgid "API channel"
 msgstr "API சேனல்"
 
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/status/IncidentDetail.tsx
 msgid "API key"
 msgstr "API விசை"
 
 #: src/app/Palette.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/channels/ChannelPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
@@ -2370,6 +2393,10 @@ msgstr "{address}-ஐச் சேவையகத்தில் கீழே �
 msgid "asked after closing"
 msgstr "மூடிய பிறகு கேட்கப்பட்டது"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Asked to be allowed to send broadcasts"
+msgstr "ஒளிபரப்புகளை அனுப்ப அனுமதி கேட்டார்"
+
 #: src/components/common/text.ts
 msgid "Asked to subscribe"
 msgstr "சந்தா செய்யக் கேட்கப்பட்டது"
@@ -2514,6 +2541,12 @@ msgstr "பண்புக்கூறுகள்"
 #: src/features/broadcasts/Composer.tsx
 msgid "Audience"
 msgstr "பார்வையாளர்கள்"
+
+#: src/app/Palette.tsx
+#: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Audit log"
+msgstr "தணிக்கைப் பதிவு"
 
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Authorization"
@@ -2947,6 +2980,10 @@ msgstr "இந்த இறக்குமதியை ரத்துசெய�
 msgid "Cancelled"
 msgstr "ரத்துசெய்யப்பட்டது"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Cancelled an invitation"
+msgstr "ஒரு அழைப்பை ரத்து செய்தார்"
+
 #: src/features/broadcasts/Import.tsx
 msgid "Cancelled. What was added before stays."
 msgstr "ரத்துசெய்யப்பட்டது. முன்பு சேர்க்கப்பட்டது அப்படியே இருக்கும்."
@@ -3038,6 +3075,26 @@ msgstr "தொடர்புகளை மாற்று, நீக்கு, �
 msgid "Change, move and bulk-update conversations"
 msgstr "உரையாடல்களை மாற்று, நகர்த்து, மொத்தமாகப் புதுப்பி"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Changed how long conversations are kept from {from} to {to}"
+msgstr "உரையாடல்களைச் சேமிக்கும் காலத்தை {from}-இலிருந்து {to} ஆக மாற்றினார்"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the daily broadcast limit from {from} to {to}"
+msgstr "தினசரி ஒளிபரப்பு வரம்பை {from}-இலிருந்து {to} ஆக மாற்றினார்"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the mail account or password of a channel"
+msgstr "ஒரு சேனலின் அஞ்சல் கணக்கு அல்லது கடவுச்சொல்லை மாற்றினார்"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the role of {person} from {from} to {to}"
+msgstr "{person}-இன் பங்கை {from}-இலிருந்து {to} ஆக மாற்றினார்"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the webhook to {host}"
+msgstr "{host}-க்கான வெப்ஹுக்கை மாற்றினார்"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Changelog settings"
 msgstr "மாற்றப் பதிவு அமைப்புகள்"
@@ -3045,6 +3102,10 @@ msgstr "மாற்றப் பதிவு அமைப்புகள்"
 #: src/features/migrations/Wizard.tsx
 msgid "Changes made to {provider}: none"
 msgstr "{provider}-இல் செய்த மாற்றங்கள்: இல்லை"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Changes to members, keys, webhooks and other sensitive settings show up here."
+msgstr "உறுப்பினர்கள், விசைகள், வெப்ஹுக்குகள் மற்றும் பிற முக்கிய அமைப்புகளின் மாற்றங்கள் இங்கே தோன்றும்."
 
 #: src/features/settings/channels/email/EmailSections.tsx
 msgid "Changing the sending domain turns DKIM signing off until you enable it again for the new domain."
@@ -3076,6 +3137,10 @@ msgstr "சேனல் அமைப்புகள்"
 #: src/features/settings/ProductsPage.tsx
 msgid "Channels"
 msgstr "சேனல்கள்"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Channels and inboxes"
+msgstr "சேனல்கள் மற்றும் இன்பாக்ஸ்கள்"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Chat"
@@ -3613,6 +3678,10 @@ msgstr "உங்கள் சேவையகங்களையும் பா�
 msgid "Connected"
 msgstr "இணைக்கப்பட்டது"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Connected {client}"
+msgstr "{client}-ஐ இணைத்தார்"
+
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Connected {created}"
 msgstr "{created} இணைக்கப்பட்டது"
@@ -3622,6 +3691,7 @@ msgstr "{created} இணைக்கப்பட்டது"
 #: src/components/common/SettingsStrip.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/inbox/SidePanels.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
 msgid "Connected apps"
@@ -3733,6 +3803,10 @@ msgstr "{since} முதல் தொடர்பு"
 #: src/features/settings/webhooks/events.tsx
 msgid "Contacts"
 msgstr "தொடர்புகள்"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Contacts and exports"
+msgstr "தொடர்புகள் மற்றும் ஏற்றுமதிகள்"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "contains"
@@ -4053,6 +4127,18 @@ msgstr "உங்கள் Yuva கணக்கை உருவாக்கு�
 msgid "Created"
 msgstr "உருவாக்கப்பட்டது"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Created an analytics export"
+msgstr "ஒரு பகுப்பாய்வு ஏற்றுமதியை உருவாக்கினார்"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Created the API key {name}"
+msgstr "API விசை {name}-ஐ உருவாக்கினார்"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Created the DKIM key {selector}"
+msgstr "DKIM விசை {selector}-ஐ உருவாக்கினார்"
+
 #: src/features/migrations/DoneStep.tsx
 msgid "Credentials deleted {deletedAt}. Yuva can no longer read {address}."
 msgstr "சான்றுகள் {deletedAt} நீக்கப்பட்டன. Yuva இனி {address}-ஐப் படிக்க முடியாது."
@@ -4154,6 +4240,10 @@ msgstr "வரலாற்று நாட்கள்"
 #: src/features/setup/InstallStep.tsx
 msgid "Decide who may write in discussions"
 msgstr "விவாதங்களில் யார் எழுதலாம் என்று முடிவு செய்யுங்கள்"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Declined the request to send broadcasts"
+msgstr "ஒளிபரப்புகளை அனுப்பும் கோரிக்கையை நிராகரித்தார்"
 
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "Default: {fallback}"
@@ -4336,6 +4426,14 @@ msgstr "உங்கள் கணக்கை நீக்கு"
 msgid "Delete your account?"
 msgstr "உங்கள் கணக்கை நீக்கவா?"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted a contact"
+msgstr "ஒரு தொடர்பை நீக்கினார்"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted a DKIM key"
+msgstr "ஒரு DKIM விசையை நீக்கினார்"
+
 #: src/features/contact/MergeContactDialog.tsx
 msgid "deleted afterwards"
 msgstr "பின்னர் நீக்கப்படும்"
@@ -4362,6 +4460,14 @@ msgstr "நீக்கப்பட்ட உறுப்பினர்"
 #: src/components/common/DiscussionAuthor.tsx
 msgid "Deleted reader"
 msgstr "நீக்கப்பட்ட வாசகர்"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted the inbox {name}"
+msgstr "இன்பாக்ஸ் {name}-ஐ நீக்கினார்"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted the webhook to {host}"
+msgstr "{host}-க்கான வெப்ஹுக்கை நீக்கினார்"
 
 #: src/features/settings/inboxes/InboxSecurity.tsx
 msgid "Deletes its channels, conversations, messages and attachments. This cannot be undone."
@@ -4474,6 +4580,10 @@ msgstr "மாற்றங்களை நிராகரி"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Discard the suggested reply"
 msgstr "பரிந்துரைத்த பதிலை நிராகரி"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Disconnected {client}"
+msgstr "{client}-இன் இணைப்பைத் துண்டித்தார்"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/DocsPage.tsx
@@ -5156,8 +5266,8 @@ msgid "Every request to this endpoint, newest first. The newest 100 are kept."
 msgstr "இந்த முனைக்கான ஒவ்வொரு கோரிக்கையும், புதியது முதலில். புதிய 100 வைக்கப்படும்."
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-msgid "Every scope except sending broadcasts."
-msgstr "ஒளிபரப்புகளை அனுப்புவதைத் தவிர ஒவ்வொரு நோக்கெல்லையும்."
+msgid "Every scope except sending broadcasts and reading the audit log."
+msgstr "ஒளிபரப்புகளை அனுப்புவது மற்றும் தணிக்கைப் பதிவைப் படிப்பது தவிர அனைத்து அனுமதிகளும்."
 
 #: src/features/inbox/SourceFilter.tsx
 msgid "Every site"
@@ -5174,6 +5284,10 @@ msgstr "ஒவ்வொரு வகையும்"
 #: src/features/setup/SetupHub.tsx
 msgid "Every website and app shows its visitors on Home and in Analytics."
 msgstr "ஒவ்வொரு இணையதளமும் ஆப்பும் தன் பார்வையாளர்களை முகப்பிலும் பகுப்பாய்விலும் காட்டும்."
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Everyone"
+msgstr "அனைவரும்"
 
 #: src/features/inbox/ChatsPage.tsx
 msgid "Everyone has been answered."
@@ -5203,6 +5317,7 @@ msgstr "ஸ்பேம் எனக் குறித்த ஆசிரிய
 #: src/features/migrations/Wizard.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 msgid "Everything"
 msgstr "அனைத்தும்"
 
@@ -5276,6 +5391,14 @@ msgstr "ஏற்றுமதிக் கோப்பு"
 #: src/features/migrations/text.ts
 msgid "Export once as a .zip file. Google mails you a link when it is ready; for a large mailbox that can take a day or more."
 msgstr ".zip கோப்பாக ஒருமுறை ஏற்றுமதி செய்யுங்கள். தயாரானதும் Google இணைப்பை மின்னஞ்சலில் அனுப்பும்; பெரிய அஞ்சல்பெட்டிக்கு ஒரு நாள் அல்லது அதற்கு மேல் ஆகலாம்."
+
+#: src/features/settings/audit/sentence.ts
+msgid "Exported the consent records of contacts"
+msgstr "தொடர்புகளின் ஒப்புதல் பதிவுகளை ஏற்றுமதி செய்தார்"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Exported the consent records of the list {name}"
+msgstr "பட்டியல் {name}-இன் ஒப்புதல் பதிவுகளை ஏற்றுமதி செய்தார்"
 
 #: src/features/broadcasts/Import.tsx
 msgid "External id"
@@ -5603,6 +5726,10 @@ msgstr "உள்நுழைந்த பயனர்களுக்கு, உ
 msgid "For signed-in users: the identity secret, shown only now"
 msgstr "உள்நுழைந்த பயனர்களுக்கு: அடையாள ரகசியம், இப்போது மட்டுமே காட்டப்படும்"
 
+#: src/features/settings/audit/sentence.ts
+msgid "forever"
+msgstr "எப்போதும்"
+
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/ListPage.tsx
 msgid "Form"
@@ -5678,6 +5805,7 @@ msgstr "உங்கள் Sent கோப்புறைகளில் கண�
 msgid "Friday"
 msgstr "வெள்ளிக்கிழமை"
 
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "From"
 msgstr "From"
@@ -5761,6 +5889,10 @@ msgstr "அதே செய்தியின் மேலும் நகல்
 #: src/components/common/ShortcutSheet.tsx
 msgid "Gallery"
 msgstr "தொகுப்பு"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Gave {person} access to {inbox}"
+msgstr "{person}-க்கு {inbox} அணுகலை வழங்கினார்"
 
 #: src/app/Sidebar.tsx
 #: src/components/common/SettingsStrip.tsx
@@ -6590,6 +6722,10 @@ msgstr "அழைப்பு மொழி"
 msgid "Invite your team"
 msgstr "உங்கள் குழுவை அழையுங்கள்"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Invited {email} as {role}"
+msgstr "{email}-ஐ {role} ஆக அழைத்தார்"
+
 #: src/features/team/TeamPage.tsx
 msgid "Invites"
 msgstr "அழைப்புகள்"
@@ -6758,6 +6894,10 @@ msgstr "இதன் அறிக்கையும் பெறுநர் ப
 msgid "Its settings, credentials and progress are deleted. Imported conversations stay."
 msgstr "இதன் அமைப்புகள், சான்றுகள், முன்னேற்றம் நீக்கப்படும். இறக்குமதி செய்த உரையாடல்கள் இருக்கும்."
 
+#: src/features/settings/audit/sentence.ts
+msgid "Joined the workspace as {role}"
+msgstr "{role} ஆக பணியிடத்தில் சேர்ந்தார்"
+
 #: src/features/conversation/ConversationStatus.tsx
 msgid "Just wrote"
 msgstr "இப்போதுதான் எழுதினார்"
@@ -6817,6 +6957,10 @@ msgstr "இந்தப் பணியிடத்தில் விசைக�
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "Keys and assistants may send broadcasts"
 msgstr "விசைகளும் உதவியாளர்களும் ஒளிபரப்புகளை அனுப்பலாம்"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Keys and connected apps"
+msgstr "விசைகள் மற்றும் இணைக்கப்பட்ட செயலிகள்"
 
 #: src/features/settings/channels/ChannelPage.tsx
 msgid "Keys that can reach this product. Create and revoke them under API & MCP."
@@ -7245,6 +7389,7 @@ msgstr "படங்களை ஏற்று"
 #: src/features/contact/ContactsPage.tsx
 #: src/features/docs/discussions/parts.tsx
 #: src/features/docs/PagesTab.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
 #: src/features/status/LinkConversationsDialog.tsx
 #: src/features/status/MonitorChecks.tsx
@@ -7628,6 +7773,10 @@ msgstr "உறுப்பினர்"
 #: src/features/team/TeamPage.tsx
 msgid "Members"
 msgstr "உறுப்பினர்கள்"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Members and invitations"
+msgstr "உறுப்பினர்கள் மற்றும் அழைப்புகள்"
 
 #: src/features/conversation/composer/MentionMenu.tsx
 msgid "Mention a teammate"
@@ -8652,6 +8801,10 @@ msgstr "இன்னும் முனைகள் இல்லை"
 msgid "No endpoints yet."
 msgstr "இன்னும் முனைகள் இல்லை."
 
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "No entry matches these filters."
+msgstr "இந்த வடிகட்டிகளுக்குப் பொருந்தும் பதிவுகள் இல்லை."
+
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "No events recorded."
 msgstr "நிகழ்வுகள் பதிவாகவில்லை."
@@ -8705,6 +8858,10 @@ msgstr "இன்னும் லேபிள்கள் இல்லை"
 #: src/features/inbox/ChatList.tsx
 msgid "No labels yet. Add them in settings."
 msgstr "இன்னும் லேபிள்கள் இல்லை. அமைப்புகளில் சேருங்கள்."
+
+#: src/features/settings/audit/sentence.ts
+msgid "no limit"
+msgstr "வரம்பு இல்லை"
 
 #: src/features/broadcasts/Pace.tsx
 msgid "No limit"
@@ -9197,6 +9354,10 @@ msgstr "இன்னும் எதுவும் தீர்க்கப்�
 #: src/features/broadcasts/Report.tsx
 msgid "Nothing has happened yet."
 msgstr "இன்னும் எதுவும் நடக்கவில்லை."
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Nothing here"
+msgstr "இங்கே இன்னும் எதுவும் இல்லை"
 
 #: src/features/broadcasts/Overview.tsx
 msgid "Nothing here."
@@ -9963,6 +10124,10 @@ msgstr "இயங்குகிறது"
 #: src/features/status/MonitorToken.tsx
 msgid "operational recovers; degraded, partial_outage and major_outage fail."
 msgstr "operational மீட்டெடுக்கும்; degraded, partial_outage, major_outage தோல்வியடையச் செய்யும்."
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Operator"
+msgstr "இயக்குநர்"
 
 #: src/features/status/ComponentDialogs.tsx
 msgid "Optional. Shown on the public page."
@@ -11090,6 +11255,10 @@ msgstr "சாலை வரைபடப் பலகைகள், யோசன�
 msgid "Read status pages, components and incidents"
 msgstr "நிலைப் பக்கங்கள், கூறுகள் மற்றும் சம்பவங்களைப் படி"
 
+#: src/components/common/text.ts
+msgid "Read the audit log (owners only)"
+msgstr "தணிக்கைப் பதிவைப் படிக்கவும் (உரிமையாளர்கள் மட்டும்)"
+
 #: src/features/migrations/text.ts
 msgid "Read the folders"
 msgstr "கோப்புறைகளைப் படி"
@@ -11373,6 +11542,10 @@ msgstr "இந்த பாஸ்கீயை அகற்றவா?"
 #: src/features/migrations/DoneStep.tsx
 msgid "Remove Yuva's access in Microsoft"
 msgstr "Microsoft-இல் Yuva-வின் அணுகலை அகற்றுங்கள்"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed {person} from the workspace"
+msgstr "{person}-ஐ பணியிடத்திலிருந்து நீக்கினார்"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Removes {name} with its products, channels, conversations, contacts, files, labels, webhooks and API keys for everyone. Members keep their accounts."
@@ -11789,6 +11962,10 @@ msgstr "{keyName}-ஐத் திரும்பப் பெறவா?"
 msgid "Revoked"
 msgstr "திரும்பப் பெறப்பட்டது"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Revoked the API key {name}"
+msgstr "API விசை {name}-ஐ திரும்பப் பெற்றார்"
+
 #: src/features/broadcasts/ListForm.tsx
 msgid "Right after subscribing, people get a short mail that confirms it, with an unsubscribe link."
 msgstr "சந்தா செய்த உடனே, அதை உறுதிப்படுத்தும் சிறு அஞ்சல் மக்களுக்குக் கிடைக்கும், சந்தா விலகல் இணைப்புடன்."
@@ -11839,6 +12016,22 @@ msgstr "பொது விசையைச் சுழற்றவா?"
 #: src/features/settings/webhooks/sections.tsx
 msgid "Rotate the signing secret?"
 msgstr "கையொப்ப ரகசியத்தைச் சுழற்றவா?"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the forwarding address of a channel"
+msgstr "ஒரு சேனலின் அனுப்பும் முகவரியைப் புதுப்பித்தார்"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the identity secret of an inbox"
+msgstr "ஒரு இன்பாக்ஸின் அடையாள ரகசியத்தைப் புதுப்பித்தார்"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the key of a channel"
+msgstr "ஒரு சேனலின் விசையைப் புதுப்பித்தார்"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the signing secret of a webhook"
+msgstr "ஒரு வெப்ஹுக்கின் கையொப்ப ரகசியத்தைப் புதுப்பித்தார்"
 
 #: src/features/setup/email/EmailReceiveStep.tsx
 msgid "Route your domain"
@@ -13534,6 +13727,10 @@ msgstr "support@your-company.com"
 msgid "Suspended"
 msgstr "இடைநீக்கப்பட்டது"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Suspended broadcasts"
+msgstr "ஒளிபரப்புகளை இடைநிறுத்தினார்"
+
 #: src/features/migrations/Wizard.tsx
 msgid "Switch"
 msgstr "மாறு"
@@ -14054,8 +14251,8 @@ msgid "The key is ready"
 msgstr "விசை தயார்"
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-msgid "The key sees only these inboxes and cannot manage inboxes, webhooks or the workspace."
-msgstr "விசை இந்த இன்பாக்ஸ்களை மட்டுமே காணும்; இன்பாக்ஸ்கள், வெப்ஹூக்குகள் அல்லது பணியிடத்தை நிர்வகிக்க முடியாது."
+msgid "The key sees only these inboxes and cannot manage inboxes, webhooks or the workspace, or read the audit log."
+msgstr "இந்த விசை இந்த இன்பாக்ஸ்களை மட்டுமே பார்க்கும்; இன்பாக்ஸ்கள், வெப்ஹுக்குகள் அல்லது பணியிடத்தை நிர்வகிக்கவோ தணிக்கைப் பதிவைப் படிக்கவோ முடியாது."
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "The key stops working at the end of this day."
@@ -14522,8 +14719,8 @@ msgid "The What’s new count shows on the chat button while no messages are unr
 msgstr "படிக்காத செய்திகள் இல்லாதவரை அரட்டைப் பொத்தானில் புதிய புதுப்பிப்புகளின் எண்ணிக்கை தெரியும். விட்ஜெட்டின் முகப்பு அதை எப்போதும் காட்டும்."
 
 #: src/features/settings/GeneralTabs.tsx
-msgid "The workspace itself: name, retention, labels, canned replies and moving in"
-msgstr "பணியிடமே: பெயர், தக்கவைப்பு, லேபிள்கள், தயார் பதில்கள், இடமாற்றம்"
+msgid "The workspace itself: name, retention, labels, canned replies, moving in and the audit log"
+msgstr "பணியிடமே: பெயர், சேமிப்பு, லேபிள்கள், தயார் பதில்கள், இடமாற்றம் மற்றும் தணிக்கைப் பதிவு"
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The workspace may not send broadcasts for now."
@@ -15062,6 +15259,7 @@ msgstr "தலைப்பு"
 msgid "TLS (port 465)"
 msgstr "TLS (போர்ட் 465)"
 
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "To"
 msgstr "To"
@@ -15112,6 +15310,10 @@ msgstr "மிக அதிக முயற்சிகள். சிறித�
 #: src/features/auth/CreateWorkspace.tsx
 msgid "Too many workspaces were created from your network today. Try again tomorrow."
 msgstr "இன்று உங்கள் நெட்வொர்க்கிலிருந்து மிக அதிகப் பணியிடங்கள் உருவாக்கப்பட்டன. நாளை மீண்டும் முயலுங்கள்."
+
+#: src/features/settings/audit/sentence.ts
+msgid "Took away the access of {person} to {inbox}"
+msgstr "{person}-இன் {inbox} அணுகலைத் திரும்பப் பெற்றார்"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "tr, en-GB"
@@ -15755,6 +15957,10 @@ msgstr "பதிப்புகள்"
 msgid "Very large mailbox? Start with a Google Takeout file"
 msgstr "மிகப் பெரிய அஞ்சல்பெட்டியா? Google Takeout கோப்புடன் தொடங்குங்கள்"
 
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "via {via}"
+msgstr "{via} வழியாக"
+
 #: src/features/home/HomePage.tsx
 msgid "View"
 msgstr "பார்"
@@ -15970,6 +16176,7 @@ msgid "Webhook endpoint"
 msgstr "வெப்ஹூக் முனை"
 
 #: src/app/Palette.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
@@ -16014,6 +16221,10 @@ msgstr "புதன்கிழமை"
 #: src/features/broadcasts/ListForm.tsx
 msgid "Welcome receipt"
 msgstr "வரவேற்புப் பற்றுச்சீட்டு"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "What"
+msgstr "என்ன"
 
 #: src/features/broadcasts/Import.tsx
 msgid "What {header} holds"
@@ -16245,6 +16456,10 @@ msgstr "அணைந்திருக்கும்போது, விநி�
 msgid "While your status is Away, only new messages in conversations assigned to you and new assignments notify you. A conversation you have open in the panel never notifies you."
 msgstr "உங்கள் நிலை Away ஆக இருக்கும்போது, உங்களுக்கு ஒதுக்கப்பட்ட உரையாடல்களின் புதிய செய்திகளும் புதிய ஒதுக்கீடுகளும் மட்டுமே உங்களுக்கு அறிவிக்கும். பலகையில் நீங்கள் திறந்துள்ள உரையாடல் ஒருபோதும் அறிவிக்காது."
 
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Who"
+msgstr "யார்"
+
 #: src/features/broadcasts/ListsHome.tsx
 msgid "Who agreed to hear from you, with consent recorded"
 msgstr "உங்களிடமிருந்து கேட்க யார் ஒப்புக்கொண்டார்கள், பதிவுசெய்த ஒப்புதலுடன்"
@@ -16256,6 +16471,14 @@ msgstr "யார், எங்கே பதிலளிக்கிறார்
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Who can reply"
 msgstr "யார் பதிலளிக்கலாம்"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Who changed access, keys and data"
+msgstr "அணுகல், விசைகள், தரவை யார் மாற்றினார்"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Who changed members, access, keys, webhooks, mail accounts, retention and exports, newest first. Only owners see this."
+msgstr "உறுப்பினர்கள், அணுகல், விசைகள், வெப்ஹுக்குகள், அஞ்சல் கணக்குகள், சேமிப்பு, ஏற்றுமதிகளை யார் மாற்றினார், புதியவை முதலில். இதை உரிமையாளர்கள் மட்டுமே பார்ப்பார்கள்."
 
 #: src/features/team/TeamPage.tsx
 msgid "Who is here"
@@ -16366,6 +16589,10 @@ msgstr "செயல்படுகிறது…"
 #: src/features/settings/workspace/RetentionForm.tsx
 msgid "Workspace"
 msgstr "பணியிடம்"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Workspace and broadcasts"
+msgstr "பணியிடமும் ஒளிபரப்புகளும்"
 
 #: src/features/auth/CreateWorkspace.tsx
 msgid "Workspace name"

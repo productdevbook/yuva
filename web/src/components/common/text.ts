@@ -103,8 +103,10 @@ export const API_KEY_SCOPES: ApiKeyScope[] = [
   "changelog:read",
   "changelog:write",
   "changelog:publish",
+  "audit:read",
 ]
-export const OPT_IN_SCOPES: ApiKeyScope[] = ["broadcasts:send"]
+export const OPT_IN_SCOPES: ApiKeyScope[] = ["broadcasts:send", "audit:read"]
+export const OWNER_ONLY_SCOPES: ApiKeyScope[] = ["audit:read"]
 export type ApiKeyPreset = "read" | "support" | "everything" | "custom"
 export const API_KEY_PRESET_SCOPES: Record<Exclude<ApiKeyPreset, "custom">, ApiKeyScope[]> = {
   read: [
@@ -136,6 +138,7 @@ export const WORKSPACE_WIDE_SCOPES: ApiKeyScope[] = [
   "workspace:manage",
   "migrations:manage",
   "analytics:manage",
+  "audit:read",
 ]
 export const DELIVERY_STATES: WebhookDeliveryState[] = ["pending", "succeeded", "failed"]
 export const SUBSCRIPTION_STATES: SubscriptionState[] = ["subscribed", "pending", "unsubscribed"]
@@ -254,6 +257,7 @@ export function useEnumText() {
       "changelog:read": t`Read What's new changelogs and their entries`,
       "changelog:write": t`Write What's new entries and translations`,
       "changelog:publish": t`Publish, schedule and unpublish What's new entries`,
+      "audit:read": t`Read the audit log (owners only)`,
     } satisfies Record<ApiKeyScope, string>,
     delivery: { pending: t`Pending`, succeeded: t`Succeeded`, failed: t`Failed` } satisfies Record<
       WebhookDeliveryState,

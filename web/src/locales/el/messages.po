@@ -293,6 +293,7 @@ msgstr "{created, plural, one {# νέα} other {# νέες}}"
 
 #: src/features/broadcasts/Growth.tsx
 #: src/features/docs/Toolbar.tsx
+#: src/features/settings/audit/sentence.ts
 msgid "{d, plural, one {# day} other {# days}}"
 msgstr "{d, plural, one {# ημέρα} other {# ημέρες}}"
 
@@ -481,6 +482,10 @@ msgstr "{n, plural, one {# άλλη συνομιλία} other {# άλλες συ
 msgid "{n, plural, one {# person} other {# people}}"
 msgstr "{n, plural, one {# άτομο} other {# άτομα}}"
 
+#: src/features/settings/audit/sentence.ts
+msgid "{n, plural, one {# recipient a day} other {# recipients a day}}"
+msgstr "{n, plural, one {# παραλήπτης την ημέρα} other {# παραλήπτες την ημέρα}}"
+
 #: src/features/setup/SetupHub.tsx
 msgid "{n, plural, one {# website chat} other {# website chats}}"
 msgstr "{n, plural, one {# συνομιλία ιστότοπου} other {# συνομιλίες ιστότοπου}}"
@@ -664,6 +669,10 @@ msgstr "{percent}%, {doneText} από {total}"
 #: src/features/migrations/UploadStep.tsx
 msgid "{percent}%, {sent} of {size}"
 msgstr "{percent}%, {sent} από {size}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "{person} left the workspace by deleting their account"
+msgstr "Ο/Η {person} αποχώρησε από τον χώρο εργασίας διαγράφοντας τον λογαριασμό του/της"
 
 #: src/features/inbox/ChatsPage.tsx
 msgid "{product}’s conversations"
@@ -1137,6 +1146,10 @@ msgstr "Ένα πρόχειρο γράφτηκε"
 #: src/components/common/text.ts
 msgid "A file's content does not match its type. Check the file and try again."
 msgstr "Το περιεχόμενο ενός αρχείου δεν ταιριάζει με τον τύπο του. Ελέγξτε το αρχείο και δοκιμάστε ξανά."
+
+#: src/features/settings/audit/sentence.ts
+msgid "a former member"
+msgstr "πρώην μέλος"
 
 #: src/features/contact/ContactNotes.tsx
 msgid "A former teammate"
@@ -1632,6 +1645,10 @@ msgstr "Προστέθηκε: {created}, τελευταία παράδοση: {d
 msgid "Added {created}, last used {used}"
 msgstr "Προστέθηκε: {created}, τελευταία χρήση: {used}"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Added a webhook to {host}"
+msgstr "Πρόσθεσε webhook προς {host}"
+
 #: src/components/common/text.ts
 msgid "Added by the team"
 msgstr "Προστέθηκε από την ομάδα"
@@ -1833,6 +1850,10 @@ msgstr "Επιτρέπεται"
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Allowed origins"
 msgstr "Επιτρεπόμενες προελεύσεις"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Allowed the workspace to send broadcasts"
+msgstr "Επέτρεψε στον χώρο εργασίας να στέλνει μαζικές αποστολές"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Already earlier in the file"
@@ -2201,11 +2222,13 @@ msgstr "API και MCP"
 msgid "API channel"
 msgstr "Κανάλι API"
 
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/status/IncidentDetail.tsx
 msgid "API key"
 msgstr "Κλειδί API"
 
 #: src/app/Palette.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/channels/ChannelPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
@@ -2370,6 +2393,10 @@ msgstr "Ζητήστε από τον διαχειριστή του διακομ�
 msgid "asked after closing"
 msgstr "ρωτήθηκε μετά το κλείσιμο"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Asked to be allowed to send broadcasts"
+msgstr "Ζήτησε άδεια για μαζικές αποστολές"
+
 #: src/components/common/text.ts
 msgid "Asked to subscribe"
 msgstr "Ζητήθηκε εγγραφή"
@@ -2514,6 +2541,12 @@ msgstr "Χαρακτηριστικά"
 #: src/features/broadcasts/Composer.tsx
 msgid "Audience"
 msgstr "Κοινό"
+
+#: src/app/Palette.tsx
+#: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Audit log"
+msgstr "Αρχείο καταγραφής ελέγχου"
 
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Authorization"
@@ -2947,6 +2980,10 @@ msgstr "Ακύρωση αυτής της εισαγωγής;"
 msgid "Cancelled"
 msgstr "Ακυρώθηκε"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Cancelled an invitation"
+msgstr "Ακύρωσε μια πρόσκληση"
+
 #: src/features/broadcasts/Import.tsx
 msgid "Cancelled. What was added before stays."
 msgstr "Ακυρώθηκε. Ό,τι προστέθηκε πριν παραμένει."
@@ -3038,6 +3075,26 @@ msgstr "Αλλαγή, διαγραφή και συγχώνευση επαφών"
 msgid "Change, move and bulk-update conversations"
 msgstr "Αλλαγή, μετακίνηση και μαζική ενημέρωση συνομιλιών"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Changed how long conversations are kept from {from} to {to}"
+msgstr "Άλλαξε τη διάρκεια διατήρησης των συνομιλιών από {from} σε {to}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the daily broadcast limit from {from} to {to}"
+msgstr "Άλλαξε το ημερήσιο όριο μαζικών αποστολών από {from} σε {to}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the mail account or password of a channel"
+msgstr "Άλλαξε τον λογαριασμό αλληλογραφίας ή τον κωδικό ενός καναλιού"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the role of {person} from {from} to {to}"
+msgstr "Άλλαξε τον ρόλο του/της {person} από {from} σε {to}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the webhook to {host}"
+msgstr "Άλλαξε το webhook προς {host}"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Changelog settings"
 msgstr "Ρυθμίσεις του αρχείου αλλαγών"
@@ -3045,6 +3102,10 @@ msgstr "Ρυθμίσεις του αρχείου αλλαγών"
 #: src/features/migrations/Wizard.tsx
 msgid "Changes made to {provider}: none"
 msgstr "Αλλαγές στο {provider}: καμία"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Changes to members, keys, webhooks and other sensitive settings show up here."
+msgstr "Οι αλλαγές σε μέλη, κλειδιά, webhooks και άλλες ευαίσθητες ρυθμίσεις εμφανίζονται εδώ."
 
 #: src/features/settings/channels/email/EmailSections.tsx
 msgid "Changing the sending domain turns DKIM signing off until you enable it again for the new domain."
@@ -3076,6 +3137,10 @@ msgstr "Ρυθμίσεις καναλιού"
 #: src/features/settings/ProductsPage.tsx
 msgid "Channels"
 msgstr "Κανάλια"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Channels and inboxes"
+msgstr "Κανάλια και εισερχόμενα"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Chat"
@@ -3613,6 +3678,10 @@ msgstr "Συνδέστε τους διακομιστές και τα bots σας
 msgid "Connected"
 msgstr "Συνδέθηκε"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Connected {client}"
+msgstr "Συνέδεσε το {client}"
+
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Connected {created}"
 msgstr "Συνδέθηκε {created}"
@@ -3622,6 +3691,7 @@ msgstr "Συνδέθηκε {created}"
 #: src/components/common/SettingsStrip.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/inbox/SidePanels.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
 msgid "Connected apps"
@@ -3733,6 +3803,10 @@ msgstr "Επαφή από {since}"
 #: src/features/settings/webhooks/events.tsx
 msgid "Contacts"
 msgstr "Επαφές"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Contacts and exports"
+msgstr "Επαφές και εξαγωγές"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "contains"
@@ -4053,6 +4127,18 @@ msgstr "Δημιουργήστε τον λογαριασμό σας στο Yuva"
 msgid "Created"
 msgstr "Δημιουργήθηκε"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Created an analytics export"
+msgstr "Δημιούργησε μια εξαγωγή αναλυτικών"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Created the API key {name}"
+msgstr "Δημιούργησε το κλειδί API {name}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Created the DKIM key {selector}"
+msgstr "Δημιούργησε το κλειδί DKIM {selector}"
+
 #: src/features/migrations/DoneStep.tsx
 msgid "Credentials deleted {deletedAt}. Yuva can no longer read {address}."
 msgstr "Τα διαπιστευτήρια διαγράφηκαν {deletedAt}. Το Yuva δεν μπορεί πλέον να διαβάσει το {address}."
@@ -4154,6 +4240,10 @@ msgstr "Ημέρες ιστορικού"
 #: src/features/setup/InstallStep.tsx
 msgid "Decide who may write in discussions"
 msgstr "Αποφασίστε ποιος μπορεί να γράφει στις συζητήσεις"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Declined the request to send broadcasts"
+msgstr "Απέρριψε το αίτημα για μαζικές αποστολές"
 
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "Default: {fallback}"
@@ -4336,6 +4426,14 @@ msgstr "Διαγραφή του λογαριασμού σας"
 msgid "Delete your account?"
 msgstr "Διαγραφή του λογαριασμού σας;"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted a contact"
+msgstr "Διέγραψε μια επαφή"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted a DKIM key"
+msgstr "Διέγραψε ένα κλειδί DKIM"
+
 #: src/features/contact/MergeContactDialog.tsx
 msgid "deleted afterwards"
 msgstr "διαγράφεται μετά"
@@ -4362,6 +4460,14 @@ msgstr "Διαγραμμένο μέλος"
 #: src/components/common/DiscussionAuthor.tsx
 msgid "Deleted reader"
 msgstr "Διαγραμμένος αναγνώστης"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted the inbox {name}"
+msgstr "Διέγραψε τα εισερχόμενα {name}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted the webhook to {host}"
+msgstr "Διέγραψε το webhook προς {host}"
 
 #: src/features/settings/inboxes/InboxSecurity.tsx
 msgid "Deletes its channels, conversations, messages and attachments. This cannot be undone."
@@ -4474,6 +4580,10 @@ msgstr "Απόρριψη αλλαγών"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Discard the suggested reply"
 msgstr "Απόρριψη της προτεινόμενης απάντησης"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Disconnected {client}"
+msgstr "Αποσύνδεσε το {client}"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/DocsPage.tsx
@@ -5156,8 +5266,8 @@ msgid "Every request to this endpoint, newest first. The newest 100 are kept."
 msgstr "Κάθε αίτημα προς αυτό το endpoint, τα νεότερα πρώτα. Κρατούνται τα τελευταία 100."
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-msgid "Every scope except sending broadcasts."
-msgstr "Κάθε εύρος πρόσβασης εκτός από την αποστολή μαζικών αποστολών."
+msgid "Every scope except sending broadcasts and reading the audit log."
+msgstr "Κάθε δικαίωμα εκτός από την αποστολή μαζικών μηνυμάτων και την ανάγνωση του αρχείου ελέγχου."
 
 #: src/features/inbox/SourceFilter.tsx
 msgid "Every site"
@@ -5174,6 +5284,10 @@ msgstr "Κάθε τύπος"
 #: src/features/setup/SetupHub.tsx
 msgid "Every website and app shows its visitors on Home and in Analytics."
 msgstr "Κάθε ιστότοπος και εφαρμογή εμφανίζει τους επισκέπτες του στην Αρχική και στα Αναλυτικά στοιχεία."
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Everyone"
+msgstr "Όλοι"
 
 #: src/features/inbox/ChatsPage.tsx
 msgid "Everyone has been answered."
@@ -5203,6 +5317,7 @@ msgstr "Οι αναρτήσεις όλων δημοσιεύονται αμέσω
 #: src/features/migrations/Wizard.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 msgid "Everything"
 msgstr "Όλα"
 
@@ -5276,6 +5391,14 @@ msgstr "Αρχείο εξαγωγής"
 #: src/features/migrations/text.ts
 msgid "Export once as a .zip file. Google mails you a link when it is ready; for a large mailbox that can take a day or more."
 msgstr "Εξαγάγετε μία φορά ως αρχείο .zip. Η Google σας στέλνει σύνδεσμο όταν είναι έτοιμο· για μεγάλο γραμματοκιβώτιο μπορεί να πάρει μια μέρα ή και περισσότερο."
+
+#: src/features/settings/audit/sentence.ts
+msgid "Exported the consent records of contacts"
+msgstr "Εξήγαγε τα αρχεία συναίνεσης των επαφών"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Exported the consent records of the list {name}"
+msgstr "Εξήγαγε τα αρχεία συναίνεσης της λίστας {name}"
 
 #: src/features/broadcasts/Import.tsx
 msgid "External id"
@@ -5603,6 +5726,10 @@ msgstr "Για συνδεδεμένους χρήστες, το backend σας υ
 msgid "For signed-in users: the identity secret, shown only now"
 msgstr "Για συνδεδεμένους χρήστες: το μυστικό ταυτότητας, εμφανίζεται μόνο τώρα"
 
+#: src/features/settings/audit/sentence.ts
+msgid "forever"
+msgstr "για πάντα"
+
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/ListPage.tsx
 msgid "Form"
@@ -5678,6 +5805,7 @@ msgstr "Βρέθηκε στους φακέλους Απεσταλμένων σα
 msgid "Friday"
 msgstr "Παρασκευή"
 
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "From"
 msgstr "Από"
@@ -5761,6 +5889,10 @@ msgstr "Περαιτέρω αντίγραφα του ίδιου μηνύματο
 #: src/components/common/ShortcutSheet.tsx
 msgid "Gallery"
 msgstr "Συλλογή"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Gave {person} access to {inbox}"
+msgstr "Έδωσε στον/στην {person} πρόσβαση στο {inbox}"
 
 #: src/app/Sidebar.tsx
 #: src/components/common/SettingsStrip.tsx
@@ -6590,6 +6722,10 @@ msgstr "Γλώσσα πρόσκλησης"
 msgid "Invite your team"
 msgstr "Προσκαλέστε την ομάδα σας"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Invited {email} as {role}"
+msgstr "Προσκάλεσε το {email} ως {role}"
+
 #: src/features/team/TeamPage.tsx
 msgid "Invites"
 msgstr "Προσκλήσεις"
@@ -6758,6 +6894,10 @@ msgstr "Η αναφορά και η λίστα παραληπτών του δι�
 msgid "Its settings, credentials and progress are deleted. Imported conversations stay."
 msgstr "Οι ρυθμίσεις, τα διαπιστευτήρια και η πρόοδός της διαγράφονται. Οι εισαγμένες συνομιλίες παραμένουν."
 
+#: src/features/settings/audit/sentence.ts
+msgid "Joined the workspace as {role}"
+msgstr "Εντάχθηκε στον χώρο εργασίας ως {role}"
+
 #: src/features/conversation/ConversationStatus.tsx
 msgid "Just wrote"
 msgstr "Μόλις έγραψε"
@@ -6817,6 +6957,10 @@ msgstr "Τα κλειδιά και οι βοηθοί δεν μπορούν να 
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "Keys and assistants may send broadcasts"
 msgstr "Τα κλειδιά και οι βοηθοί μπορούν να στέλνουν μαζικές αποστολές"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Keys and connected apps"
+msgstr "Κλειδιά και συνδεδεμένες εφαρμογές"
 
 #: src/features/settings/channels/ChannelPage.tsx
 msgid "Keys that can reach this product. Create and revoke them under API & MCP."
@@ -7245,6 +7389,7 @@ msgstr "Φόρτωση εικόνων"
 #: src/features/contact/ContactsPage.tsx
 #: src/features/docs/discussions/parts.tsx
 #: src/features/docs/PagesTab.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
 #: src/features/status/LinkConversationsDialog.tsx
 #: src/features/status/MonitorChecks.tsx
@@ -7628,6 +7773,10 @@ msgstr "Μέλος"
 #: src/features/team/TeamPage.tsx
 msgid "Members"
 msgstr "Μέλη"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Members and invitations"
+msgstr "Μέλη και προσκλήσεις"
 
 #: src/features/conversation/composer/MentionMenu.tsx
 msgid "Mention a teammate"
@@ -8652,6 +8801,10 @@ msgstr "Δεν υπάρχουν ακόμη endpoints"
 msgid "No endpoints yet."
 msgstr "Κανένα endpoint ακόμη."
 
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "No entry matches these filters."
+msgstr "Καμία καταχώριση δεν ταιριάζει με αυτά τα φίλτρα."
+
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "No events recorded."
 msgstr "Δεν καταγράφηκαν συμβάντα."
@@ -8705,6 +8858,10 @@ msgstr "Καμία ετικέτα ακόμη"
 #: src/features/inbox/ChatList.tsx
 msgid "No labels yet. Add them in settings."
 msgstr "Καμία ετικέτα ακόμη. Προσθέστε στις ρυθμίσεις."
+
+#: src/features/settings/audit/sentence.ts
+msgid "no limit"
+msgstr "χωρίς όριο"
 
 #: src/features/broadcasts/Pace.tsx
 msgid "No limit"
@@ -9197,6 +9354,10 @@ msgstr "Δεν έχει επιλυθεί τίποτα ακόμη."
 #: src/features/broadcasts/Report.tsx
 msgid "Nothing has happened yet."
 msgstr "Δεν έχει συμβεί τίποτα ακόμη."
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Nothing here"
+msgstr "Δεν υπάρχει τίποτα ακόμη"
 
 #: src/features/broadcasts/Overview.tsx
 msgid "Nothing here."
@@ -9963,6 +10124,10 @@ msgstr "Λειτουργεί"
 #: src/features/status/MonitorToken.tsx
 msgid "operational recovers; degraded, partial_outage and major_outage fail."
 msgstr "το operational αποκαθιστά· τα degraded, partial_outage και major_outage ρίχνουν."
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Operator"
+msgstr "Διαχειριστής συστήματος"
 
 #: src/features/status/ComponentDialogs.tsx
 msgid "Optional. Shown on the public page."
@@ -11090,6 +11255,10 @@ msgstr "Ανάγνωση πινάκων οδικού χάρτη, ιδεών κα
 msgid "Read status pages, components and incidents"
 msgstr "Ανάγνωση σελίδων κατάστασης, στοιχείων και περιστατικών"
 
+#: src/components/common/text.ts
+msgid "Read the audit log (owners only)"
+msgstr "Ανάγνωση του αρχείου ελέγχου (μόνο ιδιοκτήτες)"
+
 #: src/features/migrations/text.ts
 msgid "Read the folders"
 msgstr "Ανάγνωση των φακέλων"
@@ -11373,6 +11542,10 @@ msgstr "Αφαίρεση αυτού του passkey;"
 #: src/features/migrations/DoneStep.tsx
 msgid "Remove Yuva's access in Microsoft"
 msgstr "Αφαιρέστε την πρόσβαση του Yuva στη Microsoft"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed {person} from the workspace"
+msgstr "Αφαίρεσε τον/την {person} από τον χώρο εργασίας"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Removes {name} with its products, channels, conversations, contacts, files, labels, webhooks and API keys for everyone. Members keep their accounts."
@@ -11789,6 +11962,10 @@ msgstr "Ανάκληση του {keyName};"
 msgid "Revoked"
 msgstr "Ανακλήθηκε"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Revoked the API key {name}"
+msgstr "Ανακάλεσε το κλειδί API {name}"
+
 #: src/features/broadcasts/ListForm.tsx
 msgid "Right after subscribing, people get a short mail that confirms it, with an unsubscribe link."
 msgstr "Αμέσως μετά την εγγραφή, τα άτομα λαμβάνουν ένα σύντομο e-mail που την επιβεβαιώνει, με σύνδεσμο διαγραφής."
@@ -11839,6 +12016,22 @@ msgstr "Αλλαγή του δημόσιου κλειδιού;"
 #: src/features/settings/webhooks/sections.tsx
 msgid "Rotate the signing secret?"
 msgstr "Αλλαγή του μυστικού υπογραφής;"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the forwarding address of a channel"
+msgstr "Ανανέωσε τη διεύθυνση προώθησης ενός καναλιού"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the identity secret of an inbox"
+msgstr "Ανανέωσε το μυστικό ταυτότητας ενός εισερχομένων"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the key of a channel"
+msgstr "Ανανέωσε το κλειδί ενός καναλιού"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the signing secret of a webhook"
+msgstr "Ανανέωσε το μυστικό υπογραφής ενός webhook"
 
 #: src/features/setup/email/EmailReceiveStep.tsx
 msgid "Route your domain"
@@ -13534,6 +13727,10 @@ msgstr "support@your-company.com"
 msgid "Suspended"
 msgstr "Ανεστάλη"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Suspended broadcasts"
+msgstr "Ανέστειλε τις μαζικές αποστολές"
+
 #: src/features/migrations/Wizard.tsx
 msgid "Switch"
 msgstr "Αλλαγή"
@@ -14054,8 +14251,8 @@ msgid "The key is ready"
 msgstr "Το κλειδί είναι έτοιμο"
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-msgid "The key sees only these inboxes and cannot manage inboxes, webhooks or the workspace."
-msgstr "Το κλειδί βλέπει μόνο αυτά τα εισερχόμενα και δεν μπορεί να διαχειριστεί εισερχόμενα, webhooks ή τον χώρο εργασίας."
+msgid "The key sees only these inboxes and cannot manage inboxes, webhooks or the workspace, or read the audit log."
+msgstr "Το κλειδί βλέπει μόνο αυτά τα εισερχόμενα και δεν μπορεί να διαχειριστεί εισερχόμενα, webhooks ή τον χώρο εργασίας, ούτε να διαβάσει το αρχείο ελέγχου."
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "The key stops working at the end of this day."
@@ -14522,8 +14719,8 @@ msgid "The What’s new count shows on the chat button while no messages are unr
 msgstr "Ο αριθμός των νέων εμφανίζεται στο κουμπί συνομιλίας όσο δεν υπάρχουν μη αναγνωσμένα μηνύματα. Η αρχική του widget τον δείχνει πάντα."
 
 #: src/features/settings/GeneralTabs.tsx
-msgid "The workspace itself: name, retention, labels, canned replies and moving in"
-msgstr "Ο ίδιος ο χώρος εργασίας: όνομα, διατήρηση, ετικέτες, έτοιμες απαντήσεις και μεταφορά"
+msgid "The workspace itself: name, retention, labels, canned replies, moving in and the audit log"
+msgstr "Ο ίδιος ο χώρος εργασίας: όνομα, διατήρηση, ετικέτες, έτοιμες απαντήσεις, μετακίνηση και αρχείο ελέγχου"
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The workspace may not send broadcasts for now."
@@ -15062,6 +15259,7 @@ msgstr "Τίτλος"
 msgid "TLS (port 465)"
 msgstr "TLS (θύρα 465)"
 
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "To"
 msgstr "Προς"
@@ -15112,6 +15310,10 @@ msgstr "Πάρα πολλές προσπάθειες. Περιμένετε λί�
 #: src/features/auth/CreateWorkspace.tsx
 msgid "Too many workspaces were created from your network today. Try again tomorrow."
 msgstr "Δημιουργήθηκαν πάρα πολλοί χώροι εργασίας από το δίκτυό σας σήμερα. Δοκιμάστε ξανά αύριο."
+
+#: src/features/settings/audit/sentence.ts
+msgid "Took away the access of {person} to {inbox}"
+msgstr "Αφαίρεσε την πρόσβαση του/της {person} στο {inbox}"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "tr, en-GB"
@@ -15755,6 +15957,10 @@ msgstr "Εκδόσεις"
 msgid "Very large mailbox? Start with a Google Takeout file"
 msgstr "Πολύ μεγάλο γραμματοκιβώτιο; Ξεκινήστε με ένα αρχείο Google Takeout"
 
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "via {via}"
+msgstr "μέσω {via}"
+
 #: src/features/home/HomePage.tsx
 msgid "View"
 msgstr "Προβολή"
@@ -15970,6 +16176,7 @@ msgid "Webhook endpoint"
 msgstr "Endpoint webhook"
 
 #: src/app/Palette.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
@@ -16014,6 +16221,10 @@ msgstr "Τετάρτη"
 #: src/features/broadcasts/ListForm.tsx
 msgid "Welcome receipt"
 msgstr "Απόδειξη καλωσορίσματος"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "What"
+msgstr "Τι"
 
 #: src/features/broadcasts/Import.tsx
 msgid "What {header} holds"
@@ -16245,6 +16456,10 @@ msgstr "Όσο είναι ανενεργό, δεν γίνονται παραδό
 msgid "While your status is Away, only new messages in conversations assigned to you and new assignments notify you. A conversation you have open in the panel never notifies you."
 msgstr "Όσο η κατάστασή σας είναι Απών, σας ειδοποιούν μόνο νέα μηνύματα σε συνομιλίες που σας έχουν ανατεθεί και νέες αναθέσεις. Μια συνομιλία που έχετε ανοιχτή στον πίνακα δεν σας ειδοποιεί ποτέ."
 
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Who"
+msgstr "Ποιος"
+
 #: src/features/broadcasts/ListsHome.tsx
 msgid "Who agreed to hear from you, with consent recorded"
 msgstr "Ποιοι συμφώνησαν να ακούν από εσάς, με καταγεγραμμένη συγκατάθεση"
@@ -16256,6 +16471,14 @@ msgstr "Ποιος απαντά, πού, και ποιος είναι συνδε
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Who can reply"
 msgstr "Ποιος μπορεί να απαντά"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Who changed access, keys and data"
+msgstr "Ποιος άλλαξε πρόσβαση, κλειδιά και δεδομένα"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Who changed members, access, keys, webhooks, mail accounts, retention and exports, newest first. Only owners see this."
+msgstr "Ποιος άλλαξε μέλη, πρόσβαση, κλειδιά, webhooks, λογαριασμούς αλληλογραφίας, διατήρηση και εξαγωγές, με τα νεότερα πρώτα. Το βλέπουν μόνο οι ιδιοκτήτες."
 
 #: src/features/team/TeamPage.tsx
 msgid "Who is here"
@@ -16366,6 +16589,10 @@ msgstr "Σε εξέλιξη…"
 #: src/features/settings/workspace/RetentionForm.tsx
 msgid "Workspace"
 msgstr "Χώρος εργασίας"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Workspace and broadcasts"
+msgstr "Χώρος εργασίας και μαζικές αποστολές"
 
 #: src/features/auth/CreateWorkspace.tsx
 msgid "Workspace name"

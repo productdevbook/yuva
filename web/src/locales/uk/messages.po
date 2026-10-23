@@ -293,6 +293,7 @@ msgstr "{created, plural, one {# нова} few {# нові} many {# нових} 
 
 #: src/features/broadcasts/Growth.tsx
 #: src/features/docs/Toolbar.tsx
+#: src/features/settings/audit/sentence.ts
 msgid "{d, plural, one {# day} other {# days}}"
 msgstr "{d, plural, one {# день} few {# дні} many {# днів} other {# дня}}"
 
@@ -481,6 +482,10 @@ msgstr "{n, plural, one {# інша розмова} few {# інші розмов
 msgid "{n, plural, one {# person} other {# people}}"
 msgstr "{n, plural, one {# людина} few {# людини} many {# людей} other {# людини}}"
 
+#: src/features/settings/audit/sentence.ts
+msgid "{n, plural, one {# recipient a day} other {# recipients a day}}"
+msgstr "{n, plural, one {# отримувач на день} few {# отримувачі на день} many {# отримувачів на день} other {# отримувача на день}}"
+
 #: src/features/setup/SetupHub.tsx
 msgid "{n, plural, one {# website chat} other {# website chats}}"
 msgstr "{n, plural, one {# чат на сайті} few {# чати на сайті} many {# чатів на сайті} other {# чату на сайті}}"
@@ -664,6 +669,10 @@ msgstr "{percent}%, {doneText} із {total}"
 #: src/features/migrations/UploadStep.tsx
 msgid "{percent}%, {sent} of {size}"
 msgstr "{percent}%, {sent} із {size}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "{person} left the workspace by deleting their account"
+msgstr "{person} залишив(ла) робочий простір, видаливши обліковий запис"
 
 #: src/features/inbox/ChatsPage.tsx
 msgid "{product}’s conversations"
@@ -1137,6 +1146,10 @@ msgstr "Чернетку написано"
 #: src/components/common/text.ts
 msgid "A file's content does not match its type. Check the file and try again."
 msgstr "Вміст файлу не відповідає його типу. Перевірте файл і спробуйте знову."
+
+#: src/features/settings/audit/sentence.ts
+msgid "a former member"
+msgstr "колишній учасник"
 
 #: src/features/contact/ContactNotes.tsx
 msgid "A former teammate"
@@ -1632,6 +1645,10 @@ msgstr "Додано: {created}, остання доставка: {delivered}"
 msgid "Added {created}, last used {used}"
 msgstr "Додано: {created}, останнє використання: {used}"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Added a webhook to {host}"
+msgstr "Додав(ла) вебхук на {host}"
+
 #: src/components/common/text.ts
 msgid "Added by the team"
 msgstr "Додано командою"
@@ -1833,6 +1850,10 @@ msgstr "Дозволено"
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Allowed origins"
 msgstr "Дозволені джерела"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Allowed the workspace to send broadcasts"
+msgstr "Дозволив(ла) робочому простору надсилати розсилки"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Already earlier in the file"
@@ -2201,11 +2222,13 @@ msgstr "API і MCP"
 msgid "API channel"
 msgstr "Канал API"
 
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/status/IncidentDetail.tsx
 msgid "API key"
 msgstr "Ключ API"
 
 #: src/app/Palette.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/channels/ChannelPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
@@ -2370,6 +2393,10 @@ msgstr "Попросіть адміністратора вашого пошто�
 msgid "asked after closing"
 msgstr "запитали після закриття"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Asked to be allowed to send broadcasts"
+msgstr "Запросив(ла) дозвіл на надсилання розсилок"
+
 #: src/components/common/text.ts
 msgid "Asked to subscribe"
 msgstr "Запропоновано підписатися"
@@ -2514,6 +2541,12 @@ msgstr "Атрибути"
 #: src/features/broadcasts/Composer.tsx
 msgid "Audience"
 msgstr "Аудиторія"
+
+#: src/app/Palette.tsx
+#: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Audit log"
+msgstr "Журнал аудиту"
 
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Authorization"
@@ -2947,6 +2980,10 @@ msgstr "Скасувати цей імпорт?"
 msgid "Cancelled"
 msgstr "Скасовано"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Cancelled an invitation"
+msgstr "Скасував(ла) запрошення"
+
 #: src/features/broadcasts/Import.tsx
 msgid "Cancelled. What was added before stays."
 msgstr "Скасовано. Додане раніше залишається."
@@ -3038,6 +3075,26 @@ msgstr "Змінювати, видаляти й об'єднувати конта
 msgid "Change, move and bulk-update conversations"
 msgstr "Змінювати, переміщувати й масово оновлювати розмови"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Changed how long conversations are kept from {from} to {to}"
+msgstr "Змінив(ла) термін зберігання розмов з {from} на {to}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the daily broadcast limit from {from} to {to}"
+msgstr "Змінив(ла) добовий ліміт розсилок з {from} на {to}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the mail account or password of a channel"
+msgstr "Змінив(ла) поштовий обліковий запис або пароль каналу"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the role of {person} from {from} to {to}"
+msgstr "Змінив(ла) роль користувача {person} з {from} на {to}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the webhook to {host}"
+msgstr "Змінив(ла) вебхук на {host}"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Changelog settings"
 msgstr "Налаштування журналу змін"
@@ -3045,6 +3102,10 @@ msgstr "Налаштування журналу змін"
 #: src/features/migrations/Wizard.tsx
 msgid "Changes made to {provider}: none"
 msgstr "Змін у {provider}: немає"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Changes to members, keys, webhooks and other sensitive settings show up here."
+msgstr "Зміни учасників, ключів, вебхуків та інших чутливих налаштувань з’являються тут."
 
 #: src/features/settings/channels/email/EmailSections.tsx
 msgid "Changing the sending domain turns DKIM signing off until you enable it again for the new domain."
@@ -3076,6 +3137,10 @@ msgstr "Налаштування каналу"
 #: src/features/settings/ProductsPage.tsx
 msgid "Channels"
 msgstr "Канали"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Channels and inboxes"
+msgstr "Канали та скриньки"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Chat"
@@ -3613,6 +3678,10 @@ msgstr "Підключіть свої сервери й ботів до Yuva"
 msgid "Connected"
 msgstr "Підключено"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Connected {client}"
+msgstr "Підключив(ла) {client}"
+
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Connected {created}"
 msgstr "Підключено {created}"
@@ -3622,6 +3691,7 @@ msgstr "Підключено {created}"
 #: src/components/common/SettingsStrip.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/inbox/SidePanels.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
 msgid "Connected apps"
@@ -3733,6 +3803,10 @@ msgstr "Контакт з {since}"
 #: src/features/settings/webhooks/events.tsx
 msgid "Contacts"
 msgstr "Контакти"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Contacts and exports"
+msgstr "Контакти та експорти"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "contains"
@@ -4053,6 +4127,18 @@ msgstr "Створіть обліковий запис Yuva"
 msgid "Created"
 msgstr "Створено"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Created an analytics export"
+msgstr "Створив(ла) експорт аналітики"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Created the API key {name}"
+msgstr "Створив(ла) API-ключ {name}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Created the DKIM key {selector}"
+msgstr "Створив(ла) ключ DKIM {selector}"
+
 #: src/features/migrations/DoneStep.tsx
 msgid "Credentials deleted {deletedAt}. Yuva can no longer read {address}."
 msgstr "Облікові дані видалено {deletedAt}. Yuva більше не може читати {address}."
@@ -4154,6 +4240,10 @@ msgstr "Днів історії"
 #: src/features/setup/InstallStep.tsx
 msgid "Decide who may write in discussions"
 msgstr "Вирішіть, хто може писати в обговореннях"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Declined the request to send broadcasts"
+msgstr "Відхилив(ла) запит на надсилання розсилок"
 
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "Default: {fallback}"
@@ -4336,6 +4426,14 @@ msgstr "Видалити ваш обліковий запис"
 msgid "Delete your account?"
 msgstr "Видалити ваш обліковий запис?"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted a contact"
+msgstr "Видалив(ла) контакт"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted a DKIM key"
+msgstr "Видалив(ла) ключ DKIM"
+
 #: src/features/contact/MergeContactDialog.tsx
 msgid "deleted afterwards"
 msgstr "потім видаляється"
@@ -4362,6 +4460,14 @@ msgstr "Видалений учасник"
 #: src/components/common/DiscussionAuthor.tsx
 msgid "Deleted reader"
 msgstr "Видалений читач"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted the inbox {name}"
+msgstr "Видалив(ла) скриньку {name}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted the webhook to {host}"
+msgstr "Видалив(ла) вебхук на {host}"
 
 #: src/features/settings/inboxes/InboxSecurity.tsx
 msgid "Deletes its channels, conversations, messages and attachments. This cannot be undone."
@@ -4474,6 +4580,10 @@ msgstr "Скасувати зміни"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Discard the suggested reply"
 msgstr "Відкинути запропоновану відповідь"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Disconnected {client}"
+msgstr "Відключив(ла) {client}"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/DocsPage.tsx
@@ -5156,8 +5266,8 @@ msgid "Every request to this endpoint, newest first. The newest 100 are kept."
 msgstr "Кожен запит до цього ендпоїнта, спершу нові. Зберігаються останні 100."
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-msgid "Every scope except sending broadcasts."
-msgstr "Усі області доступу, крім надсилання розсилок."
+msgid "Every scope except sending broadcasts and reading the audit log."
+msgstr "Усі дозволи, крім надсилання розсилок і читання журналу аудиту."
 
 #: src/features/inbox/SourceFilter.tsx
 msgid "Every site"
@@ -5174,6 +5284,10 @@ msgstr "Кожен тип"
 #: src/features/setup/SetupHub.tsx
 msgid "Every website and app shows its visitors on Home and in Analytics."
 msgstr "Кожен сайт і застосунок показує своїх відвідувачів на головній і в аналітиці."
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Everyone"
+msgstr "Усі"
 
 #: src/features/inbox/ChatsPage.tsx
 msgid "Everyone has been answered."
@@ -5203,6 +5317,7 @@ msgstr "Повідомлення всіх публікуються одразу,
 #: src/features/migrations/Wizard.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 msgid "Everything"
 msgstr "Усе"
 
@@ -5276,6 +5391,14 @@ msgstr "Файл експорту"
 #: src/features/migrations/text.ts
 msgid "Export once as a .zip file. Google mails you a link when it is ready; for a large mailbox that can take a day or more."
 msgstr "Експортуйте один раз як файл .zip. Google надішле посилання поштою, коли він буде готовий; для великої скриньки це може зайняти день і більше."
+
+#: src/features/settings/audit/sentence.ts
+msgid "Exported the consent records of contacts"
+msgstr "Експортував(ла) записи про згоду контактів"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Exported the consent records of the list {name}"
+msgstr "Експортував(ла) записи про згоду списку {name}"
 
 #: src/features/broadcasts/Import.tsx
 msgid "External id"
@@ -5603,6 +5726,10 @@ msgstr "Для користувачів, що ввійшли, ваш бекен�
 msgid "For signed-in users: the identity secret, shown only now"
 msgstr "Для користувачів, що ввійшли: секрет особи, показано лише зараз"
 
+#: src/features/settings/audit/sentence.ts
+msgid "forever"
+msgstr "безстроково"
+
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/ListPage.tsx
 msgid "Form"
@@ -5678,6 +5805,7 @@ msgstr "Знайдено у ваших теках «Надіслані»"
 msgid "Friday"
 msgstr "П'ятниця"
 
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "From"
 msgstr "Від"
@@ -5761,6 +5889,10 @@ msgstr "Подальші копії того самого повідомленн
 #: src/components/common/ShortcutSheet.tsx
 msgid "Gallery"
 msgstr "Галерея"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Gave {person} access to {inbox}"
+msgstr "Надав(ла) користувачу {person} доступ до {inbox}"
 
 #: src/app/Sidebar.tsx
 #: src/components/common/SettingsStrip.tsx
@@ -6590,6 +6722,10 @@ msgstr "Мова запрошення"
 msgid "Invite your team"
 msgstr "Запросіть свою команду"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Invited {email} as {role}"
+msgstr "Запросив(ла) {email} з роллю {role}"
+
 #: src/features/team/TeamPage.tsx
 msgid "Invites"
 msgstr "Запрошення"
@@ -6758,6 +6894,10 @@ msgstr "Його звіт і список отримувачів видаляю�
 msgid "Its settings, credentials and progress are deleted. Imported conversations stay."
 msgstr "Його налаштування, облікові дані та перебіг видаляються. Імпортовані розмови залишаються."
 
+#: src/features/settings/audit/sentence.ts
+msgid "Joined the workspace as {role}"
+msgstr "Приєднався(лась) до робочого простору з роллю {role}"
+
 #: src/features/conversation/ConversationStatus.tsx
 msgid "Just wrote"
 msgstr "Щойно написав(ла)"
@@ -6817,6 +6957,10 @@ msgstr "Ключам і асистентам заборонено планува
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "Keys and assistants may send broadcasts"
 msgstr "Ключі й асистенти можуть надсилати розсилки"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Keys and connected apps"
+msgstr "Ключі та підключені застосунки"
 
 #: src/features/settings/channels/ChannelPage.tsx
 msgid "Keys that can reach this product. Create and revoke them under API & MCP."
@@ -7245,6 +7389,7 @@ msgstr "Завантажити зображення"
 #: src/features/contact/ContactsPage.tsx
 #: src/features/docs/discussions/parts.tsx
 #: src/features/docs/PagesTab.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
 #: src/features/status/LinkConversationsDialog.tsx
 #: src/features/status/MonitorChecks.tsx
@@ -7628,6 +7773,10 @@ msgstr "Учасник"
 #: src/features/team/TeamPage.tsx
 msgid "Members"
 msgstr "Учасники"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Members and invitations"
+msgstr "Учасники та запрошення"
 
 #: src/features/conversation/composer/MentionMenu.tsx
 msgid "Mention a teammate"
@@ -8652,6 +8801,10 @@ msgstr "Кінцевих точок поки немає"
 msgid "No endpoints yet."
 msgstr "Ендпоїнтів поки немає."
 
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "No entry matches these filters."
+msgstr "Жоден запис не відповідає цим фільтрам."
+
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "No events recorded."
 msgstr "Подій не записано."
@@ -8705,6 +8858,10 @@ msgstr "Міток поки немає"
 #: src/features/inbox/ChatList.tsx
 msgid "No labels yet. Add them in settings."
 msgstr "Міток поки немає. Додайте їх у налаштуваннях."
+
+#: src/features/settings/audit/sentence.ts
+msgid "no limit"
+msgstr "без обмежень"
 
 #: src/features/broadcasts/Pace.tsx
 msgid "No limit"
@@ -9197,6 +9354,10 @@ msgstr "Поки нічого не вирішено."
 #: src/features/broadcasts/Report.tsx
 msgid "Nothing has happened yet."
 msgstr "Поки нічого не сталося."
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Nothing here"
+msgstr "Тут поки нічого немає"
 
 #: src/features/broadcasts/Overview.tsx
 msgid "Nothing here."
@@ -9963,6 +10124,10 @@ msgstr "Працює"
 #: src/features/status/MonitorToken.tsx
 msgid "operational recovers; degraded, partial_outage and major_outage fail."
 msgstr "operational відновлює; degraded, partial_outage і major_outage переводять у збій."
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Operator"
+msgstr "Оператор"
 
 #: src/features/status/ComponentDialogs.tsx
 msgid "Optional. Shown on the public page."
@@ -11090,6 +11255,10 @@ msgstr "Читати дошки дорожньої карти, ідеї та і�
 msgid "Read status pages, components and incidents"
 msgstr "Читати сторінки статусу, компоненти та інциденти"
 
+#: src/components/common/text.ts
+msgid "Read the audit log (owners only)"
+msgstr "Читання журналу аудиту (лише власники)"
+
 #: src/features/migrations/text.ts
 msgid "Read the folders"
 msgstr "Прочитати теки"
@@ -11373,6 +11542,10 @@ msgstr "Видалити цей ключ доступу?"
 #: src/features/migrations/DoneStep.tsx
 msgid "Remove Yuva's access in Microsoft"
 msgstr "Відкличте доступ Yuva в Microsoft"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed {person} from the workspace"
+msgstr "Видалив(ла) користувача {person} з робочого простору"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Removes {name} with its products, channels, conversations, contacts, files, labels, webhooks and API keys for everyone. Members keep their accounts."
@@ -11789,6 +11962,10 @@ msgstr "Відкликати {keyName}?"
 msgid "Revoked"
 msgstr "Відкликано"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Revoked the API key {name}"
+msgstr "Відкликав(ла) API-ключ {name}"
+
 #: src/features/broadcasts/ListForm.tsx
 msgid "Right after subscribing, people get a short mail that confirms it, with an unsubscribe link."
 msgstr "Одразу після підписки люди отримують короткий лист із підтвердженням і посиланням для відписки."
@@ -11839,6 +12016,22 @@ msgstr "Змінити публічний ключ?"
 #: src/features/settings/webhooks/sections.tsx
 msgid "Rotate the signing secret?"
 msgstr "Змінити секрет підпису?"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the forwarding address of a channel"
+msgstr "Оновив(ла) адресу пересилання каналу"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the identity secret of an inbox"
+msgstr "Оновив(ла) секрет ідентичності скриньки"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the key of a channel"
+msgstr "Оновив(ла) ключ каналу"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the signing secret of a webhook"
+msgstr "Оновив(ла) секрет підпису вебхука"
 
 #: src/features/setup/email/EmailReceiveStep.tsx
 msgid "Route your domain"
@@ -13534,6 +13727,10 @@ msgstr "support@your-company.com"
 msgid "Suspended"
 msgstr "Призупинено"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Suspended broadcasts"
+msgstr "Призупинив(ла) розсилки"
+
 #: src/features/migrations/Wizard.tsx
 msgid "Switch"
 msgstr "Перемкнути"
@@ -14054,8 +14251,8 @@ msgid "The key is ready"
 msgstr "Ключ готовий"
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-msgid "The key sees only these inboxes and cannot manage inboxes, webhooks or the workspace."
-msgstr "Ключ бачить лише ці скриньки й не може керувати скриньками, вебхуками чи робочим простором."
+msgid "The key sees only these inboxes and cannot manage inboxes, webhooks or the workspace, or read the audit log."
+msgstr "Ключ бачить лише ці скриньки й не може керувати скриньками, вебхуками чи робочим простором, а також читати журнал аудиту."
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "The key stops working at the end of this day."
@@ -14522,8 +14719,8 @@ msgid "The What’s new count shows on the chat button while no messages are unr
 msgstr "Кількість новин показується на кнопці чату, поки немає непрочитаних повідомлень. На головній сторінці віджета вона видна завжди."
 
 #: src/features/settings/GeneralTabs.tsx
-msgid "The workspace itself: name, retention, labels, canned replies and moving in"
-msgstr "Сам робочий простір: назва, зберігання, мітки, готові відповіді та перенесення"
+msgid "The workspace itself: name, retention, labels, canned replies, moving in and the audit log"
+msgstr "Сам робочий простір: назва, зберігання, мітки, готові відповіді, переїзд і журнал аудиту"
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The workspace may not send broadcasts for now."
@@ -15062,6 +15259,7 @@ msgstr "Назва"
 msgid "TLS (port 465)"
 msgstr "TLS (порт 465)"
 
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "To"
 msgstr "Кому"
@@ -15112,6 +15310,10 @@ msgstr "Забагато спроб. Зачекайте трохи й спроб
 #: src/features/auth/CreateWorkspace.tsx
 msgid "Too many workspaces were created from your network today. Try again tomorrow."
 msgstr "З вашої мережі сьогодні створено забагато робочих просторів. Спробуйте завтра."
+
+#: src/features/settings/audit/sentence.ts
+msgid "Took away the access of {person} to {inbox}"
+msgstr "Закрив(ла) користувачу {person} доступ до {inbox}"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "tr, en-GB"
@@ -15755,6 +15957,10 @@ msgstr "Версії"
 msgid "Very large mailbox? Start with a Google Takeout file"
 msgstr "Дуже велика скринька? Почніть із файлу Google Takeout"
 
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "via {via}"
+msgstr "через {via}"
+
 #: src/features/home/HomePage.tsx
 msgid "View"
 msgstr "Відкрити"
@@ -15970,6 +16176,7 @@ msgid "Webhook endpoint"
 msgstr "Ендпоїнт вебхука"
 
 #: src/app/Palette.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
@@ -16014,6 +16221,10 @@ msgstr "Середа"
 #: src/features/broadcasts/ListForm.tsx
 msgid "Welcome receipt"
 msgstr "Вітальна квитанція"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "What"
+msgstr "Що"
 
 #: src/features/broadcasts/Import.tsx
 msgid "What {header} holds"
@@ -16245,6 +16456,10 @@ msgstr "Поки вимкнено, доставки не виконуються.
 msgid "While your status is Away, only new messages in conversations assigned to you and new assignments notify you. A conversation you have open in the panel never notifies you."
 msgstr "Поки ваш статус «Відійшов», сповіщають лише нові повідомлення в розмовах, призначених вам, і нові призначення. Розмова, відкрита у вас у панелі, ніколи не сповіщає."
 
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Who"
+msgstr "Хто"
+
 #: src/features/broadcasts/ListsHome.tsx
 msgid "Who agreed to hear from you, with consent recorded"
 msgstr "Хто погодився отримувати ваші листи, зі збереженою згодою"
@@ -16256,6 +16471,14 @@ msgstr "Хто відповідає, де і хто в мережі"
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Who can reply"
 msgstr "Хто може відповідати"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Who changed access, keys and data"
+msgstr "Хто змінював доступ, ключі та дані"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Who changed members, access, keys, webhooks, mail accounts, retention and exports, newest first. Only owners see this."
+msgstr "Хто змінював учасників, доступ, ключі, вебхуки, поштові облікові записи, зберігання та експорти, спочатку нові. Бачать лише власники."
 
 #: src/features/team/TeamPage.tsx
 msgid "Who is here"
@@ -16366,6 +16589,10 @@ msgstr "Робота…"
 #: src/features/settings/workspace/RetentionForm.tsx
 msgid "Workspace"
 msgstr "Робочий простір"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Workspace and broadcasts"
+msgstr "Робочий простір і розсилки"
 
 #: src/features/auth/CreateWorkspace.tsx
 msgid "Workspace name"

@@ -224,7 +224,13 @@ function useSettingsChildren(): Child[] {
       key: "workspace",
       label: t`General`,
       to: "/settings/workspace",
-      current: at("/settings/workspace", "/settings/labels", "/settings/canned-replies", "/settings/migrations"),
+      current: at(
+        "/settings/workspace",
+        "/settings/labels",
+        "/settings/canned-replies",
+        "/settings/migrations",
+        "/settings/audit-log"
+      ),
     },
   ]
 }

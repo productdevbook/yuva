@@ -293,6 +293,7 @@ msgstr "{created, plural, one {# חדש} two {# חדשים} other {# חדשים}
 
 #: src/features/broadcasts/Growth.tsx
 #: src/features/docs/Toolbar.tsx
+#: src/features/settings/audit/sentence.ts
 msgid "{d, plural, one {# day} other {# days}}"
 msgstr "{d, plural, one {יום #} two {# ימים} other {# ימים}}"
 
@@ -481,6 +482,10 @@ msgstr "{n, plural, one {שיחה אחת נוספת} two {# שיחות נוספ�
 msgid "{n, plural, one {# person} other {# people}}"
 msgstr "{n, plural, one {אדם #} two {# אנשים} other {# אנשים}}"
 
+#: src/features/settings/audit/sentence.ts
+msgid "{n, plural, one {# recipient a day} other {# recipients a day}}"
+msgstr "{n, plural, one {נמען אחד ביום} two {# נמענים ביום} other {# נמענים ביום}}"
+
 #: src/features/setup/SetupHub.tsx
 msgid "{n, plural, one {# website chat} other {# website chats}}"
 msgstr "{n, plural, one {צ׳אט אתר #} two {# צ׳אטים באתר} other {# צ׳אטים באתר}}"
@@ -664,6 +669,10 @@ msgstr "{percent}%, {doneText} מתוך {total}"
 #: src/features/migrations/UploadStep.tsx
 msgid "{percent}%, {sent} of {size}"
 msgstr "{percent}%, {sent} מתוך {size}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "{person} left the workspace by deleting their account"
+msgstr "{person} עזב/ה את סביבת העבודה במחיקת החשבון"
 
 #: src/features/inbox/ChatsPage.tsx
 msgid "{product}’s conversations"
@@ -1137,6 +1146,10 @@ msgstr "טיוטה נכתבה"
 #: src/components/common/text.ts
 msgid "A file's content does not match its type. Check the file and try again."
 msgstr "תוכן הקובץ אינו תואם לסוג שלו. בדוק את הקובץ ונסה שוב."
+
+#: src/features/settings/audit/sentence.ts
+msgid "a former member"
+msgstr "חבר/ה לשעבר"
 
 #: src/features/contact/ContactNotes.tsx
 msgid "A former teammate"
@@ -1632,6 +1645,10 @@ msgstr "נוסף {created}, נמסר לאחרונה {delivered}"
 msgid "Added {created}, last used {used}"
 msgstr "נוסף {created}, נעשה בו שימוש לאחרונה {used}"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Added a webhook to {host}"
+msgstr "הוסיף/ה webhook אל {host}"
+
 #: src/components/common/text.ts
 msgid "Added by the team"
 msgstr "נוסף על ידי הצוות"
@@ -1833,6 +1850,10 @@ msgstr "מותר"
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Allowed origins"
 msgstr "מקורות מותרים"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Allowed the workspace to send broadcasts"
+msgstr "אישר/ה לסביבת העבודה לשלוח שליחות המוניות"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Already earlier in the file"
@@ -2201,11 +2222,13 @@ msgstr "API ו-MCP"
 msgid "API channel"
 msgstr "ערוץ API"
 
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/status/IncidentDetail.tsx
 msgid "API key"
 msgstr "מפתח API"
 
 #: src/app/Palette.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/channels/ChannelPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
@@ -2370,6 +2393,10 @@ msgstr "בקש ממנהל שרת הדואר שלך להעביר את {address} �
 msgid "asked after closing"
 msgstr "נשאלה אחרי הסגירה"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Asked to be allowed to send broadcasts"
+msgstr "ביקש/ה אישור לשלוח שליחות המוניות"
+
 #: src/components/common/text.ts
 msgid "Asked to subscribe"
 msgstr "התבקש להירשם"
@@ -2514,6 +2541,12 @@ msgstr "מאפיינים"
 #: src/features/broadcasts/Composer.tsx
 msgid "Audience"
 msgstr "קהל"
+
+#: src/app/Palette.tsx
+#: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Audit log"
+msgstr "יומן ביקורת"
 
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Authorization"
@@ -2947,6 +2980,10 @@ msgstr "לבטל את הייבוא הזה?"
 msgid "Cancelled"
 msgstr "בוטל"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Cancelled an invitation"
+msgstr "ביטל/ה הזמנה"
+
 #: src/features/broadcasts/Import.tsx
 msgid "Cancelled. What was added before stays."
 msgstr "בוטל. מה שנוסף קודם נשאר."
@@ -3038,6 +3075,26 @@ msgstr "שינוי, מחיקה ומיזוג של אנשי קשר"
 msgid "Change, move and bulk-update conversations"
 msgstr "שינוי, העברה ועדכון המוני של שיחות"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Changed how long conversations are kept from {from} to {to}"
+msgstr "שינה/תה את משך שמירת השיחות מ-{from} ל-{to}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the daily broadcast limit from {from} to {to}"
+msgstr "שינה/תה את מגבלת השליחות ההמוניות היומית מ-{from} ל-{to}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the mail account or password of a channel"
+msgstr "שינה/תה את חשבון הדוא\"ל או הסיסמה של ערוץ"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the role of {person} from {from} to {to}"
+msgstr "שינה/תה את התפקיד של {person} מ-{from} ל-{to}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the webhook to {host}"
+msgstr "שינה/תה את ה-webhook אל {host}"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Changelog settings"
 msgstr "הגדרות יומן השינויים"
@@ -3045,6 +3102,10 @@ msgstr "הגדרות יומן השינויים"
 #: src/features/migrations/Wizard.tsx
 msgid "Changes made to {provider}: none"
 msgstr "שינויים שנעשו ב-{provider}: אין"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Changes to members, keys, webhooks and other sensitive settings show up here."
+msgstr "שינויים בחברים, במפתחות, ב-webhooks ובהגדרות רגישות אחרות יופיעו כאן."
 
 #: src/features/settings/channels/email/EmailSections.tsx
 msgid "Changing the sending domain turns DKIM signing off until you enable it again for the new domain."
@@ -3076,6 +3137,10 @@ msgstr "הגדרות ערוץ"
 #: src/features/settings/ProductsPage.tsx
 msgid "Channels"
 msgstr "ערוצים"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Channels and inboxes"
+msgstr "ערוצים ותיבות דואר"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Chat"
@@ -3613,6 +3678,10 @@ msgstr "חבר את השרתים והבוטים שלך ל-Yuva"
 msgid "Connected"
 msgstr "מחובר"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Connected {client}"
+msgstr "חיבר/ה את {client}"
+
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Connected {created}"
 msgstr "חובר {created}"
@@ -3622,6 +3691,7 @@ msgstr "חובר {created}"
 #: src/components/common/SettingsStrip.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/inbox/SidePanels.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
 msgid "Connected apps"
@@ -3733,6 +3803,10 @@ msgstr "איש קשר מאז {since}"
 #: src/features/settings/webhooks/events.tsx
 msgid "Contacts"
 msgstr "אנשי קשר"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Contacts and exports"
+msgstr "אנשי קשר וייצואים"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "contains"
@@ -4053,6 +4127,18 @@ msgstr "צור את חשבון Yuva שלך"
 msgid "Created"
 msgstr "נוצר"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Created an analytics export"
+msgstr "יצר/ה ייצוא של נתוני ניתוח"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Created the API key {name}"
+msgstr "יצר/ה את מפתח ה-API {name}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Created the DKIM key {selector}"
+msgstr "יצר/ה את מפתח ה-DKIM {selector}"
+
 #: src/features/migrations/DoneStep.tsx
 msgid "Credentials deleted {deletedAt}. Yuva can no longer read {address}."
 msgstr "פרטי הגישה נמחקו {deletedAt}. Yuva כבר לא יכולה לקרוא את {address}."
@@ -4154,6 +4240,10 @@ msgstr "ימי היסטוריה"
 #: src/features/setup/InstallStep.tsx
 msgid "Decide who may write in discussions"
 msgstr "קבע מי רשאי לכתוב בדיונים"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Declined the request to send broadcasts"
+msgstr "דחה/תה את הבקשה לשלוח שליחות המוניות"
 
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "Default: {fallback}"
@@ -4336,6 +4426,14 @@ msgstr "מחיקת החשבון שלך"
 msgid "Delete your account?"
 msgstr "למחוק את החשבון שלך?"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted a contact"
+msgstr "מחק/ה איש קשר"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted a DKIM key"
+msgstr "מחק/ה מפתח DKIM"
+
 #: src/features/contact/MergeContactDialog.tsx
 msgid "deleted afterwards"
 msgstr "יימחק לאחר מכן"
@@ -4362,6 +4460,14 @@ msgstr "חבר צוות שנמחק"
 #: src/components/common/DiscussionAuthor.tsx
 msgid "Deleted reader"
 msgstr "קורא שנמחק"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted the inbox {name}"
+msgstr "מחק/ה את תיבת הדואר {name}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted the webhook to {host}"
+msgstr "מחק/ה את ה-webhook אל {host}"
 
 #: src/features/settings/inboxes/InboxSecurity.tsx
 msgid "Deletes its channels, conversations, messages and attachments. This cannot be undone."
@@ -4474,6 +4580,10 @@ msgstr "ביטול השינויים"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Discard the suggested reply"
 msgstr "השלכת התשובה המוצעת"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Disconnected {client}"
+msgstr "ניתק/ה את {client}"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/DocsPage.tsx
@@ -5156,8 +5266,8 @@ msgid "Every request to this endpoint, newest first. The newest 100 are kept."
 msgstr "כל בקשה לנקודת הקצה הזאת, החדשה ביותר ראשונה. 100 האחרונות נשמרות."
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-msgid "Every scope except sending broadcasts."
-msgstr "כל ההיקפים חוץ משליחת שליחות המוניות."
+msgid "Every scope except sending broadcasts and reading the audit log."
+msgstr "כל ההרשאות מלבד שליחת שליחות המוניות וקריאת יומן הביקורת."
 
 #: src/features/inbox/SourceFilter.tsx
 msgid "Every site"
@@ -5174,6 +5284,10 @@ msgstr "כל סוג"
 #: src/features/setup/SetupHub.tsx
 msgid "Every website and app shows its visitors on Home and in Analytics."
 msgstr "כל אתר ואפליקציה מציגים את המבקרים שלהם בבית ובאנליטיקה."
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Everyone"
+msgstr "כולם"
 
 #: src/features/inbox/ChatsPage.tsx
 msgid "Everyone has been answered."
@@ -5203,6 +5317,7 @@ msgstr "הפוסטים של כולם מתפרסמים מיד, חוץ מאלה ש
 #: src/features/migrations/Wizard.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 msgid "Everything"
 msgstr "הכול"
 
@@ -5276,6 +5391,14 @@ msgstr "קובץ ייצוא"
 #: src/features/migrations/text.ts
 msgid "Export once as a .zip file. Google mails you a link when it is ready; for a large mailbox that can take a day or more."
 msgstr "ייצא פעם אחת כקובץ zip. Google שולחת לך קישור כשהוא מוכן; בתיבת דואר גדולה זה יכול לקחת יום או יותר."
+
+#: src/features/settings/audit/sentence.ts
+msgid "Exported the consent records of contacts"
+msgstr "ייצא/ה את רשומות ההסכמה של אנשי הקשר"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Exported the consent records of the list {name}"
+msgstr "ייצא/ה את רשומות ההסכמה של הרשימה {name}"
 
 #: src/features/broadcasts/Import.tsx
 msgid "External id"
@@ -5603,6 +5726,10 @@ msgstr "למשתמשים מחוברים, צד השרת שלך חותם על אס
 msgid "For signed-in users: the identity secret, shown only now"
 msgstr "למשתמשים מחוברים: סוד הזהות, מוצג רק עכשיו"
 
+#: src/features/settings/audit/sentence.ts
+msgid "forever"
+msgstr "ללא הגבלת זמן"
+
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/ListPage.tsx
 msgid "Form"
@@ -5678,6 +5805,7 @@ msgstr "נמצא בתיקיות הדואר שנשלח שלך"
 msgid "Friday"
 msgstr "יום שישי"
 
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "From"
 msgstr "מאת"
@@ -5761,6 +5889,10 @@ msgstr "עותקים נוספים של אותה הודעה"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Gallery"
 msgstr "גלריה"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Gave {person} access to {inbox}"
+msgstr "נתן/ה ל-{person} גישה אל {inbox}"
 
 #: src/app/Sidebar.tsx
 #: src/components/common/SettingsStrip.tsx
@@ -6590,6 +6722,10 @@ msgstr "שפת ההזמנה"
 msgid "Invite your team"
 msgstr "הזמן את הצוות שלך"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Invited {email} as {role}"
+msgstr "הזמין/ה את {email} בתפקיד {role}"
+
 #: src/features/team/TeamPage.tsx
 msgid "Invites"
 msgstr "הזמנות"
@@ -6758,6 +6894,10 @@ msgstr "הדוח שלה ורשימת הנמענים נמחקים. שיחות ש�
 msgid "Its settings, credentials and progress are deleted. Imported conversations stay."
 msgstr "ההגדרות, פרטי הגישה וההתקדמות שלו נמחקים. שיחות מיובאות נשארות."
 
+#: src/features/settings/audit/sentence.ts
+msgid "Joined the workspace as {role}"
+msgstr "הצטרף/ה לסביבת העבודה בתפקיד {role}"
+
 #: src/features/conversation/ConversationStatus.tsx
 msgid "Just wrote"
 msgstr "כתב הרגע"
@@ -6817,6 +6957,10 @@ msgstr "מפתחות ועוזרים אינם רשאים לתזמן שליחות 
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "Keys and assistants may send broadcasts"
 msgstr "מפתחות ועוזרים רשאים לשלוח שליחות המוניות"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Keys and connected apps"
+msgstr "מפתחות ואפליקציות מחוברות"
 
 #: src/features/settings/channels/ChannelPage.tsx
 msgid "Keys that can reach this product. Create and revoke them under API & MCP."
@@ -7245,6 +7389,7 @@ msgstr "טעינת תמונות"
 #: src/features/contact/ContactsPage.tsx
 #: src/features/docs/discussions/parts.tsx
 #: src/features/docs/PagesTab.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
 #: src/features/status/LinkConversationsDialog.tsx
 #: src/features/status/MonitorChecks.tsx
@@ -7628,6 +7773,10 @@ msgstr "חבר צוות"
 #: src/features/team/TeamPage.tsx
 msgid "Members"
 msgstr "חברי צוות"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Members and invitations"
+msgstr "חברים והזמנות"
 
 #: src/features/conversation/composer/MentionMenu.tsx
 msgid "Mention a teammate"
@@ -8652,6 +8801,10 @@ msgstr "עדיין אין נקודות קצה"
 msgid "No endpoints yet."
 msgstr "עדיין אין נקודות קצה."
 
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "No entry matches these filters."
+msgstr "אין רשומה שמתאימה למסננים האלה."
+
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "No events recorded."
 msgstr "לא נרשמו אירועים."
@@ -8705,6 +8858,10 @@ msgstr "עדיין אין תוויות"
 #: src/features/inbox/ChatList.tsx
 msgid "No labels yet. Add them in settings."
 msgstr "עדיין אין תוויות. הוסף אותן בהגדרות."
+
+#: src/features/settings/audit/sentence.ts
+msgid "no limit"
+msgstr "ללא הגבלה"
 
 #: src/features/broadcasts/Pace.tsx
 msgid "No limit"
@@ -9197,6 +9354,10 @@ msgstr "עדיין לא נפתר דבר."
 #: src/features/broadcasts/Report.tsx
 msgid "Nothing has happened yet."
 msgstr "עדיין לא קרה דבר."
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Nothing here"
+msgstr "אין כאן עדיין כלום"
 
 #: src/features/broadcasts/Overview.tsx
 msgid "Nothing here."
@@ -9963,6 +10124,10 @@ msgstr "פועל"
 #: src/features/status/MonitorToken.tsx
 msgid "operational recovers; degraded, partial_outage and major_outage fail."
 msgstr "operational משחזר; degraded, partial_outage ו־major_outage מפילים."
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Operator"
+msgstr "מפעיל"
 
 #: src/features/status/ComponentDialogs.tsx
 msgid "Optional. Shown on the public page."
@@ -11090,6 +11255,10 @@ msgstr "קריאת לוחות מפת הדרכים, רעיונות והיסטור
 msgid "Read status pages, components and incidents"
 msgstr "קריאת דפי סטטוס, רכיבים ואירועים"
 
+#: src/components/common/text.ts
+msgid "Read the audit log (owners only)"
+msgstr "קריאת יומן הביקורת (לבעלים בלבד)"
+
 #: src/features/migrations/text.ts
 msgid "Read the folders"
 msgstr "קריאת התיקיות"
@@ -11373,6 +11542,10 @@ msgstr "להסיר את מפתח הגישה הזה?"
 #: src/features/migrations/DoneStep.tsx
 msgid "Remove Yuva's access in Microsoft"
 msgstr "הסרת הגישה של Yuva ב-Microsoft"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed {person} from the workspace"
+msgstr "הסיר/ה את {person} מסביבת העבודה"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Removes {name} with its products, channels, conversations, contacts, files, labels, webhooks and API keys for everyone. Members keep their accounts."
@@ -11789,6 +11962,10 @@ msgstr "לבטל את {keyName}?"
 msgid "Revoked"
 msgstr "בוטל"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Revoked the API key {name}"
+msgstr "ביטל/ה את מפתח ה-API {name}"
+
 #: src/features/broadcasts/ListForm.tsx
 msgid "Right after subscribing, people get a short mail that confirms it, with an unsubscribe link."
 msgstr "מיד אחרי ההרשמה אנשים מקבלים אימייל קצר שמאשר אותה, עם קישור להסרה מהרשימה."
@@ -11839,6 +12016,22 @@ msgstr "להחליף את המפתח הציבורי?"
 #: src/features/settings/webhooks/sections.tsx
 msgid "Rotate the signing secret?"
 msgstr "להחליף את סוד החתימה?"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the forwarding address of a channel"
+msgstr "חידש/ה את כתובת ההעברה של ערוץ"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the identity secret of an inbox"
+msgstr "חידש/ה את סוד הזהות של תיבת דואר"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the key of a channel"
+msgstr "חידש/ה את המפתח של ערוץ"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the signing secret of a webhook"
+msgstr "חידש/ה את סוד החתימה של webhook"
 
 #: src/features/setup/email/EmailReceiveStep.tsx
 msgid "Route your domain"
@@ -13534,6 +13727,10 @@ msgstr "support@your-company.com"
 msgid "Suspended"
 msgstr "מושעה"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Suspended broadcasts"
+msgstr "השעה/תה שליחות המוניות"
+
 #: src/features/migrations/Wizard.tsx
 msgid "Switch"
 msgstr "מעבר"
@@ -14054,8 +14251,8 @@ msgid "The key is ready"
 msgstr "המפתח מוכן"
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-msgid "The key sees only these inboxes and cannot manage inboxes, webhooks or the workspace."
-msgstr "המפתח רואה רק את תיבות הדואר האלה ואינו יכול לנהל תיבות דואר, webhooks או את סביבת העבודה."
+msgid "The key sees only these inboxes and cannot manage inboxes, webhooks or the workspace, or read the audit log."
+msgstr "המפתח רואה רק את תיבות הדואר האלה ואינו יכול לנהל תיבות דואר, webhooks או את סביבת העבודה, ולא לקרוא את יומן הביקורת."
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "The key stops working at the end of this day."
@@ -14522,8 +14719,8 @@ msgid "The What’s new count shows on the chat button while no messages are unr
 msgstr "מספר החידושים מופיע בכפתור הצ׳אט כל עוד אין הודעות שלא נקראו. דף הבית של הווידג׳ט תמיד מציג אותו."
 
 #: src/features/settings/GeneralTabs.tsx
-msgid "The workspace itself: name, retention, labels, canned replies and moving in"
-msgstr "סביבת העבודה עצמה: שם, שמירה, תוויות, תשובות מוכנות והעברה"
+msgid "The workspace itself: name, retention, labels, canned replies, moving in and the audit log"
+msgstr "סביבת העבודה עצמה: שם, שמירה, תוויות, תשובות מוכנות, מעבר ויומן ביקורת"
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The workspace may not send broadcasts for now."
@@ -15062,6 +15259,7 @@ msgstr "כותרת"
 msgid "TLS (port 465)"
 msgstr "TLS (פורט 465)"
 
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "To"
 msgstr "אל"
@@ -15112,6 +15310,10 @@ msgstr "יותר מדי ניסיונות. המתן קצת ונסה שוב."
 #: src/features/auth/CreateWorkspace.tsx
 msgid "Too many workspaces were created from your network today. Try again tomorrow."
 msgstr "נוצרו יותר מדי סביבות עבודה מהרשת שלך היום. נסה שוב מחר."
+
+#: src/features/settings/audit/sentence.ts
+msgid "Took away the access of {person} to {inbox}"
+msgstr "שלל/ה מ-{person} את הגישה אל {inbox}"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "tr, en-GB"
@@ -15755,6 +15957,10 @@ msgstr "גרסאות"
 msgid "Very large mailbox? Start with a Google Takeout file"
 msgstr "תיבת דואר גדולה מאוד? התחל עם קובץ Google Takeout"
 
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "via {via}"
+msgstr "דרך {via}"
+
 #: src/features/home/HomePage.tsx
 msgid "View"
 msgstr "הצגה"
@@ -15970,6 +16176,7 @@ msgid "Webhook endpoint"
 msgstr "נקודת קצה של webhook"
 
 #: src/app/Palette.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
@@ -16014,6 +16221,10 @@ msgstr "יום רביעי"
 #: src/features/broadcasts/ListForm.tsx
 msgid "Welcome receipt"
 msgstr "קבלת ברוכים הבאים"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "What"
+msgstr "מה"
 
 #: src/features/broadcasts/Import.tsx
 msgid "What {header} holds"
@@ -16245,6 +16456,10 @@ msgstr "כשכבוי, לא מתבצעות מסירות."
 msgid "While your status is Away, only new messages in conversations assigned to you and new assignments notify you. A conversation you have open in the panel never notifies you."
 msgstr "כשהסטטוס שלך הוא לא נמצא, רק הודעות חדשות בשיחות המשויכות אליך ושיוכים חדשים מתריעים לך. שיחה שפתוחה אצלך בלוח לעולם לא מתריעה."
 
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Who"
+msgstr "מי"
+
 #: src/features/broadcasts/ListsHome.tsx
 msgid "Who agreed to hear from you, with consent recorded"
 msgstr "מי הסכים לשמוע ממך, עם הסכמה מתועדת"
@@ -16256,6 +16471,14 @@ msgstr "מי עונה, איפה, ומי מחובר"
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Who can reply"
 msgstr "מי יכול להשיב"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Who changed access, keys and data"
+msgstr "מי שינה גישה, מפתחות ונתונים"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Who changed members, access, keys, webhooks, mail accounts, retention and exports, newest first. Only owners see this."
+msgstr "מי שינה חברים, גישה, מפתחות, webhooks, חשבונות דוא\"ל, שמירה וייצואים, החדשים ראשונים. רק בעלים רואים זאת."
 
 #: src/features/team/TeamPage.tsx
 msgid "Who is here"
@@ -16366,6 +16589,10 @@ msgstr "עובד…"
 #: src/features/settings/workspace/RetentionForm.tsx
 msgid "Workspace"
 msgstr "סביבת עבודה"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Workspace and broadcasts"
+msgstr "סביבת עבודה ושליחות המוניות"
 
 #: src/features/auth/CreateWorkspace.tsx
 msgid "Workspace name"

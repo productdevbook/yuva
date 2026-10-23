@@ -293,6 +293,7 @@ msgstr "{created, plural, other {ใหม่ #}}"
 
 #: src/features/broadcasts/Growth.tsx
 #: src/features/docs/Toolbar.tsx
+#: src/features/settings/audit/sentence.ts
 msgid "{d, plural, one {# day} other {# days}}"
 msgstr "{d, plural, other {# วัน}}"
 
@@ -481,6 +482,10 @@ msgstr "{n, plural, other {อีก # การสนทนา}}"
 msgid "{n, plural, one {# person} other {# people}}"
 msgstr "{n, plural, other {# คน}}"
 
+#: src/features/settings/audit/sentence.ts
+msgid "{n, plural, one {# recipient a day} other {# recipients a day}}"
+msgstr "{n, plural, other {ผู้รับ # คนต่อวัน}}"
+
 #: src/features/setup/SetupHub.tsx
 msgid "{n, plural, one {# website chat} other {# website chats}}"
 msgstr "{n, plural, other {# แชตบนเว็บไซต์}}"
@@ -664,6 +669,10 @@ msgstr "{percent}% {doneText} จาก {total}"
 #: src/features/migrations/UploadStep.tsx
 msgid "{percent}%, {sent} of {size}"
 msgstr "{percent}% {sent} จาก {size}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "{person} left the workspace by deleting their account"
+msgstr "{person} ออกจากพื้นที่ทำงานโดยลบบัญชี"
 
 #: src/features/inbox/ChatsPage.tsx
 msgid "{product}’s conversations"
@@ -1137,6 +1146,10 @@ msgstr "ฉบับร่างถูกเขียนขึ้น"
 #: src/components/common/text.ts
 msgid "A file's content does not match its type. Check the file and try again."
 msgstr "เนื้อหาของไฟล์ไม่ตรงกับประเภทของไฟล์ ตรวจสอบไฟล์แล้วลองอีกครั้ง"
+
+#: src/features/settings/audit/sentence.ts
+msgid "a former member"
+msgstr "อดีตสมาชิก"
 
 #: src/features/contact/ContactNotes.tsx
 msgid "A former teammate"
@@ -1632,6 +1645,10 @@ msgstr "เพิ่มเมื่อ {created} ส่งล่าสุด {de
 msgid "Added {created}, last used {used}"
 msgstr "เพิ่มเมื่อ {created} ใช้ล่าสุด {used}"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Added a webhook to {host}"
+msgstr "เพิ่ม webhook ไปยัง {host}"
+
 #: src/components/common/text.ts
 msgid "Added by the team"
 msgstr "เพิ่มโดยทีม"
@@ -1833,6 +1850,10 @@ msgstr "อนุญาตแล้ว"
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Allowed origins"
 msgstr "origin ที่อนุญาต"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Allowed the workspace to send broadcasts"
+msgstr "อนุญาตให้พื้นที่ทำงานส่งบรอดแคสต์"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Already earlier in the file"
@@ -2201,11 +2222,13 @@ msgstr "API และ MCP"
 msgid "API channel"
 msgstr "ช่องทาง API"
 
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/status/IncidentDetail.tsx
 msgid "API key"
 msgstr "คีย์ API"
 
 #: src/app/Palette.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/channels/ChannelPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
@@ -2370,6 +2393,10 @@ msgstr "ขอให้ผู้ดูแลเซิร์ฟเวอร์อ
 msgid "asked after closing"
 msgstr "ถามหลังปิด"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Asked to be allowed to send broadcasts"
+msgstr "ขออนุญาตส่งบรอดแคสต์"
+
 #: src/components/common/text.ts
 msgid "Asked to subscribe"
 msgstr "ถูกขอให้สมัครรับ"
@@ -2514,6 +2541,12 @@ msgstr "แอตทริบิวต์"
 #: src/features/broadcasts/Composer.tsx
 msgid "Audience"
 msgstr "กลุ่มเป้าหมาย"
+
+#: src/app/Palette.tsx
+#: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Audit log"
+msgstr "บันทึกการตรวจสอบ"
 
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Authorization"
@@ -2947,6 +2980,10 @@ msgstr "ยกเลิกการนำเข้านี้ไหม"
 msgid "Cancelled"
 msgstr "ยกเลิกแล้ว"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Cancelled an invitation"
+msgstr "ยกเลิกคำเชิญ"
+
 #: src/features/broadcasts/Import.tsx
 msgid "Cancelled. What was added before stays."
 msgstr "ยกเลิกแล้ว สิ่งที่เพิ่มไว้ก่อนหน้านี้ยังคงอยู่"
@@ -3038,6 +3075,26 @@ msgstr "เปลี่ยน ลบ และรวมรายชื่อต�
 msgid "Change, move and bulk-update conversations"
 msgstr "เปลี่ยน ย้าย และอัปเดตการสนทนาจำนวนมาก"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Changed how long conversations are kept from {from} to {to}"
+msgstr "เปลี่ยนระยะเวลาเก็บการสนทนาจาก {from} เป็น {to}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the daily broadcast limit from {from} to {to}"
+msgstr "เปลี่ยนขีดจำกัดบรอดแคสต์รายวันจาก {from} เป็น {to}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the mail account or password of a channel"
+msgstr "เปลี่ยนบัญชีอีเมลหรือรหัสผ่านของช่องทาง"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the role of {person} from {from} to {to}"
+msgstr "เปลี่ยนบทบาทของ {person} จาก {from} เป็น {to}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the webhook to {host}"
+msgstr "เปลี่ยน webhook ไปยัง {host}"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Changelog settings"
 msgstr "การตั้งค่าบันทึกการเปลี่ยนแปลง"
@@ -3045,6 +3102,10 @@ msgstr "การตั้งค่าบันทึกการเปลี่
 #: src/features/migrations/Wizard.tsx
 msgid "Changes made to {provider}: none"
 msgstr "การเปลี่ยนแปลงที่ทำกับ {provider}: ไม่มี"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Changes to members, keys, webhooks and other sensitive settings show up here."
+msgstr "การเปลี่ยนแปลงสมาชิก คีย์ webhook และการตั้งค่าที่ละเอียดอ่อนอื่น ๆ จะแสดงที่นี่"
 
 #: src/features/settings/channels/email/EmailSections.tsx
 msgid "Changing the sending domain turns DKIM signing off until you enable it again for the new domain."
@@ -3076,6 +3137,10 @@ msgstr "การตั้งค่าช่อง"
 #: src/features/settings/ProductsPage.tsx
 msgid "Channels"
 msgstr "ช่องทาง"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Channels and inboxes"
+msgstr "ช่องทางและกล่องจดหมาย"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Chat"
@@ -3613,6 +3678,10 @@ msgstr "เชื่อมต่อเซิร์ฟเวอร์และบ
 msgid "Connected"
 msgstr "เชื่อมต่อแล้ว"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Connected {client}"
+msgstr "เชื่อมต่อ {client}"
+
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Connected {created}"
 msgstr "เชื่อมต่อเมื่อ {created}"
@@ -3622,6 +3691,7 @@ msgstr "เชื่อมต่อเมื่อ {created}"
 #: src/components/common/SettingsStrip.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/inbox/SidePanels.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
 msgid "Connected apps"
@@ -3733,6 +3803,10 @@ msgstr "เป็นผู้ติดต่อตั้งแต่ {since}"
 #: src/features/settings/webhooks/events.tsx
 msgid "Contacts"
 msgstr "ผู้ติดต่อ"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Contacts and exports"
+msgstr "รายชื่อติดต่อและการส่งออก"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "contains"
@@ -4053,6 +4127,18 @@ msgstr "สร้างบัญชี Yuva ของคุณ"
 msgid "Created"
 msgstr "สร้างแล้ว"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Created an analytics export"
+msgstr "สร้างการส่งออกข้อมูลวิเคราะห์"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Created the API key {name}"
+msgstr "สร้างคีย์ API {name}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Created the DKIM key {selector}"
+msgstr "สร้างคีย์ DKIM {selector}"
+
 #: src/features/migrations/DoneStep.tsx
 msgid "Credentials deleted {deletedAt}. Yuva can no longer read {address}."
 msgstr "ลบข้อมูลรับรองแล้วเมื่อ {deletedAt} Yuva อ่าน {address} ไม่ได้อีกต่อไป"
@@ -4154,6 +4240,10 @@ msgstr "จำนวนวันของประวัติ"
 #: src/features/setup/InstallStep.tsx
 msgid "Decide who may write in discussions"
 msgstr "กำหนดว่าใครเขียนในกระทู้ได้"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Declined the request to send broadcasts"
+msgstr "ปฏิเสธคำขอส่งบรอดแคสต์"
 
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "Default: {fallback}"
@@ -4336,6 +4426,14 @@ msgstr "ลบบัญชีของคุณ"
 msgid "Delete your account?"
 msgstr "ลบบัญชีของคุณไหม"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted a contact"
+msgstr "ลบรายชื่อติดต่อ"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted a DKIM key"
+msgstr "ลบคีย์ DKIM"
+
 #: src/features/contact/MergeContactDialog.tsx
 msgid "deleted afterwards"
 msgstr "จะถูกลบภายหลัง"
@@ -4362,6 +4460,14 @@ msgstr "สมาชิกที่ถูกลบ"
 #: src/components/common/DiscussionAuthor.tsx
 msgid "Deleted reader"
 msgstr "ผู้อ่านที่ถูกลบ"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted the inbox {name}"
+msgstr "ลบกล่องจดหมาย {name}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted the webhook to {host}"
+msgstr "ลบ webhook ไปยัง {host}"
 
 #: src/features/settings/inboxes/InboxSecurity.tsx
 msgid "Deletes its channels, conversations, messages and attachments. This cannot be undone."
@@ -4474,6 +4580,10 @@ msgstr "ละทิ้งการเปลี่ยนแปลง"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Discard the suggested reply"
 msgstr "ทิ้งคำตอบที่แนะนำ"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Disconnected {client}"
+msgstr "ยกเลิกการเชื่อมต่อ {client}"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/DocsPage.tsx
@@ -5156,8 +5266,8 @@ msgid "Every request to this endpoint, newest first. The newest 100 are kept."
 msgstr "ทุกคำขอไปยังเอนด์พอยต์นี้ ใหม่สุดก่อน เก็บ 100 รายการล่าสุด"
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-msgid "Every scope except sending broadcasts."
-msgstr "ทุกขอบเขตยกเว้นการส่งบรอดคาสต์"
+msgid "Every scope except sending broadcasts and reading the audit log."
+msgstr "ทุกสิทธิ์ ยกเว้นการส่งบรอดแคสต์และการอ่านบันทึกการตรวจสอบ"
 
 #: src/features/inbox/SourceFilter.tsx
 msgid "Every site"
@@ -5174,6 +5284,10 @@ msgstr "ทุกประเภท"
 #: src/features/setup/SetupHub.tsx
 msgid "Every website and app shows its visitors on Home and in Analytics."
 msgstr "ทุกเว็บไซต์และแอปแสดงผู้เข้าชมในหน้าแรกและการวิเคราะห์"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Everyone"
+msgstr "ทุกคน"
 
 #: src/features/inbox/ChatsPage.tsx
 msgid "Everyone has been answered."
@@ -5203,6 +5317,7 @@ msgstr "โพสต์ของทุกคนเผยแพร่ทันท
 #: src/features/migrations/Wizard.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 msgid "Everything"
 msgstr "ทุกอย่าง"
 
@@ -5276,6 +5391,14 @@ msgstr "ไฟล์ส่งออก"
 #: src/features/migrations/text.ts
 msgid "Export once as a .zip file. Google mails you a link when it is ready; for a large mailbox that can take a day or more."
 msgstr "ส่งออกครั้งเดียวเป็นไฟล์ .zip Google จะส่งลิงก์ให้ทางอีเมลเมื่อพร้อม สำหรับกล่องจดหมายขนาดใหญ่อาจใช้เวลาหนึ่งวันหรือมากกว่า"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Exported the consent records of contacts"
+msgstr "ส่งออกบันทึกความยินยอมของรายชื่อติดต่อ"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Exported the consent records of the list {name}"
+msgstr "ส่งออกบันทึกความยินยอมของรายการ {name}"
 
 #: src/features/broadcasts/Import.tsx
 msgid "External id"
@@ -5603,6 +5726,10 @@ msgstr "สำหรับผู้ใช้ที่ลงชื่อเข้
 msgid "For signed-in users: the identity secret, shown only now"
 msgstr "สำหรับผู้ใช้ที่ลงชื่อเข้าใช้: identity secret แสดงเฉพาะตอนนี้"
 
+#: src/features/settings/audit/sentence.ts
+msgid "forever"
+msgstr "ตลอดไป"
+
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/ListPage.tsx
 msgid "Form"
@@ -5678,6 +5805,7 @@ msgstr "พบในโฟลเดอร์ส่งแล้วของคุ
 msgid "Friday"
 msgstr "วันศุกร์"
 
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "From"
 msgstr "จาก"
@@ -5761,6 +5889,10 @@ msgstr "สำเนาอื่นของข้อความเดียว
 #: src/components/common/ShortcutSheet.tsx
 msgid "Gallery"
 msgstr "แกลเลอรี"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Gave {person} access to {inbox}"
+msgstr "ให้ {person} เข้าถึง {inbox}"
 
 #: src/app/Sidebar.tsx
 #: src/components/common/SettingsStrip.tsx
@@ -6590,6 +6722,10 @@ msgstr "ภาษาของคำเชิญ"
 msgid "Invite your team"
 msgstr "เชิญทีมของคุณ"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Invited {email} as {role}"
+msgstr "เชิญ {email} เป็น {role}"
+
 #: src/features/team/TeamPage.tsx
 msgid "Invites"
 msgstr "คำเชิญ"
@@ -6758,6 +6894,10 @@ msgstr "รายงานและรายชื่อผู้รับจะ
 msgid "Its settings, credentials and progress are deleted. Imported conversations stay."
 msgstr "การตั้งค่า ข้อมูลรับรอง และความคืบหน้าจะถูกลบ การสนทนาที่นำเข้าแล้วยังอยู่"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Joined the workspace as {role}"
+msgstr "เข้าร่วมพื้นที่ทำงานเป็น {role}"
+
 #: src/features/conversation/ConversationStatus.tsx
 msgid "Just wrote"
 msgstr "เพิ่งเขียน"
@@ -6817,6 +6957,10 @@ msgstr "คีย์และผู้ช่วยตั้งเวลาบร
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "Keys and assistants may send broadcasts"
 msgstr "คีย์และผู้ช่วยส่งบรอดคาสต์ได้"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Keys and connected apps"
+msgstr "คีย์และแอปที่เชื่อมต่อ"
 
 #: src/features/settings/channels/ChannelPage.tsx
 msgid "Keys that can reach this product. Create and revoke them under API & MCP."
@@ -7245,6 +7389,7 @@ msgstr "โหลดรูปภาพ"
 #: src/features/contact/ContactsPage.tsx
 #: src/features/docs/discussions/parts.tsx
 #: src/features/docs/PagesTab.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
 #: src/features/status/LinkConversationsDialog.tsx
 #: src/features/status/MonitorChecks.tsx
@@ -7628,6 +7773,10 @@ msgstr "สมาชิก"
 #: src/features/team/TeamPage.tsx
 msgid "Members"
 msgstr "สมาชิก"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Members and invitations"
+msgstr "สมาชิกและคำเชิญ"
 
 #: src/features/conversation/composer/MentionMenu.tsx
 msgid "Mention a teammate"
@@ -8652,6 +8801,10 @@ msgstr "ยังไม่มีเอนด์พอยต์"
 msgid "No endpoints yet."
 msgstr "ยังไม่มีเอนด์พอยต์"
 
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "No entry matches these filters."
+msgstr "ไม่มีรายการที่ตรงกับตัวกรองเหล่านี้"
+
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "No events recorded."
 msgstr "ไม่มีเหตุการณ์ที่บันทึกไว้"
@@ -8705,6 +8858,10 @@ msgstr "ยังไม่มีป้ายกำกับ"
 #: src/features/inbox/ChatList.tsx
 msgid "No labels yet. Add them in settings."
 msgstr "ยังไม่มีป้ายกำกับ เพิ่มในการตั้งค่า"
+
+#: src/features/settings/audit/sentence.ts
+msgid "no limit"
+msgstr "ไม่จำกัด"
 
 #: src/features/broadcasts/Pace.tsx
 msgid "No limit"
@@ -9197,6 +9354,10 @@ msgstr "ยังไม่มีสิ่งที่แก้ไขแล้ว
 #: src/features/broadcasts/Report.tsx
 msgid "Nothing has happened yet."
 msgstr "ยังไม่มีอะไรเกิดขึ้น"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Nothing here"
+msgstr "ยังไม่มีอะไรที่นี่"
 
 #: src/features/broadcasts/Overview.tsx
 msgid "Nothing here."
@@ -9963,6 +10124,10 @@ msgstr "ทำงานปกติ"
 #: src/features/status/MonitorToken.tsx
 msgid "operational recovers; degraded, partial_outage and major_outage fail."
 msgstr "operational ทำให้กลับมาปกติ ส่วน degraded, partial_outage และ major_outage ทำให้ล้มเหลว"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Operator"
+msgstr "ผู้ดูแลระบบ"
 
 #: src/features/status/ComponentDialogs.tsx
 msgid "Optional. Shown on the public page."
@@ -11090,6 +11255,10 @@ msgstr "อ่านบอร์ดโรดแมป ไอเดีย แล�
 msgid "Read status pages, components and incidents"
 msgstr "อ่านหน้าสถานะ ส่วนประกอบ และเหตุการณ์"
 
+#: src/components/common/text.ts
+msgid "Read the audit log (owners only)"
+msgstr "อ่านบันทึกการตรวจสอบ (เฉพาะเจ้าของ)"
+
 #: src/features/migrations/text.ts
 msgid "Read the folders"
 msgstr "อ่านโฟลเดอร์"
@@ -11373,6 +11542,10 @@ msgstr "นำพาสคีย์นี้ออกไหม"
 #: src/features/migrations/DoneStep.tsx
 msgid "Remove Yuva's access in Microsoft"
 msgstr "ถอนสิทธิ์เข้าถึงของ Yuva ใน Microsoft"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed {person} from the workspace"
+msgstr "นำ {person} ออกจากพื้นที่ทำงาน"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Removes {name} with its products, channels, conversations, contacts, files, labels, webhooks and API keys for everyone. Members keep their accounts."
@@ -11789,6 +11962,10 @@ msgstr "เพิกถอน {keyName} ไหม"
 msgid "Revoked"
 msgstr "เพิกถอนแล้ว"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Revoked the API key {name}"
+msgstr "เพิกถอนคีย์ API {name}"
+
 #: src/features/broadcasts/ListForm.tsx
 msgid "Right after subscribing, people get a short mail that confirms it, with an unsubscribe link."
 msgstr "ทันทีหลังสมัครรับ ผู้คนได้รับอีเมลสั้น ๆ ยืนยันการสมัคร พร้อมลิงก์ยกเลิกการสมัครรับ"
@@ -11839,6 +12016,22 @@ msgstr "หมุนเวียนคีย์สาธารณะไหม"
 #: src/features/settings/webhooks/sections.tsx
 msgid "Rotate the signing secret?"
 msgstr "หมุนเวียน signing secret ไหม"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the forwarding address of a channel"
+msgstr "สร้างที่อยู่ส่งต่อของช่องทางใหม่"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the identity secret of an inbox"
+msgstr "สร้างความลับระบุตัวตนของกล่องจดหมายใหม่"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the key of a channel"
+msgstr "สร้างคีย์ของช่องทางใหม่"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the signing secret of a webhook"
+msgstr "สร้างความลับสำหรับลงลายมือชื่อของ webhook ใหม่"
 
 #: src/features/setup/email/EmailReceiveStep.tsx
 msgid "Route your domain"
@@ -13534,6 +13727,10 @@ msgstr "support@your-company.com"
 msgid "Suspended"
 msgstr "ถูกระงับ"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Suspended broadcasts"
+msgstr "ระงับบรอดแคสต์"
+
 #: src/features/migrations/Wizard.tsx
 msgid "Switch"
 msgstr "สลับ"
@@ -14054,8 +14251,8 @@ msgid "The key is ready"
 msgstr "คีย์พร้อมแล้ว"
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-msgid "The key sees only these inboxes and cannot manage inboxes, webhooks or the workspace."
-msgstr "คีย์เห็นเฉพาะกล่องข้อความเหล่านี้ และจัดการกล่องข้อความ เว็บฮุก หรือพื้นที่ทำงานไม่ได้"
+msgid "The key sees only these inboxes and cannot manage inboxes, webhooks or the workspace, or read the audit log."
+msgstr "คีย์นี้เห็นเฉพาะกล่องจดหมายเหล่านี้ และไม่สามารถจัดการกล่องจดหมาย webhook หรือพื้นที่ทำงาน หรืออ่านบันทึกการตรวจสอบได้"
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "The key stops working at the end of this day."
@@ -14522,8 +14719,8 @@ msgid "The What’s new count shows on the chat button while no messages are unr
 msgstr "จำนวนอัปเดตใหม่จะแสดงบนปุ่มแชตตราบที่ไม่มีข้อความที่ยังไม่ได้อ่าน หน้าแรกของวิดเจ็ตแสดงเสมอ"
 
 #: src/features/settings/GeneralTabs.tsx
-msgid "The workspace itself: name, retention, labels, canned replies and moving in"
-msgstr "พื้นที่ทำงานเอง: ชื่อ ระยะเวลาเก็บรักษา ป้ายกำกับ คำตอบสำเร็จรูป และการย้าย"
+msgid "The workspace itself: name, retention, labels, canned replies, moving in and the audit log"
+msgstr "ตัวพื้นที่ทำงานเอง: ชื่อ การเก็บรักษา ป้ายกำกับ คำตอบสำเร็จรูป การย้าย และบันทึกการตรวจสอบ"
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The workspace may not send broadcasts for now."
@@ -15062,6 +15259,7 @@ msgstr "ชื่อเรื่อง"
 msgid "TLS (port 465)"
 msgstr "TLS (พอร์ต 465)"
 
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "To"
 msgstr "ถึง"
@@ -15112,6 +15310,10 @@ msgstr "ลองมากเกินไป รอสักครู่แล�
 #: src/features/auth/CreateWorkspace.tsx
 msgid "Too many workspaces were created from your network today. Try again tomorrow."
 msgstr "วันนี้มีการสร้างพื้นที่ทำงานจากเครือข่ายของคุณมากเกินไป ลองอีกครั้งพรุ่งนี้"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Took away the access of {person} to {inbox}"
+msgstr "เพิกถอนสิทธิ์เข้าถึง {inbox} ของ {person}"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "tr, en-GB"
@@ -15755,6 +15957,10 @@ msgstr "เวอร์ชัน"
 msgid "Very large mailbox? Start with a Google Takeout file"
 msgstr "กล่องจดหมายใหญ่มากใช่ไหม เริ่มด้วยไฟล์ Google Takeout"
 
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "via {via}"
+msgstr "ผ่าน {via}"
+
 #: src/features/home/HomePage.tsx
 msgid "View"
 msgstr "ดู"
@@ -15970,6 +16176,7 @@ msgid "Webhook endpoint"
 msgstr "เอนด์พอยต์เว็บฮุก"
 
 #: src/app/Palette.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
@@ -16014,6 +16221,10 @@ msgstr "วันพุธ"
 #: src/features/broadcasts/ListForm.tsx
 msgid "Welcome receipt"
 msgstr "ใบเสร็จต้อนรับ"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "What"
+msgstr "อะไร"
 
 #: src/features/broadcasts/Import.tsx
 msgid "What {header} holds"
@@ -16245,6 +16456,10 @@ msgstr "ขณะปิด จะไม่มีการส่ง"
 msgid "While your status is Away, only new messages in conversations assigned to you and new assignments notify you. A conversation you have open in the panel never notifies you."
 msgstr "ขณะที่สถานะของคุณเป็นไม่อยู่ จะแจ้งเตือนคุณเฉพาะข้อความใหม่ในการสนทนาที่มอบหมายให้คุณและการมอบหมายใหม่ การสนทนาที่คุณเปิดอยู่ในแผงควบคุมจะไม่แจ้งเตือนคุณเลย"
 
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Who"
+msgstr "ใคร"
+
 #: src/features/broadcasts/ListsHome.tsx
 msgid "Who agreed to hear from you, with consent recorded"
 msgstr "ใครยินยอมรับข่าวสารจากคุณ พร้อมบันทึกความยินยอม"
@@ -16256,6 +16471,14 @@ msgstr "ใครตอบที่ไหน และใครออนไล�
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Who can reply"
 msgstr "ใครตอบกลับได้"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Who changed access, keys and data"
+msgstr "ใครเปลี่ยนการเข้าถึง คีย์ และข้อมูล"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Who changed members, access, keys, webhooks, mail accounts, retention and exports, newest first. Only owners see this."
+msgstr "ใครเปลี่ยนสมาชิก การเข้าถึง คีย์ webhook บัญชีอีเมล การเก็บรักษา และการส่งออก เรียงจากใหม่สุด เฉพาะเจ้าของเท่านั้นที่เห็น"
 
 #: src/features/team/TeamPage.tsx
 msgid "Who is here"
@@ -16366,6 +16589,10 @@ msgstr "กำลังทำงาน…"
 #: src/features/settings/workspace/RetentionForm.tsx
 msgid "Workspace"
 msgstr "พื้นที่ทำงาน"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Workspace and broadcasts"
+msgstr "พื้นที่ทำงานและบรอดแคสต์"
 
 #: src/features/auth/CreateWorkspace.tsx
 msgid "Workspace name"

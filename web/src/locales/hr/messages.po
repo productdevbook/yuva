@@ -293,6 +293,7 @@ msgstr "{created, plural, one {# nov} few {# nova} other {# novih}}"
 
 #: src/features/broadcasts/Growth.tsx
 #: src/features/docs/Toolbar.tsx
+#: src/features/settings/audit/sentence.ts
 msgid "{d, plural, one {# day} other {# days}}"
 msgstr "{d, plural, one {# dan} few {# dana} other {# dana}}"
 
@@ -481,6 +482,10 @@ msgstr "{n, plural, one {# drugi razgovor} few {# druga razgovora} other {# drug
 msgid "{n, plural, one {# person} other {# people}}"
 msgstr "{n, plural, one {# osoba} few {# osobe} other {# osoba}}"
 
+#: src/features/settings/audit/sentence.ts
+msgid "{n, plural, one {# recipient a day} other {# recipients a day}}"
+msgstr "{n, plural, one {# primatelj dnevno} few {# primatelja dnevno} other {# primatelja dnevno}}"
+
 #: src/features/setup/SetupHub.tsx
 msgid "{n, plural, one {# website chat} other {# website chats}}"
 msgstr "{n, plural, one {# chat na web-mjestu} few {# chata na web-mjestu} other {# chatova na web-mjestu}}"
@@ -664,6 +669,10 @@ msgstr "{percent} %, {doneText} od {total}"
 #: src/features/migrations/UploadStep.tsx
 msgid "{percent}%, {sent} of {size}"
 msgstr "{percent} %, {sent} od {size}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "{person} left the workspace by deleting their account"
+msgstr "{person} je napustio/la radni prostor brisanjem računa"
 
 #: src/features/inbox/ChatsPage.tsx
 msgid "{product}’s conversations"
@@ -1137,6 +1146,10 @@ msgstr "Skica je napisana"
 #: src/components/common/text.ts
 msgid "A file's content does not match its type. Check the file and try again."
 msgstr "Sadržaj datoteke ne odgovara njezinoj vrsti. Provjerite datoteku i pokušajte ponovno."
+
+#: src/features/settings/audit/sentence.ts
+msgid "a former member"
+msgstr "bivši član"
 
 #: src/features/contact/ContactNotes.tsx
 msgid "A former teammate"
@@ -1632,6 +1645,10 @@ msgstr "Dodano {created}, zadnji put isporučeno {delivered}"
 msgid "Added {created}, last used {used}"
 msgstr "Dodano {created}, zadnji put korišteno {used}"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Added a webhook to {host}"
+msgstr "Dodao/la webhook za {host}"
+
 #: src/components/common/text.ts
 msgid "Added by the team"
 msgstr "Dodao tim"
@@ -1833,6 +1850,10 @@ msgstr "Dopušteno"
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Allowed origins"
 msgstr "Dopušteni originovi"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Allowed the workspace to send broadcasts"
+msgstr "Dopustio/la radnom prostoru slanje masovnih poruka"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Already earlier in the file"
@@ -2201,11 +2222,13 @@ msgstr "API i MCP"
 msgid "API channel"
 msgstr "API kanal"
 
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/status/IncidentDetail.tsx
 msgid "API key"
 msgstr "API ključ"
 
 #: src/app/Palette.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/channels/ChannelPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
@@ -2370,6 +2393,10 @@ msgstr "Zamolite administratora svog poštanskog poslužitelja da preusmjeruje {
 msgid "asked after closing"
 msgstr "pitano nakon zatvaranja"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Asked to be allowed to send broadcasts"
+msgstr "Zatražio/la dopuštenje za slanje masovnih poruka"
+
 #: src/components/common/text.ts
 msgid "Asked to subscribe"
 msgstr "Pozvan na pretplatu"
@@ -2514,6 +2541,12 @@ msgstr "Atributi"
 #: src/features/broadcasts/Composer.tsx
 msgid "Audience"
 msgstr "Publika"
+
+#: src/app/Palette.tsx
+#: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Audit log"
+msgstr "Revizijski zapisnik"
 
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Authorization"
@@ -2947,6 +2980,10 @@ msgstr "Otkazati ovaj uvoz?"
 msgid "Cancelled"
 msgstr "Otkazano"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Cancelled an invitation"
+msgstr "Otkazao/la pozivnicu"
+
 #: src/features/broadcasts/Import.tsx
 msgid "Cancelled. What was added before stays."
 msgstr "Otkazano. Ono što je prije dodano ostaje."
@@ -3038,6 +3075,26 @@ msgstr "Mijenjaj, briši i spajaj kontakte"
 msgid "Change, move and bulk-update conversations"
 msgstr "Mijenjaj, premještaj i skupno ažuriraj razgovore"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Changed how long conversations are kept from {from} to {to}"
+msgstr "Promijenio/la vrijeme čuvanja razgovora s {from} na {to}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the daily broadcast limit from {from} to {to}"
+msgstr "Promijenio/la dnevno ograničenje masovnih poruka s {from} na {to}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the mail account or password of a channel"
+msgstr "Promijenio/la poštanski račun ili lozinku kanala"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the role of {person} from {from} to {to}"
+msgstr "Promijenio/la ulogu korisnika {person} s {from} na {to}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the webhook to {host}"
+msgstr "Promijenio/la webhook za {host}"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Changelog settings"
 msgstr "Postavke dnevnika promjena"
@@ -3045,6 +3102,10 @@ msgstr "Postavke dnevnika promjena"
 #: src/features/migrations/Wizard.tsx
 msgid "Changes made to {provider}: none"
 msgstr "Promjene učinjene kod {provider}: nema"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Changes to members, keys, webhooks and other sensitive settings show up here."
+msgstr "Promjene članova, ključeva, webhookova i drugih osjetljivih postavki prikazuju se ovdje."
 
 #: src/features/settings/channels/email/EmailSections.tsx
 msgid "Changing the sending domain turns DKIM signing off until you enable it again for the new domain."
@@ -3076,6 +3137,10 @@ msgstr "Postavke kanala"
 #: src/features/settings/ProductsPage.tsx
 msgid "Channels"
 msgstr "Kanali"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Channels and inboxes"
+msgstr "Kanali i sandučići"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Chat"
@@ -3613,6 +3678,10 @@ msgstr "Povežite svoje poslužitelje i botove s Yuvom"
 msgid "Connected"
 msgstr "Povezano"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Connected {client}"
+msgstr "Povezao/la {client}"
+
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Connected {created}"
 msgstr "Povezano {created}"
@@ -3622,6 +3691,7 @@ msgstr "Povezano {created}"
 #: src/components/common/SettingsStrip.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/inbox/SidePanels.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
 msgid "Connected apps"
@@ -3733,6 +3803,10 @@ msgstr "Kontakt od {since}"
 #: src/features/settings/webhooks/events.tsx
 msgid "Contacts"
 msgstr "Kontakti"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Contacts and exports"
+msgstr "Kontakti i izvozi"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "contains"
@@ -4053,6 +4127,18 @@ msgstr "Izradite svoj Yuva račun"
 msgid "Created"
 msgstr "Izrađeno"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Created an analytics export"
+msgstr "Izradio/la izvoz analitike"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Created the API key {name}"
+msgstr "Izradio/la API ključ {name}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Created the DKIM key {selector}"
+msgstr "Izradio/la DKIM ključ {selector}"
+
 #: src/features/migrations/DoneStep.tsx
 msgid "Credentials deleted {deletedAt}. Yuva can no longer read {address}."
 msgstr "Vjerodajnice izbrisane {deletedAt}. Yuva više ne može čitati {address}."
@@ -4154,6 +4240,10 @@ msgstr "Dana povijesti"
 #: src/features/setup/InstallStep.tsx
 msgid "Decide who may write in discussions"
 msgstr "Odlučite tko smije pisati u raspravama"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Declined the request to send broadcasts"
+msgstr "Odbio/la zahtjev za slanje masovnih poruka"
 
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "Default: {fallback}"
@@ -4336,6 +4426,14 @@ msgstr "Izbrišite svoj račun"
 msgid "Delete your account?"
 msgstr "Izbrisati vaš račun?"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted a contact"
+msgstr "Izbrisao/la kontakt"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted a DKIM key"
+msgstr "Izbrisao/la DKIM ključ"
+
 #: src/features/contact/MergeContactDialog.tsx
 msgid "deleted afterwards"
 msgstr "potom se briše"
@@ -4362,6 +4460,14 @@ msgstr "Izbrisani član"
 #: src/components/common/DiscussionAuthor.tsx
 msgid "Deleted reader"
 msgstr "Izbrisani čitatelj"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted the inbox {name}"
+msgstr "Izbrisao/la sandučić {name}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted the webhook to {host}"
+msgstr "Izbrisao/la webhook za {host}"
 
 #: src/features/settings/inboxes/InboxSecurity.tsx
 msgid "Deletes its channels, conversations, messages and attachments. This cannot be undone."
@@ -4474,6 +4580,10 @@ msgstr "Odbaci promjene"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Discard the suggested reply"
 msgstr "Odbaci predloženi odgovor"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Disconnected {client}"
+msgstr "Odspojio/la {client}"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/DocsPage.tsx
@@ -5156,8 +5266,8 @@ msgid "Every request to this endpoint, newest first. The newest 100 are kept."
 msgstr "Svaki zahtjev prema ovoj krajnjoj točki, od najnovijeg. Čuva se najnovijih 100."
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-msgid "Every scope except sending broadcasts."
-msgstr "Svaki doseg osim slanja masovnih poruka."
+msgid "Every scope except sending broadcasts and reading the audit log."
+msgstr "Sva dopuštenja osim slanja masovnih poruka i čitanja revizijskog zapisnika."
 
 #: src/features/inbox/SourceFilter.tsx
 msgid "Every site"
@@ -5174,6 +5284,10 @@ msgstr "Svaka vrsta"
 #: src/features/setup/SetupHub.tsx
 msgid "Every website and app shows its visitors on Home and in Analytics."
 msgstr "Svako web-mjesto i aplikacija prikazuje svoje posjetitelje na Početnoj i u Analitici."
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Everyone"
+msgstr "Svi"
 
 #: src/features/inbox/ChatsPage.tsx
 msgid "Everyone has been answered."
@@ -5203,6 +5317,7 @@ msgstr "Objave svih objavljuju se odmah, osim objava autora koje ste označili k
 #: src/features/migrations/Wizard.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 msgid "Everything"
 msgstr "Sve"
 
@@ -5276,6 +5391,14 @@ msgstr "Izvozna datoteka"
 #: src/features/migrations/text.ts
 msgid "Export once as a .zip file. Google mails you a link when it is ready; for a large mailbox that can take a day or more."
 msgstr "Izvezite jednom kao .zip datoteku. Google vam šalje poveznicu e-poštom kad je spremna; za velik pretinac to može trajati dan ili duže."
+
+#: src/features/settings/audit/sentence.ts
+msgid "Exported the consent records of contacts"
+msgstr "Izvezao/la zapise o privoli kontakata"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Exported the consent records of the list {name}"
+msgstr "Izvezao/la zapise o privoli popisa {name}"
 
 #: src/features/broadcasts/Import.tsx
 msgid "External id"
@@ -5603,6 +5726,10 @@ msgstr "Za prijavljene korisnike vaša pozadina potpisuje identitetski token taj
 msgid "For signed-in users: the identity secret, shown only now"
 msgstr "Za prijavljene korisnike: tajna identiteta, prikazana samo sada"
 
+#: src/features/settings/audit/sentence.ts
+msgid "forever"
+msgstr "zauvijek"
+
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/ListPage.tsx
 msgid "Form"
@@ -5678,6 +5805,7 @@ msgstr "Pronađeno u vašim mapama Poslano"
 msgid "Friday"
 msgstr "Petak"
 
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "From"
 msgstr "Od"
@@ -5761,6 +5889,10 @@ msgstr "Daljnje kopije iste poruke"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Gallery"
 msgstr "Galerija"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Gave {person} access to {inbox}"
+msgstr "Korisniku {person} dao/la pristup za {inbox}"
 
 #: src/app/Sidebar.tsx
 #: src/components/common/SettingsStrip.tsx
@@ -6590,6 +6722,10 @@ msgstr "Jezik pozivnice"
 msgid "Invite your team"
 msgstr "Pozovite svoj tim"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Invited {email} as {role}"
+msgstr "Pozvao/la {email} kao {role}"
+
 #: src/features/team/TeamPage.tsx
 msgid "Invites"
 msgstr "Pozivnice"
@@ -6758,6 +6894,10 @@ msgstr "Njegovo izvješće i popis primatelja brišu se. Razgovori otvoreni odgo
 msgid "Its settings, credentials and progress are deleted. Imported conversations stay."
 msgstr "Njegove postavke, vjerodajnice i napredak brišu se. Uvezeni razgovori ostaju."
 
+#: src/features/settings/audit/sentence.ts
+msgid "Joined the workspace as {role}"
+msgstr "Pridružio/la se radnom prostoru kao {role}"
+
 #: src/features/conversation/ConversationStatus.tsx
 msgid "Just wrote"
 msgstr "Upravo je napisao/la"
@@ -6817,6 +6957,10 @@ msgstr "Ključevi i asistenti u ovom radnom prostoru ne smiju zakazivati masovne
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "Keys and assistants may send broadcasts"
 msgstr "Ključevi i asistenti smiju slati masovne poruke"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Keys and connected apps"
+msgstr "Ključevi i povezane aplikacije"
 
 #: src/features/settings/channels/ChannelPage.tsx
 msgid "Keys that can reach this product. Create and revoke them under API & MCP."
@@ -7245,6 +7389,7 @@ msgstr "Učitaj slike"
 #: src/features/contact/ContactsPage.tsx
 #: src/features/docs/discussions/parts.tsx
 #: src/features/docs/PagesTab.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
 #: src/features/status/LinkConversationsDialog.tsx
 #: src/features/status/MonitorChecks.tsx
@@ -7628,6 +7773,10 @@ msgstr "Član"
 #: src/features/team/TeamPage.tsx
 msgid "Members"
 msgstr "Članovi"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Members and invitations"
+msgstr "Članovi i pozivnice"
 
 #: src/features/conversation/composer/MentionMenu.tsx
 msgid "Mention a teammate"
@@ -8652,6 +8801,10 @@ msgstr "Još nema krajnjih točaka"
 msgid "No endpoints yet."
 msgstr "Još nema krajnjih točaka."
 
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "No entry matches these filters."
+msgstr "Nijedan zapis ne odgovara ovim filtrima."
+
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "No events recorded."
 msgstr "Nema zabilježenih događaja."
@@ -8705,6 +8858,10 @@ msgstr "Još nema oznaka"
 #: src/features/inbox/ChatList.tsx
 msgid "No labels yet. Add them in settings."
 msgstr "Još nema oznaka. Dodajte ih u postavkama."
+
+#: src/features/settings/audit/sentence.ts
+msgid "no limit"
+msgstr "bez ograničenja"
 
 #: src/features/broadcasts/Pace.tsx
 msgid "No limit"
@@ -9197,6 +9354,10 @@ msgstr "Još ništa nije riješeno."
 #: src/features/broadcasts/Report.tsx
 msgid "Nothing has happened yet."
 msgstr "Još se ništa nije dogodilo."
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Nothing here"
+msgstr "Ovdje još nema ničega"
 
 #: src/features/broadcasts/Overview.tsx
 msgid "Nothing here."
@@ -9963,6 +10124,10 @@ msgstr "Radi"
 #: src/features/status/MonitorToken.tsx
 msgid "operational recovers; degraded, partial_outage and major_outage fail."
 msgstr "operational vraća; degraded, partial_outage i major_outage zaustavljaju."
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Operator"
+msgstr "Operater"
 
 #: src/features/status/ComponentDialogs.tsx
 msgid "Optional. Shown on the public page."
@@ -11090,6 +11255,10 @@ msgstr "Čitaj ploče plana razvoja, ideje i povijest faza"
 msgid "Read status pages, components and incidents"
 msgstr "Čitaj stranice statusa, komponente i incidente"
 
+#: src/components/common/text.ts
+msgid "Read the audit log (owners only)"
+msgstr "Čitanje revizijskog zapisnika (samo vlasnici)"
+
 #: src/features/migrations/text.ts
 msgid "Read the folders"
 msgstr "Pročitaj mape"
@@ -11373,6 +11542,10 @@ msgstr "Ukloniti ovaj pristupni ključ?"
 #: src/features/migrations/DoneStep.tsx
 msgid "Remove Yuva's access in Microsoft"
 msgstr "Ukloni Yuvin pristup u Microsoftu"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed {person} from the workspace"
+msgstr "Uklonio/la korisnika {person} iz radnog prostora"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Removes {name} with its products, channels, conversations, contacts, files, labels, webhooks and API keys for everyone. Members keep their accounts."
@@ -11789,6 +11962,10 @@ msgstr "Opozvati {keyName}?"
 msgid "Revoked"
 msgstr "Opozvano"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Revoked the API key {name}"
+msgstr "Opozvao/la API ključ {name}"
+
 #: src/features/broadcasts/ListForm.tsx
 msgid "Right after subscribing, people get a short mail that confirms it, with an unsubscribe link."
 msgstr "Odmah nakon pretplate ljudi dobivaju kratku poruku koja je potvrđuje, s poveznicom za odjavu."
@@ -11839,6 +12016,22 @@ msgstr "Rotirati javni ključ?"
 #: src/features/settings/webhooks/sections.tsx
 msgid "Rotate the signing secret?"
 msgstr "Rotirati tajnu za potpisivanje?"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the forwarding address of a channel"
+msgstr "Obnovio/la adresu za prosljeđivanje kanala"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the identity secret of an inbox"
+msgstr "Obnovio/la tajnu identiteta sandučića"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the key of a channel"
+msgstr "Obnovio/la ključ kanala"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the signing secret of a webhook"
+msgstr "Obnovio/la tajnu potpisivanja webhooka"
 
 #: src/features/setup/email/EmailReceiveStep.tsx
 msgid "Route your domain"
@@ -13534,6 +13727,10 @@ msgstr "podrska@vasa-tvrtka.hr"
 msgid "Suspended"
 msgstr "Suspendirano"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Suspended broadcasts"
+msgstr "Obustavio/la masovne poruke"
+
 #: src/features/migrations/Wizard.tsx
 msgid "Switch"
 msgstr "Prebaci"
@@ -14054,8 +14251,8 @@ msgid "The key is ready"
 msgstr "Ključ je spreman"
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-msgid "The key sees only these inboxes and cannot manage inboxes, webhooks or the workspace."
-msgstr "Ključ vidi samo ove pretince i ne može upravljati pretincima, webhookovima ni radnim prostorom."
+msgid "The key sees only these inboxes and cannot manage inboxes, webhooks or the workspace, or read the audit log."
+msgstr "Ključ vidi samo ove sandučiće i ne može upravljati sandučićima, webhookovima ni radnim prostorom niti čitati revizijski zapisnik."
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "The key stops working at the end of this day."
@@ -14522,8 +14719,8 @@ msgid "The What’s new count shows on the chat button while no messages are unr
 msgstr "Broj novosti prikazuje se na gumbu chata dok nema nepročitanih poruka. Početni zaslon widgeta uvijek ga prikazuje."
 
 #: src/features/settings/GeneralTabs.tsx
-msgid "The workspace itself: name, retention, labels, canned replies and moving in"
-msgstr "Sam radni prostor: naziv, zadržavanje, oznake, pripremljeni odgovori i preseljenje"
+msgid "The workspace itself: name, retention, labels, canned replies, moving in and the audit log"
+msgstr "Sam radni prostor: naziv, čuvanje, oznake, gotovi odgovori, selidba i revizijski zapisnik"
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The workspace may not send broadcasts for now."
@@ -15062,6 +15259,7 @@ msgstr "Naslov"
 msgid "TLS (port 465)"
 msgstr "TLS (port 465)"
 
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "To"
 msgstr "Prima"
@@ -15112,6 +15310,10 @@ msgstr "Previše pokušaja. Pričekajte malo i pokušajte ponovno."
 #: src/features/auth/CreateWorkspace.tsx
 msgid "Too many workspaces were created from your network today. Try again tomorrow."
 msgstr "S vaše mreže danas je izrađeno previše radnih prostora. Pokušajte ponovno sutra."
+
+#: src/features/settings/audit/sentence.ts
+msgid "Took away the access of {person} to {inbox}"
+msgstr "Korisniku {person} oduzeo/la pristup za {inbox}"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "tr, en-GB"
@@ -15755,6 +15957,10 @@ msgstr "Verzije"
 msgid "Very large mailbox? Start with a Google Takeout file"
 msgstr "Vrlo velik pretinac? Počnite s Google Takeout datotekom"
 
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "via {via}"
+msgstr "putem {via}"
+
 #: src/features/home/HomePage.tsx
 msgid "View"
 msgstr "Prikaži"
@@ -15970,6 +16176,7 @@ msgid "Webhook endpoint"
 msgstr "Krajnja točka webhooka"
 
 #: src/app/Palette.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
@@ -16014,6 +16221,10 @@ msgstr "Srijeda"
 #: src/features/broadcasts/ListForm.tsx
 msgid "Welcome receipt"
 msgstr "Potvrda dobrodošlice"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "What"
+msgstr "Što"
 
 #: src/features/broadcasts/Import.tsx
 msgid "What {header} holds"
@@ -16245,6 +16456,10 @@ msgstr "Dok je isključeno, ne obavljaju se isporuke."
 msgid "While your status is Away, only new messages in conversations assigned to you and new assignments notify you. A conversation you have open in the panel never notifies you."
 msgstr "Dok je vaš status Odsutan, obavještavaju vas samo nove poruke u razgovorima dodijeljenima vama i nove dodjele. Razgovor koji imate otvoren na ploči nikad vas ne obavještava."
 
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Who"
+msgstr "Tko"
+
 #: src/features/broadcasts/ListsHome.tsx
 msgid "Who agreed to hear from you, with consent recorded"
 msgstr "Tko je pristao primati tvoje poruke, uz zabilježenu privolu"
@@ -16256,6 +16471,14 @@ msgstr "Tko odgovara, gdje i tko je na mreži"
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Who can reply"
 msgstr "Tko može odgovarati"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Who changed access, keys and data"
+msgstr "Tko je promijenio pristup, ključeve i podatke"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Who changed members, access, keys, webhooks, mail accounts, retention and exports, newest first. Only owners see this."
+msgstr "Tko je promijenio članove, pristup, ključeve, webhookove, poštanske račune, čuvanje i izvoze, najnovije prvo. Ovo vide samo vlasnici."
 
 #: src/features/team/TeamPage.tsx
 msgid "Who is here"
@@ -16366,6 +16589,10 @@ msgstr "Radi…"
 #: src/features/settings/workspace/RetentionForm.tsx
 msgid "Workspace"
 msgstr "Radni prostor"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Workspace and broadcasts"
+msgstr "Radni prostor i masovne poruke"
 
 #: src/features/auth/CreateWorkspace.tsx
 msgid "Workspace name"

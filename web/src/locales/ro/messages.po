@@ -293,6 +293,7 @@ msgstr "{created, plural, one {# nou} few {# noi} other {# de noi}}"
 
 #: src/features/broadcasts/Growth.tsx
 #: src/features/docs/Toolbar.tsx
+#: src/features/settings/audit/sentence.ts
 msgid "{d, plural, one {# day} other {# days}}"
 msgstr "{d, plural, one {# zi} few {# zile} other {# de zile}}"
 
@@ -481,6 +482,10 @@ msgstr "{n, plural, one {# altă conversație} few {# alte conversații} other {
 msgid "{n, plural, one {# person} other {# people}}"
 msgstr "{n, plural, one {# persoană} few {# persoane} other {# de persoane}}"
 
+#: src/features/settings/audit/sentence.ts
+msgid "{n, plural, one {# recipient a day} other {# recipients a day}}"
+msgstr "{n, plural, one {# destinatar pe zi} few {# destinatari pe zi} other {# de destinatari pe zi}}"
+
 #: src/features/setup/SetupHub.tsx
 msgid "{n, plural, one {# website chat} other {# website chats}}"
 msgstr "{n, plural, one {# chat de site} few {# chaturi de site} other {# de chaturi de site}}"
@@ -664,6 +669,10 @@ msgstr "{percent}%, {doneText} din {total}"
 #: src/features/migrations/UploadStep.tsx
 msgid "{percent}%, {sent} of {size}"
 msgstr "{percent}%, {sent} din {size}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "{person} left the workspace by deleting their account"
+msgstr "{person} a părăsit spațiul de lucru ștergându-și contul"
 
 #: src/features/inbox/ChatsPage.tsx
 msgid "{product}’s conversations"
@@ -1137,6 +1146,10 @@ msgstr "O ciornă a fost scrisă"
 #: src/components/common/text.ts
 msgid "A file's content does not match its type. Check the file and try again."
 msgstr "Conținutul unui fișier nu se potrivește cu tipul său. Verifică fișierul și încearcă din nou."
+
+#: src/features/settings/audit/sentence.ts
+msgid "a former member"
+msgstr "un fost membru"
 
 #: src/features/contact/ContactNotes.tsx
 msgid "A former teammate"
@@ -1632,6 +1645,10 @@ msgstr "Adăugat {created}, ultima livrare {delivered}"
 msgid "Added {created}, last used {used}"
 msgstr "Adăugat {created}, ultima utilizare {used}"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Added a webhook to {host}"
+msgstr "A adăugat un webhook către {host}"
+
 #: src/components/common/text.ts
 msgid "Added by the team"
 msgstr "Adăugat de echipă"
@@ -1833,6 +1850,10 @@ msgstr "Permis"
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Allowed origins"
 msgstr "Originuri permise"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Allowed the workspace to send broadcasts"
+msgstr "A permis spațiului de lucru să trimită difuzări"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Already earlier in the file"
@@ -2201,11 +2222,13 @@ msgstr "API și MCP"
 msgid "API channel"
 msgstr "Canal API"
 
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/status/IncidentDetail.tsx
 msgid "API key"
 msgstr "Cheie API"
 
 #: src/app/Palette.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/channels/ChannelPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
@@ -2370,6 +2393,10 @@ msgstr "Roagă administratorul serverului tău de e-mail să redirecționeze {ad
 msgid "asked after closing"
 msgstr "întrebat după închidere"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Asked to be allowed to send broadcasts"
+msgstr "A cerut permisiunea de a trimite difuzări"
+
 #: src/components/common/text.ts
 msgid "Asked to subscribe"
 msgstr "Invitat să se aboneze"
@@ -2514,6 +2541,12 @@ msgstr "Atribute"
 #: src/features/broadcasts/Composer.tsx
 msgid "Audience"
 msgstr "Public"
+
+#: src/app/Palette.tsx
+#: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Audit log"
+msgstr "Jurnal de audit"
 
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Authorization"
@@ -2947,6 +2980,10 @@ msgstr "Anulezi acest import?"
 msgid "Cancelled"
 msgstr "Anulat"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Cancelled an invitation"
+msgstr "A anulat o invitație"
+
 #: src/features/broadcasts/Import.tsx
 msgid "Cancelled. What was added before stays."
 msgstr "Anulat. Ce a fost adăugat înainte rămâne."
@@ -3038,6 +3075,26 @@ msgstr "Modifică, șterge și îmbină contacte"
 msgid "Change, move and bulk-update conversations"
 msgstr "Modifică, mută și actualizează în masă conversații"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Changed how long conversations are kept from {from} to {to}"
+msgstr "A schimbat durata de păstrare a conversațiilor de la {from} la {to}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the daily broadcast limit from {from} to {to}"
+msgstr "A schimbat limita zilnică de difuzări de la {from} la {to}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the mail account or password of a channel"
+msgstr "A schimbat contul de e-mail sau parola unui canal"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the role of {person} from {from} to {to}"
+msgstr "A schimbat rolul lui {person} din {from} în {to}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the webhook to {host}"
+msgstr "A modificat webhook-ul către {host}"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Changelog settings"
 msgstr "Setările jurnalului de modificări"
@@ -3045,6 +3102,10 @@ msgstr "Setările jurnalului de modificări"
 #: src/features/migrations/Wizard.tsx
 msgid "Changes made to {provider}: none"
 msgstr "Modificări făcute în {provider}: niciuna"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Changes to members, keys, webhooks and other sensitive settings show up here."
+msgstr "Modificările aduse membrilor, cheilor, webhook-urilor și altor setări sensibile apar aici."
 
 #: src/features/settings/channels/email/EmailSections.tsx
 msgid "Changing the sending domain turns DKIM signing off until you enable it again for the new domain."
@@ -3076,6 +3137,10 @@ msgstr "Setările canalului"
 #: src/features/settings/ProductsPage.tsx
 msgid "Channels"
 msgstr "Canale"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Channels and inboxes"
+msgstr "Canale și căsuțe de intrare"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Chat"
@@ -3613,6 +3678,10 @@ msgstr "Conectează serverele și boții tăi la Yuva"
 msgid "Connected"
 msgstr "Conectat"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Connected {client}"
+msgstr "A conectat {client}"
+
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Connected {created}"
 msgstr "Conectat {created}"
@@ -3622,6 +3691,7 @@ msgstr "Conectat {created}"
 #: src/components/common/SettingsStrip.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/inbox/SidePanels.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
 msgid "Connected apps"
@@ -3733,6 +3803,10 @@ msgstr "Contact din {since}"
 #: src/features/settings/webhooks/events.tsx
 msgid "Contacts"
 msgstr "Contacte"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Contacts and exports"
+msgstr "Contacte și exporturi"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "contains"
@@ -4053,6 +4127,18 @@ msgstr "Creează-ți contul Yuva"
 msgid "Created"
 msgstr "Creat"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Created an analytics export"
+msgstr "A creat un export de analiză"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Created the API key {name}"
+msgstr "A creat cheia API {name}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Created the DKIM key {selector}"
+msgstr "A creat cheia DKIM {selector}"
+
 #: src/features/migrations/DoneStep.tsx
 msgid "Credentials deleted {deletedAt}. Yuva can no longer read {address}."
 msgstr "Credențiale șterse {deletedAt}. Yuva nu mai poate citi {address}."
@@ -4154,6 +4240,10 @@ msgstr "Zile de istoric"
 #: src/features/setup/InstallStep.tsx
 msgid "Decide who may write in discussions"
 msgstr "Decide cine poate scrie în discuții"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Declined the request to send broadcasts"
+msgstr "A respins cererea de a trimite difuzări"
 
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "Default: {fallback}"
@@ -4336,6 +4426,14 @@ msgstr "Șterge-ți contul"
 msgid "Delete your account?"
 msgstr "Ștergi contul tău?"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted a contact"
+msgstr "A șters un contact"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted a DKIM key"
+msgstr "A șters o cheie DKIM"
+
 #: src/features/contact/MergeContactDialog.tsx
 msgid "deleted afterwards"
 msgstr "șters ulterior"
@@ -4362,6 +4460,14 @@ msgstr "Membru șters"
 #: src/components/common/DiscussionAuthor.tsx
 msgid "Deleted reader"
 msgstr "Cititor șters"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted the inbox {name}"
+msgstr "A șters căsuța de intrare {name}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted the webhook to {host}"
+msgstr "A șters webhook-ul către {host}"
 
 #: src/features/settings/inboxes/InboxSecurity.tsx
 msgid "Deletes its channels, conversations, messages and attachments. This cannot be undone."
@@ -4474,6 +4580,10 @@ msgstr "Renunță la modificări"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Discard the suggested reply"
 msgstr "Elimină răspunsul sugerat"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Disconnected {client}"
+msgstr "A deconectat {client}"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/DocsPage.tsx
@@ -5156,8 +5266,8 @@ msgid "Every request to this endpoint, newest first. The newest 100 are kept."
 msgstr "Fiecare cerere către acest endpoint, cele mai noi primele. Ultimele 100 sunt păstrate."
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-msgid "Every scope except sending broadcasts."
-msgstr "Toate domeniile de acces, cu excepția trimiterii de mesaje în masă."
+msgid "Every scope except sending broadcasts and reading the audit log."
+msgstr "Toate permisiunile, cu excepția trimiterii de difuzări și a citirii jurnalului de audit."
 
 #: src/features/inbox/SourceFilter.tsx
 msgid "Every site"
@@ -5174,6 +5284,10 @@ msgstr "Fiecare tip"
 #: src/features/setup/SetupHub.tsx
 msgid "Every website and app shows its visitors on Home and in Analytics."
 msgstr "Fiecare site și aplicație își arată vizitatorii în Acasă și în Analiză."
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Everyone"
+msgstr "Toată lumea"
 
 #: src/features/inbox/ChatsPage.tsx
 msgid "Everyone has been answered."
@@ -5203,6 +5317,7 @@ msgstr "Postările tuturor sunt publicate imediat, cu excepția celor ale autori
 #: src/features/migrations/Wizard.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 msgid "Everything"
 msgstr "Tot"
 
@@ -5276,6 +5391,14 @@ msgstr "Fișier de export"
 #: src/features/migrations/text.ts
 msgid "Export once as a .zip file. Google mails you a link when it is ready; for a large mailbox that can take a day or more."
 msgstr "Exportă o singură dată ca fișier .zip. Google îți trimite un link pe e-mail când este gata; pentru o căsuță mare poate dura o zi sau mai mult."
+
+#: src/features/settings/audit/sentence.ts
+msgid "Exported the consent records of contacts"
+msgstr "A exportat evidențele consimțământului contactelor"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Exported the consent records of the list {name}"
+msgstr "A exportat evidențele consimțământului din lista {name}"
 
 #: src/features/broadcasts/Import.tsx
 msgid "External id"
@@ -5603,6 +5726,10 @@ msgstr "Pentru utilizatorii conectați, backendul tău semnează un token de ide
 msgid "For signed-in users: the identity secret, shown only now"
 msgstr "Pentru utilizatorii conectați: secretul de identitate, afișat doar acum"
 
+#: src/features/settings/audit/sentence.ts
+msgid "forever"
+msgstr "pentru totdeauna"
+
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/ListPage.tsx
 msgid "Form"
@@ -5678,6 +5805,7 @@ msgstr "Găsit în dosarele tale Trimise"
 msgid "Friday"
 msgstr "Vineri"
 
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "From"
 msgstr "De la"
@@ -5761,6 +5889,10 @@ msgstr "Alte copii ale aceluiași mesaj"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Gallery"
 msgstr "Galerie"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Gave {person} access to {inbox}"
+msgstr "I-a dat lui {person} acces la {inbox}"
 
 #: src/app/Sidebar.tsx
 #: src/components/common/SettingsStrip.tsx
@@ -6590,6 +6722,10 @@ msgstr "Limba invitației"
 msgid "Invite your team"
 msgstr "Invită-ți echipa"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Invited {email} as {role}"
+msgstr "A invitat {email} ca {role}"
+
 #: src/features/team/TeamPage.tsx
 msgid "Invites"
 msgstr "Invitații"
@@ -6758,6 +6894,10 @@ msgstr "Raportul ei și lista destinatarilor sunt șterse. Conversațiile deschi
 msgid "Its settings, credentials and progress are deleted. Imported conversations stay."
 msgstr "Setările, credențialele și progresul lui sunt șterse. Conversațiile importate rămân."
 
+#: src/features/settings/audit/sentence.ts
+msgid "Joined the workspace as {role}"
+msgstr "S-a alăturat spațiului de lucru ca {role}"
+
 #: src/features/conversation/ConversationStatus.tsx
 msgid "Just wrote"
 msgstr "Tocmai a scris"
@@ -6817,6 +6957,10 @@ msgstr "Cheile și asistenții nu pot programa mesaje în masă în acest spați
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "Keys and assistants may send broadcasts"
 msgstr "Cheile și asistenții pot trimite mesaje în masă"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Keys and connected apps"
+msgstr "Chei și aplicații conectate"
 
 #: src/features/settings/channels/ChannelPage.tsx
 msgid "Keys that can reach this product. Create and revoke them under API & MCP."
@@ -7245,6 +7389,7 @@ msgstr "Încarcă imaginile"
 #: src/features/contact/ContactsPage.tsx
 #: src/features/docs/discussions/parts.tsx
 #: src/features/docs/PagesTab.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
 #: src/features/status/LinkConversationsDialog.tsx
 #: src/features/status/MonitorChecks.tsx
@@ -7628,6 +7773,10 @@ msgstr "Membru"
 #: src/features/team/TeamPage.tsx
 msgid "Members"
 msgstr "Membri"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Members and invitations"
+msgstr "Membri și invitații"
 
 #: src/features/conversation/composer/MentionMenu.tsx
 msgid "Mention a teammate"
@@ -8652,6 +8801,10 @@ msgstr "Încă nu există endpointuri"
 msgid "No endpoints yet."
 msgstr "Încă nu există endpointuri."
 
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "No entry matches these filters."
+msgstr "Nicio intrare nu corespunde acestor filtre."
+
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "No events recorded."
 msgstr "Niciun eveniment înregistrat."
@@ -8705,6 +8858,10 @@ msgstr "Încă nu există etichete"
 #: src/features/inbox/ChatList.tsx
 msgid "No labels yet. Add them in settings."
 msgstr "Încă nu există etichete. Adaugă-le în setări."
+
+#: src/features/settings/audit/sentence.ts
+msgid "no limit"
+msgstr "fără limită"
 
 #: src/features/broadcasts/Pace.tsx
 msgid "No limit"
@@ -9197,6 +9354,10 @@ msgstr "Nimic nu a fost rezolvat încă."
 #: src/features/broadcasts/Report.tsx
 msgid "Nothing has happened yet."
 msgstr "Încă nu s-a întâmplat nimic."
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Nothing here"
+msgstr "Nimic aici încă"
 
 #: src/features/broadcasts/Overview.tsx
 msgid "Nothing here."
@@ -9963,6 +10124,10 @@ msgstr "Funcțional"
 #: src/features/status/MonitorToken.tsx
 msgid "operational recovers; degraded, partial_outage and major_outage fail."
 msgstr "operational refac; degraded, partial_outage și major_outage opresc."
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Operator"
+msgstr "Operator"
 
 #: src/features/status/ComponentDialogs.tsx
 msgid "Optional. Shown on the public page."
@@ -11090,6 +11255,10 @@ msgstr "Citește tablourile foii de parcurs, ideile și istoricul etapelor"
 msgid "Read status pages, components and incidents"
 msgstr "Citește paginile de stare, componentele și incidentele"
 
+#: src/components/common/text.ts
+msgid "Read the audit log (owners only)"
+msgstr "Citește jurnalul de audit (doar proprietari)"
+
 #: src/features/migrations/text.ts
 msgid "Read the folders"
 msgstr "Citește dosarele"
@@ -11373,6 +11542,10 @@ msgstr "Elimini această cheie de acces?"
 #: src/features/migrations/DoneStep.tsx
 msgid "Remove Yuva's access in Microsoft"
 msgstr "Elimină accesul Yuva în Microsoft"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed {person} from the workspace"
+msgstr "L-a eliminat pe {person} din spațiul de lucru"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Removes {name} with its products, channels, conversations, contacts, files, labels, webhooks and API keys for everyone. Members keep their accounts."
@@ -11789,6 +11962,10 @@ msgstr "Revoci {keyName}?"
 msgid "Revoked"
 msgstr "Revocat"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Revoked the API key {name}"
+msgstr "A revocat cheia API {name}"
+
 #: src/features/broadcasts/ListForm.tsx
 msgid "Right after subscribing, people get a short mail that confirms it, with an unsubscribe link."
 msgstr "Imediat după abonare, oamenii primesc un scurt e-mail care o confirmă, cu un link de dezabonare."
@@ -11839,6 +12016,22 @@ msgstr "Rotești cheia publică?"
 #: src/features/settings/webhooks/sections.tsx
 msgid "Rotate the signing secret?"
 msgstr "Rotești secretul de semnare?"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the forwarding address of a channel"
+msgstr "A reînnoit adresa de redirecționare a unui canal"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the identity secret of an inbox"
+msgstr "A reînnoit secretul de identitate al unei căsuțe de intrare"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the key of a channel"
+msgstr "A reînnoit cheia unui canal"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the signing secret of a webhook"
+msgstr "A reînnoit secretul de semnare al unui webhook"
 
 #: src/features/setup/email/EmailReceiveStep.tsx
 msgid "Route your domain"
@@ -13534,6 +13727,10 @@ msgstr "suport@compania-ta.ro"
 msgid "Suspended"
 msgstr "Suspendat"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Suspended broadcasts"
+msgstr "A suspendat difuzările"
+
 #: src/features/migrations/Wizard.tsx
 msgid "Switch"
 msgstr "Comută"
@@ -14054,8 +14251,8 @@ msgid "The key is ready"
 msgstr "Cheia este gata"
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-msgid "The key sees only these inboxes and cannot manage inboxes, webhooks or the workspace."
-msgstr "Cheia vede doar aceste căsuțe și nu poate gestiona căsuțe, webhookuri sau spațiul de lucru."
+msgid "The key sees only these inboxes and cannot manage inboxes, webhooks or the workspace, or read the audit log."
+msgstr "Cheia vede doar aceste căsuțe de intrare și nu poate gestiona căsuțe, webhook-uri sau spațiul de lucru, nici citi jurnalul de audit."
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "The key stops working at the end of this day."
@@ -14522,8 +14719,8 @@ msgid "The What’s new count shows on the chat button while no messages are unr
 msgstr "Numărul de noutăți apare pe butonul de chat cât timp nu există mesaje necitite. Pagina de start a widgetului îl arată mereu."
 
 #: src/features/settings/GeneralTabs.tsx
-msgid "The workspace itself: name, retention, labels, canned replies and moving in"
-msgstr "Spațiul de lucru în sine: nume, păstrare, etichete, răspunsuri gata făcute și mutare"
+msgid "The workspace itself: name, retention, labels, canned replies, moving in and the audit log"
+msgstr "Spațiul de lucru în sine: nume, păstrare, etichete, răspunsuri salvate, mutare și jurnalul de audit"
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The workspace may not send broadcasts for now."
@@ -15062,6 +15259,7 @@ msgstr "Titlu"
 msgid "TLS (port 465)"
 msgstr "TLS (portul 465)"
 
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "To"
 msgstr "Către"
@@ -15112,6 +15310,10 @@ msgstr "Prea multe încercări. Așteaptă puțin și încearcă din nou."
 #: src/features/auth/CreateWorkspace.tsx
 msgid "Too many workspaces were created from your network today. Try again tomorrow."
 msgstr "Prea multe spații de lucru au fost create azi din rețeaua ta. Încearcă din nou mâine."
+
+#: src/features/settings/audit/sentence.ts
+msgid "Took away the access of {person} to {inbox}"
+msgstr "I-a retras lui {person} accesul la {inbox}"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "tr, en-GB"
@@ -15755,6 +15957,10 @@ msgstr "Versiuni"
 msgid "Very large mailbox? Start with a Google Takeout file"
 msgstr "Căsuță foarte mare? Începe cu un fișier Google Takeout"
 
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "via {via}"
+msgstr "prin {via}"
+
 #: src/features/home/HomePage.tsx
 msgid "View"
 msgstr "Vezi"
@@ -15970,6 +16176,7 @@ msgid "Webhook endpoint"
 msgstr "Endpoint webhook"
 
 #: src/app/Palette.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
@@ -16014,6 +16221,10 @@ msgstr "Miercuri"
 #: src/features/broadcasts/ListForm.tsx
 msgid "Welcome receipt"
 msgstr "Confirmare de bun venit"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "What"
+msgstr "Ce"
 
 #: src/features/broadcasts/Import.tsx
 msgid "What {header} holds"
@@ -16245,6 +16456,10 @@ msgstr "Cât timp este oprit, nu se fac livrări."
 msgid "While your status is Away, only new messages in conversations assigned to you and new assignments notify you. A conversation you have open in the panel never notifies you."
 msgstr "Cât timp starea ta este Plecat, doar mesajele noi din conversațiile atribuite ție și atribuirile noi te notifică. O conversație pe care o ai deschisă în panou nu te notifică niciodată."
 
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Who"
+msgstr "Cine"
+
 #: src/features/broadcasts/ListsHome.tsx
 msgid "Who agreed to hear from you, with consent recorded"
 msgstr "Cine a fost de acord să primească mesaje de la tine, cu acordul înregistrat"
@@ -16256,6 +16471,14 @@ msgstr "Cine răspunde, unde și cine este online"
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Who can reply"
 msgstr "Cine poate răspunde"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Who changed access, keys and data"
+msgstr "Cine a schimbat accesul, cheile și datele"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Who changed members, access, keys, webhooks, mail accounts, retention and exports, newest first. Only owners see this."
+msgstr "Cine a schimbat membri, acces, chei, webhook-uri, conturi de e-mail, păstrare și exporturi, cele mai noi primele. Doar proprietarii văd asta."
 
 #: src/features/team/TeamPage.tsx
 msgid "Who is here"
@@ -16366,6 +16589,10 @@ msgstr "Se lucrează…"
 #: src/features/settings/workspace/RetentionForm.tsx
 msgid "Workspace"
 msgstr "Spațiu de lucru"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Workspace and broadcasts"
+msgstr "Spațiu de lucru și difuzări"
 
 #: src/features/auth/CreateWorkspace.tsx
 msgid "Workspace name"

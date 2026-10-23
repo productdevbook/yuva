@@ -293,6 +293,7 @@ msgstr "{created, plural, one {# nova} other {# noves}}"
 
 #: src/features/broadcasts/Growth.tsx
 #: src/features/docs/Toolbar.tsx
+#: src/features/settings/audit/sentence.ts
 msgid "{d, plural, one {# day} other {# days}}"
 msgstr "{d, plural, one {# dia} other {# dies}}"
 
@@ -481,6 +482,10 @@ msgstr "{n, plural, one {# altra conversa} other {# altres converses}}"
 msgid "{n, plural, one {# person} other {# people}}"
 msgstr "{n, plural, one {# persona} other {# persones}}"
 
+#: src/features/settings/audit/sentence.ts
+msgid "{n, plural, one {# recipient a day} other {# recipients a day}}"
+msgstr "{n, plural, one {# destinatari al dia} other {# destinataris al dia}}"
+
 #: src/features/setup/SetupHub.tsx
 msgid "{n, plural, one {# website chat} other {# website chats}}"
 msgstr "{n, plural, one {# xat de lloc web} other {# xats de lloc web}}"
@@ -664,6 +669,10 @@ msgstr "{percent}%, {doneText} de {total}"
 #: src/features/migrations/UploadStep.tsx
 msgid "{percent}%, {sent} of {size}"
 msgstr "{percent}%, {sent} de {size}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "{person} left the workspace by deleting their account"
+msgstr "{person} ha deixat l'espai de treball en eliminar el seu compte"
 
 #: src/features/inbox/ChatsPage.tsx
 msgid "{product}’s conversations"
@@ -1137,6 +1146,10 @@ msgstr "S'ha escrit un esborrany"
 #: src/components/common/text.ts
 msgid "A file's content does not match its type. Check the file and try again."
 msgstr "El contingut d'un fitxer no coincideix amb el seu tipus. Comprova el fitxer i torna-ho a provar."
+
+#: src/features/settings/audit/sentence.ts
+msgid "a former member"
+msgstr "un antic membre"
 
 #: src/features/contact/ContactNotes.tsx
 msgid "A former teammate"
@@ -1632,6 +1645,10 @@ msgstr "Afegit {created}, últim lliurament {delivered}"
 msgid "Added {created}, last used {used}"
 msgstr "Afegit {created}, últim ús {used}"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Added a webhook to {host}"
+msgstr "Ha afegit un webhook cap a {host}"
+
 #: src/components/common/text.ts
 msgid "Added by the team"
 msgstr "Afegit per l'equip"
@@ -1833,6 +1850,10 @@ msgstr "Permès"
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Allowed origins"
 msgstr "Orígens permesos"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Allowed the workspace to send broadcasts"
+msgstr "Ha permès a l'espai de treball enviar difusions"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Already earlier in the file"
@@ -2201,11 +2222,13 @@ msgstr "API i MCP"
 msgid "API channel"
 msgstr "Canal d'API"
 
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/status/IncidentDetail.tsx
 msgid "API key"
 msgstr "Clau d’API"
 
 #: src/app/Palette.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/channels/ChannelPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
@@ -2370,6 +2393,10 @@ msgstr "Demana a l'administrador del teu servidor de correu que reenviï {addres
 msgid "asked after closing"
 msgstr "preguntat després de tancar"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Asked to be allowed to send broadcasts"
+msgstr "Ha demanat permís per enviar difusions"
+
 #: src/components/common/text.ts
 msgid "Asked to subscribe"
 msgstr "S'ha demanat la subscripció"
@@ -2514,6 +2541,12 @@ msgstr "Atributs"
 #: src/features/broadcasts/Composer.tsx
 msgid "Audience"
 msgstr "Públic"
+
+#: src/app/Palette.tsx
+#: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Audit log"
+msgstr "Registre d'auditoria"
 
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Authorization"
@@ -2947,6 +2980,10 @@ msgstr "Cancel·les aquesta importació?"
 msgid "Cancelled"
 msgstr "Cancel·lat"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Cancelled an invitation"
+msgstr "Ha cancel·lat una invitació"
+
 #: src/features/broadcasts/Import.tsx
 msgid "Cancelled. What was added before stays."
 msgstr "Cancel·lat. El que s'havia afegit abans es queda."
@@ -3038,6 +3075,26 @@ msgstr "Canvia, elimina i fusiona contactes"
 msgid "Change, move and bulk-update conversations"
 msgstr "Canvia, mou i actualitza converses en bloc"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Changed how long conversations are kept from {from} to {to}"
+msgstr "Ha canviat el temps de conservació de les converses de {from} a {to}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the daily broadcast limit from {from} to {to}"
+msgstr "Ha canviat el límit diari de difusions de {from} a {to}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the mail account or password of a channel"
+msgstr "Ha canviat el compte de correu o la contrasenya d'un canal"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the role of {person} from {from} to {to}"
+msgstr "Ha canviat el rol de {person} de {from} a {to}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the webhook to {host}"
+msgstr "Ha canviat el webhook cap a {host}"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Changelog settings"
 msgstr "Configuració del registre de canvis"
@@ -3045,6 +3102,10 @@ msgstr "Configuració del registre de canvis"
 #: src/features/migrations/Wizard.tsx
 msgid "Changes made to {provider}: none"
 msgstr "Canvis fets a {provider}: cap"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Changes to members, keys, webhooks and other sensitive settings show up here."
+msgstr "Els canvis en membres, claus, webhooks i altres ajustos sensibles apareixen aquí."
 
 #: src/features/settings/channels/email/EmailSections.tsx
 msgid "Changing the sending domain turns DKIM signing off until you enable it again for the new domain."
@@ -3076,6 +3137,10 @@ msgstr "Configuració del canal"
 #: src/features/settings/ProductsPage.tsx
 msgid "Channels"
 msgstr "Canals"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Channels and inboxes"
+msgstr "Canals i safates d'entrada"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Chat"
@@ -3613,6 +3678,10 @@ msgstr "Connecta els teus servidors i bots a Yuva"
 msgid "Connected"
 msgstr "Connectat"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Connected {client}"
+msgstr "Ha connectat {client}"
+
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Connected {created}"
 msgstr "Connectat {created}"
@@ -3622,6 +3691,7 @@ msgstr "Connectat {created}"
 #: src/components/common/SettingsStrip.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/inbox/SidePanels.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
 msgid "Connected apps"
@@ -3733,6 +3803,10 @@ msgstr "Contacte des de {since}"
 #: src/features/settings/webhooks/events.tsx
 msgid "Contacts"
 msgstr "Contactes"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Contacts and exports"
+msgstr "Contactes i exportacions"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "contains"
@@ -4053,6 +4127,18 @@ msgstr "Crea el teu compte de Yuva"
 msgid "Created"
 msgstr "Creat"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Created an analytics export"
+msgstr "Ha creat una exportació d'analítica"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Created the API key {name}"
+msgstr "Ha creat la clau d'API {name}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Created the DKIM key {selector}"
+msgstr "Ha creat la clau DKIM {selector}"
+
 #: src/features/migrations/DoneStep.tsx
 msgid "Credentials deleted {deletedAt}. Yuva can no longer read {address}."
 msgstr "Credencials eliminades {deletedAt}. Yuva ja no pot llegir {address}."
@@ -4154,6 +4240,10 @@ msgstr "Dies d’historial"
 #: src/features/setup/InstallStep.tsx
 msgid "Decide who may write in discussions"
 msgstr "Decideix qui pot escriure als debats"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Declined the request to send broadcasts"
+msgstr "Ha rebutjat la sol·licitud d'enviar difusions"
 
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "Default: {fallback}"
@@ -4336,6 +4426,14 @@ msgstr "Elimina el teu compte"
 msgid "Delete your account?"
 msgstr "Elimines el teu compte?"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted a contact"
+msgstr "Ha eliminat un contacte"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted a DKIM key"
+msgstr "Ha eliminat una clau DKIM"
+
 #: src/features/contact/MergeContactDialog.tsx
 msgid "deleted afterwards"
 msgstr "s’esborrarà després"
@@ -4362,6 +4460,14 @@ msgstr "Membre eliminat"
 #: src/components/common/DiscussionAuthor.tsx
 msgid "Deleted reader"
 msgstr "Lector eliminat"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted the inbox {name}"
+msgstr "Ha eliminat la safata d'entrada {name}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted the webhook to {host}"
+msgstr "Ha eliminat el webhook cap a {host}"
 
 #: src/features/settings/inboxes/InboxSecurity.tsx
 msgid "Deletes its channels, conversations, messages and attachments. This cannot be undone."
@@ -4474,6 +4580,10 @@ msgstr "Descarta els canvis"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Discard the suggested reply"
 msgstr "Descarta la resposta suggerida"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Disconnected {client}"
+msgstr "Ha desconnectat {client}"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/DocsPage.tsx
@@ -5156,8 +5266,8 @@ msgid "Every request to this endpoint, newest first. The newest 100 are kept."
 msgstr "Cada sol·licitud a aquest endpoint, de la més recent a la més antiga. Es conserven les 100 més recents."
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-msgid "Every scope except sending broadcasts."
-msgstr "Tots els abasts excepte enviar enviaments massius."
+msgid "Every scope except sending broadcasts and reading the audit log."
+msgstr "Tots els permisos excepte enviar difusions i llegir el registre d'auditoria."
 
 #: src/features/inbox/SourceFilter.tsx
 msgid "Every site"
@@ -5174,6 +5284,10 @@ msgstr "Tots els tipus"
 #: src/features/setup/SetupHub.tsx
 msgid "Every website and app shows its visitors on Home and in Analytics."
 msgstr "Cada lloc web i aplicació mostra els seus visitants a Inici i a Analítica."
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Everyone"
+msgstr "Tothom"
 
 #: src/features/inbox/ChatsPage.tsx
 msgid "Everyone has been answered."
@@ -5203,6 +5317,7 @@ msgstr "Les publicacions de tothom es publiquen a l'instant, excepte les dels au
 #: src/features/migrations/Wizard.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 msgid "Everything"
 msgstr "Tot"
 
@@ -5276,6 +5391,14 @@ msgstr "Fitxer d'exportació"
 #: src/features/migrations/text.ts
 msgid "Export once as a .zip file. Google mails you a link when it is ready; for a large mailbox that can take a day or more."
 msgstr "Exporta una vegada com a fitxer .zip. Google t'envia un enllaç per correu quan és a punt; per a una bústia gran pot trigar un dia o més."
+
+#: src/features/settings/audit/sentence.ts
+msgid "Exported the consent records of contacts"
+msgstr "Ha exportat els registres de consentiment dels contactes"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Exported the consent records of the list {name}"
+msgstr "Ha exportat els registres de consentiment de la llista {name}"
 
 #: src/features/broadcasts/Import.tsx
 msgid "External id"
@@ -5603,6 +5726,10 @@ msgstr "Per als usuaris amb sessió iniciada, el teu backend signa un testimoni 
 msgid "For signed-in users: the identity secret, shown only now"
 msgstr "Per als usuaris amb sessió iniciada: el secret d'identitat, mostrat només ara"
 
+#: src/features/settings/audit/sentence.ts
+msgid "forever"
+msgstr "per sempre"
+
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/ListPage.tsx
 msgid "Form"
@@ -5678,6 +5805,7 @@ msgstr "Trobat a les teves carpetes d'enviats"
 msgid "Friday"
 msgstr "Divendres"
 
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "From"
 msgstr "De"
@@ -5761,6 +5889,10 @@ msgstr "Més còpies del mateix missatge"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Gallery"
 msgstr "Galeria"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Gave {person} access to {inbox}"
+msgstr "Ha donat a {person} accés a {inbox}"
 
 #: src/app/Sidebar.tsx
 #: src/components/common/SettingsStrip.tsx
@@ -6590,6 +6722,10 @@ msgstr "Idioma de la invitació"
 msgid "Invite your team"
 msgstr "Convida el teu equip"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Invited {email} as {role}"
+msgstr "Ha convidat {email} com a {role}"
+
 #: src/features/team/TeamPage.tsx
 msgid "Invites"
 msgstr "Invitacions"
@@ -6758,6 +6894,10 @@ msgstr "S'eliminen el seu informe i la llista de destinataris. Les converses obe
 msgid "Its settings, credentials and progress are deleted. Imported conversations stay."
 msgstr "S'eliminen la seva configuració, credencials i progrés. Les converses importades es queden."
 
+#: src/features/settings/audit/sentence.ts
+msgid "Joined the workspace as {role}"
+msgstr "S'ha unit a l'espai de treball com a {role}"
+
 #: src/features/conversation/ConversationStatus.tsx
 msgid "Just wrote"
 msgstr "Acaba d'escriure"
@@ -6817,6 +6957,10 @@ msgstr "Les claus i els assistents no poden programar enviaments massius en aque
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "Keys and assistants may send broadcasts"
 msgstr "Les claus i els assistents poden enviar enviaments massius"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Keys and connected apps"
+msgstr "Claus i aplicacions connectades"
 
 #: src/features/settings/channels/ChannelPage.tsx
 msgid "Keys that can reach this product. Create and revoke them under API & MCP."
@@ -7245,6 +7389,7 @@ msgstr "Carrega les imatges"
 #: src/features/contact/ContactsPage.tsx
 #: src/features/docs/discussions/parts.tsx
 #: src/features/docs/PagesTab.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
 #: src/features/status/LinkConversationsDialog.tsx
 #: src/features/status/MonitorChecks.tsx
@@ -7628,6 +7773,10 @@ msgstr "Membre"
 #: src/features/team/TeamPage.tsx
 msgid "Members"
 msgstr "Membres"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Members and invitations"
+msgstr "Membres i invitacions"
 
 #: src/features/conversation/composer/MentionMenu.tsx
 msgid "Mention a teammate"
@@ -8652,6 +8801,10 @@ msgstr "Encara no hi ha endpoints"
 msgid "No endpoints yet."
 msgstr "Encara cap endpoint."
 
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "No entry matches these filters."
+msgstr "Cap entrada coincideix amb aquests filtres."
+
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "No events recorded."
 msgstr "No hi ha cap esdeveniment registrat."
@@ -8705,6 +8858,10 @@ msgstr "Encara cap etiqueta"
 #: src/features/inbox/ChatList.tsx
 msgid "No labels yet. Add them in settings."
 msgstr "Encara no hi ha etiquetes. Afegeix-ne a la configuració."
+
+#: src/features/settings/audit/sentence.ts
+msgid "no limit"
+msgstr "sense límit"
 
 #: src/features/broadcasts/Pace.tsx
 msgid "No limit"
@@ -9197,6 +9354,10 @@ msgstr "Encara no s’ha resolt res."
 #: src/features/broadcasts/Report.tsx
 msgid "Nothing has happened yet."
 msgstr "Encara no ha passat res."
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Nothing here"
+msgstr "Encara no hi ha res"
 
 #: src/features/broadcasts/Overview.tsx
 msgid "Nothing here."
@@ -9963,6 +10124,10 @@ msgstr "Operatiu"
 #: src/features/status/MonitorToken.tsx
 msgid "operational recovers; degraded, partial_outage and major_outage fail."
 msgstr "operational recupera; degraded, partial_outage i major_outage fan caure."
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Operator"
+msgstr "Operador"
 
 #: src/features/status/ComponentDialogs.tsx
 msgid "Optional. Shown on the public page."
@@ -11090,6 +11255,10 @@ msgstr "Llegeix els taulers del full de ruta, les idees i l'historial d'etapes"
 msgid "Read status pages, components and incidents"
 msgstr "Llegeix pàgines d’estat, components i incidents"
 
+#: src/components/common/text.ts
+msgid "Read the audit log (owners only)"
+msgstr "Llegir el registre d'auditoria (només propietaris)"
+
 #: src/features/migrations/text.ts
 msgid "Read the folders"
 msgstr "Llegeix les carpetes"
@@ -11373,6 +11542,10 @@ msgstr "Elimines aquesta clau d'accés?"
 #: src/features/migrations/DoneStep.tsx
 msgid "Remove Yuva's access in Microsoft"
 msgstr "Elimina l'accés de Yuva a Microsoft"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed {person} from the workspace"
+msgstr "Ha eliminat {person} de l'espai de treball"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Removes {name} with its products, channels, conversations, contacts, files, labels, webhooks and API keys for everyone. Members keep their accounts."
@@ -11789,6 +11962,10 @@ msgstr "Revoques {keyName}?"
 msgid "Revoked"
 msgstr "Revocat"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Revoked the API key {name}"
+msgstr "Ha revocat la clau d'API {name}"
+
 #: src/features/broadcasts/ListForm.tsx
 msgid "Right after subscribing, people get a short mail that confirms it, with an unsubscribe link."
 msgstr "Just després de subscriure's, les persones reben un correu breu que ho confirma, amb un enllaç de baixa."
@@ -11839,6 +12016,22 @@ msgstr "Rotes la clau pública?"
 #: src/features/settings/webhooks/sections.tsx
 msgid "Rotate the signing secret?"
 msgstr "Rotes el secret de signatura?"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the forwarding address of a channel"
+msgstr "Ha renovat l'adreça de reenviament d'un canal"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the identity secret of an inbox"
+msgstr "Ha renovat el secret d'identitat d'una safata d'entrada"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the key of a channel"
+msgstr "Ha renovat la clau d'un canal"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the signing secret of a webhook"
+msgstr "Ha renovat el secret de signatura d'un webhook"
 
 #: src/features/setup/email/EmailReceiveStep.tsx
 msgid "Route your domain"
@@ -13534,6 +13727,10 @@ msgstr "suport@la-teva-empresa.com"
 msgid "Suspended"
 msgstr "Suspès"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Suspended broadcasts"
+msgstr "Ha suspès les difusions"
+
 #: src/features/migrations/Wizard.tsx
 msgid "Switch"
 msgstr "Canvia"
@@ -14054,8 +14251,8 @@ msgid "The key is ready"
 msgstr "La clau és a punt"
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-msgid "The key sees only these inboxes and cannot manage inboxes, webhooks or the workspace."
-msgstr "La clau només veu aquestes safates i no pot gestionar safates, webhooks ni l'espai de treball."
+msgid "The key sees only these inboxes and cannot manage inboxes, webhooks or the workspace, or read the audit log."
+msgstr "La clau només veu aquestes safates d'entrada i no pot gestionar safates, webhooks ni l'espai de treball, ni llegir el registre d'auditoria."
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "The key stops working at the end of this day."
@@ -14522,8 +14719,8 @@ msgid "The What’s new count shows on the chat button while no messages are unr
 msgstr "El nombre de novetats apareix al botó del xat mentre no hi hagi missatges sense llegir. L’inici del widget sempre el mostra."
 
 #: src/features/settings/GeneralTabs.tsx
-msgid "The workspace itself: name, retention, labels, canned replies and moving in"
-msgstr "L’espai de treball en si: nom, retenció, etiquetes, respostes predefinides i trasllat"
+msgid "The workspace itself: name, retention, labels, canned replies, moving in and the audit log"
+msgstr "L'espai de treball mateix: nom, conservació, etiquetes, respostes ràpides, mudança i registre d'auditoria"
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The workspace may not send broadcasts for now."
@@ -15062,6 +15259,7 @@ msgstr "Títol"
 msgid "TLS (port 465)"
 msgstr "TLS (port 465)"
 
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "To"
 msgstr "Per a"
@@ -15112,6 +15310,10 @@ msgstr "Massa intents. Espera una mica i torna-ho a provar."
 #: src/features/auth/CreateWorkspace.tsx
 msgid "Too many workspaces were created from your network today. Try again tomorrow."
 msgstr "Avui s'han creat massa espais de treball des de la teva xarxa. Torna-ho a provar demà."
+
+#: src/features/settings/audit/sentence.ts
+msgid "Took away the access of {person} to {inbox}"
+msgstr "Ha retirat a {person} l'accés a {inbox}"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "tr, en-GB"
@@ -15755,6 +15957,10 @@ msgstr "Versions"
 msgid "Very large mailbox? Start with a Google Takeout file"
 msgstr "Bústia molt gran? Comença amb un fitxer de Google Takeout"
 
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "via {via}"
+msgstr "mitjançant {via}"
+
 #: src/features/home/HomePage.tsx
 msgid "View"
 msgstr "Mostra"
@@ -15970,6 +16176,7 @@ msgid "Webhook endpoint"
 msgstr "Endpoint de webhook"
 
 #: src/app/Palette.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
@@ -16014,6 +16221,10 @@ msgstr "Dimecres"
 #: src/features/broadcasts/ListForm.tsx
 msgid "Welcome receipt"
 msgstr "Rebut de benvinguda"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "What"
+msgstr "Què"
 
 #: src/features/broadcasts/Import.tsx
 msgid "What {header} holds"
@@ -16245,6 +16456,10 @@ msgstr "Mentre està desactivat, no es fa cap lliurament."
 msgid "While your status is Away, only new messages in conversations assigned to you and new assignments notify you. A conversation you have open in the panel never notifies you."
 msgstr "Mentre el teu estat és Absent, només t'avisen els missatges nous de les converses assignades a tu i les assignacions noves. Una conversa que tens oberta al tauler no t'avisa mai."
 
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Who"
+msgstr "Qui"
+
 #: src/features/broadcasts/ListsHome.tsx
 msgid "Who agreed to hear from you, with consent recorded"
 msgstr "Qui ha acceptat saber de tu, amb el consentiment registrat"
@@ -16256,6 +16471,14 @@ msgstr "Qui respon, on, i qui és en línia"
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Who can reply"
 msgstr "Qui pot respondre"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Who changed access, keys and data"
+msgstr "Qui ha canviat accessos, claus i dades"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Who changed members, access, keys, webhooks, mail accounts, retention and exports, newest first. Only owners see this."
+msgstr "Qui ha canviat membres, accessos, claus, webhooks, comptes de correu, conservació i exportacions, del més recent al més antic. Només els propietaris ho veuen."
 
 #: src/features/team/TeamPage.tsx
 msgid "Who is here"
@@ -16366,6 +16589,10 @@ msgstr "Treballant…"
 #: src/features/settings/workspace/RetentionForm.tsx
 msgid "Workspace"
 msgstr "Espai de treball"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Workspace and broadcasts"
+msgstr "Espai de treball i difusions"
 
 #: src/features/auth/CreateWorkspace.tsx
 msgid "Workspace name"

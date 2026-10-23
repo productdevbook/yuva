@@ -17,7 +17,13 @@ import {
   WizardFrame,
 } from "@/components/common"
 import { CopyButton } from "@/components/common/CopyButton"
-import { API_KEY_SCOPES, formatDateTime, useEnumText, WORKSPACE_WIDE_SCOPES } from "@/components/common/text"
+import {
+  API_KEY_SCOPES,
+  formatDateTime,
+  OWNER_ONLY_SCOPES,
+  useEnumText,
+  WORKSPACE_WIDE_SCOPES,
+} from "@/components/common/text"
 import { Bubble, BubbleContent } from "@/components/ui/bubble"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -215,7 +221,7 @@ export function ApiKeyNameStep() {
 }
 
 export function ApiKeyAccessStep() {
-  const { canManage } = useSession()
+  const { canManage, isOwner } = useSession()
   const navigate = useNavigate()
   const state = (useLocation().state ?? {}) as ApiKeyWizardState
   const { t } = useLingui()
@@ -226,8 +232,9 @@ export function ApiKeyAccessStep() {
   if (!canManage) return <Navigate to="/" replace />
   if (!draft.name.trim()) return <Navigate to={API_KEY_PATHS.name} replace state={{ back: state.back }} />
   const limited = draft.inboxIds.length > 0
-  const scopes = chosenScopes(draft)
-  const allowed = (s: ApiKeyScope) => !limited || !WORKSPACE_WIDE_SCOPES.includes(s)
+  const scopes = chosenScopes(draft, isOwner)
+  const allowed = (s: ApiKeyScope) =>
+    (!limited || !WORKSPACE_WIDE_SCOPES.includes(s)) && (isOwner || !OWNER_ONLY_SCOPES.includes(s))
   const display = draft.botName.trim() || draft.name.trim()
   return (
     <Layout stage="access" name={display} avatar={draft.avatar} scopes={scopes} onLeave={clear}>
@@ -250,7 +257,10 @@ export function ApiKeyAccessStep() {
           hint={
             <p className="text-caption text-muted-foreground">
               {limited ? (
-                <Trans>The key sees only these inboxes and cannot manage inboxes, webhooks or the workspace.</Trans>
+                <Trans>
+                  The key sees only these inboxes and cannot manage inboxes, webhooks or the workspace, or read the
+                  audit log.
+                </Trans>
               ) : (
                 <Trans>None picked: the key sees every inbox.</Trans>
               )}
@@ -298,7 +308,7 @@ export function ApiKeyAccessStep() {
               value: "everything",
               icon: <SparklesIcon />,
               title: <Trans>Everything</Trans>,
-              hint: <Trans>Every scope except sending broadcasts.</Trans>,
+              hint: <Trans>Every scope except sending broadcasts and reading the audit log.</Trans>,
               testId: "key-preset-everything",
             },
             {
@@ -346,7 +356,7 @@ export function ApiKeyAccessStep() {
 }
 
 export function ApiKeyReviewStep() {
-  const { canManage, workspaceId: ws } = useSession()
+  const { canManage, isOwner, workspaceId: ws } = useSession()
   const navigate = useNavigate()
   const qc = useQueryClient()
   const state = (useLocation().state ?? {}) as ApiKeyWizardState
@@ -357,7 +367,7 @@ export function ApiKeyReviewStep() {
   const [created, setCreated] = useState(false)
   const [showScopes, setShowScopes] = useState(false)
   const text = useEnumText()
-  const scopes = chosenScopes(draft)
+  const scopes = chosenScopes(draft, isOwner)
   const picked = inboxes.filter((i) => draft.inboxIds.includes(i.id))
   const display = draft.botName.trim() || draft.name.trim()
   const create = useMutation({

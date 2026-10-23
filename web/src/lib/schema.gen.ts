@@ -744,6 +744,37 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/audit-log": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * The workspace's audit log
+         * @description Who did what to the workspace's members, access, keys, webhooks, channel credentials,
+         *     retention, exports and deletions, newest first. Each entry names its actor as it was at the
+         *     time (`member`, `api_key`, `oauth_grant` for a member through a connected app, `operator`
+         *     for the server's command line), the action, its target and small details. Entries never
+         *     hold message content, secrets, webhook URLs (only their host) or a contact's name or
+         *     address. They are kept `YUVA_AUDIT_DAYS` (365 by default) and go with the workspace.
+         *
+         *     Owners only: admins and agents get `403 forbidden`. API keys need `audit:read`, which only
+         *     an owner can give a key and which a key limited to inboxes cannot hold; OAuth tokens need
+         *     `audit:read`, offered only to owners.
+         *
+         *     Scope: `audit:read`.
+         */
+        get: operations["listAuditLog"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/workspaces": {
         parameters: {
             query?: never;
@@ -881,8 +912,9 @@ export interface paths {
         /**
          * Create an API key
          * @description Owners and admins only, with a member session. The secret is returned once and stored
-         *     only as a hash. A key limited to inboxes cannot hold `inboxes:manage`, `webhooks:manage`
-         *     or `workspace:manage` (`400 validation_failed`).
+         *     only as a hash. A key limited to inboxes cannot hold `inboxes:manage`, `webhooks:manage`,
+         *     `workspace:manage` or `audit:read` (`400 validation_failed`); only an owner gives a key
+         *     `audit:read` (`403 forbidden`).
          */
         post: operations["createApiKey"];
         delete?: never;
@@ -9885,6 +9917,97 @@ export interface components {
             /** @description Whether API keys and OAuth tokens with `broadcasts:send` may schedule and resume broadcasts. Owners and admins, with a member session. */
             broadcasts_by_keys?: boolean;
         };
+        /**
+         * @description - `member`: a member with a session.
+         *     - `api_key`: an API key; `name` is its bot name.
+         *     - `oauth_grant`: a member through a connected app (OAuth or MCP); `member_id` is the member
+         *       and `via` the app's name.
+         *     - `operator`: the server's operator on the command line; no `id` or `name`.
+         * @enum {string}
+         */
+        AuditActorKind: "member" | "api_key" | "oauth_grant" | "operator";
+        AuditActor: {
+            kind: components["schemas"]["AuditActorKind"];
+            /**
+             * Format: uuid
+             * @description The member, API key or connected app (grant). Absent for `operator`.
+             */
+            id?: string;
+            /** @description The display name at the time, kept after the actor is gone. Absent for `operator`. */
+            name?: string;
+            /**
+             * Format: uuid
+             * @description For `member` and `oauth_grant`, the member.
+             */
+            member_id?: string;
+            /** @description For `oauth_grant`, the connected app's name. */
+            via?: string;
+        };
+        /**
+         * @description The action; the part before the dot is the target's type. `details` by action:
+         *     - `member.joined`: `role`; the actor is the member who accepted an invite.
+         *     - `member.role_changed`: `from`, `to`.
+         *     - `member.removed`: `role`, and `reason` `account_deleted` when the person deleted their account.
+         *     - `member.inbox_access_granted`, `member.inbox_access_revoked`: `inbox_id`, `inbox_name`.
+         *     - `invite.created`: `email`, `role`. `invite.deleted`: none.
+         *     - `api_key.created`: `name`, `prefix`, `scopes`, `inbox_count` when limited, `expires_at` when set.
+         *       `api_key.revoked`: `name`, `prefix`.
+         *     - `oauth_grant.created`: `client`, `scopes`. `oauth_grant.revoked`: `client`.
+         *     - `webhook.created`, `webhook.deleted`: `host` (never the URL), `events`.
+         *       `webhook.updated`: `fields` among `url`, `events`, `enabled` and `include_notes`, and `host`.
+         *       `webhook.secret_rotated`: none.
+         *     - `channel.credentials_changed`: `fields` among `smtp` and `broadcast_smtp` (the account
+         *       or its password; never the values).
+         *     - `channel.key_rotated`, `channel.forwarding_address_rotated`, `channel.dkim_key_deleted`:
+         *       none. `channel.dkim_key_created`: `selector`.
+         *     - `inbox.identity_secret_rotated`: none. `inbox.deleted`: `name`.
+         *     - `contact.deleted`: none (no name or address is kept). `contact.consent_exported`: `format`,
+         *       `started` (the entry is written when the export starts streaming).
+         *     - `list.consent_exported`: `name`, `format`, `started`.
+         *     - `analytics_export.created`: `property_id`, `kind`, `format`.
+         *     - `workspace.retention_changed`: `from`, `to` (days; `null` keeps everything).
+         *     - `workspace.broadcast_approval_requested`: none. `workspace.broadcasts_approved`,
+         *       `workspace.broadcasts_denied`: `reason` when the operator gave one.
+         *       `workspace.broadcasts_suspended`: `reason`, `paused_broadcasts` (by the operator).
+         *       `workspace.broadcast_limit_changed`: `from`, `to` (recipients a day; `null` is no limit).
+         *
+         *     Details never make an action fail: when they would be too long, lists are replaced by
+         *     `<name>_count` and `truncated` is `true`.
+         *     A workspace's deletion is not in its log, which goes with the workspace; the operator's
+         *     digest names it.
+         *
+         *     More actions are added over time; show an unknown one by its name.
+         * @enum {string}
+         */
+        AuditAction: "member.joined" | "member.role_changed" | "member.removed" | "member.inbox_access_granted" | "member.inbox_access_revoked" | "invite.created" | "invite.deleted" | "api_key.created" | "api_key.revoked" | "oauth_grant.created" | "oauth_grant.revoked" | "webhook.created" | "webhook.updated" | "webhook.deleted" | "webhook.secret_rotated" | "channel.credentials_changed" | "channel.key_rotated" | "channel.forwarding_address_rotated" | "channel.dkim_key_created" | "channel.dkim_key_deleted" | "inbox.identity_secret_rotated" | "inbox.deleted" | "contact.deleted" | "contact.consent_exported" | "list.consent_exported" | "analytics_export.created" | "workspace.retention_changed" | "workspace.broadcast_approval_requested" | "workspace.broadcasts_approved" | "workspace.broadcasts_denied" | "workspace.broadcasts_suspended" | "workspace.broadcast_limit_changed";
+        /** @enum {string} */
+        AuditTargetType: "workspace" | "member" | "invite" | "inbox" | "channel" | "api_key" | "oauth_grant" | "webhook" | "contact" | "list" | "analytics_export";
+        AuditTarget: {
+            type: components["schemas"]["AuditTargetType"];
+            /**
+             * Format: uuid
+             * @description The target, which may no longer exist.
+             */
+            id: string;
+        };
+        AuditEntry: {
+            /** Format: uuid */
+            id: string;
+            actor: components["schemas"]["AuditActor"];
+            action: components["schemas"]["AuditAction"];
+            target: components["schemas"]["AuditTarget"];
+            /** @description Small, non-secret facts about the action; see `AuditAction`. */
+            details: {
+                [key: string]: unknown;
+            };
+            /** Format: date-time */
+            created_at: string;
+        };
+        AuditEntryPage: {
+            items: components["schemas"]["AuditEntry"][];
+            /** @description Absent on the last page. */
+            next_cursor?: string;
+        };
         WorkspaceDeletion: {
             /** @description The workspace's name, exactly; anything else is refused with `400 confirmation_mismatch`. */
             name: string;
@@ -10096,10 +10219,14 @@ export interface components {
          *       and unpublish entries, change or delete published ones. API keys only, and never implied:
          *       a key made without naming its scopes does not hold it, and OAuth clients are not offered it.
          *
-         *     `lists:*`, `broadcasts:*`, `migrations:manage`, `analytics:*`, `status:*`, `help:*`, `roadmap:*` and `changelog:*` are never added to keys made before they existed.
+         *     - `audit:read`: the workspace's audit log. Only an owner gives it to a key, and only to a key
+         *       without an inbox limit; offered only to owners' OAuth tokens. Never implied: a key made
+         *       without naming its scopes does not hold it.
+         *
+         *     `lists:*`, `broadcasts:*`, `migrations:manage`, `analytics:*`, `status:*`, `help:*`, `roadmap:*`, `changelog:*` and `audit:read` are never added to keys made before they existed.
          * @enum {string}
          */
-        ApiKeyScope: "conversations:read" | "conversations:write" | "messages:write" | "drafts:send" | "notes:write" | "contacts:read" | "contacts:write" | "inboxes:read" | "inboxes:manage" | "labels:write" | "canned_replies:write" | "webhooks:manage" | "workspace:manage" | "feedback:write" | "lists:read" | "lists:write" | "broadcasts:read" | "broadcasts:write" | "broadcasts:send" | "migrations:manage" | "analytics:read" | "analytics:write" | "analytics:manage" | "status:read" | "status:manage" | "help:read" | "help:write" | "help:publish" | "roadmap:read" | "roadmap:write" | "roadmap:stage" | "changelog:read" | "changelog:write" | "changelog:publish";
+        ApiKeyScope: "conversations:read" | "conversations:write" | "messages:write" | "drafts:send" | "notes:write" | "contacts:read" | "contacts:write" | "inboxes:read" | "inboxes:manage" | "labels:write" | "canned_replies:write" | "webhooks:manage" | "workspace:manage" | "feedback:write" | "lists:read" | "lists:write" | "broadcasts:read" | "broadcasts:write" | "broadcasts:send" | "migrations:manage" | "analytics:read" | "analytics:write" | "analytics:manage" | "status:read" | "status:manage" | "help:read" | "help:write" | "help:publish" | "roadmap:read" | "roadmap:write" | "roadmap:stage" | "changelog:read" | "changelog:write" | "changelog:publish" | "audit:read";
         /**
          * Format: uri
          * @description An `https` image URL.
@@ -22263,6 +22390,53 @@ export interface operations {
             401: components["responses"]["Problem"];
             403: components["responses"]["Problem"];
             409: components["responses"]["Problem"];
+        };
+    };
+    listAuditLog: {
+        parameters: {
+            query?: {
+                /**
+                 * @description Only entries by this member, API key or connected app (`actor.id`). A member's id also
+                 *     matches what they did through connected apps (`actor.member_id`).
+                 */
+                actor_id?: string;
+                /** @description Only entries by this kind of actor. */
+                actor_kind?: components["schemas"]["AuditActorKind"];
+                /**
+                 * @description Only these actions. Repeat the parameter (`action=api_key.created&action=api_key.revoked`)
+                 *     or give a comma-separated list.
+                 */
+                action?: components["schemas"]["AuditAction"][];
+                /** @description Only entries at or after this time. */
+                since?: string;
+                /** @description Only entries before this time. */
+                until?: string;
+                /** @description The `next_cursor` of the previous page. */
+                cursor?: components["parameters"]["Cursor"];
+                /** @description Page size, 1 to 100; 25 by default. */
+                limit?: components["parameters"]["Limit"];
+            };
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description A page of entries. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuditEntryPage"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
         };
     };
     createWorkspace: {

@@ -49,6 +49,7 @@ type Session = {
   membership: Membership
   workspaceId: string
   canManage: boolean
+  isOwner: boolean
   switchWorkspace: (id: string, to?: string) => void
 }
 
@@ -91,6 +92,7 @@ export function SessionProvider({
       membership,
       workspaceId: membership.workspace.id,
       canManage: membership.role === "owner" || membership.role === "admin",
+      isOwner: membership.role === "owner",
       switchWorkspace: onSwitch,
     }),
     [me, membership, onSwitch]

@@ -293,6 +293,7 @@ msgstr "{created, plural, other {新增 #}}"
 
 #: src/features/broadcasts/Growth.tsx
 #: src/features/docs/Toolbar.tsx
+#: src/features/settings/audit/sentence.ts
 msgid "{d, plural, one {# day} other {# days}}"
 msgstr "{d, plural, other {# 天}}"
 
@@ -481,6 +482,10 @@ msgstr "{n, plural, other {另外 # 个对话}}"
 msgid "{n, plural, one {# person} other {# people}}"
 msgstr "{n, plural, other {# 人}}"
 
+#: src/features/settings/audit/sentence.ts
+msgid "{n, plural, one {# recipient a day} other {# recipients a day}}"
+msgstr "{n, plural, other {每天 # 位收件人}}"
+
 #: src/features/setup/SetupHub.tsx
 msgid "{n, plural, one {# website chat} other {# website chats}}"
 msgstr "{n, plural, other {# 个网站聊天}}"
@@ -664,6 +669,10 @@ msgstr "{percent}%,{doneText} / {total}"
 #: src/features/migrations/UploadStep.tsx
 msgid "{percent}%, {sent} of {size}"
 msgstr "{percent}%,{sent} / {size}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "{person} left the workspace by deleting their account"
+msgstr "{person} 删除账号并离开了工作区"
 
 #: src/features/inbox/ChatsPage.tsx
 msgid "{product}’s conversations"
@@ -1137,6 +1146,10 @@ msgstr "草稿被撰写时"
 #: src/components/common/text.ts
 msgid "A file's content does not match its type. Check the file and try again."
 msgstr "文件内容与其类型不符。请检查文件后重试。"
+
+#: src/features/settings/audit/sentence.ts
+msgid "a former member"
+msgstr "前成员"
 
 #: src/features/contact/ContactNotes.tsx
 msgid "A former teammate"
@@ -1632,6 +1645,10 @@ msgstr "添加于 {created},最近投递 {delivered}"
 msgid "Added {created}, last used {used}"
 msgstr "添加于 {created},最近使用 {used}"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Added a webhook to {host}"
+msgstr "添加了指向 {host} 的 Webhook"
+
 #: src/components/common/text.ts
 msgid "Added by the team"
 msgstr "由团队添加"
@@ -1833,6 +1850,10 @@ msgstr "已允许"
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Allowed origins"
 msgstr "允许的来源"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Allowed the workspace to send broadcasts"
+msgstr "允许工作区发送群发邮件"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Already earlier in the file"
@@ -2201,11 +2222,13 @@ msgstr "API 与 MCP"
 msgid "API channel"
 msgstr "API 渠道"
 
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/status/IncidentDetail.tsx
 msgid "API key"
 msgstr "API 密钥"
 
 #: src/app/Palette.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/channels/ChannelPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
@@ -2370,6 +2393,10 @@ msgstr "请让你的邮件服务器管理员在服务器上把 {address} 转发�
 msgid "asked after closing"
 msgstr "关闭后被询问"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Asked to be allowed to send broadcasts"
+msgstr "申请了发送群发邮件的许可"
+
 #: src/components/common/text.ts
 msgid "Asked to subscribe"
 msgstr "已请求订阅"
@@ -2514,6 +2541,12 @@ msgstr "属性"
 #: src/features/broadcasts/Composer.tsx
 msgid "Audience"
 msgstr "受众"
+
+#: src/app/Palette.tsx
+#: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Audit log"
+msgstr "审计日志"
 
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Authorization"
@@ -2947,6 +2980,10 @@ msgstr "取消此导入?"
 msgid "Cancelled"
 msgstr "已取消"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Cancelled an invitation"
+msgstr "取消了一项邀请"
+
 #: src/features/broadcasts/Import.tsx
 msgid "Cancelled. What was added before stays."
 msgstr "已取消。之前已添加的内容会保留。"
@@ -3038,6 +3075,26 @@ msgstr "更改、删除和合并联系人"
 msgid "Change, move and bulk-update conversations"
 msgstr "更改、移动和批量更新对话"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Changed how long conversations are kept from {from} to {to}"
+msgstr "将对话保留时间从 {from} 改为 {to}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the daily broadcast limit from {from} to {to}"
+msgstr "将每日群发上限从 {from} 改为 {to}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the mail account or password of a channel"
+msgstr "更改了渠道的邮件账号或密码"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the role of {person} from {from} to {to}"
+msgstr "将 {person} 的角色从 {from} 改为 {to}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the webhook to {host}"
+msgstr "更改了指向 {host} 的 Webhook"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Changelog settings"
 msgstr "更新日志设置"
@@ -3045,6 +3102,10 @@ msgstr "更新日志设置"
 #: src/features/migrations/Wizard.tsx
 msgid "Changes made to {provider}: none"
 msgstr "对 {provider} 所做的更改:无"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Changes to members, keys, webhooks and other sensitive settings show up here."
+msgstr "成员、密钥、Webhook 和其他敏感设置的更改会显示在这里。"
 
 #: src/features/settings/channels/email/EmailSections.tsx
 msgid "Changing the sending domain turns DKIM signing off until you enable it again for the new domain."
@@ -3076,6 +3137,10 @@ msgstr "渠道设置"
 #: src/features/settings/ProductsPage.tsx
 msgid "Channels"
 msgstr "渠道"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Channels and inboxes"
+msgstr "渠道和收件箱"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Chat"
@@ -3613,6 +3678,10 @@ msgstr "把你的服务器和机器人连接到 Yuva"
 msgid "Connected"
 msgstr "已连接"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Connected {client}"
+msgstr "连接了 {client}"
+
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Connected {created}"
 msgstr "{created} 连接"
@@ -3622,6 +3691,7 @@ msgstr "{created} 连接"
 #: src/components/common/SettingsStrip.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/inbox/SidePanels.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
 msgid "Connected apps"
@@ -3733,6 +3803,10 @@ msgstr "自 {since} 起的联系人"
 #: src/features/settings/webhooks/events.tsx
 msgid "Contacts"
 msgstr "联系人"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Contacts and exports"
+msgstr "联系人和导出"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "contains"
@@ -4053,6 +4127,18 @@ msgstr "创建你的 Yuva 账号"
 msgid "Created"
 msgstr "已创建"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Created an analytics export"
+msgstr "创建了分析导出"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Created the API key {name}"
+msgstr "创建了 API 密钥 {name}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Created the DKIM key {selector}"
+msgstr "创建了 DKIM 密钥 {selector}"
+
 #: src/features/migrations/DoneStep.tsx
 msgid "Credentials deleted {deletedAt}. Yuva can no longer read {address}."
 msgstr "凭据已于 {deletedAt} 删除。Yuva 无法再读取 {address}。"
@@ -4154,6 +4240,10 @@ msgstr "历史天数"
 #: src/features/setup/InstallStep.tsx
 msgid "Decide who may write in discussions"
 msgstr "决定谁可以在讨论中发言"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Declined the request to send broadcasts"
+msgstr "拒绝了发送群发邮件的申请"
 
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "Default: {fallback}"
@@ -4336,6 +4426,14 @@ msgstr "删除你的账号"
 msgid "Delete your account?"
 msgstr "删除你的账号?"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted a contact"
+msgstr "删除了一位联系人"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted a DKIM key"
+msgstr "删除了一个 DKIM 密钥"
+
 #: src/features/contact/MergeContactDialog.tsx
 msgid "deleted afterwards"
 msgstr "之后删除"
@@ -4362,6 +4460,14 @@ msgstr "已删除的成员"
 #: src/components/common/DiscussionAuthor.tsx
 msgid "Deleted reader"
 msgstr "已删除的读者"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted the inbox {name}"
+msgstr "删除了收件箱 {name}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted the webhook to {host}"
+msgstr "删除了指向 {host} 的 Webhook"
 
 #: src/features/settings/inboxes/InboxSecurity.tsx
 msgid "Deletes its channels, conversations, messages and attachments. This cannot be undone."
@@ -4474,6 +4580,10 @@ msgstr "放弃更改"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Discard the suggested reply"
 msgstr "丢弃建议的回复"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Disconnected {client}"
+msgstr "断开了 {client}"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/DocsPage.tsx
@@ -5156,8 +5266,8 @@ msgid "Every request to this endpoint, newest first. The newest 100 are kept."
 msgstr "发往此端点的每个请求,最新的在前。保留最新的 100 个。"
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-msgid "Every scope except sending broadcasts."
-msgstr "除发送群发之外的所有权限范围。"
+msgid "Every scope except sending broadcasts and reading the audit log."
+msgstr "除发送群发邮件和读取审计日志外的所有权限。"
 
 #: src/features/inbox/SourceFilter.tsx
 msgid "Every site"
@@ -5174,6 +5284,10 @@ msgstr "所有类型"
 #: src/features/setup/SetupHub.tsx
 msgid "Every website and app shows its visitors on Home and in Analytics."
 msgstr "每个网站和应用的访客都显示在首页和分析中。"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Everyone"
+msgstr "所有人"
 
 #: src/features/inbox/ChatsPage.tsx
 msgid "Everyone has been answered."
@@ -5203,6 +5317,7 @@ msgstr "所有人的帖子都会立即发布,但你标记为垃圾的作者除�
 #: src/features/migrations/Wizard.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 msgid "Everything"
 msgstr "全部"
 
@@ -5276,6 +5391,14 @@ msgstr "导出文件"
 #: src/features/migrations/text.ts
 msgid "Export once as a .zip file. Google mails you a link when it is ready; for a large mailbox that can take a day or more."
 msgstr "导出一次为 .zip 文件。准备好后 Google 会用邮件发给你链接;邮箱很大时可能需要一天或更久。"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Exported the consent records of contacts"
+msgstr "导出了联系人的同意记录"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Exported the consent records of the list {name}"
+msgstr "导出了列表 {name} 的同意记录"
 
 #: src/features/broadcasts/Import.tsx
 msgid "External id"
@@ -5603,6 +5726,10 @@ msgstr "对于已登录用户,你的后端用收件箱的身份密钥签发身�
 msgid "For signed-in users: the identity secret, shown only now"
 msgstr "对于已登录用户:身份密钥,仅此刻显示"
 
+#: src/features/settings/audit/sentence.ts
+msgid "forever"
+msgstr "永久"
+
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/ListPage.tsx
 msgid "Form"
@@ -5678,6 +5805,7 @@ msgstr "在你的已发送文件夹中找到"
 msgid "Friday"
 msgstr "星期五"
 
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "From"
 msgstr "发件人"
@@ -5761,6 +5889,10 @@ msgstr "同一封邮件的更多副本"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Gallery"
 msgstr "模板库"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Gave {person} access to {inbox}"
+msgstr "授予 {person} 访问 {inbox} 的权限"
 
 #: src/app/Sidebar.tsx
 #: src/components/common/SettingsStrip.tsx
@@ -6590,6 +6722,10 @@ msgstr "邀请语言"
 msgid "Invite your team"
 msgstr "邀请你的团队"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Invited {email} as {role}"
+msgstr "邀请 {email} 担任{role}"
+
 #: src/features/team/TeamPage.tsx
 msgid "Invites"
 msgstr "邀请"
@@ -6758,6 +6894,10 @@ msgstr "它的报告和收件人列表会被删除。由回复打开的对话会
 msgid "Its settings, credentials and progress are deleted. Imported conversations stay."
 msgstr "它的设置、凭据和进度会被删除。已导入的对话会保留。"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Joined the workspace as {role}"
+msgstr "以{role}身份加入了工作区"
+
 #: src/features/conversation/ConversationStatus.tsx
 msgid "Just wrote"
 msgstr "刚刚发言"
@@ -6817,6 +6957,10 @@ msgstr "此工作区中,密钥和助手不能安排群发。"
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "Keys and assistants may send broadcasts"
 msgstr "密钥和助手可以发送群发"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Keys and connected apps"
+msgstr "密钥和已连接的应用"
 
 #: src/features/settings/channels/ChannelPage.tsx
 msgid "Keys that can reach this product. Create and revoke them under API & MCP."
@@ -7245,6 +7389,7 @@ msgstr "加载图片"
 #: src/features/contact/ContactsPage.tsx
 #: src/features/docs/discussions/parts.tsx
 #: src/features/docs/PagesTab.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
 #: src/features/status/LinkConversationsDialog.tsx
 #: src/features/status/MonitorChecks.tsx
@@ -7628,6 +7773,10 @@ msgstr "成员"
 #: src/features/team/TeamPage.tsx
 msgid "Members"
 msgstr "成员"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Members and invitations"
+msgstr "成员和邀请"
 
 #: src/features/conversation/composer/MentionMenu.tsx
 msgid "Mention a teammate"
@@ -8652,6 +8801,10 @@ msgstr "还没有端点"
 msgid "No endpoints yet."
 msgstr "还没有端点。"
 
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "No entry matches these filters."
+msgstr "没有符合这些筛选条件的记录。"
+
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "No events recorded."
 msgstr "没有记录到事件。"
@@ -8705,6 +8858,10 @@ msgstr "还没有标签"
 #: src/features/inbox/ChatList.tsx
 msgid "No labels yet. Add them in settings."
 msgstr "还没有标签。请在设置中添加。"
+
+#: src/features/settings/audit/sentence.ts
+msgid "no limit"
+msgstr "无限制"
 
 #: src/features/broadcasts/Pace.tsx
 msgid "No limit"
@@ -9197,6 +9354,10 @@ msgstr "还没有已解决的内容。"
 #: src/features/broadcasts/Report.tsx
 msgid "Nothing has happened yet."
 msgstr "还没有发生任何事。"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Nothing here"
+msgstr "这里还没有内容"
 
 #: src/features/broadcasts/Overview.tsx
 msgid "Nothing here."
@@ -9963,6 +10124,10 @@ msgstr "运行正常"
 #: src/features/status/MonitorToken.tsx
 msgid "operational recovers; degraded, partial_outage and major_outage fail."
 msgstr "operational 表示恢复；degraded、partial_outage 和 major_outage 表示失败。"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Operator"
+msgstr "运营方"
 
 #: src/features/status/ComponentDialogs.tsx
 msgid "Optional. Shown on the public page."
@@ -11090,6 +11255,10 @@ msgstr "读取路线图看板、想法和阶段历史"
 msgid "Read status pages, components and incidents"
 msgstr "读取状态页、组件和事件"
 
+#: src/components/common/text.ts
+msgid "Read the audit log (owners only)"
+msgstr "读取审计日志（仅限所有者）"
+
 #: src/features/migrations/text.ts
 msgid "Read the folders"
 msgstr "读取文件夹"
@@ -11373,6 +11542,10 @@ msgstr "移除此通行密钥?"
 #: src/features/migrations/DoneStep.tsx
 msgid "Remove Yuva's access in Microsoft"
 msgstr "在 Microsoft 中移除 Yuva 的访问权限"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed {person} from the workspace"
+msgstr "将 {person} 移出了工作区"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Removes {name} with its products, channels, conversations, contacts, files, labels, webhooks and API keys for everyone. Members keep their accounts."
@@ -11789,6 +11962,10 @@ msgstr "撤销 {keyName}?"
 msgid "Revoked"
 msgstr "已撤销"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Revoked the API key {name}"
+msgstr "吊销了 API 密钥 {name}"
+
 #: src/features/broadcasts/ListForm.tsx
 msgid "Right after subscribing, people get a short mail that confirms it, with an unsubscribe link."
 msgstr "订阅后,人们会立即收到一封带退订链接的简短确认邮件。"
@@ -11839,6 +12016,22 @@ msgstr "轮换公钥?"
 #: src/features/settings/webhooks/sections.tsx
 msgid "Rotate the signing secret?"
 msgstr "轮换签名密钥?"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the forwarding address of a channel"
+msgstr "更新了渠道的转发地址"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the identity secret of an inbox"
+msgstr "更新了收件箱的身份密钥"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the key of a channel"
+msgstr "更新了渠道的密钥"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the signing secret of a webhook"
+msgstr "更新了 Webhook 的签名密钥"
 
 #: src/features/setup/email/EmailReceiveStep.tsx
 msgid "Route your domain"
@@ -13534,6 +13727,10 @@ msgstr "support@your-company.com"
 msgid "Suspended"
 msgstr "已暂停使用"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Suspended broadcasts"
+msgstr "暂停了群发邮件"
+
 #: src/features/migrations/Wizard.tsx
 msgid "Switch"
 msgstr "切换"
@@ -14054,8 +14251,8 @@ msgid "The key is ready"
 msgstr "密钥已就绪"
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-msgid "The key sees only these inboxes and cannot manage inboxes, webhooks or the workspace."
-msgstr "该密钥只能看到这些收件箱,不能管理收件箱、Webhook 或工作区。"
+msgid "The key sees only these inboxes and cannot manage inboxes, webhooks or the workspace, or read the audit log."
+msgstr "该密钥只能看到这些收件箱，不能管理收件箱、Webhook 或工作区，也不能读取审计日志。"
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "The key stops working at the end of this day."
@@ -14522,8 +14719,8 @@ msgid "The What’s new count shows on the chat button while no messages are unr
 msgstr "没有未读消息时，聊天按钮上会显示新动态数量。小组件的首页始终显示。"
 
 #: src/features/settings/GeneralTabs.tsx
-msgid "The workspace itself: name, retention, labels, canned replies and moving in"
-msgstr "工作区本身：名称、保留期限、标签、快捷回复和迁移"
+msgid "The workspace itself: name, retention, labels, canned replies, moving in and the audit log"
+msgstr "工作区本身：名称、保留时间、标签、预设回复、迁移和审计日志"
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The workspace may not send broadcasts for now."
@@ -15062,6 +15259,7 @@ msgstr "标题"
 msgid "TLS (port 465)"
 msgstr "TLS(端口 465)"
 
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "To"
 msgstr "收件人"
@@ -15112,6 +15310,10 @@ msgstr "尝试次数过多。请稍等片刻后重试。"
 #: src/features/auth/CreateWorkspace.tsx
 msgid "Too many workspaces were created from your network today. Try again tomorrow."
 msgstr "今天从你的网络创建的工作区过多。请明天再试。"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Took away the access of {person} to {inbox}"
+msgstr "撤销了 {person} 对 {inbox} 的访问权限"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "tr, en-GB"
@@ -15755,6 +15957,10 @@ msgstr "版本"
 msgid "Very large mailbox? Start with a Google Takeout file"
 msgstr "邮箱非常大?从 Google Takeout 文件开始"
 
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "via {via}"
+msgstr "通过 {via}"
+
 #: src/features/home/HomePage.tsx
 msgid "View"
 msgstr "查看"
@@ -15970,6 +16176,7 @@ msgid "Webhook endpoint"
 msgstr "Webhook 端点"
 
 #: src/app/Palette.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
@@ -16014,6 +16221,10 @@ msgstr "星期三"
 #: src/features/broadcasts/ListForm.tsx
 msgid "Welcome receipt"
 msgstr "欢迎回执"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "What"
+msgstr "操作"
 
 #: src/features/broadcasts/Import.tsx
 msgid "What {header} holds"
@@ -16245,6 +16456,10 @@ msgstr "关闭期间不会进行投递。"
 msgid "While your status is Away, only new messages in conversations assigned to you and new assignments notify you. A conversation you have open in the panel never notifies you."
 msgstr "当你的状态为离开时,只有分配给你的对话中的新消息和新的分配会通知你。你在面板中打开的对话绝不会通知你。"
 
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Who"
+msgstr "操作人"
+
 #: src/features/broadcasts/ListsHome.tsx
 msgid "Who agreed to hear from you, with consent recorded"
 msgstr "同意收到你邮件的人，并记录了同意"
@@ -16256,6 +16471,14 @@ msgstr "谁在哪里回复，以及谁在线"
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Who can reply"
 msgstr "谁可以回复"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Who changed access, keys and data"
+msgstr "谁更改了访问权限、密钥和数据"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Who changed members, access, keys, webhooks, mail accounts, retention and exports, newest first. Only owners see this."
+msgstr "按时间从新到旧显示谁更改了成员、访问权限、密钥、Webhook、邮件账号、保留时间和导出。仅所有者可见。"
 
 #: src/features/team/TeamPage.tsx
 msgid "Who is here"
@@ -16366,6 +16589,10 @@ msgstr "处理中…"
 #: src/features/settings/workspace/RetentionForm.tsx
 msgid "Workspace"
 msgstr "工作区"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Workspace and broadcasts"
+msgstr "工作区和群发邮件"
 
 #: src/features/auth/CreateWorkspace.tsx
 msgid "Workspace name"

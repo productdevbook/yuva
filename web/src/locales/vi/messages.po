@@ -293,6 +293,7 @@ msgstr "{created, plural, other {# mới}}"
 
 #: src/features/broadcasts/Growth.tsx
 #: src/features/docs/Toolbar.tsx
+#: src/features/settings/audit/sentence.ts
 msgid "{d, plural, one {# day} other {# days}}"
 msgstr "{d, plural, other {# ngày}}"
 
@@ -481,6 +482,10 @@ msgstr "{n, plural, other {# cuộc trò chuyện khác}}"
 msgid "{n, plural, one {# person} other {# people}}"
 msgstr "{n, plural, other {# người}}"
 
+#: src/features/settings/audit/sentence.ts
+msgid "{n, plural, one {# recipient a day} other {# recipients a day}}"
+msgstr "{n, plural, other {# người nhận mỗi ngày}}"
+
 #: src/features/setup/SetupHub.tsx
 msgid "{n, plural, one {# website chat} other {# website chats}}"
 msgstr "{n, plural, other {# cuộc chat trên trang web}}"
@@ -664,6 +669,10 @@ msgstr "{percent}%, {doneText} trên {total}"
 #: src/features/migrations/UploadStep.tsx
 msgid "{percent}%, {sent} of {size}"
 msgstr "{percent}%, {sent} trên {size}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "{person} left the workspace by deleting their account"
+msgstr "{person} đã rời không gian làm việc bằng cách xóa tài khoản"
 
 #: src/features/inbox/ChatsPage.tsx
 msgid "{product}’s conversations"
@@ -1137,6 +1146,10 @@ msgstr "Một bản nháp đã được viết"
 #: src/components/common/text.ts
 msgid "A file's content does not match its type. Check the file and try again."
 msgstr "Nội dung của tệp không khớp với loại của nó. Hãy kiểm tra tệp và thử lại."
+
+#: src/features/settings/audit/sentence.ts
+msgid "a former member"
+msgstr "một thành viên cũ"
 
 #: src/features/contact/ContactNotes.tsx
 msgid "A former teammate"
@@ -1632,6 +1645,10 @@ msgstr "Đã thêm {created}, lần gửi gần nhất {delivered}"
 msgid "Added {created}, last used {used}"
 msgstr "Đã thêm {created}, lần dùng gần nhất {used}"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Added a webhook to {host}"
+msgstr "Đã thêm webhook tới {host}"
+
 #: src/components/common/text.ts
 msgid "Added by the team"
 msgstr "Do nhóm thêm"
@@ -1833,6 +1850,10 @@ msgstr "Được phép"
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Allowed origins"
 msgstr "Origin được phép"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Allowed the workspace to send broadcasts"
+msgstr "Đã cho phép không gian làm việc gửi thư hàng loạt"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Already earlier in the file"
@@ -2201,11 +2222,13 @@ msgstr "API và MCP"
 msgid "API channel"
 msgstr "Kênh API"
 
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/status/IncidentDetail.tsx
 msgid "API key"
 msgstr "Khóa API"
 
 #: src/app/Palette.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/channels/ChannelPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
@@ -2370,6 +2393,10 @@ msgstr "Hãy nhờ quản trị viên máy chủ thư của bạn chuyển tiế
 msgid "asked after closing"
 msgstr "được hỏi sau khi đóng"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Asked to be allowed to send broadcasts"
+msgstr "Đã xin phép gửi thư hàng loạt"
+
 #: src/components/common/text.ts
 msgid "Asked to subscribe"
 msgstr "Đã được mời đăng ký"
@@ -2514,6 +2541,12 @@ msgstr "Thuộc tính"
 #: src/features/broadcasts/Composer.tsx
 msgid "Audience"
 msgstr "Đối tượng"
+
+#: src/app/Palette.tsx
+#: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Audit log"
+msgstr "Nhật ký kiểm toán"
 
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Authorization"
@@ -2947,6 +2980,10 @@ msgstr "Hủy lần nhập này?"
 msgid "Cancelled"
 msgstr "Đã hủy"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Cancelled an invitation"
+msgstr "Đã hủy một lời mời"
+
 #: src/features/broadcasts/Import.tsx
 msgid "Cancelled. What was added before stays."
 msgstr "Đã hủy. Những gì đã thêm trước đó vẫn được giữ."
@@ -3038,6 +3075,26 @@ msgstr "Thay đổi, xóa và gộp liên hệ"
 msgid "Change, move and bulk-update conversations"
 msgstr "Thay đổi, chuyển và cập nhật hàng loạt các cuộc trò chuyện"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Changed how long conversations are kept from {from} to {to}"
+msgstr "Đã đổi thời gian lưu hội thoại từ {from} sang {to}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the daily broadcast limit from {from} to {to}"
+msgstr "Đã đổi giới hạn thư hàng loạt mỗi ngày từ {from} sang {to}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the mail account or password of a channel"
+msgstr "Đã đổi tài khoản thư hoặc mật khẩu của một kênh"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the role of {person} from {from} to {to}"
+msgstr "Đã đổi vai trò của {person} từ {from} sang {to}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the webhook to {host}"
+msgstr "Đã đổi webhook tới {host}"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Changelog settings"
 msgstr "Cài đặt nhật ký thay đổi"
@@ -3045,6 +3102,10 @@ msgstr "Cài đặt nhật ký thay đổi"
 #: src/features/migrations/Wizard.tsx
 msgid "Changes made to {provider}: none"
 msgstr "Thay đổi đã thực hiện trên {provider}: không có"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Changes to members, keys, webhooks and other sensitive settings show up here."
+msgstr "Các thay đổi về thành viên, khóa, webhook và các cài đặt nhạy cảm khác sẽ hiện ở đây."
 
 #: src/features/settings/channels/email/EmailSections.tsx
 msgid "Changing the sending domain turns DKIM signing off until you enable it again for the new domain."
@@ -3076,6 +3137,10 @@ msgstr "Cài đặt kênh"
 #: src/features/settings/ProductsPage.tsx
 msgid "Channels"
 msgstr "Kênh"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Channels and inboxes"
+msgstr "Kênh và hộp thư đến"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Chat"
@@ -3613,6 +3678,10 @@ msgstr "Kết nối máy chủ và bot của bạn với Yuva"
 msgid "Connected"
 msgstr "Đã kết nối"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Connected {client}"
+msgstr "Đã kết nối {client}"
+
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Connected {created}"
 msgstr "Đã kết nối {created}"
@@ -3622,6 +3691,7 @@ msgstr "Đã kết nối {created}"
 #: src/components/common/SettingsStrip.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/inbox/SidePanels.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
 msgid "Connected apps"
@@ -3733,6 +3803,10 @@ msgstr "Là liên hệ từ {since}"
 #: src/features/settings/webhooks/events.tsx
 msgid "Contacts"
 msgstr "Liên hệ"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Contacts and exports"
+msgstr "Liên hệ và xuất dữ liệu"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "contains"
@@ -4053,6 +4127,18 @@ msgstr "Tạo tài khoản Yuva của bạn"
 msgid "Created"
 msgstr "Đã tạo"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Created an analytics export"
+msgstr "Đã tạo một bản xuất số liệu phân tích"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Created the API key {name}"
+msgstr "Đã tạo khóa API {name}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Created the DKIM key {selector}"
+msgstr "Đã tạo khóa DKIM {selector}"
+
 #: src/features/migrations/DoneStep.tsx
 msgid "Credentials deleted {deletedAt}. Yuva can no longer read {address}."
 msgstr "Đã xóa thông tin xác thực {deletedAt}. Yuva không còn đọc được {address}."
@@ -4154,6 +4240,10 @@ msgstr "Số ngày lịch sử"
 #: src/features/setup/InstallStep.tsx
 msgid "Decide who may write in discussions"
 msgstr "Quyết định ai được viết trong các cuộc thảo luận"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Declined the request to send broadcasts"
+msgstr "Đã từ chối yêu cầu gửi thư hàng loạt"
 
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "Default: {fallback}"
@@ -4336,6 +4426,14 @@ msgstr "Xóa tài khoản của bạn"
 msgid "Delete your account?"
 msgstr "Xóa tài khoản của bạn?"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted a contact"
+msgstr "Đã xóa một liên hệ"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted a DKIM key"
+msgstr "Đã xóa một khóa DKIM"
+
 #: src/features/contact/MergeContactDialog.tsx
 msgid "deleted afterwards"
 msgstr "sẽ bị xóa sau đó"
@@ -4362,6 +4460,14 @@ msgstr "Thành viên đã xóa"
 #: src/components/common/DiscussionAuthor.tsx
 msgid "Deleted reader"
 msgstr "Người đọc đã xóa"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted the inbox {name}"
+msgstr "Đã xóa hộp thư đến {name}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted the webhook to {host}"
+msgstr "Đã xóa webhook tới {host}"
 
 #: src/features/settings/inboxes/InboxSecurity.tsx
 msgid "Deletes its channels, conversations, messages and attachments. This cannot be undone."
@@ -4474,6 +4580,10 @@ msgstr "Bỏ thay đổi"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Discard the suggested reply"
 msgstr "Bỏ phản hồi được gợi ý"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Disconnected {client}"
+msgstr "Đã ngắt kết nối {client}"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/DocsPage.tsx
@@ -5156,8 +5266,8 @@ msgid "Every request to this endpoint, newest first. The newest 100 are kept."
 msgstr "Mọi yêu cầu tới endpoint này, mới nhất trước. 100 yêu cầu mới nhất được giữ lại."
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-msgid "Every scope except sending broadcasts."
-msgstr "Mọi phạm vi trừ gửi thư hàng loạt."
+msgid "Every scope except sending broadcasts and reading the audit log."
+msgstr "Mọi quyền trừ gửi thư hàng loạt và đọc nhật ký kiểm toán."
 
 #: src/features/inbox/SourceFilter.tsx
 msgid "Every site"
@@ -5174,6 +5284,10 @@ msgstr "Mọi loại"
 #: src/features/setup/SetupHub.tsx
 msgid "Every website and app shows its visitors on Home and in Analytics."
 msgstr "Mọi trang web và ứng dụng hiện khách truy cập của chúng trong Trang chủ và Phân tích."
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Everyone"
+msgstr "Mọi người"
 
 #: src/features/inbox/ChatsPage.tsx
 msgid "Everyone has been answered."
@@ -5203,6 +5317,7 @@ msgstr "Bài đăng của mọi người được đăng ngay, trừ bài của 
 #: src/features/migrations/Wizard.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 msgid "Everything"
 msgstr "Tất cả mọi thứ"
 
@@ -5276,6 +5391,14 @@ msgstr "Tệp xuất"
 #: src/features/migrations/text.ts
 msgid "Export once as a .zip file. Google mails you a link when it is ready; for a large mailbox that can take a day or more."
 msgstr "Xuất một lần dưới dạng tệp .zip. Google sẽ gửi cho bạn một liên kết khi sẵn sàng; với hộp thư lớn có thể mất một ngày hoặc hơn."
+
+#: src/features/settings/audit/sentence.ts
+msgid "Exported the consent records of contacts"
+msgstr "Đã xuất hồ sơ đồng ý của các liên hệ"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Exported the consent records of the list {name}"
+msgstr "Đã xuất hồ sơ đồng ý của danh sách {name}"
 
 #: src/features/broadcasts/Import.tsx
 msgid "External id"
@@ -5603,6 +5726,10 @@ msgstr "Với người dùng đã đăng nhập, backend của bạn ký một t
 msgid "For signed-in users: the identity secret, shown only now"
 msgstr "Với người dùng đã đăng nhập: identity secret, chỉ hiện bây giờ"
 
+#: src/features/settings/audit/sentence.ts
+msgid "forever"
+msgstr "vô thời hạn"
+
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/ListPage.tsx
 msgid "Form"
@@ -5678,6 +5805,7 @@ msgstr "Tìm thấy trong các thư mục Đã gửi của bạn"
 msgid "Friday"
 msgstr "Thứ Sáu"
 
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "From"
 msgstr "Từ"
@@ -5761,6 +5889,10 @@ msgstr "Các bản sao khác của cùng một tin nhắn"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Gallery"
 msgstr "Thư viện"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Gave {person} access to {inbox}"
+msgstr "Đã cấp cho {person} quyền truy cập {inbox}"
 
 #: src/app/Sidebar.tsx
 #: src/components/common/SettingsStrip.tsx
@@ -6590,6 +6722,10 @@ msgstr "Ngôn ngữ lời mời"
 msgid "Invite your team"
 msgstr "Mời nhóm của bạn"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Invited {email} as {role}"
+msgstr "Đã mời {email} làm {role}"
+
 #: src/features/team/TeamPage.tsx
 msgid "Invites"
 msgstr "Lời mời"
@@ -6758,6 +6894,10 @@ msgstr "Báo cáo và danh sách người nhận của nó bị xóa. Các cuộ
 msgid "Its settings, credentials and progress are deleted. Imported conversations stay."
 msgstr "Cài đặt, thông tin xác thực và tiến độ của nó bị xóa. Các cuộc trò chuyện đã nhập vẫn còn."
 
+#: src/features/settings/audit/sentence.ts
+msgid "Joined the workspace as {role}"
+msgstr "Đã tham gia không gian làm việc với vai trò {role}"
+
 #: src/features/conversation/ConversationStatus.tsx
 msgid "Just wrote"
 msgstr "Vừa viết"
@@ -6817,6 +6957,10 @@ msgstr "Khóa và trợ lý không được lên lịch thư hàng loạt trong 
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "Keys and assistants may send broadcasts"
 msgstr "Khóa và trợ lý được gửi thư hàng loạt"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Keys and connected apps"
+msgstr "Khóa và ứng dụng đã kết nối"
 
 #: src/features/settings/channels/ChannelPage.tsx
 msgid "Keys that can reach this product. Create and revoke them under API & MCP."
@@ -7245,6 +7389,7 @@ msgstr "Tải hình ảnh"
 #: src/features/contact/ContactsPage.tsx
 #: src/features/docs/discussions/parts.tsx
 #: src/features/docs/PagesTab.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
 #: src/features/status/LinkConversationsDialog.tsx
 #: src/features/status/MonitorChecks.tsx
@@ -7628,6 +7773,10 @@ msgstr "Thành viên"
 #: src/features/team/TeamPage.tsx
 msgid "Members"
 msgstr "Thành viên"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Members and invitations"
+msgstr "Thành viên và lời mời"
 
 #: src/features/conversation/composer/MentionMenu.tsx
 msgid "Mention a teammate"
@@ -8652,6 +8801,10 @@ msgstr "Chưa có endpoint"
 msgid "No endpoints yet."
 msgstr "Chưa có endpoint."
 
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "No entry matches these filters."
+msgstr "Không có mục nào khớp với các bộ lọc này."
+
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "No events recorded."
 msgstr "Không có sự kiện nào được ghi lại."
@@ -8705,6 +8858,10 @@ msgstr "Chưa có nhãn"
 #: src/features/inbox/ChatList.tsx
 msgid "No labels yet. Add them in settings."
 msgstr "Chưa có nhãn. Hãy thêm trong cài đặt."
+
+#: src/features/settings/audit/sentence.ts
+msgid "no limit"
+msgstr "không giới hạn"
 
 #: src/features/broadcasts/Pace.tsx
 msgid "No limit"
@@ -9197,6 +9354,10 @@ msgstr "Chưa có gì được giải quyết."
 #: src/features/broadcasts/Report.tsx
 msgid "Nothing has happened yet."
 msgstr "Chưa có gì xảy ra."
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Nothing here"
+msgstr "Chưa có gì ở đây"
 
 #: src/features/broadcasts/Overview.tsx
 msgid "Nothing here."
@@ -9963,6 +10124,10 @@ msgstr "Hoạt động bình thường"
 #: src/features/status/MonitorToken.tsx
 msgid "operational recovers; degraded, partial_outage and major_outage fail."
 msgstr "operational khôi phục; degraded, partial_outage và major_outage làm ngừng."
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Operator"
+msgstr "Nhà vận hành"
 
 #: src/features/status/ComponentDialogs.tsx
 msgid "Optional. Shown on the public page."
@@ -11090,6 +11255,10 @@ msgstr "Đọc bảng lộ trình, ý tưởng và lịch sử giai đoạn"
 msgid "Read status pages, components and incidents"
 msgstr "Đọc trang trạng thái, thành phần và sự cố"
 
+#: src/components/common/text.ts
+msgid "Read the audit log (owners only)"
+msgstr "Đọc nhật ký kiểm toán (chỉ chủ sở hữu)"
+
 #: src/features/migrations/text.ts
 msgid "Read the folders"
 msgstr "Đọc các thư mục"
@@ -11373,6 +11542,10 @@ msgstr "Gỡ khóa truy cập này?"
 #: src/features/migrations/DoneStep.tsx
 msgid "Remove Yuva's access in Microsoft"
 msgstr "Gỡ quyền truy cập của Yuva trong Microsoft"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed {person} from the workspace"
+msgstr "Đã xóa {person} khỏi không gian làm việc"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Removes {name} with its products, channels, conversations, contacts, files, labels, webhooks and API keys for everyone. Members keep their accounts."
@@ -11789,6 +11962,10 @@ msgstr "Thu hồi {keyName}?"
 msgid "Revoked"
 msgstr "Đã thu hồi"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Revoked the API key {name}"
+msgstr "Đã thu hồi khóa API {name}"
+
 #: src/features/broadcasts/ListForm.tsx
 msgid "Right after subscribing, people get a short mail that confirms it, with an unsubscribe link."
 msgstr "Ngay sau khi đăng ký, mọi người nhận một thư ngắn xác nhận, kèm liên kết hủy đăng ký."
@@ -11839,6 +12016,22 @@ msgstr "Xoay vòng khóa công khai?"
 #: src/features/settings/webhooks/sections.tsx
 msgid "Rotate the signing secret?"
 msgstr "Xoay vòng signing secret?"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the forwarding address of a channel"
+msgstr "Đã làm mới địa chỉ chuyển tiếp của một kênh"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the identity secret of an inbox"
+msgstr "Đã làm mới bí mật danh tính của một hộp thư đến"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the key of a channel"
+msgstr "Đã làm mới khóa của một kênh"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the signing secret of a webhook"
+msgstr "Đã làm mới bí mật chữ ký của một webhook"
 
 #: src/features/setup/email/EmailReceiveStep.tsx
 msgid "Route your domain"
@@ -13534,6 +13727,10 @@ msgstr "support@your-company.com"
 msgid "Suspended"
 msgstr "Bị đình chỉ"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Suspended broadcasts"
+msgstr "Đã tạm dừng thư hàng loạt"
+
 #: src/features/migrations/Wizard.tsx
 msgid "Switch"
 msgstr "Chuyển đổi"
@@ -14054,8 +14251,8 @@ msgid "The key is ready"
 msgstr "Khóa đã sẵn sàng"
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-msgid "The key sees only these inboxes and cannot manage inboxes, webhooks or the workspace."
-msgstr "Khóa chỉ thấy các hộp thư này và không thể quản lý hộp thư, webhook hay không gian làm việc."
+msgid "The key sees only these inboxes and cannot manage inboxes, webhooks or the workspace, or read the audit log."
+msgstr "Khóa chỉ thấy các hộp thư đến này và không thể quản lý hộp thư, webhook hay không gian làm việc, cũng không thể đọc nhật ký kiểm toán."
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "The key stops working at the end of this day."
@@ -14522,8 +14719,8 @@ msgid "The What’s new count shows on the chat button while no messages are unr
 msgstr "Số cập nhật mới hiện trên nút chat khi không có tin nhắn chưa đọc. Trang chủ của widget luôn hiện số này."
 
 #: src/features/settings/GeneralTabs.tsx
-msgid "The workspace itself: name, retention, labels, canned replies and moving in"
-msgstr "Chính không gian làm việc: tên, thời hạn lưu giữ, nhãn, phản hồi mẫu và di chuyển"
+msgid "The workspace itself: name, retention, labels, canned replies, moving in and the audit log"
+msgstr "Chính không gian làm việc: tên, thời gian lưu, nhãn, câu trả lời soạn sẵn, chuyển đổi và nhật ký kiểm toán"
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The workspace may not send broadcasts for now."
@@ -15062,6 +15259,7 @@ msgstr "Tiêu đề"
 msgid "TLS (port 465)"
 msgstr "TLS (cổng 465)"
 
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "To"
 msgstr "Đến"
@@ -15112,6 +15310,10 @@ msgstr "Quá nhiều lần thử. Hãy chờ một lúc rồi thử lại."
 #: src/features/auth/CreateWorkspace.tsx
 msgid "Too many workspaces were created from your network today. Try again tomorrow."
 msgstr "Hôm nay đã có quá nhiều không gian làm việc được tạo từ mạng của bạn. Hãy thử lại vào ngày mai."
+
+#: src/features/settings/audit/sentence.ts
+msgid "Took away the access of {person} to {inbox}"
+msgstr "Đã thu hồi quyền truy cập {inbox} của {person}"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "tr, en-GB"
@@ -15755,6 +15957,10 @@ msgstr "Phiên bản"
 msgid "Very large mailbox? Start with a Google Takeout file"
 msgstr "Hộp thư rất lớn? Hãy bắt đầu bằng tệp Google Takeout"
 
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "via {via}"
+msgstr "qua {via}"
+
 #: src/features/home/HomePage.tsx
 msgid "View"
 msgstr "Xem"
@@ -15970,6 +16176,7 @@ msgid "Webhook endpoint"
 msgstr "Endpoint webhook"
 
 #: src/app/Palette.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
@@ -16014,6 +16221,10 @@ msgstr "Thứ Tư"
 #: src/features/broadcasts/ListForm.tsx
 msgid "Welcome receipt"
 msgstr "Biên nhận chào mừng"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "What"
+msgstr "Việc gì"
 
 #: src/features/broadcasts/Import.tsx
 msgid "What {header} holds"
@@ -16245,6 +16456,10 @@ msgstr "Khi tắt, không có lượt gửi nào được thực hiện."
 msgid "While your status is Away, only new messages in conversations assigned to you and new assignments notify you. A conversation you have open in the panel never notifies you."
 msgstr "Khi trạng thái của bạn là Vắng mặt, chỉ tin nhắn mới trong các cuộc trò chuyện giao cho bạn và các lần giao mới mới thông báo cho bạn. Cuộc trò chuyện bạn đang mở trong bảng điều khiển không bao giờ thông báo."
 
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Who"
+msgstr "Ai"
+
 #: src/features/broadcasts/ListsHome.tsx
 msgid "Who agreed to hear from you, with consent recorded"
 msgstr "Ai đã đồng ý nhận tin từ bạn, kèm sự đồng ý đã ghi lại"
@@ -16256,6 +16471,14 @@ msgstr "Ai trả lời, ở đâu và ai đang trực tuyến"
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Who can reply"
 msgstr "Ai có thể trả lời"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Who changed access, keys and data"
+msgstr "Ai đã thay đổi quyền truy cập, khóa và dữ liệu"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Who changed members, access, keys, webhooks, mail accounts, retention and exports, newest first. Only owners see this."
+msgstr "Ai đã thay đổi thành viên, quyền truy cập, khóa, webhook, tài khoản thư, thời gian lưu và xuất dữ liệu, mới nhất trước. Chỉ chủ sở hữu mới thấy."
 
 #: src/features/team/TeamPage.tsx
 msgid "Who is here"
@@ -16366,6 +16589,10 @@ msgstr "Đang xử lý…"
 #: src/features/settings/workspace/RetentionForm.tsx
 msgid "Workspace"
 msgstr "Không gian làm việc"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Workspace and broadcasts"
+msgstr "Không gian làm việc và thư hàng loạt"
 
 #: src/features/auth/CreateWorkspace.tsx
 msgid "Workspace name"

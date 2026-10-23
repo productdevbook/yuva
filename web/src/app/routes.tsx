@@ -35,6 +35,7 @@ import { NotificationsPage } from "@/features/settings/notifications/Notificatio
 import { ProfilePage } from "@/features/settings/profile/ProfilePage"
 import { MembersReport, RatingsReport, ReportsPane, TodayReport } from "@/features/reports/ReportPages"
 import { SettingsHome, SettingsPane } from "@/features/settings/SettingsColumn"
+import { AuditLogPage } from "@/features/settings/audit/AuditLogPage"
 import { WebhookPage } from "@/features/settings/webhooks/WebhookPage"
 import { WebhookDoneStep, WebhookEndpointStep, WebhookEventsStep } from "@/features/settings/webhooks/WebhookWizard"
 import { NewsletterRulesStep, NewsletterSenderStep } from "@/features/setup/NewsletterStep"
@@ -287,6 +288,7 @@ export function AppRoutes() {
               <Route path="webhooks" element={<WebhooksPage />} />
               <Route path="webhooks/:webhookId" element={<WebhookPage />} />
               <Route path="migrations" element={<MigrationsPage />} />
+              <Route path="audit-log" element={<AuditLogPage />} />
             </Route>
             <Route path="new/*" element={<Navigate to="/setup" replace />} />
             <Route path="*" element={<Navigate to="/settings" replace />} />

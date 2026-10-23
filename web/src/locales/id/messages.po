@@ -293,6 +293,7 @@ msgstr "{created, plural, other {# baru}}"
 
 #: src/features/broadcasts/Growth.tsx
 #: src/features/docs/Toolbar.tsx
+#: src/features/settings/audit/sentence.ts
 msgid "{d, plural, one {# day} other {# days}}"
 msgstr "{d, plural, other {# hari}}"
 
@@ -481,6 +482,10 @@ msgstr "{n, plural, other {# percakapan lain}}"
 msgid "{n, plural, one {# person} other {# people}}"
 msgstr "{n, plural, other {# orang}}"
 
+#: src/features/settings/audit/sentence.ts
+msgid "{n, plural, one {# recipient a day} other {# recipients a day}}"
+msgstr "{n, plural, other {# penerima per hari}}"
+
 #: src/features/setup/SetupHub.tsx
 msgid "{n, plural, one {# website chat} other {# website chats}}"
 msgstr "{n, plural, other {# obrolan situs web}}"
@@ -664,6 +669,10 @@ msgstr "{percent}%, {doneText} dari {total}"
 #: src/features/migrations/UploadStep.tsx
 msgid "{percent}%, {sent} of {size}"
 msgstr "{percent}%, {sent} dari {size}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "{person} left the workspace by deleting their account"
+msgstr "{person} meninggalkan ruang kerja dengan menghapus akunnya"
 
 #: src/features/inbox/ChatsPage.tsx
 msgid "{product}’s conversations"
@@ -1137,6 +1146,10 @@ msgstr "Draf ditulis"
 #: src/components/common/text.ts
 msgid "A file's content does not match its type. Check the file and try again."
 msgstr "Isi file tidak sesuai dengan tipenya. Periksa file lalu coba lagi."
+
+#: src/features/settings/audit/sentence.ts
+msgid "a former member"
+msgstr "mantan anggota"
 
 #: src/features/contact/ContactNotes.tsx
 msgid "A former teammate"
@@ -1632,6 +1645,10 @@ msgstr "Ditambahkan {created}, terakhir terkirim {delivered}"
 msgid "Added {created}, last used {used}"
 msgstr "Ditambahkan {created}, terakhir digunakan {used}"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Added a webhook to {host}"
+msgstr "Menambahkan webhook ke {host}"
+
 #: src/components/common/text.ts
 msgid "Added by the team"
 msgstr "Ditambahkan oleh tim"
@@ -1833,6 +1850,10 @@ msgstr "Diizinkan"
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Allowed origins"
 msgstr "Origin yang diizinkan"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Allowed the workspace to send broadcasts"
+msgstr "Mengizinkan ruang kerja mengirim siaran"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Already earlier in the file"
@@ -2201,11 +2222,13 @@ msgstr "API & MCP"
 msgid "API channel"
 msgstr "Saluran API"
 
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/status/IncidentDetail.tsx
 msgid "API key"
 msgstr "Kunci API"
 
 #: src/app/Palette.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/channels/ChannelPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
@@ -2370,6 +2393,10 @@ msgstr "Minta admin server email Anda meneruskan {address} ke alamat di bawah di
 msgid "asked after closing"
 msgstr "ditanyakan setelah ditutup"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Asked to be allowed to send broadcasts"
+msgstr "Meminta izin untuk mengirim siaran"
+
 #: src/components/common/text.ts
 msgid "Asked to subscribe"
 msgstr "Diminta berlangganan"
@@ -2514,6 +2541,12 @@ msgstr "Atribut"
 #: src/features/broadcasts/Composer.tsx
 msgid "Audience"
 msgstr "Audiens"
+
+#: src/app/Palette.tsx
+#: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Audit log"
+msgstr "Log audit"
 
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Authorization"
@@ -2947,6 +2980,10 @@ msgstr "Batalkan impor ini?"
 msgid "Cancelled"
 msgstr "Dibatalkan"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Cancelled an invitation"
+msgstr "Membatalkan undangan"
+
 #: src/features/broadcasts/Import.tsx
 msgid "Cancelled. What was added before stays."
 msgstr "Dibatalkan. Yang sudah ditambahkan tetap ada."
@@ -3038,6 +3075,26 @@ msgstr "Ubah, hapus, dan gabungkan kontak"
 msgid "Change, move and bulk-update conversations"
 msgstr "Ubah, pindahkan, dan perbarui massal percakapan"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Changed how long conversations are kept from {from} to {to}"
+msgstr "Mengubah lama penyimpanan percakapan dari {from} menjadi {to}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the daily broadcast limit from {from} to {to}"
+msgstr "Mengubah batas siaran harian dari {from} menjadi {to}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the mail account or password of a channel"
+msgstr "Mengubah akun email atau kata sandi sebuah kanal"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the role of {person} from {from} to {to}"
+msgstr "Mengubah peran {person} dari {from} menjadi {to}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the webhook to {host}"
+msgstr "Mengubah webhook ke {host}"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Changelog settings"
 msgstr "Pengaturan changelog"
@@ -3045,6 +3102,10 @@ msgstr "Pengaturan changelog"
 #: src/features/migrations/Wizard.tsx
 msgid "Changes made to {provider}: none"
 msgstr "Perubahan pada {provider}: tidak ada"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Changes to members, keys, webhooks and other sensitive settings show up here."
+msgstr "Perubahan pada anggota, kunci, webhook, dan pengaturan sensitif lainnya muncul di sini."
 
 #: src/features/settings/channels/email/EmailSections.tsx
 msgid "Changing the sending domain turns DKIM signing off until you enable it again for the new domain."
@@ -3076,6 +3137,10 @@ msgstr "Pengaturan kanal"
 #: src/features/settings/ProductsPage.tsx
 msgid "Channels"
 msgstr "Saluran"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Channels and inboxes"
+msgstr "Kanal dan kotak masuk"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Chat"
@@ -3613,6 +3678,10 @@ msgstr "Hubungkan server dan bot Anda ke Yuva"
 msgid "Connected"
 msgstr "Terhubung"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Connected {client}"
+msgstr "Menghubungkan {client}"
+
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Connected {created}"
 msgstr "Terhubung {created}"
@@ -3622,6 +3691,7 @@ msgstr "Terhubung {created}"
 #: src/components/common/SettingsStrip.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/inbox/SidePanels.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
 msgid "Connected apps"
@@ -3733,6 +3803,10 @@ msgstr "Kontak sejak {since}"
 #: src/features/settings/webhooks/events.tsx
 msgid "Contacts"
 msgstr "Kontak"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Contacts and exports"
+msgstr "Kontak dan ekspor"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "contains"
@@ -4053,6 +4127,18 @@ msgstr "Buat akun Yuva Anda"
 msgid "Created"
 msgstr "Dibuat"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Created an analytics export"
+msgstr "Membuat ekspor analitik"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Created the API key {name}"
+msgstr "Membuat kunci API {name}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Created the DKIM key {selector}"
+msgstr "Membuat kunci DKIM {selector}"
+
 #: src/features/migrations/DoneStep.tsx
 msgid "Credentials deleted {deletedAt}. Yuva can no longer read {address}."
 msgstr "Kredensial dihapus {deletedAt}. Yuva tidak lagi dapat membaca {address}."
@@ -4154,6 +4240,10 @@ msgstr "Hari riwayat"
 #: src/features/setup/InstallStep.tsx
 msgid "Decide who may write in discussions"
 msgstr "Tentukan siapa yang boleh menulis di diskusi"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Declined the request to send broadcasts"
+msgstr "Menolak permintaan untuk mengirim siaran"
 
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "Default: {fallback}"
@@ -4336,6 +4426,14 @@ msgstr "Hapus akun Anda"
 msgid "Delete your account?"
 msgstr "Hapus akun Anda?"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted a contact"
+msgstr "Menghapus sebuah kontak"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted a DKIM key"
+msgstr "Menghapus sebuah kunci DKIM"
+
 #: src/features/contact/MergeContactDialog.tsx
 msgid "deleted afterwards"
 msgstr "dihapus setelahnya"
@@ -4362,6 +4460,14 @@ msgstr "Anggota yang dihapus"
 #: src/components/common/DiscussionAuthor.tsx
 msgid "Deleted reader"
 msgstr "Pembaca yang dihapus"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted the inbox {name}"
+msgstr "Menghapus kotak masuk {name}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted the webhook to {host}"
+msgstr "Menghapus webhook ke {host}"
 
 #: src/features/settings/inboxes/InboxSecurity.tsx
 msgid "Deletes its channels, conversations, messages and attachments. This cannot be undone."
@@ -4474,6 +4580,10 @@ msgstr "Buang perubahan"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Discard the suggested reply"
 msgstr "Buang balasan yang disarankan"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Disconnected {client}"
+msgstr "Memutuskan {client}"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/DocsPage.tsx
@@ -5156,8 +5266,8 @@ msgid "Every request to this endpoint, newest first. The newest 100 are kept."
 msgstr "Setiap permintaan ke endpoint ini, terbaru dulu. 100 terbaru disimpan."
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-msgid "Every scope except sending broadcasts."
-msgstr "Semua cakupan kecuali mengirim siaran massal."
+msgid "Every scope except sending broadcasts and reading the audit log."
+msgstr "Semua izin kecuali mengirim siaran dan membaca log audit."
 
 #: src/features/inbox/SourceFilter.tsx
 msgid "Every site"
@@ -5174,6 +5284,10 @@ msgstr "Setiap jenis"
 #: src/features/setup/SetupHub.tsx
 msgid "Every website and app shows its visitors on Home and in Analytics."
 msgstr "Setiap situs web dan aplikasi menampilkan pengunjungnya di Beranda dan di Analitik."
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Everyone"
+msgstr "Semua orang"
 
 #: src/features/inbox/ChatsPage.tsx
 msgid "Everyone has been answered."
@@ -5203,6 +5317,7 @@ msgstr "Kiriman semua orang langsung dipublikasikan, kecuali penulis yang Anda t
 #: src/features/migrations/Wizard.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 msgid "Everything"
 msgstr "Semuanya"
 
@@ -5276,6 +5391,14 @@ msgstr "File ekspor"
 #: src/features/migrations/text.ts
 msgid "Export once as a .zip file. Google mails you a link when it is ready; for a large mailbox that can take a day or more."
 msgstr "Ekspor sekali sebagai file .zip. Google mengirim tautan lewat email saat siap; untuk kotak surat besar bisa makan waktu sehari atau lebih."
+
+#: src/features/settings/audit/sentence.ts
+msgid "Exported the consent records of contacts"
+msgstr "Mengekspor catatan persetujuan kontak"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Exported the consent records of the list {name}"
+msgstr "Mengekspor catatan persetujuan daftar {name}"
 
 #: src/features/broadcasts/Import.tsx
 msgid "External id"
@@ -5603,6 +5726,10 @@ msgstr "Untuk pengguna yang sudah masuk, backend Anda menandatangani token ident
 msgid "For signed-in users: the identity secret, shown only now"
 msgstr "Untuk pengguna yang sudah masuk: rahasia identitas, hanya ditampilkan sekarang"
 
+#: src/features/settings/audit/sentence.ts
+msgid "forever"
+msgstr "selamanya"
+
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/ListPage.tsx
 msgid "Form"
@@ -5678,6 +5805,7 @@ msgstr "Ditemukan di folder Terkirim Anda"
 msgid "Friday"
 msgstr "Jumat"
 
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "From"
 msgstr "Dari"
@@ -5761,6 +5889,10 @@ msgstr "Salinan lain dari pesan yang sama"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Gallery"
 msgstr "Galeri"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Gave {person} access to {inbox}"
+msgstr "Memberi {person} akses ke {inbox}"
 
 #: src/app/Sidebar.tsx
 #: src/components/common/SettingsStrip.tsx
@@ -6590,6 +6722,10 @@ msgstr "Bahasa undangan"
 msgid "Invite your team"
 msgstr "Undang tim Anda"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Invited {email} as {role}"
+msgstr "Mengundang {email} sebagai {role}"
+
 #: src/features/team/TeamPage.tsx
 msgid "Invites"
 msgstr "Undangan"
@@ -6758,6 +6894,10 @@ msgstr "Laporan dan daftar penerimanya dihapus. Percakapan yang dibuka oleh bala
 msgid "Its settings, credentials and progress are deleted. Imported conversations stay."
 msgstr "Pengaturan, kredensial, dan kemajuannya dihapus. Percakapan yang diimpor tetap ada."
 
+#: src/features/settings/audit/sentence.ts
+msgid "Joined the workspace as {role}"
+msgstr "Bergabung ke ruang kerja sebagai {role}"
+
 #: src/features/conversation/ConversationStatus.tsx
 msgid "Just wrote"
 msgstr "Baru menulis"
@@ -6817,6 +6957,10 @@ msgstr "Kunci dan asisten tidak boleh menjadwalkan siaran massal di ruang kerja 
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "Keys and assistants may send broadcasts"
 msgstr "Kunci dan asisten boleh mengirim siaran massal"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Keys and connected apps"
+msgstr "Kunci dan aplikasi terhubung"
 
 #: src/features/settings/channels/ChannelPage.tsx
 msgid "Keys that can reach this product. Create and revoke them under API & MCP."
@@ -7245,6 +7389,7 @@ msgstr "Muat gambar"
 #: src/features/contact/ContactsPage.tsx
 #: src/features/docs/discussions/parts.tsx
 #: src/features/docs/PagesTab.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
 #: src/features/status/LinkConversationsDialog.tsx
 #: src/features/status/MonitorChecks.tsx
@@ -7628,6 +7773,10 @@ msgstr "Anggota"
 #: src/features/team/TeamPage.tsx
 msgid "Members"
 msgstr "Anggota"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Members and invitations"
+msgstr "Anggota dan undangan"
 
 #: src/features/conversation/composer/MentionMenu.tsx
 msgid "Mention a teammate"
@@ -8652,6 +8801,10 @@ msgstr "Belum ada endpoint"
 msgid "No endpoints yet."
 msgstr "Belum ada endpoint."
 
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "No entry matches these filters."
+msgstr "Tidak ada entri yang cocok dengan filter ini."
+
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "No events recorded."
 msgstr "Tidak ada peristiwa tercatat."
@@ -8705,6 +8858,10 @@ msgstr "Belum ada label"
 #: src/features/inbox/ChatList.tsx
 msgid "No labels yet. Add them in settings."
 msgstr "Belum ada label. Tambahkan di pengaturan."
+
+#: src/features/settings/audit/sentence.ts
+msgid "no limit"
+msgstr "tanpa batas"
 
 #: src/features/broadcasts/Pace.tsx
 msgid "No limit"
@@ -9197,6 +9354,10 @@ msgstr "Belum ada yang terselesaikan."
 #: src/features/broadcasts/Report.tsx
 msgid "Nothing has happened yet."
 msgstr "Belum ada yang terjadi."
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Nothing here"
+msgstr "Belum ada apa pun di sini"
 
 #: src/features/broadcasts/Overview.tsx
 msgid "Nothing here."
@@ -9963,6 +10124,10 @@ msgstr "Beroperasi"
 #: src/features/status/MonitorToken.tsx
 msgid "operational recovers; degraded, partial_outage and major_outage fail."
 msgstr "operational memulihkan; degraded, partial_outage, dan major_outage menjatuhkan."
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Operator"
+msgstr "Operator"
 
 #: src/features/status/ComponentDialogs.tsx
 msgid "Optional. Shown on the public page."
@@ -11090,6 +11255,10 @@ msgstr "Baca papan peta jalan, ide, dan riwayat tahap"
 msgid "Read status pages, components and incidents"
 msgstr "Baca halaman status, komponen, dan insiden"
 
+#: src/components/common/text.ts
+msgid "Read the audit log (owners only)"
+msgstr "Membaca log audit (hanya pemilik)"
+
 #: src/features/migrations/text.ts
 msgid "Read the folders"
 msgstr "Baca folder"
@@ -11373,6 +11542,10 @@ msgstr "Hapus passkey ini?"
 #: src/features/migrations/DoneStep.tsx
 msgid "Remove Yuva's access in Microsoft"
 msgstr "Cabut akses Yuva di Microsoft"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed {person} from the workspace"
+msgstr "Mengeluarkan {person} dari ruang kerja"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Removes {name} with its products, channels, conversations, contacts, files, labels, webhooks and API keys for everyone. Members keep their accounts."
@@ -11789,6 +11962,10 @@ msgstr "Cabut {keyName}?"
 msgid "Revoked"
 msgstr "Dicabut"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Revoked the API key {name}"
+msgstr "Mencabut kunci API {name}"
+
 #: src/features/broadcasts/ListForm.tsx
 msgid "Right after subscribing, people get a short mail that confirms it, with an unsubscribe link."
 msgstr "Segera setelah berlangganan, orang menerima email singkat yang mengonfirmasinya, dengan tautan berhenti berlangganan."
@@ -11839,6 +12016,22 @@ msgstr "Putar kunci publik?"
 #: src/features/settings/webhooks/sections.tsx
 msgid "Rotate the signing secret?"
 msgstr "Putar rahasia penandatanganan?"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the forwarding address of a channel"
+msgstr "Memperbarui alamat penerusan sebuah kanal"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the identity secret of an inbox"
+msgstr "Memperbarui rahasia identitas sebuah kotak masuk"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the key of a channel"
+msgstr "Memperbarui kunci sebuah kanal"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the signing secret of a webhook"
+msgstr "Memperbarui rahasia tanda tangan sebuah webhook"
 
 #: src/features/setup/email/EmailReceiveStep.tsx
 msgid "Route your domain"
@@ -13534,6 +13727,10 @@ msgstr "support@your-company.com"
 msgid "Suspended"
 msgstr "Ditangguhkan"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Suspended broadcasts"
+msgstr "Menangguhkan siaran"
+
 #: src/features/migrations/Wizard.tsx
 msgid "Switch"
 msgstr "Alihkan"
@@ -14054,8 +14251,8 @@ msgid "The key is ready"
 msgstr "Kunci siap"
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-msgid "The key sees only these inboxes and cannot manage inboxes, webhooks or the workspace."
-msgstr "Kunci hanya melihat kotak masuk ini dan tidak dapat mengelola kotak masuk, webhook, atau ruang kerja."
+msgid "The key sees only these inboxes and cannot manage inboxes, webhooks or the workspace, or read the audit log."
+msgstr "Kunci hanya melihat kotak masuk ini dan tidak dapat mengelola kotak masuk, webhook, atau ruang kerja, maupun membaca log audit."
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "The key stops working at the end of this day."
@@ -14522,8 +14719,8 @@ msgid "The What’s new count shows on the chat button while no messages are unr
 msgstr "Jumlah hal baru muncul di tombol chat selama tidak ada pesan yang belum dibaca. Beranda widget selalu menampilkannya."
 
 #: src/features/settings/GeneralTabs.tsx
-msgid "The workspace itself: name, retention, labels, canned replies and moving in"
-msgstr "Ruang kerja itu sendiri: nama, retensi, label, balasan siap pakai, dan pemindahan"
+msgid "The workspace itself: name, retention, labels, canned replies, moving in and the audit log"
+msgstr "Ruang kerja itu sendiri: nama, penyimpanan, label, balasan siap pakai, pemindahan, dan log audit"
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The workspace may not send broadcasts for now."
@@ -15062,6 +15259,7 @@ msgstr "Judul"
 msgid "TLS (port 465)"
 msgstr "TLS (port 465)"
 
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "To"
 msgstr "Kepada"
@@ -15112,6 +15310,10 @@ msgstr "Terlalu banyak percobaan. Tunggu sebentar dan coba lagi."
 #: src/features/auth/CreateWorkspace.tsx
 msgid "Too many workspaces were created from your network today. Try again tomorrow."
 msgstr "Terlalu banyak ruang kerja dibuat dari jaringan Anda hari ini. Coba lagi besok."
+
+#: src/features/settings/audit/sentence.ts
+msgid "Took away the access of {person} to {inbox}"
+msgstr "Mencabut akses {person} ke {inbox}"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "tr, en-GB"
@@ -15755,6 +15957,10 @@ msgstr "Versi"
 msgid "Very large mailbox? Start with a Google Takeout file"
 msgstr "Kotak surat sangat besar? Mulai dengan file Google Takeout"
 
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "via {via}"
+msgstr "melalui {via}"
+
 #: src/features/home/HomePage.tsx
 msgid "View"
 msgstr "Lihat"
@@ -15970,6 +16176,7 @@ msgid "Webhook endpoint"
 msgstr "Endpoint webhook"
 
 #: src/app/Palette.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
@@ -16014,6 +16221,10 @@ msgstr "Rabu"
 #: src/features/broadcasts/ListForm.tsx
 msgid "Welcome receipt"
 msgstr "Tanda terima sambutan"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "What"
+msgstr "Apa"
 
 #: src/features/broadcasts/Import.tsx
 msgid "What {header} holds"
@@ -16245,6 +16456,10 @@ msgstr "Selama nonaktif, tidak ada pengiriman yang dilakukan."
 msgid "While your status is Away, only new messages in conversations assigned to you and new assignments notify you. A conversation you have open in the panel never notifies you."
 msgstr "Selama status Anda Pergi, hanya pesan baru di percakapan yang ditugaskan kepada Anda dan penugasan baru yang memberi tahu Anda. Percakapan yang Anda buka di panel tidak pernah memberi tahu Anda."
 
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Who"
+msgstr "Siapa"
+
 #: src/features/broadcasts/ListsHome.tsx
 msgid "Who agreed to hear from you, with consent recorded"
 msgstr "Siapa yang setuju menerima kabar dari Anda, dengan persetujuan tercatat"
@@ -16256,6 +16471,14 @@ msgstr "Siapa yang menjawab, di mana, dan siapa yang online"
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Who can reply"
 msgstr "Siapa yang dapat membalas"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Who changed access, keys and data"
+msgstr "Siapa yang mengubah akses, kunci, dan data"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Who changed members, access, keys, webhooks, mail accounts, retention and exports, newest first. Only owners see this."
+msgstr "Siapa yang mengubah anggota, akses, kunci, webhook, akun email, penyimpanan, dan ekspor, terbaru dulu. Hanya pemilik yang melihat ini."
 
 #: src/features/team/TeamPage.tsx
 msgid "Who is here"
@@ -16366,6 +16589,10 @@ msgstr "Memproses…"
 #: src/features/settings/workspace/RetentionForm.tsx
 msgid "Workspace"
 msgstr "Ruang kerja"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Workspace and broadcasts"
+msgstr "Ruang kerja dan siaran"
 
 #: src/features/auth/CreateWorkspace.tsx
 msgid "Workspace name"

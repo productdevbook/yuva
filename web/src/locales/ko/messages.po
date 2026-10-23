@@ -293,6 +293,7 @@ msgstr "{created, plural, other {신규 #건}}"
 
 #: src/features/broadcasts/Growth.tsx
 #: src/features/docs/Toolbar.tsx
+#: src/features/settings/audit/sentence.ts
 msgid "{d, plural, one {# day} other {# days}}"
 msgstr "{d, plural, other {#일}}"
 
@@ -481,6 +482,10 @@ msgstr "{n, plural, other {다른 대화 #개}}"
 msgid "{n, plural, one {# person} other {# people}}"
 msgstr "{n, plural, other {#명}}"
 
+#: src/features/settings/audit/sentence.ts
+msgid "{n, plural, one {# recipient a day} other {# recipients a day}}"
+msgstr "{n, plural, other {하루 수신자 #명}}"
+
 #: src/features/setup/SetupHub.tsx
 msgid "{n, plural, one {# website chat} other {# website chats}}"
 msgstr "{n, plural, other {웹사이트 채팅 #개}}"
@@ -664,6 +669,10 @@ msgstr "{percent}%, {doneText} / {total}"
 #: src/features/migrations/UploadStep.tsx
 msgid "{percent}%, {sent} of {size}"
 msgstr "{percent}%, {sent} / {size}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "{person} left the workspace by deleting their account"
+msgstr "{person} 님이 계정을 삭제하여 워크스페이스를 떠났습니다"
 
 #: src/features/inbox/ChatsPage.tsx
 msgid "{product}’s conversations"
@@ -1137,6 +1146,10 @@ msgstr "초안이 작성되었을 때"
 #: src/components/common/text.ts
 msgid "A file's content does not match its type. Check the file and try again."
 msgstr "파일 내용이 형식과 일치하지 않습니다. 파일을 확인하고 다시 시도하세요."
+
+#: src/features/settings/audit/sentence.ts
+msgid "a former member"
+msgstr "이전 멤버"
 
 #: src/features/contact/ContactNotes.tsx
 msgid "A former teammate"
@@ -1632,6 +1645,10 @@ msgstr "{created}에 추가됨, 마지막 전달 {delivered}"
 msgid "Added {created}, last used {used}"
 msgstr "{created}에 추가됨, 마지막 사용 {used}"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Added a webhook to {host}"
+msgstr "{host}(으)로 웹훅을 추가했습니다"
+
 #: src/components/common/text.ts
 msgid "Added by the team"
 msgstr "팀이 추가함"
@@ -1833,6 +1850,10 @@ msgstr "허용됨"
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Allowed origins"
 msgstr "허용된 오리진"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Allowed the workspace to send broadcasts"
+msgstr "워크스페이스의 일괄 발송을 허용했습니다"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Already earlier in the file"
@@ -2201,11 +2222,13 @@ msgstr "API 및 MCP"
 msgid "API channel"
 msgstr "API 채널"
 
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/status/IncidentDetail.tsx
 msgid "API key"
 msgstr "API 키"
 
 #: src/app/Palette.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/channels/ChannelPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
@@ -2370,6 +2393,10 @@ msgstr "메일 서버 관리자에게 {address} 메일을 메일함 배달은 �
 msgid "asked after closing"
 msgstr "종료 후 질문함"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Asked to be allowed to send broadcasts"
+msgstr "일괄 발송 허가를 요청했습니다"
+
 #: src/components/common/text.ts
 msgid "Asked to subscribe"
 msgstr "구독 요청됨"
@@ -2514,6 +2541,12 @@ msgstr "속성"
 #: src/features/broadcasts/Composer.tsx
 msgid "Audience"
 msgstr "대상"
+
+#: src/app/Palette.tsx
+#: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Audit log"
+msgstr "감사 로그"
 
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Authorization"
@@ -2947,6 +2980,10 @@ msgstr "이 가져오기를 취소할까요?"
 msgid "Cancelled"
 msgstr "취소됨"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Cancelled an invitation"
+msgstr "초대를 취소했습니다"
+
 #: src/features/broadcasts/Import.tsx
 msgid "Cancelled. What was added before stays."
 msgstr "취소했습니다. 그전에 추가된 항목은 유지됩니다."
@@ -3038,6 +3075,26 @@ msgstr "연락처 변경, 삭제, 병합"
 msgid "Change, move and bulk-update conversations"
 msgstr "대화 변경, 이동, 일괄 업데이트"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Changed how long conversations are kept from {from} to {to}"
+msgstr "대화 보관 기간을 {from}에서 {to}(으)로 변경했습니다"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the daily broadcast limit from {from} to {to}"
+msgstr "일일 일괄 발송 한도를 {from}에서 {to}(으)로 변경했습니다"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the mail account or password of a channel"
+msgstr "채널의 메일 계정 또는 비밀번호를 변경했습니다"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the role of {person} from {from} to {to}"
+msgstr "{person} 님의 역할을 {from}에서 {to}(으)로 변경했습니다"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the webhook to {host}"
+msgstr "{host}(으)로 가는 웹훅을 변경했습니다"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Changelog settings"
 msgstr "변경 내역 설정"
@@ -3045,6 +3102,10 @@ msgstr "변경 내역 설정"
 #: src/features/migrations/Wizard.tsx
 msgid "Changes made to {provider}: none"
 msgstr "{provider}에 가한 변경: 없음"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Changes to members, keys, webhooks and other sensitive settings show up here."
+msgstr "멤버, 키, 웹훅 및 기타 민감한 설정의 변경 내용이 여기에 표시됩니다."
 
 #: src/features/settings/channels/email/EmailSections.tsx
 msgid "Changing the sending domain turns DKIM signing off until you enable it again for the new domain."
@@ -3076,6 +3137,10 @@ msgstr "채널 설정"
 #: src/features/settings/ProductsPage.tsx
 msgid "Channels"
 msgstr "채널"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Channels and inboxes"
+msgstr "채널 및 받은편지함"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Chat"
@@ -3613,6 +3678,10 @@ msgstr "서버와 봇을 Yuva에 연결하세요"
 msgid "Connected"
 msgstr "연결됨"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Connected {client}"
+msgstr "{client}을(를) 연결했습니다"
+
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Connected {created}"
 msgstr "{created}에 연결됨"
@@ -3622,6 +3691,7 @@ msgstr "{created}에 연결됨"
 #: src/components/common/SettingsStrip.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/inbox/SidePanels.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
 msgid "Connected apps"
@@ -3733,6 +3803,10 @@ msgstr "{since}부터 연락처"
 #: src/features/settings/webhooks/events.tsx
 msgid "Contacts"
 msgstr "연락처"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Contacts and exports"
+msgstr "연락처 및 내보내기"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "contains"
@@ -4053,6 +4127,18 @@ msgstr "Yuva 계정 만들기"
 msgid "Created"
 msgstr "생성됨"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Created an analytics export"
+msgstr "분석 내보내기를 만들었습니다"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Created the API key {name}"
+msgstr "API 키 {name}을(를) 만들었습니다"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Created the DKIM key {selector}"
+msgstr "DKIM 키 {selector}을(를) 만들었습니다"
+
 #: src/features/migrations/DoneStep.tsx
 msgid "Credentials deleted {deletedAt}. Yuva can no longer read {address}."
 msgstr "자격 증명을 {deletedAt}에 삭제했습니다. Yuva는 더 이상 {address}을(를) 읽을 수 없습니다."
@@ -4154,6 +4240,10 @@ msgstr "기록 일수"
 #: src/features/setup/InstallStep.tsx
 msgid "Decide who may write in discussions"
 msgstr "토론에 글을 쓸 수 있는 사람 정하기"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Declined the request to send broadcasts"
+msgstr "일괄 발송 요청을 거절했습니다"
 
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "Default: {fallback}"
@@ -4336,6 +4426,14 @@ msgstr "계정 삭제"
 msgid "Delete your account?"
 msgstr "계정을 삭제할까요?"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted a contact"
+msgstr "연락처를 삭제했습니다"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted a DKIM key"
+msgstr "DKIM 키를 삭제했습니다"
+
 #: src/features/contact/MergeContactDialog.tsx
 msgid "deleted afterwards"
 msgstr "이후 삭제됨"
@@ -4362,6 +4460,14 @@ msgstr "삭제된 멤버"
 #: src/components/common/DiscussionAuthor.tsx
 msgid "Deleted reader"
 msgstr "삭제된 독자"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted the inbox {name}"
+msgstr "받은편지함 {name}을(를) 삭제했습니다"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted the webhook to {host}"
+msgstr "{host}(으)로 가는 웹훅을 삭제했습니다"
 
 #: src/features/settings/inboxes/InboxSecurity.tsx
 msgid "Deletes its channels, conversations, messages and attachments. This cannot be undone."
@@ -4474,6 +4580,10 @@ msgstr "변경 사항 취소"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Discard the suggested reply"
 msgstr "제안된 답장 버리기"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Disconnected {client}"
+msgstr "{client} 연결을 해제했습니다"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/DocsPage.tsx
@@ -5156,8 +5266,8 @@ msgid "Every request to this endpoint, newest first. The newest 100 are kept."
 msgstr "이 엔드포인트로 온 모든 요청, 최신순. 최근 100개를 보관합니다."
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-msgid "Every scope except sending broadcasts."
-msgstr "일괄 발송 보내기를 제외한 모든 스코프."
+msgid "Every scope except sending broadcasts and reading the audit log."
+msgstr "일괄 발송과 감사 로그 읽기를 제외한 모든 권한."
 
 #: src/features/inbox/SourceFilter.tsx
 msgid "Every site"
@@ -5174,6 +5284,10 @@ msgstr "모든 유형"
 #: src/features/setup/SetupHub.tsx
 msgid "Every website and app shows its visitors on Home and in Analytics."
 msgstr "모든 웹사이트와 앱의 방문자가 홈과 분석에 표시됩니다."
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Everyone"
+msgstr "모든 사람"
 
 #: src/features/inbox/ChatsPage.tsx
 msgid "Everyone has been answered."
@@ -5203,6 +5317,7 @@ msgstr "스팸으로 표시한 작성자를 제외하고 모두의 게시물이 
 #: src/features/migrations/Wizard.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 msgid "Everything"
 msgstr "전체"
 
@@ -5276,6 +5391,14 @@ msgstr "내보내기 파일"
 #: src/features/migrations/text.ts
 msgid "Export once as a .zip file. Google mails you a link when it is ready; for a large mailbox that can take a day or more."
 msgstr ".zip 파일로 한 번 내보내세요. 준비되면 Google이 링크를 메일로 보내 주며, 큰 메일함은 하루 이상 걸릴 수 있습니다."
+
+#: src/features/settings/audit/sentence.ts
+msgid "Exported the consent records of contacts"
+msgstr "연락처의 동의 기록을 내보냈습니다"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Exported the consent records of the list {name}"
+msgstr "목록 {name}의 동의 기록을 내보냈습니다"
 
 #: src/features/broadcasts/Import.tsx
 msgid "External id"
@@ -5603,6 +5726,10 @@ msgstr "로그인한 사용자의 경우, 백엔드가 받은 편지함의 ID �
 msgid "For signed-in users: the identity secret, shown only now"
 msgstr "로그인한 사용자용: ID 시크릿(지금만 표시)"
 
+#: src/features/settings/audit/sentence.ts
+msgid "forever"
+msgstr "무기한"
+
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/ListPage.tsx
 msgid "Form"
@@ -5678,6 +5805,7 @@ msgstr "보낸 편지함에서 찾았습니다"
 msgid "Friday"
 msgstr "금요일"
 
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "From"
 msgstr "보낸 사람"
@@ -5761,6 +5889,10 @@ msgstr "같은 메시지의 추가 사본"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Gallery"
 msgstr "갤러리"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Gave {person} access to {inbox}"
+msgstr "{person} 님에게 {inbox} 접근 권한을 부여했습니다"
 
 #: src/app/Sidebar.tsx
 #: src/components/common/SettingsStrip.tsx
@@ -6590,6 +6722,10 @@ msgstr "초대 언어"
 msgid "Invite your team"
 msgstr "팀 초대"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Invited {email} as {role}"
+msgstr "{email} 님을 {role}(으)로 초대했습니다"
+
 #: src/features/team/TeamPage.tsx
 msgid "Invites"
 msgstr "초대"
@@ -6758,6 +6894,10 @@ msgstr "보고서와 수신자 목록이 삭제됩니다. 답장으로 열린 �
 msgid "Its settings, credentials and progress are deleted. Imported conversations stay."
 msgstr "설정, 자격 증명, 진행 상황이 삭제됩니다. 가져온 대화는 유지됩니다."
 
+#: src/features/settings/audit/sentence.ts
+msgid "Joined the workspace as {role}"
+msgstr "{role}(으)로 워크스페이스에 참여했습니다"
+
 #: src/features/conversation/ConversationStatus.tsx
 msgid "Just wrote"
 msgstr "방금 작성함"
@@ -6817,6 +6957,10 @@ msgstr "이 워크스페이스에서는 키와 어시스턴트가 일괄 발송�
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "Keys and assistants may send broadcasts"
 msgstr "키와 어시스턴트의 일괄 발송 허용"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Keys and connected apps"
+msgstr "키 및 연결된 앱"
 
 #: src/features/settings/channels/ChannelPage.tsx
 msgid "Keys that can reach this product. Create and revoke them under API & MCP."
@@ -7245,6 +7389,7 @@ msgstr "이미지 불러오기"
 #: src/features/contact/ContactsPage.tsx
 #: src/features/docs/discussions/parts.tsx
 #: src/features/docs/PagesTab.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
 #: src/features/status/LinkConversationsDialog.tsx
 #: src/features/status/MonitorChecks.tsx
@@ -7628,6 +7773,10 @@ msgstr "멤버"
 #: src/features/team/TeamPage.tsx
 msgid "Members"
 msgstr "멤버"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Members and invitations"
+msgstr "멤버 및 초대"
 
 #: src/features/conversation/composer/MentionMenu.tsx
 msgid "Mention a teammate"
@@ -8652,6 +8801,10 @@ msgstr "아직 엔드포인트가 없습니다"
 msgid "No endpoints yet."
 msgstr "아직 엔드포인트가 없습니다."
 
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "No entry matches these filters."
+msgstr "이 필터와 일치하는 항목이 없습니다."
+
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "No events recorded."
 msgstr "기록된 이벤트가 없습니다."
@@ -8705,6 +8858,10 @@ msgstr "아직 레이블이 없습니다"
 #: src/features/inbox/ChatList.tsx
 msgid "No labels yet. Add them in settings."
 msgstr "아직 레이블이 없습니다. 설정에서 추가하세요."
+
+#: src/features/settings/audit/sentence.ts
+msgid "no limit"
+msgstr "제한 없음"
 
 #: src/features/broadcasts/Pace.tsx
 msgid "No limit"
@@ -9197,6 +9354,10 @@ msgstr "아직 해결된 항목이 없습니다."
 #: src/features/broadcasts/Report.tsx
 msgid "Nothing has happened yet."
 msgstr "아직 아무 일도 일어나지 않았습니다."
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Nothing here"
+msgstr "아직 아무것도 없습니다"
 
 #: src/features/broadcasts/Overview.tsx
 msgid "Nothing here."
@@ -9963,6 +10124,10 @@ msgstr "정상 작동"
 #: src/features/status/MonitorToken.tsx
 msgid "operational recovers; degraded, partial_outage and major_outage fail."
 msgstr "operational은 복구하고, degraded, partial_outage, major_outage는 다운시킵니다."
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Operator"
+msgstr "운영자"
 
 #: src/features/status/ComponentDialogs.tsx
 msgid "Optional. Shown on the public page."
@@ -11090,6 +11255,10 @@ msgstr "로드맵 보드, 아이디어, 단계 기록을 읽습니다"
 msgid "Read status pages, components and incidents"
 msgstr "상태 페이지, 구성 요소, 인시던트 읽기"
 
+#: src/components/common/text.ts
+msgid "Read the audit log (owners only)"
+msgstr "감사 로그 읽기(소유자 전용)"
+
 #: src/features/migrations/text.ts
 msgid "Read the folders"
 msgstr "폴더 읽기"
@@ -11373,6 +11542,10 @@ msgstr "이 패스키를 제거할까요?"
 #: src/features/migrations/DoneStep.tsx
 msgid "Remove Yuva's access in Microsoft"
 msgstr "Microsoft에서 Yuva의 접근 권한 제거"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed {person} from the workspace"
+msgstr "{person} 님을 워크스페이스에서 제거했습니다"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Removes {name} with its products, channels, conversations, contacts, files, labels, webhooks and API keys for everyone. Members keep their accounts."
@@ -11789,6 +11962,10 @@ msgstr "{keyName}을(를) 폐기할까요?"
 msgid "Revoked"
 msgstr "폐기됨"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Revoked the API key {name}"
+msgstr "API 키 {name}을(를) 폐기했습니다"
+
 #: src/features/broadcasts/ListForm.tsx
 msgid "Right after subscribing, people get a short mail that confirms it, with an unsubscribe link."
 msgstr "구독 직후 구독 취소 링크가 포함된 확인용 짧은 메일을 받습니다."
@@ -11839,6 +12016,22 @@ msgstr "공개 키를 교체할까요?"
 #: src/features/settings/webhooks/sections.tsx
 msgid "Rotate the signing secret?"
 msgstr "서명 시크릿을 교체할까요?"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the forwarding address of a channel"
+msgstr "채널의 전달 주소를 새로 발급했습니다"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the identity secret of an inbox"
+msgstr "받은편지함의 ID 비밀 값을 새로 발급했습니다"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the key of a channel"
+msgstr "채널의 키를 새로 발급했습니다"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the signing secret of a webhook"
+msgstr "웹훅의 서명 비밀 값을 새로 발급했습니다"
 
 #: src/features/setup/email/EmailReceiveStep.tsx
 msgid "Route your domain"
@@ -13534,6 +13727,10 @@ msgstr "support@your-company.com"
 msgid "Suspended"
 msgstr "정지됨"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Suspended broadcasts"
+msgstr "일괄 발송을 중단했습니다"
+
 #: src/features/migrations/Wizard.tsx
 msgid "Switch"
 msgstr "전환"
@@ -14054,8 +14251,8 @@ msgid "The key is ready"
 msgstr "키가 준비되었습니다"
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-msgid "The key sees only these inboxes and cannot manage inboxes, webhooks or the workspace."
-msgstr "이 키는 이 받은 편지함들만 볼 수 있으며 받은 편지함, 웹훅, 워크스페이스를 관리할 수 없습니다."
+msgid "The key sees only these inboxes and cannot manage inboxes, webhooks or the workspace, or read the audit log."
+msgstr "이 키는 해당 받은편지함만 볼 수 있으며 받은편지함, 웹훅, 워크스페이스를 관리하거나 감사 로그를 읽을 수 없습니다."
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "The key stops working at the end of this day."
@@ -14522,8 +14719,8 @@ msgid "The What’s new count shows on the chat button while no messages are unr
 msgstr "읽지 않은 메시지가 없는 동안 채팅 버튼에 새 소식 수가 표시됩니다. 위젯 홈에는 항상 표시됩니다."
 
 #: src/features/settings/GeneralTabs.tsx
-msgid "The workspace itself: name, retention, labels, canned replies and moving in"
-msgstr "워크스페이스 자체: 이름, 보관 기간, 레이블, 자주 쓰는 답장, 이전"
+msgid "The workspace itself: name, retention, labels, canned replies, moving in and the audit log"
+msgstr "워크스페이스 자체: 이름, 보관 기간, 라벨, 저장된 답변, 이전, 감사 로그"
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The workspace may not send broadcasts for now."
@@ -15062,6 +15259,7 @@ msgstr "제목"
 msgid "TLS (port 465)"
 msgstr "TLS(포트 465)"
 
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "To"
 msgstr "받는 사람"
@@ -15112,6 +15310,10 @@ msgstr "시도가 너무 많습니다. 잠시 기다린 다음 다시 시도하�
 #: src/features/auth/CreateWorkspace.tsx
 msgid "Too many workspaces were created from your network today. Try again tomorrow."
 msgstr "오늘 내 네트워크에서 만들어진 워크스페이스가 너무 많습니다. 내일 다시 시도하세요."
+
+#: src/features/settings/audit/sentence.ts
+msgid "Took away the access of {person} to {inbox}"
+msgstr "{person} 님의 {inbox} 접근 권한을 회수했습니다"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "tr, en-GB"
@@ -15755,6 +15957,10 @@ msgstr "버전"
 msgid "Very large mailbox? Start with a Google Takeout file"
 msgstr "매우 큰 메일함인가요? Google Takeout 파일로 시작하세요"
 
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "via {via}"
+msgstr "{via}를 통해"
+
 #: src/features/home/HomePage.tsx
 msgid "View"
 msgstr "보기"
@@ -15970,6 +16176,7 @@ msgid "Webhook endpoint"
 msgstr "웹훅 엔드포인트"
 
 #: src/app/Palette.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
@@ -16014,6 +16221,10 @@ msgstr "수요일"
 #: src/features/broadcasts/ListForm.tsx
 msgid "Welcome receipt"
 msgstr "환영 영수증"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "What"
+msgstr "내용"
 
 #: src/features/broadcasts/Import.tsx
 msgid "What {header} holds"
@@ -16245,6 +16456,10 @@ msgstr "꺼져 있는 동안에는 전송이 이루어지지 않습니다."
 msgid "While your status is Away, only new messages in conversations assigned to you and new assignments notify you. A conversation you have open in the panel never notifies you."
 msgstr "상태가 자리 비움인 동안에는 나에게 배정된 대화의 새 메시지와 새 배정만 알립니다. 패널에서 열어 둔 대화는 알리지 않습니다."
 
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Who"
+msgstr "누가"
+
 #: src/features/broadcasts/ListsHome.tsx
 msgid "Who agreed to hear from you, with consent recorded"
 msgstr "수신에 동의한 사람과 기록된 동의"
@@ -16256,6 +16471,14 @@ msgstr "누가, 어디서 답변하고 누가 온라인인지"
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Who can reply"
 msgstr "답장할 수 있는 사람"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Who changed access, keys and data"
+msgstr "접근 권한, 키, 데이터를 변경한 사람"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Who changed members, access, keys, webhooks, mail accounts, retention and exports, newest first. Only owners see this."
+msgstr "멤버, 접근 권한, 키, 웹훅, 메일 계정, 보관 기간, 내보내기를 누가 변경했는지 최신순으로 보여 줍니다. 소유자만 볼 수 있습니다."
 
 #: src/features/team/TeamPage.tsx
 msgid "Who is here"
@@ -16366,6 +16589,10 @@ msgstr "처리 중…"
 #: src/features/settings/workspace/RetentionForm.tsx
 msgid "Workspace"
 msgstr "워크스페이스"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Workspace and broadcasts"
+msgstr "워크스페이스 및 일괄 발송"
 
 #: src/features/auth/CreateWorkspace.tsx
 msgid "Workspace name"

@@ -293,6 +293,7 @@ msgstr "{created, plural, other {新規 # 件}}"
 
 #: src/features/broadcasts/Growth.tsx
 #: src/features/docs/Toolbar.tsx
+#: src/features/settings/audit/sentence.ts
 msgid "{d, plural, one {# day} other {# days}}"
 msgstr "{d, plural, other {# 日}}"
 
@@ -481,6 +482,10 @@ msgstr "{n, plural, other {他の会話 # 件}}"
 msgid "{n, plural, one {# person} other {# people}}"
 msgstr "{n, plural, other {# 人}}"
 
+#: src/features/settings/audit/sentence.ts
+msgid "{n, plural, one {# recipient a day} other {# recipients a day}}"
+msgstr "{n, plural, other {1 日あたり # 人の宛先}}"
+
 #: src/features/setup/SetupHub.tsx
 msgid "{n, plural, one {# website chat} other {# website chats}}"
 msgstr "{n, plural, other {# 件のウェブサイトチャット}}"
@@ -664,6 +669,10 @@ msgstr "{percent}%、{doneText} / {total}"
 #: src/features/migrations/UploadStep.tsx
 msgid "{percent}%, {sent} of {size}"
 msgstr "{percent}%、{sent} / {size}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "{person} left the workspace by deleting their account"
+msgstr "{person} がアカウントを削除してワークスペースを離れました"
 
 #: src/features/inbox/ChatsPage.tsx
 msgid "{product}’s conversations"
@@ -1137,6 +1146,10 @@ msgstr "ドラフトが作成されたとき"
 #: src/components/common/text.ts
 msgid "A file's content does not match its type. Check the file and try again."
 msgstr "ファイルの内容が種類と一致しません。ファイルを確認して、もう一度お試しください。"
+
+#: src/features/settings/audit/sentence.ts
+msgid "a former member"
+msgstr "元メンバー"
 
 #: src/features/contact/ContactNotes.tsx
 msgid "A former teammate"
@@ -1632,6 +1645,10 @@ msgstr "{created} に追加、最終配信 {delivered}"
 msgid "Added {created}, last used {used}"
 msgstr "{created} に追加、最終使用 {used}"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Added a webhook to {host}"
+msgstr "{host} への Webhook を追加しました"
+
 #: src/components/common/text.ts
 msgid "Added by the team"
 msgstr "チームが追加"
@@ -1833,6 +1850,10 @@ msgstr "許可済み"
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Allowed origins"
 msgstr "許可するオリジン"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Allowed the workspace to send broadcasts"
+msgstr "ワークスペースによる一斉送信を許可しました"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Already earlier in the file"
@@ -2201,11 +2222,13 @@ msgstr "API と MCP"
 msgid "API channel"
 msgstr "API チャネル"
 
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/status/IncidentDetail.tsx
 msgid "API key"
 msgstr "API キー"
 
 #: src/app/Palette.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/channels/ChannelPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
@@ -2370,6 +2393,10 @@ msgstr "メールサーバーの管理者に、{address} をメールボック�
 msgid "asked after closing"
 msgstr "クローズ後に質問"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Asked to be allowed to send broadcasts"
+msgstr "一斉送信の許可を申請しました"
+
 #: src/components/common/text.ts
 msgid "Asked to subscribe"
 msgstr "登録をリクエスト済み"
@@ -2514,6 +2541,12 @@ msgstr "属性"
 #: src/features/broadcasts/Composer.tsx
 msgid "Audience"
 msgstr "オーディエンス"
+
+#: src/app/Palette.tsx
+#: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Audit log"
+msgstr "監査ログ"
 
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Authorization"
@@ -2947,6 +2980,10 @@ msgstr "このインポートをキャンセルしますか?"
 msgid "Cancelled"
 msgstr "キャンセル済み"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Cancelled an invitation"
+msgstr "招待を取り消しました"
+
 #: src/features/broadcasts/Import.tsx
 msgid "Cancelled. What was added before stays."
 msgstr "キャンセルしました。それまでに追加された分は残ります。"
@@ -3038,6 +3075,26 @@ msgstr "連絡先の変更、削除、統合"
 msgid "Change, move and bulk-update conversations"
 msgstr "会話の変更、移動、一括更新"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Changed how long conversations are kept from {from} to {to}"
+msgstr "会話の保存期間を {from} から {to} に変更しました"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the daily broadcast limit from {from} to {to}"
+msgstr "1 日の一斉送信の上限を {from} から {to} に変更しました"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the mail account or password of a channel"
+msgstr "チャンネルのメールアカウントまたはパスワードを変更しました"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the role of {person} from {from} to {to}"
+msgstr "{person} の役割を {from} から {to} に変更しました"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the webhook to {host}"
+msgstr "{host} への Webhook を変更しました"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Changelog settings"
 msgstr "更新履歴の設定"
@@ -3045,6 +3102,10 @@ msgstr "更新履歴の設定"
 #: src/features/migrations/Wizard.tsx
 msgid "Changes made to {provider}: none"
 msgstr "{provider} への変更: なし"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Changes to members, keys, webhooks and other sensitive settings show up here."
+msgstr "メンバー、キー、Webhook などの重要な設定の変更がここに表示されます。"
 
 #: src/features/settings/channels/email/EmailSections.tsx
 msgid "Changing the sending domain turns DKIM signing off until you enable it again for the new domain."
@@ -3076,6 +3137,10 @@ msgstr "チャンネル設定"
 #: src/features/settings/ProductsPage.tsx
 msgid "Channels"
 msgstr "チャネル"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Channels and inboxes"
+msgstr "チャンネルと受信トレイ"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Chat"
@@ -3613,6 +3678,10 @@ msgstr "サーバーとボットを Yuva に接続"
 msgid "Connected"
 msgstr "接続済み"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Connected {client}"
+msgstr "{client} を接続しました"
+
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Connected {created}"
 msgstr "{created} に接続"
@@ -3622,6 +3691,7 @@ msgstr "{created} に接続"
 #: src/components/common/SettingsStrip.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/inbox/SidePanels.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
 msgid "Connected apps"
@@ -3733,6 +3803,10 @@ msgstr "{since} から連絡先"
 #: src/features/settings/webhooks/events.tsx
 msgid "Contacts"
 msgstr "連絡先"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Contacts and exports"
+msgstr "連絡先とエクスポート"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "contains"
@@ -4053,6 +4127,18 @@ msgstr "Yuva アカウントを作成"
 msgid "Created"
 msgstr "作成済み"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Created an analytics export"
+msgstr "分析のエクスポートを作成しました"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Created the API key {name}"
+msgstr "API キー {name} を作成しました"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Created the DKIM key {selector}"
+msgstr "DKIM キー {selector} を作成しました"
+
 #: src/features/migrations/DoneStep.tsx
 msgid "Credentials deleted {deletedAt}. Yuva can no longer read {address}."
 msgstr "認証情報を {deletedAt} に削除しました。Yuva は {address} を読み取れなくなりました。"
@@ -4154,6 +4240,10 @@ msgstr "履歴の日数"
 #: src/features/setup/InstallStep.tsx
 msgid "Decide who may write in discussions"
 msgstr "ディスカッションに書き込める人を決める"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Declined the request to send broadcasts"
+msgstr "一斉送信のリクエストを却下しました"
 
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "Default: {fallback}"
@@ -4336,6 +4426,14 @@ msgstr "アカウントを削除"
 msgid "Delete your account?"
 msgstr "アカウントを削除しますか?"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted a contact"
+msgstr "連絡先を削除しました"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted a DKIM key"
+msgstr "DKIM キーを削除しました"
+
 #: src/features/contact/MergeContactDialog.tsx
 msgid "deleted afterwards"
 msgstr "後で削除されます"
@@ -4362,6 +4460,14 @@ msgstr "削除されたメンバー"
 #: src/components/common/DiscussionAuthor.tsx
 msgid "Deleted reader"
 msgstr "削除された閲覧者"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted the inbox {name}"
+msgstr "受信トレイ {name} を削除しました"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted the webhook to {host}"
+msgstr "{host} への Webhook を削除しました"
 
 #: src/features/settings/inboxes/InboxSecurity.tsx
 msgid "Deletes its channels, conversations, messages and attachments. This cannot be undone."
@@ -4474,6 +4580,10 @@ msgstr "変更を破棄"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Discard the suggested reply"
 msgstr "提案された返信を破棄"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Disconnected {client}"
+msgstr "{client} の接続を解除しました"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/DocsPage.tsx
@@ -5156,8 +5266,8 @@ msgid "Every request to this endpoint, newest first. The newest 100 are kept."
 msgstr "このエンドポイントへのすべてのリクエスト(新しい順)。最新の 100 件を保持します。"
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-msgid "Every scope except sending broadcasts."
-msgstr "一斉配信の送信を除くすべてのスコープ。"
+msgid "Every scope except sending broadcasts and reading the audit log."
+msgstr "一斉送信と監査ログの閲覧を除くすべての権限。"
 
 #: src/features/inbox/SourceFilter.tsx
 msgid "Every site"
@@ -5174,6 +5284,10 @@ msgstr "すべての種類"
 #: src/features/setup/SetupHub.tsx
 msgid "Every website and app shows its visitors on Home and in Analytics."
 msgstr "すべてのウェブサイトとアプリの訪問者が、ホームとアナリティクスに表示されます。"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Everyone"
+msgstr "全員"
 
 #: src/features/inbox/ChatsPage.tsx
 msgid "Everyone has been answered."
@@ -5203,6 +5317,7 @@ msgstr "スパムとして記録した投稿者を除き、全員の投稿がす
 #: src/features/migrations/Wizard.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 msgid "Everything"
 msgstr "すべて"
 
@@ -5276,6 +5391,14 @@ msgstr "エクスポートファイル"
 #: src/features/migrations/text.ts
 msgid "Export once as a .zip file. Google mails you a link when it is ready; for a large mailbox that can take a day or more."
 msgstr ".zip ファイルとして一度エクスポートしてください。準備ができると Google がリンクをメールで送ります。大きなメールボックスでは 1 日以上かかることがあります。"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Exported the consent records of contacts"
+msgstr "連絡先の同意記録をエクスポートしました"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Exported the consent records of the list {name}"
+msgstr "リスト {name} の同意記録をエクスポートしました"
 
 #: src/features/broadcasts/Import.tsx
 msgid "External id"
@@ -5603,6 +5726,10 @@ msgstr "サインイン済みのユーザーには、バックエンドが受信
 msgid "For signed-in users: the identity secret, shown only now"
 msgstr "サインイン済みユーザー向け: アイデンティティシークレット(今回のみ表示)"
 
+#: src/features/settings/audit/sentence.ts
+msgid "forever"
+msgstr "無期限"
+
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/ListPage.tsx
 msgid "Form"
@@ -5678,6 +5805,7 @@ msgstr "送信済みフォルダーで見つかりました"
 msgid "Friday"
 msgstr "金曜日"
 
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "From"
 msgstr "差出人"
@@ -5761,6 +5889,10 @@ msgstr "同じメッセージの追加コピー"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Gallery"
 msgstr "ギャラリー"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Gave {person} access to {inbox}"
+msgstr "{person} に {inbox} へのアクセスを付与しました"
 
 #: src/app/Sidebar.tsx
 #: src/components/common/SettingsStrip.tsx
@@ -6590,6 +6722,10 @@ msgstr "招待の言語"
 msgid "Invite your team"
 msgstr "チームを招待"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Invited {email} as {role}"
+msgstr "{email} を {role} として招待しました"
+
 #: src/features/team/TeamPage.tsx
 msgid "Invites"
 msgstr "招待"
@@ -6758,6 +6894,10 @@ msgstr "レポートと宛先リストが削除されます。返信で始まっ
 msgid "Its settings, credentials and progress are deleted. Imported conversations stay."
 msgstr "設定、認証情報、進捗が削除されます。インポート済みの会話は残ります。"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Joined the workspace as {role}"
+msgstr "{role} としてワークスペースに参加しました"
+
 #: src/features/conversation/ConversationStatus.tsx
 msgid "Just wrote"
 msgstr "たった今書き込み"
@@ -6817,6 +6957,10 @@ msgstr "このワークスペースでは、キーとアシスタントは一斉
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "Keys and assistants may send broadcasts"
 msgstr "キーとアシスタントによる一斉配信を許可"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Keys and connected apps"
+msgstr "キーと接続済みアプリ"
 
 #: src/features/settings/channels/ChannelPage.tsx
 msgid "Keys that can reach this product. Create and revoke them under API & MCP."
@@ -7245,6 +7389,7 @@ msgstr "画像を読み込む"
 #: src/features/contact/ContactsPage.tsx
 #: src/features/docs/discussions/parts.tsx
 #: src/features/docs/PagesTab.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
 #: src/features/status/LinkConversationsDialog.tsx
 #: src/features/status/MonitorChecks.tsx
@@ -7628,6 +7773,10 @@ msgstr "メンバー"
 #: src/features/team/TeamPage.tsx
 msgid "Members"
 msgstr "メンバー"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Members and invitations"
+msgstr "メンバーと招待"
 
 #: src/features/conversation/composer/MentionMenu.tsx
 msgid "Mention a teammate"
@@ -8652,6 +8801,10 @@ msgstr "エンドポイントはまだありません"
 msgid "No endpoints yet."
 msgstr "エンドポイントはまだありません。"
 
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "No entry matches these filters."
+msgstr "この条件に一致する項目はありません。"
+
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "No events recorded."
 msgstr "記録されたイベントはありません。"
@@ -8705,6 +8858,10 @@ msgstr "ラベルはまだありません"
 #: src/features/inbox/ChatList.tsx
 msgid "No labels yet. Add them in settings."
 msgstr "ラベルはまだありません。設定で追加してください。"
+
+#: src/features/settings/audit/sentence.ts
+msgid "no limit"
+msgstr "上限なし"
 
 #: src/features/broadcasts/Pace.tsx
 msgid "No limit"
@@ -9197,6 +9354,10 @@ msgstr "解決済みのものはまだありません。"
 #: src/features/broadcasts/Report.tsx
 msgid "Nothing has happened yet."
 msgstr "まだ何も起きていません。"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Nothing here"
+msgstr "まだ何もありません"
 
 #: src/features/broadcasts/Overview.tsx
 msgid "Nothing here."
@@ -9963,6 +10124,10 @@ msgstr "正常稼働"
 #: src/features/status/MonitorToken.tsx
 msgid "operational recovers; degraded, partial_outage and major_outage fail."
 msgstr "operational は復旧、degraded・partial_outage・major_outage はダウンになります。"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Operator"
+msgstr "オペレーター"
 
 #: src/features/status/ComponentDialogs.tsx
 msgid "Optional. Shown on the public page."
@@ -11090,6 +11255,10 @@ msgstr "ロードマップボード、アイデア、ステージ履歴を読み
 msgid "Read status pages, components and incidents"
 msgstr "ステータスページ、コンポーネント、インシデントを読み取る"
 
+#: src/components/common/text.ts
+msgid "Read the audit log (owners only)"
+msgstr "監査ログを読む（オーナーのみ）"
+
 #: src/features/migrations/text.ts
 msgid "Read the folders"
 msgstr "フォルダーを読み取り"
@@ -11373,6 +11542,10 @@ msgstr "このパスキーを削除しますか?"
 #: src/features/migrations/DoneStep.tsx
 msgid "Remove Yuva's access in Microsoft"
 msgstr "Microsoft で Yuva のアクセスを削除"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed {person} from the workspace"
+msgstr "{person} をワークスペースから削除しました"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Removes {name} with its products, channels, conversations, contacts, files, labels, webhooks and API keys for everyone. Members keep their accounts."
@@ -11789,6 +11962,10 @@ msgstr "{keyName} を取り消しますか?"
 msgid "Revoked"
 msgstr "取り消し済み"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Revoked the API key {name}"
+msgstr "API キー {name} を無効にしました"
+
 #: src/features/broadcasts/ListForm.tsx
 msgid "Right after subscribing, people get a short mail that confirms it, with an unsubscribe link."
 msgstr "登録直後に、確認用の短いメールが配信停止リンク付きで届きます。"
@@ -11839,6 +12016,22 @@ msgstr "公開キーをローテーションしますか?"
 #: src/features/settings/webhooks/sections.tsx
 msgid "Rotate the signing secret?"
 msgstr "署名シークレットをローテーションしますか?"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the forwarding address of a channel"
+msgstr "チャンネルの転送アドレスを再生成しました"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the identity secret of an inbox"
+msgstr "受信トレイの ID シークレットを再生成しました"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the key of a channel"
+msgstr "チャンネルのキーを再生成しました"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the signing secret of a webhook"
+msgstr "Webhook の署名シークレットを再生成しました"
 
 #: src/features/setup/email/EmailReceiveStep.tsx
 msgid "Route your domain"
@@ -13534,6 +13727,10 @@ msgstr "support@your-company.com"
 msgid "Suspended"
 msgstr "停止中"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Suspended broadcasts"
+msgstr "一斉送信を停止しました"
+
 #: src/features/migrations/Wizard.tsx
 msgid "Switch"
 msgstr "切り替え"
@@ -14054,8 +14251,8 @@ msgid "The key is ready"
 msgstr "キーの準備ができました"
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-msgid "The key sees only these inboxes and cannot manage inboxes, webhooks or the workspace."
-msgstr "このキーはこれらの受信トレイしか参照できず、受信トレイ、Webhook、ワークスペースを管理することはできません。"
+msgid "The key sees only these inboxes and cannot manage inboxes, webhooks or the workspace, or read the audit log."
+msgstr "このキーはこれらの受信トレイしか見られず、受信トレイ・Webhook・ワークスペースの管理や監査ログの閲覧はできません。"
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "The key stops working at the end of this day."
@@ -14522,8 +14719,8 @@ msgid "The What’s new count shows on the chat button while no messages are unr
 msgstr "未読メッセージがない間、チャットボタンに新着情報の件数が表示されます。ウィジェットのホームには常に表示されます。"
 
 #: src/features/settings/GeneralTabs.tsx
-msgid "The workspace itself: name, retention, labels, canned replies and moving in"
-msgstr "ワークスペース自体：名前、保持期間、ラベル、定型返信、移行"
+msgid "The workspace itself: name, retention, labels, canned replies, moving in and the audit log"
+msgstr "ワークスペース自体：名前、保存期間、ラベル、定型返信、移行、監査ログ"
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The workspace may not send broadcasts for now."
@@ -15062,6 +15259,7 @@ msgstr "タイトル"
 msgid "TLS (port 465)"
 msgstr "TLS(ポート 465)"
 
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "To"
 msgstr "宛先"
@@ -15112,6 +15310,10 @@ msgstr "試行回数が多すぎます。しばらくしてからもう一度お
 #: src/features/auth/CreateWorkspace.tsx
 msgid "Too many workspaces were created from your network today. Try again tomorrow."
 msgstr "今日、あなたのネットワークから作成されたワークスペースが多すぎます。明日もう一度お試しください。"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Took away the access of {person} to {inbox}"
+msgstr "{person} の {inbox} へのアクセスを取り消しました"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "tr, en-GB"
@@ -15755,6 +15957,10 @@ msgstr "バージョン"
 msgid "Very large mailbox? Start with a Google Takeout file"
 msgstr "非常に大きなメールボックスですか?Google Takeout ファイルから始めましょう"
 
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "via {via}"
+msgstr "{via} 経由"
+
 #: src/features/home/HomePage.tsx
 msgid "View"
 msgstr "表示"
@@ -15970,6 +16176,7 @@ msgid "Webhook endpoint"
 msgstr "Webhook エンドポイント"
 
 #: src/app/Palette.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
@@ -16014,6 +16221,10 @@ msgstr "水曜日"
 #: src/features/broadcasts/ListForm.tsx
 msgid "Welcome receipt"
 msgstr "ウェルカムレシート"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "What"
+msgstr "内容"
 
 #: src/features/broadcasts/Import.tsx
 msgid "What {header} holds"
@@ -16245,6 +16456,10 @@ msgstr "オフの間は、配信は行われません。"
 msgid "While your status is Away, only new messages in conversations assigned to you and new assignments notify you. A conversation you have open in the panel never notifies you."
 msgstr "ステータスが不在の間は、自分に割り当てられた会話の新着メッセージと新しい割り当てのみ通知されます。パネルで開いている会話が通知されることはありません。"
 
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Who"
+msgstr "実行者"
+
 #: src/features/broadcasts/ListsHome.tsx
 msgid "Who agreed to hear from you, with consent recorded"
 msgstr "配信に同意した人（同意の記録付き）"
@@ -16256,6 +16471,14 @@ msgstr "誰が、どこで返信し、誰がオンラインか"
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Who can reply"
 msgstr "返信できる人"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Who changed access, keys and data"
+msgstr "アクセス、キー、データを変更した人"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Who changed members, access, keys, webhooks, mail accounts, retention and exports, newest first. Only owners see this."
+msgstr "メンバー、アクセス、キー、Webhook、メールアカウント、保存期間、エクスポートを誰が変更したかを新しい順に表示します。オーナーのみ閲覧できます。"
 
 #: src/features/team/TeamPage.tsx
 msgid "Who is here"
@@ -16366,6 +16589,10 @@ msgstr "作業中…"
 #: src/features/settings/workspace/RetentionForm.tsx
 msgid "Workspace"
 msgstr "ワークスペース"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Workspace and broadcasts"
+msgstr "ワークスペースと一斉送信"
 
 #: src/features/auth/CreateWorkspace.tsx
 msgid "Workspace name"

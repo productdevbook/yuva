@@ -293,6 +293,7 @@ msgstr "{created, plural, one {# nový} few {# nové} many {# nového} other {# 
 
 #: src/features/broadcasts/Growth.tsx
 #: src/features/docs/Toolbar.tsx
+#: src/features/settings/audit/sentence.ts
 msgid "{d, plural, one {# day} other {# days}}"
 msgstr "{d, plural, one {# deň} few {# dni} many {# dňa} other {# dní}}"
 
@@ -481,6 +482,10 @@ msgstr "{n, plural, one {# ďalšia konverzácia} few {# ďalšie konverzácie} 
 msgid "{n, plural, one {# person} other {# people}}"
 msgstr "{n, plural, one {# osoba} few {# osoby} many {# osoby} other {# osôb}}"
 
+#: src/features/settings/audit/sentence.ts
+msgid "{n, plural, one {# recipient a day} other {# recipients a day}}"
+msgstr "{n, plural, one {# príjemca denne} few {# príjemcovia denne} many {# príjemcu denne} other {# príjemcov denne}}"
+
 #: src/features/setup/SetupHub.tsx
 msgid "{n, plural, one {# website chat} other {# website chats}}"
 msgstr "{n, plural, one {# chat na webe} few {# chaty na webe} many {# chatu na webe} other {# chatov na webe}}"
@@ -664,6 +669,10 @@ msgstr "{percent} %, {doneText} z {total}"
 #: src/features/migrations/UploadStep.tsx
 msgid "{percent}%, {sent} of {size}"
 msgstr "{percent} %, {sent} z {size}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "{person} left the workspace by deleting their account"
+msgstr "{person} opustil(a) pracovný priestor zmazaním účtu"
 
 #: src/features/inbox/ChatsPage.tsx
 msgid "{product}’s conversations"
@@ -1137,6 +1146,10 @@ msgstr "Koncept bol napísaný"
 #: src/components/common/text.ts
 msgid "A file's content does not match its type. Check the file and try again."
 msgstr "Obsah súboru nezodpovedá jeho typu. Skontrolujte súbor a skúste to znova."
+
+#: src/features/settings/audit/sentence.ts
+msgid "a former member"
+msgstr "bývalý člen"
 
 #: src/features/contact/ContactNotes.tsx
 msgid "A former teammate"
@@ -1632,6 +1645,10 @@ msgstr "Pridané {created}, naposledy doručené {delivered}"
 msgid "Added {created}, last used {used}"
 msgstr "Pridané {created}, naposledy použité {used}"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Added a webhook to {host}"
+msgstr "Pridal(a) webhook na {host}"
+
 #: src/components/common/text.ts
 msgid "Added by the team"
 msgstr "Pridané tímom"
@@ -1833,6 +1850,10 @@ msgstr "Povolené"
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Allowed origins"
 msgstr "Povolené originy"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Allowed the workspace to send broadcasts"
+msgstr "Povolil(a) pracovnému priestoru odosielať hromadné správy"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Already earlier in the file"
@@ -2201,11 +2222,13 @@ msgstr "API a MCP"
 msgid "API channel"
 msgstr "Kanál API"
 
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/status/IncidentDetail.tsx
 msgid "API key"
 msgstr "Kľúč API"
 
 #: src/app/Palette.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/channels/ChannelPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
@@ -2370,6 +2393,10 @@ msgstr "Požiadajte správcu svojho poštového servera, aby {address} presmerov
 msgid "asked after closing"
 msgstr "opýtali sa po zatvorení"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Asked to be allowed to send broadcasts"
+msgstr "Požiadal(a) o povolenie odosielať hromadné správy"
+
 #: src/components/common/text.ts
 msgid "Asked to subscribe"
 msgstr "Vyzvané na odber"
@@ -2514,6 +2541,12 @@ msgstr "Atribúty"
 #: src/features/broadcasts/Composer.tsx
 msgid "Audience"
 msgstr "Publikum"
+
+#: src/app/Palette.tsx
+#: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Audit log"
+msgstr "Auditný záznam"
 
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Authorization"
@@ -2947,6 +2980,10 @@ msgstr "Zrušiť tento import?"
 msgid "Cancelled"
 msgstr "Zrušené"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Cancelled an invitation"
+msgstr "Zrušil(a) pozvánku"
+
 #: src/features/broadcasts/Import.tsx
 msgid "Cancelled. What was added before stays."
 msgstr "Zrušené. Čo bolo pridané skôr, zostáva."
@@ -3038,6 +3075,26 @@ msgstr "Meniť, odstraňovať a zlučovať kontakty"
 msgid "Change, move and bulk-update conversations"
 msgstr "Meniť, presúvať a hromadne aktualizovať konverzácie"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Changed how long conversations are kept from {from} to {to}"
+msgstr "Zmenil(a) dobu uchovávania konverzácií z {from} na {to}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the daily broadcast limit from {from} to {to}"
+msgstr "Zmenil(a) denný limit hromadných správ z {from} na {to}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the mail account or password of a channel"
+msgstr "Zmenil(a) poštový účet alebo heslo kanála"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the role of {person} from {from} to {to}"
+msgstr "Zmenil(a) rolu používateľa {person} z {from} na {to}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the webhook to {host}"
+msgstr "Zmenil(a) webhook na {host}"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Changelog settings"
 msgstr "Nastavenia zoznamu zmien"
@@ -3045,6 +3102,10 @@ msgstr "Nastavenia zoznamu zmien"
 #: src/features/migrations/Wizard.tsx
 msgid "Changes made to {provider}: none"
 msgstr "Zmeny vykonané u {provider}: žiadne"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Changes to members, keys, webhooks and other sensitive settings show up here."
+msgstr "Zmeny členov, kľúčov, webhookov a ďalších citlivých nastavení sa zobrazia tu."
 
 #: src/features/settings/channels/email/EmailSections.tsx
 msgid "Changing the sending domain turns DKIM signing off until you enable it again for the new domain."
@@ -3076,6 +3137,10 @@ msgstr "Nastavenia kanála"
 #: src/features/settings/ProductsPage.tsx
 msgid "Channels"
 msgstr "Kanály"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Channels and inboxes"
+msgstr "Kanály a schránky"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Chat"
@@ -3613,6 +3678,10 @@ msgstr "Pripojte svoje servery a boty k Yuve"
 msgid "Connected"
 msgstr "Pripojené"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Connected {client}"
+msgstr "Pripojil(a) {client}"
+
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Connected {created}"
 msgstr "Pripojené {created}"
@@ -3622,6 +3691,7 @@ msgstr "Pripojené {created}"
 #: src/components/common/SettingsStrip.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/inbox/SidePanels.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
 msgid "Connected apps"
@@ -3733,6 +3803,10 @@ msgstr "Kontakt od {since}"
 #: src/features/settings/webhooks/events.tsx
 msgid "Contacts"
 msgstr "Kontakty"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Contacts and exports"
+msgstr "Kontakty a exporty"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "contains"
@@ -4053,6 +4127,18 @@ msgstr "Vytvorte si účet Yuva"
 msgid "Created"
 msgstr "Vytvorené"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Created an analytics export"
+msgstr "Vytvoril(a) export analytiky"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Created the API key {name}"
+msgstr "Vytvoril(a) kľúč API {name}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Created the DKIM key {selector}"
+msgstr "Vytvoril(a) kľúč DKIM {selector}"
+
 #: src/features/migrations/DoneStep.tsx
 msgid "Credentials deleted {deletedAt}. Yuva can no longer read {address}."
 msgstr "Prihlasovacie údaje odstránené {deletedAt}. Yuva už nemôže čítať {address}."
@@ -4154,6 +4240,10 @@ msgstr "Dní histórie"
 #: src/features/setup/InstallStep.tsx
 msgid "Decide who may write in discussions"
 msgstr "Rozhodnite, kto smie písať do diskusií"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Declined the request to send broadcasts"
+msgstr "Zamietol(a) žiadosť o odosielanie hromadných správ"
 
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "Default: {fallback}"
@@ -4336,6 +4426,14 @@ msgstr "Odstrániť váš účet"
 msgid "Delete your account?"
 msgstr "Odstrániť váš účet?"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted a contact"
+msgstr "Zmazal(a) kontakt"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted a DKIM key"
+msgstr "Zmazal(a) kľúč DKIM"
+
 #: src/features/contact/MergeContactDialog.tsx
 msgid "deleted afterwards"
 msgstr "potom sa odstráni"
@@ -4362,6 +4460,14 @@ msgstr "Odstránený člen"
 #: src/components/common/DiscussionAuthor.tsx
 msgid "Deleted reader"
 msgstr "Odstránený čitateľ"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted the inbox {name}"
+msgstr "Zmazal(a) schránku {name}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted the webhook to {host}"
+msgstr "Zmazal(a) webhook na {host}"
 
 #: src/features/settings/inboxes/InboxSecurity.tsx
 msgid "Deletes its channels, conversations, messages and attachments. This cannot be undone."
@@ -4474,6 +4580,10 @@ msgstr "Zahodiť zmeny"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Discard the suggested reply"
 msgstr "Zahodiť navrhnutú odpoveď"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Disconnected {client}"
+msgstr "Odpojil(a) {client}"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/DocsPage.tsx
@@ -5156,8 +5266,8 @@ msgid "Every request to this endpoint, newest first. The newest 100 are kept."
 msgstr "Každá požiadavka na tento koncový bod, od najnovšej. Uchováva sa najnovších 100."
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-msgid "Every scope except sending broadcasts."
-msgstr "Každý rozsah okrem odosielania hromadných správ."
+msgid "Every scope except sending broadcasts and reading the audit log."
+msgstr "Všetky oprávnenia okrem odosielania hromadných správ a čítania auditného záznamu."
 
 #: src/features/inbox/SourceFilter.tsx
 msgid "Every site"
@@ -5174,6 +5284,10 @@ msgstr "Každý typ"
 #: src/features/setup/SetupHub.tsx
 msgid "Every website and app shows its visitors on Home and in Analytics."
 msgstr "Každý web a aplikácia zobrazuje svojich návštevníkov na Domov a v Analytike."
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Everyone"
+msgstr "Všetci"
 
 #: src/features/inbox/ChatsPage.tsx
 msgid "Everyone has been answered."
@@ -5203,6 +5317,7 @@ msgstr "Príspevky všetkých sa publikujú hneď, okrem príspevkov autorov, kt
 #: src/features/migrations/Wizard.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 msgid "Everything"
 msgstr "Všetko"
 
@@ -5276,6 +5391,14 @@ msgstr "Exportný súbor"
 #: src/features/migrations/text.ts
 msgid "Export once as a .zip file. Google mails you a link when it is ready; for a large mailbox that can take a day or more."
 msgstr "Exportujte raz ako súbor .zip. Google vám pošle odkaz e-mailom, keď bude pripravený; pri veľkej schránke to môže trvať deň aj dlhšie."
+
+#: src/features/settings/audit/sentence.ts
+msgid "Exported the consent records of contacts"
+msgstr "Exportoval(a) záznamy o súhlase kontaktov"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Exported the consent records of the list {name}"
+msgstr "Exportoval(a) záznamy o súhlase zoznamu {name}"
 
 #: src/features/broadcasts/Import.tsx
 msgid "External id"
@@ -5603,6 +5726,10 @@ msgstr "Pri prihlásených používateľoch váš backend podpisuje token identi
 msgid "For signed-in users: the identity secret, shown only now"
 msgstr "Pri prihlásených používateľoch: tajný kľúč identity, zobrazený len teraz"
 
+#: src/features/settings/audit/sentence.ts
+msgid "forever"
+msgstr "navždy"
+
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/ListPage.tsx
 msgid "Form"
@@ -5678,6 +5805,7 @@ msgstr "Nájdené vo vašich priečinkoch Odoslané"
 msgid "Friday"
 msgstr "Piatok"
 
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "From"
 msgstr "Od"
@@ -5761,6 +5889,10 @@ msgstr "Ďalšie kópie tej istej správy"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Gallery"
 msgstr "Galéria"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Gave {person} access to {inbox}"
+msgstr "Dal(a) používateľovi {person} prístup k {inbox}"
 
 #: src/app/Sidebar.tsx
 #: src/components/common/SettingsStrip.tsx
@@ -6590,6 +6722,10 @@ msgstr "Jazyk pozvánky"
 msgid "Invite your team"
 msgstr "Pozvite svoj tím"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Invited {email} as {role}"
+msgstr "Pozval(a) {email} ako {role}"
+
 #: src/features/team/TeamPage.tsx
 msgid "Invites"
 msgstr "Pozvánky"
@@ -6758,6 +6894,10 @@ msgstr "Jej správa a zoznam príjemcov sa odstránia. Konverzácie otvorené od
 msgid "Its settings, credentials and progress are deleted. Imported conversations stay."
 msgstr "Jeho nastavenia, prihlasovacie údaje a priebeh sa odstránia. Importované konverzácie zostanú."
 
+#: src/features/settings/audit/sentence.ts
+msgid "Joined the workspace as {role}"
+msgstr "Pripojil(a) sa k pracovnému priestoru ako {role}"
+
 #: src/features/conversation/ConversationStatus.tsx
 msgid "Just wrote"
 msgstr "Práve napísal(a)"
@@ -6817,6 +6957,10 @@ msgstr "Kľúče a asistenti v tomto pracovnom priestore nesmú plánovať hroma
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "Keys and assistants may send broadcasts"
 msgstr "Kľúče a asistenti smú odosielať hromadné správy"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Keys and connected apps"
+msgstr "Kľúče a pripojené aplikácie"
 
 #: src/features/settings/channels/ChannelPage.tsx
 msgid "Keys that can reach this product. Create and revoke them under API & MCP."
@@ -7245,6 +7389,7 @@ msgstr "Načítať obrázky"
 #: src/features/contact/ContactsPage.tsx
 #: src/features/docs/discussions/parts.tsx
 #: src/features/docs/PagesTab.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
 #: src/features/status/LinkConversationsDialog.tsx
 #: src/features/status/MonitorChecks.tsx
@@ -7628,6 +7773,10 @@ msgstr "Člen"
 #: src/features/team/TeamPage.tsx
 msgid "Members"
 msgstr "Členovia"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Members and invitations"
+msgstr "Členovia a pozvánky"
 
 #: src/features/conversation/composer/MentionMenu.tsx
 msgid "Mention a teammate"
@@ -8652,6 +8801,10 @@ msgstr "Zatiaľ žiadne koncové body"
 msgid "No endpoints yet."
 msgstr "Zatiaľ žiadne koncové body."
 
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "No entry matches these filters."
+msgstr "Žiadny záznam nezodpovedá týmto filtrom."
+
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "No events recorded."
 msgstr "Nezaznamenané žiadne udalosti."
@@ -8705,6 +8858,10 @@ msgstr "Zatiaľ žiadne štítky"
 #: src/features/inbox/ChatList.tsx
 msgid "No labels yet. Add them in settings."
 msgstr "Zatiaľ žiadne štítky. Pridajte ich v nastaveniach."
+
+#: src/features/settings/audit/sentence.ts
+msgid "no limit"
+msgstr "bez limitu"
 
 #: src/features/broadcasts/Pace.tsx
 msgid "No limit"
@@ -9197,6 +9354,10 @@ msgstr "Zatiaľ nebolo nič vyriešené."
 #: src/features/broadcasts/Report.tsx
 msgid "Nothing has happened yet."
 msgstr "Zatiaľ sa nič nestalo."
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Nothing here"
+msgstr "Zatiaľ tu nič nie je"
 
 #: src/features/broadcasts/Overview.tsx
 msgid "Nothing here."
@@ -9963,6 +10124,10 @@ msgstr "V prevádzke"
 #: src/features/status/MonitorToken.tsx
 msgid "operational recovers; degraded, partial_outage and major_outage fail."
 msgstr "operational obnoví; degraded, partial_outage a major_outage vyradia."
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Operator"
+msgstr "Operátor"
 
 #: src/features/status/ComponentDialogs.tsx
 msgid "Optional. Shown on the public page."
@@ -11090,6 +11255,10 @@ msgstr "Čítať nástenky plánu vývoja, nápady a históriu fáz"
 msgid "Read status pages, components and incidents"
 msgstr "Čítať stránky stavu, komponenty a incidenty"
 
+#: src/components/common/text.ts
+msgid "Read the audit log (owners only)"
+msgstr "Čítanie auditného záznamu (len vlastníci)"
+
 #: src/features/migrations/text.ts
 msgid "Read the folders"
 msgstr "Prečítať priečinky"
@@ -11373,6 +11542,10 @@ msgstr "Odstrániť tento prístupový kľúč?"
 #: src/features/migrations/DoneStep.tsx
 msgid "Remove Yuva's access in Microsoft"
 msgstr "Odstrániť prístup Yuvy v Microsofte"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed {person} from the workspace"
+msgstr "Odobral(a) používateľa {person} z pracovného priestoru"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Removes {name} with its products, channels, conversations, contacts, files, labels, webhooks and API keys for everyone. Members keep their accounts."
@@ -11789,6 +11962,10 @@ msgstr "Odvolať {keyName}?"
 msgid "Revoked"
 msgstr "Odvolané"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Revoked the API key {name}"
+msgstr "Zrušil(a) platnosť kľúča API {name}"
+
 #: src/features/broadcasts/ListForm.tsx
 msgid "Right after subscribing, people get a short mail that confirms it, with an unsubscribe link."
 msgstr "Hneď po prihlásení na odber ľudia dostanú krátku správu, ktorá to potvrdí, s odkazom na odhlásenie."
@@ -11839,6 +12016,22 @@ msgstr "Otočiť verejný kľúč?"
 #: src/features/settings/webhooks/sections.tsx
 msgid "Rotate the signing secret?"
 msgstr "Otočiť podpisový tajný kľúč?"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the forwarding address of a channel"
+msgstr "Obnovil(a) adresu na preposielanie kanála"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the identity secret of an inbox"
+msgstr "Obnovil(a) tajný kľúč identity schránky"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the key of a channel"
+msgstr "Obnovil(a) kľúč kanála"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the signing secret of a webhook"
+msgstr "Obnovil(a) podpisový tajný kľúč webhooku"
 
 #: src/features/setup/email/EmailReceiveStep.tsx
 msgid "Route your domain"
@@ -13534,6 +13727,10 @@ msgstr "podpora@vasa-firma.sk"
 msgid "Suspended"
 msgstr "Pozastavené"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Suspended broadcasts"
+msgstr "Pozastavil(a) hromadné správy"
+
 #: src/features/migrations/Wizard.tsx
 msgid "Switch"
 msgstr "Prepnúť"
@@ -14054,8 +14251,8 @@ msgid "The key is ready"
 msgstr "Kľúč je pripravený"
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-msgid "The key sees only these inboxes and cannot manage inboxes, webhooks or the workspace."
-msgstr "Kľúč vidí len tieto schránky a nemôže spravovať schránky, webhooky ani pracovný priestor."
+msgid "The key sees only these inboxes and cannot manage inboxes, webhooks or the workspace, or read the audit log."
+msgstr "Kľúč vidí len tieto schránky a nemôže spravovať schránky, webhooky ani pracovný priestor ani čítať auditný záznam."
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "The key stops working at the end of this day."
@@ -14522,8 +14719,8 @@ msgid "The What’s new count shows on the chat button while no messages are unr
 msgstr "Počet noviniek sa zobrazí na tlačidle chatu, kým nie sú žiadne neprečítané správy. Domovská obrazovka widgetu ho ukazuje vždy."
 
 #: src/features/settings/GeneralTabs.tsx
-msgid "The workspace itself: name, retention, labels, canned replies and moving in"
-msgstr "Samotný pracovný priestor: názov, uchovávanie, štítky, pripravené odpovede a presun"
+msgid "The workspace itself: name, retention, labels, canned replies, moving in and the audit log"
+msgstr "Samotný pracovný priestor: názov, uchovávanie, štítky, hotové odpovede, sťahovanie a auditný záznam"
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The workspace may not send broadcasts for now."
@@ -15062,6 +15259,7 @@ msgstr "Názov"
 msgid "TLS (port 465)"
 msgstr "TLS (port 465)"
 
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "To"
 msgstr "Komu"
@@ -15112,6 +15310,10 @@ msgstr "Príliš veľa pokusov. Chvíľu počkajte a skúste to znova."
 #: src/features/auth/CreateWorkspace.tsx
 msgid "Too many workspaces were created from your network today. Try again tomorrow."
 msgstr "Z vašej siete bolo dnes vytvorených príliš veľa pracovných priestorov. Skúste to znova zajtra."
+
+#: src/features/settings/audit/sentence.ts
+msgid "Took away the access of {person} to {inbox}"
+msgstr "Odobral(a) používateľovi {person} prístup k {inbox}"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "tr, en-GB"
@@ -15755,6 +15957,10 @@ msgstr "Verzie"
 msgid "Very large mailbox? Start with a Google Takeout file"
 msgstr "Veľmi veľká schránka? Začnite súborom Google Takeout"
 
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "via {via}"
+msgstr "cez {via}"
+
 #: src/features/home/HomePage.tsx
 msgid "View"
 msgstr "Zobraziť"
@@ -15970,6 +16176,7 @@ msgid "Webhook endpoint"
 msgstr "Koncový bod webhooku"
 
 #: src/app/Palette.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
@@ -16014,6 +16221,10 @@ msgstr "Streda"
 #: src/features/broadcasts/ListForm.tsx
 msgid "Welcome receipt"
 msgstr "Uvítacie potvrdenie"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "What"
+msgstr "Čo"
 
 #: src/features/broadcasts/Import.tsx
 msgid "What {header} holds"
@@ -16245,6 +16456,10 @@ msgstr "Keď je vypnutý, žiadne doručenia sa nevykonávajú."
 msgid "While your status is Away, only new messages in conversations assigned to you and new assignments notify you. A conversation you have open in the panel never notifies you."
 msgstr "Keď je váš stav Preč, upozornia vás len nové správy v konverzáciách pridelených vám a nové pridelenia. Konverzácia, ktorú máte otvorenú v paneli, vás nikdy neupozorní."
 
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Who"
+msgstr "Kto"
+
 #: src/features/broadcasts/ListsHome.tsx
 msgid "Who agreed to hear from you, with consent recorded"
 msgstr "Kto súhlasil, že sa mu ozvete, so zaznamenaným súhlasom"
@@ -16256,6 +16471,14 @@ msgstr "Kto odpovedá, kde a kto je online"
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Who can reply"
 msgstr "Kto môže odpovedať"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Who changed access, keys and data"
+msgstr "Kto zmenil prístup, kľúče a dáta"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Who changed members, access, keys, webhooks, mail accounts, retention and exports, newest first. Only owners see this."
+msgstr "Kto zmenil členov, prístup, kľúče, webhooky, poštové účty, uchovávanie a exporty, od najnovších. Vidia to len vlastníci."
 
 #: src/features/team/TeamPage.tsx
 msgid "Who is here"
@@ -16366,6 +16589,10 @@ msgstr "Pracuje sa…"
 #: src/features/settings/workspace/RetentionForm.tsx
 msgid "Workspace"
 msgstr "Pracovný priestor"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Workspace and broadcasts"
+msgstr "Pracovný priestor a hromadné správy"
 
 #: src/features/auth/CreateWorkspace.tsx
 msgid "Workspace name"

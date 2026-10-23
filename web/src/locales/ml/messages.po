@@ -293,6 +293,7 @@ msgstr "{created, plural, one {# പുതിയത്} other {# പുതിയ
 
 #: src/features/broadcasts/Growth.tsx
 #: src/features/docs/Toolbar.tsx
+#: src/features/settings/audit/sentence.ts
 msgid "{d, plural, one {# day} other {# days}}"
 msgstr "{d, plural, one {# ദിവസം} other {# ദിവസങ്ങൾ}}"
 
@@ -481,6 +482,10 @@ msgstr "{n, plural, one {# മറ്റൊരു സംഭാഷണം} other {#
 msgid "{n, plural, one {# person} other {# people}}"
 msgstr "{n, plural, one {# വ്യക്തി} other {# ആളുകൾ}}"
 
+#: src/features/settings/audit/sentence.ts
+msgid "{n, plural, one {# recipient a day} other {# recipients a day}}"
+msgstr "{n, plural, one {പ്രതിദിനം # സ്വീകർത്താവ്} other {പ്രതിദിനം # സ്വീകർത്താക്കൾ}}"
+
 #: src/features/setup/SetupHub.tsx
 msgid "{n, plural, one {# website chat} other {# website chats}}"
 msgstr "{n, plural, one {# വെബ്സൈറ്റ് ചാറ്റ്} other {# വെബ്സൈറ്റ് ചാറ്റുകൾ}}"
@@ -664,6 +669,10 @@ msgstr "{percent}%, {total}-ൽ {doneText}"
 #: src/features/migrations/UploadStep.tsx
 msgid "{percent}%, {sent} of {size}"
 msgstr "{percent}%, {size}-ൽ {sent}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "{person} left the workspace by deleting their account"
+msgstr "{person} അക്കൗണ്ട് ഇല്ലാതാക്കി വർക്ക്‌സ്‌പേസ് വിട്ടു"
 
 #: src/features/inbox/ChatsPage.tsx
 msgid "{product}’s conversations"
@@ -1137,6 +1146,10 @@ msgstr "ഒരു ഡ്രാഫ്റ്റ് എഴുതി"
 #: src/components/common/text.ts
 msgid "A file's content does not match its type. Check the file and try again."
 msgstr "ഫയലിന്റെ ഉള്ളടക്കം അതിന്റെ തരത്തോട് യോജിക്കുന്നില്ല. ഫയൽ പരിശോധിച്ച് വീണ്ടും ശ്രമിക്കുക."
+
+#: src/features/settings/audit/sentence.ts
+msgid "a former member"
+msgstr "മുൻ അംഗം"
 
 #: src/features/contact/ContactNotes.tsx
 msgid "A former teammate"
@@ -1632,6 +1645,10 @@ msgstr "{created} ചേർത്തു, അവസാന ഡെലിവറി {
 msgid "Added {created}, last used {used}"
 msgstr "{created} ചേർത്തു, അവസാന ഉപയോഗം {used}"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Added a webhook to {host}"
+msgstr "{host}-ലേക്ക് ഒരു വെബ്‌ഹുക്ക് ചേർത്തു"
+
 #: src/components/common/text.ts
 msgid "Added by the team"
 msgstr "ടീം ചേർത്തത്"
@@ -1833,6 +1850,10 @@ msgstr "അനുവദിച്ചു"
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Allowed origins"
 msgstr "അനുവദിച്ച ഒറിജിനുകൾ"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Allowed the workspace to send broadcasts"
+msgstr "വർക്ക്‌സ്‌പേസിന് ബ്രോഡ്‌കാസ്റ്റ് അയയ്ക്കാൻ അനുവദിച്ചു"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Already earlier in the file"
@@ -2201,11 +2222,13 @@ msgstr "API, MCP"
 msgid "API channel"
 msgstr "API ചാനൽ"
 
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/status/IncidentDetail.tsx
 msgid "API key"
 msgstr "API കീ"
 
 #: src/app/Palette.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/channels/ChannelPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
@@ -2370,6 +2393,10 @@ msgstr "{address} സെർവറിൽ താഴെയുള്ള വിലാ
 msgid "asked after closing"
 msgstr "അടച്ചതിനു ശേഷം ചോദിച്ചു"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Asked to be allowed to send broadcasts"
+msgstr "ബ്രോഡ്‌കാസ്റ്റ് അയയ്ക്കാൻ അനുമതി ചോദിച്ചു"
+
 #: src/components/common/text.ts
 msgid "Asked to subscribe"
 msgstr "സബ്സ്ക്രൈബ് ചെയ്യാൻ ആവശ്യപ്പെട്ടു"
@@ -2514,6 +2541,12 @@ msgstr "ആട്രിബ്യൂട്ടുകൾ"
 #: src/features/broadcasts/Composer.tsx
 msgid "Audience"
 msgstr "പ്രേക്ഷകർ"
+
+#: src/app/Palette.tsx
+#: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Audit log"
+msgstr "ഓഡിറ്റ് ലോഗ്"
 
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Authorization"
@@ -2947,6 +2980,10 @@ msgstr "ഈ ഇറക്കുമതി റദ്ദാക്കണോ?"
 msgid "Cancelled"
 msgstr "റദ്ദാക്കി"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Cancelled an invitation"
+msgstr "ഒരു ക്ഷണം റദ്ദാക്കി"
+
 #: src/features/broadcasts/Import.tsx
 msgid "Cancelled. What was added before stays."
 msgstr "റദ്ദാക്കി. മുമ്പ് ചേർത്തത് നിലനിൽക്കും."
@@ -3038,6 +3075,26 @@ msgstr "കോൺടാക്റ്റുകൾ മാറ്റുക, ഇല്
 msgid "Change, move and bulk-update conversations"
 msgstr "സംഭാഷണങ്ങൾ മാറ്റുക, നീക്കുക, ബൾക്ക് അപ്ഡേറ്റ് ചെയ്യുക"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Changed how long conversations are kept from {from} to {to}"
+msgstr "സംഭാഷണങ്ങൾ സൂക്ഷിക്കുന്ന കാലയളവ് {from}-ൽ നിന്ന് {to} ആക്കി"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the daily broadcast limit from {from} to {to}"
+msgstr "പ്രതിദിന ബ്രോഡ്‌കാസ്റ്റ് പരിധി {from}-ൽ നിന്ന് {to} ആക്കി"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the mail account or password of a channel"
+msgstr "ഒരു ചാനലിന്റെ മെയിൽ അക്കൗണ്ടോ പാസ്‌വേഡോ മാറ്റി"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the role of {person} from {from} to {to}"
+msgstr "{person}-ന്റെ റോൾ {from}-ൽ നിന്ന് {to} ആക്കി"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Changed the webhook to {host}"
+msgstr "{host}-ലേക്കുള്ള വെബ്‌ഹുക്ക് മാറ്റി"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Changelog settings"
 msgstr "ചേഞ്ച്‌ലോഗ് ക്രമീകരണങ്ങൾ"
@@ -3045,6 +3102,10 @@ msgstr "ചേഞ്ച്‌ലോഗ് ക്രമീകരണങ്ങൾ"
 #: src/features/migrations/Wizard.tsx
 msgid "Changes made to {provider}: none"
 msgstr "{provider}-ൽ വരുത്തിയ മാറ്റങ്ങൾ: ഇല്ല"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Changes to members, keys, webhooks and other sensitive settings show up here."
+msgstr "അംഗങ്ങൾ, കീകൾ, വെബ്‌ഹുക്കുകൾ, മറ്റ് സെൻസിറ്റീവ് ക്രമീകരണങ്ങൾ എന്നിവയിലെ മാറ്റങ്ങൾ ഇവിടെ കാണാം."
 
 #: src/features/settings/channels/email/EmailSections.tsx
 msgid "Changing the sending domain turns DKIM signing off until you enable it again for the new domain."
@@ -3076,6 +3137,10 @@ msgstr "ചാനൽ ക്രമീകരണങ്ങൾ"
 #: src/features/settings/ProductsPage.tsx
 msgid "Channels"
 msgstr "ചാനലുകൾ"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Channels and inboxes"
+msgstr "ചാനലുകളും ഇൻബോക്സുകളും"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Chat"
@@ -3613,6 +3678,10 @@ msgstr "നിങ്ങളുടെ സെർവറുകളും ബോട്�
 msgid "Connected"
 msgstr "കണക്റ്റ് ചെയ്തു"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Connected {client}"
+msgstr "{client} ബന്ധിപ്പിച്ചു"
+
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Connected {created}"
 msgstr "{created} കണക്റ്റ് ചെയ്തു"
@@ -3622,6 +3691,7 @@ msgstr "{created} കണക്റ്റ് ചെയ്തു"
 #: src/components/common/SettingsStrip.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/inbox/SidePanels.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
 msgid "Connected apps"
@@ -3733,6 +3803,10 @@ msgstr "{since} മുതൽ കോൺടാക്റ്റ്"
 #: src/features/settings/webhooks/events.tsx
 msgid "Contacts"
 msgstr "കോൺടാക്റ്റുകൾ"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Contacts and exports"
+msgstr "കോൺടാക്റ്റുകളും എക്സ്പോർട്ടുകളും"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "contains"
@@ -4053,6 +4127,18 @@ msgstr "നിങ്ങളുടെ Yuva അക്കൗണ്ട് ഉണ്�
 msgid "Created"
 msgstr "ഉണ്ടാക്കി"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Created an analytics export"
+msgstr "ഒരു അനലിറ്റിക്സ് എക്സ്പോർട്ട് സൃഷ്ടിച്ചു"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Created the API key {name}"
+msgstr "API കീ {name} സൃഷ്ടിച്ചു"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Created the DKIM key {selector}"
+msgstr "DKIM കീ {selector} സൃഷ്ടിച്ചു"
+
 #: src/features/migrations/DoneStep.tsx
 msgid "Credentials deleted {deletedAt}. Yuva can no longer read {address}."
 msgstr "{deletedAt}-ന് ക്രെഡൻഷ്യലുകൾ ഇല്ലാതാക്കി. Yuva-യ്ക്ക് ഇനി {address} വായിക്കാൻ കഴിയില്ല."
@@ -4154,6 +4240,10 @@ msgstr "ചരിത്രത്തിന്റെ ദിവസങ്ങൾ"
 #: src/features/setup/InstallStep.tsx
 msgid "Decide who may write in discussions"
 msgstr "ചർച്ചകളിൽ ആർക്ക് എഴുതാം എന്ന് തീരുമാനിക്കുക"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Declined the request to send broadcasts"
+msgstr "ബ്രോഡ്‌കാസ്റ്റ് അയയ്ക്കാനുള്ള അഭ്യർത്ഥന നിരസിച്ചു"
 
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "Default: {fallback}"
@@ -4336,6 +4426,14 @@ msgstr "നിങ്ങളുടെ അക്കൗണ്ട് ഇല്ലാ�
 msgid "Delete your account?"
 msgstr "നിങ്ങളുടെ അക്കൗണ്ട് ഇല്ലാതാക്കണോ?"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted a contact"
+msgstr "ഒരു കോൺടാക്റ്റ് ഇല്ലാതാക്കി"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted a DKIM key"
+msgstr "ഒരു DKIM കീ ഇല്ലാതാക്കി"
+
 #: src/features/contact/MergeContactDialog.tsx
 msgid "deleted afterwards"
 msgstr "പിന്നീട് ഇല്ലാതാക്കും"
@@ -4362,6 +4460,14 @@ msgstr "ഇല്ലാതാക്കിയ അംഗം"
 #: src/components/common/DiscussionAuthor.tsx
 msgid "Deleted reader"
 msgstr "ഇല്ലാതാക്കിയ വായനക്കാരൻ"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted the inbox {name}"
+msgstr "ഇൻബോക്സ് {name} ഇല്ലാതാക്കി"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted the webhook to {host}"
+msgstr "{host}-ലേക്കുള്ള വെബ്‌ഹുക്ക് ഇല്ലാതാക്കി"
 
 #: src/features/settings/inboxes/InboxSecurity.tsx
 msgid "Deletes its channels, conversations, messages and attachments. This cannot be undone."
@@ -4474,6 +4580,10 @@ msgstr "മാറ്റങ്ങൾ ഉപേക്ഷിക്കുക"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Discard the suggested reply"
 msgstr "നിർദ്ദേശിച്ച മറുപടി ഉപേക്ഷിക്കുക"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Disconnected {client}"
+msgstr "{client} വിച്ഛേദിച്ചു"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/DocsPage.tsx
@@ -5156,8 +5266,8 @@ msgid "Every request to this endpoint, newest first. The newest 100 are kept."
 msgstr "ഈ എൻഡ്‌പോയിന്റിലേക്കുള്ള ഓരോ അഭ്യർത്ഥനയും, പുതിയത് ആദ്യം. ഏറ്റവും പുതിയ 100 സൂക്ഷിക്കുന്നു."
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-msgid "Every scope except sending broadcasts."
-msgstr "ബ്രോഡ്കാസ്റ്റുകൾ അയയ്ക്കുന്നത് ഒഴികെ എല്ലാ സ്കോപ്പും."
+msgid "Every scope except sending broadcasts and reading the audit log."
+msgstr "ബ്രോഡ്‌കാസ്റ്റ് അയയ്ക്കലും ഓഡിറ്റ് ലോഗ് വായനയും ഒഴികെയുള്ള എല്ലാ അനുമതികളും."
 
 #: src/features/inbox/SourceFilter.tsx
 msgid "Every site"
@@ -5174,6 +5284,10 @@ msgstr "എല്ലാ തരവും"
 #: src/features/setup/SetupHub.tsx
 msgid "Every website and app shows its visitors on Home and in Analytics."
 msgstr "ഓരോ വെബ്സൈറ്റും ആപ്പും അതിന്റെ സന്ദർശകരെ ഹോമിലും അനലിറ്റിക്സിലും കാണിക്കുന്നു."
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Everyone"
+msgstr "എല്ലാവരും"
 
 #: src/features/inbox/ChatsPage.tsx
 msgid "Everyone has been answered."
@@ -5203,6 +5317,7 @@ msgstr "നിങ്ങൾ സ്പാം എന്ന് അടയാളപ്
 #: src/features/migrations/Wizard.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 msgid "Everything"
 msgstr "എല്ലാം"
 
@@ -5276,6 +5391,14 @@ msgstr "എക്സ്പോർട്ട് ഫയൽ"
 #: src/features/migrations/text.ts
 msgid "Export once as a .zip file. Google mails you a link when it is ready; for a large mailbox that can take a day or more."
 msgstr ".zip ഫയലായി ഒരിക്കൽ എക്സ്പോർട്ട് ചെയ്യുക. തയ്യാറാകുമ്പോൾ Google നിങ്ങൾക്ക് ഒരു ലിങ്ക് മെയിൽ ചെയ്യും; വലിയ മെയിൽബോക്സിന് ഒരു ദിവസമോ അതിലധികമോ എടുക്കാം."
+
+#: src/features/settings/audit/sentence.ts
+msgid "Exported the consent records of contacts"
+msgstr "കോൺടാക്റ്റുകളുടെ സമ്മത രേഖകൾ എക്സ്പോർട്ട് ചെയ്തു"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Exported the consent records of the list {name}"
+msgstr "ലിസ്റ്റ് {name}-ന്റെ സമ്മത രേഖകൾ എക്സ്പോർട്ട് ചെയ്തു"
 
 #: src/features/broadcasts/Import.tsx
 msgid "External id"
@@ -5603,6 +5726,10 @@ msgstr "സൈൻ ഇൻ ചെയ്ത ഉപയോക്താക്കൾക
 msgid "For signed-in users: the identity secret, shown only now"
 msgstr "സൈൻ ഇൻ ചെയ്ത ഉപയോക്താക്കൾക്ക്: ഐഡന്റിറ്റി സീക്രട്ട്, ഇപ്പോൾ മാത്രം കാണിക്കുന്നു"
 
+#: src/features/settings/audit/sentence.ts
+msgid "forever"
+msgstr "എന്നേക്കും"
+
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/ListPage.tsx
 msgid "Form"
@@ -5678,6 +5805,7 @@ msgstr "നിങ്ങളുടെ അയച്ച ഫോൾഡറുകളി�
 msgid "Friday"
 msgstr "വെള്ളിയാഴ്ച"
 
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "From"
 msgstr "അയച്ചത്"
@@ -5761,6 +5889,10 @@ msgstr "അതേ സന്ദേശത്തിന്റെ കൂടുതൽ 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Gallery"
 msgstr "ഗാലറി"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Gave {person} access to {inbox}"
+msgstr "{person}-ന് {inbox}-ലേക്ക് ആക്സസ് നൽകി"
 
 #: src/app/Sidebar.tsx
 #: src/components/common/SettingsStrip.tsx
@@ -6590,6 +6722,10 @@ msgstr "ക്ഷണത്തിന്റെ ഭാഷ"
 msgid "Invite your team"
 msgstr "നിങ്ങളുടെ ടീമിനെ ക്ഷണിക്കുക"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Invited {email} as {role}"
+msgstr "{email}-നെ {role} ആയി ക്ഷണിച്ചു"
+
 #: src/features/team/TeamPage.tsx
 msgid "Invites"
 msgstr "ക്ഷണങ്ങൾ"
@@ -6758,6 +6894,10 @@ msgstr "ഇതിന്റെ റിപ്പോർട്ടും സ്വീ�
 msgid "Its settings, credentials and progress are deleted. Imported conversations stay."
 msgstr "ഇതിന്റെ ക്രമീകരണങ്ങൾ, ക്രെഡൻഷ്യലുകൾ, പുരോഗതി എന്നിവ ഇല്ലാതാക്കപ്പെടും. ഇറക്കുമതി ചെയ്ത സംഭാഷണങ്ങൾ നിലനിൽക്കും."
 
+#: src/features/settings/audit/sentence.ts
+msgid "Joined the workspace as {role}"
+msgstr "{role} ആയി വർക്ക്‌സ്‌പേസിൽ ചേർന്നു"
+
 #: src/features/conversation/ConversationStatus.tsx
 msgid "Just wrote"
 msgstr "ഇപ്പോൾ എഴുതി"
@@ -6817,6 +6957,10 @@ msgstr "ഈ വർക്ക്സ്പേസിൽ കീകൾക്കും 
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "Keys and assistants may send broadcasts"
 msgstr "കീകൾക്കും അസിസ്റ്റന്റുകൾക്കും ബ്രോഡ്കാസ്റ്റുകൾ അയയ്ക്കാം"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Keys and connected apps"
+msgstr "കീകളും ബന്ധിപ്പിച്ച ആപ്പുകളും"
 
 #: src/features/settings/channels/ChannelPage.tsx
 msgid "Keys that can reach this product. Create and revoke them under API & MCP."
@@ -7245,6 +7389,7 @@ msgstr "ചിത്രങ്ങൾ ലോഡ് ചെയ്യുക"
 #: src/features/contact/ContactsPage.tsx
 #: src/features/docs/discussions/parts.tsx
 #: src/features/docs/PagesTab.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
 #: src/features/status/LinkConversationsDialog.tsx
 #: src/features/status/MonitorChecks.tsx
@@ -7628,6 +7773,10 @@ msgstr "അംഗം"
 #: src/features/team/TeamPage.tsx
 msgid "Members"
 msgstr "അംഗങ്ങൾ"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Members and invitations"
+msgstr "അംഗങ്ങളും ക്ഷണങ്ങളും"
 
 #: src/features/conversation/composer/MentionMenu.tsx
 msgid "Mention a teammate"
@@ -8652,6 +8801,10 @@ msgstr "ഇതുവരെ എൻഡ്‌പോയിന്റുകളൊന�
 msgid "No endpoints yet."
 msgstr "ഇതുവരെ എൻഡ്‌പോയിന്റുകളില്ല."
 
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "No entry matches these filters."
+msgstr "ഈ ഫിൽട്ടറുകൾക്ക് യോജിക്കുന്ന എൻട്രികളില്ല."
+
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "No events recorded."
 msgstr "ഇവന്റുകളൊന്നും രേഖപ്പെടുത്തിയിട്ടില്ല."
@@ -8705,6 +8858,10 @@ msgstr "ഇതുവരെ ലേബലുകളില്ല"
 #: src/features/inbox/ChatList.tsx
 msgid "No labels yet. Add them in settings."
 msgstr "ഇതുവരെ ലേബലുകളില്ല. ക്രമീകരണങ്ങളിൽ ചേർക്കുക."
+
+#: src/features/settings/audit/sentence.ts
+msgid "no limit"
+msgstr "പരിധിയില്ല"
 
 #: src/features/broadcasts/Pace.tsx
 msgid "No limit"
@@ -9197,6 +9354,10 @@ msgstr "ഇതുവരെ ഒന്നും പരിഹരിച്ചിട�
 #: src/features/broadcasts/Report.tsx
 msgid "Nothing has happened yet."
 msgstr "ഇതുവരെ ഒന്നും സംഭവിച്ചിട്ടില്ല."
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Nothing here"
+msgstr "ഇവിടെ ഇതുവരെ ഒന്നുമില്ല"
 
 #: src/features/broadcasts/Overview.tsx
 msgid "Nothing here."
@@ -9963,6 +10124,10 @@ msgstr "പ്രവർത്തിക്കുന്നു"
 #: src/features/status/MonitorToken.tsx
 msgid "operational recovers; degraded, partial_outage and major_outage fail."
 msgstr "operational വീണ്ടെടുക്കുന്നു; degraded, partial_outage, major_outage പരാജയപ്പെടുത്തുന്നു."
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Operator"
+msgstr "ഓപ്പറേറ്റർ"
 
 #: src/features/status/ComponentDialogs.tsx
 msgid "Optional. Shown on the public page."
@@ -11090,6 +11255,10 @@ msgstr "റോഡ്മാപ്പ് ബോർഡുകളും ആശയങ�
 msgid "Read status pages, components and incidents"
 msgstr "സ്റ്റാറ്റസ് പേജുകൾ, ഘടകങ്ങൾ, സംഭവങ്ങൾ എന്നിവ വായിക്കുക"
 
+#: src/components/common/text.ts
+msgid "Read the audit log (owners only)"
+msgstr "ഓഡിറ്റ് ലോഗ് വായിക്കുക (ഉടമകൾക്ക് മാത്രം)"
+
 #: src/features/migrations/text.ts
 msgid "Read the folders"
 msgstr "ഫോൾഡറുകൾ വായിക്കുക"
@@ -11373,6 +11542,10 @@ msgstr "ഈ പാസ്‌കീ നീക്കം ചെയ്യണോ?"
 #: src/features/migrations/DoneStep.tsx
 msgid "Remove Yuva's access in Microsoft"
 msgstr "Microsoft-ൽ Yuva-യുടെ ആക്‌സസ് നീക്കം ചെയ്യുക"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Removed {person} from the workspace"
+msgstr "{person}-നെ വർക്ക്‌സ്‌പേസിൽ നിന്ന് നീക്കി"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Removes {name} with its products, channels, conversations, contacts, files, labels, webhooks and API keys for everyone. Members keep their accounts."
@@ -11789,6 +11962,10 @@ msgstr "{keyName} റദ്ദാക്കണോ?"
 msgid "Revoked"
 msgstr "റദ്ദാക്കി"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Revoked the API key {name}"
+msgstr "API കീ {name} പിൻവലിച്ചു"
+
 #: src/features/broadcasts/ListForm.tsx
 msgid "Right after subscribing, people get a short mail that confirms it, with an unsubscribe link."
 msgstr "സബ്സ്ക്രൈബ് ചെയ്ത ഉടനെ, ആളുകൾക്ക് അത് സ്ഥിരീകരിക്കുന്ന, അൺസബ്സ്ക്രൈബ് ലിങ്കുള്ള ഒരു ചെറിയ മെയിൽ ലഭിക്കും."
@@ -11839,6 +12016,22 @@ msgstr "പൊതു കീ റൊട്ടേറ്റ് ചെയ്യണോ
 #: src/features/settings/webhooks/sections.tsx
 msgid "Rotate the signing secret?"
 msgstr "സൈനിംഗ് സീക്രട്ട് റൊട്ടേറ്റ് ചെയ്യണോ?"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the forwarding address of a channel"
+msgstr "ഒരു ചാനലിന്റെ ഫോർവേഡിംഗ് വിലാസം പുതുക്കി"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the identity secret of an inbox"
+msgstr "ഒരു ഇൻബോക്സിന്റെ ഐഡന്റിറ്റി സീക്രട്ട് പുതുക്കി"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the key of a channel"
+msgstr "ഒരു ചാനലിന്റെ കീ പുതുക്കി"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Rotated the signing secret of a webhook"
+msgstr "ഒരു വെബ്‌ഹുക്കിന്റെ സിഗ്നേച്ചർ സീക്രട്ട് പുതുക്കി"
 
 #: src/features/setup/email/EmailReceiveStep.tsx
 msgid "Route your domain"
@@ -13534,6 +13727,10 @@ msgstr "support@your-company.com"
 msgid "Suspended"
 msgstr "സസ്പെൻഡ് ചെയ്തു"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Suspended broadcasts"
+msgstr "ബ്രോഡ്‌കാസ്റ്റുകൾ താൽക്കാലികമായി നിർത്തി"
+
 #: src/features/migrations/Wizard.tsx
 msgid "Switch"
 msgstr "മാറുക"
@@ -14054,8 +14251,8 @@ msgid "The key is ready"
 msgstr "കീ തയ്യാറാണ്"
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
-msgid "The key sees only these inboxes and cannot manage inboxes, webhooks or the workspace."
-msgstr "കീ ഈ ഇൻബോക്സുകൾ മാത്രം കാണുന്നു, ഇൻബോക്സുകളോ വെബ്ഹൂക്കുകളോ വർക്ക്സ്പേസോ നിയന്ത്രിക്കാൻ കഴിയില്ല."
+msgid "The key sees only these inboxes and cannot manage inboxes, webhooks or the workspace, or read the audit log."
+msgstr "ഈ കീ ഈ ഇൻബോക്സുകൾ മാത്രമേ കാണൂ; ഇൻബോക്സുകളോ വെബ്‌ഹുക്കുകളോ വർക്ക്‌സ്‌പേസോ നിയന്ത്രിക്കാനോ ഓഡിറ്റ് ലോഗ് വായിക്കാനോ കഴിയില്ല."
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "The key stops working at the end of this day."
@@ -14522,8 +14719,8 @@ msgid "The What’s new count shows on the chat button while no messages are unr
 msgstr "വായിക്കാത്ത സന്ദേശങ്ങൾ ഇല്ലാത്തിടത്തോളം ചാറ്റ് ബട്ടണിൽ പുതിയ അപ്‌ഡേറ്റുകളുടെ എണ്ണം കാണും. വിജറ്റിന്റെ ഹോം അത് എപ്പോഴും കാണിക്കുന്നു."
 
 #: src/features/settings/GeneralTabs.tsx
-msgid "The workspace itself: name, retention, labels, canned replies and moving in"
-msgstr "വർക്ക്സ്പേസ് തന്നെ: പേര്, സൂക്ഷിക്കൽ, ലേബലുകൾ, തയ്യാറാക്കിയ മറുപടികൾ, മാറ്റം"
+msgid "The workspace itself: name, retention, labels, canned replies, moving in and the audit log"
+msgstr "വർക്ക്‌സ്‌പേസ് തന്നെ: പേര്, സൂക്ഷിക്കൽ, ലേബലുകൾ, തയ്യാറായ മറുപടികൾ, മാറ്റം, ഓഡിറ്റ് ലോഗ്"
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The workspace may not send broadcasts for now."
@@ -15062,6 +15259,7 @@ msgstr "ശീർഷകം"
 msgid "TLS (port 465)"
 msgstr "TLS (പോർട്ട് 465)"
 
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
 msgid "To"
 msgstr "ഇവർക്ക്"
@@ -15112,6 +15310,10 @@ msgstr "വളരെയധികം ശ്രമങ്ങൾ. കുറച്ച
 #: src/features/auth/CreateWorkspace.tsx
 msgid "Too many workspaces were created from your network today. Try again tomorrow."
 msgstr "ഇന്ന് നിങ്ങളുടെ നെറ്റ്‌വർക്കിൽ നിന്ന് വളരെയധികം വർക്ക്സ്പേസുകൾ ഉണ്ടാക്കി. നാളെ വീണ്ടും ശ്രമിക്കുക."
+
+#: src/features/settings/audit/sentence.ts
+msgid "Took away the access of {person} to {inbox}"
+msgstr "{person}-ന്റെ {inbox} ആക്സസ് പിൻവലിച്ചു"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "tr, en-GB"
@@ -15755,6 +15957,10 @@ msgstr "പതിപ്പുകൾ"
 msgid "Very large mailbox? Start with a Google Takeout file"
 msgstr "വളരെ വലിയ മെയിൽബോക്സോ? ഒരു Google Takeout ഫയൽ കൊണ്ട് തുടങ്ങുക"
 
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "via {via}"
+msgstr "{via} വഴി"
+
 #: src/features/home/HomePage.tsx
 msgid "View"
 msgstr "കാണുക"
@@ -15970,6 +16176,7 @@ msgid "Webhook endpoint"
 msgstr "വെബ്ഹൂക്ക് എൻഡ്‌പോയിന്റ്"
 
 #: src/app/Palette.tsx
+#: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
@@ -16014,6 +16221,10 @@ msgstr "ബുധനാഴ്ച"
 #: src/features/broadcasts/ListForm.tsx
 msgid "Welcome receipt"
 msgstr "സ്വാഗത രസീത്"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "What"
+msgstr "എന്ത്"
 
 #: src/features/broadcasts/Import.tsx
 msgid "What {header} holds"
@@ -16245,6 +16456,10 @@ msgstr "ഓഫ് ആയിരിക്കുമ്പോൾ, ഡെലിവറ
 msgid "While your status is Away, only new messages in conversations assigned to you and new assignments notify you. A conversation you have open in the panel never notifies you."
 msgstr "നിങ്ങളുടെ സ്റ്റാറ്റസ് അകലെ ആയിരിക്കുമ്പോൾ, നിങ്ങൾക്ക് നിയോഗിച്ച സംഭാഷണങ്ങളിലെ പുതിയ സന്ദേശങ്ങളും പുതിയ നിയോഗങ്ങളും മാത്രമേ നിങ്ങളെ അറിയിക്കൂ. പാനലിൽ നിങ്ങൾ തുറന്നിരിക്കുന്ന സംഭാഷണം ഒരിക്കലും നിങ്ങളെ അറിയിക്കില്ല."
 
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Who"
+msgstr "ആര്"
+
 #: src/features/broadcasts/ListsHome.tsx
 msgid "Who agreed to hear from you, with consent recorded"
 msgstr "നിങ്ങളിൽ നിന്ന് കേൾക്കാൻ ആരൊക്കെ സമ്മതിച്ചു, രേഖപ്പെടുത്തിയ സമ്മതത്തോടെ"
@@ -16256,6 +16471,14 @@ msgstr "ആര്, എവിടെ മറുപടി നൽകുന്നു, 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Who can reply"
 msgstr "ആർക്ക് മറുപടി നൽകാം"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Who changed access, keys and data"
+msgstr "ആക്സസ്, കീകൾ, ഡാറ്റ എന്നിവ ആര് മാറ്റി"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Who changed members, access, keys, webhooks, mail accounts, retention and exports, newest first. Only owners see this."
+msgstr "അംഗങ്ങൾ, ആക്സസ്, കീകൾ, വെബ്‌ഹുക്കുകൾ, മെയിൽ അക്കൗണ്ടുകൾ, സൂക്ഷിക്കൽ, എക്സ്പോർട്ടുകൾ എന്നിവ ആര് മാറ്റി, പുതിയത് ആദ്യം. ഉടമകൾക്ക് മാത്രമേ ഇത് കാണാനാകൂ."
 
 #: src/features/team/TeamPage.tsx
 msgid "Who is here"
@@ -16366,6 +16589,10 @@ msgstr "പ്രവർത്തിക്കുന്നു…"
 #: src/features/settings/workspace/RetentionForm.tsx
 msgid "Workspace"
 msgstr "വർക്ക്സ്പേസ്"
+
+#: src/features/settings/audit/AuditLogPage.tsx
+msgid "Workspace and broadcasts"
+msgstr "വർക്ക്‌സ്‌പേസും ബ്രോഡ്‌കാസ്റ്റുകളും"
 
 #: src/features/auth/CreateWorkspace.tsx
 msgid "Workspace name"
