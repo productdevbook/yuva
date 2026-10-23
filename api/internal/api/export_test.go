@@ -8,12 +8,30 @@ import (
 	"github.com/productdevbook/yuva/api/internal/store"
 )
 
-func (s *Server) TakeRate(ctx context.Context, key string, n, lim int, window time.Duration) (int, time.Duration, error) {
-	g, err := s.limits.take(ctx, s.now(), rateTake{key, limit{lim, window}, n})
-	if err != nil {
-		return 0, 0, err
+type RateTake struct {
+	Key    string
+	N, Lim int
+	Window time.Duration
+}
+
+// TakeRates counts takes in one statement, in transaction q when it is not nil, and returns what
+// each got and its wait.
+func (s *Server) TakeRates(ctx context.Context, q *store.Queries, takes ...RateTake) ([]int, []time.Duration) {
+	in := make([]rateTake, len(takes))
+	for i, t := range takes {
+		in[i] = rateTake{t.Key, limit{t.Lim, t.Window}, t.N}
 	}
-	return g[0].n, g[0].wait, nil
+	g := s.limits.take(ctx, q, in...)
+	n, wait := make([]int, len(g)), make([]time.Duration, len(g))
+	for i := range g {
+		n[i], wait[i] = g[i].n, g[i].wait
+	}
+	return n, wait
+}
+
+func (s *Server) TakeRate(ctx context.Context, key string, n, lim int, window time.Duration) (int, time.Duration) {
+	got, wait := s.TakeRates(ctx, nil, RateTake{key, n, lim, window})
+	return got[0], wait[0]
 }
 
 func (s *Server) RateKeyHash(key string) []byte { return s.limits.hash(key) }

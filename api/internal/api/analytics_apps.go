@@ -317,7 +317,7 @@ func (s *Server) SendAnalyticsEvents(ctx context.Context, req oas.SendAnalyticsE
 			drop(reason, 1)
 		}
 	}
-	if items, err = s.rateServerItems(ctx, prop, items, now, drop); err != nil {
+	if items, err = s.rateServerItems(ctx, prop, items, drop); err != nil {
 		return nil, err
 	}
 	if len(changes) > 0 {
@@ -344,7 +344,7 @@ func (s *Server) SendAnalyticsEvents(ctx context.Context, req oas.SendAnalyticsE
 
 // rateServerItems counts a batch's events against their addresses' limits and then the property's,
 // one statement each, and drops in order the events past them.
-func (s *Server) rateServerItems(ctx context.Context, prop store.AnalyticsProperty, items []analyticsItem, now time.Time, drop func(reason string, n int)) ([]analyticsItem, error) {
+func (s *Server) rateServerItems(ctx context.Context, prop store.AnalyticsProperty, items []analyticsItem, drop func(reason string, n int)) ([]analyticsItem, error) {
 	var takes []rateTake
 	at := map[string]int{}
 	for _, it := range items {
@@ -359,10 +359,7 @@ func (s *Server) rateServerItems(ctx context.Context, prop store.AnalyticsProper
 		takes[i].n++
 	}
 	if len(takes) > 0 {
-		g, err := s.limits.take(ctx, now, takes...)
-		if err != nil {
-			return nil, err
-		}
+		g := s.limits.take(ctx, nil, takes...)
 		kept := make([]analyticsItem, 0, len(items))
 		for _, it := range items {
 			if it.address != "" {
@@ -380,10 +377,7 @@ func (s *Server) rateServerItems(ctx context.Context, prop store.AnalyticsProper
 	if len(items) == 0 {
 		return items, nil
 	}
-	g, err := s.limits.take(ctx, now, rateTake{rateKeyAnalyticsProperty(prop.ID), limit{s.analytics.settings.PropertyEventsPerMinute, time.Minute}, len(items)})
-	if err != nil {
-		return nil, err
-	}
+	g := s.limits.take(ctx, nil, rateTake{rateKeyAnalyticsProperty(prop.ID), limit{s.analytics.settings.PropertyEventsPerMinute, time.Minute}, len(items)})
 	if n := g[0].n; n < len(items) {
 		drop(analytics.ReasonRate, len(items)-n)
 		items = items[:n]

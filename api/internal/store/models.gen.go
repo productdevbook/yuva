@@ -1803,6 +1803,7 @@ type RateLimit struct {
 	Key       []byte
 	StartedAt time.Time
 	EndsAt    time.Time
+	CheckedAt time.Time
 	Lim       int32
 	Want      int32
 	Count     int32

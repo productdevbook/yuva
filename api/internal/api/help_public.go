@@ -178,11 +178,7 @@ const helpPageType = "text/html; charset=utf-8"
 
 // A view counts once per address, article and hour.
 func (s *Server) countHelpView(ctx context.Context, r *http.Request, c store.HelpCenter, article uuid.UUID, locale string) {
-	ok, err := s.limits.allow(ctx, "help-view:"+rateIP(s.clientIP(r))+":"+article.String(), limitHelpViewPerHour, s.now())
-	if err != nil {
-		s.log.ErrorContext(ctx, "help view rate limit", slog.Any("error", err))
-	}
-	if ok {
+	if s.limits.allow(ctx, nil, "help-view:"+rateIP(s.clientIP(r))+":"+article.String(), limitHelpViewPerHour) {
 		s.countHelpArticle(c, article, locale, helpArticleCount{views: 1})
 	}
 }

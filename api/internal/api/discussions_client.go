@@ -693,7 +693,7 @@ func (s *Server) clientVote(ctx context.Context, id uuid.UUID, add bool) (oas.Di
 			return errIdeaClosed
 		}
 		if t.d.Kind == kindIdea {
-			if err := s.rateLimit(ctx, rateCheck{"idea:vote:" + d.rateWho(), limitIdeaVotes}); err != nil {
+			if err := s.rateLimitTx(ctx, q, rateCheck{"idea:vote:" + d.rateWho(), limitIdeaVotes}); err != nil {
 				return err
 			}
 		}

@@ -5,9 +5,12 @@ import (
 	"crypto/hmac"
 	"crypto/sha256"
 	"fmt"
+	"log/slog"
 	"math"
+	"math/rand/v2"
 	"net/http"
 	"net/netip"
+	"sync/atomic"
 	"time"
 	"uuid"
 
@@ -59,19 +62,27 @@ var (
 
 const (
 	defaultAnonymousContactsPerHour = 20
-	rateSlotPoll                    = 100 * time.Millisecond
+	rateSlotFirstPoll               = 25 * time.Millisecond
+	rateSlotMaxPoll                 = 400 * time.Millisecond
+	rateFailureLogEvery             = time.Minute
 )
 
 // rateLimiter counts requests per key in fixed windows that start with a key's first request, in
-// Postgres, so every replica counts against the same windows. Keys are stored as a keyed hash: they
-// hold client addresses. Finished windows are deleted by the rate limit sweep.
+// Postgres and by the database's clock, so every replica counts against the same windows. Keys are
+// stored as a keyed hash: they hold client addresses. When the database fails, a check lets the
+// request through and the failure is logged at most once a minute. Finished windows are deleted
+// by the rate limit sweep.
 type rateLimiter struct {
-	st  *store.Store
-	mac []byte
+	st     *store.Store
+	mac    []byte
+	log    *slog.Logger
+	clock  func() time.Time
+	sleep  func(ctx context.Context, d time.Duration) error
+	logged atomic.Int64
 }
 
-func newRateLimiter(st *store.Store, secrets *secret.Key) *rateLimiter {
-	l := &rateLimiter{st: st}
+func newRateLimiter(st *store.Store, secrets *secret.Key, log *slog.Logger, clock func() time.Time, sleep func(ctx context.Context, d time.Duration) error) *rateLimiter {
+	l := &rateLimiter{st: st, log: log, clock: clock, sleep: sleep}
 	if secrets != nil {
 		l.mac = secrets.Derive("yuva rate limit keys")
 	}
@@ -82,6 +93,34 @@ func (l *rateLimiter) hash(key string) []byte {
 	m := hmac.New(sha256.New, l.mac)
 	m.Write([]byte(key))
 	return m.Sum(nil)[:16]
+}
+
+// at is the time the statements measure windows and leases with: nil, the database's clock, except
+// in tests.
+func (l *rateLimiter) at() *time.Time {
+	if l.clock == nil {
+		return nil
+	}
+	return new(l.clock())
+}
+
+func (l *rateLimiter) failed(ctx context.Context, err error) {
+	if ctx.Err() != nil {
+		return
+	}
+	now := time.Now().UnixNano()
+	last := l.logged.Load()
+	if now-last < int64(rateFailureLogEvery) || !l.logged.CompareAndSwap(last, now) {
+		return
+	}
+	l.log.ErrorContext(ctx, "rate limit check failed; letting requests through", slog.Any("error", err))
+}
+
+func (l *rateLimiter) queries(q *store.Queries) *store.Queries {
+	if q == nil {
+		return l.st.Queries
+	}
+	return q
 }
 
 type rateTake struct {
@@ -96,79 +135,103 @@ type rateGrant struct {
 }
 
 // take counts n requests against each key in one statement and says how many fit; when not all
-// did, wait is how long until that key's window ends. Keys must be distinct.
-func (l *rateLimiter) take(ctx context.Context, now time.Time, takes ...rateTake) ([]rateGrant, error) {
-	p := store.TakeRateLimitsParams{Now: now, Keys: make([][]byte, len(takes)), Ends: make([]time.Time, len(takes)),
-		Lims: make([]int32, len(takes)), Wants: make([]int32, len(takes))}
-	at := make(map[string]int, len(takes))
-	for i, t := range takes {
-		p.Keys[i], p.Ends[i], p.Lims[i], p.Wants[i] = l.hash(t.key), now.Add(t.lim.window), int32(max(t.lim.n, 0)), int32(t.n)
-		at[string(p.Keys[i])] = i
-	}
-	rows, err := l.st.TakeRateLimits(ctx, p)
-	if err != nil {
-		return nil, err
-	}
+// did, wait is how long until that key's window ends. Takes of one key are counted together, in
+// order. q is the transaction to count in, or nil; in a transaction the statement runs in a
+// savepoint so a failure leaves the transaction usable.
+func (l *rateLimiter) take(ctx context.Context, q *store.Queries, takes ...rateTake) []rateGrant {
 	out := make([]rateGrant, len(takes))
-	for _, r := range rows {
-		i, ok := at[string(r.Key)]
-		if !ok {
+	p := store.TakeRateLimitsParams{At: l.at()}
+	at := make(map[string]int, len(takes))
+	for _, t := range takes {
+		h := l.hash(t.key)
+		if i, ok := at[string(h)]; ok {
+			p.Wants[i] += int32(t.n)
 			continue
 		}
-		out[i].n = int(r.Granted)
-		if out[i].n < takes[i].n {
-			out[i].wait = min(max(r.EndsAt.Sub(now), time.Second), takes[i].lim.window)
+		at[string(h)] = len(p.Keys)
+		p.Keys = append(p.Keys, h)
+		p.WindowMs = append(p.WindowMs, t.lim.window.Milliseconds())
+		p.Lims = append(p.Lims, int32(max(t.lim.n, 0)))
+		p.Wants = append(p.Wants, int32(t.n))
+	}
+	var rows []store.TakeRateLimitsRow
+	err := l.queries(q).Savepoint(ctx, func(q *store.Queries) error {
+		var err error
+		rows, err = q.TakeRateLimits(ctx, p)
+		return err
+	})
+	if err != nil {
+		l.failed(ctx, err)
+		for i, t := range takes {
+			out[i].n = t.n
+		}
+		return out
+	}
+	granted := make([]int, len(p.Keys))
+	waits := make([]time.Duration, len(p.Keys))
+	for _, r := range rows {
+		if i, ok := at[string(r.Key)]; ok {
+			granted[i], waits[i] = int(r.Granted), r.EndsAt.Sub(r.CheckedAt)
 		}
 	}
-	return out, nil
+	for i, t := range takes {
+		k := at[string(l.hash(t.key))]
+		out[i].n = min(t.n, granted[k])
+		granted[k] -= out[i].n
+		if out[i].n < t.n {
+			out[i].wait = min(max(waits[k], time.Second), t.lim.window)
+		}
+	}
+	return out
 }
 
 // allowWait counts one request against key and, when refused, says how long until the window ends.
-func (l *rateLimiter) allowWait(ctx context.Context, key string, lim limit, now time.Time) (bool, time.Duration, error) {
-	g, err := l.take(ctx, now, rateTake{key, lim, 1})
-	if err != nil {
-		return false, 0, err
-	}
-	return g[0].n == 1, g[0].wait, nil
+func (l *rateLimiter) allowWait(ctx context.Context, q *store.Queries, key string, lim limit) (bool, time.Duration) {
+	g := l.take(ctx, q, rateTake{key, lim, 1})
+	return g[0].n == 1, g[0].wait
 }
 
-func (l *rateLimiter) allow(ctx context.Context, key string, lim limit, now time.Time) (bool, error) {
-	ok, _, err := l.allowWait(ctx, key, lim, now)
-	return ok, err
+func (l *rateLimiter) allow(ctx context.Context, q *store.Queries, key string, lim limit) bool {
+	ok, _ := l.allowWait(ctx, q, key, lim)
+	return ok
 }
 
-// acquireSlot holds one of n slots of key for at most lease, waiting up to wait for one to free.
-// It reports false when none freed in time; release gives the slot back.
-func (l *rateLimiter) acquireSlot(ctx context.Context, key string, n int, lease, wait time.Duration, now func() time.Time) (func(), bool, error) {
+// acquireSlot holds one of n slots of key for lease, by the same clock as the windows, and polls
+// with a growing pause for up to wait for one to free. It reports false when none freed in time;
+// release gives the slot back. When the database fails, it lets the caller through without a slot.
+func (l *rateLimiter) acquireSlot(ctx context.Context, key string, n int, lease, wait time.Duration) (func(), bool, error) {
 	h, holder := l.hash(key), newID()
-	deadline := time.Now().Add(wait)
+	pause, waited := rateSlotFirstPoll, time.Duration(0)
 	for {
-		at := now()
-		slot, err := l.st.TakeRateSlot(ctx, store.TakeRateSlotParams{Key: h, Holder: holder, ExpiresAt: at.Add(lease), Last: int32(n - 1), Now: at})
+		slot, err := l.st.TakeRateSlot(ctx, store.TakeRateSlotParams{Key: h, Holder: holder, LeaseSeconds: lease.Seconds(), At: l.at(), Last: int32(n - 1)})
 		if err == nil {
 			return func() { l.releaseSlot(ctx, h, slot, holder) }, true, nil
 		}
 		if !store.IsNotFound(err) {
-			return nil, false, err
+			if ctx.Err() != nil {
+				return nil, false, ctx.Err()
+			}
+			l.failed(ctx, err)
+			return func() {}, true, nil
 		}
-		left := time.Until(deadline)
-		if left <= 0 {
+		if waited >= wait {
 			return nil, false, nil
 		}
-		t := time.NewTimer(min(rateSlotPoll, left))
-		select {
-		case <-t.C:
-		case <-ctx.Done():
-			t.Stop()
-			return nil, false, ctx.Err()
+		d := min(pause+rand.N(pause/2), wait-waited)
+		if err := l.sleep(ctx, d); err != nil {
+			return nil, false, err
 		}
+		waited += d
+		pause = min(2*pause, rateSlotMaxPoll)
 	}
 }
 
 func (l *rateLimiter) releaseSlot(ctx context.Context, key []byte, slot int32, holder uuid.UUID) {
 	ctx, cancel := context.WithTimeout(context.WithoutCancel(ctx), 5*time.Second)
 	defer cancel()
-	_ = l.st.ReleaseRateSlot(ctx, store.ReleaseRateSlotParams{Key: key, Slot: slot, Holder: holder})
+	if err := l.st.ReleaseRateSlot(ctx, store.ReleaseRateSlotParams{Key: key, Slot: slot, Holder: holder}); err != nil {
+		l.failed(ctx, err)
+	}
 }
 
 type rateLimitSweepWorker struct {
@@ -183,12 +246,12 @@ func (w *rateLimitSweepWorker) Work(ctx context.Context, _ *river.Job[jobs.RateL
 
 // SweepRateLimits deletes the windows and slot leases that ended and says how many went.
 func (s *Server) SweepRateLimits(ctx context.Context) (int64, error) {
-	now := s.now()
-	n, err := s.st.SweepRateLimits(ctx, now)
+	at := s.limits.at()
+	n, err := s.st.SweepRateLimits(ctx, at)
 	if err != nil {
 		return 0, err
 	}
-	m, err := s.st.SweepRateSlots(ctx, now)
+	m, err := s.st.SweepRateSlots(ctx, at)
 	return n + m, err
 }
 
@@ -205,15 +268,17 @@ func rateIP(ip string) string {
 }
 
 // rateLimit counts the request against each check in turn and stops at the first that refuses, so
-// a refused address never spends a channel's budget.
+// a refused address never spends a channel's budget. It is never called inside a transaction: the
+// check takes a connection of its own; rateLimitTx counts on the transaction's.
 func (s *Server) rateLimit(ctx context.Context, checks ...rateCheck) error {
-	now := s.now()
+	return s.rateLimitTx(ctx, nil, checks...)
+}
+
+// rateLimitTx is rateLimit on transaction q, for a check that depends on what the transaction read;
+// the count goes with the transaction.
+func (s *Server) rateLimitTx(ctx context.Context, q *store.Queries, checks ...rateCheck) error {
 	for _, c := range checks {
-		ok, wait, err := s.limits.allowWait(ctx, c.key, c.lim, now)
-		if err != nil {
-			return err
-		}
-		if !ok {
+		if ok, wait := s.limits.allowWait(ctx, q, c.key, c.lim); !ok {
 			return rateLimited(wait)
 		}
 	}

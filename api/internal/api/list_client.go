@@ -180,8 +180,8 @@ func (s *Server) subscribeFromForm(ctx context.Context, q *store.Queries, events
 		if l.ChannelID == nil || !ready[*l.ChannelID] {
 			return nil
 		}
-		if ok, err := s.confirmationAllowed(ctx, ws, l.ID, addr, &channelID); err != nil || !ok {
-			return err
+		if !s.confirmationAllowed(ctx, q, ws, l.ID, addr, &channelID) {
+			return nil
 		}
 		return s.queueConfirmation(ctx, q, events, sub)
 	}
@@ -355,8 +355,8 @@ func (s *Server) SubscribeClient(ctx context.Context, req oas.SubscribeClientReq
 			if ready, err := s.readyChannels(ctx, q, ws, []store.MailingList{l}); err != nil || !ready[*l.ChannelID] {
 				return err
 			}
-			if ok, err := s.confirmationAllowed(ctx, ws, l.ID, addr, nil); err != nil || !ok {
-				return err
+			if !s.confirmationAllowed(ctx, q, ws, l.ID, addr, nil) {
+				return nil
 			}
 			return s.queueConfirmation(ctx, q, events, sub)
 		}

@@ -206,11 +206,7 @@ func (s *Server) anonymousContact(ctx context.Context, q *store.Queries, channel
 	}
 	now := s.now()
 	key := "anonymous:" + channelID.String() + ":" + rateIP(s.clientIP(requestFrom(ctx)))
-	ok, err := s.limits.allow(ctx, key, limit{s.chat.AnonymousContactsPerHour, time.Hour}, now)
-	if err != nil {
-		return contactRow{}, "", err
-	}
-	if !ok {
+	if !s.limits.allow(ctx, q, key, limit{s.chat.AnonymousContactsPerHour, time.Hour}) {
 		return contactRow{}, "", errAnonymousLimit
 	}
 	r, err := q.CreateContact(ctx, store.CreateContactParams{ID: newID(), WorkspaceID: ws, Attributes: []byte("{}"), Now: now})

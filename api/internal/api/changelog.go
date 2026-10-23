@@ -366,7 +366,7 @@ func (s *Server) UpdateChangelog(ctx context.Context, req oas.UpdateChangelogReq
 		}
 		now := s.now()
 		if f.slug != cur.Slug {
-			if err := s.rateLimit(ctx, rateCheck{"changelog-slug:" + cur.ID.String(), limitChangelogSlug}); err != nil {
+			if err := s.rateLimitTx(ctx, q, rateCheck{"changelog-slug:" + cur.ID.String(), limitChangelogSlug}); err != nil {
 				return err
 			}
 			if taken, err := q.ChangelogSlugTaken(ctx, store.ChangelogSlugTakenParams{Slug: f.slug, ID: cur.ID}); err != nil || taken {

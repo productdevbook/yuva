@@ -45,11 +45,10 @@ var errAnalyticsBusyQueries = &apiError{Status: http.StatusTooManyRequests, Code
 // itself.
 type querySlots struct {
 	limits *rateLimiter
-	now    func() time.Time
 }
 
 func (q querySlots) acquire(ctx context.Context, ws uuid.UUID) (func(), error) {
-	release, ok, err := q.limits.acquireSlot(ctx, "analytics-query:"+ws.String(), analyticsQueriesPerWorkspace, analyticsQueryLease, analyticsQueryWait, q.now)
+	release, ok, err := q.limits.acquireSlot(ctx, "analytics-query:"+ws.String(), analyticsQueriesPerWorkspace, analyticsQueryLease, analyticsQueryWait)
 	if err != nil {
 		return nil, err
 	}

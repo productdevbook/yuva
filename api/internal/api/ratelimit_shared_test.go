@@ -159,11 +159,7 @@ func TestRateWindowsAcrossServers(t *testing.T) {
 	key := unique("window")
 	take := func(s *api.Server, n int) (int, time.Duration) {
 		t.Helper()
-		got, wait, err := s.TakeRate(ctx, key, n, 5, time.Minute)
-		if err != nil {
-			t.Fatal(err)
-		}
-		return got, wait
+		return s.TakeRate(ctx, key, n, 5, time.Minute)
 	}
 	if n, _ := take(h.srv, 3); n != 3 {
 		t.Fatalf("first server took %d of 3", n)
@@ -189,6 +185,41 @@ func TestRateWindowsAcrossServers(t *testing.T) {
 	h.clock.Advance(-5 * time.Minute)
 	if n, _ := take(h.srv, 5); n != 5 {
 		t.Fatalf("a clock set back past the window took %d, want a fresh window", n)
+	}
+}
+
+func TestRateTakesOfOneKeyCountTogether(t *testing.T) {
+	t.Parallel()
+	h := newHarness(t)
+	ctx := context.Background()
+	key, other := unique("dup"), unique("dup")
+	got, wait := h.srv.TakeRates(ctx, nil,
+		api.RateTake{Key: key, N: 2, Lim: 3, Window: time.Minute},
+		api.RateTake{Key: other, N: 1, Lim: 3, Window: time.Minute},
+		api.RateTake{Key: key, N: 2, Lim: 3, Window: time.Minute})
+	if got[0] != 2 || got[1] != 1 || got[2] != 1 || wait[0] != 0 || wait[2] <= 0 {
+		t.Fatalf("takes sharing a key got %v (waits %v), want 2, 1 and the 1 left", got, wait)
+	}
+	if n, _ := h.srv.TakeRate(ctx, key, 1, 3, time.Minute); n != 0 {
+		t.Fatal("the shared key's window was not full")
+	}
+}
+
+func TestRateLimitFailsOpen(t *testing.T) {
+	t.Parallel()
+	h := newHarness(t)
+	ctx := context.Background()
+	tx, err := h.st.Pool.Begin(ctx)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer func() { _ = tx.Rollback(ctx) }()
+	if _, err := tx.Exec(ctx, "SELECT 1/0"); err == nil {
+		t.Fatal("the transaction did not fail")
+	}
+	key := unique("broken")
+	if got, _ := h.srv.TakeRates(ctx, h.st.WithTx(tx), api.RateTake{Key: key, N: 3, Lim: 1, Window: time.Minute}); got[0] != 3 {
+		t.Fatalf("a failing check let %d of 3 through, want all", got[0])
 	}
 }
 
@@ -241,9 +272,7 @@ func TestRateLimitSweep(t *testing.T) {
 		key    string
 		window time.Duration
 	}{{short, time.Millisecond}, {long, time.Hour}} {
-		if _, _, err := h.srv.TakeRate(ctx, k.key, 1, 1, k.window); err != nil {
-			t.Fatal(err)
-		}
+		h.srv.TakeRate(ctx, k.key, 1, 1, k.window)
 	}
 	if _, err := h.srv.AcquireQuerySlot(ctx, slots); err != nil {
 		t.Fatal(err)

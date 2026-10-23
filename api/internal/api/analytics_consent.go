@@ -73,13 +73,13 @@ func (s *Server) consentedVisitor(ctx context.Context, cp *cachedProperty, c *co
 }
 
 // consentAllowed limits identifications and withdrawals per shortened address and property.
-func (s *Server) consentAllowed(ctx context.Context, r *http.Request, cp *cachedProperty, now time.Time) (bool, error) {
+func (s *Server) consentAllowed(ctx context.Context, r *http.Request, cp *cachedProperty) bool {
 	addr, err := netip.ParseAddr(s.visitorIP(r))
 	if err != nil {
-		return false, nil
+		return false
 	}
 	short := analytics.ShortenAddr(addr.Unmap())
-	return s.limits.allow(ctx, "analytics:consent:"+cp.prop.ID.String()+":"+short.String(), limitAnalyticsConsent, now)
+	return s.limits.allow(ctx, nil, "analytics:consent:"+cp.prop.ID.String()+":"+short.String(), limitAnalyticsConsent)
 }
 
 // takeWithdrawals applies the withdrawals of a request that is otherwise not collected (Sec-GPC or
@@ -126,15 +126,8 @@ func (s *Server) takeConsentChanges(ctx context.Context, r *http.Request, cp *ca
 			continue
 		}
 		seen[k] = true
-		if r != nil {
-			ok, err := s.consentAllowed(ctx, r, cp, now)
-			if err != nil {
-				s.log.ErrorContext(ctx, "analytics consent rate limit", slog.Any("error", err))
-				return errInternal
-			}
-			if !ok {
-				continue
-			}
+		if r != nil && !s.consentAllowed(ctx, r, cp) {
+			continue
 		}
 		key, err := s.visitorKey(cp)
 		if err != nil {

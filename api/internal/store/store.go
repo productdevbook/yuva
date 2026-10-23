@@ -73,6 +73,16 @@ func (s *Store) InTx(ctx context.Context, fn func(q *Queries) error) error {
 	})
 }
 
+// Savepoint runs fn in a savepoint when q runs in a transaction, so a statement that fails there
+// leaves the transaction usable; outside one it runs fn on q.
+func (q *Queries) Savepoint(ctx context.Context, fn func(q *Queries) error) error {
+	tx, ok := q.db.(pgx.Tx)
+	if !ok {
+		return fn(q)
+	}
+	return pgx.BeginFunc(ctx, tx, func(sp pgx.Tx) error { return fn(q.WithTx(sp)) })
+}
+
 func (s *Store) InTxRaw(ctx context.Context, fn func(tx pgx.Tx, q *Queries) error) error {
 	return pgx.BeginFunc(ctx, s.Pool, func(tx pgx.Tx) error {
 		return fn(tx, s.WithTx(tx))

@@ -4,6 +4,7 @@ CREATE UNLOGGED TABLE rate_limits (
     key bytea PRIMARY KEY,
     started_at timestamptz NOT NULL,
     ends_at timestamptz NOT NULL,
+    checked_at timestamptz NOT NULL,
     lim integer NOT NULL,
     want integer NOT NULL,
     count integer NOT NULL,

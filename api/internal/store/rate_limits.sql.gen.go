@@ -28,11 +28,11 @@ func (q *Queries) ReleaseRateSlot(ctx context.Context, arg ReleaseRateSlotParams
 }
 
 const sweepRateLimits = `-- name: SweepRateLimits :execrows
-DELETE FROM rate_limits WHERE ends_at <= $1
+DELETE FROM rate_limits WHERE ends_at <= coalesce($1::timestamptz, clock_timestamp())
 `
 
-func (q *Queries) SweepRateLimits(ctx context.Context, now time.Time) (int64, error) {
-	result, err := q.db.Exec(ctx, sweepRateLimits, now)
+func (q *Queries) SweepRateLimits(ctx context.Context, at *time.Time) (int64, error) {
+	result, err := q.db.Exec(ctx, sweepRateLimits, at)
 	if err != nil {
 		return 0, err
 	}
@@ -40,11 +40,11 @@ func (q *Queries) SweepRateLimits(ctx context.Context, now time.Time) (int64, er
 }
 
 const sweepRateSlots = `-- name: SweepRateSlots :execrows
-DELETE FROM rate_slots WHERE expires_at <= $1
+DELETE FROM rate_slots WHERE expires_at <= coalesce($1::timestamptz, clock_timestamp())
 `
 
-func (q *Queries) SweepRateSlots(ctx context.Context, now time.Time) (int64, error) {
-	result, err := q.db.Exec(ctx, sweepRateSlots, now)
+func (q *Queries) SweepRateSlots(ctx context.Context, at *time.Time) (int64, error) {
+	result, err := q.db.Exec(ctx, sweepRateSlots, at)
 	if err != nil {
 		return 0, err
 	}
@@ -52,43 +52,45 @@ func (q *Queries) SweepRateSlots(ctx context.Context, now time.Time) (int64, err
 }
 
 const takeRateLimits = `-- name: TakeRateLimits :many
-INSERT INTO rate_limits AS r (key, started_at, ends_at, lim, want, count, granted)
-SELECT u.key, $1::timestamptz, u.ends_at, u.lim, u.want, LEAST(u.want, u.lim), LEAST(u.want, u.lim)
-FROM (SELECT unnest($2::bytea[]) AS key, unnest($3::timestamptz[]) AS ends_at, unnest($4::int[]) AS lim, unnest($5::int[]) AS want) u
+WITH c AS (SELECT coalesce($5::timestamptz, clock_timestamp()) AS now)
+INSERT INTO rate_limits AS r (key, started_at, ends_at, checked_at, lim, want, count, granted)
+SELECT u.key, c.now, c.now + u.window_ms * interval '1 millisecond', c.now, u.lim, u.want, LEAST(u.want, u.lim), LEAST(u.want, u.lim)
+FROM c, (SELECT unnest($1::bytea[]) AS key, unnest($2::bigint[]) AS window_ms, unnest($3::int[]) AS lim, unnest($4::int[]) AS want) u
 WHERE true
-ON CONFLICT (key) DO UPDATE SET
-    started_at = CASE WHEN r.ends_at <= excluded.started_at OR r.started_at > excluded.ends_at THEN excluded.started_at ELSE r.started_at END,
-    ends_at = CASE WHEN r.ends_at <= excluded.started_at OR r.started_at > excluded.ends_at THEN excluded.ends_at ELSE r.ends_at END,
-    lim = excluded.lim,
-    want = excluded.want,
-    count = CASE WHEN r.ends_at <= excluded.started_at OR r.started_at > excluded.ends_at THEN excluded.count
-        ELSE GREATEST(r.count, LEAST(r.count + excluded.want, excluded.lim)) END,
-    granted = CASE WHEN r.ends_at <= excluded.started_at OR r.started_at > excluded.ends_at THEN excluded.granted
-        ELSE GREATEST(0, LEAST(r.count + excluded.want, excluded.lim) - r.count) END
-RETURNING key, granted, ends_at
+ON CONFLICT (key) DO UPDATE SET (started_at, ends_at, checked_at, lim, want, count, granted) = (
+    SELECT
+        CASE WHEN x.reset THEN excluded.started_at ELSE r.started_at END,
+        CASE WHEN x.reset THEN excluded.ends_at ELSE r.ends_at END,
+        excluded.checked_at, excluded.lim, excluded.want,
+        CASE WHEN x.reset THEN excluded.count ELSE GREATEST(r.count, LEAST(r.count + excluded.want, excluded.lim)) END,
+        CASE WHEN x.reset THEN excluded.granted ELSE GREATEST(0, LEAST(r.count + excluded.want, excluded.lim) - r.count) END
+    FROM (SELECT r.ends_at <= excluded.started_at OR r.started_at > excluded.ends_at AS reset) x
+)
+RETURNING key, granted, ends_at, checked_at
 `
 
 type TakeRateLimitsParams struct {
-	Now   time.Time
-	Keys  [][]byte
-	Ends  []time.Time
-	Lims  []int32
-	Wants []int32
+	Keys     [][]byte
+	WindowMs []int64
+	Lims     []int32
+	Wants    []int32
+	At       *time.Time
 }
 
 type TakeRateLimitsRow struct {
-	Key     []byte
-	Granted int32
-	EndsAt  time.Time
+	Key       []byte
+	Granted   int32
+	EndsAt    time.Time
+	CheckedAt time.Time
 }
 
 func (q *Queries) TakeRateLimits(ctx context.Context, arg TakeRateLimitsParams) ([]TakeRateLimitsRow, error) {
 	rows, err := q.db.Query(ctx, takeRateLimits,
-		arg.Now,
 		arg.Keys,
-		arg.Ends,
+		arg.WindowMs,
 		arg.Lims,
 		arg.Wants,
+		arg.At,
 	)
 	if err != nil {
 		return nil, err
@@ -97,7 +99,12 @@ func (q *Queries) TakeRateLimits(ctx context.Context, arg TakeRateLimitsParams) 
 	var items []TakeRateLimitsRow
 	for rows.Next() {
 		var i TakeRateLimitsRow
-		if err := rows.Scan(&i.Key, &i.Granted, &i.EndsAt); err != nil {
+		if err := rows.Scan(
+			&i.Key,
+			&i.Granted,
+			&i.EndsAt,
+			&i.CheckedAt,
+		); err != nil {
 			return nil, err
 		}
 		items = append(items, i)
@@ -110,31 +117,31 @@ func (q *Queries) TakeRateLimits(ctx context.Context, arg TakeRateLimitsParams) 
 
 const takeRateSlot = `-- name: TakeRateSlot :one
 INSERT INTO rate_slots AS r (key, slot, holder, expires_at)
-SELECT $1::bytea, s.n, $2::uuid, $3::timestamptz
-FROM generate_series(0, $4::int) AS s (n)
-WHERE NOT EXISTS (SELECT 1 FROM rate_slots x WHERE x.key = $1 AND x.slot = s.n AND x.expires_at > $5::timestamptz)
+SELECT $1::bytea, s.n, $2::uuid, s.now + make_interval(secs => $3::float8)
+FROM (SELECT g.n, coalesce($4::timestamptz, clock_timestamp()) AS now FROM generate_series(0, $5::int) AS g (n)) s
+WHERE NOT EXISTS (SELECT 1 FROM rate_slots x WHERE x.key = $1 AND x.slot = s.n AND x.expires_at > s.now)
 ORDER BY s.n
 LIMIT 1
 ON CONFLICT (key, slot) DO UPDATE SET holder = excluded.holder, expires_at = excluded.expires_at
-WHERE r.expires_at <= $5
+WHERE r.expires_at <= excluded.expires_at - make_interval(secs => $3::float8)
 RETURNING slot
 `
 
 type TakeRateSlotParams struct {
-	Key       []byte
-	Holder    uuid.UUID
-	ExpiresAt time.Time
-	Last      int32
-	Now       time.Time
+	Key          []byte
+	Holder       uuid.UUID
+	LeaseSeconds float64
+	At           *time.Time
+	Last         int32
 }
 
 func (q *Queries) TakeRateSlot(ctx context.Context, arg TakeRateSlotParams) (int32, error) {
 	row := q.db.QueryRow(ctx, takeRateSlot,
 		arg.Key,
 		arg.Holder,
-		arg.ExpiresAt,
+		arg.LeaseSeconds,
+		arg.At,
 		arg.Last,
-		arg.Now,
 	)
 	var slot int32
 	err := row.Scan(&slot)
