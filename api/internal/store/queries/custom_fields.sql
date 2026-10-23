@@ -12,6 +12,9 @@ ORDER BY object, position, created_at, id;
 -- name: GetCustomField :one
 SELECT * FROM custom_fields WHERE workspace_id = $1 AND id = $2;
 
+-- name: CustomFieldKeyTaken :one
+SELECT EXISTS (SELECT 1 FROM custom_fields WHERE workspace_id = @workspace_id AND object = @object AND key = @key)::bool;
+
 -- name: CountCustomFields :one
 SELECT count(*) FROM custom_fields WHERE workspace_id = $1 AND object = $2;
 

@@ -474,6 +474,50 @@ func TestCustomFieldClearsRepeat(t *testing.T) {
 	tm.newField(map[string]any{"object": "conversation", "key": "lost", "name": "Lost", "type": "text"})
 }
 
+func TestCustomFieldDuplicateKeyIsTakenNotClearing(t *testing.T) {
+	t.Parallel()
+	h := newHarness(t)
+	tm := newTeam(t, h)
+	other := newTeam(t, h)
+	body := map[string]any{"object": "conversation", "key": "seats", "name": "X", "type": "text"}
+	tm.newField(map[string]any{"object": "conversation", "key": "seats", "name": "Seats", "type": "text"})
+	conv := tm.conversation(tm.owner)
+	path := "/v1/conversations/" + conv
+	tm.owner.expect(http.StatusOK, "PATCH", path, map[string]any{"fields": map[string]any{"seats": "5"}})
+	tm.owner.expectProblem(http.StatusConflict, "field_taken", "POST", "/v1/custom-fields", body)
+	if jobs := h.jobs("custom_field_clear", tm.ws); len(jobs) != 0 {
+		t.Fatalf("a duplicate live key queued %d clears", len(jobs))
+	}
+	if f := convFields(tm.owner.expect(http.StatusOK, "GET", path, nil)); f["seats"] != "5" {
+		t.Fatalf("a duplicate live key left %v", f)
+	}
+	other.owner.expect(http.StatusCreated, "POST", "/v1/custom-fields", body)
+}
+
+func TestCustomFieldClearSkipsLiveKey(t *testing.T) {
+	t.Parallel()
+	h := newHarness(t)
+	tm := newTeam(t, h)
+	id := tm.newField(map[string]any{"object": "conversation", "key": "seats", "name": "Seats", "type": "text"})
+	conv := tm.conversation(tm.owner)
+	path := "/v1/conversations/" + conv
+	tm.owner.expect(http.StatusOK, "PATCH", path, map[string]any{"fields": map[string]any{"seats": "5"}})
+	tm.owner.expect(http.StatusNoContent, "DELETE", "/v1/custom-fields/"+id, nil)
+	jobs := h.jobs("custom_field_clear", tm.ws)
+	if len(jobs) != 1 {
+		t.Fatalf("deletion queued %d clears", len(jobs))
+	}
+	if _, err := h.st.Pool.Exec(context.Background(), `INSERT INTO custom_fields (id, workspace_id, object, key, name, type, options, required_on_close, position, created_at, updated_at)
+		SELECT gen_random_uuid(), workspace_id, object, key, name, type, options, required_on_close, position, now(), now()
+		FROM (SELECT $1::uuid AS workspace_id, 'conversation' AS object, 'seats' AS key, 'Seats' AS name, 'text' AS type, '[]'::jsonb AS options, false AS required_on_close, 0 AS position) f`, tm.ws); err != nil {
+		t.Fatal(err)
+	}
+	h.runFieldClears(tm.ws)
+	if f := convFields(tm.owner.expect(http.StatusOK, "GET", path, nil)); f["seats"] != "5" {
+		t.Fatalf("a clear racing a recreate left %v", f)
+	}
+}
+
 func TestCustomFieldClearWalksBatches(t *testing.T) {
 	t.Parallel()
 	h := newHarness(t)

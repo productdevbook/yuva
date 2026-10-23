@@ -456,6 +456,13 @@ func (s *Server) CreateCustomField(ctx context.Context, req oas.CreateCustomFiel
 		if n >= maxCustomFields {
 			return errFieldLimit
 		}
+		taken, err := q.CustomFieldKeyTaken(ctx, store.CustomFieldKeyTakenParams{WorkspaceID: p.workspaceID, Object: string(b.Object), Key: b.Key})
+		if err != nil {
+			return err
+		}
+		if taken {
+			return errFieldTaken
+		}
 		if b.Object == oas.CustomFieldObjectConversation {
 			held, err := q.ConversationsHoldField(ctx, store.ConversationsHoldFieldParams{WorkspaceID: p.workspaceID, Key: b.Key})
 			if err != nil {
@@ -626,6 +633,9 @@ func (s *Server) ClearCustomFieldValues(ctx context.Context, a CustomFieldClearA
 	for {
 		var n int
 		err := s.inTx(ctx, a.WorkspaceID, func(q *store.Queries, events *eventBatch) error {
+			if err := q.ShareLockCustomFields(ctx, a.WorkspaceID); err != nil {
+				return err
+			}
 			rows, err := q.ClearConversationField(ctx, store.ClearConversationFieldParams{
 				WorkspaceID: a.WorkspaceID, Key: a.Key, Option: a.Option, After: after, Lim: fieldClearBatch, Now: s.now(),
 			})

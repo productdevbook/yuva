@@ -198,6 +198,23 @@ func (q *Queries) CreateCustomField(ctx context.Context, arg CreateCustomFieldPa
 	return i, err
 }
 
+const customFieldKeyTaken = `-- name: CustomFieldKeyTaken :one
+SELECT EXISTS (SELECT 1 FROM custom_fields WHERE workspace_id = $1 AND object = $2 AND key = $3)::bool
+`
+
+type CustomFieldKeyTakenParams struct {
+	WorkspaceID uuid.UUID
+	Object      string
+	Key         string
+}
+
+func (q *Queries) CustomFieldKeyTaken(ctx context.Context, arg CustomFieldKeyTakenParams) (bool, error) {
+	row := q.db.QueryRow(ctx, customFieldKeyTaken, arg.WorkspaceID, arg.Object, arg.Key)
+	var column_1 bool
+	err := row.Scan(&column_1)
+	return column_1, err
+}
+
 const deleteCustomField = `-- name: DeleteCustomField :one
 DELETE FROM custom_fields WHERE workspace_id = $1 AND id = $2
 RETURNING id, workspace_id, object, key, name, type, options, required_on_close, position, created_at, updated_at
