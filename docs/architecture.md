@@ -240,6 +240,30 @@ while it is on; a reopened conversation gets no new resolution target.
 - **Scopes.** `automations:read`; `automations:manage` is a manager scope, never implied, refused for inbox-limited keys. A rule acts with workspace-wide power.
 - **Audit.** `automation_rule.created`, `.updated`, `.deleted` (target host only for webhook actions).
 
+- **As built (#141, migration 00113).** While `bots_may_send` is off a rule reply needs both the rule
+  and its canned reply last saved by a member who is owner or admin at run time; a rule's
+  `saved_by` changes when its trigger, idle minutes, inbox, conditions, actions or `enabled` change,
+  not on rename or reorder, and canned replies record `saved_by` when their body changes (replies
+  saved before 00113 count as unknown and must be saved again). Rule replies are also capped at three
+  per conversation in 24 hours. A rule whose conditions did not match commits a `not_matched` run, so a
+  retry never evaluates it again on a later state; database errors are retried by River, business
+  refusals become `failed` runs with a specific reason (`auto_reply`, `bot_sending_disabled`,
+  `field_required`, `team_access`, `label_gone`, `canned_reply_gone`, `webhook_unavailable` and more).
+  Every message a rule writes has author `system` and `Message.rule {id, name}`; each applied run adds
+  a `rule_applied` timeline event; `conversation.updated` does not name the rule. Rule notes and
+  replies move `last_message_at` but not `last_activity_at`, so a rule never starts a new idle period;
+  an idle run re-checks under the conversation lock that nothing happened since and the conversation
+  is still open or pending and not spam. `conversations.snooze_rule_id` records the rule that set a
+  snooze, and its wake triggers no rule. The idle sweep runs every 5 minutes over open and pending
+  conversations quiet for the rule's minutes (a window of 15 minutes, 2000 per value per sweep).
+  Inside one rule: note, reply, one conversation change, then the webhook. The rate limit is taken
+  per rule before its transaction, all or nothing, only for rules that will apply; a refused job
+  snoozes until the window ends and resumes from that rule. Deleted references are not stripped:
+  an action needing one fails the run; deleting an inbox deletes its rules. Conditions include
+  `status`; operators are `in`, `not_in`, `equals`, `not_equals`, `contains`, `not_contains`,
+  `is_set`, `is_not_set`. `automation.triggered` cannot be subscribed to; it reaches only the endpoint
+  a rule names.
+
 **Macros (#142).**
 - **Table.** `macros (workspace_id, id, owner_member_id nullable, name, shortcut, body nullable, actions jsonb, position, …)`. Null owner means shared. Shortcut is unique per owner scope.
 - **Actions.** Labels add and remove, assignee or team, status, priority, snooze duration.
@@ -262,6 +286,16 @@ while it is on; a reopened conversation gets no new resolution target.
 - **Who manages them.** Personal views: any member. Workspace and team views: owners, admins and keys with `views:write`. Team views are listed to team members, owners and admins.
 - **Counts.** `GET /v1/views` returns each view with `count`, open conversations counted under the caller's own `inbox_viewers` filter, capped at 1000. A shared view therefore never counts or lists anything the caller cannot see. At most 50 views per caller.
 - **Deleted labels and teams.** The delete transaction strips the id from `filters` with a jsonb update. A rename changes nothing, because views store ids.
+
+- **As built (#143, migration 00111).** `filters` are parsed by `conversationFilter`, the same code
+  `ListConversations` calls, so a list parameter added there is a view filter with no change in
+  views; at most 30 parameters of 2000 characters. Every views endpoint needs `conversations:read`,
+  writes also `views:write`. Limits are 50 personal views per member, 50 workspace views and 50 per
+  team; `GET /v1/views` lists the caller's own, the workspace's and their teams' views without
+  truncation, and owners and admins reach other teams' views with `?team_id=`. Inbox-limited keys
+  neither see nor write team views. Counts wrap the list's own statement in `count(*)`, four at a
+  time, each stopped after one second (`count_unavailable`). Deleting a team deletes its team views;
+  PATCH locks the view and writes only the fields sent.
 
 **Custom fields (#144).**
 - **Definitions.** `custom_fields (workspace_id, id, object: conversation | contact, key ^[a-z][a-z0-9_]{0,39}$, name, type: text | number | date | select | checkbox, options jsonb, required_on_close, position)`. At most 50 per object.
