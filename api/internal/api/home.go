@@ -402,11 +402,11 @@ func (s *Server) homeAnalytics(ctx context.Context, sc homeScope) (*oas.HomeAnal
 	if err != nil {
 		return nil, err
 	}
-	if len(props) == 0 && !p.seesAllInboxes() {
-		return nil, nil
-	}
 	if sc.inbox != nil {
 		props = slices.DeleteFunc(props, func(prop store.AnalyticsProperty) bool { return prop.InboxID == nil || *prop.InboxID != *sc.inbox })
+	}
+	if len(props) == 0 && !p.seesAllInboxes() {
+		return nil, nil
 	}
 	want := make([]analytics.HomeProperty, len(props))
 	for i, prop := range props {

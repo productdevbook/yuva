@@ -114,11 +114,12 @@ WHERE @with_broadcasts::bool AND b.workspace_id = @workspace_id AND b.state = 's
   AND b.inbox_id IN (SELECT id FROM visible)
 UNION ALL
 SELECT si.kind, si.id, p.inbox_id,
-    CASE WHEN si.kind = 'maintenance' THEN si.scheduled_start ELSE coalesce(si.started_at, si.published_at, si.created_at) END,
+    CASE WHEN si.kind = 'maintenance' THEN si.scheduled_start ELSE coalesce(si.started_at, si.published_at) END,
     si.title, p.id, '', 0
 FROM status_incidents si
 JOIN status_pages p ON p.workspace_id = si.workspace_id AND p.id = si.page_id
-WHERE si.workspace_id = @workspace_id AND si.resolved_at IS NULL AND si.state NOT IN ('resolved', 'completed')
+WHERE si.workspace_id = @workspace_id AND si.published_at IS NOT NULL AND si.resolved_at IS NULL
+  AND si.state NOT IN ('resolved', 'completed')
   AND p.inbox_id IN (SELECT id FROM visible)
 UNION ALL
 SELECT 'whats_new', e.id, cl.inbox_id, e.publish_at, coalesce(t.title, ''), cl.id, cl.default_locale, 0

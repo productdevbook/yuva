@@ -226,6 +226,14 @@ func TestHomeAnalytics(t *testing.T) {
 	if len(props) != 1 || props[0].(map[string]any)["id"] != linked {
 		t.Fatalf("agent's properties: %v", props)
 	}
+	empty := tm.owner.expect(http.StatusCreated, "POST", "/v1/inboxes", map[string]any{"name": "Empty", "slug": "empty"}).body["inbox"].(map[string]any)["id"].(string)
+	tm.owner.expect(http.StatusNoContent, "PUT", "/v1/inboxes/"+empty+"/members/"+tm.agentID, nil)
+	if r := homeWith(tm.agent, "?inbox_id="+empty); r.body["analytics"] != nil {
+		t.Fatalf("an agent's inbox without a property gets analytics: %s", r.raw)
+	}
+	if props := homeBlock(homeWith(tm.owner, "?inbox_id="+empty), "analytics")["properties"].([]any); len(props) != 0 {
+		t.Fatalf("owner's inbox without a property: %v", props)
+	}
 	tm.owner.expect(http.StatusNoContent, "DELETE", "/v1/inboxes/"+tm.inbox+"/members/"+tm.agentID, nil)
 	if r := homeOf(tm.agent); r.body["analytics"] != nil {
 		t.Fatalf("an agent who sees no property gets analytics: %s", r.raw)
@@ -536,6 +544,12 @@ func TestHomeStatusIdeasAndUpcoming(t *testing.T) {
 	if _, err := h.st.Pool.Exec(context.Background(), `UPDATE broadcasts SET state = 'scheduled', scheduled_at = $2, counts = '{"recipients": 42}' WHERE id = $1`, broadcast, now.Add(time.Hour)); err != nil {
 		t.Fatal(err)
 	}
+	o.expect(http.StatusCreated, "POST", "/v1/status-pages/"+shared+"/incidents", map[string]any{"title": "Draft outage", "message": "Not yet."})
+	soon := now.Add(30 * time.Minute)
+	o.expect(http.StatusCreated, "POST", "/v1/status-pages/"+shared+"/incidents", map[string]any{
+		"kind": "maintenance", "title": "Draft upgrade", "message": "Not yet.",
+		"scheduled_start": soon.Format(time.RFC3339), "scheduled_end": soon.Add(time.Hour).Format(time.RFC3339),
+	})
 	entry := ct.entry(o, "en", "Dark mode", "Text.")
 	o.expect(http.StatusOK, "POST", ct.path("/entries/"+entry+"/schedule"), map[string]any{"publish_at": now.Add(3 * time.Hour).UTC().Format(time.RFC3339Nano)})
 
