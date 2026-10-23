@@ -1100,6 +1100,10 @@ msgstr "Een mailing stuurt een ontwerp naar een of meer lijsten, nu of later, en
 msgid "A broadcast was scheduled, started, paused or finished"
 msgstr "Een mailing is ingepland, gestart, gepauzeerd of afgerond"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "A catch-all, or an address on the forwarding domain, can be proven only with a DNS record."
+msgstr "Een catch-all, of een adres op het doorstuurdomein, kan alleen met een DNS-record worden bewezen."
+
 #: src/features/setup/ChannelStep.tsx
 msgid "A chat bubble on your site, from one line of HTML"
 msgstr "Een chatbel op je site, vanuit één regel HTML"
@@ -1955,6 +1959,10 @@ msgstr "Adres van je {provider}"
 msgid "Address or name"
 msgstr "Adres of naam"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Address proof"
+msgstr "Bewijs van het adres"
+
 #: src/components/common/text.ts
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Admin"
@@ -2539,6 +2547,10 @@ msgstr "Weergaven van een ander team"
 #: src/components/common/text.ts
 msgid "Another workspace on this server has already verified this domain."
 msgstr "Another workspace on this server has already verified this domain."
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Another workspace proved this address later"
+msgstr "Een andere werkruimte heeft dit adres later bewezen"
 
 #: src/features/docs/discussions/FromConversation.tsx
 msgid "Answer (optional)"
@@ -3731,6 +3743,7 @@ msgid "Check deliverability and set up DKIM"
 msgstr "Bezorgbaarheid controleren en DKIM instellen"
 
 #: src/features/settings/channels/ChannelState.tsx
+#: src/features/settings/channels/email/AddressProof.tsx
 msgid "Check DNS"
 msgstr "DNS controleren"
 
@@ -4072,6 +4085,7 @@ msgid "CNAME record"
 msgstr "CNAME-record"
 
 #: src/features/auth/SignInForm.tsx
+#: src/features/settings/channels/email/AddressProof.tsx
 msgid "Code"
 msgstr "Code"
 
@@ -8429,6 +8443,10 @@ msgstr "Laatste controle"
 msgid "Last checked"
 msgstr "Laatst gecontroleerd"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Last checked {checked}"
+msgstr "Laatst gecontroleerd: {checked}"
+
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Last checked {last}."
 msgstr "Laatst gecontroleerd {last}."
@@ -8940,6 +8958,10 @@ msgstr "Mail komt hier binnen; voeg een antwoordaccount toe wanneer je klaar ben
 msgid "Mail carries the tenant <0>{channelTenant}</0> you typed below."
 msgstr "De mail draagt de tenant <0>{channelTenant}</0> die je hieronder hebt getypt."
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Mail forwarded to the forwarding address arrives. Mail sent to <0>{address}</0> itself is not routed here until you prove it."
+msgstr "Mail die naar het doorstuuradres wordt doorgestuurd komt aan. Mail die rechtstreeks naar <0>{address}</0> gaat, wordt pas hierheen gerouteerd als u het adres bewijst."
+
 #: src/features/migrations/MapStep.tsx
 msgid "Mail from these addresses is imported as sent by your team. Your members' sign-in addresses count too."
 msgstr "Mail van deze adressen wordt geïmporteerd als verzonden door je team. De inlogadressen van je leden tellen ook mee."
@@ -8987,6 +9009,10 @@ msgstr "Ze een bevestiging mailen"
 #: src/features/settings/channels/email/ForwardingAddressField.tsx
 msgid "Mail to {value} is refused from then on. Change the forwarding at the provider to the new address right away, or forwarded mail no longer reaches Yuva."
 msgstr "Mail aan {value} wordt vanaf dat moment geweigerd. Wijzig het doorsturen bij de provider meteen naar het nieuwe adres, anders bereikt doorgestuurde mail Yuva niet meer."
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Mail to <0>{address}</0> goes to that workspace now. Prove the address again to take it back, or talk to whoever manages the domain."
+msgstr "Mail aan <0>{address}</0> gaat nu naar die werkruimte. Bewijs het adres opnieuw om het terug te nemen, of praat met wie het domein beheert."
 
 #: src/components/common/text.ts
 msgid "Mail to this address bounced or was reported as spam, so it cannot be added."
@@ -11446,6 +11472,10 @@ msgstr "Eén per regel, tot 20."
 msgid "One per product or brand"
 msgstr "Eén per product of merk"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "One record proves every channel of this workspace on the domain."
+msgstr "Eén record bewijst alle kanalen van deze werkruimte op het domein."
+
 #: src/features/status/LinkedSection.tsx
 msgid "One reply, written once, goes to every open conversation linked to {title}, as you, on each conversation’s own channel."
 msgstr "Eén antwoord, één keer geschreven, gaat in jouw naam naar elk open gesprek dat aan {title} is gekoppeld, via het eigen kanaal van elk gesprek."
@@ -12952,6 +12982,22 @@ msgstr "Protocol"
 msgid "Proton Mail is reachable over IMAP only through Proton Mail Bridge on your own computer, which a server cannot reach. Export the mailbox with Proton Mail's export tool, put the folder in a .zip and upload it as an export file below."
 msgstr "Proton Mail is alleen via IMAP bereikbaar via Proton Mail Bridge op je eigen computer, die een server niet kan bereiken. Exporteer de mailbox met de exporttool van Proton Mail, zet de map in een .zip en upload hem hieronder als exportbestand."
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Prove it with a code"
+msgstr "Bewijzen met een code"
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Prove it with a DNS record"
+msgstr "Bewijzen met een DNS-record"
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Proven with a code on {when}."
+msgstr "Op {when} bewezen met een code."
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Proven with the DNS record on {when}."
+msgstr "Op {when} bewezen met het DNS-record."
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Provider"
 msgstr "Provider"
@@ -13326,6 +13372,10 @@ msgstr "Realtime"
 #: src/features/migrations/SwitchStep.tsx
 msgid "Received {when}. Enter it in Gmail's forwarding settings, or open the link."
 msgstr "Ontvangen {when}. Voer hem in bij de doorstuurinstellingen van Gmail, of open de link."
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Receives mail at <0>{address}</0>"
+msgstr "Ontvangt mail op <0>{address}</0>"
 
 #: src/features/settings/channels/ChannelState.tsx
 msgid "Receives only"
@@ -14732,6 +14782,10 @@ msgstr "Een signaal sturen"
 msgid "Send a check"
 msgstr "Een controle verzenden"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Send a code"
+msgstr "Code sturen"
+
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 msgid "Send a help article"
@@ -14750,6 +14804,7 @@ msgid "Send a message from your app"
 msgstr "Een bericht verzenden vanuit je app"
 
 #: src/features/auth/SignInForm.tsx
+#: src/features/settings/channels/email/AddressProof.tsx
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Send a new code"
 msgstr "Een nieuwe code verzenden"
@@ -16609,6 +16664,10 @@ msgstr "De chat toont wanneer je gewoonlijk antwoordt"
 msgid "The chat shows who is available and typing"
 msgstr "De chat toont wie beschikbaar is en typt"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "The code is valid until {expires}. A mailbox that forwards here may prove the address by itself."
+msgstr "De code is geldig tot {expires}. Een postvak dat hierheen doorstuurt, kan het adres vanzelf bewijzen."
+
 #: src/features/auth/SignInForm.tsx
 msgid "The code is wrong or has expired."
 msgstr "De code is onjuist of verlopen."
@@ -17598,6 +17657,10 @@ msgstr "Het abonnement van dit {provider}-account heeft geen API-toegang, waarme
 msgid "This {provider} account's plan has no API access, which Yuva reads through. A plan with API access is needed to move."
 msgstr "Het abonnement van dit {provider}-account heeft geen API-toegang, waarmee Yuva leest. Om te verhuizen is een abonnement met API-toegang nodig."
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "This address does not receive mail yet"
+msgstr "Dit adres ontvangt nog geen mail"
+
 #: src/components/common/text.ts
 msgid "This address got as many confirmation mails as allowed for now. Try again tomorrow."
 msgstr "Dit adres heeft voorlopig zoveel bevestigingsmails gekregen als toegestaan. Probeer het morgen opnieuw."
@@ -17605,6 +17668,10 @@ msgstr "Dit adres heeft voorlopig zoveel bevestigingsmails gekregen als toegesta
 #: src/features/setup/NewsletterStep.tsx
 msgid "This address has no SMTP account yet. Add one in the inbox settings before the first broadcast."
 msgstr "Dit adres heeft nog geen SMTP-account. Voeg er een toe in de mailboxinstellingen vóór de eerste mailing."
+
+#: src/components/common/text.ts
+msgid "This address is already proven."
+msgstr "Dit adres is al bewezen."
 
 #: src/features/status/monitorErrors.ts
 msgid "This address is private, loopback or link-local. Checks only reach public addresses."
@@ -17673,6 +17740,10 @@ msgstr "This code has expired. Ask for a new one."
 #: src/components/common/text.ts
 msgid "This code is not right."
 msgstr "This code is not right."
+
+#: src/components/common/text.ts
+msgid "This code is wrong or has expired. Send a new code."
+msgstr "De code is onjuist of verlopen. Stuur een nieuwe code."
 
 #: src/components/common/text.ts
 msgid "This conflicts with something that already exists."
@@ -18583,6 +18654,10 @@ msgstr "tot {expires}"
 msgid "Until it starts you can go back to a draft."
 msgstr "Tot het begint kun je terug naar een concept."
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Until the address is proven, this channel receives mail only at its forwarding address."
+msgstr "Tot het adres is bewezen ontvangt dit kanaal mail alleen op het doorstuuradres."
+
 #: src/features/broadcasts/AddSubscriberDialog.tsx
 msgid "Until they click the link they stay waiting for confirmation and get no other mail. Unconfirmed subscriptions are deleted after 30 days."
 msgstr "Totdat ze op de link klikken, blijven ze op bevestiging wachten en krijgen ze geen andere mail. Onbevestigde abonnementen worden na 30 dagen verwijderd."
@@ -18905,6 +18980,7 @@ msgstr "Waarden van voorwaarde {n}, gescheiden door komma’s"
 msgid "Verified"
 msgstr "Geverifieerd"
 
+#: src/features/settings/channels/email/AddressProof.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Verify"
 msgstr "Verify"
@@ -19012,6 +19088,10 @@ msgstr "Bezoeken van deze campagne"
 #: src/features/broadcasts/Report.tsx
 msgid "Visits to your sites with utm_campaign={campaign} since sending started, counted by Analytics without cookies."
 msgstr "Bezoeken aan je sites met utm_campaign={campaign} sinds het verzenden begon, door Analytics zonder cookies geteld."
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Vouched for by the server's operator on {when}."
+msgstr "Op {when} bevestigd door de beheerder van de server."
 
 #: src/components/common/Linked.tsx
 #: src/features/broadcasts/Subscribers.tsx
@@ -20153,6 +20233,10 @@ msgstr "Yuva-mailbox"
 #: src/features/migrations/SwitchStep.tsx
 msgid "Yuva mails {address} a short test message. When it reaches Yuva by the new route, the switch works."
 msgstr "Yuva mailt {address} een kort testbericht. Zodra het via de nieuwe route bij Yuva aankomt, werkt de overstap."
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Yuva mails an 8-digit code to the address. Type it here."
+msgstr "Yuva mailt een code van 8 cijfers naar het adres. Typ die hier."
 
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Yuva may now read your organization's mailboxes over IMAP, each once its owner signs in. Whoever started the migration can open it and sign in with Microsoft again."

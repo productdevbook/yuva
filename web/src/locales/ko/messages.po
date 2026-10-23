@@ -1100,6 +1100,10 @@ msgstr "일괄 발송은 디자인 하나를 하나 이상의 리스트에 지�
 msgid "A broadcast was scheduled, started, paused or finished"
 msgstr "일괄 발송이 예약, 시작, 일시 중지 또는 완료되었을 때"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "A catch-all, or an address on the forwarding domain, can be proven only with a DNS record."
+msgstr "캐치올 주소와 전달 도메인의 주소는 DNS 레코드로만 증명할 수 있습니다."
+
 #: src/features/setup/ChannelStep.tsx
 msgid "A chat bubble on your site, from one line of HTML"
 msgstr "HTML 한 줄로 사이트에 붙이는 채팅 말풍선"
@@ -1955,6 +1959,10 @@ msgstr "{provider} 주소"
 msgid "Address or name"
 msgstr "주소 또는 이름"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Address proof"
+msgstr "주소 증명"
+
 #: src/components/common/text.ts
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Admin"
@@ -2539,6 +2547,10 @@ msgstr "다른 팀의 보기"
 #: src/components/common/text.ts
 msgid "Another workspace on this server has already verified this domain."
 msgstr "Another workspace on this server has already verified this domain."
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Another workspace proved this address later"
+msgstr "다른 워크스페이스가 나중에 이 주소를 증명했습니다"
 
 #: src/features/docs/discussions/FromConversation.tsx
 msgid "Answer (optional)"
@@ -3731,6 +3743,7 @@ msgid "Check deliverability and set up DKIM"
 msgstr "전달률을 확인하고 DKIM 설정"
 
 #: src/features/settings/channels/ChannelState.tsx
+#: src/features/settings/channels/email/AddressProof.tsx
 msgid "Check DNS"
 msgstr "DNS 확인"
 
@@ -4072,6 +4085,7 @@ msgid "CNAME record"
 msgstr "CNAME 레코드"
 
 #: src/features/auth/SignInForm.tsx
+#: src/features/settings/channels/email/AddressProof.tsx
 msgid "Code"
 msgstr "코드"
 
@@ -8429,6 +8443,10 @@ msgstr "마지막 확인"
 msgid "Last checked"
 msgstr "마지막으로 확인한 시각"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Last checked {checked}"
+msgstr "마지막 확인: {checked}"
+
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Last checked {last}."
 msgstr "마지막 확인: {last}."
@@ -8940,6 +8958,10 @@ msgstr "메일은 여기로 도착합니다. 준비되면 답장 계정을 추�
 msgid "Mail carries the tenant <0>{channelTenant}</0> you typed below."
 msgstr "메일에 아래에 입력한 테넌트 <0>{channelTenant}</0>이(가) 붙습니다."
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Mail forwarded to the forwarding address arrives. Mail sent to <0>{address}</0> itself is not routed here until you prove it."
+msgstr "전달 주소로 전달된 메일은 도착합니다. <0>{address}</0>로 직접 보낸 메일은 주소를 증명하기 전에는 이곳으로 전달되지 않습니다."
+
 #: src/features/migrations/MapStep.tsx
 msgid "Mail from these addresses is imported as sent by your team. Your members' sign-in addresses count too."
 msgstr "이 주소들의 메일은 팀이 보낸 것으로 가져옵니다. 멤버의 로그인 주소도 포함됩니다."
@@ -8987,6 +9009,10 @@ msgstr "확인 메일 보내기"
 #: src/features/settings/channels/email/ForwardingAddressField.tsx
 msgid "Mail to {value} is refused from then on. Change the forwarding at the provider to the new address right away, or forwarded mail no longer reaches Yuva."
 msgstr "{value}(으)로 오는 메일은 그때부터 거부됩니다. 지금 바로 제공업체의 전달을 새 주소로 바꾸세요. 그렇지 않으면 전달된 메일이 Yuva에 도착하지 않습니다."
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Mail to <0>{address}</0> goes to that workspace now. Prove the address again to take it back, or talk to whoever manages the domain."
+msgstr "<0>{address}</0>로 오는 메일은 이제 그 워크스페이스로 갑니다. 되찾으려면 주소를 다시 증명하거나 도메인 관리자와 이야기하세요."
 
 #: src/components/common/text.ts
 msgid "Mail to this address bounced or was reported as spam, so it cannot be added."
@@ -11446,6 +11472,10 @@ msgstr "한 줄에 하나씩, 최대 20개."
 msgid "One per product or brand"
 msgstr "제품 또는 브랜드마다 하나"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "One record proves every channel of this workspace on the domain."
+msgstr "레코드 하나로 이 워크스페이스의 도메인에 있는 모든 채널을 증명합니다."
+
 #: src/features/status/LinkedSection.tsx
 msgid "One reply, written once, goes to every open conversation linked to {title}, as you, on each conversation’s own channel."
 msgstr "한 번 작성한 답장이 {title}에 연결된 모든 열린 대화에 내 이름으로, 각 대화의 채널을 통해 전송됩니다."
@@ -12952,6 +12982,22 @@ msgstr "Protocol"
 msgid "Proton Mail is reachable over IMAP only through Proton Mail Bridge on your own computer, which a server cannot reach. Export the mailbox with Proton Mail's export tool, put the folder in a .zip and upload it as an export file below."
 msgstr "Proton Mail은 내 컴퓨터의 Proton Mail Bridge를 통해서만 IMAP으로 접근할 수 있는데, 서버는 거기에 닿을 수 없습니다. Proton Mail의 내보내기 도구로 메일함을 내보내고 폴더를 .zip으로 묶어 아래에서 내보내기 파일로 업로드하세요."
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Prove it with a code"
+msgstr "코드로 증명"
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Prove it with a DNS record"
+msgstr "DNS 레코드로 증명"
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Proven with a code on {when}."
+msgstr "{when}에 코드로 증명했습니다."
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Proven with the DNS record on {when}."
+msgstr "{when}에 DNS 레코드로 증명했습니다."
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Provider"
 msgstr "Provider"
@@ -13326,6 +13372,10 @@ msgstr "실시간"
 #: src/features/migrations/SwitchStep.tsx
 msgid "Received {when}. Enter it in Gmail's forwarding settings, or open the link."
 msgstr "{when}에 수신. Gmail의 전달 설정에 입력하거나 링크를 여세요."
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Receives mail at <0>{address}</0>"
+msgstr "<0>{address}</0>에서 메일을 받는 중"
 
 #: src/features/settings/channels/ChannelState.tsx
 msgid "Receives only"
@@ -14732,6 +14782,10 @@ msgstr "비트 보내기"
 msgid "Send a check"
 msgstr "확인 메일 보내기"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Send a code"
+msgstr "코드 보내기"
+
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 msgid "Send a help article"
@@ -14750,6 +14804,7 @@ msgid "Send a message from your app"
 msgstr "앱에서 메시지 보내기"
 
 #: src/features/auth/SignInForm.tsx
+#: src/features/settings/channels/email/AddressProof.tsx
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Send a new code"
 msgstr "새 코드 보내기"
@@ -16609,6 +16664,10 @@ msgstr "채팅에 보통 답장하는 시간 표시"
 msgid "The chat shows who is available and typing"
 msgstr "채팅에 응대 가능한 사람과 입력 중인 사람 표시"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "The code is valid until {expires}. A mailbox that forwards here may prove the address by itself."
+msgstr "코드는 {expires}까지 유효합니다. 이곳으로 전달하는 메일함은 주소를 스스로 증명할 수 있습니다."
+
 #: src/features/auth/SignInForm.tsx
 msgid "The code is wrong or has expired."
 msgstr "코드가 틀렸거나 만료되었습니다."
@@ -17598,6 +17657,10 @@ msgstr "이 {provider} 계정의 요금제에는 Yuva가 읽는 데 쓰는 API �
 msgid "This {provider} account's plan has no API access, which Yuva reads through. A plan with API access is needed to move."
 msgstr "이 {provider} 계정의 요금제에는 Yuva가 읽는 데 쓰는 API 접근이 없습니다. 이전하려면 API 접근이 있는 요금제가 필요합니다."
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "This address does not receive mail yet"
+msgstr "이 주소는 아직 메일을 받지 않습니다"
+
 #: src/components/common/text.ts
 msgid "This address got as many confirmation mails as allowed for now. Try again tomorrow."
 msgstr "이 주소는 현재 허용된 만큼 확인 메일을 받았습니다. 내일 다시 시도하세요."
@@ -17605,6 +17668,10 @@ msgstr "이 주소는 현재 허용된 만큼 확인 메일을 받았습니다. 
 #: src/features/setup/NewsletterStep.tsx
 msgid "This address has no SMTP account yet. Add one in the inbox settings before the first broadcast."
 msgstr "이 주소에는 아직 SMTP 계정이 없습니다. 첫 일괄 발송 전에 받은 편지함 설정에서 추가하세요."
+
+#: src/components/common/text.ts
+msgid "This address is already proven."
+msgstr "이 주소는 이미 증명되었습니다."
 
 #: src/features/status/monitorErrors.ts
 msgid "This address is private, loopback or link-local. Checks only reach public addresses."
@@ -17673,6 +17740,10 @@ msgstr "This code has expired. Ask for a new one."
 #: src/components/common/text.ts
 msgid "This code is not right."
 msgstr "This code is not right."
+
+#: src/components/common/text.ts
+msgid "This code is wrong or has expired. Send a new code."
+msgstr "코드가 틀렸거나 만료되었습니다. 새 코드를 보내세요."
 
 #: src/components/common/text.ts
 msgid "This conflicts with something that already exists."
@@ -18583,6 +18654,10 @@ msgstr "{expires}까지"
 msgid "Until it starts you can go back to a draft."
 msgstr "시작하기 전에는 임시 저장본으로 되돌릴 수 있습니다."
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Until the address is proven, this channel receives mail only at its forwarding address."
+msgstr "주소를 증명하기 전까지 이 채널은 전달 주소로만 메일을 받습니다."
+
 #: src/features/broadcasts/AddSubscriberDialog.tsx
 msgid "Until they click the link they stay waiting for confirmation and get no other mail. Unconfirmed subscriptions are deleted after 30 days."
 msgstr "링크를 클릭하기 전까지는 확인 대기 상태로 다른 메일을 받지 않습니다. 확인하지 않은 구독은 30일 후에 삭제됩니다."
@@ -18905,6 +18980,7 @@ msgstr "조건 {n}의 값, 쉼표로 구분"
 msgid "Verified"
 msgstr "확인됨"
 
+#: src/features/settings/channels/email/AddressProof.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Verify"
 msgstr "Verify"
@@ -19012,6 +19088,10 @@ msgstr "이 캠페인의 방문"
 #: src/features/broadcasts/Report.tsx
 msgid "Visits to your sites with utm_campaign={campaign} since sending started, counted by Analytics without cookies."
 msgstr "발송 시작 이후 utm_campaign={campaign}이 붙은 내 사이트 방문으로, 분석이 쿠키 없이 집계합니다."
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Vouched for by the server's operator on {when}."
+msgstr "{when}에 서버 운영자가 보증했습니다."
 
 #: src/components/common/Linked.tsx
 #: src/features/broadcasts/Subscribers.tsx
@@ -20153,6 +20233,10 @@ msgstr "Yuva 받은 편지함"
 #: src/features/migrations/SwitchStep.tsx
 msgid "Yuva mails {address} a short test message. When it reaches Yuva by the new route, the switch works."
 msgstr "Yuva가 {address}(으)로 짧은 테스트 메시지를 보냅니다. 새 경로로 Yuva에 도착하면 전환이 제대로 작동하는 것입니다."
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Yuva mails an 8-digit code to the address. Type it here."
+msgstr "Yuva가 8자리 코드를 이 주소로 보냅니다. 여기에 입력하세요."
 
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Yuva may now read your organization's mailboxes over IMAP, each once its owner signs in. Whoever started the migration can open it and sign in with Microsoft again."

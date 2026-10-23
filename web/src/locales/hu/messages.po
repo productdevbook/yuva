@@ -1100,6 +1100,10 @@ msgstr "A tömeges levél egy dizájnt küld egy vagy több listára, most vagy 
 msgid "A broadcast was scheduled, started, paused or finished"
 msgstr "Egy tömeges levelet ütemeztek, elindítottak, szüneteltettek vagy befejeztek"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "A catch-all, or an address on the forwarding domain, can be proven only with a DNS record."
+msgstr "A catch-all címet vagy az átirányítási tartomány egy címét csak DNS-rekorddal lehet igazolni."
+
 #: src/features/setup/ChannelStep.tsx
 msgid "A chat bubble on your site, from one line of HTML"
 msgstr "Csevegőbuborék a webhelyeden, egyetlen HTML-sorból"
@@ -1955,6 +1959,10 @@ msgstr "A(z) {provider} címe"
 msgid "Address or name"
 msgstr "Cím vagy név"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Address proof"
+msgstr "A cím igazolása"
+
 #: src/components/common/text.ts
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Admin"
@@ -2539,6 +2547,10 @@ msgstr "Másik csapat nézetei"
 #: src/components/common/text.ts
 msgid "Another workspace on this server has already verified this domain."
 msgstr "Another workspace on this server has already verified this domain."
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Another workspace proved this address later"
+msgstr "Egy másik munkaterület később igazolta ezt a címet"
 
 #: src/features/docs/discussions/FromConversation.tsx
 msgid "Answer (optional)"
@@ -3731,6 +3743,7 @@ msgid "Check deliverability and set up DKIM"
 msgstr "Kézbesíthetőség ellenőrzése és DKIM beállítása"
 
 #: src/features/settings/channels/ChannelState.tsx
+#: src/features/settings/channels/email/AddressProof.tsx
 msgid "Check DNS"
 msgstr "DNS ellenőrzése"
 
@@ -4072,6 +4085,7 @@ msgid "CNAME record"
 msgstr "CNAME-rekord"
 
 #: src/features/auth/SignInForm.tsx
+#: src/features/settings/channels/email/AddressProof.tsx
 msgid "Code"
 msgstr "Kód"
 
@@ -8429,6 +8443,10 @@ msgstr "Utolsó ellenőrzés"
 msgid "Last checked"
 msgstr "Utoljára ellenőrizve"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Last checked {checked}"
+msgstr "Utoljára ellenőrizve: {checked}"
+
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Last checked {last}."
 msgstr "Utolsó ellenőrzés: {last}."
@@ -8940,6 +8958,10 @@ msgstr "A levelek ide érkeznek; adj hozzá válaszfiókot, ha készen állsz"
 msgid "Mail carries the tenant <0>{channelTenant}</0> you typed below."
 msgstr "A levelek az általad alább megadott <0>{channelTenant}</0> bérlőt viszik."
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Mail forwarded to the forwarding address arrives. Mail sent to <0>{address}</0> itself is not routed here until you prove it."
+msgstr "Az átirányítási címre továbbított levelek megérkeznek. A közvetlenül a(z) <0>{address}</0> címre küldött levelek addig nem ide futnak be, amíg nem igazolja a címet."
+
 #: src/features/migrations/MapStep.tsx
 msgid "Mail from these addresses is imported as sent by your team. Your members' sign-in addresses count too."
 msgstr "Az ezekről a címekről érkező levelek a csapatod által küldöttként importálódnak. A tagjaid bejelentkezési címei is számítanak."
@@ -8987,6 +9009,10 @@ msgstr "Megerősítő levél küldése nekik"
 #: src/features/settings/channels/email/ForwardingAddressField.tsx
 msgid "Mail to {value} is refused from then on. Change the forwarding at the provider to the new address right away, or forwarded mail no longer reaches Yuva."
 msgstr "A(z) {value} címre küldött levelek ettől kezdve elutasításra kerülnek. Azonnal módosítsd az átirányítást a szolgáltatódnál az új címre, különben az átirányított levelek nem érik el a Yuvát."
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Mail to <0>{address}</0> goes to that workspace now. Prove the address again to take it back, or talk to whoever manages the domain."
+msgstr "A(z) <0>{address}</0> címre érkező levelek most ahhoz a munkaterülethez mennek. Igazolja újra a címet, hogy visszavegye, vagy beszéljen a tartomány kezelőjével."
 
 #: src/components/common/text.ts
 msgid "Mail to this address bounced or was reported as spam, so it cannot be added."
@@ -11446,6 +11472,10 @@ msgstr "Soronként egy, legfeljebb 20."
 msgid "One per product or brand"
 msgstr "Termékenként vagy márkánként egy"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "One record proves every channel of this workspace on the domain."
+msgstr "Egyetlen rekord igazolja e munkaterület minden csatornáját a tartományon."
+
 #: src/features/status/LinkedSection.tsx
 msgid "One reply, written once, goes to every open conversation linked to {title}, as you, on each conversation’s own channel."
 msgstr "Egyszer megírt válaszod minden, a(z) {title} incidenshez kapcsolt nyitott beszélgetésbe megy, a nevedben, a beszélgetés saját csatornáján."
@@ -12952,6 +12982,22 @@ msgstr "Protocol"
 msgid "Proton Mail is reachable over IMAP only through Proton Mail Bridge on your own computer, which a server cannot reach. Export the mailbox with Proton Mail's export tool, put the folder in a .zip and upload it as an export file below."
 msgstr "A Proton Mail IMAP-on csak a saját számítógépeden futó Proton Mail Bridge-en át érhető el, amelyet egy szerver nem ér el. Exportáld a postafiókot a Proton Mail exporteszközével, tedd a mappát egy .zip-be, és tölts fel exportfájlként alább."
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Prove it with a code"
+msgstr "Igazolás kóddal"
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Prove it with a DNS record"
+msgstr "Igazolás DNS-rekorddal"
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Proven with a code on {when}."
+msgstr "Kóddal igazolva: {when}."
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Proven with the DNS record on {when}."
+msgstr "DNS-rekorddal igazolva: {when}."
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Provider"
 msgstr "Provider"
@@ -13326,6 +13372,10 @@ msgstr "Valós idő"
 #: src/features/migrations/SwitchStep.tsx
 msgid "Received {when}. Enter it in Gmail's forwarding settings, or open the link."
 msgstr "Fogadva: {when}. Add meg a Gmail átirányítási beállításaiban, vagy nyisd meg a linket."
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Receives mail at <0>{address}</0>"
+msgstr "Leveleket fogad a(z) <0>{address}</0> címen"
 
 #: src/features/settings/channels/ChannelState.tsx
 msgid "Receives only"
@@ -14732,6 +14782,10 @@ msgstr "Jel küldése"
 msgid "Send a check"
 msgstr "Ellenőrzés küldése"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Send a code"
+msgstr "Kód küldése"
+
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 msgid "Send a help article"
@@ -14750,6 +14804,7 @@ msgid "Send a message from your app"
 msgstr "Küldj üzenetet az alkalmazásodból"
 
 #: src/features/auth/SignInForm.tsx
+#: src/features/settings/channels/email/AddressProof.tsx
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Send a new code"
 msgstr "Új kód küldése"
@@ -16609,6 +16664,10 @@ msgstr "A csevegés megmutatja, mikor szoktál válaszolni"
 msgid "The chat shows who is available and typing"
 msgstr "A csevegés megmutatja, ki elérhető és ki gépel"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "The code is valid until {expires}. A mailbox that forwards here may prove the address by itself."
+msgstr "A kód eddig érvényes: {expires}. Az ide továbbító postafiók magától is igazolhatja a címet."
+
 #: src/features/auth/SignInForm.tsx
 msgid "The code is wrong or has expired."
 msgstr "A kód hibás vagy lejárt."
@@ -17598,6 +17657,10 @@ msgstr "Ennek a(z) {provider}-fióknak a csomagja nem tartalmaz API-hozzáféré
 msgid "This {provider} account's plan has no API access, which Yuva reads through. A plan with API access is needed to move."
 msgstr "Ennek a(z) {provider}-fióknak a csomagja nem tartalmaz API-hozzáférést, amelyen keresztül a Yuva olvas. Az átvitelhez API-hozzáférést tartalmazó csomag kell."
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "This address does not receive mail yet"
+msgstr "Ez a cím még nem fogad leveleket"
+
 #: src/components/common/text.ts
 msgid "This address got as many confirmation mails as allowed for now. Try again tomorrow."
 msgstr "Ez a cím annyi megerősítő levelet kapott, amennyi egyelőre megengedett. Próbáld újra holnap."
@@ -17605,6 +17668,10 @@ msgstr "Ez a cím annyi megerősítő levelet kapott, amennyi egyelőre megenged
 #: src/features/setup/NewsletterStep.tsx
 msgid "This address has no SMTP account yet. Add one in the inbox settings before the first broadcast."
 msgstr "Ennek a címnek még nincs SMTP-fiókja. Az első tömeges levél előtt adj hozzá egyet a postafiók beállításaiban."
+
+#: src/components/common/text.ts
+msgid "This address is already proven."
+msgstr "Ez a cím már igazolva van."
 
 #: src/features/status/monitorErrors.ts
 msgid "This address is private, loopback or link-local. Checks only reach public addresses."
@@ -17673,6 +17740,10 @@ msgstr "This code has expired. Ask for a new one."
 #: src/components/common/text.ts
 msgid "This code is not right."
 msgstr "This code is not right."
+
+#: src/components/common/text.ts
+msgid "This code is wrong or has expired. Send a new code."
+msgstr "A kód hibás vagy lejárt. Küldjön új kódot."
 
 #: src/components/common/text.ts
 msgid "This conflicts with something that already exists."
@@ -18583,6 +18654,10 @@ msgstr "eddig: {expires}"
 msgid "Until it starts you can go back to a draft."
 msgstr "A kezdésig visszatérhetsz a vázlathoz."
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Until the address is proven, this channel receives mail only at its forwarding address."
+msgstr "Amíg a cím nincs igazolva, a csatorna csak az átirányítási címén fogad leveleket."
+
 #: src/features/broadcasts/AddSubscriberDialog.tsx
 msgid "Until they click the link they stay waiting for confirmation and get no other mail. Unconfirmed subscriptions are deleted after 30 days."
 msgstr "Amíg nem kattintanak a linkre, megerősítésre várnak, és más levelet nem kapnak. A meg nem erősített feliratkozások 30 nap után törlődnek."
@@ -18905,6 +18980,7 @@ msgstr "A(z) {n}. feltétel értékei, vesszővel elválasztva"
 msgid "Verified"
 msgstr "Ellenőrizve"
 
+#: src/features/settings/channels/email/AddressProof.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Verify"
 msgstr "Verify"
@@ -19012,6 +19088,10 @@ msgstr "Látogatások ebből a kampányból"
 #: src/features/broadcasts/Report.tsx
 msgid "Visits to your sites with utm_campaign={campaign} since sending started, counted by Analytics without cookies."
 msgstr "Látogatások a webhelyeiden utm_campaign={campaign} paraméterrel a küldés kezdete óta, az Analitika által sütik nélkül számolva."
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Vouched for by the server's operator on {when}."
+msgstr "A szerver üzemeltetője jóváhagyta: {when}."
 
 #: src/components/common/Linked.tsx
 #: src/features/broadcasts/Subscribers.tsx
@@ -20153,6 +20233,10 @@ msgstr "Yuva-postafiók"
 #: src/features/migrations/SwitchStep.tsx
 msgid "Yuva mails {address} a short test message. When it reaches Yuva by the new route, the switch works."
 msgstr "A Yuva rövid tesztüzenetet küld ide: {address}. Ha az új útvonalon megérkezik a Yuvába, az átállás működik."
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Yuva mails an 8-digit code to the address. Type it here."
+msgstr "A Yuva 8 számjegyű kódot küld a címre. Írja be ide."
 
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Yuva may now read your organization's mailboxes over IMAP, each once its owner signs in. Whoever started the migration can open it and sign in with Microsoft again."

@@ -423,6 +423,9 @@ export function useErrorText() {
     if (err.code === "participants_full") return t`A conversation can copy at most 20 people.`
     if (err.code === "email_not_configured")
       return t`This conversation's e-mail channel has no SMTP account, so the reply was not sent. Add one in the inbox settings.`
+    if (err.code === "verification_code_invalid") return t`This code is wrong or has expired. Send a new code.`
+    if (err.code === "email_verified") return t`This address is already proven.`
+    if (err.code === "sso_session_scope" && err.detail) return err.detail
     if (err.code === "email_address_taken") return t`Another channel already receives mail at this address.`
     if (err.code === "tracker_auth_failed")
       return t`The tracker refused the token. Check that it is valid and has access to issues.`

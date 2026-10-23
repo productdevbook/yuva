@@ -26,6 +26,7 @@ import {
   channelTabs,
   type ChannelTab,
 } from "@/features/settings/channels/ChannelState"
+import { AddressProofSection } from "@/features/settings/channels/email/AddressProof"
 import { DeliverabilityCard, DkimSection } from "@/features/settings/channels/email/Deliverability"
 import {
   AutoReplySection,
@@ -168,6 +169,7 @@ function Body({ ch, tab }: { ch: Channel; tab: ChannelTab }) {
     return tab === "settings" ? (
       <>
         <NameSection key={`name:${ch.id}`} channel={ch} />
+        <AddressProofSection channel={ch} />
         <ReceivingSection channel={ch} />
         <RepliesSection channel={ch} />
         <AutoReplySection channel={ch} />

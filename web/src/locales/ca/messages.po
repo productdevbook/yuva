@@ -1100,6 +1100,10 @@ msgstr "Un enviament massiu envia un disseny a una o més llistes, ara o més ta
 msgid "A broadcast was scheduled, started, paused or finished"
 msgstr "S'ha programat, iniciat, posat en pausa o acabat un enviament massiu"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "A catch-all, or an address on the forwarding domain, can be proven only with a DNS record."
+msgstr "Una adreça catch-all, o una del domini de reenviament, només es pot demostrar amb un registre DNS."
+
 #: src/features/setup/ChannelStep.tsx
 msgid "A chat bubble on your site, from one line of HTML"
 msgstr "Una bombolla de xat al teu lloc, amb una línia d'HTML"
@@ -1955,6 +1959,10 @@ msgstr "Adreça del vostre {provider}"
 msgid "Address or name"
 msgstr "Adreça o nom"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Address proof"
+msgstr "Prova de l'adreça"
+
 #: src/components/common/text.ts
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Admin"
@@ -2539,6 +2547,10 @@ msgstr "Vistes d’un altre equip"
 #: src/components/common/text.ts
 msgid "Another workspace on this server has already verified this domain."
 msgstr "Another workspace on this server has already verified this domain."
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Another workspace proved this address later"
+msgstr "Un altre espai de treball va demostrar aquesta adreça més tard"
 
 #: src/features/docs/discussions/FromConversation.tsx
 msgid "Answer (optional)"
@@ -3731,6 +3743,7 @@ msgid "Check deliverability and set up DKIM"
 msgstr "Comprova la lliurabilitat i configura DKIM"
 
 #: src/features/settings/channels/ChannelState.tsx
+#: src/features/settings/channels/email/AddressProof.tsx
 msgid "Check DNS"
 msgstr "Comprova el DNS"
 
@@ -4072,6 +4085,7 @@ msgid "CNAME record"
 msgstr "Registre CNAME"
 
 #: src/features/auth/SignInForm.tsx
+#: src/features/settings/channels/email/AddressProof.tsx
 msgid "Code"
 msgstr "Codi"
 
@@ -8429,6 +8443,10 @@ msgstr "Última comprovació"
 msgid "Last checked"
 msgstr "Comprovat per última vegada"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Last checked {checked}"
+msgstr "Última comprovació: {checked}"
+
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Last checked {last}."
 msgstr "Última comprovació {last}."
@@ -8940,6 +8958,10 @@ msgstr "El correu arriba aquí; afegeix un compte de respostes quan estiguis a p
 msgid "Mail carries the tenant <0>{channelTenant}</0> you typed below."
 msgstr "El correu porta el tenant <0>{channelTenant}</0> que has escrit a sota."
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Mail forwarded to the forwarding address arrives. Mail sent to <0>{address}</0> itself is not routed here until you prove it."
+msgstr "Els correus reenviats a l'adreça de reenviament arriben. Els enviats directament a <0>{address}</0> no s'encaminen aquí fins que demostreu l'adreça."
+
 #: src/features/migrations/MapStep.tsx
 msgid "Mail from these addresses is imported as sent by your team. Your members' sign-in addresses count too."
 msgstr "El correu d'aquestes adreces s'importa com a enviat pel teu equip. Les adreces d'inici de sessió dels teus membres també compten."
@@ -8987,6 +9009,10 @@ msgstr "Envia'ls una confirmació per correu"
 #: src/features/settings/channels/email/ForwardingAddressField.tsx
 msgid "Mail to {value} is refused from then on. Change the forwarding at the provider to the new address right away, or forwarded mail no longer reaches Yuva."
 msgstr "El correu a {value} es rebutja a partir d'aleshores. Canvia de seguida el reenviament al proveïdor a l'adreça nova, o el correu reenviat ja no arribarà a Yuva."
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Mail to <0>{address}</0> goes to that workspace now. Prove the address again to take it back, or talk to whoever manages the domain."
+msgstr "El correu a <0>{address}</0> va ara a aquest altre espai de treball. Demostreu l'adreça de nou per recuperar-la o parleu amb qui gestiona el domini."
 
 #: src/components/common/text.ts
 msgid "Mail to this address bounced or was reported as spam, so it cannot be added."
@@ -11446,6 +11472,10 @@ msgstr "Un per línia, fins a 20."
 msgid "One per product or brand"
 msgstr "Una per producte o marca"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "One record proves every channel of this workspace on the domain."
+msgstr "Un sol registre demostra tots els canals d'aquest espai de treball al domini."
+
 #: src/features/status/LinkedSection.tsx
 msgid "One reply, written once, goes to every open conversation linked to {title}, as you, on each conversation’s own channel."
 msgstr "Una resposta, escrita una sola vegada, arriba a cada conversa oberta vinculada a {title}, com a tu, pel canal propi de cada conversa."
@@ -12952,6 +12982,22 @@ msgstr "Protocol"
 msgid "Proton Mail is reachable over IMAP only through Proton Mail Bridge on your own computer, which a server cannot reach. Export the mailbox with Proton Mail's export tool, put the folder in a .zip and upload it as an export file below."
 msgstr "Proton Mail només és accessible per IMAP mitjançant Proton Mail Bridge al teu propi ordinador, que un servidor no pot abastar. Exporta la bústia amb l'eina d'exportació de Proton Mail, posa la carpeta en un .zip i puja'l com a fitxer d'exportació a sota."
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Prove it with a code"
+msgstr "Demostra-ho amb un codi"
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Prove it with a DNS record"
+msgstr "Demostra-ho amb un registre DNS"
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Proven with a code on {when}."
+msgstr "Demostrada amb un codi el {when}."
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Proven with the DNS record on {when}."
+msgstr "Demostrada amb el registre DNS el {when}."
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Provider"
 msgstr "Provider"
@@ -13326,6 +13372,10 @@ msgstr "Temps real"
 #: src/features/migrations/SwitchStep.tsx
 msgid "Received {when}. Enter it in Gmail's forwarding settings, or open the link."
 msgstr "Rebut {when}. Introdueix-lo a la configuració de reenviament de Gmail o obre l'enllaç."
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Receives mail at <0>{address}</0>"
+msgstr "Rep correu a <0>{address}</0>"
 
 #: src/features/settings/channels/ChannelState.tsx
 msgid "Receives only"
@@ -14732,6 +14782,10 @@ msgstr "Envia un senyal"
 msgid "Send a check"
 msgstr "Envia una comprovació"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Send a code"
+msgstr "Envia un codi"
+
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 msgid "Send a help article"
@@ -14750,6 +14804,7 @@ msgid "Send a message from your app"
 msgstr "Envia un missatge des de la teva aplicació"
 
 #: src/features/auth/SignInForm.tsx
+#: src/features/settings/channels/email/AddressProof.tsx
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Send a new code"
 msgstr "Envia un codi nou"
@@ -16609,6 +16664,10 @@ msgstr "El xat mostra quan sol respondre"
 msgid "The chat shows who is available and typing"
 msgstr "El xat mostra qui és disponible i qui està escrivint"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "The code is valid until {expires}. A mailbox that forwards here may prove the address by itself."
+msgstr "El codi és vàlid fins al {expires}. Una bústia que reenvia aquí pot demostrar l'adreça per si sola."
+
 #: src/features/auth/SignInForm.tsx
 msgid "The code is wrong or has expired."
 msgstr "El codi és incorrecte o ha caducat."
@@ -17598,6 +17657,10 @@ msgstr "El pla d'aquest compte de {provider} no té accés a l'API, que Yuva fa 
 msgid "This {provider} account's plan has no API access, which Yuva reads through. A plan with API access is needed to move."
 msgstr "El pla d'aquest compte de {provider} no té accés a l'API, que Yuva fa servir per llegir. Cal un pla amb accés a l'API per migrar."
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "This address does not receive mail yet"
+msgstr "Aquesta adreça encara no rep correu"
+
 #: src/components/common/text.ts
 msgid "This address got as many confirmation mails as allowed for now. Try again tomorrow."
 msgstr "Aquesta adreça ha rebut tants correus de confirmació com es permeten de moment. Torna-ho a provar demà."
@@ -17605,6 +17668,10 @@ msgstr "Aquesta adreça ha rebut tants correus de confirmació com es permeten d
 #: src/features/setup/NewsletterStep.tsx
 msgid "This address has no SMTP account yet. Add one in the inbox settings before the first broadcast."
 msgstr "Aquesta adreça encara no té compte SMTP. Afegeix-ne un a la configuració de la safata abans del primer enviament massiu."
+
+#: src/components/common/text.ts
+msgid "This address is already proven."
+msgstr "Aquesta adreça ja està demostrada."
 
 #: src/features/status/monitorErrors.ts
 msgid "This address is private, loopback or link-local. Checks only reach public addresses."
@@ -17673,6 +17740,10 @@ msgstr "This code has expired. Ask for a new one."
 #: src/components/common/text.ts
 msgid "This code is not right."
 msgstr "This code is not right."
+
+#: src/components/common/text.ts
+msgid "This code is wrong or has expired. Send a new code."
+msgstr "El codi és incorrecte o ha caducat. Envieu-ne un de nou."
 
 #: src/components/common/text.ts
 msgid "This conflicts with something that already exists."
@@ -18583,6 +18654,10 @@ msgstr "fins al {expires}"
 msgid "Until it starts you can go back to a draft."
 msgstr "Fins que comenci, pots tornar a un esborrany."
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Until the address is proven, this channel receives mail only at its forwarding address."
+msgstr "Fins que l'adreça no estigui demostrada, aquest canal només rep correu a la seva adreça de reenviament."
+
 #: src/features/broadcasts/AddSubscriberDialog.tsx
 msgid "Until they click the link they stay waiting for confirmation and get no other mail. Unconfirmed subscriptions are deleted after 30 days."
 msgstr "Fins que facin clic a l'enllaç esperen confirmació i no reben cap altre correu. Les subscripcions sense confirmar s'eliminen als 30 dies."
@@ -18905,6 +18980,7 @@ msgstr "Valors de la condició {n}, separats per comes"
 msgid "Verified"
 msgstr "Verificat"
 
+#: src/features/settings/channels/email/AddressProof.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Verify"
 msgstr "Verify"
@@ -19012,6 +19088,10 @@ msgstr "Visites d'aquesta campanya"
 #: src/features/broadcasts/Report.tsx
 msgid "Visits to your sites with utm_campaign={campaign} since sending started, counted by Analytics without cookies."
 msgstr "Visites als teus llocs amb utm_campaign={campaign} des que va començar l'enviament, comptades per Analítica sense galetes."
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Vouched for by the server's operator on {when}."
+msgstr "Avalada per l'operador del servidor el {when}."
 
 #: src/components/common/Linked.tsx
 #: src/features/broadcasts/Subscribers.tsx
@@ -20153,6 +20233,10 @@ msgstr "Safata de Yuva"
 #: src/features/migrations/SwitchStep.tsx
 msgid "Yuva mails {address} a short test message. When it reaches Yuva by the new route, the switch works."
 msgstr "Yuva envia a {address} un missatge de prova breu. Quan arriba a Yuva per la ruta nova, el canvi funciona."
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Yuva mails an 8-digit code to the address. Type it here."
+msgstr "Yuva envia un codi de 8 dígits a l'adreça. Escriviu-lo aquí."
 
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Yuva may now read your organization's mailboxes over IMAP, each once its owner signs in. Whoever started the migration can open it and sign in with Microsoft again."

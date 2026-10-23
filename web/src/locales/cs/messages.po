@@ -1100,6 +1100,10 @@ msgstr "Hromadná zpráva odešle návrh do jedné nebo více skupin, teď nebo 
 msgid "A broadcast was scheduled, started, paused or finished"
 msgstr "Hromadná zpráva byla naplánována, spuštěna, pozastavena nebo dokončena"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "A catch-all, or an address on the forwarding domain, can be proven only with a DNS record."
+msgstr "Adresu typu catch-all nebo adresu v doméně pro přeposílání lze dokázat jen záznamem DNS."
+
 #: src/features/setup/ChannelStep.tsx
 msgid "A chat bubble on your site, from one line of HTML"
 msgstr "Chatovací bublina na vašem webu, z jednoho řádku HTML"
@@ -1955,6 +1959,10 @@ msgstr "Adresa vašeho {provider}"
 msgid "Address or name"
 msgstr "Adresa nebo jméno"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Address proof"
+msgstr "Ověření adresy"
+
 #: src/components/common/text.ts
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Admin"
@@ -2539,6 +2547,10 @@ msgstr "Pohledy jiného týmu"
 #: src/components/common/text.ts
 msgid "Another workspace on this server has already verified this domain."
 msgstr "Another workspace on this server has already verified this domain."
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Another workspace proved this address later"
+msgstr "Jiný pracovní prostor tuto adresu ověřil později"
 
 #: src/features/docs/discussions/FromConversation.tsx
 msgid "Answer (optional)"
@@ -3731,6 +3743,7 @@ msgid "Check deliverability and set up DKIM"
 msgstr "Zkontrolovat doručitelnost a nastavit DKIM"
 
 #: src/features/settings/channels/ChannelState.tsx
+#: src/features/settings/channels/email/AddressProof.tsx
 msgid "Check DNS"
 msgstr "Zkontrolovat DNS"
 
@@ -4072,6 +4085,7 @@ msgid "CNAME record"
 msgstr "Záznam CNAME"
 
 #: src/features/auth/SignInForm.tsx
+#: src/features/settings/channels/email/AddressProof.tsx
 msgid "Code"
 msgstr "Kód"
 
@@ -8429,6 +8443,10 @@ msgstr "Poslední kontrola"
 msgid "Last checked"
 msgstr "Naposledy zkontrolováno"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Last checked {checked}"
+msgstr "Naposledy zkontrolováno: {checked}"
+
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Last checked {last}."
 msgstr "Naposledy zkontrolováno {last}."
@@ -8940,6 +8958,10 @@ msgstr "Pošta přichází sem; účet pro odpovědi přidejte, až budete přip
 msgid "Mail carries the tenant <0>{channelTenant}</0> you typed below."
 msgstr "Pošta nese tenanta <0>{channelTenant}</0>, kterého jste zadali níže."
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Mail forwarded to the forwarding address arrives. Mail sent to <0>{address}</0> itself is not routed here until you prove it."
+msgstr "Pošta přeposlaná na adresu pro přeposílání dorazí. Pošta poslaná přímo na <0>{address}</0> sem nepůjde, dokud adresu neověříte."
+
 #: src/features/migrations/MapStep.tsx
 msgid "Mail from these addresses is imported as sent by your team. Your members' sign-in addresses count too."
 msgstr "Pošta z těchto adres se importuje jako odeslaná vaším týmem. Počítají se i přihlašovací adresy vašich členů."
@@ -8987,6 +9009,10 @@ msgstr "Poslat jim potvrzení"
 #: src/features/settings/channels/email/ForwardingAddressField.tsx
 msgid "Mail to {value} is refused from then on. Change the forwarding at the provider to the new address right away, or forwarded mail no longer reaches Yuva."
 msgstr "Pošta na {value} je od té chvíle odmítána. Změňte přeposílání u poskytovatele na novou adresu hned, jinak přeposílaná pošta už do Yuvy nedorazí."
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Mail to <0>{address}</0> goes to that workspace now. Prove the address again to take it back, or talk to whoever manages the domain."
+msgstr "Pošta na <0>{address}</0> nyní míří do onoho pracovního prostoru. Ověřte adresu znovu, abyste ji získali zpět, nebo promluvte s tím, kdo spravuje doménu."
 
 #: src/components/common/text.ts
 msgid "Mail to this address bounced or was reported as spam, so it cannot be added."
@@ -11446,6 +11472,10 @@ msgstr "Jeden na řádek, nejvýše 20."
 msgid "One per product or brand"
 msgstr "Jedna na produkt nebo značku"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "One record proves every channel of this workspace on the domain."
+msgstr "Jeden záznam ověří všechny kanály tohoto pracovního prostoru v doméně."
+
 #: src/features/status/LinkedSection.tsx
 msgid "One reply, written once, goes to every open conversation linked to {title}, as you, on each conversation’s own channel."
 msgstr "Jedna odpověď, napsaná jen jednou, jde vaším jménem do každé otevřené konverzace propojené s incidentem {title}, vlastním kanálem každé konverzace."
@@ -12952,6 +12982,22 @@ msgstr "Protocol"
 msgid "Proton Mail is reachable over IMAP only through Proton Mail Bridge on your own computer, which a server cannot reach. Export the mailbox with Proton Mail's export tool, put the folder in a .zip and upload it as an export file below."
 msgstr "K Proton Mail se přes IMAP dostanete jen přes Proton Mail Bridge na vašem vlastním počítači, ke kterému se server nedostane. Exportujte schránku exportním nástrojem Proton Mail, vložte složku do .zip a nahrajte ji níže jako exportní soubor."
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Prove it with a code"
+msgstr "Ověřit kódem"
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Prove it with a DNS record"
+msgstr "Ověřit záznamem DNS"
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Proven with a code on {when}."
+msgstr "Ověřeno kódem {when}."
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Proven with the DNS record on {when}."
+msgstr "Ověřeno záznamem DNS {when}."
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Provider"
 msgstr "Provider"
@@ -13326,6 +13372,10 @@ msgstr "Reálný čas"
 #: src/features/migrations/SwitchStep.tsx
 msgid "Received {when}. Enter it in Gmail's forwarding settings, or open the link."
 msgstr "Přijato {when}. Zadejte ho v nastavení přeposílání Gmailu, nebo otevřete odkaz."
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Receives mail at <0>{address}</0>"
+msgstr "Přijímá poštu na <0>{address}</0>"
 
 #: src/features/settings/channels/ChannelState.tsx
 msgid "Receives only"
@@ -14732,6 +14782,10 @@ msgstr "Poslat signál"
 msgid "Send a check"
 msgstr "Odeslat kontrolu"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Send a code"
+msgstr "Poslat kód"
+
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 msgid "Send a help article"
@@ -14750,6 +14804,7 @@ msgid "Send a message from your app"
 msgstr "Pošlete zprávu ze své aplikace"
 
 #: src/features/auth/SignInForm.tsx
+#: src/features/settings/channels/email/AddressProof.tsx
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Send a new code"
 msgstr "Poslat nový kód"
@@ -16609,6 +16664,10 @@ msgstr "Chat ukazuje, kdy obvykle odpovídáte"
 msgid "The chat shows who is available and typing"
 msgstr "Chat ukazuje, kdo je dostupný a píše"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "The code is valid until {expires}. A mailbox that forwards here may prove the address by itself."
+msgstr "Kód platí do {expires}. Schránka, která přeposílá sem, může adresu ověřit sama."
+
 #: src/features/auth/SignInForm.tsx
 msgid "The code is wrong or has expired."
 msgstr "Kód je nesprávný nebo vypršel."
@@ -17598,6 +17657,10 @@ msgstr "Tarif tohoto účtu {provider} nemá přístup k API, přes které Yuva 
 msgid "This {provider} account's plan has no API access, which Yuva reads through. A plan with API access is needed to move."
 msgstr "Tarif tohoto účtu {provider} nemá přístup k API, přes které Yuva čte. K přenosu je potřeba tarif s přístupem k API."
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "This address does not receive mail yet"
+msgstr "Tato adresa zatím nepřijímá poštu"
+
 #: src/components/common/text.ts
 msgid "This address got as many confirmation mails as allowed for now. Try again tomorrow."
 msgstr "Tato adresa dostala tolik potvrzovacích zpráv, kolik je zatím povoleno. Zkuste to znovu zítra."
@@ -17605,6 +17668,10 @@ msgstr "Tato adresa dostala tolik potvrzovacích zpráv, kolik je zatím povolen
 #: src/features/setup/NewsletterStep.tsx
 msgid "This address has no SMTP account yet. Add one in the inbox settings before the first broadcast."
 msgstr "Tato adresa zatím nemá účet SMTP. Před první hromadnou zprávou ho přidejte v nastavení schránky."
+
+#: src/components/common/text.ts
+msgid "This address is already proven."
+msgstr "Tato adresa je již ověřena."
 
 #: src/features/status/monitorErrors.ts
 msgid "This address is private, loopback or link-local. Checks only reach public addresses."
@@ -17673,6 +17740,10 @@ msgstr "This code has expired. Ask for a new one."
 #: src/components/common/text.ts
 msgid "This code is not right."
 msgstr "This code is not right."
+
+#: src/components/common/text.ts
+msgid "This code is wrong or has expired. Send a new code."
+msgstr "Kód je nesprávný nebo vypršel. Pošlete nový kód."
 
 #: src/components/common/text.ts
 msgid "This conflicts with something that already exists."
@@ -18583,6 +18654,10 @@ msgstr "do {expires}"
 msgid "Until it starts you can go back to a draft."
 msgstr "Do začátku se můžete vrátit ke konceptu."
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Until the address is proven, this channel receives mail only at its forwarding address."
+msgstr "Dokud adresa není ověřena, tento kanál přijímá poštu jen na adrese pro přeposílání."
+
 #: src/features/broadcasts/AddSubscriberDialog.tsx
 msgid "Until they click the link they stay waiting for confirmation and get no other mail. Unconfirmed subscriptions are deleted after 30 days."
 msgstr "Dokud na odkaz neklikne, zůstane čekat na potvrzení a nedostane žádnou další poštu. Nepotvrzené odběry se po 30 dnech smažou."
@@ -18905,6 +18980,7 @@ msgstr "Hodnoty podmínky {n}, oddělené čárkami"
 msgid "Verified"
 msgstr "Ověřeno"
 
+#: src/features/settings/channels/email/AddressProof.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Verify"
 msgstr "Verify"
@@ -19012,6 +19088,10 @@ msgstr "Návštěvy z této kampaně"
 #: src/features/broadcasts/Report.tsx
 msgid "Visits to your sites with utm_campaign={campaign} since sending started, counted by Analytics without cookies."
 msgstr "Návštěvy vašich webů s utm_campaign={campaign} od zahájení odesílání, započítané Analytikou bez cookies."
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Vouched for by the server's operator on {when}."
+msgstr "Potvrdil provozovatel serveru {when}."
 
 #: src/components/common/Linked.tsx
 #: src/features/broadcasts/Subscribers.tsx
@@ -20153,6 +20233,10 @@ msgstr "Schránka Yuva"
 #: src/features/migrations/SwitchStep.tsx
 msgid "Yuva mails {address} a short test message. When it reaches Yuva by the new route, the switch works."
 msgstr "Yuva pošle na {address} krátkou testovací zprávu. Až dorazí do Yuvy novou cestou, přepnutí funguje."
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Yuva mails an 8-digit code to the address. Type it here."
+msgstr "Yuva pošle na adresu osmimístný kód. Napište ho sem."
 
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Yuva may now read your organization's mailboxes over IMAP, each once its owner signs in. Whoever started the migration can open it and sign in with Microsoft again."

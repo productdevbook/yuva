@@ -1100,6 +1100,10 @@ msgstr "Μια μαζική αποστολή στέλνει ένα σχέδιο 
 msgid "A broadcast was scheduled, started, paused or finished"
 msgstr "Μια μαζική αποστολή προγραμματίστηκε, ξεκίνησε, τέθηκε σε παύση ή ολοκληρώθηκε"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "A catch-all, or an address on the forwarding domain, can be proven only with a DNS record."
+msgstr "Μια διεύθυνση catch-all ή μια διεύθυνση στον τομέα προώθησης αποδεικνύεται μόνο με εγγραφή DNS."
+
 #: src/features/setup/ChannelStep.tsx
 msgid "A chat bubble on your site, from one line of HTML"
 msgstr "Μια φυσαλίδα συνομιλίας στον ιστότοπό σας, με μία γραμμή HTML"
@@ -1955,6 +1959,10 @@ msgstr "Διεύθυνση του {provider} σας"
 msgid "Address or name"
 msgstr "Διεύθυνση ή όνομα"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Address proof"
+msgstr "Απόδειξη διεύθυνσης"
+
 #: src/components/common/text.ts
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Admin"
@@ -2539,6 +2547,10 @@ msgstr "Προβολές άλλης ομάδας"
 #: src/components/common/text.ts
 msgid "Another workspace on this server has already verified this domain."
 msgstr "Another workspace on this server has already verified this domain."
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Another workspace proved this address later"
+msgstr "Άλλος χώρος εργασίας απέδειξε αυτή τη διεύθυνση αργότερα"
 
 #: src/features/docs/discussions/FromConversation.tsx
 msgid "Answer (optional)"
@@ -3731,6 +3743,7 @@ msgid "Check deliverability and set up DKIM"
 msgstr "Έλεγχος παραδοσιμότητας και ρύθμιση DKIM"
 
 #: src/features/settings/channels/ChannelState.tsx
+#: src/features/settings/channels/email/AddressProof.tsx
 msgid "Check DNS"
 msgstr "Έλεγχος DNS"
 
@@ -4072,6 +4085,7 @@ msgid "CNAME record"
 msgstr "Εγγραφή CNAME"
 
 #: src/features/auth/SignInForm.tsx
+#: src/features/settings/channels/email/AddressProof.tsx
 msgid "Code"
 msgstr "Κωδικός"
 
@@ -8429,6 +8443,10 @@ msgstr "Τελευταίος έλεγχος"
 msgid "Last checked"
 msgstr "Τελευταίος έλεγχος"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Last checked {checked}"
+msgstr "Τελευταίος έλεγχος: {checked}"
+
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Last checked {last}."
 msgstr "Τελευταίος έλεγχος {last}."
@@ -8940,6 +8958,10 @@ msgstr "Η αλληλογραφία φτάνει εδώ· προσθέστε λ�
 msgid "Mail carries the tenant <0>{channelTenant}</0> you typed below."
 msgstr "Η αλληλογραφία φέρει τον μισθωτή <0>{channelTenant}</0> που πληκτρολογήσατε παρακάτω."
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Mail forwarded to the forwarding address arrives. Mail sent to <0>{address}</0> itself is not routed here until you prove it."
+msgstr "Η αλληλογραφία που προωθείται στη διεύθυνση προώθησης φτάνει. Η αλληλογραφία που στέλνεται απευθείας στο <0>{address}</0> δεν δρομολογείται εδώ μέχρι να αποδείξετε τη διεύθυνση."
+
 #: src/features/migrations/MapStep.tsx
 msgid "Mail from these addresses is imported as sent by your team. Your members' sign-in addresses count too."
 msgstr "Η αλληλογραφία από αυτές τις διευθύνσεις εισάγεται ως σταλμένη από την ομάδα σας. Μετράνε και οι διευθύνσεις σύνδεσης των μελών σας."
@@ -8987,6 +9009,10 @@ msgstr "Αποστολή e-mail επιβεβαίωσης"
 #: src/features/settings/channels/email/ForwardingAddressField.tsx
 msgid "Mail to {value} is refused from then on. Change the forwarding at the provider to the new address right away, or forwarded mail no longer reaches Yuva."
 msgstr "Η αλληλογραφία προς {value} απορρίπτεται από εκεί και πέρα. Αλλάξτε αμέσως την προώθηση στον πάροχο στη νέα διεύθυνση, αλλιώς η προωθημένη αλληλογραφία δεν θα φτάνει πια στο Yuva."
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Mail to <0>{address}</0> goes to that workspace now. Prove the address again to take it back, or talk to whoever manages the domain."
+msgstr "Η αλληλογραφία προς το <0>{address}</0> πηγαίνει τώρα σε εκείνον τον χώρο εργασίας. Αποδείξτε ξανά τη διεύθυνση για να την πάρετε πίσω ή μιλήστε με όποιον διαχειρίζεται τον τομέα."
 
 #: src/components/common/text.ts
 msgid "Mail to this address bounced or was reported as spam, so it cannot be added."
@@ -11446,6 +11472,10 @@ msgstr "Ένα ανά γραμμή, έως 20."
 msgid "One per product or brand"
 msgstr "Ένα ανά προϊόν ή επωνυμία"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "One record proves every channel of this workspace on the domain."
+msgstr "Μία εγγραφή αποδεικνύει όλα τα κανάλια αυτού του χώρου εργασίας στον τομέα."
+
 #: src/features/status/LinkedSection.tsx
 msgid "One reply, written once, goes to every open conversation linked to {title}, as you, on each conversation’s own channel."
 msgstr "Μία απάντηση, γραμμένη μία φορά, πηγαίνει σε κάθε ανοιχτή συνομιλία που είναι συνδεδεμένη με το {title}, εκ μέρους σας, από το δικό της κανάλι."
@@ -12952,6 +12982,22 @@ msgstr "Protocol"
 msgid "Proton Mail is reachable over IMAP only through Proton Mail Bridge on your own computer, which a server cannot reach. Export the mailbox with Proton Mail's export tool, put the folder in a .zip and upload it as an export file below."
 msgstr "Το Proton Mail είναι προσβάσιμο μέσω IMAP μόνο μέσω του Proton Mail Bridge στον δικό σας υπολογιστή, που ένας διακομιστής δεν μπορεί να φτάσει. Εξαγάγετε το γραμματοκιβώτιο με το εργαλείο εξαγωγής του Proton Mail, βάλτε τον φάκελο σε .zip και ανεβάστε το ως αρχείο εξαγωγής παρακάτω."
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Prove it with a code"
+msgstr "Απόδειξη με κωδικό"
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Prove it with a DNS record"
+msgstr "Απόδειξη με εγγραφή DNS"
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Proven with a code on {when}."
+msgstr "Αποδείχθηκε με κωδικό στις {when}."
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Proven with the DNS record on {when}."
+msgstr "Αποδείχθηκε με την εγγραφή DNS στις {when}."
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Provider"
 msgstr "Provider"
@@ -13326,6 +13372,10 @@ msgstr "Realtime"
 #: src/features/migrations/SwitchStep.tsx
 msgid "Received {when}. Enter it in Gmail's forwarding settings, or open the link."
 msgstr "Ελήφθη {when}. Εισαγάγετέ το στις ρυθμίσεις προώθησης του Gmail ή ανοίξτε τον σύνδεσμο."
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Receives mail at <0>{address}</0>"
+msgstr "Λαμβάνει αλληλογραφία στο <0>{address}</0>"
 
 #: src/features/settings/channels/ChannelState.tsx
 msgid "Receives only"
@@ -14732,6 +14782,10 @@ msgstr "Αποστολή σήματος"
 msgid "Send a check"
 msgstr "Αποστολή ελέγχου"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Send a code"
+msgstr "Αποστολή κωδικού"
+
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 msgid "Send a help article"
@@ -14750,6 +14804,7 @@ msgid "Send a message from your app"
 msgstr "Στείλτε ένα μήνυμα από την εφαρμογή σας"
 
 #: src/features/auth/SignInForm.tsx
+#: src/features/settings/channels/email/AddressProof.tsx
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Send a new code"
 msgstr "Αποστολή νέου κωδικού"
@@ -16609,6 +16664,10 @@ msgstr "Η συνομιλία δείχνει πότε συνήθως απαντ�
 msgid "The chat shows who is available and typing"
 msgstr "Η συνομιλία δείχνει ποιος είναι διαθέσιμος και πληκτρολογεί"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "The code is valid until {expires}. A mailbox that forwards here may prove the address by itself."
+msgstr "Ο κωδικός ισχύει έως {expires}. Ένα γραμματοκιβώτιο που προωθεί εδώ μπορεί να αποδείξει μόνο του τη διεύθυνση."
+
 #: src/features/auth/SignInForm.tsx
 msgid "The code is wrong or has expired."
 msgstr "Ο κωδικός είναι λάθος ή έχει λήξει."
@@ -17598,6 +17657,10 @@ msgstr "Το πακέτο αυτού του λογαριασμού {provider} δ
 msgid "This {provider} account's plan has no API access, which Yuva reads through. A plan with API access is needed to move."
 msgstr "Το πακέτο αυτού του λογαριασμού {provider} δεν έχει πρόσβαση API, μέσω της οποίας διαβάζει το Yuva. Για τη μεταφορά χρειάζεται πακέτο με πρόσβαση API."
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "This address does not receive mail yet"
+msgstr "Αυτή η διεύθυνση δεν λαμβάνει ακόμη αλληλογραφία"
+
 #: src/components/common/text.ts
 msgid "This address got as many confirmation mails as allowed for now. Try again tomorrow."
 msgstr "Αυτή η διεύθυνση έλαβε όσα e-mail επιβεβαίωσης επιτρέπονται προς το παρόν. Δοκιμάστε ξανά αύριο."
@@ -17605,6 +17668,10 @@ msgstr "Αυτή η διεύθυνση έλαβε όσα e-mail επιβεβαί
 #: src/features/setup/NewsletterStep.tsx
 msgid "This address has no SMTP account yet. Add one in the inbox settings before the first broadcast."
 msgstr "Αυτή η διεύθυνση δεν έχει ακόμη λογαριασμό SMTP. Προσθέστε έναν στις ρυθμίσεις εισερχομένων πριν από την πρώτη μαζική αποστολή."
+
+#: src/components/common/text.ts
+msgid "This address is already proven."
+msgstr "Αυτή η διεύθυνση έχει ήδη αποδειχθεί."
 
 #: src/features/status/monitorErrors.ts
 msgid "This address is private, loopback or link-local. Checks only reach public addresses."
@@ -17673,6 +17740,10 @@ msgstr "This code has expired. Ask for a new one."
 #: src/components/common/text.ts
 msgid "This code is not right."
 msgstr "This code is not right."
+
+#: src/components/common/text.ts
+msgid "This code is wrong or has expired. Send a new code."
+msgstr "Ο κωδικός είναι λάθος ή έχει λήξει. Στείλτε νέο κωδικό."
 
 #: src/components/common/text.ts
 msgid "This conflicts with something that already exists."
@@ -18583,6 +18654,10 @@ msgstr "έως {expires}"
 msgid "Until it starts you can go back to a draft."
 msgstr "Μέχρι να ξεκινήσει, μπορείτε να επιστρέψετε σε προσχέδιο."
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Until the address is proven, this channel receives mail only at its forwarding address."
+msgstr "Μέχρι να αποδειχθεί η διεύθυνση, αυτό το κανάλι λαμβάνει αλληλογραφία μόνο στη διεύθυνση προώθησής του."
+
 #: src/features/broadcasts/AddSubscriberDialog.tsx
 msgid "Until they click the link they stay waiting for confirmation and get no other mail. Unconfirmed subscriptions are deleted after 30 days."
 msgstr "Μέχρι να πατήσουν τον σύνδεσμο μένουν σε αναμονή επιβεβαίωσης και δεν λαμβάνουν άλλη αλληλογραφία. Οι μη επιβεβαιωμένες συνδρομές διαγράφονται μετά από 30 ημέρες."
@@ -18905,6 +18980,7 @@ msgstr "Τιμές της συνθήκης {n}, χωρισμένες με κόμ
 msgid "Verified"
 msgstr "Επαληθευμένο"
 
+#: src/features/settings/channels/email/AddressProof.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Verify"
 msgstr "Verify"
@@ -19012,6 +19088,10 @@ msgstr "Επισκέψεις από αυτή την καμπάνια"
 #: src/features/broadcasts/Report.tsx
 msgid "Visits to your sites with utm_campaign={campaign} since sending started, counted by Analytics without cookies."
 msgstr "Επισκέψεις στους ιστότοπούς σας με utm_campaign={campaign} από την έναρξη της αποστολής, που μετρούν τα Αναλυτικά στοιχεία χωρίς cookies."
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Vouched for by the server's operator on {when}."
+msgstr "Εγγυήθηκε ο διαχειριστής του διακομιστή στις {when}."
 
 #: src/components/common/Linked.tsx
 #: src/features/broadcasts/Subscribers.tsx
@@ -20153,6 +20233,10 @@ msgstr "Εισερχόμενα Yuva"
 #: src/features/migrations/SwitchStep.tsx
 msgid "Yuva mails {address} a short test message. When it reaches Yuva by the new route, the switch works."
 msgstr "Το Yuva στέλνει στο {address} ένα σύντομο δοκιμαστικό μήνυμα. Όταν φτάσει στο Yuva από τη νέα διαδρομή, η αλλαγή λειτουργεί."
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Yuva mails an 8-digit code to the address. Type it here."
+msgstr "Το Yuva στέλνει στη διεύθυνση έναν 8ψήφιο κωδικό. Πληκτρολογήστε τον εδώ."
 
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Yuva may now read your organization's mailboxes over IMAP, each once its owner signs in. Whoever started the migration can open it and sign in with Microsoft again."

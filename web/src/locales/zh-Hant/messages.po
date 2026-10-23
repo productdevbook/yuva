@@ -1100,6 +1100,10 @@ msgstr "群發會把一個設計立即或稍後傳送到一個或多個列表,�
 msgid "A broadcast was scheduled, started, paused or finished"
 msgstr "群發已安排、開始、暫停或完成時"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "A catch-all, or an address on the forwarding domain, can be proven only with a DNS record."
+msgstr "全收位址或轉寄網域下的位址只能用 DNS 記錄來驗證。"
+
 #: src/features/setup/ChannelStep.tsx
 msgid "A chat bubble on your site, from one line of HTML"
 msgstr "只需一行 HTML,就能在網站上新增聊天氣泡"
@@ -1955,6 +1959,10 @@ msgstr "你的 {provider} 位址"
 msgid "Address or name"
 msgstr "地址或名稱"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Address proof"
+msgstr "位址驗證"
+
 #: src/components/common/text.ts
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Admin"
@@ -2539,6 +2547,10 @@ msgstr "其他團隊的檢視"
 #: src/components/common/text.ts
 msgid "Another workspace on this server has already verified this domain."
 msgstr "Another workspace on this server has already verified this domain."
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Another workspace proved this address later"
+msgstr "另一個工作區後來驗證了此位址"
 
 #: src/features/docs/discussions/FromConversation.tsx
 msgid "Answer (optional)"
@@ -3731,6 +3743,7 @@ msgid "Check deliverability and set up DKIM"
 msgstr "檢查送達率並設定 DKIM"
 
 #: src/features/settings/channels/ChannelState.tsx
+#: src/features/settings/channels/email/AddressProof.tsx
 msgid "Check DNS"
 msgstr "檢查 DNS"
 
@@ -4072,6 +4085,7 @@ msgid "CNAME record"
 msgstr "CNAME 記錄"
 
 #: src/features/auth/SignInForm.tsx
+#: src/features/settings/channels/email/AddressProof.tsx
 msgid "Code"
 msgstr "程式碼"
 
@@ -8429,6 +8443,10 @@ msgstr "最近檢查"
 msgid "Last checked"
 msgstr "最近檢查於"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Last checked {checked}"
+msgstr "上次檢查：{checked}"
+
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Last checked {last}."
 msgstr "上次檢查：{last}。"
@@ -8940,6 +8958,10 @@ msgstr "郵件會到達這裡;準備好後再新增回覆帳號"
 msgid "Mail carries the tenant <0>{channelTenant}</0> you typed below."
 msgstr "郵件帶有你在下面輸入的租戶 <0>{channelTenant}</0>。"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Mail forwarded to the forwarding address arrives. Mail sent to <0>{address}</0> itself is not routed here until you prove it."
+msgstr "轉寄到轉寄位址的郵件會送達。直接寄往 <0>{address}</0> 的郵件，在你驗證該位址之前不會路由到這裡。"
+
 #: src/features/migrations/MapStep.tsx
 msgid "Mail from these addresses is imported as sent by your team. Your members' sign-in addresses count too."
 msgstr "來自這些地址的郵件會作為你的團隊傳送的郵件匯入。你的成員的登入地址也算在內。"
@@ -8987,6 +9009,10 @@ msgstr "給他們發確認郵件"
 #: src/features/settings/channels/email/ForwardingAddressField.tsx
 msgid "Mail to {value} is refused from then on. Change the forwarding at the provider to the new address right away, or forwarded mail no longer reaches Yuva."
 msgstr "此後發往 {value} 的郵件會被拒絕。請立即在供應商處把轉發改為新地址,否則轉發的郵件將無法再到達 Yuva。"
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Mail to <0>{address}</0> goes to that workspace now. Prove the address again to take it back, or talk to whoever manages the domain."
+msgstr "寄往 <0>{address}</0> 的郵件現在會送到那個工作區。重新驗證該位址即可奪回，或聯絡管理該網域的人。"
 
 #: src/components/common/text.ts
 msgid "Mail to this address bounced or was reported as spam, so it cannot be added."
@@ -11446,6 +11472,10 @@ msgstr "每行一個,最多 20 個。"
 msgid "One per product or brand"
 msgstr "每個產品或品牌一個"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "One record proves every channel of this workspace on the domain."
+msgstr "一筆記錄即可驗證此工作區在該網域下的所有管道。"
+
 #: src/features/status/LinkedSection.tsx
 msgid "One reply, written once, goes to every open conversation linked to {title}, as you, on each conversation’s own channel."
 msgstr "只需寫一次的回覆，會以你的名義，透過各對話自己的管道，傳送到每則連結到 {title} 的進行中對話。"
@@ -12952,6 +12982,22 @@ msgstr "Protocol"
 msgid "Proton Mail is reachable over IMAP only through Proton Mail Bridge on your own computer, which a server cannot reach. Export the mailbox with Proton Mail's export tool, put the folder in a .zip and upload it as an export file below."
 msgstr "Proton Mail 只能透過你自己電腦上的 Proton Mail Bridge 經由 IMAP 存取,而伺服器無法連線它。請用 Proton Mail 的匯出工具匯出信箱,把資料夾放進 .zip,並在下面作為匯出檔案上傳。"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Prove it with a code"
+msgstr "用驗證碼驗證"
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Prove it with a DNS record"
+msgstr "用 DNS 記錄驗證"
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Proven with a code on {when}."
+msgstr "已於 {when} 用驗證碼驗證。"
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Proven with the DNS record on {when}."
+msgstr "已於 {when} 用 DNS 記錄驗證。"
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Provider"
 msgstr "Provider"
@@ -13326,6 +13372,10 @@ msgstr "即時"
 #: src/features/migrations/SwitchStep.tsx
 msgid "Received {when}. Enter it in Gmail's forwarding settings, or open the link."
 msgstr "{when} 收到。請填入 Gmail 的轉發設定,或開啟連結。"
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Receives mail at <0>{address}</0>"
+msgstr "正在 <0>{address}</0> 接收郵件"
 
 #: src/features/settings/channels/ChannelState.tsx
 msgid "Receives only"
@@ -14732,6 +14782,10 @@ msgstr "傳送心跳訊號"
 msgid "Send a check"
 msgstr "傳送檢查"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Send a code"
+msgstr "傳送驗證碼"
+
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 msgid "Send a help article"
@@ -14750,6 +14804,7 @@ msgid "Send a message from your app"
 msgstr "從你的應用程式傳送訊息"
 
 #: src/features/auth/SignInForm.tsx
+#: src/features/settings/channels/email/AddressProof.tsx
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Send a new code"
 msgstr "傳送新驗證碼"
@@ -16609,6 +16664,10 @@ msgstr "聊天中顯示你通常何時回覆"
 msgid "The chat shows who is available and typing"
 msgstr "聊天中顯示誰線上以及誰正在輸入"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "The code is valid until {expires}. A mailbox that forwards here may prove the address by itself."
+msgstr "驗證碼有效期限至 {expires}。轉寄到此處的信箱可能會自動驗證該位址。"
+
 #: src/features/auth/SignInForm.tsx
 msgid "The code is wrong or has expired."
 msgstr "驗證碼錯誤或已過期。"
@@ -17598,6 +17657,10 @@ msgstr "此 {provider} 帳號的套餐沒有 API 存取許可權,而 Yuva 需要
 msgid "This {provider} account's plan has no API access, which Yuva reads through. A plan with API access is needed to move."
 msgstr "此 {provider} 帳號的套餐沒有 API 存取許可權,而 Yuva 需要透過它讀取。遷移需要帶 API 存取許可權的套餐。"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "This address does not receive mail yet"
+msgstr "此位址尚未接收郵件"
+
 #: src/components/common/text.ts
 msgid "This address got as many confirmation mails as allowed for now. Try again tomorrow."
 msgstr "此地址已收到目前允許數量的確認郵件。請明天再試。"
@@ -17605,6 +17668,10 @@ msgstr "此地址已收到目前允許數量的確認郵件。請明天再試。
 #: src/features/setup/NewsletterStep.tsx
 msgid "This address has no SMTP account yet. Add one in the inbox settings before the first broadcast."
 msgstr "此地址還沒有 SMTP 帳號。請在第一次群發前在收件匣設定中新增。"
+
+#: src/components/common/text.ts
+msgid "This address is already proven."
+msgstr "此位址已驗證。"
 
 #: src/features/status/monitorErrors.ts
 msgid "This address is private, loopback or link-local. Checks only reach public addresses."
@@ -17673,6 +17740,10 @@ msgstr "This code has expired. Ask for a new one."
 #: src/components/common/text.ts
 msgid "This code is not right."
 msgstr "This code is not right."
+
+#: src/components/common/text.ts
+msgid "This code is wrong or has expired. Send a new code."
+msgstr "驗證碼錯誤或已過期。請傳送新的驗證碼。"
 
 #: src/components/common/text.ts
 msgid "This conflicts with something that already exists."
@@ -18583,6 +18654,10 @@ msgstr "直到 {expires}"
 msgid "Until it starts you can go back to a draft."
 msgstr "開始之前，你可以回到草稿。"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Until the address is proven, this channel receives mail only at its forwarding address."
+msgstr "在位址驗證之前，此管道只在其轉寄位址接收郵件。"
+
 #: src/features/broadcasts/AddSubscriberDialog.tsx
 msgid "Until they click the link they stay waiting for confirmation and get no other mail. Unconfirmed subscriptions are deleted after 30 days."
 msgstr "在他們點選連結之前,會一直等待確認,也不會收到其他郵件。未確認的訂閱會在 30 天后刪除。"
@@ -18905,6 +18980,7 @@ msgstr "條件 {n} 的值,用逗號分隔"
 msgid "Verified"
 msgstr "已驗證"
 
+#: src/features/settings/channels/email/AddressProof.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Verify"
 msgstr "Verify"
@@ -19012,6 +19088,10 @@ msgstr "來自此活動的存取"
 #: src/features/broadcasts/Report.tsx
 msgid "Visits to your sites with utm_campaign={campaign} since sending started, counted by Analytics without cookies."
 msgstr "傳送開始以來帶有 utm_campaign={campaign} 的網站存取,由分析在無 Cookie 的情況下統計。"
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Vouched for by the server's operator on {when}."
+msgstr "已於 {when} 由伺服器營運方擔保。"
 
 #: src/components/common/Linked.tsx
 #: src/features/broadcasts/Subscribers.tsx
@@ -20153,6 +20233,10 @@ msgstr "Yuva 收件匣"
 #: src/features/migrations/SwitchStep.tsx
 msgid "Yuva mails {address} a short test message. When it reaches Yuva by the new route, the switch works."
 msgstr "Yuva 會給 {address} 傳送一封簡短的測試訊息。當它透過新路徑到達 Yuva 時,切換就生效了。"
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Yuva mails an 8-digit code to the address. Type it here."
+msgstr "Yuva 會向該位址傳送 8 位數驗證碼。請在此輸入。"
 
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Yuva may now read your organization's mailboxes over IMAP, each once its owner signs in. Whoever started the migration can open it and sign in with Microsoft again."

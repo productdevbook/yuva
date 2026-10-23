@@ -1100,6 +1100,10 @@ msgstr "บรอดคาสต์ส่งดีไซน์ไปยังร
 msgid "A broadcast was scheduled, started, paused or finished"
 msgstr "บรอดคาสต์ถูกตั้งเวลา เริ่ม หยุดชั่วคราว หรือเสร็จสิ้น"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "A catch-all, or an address on the forwarding domain, can be proven only with a DNS record."
+msgstr "ที่อยู่แบบรับทั้งหมด หรือที่อยู่ในโดเมนส่งต่อ พิสูจน์ได้ด้วยเรกคอร์ด DNS เท่านั้น"
+
 #: src/features/setup/ChannelStep.tsx
 msgid "A chat bubble on your site, from one line of HTML"
 msgstr "ฟองแชตบนไซต์ของคุณ จาก HTML เพียงบรรทัดเดียว"
@@ -1955,6 +1959,10 @@ msgstr "ที่อยู่ {provider} ของคุณ"
 msgid "Address or name"
 msgstr "ที่อยู่หรือชื่อ"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Address proof"
+msgstr "การพิสูจน์ที่อยู่"
+
 #: src/components/common/text.ts
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Admin"
@@ -2539,6 +2547,10 @@ msgstr "มุมมองของทีมอื่น"
 #: src/components/common/text.ts
 msgid "Another workspace on this server has already verified this domain."
 msgstr "Another workspace on this server has already verified this domain."
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Another workspace proved this address later"
+msgstr "เวิร์กสเปซอื่นพิสูจน์ที่อยู่นี้ภายหลัง"
 
 #: src/features/docs/discussions/FromConversation.tsx
 msgid "Answer (optional)"
@@ -3731,6 +3743,7 @@ msgid "Check deliverability and set up DKIM"
 msgstr "ตรวจสอบความสามารถในการส่งถึงและตั้งค่า DKIM"
 
 #: src/features/settings/channels/ChannelState.tsx
+#: src/features/settings/channels/email/AddressProof.tsx
 msgid "Check DNS"
 msgstr "ตรวจสอบ DNS"
 
@@ -4072,6 +4085,7 @@ msgid "CNAME record"
 msgstr "เรคคอร์ด CNAME"
 
 #: src/features/auth/SignInForm.tsx
+#: src/features/settings/channels/email/AddressProof.tsx
 msgid "Code"
 msgstr "โค้ด"
 
@@ -8429,6 +8443,10 @@ msgstr "การตรวจสอบล่าสุด"
 msgid "Last checked"
 msgstr "ตรวจสอบล่าสุด"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Last checked {checked}"
+msgstr "ตรวจสอบล่าสุด: {checked}"
+
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Last checked {last}."
 msgstr "ตรวจสอบล่าสุด {last}"
@@ -8940,6 +8958,10 @@ msgstr "อีเมลมาถึงที่นี่ เพิ่มบั�
 msgid "Mail carries the tenant <0>{channelTenant}</0> you typed below."
 msgstr "อีเมลมี tenant <0>{channelTenant}</0> ที่คุณพิมพ์ด้านล่าง"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Mail forwarded to the forwarding address arrives. Mail sent to <0>{address}</0> itself is not routed here until you prove it."
+msgstr "อีเมลที่ส่งต่อไปยังที่อยู่ส่งต่อจะมาถึง ส่วนอีเมลที่ส่งตรงไปยัง <0>{address}</0> จะไม่ถูกส่งมาที่นี่จนกว่าคุณจะพิสูจน์ที่อยู่"
+
 #: src/features/migrations/MapStep.tsx
 msgid "Mail from these addresses is imported as sent by your team. Your members' sign-in addresses count too."
 msgstr "อีเมลจากที่อยู่เหล่านี้จะถูกนำเข้าเป็นอีเมลที่ทีมของคุณส่ง ที่อยู่ลงชื่อเข้าใช้ของสมาชิกก็นับด้วย"
@@ -8987,6 +9009,10 @@ msgstr "ส่งอีเมลยืนยันให้พวกเขา"
 #: src/features/settings/channels/email/ForwardingAddressField.tsx
 msgid "Mail to {value} is refused from then on. Change the forwarding at the provider to the new address right away, or forwarded mail no longer reaches Yuva."
 msgstr "อีเมลถึง {value} จะถูกปฏิเสธตั้งแต่นั้น เปลี่ยนการส่งต่อที่ผู้ให้บริการเป็นที่อยู่ใหม่ทันที มิฉะนั้นอีเมลที่ส่งต่อจะไม่ถึง Yuva อีก"
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Mail to <0>{address}</0> goes to that workspace now. Prove the address again to take it back, or talk to whoever manages the domain."
+msgstr "ตอนนี้อีเมลถึง <0>{address}</0> ไปที่เวิร์กสเปซนั้น พิสูจน์ที่อยู่อีกครั้งเพื่อเอาคืน หรือคุยกับผู้ดูแลโดเมน"
 
 #: src/components/common/text.ts
 msgid "Mail to this address bounced or was reported as spam, so it cannot be added."
@@ -11446,6 +11472,10 @@ msgstr "หนึ่งรายการต่อบรรทัด สูง�
 msgid "One per product or brand"
 msgstr "หนึ่งรายการต่อผลิตภัณฑ์หรือแบรนด์"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "One record proves every channel of this workspace on the domain."
+msgstr "เรกคอร์ดเดียวพิสูจน์ได้ทุกช่องทางของเวิร์กสเปซนี้บนโดเมน"
+
 #: src/features/status/LinkedSection.tsx
 msgid "One reply, written once, goes to every open conversation linked to {title}, as you, on each conversation’s own channel."
 msgstr "การตอบกลับหนึ่งข้อความที่เขียนครั้งเดียวจะถูกส่งในนามของคุณไปยังทุกการสนทนาที่เปิดอยู่และเชื่อมโยงกับ {title} ผ่านช่องทางของแต่ละการสนทนา"
@@ -12952,6 +12982,22 @@ msgstr "Protocol"
 msgid "Proton Mail is reachable over IMAP only through Proton Mail Bridge on your own computer, which a server cannot reach. Export the mailbox with Proton Mail's export tool, put the folder in a .zip and upload it as an export file below."
 msgstr "เข้าถึง Proton Mail ผ่าน IMAP ได้ผ่าน Proton Mail Bridge บนคอมพิวเตอร์ของคุณเองเท่านั้น ซึ่งเซิร์ฟเวอร์เข้าถึงไม่ได้ ส่งออกกล่องจดหมายด้วยเครื่องมือส่งออกของ Proton Mail ใส่โฟลเดอร์ในไฟล์ .zip แล้วอัปโหลดเป็นไฟล์ส่งออกด้านล่าง"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Prove it with a code"
+msgstr "พิสูจน์ด้วยรหัส"
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Prove it with a DNS record"
+msgstr "พิสูจน์ด้วยเรกคอร์ด DNS"
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Proven with a code on {when}."
+msgstr "พิสูจน์ด้วยรหัสเมื่อ {when}"
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Proven with the DNS record on {when}."
+msgstr "พิสูจน์ด้วยเรกคอร์ด DNS เมื่อ {when}"
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Provider"
 msgstr "Provider"
@@ -13326,6 +13372,10 @@ msgstr "เรียลไทม์"
 #: src/features/migrations/SwitchStep.tsx
 msgid "Received {when}. Enter it in Gmail's forwarding settings, or open the link."
 msgstr "ได้รับเมื่อ {when} ใส่ในการตั้งค่าการส่งต่อของ Gmail หรือเปิดลิงก์"
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Receives mail at <0>{address}</0>"
+msgstr "รับอีเมลที่ <0>{address}</0>"
 
 #: src/features/settings/channels/ChannelState.tsx
 msgid "Receives only"
@@ -14732,6 +14782,10 @@ msgstr "ส่งสัญญาณ"
 msgid "Send a check"
 msgstr "ส่งการตรวจสอบ"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Send a code"
+msgstr "ส่งรหัส"
+
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 msgid "Send a help article"
@@ -14750,6 +14804,7 @@ msgid "Send a message from your app"
 msgstr "ส่งข้อความจากแอปของคุณ"
 
 #: src/features/auth/SignInForm.tsx
+#: src/features/settings/channels/email/AddressProof.tsx
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Send a new code"
 msgstr "ส่งรหัสใหม่"
@@ -16609,6 +16664,10 @@ msgstr "แชตแสดงว่าคุณมักตอบเมื่อ
 msgid "The chat shows who is available and typing"
 msgstr "แชตแสดงว่าใครพร้อมและกำลังพิมพ์"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "The code is valid until {expires}. A mailbox that forwards here may prove the address by itself."
+msgstr "รหัสใช้ได้ถึง {expires} กล่องจดหมายที่ส่งต่อมาที่นี่อาจพิสูจน์ที่อยู่ได้เอง"
+
 #: src/features/auth/SignInForm.tsx
 msgid "The code is wrong or has expired."
 msgstr "รหัสไม่ถูกต้องหรือหมดอายุ"
@@ -17598,6 +17657,10 @@ msgstr "แพ็กเกจของบัญชี {provider} นี้ไม
 msgid "This {provider} account's plan has no API access, which Yuva reads through. A plan with API access is needed to move."
 msgstr "แพ็กเกจของบัญชี {provider} นี้ไม่มีสิทธิ์เข้าถึง API ซึ่ง Yuva อ่านผ่านช่องทางนั้น ต้องใช้แพ็กเกจที่มีสิทธิ์เข้าถึง API จึงจะย้ายได้"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "This address does not receive mail yet"
+msgstr "ที่อยู่นี้ยังไม่รับอีเมล"
+
 #: src/components/common/text.ts
 msgid "This address got as many confirmation mails as allowed for now. Try again tomorrow."
 msgstr "ที่อยู่นี้ได้รับอีเมลยืนยันครบจำนวนที่อนุญาตในตอนนี้แล้ว ลองอีกครั้งพรุ่งนี้"
@@ -17605,6 +17668,10 @@ msgstr "ที่อยู่นี้ได้รับอีเมลยืน
 #: src/features/setup/NewsletterStep.tsx
 msgid "This address has no SMTP account yet. Add one in the inbox settings before the first broadcast."
 msgstr "ที่อยู่นี้ยังไม่มีบัญชี SMTP เพิ่มในการตั้งค่ากล่องข้อความก่อนบรอดคาสต์แรก"
+
+#: src/components/common/text.ts
+msgid "This address is already proven."
+msgstr "ที่อยู่นี้พิสูจน์แล้ว"
 
 #: src/features/status/monitorErrors.ts
 msgid "This address is private, loopback or link-local. Checks only reach public addresses."
@@ -17673,6 +17740,10 @@ msgstr "This code has expired. Ask for a new one."
 #: src/components/common/text.ts
 msgid "This code is not right."
 msgstr "This code is not right."
+
+#: src/components/common/text.ts
+msgid "This code is wrong or has expired. Send a new code."
+msgstr "รหัสไม่ถูกต้องหรือหมดอายุ ส่งรหัสใหม่"
 
 #: src/components/common/text.ts
 msgid "This conflicts with something that already exists."
@@ -18583,6 +18654,10 @@ msgstr "ถึง {expires}"
 msgid "Until it starts you can go back to a draft."
 msgstr "ก่อนเริ่มส่ง คุณกลับไปเป็นฉบับร่างได้"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Until the address is proven, this channel receives mail only at its forwarding address."
+msgstr "จนกว่าจะพิสูจน์ที่อยู่ ช่องทางนี้รับอีเมลเฉพาะที่ที่อยู่ส่งต่อ"
+
 #: src/features/broadcasts/AddSubscriberDialog.tsx
 msgid "Until they click the link they stay waiting for confirmation and get no other mail. Unconfirmed subscriptions are deleted after 30 days."
 msgstr "จนกว่าจะคลิกลิงก์ พวกเขายังรอการยืนยันและไม่ได้รับอีเมลอื่น การสมัครรับที่ยังไม่ยืนยันจะถูกลบหลัง 30 วัน"
@@ -18905,6 +18980,7 @@ msgstr "ค่าของเงื่อนไข {n} คั่นด้วย�
 msgid "Verified"
 msgstr "ยืนยันแล้ว"
 
+#: src/features/settings/channels/email/AddressProof.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Verify"
 msgstr "Verify"
@@ -19012,6 +19088,10 @@ msgstr "การเข้าชมจากแคมเปญนี้"
 #: src/features/broadcasts/Report.tsx
 msgid "Visits to your sites with utm_campaign={campaign} since sending started, counted by Analytics without cookies."
 msgstr "การเข้าชมไซต์ของคุณที่มี utm_campaign={campaign} ตั้งแต่เริ่มส่ง นับโดยการวิเคราะห์โดยไม่ใช้คุกกี้"
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Vouched for by the server's operator on {when}."
+msgstr "ผู้ดูแลเซิร์ฟเวอร์รับรองเมื่อ {when}"
 
 #: src/components/common/Linked.tsx
 #: src/features/broadcasts/Subscribers.tsx
@@ -20153,6 +20233,10 @@ msgstr "กล่องข้อความ Yuva"
 #: src/features/migrations/SwitchStep.tsx
 msgid "Yuva mails {address} a short test message. When it reaches Yuva by the new route, the switch works."
 msgstr "Yuva ส่งอีเมลทดสอบสั้น ๆ ไปที่ {address} เมื่อมาถึง Yuva ทางเส้นทางใหม่ แสดงว่าการสลับใช้งานได้"
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Yuva mails an 8-digit code to the address. Type it here."
+msgstr "Yuva ส่งรหัส 8 หลักไปยังที่อยู่ พิมพ์ที่นี่"
 
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Yuva may now read your organization's mailboxes over IMAP, each once its owner signs in. Whoever started the migration can open it and sign in with Microsoft again."

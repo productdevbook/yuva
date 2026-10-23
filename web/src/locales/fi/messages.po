@@ -1100,6 +1100,10 @@ msgstr "Joukkolähetys lähettää ulkoasun yhdelle tai useammalle listalle, nyt
 msgid "A broadcast was scheduled, started, paused or finished"
 msgstr "Joukkolähetys ajastettiin, aloitettiin, keskeytettiin tai päättyi"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "A catch-all, or an address on the forwarding domain, can be proven only with a DNS record."
+msgstr "Catch-all-osoite tai edelleenlähetysdomainin osoite voidaan todentaa vain DNS-tietueella."
+
 #: src/features/setup/ChannelStep.tsx
 msgid "A chat bubble on your site, from one line of HTML"
 msgstr "Chat-kupla sivustollesi yhdellä HTML-rivillä"
@@ -1955,6 +1959,10 @@ msgstr "{provider}-palvelusi osoite"
 msgid "Address or name"
 msgstr "Osoite tai nimi"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Address proof"
+msgstr "Osoitteen todentaminen"
+
 #: src/components/common/text.ts
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Admin"
@@ -2539,6 +2547,10 @@ msgstr "Toisen tiimin näkymät"
 #: src/components/common/text.ts
 msgid "Another workspace on this server has already verified this domain."
 msgstr "Another workspace on this server has already verified this domain."
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Another workspace proved this address later"
+msgstr "Toinen työtila todensi tämän osoitteen myöhemmin"
 
 #: src/features/docs/discussions/FromConversation.tsx
 msgid "Answer (optional)"
@@ -3731,6 +3743,7 @@ msgid "Check deliverability and set up DKIM"
 msgstr "Tarkista toimitettavuus ja määritä DKIM"
 
 #: src/features/settings/channels/ChannelState.tsx
+#: src/features/settings/channels/email/AddressProof.tsx
 msgid "Check DNS"
 msgstr "Tarkista DNS"
 
@@ -4072,6 +4085,7 @@ msgid "CNAME record"
 msgstr "CNAME-tietue"
 
 #: src/features/auth/SignInForm.tsx
+#: src/features/settings/channels/email/AddressProof.tsx
 msgid "Code"
 msgstr "Koodi"
 
@@ -8429,6 +8443,10 @@ msgstr "Viimeisin tarkistus"
 msgid "Last checked"
 msgstr "Viimeksi tarkistettu"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Last checked {checked}"
+msgstr "Viimeksi tarkistettu: {checked}"
+
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Last checked {last}."
 msgstr "Viimeksi tarkistettu {last}."
@@ -8940,6 +8958,10 @@ msgstr "Posti saapuu tänne; lisää vastaustili, kun olet valmis"
 msgid "Mail carries the tenant <0>{channelTenant}</0> you typed below."
 msgstr "Posti kantaa tenantia <0>{channelTenant}</0>, jonka kirjoitit alle."
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Mail forwarded to the forwarding address arrives. Mail sent to <0>{address}</0> itself is not routed here until you prove it."
+msgstr "Edelleenlähetysosoitteeseen välitetty posti saapuu perille. Suoraan osoitteeseen <0>{address}</0> lähetettyä postia ei ohjata tänne, ennen kuin todennat osoitteen."
+
 #: src/features/migrations/MapStep.tsx
 msgid "Mail from these addresses is imported as sent by your team. Your members' sign-in addresses count too."
 msgstr "Näistä osoitteista tuleva posti tuodaan tiimisi lähettämänä. Myös jäsentesi kirjautumisosoitteet lasketaan."
@@ -8987,6 +9009,10 @@ msgstr "Lähetä heille vahvistus"
 #: src/features/settings/channels/email/ForwardingAddressField.tsx
 msgid "Mail to {value} is refused from then on. Change the forwarding at the provider to the new address right away, or forwarded mail no longer reaches Yuva."
 msgstr "Osoitteen {value} posti hylätään siitä lähtien. Muuta ohjaus palveluntarjoajalla heti uuteen osoitteeseen, tai ohjattu posti ei enää saavu Yuvaan."
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Mail to <0>{address}</0> goes to that workspace now. Prove the address again to take it back, or talk to whoever manages the domain."
+msgstr "Osoitteeseen <0>{address}</0> tuleva posti menee nyt tuohon työtilaan. Todenna osoite uudelleen saadaksesi sen takaisin tai puhu domainin ylläpitäjän kanssa."
 
 #: src/components/common/text.ts
 msgid "Mail to this address bounced or was reported as spam, so it cannot be added."
@@ -11446,6 +11472,10 @@ msgstr "Yksi per rivi, enintään 20."
 msgid "One per product or brand"
 msgstr "Yksi per tuote tai brändi"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "One record proves every channel of this workspace on the domain."
+msgstr "Yksi tietue todentaa kaikki tämän työtilan kanavat domainissa."
+
 #: src/features/status/LinkedSection.tsx
 msgid "One reply, written once, goes to every open conversation linked to {title}, as you, on each conversation’s own channel."
 msgstr "Yksi vastaus, kirjoitettuna kerran, lähtee jokaiseen kohteeseen {title} liitettyyn avoimeen keskusteluun sinun nimissäsi keskustelun omaa kanavaa pitkin."
@@ -12952,6 +12982,22 @@ msgstr "Protocol"
 msgid "Proton Mail is reachable over IMAP only through Proton Mail Bridge on your own computer, which a server cannot reach. Export the mailbox with Proton Mail's export tool, put the folder in a .zip and upload it as an export file below."
 msgstr "Proton Mailiin pääsee IMAPin kautta vain Proton Mail Bridgellä omalla tietokoneellasi, jota palvelin ei tavoita. Vie postilaatikko Proton Mailin vientityökalulla, laita kansio .zip-tiedostoon ja lataa se vientitiedostona alla."
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Prove it with a code"
+msgstr "Todenna koodilla"
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Prove it with a DNS record"
+msgstr "Todenna DNS-tietueella"
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Proven with a code on {when}."
+msgstr "Todennettu koodilla {when}."
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Proven with the DNS record on {when}."
+msgstr "Todennettu DNS-tietueella {when}."
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Provider"
 msgstr "Provider"
@@ -13326,6 +13372,10 @@ msgstr "Reaaliaika"
 #: src/features/migrations/SwitchStep.tsx
 msgid "Received {when}. Enter it in Gmail's forwarding settings, or open the link."
 msgstr "Vastaanotettu {when}. Anna se Gmailin ohjausasetuksissa tai avaa linkki."
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Receives mail at <0>{address}</0>"
+msgstr "Vastaanottaa postia osoitteessa <0>{address}</0>"
 
 #: src/features/settings/channels/ChannelState.tsx
 msgid "Receives only"
@@ -14732,6 +14782,10 @@ msgstr "Lähetä signaali"
 msgid "Send a check"
 msgstr "Lähetä tarkistus"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Send a code"
+msgstr "Lähetä koodi"
+
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 msgid "Send a help article"
@@ -14750,6 +14804,7 @@ msgid "Send a message from your app"
 msgstr "Lähetä viesti sovelluksestasi"
 
 #: src/features/auth/SignInForm.tsx
+#: src/features/settings/channels/email/AddressProof.tsx
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Send a new code"
 msgstr "Lähetä uusi koodi"
@@ -16609,6 +16664,10 @@ msgstr "Chat näyttää, milloin yleensä vastaat"
 msgid "The chat shows who is available and typing"
 msgstr "Chat näyttää, kuka on paikalla ja kirjoittaa"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "The code is valid until {expires}. A mailbox that forwards here may prove the address by itself."
+msgstr "Koodi on voimassa {expires} asti. Tänne välittävä postilaatikko voi todentaa osoitteen itsekseen."
+
 #: src/features/auth/SignInForm.tsx
 msgid "The code is wrong or has expired."
 msgstr "Koodi on väärä tai vanhentunut."
@@ -17598,6 +17657,10 @@ msgstr "Tämän {provider}-tilin paketissa ei ole API-käyttöä, jonka kautta Y
 msgid "This {provider} account's plan has no API access, which Yuva reads through. A plan with API access is needed to move."
 msgstr "Tämän {provider}-tilin paketissa ei ole API-käyttöä, jonka kautta Yuva lukee. Siirtoon tarvitaan paketti, jossa on API-käyttö."
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "This address does not receive mail yet"
+msgstr "Tämä osoite ei vastaanota vielä postia"
+
 #: src/components/common/text.ts
 msgid "This address got as many confirmation mails as allowed for now. Try again tomorrow."
 msgstr "Tämä osoite sai niin monta vahvistusviestiä kuin tällä hetkellä sallitaan. Yritä uudelleen huomenna."
@@ -17605,6 +17668,10 @@ msgstr "Tämä osoite sai niin monta vahvistusviestiä kuin tällä hetkellä sa
 #: src/features/setup/NewsletterStep.tsx
 msgid "This address has no SMTP account yet. Add one in the inbox settings before the first broadcast."
 msgstr "Tällä osoitteella ei vielä ole SMTP-tiliä. Lisää sellainen postilaatikon asetuksissa ennen ensimmäistä joukkolähetystä."
+
+#: src/components/common/text.ts
+msgid "This address is already proven."
+msgstr "Tämä osoite on jo todennettu."
 
 #: src/features/status/monitorErrors.ts
 msgid "This address is private, loopback or link-local. Checks only reach public addresses."
@@ -17673,6 +17740,10 @@ msgstr "This code has expired. Ask for a new one."
 #: src/components/common/text.ts
 msgid "This code is not right."
 msgstr "This code is not right."
+
+#: src/components/common/text.ts
+msgid "This code is wrong or has expired. Send a new code."
+msgstr "Koodi on väärä tai vanhentunut. Lähetä uusi koodi."
 
 #: src/components/common/text.ts
 msgid "This conflicts with something that already exists."
@@ -18583,6 +18654,10 @@ msgstr "{expires} asti"
 msgid "Until it starts you can go back to a draft."
 msgstr "Voit palata luonnokseen, kunnes lähetys alkaa."
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Until the address is proven, this channel receives mail only at its forwarding address."
+msgstr "Kunnes osoite on todennettu, kanava vastaanottaa postia vain edelleenlähetysosoitteessaan."
+
 #: src/features/broadcasts/AddSubscriberDialog.tsx
 msgid "Until they click the link they stay waiting for confirmation and get no other mail. Unconfirmed subscriptions are deleted after 30 days."
 msgstr "Kunnes he napsauttavat linkkiä, he odottavat vahvistusta eivätkä saa muuta postia. Vahvistamattomat tilaukset poistetaan 30 päivän kuluttua."
@@ -18905,6 +18980,7 @@ msgstr "Ehdon {n} arvot, pilkuilla eroteltuina"
 msgid "Verified"
 msgstr "Vahvistettu"
 
+#: src/features/settings/channels/email/AddressProof.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Verify"
 msgstr "Verify"
@@ -19012,6 +19088,10 @@ msgstr "Käynnit tästä kampanjasta"
 #: src/features/broadcasts/Report.tsx
 msgid "Visits to your sites with utm_campaign={campaign} since sending started, counted by Analytics without cookies."
 msgstr "Käynnit sivustoillesi, joilla on utm_campaign={campaign}, lähetyksen alkamisesta lähtien, Analytiikan laskemina ilman evästeitä."
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Vouched for by the server's operator on {when}."
+msgstr "Palvelimen ylläpitäjä vahvisti {when}."
 
 #: src/components/common/Linked.tsx
 #: src/features/broadcasts/Subscribers.tsx
@@ -20153,6 +20233,10 @@ msgstr "Yuva-postilaatikko"
 #: src/features/migrations/SwitchStep.tsx
 msgid "Yuva mails {address} a short test message. When it reaches Yuva by the new route, the switch works."
 msgstr "Yuva lähettää osoitteeseen {address} lyhyen testiviestin. Kun se saapuu Yuvaan uutta reittiä pitkin, vaihto toimii."
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Yuva mails an 8-digit code to the address. Type it here."
+msgstr "Yuva lähettää osoitteeseen 8-numeroisen koodin. Kirjoita se tähän."
 
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Yuva may now read your organization's mailboxes over IMAP, each once its owner signs in. Whoever started the migration can open it and sign in with Microsoft again."

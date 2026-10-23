@@ -1100,6 +1100,10 @@ msgstr "Thư hàng loạt gửi một thiết kế đến một hoặc nhiều d
 msgid "A broadcast was scheduled, started, paused or finished"
 msgstr "Một thư hàng loạt đã được lên lịch, bắt đầu, tạm dừng hoặc hoàn tất"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "A catch-all, or an address on the forwarding domain, can be proven only with a DNS record."
+msgstr "Địa chỉ catch-all, hoặc địa chỉ trong miền chuyển tiếp, chỉ có thể được chứng minh bằng bản ghi DNS."
+
 #: src/features/setup/ChannelStep.tsx
 msgid "A chat bubble on your site, from one line of HTML"
 msgstr "Một khung chat trên trang web của bạn, chỉ với một dòng HTML"
@@ -1955,6 +1959,10 @@ msgstr "Địa chỉ {provider} của bạn"
 msgid "Address or name"
 msgstr "Địa chỉ hoặc tên"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Address proof"
+msgstr "Chứng minh địa chỉ"
+
 #: src/components/common/text.ts
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Admin"
@@ -2539,6 +2547,10 @@ msgstr "Chế độ xem của nhóm khác"
 #: src/components/common/text.ts
 msgid "Another workspace on this server has already verified this domain."
 msgstr "Another workspace on this server has already verified this domain."
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Another workspace proved this address later"
+msgstr "Một không gian làm việc khác đã chứng minh địa chỉ này sau đó"
 
 #: src/features/docs/discussions/FromConversation.tsx
 msgid "Answer (optional)"
@@ -3731,6 +3743,7 @@ msgid "Check deliverability and set up DKIM"
 msgstr "Kiểm tra khả năng gửi thư và thiết lập DKIM"
 
 #: src/features/settings/channels/ChannelState.tsx
+#: src/features/settings/channels/email/AddressProof.tsx
 msgid "Check DNS"
 msgstr "Kiểm tra DNS"
 
@@ -4072,6 +4085,7 @@ msgid "CNAME record"
 msgstr "Bản ghi CNAME"
 
 #: src/features/auth/SignInForm.tsx
+#: src/features/settings/channels/email/AddressProof.tsx
 msgid "Code"
 msgstr "Mã"
 
@@ -8429,6 +8443,10 @@ msgstr "Lần kiểm tra cuối"
 msgid "Last checked"
 msgstr "Kiểm tra lần cuối"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Last checked {checked}"
+msgstr "Kiểm tra lần cuối: {checked}"
+
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Last checked {last}."
 msgstr "Kiểm tra lần cuối {last}."
@@ -8940,6 +8958,10 @@ msgstr "Thư đến đây; hãy thêm tài khoản phản hồi khi bạn sẵn 
 msgid "Mail carries the tenant <0>{channelTenant}</0> you typed below."
 msgstr "Thư mang tenant <0>{channelTenant}</0> bạn đã nhập bên dưới."
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Mail forwarded to the forwarding address arrives. Mail sent to <0>{address}</0> itself is not routed here until you prove it."
+msgstr "Thư được chuyển tiếp đến địa chỉ chuyển tiếp sẽ đến nơi. Thư gửi thẳng đến <0>{address}</0> sẽ không được chuyển vào đây cho đến khi bạn chứng minh địa chỉ."
+
 #: src/features/migrations/MapStep.tsx
 msgid "Mail from these addresses is imported as sent by your team. Your members' sign-in addresses count too."
 msgstr "Thư từ các địa chỉ này được nhập như do nhóm của bạn gửi. Địa chỉ đăng nhập của các thành viên cũng được tính."
@@ -8987,6 +9009,10 @@ msgstr "Gửi thư xác nhận cho họ"
 #: src/features/settings/channels/email/ForwardingAddressField.tsx
 msgid "Mail to {value} is refused from then on. Change the forwarding at the provider to the new address right away, or forwarded mail no longer reaches Yuva."
 msgstr "Từ lúc đó, thư gửi tới {value} bị từ chối. Hãy đổi chuyển tiếp ở nhà cung cấp sang địa chỉ mới ngay, nếu không thư được chuyển tiếp sẽ không đến Yuva nữa."
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Mail to <0>{address}</0> goes to that workspace now. Prove the address again to take it back, or talk to whoever manages the domain."
+msgstr "Thư gửi đến <0>{address}</0> hiện chuyển cho không gian làm việc đó. Hãy chứng minh lại địa chỉ để lấy lại, hoặc trao đổi với người quản lý miền."
 
 #: src/components/common/text.ts
 msgid "Mail to this address bounced or was reported as spam, so it cannot be added."
@@ -11446,6 +11472,10 @@ msgstr "Mỗi dòng một cái, tối đa 20."
 msgid "One per product or brand"
 msgstr "Mỗi sản phẩm hoặc thương hiệu một cái"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "One record proves every channel of this workspace on the domain."
+msgstr "Một bản ghi chứng minh mọi kênh của không gian làm việc này trên miền."
+
 #: src/features/status/LinkedSection.tsx
 msgid "One reply, written once, goes to every open conversation linked to {title}, as you, on each conversation’s own channel."
 msgstr "Một câu trả lời, viết một lần, được gửi thay mặt bạn đến mọi cuộc trò chuyện đang mở liên kết với {title}, qua kênh riêng của từng cuộc trò chuyện."
@@ -12952,6 +12982,22 @@ msgstr "Protocol"
 msgid "Proton Mail is reachable over IMAP only through Proton Mail Bridge on your own computer, which a server cannot reach. Export the mailbox with Proton Mail's export tool, put the folder in a .zip and upload it as an export file below."
 msgstr "Proton Mail chỉ truy cập được qua IMAP thông qua Proton Mail Bridge trên máy tính của chính bạn, mà máy chủ không thể kết nối tới. Hãy xuất hộp thư bằng công cụ xuất của Proton Mail, đưa thư mục vào một tệp .zip và tải lên làm tệp xuất bên dưới."
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Prove it with a code"
+msgstr "Chứng minh bằng mã"
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Prove it with a DNS record"
+msgstr "Chứng minh bằng bản ghi DNS"
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Proven with a code on {when}."
+msgstr "Đã chứng minh bằng mã lúc {when}."
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Proven with the DNS record on {when}."
+msgstr "Đã chứng minh bằng bản ghi DNS lúc {when}."
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Provider"
 msgstr "Provider"
@@ -13326,6 +13372,10 @@ msgstr "Thời gian thực"
 #: src/features/migrations/SwitchStep.tsx
 msgid "Received {when}. Enter it in Gmail's forwarding settings, or open the link."
 msgstr "Đã nhận {when}. Hãy nhập nó vào cài đặt chuyển tiếp của Gmail, hoặc mở liên kết."
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Receives mail at <0>{address}</0>"
+msgstr "Nhận thư tại <0>{address}</0>"
 
 #: src/features/settings/channels/ChannelState.tsx
 msgid "Receives only"
@@ -14732,6 +14782,10 @@ msgstr "Gửi tín hiệu"
 msgid "Send a check"
 msgstr "Gửi một lần kiểm tra"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Send a code"
+msgstr "Gửi mã"
+
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 msgid "Send a help article"
@@ -14750,6 +14804,7 @@ msgid "Send a message from your app"
 msgstr "Gửi tin nhắn từ ứng dụng của bạn"
 
 #: src/features/auth/SignInForm.tsx
+#: src/features/settings/channels/email/AddressProof.tsx
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Send a new code"
 msgstr "Gửi mã mới"
@@ -16609,6 +16664,10 @@ msgstr "Chat hiện khi bạn thường trả lời"
 msgid "The chat shows who is available and typing"
 msgstr "Chat hiện ai đang sẵn sàng và đang gõ"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "The code is valid until {expires}. A mailbox that forwards here may prove the address by itself."
+msgstr "Mã có hiệu lực đến {expires}. Hộp thư chuyển tiếp về đây có thể tự chứng minh địa chỉ."
+
 #: src/features/auth/SignInForm.tsx
 msgid "The code is wrong or has expired."
 msgstr "Mã sai hoặc đã hết hạn."
@@ -17598,6 +17657,10 @@ msgstr "Gói của tài khoản {provider} này không có quyền truy cập AP
 msgid "This {provider} account's plan has no API access, which Yuva reads through. A plan with API access is needed to move."
 msgstr "Gói của tài khoản {provider} này không có quyền truy cập API, mà Yuva đọc qua đó. Cần gói có quyền truy cập API để di chuyển."
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "This address does not receive mail yet"
+msgstr "Địa chỉ này chưa nhận thư"
+
 #: src/components/common/text.ts
 msgid "This address got as many confirmation mails as allowed for now. Try again tomorrow."
 msgstr "Địa chỉ này đã nhận đủ số thư xác nhận được phép cho lúc này. Hãy thử lại vào ngày mai."
@@ -17605,6 +17668,10 @@ msgstr "Địa chỉ này đã nhận đủ số thư xác nhận được phép
 #: src/features/setup/NewsletterStep.tsx
 msgid "This address has no SMTP account yet. Add one in the inbox settings before the first broadcast."
 msgstr "Địa chỉ này chưa có tài khoản SMTP. Hãy thêm trong cài đặt hộp thư trước thư hàng loạt đầu tiên."
+
+#: src/components/common/text.ts
+msgid "This address is already proven."
+msgstr "Địa chỉ này đã được chứng minh."
 
 #: src/features/status/monitorErrors.ts
 msgid "This address is private, loopback or link-local. Checks only reach public addresses."
@@ -17673,6 +17740,10 @@ msgstr "This code has expired. Ask for a new one."
 #: src/components/common/text.ts
 msgid "This code is not right."
 msgstr "This code is not right."
+
+#: src/components/common/text.ts
+msgid "This code is wrong or has expired. Send a new code."
+msgstr "Mã sai hoặc đã hết hạn. Hãy gửi mã mới."
 
 #: src/components/common/text.ts
 msgid "This conflicts with something that already exists."
@@ -18583,6 +18654,10 @@ msgstr "đến {expires}"
 msgid "Until it starts you can go back to a draft."
 msgstr "Trước khi bắt đầu, bạn có thể quay lại bản nháp."
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Until the address is proven, this channel receives mail only at its forwarding address."
+msgstr "Cho đến khi địa chỉ được chứng minh, kênh này chỉ nhận thư ở địa chỉ chuyển tiếp của nó."
+
 #: src/features/broadcasts/AddSubscriberDialog.tsx
 msgid "Until they click the link they stay waiting for confirmation and get no other mail. Unconfirmed subscriptions are deleted after 30 days."
 msgstr "Cho đến khi họ nhấp liên kết, họ vẫn chờ xác nhận và không nhận thư nào khác. Đăng ký chưa xác nhận bị xóa sau 30 ngày."
@@ -18905,6 +18980,7 @@ msgstr "Các giá trị của điều kiện {n}, phân tách bằng dấu phẩ
 msgid "Verified"
 msgstr "Đã xác minh"
 
+#: src/features/settings/channels/email/AddressProof.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Verify"
 msgstr "Verify"
@@ -19012,6 +19088,10 @@ msgstr "Lượt truy cập từ chiến dịch này"
 #: src/features/broadcasts/Report.tsx
 msgid "Visits to your sites with utm_campaign={campaign} since sending started, counted by Analytics without cookies."
 msgstr "Lượt truy cập vào các trang của bạn với utm_campaign={campaign} từ khi bắt đầu gửi, được Phân tích đếm mà không dùng cookie."
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Vouched for by the server's operator on {when}."
+msgstr "Được người vận hành máy chủ bảo đảm lúc {when}."
 
 #: src/components/common/Linked.tsx
 #: src/features/broadcasts/Subscribers.tsx
@@ -20153,6 +20233,10 @@ msgstr "Hộp thư Yuva"
 #: src/features/migrations/SwitchStep.tsx
 msgid "Yuva mails {address} a short test message. When it reaches Yuva by the new route, the switch works."
 msgstr "Yuva gửi {address} một tin nhắn thử ngắn. Khi nó đến Yuva qua đường mới, việc chuyển đổi hoạt động."
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Yuva mails an 8-digit code to the address. Type it here."
+msgstr "Yuva gửi mã gồm 8 chữ số đến địa chỉ. Nhập mã vào đây."
 
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Yuva may now read your organization's mailboxes over IMAP, each once its owner signs in. Whoever started the migration can open it and sign in with Microsoft again."

@@ -1100,6 +1100,10 @@ msgstr "群发会把一个设计立即或稍后发送到一个或多个列表,�
 msgid "A broadcast was scheduled, started, paused or finished"
 msgstr "群发已安排、开始、暂停或完成时"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "A catch-all, or an address on the forwarding domain, can be proven only with a DNS record."
+msgstr "全收地址或转发域名下的地址只能用 DNS 记录来验证。"
+
 #: src/features/setup/ChannelStep.tsx
 msgid "A chat bubble on your site, from one line of HTML"
 msgstr "只需一行 HTML,就能在网站上添加聊天气泡"
@@ -1955,6 +1959,10 @@ msgstr "你的 {provider} 地址"
 msgid "Address or name"
 msgstr "地址或名称"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Address proof"
+msgstr "地址验证"
+
 #: src/components/common/text.ts
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Admin"
@@ -2539,6 +2547,10 @@ msgstr "其他团队的视图"
 #: src/components/common/text.ts
 msgid "Another workspace on this server has already verified this domain."
 msgstr "Another workspace on this server has already verified this domain."
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Another workspace proved this address later"
+msgstr "另一个工作区后来验证了此地址"
 
 #: src/features/docs/discussions/FromConversation.tsx
 msgid "Answer (optional)"
@@ -3731,6 +3743,7 @@ msgid "Check deliverability and set up DKIM"
 msgstr "检查送达率并设置 DKIM"
 
 #: src/features/settings/channels/ChannelState.tsx
+#: src/features/settings/channels/email/AddressProof.tsx
 msgid "Check DNS"
 msgstr "检查 DNS"
 
@@ -4072,6 +4085,7 @@ msgid "CNAME record"
 msgstr "CNAME 记录"
 
 #: src/features/auth/SignInForm.tsx
+#: src/features/settings/channels/email/AddressProof.tsx
 msgid "Code"
 msgstr "代码"
 
@@ -8429,6 +8443,10 @@ msgstr "最近检查"
 msgid "Last checked"
 msgstr "最近检查于"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Last checked {checked}"
+msgstr "上次检查：{checked}"
+
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Last checked {last}."
 msgstr "上次检查：{last}。"
@@ -8940,6 +8958,10 @@ msgstr "邮件会到达这里;准备好后再添加回复账号"
 msgid "Mail carries the tenant <0>{channelTenant}</0> you typed below."
 msgstr "邮件带有你在下面输入的租户 <0>{channelTenant}</0>。"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Mail forwarded to the forwarding address arrives. Mail sent to <0>{address}</0> itself is not routed here until you prove it."
+msgstr "转发到转发地址的邮件会送达。直接发往 <0>{address}</0> 的邮件，在你验证该地址之前不会路由到这里。"
+
 #: src/features/migrations/MapStep.tsx
 msgid "Mail from these addresses is imported as sent by your team. Your members' sign-in addresses count too."
 msgstr "来自这些地址的邮件会作为你的团队发送的邮件导入。你的成员的登录地址也算在内。"
@@ -8987,6 +9009,10 @@ msgstr "给他们发确认邮件"
 #: src/features/settings/channels/email/ForwardingAddressField.tsx
 msgid "Mail to {value} is refused from then on. Change the forwarding at the provider to the new address right away, or forwarded mail no longer reaches Yuva."
 msgstr "此后发往 {value} 的邮件会被拒绝。请立即在服务商处把转发改为新地址,否则转发的邮件将无法再到达 Yuva。"
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Mail to <0>{address}</0> goes to that workspace now. Prove the address again to take it back, or talk to whoever manages the domain."
+msgstr "发往 <0>{address}</0> 的邮件现在会送到那个工作区。重新验证该地址即可夺回，或联系管理该域名的人。"
 
 #: src/components/common/text.ts
 msgid "Mail to this address bounced or was reported as spam, so it cannot be added."
@@ -11446,6 +11472,10 @@ msgstr "每行一个,最多 20 个。"
 msgid "One per product or brand"
 msgstr "每个产品或品牌一个"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "One record proves every channel of this workspace on the domain."
+msgstr "一条记录即可验证此工作区在该域名下的所有渠道。"
+
 #: src/features/status/LinkedSection.tsx
 msgid "One reply, written once, goes to every open conversation linked to {title}, as you, on each conversation’s own channel."
 msgstr "只需写一次的回复，会以你的名义，通过各对话自己的渠道，发送到每个关联到 {title} 的进行中对话。"
@@ -12952,6 +12982,22 @@ msgstr "Protocol"
 msgid "Proton Mail is reachable over IMAP only through Proton Mail Bridge on your own computer, which a server cannot reach. Export the mailbox with Proton Mail's export tool, put the folder in a .zip and upload it as an export file below."
 msgstr "Proton Mail 只能通过你自己电脑上的 Proton Mail Bridge 经由 IMAP 访问,而服务器无法连接它。请用 Proton Mail 的导出工具导出邮箱,把文件夹放进 .zip,并在下面作为导出文件上传。"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Prove it with a code"
+msgstr "用验证码验证"
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Prove it with a DNS record"
+msgstr "用 DNS 记录验证"
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Proven with a code on {when}."
+msgstr "已于 {when} 用验证码验证。"
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Proven with the DNS record on {when}."
+msgstr "已于 {when} 用 DNS 记录验证。"
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Provider"
 msgstr "Provider"
@@ -13326,6 +13372,10 @@ msgstr "实时"
 #: src/features/migrations/SwitchStep.tsx
 msgid "Received {when}. Enter it in Gmail's forwarding settings, or open the link."
 msgstr "{when} 收到。请填入 Gmail 的转发设置,或打开链接。"
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Receives mail at <0>{address}</0>"
+msgstr "正在 <0>{address}</0> 接收邮件"
 
 #: src/features/settings/channels/ChannelState.tsx
 msgid "Receives only"
@@ -14732,6 +14782,10 @@ msgstr "发送心跳信号"
 msgid "Send a check"
 msgstr "发送检查"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Send a code"
+msgstr "发送验证码"
+
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 msgid "Send a help article"
@@ -14750,6 +14804,7 @@ msgid "Send a message from your app"
 msgstr "从你的应用发送消息"
 
 #: src/features/auth/SignInForm.tsx
+#: src/features/settings/channels/email/AddressProof.tsx
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Send a new code"
 msgstr "发送新验证码"
@@ -16609,6 +16664,10 @@ msgstr "聊天中显示你通常何时回复"
 msgid "The chat shows who is available and typing"
 msgstr "聊天中显示谁在线以及谁正在输入"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "The code is valid until {expires}. A mailbox that forwards here may prove the address by itself."
+msgstr "验证码有效期至 {expires}。转发到此处的邮箱可能会自动验证该地址。"
+
 #: src/features/auth/SignInForm.tsx
 msgid "The code is wrong or has expired."
 msgstr "验证码错误或已过期。"
@@ -17598,6 +17657,10 @@ msgstr "此 {provider} 账号的套餐没有 API 访问权限,而 Yuva 需要通
 msgid "This {provider} account's plan has no API access, which Yuva reads through. A plan with API access is needed to move."
 msgstr "此 {provider} 账号的套餐没有 API 访问权限,而 Yuva 需要通过它读取。迁移需要带 API 访问权限的套餐。"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "This address does not receive mail yet"
+msgstr "此地址尚不接收邮件"
+
 #: src/components/common/text.ts
 msgid "This address got as many confirmation mails as allowed for now. Try again tomorrow."
 msgstr "此地址已收到目前允许数量的确认邮件。请明天再试。"
@@ -17605,6 +17668,10 @@ msgstr "此地址已收到目前允许数量的确认邮件。请明天再试。
 #: src/features/setup/NewsletterStep.tsx
 msgid "This address has no SMTP account yet. Add one in the inbox settings before the first broadcast."
 msgstr "此地址还没有 SMTP 账号。请在第一次群发前在收件箱设置中添加。"
+
+#: src/components/common/text.ts
+msgid "This address is already proven."
+msgstr "此地址已验证。"
 
 #: src/features/status/monitorErrors.ts
 msgid "This address is private, loopback or link-local. Checks only reach public addresses."
@@ -17673,6 +17740,10 @@ msgstr "This code has expired. Ask for a new one."
 #: src/components/common/text.ts
 msgid "This code is not right."
 msgstr "This code is not right."
+
+#: src/components/common/text.ts
+msgid "This code is wrong or has expired. Send a new code."
+msgstr "验证码错误或已过期。请发送新的验证码。"
 
 #: src/components/common/text.ts
 msgid "This conflicts with something that already exists."
@@ -18583,6 +18654,10 @@ msgstr "直到 {expires}"
 msgid "Until it starts you can go back to a draft."
 msgstr "开始之前，你可以回到草稿。"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Until the address is proven, this channel receives mail only at its forwarding address."
+msgstr "在地址验证之前，此渠道只在其转发地址接收邮件。"
+
 #: src/features/broadcasts/AddSubscriberDialog.tsx
 msgid "Until they click the link they stay waiting for confirmation and get no other mail. Unconfirmed subscriptions are deleted after 30 days."
 msgstr "在他们点击链接之前,会一直等待确认,也不会收到其他邮件。未确认的订阅会在 30 天后删除。"
@@ -18905,6 +18980,7 @@ msgstr "条件 {n} 的值,用逗号分隔"
 msgid "Verified"
 msgstr "已验证"
 
+#: src/features/settings/channels/email/AddressProof.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Verify"
 msgstr "Verify"
@@ -19012,6 +19088,10 @@ msgstr "来自此活动的访问"
 #: src/features/broadcasts/Report.tsx
 msgid "Visits to your sites with utm_campaign={campaign} since sending started, counted by Analytics without cookies."
 msgstr "发送开始以来带有 utm_campaign={campaign} 的网站访问,由分析在无 Cookie 的情况下统计。"
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Vouched for by the server's operator on {when}."
+msgstr "已于 {when} 由服务器运营方担保。"
 
 #: src/components/common/Linked.tsx
 #: src/features/broadcasts/Subscribers.tsx
@@ -20153,6 +20233,10 @@ msgstr "Yuva 收件箱"
 #: src/features/migrations/SwitchStep.tsx
 msgid "Yuva mails {address} a short test message. When it reaches Yuva by the new route, the switch works."
 msgstr "Yuva 会给 {address} 发送一封简短的测试消息。当它通过新路径到达 Yuva 时,切换就生效了。"
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Yuva mails an 8-digit code to the address. Type it here."
+msgstr "Yuva 会向该地址发送一个 8 位验证码。请在此输入。"
 
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Yuva may now read your organization's mailboxes over IMAP, each once its owner signs in. Whoever started the migration can open it and sign in with Microsoft again."

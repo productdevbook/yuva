@@ -1100,6 +1100,10 @@ msgstr "Siaran menghantar reka bentuk kepada satu atau lebih senarai, sekarang a
 msgid "A broadcast was scheduled, started, paused or finished"
 msgstr "Siaran dijadualkan, dimulakan, dijeda atau selesai"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "A catch-all, or an address on the forwarding domain, can be proven only with a DNS record."
+msgstr "Alamat catch-all, atau alamat dalam domain pemajuan, hanya boleh dibuktikan dengan rekod DNS."
+
 #: src/features/setup/ChannelStep.tsx
 msgid "A chat bubble on your site, from one line of HTML"
 msgstr "Gelembung sembang pada tapak anda, daripada satu baris HTML"
@@ -1955,6 +1959,10 @@ msgstr "Alamat {provider} anda"
 msgid "Address or name"
 msgstr "Alamat atau nama"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Address proof"
+msgstr "Bukti alamat"
+
 #: src/components/common/text.ts
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Admin"
@@ -2539,6 +2547,10 @@ msgstr "Paparan pasukan lain"
 #: src/components/common/text.ts
 msgid "Another workspace on this server has already verified this domain."
 msgstr "Another workspace on this server has already verified this domain."
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Another workspace proved this address later"
+msgstr "Ruang kerja lain membuktikan alamat ini kemudian"
 
 #: src/features/docs/discussions/FromConversation.tsx
 msgid "Answer (optional)"
@@ -3731,6 +3743,7 @@ msgid "Check deliverability and set up DKIM"
 msgstr "Semak kebolehsampaian dan sediakan DKIM"
 
 #: src/features/settings/channels/ChannelState.tsx
+#: src/features/settings/channels/email/AddressProof.tsx
 msgid "Check DNS"
 msgstr "Semak DNS"
 
@@ -4072,6 +4085,7 @@ msgid "CNAME record"
 msgstr "Rekod CNAME"
 
 #: src/features/auth/SignInForm.tsx
+#: src/features/settings/channels/email/AddressProof.tsx
 msgid "Code"
 msgstr "Kod"
 
@@ -8429,6 +8443,10 @@ msgstr "Semakan terakhir"
 msgid "Last checked"
 msgstr "Disemak terakhir"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Last checked {checked}"
+msgstr "Disemak kali terakhir: {checked}"
+
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Last checked {last}."
 msgstr "Disemak kali terakhir {last}."
@@ -8940,6 +8958,10 @@ msgstr "Mel tiba di sini; tambah akaun balasan apabila anda bersedia"
 msgid "Mail carries the tenant <0>{channelTenant}</0> you typed below."
 msgstr "Mel membawa penyewa <0>{channelTenant}</0> yang anda taip di bawah."
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Mail forwarded to the forwarding address arrives. Mail sent to <0>{address}</0> itself is not routed here until you prove it."
+msgstr "E-mel yang dimajukan ke alamat pemajuan akan sampai. E-mel yang dihantar terus ke <0>{address}</0> tidak dihalakan ke sini sehingga anda membuktikan alamat itu."
+
 #: src/features/migrations/MapStep.tsx
 msgid "Mail from these addresses is imported as sent by your team. Your members' sign-in addresses count too."
 msgstr "Mel daripada alamat ini diimport sebagai dihantar oleh pasukan anda. Alamat log masuk ahli anda turut dikira."
@@ -8987,6 +9009,10 @@ msgstr "Hantar mel pengesahan kepada mereka"
 #: src/features/settings/channels/email/ForwardingAddressField.tsx
 msgid "Mail to {value} is refused from then on. Change the forwarding at the provider to the new address right away, or forwarded mail no longer reaches Yuva."
 msgstr "Mel kepada {value} ditolak sejak itu. Tukar pemajuan pada penyedia ke alamat baharu dengan segera, atau mel yang dimajukan tidak lagi sampai ke Yuva."
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Mail to <0>{address}</0> goes to that workspace now. Prove the address again to take it back, or talk to whoever manages the domain."
+msgstr "E-mel ke <0>{address}</0> kini pergi ke ruang kerja itu. Buktikan alamat sekali lagi untuk mengambilnya semula, atau berbincang dengan pengurus domain."
 
 #: src/components/common/text.ts
 msgid "Mail to this address bounced or was reported as spam, so it cannot be added."
@@ -11446,6 +11472,10 @@ msgstr "Satu setiap baris, sehingga 20."
 msgid "One per product or brand"
 msgstr "Satu bagi setiap produk atau jenama"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "One record proves every channel of this workspace on the domain."
+msgstr "Satu rekod membuktikan semua saluran ruang kerja ini pada domain."
+
 #: src/features/status/LinkedSection.tsx
 msgid "One reply, written once, goes to every open conversation linked to {title}, as you, on each conversation’s own channel."
 msgstr "Satu balasan, ditulis sekali, dihantar ke setiap perbualan terbuka yang dipautkan ke {title}, atas nama anda, melalui saluran setiap perbualan itu sendiri."
@@ -12952,6 +12982,22 @@ msgstr "Protocol"
 msgid "Proton Mail is reachable over IMAP only through Proton Mail Bridge on your own computer, which a server cannot reach. Export the mailbox with Proton Mail's export tool, put the folder in a .zip and upload it as an export file below."
 msgstr "Proton Mail boleh dicapai melalui IMAP hanya melalui Proton Mail Bridge pada komputer anda sendiri, yang tidak dapat dicapai pelayan. Eksport peti mel dengan alat eksport Proton Mail, letakkan folder dalam .zip dan muat naik sebagai fail eksport di bawah."
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Prove it with a code"
+msgstr "Buktikan dengan kod"
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Prove it with a DNS record"
+msgstr "Buktikan dengan rekod DNS"
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Proven with a code on {when}."
+msgstr "Dibuktikan dengan kod pada {when}."
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Proven with the DNS record on {when}."
+msgstr "Dibuktikan dengan rekod DNS pada {when}."
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Provider"
 msgstr "Provider"
@@ -13326,6 +13372,10 @@ msgstr "Masa nyata"
 #: src/features/migrations/SwitchStep.tsx
 msgid "Received {when}. Enter it in Gmail's forwarding settings, or open the link."
 msgstr "Diterima {when}. Masukkan dalam tetapan pemajuan Gmail, atau buka pautan."
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Receives mail at <0>{address}</0>"
+msgstr "Menerima e-mel di <0>{address}</0>"
 
 #: src/features/settings/channels/ChannelState.tsx
 msgid "Receives only"
@@ -14732,6 +14782,10 @@ msgstr "Hantar isyarat"
 msgid "Send a check"
 msgstr "Hantar semakan"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Send a code"
+msgstr "Hantar kod"
+
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 msgid "Send a help article"
@@ -14750,6 +14804,7 @@ msgid "Send a message from your app"
 msgstr "Hantar mesej daripada apl anda"
 
 #: src/features/auth/SignInForm.tsx
+#: src/features/settings/channels/email/AddressProof.tsx
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Send a new code"
 msgstr "Hantar kod baharu"
@@ -16609,6 +16664,10 @@ msgstr "Sembang menunjukkan bila anda biasanya membalas"
 msgid "The chat shows who is available and typing"
 msgstr "Sembang menunjukkan siapa yang tersedia dan menaip"
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "The code is valid until {expires}. A mailbox that forwards here may prove the address by itself."
+msgstr "Kod sah sehingga {expires}. Peti mel yang memajukan ke sini boleh membuktikan alamat dengan sendirinya."
+
 #: src/features/auth/SignInForm.tsx
 msgid "The code is wrong or has expired."
 msgstr "Kod salah atau telah tamat tempoh."
@@ -17598,6 +17657,10 @@ msgstr "Pelan akaun {provider} ini tiada akses API, yang digunakan Yuva untuk me
 msgid "This {provider} account's plan has no API access, which Yuva reads through. A plan with API access is needed to move."
 msgstr "Pelan akaun {provider} ini tiada akses API, yang digunakan Yuva untuk membaca. Pelan dengan akses API diperlukan untuk berpindah."
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "This address does not receive mail yet"
+msgstr "Alamat ini belum menerima e-mel"
+
 #: src/components/common/text.ts
 msgid "This address got as many confirmation mails as allowed for now. Try again tomorrow."
 msgstr "Alamat ini sudah mendapat mel pengesahan sebanyak yang dibenarkan buat masa ini. Cuba lagi esok."
@@ -17605,6 +17668,10 @@ msgstr "Alamat ini sudah mendapat mel pengesahan sebanyak yang dibenarkan buat m
 #: src/features/setup/NewsletterStep.tsx
 msgid "This address has no SMTP account yet. Add one in the inbox settings before the first broadcast."
 msgstr "Alamat ini belum mempunyai akaun SMTP. Tambah satu dalam tetapan peti masuk sebelum siaran pertama."
+
+#: src/components/common/text.ts
+msgid "This address is already proven."
+msgstr "Alamat ini sudah dibuktikan."
 
 #: src/features/status/monitorErrors.ts
 msgid "This address is private, loopback or link-local. Checks only reach public addresses."
@@ -17673,6 +17740,10 @@ msgstr "This code has expired. Ask for a new one."
 #: src/components/common/text.ts
 msgid "This code is not right."
 msgstr "This code is not right."
+
+#: src/components/common/text.ts
+msgid "This code is wrong or has expired. Send a new code."
+msgstr "Kod salah atau telah tamat tempoh. Hantar kod baharu."
 
 #: src/components/common/text.ts
 msgid "This conflicts with something that already exists."
@@ -18583,6 +18654,10 @@ msgstr "sehingga {expires}"
 msgid "Until it starts you can go back to a draft."
 msgstr "Sebelum bermula, anda boleh kembali ke draf."
 
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Until the address is proven, this channel receives mail only at its forwarding address."
+msgstr "Sehingga alamat dibuktikan, saluran ini hanya menerima e-mel di alamat pemajuannya."
+
 #: src/features/broadcasts/AddSubscriberDialog.tsx
 msgid "Until they click the link they stay waiting for confirmation and get no other mail. Unconfirmed subscriptions are deleted after 30 days."
 msgstr "Sehingga mereka mengklik pautan, mereka kekal menunggu pengesahan dan tidak mendapat mel lain. Langganan yang belum disahkan dipadam selepas 30 hari."
@@ -18905,6 +18980,7 @@ msgstr "Nilai syarat {n}, dipisahkan koma"
 msgid "Verified"
 msgstr "Disahkan"
 
+#: src/features/settings/channels/email/AddressProof.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Verify"
 msgstr "Verify"
@@ -19012,6 +19088,10 @@ msgstr "Lawatan daripada kempen ini"
 #: src/features/broadcasts/Report.tsx
 msgid "Visits to your sites with utm_campaign={campaign} since sending started, counted by Analytics without cookies."
 msgstr "Lawatan ke tapak anda dengan utm_campaign={campaign} sejak penghantaran bermula, dikira Analitik tanpa kuki."
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Vouched for by the server's operator on {when}."
+msgstr "Dijamin oleh operator pelayan pada {when}."
 
 #: src/components/common/Linked.tsx
 #: src/features/broadcasts/Subscribers.tsx
@@ -20153,6 +20233,10 @@ msgstr "Peti masuk Yuva"
 #: src/features/migrations/SwitchStep.tsx
 msgid "Yuva mails {address} a short test message. When it reaches Yuva by the new route, the switch works."
 msgstr "Yuva mengirim mesej ujian pendek ke {address}. Apabila ia sampai ke Yuva melalui laluan baharu, pertukaran berfungsi."
+
+#: src/features/settings/channels/email/AddressProof.tsx
+msgid "Yuva mails an 8-digit code to the address. Type it here."
+msgstr "Yuva menghantar kod 8 digit ke alamat itu. Taip di sini."
 
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Yuva may now read your organization's mailboxes over IMAP, each once its owner signs in. Whoever started the migration can open it and sign in with Microsoft again."
