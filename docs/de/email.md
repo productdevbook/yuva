@@ -222,6 +222,7 @@ yuva channel create-email --workspace Example --inbox support --name "Everything
 | Grenze | Wert |
 |---|---|
 | Nachrichtengröße | 25 MiB |
+| Anhänge | Die [Datei-Grenzen](configuration.md#dateien-und-speicher) des Kanals; ein Teil darüber wird übersprungen, die Nachricht bleibt erhalten und das Teil bleibt in der Roh-E-Mail |
 | Neue Unterhaltungen pro Absender und Kanal | 20 pro Stunde; weitere E-Mails landen in seiner neuesten Unterhaltung |
 | Eingehende E-Mails pro Absender und Workspace | `YUVA_EMAIL_SENDER_HOURLY_CAP`, 500 pro Stunde; weitere werden abgelehnt |
 | Gleichzeitig verarbeitete Nachrichten | `YUVA_INGRESS_MAX_CONCURRENT`, 8; weitere erhalten `503` |

@@ -91,6 +91,17 @@ vardır.
 
 Varsayılan türler: `image/png,image/jpeg,image/gif,image/webp,image/heic,application/pdf,text/plain,text/csv,application/zip,application/json,video/mp4,video/quicktime,audio/mpeg,audio/mp4`.
 
+Bu iki ayar sunucunun sınırlarıdır. Bir kanal bunları daraltabilir, asla genişletemez:
+`POST /v1/inboxes/{inboxId}/channels` veya `PATCH /v1/channels/{channelId}` isteğinde `attachments` içinde
+`max_bytes` (bayt cinsinden boyut) ve `types` (`application/pdf` gibi içerik türleri, bir aile için `image/*`)
+gönderin. Sunucununkinden büyük bir boyut ya da sunucunun hiç izin vermediği bir tür `400 validation_failed` ile
+reddedilir; `null` kanalı yeniden sunucuyu izlemeye döndürür. Geçerli olan her zaman daha küçük boyut ve iki
+listenin de izin verdiği türlerdir (yalnızca `image/png` listeleyen bir sunucuda `image/*`, `image/png`'ye izin
+verir); bu yüzden sunucunun sınırını sonradan düşürmek yine de geçerli olur. Kanaldaki `attachments` kendi
+değerlerinizi ve geçerli `effective_max_bytes` ile `effective_types` değerlerini gösterir; geçerli tür yoksa hiçbir
+dosya kabul edilmez. Sınırlar ekibinizin dosyaları, web widget'ı ve mobil SDK'lar, geri bildirim ekran görüntüleri
+ve gelen e-posta için geçerlidir. [Yuva'ya taşıma](migrate.md) hiçbir kanala ait değildir ve sunucunun sınırlarını korur.
+
 ## Gelen e-posta
 
 | Değişken | Varsayılan | Anlamı |

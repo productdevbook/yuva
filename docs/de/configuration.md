@@ -91,6 +91,17 @@ Anmeldecodes, Einladungen und Benachrichtigungen. E-Mail-Kanäle haben [ihr eige
 
 Standardtypen: `image/png,image/jpeg,image/gif,image/webp,image/heic,application/pdf,text/plain,text/csv,application/zip,application/json,video/mp4,video/quicktime,audio/mpeg,audio/mp4`.
 
+Diese beiden Einstellungen sind die Grenzen des Servers. Ein Kanal kann sie einengen, nie erweitern: Senden Sie
+`attachments` mit `max_bytes` (Größe in Bytes) und `types` (Content-Types wie `application/pdf`, oder `image/*`
+für eine Familie) an `POST /v1/inboxes/{inboxId}/channels` oder `PATCH /v1/channels/{channelId}`. Eine Größe über der
+des Servers oder ein Typ, den der Server gar nicht erlaubt, wird mit `400 validation_failed` abgelehnt; `null`
+lässt den Kanal wieder dem Server folgen. Es gilt immer die kleinere Größe und die Typen, die beide Listen erlauben
+(`image/*` erlaubt unter einem Server, der nur `image/png` listet, `image/png`); ein später gesenkter Wert des
+Servers gilt also trotzdem. `attachments` am Kanal zeigt Ihre eigenen Werte und die geltenden `effective_max_bytes`
+und `effective_types`; ohne geltenden Typ wird keine Datei angenommen. Die Grenzen gelten für Dateien Ihres Teams,
+für das Web-Widget und die mobilen SDKs, für Screenshots im Feedback und für eingehende E-Mails. Das
+[Umziehen zu Yuva](migrate.md) gehört zu keinem Kanal und behält die Grenzen des Servers.
+
 ## Eingehende E-Mail
 
 | Variable | Standard | Bedeutung |

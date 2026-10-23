@@ -142,3 +142,7 @@ Das Widget spricht 47 Sprachen: `en`, `tr`, `de`, `fr`, `fr-CA`, `es`, `es-MX`, 
 
 Über die API: `POST /v1/inboxes/{inboxId}/channels` mit `kind: "chat"` und einem `chat`-Objekt, als
 Inhaber oder Admin.
+
+Ein Chat-Kanal kann mit `attachments` auch die [Datei-Grenzen](configuration.md#dateien-und-speicher) des Servers
+einengen. Das Widget liest sie noch nicht: Es sendet die Datei und zeigt die Ablehnung des Servers
+(`413 attachment_too_large` oder `415 attachment_type_not_allowed`).

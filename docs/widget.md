@@ -131,3 +131,7 @@ The widget speaks 47 languages: `en`, `tr`, `de`, `fr`, `fr-CA`, `es`, `es-MX`, 
 
 Over the API: `POST /v1/inboxes/{inboxId}/channels` with `kind: "chat"` and a `chat` object, as an
 owner or admin.
+
+A chat channel can also narrow the server's [attachment limits](configuration.md#attachments-and-storage) with
+`attachments`. The widget does not read them yet: it sends the file and shows the server's refusal
+(`413 attachment_too_large` or `415 attachment_type_not_allowed`).

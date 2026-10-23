@@ -208,6 +208,7 @@ yuva channel create-email --workspace Example --inbox support --name "Everything
 | Limit | Value |
 |---|---|
 | Message size | 25 MiB |
+| Attachments | The channel's [attachment limits](configuration.md#attachments-and-storage); a part over them is skipped, the message is kept and the part stays in the raw e-mail |
 | New conversations per sender and channel | 20 per hour; more mail joins their latest conversation |
 | Inbound mails per sender and workspace | `YUVA_EMAIL_SENDER_HOURLY_CAP`, 500 per hour; more are refused |
 | Messages processed at once | `YUVA_INGRESS_MAX_CONCURRENT`, 8; more get `503` |

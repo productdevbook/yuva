@@ -218,6 +218,7 @@ yuva channel create-email --workspace Example --inbox support --name "Everything
 | Sınır | Değer |
 |---|---|
 | Mesaj boyutu | 25 MiB |
+| Ekler | Kanalın [ek sınırları](configuration.md#ekler-ve-depolama); sınırı aşan bir parça atlanır, mesaj korunur ve parça ham e-postada kalır |
 | Gönderici ve kanal başına yeni konuşma | Saatte 20; fazlası göndericinin son konuşmasına eklenir |
 | Gönderici ve çalışma alanı başına gelen e-posta | `YUVA_EMAIL_SENDER_HOURLY_CAP`, saatte 500; fazlası reddedilir |
 | Aynı anda işlenen mesaj | `YUVA_INGRESS_MAX_CONCURRENT`, 8; fazlası `503` alır |

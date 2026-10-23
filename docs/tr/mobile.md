@@ -134,7 +134,7 @@ Yuva.disableShakeToFeedback()
 |---|---|
 | `serverURL` (Android'de `serverUrl`), `channelKey` | Sunucunuz ve uygulama kanalının anahtarı. |
 | `identityToken` | Bir token döndürür, anonim için `nil` / `null`. |
-| `maxAttachmentSize` | En büyük yükleme, varsayılan 25 MiB. |
+| `maxAttachmentSize` | En büyük yükleme, varsayılan 25 MiB. Bir uygulama kanalı daha düşük [ek sınırları](configuration.md#ekler-ve-depolama) belirleyebilir; SDK'lar bunları henüz okumaz, bu yüzden sunucu aşan dosyayı reddeder (`413` veya `415`). |
 | `start()`, `identify()`, `signOut()` | Oturum. |
 | `conversations()`, `messages(...)` | Sayfalı okuma. |
 | `startConversation(...)`, `sendMessage(...)` | İsteğe bağlı eklerle yazma. |

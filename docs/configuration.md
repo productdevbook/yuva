@@ -90,6 +90,16 @@ Sign-in codes, invitations and notifications. E-mail channels have [their own SM
 
 Default types: `image/png,image/jpeg,image/gif,image/webp,image/heic,application/pdf,text/plain,text/csv,application/zip,application/json,video/mp4,video/quicktime,audio/mpeg,audio/mp4`.
 
+These two settings are the server's limits. A channel can narrow them, never widen them: send `attachments` with
+`max_bytes` (a size in bytes) and `types` (content types such as `application/pdf`, or `image/*` for a family) on
+`POST /v1/inboxes/{inboxId}/channels` or `PATCH /v1/channels/{channelId}`. A size above the server's, or a type the
+server does not allow at all, is refused with `400 validation_failed`; `null` makes the channel follow the server
+again. What applies is always the smaller size and the types both lists allow (`image/*` under a server that lists
+only `image/png` allows `image/png`), so lowering the server's limit later still wins. `attachments` on the channel
+shows your own values and the `effective_max_bytes` and `effective_types` in force; no effective type means no file is
+accepted. The limits hold for files from your team, for the web widget and mobile SDKs, for feedback screenshots and
+for inbound e-mail. [Moving to Yuva](migrate.md) belongs to no channel and keeps the server's limits.
+
 ## Inbound e-mail
 
 | Variable | Default | Meaning |
