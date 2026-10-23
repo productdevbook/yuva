@@ -248,8 +248,11 @@ function Loaded({
   const inbound = shown.filter((m) => m.kind === "message" && m.direction !== "out")
   const lastInbound = inbound.at(-1)
   const feedbackId = c.kind === "feedback" && !messages.hasNextPage ? inbound[0]?.id : undefined
-  const emailTo =
-    channel?.kind === "email" ? (inbound.findLast((m) => m.email)?.email?.from ?? contact?.emails[0]) : undefined
+  const contactEmails = contact?.emails.map((e) => e.toLowerCase()) ?? []
+  const lastContactMail = inbound.findLast(
+    (m) => m.author.type === "contact" && !!m.email?.from && contactEmails.includes(m.email.from.toLowerCase())
+  )
+  const emailTo = channel?.kind === "email" ? (lastContactMail?.email?.from ?? contact?.emails[0]) : undefined
   const undeliverable = !!emailTo && !!contact?.undeliverable.some((u) => u.email === emailTo)
   const q = finding ? foldText(findQuery.trim()) : ""
   const hits = q ? shown.filter((m) => (m.kind === "message" || m.kind === "note") && foldText(m.body).includes(q)) : []
