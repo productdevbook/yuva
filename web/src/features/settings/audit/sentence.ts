@@ -3,7 +3,7 @@ import { useLingui } from "@lingui/react/macro"
 
 import { useEnumText } from "@/components/common/text"
 import type { AuditAction, AuditEntry } from "@/lib/api"
-import { useInboxes, useMemberMap } from "@/lib/workspace"
+import { useInboxes, useMemberMap, useTeams } from "@/lib/workspace"
 
 export type AuditGroup = "people" | "access" | "webhooks" | "mail" | "data" | "workspace"
 
@@ -16,6 +16,12 @@ export const AUDIT_GROUPS: Record<AuditGroup, AuditAction[]> = {
     "member.inbox_access_revoked",
     "invite.created",
     "invite.deleted",
+    "team.created",
+    "team.deleted",
+    "team.member_added",
+    "team.member_removed",
+    "team.inbox_access_granted",
+    "team.inbox_access_revoked",
   ],
   access: ["api_key.created", "api_key.revoked", "oauth_grant.created", "oauth_grant.revoked"],
   webhooks: ["webhook.created", "webhook.updated", "webhook.deleted", "webhook.secret_rotated"],
@@ -69,6 +75,7 @@ export function useAuditSentence() {
   const text = useEnumText()
   const members = useMemberMap()
   const inboxes = useInboxes().data
+  const teams = useTeams().data
   const dash = "–"
   return (e: AuditEntry): string => {
     const d = e.details as Record<string, unknown>
@@ -78,7 +85,22 @@ export function useAuditSentence() {
     const name = str(d.name) ?? dash
     const host = str(d.host) ?? dash
     const inbox = str(d.inbox_name) ?? inboxes?.find((i) => i.id === d.inbox_id)?.name ?? dash
+    const team = str(d.name) ?? teams?.find((x) => x.id === e.target.id)?.name ?? dash
+    const teamMember = members.get(str(d.member_id) ?? "")
+    const who = teamMember ? teamMember.name || teamMember.email : t`a former member`
     switch (e.action) {
+      case "team.created":
+        return t`Created the team ${team}`
+      case "team.deleted":
+        return t`Deleted the team ${team}`
+      case "team.member_added":
+        return t`Added ${who} to the team ${team}`
+      case "team.member_removed":
+        return t`Removed ${who} from the team ${team}`
+      case "team.inbox_access_granted":
+        return t`Gave the team ${team} access to ${inbox}`
+      case "team.inbox_access_revoked":
+        return t`Took away the access of the team ${team} to ${inbox}`
       case "member.joined": {
         const role = roleOf(d.role)
         return t`Joined the workspace as ${role}`
