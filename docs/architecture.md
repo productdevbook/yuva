@@ -2424,6 +2424,19 @@ losing a message and without changing anything at the source. Decisions:
   address), the mailbox decides by accepting the token in `AUTHENTICATE XOAUTH2` with its address as
   the user, and only its refusal is `account_mismatch`; the audit row names the account that signed in.
   Assistants never handle a password: MCP tools return a panel link where the person connects.
+- **People in the work rows.** The scan and the copy keep what they read about people in the
+  migration's work rows: `migration_items.meta` (a mailbox message's addresses and subject, a help
+  desk's whole ticket with the requester's name, e-mail address and phone), `migration_threads.plan`,
+  `migration_plan_names`, `migration_plan_nodes` and `migration_errors.item_subject`. The
+  transaction that completes or cancels a migration clears all of them (`meta` and `plan` become
+  `{}`, names and nodes are deleted, error subjects emptied); the item and thread rows stay, so the
+  counts and the duplicate lookup do. There is no failed end state: a migration that needs attention
+  keeps its rows until someone retries or cancels it. Deleting a contact clears, in every migration
+  of the workspace, the items and thread plans that name one of its addresses and its plan names:
+  planned items of such a thread are marked `skipped` with reason `contact_deleted` (the thread's
+  `done` count follows), so a running copy does not import them. Error subjects of a running
+  migration are not matched to a person and go when it ends. The 30-day sweep still deletes the
+  rows themselves, and migrations that ended before this rule keep their rows until then.
 - **Who.** Owners, admins, and keys without an inbox limit or owner/admin tokens with
   `migrations:manage`. Every action is in `migration_audit` (actor, client), kept
   `YUVA_MIGRATION_AUDIT_DAYS` (365). Connection tests are limited (10 per migration, 30 per workspace an

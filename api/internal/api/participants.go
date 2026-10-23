@@ -393,5 +393,27 @@ func forgetContactAddresses(ctx context.Context, q *store.Queries, ws, contactID
 	if err := q.ScrubForwardRecipients(ctx, store.ScrubForwardRecipientsParams{WorkspaceID: ws, Emails: emails}); err != nil {
 		return err
 	}
-	return q.ScrubMessageEmailAddresses(ctx, store.ScrubMessageEmailAddressesParams{WorkspaceID: ws, Emails: emails})
+	if err := q.ScrubMessageEmailAddresses(ctx, store.ScrubMessageEmailAddressesParams{WorkspaceID: ws, Emails: emails}); err != nil {
+		return err
+	}
+	return q.ForgetMigrationAddresses(ctx, store.ForgetMigrationAddressesParams{WorkspaceID: ws, Emails: emails})
+}
+
+// clearMigrationPersonalData drops what a migration's work rows hold about people: the scanned
+// headers or tickets, the thread plans, the names found and the subjects of the errors. The rows
+// stay, so the counts do.
+func clearMigrationPersonalData(ctx context.Context, q *store.Queries, ws, id uuid.UUID) error {
+	if err := q.ClearMigrationItemMeta(ctx, store.ClearMigrationItemMetaParams{WorkspaceID: ws, MigrationID: id}); err != nil {
+		return err
+	}
+	if err := q.ClearMigrationThreadPlans(ctx, store.ClearMigrationThreadPlansParams{WorkspaceID: ws, MigrationID: id}); err != nil {
+		return err
+	}
+	if err := q.ClearMigrationErrorSubjects(ctx, store.ClearMigrationErrorSubjectsParams{WorkspaceID: ws, MigrationID: id}); err != nil {
+		return err
+	}
+	if err := q.DeleteMigrationPlanNames(ctx, store.DeleteMigrationPlanNamesParams{WorkspaceID: ws, MigrationID: id}); err != nil {
+		return err
+	}
+	return q.DeleteMigrationPlanNodes(ctx, store.DeleteMigrationPlanNodesParams{WorkspaceID: ws, MigrationID: id})
 }

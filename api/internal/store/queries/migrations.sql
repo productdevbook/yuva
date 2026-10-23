@@ -635,5 +635,52 @@ WHERE i.workspace_id = @workspace_id AND i.migration_id = @migration_id AND i.th
 ORDER BY i.received_at DESC
 LIMIT 1;
 
+-- name: ClearMigrationItemMeta :exec
+UPDATE migration_items SET meta = '{}'
+WHERE workspace_id = @workspace_id AND migration_id = @migration_id AND meta <> '{}';
+
+-- name: ClearMigrationThreadPlans :exec
+UPDATE migration_threads SET plan = '{}'
+WHERE workspace_id = @workspace_id AND migration_id = @migration_id AND plan <> '{}';
+
+-- name: ClearMigrationErrorSubjects :exec
+UPDATE migration_errors SET item_subject = ''
+WHERE workspace_id = @workspace_id AND migration_id = @migration_id AND item_subject <> '';
+
+-- name: ForgetMigrationAddresses :exec
+WITH hit AS (
+    SELECT t.migration_id, t.thread_key FROM migration_threads t
+    WHERE t.workspace_id = @workspace_id AND lower(t.plan #>> '{contact,email}') = ANY(@emails::text[])
+    UNION
+    SELECT i.migration_id, i.thread_key FROM migration_items i
+    WHERE i.workspace_id = @workspace_id AND (
+        lower(i.meta #>> '{from,email}') = ANY(@emails::text[])
+        OR lower(i.meta #>> '{requester,email}') = ANY(@emails::text[])
+        OR EXISTS (SELECT 1 FROM jsonb_array_elements(CASE WHEN jsonb_typeof(i.meta -> 'to') = 'array' THEN i.meta -> 'to' ELSE '[]'::jsonb END) e
+                   WHERE lower(e ->> 'email') = ANY(@emails::text[]))
+        OR EXISTS (SELECT 1 FROM jsonb_array_elements(CASE WHEN jsonb_typeof(i.meta -> 'cc') = 'array' THEN i.meta -> 'cc' ELSE '[]'::jsonb END) e
+                   WHERE lower(e ->> 'email') = ANY(@emails::text[])))
+), pending AS (
+    SELECT i.migration_id, i.thread_key, count(*)::int AS n FROM migration_items i
+    JOIN hit h ON h.migration_id = i.migration_id AND h.thread_key = i.thread_key
+    WHERE i.workspace_id = @workspace_id AND i.state = 'planned'
+    GROUP BY i.migration_id, i.thread_key
+), skipped AS (
+    UPDATE migration_items i SET state = 'skipped', reason = 'contact_deleted', in_copy = true, meta = '{}'
+    FROM hit h
+    WHERE i.workspace_id = @workspace_id AND i.migration_id = h.migration_id AND i.thread_key = h.thread_key AND i.state IN ('planned', 'failed')
+    RETURNING i.migration_id
+), cleared AS (
+    UPDATE migration_items i SET meta = '{}'
+    FROM hit h
+    WHERE i.workspace_id = @workspace_id AND i.migration_id = h.migration_id AND i.thread_key = h.thread_key AND i.state NOT IN ('planned', 'failed')
+    RETURNING i.migration_id
+), names AS (
+    DELETE FROM migration_plan_names WHERE workspace_id = @workspace_id AND email = ANY(@emails::text[]) RETURNING migration_id
+)
+UPDATE migration_threads t SET done = t.done + coalesce(p.n, 0), plan = '{}'
+FROM hit h LEFT JOIN pending p ON p.migration_id = h.migration_id AND p.thread_key = h.thread_key
+WHERE t.workspace_id = @workspace_id AND t.migration_id = h.migration_id AND t.thread_key = h.thread_key;
+
 -- name: LockMigrationCredentials :one
 SELECT * FROM migration_credentials WHERE workspace_id = $1 AND migration_id = $2 FOR UPDATE;

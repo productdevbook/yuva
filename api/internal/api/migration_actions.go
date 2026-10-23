@@ -239,6 +239,9 @@ func (s *Server) CancelMigration(ctx context.Context, req oas.CancelMigrationReq
 		if err != nil {
 			return m, err
 		}
+		if err := clearMigrationPersonalData(ctx, q, m.WorkspaceID, m.ID); err != nil {
+			return m, err
+		}
 		if _, err := s.migrationAudit(ctx, q, p, m.ID, "cancelled", map[string]any{"state": cur.State}); err != nil {
 			return m, err
 		}

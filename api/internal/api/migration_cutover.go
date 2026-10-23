@@ -335,6 +335,9 @@ func (s *Server) completeMigration(ctx context.Context, q *store.Queries, events
 	if err != nil {
 		return m, err
 	}
+	if err := clearMigrationPersonalData(ctx, q, m.WorkspaceID, m.ID); err != nil {
+		return m, err
+	}
 	audit := func(action string, detail map[string]any) error {
 		if p != nil {
 			_, err := s.migrationAudit(ctx, q, *p, m.ID, action, detail)

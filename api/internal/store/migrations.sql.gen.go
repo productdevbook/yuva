@@ -165,6 +165,36 @@ func (q *Queries) ApplyMigrationItemsPlan(ctx context.Context, arg ApplyMigratio
 	return err
 }
 
+const clearMigrationErrorSubjects = `-- name: ClearMigrationErrorSubjects :exec
+UPDATE migration_errors SET item_subject = ''
+WHERE workspace_id = $1 AND migration_id = $2 AND item_subject <> ''
+`
+
+type ClearMigrationErrorSubjectsParams struct {
+	WorkspaceID uuid.UUID
+	MigrationID uuid.UUID
+}
+
+func (q *Queries) ClearMigrationErrorSubjects(ctx context.Context, arg ClearMigrationErrorSubjectsParams) error {
+	_, err := q.db.Exec(ctx, clearMigrationErrorSubjects, arg.WorkspaceID, arg.MigrationID)
+	return err
+}
+
+const clearMigrationItemMeta = `-- name: ClearMigrationItemMeta :exec
+UPDATE migration_items SET meta = '{}'
+WHERE workspace_id = $1 AND migration_id = $2 AND meta <> '{}'
+`
+
+type ClearMigrationItemMetaParams struct {
+	WorkspaceID uuid.UUID
+	MigrationID uuid.UUID
+}
+
+func (q *Queries) ClearMigrationItemMeta(ctx context.Context, arg ClearMigrationItemMetaParams) error {
+	_, err := q.db.Exec(ctx, clearMigrationItemMeta, arg.WorkspaceID, arg.MigrationID)
+	return err
+}
+
 const clearMigrationLease = `-- name: ClearMigrationLease :exec
 UPDATE migrations SET lease_until = NULL, lease_job_id = NULL WHERE workspace_id = $1 AND id = $2
 `
@@ -176,6 +206,21 @@ type ClearMigrationLeaseParams struct {
 
 func (q *Queries) ClearMigrationLease(ctx context.Context, arg ClearMigrationLeaseParams) error {
 	_, err := q.db.Exec(ctx, clearMigrationLease, arg.WorkspaceID, arg.ID)
+	return err
+}
+
+const clearMigrationThreadPlans = `-- name: ClearMigrationThreadPlans :exec
+UPDATE migration_threads SET plan = '{}'
+WHERE workspace_id = $1 AND migration_id = $2 AND plan <> '{}'
+`
+
+type ClearMigrationThreadPlansParams struct {
+	WorkspaceID uuid.UUID
+	MigrationID uuid.UUID
+}
+
+func (q *Queries) ClearMigrationThreadPlans(ctx context.Context, arg ClearMigrationThreadPlansParams) error {
+	_, err := q.db.Exec(ctx, clearMigrationThreadPlans, arg.WorkspaceID, arg.MigrationID)
 	return err
 }
 
@@ -942,6 +987,52 @@ func (q *Queries) FinishMigration(ctx context.Context, arg FinishMigrationParams
 		&i.SourceState,
 	)
 	return i, err
+}
+
+const forgetMigrationAddresses = `-- name: ForgetMigrationAddresses :exec
+WITH hit AS (
+    SELECT t.migration_id, t.thread_key FROM migration_threads t
+    WHERE t.workspace_id = $1 AND lower(t.plan #>> '{contact,email}') = ANY($2::text[])
+    UNION
+    SELECT i.migration_id, i.thread_key FROM migration_items i
+    WHERE i.workspace_id = $1 AND (
+        lower(i.meta #>> '{from,email}') = ANY($2::text[])
+        OR lower(i.meta #>> '{requester,email}') = ANY($2::text[])
+        OR EXISTS (SELECT 1 FROM jsonb_array_elements(CASE WHEN jsonb_typeof(i.meta -> 'to') = 'array' THEN i.meta -> 'to' ELSE '[]'::jsonb END) e
+                   WHERE lower(e ->> 'email') = ANY($2::text[]))
+        OR EXISTS (SELECT 1 FROM jsonb_array_elements(CASE WHEN jsonb_typeof(i.meta -> 'cc') = 'array' THEN i.meta -> 'cc' ELSE '[]'::jsonb END) e
+                   WHERE lower(e ->> 'email') = ANY($2::text[])))
+), pending AS (
+    SELECT i.migration_id, i.thread_key, count(*)::int AS n FROM migration_items i
+    JOIN hit h ON h.migration_id = i.migration_id AND h.thread_key = i.thread_key
+    WHERE i.workspace_id = $1 AND i.state = 'planned'
+    GROUP BY i.migration_id, i.thread_key
+), skipped AS (
+    UPDATE migration_items i SET state = 'skipped', reason = 'contact_deleted', in_copy = true, meta = '{}'
+    FROM hit h
+    WHERE i.workspace_id = $1 AND i.migration_id = h.migration_id AND i.thread_key = h.thread_key AND i.state IN ('planned', 'failed')
+    RETURNING i.migration_id
+), cleared AS (
+    UPDATE migration_items i SET meta = '{}'
+    FROM hit h
+    WHERE i.workspace_id = $1 AND i.migration_id = h.migration_id AND i.thread_key = h.thread_key AND i.state NOT IN ('planned', 'failed')
+    RETURNING i.migration_id
+), names AS (
+    DELETE FROM migration_plan_names WHERE workspace_id = $1 AND email = ANY($2::text[]) RETURNING migration_id
+)
+UPDATE migration_threads t SET done = t.done + coalesce(p.n, 0), plan = '{}'
+FROM hit h LEFT JOIN pending p ON p.migration_id = h.migration_id AND p.thread_key = h.thread_key
+WHERE t.workspace_id = $1 AND t.migration_id = h.migration_id AND t.thread_key = h.thread_key
+`
+
+type ForgetMigrationAddressesParams struct {
+	WorkspaceID uuid.UUID
+	Emails      []string
+}
+
+func (q *Queries) ForgetMigrationAddresses(ctx context.Context, arg ForgetMigrationAddressesParams) error {
+	_, err := q.db.Exec(ctx, forgetMigrationAddresses, arg.WorkspaceID, arg.Emails)
+	return err
 }
 
 const getChannelMigration = `-- name: GetChannelMigration :one
