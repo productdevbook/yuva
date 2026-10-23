@@ -933,6 +933,10 @@ msgstr "本月 +{added}"
 msgid "<0>{domain}</0> is not a verified identity in the server’s Amazon SES account. Mail goes out without tenant isolation and broadcasts are blocked. Ask the server’s operator to verify the domain."
 msgstr "<0>{domain}</0> 不是伺服器 Amazon SES 帳號中已驗證的身份。郵件將在沒有租戶隔離的情況下發出,群發會被阻止。請讓伺服器維運人員驗證該域名。"
 
+#: src/features/auth/SignInForm.tsx
+msgid "<0>{email}</0> signs in through your organisation's identity provider."
+msgstr "<0>{email}</0> signs in through your organisation's identity provider."
+
 #: src/features/settings/channels/app/AppInstall.tsx
 msgid "<0>Android:</0> add the library from <1>sdk/kotlin</1> in the Yuva repository and configure it with the same two values."
 msgstr "<0>Android:</0>從 Yuva 儲存庫的 <1>sdk/kotlin</1> 新增庫,並用相同的兩個值進行設定。"
@@ -1497,6 +1501,7 @@ msgstr "活動"
 #: src/features/broadcasts/AudienceBuilder.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/migrations/MapStep.tsx
+#: src/features/settings/sso/SsoPage.tsx
 msgid "Add"
 msgstr "新增"
 
@@ -1523,6 +1528,10 @@ msgstr "新增條件"
 #: src/features/status/MonitorToken.tsx
 msgid "Add a contact point of type Webhook, paste the address above, keep the method POST and use the contact point in a notification policy. Firing alerts fail the monitor, resolved ones recover it."
 msgstr "新增一個 Webhook 類型的聯絡點，貼上上方的位址，保持 POST 方法，並在通知政策中使用該聯絡點。觸發的警示會讓監控失敗，已解決的警示會讓它恢復。"
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Add a domain"
+msgstr "Add a domain"
 
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 msgid "Add a language"
@@ -1660,6 +1669,10 @@ msgstr "新增備註"
 msgid "Add one for each product or brand you answer for. Each gets its own branding, hours, team and channels."
 msgstr "為你負責的每個產品或品牌各新增一個。每個都有自己的品牌、營業時間、團隊和頻道。"
 
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Add people on their first sign-in"
+msgstr "Add people on their first sign-in"
+
 #: src/features/settings/ProductsPage.tsx
 msgid "Add product"
 msgstr "新增產品"
@@ -1754,6 +1767,7 @@ msgid "Address or name"
 msgstr "地址或名稱"
 
 #: src/components/common/text.ts
+#: src/features/settings/sso/SsoPage.tsx
 msgid "Admin"
 msgstr "管理員"
 
@@ -1770,6 +1784,7 @@ msgid "Affects"
 msgstr "影響範圍"
 
 #: src/components/common/text.ts
+#: src/features/settings/sso/SsoPage.tsx
 msgid "Agent"
 msgstr "客服"
 
@@ -1935,6 +1950,10 @@ msgstr "已允許"
 #: src/features/settings/channels/Attachments.tsx
 msgid "Allowed file types"
 msgstr "允許的檔案類型"
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Allowed groups"
+msgstr "Allowed groups"
 
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Allowed origins"
@@ -2257,6 +2276,10 @@ msgstr "另一個狀態頁面已驗證此網域。一個名稱只能由一個頁
 #: src/features/migrations/MapStep.tsx
 msgid "Another team address"
 msgstr "另一個團隊地址"
+
+#: src/components/common/text.ts
+msgid "Another workspace on this server has already verified this domain."
+msgstr "Another workspace on this server has already verified this domain."
 
 #: src/features/docs/discussions/FromConversation.tsx
 msgid "Answer (optional)"
@@ -2784,6 +2807,10 @@ msgstr "連線之前"
 msgid "Before you send"
 msgstr "傳送前"
 
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Besides openid, email and profile. Okta needs groups for group checks."
+msgstr "Besides openid, email and profile. Okta needs groups for group checks."
+
 #: src/features/settings/labels/LabelDialog.tsx
 msgid "Billing"
 msgstr "帳單"
@@ -3039,6 +3066,7 @@ msgstr "活動名稱"
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/AddChannelDialog.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
+#: src/features/settings/sso/SsoPage.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 #: src/features/setup/NewsletterStep.tsx
 #: src/features/status/AddSubscriberDialog.tsx
@@ -3437,6 +3465,10 @@ msgstr "選擇所選區塊的圖片"
 msgid "Chosen in the Map step"
 msgstr "已在「對映」步驟中選擇"
 
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Claim your company's e-mail domain to send its people to your provider."
+msgstr "Claim your company's e-mail domain to send its people to your provider."
+
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "claude.ai and Claude Desktop"
 msgstr "claude.ai 和 Claude Desktop"
@@ -3508,11 +3540,16 @@ msgstr "未跟蹤點選"
 msgid "Clicks not tracked"
 msgstr "未追蹤點擊"
 
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Client ID"
+msgstr "Client ID"
+
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Client identifier"
 msgstr "用戶端識別符號"
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/settings/sso/SsoPage.tsx
 msgid "Client secret"
 msgstr "用戶端金鑰"
 
@@ -3780,6 +3817,10 @@ msgstr "將 {clientName} 連線到 Yuva?"
 msgid "Connect {provider}"
 msgstr "連線 {provider}"
 
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Connect a provider and verify a domain first."
+msgstr "Connect a provider and verify a domain first."
+
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "Connect a tracker"
 msgstr "Connect a tracker"
@@ -3793,6 +3834,10 @@ msgstr "連線助手"
 #: src/features/settings/SettingsColumn.tsx
 msgid "Connect an assistant such as Claude or ChatGPT"
 msgstr "連線 Claude 或 ChatGPT 等助手"
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Connect and test"
+msgstr "Connect and test"
 
 #: src/features/inbox/AssistantsPage.tsx
 msgid "Connect Claude, ChatGPT, Cursor or another MCP client to let it read conversations and draft replies for you to review."
@@ -3995,6 +4040,11 @@ msgstr "繼續遷移"
 #: src/features/migrations/DoneStep.tsx
 msgid "Continue with the newer mail"
 msgstr "從較新的郵件繼續"
+
+#: src/app/SsoRequiredDialog.tsx
+#: src/features/auth/SignInForm.tsx
+msgid "Continue with your organisation's sign-in"
+msgstr "Continue with your organisation's sign-in"
 
 #: src/features/contact/ContactsPage.tsx
 msgid "Convers."
@@ -4300,6 +4350,10 @@ msgstr "建立更新日誌"
 #: src/features/migrations/MapStep.tsx
 msgid "Create the e-mail channel"
 msgstr "建立郵件頻道"
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Create this TXT record at your DNS provider, then press Verify. It can take a while to appear."
+msgstr "Create this TXT record at your DNS provider, then press Verify. It can take a while to appear."
 
 #: src/app/UserMenu.tsx
 #: src/features/auth/CreateWorkspace.tsx
@@ -5163,6 +5217,10 @@ msgstr "郵件設計器"
 msgid "E-mail designs"
 msgstr "郵件設計"
 
+#: src/features/settings/sso/SsoPage.tsx
+msgid "E-mail domains"
+msgstr "E-mail domains"
+
 #: src/features/account/AccountPage.tsx
 msgid "E-mail me about the discussions I follow"
 msgstr "透過郵件通知我我關注的討論"
@@ -5670,6 +5728,10 @@ msgstr "外部 ID"
 #: src/features/contact/MergePreview.tsx
 msgid "External ids"
 msgstr "外部 ID"
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Extra scopes"
+msgstr "Extra scopes"
 
 #: src/components/common/Linked.tsx
 #: src/components/common/text.ts
@@ -6315,6 +6377,10 @@ msgstr "在間隔時間內,對每位聯絡人透過郵件問候新對話一次�
 #: src/features/status/ComponentDialogs.tsx
 msgid "Group"
 msgstr "群組"
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Groups claim"
+msgstr "Groups claim"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/Growth.tsx
@@ -7103,6 +7169,10 @@ msgstr "Issue address"
 msgid "Issue trackers"
 msgstr "Issue trackers"
 
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Issuer"
+msgstr "Issuer"
+
 #: src/features/feedback/IssuesCard.tsx
 #: src/features/issues/IdeaIssues.tsx
 #: src/features/issues/IssueMenu.tsx
@@ -7570,6 +7640,14 @@ msgstr "法定名稱"
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Let bots send replies?"
 msgstr "允許機器人傳送回覆嗎？"
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Let your team sign in through your company's identity provider. Their e-mail address decides which provider they use."
+msgstr "Let your team sign in through your company's identity provider. Their e-mail address decides which provider they use."
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Let your team sign in through your identity provider"
+msgstr "Let your team sign in through your identity provider"
 
 #: src/features/settings/channels/app/PushSection.tsx
 msgid "Let Yuva send the reply push to your app's users. <0>Read the guide</0>"
@@ -8633,6 +8711,7 @@ msgstr "我的個人資料"
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/ProfileForm.tsx
+#: src/features/settings/sso/SsoPage.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/setup/email/EmailLayout.tsx
 #: src/features/setup/SetupLayout.tsx
@@ -9237,6 +9316,10 @@ msgstr "還沒有討論。讀者會在你的文件頁面下發起討論。"
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "No DKIM signature passed, so broadcasts cannot be sent. Set up DKIM with your SMTP provider, or turn on Yuva DKIM below."
 msgstr "沒有透過的 DKIM 簽名,因此無法傳送群發。請在你的 SMTP 供應商處設定 DKIM,或在下面開啟 Yuva DKIM。"
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "No domain claimed"
+msgstr "No domain claimed"
 
 #: src/features/inbox/AssistantsPage.tsx
 msgid "No drafts are waiting"
@@ -10276,6 +10359,10 @@ msgstr "暫時只接收"
 msgid "Only receives"
 msgstr "僅接收"
 
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Only the exact domain is claimed, not its subdomains. Add eu.example.com on its own if people use such addresses."
+msgstr "Only the exact domain is claimed, not its subdomains. Add eu.example.com on its own if people use such addresses."
+
 #: src/components/common/text.ts
 msgid "Only the person can subscribe again, by confirming a mail."
 msgstr "只有本人可以透過確認郵件重新訂閱。"
@@ -10629,6 +10716,10 @@ msgstr "未關閉,已指派"
 #: src/features/team/TeamPage.tsx
 msgid "open, unassigned"
 msgstr "未關閉,未指派"
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "OpenID Connect"
+msgstr "OpenID Connect"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Opens"
@@ -10988,6 +11079,10 @@ msgstr "待處理的投遞也會隨之丟棄。"
 msgid "People join it on a subscribe form or are added with their consent. Broadcasts go to lists."
 msgstr "人們透過訂閱表單加入,或在獲得其同意後被新增。群發傳送到列表。"
 
+#: src/features/settings/sso/SsoPage.tsx
+msgid "People of your verified domains work in this workspace only after signing in through your provider. Owners are exempt, so a broken provider never locks you out. Sessions that exist now stop working here, so covered members have to sign in again, and their connected apps need approving again."
+msgstr "People of your verified domains work in this workspace only after signing in through your provider. Owners are exempt, so a broken provider never locks you out. Sessions that exist now stop working here, so covered members have to sign in again, and their connected apps need approving again."
+
 #: src/features/reports/ReportPages.tsx
 msgid "People rate a conversation with a thumb when it is closed. Try a longer period."
 msgstr "聯絡人會在對話關閉時用大拇指評價。試試更長的時間範圍。"
@@ -10995,6 +11090,10 @@ msgstr "聯絡人會在對話關閉時用大拇指評價。試試更長的時間
 #: src/features/feedback/FeedbackFormDialog.tsx
 msgid "People send a bug, an idea or praise, with a screenshot and the device details. It lands here."
 msgstr "使用者會傳送錯誤、想法或讚美，並附上截圖和裝置資訊。它會出現在這裡。"
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "People sign in with a code or a passkey again, and single sign-on stops being required. Your domains stay."
+msgstr "People sign in with a code or a passkey again, and single sign-on stops being required. Your domains stay."
 
 #: src/features/contact/ContactsPage.tsx
 msgid "People so far: {shownCount}"
@@ -11024,6 +11123,10 @@ msgstr "透過表單註冊的人,需要點選郵件中的連結確認後才算�
 #: src/features/contact/ContactsPage.tsx
 msgid "People who wrote to {product}"
 msgstr "寫信給 {product} 的人"
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "People with this domain stop signing in through your provider. Removing the last verified domain turns off required single sign-on."
+msgstr "People with this domain stop signing in through your provider. Removing the last verified domain turns off required single sign-on."
 
 #: src/features/setup/ChannelStep.tsx
 #: src/features/setup/SetupHub.tsx
@@ -11523,9 +11626,25 @@ msgstr "進度 · 對方會看到"
 msgid "Progress (O)"
 msgstr "進度 (O)"
 
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Protocol"
+msgstr "Protocol"
+
 #: src/features/migrations/SourceStep.tsx
 msgid "Proton Mail is reachable over IMAP only through Proton Mail Bridge on your own computer, which a server cannot reach. Export the mailbox with Proton Mail's export tool, put the folder in a .zip and upload it as an export file below."
 msgstr "Proton Mail 只能透過你自己電腦上的 Proton Mail Bridge 經由 IMAP 存取,而伺服器無法連線它。請用 Proton Mail 的匯出工具匯出信箱,把資料夾放進 .zip,並在下面作為匯出檔案上傳。"
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Provider"
+msgstr "Provider"
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Provider removed"
+msgstr "Provider removed"
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Provider saved. Its discovery document was read."
+msgstr "Provider saved. Its discovery document was read."
 
 #: src/features/broadcasts/ListForm.tsx
 #: src/features/broadcasts/ListPage.tsx
@@ -11944,6 +12063,10 @@ msgstr "重新連線 {provider}"
 msgid "Redeliver"
 msgstr "重新投遞"
 
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Redirect URI"
+msgstr "Redirect URI"
+
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Redirect URL"
 msgstr "重定向 URL"
@@ -11968,6 +12091,10 @@ msgstr "區域"
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Register an app in Microsoft Entra"
 msgstr "在 Microsoft Entra 中註冊應用程式"
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Register this address at your provider as the sign-in redirect."
+msgstr "Register this address at your provider as the sign-in redirect."
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Registration"
@@ -11995,6 +12122,7 @@ msgstr "遠端圖片可能會讓發件人知道你已開啟郵件。"
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/Passkeys.tsx
+#: src/features/settings/sso/SsoPage.tsx
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/status/MonitorHttpFields.tsx
 #: src/features/team/TeamPage.tsx
@@ -12024,6 +12152,7 @@ msgid "Remove {name}"
 msgstr "移除 {name}"
 
 #: src/features/settings/inboxes/FeedbackCategories.tsx
+#: src/features/settings/sso/SsoPage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Remove {name}?"
 msgstr "移除 {name}？"
@@ -12089,6 +12218,10 @@ msgstr "移除 FCM 服務帳戶？"
 msgid "Remove the message or note you clicked on"
 msgstr "移除你點選的訊息或備註"
 
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Remove the provider?"
+msgstr "Remove the provider?"
+
 #: src/features/settings/channels/sections.tsx
 msgid "Remove this channel?"
 msgstr "移除此頻道?"
@@ -12124,6 +12257,10 @@ msgstr "在 Microsoft 中移除 Yuva 的存取許可權"
 #: src/features/conversation/ChatView.tsx
 msgid "Removed"
 msgstr "已移除"
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Removed {name}"
+msgstr "Removed {name}"
 
 #: src/features/settings/audit/sentence.ts
 msgid "Removed {person} from the workspace"
@@ -12181,6 +12318,7 @@ msgstr "重新開啟"
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
+#: src/features/settings/sso/SsoPage.tsx
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Replace"
 msgstr "替換"
@@ -12405,6 +12543,10 @@ msgstr "報告"
 msgid "Reputation impact"
 msgstr "信譽影響"
 
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Require single sign-on"
+msgstr "Require single sign-on"
+
 #: src/features/team/TeamPage.tsx
 msgid "Resend"
 msgstr "重新傳送"
@@ -12616,6 +12758,10 @@ msgstr "角色"
 msgid "Role addresses such as postmaster@ or noreply@"
 msgstr "角色地址,如 postmaster@ 或 noreply@"
 
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Role for new people"
+msgstr "Role for new people"
+
 #: src/features/team/TeamPage.tsx
 msgid "Role of {name}"
 msgstr "{name} 的角色"
@@ -12737,6 +12883,10 @@ msgstr "星期六"
 #: src/features/status/MonitorDialog.tsx
 msgid "Save"
 msgstr "儲存"
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Save and test"
+msgstr "Save and test"
 
 #: src/features/status/IncidentDialog.tsx
 msgid "Save as draft"
@@ -12988,6 +13138,10 @@ msgstr "秒,1 到 30。"
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Secret"
 msgstr "金鑰"
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Secret set"
+msgstr "Secret set"
 
 #: src/app/Rail.tsx
 #: src/app/Sidebar.tsx
@@ -13395,6 +13549,10 @@ msgstr "今日已傳送:{sent} 封。沒有每日上限。"
 msgid "Sent: {0}"
 msgstr "已傳送:{0}"
 
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Separate with commas. Leave empty to let everyone in your domains sign in."
+msgstr "Separate with commas. Leave empty to let everyone in your domains sign in."
+
 #: src/features/migrations/ConnectStep.tsx
 msgid "Server"
 msgstr "伺服器"
@@ -13756,6 +13914,10 @@ msgstr "重新登入 {address}"
 msgid "Sign in as a user who sees every mailbox you want to move."
 msgstr "以能看到所有要遷移的信箱的使用者身份登入。"
 
+#: src/components/common/text.ts
+msgid "Sign in as yourself to change this. API keys cannot."
+msgstr "Sign in as yourself to change this. API keys cannot."
+
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Sign in from the client. It finds everything from the URL: OAuth 2.1 with PKCE, registering itself automatically or with a Client ID Metadata Document."
 msgstr "從用戶端登入。它會根據 URL 找到所需的一切:帶 PKCE 的 OAuth 2.1,自動註冊,或使用 Client ID Metadata Document。"
@@ -13767,6 +13929,10 @@ msgstr "登入或建立帳號"
 #: src/features/account/AccountPage.tsx
 msgid "Sign in or create an account with your e-mail address to follow the discussions you write in on documentation sites. We e-mail you a one-time code; no password."
 msgstr "用你的電子郵件地址登入或建立帳號,即可關注你在文件站點上參與的討論。我們會透過郵件傳送一次性驗證碼;無需密碼。"
+
+#: src/app/SsoRequiredDialog.tsx
+msgid "Sign in through your organisation"
+msgstr "Sign in through your organisation"
 
 #: src/features/migrations/text.ts
 msgid "Sign in to Freshdesk as an admin, open your profile picture at the top right and choose Profile settings."
@@ -13813,6 +13979,10 @@ msgstr "使用信箱的使用者名稱和密碼登入。"
 msgid "Sign in with your device's fingerprint, face or screen lock instead of a code."
 msgstr "用裝置的指紋、面容或螢幕鎖定代替驗證碼登入。"
 
+#: src/features/auth/SignInForm.tsx
+msgid "Sign in with your organisation"
+msgstr "Sign in with your organisation"
+
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Sign in with Zendesk"
 msgstr "使用 Zendesk 登入"
@@ -13832,6 +14002,10 @@ msgstr "退出登入"
 #: src/features/account/AccountPage.tsx
 msgid "Sign-in address"
 msgstr "登入地址"
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Sign-in rules"
+msgstr "Sign-in rules"
 
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/setup/NewsletterStep.tsx
@@ -13879,6 +14053,10 @@ msgstr "僅限已登入使用者"
 msgid "Signing"
 msgstr "簽名"
 
+#: src/features/auth/ssoError.ts
+msgid "Signing in through your organisation did not work. Try again, or use an e-mailed code."
+msgstr "Signing in through your organisation did not work. Try again, or use an e-mailed code."
+
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Signing secret"
@@ -13900,6 +14078,16 @@ msgstr "自…"
 #: src/features/broadcasts/ListsHome.tsx
 msgid "Single opt-in"
 msgstr "單次確認訂閱"
+
+#: src/app/Palette.tsx
+#: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Single sign-on"
+msgstr "Single sign-on"
+
+#: src/components/common/text.ts
+msgid "Single sign-on is required only once a provider is connected and a domain is verified."
+msgstr "Single sign-on is required only once a provider is connected and a domain is verified."
 
 #: src/features/docs/Toolbar.tsx
 #: src/features/inbox/SourceFilter.tsx
@@ -14026,6 +14214,10 @@ msgstr "某人"
 #: src/features/settings/notifications/events.ts
 msgid "Someone mentions me in a note"
 msgstr "有人在備註中提及我時"
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Someone of your domains who signs in through the provider and is not a member joins with the role below."
+msgstr "Someone of your domains who signs in through the provider and is not a member joins with the role below."
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Someone on several lists gets one mail, under the first list they are on in this order."
@@ -14272,6 +14464,10 @@ msgstr "儲存"
 #: src/features/migrations/TokenConnectStep.tsx
 msgid "Stored encrypted and never shown again, not even to you."
 msgstr "已加密儲存,且不會再次顯示,連你也看不到。"
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Stored encrypted and never shown again."
+msgstr "Stored encrypted and never shown again."
 
 #: src/features/contact/MergePreview.tsx
 msgid "Struck-out values are not taken: this contact keeps its own value for those keys."
@@ -14882,6 +15078,14 @@ msgstr "正在設定主機名稱。找到記錄後需要一點時間。"
 msgid "The HTTPS address you open it at, such as https://help.example.com."
 msgstr "你開啟它所用的 HTTPS 位址,例如 https://help.example.com。"
 
+#: src/features/settings/sso/SsoPage.tsx
+msgid "The ID token claim that lists a person's groups."
+msgstr "The ID token claim that lists a person's groups."
+
+#: src/features/auth/ssoError.ts
+msgid "The identity provider's answer could not be verified. Try again, and tell your administrator if it keeps happening."
+msgstr "The identity provider's answer could not be verified. Try again, and tell your administrator if it keeps happening."
+
 #: src/features/broadcasts/Import.tsx
 msgid "The import failed, and nothing was added from the file."
 msgstr "匯入失敗,檔案中沒有新增任何內容。"
@@ -15195,6 +15399,10 @@ msgstr "產品之後無法變更。"
 msgid "The provider asked to slow down"
 msgstr "供應商要求放慢速度"
 
+#: src/features/settings/sso/SsoPage.tsx
+msgid "The provider's address, exactly as its discovery document names it. Yuva reads it on save."
+msgstr "The provider's address, exactly as its discovery document names it. Yuva reads it on save."
+
 #: src/features/migrations/SwitchStep.tsx
 msgid "The quiet period is over; the migration finishes at the next sync."
 msgstr "靜默期已結束;遷移會在下次同步時完成。"
@@ -15337,6 +15545,10 @@ msgstr "登入在另一個瀏覽器中返回了"
 #: src/features/migrations/text.ts
 msgid "The sign-in expired"
 msgstr "登入已過期"
+
+#: src/features/auth/ssoError.ts
+msgid "The sign-in took too long or was already used. Start again."
+msgstr "The sign-in took too long or was already used. Start again."
 
 #: src/features/migrations/text.ts
 msgid "The sign-in was declined"
@@ -15661,6 +15873,10 @@ msgid "This discussion no longer exists or you cannot see it."
 msgstr "此討論已不存在,或你無權檢視。"
 
 #: src/components/common/text.ts
+msgid "This domain is already in the list."
+msgstr "This domain is already in the list."
+
+#: src/components/common/text.ts
 msgid "This e-mail address bounced or complained, so the reply was not sent. Clear it on the contact to send again."
 msgstr "此電子郵件地址已退回或投訴,因此回覆未傳送。請在聯絡人上清除後再傳送。"
 
@@ -15902,6 +16118,10 @@ msgid "This workspace has as many broadcasts as allowed. Delete old ones first."
 msgstr "此工作區的群發數量已達允許上限。請先刪除舊的。"
 
 #: src/components/common/text.ts
+msgid "This workspace has as many domains as allowed."
+msgstr "This workspace has as many domains as allowed."
+
+#: src/components/common/text.ts
 msgid "This workspace has as many own domains as the server allows. Remove one first."
 msgstr "此工作區的自有網域數量已達伺服器允許的上限。請先移除一個。"
 
@@ -15916,6 +16136,10 @@ msgstr "此工作區暫時不能傳送群發。正在執行的群發已暫停。
 #: src/components/common/text.ts
 msgid "This workspace may send broadcasts once the server's operator approves it. Ask for approval in the workspace settings."
 msgstr "伺服器維運人員批准後,此工作區即可傳送群發。請在工作區設定中申請批准。"
+
+#: src/app/SsoRequiredDialog.tsx
+msgid "This workspace requires single sign-on. Continue with your organisation's sign-in as {email} to keep working here."
+msgstr "This workspace requires single sign-on. Continue with your organisation's sign-in as {email} to keep working here."
 
 #: src/components/common/text.ts
 msgid "This workspace sent as many tests as allowed this hour. Try again later."
@@ -16539,6 +16763,10 @@ msgstr "請使用 1 到 8760 小時。"
 msgid "Use 3 to 48 letters, numbers and inner hyphens."
 msgstr "使用 3 到 48 個字母、數字和中間的連字號。"
 
+#: src/features/auth/SignInForm.tsx
+msgid "Use a code instead"
+msgstr "Use a code instead"
+
 #: src/features/status/SettingsTab.tsx
 msgid "Use a colour like #2563eb."
 msgstr "使用類似 #2563eb 的顏色。"
@@ -16684,6 +16912,7 @@ msgstr "值"
 
 #: src/features/settings/channels/email/Deliverability.tsx
 #: src/features/settings/OwnDomainCard.tsx
+#: src/features/settings/sso/SsoPage.tsx
 msgid "Value"
 msgstr "值"
 
@@ -16704,8 +16933,13 @@ msgid "Values of condition {n}, separated by commas"
 msgstr "條件 {n} 的值,用逗號分隔"
 
 #: src/features/settings/OwnDomainCard.tsx
+#: src/features/settings/sso/SsoPage.tsx
 msgid "Verified"
 msgstr "已驗證"
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Verify"
+msgstr "Verify"
 
 #: src/features/settings/webhooks/SignatureHint.tsx
 msgid "Verify every request before trusting it: the <0>webhook-signature</0> header follows the <1>Standard Webhooks</1> specification, so any of its libraries can check it with the endpoint's secret. Go backends can use the <2>sdk/go/webhook</2> package of the Yuva repository."
@@ -16879,6 +17113,10 @@ msgstr "等待維運人員"
 #: src/features/migrations/parts.tsx
 msgid "Waiting for the provider's limit; continues at {time}."
 msgstr "正在等待供應商的限制;將在 {time} 繼續。"
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Waiting for the record"
+msgstr "Waiting for the record"
 
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Waiting for the two DNS records below. Add them where you manage the domain; DNS changes can take a while to spread. Yuva looks every 10 minutes, and the claim ends if they are not found within 7 days."
@@ -17496,6 +17734,10 @@ msgstr "你已離開。線上聊天顯示無人線上,通知暫停。"
 msgid "You are not a member of any workspace, so there is nothing to connect."
 msgstr "你不屬於任何工作區,因此沒有可連線的內容。"
 
+#: src/features/auth/ssoError.ts
+msgid "You are not a member of this workspace yet. Ask an owner to invite you."
+msgstr "You are not a member of this workspace yet. Ask an owner to invite you."
+
 #: src/components/common/text.ts
 msgid "You are not allowed to do this."
 msgstr "你無權執行此操作。"
@@ -17620,6 +17862,10 @@ msgstr "在傳送之前，你的存取權限已結束。"
 msgid "Your account"
 msgstr "你的帳號"
 
+#: src/features/auth/ssoError.ts
+msgid "Your account is not in a group that may use Yuva. Ask your administrator to add you."
+msgstr "Your account is not in a group that may use Yuva. Ask your administrator to add you."
+
 #: src/features/migrations/text.ts
 msgid "Your admin allowed Yuva"
 msgstr "你的管理員已允許 Yuva"
@@ -17652,6 +17898,10 @@ msgstr "你的域名透過 Cloudflare Email Routing 轉發郵件,因此這裡沒
 msgid "Your draft is still here; send it as well or clear it."
 msgstr "你的草稿還在這裡;可以一併傳送,或將其清除。"
 
+#: src/features/auth/ssoError.ts
+msgid "Your e-mail address is not in a domain this organisation has claimed in Yuva. Sign in with the address of your organisation."
+msgstr "Your e-mail address is not in a domain this organisation has claimed in Yuva. Sign in with the address of your organisation."
+
 #: src/features/setup/WaitStep.tsx
 msgid "Your first conversation is here"
 msgstr "你的第一個對話在這裡"
@@ -17663,6 +17913,10 @@ msgstr "你的資料夾"
 #: src/features/migrations/MapStep.tsx
 msgid "Your folders and labels become Yuva labels on the conversations they hold."
 msgstr "你的資料夾和標籤會變成其中對話上的 Yuva 標籤。"
+
+#: src/features/auth/ssoError.ts
+msgid "Your identity provider has not verified your e-mail address, so Yuva cannot trust it. Ask your administrator to verify it there."
+msgstr "Your identity provider has not verified your e-mail address, so Yuva cannot trust it. Ask your administrator to verify it there."
 
 #: src/features/status/MonitorDialog.tsx
 msgid "Your job calls Yuva on a schedule. A missing call fails the monitor."
@@ -17689,6 +17943,18 @@ msgstr "你的 Microsoft 365 組織只允許管理員同意應用程式。請把
 #: src/features/broadcasts/Composer.tsx
 msgid "Your name"
 msgstr "你的姓名"
+
+#: src/features/auth/SignInForm.tsx
+msgid "Your organisation requires this sign-in for its workspace."
+msgstr "Your organisation requires this sign-in for its workspace."
+
+#: src/components/common/text.ts
+msgid "Your organisation's identity provider could not be reached. Try again in a moment."
+msgstr "Your organisation's identity provider could not be reached. Try again in a moment."
+
+#: src/features/auth/ssoError.ts
+msgid "Your organisation's sign-in was cancelled or refused. Try again, or ask your administrator whether you may use Yuva."
+msgstr "Your organisation's sign-in was cancelled or refused. Try again, or ask your administrator whether you may use Yuva."
 
 #: src/features/migrations/text.ts
 msgid "Your organization blocked the sign-in"
@@ -17778,6 +18044,15 @@ msgstr "Yuva 現在可以讀取該帳號了。接下來選擇要匯入的內容�
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "Yuva checks the token with the tracker, stores it encrypted and never shows it again. It needs to read and write issues."
 msgstr "Yuva checks the token with the tracker, stores it encrypted and never shows it again. It needs to read and write issues."
+
+#. placeholder {0}: err.detail
+#: src/components/common/text.ts
+msgid "Yuva could not read the provider's discovery document: {0}"
+msgstr "Yuva could not read the provider's discovery document: {0}"
+
+#: src/components/common/text.ts
+msgid "Yuva could not read the provider's discovery document. Check the issuer URL."
+msgstr "Yuva could not read the provider's discovery document. Check the issuer URL."
 
 #: src/features/broadcasts/Overview.tsx
 msgid "Yuva counts clicks and replies. It does not track opens."

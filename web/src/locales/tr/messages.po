@@ -933,6 +933,10 @@ msgstr "Bu ay +{added}"
 msgid "<0>{domain}</0> is not a verified identity in the server’s Amazon SES account. Mail goes out without tenant isolation and broadcasts are blocked. Ask the server’s operator to verify the domain."
 msgstr "<0>{domain}</0>, sunucunun Amazon SES hesabında doğrulanmış bir kimlik değil. E-postalar kiracı yalıtımı olmadan gider ve bültenler engellenir. Sunucu operatöründen alan adını doğrulamasını isteyin."
 
+#: src/features/auth/SignInForm.tsx
+msgid "<0>{email}</0> signs in through your organisation's identity provider."
+msgstr "<0>{email}</0> kuruluşunuzun kimlik sağlayıcısı üzerinden giriş yapar."
+
 #: src/features/settings/channels/app/AppInstall.tsx
 msgid "<0>Android:</0> add the library from <1>sdk/kotlin</1> in the Yuva repository and configure it with the same two values."
 msgstr "<0>Android:</0> Yuva deposundaki <1>sdk/kotlin</1> kütüphanesini ekleyin ve aynı iki değerle yapılandırın."
@@ -1497,6 +1501,7 @@ msgstr "Etkinlik"
 #: src/features/broadcasts/AudienceBuilder.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/migrations/MapStep.tsx
+#: src/features/settings/sso/SsoPage.tsx
 msgid "Add"
 msgstr "Ekle"
 
@@ -1523,6 +1528,10 @@ msgstr "Koşul ekle"
 #: src/features/status/MonitorToken.tsx
 msgid "Add a contact point of type Webhook, paste the address above, keep the method POST and use the contact point in a notification policy. Firing alerts fail the monitor, resolved ones recover it."
 msgstr "Webhook türünde bir iletişim noktası ekleyin, yukarıdaki adresi yapıştırın, yöntemi POST olarak bırakın ve iletişim noktasını bir bildirim politikasında kullanın. Tetiklenen uyarılar monitörü düşürür, çözülenler düzeltir."
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Add a domain"
+msgstr "Alan adı ekle"
 
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 msgid "Add a language"
@@ -1660,6 +1669,10 @@ msgstr "Not ekle"
 msgid "Add one for each product or brand you answer for. Each gets its own branding, hours, team and channels."
 msgstr "Yanıtladığınız her ürün veya marka için bir tane ekleyin. Her birinin kendi markası, çalışma saatleri, ekibi ve kanalları olur."
 
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Add people on their first sign-in"
+msgstr "İlk girişte kişileri ekle"
+
 #: src/features/settings/ProductsPage.tsx
 msgid "Add product"
 msgstr "Ürün ekle"
@@ -1754,6 +1767,7 @@ msgid "Address or name"
 msgstr "Adres ya da ad"
 
 #: src/components/common/text.ts
+#: src/features/settings/sso/SsoPage.tsx
 msgid "Admin"
 msgstr "Yönetici"
 
@@ -1770,6 +1784,7 @@ msgid "Affects"
 msgstr "Etkilenen"
 
 #: src/components/common/text.ts
+#: src/features/settings/sso/SsoPage.tsx
 msgid "Agent"
 msgstr "Temsilci"
 
@@ -1935,6 +1950,10 @@ msgstr "İzinli"
 #: src/features/settings/channels/Attachments.tsx
 msgid "Allowed file types"
 msgstr "İzin verilen dosya türleri"
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Allowed groups"
+msgstr "İzin verilen gruplar"
 
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Allowed origins"
@@ -2257,6 +2276,10 @@ msgstr "Bu alan adını başka bir durum sayfası zaten doğruladı. Bir adı ya
 #: src/features/migrations/MapStep.tsx
 msgid "Another team address"
 msgstr "Başka bir ekip adresi"
+
+#: src/components/common/text.ts
+msgid "Another workspace on this server has already verified this domain."
+msgstr "Bu sunucudaki başka bir çalışma alanı bu alan adını zaten doğruladı."
 
 #: src/features/docs/discussions/FromConversation.tsx
 msgid "Answer (optional)"
@@ -2784,6 +2807,10 @@ msgstr "Bağlanmadan önce"
 msgid "Before you send"
 msgstr "Göndermeden önce"
 
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Besides openid, email and profile. Okta needs groups for group checks."
+msgstr "openid, email ve profile dışında. Okta, grup denetimleri için groups ister."
+
 #: src/features/settings/labels/LabelDialog.tsx
 msgid "Billing"
 msgstr "Faturalama"
@@ -3039,6 +3066,7 @@ msgstr "Kampanya adı"
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/AddChannelDialog.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
+#: src/features/settings/sso/SsoPage.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 #: src/features/setup/NewsletterStep.tsx
 #: src/features/status/AddSubscriberDialog.tsx
@@ -3437,6 +3465,10 @@ msgstr "Seçili bloğun görselini seç"
 msgid "Chosen in the Map step"
 msgstr "Eşleştir adımında seçilir"
 
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Claim your company's e-mail domain to send its people to your provider."
+msgstr "Şirketinizin e-posta alan adını sahiplenin; çalışanlar sağlayıcınıza yönlendirilsin."
+
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "claude.ai and Claude Desktop"
 msgstr "claude.ai ve Claude Desktop"
@@ -3508,11 +3540,16 @@ msgstr "tıklamalar sayılmadı"
 msgid "Clicks not tracked"
 msgstr "Tıklamalar izlenmiyor"
 
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Client ID"
+msgstr "İstemci kimliği"
+
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Client identifier"
 msgstr "İstemci kimliği"
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/settings/sso/SsoPage.tsx
 msgid "Client secret"
 msgstr "İstemci gizli anahtarı"
 
@@ -3780,6 +3817,10 @@ msgstr "{clientName} Yuva'ya bağlansın mı?"
 msgid "Connect {provider}"
 msgstr "{provider} hesabını bağlayın"
 
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Connect a provider and verify a domain first."
+msgstr "Önce bir sağlayıcı bağlayın ve bir alan adını doğrulayın."
+
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "Connect a tracker"
 msgstr "Takip aracı bağla"
@@ -3793,6 +3834,10 @@ msgstr "Asistan bağlayın"
 #: src/features/settings/SettingsColumn.tsx
 msgid "Connect an assistant such as Claude or ChatGPT"
 msgstr "Claude ya da ChatGPT gibi bir asistan bağlayın"
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Connect and test"
+msgstr "Bağla ve dene"
 
 #: src/features/inbox/AssistantsPage.tsx
 msgid "Connect Claude, ChatGPT, Cursor or another MCP client to let it read conversations and draft replies for you to review."
@@ -3995,6 +4040,11 @@ msgstr "Taşımaya devam et"
 #: src/features/migrations/DoneStep.tsx
 msgid "Continue with the newer mail"
 msgstr "Yeni e-postalarla devam edin"
+
+#: src/app/SsoRequiredDialog.tsx
+#: src/features/auth/SignInForm.tsx
+msgid "Continue with your organisation's sign-in"
+msgstr "Kuruluşunuzun girişiyle devam edin"
 
 #: src/features/contact/ContactsPage.tsx
 msgid "Convers."
@@ -4300,6 +4350,10 @@ msgstr "Değişiklik günlüğünü oluştur"
 #: src/features/migrations/MapStep.tsx
 msgid "Create the e-mail channel"
 msgstr "E-posta kanalını oluştur"
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Create this TXT record at your DNS provider, then press Verify. It can take a while to appear."
+msgstr "Bu TXT kaydını DNS sağlayıcınızda oluşturun, sonra Doğrula'ya basın. Görünmesi biraz sürebilir."
 
 #: src/app/UserMenu.tsx
 #: src/features/auth/CreateWorkspace.tsx
@@ -5163,6 +5217,10 @@ msgstr "E-posta tasarımcısı"
 msgid "E-mail designs"
 msgstr "E-posta tasarımları"
 
+#: src/features/settings/sso/SsoPage.tsx
+msgid "E-mail domains"
+msgstr "E-posta alan adları"
+
 #: src/features/account/AccountPage.tsx
 msgid "E-mail me about the discussions I follow"
 msgstr "Takip ettiğim tartışmalar hakkında bana e-posta gönder"
@@ -5670,6 +5728,10 @@ msgstr "Dış kimlik"
 #: src/features/contact/MergePreview.tsx
 msgid "External ids"
 msgstr "Harici kimlikler"
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Extra scopes"
+msgstr "Ek kapsamlar"
 
 #: src/components/common/Linked.tsx
 #: src/components/common/text.ts
@@ -6315,6 +6377,10 @@ msgstr "Yeni konuşmaları e-postayla karşılar; bu süre içinde her kişiye b
 #: src/features/status/ComponentDialogs.tsx
 msgid "Group"
 msgstr "Grup"
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Groups claim"
+msgstr "Grup talebi"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/Growth.tsx
@@ -7103,6 +7169,10 @@ msgstr "Issue adresi"
 msgid "Issue trackers"
 msgstr "Issue takip araçları"
 
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Issuer"
+msgstr "Veren (issuer)"
+
 #: src/features/feedback/IssuesCard.tsx
 #: src/features/issues/IdeaIssues.tsx
 #: src/features/issues/IssueMenu.tsx
@@ -7570,6 +7640,14 @@ msgstr "Yasal unvan"
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Let bots send replies?"
 msgstr "Botlar yanıt göndersin mi?"
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Let your team sign in through your company's identity provider. Their e-mail address decides which provider they use."
+msgstr "Ekibiniz şirketinizin kimlik sağlayıcısı üzerinden giriş yapsın. Hangi sağlayıcıyı kullanacakları e-posta adreslerine göre belirlenir."
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Let your team sign in through your identity provider"
+msgstr "Ekibiniz kimlik sağlayıcınızla giriş yapsın"
 
 #: src/features/settings/channels/app/PushSection.tsx
 msgid "Let Yuva send the reply push to your app's users. <0>Read the guide</0>"
@@ -8633,6 +8711,7 @@ msgstr "Profilim"
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/ProfileForm.tsx
+#: src/features/settings/sso/SsoPage.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/setup/email/EmailLayout.tsx
 #: src/features/setup/SetupLayout.tsx
@@ -9237,6 +9316,10 @@ msgstr "Henüz tartışma yok. Okuyucular tartışmaları dokümantasyon sayfala
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "No DKIM signature passed, so broadcasts cannot be sent. Set up DKIM with your SMTP provider, or turn on Yuva DKIM below."
 msgstr "Hiçbir DKIM imzası geçmedi, bu yüzden bülten gönderilemez. SMTP sağlayıcınızda DKIM kurun ya da aşağıdan Yuva DKIM'i açın."
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "No domain claimed"
+msgstr "Sahiplenilen alan adı yok"
 
 #: src/features/inbox/AssistantsPage.tsx
 msgid "No drafts are waiting"
@@ -10276,6 +10359,10 @@ msgstr "Şimdilik yalnızca al"
 msgid "Only receives"
 msgstr "Yalnızca alır"
 
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Only the exact domain is claimed, not its subdomains. Add eu.example.com on its own if people use such addresses."
+msgstr "Yalnızca tam alan adı sahiplenilir, alt alan adları değil. Kişiler eu.example.com gibi adresler kullanıyorsa onu ayrıca ekleyin."
+
 #: src/components/common/text.ts
 msgid "Only the person can subscribe again, by confirming a mail."
 msgstr "Yalnızca kişinin kendisi, bir e-postayı onaylayarak yeniden abone olabilir."
@@ -10629,6 +10716,10 @@ msgstr "açık, atanmış"
 #: src/features/team/TeamPage.tsx
 msgid "open, unassigned"
 msgstr "açık, atanmamış"
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "OpenID Connect"
+msgstr "OpenID Connect"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Opens"
@@ -10988,6 +11079,10 @@ msgstr "Bekleyen gönderimler de onunla birlikte silinir."
 msgid "People join it on a subscribe form or are added with their consent. Broadcasts go to lists."
 msgstr "Kişiler listeye abonelik formundan katılır ya da izinleriyle eklenir. Bültenler listelere gider."
 
+#: src/features/settings/sso/SsoPage.tsx
+msgid "People of your verified domains work in this workspace only after signing in through your provider. Owners are exempt, so a broken provider never locks you out. Sessions that exist now stop working here, so covered members have to sign in again, and their connected apps need approving again."
+msgstr "Doğrulanmış alan adlarınızdaki kişiler bu çalışma alanında yalnızca sağlayıcınız üzerinden giriş yaptıktan sonra çalışabilir. Sahipler muaftır; bozuk bir sağlayıcı sizi asla dışarıda bırakmaz. Şu an açık oturumlar burada çalışmaz; kapsanan üyelerin yeniden giriş yapması ve bağlı uygulamalarını yeniden onaylaması gerekir."
+
 #: src/features/reports/ReportPages.tsx
 msgid "People rate a conversation with a thumb when it is closed. Try a longer period."
 msgstr "İnsanlar bir görüşmeyi kapandığında başparmakla değerlendirir. Daha uzun bir dönem deneyin."
@@ -10995,6 +11090,10 @@ msgstr "İnsanlar bir görüşmeyi kapandığında başparmakla değerlendirir. 
 #: src/features/feedback/FeedbackFormDialog.tsx
 msgid "People send a bug, an idea or praise, with a screenshot and the device details. It lands here."
 msgstr "Kişiler ekran görüntüsü ve cihaz bilgileriyle bir hata, fikir ya da övgü gönderir. Buraya düşer."
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "People sign in with a code or a passkey again, and single sign-on stops being required. Your domains stay."
+msgstr "Kişiler yine kod veya geçiş anahtarıyla giriş yapar ve tek oturum açma zorunlu olmaktan çıkar. Alan adlarınız kalır."
 
 #: src/features/contact/ContactsPage.tsx
 msgid "People so far: {shownCount}"
@@ -11024,6 +11123,10 @@ msgstr "Formdan kaydolan kişiler, abone olmadan önce bir e-postadaki bağlant�
 #: src/features/contact/ContactsPage.tsx
 msgid "People who wrote to {product}"
 msgstr "{product} ürününe yazan kişiler"
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "People with this domain stop signing in through your provider. Removing the last verified domain turns off required single sign-on."
+msgstr "Bu alan adındaki kişiler artık sağlayıcınız üzerinden giriş yapamaz. Son doğrulanmış alan adını kaldırmak zorunlu tek oturum açmayı kapatır."
 
 #: src/features/setup/ChannelStep.tsx
 #: src/features/setup/SetupHub.tsx
@@ -11523,9 +11626,25 @@ msgstr "İlerleme · kişi bunu görür"
 msgid "Progress (O)"
 msgstr "İlerleme (O)"
 
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Protocol"
+msgstr "Protokol"
+
 #: src/features/migrations/SourceStep.tsx
 msgid "Proton Mail is reachable over IMAP only through Proton Mail Bridge on your own computer, which a server cannot reach. Export the mailbox with Proton Mail's export tool, put the folder in a .zip and upload it as an export file below."
 msgstr "Proton Mail'e IMAP ile yalnızca kendi bilgisayarınızdaki Proton Mail Bridge üzerinden ulaşılır; bir sunucu oraya erişemez. Posta kutusunu Proton Mail'in dışa aktarma aracıyla dışa aktarın, klasörü .zip yapın ve aşağıda dışa aktarım dosyası olarak yükleyin."
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Provider"
+msgstr "Sağlayıcı"
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Provider removed"
+msgstr "Sağlayıcı kaldırıldı"
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Provider saved. Its discovery document was read."
+msgstr "Sağlayıcı kaydedildi. Keşif belgesi okundu."
 
 #: src/features/broadcasts/ListForm.tsx
 #: src/features/broadcasts/ListPage.tsx
@@ -11944,6 +12063,10 @@ msgstr "{provider} hesabını yeniden bağlayın"
 msgid "Redeliver"
 msgstr "Yeniden gönder"
 
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Redirect URI"
+msgstr "Yönlendirme URI'si"
+
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Redirect URL"
 msgstr "Yönlendirme URL'si"
@@ -11968,6 +12091,10 @@ msgstr "Bölge"
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Register an app in Microsoft Entra"
 msgstr "Microsoft Entra'da bir uygulama kaydedin"
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Register this address at your provider as the sign-in redirect."
+msgstr "Bu adresi sağlayıcınızda giriş yönlendirmesi olarak kaydedin."
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Registration"
@@ -11995,6 +12122,7 @@ msgstr "Uzak görseller, postayı açtığınızı gönderene bildirebilir."
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/Passkeys.tsx
+#: src/features/settings/sso/SsoPage.tsx
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/status/MonitorHttpFields.tsx
 #: src/features/team/TeamPage.tsx
@@ -12024,6 +12152,7 @@ msgid "Remove {name}"
 msgstr "{name} adlı üyeyi çıkar"
 
 #: src/features/settings/inboxes/FeedbackCategories.tsx
+#: src/features/settings/sso/SsoPage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Remove {name}?"
 msgstr "{name} kaldırılsın mı?"
@@ -12089,6 +12218,10 @@ msgstr "FCM hizmet hesabı kaldırılsın mı?"
 msgid "Remove the message or note you clicked on"
 msgstr "Tıkladığınız iletiyi veya notu kaldır"
 
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Remove the provider?"
+msgstr "Sağlayıcı kaldırılsın mı?"
+
 #: src/features/settings/channels/sections.tsx
 msgid "Remove this channel?"
 msgstr "Bu kanal kaldırılsın mı?"
@@ -12124,6 +12257,10 @@ msgstr "Yuva'nın Microsoft'taki erişimini kaldırın"
 #: src/features/conversation/ChatView.tsx
 msgid "Removed"
 msgstr "Kaldırıldı"
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Removed {name}"
+msgstr "{name} kaldırıldı"
 
 #: src/features/settings/audit/sentence.ts
 msgid "Removed {person} from the workspace"
@@ -12181,6 +12318,7 @@ msgstr "Yeniden aç"
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
+#: src/features/settings/sso/SsoPage.tsx
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Replace"
 msgstr "Değiştir"
@@ -12405,6 +12543,10 @@ msgstr "Raporlar"
 msgid "Reputation impact"
 msgstr "İtibar etkisi"
 
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Require single sign-on"
+msgstr "Tek oturum açmayı zorunlu kıl"
+
 #: src/features/team/TeamPage.tsx
 msgid "Resend"
 msgstr "Yeniden gönder"
@@ -12616,6 +12758,10 @@ msgstr "Rol"
 msgid "Role addresses such as postmaster@ or noreply@"
 msgstr "postmaster@ ya da noreply@ gibi rol adresleri"
 
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Role for new people"
+msgstr "Yeni kişiler için rol"
+
 #: src/features/team/TeamPage.tsx
 msgid "Role of {name}"
 msgstr "{name} adlı üyenin rolü"
@@ -12737,6 +12883,10 @@ msgstr "Cumartesi"
 #: src/features/status/MonitorDialog.tsx
 msgid "Save"
 msgstr "Kaydet"
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Save and test"
+msgstr "Kaydet ve dene"
 
 #: src/features/status/IncidentDialog.tsx
 msgid "Save as draft"
@@ -12988,6 +13138,10 @@ msgstr "Saniye, 1 ile 30 arası."
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Secret"
 msgstr "Gizli anahtar"
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Secret set"
+msgstr "Gizli anahtar ayarlı"
 
 #: src/app/Rail.tsx
 #: src/app/Sidebar.tsx
@@ -13395,6 +13549,10 @@ msgstr "Bugün gönderilen: {sent}. Günlük sınır yok."
 msgid "Sent: {0}"
 msgstr "Gönderilen: {0}"
 
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Separate with commas. Leave empty to let everyone in your domains sign in."
+msgstr "Virgülle ayırın. Alan adlarınızdaki herkesin girebilmesi için boş bırakın."
+
 #: src/features/migrations/ConnectStep.tsx
 msgid "Server"
 msgstr "Sunucu"
@@ -13756,6 +13914,10 @@ msgstr "{address} için yeniden oturum açın"
 msgid "Sign in as a user who sees every mailbox you want to move."
 msgstr "Taşımak istediğiniz her posta kutusunu gören bir kullanıcıyla oturum açın."
 
+#: src/components/common/text.ts
+msgid "Sign in as yourself to change this. API keys cannot."
+msgstr "Bunu değiştirmek için kendi hesabınızla giriş yapın. API anahtarları değiştiremez."
+
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Sign in from the client. It finds everything from the URL: OAuth 2.1 with PKCE, registering itself automatically or with a Client ID Metadata Document."
 msgstr "İstemciden oturum açın. İstemci her şeyi adresten bulur: PKCE ile OAuth 2.1; kendini otomatik olarak ya da bir Client ID Metadata Document ile kaydeder."
@@ -13767,6 +13929,10 @@ msgstr "Giriş yapın ya da hesap oluşturun"
 #: src/features/account/AccountPage.tsx
 msgid "Sign in or create an account with your e-mail address to follow the discussions you write in on documentation sites. We e-mail you a one-time code; no password."
 msgstr "Dokümantasyon sitelerinde yazdığınız tartışmaları takip etmek için e-posta adresinizle oturum açın ya da hesap oluşturun. Size tek kullanımlık bir kod gönderiyoruz; parola yok."
+
+#: src/app/SsoRequiredDialog.tsx
+msgid "Sign in through your organisation"
+msgstr "Kuruluşunuz üzerinden giriş yapın"
 
 #: src/features/migrations/text.ts
 msgid "Sign in to Freshdesk as an admin, open your profile picture at the top right and choose Profile settings."
@@ -13813,6 +13979,10 @@ msgstr "Posta kutusunun kullanıcı adı ve şifresiyle oturum açın."
 msgid "Sign in with your device's fingerprint, face or screen lock instead of a code."
 msgstr "Kod yerine cihazınızın parmak izi, yüz tanıma veya ekran kilidiyle giriş yapın."
 
+#: src/features/auth/SignInForm.tsx
+msgid "Sign in with your organisation"
+msgstr "Kuruluşunuzla giriş yapın"
+
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Sign in with Zendesk"
 msgstr "Zendesk ile oturum aç"
@@ -13832,6 +14002,10 @@ msgstr "Çıkış yap"
 #: src/features/account/AccountPage.tsx
 msgid "Sign-in address"
 msgstr "Oturum açma adresi"
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Sign-in rules"
+msgstr "Giriş kuralları"
 
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/setup/NewsletterStep.tsx
@@ -13879,6 +14053,10 @@ msgstr "yalnızca oturum açmış kullanıcılar"
 msgid "Signing"
 msgstr "İmzalıyor"
 
+#: src/features/auth/ssoError.ts
+msgid "Signing in through your organisation did not work. Try again, or use an e-mailed code."
+msgstr "Kuruluşunuz üzerinden giriş yapılamadı. Yeniden deneyin ya da e-postayla gelen kodu kullanın."
+
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Signing secret"
@@ -13900,6 +14078,16 @@ msgstr "Şu tarihten…"
 #: src/features/broadcasts/ListsHome.tsx
 msgid "Single opt-in"
 msgstr "Tek onay"
+
+#: src/app/Palette.tsx
+#: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Single sign-on"
+msgstr "Tek oturum açma"
+
+#: src/components/common/text.ts
+msgid "Single sign-on is required only once a provider is connected and a domain is verified."
+msgstr "Tek oturum açma, ancak bir sağlayıcı bağlandığında ve bir alan adı doğrulandığında zorunlu kılınabilir."
 
 #: src/features/docs/Toolbar.tsx
 #: src/features/inbox/SourceFilter.tsx
@@ -14026,6 +14214,10 @@ msgstr "Biri"
 #: src/features/settings/notifications/events.ts
 msgid "Someone mentions me in a note"
 msgstr "Biri beni bir notta andığında"
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Someone of your domains who signs in through the provider and is not a member joins with the role below."
+msgstr "Alan adlarınızdan biri sağlayıcı üzerinden giriş yapar ve üye değilse aşağıdaki rolle katılır."
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Someone on several lists gets one mail, under the first list they are on in this order."
@@ -14272,6 +14464,10 @@ msgstr "Depolama"
 #: src/features/migrations/TokenConnectStep.tsx
 msgid "Stored encrypted and never shown again, not even to you."
 msgstr "Şifrelenmiş olarak saklanır ve bir daha, size bile gösterilmez."
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Stored encrypted and never shown again."
+msgstr "Şifreli saklanır ve bir daha gösterilmez."
 
 #: src/features/contact/MergePreview.tsx
 msgid "Struck-out values are not taken: this contact keeps its own value for those keys."
@@ -14882,6 +15078,14 @@ msgstr "Ana makine adı kuruluyor. Kayıtlar bulunduktan sonra bu kısa sürer."
 msgid "The HTTPS address you open it at, such as https://help.example.com."
 msgstr "Açtığınız HTTPS adresi, örneğin https://help.example.com."
 
+#: src/features/settings/sso/SsoPage.tsx
+msgid "The ID token claim that lists a person's groups."
+msgstr "Kişinin gruplarını listeleyen kimlik belirteci talebi."
+
+#: src/features/auth/ssoError.ts
+msgid "The identity provider's answer could not be verified. Try again, and tell your administrator if it keeps happening."
+msgstr "Kimlik sağlayıcının yanıtı doğrulanamadı. Yeniden deneyin; sürerse yöneticinize bildirin."
+
 #: src/features/broadcasts/Import.tsx
 msgid "The import failed, and nothing was added from the file."
 msgstr "İçe aktarma başarısız oldu; dosyadan hiçbir şey eklenmedi."
@@ -15195,6 +15399,10 @@ msgstr "Ürün sonradan değiştirilemez."
 msgid "The provider asked to slow down"
 msgstr "Sağlayıcı yavaşlamayı istedi"
 
+#: src/features/settings/sso/SsoPage.tsx
+msgid "The provider's address, exactly as its discovery document names it. Yuva reads it on save."
+msgstr "Sağlayıcının adresi, keşif belgesinde yazdığı gibi. Yuva kaydederken okur."
+
 #: src/features/migrations/SwitchStep.tsx
 msgid "The quiet period is over; the migration finishes at the next sync."
 msgstr "Sessiz dönem bitti; taşıma bir sonraki eşitlemede biter."
@@ -15337,6 +15545,10 @@ msgstr "Oturum açma başka bir tarayıcıda döndü"
 #: src/features/migrations/text.ts
 msgid "The sign-in expired"
 msgstr "Oturum açmanın süresi doldu"
+
+#: src/features/auth/ssoError.ts
+msgid "The sign-in took too long or was already used. Start again."
+msgstr "Giriş çok uzun sürdü ya da zaten kullanıldı. Baştan başlayın."
 
 #: src/features/migrations/text.ts
 msgid "The sign-in was declined"
@@ -15661,6 +15873,10 @@ msgid "This discussion no longer exists or you cannot see it."
 msgstr "Bu tartışma artık yok ya da onu göremiyorsunuz."
 
 #: src/components/common/text.ts
+msgid "This domain is already in the list."
+msgstr "Bu alan adı zaten listede."
+
+#: src/components/common/text.ts
 msgid "This e-mail address bounced or complained, so the reply was not sent. Clear it on the contact to send again."
 msgstr "Bu e-posta adresi geri döndü ya da şikâyet etti, yanıt gönderilmedi. Yeniden göndermek için kişi panelinden temizleyin."
 
@@ -15902,6 +16118,10 @@ msgid "This workspace has as many broadcasts as allowed. Delete old ones first."
 msgstr "Bu çalışma alanında izin verilen sayıda bülten var. Önce eskileri silin."
 
 #: src/components/common/text.ts
+msgid "This workspace has as many domains as allowed."
+msgstr "Bu çalışma alanı izin verilen sayıda alan adına sahip."
+
+#: src/components/common/text.ts
 msgid "This workspace has as many own domains as the server allows. Remove one first."
 msgstr "Bu çalışma alanı, sunucunun izin verdiği kadar kendi alan adına sahip. Önce birini kaldırın."
 
@@ -15916,6 +16136,10 @@ msgstr "Bu çalışma alanı şimdilik bülten gönderemez. Süren bültenler du
 #: src/components/common/text.ts
 msgid "This workspace may send broadcasts once the server's operator approves it. Ask for approval in the workspace settings."
 msgstr "Bu çalışma alanı, sunucu yöneticisi onayladıktan sonra bülten gönderebilir. Onayı çalışma alanı ayarlarından isteyin."
+
+#: src/app/SsoRequiredDialog.tsx
+msgid "This workspace requires single sign-on. Continue with your organisation's sign-in as {email} to keep working here."
+msgstr "Bu çalışma alanı tek oturum açma gerektiriyor. Burada çalışmaya devam etmek için {email} olarak kuruluşunuzun girişiyle devam edin."
 
 #: src/components/common/text.ts
 msgid "This workspace sent as many tests as allowed this hour. Try again later."
@@ -16539,6 +16763,10 @@ msgstr "1 ile 8760 saat arası girin."
 msgid "Use 3 to 48 letters, numbers and inner hyphens."
 msgstr "3 ile 48 arası harf, rakam ve iç tire kullanın."
 
+#: src/features/auth/SignInForm.tsx
+msgid "Use a code instead"
+msgstr "Bunun yerine kod kullan"
+
 #: src/features/status/SettingsTab.tsx
 msgid "Use a colour like #2563eb."
 msgstr "#2563eb gibi bir renk kullanın."
@@ -16684,6 +16912,7 @@ msgstr "değer"
 
 #: src/features/settings/channels/email/Deliverability.tsx
 #: src/features/settings/OwnDomainCard.tsx
+#: src/features/settings/sso/SsoPage.tsx
 msgid "Value"
 msgstr "Değer"
 
@@ -16704,8 +16933,13 @@ msgid "Values of condition {n}, separated by commas"
 msgstr "{n}. koşulun değerleri, virgülle ayrılmış"
 
 #: src/features/settings/OwnDomainCard.tsx
+#: src/features/settings/sso/SsoPage.tsx
 msgid "Verified"
 msgstr "Doğrulandı"
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Verify"
+msgstr "Doğrula"
 
 #: src/features/settings/webhooks/SignatureHint.tsx
 msgid "Verify every request before trusting it: the <0>webhook-signature</0> header follows the <1>Standard Webhooks</1> specification, so any of its libraries can check it with the endpoint's secret. Go backends can use the <2>sdk/go/webhook</2> package of the Yuva repository."
@@ -16879,6 +17113,10 @@ msgstr "Sunucu yöneticisi bekleniyor"
 #: src/features/migrations/parts.tsx
 msgid "Waiting for the provider's limit; continues at {time}."
 msgstr "Sağlayıcının sınırı bekleniyor; {time} itibarıyla devam edecek."
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Waiting for the record"
+msgstr "Kayıt bekleniyor"
 
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Waiting for the two DNS records below. Add them where you manage the domain; DNS changes can take a while to spread. Yuva looks every 10 minutes, and the claim ends if they are not found within 7 days."
@@ -17496,6 +17734,10 @@ msgstr "Uzaktasın. Canlı sohbette kimse çevrimiçi görünmez ve bildirimler 
 msgid "You are not a member of any workspace, so there is nothing to connect."
 msgstr "Hiçbir çalışma alanının üyesi değilsiniz, bu yüzden bağlanacak bir şey yok."
 
+#: src/features/auth/ssoError.ts
+msgid "You are not a member of this workspace yet. Ask an owner to invite you."
+msgstr "Henüz bu çalışma alanının üyesi değilsiniz. Bir sahipten sizi davet etmesini isteyin."
+
 #: src/components/common/text.ts
 msgid "You are not allowed to do this."
 msgstr "Bunu yapma izniniz yok."
@@ -17620,6 +17862,10 @@ msgstr "Gönderilmeden önce erişiminiz sona erdi."
 msgid "Your account"
 msgstr "Hesabınız"
 
+#: src/features/auth/ssoError.ts
+msgid "Your account is not in a group that may use Yuva. Ask your administrator to add you."
+msgstr "Hesabınız Yuva'yı kullanabilen bir grupta değil. Yöneticinizden sizi eklemesini isteyin."
+
 #: src/features/migrations/text.ts
 msgid "Your admin allowed Yuva"
 msgstr "Yöneticiniz Yuva'ya izin verdi"
@@ -17652,6 +17898,10 @@ msgstr "Alan adınız e-postalarını Cloudflare Email Routing üzerinden yönle
 msgid "Your draft is still here; send it as well or clear it."
 msgstr "Taslağın duruyor; istersen sen de gönder ya da sil."
 
+#: src/features/auth/ssoError.ts
+msgid "Your e-mail address is not in a domain this organisation has claimed in Yuva. Sign in with the address of your organisation."
+msgstr "E-posta adresiniz, bu kuruluşun Yuva'da sahiplendiği bir alan adında değil. Kuruluşunuzun adresiyle giriş yapın."
+
 #: src/features/setup/WaitStep.tsx
 msgid "Your first conversation is here"
 msgstr "İlk konuşmanız geldi"
@@ -17663,6 +17913,10 @@ msgstr "Kendi klasörünüz"
 #: src/features/migrations/MapStep.tsx
 msgid "Your folders and labels become Yuva labels on the conversations they hold."
 msgstr "Klasörleriniz ve etiketleriniz, içerdikleri konuşmalarda Yuva etiketine dönüşür."
+
+#: src/features/auth/ssoError.ts
+msgid "Your identity provider has not verified your e-mail address, so Yuva cannot trust it. Ask your administrator to verify it there."
+msgstr "Kimlik sağlayıcınız e-posta adresinizi doğrulamamış, bu yüzden Yuva ona güvenemez. Yöneticinizden orada doğrulatmasını isteyin."
 
 #: src/features/status/MonitorDialog.tsx
 msgid "Your job calls Yuva on a schedule. A missing call fails the monitor."
@@ -17689,6 +17943,18 @@ msgstr "Microsoft 365 kuruluşunuzda uygulamalara yalnızca bir yönetici onay v
 #: src/features/broadcasts/Composer.tsx
 msgid "Your name"
 msgstr "Adınız"
+
+#: src/features/auth/SignInForm.tsx
+msgid "Your organisation requires this sign-in for its workspace."
+msgstr "Kuruluşunuz kendi çalışma alanı için bu girişi zorunlu kılıyor."
+
+#: src/components/common/text.ts
+msgid "Your organisation's identity provider could not be reached. Try again in a moment."
+msgstr "Kuruluşunuzun kimlik sağlayıcısına ulaşılamadı. Biraz sonra yeniden deneyin."
+
+#: src/features/auth/ssoError.ts
+msgid "Your organisation's sign-in was cancelled or refused. Try again, or ask your administrator whether you may use Yuva."
+msgstr "Kuruluşunuzun girişi iptal edildi ya da reddedildi. Yeniden deneyin ya da yöneticinize Yuva'yı kullanıp kullanamayacağınızı sorun."
 
 #: src/features/migrations/text.ts
 msgid "Your organization blocked the sign-in"
@@ -17778,6 +18044,15 @@ msgstr "Yuva artık hesabı okuyabilir. Sıradaki adımda neyin getirileceğini 
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "Yuva checks the token with the tracker, stores it encrypted and never shows it again. It needs to read and write issues."
 msgstr "Yuva token'ı takip aracında doğrular, şifreli saklar ve bir daha göstermez. Issue'ları okuyup yazabilmesi gerekir."
+
+#. placeholder {0}: err.detail
+#: src/components/common/text.ts
+msgid "Yuva could not read the provider's discovery document: {0}"
+msgstr "Yuva sağlayıcının keşif belgesini okuyamadı: {0}"
+
+#: src/components/common/text.ts
+msgid "Yuva could not read the provider's discovery document. Check the issuer URL."
+msgstr "Yuva sağlayıcının keşif belgesini okuyamadı. Veren (issuer) adresini kontrol edin."
 
 #: src/features/broadcasts/Overview.tsx
 msgid "Yuva counts clicks and replies. It does not track opens."

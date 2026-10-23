@@ -933,6 +933,10 @@ msgstr "+{added} questo mese"
 msgid "<0>{domain}</0> is not a verified identity in the server’s Amazon SES account. Mail goes out without tenant isolation and broadcasts are blocked. Ask the server’s operator to verify the domain."
 msgstr "<0>{domain}</0> non è un’identità verificata nell’account Amazon SES del server. La posta parte senza isolamento per tenant e gli invii di massa sono bloccati. Chiedi all’operatore del server di verificare il dominio."
 
+#: src/features/auth/SignInForm.tsx
+msgid "<0>{email}</0> signs in through your organisation's identity provider."
+msgstr "<0>{email}</0> signs in through your organisation's identity provider."
+
 #: src/features/settings/channels/app/AppInstall.tsx
 msgid "<0>Android:</0> add the library from <1>sdk/kotlin</1> in the Yuva repository and configure it with the same two values."
 msgstr "<0>Android:</0> aggiungi la libreria da <1>sdk/kotlin</1> nel repository di Yuva e configurala con gli stessi due valori."
@@ -1497,6 +1501,7 @@ msgstr "Attività"
 #: src/features/broadcasts/AudienceBuilder.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/migrations/MapStep.tsx
+#: src/features/settings/sso/SsoPage.tsx
 msgid "Add"
 msgstr "Aggiungi"
 
@@ -1523,6 +1528,10 @@ msgstr "Aggiungi una condizione"
 #: src/features/status/MonitorToken.tsx
 msgid "Add a contact point of type Webhook, paste the address above, keep the method POST and use the contact point in a notification policy. Firing alerts fail the monitor, resolved ones recover it."
 msgstr "Aggiungi un punto di contatto di tipo Webhook, incolla l'indirizzo qui sopra, lascia il metodo POST e usa il punto di contatto in una policy di notifica. Gli avvisi attivi fanno cadere il monitor, quelli risolti lo ripristinano."
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Add a domain"
+msgstr "Add a domain"
 
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 msgid "Add a language"
@@ -1660,6 +1669,10 @@ msgstr "Aggiungi nota"
 msgid "Add one for each product or brand you answer for. Each gets its own branding, hours, team and channels."
 msgstr "Aggiungine uno per ogni prodotto o marchio a cui rispondi. Ognuno ha il proprio marchio, orari, team e canali."
 
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Add people on their first sign-in"
+msgstr "Add people on their first sign-in"
+
 #: src/features/settings/ProductsPage.tsx
 msgid "Add product"
 msgstr "Aggiungi prodotto"
@@ -1754,6 +1767,7 @@ msgid "Address or name"
 msgstr "Indirizzo o nome"
 
 #: src/components/common/text.ts
+#: src/features/settings/sso/SsoPage.tsx
 msgid "Admin"
 msgstr "Admin"
 
@@ -1770,6 +1784,7 @@ msgid "Affects"
 msgstr "Riguarda"
 
 #: src/components/common/text.ts
+#: src/features/settings/sso/SsoPage.tsx
 msgid "Agent"
 msgstr "Agente"
 
@@ -1935,6 +1950,10 @@ msgstr "Consentito"
 #: src/features/settings/channels/Attachments.tsx
 msgid "Allowed file types"
 msgstr "Tipi di file consentiti"
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Allowed groups"
+msgstr "Allowed groups"
 
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Allowed origins"
@@ -2257,6 +2276,10 @@ msgstr "Un'altra pagina di stato ha già verificato questo dominio. Solo una pag
 #: src/features/migrations/MapStep.tsx
 msgid "Another team address"
 msgstr "Un altro indirizzo del team"
+
+#: src/components/common/text.ts
+msgid "Another workspace on this server has already verified this domain."
+msgstr "Another workspace on this server has already verified this domain."
 
 #: src/features/docs/discussions/FromConversation.tsx
 msgid "Answer (optional)"
@@ -2784,6 +2807,10 @@ msgstr "Prima di collegare"
 msgid "Before you send"
 msgstr "Prima di inviare"
 
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Besides openid, email and profile. Okta needs groups for group checks."
+msgstr "Besides openid, email and profile. Okta needs groups for group checks."
+
 #: src/features/settings/labels/LabelDialog.tsx
 msgid "Billing"
 msgstr "Fatturazione"
@@ -3039,6 +3066,7 @@ msgstr "Nome della campagna"
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/AddChannelDialog.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
+#: src/features/settings/sso/SsoPage.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 #: src/features/setup/NewsletterStep.tsx
 #: src/features/status/AddSubscriberDialog.tsx
@@ -3437,6 +3465,10 @@ msgstr "Scegli l’immagine del blocco selezionato"
 msgid "Chosen in the Map step"
 msgstr "Scelto nel passaggio Mappa"
 
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Claim your company's e-mail domain to send its people to your provider."
+msgstr "Claim your company's e-mail domain to send its people to your provider."
+
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "claude.ai and Claude Desktop"
 msgstr "claude.ai e Claude Desktop"
@@ -3508,11 +3540,16 @@ msgstr "clic non tracciati"
 msgid "Clicks not tracked"
 msgstr "Clic non tracciati"
 
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Client ID"
+msgstr "Client ID"
+
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Client identifier"
 msgstr "Identificatore del client"
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/settings/sso/SsoPage.tsx
 msgid "Client secret"
 msgstr "Segreto del client"
 
@@ -3780,6 +3817,10 @@ msgstr "Collegare {clientName} a Yuva?"
 msgid "Connect {provider}"
 msgstr "Collega {provider}"
 
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Connect a provider and verify a domain first."
+msgstr "Connect a provider and verify a domain first."
+
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "Connect a tracker"
 msgstr "Connect a tracker"
@@ -3793,6 +3834,10 @@ msgstr "Collega un assistente"
 #: src/features/settings/SettingsColumn.tsx
 msgid "Connect an assistant such as Claude or ChatGPT"
 msgstr "Collega un assistente come Claude o ChatGPT"
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Connect and test"
+msgstr "Connect and test"
 
 #: src/features/inbox/AssistantsPage.tsx
 msgid "Connect Claude, ChatGPT, Cursor or another MCP client to let it read conversations and draft replies for you to review."
@@ -3995,6 +4040,11 @@ msgstr "Continua la migrazione"
 #: src/features/migrations/DoneStep.tsx
 msgid "Continue with the newer mail"
 msgstr "Continua con la posta più recente"
+
+#: src/app/SsoRequiredDialog.tsx
+#: src/features/auth/SignInForm.tsx
+msgid "Continue with your organisation's sign-in"
+msgstr "Continue with your organisation's sign-in"
 
 #: src/features/contact/ContactsPage.tsx
 msgid "Convers."
@@ -4300,6 +4350,10 @@ msgstr "Crea il changelog"
 #: src/features/migrations/MapStep.tsx
 msgid "Create the e-mail channel"
 msgstr "Crea il canale e-mail"
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Create this TXT record at your DNS provider, then press Verify. It can take a while to appear."
+msgstr "Create this TXT record at your DNS provider, then press Verify. It can take a while to appear."
 
 #: src/app/UserMenu.tsx
 #: src/features/auth/CreateWorkspace.tsx
@@ -5163,6 +5217,10 @@ msgstr "Designer e-mail"
 msgid "E-mail designs"
 msgstr "Design e-mail"
 
+#: src/features/settings/sso/SsoPage.tsx
+msgid "E-mail domains"
+msgstr "E-mail domains"
+
 #: src/features/account/AccountPage.tsx
 msgid "E-mail me about the discussions I follow"
 msgstr "Scrivimi per e-mail sulle discussioni che seguo"
@@ -5670,6 +5728,10 @@ msgstr "ID esterno"
 #: src/features/contact/MergePreview.tsx
 msgid "External ids"
 msgstr "ID esterni"
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Extra scopes"
+msgstr "Extra scopes"
 
 #: src/components/common/Linked.tsx
 #: src/components/common/text.ts
@@ -6315,6 +6377,10 @@ msgstr "Saluta le nuove conversazioni per e-mail, una volta per contatto nell’
 #: src/features/status/ComponentDialogs.tsx
 msgid "Group"
 msgstr "Gruppo"
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Groups claim"
+msgstr "Groups claim"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/Growth.tsx
@@ -7103,6 +7169,10 @@ msgstr "Issue address"
 msgid "Issue trackers"
 msgstr "Issue trackers"
 
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Issuer"
+msgstr "Issuer"
+
 #: src/features/feedback/IssuesCard.tsx
 #: src/features/issues/IdeaIssues.tsx
 #: src/features/issues/IssueMenu.tsx
@@ -7570,6 +7640,14 @@ msgstr "Ragione sociale"
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Let bots send replies?"
 msgstr "Lasciare che i bot inviino risposte?"
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Let your team sign in through your company's identity provider. Their e-mail address decides which provider they use."
+msgstr "Let your team sign in through your company's identity provider. Their e-mail address decides which provider they use."
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Let your team sign in through your identity provider"
+msgstr "Let your team sign in through your identity provider"
 
 #: src/features/settings/channels/app/PushSection.tsx
 msgid "Let Yuva send the reply push to your app's users. <0>Read the guide</0>"
@@ -8633,6 +8711,7 @@ msgstr "Il mio profilo"
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/ProfileForm.tsx
+#: src/features/settings/sso/SsoPage.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/setup/email/EmailLayout.tsx
 #: src/features/setup/SetupLayout.tsx
@@ -9237,6 +9316,10 @@ msgstr "Ancora nessuna discussione. I lettori le avviano sotto le tue pagine di 
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "No DKIM signature passed, so broadcasts cannot be sent. Set up DKIM with your SMTP provider, or turn on Yuva DKIM below."
 msgstr "Nessuna firma DKIM è stata superata, quindi gli invii non possono partire. Configura DKIM con il tuo provider SMTP o attiva DKIM di Yuva qui sotto."
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "No domain claimed"
+msgstr "No domain claimed"
 
 #: src/features/inbox/AssistantsPage.tsx
 msgid "No drafts are waiting"
@@ -10276,6 +10359,10 @@ msgstr "Solo ricevere per ora"
 msgid "Only receives"
 msgstr "Solo riceve"
 
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Only the exact domain is claimed, not its subdomains. Add eu.example.com on its own if people use such addresses."
+msgstr "Only the exact domain is claimed, not its subdomains. Add eu.example.com on its own if people use such addresses."
+
 #: src/components/common/text.ts
 msgid "Only the person can subscribe again, by confirming a mail."
 msgstr "Solo la persona può iscriversi di nuovo, confermando un’e-mail."
@@ -10629,6 +10716,10 @@ msgstr "aperte, assegnate"
 #: src/features/team/TeamPage.tsx
 msgid "open, unassigned"
 msgstr "aperte, non assegnate"
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "OpenID Connect"
+msgstr "OpenID Connect"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Opens"
@@ -10988,6 +11079,10 @@ msgstr "Le consegne in sospeso vengono scartate con esso."
 msgid "People join it on a subscribe form or are added with their consent. Broadcasts go to lists."
 msgstr "Vi si iscrivono con un modulo di iscrizione o vengono aggiunte con il loro consenso. Gli invii vanno alle liste."
 
+#: src/features/settings/sso/SsoPage.tsx
+msgid "People of your verified domains work in this workspace only after signing in through your provider. Owners are exempt, so a broken provider never locks you out. Sessions that exist now stop working here, so covered members have to sign in again, and their connected apps need approving again."
+msgstr "People of your verified domains work in this workspace only after signing in through your provider. Owners are exempt, so a broken provider never locks you out. Sessions that exist now stop working here, so covered members have to sign in again, and their connected apps need approving again."
+
 #: src/features/reports/ReportPages.tsx
 msgid "People rate a conversation with a thumb when it is closed. Try a longer period."
 msgstr "I contatti valutano una conversazione con un pollice quando viene chiusa. Prova un periodo più lungo."
@@ -10995,6 +11090,10 @@ msgstr "I contatti valutano una conversazione con un pollice quando viene chiusa
 #: src/features/feedback/FeedbackFormDialog.tsx
 msgid "People send a bug, an idea or praise, with a screenshot and the device details. It lands here."
 msgstr "Le persone inviano un bug, un’idea o un elogio, con screenshot e dettagli del dispositivo. Arriva qui."
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "People sign in with a code or a passkey again, and single sign-on stops being required. Your domains stay."
+msgstr "People sign in with a code or a passkey again, and single sign-on stops being required. Your domains stay."
 
 #: src/features/contact/ContactsPage.tsx
 msgid "People so far: {shownCount}"
@@ -11024,6 +11123,10 @@ msgstr "Chi si registra con un modulo conferma cliccando un link in un’e-mail 
 #: src/features/contact/ContactsPage.tsx
 msgid "People who wrote to {product}"
 msgstr "Persone che hanno scritto a {product}"
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "People with this domain stop signing in through your provider. Removing the last verified domain turns off required single sign-on."
+msgstr "People with this domain stop signing in through your provider. Removing the last verified domain turns off required single sign-on."
 
 #: src/features/setup/ChannelStep.tsx
 #: src/features/setup/SetupHub.tsx
@@ -11523,9 +11626,25 @@ msgstr "Avanzamento · la persona lo vede"
 msgid "Progress (O)"
 msgstr "Avanzamento (O)"
 
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Protocol"
+msgstr "Protocol"
+
 #: src/features/migrations/SourceStep.tsx
 msgid "Proton Mail is reachable over IMAP only through Proton Mail Bridge on your own computer, which a server cannot reach. Export the mailbox with Proton Mail's export tool, put the folder in a .zip and upload it as an export file below."
 msgstr "Proton Mail è raggiungibile via IMAP solo tramite Proton Mail Bridge sul tuo computer, che un server non può raggiungere. Esporta la casella con lo strumento di esportazione di Proton Mail, metti la cartella in uno .zip e caricalo come file di esportazione qui sotto."
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Provider"
+msgstr "Provider"
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Provider removed"
+msgstr "Provider removed"
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Provider saved. Its discovery document was read."
+msgstr "Provider saved. Its discovery document was read."
 
 #: src/features/broadcasts/ListForm.tsx
 #: src/features/broadcasts/ListPage.tsx
@@ -11944,6 +12063,10 @@ msgstr "Ricollega {provider}"
 msgid "Redeliver"
 msgstr "Riconsegna"
 
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Redirect URI"
+msgstr "Redirect URI"
+
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Redirect URL"
 msgstr "URL di reindirizzamento"
@@ -11968,6 +12091,10 @@ msgstr "Regione"
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Register an app in Microsoft Entra"
 msgstr "Registra un’app in Microsoft Entra"
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Register this address at your provider as the sign-in redirect."
+msgstr "Register this address at your provider as the sign-in redirect."
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Registration"
@@ -11995,6 +12122,7 @@ msgstr "Le immagini remote possono dire al mittente che hai aperto l’e-mail."
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/Passkeys.tsx
+#: src/features/settings/sso/SsoPage.tsx
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/status/MonitorHttpFields.tsx
 #: src/features/team/TeamPage.tsx
@@ -12024,6 +12152,7 @@ msgid "Remove {name}"
 msgstr "Rimuovi {name}"
 
 #: src/features/settings/inboxes/FeedbackCategories.tsx
+#: src/features/settings/sso/SsoPage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Remove {name}?"
 msgstr "Rimuovere {name}?"
@@ -12089,6 +12218,10 @@ msgstr "Rimuovere l'account di servizio FCM?"
 msgid "Remove the message or note you clicked on"
 msgstr "Rimuovi il messaggio o la nota su cui hai cliccato"
 
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Remove the provider?"
+msgstr "Remove the provider?"
+
 #: src/features/settings/channels/sections.tsx
 msgid "Remove this channel?"
 msgstr "Rimuovere questo canale?"
@@ -12124,6 +12257,10 @@ msgstr "Rimuovi l’accesso di Yuva in Microsoft"
 #: src/features/conversation/ChatView.tsx
 msgid "Removed"
 msgstr "Rimosso"
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Removed {name}"
+msgstr "Removed {name}"
 
 #: src/features/settings/audit/sentence.ts
 msgid "Removed {person} from the workspace"
@@ -12181,6 +12318,7 @@ msgstr "Riapri"
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
+#: src/features/settings/sso/SsoPage.tsx
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Replace"
 msgstr "Sostituisci"
@@ -12405,6 +12543,10 @@ msgstr "Rapporti"
 msgid "Reputation impact"
 msgstr "Impatto sulla reputazione"
 
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Require single sign-on"
+msgstr "Require single sign-on"
+
 #: src/features/team/TeamPage.tsx
 msgid "Resend"
 msgstr "Reinvia"
@@ -12616,6 +12758,10 @@ msgstr "Ruolo"
 msgid "Role addresses such as postmaster@ or noreply@"
 msgstr "Indirizzi di ruolo come postmaster@ o noreply@"
 
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Role for new people"
+msgstr "Role for new people"
+
 #: src/features/team/TeamPage.tsx
 msgid "Role of {name}"
 msgstr "Ruolo di {name}"
@@ -12737,6 +12883,10 @@ msgstr "Sabato"
 #: src/features/status/MonitorDialog.tsx
 msgid "Save"
 msgstr "Salva"
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Save and test"
+msgstr "Save and test"
 
 #: src/features/status/IncidentDialog.tsx
 msgid "Save as draft"
@@ -12988,6 +13138,10 @@ msgstr "Secondi, da 1 a 30."
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Secret"
 msgstr "Segreto"
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Secret set"
+msgstr "Secret set"
 
 #: src/app/Rail.tsx
 #: src/app/Sidebar.tsx
@@ -13395,6 +13549,10 @@ msgstr "Inviati oggi: {sent}. Non c’è un limite giornaliero."
 msgid "Sent: {0}"
 msgstr "Inviati: {0}"
 
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Separate with commas. Leave empty to let everyone in your domains sign in."
+msgstr "Separate with commas. Leave empty to let everyone in your domains sign in."
+
 #: src/features/migrations/ConnectStep.tsx
 msgid "Server"
 msgstr "Server"
@@ -13756,6 +13914,10 @@ msgstr "Accedi di nuovo a {address}"
 msgid "Sign in as a user who sees every mailbox you want to move."
 msgstr "Accedi come utente che vede ogni casella che vuoi spostare."
 
+#: src/components/common/text.ts
+msgid "Sign in as yourself to change this. API keys cannot."
+msgstr "Sign in as yourself to change this. API keys cannot."
+
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Sign in from the client. It finds everything from the URL: OAuth 2.1 with PKCE, registering itself automatically or with a Client ID Metadata Document."
 msgstr "Accedi dal client. Trova tutto dall’URL: OAuth 2.1 con PKCE, registrandosi da solo o con un Client ID Metadata Document."
@@ -13767,6 +13929,10 @@ msgstr "Accedi o crea un account"
 #: src/features/account/AccountPage.tsx
 msgid "Sign in or create an account with your e-mail address to follow the discussions you write in on documentation sites. We e-mail you a one-time code; no password."
 msgstr "Accedi o crea un account con il tuo indirizzo e-mail per seguire le discussioni in cui scrivi sui siti di documentazione. Ti inviamo un codice monouso; nessuna password."
+
+#: src/app/SsoRequiredDialog.tsx
+msgid "Sign in through your organisation"
+msgstr "Sign in through your organisation"
 
 #: src/features/migrations/text.ts
 msgid "Sign in to Freshdesk as an admin, open your profile picture at the top right and choose Profile settings."
@@ -13813,6 +13979,10 @@ msgstr "Accedi con il nome utente e la password della casella."
 msgid "Sign in with your device's fingerprint, face or screen lock instead of a code."
 msgstr "Accedi con l’impronta, il volto o il blocco schermo del tuo dispositivo invece di un codice."
 
+#: src/features/auth/SignInForm.tsx
+msgid "Sign in with your organisation"
+msgstr "Sign in with your organisation"
+
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Sign in with Zendesk"
 msgstr "Accedi con Zendesk"
@@ -13832,6 +14002,10 @@ msgstr "Esci"
 #: src/features/account/AccountPage.tsx
 msgid "Sign-in address"
 msgstr "Indirizzo di accesso"
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Sign-in rules"
+msgstr "Sign-in rules"
 
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/setup/NewsletterStep.tsx
@@ -13879,6 +14053,10 @@ msgstr "solo utenti connessi"
 msgid "Signing"
 msgstr "Firma"
 
+#: src/features/auth/ssoError.ts
+msgid "Signing in through your organisation did not work. Try again, or use an e-mailed code."
+msgstr "Signing in through your organisation did not work. Try again, or use an e-mailed code."
+
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Signing secret"
@@ -13900,6 +14078,16 @@ msgstr "Dal…"
 #: src/features/broadcasts/ListsHome.tsx
 msgid "Single opt-in"
 msgstr "Opt-in singolo"
+
+#: src/app/Palette.tsx
+#: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Single sign-on"
+msgstr "Single sign-on"
+
+#: src/components/common/text.ts
+msgid "Single sign-on is required only once a provider is connected and a domain is verified."
+msgstr "Single sign-on is required only once a provider is connected and a domain is verified."
 
 #: src/features/docs/Toolbar.tsx
 #: src/features/inbox/SourceFilter.tsx
@@ -14026,6 +14214,10 @@ msgstr "Qualcuno"
 #: src/features/settings/notifications/events.ts
 msgid "Someone mentions me in a note"
 msgstr "Qualcuno mi menziona in una nota"
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Someone of your domains who signs in through the provider and is not a member joins with the role below."
+msgstr "Someone of your domains who signs in through the provider and is not a member joins with the role below."
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Someone on several lists gets one mail, under the first list they are on in this order."
@@ -14272,6 +14464,10 @@ msgstr "Archiviazione"
 #: src/features/migrations/TokenConnectStep.tsx
 msgid "Stored encrypted and never shown again, not even to you."
 msgstr "Conservata cifrata e mai più mostrata, nemmeno a te."
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Stored encrypted and never shown again."
+msgstr "Stored encrypted and never shown again."
 
 #: src/features/contact/MergePreview.tsx
 msgid "Struck-out values are not taken: this contact keeps its own value for those keys."
@@ -14882,6 +15078,14 @@ msgstr "Il nome host è in fase di configurazione. Ci vuole un attimo dopo che i
 msgid "The HTTPS address you open it at, such as https://help.example.com."
 msgstr "L'indirizzo HTTPS a cui lo apri, ad esempio https://help.example.com."
 
+#: src/features/settings/sso/SsoPage.tsx
+msgid "The ID token claim that lists a person's groups."
+msgstr "The ID token claim that lists a person's groups."
+
+#: src/features/auth/ssoError.ts
+msgid "The identity provider's answer could not be verified. Try again, and tell your administrator if it keeps happening."
+msgstr "The identity provider's answer could not be verified. Try again, and tell your administrator if it keeps happening."
+
 #: src/features/broadcasts/Import.tsx
 msgid "The import failed, and nothing was added from the file."
 msgstr "L’importazione non è riuscita e non è stato aggiunto nulla dal file."
@@ -15195,6 +15399,10 @@ msgstr "Il prodotto non può essere cambiato in seguito."
 msgid "The provider asked to slow down"
 msgstr "Il provider ha chiesto di rallentare"
 
+#: src/features/settings/sso/SsoPage.tsx
+msgid "The provider's address, exactly as its discovery document names it. Yuva reads it on save."
+msgstr "The provider's address, exactly as its discovery document names it. Yuva reads it on save."
+
 #: src/features/migrations/SwitchStep.tsx
 msgid "The quiet period is over; the migration finishes at the next sync."
 msgstr "Il periodo di quiete è finito; la migrazione termina alla prossima sincronizzazione."
@@ -15337,6 +15545,10 @@ msgstr "L’accesso è tornato in un altro browser"
 #: src/features/migrations/text.ts
 msgid "The sign-in expired"
 msgstr "L’accesso è scaduto"
+
+#: src/features/auth/ssoError.ts
+msgid "The sign-in took too long or was already used. Start again."
+msgstr "The sign-in took too long or was already used. Start again."
 
 #: src/features/migrations/text.ts
 msgid "The sign-in was declined"
@@ -15661,6 +15873,10 @@ msgid "This discussion no longer exists or you cannot see it."
 msgstr "Questa discussione non esiste più o non puoi vederla."
 
 #: src/components/common/text.ts
+msgid "This domain is already in the list."
+msgstr "This domain is already in the list."
+
+#: src/components/common/text.ts
 msgid "This e-mail address bounced or complained, so the reply was not sent. Clear it on the contact to send again."
 msgstr "Questo indirizzo e-mail è rimbalzato o ha presentato un reclamo, quindi la risposta non è stata inviata. Cancellalo sul contatto per inviare di nuovo."
 
@@ -15902,6 +16118,10 @@ msgid "This workspace has as many broadcasts as allowed. Delete old ones first."
 msgstr "Questo spazio di lavoro ha tanti invii quanti ne sono consentiti. Elimina prima quelli vecchi."
 
 #: src/components/common/text.ts
+msgid "This workspace has as many domains as allowed."
+msgstr "This workspace has as many domains as allowed."
+
+#: src/components/common/text.ts
 msgid "This workspace has as many own domains as the server allows. Remove one first."
 msgstr "Questo spazio di lavoro ha tanti domini personali quanti ne consente il server. Rimuovine prima uno."
 
@@ -15916,6 +16136,10 @@ msgstr "Questo spazio di lavoro non può inviare invii per ora. Gli invii in cor
 #: src/components/common/text.ts
 msgid "This workspace may send broadcasts once the server's operator approves it. Ask for approval in the workspace settings."
 msgstr "Questo spazio di lavoro potrà inviare invii quando l’operatore del server lo approverà. Chiedi l’approvazione nelle impostazioni dello spazio di lavoro."
+
+#: src/app/SsoRequiredDialog.tsx
+msgid "This workspace requires single sign-on. Continue with your organisation's sign-in as {email} to keep working here."
+msgstr "This workspace requires single sign-on. Continue with your organisation's sign-in as {email} to keep working here."
 
 #: src/components/common/text.ts
 msgid "This workspace sent as many tests as allowed this hour. Try again later."
@@ -16539,6 +16763,10 @@ msgstr "Usa da 1 a 8760 ore."
 msgid "Use 3 to 48 letters, numbers and inner hyphens."
 msgstr "Usa da 3 a 48 lettere, numeri e trattini interni."
 
+#: src/features/auth/SignInForm.tsx
+msgid "Use a code instead"
+msgstr "Use a code instead"
+
 #: src/features/status/SettingsTab.tsx
 msgid "Use a colour like #2563eb."
 msgstr "Usa un colore come #2563eb."
@@ -16684,6 +16912,7 @@ msgstr "valore"
 
 #: src/features/settings/channels/email/Deliverability.tsx
 #: src/features/settings/OwnDomainCard.tsx
+#: src/features/settings/sso/SsoPage.tsx
 msgid "Value"
 msgstr "Valore"
 
@@ -16704,8 +16933,13 @@ msgid "Values of condition {n}, separated by commas"
 msgstr "Valori della condizione {n}, separati da virgole"
 
 #: src/features/settings/OwnDomainCard.tsx
+#: src/features/settings/sso/SsoPage.tsx
 msgid "Verified"
 msgstr "Verificato"
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Verify"
+msgstr "Verify"
 
 #: src/features/settings/webhooks/SignatureHint.tsx
 msgid "Verify every request before trusting it: the <0>webhook-signature</0> header follows the <1>Standard Webhooks</1> specification, so any of its libraries can check it with the endpoint's secret. Go backends can use the <2>sdk/go/webhook</2> package of the Yuva repository."
@@ -16879,6 +17113,10 @@ msgstr "In attesa dell’operatore"
 #: src/features/migrations/parts.tsx
 msgid "Waiting for the provider's limit; continues at {time}."
 msgstr "In attesa del limite del provider; riprende alle {time}."
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Waiting for the record"
+msgstr "Waiting for the record"
 
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Waiting for the two DNS records below. Add them where you manage the domain; DNS changes can take a while to spread. Yuva looks every 10 minutes, and the claim ends if they are not found within 7 days."
@@ -17496,6 +17734,10 @@ msgstr "Sei assente. La live chat non mostra nessuno disponibile e le notifiche 
 msgid "You are not a member of any workspace, so there is nothing to connect."
 msgstr "Non sei membro di nessuno spazio di lavoro, quindi non c’è nulla da collegare."
 
+#: src/features/auth/ssoError.ts
+msgid "You are not a member of this workspace yet. Ask an owner to invite you."
+msgstr "You are not a member of this workspace yet. Ask an owner to invite you."
+
 #: src/components/common/text.ts
 msgid "You are not allowed to do this."
 msgstr "Non sei autorizzato a farlo."
@@ -17620,6 +17862,10 @@ msgstr "Il tuo accesso è terminato prima dell’invio."
 msgid "Your account"
 msgstr "Il tuo account"
 
+#: src/features/auth/ssoError.ts
+msgid "Your account is not in a group that may use Yuva. Ask your administrator to add you."
+msgstr "Your account is not in a group that may use Yuva. Ask your administrator to add you."
+
 #: src/features/migrations/text.ts
 msgid "Your admin allowed Yuva"
 msgstr "Il tuo amministratore ha consentito Yuva"
@@ -17652,6 +17898,10 @@ msgstr "Il tuo dominio inoltra la sua posta tramite Cloudflare Email Routing, qu
 msgid "Your draft is still here; send it as well or clear it."
 msgstr "La tua bozza è ancora qui; invia anche quella o cancellala."
 
+#: src/features/auth/ssoError.ts
+msgid "Your e-mail address is not in a domain this organisation has claimed in Yuva. Sign in with the address of your organisation."
+msgstr "Your e-mail address is not in a domain this organisation has claimed in Yuva. Sign in with the address of your organisation."
+
 #: src/features/setup/WaitStep.tsx
 msgid "Your first conversation is here"
 msgstr "La tua prima conversazione è qui"
@@ -17663,6 +17913,10 @@ msgstr "La tua cartella"
 #: src/features/migrations/MapStep.tsx
 msgid "Your folders and labels become Yuva labels on the conversations they hold."
 msgstr "Le tue cartelle ed etichette diventano etichette di Yuva sulle conversazioni che contengono."
+
+#: src/features/auth/ssoError.ts
+msgid "Your identity provider has not verified your e-mail address, so Yuva cannot trust it. Ask your administrator to verify it there."
+msgstr "Your identity provider has not verified your e-mail address, so Yuva cannot trust it. Ask your administrator to verify it there."
 
 #: src/features/status/MonitorDialog.tsx
 msgid "Your job calls Yuva on a schedule. A missing call fails the monitor."
@@ -17689,6 +17943,18 @@ msgstr "La tua organizzazione Microsoft 365 consente solo a un amministratore di
 #: src/features/broadcasts/Composer.tsx
 msgid "Your name"
 msgstr "Il tuo nome"
+
+#: src/features/auth/SignInForm.tsx
+msgid "Your organisation requires this sign-in for its workspace."
+msgstr "Your organisation requires this sign-in for its workspace."
+
+#: src/components/common/text.ts
+msgid "Your organisation's identity provider could not be reached. Try again in a moment."
+msgstr "Your organisation's identity provider could not be reached. Try again in a moment."
+
+#: src/features/auth/ssoError.ts
+msgid "Your organisation's sign-in was cancelled or refused. Try again, or ask your administrator whether you may use Yuva."
+msgstr "Your organisation's sign-in was cancelled or refused. Try again, or ask your administrator whether you may use Yuva."
 
 #: src/features/migrations/text.ts
 msgid "Your organization blocked the sign-in"
@@ -17778,6 +18044,15 @@ msgstr "Yuva ora può leggere l’account. Poi scegli cosa portare."
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "Yuva checks the token with the tracker, stores it encrypted and never shows it again. It needs to read and write issues."
 msgstr "Yuva checks the token with the tracker, stores it encrypted and never shows it again. It needs to read and write issues."
+
+#. placeholder {0}: err.detail
+#: src/components/common/text.ts
+msgid "Yuva could not read the provider's discovery document: {0}"
+msgstr "Yuva could not read the provider's discovery document: {0}"
+
+#: src/components/common/text.ts
+msgid "Yuva could not read the provider's discovery document. Check the issuer URL."
+msgstr "Yuva could not read the provider's discovery document. Check the issuer URL."
 
 #: src/features/broadcasts/Overview.tsx
 msgid "Yuva counts clicks and replies. It does not track opens."

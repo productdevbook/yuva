@@ -12,6 +12,7 @@ import {
   PlusIcon,
   QuoteIcon,
   ScrollTextIcon,
+  ShieldCheckIcon,
   TagIcon,
   UsersIcon,
 } from "lucide-react"
@@ -240,6 +241,17 @@ export function SettingsColumn() {
             <RowText
               title={<Trans>Move to Yuva</Trans>}
               detail={<Trans>Bring a mailbox's history from Gmail, Yandex or any IMAP server</Trans>}
+            />
+          </NavRow>
+        )}
+        {isOwner && (
+          <NavRow to="/settings/sso" testId="settings-sso">
+            <RowIcon>
+              <ShieldCheckIcon />
+            </RowIcon>
+            <RowText
+              title={<Trans>Single sign-on</Trans>}
+              detail={<Trans>Let your team sign in through your identity provider</Trans>}
             />
           </NavRow>
         )}

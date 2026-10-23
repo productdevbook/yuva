@@ -3,6 +3,7 @@ import { Navigate, useNavigate, useSearchParams } from "react-router"
 
 import { AuthLayout } from "@/features/auth/AuthLayout"
 import { SignInForm } from "@/features/auth/SignInForm"
+import { useSsoErrorText } from "@/features/auth/ssoError"
 import { useSignup } from "@/lib/api"
 import { safeNext } from "@/lib/next"
 import { useMe } from "@/lib/session"
@@ -13,6 +14,7 @@ export function SignInPage() {
   const signup = useSignup()
   const [params] = useSearchParams()
   const next = safeNext(params.get("next"))
+  const ssoError = useSsoErrorText()(params.get("sso_error"))
   const create = signup === "open" && params.get("signup") === "1"
 
   if (me.data) return <Navigate to={next} replace />
@@ -20,6 +22,7 @@ export function SignInPage() {
   return (
     <AuthLayout>
       <SignInForm
+        banner={ssoError}
         title={
           create ? (
             <Trans>Create your Yuva account</Trans>

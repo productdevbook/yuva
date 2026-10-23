@@ -399,6 +399,18 @@ export function useErrorText() {
       return t`The tracker refused the request. Check the target and your permissions.`
     if (err.code === "too_many_links") return t`This issue or this item has as many links as allowed.`
     if (err.code === "tracker_unavailable") return t`The tracker could not be reached. Try again in a moment.`
+    if (err.code === "sso_discovery_failed")
+      return err.detail
+        ? t`Yuva could not read the provider's discovery document: ${err.detail}`
+        : t`Yuva could not read the provider's discovery document. Check the issuer URL.`
+    if (err.code === "sso_not_ready")
+      return t`Single sign-on is required only once a provider is connected and a domain is verified.`
+    if (err.code === "domain_exists") return t`This domain is already in the list.`
+    if (err.code === "domain_taken") return t`Another workspace on this server has already verified this domain.`
+    if (err.code === "sso_domain_limit") return t`This workspace has as many domains as allowed.`
+    if (err.code === "member_session_required") return t`Sign in as yourself to change this. API keys cannot.`
+    if (err.code === "sso_unavailable")
+      return t`Your organisation's identity provider could not be reached. Try again in a moment.`
     if (err.code === "webhook_disabled") return t`The endpoint is disabled. Enable it to send deliveries again.`
     if (err.code === "no_email_channel")
       return t`The other inbox has no e-mail channel, so this e-mail conversation cannot move there. Add an e-mail channel to it first.`

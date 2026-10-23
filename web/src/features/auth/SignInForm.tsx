@@ -1,6 +1,6 @@
 import { Trans, useLingui } from "@lingui/react/macro"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { ArrowLeftIcon, KeyRoundIcon, MailIcon } from "lucide-react"
+import { ArrowLeftIcon, BuildingIcon, KeyRoundIcon, MailIcon } from "lucide-react"
 import { useState } from "react"
 
 import { ErrorLine } from "@/components/common"
@@ -10,16 +10,20 @@ import { Label } from "@/components/ui/label"
 import { AuthDivider, AuthHeading, authAlert as alert, authField as field } from "@/features/auth/AuthLayout"
 import { isLocale } from "@/i18n"
 import { api, unwrap, type Locale, type Me } from "@/lib/api"
+import { safeNext } from "@/lib/next"
 import { signInWithPasskey } from "@/lib/passkey"
 import { meKey } from "@/lib/session"
+import { startSso } from "@/lib/sso"
 
 export function SignInForm({
   title,
   lead,
   reader,
   note,
+  banner,
   onSignedIn,
 }: {
+  banner?: React.ReactNode
   title: React.ReactNode
   lead: React.ReactNode
   reader?: boolean
@@ -30,7 +34,8 @@ export function SignInForm({
   const qc = useQueryClient()
   const [email, setEmail] = useState("")
   const [code, setCode] = useState("")
-  const [step, setStep] = useState<"email" | "code">("email")
+  const [step, setStep] = useState<"email" | "code" | "sso">("email")
+  const [sso, setSso] = useState<{ url: string; required: boolean } | null>(null)
   const [resent, setResent] = useState(false)
 
   const done = (data: Me) => {
@@ -39,11 +44,20 @@ export function SignInForm({
   }
 
   const request = useMutation({
-    mutationFn: () => {
+    mutationFn: async () => {
+      if (!reader && step === "email") {
+        const start = await startSso(email, safeNext(new URLSearchParams(window.location.search).get("next")))
+        if (start.sso && start.authorization_url) {
+          setSso({ url: start.authorization_url, required: start.required === true })
+          setStep("sso")
+          return null
+        }
+      }
       const locale: Locale = isLocale(i18n.locale) ? i18n.locale : "en"
       return unwrap(api.POST("/v1/auth/code", { body: reader ? { email, reader: true, locale } : { email, locale } }))
     },
-    onSuccess: () => {
+    onSuccess: (sent) => {
+      if (sent === null) return
       setResent(step === "code")
       setStep("code")
     },
@@ -57,12 +71,25 @@ export function SignInForm({
   return (
     <>
       <AuthHeading
-        icon={step === "code" ? <MailIcon /> : undefined}
-        title={step === "email" ? title : <Trans>Check your e-mail</Trans>}
+        icon={step === "code" ? <MailIcon /> : step === "sso" ? <BuildingIcon /> : undefined}
+        title={
+          step === "email" ? (
+            title
+          ) : step === "sso" ? (
+            <Trans>Sign in with your organisation</Trans>
+          ) : (
+            <Trans>Check your e-mail</Trans>
+          )
+        }
       >
         <p>
           {step === "email" ? (
             lead
+          ) : step === "sso" ? (
+            <Trans>
+              <span className="font-medium break-words text-foreground">{email}</span> signs in through your
+              organisation's identity provider.
+            </Trans>
           ) : (
             <Trans>
               We sent a 6-digit code to <span className="font-medium break-words text-foreground">{email}</span>. It is
@@ -83,6 +110,11 @@ export function SignInForm({
 
       {step === "email" ? (
         <div className="flex flex-col gap-5">
+          {banner && (
+            <p role="alert" className={alert} data-testid="sign-in-banner">
+              {banner}
+            </p>
+          )}
           <form
             className="flex flex-col gap-4"
             onSubmit={(e) => {
@@ -126,6 +158,45 @@ export function SignInForm({
             </p>
           )}
           {note}
+        </div>
+      ) : step === "sso" && sso ? (
+        <div className="flex flex-col gap-4">
+          <Button size="lg" onClick={() => window.location.assign(sso.url)} autoFocus data-testid="sign-in-sso">
+            <BuildingIcon />
+            <Trans>Continue with your organisation's sign-in</Trans>
+          </Button>
+          {sso.required && (
+            <p className="text-small text-pretty text-faint">
+              <Trans>Your organisation requires this sign-in for its workspace.</Trans>
+            </p>
+          )}
+          <ErrorLine error={request.error} className={alert} />
+          <div className="flex flex-wrap items-center justify-between gap-2 border-t pt-4">
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="-ms-3"
+              onClick={() => {
+                setStep("email")
+                setSso(null)
+                request.reset()
+              }}
+            >
+              <ArrowLeftIcon />
+              <Trans>Change address</Trans>
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="-me-3"
+              disabled={request.isPending}
+              onClick={() => request.mutate()}
+            >
+              <Trans>Use a code instead</Trans>
+            </Button>
+          </div>
         </div>
       ) : (
         <form

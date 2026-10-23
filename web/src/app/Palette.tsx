@@ -140,6 +140,7 @@ function useItems(open: boolean): Item[] {
       go(t`Workspace`, "/settings/workspace")
     }
     if (isOwner) go(t`Audit log`, "/settings/audit-log")
+    if (isOwner) go(t`Single sign-on`, "/settings/sso")
     list.push({ group: t`Go to`, label: t`Keyboard shortcuts`, keys: [SHORTCUTS.help], run: openShortcuts })
     list.push({ group: t`Appearance`, label: t`Light appearance`, run: () => setTheme("light") })
     list.push({ group: t`Appearance`, label: t`Dark appearance`, run: () => setTheme("dark") })

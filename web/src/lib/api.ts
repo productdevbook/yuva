@@ -5,6 +5,12 @@ import type { components, paths } from "@/lib/schema.gen"
 
 type S = components["schemas"]
 export type Me = S["Me"]
+export type SsoSettings = S["SsoSettings"]
+export type SsoDomain = S["SsoDomain"]
+export type SsoOidcInput = S["SsoOidcInput"]
+export type SsoSettingsUpdate = S["SsoSettingsUpdate"]
+export type SsoProtocol = S["SsoProtocol"]
+export type SsoJitRole = S["SsoJitRole"]
 export type Membership = S["Membership"]
 export type Role = S["Role"]
 export type Locale = S["Locale"]
