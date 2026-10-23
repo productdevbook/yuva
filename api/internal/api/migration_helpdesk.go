@@ -66,12 +66,13 @@ type helpdeskSecret struct {
 	BaseURL   string          `json:"base_url,omitempty"`
 	AccountID string          `json:"account_id,omitempty"`
 	Region    string          `json:"region,omitempty"`
+	Website   string          `json:"website,omitempty"`
 	Secret    string          `json:"secret,omitempty"`
 	Account   string          `json:"account"`
 }
 
 func (sec helpdeskSecret) account() helpdesk.Account {
-	return helpdesk.Account{Subdomain: sec.Subdomain, BaseURL: sec.BaseURL, ID: sec.AccountID, Region: sec.Region}
+	return helpdesk.Account{Subdomain: sec.Subdomain, BaseURL: sec.BaseURL, ID: sec.AccountID, Region: sec.Region, Website: sec.Website}
 }
 
 type signInSecret struct {
@@ -865,6 +866,13 @@ func (s *Server) reconnectAccount(ctx context.Context, p principal, id uuid.UUID
 	return me.ID, nil
 }
 
+func websiteID(id *uuid.UUID) *string {
+	if id == nil {
+		return nil
+	}
+	return new(id.String())
+}
+
 // tokenSecret checks the fields a token desk takes, and only those, and gives what is sealed and
 // the API port.
 func tokenSecret(d helpdesk.Desk, token string, b *oas.MigrationCredentialsInput) (helpdeskSecret, int32, error) {
@@ -878,7 +886,7 @@ func tokenSecret(d helpdesk.Desk, token string, b *oas.MigrationCredentialsInput
 	for _, f := range []struct {
 		name string
 		v    *string
-	}{{helpdesk.FieldSecret, b.Secret}, {helpdesk.FieldSubdomain, b.Subdomain}, {helpdesk.FieldBaseURL, b.BaseUrl}, {helpdesk.FieldAccount, b.Account}, {helpdesk.FieldRegion, region}} {
+	}{{helpdesk.FieldSecret, b.Secret}, {helpdesk.FieldSubdomain, b.Subdomain}, {helpdesk.FieldWebsite, websiteID(b.WebsiteId)}, {helpdesk.FieldBaseURL, b.BaseUrl}, {helpdesk.FieldAccount, b.Account}, {helpdesk.FieldRegion, region}} {
 		if f.v != nil && !slices.Contains(fields, f.name) {
 			return sec, 0, errValidation(f.name + " is not one of " + d.Name + "'s token_fields")
 		}
@@ -903,6 +911,9 @@ func tokenSecret(d helpdesk.Desk, token string, b *oas.MigrationCredentialsInput
 			return sec, 0, errValidation("region must be us, eu or au")
 		}
 		sec.Region = *region
+	}
+	if b.WebsiteId != nil {
+		sec.Website = b.WebsiteId.String()
 	}
 	if b.BaseUrl != nil {
 		base, err := helpdesk.BaseURL(*b.BaseUrl)

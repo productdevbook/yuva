@@ -128,6 +128,9 @@ func (b bearer) RoundTrip(r *http.Request) (*http.Response, error) {
 		r.Header.Del(b.send.Header)
 	}
 	if b.hosts.AllowsURL(r.URL) {
+		for k, v := range b.send.Headers {
+			r.Header.Set(k, v)
+		}
 		switch b.send.Scheme {
 		case SendBasic:
 			password := b.secret

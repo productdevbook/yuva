@@ -63,6 +63,7 @@ const groups = [
       "migrate-front",
       "migrate-freshdesk",
       "migrate-intercom",
+      "migrate-crisp",
       "migrate-imap",
       "migrate-files",
       "migrate-operators",

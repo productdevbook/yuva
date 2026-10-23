@@ -6668,6 +6668,10 @@ msgstr "Åbn Profile Settings i Chatwoot (dit avatar nederst til venstre), rul t
 msgid "In Claude, open <0>Customize › Connectors</0> and choose <1>Add custom connector</1>. It works for claude.ai and Claude Desktop alike."
 msgstr "I Claude, åbn <0>Customize › Connectors</0>, og vælg <1>Add custom connector</1>. Det virker ens for claude.ai og Claude Desktop."
 
+#: src/features/migrations/text.ts
+msgid "In Crisp, open Settings › Workspace Settings › Advanced configuration › API Token and generate a token. Paste its identifier and key below, with the website ID from the address of your Crisp dashboard, after /website/."
+msgstr "Åbn Settings › Workspace Settings › Advanced configuration › API Token i Crisp, og opret et token. Indsæt dets identifikator og nøgle nedenfor sammen med websteds-id’et fra adressen på dit Crisp-dashboard, efter /website/."
+
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "In Cursor's MCP settings, sign in to <0>yuva</0> when it asks."
 msgstr "I Cursors MCP-indstillinger, log ind på <0>yuva</0>, når den spørger."
@@ -7078,6 +7082,7 @@ msgstr "bevares"
 msgid "Kept with every subscription from this file, as the record of their consent."
 msgstr "Gemmes sammen med hvert abonnement fra denne fil som bevis for deres samtykke."
 
+#: src/features/migrations/TokenConnectStep.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Key"
 msgstr "Nøgle"
@@ -12228,6 +12233,10 @@ msgstr "Rolleadresser som postmaster@ eller noreply@"
 msgid "Role of {name}"
 msgstr "{name}s rolle"
 
+#: src/features/migrations/DoneStep.tsx
+msgid "Roll the website token you created for Yuva"
+msgstr "Forny det websted-token, du oprettede til Yuva"
+
 #: src/features/settings/channels/email/ForwardingAddressField.tsx
 #: src/features/settings/channels/PublicKeyField.tsx
 #: src/features/settings/inboxes/InboxSecurity.tsx
@@ -16463,6 +16472,9 @@ msgid "Webhooks for this product"
 msgstr "Webhooks for dette produkt"
 
 #: src/features/feedback/FeedbackFormDialog.tsx
+#: src/features/migrations/ChooseStep.tsx
+#: src/features/migrations/CopyStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Website"
 msgstr "Hjemmeside"
 
@@ -17284,6 +17296,10 @@ msgid "Yuva deleted its token but cannot revoke it at Microsoft. Remove Yuva fro
 msgstr "Yuva slettede sit token, men kan ikke tilbagekalde det hos Microsoft. Fjern Yuva fra din arbejdskonto i My Apps; en admin fjerner den for alle i Microsoft Entra admin center › Virksomhedsprogrammer."
 
 #: src/features/migrations/DoneStep.tsx
+msgid "Yuva deleted its token but cannot revoke it in Crisp. Regenerate the token in Settings › Workspace Settings › Advanced configuration; Yuva does not need it any more."
+msgstr "Yuva har slettet sit token, men kan ikke tilbagekalde det i Crisp. Opret tokenet igen i Settings › Workspace Settings › Advanced configuration; Yuva har ikke brug for det mere."
+
+#: src/features/migrations/DoneStep.tsx
 msgid "Yuva deleted its token but cannot revoke it in Help Scout. Delete the app in Your Profile › My Apps; Yuva does not need it any more."
 msgstr "Yuva slettede sit token, men kan ikke tilbagekalde det i Help Scout. Slet appen i Din profil › My Apps; Yuva har ikke længere brug for den."
 
@@ -17413,5 +17429,5 @@ msgid "Yuva's own notes cannot be changed."
 msgstr "Yuvas egne noter kan ikke ændres."
 
 #: src/features/migrations/MigrationsPage.tsx
-msgid "Zendesk, Help Scout, Front, Freshdesk, Intercom"
-msgstr "Zendesk, Help Scout, Front, Freshdesk, Intercom"
+msgid "Zendesk, Help Scout, Front, Freshdesk, Intercom, Crisp"
+msgstr "Zendesk, Help Scout, Front, Freshdesk, Intercom, Crisp"

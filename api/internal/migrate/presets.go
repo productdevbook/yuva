@@ -140,7 +140,7 @@ func deskPreset(d helpdesk.Desk) Preset {
 	if d.Auth == AuthOAuth {
 		p.Scopes = d.Scopes
 	}
-	if d.Account == helpdesk.AccountNone {
+	if d.Account == helpdesk.AccountNone || d.Account == helpdesk.AccountWebsite {
 		p.Servers = []Server{{Host: d.Host(helpdesk.Account{}), Port: 443, TLS: "tls"}}
 	}
 	return p

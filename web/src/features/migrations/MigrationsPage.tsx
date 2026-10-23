@@ -57,7 +57,7 @@ function NewMigrationDialog({ onClose }: { onClose: () => void }) {
   const [inboxId, setInboxId] = useState(filter || inboxes[0]?.id || "")
   const sources: [React.ReactNode, React.ReactNode][] = [
     [<Trans key="m">Mailboxes</Trans>, <Trans key="mt">Gmail, Outlook, Yandex, any IMAP server</Trans>],
-    [<Trans key="h">Help desks</Trans>, <Trans key="ht">Zendesk, Help Scout, Front, Freshdesk, Intercom</Trans>],
+    [<Trans key="h">Help desks</Trans>, <Trans key="ht">Zendesk, Help Scout, Front, Freshdesk, Intercom, Crisp</Trans>],
     [<Trans key="f">Files</Trans>, <Trans key="ft">An mbox export of a mailbox</Trans>],
   ]
   return (

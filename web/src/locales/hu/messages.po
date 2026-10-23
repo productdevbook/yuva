@@ -6668,6 +6668,10 @@ msgstr "A Chatwootban nyissa meg a Profile Settings részt (az avatarja, bal len
 msgid "In Claude, open <0>Customize › Connectors</0> and choose <1>Add custom connector</1>. It works for claude.ai and Claude Desktop alike."
 msgstr "A Claude-ban nyisd meg a <0>Customize › Connectors</0> részt, és válaszd az <1>Add custom connector</1> lehetőséget. A claude.ai-n és a Claude Desktopon egyaránt működik."
 
+#: src/features/migrations/text.ts
+msgid "In Crisp, open Settings › Workspace Settings › Advanced configuration › API Token and generate a token. Paste its identifier and key below, with the website ID from the address of your Crisp dashboard, after /website/."
+msgstr "A Crispben nyissa meg a Settings › Workspace Settings › Advanced configuration › API Token oldalt, és hozzon létre egy tokent. Illessze be alább az azonosítóját és a kulcsát, valamint a webhely azonosítóját a Crisp-irányítópult címéből, a /website/ után."
+
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "In Cursor's MCP settings, sign in to <0>yuva</0> when it asks."
 msgstr "A Cursor MCP-beállításaiban jelentkezz be a <0>yuva</0> szolgáltatásba, amikor kéri."
@@ -7078,6 +7082,7 @@ msgstr "megmarad"
 msgid "Kept with every subscription from this file, as the record of their consent."
 msgstr "Az ebből a fájlból származó minden feliratkozás mellett megmarad a hozzájárulásuk feljegyzéseként."
 
+#: src/features/migrations/TokenConnectStep.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Key"
 msgstr "Kulcs"
@@ -12228,6 +12233,10 @@ msgstr "Szerepköri címek, például postmaster@ vagy noreply@"
 msgid "Role of {name}"
 msgstr "{name} szerepe"
 
+#: src/features/migrations/DoneStep.tsx
+msgid "Roll the website token you created for Yuva"
+msgstr "Újítsa meg a Yuvához létrehozott webhelytokent"
+
 #: src/features/settings/channels/email/ForwardingAddressField.tsx
 #: src/features/settings/channels/PublicKeyField.tsx
 #: src/features/settings/inboxes/InboxSecurity.tsx
@@ -16463,6 +16472,9 @@ msgid "Webhooks for this product"
 msgstr "A termék webhookjai"
 
 #: src/features/feedback/FeedbackFormDialog.tsx
+#: src/features/migrations/ChooseStep.tsx
+#: src/features/migrations/CopyStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Website"
 msgstr "Weboldal"
 
@@ -17284,6 +17296,10 @@ msgid "Yuva deleted its token but cannot revoke it at Microsoft. Remove Yuva fro
 msgstr "A Yuva törölte a tokenjét, de nem tudja visszavonni a Microsoftnál. Távolítsd el a Yuvát a munkahelyi fiókodból a My Apps alatt; egy admin mindenkitől eltávolítja a Microsoft Entra admin center › Enterprise applications alatt."
 
 #: src/features/migrations/DoneStep.tsx
+msgid "Yuva deleted its token but cannot revoke it in Crisp. Regenerate the token in Settings › Workspace Settings › Advanced configuration; Yuva does not need it any more."
+msgstr "A Yuva törölte a tokenjét, de a Crispben nem tudja visszavonni. Hozza létre újra a tokent itt: Settings › Workspace Settings › Advanced configuration; a Yuvának már nincs rá szüksége."
+
+#: src/features/migrations/DoneStep.tsx
 msgid "Yuva deleted its token but cannot revoke it in Help Scout. Delete the app in Your Profile › My Apps; Yuva does not need it any more."
 msgstr "A Yuva törölte a tokenjét, de nem tudja visszavonni a Help Scoutban. Töröld az alkalmazást a Your Profile › My Apps alatt; a Yuvának már nincs rá szüksége."
 
@@ -17413,5 +17429,5 @@ msgid "Yuva's own notes cannot be changed."
 msgstr "A Yuva saját jegyzetei nem módosíthatók."
 
 #: src/features/migrations/MigrationsPage.tsx
-msgid "Zendesk, Help Scout, Front, Freshdesk, Intercom"
-msgstr "Zendesk, Help Scout, Front, Freshdesk, Intercom"
+msgid "Zendesk, Help Scout, Front, Freshdesk, Intercom, Crisp"
+msgstr "Zendesk, Help Scout, Front, Freshdesk, Intercom, Crisp"

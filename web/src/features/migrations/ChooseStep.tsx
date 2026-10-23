@@ -120,6 +120,8 @@ export function ChooseStep({ m, preset }: { m: Migration; preset: MigrationPrese
                 <Trans>Inboxes</Trans>
               ) : m.source === "freshdesk" ? (
                 <Trans>Products</Trans>
+              ) : m.source === "crisp" ? (
+                <Trans>Website</Trans>
               ) : (
                 <Trans>Folders</Trans>
               )

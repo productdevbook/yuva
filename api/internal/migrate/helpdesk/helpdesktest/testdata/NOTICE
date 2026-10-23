@@ -31,3 +31,8 @@ ids and content.
   from a conversation of 503 parts) and the contacts, one of them a lead without an e-mail
   address. Attachments point at Intercom's CDN host, and one points at the API host to check it
   is refused.
+
+- crisp/: the website, its operators, two pages of conversations (an e-mail visitor, a resolved one
+  with a second participant, an anonymous visitor) and each conversation's messages in batches the
+  way `timestamp_before` pages them, shaped after docs.crisp.chat (REST API v1) with example
+  addresses and invented ids. Files point at storage.crisp.chat and at hosts outside Crisp.

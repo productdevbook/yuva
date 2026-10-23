@@ -74,6 +74,14 @@ type Server struct {
 	FrontThrottle int
 	// IntercomLimited is how many of the next Intercom API requests are answered 429.
 	IntercomLimited int
+	// CrispThrottle is how many of the next Crisp API requests answer 420.
+	CrispThrottle int
+	// CrispFilesThrottle is how many of the next requests to Crisp's storage answer 429.
+	CrispFilesThrottle int
+	// CrispPageSize, when set, is the conversations a page, whatever per_page says.
+	CrispPageSize int
+	// CrispAscending lists conversations oldest update first.
+	CrispAscending bool
 
 	t        testing.TB
 	srv      *httptest.Server
@@ -99,7 +107,7 @@ func New(t testing.TB, now func() time.Time) *Server {
 	}
 	tmpl := &x509.Certificate{
 		SerialNumber: big.NewInt(1), Subject: pkix.Name{CommonName: "helpdesk fixtures"},
-		DNSNames:  []string{"*.zendesk.com", "*.zdusercontent.com", "api.helpscout.net", "secure.helpscout.net", "api2.frontapp.com", "*.freshdesk.com", "s3.eu-west-1.amazonaws.com", "api.intercom.io", "api.eu.intercom.io", "api.au.intercom.io", IntercomCDN, OutsideHost, ChatwootHost},
+		DNSNames:  []string{"*.zendesk.com", "*.zdusercontent.com", "api.helpscout.net", "secure.helpscout.net", "api2.frontapp.com", "*.freshdesk.com", "s3.eu-west-1.amazonaws.com", "api.intercom.io", "api.eu.intercom.io", "api.au.intercom.io", IntercomCDN, "api.crisp.chat", CrispStorage, OutsideHost, ChatwootHost},
 		NotBefore: time.Now().Add(-time.Hour), NotAfter: time.Now().Add(24 * time.Hour), KeyUsage: x509.KeyUsageDigitalSignature,
 		ExtKeyUsage: []x509.ExtKeyUsage{x509.ExtKeyUsageServerAuth}, IsCA: true, BasicConstraintsValid: true,
 	}
@@ -178,6 +186,10 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 		s.freshdeskFiles(w, r)
 	case strings.HasSuffix(host, ".intercom.io"):
 		s.intercom(w, r)
+	case host == "api.crisp.chat":
+		s.crisp(w, r)
+	case host == CrispStorage:
+		s.crispStorage(w, r)
 	case host == "api.helpscout.net":
 		w.Header().Set("X-RateLimit-Limit-Minute", fmt.Sprint(HelpScoutLimit))
 		s.helpscout(w, r, body)

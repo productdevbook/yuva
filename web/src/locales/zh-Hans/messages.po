@@ -6668,6 +6668,10 @@ msgstr "在 Chatwoot 中打开 Profile Settings（左下角的头像），滚动
 msgid "In Claude, open <0>Customize › Connectors</0> and choose <1>Add custom connector</1>. It works for claude.ai and Claude Desktop alike."
 msgstr "在 Claude 中,打开<0>自定义 › 连接器</0>并选择<1>添加自定义连接器</1>。它同时适用于 claude.ai 和 Claude Desktop。"
 
+#: src/features/migrations/text.ts
+msgid "In Crisp, open Settings › Workspace Settings › Advanced configuration › API Token and generate a token. Paste its identifier and key below, with the website ID from the address of your Crisp dashboard, after /website/."
+msgstr "在 Crisp 中打开 Settings › Workspace Settings › Advanced configuration › API Token 并生成令牌。把它的标识符和密钥粘贴到下方，再加上 Crisp 控制台地址中 /website/ 之后的网站 ID。"
+
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "In Cursor's MCP settings, sign in to <0>yuva</0> when it asks."
 msgstr "在 Cursor 的 MCP 设置中,按提示登录 <0>yuva</0>。"
@@ -7078,6 +7082,7 @@ msgstr "保留"
 msgid "Kept with every subscription from this file, as the record of their consent."
 msgstr "随来自此文件的每个订阅一起保存,作为他们同意的记录。"
 
+#: src/features/migrations/TokenConnectStep.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Key"
 msgstr "密钥"
@@ -12228,6 +12233,10 @@ msgstr "角色地址,如 postmaster@ 或 noreply@"
 msgid "Role of {name}"
 msgstr "{name} 的角色"
 
+#: src/features/migrations/DoneStep.tsx
+msgid "Roll the website token you created for Yuva"
+msgstr "更新你为 Yuva 创建的网站令牌"
+
 #: src/features/settings/channels/email/ForwardingAddressField.tsx
 #: src/features/settings/channels/PublicKeyField.tsx
 #: src/features/settings/inboxes/InboxSecurity.tsx
@@ -16463,6 +16472,9 @@ msgid "Webhooks for this product"
 msgstr "此产品的 Webhook"
 
 #: src/features/feedback/FeedbackFormDialog.tsx
+#: src/features/migrations/ChooseStep.tsx
+#: src/features/migrations/CopyStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Website"
 msgstr "网站"
 
@@ -17284,6 +17296,10 @@ msgid "Yuva deleted its token but cannot revoke it at Microsoft. Remove Yuva fro
 msgstr "Yuva 已删除其令牌,但无法在 Microsoft 撤销它。请在 My Apps 中从你的工作账号移除 Yuva;管理员可在 Microsoft Entra 管理中心 › 企业应用程序 中为所有人移除。"
 
 #: src/features/migrations/DoneStep.tsx
+msgid "Yuva deleted its token but cannot revoke it in Crisp. Regenerate the token in Settings › Workspace Settings › Advanced configuration; Yuva does not need it any more."
+msgstr "Yuva 已删除自己的令牌，但无法在 Crisp 中撤销它。请在 Settings › Workspace Settings › Advanced configuration 中重新生成令牌；Yuva 不再需要它。"
+
+#: src/features/migrations/DoneStep.tsx
 msgid "Yuva deleted its token but cannot revoke it in Help Scout. Delete the app in Your Profile › My Apps; Yuva does not need it any more."
 msgstr "Yuva 已删除其令牌,但无法在 Help Scout 撤销它。请在“Your Profile › My Apps”中删除该应用;Yuva 不再需要它。"
 
@@ -17413,5 +17429,5 @@ msgid "Yuva's own notes cannot be changed."
 msgstr "Yuva 自带的备注无法更改。"
 
 #: src/features/migrations/MigrationsPage.tsx
-msgid "Zendesk, Help Scout, Front, Freshdesk, Intercom"
-msgstr "Zendesk, Help Scout, Front, Freshdesk, Intercom"
+msgid "Zendesk, Help Scout, Front, Freshdesk, Intercom, Crisp"
+msgstr "Zendesk, Help Scout, Front, Freshdesk, Intercom, Crisp"

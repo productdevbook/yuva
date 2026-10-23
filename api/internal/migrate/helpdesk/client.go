@@ -73,6 +73,10 @@ type Cursor struct {
 	Inbox         string    `json:"inbox,omitempty"`
 	ModifiedSince time.Time `json:"modified_since,omitzero"`
 	StartedAt     time.Time `json:"started_at,omitzero"`
+	// Seen are the ids already read at the instant Start names, for a listing that walks by time.
+	Seen []string `json:"seen,omitempty"`
+	// Order is the direction the listing runs, once its first page has shown it.
+	Order string `json:"order,omitempty"`
 }
 
 type TicketPage struct {
@@ -123,6 +127,7 @@ type client struct {
 	retryHeaders []string
 	resetHeaders []string
 	headers      map[string]string
+	halveOnLimit bool
 }
 
 // inlineWait is the longest wait for the incremental exports a reader sleeps through; a longer
@@ -166,7 +171,7 @@ func (c *client) get(ctx context.Context, hc *http.Client, class Class, rawURL, 
 	defer res.Body.Close()
 	c.budget.Saw(res.Header)
 	if res.StatusCode < 200 || res.StatusCode > 299 {
-		return nil, c.failure(res, req.URL.Path)
+		return nil, c.failure(res, req.URL.Path, hc == c.api)
 	}
 	limit := c.cfg.MaxBytes
 	if limit <= 0 {
@@ -190,7 +195,7 @@ func (c *client) getJSON(ctx context.Context, class Class, rawURL string, out an
 	return json.Unmarshal(b, out)
 }
 
-func (c *client) failure(res *http.Response, path string) error {
+func (c *client) failure(res *http.Response, path string, api bool) error {
 	b, _ := io.ReadAll(io.LimitReader(res.Body, errBodyBytes))
 	se := StatusError{Status: res.StatusCode, Path: path, Body: strings.TrimSpace(string(b))}
 	switch res.StatusCode {
@@ -211,6 +216,9 @@ func (c *client) failure(res *http.Response, path string) error {
 					break
 				}
 			}
+		}
+		if c.halveOnLimit && api {
+			c.budget.Halve(c.cfg.now())
 		}
 		return &LimitError{Until: c.cfg.now().Add(max(wait, time.Second))}
 	}

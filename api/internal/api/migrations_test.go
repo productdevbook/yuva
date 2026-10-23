@@ -201,7 +201,7 @@ func TestMigrationAccess(t *testing.T) {
 	for _, p := range presets {
 		byID[p.(map[string]any)["id"].(string)] = p.(map[string]any)
 	}
-	if len(byID) != 18 || byID["front"]["auth"].([]any)[0] != "token" || byID["zendesk"]["source"] != "zendesk" || byID["helpscout"]["auth"].([]any)[0] != "oauth" || byID["takeout"]["source"] != "file" || byID["file"]["source"] != "file" || byID["gmail"]["available"] != true || byID["microsoft"]["available"] != true || byID["microsoft"]["team_client"] != true || byID["icloud"]["username"] != "local_part" ||
+	if len(byID) != 19 || byID["front"]["auth"].([]any)[0] != "token" || byID["zendesk"]["source"] != "zendesk" || byID["helpscout"]["auth"].([]any)[0] != "oauth" || byID["takeout"]["source"] != "file" || byID["file"]["source"] != "file" || byID["gmail"]["available"] != true || byID["microsoft"]["available"] != true || byID["microsoft"]["team_client"] != true || byID["icloud"]["username"] != "local_part" ||
 		byID["gmail"]["budget"].(map[string]any)["bytes_per_day"] != float64(1500000000) {
 		t.Fatalf("presets: %v", byID)
 	}

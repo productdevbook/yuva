@@ -7520,7 +7520,7 @@ paths:
 
         `kind: token`: a help desk whose preset's `auth` is `token` connects with an API token the
         team creates in its own account, plus the fields its preset's `token_fields` names: a
-        second `secret`, the account's `subdomain`, the `base_url` of a self-hosted install, an `account` number, or the data `region`
+        second `secret`, the account's `subdomain`, the `base_url` of a self-hosted install, an `account` number, the data `region`, or a `website_id`
         (HTTPS only; it is dialled with the same address checks as an IMAP server, so a private
         address only where the operator allows one). The token is sent only in the help desk's
         own auth header and only to its API hosts, with `GET` only; the connection test then reads
@@ -21264,10 +21264,10 @@ components:
       type: string
       description: |
         Where the history comes from: `imap`, a mailbox read over IMAP; `file`, export files;
-        `zendesk`, `helpscout`, `chatwoot`, `front`, `freshdesk` and `intercom`, help desks. A server offers the sources its operator allows
+        `zendesk`, `helpscout`, `chatwoot`, `front`, `freshdesk`, `intercom` and `crisp`, help desks. A server offers the sources its operator allows
         (`YUVA_MIGRATION_SOURCES`) among those built: all of them.
-      enum: [imap, file, zendesk, helpscout, chatwoot, front, freshdesk, intercom]
-      x-enum-varnames: [MigrationSourceImap, MigrationSourceFile, MigrationSourceZendesk, MigrationSourceHelpscout, MigrationSourceChatwoot, MigrationSourceFront, MigrationSourceFreshdesk, MigrationSourceIntercom]
+      enum: [imap, file, zendesk, helpscout, chatwoot, front, freshdesk, intercom, crisp]
+      x-enum-varnames: [MigrationSourceImap, MigrationSourceFile, MigrationSourceZendesk, MigrationSourceHelpscout, MigrationSourceChatwoot, MigrationSourceFront, MigrationSourceFreshdesk, MigrationSourceIntercom, MigrationSourceCrisp]
     MigrationPresetId:
       type: string
       description: |
@@ -21276,9 +21276,9 @@ components:
         `fastmail`, `gmx`, or `imap` for any other server. For a `file` migration: `takeout`, a
         Google Takeout file, or `file`, any other export file; both read every format the server
         knows, which `upload.format` names once the upload is complete. A help desk has the preset
-        of its source: `zendesk`, `helpscout`, `chatwoot`, `front`, `freshdesk` or `intercom`.
-      enum: [gmail, google_workspace, microsoft, yandex, icloud, zoho, yahoo, fastmail, gmx, imap, takeout, file, zendesk, helpscout, chatwoot, front, freshdesk, intercom]
-      x-enum-varnames: [PresetGmail, PresetGoogleWorkspace, PresetMicrosoft, PresetYandex, PresetIcloud, PresetZoho, PresetYahoo, PresetFastmail, PresetGmx, PresetImap, PresetTakeout, PresetFile, PresetZendesk, PresetHelpscout, PresetChatwoot, PresetFront, PresetFreshdesk, PresetIntercom]
+        of its source: `zendesk`, `helpscout`, `chatwoot`, `front`, `freshdesk`, `intercom` or `crisp`.
+      enum: [gmail, google_workspace, microsoft, yandex, icloud, zoho, yahoo, fastmail, gmx, imap, takeout, file, zendesk, helpscout, chatwoot, front, freshdesk, intercom, crisp]
+      x-enum-varnames: [PresetGmail, PresetGoogleWorkspace, PresetMicrosoft, PresetYandex, PresetIcloud, PresetZoho, PresetYahoo, PresetFastmail, PresetGmx, PresetImap, PresetTakeout, PresetFile, PresetZendesk, PresetHelpscout, PresetChatwoot, PresetFront, PresetFreshdesk, PresetIntercom, PresetCrisp]
     MigrationState:
       type: string
       description: |
@@ -21346,7 +21346,7 @@ components:
       description: |
         The stored credentials, without the secret. A help desk's are `oauth` or `token`, as its
         preset's `auth`, with the account's API host as `server` (`<subdomain>.zendesk.com`,
-        `<subdomain>.freshdesk.com`, `api.helpscout.net`, `api2.frontapp.com`, or the host of a `base_url`); a `token` is never answered and has no
+        `<subdomain>.freshdesk.com`, `api.helpscout.net`, `api2.frontapp.com`, `api.crisp.chat`, or the host of a `base_url`); a `token` is never answered and has no
         `scopes` or `expires_at`. A Microsoft
         sign-in's are `oauth` too, with `outlook.office365.com:993` as `server`, the granted
         `scopes` and when the access token expires; the token is refreshed before a connection
@@ -21412,6 +21412,10 @@ components:
           type: string
           pattern: "^[a-z0-9][a-z0-9-]{0,62}$"
           description: "`token`, where `token_fields` names `subdomain`: the account's subdomain."
+        website_id:
+          type: string
+          format: uuid
+          description: "`token`, where `token_fields` names `website_id`: the website's id (Crisp)."
         base_url:
           type: string
           format: uri
@@ -22227,8 +22231,8 @@ components:
             `kind: token`, `token` first, in the order the connect form shows them.
           items:
             type: string
-            enum: [token, secret, subdomain, base_url, account, region]
-            x-enum-varnames: [TokenFieldToken, TokenFieldSecret, TokenFieldSubdomain, TokenFieldBaseUrl, TokenFieldAccount, TokenFieldRegion]
+            enum: [token, secret, subdomain, website_id, base_url, account, region]
+            x-enum-varnames: [TokenFieldToken, TokenFieldSecret, TokenFieldSubdomain, TokenFieldWebsiteId, TokenFieldBaseUrl, TokenFieldAccount, TokenFieldRegion]
     MigrationPresetList:
       type: object
       required: [items]

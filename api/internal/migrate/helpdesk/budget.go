@@ -36,6 +36,7 @@ type Budget struct {
 	DayLimit    int         `json:"day_limit,omitempty"`
 	DayStart    time.Time   `json:"day_start,omitzero"`
 	DayUsed     int         `json:"day_used,omitempty"`
+	LimitedAt   time.Time   `json:"limited_at,omitzero"`
 
 	Default        int           `json:"-"`
 	Window         time.Duration `json:"-"`
@@ -78,8 +79,21 @@ func (b *Budget) perSecond() float64 {
 	return (float64(b.PerWindow()) - b.capacity()) / b.window().Seconds()
 }
 
+// restoreAfter is how long a help desk without limit headers goes without a limit answer before
+// the pace halved by Halve returns to the default.
+const restoreAfter = time.Hour
+
+// Halve halves the pace after a limit answer at now.
+func (b *Budget) Halve(now time.Time) {
+	b.Limit = max(b.PerWindow(), 4)
+	b.LimitedAt = now
+}
+
 // Take reserves a request at now, or tells when one may be sent.
 func (b *Budget) Take(class Class, now time.Time) error {
+	if !b.LimitedAt.IsZero() && !now.Before(b.LimitedAt.Add(restoreAfter)) {
+		b.Limit, b.LimitedAt = 0, time.Time{}
+	}
 	perDay := b.PerDay()
 	if perDay > 0 {
 		if b.DayStart.IsZero() || !now.Before(b.DayStart.Add(Day)) {

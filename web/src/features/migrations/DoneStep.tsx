@@ -140,12 +140,19 @@ export function DoneStep({ m, preset }: { m: Migration; preset: MigrationPreset 
                   <Trans>Delete the API token you created for Yuva</Trans>
                 ) : m.source === "freshdesk" ? (
                   <Trans>Reset the API key you gave Yuva</Trans>
+                ) : m.source === "crisp" ? (
+                  <Trans>Roll the website token you created for Yuva</Trans>
                 ) : (
                   <Trans>Delete the app you created for Yuva</Trans>
                 )}
               </p>
               <p>
-                {m.source === "zendesk" ? (
+                {m.source === "crisp" ? (
+                  <Trans>
+                    Yuva deleted its token but cannot revoke it in Crisp. Regenerate the token in Settings › Workspace
+                    Settings › Advanced configuration; Yuva does not need it any more.
+                  </Trans>
+                ) : m.source === "zendesk" ? (
                   <Trans>
                     Yuva deleted its token but cannot revoke it in Zendesk. Delete the client in Admin Center › Apps and
                     integrations › APIs › OAuth clients; Yuva does not need it any more.

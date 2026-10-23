@@ -201,6 +201,8 @@ function Folders({ m }: { m: Migration }) {
           <Trans>Inboxes</Trans>
         ) : m.source === "freshdesk" ? (
           <Trans>Products</Trans>
+        ) : m.source === "crisp" ? (
+          <Trans>Website</Trans>
         ) : (
           <Trans>Folders</Trans>
         )}

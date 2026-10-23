@@ -9,9 +9,9 @@ available to [assistants](#from-claude-code-or-another-assistant) and the [API](
 Pick your provider's guide: [Gmail](migrate-gmail.md), [Google Workspace](migrate-google-workspace.md),
 [Outlook.com](migrate-outlook.md), [Microsoft 365](migrate-microsoft365.md), [Yandex](migrate-yandex.md), [iCloud](migrate-icloud.md), [Zoho Mail](migrate-zoho.md),
 [Yahoo Mail](migrate-yahoo.md), [Fastmail](migrate-fastmail.md), [GMX and mail.com](migrate-gmx.md),
-[Zendesk](migrate-zendesk.md), [Help Scout](migrate-helpscout.md), [Chatwoot](migrate-chatwoot.md), [Front](migrate-front.md), [Freshdesk](migrate-freshdesk.md), [Intercom](migrate-intercom.md),
+[Zendesk](migrate-zendesk.md), [Help Scout](migrate-helpscout.md), [Chatwoot](migrate-chatwoot.md), [Front](migrate-front.md), [Freshdesk](migrate-freshdesk.md), [Intercom](migrate-intercom.md), [Crisp](migrate-crisp.md),
 [any other IMAP server](migrate-imap.md) or [an export file](migrate-files.md) (Google Takeout, mbox, .eml or Maildir in a zip). Running your own server? See [Move to Yuva for operators](migrate-operators.md).
-Zendesk, Help Scout, Outlook.com and Microsoft 365 connect with a sign-in instead of a password, Front with an API token, Freshdesk with an API key and your subdomain, Intercom with an access token.
+Zendesk, Help Scout, Outlook.com and Microsoft 365 connect with a sign-in instead of a password, Front with an API token, Freshdesk with an API key and your subdomain, Intercom with an access token, Crisp with a website token.
 
 ## What Yuva does and does not do with your mailbox
 

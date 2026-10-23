@@ -285,6 +285,13 @@ export function useGuides() {
       link: guideUrl("migrate-intercom"),
       linkLabel: t`Read the guide`,
     },
+    crisp: {
+      steps: [
+        t`In Crisp, open Settings › Workspace Settings › Advanced configuration › API Token and generate a token. Paste its identifier and key below, with the website ID from the address of your Crisp dashboard, after /website/.`,
+      ],
+      link: guideUrl("migrate-crisp"),
+      linkLabel: t`Read the guide`,
+    },
     file: {
       steps: [
         t`Thunderbird, Apple Mail and most mail apps export a folder as an .mbox file: upload that file.`,

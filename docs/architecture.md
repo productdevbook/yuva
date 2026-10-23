@@ -1806,7 +1806,10 @@ losing a message and without changing anything at the source. Decisions:
   licensed reader) need no access to the account and are the fast way for very large Gmail
   mailboxes: Takeout first, then IMAP for newer mail and the cutover. Help desks: Zendesk with OAuth
   `read`, Help Scout, Chatwoot (an administrator's access token, the install's HTTPS base URL and the account
-  number; conversations by last activity, messages backwards with `before`, 60 requests a minute); Intercom (a private app's access token, see below); each team creates the OAuth client in its own help desk with Yuva's redirect URL
+  number; conversations by last activity, messages backwards with `before`, 60 requests a minute); Intercom (a private app's access token, see below); Crisp (a website token, identifier and key as Basic auth plus `X-Crisp-Tier: website`, and
+  the website id; conversations ordered by last update a page at a time, messages read backwards with
+  `timestamp_before`, files fetched from Crisp's storage host without the token, 5,000 requests a day of the
+  token's 10,000, and a 429 or 420 waits a minute and halves the pace); each team creates the OAuth client in its own help desk with Yuva's redirect URL
   and enters its id and secret on the panel's connect page (there is no operator-wide client), and a
   help-desk migration goes through the same cutover as a mailbox. Front connects with an API token a
   Front admin creates (feature Access resources, namespaces Global and Shared, permission Read only),
@@ -1823,7 +1826,7 @@ losing a message and without changing anything at the source. Decisions:
   attribute prefix and how its changes are read after the scan; the preset, the sign-in, the reader
   and the copy read the entry, so a new help desk is a new entry. A `token` desk connects with
   `PUT /v1/migrations/{id}/credentials` (`kind: token`, the API token and, where the entry asks, a
-  second secret, the account's subdomain, the HTTPS base URL of a self-hosted install, an account number or the data region), sealed like
+  second secret, the account's subdomain, the HTTPS base URL of a self-hosted install, an account number, the data region or a website id), sealed like
   OAuth tokens and deleted with them; the panel shows its form in place of "Sign in". Freshdesk is
   a token desk: an admin's API key (no scopes, no read-only key) sent as Basic `key:X` to
   `<subdomain>.freshdesk.com` only; tickets listed by `updated_at` from `updated_since`, started again at the

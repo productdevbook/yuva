@@ -29,6 +29,7 @@ import { Field } from "@/features/settings/ui"
 import type { Migration, MigrationCredentialsInput, MigrationPreset, MigrationTestResult } from "@/lib/api"
 
 const SUBDOMAIN = /^[a-z0-9][a-z0-9-]{0,62}$/
+const WEBSITE_ID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/
 
 const REGIONS = [
   { value: "us", label: "US · api.intercom.io" },
@@ -47,6 +48,7 @@ export function TokenConnectStep({ m, preset }: { m: Migration; preset: Migratio
   const [baseUrl, setBaseUrl] = useState("")
   const [account, setAccount] = useState("")
   const [region, setRegion] = useState<(typeof REGIONS)[number]["value"]>("us")
+  const [websiteId, setWebsiteId] = useState("")
   const [result, setResult] = useState<MigrationTestResult | null>(null)
   const credentials = useSetCredentials(m.id)
   const test = useTestConnection(m.id)
@@ -60,12 +62,14 @@ export function TokenConnectStep({ m, preset }: { m: Migration; preset: Migratio
   const sub = subdomain.trim().toLowerCase()
   const base = baseUrl.trim()
   const accountId = account.trim()
+  const website = websiteId.trim().toLowerCase()
   const valid =
     token.trim() !== "" &&
     (!fields.includes("secret") || secret.trim() !== "") &&
     (!fields.includes("subdomain") || SUBDOMAIN.test(sub)) &&
     (!fields.includes("base_url") || base.startsWith("https://")) &&
-    (!fields.includes("account") || /^[0-9]{1,18}$/.test(accountId))
+    (!fields.includes("account") || /^[0-9]{1,18}$/.test(accountId)) &&
+    (!fields.includes("website_id") || WEBSITE_ID.test(website))
 
   const run = useMutation({
     mutationFn: async () => {
@@ -75,6 +79,7 @@ export function TokenConnectStep({ m, preset }: { m: Migration; preset: Migratio
         token: token.trim(),
         ...(fields.includes("secret") ? { secret: secret.trim() } : {}),
         ...(fields.includes("subdomain") ? { subdomain: sub } : {}),
+        ...(fields.includes("website_id") ? { website_id: website } : {}),
         ...(fields.includes("base_url") ? { base_url: base } : {}),
         ...(fields.includes("account") ? { account: accountId } : {}),
         ...(fields.includes("region") ? { region } : {}),
@@ -243,6 +248,22 @@ export function TokenConnectStep({ m, preset }: { m: Migration; preset: Migratio
               </NativeSelect>
             </Field>
           )}
+          {fields.includes("website_id") && (
+            <Field label={<Trans>Website</Trans>} htmlFor="migration-website-id">
+              <Input
+                id="migration-website-id"
+                autoComplete="off"
+                spellCheck={false}
+                value={websiteId}
+                maxLength={36}
+                onChange={(e) => setWebsiteId(e.target.value)}
+                placeholder="00000000-0000-0000-0000-000000000000"
+                aria-invalid={website !== "" && !WEBSITE_ID.test(website)}
+                className="h-10 rounded-xl font-mono"
+                data-testid="migration-website-id"
+              />
+            </Field>
+          )}
           <Field
             label={<Trans>API token</Trans>}
             htmlFor="migration-token"
@@ -260,7 +281,10 @@ export function TokenConnectStep({ m, preset }: { m: Migration; preset: Migratio
             />
           </Field>
           {fields.includes("secret") && (
-            <Field label={<Trans>Second secret</Trans>} htmlFor="migration-secret">
+            <Field
+              label={fields.includes("website_id") ? <Trans>Key</Trans> : <Trans>Second secret</Trans>}
+              htmlFor="migration-secret"
+            >
               <Input
                 id="migration-secret"
                 type="password"

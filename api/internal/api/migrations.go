@@ -1098,8 +1098,8 @@ func (s *Server) SetMigrationCredentials(ctx context.Context, req oas.SetMigrati
 	if b.Kind != nil && *b.Kind != oas.CredentialsInputPassword {
 		return nil, errValidation("kind must be password or token")
 	}
-	if b.Token != nil || b.Secret != nil || b.Subdomain != nil || b.BaseUrl != nil || b.Region != nil {
-		return nil, errValidation("token, secret, subdomain, base_url and region go with kind token")
+	if b.Token != nil || b.Secret != nil || b.Subdomain != nil || b.WebsiteId != nil || b.BaseUrl != nil || b.Region != nil {
+		return nil, errValidation("token, secret, subdomain, website_id, base_url and region go with kind token")
 	}
 	username := strings.TrimSpace(deref(b.Username))
 	if n := len([]rune(username)); n < 1 || n > 320 {

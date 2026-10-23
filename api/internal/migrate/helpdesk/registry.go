@@ -23,6 +23,8 @@ const (
 	AccountSubdomain = "subdomain"
 	AccountBaseURL   = "base_url"
 	AccountRegion    = "region"
+	// AccountWebsite: one API host, and the id of the website the token belongs to.
+	AccountWebsite = "website"
 )
 
 // The fields of a token desk's connect form, as the API names them.
@@ -30,6 +32,7 @@ const (
 	FieldToken     = "token"
 	FieldSecret    = "secret"
 	FieldSubdomain = "subdomain"
+	FieldWebsite   = "website_id"
 	FieldBaseURL   = "base_url"
 	FieldAccount   = "account"
 	FieldRegion    = "region"
@@ -59,6 +62,8 @@ type Send struct {
 	Scheme   string
 	Header   string
 	Password string
+	// Headers are fixed headers that go with the token, to the token's hosts only.
+	Headers map[string]string
 }
 
 // Limit is one of a help desk's rate limits: its window (a minute, ten seconds or a Day), the
@@ -75,6 +80,7 @@ type Account struct {
 	BaseURL   string `json:"base_url,omitempty"`
 	ID        string `json:"id,omitempty"`
 	Region    string `json:"region,omitempty"`
+	Website   string `json:"website,omitempty"`
 }
 
 // Credentials are what the reader sends: the access or API token, and a token desk's second
@@ -129,6 +135,8 @@ type Desk struct {
 	ResetHeaders []string
 	// Headers go on every request to the API hosts.
 	Headers map[string]string
+	// HalveOnLimit halves the pace after a 429 or 420, for a help desk that reports no limit headers.
+	HalveOnLimit bool
 	// AttributePrefix names a contact's attributes from this help desk (zendesk_id).
 	AttributePrefix string
 	Sync            SyncCursor
@@ -139,7 +147,7 @@ type Desk struct {
 
 var (
 	registryMu sync.RWMutex
-	registry   = []Desk{zendeskDesk, helpScoutDesk, chatwootDesk, frontDesk, freshdeskDesk, intercomDesk}
+	registry   = []Desk{zendeskDesk, helpScoutDesk, chatwootDesk, frontDesk, freshdeskDesk, intercomDesk, crispDesk}
 )
 
 // Desks are the help desks in the order the panel shows them.
@@ -196,6 +204,8 @@ func (d Desk) Fields() []string {
 		out = append(out, FieldBaseURL)
 	case AccountRegion:
 		out = append(out, FieldRegion)
+	case AccountWebsite:
+		out = append(out, FieldWebsite)
 	}
 	if d.AccountID {
 		out = append(out, FieldAccount)
@@ -274,7 +284,7 @@ func (d Desk) client(cfg Config, a Account, creds Credentials, budget *Budget) *
 		fb.hosts = Hosts{}
 	}
 	return &client{
-		cfg: cfg, budget: d.Budget(budget), retryHeaders: d.RetryHeaders, resetHeaders: d.ResetHeaders, headers: d.Headers,
+		cfg: cfg, budget: d.Budget(budget), retryHeaders: d.RetryHeaders, resetHeaders: d.ResetHeaders, headers: d.Headers, halveOnLimit: d.HalveOnLimit,
 		api: cfg.dataClient(api, b), files: cfg.dataClient(files, fb),
 	}
 }
