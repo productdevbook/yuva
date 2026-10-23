@@ -59,6 +59,9 @@ Artikel im Panel mit „War das hilfreich?“ und endet mit einer Schaltfläche 
 Unterhaltung, die nach dem Lesen eines Artikels beginnt, hält ihn fest, und ein Artikel, den Ihr Team
 in einer Antwort sendet, öffnet sich in derselben App. **Roadmap** erscheint, wenn der Posteingang ein öffentliches [Roadmap-Board](roadmap-board.md) hat: Ideen nach Phase und Stimmen, eine Idee mit ihren Antworten und Idee vorschlagen. Abstimmen und Vorschlagen erfordern eine Anmeldung, die das Leserfenster öffnet, sofern der Besucher kein Identitäts-Token hat. **Neuigkeiten** erscheint, wenn der Posteingang einen veröffentlichten [Neuigkeiten](whats-new.md)-Changelog mit einem Eintrag hat: eine Kachel mit der Zahl ungelesener Einträge, dann die Einträge, neueste zuerst, mit Labels, Datum, Bild und Text.
 
+Eine Nachricht, die ein Mitglied entfernt hat, erscheint als „Diese Nachricht wurde entfernt“, in der Unterhaltung
+und in ihrer Vorschau in der Unterhaltungsliste, und ändert sich live, solange das Panel offen ist.
+
 Ist niemand erreichbar und fragt der Kanal nach einer E-Mail-Adresse, bittet die Unterhaltung darum.
 Nach dem Speichern sagt sie, dass ein Bestätigungslink verschickt wurde (mit Adresse ändern und
 Erneut senden), fragt erneut, wenn die Adresse unzustellbar war oder der Link nach 24 Stunden

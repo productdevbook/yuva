@@ -71,7 +71,8 @@ und Kotlin-SDKs senden `YuvaEvent.conversationRemoved(id:)` / `YuvaEvent.Convers
 Wenn ein Mitglied [eine Nachricht entfernt](#eine-nachricht-entfernen), sendet der Stream einen `message.redacted`-Frame;
 `data` ist die Nachricht mit `redacted: true`, leerem `body` und ohne Anhänge: ersetzen Sie sie an Ort und Stelle
 und zeigen Sie "Diese Nachricht wurde entfernt". Dieselbe Nachricht trägt auch in einem späteren Replay oder einer
-Liste `redacted: true`.
+Liste `redacted: true`. `createYuvaClient()` reicht den Frame im Event `event` weiter, die React-Hooks aktualisieren
+die Nachricht, und die Swift- und Kotlin-SDKs senden `YuvaEvent.messageRedacted(_:)` / `YuvaEvent.MessageRedacted(message)`.
 
 Außerhalb eines Browsers verwenden Sie den Schlüssel eines `app`-Kanals; `chat`-Kanäle akzeptieren
 nur ihre erlaubten Origins. React-Hooks liegen in `useyuva/react`; alle Optionen stehen in der
@@ -220,6 +221,11 @@ dürfen jede Nachricht entfernen, andere Mitglieder nur die Nachrichten und Noti
 
 Webhooks senden [`message.redacted`](webhooks.md#ereignisse) ohne den alten Inhalt; löschen Sie jede Kopie, die Sie
 aufbewahren. Das [Audit-Log](operations.md#audit-log) hält jede Entfernung fest, nie den Text.
+Im Panel steht **Entfernen** bei jeder Nachricht und Notiz für Inhaber, Admins und die Autorin oder den Autor. Eine
+Bestätigung nennt die Folgen, auch dass eine gesendete E-Mail im Postfach des Empfängers bleibt; `Entf` bei einer
+fokussierten Nachricht öffnet sie ebenfalls. Alle, die die Unterhaltung geöffnet haben, sehen dann live die Zeile
+„Entfernt von <Name>“ mit der Uhrzeit.
+
 
 ### Idempotenz
 

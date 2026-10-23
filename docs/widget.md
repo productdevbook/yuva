@@ -53,6 +53,9 @@ ones and the collections, opens articles inside the panel with "Was this helpful
 "Message us" button. A conversation started after reading an article records it, and an article your
 team sends in a reply opens in the same app. **Roadmap** appears when the inbox has a public [roadmap board](roadmap-board.md): ideas by stage and votes, an idea with its replies, and Suggest an idea. Voting and suggesting need a sign-in, which opens the reader window unless the visitor has an identity token. **What's new** appears when the inbox has a published [What's new](whats-new.md) changelog with an entry: a tile with the unread count, then the entries newest first with labels, date, picture and text.
 
+A message a member removed shows as "This message was removed", in the conversation and in its preview on
+the conversations list, and changes live while the panel is open.
+
 When nobody is available and the channel asks for an e-mail address, the thread asks for one. After
 the visitor saves it, the thread says a confirmation link went out (with Change address and Send
 again), asks again when the address bounced or the link ran out after 24 hours, and shows a quiet

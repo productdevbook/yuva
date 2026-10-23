@@ -127,6 +127,10 @@ yuva.unsubscribe(list.id)
 
 Geschlossene Unterhaltungen zeigen eine Bewertungskarte, wenn der Posteingang um Bewertungen bittet.
 
+Eine Nachricht, die ein Mitglied entfernt hat, erscheint als „Diese Nachricht wurde entfernt“ in der Unterhaltung und
+in der Listenvorschau. Ihr `redacted` ist true, der Text leer, und `events()` sendet `YuvaEvent.messageRedacted(message)`
+(Kotlin `YuvaEvent.MessageRedacted(message)`).
+
 ### Schütteln, um Feedback zu senden
 
 Optional. Ein Aufruf schaltet es ein; beim Schütteln des Geräts nimmt das SDK einen Screenshot des

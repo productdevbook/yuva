@@ -56,6 +56,9 @@ koleksiyonları gösterir, makaleleri panelin içinde "Bu yararlı oldu mu?" sor
 "Bize yazın" düğmesiyle biter. Bir makaleyi okuduktan sonra başlayan konuşma onu kaydeder; ekibinizin
 yanıtta gönderdiği makale de aynı uygulamada açılır. **Yol haritası**, gelen kutusunun herkese açık bir [yol haritası panosu](roadmap-board.md) olduğunda görünür: aşamaya ve oya göre fikirler, yanıtlarıyla bir fikir ve Fikir öner. Oy vermek ve öneri yazmak giriş ister; ziyaretçinin kimlik token'ı yoksa okuyucu penceresi açılır. **Yenilikler**, gelen kutusunun kaydı olan yayınlanmış bir [Yenilikler](whats-new.md) değişiklik günlüğü olduğunda görünür: okunmamış sayılı bir kutucuk, sonra kayıtlar yeniden eskiye etiketleri, tarihi, görseli ve metniyle.
 
+Bir üyenin kaldırdığı mesaj, konuşmada ve konuşma listesindeki önizlemesinde "Bu mesaj kaldırıldı" olarak görünür;
+panel açıkken canlı güncellenir.
+
 Kimse çevrimiçi değilse ve kanal e-posta adresi istiyorsa konuşma bir adres ister. Ziyaretçi adresi
 kaydedince konuşma onay bağlantısının gönderildiğini söyler (Adresi değiştir ve Tekrar gönder ile),
 adres geri döndüğünde ya da bağlantı 24 saat sonra geçersiz olduğunda yeniden adres ister, onaylanınca

@@ -125,6 +125,10 @@ yuva.unsubscribe(list.id)
 
 Closed conversations show a rating card when the inbox asks for ratings.
 
+A message a member removed shows as "This message was removed" in the thread and in the list preview. Its
+`redacted` is true with an empty text, and `events()` sends `YuvaEvent.messageRedacted(message)` (Kotlin
+`YuvaEvent.MessageRedacted(message)`).
+
 ### Shake to send feedback
 
 Opt-in. One call turns it on; shaking the device then captures a screenshot of the current screen,

@@ -68,6 +68,8 @@ send `YuvaEvent.conversationRemoved(id:)` / `YuvaEvent.ConversationRemoved(id)`.
 When a member [removes a message](#removing-a-message), the stream sends a `message.redacted` frame whose
 `data` is the message with `redacted: true`, an empty `body` and no attachments: replace it in place and show
 "This message was removed". The same message in a later replay or list carries `redacted: true` too.
+`createYuvaClient()` passes the frame on its `event` event, the React hooks update the message, and the Swift and
+Kotlin SDKs send `YuvaEvent.messageRedacted(_:)` / `YuvaEvent.MessageRedacted(message)`.
 
 Outside a browser, use an `app` channel's key; `chat` channels accept only their allowed origins.
 React hooks are in `useyuva/react`; every option is in the [SDK README](../sdk/js/README.md).
@@ -213,6 +215,10 @@ and can remove any message it can see; `yuva api-key create` leaves the scope ou
 
 Webhooks send [`message.redacted`](webhooks.md#events) without the old content; delete any copy you keep. The
 [audit log](operations.md#audit-log) records each removal, never the text.
+In the panel, **Remove** is on every message and note for owners, admins and the author. A confirmation names the
+consequence, including that a sent e-mail stays in the recipient's mailbox, and `Delete` on a focused message opens
+it too. Everyone with the conversation open then sees the line "Removed by <member>" with the time, live.
+
 
 ### Idempotency
 

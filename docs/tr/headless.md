@@ -69,6 +69,8 @@ SDK'ları `YuvaEvent.conversationRemoved(id:)` / `YuvaEvent.ConversationRemoved(
 Bir üye [bir mesajı kaldırdığında](#bir-mesajı-kaldırma) akış bir `message.redacted` çerçevesi gönderir; `data`,
 `redacted: true`, boş bir `body` ve eksiz mesajdır: mesajı yerinde değiştirin ve "Bu mesaj kaldırıldı" gösterin.
 Aynı mesaj sonraki bir tekrar oynatmada veya listede de `redacted: true` taşır.
+`createYuvaClient()` çerçeveyi `event` olayında iletir, React kancaları mesajı günceller; Swift ve Kotlin SDK'ları
+`YuvaEvent.messageRedacted(_:)` / `YuvaEvent.MessageRedacted(message)` gönderir.
 
 Tarayıcı dışında bir `app` kanalının anahtarını kullanın; `chat` kanalları yalnızca izin verilen
 origin'leri kabul eder. React hook'ları `useyuva/react` içinde; tüm seçenekler
@@ -216,6 +218,10 @@ yetkisi olmalıdır ve görebildiği her mesajı kaldırabilir; `yuva api-key cr
 
 Webhook'lar eski içerik olmadan [`message.redacted`](webhooks.md#olaylar) gönderir; elinizdeki kopyaları silin.
 [Denetim günlüğü](operations.md#denetim-günlüğü) her kaldırmayı kaydeder, metni asla.
+Panelde **Kaldır**, sahipler, yöneticiler ve yazarı için her mesaj ve notta bulunur. Onay penceresi sonucu söyler;
+gönderilmiş bir e-postanın alıcının posta kutusunda kaldığını da belirtir. Odaktaki bir mesajda `Delete` tuşu da aynı
+pencereyi açar. Konuşmayı açık tutan herkes, zamanıyla birlikte "<üye> tarafından kaldırıldı" satırını canlı görür.
+
 
 ### Idempotency
 

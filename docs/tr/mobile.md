@@ -125,6 +125,10 @@ yuva.unsubscribe(list.id)
 
 Gelen kutusu değerlendirme istiyorsa kapalı konuşmalarda bir değerlendirme kartı görünür.
 
+Bir üyenin kaldırdığı mesaj, konuşmada ve liste önizlemesinde "Bu mesaj kaldırıldı" olarak görünür. `redacted`
+değeri true, metin boştur; `events()` `YuvaEvent.messageRedacted(message)` gönderir (Kotlin
+`YuvaEvent.MessageRedacted(message)`).
+
 ### Sallayarak geri bildirim gönderme
 
 İsteğe bağlıdır. Tek bir çağrı açar; cihaz sallandığında SDK o anki ekranın ekran görüntüsünü alır,
