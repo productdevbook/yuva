@@ -244,6 +244,28 @@ The commands, run as in [Operator commands](operations.md#operator-commands):
 | `YUVA_VAPID_PRIVATE_KEY` | unset | VAPID private key. |
 | `YUVA_VAPID_SUBJECT` | `mailto:` + address of `YUVA_SMTP_FROM`, else `YUVA_PUBLIC_URL` if `https` | Contact for push services: `mailto:…` or `https://…`. |
 
+## Tracing
+
+Tracing is off unless an endpoint is set. Yuva adds no variables of its own: it reads the standard
+[OpenTelemetry](https://opentelemetry.io/docs/specs/otel/configuration/sdk-environment-variables/)
+ones. A value the server cannot use stops it at start with a message that begins `OpenTelemetry:`. See
+[Operations](operations.md#tracing).
+
+| Variable | Default | Meaning |
+|---|---|---|
+| `OTEL_EXPORTER_OTLP_ENDPOINT` | unset | OTLP collector URL, for example `http://otel-collector:4318`. Setting it turns tracing on. |
+| `OTEL_EXPORTER_OTLP_TRACES_ENDPOINT` | unset | Collector URL for traces only, used as given. Setting it also turns tracing on. |
+| `OTEL_EXPORTER_OTLP_PROTOCOL` | `http/protobuf` | `http/protobuf` or `grpc` (usually port `4317`). `OTEL_EXPORTER_OTLP_TRACES_PROTOCOL` overrides it for traces. |
+| `OTEL_EXPORTER_OTLP_HEADERS` | unset | Headers sent to the collector, `key=value` pairs separated by commas, for example an API key. |
+| `OTEL_SERVICE_NAME` | `yuva` | Service name on every span. |
+| `OTEL_RESOURCE_ATTRIBUTES` | unset | Extra attributes on every span, for example `deployment.environment=prod`. |
+| `OTEL_TRACES_SAMPLER` | every request is traced | Sampler, for example `parentbased_traceidratio`. Without it the server ignores the sampled flag of an incoming `traceparent`. |
+| `OTEL_TRACES_SAMPLER_ARG` | unset | Argument of the sampler, for example `0.1`. |
+| `OTEL_SDK_DISABLED` | `false` | `true` keeps tracing off although an endpoint is set. `OTEL_TRACES_EXPORTER=none` does the same. |
+
+The other `OTEL_EXPORTER_OTLP_*` variables (timeout, compression, certificates) and `OTEL_BSP_*` are read by the
+OpenTelemetry libraries as their specification defines.
+
 ## Build
 
 The version the server reports (`GET /v1/version`) is set at build time with the Docker build

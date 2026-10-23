@@ -300,3 +300,71 @@ Logs are JSON lines on stderr. Lines worth an alert:
 | `email send failed, retrying` | A channel's SMTP account fails. |
 | `YUVA_SMTP_HOST is not set` (and the same for `YUVA_INGRESS_SECRET`, `YUVA_VAPID_PUBLIC_KEY`) | A feature is off by configuration. |
 | `not ready` | The database is unreachable. |
+
+## Tracing
+
+Yuva exports OpenTelemetry traces over OTLP to any collector or backend that accepts them (Jaeger,
+Tempo, Grafana Cloud, Honeycomb and others). Tracing is off, with no overhead, until you set
+`OTEL_EXPORTER_OTLP_ENDPOINT`; the variables are in [Configuration](configuration.md#tracing). At start the
+server logs `OpenTelemetry traces are on`, and it sends the last spans when it stops.
+
+What is traced:
+
+| Span | Named | Covers |
+|---|---|---|
+| HTTP request | the route pattern, for example `GET /v1/conversations/{id}` | Every request, with its method, route and status code. An incoming `traceparent` header is continued. |
+| Background job | `river.work/<kind>` | Each run of a job, linked to the request that queued it. |
+| Database query | the query name, for example `GetConversation` | Queries made while serving a request or running a job. The job queue's own polling is not exported. |
+| Mail send | `mail.send`, `smtp.send` | An outgoing message and its SMTP transaction. |
+| Webhook delivery | `webhook.deliver` | One delivery attempt. |
+
+What is never recorded: message bodies, e-mail addresses, header values, tokens, secrets, URLs with
+their query strings, client addresses, SQL text and query arguments, and error messages. A span carries
+only attributes from a fixed list, enforced before export, so no later change in a library can add more:
+
+- request: `http.request.method`, `http.route` (the pattern, never the path), `http.response.status_code`
+- workspace and inbox ids: `yuva.workspace_id`, `yuva.inbox_id`
+- jobs: `kind`, `queue`, `attempt`, `priority`, `id`, `status`, `messaging.system`
+- mail: `yuva.recipients` (a count) and `yuva.message_bytes`
+- database and errors: `db.system.name`, the SQL state code and the exception type
+
+Log lines written while a request or job is traced carry `trace_id` and `span_id`. Copy the id from a
+log line into your tracing backend to open the trace.
+
+Sampling: by default every request is traced. To keep a share, set the sampler, for example
+`OTEL_TRACES_SAMPLER=parentbased_traceidratio` and `OTEL_TRACES_SAMPLER_ARG=0.1`.
+
+Example with a local collector, which prints the spans it receives:
+
+```yaml
+# otel-collector.yaml
+receivers:
+  otlp:
+    protocols:
+      http:
+        endpoint: 0.0.0.0:4318
+exporters:
+  debug:
+    verbosity: detailed
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      exporters: [debug]
+```
+
+```sh
+docker run -d --name otel-collector -p 4318:4318 \
+  -v "$PWD/otel-collector.yaml:/etc/otelcol/config.yaml" \
+  otel/opentelemetry-collector:latest
+```
+
+Add to `.env`, then restart the server:
+
+```sh
+OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4318
+```
+
+Open any page of the panel and read the collector's log (`docker logs otel-collector`): one span per
+request with the route as its name. If Yuva runs in Docker too, use the collector's service name instead of
+`localhost`.

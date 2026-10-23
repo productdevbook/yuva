@@ -247,6 +247,29 @@ Die Befehle laufen wie unter [Operator-Befehle](operations.md#operator-befehle):
 | `YUVA_VAPID_PRIVATE_KEY` | nicht gesetzt | Privater VAPID-Schlüssel. |
 | `YUVA_VAPID_SUBJECT` | `mailto:` + Adresse aus `YUVA_SMTP_FROM`, sonst `YUVA_PUBLIC_URL`, wenn `https` | Kontakt für Push-Dienste: `mailto:…` oder `https://…`. |
 
+## Tracing
+
+Tracing ist aus, solange kein Endpunkt gesetzt ist. Yuva bringt keine eigenen Variablen mit, sondern liest die
+Standardvariablen von
+[OpenTelemetry](https://opentelemetry.io/docs/specs/otel/configuration/sdk-environment-variables/). Ein Wert,
+den der Server nicht verwenden kann, stoppt ihn beim Start mit einer Meldung, die mit `OpenTelemetry:`
+beginnt. Siehe [Betrieb](operations.md#tracing).
+
+| Variable | Standard | Bedeutung |
+|---|---|---|
+| `OTEL_EXPORTER_OTLP_ENDPOINT` | nicht gesetzt | URL des OTLP-Collectors, zum Beispiel `http://otel-collector:4318`. Setzen schaltet Tracing ein. |
+| `OTEL_EXPORTER_OTLP_TRACES_ENDPOINT` | nicht gesetzt | Collector-URL nur für Traces, unverändert verwendet. Setzen schaltet Tracing ebenfalls ein. |
+| `OTEL_EXPORTER_OTLP_PROTOCOL` | `http/protobuf` | `http/protobuf` oder `grpc` (meist Port `4317`). `OTEL_EXPORTER_OTLP_TRACES_PROTOCOL` überschreibt es für Traces. |
+| `OTEL_EXPORTER_OTLP_HEADERS` | nicht gesetzt | Header, die an den Collector gehen, `schlüssel=wert`-Paare mit Komma getrennt, zum Beispiel ein API-Schlüssel. |
+| `OTEL_SERVICE_NAME` | `yuva` | Dienstname auf jedem Span. |
+| `OTEL_RESOURCE_ATTRIBUTES` | nicht gesetzt | Zusätzliche Attribute auf jedem Span, zum Beispiel `deployment.environment=prod`. |
+| `OTEL_TRACES_SAMPLER` | jede Anfrage wird getraced | Sampler, zum Beispiel `parentbased_traceidratio`. Ohne ihn ignoriert der Server das Sampled-Flag eines eingehenden `traceparent`. |
+| `OTEL_TRACES_SAMPLER_ARG` | nicht gesetzt | Argument des Samplers, zum Beispiel `0.1`. |
+| `OTEL_SDK_DISABLED` | `false` | `true` hält Tracing aus, auch wenn ein Endpunkt gesetzt ist. `OTEL_TRACES_EXPORTER=none` bewirkt dasselbe. |
+
+Die übrigen `OTEL_EXPORTER_OTLP_*`-Variablen (Timeout, Kompression, Zertifikate) und `OTEL_BSP_*` liest die
+OpenTelemetry-Bibliothek, wie die Spezifikation sie definiert.
+
 ## Build
 
 Die Version, die der Server meldet (`GET /v1/version`), wird beim Build mit dem Docker-Build-Argument

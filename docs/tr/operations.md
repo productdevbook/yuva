@@ -299,3 +299,71 @@ Loglar stderr'e JSON satırları olarak yazılır. Alarm kurmaya değer satırla
 | `email send failed, retrying` | Bir kanalın SMTP hesabı çalışmıyor. |
 | `YUVA_SMTP_HOST is not set` (`YUVA_INGRESS_SECRET` ve `YUVA_VAPID_PUBLIC_KEY` için de aynısı) | Bir özellik yapılandırma nedeniyle kapalı. |
 | `not ready` | Veritabanına ulaşılamıyor. |
+
+## Dağıtık izleme
+
+Yuva, OpenTelemetry izlerini OTLP ile bunu kabul eden her toplayıcıya ya da servise (Jaeger, Tempo, Grafana
+Cloud, Honeycomb ve diğerleri) gönderir. `OTEL_EXPORTER_OTLP_ENDPOINT` atanana kadar izleme kapalıdır ve ek yük
+getirmez; değişkenler [Yapılandırma](configuration.md#dağıtık-izleme) sayfasında. Sunucu başlarken
+`OpenTelemetry traces are on` yazar ve durduğunda son span'ları gönderir.
+
+Neler izlenir:
+
+| Span | Adı | Kapsamı |
+|---|---|---|
+| HTTP isteği | rota deseni, örneğin `GET /v1/conversations/{id}` | Her istek; yöntemi, rotası ve durum koduyla. Gelen `traceparent` başlığı sürdürülür. |
+| Arka plan işi | `river.work/<kind>` | Bir işin her çalışması; onu kuyruğa alan isteğe bağlanır. |
+| Veritabanı sorgusu | sorgu adı, örneğin `GetConversation` | Bir istek ya da iş sırasında yapılan sorgular. İş kuyruğunun kendi yoklaması gönderilmez. |
+| Posta gönderimi | `mail.send`, `smtp.send` | Giden bir ileti ve SMTP işlemi. |
+| Webhook teslimi | `webhook.deliver` | Tek bir teslim denemesi. |
+
+Hiçbir zaman kaydedilmeyenler: ileti gövdeleri, e-posta adresleri, başlık değerleri, belirteçler, sırlar, sorgu
+dizesi içeren URL'ler, istemci adresleri, SQL metni ve sorgu argümanları ile hata mesajları. Bir span yalnızca
+sabit bir listedeki öznitelikleri taşır; liste dışa gönderimden önce uygulanır, bu yüzden bir kütüphanedeki
+sonraki bir değişiklik fazlasını ekleyemez:
+
+- istek: `http.request.method`, `http.route` (desen, asla yol değil), `http.response.status_code`
+- çalışma alanı ve gelen kutusu kimlikleri: `yuva.workspace_id`, `yuva.inbox_id`
+- işler: `kind`, `queue`, `attempt`, `priority`, `id`, `status`, `messaging.system`
+- posta: `yuva.recipients` (bir sayı) ve `yuva.message_bytes`
+- veritabanı ve hatalar: `db.system.name`, SQL durum kodu ve istisna türü
+
+İzlenen bir istek ya da iş sırasında yazılan log satırları `trace_id` ve `span_id` taşır. Bir log satırındaki
+kimliği izleme servisinize yapıştırarak izi açın.
+
+Örnekleme: varsayılan olarak her istek izlenir. Bir kısmını tutmak için örnekleyiciyi atayın, örneğin
+`OTEL_TRACES_SAMPLER=parentbased_traceidratio` ve `OTEL_TRACES_SAMPLER_ARG=0.1`.
+
+Aldığı span'ları yazdıran yerel bir toplayıcı örneği:
+
+```yaml
+# otel-collector.yaml
+receivers:
+  otlp:
+    protocols:
+      http:
+        endpoint: 0.0.0.0:4318
+exporters:
+  debug:
+    verbosity: detailed
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      exporters: [debug]
+```
+
+```sh
+docker run -d --name otel-collector -p 4318:4318 \
+  -v "$PWD/otel-collector.yaml:/etc/otelcol/config.yaml" \
+  otel/opentelemetry-collector:latest
+```
+
+`.env` dosyasına ekleyin, sonra sunucuyu yeniden başlatın:
+
+```sh
+OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4318
+```
+
+Panelde herhangi bir sayfayı açın ve toplayıcının logunu okuyun (`docker logs otel-collector`): her istek için adı
+rota olan bir span görünür. Yuva da Docker'da çalışıyorsa `localhost` yerine toplayıcının servis adını kullanın.

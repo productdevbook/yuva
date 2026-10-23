@@ -246,6 +246,28 @@ Komutlar, [Operatör komutları](operations.md#operatör-komutları) bölümünd
 | `YUVA_VAPID_PRIVATE_KEY` | atanmamış | VAPID özel anahtarı. |
 | `YUVA_VAPID_SUBJECT` | `mailto:` + `YUVA_SMTP_FROM` adresi, yoksa `https` ise `YUVA_PUBLIC_URL` | Push servisleri için iletişim adresi: `mailto:…` ya da `https://…`. |
 
+## Dağıtık izleme
+
+İzleme, bir uç nokta atanmadıkça kapalıdır. Yuva kendine ait değişken eklemez; standart
+[OpenTelemetry](https://opentelemetry.io/docs/specs/otel/configuration/sdk-environment-variables/)
+değişkenlerini okur. Sunucunun kullanamayacağı bir değer, sunucuyu başlangıçta `OpenTelemetry:` ile
+başlayan bir mesajla durdurur. Bkz. [İşletim](operations.md#dağıtık-izleme).
+
+| Değişken | Varsayılan | Anlamı |
+|---|---|---|
+| `OTEL_EXPORTER_OTLP_ENDPOINT` | atanmamış | OTLP toplayıcı (collector) adresi, örneğin `http://otel-collector:4318`. Atamak izlemeyi açar. |
+| `OTEL_EXPORTER_OTLP_TRACES_ENDPOINT` | atanmamış | Yalnızca izler için toplayıcı adresi, verildiği gibi kullanılır. Atamak da izlemeyi açar. |
+| `OTEL_EXPORTER_OTLP_PROTOCOL` | `http/protobuf` | `http/protobuf` ya da `grpc` (genelde `4317` portu). `OTEL_EXPORTER_OTLP_TRACES_PROTOCOL` izler için bunu geçersiz kılar. |
+| `OTEL_EXPORTER_OTLP_HEADERS` | atanmamış | Toplayıcıya gönderilen başlıklar; virgülle ayrılmış `anahtar=değer` çiftleri, örneğin bir API anahtarı. |
+| `OTEL_SERVICE_NAME` | `yuva` | Her span'daki servis adı. |
+| `OTEL_RESOURCE_ATTRIBUTES` | atanmamış | Her span'a eklenen öznitelikler, örneğin `deployment.environment=prod`. |
+| `OTEL_TRACES_SAMPLER` | her istek izlenir | Örnekleyici, örneğin `parentbased_traceidratio`. Atanmazsa sunucu gelen `traceparent` başlığındaki sampled bayrağını yok sayar. |
+| `OTEL_TRACES_SAMPLER_ARG` | atanmamış | Örnekleyicinin argümanı, örneğin `0.1`. |
+| `OTEL_SDK_DISABLED` | `false` | `true`, uç nokta atanmış olsa bile izlemeyi kapalı tutar. `OTEL_TRACES_EXPORTER=none` da aynısını yapar. |
+
+Diğer `OTEL_EXPORTER_OTLP_*` değişkenleri (zaman aşımı, sıkıştırma, sertifikalar) ve `OTEL_BSP_*`, OpenTelemetry
+kütüphaneleri tarafından belirtimde tanımlandığı gibi okunur.
+
 ## Derleme
 
 Sunucunun bildirdiği sürüm (`GET /v1/version`), derleme sırasında Docker build argümanı `VERSION`
