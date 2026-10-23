@@ -8,6 +8,7 @@ import (
 	"net/url"
 	"strings"
 	"time"
+	"unicode/utf8"
 	"uuid"
 
 	"github.com/productdevbook/yuva/api/internal/jobs"
@@ -21,6 +22,13 @@ const (
 	emailConfirmTTL      = 24 * time.Hour
 	emailConfirmsPerHour = 3
 	emailConfirmPath     = "/email/confirm"
+	confirmInboxNameMax  = 60
+)
+
+var (
+	limitTypedConfirmPerAddress   = limit{3, 24 * time.Hour}
+	limitTypedConfirmPerChannel   = limit{300, 24 * time.Hour}
+	limitTypedConfirmPerWorkspace = limit{1000, 24 * time.Hour}
 )
 
 // sendMail hands a mail to the server mailer, which sends it after the request has answered
@@ -65,8 +73,10 @@ func (s *Server) requestEmailConfirmation(ctx context.Context, q *store.Queries,
 	}); err != nil {
 		return nil, err
 	}
-	msg, err := mail.RenderAs(inboxMailBrand(inbox), "confirm_email", inbox.DefaultLocale, map[string]any{
-		"Inbox": inbox.Name, "URL": s.auth.PublicURL + emailConfirmPath + "?token=" + url.QueryEscape(token),
+	brand := inboxMailBrand(inbox)
+	brand.Name = confirmInboxName(inbox.Name)
+	msg, err := mail.RenderAs(brand, "confirm_email", inbox.DefaultLocale, map[string]any{
+		"Inbox": brand.Name, "URL": s.auth.PublicURL + emailConfirmPath + "?token=" + url.QueryEscape(token),
 		"Hours": int(emailConfirmTTL / time.Hour),
 	})
 	if err != nil {
@@ -79,6 +89,31 @@ func (s *Server) requestEmailConfirmation(ctx context.Context, q *store.Queries,
 		}
 	}
 	return &msg, nil
+}
+
+// sendTypedConfirmation sends a confirmation mail for a typed address, if any, within the
+// server-wide limit for that address and the daily limits of the channel and workspace. It runs
+// after the transaction committed: a mail it refuses leaves the confirmation looking sent, as for a
+// suppressed address, so a visitor cannot tell the address was capped.
+func (s *Server) sendTypedConfirmation(ctx context.Context, cp contactPrincipal, msg *mail.Message) {
+	if msg == nil || s.rateLimit(ctx,
+		rateCheck{"typed-confirm:address:" + msg.To, limitTypedConfirmPerAddress},
+		rateCheck{"typed-confirm:channel:" + cp.channelID.String(), limitTypedConfirmPerChannel},
+		rateCheck{"typed-confirm:workspace:" + cp.workspaceID.String(), limitTypedConfirmPerWorkspace},
+	) != nil {
+		return
+	}
+	s.sendMail(ctx, *msg)
+}
+
+// confirmInboxName is the inbox name as the confirmation mail shows it: the workspace chose it, and
+// the mail goes to an address nobody has confirmed, so it is one short line.
+func confirmInboxName(name string) string {
+	name = strings.Join(strings.Fields(oneLine(name)), " ")
+	if utf8.RuneCountInString(name) <= confirmInboxNameMax {
+		return name
+	}
+	return strings.TrimSpace(truncateRunes(name, confirmInboxNameMax-1)) + "…"
 }
 
 type typedEmailDelivery int

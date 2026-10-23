@@ -17493,8 +17493,9 @@ paths:
         not read can be e-mailed to them. A typed address is never used to find or merge an
         existing contact; it is used only while the contact has no address from an identity token
         or from their own mail. Yuva mails the address a confirmation link (unless a contact already
-        has it; at most 3 per hour); it becomes one of the contact's addresses only once that link
-        is confirmed. `email_confirmation` on the answer says whether a link went out, and a
+        has it; at most 3 per contact and hour, 3 per address and day on the server, and a daily
+        number per channel and workspace; a link held back by these limits still shows `sent`); it
+        becomes one of the contact's addresses only once that link is confirmed. `email_confirmation` on the answer says whether a link went out, and a
         `contact.updated` frame on `/client/v1/realtime` brings its bounce or confirmation. An
         address that bounced before is stored but not mailed and shows `undeliverable`: ask for
         another one.

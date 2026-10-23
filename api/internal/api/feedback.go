@@ -273,9 +273,7 @@ func (s *Server) CreateClientFeedback(ctx context.Context, req oas.CreateClientF
 		s.deleteObjects(ctx, stored)
 		return nil, err
 	}
-	if confirm != nil {
-		s.sendMail(ctx, *confirm)
-	}
+	s.sendTypedConfirmation(ctx, cp, confirm)
 	out, err := s.clientConversationCreated(ctx, cp, convID, msgID)
 	if err != nil {
 		return nil, err

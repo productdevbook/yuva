@@ -393,3 +393,45 @@ func contactUpdates(t *testing.T, h *harness, ws, contact string) int {
 	}
 	return n
 }
+
+func TestTypedEmailConfirmationCaps(t *testing.T) {
+	h := newHarness(t)
+	ct := newChatTeam(t, h, "live", true)
+	long := "Claim your refund\n\nat evil.example " + strings.Repeat("x", 150)
+	ct.owner.expect(http.StatusOK, "PATCH", "/v1/inboxes/"+ct.chatInbox, map[string]any{"name": long})
+	victim := unique("victim") + "@example.net"
+	for range 8 {
+		_, v := typeEmail(t, h, ct, victim)
+		if v.email != victim || v.state != "sent" {
+			t.Fatalf("typing the address: %+v", v)
+		}
+	}
+	time.Sleep(100 * time.Millisecond)
+	msgs := h.mail.to(victim)
+	if len(msgs) != 3 {
+		t.Fatalf("%d confirmation mails reached one address from 8 visitors, want 3", len(msgs))
+	}
+	for _, m := range msgs {
+		if strings.Contains(m.Subject, "\n") || strings.Contains(m.Text, "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx") || strings.Contains(m.HTML, "\n\nat evil") {
+			t.Fatalf("the inbox name is not limited to one short line: %q\n%s", m.Subject, m.Text)
+		}
+		if !strings.Contains(m.Subject, "Claim your refund at evil.example x") || !strings.Contains(m.Subject, "…") {
+			t.Fatalf("subject %q", m.Subject)
+		}
+	}
+
+	other := unique("other") + "@example.net"
+	if _, v := typeEmail(t, h, ct, other); v.state != "sent" {
+		t.Fatalf("another address: %+v", v)
+	}
+	h.mail.wait(t, other, 1)
+
+	second := newChatTeam(t, h, "live", true)
+	if _, v := typeEmail(t, h, second, victim); v.state != "sent" {
+		t.Fatalf("typing the address in another workspace: %+v", v)
+	}
+	time.Sleep(100 * time.Millisecond)
+	if n := len(h.mail.to(victim)); n != 3 {
+		t.Fatalf("another workspace sent past the server-wide cap: %d mails", n)
+	}
+}
