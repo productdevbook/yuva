@@ -146,3 +146,25 @@ func (s *Server) ForgetStatusDomains() {
 	c.gen++
 	c.verified, c.misses = map[string]statusDomainHit{}, map[string]time.Time{}
 }
+
+func ConfirmAddressKey(addr string) string { return confirmAddressKey(addr) }
+
+func SetTypedConfirmWorkspaceLimit(n int) (restore func()) {
+	old := limitTypedConfirmPerWorkspace
+	limitTypedConfirmPerWorkspace = limit{n, old.window}
+	return func() { limitTypedConfirmPerWorkspace = old }
+}
+
+type Sockets struct{ c *clientSockets }
+
+type Socket struct{ s *clientSocket }
+
+func NewSockets() Sockets { return Sockets{newClientSockets()} }
+
+func (x Sockets) Open(session, contact uuid.UUID, addr string) Socket {
+	return Socket{x.c.open(session, contact, addr)}
+}
+
+func (x Sockets) Ready(s Socket) bool { return x.c.ready(s.s) }
+
+func (x Sockets) Close(s Socket) bool { return x.c.close(s.s) }

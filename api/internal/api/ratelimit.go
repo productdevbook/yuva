@@ -138,6 +138,46 @@ func (lw *localWindows) take(key string, lim limit, n int, now time.Time) (int, 
 	return got, w.ends.Sub(now)
 }
 
+// takeEvery counts want against every key only when all of them fit, else none.
+func (lw *localWindows) takeEvery(takes []rateTake, now time.Time) (bool, time.Duration) {
+	lw.mu.Lock()
+	defer lw.mu.Unlock()
+	if lw.m == nil {
+		lw.m = map[string]*localWindow{}
+	}
+	if len(lw.m)+len(takes) > localWindowsMax {
+		for k, old := range lw.m {
+			if !now.Before(old.ends) {
+				delete(lw.m, k)
+			}
+		}
+		if len(lw.m)+len(takes) > localWindowsMax {
+			return false, time.Minute
+		}
+	}
+	var wait time.Duration
+	fits := true
+	for _, t := range takes {
+		if w := lw.m[t.key]; w != nil && now.Before(w.ends) && w.n+t.n > t.lim.n {
+			fits, wait = false, max(wait, w.ends.Sub(now))
+		} else if t.n > t.lim.n {
+			fits, wait = false, max(wait, t.lim.window)
+		}
+	}
+	if !fits {
+		return false, wait
+	}
+	for _, t := range takes {
+		w := lw.m[t.key]
+		if w == nil || !now.Before(w.ends) {
+			w = &localWindow{ends: now.Add(t.lim.window)}
+			lw.m[t.key] = w
+		}
+		w.n += t.n
+	}
+	return true, 0
+}
+
 type memberTrafficKey struct{}
 
 // memberTraffic marks ctx as a signed-in member's, an API key's or a grant's before the principal
@@ -276,6 +316,87 @@ func (l *rateLimiter) take(ctx context.Context, q *store.Queries, takes ...rateT
 		}
 	}
 	return out
+}
+
+// takeEvery counts each take only when every one of them fits, and otherwise counts none and says
+// how long until a full window ends: a refused request spends no key's budget. One transaction
+// opens the missing windows, locks all of them in key order, checks and counts. When the database
+// fails it falls back as take does.
+func (l *rateLimiter) takeEvery(ctx context.Context, takes ...rateTake) (bool, time.Duration) {
+	p := store.TakeRateLimitsParams{At: l.at()}
+	at := make(map[string]int, len(takes))
+	for _, t := range takes {
+		h := l.hash(t.key)
+		if i, ok := at[string(h)]; ok {
+			p.Wants[i] += int32(t.n)
+			continue
+		}
+		at[string(h)] = len(p.Keys)
+		p.Keys = append(p.Keys, h)
+		p.WindowMs = append(p.WindowMs, t.lim.window.Milliseconds())
+		p.Lims = append(p.Lims, int32(max(t.lim.n, 0)))
+		p.Wants = append(p.Wants, int32(t.n))
+	}
+	fits, wait := true, time.Duration(0)
+	err := l.st.InTx(ctx, func(q *store.Queries) error {
+		if l.broken != nil {
+			if err := l.broken(); err != nil {
+				return err
+			}
+		}
+		if err := q.EnsureRateLimits(ctx, store.EnsureRateLimitsParams{Keys: p.Keys, WindowMs: p.WindowMs, Lims: p.Lims, At: p.At}); err != nil {
+			return err
+		}
+		rows, err := q.LockRateLimits(ctx, store.LockRateLimitsParams{Keys: p.Keys, At: p.At})
+		if err != nil {
+			return err
+		}
+		for _, r := range rows {
+			i := at[string(r.Key)]
+			if r.Used+p.Wants[i] > p.Lims[i] {
+				fits = false
+				wait = max(wait, min(max(r.EndsAt.Sub(r.CheckedAt), time.Second), time.Duration(p.WindowMs[i])*time.Millisecond))
+			}
+		}
+		if !fits {
+			return nil
+		}
+		_, err = q.TakeRateLimits(ctx, p)
+		return err
+	})
+	if err == nil {
+		return fits, wait
+	}
+	l.failed(ctx, err)
+	if failsOpen(ctx) {
+		return true, 0
+	}
+	local := make([]rateTake, len(takes))
+	for i, t := range takes {
+		local[i] = rateTake{string(l.hash(t.key)), t.lim, t.n}
+	}
+	return l.local.takeEvery(local, l.now())
+}
+
+// full says whether a check's window is already used up, without counting anything, and how long
+// until the first full one ends.
+func (l *rateLimiter) full(ctx context.Context, checks ...rateCheck) (bool, time.Duration, error) {
+	keys := make([][]byte, len(checks))
+	lims := map[string]limit{}
+	for i, c := range checks {
+		keys[i] = l.hash(c.key)
+		lims[string(keys[i])] = c.lim
+	}
+	rows, err := l.st.RateLimitsUsed(ctx, store.RateLimitsUsedParams{Keys: keys, At: l.at()})
+	if err != nil {
+		return false, 0, err
+	}
+	for _, r := range rows {
+		if lim := lims[string(r.Key)]; int(r.Used) >= lim.n {
+			return true, min(max(r.EndsAt.Sub(r.CheckedAt), time.Second), lim.window), nil
+		}
+	}
+	return false, 0, nil
 }
 
 // allowWait counts one request against key and, when refused, says how long until the window ends.

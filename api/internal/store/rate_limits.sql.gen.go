@@ -12,6 +12,125 @@ import (
 	"uuid"
 )
 
+const ensureRateLimits = `-- name: EnsureRateLimits :exec
+WITH c AS (SELECT coalesce($4::timestamptz, clock_timestamp()) AS now)
+INSERT INTO rate_limits (key, started_at, ends_at, checked_at, lim, want, count, granted)
+SELECT u.key, c.now, c.now + u.window_ms * interval '1 millisecond', c.now, u.lim, 0, 0, 0
+FROM c, (SELECT unnest($1::bytea[]) AS key, unnest($2::bigint[]) AS window_ms, unnest($3::int[]) AS lim) u
+ORDER BY u.key
+ON CONFLICT (key) DO NOTHING
+`
+
+type EnsureRateLimitsParams struct {
+	Keys     [][]byte
+	WindowMs []int64
+	Lims     []int32
+	At       *time.Time
+}
+
+// EnsureRateLimits opens an empty window for each key that has none, in key order, so
+// LockRateLimits finds a row for every key.
+func (q *Queries) EnsureRateLimits(ctx context.Context, arg EnsureRateLimitsParams) error {
+	_, err := q.db.Exec(ctx, ensureRateLimits,
+		arg.Keys,
+		arg.WindowMs,
+		arg.Lims,
+		arg.At,
+	)
+	return err
+}
+
+const lockRateLimits = `-- name: LockRateLimits :many
+WITH c AS (SELECT coalesce($2::timestamptz, clock_timestamp()) AS now)
+SELECT r.key, CASE WHEN r.ends_at <= c.now OR r.started_at > c.now THEN 0 ELSE r.count END::int AS used,
+       r.ends_at, c.now::timestamptz AS checked_at
+FROM rate_limits r, c WHERE r.key = ANY($1::bytea[])
+ORDER BY r.key
+FOR UPDATE OF r
+`
+
+type LockRateLimitsParams struct {
+	Keys [][]byte
+	At   *time.Time
+}
+
+type LockRateLimitsRow struct {
+	Key       []byte
+	Used      int32
+	EndsAt    time.Time
+	CheckedAt time.Time
+}
+
+// LockRateLimits locks the keys' windows in key order and says how much each has used now.
+func (q *Queries) LockRateLimits(ctx context.Context, arg LockRateLimitsParams) ([]LockRateLimitsRow, error) {
+	rows, err := q.db.Query(ctx, lockRateLimits, arg.Keys, arg.At)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []LockRateLimitsRow
+	for rows.Next() {
+		var i LockRateLimitsRow
+		if err := rows.Scan(
+			&i.Key,
+			&i.Used,
+			&i.EndsAt,
+			&i.CheckedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const rateLimitsUsed = `-- name: RateLimitsUsed :many
+WITH c AS (SELECT coalesce($2::timestamptz, clock_timestamp()) AS now)
+SELECT r.key, r.count::int AS used, r.ends_at, c.now::timestamptz AS checked_at
+FROM rate_limits r, c WHERE r.key = ANY($1::bytea[]) AND r.ends_at > c.now AND r.started_at <= c.now
+`
+
+type RateLimitsUsedParams struct {
+	Keys [][]byte
+	At   *time.Time
+}
+
+type RateLimitsUsedRow struct {
+	Key       []byte
+	Used      int32
+	EndsAt    time.Time
+	CheckedAt time.Time
+}
+
+// RateLimitsUsed says how much each key has used in its current window, without counting.
+func (q *Queries) RateLimitsUsed(ctx context.Context, arg RateLimitsUsedParams) ([]RateLimitsUsedRow, error) {
+	rows, err := q.db.Query(ctx, rateLimitsUsed, arg.Keys, arg.At)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []RateLimitsUsedRow
+	for rows.Next() {
+		var i RateLimitsUsedRow
+		if err := rows.Scan(
+			&i.Key,
+			&i.Used,
+			&i.EndsAt,
+			&i.CheckedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const releaseRateSlot = `-- name: ReleaseRateSlot :exec
 DELETE FROM rate_slots WHERE key = $1 AND slot = $2 AND holder = $3
 `

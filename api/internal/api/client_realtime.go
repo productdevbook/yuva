@@ -106,8 +106,8 @@ func (s *Server) serveClientRealtime(w http.ResponseWriter, r *http.Request) {
 
 func (s *Server) clientStream(conn *websocket.Conn, r *http.Request, cp contactPrincipal, token, addr string, resumeFrom *int64) (websocket.StatusCode, string, error) {
 	ctx := conn.CloseRead(r.Context())
-	sock, first, ok := s.sockets.open(cp.sessionID, cp.contactID, addr)
-	if !ok {
+	sock := s.sockets.open(cp.sessionID, cp.contactID, addr)
+	if sock == nil {
 		return websocket.StatusTryAgainLater, reasonTooManySockets, nil
 	}
 	registered := false
@@ -136,7 +136,7 @@ func (s *Server) clientStream(conn *websocket.Conn, r *http.Request, cp contactP
 		return websocket.StatusInternalError, "internal", err
 	}
 	registered = true
-	if first {
+	if s.sockets.ready(sock) {
 		s.contactPresenceChanged(ctx, cp.workspaceID, cp.contactID)
 	}
 	defer func() {

@@ -44,25 +44,29 @@ func TestShareUnlockLimitsAndHash(t *testing.T) {
 	if r := unlock(h.client(), "old horse"); r.status != http.StatusOK {
 		t.Fatalf("a password hashed with the earlier settings: %d %s", r.status, r.raw)
 	}
-	guesses := 0
-	for n := 0; guesses < 60; n++ {
+	tries := 0
+	for n := 0; tries < 69; n++ {
 		c := h.client()
 		c.ip = "10.77.1." + strconv.Itoa(n+1)
 		for range 9 {
-			if guesses == 60 {
+			if tries == 69 {
 				break
 			}
-			if r := unlock(c, "guess"); r.status != http.StatusUnauthorized {
-				t.Fatalf("guess %d: %d %s", guesses+1, r.status, r.raw)
+			pw, want := "guess", http.StatusUnauthorized
+			if tries%7 == 3 && tries < 63 {
+				pw, want = "old horse", http.StatusOK
 			}
-			guesses++
+			if r := unlock(c, pw); r.status != want {
+				t.Fatalf("try %d: %d %s", tries+1, r.status, r.raw)
+			}
+			tries++
 		}
 	}
 	neighbour := h.client()
 	neighbour.ip = "10.77.1.200"
 	expectLimited(t, unlock(neighbour, "old horse"))
 	if r := unlock(h.client(), "old horse"); r.status != http.StatusOK {
-		t.Fatalf("another network after one network's 60 tries: %d %s", r.status, r.raw)
+		t.Fatalf("another network after one network's 60 wrong passwords: %d %s", r.status, r.raw)
 	}
 }
 

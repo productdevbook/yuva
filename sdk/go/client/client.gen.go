@@ -33787,8 +33787,9 @@ type ClientInterface interface {
 	// Answers an access token for the link's other endpoints, valid for 12 hours or until the
 	// link expires, is revoked or gets another password. A wrong password answers
 	// `401 wrong_password`; an IP address may try 10 times a minute per link and 30 times a minute
-	// in all, a network (IPv4 /24, IPv6 /48) 60 times an hour per link, and a link takes 1,000
-	// tries an hour in all (`429 rate_limited`). A link without a password answers
+	// in all. Wrong passwords count against the link: 60 an hour per network (IPv4 /24, IPv6 /48)
+	// and 1,000 an hour in all; past either, unlocks wait (`429 rate_limited`). Right passwords
+	// count only against the per-address limits. A link without a password answers
 	// `409 no_password`.
 	//
 	// Takes any type of body and a specified content type.
@@ -33801,8 +33802,9 @@ type ClientInterface interface {
 	// Answers an access token for the link's other endpoints, valid for 12 hours or until the
 	// link expires, is revoked or gets another password. A wrong password answers
 	// `401 wrong_password`; an IP address may try 10 times a minute per link and 30 times a minute
-	// in all, a network (IPv4 /24, IPv6 /48) 60 times an hour per link, and a link takes 1,000
-	// tries an hour in all (`429 rate_limited`). A link without a password answers
+	// in all. Wrong passwords count against the link: 60 an hour per network (IPv4 /24, IPv6 /48)
+	// and 1,000 an hour in all; past either, unlocks wait (`429 rate_limited`). Right passwords
+	// count only against the per-address limits. A link without a password answers
 	// `409 no_password`.
 	//
 	// Takes a body of the `application/json` content type.
@@ -34358,10 +34360,11 @@ type ClientInterface interface {
 	// nothing but the confirmation link goes to it before. A typed address is never used to find or merge an
 	// existing contact; it is used only while the contact has no address from an identity token
 	// or from their own mail. Yuva mails the address a confirmation link (unless a contact already
-	// has it; at most 3 per contact and hour and 6 a day, 3 per address and day on the server
-	// (the address compared without case, `+tag` and, for Gmail, dots), 30 per network (IPv4 /24,
-	// IPv6 /48) and channel a day, and 5,000 per channel a day; a link held back by these limits
-	// shows `limited`); it becomes one of the contact's addresses only once that link is
+	// has it; at most 3 per contact and hour and 6 a day; per address, 3 a day from one network
+	// (IPv4 /24, IPv6 /48) and 10 a day on the server, the address compared without case and
+	// `+tag`, its domain in ASCII and, for Gmail, without dots; 30 per network and workspace and
+	// 2,000 per workspace a day. The limits are taken together or not at all, so a request they
+	// refuse spends no one's budget, and a link held back by them shows `limited`); it becomes one of the contact's addresses only once that link is
 	// confirmed. `email_confirmation` on the answer says whether a link went out, and a
 	// `contact.updated` frame on `/client/v1/realtime` brings its bounce or confirmation. An
 	// address that bounced before is stored but not mailed and shows `undeliverable`: ask for
@@ -34380,10 +34383,11 @@ type ClientInterface interface {
 	// nothing but the confirmation link goes to it before. A typed address is never used to find or merge an
 	// existing contact; it is used only while the contact has no address from an identity token
 	// or from their own mail. Yuva mails the address a confirmation link (unless a contact already
-	// has it; at most 3 per contact and hour and 6 a day, 3 per address and day on the server
-	// (the address compared without case, `+tag` and, for Gmail, dots), 30 per network (IPv4 /24,
-	// IPv6 /48) and channel a day, and 5,000 per channel a day; a link held back by these limits
-	// shows `limited`); it becomes one of the contact's addresses only once that link is
+	// has it; at most 3 per contact and hour and 6 a day; per address, 3 a day from one network
+	// (IPv4 /24, IPv6 /48) and 10 a day on the server, the address compared without case and
+	// `+tag`, its domain in ASCII and, for Gmail, without dots; 30 per network and workspace and
+	// 2,000 per workspace a day. The limits are taken together or not at all, so a request they
+	// refuse spends no one's budget, and a link held back by them shows `limited`); it becomes one of the contact's addresses only once that link is
 	// confirmed. `email_confirmation` on the answer says whether a link went out, and a
 	// `contact.updated` frame on `/client/v1/realtime` brings its bounce or confirmation. An
 	// address that bounced before is stored but not mailed and shows `undeliverable`: ask for
@@ -44073,8 +44077,9 @@ func (c *Client) GetSharedAnalytics(ctx context.Context, token AnalyticsShareTok
 // Answers an access token for the link's other endpoints, valid for 12 hours or until the
 // link expires, is revoked or gets another password. A wrong password answers
 // `401 wrong_password`; an IP address may try 10 times a minute per link and 30 times a minute
-// in all, a network (IPv4 /24, IPv6 /48) 60 times an hour per link, and a link takes 1,000
-// tries an hour in all (`429 rate_limited`). A link without a password answers
+// in all. Wrong passwords count against the link: 60 an hour per network (IPv4 /24, IPv6 /48)
+// and 1,000 an hour in all; past either, unlocks wait (`429 rate_limited`). Right passwords
+// count only against the per-address limits. A link without a password answers
 // `409 no_password`.
 //
 // Takes any type of body and a specified content type.
@@ -44097,8 +44102,9 @@ func (c *Client) UnlockSharedAnalyticsWithBody(ctx context.Context, token Analyt
 // Answers an access token for the link's other endpoints, valid for 12 hours or until the
 // link expires, is revoked or gets another password. A wrong password answers
 // `401 wrong_password`; an IP address may try 10 times a minute per link and 30 times a minute
-// in all, a network (IPv4 /24, IPv6 /48) 60 times an hour per link, and a link takes 1,000
-// tries an hour in all (`429 rate_limited`). A link without a password answers
+// in all. Wrong passwords count against the link: 60 an hour per network (IPv4 /24, IPv6 /48)
+// and 1,000 an hour in all; past either, unlocks wait (`429 rate_limited`). Right passwords
+// count only against the per-address limits. A link without a password answers
 // `409 no_password`.
 //
 // Takes a body of the `application/json` content type.
@@ -44924,10 +44930,11 @@ func (c *Client) GetClientWhatsNewEntry(ctx context.Context, channelKey ClientWh
 // nothing but the confirmation link goes to it before. A typed address is never used to find or merge an
 // existing contact; it is used only while the contact has no address from an identity token
 // or from their own mail. Yuva mails the address a confirmation link (unless a contact already
-// has it; at most 3 per contact and hour and 6 a day, 3 per address and day on the server
-// (the address compared without case, `+tag` and, for Gmail, dots), 30 per network (IPv4 /24,
-// IPv6 /48) and channel a day, and 5,000 per channel a day; a link held back by these limits
-// shows `limited`); it becomes one of the contact's addresses only once that link is
+// has it; at most 3 per contact and hour and 6 a day; per address, 3 a day from one network
+// (IPv4 /24, IPv6 /48) and 10 a day on the server, the address compared without case and
+// `+tag`, its domain in ASCII and, for Gmail, without dots; 30 per network and workspace and
+// 2,000 per workspace a day. The limits are taken together or not at all, so a request they
+// refuse spends no one's budget, and a link held back by them shows `limited`); it becomes one of the contact's addresses only once that link is
 // confirmed. `email_confirmation` on the answer says whether a link went out, and a
 // `contact.updated` frame on `/client/v1/realtime` brings its bounce or confirmation. An
 // address that bounced before is stored but not mailed and shows `undeliverable`: ask for
@@ -44956,10 +44963,11 @@ func (c *Client) SetClientContactEmailWithBody(ctx context.Context, contentType 
 // nothing but the confirmation link goes to it before. A typed address is never used to find or merge an
 // existing contact; it is used only while the contact has no address from an identity token
 // or from their own mail. Yuva mails the address a confirmation link (unless a contact already
-// has it; at most 3 per contact and hour and 6 a day, 3 per address and day on the server
-// (the address compared without case, `+tag` and, for Gmail, dots), 30 per network (IPv4 /24,
-// IPv6 /48) and channel a day, and 5,000 per channel a day; a link held back by these limits
-// shows `limited`); it becomes one of the contact's addresses only once that link is
+// has it; at most 3 per contact and hour and 6 a day; per address, 3 a day from one network
+// (IPv4 /24, IPv6 /48) and 10 a day on the server, the address compared without case and
+// `+tag`, its domain in ASCII and, for Gmail, without dots; 30 per network and workspace and
+// 2,000 per workspace a day. The limits are taken together or not at all, so a request they
+// refuse spends no one's budget, and a link held back by them shows `limited`); it becomes one of the contact's addresses only once that link is
 // confirmed. `email_confirmation` on the answer says whether a link went out, and a
 // `contact.updated` frame on `/client/v1/realtime` brings its bounce or confirmation. An
 // address that bounced before is stored but not mailed and shows `undeliverable`: ask for
@@ -93792,8 +93800,9 @@ type ClientWithResponsesInterface interface {
 	// Answers an access token for the link's other endpoints, valid for 12 hours or until the
 	// link expires, is revoked or gets another password. A wrong password answers
 	// `401 wrong_password`; an IP address may try 10 times a minute per link and 30 times a minute
-	// in all, a network (IPv4 /24, IPv6 /48) 60 times an hour per link, and a link takes 1,000
-	// tries an hour in all (`429 rate_limited`). A link without a password answers
+	// in all. Wrong passwords count against the link: 60 an hour per network (IPv4 /24, IPv6 /48)
+	// and 1,000 an hour in all; past either, unlocks wait (`429 rate_limited`). Right passwords
+	// count only against the per-address limits. A link without a password answers
 	// `409 no_password`.
 	//
 	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
@@ -93806,8 +93815,9 @@ type ClientWithResponsesInterface interface {
 	// Answers an access token for the link's other endpoints, valid for 12 hours or until the
 	// link expires, is revoked or gets another password. A wrong password answers
 	// `401 wrong_password`; an IP address may try 10 times a minute per link and 30 times a minute
-	// in all, a network (IPv4 /24, IPv6 /48) 60 times an hour per link, and a link takes 1,000
-	// tries an hour in all (`429 rate_limited`). A link without a password answers
+	// in all. Wrong passwords count against the link: 60 an hour per network (IPv4 /24, IPv6 /48)
+	// and 1,000 an hour in all; past either, unlocks wait (`429 rate_limited`). Right passwords
+	// count only against the per-address limits. A link without a password answers
 	// `409 no_password`.
 	//
 	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
@@ -94389,10 +94399,11 @@ type ClientWithResponsesInterface interface {
 	// nothing but the confirmation link goes to it before. A typed address is never used to find or merge an
 	// existing contact; it is used only while the contact has no address from an identity token
 	// or from their own mail. Yuva mails the address a confirmation link (unless a contact already
-	// has it; at most 3 per contact and hour and 6 a day, 3 per address and day on the server
-	// (the address compared without case, `+tag` and, for Gmail, dots), 30 per network (IPv4 /24,
-	// IPv6 /48) and channel a day, and 5,000 per channel a day; a link held back by these limits
-	// shows `limited`); it becomes one of the contact's addresses only once that link is
+	// has it; at most 3 per contact and hour and 6 a day; per address, 3 a day from one network
+	// (IPv4 /24, IPv6 /48) and 10 a day on the server, the address compared without case and
+	// `+tag`, its domain in ASCII and, for Gmail, without dots; 30 per network and workspace and
+	// 2,000 per workspace a day. The limits are taken together or not at all, so a request they
+	// refuse spends no one's budget, and a link held back by them shows `limited`); it becomes one of the contact's addresses only once that link is
 	// confirmed. `email_confirmation` on the answer says whether a link went out, and a
 	// `contact.updated` frame on `/client/v1/realtime` brings its bounce or confirmation. An
 	// address that bounced before is stored but not mailed and shows `undeliverable`: ask for
@@ -94411,10 +94422,11 @@ type ClientWithResponsesInterface interface {
 	// nothing but the confirmation link goes to it before. A typed address is never used to find or merge an
 	// existing contact; it is used only while the contact has no address from an identity token
 	// or from their own mail. Yuva mails the address a confirmation link (unless a contact already
-	// has it; at most 3 per contact and hour and 6 a day, 3 per address and day on the server
-	// (the address compared without case, `+tag` and, for Gmail, dots), 30 per network (IPv4 /24,
-	// IPv6 /48) and channel a day, and 5,000 per channel a day; a link held back by these limits
-	// shows `limited`); it becomes one of the contact's addresses only once that link is
+	// has it; at most 3 per contact and hour and 6 a day; per address, 3 a day from one network
+	// (IPv4 /24, IPv6 /48) and 10 a day on the server, the address compared without case and
+	// `+tag`, its domain in ASCII and, for Gmail, without dots; 30 per network and workspace and
+	// 2,000 per workspace a day. The limits are taken together or not at all, so a request they
+	// refuse spends no one's budget, and a link held back by them shows `limited`); it becomes one of the contact's addresses only once that link is
 	// confirmed. `email_confirmation` on the answer says whether a link went out, and a
 	// `contact.updated` frame on `/client/v1/realtime` brings its bounce or confirmation. An
 	// address that bounced before is stored but not mailed and shows `undeliverable`: ask for
@@ -139303,8 +139315,9 @@ func (c *ClientWithResponses) GetSharedAnalyticsWithResponse(ctx context.Context
 // Answers an access token for the link's other endpoints, valid for 12 hours or until the
 // link expires, is revoked or gets another password. A wrong password answers
 // `401 wrong_password`; an IP address may try 10 times a minute per link and 30 times a minute
-// in all, a network (IPv4 /24, IPv6 /48) 60 times an hour per link, and a link takes 1,000
-// tries an hour in all (`429 rate_limited`). A link without a password answers
+// in all. Wrong passwords count against the link: 60 an hour per network (IPv4 /24, IPv6 /48)
+// and 1,000 an hour in all; past either, unlocks wait (`429 rate_limited`). Right passwords
+// count only against the per-address limits. A link without a password answers
 // `409 no_password`.
 //
 // Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
@@ -139323,8 +139336,9 @@ func (c *ClientWithResponses) UnlockSharedAnalyticsWithBodyWithResponse(ctx cont
 // Answers an access token for the link's other endpoints, valid for 12 hours or until the
 // link expires, is revoked or gets another password. A wrong password answers
 // `401 wrong_password`; an IP address may try 10 times a minute per link and 30 times a minute
-// in all, a network (IPv4 /24, IPv6 /48) 60 times an hour per link, and a link takes 1,000
-// tries an hour in all (`429 rate_limited`). A link without a password answers
+// in all. Wrong passwords count against the link: 60 an hour per network (IPv4 /24, IPv6 /48)
+// and 1,000 an hour in all; past either, unlocks wait (`429 rate_limited`). Right passwords
+// count only against the per-address limits. A link without a password answers
 // `409 no_password`.
 //
 // Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
@@ -140068,10 +140082,11 @@ func (c *ClientWithResponses) GetClientWhatsNewEntryWithResponse(ctx context.Con
 // nothing but the confirmation link goes to it before. A typed address is never used to find or merge an
 // existing contact; it is used only while the contact has no address from an identity token
 // or from their own mail. Yuva mails the address a confirmation link (unless a contact already
-// has it; at most 3 per contact and hour and 6 a day, 3 per address and day on the server
-// (the address compared without case, `+tag` and, for Gmail, dots), 30 per network (IPv4 /24,
-// IPv6 /48) and channel a day, and 5,000 per channel a day; a link held back by these limits
-// shows `limited`); it becomes one of the contact's addresses only once that link is
+// has it; at most 3 per contact and hour and 6 a day; per address, 3 a day from one network
+// (IPv4 /24, IPv6 /48) and 10 a day on the server, the address compared without case and
+// `+tag`, its domain in ASCII and, for Gmail, without dots; 30 per network and workspace and
+// 2,000 per workspace a day. The limits are taken together or not at all, so a request they
+// refuse spends no one's budget, and a link held back by them shows `limited`); it becomes one of the contact's addresses only once that link is
 // confirmed. `email_confirmation` on the answer says whether a link went out, and a
 // `contact.updated` frame on `/client/v1/realtime` brings its bounce or confirmation. An
 // address that bounced before is stored but not mailed and shows `undeliverable`: ask for
@@ -140096,10 +140111,11 @@ func (c *ClientWithResponses) SetClientContactEmailWithBodyWithResponse(ctx cont
 // nothing but the confirmation link goes to it before. A typed address is never used to find or merge an
 // existing contact; it is used only while the contact has no address from an identity token
 // or from their own mail. Yuva mails the address a confirmation link (unless a contact already
-// has it; at most 3 per contact and hour and 6 a day, 3 per address and day on the server
-// (the address compared without case, `+tag` and, for Gmail, dots), 30 per network (IPv4 /24,
-// IPv6 /48) and channel a day, and 5,000 per channel a day; a link held back by these limits
-// shows `limited`); it becomes one of the contact's addresses only once that link is
+// has it; at most 3 per contact and hour and 6 a day; per address, 3 a day from one network
+// (IPv4 /24, IPv6 /48) and 10 a day on the server, the address compared without case and
+// `+tag`, its domain in ASCII and, for Gmail, without dots; 30 per network and workspace and
+// 2,000 per workspace a day. The limits are taken together or not at all, so a request they
+// refuse spends no one's budget, and a link held back by them shows `limited`); it becomes one of the contact's addresses only once that link is
 // confirmed. `email_confirmation` on the answer says whether a link went out, and a
 // `contact.updated` frame on `/client/v1/realtime` brings its bounce or confirmation. An
 // address that bounced before is stored but not mailed and shows `undeliverable`: ask for

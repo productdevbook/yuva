@@ -7,8 +7,11 @@ import (
 	"net/http"
 	"testing"
 	"time"
+	"uuid"
 
 	"github.com/coder/websocket"
+
+	"github.com/productdevbook/yuva/api/internal/api"
 )
 
 func TestClientSocketCaps(t *testing.T) {
@@ -123,4 +126,27 @@ func TestClientSocketCaps(t *testing.T) {
 		}
 	}
 	w.close()
+}
+
+func TestContactPresenceCountsLoadedSockets(t *testing.T) {
+	x := api.NewSockets()
+	session, contact := uuid.New(), uuid.New()
+	failing := x.Open(session, contact, "198.51.100.1")
+	loaded := x.Open(session, contact, "198.51.100.1")
+	if !x.Ready(loaded) {
+		t.Fatal("the first socket that loaded did not announce the contact online")
+	}
+	if x.Close(failing) {
+		t.Fatal("a socket that never loaded announced the contact offline")
+	}
+	second := x.Open(session, contact, "198.51.100.1")
+	if x.Ready(second) {
+		t.Fatal("a second loaded socket announced the contact online again")
+	}
+	if x.Close(loaded) {
+		t.Fatal("offline while a loaded socket is still open")
+	}
+	if !x.Close(second) {
+		t.Fatal("the last loaded socket did not announce the contact offline")
+	}
 }

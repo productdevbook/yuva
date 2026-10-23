@@ -9,6 +9,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/productdevbook/yuva/api/internal/api"
 	"github.com/productdevbook/yuva/api/internal/email"
 	"github.com/productdevbook/yuva/api/internal/mail"
 )
@@ -396,6 +397,14 @@ func contactUpdates(t *testing.T, h *harness, ws, contact string) int {
 	return n
 }
 
+func typeFrom(t *testing.T, h *harness, ct chatTeam, ip, addr string) confirmationView {
+	t.Helper()
+	cs := ct.session(h, map[string]any{})
+	cs.start("hello")
+	cs.ip = ip
+	return confirmationOf(t, cs.expect(http.StatusOK, "PUT", "/client/v1/contact/email", map[string]any{"email": addr}).body)
+}
+
 func TestTypedEmailConfirmationCaps(t *testing.T) {
 	h := newHarness(t)
 	ct := newChatTeam(t, h, "live", true)
@@ -406,17 +415,16 @@ func TestTypedEmailConfirmationCaps(t *testing.T) {
 	spellings := []string{victim, strings.ToUpper(user[:1]) + user[1:] + "@gmail.com", user + "+news@gmail.com", user[:3] + "." + user[3:] + "@googlemail.com"}
 	for i := range 8 {
 		addr := spellings[i%len(spellings)]
-		cs, v := typeEmail(t, h, ct, addr)
 		want := "sent"
 		if i >= 3 {
 			want = "limited"
 		}
-		if v.state != want || v.expires != (want == "sent") {
-			t.Fatalf("visitor %d typing %s: %+v, want %s", i+1, addr, v, want)
+		if v := typeFrom(t, h, ct, "10.31.1."+strconv.Itoa(i+1), addr); v.state != want || v.expires != (want == "sent") {
+			t.Fatalf("visitor %d of one network typing %s: %+v, want %s", i+1, addr, v, want)
 		}
-		if v := sessionConfirmation(t, cs); v.state != want {
-			t.Fatalf("visitor %d's session: %+v, want %s", i+1, v, want)
-		}
+	}
+	if v := typeFrom(t, h, ct, "10.32.1.5", victim); v.state != "sent" {
+		t.Fatalf("the address's owner from their own network after another network's 8 tries: %+v", v)
 	}
 	time.Sleep(100 * time.Millisecond)
 	var msgs []mail.Message
@@ -427,8 +435,8 @@ func TestTypedEmailConfirmationCaps(t *testing.T) {
 			msgs = append(msgs, h.mail.to(a)...)
 		}
 	}
-	if len(msgs) != 3 {
-		t.Fatalf("%d confirmation mails reached one mailbox from 8 visitors, want 3", len(msgs))
+	if len(msgs) != 4 {
+		t.Fatalf("%d confirmation mails reached one mailbox, want 3 from one network and 1 from another", len(msgs))
 	}
 	for _, m := range msgs {
 		if strings.Contains(m.Subject, "\n") || strings.Contains(m.Text, "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx") || strings.Contains(m.HTML, "\n\nat evil") {
@@ -439,31 +447,63 @@ func TestTypedEmailConfirmationCaps(t *testing.T) {
 		}
 	}
 
-	second := newChatTeam(t, h, "live", true)
-	if _, v := typeEmail(t, h, second, victim); v.state != "limited" {
-		t.Fatalf("typing the address in another workspace: %+v", v)
+	attacker := newChatTeam(t, h, "live", true)
+	for i := range 30 {
+		if v := typeFrom(t, h, attacker, "10.33.1."+strconv.Itoa(i+1), unique("n")+"@example.net"); v.state != "sent" {
+			t.Fatalf("visitor %d of one network in a workspace: %+v", i+1, v)
+		}
 	}
-	time.Sleep(100 * time.Millisecond)
-	if n := len(h.mail.to(victim)); n > 3 {
-		t.Fatalf("another workspace sent past the server-wide cap: %d mails", n)
+	for i := range 5 {
+		if v := typeFrom(t, h, attacker, "10.33.1."+strconv.Itoa(100+i), victim); v.state != "limited" {
+			t.Fatalf("past the network's 30 in the workspace: %+v", v)
+		}
 	}
+	other := newChatTeam(t, h, "live", true)
+	for n := range 2 {
+		for i := range 3 {
+			if v := typeFrom(t, h, other, "10.34."+strconv.Itoa(n)+"."+strconv.Itoa(i+1), victim); v.state != "sent" {
+				t.Fatalf("network %d try %d: %+v (refused tries must not spend the address's budget)", n, i+1, v)
+			}
+		}
+	}
+	if v := typeFrom(t, h, other, "10.35.0.1", victim); v.state != "limited" {
+		t.Fatalf("an 11th mail to one address in a day: %+v", v)
+	}
+}
 
-	third := newChatTeam(t, h, "live", true)
-	for i := range 31 {
-		cs := third.session(h, map[string]any{})
-		cs.start("hello")
-		cs.ip = "10.250.7." + strconv.Itoa(i+1)
-		r := cs.expect(http.StatusOK, "PUT", "/client/v1/contact/email", map[string]any{"email": unique("n") + "@example.net"})
-		want := "sent"
-		if i == 30 {
-			want = "limited"
-		}
-		if v := confirmationOf(t, r.body); v.state != want {
-			t.Fatalf("visitor %d of one network: %+v, want %s", i+1, v, want)
+func TestTypedEmailWorkspaceCap(t *testing.T) {
+	defer api.SetTypedConfirmWorkspaceLimit(50)()
+	h := newHarness(t)
+	ct := newChatTeam(t, h, "live", true)
+	sent := 0
+	for i := range 100 {
+		ch := ct.owner.expect(http.StatusCreated, "POST", "/v1/inboxes/"+ct.chatInbox+"/channels", map[string]any{
+			"kind": "chat", "name": "Site " + strconv.Itoa(i),
+			"chat": map[string]any{"allowed_origins": []string{ct.origin + "/"}, "allow_anonymous": true},
+		})
+		c := ct
+		c.key, c.channel = ch.body["chat"].(map[string]any)["public_key"].(string), ch.str("id")
+		if v := typeFrom(t, h, c, "10.40."+strconv.Itoa(i)+".1", unique("w")+"@example.net"); v.state == "sent" {
+			sent++
+		} else if v.state != "limited" {
+			t.Fatalf("channel %d: %+v", i+1, v)
 		}
 	}
-	if _, v := typeEmail(t, h, third, unique("elsewhere")+"@example.net"); v.state != "sent" {
-		t.Fatalf("a visitor of another network after one network's 30: %+v", v)
+	if sent != 50 {
+		t.Fatalf("%d confirmation mails from 100 channels of one workspace, want the workspace's 50", sent)
+	}
+}
+
+func TestConfirmAddressKey(t *testing.T) {
+	for _, c := range [][2]string{
+		{"Jane.Doe+news@GoogleMail.com", "janedoe@gmail.com"},
+		{"jane@bücher.de", "jane@xn--bcher-kva.de"},
+		{"Jane@XN--BCHER-KVA.DE", "jane@xn--bcher-kva.de"},
+		{"jane.doe+x@example.com", "jane.doe@example.com"},
+	} {
+		if got := api.ConfirmAddressKey(c[0]); got != c[1] {
+			t.Fatalf("%s -> %s, want %s", c[0], got, c[1])
+		}
 	}
 }
 

@@ -179,7 +179,7 @@ func (s *Server) startContactSession(ctx context.Context, chat store.ChatChannel
 	if err != nil {
 		return out, err
 	}
-	held, err := s.sendTypedConfirmation(ctx, confirm, chat.ChannelID)
+	held, err := s.sendTypedConfirmation(ctx, confirm)
 	if err != nil || !held {
 		return out, err
 	}
@@ -590,7 +590,7 @@ func (s *Server) SetClientContactEmail(ctx context.Context, req oas.SetClientCon
 	if err != nil {
 		return nil, err
 	}
-	held, err := s.sendTypedConfirmation(ctx, confirm, cp.channelID)
+	held, err := s.sendTypedConfirmation(ctx, confirm)
 	if err != nil {
 		return nil, err
 	}

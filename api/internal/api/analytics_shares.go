@@ -50,7 +50,7 @@ var (
 	limitSharePerIP       = limit{120, time.Minute}
 	limitUnlockPerIP      = limit{30, time.Minute}
 	limitUnlockPerShareIP = limit{10, time.Minute}
-	budgetUnlockPerShare  = budget{limit{60, time.Hour}, limit{1000, time.Hour}}
+	budgetUnlockFailures  = budget{limit{60, time.Hour}, limit{1000, time.Hour}}
 )
 
 // shareHashSlots bounds how many password hashes run at once, and so the memory they take.
@@ -542,9 +542,17 @@ func (s *Server) UnlockSharedAnalytics(ctx context.Context, req oas.UnlockShared
 	if sh.PasswordHash == nil {
 		return nil, errShareNoPassword
 	}
-	if err := s.rateLimit(ctx, append([]rateCheck{{"share-unlock:" + sh.ID.String() + ":" + ip, limitUnlockPerShareIP}},
-		sharedChecks(addr, "share-unlock:share:"+sh.ID.String(), budgetUnlockPerShare)...)...); err != nil {
+	if err := s.rateLimit(ctx, rateCheck{"share-unlock:" + sh.ID.String() + ":" + ip, limitUnlockPerShareIP}); err != nil {
 		return nil, err
+	}
+	// Only wrong passwords count against the link and the caller's network, so viewers who know
+	// the password spend nothing; once a budget is used up every unlock waits, since a right
+	// password cannot be told from a guess without hashing it.
+	failures := sharedChecks(addr, "share-unlock:failed:"+sh.ID.String(), budgetUnlockFailures)
+	if full, wait, err := s.limits.full(ctx, failures...); err != nil {
+		return nil, err
+	} else if full {
+		return nil, rateLimited(wait)
 	}
 	select {
 	case shareHashSlots <- struct{}{}:
@@ -554,6 +562,7 @@ func (s *Server) UnlockSharedAnalytics(ctx context.Context, req oas.UnlockShared
 	ok := checkSharePassword(*sh.PasswordHash, req.Body.Password)
 	<-shareHashSlots
 	if !ok {
+		_ = s.rateLimit(ctx, failures...)
 		return nil, errShareWrongPassword
 	}
 	token, exp := s.shareAccessToken(sh)

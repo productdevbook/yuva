@@ -11,6 +11,8 @@ import (
 	"unicode/utf8"
 	"uuid"
 
+	"golang.org/x/net/idna"
+
 	"github.com/productdevbook/yuva/api/internal/jobs"
 	"github.com/productdevbook/yuva/api/internal/mail"
 	"github.com/productdevbook/yuva/api/internal/oas"
@@ -26,9 +28,11 @@ const (
 )
 
 var (
-	limitTypedConfirmPerAddress = limit{3, 24 * time.Hour}
-	limitTypedConfirmPerContact = limit{6, 24 * time.Hour}
-	budgetTypedConfirm          = budget{limit{30, 24 * time.Hour}, limit{5000, 24 * time.Hour}}
+	limitTypedConfirmPerAddressNet = limit{3, 24 * time.Hour}
+	limitTypedConfirmPerAddress    = limit{10, 24 * time.Hour}
+	limitTypedConfirmPerContact    = limit{6, 24 * time.Hour}
+	limitTypedConfirmPerNet        = limit{30, 24 * time.Hour}
+	limitTypedConfirmPerWorkspace  = limit{2000, 24 * time.Hour}
 )
 
 // typedConfirmation is a confirmation mail for a typed address, to send once its transaction
@@ -99,20 +103,24 @@ func (s *Server) requestEmailConfirmation(ctx context.Context, q *store.Queries,
 }
 
 // sendTypedConfirmation sends a confirmation mail for a typed address, if one is due, within the
-// limits per address (server-wide), contact, the caller's network on the channel and the channel.
+// limits per address from the caller's network, per address on the server, per contact, per
+// network in the workspace and per workspace. All are taken together or not at all, so a refused
+// request spends nobody's budget: others cannot use up an address's mails from their own networks.
 // It runs after the transaction committed, so the limits count only mails that are due. A mail
 // the limits hold back marks its confirmation `limited` and tells the contact's streams; it says
 // whether that happened.
-func (s *Server) sendTypedConfirmation(ctx context.Context, tc *typedConfirmation, channel uuid.UUID) (bool, error) {
+func (s *Server) sendTypedConfirmation(ctx context.Context, tc *typedConfirmation) (bool, error) {
 	if tc == nil {
 		return false, nil
 	}
-	ip := s.clientIP(requestFrom(ctx))
-	checks := append([]rateCheck{
-		{"typed-confirm:address:" + confirmAddressKey(tc.msg.To), limitTypedConfirmPerAddress},
-		{"typed-confirm:contact:" + tc.contact.String(), limitTypedConfirmPerContact},
-	}, sharedChecks(ip, "typed-confirm:channel:"+channel.String(), budgetTypedConfirm)...)
-	if s.rateLimit(ctx, checks...) == nil {
+	addr, network := confirmAddressKey(tc.msg.To), rateNet(s.clientIP(requestFrom(ctx)))
+	if ok, _ := s.limits.takeEvery(ctx,
+		rateTake{"typed-confirm:address-net:" + addr + ":" + network, limitTypedConfirmPerAddressNet, 1},
+		rateTake{"typed-confirm:address:" + addr, limitTypedConfirmPerAddress, 1},
+		rateTake{"typed-confirm:contact:" + tc.contact.String(), limitTypedConfirmPerContact, 1},
+		rateTake{"typed-confirm:net:" + tc.ws.String() + ":" + network, limitTypedConfirmPerNet, 1},
+		rateTake{"typed-confirm:workspace:" + tc.ws.String(), limitTypedConfirmPerWorkspace, 1},
+	); ok {
 		s.sendMail(ctx, tc.msg)
 		return false, nil
 	}
@@ -133,8 +141,9 @@ func (s *Server) sendTypedConfirmation(ctx context.Context, tc *typedConfirmatio
 	})
 }
 
-// confirmAddressKey is an address as the per-address limit counts it: without case and `+tag`,
-// and without dots where the provider ignores them, so spellings of one mailbox count together.
+// confirmAddressKey is an address as the per-address limits count it: without case and `+tag`,
+// the domain in its ASCII (IDNA) form, and without dots where the provider ignores them, so
+// spellings of one mailbox count together.
 func confirmAddressKey(addr string) string {
 	addr = strings.ToLower(addr)
 	at := strings.LastIndexByte(addr, '@')
@@ -142,6 +151,9 @@ func confirmAddressKey(addr string) string {
 		return addr
 	}
 	local, domain := addr[:at], addr[at+1:]
+	if ascii, err := idna.Lookup.ToASCII(domain); err == nil {
+		domain = strings.ToLower(ascii)
+	}
 	local, _, _ = strings.Cut(local, "+")
 	if domain == "googlemail.com" {
 		domain = "gmail.com"

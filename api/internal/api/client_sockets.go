@@ -26,6 +26,7 @@ var (
 type clientSocket struct {
 	session, contact uuid.UUID
 	addr             string
+	loaded           bool
 }
 
 type presenceGate struct {
@@ -50,21 +51,29 @@ func newClientSockets() *clientSockets {
 	}
 }
 
-// open registers a connection and says whether it is the contact's first open connection in this
-// process. A session or address at its cap gets no new one (ok false): open connections are never
-// closed for a newer one, since tabs of one session and visitors behind one address would knock
-// each other off in turn.
-func (c *clientSockets) open(session, contact uuid.UUID, addr string) (sock *clientSocket, first, ok bool) {
+// open registers a connection against the caps of its session and address. One at a cap gets no
+// new one (nil): open connections are never closed for a newer one, since tabs of one session and
+// visitors behind one address would knock each other off in turn.
+func (c *clientSockets) open(session, contact uuid.UUID, addr string) *clientSocket {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 	if len(c.bySession[session]) >= clientSocketsPerSession || len(c.byAddr[addr]) >= clientSocketsPerAddress {
-		return nil, false, false
+		return nil
 	}
-	sock = &clientSocket{session: session, contact: contact, addr: addr}
+	sock := &clientSocket{session: session, contact: contact, addr: addr}
 	c.bySession[session] = append(c.bySession[session], sock)
 	c.byAddr[addr] = append(c.byAddr[addr], sock)
-	c.contacts[contact]++
-	return sock, c.contacts[contact] == 1, true
+	return sock
+}
+
+// ready counts a connection that loaded and is about to stream toward its contact's presence, and
+// says whether it is the contact's first such connection in this process.
+func (c *clientSockets) ready(sock *clientSocket) bool {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	sock.loaded = true
+	c.contacts[sock.contact]++
+	return c.contacts[sock.contact] == 1
 }
 
 func (c *clientSockets) drop(sock *clientSocket) {
@@ -79,12 +88,15 @@ func (c *clientSockets) drop(sock *clientSocket) {
 	}
 }
 
-// close unregisters a connection and says whether it was the contact's last open connection in
+// close unregisters a connection and says whether it was the contact's last ready connection in
 // this process.
 func (c *clientSockets) close(sock *clientSocket) bool {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 	c.drop(sock)
+	if !sock.loaded {
+		return false
+	}
 	if c.contacts[sock.contact]--; c.contacts[sock.contact] > 0 {
 		return false
 	}

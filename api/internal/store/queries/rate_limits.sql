@@ -53,3 +53,28 @@ DELETE FROM rate_limits WHERE ends_at <= coalesce(sqlc.narg(at)::timestamptz, cl
 
 -- name: SweepRateSlots :execrows
 DELETE FROM rate_slots WHERE expires_at <= coalesce(sqlc.narg(at)::timestamptz, clock_timestamp());
+
+-- EnsureRateLimits opens an empty window for each key that has none, in key order, so
+-- LockRateLimits finds a row for every key.
+-- name: EnsureRateLimits :exec
+WITH c AS (SELECT coalesce(sqlc.narg(at)::timestamptz, clock_timestamp()) AS now)
+INSERT INTO rate_limits (key, started_at, ends_at, checked_at, lim, want, count, granted)
+SELECT u.key, c.now, c.now + u.window_ms * interval '1 millisecond', c.now, u.lim, 0, 0, 0
+FROM c, (SELECT unnest(@keys::bytea[]) AS key, unnest(@window_ms::bigint[]) AS window_ms, unnest(@lims::int[]) AS lim) u
+ORDER BY u.key
+ON CONFLICT (key) DO NOTHING;
+
+-- LockRateLimits locks the keys' windows in key order and says how much each has used now.
+-- name: LockRateLimits :many
+WITH c AS (SELECT coalesce(sqlc.narg(at)::timestamptz, clock_timestamp()) AS now)
+SELECT r.key, CASE WHEN r.ends_at <= c.now OR r.started_at > c.now THEN 0 ELSE r.count END::int AS used,
+       r.ends_at, c.now::timestamptz AS checked_at
+FROM rate_limits r, c WHERE r.key = ANY(@keys::bytea[])
+ORDER BY r.key
+FOR UPDATE OF r;
+
+-- RateLimitsUsed says how much each key has used in its current window, without counting.
+-- name: RateLimitsUsed :many
+WITH c AS (SELECT coalesce(sqlc.narg(at)::timestamptz, clock_timestamp()) AS now)
+SELECT r.key, r.count::int AS used, r.ends_at, c.now::timestamptz AS checked_at
+FROM rate_limits r, c WHERE r.key = ANY(@keys::bytea[]) AND r.ends_at > c.now AND r.started_at <= c.now;
