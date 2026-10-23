@@ -5828,12 +5828,15 @@ func (e SsoJitRole) Valid() bool {
 // Defines values for SsoProtocol.
 const (
 	SsoProtocolOidc SsoProtocol = "oidc"
+	SsoProtocolSaml SsoProtocol = "saml"
 )
 
 // Valid indicates whether the value is a known member of the SsoProtocol enum.
 func (e SsoProtocol) Valid() bool {
 	switch e {
 	case SsoProtocolOidc:
+		return true
+	case SsoProtocolSaml:
 		return true
 	default:
 		return false
@@ -9257,16 +9260,23 @@ type Attributes map[string]interface{}
 //   - `workspace.slack_connected`: `team_id`, `team_name`; `workspace.slack_disconnected`:
 //     `team_id`, and `reason` `uninstalled` (by `system`) when Slack reported the app removed.
 //   - `member.slack_linked`: `slack_user_id`; `member.slack_unlinked`: `slack_user_id`.
-//   - `sso.provider_created`, `sso.provider_updated`: `protocol`, `issuer_host`, and for an update
-//     `fields` among `issuer`, `client_id`, `client_secret`, `scopes`, `groups_claim` and
-//     `allowed_groups` (never the secret). `sso.provider_deleted`: `protocol`.
+//   - `sso.provider_created`, `sso.provider_updated`: `protocol`, and for OpenID Connect
+//     `issuer_host` and for an update `fields` among `issuer`, `client_id`, `client_secret`,
+//     `scopes`, `groups_claim` and `allowed_groups` (never the secret); for SAML `entity_id`,
+//     `metadata_host` when the metadata came from a URL, and for an update `fields` among
+//     `entity_id`, `sso_url`, `certificates`, `metadata_url`, `email_attribute`,
+//     `groups_attribute` and `allowed_groups`. `sso.provider_created` names `replaced` (the
+//     other protocol) when it replaced a provider. A change found when SAML metadata is
+//     fetched again at a sign-in is `sso.provider_updated` by `system` with `via:
+//     metadata_refresh`. `sso.provider_deleted`: `protocol`.
 //   - `sso.settings_changed`: `fields`, and `from`/`to` objects with the changed values of
 //     `sso_required`, `jit` and `jit_role`.
 //   - `sso.signed_in`: `protocol`, `email`, and `joined` (`jit` or `invite`) when the sign-in
 //     made the person a member; the actor is the member, or `system` when the person is not one.
 //   - `sso.sign_in_refused`: `protocol`, `reason` (`failed` when the code exchange failed,
-//     `invalid_token`, `email_unverified`, `domain_not_claimed`, `group_not_allowed`,
-//     `not_member`), `email` when known, `detail` for `failed` and `invalid_token`; the actor
+//     `invalid_token` (for SAML: the response or assertion was refused), `email_unverified`,
+//     `domain_not_claimed`, `group_not_allowed`, `not_member`), `email` when known, `detail`
+//     for `failed` and `invalid_token`; the actor
 //     is the member when the person is one, else `system`. Requests refused with
 //     `sso_required` are not recorded.
 //   - `sso_domain.added`, `sso_domain.verified`, `sso_domain.deleted`: `domain`.
@@ -9354,16 +9364,23 @@ type AuditEntry struct {
 	// - `workspace.slack_connected`: `team_id`, `team_name`; `workspace.slack_disconnected`:
 	//   `team_id`, and `reason` `uninstalled` (by `system`) when Slack reported the app removed.
 	// - `member.slack_linked`: `slack_user_id`; `member.slack_unlinked`: `slack_user_id`.
-	// - `sso.provider_created`, `sso.provider_updated`: `protocol`, `issuer_host`, and for an update
-	//   `fields` among `issuer`, `client_id`, `client_secret`, `scopes`, `groups_claim` and
-	//   `allowed_groups` (never the secret). `sso.provider_deleted`: `protocol`.
+	// - `sso.provider_created`, `sso.provider_updated`: `protocol`, and for OpenID Connect
+	//   `issuer_host` and for an update `fields` among `issuer`, `client_id`, `client_secret`,
+	//   `scopes`, `groups_claim` and `allowed_groups` (never the secret); for SAML `entity_id`,
+	//   `metadata_host` when the metadata came from a URL, and for an update `fields` among
+	//   `entity_id`, `sso_url`, `certificates`, `metadata_url`, `email_attribute`,
+	//   `groups_attribute` and `allowed_groups`. `sso.provider_created` names `replaced` (the
+	//   other protocol) when it replaced a provider. A change found when SAML metadata is
+	//   fetched again at a sign-in is `sso.provider_updated` by `system` with `via:
+	//   metadata_refresh`. `sso.provider_deleted`: `protocol`.
 	// - `sso.settings_changed`: `fields`, and `from`/`to` objects with the changed values of
 	//   `sso_required`, `jit` and `jit_role`.
 	// - `sso.signed_in`: `protocol`, `email`, and `joined` (`jit` or `invite`) when the sign-in
 	//   made the person a member; the actor is the member, or `system` when the person is not one.
 	// - `sso.sign_in_refused`: `protocol`, `reason` (`failed` when the code exchange failed,
-	//   `invalid_token`, `email_unverified`, `domain_not_claimed`, `group_not_allowed`,
-	//   `not_member`), `email` when known, `detail` for `failed` and `invalid_token`; the actor
+	//   `invalid_token` (for SAML: the response or assertion was refused), `email_unverified`,
+	//   `domain_not_claimed`, `group_not_allowed`, `not_member`), `email` when known, `detail`
+	//   for `failed` and `invalid_token`; the actor
 	//   is the member when the person is one, else `system`. Requests refused with
 	//   `sso_required` are not recorded.
 	// - `sso_domain.added`, `sso_domain.verified`, `sso_domain.deleted`: `domain`.
@@ -19848,6 +19865,78 @@ type SsoOidcProvider struct {
 // SsoProtocol defines model for SsoProtocol.
 type SsoProtocol string
 
+// SsoSamlCertificate defines model for SsoSamlCertificate.
+type SsoSamlCertificate struct {
+	// NotAfter Signatures are refused outside the certificate's validity.
+	NotAfter  time.Time `json:"not_after"`
+	NotBefore time.Time `json:"not_before"`
+
+	// Sha256 The certificate's SHA-256 fingerprint, upper-case hex pairs joined by `:`.
+	Sha256  string `json:"sha256"`
+	Subject string `json:"subject"`
+}
+
+// SsoSamlInput defines model for SsoSamlInput.
+type SsoSamlInput struct {
+	AllowedGroups *[]string `json:"allowed_groups,omitempty"`
+
+	// EmailAttribute An attribute (by `Name` or `FriendlyName`) holding the e-mail address. Absent or empty,
+	// the NameID is used, which must then be the address.
+	EmailAttribute *string `json:"email_attribute,omitempty"`
+
+	// GroupsAttribute Absent or empty, `groups`.
+	GroupsAttribute *string `json:"groups_attribute,omitempty"`
+
+	// MetadataUrl The identity provider's metadata URL (https). Give this or `metadata_xml`.
+	MetadataUrl *string `json:"metadata_url,omitempty"`
+
+	// MetadataXml The identity provider's metadata document, pasted.
+	MetadataXml *string `json:"metadata_xml,omitempty"`
+}
+
+// SsoSamlProvider defines model for SsoSamlProvider.
+type SsoSamlProvider struct {
+	// AllowedGroups When not empty, only people in one of these groups sign in.
+	AllowedGroups []string `json:"allowed_groups"`
+
+	// Certificates The signing certificates; a signature by any other key is refused.
+	Certificates []SsoSamlCertificate `json:"certificates"`
+
+	// EmailAttribute The attribute holding the e-mail address; absent, the NameID is used.
+	EmailAttribute *string `json:"email_attribute,omitempty"`
+
+	// EntityId The identity provider's entity id; assertions must name it as issuer.
+	EntityId string `json:"entity_id"`
+
+	// GroupsAttribute The attribute holding the person's groups.
+	GroupsAttribute string `json:"groups_attribute"`
+
+	// MetadataFetchedAt When the metadata was last read from `metadata_url`.
+	MetadataFetchedAt *time.Time `json:"metadata_fetched_at,omitempty"`
+
+	// MetadataUrl Where the metadata is fetched from; absent when it was pasted.
+	MetadataUrl *string `json:"metadata_url,omitempty"`
+
+	// SsoUrl Its single sign-on URL for the HTTP-Redirect binding.
+	SsoUrl    string    `json:"sso_url"`
+	UpdatedAt time.Time `json:"updated_at"`
+}
+
+// SsoSamlServiceProvider What to register at a SAML identity provider for this workspace.
+type SsoSamlServiceProvider struct {
+	// AcsUrl The assertion consumer service, HTTP-POST binding.
+	AcsUrl string `json:"acs_url"`
+
+	// EntityId Yuva's entity id (the audience) for this workspace; the same as `metadata_url`.
+	EntityId string `json:"entity_id"`
+
+	// MetadataUrl Yuva's service provider metadata for this workspace.
+	MetadataUrl string `json:"metadata_url"`
+
+	// NameIdFormat `urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress`.
+	NameIdFormat string `json:"name_id_format"`
+}
+
 // SsoSettings defines model for SsoSettings.
 type SsoSettings struct {
 	Domains  []SsoDomain      `json:"domains"`
@@ -19856,9 +19945,17 @@ type SsoSettings struct {
 	Oidc     *SsoOidcProvider `json:"oidc,omitempty"`
 	Protocol *SsoProtocol     `json:"protocol,omitempty"`
 
-	// RedirectUri The redirect URI to register at the identity provider.
-	RedirectUri string `json:"redirect_uri"`
-	SsoRequired bool   `json:"sso_required"`
+	// RedirectUri The redirect URI to register at an OpenID Connect provider.
+	RedirectUri string           `json:"redirect_uri"`
+	Saml        *SsoSamlProvider `json:"saml,omitempty"`
+
+	// SamlSp What to register at a SAML identity provider for this workspace.
+	SamlSp      SsoSamlServiceProvider `json:"saml_sp"`
+	SsoRequired bool                   `json:"sso_required"`
+
+	// Warnings Only in the answer to `PUT /v1/sso/saml`: what was left out of the metadata, such as
+	// signing certificates past their validity, which are not stored.
+	Warnings *[]string `json:"warnings,omitempty"`
 }
 
 // SsoSettingsUpdate defines model for SsoSettingsUpdate.
@@ -19870,7 +19967,8 @@ type SsoSettingsUpdate struct {
 
 // SsoStart defines model for SsoStart.
 type SsoStart struct {
-	// AuthorizationUrl The provider's sign-in page to send the browser to, when `sso` is true.
+	// AuthorizationUrl The provider's sign-in page to send the browser to, when `sso` is true: an OpenID
+	// Connect authorization request or a SAML `AuthnRequest` (HTTP-Redirect binding).
 	AuthorizationUrl *string `json:"authorization_url,omitempty"`
 
 	// Required When `sso` is true, whether the workspace requires single sign-on: only a session
@@ -25328,6 +25426,18 @@ type SetSsoOidcProviderParams struct {
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
 
+// DeleteSsoSamlProviderParams defines parameters for DeleteSsoSamlProvider.
+type DeleteSsoSamlProviderParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// SetSsoSamlProviderParams defines parameters for SetSsoSamlProvider.
+type SetSsoSamlProviderParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
 // GetStatsParams defines parameters for GetStats.
 type GetStatsParams struct {
 	// InboxId Only this inbox (`404` when the caller cannot see it).
@@ -26856,6 +26966,9 @@ type AddSsoDomainJSONRequestBody = SsoDomainInput
 
 // SetSsoOidcProviderJSONRequestBody defines body for SetSsoOidcProvider for application/json ContentType.
 type SetSsoOidcProviderJSONRequestBody = SsoOidcInput
+
+// SetSsoSamlProviderJSONRequestBody defines body for SetSsoSamlProvider for application/json ContentType.
+type SetSsoSamlProviderJSONRequestBody = SsoSamlInput
 
 // CreateStatusPageJSONRequestBody defines body for CreateStatusPage for application/json ContentType.
 type CreateStatusPageJSONRequestBody = StatusPageCreate
@@ -32269,6 +32382,12 @@ type ServerInterface interface {
 	// SetSsoOidcProvider Set the OpenID Connect provider
 	// (PUT /v1/sso/oidc)
 	SetSsoOidcProvider(w http.ResponseWriter, r *http.Request, params SetSsoOidcProviderParams)
+	// DeleteSsoSamlProvider Remove the SAML identity provider
+	// (DELETE /v1/sso/saml)
+	DeleteSsoSamlProvider(w http.ResponseWriter, r *http.Request, params DeleteSsoSamlProviderParams)
+	// SetSsoSamlProvider Set the SAML identity provider
+	// (PUT /v1/sso/saml)
+	SetSsoSamlProvider(w http.ResponseWriter, r *http.Request, params SetSsoSamlProviderParams)
 	// GetStats Team activity since a moment
 	// (GET /v1/stats)
 	GetStats(w http.ResponseWriter, r *http.Request, params GetStatsParams)
@@ -55611,6 +55730,88 @@ func (siw *ServerInterfaceWrapper) SetSsoOidcProvider(w http.ResponseWriter, r *
 	handler.ServeHTTP(w, r)
 }
 
+// DeleteSsoSamlProvider operation middleware
+func (siw *ServerInterfaceWrapper) DeleteSsoSamlProvider(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params DeleteSsoSamlProviderParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.DeleteSsoSamlProvider(w, r, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// SetSsoSamlProvider operation middleware
+func (siw *ServerInterfaceWrapper) SetSsoSamlProvider(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params SetSsoSamlProviderParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.SetSsoSamlProvider(w, r, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // GetStats operation middleware
 func (siw *ServerInterfaceWrapper) GetStats(w http.ResponseWriter, r *http.Request) {
 
@@ -59844,6 +60045,8 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc(http.MethodPatch+" "+options.BaseURL+"/v1/sso", wrapper.UpdateSsoSettings)
 	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/sso/oidc", wrapper.DeleteSsoOidcProvider)
 	m.HandleFunc(http.MethodPut+" "+options.BaseURL+"/v1/sso/oidc", wrapper.SetSsoOidcProvider)
+	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/sso/saml", wrapper.DeleteSsoSamlProvider)
+	m.HandleFunc(http.MethodPut+" "+options.BaseURL+"/v1/sso/saml", wrapper.SetSsoSamlProvider)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/sso/domains", wrapper.AddSsoDomain)
 	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/sso/domains/{ssoDomainId}", wrapper.DeleteSsoDomain)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/sso/domains/{ssoDomainId}/verify", wrapper.VerifySsoDomain)
@@ -96901,6 +97104,133 @@ func (response SetSsoOidcProvider403ApplicationProblemPlusJSONResponse) VisitSet
 	return err
 }
 
+type DeleteSsoSamlProviderRequestObject struct {
+	Params DeleteSsoSamlProviderParams
+}
+
+type DeleteSsoSamlProviderResponseObject interface {
+	VisitDeleteSsoSamlProviderResponse(w http.ResponseWriter) error
+}
+
+type DeleteSsoSamlProvider204Response struct {
+}
+
+func (response DeleteSsoSamlProvider204Response) VisitDeleteSsoSamlProviderResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
+}
+
+type DeleteSsoSamlProvider401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response DeleteSsoSamlProvider401ApplicationProblemPlusJSONResponse) VisitDeleteSsoSamlProviderResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteSsoSamlProvider403ApplicationProblemPlusJSONResponse Problem
+
+func (response DeleteSsoSamlProvider403ApplicationProblemPlusJSONResponse) VisitDeleteSsoSamlProviderResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteSsoSamlProvider404ApplicationProblemPlusJSONResponse Problem
+
+func (response DeleteSsoSamlProvider404ApplicationProblemPlusJSONResponse) VisitDeleteSsoSamlProviderResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type SetSsoSamlProviderRequestObject struct {
+	Params SetSsoSamlProviderParams
+	Body   *SetSsoSamlProviderJSONRequestBody
+}
+
+type SetSsoSamlProviderResponseObject interface {
+	VisitSetSsoSamlProviderResponse(w http.ResponseWriter) error
+}
+
+type SetSsoSamlProvider200JSONResponse SsoSettings
+
+func (response SetSsoSamlProvider200JSONResponse) VisitSetSsoSamlProviderResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type SetSsoSamlProvider400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response SetSsoSamlProvider400ApplicationProblemPlusJSONResponse) VisitSetSsoSamlProviderResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type SetSsoSamlProvider401ApplicationProblemPlusJSONResponse Problem
+
+func (response SetSsoSamlProvider401ApplicationProblemPlusJSONResponse) VisitSetSsoSamlProviderResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type SetSsoSamlProvider403ApplicationProblemPlusJSONResponse Problem
+
+func (response SetSsoSamlProvider403ApplicationProblemPlusJSONResponse) VisitSetSsoSamlProviderResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
 type GetStatsRequestObject struct {
 	Params GetStatsParams
 }
@@ -103077,6 +103407,12 @@ type StrictServerInterface interface {
 	// SetSsoOidcProvider Set the OpenID Connect provider
 	// (PUT /v1/sso/oidc)
 	SetSsoOidcProvider(ctx context.Context, request SetSsoOidcProviderRequestObject) (SetSsoOidcProviderResponseObject, error)
+	// DeleteSsoSamlProvider Remove the SAML identity provider
+	// (DELETE /v1/sso/saml)
+	DeleteSsoSamlProvider(ctx context.Context, request DeleteSsoSamlProviderRequestObject) (DeleteSsoSamlProviderResponseObject, error)
+	// SetSsoSamlProvider Set the SAML identity provider
+	// (PUT /v1/sso/saml)
+	SetSsoSamlProvider(ctx context.Context, request SetSsoSamlProviderRequestObject) (SetSsoSamlProviderResponseObject, error)
 	// GetStats Team activity since a moment
 	// (GET /v1/stats)
 	GetStats(ctx context.Context, request GetStatsRequestObject) (GetStatsResponseObject, error)
@@ -115543,6 +115879,65 @@ func (sh *strictHandler) SetSsoOidcProvider(w http.ResponseWriter, r *http.Reque
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
 	} else if validResponse, ok := response.(SetSsoOidcProviderResponseObject); ok {
 		if err := validResponse.VisitSetSsoOidcProviderResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// DeleteSsoSamlProvider operation middleware
+func (sh *strictHandler) DeleteSsoSamlProvider(w http.ResponseWriter, r *http.Request, params DeleteSsoSamlProviderParams) {
+	var request DeleteSsoSamlProviderRequestObject
+
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.DeleteSsoSamlProvider(ctx, request.(DeleteSsoSamlProviderRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "DeleteSsoSamlProvider")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(DeleteSsoSamlProviderResponseObject); ok {
+		if err := validResponse.VisitDeleteSsoSamlProviderResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// SetSsoSamlProvider operation middleware
+func (sh *strictHandler) SetSsoSamlProvider(w http.ResponseWriter, r *http.Request, params SetSsoSamlProviderParams) {
+	var request SetSsoSamlProviderRequestObject
+
+	request.Params = params
+
+	var body SetSsoSamlProviderJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.SetSsoSamlProvider(ctx, request.(SetSsoSamlProviderRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "SetSsoSamlProvider")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(SetSsoSamlProviderResponseObject); ok {
+		if err := validResponse.VisitSetSsoSamlProviderResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {

@@ -1,9 +1,9 @@
 # Single sign-on
 
 Members of your workspace can sign in to Yuva through your company's identity provider with
-OpenID Connect: Google Workspace, Microsoft Entra ID, Okta, Keycloak or any provider that publishes
-a discovery document. Yuva learns who someone is from the provider; their e-mail address decides
-which provider they use.
+OpenID Connect or SAML 2.0: Google Workspace, Microsoft Entra ID, Okta, Keycloak or any provider that
+publishes an OpenID Connect discovery document or SAML metadata. A workspace uses one of the two.
+Yuva learns who someone is from the provider; their e-mail address decides which provider they use.
 
 Only owners change these settings, in Settings › Single sign-on or through the API
 (`GET /v1/sso` and the endpoints below, with a member session).
@@ -11,7 +11,8 @@ Only owners change these settings, in Settings › Single sign-on or through the
 ## How it works
 
 1. You register Yuva as an application at your provider and give Yuva the issuer URL, client id and
-   client secret.
+   client secret (OpenID Connect) or the provider's metadata (SAML, see
+   [SAML 2.0 instead of OpenID Connect](#saml-20-instead-of-openid-connect)).
 2. You claim your e-mail domains (`example.com`) with a DNS TXT record. A domain belongs to one
    workspace on a Yuva server.
 3. On the sign-in page a person types their e-mail address. When its domain is claimed, the browser
@@ -90,6 +91,100 @@ The issuer must be on a public `https` address. A server whose operator set
 `YUVA_WEBHOOK_ALLOW_PRIVATE=true` also reaches providers on private addresses, for example a
 Keycloak on the same network; link-local and cloud metadata addresses are always refused.
 
+## SAML 2.0 instead of OpenID Connect
+
+If your provider offers only SAML, or you prefer it, do this instead of steps 1 and 2. Saving a SAML
+provider replaces an OpenID Connect one, and the other way round; domains and rules stay.
+
+Sign-in always starts on Yuva's sign-in page (service-provider initiated). A response the provider
+sends without Yuva asking, for example from a tile on the provider's app dashboard, is refused: hide
+the app from the dashboard or point the tile at Yuva's sign-in page.
+
+Register these values at the provider (Settings › Single sign-on shows them; `saml_sp` in
+`GET /v1/sso`):
+
+| At the provider | Value |
+|---|---|
+| Entity ID, Audience URI, Identifier | `https://<your Yuva address>/auth/saml/metadata/<workspace id>` |
+| ACS URL, Reply URL, single sign-on URL | `https://<your Yuva address>/auth/saml/acs` (HTTP-POST) |
+| NameID format | `urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress`, the person's e-mail address |
+
+The entity ID is also the address of Yuva's metadata for your workspace, for providers that can read
+it. Yuva does not sign its requests and does not take encrypted assertions: leave request signing
+and assertion encryption off.
+
+Yuva checks every response: the response or the assertion must be signed by one of the
+certificates in your provider's metadata (unsigned responses, other keys and changed content are
+refused), it must hold exactly one assertion, answer a request this browser started in the last 10
+minutes and be used once, name Yuva's ACS URL as destination and recipient and Yuva's entity ID as
+audience, and be within its validity (3 minutes of clock difference allowed, issued at most 90
+seconds before). The e-mail address comes from the NameID, or from an attribute you name, and must
+be in one of your verified domains.
+
+### Okta
+
+1. Applications › Create App Integration › **SAML 2.0**.
+2. Single sign-on URL: the ACS URL, with "Use this for Recipient URL and Destination URL" on.
+   Audience URI: the entity ID. Name ID format **EmailAddress**, application username **Email**.
+3. For groups, add a group attribute statement named `groups` with a filter (for example "Matches
+   regex" `.*`).
+4. Assign the people or groups who may use it, and copy the **Metadata URL** from the Sign On tab.
+
+### Microsoft Entra ID
+
+1. Entra admin center › Enterprise applications › New application › Create your own application,
+   "Integrate any other application you don't find in the gallery".
+2. Single sign-on › **SAML**. Basic SAML Configuration: Identifier (Entity ID) the entity ID, Reply
+   URL the ACS URL.
+3. Attributes & Claims: set the Unique User Identifier (Name ID) to `user.mail` with the format
+   **Email address**.
+4. For groups, add a group claim; Entra names it
+   `http://schemas.microsoft.com/ws/2008/06/identity/claims/groups` and lists group object ids, so
+   use that name as the groups attribute in Yuva and allow those ids.
+5. Copy the **App Federation Metadata Url** from SAML Certificates.
+
+### Google Workspace
+
+1. Admin console › Apps › Web and mobile apps › Add app › **Add custom SAML app**.
+2. On the Google identity provider details page, download the metadata. Google has no metadata URL,
+   so paste the file into Yuva, and paste the new one when Google's certificate is renewed.
+3. Service provider details: ACS URL and Entity ID from above, Name ID format **EMAIL**, Name ID
+   **Basic Information › Primary email**.
+4. For groups, map Group membership to an app attribute named `groups`.
+5. Turn the app on for the organizational units or groups who may use it.
+
+### Keycloak
+
+1. In your realm, Clients › Create client, type **SAML**, Client ID the entity ID.
+2. Valid redirect URIs: the ACS URL. Name ID format **email**, with "Force name ID format" on, and
+   "Sign documents" or "Sign assertions" on.
+3. Keys: turn "Client signature required" off; Yuva does not sign its requests.
+4. For groups, add a **Group list** mapper to the client's dedicated scope with the attribute name
+   `groups` and "Full group path" off.
+5. The metadata URL is `https://<keycloak host>/realms/<realm>/protocol/saml/descriptor`.
+
+### Connect the SAML provider
+
+Give Yuva the metadata (`PUT /v1/sso/saml`): its URL (`metadata_url`, preferred) or the document
+itself (`metadata_xml`). Yuva takes the provider's entity ID, its single sign-on URL for the
+HTTP-Redirect binding and its signing certificates; the settings show each certificate's subject,
+validity and SHA-256 fingerprint. Expired certificates are left out and named in the answer;
+metadata without a certificate that is valid now is refused. Metadata from a URL is read again when
+a sign-in starts and the copy is more than an hour old, so a certificate your provider rotates is
+used without you doing anything; when the URL cannot be read, Yuva keeps the stored copy and tries
+again 15 minutes later. Pasted metadata changes only when you paste it again. Save again without metadata to
+change only the options below (and to read the URL again at once).
+
+Optionally:
+
+- **E-mail attribute**: the attribute (by name or friendly name) holding the address, when the
+  NameID is not the address.
+- **Groups attribute** (`groups` by default) and **allowed groups**: when you list groups, only people
+  whose assertion names one of them sign in.
+
+The same address rules apply as for the issuer: public `https` addresses, private ones only with
+`YUVA_WEBHOOK_ALLOW_PRIVATE=true`.
+
 ## 3. Claim your domains
 
 Add each e-mail domain (`POST /v1/sso/domains`) and publish the TXT record it shows:
@@ -130,6 +225,8 @@ Every change and every sign-in is in the workspace's audit log (Settings › Aud
 `sso.provider_created`, `sso.provider_updated`, `sso.provider_deleted`, `sso.settings_changed`,
 `sso_domain.added`, `sso_domain.verified`, `sso_domain.deleted`, `sso.signed_in` and
 `sso.sign_in_refused` with its reason, and `member.joined` with `via: sso` for just-in-time members.
+When Yuva reads SAML metadata again and finds new certificates, `sso.provider_updated` is recorded
+by the system with `via: metadata_refresh`.
 
 ## When sign-in fails
 
@@ -137,11 +234,11 @@ The sign-in page shows what went wrong (`/sign-in?sso_error=…`):
 
 | Code | Meaning |
 |---|---|
-| `expired` | The sign-in took longer than 10 minutes, was used already, or started in another browser. |
+| `expired` | The sign-in took longer than 10 minutes, was used already, or started in another browser; for SAML also a response Yuva did not ask for, or one that is not a SAML response. |
 | `denied` | The provider refused or the person cancelled. |
 | `failed` | Yuva could not reach the provider or exchange the code; check the client secret. |
-| `invalid_token` | The `id_token` failed a check (signature, issuer, audience, expiry, nonce). |
-| `email_unverified` | The token has no address or does not say it is verified. |
+| `invalid_token` | The `id_token` failed a check (signature, issuer, audience, expiry, nonce), or the SAML response did (signature, certificate, destination, recipient, audience, validity, an assertion used before); the audit log names the check. |
+| `email_unverified` | The token has no address or does not say it is verified; for SAML, the NameID or the e-mail attribute holds no address. |
 | `domain_not_claimed` | The address is not in one of the workspace's verified domains. |
 | `group_not_allowed` | The person is in none of the allowed groups. |
 | `not_member` | The person has no account here and just-in-time membership is off. |

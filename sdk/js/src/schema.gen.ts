@@ -191,22 +191,35 @@ export interface paths {
          * Start a single sign-on
          * @description The sign-in page asks for the e-mail address first and sends it here. When the address's
          *     domain is claimed by a workspace that has an identity provider, the answer carries
-         *     `authorization_url`, the provider's sign-in page (authorization code with PKCE, `state`
-         *     and `nonce`, `login_hint` set to the address), and sets the `yuva_sso` cookie that binds
-         *     the sign-in to this browser for 10 minutes; the page sends the browser there. Otherwise
-         *     `sso` is `false` and the page goes on with a code or a passkey.
+         *     `authorization_url`, the provider's sign-in page, and sets a cookie that binds the sign-in
+         *     to this browser for 10 minutes; the page sends the browser there. Otherwise `sso` is
+         *     `false` and the page goes on with a code or a passkey.
          *
-         *     The provider sends the browser back to `GET /auth/sso/callback` (outside this contract),
-         *     which checks the cookie and `state`, exchanges the code, verifies the `id_token` (signature
-         *     against the provider's keys, `iss`, `aud`, `exp`, `nonce`) and requires a verified e-mail in a
-         *     domain the workspace has claimed. It then redirects to `return_to` (or `/`) with the
+         *     With OpenID Connect the URL is an authorization request (code with PKCE, `state` and
+         *     `nonce`, `login_hint` set to the address) and the cookie `yuva_sso`. With SAML it is the
+         *     identity provider's single sign-on URL with an `AuthnRequest` (HTTP-Redirect binding,
+         *     NameID format `emailAddress`) and the cookie `yuva_saml`, which holds the request's id. The
+         *     provider posts its answer to `POST /auth/saml/acs` (HTTP-POST binding, outside this
+         *     contract), which needs the cookie to equal the response's `InResponseTo`, takes the
+         *     stored request once, and requires a signed Response or Assertion from one of the
+         *     configured certificates, exactly one assertion, `Destination` and `Recipient` equal to
+         *     `acs_url`, `Audience` equal to `entity_id` (both in `saml_sp` of `GET /v1/sso`), the
+         *     validity window (3 minutes of clock skew, issued at most 90 seconds ago) and an assertion
+         *     id not seen before. Responses the server did not ask for (identity-provider-initiated) are
+         *     refused. The e-mail address is the NameID, or the configured attribute.
+         *
+         *     With OpenID Connect the provider sends the browser back to `GET /auth/sso/callback`
+         *     (outside this contract), which checks the cookie and `state`, exchanges the code, verifies
+         *     the `id_token` (signature against the provider's keys, `iss`, `aud`, `exp`, `nonce`) and
+         *     requires a verified e-mail. Both protocols require the address to be in a domain the
+         *     workspace has claimed. The browser is then redirected to `return_to` (or `/`) with the
          *     session cookie set, or to `/sign-in?sso_error=<code>` with `code` one of `expired`,
-         *     `denied`, `failed`, `invalid_token`, `email_unverified`, `domain_not_claimed`,
-         *     `group_not_allowed`, `not_member`.
+         *     `denied`, `failed`, `invalid_token` (for SAML: the response or assertion was refused),
+         *     `email_unverified`, `domain_not_claimed`, `group_not_allowed`, `not_member`.
          *
          *     A domain's claim is public (its DNS record is), so answering whether it has single
          *     sign-on reveals nothing about people. 30 requests a minute per client IP address (`429`).
-         *     `502 sso_unavailable` when the provider's discovery document cannot be read.
+         *     `502 sso_unavailable` when the OpenID Connect provider's discovery document cannot be read.
          */
         post: operations["startSsoSignIn"];
         delete?: never;
@@ -871,10 +884,51 @@ export interface paths {
         post?: never;
         /**
          * Remove the OpenID Connect provider
-         * @description Removes the provider and turns `sso_required` off; claimed domains stay. Owners only,
-         *     with a member session; recorded as `sso.provider_deleted`.
+         * @description Removes the OpenID Connect provider (`404` when the workspace uses SAML or none) and turns
+         *     `sso_required` off; claimed domains stay. Owners only, with a member session; recorded as
+         *     `sso.provider_deleted`.
          */
         delete: operations["deleteSsoOidcProvider"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/sso/saml": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Set the SAML identity provider
+         * @description Saves a SAML 2.0 identity provider from its metadata: `metadata_url` (fetched now, through
+         *     the same address checks as the OpenID Connect discovery, and again at a sign-in when the
+         *     copy is more than an hour old, so rotated certificates are picked up; after a failed
+         *     fetch the stored copy is used and the next try waits 15 minutes) or `metadata_xml`
+         *     (pasted; paste it again when the certificate rotates). The metadata must be one
+         *     `EntityDescriptor` with an `IDPSSODescriptor` that has a `SingleSignOnService` with the
+         *     HTTP-Redirect binding and at least one signing certificate valid now; DTDs are refused.
+         *     `400 sso_metadata_failed` with the reason otherwise. Expired certificates are left out
+         *     and named in `warnings`. Leave both out to keep the stored
+         *     metadata (fetched again when it came from a URL); one is required the first time. A
+         *     workspace has one provider: saving SAML replaces an OpenID Connect provider (and the
+         *     other way round). Register `saml_sp` from `GET /v1/sso` at the provider: entity id,
+         *     ACS URL (HTTP-POST), NameID format `emailAddress`, or load its `metadata_url`. Owners
+         *     only, with a member session; recorded as `sso.provider_created` (also when it replaces
+         *     the other protocol) or `sso.provider_updated`.
+         */
+        put: operations["setSsoSamlProvider"];
+        post?: never;
+        /**
+         * Remove the SAML identity provider
+         * @description Removes the SAML provider (`404` when the workspace uses OpenID Connect or none) and turns
+         *     `sso_required` off; claimed domains stay. Owners only, with a member session; recorded as
+         *     `sso.provider_deleted`.
+         */
+        delete: operations["deleteSsoSamlProvider"];
         options?: never;
         head?: never;
         patch?: never;
@@ -1086,7 +1140,7 @@ export interface paths {
          * Create an API key
          * @description Owners and admins only, with a member session. The secret is returned once and stored
          *     only as a hash. A key limited to inboxes cannot hold `inboxes:manage`, `webhooks:manage`,
-         *     `workspace:manage` or `audit:read` (`400 validation_failed`); only an owner gives a key
+         *     `workspace:manage`, `fields:manage` or `audit:read` (`400 validation_failed`); only an owner gives a key
          *     `audit:read` (`403 forbidden`).
          */
         post: operations["createApiKey"];
@@ -1940,6 +1994,11 @@ export interface paths {
          *     Each item carries the contact (id, name, first e-mail address), a preview of the last
          *     `message` (notes and events are not previewed), and `unread` and `pinned_at` for the
          *     calling member.
+         *
+         *     `field.<key>=<value>` keeps the conversations whose custom field `<key>` holds exactly
+         *     `<value>`: a number for `number`, `true` or `false` for `checkbox`, the text otherwise.
+         *     Several keys must all match. A key that is not a conversation field, a repeated key or a
+         *     value that does not fit the type answers `400 field_invalid` with `field`.
          */
         get: operations["listConversations"];
         put?: never;
@@ -2091,7 +2150,8 @@ export interface paths {
          *     emits the same events and webhooks as `PATCH /v1/conversations/{conversationId}`.
          *     A conversation the caller cannot see (or of another workspace) is listed in `failed`
          *     with `not_found`; one whose inbox the new assignee cannot access with
-         *     `validation_failed`. A request that is invalid as a whole (no change, an unknown label or
+         *     `validation_failed`; one that would close without a required custom field with
+         *     `field_required` and `field`. A request that is invalid as a whole (no change, an unknown label or
          *     member, a past `snooze_until`) is refused with `400` and changes nothing.
          *
          *     `trashed` moves the conversations to the trash (`true`) or restores them (`false`), as
@@ -2154,6 +2214,11 @@ export interface paths {
          *     `event` messages. `snooze_until` is required with status `snoozed` and cleared by any other
          *     status. A `feedback_progress` value is refused with `409 not_feedback` on a conversation whose
          *     `kind` is not `feedback`.
+         *
+         *     `fields` sets custom field values (`400 field_invalid` naming the key in `field`). Closing
+         *     a conversation that is not spam while a field marked `required_on_close` has no value,
+         *     after the change, answers `409 field_required` naming the first such field in `field`;
+         *     this holds for bulk changes (per item), macros and `then` of a message too.
          *
          *     Scope: `conversations:write`.
          */
@@ -2892,6 +2957,72 @@ export interface paths {
          *     macro instead.
          */
         patch: operations["updateMacro"];
+        trace?: never;
+    };
+    "/v1/custom-fields": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List custom fields
+         * @description The workspace's custom field definitions, by object, position and creation.
+         *
+         *     Scope: `conversations:read` or `contacts:read`.
+         */
+        get: operations["listCustomFields"];
+        put?: never;
+        /**
+         * Create a custom field
+         * @description Owners, admins and API keys not limited to inboxes. At most 50 fields per object
+         *     (`403 field_limit`); `key` is unique per object (`409 field_taken`). A conversation key
+         *     whose values from a deleted field are still being cleared answers `409 field_clearing`.
+         *
+         *     Scope: `fields:manage`.
+         */
+        post: operations["createCustomField"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/custom-fields/{customFieldId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get a custom field
+         * @description Scope: `conversations:read` or `contacts:read`.
+         */
+        get: operations["getCustomField"];
+        put?: never;
+        post?: never;
+        /**
+         * Delete a custom field
+         * @description Owners, admins and API keys not limited to inboxes. A conversation field's values are
+         *     cleared in the background (one `conversation.updated` each); a contact field's attribute
+         *     stays on the contacts as a free-form attribute.
+         *
+         *     Scope: `fields:manage`.
+         */
+        delete: operations["deleteCustomField"];
+        options?: never;
+        head?: never;
+        /**
+         * Update a custom field
+         * @description Owners, admins and API keys not limited to inboxes. The object, key and type do not change.
+         *     `options` replaces the options as a whole; conversation values of a removed option are
+         *     cleared in the background (one `conversation.updated` each), contact attributes are kept.
+         *
+         *     Scope: `fields:manage`.
+         */
+        patch: operations["updateCustomField"];
         trace?: never;
     };
     "/v1/docs/sites": {
@@ -11392,16 +11523,23 @@ export interface components {
          *     - `workspace.slack_connected`: `team_id`, `team_name`; `workspace.slack_disconnected`:
          *       `team_id`, and `reason` `uninstalled` (by `system`) when Slack reported the app removed.
          *     - `member.slack_linked`: `slack_user_id`; `member.slack_unlinked`: `slack_user_id`.
-         *     - `sso.provider_created`, `sso.provider_updated`: `protocol`, `issuer_host`, and for an update
-         *       `fields` among `issuer`, `client_id`, `client_secret`, `scopes`, `groups_claim` and
-         *       `allowed_groups` (never the secret). `sso.provider_deleted`: `protocol`.
+         *     - `sso.provider_created`, `sso.provider_updated`: `protocol`, and for OpenID Connect
+         *       `issuer_host` and for an update `fields` among `issuer`, `client_id`, `client_secret`,
+         *       `scopes`, `groups_claim` and `allowed_groups` (never the secret); for SAML `entity_id`,
+         *       `metadata_host` when the metadata came from a URL, and for an update `fields` among
+         *       `entity_id`, `sso_url`, `certificates`, `metadata_url`, `email_attribute`,
+         *       `groups_attribute` and `allowed_groups`. `sso.provider_created` names `replaced` (the
+         *       other protocol) when it replaced a provider. A change found when SAML metadata is
+         *       fetched again at a sign-in is `sso.provider_updated` by `system` with `via:
+         *       metadata_refresh`. `sso.provider_deleted`: `protocol`.
          *     - `sso.settings_changed`: `fields`, and `from`/`to` objects with the changed values of
          *       `sso_required`, `jit` and `jit_role`.
          *     - `sso.signed_in`: `protocol`, `email`, and `joined` (`jit` or `invite`) when the sign-in
          *       made the person a member; the actor is the member, or `system` when the person is not one.
          *     - `sso.sign_in_refused`: `protocol`, `reason` (`failed` when the code exchange failed,
-         *       `invalid_token`, `email_unverified`, `domain_not_claimed`, `group_not_allowed`,
-         *       `not_member`), `email` when known, `detail` for `failed` and `invalid_token`; the actor
+         *       `invalid_token` (for SAML: the response or assertion was refused), `email_unverified`,
+         *       `domain_not_claimed`, `group_not_allowed`, `not_member`), `email` when known, `detail`
+         *       for `failed` and `invalid_token`; the actor
          *       is the member when the person is one, else `system`. Requests refused with
          *       `sso_required` are not recorded.
          *     - `sso_domain.added`, `sso_domain.verified`, `sso_domain.deleted`: `domain`.
@@ -11460,7 +11598,8 @@ export interface components {
             sso: boolean;
             /**
              * Format: uri
-             * @description The provider's sign-in page to send the browser to, when `sso` is true.
+             * @description The provider's sign-in page to send the browser to, when `sso` is true: an OpenID
+             *     Connect authorization request or a SAML `AuthnRequest` (HTTP-Redirect binding).
              */
             authorization_url?: string;
             /**
@@ -11470,7 +11609,7 @@ export interface components {
             required?: boolean;
         };
         /** @enum {string} */
-        SsoProtocol: "oidc";
+        SsoProtocol: "oidc" | "saml";
         /** @enum {string} */
         SsoJitRole: "admin" | "agent";
         SsoOidcProvider: {
@@ -11501,6 +11640,81 @@ export interface components {
             groups_claim?: string;
             allowed_groups?: string[];
         };
+        SsoSamlCertificate: {
+            subject: string;
+            /** Format: date-time */
+            not_before: string;
+            /**
+             * Format: date-time
+             * @description Signatures are refused outside the certificate's validity.
+             */
+            not_after: string;
+            /** @description The certificate's SHA-256 fingerprint, upper-case hex pairs joined by `:`. */
+            sha256: string;
+        };
+        SsoSamlProvider: {
+            /** @description The identity provider's entity id; assertions must name it as issuer. */
+            entity_id: string;
+            /**
+             * Format: uri
+             * @description Its single sign-on URL for the HTTP-Redirect binding.
+             */
+            sso_url: string;
+            /** @description The signing certificates; a signature by any other key is refused. */
+            certificates: components["schemas"]["SsoSamlCertificate"][];
+            /**
+             * Format: uri
+             * @description Where the metadata is fetched from; absent when it was pasted.
+             */
+            metadata_url?: string;
+            /**
+             * Format: date-time
+             * @description When the metadata was last read from `metadata_url`.
+             */
+            metadata_fetched_at?: string;
+            /** @description The attribute holding the e-mail address; absent, the NameID is used. */
+            email_attribute?: string;
+            /** @description The attribute holding the person's groups. */
+            groups_attribute: string;
+            /** @description When not empty, only people in one of these groups sign in. */
+            allowed_groups: string[];
+            /** Format: date-time */
+            updated_at: string;
+        };
+        SsoSamlInput: {
+            /**
+             * Format: uri
+             * @description The identity provider's metadata URL (https). Give this or `metadata_xml`.
+             */
+            metadata_url?: string;
+            /** @description The identity provider's metadata document, pasted. */
+            metadata_xml?: string;
+            /**
+             * @description An attribute (by `Name` or `FriendlyName`) holding the e-mail address. Absent or empty,
+             *     the NameID is used, which must then be the address.
+             */
+            email_attribute?: string;
+            /** @description Absent or empty, `groups`. */
+            groups_attribute?: string;
+            allowed_groups?: string[];
+        };
+        /** @description What to register at a SAML identity provider for this workspace. */
+        SsoSamlServiceProvider: {
+            /** @description Yuva's entity id (the audience) for this workspace; the same as `metadata_url`. */
+            entity_id: string;
+            /**
+             * Format: uri
+             * @description The assertion consumer service, HTTP-POST binding.
+             */
+            acs_url: string;
+            /**
+             * Format: uri
+             * @description Yuva's service provider metadata for this workspace.
+             */
+            metadata_url: string;
+            /** @description `urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress`. */
+            name_id_format: string;
+        };
         /** @enum {string} */
         SsoDomainState: "pending" | "verified";
         SsoDomain: {
@@ -11527,15 +11741,22 @@ export interface components {
         SsoSettings: {
             protocol?: components["schemas"]["SsoProtocol"];
             oidc?: components["schemas"]["SsoOidcProvider"];
+            saml?: components["schemas"]["SsoSamlProvider"];
             domains: components["schemas"]["SsoDomain"][];
             sso_required: boolean;
             jit: boolean;
             jit_role: components["schemas"]["SsoJitRole"];
             /**
              * Format: uri
-             * @description The redirect URI to register at the identity provider.
+             * @description The redirect URI to register at an OpenID Connect provider.
              */
             redirect_uri: string;
+            saml_sp: components["schemas"]["SsoSamlServiceProvider"];
+            /**
+             * @description Only in the answer to `PUT /v1/sso/saml`: what was left out of the metadata, such as
+             *     signing certificates past their validity, which are not stored.
+             */
+            warnings?: string[];
         };
         SsoSettingsUpdate: {
             sso_required?: boolean;
@@ -11770,10 +11991,15 @@ export interface components {
          *     - `issues:write`: create, link and unlink GitHub and Linear issues on feedback and ideas,
          *       together with `conversations:read`.
          *
-         *     `conversations:delete`, `messages:redact`, `lists:*`, `broadcasts:*`, `migrations:manage`, `analytics:*`, `status:*`, `help:*`, `roadmap:*`, `changelog:*`, `audit:read`, `integrations:*` and `issues:write` are never added to keys made before they existed.
+         *     - `fields:manage`: create, change and delete custom field definitions. Owners and admins
+         *       only; never offered to agents' tokens, refused for keys limited to inboxes. Never
+         *       implied: a key made without naming its scopes does not hold it. Writing values needs
+         *       `conversations:write` or `contacts:write`.
+         *
+         *     `conversations:delete`, `messages:redact`, `lists:*`, `broadcasts:*`, `migrations:manage`, `analytics:*`, `status:*`, `help:*`, `roadmap:*`, `changelog:*`, `audit:read`, `integrations:*`, `issues:write` and `fields:manage` are never added to keys made before they existed.
          * @enum {string}
          */
-        ApiKeyScope: "conversations:read" | "conversations:write" | "conversations:delete" | "messages:write" | "messages:redact" | "drafts:send" | "notes:write" | "contacts:read" | "contacts:write" | "inboxes:read" | "inboxes:manage" | "labels:write" | "canned_replies:write" | "webhooks:manage" | "workspace:manage" | "feedback:write" | "lists:read" | "lists:write" | "broadcasts:read" | "broadcasts:write" | "broadcasts:send" | "migrations:manage" | "analytics:read" | "analytics:write" | "analytics:manage" | "status:read" | "status:manage" | "help:read" | "help:write" | "help:publish" | "roadmap:read" | "roadmap:write" | "roadmap:stage" | "changelog:read" | "changelog:write" | "changelog:publish" | "audit:read" | "integrations:read" | "integrations:manage" | "issues:write";
+        ApiKeyScope: "conversations:read" | "conversations:write" | "conversations:delete" | "messages:write" | "messages:redact" | "drafts:send" | "notes:write" | "contacts:read" | "contacts:write" | "inboxes:read" | "inboxes:manage" | "labels:write" | "canned_replies:write" | "webhooks:manage" | "workspace:manage" | "feedback:write" | "lists:read" | "lists:write" | "broadcasts:read" | "broadcasts:write" | "broadcasts:send" | "migrations:manage" | "analytics:read" | "analytics:write" | "analytics:manage" | "status:read" | "status:manage" | "help:read" | "help:write" | "help:publish" | "roadmap:read" | "roadmap:write" | "roadmap:stage" | "changelog:read" | "changelog:write" | "changelog:publish" | "audit:read" | "integrations:read" | "integrations:manage" | "issues:write" | "fields:manage";
         /**
          * Format: uri
          * @description An `https` image URL.
@@ -12540,7 +12766,11 @@ export interface components {
             /** @description The host app's user id. */
             external_id: string;
         };
-        /** @description Free-form data about the contact (plan, app version, ...), at most 16 KiB. */
+        /**
+         * @description Free-form data about the contact (plan, app version, ...), at most 16 KiB. A key that is a
+         *     contact custom field must hold a value of its type (`400 field_invalid` naming the key in
+         *     `field` on `/v1`; identity tokens drop such a value); `null` leaves it unset.
+         */
         Attributes: {
             [key: string]: unknown;
         };
@@ -13001,6 +13231,7 @@ export interface components {
             team_id?: string;
             /** @description Label ids. */
             labels: string[];
+            fields: components["schemas"]["CustomFieldValues"];
             /**
              * Format: date-time
              * @description The last `message` to or from the contact.
@@ -13115,6 +13346,7 @@ export interface components {
             team_id?: string | null;
             /** @description Replaces the labels. */
             labels?: string[];
+            fields?: components["schemas"]["CustomFieldValuesUpdate"];
             /**
              * @description `feedback` conversations only: sets `feedback.progress`; `null` clears it. A value on
              *     another kind is refused with `409 not_feedback`; `null` there changes nothing.
@@ -13136,6 +13368,7 @@ export interface components {
             assignee_id?: string | null;
             add_labels?: string[];
             remove_labels?: string[];
+            fields?: components["schemas"]["CustomFieldValuesUpdate"];
             /**
              * @description `true` moves the conversations to the trash, `false` restores them. Alone, without
              *     other changes. Owners, admins and keys and tokens with `conversations:delete`.
@@ -13152,6 +13385,8 @@ export interface components {
             status: number;
             code: string;
             detail?: string;
+            /** @description `field_invalid` and `field_required` only: the custom field's key. */
+            field?: components["schemas"]["CustomFieldKey"];
         };
         ConversationBulkResult: {
             /** @description The conversations after the change, in request order (with `trashed_at` when trashed). */
@@ -14091,6 +14326,79 @@ export interface components {
         };
         CannedReplyList: {
             items: components["schemas"]["CannedReply"][];
+        };
+        /** @enum {string} */
+        CustomFieldObject: "conversation" | "contact";
+        /**
+         * @description The JSON value each type takes: `text` a string of 1 to 1000 characters, `number` a finite
+         *     number, `date` a `YYYY-MM-DD` string, `select` one of the field's `options`, `checkbox`
+         *     `true` or `false`.
+         * @enum {string}
+         */
+        CustomFieldType: "text" | "number" | "date" | "select" | "checkbox";
+        /**
+         * @description The key the value is stored under, in `fields` of a conversation or `attributes` of a contact.
+         * @example order_id
+         */
+        CustomFieldKey: string;
+        /** @description `select` only: the values to choose from, 1 to 100 distinct strings of 1 to 100 characters. */
+        CustomFieldOptions: string[];
+        CustomField: {
+            /** Format: uuid */
+            id: string;
+            object: components["schemas"]["CustomFieldObject"];
+            key: components["schemas"]["CustomFieldKey"];
+            /** @description What the panel shows. */
+            name: string;
+            type: components["schemas"]["CustomFieldType"];
+            options: components["schemas"]["CustomFieldOptions"];
+            /**
+             * @description Conversation fields only: closing a conversation without a value answers
+             *     `409 field_required` naming the field. Spam is closed without it.
+             */
+            required_on_close: boolean;
+            /** Format: int32 */
+            position: number;
+            /** Format: date-time */
+            created_at: string;
+            /** Format: date-time */
+            updated_at: string;
+        };
+        CustomFieldCreate: {
+            object: components["schemas"]["CustomFieldObject"];
+            key: components["schemas"]["CustomFieldKey"];
+            name: string;
+            type: components["schemas"]["CustomFieldType"];
+            options?: components["schemas"]["CustomFieldOptions"];
+            /** @default false */
+            required_on_close: boolean;
+            /** Format: int32 */
+            position?: number;
+        };
+        CustomFieldUpdate: {
+            name?: string;
+            options?: components["schemas"]["CustomFieldOptions"];
+            required_on_close?: boolean;
+            /** Format: int32 */
+            position?: number;
+        };
+        CustomFieldList: {
+            items: components["schemas"]["CustomField"][];
+        };
+        /**
+         * @description Values of the workspace's conversation custom fields by key (see `CustomFieldType`); `{}`
+         *     when none is set.
+         */
+        CustomFieldValues: {
+            [key: string]: unknown;
+        };
+        /**
+         * @description Sets the named conversation custom fields and keeps the others; `null` clears one. Every
+         *     key must be a conversation field and every value fit its type, or `400 field_invalid`
+         *     names the key in `field`.
+         */
+        CustomFieldValuesUpdate: {
+            [key: string]: unknown;
         };
         /**
          * @description `personal`: only its owner sees and applies it. `shared`: the whole workspace.
@@ -23792,6 +24100,11 @@ export interface components {
              * @example messages:write
              */
             scope?: string;
+            /**
+             * @description `field_invalid` and `field_required` only: the key of the custom field.
+             * @example order_id
+             */
+            field?: string;
             limit?: components["schemas"]["HostedLimit"];
             /**
              * @description `sso_required` only: the member's address; send it to `POST /v1/auth/sso` for the
@@ -24016,6 +24329,7 @@ export interface components {
         LabelId: string;
         CannedReplyId: string;
         MacroId: string;
+        CustomFieldId: string;
         /** @description The chat channel's public key. */
         ChannelKey: string;
         AnalyticsPropertyId: string;
@@ -24290,7 +24604,11 @@ export interface operations {
             /** @description Whether the address signs in through its workspace's identity provider. */
             200: {
                 headers: {
-                    /** @description `yuva_sso`, HttpOnly, SameSite=Lax, path `/auth/sso`, when `sso` is true. */
+                    /**
+                     * @description When `sso` is true: `yuva_sso` (OpenID Connect; HttpOnly, SameSite=Lax, path
+                     *     `/auth/sso`) or `yuva_saml` (SAML; HttpOnly, path `/auth/saml`, SameSite=None and
+                     *     Secure on https so the provider's cross-site POST carries it).
+                     */
                     "Set-Cookie"?: string;
                     [name: string]: unknown;
                 };
@@ -25262,6 +25580,60 @@ export interface operations {
         };
     };
     deleteSsoOidcProvider: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Removed. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    setSsoSamlProvider: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SsoSamlInput"];
+            };
+        };
+        responses: {
+            /** @description The settings. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SsoSettings"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+        };
+    };
+    deleteSsoSamlProvider: {
         parameters: {
             query?: never;
             header?: {
@@ -28530,6 +28902,154 @@ export interface operations {
             403: components["responses"]["Problem"];
             404: components["responses"]["Problem"];
             409: components["responses"]["Problem"];
+        };
+    };
+    listCustomFields: {
+        parameters: {
+            query?: {
+                /** @description Only the fields of this object. */
+                object?: components["schemas"]["CustomFieldObject"];
+            };
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The custom fields. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CustomFieldList"];
+                };
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+        };
+    };
+    createCustomField: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Makes a retried request return the first response; see "Idempotency". */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CustomFieldCreate"];
+            };
+        };
+        responses: {
+            /** @description The custom field. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CustomField"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            409: components["responses"]["Problem"];
+        };
+    };
+    getCustomField: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                customFieldId: components["parameters"]["CustomFieldId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The custom field. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CustomField"];
+                };
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    deleteCustomField: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                customFieldId: components["parameters"]["CustomFieldId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Deleted. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    updateCustomField: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                customFieldId: components["parameters"]["CustomFieldId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CustomFieldUpdate"];
+            };
+        };
+        responses: {
+            /** @description The updated custom field. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CustomField"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
         };
     };
     listDocsSites: {

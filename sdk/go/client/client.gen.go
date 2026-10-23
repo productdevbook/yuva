@@ -5826,12 +5826,15 @@ func (e SsoJitRole) Valid() bool {
 // Defines values for SsoProtocol.
 const (
 	SsoProtocolOidc SsoProtocol = "oidc"
+	SsoProtocolSaml SsoProtocol = "saml"
 )
 
 // Valid indicates whether the value is a known member of the SsoProtocol enum.
 func (e SsoProtocol) Valid() bool {
 	switch e {
 	case SsoProtocolOidc:
+		return true
+	case SsoProtocolSaml:
 		return true
 	default:
 		return false
@@ -9303,16 +9306,23 @@ type Attributes map[string]interface{}
 //   - `workspace.slack_connected`: `team_id`, `team_name`; `workspace.slack_disconnected`:
 //     `team_id`, and `reason` `uninstalled` (by `system`) when Slack reported the app removed.
 //   - `member.slack_linked`: `slack_user_id`; `member.slack_unlinked`: `slack_user_id`.
-//   - `sso.provider_created`, `sso.provider_updated`: `protocol`, `issuer_host`, and for an update
-//     `fields` among `issuer`, `client_id`, `client_secret`, `scopes`, `groups_claim` and
-//     `allowed_groups` (never the secret). `sso.provider_deleted`: `protocol`.
+//   - `sso.provider_created`, `sso.provider_updated`: `protocol`, and for OpenID Connect
+//     `issuer_host` and for an update `fields` among `issuer`, `client_id`, `client_secret`,
+//     `scopes`, `groups_claim` and `allowed_groups` (never the secret); for SAML `entity_id`,
+//     `metadata_host` when the metadata came from a URL, and for an update `fields` among
+//     `entity_id`, `sso_url`, `certificates`, `metadata_url`, `email_attribute`,
+//     `groups_attribute` and `allowed_groups`. `sso.provider_created` names `replaced` (the
+//     other protocol) when it replaced a provider. A change found when SAML metadata is
+//     fetched again at a sign-in is `sso.provider_updated` by `system` with `via:
+//     metadata_refresh`. `sso.provider_deleted`: `protocol`.
 //   - `sso.settings_changed`: `fields`, and `from`/`to` objects with the changed values of
 //     `sso_required`, `jit` and `jit_role`.
 //   - `sso.signed_in`: `protocol`, `email`, and `joined` (`jit` or `invite`) when the sign-in
 //     made the person a member; the actor is the member, or `system` when the person is not one.
 //   - `sso.sign_in_refused`: `protocol`, `reason` (`failed` when the code exchange failed,
-//     `invalid_token`, `email_unverified`, `domain_not_claimed`, `group_not_allowed`,
-//     `not_member`), `email` when known, `detail` for `failed` and `invalid_token`; the actor
+//     `invalid_token` (for SAML: the response or assertion was refused), `email_unverified`,
+//     `domain_not_claimed`, `group_not_allowed`, `not_member`), `email` when known, `detail`
+//     for `failed` and `invalid_token`; the actor
 //     is the member when the person is one, else `system`. Requests refused with
 //     `sso_required` are not recorded.
 //   - `sso_domain.added`, `sso_domain.verified`, `sso_domain.deleted`: `domain`.
@@ -9400,16 +9410,23 @@ type AuditEntry struct {
 	// - `workspace.slack_connected`: `team_id`, `team_name`; `workspace.slack_disconnected`:
 	//   `team_id`, and `reason` `uninstalled` (by `system`) when Slack reported the app removed.
 	// - `member.slack_linked`: `slack_user_id`; `member.slack_unlinked`: `slack_user_id`.
-	// - `sso.provider_created`, `sso.provider_updated`: `protocol`, `issuer_host`, and for an update
-	//   `fields` among `issuer`, `client_id`, `client_secret`, `scopes`, `groups_claim` and
-	//   `allowed_groups` (never the secret). `sso.provider_deleted`: `protocol`.
+	// - `sso.provider_created`, `sso.provider_updated`: `protocol`, and for OpenID Connect
+	//   `issuer_host` and for an update `fields` among `issuer`, `client_id`, `client_secret`,
+	//   `scopes`, `groups_claim` and `allowed_groups` (never the secret); for SAML `entity_id`,
+	//   `metadata_host` when the metadata came from a URL, and for an update `fields` among
+	//   `entity_id`, `sso_url`, `certificates`, `metadata_url`, `email_attribute`,
+	//   `groups_attribute` and `allowed_groups`. `sso.provider_created` names `replaced` (the
+	//   other protocol) when it replaced a provider. A change found when SAML metadata is
+	//   fetched again at a sign-in is `sso.provider_updated` by `system` with `via:
+	//   metadata_refresh`. `sso.provider_deleted`: `protocol`.
 	// - `sso.settings_changed`: `fields`, and `from`/`to` objects with the changed values of
 	//   `sso_required`, `jit` and `jit_role`.
 	// - `sso.signed_in`: `protocol`, `email`, and `joined` (`jit` or `invite`) when the sign-in
 	//   made the person a member; the actor is the member, or `system` when the person is not one.
 	// - `sso.sign_in_refused`: `protocol`, `reason` (`failed` when the code exchange failed,
-	//   `invalid_token`, `email_unverified`, `domain_not_claimed`, `group_not_allowed`,
-	//   `not_member`), `email` when known, `detail` for `failed` and `invalid_token`; the actor
+	//   `invalid_token` (for SAML: the response or assertion was refused), `email_unverified`,
+	//   `domain_not_claimed`, `group_not_allowed`, `not_member`), `email` when known, `detail`
+	//   for `failed` and `invalid_token`; the actor
 	//   is the member when the person is one, else `system`. Requests refused with
 	//   `sso_required` are not recorded.
 	// - `sso_domain.added`, `sso_domain.verified`, `sso_domain.deleted`: `domain`.
@@ -19894,6 +19911,78 @@ type SsoOidcProvider struct {
 // SsoProtocol defines model for SsoProtocol.
 type SsoProtocol string
 
+// SsoSamlCertificate defines model for SsoSamlCertificate.
+type SsoSamlCertificate struct {
+	// NotAfter Signatures are refused outside the certificate's validity.
+	NotAfter  time.Time `json:"not_after"`
+	NotBefore time.Time `json:"not_before"`
+
+	// Sha256 The certificate's SHA-256 fingerprint, upper-case hex pairs joined by `:`.
+	Sha256  string `json:"sha256"`
+	Subject string `json:"subject"`
+}
+
+// SsoSamlInput defines model for SsoSamlInput.
+type SsoSamlInput struct {
+	AllowedGroups *[]string `json:"allowed_groups,omitempty"`
+
+	// EmailAttribute An attribute (by `Name` or `FriendlyName`) holding the e-mail address. Absent or empty,
+	// the NameID is used, which must then be the address.
+	EmailAttribute *string `json:"email_attribute,omitempty"`
+
+	// GroupsAttribute Absent or empty, `groups`.
+	GroupsAttribute *string `json:"groups_attribute,omitempty"`
+
+	// MetadataUrl The identity provider's metadata URL (https). Give this or `metadata_xml`.
+	MetadataUrl *string `json:"metadata_url,omitempty"`
+
+	// MetadataXml The identity provider's metadata document, pasted.
+	MetadataXml *string `json:"metadata_xml,omitempty"`
+}
+
+// SsoSamlProvider defines model for SsoSamlProvider.
+type SsoSamlProvider struct {
+	// AllowedGroups When not empty, only people in one of these groups sign in.
+	AllowedGroups []string `json:"allowed_groups"`
+
+	// Certificates The signing certificates; a signature by any other key is refused.
+	Certificates []SsoSamlCertificate `json:"certificates"`
+
+	// EmailAttribute The attribute holding the e-mail address; absent, the NameID is used.
+	EmailAttribute *string `json:"email_attribute,omitempty"`
+
+	// EntityId The identity provider's entity id; assertions must name it as issuer.
+	EntityId string `json:"entity_id"`
+
+	// GroupsAttribute The attribute holding the person's groups.
+	GroupsAttribute string `json:"groups_attribute"`
+
+	// MetadataFetchedAt When the metadata was last read from `metadata_url`.
+	MetadataFetchedAt *time.Time `json:"metadata_fetched_at,omitempty"`
+
+	// MetadataUrl Where the metadata is fetched from; absent when it was pasted.
+	MetadataUrl *string `json:"metadata_url,omitempty"`
+
+	// SsoUrl Its single sign-on URL for the HTTP-Redirect binding.
+	SsoUrl    string    `json:"sso_url"`
+	UpdatedAt time.Time `json:"updated_at"`
+}
+
+// SsoSamlServiceProvider What to register at a SAML identity provider for this workspace.
+type SsoSamlServiceProvider struct {
+	// AcsUrl The assertion consumer service, HTTP-POST binding.
+	AcsUrl string `json:"acs_url"`
+
+	// EntityId Yuva's entity id (the audience) for this workspace; the same as `metadata_url`.
+	EntityId string `json:"entity_id"`
+
+	// MetadataUrl Yuva's service provider metadata for this workspace.
+	MetadataUrl string `json:"metadata_url"`
+
+	// NameIdFormat `urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress`.
+	NameIdFormat string `json:"name_id_format"`
+}
+
 // SsoSettings defines model for SsoSettings.
 type SsoSettings struct {
 	Domains  []SsoDomain      `json:"domains"`
@@ -19902,9 +19991,17 @@ type SsoSettings struct {
 	Oidc     *SsoOidcProvider `json:"oidc,omitempty"`
 	Protocol *SsoProtocol     `json:"protocol,omitempty"`
 
-	// RedirectUri The redirect URI to register at the identity provider.
-	RedirectUri string `json:"redirect_uri"`
-	SsoRequired bool   `json:"sso_required"`
+	// RedirectUri The redirect URI to register at an OpenID Connect provider.
+	RedirectUri string           `json:"redirect_uri"`
+	Saml        *SsoSamlProvider `json:"saml,omitempty"`
+
+	// SamlSp What to register at a SAML identity provider for this workspace.
+	SamlSp      SsoSamlServiceProvider `json:"saml_sp"`
+	SsoRequired bool                   `json:"sso_required"`
+
+	// Warnings Only in the answer to `PUT /v1/sso/saml`: what was left out of the metadata, such as
+	// signing certificates past their validity, which are not stored.
+	Warnings *[]string `json:"warnings,omitempty"`
 }
 
 // SsoSettingsUpdate defines model for SsoSettingsUpdate.
@@ -19916,7 +20013,8 @@ type SsoSettingsUpdate struct {
 
 // SsoStart defines model for SsoStart.
 type SsoStart struct {
-	// AuthorizationUrl The provider's sign-in page to send the browser to, when `sso` is true.
+	// AuthorizationUrl The provider's sign-in page to send the browser to, when `sso` is true: an OpenID
+	// Connect authorization request or a SAML `AuthnRequest` (HTTP-Redirect binding).
 	AuthorizationUrl *string `json:"authorization_url,omitempty"`
 
 	// Required When `sso` is true, whether the workspace requires single sign-on: only a session
@@ -25428,6 +25526,18 @@ type SetSsoOidcProviderParams struct {
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
 
+// DeleteSsoSamlProviderParams defines parameters for DeleteSsoSamlProvider.
+type DeleteSsoSamlProviderParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// SetSsoSamlProviderParams defines parameters for SetSsoSamlProvider.
+type SetSsoSamlProviderParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
 // GetStatsParams defines parameters for GetStats.
 type GetStatsParams struct {
 	// InboxId Only this inbox (`404` when the caller cannot see it).
@@ -26971,6 +27081,9 @@ type AddSsoDomainJSONRequestBody = SsoDomainInput
 
 // SetSsoOidcProviderJSONRequestBody defines body for SetSsoOidcProvider for application/json ContentType.
 type SetSsoOidcProviderJSONRequestBody = SsoOidcInput
+
+// SetSsoSamlProviderJSONRequestBody defines body for SetSsoSamlProvider for application/json ContentType.
+type SetSsoSamlProviderJSONRequestBody = SsoSamlInput
 
 // CreateStatusPageJSONRequestBody defines body for CreateStatusPage for application/json ContentType.
 type CreateStatusPageJSONRequestBody = StatusPageCreate
@@ -33873,22 +33986,35 @@ type ClientInterface interface {
 	//
 	// The sign-in page asks for the e-mail address first and sends it here. When the address's
 	// domain is claimed by a workspace that has an identity provider, the answer carries
-	// `authorization_url`, the provider's sign-in page (authorization code with PKCE, `state`
-	// and `nonce`, `login_hint` set to the address), and sets the `yuva_sso` cookie that binds
-	// the sign-in to this browser for 10 minutes; the page sends the browser there. Otherwise
-	// `sso` is `false` and the page goes on with a code or a passkey.
+	// `authorization_url`, the provider's sign-in page, and sets a cookie that binds the sign-in
+	// to this browser for 10 minutes; the page sends the browser there. Otherwise `sso` is
+	// `false` and the page goes on with a code or a passkey.
 	//
-	// The provider sends the browser back to `GET /auth/sso/callback` (outside this contract),
-	// which checks the cookie and `state`, exchanges the code, verifies the `id_token` (signature
-	// against the provider's keys, `iss`, `aud`, `exp`, `nonce`) and requires a verified e-mail in a
-	// domain the workspace has claimed. It then redirects to `return_to` (or `/`) with the
+	// With OpenID Connect the URL is an authorization request (code with PKCE, `state` and
+	// `nonce`, `login_hint` set to the address) and the cookie `yuva_sso`. With SAML it is the
+	// identity provider's single sign-on URL with an `AuthnRequest` (HTTP-Redirect binding,
+	// NameID format `emailAddress`) and the cookie `yuva_saml`, which holds the request's id. The
+	// provider posts its answer to `POST /auth/saml/acs` (HTTP-POST binding, outside this
+	// contract), which needs the cookie to equal the response's `InResponseTo`, takes the
+	// stored request once, and requires a signed Response or Assertion from one of the
+	// configured certificates, exactly one assertion, `Destination` and `Recipient` equal to
+	// `acs_url`, `Audience` equal to `entity_id` (both in `saml_sp` of `GET /v1/sso`), the
+	// validity window (3 minutes of clock skew, issued at most 90 seconds ago) and an assertion
+	// id not seen before. Responses the server did not ask for (identity-provider-initiated) are
+	// refused. The e-mail address is the NameID, or the configured attribute.
+	//
+	// With OpenID Connect the provider sends the browser back to `GET /auth/sso/callback`
+	// (outside this contract), which checks the cookie and `state`, exchanges the code, verifies
+	// the `id_token` (signature against the provider's keys, `iss`, `aud`, `exp`, `nonce`) and
+	// requires a verified e-mail. Both protocols require the address to be in a domain the
+	// workspace has claimed. The browser is then redirected to `return_to` (or `/`) with the
 	// session cookie set, or to `/sign-in?sso_error=<code>` with `code` one of `expired`,
-	// `denied`, `failed`, `invalid_token`, `email_unverified`, `domain_not_claimed`,
-	// `group_not_allowed`, `not_member`.
+	// `denied`, `failed`, `invalid_token` (for SAML: the response or assertion was refused),
+	// `email_unverified`, `domain_not_claimed`, `group_not_allowed`, `not_member`.
 	//
 	// A domain's claim is public (its DNS record is), so answering whether it has single
 	// sign-on reveals nothing about people. 30 requests a minute per client IP address (`429`).
-	// `502 sso_unavailable` when the provider's discovery document cannot be read.
+	// `502 sso_unavailable` when the OpenID Connect provider's discovery document cannot be read.
 	//
 	// Takes any type of body and a specified content type.
 	//
@@ -33899,22 +34025,35 @@ type ClientInterface interface {
 	//
 	// The sign-in page asks for the e-mail address first and sends it here. When the address's
 	// domain is claimed by a workspace that has an identity provider, the answer carries
-	// `authorization_url`, the provider's sign-in page (authorization code with PKCE, `state`
-	// and `nonce`, `login_hint` set to the address), and sets the `yuva_sso` cookie that binds
-	// the sign-in to this browser for 10 minutes; the page sends the browser there. Otherwise
-	// `sso` is `false` and the page goes on with a code or a passkey.
+	// `authorization_url`, the provider's sign-in page, and sets a cookie that binds the sign-in
+	// to this browser for 10 minutes; the page sends the browser there. Otherwise `sso` is
+	// `false` and the page goes on with a code or a passkey.
 	//
-	// The provider sends the browser back to `GET /auth/sso/callback` (outside this contract),
-	// which checks the cookie and `state`, exchanges the code, verifies the `id_token` (signature
-	// against the provider's keys, `iss`, `aud`, `exp`, `nonce`) and requires a verified e-mail in a
-	// domain the workspace has claimed. It then redirects to `return_to` (or `/`) with the
+	// With OpenID Connect the URL is an authorization request (code with PKCE, `state` and
+	// `nonce`, `login_hint` set to the address) and the cookie `yuva_sso`. With SAML it is the
+	// identity provider's single sign-on URL with an `AuthnRequest` (HTTP-Redirect binding,
+	// NameID format `emailAddress`) and the cookie `yuva_saml`, which holds the request's id. The
+	// provider posts its answer to `POST /auth/saml/acs` (HTTP-POST binding, outside this
+	// contract), which needs the cookie to equal the response's `InResponseTo`, takes the
+	// stored request once, and requires a signed Response or Assertion from one of the
+	// configured certificates, exactly one assertion, `Destination` and `Recipient` equal to
+	// `acs_url`, `Audience` equal to `entity_id` (both in `saml_sp` of `GET /v1/sso`), the
+	// validity window (3 minutes of clock skew, issued at most 90 seconds ago) and an assertion
+	// id not seen before. Responses the server did not ask for (identity-provider-initiated) are
+	// refused. The e-mail address is the NameID, or the configured attribute.
+	//
+	// With OpenID Connect the provider sends the browser back to `GET /auth/sso/callback`
+	// (outside this contract), which checks the cookie and `state`, exchanges the code, verifies
+	// the `id_token` (signature against the provider's keys, `iss`, `aud`, `exp`, `nonce`) and
+	// requires a verified e-mail. Both protocols require the address to be in a domain the
+	// workspace has claimed. The browser is then redirected to `return_to` (or `/`) with the
 	// session cookie set, or to `/sign-in?sso_error=<code>` with `code` one of `expired`,
-	// `denied`, `failed`, `invalid_token`, `email_unverified`, `domain_not_claimed`,
-	// `group_not_allowed`, `not_member`.
+	// `denied`, `failed`, `invalid_token` (for SAML: the response or assertion was refused),
+	// `email_unverified`, `domain_not_claimed`, `group_not_allowed`, `not_member`.
 	//
 	// A domain's claim is public (its DNS record is), so answering whether it has single
 	// sign-on reveals nothing about people. 30 requests a minute per client IP address (`429`).
-	// `502 sso_unavailable` when the provider's discovery document cannot be read.
+	// `502 sso_unavailable` when the OpenID Connect provider's discovery document cannot be read.
 	//
 	// Takes a body of the `application/json` content type.
 	//
@@ -39530,8 +39669,9 @@ type ClientInterface interface {
 
 	// DeleteSsoOidcProvider Remove the OpenID Connect provider
 	//
-	// Removes the provider and turns `sso_required` off; claimed domains stay. Owners only,
-	// with a member session; recorded as `sso.provider_deleted`.
+	// Removes the OpenID Connect provider (`404` when the workspace uses SAML or none) and turns
+	// `sso_required` off; claimed domains stay. Owners only, with a member session; recorded as
+	// `sso.provider_deleted`.
 	//
 	// Corresponds with DELETE /v1/sso/oidc (the `DeleteSsoOidcProvider` operationId).
 	DeleteSsoOidcProvider(ctx context.Context, params *DeleteSsoOidcProviderParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -39567,6 +39707,61 @@ type ClientInterface interface {
 	//
 	// Corresponds with PUT /v1/sso/oidc (the `SetSsoOidcProvider` operationId).
 	SetSsoOidcProvider(ctx context.Context, params *SetSsoOidcProviderParams, body SetSsoOidcProviderJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteSsoSamlProvider Remove the SAML identity provider
+	//
+	// Removes the SAML provider (`404` when the workspace uses OpenID Connect or none) and turns
+	// `sso_required` off; claimed domains stay. Owners only, with a member session; recorded as
+	// `sso.provider_deleted`.
+	//
+	// Corresponds with DELETE /v1/sso/saml (the `DeleteSsoSamlProvider` operationId).
+	DeleteSsoSamlProvider(ctx context.Context, params *DeleteSsoSamlProviderParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// SetSsoSamlProviderWithBody Set the SAML identity provider
+	//
+	// Saves a SAML 2.0 identity provider from its metadata: `metadata_url` (fetched now, through
+	// the same address checks as the OpenID Connect discovery, and again at a sign-in when the
+	// copy is more than an hour old, so rotated certificates are picked up; after a failed
+	// fetch the stored copy is used and the next try waits 15 minutes) or `metadata_xml`
+	// (pasted; paste it again when the certificate rotates). The metadata must be one
+	// `EntityDescriptor` with an `IDPSSODescriptor` that has a `SingleSignOnService` with the
+	// HTTP-Redirect binding and at least one signing certificate valid now; DTDs are refused.
+	// `400 sso_metadata_failed` with the reason otherwise. Expired certificates are left out
+	// and named in `warnings`. Leave both out to keep the stored
+	// metadata (fetched again when it came from a URL); one is required the first time. A
+	// workspace has one provider: saving SAML replaces an OpenID Connect provider (and the
+	// other way round). Register `saml_sp` from `GET /v1/sso` at the provider: entity id,
+	// ACS URL (HTTP-POST), NameID format `emailAddress`, or load its `metadata_url`. Owners
+	// only, with a member session; recorded as `sso.provider_created` (also when it replaces
+	// the other protocol) or `sso.provider_updated`.
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with PUT /v1/sso/saml (the `SetSsoSamlProvider` operationId).
+	SetSsoSamlProviderWithBody(ctx context.Context, params *SetSsoSamlProviderParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// SetSsoSamlProvider Set the SAML identity provider
+	//
+	// Saves a SAML 2.0 identity provider from its metadata: `metadata_url` (fetched now, through
+	// the same address checks as the OpenID Connect discovery, and again at a sign-in when the
+	// copy is more than an hour old, so rotated certificates are picked up; after a failed
+	// fetch the stored copy is used and the next try waits 15 minutes) or `metadata_xml`
+	// (pasted; paste it again when the certificate rotates). The metadata must be one
+	// `EntityDescriptor` with an `IDPSSODescriptor` that has a `SingleSignOnService` with the
+	// HTTP-Redirect binding and at least one signing certificate valid now; DTDs are refused.
+	// `400 sso_metadata_failed` with the reason otherwise. Expired certificates are left out
+	// and named in `warnings`. Leave both out to keep the stored
+	// metadata (fetched again when it came from a URL); one is required the first time. A
+	// workspace has one provider: saving SAML replaces an OpenID Connect provider (and the
+	// other way round). Register `saml_sp` from `GET /v1/sso` at the provider: entity id,
+	// ACS URL (HTTP-POST), NameID format `emailAddress`, or load its `metadata_url`. Owners
+	// only, with a member session; recorded as `sso.provider_created` (also when it replaces
+	// the other protocol) or `sso.provider_updated`.
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with PUT /v1/sso/saml (the `SetSsoSamlProvider` operationId).
+	SetSsoSamlProvider(ctx context.Context, params *SetSsoSamlProviderParams, body SetSsoSamlProviderJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetStats Team activity since a moment
 	//
@@ -45074,22 +45269,35 @@ func (c *Client) SignOut(ctx context.Context, reqEditors ...RequestEditorFn) (*h
 //
 // The sign-in page asks for the e-mail address first and sends it here. When the address's
 // domain is claimed by a workspace that has an identity provider, the answer carries
-// `authorization_url`, the provider's sign-in page (authorization code with PKCE, `state`
-// and `nonce`, `login_hint` set to the address), and sets the `yuva_sso` cookie that binds
-// the sign-in to this browser for 10 minutes; the page sends the browser there. Otherwise
-// `sso` is `false` and the page goes on with a code or a passkey.
+// `authorization_url`, the provider's sign-in page, and sets a cookie that binds the sign-in
+// to this browser for 10 minutes; the page sends the browser there. Otherwise `sso` is
+// `false` and the page goes on with a code or a passkey.
 //
-// The provider sends the browser back to `GET /auth/sso/callback` (outside this contract),
-// which checks the cookie and `state`, exchanges the code, verifies the `id_token` (signature
-// against the provider's keys, `iss`, `aud`, `exp`, `nonce`) and requires a verified e-mail in a
-// domain the workspace has claimed. It then redirects to `return_to` (or `/`) with the
+// With OpenID Connect the URL is an authorization request (code with PKCE, `state` and
+// `nonce`, `login_hint` set to the address) and the cookie `yuva_sso`. With SAML it is the
+// identity provider's single sign-on URL with an `AuthnRequest` (HTTP-Redirect binding,
+// NameID format `emailAddress`) and the cookie `yuva_saml`, which holds the request's id. The
+// provider posts its answer to `POST /auth/saml/acs` (HTTP-POST binding, outside this
+// contract), which needs the cookie to equal the response's `InResponseTo`, takes the
+// stored request once, and requires a signed Response or Assertion from one of the
+// configured certificates, exactly one assertion, `Destination` and `Recipient` equal to
+// `acs_url`, `Audience` equal to `entity_id` (both in `saml_sp` of `GET /v1/sso`), the
+// validity window (3 minutes of clock skew, issued at most 90 seconds ago) and an assertion
+// id not seen before. Responses the server did not ask for (identity-provider-initiated) are
+// refused. The e-mail address is the NameID, or the configured attribute.
+//
+// With OpenID Connect the provider sends the browser back to `GET /auth/sso/callback`
+// (outside this contract), which checks the cookie and `state`, exchanges the code, verifies
+// the `id_token` (signature against the provider's keys, `iss`, `aud`, `exp`, `nonce`) and
+// requires a verified e-mail. Both protocols require the address to be in a domain the
+// workspace has claimed. The browser is then redirected to `return_to` (or `/`) with the
 // session cookie set, or to `/sign-in?sso_error=<code>` with `code` one of `expired`,
-// `denied`, `failed`, `invalid_token`, `email_unverified`, `domain_not_claimed`,
-// `group_not_allowed`, `not_member`.
+// `denied`, `failed`, `invalid_token` (for SAML: the response or assertion was refused),
+// `email_unverified`, `domain_not_claimed`, `group_not_allowed`, `not_member`.
 //
 // A domain's claim is public (its DNS record is), so answering whether it has single
 // sign-on reveals nothing about people. 30 requests a minute per client IP address (`429`).
-// `502 sso_unavailable` when the provider's discovery document cannot be read.
+// `502 sso_unavailable` when the OpenID Connect provider's discovery document cannot be read.
 //
 // Takes any type of body and a specified content type.
 //
@@ -45110,22 +45318,35 @@ func (c *Client) StartSsoSignInWithBody(ctx context.Context, contentType string,
 //
 // The sign-in page asks for the e-mail address first and sends it here. When the address's
 // domain is claimed by a workspace that has an identity provider, the answer carries
-// `authorization_url`, the provider's sign-in page (authorization code with PKCE, `state`
-// and `nonce`, `login_hint` set to the address), and sets the `yuva_sso` cookie that binds
-// the sign-in to this browser for 10 minutes; the page sends the browser there. Otherwise
-// `sso` is `false` and the page goes on with a code or a passkey.
+// `authorization_url`, the provider's sign-in page, and sets a cookie that binds the sign-in
+// to this browser for 10 minutes; the page sends the browser there. Otherwise `sso` is
+// `false` and the page goes on with a code or a passkey.
 //
-// The provider sends the browser back to `GET /auth/sso/callback` (outside this contract),
-// which checks the cookie and `state`, exchanges the code, verifies the `id_token` (signature
-// against the provider's keys, `iss`, `aud`, `exp`, `nonce`) and requires a verified e-mail in a
-// domain the workspace has claimed. It then redirects to `return_to` (or `/`) with the
+// With OpenID Connect the URL is an authorization request (code with PKCE, `state` and
+// `nonce`, `login_hint` set to the address) and the cookie `yuva_sso`. With SAML it is the
+// identity provider's single sign-on URL with an `AuthnRequest` (HTTP-Redirect binding,
+// NameID format `emailAddress`) and the cookie `yuva_saml`, which holds the request's id. The
+// provider posts its answer to `POST /auth/saml/acs` (HTTP-POST binding, outside this
+// contract), which needs the cookie to equal the response's `InResponseTo`, takes the
+// stored request once, and requires a signed Response or Assertion from one of the
+// configured certificates, exactly one assertion, `Destination` and `Recipient` equal to
+// `acs_url`, `Audience` equal to `entity_id` (both in `saml_sp` of `GET /v1/sso`), the
+// validity window (3 minutes of clock skew, issued at most 90 seconds ago) and an assertion
+// id not seen before. Responses the server did not ask for (identity-provider-initiated) are
+// refused. The e-mail address is the NameID, or the configured attribute.
+//
+// With OpenID Connect the provider sends the browser back to `GET /auth/sso/callback`
+// (outside this contract), which checks the cookie and `state`, exchanges the code, verifies
+// the `id_token` (signature against the provider's keys, `iss`, `aud`, `exp`, `nonce`) and
+// requires a verified e-mail. Both protocols require the address to be in a domain the
+// workspace has claimed. The browser is then redirected to `return_to` (or `/`) with the
 // session cookie set, or to `/sign-in?sso_error=<code>` with `code` one of `expired`,
-// `denied`, `failed`, `invalid_token`, `email_unverified`, `domain_not_claimed`,
-// `group_not_allowed`, `not_member`.
+// `denied`, `failed`, `invalid_token` (for SAML: the response or assertion was refused),
+// `email_unverified`, `domain_not_claimed`, `group_not_allowed`, `not_member`.
 //
 // A domain's claim is public (its DNS record is), so answering whether it has single
 // sign-on reveals nothing about people. 30 requests a minute per client IP address (`429`).
-// `502 sso_unavailable` when the provider's discovery document cannot be read.
+// `502 sso_unavailable` when the OpenID Connect provider's discovery document cannot be read.
 //
 // Takes a body of the `application/json` content type.
 //
@@ -54691,8 +54912,9 @@ func (c *Client) VerifySsoDomain(ctx context.Context, ssoDomainId SsoDomainId, p
 
 // DeleteSsoOidcProvider Remove the OpenID Connect provider
 //
-// Removes the provider and turns `sso_required` off; claimed domains stay. Owners only,
-// with a member session; recorded as `sso.provider_deleted`.
+// Removes the OpenID Connect provider (`404` when the workspace uses SAML or none) and turns
+// `sso_required` off; claimed domains stay. Owners only, with a member session; recorded as
+// `sso.provider_deleted`.
 //
 // Corresponds with DELETE /v1/sso/oidc (the `DeleteSsoOidcProvider` operationId).
 func (c *Client) DeleteSsoOidcProvider(ctx context.Context, params *DeleteSsoOidcProviderParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
@@ -54749,6 +54971,91 @@ func (c *Client) SetSsoOidcProviderWithBody(ctx context.Context, params *SetSsoO
 // Corresponds with PUT /v1/sso/oidc (the `SetSsoOidcProvider` operationId).
 func (c *Client) SetSsoOidcProvider(ctx context.Context, params *SetSsoOidcProviderParams, body SetSsoOidcProviderJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewSetSsoOidcProviderRequest(c.Server, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// DeleteSsoSamlProvider Remove the SAML identity provider
+//
+// Removes the SAML provider (`404` when the workspace uses OpenID Connect or none) and turns
+// `sso_required` off; claimed domains stay. Owners only, with a member session; recorded as
+// `sso.provider_deleted`.
+//
+// Corresponds with DELETE /v1/sso/saml (the `DeleteSsoSamlProvider` operationId).
+func (c *Client) DeleteSsoSamlProvider(ctx context.Context, params *DeleteSsoSamlProviderParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteSsoSamlProviderRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// SetSsoSamlProviderWithBody Set the SAML identity provider
+//
+// Saves a SAML 2.0 identity provider from its metadata: `metadata_url` (fetched now, through
+// the same address checks as the OpenID Connect discovery, and again at a sign-in when the
+// copy is more than an hour old, so rotated certificates are picked up; after a failed
+// fetch the stored copy is used and the next try waits 15 minutes) or `metadata_xml`
+// (pasted; paste it again when the certificate rotates). The metadata must be one
+// `EntityDescriptor` with an `IDPSSODescriptor` that has a `SingleSignOnService` with the
+// HTTP-Redirect binding and at least one signing certificate valid now; DTDs are refused.
+// `400 sso_metadata_failed` with the reason otherwise. Expired certificates are left out
+// and named in `warnings`. Leave both out to keep the stored
+// metadata (fetched again when it came from a URL); one is required the first time. A
+// workspace has one provider: saving SAML replaces an OpenID Connect provider (and the
+// other way round). Register `saml_sp` from `GET /v1/sso` at the provider: entity id,
+// ACS URL (HTTP-POST), NameID format `emailAddress`, or load its `metadata_url`. Owners
+// only, with a member session; recorded as `sso.provider_created` (also when it replaces
+// the other protocol) or `sso.provider_updated`.
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with PUT /v1/sso/saml (the `SetSsoSamlProvider` operationId).
+func (c *Client) SetSsoSamlProviderWithBody(ctx context.Context, params *SetSsoSamlProviderParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSetSsoSamlProviderRequestWithBody(c.Server, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// SetSsoSamlProvider Set the SAML identity provider
+//
+// Saves a SAML 2.0 identity provider from its metadata: `metadata_url` (fetched now, through
+// the same address checks as the OpenID Connect discovery, and again at a sign-in when the
+// copy is more than an hour old, so rotated certificates are picked up; after a failed
+// fetch the stored copy is used and the next try waits 15 minutes) or `metadata_xml`
+// (pasted; paste it again when the certificate rotates). The metadata must be one
+// `EntityDescriptor` with an `IDPSSODescriptor` that has a `SingleSignOnService` with the
+// HTTP-Redirect binding and at least one signing certificate valid now; DTDs are refused.
+// `400 sso_metadata_failed` with the reason otherwise. Expired certificates are left out
+// and named in `warnings`. Leave both out to keep the stored
+// metadata (fetched again when it came from a URL); one is required the first time. A
+// workspace has one provider: saving SAML replaces an OpenID Connect provider (and the
+// other way round). Register `saml_sp` from `GET /v1/sso` at the provider: entity id,
+// ACS URL (HTTP-POST), NameID format `emailAddress`, or load its `metadata_url`. Owners
+// only, with a member session; recorded as `sso.provider_created` (also when it replaces
+// the other protocol) or `sso.provider_updated`.
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with PUT /v1/sso/saml (the `SetSsoSamlProvider` operationId).
+func (c *Client) SetSsoSamlProvider(ctx context.Context, params *SetSsoSamlProviderParams, body SetSsoSamlProviderJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSetSsoSamlProviderRequest(c.Server, params, body)
 	if err != nil {
 		return nil, err
 	}
@@ -82844,6 +83151,103 @@ func NewSetSsoOidcProviderRequestWithBody(server string, params *SetSsoOidcProvi
 	return req, nil
 }
 
+// NewDeleteSsoSamlProviderRequest constructs an http.Request for the DeleteSsoSamlProvider method
+func NewDeleteSsoSamlProviderRequest(server string, params *DeleteSsoSamlProviderParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/sso/saml")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodDelete, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewSetSsoSamlProviderRequest calls the generic SetSsoSamlProvider builder with application/json body
+func NewSetSsoSamlProviderRequest(server string, params *SetSsoSamlProviderParams, body SetSsoSamlProviderJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewSetSsoSamlProviderRequestWithBody(server, params, "application/json", bodyReader)
+}
+
+// NewSetSsoSamlProviderRequestWithBody constructs an http.Request for the SetSsoSamlProvider method, with any body, and a specified content type
+func NewSetSsoSamlProviderRequestWithBody(server string, params *SetSsoSamlProviderParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/sso/saml")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPut, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
 // NewGetStatsRequest constructs an http.Request for the GetStats method
 func NewGetStatsRequest(server string, params *GetStatsParams) (*http.Request, error) {
 	var err error
@@ -89941,22 +90345,35 @@ type ClientWithResponsesInterface interface {
 	//
 	// The sign-in page asks for the e-mail address first and sends it here. When the address's
 	// domain is claimed by a workspace that has an identity provider, the answer carries
-	// `authorization_url`, the provider's sign-in page (authorization code with PKCE, `state`
-	// and `nonce`, `login_hint` set to the address), and sets the `yuva_sso` cookie that binds
-	// the sign-in to this browser for 10 minutes; the page sends the browser there. Otherwise
-	// `sso` is `false` and the page goes on with a code or a passkey.
+	// `authorization_url`, the provider's sign-in page, and sets a cookie that binds the sign-in
+	// to this browser for 10 minutes; the page sends the browser there. Otherwise `sso` is
+	// `false` and the page goes on with a code or a passkey.
 	//
-	// The provider sends the browser back to `GET /auth/sso/callback` (outside this contract),
-	// which checks the cookie and `state`, exchanges the code, verifies the `id_token` (signature
-	// against the provider's keys, `iss`, `aud`, `exp`, `nonce`) and requires a verified e-mail in a
-	// domain the workspace has claimed. It then redirects to `return_to` (or `/`) with the
+	// With OpenID Connect the URL is an authorization request (code with PKCE, `state` and
+	// `nonce`, `login_hint` set to the address) and the cookie `yuva_sso`. With SAML it is the
+	// identity provider's single sign-on URL with an `AuthnRequest` (HTTP-Redirect binding,
+	// NameID format `emailAddress`) and the cookie `yuva_saml`, which holds the request's id. The
+	// provider posts its answer to `POST /auth/saml/acs` (HTTP-POST binding, outside this
+	// contract), which needs the cookie to equal the response's `InResponseTo`, takes the
+	// stored request once, and requires a signed Response or Assertion from one of the
+	// configured certificates, exactly one assertion, `Destination` and `Recipient` equal to
+	// `acs_url`, `Audience` equal to `entity_id` (both in `saml_sp` of `GET /v1/sso`), the
+	// validity window (3 minutes of clock skew, issued at most 90 seconds ago) and an assertion
+	// id not seen before. Responses the server did not ask for (identity-provider-initiated) are
+	// refused. The e-mail address is the NameID, or the configured attribute.
+	//
+	// With OpenID Connect the provider sends the browser back to `GET /auth/sso/callback`
+	// (outside this contract), which checks the cookie and `state`, exchanges the code, verifies
+	// the `id_token` (signature against the provider's keys, `iss`, `aud`, `exp`, `nonce`) and
+	// requires a verified e-mail. Both protocols require the address to be in a domain the
+	// workspace has claimed. The browser is then redirected to `return_to` (or `/`) with the
 	// session cookie set, or to `/sign-in?sso_error=<code>` with `code` one of `expired`,
-	// `denied`, `failed`, `invalid_token`, `email_unverified`, `domain_not_claimed`,
-	// `group_not_allowed`, `not_member`.
+	// `denied`, `failed`, `invalid_token` (for SAML: the response or assertion was refused),
+	// `email_unverified`, `domain_not_claimed`, `group_not_allowed`, `not_member`.
 	//
 	// A domain's claim is public (its DNS record is), so answering whether it has single
 	// sign-on reveals nothing about people. 30 requests a minute per client IP address (`429`).
-	// `502 sso_unavailable` when the provider's discovery document cannot be read.
+	// `502 sso_unavailable` when the OpenID Connect provider's discovery document cannot be read.
 	//
 	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
 	//
@@ -89967,22 +90384,35 @@ type ClientWithResponsesInterface interface {
 	//
 	// The sign-in page asks for the e-mail address first and sends it here. When the address's
 	// domain is claimed by a workspace that has an identity provider, the answer carries
-	// `authorization_url`, the provider's sign-in page (authorization code with PKCE, `state`
-	// and `nonce`, `login_hint` set to the address), and sets the `yuva_sso` cookie that binds
-	// the sign-in to this browser for 10 minutes; the page sends the browser there. Otherwise
-	// `sso` is `false` and the page goes on with a code or a passkey.
+	// `authorization_url`, the provider's sign-in page, and sets a cookie that binds the sign-in
+	// to this browser for 10 minutes; the page sends the browser there. Otherwise `sso` is
+	// `false` and the page goes on with a code or a passkey.
 	//
-	// The provider sends the browser back to `GET /auth/sso/callback` (outside this contract),
-	// which checks the cookie and `state`, exchanges the code, verifies the `id_token` (signature
-	// against the provider's keys, `iss`, `aud`, `exp`, `nonce`) and requires a verified e-mail in a
-	// domain the workspace has claimed. It then redirects to `return_to` (or `/`) with the
+	// With OpenID Connect the URL is an authorization request (code with PKCE, `state` and
+	// `nonce`, `login_hint` set to the address) and the cookie `yuva_sso`. With SAML it is the
+	// identity provider's single sign-on URL with an `AuthnRequest` (HTTP-Redirect binding,
+	// NameID format `emailAddress`) and the cookie `yuva_saml`, which holds the request's id. The
+	// provider posts its answer to `POST /auth/saml/acs` (HTTP-POST binding, outside this
+	// contract), which needs the cookie to equal the response's `InResponseTo`, takes the
+	// stored request once, and requires a signed Response or Assertion from one of the
+	// configured certificates, exactly one assertion, `Destination` and `Recipient` equal to
+	// `acs_url`, `Audience` equal to `entity_id` (both in `saml_sp` of `GET /v1/sso`), the
+	// validity window (3 minutes of clock skew, issued at most 90 seconds ago) and an assertion
+	// id not seen before. Responses the server did not ask for (identity-provider-initiated) are
+	// refused. The e-mail address is the NameID, or the configured attribute.
+	//
+	// With OpenID Connect the provider sends the browser back to `GET /auth/sso/callback`
+	// (outside this contract), which checks the cookie and `state`, exchanges the code, verifies
+	// the `id_token` (signature against the provider's keys, `iss`, `aud`, `exp`, `nonce`) and
+	// requires a verified e-mail. Both protocols require the address to be in a domain the
+	// workspace has claimed. The browser is then redirected to `return_to` (or `/`) with the
 	// session cookie set, or to `/sign-in?sso_error=<code>` with `code` one of `expired`,
-	// `denied`, `failed`, `invalid_token`, `email_unverified`, `domain_not_claimed`,
-	// `group_not_allowed`, `not_member`.
+	// `denied`, `failed`, `invalid_token` (for SAML: the response or assertion was refused),
+	// `email_unverified`, `domain_not_claimed`, `group_not_allowed`, `not_member`.
 	//
 	// A domain's claim is public (its DNS record is), so answering whether it has single
 	// sign-on reveals nothing about people. 30 requests a minute per client IP address (`429`).
-	// `502 sso_unavailable` when the provider's discovery document cannot be read.
+	// `502 sso_unavailable` when the OpenID Connect provider's discovery document cannot be read.
 	//
 	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
 	//
@@ -95988,8 +96418,9 @@ type ClientWithResponsesInterface interface {
 
 	// DeleteSsoOidcProviderWithResponse Remove the OpenID Connect provider
 	//
-	// Removes the provider and turns `sso_required` off; claimed domains stay. Owners only,
-	// with a member session; recorded as `sso.provider_deleted`.
+	// Removes the OpenID Connect provider (`404` when the workspace uses SAML or none) and turns
+	// `sso_required` off; claimed domains stay. Owners only, with a member session; recorded as
+	// `sso.provider_deleted`.
 	//
 	// Returns a wrapper object for the known response body format(s).
 	//
@@ -96027,6 +96458,63 @@ type ClientWithResponsesInterface interface {
 	//
 	// Corresponds with PUT /v1/sso/oidc (the `SetSsoOidcProvider` operationId).
 	SetSsoOidcProviderWithResponse(ctx context.Context, params *SetSsoOidcProviderParams, body SetSsoOidcProviderJSONRequestBody, reqEditors ...RequestEditorFn) (*SetSsoOidcProviderResponse, error)
+
+	// DeleteSsoSamlProviderWithResponse Remove the SAML identity provider
+	//
+	// Removes the SAML provider (`404` when the workspace uses OpenID Connect or none) and turns
+	// `sso_required` off; claimed domains stay. Owners only, with a member session; recorded as
+	// `sso.provider_deleted`.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with DELETE /v1/sso/saml (the `DeleteSsoSamlProvider` operationId).
+	DeleteSsoSamlProviderWithResponse(ctx context.Context, params *DeleteSsoSamlProviderParams, reqEditors ...RequestEditorFn) (*DeleteSsoSamlProviderResponse, error)
+
+	// SetSsoSamlProviderWithBodyWithResponse Set the SAML identity provider
+	//
+	// Saves a SAML 2.0 identity provider from its metadata: `metadata_url` (fetched now, through
+	// the same address checks as the OpenID Connect discovery, and again at a sign-in when the
+	// copy is more than an hour old, so rotated certificates are picked up; after a failed
+	// fetch the stored copy is used and the next try waits 15 minutes) or `metadata_xml`
+	// (pasted; paste it again when the certificate rotates). The metadata must be one
+	// `EntityDescriptor` with an `IDPSSODescriptor` that has a `SingleSignOnService` with the
+	// HTTP-Redirect binding and at least one signing certificate valid now; DTDs are refused.
+	// `400 sso_metadata_failed` with the reason otherwise. Expired certificates are left out
+	// and named in `warnings`. Leave both out to keep the stored
+	// metadata (fetched again when it came from a URL); one is required the first time. A
+	// workspace has one provider: saving SAML replaces an OpenID Connect provider (and the
+	// other way round). Register `saml_sp` from `GET /v1/sso` at the provider: entity id,
+	// ACS URL (HTTP-POST), NameID format `emailAddress`, or load its `metadata_url`. Owners
+	// only, with a member session; recorded as `sso.provider_created` (also when it replaces
+	// the other protocol) or `sso.provider_updated`.
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PUT /v1/sso/saml (the `SetSsoSamlProvider` operationId).
+	SetSsoSamlProviderWithBodyWithResponse(ctx context.Context, params *SetSsoSamlProviderParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SetSsoSamlProviderResponse, error)
+
+	// SetSsoSamlProviderWithResponse Set the SAML identity provider
+	//
+	// Saves a SAML 2.0 identity provider from its metadata: `metadata_url` (fetched now, through
+	// the same address checks as the OpenID Connect discovery, and again at a sign-in when the
+	// copy is more than an hour old, so rotated certificates are picked up; after a failed
+	// fetch the stored copy is used and the next try waits 15 minutes) or `metadata_xml`
+	// (pasted; paste it again when the certificate rotates). The metadata must be one
+	// `EntityDescriptor` with an `IDPSSODescriptor` that has a `SingleSignOnService` with the
+	// HTTP-Redirect binding and at least one signing certificate valid now; DTDs are refused.
+	// `400 sso_metadata_failed` with the reason otherwise. Expired certificates are left out
+	// and named in `warnings`. Leave both out to keep the stored
+	// metadata (fetched again when it came from a URL); one is required the first time. A
+	// workspace has one provider: saving SAML replaces an OpenID Connect provider (and the
+	// other way round). Register `saml_sp` from `GET /v1/sso` at the provider: entity id,
+	// ACS URL (HTTP-POST), NameID format `emailAddress`, or load its `metadata_url`. Owners
+	// only, with a member session; recorded as `sso.provider_created` (also when it replaces
+	// the other protocol) or `sso.provider_updated`.
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PUT /v1/sso/saml (the `SetSsoSamlProvider` operationId).
+	SetSsoSamlProviderWithResponse(ctx context.Context, params *SetSsoSamlProviderParams, body SetSsoSamlProviderJSONRequestBody, reqEditors ...RequestEditorFn) (*SetSsoSamlProviderResponse, error)
 
 	// GetStatsWithResponse Team activity since a moment
 	//
@@ -125605,6 +126093,123 @@ func (r SetSsoOidcProviderResponse) ContentType() string {
 	return ""
 }
 
+type DeleteSsoSamlProviderResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r DeleteSsoSamlProviderResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r DeleteSsoSamlProviderResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r DeleteSsoSamlProviderResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetBody returns the raw response body bytes
+func (r DeleteSsoSamlProviderResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteSsoSamlProviderResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteSsoSamlProviderResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r DeleteSsoSamlProviderResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type SetSsoSamlProviderResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *SsoSettings
+	// ApplicationproblemJSON400 the response for an HTTP 400 `application/problem+json` response
+	ApplicationproblemJSON400 *Problem
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r SetSsoSamlProviderResponse) GetJSON200() *SsoSettings {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON400 returns the response for an HTTP 400 `application/problem+json` response
+func (r SetSsoSamlProviderResponse) GetApplicationproblemJSON400() *Problem {
+	return r.ApplicationproblemJSON400
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r SetSsoSamlProviderResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r SetSsoSamlProviderResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetBody returns the raw response body bytes
+func (r SetSsoSamlProviderResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r SetSsoSamlProviderResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r SetSsoSamlProviderResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r SetSsoSamlProviderResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type GetStatsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -133675,22 +134280,35 @@ func (c *ClientWithResponses) SignOutWithResponse(ctx context.Context, reqEditor
 //
 // The sign-in page asks for the e-mail address first and sends it here. When the address's
 // domain is claimed by a workspace that has an identity provider, the answer carries
-// `authorization_url`, the provider's sign-in page (authorization code with PKCE, `state`
-// and `nonce`, `login_hint` set to the address), and sets the `yuva_sso` cookie that binds
-// the sign-in to this browser for 10 minutes; the page sends the browser there. Otherwise
-// `sso` is `false` and the page goes on with a code or a passkey.
+// `authorization_url`, the provider's sign-in page, and sets a cookie that binds the sign-in
+// to this browser for 10 minutes; the page sends the browser there. Otherwise `sso` is
+// `false` and the page goes on with a code or a passkey.
 //
-// The provider sends the browser back to `GET /auth/sso/callback` (outside this contract),
-// which checks the cookie and `state`, exchanges the code, verifies the `id_token` (signature
-// against the provider's keys, `iss`, `aud`, `exp`, `nonce`) and requires a verified e-mail in a
-// domain the workspace has claimed. It then redirects to `return_to` (or `/`) with the
+// With OpenID Connect the URL is an authorization request (code with PKCE, `state` and
+// `nonce`, `login_hint` set to the address) and the cookie `yuva_sso`. With SAML it is the
+// identity provider's single sign-on URL with an `AuthnRequest` (HTTP-Redirect binding,
+// NameID format `emailAddress`) and the cookie `yuva_saml`, which holds the request's id. The
+// provider posts its answer to `POST /auth/saml/acs` (HTTP-POST binding, outside this
+// contract), which needs the cookie to equal the response's `InResponseTo`, takes the
+// stored request once, and requires a signed Response or Assertion from one of the
+// configured certificates, exactly one assertion, `Destination` and `Recipient` equal to
+// `acs_url`, `Audience` equal to `entity_id` (both in `saml_sp` of `GET /v1/sso`), the
+// validity window (3 minutes of clock skew, issued at most 90 seconds ago) and an assertion
+// id not seen before. Responses the server did not ask for (identity-provider-initiated) are
+// refused. The e-mail address is the NameID, or the configured attribute.
+//
+// With OpenID Connect the provider sends the browser back to `GET /auth/sso/callback`
+// (outside this contract), which checks the cookie and `state`, exchanges the code, verifies
+// the `id_token` (signature against the provider's keys, `iss`, `aud`, `exp`, `nonce`) and
+// requires a verified e-mail. Both protocols require the address to be in a domain the
+// workspace has claimed. The browser is then redirected to `return_to` (or `/`) with the
 // session cookie set, or to `/sign-in?sso_error=<code>` with `code` one of `expired`,
-// `denied`, `failed`, `invalid_token`, `email_unverified`, `domain_not_claimed`,
-// `group_not_allowed`, `not_member`.
+// `denied`, `failed`, `invalid_token` (for SAML: the response or assertion was refused),
+// `email_unverified`, `domain_not_claimed`, `group_not_allowed`, `not_member`.
 //
 // A domain's claim is public (its DNS record is), so answering whether it has single
 // sign-on reveals nothing about people. 30 requests a minute per client IP address (`429`).
-// `502 sso_unavailable` when the provider's discovery document cannot be read.
+// `502 sso_unavailable` when the OpenID Connect provider's discovery document cannot be read.
 //
 // Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
 //
@@ -133707,22 +134325,35 @@ func (c *ClientWithResponses) StartSsoSignInWithBodyWithResponse(ctx context.Con
 //
 // The sign-in page asks for the e-mail address first and sends it here. When the address's
 // domain is claimed by a workspace that has an identity provider, the answer carries
-// `authorization_url`, the provider's sign-in page (authorization code with PKCE, `state`
-// and `nonce`, `login_hint` set to the address), and sets the `yuva_sso` cookie that binds
-// the sign-in to this browser for 10 minutes; the page sends the browser there. Otherwise
-// `sso` is `false` and the page goes on with a code or a passkey.
+// `authorization_url`, the provider's sign-in page, and sets a cookie that binds the sign-in
+// to this browser for 10 minutes; the page sends the browser there. Otherwise `sso` is
+// `false` and the page goes on with a code or a passkey.
 //
-// The provider sends the browser back to `GET /auth/sso/callback` (outside this contract),
-// which checks the cookie and `state`, exchanges the code, verifies the `id_token` (signature
-// against the provider's keys, `iss`, `aud`, `exp`, `nonce`) and requires a verified e-mail in a
-// domain the workspace has claimed. It then redirects to `return_to` (or `/`) with the
+// With OpenID Connect the URL is an authorization request (code with PKCE, `state` and
+// `nonce`, `login_hint` set to the address) and the cookie `yuva_sso`. With SAML it is the
+// identity provider's single sign-on URL with an `AuthnRequest` (HTTP-Redirect binding,
+// NameID format `emailAddress`) and the cookie `yuva_saml`, which holds the request's id. The
+// provider posts its answer to `POST /auth/saml/acs` (HTTP-POST binding, outside this
+// contract), which needs the cookie to equal the response's `InResponseTo`, takes the
+// stored request once, and requires a signed Response or Assertion from one of the
+// configured certificates, exactly one assertion, `Destination` and `Recipient` equal to
+// `acs_url`, `Audience` equal to `entity_id` (both in `saml_sp` of `GET /v1/sso`), the
+// validity window (3 minutes of clock skew, issued at most 90 seconds ago) and an assertion
+// id not seen before. Responses the server did not ask for (identity-provider-initiated) are
+// refused. The e-mail address is the NameID, or the configured attribute.
+//
+// With OpenID Connect the provider sends the browser back to `GET /auth/sso/callback`
+// (outside this contract), which checks the cookie and `state`, exchanges the code, verifies
+// the `id_token` (signature against the provider's keys, `iss`, `aud`, `exp`, `nonce`) and
+// requires a verified e-mail. Both protocols require the address to be in a domain the
+// workspace has claimed. The browser is then redirected to `return_to` (or `/`) with the
 // session cookie set, or to `/sign-in?sso_error=<code>` with `code` one of `expired`,
-// `denied`, `failed`, `invalid_token`, `email_unverified`, `domain_not_claimed`,
-// `group_not_allowed`, `not_member`.
+// `denied`, `failed`, `invalid_token` (for SAML: the response or assertion was refused),
+// `email_unverified`, `domain_not_claimed`, `group_not_allowed`, `not_member`.
 //
 // A domain's claim is public (its DNS record is), so answering whether it has single
 // sign-on reveals nothing about people. 30 requests a minute per client IP address (`429`).
-// `502 sso_unavailable` when the provider's discovery document cannot be read.
+// `502 sso_unavailable` when the OpenID Connect provider's discovery document cannot be read.
 //
 // Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
 //
@@ -142098,8 +142729,9 @@ func (c *ClientWithResponses) VerifySsoDomainWithResponse(ctx context.Context, s
 
 // DeleteSsoOidcProviderWithResponse Remove the OpenID Connect provider
 //
-// Removes the provider and turns `sso_required` off; claimed domains stay. Owners only,
-// with a member session; recorded as `sso.provider_deleted`.
+// Removes the OpenID Connect provider (`404` when the workspace uses SAML or none) and turns
+// `sso_required` off; claimed domains stay. Owners only, with a member session; recorded as
+// `sso.provider_deleted`.
 //
 // Returns a wrapper object for the known response body format(s).
 //
@@ -142154,6 +142786,81 @@ func (c *ClientWithResponses) SetSsoOidcProviderWithResponse(ctx context.Context
 		return nil, err
 	}
 	return ParseSetSsoOidcProviderResponse(rsp)
+}
+
+// DeleteSsoSamlProviderWithResponse Remove the SAML identity provider
+//
+// Removes the SAML provider (`404` when the workspace uses OpenID Connect or none) and turns
+// `sso_required` off; claimed domains stay. Owners only, with a member session; recorded as
+// `sso.provider_deleted`.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with DELETE /v1/sso/saml (the `DeleteSsoSamlProvider` operationId).
+func (c *ClientWithResponses) DeleteSsoSamlProviderWithResponse(ctx context.Context, params *DeleteSsoSamlProviderParams, reqEditors ...RequestEditorFn) (*DeleteSsoSamlProviderResponse, error) {
+	rsp, err := c.DeleteSsoSamlProvider(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteSsoSamlProviderResponse(rsp)
+}
+
+// SetSsoSamlProviderWithBodyWithResponse Set the SAML identity provider
+//
+// Saves a SAML 2.0 identity provider from its metadata: `metadata_url` (fetched now, through
+// the same address checks as the OpenID Connect discovery, and again at a sign-in when the
+// copy is more than an hour old, so rotated certificates are picked up; after a failed
+// fetch the stored copy is used and the next try waits 15 minutes) or `metadata_xml`
+// (pasted; paste it again when the certificate rotates). The metadata must be one
+// `EntityDescriptor` with an `IDPSSODescriptor` that has a `SingleSignOnService` with the
+// HTTP-Redirect binding and at least one signing certificate valid now; DTDs are refused.
+// `400 sso_metadata_failed` with the reason otherwise. Expired certificates are left out
+// and named in `warnings`. Leave both out to keep the stored
+// metadata (fetched again when it came from a URL); one is required the first time. A
+// workspace has one provider: saving SAML replaces an OpenID Connect provider (and the
+// other way round). Register `saml_sp` from `GET /v1/sso` at the provider: entity id,
+// ACS URL (HTTP-POST), NameID format `emailAddress`, or load its `metadata_url`. Owners
+// only, with a member session; recorded as `sso.provider_created` (also when it replaces
+// the other protocol) or `sso.provider_updated`.
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PUT /v1/sso/saml (the `SetSsoSamlProvider` operationId).
+func (c *ClientWithResponses) SetSsoSamlProviderWithBodyWithResponse(ctx context.Context, params *SetSsoSamlProviderParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SetSsoSamlProviderResponse, error) {
+	rsp, err := c.SetSsoSamlProviderWithBody(ctx, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSetSsoSamlProviderResponse(rsp)
+}
+
+// SetSsoSamlProviderWithResponse Set the SAML identity provider
+//
+// Saves a SAML 2.0 identity provider from its metadata: `metadata_url` (fetched now, through
+// the same address checks as the OpenID Connect discovery, and again at a sign-in when the
+// copy is more than an hour old, so rotated certificates are picked up; after a failed
+// fetch the stored copy is used and the next try waits 15 minutes) or `metadata_xml`
+// (pasted; paste it again when the certificate rotates). The metadata must be one
+// `EntityDescriptor` with an `IDPSSODescriptor` that has a `SingleSignOnService` with the
+// HTTP-Redirect binding and at least one signing certificate valid now; DTDs are refused.
+// `400 sso_metadata_failed` with the reason otherwise. Expired certificates are left out
+// and named in `warnings`. Leave both out to keep the stored
+// metadata (fetched again when it came from a URL); one is required the first time. A
+// workspace has one provider: saving SAML replaces an OpenID Connect provider (and the
+// other way round). Register `saml_sp` from `GET /v1/sso` at the provider: entity id,
+// ACS URL (HTTP-POST), NameID format `emailAddress`, or load its `metadata_url`. Owners
+// only, with a member session; recorded as `sso.provider_created` (also when it replaces
+// the other protocol) or `sso.provider_updated`.
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PUT /v1/sso/saml (the `SetSsoSamlProvider` operationId).
+func (c *ClientWithResponses) SetSsoSamlProviderWithResponse(ctx context.Context, params *SetSsoSamlProviderParams, body SetSsoSamlProviderJSONRequestBody, reqEditors ...RequestEditorFn) (*SetSsoSamlProviderResponse, error) {
+	rsp, err := c.SetSsoSamlProvider(ctx, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSetSsoSamlProviderResponse(rsp)
 }
 
 // GetStatsWithResponse Team activity since a moment
@@ -166240,6 +166947,96 @@ func ParseSetSsoOidcProviderResponse(rsp *http.Response) (*SetSsoOidcProviderRes
 	}
 
 	response := &SetSsoOidcProviderResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest SsoSettings
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteSsoSamlProviderResponse parses an HTTP response from a DeleteSsoSamlProviderWithResponse call
+func ParseDeleteSsoSamlProviderResponse(rsp *http.Response) (*DeleteSsoSamlProviderResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteSsoSamlProviderResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case rsp.StatusCode == 204:
+		break // No content-type
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseSetSsoSamlProviderResponse parses an HTTP response from a SetSsoSamlProviderWithResponse call
+func ParseSetSsoSamlProviderResponse(rsp *http.Response) (*SetSsoSamlProviderResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &SetSsoSamlProviderResponse{
 		Body:         bodyBytes,
 		HTTPResponse: rsp,
 	}

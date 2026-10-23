@@ -50,18 +50,21 @@ func (q *Queries) AddSsoDomain(ctx context.Context, arg AddSsoDomainParams) (Sso
 
 const clearSsoProvider = `-- name: ClearSsoProvider :one
 UPDATE sso_settings SET protocol = NULL, oidc_issuer = NULL, oidc_client_id = NULL, oidc_client_secret = NULL,
-    oidc_scopes = '{}', groups_claim = 'groups', allowed_groups = '{}', sso_required = false, updated_at = $1
-WHERE workspace_id = $2 AND protocol IS NOT NULL
-RETURNING workspace_id, id, protocol, oidc_issuer, oidc_client_id, oidc_client_secret, oidc_scopes, groups_claim, allowed_groups, sso_required, jit, jit_role, created_at, updated_at
+    oidc_scopes = '{}', groups_claim = 'groups', allowed_groups = '{}', sso_required = false,
+    saml_entity_id = NULL, saml_sso_url = NULL, saml_certificates = '{}', saml_metadata_url = NULL, saml_metadata_at = NULL, saml_metadata_tried_at = NULL,
+    saml_email_attribute = NULL, updated_at = $1
+WHERE workspace_id = $2 AND protocol = $3
+RETURNING workspace_id, id, protocol, oidc_issuer, oidc_client_id, oidc_client_secret, oidc_scopes, groups_claim, allowed_groups, sso_required, jit, jit_role, created_at, updated_at, saml_entity_id, saml_sso_url, saml_certificates, saml_metadata_url, saml_metadata_at, saml_metadata_tried_at, saml_email_attribute
 `
 
 type ClearSsoProviderParams struct {
 	Now         time.Time
 	WorkspaceID uuid.UUID
+	Protocol    *string
 }
 
 func (q *Queries) ClearSsoProvider(ctx context.Context, arg ClearSsoProviderParams) (SsoSetting, error) {
-	row := q.db.QueryRow(ctx, clearSsoProvider, arg.Now, arg.WorkspaceID)
+	row := q.db.QueryRow(ctx, clearSsoProvider, arg.Now, arg.WorkspaceID, arg.Protocol)
 	var i SsoSetting
 	err := row.Scan(
 		&i.WorkspaceID,
@@ -78,6 +81,13 @@ func (q *Queries) ClearSsoProvider(ctx context.Context, arg ClearSsoProviderPara
 		&i.JitRole,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.SamlEntityID,
+		&i.SamlSsoUrl,
+		&i.SamlCertificates,
+		&i.SamlMetadataUrl,
+		&i.SamlMetadataAt,
+		&i.SamlMetadataTriedAt,
+		&i.SamlEmailAttribute,
 	)
 	return i, err
 }
@@ -123,6 +133,20 @@ func (q *Queries) CreateSsoLogin(ctx context.Context, arg CreateSsoLoginParams) 
 	return err
 }
 
+const deleteExpiredSamlAssertions = `-- name: DeleteExpiredSamlAssertions :exec
+DELETE FROM saml_assertions WHERE workspace_id = $1 AND expires_at <= $2
+`
+
+type DeleteExpiredSamlAssertionsParams struct {
+	WorkspaceID uuid.UUID
+	Now         time.Time
+}
+
+func (q *Queries) DeleteExpiredSamlAssertions(ctx context.Context, arg DeleteExpiredSamlAssertionsParams) error {
+	_, err := q.db.Exec(ctx, deleteExpiredSamlAssertions, arg.WorkspaceID, arg.Now)
+	return err
+}
+
 const deleteExpiredSsoLogins = `-- name: DeleteExpiredSsoLogins :exec
 DELETE FROM sso_logins WHERE expires_at <= $1
 `
@@ -159,7 +183,7 @@ func (q *Queries) DeleteSsoDomain(ctx context.Context, arg DeleteSsoDomainParams
 }
 
 const findSsoByDomain = `-- name: FindSsoByDomain :one
-SELECT s.workspace_id, s.id, s.protocol, s.oidc_issuer, s.oidc_client_id, s.oidc_client_secret, s.oidc_scopes, s.groups_claim, s.allowed_groups, s.sso_required, s.jit, s.jit_role, s.created_at, s.updated_at FROM sso_domains d
+SELECT s.workspace_id, s.id, s.protocol, s.oidc_issuer, s.oidc_client_id, s.oidc_client_secret, s.oidc_scopes, s.groups_claim, s.allowed_groups, s.sso_required, s.jit, s.jit_role, s.created_at, s.updated_at, s.saml_entity_id, s.saml_sso_url, s.saml_certificates, s.saml_metadata_url, s.saml_metadata_at, s.saml_metadata_tried_at, s.saml_email_attribute FROM sso_domains d
 JOIN sso_settings s ON s.workspace_id = d.workspace_id
 JOIN workspaces w ON w.id = d.workspace_id
 WHERE d.domain = $1 AND d.verified_at IS NOT NULL AND w.deleted_at IS NULL
@@ -184,6 +208,13 @@ func (q *Queries) FindSsoByDomain(ctx context.Context, domain string) (SsoSettin
 		&i.JitRole,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.SamlEntityID,
+		&i.SamlSsoUrl,
+		&i.SamlCertificates,
+		&i.SamlMetadataUrl,
+		&i.SamlMetadataAt,
+		&i.SamlMetadataTriedAt,
+		&i.SamlEmailAttribute,
 	)
 	return i, err
 }
@@ -214,7 +245,7 @@ func (q *Queries) GetSsoDomain(ctx context.Context, arg GetSsoDomainParams) (Sso
 }
 
 const getSsoSettings = `-- name: GetSsoSettings :one
-SELECT workspace_id, id, protocol, oidc_issuer, oidc_client_id, oidc_client_secret, oidc_scopes, groups_claim, allowed_groups, sso_required, jit, jit_role, created_at, updated_at FROM sso_settings WHERE workspace_id = $1
+SELECT workspace_id, id, protocol, oidc_issuer, oidc_client_id, oidc_client_secret, oidc_scopes, groups_claim, allowed_groups, sso_required, jit, jit_role, created_at, updated_at, saml_entity_id, saml_sso_url, saml_certificates, saml_metadata_url, saml_metadata_at, saml_metadata_tried_at, saml_email_attribute FROM sso_settings WHERE workspace_id = $1
 `
 
 func (q *Queries) GetSsoSettings(ctx context.Context, workspaceID uuid.UUID) (SsoSetting, error) {
@@ -235,6 +266,13 @@ func (q *Queries) GetSsoSettings(ctx context.Context, workspaceID uuid.UUID) (Ss
 		&i.JitRole,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.SamlEntityID,
+		&i.SamlSsoUrl,
+		&i.SamlCertificates,
+		&i.SamlMetadataUrl,
+		&i.SamlMetadataAt,
+		&i.SamlMetadataTriedAt,
+		&i.SamlEmailAttribute,
 	)
 	return i, err
 }
@@ -287,7 +325,7 @@ const lockSsoSettings = `-- name: LockSsoSettings :one
 INSERT INTO sso_settings (workspace_id, id, created_at, updated_at)
 VALUES ($1, $2, $3, $3)
 ON CONFLICT (workspace_id) DO UPDATE SET workspace_id = excluded.workspace_id
-RETURNING workspace_id, id, protocol, oidc_issuer, oidc_client_id, oidc_client_secret, oidc_scopes, groups_claim, allowed_groups, sso_required, jit, jit_role, created_at, updated_at
+RETURNING workspace_id, id, protocol, oidc_issuer, oidc_client_id, oidc_client_secret, oidc_scopes, groups_claim, allowed_groups, sso_required, jit, jit_role, created_at, updated_at, saml_entity_id, saml_sso_url, saml_certificates, saml_metadata_url, saml_metadata_at, saml_metadata_tried_at, saml_email_attribute
 `
 
 type LockSsoSettingsParams struct {
@@ -314,8 +352,37 @@ func (q *Queries) LockSsoSettings(ctx context.Context, arg LockSsoSettingsParams
 		&i.JitRole,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.SamlEntityID,
+		&i.SamlSsoUrl,
+		&i.SamlCertificates,
+		&i.SamlMetadataUrl,
+		&i.SamlMetadataAt,
+		&i.SamlMetadataTriedAt,
+		&i.SamlEmailAttribute,
 	)
 	return i, err
+}
+
+const markSamlMetadataTried = `-- name: MarkSamlMetadataTried :exec
+UPDATE sso_settings SET saml_metadata_tried_at = $1
+WHERE workspace_id = $2 AND id = $3 AND protocol = 'saml' AND saml_metadata_url = $4
+`
+
+type MarkSamlMetadataTriedParams struct {
+	Now         *time.Time
+	WorkspaceID uuid.UUID
+	ID          uuid.UUID
+	MetadataUrl *string
+}
+
+func (q *Queries) MarkSamlMetadataTried(ctx context.Context, arg MarkSamlMetadataTriedParams) error {
+	_, err := q.db.Exec(ctx, markSamlMetadataTried,
+		arg.Now,
+		arg.WorkspaceID,
+		arg.ID,
+		arg.MetadataUrl,
+	)
+	return err
 }
 
 const markSsoDomainChecked = `-- name: MarkSsoDomainChecked :one
@@ -355,6 +422,83 @@ func (q *Queries) MarkSsoDomainChecked(ctx context.Context, arg MarkSsoDomainChe
 	return i, err
 }
 
+const recordSamlAssertion = `-- name: RecordSamlAssertion :execrows
+INSERT INTO saml_assertions (workspace_id, id_hash, expires_at)
+VALUES ($1, $2, $3)
+ON CONFLICT DO NOTHING
+`
+
+type RecordSamlAssertionParams struct {
+	WorkspaceID uuid.UUID
+	IDHash      []byte
+	ExpiresAt   time.Time
+}
+
+func (q *Queries) RecordSamlAssertion(ctx context.Context, arg RecordSamlAssertionParams) (int64, error) {
+	result, err := q.db.Exec(ctx, recordSamlAssertion, arg.WorkspaceID, arg.IDHash, arg.ExpiresAt)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected(), nil
+}
+
+const refreshSsoSamlMetadata = `-- name: RefreshSsoSamlMetadata :one
+UPDATE sso_settings SET saml_entity_id = $1, saml_sso_url = $2, saml_certificates = $3,
+    saml_metadata_at = $4, saml_metadata_tried_at = $4, updated_at = CASE WHEN $5::boolean THEN $4 ELSE updated_at END
+WHERE workspace_id = $6 AND id = $7 AND protocol = 'saml' AND saml_metadata_url = $8
+RETURNING workspace_id, id, protocol, oidc_issuer, oidc_client_id, oidc_client_secret, oidc_scopes, groups_claim, allowed_groups, sso_required, jit, jit_role, created_at, updated_at, saml_entity_id, saml_sso_url, saml_certificates, saml_metadata_url, saml_metadata_at, saml_metadata_tried_at, saml_email_attribute
+`
+
+type RefreshSsoSamlMetadataParams struct {
+	EntityID     *string
+	SsoUrl       *string
+	Certificates [][]byte
+	Now          *time.Time
+	Changed      bool
+	WorkspaceID  uuid.UUID
+	ID           uuid.UUID
+	MetadataUrl  *string
+}
+
+// A refresh applies only to the metadata it was fetched for: a change made meanwhile wins.
+func (q *Queries) RefreshSsoSamlMetadata(ctx context.Context, arg RefreshSsoSamlMetadataParams) (SsoSetting, error) {
+	row := q.db.QueryRow(ctx, refreshSsoSamlMetadata,
+		arg.EntityID,
+		arg.SsoUrl,
+		arg.Certificates,
+		arg.Now,
+		arg.Changed,
+		arg.WorkspaceID,
+		arg.ID,
+		arg.MetadataUrl,
+	)
+	var i SsoSetting
+	err := row.Scan(
+		&i.WorkspaceID,
+		&i.ID,
+		&i.Protocol,
+		&i.OidcIssuer,
+		&i.OidcClientID,
+		&i.OidcClientSecret,
+		&i.OidcScopes,
+		&i.GroupsClaim,
+		&i.AllowedGroups,
+		&i.SsoRequired,
+		&i.Jit,
+		&i.JitRole,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.SamlEntityID,
+		&i.SamlSsoUrl,
+		&i.SamlCertificates,
+		&i.SamlMetadataUrl,
+		&i.SamlMetadataAt,
+		&i.SamlMetadataTriedAt,
+		&i.SamlEmailAttribute,
+	)
+	return i, err
+}
+
 const relaxSsoWithoutDomains = `-- name: RelaxSsoWithoutDomains :exec
 UPDATE sso_settings s SET sso_required = false, updated_at = $1
 WHERE s.workspace_id = $2 AND s.sso_required
@@ -373,9 +517,11 @@ func (q *Queries) RelaxSsoWithoutDomains(ctx context.Context, arg RelaxSsoWithou
 
 const saveSsoOidc = `-- name: SaveSsoOidc :one
 UPDATE sso_settings SET protocol = 'oidc', oidc_issuer = $1, oidc_client_id = $2, oidc_client_secret = $3,
-    oidc_scopes = $4, groups_claim = $5, allowed_groups = $6, updated_at = $7
+    oidc_scopes = $4, groups_claim = $5, allowed_groups = $6,
+    saml_entity_id = NULL, saml_sso_url = NULL, saml_certificates = '{}', saml_metadata_url = NULL, saml_metadata_at = NULL, saml_metadata_tried_at = NULL,
+    saml_email_attribute = NULL, updated_at = $7
 WHERE workspace_id = $8
-RETURNING workspace_id, id, protocol, oidc_issuer, oidc_client_id, oidc_client_secret, oidc_scopes, groups_claim, allowed_groups, sso_required, jit, jit_role, created_at, updated_at
+RETURNING workspace_id, id, protocol, oidc_issuer, oidc_client_id, oidc_client_secret, oidc_scopes, groups_claim, allowed_groups, sso_required, jit, jit_role, created_at, updated_at, saml_entity_id, saml_sso_url, saml_certificates, saml_metadata_url, saml_metadata_at, saml_metadata_tried_at, saml_email_attribute
 `
 
 type SaveSsoOidcParams struct {
@@ -416,6 +562,13 @@ func (q *Queries) SaveSsoOidc(ctx context.Context, arg SaveSsoOidcParams) (SsoSe
 		&i.JitRole,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.SamlEntityID,
+		&i.SamlSsoUrl,
+		&i.SamlCertificates,
+		&i.SamlMetadataUrl,
+		&i.SamlMetadataAt,
+		&i.SamlMetadataTriedAt,
+		&i.SamlEmailAttribute,
 	)
 	return i, err
 }
@@ -423,7 +576,7 @@ func (q *Queries) SaveSsoOidc(ctx context.Context, arg SaveSsoOidcParams) (SsoSe
 const saveSsoRules = `-- name: SaveSsoRules :one
 UPDATE sso_settings SET sso_required = $1, jit = $2, jit_role = $3, updated_at = $4
 WHERE workspace_id = $5
-RETURNING workspace_id, id, protocol, oidc_issuer, oidc_client_id, oidc_client_secret, oidc_scopes, groups_claim, allowed_groups, sso_required, jit, jit_role, created_at, updated_at
+RETURNING workspace_id, id, protocol, oidc_issuer, oidc_client_id, oidc_client_secret, oidc_scopes, groups_claim, allowed_groups, sso_required, jit, jit_role, created_at, updated_at, saml_entity_id, saml_sso_url, saml_certificates, saml_metadata_url, saml_metadata_at, saml_metadata_tried_at, saml_email_attribute
 `
 
 type SaveSsoRulesParams struct {
@@ -458,6 +611,75 @@ func (q *Queries) SaveSsoRules(ctx context.Context, arg SaveSsoRulesParams) (Sso
 		&i.JitRole,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.SamlEntityID,
+		&i.SamlSsoUrl,
+		&i.SamlCertificates,
+		&i.SamlMetadataUrl,
+		&i.SamlMetadataAt,
+		&i.SamlMetadataTriedAt,
+		&i.SamlEmailAttribute,
+	)
+	return i, err
+}
+
+const saveSsoSaml = `-- name: SaveSsoSaml :one
+UPDATE sso_settings SET protocol = 'saml', saml_entity_id = $1, saml_sso_url = $2, saml_certificates = $3,
+    saml_metadata_url = $4, saml_metadata_at = $5, saml_metadata_tried_at = $5, saml_email_attribute = $6,
+    groups_claim = $7, allowed_groups = $8,
+    oidc_issuer = NULL, oidc_client_id = NULL, oidc_client_secret = NULL, oidc_scopes = '{}', updated_at = $9
+WHERE workspace_id = $10
+RETURNING workspace_id, id, protocol, oidc_issuer, oidc_client_id, oidc_client_secret, oidc_scopes, groups_claim, allowed_groups, sso_required, jit, jit_role, created_at, updated_at, saml_entity_id, saml_sso_url, saml_certificates, saml_metadata_url, saml_metadata_at, saml_metadata_tried_at, saml_email_attribute
+`
+
+type SaveSsoSamlParams struct {
+	EntityID       *string
+	SsoUrl         *string
+	Certificates   [][]byte
+	MetadataUrl    *string
+	MetadataAt     *time.Time
+	EmailAttribute *string
+	GroupsClaim    string
+	AllowedGroups  []string
+	Now            time.Time
+	WorkspaceID    uuid.UUID
+}
+
+func (q *Queries) SaveSsoSaml(ctx context.Context, arg SaveSsoSamlParams) (SsoSetting, error) {
+	row := q.db.QueryRow(ctx, saveSsoSaml,
+		arg.EntityID,
+		arg.SsoUrl,
+		arg.Certificates,
+		arg.MetadataUrl,
+		arg.MetadataAt,
+		arg.EmailAttribute,
+		arg.GroupsClaim,
+		arg.AllowedGroups,
+		arg.Now,
+		arg.WorkspaceID,
+	)
+	var i SsoSetting
+	err := row.Scan(
+		&i.WorkspaceID,
+		&i.ID,
+		&i.Protocol,
+		&i.OidcIssuer,
+		&i.OidcClientID,
+		&i.OidcClientSecret,
+		&i.OidcScopes,
+		&i.GroupsClaim,
+		&i.AllowedGroups,
+		&i.SsoRequired,
+		&i.Jit,
+		&i.JitRole,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.SamlEntityID,
+		&i.SamlSsoUrl,
+		&i.SamlCertificates,
+		&i.SamlMetadataUrl,
+		&i.SamlMetadataAt,
+		&i.SamlMetadataTriedAt,
+		&i.SamlEmailAttribute,
 	)
 	return i, err
 }

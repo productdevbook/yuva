@@ -2064,6 +2064,12 @@ type RoadmapStageChange struct {
 	CreatedAt       time.Time
 }
 
+type SamlAssertion struct {
+	WorkspaceID uuid.UUID
+	IDHash      []byte
+	ExpiresAt   time.Time
+}
+
 type SesTenant struct {
 	WorkspaceID      uuid.UUID
 	InboxID          uuid.UUID
@@ -2190,20 +2196,27 @@ type SsoLogin struct {
 }
 
 type SsoSetting struct {
-	WorkspaceID      uuid.UUID
-	ID               uuid.UUID
-	Protocol         *string
-	OidcIssuer       *string
-	OidcClientID     *string
-	OidcClientSecret []byte
-	OidcScopes       []string
-	GroupsClaim      string
-	AllowedGroups    []string
-	SsoRequired      bool
-	Jit              bool
-	JitRole          string
-	CreatedAt        time.Time
-	UpdatedAt        time.Time
+	WorkspaceID         uuid.UUID
+	ID                  uuid.UUID
+	Protocol            *string
+	OidcIssuer          *string
+	OidcClientID        *string
+	OidcClientSecret    []byte
+	OidcScopes          []string
+	GroupsClaim         string
+	AllowedGroups       []string
+	SsoRequired         bool
+	Jit                 bool
+	JitRole             string
+	CreatedAt           time.Time
+	UpdatedAt           time.Time
+	SamlEntityID        *string
+	SamlSsoUrl          *string
+	SamlCertificates    [][]byte
+	SamlMetadataUrl     *string
+	SamlMetadataAt      *time.Time
+	SamlMetadataTriedAt *time.Time
+	SamlEmailAttribute  *string
 }
 
 type StatusCheck struct {

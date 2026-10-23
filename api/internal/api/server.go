@@ -41,7 +41,7 @@ import (
 
 const maxBodyBytes = 8 << 20
 
-var apiPrefixes = []string{"/v1/", "/client/v1/", "/ingress/", "/.well-known/", emailImagePathPrefix, emailTemplatesPathPrefix, clickPathPrefix, statusPathPrefix}
+var apiPrefixes = []string{"/v1/", "/client/v1/", "/ingress/", "/.well-known/", emailImagePathPrefix, emailTemplatesPathPrefix, clickPathPrefix, statusPathPrefix, samlPathPrefix}
 
 var apiPaths = []string{"/v1", "/client/v1", "/healthz", "/readyz", "/oauth/register", "/oauth/authorize", "/oauth/token", "/oauth/revoke", "/mcp", signInCallbackPath, slackCallbackPath, ssoCallbackPath}
 
@@ -394,6 +394,8 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("GET /v1/realtime", s.serveRealtime)
 	mux.HandleFunc("GET "+signInCallbackPath, s.serveMigrationSignIn)
 	mux.HandleFunc("GET "+ssoCallbackPath, s.serveSSOCallback)
+	mux.HandleFunc("POST "+samlACSPath, s.serveSAMLACS)
+	mux.HandleFunc("GET "+samlMetadataPath+"{workspace}", s.serveSAMLMetadata)
 	mux.HandleFunc("GET /client/v1/realtime", s.serveClientRealtime)
 	if s.analytics != nil {
 		mux.HandleFunc("POST "+analyticsPrefix+"{key}", s.serveAnalyticsCollect)

@@ -1,11 +1,13 @@
 package api
 
 import (
+	"bytes"
 	"context"
 	"net"
 	"net/url"
 	"slices"
 	"strings"
+	"time"
 	"uuid"
 
 	"github.com/productdevbook/yuva/api/internal/oas"
@@ -13,7 +15,7 @@ import (
 )
 
 func (s *Server) ssoSettingsBody(ctx context.Context, q *store.Queries, ws uuid.UUID) (oas.SsoSettings, error) {
-	out := oas.SsoSettings{Domains: []oas.SsoDomain{}, JitRole: oas.SsoJitAgent, RedirectUri: s.ssoRedirectURI()}
+	out := oas.SsoSettings{Domains: []oas.SsoDomain{}, JitRole: oas.SsoJitAgent, RedirectUri: s.ssoRedirectURI(), SamlSp: s.samlSPBody(ws)}
 	set, err := q.GetSsoSettings(ctx, ws)
 	if err != nil && !store.IsNotFound(err) {
 		return out, err
@@ -22,8 +24,21 @@ func (s *Server) ssoSettingsBody(ctx context.Context, q *store.Queries, ws uuid.
 		out.SsoRequired, out.Jit, out.JitRole = set.SsoRequired, set.Jit, oas.SsoJitRole(set.JitRole)
 		if set.Protocol != nil {
 			out.Protocol = new(oas.SsoProtocol(*set.Protocol))
+		}
+		switch deref(set.Protocol) {
+		case protocolOIDC:
 			out.Oidc = &oas.SsoOidcProvider{
 				Issuer: deref(set.OidcIssuer), ClientId: deref(set.OidcClientID), Scopes: set.OidcScopes, GroupsClaim: set.GroupsClaim,
+				AllowedGroups: set.AllowedGroups, UpdatedAt: set.UpdatedAt,
+			}
+		case protocolSAML:
+			certs := make([]oas.SsoSamlCertificate, 0, len(set.SamlCertificates))
+			for _, der := range set.SamlCertificates {
+				certs = append(certs, samlCertificateBody(der))
+			}
+			out.Saml = &oas.SsoSamlProvider{
+				EntityId: deref(set.SamlEntityID), SsoUrl: deref(set.SamlSsoUrl), Certificates: certs, MetadataUrl: set.SamlMetadataUrl,
+				MetadataFetchedAt: set.SamlMetadataAt, EmailAttribute: set.SamlEmailAttribute, GroupsAttribute: set.GroupsClaim,
 				AllowedGroups: set.AllowedGroups, UpdatedAt: set.UpdatedAt,
 			}
 		}
@@ -148,7 +163,7 @@ func (s *Server) SetSsoOidcProvider(ctx context.Context, req oas.SetSsoOidcProvi
 		} else if sealed == nil || deref(cur.Protocol) != protocolOIDC {
 			return errValidation("client_secret is required")
 		}
-		created := cur.Protocol == nil
+		created := deref(cur.Protocol) != protocolOIDC
 		var fields []string
 		if deref(cur.OidcIssuer) != issuer {
 			fields = append(fields, "issuer")
@@ -182,6 +197,8 @@ func (s *Server) SetSsoOidcProvider(ctx context.Context, req oas.SetSsoOidcProvi
 		action := oas.AuditSsoProviderCreated
 		if !created {
 			action, details["fields"] = oas.AuditSsoProviderUpdated, fields
+		} else if cur.Protocol != nil {
+			details["replaced"] = *cur.Protocol
 		}
 		if err := s.audit(ctx, q, p, action, oas.AuditTargetSso, cur.ID, details); err != nil {
 			return err
@@ -196,31 +213,172 @@ func (s *Server) SetSsoOidcProvider(ctx context.Context, req oas.SetSsoOidcProvi
 }
 
 func (s *Server) DeleteSsoOidcProvider(ctx context.Context, _ oas.DeleteSsoOidcProviderRequestObject) (oas.DeleteSsoOidcProviderResponseObject, error) {
+	if err := s.deleteSSOProvider(ctx, protocolOIDC); err != nil {
+		return nil, err
+	}
+	return oas.DeleteSsoOidcProvider204Response{}, nil
+}
+
+func (s *Server) DeleteSsoSamlProvider(ctx context.Context, _ oas.DeleteSsoSamlProviderRequestObject) (oas.DeleteSsoSamlProviderResponseObject, error) {
+	if err := s.deleteSSOProvider(ctx, protocolSAML); err != nil {
+		return nil, err
+	}
+	return oas.DeleteSsoSamlProvider204Response{}, nil
+}
+
+func (s *Server) deleteSSOProvider(ctx context.Context, protocol string) error {
+	p := principalFrom(ctx)
+	if err := requireOwner(p); err != nil {
+		return err
+	}
+	return s.st.InTx(ctx, func(q *store.Queries) error {
+		set, err := q.ClearSsoProvider(ctx, store.ClearSsoProviderParams{WorkspaceID: p.workspaceID, Protocol: &protocol, Now: s.now()})
+		if store.IsNotFound(err) {
+			return errNotFound
+		}
+		if err != nil {
+			return err
+		}
+		return s.audit(ctx, q, p, oas.AuditSsoProviderDeleted, oas.AuditTargetSso, set.ID, auditDetails{"protocol": protocol})
+	})
+}
+
+func (s *Server) SetSsoSamlProvider(ctx context.Context, req oas.SetSsoSamlProviderRequestObject) (oas.SetSsoSamlProviderResponseObject, error) {
 	p := principalFrom(ctx)
 	if err := requireOwner(p); err != nil {
 		return nil, err
 	}
-	err := s.st.InTx(ctx, func(q *store.Queries) error {
-		cur, err := q.GetSsoSettings(ctx, p.workspaceID)
-		if store.IsNotFound(err) {
-			return errNotFound
+	b := req.Body
+	if b.MetadataUrl != nil && b.MetadataXml != nil {
+		return nil, errValidation("give metadata_url or metadata_xml, not both")
+	}
+	var metadataURL *string
+	if b.MetadataUrl != nil {
+		v := strings.TrimSpace(*b.MetadataUrl)
+		u, err := url.Parse(v)
+		if err != nil || len(v) > 2000 || u.Host == "" || u.User != nil || u.Fragment != "" ||
+			(u.Scheme != "https" && !(u.Scheme == "http" && s.webhooks.AllowPrivate)) {
+			return nil, errValidation("metadata_url must be an https URL without credentials or fragment")
 		}
+		metadataURL = &v
+	}
+	var emailAttr *string
+	if b.EmailAttribute != nil {
+		if v := strings.TrimSpace(*b.EmailAttribute); v != "" {
+			if len(v) > 200 {
+				return nil, errValidation("email_attribute is longer than 200 characters")
+			}
+			emailAttr = &v
+		}
+	}
+	groupsAttr := ssoDefaultGroups
+	if b.GroupsAttribute != nil {
+		if v := strings.TrimSpace(*b.GroupsAttribute); v != "" {
+			if len(v) > 100 {
+				return nil, errValidation("groups_attribute is longer than 100 characters")
+			}
+			groupsAttr = v
+		}
+	}
+	groups, err := cleanList(b.AllowedGroups, 50, 200, "allowed_groups", nil)
+	if err != nil {
+		return nil, err
+	}
+	cur, err := s.st.GetSsoSettings(ctx, p.workspaceID)
+	if err != nil && !store.IsNotFound(err) {
+		return nil, err
+	}
+	keep := b.MetadataUrl == nil && b.MetadataXml == nil
+	if keep {
+		if deref(cur.Protocol) != protocolSAML {
+			return nil, errValidation("metadata_url or metadata_xml is required")
+		}
+		metadataURL = cur.SamlMetadataUrl
+	}
+	var idp samlIdP
+	var fetchedAt *time.Time
+	switch {
+	case metadataURL != nil:
+		if idp, err = s.fetchIdPMetadata(ctx, *metadataURL); err != nil {
+			return nil, errSSOMetadata(err.Error())
+		}
+		fetchedAt = new(s.now())
+	case b.MetadataXml != nil:
+		if idp, err = s.parseIdPMetadata([]byte(*b.MetadataXml)); err != nil {
+			return nil, errSSOMetadata(err.Error())
+		}
+	default:
+		idp = samlIdP{entityID: deref(cur.SamlEntityID), ssoURL: deref(cur.SamlSsoUrl), certs: cur.SamlCertificates}
+	}
+	now := s.now()
+	var out oas.SsoSettings
+	err = s.st.InTx(ctx, func(q *store.Queries) error {
+		cur, err := q.LockSsoSettings(ctx, store.LockSsoSettingsParams{WorkspaceID: p.workspaceID, ID: newID(), Now: now})
 		if err != nil {
 			return err
 		}
-		set, err := q.ClearSsoProvider(ctx, store.ClearSsoProviderParams{WorkspaceID: p.workspaceID, Now: s.now()})
-		if store.IsNotFound(err) {
-			return errNotFound
+		if keep && deref(cur.Protocol) != protocolSAML {
+			return errValidation("metadata_url or metadata_xml is required")
 		}
-		if err != nil {
+		created := deref(cur.Protocol) != protocolSAML
+		var fields []string
+		if deref(cur.SamlEntityID) != idp.entityID {
+			fields = append(fields, "entity_id")
+		}
+		if deref(cur.SamlSsoUrl) != idp.ssoURL {
+			fields = append(fields, "sso_url")
+		}
+		if !slices.EqualFunc(cur.SamlCertificates, idp.certs, bytes.Equal) {
+			fields = append(fields, "certificates")
+		}
+		if deref(cur.SamlMetadataUrl) != deref(metadataURL) {
+			fields = append(fields, "metadata_url")
+		}
+		if deref(cur.SamlEmailAttribute) != deref(emailAttr) {
+			fields = append(fields, "email_attribute")
+		}
+		if cur.GroupsClaim != groupsAttr {
+			fields = append(fields, "groups_attribute")
+		}
+		if !slices.Equal(cur.AllowedGroups, groups) {
+			fields = append(fields, "allowed_groups")
+		}
+		if fetchedAt == nil && metadataURL != nil {
+			fetchedAt = cur.SamlMetadataAt
+		}
+		if _, err := q.SaveSsoSaml(ctx, store.SaveSsoSamlParams{
+			WorkspaceID: p.workspaceID, EntityID: &idp.entityID, SsoUrl: &idp.ssoURL, Certificates: idp.certs, MetadataUrl: metadataURL,
+			MetadataAt: fetchedAt, EmailAttribute: emailAttr, GroupsClaim: groupsAttr, AllowedGroups: groups, Now: now,
+		}); err != nil {
 			return err
 		}
-		return s.audit(ctx, q, p, oas.AuditSsoProviderDeleted, oas.AuditTargetSso, set.ID, auditDetails{"protocol": deref(cur.Protocol)})
+		if !created && len(fields) == 0 {
+			out, err = s.ssoSettingsBody(ctx, q, p.workspaceID)
+			return err
+		}
+		details := auditDetails{"protocol": protocolSAML, "entity_id": idp.entityID}
+		if metadataURL != nil {
+			details["metadata_host"] = urlHost(*metadataURL)
+		}
+		action := oas.AuditSsoProviderCreated
+		if !created {
+			action, details["fields"] = oas.AuditSsoProviderUpdated, fields
+		} else if cur.Protocol != nil {
+			details["replaced"] = *cur.Protocol
+		}
+		if err := s.audit(ctx, q, p, action, oas.AuditTargetSso, cur.ID, details); err != nil {
+			return err
+		}
+		out, err = s.ssoSettingsBody(ctx, q, p.workspaceID)
+		return err
 	})
 	if err != nil {
 		return nil, err
 	}
-	return oas.DeleteSsoOidcProvider204Response{}, nil
+	if len(idp.warnings) > 0 {
+		out.Warnings = &idp.warnings
+	}
+	return oas.SetSsoSamlProvider200JSONResponse(out), nil
 }
 
 func (s *Server) UpdateSsoSettings(ctx context.Context, req oas.UpdateSsoSettingsRequestObject) (oas.UpdateSsoSettingsResponseObject, error) {

@@ -9,14 +9,37 @@ RETURNING *;
 
 -- name: SaveSsoOidc :one
 UPDATE sso_settings SET protocol = 'oidc', oidc_issuer = @issuer, oidc_client_id = @client_id, oidc_client_secret = @client_secret,
-    oidc_scopes = @scopes, groups_claim = @groups_claim, allowed_groups = @allowed_groups, updated_at = @now
+    oidc_scopes = @scopes, groups_claim = @groups_claim, allowed_groups = @allowed_groups,
+    saml_entity_id = NULL, saml_sso_url = NULL, saml_certificates = '{}', saml_metadata_url = NULL, saml_metadata_at = NULL, saml_metadata_tried_at = NULL,
+    saml_email_attribute = NULL, updated_at = @now
 WHERE workspace_id = @workspace_id
 RETURNING *;
 
+-- name: SaveSsoSaml :one
+UPDATE sso_settings SET protocol = 'saml', saml_entity_id = @entity_id, saml_sso_url = @sso_url, saml_certificates = @certificates,
+    saml_metadata_url = sqlc.narg(metadata_url), saml_metadata_at = sqlc.narg(metadata_at), saml_metadata_tried_at = sqlc.narg(metadata_at), saml_email_attribute = sqlc.narg(email_attribute),
+    groups_claim = @groups_claim, allowed_groups = @allowed_groups,
+    oidc_issuer = NULL, oidc_client_id = NULL, oidc_client_secret = NULL, oidc_scopes = '{}', updated_at = @now
+WHERE workspace_id = @workspace_id
+RETURNING *;
+
+-- A refresh applies only to the metadata it was fetched for: a change made meanwhile wins.
+-- name: RefreshSsoSamlMetadata :one
+UPDATE sso_settings SET saml_entity_id = @entity_id, saml_sso_url = @sso_url, saml_certificates = @certificates,
+    saml_metadata_at = @now, saml_metadata_tried_at = @now, updated_at = CASE WHEN @changed::boolean THEN @now ELSE updated_at END
+WHERE workspace_id = @workspace_id AND id = @id AND protocol = 'saml' AND saml_metadata_url = @metadata_url
+RETURNING *;
+
+-- name: MarkSamlMetadataTried :exec
+UPDATE sso_settings SET saml_metadata_tried_at = @now
+WHERE workspace_id = @workspace_id AND id = @id AND protocol = 'saml' AND saml_metadata_url = @metadata_url;
+
 -- name: ClearSsoProvider :one
 UPDATE sso_settings SET protocol = NULL, oidc_issuer = NULL, oidc_client_id = NULL, oidc_client_secret = NULL,
-    oidc_scopes = '{}', groups_claim = 'groups', allowed_groups = '{}', sso_required = false, updated_at = @now
-WHERE workspace_id = @workspace_id AND protocol IS NOT NULL
+    oidc_scopes = '{}', groups_claim = 'groups', allowed_groups = '{}', sso_required = false,
+    saml_entity_id = NULL, saml_sso_url = NULL, saml_certificates = '{}', saml_metadata_url = NULL, saml_metadata_at = NULL, saml_metadata_tried_at = NULL,
+    saml_email_attribute = NULL, updated_at = @now
+WHERE workspace_id = @workspace_id AND protocol = @protocol
 RETURNING *;
 
 -- name: SaveSsoRules :one
@@ -93,3 +116,11 @@ RETURNING *;
 
 -- name: DeleteExpiredSsoLogins :exec
 DELETE FROM sso_logins WHERE expires_at <= @now;
+
+-- name: DeleteExpiredSamlAssertions :exec
+DELETE FROM saml_assertions WHERE workspace_id = @workspace_id AND expires_at <= @now;
+
+-- name: RecordSamlAssertion :execrows
+INSERT INTO saml_assertions (workspace_id, id_hash, expires_at)
+VALUES (@workspace_id, @id_hash, @expires_at)
+ON CONFLICT DO NOTHING;

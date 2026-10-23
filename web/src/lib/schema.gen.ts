@@ -191,22 +191,35 @@ export interface paths {
          * Start a single sign-on
          * @description The sign-in page asks for the e-mail address first and sends it here. When the address's
          *     domain is claimed by a workspace that has an identity provider, the answer carries
-         *     `authorization_url`, the provider's sign-in page (authorization code with PKCE, `state`
-         *     and `nonce`, `login_hint` set to the address), and sets the `yuva_sso` cookie that binds
-         *     the sign-in to this browser for 10 minutes; the page sends the browser there. Otherwise
-         *     `sso` is `false` and the page goes on with a code or a passkey.
+         *     `authorization_url`, the provider's sign-in page, and sets a cookie that binds the sign-in
+         *     to this browser for 10 minutes; the page sends the browser there. Otherwise `sso` is
+         *     `false` and the page goes on with a code or a passkey.
          *
-         *     The provider sends the browser back to `GET /auth/sso/callback` (outside this contract),
-         *     which checks the cookie and `state`, exchanges the code, verifies the `id_token` (signature
-         *     against the provider's keys, `iss`, `aud`, `exp`, `nonce`) and requires a verified e-mail in a
-         *     domain the workspace has claimed. It then redirects to `return_to` (or `/`) with the
+         *     With OpenID Connect the URL is an authorization request (code with PKCE, `state` and
+         *     `nonce`, `login_hint` set to the address) and the cookie `yuva_sso`. With SAML it is the
+         *     identity provider's single sign-on URL with an `AuthnRequest` (HTTP-Redirect binding,
+         *     NameID format `emailAddress`) and the cookie `yuva_saml`, which holds the request's id. The
+         *     provider posts its answer to `POST /auth/saml/acs` (HTTP-POST binding, outside this
+         *     contract), which needs the cookie to equal the response's `InResponseTo`, takes the
+         *     stored request once, and requires a signed Response or Assertion from one of the
+         *     configured certificates, exactly one assertion, `Destination` and `Recipient` equal to
+         *     `acs_url`, `Audience` equal to `entity_id` (both in `saml_sp` of `GET /v1/sso`), the
+         *     validity window (3 minutes of clock skew, issued at most 90 seconds ago) and an assertion
+         *     id not seen before. Responses the server did not ask for (identity-provider-initiated) are
+         *     refused. The e-mail address is the NameID, or the configured attribute.
+         *
+         *     With OpenID Connect the provider sends the browser back to `GET /auth/sso/callback`
+         *     (outside this contract), which checks the cookie and `state`, exchanges the code, verifies
+         *     the `id_token` (signature against the provider's keys, `iss`, `aud`, `exp`, `nonce`) and
+         *     requires a verified e-mail. Both protocols require the address to be in a domain the
+         *     workspace has claimed. The browser is then redirected to `return_to` (or `/`) with the
          *     session cookie set, or to `/sign-in?sso_error=<code>` with `code` one of `expired`,
-         *     `denied`, `failed`, `invalid_token`, `email_unverified`, `domain_not_claimed`,
-         *     `group_not_allowed`, `not_member`.
+         *     `denied`, `failed`, `invalid_token` (for SAML: the response or assertion was refused),
+         *     `email_unverified`, `domain_not_claimed`, `group_not_allowed`, `not_member`.
          *
          *     A domain's claim is public (its DNS record is), so answering whether it has single
          *     sign-on reveals nothing about people. 30 requests a minute per client IP address (`429`).
-         *     `502 sso_unavailable` when the provider's discovery document cannot be read.
+         *     `502 sso_unavailable` when the OpenID Connect provider's discovery document cannot be read.
          */
         post: operations["startSsoSignIn"];
         delete?: never;
@@ -871,10 +884,51 @@ export interface paths {
         post?: never;
         /**
          * Remove the OpenID Connect provider
-         * @description Removes the provider and turns `sso_required` off; claimed domains stay. Owners only,
-         *     with a member session; recorded as `sso.provider_deleted`.
+         * @description Removes the OpenID Connect provider (`404` when the workspace uses SAML or none) and turns
+         *     `sso_required` off; claimed domains stay. Owners only, with a member session; recorded as
+         *     `sso.provider_deleted`.
          */
         delete: operations["deleteSsoOidcProvider"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/sso/saml": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Set the SAML identity provider
+         * @description Saves a SAML 2.0 identity provider from its metadata: `metadata_url` (fetched now, through
+         *     the same address checks as the OpenID Connect discovery, and again at a sign-in when the
+         *     copy is more than an hour old, so rotated certificates are picked up; after a failed
+         *     fetch the stored copy is used and the next try waits 15 minutes) or `metadata_xml`
+         *     (pasted; paste it again when the certificate rotates). The metadata must be one
+         *     `EntityDescriptor` with an `IDPSSODescriptor` that has a `SingleSignOnService` with the
+         *     HTTP-Redirect binding and at least one signing certificate valid now; DTDs are refused.
+         *     `400 sso_metadata_failed` with the reason otherwise. Expired certificates are left out
+         *     and named in `warnings`. Leave both out to keep the stored
+         *     metadata (fetched again when it came from a URL); one is required the first time. A
+         *     workspace has one provider: saving SAML replaces an OpenID Connect provider (and the
+         *     other way round). Register `saml_sp` from `GET /v1/sso` at the provider: entity id,
+         *     ACS URL (HTTP-POST), NameID format `emailAddress`, or load its `metadata_url`. Owners
+         *     only, with a member session; recorded as `sso.provider_created` (also when it replaces
+         *     the other protocol) or `sso.provider_updated`.
+         */
+        put: operations["setSsoSamlProvider"];
+        post?: never;
+        /**
+         * Remove the SAML identity provider
+         * @description Removes the SAML provider (`404` when the workspace uses OpenID Connect or none) and turns
+         *     `sso_required` off; claimed domains stay. Owners only, with a member session; recorded as
+         *     `sso.provider_deleted`.
+         */
+        delete: operations["deleteSsoSamlProvider"];
         options?: never;
         head?: never;
         patch?: never;
@@ -11469,16 +11523,23 @@ export interface components {
          *     - `workspace.slack_connected`: `team_id`, `team_name`; `workspace.slack_disconnected`:
          *       `team_id`, and `reason` `uninstalled` (by `system`) when Slack reported the app removed.
          *     - `member.slack_linked`: `slack_user_id`; `member.slack_unlinked`: `slack_user_id`.
-         *     - `sso.provider_created`, `sso.provider_updated`: `protocol`, `issuer_host`, and for an update
-         *       `fields` among `issuer`, `client_id`, `client_secret`, `scopes`, `groups_claim` and
-         *       `allowed_groups` (never the secret). `sso.provider_deleted`: `protocol`.
+         *     - `sso.provider_created`, `sso.provider_updated`: `protocol`, and for OpenID Connect
+         *       `issuer_host` and for an update `fields` among `issuer`, `client_id`, `client_secret`,
+         *       `scopes`, `groups_claim` and `allowed_groups` (never the secret); for SAML `entity_id`,
+         *       `metadata_host` when the metadata came from a URL, and for an update `fields` among
+         *       `entity_id`, `sso_url`, `certificates`, `metadata_url`, `email_attribute`,
+         *       `groups_attribute` and `allowed_groups`. `sso.provider_created` names `replaced` (the
+         *       other protocol) when it replaced a provider. A change found when SAML metadata is
+         *       fetched again at a sign-in is `sso.provider_updated` by `system` with `via:
+         *       metadata_refresh`. `sso.provider_deleted`: `protocol`.
          *     - `sso.settings_changed`: `fields`, and `from`/`to` objects with the changed values of
          *       `sso_required`, `jit` and `jit_role`.
          *     - `sso.signed_in`: `protocol`, `email`, and `joined` (`jit` or `invite`) when the sign-in
          *       made the person a member; the actor is the member, or `system` when the person is not one.
          *     - `sso.sign_in_refused`: `protocol`, `reason` (`failed` when the code exchange failed,
-         *       `invalid_token`, `email_unverified`, `domain_not_claimed`, `group_not_allowed`,
-         *       `not_member`), `email` when known, `detail` for `failed` and `invalid_token`; the actor
+         *       `invalid_token` (for SAML: the response or assertion was refused), `email_unverified`,
+         *       `domain_not_claimed`, `group_not_allowed`, `not_member`), `email` when known, `detail`
+         *       for `failed` and `invalid_token`; the actor
          *       is the member when the person is one, else `system`. Requests refused with
          *       `sso_required` are not recorded.
          *     - `sso_domain.added`, `sso_domain.verified`, `sso_domain.deleted`: `domain`.
@@ -11537,7 +11598,8 @@ export interface components {
             sso: boolean;
             /**
              * Format: uri
-             * @description The provider's sign-in page to send the browser to, when `sso` is true.
+             * @description The provider's sign-in page to send the browser to, when `sso` is true: an OpenID
+             *     Connect authorization request or a SAML `AuthnRequest` (HTTP-Redirect binding).
              */
             authorization_url?: string;
             /**
@@ -11547,7 +11609,7 @@ export interface components {
             required?: boolean;
         };
         /** @enum {string} */
-        SsoProtocol: "oidc";
+        SsoProtocol: "oidc" | "saml";
         /** @enum {string} */
         SsoJitRole: "admin" | "agent";
         SsoOidcProvider: {
@@ -11578,6 +11640,81 @@ export interface components {
             groups_claim?: string;
             allowed_groups?: string[];
         };
+        SsoSamlCertificate: {
+            subject: string;
+            /** Format: date-time */
+            not_before: string;
+            /**
+             * Format: date-time
+             * @description Signatures are refused outside the certificate's validity.
+             */
+            not_after: string;
+            /** @description The certificate's SHA-256 fingerprint, upper-case hex pairs joined by `:`. */
+            sha256: string;
+        };
+        SsoSamlProvider: {
+            /** @description The identity provider's entity id; assertions must name it as issuer. */
+            entity_id: string;
+            /**
+             * Format: uri
+             * @description Its single sign-on URL for the HTTP-Redirect binding.
+             */
+            sso_url: string;
+            /** @description The signing certificates; a signature by any other key is refused. */
+            certificates: components["schemas"]["SsoSamlCertificate"][];
+            /**
+             * Format: uri
+             * @description Where the metadata is fetched from; absent when it was pasted.
+             */
+            metadata_url?: string;
+            /**
+             * Format: date-time
+             * @description When the metadata was last read from `metadata_url`.
+             */
+            metadata_fetched_at?: string;
+            /** @description The attribute holding the e-mail address; absent, the NameID is used. */
+            email_attribute?: string;
+            /** @description The attribute holding the person's groups. */
+            groups_attribute: string;
+            /** @description When not empty, only people in one of these groups sign in. */
+            allowed_groups: string[];
+            /** Format: date-time */
+            updated_at: string;
+        };
+        SsoSamlInput: {
+            /**
+             * Format: uri
+             * @description The identity provider's metadata URL (https). Give this or `metadata_xml`.
+             */
+            metadata_url?: string;
+            /** @description The identity provider's metadata document, pasted. */
+            metadata_xml?: string;
+            /**
+             * @description An attribute (by `Name` or `FriendlyName`) holding the e-mail address. Absent or empty,
+             *     the NameID is used, which must then be the address.
+             */
+            email_attribute?: string;
+            /** @description Absent or empty, `groups`. */
+            groups_attribute?: string;
+            allowed_groups?: string[];
+        };
+        /** @description What to register at a SAML identity provider for this workspace. */
+        SsoSamlServiceProvider: {
+            /** @description Yuva's entity id (the audience) for this workspace; the same as `metadata_url`. */
+            entity_id: string;
+            /**
+             * Format: uri
+             * @description The assertion consumer service, HTTP-POST binding.
+             */
+            acs_url: string;
+            /**
+             * Format: uri
+             * @description Yuva's service provider metadata for this workspace.
+             */
+            metadata_url: string;
+            /** @description `urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress`. */
+            name_id_format: string;
+        };
         /** @enum {string} */
         SsoDomainState: "pending" | "verified";
         SsoDomain: {
@@ -11604,15 +11741,22 @@ export interface components {
         SsoSettings: {
             protocol?: components["schemas"]["SsoProtocol"];
             oidc?: components["schemas"]["SsoOidcProvider"];
+            saml?: components["schemas"]["SsoSamlProvider"];
             domains: components["schemas"]["SsoDomain"][];
             sso_required: boolean;
             jit: boolean;
             jit_role: components["schemas"]["SsoJitRole"];
             /**
              * Format: uri
-             * @description The redirect URI to register at the identity provider.
+             * @description The redirect URI to register at an OpenID Connect provider.
              */
             redirect_uri: string;
+            saml_sp: components["schemas"]["SsoSamlServiceProvider"];
+            /**
+             * @description Only in the answer to `PUT /v1/sso/saml`: what was left out of the metadata, such as
+             *     signing certificates past their validity, which are not stored.
+             */
+            warnings?: string[];
         };
         SsoSettingsUpdate: {
             sso_required?: boolean;
@@ -24460,7 +24604,11 @@ export interface operations {
             /** @description Whether the address signs in through its workspace's identity provider. */
             200: {
                 headers: {
-                    /** @description `yuva_sso`, HttpOnly, SameSite=Lax, path `/auth/sso`, when `sso` is true. */
+                    /**
+                     * @description When `sso` is true: `yuva_sso` (OpenID Connect; HttpOnly, SameSite=Lax, path
+                     *     `/auth/sso`) or `yuva_saml` (SAML; HttpOnly, path `/auth/saml`, SameSite=None and
+                     *     Secure on https so the provider's cross-site POST carries it).
+                     */
                     "Set-Cookie"?: string;
                     [name: string]: unknown;
                 };
@@ -25432,6 +25580,60 @@ export interface operations {
         };
     };
     deleteSsoOidcProvider: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Removed. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    setSsoSamlProvider: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SsoSamlInput"];
+            };
+        };
+        responses: {
+            /** @description The settings. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SsoSettings"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+        };
+    };
+    deleteSsoSamlProvider: {
         parameters: {
             query?: never;
             header?: {

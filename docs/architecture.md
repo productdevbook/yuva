@@ -3633,9 +3633,9 @@ appear in help search. Writing, rendering and translating are M20's.
 
 ### Single sign-on (M33)
 
-Members of a workspace can sign in through the workspace's identity provider. OpenID Connect comes
-first (#160); SAML 2.0 (#161) uses the same domain claims, rules and membership, adding its own
-columns to `sso_settings` and `protocol` `saml`.
+Members of a workspace can sign in through the workspace's identity provider, with OpenID Connect
+(#160) or SAML 2.0 (#161). Both use the same settings row, domain claims, rules, membership, sessions
+and audit; `sso_settings.protocol` (`oidc` or `saml`) says which one, so a workspace has one provider.
 
 - **Settings** (migration 00099): one `sso_settings` row per workspace (created on first change)
   holds the provider (`protocol`, the issuer, client id, the client secret sealed under
@@ -3689,6 +3689,39 @@ columns to `sso_settings` and `protocol` `saml`.
   before the rule was on) is refused the same way until it is approved again through the provider.
   API keys are not member sessions and are not affected. Removing the provider or the last verified
   domain turns the rule off.
+- **SAML 2.0** (migration 00105, #161): service-provider-initiated only, with crewjam/saml and
+  goxmldsig. `PUT /v1/sso/saml` takes the identity provider's metadata by URL (fetched through the
+  outbound checks below) or pasted, refuses any DTD or other directive, and stores its entity id, the
+  HTTP-Redirect single sign-on URL and the signing certificates (DER, at most 10) in the `saml_*`
+  columns, clearing the OIDC ones (and `PUT /v1/sso/oidc` clears the SAML ones); `DELETE
+  /v1/sso/saml` and `DELETE /v1/sso/oidc` remove only their own protocol. Metadata from a URL is
+  fetched again when a sign-in starts and the copy is over an hour old (a certificate change is
+  `sso.provider_updated` by `system`, `via: metadata_refresh`); a failed fetch keeps the stored copy
+  and is recorded in `saml_metadata_tried_at`, so the next try waits 15 minutes and sign-ins do not
+  wait on a host that is down. Certificates past their `NotAfter` are left out (named in `warnings`
+  of the `PUT` answer); metadata without a certificate valid now is refused.
+  Yuva's entity id and audience per workspace is `<public URL>/auth/saml/metadata/<workspace id>`,
+  which serves the SP metadata (ACS with HTTP-POST only, NameID format `emailAddress`, no keys: Yuva
+  neither signs requests nor takes encrypted assertions); the ACS is `POST /auth/saml/acs` for every
+  workspace. `POST /v1/auth/sso` answers the `AuthnRequest` redirect URL and sets `yuva_saml` (the
+  request id, HttpOnly, path `/auth/saml`, SameSite=None and Secure on https because the identity
+  provider's form POST is cross-site, Lax otherwise); the `sso_logins` row is keyed by the request
+  id's hash (nonce and verifier empty). The ACS reads at most 256 KiB, refuses directives, needs a
+  non-empty `InResponseTo` equal to the cookie (unsolicited and identity-provider-initiated
+  responses fail as `expired`, unaudited, since nothing ties them to a workspace yet), takes the
+  login row once, then requires a `Response` with `Destination` equal to the ACS, exactly one plain
+  `Assertion` (no `EncryptedAssertion`), bearer subject confirmations with data and an audience
+  restriction, before crewjam verifies the enveloped signature of the Response or the Assertion
+  against the stored certificates only (a signature must reference the element that is consumed),
+  issuer, `InResponseTo` on the response and every confirmation, `Recipient`, audience, validity
+  (`MaxClockSkew` 180 s, `MaxIssueDelay` 90 s). The assertion id is then recorded in
+  `saml_assertions` (per workspace, kept until the assertion could no longer be accepted, at least
+  10 minutes); a second use is refused. The address is the NameID or the configured
+  `saml_email_attribute` (by `Name` or `FriendlyName`), groups the attribute named by
+  `groups_claim`; SAML has no `email_verified`, the domain claim is the guard. From there the sign-in
+  is the OIDC one (claimed domain, groups, invites, JIT, `sso` session naming the settings row,
+  audit with `protocol: saml`). Refusals of a verified workspace's response are `invalid_token` with
+  the check in `detail`; a non-success status is `denied`.
 - **Outbound calls** to the issuer (discovery, keys, token) go through the webhook address checks
   (`webhook.Dial`): never link-local or metadata addresses, private ones only with
   `YUVA_WEBHOOK_ALLOW_PRIVATE`, no redirects, 10-second timeout, answers read up to 1 MiB.
@@ -4060,7 +4093,8 @@ they belong to no channel. (#136, migration 00095)
   - Single sign-on (M33): a sign-in finds the workspace whose identity provider an address uses by its
     verified `sso_domains.domain`, unique across the server, before any workspace is known (when
     starting a sign-in), and the
-    callback finds its `sso_logins` row by the state's hash alone; adding or verifying a claim checks
+    OIDC callback and the SAML ACS find their `sso_logins` row by the hash of the state or request id
+    alone; adding or verifying a claim checks
     the verified domains of every workspace. Everything after those lookups is scoped by the workspace
     they returned.
   - The person-level identity tables `people`, `sessions`, `login_codes`, `passkeys`,

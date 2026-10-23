@@ -254,6 +254,16 @@ func (s *Server) StartSsoSignIn(ctx context.Context, req oas.StartSsoSignInReque
 	if set == nil {
 		return oas.StartSsoSignIn200JSONResponse{Body: oas.SsoStart{Sso: false}}, nil
 	}
+	if deref(set.Protocol) == protocolSAML {
+		target, c, err := s.startSAML(ctx, *set, safeReturnTo(req.Body.ReturnTo))
+		if err != nil {
+			return nil, err
+		}
+		return oas.StartSsoSignIn200JSONResponse{
+			Body:    oas.SsoStart{Sso: true, AuthorizationUrl: &target, Required: new(set.SsoRequired)},
+			Headers: oas.StartSsoSignIn200ResponseHeaders{SetCookie: &c},
+		}, nil
+	}
 	p, err := s.oidcProvider(ctx, deref(set.OidcIssuer), false)
 	if err != nil {
 		s.log.WarnContext(ctx, "sso discovery", "workspace", set.WorkspaceID, "error", err)
@@ -374,12 +384,7 @@ func (s *Server) finishSSO(ctx context.Context, login store.SsoLogin, authCode s
 		return "", "", err
 	}
 	refuse := func(email, reason, detail string) (string, string, error) {
-		if err := s.st.InTx(ctx, func(q *store.Queries) error {
-			return s.auditSSORefusal(ctx, q, set, email, reason, detail)
-		}); err != nil {
-			return "", "", err
-		}
-		return "", reason, nil
+		return s.refuseSSO(ctx, set, email, reason, detail)
 	}
 	clientSecret, err := s.secrets.Open(set.OidcClientSecret, ssoSecretContext(set.WorkspaceID, set.ID))
 	if err != nil {
@@ -427,15 +432,36 @@ func (s *Server) finishSSO(ctx context.Context, login store.SsoLogin, authCode s
 	if !claimTrue(claims.EmailVerified) && !claimTrue(claims.EntraVerified) {
 		return refuse(email, ssoFailUnverified, "")
 	}
+	return s.completeSSO(ctx, set, ssoIdentity{email: email, name: claims.Name, locale: claims.Locale, groups: claimStrings(all[set.GroupsClaim])})
+}
+
+func (s *Server) refuseSSO(ctx context.Context, set store.SsoSetting, email, reason, detail string) (string, string, error) {
+	if err := s.st.InTx(ctx, func(q *store.Queries) error {
+		return s.auditSSORefusal(ctx, q, set, email, reason, detail)
+	}); err != nil {
+		return "", "", err
+	}
+	return "", reason, nil
+}
+
+type ssoIdentity struct {
+	email, name, locale string
+	groups              []string
+}
+
+// completeSSO is the sign-in after either protocol verified who the person is: the address must be
+// in a domain this workspace verified, then invites, JIT and the session.
+func (s *Server) completeSSO(ctx context.Context, set store.SsoSetting, id ssoIdentity) (string, string, error) {
+	email, protocol := id.email, deref(set.Protocol)
 	ok, err := s.st.SsoDomainVerifiedIn(ctx, store.SsoDomainVerifiedInParams{WorkspaceID: set.WorkspaceID, Domain: emailDomain(email)})
 	if err != nil {
 		return "", "", err
 	}
 	if !ok {
-		return refuse(email, ssoFailUnclaimed, "")
+		return s.refuseSSO(ctx, set, email, ssoFailUnclaimed, "")
 	}
-	if len(set.AllowedGroups) > 0 && !slices.ContainsFunc(claimStrings(all[set.GroupsClaim]), func(g string) bool { return slices.Contains(set.AllowedGroups, g) }) {
-		return refuse(email, ssoFailGroup, "")
+	if len(set.AllowedGroups) > 0 && !slices.ContainsFunc(id.groups, func(g string) bool { return slices.Contains(set.AllowedGroups, g) }) {
+		return s.refuseSSO(ctx, set, email, ssoFailGroup, "")
 	}
 	now := s.now()
 	var cookie string
@@ -455,7 +481,7 @@ func (s *Server) finishSSO(ctx context.Context, login store.SsoLogin, authCode s
 		if err != nil {
 			return err
 		}
-		details := auditDetails{"protocol": protocolOIDC, "email": email}
+		details := auditDetails{"protocol": protocol, "email": email}
 		isMember := wasMember
 		if found && !wasMember {
 			_, err := q.GetMemberByPerson(ctx, store.GetMemberByPersonParams{WorkspaceID: set.WorkspaceID, PersonID: personID})
@@ -469,10 +495,10 @@ func (s *Server) finishSSO(ctx context.Context, login store.SsoLogin, authCode s
 		if !isMember && set.Jit {
 			if !found {
 				locale := string(oas.En)
-				if validLocale(oas.Locale(claims.Locale)) {
-					locale = claims.Locale
+				if validLocale(oas.Locale(id.locale)) {
+					locale = id.locale
 				}
-				pe, err := createPerson(ctx, q, email, truncateRunes(strings.TrimSpace(claims.Name), 200), locale)
+				pe, err := createPerson(ctx, q, email, truncateRunes(strings.TrimSpace(id.name), 200), locale)
 				if err != nil {
 					return err
 				}
