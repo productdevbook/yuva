@@ -947,6 +947,7 @@ const (
 	MessagesWrite       ApiKeyScope = "messages:write"
 	MigrationsManage    ApiKeyScope = "migrations:manage"
 	NotesWrite          ApiKeyScope = "notes:write"
+	ReportsRead         ApiKeyScope = "reports:read"
 	RoadmapRead         ApiKeyScope = "roadmap:read"
 	RoadmapStage        ApiKeyScope = "roadmap:stage"
 	RoadmapWrite        ApiKeyScope = "roadmap:write"
@@ -1031,6 +1032,8 @@ func (e ApiKeyScope) Valid() bool {
 	case MigrationsManage:
 		return true
 	case NotesWrite:
+		return true
+	case ReportsRead:
 		return true
 	case RoadmapRead:
 		return true
@@ -5934,6 +5937,90 @@ func (e RealtimeResyncRequiredType) Valid() bool {
 	}
 }
 
+// Defines values for ReportGranularity.
+const (
+	ReportGranularityDay   ReportGranularity = "day"
+	ReportGranularityMonth ReportGranularity = "month"
+	ReportGranularityWeek  ReportGranularity = "week"
+)
+
+// Valid indicates whether the value is a known member of the ReportGranularity enum.
+func (e ReportGranularity) Valid() bool {
+	switch e {
+	case ReportGranularityDay:
+		return true
+	case ReportGranularityMonth:
+		return true
+	case ReportGranularityWeek:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ReportGroupBy.
+const (
+	ReportGroupByChannel ReportGroupBy = "channel"
+	ReportGroupByInbox   ReportGroupBy = "inbox"
+	ReportGroupByLabel   ReportGroupBy = "label"
+	ReportGroupByMember  ReportGroupBy = "member"
+	ReportGroupByTeam    ReportGroupBy = "team"
+)
+
+// Valid indicates whether the value is a known member of the ReportGroupBy enum.
+func (e ReportGroupBy) Valid() bool {
+	switch e {
+	case ReportGroupByChannel:
+		return true
+	case ReportGroupByInbox:
+		return true
+	case ReportGroupByLabel:
+		return true
+	case ReportGroupByMember:
+		return true
+	case ReportGroupByTeam:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ReportMetric.
+const (
+	ReportMetricClosed     ReportMetric = "closed"
+	ReportMetricFirstReply ReportMetric = "first_reply"
+	ReportMetricOpened     ReportMetric = "opened"
+	ReportMetricRatings    ReportMetric = "ratings"
+	ReportMetricReopened   ReportMetric = "reopened"
+	ReportMetricReplies    ReportMetric = "replies"
+	ReportMetricResolution ReportMetric = "resolution"
+	ReportMetricSla        ReportMetric = "sla"
+)
+
+// Valid indicates whether the value is a known member of the ReportMetric enum.
+func (e ReportMetric) Valid() bool {
+	switch e {
+	case ReportMetricClosed:
+		return true
+	case ReportMetricFirstReply:
+		return true
+	case ReportMetricOpened:
+		return true
+	case ReportMetricRatings:
+		return true
+	case ReportMetricReopened:
+		return true
+	case ReportMetricReplies:
+		return true
+	case ReportMetricResolution:
+		return true
+	case ReportMetricSla:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for RoadmapBoardSignalType.
 const (
 	RoadmapBoardUpdated RoadmapBoardSignalType = "roadmap.board.updated"
@@ -9590,8 +9677,9 @@ type ApiKeyList struct {
 //	    admins only; never offered to agents' tokens, refused for keys limited to inboxes. Never
 //	    implied: a key made without naming its scopes does not hold it. A rule acts on every
 //	    inbox it covers with the workspace's power.
+//	  - `reports:read`: reports and their CSV export, over the inboxes the caller can see.
 //
-// `conversations:delete`, `messages:redact`, `lists:*`, `broadcasts:*`, `migrations:manage`, `analytics:*`, `status:*`, `help:*`, `roadmap:*`, `changelog:*`, `audit:read`, `integrations:*`, `issues:write`, `fields:manage`, `views:write` and `automations:*` are never added to keys made before they existed.
+// `conversations:delete`, `messages:redact`, `lists:*`, `broadcasts:*`, `migrations:manage`, `analytics:*`, `status:*`, `help:*`, `roadmap:*`, `changelog:*`, `audit:read`, `integrations:*`, `issues:write`, `fields:manage`, `views:write`, `automations:*` and `reports:read` are never added to keys made before they existed.
 type ApiKeyScope string
 
 // ApiKeyUpdate Only the fields sent change. Scopes, inbox limit and expiry cannot change.
@@ -20509,6 +20597,104 @@ type RealtimeResyncRequired struct {
 // RealtimeResyncRequiredType defines model for RealtimeResyncRequired.Type.
 type RealtimeResyncRequiredType string
 
+// Report defines model for Report.
+type Report struct {
+	// BuiltUntil The rollups hold everything before this instant. Absent until the first rollup ran;
+	// activity after it is counted live only when it is less than a day old.
+	BuiltUntil  *time.Time         `json:"built_until,omitempty"`
+	From        openapi_types.Date `json:"from"`
+	Granularity ReportGranularity  `json:"granularity"`
+	GroupBy     *ReportGroupBy     `json:"group_by,omitempty"`
+
+	// Groups With `group_by`: each group with any figure, by `key`, the group without `key` last.
+	// Inboxes, labels, teams and members are named by id; their names come from their own
+	// endpoints.
+	Groups *[]ReportGroup `json:"groups,omitempty"`
+
+	// Metrics The metrics counted; the figures of the others are absent.
+	Metrics []ReportMetric `json:"metrics"`
+
+	// Series Every period from `from` to `to`, oldest first.
+	Series   []ReportPeriod     `json:"series"`
+	Timezone string             `json:"timezone"`
+	To       openapi_types.Date `json:"to"`
+
+	// Totals The figures of the requested metrics; the others are absent. A median or p90 is absent
+	// when there is nothing to measure.
+	Totals ReportValues `json:"totals"`
+}
+
+// ReportGranularity defines model for ReportGranularity.
+type ReportGranularity string
+
+// ReportGroup defines model for ReportGroup.
+type ReportGroup struct {
+	// Key The inbox, label, team or member id, or the channel kind. Absent for figures without
+	// a team, a member or a channel kind.
+	Key *string `json:"key,omitempty"`
+
+	// Series Every period, as in the report's `series`.
+	Series []ReportPeriod `json:"series"`
+
+	// Totals The figures of the requested metrics; the others are absent. A median or p90 is absent
+	// when there is nothing to measure.
+	Totals ReportValues `json:"totals"`
+}
+
+// ReportGroupBy defines model for ReportGroupBy.
+type ReportGroupBy string
+
+// ReportMetric `opened`, `closed`, `reopened` and `replies` are counts; `first_reply` is
+// `first_replies` with their median and p90 seconds; `resolution` is `resolutions` with
+// theirs; `sla` the targets met and breached; `ratings` good and bad.
+type ReportMetric string
+
+// ReportPeriod defines model for ReportPeriod.
+type ReportPeriod struct {
+	// Start The period's first day, never before `from` (a week or month cut by `from` starts there).
+	Start openapi_types.Date `json:"start"`
+
+	// Values The figures of the requested metrics; the others are absent. A median or p90 is absent
+	// when there is nothing to measure.
+	Values ReportValues `json:"values"`
+}
+
+// ReportRatings defines model for ReportRatings.
+type ReportRatings struct {
+	Bad  int64 `json:"bad"`
+	Good int64 `json:"good"`
+}
+
+// ReportSla defines model for ReportSla.
+type ReportSla struct {
+	FirstReply ReportSlaTarget `json:"first_reply"`
+	NextReply  ReportSlaTarget `json:"next_reply"`
+	Resolution ReportSlaTarget `json:"resolution"`
+}
+
+// ReportSlaTarget defines model for ReportSlaTarget.
+type ReportSlaTarget struct {
+	Breached int64 `json:"breached"`
+	Met      int64 `json:"met"`
+}
+
+// ReportValues The figures of the requested metrics; the others are absent. A median or p90 is absent
+// when there is nothing to measure.
+type ReportValues struct {
+	Closed                  *int64         `json:"closed,omitempty"`
+	FirstReplies            *int64         `json:"first_replies,omitempty"`
+	FirstReplyMedianSeconds *int64         `json:"first_reply_median_seconds,omitempty"`
+	FirstReplyP90Seconds    *int64         `json:"first_reply_p90_seconds,omitempty"`
+	Opened                  *int64         `json:"opened,omitempty"`
+	Ratings                 *ReportRatings `json:"ratings,omitempty"`
+	Reopened                *int64         `json:"reopened,omitempty"`
+	Replies                 *int64         `json:"replies,omitempty"`
+	ResolutionMedianSeconds *int64         `json:"resolution_median_seconds,omitempty"`
+	ResolutionP90Seconds    *int64         `json:"resolution_p90_seconds,omitempty"`
+	Resolutions             *int64         `json:"resolutions,omitempty"`
+	Sla                     *ReportSla     `json:"sla,omitempty"`
+}
+
 // RoadmapBoard defines model for RoadmapBoard.
 type RoadmapBoard struct {
 	// AnalyticsPropertyId The analytics property the public page counts cookieless page views in.
@@ -23863,6 +24049,33 @@ type PushDeviceId = uuid.UUID
 // PushSubscriptionId defines model for PushSubscriptionId.
 type PushSubscriptionId = uuid.UUID
 
+// ReportChannelKind `email`, `chat` (web widget), `app` (mobile SDKs) or `api` (server to server).
+type ReportChannelKind = ChannelKind
+
+// ReportFrom defines model for ReportFrom.
+type ReportFrom = openapi_types.Date
+
+// ReportInboxId defines model for ReportInboxId.
+type ReportInboxId = uuid.UUID
+
+// ReportLabelId defines model for ReportLabelId.
+type ReportLabelId = uuid.UUID
+
+// ReportMemberId defines model for ReportMemberId.
+type ReportMemberId = uuid.UUID
+
+// ReportMetrics defines model for ReportMetrics.
+type ReportMetrics = []ReportMetric
+
+// ReportTeamId defines model for ReportTeamId.
+type ReportTeamId = uuid.UUID
+
+// ReportTimezone Examples: Europe/Istanbul
+type ReportTimezone = string
+
+// ReportTo defines model for ReportTo.
+type ReportTo = openapi_types.Date
+
 // RoadmapBoardId defines model for RoadmapBoardId.
 type RoadmapBoardId = uuid.UUID
 
@@ -26949,6 +27162,88 @@ type ListOAuthGrantsParams struct {
 
 // RevokeOAuthGrantParams defines parameters for RevokeOAuthGrant.
 type RevokeOAuthGrantParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// GetReportParams defines parameters for GetReport.
+type GetReportParams struct {
+	// From First local day of the report, in `timezone`.
+	From ReportFrom `form:"from" json:"from"`
+
+	// To Last local day of the report, included; before the same day 13 months after `from`.
+	// Days after today are empty.
+	To ReportTo `form:"to" json:"to"`
+
+	// Timezone IANA time zone whose days, weeks and months the report uses; the panel sends the browser's.
+	Timezone *ReportTimezone `form:"timezone,omitempty" json:"timezone,omitempty"`
+
+	// Granularity Length of each period.
+	Granularity *ReportGranularity `form:"granularity,omitempty" json:"granularity,omitempty"`
+
+	// Metrics The metrics to count; all of them when absent. Repeat the parameter or give a
+	// comma-separated list.
+	Metrics *ReportMetrics `form:"metrics,omitempty" json:"metrics,omitempty"`
+
+	// GroupBy Break every figure down by this, into `groups`.
+	GroupBy *ReportGroupBy `form:"group_by,omitempty" json:"group_by,omitempty"`
+
+	// InboxId Only this inbox (`404` when the caller cannot see it).
+	InboxId *ReportInboxId `form:"inbox_id,omitempty" json:"inbox_id,omitempty"`
+
+	// ChannelKind Only conversations that started on a channel of this kind.
+	ChannelKind *ReportChannelKind `form:"channel_kind,omitempty" json:"channel_kind,omitempty"`
+
+	// LabelId Only conversations with this label (`404` for a label the workspace does not have).
+	LabelId *ReportLabelId `form:"label_id,omitempty" json:"label_id,omitempty"`
+
+	// TeamId Only the figures of this team, attributed as `group_by=team` does (`404` for a team the workspace does not have).
+	TeamId *ReportTeamId `form:"team_id,omitempty" json:"team_id,omitempty"`
+
+	// MemberId Only the figures of this member, attributed as `group_by=member` does (`404` for a member the workspace does not have).
+	MemberId *ReportMemberId `form:"member_id,omitempty" json:"member_id,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// ExportReportParams defines parameters for ExportReport.
+type ExportReportParams struct {
+	// From First local day of the report, in `timezone`.
+	From ReportFrom `form:"from" json:"from"`
+
+	// To Last local day of the report, included; before the same day 13 months after `from`.
+	// Days after today are empty.
+	To ReportTo `form:"to" json:"to"`
+
+	// Timezone IANA time zone whose days, weeks and months the report uses; the panel sends the browser's.
+	Timezone *ReportTimezone `form:"timezone,omitempty" json:"timezone,omitempty"`
+
+	// Granularity Length of each period.
+	Granularity *ReportGranularity `form:"granularity,omitempty" json:"granularity,omitempty"`
+
+	// Metrics The metrics to count; all of them when absent. Repeat the parameter or give a
+	// comma-separated list.
+	Metrics *ReportMetrics `form:"metrics,omitempty" json:"metrics,omitempty"`
+
+	// GroupBy Break every figure down by this, into `groups`.
+	GroupBy *ReportGroupBy `form:"group_by,omitempty" json:"group_by,omitempty"`
+
+	// InboxId Only this inbox (`404` when the caller cannot see it).
+	InboxId *ReportInboxId `form:"inbox_id,omitempty" json:"inbox_id,omitempty"`
+
+	// ChannelKind Only conversations that started on a channel of this kind.
+	ChannelKind *ReportChannelKind `form:"channel_kind,omitempty" json:"channel_kind,omitempty"`
+
+	// LabelId Only conversations with this label (`404` for a label the workspace does not have).
+	LabelId *ReportLabelId `form:"label_id,omitempty" json:"label_id,omitempty"`
+
+	// TeamId Only the figures of this team, attributed as `group_by=team` does (`404` for a team the workspace does not have).
+	TeamId *ReportTeamId `form:"team_id,omitempty" json:"team_id,omitempty"`
+
+	// MemberId Only the figures of this member, attributed as `group_by=member` does (`404` for a member the workspace does not have).
+	MemberId *ReportMemberId `form:"member_id,omitempty" json:"member_id,omitempty"`
+
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
@@ -41476,6 +41771,67 @@ type ClientInterface interface {
 	//
 	// Corresponds with GET /v1/push/vapid-public-key (the `GetVapidPublicKey` operationId).
 	GetVapidPublicKey(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetReport Team activity over days, weeks or months
+	//
+	// Conversations opened, closed and reopened, replies, first-reply and resolution times
+	// (median and p90), SLA targets met and breached and ratings, per day, week (Monday to
+	// Sunday) or month from `from` to `to` in `timezone`, optionally broken down by inbox,
+	// channel kind, label, team or member, over the inboxes the caller can see. At most 13
+	// months.
+	//
+	// Answers come from rollups the server keeps in quarter-hour buckets, which add up exactly
+	// to local days in every time zone in use today. Activity after `built_until` (when that is
+	// less than a day ago) is counted from the conversations at request time, so today's
+	// counts agree with `GET /v1/stats`. While the rollups are first being built,
+	// `built_until` says how far they reach and later periods are empty.
+	//
+	// Counted as `GET /v1/stats` counts: `replies` are replies sent by members (their own, or
+	// a bot's draft a member sent); replies that bots, automation rules and automatic replies
+	// send never count, neither as replies nor as a first reply. `closed` is every close;
+	// `first_replies` the conversations whose first member reply falls in the period;
+	// ratings when they were given (feedback is never rated). `opened` counts conversations
+	// started (not spam); `reopened` a change from closed to another status; a resolution is
+	// each close that follows a message from the contact, timed from the first such message
+	// after the previous close. Trashed conversations and imported history are left out.
+	//
+	// Medians and p90 come from histograms whose buckets are 5% wide, so they are within 2.5%
+	// of the exact value. Labels and the conversation's team are those it had when its period
+	// was last rolled up: today's periods are rebuilt every few minutes and the last 31 days
+	// every night.
+	//
+	// `group_by=member` counts each figure for the member who did it: the reply's author, who
+	// closed or reopened, who sent the first reply, who closed for resolutions, the assignee
+	// for opened conversations and ratings, the assignee at the outcome for SLA. `team` is the
+	// conversation's team, and the team at the outcome for SLA. Figures with no member, team or
+	// channel kind go to a group without `key`. `label` groups count a conversation under each
+	// of its labels and leave out conversations without one.
+	//
+	// Scope: `reports:read`.
+	//
+	// Corresponds with GET /v1/reports (the `GetReport` operationId).
+	GetReport(ctx context.Context, params *GetReportParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ExportReport Download a report as CSV
+	//
+	// The report `GET /v1/reports` answers for the same parameters, as a CSV download
+	// (`Content-Disposition: attachment`): a header row, then one row per period, or per group
+	// and period with `group_by` (groups in the order of `groups`, every period of each, oldest
+	// first). Columns: `period` (the period's first day, `YYYY-MM-DD`), with `group_by` also
+	// `group_id` (empty for the group without a key) and `group_name` (the inbox, label, team
+	// or member name, or the channel kind), then one column per figure of the chosen metrics
+	// in this order: `opened`, `closed`, `reopened`, `replies`, `first_replies`,
+	// `first_reply_median_seconds`, `first_reply_p90_seconds`, `resolutions`,
+	// `resolution_median_seconds`, `resolution_p90_seconds`, `sla_first_reply_met`,
+	// `sla_first_reply_breached`, `sla_next_reply_met`, `sla_next_reply_breached`,
+	// `sla_resolution_met`, `sla_resolution_breached`, `ratings_good`, `ratings_bad`. A time
+	// with nothing to measure is an empty cell. Every cell is quoted; cells starting with `=`,
+	// `+`, `-`, `@`, tab or carriage return get a leading `'`.
+	//
+	// Scope: `reports:read`.
+	//
+	// Corresponds with GET /v1/reports/export (the `ExportReport` operationId).
+	ExportReport(ctx context.Context, params *ExportReportParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ListRoadmapBoards List roadmap boards
 	//
@@ -57148,6 +57504,87 @@ func (c *Client) DenyOAuthRequest(ctx context.Context, oauthRequestId OAuthReque
 // Corresponds with GET /v1/push/vapid-public-key (the `GetVapidPublicKey` operationId).
 func (c *Client) GetVapidPublicKey(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetVapidPublicKeyRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetReport Team activity over days, weeks or months
+//
+// Conversations opened, closed and reopened, replies, first-reply and resolution times
+// (median and p90), SLA targets met and breached and ratings, per day, week (Monday to
+// Sunday) or month from `from` to `to` in `timezone`, optionally broken down by inbox,
+// channel kind, label, team or member, over the inboxes the caller can see. At most 13
+// months.
+//
+// Answers come from rollups the server keeps in quarter-hour buckets, which add up exactly
+// to local days in every time zone in use today. Activity after `built_until` (when that is
+// less than a day ago) is counted from the conversations at request time, so today's
+// counts agree with `GET /v1/stats`. While the rollups are first being built,
+// `built_until` says how far they reach and later periods are empty.
+//
+// Counted as `GET /v1/stats` counts: `replies` are replies sent by members (their own, or
+// a bot's draft a member sent); replies that bots, automation rules and automatic replies
+// send never count, neither as replies nor as a first reply. `closed` is every close;
+// `first_replies` the conversations whose first member reply falls in the period;
+// ratings when they were given (feedback is never rated). `opened` counts conversations
+// started (not spam); `reopened` a change from closed to another status; a resolution is
+// each close that follows a message from the contact, timed from the first such message
+// after the previous close. Trashed conversations and imported history are left out.
+//
+// Medians and p90 come from histograms whose buckets are 5% wide, so they are within 2.5%
+// of the exact value. Labels and the conversation's team are those it had when its period
+// was last rolled up: today's periods are rebuilt every few minutes and the last 31 days
+// every night.
+//
+// `group_by=member` counts each figure for the member who did it: the reply's author, who
+// closed or reopened, who sent the first reply, who closed for resolutions, the assignee
+// for opened conversations and ratings, the assignee at the outcome for SLA. `team` is the
+// conversation's team, and the team at the outcome for SLA. Figures with no member, team or
+// channel kind go to a group without `key`. `label` groups count a conversation under each
+// of its labels and leave out conversations without one.
+//
+// Scope: `reports:read`.
+//
+// Corresponds with GET /v1/reports (the `GetReport` operationId).
+func (c *Client) GetReport(ctx context.Context, params *GetReportParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetReportRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// ExportReport Download a report as CSV
+//
+// The report `GET /v1/reports` answers for the same parameters, as a CSV download
+// (`Content-Disposition: attachment`): a header row, then one row per period, or per group
+// and period with `group_by` (groups in the order of `groups`, every period of each, oldest
+// first). Columns: `period` (the period's first day, `YYYY-MM-DD`), with `group_by` also
+// `group_id` (empty for the group without a key) and `group_name` (the inbox, label, team
+// or member name, or the channel kind), then one column per figure of the chosen metrics
+// in this order: `opened`, `closed`, `reopened`, `replies`, `first_replies`,
+// `first_reply_median_seconds`, `first_reply_p90_seconds`, `resolutions`,
+// `resolution_median_seconds`, `resolution_p90_seconds`, `sla_first_reply_met`,
+// `sla_first_reply_breached`, `sla_next_reply_met`, `sla_next_reply_breached`,
+// `sla_resolution_met`, `sla_resolution_breached`, `ratings_good`, `ratings_bad`. A time
+// with nothing to measure is an empty cell. Every cell is quoted; cells starting with `=`,
+// `+`, `-`, `@`, tab or carriage return get a leading `'`.
+//
+// Scope: `reports:read`.
+//
+// Corresponds with GET /v1/reports/export (the `ExportReport` operationId).
+func (c *Client) ExportReport(ctx context.Context, params *ExportReportParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewExportReportRequest(c.Server, params)
 	if err != nil {
 		return nil, err
 	}
@@ -86051,6 +86488,368 @@ func NewGetVapidPublicKeyRequest(server string) (*http.Request, error) {
 	return req, nil
 }
 
+// NewGetReportRequest constructs an http.Request for the GetReport method
+func NewGetReportRequest(server string, params *GetReportParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/reports")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "from", params.From, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "date"}); err != nil {
+			return nil, err
+		} else {
+			for _, qp := range strings.Split(queryFrag, "&") {
+				rawQueryFragments = append(rawQueryFragments, qp)
+			}
+		}
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "to", params.To, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "date"}); err != nil {
+			return nil, err
+		} else {
+			for _, qp := range strings.Split(queryFrag, "&") {
+				rawQueryFragments = append(rawQueryFragments, qp)
+			}
+		}
+
+		if params.Timezone != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "timezone", *params.Timezone, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Granularity != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "granularity", *params.Granularity, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Metrics != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "metrics", *params.Metrics, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "array", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.GroupBy != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "group_by", *params.GroupBy, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.InboxId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "inbox_id", *params.InboxId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "uuid"}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.ChannelKind != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "channel_kind", *params.ChannelKind, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.LabelId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "label_id", *params.LabelId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "uuid"}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.TeamId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "team_id", *params.TeamId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "uuid"}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.MemberId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "member_id", *params.MemberId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "uuid"}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewExportReportRequest constructs an http.Request for the ExportReport method
+func NewExportReportRequest(server string, params *ExportReportParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/reports/export")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "from", params.From, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "date"}); err != nil {
+			return nil, err
+		} else {
+			for _, qp := range strings.Split(queryFrag, "&") {
+				rawQueryFragments = append(rawQueryFragments, qp)
+			}
+		}
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "to", params.To, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "date"}); err != nil {
+			return nil, err
+		} else {
+			for _, qp := range strings.Split(queryFrag, "&") {
+				rawQueryFragments = append(rawQueryFragments, qp)
+			}
+		}
+
+		if params.Timezone != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "timezone", *params.Timezone, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Granularity != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "granularity", *params.Granularity, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Metrics != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "metrics", *params.Metrics, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "array", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.GroupBy != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "group_by", *params.GroupBy, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.InboxId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "inbox_id", *params.InboxId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "uuid"}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.ChannelKind != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "channel_kind", *params.ChannelKind, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.LabelId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "label_id", *params.LabelId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "uuid"}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.TeamId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "team_id", *params.TeamId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "uuid"}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.MemberId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "member_id", *params.MemberId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "uuid"}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
 // NewListRoadmapBoardsRequest constructs an http.Request for the ListRoadmapBoards method
 func NewListRoadmapBoardsRequest(server string, params *ListRoadmapBoardsParams) (*http.Request, error) {
 	var err error
@@ -100930,6 +101729,71 @@ type ClientWithResponsesInterface interface {
 	//
 	// Corresponds with GET /v1/push/vapid-public-key (the `GetVapidPublicKey` operationId).
 	GetVapidPublicKeyWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetVapidPublicKeyResponse, error)
+
+	// GetReportWithResponse Team activity over days, weeks or months
+	//
+	// Conversations opened, closed and reopened, replies, first-reply and resolution times
+	// (median and p90), SLA targets met and breached and ratings, per day, week (Monday to
+	// Sunday) or month from `from` to `to` in `timezone`, optionally broken down by inbox,
+	// channel kind, label, team or member, over the inboxes the caller can see. At most 13
+	// months.
+	//
+	// Answers come from rollups the server keeps in quarter-hour buckets, which add up exactly
+	// to local days in every time zone in use today. Activity after `built_until` (when that is
+	// less than a day ago) is counted from the conversations at request time, so today's
+	// counts agree with `GET /v1/stats`. While the rollups are first being built,
+	// `built_until` says how far they reach and later periods are empty.
+	//
+	// Counted as `GET /v1/stats` counts: `replies` are replies sent by members (their own, or
+	// a bot's draft a member sent); replies that bots, automation rules and automatic replies
+	// send never count, neither as replies nor as a first reply. `closed` is every close;
+	// `first_replies` the conversations whose first member reply falls in the period;
+	// ratings when they were given (feedback is never rated). `opened` counts conversations
+	// started (not spam); `reopened` a change from closed to another status; a resolution is
+	// each close that follows a message from the contact, timed from the first such message
+	// after the previous close. Trashed conversations and imported history are left out.
+	//
+	// Medians and p90 come from histograms whose buckets are 5% wide, so they are within 2.5%
+	// of the exact value. Labels and the conversation's team are those it had when its period
+	// was last rolled up: today's periods are rebuilt every few minutes and the last 31 days
+	// every night.
+	//
+	// `group_by=member` counts each figure for the member who did it: the reply's author, who
+	// closed or reopened, who sent the first reply, who closed for resolutions, the assignee
+	// for opened conversations and ratings, the assignee at the outcome for SLA. `team` is the
+	// conversation's team, and the team at the outcome for SLA. Figures with no member, team or
+	// channel kind go to a group without `key`. `label` groups count a conversation under each
+	// of its labels and leave out conversations without one.
+	//
+	// Scope: `reports:read`.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /v1/reports (the `GetReport` operationId).
+	GetReportWithResponse(ctx context.Context, params *GetReportParams, reqEditors ...RequestEditorFn) (*GetReportResponse, error)
+
+	// ExportReportWithResponse Download a report as CSV
+	//
+	// The report `GET /v1/reports` answers for the same parameters, as a CSV download
+	// (`Content-Disposition: attachment`): a header row, then one row per period, or per group
+	// and period with `group_by` (groups in the order of `groups`, every period of each, oldest
+	// first). Columns: `period` (the period's first day, `YYYY-MM-DD`), with `group_by` also
+	// `group_id` (empty for the group without a key) and `group_name` (the inbox, label, team
+	// or member name, or the channel kind), then one column per figure of the chosen metrics
+	// in this order: `opened`, `closed`, `reopened`, `replies`, `first_replies`,
+	// `first_reply_median_seconds`, `first_reply_p90_seconds`, `resolutions`,
+	// `resolution_median_seconds`, `resolution_p90_seconds`, `sla_first_reply_met`,
+	// `sla_first_reply_breached`, `sla_next_reply_met`, `sla_next_reply_breached`,
+	// `sla_resolution_met`, `sla_resolution_breached`, `ratings_good`, `ratings_bad`. A time
+	// with nothing to measure is an empty cell. Every cell is quoted; cells starting with `=`,
+	// `+`, `-`, `@`, tab or carriage return get a leading `'`.
+	//
+	// Scope: `reports:read`.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /v1/reports/export (the `ExportReport` operationId).
+	ExportReportWithResponse(ctx context.Context, params *ExportReportParams, reqEditors ...RequestEditorFn) (*ExportReportResponse, error)
 
 	// ListRoadmapBoardsWithResponse List roadmap boards
 	//
@@ -130720,6 +131584,144 @@ func (r GetVapidPublicKeyResponse) ContentType() string {
 	return ""
 }
 
+type GetReportResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *Report
+	// ApplicationproblemJSON400 the response for an HTTP 400 `application/problem+json` response
+	ApplicationproblemJSON400 *Problem
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetReportResponse) GetJSON200() *Report {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON400 returns the response for an HTTP 400 `application/problem+json` response
+func (r GetReportResponse) GetApplicationproblemJSON400() *Problem {
+	return r.ApplicationproblemJSON400
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r GetReportResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r GetReportResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r GetReportResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetBody returns the raw response body bytes
+func (r GetReportResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetReportResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetReportResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetReportResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+// ExportReportResponse200Headers the declared response headers of an HTTP 200 response for ExportReport
+type ExportReportResponse200Headers struct {
+	ContentDisposition *string
+}
+
+type ExportReportResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// ApplicationproblemJSON400 the response for an HTTP 400 `application/problem+json` response
+	ApplicationproblemJSON400 *Problem
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+	// Headers200 the parsed response headers for an HTTP 200 response
+	Headers200 *ExportReportResponse200Headers
+}
+
+// GetApplicationproblemJSON400 returns the response for an HTTP 400 `application/problem+json` response
+func (r ExportReportResponse) GetApplicationproblemJSON400() *Problem {
+	return r.ApplicationproblemJSON400
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r ExportReportResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r ExportReportResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r ExportReportResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetBody returns the raw response body bytes
+func (r ExportReportResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r ExportReportResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ExportReportResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ExportReportResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type ListRoadmapBoardsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -149162,6 +150164,83 @@ func (c *ClientWithResponses) GetVapidPublicKeyWithResponse(ctx context.Context,
 		return nil, err
 	}
 	return ParseGetVapidPublicKeyResponse(rsp)
+}
+
+// GetReportWithResponse Team activity over days, weeks or months
+//
+// Conversations opened, closed and reopened, replies, first-reply and resolution times
+// (median and p90), SLA targets met and breached and ratings, per day, week (Monday to
+// Sunday) or month from `from` to `to` in `timezone`, optionally broken down by inbox,
+// channel kind, label, team or member, over the inboxes the caller can see. At most 13
+// months.
+//
+// Answers come from rollups the server keeps in quarter-hour buckets, which add up exactly
+// to local days in every time zone in use today. Activity after `built_until` (when that is
+// less than a day ago) is counted from the conversations at request time, so today's
+// counts agree with `GET /v1/stats`. While the rollups are first being built,
+// `built_until` says how far they reach and later periods are empty.
+//
+// Counted as `GET /v1/stats` counts: `replies` are replies sent by members (their own, or
+// a bot's draft a member sent); replies that bots, automation rules and automatic replies
+// send never count, neither as replies nor as a first reply. `closed` is every close;
+// `first_replies` the conversations whose first member reply falls in the period;
+// ratings when they were given (feedback is never rated). `opened` counts conversations
+// started (not spam); `reopened` a change from closed to another status; a resolution is
+// each close that follows a message from the contact, timed from the first such message
+// after the previous close. Trashed conversations and imported history are left out.
+//
+// Medians and p90 come from histograms whose buckets are 5% wide, so they are within 2.5%
+// of the exact value. Labels and the conversation's team are those it had when its period
+// was last rolled up: today's periods are rebuilt every few minutes and the last 31 days
+// every night.
+//
+// `group_by=member` counts each figure for the member who did it: the reply's author, who
+// closed or reopened, who sent the first reply, who closed for resolutions, the assignee
+// for opened conversations and ratings, the assignee at the outcome for SLA. `team` is the
+// conversation's team, and the team at the outcome for SLA. Figures with no member, team or
+// channel kind go to a group without `key`. `label` groups count a conversation under each
+// of its labels and leave out conversations without one.
+//
+// Scope: `reports:read`.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /v1/reports (the `GetReport` operationId).
+func (c *ClientWithResponses) GetReportWithResponse(ctx context.Context, params *GetReportParams, reqEditors ...RequestEditorFn) (*GetReportResponse, error) {
+	rsp, err := c.GetReport(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetReportResponse(rsp)
+}
+
+// ExportReportWithResponse Download a report as CSV
+//
+// The report `GET /v1/reports` answers for the same parameters, as a CSV download
+// (`Content-Disposition: attachment`): a header row, then one row per period, or per group
+// and period with `group_by` (groups in the order of `groups`, every period of each, oldest
+// first). Columns: `period` (the period's first day, `YYYY-MM-DD`), with `group_by` also
+// `group_id` (empty for the group without a key) and `group_name` (the inbox, label, team
+// or member name, or the channel kind), then one column per figure of the chosen metrics
+// in this order: `opened`, `closed`, `reopened`, `replies`, `first_replies`,
+// `first_reply_median_seconds`, `first_reply_p90_seconds`, `resolutions`,
+// `resolution_median_seconds`, `resolution_p90_seconds`, `sla_first_reply_met`,
+// `sla_first_reply_breached`, `sla_next_reply_met`, `sla_next_reply_breached`,
+// `sla_resolution_met`, `sla_resolution_breached`, `ratings_good`, `ratings_bad`. A time
+// with nothing to measure is an empty cell. Every cell is quoted; cells starting with `=`,
+// `+`, `-`, `@`, tab or carriage return get a leading `'`.
+//
+// Scope: `reports:read`.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /v1/reports/export (the `ExportReport` operationId).
+func (c *ClientWithResponses) ExportReportWithResponse(ctx context.Context, params *ExportReportParams, reqEditors ...RequestEditorFn) (*ExportReportResponse, error) {
+	rsp, err := c.ExportReport(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseExportReportResponse(rsp)
 }
 
 // ListRoadmapBoardsWithResponse List roadmap boards
@@ -173859,6 +174938,120 @@ func ParseGetVapidPublicKeyResponse(rsp *http.Response) (*GetVapidPublicKeyRespo
 		}
 		response.ApplicationproblemJSON404 = &dest
 
+	}
+
+	return response, nil
+}
+
+// ParseGetReportResponse parses an HTTP response from a GetReportWithResponse call
+func ParseGetReportResponse(rsp *http.Response) (*GetReportResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetReportResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest Report
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseExportReportResponse parses an HTTP response from a ExportReportWithResponse call
+func ParseExportReportResponse(rsp *http.Response) (*ExportReportResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ExportReportResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	}
+
+	switch {
+	case rsp.StatusCode == 200:
+		var headers ExportReportResponse200Headers
+		if values := rsp.Header.Values("Content-Disposition"); len(values) > 0 {
+			var value string
+			if err := runtime.BindStyledParameterWithOptions("simple", "Content-Disposition", values[0], &value, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			}
+			headers.ContentDisposition = &value
+		}
+		response.Headers200 = &headers
 	}
 
 	return response, nil

@@ -356,6 +356,58 @@ while it is on; a reopened conversation gets no new resolution target.
 - rules with OR groups;
 - rules triggered by notes or by other rules.
 
+### Reports (M29)
+
+Built in #147 (migration 00114). Reports answer from rollups, never by scanning `messages` over the
+range, and agree with `/v1/stats` for today.
+
+- **Granularity: UTC quarter hours.** `report_rollups (workspace_id, bucket, inbox_id, channel_kind,
+  team_id, member_id, label_id, metric, bin, n)` holds sums per 15-minute UTC bucket, not per day or
+  hour: every offset in use today is a multiple of 15 minutes (India +5:30, Nepal +5:45, Chatham
+  +12:45), so any local day, week or month is a whole number of buckets and a report in any IANA zone
+  is exact. Reads sum buckets into `date_trunc(granularity, bucket AT TIME ZONE tz)`. Rows exist only
+  where something happened. Index `(workspace_id, bucket)`.
+- **Facts.** One query (`ReportFacts`) lists everything that happened in a window, each with the
+  conversation's inbox, channel kind and team and the member it is attributed to, counted exactly as
+  `/v1/stats` counts: `replies` (member replies or bot drafts a member sent; bots, rules and automatic
+  replies never), `closed`, `reopened` (`previous_status` closed), `opened` (not spam, not imported),
+  `first_reply` (stats' definition, attributed to the replier), `resolution` (each close after a
+  contact message, from the first such message after the previous close, attributed to the closer),
+  `rating_good|bad` (at `rated_at`, to the assignee), and `sla_<target>_<met|breached>` from
+  `sla_outcomes` (inbox, assignee and team at the outcome). Trashed conversations and imported rows
+  are left out. Labels are the conversation's labels when its bucket is built; each fact is written
+  once with `label_id` null and once per label, and totals read only the null rows.
+- **Percentiles: fixed log histograms.** `first_reply` and `resolution` rows count per bin: bin 0 is
+  under a second, bin b holds [1.05^(b-1), 1.05^b) seconds, capped at 400 (about 9.5 years). Bins add
+  up across buckets, days and groups, so medians and p90 over any range are exact up to the bin:
+  within 2.5% when read at the bin's geometric middle, interpolated between neighbouring samples so an
+  even count's median is the mean of the middle two as in `/v1/stats`. No t-digest: merging fixed
+  bins in SQL is a plain `sum`.
+- **The job.** A periodic `report_rollup_scan` (5 minutes) queues `report_rollup {workspace_id}`
+  (unique while pending) for every workspace (`ListWorkspaceIDs`, the SLA sweep's listing).
+  `report_rollup_state (workspace_id, built_until, recomputed_on, recompute_at)` drives it, each step
+  one transaction under the state row's lock that deletes the window's buckets and copies fresh ones:
+  first a UTC day at a time from the first activity reports count (the earliest of a native
+  conversation, a message that was not imported, so replies in imported threads count, and an SLA
+  outcome; the backfill), then today from midnight UTC (or 10 minutes before `built_until`,
+  whichever is earlier) to the last quarter-hour edge on every run; `built_until` is always a bucket
+  edge, so a bucket is never part rolled up and part counted live, and
+  once per UTC day the 31 days before today, a day per step (`recompute_at` resumes an unfinished
+  rebuild). A run stops after 20 seconds and snoozes itself to go on. Deleted workspaces are skipped.
+- **Reading.** `GET /v1/reports` reads the rollups before `built_until` and, when `built_until` is
+  less than a day old, counts the facts after it live and passes them to the same SQL as arrays, so
+  one query filters, checks access and groups both. Inboxes are filtered through `inbox_viewers`.
+  Deleted inboxes and labels drop out at read time; deleted teams and members fall into the group
+  without a key. The ids are not foreign keys, so no deletion rewrites the table. `from`/`to` are local
+  days, at most 13 months apart; series list every period, the first cut at `from`.
+- **API.** `GET /v1/reports` and `GET /v1/reports/export` (CSV, the same parameters, formula-safe
+  cells as the consent export), scope `reports:read` (every member's token may have it; implied for
+  keys made without named scopes from now on, never added to older keys). MCP `get_report`.
+- **Privacy.** Rollups hold counts and ids, no content. They go with the workspace (foreign key on
+  `workspace_id`, `ON DELETE CASCADE`). Retention days do not apply to them; the nightly rebuild stops
+  at the retention cutoff, so periods whose conversations retention deleted keep their counts.
+  Conversations deleted or trashed inside the rebuild window drop out of it.
+
 ## Components
 
 ```
@@ -4180,6 +4232,8 @@ they belong to no channel. (#136, migration 00095)
   (25); salts are deleted two hours after their day. Members delete a property's data for a range or in
   full; a property, a consented visitor, a contact with linked visits and a deleted workspace take their
   analytics rows with them. Workspace `retention_days` does not apply to analytics.
+- Report rollups (M29) hold counts per inbox, channel kind, team, member and label, no content; they
+  go with the workspace, and `retention_days` does not apply to them.
 - Status page subscribers (M19) are subscriptions of a status list and follow the list rules above
   (pending ones after 30 days with the contacts only they created, unsubscribed ones after 3 years);
   notice deliveries and their addresses go after 90 days, the notice keeps its counts.

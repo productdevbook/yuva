@@ -2094,6 +2094,27 @@ type RealtimeConnection struct {
 	ViewingConversationID *uuid.UUID
 }
 
+type ReportRollup struct {
+	WorkspaceID uuid.UUID
+	Bucket      time.Time
+	InboxID     uuid.UUID
+	ChannelKind *string
+	TeamID      *uuid.UUID
+	MemberID    *uuid.UUID
+	LabelID     *uuid.UUID
+	Metric      string
+	Bin         int16
+	N           int32
+}
+
+type ReportRollupState struct {
+	WorkspaceID  uuid.UUID
+	BuiltUntil   time.Time
+	RecomputedOn *time.Time
+	RecomputeAt  *time.Time
+	UpdatedAt    time.Time
+}
+
 type RoadmapBoard struct {
 	ID                  uuid.UUID
 	WorkspaceID         uuid.UUID

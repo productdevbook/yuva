@@ -949,6 +949,7 @@ const (
 	MessagesWrite       ApiKeyScope = "messages:write"
 	MigrationsManage    ApiKeyScope = "migrations:manage"
 	NotesWrite          ApiKeyScope = "notes:write"
+	ReportsRead         ApiKeyScope = "reports:read"
 	RoadmapRead         ApiKeyScope = "roadmap:read"
 	RoadmapStage        ApiKeyScope = "roadmap:stage"
 	RoadmapWrite        ApiKeyScope = "roadmap:write"
@@ -1033,6 +1034,8 @@ func (e ApiKeyScope) Valid() bool {
 	case MigrationsManage:
 		return true
 	case NotesWrite:
+		return true
+	case ReportsRead:
 		return true
 	case RoadmapRead:
 		return true
@@ -5936,6 +5939,90 @@ func (e RealtimeResyncRequiredType) Valid() bool {
 	}
 }
 
+// Defines values for ReportGranularity.
+const (
+	ReportGranularityDay   ReportGranularity = "day"
+	ReportGranularityMonth ReportGranularity = "month"
+	ReportGranularityWeek  ReportGranularity = "week"
+)
+
+// Valid indicates whether the value is a known member of the ReportGranularity enum.
+func (e ReportGranularity) Valid() bool {
+	switch e {
+	case ReportGranularityDay:
+		return true
+	case ReportGranularityMonth:
+		return true
+	case ReportGranularityWeek:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ReportGroupBy.
+const (
+	ReportGroupByChannel ReportGroupBy = "channel"
+	ReportGroupByInbox   ReportGroupBy = "inbox"
+	ReportGroupByLabel   ReportGroupBy = "label"
+	ReportGroupByMember  ReportGroupBy = "member"
+	ReportGroupByTeam    ReportGroupBy = "team"
+)
+
+// Valid indicates whether the value is a known member of the ReportGroupBy enum.
+func (e ReportGroupBy) Valid() bool {
+	switch e {
+	case ReportGroupByChannel:
+		return true
+	case ReportGroupByInbox:
+		return true
+	case ReportGroupByLabel:
+		return true
+	case ReportGroupByMember:
+		return true
+	case ReportGroupByTeam:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ReportMetric.
+const (
+	ReportMetricClosed     ReportMetric = "closed"
+	ReportMetricFirstReply ReportMetric = "first_reply"
+	ReportMetricOpened     ReportMetric = "opened"
+	ReportMetricRatings    ReportMetric = "ratings"
+	ReportMetricReopened   ReportMetric = "reopened"
+	ReportMetricReplies    ReportMetric = "replies"
+	ReportMetricResolution ReportMetric = "resolution"
+	ReportMetricSla        ReportMetric = "sla"
+)
+
+// Valid indicates whether the value is a known member of the ReportMetric enum.
+func (e ReportMetric) Valid() bool {
+	switch e {
+	case ReportMetricClosed:
+		return true
+	case ReportMetricFirstReply:
+		return true
+	case ReportMetricOpened:
+		return true
+	case ReportMetricRatings:
+		return true
+	case ReportMetricReopened:
+		return true
+	case ReportMetricReplies:
+		return true
+	case ReportMetricResolution:
+		return true
+	case ReportMetricSla:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for RoadmapBoardSignalType.
 const (
 	RoadmapBoardUpdated RoadmapBoardSignalType = "roadmap.board.updated"
@@ -9544,8 +9631,9 @@ type ApiKeyList struct {
 //	    admins only; never offered to agents' tokens, refused for keys limited to inboxes. Never
 //	    implied: a key made without naming its scopes does not hold it. A rule acts on every
 //	    inbox it covers with the workspace's power.
+//	  - `reports:read`: reports and their CSV export, over the inboxes the caller can see.
 //
-// `conversations:delete`, `messages:redact`, `lists:*`, `broadcasts:*`, `migrations:manage`, `analytics:*`, `status:*`, `help:*`, `roadmap:*`, `changelog:*`, `audit:read`, `integrations:*`, `issues:write`, `fields:manage`, `views:write` and `automations:*` are never added to keys made before they existed.
+// `conversations:delete`, `messages:redact`, `lists:*`, `broadcasts:*`, `migrations:manage`, `analytics:*`, `status:*`, `help:*`, `roadmap:*`, `changelog:*`, `audit:read`, `integrations:*`, `issues:write`, `fields:manage`, `views:write`, `automations:*` and `reports:read` are never added to keys made before they existed.
 type ApiKeyScope string
 
 // ApiKeyUpdate Only the fields sent change. Scopes, inbox limit and expiry cannot change.
@@ -20463,6 +20551,104 @@ type RealtimeResyncRequired struct {
 // RealtimeResyncRequiredType defines model for RealtimeResyncRequired.Type.
 type RealtimeResyncRequiredType string
 
+// Report defines model for Report.
+type Report struct {
+	// BuiltUntil The rollups hold everything before this instant. Absent until the first rollup ran;
+	// activity after it is counted live only when it is less than a day old.
+	BuiltUntil  *time.Time         `json:"built_until,omitempty"`
+	From        openapi_types.Date `json:"from"`
+	Granularity ReportGranularity  `json:"granularity"`
+	GroupBy     *ReportGroupBy     `json:"group_by,omitempty"`
+
+	// Groups With `group_by`: each group with any figure, by `key`, the group without `key` last.
+	// Inboxes, labels, teams and members are named by id; their names come from their own
+	// endpoints.
+	Groups *[]ReportGroup `json:"groups,omitempty"`
+
+	// Metrics The metrics counted; the figures of the others are absent.
+	Metrics []ReportMetric `json:"metrics"`
+
+	// Series Every period from `from` to `to`, oldest first.
+	Series   []ReportPeriod     `json:"series"`
+	Timezone string             `json:"timezone"`
+	To       openapi_types.Date `json:"to"`
+
+	// Totals The figures of the requested metrics; the others are absent. A median or p90 is absent
+	// when there is nothing to measure.
+	Totals ReportValues `json:"totals"`
+}
+
+// ReportGranularity defines model for ReportGranularity.
+type ReportGranularity string
+
+// ReportGroup defines model for ReportGroup.
+type ReportGroup struct {
+	// Key The inbox, label, team or member id, or the channel kind. Absent for figures without
+	// a team, a member or a channel kind.
+	Key *string `json:"key,omitempty"`
+
+	// Series Every period, as in the report's `series`.
+	Series []ReportPeriod `json:"series"`
+
+	// Totals The figures of the requested metrics; the others are absent. A median or p90 is absent
+	// when there is nothing to measure.
+	Totals ReportValues `json:"totals"`
+}
+
+// ReportGroupBy defines model for ReportGroupBy.
+type ReportGroupBy string
+
+// ReportMetric `opened`, `closed`, `reopened` and `replies` are counts; `first_reply` is
+// `first_replies` with their median and p90 seconds; `resolution` is `resolutions` with
+// theirs; `sla` the targets met and breached; `ratings` good and bad.
+type ReportMetric string
+
+// ReportPeriod defines model for ReportPeriod.
+type ReportPeriod struct {
+	// Start The period's first day, never before `from` (a week or month cut by `from` starts there).
+	Start openapi_types.Date `json:"start"`
+
+	// Values The figures of the requested metrics; the others are absent. A median or p90 is absent
+	// when there is nothing to measure.
+	Values ReportValues `json:"values"`
+}
+
+// ReportRatings defines model for ReportRatings.
+type ReportRatings struct {
+	Bad  int64 `json:"bad"`
+	Good int64 `json:"good"`
+}
+
+// ReportSla defines model for ReportSla.
+type ReportSla struct {
+	FirstReply ReportSlaTarget `json:"first_reply"`
+	NextReply  ReportSlaTarget `json:"next_reply"`
+	Resolution ReportSlaTarget `json:"resolution"`
+}
+
+// ReportSlaTarget defines model for ReportSlaTarget.
+type ReportSlaTarget struct {
+	Breached int64 `json:"breached"`
+	Met      int64 `json:"met"`
+}
+
+// ReportValues The figures of the requested metrics; the others are absent. A median or p90 is absent
+// when there is nothing to measure.
+type ReportValues struct {
+	Closed                  *int64         `json:"closed,omitempty"`
+	FirstReplies            *int64         `json:"first_replies,omitempty"`
+	FirstReplyMedianSeconds *int64         `json:"first_reply_median_seconds,omitempty"`
+	FirstReplyP90Seconds    *int64         `json:"first_reply_p90_seconds,omitempty"`
+	Opened                  *int64         `json:"opened,omitempty"`
+	Ratings                 *ReportRatings `json:"ratings,omitempty"`
+	Reopened                *int64         `json:"reopened,omitempty"`
+	Replies                 *int64         `json:"replies,omitempty"`
+	ResolutionMedianSeconds *int64         `json:"resolution_median_seconds,omitempty"`
+	ResolutionP90Seconds    *int64         `json:"resolution_p90_seconds,omitempty"`
+	Resolutions             *int64         `json:"resolutions,omitempty"`
+	Sla                     *ReportSla     `json:"sla,omitempty"`
+}
+
 // RoadmapBoard defines model for RoadmapBoard.
 type RoadmapBoard struct {
 	// AnalyticsPropertyId The analytics property the public page counts cookieless page views in.
@@ -23817,6 +24003,33 @@ type PushDeviceId = uuid.UUID
 // PushSubscriptionId defines model for PushSubscriptionId.
 type PushSubscriptionId = uuid.UUID
 
+// ReportChannelKind `email`, `chat` (web widget), `app` (mobile SDKs) or `api` (server to server).
+type ReportChannelKind = ChannelKind
+
+// ReportFrom defines model for ReportFrom.
+type ReportFrom = openapi_types.Date
+
+// ReportInboxId defines model for ReportInboxId.
+type ReportInboxId = uuid.UUID
+
+// ReportLabelId defines model for ReportLabelId.
+type ReportLabelId = uuid.UUID
+
+// ReportMemberId defines model for ReportMemberId.
+type ReportMemberId = uuid.UUID
+
+// ReportMetrics defines model for ReportMetrics.
+type ReportMetrics = []ReportMetric
+
+// ReportTeamId defines model for ReportTeamId.
+type ReportTeamId = uuid.UUID
+
+// ReportTimezone Examples: Europe/Istanbul
+type ReportTimezone = string
+
+// ReportTo defines model for ReportTo.
+type ReportTo = openapi_types.Date
+
 // RoadmapBoardId defines model for RoadmapBoardId.
 type RoadmapBoardId = uuid.UUID
 
@@ -26849,6 +27062,88 @@ type ListOAuthGrantsParams struct {
 
 // RevokeOAuthGrantParams defines parameters for RevokeOAuthGrant.
 type RevokeOAuthGrantParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// GetReportParams defines parameters for GetReport.
+type GetReportParams struct {
+	// From First local day of the report, in `timezone`.
+	From ReportFrom `form:"from" json:"from"`
+
+	// To Last local day of the report, included; before the same day 13 months after `from`.
+	// Days after today are empty.
+	To ReportTo `form:"to" json:"to"`
+
+	// Timezone IANA time zone whose days, weeks and months the report uses; the panel sends the browser's.
+	Timezone *ReportTimezone `form:"timezone,omitempty" json:"timezone,omitempty"`
+
+	// Granularity Length of each period.
+	Granularity *ReportGranularity `form:"granularity,omitempty" json:"granularity,omitempty"`
+
+	// Metrics The metrics to count; all of them when absent. Repeat the parameter or give a
+	// comma-separated list.
+	Metrics *ReportMetrics `form:"metrics,omitempty" json:"metrics,omitempty"`
+
+	// GroupBy Break every figure down by this, into `groups`.
+	GroupBy *ReportGroupBy `form:"group_by,omitempty" json:"group_by,omitempty"`
+
+	// InboxId Only this inbox (`404` when the caller cannot see it).
+	InboxId *ReportInboxId `form:"inbox_id,omitempty" json:"inbox_id,omitempty"`
+
+	// ChannelKind Only conversations that started on a channel of this kind.
+	ChannelKind *ReportChannelKind `form:"channel_kind,omitempty" json:"channel_kind,omitempty"`
+
+	// LabelId Only conversations with this label (`404` for a label the workspace does not have).
+	LabelId *ReportLabelId `form:"label_id,omitempty" json:"label_id,omitempty"`
+
+	// TeamId Only the figures of this team, attributed as `group_by=team` does (`404` for a team the workspace does not have).
+	TeamId *ReportTeamId `form:"team_id,omitempty" json:"team_id,omitempty"`
+
+	// MemberId Only the figures of this member, attributed as `group_by=member` does (`404` for a member the workspace does not have).
+	MemberId *ReportMemberId `form:"member_id,omitempty" json:"member_id,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// ExportReportParams defines parameters for ExportReport.
+type ExportReportParams struct {
+	// From First local day of the report, in `timezone`.
+	From ReportFrom `form:"from" json:"from"`
+
+	// To Last local day of the report, included; before the same day 13 months after `from`.
+	// Days after today are empty.
+	To ReportTo `form:"to" json:"to"`
+
+	// Timezone IANA time zone whose days, weeks and months the report uses; the panel sends the browser's.
+	Timezone *ReportTimezone `form:"timezone,omitempty" json:"timezone,omitempty"`
+
+	// Granularity Length of each period.
+	Granularity *ReportGranularity `form:"granularity,omitempty" json:"granularity,omitempty"`
+
+	// Metrics The metrics to count; all of them when absent. Repeat the parameter or give a
+	// comma-separated list.
+	Metrics *ReportMetrics `form:"metrics,omitempty" json:"metrics,omitempty"`
+
+	// GroupBy Break every figure down by this, into `groups`.
+	GroupBy *ReportGroupBy `form:"group_by,omitempty" json:"group_by,omitempty"`
+
+	// InboxId Only this inbox (`404` when the caller cannot see it).
+	InboxId *ReportInboxId `form:"inbox_id,omitempty" json:"inbox_id,omitempty"`
+
+	// ChannelKind Only conversations that started on a channel of this kind.
+	ChannelKind *ReportChannelKind `form:"channel_kind,omitempty" json:"channel_kind,omitempty"`
+
+	// LabelId Only conversations with this label (`404` for a label the workspace does not have).
+	LabelId *ReportLabelId `form:"label_id,omitempty" json:"label_id,omitempty"`
+
+	// TeamId Only the figures of this team, attributed as `group_by=team` does (`404` for a team the workspace does not have).
+	TeamId *ReportTeamId `form:"team_id,omitempty" json:"team_id,omitempty"`
+
+	// MemberId Only the figures of this member, attributed as `group_by=member` does (`404` for a member the workspace does not have).
+	MemberId *ReportMemberId `form:"member_id,omitempty" json:"member_id,omitempty"`
+
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
@@ -34195,6 +34490,12 @@ type ServerInterface interface {
 	// GetVapidPublicKey The server's Web Push key
 	// (GET /v1/push/vapid-public-key)
 	GetVapidPublicKey(w http.ResponseWriter, r *http.Request)
+	// GetReport Team activity over days, weeks or months
+	// (GET /v1/reports)
+	GetReport(w http.ResponseWriter, r *http.Request, params GetReportParams)
+	// ExportReport Download a report as CSV
+	// (GET /v1/reports/export)
+	ExportReport(w http.ResponseWriter, r *http.Request, params ExportReportParams)
 	// ListRoadmapBoards List roadmap boards
 	// (GET /v1/roadmap-boards)
 	ListRoadmapBoards(w http.ResponseWriter, r *http.Request, params ListRoadmapBoardsParams)
@@ -57412,6 +57713,374 @@ func (siw *ServerInterfaceWrapper) GetVapidPublicKey(w http.ResponseWriter, r *h
 	handler.ServeHTTP(w, r)
 }
 
+// GetReport operation middleware
+func (siw *ServerInterfaceWrapper) GetReport(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetReportParams
+
+	// ------------- Required query parameter "from" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, true, "from", r.URL.Query(), &params.From, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "from"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "from", Err: err})
+		}
+		return
+	}
+
+	// ------------- Required query parameter "to" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, true, "to", r.URL.Query(), &params.To, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "to"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "to", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "timezone" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "timezone", r.URL.Query(), &params.Timezone, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "timezone"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "timezone", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "granularity" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "granularity", r.URL.Query(), &params.Granularity, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "granularity"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "granularity", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "metrics" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "metrics", r.URL.Query(), &params.Metrics, runtime.BindQueryParameterOptions{Type: "array", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "metrics"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "metrics", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "group_by" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "group_by", r.URL.Query(), &params.GroupBy, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "group_by"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "group_by", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "inbox_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "inbox_id", r.URL.Query(), &params.InboxId, runtime.BindQueryParameterOptions{Type: "string", Format: "uuid"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "inbox_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "inbox_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "channel_kind" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "channel_kind", r.URL.Query(), &params.ChannelKind, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "channel_kind"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "channel_kind", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "label_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "label_id", r.URL.Query(), &params.LabelId, runtime.BindQueryParameterOptions{Type: "string", Format: "uuid"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "label_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "label_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "team_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "team_id", r.URL.Query(), &params.TeamId, runtime.BindQueryParameterOptions{Type: "string", Format: "uuid"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "team_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "team_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "member_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "member_id", r.URL.Query(), &params.MemberId, runtime.BindQueryParameterOptions{Type: "string", Format: "uuid"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "member_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "member_id", Err: err})
+		}
+		return
+	}
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetReport(w, r, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ExportReport operation middleware
+func (siw *ServerInterfaceWrapper) ExportReport(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ExportReportParams
+
+	// ------------- Required query parameter "from" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, true, "from", r.URL.Query(), &params.From, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "from"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "from", Err: err})
+		}
+		return
+	}
+
+	// ------------- Required query parameter "to" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, true, "to", r.URL.Query(), &params.To, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "to"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "to", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "timezone" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "timezone", r.URL.Query(), &params.Timezone, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "timezone"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "timezone", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "granularity" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "granularity", r.URL.Query(), &params.Granularity, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "granularity"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "granularity", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "metrics" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "metrics", r.URL.Query(), &params.Metrics, runtime.BindQueryParameterOptions{Type: "array", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "metrics"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "metrics", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "group_by" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "group_by", r.URL.Query(), &params.GroupBy, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "group_by"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "group_by", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "inbox_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "inbox_id", r.URL.Query(), &params.InboxId, runtime.BindQueryParameterOptions{Type: "string", Format: "uuid"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "inbox_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "inbox_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "channel_kind" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "channel_kind", r.URL.Query(), &params.ChannelKind, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "channel_kind"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "channel_kind", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "label_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "label_id", r.URL.Query(), &params.LabelId, runtime.BindQueryParameterOptions{Type: "string", Format: "uuid"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "label_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "label_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "team_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "team_id", r.URL.Query(), &params.TeamId, runtime.BindQueryParameterOptions{Type: "string", Format: "uuid"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "team_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "team_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "member_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "member_id", r.URL.Query(), &params.MemberId, runtime.BindQueryParameterOptions{Type: "string", Format: "uuid"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "member_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "member_id", Err: err})
+		}
+		return
+	}
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ExportReport(w, r, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // ListRoadmapBoards operation middleware
 func (siw *ServerInterfaceWrapper) ListRoadmapBoards(w http.ResponseWriter, r *http.Request) {
 
@@ -63287,6 +63956,8 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/conversations/counts", wrapper.GetConversationCounts)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/home", wrapper.GetHome)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/stats", wrapper.GetStats)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/reports", wrapper.GetReport)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/reports/export", wrapper.ExportReport)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/conversations/bulk", wrapper.BulkUpdateConversations)
 	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/conversations/{conversationId}", wrapper.TrashConversation)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/conversations/{conversationId}", wrapper.GetConversation)
@@ -100069,6 +100740,180 @@ func (response GetVapidPublicKey404ApplicationProblemPlusJSONResponse) VisitGetV
 	return err
 }
 
+type GetReportRequestObject struct {
+	Params GetReportParams
+}
+
+type GetReportResponseObject interface {
+	VisitGetReportResponse(w http.ResponseWriter) error
+}
+
+type GetReport200JSONResponse Report
+
+func (response GetReport200JSONResponse) VisitGetReportResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetReport400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response GetReport400ApplicationProblemPlusJSONResponse) VisitGetReportResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetReport401ApplicationProblemPlusJSONResponse Problem
+
+func (response GetReport401ApplicationProblemPlusJSONResponse) VisitGetReportResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetReport403ApplicationProblemPlusJSONResponse Problem
+
+func (response GetReport403ApplicationProblemPlusJSONResponse) VisitGetReportResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetReport404ApplicationProblemPlusJSONResponse Problem
+
+func (response GetReport404ApplicationProblemPlusJSONResponse) VisitGetReportResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ExportReportRequestObject struct {
+	Params ExportReportParams
+}
+
+type ExportReportResponseObject interface {
+	VisitExportReportResponse(w http.ResponseWriter) error
+}
+
+type ExportReport200ResponseHeaders struct {
+	ContentDisposition *string
+}
+
+type ExportReport200TextcsvResponse struct {
+	Body          io.Reader
+	Headers       ExportReport200ResponseHeaders
+	ContentLength int64
+}
+
+func (response ExportReport200TextcsvResponse) VisitExportReportResponse(w http.ResponseWriter) error {
+
+	w.Header().Set("Content-Type", "text/csv")
+	if response.ContentLength != 0 {
+		w.Header().Set("Content-Length", fmt.Sprint(response.ContentLength))
+	}
+	if response.Headers.ContentDisposition != nil {
+		w.Header().Set("Content-Disposition", fmt.Sprint(*response.Headers.ContentDisposition))
+	}
+	w.WriteHeader(200)
+
+	if closer, ok := response.Body.(io.ReadCloser); ok {
+		defer closer.Close()
+	}
+	_, err := io.Copy(w, response.Body)
+	return err
+}
+
+type ExportReport400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response ExportReport400ApplicationProblemPlusJSONResponse) VisitExportReportResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ExportReport401ApplicationProblemPlusJSONResponse Problem
+
+func (response ExportReport401ApplicationProblemPlusJSONResponse) VisitExportReportResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ExportReport403ApplicationProblemPlusJSONResponse Problem
+
+func (response ExportReport403ApplicationProblemPlusJSONResponse) VisitExportReportResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ExportReport404ApplicationProblemPlusJSONResponse Problem
+
+func (response ExportReport404ApplicationProblemPlusJSONResponse) VisitExportReportResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
 type ListRoadmapBoardsRequestObject struct {
 	Params ListRoadmapBoardsParams
 }
@@ -108459,6 +109304,12 @@ type StrictServerInterface interface {
 	// GetVapidPublicKey The server's Web Push key
 	// (GET /v1/push/vapid-public-key)
 	GetVapidPublicKey(ctx context.Context, request GetVapidPublicKeyRequestObject) (GetVapidPublicKeyResponseObject, error)
+	// GetReport Team activity over days, weeks or months
+	// (GET /v1/reports)
+	GetReport(ctx context.Context, request GetReportRequestObject) (GetReportResponseObject, error)
+	// ExportReport Download a report as CSV
+	// (GET /v1/reports/export)
+	ExportReport(ctx context.Context, request ExportReportRequestObject) (ExportReportResponseObject, error)
 	// ListRoadmapBoards List roadmap boards
 	// (GET /v1/roadmap-boards)
 	ListRoadmapBoards(ctx context.Context, request ListRoadmapBoardsRequestObject) (ListRoadmapBoardsResponseObject, error)
@@ -120838,6 +121689,58 @@ func (sh *strictHandler) GetVapidPublicKey(w http.ResponseWriter, r *http.Reques
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
 	} else if validResponse, ok := response.(GetVapidPublicKeyResponseObject); ok {
 		if err := validResponse.VisitGetVapidPublicKeyResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// GetReport operation middleware
+func (sh *strictHandler) GetReport(w http.ResponseWriter, r *http.Request, params GetReportParams) {
+	var request GetReportRequestObject
+
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.GetReport(ctx, request.(GetReportRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "GetReport")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(GetReportResponseObject); ok {
+		if err := validResponse.VisitGetReportResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// ExportReport operation middleware
+func (sh *strictHandler) ExportReport(w http.ResponseWriter, r *http.Request, params ExportReportParams) {
+	var request ExportReportRequestObject
+
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.ExportReport(ctx, request.(ExportReportRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "ExportReport")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(ExportReportResponseObject); ok {
+		if err := validResponse.VisitExportReportResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {

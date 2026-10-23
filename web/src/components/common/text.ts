@@ -121,6 +121,7 @@ export const API_KEY_SCOPES: ApiKeyScope[] = [
   "views:write",
   "automations:read",
   "automations:manage",
+  "reports:read",
   "audit:read",
 ]
 export const OPT_IN_SCOPES: ApiKeyScope[] = [
@@ -303,6 +304,7 @@ export function useEnumText() {
       "views:write": t`Create and change saved views of the conversation list`,
       "automations:read": t`Read automation rules and their run log`,
       "automations:manage": t`Create, change, reorder and delete automation rules`,
+      "reports:read": t`Read reports of the team's work`,
       "audit:read": t`Read the audit log (owners only)`,
     } satisfies Record<ApiKeyScope, string>,
     delivery: { pending: t`Pending`, succeeded: t`Succeeded`, failed: t`Failed` } satisfies Record<

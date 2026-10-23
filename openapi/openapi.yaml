@@ -149,6 +149,8 @@ tags:
       of contacts that appear in no other inbox (`403 forbidden`).
   - name: conversations
     description: Threads between a contact and an inbox.
+  - name: reports
+    description: Team activity over days, weeks and months, from rollups.
   - name: messages
     description: Messages, notes, events and their attachments.
   - name: labels
@@ -4462,6 +4464,127 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Stats"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+  /v1/reports:
+    get:
+      operationId: getReport
+      summary: Team activity over days, weeks or months
+      description: |
+        Conversations opened, closed and reopened, replies, first-reply and resolution times
+        (median and p90), SLA targets met and breached and ratings, per day, week (Monday to
+        Sunday) or month from `from` to `to` in `timezone`, optionally broken down by inbox,
+        channel kind, label, team or member, over the inboxes the caller can see. At most 13
+        months.
+
+        Answers come from rollups the server keeps in quarter-hour buckets, which add up exactly
+        to local days in every time zone in use today. Activity after `built_until` (when that is
+        less than a day ago) is counted from the conversations at request time, so today's
+        counts agree with `GET /v1/stats`. While the rollups are first being built,
+        `built_until` says how far they reach and later periods are empty.
+
+        Counted as `GET /v1/stats` counts: `replies` are replies sent by members (their own, or
+        a bot's draft a member sent); replies that bots, automation rules and automatic replies
+        send never count, neither as replies nor as a first reply. `closed` is every close;
+        `first_replies` the conversations whose first member reply falls in the period;
+        ratings when they were given (feedback is never rated). `opened` counts conversations
+        started (not spam); `reopened` a change from closed to another status; a resolution is
+        each close that follows a message from the contact, timed from the first such message
+        after the previous close. Trashed conversations and imported history are left out.
+
+        Medians and p90 come from histograms whose buckets are 5% wide, so they are within 2.5%
+        of the exact value. Labels and the conversation's team are those it had when its period
+        was last rolled up: today's periods are rebuilt every few minutes and the last 31 days
+        every night.
+
+        `group_by=member` counts each figure for the member who did it: the reply's author, who
+        closed or reopened, who sent the first reply, who closed for resolutions, the assignee
+        for opened conversations and ratings, the assignee at the outcome for SLA. `team` is the
+        conversation's team, and the team at the outcome for SLA. Figures with no member, team or
+        channel kind go to a group without `key`. `label` groups count a conversation under each
+        of its labels and leave out conversations without one.
+
+        Scope: `reports:read`.
+      tags: [reports]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/ReportFrom"
+        - $ref: "#/components/parameters/ReportTo"
+        - $ref: "#/components/parameters/ReportTimezone"
+        - $ref: "#/components/parameters/ReportGranularity"
+        - $ref: "#/components/parameters/ReportMetrics"
+        - $ref: "#/components/parameters/ReportGroupBy"
+        - $ref: "#/components/parameters/ReportInboxId"
+        - $ref: "#/components/parameters/ReportChannelKind"
+        - $ref: "#/components/parameters/ReportLabelId"
+        - $ref: "#/components/parameters/ReportTeamId"
+        - $ref: "#/components/parameters/ReportMemberId"
+      responses:
+        "200":
+          description: The report.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Report"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+  /v1/reports/export:
+    get:
+      operationId: exportReport
+      summary: Download a report as CSV
+      description: |
+        The report `GET /v1/reports` answers for the same parameters, as a CSV download
+        (`Content-Disposition: attachment`): a header row, then one row per period, or per group
+        and period with `group_by` (groups in the order of `groups`, every period of each, oldest
+        first). Columns: `period` (the period's first day, `YYYY-MM-DD`), with `group_by` also
+        `group_id` (empty for the group without a key) and `group_name` (the inbox, label, team
+        or member name, or the channel kind), then one column per figure of the chosen metrics
+        in this order: `opened`, `closed`, `reopened`, `replies`, `first_replies`,
+        `first_reply_median_seconds`, `first_reply_p90_seconds`, `resolutions`,
+        `resolution_median_seconds`, `resolution_p90_seconds`, `sla_first_reply_met`,
+        `sla_first_reply_breached`, `sla_next_reply_met`, `sla_next_reply_breached`,
+        `sla_resolution_met`, `sla_resolution_breached`, `ratings_good`, `ratings_bad`. A time
+        with nothing to measure is an empty cell. Every cell is quoted; cells starting with `=`,
+        `+`, `-`, `@`, tab or carriage return get a leading `'`.
+
+        Scope: `reports:read`.
+      tags: [reports]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/ReportFrom"
+        - $ref: "#/components/parameters/ReportTo"
+        - $ref: "#/components/parameters/ReportTimezone"
+        - $ref: "#/components/parameters/ReportGranularity"
+        - $ref: "#/components/parameters/ReportMetrics"
+        - $ref: "#/components/parameters/ReportGroupBy"
+        - $ref: "#/components/parameters/ReportInboxId"
+        - $ref: "#/components/parameters/ReportChannelKind"
+        - $ref: "#/components/parameters/ReportLabelId"
+        - $ref: "#/components/parameters/ReportTeamId"
+        - $ref: "#/components/parameters/ReportMemberId"
+      responses:
+        "200":
+          description: The report as CSV.
+          headers:
+            Content-Disposition:
+              schema:
+                type: string
+          content:
+            text/csv:
+              schema:
+                type: string
         "400":
           $ref: "#/components/responses/Problem"
         "401":
@@ -19984,6 +20107,89 @@ components:
         type: array
         items:
           $ref: "#/components/schemas/ConversationKind"
+    ReportFrom:
+      name: from
+      in: query
+      required: true
+      description: First local day of the report, in `timezone`.
+      schema:
+        type: string
+        format: date
+    ReportTo:
+      name: to
+      in: query
+      required: true
+      description: |
+        Last local day of the report, included; before the same day 13 months after `from`.
+        Days after today are empty.
+      schema:
+        type: string
+        format: date
+    ReportTimezone:
+      name: timezone
+      in: query
+      description: IANA time zone whose days, weeks and months the report uses; the panel sends the browser's.
+      schema:
+        type: string
+        maxLength: 64
+        default: UTC
+        examples: ["Europe/Istanbul"]
+    ReportGranularity:
+      name: granularity
+      in: query
+      description: Length of each period.
+      schema:
+        $ref: "#/components/schemas/ReportGranularity"
+    ReportMetrics:
+      name: metrics
+      in: query
+      description: |
+        The metrics to count; all of them when absent. Repeat the parameter or give a
+        comma-separated list.
+      schema:
+        type: array
+        items:
+          $ref: "#/components/schemas/ReportMetric"
+    ReportGroupBy:
+      name: group_by
+      in: query
+      description: Break every figure down by this, into `groups`.
+      schema:
+        $ref: "#/components/schemas/ReportGroupBy"
+    ReportInboxId:
+      name: inbox_id
+      in: query
+      description: Only this inbox (`404` when the caller cannot see it).
+      schema:
+        type: string
+        format: uuid
+    ReportChannelKind:
+      name: channel_kind
+      in: query
+      description: Only conversations that started on a channel of this kind.
+      schema:
+        $ref: "#/components/schemas/ChannelKind"
+    ReportLabelId:
+      name: label_id
+      in: query
+      description: Only conversations with this label (`404` for a label the workspace does not have).
+      schema:
+        type: string
+        format: uuid
+    ReportTeamId:
+      name: team_id
+      in: query
+      description: Only the figures of this team, attributed as `group_by=team` does (`404` for a team the workspace does not have).
+      schema:
+        type: string
+        format: uuid
+    ReportMemberId:
+      name: member_id
+      in: query
+      description: Only the figures of this member, attributed as `group_by=member` does (`404` for a member the workspace does not have).
+      schema:
+        type: string
+        format: uuid
     Limit:
       name: limit
       in: query
@@ -21148,8 +21354,9 @@ components:
           admins only; never offered to agents' tokens, refused for keys limited to inboxes. Never
           implied: a key made without naming its scopes does not hold it. A rule acts on every
           inbox it covers with the workspace's power.
+        - `reports:read`: reports and their CSV export, over the inboxes the caller can see.
 
-        `conversations:delete`, `messages:redact`, `lists:*`, `broadcasts:*`, `migrations:manage`, `analytics:*`, `status:*`, `help:*`, `roadmap:*`, `changelog:*`, `audit:read`, `integrations:*`, `issues:write`, `fields:manage`, `views:write` and `automations:*` are never added to keys made before they existed.
+        `conversations:delete`, `messages:redact`, `lists:*`, `broadcasts:*`, `migrations:manage`, `analytics:*`, `status:*`, `help:*`, `roadmap:*`, `changelog:*`, `audit:read`, `integrations:*`, `issues:write`, `fields:manage`, `views:write`, `automations:*` and `reports:read` are never added to keys made before they existed.
       enum:
         - conversations:read
         - conversations:write
@@ -21195,6 +21402,7 @@ components:
         - views:write
         - automations:read
         - automations:manage
+        - reports:read
     BotAvatarUrl:
       type: string
       format: uri
@@ -23781,6 +23989,161 @@ components:
             $ref: "#/components/schemas/MemberStats"
         sla:
           $ref: "#/components/schemas/SlaStats"
+    ReportGranularity:
+      type: string
+      enum: [day, week, month]
+      default: day
+      x-enum-varnames: [ReportGranularityDay, ReportGranularityWeek, ReportGranularityMonth]
+    ReportMetric:
+      type: string
+      description: |
+        `opened`, `closed`, `reopened` and `replies` are counts; `first_reply` is
+        `first_replies` with their median and p90 seconds; `resolution` is `resolutions` with
+        theirs; `sla` the targets met and breached; `ratings` good and bad.
+      enum: [opened, closed, reopened, replies, first_reply, resolution, sla, ratings]
+      x-enum-varnames: [ReportMetricOpened, ReportMetricClosed, ReportMetricReopened, ReportMetricReplies, ReportMetricFirstReply, ReportMetricResolution, ReportMetricSla, ReportMetricRatings]
+    ReportGroupBy:
+      type: string
+      enum: [inbox, channel, label, team, member]
+      x-enum-varnames: [ReportGroupByInbox, ReportGroupByChannel, ReportGroupByLabel, ReportGroupByTeam, ReportGroupByMember]
+    Report:
+      type: object
+      required: [from, to, timezone, granularity, metrics, totals, series]
+      properties:
+        from:
+          type: string
+          format: date
+        to:
+          type: string
+          format: date
+        timezone:
+          type: string
+        granularity:
+          $ref: "#/components/schemas/ReportGranularity"
+        metrics:
+          type: array
+          description: The metrics counted; the figures of the others are absent.
+          items:
+            $ref: "#/components/schemas/ReportMetric"
+        group_by:
+          $ref: "#/components/schemas/ReportGroupBy"
+        built_until:
+          type: string
+          format: date-time
+          description: |
+            The rollups hold everything before this instant. Absent until the first rollup ran;
+            activity after it is counted live only when it is less than a day old.
+        totals:
+          $ref: "#/components/schemas/ReportValues"
+        series:
+          type: array
+          description: Every period from `from` to `to`, oldest first.
+          items:
+            $ref: "#/components/schemas/ReportPeriod"
+        groups:
+          type: array
+          description: |
+            With `group_by`: each group with any figure, by `key`, the group without `key` last.
+            Inboxes, labels, teams and members are named by id; their names come from their own
+            endpoints.
+          items:
+            $ref: "#/components/schemas/ReportGroup"
+    ReportGroup:
+      type: object
+      required: [totals, series]
+      properties:
+        key:
+          type: string
+          description: |
+            The inbox, label, team or member id, or the channel kind. Absent for figures without
+            a team, a member or a channel kind.
+        totals:
+          $ref: "#/components/schemas/ReportValues"
+        series:
+          type: array
+          description: Every period, as in the report's `series`.
+          items:
+            $ref: "#/components/schemas/ReportPeriod"
+    ReportPeriod:
+      type: object
+      required: [start, values]
+      properties:
+        start:
+          type: string
+          format: date
+          description: The period's first day, never before `from` (a week or month cut by `from` starts there).
+        values:
+          $ref: "#/components/schemas/ReportValues"
+    ReportValues:
+      type: object
+      description: |
+        The figures of the requested metrics; the others are absent. A median or p90 is absent
+        when there is nothing to measure.
+      properties:
+        opened:
+          type: integer
+          format: int64
+        closed:
+          type: integer
+          format: int64
+        reopened:
+          type: integer
+          format: int64
+        replies:
+          type: integer
+          format: int64
+        first_replies:
+          type: integer
+          format: int64
+        first_reply_median_seconds:
+          type: integer
+          format: int64
+        first_reply_p90_seconds:
+          type: integer
+          format: int64
+        resolutions:
+          type: integer
+          format: int64
+        resolution_median_seconds:
+          type: integer
+          format: int64
+        resolution_p90_seconds:
+          type: integer
+          format: int64
+        sla:
+          $ref: "#/components/schemas/ReportSla"
+        ratings:
+          $ref: "#/components/schemas/ReportRatings"
+    ReportSla:
+      type: object
+      required: [first_reply, next_reply, resolution]
+      properties:
+        first_reply:
+          $ref: "#/components/schemas/ReportSlaTarget"
+        next_reply:
+          $ref: "#/components/schemas/ReportSlaTarget"
+        resolution:
+          $ref: "#/components/schemas/ReportSlaTarget"
+    ReportSlaTarget:
+      type: object
+      required: [met, breached]
+      properties:
+        met:
+          type: integer
+          format: int64
+        breached:
+          type: integer
+          format: int64
+    ReportRatings:
+      type: object
+      required: [good, bad]
+      properties:
+        good:
+          type: integer
+          format: int64
+        bad:
+          type: integer
+          format: int64
     RatingStats:
       type: object
       description: Ratings contacts gave in the window, in total and per inbox (inboxes without any are left out).

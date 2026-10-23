@@ -2381,6 +2381,93 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/reports": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Team activity over days, weeks or months
+         * @description Conversations opened, closed and reopened, replies, first-reply and resolution times
+         *     (median and p90), SLA targets met and breached and ratings, per day, week (Monday to
+         *     Sunday) or month from `from` to `to` in `timezone`, optionally broken down by inbox,
+         *     channel kind, label, team or member, over the inboxes the caller can see. At most 13
+         *     months.
+         *
+         *     Answers come from rollups the server keeps in quarter-hour buckets, which add up exactly
+         *     to local days in every time zone in use today. Activity after `built_until` (when that is
+         *     less than a day ago) is counted from the conversations at request time, so today's
+         *     counts agree with `GET /v1/stats`. While the rollups are first being built,
+         *     `built_until` says how far they reach and later periods are empty.
+         *
+         *     Counted as `GET /v1/stats` counts: `replies` are replies sent by members (their own, or
+         *     a bot's draft a member sent); replies that bots, automation rules and automatic replies
+         *     send never count, neither as replies nor as a first reply. `closed` is every close;
+         *     `first_replies` the conversations whose first member reply falls in the period;
+         *     ratings when they were given (feedback is never rated). `opened` counts conversations
+         *     started (not spam); `reopened` a change from closed to another status; a resolution is
+         *     each close that follows a message from the contact, timed from the first such message
+         *     after the previous close. Trashed conversations and imported history are left out.
+         *
+         *     Medians and p90 come from histograms whose buckets are 5% wide, so they are within 2.5%
+         *     of the exact value. Labels and the conversation's team are those it had when its period
+         *     was last rolled up: today's periods are rebuilt every few minutes and the last 31 days
+         *     every night.
+         *
+         *     `group_by=member` counts each figure for the member who did it: the reply's author, who
+         *     closed or reopened, who sent the first reply, who closed for resolutions, the assignee
+         *     for opened conversations and ratings, the assignee at the outcome for SLA. `team` is the
+         *     conversation's team, and the team at the outcome for SLA. Figures with no member, team or
+         *     channel kind go to a group without `key`. `label` groups count a conversation under each
+         *     of its labels and leave out conversations without one.
+         *
+         *     Scope: `reports:read`.
+         */
+        get: operations["getReport"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/reports/export": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Download a report as CSV
+         * @description The report `GET /v1/reports` answers for the same parameters, as a CSV download
+         *     (`Content-Disposition: attachment`): a header row, then one row per period, or per group
+         *     and period with `group_by` (groups in the order of `groups`, every period of each, oldest
+         *     first). Columns: `period` (the period's first day, `YYYY-MM-DD`), with `group_by` also
+         *     `group_id` (empty for the group without a key) and `group_name` (the inbox, label, team
+         *     or member name, or the channel kind), then one column per figure of the chosen metrics
+         *     in this order: `opened`, `closed`, `reopened`, `replies`, `first_replies`,
+         *     `first_reply_median_seconds`, `first_reply_p90_seconds`, `resolutions`,
+         *     `resolution_median_seconds`, `resolution_p90_seconds`, `sla_first_reply_met`,
+         *     `sla_first_reply_breached`, `sla_next_reply_met`, `sla_next_reply_breached`,
+         *     `sla_resolution_met`, `sla_resolution_breached`, `ratings_good`, `ratings_bad`. A time
+         *     with nothing to measure is an empty cell. Every cell is quoted; cells starting with `=`,
+         *     `+`, `-`, `@`, tab or carriage return get a leading `'`.
+         *
+         *     Scope: `reports:read`.
+         */
+        get: operations["exportReport"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/conversations/bulk": {
         parameters: {
             query?: never;
@@ -12503,11 +12590,12 @@ export interface components {
          *       admins only; never offered to agents' tokens, refused for keys limited to inboxes. Never
          *       implied: a key made without naming its scopes does not hold it. A rule acts on every
          *       inbox it covers with the workspace's power.
+         *     - `reports:read`: reports and their CSV export, over the inboxes the caller can see.
          *
-         *     `conversations:delete`, `messages:redact`, `lists:*`, `broadcasts:*`, `migrations:manage`, `analytics:*`, `status:*`, `help:*`, `roadmap:*`, `changelog:*`, `audit:read`, `integrations:*`, `issues:write`, `fields:manage`, `views:write` and `automations:*` are never added to keys made before they existed.
+         *     `conversations:delete`, `messages:redact`, `lists:*`, `broadcasts:*`, `migrations:manage`, `analytics:*`, `status:*`, `help:*`, `roadmap:*`, `changelog:*`, `audit:read`, `integrations:*`, `issues:write`, `fields:manage`, `views:write`, `automations:*` and `reports:read` are never added to keys made before they existed.
          * @enum {string}
          */
-        ApiKeyScope: "conversations:read" | "conversations:write" | "conversations:delete" | "messages:write" | "messages:redact" | "drafts:send" | "notes:write" | "contacts:read" | "contacts:write" | "inboxes:read" | "inboxes:manage" | "labels:write" | "canned_replies:write" | "webhooks:manage" | "workspace:manage" | "feedback:write" | "lists:read" | "lists:write" | "broadcasts:read" | "broadcasts:write" | "broadcasts:send" | "migrations:manage" | "analytics:read" | "analytics:write" | "analytics:manage" | "status:read" | "status:manage" | "help:read" | "help:write" | "help:publish" | "roadmap:read" | "roadmap:write" | "roadmap:stage" | "changelog:read" | "changelog:write" | "changelog:publish" | "audit:read" | "integrations:read" | "integrations:manage" | "issues:write" | "fields:manage" | "views:write" | "automations:read" | "automations:manage";
+        ApiKeyScope: "conversations:read" | "conversations:write" | "conversations:delete" | "messages:write" | "messages:redact" | "drafts:send" | "notes:write" | "contacts:read" | "contacts:write" | "inboxes:read" | "inboxes:manage" | "labels:write" | "canned_replies:write" | "webhooks:manage" | "workspace:manage" | "feedback:write" | "lists:read" | "lists:write" | "broadcasts:read" | "broadcasts:write" | "broadcasts:send" | "migrations:manage" | "analytics:read" | "analytics:write" | "analytics:manage" | "status:read" | "status:manage" | "help:read" | "help:write" | "help:publish" | "roadmap:read" | "roadmap:write" | "roadmap:stage" | "changelog:read" | "changelog:write" | "changelog:publish" | "audit:read" | "integrations:read" | "integrations:manage" | "issues:write" | "fields:manage" | "views:write" | "automations:read" | "automations:manage" | "reports:read";
         /**
          * Format: uri
          * @description An `https` image URL.
@@ -12753,6 +12841,30 @@ export interface components {
          * @enum {string}
          */
         InboxMode: "live" | "async";
+        /**
+         * @description How conversations without an assignee get one when they arrive or are reopened by the
+         *     contact. `off`: they stay unassigned. `round_robin`: the eligible member of the pool who was
+         *     given one longest ago (never first). `least_open`: the eligible member with the fewest
+         *     open conversations, then the one given one longest ago. A member is eligible while they
+         *     have access to the inbox through their own or a team's grant (owners and admins too only
+         *     with a grant), have the panel or an app connected, have availability `auto`, are under the
+         *     pool's cap, and, for a team's pool, are in the team; and only while the inbox is inside
+         *     its business hours. A conversation with a team and no member uses the team's pool, one
+         *     with neither the inbox's. When nobody is eligible it waits (`assign_waiting_since`) and is
+         *     assigned, oldest first, as soon as someone is. A reopened conversation keeps its member
+         *     while they still have access to the inbox and are not `away`; otherwise it is unassigned
+         *     and goes to the pool. A conversation with a member is never reassigned otherwise.
+         *     Automation rules run first.
+         * @enum {string}
+         */
+        AssignmentMode: "off" | "round_robin" | "least_open";
+        /**
+         * Format: int32
+         * @description The most `open`, non-spam conversations outside the trash a member of the pool may hold,
+         *     counted across the workspace, for automatic assignment to give them another. Assigning by
+         *     hand ignores it.
+         */
+        AssignmentCap: number;
         /** @enum {string} */
         Weekday: "mon" | "tue" | "wed" | "thu" | "fri" | "sat" | "sun";
         BusinessHoursInterval: {
@@ -12800,6 +12912,9 @@ export interface components {
             expected_reply_minutes?: number;
             business_hours: components["schemas"]["BusinessHours"];
             feedback_categories: components["schemas"]["InboxFeedbackCategoryList"];
+            assignment_mode: components["schemas"]["AssignmentMode"];
+            /** @description Absent when there is no cap. */
+            assignment_cap?: components["schemas"]["AssignmentCap"];
             /**
              * @description Contacts may rate a closed conversation (`good` or `bad`, with an optional comment):
              *     the widget and the mobile SDKs offer it, and e-mail contacts get a request with two
@@ -12854,6 +12969,9 @@ export interface components {
             /** Format: int32 */
             expected_reply_minutes?: number;
             business_hours?: components["schemas"]["BusinessHours"];
+            /** @description Defaults to `off`. */
+            assignment_mode?: components["schemas"]["AssignmentMode"];
+            assignment_cap?: components["schemas"]["AssignmentCap"];
             /** @default false */
             ask_for_rating: boolean;
         };
@@ -12877,6 +12995,12 @@ export interface components {
              *     `inboxes:manage`.
              */
             feedback_categories?: components["schemas"]["InboxFeedbackCategoryList"];
+            assignment_mode?: components["schemas"]["AssignmentMode"];
+            /**
+             * Format: int32
+             * @description See `AssignmentCap`; `null` removes the cap.
+             */
+            assignment_cap?: number | null;
             ask_for_rating?: boolean;
             /** @description Owners, admins and keys with `inboxes:manage`. */
             sender?: components["schemas"]["InboxSenderUpdate"];
@@ -13821,6 +13945,13 @@ export interface components {
              * @description The assigned team; absent when none. Independent of `assignee_id`.
              */
             team_id?: string;
+            /**
+             * Format: date-time
+             * @description Automatic assignment found nobody eligible at this time and the conversation waits for
+             *     a member to become available; absent otherwise. It clears when the conversation gets a
+             *     member or stops being `open`.
+             */
+            assign_waiting_since?: string;
             /** @description The SLA policy that applies and its targets; absent when none does. */
             sla?: components["schemas"]["ConversationSla"];
             /** @description Label ids. */
@@ -14145,6 +14276,109 @@ export interface components {
             /** @description Per member, by member id. */
             members: components["schemas"]["MemberStats"][];
             sla: components["schemas"]["SlaStats"];
+        };
+        /**
+         * @default day
+         * @enum {string}
+         */
+        ReportGranularity: "day" | "week" | "month";
+        /**
+         * @description `opened`, `closed`, `reopened` and `replies` are counts; `first_reply` is
+         *     `first_replies` with their median and p90 seconds; `resolution` is `resolutions` with
+         *     theirs; `sla` the targets met and breached; `ratings` good and bad.
+         * @enum {string}
+         */
+        ReportMetric: "opened" | "closed" | "reopened" | "replies" | "first_reply" | "resolution" | "sla" | "ratings";
+        /** @enum {string} */
+        ReportGroupBy: "inbox" | "channel" | "label" | "team" | "member";
+        Report: {
+            /** Format: date */
+            from: string;
+            /** Format: date */
+            to: string;
+            timezone: string;
+            granularity: components["schemas"]["ReportGranularity"];
+            /** @description The metrics counted; the figures of the others are absent. */
+            metrics: components["schemas"]["ReportMetric"][];
+            group_by?: components["schemas"]["ReportGroupBy"];
+            /**
+             * Format: date-time
+             * @description The rollups hold everything before this instant. Absent until the first rollup ran;
+             *     activity after it is counted live only when it is less than a day old.
+             */
+            built_until?: string;
+            totals: components["schemas"]["ReportValues"];
+            /** @description Every period from `from` to `to`, oldest first. */
+            series: components["schemas"]["ReportPeriod"][];
+            /**
+             * @description With `group_by`: each group with any figure, by `key`, the group without `key` last.
+             *     Inboxes, labels, teams and members are named by id; their names come from their own
+             *     endpoints.
+             */
+            groups?: components["schemas"]["ReportGroup"][];
+        };
+        ReportGroup: {
+            /**
+             * @description The inbox, label, team or member id, or the channel kind. Absent for figures without
+             *     a team, a member or a channel kind.
+             */
+            key?: string;
+            totals: components["schemas"]["ReportValues"];
+            /** @description Every period, as in the report's `series`. */
+            series: components["schemas"]["ReportPeriod"][];
+        };
+        ReportPeriod: {
+            /**
+             * Format: date
+             * @description The period's first day, never before `from` (a week or month cut by `from` starts there).
+             */
+            start: string;
+            values: components["schemas"]["ReportValues"];
+        };
+        /**
+         * @description The figures of the requested metrics; the others are absent. A median or p90 is absent
+         *     when there is nothing to measure.
+         */
+        ReportValues: {
+            /** Format: int64 */
+            opened?: number;
+            /** Format: int64 */
+            closed?: number;
+            /** Format: int64 */
+            reopened?: number;
+            /** Format: int64 */
+            replies?: number;
+            /** Format: int64 */
+            first_replies?: number;
+            /** Format: int64 */
+            first_reply_median_seconds?: number;
+            /** Format: int64 */
+            first_reply_p90_seconds?: number;
+            /** Format: int64 */
+            resolutions?: number;
+            /** Format: int64 */
+            resolution_median_seconds?: number;
+            /** Format: int64 */
+            resolution_p90_seconds?: number;
+            sla?: components["schemas"]["ReportSla"];
+            ratings?: components["schemas"]["ReportRatings"];
+        };
+        ReportSla: {
+            first_reply: components["schemas"]["ReportSlaTarget"];
+            next_reply: components["schemas"]["ReportSlaTarget"];
+            resolution: components["schemas"]["ReportSlaTarget"];
+        };
+        ReportSlaTarget: {
+            /** Format: int64 */
+            met: number;
+            /** Format: int64 */
+            breached: number;
+        };
+        ReportRatings: {
+            /** Format: int64 */
+            good: number;
+            /** Format: int64 */
+            bad: number;
         };
         /** @description Ratings contacts gave in the window, in total and per inbox (inboxes without any are left out). */
         RatingStats: {
@@ -14618,6 +14852,11 @@ export interface components {
              * @description The previous assignee (`assigned`, `unassigned`).
              */
             previous_assignee_id?: string;
+            /**
+             * @description `assigned` and `unassigned` only: true when automatic assignment made the change (the
+             *     author is `system`); absent otherwise.
+             */
+            auto?: boolean;
             status?: components["schemas"]["ConversationStatus"];
             previous_status?: components["schemas"]["ConversationStatus"];
             added_labels?: string[];
@@ -16715,6 +16954,10 @@ export interface components {
             id: string;
             name: string;
             description: string;
+            /** @description The team's pool, for conversations given to the team without a member. */
+            assignment_mode: components["schemas"]["AssignmentMode"];
+            /** @description Absent when there is no cap. */
+            assignment_cap?: components["schemas"]["AssignmentCap"];
             /** @description The team's members, in the order they were added. */
             member_ids: string[];
             /**
@@ -16731,11 +16974,20 @@ export interface components {
             /** @description Unique in the workspace (`409 team_taken`). */
             name: string;
             description?: string;
+            /** @description Defaults to `off`. */
+            assignment_mode?: components["schemas"]["AssignmentMode"];
+            assignment_cap?: components["schemas"]["AssignmentCap"];
         };
         TeamUpdate: {
             /** @description Unique in the workspace (`409 team_taken`). */
             name?: string;
             description?: string;
+            assignment_mode?: components["schemas"]["AssignmentMode"];
+            /**
+             * Format: int32
+             * @description See `AssignmentCap`; `null` removes the cap.
+             */
+            assignment_cap?: number | null;
         };
         TeamList: {
             items: components["schemas"]["Team"][];
@@ -16933,8 +17185,9 @@ export interface components {
          * @description - `add_labels`, `remove_labels` (`label_ids`).
          *     - `assign_member` (`member_id`, a member with access to the conversation's inbox when the
          *       rule runs), `assign_team` (`team_id`, a team granted the inbox), `unassign` (clears the
-         *       member). `assign_pool` leaves the conversation to automatic assignment; until automatic
-         *       assignment exists it does nothing and the run lists it as `skipped`.
+         *       member). `assign_pool` clears the member and hands the conversation to automatic
+         *       assignment once every rule of the trigger has run, with the pool the conversation's team
+         *       or inbox sets; when that pool is `off` it stays unassigned.
          *     - `set_priority` (`priority`), `set_status` (`status`: `open`, `pending` or `closed`;
          *       closing needs the conversation's required custom fields), `snooze` (`snooze_minutes`).
          *     - `add_note` (`body`): an internal note.
@@ -17065,8 +17318,9 @@ export interface components {
         AutomationRunAction: {
             type: components["schemas"]["AutomationActionType"];
             /**
-             * @description `applied`; `unchanged` when the conversation already was that way; `skipped` for
-             *     `assign_pool`; `not_run` in a failed run.
+             * @description `applied`; `unchanged` when the conversation already was that way; `not_run` in a
+             *     failed run. `skipped` is not used any more; runs written before automatic assignment
+             *     existed list `assign_pool` with it.
              * @enum {string}
              */
             result: "applied" | "unchanged" | "skipped" | "not_run";
@@ -25540,6 +25794,34 @@ export interface components {
          *     (`kind=feedback,conversation`).
          */
         ConversationKinds: components["schemas"]["ConversationKind"][];
+        /** @description First local day of the report, in `timezone`. */
+        ReportFrom: string;
+        /**
+         * @description Last local day of the report, included; before the same day 13 months after `from`.
+         *     Days after today are empty.
+         */
+        ReportTo: string;
+        /** @description IANA time zone whose days, weeks and months the report uses; the panel sends the browser's. */
+        ReportTimezone: string;
+        /** @description Length of each period. */
+        ReportGranularity: components["schemas"]["ReportGranularity"];
+        /**
+         * @description The metrics to count; all of them when absent. Repeat the parameter or give a
+         *     comma-separated list.
+         */
+        ReportMetrics: components["schemas"]["ReportMetric"][];
+        /** @description Break every figure down by this, into `groups`. */
+        ReportGroupBy: components["schemas"]["ReportGroupBy"];
+        /** @description Only this inbox (`404` when the caller cannot see it). */
+        ReportInboxId: string;
+        /** @description Only conversations that started on a channel of this kind. */
+        ReportChannelKind: components["schemas"]["ChannelKind"];
+        /** @description Only conversations with this label (`404` for a label the workspace does not have). */
+        ReportLabelId: string;
+        /** @description Only the figures of this team, attributed as `group_by=team` does (`404` for a team the workspace does not have). */
+        ReportTeamId: string;
+        /** @description Only the figures of this member, attributed as `group_by=member` does (`404` for a member the workspace does not have). */
+        ReportMemberId: string;
         /** @description Page size, 1 to 100; 25 by default. */
         Limit: number;
         StatusPageId: string;
@@ -29264,6 +29546,119 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Stats"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    getReport: {
+        parameters: {
+            query: {
+                /** @description First local day of the report, in `timezone`. */
+                from: components["parameters"]["ReportFrom"];
+                /**
+                 * @description Last local day of the report, included; before the same day 13 months after `from`.
+                 *     Days after today are empty.
+                 */
+                to: components["parameters"]["ReportTo"];
+                /** @description IANA time zone whose days, weeks and months the report uses; the panel sends the browser's. */
+                timezone?: components["parameters"]["ReportTimezone"];
+                /** @description Length of each period. */
+                granularity?: components["parameters"]["ReportGranularity"];
+                /**
+                 * @description The metrics to count; all of them when absent. Repeat the parameter or give a
+                 *     comma-separated list.
+                 */
+                metrics?: components["parameters"]["ReportMetrics"];
+                /** @description Break every figure down by this, into `groups`. */
+                group_by?: components["parameters"]["ReportGroupBy"];
+                /** @description Only this inbox (`404` when the caller cannot see it). */
+                inbox_id?: components["parameters"]["ReportInboxId"];
+                /** @description Only conversations that started on a channel of this kind. */
+                channel_kind?: components["parameters"]["ReportChannelKind"];
+                /** @description Only conversations with this label (`404` for a label the workspace does not have). */
+                label_id?: components["parameters"]["ReportLabelId"];
+                /** @description Only the figures of this team, attributed as `group_by=team` does (`404` for a team the workspace does not have). */
+                team_id?: components["parameters"]["ReportTeamId"];
+                /** @description Only the figures of this member, attributed as `group_by=member` does (`404` for a member the workspace does not have). */
+                member_id?: components["parameters"]["ReportMemberId"];
+            };
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The report. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Report"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    exportReport: {
+        parameters: {
+            query: {
+                /** @description First local day of the report, in `timezone`. */
+                from: components["parameters"]["ReportFrom"];
+                /**
+                 * @description Last local day of the report, included; before the same day 13 months after `from`.
+                 *     Days after today are empty.
+                 */
+                to: components["parameters"]["ReportTo"];
+                /** @description IANA time zone whose days, weeks and months the report uses; the panel sends the browser's. */
+                timezone?: components["parameters"]["ReportTimezone"];
+                /** @description Length of each period. */
+                granularity?: components["parameters"]["ReportGranularity"];
+                /**
+                 * @description The metrics to count; all of them when absent. Repeat the parameter or give a
+                 *     comma-separated list.
+                 */
+                metrics?: components["parameters"]["ReportMetrics"];
+                /** @description Break every figure down by this, into `groups`. */
+                group_by?: components["parameters"]["ReportGroupBy"];
+                /** @description Only this inbox (`404` when the caller cannot see it). */
+                inbox_id?: components["parameters"]["ReportInboxId"];
+                /** @description Only conversations that started on a channel of this kind. */
+                channel_kind?: components["parameters"]["ReportChannelKind"];
+                /** @description Only conversations with this label (`404` for a label the workspace does not have). */
+                label_id?: components["parameters"]["ReportLabelId"];
+                /** @description Only the figures of this team, attributed as `group_by=team` does (`404` for a team the workspace does not have). */
+                team_id?: components["parameters"]["ReportTeamId"];
+                /** @description Only the figures of this member, attributed as `group_by=member` does (`404` for a member the workspace does not have). */
+                member_id?: components["parameters"]["ReportMemberId"];
+            };
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The report as CSV. */
+            200: {
+                headers: {
+                    "Content-Disposition"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "text/csv": string;
                 };
             };
             400: components["responses"]["Problem"];

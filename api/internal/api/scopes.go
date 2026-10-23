@@ -15,7 +15,7 @@ var allScopes = []oas.ApiKeyScope{
 	oas.AnalyticsRead, oas.AnalyticsWrite, oas.AnalyticsManage, oas.StatusRead, oas.StatusManage,
 	oas.HelpRead, oas.HelpWrite, oas.HelpPublish, oas.RoadmapRead, oas.RoadmapWrite, oas.RoadmapStage,
 	oas.ChangelogRead, oas.ChangelogWrite, oas.ChangelogPublish, oas.AuditRead, oas.IntegrationsRead, oas.IntegrationsManage, oas.IssuesWrite, oas.FieldsManage, oas.ViewsWrite,
-	oas.AutomationsRead, oas.AutomationsManage,
+	oas.AutomationsRead, oas.AutomationsManage, oas.ReportsRead,
 }
 
 // notImpliedScopes are left out of a key made without naming its scopes.
@@ -103,6 +103,8 @@ var operationScopes = map[string][]oas.ApiKeyScope{
 	"ListConversations":     {oas.ConversationsRead},
 	"GetConversationCounts": {oas.ConversationsRead},
 	"GetStats":              {oas.ConversationsRead},
+	"GetReport":             {oas.ReportsRead},
+	"ExportReport":          {oas.ReportsRead},
 	"GetConversation":       {oas.ConversationsRead},
 	"ListMessages":          {oas.ConversationsRead},
 	"ListDrafts":            {oas.ConversationsRead},

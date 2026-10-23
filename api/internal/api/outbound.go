@@ -330,6 +330,8 @@ func (s *Server) AddWorkers(workers *river.Workers) {
 	river.AddWorker(workers, &autoAssignWorker{s: s})
 	river.AddWorker(workers, &assignWaitingWorker{s: s})
 	river.AddWorker(workers, &assignSweepWorker{s: s})
+	river.AddWorker(workers, &reportRollupWorker{s: s})
+	river.AddWorker(workers, &reportRollupScanWorker{s: s})
 	s.addStatusDomainWorkers(workers)
 	s.addAnalyticsWorkers(workers)
 	s.addSESWorkers(workers)
