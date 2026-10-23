@@ -1,6 +1,7 @@
 package api
 
 import (
+	"container/list"
 	"crypto/sha256"
 	"embed"
 	"encoding/base64"
@@ -72,24 +73,27 @@ const publicCachePerPage = 200
 
 type publicSlot struct {
 	publicEntry
-	used time.Time
+	key, page string
+	all, own  *list.Element
 }
 
 // publicCache keeps rendered public answers per page, view and language; an entry is used only
 // while the page's changed_at is the one it was made from and for at most ttl. Keys start with the
 // page ("<page>|…"). Visitors choose part of a key (a cursor, search words, a filter), so a page
-// holds at most publicCachePerPage entries and a full cache or page lets go of its least recently
-// used one: answers asked once never push out the ones that are read.
+// holds at most publicCachePerPage entries, and a full page or cache lets go of its least recently
+// used one: answers asked once never push out the ones that are read. Both orders are lists, so
+// every operation takes constant time under the lock.
 type publicCache struct {
 	mu      sync.Mutex
 	entries map[string]*publicSlot
-	pages   map[string]map[string]struct{}
+	lru     *list.List
+	pages   map[string]*list.List
 	ttl     time.Duration
 	max     int
 }
 
 func newPublicCache(ttl time.Duration, max int) *publicCache {
-	return &publicCache{entries: map[string]*publicSlot{}, pages: map[string]map[string]struct{}{}, ttl: ttl, max: max}
+	return &publicCache{entries: map[string]*publicSlot{}, lru: list.New(), pages: map[string]*list.List{}, ttl: ttl, max: max}
 }
 
 func publicCachePage(key string) string {
@@ -107,7 +111,8 @@ func (c *publicCache) get(key string, changed, now time.Time) (publicEntry, bool
 	if !e.changed.Equal(changed) || now.Sub(e.at) >= c.ttl || now.Before(e.at) {
 		return e.publicEntry, false
 	}
-	e.used = now
+	c.lru.MoveToFront(e.all)
+	c.pages[e.page].MoveToFront(e.own)
 	return e.publicEntry, true
 }
 
@@ -115,54 +120,37 @@ func (c *publicCache) put(key string, e publicEntry) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 	if old, ok := c.entries[key]; ok {
-		old.publicEntry, old.used = e, e.at
+		old.publicEntry = e
+		c.lru.MoveToFront(old.all)
+		c.pages[old.page].MoveToFront(old.own)
 		return
 	}
 	page := publicCachePage(key)
-	if keys := c.pages[page]; len(keys) >= publicCachePerPage {
-		c.evict(keys, e.at)
+	own := c.pages[page]
+	if own == nil {
+		own = list.New()
+		c.pages[page] = own
+	}
+	if own.Len() >= publicCachePerPage {
+		c.remove(own.Back().Value.(*publicSlot))
 	}
 	if len(c.entries) >= c.max {
-		all := make(map[string]struct{}, len(c.entries))
-		for k := range c.entries {
-			all[k] = struct{}{}
-		}
-		c.evict(all, e.at)
+		c.remove(c.lru.Back().Value.(*publicSlot))
 	}
-	c.entries[key] = &publicSlot{publicEntry: e, used: e.at}
 	if c.pages[page] == nil {
-		c.pages[page] = map[string]struct{}{}
+		c.pages[page] = own
 	}
-	c.pages[page][key] = struct{}{}
+	slot := &publicSlot{publicEntry: e, key: key, page: page}
+	slot.all, slot.own = c.lru.PushFront(slot), own.PushFront(slot)
+	c.entries[key] = slot
 }
 
-// evict drops the expired entries among keys, or the least recently used of them when none is.
-func (c *publicCache) evict(keys map[string]struct{}, now time.Time) {
-	var lru string
-	var lruAt time.Time
-	dropped := false
-	for k := range keys {
-		e := c.entries[k]
-		if now.Sub(e.at) >= c.ttl {
-			c.remove(k)
-			dropped = true
-			continue
-		}
-		if lru == "" || e.used.Before(lruAt) {
-			lru, lruAt = k, e.used
-		}
-	}
-	if !dropped && lru != "" {
-		c.remove(lru)
-	}
-}
-
-func (c *publicCache) remove(key string) {
-	delete(c.entries, key)
-	page := publicCachePage(key)
-	if keys := c.pages[page]; keys != nil {
-		if delete(keys, key); len(keys) == 0 {
-			delete(c.pages, page)
+func (c *publicCache) remove(slot *publicSlot) {
+	delete(c.entries, slot.key)
+	c.lru.Remove(slot.all)
+	if own := c.pages[slot.page]; own != nil {
+		if own.Remove(slot.own); own.Len() == 0 {
+			delete(c.pages, slot.page)
 		}
 	}
 }
@@ -170,8 +158,10 @@ func (c *publicCache) remove(key string) {
 func (c *publicCache) forget(page uuid.UUID) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
-	for k := range c.pages[page.String()] {
-		c.remove(k)
+	if own := c.pages[page.String()]; own != nil {
+		for own.Len() > 0 {
+			c.remove(own.Front().Value.(*publicSlot))
+		}
 	}
 }
 
