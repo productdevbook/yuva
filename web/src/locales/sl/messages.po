@@ -8597,9 +8597,17 @@ msgstr "Izpuščeno: {left} od {total} oseb na seznamih"
 msgid "Legal name"
 msgstr "Pravno ime"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Let assistants and keys send messages to customers"
+msgstr "Pomočnikom in ključem dovoljeno pošiljanje sporočil strankam"
+
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Let bots send replies?"
 msgstr "Naj boti pošiljajo odgovore?"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Let keys and assistants schedule broadcasts"
+msgstr "Ključem in pomočnikom dovoljeno načrtovanje množičnih pošiljk"
 
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Let your team sign in through your company's identity provider. Their e-mail address decides which provider they use."
@@ -8939,6 +8947,10 @@ msgstr "Preverjamo"
 msgid "Looking up the provider…"
 msgstr "Iskanje ponudnika …"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Lost the address {address}: another workspace proved it later"
+msgstr "Izgubljen naslov {address}: drug delovni prostor ga je potrdil pozneje"
+
 #: src/components/common/text.ts
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/setup/email/EmailTestStep.tsx
@@ -9025,6 +9037,10 @@ msgstr "Pošlji zapis naročnikom po e-pošti"
 #: src/features/broadcasts/AddSubscriberDialog.tsx
 msgid "Mail them a confirmation"
 msgstr "Pošlji jim potrditev"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Mail to {address} no longer reaches {via}: another workspace proved the address"
+msgstr "Pošta na {address} ne doseže več {via}: drug delovni prostor je potrdil naslov"
 
 #: src/features/settings/channels/email/ForwardingAddressField.tsx
 msgid "Mail to {value} is refused from then on. Change the forwarding at the provider to the new address right away, or forwarded mail no longer reaches Yuva."
@@ -13018,6 +13034,14 @@ msgstr "Potrdi s kodo"
 msgid "Prove it with a DNS record"
 msgstr "Potrdi z zapisom DNS"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Proved the address {address} with a code"
+msgstr "Naslov {address} potrjen s kodo"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Proved the address {address} with the DNS record"
+msgstr "Naslov {address} potrjen z zapisom DNS"
+
 #: src/features/settings/channels/email/AddressProof.tsx
 msgid "Proven with a code on {when}."
 msgstr "Potrjeno s kodo {when}."
@@ -16246,6 +16270,14 @@ msgstr "Nehaj sprejemati nove naročnike. Zapisi in pretekla poročila ostanejo,
 msgid "Stopped"
 msgstr "Ustavljeno"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Stopped assistants and keys from sending messages to customers; they write drafts only"
+msgstr "Pomočnikom in ključem prepovedano pošiljanje sporočil strankam; pišejo samo osnutke"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Stopped keys and assistants from scheduling broadcasts"
+msgstr "Ključem in pomočnikom prepovedano načrtovanje množičnih pošiljk"
+
 #: src/features/migrations/ReviewStep.tsx
 msgid "Storage"
 msgstr "Shramba"
@@ -17460,6 +17492,10 @@ msgstr "Upravljavec strežnika to prebere, preden delovnemu prostoru dovoli poš
 #: src/features/settings/slack/SlackPage.tsx
 msgid "The server's operator registers the Slack app and sets its credentials. The guide explains how."
 msgstr "The server's operator registers the Slack app and sets its credentials. The guide explains how."
+
+#: src/features/settings/audit/sentence.ts
+msgid "The server's operator vouched for the address {address}"
+msgstr "Upravljavec strežnika je potrdil naslov {address}"
 
 #: src/features/migrations/text.ts
 msgid "The sign-in came back in another browser"

@@ -8597,9 +8597,17 @@ msgstr "ഒഴിവാക്കിയത്: പട്ടികകളിലെ 
 msgid "Legal name"
 msgstr "നിയമപരമായ പേര്"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Let assistants and keys send messages to customers"
+msgstr "അസിസ്റ്റന്റുമാർക്കും കീകൾക്കും ഉപഭോക്താക്കൾക്ക് സന്ദേശം അയയ്ക്കാൻ അനുമതി നൽകി"
+
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Let bots send replies?"
 msgstr "ബോട്ടുകളെ മറുപടി അയയ്ക്കാൻ അനുവദിക്കണോ?"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Let keys and assistants schedule broadcasts"
+msgstr "കീകൾക്കും അസിസ്റ്റന്റുമാർക്കും ബ്രോഡ്‌കാസ്റ്റുകൾ ഷെഡ്യൂൾ ചെയ്യാൻ അനുമതി നൽകി"
 
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Let your team sign in through your company's identity provider. Their e-mail address decides which provider they use."
@@ -8939,6 +8947,10 @@ msgstr "ഞങ്ങൾ പരിശോധിക്കുന്നു"
 msgid "Looking up the provider…"
 msgstr "ദാതാവിനെ തിരയുന്നു…"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Lost the address {address}: another workspace proved it later"
+msgstr "{address} വിലാസം നഷ്ടമായി: മറ്റൊരു വർക്ക്‌സ്‌പേസ് അത് പിന്നീട് തെളിയിച്ചു"
+
 #: src/components/common/text.ts
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/setup/email/EmailTestStep.tsx
@@ -9025,6 +9037,10 @@ msgstr "എൻട്രി സബ്സ്ക്രൈബർമാർക്ക�
 #: src/features/broadcasts/AddSubscriberDialog.tsx
 msgid "Mail them a confirmation"
 msgstr "അവർക്ക് ഒരു സ്ഥിരീകരണം മെയിൽ ചെയ്യുക"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Mail to {address} no longer reaches {via}: another workspace proved the address"
+msgstr "{address} ലേക്കുള്ള മെയിൽ ഇനി {via} ൽ എത്തില്ല: മറ്റൊരു വർക്ക്‌സ്‌പേസ് വിലാസം തെളിയിച്ചു"
 
 #: src/features/settings/channels/email/ForwardingAddressField.tsx
 msgid "Mail to {value} is refused from then on. Change the forwarding at the provider to the new address right away, or forwarded mail no longer reaches Yuva."
@@ -13018,6 +13034,14 @@ msgstr "കോഡ് ഉപയോഗിച്ച് തെളിയിക്ക�
 msgid "Prove it with a DNS record"
 msgstr "DNS റെക്കോർഡ് ഉപയോഗിച്ച് തെളിയിക്കുക"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Proved the address {address} with a code"
+msgstr "{address} വിലാസം കോഡ് ഉപയോഗിച്ച് തെളിയിച്ചു"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Proved the address {address} with the DNS record"
+msgstr "{address} വിലാസം DNS റെക്കോർഡ് ഉപയോഗിച്ച് തെളിയിച്ചു"
+
 #: src/features/settings/channels/email/AddressProof.tsx
 msgid "Proven with a code on {when}."
 msgstr "{when} ന് കോഡ് ഉപയോഗിച്ച് തെളിയിച്ചു."
@@ -16246,6 +16270,14 @@ msgstr "പുതിയ സബ്സ്ക്രൈബർമാരെ സ്വ�
 msgid "Stopped"
 msgstr "നിർത്തി"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Stopped assistants and keys from sending messages to customers; they write drafts only"
+msgstr "അസിസ്റ്റന്റുമാരെയും കീകളെയും ഉപഭോക്താക്കൾക്ക് സന്ദേശം അയയ്ക്കുന്നതിൽ നിന്ന് തടഞ്ഞു; അവ ഡ്രാഫ്റ്റുകൾ മാത്രം എഴുതും"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Stopped keys and assistants from scheduling broadcasts"
+msgstr "കീകളെയും അസിസ്റ്റന്റുമാരെയും ബ്രോഡ്‌കാസ്റ്റുകൾ ഷെഡ്യൂൾ ചെയ്യുന്നതിൽ നിന്ന് തടഞ്ഞു"
+
 #: src/features/migrations/ReviewStep.tsx
 msgid "Storage"
 msgstr "സ്റ്റോറേജ്"
@@ -17460,6 +17492,10 @@ msgstr "വർക്ക്സ്പേസിനെ അയയ്ക്കാൻ �
 #: src/features/settings/slack/SlackPage.tsx
 msgid "The server's operator registers the Slack app and sets its credentials. The guide explains how."
 msgstr "The server's operator registers the Slack app and sets its credentials. The guide explains how."
+
+#: src/features/settings/audit/sentence.ts
+msgid "The server's operator vouched for the address {address}"
+msgstr "സെർവറിന്റെ ഓപ്പറേറ്റർ {address} വിലാസത്തിന് ഉറപ്പുനൽകി"
 
 #: src/features/migrations/text.ts
 msgid "The sign-in came back in another browser"

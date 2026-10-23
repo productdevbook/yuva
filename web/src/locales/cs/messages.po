@@ -8597,9 +8597,17 @@ msgstr "Vynecháno: {left} z {total} lidí na seznamech"
 msgid "Legal name"
 msgstr "Právní název"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Let assistants and keys send messages to customers"
+msgstr "Asistentům a klíčům povoleno posílat zprávy zákazníkům"
+
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Let bots send replies?"
 msgstr "Nechat boty odesílat odpovědi?"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Let keys and assistants schedule broadcasts"
+msgstr "Klíčům a asistentům povoleno plánovat hromadné rozesílky"
 
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Let your team sign in through your company's identity provider. Their e-mail address decides which provider they use."
@@ -8939,6 +8947,10 @@ msgstr "Prověřujeme to"
 msgid "Looking up the provider…"
 msgstr "Vyhledává se poskytovatel…"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Lost the address {address}: another workspace proved it later"
+msgstr "Ztracena adresa {address}: jiný pracovní prostor ji ověřil později"
+
 #: src/components/common/text.ts
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/setup/email/EmailTestStep.tsx
@@ -9025,6 +9037,10 @@ msgstr "Poslat záznam odběratelům e-mailem"
 #: src/features/broadcasts/AddSubscriberDialog.tsx
 msgid "Mail them a confirmation"
 msgstr "Poslat jim potvrzení"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Mail to {address} no longer reaches {via}: another workspace proved the address"
+msgstr "Pošta na {address} už nedorazí do {via}: jiný pracovní prostor adresu ověřil"
 
 #: src/features/settings/channels/email/ForwardingAddressField.tsx
 msgid "Mail to {value} is refused from then on. Change the forwarding at the provider to the new address right away, or forwarded mail no longer reaches Yuva."
@@ -13018,6 +13034,14 @@ msgstr "Ověřit kódem"
 msgid "Prove it with a DNS record"
 msgstr "Ověřit záznamem DNS"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Proved the address {address} with a code"
+msgstr "Ověřena adresa {address} kódem"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Proved the address {address} with the DNS record"
+msgstr "Ověřena adresa {address} záznamem DNS"
+
 #: src/features/settings/channels/email/AddressProof.tsx
 msgid "Proven with a code on {when}."
 msgstr "Ověřeno kódem {when}."
@@ -16246,6 +16270,14 @@ msgstr "Přestat přijímat nové odběratele. Záznamy a dřívější přehled
 msgid "Stopped"
 msgstr "Zastaveno"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Stopped assistants and keys from sending messages to customers; they write drafts only"
+msgstr "Asistentům a klíčům zakázáno posílat zprávy zákazníkům; píší jen koncepty"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Stopped keys and assistants from scheduling broadcasts"
+msgstr "Klíčům a asistentům zakázáno plánovat hromadné rozesílky"
+
 #: src/features/migrations/ReviewStep.tsx
 msgid "Storage"
 msgstr "Úložiště"
@@ -17460,6 +17492,10 @@ msgstr "Provozovatel serveru si to přečte, než pracovnímu prostoru dovolí o
 #: src/features/settings/slack/SlackPage.tsx
 msgid "The server's operator registers the Slack app and sets its credentials. The guide explains how."
 msgstr "The server's operator registers the Slack app and sets its credentials. The guide explains how."
+
+#: src/features/settings/audit/sentence.ts
+msgid "The server's operator vouched for the address {address}"
+msgstr "Provozovatel serveru potvrdil adresu {address}"
 
 #: src/features/migrations/text.ts
 msgid "The sign-in came back in another browser"

@@ -8597,9 +8597,17 @@ msgstr "הוחרגו: {left} מתוך {total} אנשים ברשימות"
 msgid "Legal name"
 msgstr "שם משפטי"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Let assistants and keys send messages to customers"
+msgstr "הותר לעוזרים ולמפתחות לשלוח הודעות ללקוחות"
+
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Let bots send replies?"
 msgstr "לאפשר לבוטים לשלוח תשובות?"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Let keys and assistants schedule broadcasts"
+msgstr "הותר למפתחות ולעוזרים לתזמן שליחות המוניות"
 
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Let your team sign in through your company's identity provider. Their e-mail address decides which provider they use."
@@ -8939,6 +8947,10 @@ msgstr "בודקים את זה"
 msgid "Looking up the provider…"
 msgstr "מחפש את הספק…"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Lost the address {address}: another workspace proved it later"
+msgstr "הכתובת {address} אבדה: סביבת עבודה אחרת הוכיחה אותה מאוחר יותר"
+
 #: src/components/common/text.ts
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/setup/email/EmailTestStep.tsx
@@ -9025,6 +9037,10 @@ msgstr "שליחת הרשומה למנויים בדוא״ל"
 #: src/features/broadcasts/AddSubscriberDialog.tsx
 msgid "Mail them a confirmation"
 msgstr "שלח להם אימייל אישור"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Mail to {address} no longer reaches {via}: another workspace proved the address"
+msgstr "דואר אל {address} כבר לא מגיע אל {via}: סביבת עבודה אחרת הוכיחה את הכתובת"
 
 #: src/features/settings/channels/email/ForwardingAddressField.tsx
 msgid "Mail to {value} is refused from then on. Change the forwarding at the provider to the new address right away, or forwarded mail no longer reaches Yuva."
@@ -13018,6 +13034,14 @@ msgstr "הוכחה בקוד"
 msgid "Prove it with a DNS record"
 msgstr "הוכחה ברשומת DNS"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Proved the address {address} with a code"
+msgstr "הכתובת {address} הוכחה בקוד"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Proved the address {address} with the DNS record"
+msgstr "הכתובת {address} הוכחה ברשומת DNS"
+
 #: src/features/settings/channels/email/AddressProof.tsx
 msgid "Proven with a code on {when}."
 msgstr "הוכחה בקוד ב-{when}."
@@ -16246,6 +16270,14 @@ msgstr "הפסיקו לקבל מנויים חדשים. הרישומים והדו
 msgid "Stopped"
 msgstr "הופסק"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Stopped assistants and keys from sending messages to customers; they write drafts only"
+msgstr "נאסר על עוזרים ומפתחות לשלוח הודעות ללקוחות; הם כותבים טיוטות בלבד"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Stopped keys and assistants from scheduling broadcasts"
+msgstr "נאסר על מפתחות ועוזרים לתזמן שליחות המוניות"
+
 #: src/features/migrations/ReviewStep.tsx
 msgid "Storage"
 msgstr "אחסון"
@@ -17460,6 +17492,10 @@ msgstr "מפעיל השרת קורא את זה לפני שהוא נותן לסב
 #: src/features/settings/slack/SlackPage.tsx
 msgid "The server's operator registers the Slack app and sets its credentials. The guide explains how."
 msgstr "The server's operator registers the Slack app and sets its credentials. The guide explains how."
+
+#: src/features/settings/audit/sentence.ts
+msgid "The server's operator vouched for the address {address}"
+msgstr "מפעיל השרת אישר את הכתובת {address}"
 
 #: src/features/migrations/text.ts
 msgid "The sign-in came back in another browser"

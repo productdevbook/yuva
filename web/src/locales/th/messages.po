@@ -8597,9 +8597,17 @@ msgstr "ถูกคัดออก: {left} จาก {total} คนในรา
 msgid "Legal name"
 msgstr "ชื่อตามกฎหมาย"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Let assistants and keys send messages to customers"
+msgstr "อนุญาตให้ผู้ช่วยและคีย์ส่งข้อความถึงลูกค้า"
+
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Let bots send replies?"
 msgstr "ให้บอทส่งคำตอบหรือไม่"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Let keys and assistants schedule broadcasts"
+msgstr "อนุญาตให้คีย์และผู้ช่วยตั้งเวลาส่งแบบกลุ่ม"
 
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Let your team sign in through your company's identity provider. Their e-mail address decides which provider they use."
@@ -8939,6 +8947,10 @@ msgstr "กำลังตรวจสอบ"
 msgid "Looking up the provider…"
 msgstr "กำลังค้นหาผู้ให้บริการ…"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Lost the address {address}: another workspace proved it later"
+msgstr "สูญเสียที่อยู่ {address}: เวิร์กสเปซอื่นพิสูจน์ภายหลัง"
+
 #: src/components/common/text.ts
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/setup/email/EmailTestStep.tsx
@@ -9025,6 +9037,10 @@ msgstr "ส่งรายการให้ผู้สมัครรับท
 #: src/features/broadcasts/AddSubscriberDialog.tsx
 msgid "Mail them a confirmation"
 msgstr "ส่งอีเมลยืนยันให้พวกเขา"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Mail to {address} no longer reaches {via}: another workspace proved the address"
+msgstr "อีเมลถึง {address} ไม่ถึง {via} อีกต่อไป: เวิร์กสเปซอื่นพิสูจน์ที่อยู่แล้ว"
 
 #: src/features/settings/channels/email/ForwardingAddressField.tsx
 msgid "Mail to {value} is refused from then on. Change the forwarding at the provider to the new address right away, or forwarded mail no longer reaches Yuva."
@@ -13018,6 +13034,14 @@ msgstr "พิสูจน์ด้วยรหัส"
 msgid "Prove it with a DNS record"
 msgstr "พิสูจน์ด้วยเรกคอร์ด DNS"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Proved the address {address} with a code"
+msgstr "พิสูจน์ที่อยู่ {address} ด้วยรหัส"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Proved the address {address} with the DNS record"
+msgstr "พิสูจน์ที่อยู่ {address} ด้วยเรกคอร์ด DNS"
+
 #: src/features/settings/channels/email/AddressProof.tsx
 msgid "Proven with a code on {when}."
 msgstr "พิสูจน์ด้วยรหัสเมื่อ {when}"
@@ -16246,6 +16270,14 @@ msgstr "หยุดรับผู้สมัครใหม่ บันท�
 msgid "Stopped"
 msgstr "หยุดแล้ว"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Stopped assistants and keys from sending messages to customers; they write drafts only"
+msgstr "ห้ามผู้ช่วยและคีย์ส่งข้อความถึงลูกค้า พวกเขาเขียนได้เฉพาะฉบับร่าง"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Stopped keys and assistants from scheduling broadcasts"
+msgstr "ห้ามคีย์และผู้ช่วยตั้งเวลาส่งแบบกลุ่ม"
+
 #: src/features/migrations/ReviewStep.tsx
 msgid "Storage"
 msgstr "พื้นที่เก็บข้อมูล"
@@ -17460,6 +17492,10 @@ msgstr "ผู้ดูแลเซิร์ฟเวอร์อ่านสิ
 #: src/features/settings/slack/SlackPage.tsx
 msgid "The server's operator registers the Slack app and sets its credentials. The guide explains how."
 msgstr "The server's operator registers the Slack app and sets its credentials. The guide explains how."
+
+#: src/features/settings/audit/sentence.ts
+msgid "The server's operator vouched for the address {address}"
+msgstr "ผู้ดูแลเซิร์ฟเวอร์รับรองที่อยู่ {address}"
 
 #: src/features/migrations/text.ts
 msgid "The sign-in came back in another browser"

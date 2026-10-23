@@ -8597,9 +8597,17 @@ msgstr "Dışarıda kalan: listelerdeki {total} kişiden {left}"
 msgid "Legal name"
 msgstr "Yasal unvan"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Let assistants and keys send messages to customers"
+msgstr "Asistanların ve anahtarların müşterilere mesaj göndermesine izin verildi"
+
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Let bots send replies?"
 msgstr "Botlar yanıt göndersin mi?"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Let keys and assistants schedule broadcasts"
+msgstr "Anahtarların ve asistanların toplu e-posta zamanlamasına izin verildi"
 
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Let your team sign in through your company's identity provider. Their e-mail address decides which provider they use."
@@ -8939,6 +8947,10 @@ msgstr "İnceleniyor"
 msgid "Looking up the provider…"
 msgstr "Sağlayıcı aranıyor…"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Lost the address {address}: another workspace proved it later"
+msgstr "{address} adresi kaybedildi: başka bir çalışma alanı daha sonra doğruladı"
+
 #: src/components/common/text.ts
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/setup/email/EmailTestStep.tsx
@@ -9025,6 +9037,10 @@ msgstr "Kaydı abonelere e-postayla gönder"
 #: src/features/broadcasts/AddSubscriberDialog.tsx
 msgid "Mail them a confirmation"
 msgstr "Onay e-postası gönder"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Mail to {address} no longer reaches {via}: another workspace proved the address"
+msgstr "{address} adresine gelen postalar artık {via} adresine ulaşmıyor: başka bir çalışma alanı adresi doğruladı"
 
 #: src/features/settings/channels/email/ForwardingAddressField.tsx
 msgid "Mail to {value} is refused from then on. Change the forwarding at the provider to the new address right away, or forwarded mail no longer reaches Yuva."
@@ -13018,6 +13034,14 @@ msgstr "Kodla doğrula"
 msgid "Prove it with a DNS record"
 msgstr "DNS kaydıyla doğrula"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Proved the address {address} with a code"
+msgstr "{address} adresi kodla doğrulandı"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Proved the address {address} with the DNS record"
+msgstr "{address} adresi DNS kaydıyla doğrulandı"
+
 #: src/features/settings/channels/email/AddressProof.tsx
 msgid "Proven with a code on {when}."
 msgstr "{when} tarihinde kodla doğrulandı."
@@ -16246,6 +16270,14 @@ msgstr "Yeni aboneleri almayı durdurun. Kayıtlar ve geçmiş raporlar kalır, 
 msgid "Stopped"
 msgstr "Durduruldu"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Stopped assistants and keys from sending messages to customers; they write drafts only"
+msgstr "Asistanların ve anahtarların müşterilere mesaj göndermesi durduruldu; yalnızca taslak yazarlar"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Stopped keys and assistants from scheduling broadcasts"
+msgstr "Anahtarların ve asistanların toplu e-posta zamanlaması durduruldu"
+
 #: src/features/migrations/ReviewStep.tsx
 msgid "Storage"
 msgstr "Depolama"
@@ -17460,6 +17492,10 @@ msgstr "Sunucu yöneticisi, çalışma alanının göndermesine izin vermeden ö
 #: src/features/settings/slack/SlackPage.tsx
 msgid "The server's operator registers the Slack app and sets its credentials. The guide explains how."
 msgstr "Slack uygulamasını sunucunun işletmecisi kaydeder ve kimlik bilgilerini ayarlar. Nasıl yapıldığını kılavuz anlatır."
+
+#: src/features/settings/audit/sentence.ts
+msgid "The server's operator vouched for the address {address}"
+msgstr "Sunucunun operatörü {address} adresini onayladı"
 
 #: src/features/migrations/text.ts
 msgid "The sign-in came back in another browser"

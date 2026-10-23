@@ -8597,9 +8597,17 @@ msgstr "除外: リスト上の{total}人中{left}人"
 msgid "Legal name"
 msgstr "正式名称"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Let assistants and keys send messages to customers"
+msgstr "アシスタントとキーによるお客様へのメッセージ送信を許可しました"
+
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Let bots send replies?"
 msgstr "ボットに返信の送信を許可しますか？"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Let keys and assistants schedule broadcasts"
+msgstr "キーとアシスタントによる一斉配信の予約を許可しました"
 
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Let your team sign in through your company's identity provider. Their e-mail address decides which provider they use."
@@ -8939,6 +8947,10 @@ msgstr "調査中"
 msgid "Looking up the provider…"
 msgstr "プロバイダーを検索中…"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Lost the address {address}: another workspace proved it later"
+msgstr "アドレス {address} を失いました。別のワークスペースが後から証明しました"
+
 #: src/components/common/text.ts
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/setup/email/EmailTestStep.tsx
@@ -9025,6 +9037,10 @@ msgstr "エントリを登録者にメールで送信"
 #: src/features/broadcasts/AddSubscriberDialog.tsx
 msgid "Mail them a confirmation"
 msgstr "確認メールを送る"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Mail to {address} no longer reaches {via}: another workspace proved the address"
+msgstr "{address} 宛てのメールは {via} に届かなくなりました。別のワークスペースがアドレスを証明しました"
 
 #: src/features/settings/channels/email/ForwardingAddressField.tsx
 msgid "Mail to {value} is refused from then on. Change the forwarding at the provider to the new address right away, or forwarded mail no longer reaches Yuva."
@@ -13018,6 +13034,14 @@ msgstr "コードで証明"
 msgid "Prove it with a DNS record"
 msgstr "DNSレコードで証明"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Proved the address {address} with a code"
+msgstr "アドレス {address} をコードで証明しました"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Proved the address {address} with the DNS record"
+msgstr "アドレス {address} をDNSレコードで証明しました"
+
 #: src/features/settings/channels/email/AddressProof.tsx
 msgid "Proven with a code on {when}."
 msgstr "{when}にコードで証明されました。"
@@ -16246,6 +16270,14 @@ msgstr "新しい購読者の受け付けを止めます。記録と過去のレ
 msgid "Stopped"
 msgstr "停止"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Stopped assistants and keys from sending messages to customers; they write drafts only"
+msgstr "アシスタントとキーによるお客様へのメッセージ送信を停止しました。下書きのみ作成します"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Stopped keys and assistants from scheduling broadcasts"
+msgstr "キーとアシスタントによる一斉配信の予約を停止しました"
+
 #: src/features/migrations/ReviewStep.tsx
 msgid "Storage"
 msgstr "ストレージ"
@@ -17460,6 +17492,10 @@ msgstr "サーバーの運用担当者は、ワークスペースの送信を許
 #: src/features/settings/slack/SlackPage.tsx
 msgid "The server's operator registers the Slack app and sets its credentials. The guide explains how."
 msgstr "The server's operator registers the Slack app and sets its credentials. The guide explains how."
+
+#: src/features/settings/audit/sentence.ts
+msgid "The server's operator vouched for the address {address}"
+msgstr "サーバーの運用者がアドレス {address} を保証しました"
 
 #: src/features/migrations/text.ts
 msgid "The sign-in came back in another browser"

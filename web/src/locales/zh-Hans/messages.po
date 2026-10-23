@@ -8597,9 +8597,17 @@ msgstr "已排除：列表中 {total} 人里的 {left} 人"
 msgid "Legal name"
 msgstr "法定名称"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Let assistants and keys send messages to customers"
+msgstr "允许助手和密钥向客户发送消息"
+
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Let bots send replies?"
 msgstr "允许机器人发送回复吗？"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Let keys and assistants schedule broadcasts"
+msgstr "允许密钥和助手安排群发"
 
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Let your team sign in through your company's identity provider. Their e-mail address decides which provider they use."
@@ -8939,6 +8947,10 @@ msgstr "正在调查"
 msgid "Looking up the provider…"
 msgstr "正在查找服务商…"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Lost the address {address}: another workspace proved it later"
+msgstr "已失去地址 {address}：另一个工作区后来验证了它"
+
 #: src/components/common/text.ts
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/setup/email/EmailTestStep.tsx
@@ -9025,6 +9037,10 @@ msgstr "通过邮件将条目发送给订阅者"
 #: src/features/broadcasts/AddSubscriberDialog.tsx
 msgid "Mail them a confirmation"
 msgstr "给他们发确认邮件"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Mail to {address} no longer reaches {via}: another workspace proved the address"
+msgstr "发往 {address} 的邮件不再送达 {via}：另一个工作区验证了该地址"
 
 #: src/features/settings/channels/email/ForwardingAddressField.tsx
 msgid "Mail to {value} is refused from then on. Change the forwarding at the provider to the new address right away, or forwarded mail no longer reaches Yuva."
@@ -13018,6 +13034,14 @@ msgstr "用验证码验证"
 msgid "Prove it with a DNS record"
 msgstr "用 DNS 记录验证"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Proved the address {address} with a code"
+msgstr "已用验证码验证地址 {address}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Proved the address {address} with the DNS record"
+msgstr "已用 DNS 记录验证地址 {address}"
+
 #: src/features/settings/channels/email/AddressProof.tsx
 msgid "Proven with a code on {when}."
 msgstr "已于 {when} 用验证码验证。"
@@ -16246,6 +16270,14 @@ msgstr "停止接受新订阅者。记录和以往的报告会保留，你可以
 msgid "Stopped"
 msgstr "已停止"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Stopped assistants and keys from sending messages to customers; they write drafts only"
+msgstr "已禁止助手和密钥向客户发送消息，它们只写草稿"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Stopped keys and assistants from scheduling broadcasts"
+msgstr "已禁止密钥和助手安排群发"
+
 #: src/features/migrations/ReviewStep.tsx
 msgid "Storage"
 msgstr "存储"
@@ -17460,6 +17492,10 @@ msgstr "服务器运维人员会在允许工作区发送之前查看这一点。
 #: src/features/settings/slack/SlackPage.tsx
 msgid "The server's operator registers the Slack app and sets its credentials. The guide explains how."
 msgstr "The server's operator registers the Slack app and sets its credentials. The guide explains how."
+
+#: src/features/settings/audit/sentence.ts
+msgid "The server's operator vouched for the address {address}"
+msgstr "服务器运营方为地址 {address} 担保"
 
 #: src/features/migrations/text.ts
 msgid "The sign-in came back in another browser"

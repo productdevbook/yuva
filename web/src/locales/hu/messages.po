@@ -8597,9 +8597,17 @@ msgstr "Kihagyva: {left} / {total} fő a listákon"
 msgid "Legal name"
 msgstr "Jogi név"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Let assistants and keys send messages to customers"
+msgstr "Engedélyezte, hogy az asszisztensek és a kulcsok üzenetet küldjenek az ügyfeleknek"
+
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Let bots send replies?"
 msgstr "Küldhetnek a botok válaszokat?"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Let keys and assistants schedule broadcasts"
+msgstr "Engedélyezte, hogy a kulcsok és az asszisztensek körleveleket ütemezzenek"
 
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Let your team sign in through your company's identity provider. Their e-mail address decides which provider they use."
@@ -8939,6 +8947,10 @@ msgstr "Vizsgáljuk"
 msgid "Looking up the provider…"
 msgstr "A szolgáltató keresése…"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Lost the address {address}: another workspace proved it later"
+msgstr "Elvesztette a(z) {address} címet: egy másik munkaterület később igazolta"
+
 #: src/components/common/text.ts
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/setup/email/EmailTestStep.tsx
@@ -9025,6 +9037,10 @@ msgstr "A bejegyzés elküldése e-mailben a feliratkozóknak"
 #: src/features/broadcasts/AddSubscriberDialog.tsx
 msgid "Mail them a confirmation"
 msgstr "Megerősítő levél küldése nekik"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Mail to {address} no longer reaches {via}: another workspace proved the address"
+msgstr "A(z) {address} címre küldött levelek már nem érik el ezt: {via}; egy másik munkaterület igazolta a címet"
 
 #: src/features/settings/channels/email/ForwardingAddressField.tsx
 msgid "Mail to {value} is refused from then on. Change the forwarding at the provider to the new address right away, or forwarded mail no longer reaches Yuva."
@@ -13018,6 +13034,14 @@ msgstr "Igazolás kóddal"
 msgid "Prove it with a DNS record"
 msgstr "Igazolás DNS-rekorddal"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Proved the address {address} with a code"
+msgstr "Kóddal igazolta a(z) {address} címet"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Proved the address {address} with the DNS record"
+msgstr "DNS-rekorddal igazolta a(z) {address} címet"
+
 #: src/features/settings/channels/email/AddressProof.tsx
 msgid "Proven with a code on {when}."
 msgstr "Kóddal igazolva: {when}."
@@ -16246,6 +16270,14 @@ msgstr "Ne fogadjon több feliratkozót. A rekordok és a korábbi jelentések m
 msgid "Stopped"
 msgstr "Leállítva"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Stopped assistants and keys from sending messages to customers; they write drafts only"
+msgstr "Megtiltotta, hogy az asszisztensek és a kulcsok üzenetet küldjenek az ügyfeleknek; csak piszkozatot írnak"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Stopped keys and assistants from scheduling broadcasts"
+msgstr "Megtiltotta, hogy a kulcsok és az asszisztensek körleveleket ütemezzenek"
+
 #: src/features/migrations/ReviewStep.tsx
 msgid "Storage"
 msgstr "Tárhely"
@@ -17460,6 +17492,10 @@ msgstr "A szerver üzemeltetője ezt elolvassa, mielőtt engedné a munkaterüle
 #: src/features/settings/slack/SlackPage.tsx
 msgid "The server's operator registers the Slack app and sets its credentials. The guide explains how."
 msgstr "The server's operator registers the Slack app and sets its credentials. The guide explains how."
+
+#: src/features/settings/audit/sentence.ts
+msgid "The server's operator vouched for the address {address}"
+msgstr "A szerver üzemeltetője jóváhagyta a(z) {address} címet"
 
 #: src/features/migrations/text.ts
 msgid "The sign-in came back in another browser"

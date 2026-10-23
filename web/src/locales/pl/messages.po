@@ -8597,9 +8597,17 @@ msgstr "Pominięto: {left} z {total} osób na listach"
 msgid "Legal name"
 msgstr "Nazwa prawna"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Let assistants and keys send messages to customers"
+msgstr "Zezwolono asystentom i kluczom na wysyłanie wiadomości do klientów"
+
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Let bots send replies?"
 msgstr "Pozwolić botom wysyłać odpowiedzi?"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Let keys and assistants schedule broadcasts"
+msgstr "Zezwolono kluczom i asystentom na planowanie wysyłek masowych"
 
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Let your team sign in through your company's identity provider. Their e-mail address decides which provider they use."
@@ -8939,6 +8947,10 @@ msgstr "Sprawdzamy to"
 msgid "Looking up the provider…"
 msgstr "Wyszukiwanie dostawcy…"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Lost the address {address}: another workspace proved it later"
+msgstr "Utracono adres {address}: inna przestrzeń robocza potwierdziła go później"
+
 #: src/components/common/text.ts
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/setup/email/EmailTestStep.tsx
@@ -9025,6 +9037,10 @@ msgstr "Wyślij wpis e-mailem subskrybentom"
 #: src/features/broadcasts/AddSubscriberDialog.tsx
 msgid "Mail them a confirmation"
 msgstr "Wyślij im potwierdzenie"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Mail to {address} no longer reaches {via}: another workspace proved the address"
+msgstr "Poczta na {address} nie trafia już do {via}: inna przestrzeń robocza potwierdziła adres"
 
 #: src/features/settings/channels/email/ForwardingAddressField.tsx
 msgid "Mail to {value} is refused from then on. Change the forwarding at the provider to the new address right away, or forwarded mail no longer reaches Yuva."
@@ -13018,6 +13034,14 @@ msgstr "Potwierdź kodem"
 msgid "Prove it with a DNS record"
 msgstr "Potwierdź rekordem DNS"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Proved the address {address} with a code"
+msgstr "Potwierdzono adres {address} kodem"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Proved the address {address} with the DNS record"
+msgstr "Potwierdzono adres {address} rekordem DNS"
+
 #: src/features/settings/channels/email/AddressProof.tsx
 msgid "Proven with a code on {when}."
 msgstr "Potwierdzono kodem: {when}."
@@ -16246,6 +16270,14 @@ msgstr "Przestań przyjmować nowych subskrybentów. Zapisy i dotychczasowe rapo
 msgid "Stopped"
 msgstr "Zatrzymane"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Stopped assistants and keys from sending messages to customers; they write drafts only"
+msgstr "Zabroniono asystentom i kluczom wysyłania wiadomości do klientów; piszą tylko wersje robocze"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Stopped keys and assistants from scheduling broadcasts"
+msgstr "Zabroniono kluczom i asystentom planowania wysyłek masowych"
+
 #: src/features/migrations/ReviewStep.tsx
 msgid "Storage"
 msgstr "Przechowywanie"
@@ -17460,6 +17492,10 @@ msgstr "Operator serwera czyta to, zanim pozwoli obszarowi roboczemu wysyłać. 
 #: src/features/settings/slack/SlackPage.tsx
 msgid "The server's operator registers the Slack app and sets its credentials. The guide explains how."
 msgstr "The server's operator registers the Slack app and sets its credentials. The guide explains how."
+
+#: src/features/settings/audit/sentence.ts
+msgid "The server's operator vouched for the address {address}"
+msgstr "Operator serwera poręczył za adres {address}"
 
 #: src/features/migrations/text.ts
 msgid "The sign-in came back in another browser"

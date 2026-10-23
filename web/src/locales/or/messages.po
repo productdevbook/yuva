@@ -8597,9 +8597,17 @@ msgstr "ବାଦ୍: ତାଲିକାର {total} ଜଣଙ୍କ ମଧ୍ୟ
 msgid "Legal name"
 msgstr "ଆଇନଗତ ନାମ"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Let assistants and keys send messages to customers"
+msgstr "ସହାୟକ ଓ କୀ'କୁ ଗ୍ରାହକଙ୍କୁ ବାର୍ତ୍ତା ପଠାଇବାକୁ ଅନୁମତି ଦିଆଗଲା"
+
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Let bots send replies?"
 msgstr "ବଟ୍‌ମାନଙ୍କୁ ଉତ୍ତର ପଠାଇବାକୁ ଦେବେ କି?"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Let keys and assistants schedule broadcasts"
+msgstr "କୀ ଓ ସହାୟକଙ୍କୁ ବ୍ରଡକାଷ୍ଟ ନିର୍ଦ୍ଧାରଣ କରିବାକୁ ଅନୁମତି ଦିଆଗଲା"
 
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Let your team sign in through your company's identity provider. Their e-mail address decides which provider they use."
@@ -8939,6 +8947,10 @@ msgstr "ଆମେ ଦେଖୁଛୁ"
 msgid "Looking up the provider…"
 msgstr "ପ୍ରଦାତା ଖୋଜୁଛି…"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Lost the address {address}: another workspace proved it later"
+msgstr "ଠିକଣା {address} ହରାଇଲା: ଅନ୍ୟ ଏକ ୱାର୍କସ୍ପେସ୍ ଏହାକୁ ପରେ ପ୍ରମାଣିତ କଲା"
+
 #: src/components/common/text.ts
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/setup/email/EmailTestStep.tsx
@@ -9025,6 +9037,10 @@ msgstr "ଏଣ୍ଟ୍ରିକୁ ସବ୍ସ୍କ୍ରାଇବର୍‌�
 #: src/features/broadcasts/AddSubscriberDialog.tsx
 msgid "Mail them a confirmation"
 msgstr "ସେମାନଙ୍କୁ ନିଶ୍ଚିତକରଣ ମେଲ୍ କରନ୍ତୁ"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Mail to {address} no longer reaches {via}: another workspace proved the address"
+msgstr "{address} ର ମେଲ୍ ଆଉ {via} ରେ ପହଞ୍ଚେ ନାହିଁ: ଅନ୍ୟ ଏକ ୱାର୍କସ୍ପେସ୍ ଠିକଣା ପ୍ରମାଣିତ କଲା"
 
 #: src/features/settings/channels/email/ForwardingAddressField.tsx
 msgid "Mail to {value} is refused from then on. Change the forwarding at the provider to the new address right away, or forwarded mail no longer reaches Yuva."
@@ -13018,6 +13034,14 @@ msgstr "କୋଡ୍ ଦ୍ୱାରା ପ୍ରମାଣ କରନ୍ତୁ"
 msgid "Prove it with a DNS record"
 msgstr "DNS ରେକର୍ଡ ଦ୍ୱାରା ପ୍ରମାଣ କରନ୍ତୁ"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Proved the address {address} with a code"
+msgstr "ଠିକଣା {address} କୋଡ୍ ଦ୍ୱାରା ପ୍ରମାଣିତ"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Proved the address {address} with the DNS record"
+msgstr "ଠିକଣା {address} DNS ରେକର୍ଡ ଦ୍ୱାରା ପ୍ରମାଣିତ"
+
 #: src/features/settings/channels/email/AddressProof.tsx
 msgid "Proven with a code on {when}."
 msgstr "{when} ରେ କୋଡ୍ ଦ୍ୱାରା ପ୍ରମାଣିତ।"
@@ -16246,6 +16270,14 @@ msgstr "ନୂଆ ସବସ୍କ୍ରାଇବର ନେବା ବନ୍ଦ �
 msgid "Stopped"
 msgstr "ବନ୍ଦ କରାଗଲା"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Stopped assistants and keys from sending messages to customers; they write drafts only"
+msgstr "ସହାୟକ ଓ କୀ'କୁ ଗ୍ରାହକଙ୍କୁ ବାର୍ତ୍ତା ପଠାଇବାରୁ ବାରଣ କରାଗଲା; ସେମାନେ କେବଳ ଖସଡ଼ା ଲେଖନ୍ତି"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Stopped keys and assistants from scheduling broadcasts"
+msgstr "କୀ ଓ ସହାୟକଙ୍କୁ ବ୍ରଡକାଷ୍ଟ ନିର୍ଦ୍ଧାରଣରୁ ବାରଣ କରାଗଲା"
+
 #: src/features/migrations/ReviewStep.tsx
 msgid "Storage"
 msgstr "ଷ୍ଟୋରେଜ୍"
@@ -17460,6 +17492,10 @@ msgstr "ୱାର୍କସ୍ପେସ୍କୁ ପଠାଇବାକୁ ଦେ�
 #: src/features/settings/slack/SlackPage.tsx
 msgid "The server's operator registers the Slack app and sets its credentials. The guide explains how."
 msgstr "The server's operator registers the Slack app and sets its credentials. The guide explains how."
+
+#: src/features/settings/audit/sentence.ts
+msgid "The server's operator vouched for the address {address}"
+msgstr "ସର୍ଭରର ସଞ୍ଚାଳକ ଠିକଣା {address} ନିଶ୍ଚିତ କଲେ"
 
 #: src/features/migrations/text.ts
 msgid "The sign-in came back in another browser"

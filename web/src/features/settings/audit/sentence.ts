@@ -29,6 +29,9 @@ export const AUDIT_GROUPS: Record<AuditGroup, AuditAction[]> = {
     "channel.credentials_changed",
     "channel.key_rotated",
     "channel.forwarding_address_rotated",
+    "channel.address_verified",
+    "channel.address_lost",
+    "channel.address_proven",
     "channel.dkim_key_created",
     "channel.dkim_key_deleted",
     "inbox.identity_secret_rotated",
@@ -49,6 +52,8 @@ export const AUDIT_GROUPS: Record<AuditGroup, AuditAction[]> = {
     "automation_rule.updated",
     "automation_rule.deleted",
     "workspace.retention_changed",
+    "workspace.bots_may_send_changed",
+    "workspace.broadcasts_by_keys_changed",
     "workspace.broadcast_approval_requested",
     "workspace.broadcasts_approved",
     "workspace.broadcasts_denied",
@@ -154,6 +159,23 @@ export function useAuditSentence() {
         return t`Rotated the key of a channel`
       case "channel.forwarding_address_rotated":
         return t`Rotated the forwarding address of a channel`
+      case "channel.address_verified": {
+        const address = str(d.address) ?? dash
+        return d.method === "dns"
+          ? t`Proved the address ${address} with the DNS record`
+          : t`Proved the address ${address} with a code`
+      }
+      case "channel.address_lost": {
+        const address = str(d.address) ?? dash
+        const via = str(d.via)
+        return via
+          ? t`Mail to ${address} no longer reaches ${via}: another workspace proved the address`
+          : t`Lost the address ${address}: another workspace proved it later`
+      }
+      case "channel.address_proven": {
+        const address = str(d.address) ?? dash
+        return t`The server's operator vouched for the address ${address}`
+      }
       case "channel.dkim_key_created": {
         const selector = str(d.selector) ?? dash
         return t`Created the DKIM key ${selector}`
@@ -185,6 +207,14 @@ export function useAuditSentence() {
         const to = days(d.to, t`forever`)
         return t`Changed how long conversations are kept from ${from} to ${to}`
       }
+      case "workspace.bots_may_send_changed":
+        return d.to === true
+          ? t`Let assistants and keys send messages to customers`
+          : t`Stopped assistants and keys from sending messages to customers; they write drafts only`
+      case "workspace.broadcasts_by_keys_changed":
+        return d.to === true
+          ? t`Let keys and assistants schedule broadcasts`
+          : t`Stopped keys and assistants from scheduling broadcasts`
       case "workspace.broadcast_approval_requested":
         return t`Asked to be allowed to send broadcasts`
       case "workspace.broadcasts_approved":

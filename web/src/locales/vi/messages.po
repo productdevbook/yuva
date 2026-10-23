@@ -8597,9 +8597,17 @@ msgstr "Bị loại: {left} trên {total} người trong các danh sách"
 msgid "Legal name"
 msgstr "Tên pháp lý"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Let assistants and keys send messages to customers"
+msgstr "Cho phép trợ lý và khóa gửi tin nhắn cho khách hàng"
+
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Let bots send replies?"
 msgstr "Cho phép bot gửi phản hồi?"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Let keys and assistants schedule broadcasts"
+msgstr "Cho phép khóa và trợ lý lên lịch gửi hàng loạt"
 
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Let your team sign in through your company's identity provider. Their e-mail address decides which provider they use."
@@ -8939,6 +8947,10 @@ msgstr "Đang kiểm tra"
 msgid "Looking up the provider…"
 msgstr "Đang tìm nhà cung cấp…"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Lost the address {address}: another workspace proved it later"
+msgstr "Mất địa chỉ {address}: một không gian làm việc khác đã chứng minh nó sau đó"
+
 #: src/components/common/text.ts
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/setup/email/EmailTestStep.tsx
@@ -9025,6 +9037,10 @@ msgstr "Gửi mục này qua email cho người đăng ký"
 #: src/features/broadcasts/AddSubscriberDialog.tsx
 msgid "Mail them a confirmation"
 msgstr "Gửi thư xác nhận cho họ"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Mail to {address} no longer reaches {via}: another workspace proved the address"
+msgstr "Thư gửi đến {address} không còn đến {via}: một không gian làm việc khác đã chứng minh địa chỉ"
 
 #: src/features/settings/channels/email/ForwardingAddressField.tsx
 msgid "Mail to {value} is refused from then on. Change the forwarding at the provider to the new address right away, or forwarded mail no longer reaches Yuva."
@@ -13018,6 +13034,14 @@ msgstr "Chứng minh bằng mã"
 msgid "Prove it with a DNS record"
 msgstr "Chứng minh bằng bản ghi DNS"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Proved the address {address} with a code"
+msgstr "Đã chứng minh địa chỉ {address} bằng mã"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Proved the address {address} with the DNS record"
+msgstr "Đã chứng minh địa chỉ {address} bằng bản ghi DNS"
+
 #: src/features/settings/channels/email/AddressProof.tsx
 msgid "Proven with a code on {when}."
 msgstr "Đã chứng minh bằng mã lúc {when}."
@@ -16246,6 +16270,14 @@ msgstr "Ngừng nhận người đăng ký mới. Bản ghi và báo cáo cũ v�
 msgid "Stopped"
 msgstr "Đã dừng"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Stopped assistants and keys from sending messages to customers; they write drafts only"
+msgstr "Cấm trợ lý và khóa gửi tin nhắn cho khách hàng; chúng chỉ viết bản nháp"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Stopped keys and assistants from scheduling broadcasts"
+msgstr "Cấm khóa và trợ lý lên lịch gửi hàng loạt"
+
 #: src/features/migrations/ReviewStep.tsx
 msgid "Storage"
 msgstr "Lưu trữ"
@@ -17460,6 +17492,10 @@ msgstr "Người vận hành máy chủ đọc mục này trước khi cho khôn
 #: src/features/settings/slack/SlackPage.tsx
 msgid "The server's operator registers the Slack app and sets its credentials. The guide explains how."
 msgstr "The server's operator registers the Slack app and sets its credentials. The guide explains how."
+
+#: src/features/settings/audit/sentence.ts
+msgid "The server's operator vouched for the address {address}"
+msgstr "Người vận hành máy chủ đã bảo đảm địa chỉ {address}"
 
 #: src/features/migrations/text.ts
 msgid "The sign-in came back in another browser"

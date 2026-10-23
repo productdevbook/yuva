@@ -8597,9 +8597,17 @@ msgstr "제외됨: 목록의 {total}명 중 {left}명"
 msgid "Legal name"
 msgstr "법적 이름"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Let assistants and keys send messages to customers"
+msgstr "어시스턴트와 키가 고객에게 메시지를 보내도록 허용했습니다"
+
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Let bots send replies?"
 msgstr "봇이 답장을 보내도록 허용할까요?"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Let keys and assistants schedule broadcasts"
+msgstr "키와 어시스턴트가 브로드캐스트를 예약하도록 허용했습니다"
 
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Let your team sign in through your company's identity provider. Their e-mail address decides which provider they use."
@@ -8939,6 +8947,10 @@ msgstr "조사 중"
 msgid "Looking up the provider…"
 msgstr "제공업체를 찾는 중…"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Lost the address {address}: another workspace proved it later"
+msgstr "주소 {address}를 잃었습니다. 다른 워크스페이스가 나중에 증명했습니다"
+
 #: src/components/common/text.ts
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/setup/email/EmailTestStep.tsx
@@ -9025,6 +9037,10 @@ msgstr "항목을 구독자에게 이메일로 보내기"
 #: src/features/broadcasts/AddSubscriberDialog.tsx
 msgid "Mail them a confirmation"
 msgstr "확인 메일 보내기"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Mail to {address} no longer reaches {via}: another workspace proved the address"
+msgstr "{address}로 오는 메일이 더 이상 {via}에 도달하지 않습니다. 다른 워크스페이스가 주소를 증명했습니다"
 
 #: src/features/settings/channels/email/ForwardingAddressField.tsx
 msgid "Mail to {value} is refused from then on. Change the forwarding at the provider to the new address right away, or forwarded mail no longer reaches Yuva."
@@ -13018,6 +13034,14 @@ msgstr "코드로 증명"
 msgid "Prove it with a DNS record"
 msgstr "DNS 레코드로 증명"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Proved the address {address} with a code"
+msgstr "코드로 주소 {address}를 증명했습니다"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Proved the address {address} with the DNS record"
+msgstr "DNS 레코드로 주소 {address}를 증명했습니다"
+
 #: src/features/settings/channels/email/AddressProof.tsx
 msgid "Proven with a code on {when}."
 msgstr "{when}에 코드로 증명했습니다."
@@ -16246,6 +16270,14 @@ msgstr "새 구독자 받기를 중단합니다. 기록과 지난 보고서는 �
 msgid "Stopped"
 msgstr "중지됨"
 
+#: src/features/settings/audit/sentence.ts
+msgid "Stopped assistants and keys from sending messages to customers; they write drafts only"
+msgstr "어시스턴트와 키가 고객에게 메시지를 보내지 못하게 했습니다. 초안만 작성합니다"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Stopped keys and assistants from scheduling broadcasts"
+msgstr "키와 어시스턴트가 브로드캐스트를 예약하지 못하게 했습니다"
+
 #: src/features/migrations/ReviewStep.tsx
 msgid "Storage"
 msgstr "저장소"
@@ -17460,6 +17492,10 @@ msgstr "서버 운영자는 워크스페이스의 발송을 허용하기 전에 
 #: src/features/settings/slack/SlackPage.tsx
 msgid "The server's operator registers the Slack app and sets its credentials. The guide explains how."
 msgstr "The server's operator registers the Slack app and sets its credentials. The guide explains how."
+
+#: src/features/settings/audit/sentence.ts
+msgid "The server's operator vouched for the address {address}"
+msgstr "서버 운영자가 주소 {address}를 보증했습니다"
 
 #: src/features/migrations/text.ts
 msgid "The sign-in came back in another browser"
