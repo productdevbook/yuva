@@ -249,6 +249,15 @@ export function useGuides() {
       link: guideUrl("migrate-helpscout"),
       linkLabel: t`Read the guide`,
     },
+    chatwoot: {
+      steps: [
+        t`In Chatwoot, open Profile Settings (your avatar, bottom left), scroll to Access Token and copy it. Use an administrator: an agent's token is refused.`,
+        t`Find the account number in Chatwoot's address: the number after /app/accounts/.`,
+        t`Enter the address of your Chatwoot, the account number and the token below. Reset the token in Chatwoot when the migration is done.`,
+      ],
+      link: guideUrl("migrate-chatwoot"),
+      linkLabel: t`Read the guide`,
+    },
     file: {
       steps: [
         t`Thunderbird, Apple Mail and most mail apps export a folder as an .mbox file: upload that file.`,

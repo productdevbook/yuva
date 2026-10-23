@@ -9,7 +9,7 @@ Schritte stehen [Assistenten](#von-claude-code-oder-einem-anderen-assistenten) u
 [API](#aus-ihrem-backend) offen. Wählen Sie die Anleitung Ihres Anbieters: [Gmail](migrate-gmail.md),
 [Google Workspace](migrate-google-workspace.md), [Outlook.com](migrate-outlook.md), [Microsoft 365](migrate-microsoft365.md), [Yandex](migrate-yandex.md), [iCloud](migrate-icloud.md),
 [Zoho Mail](migrate-zoho.md), [Yahoo Mail](migrate-yahoo.md), [Fastmail](migrate-fastmail.md),
-[GMX und mail.com](migrate-gmx.md), [Zendesk](migrate-zendesk.md), [Help Scout](migrate-helpscout.md), [jeder andere IMAP-Server](migrate-imap.md) oder [eine Exportdatei](migrate-files.md) (Google Takeout, mbox, .eml oder Maildir in einer Zip). Betreiben Sie einen
+[GMX und mail.com](migrate-gmx.md), [Zendesk](migrate-zendesk.md), [Help Scout](migrate-helpscout.md), [Chatwoot](migrate-chatwoot.md), [jeder andere IMAP-Server](migrate-imap.md) oder [eine Exportdatei](migrate-files.md) (Google Takeout, mbox, .eml oder Maildir in einer Zip). Betreiben Sie einen
 eigenen Server? Siehe [Zu Yuva umziehen für Betreiber](migrate-operators.md). Zendesk, Help Scout, Outlook.com und Microsoft 365 verbinden sich per Anmeldung statt mit einem Passwort.
 
 ## Was Yuva mit Ihrem Postfach tut und was nicht

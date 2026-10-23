@@ -35,6 +35,7 @@ const (
 )
 
 var (
+	accountIDRe           = regexp.MustCompile(`^[0-9]{1,18}$`)
 	subdomainRe           = regexp.MustCompile(`^[a-z0-9][a-z0-9-]{0,62}$`)
 	errNotHelpdesk        = errMigrationState("only a help desk or a Microsoft migration signs in")
 	errHelpdeskNoPassword = errMigrationState("a help desk connects with a sign-in (POST .../sign-in), not a password")
@@ -63,12 +64,13 @@ type helpdeskSecret struct {
 	Tokens    helpdesk.Tokens `json:"tokens"`
 	Subdomain string          `json:"subdomain,omitempty"`
 	BaseURL   string          `json:"base_url,omitempty"`
+	AccountID string          `json:"account_id,omitempty"`
 	Secret    string          `json:"secret,omitempty"`
 	Account   string          `json:"account"`
 }
 
 func (sec helpdeskSecret) account() helpdesk.Account {
-	return helpdesk.Account{Subdomain: sec.Subdomain, BaseURL: sec.BaseURL}
+	return helpdesk.Account{Subdomain: sec.Subdomain, BaseURL: sec.BaseURL, ID: sec.AccountID}
 }
 
 type signInSecret struct {
@@ -787,7 +789,7 @@ func (s *Server) setTokenCredentials(ctx context.Context, p principal, id uuid.U
 			if err == nil {
 				var prev helpdeskSecret
 				plain, err := s.secrets.Open(old.Sealed, migrationSecretContext(p.workspaceID, m.ID))
-				if err != nil || json.Unmarshal(plain, &prev) != nil || !strings.EqualFold(old.Host, host) || prev.BaseURL != sec.BaseURL ||
+				if err != nil || json.Unmarshal(plain, &prev) != nil || !strings.EqualFold(old.Host, host) || prev.BaseURL != sec.BaseURL || prev.AccountID != sec.AccountID ||
 					(prev.Account != "" && prev.Account != verified) {
 					return errMigrationState("reconnect the same account; start a new migration for another help desk")
 				}
@@ -871,7 +873,7 @@ func tokenSecret(d helpdesk.Desk, token string, b *oas.MigrationCredentialsInput
 	for _, f := range []struct {
 		name string
 		v    *string
-	}{{helpdesk.FieldSecret, b.Secret}, {helpdesk.FieldSubdomain, b.Subdomain}, {helpdesk.FieldBaseURL, b.BaseUrl}} {
+	}{{helpdesk.FieldSecret, b.Secret}, {helpdesk.FieldSubdomain, b.Subdomain}, {helpdesk.FieldBaseURL, b.BaseUrl}, {helpdesk.FieldAccount, b.Account}} {
 		if f.v != nil && !slices.Contains(fields, f.name) {
 			return sec, 0, errValidation(f.name + " is not one of " + d.Name + "'s token_fields")
 		}
@@ -900,6 +902,12 @@ func tokenSecret(d helpdesk.Desk, token string, b *oas.MigrationCredentialsInput
 		u, _ := url.Parse(base)
 		if n, err := strconv.Atoi(u.Port()); err == nil {
 			port = int32(n)
+		}
+	}
+	if b.Account != nil {
+		sec.AccountID = strings.TrimSpace(*b.Account)
+		if !accountIDRe.MatchString(sec.AccountID) {
+			return sec, 0, errValidation("account must be the account's number, such as 1")
 		}
 	}
 	return sec, port, nil

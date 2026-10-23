@@ -30,6 +30,7 @@ const (
 	FieldSecret    = "secret"
 	FieldSubdomain = "subdomain"
 	FieldBaseURL   = "base_url"
+	FieldAccount   = "account"
 )
 
 // How the token goes on a request.
@@ -70,6 +71,7 @@ type Limit struct {
 type Account struct {
 	Subdomain string `json:"subdomain,omitempty"`
 	BaseURL   string `json:"base_url,omitempty"`
+	ID        string `json:"id,omitempty"`
 }
 
 // Credentials are what the reader sends: the access or API token, and a token desk's second
@@ -97,6 +99,8 @@ type Desk struct {
 	// Account is what names the account; Secret, that a token desk needs a second secret.
 	Account string
 	Secret  bool
+	// AccountID: the connect form names which of the token's accounts to read (Chatwoot's).
+	AccountID bool
 	// Scopes are what an OAuth sign-in asks for and accepts nothing beyond; empty when the help
 	// desk has no read-only permission.
 	Scopes []string
@@ -109,8 +113,10 @@ type Desk struct {
 	FileHosts func(Account) Hosts
 	// FilesAnywhere lets attachments be fetched from any host the dialer allows, without the token.
 	FilesAnywhere bool
-	Send          Send
-	Limits        []Limit
+	// FilesNoToken: attachments are fetched by signed URLs and never carry the token.
+	FilesNoToken bool
+	Send         Send
+	Limits       []Limit
 	// IncrementalMax caps ClassIncremental requests a minute.
 	IncrementalMax int
 	RetryHeaders   []string
@@ -124,7 +130,7 @@ type Desk struct {
 
 var (
 	registryMu sync.RWMutex
-	registry   = []Desk{zendeskDesk, helpScoutDesk}
+	registry   = []Desk{zendeskDesk, helpScoutDesk, chatwootDesk}
 )
 
 // Desks are the help desks in the order the panel shows them.
@@ -179,6 +185,9 @@ func (d Desk) Fields() []string {
 		out = append(out, FieldSubdomain)
 	case AccountBaseURL:
 		out = append(out, FieldBaseURL)
+	}
+	if d.AccountID {
+		out = append(out, FieldAccount)
 	}
 	return out
 }
@@ -245,9 +254,13 @@ func (d Desk) client(cfg Config, a Account, creds Credentials, budget *Budget) *
 		files = Hosts{Any: true}
 	}
 	b := bearer{hosts: tokenHosts, token: creds.Token, send: d.Send, secret: creds.Secret}
+	fb := b
+	if d.FilesNoToken {
+		fb.hosts = Hosts{}
+	}
 	return &client{
 		cfg: cfg, budget: d.Budget(budget), retryHeaders: d.RetryHeaders,
-		api: cfg.dataClient(api, b), files: cfg.dataClient(files, b),
+		api: cfg.dataClient(api, b), files: cfg.dataClient(files, fb),
 	}
 }
 
@@ -271,7 +284,7 @@ func BaseURLHosts(a Account) Hosts {
 	if err != nil || u.Hostname() == "" {
 		return Hosts{}
 	}
-	return Hosts{Exact: []string{strings.ToLower(u.Hostname())}}
+	return Hosts{Exact: []string{strings.ToLower(u.Hostname())}, Port: u.Port()}
 }
 
 var zendeskDesk = Desk{
@@ -315,4 +328,14 @@ var helpScoutDesk = Desk{
 		},
 	},
 	read: func(c *client, _ Account) Source { return &HelpScout{c: c} },
+}
+
+var chatwootDesk = Desk{
+	Source: "chatwoot", Name: "Chatwoot", Guide: "migrate-chatwoot", Auth: AuthToken, Account: AccountBaseURL, AccountID: true, Admin: true,
+	APIHosts:      BaseURLHosts,
+	FilesAnywhere: true, FilesNoToken: true,
+	Send:         Send{Scheme: SendHeader, Header: "api_access_token"},
+	Limits:       []Limit{{Window: time.Minute, Default: 60}},
+	RetryHeaders: []string{"Retry-After"}, AttributePrefix: "chatwoot", Sync: SyncModifiedSince,
+	read: func(c *client, a Account) Source { return &Chatwoot{c: c, base: a.BaseURL, account: a.ID} },
 }

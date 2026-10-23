@@ -850,7 +850,7 @@ func (s *Server) CreateMigration(ctx context.Context, req oas.CreateMigrationReq
 	source := string(oas.MigrationSourceImap)
 	if b.Source != nil {
 		if !b.Source.Valid() {
-			return nil, errValidation("source must be imap, file, zendesk or helpscout")
+			return nil, errValidation("source must be imap, file, zendesk, helpscout or chatwoot")
 		}
 		source = string(*b.Source)
 	}

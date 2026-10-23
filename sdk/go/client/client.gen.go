@@ -4520,6 +4520,7 @@ func (e MigrationMboxFormat) Valid() bool {
 
 // Defines values for MigrationPresetTokenFields.
 const (
+	TokenFieldAccount   MigrationPresetTokenFields = "account"
 	TokenFieldBaseUrl   MigrationPresetTokenFields = "base_url"
 	TokenFieldSecret    MigrationPresetTokenFields = "secret"
 	TokenFieldSubdomain MigrationPresetTokenFields = "subdomain"
@@ -4529,6 +4530,8 @@ const (
 // Valid indicates whether the value is a known member of the MigrationPresetTokenFields enum.
 func (e MigrationPresetTokenFields) Valid() bool {
 	switch e {
+	case TokenFieldAccount:
+		return true
 	case TokenFieldBaseUrl:
 		return true
 	case TokenFieldSecret:
@@ -4562,6 +4565,7 @@ func (e MigrationPresetUsername) Valid() bool {
 
 // Defines values for MigrationPresetId.
 const (
+	PresetChatwoot        MigrationPresetId = "chatwoot"
 	PresetFastmail        MigrationPresetId = "fastmail"
 	PresetFile            MigrationPresetId = "file"
 	PresetGmail           MigrationPresetId = "gmail"
@@ -4581,6 +4585,8 @@ const (
 // Valid indicates whether the value is a known member of the MigrationPresetId enum.
 func (e MigrationPresetId) Valid() bool {
 	switch e {
+	case PresetChatwoot:
+		return true
 	case PresetFastmail:
 		return true
 	case PresetFile:
@@ -4691,6 +4697,7 @@ func (e MigrationSignInResult) Valid() bool {
 
 // Defines values for MigrationSource.
 const (
+	MigrationSourceChatwoot  MigrationSource = "chatwoot"
 	MigrationSourceFile      MigrationSource = "file"
 	MigrationSourceHelpscout MigrationSource = "helpscout"
 	MigrationSourceImap      MigrationSource = "imap"
@@ -4700,6 +4707,8 @@ const (
 // Valid indicates whether the value is a known member of the MigrationSource enum.
 func (e MigrationSource) Valid() bool {
 	switch e {
+	case MigrationSourceChatwoot:
+		return true
 	case MigrationSourceFile:
 		return true
 	case MigrationSourceHelpscout:
@@ -16035,7 +16044,7 @@ type Migration struct {
 	// `fastmail`, `gmx`, or `imap` for any other server. For a `file` migration: `takeout`, a
 	// Google Takeout file, or `file`, any other export file; both read every format the server
 	// knows, which `upload.format` names once the upload is complete. A help desk has the preset
-	// of its source: `zendesk` or `helpscout`.
+	// of its source: `zendesk`, `helpscout` or `chatwoot`.
 	Preset MigrationPresetId `json:"preset"`
 
 	// ProbeSentAt When the last test message was sent.
@@ -16063,8 +16072,8 @@ type Migration struct {
 	SignInResult *MigrationSignInResult `json:"sign_in_result,omitempty"`
 
 	// Source Where the history comes from: `imap`, a mailbox read over IMAP; `file`, export files;
-	// `zendesk` and `helpscout`, help desks. A server offers the sources its operator allows
-	// (`YUVA_MIGRATION_SOURCES`) among those built: all four.
+	// `zendesk`, `helpscout` and `chatwoot`, help desks. A server offers the sources its operator allows
+	// (`YUVA_MIGRATION_SOURCES`) among those built.
 	Source MigrationSource `json:"source"`
 
 	// SourceAddress The mailbox address; for a help desk, the support address whose channel is the default target.
@@ -16193,7 +16202,7 @@ type MigrationCreate struct {
 	// `fastmail`, `gmx`, or `imap` for any other server. For a `file` migration: `takeout`, a
 	// Google Takeout file, or `file`, any other export file; both read every format the server
 	// knows, which `upload.format` names once the upload is complete. A help desk has the preset
-	// of its source: `zendesk` or `helpscout`.
+	// of its source: `zendesk`, `helpscout` or `chatwoot`.
 	Preset MigrationPresetId `json:"preset"`
 
 	// Source `imap` when absent.
@@ -16230,6 +16239,12 @@ type MigrationCredentialsKind string
 // MigrationCredentialsInput `kind: password` needs `username` and `password`; `kind: token` needs `token` and the
 // fields the preset's `token_fields` names, and takes no others.
 type MigrationCredentialsInput struct {
+	// Account `token`, where `token_fields` names `account`: the number of the help desk account to
+	// read, one of the accounts the token's user belongs to (Chatwoot's account id, the
+	// number after `/app/accounts/` in its address). The connection test refuses a user who
+	// is not an administrator of that account.
+	Account *string `json:"account,omitempty"`
+
 	// BaseUrl `token`, where `token_fields` names `base_url`: the HTTPS address of a self-hosted
 	// install, such as `https://help.example.com`; no user name, query or fragment.
 	BaseUrl *string `json:"base_url,omitempty"`
@@ -16299,7 +16314,7 @@ type MigrationDetection struct {
 	// `fastmail`, `gmx`, or `imap` for any other server. For a `file` migration: `takeout`, a
 	// Google Takeout file, or `file`, any other export file; both read every format the server
 	// knows, which `upload.format` names once the upload is complete. A help desk has the preset
-	// of its source: `zendesk` or `helpscout`.
+	// of its source: `zendesk`, `helpscout` or `chatwoot`.
 	Preset MigrationPresetId `json:"preset"`
 
 	// Server The IMAP server to use; absent when none was found.
@@ -16726,7 +16741,7 @@ type MigrationPreset struct {
 	// `fastmail`, `gmx`, or `imap` for any other server. For a `file` migration: `takeout`, a
 	// Google Takeout file, or `file`, any other export file; both read every format the server
 	// knows, which `upload.format` names once the upload is complete. A help desk has the preset
-	// of its source: `zendesk` or `helpscout`.
+	// of its source: `zendesk`, `helpscout` or `chatwoot`.
 	Id   MigrationPresetId `json:"id"`
 	Name string            `json:"name"`
 
@@ -16748,8 +16763,8 @@ type MigrationPreset struct {
 	Servers []MigrationServer `json:"servers"`
 
 	// Source Where the history comes from: `imap`, a mailbox read over IMAP; `file`, export files;
-	// `zendesk` and `helpscout`, help desks. A server offers the sources its operator allows
-	// (`YUVA_MIGRATION_SOURCES`) among those built: all four.
+	// `zendesk`, `helpscout` and `chatwoot`, help desks. A server offers the sources its operator allows
+	// (`YUVA_MIGRATION_SOURCES`) among those built.
 	Source MigrationSource `json:"source"`
 
 	// Subdomain The sign-in needs the account's subdomain (Zendesk's `<subdomain>.zendesk.com`).
@@ -16780,7 +16795,7 @@ type MigrationPresetUsername string
 // `fastmail`, `gmx`, or `imap` for any other server. For a `file` migration: `takeout`, a
 // Google Takeout file, or `file`, any other export file; both read every format the server
 // knows, which `upload.format` names once the upload is complete. A help desk has the preset
-// of its source: `zendesk` or `helpscout`.
+// of its source: `zendesk`, `helpscout` or `chatwoot`.
 type MigrationPresetId string
 
 // MigrationPresetList defines model for MigrationPresetList.
@@ -16973,8 +16988,8 @@ type MigrationSkipped struct {
 }
 
 // MigrationSource Where the history comes from: `imap`, a mailbox read over IMAP; `file`, export files;
-// `zendesk` and `helpscout`, help desks. A server offers the sources its operator allows
-// (`YUVA_MIGRATION_SOURCES`) among those built: all four.
+// `zendesk`, `helpscout` and `chatwoot`, help desks. A server offers the sources its operator allows
+// (`YUVA_MIGRATION_SOURCES`) among those built.
 type MigrationSource string
 
 // MigrationState - `draft`: created; not connected yet.
@@ -17113,7 +17128,7 @@ type MigrationUpdate struct {
 	// `fastmail`, `gmx`, or `imap` for any other server. For a `file` migration: `takeout`, a
 	// Google Takeout file, or `file`, any other export file; both read every format the server
 	// knows, which `upload.format` names once the upload is complete. A help desk has the preset
-	// of its source: `zendesk` or `helpscout`.
+	// of its source: `zendesk`, `helpscout` or `chatwoot`.
 	Preset *MigrationPresetId `json:"preset,omitempty"`
 
 	// SourceAddress Examples: owner@example.com
@@ -35167,7 +35182,7 @@ type ClientInterface interface {
 	//
 	// `kind: token`: a help desk whose preset's `auth` is `token` connects with an API token the
 	// team creates in its own account, plus the fields its preset's `token_fields` names: a
-	// second `secret`, the account's `subdomain`, or the `base_url` of a self-hosted install
+	// second `secret`, the account's `subdomain`, the `base_url` of a self-hosted install, or an `account` number
 	// (HTTPS only; it is dialled with the same address checks as an IMAP server, so a private
 	// address only where the operator allows one). The token is sent only in the help desk's
 	// own auth header and only to its API hosts, with `GET` only; the connection test then reads
@@ -35200,7 +35215,7 @@ type ClientInterface interface {
 	//
 	// `kind: token`: a help desk whose preset's `auth` is `token` connects with an API token the
 	// team creates in its own account, plus the fields its preset's `token_fields` names: a
-	// second `secret`, the account's `subdomain`, or the `base_url` of a self-hosted install
+	// second `secret`, the account's `subdomain`, the `base_url` of a self-hosted install, or an `account` number
 	// (HTTPS only; it is dialled with the same address checks as an IMAP server, so a private
 	// address only where the operator allows one). The token is sent only in the help desk's
 	// own auth header and only to its API hosts, with `GET` only; the connection test then reads
@@ -48046,7 +48061,7 @@ func (c *Client) CancelMigration(ctx context.Context, migrationId MigrationId, p
 //
 // `kind: token`: a help desk whose preset's `auth` is `token` connects with an API token the
 // team creates in its own account, plus the fields its preset's `token_fields` names: a
-// second `secret`, the account's `subdomain`, or the `base_url` of a self-hosted install
+// second `secret`, the account's `subdomain`, the `base_url` of a self-hosted install, or an `account` number
 // (HTTPS only; it is dialled with the same address checks as an IMAP server, so a private
 // address only where the operator allows one). The token is sent only in the help desk's
 // own auth header and only to its API hosts, with `GET` only; the connection test then reads
@@ -48089,7 +48104,7 @@ func (c *Client) SetMigrationCredentialsWithBody(ctx context.Context, migrationI
 //
 // `kind: token`: a help desk whose preset's `auth` is `token` connects with an API token the
 // team creates in its own account, plus the fields its preset's `token_fields` names: a
-// second `secret`, the account's `subdomain`, or the `base_url` of a self-hosted install
+// second `secret`, the account's `subdomain`, the `base_url` of a self-hosted install, or an `account` number
 // (HTTPS only; it is dialled with the same address checks as an IMAP server, so a private
 // address only where the operator allows one). The token is sent only in the help desk's
 // own auth header and only to its API hosts, with `GET` only; the connection test then reads
@@ -84786,7 +84801,7 @@ type ClientWithResponsesInterface interface {
 	//
 	// `kind: token`: a help desk whose preset's `auth` is `token` connects with an API token the
 	// team creates in its own account, plus the fields its preset's `token_fields` names: a
-	// second `secret`, the account's `subdomain`, or the `base_url` of a self-hosted install
+	// second `secret`, the account's `subdomain`, the `base_url` of a self-hosted install, or an `account` number
 	// (HTTPS only; it is dialled with the same address checks as an IMAP server, so a private
 	// address only where the operator allows one). The token is sent only in the help desk's
 	// own auth header and only to its API hosts, with `GET` only; the connection test then reads
@@ -84819,7 +84834,7 @@ type ClientWithResponsesInterface interface {
 	//
 	// `kind: token`: a help desk whose preset's `auth` is `token` connects with an API token the
 	// team creates in its own account, plus the fields its preset's `token_fields` names: a
-	// second `secret`, the account's `subdomain`, or the `base_url` of a self-hosted install
+	// second `secret`, the account's `subdomain`, the `base_url` of a self-hosted install, or an `account` number
 	// (HTTPS only; it is dialled with the same address checks as an IMAP server, so a private
 	// address only where the operator allows one). The token is sent only in the help desk's
 	// own auth header and only to its API hosts, with `GET` only; the connection test then reads
@@ -124999,7 +125014,7 @@ func (c *ClientWithResponses) CancelMigrationWithResponse(ctx context.Context, m
 //
 // `kind: token`: a help desk whose preset's `auth` is `token` connects with an API token the
 // team creates in its own account, plus the fields its preset's `token_fields` names: a
-// second `secret`, the account's `subdomain`, or the `base_url` of a self-hosted install
+// second `secret`, the account's `subdomain`, the `base_url` of a self-hosted install, or an `account` number
 // (HTTPS only; it is dialled with the same address checks as an IMAP server, so a private
 // address only where the operator allows one). The token is sent only in the help desk's
 // own auth header and only to its API hosts, with `GET` only; the connection test then reads
@@ -125038,7 +125053,7 @@ func (c *ClientWithResponses) SetMigrationCredentialsWithBodyWithResponse(ctx co
 //
 // `kind: token`: a help desk whose preset's `auth` is `token` connects with an API token the
 // team creates in its own account, plus the fields its preset's `token_fields` names: a
-// second `secret`, the account's `subdomain`, or the `base_url` of a self-hosted install
+// second `secret`, the account's `subdomain`, the `base_url` of a self-hosted install, or an `account` number
 // (HTTPS only; it is dialled with the same address checks as an IMAP server, so a private
 // address only where the operator allows one). The token is sent only in the help desk's
 // own auth header and only to its API hosts, with `GET` only; the connection test then reads

@@ -4167,7 +4167,7 @@ export interface paths {
          *
          *     `kind: token`: a help desk whose preset's `auth` is `token` connects with an API token the
          *     team creates in its own account, plus the fields its preset's `token_fields` names: a
-         *     second `secret`, the account's `subdomain`, or the `base_url` of a self-hosted install
+         *     second `secret`, the account's `subdomain`, the `base_url` of a self-hosted install, or an `account` number
          *     (HTTPS only; it is dialled with the same address checks as an IMAP server, so a private
          *     address only where the operator allows one). The token is sent only in the help desk's
          *     own auth header and only to its API hosts, with `GET` only; the connection test then reads
@@ -12455,21 +12455,21 @@ export interface components {
         };
         /**
          * @description Where the history comes from: `imap`, a mailbox read over IMAP; `file`, export files;
-         *     `zendesk` and `helpscout`, help desks. A server offers the sources its operator allows
-         *     (`YUVA_MIGRATION_SOURCES`) among those built: all four.
+         *     `zendesk`, `helpscout` and `chatwoot`, help desks. A server offers the sources its operator allows
+         *     (`YUVA_MIGRATION_SOURCES`) among those built.
          * @enum {string}
          */
-        MigrationSource: "imap" | "file" | "zendesk" | "helpscout";
+        MigrationSource: "imap" | "file" | "zendesk" | "helpscout" | "chatwoot";
         /**
          * @description The provider of an `imap` mailbox: `gmail`, `google_workspace`, `microsoft` (Outlook.com
          *     and Microsoft 365, through "Sign in with Microsoft"), `yandex`, `icloud`, `zoho`, `yahoo`,
          *     `fastmail`, `gmx`, or `imap` for any other server. For a `file` migration: `takeout`, a
          *     Google Takeout file, or `file`, any other export file; both read every format the server
          *     knows, which `upload.format` names once the upload is complete. A help desk has the preset
-         *     of its source: `zendesk` or `helpscout`.
+         *     of its source: `zendesk`, `helpscout` or `chatwoot`.
          * @enum {string}
          */
-        MigrationPresetId: "gmail" | "google_workspace" | "microsoft" | "yandex" | "icloud" | "zoho" | "yahoo" | "fastmail" | "gmx" | "imap" | "takeout" | "file" | "zendesk" | "helpscout";
+        MigrationPresetId: "gmail" | "google_workspace" | "microsoft" | "yandex" | "icloud" | "zoho" | "yahoo" | "fastmail" | "gmx" | "imap" | "takeout" | "file" | "zendesk" | "helpscout" | "chatwoot";
         /**
          * @description - `draft`: created; not connected yet.
          *     - `connected`: the connection test passed; choose what to read.
@@ -12570,6 +12570,13 @@ export interface components {
              *     install, such as `https://help.example.com`; no user name, query or fragment.
              */
             base_url?: string;
+            /**
+             * @description `token`, where `token_fields` names `account`: the number of the help desk account to
+             *     read, one of the accounts the token's user belongs to (Chatwoot's account id, the
+             *     number after `/app/accounts/` in its address). The connection test refuses a user who
+             *     is not an administrator of that account.
+             */
+            account?: string;
             host?: string;
             /** Format: int32 */
             port?: number;
@@ -13173,7 +13180,7 @@ export interface components {
              * @description `token` presets: the fields `PUT /v1/migrations/{migrationId}/credentials` takes with
              *     `kind: token`, `token` first, in the order the connect form shows them.
              */
-            token_fields?: ("token" | "secret" | "subdomain" | "base_url")[];
+            token_fields?: ("token" | "secret" | "subdomain" | "base_url" | "account")[];
         };
         MigrationPresetList: {
             items: components["schemas"]["MigrationPreset"][];

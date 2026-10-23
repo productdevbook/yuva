@@ -9,7 +9,7 @@ Posta kutusunu sahipler ve yöneticiler taşıyabilir: **Ayarlar → Yuva'ya ta�
 Sağlayıcınızın rehberini seçin: [Gmail](migrate-gmail.md), [Google Workspace](migrate-google-workspace.md),
 [Outlook.com](migrate-outlook.md), [Microsoft 365](migrate-microsoft365.md), [Yandex](migrate-yandex.md), [iCloud](migrate-icloud.md), [Zoho Mail](migrate-zoho.md),
 [Yahoo Mail](migrate-yahoo.md), [Fastmail](migrate-fastmail.md), [GMX ve mail.com](migrate-gmx.md),
-[Zendesk](migrate-zendesk.md), [Help Scout](migrate-helpscout.md),
+[Zendesk](migrate-zendesk.md), [Help Scout](migrate-helpscout.md), [Chatwoot](migrate-chatwoot.md),
 [herhangi bir IMAP sunucusu](migrate-imap.md) ya da [bir dışa aktarım dosyası](migrate-files.md) (Google Takeout, mbox, zip içinde .eml veya Maildir). Kendi sunucunuzu mu işletiyorsunuz? [İşletmeciler için Yuva'ya taşıma](migrate-operators.md) sayfasına bakın.
 Zendesk, Help Scout, Outlook.com ve Microsoft 365 şifreyle değil, oturum açarak bağlanır.
 

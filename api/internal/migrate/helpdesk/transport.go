@@ -12,6 +12,7 @@ import (
 	"fmt"
 	"net"
 	"net/http"
+	"net/url"
 	"strings"
 	"time"
 )
@@ -32,6 +33,21 @@ type Hosts struct {
 	Exact    []string
 	Suffixes []string
 	Any      bool
+	// Port is the port a token host is reached on; empty means 443.
+	Port string
+}
+
+// AllowsURL is Allows for the host and the port of u, which a token goes to.
+func (h Hosts) AllowsURL(u *url.URL) bool {
+	port := u.Port()
+	if port == "" {
+		port = "443"
+	}
+	want := h.Port
+	if want == "" {
+		want = "443"
+	}
+	return h.Allows(u.Hostname()) && port == want
 }
 
 func (h Hosts) Allows(host string) bool {
@@ -108,7 +124,7 @@ func (b bearer) RoundTrip(r *http.Request) (*http.Response, error) {
 	if b.send.Header != "" {
 		r.Header.Del(b.send.Header)
 	}
-	if b.hosts.Allows(r.URL.Hostname()) {
+	if b.hosts.AllowsURL(r.URL) {
 		switch b.send.Scheme {
 		case SendBasic:
 			password := b.secret

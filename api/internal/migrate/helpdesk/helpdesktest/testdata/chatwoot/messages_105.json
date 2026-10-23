@@ -1,0 +1,81 @@
+{
+  "meta": {
+    "labels": [],
+    "additional_attributes": {},
+    "contact": {
+      "payload": []
+    },
+    "assignee": {
+      "id": 3,
+      "name": "Ece Agent",
+      "email": "ece@acme.example.com",
+      "role": "agent"
+    }
+  },
+  "payload": [
+    {
+      "id": 1401,
+      "content": "Invoice 7 is wrong",
+      "account_id": 1,
+      "inbox_id": 1,
+      "conversation_id": 0,
+      "message_type": 0,
+      "created_at": 1760004000,
+      "updated_at": 1760004000,
+      "private": false,
+      "status": "sent",
+      "source_id": null,
+      "content_type": "incoming_email",
+      "content_attributes": {
+        "email": {
+          "from": [
+            "ayse@example.org"
+          ],
+          "html_content": {
+            "full": "<p>Invoice 7 is <b>wrong</b></p>",
+            "reply": "<p>Invoice 7 is wrong</p>"
+          },
+          "text_content": {
+            "full": "Invoice 7 is wrong",
+            "reply": "Invoice 7 is wrong"
+          }
+        }
+      },
+      "sender_type": "Contact",
+      "sender_id": 11,
+      "external_source_ids": {},
+      "attachments": [],
+      "sender": {
+        "id": 11,
+        "name": "Ayse Example",
+        "email": "ayse@example.org",
+        "type": "contact"
+      }
+    },
+    {
+      "id": 1402,
+      "content": "We will fix it.",
+      "account_id": 1,
+      "inbox_id": 1,
+      "conversation_id": 0,
+      "message_type": 1,
+      "created_at": 1760004500,
+      "updated_at": 1760004500,
+      "private": false,
+      "status": "sent",
+      "source_id": null,
+      "content_type": "text",
+      "content_attributes": {},
+      "sender_type": "User",
+      "sender_id": 3,
+      "external_source_ids": {},
+      "attachments": [],
+      "sender": {
+        "id": 3,
+        "name": "Ece Agent",
+        "email": "ece@acme.example.com",
+        "type": "user"
+      }
+    }
+  ]
+}

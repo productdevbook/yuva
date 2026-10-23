@@ -1805,7 +1805,8 @@ losing a message and without changing anything at the source. Decisions:
   files (Google Takeout mbox, mbox, .eml or Maildir in a zip; no PST, for want of a permissively
   licensed reader) need no access to the account and are the fast way for very large Gmail
   mailboxes: Takeout first, then IMAP for newer mail and the cutover. Help desks: Zendesk with OAuth
-  `read`, Help Scout; each team creates the OAuth client in its own help desk with Yuva's redirect URL
+  `read`, Help Scout, Chatwoot (an administrator's access token, the install's HTTPS base URL and the account
+  number; conversations by last activity, messages backwards with `before`, 60 requests a minute); each team creates the OAuth client in its own help desk with Yuva's redirect URL
   and enters its id and secret on the panel's connect page (there is no operator-wide client), and a
   help-desk migration goes through the same cutover as a mailbox. Every help desk is one entry of a
   registry (`internal/migrate/helpdesk`): its API hosts, attachment hosts, auth kind (`oauth` or
@@ -1814,7 +1815,7 @@ losing a message and without changing anything at the source. Decisions:
   attribute prefix and how its changes are read after the scan; the preset, the sign-in, the reader
   and the copy read the entry, so a new help desk is a new entry. A `token` desk connects with
   `PUT /v1/migrations/{id}/credentials` (`kind: token`, the API token and, where the entry asks, a
-  second secret, the account's subdomain or the HTTPS base URL of a self-hosted install), sealed like
+  second secret, the account's subdomain, the HTTPS base URL of a self-hosted install or an account number), sealed like
   OAuth tokens and deleted with them; the panel shows its form in place of "Sign in". Detection from the address and the domain's MX picks the preset; autoconfig is
   read only from the team's own domain. Provider mail APIs and other sign-ins were considered and
   rejected for one IMAP path.

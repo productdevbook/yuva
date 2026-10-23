@@ -1,0 +1,97 @@
+{
+  "meta": {
+    "labels": [],
+    "additional_attributes": {},
+    "contact": {
+      "payload": []
+    },
+    "assignee": {
+      "id": 3,
+      "name": "Ece Agent",
+      "email": "ece@acme.example.com",
+      "role": "agent"
+    }
+  },
+  "payload": [
+    {
+      "id": 1001,
+      "content": "My export is empty, see the screenshot.",
+      "account_id": 1,
+      "inbox_id": 1,
+      "conversation_id": 0,
+      "message_type": 0,
+      "created_at": 1760000100,
+      "updated_at": 1760000100,
+      "private": false,
+      "status": "sent",
+      "source_id": null,
+      "content_type": "text",
+      "content_attributes": {},
+      "sender_type": "Contact",
+      "sender_id": 12,
+      "external_source_ids": {},
+      "attachments": [
+        {
+          "id": 1,
+          "message_id": 1001,
+          "file_type": "image",
+          "account_id": 1,
+          "extension": "png",
+          "data_url": "https://files.example.org/storage/attachments/screenshot.png",
+          "thumb_url": "https://files.example.org/storage/attachments/screenshot.png",
+          "file_size": 70
+        }
+      ],
+      "sender": {
+        "id": 12,
+        "name": "Carol Example",
+        "email": "carol@example.net",
+        "type": "contact"
+      }
+    },
+    {
+      "id": 1002,
+      "content": "Thanks Carol, looking into it.",
+      "account_id": 1,
+      "inbox_id": 1,
+      "conversation_id": 0,
+      "message_type": 1,
+      "created_at": 1760000120,
+      "updated_at": 1760000120,
+      "private": false,
+      "status": "sent",
+      "source_id": null,
+      "content_type": "text",
+      "content_attributes": {},
+      "sender_type": "User",
+      "sender_id": 3,
+      "external_source_ids": {},
+      "attachments": [],
+      "sender": {
+        "id": 3,
+        "name": "Ece Agent",
+        "email": "ece@acme.example.com",
+        "type": "user"
+      }
+    },
+    {
+      "id": 1003,
+      "content": "Ece Agent assigned this conversation",
+      "account_id": 1,
+      "inbox_id": 1,
+      "conversation_id": 0,
+      "message_type": 2,
+      "created_at": 1760000121,
+      "updated_at": 1760000121,
+      "private": false,
+      "status": "sent",
+      "source_id": null,
+      "content_type": "text",
+      "content_attributes": {},
+      "sender_type": null,
+      "sender_id": null,
+      "external_source_ids": {},
+      "attachments": []
+    }
+  ]
+}

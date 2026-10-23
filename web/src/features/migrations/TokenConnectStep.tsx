@@ -38,6 +38,7 @@ export function TokenConnectStep({ m, preset }: { m: Migration; preset: Migratio
   const [secret, setSecret] = useState("")
   const [subdomain, setSubdomain] = useState("")
   const [baseUrl, setBaseUrl] = useState("")
+  const [account, setAccount] = useState("")
   const [result, setResult] = useState<MigrationTestResult | null>(null)
   const credentials = useSetCredentials(m.id)
   const test = useTestConnection(m.id)
@@ -50,11 +51,13 @@ export function TokenConnectStep({ m, preset }: { m: Migration; preset: Migratio
   const host = m.credentials?.server.host ?? provider
   const sub = subdomain.trim().toLowerCase()
   const base = baseUrl.trim()
+  const accountId = account.trim()
   const valid =
     token.trim() !== "" &&
     (!fields.includes("secret") || secret.trim() !== "") &&
     (!fields.includes("subdomain") || SUBDOMAIN.test(sub)) &&
-    (!fields.includes("base_url") || base.startsWith("https://"))
+    (!fields.includes("base_url") || base.startsWith("https://")) &&
+    (!fields.includes("account") || /^[0-9]{1,18}$/.test(accountId))
 
   const run = useMutation({
     mutationFn: async () => {
@@ -65,6 +68,7 @@ export function TokenConnectStep({ m, preset }: { m: Migration; preset: Migratio
         ...(fields.includes("secret") ? { secret: secret.trim() } : {}),
         ...(fields.includes("subdomain") ? { subdomain: sub } : {}),
         ...(fields.includes("base_url") ? { base_url: base } : {}),
+        ...(fields.includes("account") ? { account: accountId } : {}),
       }
       await credentials.mutateAsync(body)
       const r = await test.mutateAsync()
@@ -178,6 +182,23 @@ export function TokenConnectStep({ m, preset }: { m: Migration; preset: Migratio
                 aria-invalid={base !== "" && !base.startsWith("https://")}
                 className="h-10 rounded-xl"
                 data-testid="migration-base-url"
+              />
+            </Field>
+          )}
+          {fields.includes("account") && (
+            <Field label={<Trans>Account number</Trans>} htmlFor="migration-account">
+              <Input
+                id="migration-account"
+                inputMode="numeric"
+                autoComplete="off"
+                spellCheck={false}
+                value={account}
+                maxLength={18}
+                onChange={(e) => setAccount(e.target.value)}
+                placeholder="1"
+                aria-invalid={account !== "" && !/^[0-9]{1,18}$/.test(accountId)}
+                className="h-10 rounded-xl"
+                data-testid="migration-account"
               />
             </Field>
           )}

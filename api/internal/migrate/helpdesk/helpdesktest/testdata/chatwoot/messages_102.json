@@ -1,0 +1,103 @@
+{
+  "meta": {
+    "labels": [],
+    "additional_attributes": {},
+    "contact": {
+      "payload": []
+    },
+    "assignee": {
+      "id": 3,
+      "name": "Ece Agent",
+      "email": "ece@acme.example.com",
+      "role": "agent"
+    }
+  },
+  "payload": [
+    {
+      "id": 1101,
+      "content": "Please refund order 55.",
+      "account_id": 1,
+      "inbox_id": 1,
+      "conversation_id": 0,
+      "message_type": 0,
+      "created_at": 1760000800,
+      "updated_at": 1760000800,
+      "private": false,
+      "status": "sent",
+      "source_id": null,
+      "content_type": "text",
+      "content_attributes": {},
+      "sender_type": "Contact",
+      "sender_id": 11,
+      "external_source_ids": {},
+      "attachments": [
+        {
+          "id": 3,
+          "message_id": 1101,
+          "file_type": "fallback",
+          "account_id": 1,
+          "extension": "",
+          "data_url": "https://chatwoot.acme.example:8443/shared/link",
+          "thumb_url": "https://chatwoot.acme.example:8443/shared/link",
+          "file_size": 0
+        }
+      ],
+      "sender": {
+        "id": 11,
+        "name": "Ayse Example",
+        "email": "ayse@example.org",
+        "type": "contact"
+      }
+    },
+    {
+      "id": 1102,
+      "content": "Refund sent.",
+      "account_id": 1,
+      "inbox_id": 1,
+      "conversation_id": 0,
+      "message_type": 1,
+      "created_at": 1760000900,
+      "updated_at": 1760000900,
+      "private": false,
+      "status": "sent",
+      "source_id": null,
+      "content_type": "text",
+      "content_attributes": {},
+      "sender_type": "User",
+      "sender_id": 3,
+      "external_source_ids": {},
+      "attachments": [],
+      "sender": {
+        "id": 3,
+        "name": "Ece Agent",
+        "email": "ece@acme.example.com",
+        "type": "user"
+      }
+    },
+    {
+      "id": 1103,
+      "content": "I was on cc: the refund is also fine with me.",
+      "account_id": 1,
+      "inbox_id": 1,
+      "conversation_id": 0,
+      "message_type": 0,
+      "created_at": 1760000950,
+      "updated_at": 1760000950,
+      "private": false,
+      "status": "sent",
+      "source_id": null,
+      "content_type": "text",
+      "content_attributes": {},
+      "sender_type": "Contact",
+      "sender_id": 14,
+      "external_source_ids": {},
+      "attachments": [],
+      "sender": {
+        "id": 14,
+        "name": "Cem Copy",
+        "email": "Cem@Example.net",
+        "type": "contact"
+      }
+    }
+  ]
+}

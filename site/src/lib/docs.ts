@@ -59,6 +59,7 @@ const groups = [
       "migrate-gmx",
       "migrate-zendesk",
       "migrate-helpscout",
+      "migrate-chatwoot",
       "migrate-imap",
       "migrate-files",
       "migrate-operators",

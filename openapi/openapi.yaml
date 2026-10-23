@@ -7470,7 +7470,7 @@ paths:
 
         `kind: token`: a help desk whose preset's `auth` is `token` connects with an API token the
         team creates in its own account, plus the fields its preset's `token_fields` names: a
-        second `secret`, the account's `subdomain`, or the `base_url` of a self-hosted install
+        second `secret`, the account's `subdomain`, the `base_url` of a self-hosted install, or an `account` number
         (HTTPS only; it is dialled with the same address checks as an IMAP server, so a private
         address only where the operator allows one). The token is sent only in the help desk's
         own auth header and only to its API hosts, with `GET` only; the connection test then reads
@@ -21159,10 +21159,10 @@ components:
       type: string
       description: |
         Where the history comes from: `imap`, a mailbox read over IMAP; `file`, export files;
-        `zendesk` and `helpscout`, help desks. A server offers the sources its operator allows
-        (`YUVA_MIGRATION_SOURCES`) among those built: all four.
-      enum: [imap, file, zendesk, helpscout]
-      x-enum-varnames: [MigrationSourceImap, MigrationSourceFile, MigrationSourceZendesk, MigrationSourceHelpscout]
+        `zendesk`, `helpscout` and `chatwoot`, help desks. A server offers the sources its operator allows
+        (`YUVA_MIGRATION_SOURCES`) among those built.
+      enum: [imap, file, zendesk, helpscout, chatwoot]
+      x-enum-varnames: [MigrationSourceImap, MigrationSourceFile, MigrationSourceZendesk, MigrationSourceHelpscout, MigrationSourceChatwoot]
     MigrationPresetId:
       type: string
       description: |
@@ -21171,9 +21171,9 @@ components:
         `fastmail`, `gmx`, or `imap` for any other server. For a `file` migration: `takeout`, a
         Google Takeout file, or `file`, any other export file; both read every format the server
         knows, which `upload.format` names once the upload is complete. A help desk has the preset
-        of its source: `zendesk` or `helpscout`.
-      enum: [gmail, google_workspace, microsoft, yandex, icloud, zoho, yahoo, fastmail, gmx, imap, takeout, file, zendesk, helpscout]
-      x-enum-varnames: [PresetGmail, PresetGoogleWorkspace, PresetMicrosoft, PresetYandex, PresetIcloud, PresetZoho, PresetYahoo, PresetFastmail, PresetGmx, PresetImap, PresetTakeout, PresetFile, PresetZendesk, PresetHelpscout]
+        of its source: `zendesk`, `helpscout` or `chatwoot`.
+      enum: [gmail, google_workspace, microsoft, yandex, icloud, zoho, yahoo, fastmail, gmx, imap, takeout, file, zendesk, helpscout, chatwoot]
+      x-enum-varnames: [PresetGmail, PresetGoogleWorkspace, PresetMicrosoft, PresetYandex, PresetIcloud, PresetZoho, PresetYahoo, PresetFastmail, PresetGmx, PresetImap, PresetTakeout, PresetFile, PresetZendesk, PresetHelpscout, PresetChatwoot]
     MigrationState:
       type: string
       description: |
@@ -21314,6 +21314,14 @@ components:
           description: |
             `token`, where `token_fields` names `base_url`: the HTTPS address of a self-hosted
             install, such as `https://help.example.com`; no user name, query or fragment.
+        account:
+          type: string
+          pattern: "^[0-9]{1,18}$"
+          description: |
+            `token`, where `token_fields` names `account`: the number of the help desk account to
+            read, one of the accounts the token's user belongs to (Chatwoot's account id, the
+            number after `/app/accounts/` in its address). The connection test refuses a user who
+            is not an administrator of that account.
         host:
           type: string
           minLength: 1
@@ -22108,8 +22116,8 @@ components:
             `kind: token`, `token` first, in the order the connect form shows them.
           items:
             type: string
-            enum: [token, secret, subdomain, base_url]
-            x-enum-varnames: [TokenFieldToken, TokenFieldSecret, TokenFieldSubdomain, TokenFieldBaseUrl]
+            enum: [token, secret, subdomain, base_url, account]
+            x-enum-varnames: [TokenFieldToken, TokenFieldSecret, TokenFieldSubdomain, TokenFieldBaseUrl, TokenFieldAccount]
     MigrationPresetList:
       type: object
       required: [items]

@@ -1,0 +1,81 @@
+{
+  "data": {
+    "meta": {
+      "mine_count": 1,
+      "assigned_count": 2,
+      "unassigned_count": 25,
+      "all_count": 27
+    },
+    "payload": [
+      {
+        "id": 102,
+        "account_id": 1,
+        "uuid": "00000000-0000-0000-0000-000000000102",
+        "status": "resolved",
+        "inbox_id": 1,
+        "labels": [
+          "billing"
+        ],
+        "created_at": 1760000800,
+        "timestamp": 1760001000,
+        "last_activity_at": 1760001000,
+        "messages": [],
+        "meta": {
+          "sender": {
+            "id": 11,
+            "name": "Ayse Example",
+            "email": "Ayse@Example.org",
+            "phone_number": "+905550000011",
+            "identifier": "crm-101",
+            "thumbnail": "",
+            "blocked": false,
+            "additional_attributes": {},
+            "custom_attributes": {}
+          },
+          "channel": "Channel::Email",
+          "assignee": null,
+          "hmac_verified": false
+        },
+        "additional_attributes": {
+          "mail_subject": "Re: Refund"
+        }
+      },
+      {
+        "id": 101,
+        "account_id": 1,
+        "uuid": "00000000-0000-0000-0000-000000000101",
+        "status": "open",
+        "inbox_id": 1,
+        "labels": [],
+        "created_at": 1760000100,
+        "timestamp": 1760000500,
+        "last_activity_at": 1760000500,
+        "messages": [],
+        "meta": {
+          "sender": {
+            "id": 12,
+            "name": "Carol Example",
+            "email": "carol@example.net",
+            "phone_number": null,
+            "identifier": null,
+            "thumbnail": "",
+            "blocked": false,
+            "additional_attributes": {},
+            "custom_attributes": {}
+          },
+          "channel": "Channel::Email",
+          "assignee": {
+            "id": 3,
+            "name": "Ece Agent",
+            "email": "ece@acme.example.com",
+            "role": "agent"
+          },
+          "hmac_verified": false
+        },
+        "additional_attributes": {
+          "mail_subject": "Export is empty"
+        }
+      }
+    ]
+  }
+}

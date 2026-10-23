@@ -1,4 +1,4 @@
-// Package helpdesktest serves recorded Zendesk and Help Scout answers from a local TLS server for
+// Package helpdesktest serves recorded Zendesk, Help Scout and Chatwoot answers from a local TLS server for
 // tests: every request is recorded, the API refuses a missing or stale token, and the rate-limit
 // headers are the ones the providers document.
 package helpdesktest
@@ -41,6 +41,8 @@ const (
 	ZendeskLimit     = 20
 	HelpScoutLimit   = 40
 	OutsideHost      = "files.example.org"
+	ChatwootHost     = "chatwoot.acme.example"
+	ChatwootToken    = "cw-admin-token-1"
 )
 
 // Request is one request the server saw, at the test's clock.
@@ -50,6 +52,7 @@ type Request struct {
 	Path   string
 	Query  string
 	Auth   string
+	Token  string
 	Body   string
 	At     time.Time
 }
@@ -70,6 +73,9 @@ type Server struct {
 	access   map[string]bool
 	refresh  map[string]bool
 	issued   int
+
+	throttle      int
+	throttleRetry string
 }
 
 // New starts the server; now is the clock requests are recorded at.
@@ -81,7 +87,7 @@ func New(t testing.TB, now func() time.Time) *Server {
 	}
 	tmpl := &x509.Certificate{
 		SerialNumber: big.NewInt(1), Subject: pkix.Name{CommonName: "helpdesk fixtures"},
-		DNSNames:  []string{"*.zendesk.com", "*.zdusercontent.com", "api.helpscout.net", "secure.helpscout.net", OutsideHost},
+		DNSNames:  []string{"*.zendesk.com", "*.zdusercontent.com", "api.helpscout.net", "secure.helpscout.net", OutsideHost, ChatwootHost},
 		NotBefore: time.Now().Add(-time.Hour), NotAfter: time.Now().Add(24 * time.Hour), KeyUsage: x509.KeyUsageDigitalSignature,
 		ExtKeyUsage: []x509.ExtKeyUsage{x509.ExtKeyUsageServerAuth}, IsCA: true, BasicConstraintsValid: true,
 	}
@@ -142,7 +148,7 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 	}
 	s.mu.Lock()
 	s.requests = append(s.requests, Request{Method: r.Method, Host: host, Path: r.URL.Path, Query: r.URL.RawQuery, Auth: r.Header.Get("Authorization"),
-		Body: string(body), At: s.now()})
+		Token: r.Header.Get("api_access_token"), Body: string(body), At: s.now()})
 	s.mu.Unlock()
 	switch {
 	case host == ZendeskSubdomain+".zendesk.com":
@@ -152,6 +158,8 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 		s.attachment(w, r.URL.Path)
 	case host == OutsideHost:
 		s.attachment(w, r.URL.Path)
+	case host == ChatwootHost:
+		s.chatwoot(w, r)
 	case host == "api.helpscout.net":
 		w.Header().Set("X-RateLimit-Limit-Minute", fmt.Sprint(HelpScoutLimit))
 		s.helpscout(w, r, body)
@@ -400,6 +408,96 @@ func (s *Server) helpscout(w http.ResponseWriter, r *http.Request, body []byte) 
 		_ = json.NewEncoder(w).Encode(map[string]string{"data": base64.StdEncoding.EncodeToString(Attachment(r.URL.Path))})
 	case len(parts) == 3 && parts[1] == "customers":
 		s.json(w, r, "helpscout/customer_"+parts[2]+".json")
+	default:
+		http.NotFound(w, r)
+	}
+}
+
+// ThrottleChatwoot answers the next n Chatwoot conversation listings with 429, with a Retry-After
+// of retryAfter seconds when it is not empty.
+func (s *Server) ThrottleChatwoot(n int, retryAfter string) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	s.throttle, s.throttleRetry = n, retryAfter
+}
+
+func (s *Server) chatwoot(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		return
+	}
+	if strings.HasPrefix(r.URL.Path, "/rails/") {
+		s.attachment(w, r.URL.Path)
+		return
+	}
+	if r.Header.Get("api_access_token") != ChatwootToken || r.Header.Get("Authorization") != "" {
+		w.WriteHeader(http.StatusUnauthorized)
+		_, _ = w.Write([]byte(`{"error":"You need to sign in or sign up before continuing."}`))
+		return
+	}
+	q := r.URL.Query()
+	parts := strings.Split(strings.Trim(r.URL.Path, "/"), "/")
+	switch {
+	case r.URL.Path == "/api/v1/profile":
+		s.json(w, r, "chatwoot/profile.json")
+	case len(parts) >= 5 && parts[0] == "api" && parts[2] == "accounts":
+		if parts[3] != "1" {
+			w.WriteHeader(http.StatusUnauthorized)
+			_, _ = w.Write([]byte(`{"error":"You are not authorized to do this action"}`))
+			return
+		}
+		s.chatwootAccount(w, r, parts[4:], q)
+	default:
+		http.NotFound(w, r)
+	}
+}
+
+func (s *Server) chatwootAccount(w http.ResponseWriter, r *http.Request, parts []string, q url.Values) {
+	switch {
+	case len(parts) == 1 && parts[0] == "inboxes":
+		s.json(w, r, "chatwoot/inboxes.json")
+	case len(parts) == 1 && parts[0] == "agents":
+		s.json(w, r, "chatwoot/agents.json")
+	case len(parts) == 1 && parts[0] == "conversations":
+		s.mu.Lock()
+		throttled, retry := s.throttle > 0, s.throttleRetry
+		if throttled {
+			s.throttle--
+		}
+		s.mu.Unlock()
+		if throttled {
+			if retry != "" {
+				w.Header().Set("Retry-After", retry)
+			}
+			w.WriteHeader(http.StatusTooManyRequests)
+			_, _ = w.Write([]byte("Retry later\n"))
+			return
+		}
+		switch q.Get("page") {
+		case "2":
+			s.json(w, r, "chatwoot/conversations_2.json")
+		case "", "1":
+			s.json(w, r, "chatwoot/conversations_1.json")
+		default:
+			w.Header().Set("Content-Type", "application/json")
+			_, _ = w.Write([]byte(`{"data":{"meta":{},"payload":[]}}`))
+		}
+	case len(parts) == 3 && parts[0] == "conversations" && parts[2] == "messages":
+		name := "chatwoot/messages_" + parts[1]
+		if before := q.Get("before"); before != "" {
+			name += "_before_" + before
+		}
+		if _, ok := s.file(name + ".json"); !ok && q.Get("before") == "" {
+			w.Header().Set("Content-Type", "application/json")
+			_, _ = w.Write([]byte(`{"meta":{},"payload":[{"id":9000,"content":"Hello","message_type":0,"private":false,"created_at":1760000000,"sender_type":"Contact","sender_id":12,"sender":{"id":12,"name":"Carol Example","email":"carol@example.net","type":"contact"},"attachments":[]}]}`))
+			return
+		}
+		if _, ok := s.file(name + ".json"); !ok {
+			w.Header().Set("Content-Type", "application/json")
+			_, _ = w.Write([]byte(`{"meta":{},"payload":[]}`))
+			return
+		}
+		s.json(w, r, name+".json")
 	default:
 		http.NotFound(w, r)
 	}
