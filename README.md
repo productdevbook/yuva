@@ -118,7 +118,7 @@ Working projects are in [examples](examples).
 Guides, the API reference and examples are at [useyuva.com/docs](https://useyuva.com/docs/), and in
 [docs/](docs) (also in [Turkish](docs/tr) and [German](docs/de)). How it is built:
 [architecture](docs/architecture.md). What is next: [roadmap](docs/roadmap.md). What changed:
-[changelog](CHANGELOG.md).
+[GitHub Releases](https://github.com/productdevbook/yuva/releases).
 
 ## Community and contributing
 
