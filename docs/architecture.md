@@ -516,6 +516,17 @@ panel (embedded SPA) ─────────► /v1 + WS ──────�
   identity secrets, webhook secrets) are encrypted with AES-256-GCM under a master key,
   `YUVA_MASTER_KEY` (32 random bytes, base64, e.g. `openssl rand -base64 32`). The server does not
   start without it, and losing it makes the stored secrets unreadable.
+  Rotation (#194, migration 00128): `YUVA_MASTER_KEY_PREVIOUS` (one key, never equal to the current one)
+  is accepted for opening values while new ones are sealed with the current key; `yuva master-key
+  rotate` re-seals every registered sealed column in batches, compare-and-swap so a concurrent panel
+  save is never overwritten, and ends by running `yuva master-key check`, which exits non-zero until
+  nothing needs the previous key. A test fails when a new binary column is registered neither as
+  sealed nor as not sealed. Derived values (mail link tokens, probe headers, share tokens, the DNS
+  proof value) are accepted under either key while the previous one is set; rate-limit windows start
+  over. Opt-out hashes cannot be re-derived, so each workspace's opt-out key is stored sealed in
+  `workspace_keys`, written at startup for every workspace while no previous key is set; with a
+  previous key the server refuses to start when a workspace with opt-outs has no stored key. After a
+  suspected leak the previous key is removed at once rather than kept for old links.
 - `slog` structured logs, Prometheus metrics, `/healthz` and `/readyz`.
 
 ### API surfaces
