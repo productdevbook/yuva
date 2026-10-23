@@ -106,6 +106,10 @@ Bestätigungslink geht an sie, und Antworten werden erst nach der Bestätigung p
 | `confirmed` | Die Adresse ist jetzt das `email` des Kontakts. |
 | `limited` | Es ging kein Link raus, weil die Adresse, das Netz des Besuchers, der Kontakt oder der Workspace für den Moment sein Limit an Bestätigungs-E-Mails erreicht hat. Sagen Sie das und bitten Sie den Besucher, es später zu versuchen oder eine andere Adresse zu nutzen; sagen Sie nicht, ein Link sei gesendet worden. |
 
+`email_confirmation` fehlt, wenn nichts begonnen wurde: Der Kontakt hat in der letzten Stunde schon drei
+Adressen eingegeben, oder die Adresse gehört einem anderen Kontakt des Workspace. Behandeln Sie das in dem,
+was Sie dem Besucher zeigen, wie `limited`.
+
 Ein `contact.updated`-Frame auf der Live-Verbindung trägt jede Änderung. Die Limits: 3 pro Tag und Adresse aus
 einem Netz, 10 pro Tag und Adresse serverweit, 6 pro Tag und Kontakt, 30 pro Tag und Netz und Workspace und
 2.000 pro Tag und Workspace.

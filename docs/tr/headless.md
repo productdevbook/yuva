@@ -102,6 +102,10 @@ gönderilir ve yanıtlar ancak onaylandıktan sonra e-postayla gider. Kişideki 
 | `confirmed` | Adres artık kişinin `email` alanıdır. |
 | `limited` | Adres, ziyaretçinin ağı, kişi ya da çalışma alanı onay e-postaları sınırına şimdilik ulaştığı için hiçbir bağlantı gitmedi. Bunu söyleyin ve ziyaretçiden daha sonra denemesini ya da başka bir adres kullanmasını isteyin; bağlantı gönderildiğini söylemeyin. |
 
+Hiçbir şey başlatılmadığında `email_confirmation` gelmez: kişi son bir saatte zaten üç adres yazmıştır ya da
+adres çalışma alanındaki başka bir kişiye aittir. Ziyaretçiye göstereceğiniz şeyde bunu `limited` gibi ele
+alın.
+
 Canlı bağlantıdaki bir `contact.updated` çerçevesi her değişikliği taşır. Sınırlar: aynı ağdan adres başına
 günde 3, sunucuda adres başına günde 10, kişi başına günde 6, ağ ve çalışma alanı başına günde 30 ve çalışma
 alanı başına günde 2.000.

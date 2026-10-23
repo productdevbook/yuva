@@ -100,6 +100,10 @@ are e-mailed only after it is confirmed. `email_confirmation` on the contact say
 | `confirmed` | The address is now the contact's `email`. |
 | `limited` | No link went out because the address, the visitor's network, the contact or the workspace reached its limit of confirmation mails for now. Say so, and ask the visitor to try later or to use another address; do not say a link was sent. |
 
+`email_confirmation` is absent when nothing was started: the contact already typed three addresses in the
+last hour, or the address belongs to another contact of the workspace. Treat it like `limited` in what you
+show the visitor.
+
 A `contact.updated` frame on the live connection carries each change. The limits are 3 a day per address from
 one network, 10 a day per address on the server, 6 a day per contact, 30 a day per network and workspace and
 2,000 a day per workspace.
