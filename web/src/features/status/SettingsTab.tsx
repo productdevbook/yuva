@@ -289,6 +289,17 @@ function DisplayCard({ page, auto }: { page: StatusPage; auto: Autosave }) {
           />
         </ToggleRow>
         <ToggleRow
+          title={<Trans>Show response times</Trans>}
+          hint={<Trans>The last 24 hours of components with an http or tcp monitor.</Trans>}
+        >
+          <Switch
+            checked={page.show_response_times}
+            disabled={patch.isPending}
+            onCheckedChange={(show_response_times) => save({ show_response_times })}
+            data-testid="status-setting-response-times"
+          />
+        </ToggleRow>
+        <ToggleRow
           title={<Trans>Show the name next to the logo</Trans>}
           hint={<Trans>Turn off when the logo already contains the name.</Trans>}
         >

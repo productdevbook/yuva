@@ -24,6 +24,7 @@ Admins an und ändern sie; Agents mit Zugriff auf den Posteingang arbeiten mit K
 | Zeitzone (`timezone`) | Die Zone der Tagesbalken. Besucher sehen Zeiten in ihrer eigenen Zone. |
 | Tage Verlauf (`history_days`) | 7 bis 90, Standard 90. |
 | Verfügbarkeit anzeigen (`show_uptime`) | Ein Prozentwert neben jeder Komponente. Standardmäßig an. |
+| Antwortzeiten anzeigen (`show_response_times`) | Die Antwortzeiten der letzten 24 Stunden für Komponenten mit einem `http`- oder `tcp`-Monitor, mit Median und p95. Standardmäßig aus. |
 | Namen neben dem Logo anzeigen (`show_name`) | Standardmäßig an. Schalten Sie es aus, wenn das Logo den Namen schon enthält: Die Kopfzeile zeigt dann nur das Logo, mit dem Namen als Alternativtext. Ohne Logo erscheint der Name immer. |
 | Feed, Badge und Einbettung anzeigen (`show_follow`) | Standardmäßig an. Aus blendet den Abschnitt „Folgen und einbetten“, seinen Link in der Kopfzeile, die Links `feed.atom` und `badge.svg` in der Fußzeile und den Feed-Link auf Vorfallseiten aus. Feed, Badge und JSON bleiben unter ihren Adressen erreichbar. |
 | Veröffentlicht (`published`) | Standardmäßig aus. Eine unveröffentlichte Seite antwortet allen außer Ihrem Team mit `404`; das Team sieht sie im Panel in der Vorschau. |

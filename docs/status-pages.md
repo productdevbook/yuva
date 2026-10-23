@@ -24,6 +24,7 @@ and change pages; agents with access to the inbox work with components and incid
 | Time zone (`timezone`) | The zone of the day bars. Visitors see times in their own zone. |
 | Days of history (`history_days`) | 7 to 90, default 90. |
 | Show uptime (`show_uptime`) | A percentage next to each component. On by default. |
+| Show response times (`show_response_times`) | The last 24 hours of response times for components with an `http` or `tcp` monitor, with the median and p95. Off by default. |
 | Show the name next to the logo (`show_name`) | On by default. Turn it off when the logo already contains the name: the header then shows only the logo, with the name as its alt text. Without a logo the name always shows. |
 | Show feed, badge and embed (`show_follow`) | On by default. Off leaves out the Follow and embed section, its link in the header, the `feed.atom` and `badge.svg` links in the footer and the feed link on incident pages. The feed, badge and JSON addresses keep answering. |
 | Published (`published`) | Off by default. An unpublished page answers `404` to everyone but your team, which previews it in the panel. |

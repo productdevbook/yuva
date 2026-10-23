@@ -25,6 +25,7 @@ yöneticiler oluşturur ve değiştirir; gelen kutusuna erişimi olan temsilcile
 | Saat dilimi (`timezone`) | Gün çubuklarının dilimi. Ziyaretçiler saatleri kendi dilimlerinde görür. |
 | Geçmiş günü (`history_days`) | 7 ile 90, varsayılan 90. |
 | Çalışma süresini göster (`show_uptime`) | Her bileşenin yanında bir yüzde. Varsayılan olarak açık. |
+| Yanıt sürelerini göster (`show_response_times`) | `http` veya `tcp` izleyicisi olan bileşenlerin son 24 saatteki yanıt süreleri, medyan ve p95 ile. Varsayılan olarak kapalı. |
 | Adı logonun yanında göster (`show_name`) | Varsayılan olarak açık. Logo adı zaten içeriyorsa kapatın: başlıkta yalnızca logo görünür ve ad, logonun alternatif metni olur. Logo yoksa ad her zaman görünür. |
 | Akışı, rozeti ve yerleştirmeyi göster (`show_follow`) | Varsayılan olarak açık. Kapalıyken Takip et ve yerleştir bölümü, başlıktaki bağlantısı, sayfa altındaki `feed.atom` ve `badge.svg` bağlantıları ve olay sayfalarındaki akış bağlantısı gösterilmez. Akış, rozet ve JSON adresleri yanıt vermeye devam eder. |
 | Yayında (`published`) | Varsayılan olarak kapalı. Yayınlanmamış bir sayfa ekibiniz dışında herkese `404` verir; ekibiniz onu panelde önizler. |
