@@ -17,6 +17,7 @@ import (
 
 	"github.com/productdevbook/yuva/api/internal/email"
 	"github.com/productdevbook/yuva/api/internal/jobs"
+	"github.com/productdevbook/yuva/api/internal/mail"
 	"github.com/productdevbook/yuva/api/internal/oas"
 	"github.com/productdevbook/yuva/api/internal/store"
 )
@@ -527,7 +528,7 @@ func (s *Server) SendDeliverabilityProbe(ctx context.Context, a DeliverabilityPr
 		if email.IsPermanent(err) || lastAttempt {
 			return fail(err.Error())
 		}
-		return err
+		return mail.RedactError(err)
 	}
 	tls := cfg.TLS != smtpTLSNone
 	_, err = s.st.SaveDeliverabilitySent(ctx, store.SaveDeliverabilitySentParams{

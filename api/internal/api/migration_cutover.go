@@ -18,6 +18,7 @@ import (
 
 	"github.com/productdevbook/yuva/api/internal/email"
 	"github.com/productdevbook/yuva/api/internal/jobs"
+	"github.com/productdevbook/yuva/api/internal/mail"
 	"github.com/productdevbook/yuva/api/internal/migrate"
 	"github.com/productdevbook/yuva/api/internal/oas"
 	"github.com/productdevbook/yuva/api/internal/realtime"
@@ -316,7 +317,7 @@ func (s *Server) SendMigrationProbeMail(ctx context.Context, a MigrationProbeArg
 			s.addMigrationError(ctx, m, "probe_failed", migrate.Scrub(err.Error(), cfg.Password), "", nil, "")
 			return nil
 		}
-		return err
+		return mail.RedactError(err)
 	}
 	return nil
 }

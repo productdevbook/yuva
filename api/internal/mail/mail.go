@@ -7,6 +7,7 @@ import (
 	"crypto/tls"
 	"embed"
 	"encoding/hex"
+	"errors"
 	"fmt"
 	htmltemplate "html/template"
 	"log/slog"
@@ -214,11 +215,19 @@ func RenderAs(b Brand, name, locale string, data any) (Message, error) {
 	return m, nil
 }
 
-var addressRe = regexp.MustCompile(`[^\s<>"'(),;:@\[\]]+@([A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*)`)
+var addressRe = regexp.MustCompile(`(?:"[^"\r\n]*"|[^\s<>"'(),;:@\[\]]+)@([A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*|\[[^\]\s]*\])`)
 
 // RedactAddresses keeps only the domain of every e-mail address in s, for logs.
 func RedactAddresses(s string) string {
 	return addressRe.ReplaceAllString(s, "*@$1")
+}
+
+// RedactError is err with RedactAddresses applied to its text, for logs, traces and job errors.
+func RedactError(err error) error {
+	if err == nil {
+		return nil
+	}
+	return errors.New(RedactAddresses(err.Error()))
 }
 
 // Log writes mail to the log instead of sending it: a sign-in code as one line with the
@@ -266,7 +275,7 @@ type SMTP struct{ Config config.SMTP }
 
 func (s SMTP) Send(ctx context.Context, m Message) (err error) {
 	ctx, span := telemetry.Start(ctx, "smtp.send", attribute.Int("yuva.recipients", 1))
-	defer func() { telemetry.End(span, err) }()
+	defer func() { telemetry.End(span, RedactError(err)) }()
 	if err := checkHeaders(m); err != nil {
 		return err
 	}

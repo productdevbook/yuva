@@ -19,6 +19,9 @@ func TestRedactAddresses(t *testing.T) {
 		"550 5.1.1 <ayse.yilmaz+x@mail.example.com.tr>: Recipient address rejected": "550 5.1.1 <*@mail.example.com.tr>: Recipient address rejected",
 		"Ayşe <a@b.example>, bob@c.example":                                         "Ayşe <*@b.example>, *@c.example",
 		"dial tcp 10.0.0.1:25: connection refused":                                  "dial tcp 10.0.0.1:25: connection refused",
+		`550 <"john.doe"@example.org> unknown`:                                      "550 <*@example.org> unknown",
+		`"john doe"@example.org`:                                                    "*@example.org",
+		"user@[192.0.2.1]":                                                          "*@[192.0.2.1]",
 	}
 	for in, want := range cases {
 		if got := mail.RedactAddresses(in); got != want {

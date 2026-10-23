@@ -128,7 +128,7 @@ func (s *Server) SendListMail(ctx context.Context, a ListMailArgs, lastAttempt b
 		return err
 	}
 	skip := func(reason string) error {
-		s.log.InfoContext(ctx, "list mail not sent", slog.String("subscription_id", sub.ID.String()), slog.String("kind", a.Mail), slog.String("reason", reason))
+		s.log.InfoContext(ctx, "list mail not sent", slog.String("subscription_id", sub.ID.String()), slog.String("kind", a.Mail), slog.String("reason", mail.RedactAddresses(reason)))
 		return nil
 	}
 	if list.ChannelID == nil {
@@ -231,7 +231,7 @@ func (s *Server) SendListMail(ctx context.Context, a ListMailArgs, lastAttempt b
 		if email.IsPermanent(err) || lastAttempt {
 			return skip(err.Error())
 		}
-		return err
+		return mail.RedactError(err)
 	}
 	if a.Mail != listMailConfirm {
 		return nil

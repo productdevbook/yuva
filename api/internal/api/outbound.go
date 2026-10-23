@@ -430,9 +430,9 @@ func (s *Server) SendEmails(ctx context.Context, workspaceID uuid.UUID, ids []uu
 		})
 	}
 	if !email.IsPermanent(sendErr) && !lastAttempt {
-		redacted := mail.RedactAddresses(sendErr.Error())
-		s.log.WarnContext(ctx, "email send failed, retrying", slog.String("message_id", ids[len(ids)-1].String()), slog.String("error", redacted))
-		return errors.New(redacted)
+		redacted := mail.RedactError(sendErr)
+		s.log.WarnContext(ctx, "email send failed, retrying", slog.String("message_id", ids[len(ids)-1].String()), slog.Any("error", redacted))
+		return redacted
 	}
 	detail := truncateRunes(sendErr.Error(), maxDeliveryError)
 	return set(deliveryFailed, &detail)

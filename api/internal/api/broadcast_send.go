@@ -1231,7 +1231,7 @@ func (s *Server) SendBroadcastTestMail(ctx context.Context, a BroadcastTestArgs,
 		return err
 	}
 	skip := func(reason string) error {
-		s.log.InfoContext(ctx, "broadcast test not sent", slog.String("broadcast_id", a.BroadcastID.String()), slog.String("reason", reason))
+		s.log.InfoContext(ctx, "broadcast test not sent", slog.String("broadcast_id", a.BroadcastID.String()), slog.String("reason", mail.RedactAddresses(reason)))
 		return nil
 	}
 	b, err := s.st.GetBroadcast(ctx, store.GetBroadcastParams{WorkspaceID: ws, ID: a.BroadcastID})
@@ -1308,7 +1308,7 @@ func (s *Server) SendBroadcastTestMail(ctx context.Context, a BroadcastTestArgs,
 		if email.IsPermanent(err) || lastAttempt {
 			return skip(err.Error())
 		}
-		return err
+		return mail.RedactError(err)
 	}
 	return nil
 }
