@@ -167,6 +167,24 @@ a withdrawn item stays here marked withdrawn. Work before `Y-117` is tracked in 
     and consent, e-mail image uploads, migrations' source credentials, analytics ingest.
   - Each finding that affects correctness or security is its own backlog item, fixed before Y-132.
 
+### Security findings from Y-129 (this session's areas)
+
+Each finding below is its own GitHub issue with the full acceptance; all are fixed before Y-132.
+
+- **Y-182 · E-mail channel addresses are claimed without proof and act server-wide** · Area api · Owner yuva-api · Priority P0 · Depends on – · issue #182
+- **Y-183 · DMARC result is read from the first dmarc= anywhere in the trusted header** · Area api · Owner yuva-api · Priority P0 · Depends on – · issue #183
+- **Y-184 · Auto-replies go to unauthenticated senders (backscatter)** · Area api · Owner yuva-api · Priority P1 · Depends on – · issue #184
+- **Y-185 · Address confirmation mails can be sent in bulk to any address** · Area api · Owner yuva-api · Priority P0 · Depends on – · issue #185
+- **Y-186 · Whole-API OAuth tokens let any assistant send while bots may not** · Area api · Owner yuva-api · Priority P0 · Depends on – · issue #186
+- **Y-187 · Per-channel rate limits let anyone lock out a channel's visitors** · Area api · Owner yuva-api · Priority P1 · Depends on – · issue #187
+- **Y-188 · No limit on client realtime sockets** · Area api · Owner yuva-api · Priority P1 · Depends on – · issue #188
+- **Y-189 · Deleting a contact or inbox leaves event and webhook copies for 7 days** · Area api · Owner yuva-api · Priority P0 · Depends on – · issue #189
+- **Y-190 · Ingress hardening (cap starvation, unsigned v2 default, HTML cost, metadata ranges, CSS url)** · Area api · Owner yuva-api · Priority P2 · Depends on – · issue #190
+- **Y-191 · Public surface hardening (Caddy check, unconfirmed address, share passwords, analytics keys, caches, limiter fail-open)** · Area api · Owner yuva-api · Priority P2 · Depends on – · issue #191
+- **Y-192 · Sessions and tokens (redirect_uri at token, OAuth presence, sign out everywhere)** · Area api · Owner yuva-api · Priority P2 · Depends on – · issue #192
+- **Y-193 · Data handling hardening (storage deletes, audit of sending settings, run log, logs)** · Area api · Owner yuva-api · Priority P2 · Depends on – · issue #193
+- **Y-194 · Master key rotation** · Area api · Owner yuva-api · Priority P2 · Depends on – · issue #194
+
 ### Y-130 · Version 0.1.0 everywhere
 
 - **Area** release · **Owner** orchestrator · **Priority** P0 · **Depends on** M24, M25, M27–M33, Y-129 · **Chapters** –
