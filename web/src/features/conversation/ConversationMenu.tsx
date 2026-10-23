@@ -17,6 +17,7 @@ import {
   ShieldAlertIcon,
   ShieldCheckIcon,
   TagIcon,
+  Trash2Icon,
 } from "lucide-react"
 
 import { Dot, Kbd } from "@/components/common"
@@ -54,6 +55,7 @@ export function ConversationMenu({
   onIncident,
   onIdea,
   onFind,
+  onTrash,
 }: {
   c: Conversation
   open: boolean
@@ -69,6 +71,7 @@ export function ConversationMenu({
   onIncident: () => void
   onIdea: () => void
   onFind: () => void
+  onTrash?: () => void
 }) {
   const { t } = useLingui()
   const text = useEnumText()
@@ -196,6 +199,15 @@ export function ConversationMenu({
               <span className="flex-1">{c.spam ? <Trans>Not spam</Trans> : <Trans>Mark as spam</Trans>}</span>
               <Kbd>{SHORTCUTS.spam}</Kbd>
             </DropdownMenuItem>
+            {onTrash && (
+              <DropdownMenuItem variant="destructive" onClick={onTrash} data-testid="trash-conversation">
+                <Trash2Icon />
+                <span className="flex-1">
+                  <Trans>Move to the Trash</Trans>
+                </span>
+                <Kbd>{SHORTCUTS.trash}</Kbd>
+              </DropdownMenuItem>
+            )}
           </>
         )}
         {view === "priority" && (

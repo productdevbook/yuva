@@ -97,6 +97,11 @@ msgstr "{0} ಉತ್ತಮ"
 msgid "{0} marked as spam · no reply needed"
 msgstr "{0} ಸ್ಪ್ಯಾಮ್ ಎಂದು ಗುರುತಿಸಲಾಗಿದೆ · ಉತ್ತರ ಅಗತ್ಯವಿಲ್ಲ"
 
+#. placeholder {0}: done.length
+#: src/features/inbox/ChatList.tsx
+msgid "{0} moved to the Trash"
+msgstr "{0} ಟ್ರ್ಯಾಶ್‌ಗೆ ಸರಿಸಲಾಗಿದೆ"
+
 #. placeholder {0}: hitIndex + 1
 #. placeholder {1}: hits.length
 #: src/features/conversation/ChatView.tsx
@@ -108,6 +113,11 @@ msgstr "{1} ರಲ್ಲಿ {0}"
 #: src/features/reports/ReportsColumn.tsx
 msgid "{0} replies · {1} closed"
 msgstr "{0} ಉತ್ತರಗಳು · {1} ಮುಚ್ಚಲಾಗಿದೆ"
+
+#. placeholder {0}: done.length
+#: src/features/inbox/ChatList.tsx
+msgid "{0} restored"
+msgstr "{0} ಮರುಸ್ಥಾಪಿಸಲಾಗಿದೆ"
 
 #. placeholder {0}: done.scopes.length
 #. placeholder {0}: scopes.length
@@ -1096,6 +1106,18 @@ msgstr "ಕೊನೆಯ ಬಾರಿ ಅವಧಿಯೊಳಗೆ ನವೀಕರ
 msgid "A conversation started"
 msgstr "ಒಂದು ಸಂಭಾಷಣೆ ಆರಂಭವಾಯಿತು"
 
+#: src/components/common/text.ts
+msgid "A conversation was deleted for good"
+msgstr "ಒಂದು ಸಂಭಾಷಣೆಯನ್ನು ಶಾಶ್ವತವಾಗಿ ಅಳಿಸಲಾಗಿದೆ"
+
+#: src/components/common/text.ts
+msgid "A conversation was moved to the Trash"
+msgstr "ಒಂದು ಸಂಭಾಷಣೆಯನ್ನು ಟ್ರ್ಯಾಶ್‌ಗೆ ಸರಿಸಲಾಗಿದೆ"
+
+#: src/components/common/text.ts
+msgid "A conversation was restored from the Trash"
+msgstr "ಒಂದು ಸಂಭಾಷಣೆಯನ್ನು ಟ್ರ್ಯಾಶ್‌ನಿಂದ ಮರುಸ್ಥಾಪಿಸಲಾಗಿದೆ"
+
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "A custom connector, for claude.ai and Claude Desktop. It acts as you, with the access you allow."
 msgstr "claude.ai ಮತ್ತು Claude Desktop ಗಾಗಿ ಕಸ್ಟಮ್ ಕನೆಕ್ಟರ್. ಇದು ನೀವು ಅನುಮತಿಸುವ ಪ್ರವೇಶದೊಂದಿಗೆ ನಿಮ್ಮ ಪರವಾಗಿ ಕೆಲಸ ಮಾಡುತ್ತದೆ."
@@ -1993,6 +2015,10 @@ msgstr "ಇನ್‌ಬಾಕ್ಸ್‌ನ ಅನಾಲಿಟಿಕ್ಸ್ �
 #: src/features/account/AccountPage.tsx
 msgid "An answer was accepted in <0>{title}</0>"
 msgstr "<0>{title}</0> ನಲ್ಲಿ ಒಂದು ಉತ್ತರವನ್ನು ಸ್ವೀಕರಿಸಲಾಯಿತು"
+
+#: src/features/conversation/Trash.tsx
+msgid "an API key"
+msgstr "ಒಂದು API ಕೀ"
 
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "An API key"
@@ -4285,6 +4311,7 @@ msgstr "ಕಡಿಮೆಯಾದ ಕಾರ್ಯಕ್ಷಮತೆ"
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactNotes.tsx
+#: src/features/inbox/ChatList.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
@@ -4465,6 +4492,10 @@ msgstr "ಒಂದು DKIM ಕೀ ಅಳಿಸಿದರು"
 msgid "deleted afterwards"
 msgstr "ನಂತರ ಅಳಿಸಲಾಗುತ್ತದೆ"
 
+#: src/features/conversation/Trash.tsx
+msgid "Deleted by {who} on {date}"
+msgstr "{who} ಅವರು {date} ರಂದು ಅಳಿಸಿದ್ದಾರೆ"
+
 #: src/features/docs/discussions/parts.tsx
 msgid "Deleted by its author."
 msgstr "ಲೇಖಕರು ಅಳಿಸಿದ್ದಾರೆ."
@@ -4472,6 +4503,10 @@ msgstr "ಲೇಖಕರು ಅಳಿಸಿದ್ದಾರೆ."
 #: src/features/status/IncidentDetail.tsx
 msgid "Deleted component"
 msgstr "ಅಳಿಸಿದ ಘಟಕ"
+
+#: src/features/conversation/Trash.tsx
+msgid "Deleted for good on {until}"
+msgstr "{until} ರಂದು ಶಾಶ್ವತವಾಗಿ ಅಳಿಸಲಾಗುತ್ತದೆ"
 
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Deleted inbox"
@@ -4483,6 +4518,10 @@ msgstr "ಅಳಿಸಿದ ಇನ್‌ಬಾಕ್ಸ್"
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Deleted member"
 msgstr "ಅಳಿಸಿದ ಸದಸ್ಯ"
+
+#: src/features/conversation/Trash.tsx
+msgid "Deleted on {date}"
+msgstr "{date} ರಂದು ಅಳಿಸಲಾಗಿದೆ"
 
 #: src/components/common/DiscussionAuthor.tsx
 msgid "Deleted reader"
@@ -6823,6 +6862,10 @@ msgstr "ನನ್ನ ಟಿಪ್ಪಣಿಗಳನ್ನು ರಫ್ತು ಮ
 msgid "It also asked for access your role here cannot give:"
 msgstr "ಇಲ್ಲಿ ನಿಮ್ಮ ಪಾತ್ರ ನೀಡಲಾಗದ ಪ್ರವೇಶವನ್ನೂ ಅದು ಕೇಳಿತು:"
 
+#: src/features/conversation/ChatView.tsx
+msgid "It disappears for your team and for the customer. You can restore it from the Trash for 30 days, then it is deleted for good with its messages and files."
+msgstr "ಇದು ನಿಮ್ಮ ತಂಡಕ್ಕೆ ಮತ್ತು ಗ್ರಾಹಕರಿಗೆ ಕಾಣಿಸುವುದಿಲ್ಲ. 30 ದಿನಗಳವರೆಗೆ ಟ್ರ್ಯಾಶ್‌ನಿಂದ ಮರುಸ್ಥಾಪಿಸಬಹುದು, ನಂತರ ಸಂದೇಶಗಳು ಮತ್ತು ಫೈಲ್‌ಗಳೊಂದಿಗೆ ಶಾಶ್ವತವಾಗಿ ಅಳಿಸಲಾಗುತ್ತದೆ."
+
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "It goes into <0>~/.codex/config.toml</0>, which the Codex CLI and IDE extension share."
 msgstr "ಇದು <0>~/.codex/config.toml</0> ಗೆ ಹೋಗುತ್ತದೆ, ಅದನ್ನು Codex CLI ಮತ್ತು IDE ವಿಸ್ತರಣೆ ಹಂಚಿಕೊಳ್ಳುತ್ತವೆ."
@@ -8082,6 +8125,15 @@ msgstr "ಅತಿ ಹೆಚ್ಚು ರೇಟಿಂಗ್‌ಗಳು, ತೆ�
 msgid "Most votes"
 msgstr "ಅತಿ ಹೆಚ್ಚು ಮತಗಳು"
 
+#. placeholder {0}: ids.length
+#: src/features/inbox/ChatList.tsx
+msgid "Move {0} to the Trash?"
+msgstr "{0} ಅನ್ನು ಟ್ರ್ಯಾಶ್‌ಗೆ ಸರಿಸಬೇಕೇ?"
+
+#: src/components/common/text.ts
+msgid "Move conversations to the Trash, restore them and read the Trash"
+msgstr "ಸಂಭಾಷಣೆಗಳನ್ನು ಟ್ರ್ಯಾಶ್‌ಗೆ ಸರಿಸಿ, ಮರುಸ್ಥಾಪಿಸಿ ಮತ್ತು ಟ್ರ್ಯಾಶ್ ಓದಿ"
+
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move down"
@@ -8102,6 +8154,14 @@ msgstr "ಆಯ್ದ ಬ್ಲಾಕ್ ಅನ್ನು ಸರಿಸಿ"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Move the selected collection"
 msgstr "ಆಯ್ದ ಸಂಗ್ರಹ ಸರಿಸಿ"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Move the selected conversations to the Trash"
+msgstr "ಆಯ್ದ ಸಂಭಾಷಣೆಗಳನ್ನು ಟ್ರ್ಯಾಶ್‌ಗೆ ಸರಿಸಿ"
+
+#: src/features/conversation/ChatView.tsx
+msgid "Move this conversation to the Trash?"
+msgstr "ಈ ಸಂಭಾಷಣೆಯನ್ನು ಟ್ರ್ಯಾಶ್‌ಗೆ ಸರಿಸಬೇಕೇ?"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Move through the articles or collections"
@@ -8159,6 +8219,14 @@ msgstr "ಇನ್‌ಬಾಕ್ಸ್‌ಗೆ ಸರಿಸಿ"
 msgid "Move to the previous or next stage"
 msgstr "ಹಿಂದಿನ ಅಥವಾ ಮುಂದಿನ ಹಂತಕ್ಕೆ ಸರಿಸಿ"
 
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/conversation/ChatView.tsx
+#: src/features/conversation/ConversationMenu.tsx
+#: src/features/inbox/ChatList.tsx
+msgid "Move to the Trash"
+msgstr "ಟ್ರ್ಯಾಶ್‌ಗೆ ಸರಿಸಿ"
+
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
 msgid "Move to Yuva"
@@ -8176,6 +8244,10 @@ msgstr "{from} ನಿಂದ ಸರಿಸಲಾಗಿದೆ"
 #: src/features/conversation/ChatView.tsx
 msgid "Moved to {to}"
 msgstr "{to} ಗೆ ಸರಿಸಲಾಗಿದೆ"
+
+#: src/features/conversation/ChatView.tsx
+msgid "Moved to the Trash"
+msgstr "ಟ್ರ್ಯಾಶ್‌ಗೆ ಸರಿಸಲಾಗಿದೆ"
 
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Moving from Gmail, Google Workspace, Yandex, iCloud, Zoho, Yahoo, Fastmail, GMX or any IMAP server? Yuva copies the mailbox's history into an inbox, quietly and newest first, while your team keeps working. Then you forward the mailbox here and nothing is lost in between."
@@ -11917,8 +11989,23 @@ msgstr "ಪ್ರತಿಕ್ರಿಯೆ ಸಮಯ, ಕಳೆದ 24 ಗಂಟ�
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/broadcasts/ListsHome.tsx
+#: src/features/conversation/Trash.tsx
+#: src/features/inbox/ChatList.tsx
 msgid "Restore"
 msgstr "ಮರುಸ್ಥಾಪಿಸಿ"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Restore from the Trash"
+msgstr "ಟ್ರ್ಯಾಶ್‌ನಿಂದ ಮರುಸ್ಥಾಪಿಸಿ"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Restore the selected conversations, in the Trash"
+msgstr "ಟ್ರ್ಯಾಶ್‌ನಲ್ಲಿ ಆಯ್ದ ಸಂಭಾಷಣೆಗಳನ್ನು ಮರುಸ್ಥಾಪಿಸಿ"
+
+#: src/features/conversation/ChatView.tsx
+msgid "Restored from the Trash"
+msgstr "ಟ್ರ್ಯಾಶ್‌ನಿಂದ ಮರುಸ್ಥಾಪಿಸಲಾಗಿದೆ"
 
 #: src/features/status/ResponseChart.tsx
 msgid "Results"
@@ -14761,6 +14848,10 @@ msgstr "ಪರೀಕ್ಷೆ ಒಂದು ಹಂತದಲ್ಲಿ ನಿಂತ
 msgid "The timeout must be 1 to 30 seconds."
 msgstr "ಟೈಮ್‌ಔಟ್ 1 ರಿಂದ 30 ಸೆಕೆಂಡುಗಳ ನಡುವೆ ಇರಬೇಕು."
 
+#: src/features/inbox/ChatList.tsx
+msgid "The Trash is empty."
+msgstr "ಟ್ರ್ಯಾಶ್ ಖಾಲಿಯಾಗಿದೆ."
+
 #: src/features/migrations/DoneStep.tsx
 msgid "The uploaded file is deleted when the migration ends. Yuva keeps only what it imported."
 msgstr "ಸ್ಥಳಾಂತರ ಮುಗಿದಾಗ ಅಪ್‌ಲೋಡ್ ಮಾಡಿದ ಫೈಲ್ ಅಳಿಸಲಾಗುತ್ತದೆ. Yuva ಆಮದು ಮಾಡಿದ್ದನ್ನು ಮಾತ್ರ ಇರಿಸಿಕೊಳ್ಳುತ್ತದೆ."
@@ -14869,6 +14960,10 @@ msgstr "ಈ ನಿಯಮಗಳು ಚಂದಾದಾರಿಕೆ ಫಾರ್ಮ
 #: src/features/broadcasts/AddSubscriberDialog.tsx
 msgid "They already agreed"
 msgstr "ಅವರು ಈಗಾಗಲೇ ಒಪ್ಪಿದ್ದಾರೆ"
+
+#: src/features/inbox/ChatList.tsx
+msgid "They disappear for your team and for the customers. You can restore them from the Trash for 30 days, then they are deleted for good with their messages and files."
+msgstr "ಇವು ನಿಮ್ಮ ತಂಡಕ್ಕೆ ಮತ್ತು ಗ್ರಾಹಕರಿಗೆ ಕಾಣಿಸುವುದಿಲ್ಲ. 30 ದಿನಗಳವರೆಗೆ ಟ್ರ್ಯಾಶ್‌ನಿಂದ ಮರುಸ್ಥಾಪಿಸಬಹುದು, ನಂತರ ಸಂದೇಶಗಳು ಮತ್ತು ಫೈಲ್‌ಗಳೊಂದಿಗೆ ಶಾಶ್ವತವಾಗಿ ಅಳಿಸಲಾಗುತ್ತದೆ."
 
 #: src/features/broadcasts/AddSubscriberDialog.tsx
 msgid "They get a mail with a link and are subscribed only after they click it."
@@ -14982,6 +15077,10 @@ msgstr "ಈ ಸಂಭಾಷಣೆ"
 #: src/components/common/text.ts
 msgid "This conversation is already a discussion."
 msgstr "ಈ ಸಂಭಾಷಣೆ ಈಗಾಗಲೇ ಒಂದು ಚರ್ಚೆ."
+
+#: src/features/conversation/Trash.tsx
+msgid "This conversation is in the Trash and read-only."
+msgstr "ಈ ಸಂಭಾಷಣೆ ಟ್ರ್ಯಾಶ್‌ನಲ್ಲಿದೆ ಮತ್ತು ಓದಲು ಮಾತ್ರ."
 
 #: src/features/conversation/ChatView.tsx
 msgid "This conversation is not available"
@@ -15383,6 +15482,7 @@ msgstr "{person} ಅವರ {inbox} ಪ್ರವೇಶವನ್ನು ಹಿಂ�
 msgid "tr, en-GB"
 msgstr "tr, en-GB"
 
+#: src/features/inbox/ChatList.tsx
 #: src/features/migrations/parts.tsx
 msgid "Trash"
 msgstr "ಟ್ರ್ಯಾಶ್"

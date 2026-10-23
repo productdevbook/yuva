@@ -17,6 +17,8 @@ export type CommandName =
   | "incident"
   | "article"
   | "idea"
+  | "trash"
+  | "restore"
 
 type Handlers = Partial<Record<CommandName, () => void>>
 

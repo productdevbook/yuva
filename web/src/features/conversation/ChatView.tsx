@@ -28,6 +28,7 @@ import {
 import { inboxRoot } from "@/app/shell"
 import { SHORTCUTS } from "@/components/common/ShortcutSheet"
 import { useEnumText, useErrorText } from "@/components/common/text"
+import { useConfirm } from "@/components/common/ConfirmDialog"
 import { Alert } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -38,6 +39,7 @@ import { Beaten, TypingCollision } from "@/features/conversation/Collision"
 import { useCommandHandlers } from "@/features/conversation/commands"
 import { ReplyBox, type ReplyHandle } from "@/features/conversation/composer/ReplyBox"
 import { ConversationMenu, type MenuView } from "@/features/conversation/ConversationMenu"
+import { TrashBanner } from "@/features/conversation/Trash"
 import { CategoryChip, ProgressStrip } from "@/features/conversation/Feedback"
 import { IdeaChip } from "@/features/conversation/IdeaChip"
 import { IncidentChips } from "@/features/status/IncidentChips"
@@ -56,6 +58,7 @@ import {
   useMarkRead,
   useMessages,
   useMoveConversation,
+  useTrashConversation,
   useUpdateConversation,
 } from "@/features/conversation/queries"
 import { BroadcastLine } from "@/features/conversation/BroadcastLine"
@@ -185,6 +188,9 @@ function Loaded({
   const actions = useConversationActions(c, name)
   const updater = useUpdateConversation(c.id)
   const mover = useMoveConversation(c.id)
+  const trasher = useTrashConversation(c.id)
+  const [confirm, confirmDialog] = useConfirm()
+  const trashed = !!c.trashed_at
   const navigate = useNavigate()
   const reply = useRef<ReplyHandle>(null)
   const [menu, setMenu] = useState<HeaderMenu>(null)
@@ -297,14 +303,14 @@ function Loaded({
   const marked = useRef<string | null>(null)
   useEffect(() => {
     const go = () => {
-      if (!lastId || marked.current === lastId || document.visibilityState !== "visible") return
+      if (trashed || !lastId || marked.current === lastId || document.visibilityState !== "visible") return
       marked.current = lastId
       mark(lastId)
     }
     go()
     document.addEventListener("visibilitychange", go)
     return () => document.removeEventListener("visibilitychange", go)
-  }, [lastId, mark])
+  }, [lastId, mark, trashed])
 
   const fail = (err: unknown) => toast(errorText(err))
   const changed = (body: ConversationUpdate): { done: string; revert: ConversationUpdate } | undefined => {
@@ -333,6 +339,27 @@ function Loaded({
       onError: fail,
     })
   }
+  const restore = () =>
+    trasher.mutate(false, {
+      onSuccess: () => toast(t`Restored from the Trash`, () => trasher.mutate(true, { onError: fail })),
+      onError: fail,
+    })
+  const trash = () =>
+    confirm({
+      title: <Trans>Move this conversation to the Trash?</Trans>,
+      description: (
+        <Trans>
+          It disappears for your team and for the customer. You can restore it from the Trash for 30 days, then it is
+          deleted for good with its messages and files.
+        </Trans>
+      ),
+      confirm: <Trans>Move to the Trash</Trans>,
+      run: () =>
+        trasher.mutate(true, {
+          onSuccess: () => toast(t`Moved to the Trash`, () => trasher.mutate(false, { onError: fail })),
+          onError: fail,
+        }),
+    })
   const claim = () => {
     if (mate?.member_id) setClaimedFrom(mate.member_id)
     if (c.assignee_id !== me) actions.claim()
@@ -384,32 +411,46 @@ function Loaded({
     incident: () => setLinking(true),
     idea: () => c.kind === "feedback" && setIdeaLinking(true),
     article: () => reply.current?.article(),
+    trash: () => canManage && trash(),
   }
-  useCommandHandlers(handlers)
-  useHotkeys({
-    [SHORTCUTS.reply]: handlers.reply,
-    [SHORTCUTS.note]: handlers.note,
-    [SHORTCUTS.attach]: () => reply.current?.attach(),
-    [SHORTCUTS.snooze]: handlers.snooze,
-    [SHORTCUTS.hand]: handlers.hand,
-    [SHORTCUTS.labels]: handlers.labels,
-    [SHORTCUTS.progress]: handlers.progress,
-    [SHORTCUTS.close]: handlers.close,
-    [SHORTCUTS.leave]: () => showCollision && leaveTo(),
-    [SHORTCUTS.history]: handlers.history,
-    [SHORTCUTS.contact]: handlers.contact,
-    [SHORTCUTS.more]: handlers.more,
-    [SHORTCUTS.spam]: () => update({ spam: !c.spam }),
-    [SHORTCUTS.quoted]: () => setExpandQuoted((x) => !x),
-    [SHORTCUTS.discardSuggestion]: () => reply.current?.discardSuggestion(),
-    [SHORTCUTS.find]: openFind,
-    [SHORTCUTS.pin]: togglePin,
-    [SHORTCUTS.unread]: markUnread,
-    [SHORTCUTS.discussion]: handlers.discussion,
-    [SHORTCUTS.incident]: handlers.incident,
-    [SHORTCUTS.idea]: handlers.idea,
-    [SHORTCUTS.article]: handlers.article,
-  })
+  useCommandHandlers(
+    trashed ? { contact: handlers.contact, history: handlers.history, restore: () => canManage && restore() } : handlers
+  )
+  useHotkeys(
+    trashed
+      ? {
+          [SHORTCUTS.contact]: handlers.contact,
+          [SHORTCUTS.history]: handlers.history,
+          [SHORTCUTS.quoted]: () => setExpandQuoted((x) => !x),
+          [SHORTCUTS.find]: openFind,
+          [SHORTCUTS.restore]: () => canManage && restore(),
+        }
+      : {
+          [SHORTCUTS.reply]: handlers.reply,
+          [SHORTCUTS.note]: handlers.note,
+          [SHORTCUTS.attach]: () => reply.current?.attach(),
+          [SHORTCUTS.snooze]: handlers.snooze,
+          [SHORTCUTS.hand]: handlers.hand,
+          [SHORTCUTS.labels]: handlers.labels,
+          [SHORTCUTS.progress]: handlers.progress,
+          [SHORTCUTS.close]: handlers.close,
+          [SHORTCUTS.leave]: () => showCollision && leaveTo(),
+          [SHORTCUTS.history]: handlers.history,
+          [SHORTCUTS.contact]: handlers.contact,
+          [SHORTCUTS.more]: handlers.more,
+          [SHORTCUTS.spam]: () => update({ spam: !c.spam }),
+          [SHORTCUTS.quoted]: () => setExpandQuoted((x) => !x),
+          [SHORTCUTS.discardSuggestion]: () => reply.current?.discardSuggestion(),
+          [SHORTCUTS.find]: openFind,
+          [SHORTCUTS.pin]: togglePin,
+          [SHORTCUTS.unread]: markUnread,
+          [SHORTCUTS.discussion]: handlers.discussion,
+          [SHORTCUTS.incident]: handlers.incident,
+          [SHORTCUTS.idea]: handlers.idea,
+          [SHORTCUTS.article]: handlers.article,
+          [SHORTCUTS.trash]: handlers.trash,
+        }
+  )
 
   const sep = <span aria-hidden>·</span>
   const subject = c.kind === "feedback" ? "" : c.subject.trim()
@@ -530,49 +571,56 @@ function Loaded({
           className="flex flex-wrap items-center gap-1.5"
           data-testid="conversation-actions"
         >
-          <HandMenu
-            c={c}
-            actions={actions}
-            open={menu === "hand"}
-            onOpenChange={openMenu("hand")}
-            label={
-              <span data-testid={assignee ? "header-assignee" : undefined}>
-                {assignee ? assignee.name || assignee.email : <Trans>Unassigned</Trans>}
-              </span>
-            }
-          />
-          {!c.assignee_id && (
-            <Button
-              variant="outline"
-              className={look.btnSm}
-              onClick={actions.claim}
-              title={t`Assign to me`}
-              data-testid="assign-me-button"
-            >
-              <Trans>Assign to me</Trans>
-            </Button>
-          )}
-          <SnoozeMenu name={name} actions={actions} open={menu === "snooze"} onOpenChange={openMenu("snooze")} />
-          {c.kind === "feedback" && (
-            <ProgressMenu c={c} update={update} open={menu === "progress"} onOpenChange={openMenu("progress")} />
+          {!trashed && (
+            <>
+              <HandMenu
+                c={c}
+                actions={actions}
+                open={menu === "hand"}
+                onOpenChange={openMenu("hand")}
+                label={
+                  <span data-testid={assignee ? "header-assignee" : undefined}>
+                    {assignee ? assignee.name || assignee.email : <Trans>Unassigned</Trans>}
+                  </span>
+                }
+              />
+              {!c.assignee_id && (
+                <Button
+                  variant="outline"
+                  className={look.btnSm}
+                  onClick={actions.claim}
+                  title={t`Assign to me`}
+                  data-testid="assign-me-button"
+                >
+                  <Trans>Assign to me</Trans>
+                </Button>
+              )}
+              <SnoozeMenu name={name} actions={actions} open={menu === "snooze"} onOpenChange={openMenu("snooze")} />
+              {c.kind === "feedback" && (
+                <ProgressMenu c={c} update={update} open={menu === "progress"} onOpenChange={openMenu("progress")} />
+              )}
+            </>
           )}
           <div className="ms-auto flex items-center gap-1.5">
-            <ConversationMenu
-              c={c}
-              open={moreOpen}
-              onOpenChange={setMoreOpen}
-              view={moreView}
-              onView={setMoreView}
-              update={update}
-              move={move}
-              pinned={pinned}
-              onPin={togglePin}
-              onUnread={markUnread}
-              onDiscussion={handlers.discussion}
-              onIncident={handlers.incident}
-              onIdea={handlers.idea}
-              onFind={() => (finding ? closeFind() : openFind())}
-            />
+            {!trashed && (
+              <ConversationMenu
+                c={c}
+                open={moreOpen}
+                onOpenChange={setMoreOpen}
+                view={moreView}
+                onView={setMoreView}
+                update={update}
+                move={move}
+                pinned={pinned}
+                onPin={togglePin}
+                onUnread={markUnread}
+                onDiscussion={handlers.discussion}
+                onIncident={handlers.incident}
+                onIdea={handlers.idea}
+                onFind={() => (finding ? closeFind() : openFind())}
+                onTrash={canManage ? trash : undefined}
+              />
+            )}
             <Button
               variant="outline"
               className={cn(look.btnSm, "w-[30px] px-0", shownPanel && "bg-muted")}
@@ -584,7 +632,7 @@ function Loaded({
             >
               <PanelRightIcon className="rtl:-scale-x-100" />
             </Button>
-            <CloseButton c={c} actions={actions} />
+            {!trashed && <CloseButton c={c} actions={actions} />}
           </div>
         </div>
       </header>
@@ -697,7 +745,8 @@ function Loaded({
           </Button>
         </div>
       )}
-      {c.spam && (
+      {trashed && <TrashBanner c={c} onRestore={restore} busy={trasher.isPending} />}
+      {c.spam && !trashed && (
         <Alert
           role="status"
           variant="destructive"
@@ -733,26 +782,29 @@ function Loaded({
         lastMine={lastMine}
         focusId={focusId}
       />
-      <Composer>
-        {beatenBy ? (
-          <Beaten name={beatenBy} />
-        ) : (
-          showCollision && <TypingCollision name={mateName} typing={!!typingMate} onLeave={leaveTo} onClaim={claim} />
-        )}
-        <ReplyBox
-          key={`${c.id}:${revision}`}
-          ref={reply}
-          c={c}
-          contactName={name}
-          via={channel ? text.channel[channel.kind] : undefined}
-          emailTo={emailTo}
-          undeliverable={undeliverable}
-          suggestion={suggestion}
-          ctx={ctx}
-          actions={actions}
-          autoFocus={fine && revision === 0}
-        />
-      </Composer>
+      {!trashed && (
+        <Composer>
+          {beatenBy ? (
+            <Beaten name={beatenBy} />
+          ) : (
+            showCollision && <TypingCollision name={mateName} typing={!!typingMate} onLeave={leaveTo} onClaim={claim} />
+          )}
+          <ReplyBox
+            key={`${c.id}:${revision}`}
+            ref={reply}
+            c={c}
+            contactName={name}
+            via={channel ? text.channel[channel.kind] : undefined}
+            emailTo={emailTo}
+            undeliverable={undeliverable}
+            suggestion={suggestion}
+            ctx={ctx}
+            actions={actions}
+            autoFocus={fine && revision === 0}
+          />
+        </Composer>
+      )}
+      {confirmDialog}
       {linking && (
         <LinkIncidentDialog
           conversationIds={[c.id]}

@@ -80,6 +80,10 @@ function useItems(open: boolean): Item[] {
       act("incident", t`Link to a status incident`, SHORTCUTS.incident)
       act("article", t`Send a help article`, SHORTCUTS.article)
       act("idea", t`Link to a roadmap idea`, SHORTCUTS.idea)
+      if (canManage) {
+        act("trash", t`Move to the Trash`, SHORTCUTS.trash)
+        act("restore", t`Restore from the Trash`, SHORTCUTS.restore)
+      }
     }
     if (inboxes.length > 1) {
       list.push({ group: t`Inbox`, label: t`All inboxes`, run: () => setFilter("") })

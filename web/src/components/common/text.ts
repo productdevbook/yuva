@@ -37,6 +37,9 @@ export const WEBHOOK_EVENTS: WebhookEventType[] = [
   "conversation.created",
   "conversation.updated",
   "conversation.rated",
+  "conversation.trashed",
+  "conversation.restored",
+  "conversation.deleted",
   "message.created",
   "feedback.created",
   "contact.updated",
@@ -69,6 +72,7 @@ export const WEBHOOK_EVENTS: WebhookEventType[] = [
 export const API_KEY_SCOPES: ApiKeyScope[] = [
   "conversations:read",
   "conversations:write",
+  "conversations:delete",
   "messages:write",
   "drafts:send",
   "notes:write",
@@ -103,7 +107,7 @@ export const API_KEY_SCOPES: ApiKeyScope[] = [
   "changelog:publish",
   "audit:read",
 ]
-export const OPT_IN_SCOPES: ApiKeyScope[] = ["broadcasts:send", "audit:read"]
+export const OPT_IN_SCOPES: ApiKeyScope[] = ["conversations:delete", "broadcasts:send", "audit:read"]
 export const OWNER_ONLY_SCOPES: ApiKeyScope[] = ["audit:read"]
 export type ApiKeyPreset = "read" | "support" | "everything" | "custom"
 export const API_KEY_PRESET_SCOPES: Record<Exclude<ApiKeyPreset, "custom">, ApiKeyScope[]> = {
@@ -187,6 +191,9 @@ export function useEnumText() {
       "conversation.created": t`A conversation started`,
       "conversation.updated": t`A conversation changed`,
       "conversation.rated": t`A contact rated a conversation`,
+      "conversation.trashed": t`A conversation was moved to the Trash`,
+      "conversation.restored": t`A conversation was restored from the Trash`,
+      "conversation.deleted": t`A conversation was deleted for good`,
       "message.created": t`A message was added`,
       "feedback.created": t`Feedback arrived`,
       "contact.updated": t`A contact changed`,
@@ -219,6 +226,7 @@ export function useEnumText() {
     scope: {
       "conversations:read": t`Read conversations, messages, labels and canned replies`,
       "conversations:write": t`Change, move and bulk-update conversations`,
+      "conversations:delete": t`Move conversations to the Trash, restore them and read the Trash`,
       "messages:write": t`Write messages and drafts`,
       "drafts:send": t`Send drafts`,
       "notes:write": t`Write notes`,

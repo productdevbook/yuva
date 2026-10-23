@@ -93,6 +93,23 @@ export function useMoveConversation(id: string) {
   })
 }
 
+export function useTrashConversation(id: string) {
+  const qc = useQueryClient()
+  const live = useLiveContext()
+  return useMutation({
+    mutationFn: (trashed: boolean) => {
+      const params = { params: { path: { conversationId: id } } }
+      return unwrap(
+        trashed
+          ? api.DELETE("/v1/conversations/{conversationId}", params)
+          : api.POST("/v1/conversations/{conversationId}/restore", params)
+      )
+    },
+    onSuccess: (data) =>
+      applyEvent(qc, live, { type: data.trashed_at ? "conversation.trashed" : "conversation.restored", data }),
+  })
+}
+
 export type Outgoing = MessageCreate & { client_id: string; files: File[] }
 
 export function postMessage(conversationId: string, { files, ...body }: Outgoing) {

@@ -14,11 +14,11 @@ import { FeedbackPage } from "@/features/feedback/FeedbackPage"
 import {
   ChatList,
   isWaiting,
-  PAGE_CHIPS,
   rememberChip,
   rememberedChip,
   StartConversation,
   useChipLabels,
+  useChips,
   type Chip,
 } from "@/features/inbox/ChatList"
 import { useInboxFilter } from "@/features/inbox/inboxFilter"
@@ -154,6 +154,7 @@ function InboxPage({ id }: { id: string | null }) {
   const waiting = useLoadedCount({ ...scope, status: ["open"] }, isWaiting)
   const unassigned = useLoadedCount({ ...scope, status: ["open"], assignee: "unassigned" })
   const labels = useChipLabels()
+  const tabs = useChips()
   const contactId = useConversation(id ?? undefined).data?.contact_id
   const open = useCallback((next: string) => navigate(`/conversations/${next}`), [navigate])
   const count = (k: Chip) =>
@@ -186,7 +187,7 @@ function InboxPage({ id }: { id: string | null }) {
               rememberChip(k)
               setChip(k)
             }}
-            items={PAGE_CHIPS.map((k) => ({ key: k, label: labels[k], count: count(k), testId: `chip-${k}` }))}
+            items={tabs.map((k) => ({ key: k, label: labels[k], count: count(k), testId: `chip-${k}` }))}
           />
         }
       />

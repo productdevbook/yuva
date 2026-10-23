@@ -48,6 +48,8 @@ export const SHORTCUTS = {
   idea: "b",
   select: "x",
   linkSelected: "I",
+  trash: "#",
+  restore: "Z",
 } as const
 
 export const DISCUSSION_KEYS = {
@@ -268,6 +270,8 @@ export function ShortcutSheet({
         [k(SHORTCUTS.history), t`Other conversations`],
         [k(SHORTCUTS.more), t`Priority, inbox, spam and more`],
         [k(SHORTCUTS.spam), t`Mark or unmark as spam`],
+        [k(SHORTCUTS.trash), t`Move to the Trash`],
+        [k(SHORTCUTS.restore), t`Restore from the Trash`],
         [k(SHORTCUTS.quoted), t`Show or hide quoted text`],
         [k(SHORTCUTS.copyDetails), t`Copy the feedback details`],
         [k(SHORTCUTS.find), t`Search in this conversation`],
@@ -288,6 +292,8 @@ export function ShortcutSheet({
         [[SHORTCUTS.search], t`Search conversations`],
         [k(SHORTCUTS.select), t`Select the conversation under the cursor`],
         [k(SHORTCUTS.linkSelected), t`Link the selected conversations to an incident`],
+        [k(SHORTCUTS.trash), t`Move the selected conversations to the Trash`],
+        [k(SHORTCUTS.restore), t`Restore the selected conversations, in the Trash`],
         [["Esc"], t`Clear the selection`],
       ],
     },

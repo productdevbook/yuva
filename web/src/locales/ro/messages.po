@@ -97,6 +97,11 @@ msgstr "{0} bune"
 msgid "{0} marked as spam · no reply needed"
 msgstr "{0} marcate ca spam · nu e nevoie de răspuns"
 
+#. placeholder {0}: done.length
+#: src/features/inbox/ChatList.tsx
+msgid "{0} moved to the Trash"
+msgstr "{0} mutate în coș"
+
 #. placeholder {0}: hitIndex + 1
 #. placeholder {1}: hits.length
 #: src/features/conversation/ChatView.tsx
@@ -108,6 +113,11 @@ msgstr "{0} din {1}"
 #: src/features/reports/ReportsColumn.tsx
 msgid "{0} replies · {1} closed"
 msgstr "{0} răspunsuri · {1} închise"
+
+#. placeholder {0}: done.length
+#: src/features/inbox/ChatList.tsx
+msgid "{0} restored"
+msgstr "{0} restaurate"
 
 #. placeholder {0}: done.scopes.length
 #. placeholder {0}: scopes.length
@@ -1096,6 +1106,18 @@ msgstr "O conversație este luată în întregime când a fost actualizată ulti
 msgid "A conversation started"
 msgstr "O conversație a început"
 
+#: src/components/common/text.ts
+msgid "A conversation was deleted for good"
+msgstr "O conversație a fost ștearsă definitiv"
+
+#: src/components/common/text.ts
+msgid "A conversation was moved to the Trash"
+msgstr "O conversație a fost mutată în coș"
+
+#: src/components/common/text.ts
+msgid "A conversation was restored from the Trash"
+msgstr "O conversație a fost restaurată din coș"
+
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "A custom connector, for claude.ai and Claude Desktop. It acts as you, with the access you allow."
 msgstr "Un conector personalizat, pentru claude.ai și Claude Desktop. Acționează ca tine, cu accesul pe care îl permiți."
@@ -1993,6 +2015,10 @@ msgstr "O proprietate de analiză a căsuței a declanșat o alertă"
 #: src/features/account/AccountPage.tsx
 msgid "An answer was accepted in <0>{title}</0>"
 msgstr "Un răspuns a fost acceptat în <0>{title}</0>"
+
+#: src/features/conversation/Trash.tsx
+msgid "an API key"
+msgstr "o cheie API"
 
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "An API key"
@@ -4285,6 +4311,7 @@ msgstr "Performanță redusă"
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactNotes.tsx
+#: src/features/inbox/ChatList.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
@@ -4465,6 +4492,10 @@ msgstr "A șters o cheie DKIM"
 msgid "deleted afterwards"
 msgstr "șters ulterior"
 
+#: src/features/conversation/Trash.tsx
+msgid "Deleted by {who} on {date}"
+msgstr "Ștearsă de {who} pe {date}"
+
 #: src/features/docs/discussions/parts.tsx
 msgid "Deleted by its author."
 msgstr "Șters de autor."
@@ -4472,6 +4503,10 @@ msgstr "Șters de autor."
 #: src/features/status/IncidentDetail.tsx
 msgid "Deleted component"
 msgstr "Componentă ștearsă"
+
+#: src/features/conversation/Trash.tsx
+msgid "Deleted for good on {until}"
+msgstr "Va fi ștearsă definitiv pe {until}"
 
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Deleted inbox"
@@ -4483,6 +4518,10 @@ msgstr "Căsuță ștearsă"
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Deleted member"
 msgstr "Membru șters"
+
+#: src/features/conversation/Trash.tsx
+msgid "Deleted on {date}"
+msgstr "Ștearsă pe {date}"
 
 #: src/components/common/DiscussionAuthor.tsx
 msgid "Deleted reader"
@@ -6823,6 +6862,10 @@ msgstr "Există o modalitate de a-mi exporta notele?"
 msgid "It also asked for access your role here cannot give:"
 msgstr "A cerut și acces pe care rolul tău de aici nu îl poate da:"
 
+#: src/features/conversation/ChatView.tsx
+msgid "It disappears for your team and for the customer. You can restore it from the Trash for 30 days, then it is deleted for good with its messages and files."
+msgstr "Dispare pentru echipa ta și pentru client. O poți restaura din coș timp de 30 de zile, apoi este ștearsă definitiv împreună cu mesajele și fișierele ei."
+
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "It goes into <0>~/.codex/config.toml</0>, which the Codex CLI and IDE extension share."
 msgstr "Intră în <0>~/.codex/config.toml</0>, pe care îl împart Codex CLI și extensia IDE."
@@ -8082,6 +8125,15 @@ msgstr "Cele mai multe evaluări, feedback deschis, discuții deschise și post�
 msgid "Most votes"
 msgstr "Cele mai multe voturi"
 
+#. placeholder {0}: ids.length
+#: src/features/inbox/ChatList.tsx
+msgid "Move {0} to the Trash?"
+msgstr "Muți {0} în coș?"
+
+#: src/components/common/text.ts
+msgid "Move conversations to the Trash, restore them and read the Trash"
+msgstr "Mută conversații în coș, restaurează-le și citește coșul"
+
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move down"
@@ -8102,6 +8154,14 @@ msgstr "Mută blocul selectat"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Move the selected collection"
 msgstr "Mută colecția selectată"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Move the selected conversations to the Trash"
+msgstr "Mută conversațiile selectate în coș"
+
+#: src/features/conversation/ChatView.tsx
+msgid "Move this conversation to the Trash?"
+msgstr "Muți această conversație în coș?"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Move through the articles or collections"
@@ -8159,6 +8219,14 @@ msgstr "Mută în căsuță"
 msgid "Move to the previous or next stage"
 msgstr "Mută la etapa anterioară sau următoare"
 
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/conversation/ChatView.tsx
+#: src/features/conversation/ConversationMenu.tsx
+#: src/features/inbox/ChatList.tsx
+msgid "Move to the Trash"
+msgstr "Mută în coș"
+
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
 msgid "Move to Yuva"
@@ -8176,6 +8244,10 @@ msgstr "Mutat din {from}"
 #: src/features/conversation/ChatView.tsx
 msgid "Moved to {to}"
 msgstr "Mutată în {to}"
+
+#: src/features/conversation/ChatView.tsx
+msgid "Moved to the Trash"
+msgstr "Mutată în coș"
 
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Moving from Gmail, Google Workspace, Yandex, iCloud, Zoho, Yahoo, Fastmail, GMX or any IMAP server? Yuva copies the mailbox's history into an inbox, quietly and newest first, while your team keeps working. Then you forward the mailbox here and nothing is lost in between."
@@ -11917,8 +11989,23 @@ msgstr "Timp de răspuns, ultimele 24 de ore"
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/broadcasts/ListsHome.tsx
+#: src/features/conversation/Trash.tsx
+#: src/features/inbox/ChatList.tsx
 msgid "Restore"
 msgstr "Restaurează"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Restore from the Trash"
+msgstr "Restaurează din coș"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Restore the selected conversations, in the Trash"
+msgstr "Restaurează conversațiile selectate, în coș"
+
+#: src/features/conversation/ChatView.tsx
+msgid "Restored from the Trash"
+msgstr "Restaurată din coș"
 
 #: src/features/status/ResponseChart.tsx
 msgid "Results"
@@ -14761,6 +14848,10 @@ msgstr "Testul s-a oprit la un pas."
 msgid "The timeout must be 1 to 30 seconds."
 msgstr "Timpul de așteptare trebuie să fie de la 1 la 30 de secunde."
 
+#: src/features/inbox/ChatList.tsx
+msgid "The Trash is empty."
+msgstr "Coșul este gol."
+
 #: src/features/migrations/DoneStep.tsx
 msgid "The uploaded file is deleted when the migration ends. Yuva keeps only what it imported."
 msgstr "Fișierul încărcat este șters când migrarea se termină. Yuva păstrează doar ce a importat."
@@ -14869,6 +14960,10 @@ msgstr "Aceste reguli se aplică formularului de abonare. Le poți schimba oric�
 #: src/features/broadcasts/AddSubscriberDialog.tsx
 msgid "They already agreed"
 msgstr "Au fost deja de acord"
+
+#: src/features/inbox/ChatList.tsx
+msgid "They disappear for your team and for the customers. You can restore them from the Trash for 30 days, then they are deleted for good with their messages and files."
+msgstr "Dispar pentru echipa ta și pentru clienți. Le poți restaura din coș timp de 30 de zile, apoi sunt șterse definitiv împreună cu mesajele și fișierele lor."
 
 #: src/features/broadcasts/AddSubscriberDialog.tsx
 msgid "They get a mail with a link and are subscribed only after they click it."
@@ -14982,6 +15077,10 @@ msgstr "Această conversație"
 #: src/components/common/text.ts
 msgid "This conversation is already a discussion."
 msgstr "Această conversație este deja o discuție."
+
+#: src/features/conversation/Trash.tsx
+msgid "This conversation is in the Trash and read-only."
+msgstr "Această conversație este în coș și este doar pentru citire."
 
 #: src/features/conversation/ChatView.tsx
 msgid "This conversation is not available"
@@ -15383,6 +15482,7 @@ msgstr "I-a retras lui {person} accesul la {inbox}"
 msgid "tr, en-GB"
 msgstr "tr, en-GB"
 
+#: src/features/inbox/ChatList.tsx
 #: src/features/migrations/parts.tsx
 msgid "Trash"
 msgstr "Coș"

@@ -1627,8 +1627,9 @@ export interface paths {
          * @description Most recent activity (message or note) first, in the inboxes the caller can see. `q` is a
          *     full-text search over the subject, the messages and notes, and the contact; a negated term
          *     (`-word`, `-"some phrase"`) excludes every conversation in which any of those contains it.
+         *     Conversations in the trash are listed only with `trashed=true`.
          *
-         *     Scope: `conversations:read`.
+         *     Scope: `conversations:read`; with `trashed=true` also `conversations:delete`.
          *
          *     Each item carries the contact (id, name, first e-mail address), a preview of the last
          *     `message` (notes and events are not previewed), and `unread` and `pinned_at` for the
@@ -1787,7 +1788,14 @@ export interface paths {
          *     `validation_failed`. A request that is invalid as a whole (no change, an unknown label or
          *     member, a past `snooze_until`) is refused with `400` and changes nothing.
          *
-         *     Scope: `conversations:write`.
+         *     `trashed` moves the conversations to the trash (`true`) or restores them (`false`), as
+         *     `DELETE /v1/conversations/{conversationId}` and `POST .../restore` do, and goes alone,
+         *     without other changes. Only owners and admins, and keys and tokens with
+         *     `conversations:delete`; agents get `403 forbidden` for the whole request. A conversation in
+         *     the trash is listed in `failed` with `not_found` for every other change, and one whose 30
+         *     days in the trash are over with `trash_expired` when restored.
+         *
+         *     Scope: `conversations:write`; a `trashed` change needs `conversations:delete` instead.
          */
         post: operations["bulkUpdateConversations"];
         delete?: never;
@@ -1805,12 +1813,33 @@ export interface paths {
         };
         /**
          * Get a conversation
-         * @description Scope: `conversations:read`.
+         * @description A conversation in the trash answers `404` except to those who may see the trash (owners,
+         *     admins, keys and tokens with `conversations:delete`), who get it with `trashed_at`.
+         *
+         *     Scope: `conversations:read`.
          */
         get: operations["getConversation"];
         put?: never;
         post?: never;
-        delete?: never;
+        /**
+         * Move a conversation to the trash
+         * @description Sets `trashed_at` and `trashed_by`. From then on the conversation is left out of every
+         *     list, count, search, stat and Home figure, `/client/v1` and MCP, and nobody can change it;
+         *     only the Trash view (`GET /v1/conversations?trashed=true`) lists it. A new message from
+         *     the contact (e-mail, widget, SDK) starts a new conversation. `POST .../restore` brings it
+         *     back within 30 days (`deletes_at`); after that the retention job deletes it for good with
+         *     its messages, attachments, raw e-mails and stored files.
+         *
+         *     Only owners and admins, and keys and tokens with `conversations:delete`; agents get
+         *     `403 forbidden`, so a mistake cannot be hidden. Trashing a conversation already in the
+         *     trash answers it unchanged. Its earlier events leave `GET /v1/events` and realtime
+         *     replays (only its `conversation.trashed` and `conversation.restored` stay); a webhook of
+         *     such an event not yet sent is dropped. The 30 days run on the database's clock. Emits
+         *     `conversation.trashed`; the audit log records `conversation.trashed`.
+         *
+         *     Scope: `conversations:delete`.
+         */
+        delete: operations["trashConversation"];
         options?: never;
         head?: never;
         /**
@@ -1823,6 +1852,32 @@ export interface paths {
          *     Scope: `conversations:write`.
          */
         patch: operations["updateConversation"];
+        trace?: never;
+    };
+    "/v1/conversations/{conversationId}/restore": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Bring a conversation back from the trash
+         * @description Clears `trashed_at` and `trashed_by`; the conversation is where it was, with its status,
+         *     assignee and labels. A conversation whose 30 days are over answers `409 trash_expired`
+         *     until the retention job deletes it. Restoring a conversation that is not in the trash
+         *     answers it unchanged. Who may, as for `DELETE`. Emits `conversation.restored`; the audit
+         *     log records `conversation.restored`.
+         *
+         *     Scope: `conversations:delete`.
+         */
+        post: operations["restoreConversation"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/v1/conversations/{conversationId}/move": {
@@ -1906,7 +1961,8 @@ export interface paths {
          * List a conversation's messages
          * @description Messages, notes and events, oldest first by default. With `order=desc` the newest come
          *     first and `next_cursor` pages backward, so a thread can load its latest page and then
-         *     older ones.
+         *     older ones. A conversation in the trash answers `404` except to those who may see the
+         *     trash, who can also download its attachments and read its e-mail and raw source.
          *
          *     Scope: `conversations:read`.
          */
@@ -1928,8 +1984,10 @@ export interface paths {
          *     `POST /v1/messages/{id}/send`. A draft cannot be a note or an `in` message.
          *
          *     Send `multipart/form-data` to attach files: the fields of `MessageCreate` as form fields
-         *     and up to 10 `files` parts. Each file must be within the server's size limit and have an
-         *     allowed content type. The type is checked against the content: a file whose content does
+         *     and up to 10 `files` parts. Each file must be within the conversation's channel's limits
+         *     (`attachments.effective_max_bytes` and `attachments.effective_types` on the channel, the
+         *     server's limits when the conversation has no channel): a larger file is refused with 413
+         *     `attachment_too_large`, another type with 415 `attachment_type_not_allowed`. The type is checked against the content: a file whose content does
          *     not match its declared type (a text file sent as `image/png`) is refused with 415
          *     `attachment_type_mismatch`; a file declared without a type or as
          *     `application/octet-stream` gets the type detected from its content.
@@ -5092,7 +5150,8 @@ export interface paths {
          *     when more events follow, so call again at once; otherwise poll later. A page can hold
          *     fewer than `limit` events while `has_more` is true.
          *
-         *     Events are kept 7 days. An `after` older than the oldest kept event answers
+         *     Events are kept 7 days; those of a conversation moved to the trash are removed then, except
+         *     its `conversation.trashed` and `conversation.restored`. An `after` older than the oldest kept event answers
          *     `410 cursor_expired`: some events after it are gone. Reload what you need over the lists,
          *     then continue from `GET /v1/events/latest`'s `id`.
          *
@@ -8405,6 +8464,8 @@ export interface paths {
          * @description The contact's conversations in the session's inbox, on any channel, latest message first.
          *     Members' notes and internal events are never shown to contacts. `kind` keeps only
          *     conversations of those kinds, e.g. `kind=feedback` for the feedback the contact sent.
+         *     A conversation a member moved to the trash is never listed and answers `404` everywhere
+         *     under `/client/v1`; the realtime stream sends `conversation.removed` when it happens.
          */
         get: operations["listClientConversations"];
         put?: never;
@@ -8412,8 +8473,9 @@ export interface paths {
          * Start a conversation
          * @description Starts a conversation on the session's channel with its first message. Send
          *     `multipart/form-data` to attach files (`body`, `subject`, `client_id`, `page_url` and
-         *     `page_title` as form fields and up to 10 `files` parts), with the same size and type rules
-         *     as `/v1`. Rate limited per IP address and per channel.
+         *     `page_title` as form fields and up to 10 `files` parts). Each file must be within the
+         *     session channel's limits, `attachments` on `ClientInbox` (413 `attachment_too_large`, 415
+         *     `attachment_type_not_allowed`). Rate limited per IP address and per channel.
          *
          *     `page_url` is the page the conversation starts on, kept without query and fragment only
          *     when the channel is a chat channel and the page's origin is one of its allowed origins;
@@ -8466,6 +8528,10 @@ export interface paths {
          * Send a message
          * @description Adds the contact's message. A closed, pending or snoozed conversation is reopened. A
          *     repeated `client_id` in the same conversation returns the stored message with `200`.
+         *     Into a conversation a member moved to the trash, the message starts a new conversation
+         *     with the same kind, subject and page: the answer's `conversation_id` names it, and
+         *     `conversation.created` announces it. A `client_id` already used in the trashed
+         *     conversation answers that message with `200` and starts nothing.
          *     Send `multipart/form-data` to attach files, as for starting a conversation. Rate limited
          *     per IP address and per channel.
          */
@@ -8570,7 +8636,8 @@ export interface paths {
          *     the app.
          *
          *     Send `multipart/form-data` to attach screenshots (the other fields as form fields and up to
-         *     10 `files` parts), with the same size and type rules as messages. `client_id` makes the
+         *     10 `files` parts), within the session channel's limits (`attachments` on `ClientInbox`) like
+         *     messages. `client_id` makes the
          *     request idempotent: the same `client_id` again answers `201` with the first conversation.
          *     Rate limited per IP address and per channel.
          *
@@ -9275,6 +9342,65 @@ export interface webhooks {
         patch?: never;
         trace?: never;
     };
+    "conversation.trashed": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * A conversation went to the trash
+         * @description `data.conversation.trashed_at` and `deletes_at` are set. It can be restored until then
+         *     (`conversation.restored`); after that `conversation.deleted` follows.
+         */
+        post: operations["webhookConversationTrashed"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "conversation.restored": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** A conversation came back from the trash */
+        post: operations["webhookConversationRestored"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "conversation.deleted": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * A conversation was deleted for good
+         * @description 30 days after it went to the trash, with its messages and files. Only its id, inbox and
+         *     contact are sent.
+         */
+        post: operations["webhookConversationDeleted"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "message.created": {
         parameters: {
             query?: never;
@@ -9945,17 +10071,19 @@ export interface components {
          *     - `oauth_grant`: a member through a connected app (OAuth or MCP); `member_id` is the member
          *       and `via` the app's name.
          *     - `operator`: the server's operator on the command line; no `id` or `name`.
+         *     - `system`: Yuva itself, such as the retention job deleting a conversation 30 days after
+         *       it went to the trash; no `id` or `name`.
          * @enum {string}
          */
-        AuditActorKind: "member" | "api_key" | "oauth_grant" | "operator";
+        AuditActorKind: "member" | "api_key" | "oauth_grant" | "operator" | "system";
         AuditActor: {
             kind: components["schemas"]["AuditActorKind"];
             /**
              * Format: uuid
-             * @description The member, API key or connected app (grant). Absent for `operator`.
+             * @description The member, API key or connected app (grant). Absent for `operator` and `system`.
              */
             id?: string;
-            /** @description The display name at the time, kept after the actor is gone. Absent for `operator`. */
+            /** @description The display name at the time, kept after the actor is gone. Absent for `operator` and `system`. */
             name?: string;
             /**
              * Format: uuid
@@ -9983,6 +10111,8 @@ export interface components {
          *     - `channel.key_rotated`, `channel.forwarding_address_rotated`, `channel.dkim_key_deleted`:
          *       none. `channel.dkim_key_created`: `selector`.
          *     - `inbox.identity_secret_rotated`: none. `inbox.deleted`: `name`.
+         *     - `conversation.trashed`, `conversation.restored`: `inbox_id`. `conversation.deleted`:
+         *       `inbox_id`, by `system` (never the subject or content).
          *     - `contact.deleted`: none (no name or address is kept). `contact.consent_exported`: `format`,
          *       `started` (the entry is written when the export starts streaming).
          *     - `list.consent_exported`: `name`, `format`, `started`.
@@ -10001,9 +10131,9 @@ export interface components {
          *     More actions are added over time; show an unknown one by its name.
          * @enum {string}
          */
-        AuditAction: "member.joined" | "member.role_changed" | "member.removed" | "member.inbox_access_granted" | "member.inbox_access_revoked" | "invite.created" | "invite.deleted" | "api_key.created" | "api_key.revoked" | "oauth_grant.created" | "oauth_grant.revoked" | "webhook.created" | "webhook.updated" | "webhook.deleted" | "webhook.secret_rotated" | "channel.credentials_changed" | "channel.key_rotated" | "channel.forwarding_address_rotated" | "channel.dkim_key_created" | "channel.dkim_key_deleted" | "inbox.identity_secret_rotated" | "inbox.deleted" | "contact.deleted" | "contact.consent_exported" | "list.consent_exported" | "analytics_export.created" | "workspace.retention_changed" | "workspace.broadcast_approval_requested" | "workspace.broadcasts_approved" | "workspace.broadcasts_denied" | "workspace.broadcasts_suspended" | "workspace.broadcast_limit_changed";
+        AuditAction: "member.joined" | "member.role_changed" | "member.removed" | "member.inbox_access_granted" | "member.inbox_access_revoked" | "invite.created" | "invite.deleted" | "api_key.created" | "api_key.revoked" | "oauth_grant.created" | "oauth_grant.revoked" | "webhook.created" | "webhook.updated" | "webhook.deleted" | "webhook.secret_rotated" | "channel.credentials_changed" | "channel.key_rotated" | "channel.forwarding_address_rotated" | "channel.dkim_key_created" | "channel.dkim_key_deleted" | "inbox.identity_secret_rotated" | "inbox.deleted" | "conversation.trashed" | "conversation.restored" | "conversation.deleted" | "contact.deleted" | "contact.consent_exported" | "list.consent_exported" | "analytics_export.created" | "workspace.retention_changed" | "workspace.broadcast_approval_requested" | "workspace.broadcasts_approved" | "workspace.broadcasts_denied" | "workspace.broadcasts_suspended" | "workspace.broadcast_limit_changed";
         /** @enum {string} */
-        AuditTargetType: "workspace" | "member" | "invite" | "inbox" | "channel" | "api_key" | "oauth_grant" | "webhook" | "contact" | "list" | "analytics_export";
+        AuditTargetType: "workspace" | "member" | "invite" | "inbox" | "channel" | "api_key" | "oauth_grant" | "webhook" | "contact" | "list" | "analytics_export" | "conversation";
         AuditTarget: {
             type: components["schemas"]["AuditTargetType"];
             /**
@@ -10181,6 +10311,9 @@ export interface components {
          *       message e-mail and raw source; list labels and canned replies.
          *     - `conversations:write`: create, update (status, assignee, snooze, priority, labels), move
          *       and bulk-update conversations.
+         *     - `conversations:delete`: move conversations to the trash, restore them, and list the
+         *       trash. For owners and admins: never offered to agents' tokens. Never implied: a key made
+         *       without naming its scopes does not hold it.
          *     - `messages:write`: outgoing and incoming messages, drafts: create, edit, discard; for
          *       OAuth tokens also replies to reader threads and their accepted answer.
          *     - `drafts:send`: send a draft (`POST /v1/messages/{id}/send`), together with
@@ -10245,10 +10378,10 @@ export interface components {
          *       without an inbox limit; offered only to owners' OAuth tokens. Never implied: a key made
          *       without naming its scopes does not hold it.
          *
-         *     `lists:*`, `broadcasts:*`, `migrations:manage`, `analytics:*`, `status:*`, `help:*`, `roadmap:*`, `changelog:*` and `audit:read` are never added to keys made before they existed.
+         *     `conversations:delete`, `lists:*`, `broadcasts:*`, `migrations:manage`, `analytics:*`, `status:*`, `help:*`, `roadmap:*`, `changelog:*` and `audit:read` are never added to keys made before they existed.
          * @enum {string}
          */
-        ApiKeyScope: "conversations:read" | "conversations:write" | "messages:write" | "drafts:send" | "notes:write" | "contacts:read" | "contacts:write" | "inboxes:read" | "inboxes:manage" | "labels:write" | "canned_replies:write" | "webhooks:manage" | "workspace:manage" | "feedback:write" | "lists:read" | "lists:write" | "broadcasts:read" | "broadcasts:write" | "broadcasts:send" | "migrations:manage" | "analytics:read" | "analytics:write" | "analytics:manage" | "status:read" | "status:manage" | "help:read" | "help:write" | "help:publish" | "roadmap:read" | "roadmap:write" | "roadmap:stage" | "changelog:read" | "changelog:write" | "changelog:publish" | "audit:read";
+        ApiKeyScope: "conversations:read" | "conversations:write" | "conversations:delete" | "messages:write" | "drafts:send" | "notes:write" | "contacts:read" | "contacts:write" | "inboxes:read" | "inboxes:manage" | "labels:write" | "canned_replies:write" | "webhooks:manage" | "workspace:manage" | "feedback:write" | "lists:read" | "lists:write" | "broadcasts:read" | "broadcasts:write" | "broadcasts:send" | "migrations:manage" | "analytics:read" | "analytics:write" | "analytics:manage" | "status:read" | "status:manage" | "help:read" | "help:write" | "help:publish" | "roadmap:read" | "roadmap:write" | "roadmap:stage" | "changelog:read" | "changelog:write" | "changelog:publish" | "audit:read";
         /**
          * Format: uri
          * @description An `https` image URL.
@@ -10934,6 +11067,7 @@ export interface components {
             kind: components["schemas"]["ChannelKind"];
             name: string;
             settings: components["schemas"]["ChannelSettings"];
+            attachments: components["schemas"]["ChannelAttachments"];
             email?: components["schemas"]["EmailChannel"];
             chat?: components["schemas"]["ChatChannel"];
             app?: components["schemas"]["AppChannel"];
@@ -10952,6 +11086,7 @@ export interface components {
             kind: components["schemas"]["ChannelKind"];
             name: string;
             settings?: components["schemas"]["ChannelSettings"];
+            attachments?: components["schemas"]["ChannelAttachmentsInput"];
             email?: components["schemas"]["EmailChannelInput"];
             chat?: components["schemas"]["ChatChannelInput"];
             app?: components["schemas"]["AppChannelInput"];
@@ -10959,9 +11094,50 @@ export interface components {
         ChannelUpdate: {
             name?: string;
             settings?: components["schemas"]["ChannelSettings"];
+            attachments?: components["schemas"]["ChannelAttachmentsInput"];
             email?: components["schemas"]["EmailChannelInput"];
             chat?: components["schemas"]["ChatChannelInput"];
             app?: components["schemas"]["AppChannelInput"];
+        };
+        /**
+         * @description The attachment limits of the channel. The server's `YUVA_ATTACHMENT_MAX_BYTES` and
+         *     `YUVA_ATTACHMENT_TYPES` apply everywhere; a channel can only narrow them. The effective
+         *     limits are what every upload on the channel (members' and contacts' messages, feedback
+         *     screenshots, inbound e-mail) is held to: the smaller size and the types both lists allow,
+         *     so a server limit lowered after the channel was set still wins.
+         */
+        ChannelAttachments: {
+            /**
+             * Format: int64
+             * @description The channel's own size limit in bytes; absent when the channel follows the server.
+             */
+            max_bytes?: number;
+            /** @description The channel's own content types; absent when the channel follows the server. */
+            types?: string[];
+            /**
+             * Format: int64
+             * @description The smaller of the server's and the channel's size limit.
+             */
+            effective_max_bytes: number;
+            /**
+             * @description The content types both the server and the channel allow (`image/*` style wildcards
+             *     where both allow the whole family). Empty when the two lists share no type: every file
+             *     is refused.
+             */
+            effective_types: string[];
+        };
+        /**
+         * @description Narrows the server's attachment limits for this channel. Only the fields sent change;
+         *     `null` makes the channel follow the server again. `max_bytes` above
+         *     `YUVA_ATTACHMENT_MAX_BYTES`, or a type that allows nothing `YUVA_ATTACHMENT_TYPES` allows,
+         *     is refused with `400 validation_failed` naming the field. A wildcard is narrowed to what
+         *     the server allows: `image/*` under a server that lists `image/png` allows `image/png`.
+         */
+        ChannelAttachmentsInput: {
+            /** Format: int64 */
+            max_bytes?: number | null;
+            /** @description Content types such as `application/pdf`, or `image/*` for a whole family; lowercase, no duplicates kept. */
+            types?: string[] | null;
         };
         ChannelList: {
             items: components["schemas"]["Channel"][];
@@ -11118,7 +11294,7 @@ export interface components {
             count: number;
         };
         /** @enum {string} */
-        WebhookEventType: "conversation.created" | "conversation.updated" | "conversation.rated" | "message.created" | "feedback.created" | "contact.updated" | "contact.deleted" | "draft.created" | "draft.updated" | "draft.deleted" | "discussion.created" | "discussion.post_created" | "discussion.answered" | "discussion.updated" | "subscription.created" | "subscription.updated" | "broadcast.updated" | "analytics.alert" | "status.component.updated" | "status.incident.created" | "status.incident.updated" | "status.incident.resolved" | "status.monitor.down" | "status.monitor.up" | "help.article.published" | "help.article.unpublished" | "help.article.deleted" | "discussion.stage_changed" | "changelog.entry.published" | "changelog.entry.unpublished" | "changelog.entry.deleted";
+        WebhookEventType: "conversation.created" | "conversation.updated" | "conversation.rated" | "conversation.trashed" | "conversation.restored" | "conversation.deleted" | "message.created" | "feedback.created" | "contact.updated" | "contact.deleted" | "draft.created" | "draft.updated" | "draft.deleted" | "discussion.created" | "discussion.post_created" | "discussion.answered" | "discussion.updated" | "subscription.created" | "subscription.updated" | "broadcast.updated" | "analytics.alert" | "status.component.updated" | "status.incident.created" | "status.incident.updated" | "status.incident.resolved" | "status.monitor.down" | "status.monitor.up" | "help.article.published" | "help.article.unpublished" | "help.article.deleted" | "discussion.stage_changed" | "changelog.entry.published" | "changelog.entry.unpublished" | "changelog.entry.deleted";
         WebhookEndpoint: {
             /** Format: uuid */
             id: string;
@@ -11321,6 +11497,12 @@ export interface components {
         WebhookContactDeletedPayload: components["schemas"]["WebhookPayloadBase"] & {
             data: components["schemas"]["WebhookContactDeletedData"];
         };
+        WebhookConversationDeletedData: {
+            conversation: components["schemas"]["ConversationDeleted"];
+        };
+        WebhookConversationDeletedPayload: components["schemas"]["WebhookPayloadBase"] & {
+            data: components["schemas"]["WebhookConversationDeletedData"];
+        };
         ContactCreate: {
             name?: string;
             emails?: components["schemas"]["Email"][];
@@ -11444,10 +11626,42 @@ export interface components {
              *     event tells when it moves.
              */
             last_read_by_contact_at?: string;
+            /**
+             * Format: date-time
+             * @description When it went to the trash; absent when it is not in the trash.
+             */
+            trashed_at?: string;
+            /** @description Who moved it to the trash; absent when it is not in the trash. */
+            trashed_by?: components["schemas"]["ConversationTrashedBy"];
+            /**
+             * Format: date-time
+             * @description In the trash only: when the retention job deletes it for good, 30 days after
+             *     `trashed_at`. It can be restored until then.
+             */
+            deletes_at?: string;
             /** Format: date-time */
             created_at: string;
             /** Format: date-time */
             updated_at: string;
+        };
+        /** @description The member or API key that moved the conversation to the trash; empty when it is gone. */
+        ConversationTrashedBy: {
+            /**
+             * Format: uuid
+             * @description The member, also when they acted through a connected app.
+             */
+            member_id?: string;
+            /** Format: uuid */
+            api_key_id?: string;
+        };
+        /** @description A conversation deleted for good; nothing else of it is kept. */
+        ConversationDeleted: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            inbox_id: string;
+            /** Format: uuid */
+            contact_id: string;
         };
         /**
          * @description The contact's latest rating. A conversation can be rated once each time it is closed, so
@@ -11517,6 +11731,11 @@ export interface components {
             assignee_id?: string | null;
             add_labels?: string[];
             remove_labels?: string[];
+            /**
+             * @description `true` moves the conversations to the trash, `false` restores them. Alone, without
+             *     other changes. Owners, admins and keys and tokens with `conversations:delete`.
+             */
+            trashed?: boolean;
         };
         ConversationBulkFailure: {
             /** Format: uuid */
@@ -11530,7 +11749,7 @@ export interface components {
             detail?: string;
         };
         ConversationBulkResult: {
-            /** @description The conversations after the change, in request order. */
+            /** @description The conversations after the change, in request order (with `trashed_at` when trashed). */
             updated: components["schemas"]["Conversation"][];
             failed: components["schemas"]["ConversationBulkFailure"][];
         };
@@ -13641,7 +13860,11 @@ export interface components {
             name: string;
             address: string;
         };
-        /** @description A conversation was created, or its status, snooze, assignee, priority, labels or subject changed. */
+        /**
+         * @description A conversation was created, or its status, snooze, assignee, priority, labels or subject
+         *     changed. `conversation.trashed`: it went to the trash, so drop it from every list but the
+         *     Trash view; `conversation.restored`: it came back.
+         */
         ConversationEvent: {
             /** Format: int64 */
             id: number;
@@ -13649,7 +13872,7 @@ export interface components {
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
              */
-            type: "conversation.created" | "conversation.updated";
+            type: "conversation.created" | "conversation.updated" | "conversation.trashed" | "conversation.restored";
             /** Format: uuid */
             workspace_id: string;
             /** Format: uuid */
@@ -13659,6 +13882,25 @@ export interface components {
             /** Format: date-time */
             created_at: string;
             data: components["schemas"]["Conversation"];
+        };
+        /** @description A conversation was deleted for good, 30 days after it went to the trash. */
+        ConversationDeletedEvent: {
+            /** Format: int64 */
+            id: number;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "conversation.deleted";
+            /** Format: uuid */
+            workspace_id: string;
+            /** Format: uuid */
+            inbox_id: string;
+            /** Format: uuid */
+            conversation_id: string;
+            /** Format: date-time */
+            created_at: string;
+            data: components["schemas"]["ConversationDeleted"];
         };
         /**
          * @description A conversation left this event's inbox for another one. Sent to whoever can see the old
@@ -13959,7 +14201,7 @@ export interface components {
             type: "resync_required";
         };
         /** @description An event as `GET /v1/events` returns it, told apart by `type`; the same objects realtime and webhooks carry. */
-        StoredEvent: components["schemas"]["ConversationEvent"] | components["schemas"]["ConversationMovedEvent"] | components["schemas"]["MessageCreatedEvent"] | components["schemas"]["MessageUpdatedEvent"] | components["schemas"]["DraftEvent"] | components["schemas"]["ContactUpdatedEvent"] | components["schemas"]["ContactDeletedEvent"] | components["schemas"]["InboxCreatedEvent"] | components["schemas"]["InboxUpdatedEvent"] | components["schemas"]["InboxDeletedEvent"] | components["schemas"]["InboxAccessChangedEvent"] | components["schemas"]["ConversationReadEvent"] | components["schemas"]["ContactReadEvent"] | components["schemas"]["ConversationPinEvent"] | components["schemas"]["DiscussionEvent"] | components["schemas"]["DiscussionStageEvent"] | components["schemas"]["SubscriptionEvent"] | components["schemas"]["BroadcastEvent"] | components["schemas"]["MigrationEvent"] | components["schemas"]["AnalyticsAlertEvent"] | components["schemas"]["StatusComponentEvent"] | components["schemas"]["StatusIncidentEvent"] | components["schemas"]["StatusMonitorEvent"] | components["schemas"]["HelpArticleEvent"] | components["schemas"]["ChangelogEntryEvent"];
+        StoredEvent: components["schemas"]["ConversationEvent"] | components["schemas"]["ConversationDeletedEvent"] | components["schemas"]["ConversationMovedEvent"] | components["schemas"]["MessageCreatedEvent"] | components["schemas"]["MessageUpdatedEvent"] | components["schemas"]["DraftEvent"] | components["schemas"]["ContactUpdatedEvent"] | components["schemas"]["ContactDeletedEvent"] | components["schemas"]["InboxCreatedEvent"] | components["schemas"]["InboxUpdatedEvent"] | components["schemas"]["InboxDeletedEvent"] | components["schemas"]["InboxAccessChangedEvent"] | components["schemas"]["ConversationReadEvent"] | components["schemas"]["ContactReadEvent"] | components["schemas"]["ConversationPinEvent"] | components["schemas"]["DiscussionEvent"] | components["schemas"]["DiscussionStageEvent"] | components["schemas"]["SubscriptionEvent"] | components["schemas"]["BroadcastEvent"] | components["schemas"]["MigrationEvent"] | components["schemas"]["AnalyticsAlertEvent"] | components["schemas"]["StatusComponentEvent"] | components["schemas"]["StatusIncidentEvent"] | components["schemas"]["StatusMonitorEvent"] | components["schemas"]["HelpArticleEvent"] | components["schemas"]["ChangelogEntryEvent"];
         EventPage: {
             events: components["schemas"]["StoredEvent"][];
             /**
@@ -13978,7 +14220,7 @@ export interface components {
             id: number;
         };
         /** @description One server message on `/v1/realtime`, told apart by `type`. */
-        RealtimeMessage: components["schemas"]["ConversationEvent"] | components["schemas"]["ConversationMovedEvent"] | components["schemas"]["MessageCreatedEvent"] | components["schemas"]["MessageUpdatedEvent"] | components["schemas"]["DraftEvent"] | components["schemas"]["ContactUpdatedEvent"] | components["schemas"]["ContactDeletedEvent"] | components["schemas"]["InboxCreatedEvent"] | components["schemas"]["InboxUpdatedEvent"] | components["schemas"]["InboxDeletedEvent"] | components["schemas"]["InboxAccessChangedEvent"] | components["schemas"]["ConversationReadEvent"] | components["schemas"]["ContactReadEvent"] | components["schemas"]["ConversationPinEvent"] | components["schemas"]["DiscussionEvent"] | components["schemas"]["DiscussionStageEvent"] | components["schemas"]["SubscriptionEvent"] | components["schemas"]["BroadcastEvent"] | components["schemas"]["MigrationEvent"] | components["schemas"]["AnalyticsAlertEvent"] | components["schemas"]["StatusComponentEvent"] | components["schemas"]["StatusIncidentEvent"] | components["schemas"]["StatusMonitorEvent"] | components["schemas"]["MigrationProgressEvent"] | components["schemas"]["MigrationForwardingConfirmationEvent"] | components["schemas"]["BroadcastProgressEvent"] | components["schemas"]["StatusNoticeEvent"] | components["schemas"]["StatusPageEvent"] | components["schemas"]["HelpArticleEvent"] | components["schemas"]["HelpArticleSignal"] | components["schemas"]["ChangelogEntryEvent"] | components["schemas"]["ChangelogEntrySignal"] | components["schemas"]["RoadmapBoardSignal"] | components["schemas"]["HelpCenterSignal"] | components["schemas"]["ChangelogSignal"] | components["schemas"]["ListImportEvent"] | components["schemas"]["ListImportProgressEvent"] | components["schemas"]["TypingEvent"] | components["schemas"]["MemberPresenceEvent"] | components["schemas"]["ContactPresenceEvent"] | components["schemas"]["ViewingEvent"] | components["schemas"]["RealtimeReady"] | components["schemas"]["RealtimeResyncRequired"];
+        RealtimeMessage: components["schemas"]["ConversationEvent"] | components["schemas"]["ConversationDeletedEvent"] | components["schemas"]["ConversationMovedEvent"] | components["schemas"]["MessageCreatedEvent"] | components["schemas"]["MessageUpdatedEvent"] | components["schemas"]["DraftEvent"] | components["schemas"]["ContactUpdatedEvent"] | components["schemas"]["ContactDeletedEvent"] | components["schemas"]["InboxCreatedEvent"] | components["schemas"]["InboxUpdatedEvent"] | components["schemas"]["InboxDeletedEvent"] | components["schemas"]["InboxAccessChangedEvent"] | components["schemas"]["ConversationReadEvent"] | components["schemas"]["ContactReadEvent"] | components["schemas"]["ConversationPinEvent"] | components["schemas"]["DiscussionEvent"] | components["schemas"]["DiscussionStageEvent"] | components["schemas"]["SubscriptionEvent"] | components["schemas"]["BroadcastEvent"] | components["schemas"]["MigrationEvent"] | components["schemas"]["AnalyticsAlertEvent"] | components["schemas"]["StatusComponentEvent"] | components["schemas"]["StatusIncidentEvent"] | components["schemas"]["StatusMonitorEvent"] | components["schemas"]["MigrationProgressEvent"] | components["schemas"]["MigrationForwardingConfirmationEvent"] | components["schemas"]["BroadcastProgressEvent"] | components["schemas"]["StatusNoticeEvent"] | components["schemas"]["StatusPageEvent"] | components["schemas"]["HelpArticleEvent"] | components["schemas"]["HelpArticleSignal"] | components["schemas"]["ChangelogEntryEvent"] | components["schemas"]["ChangelogEntrySignal"] | components["schemas"]["RoadmapBoardSignal"] | components["schemas"]["HelpCenterSignal"] | components["schemas"]["ChangelogSignal"] | components["schemas"]["ListImportEvent"] | components["schemas"]["ListImportProgressEvent"] | components["schemas"]["TypingEvent"] | components["schemas"]["MemberPresenceEvent"] | components["schemas"]["ContactPresenceEvent"] | components["schemas"]["ViewingEvent"] | components["schemas"]["RealtimeReady"] | components["schemas"]["RealtimeResyncRequired"];
         /**
          * @description `auto`: available in `live` inboxes while connected to `/v1/realtime` within business
          *     hours. `away`: never shown as available.
@@ -16270,6 +16512,7 @@ export interface components {
              *     on a conversation.
              */
             ask_for_rating: boolean;
+            attachments: components["schemas"]["ClientAttachmentLimits"];
             /**
              * @description Absent unless the inbox has a published status page. Show a line while `open` is not
              *     empty; an `inbox.updated` frame brings every change.
@@ -16293,6 +16536,18 @@ export interface components {
              *     `inbox.updated` frame brings every change.
              */
             whats_new?: components["schemas"]["ClientInboxWhatsNew"];
+        };
+        /**
+         * @description The files this channel accepts, the server's limits narrowed by the channel's. Refuse a
+         *     file before uploading it when it is larger than `max_bytes` or its type matches no entry
+         *     of `types` (`image/*` matches every `image/` type); the server refuses it with 413
+         *     `attachment_too_large` or 415 `attachment_type_not_allowed` anyway. An empty `types`
+         *     accepts no file: hide the attach button.
+         */
+        ClientAttachmentLimits: {
+            /** Format: int64 */
+            max_bytes: number;
+            types: string[];
         };
         ClientContact: {
             /** Format: uuid */
@@ -16562,6 +16817,29 @@ export interface components {
             created_at: string;
             data: components["schemas"]["ClientConversationStatus"];
         };
+        /**
+         * @description A member removed the conversation: drop it from the list and close it if it is open. A
+         *     new message from the contact starts a new conversation. If it is brought back, it arrives
+         *     again as `conversation.created`.
+         */
+        ClientConversationRemovedEvent: {
+            /** Format: int64 */
+            id: number;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "conversation.removed";
+            /** Format: uuid */
+            conversation_id: string;
+            /** Format: date-time */
+            created_at: string;
+            data: components["schemas"]["ClientConversationRemoved"];
+        };
+        ClientConversationRemoved: {
+            /** Format: uuid */
+            id: string;
+        };
         /** @description A message was added or changed. */
         ClientMessageEvent: {
             /** Format: int64 */
@@ -16650,7 +16928,7 @@ export interface components {
             data: components["schemas"]["ClientContact"];
         };
         /** @description One server message on `/client/v1/realtime`, told apart by `type`. */
-        ClientRealtimeMessage: components["schemas"]["ClientConversationCreatedEvent"] | components["schemas"]["ClientConversationUpdatedEvent"] | components["schemas"]["ClientMessageEvent"] | components["schemas"]["ClientReadEvent"] | components["schemas"]["ClientTypingEvent"] | components["schemas"]["ClientPresenceEvent"] | components["schemas"]["ClientInboxUpdatedEvent"] | components["schemas"]["ClientContactUpdatedEvent"] | components["schemas"]["RealtimeReady"] | components["schemas"]["RealtimeResyncRequired"];
+        ClientRealtimeMessage: components["schemas"]["ClientConversationCreatedEvent"] | components["schemas"]["ClientConversationUpdatedEvent"] | components["schemas"]["ClientConversationRemovedEvent"] | components["schemas"]["ClientMessageEvent"] | components["schemas"]["ClientReadEvent"] | components["schemas"]["ClientTypingEvent"] | components["schemas"]["ClientPresenceEvent"] | components["schemas"]["ClientInboxUpdatedEvent"] | components["schemas"]["ClientContactUpdatedEvent"] | components["schemas"]["RealtimeReady"] | components["schemas"]["RealtimeResyncRequired"];
         /**
          * @description Where a property's events come from. Browsers send from `web` pages; `ios` and `android`
          *     apps send without an `Origin`. Server-side events (`sendAnalyticsEvents`) need no platform.
@@ -24129,10 +24407,17 @@ export interface operations {
                 assignee?: string;
                 label_id?: string;
                 /**
-                 * @description `true` lists only conversations flagged as spam (the spam view); without it, or with
-                 *     `false`, spam is left out.
+                 * @description `true` lists only conversations flagged as spam (the spam view); `false` leaves spam
+                 *     out. Without it spam is left out, except with `trashed=true`, which lists both.
                  */
                 spam?: boolean;
+                /**
+                 * @description `true` lists only the conversations in the trash (the Trash view), which every other
+                 *     list, count and search leaves out. Owners and admins, and keys and tokens with
+                 *     `conversations:delete`; agents get `403 forbidden`. `false` or absent lists what is not
+                 *     in the trash.
+                 */
+                trashed?: boolean;
                 /**
                  * @description Only conversations of these kinds, e.g. `feedback` for the feedback view. Repeat the
                  *     parameter (`kind=feedback&kind=conversation`) or give a comma-separated list
@@ -24398,6 +24683,34 @@ export interface operations {
             404: components["responses"]["Problem"];
         };
     };
+    trashConversation: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                conversationId: components["parameters"]["ConversationId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The conversation in the trash. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Conversation"];
+                };
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
     updateConversation: {
         parameters: {
             query?: never;
@@ -24426,6 +24739,35 @@ export interface operations {
                 };
             };
             400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+            409: components["responses"]["Problem"];
+        };
+    };
+    restoreConversation: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                conversationId: components["parameters"]["ConversationId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The restored conversation. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Conversation"];
+                };
+            };
             401: components["responses"]["Problem"];
             403: components["responses"]["Problem"];
             404: components["responses"]["Problem"];
@@ -35441,6 +35783,105 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": components["schemas"]["WebhookConversationPayload"];
+            };
+        };
+        responses: {
+            /** @description Any 2xx answer counts as delivered. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    webhookConversationTrashed: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description The delivery's id, the same on every retry; use it to ignore duplicates. */
+                "webhook-id": components["parameters"]["WebhookIdHeader"];
+                /** @description Unix seconds of this attempt. Refuse values far from your clock. */
+                "webhook-timestamp": components["parameters"]["WebhookTimestampHeader"];
+                /**
+                 * @description Space-separated `v1,<base64>` signatures: HMAC-SHA256 over
+                 *     `<webhook-id>.<webhook-timestamp>.<body>` with the base64-decoded part of the
+                 *     `whsec_` secret (Standard Webhooks). Two during a secret rotation.
+                 */
+                "webhook-signature": components["parameters"]["WebhookSignatureHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WebhookConversationPayload"];
+            };
+        };
+        responses: {
+            /** @description Any 2xx answer counts as delivered. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    webhookConversationRestored: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description The delivery's id, the same on every retry; use it to ignore duplicates. */
+                "webhook-id": components["parameters"]["WebhookIdHeader"];
+                /** @description Unix seconds of this attempt. Refuse values far from your clock. */
+                "webhook-timestamp": components["parameters"]["WebhookTimestampHeader"];
+                /**
+                 * @description Space-separated `v1,<base64>` signatures: HMAC-SHA256 over
+                 *     `<webhook-id>.<webhook-timestamp>.<body>` with the base64-decoded part of the
+                 *     `whsec_` secret (Standard Webhooks). Two during a secret rotation.
+                 */
+                "webhook-signature": components["parameters"]["WebhookSignatureHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WebhookConversationPayload"];
+            };
+        };
+        responses: {
+            /** @description Any 2xx answer counts as delivered. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    webhookConversationDeleted: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description The delivery's id, the same on every retry; use it to ignore duplicates. */
+                "webhook-id": components["parameters"]["WebhookIdHeader"];
+                /** @description Unix seconds of this attempt. Refuse values far from your clock. */
+                "webhook-timestamp": components["parameters"]["WebhookTimestampHeader"];
+                /**
+                 * @description Space-separated `v1,<base64>` signatures: HMAC-SHA256 over
+                 *     `<webhook-id>.<webhook-timestamp>.<body>` with the base64-decoded part of the
+                 *     `whsec_` secret (Standard Webhooks). Two during a secret rotation.
+                 */
+                "webhook-signature": components["parameters"]["WebhookSignatureHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WebhookConversationDeletedPayload"];
             };
         };
         responses: {

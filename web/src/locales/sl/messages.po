@@ -97,6 +97,11 @@ msgstr "{0} dobrih"
 msgid "{0} marked as spam · no reply needed"
 msgstr "{0} označenih kot vsiljena pošta · odgovor ni potreben"
 
+#. placeholder {0}: done.length
+#: src/features/inbox/ChatList.tsx
+msgid "{0} moved to the Trash"
+msgstr "{0} premaknjenih v koš"
+
 #. placeholder {0}: hitIndex + 1
 #. placeholder {1}: hits.length
 #: src/features/conversation/ChatView.tsx
@@ -108,6 +113,11 @@ msgstr "{0} od {1}"
 #: src/features/reports/ReportsColumn.tsx
 msgid "{0} replies · {1} closed"
 msgstr "{0} odgovorov · {1} zaprtih"
+
+#. placeholder {0}: done.length
+#: src/features/inbox/ChatList.tsx
+msgid "{0} restored"
+msgstr "{0} obnovljenih"
 
 #. placeholder {0}: done.scopes.length
 #. placeholder {0}: scopes.length
@@ -1096,6 +1106,18 @@ msgstr "Pogovor se vzame v celoti, če je bil nazadnje posodobljen v obdobju."
 msgid "A conversation started"
 msgstr "Pogovor se je začel"
 
+#: src/components/common/text.ts
+msgid "A conversation was deleted for good"
+msgstr "Pogovor je bil trajno izbrisan"
+
+#: src/components/common/text.ts
+msgid "A conversation was moved to the Trash"
+msgstr "Pogovor je bil premaknjen v koš"
+
+#: src/components/common/text.ts
+msgid "A conversation was restored from the Trash"
+msgstr "Pogovor je bil obnovljen iz koša"
+
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "A custom connector, for claude.ai and Claude Desktop. It acts as you, with the access you allow."
 msgstr "Povezovalnik po meri za claude.ai in Claude Desktop. Deluje kot vi, z dostopom, ki ga dovolite."
@@ -1993,6 +2015,10 @@ msgstr "Analitična lastnost nabiralnika je sprožila opozorilo"
 #: src/features/account/AccountPage.tsx
 msgid "An answer was accepted in <0>{title}</0>"
 msgstr "V <0>{title}</0> je bil sprejet odgovor"
+
+#: src/features/conversation/Trash.tsx
+msgid "an API key"
+msgstr "ključ API"
 
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "An API key"
@@ -4285,6 +4311,7 @@ msgstr "Zmanjšana zmogljivost"
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactNotes.tsx
+#: src/features/inbox/ChatList.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
@@ -4465,6 +4492,10 @@ msgstr "Izbrisal(a) ključ DKIM"
 msgid "deleted afterwards"
 msgstr "nato izbrisan"
 
+#: src/features/conversation/Trash.tsx
+msgid "Deleted by {who} on {date}"
+msgstr "Izbrisal(a) {who} dne {date}"
+
 #: src/features/docs/discussions/parts.tsx
 msgid "Deleted by its author."
 msgstr "Izbrisal avtor."
@@ -4472,6 +4503,10 @@ msgstr "Izbrisal avtor."
 #: src/features/status/IncidentDetail.tsx
 msgid "Deleted component"
 msgstr "Izbrisana komponenta"
+
+#: src/features/conversation/Trash.tsx
+msgid "Deleted for good on {until}"
+msgstr "Trajno bo izbrisan dne {until}"
 
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Deleted inbox"
@@ -4483,6 +4518,10 @@ msgstr "Izbrisan nabiralnik"
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Deleted member"
 msgstr "Izbrisan član"
+
+#: src/features/conversation/Trash.tsx
+msgid "Deleted on {date}"
+msgstr "Izbrisano dne {date}"
 
 #: src/components/common/DiscussionAuthor.tsx
 msgid "Deleted reader"
@@ -6823,6 +6862,10 @@ msgstr "Ali lahko izvozim svoje opombe?"
 msgid "It also asked for access your role here cannot give:"
 msgstr "Zahtevala je tudi dostop, ki ga vaša vloga tukaj ne more dati:"
 
+#: src/features/conversation/ChatView.tsx
+msgid "It disappears for your team and for the customer. You can restore it from the Trash for 30 days, then it is deleted for good with its messages and files."
+msgstr "Izgine za vašo ekipo in za stranko. 30 dni ga lahko obnovite iz koša, nato bo trajno izbrisan z vsemi sporočili in datotekami."
+
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "It goes into <0>~/.codex/config.toml</0>, which the Codex CLI and IDE extension share."
 msgstr "Gre v <0>~/.codex/config.toml</0>, ki si ga delita Codex CLI in razširitev IDE."
@@ -8082,6 +8125,15 @@ msgstr "Najprej največ ocen, odprte povratne informacije, odprte razprave in ob
 msgid "Most votes"
 msgstr "Največ glasov"
 
+#. placeholder {0}: ids.length
+#: src/features/inbox/ChatList.tsx
+msgid "Move {0} to the Trash?"
+msgstr "Premaknem {0} v koš?"
+
+#: src/components/common/text.ts
+msgid "Move conversations to the Trash, restore them and read the Trash"
+msgstr "Premikanje pogovorov v koš, njihovo obnavljanje in branje koša"
+
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move down"
@@ -8102,6 +8154,14 @@ msgstr "Premakni izbrani blok"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Move the selected collection"
 msgstr "Premakni izbrano zbirko"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Move the selected conversations to the Trash"
+msgstr "Premakni izbrane pogovore v koš"
+
+#: src/features/conversation/ChatView.tsx
+msgid "Move this conversation to the Trash?"
+msgstr "Premaknem ta pogovor v koš?"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Move through the articles or collections"
@@ -8159,6 +8219,14 @@ msgstr "Premakni v nabiralnik"
 msgid "Move to the previous or next stage"
 msgstr "Premakni v prejšnjo ali naslednjo fazo"
 
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/conversation/ChatView.tsx
+#: src/features/conversation/ConversationMenu.tsx
+#: src/features/inbox/ChatList.tsx
+msgid "Move to the Trash"
+msgstr "Premakni v koš"
+
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
 msgid "Move to Yuva"
@@ -8176,6 +8244,10 @@ msgstr "Premaknjeno iz {from}"
 #: src/features/conversation/ChatView.tsx
 msgid "Moved to {to}"
 msgstr "Premaknjeno v {to}"
+
+#: src/features/conversation/ChatView.tsx
+msgid "Moved to the Trash"
+msgstr "Premaknjeno v koš"
 
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Moving from Gmail, Google Workspace, Yandex, iCloud, Zoho, Yahoo, Fastmail, GMX or any IMAP server? Yuva copies the mailbox's history into an inbox, quietly and newest first, while your team keeps working. Then you forward the mailbox here and nothing is lost in between."
@@ -11917,8 +11989,23 @@ msgstr "Odzivni čas, zadnjih 24 ur"
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/broadcasts/ListsHome.tsx
+#: src/features/conversation/Trash.tsx
+#: src/features/inbox/ChatList.tsx
 msgid "Restore"
 msgstr "Obnovi"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Restore from the Trash"
+msgstr "Obnovi iz koša"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Restore the selected conversations, in the Trash"
+msgstr "Obnovi izbrane pogovore v košu"
+
+#: src/features/conversation/ChatView.tsx
+msgid "Restored from the Trash"
+msgstr "Obnovljeno iz koša"
 
 #: src/features/status/ResponseChart.tsx
 msgid "Results"
@@ -14761,6 +14848,10 @@ msgstr "Preizkus se je ustavil pri koraku."
 msgid "The timeout must be 1 to 30 seconds."
 msgstr "Časovna omejitev mora biti od 1 do 30 sekund."
 
+#: src/features/inbox/ChatList.tsx
+msgid "The Trash is empty."
+msgstr "Koš je prazen."
+
 #: src/features/migrations/DoneStep.tsx
 msgid "The uploaded file is deleted when the migration ends. Yuva keeps only what it imported."
 msgstr "Naložena datoteka se izbriše, ko se selitev konča. Yuva obdrži samo tisto, kar je uvozila."
@@ -14869,6 +14960,10 @@ msgstr "Ta pravila veljajo za obrazec za naročanje. Spremenite jih lahko kadar 
 #: src/features/broadcasts/AddSubscriberDialog.tsx
 msgid "They already agreed"
 msgstr "Že so privolili"
+
+#: src/features/inbox/ChatList.tsx
+msgid "They disappear for your team and for the customers. You can restore them from the Trash for 30 days, then they are deleted for good with their messages and files."
+msgstr "Izginejo za vašo ekipo in za stranke. 30 dni jih lahko obnovite iz koša, nato bodo trajno izbrisani z vsemi sporočili in datotekami."
 
 #: src/features/broadcasts/AddSubscriberDialog.tsx
 msgid "They get a mail with a link and are subscribed only after they click it."
@@ -14982,6 +15077,10 @@ msgstr "Ta pogovor"
 #: src/components/common/text.ts
 msgid "This conversation is already a discussion."
 msgstr "Ta pogovor je že razprava."
+
+#: src/features/conversation/Trash.tsx
+msgid "This conversation is in the Trash and read-only."
+msgstr "Ta pogovor je v košu in je samo za branje."
 
 #: src/features/conversation/ChatView.tsx
 msgid "This conversation is not available"
@@ -15383,6 +15482,7 @@ msgstr "Uporabniku {person} odvzel(a) dostop do {inbox}"
 msgid "tr, en-GB"
 msgstr "tr, en-GB"
 
+#: src/features/inbox/ChatList.tsx
 #: src/features/migrations/parts.tsx
 msgid "Trash"
 msgstr "Koš"

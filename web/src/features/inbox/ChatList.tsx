@@ -16,6 +16,7 @@ import {
   SearchIcon,
   SettingsIcon,
   SquareCheckBigIcon,
+  Trash2Icon,
   XIcon,
 } from "lucide-react"
 import { useEffect, useMemo, useRef, useState } from "react"
@@ -42,6 +43,7 @@ import {
 import { keyLabel, mod, SHORTCUTS } from "@/components/common/ShortcutSheet"
 import { formatDuration, formatShort, useErrorText } from "@/components/common/text"
 import { useNow } from "@/hooks/use-now"
+import { useConfirm } from "@/components/common/ConfirmDialog"
 import { Alert } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
@@ -61,6 +63,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { NewConversationDialog } from "@/features/contact/ContactDetails"
 import { ContactSearch } from "@/features/contact/ContactSearch"
 import { useDraftText } from "@/features/conversation/actions"
+import { TrashLine } from "@/features/conversation/Trash"
 import { useLiveIds } from "@/features/conversation/liveness"
 import { Ticks } from "@/features/conversation/messages/MessageActions"
 import { currentRating, RatingMark } from "@/features/conversation/rating"
@@ -85,8 +88,13 @@ import { useTyping } from "@/lib/typing"
 import { cn } from "@/lib/utils"
 import { useChannelMap, useLabels, useMemberMap } from "@/lib/workspace"
 
-export type Chip = "waiting" | "all" | "mine" | "unassigned" | "snoozed" | "done"
+export type Chip = "waiting" | "all" | "mine" | "unassigned" | "snoozed" | "done" | "trash"
 export const PAGE_CHIPS: Chip[] = ["waiting", "all", "mine", "unassigned", "snoozed", "done"]
+
+export function useChips(): Chip[] {
+  const { canManage } = useSession()
+  return canManage ? [...PAGE_CHIPS, "trash"] : PAGE_CHIPS
+}
 
 const chipFilters: Record<Chip, ConversationFilters> = {
   waiting: { status: ["open"] },
@@ -95,6 +103,7 @@ const chipFilters: Record<Chip, ConversationFilters> = {
   unassigned: { status: ["open"], assignee: "unassigned" },
   snoozed: { status: ["snoozed"] },
   done: { status: ["closed"] },
+  trash: { trashed: true, kind: undefined },
 }
 
 export function isWaiting(c: ConversationListItem) {
@@ -121,6 +130,7 @@ export function useChipLabels(): Record<Chip, string> {
     unassigned: t`Unassigned`,
     snoozed: t`Snoozed`,
     done: t`Closed`,
+    trash: t`Trash`,
   }
 }
 
@@ -287,6 +297,7 @@ function Row({
           </time>
         </span>
         <span className="flex min-w-0 items-center gap-1.5 text-body text-muted-foreground">
+          {c.trashed_at && <Trash2Icon className="size-3.5 shrink-0 text-faint" aria-label={t`Trash`} />}
           {c.status === "snoozed" && <ClockIcon className="size-3.5 shrink-0 text-faint" aria-label={t`Snoozed`} />}
           <span className="flex min-w-0 flex-1">
             <Preview
@@ -297,6 +308,7 @@ function Row({
             />
           </span>
         </span>
+        {c.trashed_at && <TrashLine c={c} />}
         <span className="flex min-w-0 items-center gap-1.5 text-caption" data-testid="row-source">
           <ProductTag id={c.inbox_id} />
           {c.imported && <ImportedChip at={c.imported.at} />}
@@ -643,6 +655,9 @@ export function ChatList({
 }) {
   const { t } = useLingui()
   const errorText = useErrorText()
+  const { canManage } = useSession()
+  const [confirm, confirmDialog] = useConfirm()
+  const tabs = useChips()
   const { query, focus, select } = useListSearch()
   const q = useDebounced(query.trim(), 250)
   const [sidebarInbox] = useInboxFilter()
@@ -796,6 +811,7 @@ export function ChatList({
     unassigned: <Trans>Every open conversation has someone.</Trans>,
     snoozed: <Trans>Nothing is snoozed.</Trans>,
     done: <Trans>Nothing is closed yet.</Trans>,
+    trash: <Trans>The Trash is empty.</Trans>,
   }
   const filtered = !!q || narrowed || unreadOnly
   const clearFilters = () => {
@@ -863,6 +879,58 @@ export function ChatList({
     )
   }
   const allLabels = useLabels().data ?? []
+  const inTrash = chip === "trash"
+  const trashChosen = () => {
+    const ids = chosen.slice(0, 100)
+    if (ids.length === 0) return
+    confirm({
+      title: <Trans>Move {ids.length} to the Trash?</Trans>,
+      description: (
+        <Trans>
+          They disappear for your team and for the customers. You can restore them from the Trash for 30 days, then they
+          are deleted for good with their messages and files.
+        </Trans>
+      ),
+      confirm: <Trans>Move to the Trash</Trans>,
+      run: () =>
+        bulk.mutate(
+          { conversation_ids: ids, trashed: true },
+          {
+            onSuccess: (r) => {
+              const done = r.updated.map((c) => c.id)
+              toast(t`${done.length} moved to the Trash`, () =>
+                bulk.mutate({ conversation_ids: done, trashed: false }, { onError: failed })
+              )
+              stopSelecting()
+            },
+            onError: failed,
+          }
+        ),
+    })
+  }
+  const restoreChosen = () => {
+    const ids = chosen.slice(0, 100)
+    if (ids.length === 0) return
+    bulk.mutate(
+      { conversation_ids: ids, trashed: false },
+      {
+        onSuccess: (r) => {
+          const done = r.updated.map((c) => c.id)
+          toast(t`${done.length} restored`, () =>
+            bulk.mutate({ conversation_ids: done, trashed: true }, { onError: failed })
+          )
+          stopSelecting()
+        },
+        onError: failed,
+      }
+    )
+  }
+  useHotkeys(
+    selecting && canManage && chosen.length > 0
+      ? { [inTrash ? SHORTCUTS.restore : SHORTCUTS.trash]: inTrash ? restoreChosen : trashChosen }
+      : {},
+    active
+  )
 
   const searchBox = (
     <InputGroup className="h-[34px] min-w-0 flex-1 rounded-lg border-input bg-background shadow-none focus-within:border-faint">
@@ -933,54 +1001,85 @@ export function ChatList({
       <span className="me-1 min-w-0 truncate text-small font-medium" aria-live="polite">
         {none ? <Trans>Pick conversations</Trans> : <Trans>Selected: {picked}</Trans>}
       </span>
-      <Button
-        variant="outline"
-        className={look.btnSm}
-        disabled={none || bulk.isPending}
-        onClick={closeChosen}
-        data-testid="close-selected"
-      >
-        <Trans>Close all</Trans>
-      </Button>
-      <Button variant="outline" className={look.btnSm} disabled={none} onClick={readChosen} data-testid="read-selected">
-        {anyUnread || none ? <Trans>Mark as read</Trans> : <Trans>Mark as unread</Trans>}
-      </Button>
-      <DropdownMenu>
-        <DropdownMenuTrigger
-          render={<Button variant="outline" className={look.btnSm} disabled={none || bulk.isPending} />}
-          data-testid="label-selected"
+      {inTrash ? (
+        <Button
+          variant="outline"
+          className={look.btnSm}
+          disabled={none || bulk.isPending}
+          onClick={restoreChosen}
+          data-testid="restore-selected"
         >
-          <Trans>Label</Trans>
-          <ChevronDownIcon className="text-faint" />
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="start" className="max-h-[60svh] min-w-48">
-          {allLabels.length === 0 && (
-            <p className="px-2.5 py-1.5 text-body text-muted-foreground">
-              <Trans>No labels yet. Add them in settings.</Trans>
-            </p>
-          )}
-          {allLabels.map((l) => (
-            <DropdownMenuCheckboxItem
-              key={l.id}
-              checked={chosenRows.length > 0 && chosenRows.every((c) => c.labels.includes(l.id))}
-              onCheckedChange={() => labelChosen(l.id)}
+          <Trans>Restore</Trans>
+        </Button>
+      ) : (
+        <>
+          <Button
+            variant="outline"
+            className={look.btnSm}
+            disabled={none || bulk.isPending}
+            onClick={closeChosen}
+            data-testid="close-selected"
+          >
+            <Trans>Close all</Trans>
+          </Button>
+          <Button
+            variant="outline"
+            className={look.btnSm}
+            disabled={none}
+            onClick={readChosen}
+            data-testid="read-selected"
+          >
+            {anyUnread || none ? <Trans>Mark as read</Trans> : <Trans>Mark as unread</Trans>}
+          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger
+              render={<Button variant="outline" className={look.btnSm} disabled={none || bulk.isPending} />}
+              data-testid="label-selected"
             >
-              <Dot color={l.color} />
-              {l.name}
-            </DropdownMenuCheckboxItem>
-          ))}
-        </DropdownMenuContent>
-      </DropdownMenu>
-      <Button
-        variant="outline"
-        className={look.btnSm}
-        disabled={none}
-        onClick={() => setLinking(true)}
-        title={t`Link to an incident (${linkKey})`}
-        data-testid="link-selected"
-      >
-        <Trans>Link to an incident</Trans>
-      </Button>
+              <Trans>Label</Trans>
+              <ChevronDownIcon className="text-faint" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" className="max-h-[60svh] min-w-48">
+              {allLabels.length === 0 && (
+                <p className="px-2.5 py-1.5 text-body text-muted-foreground">
+                  <Trans>No labels yet. Add them in settings.</Trans>
+                </p>
+              )}
+              {allLabels.map((l) => (
+                <DropdownMenuCheckboxItem
+                  key={l.id}
+                  checked={chosenRows.length > 0 && chosenRows.every((c) => c.labels.includes(l.id))}
+                  onCheckedChange={() => labelChosen(l.id)}
+                >
+                  <Dot color={l.color} />
+                  {l.name}
+                </DropdownMenuCheckboxItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <Button
+            variant="outline"
+            className={look.btnSm}
+            disabled={none}
+            onClick={() => setLinking(true)}
+            title={t`Link to an incident (${linkKey})`}
+            data-testid="link-selected"
+          >
+            <Trans>Link to an incident</Trans>
+          </Button>
+          {canManage && (
+            <Button
+              variant="outline"
+              className={cn(look.btnSm, "text-destructive")}
+              disabled={none || bulk.isPending}
+              onClick={trashChosen}
+              data-testid="trash-selected"
+            >
+              <Trans>Delete</Trans>
+            </Button>
+          )}
+        </>
+      )}
       <Button
         variant="ghost"
         className="h-[30px] rounded-lg px-2"
@@ -1042,7 +1141,7 @@ export function ChatList({
             value={chip}
             onChange={setChip}
             label={t`Filter`}
-            items={PAGE_CHIPS.map((k) => ({
+            items={tabs.map((k) => ({
               value: k,
               label: labels[k],
               count:
@@ -1142,6 +1241,7 @@ export function ChatList({
         )}
         <ErrorLine error={list.error} className="px-4 py-2" />
       </div>
+      {confirmDialog}
       {linking && (
         <LinkIncidentDialog conversationIds={chosen} onClose={() => setLinking(false)} onDone={stopSelecting} />
       )}

@@ -56,6 +56,7 @@ function pageOrigin(url?: string) {
 
 function matches(c: Conversation & { pinned_at?: string }, f: ConversationFilters, memberId: string) {
   if (!!f.spam !== c.spam) return false
+  if (!!f.trashed !== !!c.trashed_at) return false
   if (f.pinned !== undefined && !!c.pinned_at !== f.pinned) return false
   if (f.status?.length && !f.status.includes(c.status)) return false
   if (f.kind?.length && !f.kind.includes(c.kind)) return false
@@ -115,6 +116,10 @@ function updateLists(qc: QueryClient, ctx: LiveContext, c: Conversation, patch: 
   for (const [key, data] of listCaches(qc, ctx.ws)) {
     if (!data) continue
     const f = (key as QueryKey)[3] as ConversationFilters
+    if (f.trashed) {
+      void qc.invalidateQueries({ queryKey: key, exact: true })
+      continue
+    }
     if (f.q || (!base && matches(c, f, ctx.memberId))) {
       void qc.invalidateQueries({ queryKey: key, exact: true })
       continue
@@ -465,6 +470,28 @@ function refreshLinked(qc: QueryClient, ws: string, id: string) {
 
 export function applyEvent(qc: QueryClient, ctx: LiveContext, event: LiveEvent) {
   switch (event.type) {
+    case "conversation.deleted": {
+      const id = event.data.id
+      for (const [key, data] of listCaches(qc, ctx.ws)) {
+        if (!data?.pages.some((p) => p.items.some((x) => x.id === id))) continue
+        qc.setQueryData<Lists>(key, (old) =>
+          old ? { ...old, pages: old.pages.map((p) => ({ ...p, items: p.items.filter((x) => x.id !== id) })) } : old
+        )
+      }
+      qc.removeQueries({ queryKey: keys.conversation(ctx.ws, id), exact: true })
+      qc.removeQueries({ queryKey: keys.messages(ctx.ws, id), exact: true })
+      refreshCounts(qc, ctx.ws)
+      refreshMentions(qc, ctx.ws)
+      refreshDrafts(qc, ctx.ws)
+      return
+    }
+    case "conversation.trashed":
+    case "conversation.restored":
+      setConversation(qc, ctx, event.data)
+      void qc.invalidateQueries({ queryKey: keys.contactSummary(ctx.ws, event.data.contact_id) })
+      refreshMentions(qc, ctx.ws)
+      refreshDrafts(qc, ctx.ws)
+      return
     case "conversation.created":
     case "conversation.updated":
       knowMember(qc, ctx.ws, event.data.assignee_id)

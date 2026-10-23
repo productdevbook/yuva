@@ -97,6 +97,11 @@ msgstr "{0} jó"
 msgid "{0} marked as spam · no reply needed"
 msgstr "{0} spamnek jelölve · nem kell válaszolni"
 
+#. placeholder {0}: done.length
+#: src/features/inbox/ChatList.tsx
+msgid "{0} moved to the Trash"
+msgstr "{0} a Kukába helyezve"
+
 #. placeholder {0}: hitIndex + 1
 #. placeholder {1}: hits.length
 #: src/features/conversation/ChatView.tsx
@@ -108,6 +113,11 @@ msgstr "{0} / {1}"
 #: src/features/reports/ReportsColumn.tsx
 msgid "{0} replies · {1} closed"
 msgstr "{0} válasz · {1} lezárva"
+
+#. placeholder {0}: done.length
+#: src/features/inbox/ChatList.tsx
+msgid "{0} restored"
+msgstr "{0} visszaállítva"
 
 #. placeholder {0}: done.scopes.length
 #. placeholder {0}: scopes.length
@@ -1096,6 +1106,18 @@ msgstr "A beszélgetést egészében veszi, ha utoljára a tartományon belül f
 msgid "A conversation started"
 msgstr "Egy beszélgetés elindult"
 
+#: src/components/common/text.ts
+msgid "A conversation was deleted for good"
+msgstr "Egy beszélgetés véglegesen törölve lett"
+
+#: src/components/common/text.ts
+msgid "A conversation was moved to the Trash"
+msgstr "Egy beszélgetés a Kukába került"
+
+#: src/components/common/text.ts
+msgid "A conversation was restored from the Trash"
+msgstr "Egy beszélgetés vissza lett állítva a Kukából"
+
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "A custom connector, for claude.ai and Claude Desktop. It acts as you, with the access you allow."
 msgstr "Egyéni összekötő a claude.ai-hoz és a Claude Desktophoz. Úgy jár el, mint te, az engedélyezett hozzáféréssel."
@@ -1993,6 +2015,10 @@ msgstr "A postafiók egy analitikai tulajdonsága riasztást adott"
 #: src/features/account/AccountPage.tsx
 msgid "An answer was accepted in <0>{title}</0>"
 msgstr "Egy választ elfogadtak itt: <0>{title}</0>"
+
+#: src/features/conversation/Trash.tsx
+msgid "an API key"
+msgstr "egy API-kulcs"
 
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "An API key"
@@ -4285,6 +4311,7 @@ msgstr "Csökkent teljesítmény"
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactNotes.tsx
+#: src/features/inbox/ChatList.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
@@ -4465,6 +4492,10 @@ msgstr "Törölt egy DKIM-kulcsot"
 msgid "deleted afterwards"
 msgstr "utána törlődik"
 
+#: src/features/conversation/Trash.tsx
+msgid "Deleted by {who} on {date}"
+msgstr "{who} törölte ekkor: {date}"
+
 #: src/features/docs/discussions/parts.tsx
 msgid "Deleted by its author."
 msgstr "A szerzője törölte."
@@ -4472,6 +4503,10 @@ msgstr "A szerzője törölte."
 #: src/features/status/IncidentDetail.tsx
 msgid "Deleted component"
 msgstr "Törölt összetevő"
+
+#: src/features/conversation/Trash.tsx
+msgid "Deleted for good on {until}"
+msgstr "Véglegesen törlődik ekkor: {until}"
 
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Deleted inbox"
@@ -4483,6 +4518,10 @@ msgstr "Törölt postafiók"
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Deleted member"
 msgstr "Törölt tag"
+
+#: src/features/conversation/Trash.tsx
+msgid "Deleted on {date}"
+msgstr "Törölve ekkor: {date}"
 
 #: src/components/common/DiscussionAuthor.tsx
 msgid "Deleted reader"
@@ -6823,6 +6862,10 @@ msgstr "Van mód a jegyzeteim exportálására?"
 msgid "It also asked for access your role here cannot give:"
 msgstr "Olyan hozzáférést is kért, amelyet a szereped itt nem adhat meg:"
 
+#: src/features/conversation/ChatView.tsx
+msgid "It disappears for your team and for the customer. You can restore it from the Trash for 30 days, then it is deleted for good with its messages and files."
+msgstr "Eltűnik a csapatod és az ügyfél elől. 30 napig visszaállíthatod a Kukából, utána az üzeneteivel és fájljaival együtt véglegesen törlődik."
+
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "It goes into <0>~/.codex/config.toml</0>, which the Codex CLI and IDE extension share."
 msgstr "A <0>~/.codex/config.toml</0> fájlba kerül, amelyen a Codex CLI és az IDE-bővítmény osztozik."
@@ -8082,6 +8125,15 @@ msgstr "Először a legtöbb értékelés, nyitott visszajelzés, nyitott vita �
 msgid "Most votes"
 msgstr "Legtöbb szavazat"
 
+#. placeholder {0}: ids.length
+#: src/features/inbox/ChatList.tsx
+msgid "Move {0} to the Trash?"
+msgstr "A Kukába helyezed: {0}?"
+
+#: src/components/common/text.ts
+msgid "Move conversations to the Trash, restore them and read the Trash"
+msgstr "Beszélgetések Kukába helyezése, visszaállítása és a Kuka olvasása"
+
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move down"
@@ -8102,6 +8154,14 @@ msgstr "A kijelölt blokk áthelyezése"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Move the selected collection"
 msgstr "A kijelölt gyűjtemény áthelyezése"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Move the selected conversations to the Trash"
+msgstr "A kijelölt beszélgetések Kukába helyezése"
+
+#: src/features/conversation/ChatView.tsx
+msgid "Move this conversation to the Trash?"
+msgstr "A Kukába helyezed ezt a beszélgetést?"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Move through the articles or collections"
@@ -8159,6 +8219,14 @@ msgstr "Áthelyezés a postafiókba"
 msgid "Move to the previous or next stage"
 msgstr "Áthelyezés az előző vagy a következő szakaszba"
 
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/conversation/ChatView.tsx
+#: src/features/conversation/ConversationMenu.tsx
+#: src/features/inbox/ChatList.tsx
+msgid "Move to the Trash"
+msgstr "Kukába helyezés"
+
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
 msgid "Move to Yuva"
@@ -8176,6 +8244,10 @@ msgstr "Áthelyezve innen: {from}"
 #: src/features/conversation/ChatView.tsx
 msgid "Moved to {to}"
 msgstr "Áthelyezve ide: {to}"
+
+#: src/features/conversation/ChatView.tsx
+msgid "Moved to the Trash"
+msgstr "A Kukába helyezve"
 
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Moving from Gmail, Google Workspace, Yandex, iCloud, Zoho, Yahoo, Fastmail, GMX or any IMAP server? Yuva copies the mailbox's history into an inbox, quietly and newest first, while your team keeps working. Then you forward the mailbox here and nothing is lost in between."
@@ -11917,8 +11989,23 @@ msgstr "Válaszidő, elmúlt 24 óra"
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/broadcasts/ListsHome.tsx
+#: src/features/conversation/Trash.tsx
+#: src/features/inbox/ChatList.tsx
 msgid "Restore"
 msgstr "Visszaállítás"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Restore from the Trash"
+msgstr "Visszaállítás a Kukából"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Restore the selected conversations, in the Trash"
+msgstr "A kijelölt beszélgetések visszaállítása a Kukában"
+
+#: src/features/conversation/ChatView.tsx
+msgid "Restored from the Trash"
+msgstr "Visszaállítva a Kukából"
 
 #: src/features/status/ResponseChart.tsx
 msgid "Results"
@@ -14761,6 +14848,10 @@ msgstr "A teszt megállt egy lépésnél."
 msgid "The timeout must be 1 to 30 seconds."
 msgstr "Az időkorlátnak 1 és 30 másodperc között kell lennie."
 
+#: src/features/inbox/ChatList.tsx
+msgid "The Trash is empty."
+msgstr "A Kuka üres."
+
 #: src/features/migrations/DoneStep.tsx
 msgid "The uploaded file is deleted when the migration ends. Yuva keeps only what it imported."
 msgstr "A feltöltött fájl törlődik, amikor az átvitel véget ér. A Yuva csak azt tartja meg, amit importált."
@@ -14869,6 +14960,10 @@ msgstr "Ezek a szabályok a feliratkozási űrlapra vonatkoznak. A lista beáll�
 #: src/features/broadcasts/AddSubscriberDialog.tsx
 msgid "They already agreed"
 msgstr "Már beleegyeztek"
+
+#: src/features/inbox/ChatList.tsx
+msgid "They disappear for your team and for the customers. You can restore them from the Trash for 30 days, then they are deleted for good with their messages and files."
+msgstr "Eltűnnek a csapatod és az ügyfelek elől. 30 napig visszaállíthatod őket a Kukából, utána az üzeneteikkel és fájljaikkal együtt véglegesen törlődnek."
 
 #: src/features/broadcasts/AddSubscriberDialog.tsx
 msgid "They get a mail with a link and are subscribed only after they click it."
@@ -14982,6 +15077,10 @@ msgstr "Ez a beszélgetés"
 #: src/components/common/text.ts
 msgid "This conversation is already a discussion."
 msgstr "Ez a beszélgetés már vita."
+
+#: src/features/conversation/Trash.tsx
+msgid "This conversation is in the Trash and read-only."
+msgstr "Ez a beszélgetés a Kukában van, és csak olvasható."
 
 #: src/features/conversation/ChatView.tsx
 msgid "This conversation is not available"
@@ -15383,6 +15482,7 @@ msgstr "Visszavonta {person} hozzáférését ehhez: {inbox}"
 msgid "tr, en-GB"
 msgstr "tr, en-GB"
 
+#: src/features/inbox/ChatList.tsx
 #: src/features/migrations/parts.tsx
 msgid "Trash"
 msgstr "Kuka"

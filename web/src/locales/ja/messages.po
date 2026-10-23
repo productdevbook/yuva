@@ -97,6 +97,11 @@ msgstr "{0} 件が良好"
 msgid "{0} marked as spam · no reply needed"
 msgstr "{0} 件をスパムとして記録 · 返信不要"
 
+#. placeholder {0}: done.length
+#: src/features/inbox/ChatList.tsx
+msgid "{0} moved to the Trash"
+msgstr "{0} 件をゴミ箱に移動しました"
+
 #. placeholder {0}: hitIndex + 1
 #. placeholder {1}: hits.length
 #: src/features/conversation/ChatView.tsx
@@ -108,6 +113,11 @@ msgstr "{0} / {1}"
 #: src/features/reports/ReportsColumn.tsx
 msgid "{0} replies · {1} closed"
 msgstr "{0} 件の返信 · {1} 件が完了"
+
+#. placeholder {0}: done.length
+#: src/features/inbox/ChatList.tsx
+msgid "{0} restored"
+msgstr "{0} 件を復元しました"
 
 #. placeholder {0}: done.scopes.length
 #. placeholder {0}: scopes.length
@@ -1096,6 +1106,18 @@ msgstr "最終更新が範囲内の会話は、全体が対象になります。
 msgid "A conversation started"
 msgstr "会話が開始されたとき"
 
+#: src/components/common/text.ts
+msgid "A conversation was deleted for good"
+msgstr "会話が完全に削除されました"
+
+#: src/components/common/text.ts
+msgid "A conversation was moved to the Trash"
+msgstr "会話がゴミ箱に移動されました"
+
+#: src/components/common/text.ts
+msgid "A conversation was restored from the Trash"
+msgstr "会話がゴミ箱から復元されました"
+
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "A custom connector, for claude.ai and Claude Desktop. It acts as you, with the access you allow."
 msgstr "claude.ai と Claude Desktop 用のカスタムコネクターです。あなたの権限で動作し、許可したアクセスの範囲で操作します。"
@@ -1993,6 +2015,10 @@ msgstr "受信トレイのアナリティクスプロパティがアラートを
 #: src/features/account/AccountPage.tsx
 msgid "An answer was accepted in <0>{title}</0>"
 msgstr "<0>{title}</0> で回答が承認されました"
+
+#: src/features/conversation/Trash.tsx
+msgid "an API key"
+msgstr "API キー"
 
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "An API key"
@@ -4285,6 +4311,7 @@ msgstr "パフォーマンス低下"
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactNotes.tsx
+#: src/features/inbox/ChatList.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
@@ -4465,6 +4492,10 @@ msgstr "DKIM キーを削除しました"
 msgid "deleted afterwards"
 msgstr "後で削除されます"
 
+#: src/features/conversation/Trash.tsx
+msgid "Deleted by {who} on {date}"
+msgstr "{who} が {date} に削除"
+
 #: src/features/docs/discussions/parts.tsx
 msgid "Deleted by its author."
 msgstr "作成者が削除しました。"
@@ -4472,6 +4503,10 @@ msgstr "作成者が削除しました。"
 #: src/features/status/IncidentDetail.tsx
 msgid "Deleted component"
 msgstr "削除されたコンポーネント"
+
+#: src/features/conversation/Trash.tsx
+msgid "Deleted for good on {until}"
+msgstr "{until} に完全に削除されます"
 
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Deleted inbox"
@@ -4483,6 +4518,10 @@ msgstr "削除された受信トレイ"
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Deleted member"
 msgstr "削除されたメンバー"
+
+#: src/features/conversation/Trash.tsx
+msgid "Deleted on {date}"
+msgstr "{date} に削除"
 
 #: src/components/common/DiscussionAuthor.tsx
 msgid "Deleted reader"
@@ -6823,6 +6862,10 @@ msgstr "メモをエクスポートする方法はありますか?"
 msgid "It also asked for access your role here cannot give:"
 msgstr "このロールでは付与できないアクセスも求められました:"
 
+#: src/features/conversation/ChatView.tsx
+msgid "It disappears for your team and for the customer. You can restore it from the Trash for 30 days, then it is deleted for good with its messages and files."
+msgstr "チームと顧客から見えなくなります。30 日間はゴミ箱から復元でき、その後はメッセージとファイルごと完全に削除されます。"
+
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "It goes into <0>~/.codex/config.toml</0>, which the Codex CLI and IDE extension share."
 msgstr "<0>~/.codex/config.toml</0> に書き込まれ、Codex CLI と IDE 拡張機能で共有されます。"
@@ -8082,6 +8125,15 @@ msgstr "評価が多い順、次に未対応のフィードバック、未完了
 msgid "Most votes"
 msgstr "投票が多い順"
 
+#. placeholder {0}: ids.length
+#: src/features/inbox/ChatList.tsx
+msgid "Move {0} to the Trash?"
+msgstr "{0} 件をゴミ箱に移動しますか？"
+
+#: src/components/common/text.ts
+msgid "Move conversations to the Trash, restore them and read the Trash"
+msgstr "会話をゴミ箱に移動し、復元し、ゴミ箱を読み取る"
+
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move down"
@@ -8102,6 +8154,14 @@ msgstr "選択したブロックを移動"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Move the selected collection"
 msgstr "選択したコレクションを移動"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Move the selected conversations to the Trash"
+msgstr "選択した会話をゴミ箱に移動"
+
+#: src/features/conversation/ChatView.tsx
+msgid "Move this conversation to the Trash?"
+msgstr "この会話をゴミ箱に移動しますか？"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Move through the articles or collections"
@@ -8159,6 +8219,14 @@ msgstr "受信トレイに移動"
 msgid "Move to the previous or next stage"
 msgstr "前または次のステージに移動"
 
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/conversation/ChatView.tsx
+#: src/features/conversation/ConversationMenu.tsx
+#: src/features/inbox/ChatList.tsx
+msgid "Move to the Trash"
+msgstr "ゴミ箱に移動"
+
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
 msgid "Move to Yuva"
@@ -8176,6 +8244,10 @@ msgstr "{from} から移動"
 #: src/features/conversation/ChatView.tsx
 msgid "Moved to {to}"
 msgstr "{to} に移動しました"
+
+#: src/features/conversation/ChatView.tsx
+msgid "Moved to the Trash"
+msgstr "ゴミ箱に移動しました"
 
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Moving from Gmail, Google Workspace, Yandex, iCloud, Zoho, Yahoo, Fastmail, GMX or any IMAP server? Yuva copies the mailbox's history into an inbox, quietly and newest first, while your team keeps working. Then you forward the mailbox here and nothing is lost in between."
@@ -11917,8 +11989,23 @@ msgstr "応答時間、過去 24 時間"
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/broadcasts/ListsHome.tsx
+#: src/features/conversation/Trash.tsx
+#: src/features/inbox/ChatList.tsx
 msgid "Restore"
 msgstr "復元"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Restore from the Trash"
+msgstr "ゴミ箱から復元"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Restore the selected conversations, in the Trash"
+msgstr "ゴミ箱内の選択した会話を復元"
+
+#: src/features/conversation/ChatView.tsx
+msgid "Restored from the Trash"
+msgstr "ゴミ箱から復元しました"
 
 #: src/features/status/ResponseChart.tsx
 msgid "Results"
@@ -14761,6 +14848,10 @@ msgstr "テストは途中の手順で停止しました。"
 msgid "The timeout must be 1 to 30 seconds."
 msgstr "タイムアウトは 1 秒から 30 秒にしてください。"
 
+#: src/features/inbox/ChatList.tsx
+msgid "The Trash is empty."
+msgstr "ゴミ箱は空です。"
+
 #: src/features/migrations/DoneStep.tsx
 msgid "The uploaded file is deleted when the migration ends. Yuva keeps only what it imported."
 msgstr "アップロードしたファイルは、移行の終了時に削除されます。Yuva が保持するのはインポートしたデータのみです。"
@@ -14869,6 +14960,10 @@ msgstr "これらのルールは購読フォームに適用されます。リス
 #: src/features/broadcasts/AddSubscriberDialog.tsx
 msgid "They already agreed"
 msgstr "すでに同意済み"
+
+#: src/features/inbox/ChatList.tsx
+msgid "They disappear for your team and for the customers. You can restore them from the Trash for 30 days, then they are deleted for good with their messages and files."
+msgstr "チームと顧客から見えなくなります。30 日間はゴミ箱から復元でき、その後はメッセージとファイルごと完全に削除されます。"
 
 #: src/features/broadcasts/AddSubscriberDialog.tsx
 msgid "They get a mail with a link and are subscribed only after they click it."
@@ -14982,6 +15077,10 @@ msgstr "この会話"
 #: src/components/common/text.ts
 msgid "This conversation is already a discussion."
 msgstr "この会話はすでにディスカッションです。"
+
+#: src/features/conversation/Trash.tsx
+msgid "This conversation is in the Trash and read-only."
+msgstr "この会話はゴミ箱にあり、読み取り専用です。"
 
 #: src/features/conversation/ChatView.tsx
 msgid "This conversation is not available"
@@ -15383,6 +15482,7 @@ msgstr "{person} の {inbox} へのアクセスを取り消しました"
 msgid "tr, en-GB"
 msgstr "tr, en-GB"
 
+#: src/features/inbox/ChatList.tsx
 #: src/features/migrations/parts.tsx
 msgid "Trash"
 msgstr "ゴミ箱"
