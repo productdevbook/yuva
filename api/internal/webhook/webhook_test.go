@@ -74,13 +74,13 @@ func TestCheckURL(t *testing.T) {
 func TestNeverAllowed(t *testing.T) {
 	for _, ip := range []string{
 		"169.254.169.254", "169.254.0.1", "169.254.255.255", "::ffff:169.254.169.254", "fe80::1", "fe80::1%eth0",
-		"febf::1", "fd00:ec2::254",
+		"febf::1", "fd00:ec2::254", "168.63.129.16", "::ffff:168.63.129.16", "100.100.100.200",
 	} {
 		if !NeverAllowed(netip.MustParseAddr(ip)) {
 			t.Errorf("%s is allowed", ip)
 		}
 	}
-	for _, ip := range []string{"127.0.0.1", "10.0.0.1", "192.168.1.1", "::1", "fd12::1", "fec0::1", "169.253.255.255", "169.255.0.1", "1.1.1.1"} {
+	for _, ip := range []string{"127.0.0.1", "10.0.0.1", "192.168.1.1", "::1", "fd12::1", "fec0::1", "169.253.255.255", "169.255.0.1", "1.1.1.1", "168.63.129.17", "100.100.100.201"} {
 		if NeverAllowed(netip.MustParseAddr(ip)) {
 			t.Errorf("%s is never allowed", ip)
 		}

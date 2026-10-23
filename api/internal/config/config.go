@@ -382,7 +382,7 @@ func Load(version string) (Config, error) {
 	if c.IngressAcceptV1, err = boolEnv("YUVA_INGRESS_ACCEPT_V1", false); err != nil {
 		return c, err
 	}
-	if c.IngressAcceptV2, err = boolEnv("YUVA_INGRESS_ACCEPT_V2", true); err != nil {
+	if c.IngressAcceptV2, err = boolEnv("YUVA_INGRESS_ACCEPT_V2", false); err != nil {
 		return c, err
 	}
 	if c.IngressMaxConcurrent, err = strconv.Atoi(env("YUVA_INGRESS_MAX_CONCURRENT", "8")); err != nil || c.IngressMaxConcurrent < 1 {

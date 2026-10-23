@@ -244,6 +244,7 @@ const styledMailHTML = `<html><head><style>body { color: red } @import url(https
 	`<p style="color: expression(alert(1)); margin: 0 0 12px 0">Track it below.</p>` +
 	`<a href="javascript:alert(1)" style="color: #0066cc; text-decoration: underline">Track</a>` +
 	`<div onclick="steal()" style="width: 100px; behavior: url(x.htc)">Box</div>` +
+	`<ul style="list-style: URL(https://tracker.example.com/li.png) inside"><li style="list-style: Image-Set(&quot;https://tracker.example.com/s.png&quot; 1x)">Item</li></ul>` +
 	`<img src="cid:logo@client.example.net" alt="logo">` +
 	`<script>alert(1)</script><form action="https://evil.example.com"><input name="pw"></form>` +
 	`<iframe src="https://evil.example.com"></iframe>` +
@@ -289,9 +290,9 @@ func TestOriginalHTMLKeepsAllowedStyles(t *testing.T) {
 	}
 	for _, refused := range []string{
 		"<style", "@import", "evil.example.com", "url(", "expression", "position", "behavior",
-		"javascript:", "onclick", "<script", "alert", "<form", "<input", "<iframe", "<link",
+		"javascript:", "onclick", "<script", "alert", "<form", "<input", "<iframe", "<link", "tracker.example.com",
 	} {
-		if strings.Contains(orig, refused) {
+		if strings.Contains(strings.ToLower(orig), refused) {
 			t.Errorf("original_html keeps %s: %q", refused, orig)
 		}
 	}

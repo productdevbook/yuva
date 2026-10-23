@@ -154,7 +154,7 @@ SELECT count(*) FROM message_emails e
 JOIN conversations c ON c.workspace_id = e.workspace_id AND c.id = e.conversation_id
 JOIN messages m ON m.workspace_id = e.workspace_id AND m.id = e.message_id
 WHERE e.workspace_id = @workspace_id AND coalesce(m.author_contact_id, c.contact_id) = @contact_id::uuid
-  AND e.direction = 'in' AND e.created_at > @since;
+  AND e.direction = 'in' AND (e.dmarc = 'pass') = @authenticated::bool AND e.created_at > @since;
 
 -- Mail from an address the server sends from is dropped, whichever workspace it belongs to.
 -- name: IsEmailChannelSender :one

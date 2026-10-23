@@ -65,6 +65,8 @@ var neverAllowedPrefixes = []netip.Prefix{
 	netip.MustParsePrefix("169.254.0.0/16"),
 	netip.MustParsePrefix("fe80::/10"),
 	netip.MustParsePrefix("fd00:ec2::254/128"),
+	netip.MustParsePrefix("168.63.129.16/32"),
+	netip.MustParsePrefix("100.100.100.200/32"),
 }
 
 // NeverAllowed reports whether ip is link-local or a cloud metadata address, which webhooks may

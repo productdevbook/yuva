@@ -665,7 +665,7 @@ func (s *Server) originalHTML(ctx context.Context, me store.MessageEmail) *strin
 		return nil
 	}
 	m, err := email.Parse(raw)
-	if err != nil || strings.TrimSpace(m.HTML) == "" {
+	if err != nil || strings.TrimSpace(m.HTML) == "" || len(m.HTML) > maxFullHTMLBytes {
 		return nil
 	}
 	clean := strings.TrimSpace(s.original.Sanitize(m.HTML))

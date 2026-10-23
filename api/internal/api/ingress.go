@@ -287,12 +287,12 @@ type mailContent struct {
 func (s *Server) mailContent(m *email.Message) mailContent {
 	visible, textQuoted := reply.Strip(m.Text)
 	out := mailContent{visible: truncateRunes(visible, maxMessageBodyRunes), quoted: textQuoted}
-	if m.HTML != "" {
+	if m.HTML != "" && len(m.HTML) <= maxFullHTMLBytes {
 		stripped, removed := email.StripHTMLQuotes(m.HTML)
 		out.quoted = out.quoted || removed
 		out.html = s.sanitizeHTML(stripped, maxMessageHTMLBytes)
+		out.fullHTML = s.sanitizeHTML(m.HTML, maxFullHTMLBytes)
 	}
-	out.fullHTML = s.sanitizeHTML(m.HTML, maxFullHTMLBytes)
 	out.subject = truncateRunes(strings.Join(strings.Fields(m.Subject), " "), 500)
 	out.headers, _ = json.Marshal(m.Headers)
 	if len(m.InReplyTo) > 0 {
@@ -327,6 +327,11 @@ func (s *Server) IngestEmail(ctx context.Context, envelopeTo, envelopeFrom strin
 	ch, recipient, forwarded, err := s.findEmailChannel(ctx, envelopeTo)
 	if err != nil {
 		return IngestResult{}, err
+	}
+	if from, authResults := email.HeaderSender(raw); from != "" {
+		if err := s.checkKnownSenderCap(ctx, ch.WorkspaceID, from, email.TrustedDMARC(authResults, s.ingress.AuthservID) == email.DMARCPass); err != nil {
+			return IngestResult{}, err
+		}
 	}
 	m, err := email.Parse(raw)
 	if err != nil {
@@ -450,7 +455,7 @@ func (s *Server) ingestToChannel(ctx context.Context, ch store.FindEmailChannelB
 		if err != nil {
 			return err
 		}
-		if err := s.checkSenderCap(ctx, q, ws, contact.ID, now); err != nil {
+		if err := s.checkSenderCap(ctx, q, ws, contact.ID, dmarc == email.DMARCPass, now); err != nil {
 			return err
 		}
 		var convAddress *string
@@ -813,12 +818,27 @@ func (s *Server) forwardThread(ctx context.Context, q *store.Queries, events *ev
 	return true, emitParticipants(ctx, q, events, c)
 }
 
-func (s *Server) checkSenderCap(ctx context.Context, q *store.Queries, ws, contactID uuid.UUID, now time.Time) error {
+// checkKnownSenderCap refuses mail from an existing contact over the hourly cap before the message
+// is parsed; checkSenderCap in the transaction stays the check that counts.
+func (s *Server) checkKnownSenderCap(ctx context.Context, ws uuid.UUID, addr string, authenticated bool) error {
+	id, err := s.st.GetContactIDByEmail(ctx, store.GetContactIDByEmailParams{WorkspaceID: ws, Email: addr})
+	if store.IsNotFound(err) {
+		return nil
+	}
+	if err != nil {
+		return err
+	}
+	return s.checkSenderCap(ctx, s.st.Queries, ws, id, authenticated, s.now())
+}
+
+// checkSenderCap counts mail that passed DMARC and other mail separately, so forged mail in a
+// customer's name cannot use up the cap of the customer's own mail.
+func (s *Server) checkSenderCap(ctx context.Context, q *store.Queries, ws, contactID uuid.UUID, authenticated bool, now time.Time) error {
 	limit := s.ingress.SenderHourlyCap
 	if limit <= 0 {
 		limit = defaultSenderHourlyCap
 	}
-	n, err := q.CountRecentInboundEmails(ctx, store.CountRecentInboundEmailsParams{WorkspaceID: ws, ContactID: contactID, Since: now.Add(-time.Hour)})
+	n, err := q.CountRecentInboundEmails(ctx, store.CountRecentInboundEmailsParams{WorkspaceID: ws, ContactID: contactID, Authenticated: authenticated, Since: now.Add(-time.Hour)})
 	if err != nil {
 		return err
 	}

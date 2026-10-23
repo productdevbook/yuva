@@ -124,17 +124,23 @@ SELECT count(*) FROM message_emails e
 JOIN conversations c ON c.workspace_id = e.workspace_id AND c.id = e.conversation_id
 JOIN messages m ON m.workspace_id = e.workspace_id AND m.id = e.message_id
 WHERE e.workspace_id = $1 AND coalesce(m.author_contact_id, c.contact_id) = $2::uuid
-  AND e.direction = 'in' AND e.created_at > $3
+  AND e.direction = 'in' AND (e.dmarc = 'pass') = $3::bool AND e.created_at > $4
 `
 
 type CountRecentInboundEmailsParams struct {
-	WorkspaceID uuid.UUID
-	ContactID   uuid.UUID
-	Since       time.Time
+	WorkspaceID   uuid.UUID
+	ContactID     uuid.UUID
+	Authenticated bool
+	Since         time.Time
 }
 
 func (q *Queries) CountRecentInboundEmails(ctx context.Context, arg CountRecentInboundEmailsParams) (int64, error) {
-	row := q.db.QueryRow(ctx, countRecentInboundEmails, arg.WorkspaceID, arg.ContactID, arg.Since)
+	row := q.db.QueryRow(ctx, countRecentInboundEmails,
+		arg.WorkspaceID,
+		arg.ContactID,
+		arg.Authenticated,
+		arg.Since,
+	)
 	var count int64
 	err := row.Scan(&count)
 	return count, err

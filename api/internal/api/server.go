@@ -353,6 +353,7 @@ var originalStyles = []string{
 var refusedStyleValues = []string{"url(", "image(", "image-set(", "cross-fade(", "element(", "src(", "expression", "@import", "javascript:", "\\"}
 
 func safeStyleValue(v string) bool {
+	v = strings.ToLower(v)
 	for _, r := range refusedStyleValues {
 		if strings.Contains(v, r) {
 			return false

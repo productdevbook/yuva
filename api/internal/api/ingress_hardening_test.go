@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -412,5 +413,60 @@ func TestAnonymousContactCap(t *testing.T) {
 	h.clock.Advance(time.Hour + time.Second)
 	if r := start(c, ""); r.status != http.StatusCreated {
 		t.Fatalf("after an hour: %d %s", r.status, r.raw)
+	}
+}
+
+func TestSenderCapCountsForgedMailApart(t *testing.T) {
+	t.Parallel()
+	h := newHarnessWith(t, func(d *api.Deps) { d.Ingress.SenderHourlyCap = 2 })
+	et := newEmailTeam(t, h, false)
+	sender := unique("customer") + "@example.net"
+	send := func(authResults string) ingressResult {
+		return h.ingest(et.address, buildMail(mailOpts{
+			from: sender, to: et.address, subject: "Order", messageID: newMessageID(), body: "x",
+			headers: map[string]string{"Authentication-Results": authResults},
+		}), nil)
+	}
+	forged := testAuthservID + "; dmarc=none header.from=example.net"
+	for i := range 2 {
+		if r := send(forged); r.status != http.StatusAccepted {
+			t.Fatalf("forged mail %d: %d %v", i+1, r.status, r.body)
+		}
+	}
+	if r := send(forged); r.status != http.StatusTooManyRequests {
+		t.Fatalf("forged mail over the cap: %d %v", r.status, r.body)
+	}
+	for i := range 2 {
+		if r := send(dmarcPass("example.net")); r.status != http.StatusAccepted || r.str("status") != "stored" {
+			t.Fatalf("authenticated mail %d after a forged flood: %d %v", i+1, r.status, r.body)
+		}
+	}
+	if r := send(dmarcPass("example.net")); r.status != http.StatusTooManyRequests || r.str("code") != "rate_limited" {
+		t.Fatalf("authenticated mail over its own cap: %d %v", r.status, r.body)
+	}
+}
+
+func TestLargeHTMLMailIsCheap(t *testing.T) {
+	t.Parallel()
+	h := newHarness(t)
+	et := newEmailTeam(t, h, false)
+	var b strings.Builder
+	fmt.Fprintf(&b, "From: %s\r\nTo: %s\r\nSubject: Big\r\nMessage-ID: <%s>\r\nMIME-Version: 1.0\r\nContent-Type: text/html; charset=utf-8\r\n\r\n<p>Hello there</p>\r\n",
+		unique("big")+"@example.net", et.address, newMessageID())
+	for b.Len() < 20<<20 {
+		b.WriteString("<a><p>x</p></a><b><p>y</p></b>\r\n")
+	}
+	start := time.Now()
+	r := h.ingest(et.address, []byte(b.String()), nil)
+	took := time.Since(start)
+	if r.status != http.StatusAccepted || r.str("status") != "stored" {
+		t.Fatalf("ingest: %d %v", r.status, r.body)
+	}
+	if took > 5*time.Second {
+		t.Fatalf("a 20 MB HTML mail took %v", took)
+	}
+	m := lastOf(messages(et.owner, r.str("conversation_id")), "message")
+	if m["html"] != nil || !strings.HasPrefix(m["body"].(string), "Hello there") {
+		t.Fatalf("stored html %v, body %.40q", m["html"] != nil, m["body"])
 	}
 }

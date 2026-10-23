@@ -68,3 +68,24 @@ func TestTrustedDMARCOnFoldedReceiverHeaders(t *testing.T) {
 		})
 	}
 }
+
+func TestHeaderSenderMatchesParse(t *testing.T) {
+	raw := []byte("Authentication-Results: mx.cloudflare.net;\r\n\tdkim=pass header.d=example.net;\r\n\tdmarc=pass header.from=example.net\r\n" +
+		"Authentication-Results: mx.example.org; dmarc=fail\r\n" +
+		"From: =?UTF-8?Q?Ay=C5=9Fe?= <Ayse@Example.NET>\r\nTo: b@example.com\r\nSubject: x\r\n" +
+		"Content-Type: text/html\r\n\r\n<p>Hi</p>\r\n")
+	from, ar := email.HeaderSender(raw)
+	m, err := email.Parse(raw)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if from != m.From.Email || len(ar) != 2 || email.TrustedDMARC(ar, "mx.cloudflare.net") != email.TrustedDMARC(m.AllAuthResults, "mx.cloudflare.net") {
+		t.Fatalf("header %q %q, parse %q %q", from, ar, m.From.Email, m.AllAuthResults)
+	}
+	if email.TrustedDMARC(ar, "mx.cloudflare.net") != email.DMARCPass || m.Text != "Hi" {
+		t.Fatalf("dmarc %q text %q", email.TrustedDMARC(ar, "mx.cloudflare.net"), m.Text)
+	}
+	if from, ar := email.HeaderSender([]byte("not a message")); from != "" || ar != nil {
+		t.Fatalf("garbage: %q %q", from, ar)
+	}
+}

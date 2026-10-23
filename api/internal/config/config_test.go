@@ -102,3 +102,21 @@ func TestStatusCanaryURLs(t *testing.T) {
 		}
 	}
 }
+
+func TestIngressAcceptsOnlySignedHeadersByDefault(t *testing.T) {
+	t.Setenv("YUVA_PUBLIC_URL", "http://localhost:8809")
+	t.Setenv("YUVA_MASTER_KEY", devSecrets["YUVA_MASTER_KEY"])
+	for _, tc := range []struct {
+		env  string
+		want bool
+	}{{"", false}, {"true", true}, {"false", false}} {
+		t.Setenv("YUVA_INGRESS_ACCEPT_V2", tc.env)
+		c, err := Load("test")
+		if err != nil {
+			t.Fatal(err)
+		}
+		if c.IngressAcceptV1 || c.IngressAcceptV2 != tc.want {
+			t.Errorf("YUVA_INGRESS_ACCEPT_V2=%q: v1 %v v2 %v", tc.env, c.IngressAcceptV1, c.IngressAcceptV2)
+		}
+	}
+}

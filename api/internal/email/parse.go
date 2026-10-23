@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/inbucket/html2text"
 	"github.com/jhillyerd/enmime/v2"
 )
 
@@ -59,7 +60,11 @@ var keptHeaders = []string{
 	"X-Auto-Response-Suppress", "List-Id", "X-Mailer", "User-Agent",
 }
 
-var parser = enmime.NewParser(enmime.MaxMIMEParts(1000), enmime.SkipMalformedParts(true))
+var parser = enmime.NewParser(enmime.MaxMIMEParts(1000), enmime.SkipMalformedParts(true), enmime.DisableTextConversion(true))
+
+// maxTextFromHTMLBytes bounds the HTML turned into text for a message without a text part:
+// converting costs about a quarter of a second per megabyte.
+const maxTextFromHTMLBytes = 1 << 20
 
 func Parse(raw []byte) (*Message, error) {
 	env, err := parser.ReadEnvelope(bytes.NewReader(raw))
@@ -74,6 +79,13 @@ func Parse(raw []byte) (*Message, error) {
 		Text:       env.Text,
 		HTML:       env.HTML,
 		Headers:    map[string]string{},
+	}
+	if m.Text == "" && m.HTML != "" {
+		h := m.HTML
+		if len(h) > maxTextFromHTMLBytes {
+			h = h[:maxTextFromHTMLBytes]
+		}
+		m.Text, _ = html2text.FromString(h)
 	}
 	if from, err := env.AddressList("From"); err == nil && len(from) > 0 {
 		m.From = Address{Name: strings.TrimSpace(from[0].Name), Email: strings.ToLower(strings.TrimSpace(from[0].Address))}
@@ -147,6 +159,22 @@ func attachments(env *enmime.Envelope) []Attachment {
 		add(p, p.ContentID != "")
 	}
 	return out
+}
+
+// HeaderSender reads only the header of raw: the From address and the Authentication-Results
+// values in order, so that limits apply before the body is parsed.
+func HeaderSender(raw []byte) (from string, authResults []string) {
+	msg, err := mail.ReadMessage(bytes.NewReader(raw))
+	if err != nil {
+		return "", nil
+	}
+	if list, err := msg.Header.AddressList("From"); err == nil && len(list) > 0 {
+		from = strings.ToLower(strings.TrimSpace(list[0].Address))
+	}
+	for _, v := range msg.Header["Authentication-Results"] {
+		authResults = append(authResults, strings.TrimSpace(v))
+	}
+	return from, authResults
 }
 
 // TrustedDMARC is the DMARC verdict of the topmost Authentication-Results only when its authserv-id
