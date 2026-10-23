@@ -454,7 +454,11 @@ func (s *Server) clientInbox(ctx context.Context, q *store.Queries, in store.Inb
 	if in.Mode == string(oas.Async) {
 		out.ExpectedReplyMinutes = in.ExpectedReplyMinutes
 	}
-	var err error
+	limits, err := s.channelLimits(ctx, q, in.WorkspaceID, &chat.ChannelID)
+	if err != nil {
+		return out, err
+	}
+	out.Attachments = clientAttachmentLimits(limits)
 	if out.Presence, err = s.presence(ctx, q, in); err != nil {
 		return out, err
 	}

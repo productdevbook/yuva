@@ -940,7 +940,7 @@ func (s *Server) importDeskMessage(ctx context.Context, m store.Migration, team 
 		}
 		rawKey, rawSize, stored = &key, new(int64(len(msg.Raw))), append(stored, key)
 	}
-	files, _, err := s.keepAttachments(ctx, ws, atts, func(i int) uuid.UUID { return migrate.NameID(msgID, "attachment:"+strconv.Itoa(i)) })
+	files, _, err := s.keepAttachments(ctx, ws, atts, s.serverLimits(), func(i int) uuid.UUID { return migrate.NameID(msgID, "attachment:"+strconv.Itoa(i)) })
 	for _, f := range files {
 		stored = append(stored, f.key)
 	}

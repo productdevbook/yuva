@@ -218,14 +218,14 @@ type storedFile struct {
 	inline      bool
 }
 
-func (s *Server) inboundAttachments(ctx context.Context, workspaceID uuid.UUID, atts []email.Attachment) ([]storedFile, error) {
-	out, _, err := s.keepAttachments(ctx, workspaceID, atts, func(int) uuid.UUID { return newID() })
+func (s *Server) inboundAttachments(ctx context.Context, workspaceID uuid.UUID, atts []email.Attachment, limits attachLimits) ([]storedFile, error) {
+	out, _, err := s.keepAttachments(ctx, workspaceID, atts, limits, func(int) uuid.UUID { return newID() })
 	return out, err
 }
 
 // keepAttachments stores the attachments the server keeps, at most 50, under the ids idFor
 // gives by position, and reports how many it left out by size or type.
-func (s *Server) keepAttachments(ctx context.Context, workspaceID uuid.UUID, atts []email.Attachment, idFor func(int) uuid.UUID) ([]storedFile, int, error) {
+func (s *Server) keepAttachments(ctx context.Context, workspaceID uuid.UUID, atts []email.Attachment, limits attachLimits, idFor func(int) uuid.UUID) ([]storedFile, int, error) {
 	var out []storedFile
 	skipped := 0
 	for i, a := range atts {
@@ -237,11 +237,11 @@ func (s *Server) keepAttachments(ctx context.Context, workspaceID uuid.UUID, att
 		if size == 0 {
 			continue
 		}
-		if size > s.attach.MaxBytes {
+		if size > limits.maxBytes {
 			skipped++
 			continue
 		}
-		ct, err := s.contentType(a.ContentType, bytes.NewReader(a.Data))
+		ct, err := contentType(a.ContentType, bytes.NewReader(a.Data), limits)
 		if err != nil {
 			var apiErr *apiError
 			if errors.As(err, &apiErr) {
@@ -418,7 +418,12 @@ func (s *Server) ingestToChannel(ctx context.Context, ch store.FindEmailChannelB
 		return IngestResult{}, err
 	}
 	stored := []string{rawKey}
-	files, err := s.inboundAttachments(ctx, ws, m.Attachments)
+	limits, err := s.channelLimits(ctx, s.st.Queries, ws, &ch.ChannelID)
+	if err != nil {
+		s.deleteObjects(ctx, stored)
+		return IngestResult{}, err
+	}
+	files, err := s.inboundAttachments(ctx, ws, m.Attachments, limits)
 	for _, f := range files {
 		stored = append(stored, f.key)
 	}

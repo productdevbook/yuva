@@ -9809,6 +9809,13 @@ type Channel struct {
 	// tied to origins; anonymous use is off unless allowed.
 	App *AppChannel `json:"app,omitempty"`
 
+	// Attachments The attachment limits of the channel. The server's `YUVA_ATTACHMENT_MAX_BYTES` and
+	// `YUVA_ATTACHMENT_TYPES` apply everywhere; a channel can only narrow them. The effective
+	// limits are what every upload on the channel (members' and contacts' messages, feedback
+	// screenshots, inbound e-mail) is held to: the smaller size and the types both lists allow,
+	// so a server limit lowered after the channel was set still wins.
+	Attachments ChannelAttachments `json:"attachments"`
+
 	// Chat Settings of a `chat` (web widget) channel.
 	Chat      *ChatChannel `json:"chat,omitempty"`
 	CreatedAt time.Time    `json:"created_at"`
@@ -9832,11 +9839,51 @@ type Channel struct {
 	UpdatedAt time.Time       `json:"updated_at"`
 }
 
+// ChannelAttachments The attachment limits of the channel. The server's `YUVA_ATTACHMENT_MAX_BYTES` and
+// `YUVA_ATTACHMENT_TYPES` apply everywhere; a channel can only narrow them. The effective
+// limits are what every upload on the channel (members' and contacts' messages, feedback
+// screenshots, inbound e-mail) is held to: the smaller size and the types both lists allow,
+// so a server limit lowered after the channel was set still wins.
+type ChannelAttachments struct {
+	// EffectiveMaxBytes The smaller of the server's and the channel's size limit.
+	EffectiveMaxBytes int64 `json:"effective_max_bytes"`
+
+	// EffectiveTypes The content types both the server and the channel allow (`image/*` style wildcards
+	// where both allow the whole family). Empty when the two lists share no type: every file
+	// is refused.
+	EffectiveTypes []string `json:"effective_types"`
+
+	// MaxBytes The channel's own size limit in bytes; absent when the channel follows the server.
+	MaxBytes *int64 `json:"max_bytes,omitempty"`
+
+	// Types The channel's own content types; absent when the channel follows the server.
+	Types *[]string `json:"types,omitempty"`
+}
+
+// ChannelAttachmentsInput Narrows the server's attachment limits for this channel. Only the fields sent change;
+// `null` makes the channel follow the server again. A value wider than the server's
+// (`max_bytes` above `YUVA_ATTACHMENT_MAX_BYTES`, a type or wildcard the server's
+// `YUVA_ATTACHMENT_TYPES` does not cover) is refused with `400 validation_failed` naming the
+// field.
+type ChannelAttachmentsInput struct {
+	MaxBytes nullable.Nullable[int64] `json:"max_bytes,omitempty"`
+
+	// Types Content types such as `application/pdf`, or `image/*` for a whole family; lowercase, no duplicates kept.
+	Types nullable.Nullable[[]string] `json:"types,omitempty"`
+}
+
 // ChannelCreate defines model for ChannelCreate.
 type ChannelCreate struct {
-	App   *AppChannelInput   `json:"app,omitempty"`
-	Chat  *ChatChannelInput  `json:"chat,omitempty"`
-	Email *EmailChannelInput `json:"email,omitempty"`
+	App *AppChannelInput `json:"app,omitempty"`
+
+	// Attachments Narrows the server's attachment limits for this channel. Only the fields sent change;
+	// `null` makes the channel follow the server again. A value wider than the server's
+	// (`max_bytes` above `YUVA_ATTACHMENT_MAX_BYTES`, a type or wildcard the server's
+	// `YUVA_ATTACHMENT_TYPES` does not cover) is refused with `400 validation_failed` naming the
+	// field.
+	Attachments *ChannelAttachmentsInput `json:"attachments,omitempty"`
+	Chat        *ChatChannelInput        `json:"chat,omitempty"`
+	Email       *EmailChannelInput       `json:"email,omitempty"`
 
 	// Kind `email`, `chat` (web widget), `app` (mobile SDKs) or `api` (server to server).
 	Kind ChannelKind `json:"kind"`
@@ -9859,10 +9906,17 @@ type ChannelSettings map[string]interface{}
 
 // ChannelUpdate defines model for ChannelUpdate.
 type ChannelUpdate struct {
-	App   *AppChannelInput   `json:"app,omitempty"`
-	Chat  *ChatChannelInput  `json:"chat,omitempty"`
-	Email *EmailChannelInput `json:"email,omitempty"`
-	Name  *string            `json:"name,omitempty"`
+	App *AppChannelInput `json:"app,omitempty"`
+
+	// Attachments Narrows the server's attachment limits for this channel. Only the fields sent change;
+	// `null` makes the channel follow the server again. A value wider than the server's
+	// (`max_bytes` above `YUVA_ATTACHMENT_MAX_BYTES`, a type or wildcard the server's
+	// `YUVA_ATTACHMENT_TYPES` does not cover) is refused with `400 validation_failed` naming the
+	// field.
+	Attachments *ChannelAttachmentsInput `json:"attachments,omitempty"`
+	Chat        *ChatChannelInput        `json:"chat,omitempty"`
+	Email       *EmailChannelInput       `json:"email,omitempty"`
+	Name        *string                  `json:"name,omitempty"`
 
 	// Settings Free-form settings, stored as given. The settings Yuva acts on are in `email` and `chat`.
 	Settings *ChannelSettings `json:"settings,omitempty"`
@@ -9938,6 +9992,16 @@ type ClientAttachment struct {
 	Id     uuid.UUID `json:"id"`
 	Inline bool      `json:"inline"`
 	Size   int64     `json:"size"`
+}
+
+// ClientAttachmentLimits The files this channel accepts, the server's limits narrowed by the channel's. Refuse a
+// file before uploading it when it is larger than `max_bytes` or its type matches no entry
+// of `types` (`image/*` matches every `image/` type); the server refuses it with 413
+// `attachment_too_large` or 415 `attachment_type_not_allowed` anyway. An empty `types`
+// accepts no file: hide the attach button.
+type ClientAttachmentLimits struct {
+	MaxBytes int64    `json:"max_bytes"`
+	Types    []string `json:"types"`
 }
 
 // ClientChangelog defines model for ClientChangelog.
@@ -10468,8 +10532,15 @@ type ClientHelpSearchResults struct {
 type ClientInbox struct {
 	// AskForRating The inbox asks contacts to rate closed conversations; offer it where `can_rate` is true
 	// on a conversation.
-	AskForRating bool          `json:"ask_for_rating"`
-	Branding     InboxBranding `json:"branding"`
+	AskForRating bool `json:"ask_for_rating"`
+
+	// Attachments The files this channel accepts, the server's limits narrowed by the channel's. Refuse a
+	// file before uploading it when it is larger than `max_bytes` or its type matches no entry
+	// of `types` (`image/*` matches every `image/` type); the server refuses it with 413
+	// `attachment_too_large` or 415 `attachment_type_not_allowed` anyway. An empty `types`
+	// accepts no file: hide the attach button.
+	Attachments ClientAttachmentLimits `json:"attachments"`
+	Branding    InboxBranding          `json:"branding"`
 
 	// BusinessHours When `enabled` is false the inbox counts as always open.
 	BusinessHours BusinessHours      `json:"business_hours"`

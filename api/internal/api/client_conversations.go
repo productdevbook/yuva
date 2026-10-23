@@ -395,8 +395,11 @@ func (s *Server) CreateClientConversation(ctx context.Context, req oas.CreateCli
 		}
 		rawPage, rawTitle, rawArticle = b.PageUrl, b.PageTitle, b.HelpArticleId
 	case req.MultipartBody != nil:
-		var err error
-		if in, err = s.readMultipart(req.MultipartBody, cp.workspaceID, clientConversationFields); err != nil {
+		limits, err := s.channelLimits(ctx, s.st.Queries, cp.workspaceID, &cp.channelID)
+		if err != nil {
+			return nil, err
+		}
+		if in, err = s.readMultipart(req.MultipartBody, cp.workspaceID, clientConversationFields, limits); err != nil {
 			return nil, err
 		}
 		if v, ok := in.extra["page_url"]; ok {
@@ -539,8 +542,11 @@ func (s *Server) CreateClientMessage(ctx context.Context, req oas.CreateClientMe
 			in.body = *b.Body
 		}
 	case req.MultipartBody != nil:
-		var err error
-		if in, err = s.readMultipart(req.MultipartBody, cp.workspaceID, clientMessageFields); err != nil {
+		limits, err := s.channelLimits(ctx, s.st.Queries, cp.workspaceID, &cp.channelID)
+		if err != nil {
+			return nil, err
+		}
+		if in, err = s.readMultipart(req.MultipartBody, cp.workspaceID, clientMessageFields, limits); err != nil {
 			return nil, err
 		}
 	default:

@@ -15,7 +15,7 @@ const maxChannelSettingsBytes = 64 << 10
 func (s *Server) channelBody(c store.Channel, e *store.EmailChannel, chat *store.ChatChannel, t *store.SesTenant) oas.Channel {
 	out := oas.Channel{
 		Id: c.ID, InboxId: c.InboxID, Kind: oas.ChannelKind(c.Kind), Name: c.Name,
-		CreatedAt: c.CreatedAt, UpdatedAt: c.UpdatedAt, Settings: oas.ChannelSettings{},
+		CreatedAt: c.CreatedAt, UpdatedAt: c.UpdatedAt, Settings: oas.ChannelSettings{}, Attachments: s.channelAttachmentsBody(c),
 	}
 	_ = json.Unmarshal(c.Settings, &out.Settings)
 	if e != nil {
@@ -130,6 +130,10 @@ func (s *Server) CreateChannel(ctx context.Context, req oas.CreateChannelRequest
 	if err != nil {
 		return nil, err
 	}
+	maxBytes, types, err := s.channelAttachmentsInput(req.Body.Attachments, nil, nil)
+	if err != nil {
+		return nil, err
+	}
 	isEmail := req.Body.Kind == oas.ChannelKindEmail
 	if isEmail && req.Body.Email == nil {
 		return nil, errEmailRequired
@@ -176,7 +180,7 @@ func (s *Server) CreateChannel(ctx context.Context, req oas.CreateChannelRequest
 	err = s.inTx(ctx, p.workspaceID, func(q *store.Queries, events *eventBatch) error {
 		c, err := q.CreateChannel(ctx, store.CreateChannelParams{
 			ID: id, WorkspaceID: p.workspaceID, InboxID: req.InboxId, Kind: string(req.Body.Kind),
-			Name: name, Settings: settings, Now: s.now(),
+			Name: name, Settings: settings, AttachmentMaxBytes: maxBytes, AttachmentTypes: types, Now: s.now(),
 		})
 		if store.IsForeignKeyViolation(err) {
 			return errInboxGone
@@ -282,6 +286,10 @@ func (s *Server) UpdateChannel(ctx context.Context, req oas.UpdateChannelRequest
 			return nil, err
 		}
 	}
+	maxBytes, types, err := s.channelAttachmentsInput(req.Body.Attachments, cur.AttachmentMaxBytes, cur.AttachmentTypes)
+	if err != nil {
+		return nil, err
+	}
 	if req.Body.Email != nil && cur.Kind != string(oas.ChannelKindEmail) {
 		return nil, errEmailNotAllowed
 	}
@@ -293,7 +301,9 @@ func (s *Server) UpdateChannel(ctx context.Context, req oas.UpdateChannelRequest
 	}
 	var out oas.Channel
 	err = s.inTx(ctx, p.workspaceID, func(q *store.Queries, events *eventBatch) error {
-		c, err := q.UpdateChannel(ctx, store.UpdateChannelParams{WorkspaceID: p.workspaceID, ID: cur.ID, Name: name, Settings: settings, Now: s.now()})
+		c, err := q.UpdateChannel(ctx, store.UpdateChannelParams{
+			WorkspaceID: p.workspaceID, ID: cur.ID, Name: name, Settings: settings, AttachmentMaxBytes: maxBytes, AttachmentTypes: types, Now: s.now(),
+		})
 		if store.IsNotFound(err) {
 			return errChannelGone
 		}

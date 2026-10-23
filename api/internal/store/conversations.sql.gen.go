@@ -375,7 +375,7 @@ func (q *Queries) GetFirstPublicMessage(ctx context.Context, arg GetFirstPublicM
 }
 
 const inboxAPIChannel = `-- name: InboxAPIChannel :one
-SELECT id, workspace_id, inbox_id, kind, name, settings, created_at, updated_at FROM channels WHERE workspace_id = $1 AND inbox_id = $2 AND kind = 'api' ORDER BY created_at, id LIMIT 1
+SELECT id, workspace_id, inbox_id, kind, name, settings, created_at, updated_at, attachment_max_bytes, attachment_types FROM channels WHERE workspace_id = $1 AND inbox_id = $2 AND kind = 'api' ORDER BY created_at, id LIMIT 1
 `
 
 type InboxAPIChannelParams struct {
@@ -395,12 +395,14 @@ func (q *Queries) InboxAPIChannel(ctx context.Context, arg InboxAPIChannelParams
 		&i.Settings,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.AttachmentMaxBytes,
+		&i.AttachmentTypes,
 	)
 	return i, err
 }
 
 const inboxChannelOfKind = `-- name: InboxChannelOfKind :one
-SELECT id, workspace_id, inbox_id, kind, name, settings, created_at, updated_at FROM channels WHERE workspace_id = $1 AND inbox_id = $2 AND kind = $3 ORDER BY created_at, id LIMIT 1
+SELECT id, workspace_id, inbox_id, kind, name, settings, created_at, updated_at, attachment_max_bytes, attachment_types FROM channels WHERE workspace_id = $1 AND inbox_id = $2 AND kind = $3 ORDER BY created_at, id LIMIT 1
 `
 
 type InboxChannelOfKindParams struct {
@@ -421,6 +423,8 @@ func (q *Queries) InboxChannelOfKind(ctx context.Context, arg InboxChannelOfKind
 		&i.Settings,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.AttachmentMaxBytes,
+		&i.AttachmentTypes,
 	)
 	return i, err
 }

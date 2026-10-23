@@ -3659,8 +3659,10 @@ paths:
         `POST /v1/messages/{id}/send`. A draft cannot be a note or an `in` message.
 
         Send `multipart/form-data` to attach files: the fields of `MessageCreate` as form fields
-        and up to 10 `files` parts. Each file must be within the server's size limit and have an
-        allowed content type. The type is checked against the content: a file whose content does
+        and up to 10 `files` parts. Each file must be within the conversation's channel's limits
+        (`attachments.effective_max_bytes` and `attachments.effective_types` on the channel, the
+        server's limits when the conversation has no channel): a larger file is refused with 413
+        `attachment_too_large`, another type with 415 `attachment_type_not_allowed`. The type is checked against the content: a file whose content does
         not match its declared type (a text file sent as `image/png`) is refused with 415
         `attachment_type_mismatch`; a file declared without a type or as
         `application/octet-stream` gets the type detected from its content.
@@ -14453,8 +14455,9 @@ paths:
       description: |
         Starts a conversation on the session's channel with its first message. Send
         `multipart/form-data` to attach files (`body`, `subject`, `client_id`, `page_url` and
-        `page_title` as form fields and up to 10 `files` parts), with the same size and type rules
-        as `/v1`. Rate limited per IP address and per channel.
+        `page_title` as form fields and up to 10 `files` parts). Each file must be within the
+        session channel's limits, `attachments` on `ClientInbox` (413 `attachment_too_large`, 415
+        `attachment_type_not_allowed`). Rate limited per IP address and per channel.
 
         `page_url` is the page the conversation starts on, kept without query and fragment only
         when the channel is a chat channel and the page's origin is one of its allowed origins;
@@ -14732,7 +14735,8 @@ paths:
         the app.
 
         Send `multipart/form-data` to attach screenshots (the other fields as form fields and up to
-        10 `files` parts), with the same size and type rules as messages. `client_id` makes the
+        10 `files` parts), within the session channel's limits (`attachments` on `ClientInbox`) like
+        messages. `client_id` makes the
         request idempotent: the same `client_id` again answers `201` with the first conversation.
         Rate limited per IP address and per channel.
 
@@ -18674,7 +18678,7 @@ components:
           description: When the probe arrived or failed.
     Channel:
       type: object
-      required: [id, inbox_id, kind, name, settings, created_at, updated_at]
+      required: [id, inbox_id, kind, name, settings, attachments, created_at, updated_at]
       properties:
         id:
           type: string
@@ -18688,6 +18692,8 @@ components:
           type: string
         settings:
           $ref: "#/components/schemas/ChannelSettings"
+        attachments:
+          $ref: "#/components/schemas/ChannelAttachments"
         email:
           $ref: "#/components/schemas/EmailChannel"
         chat:
@@ -18718,6 +18724,8 @@ components:
           maxLength: 200
         settings:
           $ref: "#/components/schemas/ChannelSettings"
+        attachments:
+          $ref: "#/components/schemas/ChannelAttachmentsInput"
         email:
           $ref: "#/components/schemas/EmailChannelInput"
         chat:
@@ -18734,12 +18742,67 @@ components:
           maxLength: 200
         settings:
           $ref: "#/components/schemas/ChannelSettings"
+        attachments:
+          $ref: "#/components/schemas/ChannelAttachmentsInput"
         email:
           $ref: "#/components/schemas/EmailChannelInput"
         chat:
           $ref: "#/components/schemas/ChatChannelInput"
         app:
           $ref: "#/components/schemas/AppChannelInput"
+    ChannelAttachments:
+      type: object
+      description: |
+        The attachment limits of the channel. The server's `YUVA_ATTACHMENT_MAX_BYTES` and
+        `YUVA_ATTACHMENT_TYPES` apply everywhere; a channel can only narrow them. The effective
+        limits are what every upload on the channel (members' and contacts' messages, feedback
+        screenshots, inbound e-mail) is held to: the smaller size and the types both lists allow,
+        so a server limit lowered after the channel was set still wins.
+      required: [effective_max_bytes, effective_types]
+      properties:
+        max_bytes:
+          type: integer
+          format: int64
+          description: The channel's own size limit in bytes; absent when the channel follows the server.
+        types:
+          type: array
+          description: The channel's own content types; absent when the channel follows the server.
+          items:
+            type: string
+        effective_max_bytes:
+          type: integer
+          format: int64
+          description: The smaller of the server's and the channel's size limit.
+        effective_types:
+          type: array
+          description: |
+            The content types both the server and the channel allow (`image/*` style wildcards
+            where both allow the whole family). Empty when the two lists share no type: every file
+            is refused.
+          items:
+            type: string
+    ChannelAttachmentsInput:
+      type: object
+      description: |
+        Narrows the server's attachment limits for this channel. Only the fields sent change;
+        `null` makes the channel follow the server again. A value wider than the server's
+        (`max_bytes` above `YUVA_ATTACHMENT_MAX_BYTES`, a type or wildcard the server's
+        `YUVA_ATTACHMENT_TYPES` does not cover) is refused with `400 validation_failed` naming the
+        field.
+      properties:
+        max_bytes:
+          type: [integer, "null"]
+          format: int64
+          minimum: 1
+        types:
+          type: [array, "null"]
+          description: Content types such as `application/pdf`, or `image/*` for a whole family; lowercase, no duplicates kept.
+          minItems: 1
+          maxItems: 100
+          items:
+            type: string
+            minLength: 3
+            maxLength: 255
     ChannelList:
       type: object
       required: [items]
@@ -26757,7 +26820,7 @@ components:
       description: |
         The inbox's public settings. `live` inboxes carry `presence`; `async` inboxes never do and
         show `expected_reply_minutes` instead.
-      required: [id, name, branding, default_locale, timezone, mode, business_hours, open_now, chat, feedback_categories, feedback_category_items, ask_for_rating]
+      required: [id, name, branding, default_locale, timezone, mode, business_hours, open_now, chat, feedback_categories, feedback_category_items, ask_for_rating, attachments]
       properties:
         id:
           type: string
@@ -26805,6 +26868,8 @@ components:
           description: |
             The inbox asks contacts to rate closed conversations; offer it where `can_rate` is true
             on a conversation.
+        attachments:
+          $ref: "#/components/schemas/ClientAttachmentLimits"
         status:
           $ref: "#/components/schemas/ClientInboxStatus"
           description: |
@@ -26828,6 +26893,23 @@ components:
             Absent unless the inbox has a published changelog with a published entry (and on a
             server with `YUVA_WHATS_NEW=off`); show the What's new tile only then. An
             `inbox.updated` frame brings every change.
+    ClientAttachmentLimits:
+      type: object
+      description: |
+        The files this channel accepts, the server's limits narrowed by the channel's. Refuse a
+        file before uploading it when it is larger than `max_bytes` or its type matches no entry
+        of `types` (`image/*` matches every `image/` type); the server refuses it with 413
+        `attachment_too_large` or 415 `attachment_type_not_allowed` anyway. An empty `types`
+        accepts no file: hide the attach button.
+      required: [max_bytes, types]
+      properties:
+        max_bytes:
+          type: integer
+          format: int64
+        types:
+          type: array
+          items:
+            type: string
     ClientContact:
       type: object
       required: [id, name, identified]

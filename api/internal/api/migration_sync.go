@@ -341,7 +341,7 @@ func (s *Server) syncOutgoing(ctx context.Context, m store.Migration, team migra
 		}
 		rawKey, rawSize, stored = &key, new(int64(len(raw))), append(stored, key)
 	}
-	files, _, err := s.keepAttachments(ctx, ws, parsed.Attachments, func(i int) uuid.UUID {
+	files, _, err := s.keepAttachments(ctx, ws, parsed.Attachments, s.serverLimits(), func(i int) uuid.UUID {
 		return migrate.NameID(msgID, "attachment:"+strconv.Itoa(i))
 	})
 	for _, f := range files {

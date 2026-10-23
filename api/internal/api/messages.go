@@ -153,12 +153,7 @@ func (s *Server) validateMessage(p principal, in *messageInput) error {
 }
 
 func (s *Server) typeAllowed(ct string) bool {
-	for _, t := range s.attach.Types {
-		if t == ct || (strings.HasSuffix(t, "/*") && strings.HasPrefix(ct, strings.TrimSuffix(t, "*"))) {
-			return true
-		}
-	}
-	return false
+	return s.serverLimits().allows(ct)
 }
 
 func cleanFilename(name string) string {
@@ -179,20 +174,20 @@ func cleanFilename(name string) string {
 	return name
 }
 
-func (s *Server) spool(workspaceID uuid.UUID, part *multipart.Part) (*upload, error) {
+func (s *Server) spool(workspaceID uuid.UUID, part *multipart.Part, limits attachLimits) (*upload, error) {
 	f, err := os.CreateTemp("", "yuva-upload-*")
 	if err != nil {
 		return nil, err
 	}
 	u := &upload{id: newID(), filename: cleanFilename(part.FileName()), file: f}
 	u.key = workspaceID.String() + "/attachments/" + u.id.String()
-	n, err := io.Copy(f, io.LimitReader(part, s.attach.MaxBytes+1))
-	if err == nil && n > s.attach.MaxBytes {
+	n, err := io.Copy(f, io.LimitReader(part, limits.maxBytes+1))
+	if err == nil && n > limits.maxBytes {
 		err = errAttachmentTooLarge
 	}
 	if err == nil {
 		u.size = n
-		u.contentType, err = s.contentType(part.Header.Get("Content-Type"), f)
+		u.contentType, err = contentType(part.Header.Get("Content-Type"), f, limits)
 	}
 	if err == nil {
 		_, err = f.Seek(0, io.SeekStart)
@@ -205,7 +200,7 @@ func (s *Server) spool(workspaceID uuid.UUID, part *multipart.Part) (*upload, er
 	return u, nil
 }
 
-func (s *Server) contentType(declared string, f io.ReaderAt) (string, error) {
+func contentType(declared string, f io.ReaderAt, limits attachLimits) (string, error) {
 	head := make([]byte, 512)
 	n, _ := f.ReadAt(head, 0)
 	sniffed := sniffType(head[:n])
@@ -215,18 +210,18 @@ func (s *Server) contentType(declared string, f io.ReaderAt) (string, error) {
 	case err != nil || ct == "" || ct == octetStream:
 		ct = sniffed
 	case !contentMatches(ct, sniffed):
-		if !s.typeAllowed(ct) {
+		if !limits.allows(ct) {
 			return "", errAttachmentType
 		}
 		return "", errAttachmentMismatch
 	}
-	if !s.typeAllowed(ct) {
+	if !limits.allows(ct) {
 		return "", errAttachmentType
 	}
 	return ct, nil
 }
 
-func (s *Server) readMultipart(r *multipart.Reader, workspaceID uuid.UUID, fields []string) (*messageInput, error) {
+func (s *Server) readMultipart(r *multipart.Reader, workspaceID uuid.UUID, fields []string, limits attachLimits) (*messageInput, error) {
 	in := &messageInput{}
 	for {
 		part, err := r.NextPart()
@@ -242,7 +237,7 @@ func (s *Server) readMultipart(r *multipart.Reader, workspaceID uuid.UUID, field
 				in.close()
 				return nil, errTooManyAttachments
 			}
-			u, err := s.spool(workspaceID, part)
+			u, err := s.spool(workspaceID, part, limits)
 			if err != nil {
 				in.close()
 				return nil, uploadError(err)
@@ -467,7 +462,8 @@ func (s *Server) ListMessages(ctx context.Context, req oas.ListMessagesRequestOb
 
 func (s *Server) CreateMessage(ctx context.Context, req oas.CreateMessageRequestObject) (oas.CreateMessageResponseObject, error) {
 	p := principalFrom(ctx)
-	if _, err := visibleConversation(ctx, s.st.Queries, p, req.ConversationId, false); err != nil {
+	conv, err := visibleConversation(ctx, s.st.Queries, p, req.ConversationId, false)
+	if err != nil {
 		return nil, err
 	}
 	var in *messageInput
@@ -488,8 +484,11 @@ func (s *Server) CreateMessage(ctx context.Context, req oas.CreateMessageRequest
 			in.articles = *b.ArticleIds
 		}
 	case req.MultipartBody != nil:
-		var err error
-		if in, err = s.readMultipart(req.MultipartBody, p.workspaceID, memberFormFields); err != nil {
+		limits, err := s.channelLimits(ctx, s.st.Queries, p.workspaceID, conv.ChannelID)
+		if err != nil {
+			return nil, err
+		}
+		if in, err = s.readMultipart(req.MultipartBody, p.workspaceID, memberFormFields, limits); err != nil {
 			return nil, err
 		}
 	default:
@@ -515,7 +514,7 @@ func (s *Server) CreateMessage(ctx context.Context, req oas.CreateMessageRequest
 		inbox   uuid.UUID
 		created = true
 	)
-	err := s.inTx(ctx, p.workspaceID, func(q *store.Queries, events *eventBatch) error {
+	err = s.inTx(ctx, p.workspaceID, func(q *store.Queries, events *eventBatch) error {
 		c, err := visibleConversation(ctx, q, p, req.ConversationId, true)
 		if err != nil {
 			return err

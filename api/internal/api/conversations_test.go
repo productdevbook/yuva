@@ -44,6 +44,9 @@ func (c *client) upload(path string, fields map[string]string, files []file) res
 	if c.workspace != "" {
 		req.Header.Set("Yuva-Workspace", c.workspace)
 	}
+	if c.origin != "" {
+		req.Header.Set("Origin", c.origin)
+	}
 	res, err := c.http.Do(req)
 	if err != nil {
 		c.h.t.Fatal(err)

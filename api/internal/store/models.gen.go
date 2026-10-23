@@ -661,14 +661,16 @@ type ChangelogSlug struct {
 }
 
 type Channel struct {
-	ID          uuid.UUID
-	WorkspaceID uuid.UUID
-	InboxID     uuid.UUID
-	Kind        string
-	Name        string
-	Settings    []byte
-	CreatedAt   time.Time
-	UpdatedAt   time.Time
+	ID                 uuid.UUID
+	WorkspaceID        uuid.UUID
+	InboxID            uuid.UUID
+	Kind               string
+	Name               string
+	Settings           []byte
+	CreatedAt          time.Time
+	UpdatedAt          time.Time
+	AttachmentMaxBytes *int64
+	AttachmentTypes    []string
 }
 
 type ChatChannel struct {

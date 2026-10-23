@@ -13,19 +13,21 @@ import (
 )
 
 const createChannel = `-- name: CreateChannel :one
-INSERT INTO channels (id, workspace_id, inbox_id, kind, name, settings, created_at, updated_at)
-VALUES ($1, $2, $3, $4, $5, $6, $7, $7)
-RETURNING id, workspace_id, inbox_id, kind, name, settings, created_at, updated_at
+INSERT INTO channels (id, workspace_id, inbox_id, kind, name, settings, attachment_max_bytes, attachment_types, created_at, updated_at)
+VALUES ($1, $2, $3, $4, $5, $6, $7, $8::text[], $9, $9)
+RETURNING id, workspace_id, inbox_id, kind, name, settings, created_at, updated_at, attachment_max_bytes, attachment_types
 `
 
 type CreateChannelParams struct {
-	ID          uuid.UUID
-	WorkspaceID uuid.UUID
-	InboxID     uuid.UUID
-	Kind        string
-	Name        string
-	Settings    []byte
-	Now         time.Time
+	ID                 uuid.UUID
+	WorkspaceID        uuid.UUID
+	InboxID            uuid.UUID
+	Kind               string
+	Name               string
+	Settings           []byte
+	AttachmentMaxBytes *int64
+	AttachmentTypes    []string
+	Now                time.Time
 }
 
 func (q *Queries) CreateChannel(ctx context.Context, arg CreateChannelParams) (Channel, error) {
@@ -36,6 +38,8 @@ func (q *Queries) CreateChannel(ctx context.Context, arg CreateChannelParams) (C
 		arg.Kind,
 		arg.Name,
 		arg.Settings,
+		arg.AttachmentMaxBytes,
+		arg.AttachmentTypes,
 		arg.Now,
 	)
 	var i Channel
@@ -48,6 +52,8 @@ func (q *Queries) CreateChannel(ctx context.Context, arg CreateChannelParams) (C
 		&i.Settings,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.AttachmentMaxBytes,
+		&i.AttachmentTypes,
 	)
 	return i, err
 }
@@ -67,7 +73,7 @@ func (q *Queries) DeleteChannel(ctx context.Context, arg DeleteChannelParams) er
 }
 
 const getChannel = `-- name: GetChannel :one
-SELECT id, workspace_id, inbox_id, kind, name, settings, created_at, updated_at FROM channels WHERE workspace_id = $1 AND id = $2
+SELECT id, workspace_id, inbox_id, kind, name, settings, created_at, updated_at, attachment_max_bytes, attachment_types FROM channels WHERE workspace_id = $1 AND id = $2
 `
 
 type GetChannelParams struct {
@@ -87,12 +93,35 @@ func (q *Queries) GetChannel(ctx context.Context, arg GetChannelParams) (Channel
 		&i.Settings,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.AttachmentMaxBytes,
+		&i.AttachmentTypes,
 	)
 	return i, err
 }
 
+const getChannelAttachmentLimits = `-- name: GetChannelAttachmentLimits :one
+SELECT attachment_max_bytes, attachment_types FROM channels WHERE workspace_id = $1 AND id = $2
+`
+
+type GetChannelAttachmentLimitsParams struct {
+	WorkspaceID uuid.UUID
+	ID          uuid.UUID
+}
+
+type GetChannelAttachmentLimitsRow struct {
+	AttachmentMaxBytes *int64
+	AttachmentTypes    []string
+}
+
+func (q *Queries) GetChannelAttachmentLimits(ctx context.Context, arg GetChannelAttachmentLimitsParams) (GetChannelAttachmentLimitsRow, error) {
+	row := q.db.QueryRow(ctx, getChannelAttachmentLimits, arg.WorkspaceID, arg.ID)
+	var i GetChannelAttachmentLimitsRow
+	err := row.Scan(&i.AttachmentMaxBytes, &i.AttachmentTypes)
+	return i, err
+}
+
 const listChannels = `-- name: ListChannels :many
-SELECT id, workspace_id, inbox_id, kind, name, settings, created_at, updated_at FROM channels WHERE workspace_id = $1 AND inbox_id = $2 ORDER BY created_at, id
+SELECT id, workspace_id, inbox_id, kind, name, settings, created_at, updated_at, attachment_max_bytes, attachment_types FROM channels WHERE workspace_id = $1 AND inbox_id = $2 ORDER BY created_at, id
 `
 
 type ListChannelsParams struct {
@@ -118,6 +147,8 @@ func (q *Queries) ListChannels(ctx context.Context, arg ListChannelsParams) ([]C
 			&i.Settings,
 			&i.CreatedAt,
 			&i.UpdatedAt,
+			&i.AttachmentMaxBytes,
+			&i.AttachmentTypes,
 		); err != nil {
 			return nil, err
 		}
@@ -130,23 +161,28 @@ func (q *Queries) ListChannels(ctx context.Context, arg ListChannelsParams) ([]C
 }
 
 const updateChannel = `-- name: UpdateChannel :one
-UPDATE channels SET name = $1, settings = $2, updated_at = $3
-WHERE workspace_id = $4 AND id = $5
-RETURNING id, workspace_id, inbox_id, kind, name, settings, created_at, updated_at
+UPDATE channels SET name = $1, settings = $2, attachment_max_bytes = $3,
+    attachment_types = $4::text[], updated_at = $5
+WHERE workspace_id = $6 AND id = $7
+RETURNING id, workspace_id, inbox_id, kind, name, settings, created_at, updated_at, attachment_max_bytes, attachment_types
 `
 
 type UpdateChannelParams struct {
-	Name        string
-	Settings    []byte
-	Now         time.Time
-	WorkspaceID uuid.UUID
-	ID          uuid.UUID
+	Name               string
+	Settings           []byte
+	AttachmentMaxBytes *int64
+	AttachmentTypes    []string
+	Now                time.Time
+	WorkspaceID        uuid.UUID
+	ID                 uuid.UUID
 }
 
 func (q *Queries) UpdateChannel(ctx context.Context, arg UpdateChannelParams) (Channel, error) {
 	row := q.db.QueryRow(ctx, updateChannel,
 		arg.Name,
 		arg.Settings,
+		arg.AttachmentMaxBytes,
+		arg.AttachmentTypes,
 		arg.Now,
 		arg.WorkspaceID,
 		arg.ID,
@@ -161,6 +197,8 @@ func (q *Queries) UpdateChannel(ctx context.Context, arg UpdateChannelParams) (C
 		&i.Settings,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.AttachmentMaxBytes,
+		&i.AttachmentTypes,
 	)
 	return i, err
 }
