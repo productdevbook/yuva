@@ -69,13 +69,15 @@ func (s *Server) effectiveLimits(maxBytes *int64, types []string) attachLimits {
 	return l
 }
 
+// channelLimits answers the server's limits for a conversation without a channel, and accepts no
+// file when the channel is gone, since its narrower limits can no longer be read.
 func (s *Server) channelLimits(ctx context.Context, q *store.Queries, workspaceID uuid.UUID, channelID *uuid.UUID) (attachLimits, error) {
 	if channelID == nil {
 		return s.serverLimits(), nil
 	}
 	r, err := q.GetChannelAttachmentLimits(ctx, store.GetChannelAttachmentLimitsParams{WorkspaceID: workspaceID, ID: *channelID})
 	if store.IsNotFound(err) {
-		return s.serverLimits(), nil
+		return attachLimits{types: []string{}}, nil
 	}
 	if err != nil {
 		return attachLimits{}, err
@@ -104,48 +106,56 @@ func clientAttachmentLimits(l attachLimits) oas.ClientAttachmentLimits {
 	return oas.ClientAttachmentLimits{MaxBytes: l.maxBytes, Types: types}
 }
 
-// channelAttachmentsInput applies a create or update body to the channel's stored limits, refusing
-// anything wider than the server's.
-func (s *Server) channelAttachmentsInput(in *oas.ChannelAttachmentsInput, maxBytes *int64, types []string) (*int64, []string, error) {
+type channelAttachmentsChange struct {
+	setMaxBytes bool
+	maxBytes    *int64
+	setTypes    bool
+	types       []string
+}
+
+// channelAttachmentsInput reads a create or update body, refusing a size above the server's and a
+// type that allows nothing the server allows.
+func (s *Server) channelAttachmentsInput(in *oas.ChannelAttachmentsInput) (channelAttachmentsChange, error) {
+	var out channelAttachmentsChange
 	if in == nil {
-		return maxBytes, types, nil
+		return out, nil
 	}
 	if in.MaxBytes.IsSpecified() {
-		maxBytes = nil
+		out.setMaxBytes = true
 		if !in.MaxBytes.IsNull() {
 			v := in.MaxBytes.MustGet()
 			if v < 1 {
-				return nil, nil, errValidation("attachments.max_bytes must be at least 1")
+				return out, errValidation("attachments.max_bytes must be at least 1")
 			}
 			if v > s.attach.MaxBytes {
-				return nil, nil, errValidation(fmt.Sprintf("attachments.max_bytes must be at most %d, the server's limit", s.attach.MaxBytes))
+				return out, errValidation(fmt.Sprintf("attachments.max_bytes must be at most %d, the server's limit", s.attach.MaxBytes))
 			}
-			maxBytes = &v
+			out.maxBytes = &v
 		}
 	}
 	if in.Types.IsSpecified() {
-		types = nil
+		out.setTypes = true
 		if !in.Types.IsNull() {
 			list := in.Types.MustGet()
 			if len(list) == 0 || len(list) > maxChannelAttachmentTypes {
-				return nil, nil, errValidation("attachments.types must have 1 to 100 entries")
+				return out, errValidation("attachments.types must have 1 to 100 entries")
 			}
-			types = []string{}
+			out.types = []string{}
 			for _, raw := range list {
 				t := strings.ToLower(strings.TrimSpace(raw))
 				if !validTypePattern(t) {
-					return nil, nil, errValidation("attachments.types: " + raw + " is not a content type such as application/pdf or image/*")
+					return out, errValidation("attachments.types: " + raw + " is not a content type such as application/pdf or image/*")
 				}
-				if !typeIn(s.attach.Types, t) {
-					return nil, nil, errValidation("attachments.types: " + t + " is wider than the server allows")
+				if len(intersectTypes(s.attach.Types, []string{t})) == 0 {
+					return out, errValidation("attachments.types: " + t + " allows nothing the server allows")
 				}
-				if !slices.Contains(types, t) {
-					types = append(types, t)
+				if !slices.Contains(out.types, t) {
+					out.types = append(out.types, t)
 				}
 			}
 		}
 	}
-	return maxBytes, types, nil
+	return out, nil
 }
 
 func validTypePattern(t string) bool {

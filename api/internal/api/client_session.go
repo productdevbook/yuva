@@ -75,7 +75,7 @@ func (s *Server) CreateClientSession(ctx context.Context, req oas.CreateClientSe
 	chat := chatChannelOf(ch)
 	var out oas.ClientSession
 	for attempt := 0; ; attempt++ {
-		out, err = s.startContactSession(ctx, chat, inbox, claims, visitor)
+		out, err = s.startContactSession(ctx, chat, s.effectiveLimits(ch.AttachmentMaxBytes, ch.AttachmentTypes), inbox, claims, visitor)
 		if err == nil || attempt == 1 || !store.IsUniqueViolation(err) {
 			break
 		}
@@ -123,14 +123,14 @@ func (s *Server) GetClientChannel(ctx context.Context, req oas.GetClientChannelR
 	if err != nil {
 		return nil, err
 	}
-	out, err := s.clientInbox(ctx, s.st.Queries, inbox, chatChannelOf(ch))
+	out, err := s.clientInbox(ctx, s.st.Queries, inbox, chatChannelOf(ch), s.effectiveLimits(ch.AttachmentMaxBytes, ch.AttachmentTypes))
 	if err != nil {
 		return nil, err
 	}
 	return oas.GetClientChannel200JSONResponse(out), nil
 }
 
-func (s *Server) startContactSession(ctx context.Context, chat store.ChatChannel, inbox store.Inbox, claims *identityClaims, visitor string) (oas.ClientSession, error) {
+func (s *Server) startContactSession(ctx context.Context, chat store.ChatChannel, limits attachLimits, inbox store.Inbox, claims *identityClaims, visitor string) (oas.ClientSession, error) {
 	ws := chat.WorkspaceID
 	var out oas.ClientSession
 	err := s.inTx(ctx, ws, func(q *store.Queries, events *eventBatch) error {
@@ -168,7 +168,7 @@ func (s *Server) startContactSession(ctx context.Context, chat store.ChatChannel
 		if out.Contact, err = s.clientContactBody(ctx, q, contact, claims != nil); err != nil {
 			return err
 		}
-		out.Inbox, err = s.clientInbox(ctx, q, inbox, chat)
+		out.Inbox, err = s.clientInbox(ctx, q, inbox, chat, limits)
 		return err
 	})
 	return out, err
@@ -425,7 +425,7 @@ func (s *Server) clientContactBody(ctx context.Context, q *store.Queries, c cont
 	return out, err
 }
 
-func (s *Server) clientInbox(ctx context.Context, q *store.Queries, in store.Inbox, chat store.ChatChannel) (oas.ClientInbox, error) {
+func (s *Server) clientInbox(ctx context.Context, q *store.Queries, in store.Inbox, chat store.ChatChannel, limits attachLimits) (oas.ClientInbox, error) {
 	b := inboxBody(in)
 	out := oas.ClientInbox{
 		Id: in.ID, Name: in.Name, Branding: b.Branding, DefaultLocale: in.DefaultLocale, Timezone: in.Timezone,
@@ -454,11 +454,8 @@ func (s *Server) clientInbox(ctx context.Context, q *store.Queries, in store.Inb
 	if in.Mode == string(oas.Async) {
 		out.ExpectedReplyMinutes = in.ExpectedReplyMinutes
 	}
-	limits, err := s.channelLimits(ctx, q, in.WorkspaceID, &chat.ChannelID)
-	if err != nil {
-		return out, err
-	}
 	out.Attachments = clientAttachmentLimits(limits)
+	var err error
 	if out.Presence, err = s.presence(ctx, q, in); err != nil {
 		return out, err
 	}
@@ -489,7 +486,7 @@ func (s *Server) clientSessionInfo(ctx context.Context, cp contactPrincipal) (oa
 	if out.Contact, err = s.clientContactBody(ctx, s.st.Queries, c, cp.identified); err != nil {
 		return out, err
 	}
-	out.Inbox, err = s.clientInbox(ctx, s.st.Queries, in, cp.chat)
+	out.Inbox, err = s.clientInbox(ctx, s.st.Queries, in, cp.chat, cp.attach)
 	return out, err
 }
 

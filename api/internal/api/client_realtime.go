@@ -262,6 +262,7 @@ type clientFilter struct {
 	cp       contactPrincipal
 	inbox    store.Inbox
 	chat     store.ChatChannel
+	attach   attachLimits
 	settings []byte
 	contact  []byte
 	convs    map[uuid.UUID]string
@@ -275,7 +276,7 @@ func (f *clientFilter) load(ctx context.Context, resuming bool) error {
 	if err != nil {
 		return err
 	}
-	f.inbox, f.chat = in, f.cp.chat
+	f.inbox, f.chat, f.attach = in, f.cp.chat, f.cp.attach
 	if _, err := f.inboxFrames(ctx); err != nil {
 		return err
 	}
@@ -380,7 +381,7 @@ func (f *clientFilter) presenceFrames(ctx context.Context) ([]any, error) {
 // inboxFrames sends the inbox's public settings when they differ from what this connection last
 // saw; the first call only records them.
 func (f *clientFilter) inboxFrames(ctx context.Context) ([]any, error) {
-	in, err := f.s.clientInbox(ctx, f.s.st.Queries, f.inbox, f.chat)
+	in, err := f.s.clientInbox(ctx, f.s.st.Queries, f.inbox, f.chat, f.attach)
 	if err != nil {
 		return nil, err
 	}
@@ -423,7 +424,7 @@ func (f *clientFilter) contactFrames(ctx context.Context, e realtime.Event) ([]a
 // currentInboxFrame sends the inbox's settings and status as they are now, for a connection that
 // resumes: it cannot know which changes it missed while away, and replay carries none of them.
 func (f *clientFilter) currentInboxFrame(ctx context.Context) ([]any, error) {
-	in, err := f.s.clientInbox(ctx, f.s.st.Queries, f.inbox, f.chat)
+	in, err := f.s.clientInbox(ctx, f.s.st.Queries, f.inbox, f.chat, f.attach)
 	if err != nil {
 		return nil, err
 	}
@@ -595,7 +596,7 @@ func (f *clientFilter) transform(ctx context.Context, e realtime.Event) ([]any, 
 		if err != nil {
 			return nil, err
 		}
-		f.chat = sessionChat(ch)
+		f.chat, f.attach = sessionChat(ch), f.s.effectiveLimits(ch.AttachmentMaxBytes, ch.AttachmentTypes)
 		return f.inboxFrames(ctx)
 	case realtime.PresenceHint:
 		return f.presenceFrames(ctx)

@@ -9861,10 +9861,10 @@ type ChannelAttachments struct {
 }
 
 // ChannelAttachmentsInput Narrows the server's attachment limits for this channel. Only the fields sent change;
-// `null` makes the channel follow the server again. A value wider than the server's
-// (`max_bytes` above `YUVA_ATTACHMENT_MAX_BYTES`, a type or wildcard the server's
-// `YUVA_ATTACHMENT_TYPES` does not cover) is refused with `400 validation_failed` naming the
-// field.
+// `null` makes the channel follow the server again. `max_bytes` above
+// `YUVA_ATTACHMENT_MAX_BYTES`, or a type that allows nothing `YUVA_ATTACHMENT_TYPES` allows,
+// is refused with `400 validation_failed` naming the field. A wildcard is narrowed to what
+// the server allows: `image/*` under a server that lists `image/png` allows `image/png`.
 type ChannelAttachmentsInput struct {
 	MaxBytes nullable.Nullable[int64] `json:"max_bytes,omitempty"`
 
@@ -9877,10 +9877,10 @@ type ChannelCreate struct {
 	App *AppChannelInput `json:"app,omitempty"`
 
 	// Attachments Narrows the server's attachment limits for this channel. Only the fields sent change;
-	// `null` makes the channel follow the server again. A value wider than the server's
-	// (`max_bytes` above `YUVA_ATTACHMENT_MAX_BYTES`, a type or wildcard the server's
-	// `YUVA_ATTACHMENT_TYPES` does not cover) is refused with `400 validation_failed` naming the
-	// field.
+	// `null` makes the channel follow the server again. `max_bytes` above
+	// `YUVA_ATTACHMENT_MAX_BYTES`, or a type that allows nothing `YUVA_ATTACHMENT_TYPES` allows,
+	// is refused with `400 validation_failed` naming the field. A wildcard is narrowed to what
+	// the server allows: `image/*` under a server that lists `image/png` allows `image/png`.
 	Attachments *ChannelAttachmentsInput `json:"attachments,omitempty"`
 	Chat        *ChatChannelInput        `json:"chat,omitempty"`
 	Email       *EmailChannelInput       `json:"email,omitempty"`
@@ -9909,10 +9909,10 @@ type ChannelUpdate struct {
 	App *AppChannelInput `json:"app,omitempty"`
 
 	// Attachments Narrows the server's attachment limits for this channel. Only the fields sent change;
-	// `null` makes the channel follow the server again. A value wider than the server's
-	// (`max_bytes` above `YUVA_ATTACHMENT_MAX_BYTES`, a type or wildcard the server's
-	// `YUVA_ATTACHMENT_TYPES` does not cover) is refused with `400 validation_failed` naming the
-	// field.
+	// `null` makes the channel follow the server again. `max_bytes` above
+	// `YUVA_ATTACHMENT_MAX_BYTES`, or a type that allows nothing `YUVA_ATTACHMENT_TYPES` allows,
+	// is refused with `400 validation_failed` naming the field. A wildcard is narrowed to what
+	// the server allows: `image/*` under a server that lists `image/png` allows `image/png`.
 	Attachments *ChannelAttachmentsInput `json:"attachments,omitempty"`
 	Chat        *ChatChannelInput        `json:"chat,omitempty"`
 	Email       *EmailChannelInput       `json:"email,omitempty"`

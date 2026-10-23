@@ -36,6 +36,7 @@ type contactPrincipal struct {
 	expiresAt   time.Time
 	kind        string
 	chat        store.ChatChannel
+	attach      attachLimits
 }
 
 const (
@@ -197,6 +198,7 @@ func (s *Server) resolveContact(ctx context.Context, token string) (contactPrinc
 	return contactPrincipal{
 		workspaceID: sess.WorkspaceID, inboxID: sess.InboxID, channelID: sess.ChannelID, contactID: sess.ContactID,
 		sessionID: sess.ID, identified: sess.Identified, expiresAt: expires, kind: ch.Kind, chat: chat,
+		attach: s.effectiveLimits(ch.AttachmentMaxBytes, ch.AttachmentTypes),
 	}, nil
 }
 

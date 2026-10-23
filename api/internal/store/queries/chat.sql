@@ -17,7 +17,7 @@ SELECT * FROM chat_channels WHERE workspace_id = $1 AND channel_id = $2;
 SELECT * FROM chat_channels WHERE workspace_id = @workspace_id AND channel_id = ANY(@channel_ids::uuid[]);
 
 -- name: GetSessionChannel :one
-SELECT cc.*, c.kind FROM chat_channels cc
+SELECT cc.*, c.kind, c.attachment_max_bytes, c.attachment_types FROM chat_channels cc
 JOIN channels c ON c.workspace_id = cc.workspace_id AND c.id = cc.channel_id
 WHERE cc.workspace_id = $1 AND cc.channel_id = $2;
 
@@ -29,7 +29,7 @@ RETURNING *;
 -- The widget names only the channel's public key, so the channel is found before the workspace is
 -- known (see "Hosting for others later" in docs/architecture.md).
 -- name: FindChatChannelByKey :one
-SELECT cc.*, c.inbox_id, c.kind FROM chat_channels cc
+SELECT cc.*, c.inbox_id, c.kind, c.attachment_max_bytes, c.attachment_types FROM chat_channels cc
 JOIN channels c ON c.workspace_id = cc.workspace_id AND c.id = cc.channel_id
 JOIN workspaces w ON w.id = cc.workspace_id
 WHERE cc.public_key = $1 AND w.deleted_at IS NULL;

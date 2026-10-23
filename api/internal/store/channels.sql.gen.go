@@ -161,27 +161,33 @@ func (q *Queries) ListChannels(ctx context.Context, arg ListChannelsParams) ([]C
 }
 
 const updateChannel = `-- name: UpdateChannel :one
-UPDATE channels SET name = $1, settings = $2, attachment_max_bytes = $3,
-    attachment_types = $4::text[], updated_at = $5
-WHERE workspace_id = $6 AND id = $7
+UPDATE channels SET name = $1, settings = $2,
+    attachment_max_bytes = CASE WHEN $3::bool THEN $4 ELSE attachment_max_bytes END,
+    attachment_types = CASE WHEN $5::bool THEN $6::text[] ELSE attachment_types END,
+    updated_at = $7
+WHERE workspace_id = $8 AND id = $9
 RETURNING id, workspace_id, inbox_id, kind, name, settings, created_at, updated_at, attachment_max_bytes, attachment_types
 `
 
 type UpdateChannelParams struct {
-	Name               string
-	Settings           []byte
-	AttachmentMaxBytes *int64
-	AttachmentTypes    []string
-	Now                time.Time
-	WorkspaceID        uuid.UUID
-	ID                 uuid.UUID
+	Name                  string
+	Settings              []byte
+	SetAttachmentMaxBytes bool
+	AttachmentMaxBytes    *int64
+	SetAttachmentTypes    bool
+	AttachmentTypes       []string
+	Now                   time.Time
+	WorkspaceID           uuid.UUID
+	ID                    uuid.UUID
 }
 
 func (q *Queries) UpdateChannel(ctx context.Context, arg UpdateChannelParams) (Channel, error) {
 	row := q.db.QueryRow(ctx, updateChannel,
 		arg.Name,
 		arg.Settings,
+		arg.SetAttachmentMaxBytes,
 		arg.AttachmentMaxBytes,
+		arg.SetAttachmentTypes,
 		arg.AttachmentTypes,
 		arg.Now,
 		arg.WorkspaceID,

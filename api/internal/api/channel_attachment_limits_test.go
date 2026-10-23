@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"reflect"
 	"strings"
+	"sync"
 	"testing"
 
 	"github.com/productdevbook/yuva/api/internal/api"
@@ -78,6 +79,11 @@ func TestChannelAttachmentLimits(t *testing.T) {
 		!reflect.DeepEqual(effTypes, []any{"image/png"}) {
 		t.Fatalf("narrowed: %s", r.raw)
 	}
+	r = ct.owner.expect(http.StatusOK, "PATCH", chPath, map[string]any{"attachments": map[string]any{"types": []string{"image/*"}}})
+	if mb, ty, _, effTypes := limitsOf(t, r.body); mb != float64(100) || !reflect.DeepEqual(ty, []any{"image/*"}) || !reflect.DeepEqual(effTypes, []any{"image/*"}) {
+		t.Fatalf("types alone: %s", r.raw)
+	}
+	ct.owner.expect(http.StatusOK, "PATCH", chPath, map[string]any{"attachments": map[string]any{"types": []string{"image/png"}}})
 	r = ct.owner.expect(http.StatusOK, "PATCH", chPath, map[string]any{"name": "Renamed"})
 	if mb, _, _, _ := limitsOf(t, r.body); mb != float64(100) {
 		t.Fatalf("a patch without attachments changed them: %s", r.raw)
@@ -175,7 +181,17 @@ func TestChannelAttachmentLimitsFollowLoweredServer(t *testing.T) {
 	expectUpload(t, cs.upload("/client/v1/conversations", fields, []file{{"a.txt", "text/plain", []byte("hello")}}), http.StatusUnsupportedMediaType, "attachment_type_not_allowed")
 	expectUpload(t, cs.upload("/client/v1/conversations", fields, []file{{"ok.png", "image/png", pngOf(200)}}), http.StatusCreated, "")
 
-	ct.owner.expectProblem(http.StatusBadRequest, "validation_failed", "PATCH", "/v1/channels/"+ct.channel, map[string]any{"attachments": map[string]any{"types": []string{"image/*"}}})
+	chPath := "/v1/channels/" + ct.channel
+	r = ct.owner.expect(http.StatusOK, "PATCH", chPath, map[string]any{"attachments": map[string]any{"types": []string{"image/*"}, "max_bytes": nil}})
+	if _, ty, eff, effTypes := limitsOf(t, r.body); !reflect.DeepEqual(ty, []any{"image/*"}) || eff != 200 || !reflect.DeepEqual(effTypes, []any{"image/png", "image/gif"}) {
+		t.Fatalf("image/* over concrete server types: %s", r.raw)
+	}
+	for _, wide := range []string{"video/*", "image/jpeg"} {
+		w := ct.owner.do("PATCH", chPath, map[string]any{"attachments": map[string]any{"types": []string{"image/png", wide}}})
+		if w.status != http.StatusBadRequest || !strings.Contains(w.str("detail"), "attachments.types: "+wide) {
+			t.Fatalf("%s allows nothing the server allows: %d %s", wide, w.status, w.raw)
+		}
+	}
 }
 
 func TestInboundMailOverChannelLimit(t *testing.T) {
@@ -221,5 +237,34 @@ func TestInboundMailOverChannelLimit(t *testing.T) {
 	m := lastOf(messages(et.owner, r.str("conversation_id")), "message")
 	if r.str("status") != "stored" || len(m["attachments"].([]any)) != 0 {
 		t.Fatalf("type-narrowed ingest: %v %v", r.body, m)
+	}
+}
+
+func TestChannelAttachmentPatchesDoNotRevertEachOther(t *testing.T) {
+	t.Parallel()
+	h := newHarness(t)
+	ct := newChatTeam(t, h, "live", true)
+	chPath := "/v1/channels/" + ct.channel
+	for i := range 10 {
+		size := 10 + i
+		types := []string{"text/plain"}
+		if i%2 == 1 {
+			types = []string{"image/*"}
+		}
+		var wg sync.WaitGroup
+		wg.Add(2)
+		go func() {
+			defer wg.Done()
+			ct.owner.do("PATCH", chPath, map[string]any{"attachments": map[string]any{"max_bytes": size}})
+		}()
+		go func() {
+			defer wg.Done()
+			ct.owner.do("PATCH", chPath, map[string]any{"attachments": map[string]any{"types": types}})
+		}()
+		wg.Wait()
+		r := ct.owner.expect(http.StatusOK, "GET", chPath, nil)
+		if mb, ty, _, _ := limitsOf(t, r.body); mb != float64(size) || !reflect.DeepEqual(ty, []any{types[0]}) {
+			t.Fatalf("round %d: one patch reverted the other: %s", i, r.raw)
+		}
 	}
 }

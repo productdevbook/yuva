@@ -406,27 +406,29 @@ func (q *Queries) DeleteStaleConnections(ctx context.Context, arg DeleteStaleCon
 }
 
 const findChatChannelByKey = `-- name: FindChatChannelByKey :one
-SELECT cc.workspace_id, cc.channel_id, cc.public_key, cc.allowed_origins, cc.allow_anonymous, cc.ask_email_offline, cc.greeting, cc.launcher_position, cc.launcher_color, cc.platforms, cc.discussions, cc.announce_updates, c.inbox_id, c.kind FROM chat_channels cc
+SELECT cc.workspace_id, cc.channel_id, cc.public_key, cc.allowed_origins, cc.allow_anonymous, cc.ask_email_offline, cc.greeting, cc.launcher_position, cc.launcher_color, cc.platforms, cc.discussions, cc.announce_updates, c.inbox_id, c.kind, c.attachment_max_bytes, c.attachment_types FROM chat_channels cc
 JOIN channels c ON c.workspace_id = cc.workspace_id AND c.id = cc.channel_id
 JOIN workspaces w ON w.id = cc.workspace_id
 WHERE cc.public_key = $1 AND w.deleted_at IS NULL
 `
 
 type FindChatChannelByKeyRow struct {
-	WorkspaceID      uuid.UUID
-	ChannelID        uuid.UUID
-	PublicKey        string
-	AllowedOrigins   []string
-	AllowAnonymous   bool
-	AskEmailOffline  bool
-	Greeting         string
-	LauncherPosition *string
-	LauncherColor    *string
-	Platforms        []string
-	Discussions      string
-	AnnounceUpdates  bool
-	InboxID          uuid.UUID
-	Kind             string
+	WorkspaceID        uuid.UUID
+	ChannelID          uuid.UUID
+	PublicKey          string
+	AllowedOrigins     []string
+	AllowAnonymous     bool
+	AskEmailOffline    bool
+	Greeting           string
+	LauncherPosition   *string
+	LauncherColor      *string
+	Platforms          []string
+	Discussions        string
+	AnnounceUpdates    bool
+	InboxID            uuid.UUID
+	Kind               string
+	AttachmentMaxBytes *int64
+	AttachmentTypes    []string
 }
 
 // The widget names only the channel's public key, so the channel is found before the workspace is
@@ -449,6 +451,8 @@ func (q *Queries) FindChatChannelByKey(ctx context.Context, publicKey string) (F
 		&i.AnnounceUpdates,
 		&i.InboxID,
 		&i.Kind,
+		&i.AttachmentMaxBytes,
+		&i.AttachmentTypes,
 	)
 	return i, err
 }
@@ -714,7 +718,7 @@ func (q *Queries) GetLatestPublicMessagePosition(ctx context.Context, arg GetLat
 }
 
 const getSessionChannel = `-- name: GetSessionChannel :one
-SELECT cc.workspace_id, cc.channel_id, cc.public_key, cc.allowed_origins, cc.allow_anonymous, cc.ask_email_offline, cc.greeting, cc.launcher_position, cc.launcher_color, cc.platforms, cc.discussions, cc.announce_updates, c.kind FROM chat_channels cc
+SELECT cc.workspace_id, cc.channel_id, cc.public_key, cc.allowed_origins, cc.allow_anonymous, cc.ask_email_offline, cc.greeting, cc.launcher_position, cc.launcher_color, cc.platforms, cc.discussions, cc.announce_updates, c.kind, c.attachment_max_bytes, c.attachment_types FROM chat_channels cc
 JOIN channels c ON c.workspace_id = cc.workspace_id AND c.id = cc.channel_id
 WHERE cc.workspace_id = $1 AND cc.channel_id = $2
 `
@@ -725,19 +729,21 @@ type GetSessionChannelParams struct {
 }
 
 type GetSessionChannelRow struct {
-	WorkspaceID      uuid.UUID
-	ChannelID        uuid.UUID
-	PublicKey        string
-	AllowedOrigins   []string
-	AllowAnonymous   bool
-	AskEmailOffline  bool
-	Greeting         string
-	LauncherPosition *string
-	LauncherColor    *string
-	Platforms        []string
-	Discussions      string
-	AnnounceUpdates  bool
-	Kind             string
+	WorkspaceID        uuid.UUID
+	ChannelID          uuid.UUID
+	PublicKey          string
+	AllowedOrigins     []string
+	AllowAnonymous     bool
+	AskEmailOffline    bool
+	Greeting           string
+	LauncherPosition   *string
+	LauncherColor      *string
+	Platforms          []string
+	Discussions        string
+	AnnounceUpdates    bool
+	Kind               string
+	AttachmentMaxBytes *int64
+	AttachmentTypes    []string
 }
 
 func (q *Queries) GetSessionChannel(ctx context.Context, arg GetSessionChannelParams) (GetSessionChannelRow, error) {
@@ -757,6 +763,8 @@ func (q *Queries) GetSessionChannel(ctx context.Context, arg GetSessionChannelPa
 		&i.Discussions,
 		&i.AnnounceUpdates,
 		&i.Kind,
+		&i.AttachmentMaxBytes,
+		&i.AttachmentTypes,
 	)
 	return i, err
 }

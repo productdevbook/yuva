@@ -144,11 +144,8 @@ func (s *Server) CreateClientFeedback(ctx context.Context, req oas.CreateClientF
 			Locale: b.Locale, Screen: b.Screen, InstallationId: b.InstallationId,
 		})
 	case req.MultipartBody != nil:
-		limits, err := s.channelLimits(ctx, s.st.Queries, cp.workspaceID, &cp.channelID)
-		if err != nil {
-			return nil, err
-		}
-		if in, err = s.readMultipart(req.MultipartBody, cp.workspaceID, clientFeedbackFields, limits); err != nil {
+		var err error
+		if in, err = s.readMultipart(req.MultipartBody, cp.workspaceID, clientFeedbackFields, cp.attach); err != nil {
 			return nil, err
 		}
 		category = oas.FeedbackCategory(in.extra["category"])
