@@ -250,7 +250,7 @@ func (s *Server) VerifySignInCode(ctx context.Context, req oas.VerifySignInCodeR
 		if me, err = s.buildMe(ctx, q, personID); err != nil {
 			return err
 		}
-		cookie, err = s.startSession(ctx, q, personID, methodCode)
+		cookie, err = s.startSession(ctx, q, personID, methodCode, nil)
 		return err
 	})
 	if err != nil {

@@ -51,6 +51,7 @@ var operationAccess = map[string]access{
 	"VerifySignInCode":    accessPublic,
 	"BeginPasskeySignIn":  accessPublic,
 	"FinishPasskeySignIn": accessPublic,
+	"StartSsoSignIn":      accessPublic,
 
 	"SignOut":                   accessPerson,
 	"GetMe":                     accessPerson,
@@ -165,6 +166,14 @@ var operationAccess = map[string]access{
 
 	"DeleteWorkspace": accessMember,
 
+	"GetSsoSettings":        accessMember,
+	"UpdateSsoSettings":     accessMember,
+	"SetSsoOidcProvider":    accessMember,
+	"DeleteSsoOidcProvider": accessMember,
+	"AddSsoDomain":          accessMember,
+	"VerifySsoDomain":       accessMember,
+	"DeleteSsoDomain":       accessMember,
+
 	"GetOAuthRequest":     accessPerson,
 	"ApproveOAuthRequest": accessPerson,
 	"DenyOAuthRequest":    accessPerson,
@@ -186,6 +195,7 @@ type principal struct {
 	grantID          uuid.UUID
 	via              string
 	mcpOnly          bool
+	ssoSettings      *uuid.UUID
 }
 
 func (p principal) isKey() bool { return p.keyID != uuid.Nil() }
@@ -366,7 +376,7 @@ func (s *Server) resolvePrincipal(ctx context.Context, r *http.Request, kind acc
 	if err := s.st.TouchSession(ctx, store.TouchSessionParams{Now: now, ID: sess.ID, StaleBefore: now.Add(-touchEvery)}); err != nil {
 		return principal{}, err
 	}
-	p := principal{personID: sess.PersonID, sessionID: sess.ID}
+	p := principal{personID: sess.PersonID, sessionID: sess.ID, ssoSettings: sess.SsoSettingsID}
 	if kind == accessPerson {
 		return p, nil
 	}
@@ -389,6 +399,9 @@ func (s *Server) resolvePrincipal(ctx context.Context, r *http.Request, kind acc
 		return principal{}, errNotAMember
 	}
 	if err != nil {
+		return principal{}, err
+	}
+	if err := s.ssoGate(ctx, m.WorkspaceID, sess.PersonID, m.Role, sess.SsoSettingsID); err != nil {
 		return principal{}, err
 	}
 	p.workspaceID, p.memberID, p.role = m.WorkspaceID, m.ID, m.Role
@@ -591,17 +604,21 @@ func (s *Server) sessionCookie(value string, maxAge int) string {
 	return c.String()
 }
 
-func (s *Server) startSession(ctx context.Context, q *store.Queries, personID uuid.UUID, method string) (string, error) {
+func (s *Server) startSession(ctx context.Context, q *store.Queries, personID uuid.UUID, method string, sso *store.SsoSetting) (string, error) {
 	now := s.now()
 	token := randomToken(32)
-	if err := q.CreateSession(ctx, store.CreateSessionParams{
+	arg := store.CreateSessionParams{
 		ID:        newID(),
 		PersonID:  personID,
 		TokenHash: hashSecret(token),
 		Method:    method,
 		CreatedAt: now,
 		ExpiresAt: now.Add(sessionTTL),
-	}); err != nil {
+	}
+	if sso != nil {
+		arg.SsoWorkspaceID, arg.SsoSettingsID = &sso.WorkspaceID, &sso.ID
+	}
+	if err := q.CreateSession(ctx, arg); err != nil {
 		return "", err
 	}
 	return s.sessionCookie(token, int(sessionTTL/time.Second)), nil

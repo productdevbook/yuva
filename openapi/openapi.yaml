@@ -62,6 +62,11 @@ tags:
     description: Sign-in with an e-mailed code or a passkey, sign-out.
   - name: me
     description: The signed-in person and their passkeys.
+  - name: sso
+    description: |
+      Single sign-on for members: a workspace's OpenID Connect provider, the e-mail domains it
+      claims through DNS, and whether people of those domains must sign in through it to act in
+      the workspace.
   - name: workspace
     description: The current workspace, its members and invites.
   - name: api-keys
@@ -693,6 +698,55 @@ paths:
         "200":
           $ref: "#/components/responses/SignedIn"
         "400":
+          $ref: "#/components/responses/Problem"
+  /v1/auth/sso:
+    post:
+      operationId: startSsoSignIn
+      summary: Start a single sign-on
+      description: |
+        The sign-in page asks for the e-mail address first and sends it here. When the address's
+        domain is claimed by a workspace that has an identity provider, the answer carries
+        `authorization_url`, the provider's sign-in page (authorization code with PKCE, `state`
+        and `nonce`, `login_hint` set to the address), and sets the `yuva_sso` cookie that binds
+        the sign-in to this browser for 10 minutes; the page sends the browser there. Otherwise
+        `sso` is `false` and the page goes on with a code or a passkey.
+
+        The provider sends the browser back to `GET /auth/sso/callback` (outside this contract),
+        which checks the cookie and `state`, exchanges the code, verifies the `id_token` (signature
+        against the provider's keys, `iss`, `aud`, `exp`, `nonce`) and requires a verified e-mail in a
+        domain the workspace has claimed. It then redirects to `return_to` (or `/`) with the
+        session cookie set, or to `/sign-in?sso_error=<code>` with `code` one of `expired`,
+        `denied`, `failed`, `invalid_token`, `email_unverified`, `domain_not_claimed`,
+        `group_not_allowed`, `not_member`.
+
+        A domain's claim is public (its DNS record is), so answering whether it has single
+        sign-on reveals nothing about people. 30 requests a minute per client IP address (`429`).
+        `502 sso_unavailable` when the provider's discovery document cannot be read.
+      tags: [auth]
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SsoStartRequest"
+      responses:
+        "200":
+          description: Whether the address signs in through its workspace's identity provider.
+          headers:
+            Set-Cookie:
+              description: "`yuva_sso`, HttpOnly, SameSite=Lax, path `/auth/sso`, when `sso` is true."
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SsoStart"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "429":
+          $ref: "#/components/responses/Problem"
+        "502":
           $ref: "#/components/responses/Problem"
   /v1/auth/sign-out:
     post:
@@ -1569,6 +1623,215 @@ paths:
         "401":
           $ref: "#/components/responses/Problem"
         "403":
+          $ref: "#/components/responses/Problem"
+  /v1/sso:
+    get:
+      operationId: getSsoSettings
+      summary: Single sign-on settings
+      description: |
+        The workspace's identity provider, claimed domains and sign-in rules. Owners only, with a
+        member session.
+      tags: [sso]
+      security:
+        - session: []
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+      responses:
+        "200":
+          description: The settings.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SsoSettings"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+    patch:
+      operationId: updateSsoSettings
+      summary: Change the sign-in rules
+      description: |
+        `sso_required`: a member whose address is in one of the workspace's verified domains acts
+        in the workspace (`/v1` with a session, `/v1/realtime`, approving an OAuth request) only
+        with a session made through this workspace's provider; any other session gets `403
+        sso_required` with `sso_email`, to send to `POST /v1/auth/sso`. Sessions that exist when it
+        is turned on are refused at once. Signing in with a code or a passkey still works (for
+        other workspaces and as a reader). Owners are exempt, so a broken identity provider never
+        locks the workspace out. OAuth grants of covered members work only when they were approved
+        with such a session; API keys are not affected. Turning it on needs a provider and a
+        verified domain (`409 sso_not_ready`). `jit` lets a person of a claimed domain who signs
+        in through the provider and is not a member join with `jit_role` (`admin` or `agent`,
+        never `owner`). Owners only, with a member session; recorded as `sso.settings_changed`.
+      tags: [sso]
+      security:
+        - session: []
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SsoSettingsUpdate"
+      responses:
+        "200":
+          description: The settings.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SsoSettings"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "409":
+          $ref: "#/components/responses/Problem"
+  /v1/sso/oidc:
+    put:
+      operationId: setSsoOidcProvider
+      summary: Set the OpenID Connect provider
+      description: |
+        Saves the provider after reading its discovery document
+        (`<issuer>/.well-known/openid-configuration`, whose `issuer` must equal the one given):
+        `400 sso_discovery_failed` with the reason otherwise. The issuer is `https` and on a public
+        address unless the server allows private addresses (`YUVA_WEBHOOK_ALLOW_PRIVATE`). The
+        client secret is stored encrypted and never returned; leave it out to keep the stored
+        one (required the first time). Register `redirect_uri` from `GET /v1/sso` at the
+        provider. Owners only, with a member session; recorded as `sso.provider_created` or
+        `sso.provider_updated`.
+      tags: [sso]
+      security:
+        - session: []
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SsoOidcInput"
+      responses:
+        "200":
+          description: The settings.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SsoSettings"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+    delete:
+      operationId: deleteSsoOidcProvider
+      summary: Remove the OpenID Connect provider
+      description: |
+        Removes the provider and turns `sso_required` off; claimed domains stay. Owners only,
+        with a member session; recorded as `sso.provider_deleted`.
+      tags: [sso]
+      security:
+        - session: []
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+      responses:
+        "204":
+          description: Removed.
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+  /v1/sso/domains:
+    post:
+      operationId: addSsoDomain
+      summary: Claim an e-mail domain
+      description: |
+        Starts a claim: publish the TXT record `txt_name` with `txt_value`, then verify. A domain
+        verified by another workspace on this server answers `409 domain_taken`, the same domain
+        twice in this workspace `409 domain_exists`; at most 50 domains (`409 sso_domain_limit`).
+        Owners only, with a member session; recorded as `sso_domain.added`.
+      tags: [sso]
+      security:
+        - session: []
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SsoDomainInput"
+      responses:
+        "201":
+          description: The pending claim.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SsoDomain"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "409":
+          $ref: "#/components/responses/Problem"
+  /v1/sso/domains/{ssoDomainId}:
+    delete:
+      operationId: deleteSsoDomain
+      summary: Give up a claimed domain
+      description: |
+        People of the domain sign in with codes and passkeys again; removing the last verified
+        domain turns `sso_required` off. Owners only, with a member session; recorded as
+        `sso_domain.deleted`.
+      tags: [sso]
+      security:
+        - session: []
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/SsoDomainId"
+      responses:
+        "204":
+          description: Removed.
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+  /v1/sso/domains/{ssoDomainId}/verify:
+    post:
+      operationId: verifySsoDomain
+      summary: Check a domain's TXT record
+      description: |
+        Looks the TXT record up now. When it holds `txt_value` the domain becomes `verified`
+        (recorded as `sso_domain.verified`) and stays so; the record may stay in place. Otherwise
+        the claim stays `pending` with `problem` saying what was found. `409 domain_taken` when
+        another workspace verified the domain first. Owners only, with a member session.
+      tags: [sso]
+      security:
+        - session: []
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/SsoDomainId"
+      responses:
+        "200":
+          description: The claim after the check.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SsoDomain"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+        "409":
           $ref: "#/components/responses/Problem"
   /v1/workspaces:
     post:
@@ -17643,6 +17906,13 @@ components:
         An access token from `POST /client/v1/analytics-shares/{token}/access`, `yuva_sa_<…>`, for
         a share link with a password. It works on that link's endpoints only.
   parameters:
+    SsoDomainId:
+      name: ssoDomainId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
     WorkspaceHeader:
       name: Yuva-Workspace
       in: header
@@ -18448,6 +18718,19 @@ components:
         - `workspace.slack_connected`: `team_id`, `team_name`; `workspace.slack_disconnected`:
           `team_id`, and `reason` `uninstalled` (by `system`) when Slack reported the app removed.
         - `member.slack_linked`: `slack_user_id`; `member.slack_unlinked`: `slack_user_id`.
+        - `sso.provider_created`, `sso.provider_updated`: `protocol`, `issuer_host`, and for an update
+          `fields` among `issuer`, `client_id`, `client_secret`, `scopes`, `groups_claim` and
+          `allowed_groups` (never the secret). `sso.provider_deleted`: `protocol`.
+        - `sso.settings_changed`: `fields`, and `from`/`to` objects with the changed values of
+          `sso_required`, `jit` and `jit_role`.
+        - `sso.signed_in`: `protocol`, `email`, and `joined` (`jit` or `invite`) when the sign-in
+          made the person a member; the actor is the member, or `system` when the person is not one.
+        - `sso.sign_in_refused`: `protocol`, `reason` (`failed` when the code exchange failed,
+          `invalid_token`, `email_unverified`, `domain_not_claimed`, `group_not_allowed`,
+          `not_member`), `email` when known, `detail` for `failed` and `invalid_token`; the actor
+          is the member when the person is one, else `system`. Requests refused with
+          `sso_required` are not recorded.
+        - `sso_domain.added`, `sso_domain.verified`, `sso_domain.deleted`: `domain`.
 
         Details never make an action fail: when they would be too long, lists are replaced by
         `<name>_count` and `truncated` is `true`.
@@ -18502,11 +18785,20 @@ components:
         - workspace.slack_disconnected
         - member.slack_linked
         - member.slack_unlinked
-      x-enum-varnames: [AuditMemberJoined, AuditMemberRoleChanged, AuditMemberRemoved, AuditMemberInboxAccessGranted, AuditMemberInboxAccessRevoked, AuditInviteCreated, AuditInviteDeleted, AuditApiKeyCreated, AuditApiKeyRevoked, AuditOAuthGrantCreated, AuditOAuthGrantRevoked, AuditWebhookCreated, AuditWebhookUpdated, AuditWebhookDeleted, AuditWebhookSecretRotated, AuditChannelCredentialsChanged, AuditChannelKeyRotated, AuditChannelForwardingAddressRotated, AuditChannelDkimKeyCreated, AuditChannelDkimKeyDeleted, AuditInboxIdentitySecretRotated, AuditInboxDeleted, AuditConversationTrashed, AuditConversationRestored, AuditConversationDeleted, AuditMessageRedacted, AuditContactDeleted, AuditContactConsentExported, AuditListConsentExported, AuditAnalyticsExportCreated, AuditWorkspaceRetentionChanged, AuditWorkspaceBroadcastApprovalRequested, AuditWorkspaceBroadcastsApproved, AuditWorkspaceBroadcastsDenied, AuditWorkspaceBroadcastsSuspended, AuditWorkspaceBroadcastLimitChanged, AuditTeamCreated, AuditTeamDeleted, AuditTeamMemberAdded, AuditTeamMemberRemoved, AuditTeamInboxAccessGranted, AuditTeamInboxAccessRevoked, AuditWorkspaceSlackConnected, AuditWorkspaceSlackDisconnected, AuditMemberSlackLinked, AuditMemberSlackUnlinked]
+        - sso.provider_created
+        - sso.provider_updated
+        - sso.provider_deleted
+        - sso.settings_changed
+        - sso.signed_in
+        - sso.sign_in_refused
+        - sso_domain.added
+        - sso_domain.verified
+        - sso_domain.deleted
+      x-enum-varnames: [AuditMemberJoined, AuditMemberRoleChanged, AuditMemberRemoved, AuditMemberInboxAccessGranted, AuditMemberInboxAccessRevoked, AuditInviteCreated, AuditInviteDeleted, AuditApiKeyCreated, AuditApiKeyRevoked, AuditOAuthGrantCreated, AuditOAuthGrantRevoked, AuditWebhookCreated, AuditWebhookUpdated, AuditWebhookDeleted, AuditWebhookSecretRotated, AuditChannelCredentialsChanged, AuditChannelKeyRotated, AuditChannelForwardingAddressRotated, AuditChannelDkimKeyCreated, AuditChannelDkimKeyDeleted, AuditInboxIdentitySecretRotated, AuditInboxDeleted, AuditConversationTrashed, AuditConversationRestored, AuditConversationDeleted, AuditMessageRedacted, AuditContactDeleted, AuditContactConsentExported, AuditListConsentExported, AuditAnalyticsExportCreated, AuditWorkspaceRetentionChanged, AuditWorkspaceBroadcastApprovalRequested, AuditWorkspaceBroadcastsApproved, AuditWorkspaceBroadcastsDenied, AuditWorkspaceBroadcastsSuspended, AuditWorkspaceBroadcastLimitChanged, AuditTeamCreated, AuditTeamDeleted, AuditTeamMemberAdded, AuditTeamMemberRemoved, AuditTeamInboxAccessGranted, AuditTeamInboxAccessRevoked, AuditWorkspaceSlackConnected, AuditWorkspaceSlackDisconnected, AuditMemberSlackLinked, AuditMemberSlackUnlinked, AuditSsoProviderCreated, AuditSsoProviderUpdated, AuditSsoProviderDeleted, AuditSsoSettingsChanged, AuditSsoSignedIn, AuditSsoSignInRefused, AuditSsoDomainAdded, AuditSsoDomainVerified, AuditSsoDomainDeleted]
     AuditTargetType:
       type: string
-      enum: [workspace, member, invite, inbox, channel, api_key, oauth_grant, webhook, contact, list, analytics_export, conversation, message, team]
-      x-enum-varnames: [AuditTargetWorkspace, AuditTargetMember, AuditTargetInvite, AuditTargetInbox, AuditTargetChannel, AuditTargetApiKey, AuditTargetOAuthGrant, AuditTargetWebhook, AuditTargetContact, AuditTargetList, AuditTargetAnalyticsExport, AuditTargetConversation, AuditTargetMessage, AuditTargetTeam]
+      enum: [workspace, member, invite, inbox, channel, api_key, oauth_grant, webhook, contact, list, analytics_export, conversation, message, team, sso, sso_domain]
+      x-enum-varnames: [AuditTargetWorkspace, AuditTargetMember, AuditTargetInvite, AuditTargetInbox, AuditTargetChannel, AuditTargetApiKey, AuditTargetOAuthGrant, AuditTargetWebhook, AuditTargetContact, AuditTargetList, AuditTargetAnalyticsExport, AuditTargetConversation, AuditTargetMessage, AuditTargetTeam, AuditTargetSso, AuditTargetSsoDomain]
     AuditTarget:
       type: object
       required: [type, id]
@@ -18548,6 +18840,177 @@ components:
         next_cursor:
           type: string
           description: Absent on the last page.
+    SsoStartRequest:
+      type: object
+      required: [email]
+      properties:
+        email:
+          $ref: "#/components/schemas/Email"
+        return_to:
+          type: string
+          maxLength: 2000
+          description: |
+            A panel path starting with a single `/` to open after the sign-in; anything else is
+            ignored and `/` opens.
+    SsoStart:
+      type: object
+      required: [sso]
+      properties:
+        sso:
+          type: boolean
+          description: Whether the address signs in through an identity provider.
+        authorization_url:
+          type: string
+          format: uri
+          description: The provider's sign-in page to send the browser to, when `sso` is true.
+        required:
+          type: boolean
+          description: |
+            When `sso` is true, whether the workspace requires single sign-on: only a session
+            made here lets the address act in it (owners excepted).
+    SsoProtocol:
+      type: string
+      enum: [oidc]
+      x-enum-varnames: [SsoProtocolOidc]
+    SsoJitRole:
+      type: string
+      enum: [admin, agent]
+      x-enum-varnames: [SsoJitAdmin, SsoJitAgent]
+    SsoOidcProvider:
+      type: object
+      required: [issuer, client_id, scopes, groups_claim, allowed_groups, updated_at]
+      properties:
+        issuer:
+          type: string
+          format: uri
+        client_id:
+          type: string
+        scopes:
+          type: array
+          items:
+            type: string
+          description: Scopes asked for besides `openid email profile`.
+        groups_claim:
+          type: string
+          description: The `id_token` claim holding the person's groups.
+        allowed_groups:
+          type: array
+          items:
+            type: string
+          description: When not empty, only people in one of these groups sign in.
+        updated_at:
+          type: string
+          format: date-time
+    SsoOidcInput:
+      type: object
+      required: [issuer, client_id]
+      properties:
+        issuer:
+          type: string
+          format: uri
+          maxLength: 500
+          description: The issuer URL exactly as the provider's discovery document names it.
+        client_id:
+          type: string
+          minLength: 1
+          maxLength: 500
+        client_secret:
+          type: string
+          minLength: 1
+          maxLength: 2000
+          writeOnly: true
+          description: Required the first time; left out, the stored secret stays.
+        scopes:
+          type: array
+          maxItems: 10
+          items:
+            type: string
+            minLength: 1
+            maxLength: 100
+          description: Extra scopes, such as `groups` for Okta; no spaces or quotes.
+        groups_claim:
+          type: string
+          maxLength: 100
+          description: Absent or empty, `groups`.
+        allowed_groups:
+          type: array
+          maxItems: 50
+          items:
+            type: string
+            minLength: 1
+            maxLength: 200
+    SsoDomainState:
+      type: string
+      enum: [pending, verified]
+      x-enum-varnames: [SsoDomainPending, SsoDomainVerified]
+    SsoDomain:
+      type: object
+      required: [id, domain, state, txt_name, txt_value, created_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+        domain:
+          type: string
+        state:
+          $ref: "#/components/schemas/SsoDomainState"
+        txt_name:
+          type: string
+          description: The record's name, `_yuva-sso.<domain>`.
+        txt_value:
+          type: string
+        problem:
+          type: string
+          description: What the last check found, while `pending`.
+        checked_at:
+          type: string
+          format: date-time
+        verified_at:
+          type: string
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
+    SsoDomainInput:
+      type: object
+      required: [domain]
+      properties:
+        domain:
+          type: string
+          minLength: 4
+          maxLength: 253
+          description: An e-mail domain such as `example.com`; only that exact domain, not its subdomains.
+    SsoSettings:
+      type: object
+      required: [domains, sso_required, jit, jit_role, redirect_uri]
+      properties:
+        protocol:
+          $ref: "#/components/schemas/SsoProtocol"
+        oidc:
+          $ref: "#/components/schemas/SsoOidcProvider"
+        domains:
+          type: array
+          items:
+            $ref: "#/components/schemas/SsoDomain"
+        sso_required:
+          type: boolean
+        jit:
+          type: boolean
+        jit_role:
+          $ref: "#/components/schemas/SsoJitRole"
+        redirect_uri:
+          type: string
+          format: uri
+          description: The redirect URI to register at the identity provider.
+    SsoSettingsUpdate:
+      type: object
+      properties:
+        sso_required:
+          type: boolean
+        jit:
+          type: boolean
+        jit_role:
+          $ref: "#/components/schemas/SsoJitRole"
     WorkspaceDeletion:
       type: object
       required: [name]
@@ -37063,6 +37526,11 @@ components:
           examples: [messages:write]
         limit:
           $ref: "#/components/schemas/HostedLimit"
+        sso_email:
+          type: string
+          description: |
+            `sso_required` only: the member's address; send it to `POST /v1/auth/sso` for the
+            identity provider's sign-in page.
         detail:
           type: string
     SlackConnection:

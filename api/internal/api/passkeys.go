@@ -290,7 +290,7 @@ func (s *Server) FinishPasskeySignIn(ctx context.Context, req oas.FinishPasskeyS
 		if me, err = s.buildMe(ctx, q, user.person.ID); err != nil {
 			return err
 		}
-		cookie, err = s.startSession(ctx, q, user.person.ID, methodPasskey)
+		cookie, err = s.startSession(ctx, q, user.person.ID, methodPasskey, nil)
 		return err
 	})
 	if err != nil {

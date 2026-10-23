@@ -1098,6 +1098,15 @@ const (
 	AuditMessageRedacted                     AuditAction = "message.redacted"
 	AuditOAuthGrantCreated                   AuditAction = "oauth_grant.created"
 	AuditOAuthGrantRevoked                   AuditAction = "oauth_grant.revoked"
+	AuditSsoDomainAdded                      AuditAction = "sso_domain.added"
+	AuditSsoDomainDeleted                    AuditAction = "sso_domain.deleted"
+	AuditSsoDomainVerified                   AuditAction = "sso_domain.verified"
+	AuditSsoProviderCreated                  AuditAction = "sso.provider_created"
+	AuditSsoProviderDeleted                  AuditAction = "sso.provider_deleted"
+	AuditSsoProviderUpdated                  AuditAction = "sso.provider_updated"
+	AuditSsoSettingsChanged                  AuditAction = "sso.settings_changed"
+	AuditSsoSignInRefused                    AuditAction = "sso.sign_in_refused"
+	AuditSsoSignedIn                         AuditAction = "sso.signed_in"
 	AuditTeamCreated                         AuditAction = "team.created"
 	AuditTeamDeleted                         AuditAction = "team.deleted"
 	AuditTeamInboxAccessGranted              AuditAction = "team.inbox_access_granted"
@@ -1176,6 +1185,24 @@ func (e AuditAction) Valid() bool {
 	case AuditOAuthGrantCreated:
 		return true
 	case AuditOAuthGrantRevoked:
+		return true
+	case AuditSsoDomainAdded:
+		return true
+	case AuditSsoDomainDeleted:
+		return true
+	case AuditSsoDomainVerified:
+		return true
+	case AuditSsoProviderCreated:
+		return true
+	case AuditSsoProviderDeleted:
+		return true
+	case AuditSsoProviderUpdated:
+		return true
+	case AuditSsoSettingsChanged:
+		return true
+	case AuditSsoSignInRefused:
+		return true
+	case AuditSsoSignedIn:
 		return true
 	case AuditTeamCreated:
 		return true
@@ -1258,6 +1285,8 @@ const (
 	AuditTargetMember          AuditTargetType = "member"
 	AuditTargetMessage         AuditTargetType = "message"
 	AuditTargetOAuthGrant      AuditTargetType = "oauth_grant"
+	AuditTargetSso             AuditTargetType = "sso"
+	AuditTargetSsoDomain       AuditTargetType = "sso_domain"
 	AuditTargetTeam            AuditTargetType = "team"
 	AuditTargetWebhook         AuditTargetType = "webhook"
 	AuditTargetWorkspace       AuditTargetType = "workspace"
@@ -1287,6 +1316,10 @@ func (e AuditTargetType) Valid() bool {
 	case AuditTargetMessage:
 		return true
 	case AuditTargetOAuthGrant:
+		return true
+	case AuditTargetSso:
+		return true
+	case AuditTargetSsoDomain:
 		return true
 	case AuditTargetTeam:
 		return true
@@ -5643,6 +5676,57 @@ func (e SmtpTls) Valid() bool {
 	}
 }
 
+// Defines values for SsoDomainState.
+const (
+	SsoDomainPending  SsoDomainState = "pending"
+	SsoDomainVerified SsoDomainState = "verified"
+)
+
+// Valid indicates whether the value is a known member of the SsoDomainState enum.
+func (e SsoDomainState) Valid() bool {
+	switch e {
+	case SsoDomainPending:
+		return true
+	case SsoDomainVerified:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for SsoJitRole.
+const (
+	SsoJitAdmin SsoJitRole = "admin"
+	SsoJitAgent SsoJitRole = "agent"
+)
+
+// Valid indicates whether the value is a known member of the SsoJitRole enum.
+func (e SsoJitRole) Valid() bool {
+	switch e {
+	case SsoJitAdmin:
+		return true
+	case SsoJitAgent:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for SsoProtocol.
+const (
+	SsoProtocolOidc SsoProtocol = "oidc"
+)
+
+// Valid indicates whether the value is a known member of the SsoProtocol enum.
+func (e SsoProtocol) Valid() bool {
+	switch e {
+	case SsoProtocolOidc:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for StatusCheckRange.
 const (
 	StatusCheckRange24h StatusCheckRange = "24h"
@@ -8312,9 +8396,13 @@ type AnalyticsRangeProblem struct {
 	// Scope `insufficient_scope` only: the scope the API key lacks.
 	//
 	// Examples: messages:write
-	Scope  *string `json:"scope,omitempty"`
-	Status int32   `json:"status"`
-	Title  string  `json:"title"`
+	Scope *string `json:"scope,omitempty"`
+
+	// SsoEmail `sso_required` only: the member's address; send it to `POST /v1/auth/sso` for the
+	// identity provider's sign-in page.
+	SsoEmail *string `json:"sso_email,omitempty"`
+	Status   int32   `json:"status"`
+	Title    string  `json:"title"`
 
 	// Type A URI that identifies the problem type.
 	Type string `json:"type"`
@@ -9076,6 +9164,19 @@ type Attributes map[string]interface{}
 //   - `workspace.slack_connected`: `team_id`, `team_name`; `workspace.slack_disconnected`:
 //     `team_id`, and `reason` `uninstalled` (by `system`) when Slack reported the app removed.
 //   - `member.slack_linked`: `slack_user_id`; `member.slack_unlinked`: `slack_user_id`.
+//   - `sso.provider_created`, `sso.provider_updated`: `protocol`, `issuer_host`, and for an update
+//     `fields` among `issuer`, `client_id`, `client_secret`, `scopes`, `groups_claim` and
+//     `allowed_groups` (never the secret). `sso.provider_deleted`: `protocol`.
+//   - `sso.settings_changed`: `fields`, and `from`/`to` objects with the changed values of
+//     `sso_required`, `jit` and `jit_role`.
+//   - `sso.signed_in`: `protocol`, `email`, and `joined` (`jit` or `invite`) when the sign-in
+//     made the person a member; the actor is the member, or `system` when the person is not one.
+//   - `sso.sign_in_refused`: `protocol`, `reason` (`failed` when the code exchange failed,
+//     `invalid_token`, `email_unverified`, `domain_not_claimed`, `group_not_allowed`,
+//     `not_member`), `email` when known, `detail` for `failed` and `invalid_token`; the actor
+//     is the member when the person is one, else `system`. Requests refused with
+//     `sso_required` are not recorded.
+//   - `sso_domain.added`, `sso_domain.verified`, `sso_domain.deleted`: `domain`.
 //
 // Details never make an action fail: when they would be too long, lists are replaced by
 // `<name>_count` and `truncated` is `true`.
@@ -9156,6 +9257,19 @@ type AuditEntry struct {
 	// - `workspace.slack_connected`: `team_id`, `team_name`; `workspace.slack_disconnected`:
 	//   `team_id`, and `reason` `uninstalled` (by `system`) when Slack reported the app removed.
 	// - `member.slack_linked`: `slack_user_id`; `member.slack_unlinked`: `slack_user_id`.
+	// - `sso.provider_created`, `sso.provider_updated`: `protocol`, `issuer_host`, and for an update
+	//   `fields` among `issuer`, `client_id`, `client_secret`, `scopes`, `groups_claim` and
+	//   `allowed_groups` (never the secret). `sso.provider_deleted`: `protocol`.
+	// - `sso.settings_changed`: `fields`, and `from`/`to` objects with the changed values of
+	//   `sso_required`, `jit` and `jit_role`.
+	// - `sso.signed_in`: `protocol`, `email`, and `joined` (`jit` or `invite`) when the sign-in
+	//   made the person a member; the actor is the member, or `system` when the person is not one.
+	// - `sso.sign_in_refused`: `protocol`, `reason` (`failed` when the code exchange failed,
+	//   `invalid_token`, `email_unverified`, `domain_not_claimed`, `group_not_allowed`,
+	//   `not_member`), `email` when known, `detail` for `failed` and `invalid_token`; the actor
+	//   is the member when the person is one, else `system`. Requests refused with
+	//   `sso_required` are not recorded.
+	// - `sso_domain.added`, `sso_domain.verified`, `sso_domain.deleted`: `domain`.
 	//
 	// Details never make an action fail: when they would be too long, lists are replaced by
 	// `<name>_count` and `truncated` is `true`.
@@ -9571,9 +9685,13 @@ type BroadcastProblem struct {
 	// Scope `insufficient_scope` only: the scope the API key lacks.
 	//
 	// Examples: messages:write
-	Scope  *string `json:"scope,omitempty"`
-	Status int32   `json:"status"`
-	Title  string  `json:"title"`
+	Scope *string `json:"scope,omitempty"`
+
+	// SsoEmail `sso_required` only: the member's address; send it to `POST /v1/auth/sso` for the
+	// identity provider's sign-in page.
+	SsoEmail *string `json:"sso_email,omitempty"`
+	Status   int32   `json:"status"`
+	Title    string  `json:"title"`
 
 	// Type A URI that identifies the problem type.
 	Type string `json:"type"`
@@ -9924,9 +10042,13 @@ type ChangelogConflictProblem struct {
 	// Scope `insufficient_scope` only: the scope the API key lacks.
 	//
 	// Examples: messages:write
-	Scope  *string `json:"scope,omitempty"`
-	Status int32   `json:"status"`
-	Title  string  `json:"title"`
+	Scope *string `json:"scope,omitempty"`
+
+	// SsoEmail `sso_required` only: the member's address; send it to `POST /v1/auth/sso` for the
+	// identity provider's sign-in page.
+	SsoEmail *string `json:"sso_email,omitempty"`
+	Status   int32   `json:"status"`
+	Title    string  `json:"title"`
 
 	// Translation `version_conflict` only: the translation as it is now.
 	Translation *ChangelogEntryTranslation `json:"translation,omitempty"`
@@ -13409,9 +13531,13 @@ type EmailDesignProblem struct {
 	// Scope `insufficient_scope` only: the scope the API key lacks.
 	//
 	// Examples: messages:write
-	Scope  *string `json:"scope,omitempty"`
-	Status int32   `json:"status"`
-	Title  string  `json:"title"`
+	Scope *string `json:"scope,omitempty"`
+
+	// SsoEmail `sso_required` only: the member's address; send it to `POST /v1/auth/sso` for the
+	// identity provider's sign-in page.
+	SsoEmail *string `json:"sso_email,omitempty"`
+	Status   int32   `json:"status"`
+	Title    string  `json:"title"`
 
 	// Type A URI that identifies the problem type.
 	Type string `json:"type"`
@@ -13743,9 +13869,13 @@ type EmailImageProblem struct {
 	// Scope `insufficient_scope` only: the scope the API key lacks.
 	//
 	// Examples: messages:write
-	Scope  *string `json:"scope,omitempty"`
-	Status int32   `json:"status"`
-	Title  string  `json:"title"`
+	Scope *string `json:"scope,omitempty"`
+
+	// SsoEmail `sso_required` only: the member's address; send it to `POST /v1/auth/sso` for the
+	// identity provider's sign-in page.
+	SsoEmail *string `json:"sso_email,omitempty"`
+	Status   int32   `json:"status"`
+	Title    string  `json:"title"`
 
 	// Type A URI that identifies the problem type.
 	Type   string           `json:"type"`
@@ -14802,9 +14932,13 @@ type HelpConflictProblem struct {
 	// Scope `insufficient_scope` only: the scope the API key lacks.
 	//
 	// Examples: messages:write
-	Scope  *string `json:"scope,omitempty"`
-	Status int32   `json:"status"`
-	Title  string  `json:"title"`
+	Scope *string `json:"scope,omitempty"`
+
+	// SsoEmail `sso_required` only: the member's address; send it to `POST /v1/auth/sso` for the
+	// identity provider's sign-in page.
+	SsoEmail *string `json:"sso_email,omitempty"`
+	Status   int32   `json:"status"`
+	Title    string  `json:"title"`
 
 	// Translation `version_conflict` only: the translation as it is now.
 	Translation *HelpArticleTranslation `json:"translation,omitempty"`
@@ -17393,9 +17527,13 @@ type MigrationFileProblem struct {
 	// Scope `insufficient_scope` only: the scope the API key lacks.
 	//
 	// Examples: messages:write
-	Scope  *string `json:"scope,omitempty"`
-	Status int32   `json:"status"`
-	Title  string  `json:"title"`
+	Scope *string `json:"scope,omitempty"`
+
+	// SsoEmail `sso_required` only: the member's address; send it to `POST /v1/auth/sso` for the
+	// identity provider's sign-in page.
+	SsoEmail *string `json:"sso_email,omitempty"`
+	Status   int32   `json:"status"`
+	Title    string  `json:"title"`
 
 	// Type A URI that identifies the problem type.
 	Type string `json:"type"`
@@ -18425,9 +18563,13 @@ type Problem struct {
 	// Scope `insufficient_scope` only: the scope the API key lacks.
 	//
 	// Examples: messages:write
-	Scope  *string `json:"scope,omitempty"`
-	Status int32   `json:"status"`
-	Title  string  `json:"title"`
+	Scope *string `json:"scope,omitempty"`
+
+	// SsoEmail `sso_required` only: the member's address; send it to `POST /v1/auth/sso` for the
+	// identity provider's sign-in page.
+	SsoEmail *string `json:"sso_email,omitempty"`
+	Status   int32   `json:"status"`
+	Title    string  `json:"title"`
 
 	// Type A URI that identifies the problem type.
 	Type string `json:"type"`
@@ -19217,6 +19359,114 @@ type SourcePage struct {
 
 	// PageUrl Without query and fragment.
 	PageUrl string `json:"page_url"`
+}
+
+// SsoDomain defines model for SsoDomain.
+type SsoDomain struct {
+	CheckedAt *time.Time `json:"checked_at,omitempty"`
+	CreatedAt time.Time  `json:"created_at"`
+	Domain    string     `json:"domain"`
+	Id        uuid.UUID  `json:"id"`
+
+	// Problem What the last check found, while `pending`.
+	Problem *string        `json:"problem,omitempty"`
+	State   SsoDomainState `json:"state"`
+
+	// TxtName The record's name, `_yuva-sso.<domain>`.
+	TxtName    string     `json:"txt_name"`
+	TxtValue   string     `json:"txt_value"`
+	VerifiedAt *time.Time `json:"verified_at,omitempty"`
+}
+
+// SsoDomainInput defines model for SsoDomainInput.
+type SsoDomainInput struct {
+	// Domain An e-mail domain such as `example.com`; only that exact domain, not its subdomains.
+	Domain string `json:"domain"`
+}
+
+// SsoDomainState defines model for SsoDomainState.
+type SsoDomainState string
+
+// SsoJitRole defines model for SsoJitRole.
+type SsoJitRole string
+
+// SsoOidcInput defines model for SsoOidcInput.
+type SsoOidcInput struct {
+	AllowedGroups *[]string `json:"allowed_groups,omitempty"`
+	ClientId      string    `json:"client_id"`
+
+	// ClientSecret Required the first time; left out, the stored secret stays.
+	ClientSecret *string `json:"client_secret,omitempty"`
+
+	// GroupsClaim Absent or empty, `groups`.
+	GroupsClaim *string `json:"groups_claim,omitempty"`
+
+	// Issuer The issuer URL exactly as the provider's discovery document names it.
+	Issuer string `json:"issuer"`
+
+	// Scopes Extra scopes, such as `groups` for Okta; no spaces or quotes.
+	Scopes *[]string `json:"scopes,omitempty"`
+}
+
+// SsoOidcProvider defines model for SsoOidcProvider.
+type SsoOidcProvider struct {
+	// AllowedGroups When not empty, only people in one of these groups sign in.
+	AllowedGroups []string `json:"allowed_groups"`
+	ClientId      string   `json:"client_id"`
+
+	// GroupsClaim The `id_token` claim holding the person's groups.
+	GroupsClaim string `json:"groups_claim"`
+	Issuer      string `json:"issuer"`
+
+	// Scopes Scopes asked for besides `openid email profile`.
+	Scopes    []string  `json:"scopes"`
+	UpdatedAt time.Time `json:"updated_at"`
+}
+
+// SsoProtocol defines model for SsoProtocol.
+type SsoProtocol string
+
+// SsoSettings defines model for SsoSettings.
+type SsoSettings struct {
+	Domains  []SsoDomain      `json:"domains"`
+	Jit      bool             `json:"jit"`
+	JitRole  SsoJitRole       `json:"jit_role"`
+	Oidc     *SsoOidcProvider `json:"oidc,omitempty"`
+	Protocol *SsoProtocol     `json:"protocol,omitempty"`
+
+	// RedirectUri The redirect URI to register at the identity provider.
+	RedirectUri string `json:"redirect_uri"`
+	SsoRequired bool   `json:"sso_required"`
+}
+
+// SsoSettingsUpdate defines model for SsoSettingsUpdate.
+type SsoSettingsUpdate struct {
+	Jit         *bool       `json:"jit,omitempty"`
+	JitRole     *SsoJitRole `json:"jit_role,omitempty"`
+	SsoRequired *bool       `json:"sso_required,omitempty"`
+}
+
+// SsoStart defines model for SsoStart.
+type SsoStart struct {
+	// AuthorizationUrl The provider's sign-in page to send the browser to, when `sso` is true.
+	AuthorizationUrl *string `json:"authorization_url,omitempty"`
+
+	// Required When `sso` is true, whether the workspace requires single sign-on: only a session
+	// made here lets the address act in it (owners excepted).
+	Required *bool `json:"required,omitempty"`
+
+	// Sso Whether the address signs in through an identity provider.
+	Sso bool `json:"sso"`
+}
+
+// SsoStartRequest defines model for SsoStartRequest.
+type SsoStartRequest struct {
+	// Email Examples: owner@example.com
+	Email Email `json:"email"`
+
+	// ReturnTo A panel path starting with a single `/` to open after the sign-in; anything else is
+	// ignored and `/` opens.
+	ReturnTo *string `json:"return_to,omitempty"`
 }
 
 // Stats defines model for Stats.
@@ -21572,6 +21822,9 @@ type RoadmapBoardId = uuid.UUID
 
 // Search defines model for Search.
 type Search = string
+
+// SsoDomainId defines model for SsoDomainId.
+type SsoDomainId = uuid.UUID
 
 // StatusComponentId defines model for StatusComponentId.
 type StatusComponentId = uuid.UUID
@@ -24499,6 +24752,48 @@ type ConnectSlackParams struct {
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
 
+// GetSsoSettingsParams defines parameters for GetSsoSettings.
+type GetSsoSettingsParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// UpdateSsoSettingsParams defines parameters for UpdateSsoSettings.
+type UpdateSsoSettingsParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// AddSsoDomainParams defines parameters for AddSsoDomain.
+type AddSsoDomainParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// DeleteSsoDomainParams defines parameters for DeleteSsoDomain.
+type DeleteSsoDomainParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// VerifySsoDomainParams defines parameters for VerifySsoDomain.
+type VerifySsoDomainParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// DeleteSsoOidcProviderParams defines parameters for DeleteSsoOidcProvider.
+type DeleteSsoOidcProviderParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// SetSsoOidcProviderParams defines parameters for SetSsoOidcProvider.
+type SetSsoOidcProviderParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
 // GetStatsParams defines parameters for GetStats.
 type GetStatsParams struct {
 	// InboxId Only this inbox (`404` when the caller cannot see it).
@@ -25683,6 +25978,9 @@ type VerifySignInCodeJSONRequestBody = SignInCodeVerify
 // FinishPasskeySignInJSONRequestBody defines body for FinishPasskeySignIn for application/json ContentType.
 type FinishPasskeySignInJSONRequestBody = PasskeyCeremonyResult
 
+// StartSsoSignInJSONRequestBody defines body for StartSsoSignIn for application/json ContentType.
+type StartSsoSignInJSONRequestBody = SsoStartRequest
+
 // CreateBroadcastJSONRequestBody defines body for CreateBroadcast for application/json ContentType.
 type CreateBroadcastJSONRequestBody = BroadcastCreate
 
@@ -25967,6 +26265,15 @@ type UpdateRoadmapBoardJSONRequestBody = RoadmapBoardUpdate
 
 // UpdateSlackJSONRequestBody defines body for UpdateSlack for application/json ContentType.
 type UpdateSlackJSONRequestBody = SlackConnectionUpdate
+
+// UpdateSsoSettingsJSONRequestBody defines body for UpdateSsoSettings for application/json ContentType.
+type UpdateSsoSettingsJSONRequestBody = SsoSettingsUpdate
+
+// AddSsoDomainJSONRequestBody defines body for AddSsoDomain for application/json ContentType.
+type AddSsoDomainJSONRequestBody = SsoDomainInput
+
+// SetSsoOidcProviderJSONRequestBody defines body for SetSsoOidcProvider for application/json ContentType.
+type SetSsoOidcProviderJSONRequestBody = SsoOidcInput
 
 // CreateStatusPageJSONRequestBody defines body for CreateStatusPage for application/json ContentType.
 type CreateStatusPageJSONRequestBody = StatusPageCreate
@@ -32750,6 +33057,58 @@ type ClientInterface interface {
 	// Corresponds with POST /v1/auth/sign-out (the `SignOut` operationId).
 	SignOut(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// StartSsoSignInWithBody Start a single sign-on
+	//
+	// The sign-in page asks for the e-mail address first and sends it here. When the address's
+	// domain is claimed by a workspace that has an identity provider, the answer carries
+	// `authorization_url`, the provider's sign-in page (authorization code with PKCE, `state`
+	// and `nonce`, `login_hint` set to the address), and sets the `yuva_sso` cookie that binds
+	// the sign-in to this browser for 10 minutes; the page sends the browser there. Otherwise
+	// `sso` is `false` and the page goes on with a code or a passkey.
+	//
+	// The provider sends the browser back to `GET /auth/sso/callback` (outside this contract),
+	// which checks the cookie and `state`, exchanges the code, verifies the `id_token` (signature
+	// against the provider's keys, `iss`, `aud`, `exp`, `nonce`) and requires a verified e-mail in a
+	// domain the workspace has claimed. It then redirects to `return_to` (or `/`) with the
+	// session cookie set, or to `/sign-in?sso_error=<code>` with `code` one of `expired`,
+	// `denied`, `failed`, `invalid_token`, `email_unverified`, `domain_not_claimed`,
+	// `group_not_allowed`, `not_member`.
+	//
+	// A domain's claim is public (its DNS record is), so answering whether it has single
+	// sign-on reveals nothing about people. 30 requests a minute per client IP address (`429`).
+	// `502 sso_unavailable` when the provider's discovery document cannot be read.
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /v1/auth/sso (the `StartSsoSignIn` operationId).
+	StartSsoSignInWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// StartSsoSignIn Start a single sign-on
+	//
+	// The sign-in page asks for the e-mail address first and sends it here. When the address's
+	// domain is claimed by a workspace that has an identity provider, the answer carries
+	// `authorization_url`, the provider's sign-in page (authorization code with PKCE, `state`
+	// and `nonce`, `login_hint` set to the address), and sets the `yuva_sso` cookie that binds
+	// the sign-in to this browser for 10 minutes; the page sends the browser there. Otherwise
+	// `sso` is `false` and the page goes on with a code or a passkey.
+	//
+	// The provider sends the browser back to `GET /auth/sso/callback` (outside this contract),
+	// which checks the cookie and `state`, exchanges the code, verifies the `id_token` (signature
+	// against the provider's keys, `iss`, `aud`, `exp`, `nonce`) and requires a verified e-mail in a
+	// domain the workspace has claimed. It then redirects to `return_to` (or `/`) with the
+	// session cookie set, or to `/sign-in?sso_error=<code>` with `code` one of `expired`,
+	// `denied`, `failed`, `invalid_token`, `email_unverified`, `domain_not_claimed`,
+	// `group_not_allowed`, `not_member`.
+	//
+	// A domain's claim is public (its DNS record is), so answering whether it has single
+	// sign-on reveals nothing about people. 30 requests a minute per client IP address (`429`).
+	// `502 sso_unavailable` when the provider's discovery document cannot be read.
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /v1/auth/sso (the `StartSsoSignIn` operationId).
+	StartSsoSignIn(ctx context.Context, body StartSsoSignInJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// ListBroadcasts List broadcasts
 	//
 	// Newest first, in the inboxes the caller can see. `state` may be repeated.
@@ -37937,6 +38296,135 @@ type ClientInterface interface {
 	//
 	// Corresponds with POST /v1/slack/connect (the `ConnectSlack` operationId).
 	ConnectSlack(ctx context.Context, params *ConnectSlackParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetSsoSettings Single sign-on settings
+	//
+	// The workspace's identity provider, claimed domains and sign-in rules. Owners only, with a
+	// member session.
+	//
+	// Corresponds with GET /v1/sso (the `GetSsoSettings` operationId).
+	GetSsoSettings(ctx context.Context, params *GetSsoSettingsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateSsoSettingsWithBody Change the sign-in rules
+	//
+	// `sso_required`: a member whose address is in one of the workspace's verified domains acts
+	// in the workspace (`/v1` with a session, `/v1/realtime`, approving an OAuth request) only
+	// with a session made through this workspace's provider; any other session gets `403
+	// sso_required` with `sso_email`, to send to `POST /v1/auth/sso`. Sessions that exist when it
+	// is turned on are refused at once. Signing in with a code or a passkey still works (for
+	// other workspaces and as a reader). Owners are exempt, so a broken identity provider never
+	// locks the workspace out. OAuth grants of covered members work only when they were approved
+	// with such a session; API keys are not affected. Turning it on needs a provider and a
+	// verified domain (`409 sso_not_ready`). `jit` lets a person of a claimed domain who signs
+	// in through the provider and is not a member join with `jit_role` (`admin` or `agent`,
+	// never `owner`). Owners only, with a member session; recorded as `sso.settings_changed`.
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with PATCH /v1/sso (the `UpdateSsoSettings` operationId).
+	UpdateSsoSettingsWithBody(ctx context.Context, params *UpdateSsoSettingsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateSsoSettings Change the sign-in rules
+	//
+	// `sso_required`: a member whose address is in one of the workspace's verified domains acts
+	// in the workspace (`/v1` with a session, `/v1/realtime`, approving an OAuth request) only
+	// with a session made through this workspace's provider; any other session gets `403
+	// sso_required` with `sso_email`, to send to `POST /v1/auth/sso`. Sessions that exist when it
+	// is turned on are refused at once. Signing in with a code or a passkey still works (for
+	// other workspaces and as a reader). Owners are exempt, so a broken identity provider never
+	// locks the workspace out. OAuth grants of covered members work only when they were approved
+	// with such a session; API keys are not affected. Turning it on needs a provider and a
+	// verified domain (`409 sso_not_ready`). `jit` lets a person of a claimed domain who signs
+	// in through the provider and is not a member join with `jit_role` (`admin` or `agent`,
+	// never `owner`). Owners only, with a member session; recorded as `sso.settings_changed`.
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with PATCH /v1/sso (the `UpdateSsoSettings` operationId).
+	UpdateSsoSettings(ctx context.Context, params *UpdateSsoSettingsParams, body UpdateSsoSettingsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// AddSsoDomainWithBody Claim an e-mail domain
+	//
+	// Starts a claim: publish the TXT record `txt_name` with `txt_value`, then verify. A domain
+	// verified by another workspace on this server answers `409 domain_taken`, the same domain
+	// twice in this workspace `409 domain_exists`; at most 50 domains (`409 sso_domain_limit`).
+	// Owners only, with a member session; recorded as `sso_domain.added`.
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /v1/sso/domains (the `AddSsoDomain` operationId).
+	AddSsoDomainWithBody(ctx context.Context, params *AddSsoDomainParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// AddSsoDomain Claim an e-mail domain
+	//
+	// Starts a claim: publish the TXT record `txt_name` with `txt_value`, then verify. A domain
+	// verified by another workspace on this server answers `409 domain_taken`, the same domain
+	// twice in this workspace `409 domain_exists`; at most 50 domains (`409 sso_domain_limit`).
+	// Owners only, with a member session; recorded as `sso_domain.added`.
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /v1/sso/domains (the `AddSsoDomain` operationId).
+	AddSsoDomain(ctx context.Context, params *AddSsoDomainParams, body AddSsoDomainJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteSsoDomain Give up a claimed domain
+	//
+	// People of the domain sign in with codes and passkeys again; removing the last verified
+	// domain turns `sso_required` off. Owners only, with a member session; recorded as
+	// `sso_domain.deleted`.
+	//
+	// Corresponds with DELETE /v1/sso/domains/{ssoDomainId} (the `DeleteSsoDomain` operationId).
+	DeleteSsoDomain(ctx context.Context, ssoDomainId SsoDomainId, params *DeleteSsoDomainParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// VerifySsoDomain Check a domain's TXT record
+	//
+	// Looks the TXT record up now. When it holds `txt_value` the domain becomes `verified`
+	// (recorded as `sso_domain.verified`) and stays so; the record may stay in place. Otherwise
+	// the claim stays `pending` with `problem` saying what was found. `409 domain_taken` when
+	// another workspace verified the domain first. Owners only, with a member session.
+	//
+	// Corresponds with POST /v1/sso/domains/{ssoDomainId}/verify (the `VerifySsoDomain` operationId).
+	VerifySsoDomain(ctx context.Context, ssoDomainId SsoDomainId, params *VerifySsoDomainParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteSsoOidcProvider Remove the OpenID Connect provider
+	//
+	// Removes the provider and turns `sso_required` off; claimed domains stay. Owners only,
+	// with a member session; recorded as `sso.provider_deleted`.
+	//
+	// Corresponds with DELETE /v1/sso/oidc (the `DeleteSsoOidcProvider` operationId).
+	DeleteSsoOidcProvider(ctx context.Context, params *DeleteSsoOidcProviderParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// SetSsoOidcProviderWithBody Set the OpenID Connect provider
+	//
+	// Saves the provider after reading its discovery document
+	// (`<issuer>/.well-known/openid-configuration`, whose `issuer` must equal the one given):
+	// `400 sso_discovery_failed` with the reason otherwise. The issuer is `https` and on a public
+	// address unless the server allows private addresses (`YUVA_WEBHOOK_ALLOW_PRIVATE`). The
+	// client secret is stored encrypted and never returned; leave it out to keep the stored
+	// one (required the first time). Register `redirect_uri` from `GET /v1/sso` at the
+	// provider. Owners only, with a member session; recorded as `sso.provider_created` or
+	// `sso.provider_updated`.
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with PUT /v1/sso/oidc (the `SetSsoOidcProvider` operationId).
+	SetSsoOidcProviderWithBody(ctx context.Context, params *SetSsoOidcProviderParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// SetSsoOidcProvider Set the OpenID Connect provider
+	//
+	// Saves the provider after reading its discovery document
+	// (`<issuer>/.well-known/openid-configuration`, whose `issuer` must equal the one given):
+	// `400 sso_discovery_failed` with the reason otherwise. The issuer is `https` and on a public
+	// address unless the server allows private addresses (`YUVA_WEBHOOK_ALLOW_PRIVATE`). The
+	// client secret is stored encrypted and never returned; leave it out to keep the stored
+	// one (required the first time). Register `redirect_uri` from `GET /v1/sso` at the
+	// provider. Owners only, with a member session; recorded as `sso.provider_created` or
+	// `sso.provider_updated`.
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with PUT /v1/sso/oidc (the `SetSsoOidcProvider` operationId).
+	SetSsoOidcProvider(ctx context.Context, params *SetSsoOidcProviderParams, body SetSsoOidcProviderJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetStats Team activity since a moment
 	//
@@ -43368,6 +43856,78 @@ func (c *Client) BeginPasskeySignIn(ctx context.Context, reqEditors ...RequestEd
 // Corresponds with POST /v1/auth/sign-out (the `SignOut` operationId).
 func (c *Client) SignOut(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewSignOutRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// StartSsoSignInWithBody Start a single sign-on
+//
+// The sign-in page asks for the e-mail address first and sends it here. When the address's
+// domain is claimed by a workspace that has an identity provider, the answer carries
+// `authorization_url`, the provider's sign-in page (authorization code with PKCE, `state`
+// and `nonce`, `login_hint` set to the address), and sets the `yuva_sso` cookie that binds
+// the sign-in to this browser for 10 minutes; the page sends the browser there. Otherwise
+// `sso` is `false` and the page goes on with a code or a passkey.
+//
+// The provider sends the browser back to `GET /auth/sso/callback` (outside this contract),
+// which checks the cookie and `state`, exchanges the code, verifies the `id_token` (signature
+// against the provider's keys, `iss`, `aud`, `exp`, `nonce`) and requires a verified e-mail in a
+// domain the workspace has claimed. It then redirects to `return_to` (or `/`) with the
+// session cookie set, or to `/sign-in?sso_error=<code>` with `code` one of `expired`,
+// `denied`, `failed`, `invalid_token`, `email_unverified`, `domain_not_claimed`,
+// `group_not_allowed`, `not_member`.
+//
+// A domain's claim is public (its DNS record is), so answering whether it has single
+// sign-on reveals nothing about people. 30 requests a minute per client IP address (`429`).
+// `502 sso_unavailable` when the provider's discovery document cannot be read.
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /v1/auth/sso (the `StartSsoSignIn` operationId).
+func (c *Client) StartSsoSignInWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewStartSsoSignInRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// StartSsoSignIn Start a single sign-on
+//
+// The sign-in page asks for the e-mail address first and sends it here. When the address's
+// domain is claimed by a workspace that has an identity provider, the answer carries
+// `authorization_url`, the provider's sign-in page (authorization code with PKCE, `state`
+// and `nonce`, `login_hint` set to the address), and sets the `yuva_sso` cookie that binds
+// the sign-in to this browser for 10 minutes; the page sends the browser there. Otherwise
+// `sso` is `false` and the page goes on with a code or a passkey.
+//
+// The provider sends the browser back to `GET /auth/sso/callback` (outside this contract),
+// which checks the cookie and `state`, exchanges the code, verifies the `id_token` (signature
+// against the provider's keys, `iss`, `aud`, `exp`, `nonce`) and requires a verified e-mail in a
+// domain the workspace has claimed. It then redirects to `return_to` (or `/`) with the
+// session cookie set, or to `/sign-in?sso_error=<code>` with `code` one of `expired`,
+// `denied`, `failed`, `invalid_token`, `email_unverified`, `domain_not_claimed`,
+// `group_not_allowed`, `not_member`.
+//
+// A domain's claim is public (its DNS record is), so answering whether it has single
+// sign-on reveals nothing about people. 30 requests a minute per client IP address (`429`).
+// `502 sso_unavailable` when the provider's discovery document cannot be read.
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /v1/auth/sso (the `StartSsoSignIn` operationId).
+func (c *Client) StartSsoSignIn(ctx context.Context, body StartSsoSignInJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewStartSsoSignInRequest(c.Server, body)
 	if err != nil {
 		return nil, err
 	}
@@ -52196,6 +52756,235 @@ func (c *Client) ListSlackChannels(ctx context.Context, params *ListSlackChannel
 // Corresponds with POST /v1/slack/connect (the `ConnectSlack` operationId).
 func (c *Client) ConnectSlack(ctx context.Context, params *ConnectSlackParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewConnectSlackRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetSsoSettings Single sign-on settings
+//
+// The workspace's identity provider, claimed domains and sign-in rules. Owners only, with a
+// member session.
+//
+// Corresponds with GET /v1/sso (the `GetSsoSettings` operationId).
+func (c *Client) GetSsoSettings(ctx context.Context, params *GetSsoSettingsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetSsoSettingsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// UpdateSsoSettingsWithBody Change the sign-in rules
+//
+// `sso_required`: a member whose address is in one of the workspace's verified domains acts
+// in the workspace (`/v1` with a session, `/v1/realtime`, approving an OAuth request) only
+// with a session made through this workspace's provider; any other session gets `403
+// sso_required` with `sso_email`, to send to `POST /v1/auth/sso`. Sessions that exist when it
+// is turned on are refused at once. Signing in with a code or a passkey still works (for
+// other workspaces and as a reader). Owners are exempt, so a broken identity provider never
+// locks the workspace out. OAuth grants of covered members work only when they were approved
+// with such a session; API keys are not affected. Turning it on needs a provider and a
+// verified domain (`409 sso_not_ready`). `jit` lets a person of a claimed domain who signs
+// in through the provider and is not a member join with `jit_role` (`admin` or `agent`,
+// never `owner`). Owners only, with a member session; recorded as `sso.settings_changed`.
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with PATCH /v1/sso (the `UpdateSsoSettings` operationId).
+func (c *Client) UpdateSsoSettingsWithBody(ctx context.Context, params *UpdateSsoSettingsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateSsoSettingsRequestWithBody(c.Server, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// UpdateSsoSettings Change the sign-in rules
+//
+// `sso_required`: a member whose address is in one of the workspace's verified domains acts
+// in the workspace (`/v1` with a session, `/v1/realtime`, approving an OAuth request) only
+// with a session made through this workspace's provider; any other session gets `403
+// sso_required` with `sso_email`, to send to `POST /v1/auth/sso`. Sessions that exist when it
+// is turned on are refused at once. Signing in with a code or a passkey still works (for
+// other workspaces and as a reader). Owners are exempt, so a broken identity provider never
+// locks the workspace out. OAuth grants of covered members work only when they were approved
+// with such a session; API keys are not affected. Turning it on needs a provider and a
+// verified domain (`409 sso_not_ready`). `jit` lets a person of a claimed domain who signs
+// in through the provider and is not a member join with `jit_role` (`admin` or `agent`,
+// never `owner`). Owners only, with a member session; recorded as `sso.settings_changed`.
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with PATCH /v1/sso (the `UpdateSsoSettings` operationId).
+func (c *Client) UpdateSsoSettings(ctx context.Context, params *UpdateSsoSettingsParams, body UpdateSsoSettingsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateSsoSettingsRequest(c.Server, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// AddSsoDomainWithBody Claim an e-mail domain
+//
+// Starts a claim: publish the TXT record `txt_name` with `txt_value`, then verify. A domain
+// verified by another workspace on this server answers `409 domain_taken`, the same domain
+// twice in this workspace `409 domain_exists`; at most 50 domains (`409 sso_domain_limit`).
+// Owners only, with a member session; recorded as `sso_domain.added`.
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /v1/sso/domains (the `AddSsoDomain` operationId).
+func (c *Client) AddSsoDomainWithBody(ctx context.Context, params *AddSsoDomainParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAddSsoDomainRequestWithBody(c.Server, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// AddSsoDomain Claim an e-mail domain
+//
+// Starts a claim: publish the TXT record `txt_name` with `txt_value`, then verify. A domain
+// verified by another workspace on this server answers `409 domain_taken`, the same domain
+// twice in this workspace `409 domain_exists`; at most 50 domains (`409 sso_domain_limit`).
+// Owners only, with a member session; recorded as `sso_domain.added`.
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /v1/sso/domains (the `AddSsoDomain` operationId).
+func (c *Client) AddSsoDomain(ctx context.Context, params *AddSsoDomainParams, body AddSsoDomainJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAddSsoDomainRequest(c.Server, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// DeleteSsoDomain Give up a claimed domain
+//
+// People of the domain sign in with codes and passkeys again; removing the last verified
+// domain turns `sso_required` off. Owners only, with a member session; recorded as
+// `sso_domain.deleted`.
+//
+// Corresponds with DELETE /v1/sso/domains/{ssoDomainId} (the `DeleteSsoDomain` operationId).
+func (c *Client) DeleteSsoDomain(ctx context.Context, ssoDomainId SsoDomainId, params *DeleteSsoDomainParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteSsoDomainRequest(c.Server, ssoDomainId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// VerifySsoDomain Check a domain's TXT record
+//
+// Looks the TXT record up now. When it holds `txt_value` the domain becomes `verified`
+// (recorded as `sso_domain.verified`) and stays so; the record may stay in place. Otherwise
+// the claim stays `pending` with `problem` saying what was found. `409 domain_taken` when
+// another workspace verified the domain first. Owners only, with a member session.
+//
+// Corresponds with POST /v1/sso/domains/{ssoDomainId}/verify (the `VerifySsoDomain` operationId).
+func (c *Client) VerifySsoDomain(ctx context.Context, ssoDomainId SsoDomainId, params *VerifySsoDomainParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewVerifySsoDomainRequest(c.Server, ssoDomainId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// DeleteSsoOidcProvider Remove the OpenID Connect provider
+//
+// Removes the provider and turns `sso_required` off; claimed domains stay. Owners only,
+// with a member session; recorded as `sso.provider_deleted`.
+//
+// Corresponds with DELETE /v1/sso/oidc (the `DeleteSsoOidcProvider` operationId).
+func (c *Client) DeleteSsoOidcProvider(ctx context.Context, params *DeleteSsoOidcProviderParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteSsoOidcProviderRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// SetSsoOidcProviderWithBody Set the OpenID Connect provider
+//
+// Saves the provider after reading its discovery document
+// (`<issuer>/.well-known/openid-configuration`, whose `issuer` must equal the one given):
+// `400 sso_discovery_failed` with the reason otherwise. The issuer is `https` and on a public
+// address unless the server allows private addresses (`YUVA_WEBHOOK_ALLOW_PRIVATE`). The
+// client secret is stored encrypted and never returned; leave it out to keep the stored
+// one (required the first time). Register `redirect_uri` from `GET /v1/sso` at the
+// provider. Owners only, with a member session; recorded as `sso.provider_created` or
+// `sso.provider_updated`.
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with PUT /v1/sso/oidc (the `SetSsoOidcProvider` operationId).
+func (c *Client) SetSsoOidcProviderWithBody(ctx context.Context, params *SetSsoOidcProviderParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSetSsoOidcProviderRequestWithBody(c.Server, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// SetSsoOidcProvider Set the OpenID Connect provider
+//
+// Saves the provider after reading its discovery document
+// (`<issuer>/.well-known/openid-configuration`, whose `issuer` must equal the one given):
+// `400 sso_discovery_failed` with the reason otherwise. The issuer is `https` and on a public
+// address unless the server allows private addresses (`YUVA_WEBHOOK_ALLOW_PRIVATE`). The
+// client secret is stored encrypted and never returned; leave it out to keep the stored
+// one (required the first time). Register `redirect_uri` from `GET /v1/sso` at the
+// provider. Owners only, with a member session; recorded as `sso.provider_created` or
+// `sso.provider_updated`.
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with PUT /v1/sso/oidc (the `SetSsoOidcProvider` operationId).
+func (c *Client) SetSsoOidcProvider(ctx context.Context, params *SetSsoOidcProviderParams, body SetSsoOidcProviderJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSetSsoOidcProviderRequest(c.Server, params, body)
 	if err != nil {
 		return nil, err
 	}
@@ -61100,6 +61889,46 @@ func NewSignOutRequest(server string) (*http.Request, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	return req, nil
+}
+
+// NewStartSsoSignInRequest calls the generic StartSsoSignIn builder with application/json body
+func NewStartSsoSignInRequest(server string, body StartSsoSignInJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewStartSsoSignInRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewStartSsoSignInRequestWithBody constructs an http.Request for the StartSsoSignIn method, with any body, and a specified content type
+func NewStartSsoSignInRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/auth/sso")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
 
 	return req, nil
 }
@@ -78841,6 +79670,353 @@ func NewConnectSlackRequest(server string, params *ConnectSlackParams) (*http.Re
 	return req, nil
 }
 
+// NewGetSsoSettingsRequest constructs an http.Request for the GetSsoSettings method
+func NewGetSsoSettingsRequest(server string, params *GetSsoSettingsParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/sso")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewUpdateSsoSettingsRequest calls the generic UpdateSsoSettings builder with application/json body
+func NewUpdateSsoSettingsRequest(server string, params *UpdateSsoSettingsParams, body UpdateSsoSettingsJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateSsoSettingsRequestWithBody(server, params, "application/json", bodyReader)
+}
+
+// NewUpdateSsoSettingsRequestWithBody constructs an http.Request for the UpdateSsoSettings method, with any body, and a specified content type
+func NewUpdateSsoSettingsRequestWithBody(server string, params *UpdateSsoSettingsParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/sso")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPatch, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewAddSsoDomainRequest calls the generic AddSsoDomain builder with application/json body
+func NewAddSsoDomainRequest(server string, params *AddSsoDomainParams, body AddSsoDomainJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewAddSsoDomainRequestWithBody(server, params, "application/json", bodyReader)
+}
+
+// NewAddSsoDomainRequestWithBody constructs an http.Request for the AddSsoDomain method, with any body, and a specified content type
+func NewAddSsoDomainRequestWithBody(server string, params *AddSsoDomainParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/sso/domains")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewDeleteSsoDomainRequest constructs an http.Request for the DeleteSsoDomain method
+func NewDeleteSsoDomainRequest(server string, ssoDomainId SsoDomainId, params *DeleteSsoDomainParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "ssoDomainId", ssoDomainId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/sso/domains/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodDelete, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewVerifySsoDomainRequest constructs an http.Request for the VerifySsoDomain method
+func NewVerifySsoDomainRequest(server string, ssoDomainId SsoDomainId, params *VerifySsoDomainParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "ssoDomainId", ssoDomainId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/sso/domains/%s/verify", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewDeleteSsoOidcProviderRequest constructs an http.Request for the DeleteSsoOidcProvider method
+func NewDeleteSsoOidcProviderRequest(server string, params *DeleteSsoOidcProviderParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/sso/oidc")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodDelete, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewSetSsoOidcProviderRequest calls the generic SetSsoOidcProvider builder with application/json body
+func NewSetSsoOidcProviderRequest(server string, params *SetSsoOidcProviderParams, body SetSsoOidcProviderJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewSetSsoOidcProviderRequestWithBody(server, params, "application/json", bodyReader)
+}
+
+// NewSetSsoOidcProviderRequestWithBody constructs an http.Request for the SetSsoOidcProvider method, with any body, and a specified content type
+func NewSetSsoOidcProviderRequestWithBody(server string, params *SetSsoOidcProviderParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/sso/oidc")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPut, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
 // NewGetStatsRequest constructs an http.Request for the GetStats method
 func NewGetStatsRequest(server string, params *GetStatsParams) (*http.Request, error) {
 	var err error
@@ -85892,6 +87068,58 @@ type ClientWithResponsesInterface interface {
 	// Corresponds with POST /v1/auth/sign-out (the `SignOut` operationId).
 	SignOutWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*SignOutResponse, error)
 
+	// StartSsoSignInWithBodyWithResponse Start a single sign-on
+	//
+	// The sign-in page asks for the e-mail address first and sends it here. When the address's
+	// domain is claimed by a workspace that has an identity provider, the answer carries
+	// `authorization_url`, the provider's sign-in page (authorization code with PKCE, `state`
+	// and `nonce`, `login_hint` set to the address), and sets the `yuva_sso` cookie that binds
+	// the sign-in to this browser for 10 minutes; the page sends the browser there. Otherwise
+	// `sso` is `false` and the page goes on with a code or a passkey.
+	//
+	// The provider sends the browser back to `GET /auth/sso/callback` (outside this contract),
+	// which checks the cookie and `state`, exchanges the code, verifies the `id_token` (signature
+	// against the provider's keys, `iss`, `aud`, `exp`, `nonce`) and requires a verified e-mail in a
+	// domain the workspace has claimed. It then redirects to `return_to` (or `/`) with the
+	// session cookie set, or to `/sign-in?sso_error=<code>` with `code` one of `expired`,
+	// `denied`, `failed`, `invalid_token`, `email_unverified`, `domain_not_claimed`,
+	// `group_not_allowed`, `not_member`.
+	//
+	// A domain's claim is public (its DNS record is), so answering whether it has single
+	// sign-on reveals nothing about people. 30 requests a minute per client IP address (`429`).
+	// `502 sso_unavailable` when the provider's discovery document cannot be read.
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /v1/auth/sso (the `StartSsoSignIn` operationId).
+	StartSsoSignInWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*StartSsoSignInResponse, error)
+
+	// StartSsoSignInWithResponse Start a single sign-on
+	//
+	// The sign-in page asks for the e-mail address first and sends it here. When the address's
+	// domain is claimed by a workspace that has an identity provider, the answer carries
+	// `authorization_url`, the provider's sign-in page (authorization code with PKCE, `state`
+	// and `nonce`, `login_hint` set to the address), and sets the `yuva_sso` cookie that binds
+	// the sign-in to this browser for 10 minutes; the page sends the browser there. Otherwise
+	// `sso` is `false` and the page goes on with a code or a passkey.
+	//
+	// The provider sends the browser back to `GET /auth/sso/callback` (outside this contract),
+	// which checks the cookie and `state`, exchanges the code, verifies the `id_token` (signature
+	// against the provider's keys, `iss`, `aud`, `exp`, `nonce`) and requires a verified e-mail in a
+	// domain the workspace has claimed. It then redirects to `return_to` (or `/`) with the
+	// session cookie set, or to `/sign-in?sso_error=<code>` with `code` one of `expired`,
+	// `denied`, `failed`, `invalid_token`, `email_unverified`, `domain_not_claimed`,
+	// `group_not_allowed`, `not_member`.
+	//
+	// A domain's claim is public (its DNS record is), so answering whether it has single
+	// sign-on reveals nothing about people. 30 requests a minute per client IP address (`429`).
+	// `502 sso_unavailable` when the provider's discovery document cannot be read.
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /v1/auth/sso (the `StartSsoSignIn` operationId).
+	StartSsoSignInWithResponse(ctx context.Context, body StartSsoSignInJSONRequestBody, reqEditors ...RequestEditorFn) (*StartSsoSignInResponse, error)
+
 	// ListBroadcastsWithResponse List broadcasts
 	//
 	// Newest first, in the inboxes the caller can see. `state` may be repeated.
@@ -91441,6 +92669,143 @@ type ClientWithResponsesInterface interface {
 	//
 	// Corresponds with POST /v1/slack/connect (the `ConnectSlack` operationId).
 	ConnectSlackWithResponse(ctx context.Context, params *ConnectSlackParams, reqEditors ...RequestEditorFn) (*ConnectSlackResponse, error)
+
+	// GetSsoSettingsWithResponse Single sign-on settings
+	//
+	// The workspace's identity provider, claimed domains and sign-in rules. Owners only, with a
+	// member session.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /v1/sso (the `GetSsoSettings` operationId).
+	GetSsoSettingsWithResponse(ctx context.Context, params *GetSsoSettingsParams, reqEditors ...RequestEditorFn) (*GetSsoSettingsResponse, error)
+
+	// UpdateSsoSettingsWithBodyWithResponse Change the sign-in rules
+	//
+	// `sso_required`: a member whose address is in one of the workspace's verified domains acts
+	// in the workspace (`/v1` with a session, `/v1/realtime`, approving an OAuth request) only
+	// with a session made through this workspace's provider; any other session gets `403
+	// sso_required` with `sso_email`, to send to `POST /v1/auth/sso`. Sessions that exist when it
+	// is turned on are refused at once. Signing in with a code or a passkey still works (for
+	// other workspaces and as a reader). Owners are exempt, so a broken identity provider never
+	// locks the workspace out. OAuth grants of covered members work only when they were approved
+	// with such a session; API keys are not affected. Turning it on needs a provider and a
+	// verified domain (`409 sso_not_ready`). `jit` lets a person of a claimed domain who signs
+	// in through the provider and is not a member join with `jit_role` (`admin` or `agent`,
+	// never `owner`). Owners only, with a member session; recorded as `sso.settings_changed`.
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PATCH /v1/sso (the `UpdateSsoSettings` operationId).
+	UpdateSsoSettingsWithBodyWithResponse(ctx context.Context, params *UpdateSsoSettingsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateSsoSettingsResponse, error)
+
+	// UpdateSsoSettingsWithResponse Change the sign-in rules
+	//
+	// `sso_required`: a member whose address is in one of the workspace's verified domains acts
+	// in the workspace (`/v1` with a session, `/v1/realtime`, approving an OAuth request) only
+	// with a session made through this workspace's provider; any other session gets `403
+	// sso_required` with `sso_email`, to send to `POST /v1/auth/sso`. Sessions that exist when it
+	// is turned on are refused at once. Signing in with a code or a passkey still works (for
+	// other workspaces and as a reader). Owners are exempt, so a broken identity provider never
+	// locks the workspace out. OAuth grants of covered members work only when they were approved
+	// with such a session; API keys are not affected. Turning it on needs a provider and a
+	// verified domain (`409 sso_not_ready`). `jit` lets a person of a claimed domain who signs
+	// in through the provider and is not a member join with `jit_role` (`admin` or `agent`,
+	// never `owner`). Owners only, with a member session; recorded as `sso.settings_changed`.
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PATCH /v1/sso (the `UpdateSsoSettings` operationId).
+	UpdateSsoSettingsWithResponse(ctx context.Context, params *UpdateSsoSettingsParams, body UpdateSsoSettingsJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateSsoSettingsResponse, error)
+
+	// AddSsoDomainWithBodyWithResponse Claim an e-mail domain
+	//
+	// Starts a claim: publish the TXT record `txt_name` with `txt_value`, then verify. A domain
+	// verified by another workspace on this server answers `409 domain_taken`, the same domain
+	// twice in this workspace `409 domain_exists`; at most 50 domains (`409 sso_domain_limit`).
+	// Owners only, with a member session; recorded as `sso_domain.added`.
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /v1/sso/domains (the `AddSsoDomain` operationId).
+	AddSsoDomainWithBodyWithResponse(ctx context.Context, params *AddSsoDomainParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AddSsoDomainResponse, error)
+
+	// AddSsoDomainWithResponse Claim an e-mail domain
+	//
+	// Starts a claim: publish the TXT record `txt_name` with `txt_value`, then verify. A domain
+	// verified by another workspace on this server answers `409 domain_taken`, the same domain
+	// twice in this workspace `409 domain_exists`; at most 50 domains (`409 sso_domain_limit`).
+	// Owners only, with a member session; recorded as `sso_domain.added`.
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /v1/sso/domains (the `AddSsoDomain` operationId).
+	AddSsoDomainWithResponse(ctx context.Context, params *AddSsoDomainParams, body AddSsoDomainJSONRequestBody, reqEditors ...RequestEditorFn) (*AddSsoDomainResponse, error)
+
+	// DeleteSsoDomainWithResponse Give up a claimed domain
+	//
+	// People of the domain sign in with codes and passkeys again; removing the last verified
+	// domain turns `sso_required` off. Owners only, with a member session; recorded as
+	// `sso_domain.deleted`.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with DELETE /v1/sso/domains/{ssoDomainId} (the `DeleteSsoDomain` operationId).
+	DeleteSsoDomainWithResponse(ctx context.Context, ssoDomainId SsoDomainId, params *DeleteSsoDomainParams, reqEditors ...RequestEditorFn) (*DeleteSsoDomainResponse, error)
+
+	// VerifySsoDomainWithResponse Check a domain's TXT record
+	//
+	// Looks the TXT record up now. When it holds `txt_value` the domain becomes `verified`
+	// (recorded as `sso_domain.verified`) and stays so; the record may stay in place. Otherwise
+	// the claim stays `pending` with `problem` saying what was found. `409 domain_taken` when
+	// another workspace verified the domain first. Owners only, with a member session.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /v1/sso/domains/{ssoDomainId}/verify (the `VerifySsoDomain` operationId).
+	VerifySsoDomainWithResponse(ctx context.Context, ssoDomainId SsoDomainId, params *VerifySsoDomainParams, reqEditors ...RequestEditorFn) (*VerifySsoDomainResponse, error)
+
+	// DeleteSsoOidcProviderWithResponse Remove the OpenID Connect provider
+	//
+	// Removes the provider and turns `sso_required` off; claimed domains stay. Owners only,
+	// with a member session; recorded as `sso.provider_deleted`.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with DELETE /v1/sso/oidc (the `DeleteSsoOidcProvider` operationId).
+	DeleteSsoOidcProviderWithResponse(ctx context.Context, params *DeleteSsoOidcProviderParams, reqEditors ...RequestEditorFn) (*DeleteSsoOidcProviderResponse, error)
+
+	// SetSsoOidcProviderWithBodyWithResponse Set the OpenID Connect provider
+	//
+	// Saves the provider after reading its discovery document
+	// (`<issuer>/.well-known/openid-configuration`, whose `issuer` must equal the one given):
+	// `400 sso_discovery_failed` with the reason otherwise. The issuer is `https` and on a public
+	// address unless the server allows private addresses (`YUVA_WEBHOOK_ALLOW_PRIVATE`). The
+	// client secret is stored encrypted and never returned; leave it out to keep the stored
+	// one (required the first time). Register `redirect_uri` from `GET /v1/sso` at the
+	// provider. Owners only, with a member session; recorded as `sso.provider_created` or
+	// `sso.provider_updated`.
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PUT /v1/sso/oidc (the `SetSsoOidcProvider` operationId).
+	SetSsoOidcProviderWithBodyWithResponse(ctx context.Context, params *SetSsoOidcProviderParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SetSsoOidcProviderResponse, error)
+
+	// SetSsoOidcProviderWithResponse Set the OpenID Connect provider
+	//
+	// Saves the provider after reading its discovery document
+	// (`<issuer>/.well-known/openid-configuration`, whose `issuer` must equal the one given):
+	// `400 sso_discovery_failed` with the reason otherwise. The issuer is `https` and on a public
+	// address unless the server allows private addresses (`YUVA_WEBHOOK_ALLOW_PRIVATE`). The
+	// client secret is stored encrypted and never returned; leave it out to keep the stored
+	// one (required the first time). Register `redirect_uri` from `GET /v1/sso` at the
+	// provider. Owners only, with a member session; recorded as `sso.provider_created` or
+	// `sso.provider_updated`.
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PUT /v1/sso/oidc (the `SetSsoOidcProvider` operationId).
+	SetSsoOidcProviderWithResponse(ctx context.Context, params *SetSsoOidcProviderParams, body SetSsoOidcProviderJSONRequestBody, reqEditors ...RequestEditorFn) (*SetSsoOidcProviderResponse, error)
 
 	// GetStatsWithResponse Team activity since a moment
 	//
@@ -100740,6 +102105,75 @@ func (r SignOutResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r SignOutResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+// StartSsoSignInResponse200Headers the declared response headers of an HTTP 200 response for StartSsoSignIn
+type StartSsoSignInResponse200Headers struct {
+	SetCookie *string
+}
+
+type StartSsoSignInResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *SsoStart
+	// ApplicationproblemJSON400 the response for an HTTP 400 `application/problem+json` response
+	ApplicationproblemJSON400 *Problem
+	// ApplicationproblemJSON429 the response for an HTTP 429 `application/problem+json` response
+	ApplicationproblemJSON429 *Problem
+	// ApplicationproblemJSON502 the response for an HTTP 502 `application/problem+json` response
+	ApplicationproblemJSON502 *Problem
+	// Headers200 the parsed response headers for an HTTP 200 response
+	Headers200 *StartSsoSignInResponse200Headers
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r StartSsoSignInResponse) GetJSON200() *SsoStart {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON400 returns the response for an HTTP 400 `application/problem+json` response
+func (r StartSsoSignInResponse) GetApplicationproblemJSON400() *Problem {
+	return r.ApplicationproblemJSON400
+}
+
+// GetApplicationproblemJSON429 returns the response for an HTTP 429 `application/problem+json` response
+func (r StartSsoSignInResponse) GetApplicationproblemJSON429() *Problem {
+	return r.ApplicationproblemJSON429
+}
+
+// GetApplicationproblemJSON502 returns the response for an HTTP 502 `application/problem+json` response
+func (r StartSsoSignInResponse) GetApplicationproblemJSON502() *Problem {
+	return r.ApplicationproblemJSON502
+}
+
+// GetBody returns the raw response body bytes
+func (r StartSsoSignInResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r StartSsoSignInResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r StartSsoSignInResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r StartSsoSignInResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -119323,6 +120757,440 @@ func (r ConnectSlackResponse) ContentType() string {
 	return ""
 }
 
+type GetSsoSettingsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *SsoSettings
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetSsoSettingsResponse) GetJSON200() *SsoSettings {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r GetSsoSettingsResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r GetSsoSettingsResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetBody returns the raw response body bytes
+func (r GetSsoSettingsResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetSsoSettingsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetSsoSettingsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetSsoSettingsResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type UpdateSsoSettingsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *SsoSettings
+	// ApplicationproblemJSON400 the response for an HTTP 400 `application/problem+json` response
+	ApplicationproblemJSON400 *Problem
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON409 the response for an HTTP 409 `application/problem+json` response
+	ApplicationproblemJSON409 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r UpdateSsoSettingsResponse) GetJSON200() *SsoSettings {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON400 returns the response for an HTTP 400 `application/problem+json` response
+func (r UpdateSsoSettingsResponse) GetApplicationproblemJSON400() *Problem {
+	return r.ApplicationproblemJSON400
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r UpdateSsoSettingsResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r UpdateSsoSettingsResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON409 returns the response for an HTTP 409 `application/problem+json` response
+func (r UpdateSsoSettingsResponse) GetApplicationproblemJSON409() *Problem {
+	return r.ApplicationproblemJSON409
+}
+
+// GetBody returns the raw response body bytes
+func (r UpdateSsoSettingsResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateSsoSettingsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateSsoSettingsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r UpdateSsoSettingsResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type AddSsoDomainResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON201 the response for an HTTP 201 `application/json` response
+	JSON201 *SsoDomain
+	// ApplicationproblemJSON400 the response for an HTTP 400 `application/problem+json` response
+	ApplicationproblemJSON400 *Problem
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON409 the response for an HTTP 409 `application/problem+json` response
+	ApplicationproblemJSON409 *Problem
+}
+
+// GetJSON201 returns the response for an HTTP 201 `application/json` response
+func (r AddSsoDomainResponse) GetJSON201() *SsoDomain {
+	return r.JSON201
+}
+
+// GetApplicationproblemJSON400 returns the response for an HTTP 400 `application/problem+json` response
+func (r AddSsoDomainResponse) GetApplicationproblemJSON400() *Problem {
+	return r.ApplicationproblemJSON400
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r AddSsoDomainResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r AddSsoDomainResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON409 returns the response for an HTTP 409 `application/problem+json` response
+func (r AddSsoDomainResponse) GetApplicationproblemJSON409() *Problem {
+	return r.ApplicationproblemJSON409
+}
+
+// GetBody returns the raw response body bytes
+func (r AddSsoDomainResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r AddSsoDomainResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r AddSsoDomainResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r AddSsoDomainResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type DeleteSsoDomainResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r DeleteSsoDomainResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r DeleteSsoDomainResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r DeleteSsoDomainResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetBody returns the raw response body bytes
+func (r DeleteSsoDomainResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteSsoDomainResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteSsoDomainResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r DeleteSsoDomainResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type VerifySsoDomainResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *SsoDomain
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+	// ApplicationproblemJSON409 the response for an HTTP 409 `application/problem+json` response
+	ApplicationproblemJSON409 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r VerifySsoDomainResponse) GetJSON200() *SsoDomain {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r VerifySsoDomainResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r VerifySsoDomainResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r VerifySsoDomainResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetApplicationproblemJSON409 returns the response for an HTTP 409 `application/problem+json` response
+func (r VerifySsoDomainResponse) GetApplicationproblemJSON409() *Problem {
+	return r.ApplicationproblemJSON409
+}
+
+// GetBody returns the raw response body bytes
+func (r VerifySsoDomainResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r VerifySsoDomainResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r VerifySsoDomainResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r VerifySsoDomainResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type DeleteSsoOidcProviderResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r DeleteSsoOidcProviderResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r DeleteSsoOidcProviderResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r DeleteSsoOidcProviderResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetBody returns the raw response body bytes
+func (r DeleteSsoOidcProviderResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteSsoOidcProviderResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteSsoOidcProviderResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r DeleteSsoOidcProviderResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type SetSsoOidcProviderResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *SsoSettings
+	// ApplicationproblemJSON400 the response for an HTTP 400 `application/problem+json` response
+	ApplicationproblemJSON400 *Problem
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r SetSsoOidcProviderResponse) GetJSON200() *SsoSettings {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON400 returns the response for an HTTP 400 `application/problem+json` response
+func (r SetSsoOidcProviderResponse) GetApplicationproblemJSON400() *Problem {
+	return r.ApplicationproblemJSON400
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r SetSsoOidcProviderResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r SetSsoOidcProviderResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetBody returns the raw response body bytes
+func (r SetSsoOidcProviderResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r SetSsoOidcProviderResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r SetSsoOidcProviderResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r SetSsoOidcProviderResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type GetStatsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -127335,6 +129203,70 @@ func (c *ClientWithResponses) SignOutWithResponse(ctx context.Context, reqEditor
 	return ParseSignOutResponse(rsp)
 }
 
+// StartSsoSignInWithBodyWithResponse Start a single sign-on
+//
+// The sign-in page asks for the e-mail address first and sends it here. When the address's
+// domain is claimed by a workspace that has an identity provider, the answer carries
+// `authorization_url`, the provider's sign-in page (authorization code with PKCE, `state`
+// and `nonce`, `login_hint` set to the address), and sets the `yuva_sso` cookie that binds
+// the sign-in to this browser for 10 minutes; the page sends the browser there. Otherwise
+// `sso` is `false` and the page goes on with a code or a passkey.
+//
+// The provider sends the browser back to `GET /auth/sso/callback` (outside this contract),
+// which checks the cookie and `state`, exchanges the code, verifies the `id_token` (signature
+// against the provider's keys, `iss`, `aud`, `exp`, `nonce`) and requires a verified e-mail in a
+// domain the workspace has claimed. It then redirects to `return_to` (or `/`) with the
+// session cookie set, or to `/sign-in?sso_error=<code>` with `code` one of `expired`,
+// `denied`, `failed`, `invalid_token`, `email_unverified`, `domain_not_claimed`,
+// `group_not_allowed`, `not_member`.
+//
+// A domain's claim is public (its DNS record is), so answering whether it has single
+// sign-on reveals nothing about people. 30 requests a minute per client IP address (`429`).
+// `502 sso_unavailable` when the provider's discovery document cannot be read.
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /v1/auth/sso (the `StartSsoSignIn` operationId).
+func (c *ClientWithResponses) StartSsoSignInWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*StartSsoSignInResponse, error) {
+	rsp, err := c.StartSsoSignInWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseStartSsoSignInResponse(rsp)
+}
+
+// StartSsoSignInWithResponse Start a single sign-on
+//
+// The sign-in page asks for the e-mail address first and sends it here. When the address's
+// domain is claimed by a workspace that has an identity provider, the answer carries
+// `authorization_url`, the provider's sign-in page (authorization code with PKCE, `state`
+// and `nonce`, `login_hint` set to the address), and sets the `yuva_sso` cookie that binds
+// the sign-in to this browser for 10 minutes; the page sends the browser there. Otherwise
+// `sso` is `false` and the page goes on with a code or a passkey.
+//
+// The provider sends the browser back to `GET /auth/sso/callback` (outside this contract),
+// which checks the cookie and `state`, exchanges the code, verifies the `id_token` (signature
+// against the provider's keys, `iss`, `aud`, `exp`, `nonce`) and requires a verified e-mail in a
+// domain the workspace has claimed. It then redirects to `return_to` (or `/`) with the
+// session cookie set, or to `/sign-in?sso_error=<code>` with `code` one of `expired`,
+// `denied`, `failed`, `invalid_token`, `email_unverified`, `domain_not_claimed`,
+// `group_not_allowed`, `not_member`.
+//
+// A domain's claim is public (its DNS record is), so answering whether it has single
+// sign-on reveals nothing about people. 30 requests a minute per client IP address (`429`).
+// `502 sso_unavailable` when the provider's discovery document cannot be read.
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /v1/auth/sso (the `StartSsoSignIn` operationId).
+func (c *ClientWithResponses) StartSsoSignInWithResponse(ctx context.Context, body StartSsoSignInJSONRequestBody, reqEditors ...RequestEditorFn) (*StartSsoSignInResponse, error) {
+	rsp, err := c.StartSsoSignIn(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseStartSsoSignInResponse(rsp)
+}
+
 // ListBroadcastsWithResponse List broadcasts
 //
 // Newest first, in the inboxes the caller can see. `state` may be repeated.
@@ -135067,6 +136999,203 @@ func (c *ClientWithResponses) ConnectSlackWithResponse(ctx context.Context, para
 		return nil, err
 	}
 	return ParseConnectSlackResponse(rsp)
+}
+
+// GetSsoSettingsWithResponse Single sign-on settings
+//
+// The workspace's identity provider, claimed domains and sign-in rules. Owners only, with a
+// member session.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /v1/sso (the `GetSsoSettings` operationId).
+func (c *ClientWithResponses) GetSsoSettingsWithResponse(ctx context.Context, params *GetSsoSettingsParams, reqEditors ...RequestEditorFn) (*GetSsoSettingsResponse, error) {
+	rsp, err := c.GetSsoSettings(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetSsoSettingsResponse(rsp)
+}
+
+// UpdateSsoSettingsWithBodyWithResponse Change the sign-in rules
+//
+// `sso_required`: a member whose address is in one of the workspace's verified domains acts
+// in the workspace (`/v1` with a session, `/v1/realtime`, approving an OAuth request) only
+// with a session made through this workspace's provider; any other session gets `403
+// sso_required` with `sso_email`, to send to `POST /v1/auth/sso`. Sessions that exist when it
+// is turned on are refused at once. Signing in with a code or a passkey still works (for
+// other workspaces and as a reader). Owners are exempt, so a broken identity provider never
+// locks the workspace out. OAuth grants of covered members work only when they were approved
+// with such a session; API keys are not affected. Turning it on needs a provider and a
+// verified domain (`409 sso_not_ready`). `jit` lets a person of a claimed domain who signs
+// in through the provider and is not a member join with `jit_role` (`admin` or `agent`,
+// never `owner`). Owners only, with a member session; recorded as `sso.settings_changed`.
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PATCH /v1/sso (the `UpdateSsoSettings` operationId).
+func (c *ClientWithResponses) UpdateSsoSettingsWithBodyWithResponse(ctx context.Context, params *UpdateSsoSettingsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateSsoSettingsResponse, error) {
+	rsp, err := c.UpdateSsoSettingsWithBody(ctx, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateSsoSettingsResponse(rsp)
+}
+
+// UpdateSsoSettingsWithResponse Change the sign-in rules
+//
+// `sso_required`: a member whose address is in one of the workspace's verified domains acts
+// in the workspace (`/v1` with a session, `/v1/realtime`, approving an OAuth request) only
+// with a session made through this workspace's provider; any other session gets `403
+// sso_required` with `sso_email`, to send to `POST /v1/auth/sso`. Sessions that exist when it
+// is turned on are refused at once. Signing in with a code or a passkey still works (for
+// other workspaces and as a reader). Owners are exempt, so a broken identity provider never
+// locks the workspace out. OAuth grants of covered members work only when they were approved
+// with such a session; API keys are not affected. Turning it on needs a provider and a
+// verified domain (`409 sso_not_ready`). `jit` lets a person of a claimed domain who signs
+// in through the provider and is not a member join with `jit_role` (`admin` or `agent`,
+// never `owner`). Owners only, with a member session; recorded as `sso.settings_changed`.
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PATCH /v1/sso (the `UpdateSsoSettings` operationId).
+func (c *ClientWithResponses) UpdateSsoSettingsWithResponse(ctx context.Context, params *UpdateSsoSettingsParams, body UpdateSsoSettingsJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateSsoSettingsResponse, error) {
+	rsp, err := c.UpdateSsoSettings(ctx, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateSsoSettingsResponse(rsp)
+}
+
+// AddSsoDomainWithBodyWithResponse Claim an e-mail domain
+//
+// Starts a claim: publish the TXT record `txt_name` with `txt_value`, then verify. A domain
+// verified by another workspace on this server answers `409 domain_taken`, the same domain
+// twice in this workspace `409 domain_exists`; at most 50 domains (`409 sso_domain_limit`).
+// Owners only, with a member session; recorded as `sso_domain.added`.
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /v1/sso/domains (the `AddSsoDomain` operationId).
+func (c *ClientWithResponses) AddSsoDomainWithBodyWithResponse(ctx context.Context, params *AddSsoDomainParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AddSsoDomainResponse, error) {
+	rsp, err := c.AddSsoDomainWithBody(ctx, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAddSsoDomainResponse(rsp)
+}
+
+// AddSsoDomainWithResponse Claim an e-mail domain
+//
+// Starts a claim: publish the TXT record `txt_name` with `txt_value`, then verify. A domain
+// verified by another workspace on this server answers `409 domain_taken`, the same domain
+// twice in this workspace `409 domain_exists`; at most 50 domains (`409 sso_domain_limit`).
+// Owners only, with a member session; recorded as `sso_domain.added`.
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /v1/sso/domains (the `AddSsoDomain` operationId).
+func (c *ClientWithResponses) AddSsoDomainWithResponse(ctx context.Context, params *AddSsoDomainParams, body AddSsoDomainJSONRequestBody, reqEditors ...RequestEditorFn) (*AddSsoDomainResponse, error) {
+	rsp, err := c.AddSsoDomain(ctx, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAddSsoDomainResponse(rsp)
+}
+
+// DeleteSsoDomainWithResponse Give up a claimed domain
+//
+// People of the domain sign in with codes and passkeys again; removing the last verified
+// domain turns `sso_required` off. Owners only, with a member session; recorded as
+// `sso_domain.deleted`.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with DELETE /v1/sso/domains/{ssoDomainId} (the `DeleteSsoDomain` operationId).
+func (c *ClientWithResponses) DeleteSsoDomainWithResponse(ctx context.Context, ssoDomainId SsoDomainId, params *DeleteSsoDomainParams, reqEditors ...RequestEditorFn) (*DeleteSsoDomainResponse, error) {
+	rsp, err := c.DeleteSsoDomain(ctx, ssoDomainId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteSsoDomainResponse(rsp)
+}
+
+// VerifySsoDomainWithResponse Check a domain's TXT record
+//
+// Looks the TXT record up now. When it holds `txt_value` the domain becomes `verified`
+// (recorded as `sso_domain.verified`) and stays so; the record may stay in place. Otherwise
+// the claim stays `pending` with `problem` saying what was found. `409 domain_taken` when
+// another workspace verified the domain first. Owners only, with a member session.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /v1/sso/domains/{ssoDomainId}/verify (the `VerifySsoDomain` operationId).
+func (c *ClientWithResponses) VerifySsoDomainWithResponse(ctx context.Context, ssoDomainId SsoDomainId, params *VerifySsoDomainParams, reqEditors ...RequestEditorFn) (*VerifySsoDomainResponse, error) {
+	rsp, err := c.VerifySsoDomain(ctx, ssoDomainId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseVerifySsoDomainResponse(rsp)
+}
+
+// DeleteSsoOidcProviderWithResponse Remove the OpenID Connect provider
+//
+// Removes the provider and turns `sso_required` off; claimed domains stay. Owners only,
+// with a member session; recorded as `sso.provider_deleted`.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with DELETE /v1/sso/oidc (the `DeleteSsoOidcProvider` operationId).
+func (c *ClientWithResponses) DeleteSsoOidcProviderWithResponse(ctx context.Context, params *DeleteSsoOidcProviderParams, reqEditors ...RequestEditorFn) (*DeleteSsoOidcProviderResponse, error) {
+	rsp, err := c.DeleteSsoOidcProvider(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteSsoOidcProviderResponse(rsp)
+}
+
+// SetSsoOidcProviderWithBodyWithResponse Set the OpenID Connect provider
+//
+// Saves the provider after reading its discovery document
+// (`<issuer>/.well-known/openid-configuration`, whose `issuer` must equal the one given):
+// `400 sso_discovery_failed` with the reason otherwise. The issuer is `https` and on a public
+// address unless the server allows private addresses (`YUVA_WEBHOOK_ALLOW_PRIVATE`). The
+// client secret is stored encrypted and never returned; leave it out to keep the stored
+// one (required the first time). Register `redirect_uri` from `GET /v1/sso` at the
+// provider. Owners only, with a member session; recorded as `sso.provider_created` or
+// `sso.provider_updated`.
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PUT /v1/sso/oidc (the `SetSsoOidcProvider` operationId).
+func (c *ClientWithResponses) SetSsoOidcProviderWithBodyWithResponse(ctx context.Context, params *SetSsoOidcProviderParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SetSsoOidcProviderResponse, error) {
+	rsp, err := c.SetSsoOidcProviderWithBody(ctx, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSetSsoOidcProviderResponse(rsp)
+}
+
+// SetSsoOidcProviderWithResponse Set the OpenID Connect provider
+//
+// Saves the provider after reading its discovery document
+// (`<issuer>/.well-known/openid-configuration`, whose `issuer` must equal the one given):
+// `400 sso_discovery_failed` with the reason otherwise. The issuer is `https` and on a public
+// address unless the server allows private addresses (`YUVA_WEBHOOK_ALLOW_PRIVATE`). The
+// client secret is stored encrypted and never returned; leave it out to keep the stored
+// one (required the first time). Register `redirect_uri` from `GET /v1/sso` at the
+// provider. Owners only, with a member session; recorded as `sso.provider_created` or
+// `sso.provider_updated`.
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PUT /v1/sso/oidc (the `SetSsoOidcProvider` operationId).
+func (c *ClientWithResponses) SetSsoOidcProviderWithResponse(ctx context.Context, params *SetSsoOidcProviderParams, body SetSsoOidcProviderJSONRequestBody, reqEditors ...RequestEditorFn) (*SetSsoOidcProviderResponse, error) {
+	rsp, err := c.SetSsoOidcProvider(ctx, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSetSsoOidcProviderResponse(rsp)
 }
 
 // GetStatsWithResponse Team activity since a moment
@@ -143224,6 +145353,66 @@ func ParseSignOutResponse(rsp *http.Response) (*SignOutResponse, error) {
 			headers.SetCookie = &value
 		}
 		response.Headers204 = &headers
+	}
+
+	return response, nil
+}
+
+// ParseStartSsoSignInResponse parses an HTTP response from a StartSsoSignInWithResponse call
+func ParseStartSsoSignInResponse(rsp *http.Response) (*StartSsoSignInResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &StartSsoSignInResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest SsoStart
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 429:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON429 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 502:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON502 = &dest
+
+	}
+
+	switch {
+	case rsp.StatusCode == 200:
+		var headers StartSsoSignInResponse200Headers
+		if values := rsp.Header.Values("Set-Cookie"); len(values) > 0 {
+			var value string
+			if err := runtime.BindStyledParameterWithOptions("simple", "Set-Cookie", values[0], &value, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			}
+			headers.SetCookie = &value
+		}
+		response.Headers200 = &headers
 	}
 
 	return response, nil
@@ -157852,6 +160041,341 @@ func ParseConnectSlackResponse(rsp *http.Response) (*ConnectSlackResponse, error
 			return nil, err
 		}
 		response.ApplicationproblemJSON409 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetSsoSettingsResponse parses an HTTP response from a GetSsoSettingsWithResponse call
+func ParseGetSsoSettingsResponse(rsp *http.Response) (*GetSsoSettingsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetSsoSettingsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest SsoSettings
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateSsoSettingsResponse parses an HTTP response from a UpdateSsoSettingsWithResponse call
+func ParseUpdateSsoSettingsResponse(rsp *http.Response) (*UpdateSsoSettingsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateSsoSettingsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest SsoSettings
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON409 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseAddSsoDomainResponse parses an HTTP response from a AddSsoDomainWithResponse call
+func ParseAddSsoDomainResponse(rsp *http.Response) (*AddSsoDomainResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &AddSsoDomainResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
+		var dest SsoDomain
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON201 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON409 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteSsoDomainResponse parses an HTTP response from a DeleteSsoDomainWithResponse call
+func ParseDeleteSsoDomainResponse(rsp *http.Response) (*DeleteSsoDomainResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteSsoDomainResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case rsp.StatusCode == 204:
+		break // No content-type
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseVerifySsoDomainResponse parses an HTTP response from a VerifySsoDomainWithResponse call
+func ParseVerifySsoDomainResponse(rsp *http.Response) (*VerifySsoDomainResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &VerifySsoDomainResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest SsoDomain
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON409 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteSsoOidcProviderResponse parses an HTTP response from a DeleteSsoOidcProviderWithResponse call
+func ParseDeleteSsoOidcProviderResponse(rsp *http.Response) (*DeleteSsoOidcProviderResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteSsoOidcProviderResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case rsp.StatusCode == 204:
+		break // No content-type
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseSetSsoOidcProviderResponse parses an HTTP response from a SetSsoOidcProviderWithResponse call
+func ParseSetSsoOidcProviderResponse(rsp *http.Response) (*SetSsoOidcProviderResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &SetSsoOidcProviderResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest SsoSettings
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
 
 	}
 

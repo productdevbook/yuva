@@ -245,7 +245,7 @@ The commands, run as in [Operator commands](operations.md#operator-commands):
 
 | Variable | Default | Meaning |
 |---|---|---|
-| `YUVA_WEBHOOK_ALLOW_PRIVATE` | `false` | Lets webhooks reach loopback and private addresses. Development only. |
+| `YUVA_WEBHOOK_ALLOW_PRIVATE` | `false` | Lets webhooks, OAuth client metadata and single sign-on identity providers reach loopback and private addresses. Development only. |
 
 ## Slack
 

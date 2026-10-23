@@ -248,7 +248,7 @@ Komutlar, [Operatör komutları](operations.md#operatör-komutları) bölümünd
 
 | Değişken | Varsayılan | Anlamı |
 |---|---|---|
-| `YUVA_WEBHOOK_ALLOW_PRIVATE` | `false` | Webhook'ların loopback ve özel ağ adreslerine ulaşmasına izin verir. Yalnızca geliştirme için. |
+| `YUVA_WEBHOOK_ALLOW_PRIVATE` | `false` | Webhook'ların, OAuth istemci metadata'sının ve tek oturum açma kimlik sağlayıcılarının loopback ve özel ağ adreslerine ulaşmasına izin verir. Yalnızca geliştirme için. |
 
 ## Slack
 

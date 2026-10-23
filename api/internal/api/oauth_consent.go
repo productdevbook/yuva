@@ -66,6 +66,9 @@ func (s *Server) ApproveOAuthRequest(ctx context.Context, req oas.ApproveOAuthRe
 		if err != nil {
 			return err
 		}
+		if err := s.ssoGate(ctx, m.WorkspaceID, p.personID, m.Role, p.ssoSettings); err != nil {
+			return err
+		}
 		offered := offeredScopes(r.Scopes, m.Role)
 		for _, sc := range scopes {
 			if !slices.Contains(offered, oas.ApiKeyScope(sc)) {
@@ -80,7 +83,7 @@ func (s *Server) ApproveOAuthRequest(ctx context.Context, req oas.ApproveOAuthRe
 		}
 		g, err := q.UpsertOAuthGrant(ctx, store.UpsertOAuthGrantParams{
 			WorkspaceID: m.WorkspaceID, ID: newID(), MemberID: m.ID, ClientID: r.ClientRef, Scopes: scopes,
-			Resource: r.Resource, CreatedAt: now,
+			Resource: r.Resource, CreatedAt: now, SsoSettingsID: p.ssoSettings,
 		})
 		if err != nil {
 			return err

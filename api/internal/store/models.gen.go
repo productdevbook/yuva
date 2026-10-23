@@ -1793,17 +1793,18 @@ type OauthCode struct {
 }
 
 type OauthGrant struct {
-	WorkspaceID  uuid.UUID
-	ID           uuid.UUID
-	MemberID     uuid.UUID
-	ClientID     uuid.UUID
-	Scopes       []string
-	Resource     string
-	CreatedAt    time.Time
-	LastUsedAt   *time.Time
-	RequestMonth *time.Time
-	RequestCount int64
-	RevokedAt    *time.Time
+	WorkspaceID   uuid.UUID
+	ID            uuid.UUID
+	MemberID      uuid.UUID
+	ClientID      uuid.UUID
+	Scopes        []string
+	Resource      string
+	CreatedAt     time.Time
+	LastUsedAt    *time.Time
+	RequestMonth  *time.Time
+	RequestCount  int64
+	RevokedAt     *time.Time
+	SsoSettingsID *uuid.UUID
 }
 
 type OauthRequest struct {
@@ -2045,13 +2046,15 @@ type SesTenantResource struct {
 }
 
 type Session struct {
-	ID         uuid.UUID
-	PersonID   uuid.UUID
-	TokenHash  []byte
-	Method     string
-	CreatedAt  time.Time
-	ExpiresAt  time.Time
-	LastSeenAt time.Time
+	ID             uuid.UUID
+	PersonID       uuid.UUID
+	TokenHash      []byte
+	Method         string
+	CreatedAt      time.Time
+	ExpiresAt      time.Time
+	LastSeenAt     time.Time
+	SsoWorkspaceID *uuid.UUID
+	SsoSettingsID  *uuid.UUID
 }
 
 type SlackConnectState struct {
@@ -2116,6 +2119,45 @@ type SlackThread struct {
 	ThreadTs       string
 	ConversationID uuid.UUID
 	CreatedAt      time.Time
+}
+
+type SsoDomain struct {
+	ID          uuid.UUID
+	WorkspaceID uuid.UUID
+	Domain      string
+	Token       string
+	VerifiedAt  *time.Time
+	CheckedAt   *time.Time
+	Problem     *string
+	CreatedAt   time.Time
+}
+
+type SsoLogin struct {
+	StateHash   []byte
+	WorkspaceID uuid.UUID
+	SettingsID  uuid.UUID
+	Nonce       string
+	Verifier    string
+	ReturnTo    string
+	CreatedAt   time.Time
+	ExpiresAt   time.Time
+}
+
+type SsoSetting struct {
+	WorkspaceID      uuid.UUID
+	ID               uuid.UUID
+	Protocol         *string
+	OidcIssuer       *string
+	OidcClientID     *string
+	OidcClientSecret []byte
+	OidcScopes       []string
+	GroupsClaim      string
+	AllowedGroups    []string
+	SsoRequired      bool
+	Jit              bool
+	JitRole          string
+	CreatedAt        time.Time
+	UpdatedAt        time.Time
 }
 
 type StatusCheck struct {

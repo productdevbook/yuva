@@ -1446,6 +1446,8 @@ remote images, http(s)):
   timing does not reveal members. Each code takes five attempts; after 20 wrong codes for an
   address within 24 hours its codes are refused (`429 sign_in_paused`) and the member gets one
   e-mail about it. Passkeys are not affected.
+  The sign-in page asks for the e-mail first and sends people of a domain claimed for single
+  sign-on to its identity provider (see Single sign-on (M33)).
 
 ### Member notifications
 
@@ -3625,6 +3627,74 @@ appear in help search. Writing, rendering and translating are M20's.
      and badge, the feed, mailing an entry through broadcasts, MCP) and README lines. Check: links resolve,
      and every documented endpoint exists in `openapi/`.
 
+### Single sign-on (M33)
+
+Members of a workspace can sign in through the workspace's identity provider. OpenID Connect comes
+first (#160); SAML 2.0 (#161) uses the same domain claims, rules and membership, adding its own
+columns to `sso_settings` and `protocol` `saml`.
+
+- **Settings** (migration 00099): one `sso_settings` row per workspace (created on first change)
+  holds the provider (`protocol`, the issuer, client id, the client secret sealed under
+  `YUVA_MASTER_KEY` with the workspace and row id as context and never returned, extra scopes, the
+  groups claim and allowed groups) and the rules (`sso_required`, `jit`, `jit_role`). Owners only,
+  with a member session (keys and OAuth tokens get `403 member_session_required`): `GET`/`PATCH
+  /v1/sso`, `PUT`/`DELETE /v1/sso/oidc`, `POST /v1/sso/domains`, `POST
+  /v1/sso/domains/{id}/verify`, `DELETE /v1/sso/domains/{id}`. Saving the provider reads
+  `<issuer>/.well-known/openid-configuration` (its `issuer` must match exactly; Entra's shared
+  `common` issuer is therefore refused) and answers `400 sso_discovery_failed` otherwise. Removing
+  it turns `sso_required` off and keeps the domains. Not offered through MCP (credentials and access).
+- **Domain claims**: `sso_domains` rows, `pending` until `POST …/verify` finds the TXT record
+  `_yuva-sso.<domain>` holding the row's `yuva-verify-…` token (the status-page resolver, a lookup on
+  demand, no sweep). A verified domain is unique across the server (partial unique index): a domain
+  another workspace verified answers `409 domain_taken` when added or verified; pending claims may
+  overlap. Only the exact domain is claimed, not subdomains. At most 50 per workspace. A verified
+  claim stays until removed; removing the last verified one turns `sso_required` off.
+- **Sign-in**: the panel asks for the e-mail first and posts it to `POST /v1/auth/sso` (30 a minute per
+  client IP address). When the address's domain is verified by a workspace with a provider, the answer carries
+  `authorization_url` (code flow, PKCE S256, `state`, `nonce`, `login_hint`) and `required`, and sets
+  `yuva_sso` (the state, HttpOnly, SameSite=Lax, path `/auth/sso`, 10 minutes), binding the sign-in
+  to the browser; else `sso: false` and the page offers a code or a passkey. An `sso_logins` row
+  (state hash, nonce, verifier, `return_to`, 10 minutes) is taken once by `GET /auth/sso/callback`,
+  which needs the cookie to equal `state`, exchanges the code with the client secret and verifier,
+  and verifies the `id_token` with go-oidc: signature against the provider's JWKS (kept in memory
+  with the discovery document for an hour, fetched again when a token names an unknown key),
+  `iss`, `aud`, `exp`, then the nonce. The address must be verified (`email_verified: true`, or
+  Entra's `xms_edov: true`, which Entra sends instead) and in a domain this workspace verified; with
+  allowed groups, the groups claim must name one. Success redirects to `return_to` (a path on the
+  panel, else `/`) with the session cookie; a refusal to `/sign-in?sso_error=<code>`. Every session
+  records how it was made (`sessions.method` `code`, `passkey` or `sso`, and for `sso` the
+  workspace and `sso_settings` row it came through).
+- **Membership**: pending invites for the address are accepted as with a code. A person who is not a
+  member joins with `jit_role` (`agent` by default, `admin` allowed, never `owner`) when `jit` is on
+  (off by default), creating the person if needed: a `members` row only, inbox access follows the
+  usual grants. A person who already exists signs in even when not a member of the claiming
+  workspace (the session is the person's); with no person, no invite and `jit` off the answer is
+  `not_member`. Sessions stay person-level: a person's e-mail domain decides the one provider they
+  use, whatever workspaces they belong to.
+- **`sso_required`** is enforced on workspace access, not on sign-in. It needs a provider and a
+  verified domain (`409 sso_not_ready`). Every request that acts in the workspace as a member with a
+  session (`/v1`, `/v1/realtime`, approving an OAuth request for it) is refused with `403
+  sso_required` and `sso_email` (to send to `POST /v1/auth/sso`) when the person's address is in one
+  of the workspace's verified domains and the session was not made through this workspace's
+  provider; the check runs on every request, so sessions that exist when the rule is turned on are
+  refused at once and realtime streams at their next re-check. Signing in with a code or a passkey is
+  never refused for single sign-on: the person still reaches their other workspaces and the reader
+  account (discussions on any server page). Owners are exempt whatever their session, so a broken
+  provider never locks the workspace out. OAuth grants record whether they were approved with such a
+  session (`oauth_grants.sso_settings_id`); a covered member's grant approved otherwise (for example
+  before the rule was on) is refused the same way until it is approved again through the provider.
+  API keys are not member sessions and are not affected. Removing the provider or the last verified
+  domain turns the rule off.
+- **Outbound calls** to the issuer (discovery, keys, token) go through the webhook address checks
+  (`webhook.Dial`): never link-local or metadata addresses, private ones only with
+  `YUVA_WEBHOOK_ALLOW_PRIVATE`, no redirects, 10-second timeout, answers read up to 1 MiB.
+- **Audit**: `sso.provider_created`, `sso.provider_updated`, `sso.provider_deleted`,
+  `sso.settings_changed`, `sso_domain.added`, `sso_domain.verified`, `sso_domain.deleted`,
+  `sso.signed_in` and `sso.sign_in_refused` (reasons `failed`, `invalid_token`, `email_unverified`,
+  `domain_not_claimed`, `group_not_allowed`, `not_member`), actor the member when the address is one
+  in the workspace, else `system`; `member.joined` with `via: sso` for JIT. Requests refused with
+  `sso_required` are not recorded (they repeat on every call).
+
 ### Team mail (M34–M38)
 
 Some teams use Yuva as their mail client rather than for support: shared addresses such as sales@ and
@@ -3800,7 +3870,8 @@ they belong to no channel. (#136, migration 00095)
   `workspace.broadcast_approval_requested`, and the operator's `workspace.broadcasts_approved`,
   `workspace.broadcasts_denied`, `workspace.broadcasts_suspended` and
   `workspace.broadcast_limit_changed`; `conversation.trashed`, `conversation.restored`,
-  `conversation.deleted` (actor `system`) and `message.redacted` (target type `message`). Revocations and deletes write their entry only when the row
+  `conversation.deleted` (actor `system`) and `message.redacted` (target type `message`); the
+  single sign-on actions (targets `sso` and `sso_domain`, see Single sign-on (M33)). Revocations and deletes write their entry only when the row
   changed, so repeated or concurrent calls record one; a password sent again unchanged records
   nothing. No row holds message content, a secret, a password, a webhook URL (only its host), or a
   contact's name or address. A workspace's own deletion is not in its log, which goes with it: it is
@@ -3901,6 +3972,12 @@ they belong to no channel. (#136, migration 00095)
     other claims of its name in all four and every workspace, and the domain sweep lists the domains due
     for a check of all four and every workspace. Everything after those lookups is scoped by the
     workspace they returned.
+  - Single sign-on (M33): a sign-in finds the workspace whose identity provider an address uses by its
+    verified `sso_domains.domain`, unique across the server, before any workspace is known (when
+    starting a sign-in), and the
+    callback finds its `sso_logins` row by the state's hash alone; adding or verifying a claim checks
+    the verified domains of every workspace. Everything after those lookups is scoped by the workspace
+    they returned.
   - The person-level identity tables `people`, `sessions`, `login_codes`, `passkeys`,
     `webauthn_ceremonies` and `push_subscriptions` (a browser's subscription follows the person
     into every workspace; the send job finds it by its id). A person signs in once and can be a member of several workspaces, so

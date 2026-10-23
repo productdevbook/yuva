@@ -126,6 +126,9 @@ func (s *Server) resolveOAuthAccess(ctx context.Context, token string, kind acce
 	if selected != nil && *selected != a.WorkspaceID {
 		return principal{}, errTokenWorkspace
 	}
+	if err := s.ssoGate(ctx, a.WorkspaceID, a.PersonID, a.Role, a.SsoSettingsID); err != nil {
+		return principal{}, err
+	}
 	return principal{
 		grantID: a.GrantID, workspaceID: a.WorkspaceID, memberID: a.MemberID, role: a.Role, scopes: a.Scopes,
 		via: a.ClientName, mcpOnly: mcpOnly, botsMaySend: a.BotsMaySend, broadcastsByKeys: a.BroadcastsByKeys,

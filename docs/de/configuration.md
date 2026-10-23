@@ -249,7 +249,7 @@ Die Befehle laufen wie unter [Operator-Befehle](operations.md#operator-befehle):
 
 | Variable | Standard | Bedeutung |
 |---|---|---|
-| `YUVA_WEBHOOK_ALLOW_PRIVATE` | `false` | Erlaubt Webhooks, Loopback- und private Adressen zu erreichen. Nur für die Entwicklung. |
+| `YUVA_WEBHOOK_ALLOW_PRIVATE` | `false` | Erlaubt Webhooks, OAuth-Client-Metadaten und Single-Sign-on-Identitätsanbietern, Loopback- und private Adressen zu erreichen. Nur für die Entwicklung. |
 
 ## Slack
 

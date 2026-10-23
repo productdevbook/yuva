@@ -1100,6 +1100,15 @@ const (
 	AuditMessageRedacted                     AuditAction = "message.redacted"
 	AuditOAuthGrantCreated                   AuditAction = "oauth_grant.created"
 	AuditOAuthGrantRevoked                   AuditAction = "oauth_grant.revoked"
+	AuditSsoDomainAdded                      AuditAction = "sso_domain.added"
+	AuditSsoDomainDeleted                    AuditAction = "sso_domain.deleted"
+	AuditSsoDomainVerified                   AuditAction = "sso_domain.verified"
+	AuditSsoProviderCreated                  AuditAction = "sso.provider_created"
+	AuditSsoProviderDeleted                  AuditAction = "sso.provider_deleted"
+	AuditSsoProviderUpdated                  AuditAction = "sso.provider_updated"
+	AuditSsoSettingsChanged                  AuditAction = "sso.settings_changed"
+	AuditSsoSignInRefused                    AuditAction = "sso.sign_in_refused"
+	AuditSsoSignedIn                         AuditAction = "sso.signed_in"
 	AuditTeamCreated                         AuditAction = "team.created"
 	AuditTeamDeleted                         AuditAction = "team.deleted"
 	AuditTeamInboxAccessGranted              AuditAction = "team.inbox_access_granted"
@@ -1178,6 +1187,24 @@ func (e AuditAction) Valid() bool {
 	case AuditOAuthGrantCreated:
 		return true
 	case AuditOAuthGrantRevoked:
+		return true
+	case AuditSsoDomainAdded:
+		return true
+	case AuditSsoDomainDeleted:
+		return true
+	case AuditSsoDomainVerified:
+		return true
+	case AuditSsoProviderCreated:
+		return true
+	case AuditSsoProviderDeleted:
+		return true
+	case AuditSsoProviderUpdated:
+		return true
+	case AuditSsoSettingsChanged:
+		return true
+	case AuditSsoSignInRefused:
+		return true
+	case AuditSsoSignedIn:
 		return true
 	case AuditTeamCreated:
 		return true
@@ -1260,6 +1287,8 @@ const (
 	AuditTargetMember          AuditTargetType = "member"
 	AuditTargetMessage         AuditTargetType = "message"
 	AuditTargetOAuthGrant      AuditTargetType = "oauth_grant"
+	AuditTargetSso             AuditTargetType = "sso"
+	AuditTargetSsoDomain       AuditTargetType = "sso_domain"
 	AuditTargetTeam            AuditTargetType = "team"
 	AuditTargetWebhook         AuditTargetType = "webhook"
 	AuditTargetWorkspace       AuditTargetType = "workspace"
@@ -1289,6 +1318,10 @@ func (e AuditTargetType) Valid() bool {
 	case AuditTargetMessage:
 		return true
 	case AuditTargetOAuthGrant:
+		return true
+	case AuditTargetSso:
+		return true
+	case AuditTargetSsoDomain:
 		return true
 	case AuditTargetTeam:
 		return true
@@ -5645,6 +5678,57 @@ func (e SmtpTls) Valid() bool {
 	}
 }
 
+// Defines values for SsoDomainState.
+const (
+	SsoDomainPending  SsoDomainState = "pending"
+	SsoDomainVerified SsoDomainState = "verified"
+)
+
+// Valid indicates whether the value is a known member of the SsoDomainState enum.
+func (e SsoDomainState) Valid() bool {
+	switch e {
+	case SsoDomainPending:
+		return true
+	case SsoDomainVerified:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for SsoJitRole.
+const (
+	SsoJitAdmin SsoJitRole = "admin"
+	SsoJitAgent SsoJitRole = "agent"
+)
+
+// Valid indicates whether the value is a known member of the SsoJitRole enum.
+func (e SsoJitRole) Valid() bool {
+	switch e {
+	case SsoJitAdmin:
+		return true
+	case SsoJitAgent:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for SsoProtocol.
+const (
+	SsoProtocolOidc SsoProtocol = "oidc"
+)
+
+// Valid indicates whether the value is a known member of the SsoProtocol enum.
+func (e SsoProtocol) Valid() bool {
+	switch e {
+	case SsoProtocolOidc:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for StatusCheckRange.
 const (
 	StatusCheckRange24h StatusCheckRange = "24h"
@@ -8266,9 +8350,13 @@ type AnalyticsRangeProblem struct {
 	// Scope `insufficient_scope` only: the scope the API key lacks.
 	//
 	// Examples: messages:write
-	Scope  *string `json:"scope,omitempty"`
-	Status int32   `json:"status"`
-	Title  string  `json:"title"`
+	Scope *string `json:"scope,omitempty"`
+
+	// SsoEmail `sso_required` only: the member's address; send it to `POST /v1/auth/sso` for the
+	// identity provider's sign-in page.
+	SsoEmail *string `json:"sso_email,omitempty"`
+	Status   int32   `json:"status"`
+	Title    string  `json:"title"`
 
 	// Type A URI that identifies the problem type.
 	Type string `json:"type"`
@@ -9030,6 +9118,19 @@ type Attributes map[string]interface{}
 //   - `workspace.slack_connected`: `team_id`, `team_name`; `workspace.slack_disconnected`:
 //     `team_id`, and `reason` `uninstalled` (by `system`) when Slack reported the app removed.
 //   - `member.slack_linked`: `slack_user_id`; `member.slack_unlinked`: `slack_user_id`.
+//   - `sso.provider_created`, `sso.provider_updated`: `protocol`, `issuer_host`, and for an update
+//     `fields` among `issuer`, `client_id`, `client_secret`, `scopes`, `groups_claim` and
+//     `allowed_groups` (never the secret). `sso.provider_deleted`: `protocol`.
+//   - `sso.settings_changed`: `fields`, and `from`/`to` objects with the changed values of
+//     `sso_required`, `jit` and `jit_role`.
+//   - `sso.signed_in`: `protocol`, `email`, and `joined` (`jit` or `invite`) when the sign-in
+//     made the person a member; the actor is the member, or `system` when the person is not one.
+//   - `sso.sign_in_refused`: `protocol`, `reason` (`failed` when the code exchange failed,
+//     `invalid_token`, `email_unverified`, `domain_not_claimed`, `group_not_allowed`,
+//     `not_member`), `email` when known, `detail` for `failed` and `invalid_token`; the actor
+//     is the member when the person is one, else `system`. Requests refused with
+//     `sso_required` are not recorded.
+//   - `sso_domain.added`, `sso_domain.verified`, `sso_domain.deleted`: `domain`.
 //
 // Details never make an action fail: when they would be too long, lists are replaced by
 // `<name>_count` and `truncated` is `true`.
@@ -9110,6 +9211,19 @@ type AuditEntry struct {
 	// - `workspace.slack_connected`: `team_id`, `team_name`; `workspace.slack_disconnected`:
 	//   `team_id`, and `reason` `uninstalled` (by `system`) when Slack reported the app removed.
 	// - `member.slack_linked`: `slack_user_id`; `member.slack_unlinked`: `slack_user_id`.
+	// - `sso.provider_created`, `sso.provider_updated`: `protocol`, `issuer_host`, and for an update
+	//   `fields` among `issuer`, `client_id`, `client_secret`, `scopes`, `groups_claim` and
+	//   `allowed_groups` (never the secret). `sso.provider_deleted`: `protocol`.
+	// - `sso.settings_changed`: `fields`, and `from`/`to` objects with the changed values of
+	//   `sso_required`, `jit` and `jit_role`.
+	// - `sso.signed_in`: `protocol`, `email`, and `joined` (`jit` or `invite`) when the sign-in
+	//   made the person a member; the actor is the member, or `system` when the person is not one.
+	// - `sso.sign_in_refused`: `protocol`, `reason` (`failed` when the code exchange failed,
+	//   `invalid_token`, `email_unverified`, `domain_not_claimed`, `group_not_allowed`,
+	//   `not_member`), `email` when known, `detail` for `failed` and `invalid_token`; the actor
+	//   is the member when the person is one, else `system`. Requests refused with
+	//   `sso_required` are not recorded.
+	// - `sso_domain.added`, `sso_domain.verified`, `sso_domain.deleted`: `domain`.
 	//
 	// Details never make an action fail: when they would be too long, lists are replaced by
 	// `<name>_count` and `truncated` is `true`.
@@ -9525,9 +9639,13 @@ type BroadcastProblem struct {
 	// Scope `insufficient_scope` only: the scope the API key lacks.
 	//
 	// Examples: messages:write
-	Scope  *string `json:"scope,omitempty"`
-	Status int32   `json:"status"`
-	Title  string  `json:"title"`
+	Scope *string `json:"scope,omitempty"`
+
+	// SsoEmail `sso_required` only: the member's address; send it to `POST /v1/auth/sso` for the
+	// identity provider's sign-in page.
+	SsoEmail *string `json:"sso_email,omitempty"`
+	Status   int32   `json:"status"`
+	Title    string  `json:"title"`
 
 	// Type A URI that identifies the problem type.
 	Type string `json:"type"`
@@ -9878,9 +9996,13 @@ type ChangelogConflictProblem struct {
 	// Scope `insufficient_scope` only: the scope the API key lacks.
 	//
 	// Examples: messages:write
-	Scope  *string `json:"scope,omitempty"`
-	Status int32   `json:"status"`
-	Title  string  `json:"title"`
+	Scope *string `json:"scope,omitempty"`
+
+	// SsoEmail `sso_required` only: the member's address; send it to `POST /v1/auth/sso` for the
+	// identity provider's sign-in page.
+	SsoEmail *string `json:"sso_email,omitempty"`
+	Status   int32   `json:"status"`
+	Title    string  `json:"title"`
 
 	// Translation `version_conflict` only: the translation as it is now.
 	Translation *ChangelogEntryTranslation `json:"translation,omitempty"`
@@ -13363,9 +13485,13 @@ type EmailDesignProblem struct {
 	// Scope `insufficient_scope` only: the scope the API key lacks.
 	//
 	// Examples: messages:write
-	Scope  *string `json:"scope,omitempty"`
-	Status int32   `json:"status"`
-	Title  string  `json:"title"`
+	Scope *string `json:"scope,omitempty"`
+
+	// SsoEmail `sso_required` only: the member's address; send it to `POST /v1/auth/sso` for the
+	// identity provider's sign-in page.
+	SsoEmail *string `json:"sso_email,omitempty"`
+	Status   int32   `json:"status"`
+	Title    string  `json:"title"`
 
 	// Type A URI that identifies the problem type.
 	Type string `json:"type"`
@@ -13697,9 +13823,13 @@ type EmailImageProblem struct {
 	// Scope `insufficient_scope` only: the scope the API key lacks.
 	//
 	// Examples: messages:write
-	Scope  *string `json:"scope,omitempty"`
-	Status int32   `json:"status"`
-	Title  string  `json:"title"`
+	Scope *string `json:"scope,omitempty"`
+
+	// SsoEmail `sso_required` only: the member's address; send it to `POST /v1/auth/sso` for the
+	// identity provider's sign-in page.
+	SsoEmail *string `json:"sso_email,omitempty"`
+	Status   int32   `json:"status"`
+	Title    string  `json:"title"`
 
 	// Type A URI that identifies the problem type.
 	Type   string           `json:"type"`
@@ -14756,9 +14886,13 @@ type HelpConflictProblem struct {
 	// Scope `insufficient_scope` only: the scope the API key lacks.
 	//
 	// Examples: messages:write
-	Scope  *string `json:"scope,omitempty"`
-	Status int32   `json:"status"`
-	Title  string  `json:"title"`
+	Scope *string `json:"scope,omitempty"`
+
+	// SsoEmail `sso_required` only: the member's address; send it to `POST /v1/auth/sso` for the
+	// identity provider's sign-in page.
+	SsoEmail *string `json:"sso_email,omitempty"`
+	Status   int32   `json:"status"`
+	Title    string  `json:"title"`
 
 	// Translation `version_conflict` only: the translation as it is now.
 	Translation *HelpArticleTranslation `json:"translation,omitempty"`
@@ -17347,9 +17481,13 @@ type MigrationFileProblem struct {
 	// Scope `insufficient_scope` only: the scope the API key lacks.
 	//
 	// Examples: messages:write
-	Scope  *string `json:"scope,omitempty"`
-	Status int32   `json:"status"`
-	Title  string  `json:"title"`
+	Scope *string `json:"scope,omitempty"`
+
+	// SsoEmail `sso_required` only: the member's address; send it to `POST /v1/auth/sso` for the
+	// identity provider's sign-in page.
+	SsoEmail *string `json:"sso_email,omitempty"`
+	Status   int32   `json:"status"`
+	Title    string  `json:"title"`
 
 	// Type A URI that identifies the problem type.
 	Type string `json:"type"`
@@ -18379,9 +18517,13 @@ type Problem struct {
 	// Scope `insufficient_scope` only: the scope the API key lacks.
 	//
 	// Examples: messages:write
-	Scope  *string `json:"scope,omitempty"`
-	Status int32   `json:"status"`
-	Title  string  `json:"title"`
+	Scope *string `json:"scope,omitempty"`
+
+	// SsoEmail `sso_required` only: the member's address; send it to `POST /v1/auth/sso` for the
+	// identity provider's sign-in page.
+	SsoEmail *string `json:"sso_email,omitempty"`
+	Status   int32   `json:"status"`
+	Title    string  `json:"title"`
 
 	// Type A URI that identifies the problem type.
 	Type string `json:"type"`
@@ -19171,6 +19313,114 @@ type SourcePage struct {
 
 	// PageUrl Without query and fragment.
 	PageUrl string `json:"page_url"`
+}
+
+// SsoDomain defines model for SsoDomain.
+type SsoDomain struct {
+	CheckedAt *time.Time `json:"checked_at,omitempty"`
+	CreatedAt time.Time  `json:"created_at"`
+	Domain    string     `json:"domain"`
+	Id        uuid.UUID  `json:"id"`
+
+	// Problem What the last check found, while `pending`.
+	Problem *string        `json:"problem,omitempty"`
+	State   SsoDomainState `json:"state"`
+
+	// TxtName The record's name, `_yuva-sso.<domain>`.
+	TxtName    string     `json:"txt_name"`
+	TxtValue   string     `json:"txt_value"`
+	VerifiedAt *time.Time `json:"verified_at,omitempty"`
+}
+
+// SsoDomainInput defines model for SsoDomainInput.
+type SsoDomainInput struct {
+	// Domain An e-mail domain such as `example.com`; only that exact domain, not its subdomains.
+	Domain string `json:"domain"`
+}
+
+// SsoDomainState defines model for SsoDomainState.
+type SsoDomainState string
+
+// SsoJitRole defines model for SsoJitRole.
+type SsoJitRole string
+
+// SsoOidcInput defines model for SsoOidcInput.
+type SsoOidcInput struct {
+	AllowedGroups *[]string `json:"allowed_groups,omitempty"`
+	ClientId      string    `json:"client_id"`
+
+	// ClientSecret Required the first time; left out, the stored secret stays.
+	ClientSecret *string `json:"client_secret,omitempty"`
+
+	// GroupsClaim Absent or empty, `groups`.
+	GroupsClaim *string `json:"groups_claim,omitempty"`
+
+	// Issuer The issuer URL exactly as the provider's discovery document names it.
+	Issuer string `json:"issuer"`
+
+	// Scopes Extra scopes, such as `groups` for Okta; no spaces or quotes.
+	Scopes *[]string `json:"scopes,omitempty"`
+}
+
+// SsoOidcProvider defines model for SsoOidcProvider.
+type SsoOidcProvider struct {
+	// AllowedGroups When not empty, only people in one of these groups sign in.
+	AllowedGroups []string `json:"allowed_groups"`
+	ClientId      string   `json:"client_id"`
+
+	// GroupsClaim The `id_token` claim holding the person's groups.
+	GroupsClaim string `json:"groups_claim"`
+	Issuer      string `json:"issuer"`
+
+	// Scopes Scopes asked for besides `openid email profile`.
+	Scopes    []string  `json:"scopes"`
+	UpdatedAt time.Time `json:"updated_at"`
+}
+
+// SsoProtocol defines model for SsoProtocol.
+type SsoProtocol string
+
+// SsoSettings defines model for SsoSettings.
+type SsoSettings struct {
+	Domains  []SsoDomain      `json:"domains"`
+	Jit      bool             `json:"jit"`
+	JitRole  SsoJitRole       `json:"jit_role"`
+	Oidc     *SsoOidcProvider `json:"oidc,omitempty"`
+	Protocol *SsoProtocol     `json:"protocol,omitempty"`
+
+	// RedirectUri The redirect URI to register at the identity provider.
+	RedirectUri string `json:"redirect_uri"`
+	SsoRequired bool   `json:"sso_required"`
+}
+
+// SsoSettingsUpdate defines model for SsoSettingsUpdate.
+type SsoSettingsUpdate struct {
+	Jit         *bool       `json:"jit,omitempty"`
+	JitRole     *SsoJitRole `json:"jit_role,omitempty"`
+	SsoRequired *bool       `json:"sso_required,omitempty"`
+}
+
+// SsoStart defines model for SsoStart.
+type SsoStart struct {
+	// AuthorizationUrl The provider's sign-in page to send the browser to, when `sso` is true.
+	AuthorizationUrl *string `json:"authorization_url,omitempty"`
+
+	// Required When `sso` is true, whether the workspace requires single sign-on: only a session
+	// made here lets the address act in it (owners excepted).
+	Required *bool `json:"required,omitempty"`
+
+	// Sso Whether the address signs in through an identity provider.
+	Sso bool `json:"sso"`
+}
+
+// SsoStartRequest defines model for SsoStartRequest.
+type SsoStartRequest struct {
+	// Email Examples: owner@example.com
+	Email Email `json:"email"`
+
+	// ReturnTo A panel path starting with a single `/` to open after the sign-in; anything else is
+	// ignored and `/` opens.
+	ReturnTo *string `json:"return_to,omitempty"`
 }
 
 // Stats defines model for Stats.
@@ -21526,6 +21776,9 @@ type RoadmapBoardId = uuid.UUID
 
 // Search defines model for Search.
 type Search = string
+
+// SsoDomainId defines model for SsoDomainId.
+type SsoDomainId = uuid.UUID
 
 // StatusComponentId defines model for StatusComponentId.
 type StatusComponentId = uuid.UUID
@@ -24412,6 +24665,48 @@ type ConnectSlackParams struct {
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
 
+// GetSsoSettingsParams defines parameters for GetSsoSettings.
+type GetSsoSettingsParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// UpdateSsoSettingsParams defines parameters for UpdateSsoSettings.
+type UpdateSsoSettingsParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// AddSsoDomainParams defines parameters for AddSsoDomain.
+type AddSsoDomainParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// DeleteSsoDomainParams defines parameters for DeleteSsoDomain.
+type DeleteSsoDomainParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// VerifySsoDomainParams defines parameters for VerifySsoDomain.
+type VerifySsoDomainParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// DeleteSsoOidcProviderParams defines parameters for DeleteSsoOidcProvider.
+type DeleteSsoOidcProviderParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// SetSsoOidcProviderParams defines parameters for SetSsoOidcProvider.
+type SetSsoOidcProviderParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
 // GetStatsParams defines parameters for GetStats.
 type GetStatsParams struct {
 	// InboxId Only this inbox (`404` when the caller cannot see it).
@@ -25584,6 +25879,9 @@ type VerifySignInCodeJSONRequestBody = SignInCodeVerify
 // FinishPasskeySignInJSONRequestBody defines body for FinishPasskeySignIn for application/json ContentType.
 type FinishPasskeySignInJSONRequestBody = PasskeyCeremonyResult
 
+// StartSsoSignInJSONRequestBody defines body for StartSsoSignIn for application/json ContentType.
+type StartSsoSignInJSONRequestBody = SsoStartRequest
+
 // CreateBroadcastJSONRequestBody defines body for CreateBroadcast for application/json ContentType.
 type CreateBroadcastJSONRequestBody = BroadcastCreate
 
@@ -25868,6 +26166,15 @@ type UpdateRoadmapBoardJSONRequestBody = RoadmapBoardUpdate
 
 // UpdateSlackJSONRequestBody defines body for UpdateSlack for application/json ContentType.
 type UpdateSlackJSONRequestBody = SlackConnectionUpdate
+
+// UpdateSsoSettingsJSONRequestBody defines body for UpdateSsoSettings for application/json ContentType.
+type UpdateSsoSettingsJSONRequestBody = SsoSettingsUpdate
+
+// AddSsoDomainJSONRequestBody defines body for AddSsoDomain for application/json ContentType.
+type AddSsoDomainJSONRequestBody = SsoDomainInput
+
+// SetSsoOidcProviderJSONRequestBody defines body for SetSsoOidcProvider for application/json ContentType.
+type SetSsoOidcProviderJSONRequestBody = SsoOidcInput
 
 // CreateStatusPageJSONRequestBody defines body for CreateStatusPage for application/json ContentType.
 type CreateStatusPageJSONRequestBody = StatusPageCreate
@@ -30308,6 +30615,9 @@ type ServerInterface interface {
 	// SignOut Sign out
 	// (POST /v1/auth/sign-out)
 	SignOut(w http.ResponseWriter, r *http.Request)
+	// StartSsoSignIn Start a single sign-on
+	// (POST /v1/auth/sso)
+	StartSsoSignIn(w http.ResponseWriter, r *http.Request)
 	// ListBroadcasts List broadcasts
 	// (GET /v1/broadcasts)
 	ListBroadcasts(w http.ResponseWriter, r *http.Request, params ListBroadcastsParams)
@@ -31133,6 +31443,27 @@ type ServerInterface interface {
 	// ConnectSlack Start connecting Slack
 	// (POST /v1/slack/connect)
 	ConnectSlack(w http.ResponseWriter, r *http.Request, params ConnectSlackParams)
+	// GetSsoSettings Single sign-on settings
+	// (GET /v1/sso)
+	GetSsoSettings(w http.ResponseWriter, r *http.Request, params GetSsoSettingsParams)
+	// UpdateSsoSettings Change the sign-in rules
+	// (PATCH /v1/sso)
+	UpdateSsoSettings(w http.ResponseWriter, r *http.Request, params UpdateSsoSettingsParams)
+	// AddSsoDomain Claim an e-mail domain
+	// (POST /v1/sso/domains)
+	AddSsoDomain(w http.ResponseWriter, r *http.Request, params AddSsoDomainParams)
+	// DeleteSsoDomain Give up a claimed domain
+	// (DELETE /v1/sso/domains/{ssoDomainId})
+	DeleteSsoDomain(w http.ResponseWriter, r *http.Request, ssoDomainId SsoDomainId, params DeleteSsoDomainParams)
+	// VerifySsoDomain Check a domain's TXT record
+	// (POST /v1/sso/domains/{ssoDomainId}/verify)
+	VerifySsoDomain(w http.ResponseWriter, r *http.Request, ssoDomainId SsoDomainId, params VerifySsoDomainParams)
+	// DeleteSsoOidcProvider Remove the OpenID Connect provider
+	// (DELETE /v1/sso/oidc)
+	DeleteSsoOidcProvider(w http.ResponseWriter, r *http.Request, params DeleteSsoOidcProviderParams)
+	// SetSsoOidcProvider Set the OpenID Connect provider
+	// (PUT /v1/sso/oidc)
+	SetSsoOidcProvider(w http.ResponseWriter, r *http.Request, params SetSsoOidcProviderParams)
 	// GetStats Team activity since a moment
 	// (GET /v1/stats)
 	GetStats(w http.ResponseWriter, r *http.Request, params GetStatsParams)
@@ -36494,6 +36825,20 @@ func (siw *ServerInterfaceWrapper) SignOut(w http.ResponseWriter, r *http.Reques
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.SignOut(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// StartSsoSignIn operation middleware
+func (siw *ServerInterfaceWrapper) StartSsoSignIn(w http.ResponseWriter, r *http.Request) {
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.StartSsoSignIn(w, r)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -53216,6 +53561,311 @@ func (siw *ServerInterfaceWrapper) ConnectSlack(w http.ResponseWriter, r *http.R
 	handler.ServeHTTP(w, r)
 }
 
+// GetSsoSettings operation middleware
+func (siw *ServerInterfaceWrapper) GetSsoSettings(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetSsoSettingsParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetSsoSettings(w, r, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UpdateSsoSettings operation middleware
+func (siw *ServerInterfaceWrapper) UpdateSsoSettings(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params UpdateSsoSettingsParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UpdateSsoSettings(w, r, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// AddSsoDomain operation middleware
+func (siw *ServerInterfaceWrapper) AddSsoDomain(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params AddSsoDomainParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.AddSsoDomain(w, r, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// DeleteSsoDomain operation middleware
+func (siw *ServerInterfaceWrapper) DeleteSsoDomain(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "ssoDomainId" -------------
+	var ssoDomainId SsoDomainId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "ssoDomainId", r.PathValue("ssoDomainId"), &ssoDomainId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "ssoDomainId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params DeleteSsoDomainParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.DeleteSsoDomain(w, r, ssoDomainId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// VerifySsoDomain operation middleware
+func (siw *ServerInterfaceWrapper) VerifySsoDomain(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "ssoDomainId" -------------
+	var ssoDomainId SsoDomainId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "ssoDomainId", r.PathValue("ssoDomainId"), &ssoDomainId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "ssoDomainId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params VerifySsoDomainParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.VerifySsoDomain(w, r, ssoDomainId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// DeleteSsoOidcProvider operation middleware
+func (siw *ServerInterfaceWrapper) DeleteSsoOidcProvider(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params DeleteSsoOidcProviderParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.DeleteSsoOidcProvider(w, r, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// SetSsoOidcProvider operation middleware
+func (siw *ServerInterfaceWrapper) SetSsoOidcProvider(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params SetSsoOidcProviderParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.SetSsoOidcProvider(w, r, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // GetStats operation middleware
 func (siw *ServerInterfaceWrapper) GetStats(w http.ResponseWriter, r *http.Request) {
 
@@ -57411,6 +58061,7 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/auth/code/verify", wrapper.VerifySignInCode)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/auth/passkey/options", wrapper.BeginPasskeySignIn)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/auth/passkey", wrapper.FinishPasskeySignIn)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/auth/sso", wrapper.StartSsoSignIn)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/auth/sign-out", wrapper.SignOut)
 	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/me", wrapper.DeleteMe)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/me", wrapper.GetMe)
@@ -57444,6 +58095,13 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc(http.MethodPatch+" "+options.BaseURL+"/v1/workspace", wrapper.UpdateWorkspace)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/workspace/broadcast-approval", wrapper.RequestBroadcastApproval)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/audit-log", wrapper.ListAuditLog)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/sso", wrapper.GetSsoSettings)
+	m.HandleFunc(http.MethodPatch+" "+options.BaseURL+"/v1/sso", wrapper.UpdateSsoSettings)
+	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/sso/oidc", wrapper.DeleteSsoOidcProvider)
+	m.HandleFunc(http.MethodPut+" "+options.BaseURL+"/v1/sso/oidc", wrapper.SetSsoOidcProvider)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/sso/domains", wrapper.AddSsoDomain)
+	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/sso/domains/{ssoDomainId}", wrapper.DeleteSsoDomain)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/sso/domains/{ssoDomainId}/verify", wrapper.VerifySsoDomain)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/workspaces", wrapper.CreateWorkspace)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/members", wrapper.ListMembers)
 	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/members/{memberId}", wrapper.RemoveMember)
@@ -70264,6 +70922,82 @@ func (response SignOut401ApplicationProblemPlusJSONResponse) VisitSignOutRespons
 	}
 	w.Header().Set("Content-Type", "application/problem+json")
 	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type StartSsoSignInRequestObject struct {
+	Body *StartSsoSignInJSONRequestBody
+}
+
+type StartSsoSignInResponseObject interface {
+	VisitStartSsoSignInResponse(w http.ResponseWriter) error
+}
+
+type StartSsoSignIn200ResponseHeaders struct {
+	SetCookie *string
+}
+
+type StartSsoSignIn200JSONResponse struct {
+	Body    SsoStart
+	Headers StartSsoSignIn200ResponseHeaders
+}
+
+func (response StartSsoSignIn200JSONResponse) VisitStartSsoSignInResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response.Body); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	if response.Headers.SetCookie != nil {
+		w.Header().Set("Set-Cookie", fmt.Sprint(*response.Headers.SetCookie))
+	}
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type StartSsoSignIn400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response StartSsoSignIn400ApplicationProblemPlusJSONResponse) VisitStartSsoSignInResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type StartSsoSignIn429ApplicationProblemPlusJSONResponse Problem
+
+func (response StartSsoSignIn429ApplicationProblemPlusJSONResponse) VisitStartSsoSignInResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(429)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type StartSsoSignIn502ApplicationProblemPlusJSONResponse Problem
+
+func (response StartSsoSignIn502ApplicationProblemPlusJSONResponse) VisitStartSsoSignInResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(502)
 	_, err := buf.WriteTo(w)
 	return err
 }
@@ -92308,6 +93042,489 @@ func (response ConnectSlack409ApplicationProblemPlusJSONResponse) VisitConnectSl
 	return err
 }
 
+type GetSsoSettingsRequestObject struct {
+	Params GetSsoSettingsParams
+}
+
+type GetSsoSettingsResponseObject interface {
+	VisitGetSsoSettingsResponse(w http.ResponseWriter) error
+}
+
+type GetSsoSettings200JSONResponse SsoSettings
+
+func (response GetSsoSettings200JSONResponse) VisitGetSsoSettingsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetSsoSettings401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response GetSsoSettings401ApplicationProblemPlusJSONResponse) VisitGetSsoSettingsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetSsoSettings403ApplicationProblemPlusJSONResponse Problem
+
+func (response GetSsoSettings403ApplicationProblemPlusJSONResponse) VisitGetSsoSettingsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateSsoSettingsRequestObject struct {
+	Params UpdateSsoSettingsParams
+	Body   *UpdateSsoSettingsJSONRequestBody
+}
+
+type UpdateSsoSettingsResponseObject interface {
+	VisitUpdateSsoSettingsResponse(w http.ResponseWriter) error
+}
+
+type UpdateSsoSettings200JSONResponse SsoSettings
+
+func (response UpdateSsoSettings200JSONResponse) VisitUpdateSsoSettingsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateSsoSettings400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response UpdateSsoSettings400ApplicationProblemPlusJSONResponse) VisitUpdateSsoSettingsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateSsoSettings401ApplicationProblemPlusJSONResponse Problem
+
+func (response UpdateSsoSettings401ApplicationProblemPlusJSONResponse) VisitUpdateSsoSettingsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateSsoSettings403ApplicationProblemPlusJSONResponse Problem
+
+func (response UpdateSsoSettings403ApplicationProblemPlusJSONResponse) VisitUpdateSsoSettingsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateSsoSettings409ApplicationProblemPlusJSONResponse Problem
+
+func (response UpdateSsoSettings409ApplicationProblemPlusJSONResponse) VisitUpdateSsoSettingsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(409)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AddSsoDomainRequestObject struct {
+	Params AddSsoDomainParams
+	Body   *AddSsoDomainJSONRequestBody
+}
+
+type AddSsoDomainResponseObject interface {
+	VisitAddSsoDomainResponse(w http.ResponseWriter) error
+}
+
+type AddSsoDomain201JSONResponse SsoDomain
+
+func (response AddSsoDomain201JSONResponse) VisitAddSsoDomainResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(201)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AddSsoDomain400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response AddSsoDomain400ApplicationProblemPlusJSONResponse) VisitAddSsoDomainResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AddSsoDomain401ApplicationProblemPlusJSONResponse Problem
+
+func (response AddSsoDomain401ApplicationProblemPlusJSONResponse) VisitAddSsoDomainResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AddSsoDomain403ApplicationProblemPlusJSONResponse Problem
+
+func (response AddSsoDomain403ApplicationProblemPlusJSONResponse) VisitAddSsoDomainResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AddSsoDomain409ApplicationProblemPlusJSONResponse Problem
+
+func (response AddSsoDomain409ApplicationProblemPlusJSONResponse) VisitAddSsoDomainResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(409)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteSsoDomainRequestObject struct {
+	SsoDomainId SsoDomainId `json:"ssoDomainId"`
+	Params      DeleteSsoDomainParams
+}
+
+type DeleteSsoDomainResponseObject interface {
+	VisitDeleteSsoDomainResponse(w http.ResponseWriter) error
+}
+
+type DeleteSsoDomain204Response struct {
+}
+
+func (response DeleteSsoDomain204Response) VisitDeleteSsoDomainResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
+}
+
+type DeleteSsoDomain401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response DeleteSsoDomain401ApplicationProblemPlusJSONResponse) VisitDeleteSsoDomainResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteSsoDomain403ApplicationProblemPlusJSONResponse Problem
+
+func (response DeleteSsoDomain403ApplicationProblemPlusJSONResponse) VisitDeleteSsoDomainResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteSsoDomain404ApplicationProblemPlusJSONResponse Problem
+
+func (response DeleteSsoDomain404ApplicationProblemPlusJSONResponse) VisitDeleteSsoDomainResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type VerifySsoDomainRequestObject struct {
+	SsoDomainId SsoDomainId `json:"ssoDomainId"`
+	Params      VerifySsoDomainParams
+}
+
+type VerifySsoDomainResponseObject interface {
+	VisitVerifySsoDomainResponse(w http.ResponseWriter) error
+}
+
+type VerifySsoDomain200JSONResponse SsoDomain
+
+func (response VerifySsoDomain200JSONResponse) VisitVerifySsoDomainResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type VerifySsoDomain401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response VerifySsoDomain401ApplicationProblemPlusJSONResponse) VisitVerifySsoDomainResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type VerifySsoDomain403ApplicationProblemPlusJSONResponse Problem
+
+func (response VerifySsoDomain403ApplicationProblemPlusJSONResponse) VisitVerifySsoDomainResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type VerifySsoDomain404ApplicationProblemPlusJSONResponse Problem
+
+func (response VerifySsoDomain404ApplicationProblemPlusJSONResponse) VisitVerifySsoDomainResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type VerifySsoDomain409ApplicationProblemPlusJSONResponse Problem
+
+func (response VerifySsoDomain409ApplicationProblemPlusJSONResponse) VisitVerifySsoDomainResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(409)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteSsoOidcProviderRequestObject struct {
+	Params DeleteSsoOidcProviderParams
+}
+
+type DeleteSsoOidcProviderResponseObject interface {
+	VisitDeleteSsoOidcProviderResponse(w http.ResponseWriter) error
+}
+
+type DeleteSsoOidcProvider204Response struct {
+}
+
+func (response DeleteSsoOidcProvider204Response) VisitDeleteSsoOidcProviderResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
+}
+
+type DeleteSsoOidcProvider401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response DeleteSsoOidcProvider401ApplicationProblemPlusJSONResponse) VisitDeleteSsoOidcProviderResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteSsoOidcProvider403ApplicationProblemPlusJSONResponse Problem
+
+func (response DeleteSsoOidcProvider403ApplicationProblemPlusJSONResponse) VisitDeleteSsoOidcProviderResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteSsoOidcProvider404ApplicationProblemPlusJSONResponse Problem
+
+func (response DeleteSsoOidcProvider404ApplicationProblemPlusJSONResponse) VisitDeleteSsoOidcProviderResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type SetSsoOidcProviderRequestObject struct {
+	Params SetSsoOidcProviderParams
+	Body   *SetSsoOidcProviderJSONRequestBody
+}
+
+type SetSsoOidcProviderResponseObject interface {
+	VisitSetSsoOidcProviderResponse(w http.ResponseWriter) error
+}
+
+type SetSsoOidcProvider200JSONResponse SsoSettings
+
+func (response SetSsoOidcProvider200JSONResponse) VisitSetSsoOidcProviderResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type SetSsoOidcProvider400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response SetSsoOidcProvider400ApplicationProblemPlusJSONResponse) VisitSetSsoOidcProviderResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type SetSsoOidcProvider401ApplicationProblemPlusJSONResponse Problem
+
+func (response SetSsoOidcProvider401ApplicationProblemPlusJSONResponse) VisitSetSsoOidcProviderResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type SetSsoOidcProvider403ApplicationProblemPlusJSONResponse Problem
+
+func (response SetSsoOidcProvider403ApplicationProblemPlusJSONResponse) VisitSetSsoOidcProviderResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
 type GetStatsRequestObject struct {
 	Params GetStatsParams
 }
@@ -97584,6 +98801,9 @@ type StrictServerInterface interface {
 	// SignOut Sign out
 	// (POST /v1/auth/sign-out)
 	SignOut(ctx context.Context, request SignOutRequestObject) (SignOutResponseObject, error)
+	// StartSsoSignIn Start a single sign-on
+	// (POST /v1/auth/sso)
+	StartSsoSignIn(ctx context.Context, request StartSsoSignInRequestObject) (StartSsoSignInResponseObject, error)
 	// ListBroadcasts List broadcasts
 	// (GET /v1/broadcasts)
 	ListBroadcasts(ctx context.Context, request ListBroadcastsRequestObject) (ListBroadcastsResponseObject, error)
@@ -98409,6 +99629,27 @@ type StrictServerInterface interface {
 	// ConnectSlack Start connecting Slack
 	// (POST /v1/slack/connect)
 	ConnectSlack(ctx context.Context, request ConnectSlackRequestObject) (ConnectSlackResponseObject, error)
+	// GetSsoSettings Single sign-on settings
+	// (GET /v1/sso)
+	GetSsoSettings(ctx context.Context, request GetSsoSettingsRequestObject) (GetSsoSettingsResponseObject, error)
+	// UpdateSsoSettings Change the sign-in rules
+	// (PATCH /v1/sso)
+	UpdateSsoSettings(ctx context.Context, request UpdateSsoSettingsRequestObject) (UpdateSsoSettingsResponseObject, error)
+	// AddSsoDomain Claim an e-mail domain
+	// (POST /v1/sso/domains)
+	AddSsoDomain(ctx context.Context, request AddSsoDomainRequestObject) (AddSsoDomainResponseObject, error)
+	// DeleteSsoDomain Give up a claimed domain
+	// (DELETE /v1/sso/domains/{ssoDomainId})
+	DeleteSsoDomain(ctx context.Context, request DeleteSsoDomainRequestObject) (DeleteSsoDomainResponseObject, error)
+	// VerifySsoDomain Check a domain's TXT record
+	// (POST /v1/sso/domains/{ssoDomainId}/verify)
+	VerifySsoDomain(ctx context.Context, request VerifySsoDomainRequestObject) (VerifySsoDomainResponseObject, error)
+	// DeleteSsoOidcProvider Remove the OpenID Connect provider
+	// (DELETE /v1/sso/oidc)
+	DeleteSsoOidcProvider(ctx context.Context, request DeleteSsoOidcProviderRequestObject) (DeleteSsoOidcProviderResponseObject, error)
+	// SetSsoOidcProvider Set the OpenID Connect provider
+	// (PUT /v1/sso/oidc)
+	SetSsoOidcProvider(ctx context.Context, request SetSsoOidcProviderRequestObject) (SetSsoOidcProviderResponseObject, error)
 	// GetStats Team activity since a moment
 	// (GET /v1/stats)
 	GetStats(ctx context.Context, request GetStatsRequestObject) (GetStatsResponseObject, error)
@@ -102063,6 +103304,37 @@ func (sh *strictHandler) SignOut(w http.ResponseWriter, r *http.Request) {
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
 	} else if validResponse, ok := response.(SignOutResponseObject); ok {
 		if err := validResponse.VisitSignOutResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// StartSsoSignIn operation middleware
+func (sh *strictHandler) StartSsoSignIn(w http.ResponseWriter, r *http.Request) {
+	var request StartSsoSignInRequestObject
+
+	var body StartSsoSignInJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.StartSsoSignIn(ctx, request.(StartSsoSignInRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "StartSsoSignIn")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(StartSsoSignInResponseObject); ok {
+		if err := validResponse.VisitStartSsoSignInResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {
@@ -110140,6 +111412,211 @@ func (sh *strictHandler) ConnectSlack(w http.ResponseWriter, r *http.Request, pa
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
 	} else if validResponse, ok := response.(ConnectSlackResponseObject); ok {
 		if err := validResponse.VisitConnectSlackResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// GetSsoSettings operation middleware
+func (sh *strictHandler) GetSsoSettings(w http.ResponseWriter, r *http.Request, params GetSsoSettingsParams) {
+	var request GetSsoSettingsRequestObject
+
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.GetSsoSettings(ctx, request.(GetSsoSettingsRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "GetSsoSettings")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(GetSsoSettingsResponseObject); ok {
+		if err := validResponse.VisitGetSsoSettingsResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// UpdateSsoSettings operation middleware
+func (sh *strictHandler) UpdateSsoSettings(w http.ResponseWriter, r *http.Request, params UpdateSsoSettingsParams) {
+	var request UpdateSsoSettingsRequestObject
+
+	request.Params = params
+
+	var body UpdateSsoSettingsJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.UpdateSsoSettings(ctx, request.(UpdateSsoSettingsRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "UpdateSsoSettings")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(UpdateSsoSettingsResponseObject); ok {
+		if err := validResponse.VisitUpdateSsoSettingsResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// AddSsoDomain operation middleware
+func (sh *strictHandler) AddSsoDomain(w http.ResponseWriter, r *http.Request, params AddSsoDomainParams) {
+	var request AddSsoDomainRequestObject
+
+	request.Params = params
+
+	var body AddSsoDomainJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.AddSsoDomain(ctx, request.(AddSsoDomainRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "AddSsoDomain")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(AddSsoDomainResponseObject); ok {
+		if err := validResponse.VisitAddSsoDomainResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// DeleteSsoDomain operation middleware
+func (sh *strictHandler) DeleteSsoDomain(w http.ResponseWriter, r *http.Request, ssoDomainId SsoDomainId, params DeleteSsoDomainParams) {
+	var request DeleteSsoDomainRequestObject
+
+	request.SsoDomainId = ssoDomainId
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.DeleteSsoDomain(ctx, request.(DeleteSsoDomainRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "DeleteSsoDomain")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(DeleteSsoDomainResponseObject); ok {
+		if err := validResponse.VisitDeleteSsoDomainResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// VerifySsoDomain operation middleware
+func (sh *strictHandler) VerifySsoDomain(w http.ResponseWriter, r *http.Request, ssoDomainId SsoDomainId, params VerifySsoDomainParams) {
+	var request VerifySsoDomainRequestObject
+
+	request.SsoDomainId = ssoDomainId
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.VerifySsoDomain(ctx, request.(VerifySsoDomainRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "VerifySsoDomain")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(VerifySsoDomainResponseObject); ok {
+		if err := validResponse.VisitVerifySsoDomainResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// DeleteSsoOidcProvider operation middleware
+func (sh *strictHandler) DeleteSsoOidcProvider(w http.ResponseWriter, r *http.Request, params DeleteSsoOidcProviderParams) {
+	var request DeleteSsoOidcProviderRequestObject
+
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.DeleteSsoOidcProvider(ctx, request.(DeleteSsoOidcProviderRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "DeleteSsoOidcProvider")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(DeleteSsoOidcProviderResponseObject); ok {
+		if err := validResponse.VisitDeleteSsoOidcProviderResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// SetSsoOidcProvider operation middleware
+func (sh *strictHandler) SetSsoOidcProvider(w http.ResponseWriter, r *http.Request, params SetSsoOidcProviderParams) {
+	var request SetSsoOidcProviderRequestObject
+
+	request.Params = params
+
+	var body SetSsoOidcProviderJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.SetSsoOidcProvider(ctx, request.(SetSsoOidcProviderRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "SetSsoOidcProvider")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(SetSsoOidcProviderResponseObject); ok {
+		if err := validResponse.VisitSetSsoOidcProviderResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {

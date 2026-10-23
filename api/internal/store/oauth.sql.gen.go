@@ -284,7 +284,7 @@ func (q *Queries) DeleteUnusedOAuthClients(ctx context.Context, before time.Time
 }
 
 const getOAuthAccess = `-- name: GetOAuthAccess :one
-SELECT t.expires_at, g.workspace_id, g.id AS grant_id, g.scopes, g.resource, m.id AS member_id, m.role,
+SELECT t.expires_at, g.workspace_id, g.id AS grant_id, g.scopes, g.resource, g.sso_settings_id, m.id AS member_id, m.person_id, m.role,
        cl.name AS client_name, w.bots_may_send, w.broadcasts_by_keys
 FROM oauth_tokens t
 JOIN oauth_grants g ON g.workspace_id = t.workspace_id AND g.id = t.grant_id
@@ -300,7 +300,9 @@ type GetOAuthAccessRow struct {
 	GrantID          uuid.UUID
 	Scopes           []string
 	Resource         string
+	SsoSettingsID    *uuid.UUID
 	MemberID         uuid.UUID
+	PersonID         uuid.UUID
 	Role             string
 	ClientName       string
 	BotsMaySend      bool
@@ -316,7 +318,9 @@ func (q *Queries) GetOAuthAccess(ctx context.Context, tokenHash []byte) (GetOAut
 		&i.GrantID,
 		&i.Scopes,
 		&i.Resource,
+		&i.SsoSettingsID,
 		&i.MemberID,
+		&i.PersonID,
 		&i.Role,
 		&i.ClientName,
 		&i.BotsMaySend,
@@ -346,7 +350,7 @@ func (q *Queries) GetOAuthClientByClientID(ctx context.Context, clientID string)
 }
 
 const getOAuthGrant = `-- name: GetOAuthGrant :one
-SELECT workspace_id, id, member_id, client_id, scopes, resource, created_at, last_used_at, request_month, request_count, revoked_at FROM oauth_grants WHERE workspace_id = $1 AND id = $2 AND revoked_at IS NULL
+SELECT workspace_id, id, member_id, client_id, scopes, resource, created_at, last_used_at, request_month, request_count, revoked_at, sso_settings_id FROM oauth_grants WHERE workspace_id = $1 AND id = $2 AND revoked_at IS NULL
 `
 
 type GetOAuthGrantParams struct {
@@ -369,6 +373,7 @@ func (q *Queries) GetOAuthGrant(ctx context.Context, arg GetOAuthGrantParams) (O
 		&i.RequestMonth,
 		&i.RequestCount,
 		&i.RevokedAt,
+		&i.SsoSettingsID,
 	)
 	return i, err
 }
@@ -693,21 +698,22 @@ func (q *Queries) SaveMetadataClient(ctx context.Context, arg SaveMetadataClient
 }
 
 const upsertOAuthGrant = `-- name: UpsertOAuthGrant :one
-INSERT INTO oauth_grants (workspace_id, id, member_id, client_id, scopes, resource, created_at)
-VALUES ($1, $2, $3, $4, $5, $6, $7)
+INSERT INTO oauth_grants (workspace_id, id, member_id, client_id, scopes, resource, created_at, sso_settings_id)
+VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
 ON CONFLICT (workspace_id, member_id, client_id) WHERE revoked_at IS NULL
-DO UPDATE SET scopes = EXCLUDED.scopes, resource = EXCLUDED.resource
-RETURNING workspace_id, id, member_id, client_id, scopes, resource, created_at, last_used_at, request_month, request_count, revoked_at
+DO UPDATE SET scopes = EXCLUDED.scopes, resource = EXCLUDED.resource, sso_settings_id = EXCLUDED.sso_settings_id
+RETURNING workspace_id, id, member_id, client_id, scopes, resource, created_at, last_used_at, request_month, request_count, revoked_at, sso_settings_id
 `
 
 type UpsertOAuthGrantParams struct {
-	WorkspaceID uuid.UUID
-	ID          uuid.UUID
-	MemberID    uuid.UUID
-	ClientID    uuid.UUID
-	Scopes      []string
-	Resource    string
-	CreatedAt   time.Time
+	WorkspaceID   uuid.UUID
+	ID            uuid.UUID
+	MemberID      uuid.UUID
+	ClientID      uuid.UUID
+	Scopes        []string
+	Resource      string
+	CreatedAt     time.Time
+	SsoSettingsID *uuid.UUID
 }
 
 func (q *Queries) UpsertOAuthGrant(ctx context.Context, arg UpsertOAuthGrantParams) (OauthGrant, error) {
@@ -719,6 +725,7 @@ func (q *Queries) UpsertOAuthGrant(ctx context.Context, arg UpsertOAuthGrantPara
 		arg.Scopes,
 		arg.Resource,
 		arg.CreatedAt,
+		arg.SsoSettingsID,
 	)
 	var i OauthGrant
 	err := row.Scan(
@@ -733,6 +740,7 @@ func (q *Queries) UpsertOAuthGrant(ctx context.Context, arg UpsertOAuthGrantPara
 		&i.RequestMonth,
 		&i.RequestCount,
 		&i.RevokedAt,
+		&i.SsoSettingsID,
 	)
 	return i, err
 }

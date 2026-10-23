@@ -1,0 +1,148 @@
+# Tek oturum açma
+
+Çalışma alanınızın üyeleri Yuva'ya şirketinizin kimlik sağlayıcısı üzerinden OpenID Connect ile
+girebilir: Google Workspace, Microsoft Entra ID, Okta, Keycloak ya da keşif belgesi yayımlayan her
+sağlayıcı. Yuva kişinin kim olduğunu sağlayıcıdan öğrenir; hangi sağlayıcıyı kullanacağına kişinin
+e-posta adresi karar verir.
+
+Bu ayarları yalnızca sahipler değiştirir: Ayarlar › Tek oturum açma'da ya da API üzerinden
+(`GET /v1/sso` ve aşağıdaki uç noktalar, üye oturumuyla).
+
+## Nasıl çalışır
+
+1. Yuva'yı sağlayıcınızda bir uygulama olarak kaydeder, Yuva'ya issuer URL'sini, istemci kimliğini
+   ve istemci gizli anahtarını verirsiniz.
+2. E-posta alan adlarınızı (`example.com`) bir DNS TXT kaydıyla sahiplenirsiniz. Bir alan adı bir Yuva
+   sunucusunda tek bir çalışma alanına aittir.
+3. Giriş sayfasında kişi e-posta adresini yazar. Alan adı sahiplenilmişse tarayıcı sağlayıcınıza
+   gider ve oturum açmış olarak döner.
+
+Yuva `openid email profile` (ve eklediğiniz kapsamları) ister, PKCE, `state` ve `nonce` ile
+yetkilendirme kodu akışını kullanır ve `id_token`'ın imzasını sağlayıcının anahtarlarıyla (sağlayıcı
+anahtarlarını değiştirdiğinde yenileri alınır), issuer'ını, hedef kitlesini, süresini ve nonce'unu
+denetler. Token kişinin e-posta adresini `email_verified: true` ile taşımalı ve adres doğrulanmış
+alan adlarınızdan birinde olmalıdır.
+
+Oturumlar çalışma alanına değil kişiye aittir: birden çok çalışma alanının üyesi olan biri, kendi
+e-posta alan adının sağlayıcısıyla bir kez giriş yapar.
+
+## 1. Yuva'yı sağlayıcınızda kaydedin
+
+Şu yönlendirme URI'sini kullanın (Ayarlar › Tek oturum açma gösterir; `GET /v1/sso` içinde
+`redirect_uri`):
+
+```
+https://<Yuva adresiniz>/auth/sso/callback
+```
+
+### Google Workspace
+
+1. Google Cloud konsolunda APIs & Services › OAuth consent screen'i açın ve **Internal** seçin;
+   böylece yalnızca kuruluşunuzun hesapları giriş yapabilir.
+2. Credentials › Create credentials › OAuth client ID, tür **Web application**, yukarıdaki
+   yönlendirme URI'siyle.
+3. Issuer: `https://accounts.google.com`. Google'ın token'ları grup taşımaz; izin verilen grupları
+   boş bırakın.
+
+### Microsoft Entra ID
+
+1. Entra yönetim merkezi › App registrations › New registration, "Accounts in this organizational
+   directory only", yukarıdaki yönlendirme URI'siyle **Web** platformu.
+2. Certificates & secrets › New client secret.
+3. Token configuration › Add optional claim › ID: `email` ve `xms_edov` ekleyin. Entra
+   `email_verified` göndermez; Yuva onun yerine `xms_edov: true`'yu (adresin alan adı kiracınızda
+   doğrulanmış) kabul eder.
+4. Issuer: `https://login.microsoftonline.com/<kiracı kimliği>/v2.0`. Ortak `common` ve
+   `organizations` issuer'ları kabul edilmez.
+5. Gruplar için Token configuration'da `groups` claim'ini ekleyin; grup nesne kimliklerini listeler,
+   bu yüzden o kimliklere izin verin.
+
+### Okta
+
+1. Applications › Create App Integration › OIDC, **Web Application**, oturum açma yönlendirme
+   URI'si olarak yukarıdaki URI. Kullanabilecek kişileri ya da grupları atayın.
+2. Issuer: `https://<kuruluşunuz>.okta.com` (kuruluş yetkilendirme sunucusu) ya da özel
+   yetkilendirme sunucunuzun issuer'ı, örneğin `https://<kuruluşunuz>.okta.com/oauth2/default`.
+3. Gruplar için ID token'a bir `groups` claim'i ekleyin (Sign On › OpenID Connect ID Token › Groups
+   claim filter) ve Yuva'da `groups` kapsamını ekleyin.
+
+### Keycloak
+
+1. Realm'inizde Clients › Create client, tür **OpenID Connect**, istemci kimlik doğrulaması açık,
+   geçerli yönlendirme URI'si olarak yukarıdaki URI.
+2. Issuer: `https://<keycloak sunucusu>/realms/<realm>`.
+3. Gruplar için istemcinin kendi kapsamına token claim adı `groups` olan ve "Add to ID token" açık
+   bir **Group Membership** eşleyicisi ekleyin.
+
+## 2. Sağlayıcıyı bağlayın
+
+Issuer'ı, istemci kimliğini ve istemci gizli anahtarını girin (`PUT /v1/sso/oidc`). Yuva kaydetmeden
+önce `<issuer>/.well-known/openid-configuration` belgesini okur; issuer belgedeki `issuer` ile birebir
+aynı olmalıdır. Gizli anahtar şifreli saklanır ve bir daha gösterilmez; sonradan boş bırakırsanız
+saklanan kalır.
+
+İsteğe bağlı olarak:
+
+- **Kapsamlar**: Okta için `groups` gibi ek kapsamlar.
+- **Grup claim'i** (varsayılan `groups`) ve **izin verilen gruplar**: grup listelediğinizde yalnızca
+  `id_token`'ı bunlardan birini adlandıran kişiler giriş yapar.
+
+Issuer herkese açık bir `https` adresinde olmalıdır. İşletmecisi `YUVA_WEBHOOK_ALLOW_PRIVATE=true`
+ayarlamış bir sunucu, aynı ağdaki bir Keycloak gibi özel adreslerdeki sağlayıcılara da ulaşır;
+link-local ve bulut metadata adresleri her zaman reddedilir.
+
+## 3. Alan adlarınızı sahiplenin
+
+Her e-posta alan adını ekleyin (`POST /v1/sso/domains`) ve gösterdiği TXT kaydını yayımlayın:
+
+```
+_yuva-sso.example.com.  TXT  "yuva-verify-…"
+```
+
+Sonra Doğrula'ya basın (`POST /v1/sso/domains/{id}/verify`). Yalnızca tam alan adı sahiplenilir,
+alt alan adları değil; kişilerin böyle adresleri varsa `eu.example.com`'u ayrıca ekleyin. Sunucudaki
+başka bir çalışma alanının doğruladığı bir alan adı sahiplenilemez (`domain_taken`). Doğrulanan alan
+adı siz kaldırana kadar sahiplenilmiş kalır.
+
+## 4. Giriş kurallarını seçin
+
+`PATCH /v1/sso`:
+
+- **Tek oturum açma zorunlu** (`sso_required`): alan adlarınızdaki kişiler bu çalışma alanında
+  yalnızca sağlayıcınız üzerinden giriş yaptıktan sonra çalışır. E-postayla gelen kod ya da geçiş
+  anahtarıyla açılan oturum onları yine içeri alır, diğer çalışma alanlarına ve tartışmalarda okur
+  olarak; ama bu çalışma alanı `sso_required` yanıtını verir ve panel onları sağlayıcınıza gönderir.
+  Açtığınız anda var olan oturumlar bir sonraki istekten itibaren reddedilir. Sahipler her oturumla
+  muaftır; böylece bozulan bir sağlayıcı sizi asla dışarıda bırakmaz. Bu kişilerin bağlı uygulamaları
+  (OAuth, MCP) sağlayıcı üzerinden giriş yapıp onları yeniden onaylayana kadar burada çalışmaz; API
+  anahtarları etkilenmez. Bir sağlayıcı ve doğrulanmış bir alan adı gerekir; sağlayıcıyı ya da son
+  doğrulanmış alan adını kaldırmak onu kapatır.
+- **Anında üyelik** (`jit`, varsayılan kapalı): alan adlarınızdan biri sağlayıcı üzerinden giriş
+  yapar ve üye değilse varsayılan rolle katılır (`jit_role`: `agent` ya da `admin`; asla `owner`
+  değil). O rolün ve olağan gelen kutusu erişim kurallarının verdiğini görür. Kapalıyken kişiler
+  eskisi gibi davet edilir; sağlayıcıyla giriş yapan davetli kişi daveti kabul etmiş olur.
+
+Alan adlarınızdan Yuva hesabı zaten olan kişiler (örneğin başka bir çalışma alanının üyesi olarak),
+çalışma alanınızın üyesi olmasalar da sağlayıcınız üzerinden giriş yapar.
+
+## Denetim kaydı
+
+Her değişiklik ve her giriş çalışma alanının denetim kaydındadır (Ayarlar › Denetim kaydı):
+`sso.provider_created`, `sso.provider_updated`, `sso.provider_deleted`, `sso.settings_changed`,
+`sso_domain.added`, `sso_domain.verified`, `sso_domain.deleted`, `sso.signed_in`, nedeniyle
+`sso.sign_in_refused` ve anında üyeler için `via: sso` ile `member.joined`.
+
+## Giriş başarısız olduğunda
+
+Giriş sayfası neyin yanlış gittiğini gösterir (`/sign-in?sso_error=…`):
+
+| Kod | Anlamı |
+|---|---|
+| `expired` | Giriş 10 dakikadan uzun sürdü, zaten kullanıldı ya da başka bir tarayıcıda başladı. |
+| `denied` | Sağlayıcı reddetti ya da kişi vazgeçti. |
+| `failed` | Yuva sağlayıcıya ulaşamadı ya da kodu değiştiremedi; istemci gizli anahtarını denetleyin. |
+| `invalid_token` | `id_token` bir denetimden geçemedi (imza, issuer, hedef kitle, süre, nonce). |
+| `email_unverified` | Token'da adres yok ya da doğrulandığını söylemiyor. |
+| `domain_not_claimed` | Adres çalışma alanının doğrulanmış alan adlarından birinde değil. |
+| `group_not_allowed` | Kişi izin verilen grupların hiçbirinde değil. |
+| `not_member` | Kişinin burada hesabı yok ve anında üyelik kapalı. |

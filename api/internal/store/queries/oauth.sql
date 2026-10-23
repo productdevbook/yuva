@@ -27,10 +27,10 @@ WHERE r.id = @id AND r.expires_at > @now::timestamptz;
 DELETE FROM oauth_requests WHERE id = $1;
 
 -- name: UpsertOAuthGrant :one
-INSERT INTO oauth_grants (workspace_id, id, member_id, client_id, scopes, resource, created_at)
-VALUES (@workspace_id, @id, @member_id, @client_id, @scopes, @resource, @created_at)
+INSERT INTO oauth_grants (workspace_id, id, member_id, client_id, scopes, resource, created_at, sso_settings_id)
+VALUES (@workspace_id, @id, @member_id, @client_id, @scopes, @resource, @created_at, sqlc.narg(sso_settings_id))
 ON CONFLICT (workspace_id, member_id, client_id) WHERE revoked_at IS NULL
-DO UPDATE SET scopes = EXCLUDED.scopes, resource = EXCLUDED.resource
+DO UPDATE SET scopes = EXCLUDED.scopes, resource = EXCLUDED.resource, sso_settings_id = EXCLUDED.sso_settings_id
 RETURNING *;
 
 -- name: CreateOAuthCode :exec
@@ -85,7 +85,7 @@ DELETE FROM oauth_tokens WHERE workspace_id = $1 AND grant_id = $2;
 DELETE FROM oauth_codes WHERE workspace_id = $1 AND grant_id = $2;
 
 -- name: GetOAuthAccess :one
-SELECT t.expires_at, g.workspace_id, g.id AS grant_id, g.scopes, g.resource, m.id AS member_id, m.role,
+SELECT t.expires_at, g.workspace_id, g.id AS grant_id, g.scopes, g.resource, g.sso_settings_id, m.id AS member_id, m.person_id, m.role,
        cl.name AS client_name, w.bots_may_send, w.broadcasts_by_keys
 FROM oauth_tokens t
 JOIN oauth_grants g ON g.workspace_id = t.workspace_id AND g.id = t.grant_id

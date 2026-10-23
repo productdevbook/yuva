@@ -13,17 +13,19 @@ import (
 )
 
 const createSession = `-- name: CreateSession :exec
-INSERT INTO sessions (id, person_id, token_hash, method, created_at, expires_at, last_seen_at)
-VALUES ($1, $2, $3, $4, $5, $6, $5)
+INSERT INTO sessions (id, person_id, token_hash, method, created_at, expires_at, last_seen_at, sso_workspace_id, sso_settings_id)
+VALUES ($1, $2, $3, $4, $5, $6, $5, $7, $8)
 `
 
 type CreateSessionParams struct {
-	ID        uuid.UUID
-	PersonID  uuid.UUID
-	TokenHash []byte
-	Method    string
-	CreatedAt time.Time
-	ExpiresAt time.Time
+	ID             uuid.UUID
+	PersonID       uuid.UUID
+	TokenHash      []byte
+	Method         string
+	CreatedAt      time.Time
+	ExpiresAt      time.Time
+	SsoWorkspaceID *uuid.UUID
+	SsoSettingsID  *uuid.UUID
 }
 
 func (q *Queries) CreateSession(ctx context.Context, arg CreateSessionParams) error {
@@ -34,6 +36,8 @@ func (q *Queries) CreateSession(ctx context.Context, arg CreateSessionParams) er
 		arg.Method,
 		arg.CreatedAt,
 		arg.ExpiresAt,
+		arg.SsoWorkspaceID,
+		arg.SsoSettingsID,
 	)
 	return err
 }
@@ -48,7 +52,7 @@ func (q *Queries) DeleteSession(ctx context.Context, id uuid.UUID) error {
 }
 
 const getSessionByTokenHash = `-- name: GetSessionByTokenHash :one
-SELECT id, person_id, token_hash, method, created_at, expires_at, last_seen_at FROM sessions WHERE token_hash = $1 AND expires_at > $2
+SELECT id, person_id, token_hash, method, created_at, expires_at, last_seen_at, sso_workspace_id, sso_settings_id FROM sessions WHERE token_hash = $1 AND expires_at > $2
 `
 
 type GetSessionByTokenHashParams struct {
@@ -67,6 +71,8 @@ func (q *Queries) GetSessionByTokenHash(ctx context.Context, arg GetSessionByTok
 		&i.CreatedAt,
 		&i.ExpiresAt,
 		&i.LastSeenAt,
+		&i.SsoWorkspaceID,
+		&i.SsoSettingsID,
 	)
 	return i, err
 }
