@@ -128,7 +128,9 @@ language, Open Graph tags and structured data. Public pages answer 120 requests 
 
 `YUVA_HELP_URL` is an origin you point at the server, such as `https://help.example.com`. Set it in
 [Configuration](configuration.md#help-center); centers are then at `<origin>/{slug}`, and the origin must differ from `YUVA_PUBLIC_URL`.
-Own domains per center are not supported yet. `YUVA_HELP=off` removes help centers altogether: their
+A center can also have its own domain, such as `help.example.com`: add it in the center's settings,
+create the CNAME and TXT records shown there, and once they are verified the center answers at `/` on that
+domain (the server setting is `YUVA_STATUS_DOMAINS` in [Configuration](configuration.md)). `YUVA_HELP=off` removes help centers altogether: their
 routes answer `404`.
 
 ## Search and the report

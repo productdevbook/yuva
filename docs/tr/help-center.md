@@ -130,8 +130,10 @@ sayfalar adres başına dakikada 120 isteğe yanıt verir.
 
 `YUVA_HELP_URL`, sunucuya yönlendirdiğiniz bir origin'dir, örneğin `https://help.example.com`.
 [Yapılandırma](configuration.md#yardım-merkezi) bölümünde atayın; merkezler bu durumda `<origin>/{slug}`
-adresindedir ve origin `YUVA_PUBLIC_URL`'den farklı olmalıdır. Merkez başına kendi alan adı henüz
-desteklenmez. `YUVA_HELP=off` yardım merkezlerini tümden kaldırır: yolları `404` verir.
+adresindedir ve origin `YUVA_PUBLIC_URL`'den farklı olmalıdır. Bir merkezin
+kendi alan adı da olabilir, örneğin `help.example.com`: merkezin ayarlarından ekleyin, orada gösterilen CNAME ve
+TXT kayıtlarını oluşturun; kayıtlar doğrulanınca merkez o alan adında `/` adresinde açılır (sunucu ayarı
+[Yapılandırma](configuration.md) bölümündeki `YUVA_STATUS_DOMAINS`). `YUVA_HELP=off` yardım merkezlerini tümden kaldırır: yolları `404` verir.
 
 ## Arama ve rapor
 

@@ -134,8 +134,11 @@ Seiten beantworten 120 Anfragen pro Minute und Adresse.
 
 `YUVA_HELP_URL` ist ein Ursprung, den Sie auf den Server zeigen lassen, etwa `https://help.example.com`.
 Setzen Sie ihn in der [Konfiguration](configuration.md#hilfecenter); die Center liegen dann unter
-`<Ursprung>/{slug}`, und der Ursprung muss sich von `YUVA_PUBLIC_URL` unterscheiden. Eigene Domains pro
-Center werden noch nicht unterstützt. `YUVA_HELP=off` entfernt Hilfecenter ganz: Ihre Pfade antworten mit
+`<Ursprung>/{slug}`, und der Ursprung muss sich von `YUVA_PUBLIC_URL` unterscheiden. Ein Center kann
+auch eine eigene Domain haben, etwa `help.example.com`: Fügen Sie sie in den Einstellungen des Centers hinzu,
+legen Sie die dort gezeigten CNAME- und TXT-Einträge an, und sobald sie bestätigt sind, antwortet das Center
+unter `/` auf dieser Domain (die Servereinstellung ist `YUVA_STATUS_DOMAINS` in der
+[Konfiguration](configuration.md)). `YUVA_HELP=off` entfernt Hilfecenter ganz: Ihre Pfade antworten mit
 `404`.
 
 ## Suche und Bericht
