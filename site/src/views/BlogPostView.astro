@@ -4,9 +4,9 @@ import { homeCopy } from "@/copy/home"
 import { blogCopy } from "@/copy/pages"
 import { i18nFor } from "@/i18n"
 import Base from "@/layouts/Base.astro"
-import { isoDay, minutes, posts, type Post } from "@/lib/blog"
+import { isoDay, listFor, localesOf, minutes, slugOf, type Post } from "@/lib/blog"
 import { quickStart } from "@/lib/docs"
-import { absolute, blog, post } from "@/lib/routes"
+import { absolute, bcp47, blog, post, type Locale } from "@/lib/routes"
 import Logo from "@/ui/Logo.astro"
 import PostCover from "@/ui/PostCover.astro"
 import StartCards from "@/ui/StartCards.astro"
@@ -14,17 +14,23 @@ import Stop from "@/ui/Stop.astro"
 
 interface Props {
   entry: Post
+  locale: Locale
 }
 
-const { entry } = Astro.props
-const i18n = i18nFor("en")
+const { entry, locale } = Astro.props
+const slug = slugOf(entry.id)
+const i18n = i18nFor(locale)
 const t = blogCopy(i18n)
-const hero = homeCopy(i18n, await quickStart("en")).hero
+const hero = homeCopy(i18n, await quickStart(locale)).hero
 const { Content, headings } = await render(entry)
 const toc = headings.filter((h) => h.depth === 2)
-const others = (await posts()).filter((p) => p.id !== entry.id).slice(0, 3)
-const date = new Intl.DateTimeFormat("en-US", { dateStyle: "long", timeZone: "UTC" })
-const url = absolute(post(entry.id))
+const others = (await listFor(locale)).filter((p) => p.slug !== slug).slice(0, 3)
+const available = await localesOf(slug)
+const paths = Object.fromEntries(
+  Object.entries(blog).map(([l, rel]) => [l, available.includes(l as Locale) ? post(slug, l as Locale) : rel])
+) as typeof blog
+const date = new Intl.DateTimeFormat(bcp47[locale], { dateStyle: "long", timeZone: "UTC" })
+const url = absolute(post(slug, locale))
 const share = [
   {
     label: "X",
@@ -43,16 +49,17 @@ const jsonLd = [
     datePublished: entry.data.date.toISOString(),
     author: { "@type": "Person", name: entry.data.author },
     image: absolute(`/og/blog/${entry.id}.png`),
+    inLanguage: bcp47[locale],
     mainEntityOfPage: url,
   },
 ]
 ---
 
 <Base
-  locale="en"
+  locale={locale}
   title={`${entry.data.title} · Yuva`}
   description={entry.data.description}
-  paths={{ ...blog, en: post(entry.id) }}
+  paths={paths}
   translated={false}
   type="article"
   image={`/og/blog/${entry.id}.png`}
@@ -60,7 +67,7 @@ const jsonLd = [
 >
   <article>
     <header class="px-5 pt-12 pb-16 text-center sm:px-8 sm:pt-16">
-      <a class="text-sm text-ink-soft transition-colors hover:text-ink" href={blog.en}>
+      <a class="text-sm text-ink-soft transition-colors hover:text-ink" href={blog[locale]}>
         ← {t.back}
       </a>
       <p class="mt-8 text-sm text-ink-faint">
@@ -140,7 +147,7 @@ const jsonLd = [
         {t.tryTitle}
       </h2>
       <p class="mt-2 text-ink-soft">{t.tryBody}</p>
-      <StartCards t={hero} locale="en" class="mt-6" />
+      <StartCards t={hero} locale={locale} class="mt-6" />
     </div>
   </Stop>
 
@@ -149,10 +156,10 @@ const jsonLd = [
       <ul class="-me-px -mb-px grid sm:grid-cols-3">
         {others.map((p) => (
           <li class="min-w-0 border-e border-b border-rule">
-            <a class="group block p-5 sm:p-6" href={post(p.id)}>
-              <PostCover title={p.data.title} size="sm" />
-              <p class="mt-4 text-sm text-ink-faint">{date.format(p.data.date)}</p>
-              <h3 class="mt-1 font-semibold group-hover:text-brand">{p.data.title}</h3>
+            <a class="group block p-5 sm:p-6" href={post(p.slug, p.lang)} hreflang={p.lang} lang={p.lang}>
+              <PostCover title={p.entry.data.title} size="sm" />
+              <p class="mt-4 text-sm text-ink-faint">{date.format(p.entry.data.date)}</p>
+              <h3 class="mt-1 font-semibold group-hover:text-brand">{p.entry.data.title}</h3>
             </a>
           </li>
         ))}

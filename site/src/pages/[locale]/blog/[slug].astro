@@ -1,0 +1,17 @@
+---
+import { localeOf, slugOf, translatedPosts, type Post } from "@/lib/blog"
+import type { Locale } from "@/lib/routes"
+import BlogPostView from "@/views/BlogPostView.astro"
+
+export async function getStaticPaths() {
+  return (await translatedPosts()).map((entry) => ({
+    params: { locale: localeOf(entry.id), slug: slugOf(entry.id) },
+    props: { entry },
+  }))
+}
+
+const { locale } = Astro.params as { locale: Locale }
+const { entry } = Astro.props as { entry: Post }
+---
+
+<BlogPostView entry={entry} locale={locale} />

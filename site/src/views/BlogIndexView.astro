@@ -2,7 +2,7 @@
 import { blogCopy } from "@/copy/pages"
 import { i18nFor } from "@/i18n"
 import Base from "@/layouts/Base.astro"
-import { isoDay, minutes, posts } from "@/lib/blog"
+import { isoDay, listFor, minutes } from "@/lib/blog"
 import { bcp47, blog, post, type Locale } from "@/lib/routes"
 import Logo from "@/ui/Logo.astro"
 import PostCover from "@/ui/PostCover.astro"
@@ -15,7 +15,7 @@ interface Props {
 
 const { locale } = Astro.props
 const t = blogCopy(i18nFor(locale))
-const [first, ...rest] = await posts()
+const [first, ...rest] = await listFor(locale)
 const date = new Intl.DateTimeFormat(bcp47[locale], { dateStyle: "long", timeZone: "UTC" })
 const rss =
   "inline-flex h-9 items-center gap-2 rounded-full border border-rule-strong px-4 text-sm font-medium transition-colors hover:border-ink/40 hover:bg-paper-deep"
@@ -27,7 +27,9 @@ const rss =
       <p class="text-sm font-medium text-brand">{t.kicker}</p>
       <h1 class="mt-3 text-4xl font-semibold tracking-[-0.03em] sm:text-5xl">{t.title}</h1>
       <p class="mt-4 text-lg leading-relaxed text-ink-soft">{t.lead}</p>
-      {locale !== "en" && <p class="mt-3 text-sm text-ink-faint">{t.english}</p>}
+      {locale !== "en" && rest.concat(first ?? []).some((p) => p.lang === "en") && (
+        <p class="mt-3 text-sm text-ink-faint">{t.english}</p>
+      )}
     </div>
     <a class={rss} href="/blog/rss.xml">
       <RssIcon />
@@ -39,25 +41,25 @@ const rss =
     <Stop labelledby="latest-title" index="01" label={t.latest} headed flush>
       <a
         class="group grid items-center lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]"
-        href={post(first.id)}
-        hreflang="en"
+        href={post(first.slug, first.lang)}
+        hreflang={first.lang}
       >
         <PostCover
-          title={first.data.title}
+          title={first.entry.data.title}
           class="border-b border-rule transition-opacity group-hover:opacity-95 lg:border-e lg:border-b-0"
         />
-        <div class="px-5 py-10 sm:px-8" lang="en">
+        <div class="px-5 py-10 sm:px-8" lang={first.lang}>
           <p class="text-sm text-ink-faint">
-            <time datetime={isoDay(first.data.date)}>{date.format(first.data.date)}</time>
-            <span> · {t.readTime(minutes(first))}</span>
+            <time datetime={isoDay(first.entry.data.date)}>{date.format(first.entry.data.date)}</time>
+            <span> · {t.readTime(minutes(first.entry))}</span>
           </p>
           <h3 class="mt-3 text-3xl leading-tight font-semibold tracking-[-0.025em] group-hover:text-brand">
-            {first.data.title}
+            {first.entry.data.title}
           </h3>
-          <p class="mt-4 text-lg leading-relaxed text-ink-soft">{first.data.description}</p>
+          <p class="mt-4 text-lg leading-relaxed text-ink-soft">{first.entry.data.description}</p>
           <p class="mt-6 flex items-center gap-3 text-sm">
             <Logo size={28} />
-            <span class="font-medium">{first.data.author}</span>
+            <span class="font-medium">{first.entry.data.author}</span>
           </p>
         </div>
       </a>
@@ -69,17 +71,17 @@ const rss =
       <ul class="-me-px -mb-px grid sm:grid-cols-2 lg:grid-cols-3">
         {rest.map((p) => (
           <li class="min-w-0 border-e border-b border-rule">
-            <a class="group block p-5 sm:p-8" href={post(p.id)} hreflang="en">
-              <PostCover title={p.data.title} size="sm" />
+            <a class="group block p-5 sm:p-8" href={post(p.slug, p.lang)} hreflang={p.lang}>
+              <PostCover title={p.entry.data.title} size="sm" />
               <p class="mt-5 text-sm text-ink-faint">
-                <time datetime={isoDay(p.data.date)}>{date.format(p.data.date)}</time>
-                <span> · {t.readTime(minutes(p))}</span>
+                <time datetime={isoDay(p.entry.data.date)}>{date.format(p.entry.data.date)}</time>
+                <span> · {t.readTime(minutes(p.entry))}</span>
               </p>
-              <h3 class="mt-2 text-xl leading-snug font-semibold tracking-tight group-hover:text-brand" lang="en">
-                {p.data.title}
+              <h3 class="mt-2 text-xl leading-snug font-semibold tracking-tight group-hover:text-brand" lang={p.lang}>
+                {p.entry.data.title}
               </h3>
-              <p class="mt-2 line-clamp-2 text-ink-soft" lang="en">
-                {p.data.description}
+              <p class="mt-2 line-clamp-2 text-ink-soft" lang={p.lang}>
+                {p.entry.data.description}
               </p>
             </a>
           </li>

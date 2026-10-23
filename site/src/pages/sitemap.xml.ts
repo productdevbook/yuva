@@ -1,5 +1,5 @@
 import type { APIRoute } from "astro"
-import { getCollection } from "astro:content"
+import { posts as published, localeOf, slugOf, translatedPosts } from "@/lib/blog"
 import { docRel, ordered } from "@/lib/docs"
 import { templates as gallery } from "@/lib/templates"
 import {
@@ -20,7 +20,9 @@ import {
 } from "@/lib/routes"
 
 export const GET: APIRoute = async () => {
-  const posts = (await getCollection("blog")).map((p) => `<url><loc>${absolute(post(p.id))}</loc></url>`)
+  const posts = [...(await published()), ...(await translatedPosts())].map(
+    (p) => `<url><loc>${absolute(post(slugOf(p.id), localeOf(p.id)))}</loc></url>`
+  )
   const docs = ["", ...(await ordered()).map((d) => docRel(d.id)), "api/"].map(docsPath)
   const urls = [
     home,

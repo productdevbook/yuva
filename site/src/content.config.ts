@@ -5,12 +5,15 @@ import { defaultLocale, locales } from "./lib/routes"
 
 const blog = defineCollection({
   loader: glob({ pattern: "**/*.md", base: "./src/content/blog" }),
-  schema: z.object({
-    title: z.string(),
-    description: z.string(),
-    date: z.coerce.date(),
-    author: z.string(),
-  }),
+  schema: z
+    .object({
+      title: z.string(),
+      description: z.string(),
+      date: z.coerce.date().optional(),
+      draft: z.boolean().default(false),
+      author: z.string(),
+    })
+    .refine((post) => post.draft || post.date, { message: "a published post needs a date" }),
 })
 
 const docs = defineCollection({

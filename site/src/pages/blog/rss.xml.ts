@@ -1,6 +1,6 @@
 import rss from "@astrojs/rss"
 import type { APIRoute } from "astro"
-import { posts as all } from "@/lib/blog"
+import { posts as all, slugOf } from "@/lib/blog"
 import { post, SITE } from "@/lib/routes"
 
 export const GET: APIRoute = async () => {
@@ -13,7 +13,7 @@ export const GET: APIRoute = async () => {
       title: p.data.title,
       description: p.data.description,
       pubDate: p.data.date,
-      link: post(p.id),
+      link: post(slugOf(p.id)),
     })),
   })
 }
