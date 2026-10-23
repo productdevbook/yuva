@@ -179,6 +179,69 @@ with `GET`, `POST /v1/sla-policies`, `GET`, `PATCH`, `DELETE /v1/sla-policies/{s
 not limited to inboxes). Conversations carry `sla`, the list takes `sort=sla_due` and `sla_state`, and
 `conversation.sla_warning` and `conversation.sla_breached` reach the event feed and webhooks.
 
+## Saved views
+
+A saved view is a named set of conversation list filters. Personal views belong to one member; workspace views are
+shared with everyone; team views are shared with one team.
+
+```sh
+curl -X POST https://support.example.com/v1/views \
+  -H "Authorization: Bearer $YUVA_API_KEY" -H "Content-Type: application/json" \
+  -d '{"visibility": "workspace", "name": "Open Pro refunds",
+       "filters": {"status": "open,pending", "q": "refund -spam", "field.plan": "pro"}}'
+```
+
+| Call | Does |
+|---|---|
+| `GET /v1/views` | Your personal views, the workspace's views and the views of your teams, each by `position` and name: `{"items": [...]}`. With `?team_id=` only that team's views, for its members, owners, admins and keys not limited to inboxes (others get `404`). |
+| `POST /v1/views` | Saves one: `visibility` (`personal`, `workspace` or `team`), `name`, `filters`, `team_id` for a team view, optional `position`. `201`. |
+| `GET`, `PATCH`, `DELETE /v1/views/{viewId}` | Reads, changes or deletes a view. `PATCH` takes `name`, `filters` (replaces the whole set) and `position`; visibility and team cannot change. |
+| `PUT /v1/views/order` | `{"ids": [...]}`, 1 to 50 views: each gets the position of its index. Every view must be visible to you (`404`) and changeable by you (`403`); otherwise nothing moves. `204`. |
+
+A view has `id`, `visibility`, `owner_member_id` (personal only), `team_id` (team only), `name`, `filters`,
+`position`, `count`, `count_capped`, `count_unavailable`, `created_at` and `updated_at`.
+
+### Filters
+
+`filters` is an object of the query parameters of `GET /v1/conversations` and their values as strings, for example
+`status`, `label_id`, `assignee`, `team`, `q` and `field.<key>`. `cursor` and `limit` are not filters. A filter is
+checked as the list checks it, for the caller who saves it: an unknown name, a value the list refuses, or a label or
+team that does not exist answers `400 validation_failed` with `field` naming the parameter. A view holds at most 30
+filters of 2000 characters. `assignee=me`, `team=mine` and `pinned` resolve for whoever reads the view.
+
+### Counts
+
+Each view carries `count`: its open conversations under its filters, counted with the reader's own inbox access, so a
+shared view never counts what the reader cannot see. A status filter without `open` counts 0.
+
+| Field | Meaning |
+|---|---|
+| `count` | At most 1000. Absent when the filters do not apply to the reader (an inbox they cannot see, `assignee=me` for an API key) and when counting failed. |
+| `count_capped` | `true` when more than 1000 matched. |
+| `count_unavailable` | `true` when counting took longer than a second. |
+
+### Who may do what
+
+| Who | May |
+|---|---|
+| Any member, signed in | Manage their own personal views and read the workspace views and those of their teams. |
+| Owners and admins | Also manage workspace and team views. Agents get `403 forbidden`. |
+| Connected apps (OAuth) | Personal views with `views:write`; workspace and team views for owners and admins with `views:write`. |
+| API keys | Workspace views, and team views when not limited to inboxes, with `views:write`. Personal views: `403 member_session_required`. |
+
+Team members see their team's views but cannot change them. Another member's personal view answers `404`.
+A key with only `views:write` gets `403 insufficient_scope` on every views endpoint: add `conversations:read`.
+
+A member keeps at most 50 personal views, the workspace 50 workspace views and each team 50 team views
+(`403 view_limit`).
+
+### When something is deleted
+
+Deleting a label, a team or a custom field removes `label_id`, `team_id` or `field.<key>` from every view that used
+it; the rest of each view stays. Renaming changes nothing. Deleting a team deletes its team views, and removing a
+member deletes their personal views. A view that names a deleted inbox, contact or idea stays and counts 0 or has no
+`count`.
+
 ## Custom fields
 
 Typed values on conversations and contacts, filters on the list, and a rule that blocks closing without one: see [Custom fields](custom-fields.md). The key needs `fields:manage` to define them.
@@ -297,6 +360,7 @@ A call without the needed scope answers `403 insufficient_scope`.
 | `changelog:publish` | Create, change and delete changelogs; publish, schedule, unpublish and delete published entries. Not included in any other scope: name it. |
 | `audit:read` | `GET /v1/audit-log`, the [audit log](operations.md#audit-log). Not included in any other scope: name it. Only an owner can give it to a key, and a key limited to inboxes cannot hold it. It works only while the member who made the key is still an owner. `yuva api-key create` leaves it out unless you name it. |
 | `fields:manage` | Create, change and delete [custom field](custom-fields.md) definitions. Owners and admins only; a key limited to inboxes cannot hold it. Not included in any other scope: name it. Writing values needs `conversations:write` or `contacts:write`. |
+| `views:write` | Save, change, reorder and delete [saved views](#saved-views). Every views endpoint, reads included, also needs `conversations:read`. |
 | `integrations:read` | `GET /v1/issue-integrations` and one integration: the [GitHub and Linear](issue-trackers.md) connections, never a token. |
 | `integrations:manage` | Connect, change and disconnect GitHub and Linear, make a new webhook secret. A key limited to inboxes cannot hold it. |
 | `issues:write` | Create, link and unlink GitHub and Linear issues on feedback and ideas (`/v1/conversations/{id}/issues`, `/v1/discussions/{id}/issues`), together with `conversations:read`. |

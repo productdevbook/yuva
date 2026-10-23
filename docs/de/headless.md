@@ -189,6 +189,72 @@ nicht auf Posteingänge beschränkte Schlüssel). Unterhaltungen tragen `sla`, d
 und `sla_state`, und `conversation.sla_warning` und `conversation.sla_breached` erreichen Event-Feed und
 Webhooks.
 
+## Gespeicherte Ansichten
+
+Eine gespeicherte Ansicht ist ein benannter Satz von Filtern der Unterhaltungsliste. Persönliche Ansichten gehören einem
+Mitglied; Workspace-Ansichten sind für alle freigegeben, Team-Ansichten für ein Team.
+
+```sh
+curl -X POST https://support.example.com/v1/views \
+  -H "Authorization: Bearer $YUVA_API_KEY" -H "Content-Type: application/json" \
+  -d '{"visibility": "workspace", "name": "Open Pro refunds",
+       "filters": {"status": "open,pending", "q": "refund -spam", "field.plan": "pro"}}'
+```
+
+| Aufruf | Wirkung |
+|---|---|
+| `GET /v1/views` | Ihre persönlichen Ansichten, die des Workspace und die Ihrer Teams, jeweils nach `position` und Name: `{"items": [...]}`. Mit `?team_id=` nur die Ansichten dieses Teams, für seine Mitglieder, Inhaber, Admins und nicht auf Posteingänge beschränkte Schlüssel (andere erhalten `404`). |
+| `POST /v1/views` | Speichert eine Ansicht: `visibility` (`personal`, `workspace` oder `team`), `name`, `filters`, `team_id` für eine Team-Ansicht, optional `position`. `201`. |
+| `GET`, `PATCH`, `DELETE /v1/views/{viewId}` | Liest, ändert oder löscht eine Ansicht. `PATCH` nimmt `name`, `filters` (ersetzt den ganzen Satz) und `position`; Sichtbarkeit und Team ändern sich nicht. |
+| `PUT /v1/views/order` | `{"ids": [...]}`, 1 bis 50 Ansichten: Jede erhält ihren Index als Position. Jede Ansicht muss für Sie sichtbar (`404`) und änderbar (`403`) sein; sonst bewegt sich nichts. `204`. |
+
+Eine Ansicht hat `id`, `visibility`, `owner_member_id` (nur persönlich), `team_id` (nur Team), `name`, `filters`,
+`position`, `count`, `count_capped`, `count_unavailable`, `created_at` und `updated_at`.
+
+### Filter
+
+`filters` ist ein Objekt aus den Abfrageparametern von `GET /v1/conversations` und ihren Werten als Zeichenketten,
+etwa `status`, `label_id`, `assignee`, `team`, `q` und `field.<key>`. `cursor` und `limit` sind keine Filter. Ein Filter
+wird wie in der Liste geprüft, für die Person, die speichert: ein unbekannter Name, ein Wert, den die Liste ablehnt,
+oder ein nicht vorhandenes Label oder Team ergibt `400 validation_failed` mit `field` für den Parameter. Eine Ansicht
+hat höchstens 30 Filter mit je 2000 Zeichen. `assignee=me`, `team=mine` und `pinned` werden für die Person aufgelöst,
+die die Ansicht liest.
+
+### Zähler
+
+Jede Ansicht trägt `count`: ihre offenen Unterhaltungen unter ihren Filtern, gezählt mit dem eigenen
+Posteingangszugriff der lesenden Person; eine geteilte Ansicht zählt also nie, was die Person nicht sehen darf. Ein
+Statusfilter ohne `open` zählt 0.
+
+| Feld | Bedeutung |
+|---|---|
+| `count` | Höchstens 1000. Fehlt, wenn die Filter für die lesende Person nicht gelten (ein Posteingang, den sie nicht sieht, `assignee=me` bei einem API-Schlüssel) und wenn das Zählen fehlschlug. |
+| `count_capped` | `true`, wenn mehr als 1000 passen. |
+| `count_unavailable` | `true`, wenn das Zählen länger als eine Sekunde dauerte. |
+
+### Wer was darf
+
+| Wer | Darf |
+|---|---|
+| Jedes angemeldete Mitglied | Die eigenen persönlichen Ansichten verwalten und die Workspace-Ansichten sowie die der eigenen Teams lesen. |
+| Inhaber und Admins | Zusätzlich Workspace- und Team-Ansichten verwalten. Agents erhalten `403 forbidden`. |
+| Verbundene Apps (OAuth) | Persönliche Ansichten mit `views:write`; Workspace- und Team-Ansichten für Inhaber und Admins mit `views:write`. |
+| API-Schlüssel | Workspace-Ansichten und, ohne Posteingangsbeschränkung, Team-Ansichten mit `views:write`. Persönliche Ansichten: `403 member_session_required`. |
+
+Teammitglieder sehen die Ansichten ihres Teams, ändern sie aber nicht. Die persönliche Ansicht eines anderen Mitglieds
+ergibt `404`. Ein Schlüssel nur mit `views:write` erhält bei jedem Ansichten-Endpunkt `403 insufficient_scope`: Fügen Sie
+`conversations:read` hinzu.
+
+Ein Mitglied hat höchstens 50 persönliche Ansichten, der Workspace 50 Workspace-Ansichten und jedes Team 50
+Team-Ansichten (`403 view_limit`).
+
+### Wenn etwas gelöscht wird
+
+Das Löschen eines Labels, eines Teams oder eines benutzerdefinierten Felds entfernt `label_id`, `team_id` oder
+`field.<key>` aus jeder Ansicht, die es nutzte; der Rest der Ansicht bleibt. Umbenennen ändert nichts. Das Löschen eines
+Teams löscht seine Team-Ansichten, das Entfernen eines Mitglieds dessen persönliche Ansichten. Eine Ansicht mit einem
+gelöschten Posteingang, Kontakt oder einer gelöschten Idee bleibt bestehen und zählt 0 oder hat kein `count`.
+
 ## Benutzerdefinierte Felder
 
 Typisierte Werte an Unterhaltungen und Kontakten, Filter in der Liste und eine Regel, die das Schließen ohne Wert verhindert: siehe [Benutzerdefinierte Felder](custom-fields.md). Zum Definieren braucht der Schlüssel `fields:manage`.
@@ -310,6 +376,7 @@ Ein Aufruf ohne den nötigen Scope antwortet mit `403 insufficient_scope`.
 | `changelog:publish` | Changelogs anlegen, ändern und löschen; veröffentlichte Einträge veröffentlichen, planen, zurückziehen und löschen. In keinem anderen Scope enthalten: nennen Sie ihn ausdrücklich. |
 | `audit:read` | `GET /v1/audit-log`, das [Audit-Log](operations.md#audit-log). In keinem anderen Scope enthalten: nennen Sie ihn. Nur ein Inhaber kann ihn einem Schlüssel geben, und ein auf Postfächer begrenzter Schlüssel kann ihn nicht halten. Er gilt nur, solange das Mitglied, das den Schlüssel erstellt hat, noch Inhaber ist. `yuva api-key create` lässt ihn weg, wenn Sie ihn nicht nennen. |
 | `fields:manage` | Definitionen von [benutzerdefinierten Feldern](custom-fields.md) anlegen, ändern und löschen. Nur Inhaber und Admins; ein auf Posteingänge beschränkter Schlüssel kann es nicht besitzen. In keinem anderen Scope enthalten: nennen Sie ihn ausdrücklich. Werte schreiben braucht `conversations:write` oder `contacts:write`. |
+| `views:write` | [Gespeicherte Ansichten](#gespeicherte-ansichten) speichern, ändern, sortieren und löschen. Jeder Ansichten-Endpunkt, auch zum Lesen, braucht zusätzlich `conversations:read`. |
 | `integrations:read` | `GET /v1/issue-integrations` und eine einzelne Integration: die Verbindungen zu [GitHub und Linear](issue-trackers.md), nie ein Token. |
 | `integrations:manage` | GitHub und Linear verbinden, ändern und trennen, ein neues Webhook-Geheimnis erzeugen. Ein auf Postfächer begrenzter Schlüssel kann ihn nicht halten. |
 | `issues:write` | GitHub- und Linear-Issues an Feedback und Ideen erstellen, verknüpfen und lösen (`/v1/conversations/{id}/issues`, `/v1/discussions/{id}/issues`), zusammen mit `conversations:read`. |

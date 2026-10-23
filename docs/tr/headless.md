@@ -182,6 +182,71 @@ Mesai saatlerine göre yanıt süresi hedefleri, uyarılar ve ihlaller: [SLA pol
 yöneticiler ve gelen kutularıyla sınırlı olmayan anahtarlar). Konuşmalar `sla` taşır, liste `sort=sla_due` ve
 `sla_state` alır, `conversation.sla_warning` ile `conversation.sla_breached` olay akışına ve webhook'lara ulaşır.
 
+## Kayıtlı görünümler
+
+Kayıtlı görünüm, konuşma listesi filtrelerinin adlandırılmış bir kümesidir. Kişisel görünümler tek bir üyeye aittir;
+çalışma alanı görünümleri herkesle, ekip görünümleri bir ekiple paylaşılır.
+
+```sh
+curl -X POST https://support.example.com/v1/views \
+  -H "Authorization: Bearer $YUVA_API_KEY" -H "Content-Type: application/json" \
+  -d '{"visibility": "workspace", "name": "Open Pro refunds",
+       "filters": {"status": "open,pending", "q": "refund -spam", "field.plan": "pro"}}'
+```
+
+| Çağrı | Ne yapar |
+|---|---|
+| `GET /v1/views` | Kişisel görünümleriniz, çalışma alanının görünümleri ve ekiplerinizin görünümleri; her biri `position` ve ada göre: `{"items": [...]}`. `?team_id=` ile yalnızca o ekibin görünümleri; ekibin üyeleri, sahipler, yöneticiler ve gelen kutularıyla sınırlı olmayan anahtarlar görür (diğerleri `404` alır). |
+| `POST /v1/views` | Bir görünüm kaydeder: `visibility` (`personal`, `workspace` veya `team`), `name`, `filters`, ekip görünümü için `team_id`, isteğe bağlı `position`. `201`. |
+| `GET`, `PATCH`, `DELETE /v1/views/{viewId}` | Görünümü okur, değiştirir veya siler. `PATCH` `name`, `filters` (tüm kümeyi değiştirir) ve `position` alır; görünürlük ve ekip değişmez. |
+| `PUT /v1/views/order` | `{"ids": [...]}`, 1 ile 50 görünüm: her biri dizin sırasını konum olarak alır. Her görünümü görebiliyor (`404`) ve değiştirebiliyor (`403`) olmalısınız; aksi halde hiçbir şey taşınmaz. `204`. |
+
+Bir görünümde `id`, `visibility`, `owner_member_id` (yalnızca kişisel), `team_id` (yalnızca ekip), `name`, `filters`,
+`position`, `count`, `count_capped`, `count_unavailable`, `created_at` ve `updated_at` bulunur.
+
+### Filtreler
+
+`filters`, `GET /v1/conversations` sorgu parametrelerinin ve değerlerinin (metin olarak) bir nesnesidir; örneğin
+`status`, `label_id`, `assignee`, `team`, `q` ve `field.<key>`. `cursor` ve `limit` filtre değildir. Filtre, listenin
+denetlediği gibi ve kaydeden kişi için denetlenir: bilinmeyen bir ad, listenin reddettiği bir değer veya var olmayan
+bir etiket ya da ekip, parametreyi `field` ile gösteren `400 validation_failed` döndürür. Bir görünümde en fazla 30
+filtre bulunur, her biri en çok 2000 karakter. `assignee=me`, `team=mine` ve `pinned`, görünümü okuyan kişi için
+çözülür.
+
+### Sayaçlar
+
+Her görünümde `count` bulunur: filtrelerine uyan açık konuşmalar, okuyanın kendi gelen kutusu erişimiyle sayılır;
+paylaşılan bir görünüm okuyanın göremediğini asla saymaz. `open` içermeyen bir durum filtresi 0 sayar.
+
+| Alan | Anlamı |
+|---|---|
+| `count` | En fazla 1000. Filtreler okuyana uygulanmıyorsa (göremediği bir gelen kutusu, bir API anahtarı için `assignee=me`) ve sayım başarısız olduysa yoktur. |
+| `count_capped` | 1000'den fazlası eşleştiğinde `true`. |
+| `count_unavailable` | Sayım bir saniyeden uzun sürdüğünde `true`. |
+
+### Kim ne yapabilir
+
+| Kim | Yapabilir |
+|---|---|
+| Oturum açmış her üye | Kendi kişisel görünümlerini yönetir; çalışma alanı ve kendi ekiplerinin görünümlerini okur. |
+| Sahipler ve yöneticiler | Ayrıca çalışma alanı ve ekip görünümlerini yönetir. Temsilciler `403 forbidden` alır. |
+| Bağlı uygulamalar (OAuth) | `views:write` ile kişisel görünümler; sahipler ve yöneticiler için `views:write` ile çalışma alanı ve ekip görünümleri. |
+| API anahtarları | `views:write` ile çalışma alanı görünümleri, gelen kutularıyla sınırlı değilse ekip görünümleri. Kişisel görünümler: `403 member_session_required`. |
+
+Ekip üyeleri ekiplerinin görünümlerini görür ama değiştiremez. Başka bir üyenin kişisel görünümü `404` döndürür.
+Yalnızca `views:write` taşıyan bir anahtar her görünüm uç noktasında `403 insufficient_scope` alır:
+`conversations:read` ekleyin.
+
+Bir üyenin en fazla 50 kişisel görünümü, çalışma alanının 50 çalışma alanı görünümü ve her ekibin 50 ekip görünümü
+olabilir (`403 view_limit`).
+
+### Bir şey silindiğinde
+
+Bir etiketi, ekibi veya özel alanı silmek, onu kullanan her görünümden `label_id`, `team_id` veya `field.<key>`
+filtresini kaldırır; görünümün geri kalanı kalır. Yeniden adlandırma hiçbir şeyi değiştirmez. Bir ekibi silmek ekip
+görünümlerini, bir üyeyi kaldırmak kişisel görünümlerini siler. Silinmiş bir gelen kutusunu, kişiyi veya fikri
+kullanan görünüm kalır ve 0 sayar ya da `count` içermez.
+
 ## Özel alanlar
 
 Konuşmalarda ve kişilerde türlü değerler, listede filtreler ve bir değer olmadan kapatmayı engelleyen bir kural: [Özel alanlar](custom-fields.md). Tanımlamak için anahtarın `fields:manage` yetkisi olmalı.
@@ -300,6 +365,7 @@ Gereken yetki olmadan yapılan çağrı `403 insufficient_scope` döner.
 | `changelog:publish` | Değişiklik günlüğü oluşturma, değiştirme ve silme; yayındaki kayıtları yayınlama, zamanlama, yayından kaldırma ve silme. Başka hiçbir yetkiye dahil değildir: adıyla verin. |
 | `audit:read` | `GET /v1/audit-log`, [denetim günlüğü](operations.md#denetim-günlüğü). Başka hiçbir kapsama dahil değildir: adıyla verin. Yalnızca bir sahip anahtara verebilir, gelen kutularına sınırlı bir anahtar bunu tutamaz. Yalnızca anahtarı oluşturan üye hâlâ sahip olduğu sürece çalışır. `yuva api-key create` adını vermezseniz bunu eklemez. |
 | `fields:manage` | [Özel alan](custom-fields.md) tanımlarını oluşturma, değiştirme ve silme. Yalnızca sahipler ve yöneticiler; gelen kutularıyla sınırlı bir anahtar bunu taşıyamaz. Başka hiçbir yetkiye dahil değildir: adıyla verin. Değer yazmak için `conversations:write` veya `contacts:write` gerekir. |
+| `views:write` | [Kayıtlı görünümleri](#kayıtlı-görünümler) kaydetme, değiştirme, sıralama ve silme. Okumalar dahil her görünüm uç noktası ayrıca `conversations:read` ister. |
 | `integrations:read` | `GET /v1/issue-integrations` ve tek bir entegrasyon: [GitHub ve Linear](issue-trackers.md) bağlantıları, hiçbir zaman bir belirteç değil. |
 | `integrations:manage` | GitHub ve Linear bağlamak, değiştirmek, bağlantıyı kesmek, yeni webhook gizli değeri üretmek. Gelen kutularına sınırlı bir anahtar bunu tutamaz. |
 | `issues:write` | Geri bildirim ve fikirlerde GitHub ve Linear kayıtları oluşturmak, bağlamak ve bağlantıyı kaldırmak (`/v1/conversations/{id}/issues`, `/v1/discussions/{id}/issues`), `conversations:read` ile birlikte. |
