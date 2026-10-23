@@ -1013,7 +1013,8 @@ is read from the counters, rollups and indexed tables the server already keeps, 
 of the workspace's analytics query slots; blocks the member may not see are left out. What the
 shell already loads on every page stays out of it and Home reads it from there: inbox names and
 colours (`GET /v1/inboxes`), members and their live presence (`GET /v1/members` and realtime), and
-mentions (`GET /v1/me/mentions`, whose seen state changes live). The checklist is the same setup state
+mentions (`GET /v1/me/mentions`, whose seen state changes live); the conversation a teammate is
+looking at is named from the open conversations list, as in the team menu. The checklist is the same setup state
 the MCP `get_setup_state` tool returns. `/setup` is one hub of cards (live chat, e-mail, mobile
 app, documentation pages, analytics, newsletter); a card that is set up links to its place, one that
 is not runs its flow inside the setup layout, and `/analytics/new` opens the same analytics flow. The

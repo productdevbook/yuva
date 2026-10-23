@@ -147,6 +147,16 @@ a withdrawn item stays here marked withdrawn. Work before `Y-117` is tracked in 
   - The `web/` check passes; screenshots of Home for an owner with two properties and a sent
     broadcast, light and dark.
 
+### Y-177 · Deleting your account right after deleting your workspace answers 500
+
+- **Area** api · **Owner** yuva-api · **Priority** P1 · **Depends on** – · **Chapters** architecture
+- **Acceptance**
+  - Found by the M17 re-run: `DELETE /v1/me` sent right after `DELETE /v1/workspace` (or `yuva
+    workspace delete`) answered `500`, the server log showing `deadlock detected (SQLSTATE 40P01)`.
+  - The cause is found and named in the commit; the two deletes in that order succeed, and a test
+    runs them back to back against Postgres.
+  - The `api/` check passes with `YUVA_TEST_DATABASE_URL` set.
+
 ## M26 — Release 0.1.0
 
 ### Y-129 · Security review since 0.0.1

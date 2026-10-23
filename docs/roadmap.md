@@ -282,7 +282,7 @@ Status: withdrawn; #63 closed as not planned and its pull request #72 closed unm
 
 ## M17 — Home and one setup
 
-Status: done in `v0.0.15`, acceptance on a running instance pending (#127); issue #74, decisions in `architecture.md` › Panel (`web/`) › Home and setup (M17).
+Status: done in `v0.0.15`; every Accept item verified on 2026-10-23 at `6de390b` after the Home fix (#127, #162); issue #74, decisions in `architecture.md` › Panel (`web/`) › Home and setup (M17).
 
 - `GET /v1/home` with inbox counts, visitors per property (today, last 30 minutes, seven days), the
   last broadcast and the setup checklist shared with `get_setup_state`.
@@ -531,7 +531,7 @@ paths finds none; every check in the `CLAUDE.md` table passes.
 
 ## M25 — Acceptance for 0.1.0
 
-Status: in progress; items Y-126 to Y-128 and Y-162 in `backlog.md`.
+Status: in progress; items Y-126 to Y-128, Y-162 and Y-177 in `backlog.md`.
 
 - The Accept items of M6.1, M17 and M23, the milestones released without them, run on a server built
   from `main`.
