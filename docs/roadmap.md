@@ -556,7 +556,7 @@ and the widget and its attachment no longer downloads.
 
 ## M28 — Team workflow
 
-Status: planned; items Y-138 to Y-144 in `backlog.md`. Part of 0.1.0.
+Status: done on 2026-10-23 (#138–#144); items Y-138 to Y-144 in `backlog.md`. Part of 0.1.0.
 
 - Teams with inbox access and assignment, automatic assignment, SLA policies on business hours,
   automation rules, macros, saved views and custom fields.

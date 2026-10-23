@@ -427,7 +427,12 @@ panel (embedded SPA) ─────────► /v1 + WS ──────�
   oapi-codegen. Postgres through pgx and sqlc; goose migrations.
 - Background work on River (Postgres-backed queue): outbound e-mail, webhooks, notification
   fan-out, attachment cleanup, retention, and migrations on their own `migrations` queue (see
-  "Moving to Yuva").
+  "Moving to Yuva"). Calls to the outside that can hang or retry for long run on their own queues,
+  so a customer's broken endpoint never holds up assignment, automation, SLA checks or
+  notifications on the default queue: `webhooks` (10 workers, webhook deliveries only), `outbound`
+  (10: member Web Push, app push, Slack posts and events, issue-tracker sync), `email` (10: sending
+  through a channel's SMTP: replies, list mail, deliverability and migration probes) and `imports`
+  (2: help-center imports). Each job kind sets its queue in its own insert options.
 - Rate limits count in Postgres so every replica shares them (#134): `rate_limits` (UNLOGGED, one
   row per key) holds a fixed window that starts with the key's first request; one upsert per check
   counts and answers, and several keys go in one statement when a batch is checked (analytics server
