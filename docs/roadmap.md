@@ -83,8 +83,8 @@ Accept: a new conversation in a `live` inbox notifies a member's phone within se
 
 ## M6.1 — Satisfaction ratings
 
-Status: in progress; API done, widget, mobile SDKs and panel next. Decisions in `architecture.md` ›
-Satisfaction ratings.
+Status: built in the API, the widget, the Swift and Kotlin SDKs and the panel; acceptance on a running
+instance pending (#126). Decisions in `architecture.md` › Satisfaction ratings.
 
 - An inbox setting; contacts rate a closed conversation `good` or `bad` with an optional comment,
   once per close, in the widget, the mobile SDKs and through two links in an e-mail.
@@ -106,7 +106,7 @@ Accept: one week of real support handled only in Yuva.
 
 ## M8 — First public release (0.0.1)
 
-Status: in progress; ships as `v0.0.1` (see `CHANGELOG.md`).
+Status: done in `v0.0.1`.
 
 - Docker image, install guide, configuration reference, upgrade notes, backup guide.
 - Security review of authentication, client sessions, ingress and attachment handling.
@@ -127,9 +127,9 @@ Status: done in `v0.0.4`; plan in issue #17, decisions in `architecture.md` › 
 Accept: Claude Code and claude.ai triage an inbox and draft replies a member sends from the panel;
 a prompt-injection e-mail sends nothing; a headless chat works with the panel turned off.
 
-## M10 — Native apps for members (0.0.33)
+## M10 — Native apps for members
 
-Status: planned; iOS in issue #18, Android in issue #19.
+Status: later, not scheduled; not part of 0.1.0. iOS in issue #18, Android in issue #19.
 
 - iOS 27 (Swift 6.4, SwiftUI) and Android 16+ (Compose, Material 3 Expressive) apps for members,
   on the App Store and Google Play. One build signs in to any Yuva server: the member picks
@@ -179,8 +179,8 @@ workspace or another reader is visible.
 
 ## M13 — Broadcasts and e-mail designs
 
-Status: M13.1–M13.5 done and deployed on 2026-10-12 (#26–#30); M13.6 (#91) and M13.7 (#92) done,
-verified on 2026-10-19. Umbrella issue #25, decisions in `architecture.md` › Broadcasts and e-mail designs (M13).
+Status: M13.1–M13.5 done in `v0.0.9` and deployed on 2026-10-12 (#26–#30); M13.6 (#91) and M13.7 (#92)
+done in `v0.0.18`, verified on 2026-10-19. Umbrella issue #25, decisions in `architecture.md` › Broadcasts and e-mail designs (M13).
 
 - **M13.1 Lists and subscribing:** mailing lists with recorded consent and double opt-in,
   `<yuva-subscribe>` (HTML, React, Nuxt, shadcn), unsubscribe and preference pages with one-click, an API
@@ -222,7 +222,7 @@ the IAM key cannot read a tenant outside its prefix; deleting the workspace dele
 
 ## M14 — Move to Yuva
 
-Status: done and deployed on 2026-10-12 (all four steps, #31–#34); umbrella issue #35, decisions in
+Status: done in `v0.0.9` and deployed on 2026-10-12 (all four steps, #31–#34); umbrella issue #35, decisions in
 `architecture.md` › Moving to Yuva (M14).
 
 - **M14.1 IMAP with presets:** every mailbox over IMAP with app passwords (Gmail, Google Workspace,
@@ -277,9 +277,13 @@ a share link shows only its views; after consent and identify a contact's page l
 without consent it never does; another workspace sees none of it; the load test meets the targets at
 10M events a month.
 
+## M16 — API monitoring
+
+Status: withdrawn; #63 closed as not planned and its pull request #72 closed unmerged.
+
 ## M17 — Home and one setup
 
-Status: planned; issue #74, decisions in `architecture.md` › Panel (`web/`) › Home and setup (M17).
+Status: done in `v0.0.15`, acceptance on a running instance pending (#127); issue #74, decisions in `architecture.md` › Panel (`web/`) › Home and setup (M17).
 
 - `GET /v1/home` with inbox counts, visitors per property (today, last 30 minutes, seven days), the
   last broadcast and the setup checklist shared with `get_setup_state`.
@@ -292,7 +296,7 @@ an agent opens the inbox at `/` and never sees an inbox or property they may not
 
 ## M18 — Feedback on its own
 
-Status: done. API, panel, SDKs and progress verified on 2026-10-19 with the Swift and Kotlin samples against a server; the widget shows Resolved for a closed feedback (`5a73a1e`) and the SDK threads keep the resolved line when a progress is set (`2e344c1`). Issue #93, decisions in `architecture.md` › Feedback (M18).
+Status: done in `v0.0.25`. API, panel, SDKs and progress verified on 2026-10-19 with the Swift and Kotlin samples against a server; the widget shows Resolved for a closed feedback (`5a73a1e`) and the SDK threads keep the resolved line when a progress is set (`2e344c1`). Issue #93, decisions in `architecture.md` › Feedback (M18).
 
 - `kind` on `GET /v1/conversations/counts` and `GET /client/v1/conversations`; `can_rate` false for
   feedback.
@@ -313,7 +317,7 @@ in the row and as a line in the thread.
 
 ## M19 — Status pages
 
-Status: planned; decisions in `architecture.md` › Status pages (M19). Built in this order, each its own
+Status: done in `v0.0.25`; decisions in `architecture.md` › Status pages (M19). Built in this order, each its own
 issue; each part is done when its Accept holds on a running instance.
 
 ### M19.1 — Pages, components and incidents
@@ -347,14 +351,14 @@ and its resolved body recovers it; a member who set a state by hand later than t
 
 ### M19.3 — Status in the widget, the apps and the inbox
 
+Status: done, issue #97; widget, panel and API verified at `410afaf`, the Swift and Kotlin samples on 2026-10-19 at `b9d23c6`.
+
 - `status` on the client inbox and `channel.updated`; the line in `<yuva-chat>`, Swift and Kotlin.
 - Linking conversations to an incident, its list of conversations, "Reply to linked".
 
 Accept: while an incident is published the widget and both sample apps show its line and it goes away
 when it is resolved; a member links three conversations (e-mail, chat, app), replies once with "Reply
 to linked" and each contact gets the reply on their own channel.
-
-Status: done, issue #97; widget, panel and API verified at `410afaf`, the Swift and Kotlin samples on 2026-10-19 at `b9d23c6`.
 
 ### M19.4 — E-mail subscribers
 
@@ -386,14 +390,14 @@ the panel shows the response times of the last 24 hours.
 
 ### M19.6 — Own domains
 
+Status: done, issue #100; verified on 2026-10-19 at `9290284`: behind Caddy on demand, and on useyuva.com with a Cloudflare custom hostname and certificate active.
+
 - `custom_domain` with CNAME and TXT checks; `YUVA_STATUS_DOMAINS=ask` with `/status-domains/check` and
   the Caddy example in `deploy/`, and `cloudflare` with Cloudflare for SaaS custom hostnames.
 
 Accept: a page on a verified domain answers at `/` behind Caddy with a certificate issued on demand, and
 on a server behind Cloudflare with the custom hostname active; an unverified or removed domain gets 404
 from the check and is not (or no longer) a custom hostname.
-
-Status: done, issue #100; verified on 2026-10-19 at `9290284`: behind Caddy on demand, and on useyuva.com with a Cloudflare custom hostname and certificate active.
 
 ## M20 — Help center
 
@@ -493,7 +497,7 @@ address get `429`.
 
 ## M23 — MCP coverage
 
-Status: released in `v0.0.32`, acceptance on a running instance pending; issues #107, #108, #109,
+Status: released in `v0.0.32`, acceptance on a running instance pending (#128); issues #107, #108, #109,
 decisions in `architecture.md` › MCP coverage (M23).
 
 - Sender identity, e-mail channel and deliverability records, mailing lists, subscribers and CSV
