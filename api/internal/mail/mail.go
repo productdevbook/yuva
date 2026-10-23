@@ -43,6 +43,9 @@ type Message struct {
 	MessageID string
 	// OnRelayed gets the Message-ID a relay such as Amazon SES put on the mail in place of ours.
 	OnRelayed func(ctx context.Context, relayID string)
+	// SignInCode is the one-time code a sign-in mail carries; the log mailer always writes it, so
+	// a server without SMTP can still be signed in to.
+	SignInCode string
 }
 
 type Mailer interface {
@@ -218,8 +221,9 @@ func RedactAddresses(s string) string {
 	return addressRe.ReplaceAllString(s, "*@$1")
 }
 
-// Log writes mail to the log instead of sending it. Only Full, for development on a local
-// instance, writes the subject and text, which hold sign-in codes and customers' names.
+// Log writes mail to the log instead of sending it: a sign-in code as one line with the
+// recipient's domain, any other mail as its recipient's domain and sizes. Only Full, for
+// development on a local instance, writes whole mails, which hold customers' names and content.
 type Log struct {
 	Log  *slog.Logger
 	Full bool
@@ -229,6 +233,10 @@ func (l Log) Send(ctx context.Context, m Message) error {
 	if l.Full {
 		l.Log.InfoContext(ctx, "mail (log mailer, not sent)",
 			slog.String("to", m.To), slog.String("subject", m.Subject), slog.String("text", m.Text), slog.Int("html_bytes", len(m.HTML)))
+		return nil
+	}
+	if m.SignInCode != "" {
+		l.Log.InfoContext(ctx, "sign-in code (log mailer, not sent)", slog.String("to", RedactAddresses(m.To)), slog.String("code", m.SignInCode))
 		return nil
 	}
 	l.Log.InfoContext(ctx, "mail (log mailer, not sent)",

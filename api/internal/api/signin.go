@@ -131,7 +131,7 @@ func (s *Server) RequestSignInCode(ctx context.Context, req oas.RequestSignInCod
 	if err != nil {
 		return nil, err
 	}
-	msg.To = email
+	msg.To, msg.SignInCode = email, code
 	s.sendMail(ctx, msg)
 	return oas.RequestSignInCode202Response{}, nil
 }

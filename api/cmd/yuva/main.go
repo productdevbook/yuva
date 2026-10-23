@@ -238,7 +238,7 @@ func serve(ctx context.Context, cfg config.Config, log *slog.Logger, args []stri
 	case cfg.MailLogFull:
 		log.Warn("YUVA_SMTP_HOST is not set; e-mails, sign-in codes included, are written to the log instead of being sent")
 	default:
-		log.Warn("YUVA_SMTP_HOST is not set; e-mails are not sent, and the log names only their recipients' domains (YUVA_MAIL_LOG=full on a localhost instance writes them whole)")
+		log.Warn("YUVA_SMTP_HOST is not set; e-mails are not sent: the log shows sign-in codes and, for other mail, only the recipient's domain (YUVA_MAIL_LOG=full on a localhost instance writes whole mails)")
 	}
 	srv := api.New(api.Deps{
 		Log:      log,

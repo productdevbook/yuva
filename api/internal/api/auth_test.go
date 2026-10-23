@@ -125,6 +125,10 @@ func (o *outbox) code(t *testing.T, addr string) string {
 				continue
 			}
 			if c := codePattern.FindString(m.Text); c != "" {
+				if m.SignInCode != c {
+					o.mu.Unlock()
+					t.Fatalf("sign-in mail carries SignInCode %q, its text %q", m.SignInCode, c)
+				}
 				n++
 				if n > o.codes[addr] {
 					if o.codes == nil {

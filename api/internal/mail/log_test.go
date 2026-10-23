@@ -67,6 +67,16 @@ func TestMailLogsKeepAddressesOut(t *testing.T) {
 		t.Fatalf("log mailer outside development: %s", out)
 	}
 	buf.Reset()
+	code := m
+	code.SignInCode = "123456"
+	if err := (mail.Log{Log: log}).Send(context.Background(), code); err != nil {
+		t.Fatal(err)
+	}
+	if out := buf.String(); strings.Count(out, "\n") != 1 || !strings.Contains(out, "code=123456") || !strings.Contains(out, "to=*@example.com") ||
+		strings.Contains(out, "ayse@") || strings.Contains(out, "Your") {
+		t.Fatalf("sign-in code outside development: %s", out)
+	}
+	buf.Reset()
 	if err := (mail.Log{Log: log, Full: true}).Send(context.Background(), m); err != nil {
 		t.Fatal(err)
 	}
