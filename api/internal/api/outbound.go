@@ -45,6 +45,7 @@ type emailPlan struct {
 	channelID  uuid.UUID
 	from       email.Address
 	to         string
+	toAll      []string
 	cc         []string
 	bcc        []string
 	subject    string
@@ -52,6 +53,13 @@ type emailPlan struct {
 	inReplyTo  *string
 	references []string
 	auto       bool
+}
+
+func (p *emailPlan) recipients() []string {
+	if len(p.toAll) > 0 {
+		return p.toAll
+	}
+	return []string{p.to}
 }
 
 // planEmail decides whether an outgoing message in c goes out by e-mail and prepares its headers.
@@ -164,7 +172,7 @@ func (s *Server) recordOutboundEmail(ctx context.Context, q *store.Queries, plan
 	if err := q.CreateMessageEmail(ctx, store.CreateMessageEmailParams{
 		WorkspaceID: msg.WorkspaceID, MessageID: msg.ID, ConversationID: msg.ConversationID, ChannelID: &chID,
 		Direction: string(oas.Out), HeaderMessageID: plan.headerID, InReplyTo: plan.inReplyTo, ReferencesIds: refs,
-		FromAddress: plan.from.Email, ToAddresses: []string{plan.to}, CcAddresses: nonNil(plan.cc), Subject: plan.subject,
+		FromAddress: plan.from.Email, ToAddresses: plan.recipients(), CcAddresses: nonNil(plan.cc), Subject: plan.subject,
 		FullText: msg.Body, FullHtml: msg.Html, Headers: []byte("{}"), Dmarc: email.DMARCUnknown, Auto: plan.auto,
 		CreatedAt: msg.CreatedAt,
 	}); err != nil {
@@ -183,7 +191,7 @@ func (s *Server) queueEmail(ctx context.Context, q *store.Queries, events *event
 	events.job(EmailSendArgs{WorkspaceID: msg.WorkspaceID, MessageID: msg.ID}, &river.InsertOpts{MaxAttempts: emailSendAttempts})
 	return &store.ListMessageEmailsRow{
 		MessageID: msg.ID, Direction: string(oas.Out), HeaderMessageID: plan.headerID, FromAddress: plan.from.Email,
-		ToAddresses: []string{plan.to}, CcAddresses: plan.cc, BccAddresses: plan.bcc, Subject: plan.subject, Auto: plan.auto,
+		ToAddresses: plan.recipients(), CcAddresses: plan.cc, BccAddresses: plan.bcc, Subject: plan.subject, Auto: plan.auto,
 		Dmarc: email.DMARCUnknown,
 	}, nil
 }
@@ -447,6 +455,9 @@ func (s *Server) sendQueued(ctx context.Context, workspaceID uuid.UUID, msgs []m
 	if ch.SmtpHost == "" {
 		return "", &email.PermanentError{Err: errors.New("the e-mail channel has no SMTP account")}
 	}
+	if msg.Kind == string(oas.MessageKindForward) {
+		return s.sendForward(ctx, workspaceID, msg, me, ch)
+	}
 	if len(me.ToAddresses) == 0 {
 		return "", &email.PermanentError{Err: errors.New("no recipient")}
 	}
@@ -478,13 +489,9 @@ func (s *Server) sendQueued(ctx context.Context, workspaceID uuid.UUID, msgs []m
 			}
 		}
 	}
-	var password string
-	if len(ch.SmtpPassword) > 0 {
-		plain, err := s.secrets.Open(ch.SmtpPassword, smtpSecretContext(workspaceID, ch.ChannelID))
-		if err != nil {
-			return "", &email.PermanentError{Err: errors.New("the SMTP password cannot be decrypted with this master key")}
-		}
-		password = string(plain)
+	cfg, err := s.channelSMTP(workspaceID, ch)
+	if err != nil {
+		return "", err
 	}
 	conv, err := s.st.GetConversation(ctx, store.GetConversationParams{WorkspaceID: workspaceID, ID: msg.ConversationID})
 	if err != nil {
@@ -545,7 +552,6 @@ func (s *Server) sendQueued(ctx context.Context, workspaceID uuid.UUID, msgs []m
 			out.Attachments = append(out.Attachments, email.Attachment{Filename: a.Filename, ContentType: a.ContentType, Data: data})
 		}
 	}
-	cfg := email.SMTPConfig{Host: ch.SmtpHost, Port: int(ch.SmtpPort), Username: ch.SmtpUsername, Password: password, TLS: ch.SmtpTls}
 	if out.Headers, err = s.sesHeaders(ctx, ch, cfg); err != nil {
 		return "", err
 	}
@@ -560,6 +566,18 @@ func (s *Server) sendQueued(ctx context.Context, workspaceID uuid.UUID, msgs []m
 	relayID, err := email.SendRelayed(sendCtx, s.sender, cfg, me.FromAddress, rcpts, raw)
 	telemetry.End(span, err)
 	return relayID, err
+}
+
+func (s *Server) channelSMTP(workspaceID uuid.UUID, ch store.EmailChannel) (email.SMTPConfig, error) {
+	var password string
+	if len(ch.SmtpPassword) > 0 {
+		plain, err := s.secrets.Open(ch.SmtpPassword, smtpSecretContext(workspaceID, ch.ChannelID))
+		if err != nil {
+			return email.SMTPConfig{}, &email.PermanentError{Err: errors.New("the SMTP password cannot be decrypted with this master key")}
+		}
+		password = string(plain)
+	}
+	return email.SMTPConfig{Host: ch.SmtpHost, Port: int(ch.SmtpPort), Username: ch.SmtpUsername, Password: password, TLS: ch.SmtpTls}, nil
 }
 
 // batchText joins the messages' bodies; plain leaves out the article lines that the HTML part draws as cards.

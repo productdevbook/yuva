@@ -46,6 +46,7 @@ func roleNotificationDefaults(role string) oas.NotificationEvents {
 		Mentioned:                       oas.NotificationChannels{Push: true, Email: true},
 		SlaWarning:                      oas.NotificationChannels{Push: true},
 		SlaBreached:                     oas.NotificationChannels{Push: true, Email: true},
+		ForwardAnswer:                   oas.NotificationChannels{Push: true, Email: true},
 	}
 }
 
@@ -63,6 +64,7 @@ func applyNotificationEvents(base oas.NotificationEvents, u oas.NotificationEven
 	set(&base.Mentioned, u.Mentioned)
 	set(&base.SlaWarning, u.SlaWarning)
 	set(&base.SlaBreached, u.SlaBreached)
+	set(&base.ForwardAnswer, u.ForwardAnswer)
 	return base
 }
 
@@ -82,12 +84,14 @@ func mergeNotificationUpdates(base, u oas.NotificationEventsUpdate) oas.Notifica
 		Mentioned:                       pick(base.Mentioned, u.Mentioned),
 		SlaWarning:                      pick(base.SlaWarning, u.SlaWarning),
 		SlaBreached:                     pick(base.SlaBreached, u.SlaBreached),
+		ForwardAnswer:                   pick(base.ForwardAnswer, u.ForwardAnswer),
 	}
 }
 
 func emptyNotificationUpdate(u oas.NotificationEventsUpdate) bool {
 	return u.NewLiveConversation == nil && u.NewAsyncConversation == nil && u.MessageInMyConversation == nil &&
-		u.MessageInUnassignedConversation == nil && u.AssignedToMe == nil && u.Mentioned == nil && u.SlaWarning == nil && u.SlaBreached == nil
+		u.MessageInUnassignedConversation == nil && u.AssignedToMe == nil && u.Mentioned == nil && u.SlaWarning == nil && u.SlaBreached == nil &&
+		u.ForwardAnswer == nil
 }
 
 func notificationChannelsFor(e oas.NotificationEvents, ev notificationEvent) oas.NotificationChannels {
@@ -108,6 +112,8 @@ func notificationChannelsFor(e oas.NotificationEvents, ev notificationEvent) oas
 		return e.SlaWarning
 	case oas.SlaBreached:
 		return e.SlaBreached
+	case oas.ForwardAnswer:
+		return e.ForwardAnswer
 	}
 	return oas.NotificationChannels{}
 }
@@ -252,8 +258,9 @@ func notifiable(e pendingEvent) bool {
 		return false
 	}
 	var m struct {
-		Kind   oas.MessageKind `json:"kind"`
-		Author struct {
+		Kind      oas.MessageKind `json:"kind"`
+		Direction *oas.Direction  `json:"direction"`
+		Author    struct {
 			Type oas.AuthorType `json:"type"`
 		} `json:"author"`
 		Event *struct {
@@ -271,6 +278,8 @@ func notifiable(e pendingEvent) bool {
 		return m.Event != nil && m.Event.Type == oas.Assigned
 	case oas.MessageKindNote:
 		return len(m.Mentions) > 0
+	case oas.MessageKindForward:
+		return m.Direction != nil && *m.Direction == oas.In
 	}
 	return false
 }
@@ -317,6 +326,12 @@ func (s *Server) classify(ctx context.Context, ws uuid.UUID, m store.GetMessageR
 		}
 	case m.Kind == string(oas.MessageKindNote) && len(m.Mentions) > 0:
 		return oas.Mentioned, m.Mentions, nil
+	case m.Kind == string(oas.MessageKindForward) && m.Direction != nil && *m.Direction == string(oas.In):
+		only, err := s.forwardAnswerMembers(ctx, ws, m.ID, c)
+		if err != nil || len(only) == 0 {
+			return "", nil, err
+		}
+		return oas.ForwardAnswer, only, nil
 	case m.Kind == string(oas.MessageKindEvent):
 		var ev oas.MessageEvent
 		if json.Unmarshal(m.Event, &ev) != nil || ev.Type != oas.Assigned || ev.AssigneeId == nil {
@@ -429,7 +444,12 @@ func (s *Server) Notify(ctx context.Context, a NotifyArgs) error {
 			return err
 		}
 	}
-	mine := ev == oas.MessageInMyConversation || ev == oas.AssignedToMe || ev == oas.Mentioned
+	if ev == oas.ForwardAnswer && m.AuthorContactID != nil {
+		if actorName, err = s.contactDisplayName(ctx, ws, *m.AuthorContactID); err != nil {
+			return err
+		}
+	}
+	mine := ev == oas.MessageInMyConversation || ev == oas.AssignedToMe || ev == oas.Mentioned || ev == oas.ForwardAnswer
 	grouped := c.BroadcastID != nil && (ev == oas.NewLiveConversation || ev == oas.NewAsyncConversation)
 	now := s.now()
 	var jobs []river.InsertManyParams
@@ -503,6 +523,8 @@ func (s *Server) pushPayload(ev notificationEvent, locale string, ws uuid.UUID, 
 		tmpl = "push_assigned"
 	case oas.Mentioned:
 		tmpl = "push_mention"
+	case oas.ForwardAnswer:
+		tmpl = "push_forward_answer"
 	}
 	msg, err := mail.Render(tmpl, locale, map[string]string{
 		"Inbox": in.Name, "Contact": contact, "Actor": actor, "Preview": excerpt(body, pushPreviewRunes),
@@ -571,6 +593,7 @@ type notificationEmailData struct {
 	Messages    []string
 	More        int
 	Mentions    []notificationMention
+	Answers     []notificationMention
 	Assigned    bool
 	AssignedBy  string
 	URL         string
@@ -639,9 +662,23 @@ func (s *Server) SendNotificationEmail(ctx context.Context, a NotificationEmailA
 			events = applyNotificationEvents(events, parseNotificationUpdate(o.Events))
 		}
 	}
+	answers := map[uuid.UUID]bool{}
+	for _, it := range items {
+		if it.Kind != string(oas.MessageKindForward) || !events.ForwardAnswer.Email {
+			continue
+		}
+		only, err := s.forwardAnswerMembers(ctx, ws, it.ID, c)
+		if err != nil {
+			return nil, err
+		}
+		answers[it.ID] = containsID(only, r.ID)
+	}
 	items = slices.DeleteFunc(items, func(it store.ListNotifiableMessagesRow) bool {
-		if it.Kind == string(oas.MessageKindNote) {
+		switch it.Kind {
+		case string(oas.MessageKindNote):
 			return !events.Mentioned.Email
+		case string(oas.MessageKindForward):
+			return !answers[it.ID]
 		}
 		return mentionsOnly
 	})
@@ -682,13 +719,21 @@ func (s *Server) SendNotificationEmail(ctx context.Context, a NotificationEmailA
 				return nil, err
 			}
 			data.Mentions = append(data.Mentions, notificationMention{By: by, Text: excerpt(it.Body, emailPreviewRunes)})
+		case it.Kind == string(oas.MessageKindForward) && len(data.Answers) < notificationEmailMessages:
+			var by string
+			if it.AuthorContactID != nil {
+				if by, err = s.contactDisplayName(ctx, ws, *it.AuthorContactID); err != nil {
+					return nil, err
+				}
+			}
+			data.Answers = append(data.Answers, notificationMention{By: by, Text: excerpt(it.Body, emailPreviewRunes)})
 		case it.Kind == string(oas.MessageKindMessage) && len(data.Messages) < notificationEmailMessages:
 			data.Messages = append(data.Messages, excerpt(it.Body, emailPreviewRunes))
 		case it.Kind == string(oas.MessageKindMessage):
 			data.More++
 		}
 	}
-	if len(data.Messages) == 0 && !data.Assigned && len(data.Mentions) == 0 {
+	if len(data.Messages) == 0 && !data.Assigned && len(data.Mentions) == 0 && len(data.Answers) == 0 {
 		return nil, nil
 	}
 	msg, err := mail.Render("notification", r.Locale, data)
@@ -710,3 +755,16 @@ func (s *Server) SendNotificationEmail(ctx context.Context, a NotificationEmailA
 var errPushDisabled = problem(http.StatusNotFound, "push_disabled", "this server has no Web Push keys configured")
 
 var errPushRetry = errors.New("push attempt failed")
+
+// forwardAnswerMembers is who an answer to a forward notifies: the members who sent the forwards it
+// answers and the conversation's assignee.
+func (s *Server) forwardAnswerMembers(ctx context.Context, ws, messageID uuid.UUID, c store.Conversation) ([]uuid.UUID, error) {
+	out, err := s.st.ListForwardAnswerMembers(ctx, store.ListForwardAnswerMembersParams{WorkspaceID: ws, MessageID: messageID})
+	if err != nil {
+		return nil, err
+	}
+	if c.AssigneeID != nil && !containsID(out, *c.AssigneeID) {
+		out = append(out, *c.AssigneeID)
+	}
+	return out, nil
+}

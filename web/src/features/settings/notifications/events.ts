@@ -14,6 +14,7 @@ export const EVENTS: EventName[] = [
   "mentioned",
   "sla_warning",
   "sla_breached",
+  "forward_answer",
 ]
 
 export const DELAYS = [5, 15, 30, 60, 120, 240, 1440]
@@ -46,6 +47,10 @@ export function useEventText(): Record<EventName, { label: string; hint: string 
     sla_breached: {
       label: t`An SLA target was breached`,
       hint: t`For conversations assigned to me, or to my team when nobody is assigned.`,
+    },
+    forward_answer: {
+      label: t`Someone answers a forward`,
+      hint: t`For forwards I sent, and for conversations assigned to me.`,
     },
   }
 }

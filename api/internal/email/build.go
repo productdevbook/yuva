@@ -14,6 +14,7 @@ type Outgoing struct {
 	From          Address
 	ReplyTo       Address
 	To            Address
+	AlsoTo        []Address
 	Cc            []Address
 	Subject       string
 	MessageID     string
@@ -138,7 +139,11 @@ func Build(o Outgoing) ([]byte, error) {
 		return nil, err
 	}
 	root.Header.Set("From", FormatAddress(o.From))
-	root.Header.Set("To", FormatAddress(o.To))
+	to := []string{FormatAddress(o.To)}
+	for _, a := range o.AlsoTo {
+		to = append(to, FormatAddress(a))
+	}
+	root.Header.Set("To", strings.Join(to, ", "))
 	if len(o.Cc) > 0 {
 		cc := make([]string, len(o.Cc))
 		for i, c := range o.Cc {

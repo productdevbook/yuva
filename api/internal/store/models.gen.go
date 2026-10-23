@@ -1698,6 +1698,7 @@ type Message struct {
 	RedactedByMemberID *uuid.UUID
 	RedactedByApiKeyID *uuid.UUID
 	Rule               []byte
+	Forward            []byte
 }
 
 type MessageEmail struct {

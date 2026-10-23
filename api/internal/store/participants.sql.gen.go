@@ -13,18 +13,26 @@ import (
 )
 
 const activateConversationParticipant = `-- name: ActivateConversationParticipant :execrows
-UPDATE conversation_participants SET status = 'active'
-WHERE workspace_id = $1 AND conversation_id = $2 AND email = $3 AND status = 'suggested'
+UPDATE conversation_participants SET status = 'active', role = CASE WHEN $1::text = 'cc' THEN 'cc' ELSE role END
+WHERE workspace_id = $2 AND conversation_id = $3 AND email = $4
+  AND (status = 'suggested' OR ($1::text = 'cc' AND role = 'forwarded'))
 `
 
 type ActivateConversationParticipantParams struct {
+	Role           string
 	WorkspaceID    uuid.UUID
 	ConversationID uuid.UUID
 	Email          string
 }
 
+// A member or the contact copying a forwarded participant makes them cc.
 func (q *Queries) ActivateConversationParticipant(ctx context.Context, arg ActivateConversationParticipantParams) (int64, error) {
-	result, err := q.db.Exec(ctx, activateConversationParticipant, arg.WorkspaceID, arg.ConversationID, arg.Email)
+	result, err := q.db.Exec(ctx, activateConversationParticipant,
+		arg.Role,
+		arg.WorkspaceID,
+		arg.ConversationID,
+		arg.Email,
+	)
 	if err != nil {
 		return 0, err
 	}
@@ -33,9 +41,9 @@ func (q *Queries) ActivateConversationParticipant(ctx context.Context, arg Activ
 
 const addConversationParticipant = `-- name: AddConversationParticipant :execrows
 INSERT INTO conversation_participants (workspace_id, conversation_id, email, role, status, created_at)
-SELECT $1, $2, $3, 'cc', $4, $5
+SELECT $1, $2, $3, $4, $5, $6
 WHERE (SELECT count(*) FROM conversation_participants
-       WHERE workspace_id = $1 AND conversation_id = $2) < $6::int
+       WHERE workspace_id = $1 AND conversation_id = $2) < $7::int
 ON CONFLICT DO NOTHING
 `
 
@@ -43,6 +51,7 @@ type AddConversationParticipantParams struct {
 	WorkspaceID     uuid.UUID
 	ConversationID  uuid.UUID
 	Email           string
+	Role            string
 	Status          string
 	Now             time.Time
 	MaxParticipants int32
@@ -54,6 +63,7 @@ func (q *Queries) AddConversationParticipant(ctx context.Context, arg AddConvers
 		arg.WorkspaceID,
 		arg.ConversationID,
 		arg.Email,
+		arg.Role,
 		arg.Status,
 		arg.Now,
 		arg.MaxParticipants,
@@ -96,6 +106,29 @@ func (q *Queries) DeleteParticipantsByEmails(ctx context.Context, arg DeletePart
 	return err
 }
 
+const getConversationParticipant = `-- name: GetConversationParticipant :one
+SELECT role, status FROM conversation_participants
+WHERE workspace_id = $1 AND conversation_id = $2 AND email = $3
+`
+
+type GetConversationParticipantParams struct {
+	WorkspaceID    uuid.UUID
+	ConversationID uuid.UUID
+	Email          string
+}
+
+type GetConversationParticipantRow struct {
+	Role   string
+	Status string
+}
+
+func (q *Queries) GetConversationParticipant(ctx context.Context, arg GetConversationParticipantParams) (GetConversationParticipantRow, error) {
+	row := q.db.QueryRow(ctx, getConversationParticipant, arg.WorkspaceID, arg.ConversationID, arg.Email)
+	var i GetConversationParticipantRow
+	err := row.Scan(&i.Role, &i.Status)
+	return i, err
+}
+
 const isConversationParticipant = `-- name: IsConversationParticipant :one
 SELECT EXISTS (
   SELECT 1 FROM conversation_participants
@@ -116,6 +149,35 @@ func (q *Queries) IsConversationParticipant(ctx context.Context, arg IsConversat
 	return participant, err
 }
 
+const isForwardRecipient = `-- name: IsForwardRecipient :one
+SELECT EXISTS (
+  SELECT 1 FROM message_emails e
+  JOIN messages m ON m.workspace_id = e.workspace_id AND m.id = e.message_id
+  WHERE e.workspace_id = $1 AND e.conversation_id = $2 AND e.direction = 'out'
+    AND m.kind = 'forward' AND (e.header_message_id = ANY($3::text[]) OR e.relay_message_id = ANY($3::text[]))
+    AND $4::text = ANY(e.to_addresses)
+)::bool AS recipient
+`
+
+type IsForwardRecipientParams struct {
+	WorkspaceID    uuid.UUID
+	ConversationID uuid.UUID
+	Ids            []string
+	Email          string
+}
+
+func (q *Queries) IsForwardRecipient(ctx context.Context, arg IsForwardRecipientParams) (bool, error) {
+	row := q.db.QueryRow(ctx, isForwardRecipient,
+		arg.WorkspaceID,
+		arg.ConversationID,
+		arg.Ids,
+		arg.Email,
+	)
+	var recipient bool
+	err := row.Scan(&recipient)
+	return recipient, err
+}
+
 const listContactParticipations = `-- name: ListContactParticipations :many
 WITH addrs AS (
   SELECT ce.email FROM contact_emails ce WHERE ce.workspace_id = $1 AND ce.contact_id = $2
@@ -128,6 +190,11 @@ WITH addrs AS (
   FROM message_emails e
   JOIN addrs a ON a.email = ANY(e.to_addresses) OR a.email = ANY(e.cc_addresses) OR a.email = ANY(e.bcc_addresses)
   WHERE e.workspace_id = $1
+  UNION ALL
+  SELECT m.conversation_id, a.email, false AS participant
+  FROM messages m
+  JOIN addrs a ON m.forward->'to' ? a.email
+  WHERE m.workspace_id = $1 AND m.kind = 'forward' AND m.forward IS NOT NULL
 )
 SELECT cv.id, cv.inbox_id, cv.subject, cv.created_at,
        array_agg(DISTINCT h.email ORDER BY h.email)::text[] AS emails, bool_or(h.participant)::bool AS participant
@@ -246,6 +313,80 @@ func (q *Queries) ListConversationParticipants(ctx context.Context, arg ListConv
 		return nil, err
 	}
 	return items, nil
+}
+
+const listForwardAnswerMembers = `-- name: ListForwardAnswerMembers :many
+SELECT DISTINCT coalesce(m.sent_by_member_id, m.author_member_id)::uuid AS member_id
+FROM message_emails a
+JOIN message_emails f ON f.workspace_id = a.workspace_id AND f.conversation_id = a.conversation_id AND f.direction = 'out'
+  AND (f.header_message_id = ANY(array_append(a.references_ids, a.in_reply_to))
+       OR f.relay_message_id = ANY(array_append(a.references_ids, a.in_reply_to)))
+JOIN messages m ON m.workspace_id = f.workspace_id AND m.id = f.message_id AND m.kind = 'forward'
+WHERE a.workspace_id = $1 AND a.message_id = $2
+  AND coalesce(m.sent_by_member_id, m.author_member_id) IS NOT NULL
+`
+
+type ListForwardAnswerMembersParams struct {
+	WorkspaceID uuid.UUID
+	MessageID   uuid.UUID
+}
+
+// The members who sent the forwards an answer names in In-Reply-To or References.
+func (q *Queries) ListForwardAnswerMembers(ctx context.Context, arg ListForwardAnswerMembersParams) ([]uuid.UUID, error) {
+	rows, err := q.db.Query(ctx, listForwardAnswerMembers, arg.WorkspaceID, arg.MessageID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []uuid.UUID
+	for rows.Next() {
+		var member_id uuid.UUID
+		if err := rows.Scan(&member_id); err != nil {
+			return nil, err
+		}
+		items = append(items, member_id)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const promoteSuggestedToForwarded = `-- name: PromoteSuggestedToForwarded :execrows
+UPDATE conversation_participants SET status = 'active', role = 'forwarded'
+WHERE workspace_id = $1 AND conversation_id = $2 AND email = $3 AND status = 'suggested'
+`
+
+type PromoteSuggestedToForwardedParams struct {
+	WorkspaceID    uuid.UUID
+	ConversationID uuid.UUID
+	Email          string
+}
+
+// A suggested address that answers a forward it received becomes a forwarded participant.
+func (q *Queries) PromoteSuggestedToForwarded(ctx context.Context, arg PromoteSuggestedToForwardedParams) (int64, error) {
+	result, err := q.db.Exec(ctx, promoteSuggestedToForwarded, arg.WorkspaceID, arg.ConversationID, arg.Email)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected(), nil
+}
+
+const scrubForwardRecipients = `-- name: ScrubForwardRecipients :exec
+UPDATE messages SET forward = jsonb_set(forward, '{to}', coalesce((
+    SELECT jsonb_agg(t ORDER BY i) FROM jsonb_array_elements_text(forward->'to') WITH ORDINALITY u (t, i)
+    WHERE t <> ALL($1::text[])), '[]'::jsonb))
+WHERE workspace_id = $2 AND kind = 'forward' AND forward IS NOT NULL AND forward->'to' ?| $1::text[]
+`
+
+type ScrubForwardRecipientsParams struct {
+	Emails      []string
+	WorkspaceID uuid.UUID
+}
+
+func (q *Queries) ScrubForwardRecipients(ctx context.Context, arg ScrubForwardRecipientsParams) error {
+	_, err := q.db.Exec(ctx, scrubForwardRecipients, arg.Emails, arg.WorkspaceID)
+	return err
 }
 
 const scrubMessageEmailAddresses = `-- name: ScrubMessageEmailAddresses :exec

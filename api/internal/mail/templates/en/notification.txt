@@ -1,4 +1,4 @@
-{{if or .Messages .Assigned}}{{.Inbox}}: {{if .Contact}}{{.Contact}}{{else}}a visitor{{end}} is waiting for an answer{{else}}{{.Inbox}}: you were mentioned in a note{{end}}
+{{if or .Messages .Assigned}}{{.Inbox}}: {{if .Contact}}{{.Contact}}{{else}}a visitor{{end}} is waiting for an answer{{else if .Mentions}}{{.Inbox}}: you were mentioned in a note{{else}}{{.Inbox}}: a forward was answered{{end}}
 
 {{if .Assigned}}{{if .AssignedBy}}{{.AssignedBy}} assigned you{{else}}You were assigned{{end}} a conversation in {{.Inbox}}{{if .Subject}}: {{.Subject}}{{end}}.
 
@@ -8,6 +8,9 @@
 {{if .More}}…and {{.More}} more.
 {{end}}
 {{end}}{{range .Mentions}}{{if .By}}{{.By}}{{else}}Someone{{end}} mentioned you in a note:
+> {{.Text}}
+
+{{end}}{{range .Answers}}{{if .By}}{{.By}}{{else}}Someone{{end}} answered a forward:
 > {{.Text}}
 
 {{end}}Open the conversation: {{.URL}}

@@ -91,10 +91,13 @@ UPDATE conversations SET email_token = coalesce(email_token, @token::text)
 WHERE workspace_id = @workspace_id AND id = @id
 RETURNING email_token::text;
 
+-- Forwards and their answers are a separate thread with someone else; replies never name them.
 -- name: LatestThreadEmail :one
-SELECT header_message_id, in_reply_to, references_ids, from_address, direction FROM message_emails
-WHERE workspace_id = @workspace_id AND conversation_id = @conversation_id AND message_id <> @exclude_message_id
-ORDER BY created_at DESC, message_id DESC
+SELECT e.header_message_id, e.in_reply_to, e.references_ids, e.from_address, e.direction FROM message_emails e
+JOIN messages m ON m.workspace_id = e.workspace_id AND m.id = e.message_id
+WHERE e.workspace_id = @workspace_id AND e.conversation_id = @conversation_id AND e.message_id <> @exclude_message_id
+  AND m.kind <> 'forward'
+ORDER BY e.created_at DESC, e.message_id DESC
 LIMIT 1;
 
 -- Replies go only to an address of the conversation's contact, never to another sender in the thread.

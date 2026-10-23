@@ -21,6 +21,8 @@ const (
 
 	participantActive    = string(oas.Active)
 	participantSuggested = string(oas.Suggested)
+	participantCc        = string(oas.Cc)
+	participantForwarded = string(oas.Forwarded)
 )
 
 var (
@@ -45,11 +47,11 @@ func (s *Server) serverAddress(ctx context.Context, addr string) (bool, error) {
 	return s.st.IsEmailChannelSender(ctx, addr)
 }
 
-// addParticipants keeps the To and Cc addresses of an inbound mail in c as participants, leaving
-// out the sender, the contact's own addresses and every address of this server. They are active
+// addParticipants keeps the To and Cc addresses of an inbound mail in c as participants with role,
+// leaving out the sender, the contact's own addresses and every address of this server. They are active
 // only when the mail passed DMARC: otherwise anyone could forge the contact's From and have
 // replies copied to an address of their choosing.
-func (s *Server) addParticipants(ctx context.Context, q *store.Queries, events *eventBatch, c store.Conversation, m *email.Message, sender string, verified bool, now time.Time) error {
+func (s *Server) addParticipants(ctx context.Context, q *store.Queries, events *eventBatch, c store.Conversation, m *email.Message, sender string, verified bool, role string, now time.Time) error {
 	own, err := q.ListContactEmails(ctx, store.ListContactEmailsParams{WorkspaceID: c.WorkspaceID, ContactIds: []uuid.UUID{c.ContactID}})
 	if err != nil {
 		return err
@@ -80,7 +82,7 @@ func (s *Server) addParticipants(ctx context.Context, q *store.Queries, events *
 		if verified {
 			status = participantActive
 		}
-		n, err := putParticipant(ctx, q, c, addr, status, now)
+		n, err := putParticipant(ctx, q, c, addr, status, role, now)
 		if err != nil {
 			return err
 		}
@@ -92,17 +94,17 @@ func (s *Server) addParticipants(ctx context.Context, q *store.Queries, events *
 	return emitParticipants(ctx, q, events, c)
 }
 
-// putParticipant adds addr to c's participants, or makes a suggested one active, and reports
-// whether anything changed; a full conversation adds nothing.
-func putParticipant(ctx context.Context, q *store.Queries, c store.Conversation, addr, status string, now time.Time) (int64, error) {
+// putParticipant adds addr to c's participants, or makes a suggested one active (and a forwarded
+// one cc when role is cc), and reports whether anything changed; a full conversation adds nothing.
+func putParticipant(ctx context.Context, q *store.Queries, c store.Conversation, addr, status, role string, now time.Time) (int64, error) {
 	if status == participantActive {
-		n, err := q.ActivateConversationParticipant(ctx, store.ActivateConversationParticipantParams{WorkspaceID: c.WorkspaceID, ConversationID: c.ID, Email: addr})
+		n, err := q.ActivateConversationParticipant(ctx, store.ActivateConversationParticipantParams{WorkspaceID: c.WorkspaceID, ConversationID: c.ID, Email: addr, Role: role})
 		if err != nil || n > 0 {
 			return n, err
 		}
 	}
 	return q.AddConversationParticipant(ctx, store.AddConversationParticipantParams{
-		WorkspaceID: c.WorkspaceID, ConversationID: c.ID, Email: addr, Status: status, Now: now, MaxParticipants: maxParticipants,
+		WorkspaceID: c.WorkspaceID, ConversationID: c.ID, Email: addr, Role: role, Status: status, Now: now, MaxParticipants: maxParticipants,
 	})
 }
 
@@ -161,7 +163,7 @@ func (s *Server) setCopies(ctx context.Context, q *store.Queries, c store.Conver
 			return err
 		}
 		for _, r := range rows {
-			if r.Status != participantActive || slices.Contains(taken, r.Email) {
+			if r.Status != participantActive || r.Role == participantForwarded || slices.Contains(taken, r.Email) {
 				continue
 			}
 			suppressed, err := q.IsEmailSuppressed(ctx, store.IsEmailSuppressedParams{WorkspaceID: c.WorkspaceID, Email: r.Email})
@@ -240,7 +242,7 @@ func keepCopiesAsParticipants(ctx context.Context, q *store.Queries, events *eve
 	}
 	var changed int64
 	for _, addr := range plan.cc {
-		n, err := putParticipant(ctx, q, c, addr, participantActive, now)
+		n, err := putParticipant(ctx, q, c, addr, participantActive, participantCc, now)
 		if err != nil {
 			return err
 		}
@@ -264,7 +266,7 @@ func (s *Server) AddConversationParticipant(ctx context.Context, req oas.AddConv
 		if err != nil {
 			return err
 		}
-		n, err := putParticipant(ctx, q, c, addr, participantActive, s.now())
+		n, err := putParticipant(ctx, q, c, addr, participantActive, participantCc, s.now())
 		if err != nil {
 			return err
 		}
@@ -386,6 +388,9 @@ func forgetContactAddresses(ctx context.Context, q *store.Queries, ws, contactID
 		emails[i] = r.Email
 	}
 	if err := q.DeleteParticipantsByEmails(ctx, store.DeleteParticipantsByEmailsParams{WorkspaceID: ws, Emails: emails}); err != nil {
+		return err
+	}
+	if err := q.ScrubForwardRecipients(ctx, store.ScrubForwardRecipientsParams{WorkspaceID: ws, Emails: emails}); err != nil {
 		return err
 	}
 	return q.ScrubMessageEmailAddresses(ctx, store.ScrubMessageEmailAddressesParams{WorkspaceID: ws, Emails: emails})

@@ -751,7 +751,7 @@ func (s *Server) webhookPayloads(ctx context.Context, q *store.Queries, ev store
 			typ := string(oas.WebhookEventTypeConversationRated)
 			return []webhookOut{{typ: typ, body: payload(typ, &inbox, oas.WebhookConversationData{Conversation: conv, Contact: *contact})}}, []uuid.UUID{inbox}, nil
 		}
-		return []webhookOut{{typ: ev.Type, note: m.Kind == oas.MessageKindNote, body: payload(ev.Type, &inbox, oas.WebhookMessageData{
+		return []webhookOut{{typ: ev.Type, note: m.Kind == oas.MessageKindNote || m.Kind == oas.MessageKindForward, body: payload(ev.Type, &inbox, oas.WebhookMessageData{
 			Message: m, Conversation: conv, Contact: *contact,
 		})}}, []uuid.UUID{inbox}, nil
 	case realtime.ContactUpdated:

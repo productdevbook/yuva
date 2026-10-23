@@ -405,6 +405,37 @@ func (c mcpCopies) lists() (cc, bcc *[]oas.Email) {
 	return cc, bcc
 }
 
+type forwardIn struct {
+	ConversationID uuid.UUID  `json:"conversation_id"`
+	To             []string   `json:"to" jsonschema:"1 to 10 outside addresses; never the contact, who gets replies"`
+	MessageID      *uuid.UUID `json:"message_id,omitempty" jsonschema:"forward only this message to or from the contact; leave out to forward the conversation's latest 100 messages"`
+	Note           string     `json:"note,omitempty" jsonschema:"plain text written above the forwarded content"`
+	Attachments    *bool      `json:"attachments,omitempty" jsonschema:"include the messages' files (default true, at most 20 MiB together)"`
+}
+
+func (c *mcpCall) forward(ctx context.Context, in forwardIn, draft bool) (mcpMessage, error) {
+	to := make([]oas.Email, len(in.To))
+	for i, v := range in.To {
+		to[i] = oas.Email(v)
+	}
+	b := oas.ConversationForward{To: to, MessageId: in.MessageID, Attachments: in.Attachments}
+	if in.Note != "" {
+		b.Note = &in.Note
+	}
+	if draft {
+		b.Draft = boolPtr(true)
+	}
+	res, err := c.s.ForwardConversation(ctx, oas.ForwardConversationRequestObject{ConversationId: in.ConversationID, Body: &b})
+	if err != nil {
+		return mcpMessage{}, err
+	}
+	m, ok := res.(oas.ForwardConversation201JSONResponse)
+	if !ok {
+		return mcpMessage{}, errInternal
+	}
+	return messageOut(oas.Message(m)), nil
+}
+
 type assignIn struct {
 	ConversationID uuid.UUID  `json:"conversation_id"`
 	AssigneeID     *uuid.UUID `json:"assignee_id,omitempty" jsonschema:"a member id; omit to unassign, unless only team_id or remove_team is sent"`
@@ -745,6 +776,18 @@ var mcpTools = append([]mcpTool{
 				return mcpMessage{}, errInternal
 			}
 			return messageOut(oas.Message(m)), nil
+		}),
+	defineTool("draft_forward", "Draft a forward",
+		"Stores a forward of one message or the whole conversation (never notes) to outside addresses as a draft that a member reviews and sends; members only see it, never the contact. Send it with send_draft when the person you work for asks. Maps to POST /v1/conversations/{id}/forward with draft: true.",
+		additive, nil, mcpTool{ops: []string{"ForwardConversation"}},
+		func(ctx context.Context, c *mcpCall, in forwardIn) (mcpMessage, error) {
+			return c.forward(ctx, in, true)
+		}),
+	defineTool("forward_conversation", "Forward by e-mail",
+		"E-mails one message or the whole conversation (never notes) to outside addresses now, with a note on top, from the inbox's e-mail channel. Use it only when the person you work for asked to forward; prefer draft_forward otherwise. Members only see it, never the contact. Maps to POST /v1/conversations/{id}/forward.",
+		delivering, nil, mcpTool{ops: []string{"ForwardConversation"}, allow: mayDeliver, denied: errBotSendingDisabled},
+		func(ctx context.Context, c *mcpCall, in forwardIn) (mcpMessage, error) {
+			return c.forward(ctx, in, false)
 		}),
 	defineTool("add_note", "Add a note",
 		"Adds an internal note that only members see. Maps to POST /v1/conversations/{id}/messages with kind note.",

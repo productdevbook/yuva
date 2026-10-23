@@ -2533,13 +2533,16 @@ func (e ConversationMovedEventType) Valid() bool {
 
 // Defines values for ConversationParticipantRole.
 const (
-	Cc ConversationParticipantRole = "cc"
+	Cc        ConversationParticipantRole = "cc"
+	Forwarded ConversationParticipantRole = "forwarded"
 )
 
 // Valid indicates whether the value is a known member of the ConversationParticipantRole enum.
 func (e ConversationParticipantRole) Valid() bool {
 	switch e {
 	case Cc:
+		return true
+	case Forwarded:
 		return true
 	default:
 		return false
@@ -4754,9 +4757,28 @@ func (e MessageEmailDmarc) Valid() bool {
 	}
 }
 
+// Defines values for MessageForwardScope.
+const (
+	MessageForwardScopeConversation MessageForwardScope = "conversation"
+	MessageForwardScopeMessage      MessageForwardScope = "message"
+)
+
+// Valid indicates whether the value is a known member of the MessageForwardScope enum.
+func (e MessageForwardScope) Valid() bool {
+	switch e {
+	case MessageForwardScopeConversation:
+		return true
+	case MessageForwardScopeMessage:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for MessageKind.
 const (
 	MessageKindEvent   MessageKind = "event"
+	MessageKindForward MessageKind = "forward"
 	MessageKindMessage MessageKind = "message"
 	MessageKindNote    MessageKind = "note"
 )
@@ -4765,6 +4787,8 @@ const (
 func (e MessageKind) Valid() bool {
 	switch e {
 	case MessageKindEvent:
+		return true
+	case MessageKindForward:
 		return true
 	case MessageKindMessage:
 		return true
@@ -5834,6 +5858,7 @@ func (e Priority) Valid() bool {
 // Defines values for PushNotificationEvent.
 const (
 	AssignedToMe                    PushNotificationEvent = "assigned_to_me"
+	ForwardAnswer                   PushNotificationEvent = "forward_answer"
 	Mentioned                       PushNotificationEvent = "mentioned"
 	MessageInMyConversation         PushNotificationEvent = "message_in_my_conversation"
 	MessageInUnassignedConversation PushNotificationEvent = "message_in_unassigned_conversation"
@@ -5848,6 +5873,8 @@ const (
 func (e PushNotificationEvent) Valid() bool {
 	switch e {
 	case AssignedToMe:
+		return true
+	case ForwardAnswer:
 		return true
 	case Mentioned:
 		return true
@@ -9544,7 +9571,8 @@ type ApiKeyList struct {
 //	    trash. For owners and admins: never offered to agents' tokens. Never implied: a key made
 //	    without naming its scopes does not hold it.
 //	  - `messages:write`: outgoing and incoming messages, drafts: create, edit, discard; for
-//	    OAuth tokens also replies to reader threads and their accepted answer.
+//	    OAuth tokens also replies to reader threads and their accepted answer. Forwarding a
+//	    conversation by e-mail also needs `conversations:read`.
 //	  - `drafts:send`: send a draft (`POST /v1/messages/{id}/send`), together with
 //	    `messages:write`.
 //	  - `messages:redact`: remove a message's or note's content (`POST /v1/messages/{id}/redact`).
@@ -13357,6 +13385,23 @@ type ConversationEvent struct {
 // ConversationEventType defines model for ConversationEvent.Type.
 type ConversationEventType string
 
+// ConversationForward defines model for ConversationForward.
+type ConversationForward struct {
+	// Attachments Include the forwarded messages' files (at most 20 MiB together).
+	Attachments *bool `json:"attachments,omitempty"`
+
+	// Draft Store it as a draft to send later with `POST /v1/messages/{id}/send`.
+	Draft *bool `json:"draft,omitempty"`
+
+	// MessageId The message to forward: one to or from the contact in this conversation. Without it the
+	// conversation's latest 100 messages go.
+	MessageId *uuid.UUID `json:"message_id,omitempty"`
+
+	// Note Plain text written above the forwarded content.
+	Note *string `json:"note,omitempty"`
+	To   []Email `json:"to"`
+}
+
 // ConversationImport Where an imported conversation came from.
 type ConversationImport struct {
 	// At When it was imported.
@@ -13569,7 +13614,12 @@ type ConversationParticipant struct {
 	Email Email `json:"email"`
 
 	// Name That contact's name.
-	Name *string                     `json:"name,omitempty"`
+	Name *string `json:"name,omitempty"`
+
+	// Role `cc` was copied on the conversation's mail and is copied on replies while `active`;
+	// `forwarded` answered a forward (or was named in such an answer) and is never copied
+	// unless a member names them in `cc` or adds them, which makes them `cc`. Mail from a
+	// `forwarded` participant joins the conversation as a members-only `forward`.
 	Role ConversationParticipantRole `json:"role"`
 
 	// Status `active` addresses are copied on replies and may answer into the conversation;
@@ -13577,7 +13627,10 @@ type ConversationParticipant struct {
 	Status ConversationParticipantStatus `json:"status"`
 }
 
-// ConversationParticipantRole defines model for ConversationParticipant.Role.
+// ConversationParticipantRole `cc` was copied on the conversation's mail and is copied on replies while `active`;
+// `forwarded` answered a forward (or was named in such an answer) and is never copied
+// unless a member names them in `cc` or adds them, which makes them `cc`. Mail from a
+// `forwarded` participant joins the conversation as a members-only `forward`.
 type ConversationParticipantRole string
 
 // ConversationParticipantStatus `active` addresses are copied on replies and may answer into the conversation;
@@ -18213,6 +18266,9 @@ type Message struct {
 	Email *MessageEmail `json:"email,omitempty"`
 	Event *MessageEvent `json:"event,omitempty"`
 
+	// Forward What an outgoing `forward` sent and to whom; absent for everything else.
+	Forward *MessageForward `json:"forward,omitempty"`
+
 	// Html Sanitized HTML, when the message has an HTML form.
 	Html *string   `json:"html,omitempty"`
 	Id   uuid.UUID `json:"id"`
@@ -18225,7 +18281,9 @@ type Message struct {
 	ImportedAuthor *ImportedAuthor `json:"imported_author,omitempty"`
 
 	// Kind `message` goes to or comes from the contact, `note` is for members only, `event` records a
-	// change (assignment, status, labels).
+	// change (assignment, status, labels). `forward` is for members only too: a message or the
+	// conversation e-mailed to someone else (direction `out`, see `forwardConversation`), or that
+	// person's answer (direction `in`). Never send a `forward` to the contact.
 	Kind MessageKind `json:"kind"`
 
 	// Mentions Members a note mentions (notes only; absent when it mentions nobody).
@@ -18523,8 +18581,24 @@ type MessageEvent struct {
 	Type    EventType           `json:"type"`
 }
 
+// MessageForward defines model for MessageForward.
+type MessageForward struct {
+	// Attachments Whether their files were included.
+	Attachments bool `json:"attachments"`
+
+	// MessageIds The forwarded messages, oldest first.
+	MessageIds []uuid.UUID         `json:"message_ids"`
+	Scope      MessageForwardScope `json:"scope"`
+	To         []Email             `json:"to"`
+}
+
+// MessageForwardScope defines model for MessageForward.Scope.
+type MessageForwardScope string
+
 // MessageKind `message` goes to or comes from the contact, `note` is for members only, `event` records a
-// change (assignment, status, labels).
+// change (assignment, status, labels). `forward` is for members only too: a message or the
+// conversation e-mailed to someone else (direction `out`, see `forwardConversation`), or that
+// person's answer (direction `in`). Never send a `forward` to the contact.
 type MessageKind string
 
 // MessagePage defines model for MessagePage.
@@ -18543,7 +18617,9 @@ type MessagePreview struct {
 	Id         uuid.UUID  `json:"id"`
 
 	// Kind `message` goes to or comes from the contact, `note` is for members only, `event` records a
-	// change (assignment, status, labels).
+	// change (assignment, status, labels). `forward` is for members only too: a message or the
+	// conversation e-mailed to someone else (direction `out`, see `forwardConversation`), or that
+	// person's answer (direction `in`). Never send a `forward` to the contact.
 	Kind MessageKind `json:"kind"`
 
 	// Redacted `true` when its content was removed; `text` is empty. Absent otherwise.
@@ -19835,6 +19911,7 @@ type NotificationChannels struct {
 // NotificationEvents defines model for NotificationEvents.
 type NotificationEvents struct {
 	AssignedToMe                    NotificationChannels `json:"assigned_to_me"`
+	ForwardAnswer                   NotificationChannels `json:"forward_answer"`
 	Mentioned                       NotificationChannels `json:"mentioned"`
 	MessageInMyConversation         NotificationChannels `json:"message_in_my_conversation"`
 	MessageInUnassignedConversation NotificationChannels `json:"message_in_unassigned_conversation"`
@@ -19847,6 +19924,7 @@ type NotificationEvents struct {
 // NotificationEventsUpdate Some events and their channels.
 type NotificationEventsUpdate struct {
 	AssignedToMe                    *NotificationChannels `json:"assigned_to_me,omitempty"`
+	ForwardAnswer                   *NotificationChannels `json:"forward_answer,omitempty"`
 	Mentioned                       *NotificationChannels `json:"mentioned,omitempty"`
 	MessageInMyConversation         *NotificationChannels `json:"message_in_my_conversation,omitempty"`
 	MessageInUnassignedConversation *NotificationChannels `json:"message_in_unassigned_conversation,omitempty"`
@@ -23524,7 +23602,7 @@ type WebhookEndpoint struct {
 	// InboxId Absent for workspace endpoints.
 	InboxId *uuid.UUID `json:"inbox_id,omitempty"`
 
-	// IncludeNotes `message.created` and `message.redacted` also for members' notes.
+	// IncludeNotes `message.created` and `message.redacted` also for members' notes, and those and the draft events also for forwards (kind `forward`).
 	IncludeNotes bool `json:"include_notes"`
 
 	// SecretRotatedAt While the previous secret still signs (24 hours after a rotation), when it was replaced.
@@ -25434,6 +25512,15 @@ type UpdateConversationParams struct {
 
 // CreateDiscussionFromConversationParams defines parameters for CreateDiscussionFromConversation.
 type CreateDiscussionFromConversationParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// ForwardConversationParams defines parameters for ForwardConversation.
+type ForwardConversationParams struct {
 	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
@@ -28709,6 +28796,9 @@ type UpdateConversationJSONRequestBody = ConversationUpdate
 
 // CreateDiscussionFromConversationJSONRequestBody defines body for CreateDiscussionFromConversation for application/json ContentType.
 type CreateDiscussionFromConversationJSONRequestBody = DiscussionFromConversation
+
+// ForwardConversationJSONRequestBody defines body for ForwardConversation for application/json ContentType.
+type ForwardConversationJSONRequestBody = ConversationForward
 
 // LinkConversationIssueJSONRequestBody defines body for LinkConversationIssue for application/json ContentType.
 type LinkConversationIssueJSONRequestBody = IssueLinkCreate
@@ -33851,6 +33941,9 @@ type ServerInterface interface {
 	// CreateDiscussionFromConversation Turn a private conversation into a public thread
 	// (POST /v1/conversations/{conversationId}/discussion)
 	CreateDiscussionFromConversation(w http.ResponseWriter, r *http.Request, conversationId ConversationId, params CreateDiscussionFromConversationParams)
+	// ForwardConversation Forward a message or the conversation by e-mail
+	// (POST /v1/conversations/{conversationId}/forward)
+	ForwardConversation(w http.ResponseWriter, r *http.Request, conversationId ConversationId, params ForwardConversationParams)
 	// ListConversationIncidents List the incidents a conversation is linked to
 	// (GET /v1/conversations/{conversationId}/incidents)
 	ListConversationIncidents(w http.ResponseWriter, r *http.Request, conversationId ConversationId, params ListConversationIncidentsParams)
@@ -45226,6 +45319,75 @@ func (siw *ServerInterfaceWrapper) CreateDiscussionFromConversation(w http.Respo
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.CreateDiscussionFromConversation(w, r, conversationId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ForwardConversation operation middleware
+func (siw *ServerInterfaceWrapper) ForwardConversation(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "conversationId" -------------
+	var conversationId ConversationId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "conversationId", r.PathValue("conversationId"), &conversationId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "conversationId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ForwardConversationParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ForwardConversation(w, r, conversationId, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -63967,6 +64129,7 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/conversations/{conversationId}/discussion", wrapper.CreateDiscussionFromConversation)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/conversations/{conversationId}/messages", wrapper.ListMessages)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/conversations/{conversationId}/messages", wrapper.CreateMessage)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/conversations/{conversationId}/forward", wrapper.ForwardConversation)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/conversations/{conversationId}/participants", wrapper.ListConversationParticipants)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/conversations/{conversationId}/participants", wrapper.AddConversationParticipant)
 	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/conversations/{conversationId}/participants/{email}", wrapper.RemoveConversationParticipant)
@@ -83749,6 +83912,130 @@ func (response CreateDiscussionFromConversation422ApplicationProblemPlusJSONResp
 	}
 	w.Header().Set("Content-Type", "application/problem+json")
 	w.WriteHeader(422)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ForwardConversationRequestObject struct {
+	ConversationId ConversationId `json:"conversationId"`
+	Params         ForwardConversationParams
+	Body           *ForwardConversationJSONRequestBody
+}
+
+type ForwardConversationResponseObject interface {
+	VisitForwardConversationResponse(w http.ResponseWriter) error
+}
+
+type ForwardConversation201JSONResponse Message
+
+func (response ForwardConversation201JSONResponse) VisitForwardConversationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(201)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ForwardConversation400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response ForwardConversation400ApplicationProblemPlusJSONResponse) VisitForwardConversationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ForwardConversation401ApplicationProblemPlusJSONResponse Problem
+
+func (response ForwardConversation401ApplicationProblemPlusJSONResponse) VisitForwardConversationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ForwardConversation403ApplicationProblemPlusJSONResponse Problem
+
+func (response ForwardConversation403ApplicationProblemPlusJSONResponse) VisitForwardConversationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ForwardConversation404ApplicationProblemPlusJSONResponse Problem
+
+func (response ForwardConversation404ApplicationProblemPlusJSONResponse) VisitForwardConversationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ForwardConversation409ApplicationProblemPlusJSONResponse Problem
+
+func (response ForwardConversation409ApplicationProblemPlusJSONResponse) VisitForwardConversationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(409)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ForwardConversation413ApplicationProblemPlusJSONResponse Problem
+
+func (response ForwardConversation413ApplicationProblemPlusJSONResponse) VisitForwardConversationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(413)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ForwardConversation429ApplicationProblemPlusJSONResponse Problem
+
+func (response ForwardConversation429ApplicationProblemPlusJSONResponse) VisitForwardConversationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(429)
 	_, err := buf.WriteTo(w)
 	return err
 }
@@ -108665,6 +108952,9 @@ type StrictServerInterface interface {
 	// CreateDiscussionFromConversation Turn a private conversation into a public thread
 	// (POST /v1/conversations/{conversationId}/discussion)
 	CreateDiscussionFromConversation(ctx context.Context, request CreateDiscussionFromConversationRequestObject) (CreateDiscussionFromConversationResponseObject, error)
+	// ForwardConversation Forward a message or the conversation by e-mail
+	// (POST /v1/conversations/{conversationId}/forward)
+	ForwardConversation(ctx context.Context, request ForwardConversationRequestObject) (ForwardConversationResponseObject, error)
 	// ListConversationIncidents List the incidents a conversation is linked to
 	// (GET /v1/conversations/{conversationId}/incidents)
 	ListConversationIncidents(ctx context.Context, request ListConversationIncidentsRequestObject) (ListConversationIncidentsResponseObject, error)
@@ -115425,6 +115715,40 @@ func (sh *strictHandler) CreateDiscussionFromConversation(w http.ResponseWriter,
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
 	} else if validResponse, ok := response.(CreateDiscussionFromConversationResponseObject); ok {
 		if err := validResponse.VisitCreateDiscussionFromConversationResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// ForwardConversation operation middleware
+func (sh *strictHandler) ForwardConversation(w http.ResponseWriter, r *http.Request, conversationId ConversationId, params ForwardConversationParams) {
+	var request ForwardConversationRequestObject
+
+	request.ConversationId = conversationId
+	request.Params = params
+
+	var body ForwardConversationJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.ForwardConversation(ctx, request.(ForwardConversationRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "ForwardConversation")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(ForwardConversationResponseObject); ok {
+		if err := validResponse.VisitForwardConversationResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {

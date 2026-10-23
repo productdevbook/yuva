@@ -1,14 +1,35 @@
 -- The conversation is locked by the caller, so the count holds until the insert.
 -- name: AddConversationParticipant :execrows
 INSERT INTO conversation_participants (workspace_id, conversation_id, email, role, status, created_at)
-SELECT @workspace_id, @conversation_id, @email, 'cc', @status, @now
+SELECT @workspace_id, @conversation_id, @email, @role, @status, @now
 WHERE (SELECT count(*) FROM conversation_participants
        WHERE workspace_id = @workspace_id AND conversation_id = @conversation_id) < @max_participants::int
 ON CONFLICT DO NOTHING;
 
+-- A member or the contact copying a forwarded participant makes them cc.
 -- name: ActivateConversationParticipant :execrows
-UPDATE conversation_participants SET status = 'active'
-WHERE workspace_id = @workspace_id AND conversation_id = @conversation_id AND email = @email AND status = 'suggested';
+UPDATE conversation_participants SET status = 'active', role = CASE WHEN @role::text = 'cc' THEN 'cc' ELSE role END
+WHERE workspace_id = @workspace_id AND conversation_id = @conversation_id AND email = @email
+  AND (status = 'suggested' OR (@role::text = 'cc' AND role = 'forwarded'));
+
+-- name: GetConversationParticipant :one
+SELECT role, status FROM conversation_participants
+WHERE workspace_id = @workspace_id AND conversation_id = @conversation_id AND email = @email;
+
+-- name: IsForwardRecipient :one
+SELECT EXISTS (
+  SELECT 1 FROM message_emails e
+  JOIN messages m ON m.workspace_id = e.workspace_id AND m.id = e.message_id
+  WHERE e.workspace_id = @workspace_id AND e.conversation_id = @conversation_id AND e.direction = 'out'
+    AND m.kind = 'forward' AND (e.header_message_id = ANY(@ids::text[]) OR e.relay_message_id = ANY(@ids::text[]))
+    AND @email::text = ANY(e.to_addresses)
+)::bool AS recipient;
+
+-- name: ScrubForwardRecipients :exec
+UPDATE messages SET forward = jsonb_set(forward, '{to}', coalesce((
+    SELECT jsonb_agg(t ORDER BY i) FROM jsonb_array_elements_text(forward->'to') WITH ORDINALITY u (t, i)
+    WHERE t <> ALL(@emails::text[])), '[]'::jsonb))
+WHERE workspace_id = @workspace_id AND kind = 'forward' AND forward IS NOT NULL AND forward->'to' ?| @emails::text[];
 
 -- name: DeleteConversationParticipant :execrows
 DELETE FROM conversation_participants WHERE workspace_id = @workspace_id AND conversation_id = @conversation_id AND email = @email;
@@ -54,6 +75,11 @@ WITH addrs AS (
   FROM message_emails e
   JOIN addrs a ON a.email = ANY(e.to_addresses) OR a.email = ANY(e.cc_addresses) OR a.email = ANY(e.bcc_addresses)
   WHERE e.workspace_id = @workspace_id
+  UNION ALL
+  SELECT m.conversation_id, a.email, false AS participant
+  FROM messages m
+  JOIN addrs a ON m.forward->'to' ? a.email
+  WHERE m.workspace_id = @workspace_id AND m.kind = 'forward' AND m.forward IS NOT NULL
 )
 SELECT cv.id, cv.inbox_id, cv.subject, cv.created_at,
        array_agg(DISTINCT h.email ORDER BY h.email)::text[] AS emails, bool_or(h.participant)::bool AS participant
@@ -68,3 +94,19 @@ WHERE cv.contact_id <> @contact_id AND cv.trashed_at IS NULL
 GROUP BY cv.id
 ORDER BY cv.created_at DESC, cv.id DESC
 LIMIT @lim;
+
+-- A suggested address that answers a forward it received becomes a forwarded participant.
+-- name: PromoteSuggestedToForwarded :execrows
+UPDATE conversation_participants SET status = 'active', role = 'forwarded'
+WHERE workspace_id = @workspace_id AND conversation_id = @conversation_id AND email = @email AND status = 'suggested';
+
+-- The members who sent the forwards an answer names in In-Reply-To or References.
+-- name: ListForwardAnswerMembers :many
+SELECT DISTINCT coalesce(m.sent_by_member_id, m.author_member_id)::uuid AS member_id
+FROM message_emails a
+JOIN message_emails f ON f.workspace_id = a.workspace_id AND f.conversation_id = a.conversation_id AND f.direction = 'out'
+  AND (f.header_message_id = ANY(array_append(a.references_ids, a.in_reply_to))
+       OR f.relay_message_id = ANY(array_append(a.references_ids, a.in_reply_to)))
+JOIN messages m ON m.workspace_id = f.workspace_id AND m.id = f.message_id AND m.kind = 'forward'
+WHERE a.workspace_id = @workspace_id AND a.message_id = @message_id
+  AND coalesce(m.sent_by_member_id, m.author_member_id) IS NOT NULL;

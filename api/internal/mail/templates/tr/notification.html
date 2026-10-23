@@ -1,4 +1,4 @@
-{{template "heading" (or (and (or .Messages .Assigned) (print (or .Contact "Bir ziyaretçi") " yanıt bekliyor")) "Bir notta sizden bahsedildi")}}
+{{template "heading" (or (and (or .Messages .Assigned) (print (or .Contact "Bir ziyaretçi") " yanıt bekliyor")) (and .Mentions "Bir notta sizden bahsedildi") "Bir ileti yanıtlandı")}}
 {{- if .Assigned}}
 <p style="margin:0 0 16px 0;">{{if .AssignedBy}}<strong>{{.AssignedBy}}</strong> size <strong>{{.Inbox}}</strong> gelen kutusunda bir konuşma atadı{{else}}<strong>{{.Inbox}}</strong> gelen kutusunda size bir konuşma atandı{{end}}{{if .Subject}}: {{.Subject}}{{end}}.</p>
 {{- end}}
@@ -11,6 +11,10 @@
 {{- end}}
 {{- range .Mentions}}
 <p style="margin:0;">{{if .By}}<strong>{{.By}}</strong>{{else}}Biri{{end}} bir notta sizden bahsetti:</p>
+{{template "quote" .Text}}
+{{- end}}
+{{- range .Answers}}
+<p style="margin:0;">{{if .By}}<strong>{{.By}}</strong>{{else}}Biri{{end}} bir iletiyi yanıtladı:</p>
 {{template "quote" .Text}}
 {{- end}}
 {{template "button" (button .URL "Konuşmayı açın")}}

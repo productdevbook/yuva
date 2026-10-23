@@ -414,6 +414,9 @@ func messageBody(m messageRow, atts []store.Attachment) oas.Message {
 			out.Rule = &r
 		}
 	}
+	if spec, ok := forwardOf(m); ok {
+		out.Forward = &spec
+	}
 	if m.DeliveryState != nil && m.DeliveryUpdatedAt != nil {
 		out.Delivery = &oas.MessageDelivery{
 			Channel: oas.MessageDeliveryChannelEmail, State: oas.MessageDeliveryState(*m.DeliveryState),

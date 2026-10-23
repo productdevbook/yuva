@@ -154,7 +154,7 @@ type mcpEvent struct {
 type mcpMessage struct {
 	ID              uuid.UUID         `json:"id"`
 	ConversationID  uuid.UUID         `json:"conversation_id"`
-	Kind            string            `json:"kind" jsonschema:"message, note (internal) or event (timeline change)"`
+	Kind            string            `json:"kind" jsonschema:"message, note (internal), event (timeline change) or forward (internal: e-mailed to someone else, or their answer)"`
 	Direction       string            `json:"direction,omitempty" jsonschema:"in from the contact, out to the contact"`
 	Draft           bool              `json:"draft" jsonschema:"true for a draft that a member has not sent yet"`
 	Author          mcpAuthor         `json:"author"`

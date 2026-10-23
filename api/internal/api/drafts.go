@@ -83,6 +83,10 @@ func (s *Server) UpdateMessage(ctx context.Context, req oas.UpdateMessageRequest
 		if b.Body != nil {
 			body = *b.Body
 		}
+		forward := cur.Kind == string(oas.MessageKindForward)
+		if forward && b.Html.IsSpecified() && !b.Html.IsNull() {
+			return errForwardNoteFormat
+		}
 		if b.Html.IsSpecified() {
 			html = nil
 			if !b.Html.IsNull() {
@@ -102,7 +106,7 @@ func (s *Server) UpdateMessage(ctx context.Context, req oas.UpdateMessageRequest
 		if len([]rune(body)) > maxMessageBodyRunes {
 			return errValidation("body must be at most 65536 characters")
 		}
-		if strings.TrimSpace(body) == "" && len(atts[cur.ID]) == 0 {
+		if strings.TrimSpace(body) == "" && len(atts[cur.ID]) == 0 && !forward {
 			return errValidation("body is required unless files are attached")
 		}
 		m, err := q.UpdateDraft(ctx, store.UpdateDraftParams{WorkspaceID: p.workspaceID, ID: cur.ID, Body: body, Html: html})
@@ -155,6 +159,9 @@ func (s *Server) SendMessage(ctx context.Context, req oas.SendMessageRequestObje
 	p := principalFrom(ctx)
 	if p.deliversAsBot() && !p.botsMaySend {
 		return nil, errBotSendingDisabled
+	}
+	if m, err := s.st.GetMessage(ctx, store.GetMessageParams{WorkspaceID: p.workspaceID, ID: req.MessageId}); err == nil && m.Kind == string(oas.MessageKindForward) {
+		return s.sendForwardDraft(ctx, p, req)
 	}
 	var out oas.Message
 	var inbox uuid.UUID

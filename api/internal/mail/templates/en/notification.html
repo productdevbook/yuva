@@ -1,4 +1,4 @@
-{{template "heading" (or (and (or .Messages .Assigned) (print (or .Contact "A visitor") " is waiting for an answer")) "You were mentioned in a note")}}
+{{template "heading" (or (and (or .Messages .Assigned) (print (or .Contact "A visitor") " is waiting for an answer")) (and .Mentions "You were mentioned in a note") "A forward was answered")}}
 {{- if .Assigned}}
 <p style="margin:0 0 16px 0;">{{if .AssignedBy}}<strong>{{.AssignedBy}}</strong> assigned you{{else}}You were assigned{{end}} a conversation in <strong>{{.Inbox}}</strong>{{if .Subject}}: {{.Subject}}{{end}}.</p>
 {{- end}}
@@ -11,6 +11,10 @@
 {{- end}}
 {{- range .Mentions}}
 <p style="margin:0;">{{if .By}}<strong>{{.By}}</strong>{{else}}Someone{{end}} mentioned you in a note:</p>
+{{template "quote" .Text}}
+{{- end}}
+{{- range .Answers}}
+<p style="margin:0;">{{if .By}}<strong>{{.By}}</strong>{{else}}Someone{{end}} answered a forward:</p>
 {{template "quote" .Text}}
 {{- end}}
 {{template "button" (button .URL "Open the conversation")}}

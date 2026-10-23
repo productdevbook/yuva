@@ -1,4 +1,4 @@
-{{template "heading" (or (and (or .Messages .Assigned) (print (or .Contact "Ein Besucher") " wartet auf eine Antwort")) "Sie wurden in einer Notiz erwähnt")}}
+{{template "heading" (or (and (or .Messages .Assigned) (print (or .Contact "Ein Besucher") " wartet auf eine Antwort")) (and .Mentions "Sie wurden in einer Notiz erwähnt") "Eine Weiterleitung wurde beantwortet")}}
 {{- if .Assigned}}
 <p style="margin:0 0 16px 0;">{{if .AssignedBy}}<strong>{{.AssignedBy}}</strong> hat Ihnen{{else}}Ihnen wurde{{end}} eine Unterhaltung in <strong>{{.Inbox}}</strong> zugewiesen{{if .Subject}}: {{.Subject}}{{end}}.</p>
 {{- end}}
@@ -11,6 +11,10 @@
 {{- end}}
 {{- range .Mentions}}
 <p style="margin:0;">{{if .By}}<strong>{{.By}}</strong>{{else}}Jemand{{end}} hat Sie in einer Notiz erwähnt:</p>
+{{template "quote" .Text}}
+{{- end}}
+{{- range .Answers}}
+<p style="margin:0;">{{if .By}}<strong>{{.By}}</strong>{{else}}Jemand{{end}} hat auf eine Weiterleitung geantwortet:</p>
 {{template "quote" .Text}}
 {{- end}}
 {{template "button" (button .URL "Unterhaltung öffnen")}}

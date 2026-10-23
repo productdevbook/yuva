@@ -2,12 +2,13 @@
 WITH m AS (
     INSERT INTO messages (id, workspace_id, conversation_id, kind, direction, author_type, author_member_id,
                           author_contact_id, author_api_key_id, body, html, client_id, event, created_at, draft,
-                          delivery_state, delivery_updated_at, via, mentions, help_cards, rule)
+                          delivery_state, delivery_updated_at, via, mentions, help_cards, rule, forward)
     VALUES (@id, @workspace_id, @conversation_id, @kind, @direction, @author_type, @author_member_id,
             @author_contact_id, sqlc.narg(author_api_key_id), @body, @html, @client_id, @event, @created_at, @draft,
             sqlc.narg(delivery_state),
             CASE WHEN sqlc.narg(delivery_state)::text IS NULL THEN NULL ELSE @created_at::timestamptz END,
-            sqlc.narg(via), coalesce(sqlc.narg(mentions)::uuid[], '{}'), sqlc.narg(help_cards)::jsonb, sqlc.narg(rule)::jsonb)
+            sqlc.narg(via), coalesce(sqlc.narg(mentions)::uuid[], '{}'), sqlc.narg(help_cards)::jsonb, sqlc.narg(rule)::jsonb,
+            sqlc.narg(forward)::jsonb)
     ON CONFLICT (workspace_id, conversation_id, client_id) DO NOTHING
     RETURNING *),
 seen AS (
@@ -16,7 +17,7 @@ seen AS (
 SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
        m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
        m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions, m.imported_at, m.imported_author, m.help_cards,
-       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule,
+       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward,
        coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
        coalesce(sk.bot_name, sk.name, '')::text AS sent_by_bot_name
 FROM m
@@ -27,7 +28,7 @@ LEFT JOIN api_keys sk ON sk.workspace_id = m.workspace_id AND sk.id = m.sent_by_
 SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
        m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
        m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions, m.imported_at, m.imported_author, m.help_cards,
-       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule,
+       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward,
        coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
        coalesce(sk.bot_name, sk.name, '')::text AS sent_by_bot_name
 FROM messages m
@@ -39,7 +40,7 @@ WHERE m.workspace_id = $1 AND m.conversation_id = $2 AND m.client_id = $3;
 SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
        m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
        m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions, m.imported_at, m.imported_author, m.help_cards,
-       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule,
+       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward,
        coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
        coalesce(sk.bot_name, sk.name, '')::text AS sent_by_bot_name
 FROM messages m
@@ -55,7 +56,7 @@ LIMIT @lim;
 SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
        m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
        m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions, m.imported_at, m.imported_author, m.help_cards,
-       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule,
+       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward,
        coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
        coalesce(sk.bot_name, sk.name, '')::text AS sent_by_bot_name
 FROM messages m
@@ -96,7 +97,7 @@ WHERE a.workspace_id = $1 AND a.id = $2;
 SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
        m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
        m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions, m.imported_at, m.imported_author, m.help_cards,
-       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule,
+       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward,
        coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
        coalesce(sk.bot_name, sk.name, '')::text AS sent_by_bot_name
 FROM messages m
@@ -115,7 +116,7 @@ WITH m AS (
 SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
        m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
        m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions, m.imported_at, m.imported_author, m.help_cards,
-       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule,
+       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward,
        coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
        coalesce(sk.bot_name, sk.name, '')::text AS sent_by_bot_name
 FROM m
@@ -130,7 +131,7 @@ WITH m AS (
 SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
        m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
        m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions, m.imported_at, m.imported_author, m.help_cards,
-       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule,
+       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward,
        coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
        coalesce(sk.bot_name, sk.name, '')::text AS sent_by_bot_name
 FROM m
@@ -149,7 +150,7 @@ WITH m AS (
 SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
        m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
        m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions, m.imported_at, m.imported_author, m.help_cards,
-       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule,
+       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward,
        coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
        coalesce(sk.bot_name, sk.name, '')::text AS sent_by_bot_name
 FROM m
@@ -174,7 +175,7 @@ LIMIT 1;
 SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
        m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
        m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions, m.imported_at, m.imported_author, m.help_cards,
-       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule,
+       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward,
        coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
        coalesce(sk.bot_name, sk.name, '')::text AS sent_by_bot_name
 FROM messages m
@@ -272,7 +273,7 @@ WITH m AS (
 SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
        m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
        m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions, m.imported_at, m.imported_author, m.help_cards,
-       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule,
+       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward,
        coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
        coalesce(sk.bot_name, sk.name, '')::text AS sent_by_bot_name
 FROM m
@@ -327,3 +328,15 @@ FOR SHARE;
 SELECT id FROM messages WHERE workspace_id = @workspace_id AND id = ANY(@ids::uuid[])
 ORDER BY id
 FOR UPDATE;
+
+-- name: ListForwardableMessageIDs :many
+SELECT id FROM (
+    SELECT id, created_at FROM messages
+    WHERE workspace_id = @workspace_id AND conversation_id = @conversation_id AND kind = 'message' AND NOT draft
+      AND redacted_at IS NULL AND created_at <= @before::timestamptz
+    ORDER BY created_at DESC, id DESC
+    LIMIT @lim) latest
+ORDER BY created_at, id;
+
+-- name: SetMessageForward :exec
+UPDATE messages SET forward = @forward::jsonb WHERE workspace_id = @workspace_id AND id = @id AND kind = 'forward';

@@ -568,21 +568,26 @@ tags:
         breached (see the `sla` tag). The assignee is the candidate, or, without one, the members
         of the conversation's team; without either, nobody. The e-mail for `sla_breached` is sent
         at once, not after `email_delay_minutes`.
+      - `forward_answer`: someone answered a forward of the conversation (a `forward` message with
+        direction `in`, see `forwardConversation`). Only the member who sent that forward and the
+        conversation's assignee are candidates, while they can see the inbox; never the inbox's
+        other members, Slack, automations or SLA.
 
       Never notified: the member who caused it (their own assignment), conversations marked spam,
       a member whose open panel reports that it is showing that conversation (the `viewing` frame
       on `/v1/realtime`), and, while the member's `availability` is `away`, everything except
-      `message_in_my_conversation`, `assigned_to_me`, `mentioned` and the SLA events of
-      conversations assigned to them.
+      `message_in_my_conversation`, `assigned_to_me`, `mentioned`, `forward_answer` and the SLA
+      events of conversations assigned to them.
 
       Defaults by role (`defaults` in `NotificationSettings`): push for everything except, for
       agents, `new_async_conversation` and `message_in_unassigned_conversation`; e-mail only for
-      `message_in_my_conversation`, `assigned_to_me`, `mentioned` and `sla_breached`, for every
-      role.
+      `message_in_my_conversation`, `assigned_to_me`, `mentioned`, `sla_breached` and
+      `forward_answer`, for every role.
 
       E-mail fallback: when an event with `email: true` is still unread after
       `email_delay_minutes` (15 by default), one e-mail lists the conversation's unread contact
-      messages and the notes mentioning the member, and links to it; at most one e-mail per conversation and member per hour. It goes
+      messages, the notes mentioning the member and the answers to forwards they are a candidate
+      for, and links to it; at most one e-mail per conversation and member per hour. It goes
       to the person's sign-in address in their locale.
   - name: slack
     description: |
@@ -5019,6 +5024,79 @@ paths:
           $ref: "#/components/responses/Problem"
         "415":
           $ref: "#/components/responses/Problem"
+  /v1/conversations/{conversationId}/forward:
+    post:
+      operationId: forwardConversation
+      summary: Forward a message or the conversation by e-mail
+      description: |
+        E-mails one message (`message_id`) or the whole conversation (its latest 100 messages to
+        and from the contact; never notes, drafts, events or earlier forwards) to up to 10 outside
+        addresses, with the caller's `note` on top. It goes out through the inbox's e-mail channel
+        (the conversation's own when it is an e-mail conversation): `From` the channel's sending
+        address with the member's name, `Reply-To` the channel address, `Subject` `Fwd: ` and the
+        conversation's subject, a new `Message-ID`, and no `In-Reply-To` or `References`. The
+        forwarded messages are quoted as text, each under a header with its sender, date and
+        subject; `attachments` (default `true`) adds their files, at most 20 MiB together
+        (`413 forward_too_large`; forward without them instead). Messages redacted before the mail
+        leaves are left out.
+
+        The forward is stored as a message of kind `forward` (`body` is the note, `forward` names
+        what went to whom, `email.to` the recipients, `delivery` its state) and emitted as
+        `message.created` on `/v1/realtime` and `/v1/events`; webhooks receive it only on endpoints
+        with `include_notes`. It is never shown on `/client/v1` or to the contact, and it is not a
+        reply: it does not count as a response, change the conversation's status or copy anyone.
+
+        Each recipient must be a valid address that this server neither receives nor sends mail for
+        (`400 validation_failed`, the same answer for both) and not one of the contact's addresses
+        (`400 validation_failed`; reply instead); one that bounced or complained is refused with
+        `409 email_undeliverable`. An inbox without an e-mail channel that has an SMTP account
+        answers `409 email_not_configured`. A member forwards at most 20 times an hour and a
+        workspace 200 times (`429 rate_limited`).
+
+        A recipient's answer that passes DMARC and names the forward's `Message-ID` in
+        `In-Reply-To` or `References` joins the conversation as a message of kind `forward`,
+        direction `in`, from that recipient's contact, which is members-only like the forward; the
+        recipient becomes a participant with role `forwarded`, who is not copied on replies unless
+        named in `cc` or added. Anything else from them opens a new conversation.
+
+        `draft: true` stores the forward as a draft (`draft.created`): nothing is sent until
+        `POST /v1/messages/{id}/send`, which checks the recipients and the limits again.
+
+        Whoever can see the conversation may. API keys and OAuth tokens need `conversations:read`
+        and `messages:write`, and the workspace's `bots_may_send` unless it is a draft
+        (`403 bot_sending_disabled`).
+      tags: [conversations]
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/ConversationId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ConversationForward"
+      responses:
+        "201":
+          description: The forward, queued for delivery (or the draft).
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Message"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+        "409":
+          $ref: "#/components/responses/Problem"
+        "413":
+          $ref: "#/components/responses/Problem"
+        "429":
+          $ref: "#/components/responses/Problem"
   /v1/conversations/{conversationId}/participants:
     get:
       operationId: listConversationParticipants
@@ -5557,7 +5635,8 @@ paths:
         sent it, the author stays the draft's author, and `message.created` is emitted (an e-mail
         conversation e-mails it, as in `createMessage`). Anything that is not a draft answers
         `409 not_a_draft`. `cc` and `bcc` follow the rules of `createMessage`; without them the
-        e-mail copies the conversation's participants.
+        e-mail copies the conversation's participants. A `forward` draft goes to its `forward.to`
+        under the rules and limits of `forwardConversation` and takes neither `cc` nor `bcc`.
 
         Members always may. An API key needs `drafts:send` and `messages:write`, and the
         workspace's `bots_may_send` (`403 bot_sending_disabled`).
@@ -18810,8 +18889,8 @@ webhooks:
       operationId: webhookMessageCreated
       summary: A message was added
       description: |
-        A message to or from the contact. Members' notes only for endpoints with
-        `include_notes`; internal events never. When a member answers and `contact.online` is
+        A message to or from the contact. Members' notes and forwards (kind `forward`) only for
+        endpoints with `include_notes`; internal events never. When a member answers and `contact.online` is
         false, the contact has no live connection: send your push notification.
 
         The conversation is `data.message.conversation_id` (the same as `data.conversation.id`).
@@ -21267,7 +21346,8 @@ components:
           trash. For owners and admins: never offered to agents' tokens. Never implied: a key made
           without naming its scopes does not hold it.
         - `messages:write`: outgoing and incoming messages, drafts: create, edit, discard; for
-          OAuth tokens also replies to reader threads and their accepted answer.
+          OAuth tokens also replies to reader threads and their accepted answer. Forwarding a
+          conversation by e-mail also needs `conversations:read`.
         - `drafts:send`: send a draft (`POST /v1/messages/{id}/send`), together with
           `messages:write`.
         - `messages:redact`: remove a message's or note's content (`POST /v1/messages/{id}/redact`).
@@ -21626,7 +21706,7 @@ components:
           description: An e-mail when it is still unread after `email_delay_minutes`.
     NotificationEvents:
       type: object
-      required: [new_live_conversation, new_async_conversation, message_in_my_conversation, message_in_unassigned_conversation, assigned_to_me, mentioned, sla_warning, sla_breached]
+      required: [new_live_conversation, new_async_conversation, message_in_my_conversation, message_in_unassigned_conversation, assigned_to_me, mentioned, sla_warning, sla_breached, forward_answer]
       properties:
         new_live_conversation:
           $ref: "#/components/schemas/NotificationChannels"
@@ -21643,6 +21723,8 @@ components:
         sla_warning:
           $ref: "#/components/schemas/NotificationChannels"
         sla_breached:
+          $ref: "#/components/schemas/NotificationChannels"
+        forward_answer:
           $ref: "#/components/schemas/NotificationChannels"
     NotificationEventsUpdate:
       type: object
@@ -21663,6 +21745,8 @@ components:
         sla_warning:
           $ref: "#/components/schemas/NotificationChannels"
         sla_breached:
+          $ref: "#/components/schemas/NotificationChannels"
+        forward_answer:
           $ref: "#/components/schemas/NotificationChannels"
     NotificationSettings:
       type: object
@@ -21722,7 +21806,7 @@ components:
         event:
           type: string
           description: What caused it (see the `notifications` tag), or `test`.
-          enum: [new_live_conversation, new_async_conversation, message_in_my_conversation, message_in_unassigned_conversation, assigned_to_me, mentioned, sla_warning, sla_breached, test]
+          enum: [new_live_conversation, new_async_conversation, message_in_my_conversation, message_in_unassigned_conversation, assigned_to_me, mentioned, sla_warning, sla_breached, forward_answer, test]
         title:
           type: string
           description: The inbox name and the contact's name.
@@ -22804,7 +22888,12 @@ components:
           description: That contact's name.
         role:
           type: string
-          enum: [cc]
+          enum: [cc, forwarded]
+          description: |
+            `cc` was copied on the conversation's mail and is copied on replies while `active`;
+            `forwarded` answered a forward (or was named in such an answer) and is never copied
+            unless a member names them in `cc` or adds them, which makes them `cc`. Mail from a
+            `forwarded` participant joins the conversation as a members-only `forward`.
         created_at:
           type: string
           format: date-time
@@ -23025,7 +23114,7 @@ components:
             $ref: "#/components/schemas/WebhookEventType"
         include_notes:
           type: boolean
-          description: "`message.created` and `message.redacted` also for members' notes."
+          description: "`message.created` and `message.redacted` also for members' notes, and those and the draft events also for forwards (kind `forward`)."
         enabled:
           type: boolean
         disabled_at:
@@ -24747,8 +24836,10 @@ components:
       type: string
       description: |
         `message` goes to or comes from the contact, `note` is for members only, `event` records a
-        change (assignment, status, labels).
-      enum: [message, note, event]
+        change (assignment, status, labels). `forward` is for members only too: a message or the
+        conversation e-mailed to someone else (direction `out`, see `forwardConversation`), or that
+        person's answer (direction `in`). Never send a `forward` to the contact.
+      enum: [message, note, event, forward]
     Direction:
       type: string
       enum: [in, out]
@@ -24976,6 +25067,9 @@ components:
           description: |
             The automation rule that wrote it (author `system`): its notes, replies and the timeline
             events of its changes. Absent for everything else.
+        forward:
+          $ref: "#/components/schemas/MessageForward"
+          description: What an outgoing `forward` sent and to whom; absent for everything else.
         created_at:
           type: string
           format: date-time
@@ -25173,6 +25267,55 @@ components:
           description: E-mailed replies only, hidden recipients. See `createMessage`.
           items:
             $ref: "#/components/schemas/Email"
+    ConversationForward:
+      type: object
+      required: [to]
+      properties:
+        to:
+          type: array
+          minItems: 1
+          maxItems: 10
+          items:
+            $ref: "#/components/schemas/Email"
+        message_id:
+          type: string
+          format: uuid
+          description: |
+            The message to forward: one to or from the contact in this conversation. Without it the
+            conversation's latest 100 messages go.
+        note:
+          type: string
+          maxLength: 65536
+          description: Plain text written above the forwarded content.
+        attachments:
+          type: boolean
+          default: true
+          description: Include the forwarded messages' files (at most 20 MiB together).
+        draft:
+          type: boolean
+          description: Store it as a draft to send later with `POST /v1/messages/{id}/send`.
+    MessageForward:
+      type: object
+      required: [scope, message_ids, to, attachments]
+      properties:
+        scope:
+          type: string
+          enum: [message, conversation]
+        message_ids:
+          type: array
+          maxItems: 100
+          description: The forwarded messages, oldest first.
+          items:
+            type: string
+            format: uuid
+        to:
+          type: array
+          maxItems: 10
+          items:
+            $ref: "#/components/schemas/Email"
+        attachments:
+          type: boolean
+          description: Whether their files were included.
     MessageSend:
       type: object
       description: Recipients of a draft's e-mail; see `createMessage`.

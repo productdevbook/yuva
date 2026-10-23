@@ -90,6 +90,7 @@ var operationScopes = map[string][]oas.ApiKeyScope{
 	"ListConversationParticipants": {oas.ConversationsRead},
 
 	"AddConversationParticipant":    {oas.ConversationsWrite},
+	"ForwardConversation":           {oas.ConversationsRead, oas.MessagesWrite},
 	"RemoveConversationParticipant": {oas.ConversationsWrite},
 
 	"CreateContact":             {oas.ContactsWrite},

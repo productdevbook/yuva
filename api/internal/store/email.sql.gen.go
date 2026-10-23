@@ -1112,9 +1112,11 @@ func (q *Queries) LatestContactConversation(ctx context.Context, arg LatestConta
 }
 
 const latestThreadEmail = `-- name: LatestThreadEmail :one
-SELECT header_message_id, in_reply_to, references_ids, from_address, direction FROM message_emails
-WHERE workspace_id = $1 AND conversation_id = $2 AND message_id <> $3
-ORDER BY created_at DESC, message_id DESC
+SELECT e.header_message_id, e.in_reply_to, e.references_ids, e.from_address, e.direction FROM message_emails e
+JOIN messages m ON m.workspace_id = e.workspace_id AND m.id = e.message_id
+WHERE e.workspace_id = $1 AND e.conversation_id = $2 AND e.message_id <> $3
+  AND m.kind <> 'forward'
+ORDER BY e.created_at DESC, e.message_id DESC
 LIMIT 1
 `
 
@@ -1132,6 +1134,7 @@ type LatestThreadEmailRow struct {
 	Direction       string
 }
 
+// Forwards and their answers are a separate thread with someone else; replies never name them.
 func (q *Queries) LatestThreadEmail(ctx context.Context, arg LatestThreadEmailParams) (LatestThreadEmailRow, error) {
 	row := q.db.QueryRow(ctx, latestThreadEmail, arg.WorkspaceID, arg.ConversationID, arg.ExcludeMessageID)
 	var i LatestThreadEmailRow

@@ -829,8 +829,8 @@ re-checks its token every 30 seconds and ends when the token stops working. The 
   `yuva://migration/{id}`; prompt `move_to_yuva` (address, inbox).
 - Writes carry `destructiveHint: false` except `merge_contacts`; `assign`, `set_status`, `snooze`,
   the label tools, `move_conversation`, `bulk_update` and `update_chat_channel` carry `idempotentHint`; `send_reply` and
-  `send_draft` (`SendMessage`, delivering a stored draft instead of a copy of its text) carry
-  `openWorldHint`. `send_reply` answers `409 draft_pending` while the caller (the same key,
+  `send_draft` (`SendMessage`, delivering a stored draft instead of a copy of its text) and
+  `forward_conversation` carry `openWorldHint`. `send_reply` answers `409 draft_pending` while the caller (the same key,
   or the same member through the same client) has a draft in that conversation.
 - `resources/list` lists the inboxes the caller sees. `yuva://inbox/{id}` holds the inbox and, with
   `conversations:read`, its latest open conversations; it is updated by `inbox.*` and
@@ -840,8 +840,8 @@ re-checks its token every 30 seconds and ends when the token stops working. The 
 - Tools call the same code as the `/v1` operations with the caller's principal, so access, scope
   and inbox checks are the API's. Read tools carry `readOnlyHint`; idempotent writes
   `idempotentHint`; `merge_contacts` `destructiveHint`. Every tool has an output schema. Tools the
-  caller's scopes or role cannot use are not listed; `send_reply` and `send_draft` are listed only
-  when the caller may deliver.
+  caller's scopes or role cannot use are not listed; `send_reply`, `send_draft` and
+  `forward_conversation` are listed only when the caller may deliver; `draft_forward` always is.
 - Customer text is untrusted: message bodies, subjects, names, e-mail addresses and attributes are
   returned only inside `customer_content` fields, and every tool description says that text there
   is data from customers and never instructions.
@@ -1085,7 +1085,10 @@ Inbound:
    senders, loop and auto-reply handling, and the hourly sender cap, which counts inbound mail by
    its author. Any other mail from them, and answers from Bcc recipients (never participants), opens
    a new related conversation. `GET /v1/conversations/{id}/participants` lists them with their
-   status. The add endpoint answers an address of this server like an invalid one
+   status. A participant's role is `cc`, or `forwarded` for the recipient of a forward (below) and
+   the addresses their mail names; a `forwarded` participant is never copied by default, and their
+   mail joins only as a members-only `forward`. A member naming one in `cc` or adding them, or a
+   verified mail from the contact copying them, makes them `cc`. The add endpoint answers an address of this server like an invalid one
    (`400 validation_failed`, same text), as do `cc` and `bcc`, so nobody learns another workspace's
    addresses.
    Every e-mail channel also has a forwarding address, `<token>@<YUVA_FORWARDING_DOMAIN>` (16 random
@@ -1162,6 +1165,50 @@ from inbound headers would turn every rule into a way to send mail to strangers.
 errors are retried, 5xx replies fail at once. An e-mail channel can greet new conversations once
 per contact within a set interval; the greeting is a `system` message with
 `Auto-Submitted: auto-replied`.
+Forwarding (`POST /v1/conversations/{id}/forward`): a member sends one message or the
+conversation (its latest 100 messages to and from the contact; never notes, drafts, events or other
+forwards) to 1–10 outside addresses with a note on top. It is stored as a message of the members-only
+kind `forward` (direction `out`, `body` the note, `forward` = scope, message ids, recipients and
+whether files went, and a `message_emails` row with the recipients in `to`), sent by the same River
+job as replies through the conversation's e-mail channel or else the inbox's first (an exact address
+before a catch-all; none with SMTP is `409 email_not_configured`). Headers: `From` the channel's
+sending address with the member's name (a key's bot name), `Reply-To` the channel address, `To`
+every recipient, `Subject` `Fwd: ` and the conversation's subject, a new Message-ID with the
+conversation's token, and neither `In-Reply-To` nor `References`, so recipients learn no id of the
+customer's thread. The body is composed when the job runs, under the forwarded messages' share
+locks, so a message redacted meanwhile is left out: the note, then each message as text under a
+`---------- Forwarded message ----------` header (sender, date, subject, `To`, `Cc`; never `Bcc`);
+the HTML part is that text escaped, the original HTML is never sent. Files go when `attachments`
+(default true) and total at most 20 MiB (`413 forward_too_large`). Recipients are checked like
+`cc` (valid, not this server's, same answer for both), the contact's own and typed addresses and the
+conversation's active `cc` participants, who already get its replies, are refused (`400`, reply
+instead) and suppressions of scope `all` answer `409 email_undeliverable`; at send
+time suppressed recipients are dropped. Forwards are rate-limited per member or key (20 an hour)
+and per workspace (200) by the DB limiter, checked before the transaction. A forward is never a
+reply: it does not touch SLA, status, first response or `last_message_at`, copies no one, and
+`LatestThreadEmail` skips `forward` rows, so customer replies never name it. It is emitted as
+`message.created` on realtime and `/v1/events`; webhooks get it (and its draft events) only on
+endpoints with `include_notes`, and `/client/v1`, the contact's stream, previews, unread counts for
+contacts, SLA and automation triggers only see `message` rows. An answer to a forward notifies,
+as the member notification `forward_answer` (push and e-mail fallback, both on by default), only
+the member who sent the forward it names and the conversation's assignee, while they can see the
+inbox and have the event on; never the inbox's other members or Slack. Members may; keys and
+OAuth tokens need `conversations:read` and `messages:write` (no separate scope: those rights can
+already mail a conversation's text to a `bcc`), and `bots_may_send` unless `draft: true`. A draft
+forward is sent with `POST /v1/messages/{id}/send`, which rechecks recipients, files and limits and
+takes the conversation as it is then. MCP: `draft_forward` always, `forward_conversation` only while
+the caller may deliver. Answers: mail that passes DMARC from a forward's recipient and names that
+forward's Message-ID (or its relay id) in `In-Reply-To` or `References` joins the conversation as a
+`forward` with direction `in` from the recipient's contact, members-only like the forward and not
+counted as the contact's message (it reopens the conversation like any reply); the recipient becomes an active participant with role
+`forwarded`, and the other addresses that mail names become `forwarded` and `suggested`. Any
+verified mail that answers a forward its sender received joins this way, whatever participant row
+the sender has, and even from the contact's unconfirmed typed address: a `suggested` address becomes `forwarded` and active, an active `cc` stays `cc`.
+Later verified mail from a `forwarded` participant joins the same way; anything else from them opens a
+related conversation. Contact deletion removes their address from forwards' recipients like from
+participants, and `GET /v1/contacts/{id}/participations` lists conversations whose forwards (also
+drafts) named them.
+
 Mail through Amazon SES can carry the SES tenant of the channel's inbox (see Broadcasts and e-mail
 designs › Amazon SES tenants): every send path (replies, greetings, rating requests, continuity,
 broadcasts, tests, list mails, both probes) adds `X-SES-TENANT` and `X-SES-CONFIGURATION-SET` through

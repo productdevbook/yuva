@@ -1,4 +1,4 @@
-{{if or .Messages .Assigned}}{{.Inbox}}: {{if .Contact}}{{.Contact}}{{else}}ein Besucher{{end}} wartet auf eine Antwort{{else}}{{.Inbox}}: Sie wurden in einer Notiz erwähnt{{end}}
+{{if or .Messages .Assigned}}{{.Inbox}}: {{if .Contact}}{{.Contact}}{{else}}ein Besucher{{end}} wartet auf eine Antwort{{else if .Mentions}}{{.Inbox}}: Sie wurden in einer Notiz erwähnt{{else}}{{.Inbox}}: eine Weiterleitung wurde beantwortet{{end}}
 
 {{if .Assigned}}{{if .AssignedBy}}{{.AssignedBy}} hat Ihnen{{else}}Ihnen wurde{{end}} eine Unterhaltung in {{.Inbox}} zugewiesen{{if .Subject}}: {{.Subject}}{{end}}.
 
@@ -8,6 +8,9 @@
 {{if .More}}…und {{.More}} weitere.
 {{end}}
 {{end}}{{range .Mentions}}{{if .By}}{{.By}}{{else}}Jemand{{end}} hat Sie in einer Notiz erwähnt:
+> {{.Text}}
+
+{{end}}{{range .Answers}}{{if .By}}{{.By}}{{else}}Jemand{{end}} hat auf eine Weiterleitung geantwortet:
 > {{.Text}}
 
 {{end}}Unterhaltung öffnen: {{.URL}}

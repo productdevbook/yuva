@@ -2531,13 +2531,16 @@ func (e ConversationMovedEventType) Valid() bool {
 
 // Defines values for ConversationParticipantRole.
 const (
-	Cc ConversationParticipantRole = "cc"
+	Cc        ConversationParticipantRole = "cc"
+	Forwarded ConversationParticipantRole = "forwarded"
 )
 
 // Valid indicates whether the value is a known member of the ConversationParticipantRole enum.
 func (e ConversationParticipantRole) Valid() bool {
 	switch e {
 	case Cc:
+		return true
+	case Forwarded:
 		return true
 	default:
 		return false
@@ -4752,9 +4755,28 @@ func (e MessageEmailDmarc) Valid() bool {
 	}
 }
 
+// Defines values for MessageForwardScope.
+const (
+	MessageForwardScopeConversation MessageForwardScope = "conversation"
+	MessageForwardScopeMessage      MessageForwardScope = "message"
+)
+
+// Valid indicates whether the value is a known member of the MessageForwardScope enum.
+func (e MessageForwardScope) Valid() bool {
+	switch e {
+	case MessageForwardScopeConversation:
+		return true
+	case MessageForwardScopeMessage:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for MessageKind.
 const (
 	MessageKindEvent   MessageKind = "event"
+	MessageKindForward MessageKind = "forward"
 	MessageKindMessage MessageKind = "message"
 	MessageKindNote    MessageKind = "note"
 )
@@ -4763,6 +4785,8 @@ const (
 func (e MessageKind) Valid() bool {
 	switch e {
 	case MessageKindEvent:
+		return true
+	case MessageKindForward:
 		return true
 	case MessageKindMessage:
 		return true
@@ -5832,6 +5856,7 @@ func (e Priority) Valid() bool {
 // Defines values for PushNotificationEvent.
 const (
 	AssignedToMe                    PushNotificationEvent = "assigned_to_me"
+	ForwardAnswer                   PushNotificationEvent = "forward_answer"
 	Mentioned                       PushNotificationEvent = "mentioned"
 	MessageInMyConversation         PushNotificationEvent = "message_in_my_conversation"
 	MessageInUnassignedConversation PushNotificationEvent = "message_in_unassigned_conversation"
@@ -5846,6 +5871,8 @@ const (
 func (e PushNotificationEvent) Valid() bool {
 	switch e {
 	case AssignedToMe:
+		return true
+	case ForwardAnswer:
 		return true
 	case Mentioned:
 		return true
@@ -9590,7 +9617,8 @@ type ApiKeyList struct {
 //	    trash. For owners and admins: never offered to agents' tokens. Never implied: a key made
 //	    without naming its scopes does not hold it.
 //	  - `messages:write`: outgoing and incoming messages, drafts: create, edit, discard; for
-//	    OAuth tokens also replies to reader threads and their accepted answer.
+//	    OAuth tokens also replies to reader threads and their accepted answer. Forwarding a
+//	    conversation by e-mail also needs `conversations:read`.
 //	  - `drafts:send`: send a draft (`POST /v1/messages/{id}/send`), together with
 //	    `messages:write`.
 //	  - `messages:redact`: remove a message's or note's content (`POST /v1/messages/{id}/redact`).
@@ -13403,6 +13431,23 @@ type ConversationEvent struct {
 // ConversationEventType defines model for ConversationEvent.Type.
 type ConversationEventType string
 
+// ConversationForward defines model for ConversationForward.
+type ConversationForward struct {
+	// Attachments Include the forwarded messages' files (at most 20 MiB together).
+	Attachments *bool `json:"attachments,omitempty"`
+
+	// Draft Store it as a draft to send later with `POST /v1/messages/{id}/send`.
+	Draft *bool `json:"draft,omitempty"`
+
+	// MessageId The message to forward: one to or from the contact in this conversation. Without it the
+	// conversation's latest 100 messages go.
+	MessageId *uuid.UUID `json:"message_id,omitempty"`
+
+	// Note Plain text written above the forwarded content.
+	Note *string `json:"note,omitempty"`
+	To   []Email `json:"to"`
+}
+
 // ConversationImport Where an imported conversation came from.
 type ConversationImport struct {
 	// At When it was imported.
@@ -13615,7 +13660,12 @@ type ConversationParticipant struct {
 	Email Email `json:"email"`
 
 	// Name That contact's name.
-	Name *string                     `json:"name,omitempty"`
+	Name *string `json:"name,omitempty"`
+
+	// Role `cc` was copied on the conversation's mail and is copied on replies while `active`;
+	// `forwarded` answered a forward (or was named in such an answer) and is never copied
+	// unless a member names them in `cc` or adds them, which makes them `cc`. Mail from a
+	// `forwarded` participant joins the conversation as a members-only `forward`.
 	Role ConversationParticipantRole `json:"role"`
 
 	// Status `active` addresses are copied on replies and may answer into the conversation;
@@ -13623,7 +13673,10 @@ type ConversationParticipant struct {
 	Status ConversationParticipantStatus `json:"status"`
 }
 
-// ConversationParticipantRole defines model for ConversationParticipant.Role.
+// ConversationParticipantRole `cc` was copied on the conversation's mail and is copied on replies while `active`;
+// `forwarded` answered a forward (or was named in such an answer) and is never copied
+// unless a member names them in `cc` or adds them, which makes them `cc`. Mail from a
+// `forwarded` participant joins the conversation as a members-only `forward`.
 type ConversationParticipantRole string
 
 // ConversationParticipantStatus `active` addresses are copied on replies and may answer into the conversation;
@@ -18259,6 +18312,9 @@ type Message struct {
 	Email *MessageEmail `json:"email,omitempty"`
 	Event *MessageEvent `json:"event,omitempty"`
 
+	// Forward What an outgoing `forward` sent and to whom; absent for everything else.
+	Forward *MessageForward `json:"forward,omitempty"`
+
 	// Html Sanitized HTML, when the message has an HTML form.
 	Html *string   `json:"html,omitempty"`
 	Id   uuid.UUID `json:"id"`
@@ -18271,7 +18327,9 @@ type Message struct {
 	ImportedAuthor *ImportedAuthor `json:"imported_author,omitempty"`
 
 	// Kind `message` goes to or comes from the contact, `note` is for members only, `event` records a
-	// change (assignment, status, labels).
+	// change (assignment, status, labels). `forward` is for members only too: a message or the
+	// conversation e-mailed to someone else (direction `out`, see `forwardConversation`), or that
+	// person's answer (direction `in`). Never send a `forward` to the contact.
 	Kind MessageKind `json:"kind"`
 
 	// Mentions Members a note mentions (notes only; absent when it mentions nobody).
@@ -18569,8 +18627,24 @@ type MessageEvent struct {
 	Type    EventType           `json:"type"`
 }
 
+// MessageForward defines model for MessageForward.
+type MessageForward struct {
+	// Attachments Whether their files were included.
+	Attachments bool `json:"attachments"`
+
+	// MessageIds The forwarded messages, oldest first.
+	MessageIds []uuid.UUID         `json:"message_ids"`
+	Scope      MessageForwardScope `json:"scope"`
+	To         []Email             `json:"to"`
+}
+
+// MessageForwardScope defines model for MessageForward.Scope.
+type MessageForwardScope string
+
 // MessageKind `message` goes to or comes from the contact, `note` is for members only, `event` records a
-// change (assignment, status, labels).
+// change (assignment, status, labels). `forward` is for members only too: a message or the
+// conversation e-mailed to someone else (direction `out`, see `forwardConversation`), or that
+// person's answer (direction `in`). Never send a `forward` to the contact.
 type MessageKind string
 
 // MessagePage defines model for MessagePage.
@@ -18589,7 +18663,9 @@ type MessagePreview struct {
 	Id         uuid.UUID  `json:"id"`
 
 	// Kind `message` goes to or comes from the contact, `note` is for members only, `event` records a
-	// change (assignment, status, labels).
+	// change (assignment, status, labels). `forward` is for members only too: a message or the
+	// conversation e-mailed to someone else (direction `out`, see `forwardConversation`), or that
+	// person's answer (direction `in`). Never send a `forward` to the contact.
 	Kind MessageKind `json:"kind"`
 
 	// Redacted `true` when its content was removed; `text` is empty. Absent otherwise.
@@ -19881,6 +19957,7 @@ type NotificationChannels struct {
 // NotificationEvents defines model for NotificationEvents.
 type NotificationEvents struct {
 	AssignedToMe                    NotificationChannels `json:"assigned_to_me"`
+	ForwardAnswer                   NotificationChannels `json:"forward_answer"`
 	Mentioned                       NotificationChannels `json:"mentioned"`
 	MessageInMyConversation         NotificationChannels `json:"message_in_my_conversation"`
 	MessageInUnassignedConversation NotificationChannels `json:"message_in_unassigned_conversation"`
@@ -19893,6 +19970,7 @@ type NotificationEvents struct {
 // NotificationEventsUpdate Some events and their channels.
 type NotificationEventsUpdate struct {
 	AssignedToMe                    *NotificationChannels `json:"assigned_to_me,omitempty"`
+	ForwardAnswer                   *NotificationChannels `json:"forward_answer,omitempty"`
 	Mentioned                       *NotificationChannels `json:"mentioned,omitempty"`
 	MessageInMyConversation         *NotificationChannels `json:"message_in_my_conversation,omitempty"`
 	MessageInUnassignedConversation *NotificationChannels `json:"message_in_unassigned_conversation,omitempty"`
@@ -23570,7 +23648,7 @@ type WebhookEndpoint struct {
 	// InboxId Absent for workspace endpoints.
 	InboxId *uuid.UUID `json:"inbox_id,omitempty"`
 
-	// IncludeNotes `message.created` and `message.redacted` also for members' notes.
+	// IncludeNotes `message.created` and `message.redacted` also for members' notes, and those and the draft events also for forwards (kind `forward`).
 	IncludeNotes bool `json:"include_notes"`
 
 	// SecretRotatedAt While the previous secret still signs (24 hours after a rotation), when it was replaced.
@@ -25534,6 +25612,15 @@ type UpdateConversationParams struct {
 
 // CreateDiscussionFromConversationParams defines parameters for CreateDiscussionFromConversation.
 type CreateDiscussionFromConversationParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// ForwardConversationParams defines parameters for ForwardConversation.
+type ForwardConversationParams struct {
 	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
@@ -28824,6 +28911,9 @@ type UpdateConversationJSONRequestBody = ConversationUpdate
 
 // CreateDiscussionFromConversationJSONRequestBody defines body for CreateDiscussionFromConversation for application/json ContentType.
 type CreateDiscussionFromConversationJSONRequestBody = DiscussionFromConversation
+
+// ForwardConversationJSONRequestBody defines body for ForwardConversation for application/json ContentType.
+type ForwardConversationJSONRequestBody = ConversationForward
 
 // LinkConversationIssueJSONRequestBody defines body for LinkConversationIssue for application/json ContentType.
 type LinkConversationIssueJSONRequestBody = IssueLinkCreate
@@ -37663,6 +37753,94 @@ type ClientInterface interface {
 	// Corresponds with POST /v1/conversations/{conversationId}/discussion (the `CreateDiscussionFromConversation` operationId).
 	CreateDiscussionFromConversation(ctx context.Context, conversationId ConversationId, params *CreateDiscussionFromConversationParams, body CreateDiscussionFromConversationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// ForwardConversationWithBody Forward a message or the conversation by e-mail
+	//
+	// E-mails one message (`message_id`) or the whole conversation (its latest 100 messages to
+	// and from the contact; never notes, drafts, events or earlier forwards) to up to 10 outside
+	// addresses, with the caller's `note` on top. It goes out through the inbox's e-mail channel
+	// (the conversation's own when it is an e-mail conversation): `From` the channel's sending
+	// address with the member's name, `Reply-To` the channel address, `Subject` `Fwd: ` and the
+	// conversation's subject, a new `Message-ID`, and no `In-Reply-To` or `References`. The
+	// forwarded messages are quoted as text, each under a header with its sender, date and
+	// subject; `attachments` (default `true`) adds their files, at most 20 MiB together
+	// (`413 forward_too_large`; forward without them instead). Messages redacted before the mail
+	// leaves are left out.
+	//
+	// The forward is stored as a message of kind `forward` (`body` is the note, `forward` names
+	// what went to whom, `email.to` the recipients, `delivery` its state) and emitted as
+	// `message.created` on `/v1/realtime` and `/v1/events`; webhooks receive it only on endpoints
+	// with `include_notes`. It is never shown on `/client/v1` or to the contact, and it is not a
+	// reply: it does not count as a response, change the conversation's status or copy anyone.
+	//
+	// Each recipient must be a valid address that this server neither receives nor sends mail for
+	// (`400 validation_failed`, the same answer for both) and not one of the contact's addresses
+	// (`400 validation_failed`; reply instead); one that bounced or complained is refused with
+	// `409 email_undeliverable`. An inbox without an e-mail channel that has an SMTP account
+	// answers `409 email_not_configured`. A member forwards at most 20 times an hour and a
+	// workspace 200 times (`429 rate_limited`).
+	//
+	// A recipient's answer that passes DMARC and names the forward's `Message-ID` in
+	// `In-Reply-To` or `References` joins the conversation as a message of kind `forward`,
+	// direction `in`, from that recipient's contact, which is members-only like the forward; the
+	// recipient becomes a participant with role `forwarded`, who is not copied on replies unless
+	// named in `cc` or added. Anything else from them opens a new conversation.
+	//
+	// `draft: true` stores the forward as a draft (`draft.created`): nothing is sent until
+	// `POST /v1/messages/{id}/send`, which checks the recipients and the limits again.
+	//
+	// Whoever can see the conversation may. API keys and OAuth tokens need `conversations:read`
+	// and `messages:write`, and the workspace's `bots_may_send` unless it is a draft
+	// (`403 bot_sending_disabled`).
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /v1/conversations/{conversationId}/forward (the `ForwardConversation` operationId).
+	ForwardConversationWithBody(ctx context.Context, conversationId ConversationId, params *ForwardConversationParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ForwardConversation Forward a message or the conversation by e-mail
+	//
+	// E-mails one message (`message_id`) or the whole conversation (its latest 100 messages to
+	// and from the contact; never notes, drafts, events or earlier forwards) to up to 10 outside
+	// addresses, with the caller's `note` on top. It goes out through the inbox's e-mail channel
+	// (the conversation's own when it is an e-mail conversation): `From` the channel's sending
+	// address with the member's name, `Reply-To` the channel address, `Subject` `Fwd: ` and the
+	// conversation's subject, a new `Message-ID`, and no `In-Reply-To` or `References`. The
+	// forwarded messages are quoted as text, each under a header with its sender, date and
+	// subject; `attachments` (default `true`) adds their files, at most 20 MiB together
+	// (`413 forward_too_large`; forward without them instead). Messages redacted before the mail
+	// leaves are left out.
+	//
+	// The forward is stored as a message of kind `forward` (`body` is the note, `forward` names
+	// what went to whom, `email.to` the recipients, `delivery` its state) and emitted as
+	// `message.created` on `/v1/realtime` and `/v1/events`; webhooks receive it only on endpoints
+	// with `include_notes`. It is never shown on `/client/v1` or to the contact, and it is not a
+	// reply: it does not count as a response, change the conversation's status or copy anyone.
+	//
+	// Each recipient must be a valid address that this server neither receives nor sends mail for
+	// (`400 validation_failed`, the same answer for both) and not one of the contact's addresses
+	// (`400 validation_failed`; reply instead); one that bounced or complained is refused with
+	// `409 email_undeliverable`. An inbox without an e-mail channel that has an SMTP account
+	// answers `409 email_not_configured`. A member forwards at most 20 times an hour and a
+	// workspace 200 times (`429 rate_limited`).
+	//
+	// A recipient's answer that passes DMARC and names the forward's `Message-ID` in
+	// `In-Reply-To` or `References` joins the conversation as a message of kind `forward`,
+	// direction `in`, from that recipient's contact, which is members-only like the forward; the
+	// recipient becomes a participant with role `forwarded`, who is not copied on replies unless
+	// named in `cc` or added. Anything else from them opens a new conversation.
+	//
+	// `draft: true` stores the forward as a draft (`draft.created`): nothing is sent until
+	// `POST /v1/messages/{id}/send`, which checks the recipients and the limits again.
+	//
+	// Whoever can see the conversation may. API keys and OAuth tokens need `conversations:read`
+	// and `messages:write`, and the workspace's `bots_may_send` unless it is a draft
+	// (`403 bot_sending_disabled`).
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /v1/conversations/{conversationId}/forward (the `ForwardConversation` operationId).
+	ForwardConversation(ctx context.Context, conversationId ConversationId, params *ForwardConversationParams, body ForwardConversationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// ListConversationIncidents List the incidents a conversation is linked to
 	//
 	// The status incidents and maintenance the conversation is linked to, the most recently
@@ -40998,7 +41176,8 @@ type ClientInterface interface {
 	// sent it, the author stays the draft's author, and `message.created` is emitted (an e-mail
 	// conversation e-mails it, as in `createMessage`). Anything that is not a draft answers
 	// `409 not_a_draft`. `cc` and `bcc` follow the rules of `createMessage`; without them the
-	// e-mail copies the conversation's participants.
+	// e-mail copies the conversation's participants. A `forward` draft goes to its `forward.to`
+	// under the rules and limits of `forwardConversation` and takes neither `cc` nor `bcc`.
 	//
 	// Members always may. An API key needs `drafts:send` and `messages:write`, and the
 	// workspace's `bots_may_send` (`403 bot_sending_disabled`).
@@ -41014,7 +41193,8 @@ type ClientInterface interface {
 	// sent it, the author stays the draft's author, and `message.created` is emitted (an e-mail
 	// conversation e-mails it, as in `createMessage`). Anything that is not a draft answers
 	// `409 not_a_draft`. `cc` and `bcc` follow the rules of `createMessage`; without them the
-	// e-mail copies the conversation's participants.
+	// e-mail copies the conversation's participants. A `forward` draft goes to its `forward.to`
+	// under the rules and limits of `forwardConversation` and takes neither `cc` nor `bcc`.
 	//
 	// Members always may. An API key needs `drafts:send` and `messages:write`, and the
 	// workspace's `bots_may_send` (`403 bot_sending_disabled`).
@@ -50575,6 +50755,114 @@ func (c *Client) CreateDiscussionFromConversation(ctx context.Context, conversat
 	return c.Client.Do(req)
 }
 
+// ForwardConversationWithBody Forward a message or the conversation by e-mail
+//
+// E-mails one message (`message_id`) or the whole conversation (its latest 100 messages to
+// and from the contact; never notes, drafts, events or earlier forwards) to up to 10 outside
+// addresses, with the caller's `note` on top. It goes out through the inbox's e-mail channel
+// (the conversation's own when it is an e-mail conversation): `From` the channel's sending
+// address with the member's name, `Reply-To` the channel address, `Subject` `Fwd: ` and the
+// conversation's subject, a new `Message-ID`, and no `In-Reply-To` or `References`. The
+// forwarded messages are quoted as text, each under a header with its sender, date and
+// subject; `attachments` (default `true`) adds their files, at most 20 MiB together
+// (`413 forward_too_large`; forward without them instead). Messages redacted before the mail
+// leaves are left out.
+//
+// The forward is stored as a message of kind `forward` (`body` is the note, `forward` names
+// what went to whom, `email.to` the recipients, `delivery` its state) and emitted as
+// `message.created` on `/v1/realtime` and `/v1/events`; webhooks receive it only on endpoints
+// with `include_notes`. It is never shown on `/client/v1` or to the contact, and it is not a
+// reply: it does not count as a response, change the conversation's status or copy anyone.
+//
+// Each recipient must be a valid address that this server neither receives nor sends mail for
+// (`400 validation_failed`, the same answer for both) and not one of the contact's addresses
+// (`400 validation_failed`; reply instead); one that bounced or complained is refused with
+// `409 email_undeliverable`. An inbox without an e-mail channel that has an SMTP account
+// answers `409 email_not_configured`. A member forwards at most 20 times an hour and a
+// workspace 200 times (`429 rate_limited`).
+//
+// A recipient's answer that passes DMARC and names the forward's `Message-ID` in
+// `In-Reply-To` or `References` joins the conversation as a message of kind `forward`,
+// direction `in`, from that recipient's contact, which is members-only like the forward; the
+// recipient becomes a participant with role `forwarded`, who is not copied on replies unless
+// named in `cc` or added. Anything else from them opens a new conversation.
+//
+// `draft: true` stores the forward as a draft (`draft.created`): nothing is sent until
+// `POST /v1/messages/{id}/send`, which checks the recipients and the limits again.
+//
+// Whoever can see the conversation may. API keys and OAuth tokens need `conversations:read`
+// and `messages:write`, and the workspace's `bots_may_send` unless it is a draft
+// (`403 bot_sending_disabled`).
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /v1/conversations/{conversationId}/forward (the `ForwardConversation` operationId).
+func (c *Client) ForwardConversationWithBody(ctx context.Context, conversationId ConversationId, params *ForwardConversationParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewForwardConversationRequestWithBody(c.Server, conversationId, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// ForwardConversation Forward a message or the conversation by e-mail
+//
+// E-mails one message (`message_id`) or the whole conversation (its latest 100 messages to
+// and from the contact; never notes, drafts, events or earlier forwards) to up to 10 outside
+// addresses, with the caller's `note` on top. It goes out through the inbox's e-mail channel
+// (the conversation's own when it is an e-mail conversation): `From` the channel's sending
+// address with the member's name, `Reply-To` the channel address, `Subject` `Fwd: ` and the
+// conversation's subject, a new `Message-ID`, and no `In-Reply-To` or `References`. The
+// forwarded messages are quoted as text, each under a header with its sender, date and
+// subject; `attachments` (default `true`) adds their files, at most 20 MiB together
+// (`413 forward_too_large`; forward without them instead). Messages redacted before the mail
+// leaves are left out.
+//
+// The forward is stored as a message of kind `forward` (`body` is the note, `forward` names
+// what went to whom, `email.to` the recipients, `delivery` its state) and emitted as
+// `message.created` on `/v1/realtime` and `/v1/events`; webhooks receive it only on endpoints
+// with `include_notes`. It is never shown on `/client/v1` or to the contact, and it is not a
+// reply: it does not count as a response, change the conversation's status or copy anyone.
+//
+// Each recipient must be a valid address that this server neither receives nor sends mail for
+// (`400 validation_failed`, the same answer for both) and not one of the contact's addresses
+// (`400 validation_failed`; reply instead); one that bounced or complained is refused with
+// `409 email_undeliverable`. An inbox without an e-mail channel that has an SMTP account
+// answers `409 email_not_configured`. A member forwards at most 20 times an hour and a
+// workspace 200 times (`429 rate_limited`).
+//
+// A recipient's answer that passes DMARC and names the forward's `Message-ID` in
+// `In-Reply-To` or `References` joins the conversation as a message of kind `forward`,
+// direction `in`, from that recipient's contact, which is members-only like the forward; the
+// recipient becomes a participant with role `forwarded`, who is not copied on replies unless
+// named in `cc` or added. Anything else from them opens a new conversation.
+//
+// `draft: true` stores the forward as a draft (`draft.created`): nothing is sent until
+// `POST /v1/messages/{id}/send`, which checks the recipients and the limits again.
+//
+// Whoever can see the conversation may. API keys and OAuth tokens need `conversations:read`
+// and `messages:write`, and the workspace's `bots_may_send` unless it is a draft
+// (`403 bot_sending_disabled`).
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /v1/conversations/{conversationId}/forward (the `ForwardConversation` operationId).
+func (c *Client) ForwardConversation(ctx context.Context, conversationId ConversationId, params *ForwardConversationParams, body ForwardConversationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewForwardConversationRequest(c.Server, conversationId, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 // ListConversationIncidents List the incidents a conversation is linked to
 //
 // The status incidents and maintenance the conversation is linked to, the most recently
@@ -56320,7 +56608,8 @@ func (c *Client) RedactMessage(ctx context.Context, messageId MessageId, params 
 // sent it, the author stays the draft's author, and `message.created` is emitted (an e-mail
 // conversation e-mails it, as in `createMessage`). Anything that is not a draft answers
 // `409 not_a_draft`. `cc` and `bcc` follow the rules of `createMessage`; without them the
-// e-mail copies the conversation's participants.
+// e-mail copies the conversation's participants. A `forward` draft goes to its `forward.to`
+// under the rules and limits of `forwardConversation` and takes neither `cc` nor `bcc`.
 //
 // Members always may. An API key needs `drafts:send` and `messages:write`, and the
 // workspace's `bots_may_send` (`403 bot_sending_disabled`).
@@ -56346,7 +56635,8 @@ func (c *Client) SendMessageWithBody(ctx context.Context, messageId MessageId, p
 // sent it, the author stays the draft's author, and `message.created` is emitted (an e-mail
 // conversation e-mails it, as in `createMessage`). Anything that is not a draft answers
 // `409 not_a_draft`. `cc` and `bcc` follow the rules of `createMessage`; without them the
-// e-mail copies the conversation's participants.
+// e-mail copies the conversation's participants. A `forward` draft goes to its `forward.to`
+// under the rules and limits of `forwardConversation` and takes neither `cc` nor `bcc`.
 //
 // Members always may. An API key needs `drafts:send` and `messages:write`, and the
 // workspace's `bots_may_send` (`403 bot_sending_disabled`).
@@ -73100,6 +73390,79 @@ func NewCreateDiscussionFromConversationRequestWithBody(server string, conversat
 	}
 
 	operationPath := fmt.Sprintf("/v1/conversations/%s/discussion", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.IdempotencyKey != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Idempotency-Key", *params.IdempotencyKey, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Idempotency-Key", headerParam0)
+		}
+
+		if params.YuvaWorkspace != nil {
+			var headerParam1 string
+
+			headerParam1, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam1)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewForwardConversationRequest calls the generic ForwardConversation builder with application/json body
+func NewForwardConversationRequest(server string, conversationId ConversationId, params *ForwardConversationParams, body ForwardConversationJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewForwardConversationRequestWithBody(server, conversationId, params, "application/json", bodyReader)
+}
+
+// NewForwardConversationRequestWithBody constructs an http.Request for the ForwardConversation method, with any body, and a specified content type
+func NewForwardConversationRequestWithBody(server string, conversationId ConversationId, params *ForwardConversationParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "conversationId", conversationId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/conversations/%s/forward", pathParam0)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -97343,6 +97706,94 @@ type ClientWithResponsesInterface interface {
 	// Corresponds with POST /v1/conversations/{conversationId}/discussion (the `CreateDiscussionFromConversation` operationId).
 	CreateDiscussionFromConversationWithResponse(ctx context.Context, conversationId ConversationId, params *CreateDiscussionFromConversationParams, body CreateDiscussionFromConversationJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateDiscussionFromConversationResponse, error)
 
+	// ForwardConversationWithBodyWithResponse Forward a message or the conversation by e-mail
+	//
+	// E-mails one message (`message_id`) or the whole conversation (its latest 100 messages to
+	// and from the contact; never notes, drafts, events or earlier forwards) to up to 10 outside
+	// addresses, with the caller's `note` on top. It goes out through the inbox's e-mail channel
+	// (the conversation's own when it is an e-mail conversation): `From` the channel's sending
+	// address with the member's name, `Reply-To` the channel address, `Subject` `Fwd: ` and the
+	// conversation's subject, a new `Message-ID`, and no `In-Reply-To` or `References`. The
+	// forwarded messages are quoted as text, each under a header with its sender, date and
+	// subject; `attachments` (default `true`) adds their files, at most 20 MiB together
+	// (`413 forward_too_large`; forward without them instead). Messages redacted before the mail
+	// leaves are left out.
+	//
+	// The forward is stored as a message of kind `forward` (`body` is the note, `forward` names
+	// what went to whom, `email.to` the recipients, `delivery` its state) and emitted as
+	// `message.created` on `/v1/realtime` and `/v1/events`; webhooks receive it only on endpoints
+	// with `include_notes`. It is never shown on `/client/v1` or to the contact, and it is not a
+	// reply: it does not count as a response, change the conversation's status or copy anyone.
+	//
+	// Each recipient must be a valid address that this server neither receives nor sends mail for
+	// (`400 validation_failed`, the same answer for both) and not one of the contact's addresses
+	// (`400 validation_failed`; reply instead); one that bounced or complained is refused with
+	// `409 email_undeliverable`. An inbox without an e-mail channel that has an SMTP account
+	// answers `409 email_not_configured`. A member forwards at most 20 times an hour and a
+	// workspace 200 times (`429 rate_limited`).
+	//
+	// A recipient's answer that passes DMARC and names the forward's `Message-ID` in
+	// `In-Reply-To` or `References` joins the conversation as a message of kind `forward`,
+	// direction `in`, from that recipient's contact, which is members-only like the forward; the
+	// recipient becomes a participant with role `forwarded`, who is not copied on replies unless
+	// named in `cc` or added. Anything else from them opens a new conversation.
+	//
+	// `draft: true` stores the forward as a draft (`draft.created`): nothing is sent until
+	// `POST /v1/messages/{id}/send`, which checks the recipients and the limits again.
+	//
+	// Whoever can see the conversation may. API keys and OAuth tokens need `conversations:read`
+	// and `messages:write`, and the workspace's `bots_may_send` unless it is a draft
+	// (`403 bot_sending_disabled`).
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /v1/conversations/{conversationId}/forward (the `ForwardConversation` operationId).
+	ForwardConversationWithBodyWithResponse(ctx context.Context, conversationId ConversationId, params *ForwardConversationParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ForwardConversationResponse, error)
+
+	// ForwardConversationWithResponse Forward a message or the conversation by e-mail
+	//
+	// E-mails one message (`message_id`) or the whole conversation (its latest 100 messages to
+	// and from the contact; never notes, drafts, events or earlier forwards) to up to 10 outside
+	// addresses, with the caller's `note` on top. It goes out through the inbox's e-mail channel
+	// (the conversation's own when it is an e-mail conversation): `From` the channel's sending
+	// address with the member's name, `Reply-To` the channel address, `Subject` `Fwd: ` and the
+	// conversation's subject, a new `Message-ID`, and no `In-Reply-To` or `References`. The
+	// forwarded messages are quoted as text, each under a header with its sender, date and
+	// subject; `attachments` (default `true`) adds their files, at most 20 MiB together
+	// (`413 forward_too_large`; forward without them instead). Messages redacted before the mail
+	// leaves are left out.
+	//
+	// The forward is stored as a message of kind `forward` (`body` is the note, `forward` names
+	// what went to whom, `email.to` the recipients, `delivery` its state) and emitted as
+	// `message.created` on `/v1/realtime` and `/v1/events`; webhooks receive it only on endpoints
+	// with `include_notes`. It is never shown on `/client/v1` or to the contact, and it is not a
+	// reply: it does not count as a response, change the conversation's status or copy anyone.
+	//
+	// Each recipient must be a valid address that this server neither receives nor sends mail for
+	// (`400 validation_failed`, the same answer for both) and not one of the contact's addresses
+	// (`400 validation_failed`; reply instead); one that bounced or complained is refused with
+	// `409 email_undeliverable`. An inbox without an e-mail channel that has an SMTP account
+	// answers `409 email_not_configured`. A member forwards at most 20 times an hour and a
+	// workspace 200 times (`429 rate_limited`).
+	//
+	// A recipient's answer that passes DMARC and names the forward's `Message-ID` in
+	// `In-Reply-To` or `References` joins the conversation as a message of kind `forward`,
+	// direction `in`, from that recipient's contact, which is members-only like the forward; the
+	// recipient becomes a participant with role `forwarded`, who is not copied on replies unless
+	// named in `cc` or added. Anything else from them opens a new conversation.
+	//
+	// `draft: true` stores the forward as a draft (`draft.created`): nothing is sent until
+	// `POST /v1/messages/{id}/send`, which checks the recipients and the limits again.
+	//
+	// Whoever can see the conversation may. API keys and OAuth tokens need `conversations:read`
+	// and `messages:write`, and the workspace's `bots_may_send` unless it is a draft
+	// (`403 bot_sending_disabled`).
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /v1/conversations/{conversationId}/forward (the `ForwardConversation` operationId).
+	ForwardConversationWithResponse(ctx context.Context, conversationId ConversationId, params *ForwardConversationParams, body ForwardConversationJSONRequestBody, reqEditors ...RequestEditorFn) (*ForwardConversationResponse, error)
+
 	// ListConversationIncidentsWithResponse List the incidents a conversation is linked to
 	//
 	// The status incidents and maintenance the conversation is linked to, the most recently
@@ -100914,7 +101365,8 @@ type ClientWithResponsesInterface interface {
 	// sent it, the author stays the draft's author, and `message.created` is emitted (an e-mail
 	// conversation e-mails it, as in `createMessage`). Anything that is not a draft answers
 	// `409 not_a_draft`. `cc` and `bcc` follow the rules of `createMessage`; without them the
-	// e-mail copies the conversation's participants.
+	// e-mail copies the conversation's participants. A `forward` draft goes to its `forward.to`
+	// under the rules and limits of `forwardConversation` and takes neither `cc` nor `bcc`.
 	//
 	// Members always may. An API key needs `drafts:send` and `messages:write`, and the
 	// workspace's `bots_may_send` (`403 bot_sending_disabled`).
@@ -100930,7 +101382,8 @@ type ClientWithResponsesInterface interface {
 	// sent it, the author stays the draft's author, and `message.created` is emitted (an e-mail
 	// conversation e-mails it, as in `createMessage`). Anything that is not a draft answers
 	// `409 not_a_draft`. `cc` and `bcc` follow the rules of `createMessage`; without them the
-	// e-mail copies the conversation's participants.
+	// e-mail copies the conversation's participants. A `forward` draft goes to its `forward.to`
+	// under the rules and limits of `forwardConversation` and takes neither `cc` nor `bcc`.
 	//
 	// Members always may. An API key needs `drafts:send` and `messages:write`, and the
 	// workspace's `bots_may_send` (`403 bot_sending_disabled`).
@@ -117223,6 +117676,96 @@ func (r CreateDiscussionFromConversationResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r CreateDiscussionFromConversationResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type ForwardConversationResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON201 the response for an HTTP 201 `application/json` response
+	JSON201 *Message
+	// ApplicationproblemJSON400 the response for an HTTP 400 `application/problem+json` response
+	ApplicationproblemJSON400 *Problem
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+	// ApplicationproblemJSON409 the response for an HTTP 409 `application/problem+json` response
+	ApplicationproblemJSON409 *Problem
+	// ApplicationproblemJSON413 the response for an HTTP 413 `application/problem+json` response
+	ApplicationproblemJSON413 *Problem
+	// ApplicationproblemJSON429 the response for an HTTP 429 `application/problem+json` response
+	ApplicationproblemJSON429 *Problem
+}
+
+// GetJSON201 returns the response for an HTTP 201 `application/json` response
+func (r ForwardConversationResponse) GetJSON201() *Message {
+	return r.JSON201
+}
+
+// GetApplicationproblemJSON400 returns the response for an HTTP 400 `application/problem+json` response
+func (r ForwardConversationResponse) GetApplicationproblemJSON400() *Problem {
+	return r.ApplicationproblemJSON400
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r ForwardConversationResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r ForwardConversationResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r ForwardConversationResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetApplicationproblemJSON409 returns the response for an HTTP 409 `application/problem+json` response
+func (r ForwardConversationResponse) GetApplicationproblemJSON409() *Problem {
+	return r.ApplicationproblemJSON409
+}
+
+// GetApplicationproblemJSON413 returns the response for an HTTP 413 `application/problem+json` response
+func (r ForwardConversationResponse) GetApplicationproblemJSON413() *Problem {
+	return r.ApplicationproblemJSON413
+}
+
+// GetApplicationproblemJSON429 returns the response for an HTTP 429 `application/problem+json` response
+func (r ForwardConversationResponse) GetApplicationproblemJSON429() *Problem {
+	return r.ApplicationproblemJSON429
+}
+
+// GetBody returns the raw response body bytes
+func (r ForwardConversationResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r ForwardConversationResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ForwardConversationResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ForwardConversationResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -144081,6 +144624,106 @@ func (c *ClientWithResponses) CreateDiscussionFromConversationWithResponse(ctx c
 	return ParseCreateDiscussionFromConversationResponse(rsp)
 }
 
+// ForwardConversationWithBodyWithResponse Forward a message or the conversation by e-mail
+//
+// E-mails one message (`message_id`) or the whole conversation (its latest 100 messages to
+// and from the contact; never notes, drafts, events or earlier forwards) to up to 10 outside
+// addresses, with the caller's `note` on top. It goes out through the inbox's e-mail channel
+// (the conversation's own when it is an e-mail conversation): `From` the channel's sending
+// address with the member's name, `Reply-To` the channel address, `Subject` `Fwd: ` and the
+// conversation's subject, a new `Message-ID`, and no `In-Reply-To` or `References`. The
+// forwarded messages are quoted as text, each under a header with its sender, date and
+// subject; `attachments` (default `true`) adds their files, at most 20 MiB together
+// (`413 forward_too_large`; forward without them instead). Messages redacted before the mail
+// leaves are left out.
+//
+// The forward is stored as a message of kind `forward` (`body` is the note, `forward` names
+// what went to whom, `email.to` the recipients, `delivery` its state) and emitted as
+// `message.created` on `/v1/realtime` and `/v1/events`; webhooks receive it only on endpoints
+// with `include_notes`. It is never shown on `/client/v1` or to the contact, and it is not a
+// reply: it does not count as a response, change the conversation's status or copy anyone.
+//
+// Each recipient must be a valid address that this server neither receives nor sends mail for
+// (`400 validation_failed`, the same answer for both) and not one of the contact's addresses
+// (`400 validation_failed`; reply instead); one that bounced or complained is refused with
+// `409 email_undeliverable`. An inbox without an e-mail channel that has an SMTP account
+// answers `409 email_not_configured`. A member forwards at most 20 times an hour and a
+// workspace 200 times (`429 rate_limited`).
+//
+// A recipient's answer that passes DMARC and names the forward's `Message-ID` in
+// `In-Reply-To` or `References` joins the conversation as a message of kind `forward`,
+// direction `in`, from that recipient's contact, which is members-only like the forward; the
+// recipient becomes a participant with role `forwarded`, who is not copied on replies unless
+// named in `cc` or added. Anything else from them opens a new conversation.
+//
+// `draft: true` stores the forward as a draft (`draft.created`): nothing is sent until
+// `POST /v1/messages/{id}/send`, which checks the recipients and the limits again.
+//
+// Whoever can see the conversation may. API keys and OAuth tokens need `conversations:read`
+// and `messages:write`, and the workspace's `bots_may_send` unless it is a draft
+// (`403 bot_sending_disabled`).
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /v1/conversations/{conversationId}/forward (the `ForwardConversation` operationId).
+func (c *ClientWithResponses) ForwardConversationWithBodyWithResponse(ctx context.Context, conversationId ConversationId, params *ForwardConversationParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ForwardConversationResponse, error) {
+	rsp, err := c.ForwardConversationWithBody(ctx, conversationId, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseForwardConversationResponse(rsp)
+}
+
+// ForwardConversationWithResponse Forward a message or the conversation by e-mail
+//
+// E-mails one message (`message_id`) or the whole conversation (its latest 100 messages to
+// and from the contact; never notes, drafts, events or earlier forwards) to up to 10 outside
+// addresses, with the caller's `note` on top. It goes out through the inbox's e-mail channel
+// (the conversation's own when it is an e-mail conversation): `From` the channel's sending
+// address with the member's name, `Reply-To` the channel address, `Subject` `Fwd: ` and the
+// conversation's subject, a new `Message-ID`, and no `In-Reply-To` or `References`. The
+// forwarded messages are quoted as text, each under a header with its sender, date and
+// subject; `attachments` (default `true`) adds their files, at most 20 MiB together
+// (`413 forward_too_large`; forward without them instead). Messages redacted before the mail
+// leaves are left out.
+//
+// The forward is stored as a message of kind `forward` (`body` is the note, `forward` names
+// what went to whom, `email.to` the recipients, `delivery` its state) and emitted as
+// `message.created` on `/v1/realtime` and `/v1/events`; webhooks receive it only on endpoints
+// with `include_notes`. It is never shown on `/client/v1` or to the contact, and it is not a
+// reply: it does not count as a response, change the conversation's status or copy anyone.
+//
+// Each recipient must be a valid address that this server neither receives nor sends mail for
+// (`400 validation_failed`, the same answer for both) and not one of the contact's addresses
+// (`400 validation_failed`; reply instead); one that bounced or complained is refused with
+// `409 email_undeliverable`. An inbox without an e-mail channel that has an SMTP account
+// answers `409 email_not_configured`. A member forwards at most 20 times an hour and a
+// workspace 200 times (`429 rate_limited`).
+//
+// A recipient's answer that passes DMARC and names the forward's `Message-ID` in
+// `In-Reply-To` or `References` joins the conversation as a message of kind `forward`,
+// direction `in`, from that recipient's contact, which is members-only like the forward; the
+// recipient becomes a participant with role `forwarded`, who is not copied on replies unless
+// named in `cc` or added. Anything else from them opens a new conversation.
+//
+// `draft: true` stores the forward as a draft (`draft.created`): nothing is sent until
+// `POST /v1/messages/{id}/send`, which checks the recipients and the limits again.
+//
+// Whoever can see the conversation may. API keys and OAuth tokens need `conversations:read`
+// and `messages:write`, and the workspace's `bots_may_send` unless it is a draft
+// (`403 bot_sending_disabled`).
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /v1/conversations/{conversationId}/forward (the `ForwardConversation` operationId).
+func (c *ClientWithResponses) ForwardConversationWithResponse(ctx context.Context, conversationId ConversationId, params *ForwardConversationParams, body ForwardConversationJSONRequestBody, reqEditors ...RequestEditorFn) (*ForwardConversationResponse, error) {
+	rsp, err := c.ForwardConversation(ctx, conversationId, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseForwardConversationResponse(rsp)
+}
+
 // ListConversationIncidentsWithResponse List the incidents a conversation is linked to
 //
 // The status incidents and maintenance the conversation is linked to, the most recently
@@ -149098,7 +149741,8 @@ func (c *ClientWithResponses) RedactMessageWithResponse(ctx context.Context, mes
 // sent it, the author stays the draft's author, and `message.created` is emitted (an e-mail
 // conversation e-mails it, as in `createMessage`). Anything that is not a draft answers
 // `409 not_a_draft`. `cc` and `bcc` follow the rules of `createMessage`; without them the
-// e-mail copies the conversation's participants.
+// e-mail copies the conversation's participants. A `forward` draft goes to its `forward.to`
+// under the rules and limits of `forwardConversation` and takes neither `cc` nor `bcc`.
 //
 // Members always may. An API key needs `drafts:send` and `messages:write`, and the
 // workspace's `bots_may_send` (`403 bot_sending_disabled`).
@@ -149120,7 +149764,8 @@ func (c *ClientWithResponses) SendMessageWithBodyWithResponse(ctx context.Contex
 // sent it, the author stays the draft's author, and `message.created` is emitted (an e-mail
 // conversation e-mails it, as in `createMessage`). Anything that is not a draft answers
 // `409 not_a_draft`. `cc` and `bcc` follow the rules of `createMessage`; without them the
-// e-mail copies the conversation's participants.
+// e-mail copies the conversation's participants. A `forward` draft goes to its `forward.to`
+// under the rules and limits of `forwardConversation` and takes neither `cc` nor `bcc`.
 //
 // Members always may. An API key needs `drafts:send` and `messages:write`, and the
 // workspace's `bots_may_send` (`403 bot_sending_disabled`).
@@ -163633,6 +164278,81 @@ func ParseCreateDiscussionFromConversationResponse(rsp *http.Response) (*CreateD
 			return nil, err
 		}
 		response.ApplicationproblemJSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseForwardConversationResponse parses an HTTP response from a ForwardConversationWithResponse call
+func ParseForwardConversationResponse(rsp *http.Response) (*ForwardConversationResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ForwardConversationResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
+		var dest Message
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON201 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON409 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 413:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON413 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 429:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON429 = &dest
 
 	}
 

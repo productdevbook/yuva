@@ -65,6 +65,7 @@ func samples(inbox, text string) map[string]map[string]any {
 			"Inbox": inbox, "Contact": "Jane Doe", "Subject": "Invoice question",
 			"Messages": []string{text, "Can you also send a copy to accounting?"}, "More": 2,
 			"Mentions": []map[string]string{{"By": "Mehmet", "Text": "@you can you take this one?"}},
+			"Answers":  []map[string]string{{"By": "Vendor Ltd", "Text": "The tax rate is outdated."}},
 			"Assigned": true, "AssignedBy": "Mehmet", "URL": "https://yuva.example.com/c/1",
 			"SettingsURL": "https://yuva.example.com/settings/notifications", "Minutes": 15,
 		},

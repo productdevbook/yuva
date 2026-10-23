@@ -461,14 +461,26 @@ func (s *Server) ingestToChannel(ctx context.Context, ch store.FindEmailChannelB
 		if err != nil {
 			return err
 		}
+		forwardThread, err := s.forwardThread(ctx, q, events, conv, m, contact.ID, sender, now)
+		if err != nil {
+			return err
+		}
 		if !auto && !spam {
-			if err := s.addParticipants(ctx, q, events, conv, m, sender, verified, now); err != nil {
+			role := participantCc
+			if forwardThread {
+				role = participantForwarded
+			}
+			if err := s.addParticipants(ctx, q, events, conv, m, sender, verified && !forwardThread, role, now); err != nil {
 				return err
 			}
 		}
 		direction := string(oas.In)
+		kind := string(oas.MessageKindMessage)
+		if forwardThread {
+			kind = string(oas.MessageKindForward)
+		}
 		msg, err := q.CreateMessage(ctx, store.CreateMessageParams{
-			ID: newID(), WorkspaceID: ws, ConversationID: conv.ID, Kind: string(oas.MessageKindMessage), Direction: &direction,
+			ID: newID(), WorkspaceID: ws, ConversationID: conv.ID, Kind: kind, Direction: &direction,
 			AuthorType: string(oas.AuthorTypeContact), AuthorContactID: &contact.ID, Body: content.visible, Html: content.html, CreatedAt: now,
 		})
 		if err != nil {
@@ -501,7 +513,7 @@ func (s *Server) ingestToChannel(ctx context.Context, ch store.FindEmailChannelB
 			atts = append(atts, a)
 			total += f.size
 		}
-		if err := q.TouchConversation(ctx, store.TouchConversationParams{WorkspaceID: ws, ID: conv.ID, Now: now, IsMessage: true}); err != nil {
+		if err := q.TouchConversation(ctx, store.TouchConversationParams{WorkspaceID: ws, ID: conv.ID, Now: now, IsMessage: !forwardThread}); err != nil {
 			return err
 		}
 		newConversations := int64(0)
@@ -664,6 +676,13 @@ func (s *Server) threadFor(ctx context.Context, q *store.Queries, events *eventB
 		}); err != nil {
 			return store.Conversation{}, false, err
 		}
+		if !joins {
+			if joins, err = q.IsForwardRecipient(ctx, store.IsForwardRecipientParams{
+				WorkspaceID: ws, ConversationID: found.ID, Ids: slices.Concat(m.InReplyTo, m.References), Email: strings.ToLower(sender),
+			}); err != nil {
+				return store.Conversation{}, false, err
+			}
+		}
 	}
 	var related *uuid.UUID
 	if found != nil && (!joins || (spam && !found.Spam)) {
@@ -756,6 +775,41 @@ func (s *Server) threadFor(ctx context.Context, q *store.Queries, events *eventB
 		}
 	}
 	return c, true, nil
+}
+
+// forwardThread reports whether mail from sender that joined c, a conversation of another contact
+// (so it passed DMARC), belongs to the members-only thread of a forward: it answers a forward the
+// sender received, whatever participant row they have (even when the address resolved to the
+// conversation's own contact, as an unconfirmed typed address does), or the sender is a forwarded
+// participant.
+// An answer makes an unknown or suggested address a forwarded participant; an active cc stays cc.
+func (s *Server) forwardThread(ctx context.Context, q *store.Queries, events *eventBatch, c store.Conversation, m *email.Message, contactID uuid.UUID, sender string, now time.Time) (bool, error) {
+	addr := strings.ToLower(sender)
+	answer, err := q.IsForwardRecipient(ctx, store.IsForwardRecipientParams{
+		WorkspaceID: c.WorkspaceID, ConversationID: c.ID, Ids: slices.Concat(m.InReplyTo, m.References), Email: addr,
+	})
+	if err != nil || c.ContactID == contactID {
+		return answer, err
+	}
+	p, err := q.GetConversationParticipant(ctx, store.GetConversationParticipantParams{WorkspaceID: c.WorkspaceID, ConversationID: c.ID, Email: addr})
+	if err != nil && !store.IsNotFound(err) {
+		return false, err
+	}
+	found := err == nil
+	if !answer {
+		return found && p.Role == participantForwarded, nil
+	}
+	var n int64
+	switch {
+	case !found:
+		n, err = putParticipant(ctx, q, c, addr, participantActive, participantForwarded, now)
+	case p.Status == participantSuggested:
+		n, err = q.PromoteSuggestedToForwarded(ctx, store.PromoteSuggestedToForwardedParams{WorkspaceID: c.WorkspaceID, ConversationID: c.ID, Email: addr})
+	}
+	if err != nil || n == 0 {
+		return true, err
+	}
+	return true, emitParticipants(ctx, q, events, c)
 }
 
 func (s *Server) checkSenderCap(ctx context.Context, q *store.Queries, ws, contactID uuid.UUID, now time.Time) error {

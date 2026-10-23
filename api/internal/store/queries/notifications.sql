@@ -89,9 +89,10 @@ VALUES (@workspace_id, @member_id, @conversation_id, @now, @through)
 ON CONFLICT (workspace_id, member_id, conversation_id) DO UPDATE SET sent_at = excluded.sent_at, through = excluded.through;
 
 -- name: ListNotifiableMessages :many
-SELECT id, kind, body, author_member_id, created_at FROM messages
+SELECT id, kind, body, author_member_id, author_contact_id, created_at FROM messages
 WHERE workspace_id = @workspace_id AND conversation_id = @conversation_id AND created_at > @after AND redacted_at IS NULL
   AND ((kind = 'message' AND author_type = 'contact')
+       OR (kind = 'forward' AND direction = 'in')
        OR (kind = 'event' AND event->>'type' = 'assigned' AND (event->>'assignee_id')::uuid = @member_id::uuid
            AND author_member_id IS DISTINCT FROM @member_id::uuid)
        OR (kind = 'note' AND @member_id::uuid = ANY(mentions) AND author_member_id IS DISTINCT FROM @member_id::uuid))

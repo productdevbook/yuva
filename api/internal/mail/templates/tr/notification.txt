@@ -1,4 +1,4 @@
-{{if or .Messages .Assigned}}{{.Inbox}}: {{if .Contact}}{{.Contact}}{{else}}bir ziyaretçi{{end}} yanıt bekliyor{{else}}{{.Inbox}}: bir notta sizden bahsedildi{{end}}
+{{if or .Messages .Assigned}}{{.Inbox}}: {{if .Contact}}{{.Contact}}{{else}}bir ziyaretçi{{end}} yanıt bekliyor{{else if .Mentions}}{{.Inbox}}: bir notta sizden bahsedildi{{else}}{{.Inbox}}: bir ileti yanıtlandı{{end}}
 
 {{if .Assigned}}{{if .AssignedBy}}{{.AssignedBy}} size {{.Inbox}} gelen kutusunda bir konuşma atadı{{else}}{{.Inbox}} gelen kutusunda size bir konuşma atandı{{end}}{{if .Subject}}: {{.Subject}}{{end}}.
 
@@ -8,6 +8,9 @@
 {{if .More}}…ve {{.More}} mesaj daha.
 {{end}}
 {{end}}{{range .Mentions}}{{if .By}}{{.By}}{{else}}Biri{{end}} bir notta sizden bahsetti:
+> {{.Text}}
+
+{{end}}{{range .Answers}}{{if .By}}{{.By}}{{else}}Biri{{end}} bir iletiyi yanıtladı:
 > {{.Text}}
 
 {{end}}Konuşmayı açın: {{.URL}}

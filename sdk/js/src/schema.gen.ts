@@ -2745,6 +2745,61 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/conversations/{conversationId}/forward": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Forward a message or the conversation by e-mail
+         * @description E-mails one message (`message_id`) or the whole conversation (its latest 100 messages to
+         *     and from the contact; never notes, drafts, events or earlier forwards) to up to 10 outside
+         *     addresses, with the caller's `note` on top. It goes out through the inbox's e-mail channel
+         *     (the conversation's own when it is an e-mail conversation): `From` the channel's sending
+         *     address with the member's name, `Reply-To` the channel address, `Subject` `Fwd: ` and the
+         *     conversation's subject, a new `Message-ID`, and no `In-Reply-To` or `References`. The
+         *     forwarded messages are quoted as text, each under a header with its sender, date and
+         *     subject; `attachments` (default `true`) adds their files, at most 20 MiB together
+         *     (`413 forward_too_large`; forward without them instead). Messages redacted before the mail
+         *     leaves are left out.
+         *
+         *     The forward is stored as a message of kind `forward` (`body` is the note, `forward` names
+         *     what went to whom, `email.to` the recipients, `delivery` its state) and emitted as
+         *     `message.created` on `/v1/realtime` and `/v1/events`; webhooks receive it only on endpoints
+         *     with `include_notes`. It is never shown on `/client/v1` or to the contact, and it is not a
+         *     reply: it does not count as a response, change the conversation's status or copy anyone.
+         *
+         *     Each recipient must be a valid address that this server neither receives nor sends mail for
+         *     (`400 validation_failed`, the same answer for both) and not one of the contact's addresses
+         *     (`400 validation_failed`; reply instead); one that bounced or complained is refused with
+         *     `409 email_undeliverable`. An inbox without an e-mail channel that has an SMTP account
+         *     answers `409 email_not_configured`. A member forwards at most 20 times an hour and a
+         *     workspace 200 times (`429 rate_limited`).
+         *
+         *     A recipient's answer that passes DMARC and names the forward's `Message-ID` in
+         *     `In-Reply-To` or `References` joins the conversation as a message of kind `forward`,
+         *     direction `in`, from that recipient's contact, which is members-only like the forward; the
+         *     recipient becomes a participant with role `forwarded`, who is not copied on replies unless
+         *     named in `cc` or added. Anything else from them opens a new conversation.
+         *
+         *     `draft: true` stores the forward as a draft (`draft.created`): nothing is sent until
+         *     `POST /v1/messages/{id}/send`, which checks the recipients and the limits again.
+         *
+         *     Whoever can see the conversation may. API keys and OAuth tokens need `conversations:read`
+         *     and `messages:write`, and the workspace's `bots_may_send` unless it is a draft
+         *     (`403 bot_sending_disabled`).
+         */
+        post: operations["forwardConversation"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/conversations/{conversationId}/participants": {
         parameters: {
             query?: never;
@@ -3094,7 +3149,8 @@ export interface paths {
          *     sent it, the author stays the draft's author, and `message.created` is emitted (an e-mail
          *     conversation e-mails it, as in `createMessage`). Anything that is not a draft answers
          *     `409 not_a_draft`. `cc` and `bcc` follow the rules of `createMessage`; without them the
-         *     e-mail copies the conversation's participants.
+         *     e-mail copies the conversation's participants. A `forward` draft goes to its `forward.to`
+         *     under the rules and limits of `forwardConversation` and takes neither `cc` nor `bcc`.
          *
          *     Members always may. An API key needs `drafts:send` and `messages:write`, and the
          *     workspace's `bots_may_send` (`403 bot_sending_disabled`).
@@ -11180,8 +11236,8 @@ export interface webhooks {
         put?: never;
         /**
          * A message was added
-         * @description A message to or from the contact. Members' notes only for endpoints with
-         *     `include_notes`; internal events never. When a member answers and `contact.online` is
+         * @description A message to or from the contact. Members' notes and forwards (kind `forward`) only for
+         *     endpoints with `include_notes`; internal events never. When a member answers and `contact.online` is
          *     false, the contact has no live connection: send your push notification.
          *
          *     The conversation is `data.message.conversation_id` (the same as `data.conversation.id`).
@@ -12503,7 +12559,8 @@ export interface components {
          *       trash. For owners and admins: never offered to agents' tokens. Never implied: a key made
          *       without naming its scopes does not hold it.
          *     - `messages:write`: outgoing and incoming messages, drafts: create, edit, discard; for
-         *       OAuth tokens also replies to reader threads and their accepted answer.
+         *       OAuth tokens also replies to reader threads and their accepted answer. Forwarding a
+         *       conversation by e-mail also needs `conversations:read`.
          *     - `drafts:send`: send a draft (`POST /v1/messages/{id}/send`), together with
          *       `messages:write`.
          *     - `messages:redact`: remove a message's or note's content (`POST /v1/messages/{id}/redact`).
@@ -12732,6 +12789,7 @@ export interface components {
             mentioned: components["schemas"]["NotificationChannels"];
             sla_warning: components["schemas"]["NotificationChannels"];
             sla_breached: components["schemas"]["NotificationChannels"];
+            forward_answer: components["schemas"]["NotificationChannels"];
         };
         /** @description Some events and their channels. */
         NotificationEventsUpdate: {
@@ -12743,6 +12801,7 @@ export interface components {
             mentioned?: components["schemas"]["NotificationChannels"];
             sla_warning?: components["schemas"]["NotificationChannels"];
             sla_breached?: components["schemas"]["NotificationChannels"];
+            forward_answer?: components["schemas"]["NotificationChannels"];
         };
         NotificationSettings: {
             events: components["schemas"]["NotificationEvents"];
@@ -12777,7 +12836,7 @@ export interface components {
              * @description What caused it (see the `notifications` tag), or `test`.
              * @enum {string}
              */
-            event: "new_live_conversation" | "new_async_conversation" | "message_in_my_conversation" | "message_in_unassigned_conversation" | "assigned_to_me" | "mentioned" | "sla_warning" | "sla_breached" | "test";
+            event: "new_live_conversation" | "new_async_conversation" | "message_in_my_conversation" | "message_in_unassigned_conversation" | "assigned_to_me" | "mentioned" | "sla_warning" | "sla_breached" | "forward_answer" | "test";
             /**
              * @description The inbox name and the contact's name.
              * @example Support · Ayşe Yılmaz
@@ -13505,8 +13564,14 @@ export interface components {
             contact_id?: string;
             /** @description That contact's name. */
             name?: string;
-            /** @enum {string} */
-            role: "cc";
+            /**
+             * @description `cc` was copied on the conversation's mail and is copied on replies while `active`;
+             *     `forwarded` answered a forward (or was named in such an answer) and is never copied
+             *     unless a member names them in `cc` or adds them, which makes them `cc`. Mail from a
+             *     `forwarded` participant joins the conversation as a members-only `forward`.
+             * @enum {string}
+             */
+            role: "cc" | "forwarded";
             /**
              * Format: date-time
              * @description When the address was first seen on the conversation.
@@ -13645,7 +13710,7 @@ export interface components {
             url: string;
             description: string;
             events: components["schemas"]["WebhookEventType"][];
-            /** @description `message.created` and `message.redacted` also for members' notes. */
+            /** @description `message.created` and `message.redacted` also for members' notes, and those and the draft events also for forwards (kind `forward`). */
             include_notes: boolean;
             enabled: boolean;
             /** Format: date-time */
@@ -14799,10 +14864,12 @@ export interface components {
         };
         /**
          * @description `message` goes to or comes from the contact, `note` is for members only, `event` records a
-         *     change (assignment, status, labels).
+         *     change (assignment, status, labels). `forward` is for members only too: a message or the
+         *     conversation e-mailed to someone else (direction `out`, see `forwardConversation`), or that
+         *     person's answer (direction `in`). Never send a `forward` to the contact.
          * @enum {string}
          */
-        MessageKind: "message" | "note" | "event";
+        MessageKind: "message" | "note" | "event" | "forward";
         /** @enum {string} */
         Direction: "in" | "out";
         /**
@@ -14974,6 +15041,8 @@ export interface components {
              *     events of its changes. Absent for everything else.
              */
             rule?: components["schemas"]["AutomationRuleRef"];
+            /** @description What an outgoing `forward` sent and to whom; absent for everything else. */
+            forward?: components["schemas"]["MessageForward"];
             /**
              * Format: date-time
              * @description For a sent draft, when it was sent.
@@ -15109,6 +15178,33 @@ export interface components {
             cc?: components["schemas"]["Email"][];
             /** @description E-mailed replies only, hidden recipients. See `createMessage`. */
             bcc?: components["schemas"]["Email"][];
+        };
+        ConversationForward: {
+            to: components["schemas"]["Email"][];
+            /**
+             * Format: uuid
+             * @description The message to forward: one to or from the contact in this conversation. Without it the
+             *     conversation's latest 100 messages go.
+             */
+            message_id?: string;
+            /** @description Plain text written above the forwarded content. */
+            note?: string;
+            /**
+             * @description Include the forwarded messages' files (at most 20 MiB together).
+             * @default true
+             */
+            attachments: boolean;
+            /** @description Store it as a draft to send later with `POST /v1/messages/{id}/send`. */
+            draft?: boolean;
+        };
+        MessageForward: {
+            /** @enum {string} */
+            scope: "message" | "conversation";
+            /** @description The forwarded messages, oldest first. */
+            message_ids: string[];
+            to: components["schemas"]["Email"][];
+            /** @description Whether their files were included. */
+            attachments: boolean;
         };
         /** @description Recipients of a draft's e-mail; see `createMessage`. */
         MessageSend: {
@@ -29972,6 +30068,44 @@ export interface operations {
             409: components["responses"]["Problem"];
             413: components["responses"]["Problem"];
             415: components["responses"]["Problem"];
+        };
+    };
+    forwardConversation: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Makes a retried request return the first response; see "Idempotency". */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                conversationId: components["parameters"]["ConversationId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ConversationForward"];
+            };
+        };
+        responses: {
+            /** @description The forward, queued for delivery (or the draft). */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Message"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+            409: components["responses"]["Problem"];
+            413: components["responses"]["Problem"];
+            429: components["responses"]["Problem"];
         };
     };
     listConversationParticipants: {

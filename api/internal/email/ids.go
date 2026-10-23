@@ -51,6 +51,17 @@ func ReplySubject(subject string) string {
 	return "Re: " + strings.TrimSpace(replyPrefix.ReplaceAllString(subject, ""))
 }
 
+var forwardPrefix = regexp.MustCompile(`(?i)^\s*((fwd?|fw|wg|tr|ilt)\s*(\[\d+\])?\s*:\s*)+`)
+
+func ForwardSubject(subject string) string {
+	subject = strings.TrimSpace(subject)
+	subject = strings.TrimSpace(forwardPrefix.ReplaceAllString(replyPrefix.ReplaceAllString(subject, ""), ""))
+	if subject == "" {
+		return ""
+	}
+	return "Fwd: " + subject
+}
+
 // SynthesizedID is the Message-ID stored for a message that has none: a hash of the message.
 func SynthesizedID(raw []byte) string {
 	sum := sha256.Sum256(raw)
