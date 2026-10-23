@@ -38,7 +38,7 @@ tutan Yuva'nın bağlantısıdır: Crisp'e okuma isteklerinden başka bir şey g
 Olaylar (örneğin durum değişikliği), seçiciler ve alanlar mesaj değildir ve kopyalanmaz. Bir konuşmaya yazan ikinci
 bir kişi mesajlarında kendi adını korur. Dosyalar tokensız olarak Crisp'in kendi depolama alanından alınır; başka
 yerde duran bir dosya ya da animasyon ve insanların mesaja yazdığı bağlantılar hiçbir zaman alınmaz. Konuşmalar
-özgün zamanlarını taşır ve [sessizce](migrate.md#how-history-stays-quiet) gelir.
+özgün zamanlarını taşır ve [sessizce](migrate.md#geçmiş-nasıl-sessiz-kalır) gelir.
 
 ## Neler kopyalanmaz
 
@@ -55,12 +55,12 @@ bundan sonra hızını yarıya indirir. Crisp'in sayfası: [Rate limits](https:/
 ## Geçiş
 
 Web sitenizdeki sohbet kutusunu Yuva'nınkiyle değiştirene kadar Crisp sohbete devam eder. Destek adresinize gelen
-e-posta, o adresin yönlendirmesini kanalın [yönlendirme adresine](email.md#forwarding-address) çevirdiğinizde
+e-posta, o adresin yönlendirmesini kanalın [yönlendirme adresine](email.md#yönlendirme-adresi) çevirdiğinizde
 Yuva'ya ulaşır. Sohbet kutusu değişene kadar Yuva Crisp'i iki dakikada bir okur, böylece hiçbir konuşma kaybolmaz.
 
 Sonra **Deneme iletisi gönder**'e basın: ileti yeni yoldan Yuva'ya ulaştığında çalışıyordur. Sessiz dönemden sonra
 ya da **Şimdi bitir**'e bastığınızda taşıma biter
-([nasıl](migrate.md#the-test-message-the-quiet-period-and-finishing)).
+([nasıl](migrate.md#deneme-e-postası-sessiz-dönem-ve-bitirme)).
 
 ## Bittikten sonra
 

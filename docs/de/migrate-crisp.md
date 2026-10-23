@@ -39,7 +39,7 @@ Ereignisse (zum Beispiel ein Statuswechsel), Auswahlfelder und Felder sind keine
 kopiert. Eine zweite Person, die in einer Unterhaltung schreibt, behält ihren eigenen Namen an ihren Nachrichten.
 Dateien werden ohne das Token aus Crisps eigenem Speicher geholt; eine Datei oder Animation an einem anderen Ort und
 Links, die jemand in eine Nachricht getippt hat, werden nie abgerufen. Unterhaltungen behalten ihre ursprünglichen
-Zeiten und kommen [still](migrate.md#how-history-stays-quiet) an.
+Zeiten und kommen [still](migrate.md#wie-der-verlauf-still-bleibt) an.
 
 ## Was nicht kopiert wird
 
@@ -58,12 +58,12 @@ wartet Yuva eine Minute und arbeitet danach langsamer. Crisps Seite:
 
 Crisp chattet auf Ihrer Website weiter, bis Sie dessen Chatfenster durch das von Yuva ersetzen. E-Mails an Ihre
 Support-Adresse erreichen Yuva, sobald Sie die Weiterleitung dieser Adresse auf die
-[Weiterleitungsadresse](email.md#forwarding-address) des Kanals umstellen. Bis das Chatfenster ersetzt ist, liest
+[Weiterleitungsadresse](email.md#weiterleitungsadresse) des Kanals umstellen. Bis das Chatfenster ersetzt ist, liest
 Yuva Crisp alle zwei Minuten, sodass keine Unterhaltung verloren geht.
 
 Drücken Sie dann **Testnachricht senden**: Es funktioniert, wenn die Nachricht auf dem neuen Weg bei Yuva ankommt.
 Nach der ruhigen Phase oder mit **Jetzt beenden** endet der Umzug
-([wie](migrate.md#the-test-message-the-quiet-period-and-finishing)).
+([wie](migrate.md#testnachricht-ruhige-phase-und-abschluss)).
 
 ## Nach dem Umzug
 
