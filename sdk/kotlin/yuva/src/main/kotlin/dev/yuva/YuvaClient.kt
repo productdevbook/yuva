@@ -527,6 +527,7 @@ class YuvaClient internal constructor(
             }
             "message.created" -> payload { YuvaEvent.MessageCreated(json.decodeFromJsonElement(it)) }
             "message.updated" -> payload { YuvaEvent.MessageUpdated(json.decodeFromJsonElement(it)) }
+            "message.redacted" -> payload { YuvaEvent.MessageRedacted(json.decodeFromJsonElement(it)) }
             "read" -> payload {
                 val read = json.decodeFromJsonElement<ReadData>(it)
                 YuvaEvent.Read(read.conversationId, read.readAt)

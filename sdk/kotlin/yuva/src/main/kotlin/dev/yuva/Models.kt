@@ -243,6 +243,7 @@ data class YuvaMessagePreview(
     val id: String,
     val authorType: YuvaAuthorType,
     val text: String,
+    val redacted: Boolean = false,
     @Serializable(InstantSerializer::class) val createdAt: Instant,
 )
 
@@ -309,6 +310,7 @@ data class YuvaMessage(
     val html: String? = null,
     val clientId: String? = null,
     val attachments: List<YuvaAttachment> = emptyList(),
+    val redacted: Boolean = false,
     @Serializable(InstantSerializer::class) val createdAt: Instant,
 )
 
@@ -356,6 +358,7 @@ sealed interface YuvaEvent {
     ) : YuvaEvent
     data class MessageCreated(val message: YuvaMessage) : YuvaEvent
     data class MessageUpdated(val message: YuvaMessage) : YuvaEvent
+    data class MessageRedacted(val message: YuvaMessage) : YuvaEvent
     data class Read(val conversationId: String, val readAt: Instant) : YuvaEvent
     data class Typing(val conversationId: String, val typing: Boolean, val author: YuvaMessageAuthor) : YuvaEvent
     data class Presence(val presence: YuvaPresence) : YuvaEvent

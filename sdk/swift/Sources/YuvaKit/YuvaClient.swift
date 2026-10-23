@@ -552,6 +552,8 @@ public actor YuvaClient {
             if let message = payload(YuvaMessage.self) { broadcast(.messageCreated(message)) }
         case "message.updated":
             if let message = payload(YuvaMessage.self) { broadcast(.messageUpdated(message)) }
+        case "message.redacted":
+            if let message = payload(YuvaMessage.self) { broadcast(.messageRedacted(message)) }
         case "read":
             if let read = payload(ReadData.self) {
                 broadcast(.read(conversationId: read.conversationId, readAt: read.readAt))

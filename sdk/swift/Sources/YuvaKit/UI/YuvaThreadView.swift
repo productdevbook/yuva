@@ -82,7 +82,7 @@ final class ThreadModel {
     func listen() async {
         for await event in client.events() {
             switch event {
-            case .messageCreated(let message), .messageUpdated(let message):
+            case .messageCreated(let message), .messageUpdated(let message), .messageRedacted(let message):
                 guard message.conversationId == conversationId else { continue }
                 upsert(message)
                 if message.author.type.isTeam {
@@ -705,8 +705,18 @@ struct MessageRow: View {
                 if first, !item.mine, let name = item.message?.author.name, !name.isEmpty {
                     Text(name).font(.caption).foregroundStyle(.secondary).padding(.horizontal, 4)
                 }
-                attachments
-                if !item.body.isEmpty {
+                if item.message?.redacted == true {
+                    Text(L.t("thread.removed"))
+                        .italic()
+                        .padding(.horizontal, 12).padding(.vertical, 8)
+                        .foregroundStyle(.secondary)
+                        .background(
+                            UnevenRoundedRectangle(cornerRadii: corners, style: .continuous)
+                                .strokeBorder(Color.secondary.opacity(0.4)))
+                } else {
+                    attachments
+                }
+                if item.message?.redacted != true, !item.body.isEmpty {
                     Text(Links.attributed(item.body))
                         .textSelection(.enabled)
                         .tint(item.mine ? Color.white : Color.accentColor)

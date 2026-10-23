@@ -85,7 +85,7 @@ final class ConversationsModel {
                 await refresh(id, progress: .some(progress))
             case .read(let id, _):
                 await refresh(id)
-            case .messageCreated(let message):
+            case .messageCreated(let message), .messageRedacted(let message):
                 await refresh(message.conversationId)
             case .presence:
                 session = try? await client.refreshSession()
@@ -412,6 +412,7 @@ struct ConversationRow: View {
 
     private var preview: String {
         guard let last = conversation.lastMessage else { return "" }
+        if last.redacted { return L.t("thread.removed") }
         return last.authorType == .contact ? L.t("thread.you") + ": " + last.text : last.text
     }
 }
@@ -443,7 +444,8 @@ struct FeedbackRow: View {
 
     private var firstLine: String {
         let own = conversation.feedback?.text ?? ""
-        let text = !own.isEmpty ? own : (conversation.subject.isEmpty ? (conversation.lastMessage?.text ?? "") : conversation.subject)
+        let last = conversation.lastMessage.map { $0.redacted ? L.t("thread.removed") : $0.text } ?? ""
+        let text = !own.isEmpty ? own : (conversation.subject.isEmpty ? last : conversation.subject)
         return text.split(whereSeparator: \.isNewline).first.map(String.init) ?? text
     }
 }

@@ -177,6 +177,7 @@ internal class ConversationsState(private val client: YuvaClient) {
                 is YuvaEvent.ConversationUpdated -> refresh(event.conversationId) { it.withFeedbackProgress(event.feedbackProgress) }
                 is YuvaEvent.Read -> refresh(event.conversationId)
                 is YuvaEvent.MessageCreated -> refresh(event.message.conversationId)
+                is YuvaEvent.MessageRedacted -> refresh(event.message.conversationId)
                 is YuvaEvent.Presence -> runCatching { session = client.refreshSession() }
                 is YuvaEvent.InboxUpdated -> session = session?.copy(inbox = event.inbox)
                 is YuvaEvent.ResyncRequired -> load()
@@ -694,6 +695,7 @@ private fun ConversationRow(
     val last = conversation.lastMessage
     val preview = when {
         last == null -> ""
+        last.redacted -> stringResource(R.string.yuva_thread_removed)
         last.authorType == YuvaAuthorType.CONTACT -> stringResource(R.string.yuva_thread_you) + ": " + last.text
         else -> last.text
     }
@@ -750,8 +752,9 @@ internal fun stateLabel(state: YuvaFeedbackState): Int = when (state) {
 private fun FeedbackRow(conversation: YuvaConversation, shape: Shape, color: Color, modifier: Modifier, onClick: () -> Unit) {
     val context = LocalContext.current
     val title = conversation.feedback?.let { categoryTitle(it) } ?: stringResource(R.string.yuva_feedback_kind)
+    val lastText = conversation.lastMessage?.let { if (it.redacted) stringResource(R.string.yuva_thread_removed) else it.text }.orEmpty()
     val text = conversation.feedback?.text?.takeIf { it.isNotEmpty() }
-        ?: conversation.subject.ifEmpty { conversation.lastMessage?.text.orEmpty() }
+        ?: conversation.subject.ifEmpty { lastText }
     ConversationListRow(
         title = title,
         preview = text.lineSequence().firstOrNull().orEmpty(),

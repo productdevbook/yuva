@@ -185,7 +185,15 @@ public struct YuvaMessagePreview: Codable, Sendable, Hashable {
     public let id: String
     public let authorType: YuvaAuthorType
     public let text: String
+    private let redactedValue: Bool?
     public let createdAt: Date
+
+    public var redacted: Bool { redactedValue ?? false }
+
+    enum CodingKeys: String, CodingKey {
+        case id, authorType, text, createdAt
+        case redactedValue = "redacted"
+    }
 }
 
 public struct YuvaConversation: Codable, Sendable, Identifiable, Hashable {
@@ -264,7 +272,15 @@ public struct YuvaMessage: Codable, Sendable, Identifiable, Hashable {
     public let html: String?
     public let clientId: String?
     public let attachments: [YuvaAttachment]
+    private let redactedValue: Bool?
     public let createdAt: Date
+
+    public var redacted: Bool { redactedValue ?? false }
+
+    enum CodingKeys: String, CodingKey {
+        case id, conversationId, direction, author, body, html, clientId, attachments, createdAt
+        case redactedValue = "redacted"
+    }
 }
 
 public struct YuvaPage<Item: Sendable>: Sendable {
@@ -325,6 +341,7 @@ public enum YuvaEvent: Sendable {
         feedbackProgress: YuvaFeedbackProgress?)
     case messageCreated(YuvaMessage)
     case messageUpdated(YuvaMessage)
+    case messageRedacted(YuvaMessage)
     case read(conversationId: String, readAt: Date)
     case typing(conversationId: String, typing: Bool, author: YuvaMessageAuthor)
     case presence(YuvaPresence)

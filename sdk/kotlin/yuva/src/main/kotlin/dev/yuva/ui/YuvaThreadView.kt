@@ -17,6 +17,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -64,6 +65,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.material3.TextField
@@ -200,6 +202,7 @@ internal class ThreadState(val client: YuvaClient, conversationId: String?, priv
             when (event) {
                 is YuvaEvent.MessageCreated -> onMessage(event.message)
                 is YuvaEvent.MessageUpdated -> onMessage(event.message)
+                is YuvaEvent.MessageRedacted -> onMessage(event.message)
                 is YuvaEvent.ConversationRemoved -> if (event.id == conversationId) {
                     stopTyping()
                     conversationId = null
@@ -911,6 +914,16 @@ private val BubbleRadius = 22.dp
 private val BubbleJoined = 6.dp
 private val ThreadAvatar = 32.dp
 
+private fun bubbleShape(mine: Boolean, first: Boolean, last: Boolean): RoundedCornerShape {
+    val big = BubbleRadius
+    val small = BubbleJoined
+    return if (mine) {
+        RoundedCornerShape(topStart = big, topEnd = if (first) big else small, bottomEnd = if (last) big else small, bottomStart = big)
+    } else {
+        RoundedCornerShape(topStart = if (first) big else small, topEnd = big, bottomEnd = big, bottomStart = if (last) big else small)
+    }
+}
+
 @Composable
 private fun MessageRow(
     item: ThreadItem,
@@ -953,7 +966,17 @@ private fun MessageRow(
                 )
             }
             val message = item.message
-            if (message != null) {
+            val shape = bubbleShape(mine, first, last)
+            if (message?.redacted == true) {
+                Text(
+                    stringResource(R.string.yuva_thread_removed),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    style = MaterialTheme.typography.bodyLarge.copy(fontStyle = FontStyle.Italic),
+                    modifier = Modifier
+                        .border(1.dp, MaterialTheme.colorScheme.outlineVariant, shape)
+                        .padding(horizontal = 16.dp, vertical = 10.dp),
+                )
+            } else if (message != null) {
                 message.attachments.forEach { attachment ->
                     if (attachment.isImage) {
                         AttachmentImage(client, attachment.id) { onOpenImage(attachment.id) }
@@ -968,14 +991,7 @@ private fun MessageRow(
                     Spacer(Modifier.size(4.dp))
                 }
             }
-            if (item.body.isNotEmpty()) {
-                val big = BubbleRadius
-                val small = BubbleJoined
-                val shape = if (mine) {
-                    RoundedCornerShape(topStart = big, topEnd = if (first) big else small, bottomEnd = if (last) big else small, bottomStart = big)
-                } else {
-                    RoundedCornerShape(topStart = if (first) big else small, topEnd = big, bottomEnd = big, bottomStart = if (last) big else small)
-                }
+            if (message?.redacted != true && item.body.isNotEmpty()) {
                 val content = if (mine) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
                 val linkColor = if (mine) content else MaterialTheme.colorScheme.primary
                 val body = remember(item.body, linkColor) { linkified(item.body, linkColor) }
