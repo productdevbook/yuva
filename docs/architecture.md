@@ -445,15 +445,18 @@ scoped API keys, and every key-authored message names its bot.
 | `changelog:write` | feeds, entries and translation drafts |
 | `changelog:publish` | publish, schedule, unpublish and delete published entries (never implied) |
 | `audit:read` | the workspace audit log (never implied; owner-only, see Audit log) |
+| `integrations:read` | GitHub and Linear integrations |
+| `integrations:manage` | connect, change and disconnect GitHub and Linear, webhook secrets |
+| `issues:write` | create, link and unlink GitHub and Linear issues on feedback and ideas |
 
 A call without its scope gets `403 insufficient_scope` with the missing scope in `scope`. Keys made
-before scopes existed hold every scope above. Scopes added later (`lists:*`, `broadcasts:*`) are never
+before scopes existed hold every scope above. Scopes added later (`lists:*`, `broadcasts:*`, `integrations:*`, `issues:write`) are never
 added to existing keys, and `broadcasts:send`, `status:manage`, `roadmap:stage`, `changelog:publish` and `audit:read` are never implied: a key made without
 naming its scopes holds every scope but those. `yuva api-key create` takes `--scope` (repeatable, default
 every scope but those five) and `--inbox` (repeatable).
 
 A key may be limited to some inboxes. It then sees what an agent with access to exactly those
-inboxes sees; it cannot hold `inboxes:manage`, `webhooks:manage`, `workspace:manage`, `migrations:manage` or `audit:read` (refused when
+inboxes sees; it cannot hold `inboxes:manage`, `webhooks:manage`, `workspace:manage`, `migrations:manage`, `integrations:manage` or `audit:read` (refused when
 the key is made). An inbox that is deleted drops out of the limit; a key whose every inbox is gone
 sees nothing. A key may have an expiry; after it, the key gets `401 api_key_expired`. Scopes, inbox
 limit and expiry are fixed when the key is made; a different set needs a new key. Name, bot name and
@@ -1151,7 +1154,8 @@ secret keeps signing next to the new one for 24 hours.
 Events: `conversation.created`, `conversation.updated`, `conversation.rated`, `message.created`,
 `feedback.created`, `contact.updated`, `contact.deleted`, `subscription.created`, `subscription.updated`,
 `broadcast.updated`, `discussion.stage_changed`, `changelog.entry.published`,
-`changelog.entry.unpublished`, `changelog.entry.deleted`. Payloads follow Standard Webhooks: `{type, timestamp,
+`changelog.entry.unpublished`, `changelog.entry.deleted`, `issue_link.created`, `issue_link.updated`,
+`issue_link.deleted`. Payloads follow Standard Webhooks: `{type, timestamp,
 workspace_id, inbox_id, data}`, with the conversation, message and contact in `data`; the contact
 carries `external_ids` (so the host maps it to its own user) and `online`. `contact.deleted`
 carries the external ids the contact had.
@@ -3694,6 +3698,87 @@ columns to `sso_settings` and `protocol` `saml`.
   `domain_not_claimed`, `group_not_allowed`, `not_member`), actor the member when the address is one
   in the workspace, else `system`; `member.joined` with `via: sso` for JIT. Requests refused with
   `sso_required` are not recorded (they repeat on every call).
+### Issue trackers (M32)
+
+A workspace connects GitHub and Linear so that what customers ask for becomes an issue where the team
+plans its work, and the issue's state tells the customer where it stands, the way a roadmap stage does.
+
+- **Connecting.** Owners and admins (and API keys without an inbox limit holding `integrations:manage`)
+  connect with a token a self-hoster gets without registering an app: a GitHub fine-grained personal
+  access token limited to the chosen repositories (Issues: read and write), or a Linear personal API
+  key. GitHub Apps and Linear OAuth apps are not supported. The token is checked with the tracker
+  (`GET /user`, Linear's `organization`) before it is stored, sealed under `YUVA_MASTER_KEY` with the
+  integration as context, never answered and never logged; `account` keeps the name the tracker gave.
+  A GitHub Enterprise Server is reached through its `api_url` (`https`, refused on private, loopback and
+  link-local addresses when saved, as webhook URLs are). Every outbound call goes through the webhook
+  client's address checks, without redirects, to `api.github.com`, the configured Enterprise API or
+  `api.linear.app` only. A change or a new webhook secret locks the integration's row in its
+  transaction and writes only what it was sent, so a token check that takes a while never undoes a
+  concurrent rotation. At most 20 integrations per workspace. Connect, change, disconnect and a new
+  webhook secret write audit entries (`issue_integration.*`, never a token or secret).
+- **Tables.** `issue_integrations` (provider, name, account, `api_url`, `default_target`, the sealed
+  `token` and `webhook_secret`, last error), `tracked_issues` (one row per issue of an integration that
+  is linked: external id, key, URL, title, the tracker's state, the mapped `progress`, `synced_at`,
+  `next_sync_at`, `sync_failures`, `state_changed_at`) and `issue_links` (an issue to exactly one feedback conversation or idea, who
+  linked it, and `applied_progress`). All carry `workspace_id` with composite foreign keys; links
+  cascade with their conversation, idea, issue and integration, and an issue without links is deleted
+  with its last link. Migration 00099.
+- **Mapping.** GitHub: open is `planned`; closed as completed (or without a reason) `done`; closed as
+  not planned or duplicate `wont_do`. GitHub issues have no in-progress state, so none is inferred
+  from labels. Linear's state type: `triage`, `backlog` and `unstarted` are `planned`, `started`
+  `in_progress`, `completed` `done`, `canceled` (and `duplicate`) `wont_do`. An idea only shows its
+  issues and their state: an issue never moves an idea's stage, which notifies followers and stays a
+  deliberate action of the team, and never touches the idea's linked feedback.
+- **Linking.** `POST /v1/conversations/{id}/issues` (feedback only, `409 not_feedback`) and
+  `POST /v1/discussions/{id}/issues` (ideas only) take `url` to link an existing issue (a GitHub URL
+  or `owner/repo#12`, a Linear URL or `ENG-123`) or `title`, `body` and `target` (`owner/repo`, a
+  Linear team key or id, or the integration's `default_target`) to create one. A created issue's body
+  is what the member wrote, then a line with the conversation's or idea's address in the panel;
+  nothing of the conversation and no customer's name or address goes to the tracker unless the member
+  writes it. A target takes at most 10 issues, an issue at most 1,000 links. The link's transaction
+  stores the issue, writes the link and `issue_link.created`, and on a feedback applies the issue's
+  progress at once.
+  Linking the same issue again answers `200` with the existing link. Unlinking keeps the progress.
+- **Applying the state.** A feedback link is applied as the member, key or grant that made it,
+  through the conversation update a member makes: the `feedback_progress` event carries
+  `issue_link_id`, the contact sees the line, `conversation.updated` goes to webhooks. A key or grant
+  without `issues:write`, and a link whose maker was removed or revoked or lost access to the inbox,
+  records the state and sets nothing.
+  `applied_progress` is set either way, so a progress set by hand holds until the issue's mapped
+  progress changes again.
+- **Webhooks in.** `POST /ingress/issues/{integrationId}` finds the integration by its id before the
+  workspace is known, then checks GitHub's `X-Hub-Signature-256` or Linear's `Linear-Signature` (and a
+  `webhookTimestamp` within a minute) with the integration's secret: Yuva makes one (shown once,
+  rotatable) or stores Linear's signing secret. A missing or wrong signature answers
+  `401 invalid_signature` and changes nothing. The body is only a hint: for GitHub `issues` events that
+  may change state and Linear `Issue` events on linked issues it queues an `issue_sync` job, which
+  reads the issue again with the token. The job stores the answer only when it was read after the
+  stored one (`synced_at`), so replayed or out-of-order deliveries change nothing, sends
+  `issue_link.updated` when the state, title or address changed, and applies the new progress to each
+  link whose `applied_progress` differs, each in its own transaction. 1 MiB and 600 calls a minute per
+  integration, counted after the lookup.
+- **Reconciliation.** Every issue has `next_sync_at`: an hour after a successful read; after a failed
+  one (the tracker unreachable, rate limited, refusing the token, or no longer showing the issue)
+  15 minutes doubled for each failure in a row, up to a day, with `sync_failures` counting them. The
+  `issue_sweep` job every 15 minutes takes up to 500 due linked issues of every workspace, oldest
+  `next_sync_at` first and at most 50 of one integration, moves each `next_sync_at` 15 minutes ahead
+  while its `issue_sync` job is queued, and queues the jobs. A tracker that keeps failing thus backs
+  off and never takes another integration's turn. The last failure is kept on the integration as
+  `last_error`.
+- **Scopes.** `integrations:read` (integrations), `integrations:manage` (connect, change,
+  disconnect, rotate; refused for keys limited to inboxes, never offered to agents' tokens) and
+  `issues:write` (create, link, unlink, with `conversations:read`). Listing links needs
+  `conversations:read`. None is added to keys made before them.
+- **Events.** `issue_link.created`, `issue_link.updated` (with `previous_progress` when it moved) and
+  `issue_link.deleted` (also for each link when an integration is disconnected) are stored events for
+  callers who see the inbox and webhook types, with the `IssueLink` as data. `Conversation.issues` and,
+  when one idea is read, `Discussion.issues` list the links.
+- **MCP.** `list_issue_integrations` (read-only), `link_issue` (`idempotentHint`, open-world: the
+  customer sees the progress) and `create_issue` (open-world), both on feedback with `issues:write` and
+  `conversations:read`. `create_issue` tells the assistant to write the body itself and leave out
+  personal data unless asked.
+- **Not in M32.** GitHub Apps and Linear OAuth, issue comments synced into the thread, pull requests,
+  GitHub Projects status fields, and changing an issue from Yuva after it was created.
 
 ### Team mail (M34–M38)
 
@@ -4019,6 +4104,11 @@ they belong to no channel. (#136, migration 00095)
   - Slack (M32): `POST /ingress/slack` finds the installation by `slack_installations.team_id`
     (unique across the server) before the workspace is known; everything after that lookup is
     scoped by the workspace it returned. The OAuth callback's state names its workspace.
+  - Issue trackers (M32): `/ingress/issues/{integrationId}` finds its integration by
+    `issue_integrations.id` (unique across the server) before the workspace is known, and the
+    reconciliation sweep takes due linked `tracked_issues` of every workspace
+    (`tracked_issues_next_sync_idx`); everything after those lookups is scoped by the workspace they
+    returned.
   - `yuva api-key revoke <id>` runs on the server with no workspace given: it finds the key by its
     id, unique across the server, and revokes it scoped by the workspace that lookup returned.
 - Usage counters (conversations, messages, members, storage, broadcast recipients, status notice mails) recorded per workspace per month.

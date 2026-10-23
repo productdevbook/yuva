@@ -296,6 +296,9 @@ Ein Aufruf ohne den nötigen Scope antwortet mit `403 insufficient_scope`.
 | `changelog:write` | Einträge und Übersetzungen schreiben, Bilder hochladen |
 | `changelog:publish` | Changelogs anlegen, ändern und löschen; veröffentlichte Einträge veröffentlichen, planen, zurückziehen und löschen. In keinem anderen Scope enthalten: nennen Sie ihn ausdrücklich. |
 | `audit:read` | `GET /v1/audit-log`, das [Audit-Log](operations.md#audit-log). In keinem anderen Scope enthalten: nennen Sie ihn. Nur ein Inhaber kann ihn einem Schlüssel geben, und ein auf Postfächer begrenzter Schlüssel kann ihn nicht halten. Er gilt nur, solange das Mitglied, das den Schlüssel erstellt hat, noch Inhaber ist. `yuva api-key create` lässt ihn weg, wenn Sie ihn nicht nennen. |
+| `integrations:read` | `GET /v1/issue-integrations` und eine einzelne Integration: die Verbindungen zu [GitHub und Linear](issue-trackers.md), nie ein Token. |
+| `integrations:manage` | GitHub und Linear verbinden, ändern und trennen, ein neues Webhook-Geheimnis erzeugen. Ein auf Postfächer begrenzter Schlüssel kann ihn nicht halten. |
+| `issues:write` | GitHub- und Linear-Issues an Feedback und Ideen erstellen, verknüpfen und lösen (`/v1/conversations/{id}/issues`, `/v1/discussions/{id}/issues`), zusammen mit `conversations:read`. |
 | `feedback:write` | `POST /v1/feedback` |
 
 ### Schlüssel

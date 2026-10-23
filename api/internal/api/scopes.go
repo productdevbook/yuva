@@ -14,13 +14,13 @@ var allScopes = []oas.ApiKeyScope{
 	oas.BroadcastsRead, oas.BroadcastsWrite, oas.BroadcastsSend, oas.MigrationsManage,
 	oas.AnalyticsRead, oas.AnalyticsWrite, oas.AnalyticsManage, oas.StatusRead, oas.StatusManage,
 	oas.HelpRead, oas.HelpWrite, oas.HelpPublish, oas.RoadmapRead, oas.RoadmapWrite, oas.RoadmapStage,
-	oas.ChangelogRead, oas.ChangelogWrite, oas.ChangelogPublish, oas.AuditRead,
+	oas.ChangelogRead, oas.ChangelogWrite, oas.ChangelogPublish, oas.AuditRead, oas.IntegrationsRead, oas.IntegrationsManage, oas.IssuesWrite,
 }
 
 // notImpliedScopes are left out of a key made without naming its scopes.
 var notImpliedScopes = []oas.ApiKeyScope{oas.ConversationsDelete, oas.MessagesRedact, oas.BroadcastsSend, oas.StatusManage, oas.HelpPublish, oas.RoadmapStage, oas.ChangelogPublish, oas.AuditRead}
 
-var unlimitedOnlyScopes = []oas.ApiKeyScope{oas.InboxesManage, oas.WebhooksManage, oas.WorkspaceManage, oas.MigrationsManage, oas.AnalyticsManage, oas.AuditRead}
+var unlimitedOnlyScopes = []oas.ApiKeyScope{oas.InboxesManage, oas.WebhooksManage, oas.WorkspaceManage, oas.MigrationsManage, oas.AnalyticsManage, oas.AuditRead, oas.IntegrationsManage}
 
 // operationScopes lists every operation an API key may call with the scopes it needs. An operation
 // missing here needs a member session.
@@ -387,6 +387,19 @@ var operationScopes = map[string][]oas.ApiKeyScope{
 	"UnpublishChangelogEntry":         {oas.ChangelogPublish},
 	"BroadcastChangelogEntry":         {oas.BroadcastsWrite, oas.ListsRead},
 	"RenderMarkdown":                  nil,
+
+	"ListIssueIntegrations":    {oas.IntegrationsRead},
+	"GetIssueIntegration":      {oas.IntegrationsRead},
+	"CreateIssueIntegration":   {oas.IntegrationsManage},
+	"UpdateIssueIntegration":   {oas.IntegrationsManage},
+	"DeleteIssueIntegration":   {oas.IntegrationsManage},
+	"RotateIssueWebhookSecret": {oas.IntegrationsManage},
+	"ListConversationIssues":   {oas.ConversationsRead},
+	"LinkConversationIssue":    {oas.IssuesWrite, oas.ConversationsRead},
+	"UnlinkConversationIssue":  {oas.IssuesWrite, oas.ConversationsRead},
+	"ListIdeaIssues":           {oas.ConversationsRead},
+	"LinkIdeaIssue":            {oas.IssuesWrite, oas.ConversationsRead},
+	"UnlinkIdeaIssue":          {oas.IssuesWrite, oas.ConversationsRead},
 }
 
 func errInsufficientScope(scope oas.ApiKeyScope) *apiError {

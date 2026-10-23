@@ -6,7 +6,7 @@ generate:
   strict-server: true
 output-options:
   skip-prune: true
-  exclude-operation-ids: [realtime, ingestSlack, slackOAuthCallback, clientRealtime, collectAnalytics, ingestEmail, ingestSes, statusHeartbeat, statusHeartbeatPost, statusHeartbeatFail, statusHeartbeatFailPost, statusPush, oauthAuthorizationServerMetadata, oauthProtectedResourceMetadata, oauthProtectedResourceMetadataMcp, oauthRegister, oauthAuthorize, oauthToken, oauthRevoke]
+  exclude-operation-ids: [realtime, ingestSlack, slackOAuthCallback, clientRealtime, collectAnalytics, ingestEmail, ingestSes, statusHeartbeat, statusHeartbeatPost, statusHeartbeatFail, statusHeartbeatFailPost, statusPush, ingestIssueWebhook, oauthAuthorizationServerMetadata, oauthProtectedResourceMetadata, oauthProtectedResourceMetadataMcp, oauthRegister, oauthAuthorize, oauthToken, oauthRevoke]
   nullable-type: true
   type-mapping:
     string:

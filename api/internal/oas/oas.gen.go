@@ -936,6 +936,9 @@ const (
 	HelpWrite           ApiKeyScope = "help:write"
 	InboxesManage       ApiKeyScope = "inboxes:manage"
 	InboxesRead         ApiKeyScope = "inboxes:read"
+	IntegrationsManage  ApiKeyScope = "integrations:manage"
+	IntegrationsRead    ApiKeyScope = "integrations:read"
+	IssuesWrite         ApiKeyScope = "issues:write"
 	LabelsWrite         ApiKeyScope = "labels:write"
 	ListsRead           ApiKeyScope = "lists:read"
 	ListsWrite          ApiKeyScope = "lists:write"
@@ -1000,6 +1003,12 @@ func (e ApiKeyScope) Valid() bool {
 	case InboxesManage:
 		return true
 	case InboxesRead:
+		return true
+	case IntegrationsManage:
+		return true
+	case IntegrationsRead:
+		return true
+	case IssuesWrite:
 		return true
 	case LabelsWrite:
 		return true
@@ -1089,6 +1098,10 @@ const (
 	AuditInboxIdentitySecretRotated          AuditAction = "inbox.identity_secret_rotated"
 	AuditInviteCreated                       AuditAction = "invite.created"
 	AuditInviteDeleted                       AuditAction = "invite.deleted"
+	AuditIssueIntegrationConnected           AuditAction = "issue_integration.connected"
+	AuditIssueIntegrationDisconnected        AuditAction = "issue_integration.disconnected"
+	AuditIssueIntegrationSecretRotated       AuditAction = "issue_integration.secret_rotated"
+	AuditIssueIntegrationUpdated             AuditAction = "issue_integration.updated"
 	AuditListConsentExported                 AuditAction = "list.consent_exported"
 	AuditMemberInboxAccessGranted            AuditAction = "member.inbox_access_granted"
 	AuditMemberInboxAccessRevoked            AuditAction = "member.inbox_access_revoked"
@@ -1165,6 +1178,14 @@ func (e AuditAction) Valid() bool {
 	case AuditInviteCreated:
 		return true
 	case AuditInviteDeleted:
+		return true
+	case AuditIssueIntegrationConnected:
+		return true
+	case AuditIssueIntegrationDisconnected:
+		return true
+	case AuditIssueIntegrationSecretRotated:
+		return true
+	case AuditIssueIntegrationUpdated:
 		return true
 	case AuditListConsentExported:
 		return true
@@ -1276,22 +1297,23 @@ func (e AuditActorKind) Valid() bool {
 
 // Defines values for AuditTargetType.
 const (
-	AuditTargetAnalyticsExport AuditTargetType = "analytics_export"
-	AuditTargetApiKey          AuditTargetType = "api_key"
-	AuditTargetChannel         AuditTargetType = "channel"
-	AuditTargetContact         AuditTargetType = "contact"
-	AuditTargetConversation    AuditTargetType = "conversation"
-	AuditTargetInbox           AuditTargetType = "inbox"
-	AuditTargetInvite          AuditTargetType = "invite"
-	AuditTargetList            AuditTargetType = "list"
-	AuditTargetMember          AuditTargetType = "member"
-	AuditTargetMessage         AuditTargetType = "message"
-	AuditTargetOAuthGrant      AuditTargetType = "oauth_grant"
-	AuditTargetSso             AuditTargetType = "sso"
-	AuditTargetSsoDomain       AuditTargetType = "sso_domain"
-	AuditTargetTeam            AuditTargetType = "team"
-	AuditTargetWebhook         AuditTargetType = "webhook"
-	AuditTargetWorkspace       AuditTargetType = "workspace"
+	AuditTargetAnalyticsExport  AuditTargetType = "analytics_export"
+	AuditTargetApiKey           AuditTargetType = "api_key"
+	AuditTargetChannel          AuditTargetType = "channel"
+	AuditTargetContact          AuditTargetType = "contact"
+	AuditTargetConversation     AuditTargetType = "conversation"
+	AuditTargetInbox            AuditTargetType = "inbox"
+	AuditTargetInvite           AuditTargetType = "invite"
+	AuditTargetIssueIntegration AuditTargetType = "issue_integration"
+	AuditTargetList             AuditTargetType = "list"
+	AuditTargetMember           AuditTargetType = "member"
+	AuditTargetMessage          AuditTargetType = "message"
+	AuditTargetOAuthGrant       AuditTargetType = "oauth_grant"
+	AuditTargetSso              AuditTargetType = "sso"
+	AuditTargetSsoDomain        AuditTargetType = "sso_domain"
+	AuditTargetTeam             AuditTargetType = "team"
+	AuditTargetWebhook          AuditTargetType = "webhook"
+	AuditTargetWorkspace        AuditTargetType = "workspace"
 )
 
 // Valid indicates whether the value is a known member of the AuditTargetType enum.
@@ -1310,6 +1332,8 @@ func (e AuditTargetType) Valid() bool {
 	case AuditTargetInbox:
 		return true
 	case AuditTargetInvite:
+		return true
+	case AuditTargetIssueIntegration:
 		return true
 	case AuditTargetList:
 		return true
@@ -3785,6 +3809,45 @@ func (e IngressResultStatus) Valid() bool {
 	case IngressResultStatusDuplicate:
 		return true
 	case IngressResultStatusStored:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for IssueLinkEventType.
+const (
+	IssueLinkEventTypeIssueLinkCreated IssueLinkEventType = "issue_link.created"
+	IssueLinkEventTypeIssueLinkDeleted IssueLinkEventType = "issue_link.deleted"
+	IssueLinkEventTypeIssueLinkUpdated IssueLinkEventType = "issue_link.updated"
+)
+
+// Valid indicates whether the value is a known member of the IssueLinkEventType enum.
+func (e IssueLinkEventType) Valid() bool {
+	switch e {
+	case IssueLinkEventTypeIssueLinkCreated:
+		return true
+	case IssueLinkEventTypeIssueLinkDeleted:
+		return true
+	case IssueLinkEventTypeIssueLinkUpdated:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for IssueProvider.
+const (
+	IssueProviderGithub IssueProvider = "github"
+	IssueProviderLinear IssueProvider = "linear"
+)
+
+// Valid indicates whether the value is a known member of the IssueProvider enum.
+func (e IssueProvider) Valid() bool {
+	switch e {
+	case IssueProviderGithub:
+		return true
+	case IssueProviderLinear:
 		return true
 	default:
 		return false
@@ -6572,6 +6635,9 @@ const (
 	WebhookEventTypeHelpArticleDeleted        WebhookEventType = "help.article.deleted"
 	WebhookEventTypeHelpArticlePublished      WebhookEventType = "help.article.published"
 	WebhookEventTypeHelpArticleUnpublished    WebhookEventType = "help.article.unpublished"
+	WebhookEventTypeIssueLinkCreated          WebhookEventType = "issue_link.created"
+	WebhookEventTypeIssueLinkDeleted          WebhookEventType = "issue_link.deleted"
+	WebhookEventTypeIssueLinkUpdated          WebhookEventType = "issue_link.updated"
 	WebhookEventTypeMessageCreated            WebhookEventType = "message.created"
 	WebhookEventTypeMessageRedacted           WebhookEventType = "message.redacted"
 	WebhookEventTypeStatusComponentUpdated    WebhookEventType = "status.component.updated"
@@ -6639,6 +6705,12 @@ func (e WebhookEventType) Valid() bool {
 	case WebhookEventTypeHelpArticlePublished:
 		return true
 	case WebhookEventTypeHelpArticleUnpublished:
+		return true
+	case WebhookEventTypeIssueLinkCreated:
+		return true
+	case WebhookEventTypeIssueLinkDeleted:
+		return true
+	case WebhookEventTypeIssueLinkUpdated:
 		return true
 	case WebhookEventTypeMessageCreated:
 		return true
@@ -8925,7 +8997,14 @@ type ApiKeyList struct {
 //	    without an inbox limit; offered only to owners' OAuth tokens. Never implied: a key made
 //	    without naming its scopes does not hold it.
 //
-// `conversations:delete`, `messages:redact`, `lists:*`, `broadcasts:*`, `migrations:manage`, `analytics:*`, `status:*`, `help:*`, `roadmap:*`, `changelog:*` and `audit:read` are never added to keys made before they existed.
+//	  - `integrations:read`: the workspace's GitHub and Linear integrations.
+//	  - `integrations:manage`: connect, change and disconnect GitHub and Linear, make webhook
+//	    secrets. Owners and admins only; never offered to agents' tokens, refused for keys
+//	    limited to inboxes.
+//	  - `issues:write`: create, link and unlink GitHub and Linear issues on feedback and ideas,
+//	    together with `conversations:read`.
+//
+// `conversations:delete`, `messages:redact`, `lists:*`, `broadcasts:*`, `migrations:manage`, `analytics:*`, `status:*`, `help:*`, `roadmap:*`, `changelog:*`, `audit:read`, `integrations:*` and `issues:write` are never added to keys made before they existed.
 type ApiKeyScope string
 
 // ApiKeyUpdate Only the fields sent change. Scopes, inbox limit and expiry cannot change.
@@ -9131,6 +9210,10 @@ type Attributes map[string]interface{}
 //     is the member when the person is one, else `system`. Requests refused with
 //     `sso_required` are not recorded.
 //   - `sso_domain.added`, `sso_domain.verified`, `sso_domain.deleted`: `domain`.
+//   - `issue_integration.connected`, `issue_integration.disconnected`: `provider`, `name`,
+//     `account`, and `host` for a GitHub Enterprise Server. `issue_integration.updated`:
+//     `fields` among `name`, `token`, `default_target` and `webhook_secret`; never a token or
+//     secret. `issue_integration.secret_rotated`: none.
 //
 // Details never make an action fail: when they would be too long, lists are replaced by
 // `<name>_count` and `truncated` is `true`.
@@ -9224,6 +9307,10 @@ type AuditEntry struct {
 	//   is the member when the person is one, else `system`. Requests refused with
 	//   `sso_required` are not recorded.
 	// - `sso_domain.added`, `sso_domain.verified`, `sso_domain.deleted`: `domain`.
+	// - `issue_integration.connected`, `issue_integration.disconnected`: `provider`, `name`,
+	//   `account`, and `host` for a GitHub Enterprise Server. `issue_integration.updated`:
+	//   `fields` among `name`, `token`, `default_target` and `webhook_secret`; never a token or
+	//   secret. `issue_integration.secret_rotated`: none.
 	//
 	// Details never make an action fail: when they would be too long, lists are replaced by
 	// `<name>_count` and `truncated` is `true`.
@@ -12069,6 +12156,9 @@ type Conversation struct {
 	Imported *ConversationImport `json:"imported,omitempty"`
 	InboxId  uuid.UUID           `json:"inbox_id"`
 
+	// Issues The GitHub and Linear issues a `feedback` conversation is linked to, oldest link first; absent when there are none.
+	Issues *[]IssueLink `json:"issues,omitempty"`
+
 	// Kind `feedback` conversations carry `feedback` metadata; everything else is `conversation`.
 	Kind ConversationKind `json:"kind"`
 
@@ -12337,6 +12427,9 @@ type ConversationListItem struct {
 	// they were imported. Absent otherwise.
 	Imported *ConversationImport `json:"imported,omitempty"`
 	InboxId  uuid.UUID           `json:"inbox_id"`
+
+	// Issues The GitHub and Linear issues a `feedback` conversation is linked to, oldest link first; absent when there are none.
+	Issues *[]IssueLink `json:"issues,omitempty"`
 
 	// Kind `feedback` conversations carry `feedback` metadata; everything else is `conversation`.
 	Kind ConversationKind `json:"kind"`
@@ -12693,6 +12786,9 @@ type Discussion struct {
 	HiddenPosts *int32     `json:"hidden_posts,omitempty"`
 	Id          uuid.UUID  `json:"id"`
 	InboxId     *uuid.UUID `json:"inbox_id,omitempty"`
+
+	// Issues `idea` only, on `/v1` when reading one idea: the GitHub and Linear issues linked to it, oldest link first; absent when there are none.
+	Issues *[]IssueLink `json:"issues,omitempty"`
 
 	// Kind `page`: a thread on a documentation page. `idea`: an idea on a roadmap board, which belongs
 	// to no page and has a `stage`.
@@ -15973,6 +16069,162 @@ type InviteList struct {
 	Items []Invite `json:"items"`
 }
 
+// IssueIntegration A connection to GitHub or Linear. The token and webhook secret are never answered.
+type IssueIntegration struct {
+	// Account The GitHub login or the Linear organization the token belongs to, as the tracker named it when the token was checked.
+	Account string `json:"account"`
+
+	// ApiUrl `github` only: the GitHub Enterprise Server API Yuva calls; absent for github.com.
+	ApiUrl    *string   `json:"api_url,omitempty"`
+	CreatedAt time.Time `json:"created_at"`
+
+	// DefaultTarget Where issues are created when a request names no `target`: `owner/repo` for GitHub, a
+	// team key (`ENG`) or id for Linear. Absent when there is none.
+	DefaultTarget *string   `json:"default_target,omitempty"`
+	Id            uuid.UUID `json:"id"`
+
+	// LastError The last failure reading an issue (the tracker refused the token, could not be reached); absent after a success.
+	LastError   *string       `json:"last_error,omitempty"`
+	LastErrorAt *time.Time    `json:"last_error_at,omitempty"`
+	Name        string        `json:"name"`
+	Provider    IssueProvider `json:"provider"`
+	UpdatedAt   time.Time     `json:"updated_at"`
+
+	// WebhookSecretSet Incoming webhooks are checked with a secret; false until Linear's signing secret is sent.
+	WebhookSecretSet bool `json:"webhook_secret_set"`
+
+	// WebhookUrl The address to give the tracker's webhook settings.
+	WebhookUrl string `json:"webhook_url"`
+}
+
+// IssueIntegrationCreate defines model for IssueIntegrationCreate.
+type IssueIntegrationCreate struct {
+	// ApiUrl `github` only: a GitHub Enterprise Server's API, `https://<host>/api/v3`.
+	ApiUrl        *string `json:"api_url,omitempty"`
+	DefaultTarget *string `json:"default_target,omitempty"`
+
+	// Name Defaults to the provider's name and the account.
+	Name     *string       `json:"name,omitempty"`
+	Provider IssueProvider `json:"provider"`
+
+	// Token A GitHub fine-grained personal access token or a Linear personal API key.
+	Token *string `json:"token,omitempty"`
+
+	// WebhookSecret The secret webhooks are signed with; Yuva makes one when it is absent.
+	WebhookSecret *string `json:"webhook_secret,omitempty"`
+}
+
+// IssueIntegrationList defines model for IssueIntegrationList.
+type IssueIntegrationList struct {
+	Items []IssueIntegration `json:"items"`
+}
+
+// IssueIntegrationSecret defines model for IssueIntegrationSecret.
+type IssueIntegrationSecret struct {
+	// Integration A connection to GitHub or Linear. The token and webhook secret are never answered.
+	Integration IssueIntegration `json:"integration"`
+
+	// WebhookSecret The webhook secret Yuva made; shown only now. Absent when the request sent its own.
+	WebhookSecret *string `json:"webhook_secret,omitempty"`
+}
+
+// IssueIntegrationUpdate defines model for IssueIntegrationUpdate.
+type IssueIntegrationUpdate struct {
+	DefaultTarget nullable.Nullable[string] `json:"default_target,omitempty"`
+	Name          *string                   `json:"name,omitempty"`
+	Token         *string                   `json:"token,omitempty"`
+	WebhookSecret *string                   `json:"webhook_secret,omitempty"`
+}
+
+// IssueLink A GitHub or Linear issue linked to a feedback conversation or a roadmap idea.
+type IssueLink struct {
+	// ConversationId The feedback it is linked to; absent for an idea.
+	ConversationId *uuid.UUID `json:"conversation_id,omitempty"`
+
+	// Id The link's id.
+	Id uuid.UUID `json:"id"`
+
+	// IdeaId The roadmap idea it is linked to; absent for a feedback.
+	IdeaId        *uuid.UUID `json:"idea_id,omitempty"`
+	InboxId       *uuid.UUID `json:"inbox_id,omitempty"`
+	IntegrationId uuid.UUID  `json:"integration_id"`
+
+	// Key How the tracker names the issue, `owner/repo#12` or `ENG-123`.
+	Key      string    `json:"key"`
+	LinkedAt time.Time `json:"linked_at"`
+
+	// LinkedBy Who linked it; the state changes are made as them.
+	LinkedBy *IssueLinkAuthor `json:"linked_by,omitempty"`
+
+	// Progress What the state means for a feedback, which it sets; on an idea it is shown only.
+	Progress FeedbackProgress `json:"progress"`
+	Provider IssueProvider    `json:"provider"`
+
+	// State The issue's state as the tracker names it (`open`, `closed`, `In Review`).
+	State string `json:"state"`
+
+	// StateChangedAt When Yuva last saw the progress change; absent until it has.
+	StateChangedAt *time.Time `json:"state_changed_at,omitempty"`
+
+	// SyncedAt When Yuva last read the issue from the tracker.
+	SyncedAt *time.Time `json:"synced_at,omitempty"`
+	Title    string     `json:"title"`
+	Url      string     `json:"url"`
+}
+
+// IssueLinkAuthor Who linked it; the state changes are made as them.
+type IssueLinkAuthor struct {
+	ApiKeyId *uuid.UUID `json:"api_key_id,omitempty"`
+	MemberId *uuid.UUID `json:"member_id,omitempty"`
+}
+
+// IssueLinkCreate `url` links an existing issue; `title` (and `body`, `target`) creates one. Send exactly one of `url` and `title`.
+type IssueLinkCreate struct {
+	// Body Markdown; Yuva adds a line with the address of the conversation or idea in the panel.
+	Body          *string   `json:"body,omitempty"`
+	IntegrationId uuid.UUID `json:"integration_id"`
+
+	// Target Where to create it, `owner/repo` or a Linear team key or id; defaults to the integration's `default_target`.
+	Target *string `json:"target,omitempty"`
+	Title  *string `json:"title,omitempty"`
+
+	// Url The issue's address: `https://github.com/owner/repo/issues/12` (or the Enterprise
+	// Server's), `owner/repo#12`, `https://linear.app/<team>/issue/ENG-123/...` or `ENG-123`.
+	Url *string `json:"url,omitempty"`
+}
+
+// IssueLinkEvent `issue_link.created`, `issue_link.updated` (the tracker changed the issue's state, title
+// or address) and `issue_link.deleted` (unlinked, or the integration was disconnected).
+// Delivered to callers who can see the inbox.
+type IssueLinkEvent struct {
+	CreatedAt   time.Time          `json:"created_at"`
+	Data        IssueLinkEventData `json:"data"`
+	Id          int64              `json:"id"`
+	InboxId     uuid.UUID          `json:"inbox_id"`
+	Type        IssueLinkEventType `json:"type"`
+	WorkspaceId uuid.UUID          `json:"workspace_id"`
+}
+
+// IssueLinkEventType defines model for IssueLinkEvent.Type.
+type IssueLinkEventType string
+
+// IssueLinkEventData defines model for IssueLinkEventData.
+type IssueLinkEventData struct {
+	// IssueLink A GitHub or Linear issue linked to a feedback conversation or a roadmap idea.
+	IssueLink IssueLink `json:"issue_link"`
+
+	// PreviousProgress `issue_link.updated` only: the progress before, when the change moved it.
+	PreviousProgress *FeedbackProgress `json:"previous_progress,omitempty"`
+}
+
+// IssueLinkList defines model for IssueLinkList.
+type IssueLinkList struct {
+	Items []IssueLink `json:"items"`
+}
+
+// IssueProvider defines model for IssueProvider.
+type IssueProvider string
+
 // Label defines model for Label.
 type Label struct {
 	Color     string    `json:"color"`
@@ -16871,6 +17123,9 @@ type MessageEvent struct {
 
 	// InboxId The inbox it moved to (`moved`).
 	InboxId *uuid.UUID `json:"inbox_id,omitempty"`
+
+	// IssueLinkId `feedback_progress` only: the issue link whose issue's state set the progress.
+	IssueLinkId *uuid.UUID `json:"issue_link_id,omitempty"`
 
 	// Macro `macro_applied` only: the macro sent with the message just before.
 	Macro *MacroRef `json:"macro,omitempty"`
@@ -19839,6 +20094,9 @@ type StatusIncidentConversation struct {
 	Imported *ConversationImport `json:"imported,omitempty"`
 	InboxId  uuid.UUID           `json:"inbox_id"`
 
+	// Issues The GitHub and Linear issues a `feedback` conversation is linked to, oldest link first; absent when there are none.
+	Issues *[]IssueLink `json:"issues,omitempty"`
+
 	// Kind `feedback` conversations carry `feedback` metadata; everything else is `conversation`.
 	Kind ConversationKind `json:"kind"`
 
@@ -21418,6 +21676,19 @@ type WebhookHelpArticlePayload struct {
 	WorkspaceId uuid.UUID        `json:"workspace_id"`
 }
 
+// WebhookIssueLinkPayload defines model for WebhookIssueLinkPayload.
+type WebhookIssueLinkPayload struct {
+	Data IssueLinkEventData `json:"data"`
+
+	// InboxId The conversation's inbox; absent for contact events.
+	InboxId *uuid.UUID `json:"inbox_id,omitempty"`
+
+	// Timestamp When the event happened (not when it was sent).
+	Timestamp   time.Time        `json:"timestamp"`
+	Type        WebhookEventType `json:"type"`
+	WorkspaceId uuid.UUID        `json:"workspace_id"`
+}
+
 // WebhookMessageData defines model for WebhookMessageData.
 type WebhookMessageData struct {
 	// Contact The contact as a host backend needs it.
@@ -21731,6 +22002,12 @@ type InboxId = uuid.UUID
 
 // InviteId defines model for InviteId.
 type InviteId = uuid.UUID
+
+// IssueIntegrationId defines model for IssueIntegrationId.
+type IssueIntegrationId = uuid.UUID
+
+// IssueLinkId defines model for IssueLinkId.
+type IssueLinkId = uuid.UUID
 
 // LabelId defines model for LabelId.
 type LabelId = uuid.UUID
@@ -23103,6 +23380,27 @@ type ListConversationIncidentsParams struct {
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
 
+// ListConversationIssuesParams defines parameters for ListConversationIssues.
+type ListConversationIssuesParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// LinkConversationIssueParams defines parameters for LinkConversationIssue.
+type LinkConversationIssueParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// UnlinkConversationIssueParams defines parameters for UnlinkConversationIssue.
+type UnlinkConversationIssueParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
 // ListMessagesParams defines parameters for ListMessages.
 type ListMessagesParams struct {
 	Order *ListMessagesParamsOrder `form:"order,omitempty" json:"order,omitempty"`
@@ -23314,6 +23612,27 @@ type UnlinkIdeaConversationParams struct {
 
 // LinkIdeaConversationParams defines parameters for LinkIdeaConversation.
 type LinkIdeaConversationParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// ListIdeaIssuesParams defines parameters for ListIdeaIssues.
+type ListIdeaIssuesParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// LinkIdeaIssueParams defines parameters for LinkIdeaIssue.
+type LinkIdeaIssueParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// UnlinkIdeaIssueParams defines parameters for UnlinkIdeaIssue.
+type UnlinkIdeaIssueParams struct {
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
@@ -23983,6 +24302,48 @@ type CreateInviteParams struct {
 
 // DeleteInviteParams defines parameters for DeleteInvite.
 type DeleteInviteParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// ListIssueIntegrationsParams defines parameters for ListIssueIntegrations.
+type ListIssueIntegrationsParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// CreateIssueIntegrationParams defines parameters for CreateIssueIntegration.
+type CreateIssueIntegrationParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// DeleteIssueIntegrationParams defines parameters for DeleteIssueIntegration.
+type DeleteIssueIntegrationParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// GetIssueIntegrationParams defines parameters for GetIssueIntegration.
+type GetIssueIntegrationParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// UpdateIssueIntegrationParams defines parameters for UpdateIssueIntegration.
+type UpdateIssueIntegrationParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// RotateIssueWebhookSecretParams defines parameters for RotateIssueWebhookSecret.
+type RotateIssueWebhookSecretParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
@@ -25550,6 +25911,48 @@ type WebhookHelpArticleUnpublishedParams struct {
 	WebhookSignature WebhookSignatureHeader `json:"webhook-signature"`
 }
 
+// WebhookIssueLinkCreatedParams defines parameters for WebhookIssueLinkCreated.
+type WebhookIssueLinkCreatedParams struct {
+	// WebhookId The delivery's id, the same on every retry; use it to ignore duplicates.
+	WebhookId WebhookIdHeader `json:"webhook-id"`
+
+	// WebhookTimestamp Unix seconds of this attempt. Refuse values far from your clock.
+	WebhookTimestamp WebhookTimestampHeader `json:"webhook-timestamp"`
+
+	// WebhookSignature Space-separated `v1,<base64>` signatures: HMAC-SHA256 over
+	// `<webhook-id>.<webhook-timestamp>.<body>` with the base64-decoded part of the
+	// `whsec_` secret (Standard Webhooks). Two during a secret rotation.
+	WebhookSignature WebhookSignatureHeader `json:"webhook-signature"`
+}
+
+// WebhookIssueLinkDeletedParams defines parameters for WebhookIssueLinkDeleted.
+type WebhookIssueLinkDeletedParams struct {
+	// WebhookId The delivery's id, the same on every retry; use it to ignore duplicates.
+	WebhookId WebhookIdHeader `json:"webhook-id"`
+
+	// WebhookTimestamp Unix seconds of this attempt. Refuse values far from your clock.
+	WebhookTimestamp WebhookTimestampHeader `json:"webhook-timestamp"`
+
+	// WebhookSignature Space-separated `v1,<base64>` signatures: HMAC-SHA256 over
+	// `<webhook-id>.<webhook-timestamp>.<body>` with the base64-decoded part of the
+	// `whsec_` secret (Standard Webhooks). Two during a secret rotation.
+	WebhookSignature WebhookSignatureHeader `json:"webhook-signature"`
+}
+
+// WebhookIssueLinkUpdatedParams defines parameters for WebhookIssueLinkUpdated.
+type WebhookIssueLinkUpdatedParams struct {
+	// WebhookId The delivery's id, the same on every retry; use it to ignore duplicates.
+	WebhookId WebhookIdHeader `json:"webhook-id"`
+
+	// WebhookTimestamp Unix seconds of this attempt. Refuse values far from your clock.
+	WebhookTimestamp WebhookTimestampHeader `json:"webhook-timestamp"`
+
+	// WebhookSignature Space-separated `v1,<base64>` signatures: HMAC-SHA256 over
+	// `<webhook-id>.<webhook-timestamp>.<body>` with the base64-decoded part of the
+	// `whsec_` secret (Standard Webhooks). Two during a secret rotation.
+	WebhookSignature WebhookSignatureHeader `json:"webhook-signature"`
+}
+
 // WebhookMessageCreatedParams defines parameters for WebhookMessageCreated.
 type WebhookMessageCreatedParams struct {
 	// WebhookId The delivery's id, the same on every retry; use it to ignore duplicates.
@@ -25957,6 +26360,9 @@ type UpdateConversationJSONRequestBody = ConversationUpdate
 // CreateDiscussionFromConversationJSONRequestBody defines body for CreateDiscussionFromConversation for application/json ContentType.
 type CreateDiscussionFromConversationJSONRequestBody = DiscussionFromConversation
 
+// LinkConversationIssueJSONRequestBody defines body for LinkConversationIssue for application/json ContentType.
+type LinkConversationIssueJSONRequestBody = IssueLinkCreate
+
 // CreateMessageJSONRequestBody defines body for CreateMessage for application/json ContentType.
 type CreateMessageJSONRequestBody = MessageCreate
 
@@ -25983,6 +26389,9 @@ type UpdateDiscussionJSONRequestBody = DiscussionUpdate
 
 // AcceptDiscussionAnswerJSONRequestBody defines body for AcceptDiscussionAnswer for application/json ContentType.
 type AcceptDiscussionAnswerJSONRequestBody = DiscussionAnswer
+
+// LinkIdeaIssueJSONRequestBody defines body for LinkIdeaIssue for application/json ContentType.
+type LinkIdeaIssueJSONRequestBody = IssueLinkCreate
 
 // ReplyToIdeaConversationsJSONRequestBody defines body for ReplyToIdeaConversations for application/json ContentType.
 type ReplyToIdeaConversationsJSONRequestBody = LinkedReplyCreate
@@ -26064,6 +26473,12 @@ type SetInboxSlackJSONRequestBody = InboxSlackUpdate
 
 // CreateInviteJSONRequestBody defines body for CreateInvite for application/json ContentType.
 type CreateInviteJSONRequestBody = InviteCreate
+
+// CreateIssueIntegrationJSONRequestBody defines body for CreateIssueIntegration for application/json ContentType.
+type CreateIssueIntegrationJSONRequestBody = IssueIntegrationCreate
+
+// UpdateIssueIntegrationJSONRequestBody defines body for UpdateIssueIntegration for application/json ContentType.
+type UpdateIssueIntegrationJSONRequestBody = IssueIntegrationUpdate
 
 // CreateLabelJSONRequestBody defines body for CreateLabel for application/json ContentType.
 type CreateLabelJSONRequestBody = LabelCreate
@@ -26319,6 +26734,15 @@ type WebhookHelpArticlePublishedJSONRequestBody = WebhookHelpArticlePayload
 
 // WebhookHelpArticleUnpublishedJSONRequestBody defines body for WebhookHelpArticleUnpublished for application/json ContentType.
 type WebhookHelpArticleUnpublishedJSONRequestBody = WebhookHelpArticlePayload
+
+// WebhookIssueLinkCreatedJSONRequestBody defines body for WebhookIssueLinkCreated for application/json ContentType.
+type WebhookIssueLinkCreatedJSONRequestBody = WebhookIssueLinkPayload
+
+// WebhookIssueLinkDeletedJSONRequestBody defines body for WebhookIssueLinkDeleted for application/json ContentType.
+type WebhookIssueLinkDeletedJSONRequestBody = WebhookIssueLinkPayload
+
+// WebhookIssueLinkUpdatedJSONRequestBody defines body for WebhookIssueLinkUpdated for application/json ContentType.
+type WebhookIssueLinkUpdatedJSONRequestBody = WebhookIssueLinkPayload
 
 // WebhookMessageCreatedJSONRequestBody defines body for WebhookMessageCreated for application/json ContentType.
 type WebhookMessageCreatedJSONRequestBody = WebhookMessagePayload
@@ -28527,6 +28951,32 @@ func (t *RealtimeMessage) MergeDiscussionStageEvent(v DiscussionStageEvent) erro
 	return err
 }
 
+// AsIssueLinkEvent returns the union data inside the RealtimeMessage as a IssueLinkEvent
+func (t RealtimeMessage) AsIssueLinkEvent() (IssueLinkEvent, error) {
+	var body IssueLinkEvent
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromIssueLinkEvent overwrites any union data inside the RealtimeMessage as the provided IssueLinkEvent
+func (t *RealtimeMessage) FromIssueLinkEvent(v IssueLinkEvent) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeIssueLinkEvent performs a merge with any union data inside the RealtimeMessage, using the provided IssueLinkEvent
+func (t *RealtimeMessage) MergeIssueLinkEvent(v IssueLinkEvent) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
 // AsSubscriptionEvent returns the union data inside the RealtimeMessage as a SubscriptionEvent
 func (t RealtimeMessage) AsSubscriptionEvent() (SubscriptionEvent, error) {
 	var body SubscriptionEvent
@@ -29373,6 +29823,12 @@ func (t RealtimeMessage) ValueByDiscriminator() (interface{}, error) {
 		return t.AsInboxUpdatedEvent()
 	case "inbox_access.changed":
 		return t.AsInboxAccessChangedEvent()
+	case "issue_link.created":
+		return t.AsIssueLinkEvent()
+	case "issue_link.deleted":
+		return t.AsIssueLinkEvent()
+	case "issue_link.updated":
+		return t.AsIssueLinkEvent()
 	case "list_import.progress":
 		return t.AsListImportProgressEvent()
 	case "list_import.updated":
@@ -29910,6 +30366,32 @@ func (t *StoredEvent) MergeDiscussionStageEvent(v DiscussionStageEvent) error {
 	return err
 }
 
+// AsIssueLinkEvent returns the union data inside the StoredEvent as a IssueLinkEvent
+func (t StoredEvent) AsIssueLinkEvent() (IssueLinkEvent, error) {
+	var body IssueLinkEvent
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromIssueLinkEvent overwrites any union data inside the StoredEvent as the provided IssueLinkEvent
+func (t *StoredEvent) FromIssueLinkEvent(v IssueLinkEvent) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeIssueLinkEvent performs a merge with any union data inside the StoredEvent, using the provided IssueLinkEvent
+func (t *StoredEvent) MergeIssueLinkEvent(v IssueLinkEvent) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
 // AsSubscriptionEvent returns the union data inside the StoredEvent as a SubscriptionEvent
 func (t StoredEvent) AsSubscriptionEvent() (SubscriptionEvent, error) {
 	var body SubscriptionEvent
@@ -30220,6 +30702,12 @@ func (t StoredEvent) ValueByDiscriminator() (interface{}, error) {
 		return t.AsInboxUpdatedEvent()
 	case "inbox_access.changed":
 		return t.AsInboxAccessChangedEvent()
+	case "issue_link.created":
+		return t.AsIssueLinkEvent()
+	case "issue_link.deleted":
+		return t.AsIssueLinkEvent()
+	case "issue_link.updated":
+		return t.AsIssueLinkEvent()
 	case "message.created":
 		return t.AsMessageCreatedEvent()
 	case "message.redacted":
@@ -30834,6 +31322,15 @@ type ServerInterface interface {
 	// ListConversationIncidents List the incidents a conversation is linked to
 	// (GET /v1/conversations/{conversationId}/incidents)
 	ListConversationIncidents(w http.ResponseWriter, r *http.Request, conversationId ConversationId, params ListConversationIncidentsParams)
+	// ListConversationIssues List the issues a feedback is linked to
+	// (GET /v1/conversations/{conversationId}/issues)
+	ListConversationIssues(w http.ResponseWriter, r *http.Request, conversationId ConversationId, params ListConversationIssuesParams)
+	// LinkConversationIssue Create or link an issue for a feedback
+	// (POST /v1/conversations/{conversationId}/issues)
+	LinkConversationIssue(w http.ResponseWriter, r *http.Request, conversationId ConversationId, params LinkConversationIssueParams)
+	// UnlinkConversationIssue Unlink an issue from a feedback
+	// (DELETE /v1/conversations/{conversationId}/issues/{issueLinkId})
+	UnlinkConversationIssue(w http.ResponseWriter, r *http.Request, conversationId ConversationId, issueLinkId IssueLinkId, params UnlinkConversationIssueParams)
 	// ListMessages List a conversation's messages
 	// (GET /v1/conversations/{conversationId}/messages)
 	ListMessages(w http.ResponseWriter, r *http.Request, conversationId ConversationId, params ListMessagesParams)
@@ -30903,6 +31400,15 @@ type ServerInterface interface {
 	// LinkIdeaConversation Link feedback to an idea
 	// (PUT /v1/discussions/{discussionId}/conversations/{conversationId})
 	LinkIdeaConversation(w http.ResponseWriter, r *http.Request, discussionId DiscussionId, conversationId ConversationId, params LinkIdeaConversationParams)
+	// ListIdeaIssues List the issues an idea is linked to
+	// (GET /v1/discussions/{discussionId}/issues)
+	ListIdeaIssues(w http.ResponseWriter, r *http.Request, discussionId DiscussionId, params ListIdeaIssuesParams)
+	// LinkIdeaIssue Create or link an issue for an idea
+	// (POST /v1/discussions/{discussionId}/issues)
+	LinkIdeaIssue(w http.ResponseWriter, r *http.Request, discussionId DiscussionId, params LinkIdeaIssueParams)
+	// UnlinkIdeaIssue Unlink an issue from an idea
+	// (DELETE /v1/discussions/{discussionId}/issues/{issueLinkId})
+	UnlinkIdeaIssue(w http.ResponseWriter, r *http.Request, discussionId DiscussionId, issueLinkId IssueLinkId, params UnlinkIdeaIssueParams)
 	// ReplyToIdeaConversations Reply to the feedback linked to an idea
 	// (POST /v1/discussions/{discussionId}/linked-replies)
 	ReplyToIdeaConversations(w http.ResponseWriter, r *http.Request, discussionId DiscussionId, params ReplyToIdeaConversationsParams)
@@ -31131,6 +31637,24 @@ type ServerInterface interface {
 	// DeleteInvite Withdraw an invite
 	// (DELETE /v1/invites/{inviteId})
 	DeleteInvite(w http.ResponseWriter, r *http.Request, inviteId InviteId, params DeleteInviteParams)
+	// ListIssueIntegrations List issue tracker integrations
+	// (GET /v1/issue-integrations)
+	ListIssueIntegrations(w http.ResponseWriter, r *http.Request, params ListIssueIntegrationsParams)
+	// CreateIssueIntegration Connect GitHub or Linear
+	// (POST /v1/issue-integrations)
+	CreateIssueIntegration(w http.ResponseWriter, r *http.Request, params CreateIssueIntegrationParams)
+	// DeleteIssueIntegration Disconnect an issue tracker
+	// (DELETE /v1/issue-integrations/{integrationId})
+	DeleteIssueIntegration(w http.ResponseWriter, r *http.Request, integrationId IssueIntegrationId, params DeleteIssueIntegrationParams)
+	// GetIssueIntegration Get an issue tracker integration
+	// (GET /v1/issue-integrations/{integrationId})
+	GetIssueIntegration(w http.ResponseWriter, r *http.Request, integrationId IssueIntegrationId, params GetIssueIntegrationParams)
+	// UpdateIssueIntegration Change an issue tracker integration
+	// (PATCH /v1/issue-integrations/{integrationId})
+	UpdateIssueIntegration(w http.ResponseWriter, r *http.Request, integrationId IssueIntegrationId, params UpdateIssueIntegrationParams)
+	// RotateIssueWebhookSecret Make a new webhook secret
+	// (POST /v1/issue-integrations/{integrationId}/webhook-secret)
+	RotateIssueWebhookSecret(w http.ResponseWriter, r *http.Request, integrationId IssueIntegrationId, params RotateIssueWebhookSecretParams)
 	// ListLabels List labels
 	// (GET /v1/labels)
 	ListLabels(w http.ResponseWriter, r *http.Request, params ListLabelsParams)
@@ -41674,6 +42198,184 @@ func (siw *ServerInterfaceWrapper) ListConversationIncidents(w http.ResponseWrit
 	handler.ServeHTTP(w, r)
 }
 
+// ListConversationIssues operation middleware
+func (siw *ServerInterfaceWrapper) ListConversationIssues(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "conversationId" -------------
+	var conversationId ConversationId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "conversationId", r.PathValue("conversationId"), &conversationId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "conversationId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListConversationIssuesParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListConversationIssues(w, r, conversationId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// LinkConversationIssue operation middleware
+func (siw *ServerInterfaceWrapper) LinkConversationIssue(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "conversationId" -------------
+	var conversationId ConversationId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "conversationId", r.PathValue("conversationId"), &conversationId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "conversationId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params LinkConversationIssueParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.LinkConversationIssue(w, r, conversationId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UnlinkConversationIssue operation middleware
+func (siw *ServerInterfaceWrapper) UnlinkConversationIssue(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "conversationId" -------------
+	var conversationId ConversationId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "conversationId", r.PathValue("conversationId"), &conversationId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "conversationId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "issueLinkId" -------------
+	var issueLinkId IssueLinkId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "issueLinkId", r.PathValue("issueLinkId"), &issueLinkId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "issueLinkId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params UnlinkConversationIssueParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UnlinkConversationIssue(w, r, conversationId, issueLinkId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // ListMessages operation middleware
 func (siw *ServerInterfaceWrapper) ListMessages(w http.ResponseWriter, r *http.Request) {
 
@@ -43219,6 +43921,184 @@ func (siw *ServerInterfaceWrapper) LinkIdeaConversation(w http.ResponseWriter, r
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.LinkIdeaConversation(w, r, discussionId, conversationId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListIdeaIssues operation middleware
+func (siw *ServerInterfaceWrapper) ListIdeaIssues(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "discussionId" -------------
+	var discussionId DiscussionId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "discussionId", r.PathValue("discussionId"), &discussionId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "discussionId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListIdeaIssuesParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListIdeaIssues(w, r, discussionId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// LinkIdeaIssue operation middleware
+func (siw *ServerInterfaceWrapper) LinkIdeaIssue(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "discussionId" -------------
+	var discussionId DiscussionId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "discussionId", r.PathValue("discussionId"), &discussionId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "discussionId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params LinkIdeaIssueParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.LinkIdeaIssue(w, r, discussionId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UnlinkIdeaIssue operation middleware
+func (siw *ServerInterfaceWrapper) UnlinkIdeaIssue(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "discussionId" -------------
+	var discussionId DiscussionId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "discussionId", r.PathValue("discussionId"), &discussionId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "discussionId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "issueLinkId" -------------
+	var issueLinkId IssueLinkId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "issueLinkId", r.PathValue("issueLinkId"), &issueLinkId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "issueLinkId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params UnlinkIdeaIssueParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UnlinkIdeaIssue(w, r, discussionId, issueLinkId, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -48188,6 +49068,326 @@ func (siw *ServerInterfaceWrapper) DeleteInvite(w http.ResponseWriter, r *http.R
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.DeleteInvite(w, r, inviteId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListIssueIntegrations operation middleware
+func (siw *ServerInterfaceWrapper) ListIssueIntegrations(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListIssueIntegrationsParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListIssueIntegrations(w, r, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CreateIssueIntegration operation middleware
+func (siw *ServerInterfaceWrapper) CreateIssueIntegration(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params CreateIssueIntegrationParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CreateIssueIntegration(w, r, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// DeleteIssueIntegration operation middleware
+func (siw *ServerInterfaceWrapper) DeleteIssueIntegration(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "integrationId" -------------
+	var integrationId IssueIntegrationId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "integrationId", r.PathValue("integrationId"), &integrationId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "integrationId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params DeleteIssueIntegrationParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.DeleteIssueIntegration(w, r, integrationId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetIssueIntegration operation middleware
+func (siw *ServerInterfaceWrapper) GetIssueIntegration(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "integrationId" -------------
+	var integrationId IssueIntegrationId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "integrationId", r.PathValue("integrationId"), &integrationId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "integrationId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetIssueIntegrationParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetIssueIntegration(w, r, integrationId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UpdateIssueIntegration operation middleware
+func (siw *ServerInterfaceWrapper) UpdateIssueIntegration(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "integrationId" -------------
+	var integrationId IssueIntegrationId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "integrationId", r.PathValue("integrationId"), &integrationId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "integrationId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params UpdateIssueIntegrationParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UpdateIssueIntegration(w, r, integrationId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// RotateIssueWebhookSecret operation middleware
+func (siw *ServerInterfaceWrapper) RotateIssueWebhookSecret(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "integrationId" -------------
+	var integrationId IssueIntegrationId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "integrationId", r.PathValue("integrationId"), &integrationId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "integrationId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params RotateIssueWebhookSecretParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.RotateIssueWebhookSecret(w, r, integrationId, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -58178,6 +59378,9 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/conversations/{conversationId}/pin", wrapper.UnpinConversation)
 	m.HandleFunc(http.MethodPut+" "+options.BaseURL+"/v1/conversations/{conversationId}/pin", wrapper.PinConversation)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/conversations/{conversationId}/incidents", wrapper.ListConversationIncidents)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/conversations/{conversationId}/issues", wrapper.ListConversationIssues)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/conversations/{conversationId}/issues", wrapper.LinkConversationIssue)
+	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/conversations/{conversationId}/issues/{issueLinkId}", wrapper.UnlinkConversationIssue)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/conversations/{conversationId}/typing", wrapper.SetMemberTyping)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/drafts", wrapper.ListDrafts)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/attachments/{attachmentId}", wrapper.DownloadAttachment)
@@ -58227,6 +59430,9 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/discussions/{discussionId}/stage-changes", wrapper.ListIdeaStageChanges)
 	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/discussions/{discussionId}/conversations/{conversationId}", wrapper.UnlinkIdeaConversation)
 	m.HandleFunc(http.MethodPut+" "+options.BaseURL+"/v1/discussions/{discussionId}/conversations/{conversationId}", wrapper.LinkIdeaConversation)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/discussions/{discussionId}/issues", wrapper.ListIdeaIssues)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/discussions/{discussionId}/issues", wrapper.LinkIdeaIssue)
+	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/discussions/{discussionId}/issues/{issueLinkId}", wrapper.UnlinkIdeaIssue)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/discussions/{discussionId}/linked-replies", wrapper.ReplyToIdeaConversations)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/discussions/{discussionId}/linked-replies/{replyId}", wrapper.GetIdeaLinkedReply)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/lists", wrapper.ListMailingLists)
@@ -58306,6 +59512,12 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/migrations/{migrationId}/errors", wrapper.ListMigrationErrors)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/usage", wrapper.GetUsage)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/feedback", wrapper.CreateFeedback)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/issue-integrations", wrapper.ListIssueIntegrations)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/issue-integrations", wrapper.CreateIssueIntegration)
+	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/issue-integrations/{integrationId}", wrapper.DeleteIssueIntegration)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/issue-integrations/{integrationId}", wrapper.GetIssueIntegration)
+	m.HandleFunc(http.MethodPatch+" "+options.BaseURL+"/v1/issue-integrations/{integrationId}", wrapper.UpdateIssueIntegration)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/issue-integrations/{integrationId}/webhook-secret", wrapper.RotateIssueWebhookSecret)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/webhooks", wrapper.ListWebhooks)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/webhooks", wrapper.CreateWebhook)
 	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/webhooks/{webhookId}", wrapper.DeleteWebhook)
@@ -58604,6 +59816,15 @@ type WebhookReceiverInterface interface {
 	// A help article translation was unpublished
 	// HandleWebhookHelpArticleUnpublishedWebhook handles the POST webhook for help.article.unpublished.
 	HandleWebhookHelpArticleUnpublishedWebhook(w http.ResponseWriter, r *http.Request, params WebhookHelpArticleUnpublishedParams)
+	// An issue was linked
+	// HandleWebhookIssueLinkCreatedWebhook handles the POST webhook for issue_link.created.
+	HandleWebhookIssueLinkCreatedWebhook(w http.ResponseWriter, r *http.Request, params WebhookIssueLinkCreatedParams)
+	// An issue was unlinked
+	// HandleWebhookIssueLinkDeletedWebhook handles the POST webhook for issue_link.deleted.
+	HandleWebhookIssueLinkDeletedWebhook(w http.ResponseWriter, r *http.Request, params WebhookIssueLinkDeletedParams)
+	// A linked issue changed
+	// HandleWebhookIssueLinkUpdatedWebhook handles the POST webhook for issue_link.updated.
+	HandleWebhookIssueLinkUpdatedWebhook(w http.ResponseWriter, r *http.Request, params WebhookIssueLinkUpdatedParams)
 	// A message was added
 	// HandleWebhookMessageCreatedWebhook handles the POST webhook for message.created.
 	HandleWebhookMessageCreatedWebhook(w http.ResponseWriter, r *http.Request, params WebhookMessageCreatedParams)
@@ -60942,6 +62163,282 @@ func WebhookHelpArticleUnpublishedWebhookHandler(si WebhookReceiverInterface, er
 		}
 
 		si.HandleWebhookHelpArticleUnpublishedWebhook(w, r, params)
+	})
+	for _, mw := range middlewares {
+		h = mw(h)
+	}
+	return h
+}
+
+// WebhookIssueLinkCreatedWebhookHandler returns the http.Handler for the issue_link.created webhook.
+// Mount this at the URL path advertised to webhook senders. errHandler
+// may be nil; if so, parameter-binding errors return 400 with the error
+// message. Middlewares are applied in the order provided -- the last
+// argument becomes the outermost wrapper.
+func WebhookIssueLinkCreatedWebhookHandler(si WebhookReceiverInterface, errHandler func(w http.ResponseWriter, r *http.Request, err error), middlewares ...WebhookReceiverMiddlewareFunc) http.Handler {
+	if errHandler == nil {
+		errHandler = func(w http.ResponseWriter, r *http.Request, err error) {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+		}
+	}
+	var h http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		var err error
+		_ = err
+
+		// Parameter object where we will unmarshal all parameters from the request.
+		var params WebhookIssueLinkCreatedParams
+
+		// ------------- Required header parameter "webhook-id" -------------
+		if valueList, found := r.Header[http.CanonicalHeaderKey("webhook-id")]; found {
+			var WebhookId WebhookIdHeader
+			n := len(valueList)
+			if n != 1 {
+				errHandler(w, r, &TooManyValuesForParamError{ParamName: "webhook-id", Count: n})
+				return
+			}
+
+			err = runtime.BindStyledParameterWithOptions("simple", "webhook-id", valueList[0], &WebhookId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
+			if err != nil {
+				errHandler(w, r, &InvalidParamFormatError{ParamName: "webhook-id", Err: err})
+				return
+			}
+			params.WebhookId = WebhookId
+
+		} else {
+			err := fmt.Errorf("Header parameter webhook-id is required, but not found")
+			errHandler(w, r, &RequiredHeaderError{ParamName: "webhook-id", Err: err})
+			return
+		}
+
+		// ------------- Required header parameter "webhook-timestamp" -------------
+		if valueList, found := r.Header[http.CanonicalHeaderKey("webhook-timestamp")]; found {
+			var WebhookTimestamp WebhookTimestampHeader
+			n := len(valueList)
+			if n != 1 {
+				errHandler(w, r, &TooManyValuesForParamError{ParamName: "webhook-timestamp", Count: n})
+				return
+			}
+
+			err = runtime.BindStyledParameterWithOptions("simple", "webhook-timestamp", valueList[0], &WebhookTimestamp, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
+			if err != nil {
+				errHandler(w, r, &InvalidParamFormatError{ParamName: "webhook-timestamp", Err: err})
+				return
+			}
+			params.WebhookTimestamp = WebhookTimestamp
+
+		} else {
+			err := fmt.Errorf("Header parameter webhook-timestamp is required, but not found")
+			errHandler(w, r, &RequiredHeaderError{ParamName: "webhook-timestamp", Err: err})
+			return
+		}
+
+		// ------------- Required header parameter "webhook-signature" -------------
+		if valueList, found := r.Header[http.CanonicalHeaderKey("webhook-signature")]; found {
+			var WebhookSignature WebhookSignatureHeader
+			n := len(valueList)
+			if n != 1 {
+				errHandler(w, r, &TooManyValuesForParamError{ParamName: "webhook-signature", Count: n})
+				return
+			}
+
+			err = runtime.BindStyledParameterWithOptions("simple", "webhook-signature", valueList[0], &WebhookSignature, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
+			if err != nil {
+				errHandler(w, r, &InvalidParamFormatError{ParamName: "webhook-signature", Err: err})
+				return
+			}
+			params.WebhookSignature = WebhookSignature
+
+		} else {
+			err := fmt.Errorf("Header parameter webhook-signature is required, but not found")
+			errHandler(w, r, &RequiredHeaderError{ParamName: "webhook-signature", Err: err})
+			return
+		}
+
+		si.HandleWebhookIssueLinkCreatedWebhook(w, r, params)
+	})
+	for _, mw := range middlewares {
+		h = mw(h)
+	}
+	return h
+}
+
+// WebhookIssueLinkDeletedWebhookHandler returns the http.Handler for the issue_link.deleted webhook.
+// Mount this at the URL path advertised to webhook senders. errHandler
+// may be nil; if so, parameter-binding errors return 400 with the error
+// message. Middlewares are applied in the order provided -- the last
+// argument becomes the outermost wrapper.
+func WebhookIssueLinkDeletedWebhookHandler(si WebhookReceiverInterface, errHandler func(w http.ResponseWriter, r *http.Request, err error), middlewares ...WebhookReceiverMiddlewareFunc) http.Handler {
+	if errHandler == nil {
+		errHandler = func(w http.ResponseWriter, r *http.Request, err error) {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+		}
+	}
+	var h http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		var err error
+		_ = err
+
+		// Parameter object where we will unmarshal all parameters from the request.
+		var params WebhookIssueLinkDeletedParams
+
+		// ------------- Required header parameter "webhook-id" -------------
+		if valueList, found := r.Header[http.CanonicalHeaderKey("webhook-id")]; found {
+			var WebhookId WebhookIdHeader
+			n := len(valueList)
+			if n != 1 {
+				errHandler(w, r, &TooManyValuesForParamError{ParamName: "webhook-id", Count: n})
+				return
+			}
+
+			err = runtime.BindStyledParameterWithOptions("simple", "webhook-id", valueList[0], &WebhookId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
+			if err != nil {
+				errHandler(w, r, &InvalidParamFormatError{ParamName: "webhook-id", Err: err})
+				return
+			}
+			params.WebhookId = WebhookId
+
+		} else {
+			err := fmt.Errorf("Header parameter webhook-id is required, but not found")
+			errHandler(w, r, &RequiredHeaderError{ParamName: "webhook-id", Err: err})
+			return
+		}
+
+		// ------------- Required header parameter "webhook-timestamp" -------------
+		if valueList, found := r.Header[http.CanonicalHeaderKey("webhook-timestamp")]; found {
+			var WebhookTimestamp WebhookTimestampHeader
+			n := len(valueList)
+			if n != 1 {
+				errHandler(w, r, &TooManyValuesForParamError{ParamName: "webhook-timestamp", Count: n})
+				return
+			}
+
+			err = runtime.BindStyledParameterWithOptions("simple", "webhook-timestamp", valueList[0], &WebhookTimestamp, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
+			if err != nil {
+				errHandler(w, r, &InvalidParamFormatError{ParamName: "webhook-timestamp", Err: err})
+				return
+			}
+			params.WebhookTimestamp = WebhookTimestamp
+
+		} else {
+			err := fmt.Errorf("Header parameter webhook-timestamp is required, but not found")
+			errHandler(w, r, &RequiredHeaderError{ParamName: "webhook-timestamp", Err: err})
+			return
+		}
+
+		// ------------- Required header parameter "webhook-signature" -------------
+		if valueList, found := r.Header[http.CanonicalHeaderKey("webhook-signature")]; found {
+			var WebhookSignature WebhookSignatureHeader
+			n := len(valueList)
+			if n != 1 {
+				errHandler(w, r, &TooManyValuesForParamError{ParamName: "webhook-signature", Count: n})
+				return
+			}
+
+			err = runtime.BindStyledParameterWithOptions("simple", "webhook-signature", valueList[0], &WebhookSignature, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
+			if err != nil {
+				errHandler(w, r, &InvalidParamFormatError{ParamName: "webhook-signature", Err: err})
+				return
+			}
+			params.WebhookSignature = WebhookSignature
+
+		} else {
+			err := fmt.Errorf("Header parameter webhook-signature is required, but not found")
+			errHandler(w, r, &RequiredHeaderError{ParamName: "webhook-signature", Err: err})
+			return
+		}
+
+		si.HandleWebhookIssueLinkDeletedWebhook(w, r, params)
+	})
+	for _, mw := range middlewares {
+		h = mw(h)
+	}
+	return h
+}
+
+// WebhookIssueLinkUpdatedWebhookHandler returns the http.Handler for the issue_link.updated webhook.
+// Mount this at the URL path advertised to webhook senders. errHandler
+// may be nil; if so, parameter-binding errors return 400 with the error
+// message. Middlewares are applied in the order provided -- the last
+// argument becomes the outermost wrapper.
+func WebhookIssueLinkUpdatedWebhookHandler(si WebhookReceiverInterface, errHandler func(w http.ResponseWriter, r *http.Request, err error), middlewares ...WebhookReceiverMiddlewareFunc) http.Handler {
+	if errHandler == nil {
+		errHandler = func(w http.ResponseWriter, r *http.Request, err error) {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+		}
+	}
+	var h http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		var err error
+		_ = err
+
+		// Parameter object where we will unmarshal all parameters from the request.
+		var params WebhookIssueLinkUpdatedParams
+
+		// ------------- Required header parameter "webhook-id" -------------
+		if valueList, found := r.Header[http.CanonicalHeaderKey("webhook-id")]; found {
+			var WebhookId WebhookIdHeader
+			n := len(valueList)
+			if n != 1 {
+				errHandler(w, r, &TooManyValuesForParamError{ParamName: "webhook-id", Count: n})
+				return
+			}
+
+			err = runtime.BindStyledParameterWithOptions("simple", "webhook-id", valueList[0], &WebhookId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
+			if err != nil {
+				errHandler(w, r, &InvalidParamFormatError{ParamName: "webhook-id", Err: err})
+				return
+			}
+			params.WebhookId = WebhookId
+
+		} else {
+			err := fmt.Errorf("Header parameter webhook-id is required, but not found")
+			errHandler(w, r, &RequiredHeaderError{ParamName: "webhook-id", Err: err})
+			return
+		}
+
+		// ------------- Required header parameter "webhook-timestamp" -------------
+		if valueList, found := r.Header[http.CanonicalHeaderKey("webhook-timestamp")]; found {
+			var WebhookTimestamp WebhookTimestampHeader
+			n := len(valueList)
+			if n != 1 {
+				errHandler(w, r, &TooManyValuesForParamError{ParamName: "webhook-timestamp", Count: n})
+				return
+			}
+
+			err = runtime.BindStyledParameterWithOptions("simple", "webhook-timestamp", valueList[0], &WebhookTimestamp, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
+			if err != nil {
+				errHandler(w, r, &InvalidParamFormatError{ParamName: "webhook-timestamp", Err: err})
+				return
+			}
+			params.WebhookTimestamp = WebhookTimestamp
+
+		} else {
+			err := fmt.Errorf("Header parameter webhook-timestamp is required, but not found")
+			errHandler(w, r, &RequiredHeaderError{ParamName: "webhook-timestamp", Err: err})
+			return
+		}
+
+		// ------------- Required header parameter "webhook-signature" -------------
+		if valueList, found := r.Header[http.CanonicalHeaderKey("webhook-signature")]; found {
+			var WebhookSignature WebhookSignatureHeader
+			n := len(valueList)
+			if n != 1 {
+				errHandler(w, r, &TooManyValuesForParamError{ParamName: "webhook-signature", Count: n})
+				return
+			}
+
+			err = runtime.BindStyledParameterWithOptions("simple", "webhook-signature", valueList[0], &WebhookSignature, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
+			if err != nil {
+				errHandler(w, r, &InvalidParamFormatError{ParamName: "webhook-signature", Err: err})
+				return
+			}
+			params.WebhookSignature = WebhookSignature
+
+		} else {
+			err := fmt.Errorf("Header parameter webhook-signature is required, but not found")
+			errHandler(w, r, &RequiredHeaderError{ParamName: "webhook-signature", Err: err})
+			return
+		}
+
+		si.HandleWebhookIssueLinkUpdatedWebhook(w, r, params)
 	})
 	for _, mw := range middlewares {
 		h = mw(h)
@@ -76872,6 +78369,273 @@ func (response ListConversationIncidents404ApplicationProblemPlusJSONResponse) V
 	return err
 }
 
+type ListConversationIssuesRequestObject struct {
+	ConversationId ConversationId `json:"conversationId"`
+	Params         ListConversationIssuesParams
+}
+
+type ListConversationIssuesResponseObject interface {
+	VisitListConversationIssuesResponse(w http.ResponseWriter) error
+}
+
+type ListConversationIssues200JSONResponse IssueLinkList
+
+func (response ListConversationIssues200JSONResponse) VisitListConversationIssuesResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListConversationIssues401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response ListConversationIssues401ApplicationProblemPlusJSONResponse) VisitListConversationIssuesResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListConversationIssues403ApplicationProblemPlusJSONResponse Problem
+
+func (response ListConversationIssues403ApplicationProblemPlusJSONResponse) VisitListConversationIssuesResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListConversationIssues404ApplicationProblemPlusJSONResponse Problem
+
+func (response ListConversationIssues404ApplicationProblemPlusJSONResponse) VisitListConversationIssuesResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type LinkConversationIssueRequestObject struct {
+	ConversationId ConversationId `json:"conversationId"`
+	Params         LinkConversationIssueParams
+	Body           *LinkConversationIssueJSONRequestBody
+}
+
+type LinkConversationIssueResponseObject interface {
+	VisitLinkConversationIssueResponse(w http.ResponseWriter) error
+}
+
+type LinkConversationIssue200JSONResponse IssueLink
+
+func (response LinkConversationIssue200JSONResponse) VisitLinkConversationIssueResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type LinkConversationIssue201JSONResponse IssueLink
+
+func (response LinkConversationIssue201JSONResponse) VisitLinkConversationIssueResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(201)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type LinkConversationIssue400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response LinkConversationIssue400ApplicationProblemPlusJSONResponse) VisitLinkConversationIssueResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type LinkConversationIssue401ApplicationProblemPlusJSONResponse Problem
+
+func (response LinkConversationIssue401ApplicationProblemPlusJSONResponse) VisitLinkConversationIssueResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type LinkConversationIssue403ApplicationProblemPlusJSONResponse Problem
+
+func (response LinkConversationIssue403ApplicationProblemPlusJSONResponse) VisitLinkConversationIssueResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type LinkConversationIssue404ApplicationProblemPlusJSONResponse Problem
+
+func (response LinkConversationIssue404ApplicationProblemPlusJSONResponse) VisitLinkConversationIssueResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type LinkConversationIssue409ApplicationProblemPlusJSONResponse Problem
+
+func (response LinkConversationIssue409ApplicationProblemPlusJSONResponse) VisitLinkConversationIssueResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(409)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type LinkConversationIssue422ApplicationProblemPlusJSONResponse Problem
+
+func (response LinkConversationIssue422ApplicationProblemPlusJSONResponse) VisitLinkConversationIssueResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(422)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type LinkConversationIssue503ApplicationProblemPlusJSONResponse Problem
+
+func (response LinkConversationIssue503ApplicationProblemPlusJSONResponse) VisitLinkConversationIssueResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(503)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UnlinkConversationIssueRequestObject struct {
+	ConversationId ConversationId `json:"conversationId"`
+	IssueLinkId    IssueLinkId    `json:"issueLinkId"`
+	Params         UnlinkConversationIssueParams
+}
+
+type UnlinkConversationIssueResponseObject interface {
+	VisitUnlinkConversationIssueResponse(w http.ResponseWriter) error
+}
+
+type UnlinkConversationIssue204Response struct {
+}
+
+func (response UnlinkConversationIssue204Response) VisitUnlinkConversationIssueResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
+}
+
+type UnlinkConversationIssue401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response UnlinkConversationIssue401ApplicationProblemPlusJSONResponse) VisitUnlinkConversationIssueResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UnlinkConversationIssue403ApplicationProblemPlusJSONResponse Problem
+
+func (response UnlinkConversationIssue403ApplicationProblemPlusJSONResponse) VisitUnlinkConversationIssueResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UnlinkConversationIssue404ApplicationProblemPlusJSONResponse Problem
+
+func (response UnlinkConversationIssue404ApplicationProblemPlusJSONResponse) VisitUnlinkConversationIssueResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
 type ListMessagesRequestObject struct {
 	ConversationId ConversationId `json:"conversationId"`
 	Params         ListMessagesParams
@@ -78729,6 +80493,273 @@ func (response LinkIdeaConversation422ApplicationProblemPlusJSONResponse) VisitL
 	}
 	w.Header().Set("Content-Type", "application/problem+json")
 	w.WriteHeader(422)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListIdeaIssuesRequestObject struct {
+	DiscussionId DiscussionId `json:"discussionId"`
+	Params       ListIdeaIssuesParams
+}
+
+type ListIdeaIssuesResponseObject interface {
+	VisitListIdeaIssuesResponse(w http.ResponseWriter) error
+}
+
+type ListIdeaIssues200JSONResponse IssueLinkList
+
+func (response ListIdeaIssues200JSONResponse) VisitListIdeaIssuesResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListIdeaIssues401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response ListIdeaIssues401ApplicationProblemPlusJSONResponse) VisitListIdeaIssuesResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListIdeaIssues403ApplicationProblemPlusJSONResponse Problem
+
+func (response ListIdeaIssues403ApplicationProblemPlusJSONResponse) VisitListIdeaIssuesResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListIdeaIssues404ApplicationProblemPlusJSONResponse Problem
+
+func (response ListIdeaIssues404ApplicationProblemPlusJSONResponse) VisitListIdeaIssuesResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type LinkIdeaIssueRequestObject struct {
+	DiscussionId DiscussionId `json:"discussionId"`
+	Params       LinkIdeaIssueParams
+	Body         *LinkIdeaIssueJSONRequestBody
+}
+
+type LinkIdeaIssueResponseObject interface {
+	VisitLinkIdeaIssueResponse(w http.ResponseWriter) error
+}
+
+type LinkIdeaIssue200JSONResponse IssueLink
+
+func (response LinkIdeaIssue200JSONResponse) VisitLinkIdeaIssueResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type LinkIdeaIssue201JSONResponse IssueLink
+
+func (response LinkIdeaIssue201JSONResponse) VisitLinkIdeaIssueResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(201)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type LinkIdeaIssue400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response LinkIdeaIssue400ApplicationProblemPlusJSONResponse) VisitLinkIdeaIssueResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type LinkIdeaIssue401ApplicationProblemPlusJSONResponse Problem
+
+func (response LinkIdeaIssue401ApplicationProblemPlusJSONResponse) VisitLinkIdeaIssueResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type LinkIdeaIssue403ApplicationProblemPlusJSONResponse Problem
+
+func (response LinkIdeaIssue403ApplicationProblemPlusJSONResponse) VisitLinkIdeaIssueResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type LinkIdeaIssue404ApplicationProblemPlusJSONResponse Problem
+
+func (response LinkIdeaIssue404ApplicationProblemPlusJSONResponse) VisitLinkIdeaIssueResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type LinkIdeaIssue409ApplicationProblemPlusJSONResponse Problem
+
+func (response LinkIdeaIssue409ApplicationProblemPlusJSONResponse) VisitLinkIdeaIssueResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(409)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type LinkIdeaIssue422ApplicationProblemPlusJSONResponse Problem
+
+func (response LinkIdeaIssue422ApplicationProblemPlusJSONResponse) VisitLinkIdeaIssueResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(422)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type LinkIdeaIssue503ApplicationProblemPlusJSONResponse Problem
+
+func (response LinkIdeaIssue503ApplicationProblemPlusJSONResponse) VisitLinkIdeaIssueResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(503)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UnlinkIdeaIssueRequestObject struct {
+	DiscussionId DiscussionId `json:"discussionId"`
+	IssueLinkId  IssueLinkId  `json:"issueLinkId"`
+	Params       UnlinkIdeaIssueParams
+}
+
+type UnlinkIdeaIssueResponseObject interface {
+	VisitUnlinkIdeaIssueResponse(w http.ResponseWriter) error
+}
+
+type UnlinkIdeaIssue204Response struct {
+}
+
+func (response UnlinkIdeaIssue204Response) VisitUnlinkIdeaIssueResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
+}
+
+type UnlinkIdeaIssue401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response UnlinkIdeaIssue401ApplicationProblemPlusJSONResponse) VisitUnlinkIdeaIssueResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UnlinkIdeaIssue403ApplicationProblemPlusJSONResponse Problem
+
+func (response UnlinkIdeaIssue403ApplicationProblemPlusJSONResponse) VisitUnlinkIdeaIssueResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UnlinkIdeaIssue404ApplicationProblemPlusJSONResponse Problem
+
+func (response UnlinkIdeaIssue404ApplicationProblemPlusJSONResponse) VisitUnlinkIdeaIssueResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
 	_, err := buf.WriteTo(w)
 	return err
 }
@@ -85005,6 +87036,458 @@ func (response DeleteInvite403ApplicationProblemPlusJSONResponse) VisitDeleteInv
 type DeleteInvite404ApplicationProblemPlusJSONResponse Problem
 
 func (response DeleteInvite404ApplicationProblemPlusJSONResponse) VisitDeleteInviteResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListIssueIntegrationsRequestObject struct {
+	Params ListIssueIntegrationsParams
+}
+
+type ListIssueIntegrationsResponseObject interface {
+	VisitListIssueIntegrationsResponse(w http.ResponseWriter) error
+}
+
+type ListIssueIntegrations200JSONResponse IssueIntegrationList
+
+func (response ListIssueIntegrations200JSONResponse) VisitListIssueIntegrationsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListIssueIntegrations401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response ListIssueIntegrations401ApplicationProblemPlusJSONResponse) VisitListIssueIntegrationsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListIssueIntegrations403ApplicationProblemPlusJSONResponse Problem
+
+func (response ListIssueIntegrations403ApplicationProblemPlusJSONResponse) VisitListIssueIntegrationsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateIssueIntegrationRequestObject struct {
+	Params CreateIssueIntegrationParams
+	Body   *CreateIssueIntegrationJSONRequestBody
+}
+
+type CreateIssueIntegrationResponseObject interface {
+	VisitCreateIssueIntegrationResponse(w http.ResponseWriter) error
+}
+
+type CreateIssueIntegration201JSONResponse IssueIntegrationSecret
+
+func (response CreateIssueIntegration201JSONResponse) VisitCreateIssueIntegrationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(201)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateIssueIntegration400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response CreateIssueIntegration400ApplicationProblemPlusJSONResponse) VisitCreateIssueIntegrationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateIssueIntegration401ApplicationProblemPlusJSONResponse Problem
+
+func (response CreateIssueIntegration401ApplicationProblemPlusJSONResponse) VisitCreateIssueIntegrationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateIssueIntegration403ApplicationProblemPlusJSONResponse Problem
+
+func (response CreateIssueIntegration403ApplicationProblemPlusJSONResponse) VisitCreateIssueIntegrationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateIssueIntegration422ApplicationProblemPlusJSONResponse Problem
+
+func (response CreateIssueIntegration422ApplicationProblemPlusJSONResponse) VisitCreateIssueIntegrationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(422)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateIssueIntegration503ApplicationProblemPlusJSONResponse Problem
+
+func (response CreateIssueIntegration503ApplicationProblemPlusJSONResponse) VisitCreateIssueIntegrationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(503)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteIssueIntegrationRequestObject struct {
+	IntegrationId IssueIntegrationId `json:"integrationId"`
+	Params        DeleteIssueIntegrationParams
+}
+
+type DeleteIssueIntegrationResponseObject interface {
+	VisitDeleteIssueIntegrationResponse(w http.ResponseWriter) error
+}
+
+type DeleteIssueIntegration204Response struct {
+}
+
+func (response DeleteIssueIntegration204Response) VisitDeleteIssueIntegrationResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
+}
+
+type DeleteIssueIntegration401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response DeleteIssueIntegration401ApplicationProblemPlusJSONResponse) VisitDeleteIssueIntegrationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteIssueIntegration403ApplicationProblemPlusJSONResponse Problem
+
+func (response DeleteIssueIntegration403ApplicationProblemPlusJSONResponse) VisitDeleteIssueIntegrationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteIssueIntegration404ApplicationProblemPlusJSONResponse Problem
+
+func (response DeleteIssueIntegration404ApplicationProblemPlusJSONResponse) VisitDeleteIssueIntegrationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetIssueIntegrationRequestObject struct {
+	IntegrationId IssueIntegrationId `json:"integrationId"`
+	Params        GetIssueIntegrationParams
+}
+
+type GetIssueIntegrationResponseObject interface {
+	VisitGetIssueIntegrationResponse(w http.ResponseWriter) error
+}
+
+type GetIssueIntegration200JSONResponse IssueIntegration
+
+func (response GetIssueIntegration200JSONResponse) VisitGetIssueIntegrationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetIssueIntegration401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response GetIssueIntegration401ApplicationProblemPlusJSONResponse) VisitGetIssueIntegrationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetIssueIntegration403ApplicationProblemPlusJSONResponse Problem
+
+func (response GetIssueIntegration403ApplicationProblemPlusJSONResponse) VisitGetIssueIntegrationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetIssueIntegration404ApplicationProblemPlusJSONResponse Problem
+
+func (response GetIssueIntegration404ApplicationProblemPlusJSONResponse) VisitGetIssueIntegrationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateIssueIntegrationRequestObject struct {
+	IntegrationId IssueIntegrationId `json:"integrationId"`
+	Params        UpdateIssueIntegrationParams
+	Body          *UpdateIssueIntegrationJSONRequestBody
+}
+
+type UpdateIssueIntegrationResponseObject interface {
+	VisitUpdateIssueIntegrationResponse(w http.ResponseWriter) error
+}
+
+type UpdateIssueIntegration200JSONResponse IssueIntegration
+
+func (response UpdateIssueIntegration200JSONResponse) VisitUpdateIssueIntegrationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateIssueIntegration400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response UpdateIssueIntegration400ApplicationProblemPlusJSONResponse) VisitUpdateIssueIntegrationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateIssueIntegration401ApplicationProblemPlusJSONResponse Problem
+
+func (response UpdateIssueIntegration401ApplicationProblemPlusJSONResponse) VisitUpdateIssueIntegrationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateIssueIntegration403ApplicationProblemPlusJSONResponse Problem
+
+func (response UpdateIssueIntegration403ApplicationProblemPlusJSONResponse) VisitUpdateIssueIntegrationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateIssueIntegration404ApplicationProblemPlusJSONResponse Problem
+
+func (response UpdateIssueIntegration404ApplicationProblemPlusJSONResponse) VisitUpdateIssueIntegrationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateIssueIntegration422ApplicationProblemPlusJSONResponse Problem
+
+func (response UpdateIssueIntegration422ApplicationProblemPlusJSONResponse) VisitUpdateIssueIntegrationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(422)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateIssueIntegration503ApplicationProblemPlusJSONResponse Problem
+
+func (response UpdateIssueIntegration503ApplicationProblemPlusJSONResponse) VisitUpdateIssueIntegrationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(503)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type RotateIssueWebhookSecretRequestObject struct {
+	IntegrationId IssueIntegrationId `json:"integrationId"`
+	Params        RotateIssueWebhookSecretParams
+}
+
+type RotateIssueWebhookSecretResponseObject interface {
+	VisitRotateIssueWebhookSecretResponse(w http.ResponseWriter) error
+}
+
+type RotateIssueWebhookSecret200JSONResponse IssueIntegrationSecret
+
+func (response RotateIssueWebhookSecret200JSONResponse) VisitRotateIssueWebhookSecretResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type RotateIssueWebhookSecret401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response RotateIssueWebhookSecret401ApplicationProblemPlusJSONResponse) VisitRotateIssueWebhookSecretResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type RotateIssueWebhookSecret403ApplicationProblemPlusJSONResponse Problem
+
+func (response RotateIssueWebhookSecret403ApplicationProblemPlusJSONResponse) VisitRotateIssueWebhookSecretResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type RotateIssueWebhookSecret404ApplicationProblemPlusJSONResponse Problem
+
+func (response RotateIssueWebhookSecret404ApplicationProblemPlusJSONResponse) VisitRotateIssueWebhookSecretResponse(w http.ResponseWriter) error {
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(response); err != nil {
@@ -99020,6 +101503,15 @@ type StrictServerInterface interface {
 	// ListConversationIncidents List the incidents a conversation is linked to
 	// (GET /v1/conversations/{conversationId}/incidents)
 	ListConversationIncidents(ctx context.Context, request ListConversationIncidentsRequestObject) (ListConversationIncidentsResponseObject, error)
+	// ListConversationIssues List the issues a feedback is linked to
+	// (GET /v1/conversations/{conversationId}/issues)
+	ListConversationIssues(ctx context.Context, request ListConversationIssuesRequestObject) (ListConversationIssuesResponseObject, error)
+	// LinkConversationIssue Create or link an issue for a feedback
+	// (POST /v1/conversations/{conversationId}/issues)
+	LinkConversationIssue(ctx context.Context, request LinkConversationIssueRequestObject) (LinkConversationIssueResponseObject, error)
+	// UnlinkConversationIssue Unlink an issue from a feedback
+	// (DELETE /v1/conversations/{conversationId}/issues/{issueLinkId})
+	UnlinkConversationIssue(ctx context.Context, request UnlinkConversationIssueRequestObject) (UnlinkConversationIssueResponseObject, error)
 	// ListMessages List a conversation's messages
 	// (GET /v1/conversations/{conversationId}/messages)
 	ListMessages(ctx context.Context, request ListMessagesRequestObject) (ListMessagesResponseObject, error)
@@ -99089,6 +101581,15 @@ type StrictServerInterface interface {
 	// LinkIdeaConversation Link feedback to an idea
 	// (PUT /v1/discussions/{discussionId}/conversations/{conversationId})
 	LinkIdeaConversation(ctx context.Context, request LinkIdeaConversationRequestObject) (LinkIdeaConversationResponseObject, error)
+	// ListIdeaIssues List the issues an idea is linked to
+	// (GET /v1/discussions/{discussionId}/issues)
+	ListIdeaIssues(ctx context.Context, request ListIdeaIssuesRequestObject) (ListIdeaIssuesResponseObject, error)
+	// LinkIdeaIssue Create or link an issue for an idea
+	// (POST /v1/discussions/{discussionId}/issues)
+	LinkIdeaIssue(ctx context.Context, request LinkIdeaIssueRequestObject) (LinkIdeaIssueResponseObject, error)
+	// UnlinkIdeaIssue Unlink an issue from an idea
+	// (DELETE /v1/discussions/{discussionId}/issues/{issueLinkId})
+	UnlinkIdeaIssue(ctx context.Context, request UnlinkIdeaIssueRequestObject) (UnlinkIdeaIssueResponseObject, error)
 	// ReplyToIdeaConversations Reply to the feedback linked to an idea
 	// (POST /v1/discussions/{discussionId}/linked-replies)
 	ReplyToIdeaConversations(ctx context.Context, request ReplyToIdeaConversationsRequestObject) (ReplyToIdeaConversationsResponseObject, error)
@@ -99317,6 +101818,24 @@ type StrictServerInterface interface {
 	// DeleteInvite Withdraw an invite
 	// (DELETE /v1/invites/{inviteId})
 	DeleteInvite(ctx context.Context, request DeleteInviteRequestObject) (DeleteInviteResponseObject, error)
+	// ListIssueIntegrations List issue tracker integrations
+	// (GET /v1/issue-integrations)
+	ListIssueIntegrations(ctx context.Context, request ListIssueIntegrationsRequestObject) (ListIssueIntegrationsResponseObject, error)
+	// CreateIssueIntegration Connect GitHub or Linear
+	// (POST /v1/issue-integrations)
+	CreateIssueIntegration(ctx context.Context, request CreateIssueIntegrationRequestObject) (CreateIssueIntegrationResponseObject, error)
+	// DeleteIssueIntegration Disconnect an issue tracker
+	// (DELETE /v1/issue-integrations/{integrationId})
+	DeleteIssueIntegration(ctx context.Context, request DeleteIssueIntegrationRequestObject) (DeleteIssueIntegrationResponseObject, error)
+	// GetIssueIntegration Get an issue tracker integration
+	// (GET /v1/issue-integrations/{integrationId})
+	GetIssueIntegration(ctx context.Context, request GetIssueIntegrationRequestObject) (GetIssueIntegrationResponseObject, error)
+	// UpdateIssueIntegration Change an issue tracker integration
+	// (PATCH /v1/issue-integrations/{integrationId})
+	UpdateIssueIntegration(ctx context.Context, request UpdateIssueIntegrationRequestObject) (UpdateIssueIntegrationResponseObject, error)
+	// RotateIssueWebhookSecret Make a new webhook secret
+	// (POST /v1/issue-integrations/{integrationId}/webhook-secret)
+	RotateIssueWebhookSecret(ctx context.Context, request RotateIssueWebhookSecretRequestObject) (RotateIssueWebhookSecretResponseObject, error)
 	// ListLabels List labels
 	// (GET /v1/labels)
 	ListLabels(ctx context.Context, request ListLabelsRequestObject) (ListLabelsResponseObject, error)
@@ -105469,6 +107988,95 @@ func (sh *strictHandler) ListConversationIncidents(w http.ResponseWriter, r *htt
 	}
 }
 
+// ListConversationIssues operation middleware
+func (sh *strictHandler) ListConversationIssues(w http.ResponseWriter, r *http.Request, conversationId ConversationId, params ListConversationIssuesParams) {
+	var request ListConversationIssuesRequestObject
+
+	request.ConversationId = conversationId
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.ListConversationIssues(ctx, request.(ListConversationIssuesRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "ListConversationIssues")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(ListConversationIssuesResponseObject); ok {
+		if err := validResponse.VisitListConversationIssuesResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// LinkConversationIssue operation middleware
+func (sh *strictHandler) LinkConversationIssue(w http.ResponseWriter, r *http.Request, conversationId ConversationId, params LinkConversationIssueParams) {
+	var request LinkConversationIssueRequestObject
+
+	request.ConversationId = conversationId
+	request.Params = params
+
+	var body LinkConversationIssueJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.LinkConversationIssue(ctx, request.(LinkConversationIssueRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "LinkConversationIssue")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(LinkConversationIssueResponseObject); ok {
+		if err := validResponse.VisitLinkConversationIssueResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// UnlinkConversationIssue operation middleware
+func (sh *strictHandler) UnlinkConversationIssue(w http.ResponseWriter, r *http.Request, conversationId ConversationId, issueLinkId IssueLinkId, params UnlinkConversationIssueParams) {
+	var request UnlinkConversationIssueRequestObject
+
+	request.ConversationId = conversationId
+	request.IssueLinkId = issueLinkId
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.UnlinkConversationIssue(ctx, request.(UnlinkConversationIssueRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "UnlinkConversationIssue")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(UnlinkConversationIssueResponseObject); ok {
+		if err := validResponse.VisitUnlinkConversationIssueResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
 // ListMessages operation middleware
 func (sh *strictHandler) ListMessages(w http.ResponseWriter, r *http.Request, conversationId ConversationId, params ListMessagesParams) {
 	var request ListMessagesRequestObject
@@ -106155,6 +108763,95 @@ func (sh *strictHandler) LinkIdeaConversation(w http.ResponseWriter, r *http.Req
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
 	} else if validResponse, ok := response.(LinkIdeaConversationResponseObject); ok {
 		if err := validResponse.VisitLinkIdeaConversationResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// ListIdeaIssues operation middleware
+func (sh *strictHandler) ListIdeaIssues(w http.ResponseWriter, r *http.Request, discussionId DiscussionId, params ListIdeaIssuesParams) {
+	var request ListIdeaIssuesRequestObject
+
+	request.DiscussionId = discussionId
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.ListIdeaIssues(ctx, request.(ListIdeaIssuesRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "ListIdeaIssues")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(ListIdeaIssuesResponseObject); ok {
+		if err := validResponse.VisitListIdeaIssuesResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// LinkIdeaIssue operation middleware
+func (sh *strictHandler) LinkIdeaIssue(w http.ResponseWriter, r *http.Request, discussionId DiscussionId, params LinkIdeaIssueParams) {
+	var request LinkIdeaIssueRequestObject
+
+	request.DiscussionId = discussionId
+	request.Params = params
+
+	var body LinkIdeaIssueJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.LinkIdeaIssue(ctx, request.(LinkIdeaIssueRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "LinkIdeaIssue")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(LinkIdeaIssueResponseObject); ok {
+		if err := validResponse.VisitLinkIdeaIssueResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// UnlinkIdeaIssue operation middleware
+func (sh *strictHandler) UnlinkIdeaIssue(w http.ResponseWriter, r *http.Request, discussionId DiscussionId, issueLinkId IssueLinkId, params UnlinkIdeaIssueParams) {
+	var request UnlinkIdeaIssueRequestObject
+
+	request.DiscussionId = discussionId
+	request.IssueLinkId = issueLinkId
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.UnlinkIdeaIssue(ctx, request.(UnlinkIdeaIssueRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "UnlinkIdeaIssue")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(UnlinkIdeaIssueResponseObject); ok {
+		if err := validResponse.VisitUnlinkIdeaIssueResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {
@@ -108408,6 +111105,180 @@ func (sh *strictHandler) DeleteInvite(w http.ResponseWriter, r *http.Request, in
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
 	} else if validResponse, ok := response.(DeleteInviteResponseObject); ok {
 		if err := validResponse.VisitDeleteInviteResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// ListIssueIntegrations operation middleware
+func (sh *strictHandler) ListIssueIntegrations(w http.ResponseWriter, r *http.Request, params ListIssueIntegrationsParams) {
+	var request ListIssueIntegrationsRequestObject
+
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.ListIssueIntegrations(ctx, request.(ListIssueIntegrationsRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "ListIssueIntegrations")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(ListIssueIntegrationsResponseObject); ok {
+		if err := validResponse.VisitListIssueIntegrationsResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// CreateIssueIntegration operation middleware
+func (sh *strictHandler) CreateIssueIntegration(w http.ResponseWriter, r *http.Request, params CreateIssueIntegrationParams) {
+	var request CreateIssueIntegrationRequestObject
+
+	request.Params = params
+
+	var body CreateIssueIntegrationJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.CreateIssueIntegration(ctx, request.(CreateIssueIntegrationRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "CreateIssueIntegration")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(CreateIssueIntegrationResponseObject); ok {
+		if err := validResponse.VisitCreateIssueIntegrationResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// DeleteIssueIntegration operation middleware
+func (sh *strictHandler) DeleteIssueIntegration(w http.ResponseWriter, r *http.Request, integrationId IssueIntegrationId, params DeleteIssueIntegrationParams) {
+	var request DeleteIssueIntegrationRequestObject
+
+	request.IntegrationId = integrationId
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.DeleteIssueIntegration(ctx, request.(DeleteIssueIntegrationRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "DeleteIssueIntegration")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(DeleteIssueIntegrationResponseObject); ok {
+		if err := validResponse.VisitDeleteIssueIntegrationResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// GetIssueIntegration operation middleware
+func (sh *strictHandler) GetIssueIntegration(w http.ResponseWriter, r *http.Request, integrationId IssueIntegrationId, params GetIssueIntegrationParams) {
+	var request GetIssueIntegrationRequestObject
+
+	request.IntegrationId = integrationId
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.GetIssueIntegration(ctx, request.(GetIssueIntegrationRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "GetIssueIntegration")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(GetIssueIntegrationResponseObject); ok {
+		if err := validResponse.VisitGetIssueIntegrationResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// UpdateIssueIntegration operation middleware
+func (sh *strictHandler) UpdateIssueIntegration(w http.ResponseWriter, r *http.Request, integrationId IssueIntegrationId, params UpdateIssueIntegrationParams) {
+	var request UpdateIssueIntegrationRequestObject
+
+	request.IntegrationId = integrationId
+	request.Params = params
+
+	var body UpdateIssueIntegrationJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.UpdateIssueIntegration(ctx, request.(UpdateIssueIntegrationRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "UpdateIssueIntegration")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(UpdateIssueIntegrationResponseObject); ok {
+		if err := validResponse.VisitUpdateIssueIntegrationResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// RotateIssueWebhookSecret operation middleware
+func (sh *strictHandler) RotateIssueWebhookSecret(w http.ResponseWriter, r *http.Request, integrationId IssueIntegrationId, params RotateIssueWebhookSecretParams) {
+	var request RotateIssueWebhookSecretRequestObject
+
+	request.IntegrationId = integrationId
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.RotateIssueWebhookSecret(ctx, request.(RotateIssueWebhookSecretRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "RotateIssueWebhookSecret")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(RotateIssueWebhookSecretResponseObject); ok {
+		if err := validResponse.VisitRotateIssueWebhookSecretResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {

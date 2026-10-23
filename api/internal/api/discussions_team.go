@@ -66,7 +66,13 @@ func (s *Server) teamDetail(ctx context.Context, p principal, id uuid.UUID) (oas
 	if err := fillLinked(ctx, s.st.Queries, p.workspaceID, &v, []store.Discussion{t.d}); err != nil {
 		return oas.DiscussionDetail{}, err
 	}
-	return t.detail(&v), nil
+	out := t.detail(&v)
+	if t.d.Kind == kindIdea {
+		if err := fillIdeaIssues(ctx, s.st.Queries, p.workspaceID, &out.Discussion); err != nil {
+			return out, err
+		}
+	}
+	return out, nil
 }
 
 func (s *Server) teamDiscussion(ctx context.Context, p principal, id uuid.UUID) (oas.Discussion, error) {

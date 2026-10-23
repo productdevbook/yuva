@@ -58,6 +58,7 @@ var webhookEventTypes = []oas.WebhookEventType{
 	oas.WebhookEventTypeDiscussionStageChanged,
 	oas.WebhookEventTypeChangelogEntryPublished, oas.WebhookEventTypeChangelogEntryUnpublished, oas.WebhookEventTypeChangelogEntryDeleted,
 	oas.WebhookEventTypeTeamCreated, oas.WebhookEventTypeTeamUpdated, oas.WebhookEventTypeTeamDeleted,
+	oas.WebhookEventTypeIssueLinkCreated, oas.WebhookEventTypeIssueLinkUpdated, oas.WebhookEventTypeIssueLinkDeleted,
 }
 
 func webhookSecretContext(workspaceID, endpointID uuid.UUID) []byte {
@@ -506,7 +507,8 @@ func webhookSource(e pendingEvent) bool {
 		statusEventComponent, statusEventCreated, statusEventUpdated, statusEventResolved, statusEventMonitorDown, statusEventMonitorUp,
 		helpEventPublished, helpEventUnpublish, helpEventDeleted,
 		changelogEventPublished, changelogEventUnpublished, changelogEventDeleted,
-		eventTeamCreated, eventTeamUpdated, eventTeamDeleted:
+		eventTeamCreated, eventTeamUpdated, eventTeamDeleted,
+		eventIssueLinkCreated, eventIssueLinkUpdated, eventIssueLinkDeleted:
 		return true
 	case realtime.ContactDeleted:
 		return e.deleted != nil
@@ -747,7 +749,8 @@ func (s *Server) webhookPayloads(ctx context.Context, q *store.Queries, ev store
 			return nil, nil, err
 		}
 		return []webhookOut{{typ: ev.Type, body: payload(ev.Type, nil, oas.WebhookContactData{Contact: wc})}}, inboxes, nil
-	case eventDiscussionCreated, eventDiscussionPostCreated, eventDiscussionAnswered, eventDiscussionUpdated, eventDiscussionStageChanged:
+	case eventDiscussionCreated, eventDiscussionPostCreated, eventDiscussionAnswered, eventDiscussionUpdated, eventDiscussionStageChanged,
+		eventIssueLinkCreated, eventIssueLinkUpdated, eventIssueLinkDeleted:
 		if ev.InboxID == nil {
 			return nil, nil, nil
 		}

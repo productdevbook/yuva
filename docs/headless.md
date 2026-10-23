@@ -284,6 +284,9 @@ A call without the needed scope answers `403 insufficient_scope`.
 | `changelog:write` | Write entries and translations, upload images |
 | `changelog:publish` | Create, change and delete changelogs; publish, schedule, unpublish and delete published entries. Not included in any other scope: name it. |
 | `audit:read` | `GET /v1/audit-log`, the [audit log](operations.md#audit-log). Not included in any other scope: name it. Only an owner can give it to a key, and a key limited to inboxes cannot hold it. It works only while the member who made the key is still an owner. `yuva api-key create` leaves it out unless you name it. |
+| `integrations:read` | `GET /v1/issue-integrations` and one integration: the [GitHub and Linear](issue-trackers.md) connections, never a token. |
+| `integrations:manage` | Connect, change and disconnect GitHub and Linear, make a new webhook secret. A key limited to inboxes cannot hold it. |
+| `issues:write` | Create, link and unlink GitHub and Linear issues on feedback and ideas (`/v1/conversations/{id}/issues`, `/v1/discussions/{id}/issues`), together with `conversations:read`. |
 | `feedback:write` | `POST /v1/feedback` |
 
 ### Keys

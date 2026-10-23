@@ -448,6 +448,34 @@ tags:
       changelogs of those inboxes; a changelog the caller cannot see answers `404`. A server with
       `YUVA_WHATS_NEW=off` answers `404 whats_new_off` on every What's new endpoint, and the
       client inbox has no `whats_new`.
+  - name: issues
+    description: |
+      Issue trackers. A workspace connects GitHub with a fine-grained personal access token limited
+      to the repositories it chooses (on github.com, or a GitHub Enterprise Server through its API
+      URL) and Linear with a personal API key; nobody registers an app. From a feedback
+      conversation or a roadmap idea a member creates an issue, whose title and body the member
+      writes and whose body ends with a link back to Yuva, or links an existing issue by its URL.
+      Nothing of the conversation goes into the issue unless the member writes it.
+
+      The issue's state sets the feedback's progress the way a roadmap stage does: an open GitHub
+      issue, and a Linear issue in triage, the backlog or not started, sets `planned`; a started
+      Linear issue `in_progress`; a GitHub issue closed as completed and a completed Linear issue
+      `done`; a GitHub issue closed as not planned or as a duplicate and a canceled Linear issue
+      `wont_do`. A link sets the progress at once; after that only a change of the issue's state
+      does, so a progress set by hand holds until the issue moves again. The change is made as the
+      member or key that linked the issue: when they can no longer make it (removed, revoked,
+      without access to the inbox), the state is recorded and nothing is set. An idea only shows its
+      issues' state: moving its stage stays a deliberate action of the team.
+
+      The tracker reports changes to `/ingress/issues/{integrationId}`, signed with the
+      integration's webhook secret; Yuva then reads the issue again with the token. Every linked
+      issue is also read again about every hour; after a failed read it waits longer each time,
+      up to a day.
+
+      Owners and admins connect, change and disconnect integrations; tokens are write-only and
+      never logged. Agents with access to the inbox create, link and unlink issues. API keys need
+      `integrations:read`, `integrations:manage` (refused for keys limited to inboxes) or
+      `issues:write`; linking also needs `conversations:read`.
   - name: realtime
     description: Live workspace events over WebSocket, and the same events as a feed to poll.
   - name: client
@@ -4401,6 +4429,112 @@ paths:
           $ref: "#/components/responses/Problem"
         "404":
           $ref: "#/components/responses/Problem"
+  /v1/conversations/{conversationId}/issues:
+    get:
+      operationId: listConversationIssues
+      summary: List the issues a feedback is linked to
+      description: |
+        The GitHub and Linear issues linked to the conversation, oldest link first, as `issues` on
+        the conversation carries them.
+
+        Scope: `conversations:read`.
+      tags: [issues]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/ConversationId"
+      responses:
+        "200":
+          description: The links.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IssueLinkList"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+    post:
+      operationId: linkConversationIssue
+      summary: Create or link an issue for a feedback
+      description: |
+        With `url`, links the existing issue it names; with `title`, creates an issue in `target`
+        (or the integration's `default_target`) and links it. The issue's body is `body`, then a
+        line with the conversation's address in the panel; nothing else of the conversation, and
+        no customer's name or address, goes to the tracker.
+
+        Only `feedback` conversations link (`409 not_feedback`). A conversation takes at most 10
+        issues and an issue at most 1,000 links (`422 too_many_links`). Linking an issue the
+        conversation is already linked to changes nothing and answers `200`. The new link sets the
+        feedback's progress from the issue's state at once. `422 issue_not_found` when the tracker
+        does not know the issue or the token cannot see it, `422 tracker_auth_failed` when the
+        tracker refuses the token, `422 tracker_rejected` when it refuses the request (a pull request,
+        a target it does not take), `503 tracker_unavailable` when it cannot be reached.
+
+        Agents with access to the inbox, owners, admins and API keys. Scopes: `issues:write` and
+        `conversations:read`.
+      tags: [issues]
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/ConversationId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/IssueLinkCreate"
+      responses:
+        "200":
+          description: The conversation was already linked to this issue.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IssueLink"
+        "201":
+          description: The link.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IssueLink"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+        "409":
+          $ref: "#/components/responses/Problem"
+        "422":
+          $ref: "#/components/responses/Problem"
+        "503":
+          $ref: "#/components/responses/Problem"
+  /v1/conversations/{conversationId}/issues/{issueLinkId}:
+    delete:
+      operationId: unlinkConversationIssue
+      summary: Unlink an issue from a feedback
+      description: |
+        The progress the issue set stays; the issue itself is not changed.
+
+        Agents with access to the inbox, owners, admins and API keys. Scopes: `issues:write` and
+        `conversations:read`.
+      tags: [issues]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/ConversationId"
+        - $ref: "#/components/parameters/IssueLinkId"
+      responses:
+        "204":
+          description: Unlinked.
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
   /v1/conversations/{conversationId}/typing:
     post:
       operationId: setMemberTyping
@@ -6084,6 +6218,104 @@ paths:
         "404":
           $ref: "#/components/responses/Problem"
         "409":
+          $ref: "#/components/responses/Problem"
+  /v1/discussions/{discussionId}/issues:
+    get:
+      operationId: listIdeaIssues
+      summary: List the issues an idea is linked to
+      description: |
+        The GitHub and Linear issues linked to the roadmap idea, oldest link first. A discussion
+        that is not an idea answers `404`.
+
+        Scope: `conversations:read`.
+      tags: [issues]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/DiscussionId"
+      responses:
+        "200":
+          description: The links.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IssueLinkList"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+    post:
+      operationId: linkIdeaIssue
+      summary: Create or link an issue for an idea
+      description: |
+        As for a feedback, with the idea's address in the panel at the end of a created issue's
+        body. The idea shows the issue and its state; neither linking nor a change of the issue's
+        state moves the idea's stage or touches its linked feedback. A discussion that is not an
+        idea answers `409 not_an_idea`; a server with `YUVA_ROADMAP=off` answers `404`.
+
+        Agents with access to the inbox, owners, admins and API keys. Scopes: `issues:write` and
+        `conversations:read`.
+      tags: [issues]
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/DiscussionId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/IssueLinkCreate"
+      responses:
+        "200":
+          description: The idea was already linked to this issue.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IssueLink"
+        "201":
+          description: The link.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IssueLink"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+        "409":
+          $ref: "#/components/responses/Problem"
+        "422":
+          $ref: "#/components/responses/Problem"
+        "503":
+          $ref: "#/components/responses/Problem"
+  /v1/discussions/{discussionId}/issues/{issueLinkId}:
+    delete:
+      operationId: unlinkIdeaIssue
+      summary: Unlink an issue from an idea
+      description: |
+        The issue itself is not changed.
+
+        Agents with access to the inbox, owners, admins and API keys. Scopes: `issues:write` and
+        `conversations:read`.
+      tags: [issues]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/DiscussionId"
+        - $ref: "#/components/parameters/IssueLinkId"
+      responses:
+        "204":
+          description: Unlinked.
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
           $ref: "#/components/responses/Problem"
   /v1/discussions/{discussionId}/linked-replies:
     post:
@@ -8991,6 +9223,188 @@ paths:
                 $ref: "#/components/schemas/FeedbackCreated"
         "400":
           $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+  /v1/issue-integrations:
+    get:
+      operationId: listIssueIntegrations
+      summary: List issue tracker integrations
+      description: |
+        The GitHub and Linear connections of the workspace, oldest first. Every member reads them;
+        tokens and webhook secrets are never answered.
+
+        Scope: `integrations:read`.
+      tags: [issues]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+      responses:
+        "200":
+          description: The integrations.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IssueIntegrationList"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+    post:
+      operationId: createIssueIntegration
+      summary: Connect GitHub or Linear
+      description: |
+        Owners, admins and API keys without an inbox limit. The token is checked with the tracker
+        before it is stored (`422 tracker_auth_failed` when the tracker refuses it,
+        `503 tracker_unavailable` when it cannot be reached) and sealed under the master key; it is
+        never answered. `account` is the GitHub login or the Linear organization the token belongs
+        to.
+
+        GitHub: a fine-grained personal access token limited to the repositories issues go to,
+        with read and write access to Issues. `api_url` names a GitHub Enterprise Server's API
+        (`https://<host>/api/v3`); without it Yuva calls `api.github.com`. The URL must be `https`
+        and is refused when it points to a private, loopback or link-local address, as webhook URLs
+        are, checked again on every call. Linear: a personal API key; Yuva calls `api.linear.app`.
+
+        Without `webhook_secret` Yuva makes one and answers it once; paste it, with `webhook_url`,
+        into the tracker's webhook settings (GitHub: content type `application/json`, the Issues
+        event). Linear makes its own signing secret: send it as `webhook_secret` here or later.
+        At most 20 integrations per workspace (`422 too_many_integrations`).
+
+        Scope: `integrations:manage`.
+      tags: [issues]
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/WorkspaceHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/IssueIntegrationCreate"
+      responses:
+        "201":
+          description: The integration, with the webhook secret when Yuva made it.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IssueIntegrationSecret"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "422":
+          $ref: "#/components/responses/Problem"
+        "503":
+          $ref: "#/components/responses/Problem"
+  /v1/issue-integrations/{integrationId}:
+    get:
+      operationId: getIssueIntegration
+      summary: Get an issue tracker integration
+      description: "Scope: `integrations:read`."
+      tags: [issues]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/IssueIntegrationId"
+      responses:
+        "200":
+          description: The integration.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IssueIntegration"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+    patch:
+      operationId: updateIssueIntegration
+      summary: Change an issue tracker integration
+      description: |
+        Owners, admins and API keys without an inbox limit. A new `token` is checked with the
+        tracker before it replaces the old one, as on connect. `webhook_secret` replaces the secret
+        incoming webhooks are checked with (Linear's signing secret); `default_target: null`
+        clears the default.
+
+        Scope: `integrations:manage`.
+      tags: [issues]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/IssueIntegrationId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/IssueIntegrationUpdate"
+      responses:
+        "200":
+          description: The integration.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IssueIntegration"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+        "422":
+          $ref: "#/components/responses/Problem"
+        "503":
+          $ref: "#/components/responses/Problem"
+    delete:
+      operationId: deleteIssueIntegration
+      summary: Disconnect an issue tracker
+      description: |
+        Owners, admins and API keys without an inbox limit. The token and secret are deleted, and
+        with them every link to the integration's issues (`issue_link.deleted` for each); the
+        progress those links set stays. Nothing changes in the tracker.
+
+        Scope: `integrations:manage`.
+      tags: [issues]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/IssueIntegrationId"
+      responses:
+        "204":
+          description: Disconnected.
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+  /v1/issue-integrations/{integrationId}/webhook-secret:
+    post:
+      operationId: rotateIssueWebhookSecret
+      summary: Make a new webhook secret
+      description: |
+        Owners, admins and API keys without an inbox limit. Yuva makes a new secret, answers it
+        once and checks incoming webhooks with it alone from now on; paste it into the tracker.
+
+        Scope: `integrations:manage`.
+      tags: [issues]
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/IssueIntegrationId"
+      responses:
+        "200":
+          description: The integration and its new secret.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IssueIntegrationSecret"
         "401":
           $ref: "#/components/responses/Problem"
         "403":
@@ -16853,6 +17267,63 @@ paths:
           $ref: "#/components/responses/Problem"
         "429":
           $ref: "#/components/responses/Problem"
+  /ingress/issues/{integrationId}:
+    post:
+      operationId: ingestIssueWebhook
+      summary: Receive an issue tracker webhook
+      description: |
+        Where GitHub and Linear report changes to issues; the address is the integration's
+        `webhook_url`. GitHub requests are checked with `X-Hub-Signature-256`
+        (`sha256=` and the hex HMAC-SHA256 of the raw body under the integration's webhook
+        secret), Linear requests with `Linear-Signature` (the hex HMAC-SHA256 of the raw body)
+        and a `webhookTimestamp` within a minute of the server's clock. A request without a valid
+        signature is refused with `401 invalid_signature` and changes nothing.
+
+        The body is only a hint: for an issue event that may change its state (GitHub `issues`
+        `opened`, `closed`, `reopened`, `edited`, `deleted`, `transferred`; Linear `Issue` events)
+        on an issue linked in Yuva, Yuva reads the issue again with the integration's token and
+        applies what the tracker answers, so a replayed or out-of-order delivery changes nothing.
+        GitHub's `ping` and every other event are accepted and ignored. At most 1 MiB and 600
+        calls a minute per integration (`429`). An unknown integration answers `404`.
+      tags: [ingress]
+      security: []
+      parameters:
+        - $ref: "#/components/parameters/IssueIntegrationId"
+        - name: X-Hub-Signature-256
+          in: header
+          required: false
+          description: GitHub's signature.
+          schema:
+            type: string
+        - name: X-GitHub-Event
+          in: header
+          required: false
+          schema:
+            type: string
+        - name: Linear-Signature
+          in: header
+          required: false
+          description: Linear's signature.
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        "202":
+          description: Accepted; the linked issues it names are read again.
+        "401":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+        "413":
+          $ref: "#/components/responses/Problem"
+        "429":
+          $ref: "#/components/responses/Problem"
   /.well-known/oauth-authorization-server:
     get:
       operationId: oauthAuthorizationServerMetadata
@@ -17454,6 +17925,71 @@ webhooks:
       responses:
         "200":
           description: Any 2xx answer counts as delivered.
+  issue_link.created:
+    post:
+      operationId: webhookIssueLinkCreated
+      summary: An issue was linked
+      description: |
+        A GitHub or Linear issue was created or linked for a feedback conversation or a roadmap
+        idea. The progress or stage it sets sends the usual `conversation.updated` or
+        `discussion.stage_changed`.
+      tags: [webhooks]
+      security: []
+      parameters:
+        - $ref: "#/components/parameters/WebhookIdHeader"
+        - $ref: "#/components/parameters/WebhookTimestampHeader"
+        - $ref: "#/components/parameters/WebhookSignatureHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WebhookIssueLinkPayload"
+      responses:
+        "200":
+          description: Any 2xx answer counts as delivered.
+  issue_link.updated:
+    post:
+      operationId: webhookIssueLinkUpdated
+      summary: A linked issue changed
+      description: |
+        A linked issue's state, title or address changed in the tracker; `previous_progress` is
+        set when the change moved its progress.
+      tags: [webhooks]
+      security: []
+      parameters:
+        - $ref: "#/components/parameters/WebhookIdHeader"
+        - $ref: "#/components/parameters/WebhookTimestampHeader"
+        - $ref: "#/components/parameters/WebhookSignatureHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WebhookIssueLinkPayload"
+      responses:
+        "200":
+          description: Any 2xx answer counts as delivered.
+  issue_link.deleted:
+    post:
+      operationId: webhookIssueLinkDeleted
+      summary: An issue was unlinked
+      description: An issue was unlinked, or its integration was disconnected.
+      tags: [webhooks]
+      security: []
+      parameters:
+        - $ref: "#/components/parameters/WebhookIdHeader"
+        - $ref: "#/components/parameters/WebhookTimestampHeader"
+        - $ref: "#/components/parameters/WebhookSignatureHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WebhookIssueLinkPayload"
+      responses:
+        "200":
+          description: Any 2xx answer counts as delivered.
   subscription.created:
     post:
       operationId: webhookSubscriptionCreated
@@ -17918,6 +18454,20 @@ components:
       in: header
       required: false
       description: The workspace to act on; see "Workspace selection".
+      schema:
+        type: string
+        format: uuid
+    IssueIntegrationId:
+      name: integrationId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    IssueLinkId:
+      name: issueLinkId
+      in: path
+      required: true
       schema:
         type: string
         format: uuid
@@ -18731,6 +19281,10 @@ components:
           is the member when the person is one, else `system`. Requests refused with
           `sso_required` are not recorded.
         - `sso_domain.added`, `sso_domain.verified`, `sso_domain.deleted`: `domain`.
+        - `issue_integration.connected`, `issue_integration.disconnected`: `provider`, `name`,
+          `account`, and `host` for a GitHub Enterprise Server. `issue_integration.updated`:
+          `fields` among `name`, `token`, `default_target` and `webhook_secret`; never a token or
+          secret. `issue_integration.secret_rotated`: none.
 
         Details never make an action fail: when they would be too long, lists are replaced by
         `<name>_count` and `truncated` is `true`.
@@ -18794,11 +19348,15 @@ components:
         - sso_domain.added
         - sso_domain.verified
         - sso_domain.deleted
-      x-enum-varnames: [AuditMemberJoined, AuditMemberRoleChanged, AuditMemberRemoved, AuditMemberInboxAccessGranted, AuditMemberInboxAccessRevoked, AuditInviteCreated, AuditInviteDeleted, AuditApiKeyCreated, AuditApiKeyRevoked, AuditOAuthGrantCreated, AuditOAuthGrantRevoked, AuditWebhookCreated, AuditWebhookUpdated, AuditWebhookDeleted, AuditWebhookSecretRotated, AuditChannelCredentialsChanged, AuditChannelKeyRotated, AuditChannelForwardingAddressRotated, AuditChannelDkimKeyCreated, AuditChannelDkimKeyDeleted, AuditInboxIdentitySecretRotated, AuditInboxDeleted, AuditConversationTrashed, AuditConversationRestored, AuditConversationDeleted, AuditMessageRedacted, AuditContactDeleted, AuditContactConsentExported, AuditListConsentExported, AuditAnalyticsExportCreated, AuditWorkspaceRetentionChanged, AuditWorkspaceBroadcastApprovalRequested, AuditWorkspaceBroadcastsApproved, AuditWorkspaceBroadcastsDenied, AuditWorkspaceBroadcastsSuspended, AuditWorkspaceBroadcastLimitChanged, AuditTeamCreated, AuditTeamDeleted, AuditTeamMemberAdded, AuditTeamMemberRemoved, AuditTeamInboxAccessGranted, AuditTeamInboxAccessRevoked, AuditWorkspaceSlackConnected, AuditWorkspaceSlackDisconnected, AuditMemberSlackLinked, AuditMemberSlackUnlinked, AuditSsoProviderCreated, AuditSsoProviderUpdated, AuditSsoProviderDeleted, AuditSsoSettingsChanged, AuditSsoSignedIn, AuditSsoSignInRefused, AuditSsoDomainAdded, AuditSsoDomainVerified, AuditSsoDomainDeleted]
+        - issue_integration.connected
+        - issue_integration.updated
+        - issue_integration.disconnected
+        - issue_integration.secret_rotated
+      x-enum-varnames: [AuditMemberJoined, AuditMemberRoleChanged, AuditMemberRemoved, AuditMemberInboxAccessGranted, AuditMemberInboxAccessRevoked, AuditInviteCreated, AuditInviteDeleted, AuditApiKeyCreated, AuditApiKeyRevoked, AuditOAuthGrantCreated, AuditOAuthGrantRevoked, AuditWebhookCreated, AuditWebhookUpdated, AuditWebhookDeleted, AuditWebhookSecretRotated, AuditChannelCredentialsChanged, AuditChannelKeyRotated, AuditChannelForwardingAddressRotated, AuditChannelDkimKeyCreated, AuditChannelDkimKeyDeleted, AuditInboxIdentitySecretRotated, AuditInboxDeleted, AuditConversationTrashed, AuditConversationRestored, AuditConversationDeleted, AuditMessageRedacted, AuditContactDeleted, AuditContactConsentExported, AuditListConsentExported, AuditAnalyticsExportCreated, AuditWorkspaceRetentionChanged, AuditWorkspaceBroadcastApprovalRequested, AuditWorkspaceBroadcastsApproved, AuditWorkspaceBroadcastsDenied, AuditWorkspaceBroadcastsSuspended, AuditWorkspaceBroadcastLimitChanged, AuditTeamCreated, AuditTeamDeleted, AuditTeamMemberAdded, AuditTeamMemberRemoved, AuditTeamInboxAccessGranted, AuditTeamInboxAccessRevoked, AuditWorkspaceSlackConnected, AuditWorkspaceSlackDisconnected, AuditMemberSlackLinked, AuditMemberSlackUnlinked, AuditSsoProviderCreated, AuditSsoProviderUpdated, AuditSsoProviderDeleted, AuditSsoSettingsChanged, AuditSsoSignedIn, AuditSsoSignInRefused, AuditSsoDomainAdded, AuditSsoDomainVerified, AuditSsoDomainDeleted, AuditIssueIntegrationConnected, AuditIssueIntegrationUpdated, AuditIssueIntegrationDisconnected, AuditIssueIntegrationSecretRotated]
     AuditTargetType:
       type: string
-      enum: [workspace, member, invite, inbox, channel, api_key, oauth_grant, webhook, contact, list, analytics_export, conversation, message, team, sso, sso_domain]
-      x-enum-varnames: [AuditTargetWorkspace, AuditTargetMember, AuditTargetInvite, AuditTargetInbox, AuditTargetChannel, AuditTargetApiKey, AuditTargetOAuthGrant, AuditTargetWebhook, AuditTargetContact, AuditTargetList, AuditTargetAnalyticsExport, AuditTargetConversation, AuditTargetMessage, AuditTargetTeam, AuditTargetSso, AuditTargetSsoDomain]
+      enum: [workspace, member, invite, inbox, channel, api_key, oauth_grant, webhook, contact, list, analytics_export, conversation, message, team, sso, sso_domain, issue_integration]
+      x-enum-varnames: [AuditTargetWorkspace, AuditTargetMember, AuditTargetInvite, AuditTargetInbox, AuditTargetChannel, AuditTargetApiKey, AuditTargetOAuthGrant, AuditTargetWebhook, AuditTargetContact, AuditTargetList, AuditTargetAnalyticsExport, AuditTargetConversation, AuditTargetMessage, AuditTargetTeam, AuditTargetSso, AuditTargetSsoDomain, AuditTargetIssueIntegration]
     AuditTarget:
       type: object
       required: [type, id]
@@ -19309,7 +19867,14 @@ components:
           without an inbox limit; offered only to owners' OAuth tokens. Never implied: a key made
           without naming its scopes does not hold it.
 
-        `conversations:delete`, `messages:redact`, `lists:*`, `broadcasts:*`, `migrations:manage`, `analytics:*`, `status:*`, `help:*`, `roadmap:*`, `changelog:*` and `audit:read` are never added to keys made before they existed.
+        - `integrations:read`: the workspace's GitHub and Linear integrations.
+        - `integrations:manage`: connect, change and disconnect GitHub and Linear, make webhook
+          secrets. Owners and admins only; never offered to agents' tokens, refused for keys
+          limited to inboxes.
+        - `issues:write`: create, link and unlink GitHub and Linear issues on feedback and ideas,
+          together with `conversations:read`.
+
+        `conversations:delete`, `messages:redact`, `lists:*`, `broadcasts:*`, `migrations:manage`, `analytics:*`, `status:*`, `help:*`, `roadmap:*`, `changelog:*`, `audit:read`, `integrations:*` and `issues:write` are never added to keys made before they existed.
       enum:
         - conversations:read
         - conversations:write
@@ -19348,6 +19913,9 @@ components:
         - changelog:write
         - changelog:publish
         - audit:read
+        - integrations:read
+        - integrations:manage
+        - issues:write
     BotAvatarUrl:
       type: string
       format: uri
@@ -20774,7 +21342,7 @@ components:
           format: int64
     WebhookEventType:
       type: string
-      enum: [conversation.created, conversation.updated, conversation.rated, conversation.trashed, conversation.restored, conversation.deleted, message.created, message.redacted, feedback.created, contact.updated, contact.deleted, draft.created, draft.updated, draft.deleted, discussion.created, discussion.post_created, discussion.answered, discussion.updated, subscription.created, subscription.updated, broadcast.updated, analytics.alert, status.component.updated, status.incident.created, status.incident.updated, status.incident.resolved, status.monitor.down, status.monitor.up, help.article.published, help.article.unpublished, help.article.deleted, discussion.stage_changed, changelog.entry.published, changelog.entry.unpublished, changelog.entry.deleted, team.created, team.updated, team.deleted]
+      enum: [conversation.created, conversation.updated, conversation.rated, conversation.trashed, conversation.restored, conversation.deleted, message.created, message.redacted, feedback.created, contact.updated, contact.deleted, draft.created, draft.updated, draft.deleted, discussion.created, discussion.post_created, discussion.answered, discussion.updated, subscription.created, subscription.updated, broadcast.updated, analytics.alert, status.component.updated, status.incident.created, status.incident.updated, status.incident.resolved, status.monitor.down, status.monitor.up, help.article.published, help.article.unpublished, help.article.deleted, discussion.stage_changed, changelog.entry.published, changelog.entry.unpublished, changelog.entry.deleted, team.created, team.updated, team.deleted, issue_link.created, issue_link.updated, issue_link.deleted]
     WebhookEndpoint:
       type: object
       required: [id, url, description, events, include_notes, enabled, created_at, updated_at]
@@ -21232,6 +21800,11 @@ components:
         idea:
           $ref: "#/components/schemas/IdeaRef"
           description: The roadmap idea a `feedback` conversation is linked to; absent when it is not linked.
+        issues:
+          type: array
+          description: The GitHub and Linear issues a `feedback` conversation is linked to, oldest link first; absent when there are none.
+          items:
+            $ref: "#/components/schemas/IssueLink"
         channel_id:
           type: string
           format: uuid
@@ -22428,6 +23001,10 @@ components:
           type: string
           format: uuid
           description: "`feedback_progress` only: the roadmap idea whose stage move set the progress."
+        issue_link_id:
+          type: string
+          format: uuid
+          description: "`feedback_progress` only: the issue link whose issue's state set the progress."
         feedback_progress:
           anyOf:
             - $ref: "#/components/schemas/FeedbackProgress"
@@ -25258,6 +25835,7 @@ components:
         - $ref: "#/components/schemas/ConversationPinEvent"
         - $ref: "#/components/schemas/DiscussionEvent"
         - $ref: "#/components/schemas/DiscussionStageEvent"
+        - $ref: "#/components/schemas/IssueLinkEvent"
         - $ref: "#/components/schemas/SubscriptionEvent"
         - $ref: "#/components/schemas/BroadcastEvent"
         - $ref: "#/components/schemas/MigrationEvent"
@@ -25299,6 +25877,9 @@ components:
           discussion.answered: "#/components/schemas/DiscussionEvent"
           discussion.updated: "#/components/schemas/DiscussionEvent"
           discussion.stage_changed: "#/components/schemas/DiscussionStageEvent"
+          issue_link.created: "#/components/schemas/IssueLinkEvent"
+          issue_link.updated: "#/components/schemas/IssueLinkEvent"
+          issue_link.deleted: "#/components/schemas/IssueLinkEvent"
           subscription.created: "#/components/schemas/SubscriptionEvent"
           subscription.updated: "#/components/schemas/SubscriptionEvent"
           broadcast.updated: "#/components/schemas/BroadcastEvent"
@@ -25360,6 +25941,7 @@ components:
         - $ref: "#/components/schemas/ConversationPinEvent"
         - $ref: "#/components/schemas/DiscussionEvent"
         - $ref: "#/components/schemas/DiscussionStageEvent"
+        - $ref: "#/components/schemas/IssueLinkEvent"
         - $ref: "#/components/schemas/SubscriptionEvent"
         - $ref: "#/components/schemas/BroadcastEvent"
         - $ref: "#/components/schemas/MigrationEvent"
@@ -25421,6 +26003,9 @@ components:
           discussion.answered: "#/components/schemas/DiscussionEvent"
           discussion.updated: "#/components/schemas/DiscussionEvent"
           discussion.stage_changed: "#/components/schemas/DiscussionStageEvent"
+          issue_link.created: "#/components/schemas/IssueLinkEvent"
+          issue_link.updated: "#/components/schemas/IssueLinkEvent"
+          issue_link.deleted: "#/components/schemas/IssueLinkEvent"
           subscription.created: "#/components/schemas/SubscriptionEvent"
           subscription.updated: "#/components/schemas/SubscriptionEvent"
           broadcast.updated: "#/components/schemas/BroadcastEvent"
@@ -26241,6 +26826,11 @@ components:
           type: integer
           format: int32
           description: "`idea` only, on `/v1`: feedback conversations linked to it."
+        issues:
+          type: array
+          description: "`idea` only, on `/v1` when reading one idea: the GitHub and Linear issues linked to it, oldest link first; absent when there are none."
+          items:
+            $ref: "#/components/schemas/IssueLink"
         page:
           type: string
           description: The page's URL without query and fragment; empty for an idea, which has no page.
@@ -31952,6 +32542,265 @@ components:
         linked_at:
           type: string
           format: date-time
+    IssueProvider:
+      type: string
+      enum: [github, linear]
+      x-enum-varnames: [IssueProviderGithub, IssueProviderLinear]
+    IssueIntegration:
+      type: object
+      description: A connection to GitHub or Linear. The token and webhook secret are never answered.
+      required: [id, provider, name, account, webhook_url, webhook_secret_set, created_at, updated_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+        provider:
+          $ref: "#/components/schemas/IssueProvider"
+        name:
+          type: string
+        account:
+          type: string
+          description: The GitHub login or the Linear organization the token belongs to, as the tracker named it when the token was checked.
+        api_url:
+          type: string
+          format: uri
+          description: "`github` only: the GitHub Enterprise Server API Yuva calls; absent for github.com."
+        default_target:
+          type: string
+          description: |
+            Where issues are created when a request names no `target`: `owner/repo` for GitHub, a
+            team key (`ENG`) or id for Linear. Absent when there is none.
+        webhook_url:
+          type: string
+          format: uri
+          description: The address to give the tracker's webhook settings.
+        webhook_secret_set:
+          type: boolean
+          description: Incoming webhooks are checked with a secret; false until Linear's signing secret is sent.
+        last_error:
+          type: string
+          description: The last failure reading an issue (the tracker refused the token, could not be reached); absent after a success.
+        last_error_at:
+          type: string
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    IssueIntegrationCreate:
+      type: object
+      required: [provider, token]
+      properties:
+        provider:
+          $ref: "#/components/schemas/IssueProvider"
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+          description: Defaults to the provider's name and the account.
+        token:
+          type: string
+          minLength: 1
+          maxLength: 1000
+          writeOnly: true
+          description: A GitHub fine-grained personal access token or a Linear personal API key.
+        api_url:
+          type: string
+          format: uri
+          maxLength: 500
+          description: "`github` only: a GitHub Enterprise Server's API, `https://<host>/api/v3`."
+        default_target:
+          type: string
+          minLength: 1
+          maxLength: 200
+        webhook_secret:
+          type: string
+          minLength: 16
+          maxLength: 200
+          writeOnly: true
+          description: The secret webhooks are signed with; Yuva makes one when it is absent.
+    IssueIntegrationUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+        token:
+          type: string
+          minLength: 1
+          maxLength: 1000
+          writeOnly: true
+        default_target:
+          anyOf:
+            - type: string
+              minLength: 1
+              maxLength: 200
+            - type: "null"
+        webhook_secret:
+          type: string
+          minLength: 16
+          maxLength: 200
+          writeOnly: true
+    IssueIntegrationSecret:
+      type: object
+      required: [integration]
+      properties:
+        integration:
+          $ref: "#/components/schemas/IssueIntegration"
+        webhook_secret:
+          type: string
+          description: The webhook secret Yuva made; shown only now. Absent when the request sent its own.
+    IssueIntegrationList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/IssueIntegration"
+    IssueLink:
+      type: object
+      description: A GitHub or Linear issue linked to a feedback conversation or a roadmap idea.
+      required: [id, integration_id, provider, key, url, title, state, progress, linked_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The link's id.
+        integration_id:
+          type: string
+          format: uuid
+        provider:
+          $ref: "#/components/schemas/IssueProvider"
+        key:
+          type: string
+          description: How the tracker names the issue, `owner/repo#12` or `ENG-123`.
+        url:
+          type: string
+          format: uri
+        title:
+          type: string
+        state:
+          type: string
+          description: The issue's state as the tracker names it (`open`, `closed`, `In Review`).
+        progress:
+          $ref: "#/components/schemas/FeedbackProgress"
+          description: What the state means for a feedback, which it sets; on an idea it is shown only.
+        conversation_id:
+          type: string
+          format: uuid
+          description: The feedback it is linked to; absent for an idea.
+        idea_id:
+          type: string
+          format: uuid
+          description: The roadmap idea it is linked to; absent for a feedback.
+        inbox_id:
+          type: string
+          format: uuid
+        linked_by:
+          $ref: "#/components/schemas/IssueLinkAuthor"
+        linked_at:
+          type: string
+          format: date-time
+        state_changed_at:
+          type: string
+          format: date-time
+          description: When Yuva last saw the progress change; absent until it has.
+        synced_at:
+          type: string
+          format: date-time
+          description: When Yuva last read the issue from the tracker.
+    IssueLinkAuthor:
+      type: object
+      description: Who linked it; the state changes are made as them.
+      properties:
+        member_id:
+          type: string
+          format: uuid
+        api_key_id:
+          type: string
+          format: uuid
+    IssueLinkCreate:
+      type: object
+      description: "`url` links an existing issue; `title` (and `body`, `target`) creates one. Send exactly one of `url` and `title`."
+      required: [integration_id]
+      properties:
+        integration_id:
+          type: string
+          format: uuid
+        url:
+          type: string
+          maxLength: 2000
+          description: |
+            The issue's address: `https://github.com/owner/repo/issues/12` (or the Enterprise
+            Server's), `owner/repo#12`, `https://linear.app/<team>/issue/ENG-123/...` or `ENG-123`.
+        title:
+          type: string
+          minLength: 1
+          maxLength: 256
+        body:
+          type: string
+          maxLength: 20000
+          description: Markdown; Yuva adds a line with the address of the conversation or idea in the panel.
+        target:
+          type: string
+          minLength: 1
+          maxLength: 200
+          description: Where to create it, `owner/repo` or a Linear team key or id; defaults to the integration's `default_target`.
+    IssueLinkList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/IssueLink"
+    IssueLinkEventData:
+      type: object
+      required: [issue_link]
+      properties:
+        issue_link:
+          $ref: "#/components/schemas/IssueLink"
+        previous_progress:
+          $ref: "#/components/schemas/FeedbackProgress"
+          description: "`issue_link.updated` only: the progress before, when the change moved it."
+    IssueLinkEvent:
+      type: object
+      description: |
+        `issue_link.created`, `issue_link.updated` (the tracker changed the issue's state, title
+        or address) and `issue_link.deleted` (unlinked, or the integration was disconnected).
+        Delivered to callers who can see the inbox.
+      required: [id, type, workspace_id, inbox_id, created_at, data]
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+          enum: [issue_link.created, issue_link.updated, issue_link.deleted]
+          x-enum-varnames: [IssueLinkCreated, IssueLinkUpdated, IssueLinkDeleted]
+        workspace_id:
+          type: string
+          format: uuid
+        inbox_id:
+          type: string
+          format: uuid
+        created_at:
+          type: string
+          format: date-time
+        data:
+          $ref: "#/components/schemas/IssueLinkEventData"
+    WebhookIssueLinkPayload:
+      allOf:
+        - $ref: "#/components/schemas/WebhookPayloadBase"
+        - type: object
+          required: [data]
+          properties:
+            data:
+              $ref: "#/components/schemas/IssueLinkEventData"
     ConversationIncidentList:
       type: object
       required: [items]

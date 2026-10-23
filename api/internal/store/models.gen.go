@@ -1343,6 +1343,37 @@ type Invite struct {
 	ExpiresAt   time.Time
 }
 
+type IssueIntegration struct {
+	ID                uuid.UUID
+	WorkspaceID       uuid.UUID
+	Provider          string
+	Name              string
+	Account           string
+	ApiUrl            *string
+	DefaultTarget     *string
+	Token             []byte
+	WebhookSecret     []byte
+	LastError         *string
+	LastErrorAt       *time.Time
+	CreatedByMemberID *uuid.UUID
+	CreatedAt         time.Time
+	UpdatedAt         time.Time
+}
+
+type IssueLink struct {
+	ID               uuid.UUID
+	WorkspaceID      uuid.UUID
+	IssueID          uuid.UUID
+	ConversationID   *uuid.UUID
+	IdeaID           *uuid.UUID
+	LinkedByMemberID *uuid.UUID
+	LinkedByApiKeyID *uuid.UUID
+	LinkedByGrantID  *uuid.UUID
+	Via              string
+	AppliedProgress  *string
+	CreatedAt        time.Time
+}
+
 type Label struct {
 	ID          uuid.UUID
 	WorkspaceID uuid.UUID
@@ -2425,6 +2456,23 @@ type TeamMember struct {
 	TeamID      uuid.UUID
 	MemberID    uuid.UUID
 	CreatedAt   time.Time
+}
+
+type TrackedIssue struct {
+	ID             uuid.UUID
+	WorkspaceID    uuid.UUID
+	IntegrationID  uuid.UUID
+	ExternalID     string
+	Key            string
+	Url            string
+	Title          string
+	State          string
+	Progress       string
+	StateChangedAt *time.Time
+	SyncedAt       time.Time
+	NextSyncAt     time.Time
+	SyncFailures   int32
+	CreatedAt      time.Time
 }
 
 type UsageCounter struct {

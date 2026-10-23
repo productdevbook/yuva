@@ -78,6 +78,7 @@ type Server struct {
 	slackAPI *slack.Client
 
 	imagesMax         int64
+	issueTrackers     IssueTrackerSettings
 	analytics         *analyticsState
 	broadcasts        BroadcastSettings
 	imports           ImportSettings
@@ -139,6 +140,8 @@ type Deps struct {
 	Push PushSettings
 
 	AppPush AppPushSettings
+	// IssueTrackers points the GitHub and Linear clients at fakes, for tests.
+	IssueTrackers IssueTrackerSettings
 
 	Slack SlackSettings
 
@@ -290,7 +293,7 @@ func New(d Deps) *Server {
 		log: d.Log, st: d.Store, version: d.Version, mailer: d.Mailer, webauthn: d.WebAuthn, auth: d.Auth, now: now, sleep: sleep,
 		secrets: d.Secrets, objects: d.Storage, attach: d.Attachments, sanitize: htmlPolicy(), original: originalHTMLPolicy(),
 		hub: d.Hub, jobs: jobs, ingress: d.Ingress, ingestQ: make(chan struct{}, ingestSlots), sender: sender, smtpPriv: d.SMTPAllowPrivate, snsCerts: newCertCache(fetch), fetch: fetch,
-		chat: chat, limits: newRateLimiter(d.Store, d.Secrets, d.Log, d.RateLimitClock, sleep), webhooks: d.Webhooks, hooks: hooks, sso: newSSOState(d.Webhooks), push: pusher, appPush: newAppPushClient(d.AppPush),
+		chat: chat, limits: newRateLimiter(d.Store, d.Secrets, d.Log, d.RateLimitClock, sleep), webhooks: d.Webhooks, hooks: hooks, sso: newSSOState(d.Webhooks), push: pusher, appPush: newAppPushClient(d.AppPush), issueTrackers: d.IssueTrackers,
 		slack: d.Slack, slackAPI: newSlackClient(d.Slack, sleep),
 		noPanel: d.DisablePanel, panelKey: d.PanelAnalyticsKey, noWidget: d.DisableWidget, operator: d.OperatorEmails, imagesMax: d.EmailImagesMaxBytes,
 		broadcasts: d.Broadcasts, imports: importSettings(d.Imports), migrations: migrationSettings(d.Migrations), ses: d.SES,
@@ -410,6 +413,7 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("GET "+heartbeatPathPrefix+"{token}/fail", s.serveHeartbeat(true))
 	mux.HandleFunc("POST "+heartbeatPathPrefix+"{token}/fail", s.serveHeartbeat(true))
 	mux.HandleFunc("POST "+statusPushPathPrefix+"{token}", s.serveStatusPush)
+	mux.HandleFunc("POST "+issueIngressPathPrefix+"{integrationId}", s.serveIssueWebhook)
 	mux.HandleFunc("GET "+emailConfirmPath, s.serveEmailConfirm)
 	mux.HandleFunc("POST "+emailConfirmPath, s.serveEmailConfirmPost)
 	mux.HandleFunc("GET "+ratingPathPrefix+"{token}", s.serveRatingPage)

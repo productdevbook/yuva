@@ -934,6 +934,9 @@ const (
 	HelpWrite           ApiKeyScope = "help:write"
 	InboxesManage       ApiKeyScope = "inboxes:manage"
 	InboxesRead         ApiKeyScope = "inboxes:read"
+	IntegrationsManage  ApiKeyScope = "integrations:manage"
+	IntegrationsRead    ApiKeyScope = "integrations:read"
+	IssuesWrite         ApiKeyScope = "issues:write"
 	LabelsWrite         ApiKeyScope = "labels:write"
 	ListsRead           ApiKeyScope = "lists:read"
 	ListsWrite          ApiKeyScope = "lists:write"
@@ -998,6 +1001,12 @@ func (e ApiKeyScope) Valid() bool {
 	case InboxesManage:
 		return true
 	case InboxesRead:
+		return true
+	case IntegrationsManage:
+		return true
+	case IntegrationsRead:
+		return true
+	case IssuesWrite:
 		return true
 	case LabelsWrite:
 		return true
@@ -1087,6 +1096,10 @@ const (
 	AuditInboxIdentitySecretRotated          AuditAction = "inbox.identity_secret_rotated"
 	AuditInviteCreated                       AuditAction = "invite.created"
 	AuditInviteDeleted                       AuditAction = "invite.deleted"
+	AuditIssueIntegrationConnected           AuditAction = "issue_integration.connected"
+	AuditIssueIntegrationDisconnected        AuditAction = "issue_integration.disconnected"
+	AuditIssueIntegrationSecretRotated       AuditAction = "issue_integration.secret_rotated"
+	AuditIssueIntegrationUpdated             AuditAction = "issue_integration.updated"
 	AuditListConsentExported                 AuditAction = "list.consent_exported"
 	AuditMemberInboxAccessGranted            AuditAction = "member.inbox_access_granted"
 	AuditMemberInboxAccessRevoked            AuditAction = "member.inbox_access_revoked"
@@ -1163,6 +1176,14 @@ func (e AuditAction) Valid() bool {
 	case AuditInviteCreated:
 		return true
 	case AuditInviteDeleted:
+		return true
+	case AuditIssueIntegrationConnected:
+		return true
+	case AuditIssueIntegrationDisconnected:
+		return true
+	case AuditIssueIntegrationSecretRotated:
+		return true
+	case AuditIssueIntegrationUpdated:
 		return true
 	case AuditListConsentExported:
 		return true
@@ -1274,22 +1295,23 @@ func (e AuditActorKind) Valid() bool {
 
 // Defines values for AuditTargetType.
 const (
-	AuditTargetAnalyticsExport AuditTargetType = "analytics_export"
-	AuditTargetApiKey          AuditTargetType = "api_key"
-	AuditTargetChannel         AuditTargetType = "channel"
-	AuditTargetContact         AuditTargetType = "contact"
-	AuditTargetConversation    AuditTargetType = "conversation"
-	AuditTargetInbox           AuditTargetType = "inbox"
-	AuditTargetInvite          AuditTargetType = "invite"
-	AuditTargetList            AuditTargetType = "list"
-	AuditTargetMember          AuditTargetType = "member"
-	AuditTargetMessage         AuditTargetType = "message"
-	AuditTargetOAuthGrant      AuditTargetType = "oauth_grant"
-	AuditTargetSso             AuditTargetType = "sso"
-	AuditTargetSsoDomain       AuditTargetType = "sso_domain"
-	AuditTargetTeam            AuditTargetType = "team"
-	AuditTargetWebhook         AuditTargetType = "webhook"
-	AuditTargetWorkspace       AuditTargetType = "workspace"
+	AuditTargetAnalyticsExport  AuditTargetType = "analytics_export"
+	AuditTargetApiKey           AuditTargetType = "api_key"
+	AuditTargetChannel          AuditTargetType = "channel"
+	AuditTargetContact          AuditTargetType = "contact"
+	AuditTargetConversation     AuditTargetType = "conversation"
+	AuditTargetInbox            AuditTargetType = "inbox"
+	AuditTargetInvite           AuditTargetType = "invite"
+	AuditTargetIssueIntegration AuditTargetType = "issue_integration"
+	AuditTargetList             AuditTargetType = "list"
+	AuditTargetMember           AuditTargetType = "member"
+	AuditTargetMessage          AuditTargetType = "message"
+	AuditTargetOAuthGrant       AuditTargetType = "oauth_grant"
+	AuditTargetSso              AuditTargetType = "sso"
+	AuditTargetSsoDomain        AuditTargetType = "sso_domain"
+	AuditTargetTeam             AuditTargetType = "team"
+	AuditTargetWebhook          AuditTargetType = "webhook"
+	AuditTargetWorkspace        AuditTargetType = "workspace"
 )
 
 // Valid indicates whether the value is a known member of the AuditTargetType enum.
@@ -1308,6 +1330,8 @@ func (e AuditTargetType) Valid() bool {
 	case AuditTargetInbox:
 		return true
 	case AuditTargetInvite:
+		return true
+	case AuditTargetIssueIntegration:
 		return true
 	case AuditTargetList:
 		return true
@@ -3783,6 +3807,45 @@ func (e IngressResultStatus) Valid() bool {
 	case IngressResultStatusDuplicate:
 		return true
 	case IngressResultStatusStored:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for IssueLinkEventType.
+const (
+	IssueLinkEventTypeIssueLinkCreated IssueLinkEventType = "issue_link.created"
+	IssueLinkEventTypeIssueLinkDeleted IssueLinkEventType = "issue_link.deleted"
+	IssueLinkEventTypeIssueLinkUpdated IssueLinkEventType = "issue_link.updated"
+)
+
+// Valid indicates whether the value is a known member of the IssueLinkEventType enum.
+func (e IssueLinkEventType) Valid() bool {
+	switch e {
+	case IssueLinkEventTypeIssueLinkCreated:
+		return true
+	case IssueLinkEventTypeIssueLinkDeleted:
+		return true
+	case IssueLinkEventTypeIssueLinkUpdated:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for IssueProvider.
+const (
+	IssueProviderGithub IssueProvider = "github"
+	IssueProviderLinear IssueProvider = "linear"
+)
+
+// Valid indicates whether the value is a known member of the IssueProvider enum.
+func (e IssueProvider) Valid() bool {
+	switch e {
+	case IssueProviderGithub:
+		return true
+	case IssueProviderLinear:
 		return true
 	default:
 		return false
@@ -6570,6 +6633,9 @@ const (
 	WebhookEventTypeHelpArticleDeleted        WebhookEventType = "help.article.deleted"
 	WebhookEventTypeHelpArticlePublished      WebhookEventType = "help.article.published"
 	WebhookEventTypeHelpArticleUnpublished    WebhookEventType = "help.article.unpublished"
+	WebhookEventTypeIssueLinkCreated          WebhookEventType = "issue_link.created"
+	WebhookEventTypeIssueLinkDeleted          WebhookEventType = "issue_link.deleted"
+	WebhookEventTypeIssueLinkUpdated          WebhookEventType = "issue_link.updated"
 	WebhookEventTypeMessageCreated            WebhookEventType = "message.created"
 	WebhookEventTypeMessageRedacted           WebhookEventType = "message.redacted"
 	WebhookEventTypeStatusComponentUpdated    WebhookEventType = "status.component.updated"
@@ -6637,6 +6703,12 @@ func (e WebhookEventType) Valid() bool {
 	case WebhookEventTypeHelpArticlePublished:
 		return true
 	case WebhookEventTypeHelpArticleUnpublished:
+		return true
+	case WebhookEventTypeIssueLinkCreated:
+		return true
+	case WebhookEventTypeIssueLinkDeleted:
+		return true
+	case WebhookEventTypeIssueLinkUpdated:
 		return true
 	case WebhookEventTypeMessageCreated:
 		return true
@@ -8971,7 +9043,14 @@ type ApiKeyList struct {
 //	    without an inbox limit; offered only to owners' OAuth tokens. Never implied: a key made
 //	    without naming its scopes does not hold it.
 //
-// `conversations:delete`, `messages:redact`, `lists:*`, `broadcasts:*`, `migrations:manage`, `analytics:*`, `status:*`, `help:*`, `roadmap:*`, `changelog:*` and `audit:read` are never added to keys made before they existed.
+//	  - `integrations:read`: the workspace's GitHub and Linear integrations.
+//	  - `integrations:manage`: connect, change and disconnect GitHub and Linear, make webhook
+//	    secrets. Owners and admins only; never offered to agents' tokens, refused for keys
+//	    limited to inboxes.
+//	  - `issues:write`: create, link and unlink GitHub and Linear issues on feedback and ideas,
+//	    together with `conversations:read`.
+//
+// `conversations:delete`, `messages:redact`, `lists:*`, `broadcasts:*`, `migrations:manage`, `analytics:*`, `status:*`, `help:*`, `roadmap:*`, `changelog:*`, `audit:read`, `integrations:*` and `issues:write` are never added to keys made before they existed.
 type ApiKeyScope string
 
 // ApiKeyUpdate Only the fields sent change. Scopes, inbox limit and expiry cannot change.
@@ -9177,6 +9256,10 @@ type Attributes map[string]interface{}
 //     is the member when the person is one, else `system`. Requests refused with
 //     `sso_required` are not recorded.
 //   - `sso_domain.added`, `sso_domain.verified`, `sso_domain.deleted`: `domain`.
+//   - `issue_integration.connected`, `issue_integration.disconnected`: `provider`, `name`,
+//     `account`, and `host` for a GitHub Enterprise Server. `issue_integration.updated`:
+//     `fields` among `name`, `token`, `default_target` and `webhook_secret`; never a token or
+//     secret. `issue_integration.secret_rotated`: none.
 //
 // Details never make an action fail: when they would be too long, lists are replaced by
 // `<name>_count` and `truncated` is `true`.
@@ -9270,6 +9353,10 @@ type AuditEntry struct {
 	//   is the member when the person is one, else `system`. Requests refused with
 	//   `sso_required` are not recorded.
 	// - `sso_domain.added`, `sso_domain.verified`, `sso_domain.deleted`: `domain`.
+	// - `issue_integration.connected`, `issue_integration.disconnected`: `provider`, `name`,
+	//   `account`, and `host` for a GitHub Enterprise Server. `issue_integration.updated`:
+	//   `fields` among `name`, `token`, `default_target` and `webhook_secret`; never a token or
+	//   secret. `issue_integration.secret_rotated`: none.
 	//
 	// Details never make an action fail: when they would be too long, lists are replaced by
 	// `<name>_count` and `truncated` is `true`.
@@ -12115,6 +12202,9 @@ type Conversation struct {
 	Imported *ConversationImport `json:"imported,omitempty"`
 	InboxId  uuid.UUID           `json:"inbox_id"`
 
+	// Issues The GitHub and Linear issues a `feedback` conversation is linked to, oldest link first; absent when there are none.
+	Issues *[]IssueLink `json:"issues,omitempty"`
+
 	// Kind `feedback` conversations carry `feedback` metadata; everything else is `conversation`.
 	Kind ConversationKind `json:"kind"`
 
@@ -12383,6 +12473,9 @@ type ConversationListItem struct {
 	// they were imported. Absent otherwise.
 	Imported *ConversationImport `json:"imported,omitempty"`
 	InboxId  uuid.UUID           `json:"inbox_id"`
+
+	// Issues The GitHub and Linear issues a `feedback` conversation is linked to, oldest link first; absent when there are none.
+	Issues *[]IssueLink `json:"issues,omitempty"`
 
 	// Kind `feedback` conversations carry `feedback` metadata; everything else is `conversation`.
 	Kind ConversationKind `json:"kind"`
@@ -12739,6 +12832,9 @@ type Discussion struct {
 	HiddenPosts *int32     `json:"hidden_posts,omitempty"`
 	Id          uuid.UUID  `json:"id"`
 	InboxId     *uuid.UUID `json:"inbox_id,omitempty"`
+
+	// Issues `idea` only, on `/v1` when reading one idea: the GitHub and Linear issues linked to it, oldest link first; absent when there are none.
+	Issues *[]IssueLink `json:"issues,omitempty"`
 
 	// Kind `page`: a thread on a documentation page. `idea`: an idea on a roadmap board, which belongs
 	// to no page and has a `stage`.
@@ -16019,6 +16115,162 @@ type InviteList struct {
 	Items []Invite `json:"items"`
 }
 
+// IssueIntegration A connection to GitHub or Linear. The token and webhook secret are never answered.
+type IssueIntegration struct {
+	// Account The GitHub login or the Linear organization the token belongs to, as the tracker named it when the token was checked.
+	Account string `json:"account"`
+
+	// ApiUrl `github` only: the GitHub Enterprise Server API Yuva calls; absent for github.com.
+	ApiUrl    *string   `json:"api_url,omitempty"`
+	CreatedAt time.Time `json:"created_at"`
+
+	// DefaultTarget Where issues are created when a request names no `target`: `owner/repo` for GitHub, a
+	// team key (`ENG`) or id for Linear. Absent when there is none.
+	DefaultTarget *string   `json:"default_target,omitempty"`
+	Id            uuid.UUID `json:"id"`
+
+	// LastError The last failure reading an issue (the tracker refused the token, could not be reached); absent after a success.
+	LastError   *string       `json:"last_error,omitempty"`
+	LastErrorAt *time.Time    `json:"last_error_at,omitempty"`
+	Name        string        `json:"name"`
+	Provider    IssueProvider `json:"provider"`
+	UpdatedAt   time.Time     `json:"updated_at"`
+
+	// WebhookSecretSet Incoming webhooks are checked with a secret; false until Linear's signing secret is sent.
+	WebhookSecretSet bool `json:"webhook_secret_set"`
+
+	// WebhookUrl The address to give the tracker's webhook settings.
+	WebhookUrl string `json:"webhook_url"`
+}
+
+// IssueIntegrationCreate defines model for IssueIntegrationCreate.
+type IssueIntegrationCreate struct {
+	// ApiUrl `github` only: a GitHub Enterprise Server's API, `https://<host>/api/v3`.
+	ApiUrl        *string `json:"api_url,omitempty"`
+	DefaultTarget *string `json:"default_target,omitempty"`
+
+	// Name Defaults to the provider's name and the account.
+	Name     *string       `json:"name,omitempty"`
+	Provider IssueProvider `json:"provider"`
+
+	// Token A GitHub fine-grained personal access token or a Linear personal API key.
+	Token *string `json:"token,omitempty"`
+
+	// WebhookSecret The secret webhooks are signed with; Yuva makes one when it is absent.
+	WebhookSecret *string `json:"webhook_secret,omitempty"`
+}
+
+// IssueIntegrationList defines model for IssueIntegrationList.
+type IssueIntegrationList struct {
+	Items []IssueIntegration `json:"items"`
+}
+
+// IssueIntegrationSecret defines model for IssueIntegrationSecret.
+type IssueIntegrationSecret struct {
+	// Integration A connection to GitHub or Linear. The token and webhook secret are never answered.
+	Integration IssueIntegration `json:"integration"`
+
+	// WebhookSecret The webhook secret Yuva made; shown only now. Absent when the request sent its own.
+	WebhookSecret *string `json:"webhook_secret,omitempty"`
+}
+
+// IssueIntegrationUpdate defines model for IssueIntegrationUpdate.
+type IssueIntegrationUpdate struct {
+	DefaultTarget nullable.Nullable[string] `json:"default_target,omitempty"`
+	Name          *string                   `json:"name,omitempty"`
+	Token         *string                   `json:"token,omitempty"`
+	WebhookSecret *string                   `json:"webhook_secret,omitempty"`
+}
+
+// IssueLink A GitHub or Linear issue linked to a feedback conversation or a roadmap idea.
+type IssueLink struct {
+	// ConversationId The feedback it is linked to; absent for an idea.
+	ConversationId *uuid.UUID `json:"conversation_id,omitempty"`
+
+	// Id The link's id.
+	Id uuid.UUID `json:"id"`
+
+	// IdeaId The roadmap idea it is linked to; absent for a feedback.
+	IdeaId        *uuid.UUID `json:"idea_id,omitempty"`
+	InboxId       *uuid.UUID `json:"inbox_id,omitempty"`
+	IntegrationId uuid.UUID  `json:"integration_id"`
+
+	// Key How the tracker names the issue, `owner/repo#12` or `ENG-123`.
+	Key      string    `json:"key"`
+	LinkedAt time.Time `json:"linked_at"`
+
+	// LinkedBy Who linked it; the state changes are made as them.
+	LinkedBy *IssueLinkAuthor `json:"linked_by,omitempty"`
+
+	// Progress What the state means for a feedback, which it sets; on an idea it is shown only.
+	Progress FeedbackProgress `json:"progress"`
+	Provider IssueProvider    `json:"provider"`
+
+	// State The issue's state as the tracker names it (`open`, `closed`, `In Review`).
+	State string `json:"state"`
+
+	// StateChangedAt When Yuva last saw the progress change; absent until it has.
+	StateChangedAt *time.Time `json:"state_changed_at,omitempty"`
+
+	// SyncedAt When Yuva last read the issue from the tracker.
+	SyncedAt *time.Time `json:"synced_at,omitempty"`
+	Title    string     `json:"title"`
+	Url      string     `json:"url"`
+}
+
+// IssueLinkAuthor Who linked it; the state changes are made as them.
+type IssueLinkAuthor struct {
+	ApiKeyId *uuid.UUID `json:"api_key_id,omitempty"`
+	MemberId *uuid.UUID `json:"member_id,omitempty"`
+}
+
+// IssueLinkCreate `url` links an existing issue; `title` (and `body`, `target`) creates one. Send exactly one of `url` and `title`.
+type IssueLinkCreate struct {
+	// Body Markdown; Yuva adds a line with the address of the conversation or idea in the panel.
+	Body          *string   `json:"body,omitempty"`
+	IntegrationId uuid.UUID `json:"integration_id"`
+
+	// Target Where to create it, `owner/repo` or a Linear team key or id; defaults to the integration's `default_target`.
+	Target *string `json:"target,omitempty"`
+	Title  *string `json:"title,omitempty"`
+
+	// Url The issue's address: `https://github.com/owner/repo/issues/12` (or the Enterprise
+	// Server's), `owner/repo#12`, `https://linear.app/<team>/issue/ENG-123/...` or `ENG-123`.
+	Url *string `json:"url,omitempty"`
+}
+
+// IssueLinkEvent `issue_link.created`, `issue_link.updated` (the tracker changed the issue's state, title
+// or address) and `issue_link.deleted` (unlinked, or the integration was disconnected).
+// Delivered to callers who can see the inbox.
+type IssueLinkEvent struct {
+	CreatedAt   time.Time          `json:"created_at"`
+	Data        IssueLinkEventData `json:"data"`
+	Id          int64              `json:"id"`
+	InboxId     uuid.UUID          `json:"inbox_id"`
+	Type        IssueLinkEventType `json:"type"`
+	WorkspaceId uuid.UUID          `json:"workspace_id"`
+}
+
+// IssueLinkEventType defines model for IssueLinkEvent.Type.
+type IssueLinkEventType string
+
+// IssueLinkEventData defines model for IssueLinkEventData.
+type IssueLinkEventData struct {
+	// IssueLink A GitHub or Linear issue linked to a feedback conversation or a roadmap idea.
+	IssueLink IssueLink `json:"issue_link"`
+
+	// PreviousProgress `issue_link.updated` only: the progress before, when the change moved it.
+	PreviousProgress *FeedbackProgress `json:"previous_progress,omitempty"`
+}
+
+// IssueLinkList defines model for IssueLinkList.
+type IssueLinkList struct {
+	Items []IssueLink `json:"items"`
+}
+
+// IssueProvider defines model for IssueProvider.
+type IssueProvider string
+
 // Label defines model for Label.
 type Label struct {
 	Color     string    `json:"color"`
@@ -16917,6 +17169,9 @@ type MessageEvent struct {
 
 	// InboxId The inbox it moved to (`moved`).
 	InboxId *uuid.UUID `json:"inbox_id,omitempty"`
+
+	// IssueLinkId `feedback_progress` only: the issue link whose issue's state set the progress.
+	IssueLinkId *uuid.UUID `json:"issue_link_id,omitempty"`
 
 	// Macro `macro_applied` only: the macro sent with the message just before.
 	Macro *MacroRef `json:"macro,omitempty"`
@@ -19885,6 +20140,9 @@ type StatusIncidentConversation struct {
 	Imported *ConversationImport `json:"imported,omitempty"`
 	InboxId  uuid.UUID           `json:"inbox_id"`
 
+	// Issues The GitHub and Linear issues a `feedback` conversation is linked to, oldest link first; absent when there are none.
+	Issues *[]IssueLink `json:"issues,omitempty"`
+
 	// Kind `feedback` conversations carry `feedback` metadata; everything else is `conversation`.
 	Kind ConversationKind `json:"kind"`
 
@@ -21464,6 +21722,19 @@ type WebhookHelpArticlePayload struct {
 	WorkspaceId uuid.UUID        `json:"workspace_id"`
 }
 
+// WebhookIssueLinkPayload defines model for WebhookIssueLinkPayload.
+type WebhookIssueLinkPayload struct {
+	Data IssueLinkEventData `json:"data"`
+
+	// InboxId The conversation's inbox; absent for contact events.
+	InboxId *uuid.UUID `json:"inbox_id,omitempty"`
+
+	// Timestamp When the event happened (not when it was sent).
+	Timestamp   time.Time        `json:"timestamp"`
+	Type        WebhookEventType `json:"type"`
+	WorkspaceId uuid.UUID        `json:"workspace_id"`
+}
+
 // WebhookMessageData defines model for WebhookMessageData.
 type WebhookMessageData struct {
 	// Contact The contact as a host backend needs it.
@@ -21778,6 +22049,12 @@ type InboxId = uuid.UUID
 // InviteId defines model for InviteId.
 type InviteId = uuid.UUID
 
+// IssueIntegrationId defines model for IssueIntegrationId.
+type IssueIntegrationId = uuid.UUID
+
+// IssueLinkId defines model for IssueLinkId.
+type IssueLinkId = uuid.UUID
+
 // LabelId defines model for LabelId.
 type LabelId = uuid.UUID
 
@@ -22052,6 +22329,19 @@ type StatusHeartbeatPostParams struct {
 
 // StatusHeartbeatPostParamsFail defines parameters for StatusHeartbeatPost.
 type StatusHeartbeatPostParamsFail string
+
+// IngestIssueWebhookJSONBody defines parameters for IngestIssueWebhook.
+type IngestIssueWebhookJSONBody map[string]interface{}
+
+// IngestIssueWebhookParams defines parameters for IngestIssueWebhook.
+type IngestIssueWebhookParams struct {
+	// XHubSignature256 GitHub's signature.
+	XHubSignature256 *string `json:"X-Hub-Signature-256,omitempty"`
+	XGitHubEvent     *string `json:"X-GitHub-Event,omitempty"`
+
+	// LinearSignature Linear's signature.
+	LinearSignature *string `json:"Linear-Signature,omitempty"`
+}
 
 // IngestSlackJSONBody defines parameters for IngestSlack.
 type IngestSlackJSONBody = map[string]interface{}
@@ -23190,6 +23480,27 @@ type ListConversationIncidentsParams struct {
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
 
+// ListConversationIssuesParams defines parameters for ListConversationIssues.
+type ListConversationIssuesParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// LinkConversationIssueParams defines parameters for LinkConversationIssue.
+type LinkConversationIssueParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// UnlinkConversationIssueParams defines parameters for UnlinkConversationIssue.
+type UnlinkConversationIssueParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
 // ListMessagesParams defines parameters for ListMessages.
 type ListMessagesParams struct {
 	Order *ListMessagesParamsOrder `form:"order,omitempty" json:"order,omitempty"`
@@ -23401,6 +23712,27 @@ type UnlinkIdeaConversationParams struct {
 
 // LinkIdeaConversationParams defines parameters for LinkIdeaConversation.
 type LinkIdeaConversationParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// ListIdeaIssuesParams defines parameters for ListIdeaIssues.
+type ListIdeaIssuesParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// LinkIdeaIssueParams defines parameters for LinkIdeaIssue.
+type LinkIdeaIssueParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// UnlinkIdeaIssueParams defines parameters for UnlinkIdeaIssue.
+type UnlinkIdeaIssueParams struct {
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
@@ -24070,6 +24402,48 @@ type CreateInviteParams struct {
 
 // DeleteInviteParams defines parameters for DeleteInvite.
 type DeleteInviteParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// ListIssueIntegrationsParams defines parameters for ListIssueIntegrations.
+type ListIssueIntegrationsParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// CreateIssueIntegrationParams defines parameters for CreateIssueIntegration.
+type CreateIssueIntegrationParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// DeleteIssueIntegrationParams defines parameters for DeleteIssueIntegration.
+type DeleteIssueIntegrationParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// GetIssueIntegrationParams defines parameters for GetIssueIntegration.
+type GetIssueIntegrationParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// UpdateIssueIntegrationParams defines parameters for UpdateIssueIntegration.
+type UpdateIssueIntegrationParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// RotateIssueWebhookSecretParams defines parameters for RotateIssueWebhookSecret.
+type RotateIssueWebhookSecretParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
@@ -25637,6 +26011,48 @@ type WebhookHelpArticleUnpublishedParams struct {
 	WebhookSignature WebhookSignatureHeader `json:"webhook-signature"`
 }
 
+// WebhookIssueLinkCreatedParams defines parameters for WebhookIssueLinkCreated.
+type WebhookIssueLinkCreatedParams struct {
+	// WebhookId The delivery's id, the same on every retry; use it to ignore duplicates.
+	WebhookId WebhookIdHeader `json:"webhook-id"`
+
+	// WebhookTimestamp Unix seconds of this attempt. Refuse values far from your clock.
+	WebhookTimestamp WebhookTimestampHeader `json:"webhook-timestamp"`
+
+	// WebhookSignature Space-separated `v1,<base64>` signatures: HMAC-SHA256 over
+	// `<webhook-id>.<webhook-timestamp>.<body>` with the base64-decoded part of the
+	// `whsec_` secret (Standard Webhooks). Two during a secret rotation.
+	WebhookSignature WebhookSignatureHeader `json:"webhook-signature"`
+}
+
+// WebhookIssueLinkDeletedParams defines parameters for WebhookIssueLinkDeleted.
+type WebhookIssueLinkDeletedParams struct {
+	// WebhookId The delivery's id, the same on every retry; use it to ignore duplicates.
+	WebhookId WebhookIdHeader `json:"webhook-id"`
+
+	// WebhookTimestamp Unix seconds of this attempt. Refuse values far from your clock.
+	WebhookTimestamp WebhookTimestampHeader `json:"webhook-timestamp"`
+
+	// WebhookSignature Space-separated `v1,<base64>` signatures: HMAC-SHA256 over
+	// `<webhook-id>.<webhook-timestamp>.<body>` with the base64-decoded part of the
+	// `whsec_` secret (Standard Webhooks). Two during a secret rotation.
+	WebhookSignature WebhookSignatureHeader `json:"webhook-signature"`
+}
+
+// WebhookIssueLinkUpdatedParams defines parameters for WebhookIssueLinkUpdated.
+type WebhookIssueLinkUpdatedParams struct {
+	// WebhookId The delivery's id, the same on every retry; use it to ignore duplicates.
+	WebhookId WebhookIdHeader `json:"webhook-id"`
+
+	// WebhookTimestamp Unix seconds of this attempt. Refuse values far from your clock.
+	WebhookTimestamp WebhookTimestampHeader `json:"webhook-timestamp"`
+
+	// WebhookSignature Space-separated `v1,<base64>` signatures: HMAC-SHA256 over
+	// `<webhook-id>.<webhook-timestamp>.<body>` with the base64-decoded part of the
+	// `whsec_` secret (Standard Webhooks). Two during a secret rotation.
+	WebhookSignature WebhookSignatureHeader `json:"webhook-signature"`
+}
+
 // WebhookMessageCreatedParams defines parameters for WebhookMessageCreated.
 type WebhookMessageCreatedParams struct {
 	// WebhookId The delivery's id, the same on every retry; use it to ignore duplicates.
@@ -25894,6 +26310,9 @@ type CreateClientSessionJSONRequestBody = ClientSessionCreate
 // SubscribeClientJSONRequestBody defines body for SubscribeClient for application/json ContentType.
 type SubscribeClientJSONRequestBody = ClientSubscriptionPut
 
+// IngestIssueWebhookJSONRequestBody defines body for IngestIssueWebhook for application/json ContentType.
+type IngestIssueWebhookJSONRequestBody IngestIssueWebhookJSONBody
+
 // IngestSlackJSONRequestBody defines body for IngestSlack for application/json ContentType.
 type IngestSlackJSONRequestBody = IngestSlackJSONBody
 
@@ -26056,6 +26475,9 @@ type UpdateConversationJSONRequestBody = ConversationUpdate
 // CreateDiscussionFromConversationJSONRequestBody defines body for CreateDiscussionFromConversation for application/json ContentType.
 type CreateDiscussionFromConversationJSONRequestBody = DiscussionFromConversation
 
+// LinkConversationIssueJSONRequestBody defines body for LinkConversationIssue for application/json ContentType.
+type LinkConversationIssueJSONRequestBody = IssueLinkCreate
+
 // CreateMessageJSONRequestBody defines body for CreateMessage for application/json ContentType.
 type CreateMessageJSONRequestBody = MessageCreate
 
@@ -26082,6 +26504,9 @@ type UpdateDiscussionJSONRequestBody = DiscussionUpdate
 
 // AcceptDiscussionAnswerJSONRequestBody defines body for AcceptDiscussionAnswer for application/json ContentType.
 type AcceptDiscussionAnswerJSONRequestBody = DiscussionAnswer
+
+// LinkIdeaIssueJSONRequestBody defines body for LinkIdeaIssue for application/json ContentType.
+type LinkIdeaIssueJSONRequestBody = IssueLinkCreate
 
 // ReplyToIdeaConversationsJSONRequestBody defines body for ReplyToIdeaConversations for application/json ContentType.
 type ReplyToIdeaConversationsJSONRequestBody = LinkedReplyCreate
@@ -26163,6 +26588,12 @@ type SetInboxSlackJSONRequestBody = InboxSlackUpdate
 
 // CreateInviteJSONRequestBody defines body for CreateInvite for application/json ContentType.
 type CreateInviteJSONRequestBody = InviteCreate
+
+// CreateIssueIntegrationJSONRequestBody defines body for CreateIssueIntegration for application/json ContentType.
+type CreateIssueIntegrationJSONRequestBody = IssueIntegrationCreate
+
+// UpdateIssueIntegrationJSONRequestBody defines body for UpdateIssueIntegration for application/json ContentType.
+type UpdateIssueIntegrationJSONRequestBody = IssueIntegrationUpdate
 
 // CreateLabelJSONRequestBody defines body for CreateLabel for application/json ContentType.
 type CreateLabelJSONRequestBody = LabelCreate
@@ -26418,6 +26849,15 @@ type WebhookHelpArticlePublishedJSONRequestBody = WebhookHelpArticlePayload
 
 // WebhookHelpArticleUnpublishedJSONRequestBody defines body for WebhookHelpArticleUnpublished for application/json ContentType.
 type WebhookHelpArticleUnpublishedJSONRequestBody = WebhookHelpArticlePayload
+
+// WebhookIssueLinkCreatedJSONRequestBody defines body for WebhookIssueLinkCreated for application/json ContentType.
+type WebhookIssueLinkCreatedJSONRequestBody = WebhookIssueLinkPayload
+
+// WebhookIssueLinkDeletedJSONRequestBody defines body for WebhookIssueLinkDeleted for application/json ContentType.
+type WebhookIssueLinkDeletedJSONRequestBody = WebhookIssueLinkPayload
+
+// WebhookIssueLinkUpdatedJSONRequestBody defines body for WebhookIssueLinkUpdated for application/json ContentType.
+type WebhookIssueLinkUpdatedJSONRequestBody = WebhookIssueLinkPayload
 
 // WebhookMessageCreatedJSONRequestBody defines body for WebhookMessageCreated for application/json ContentType.
 type WebhookMessageCreatedJSONRequestBody = WebhookMessagePayload
@@ -28626,6 +29066,32 @@ func (t *RealtimeMessage) MergeDiscussionStageEvent(v DiscussionStageEvent) erro
 	return err
 }
 
+// AsIssueLinkEvent returns the union data inside the RealtimeMessage as a IssueLinkEvent
+func (t RealtimeMessage) AsIssueLinkEvent() (IssueLinkEvent, error) {
+	var body IssueLinkEvent
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromIssueLinkEvent overwrites any union data inside the RealtimeMessage as the provided IssueLinkEvent
+func (t *RealtimeMessage) FromIssueLinkEvent(v IssueLinkEvent) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeIssueLinkEvent performs a merge with any union data inside the RealtimeMessage, using the provided IssueLinkEvent
+func (t *RealtimeMessage) MergeIssueLinkEvent(v IssueLinkEvent) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
 // AsSubscriptionEvent returns the union data inside the RealtimeMessage as a SubscriptionEvent
 func (t RealtimeMessage) AsSubscriptionEvent() (SubscriptionEvent, error) {
 	var body SubscriptionEvent
@@ -29472,6 +29938,12 @@ func (t RealtimeMessage) ValueByDiscriminator() (interface{}, error) {
 		return t.AsInboxUpdatedEvent()
 	case "inbox_access.changed":
 		return t.AsInboxAccessChangedEvent()
+	case "issue_link.created":
+		return t.AsIssueLinkEvent()
+	case "issue_link.deleted":
+		return t.AsIssueLinkEvent()
+	case "issue_link.updated":
+		return t.AsIssueLinkEvent()
 	case "list_import.progress":
 		return t.AsListImportProgressEvent()
 	case "list_import.updated":
@@ -30009,6 +30481,32 @@ func (t *StoredEvent) MergeDiscussionStageEvent(v DiscussionStageEvent) error {
 	return err
 }
 
+// AsIssueLinkEvent returns the union data inside the StoredEvent as a IssueLinkEvent
+func (t StoredEvent) AsIssueLinkEvent() (IssueLinkEvent, error) {
+	var body IssueLinkEvent
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromIssueLinkEvent overwrites any union data inside the StoredEvent as the provided IssueLinkEvent
+func (t *StoredEvent) FromIssueLinkEvent(v IssueLinkEvent) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeIssueLinkEvent performs a merge with any union data inside the StoredEvent, using the provided IssueLinkEvent
+func (t *StoredEvent) MergeIssueLinkEvent(v IssueLinkEvent) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
 // AsSubscriptionEvent returns the union data inside the StoredEvent as a SubscriptionEvent
 func (t StoredEvent) AsSubscriptionEvent() (SubscriptionEvent, error) {
 	var body SubscriptionEvent
@@ -30319,6 +30817,12 @@ func (t StoredEvent) ValueByDiscriminator() (interface{}, error) {
 		return t.AsInboxUpdatedEvent()
 	case "inbox_access.changed":
 		return t.AsInboxAccessChangedEvent()
+	case "issue_link.created":
+		return t.AsIssueLinkEvent()
+	case "issue_link.deleted":
+		return t.AsIssueLinkEvent()
+	case "issue_link.updated":
+		return t.AsIssueLinkEvent()
 	case "message.created":
 		return t.AsMessageCreatedEvent()
 	case "message.redacted":
@@ -31774,6 +32278,48 @@ type ClientInterface interface {
 	//
 	// Corresponds with POST /ingress/heartbeat/{token}/fail (the `StatusHeartbeatFailPost` operationId).
 	StatusHeartbeatFailPost(ctx context.Context, token StatusMonitorToken, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// IngestIssueWebhookWithBody Receive an issue tracker webhook
+	//
+	// Where GitHub and Linear report changes to issues; the address is the integration's
+	// `webhook_url`. GitHub requests are checked with `X-Hub-Signature-256`
+	// (`sha256=` and the hex HMAC-SHA256 of the raw body under the integration's webhook
+	// secret), Linear requests with `Linear-Signature` (the hex HMAC-SHA256 of the raw body)
+	// and a `webhookTimestamp` within a minute of the server's clock. A request without a valid
+	// signature is refused with `401 invalid_signature` and changes nothing.
+	//
+	// The body is only a hint: for an issue event that may change its state (GitHub `issues`
+	// `opened`, `closed`, `reopened`, `edited`, `deleted`, `transferred`; Linear `Issue` events)
+	// on an issue linked in Yuva, Yuva reads the issue again with the integration's token and
+	// applies what the tracker answers, so a replayed or out-of-order delivery changes nothing.
+	// GitHub's `ping` and every other event are accepted and ignored. At most 1 MiB and 600
+	// calls a minute per integration (`429`). An unknown integration answers `404`.
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /ingress/issues/{integrationId} (the `IngestIssueWebhook` operationId).
+	IngestIssueWebhookWithBody(ctx context.Context, integrationId IssueIntegrationId, params *IngestIssueWebhookParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// IngestIssueWebhook Receive an issue tracker webhook
+	//
+	// Where GitHub and Linear report changes to issues; the address is the integration's
+	// `webhook_url`. GitHub requests are checked with `X-Hub-Signature-256`
+	// (`sha256=` and the hex HMAC-SHA256 of the raw body under the integration's webhook
+	// secret), Linear requests with `Linear-Signature` (the hex HMAC-SHA256 of the raw body)
+	// and a `webhookTimestamp` within a minute of the server's clock. A request without a valid
+	// signature is refused with `401 invalid_signature` and changes nothing.
+	//
+	// The body is only a hint: for an issue event that may change its state (GitHub `issues`
+	// `opened`, `closed`, `reopened`, `edited`, `deleted`, `transferred`; Linear `Issue` events)
+	// on an issue linked in Yuva, Yuva reads the issue again with the integration's token and
+	// applies what the tracker answers, so a replayed or out-of-order delivery changes nothing.
+	// GitHub's `ping` and every other event are accepted and ignored. At most 1 MiB and 600
+	// calls a minute per integration (`429`). An unknown integration answers `404`.
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /ingress/issues/{integrationId} (the `IngestIssueWebhook` operationId).
+	IngestIssueWebhook(ctx context.Context, integrationId IssueIntegrationId, params *IngestIssueWebhookParams, body IngestIssueWebhookJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// IngestSlackWithBody Receive Slack events
 	//
@@ -34436,6 +34982,72 @@ type ClientInterface interface {
 	// Corresponds with GET /v1/conversations/{conversationId}/incidents (the `ListConversationIncidents` operationId).
 	ListConversationIncidents(ctx context.Context, conversationId ConversationId, params *ListConversationIncidentsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// ListConversationIssues List the issues a feedback is linked to
+	//
+	// The GitHub and Linear issues linked to the conversation, oldest link first, as `issues` on
+	// the conversation carries them.
+	//
+	// Scope: `conversations:read`.
+	//
+	// Corresponds with GET /v1/conversations/{conversationId}/issues (the `ListConversationIssues` operationId).
+	ListConversationIssues(ctx context.Context, conversationId ConversationId, params *ListConversationIssuesParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// LinkConversationIssueWithBody Create or link an issue for a feedback
+	//
+	// With `url`, links the existing issue it names; with `title`, creates an issue in `target`
+	// (or the integration's `default_target`) and links it. The issue's body is `body`, then a
+	// line with the conversation's address in the panel; nothing else of the conversation, and
+	// no customer's name or address, goes to the tracker.
+	//
+	// Only `feedback` conversations link (`409 not_feedback`). A conversation takes at most 10
+	// issues and an issue at most 1,000 links (`422 too_many_links`). Linking an issue the
+	// conversation is already linked to changes nothing and answers `200`. The new link sets the
+	// feedback's progress from the issue's state at once. `422 issue_not_found` when the tracker
+	// does not know the issue or the token cannot see it, `422 tracker_auth_failed` when the
+	// tracker refuses the token, `422 tracker_rejected` when it refuses the request (a pull request,
+	// a target it does not take), `503 tracker_unavailable` when it cannot be reached.
+	//
+	// Agents with access to the inbox, owners, admins and API keys. Scopes: `issues:write` and
+	// `conversations:read`.
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /v1/conversations/{conversationId}/issues (the `LinkConversationIssue` operationId).
+	LinkConversationIssueWithBody(ctx context.Context, conversationId ConversationId, params *LinkConversationIssueParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// LinkConversationIssue Create or link an issue for a feedback
+	//
+	// With `url`, links the existing issue it names; with `title`, creates an issue in `target`
+	// (or the integration's `default_target`) and links it. The issue's body is `body`, then a
+	// line with the conversation's address in the panel; nothing else of the conversation, and
+	// no customer's name or address, goes to the tracker.
+	//
+	// Only `feedback` conversations link (`409 not_feedback`). A conversation takes at most 10
+	// issues and an issue at most 1,000 links (`422 too_many_links`). Linking an issue the
+	// conversation is already linked to changes nothing and answers `200`. The new link sets the
+	// feedback's progress from the issue's state at once. `422 issue_not_found` when the tracker
+	// does not know the issue or the token cannot see it, `422 tracker_auth_failed` when the
+	// tracker refuses the token, `422 tracker_rejected` when it refuses the request (a pull request,
+	// a target it does not take), `503 tracker_unavailable` when it cannot be reached.
+	//
+	// Agents with access to the inbox, owners, admins and API keys. Scopes: `issues:write` and
+	// `conversations:read`.
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /v1/conversations/{conversationId}/issues (the `LinkConversationIssue` operationId).
+	LinkConversationIssue(ctx context.Context, conversationId ConversationId, params *LinkConversationIssueParams, body LinkConversationIssueJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UnlinkConversationIssue Unlink an issue from a feedback
+	//
+	// The progress the issue set stays; the issue itself is not changed.
+	//
+	// Agents with access to the inbox, owners, admins and API keys. Scopes: `issues:write` and
+	// `conversations:read`.
+	//
+	// Corresponds with DELETE /v1/conversations/{conversationId}/issues/{issueLinkId} (the `UnlinkConversationIssue` operationId).
+	UnlinkConversationIssue(ctx context.Context, conversationId ConversationId, issueLinkId IssueLinkId, params *UnlinkConversationIssueParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// ListMessages List a conversation's messages
 	//
 	// Messages, notes and events, oldest first by default. With `order=desc` the newest come
@@ -34914,6 +35526,56 @@ type ClientInterface interface {
 	//
 	// Corresponds with PUT /v1/discussions/{discussionId}/conversations/{conversationId} (the `LinkIdeaConversation` operationId).
 	LinkIdeaConversation(ctx context.Context, discussionId DiscussionId, conversationId ConversationId, params *LinkIdeaConversationParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListIdeaIssues List the issues an idea is linked to
+	//
+	// The GitHub and Linear issues linked to the roadmap idea, oldest link first. A discussion
+	// that is not an idea answers `404`.
+	//
+	// Scope: `conversations:read`.
+	//
+	// Corresponds with GET /v1/discussions/{discussionId}/issues (the `ListIdeaIssues` operationId).
+	ListIdeaIssues(ctx context.Context, discussionId DiscussionId, params *ListIdeaIssuesParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// LinkIdeaIssueWithBody Create or link an issue for an idea
+	//
+	// As for a feedback, with the idea's address in the panel at the end of a created issue's
+	// body. The idea shows the issue and its state; neither linking nor a change of the issue's
+	// state moves the idea's stage or touches its linked feedback. A discussion that is not an
+	// idea answers `409 not_an_idea`; a server with `YUVA_ROADMAP=off` answers `404`.
+	//
+	// Agents with access to the inbox, owners, admins and API keys. Scopes: `issues:write` and
+	// `conversations:read`.
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /v1/discussions/{discussionId}/issues (the `LinkIdeaIssue` operationId).
+	LinkIdeaIssueWithBody(ctx context.Context, discussionId DiscussionId, params *LinkIdeaIssueParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// LinkIdeaIssue Create or link an issue for an idea
+	//
+	// As for a feedback, with the idea's address in the panel at the end of a created issue's
+	// body. The idea shows the issue and its state; neither linking nor a change of the issue's
+	// state moves the idea's stage or touches its linked feedback. A discussion that is not an
+	// idea answers `409 not_an_idea`; a server with `YUVA_ROADMAP=off` answers `404`.
+	//
+	// Agents with access to the inbox, owners, admins and API keys. Scopes: `issues:write` and
+	// `conversations:read`.
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /v1/discussions/{discussionId}/issues (the `LinkIdeaIssue` operationId).
+	LinkIdeaIssue(ctx context.Context, discussionId DiscussionId, params *LinkIdeaIssueParams, body LinkIdeaIssueJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UnlinkIdeaIssue Unlink an issue from an idea
+	//
+	// The issue itself is not changed.
+	//
+	// Agents with access to the inbox, owners, admins and API keys. Scopes: `issues:write` and
+	// `conversations:read`.
+	//
+	// Corresponds with DELETE /v1/discussions/{discussionId}/issues/{issueLinkId} (the `UnlinkIdeaIssue` operationId).
+	UnlinkIdeaIssue(ctx context.Context, discussionId DiscussionId, issueLinkId IssueLinkId, params *UnlinkIdeaIssueParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ReplyToIdeaConversationsWithBody Reply to the feedback linked to an idea
 	//
@@ -36378,6 +37040,124 @@ type ClientInterface interface {
 	//
 	// Corresponds with DELETE /v1/invites/{inviteId} (the `DeleteInvite` operationId).
 	DeleteInvite(ctx context.Context, inviteId InviteId, params *DeleteInviteParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListIssueIntegrations List issue tracker integrations
+	//
+	// The GitHub and Linear connections of the workspace, oldest first. Every member reads them;
+	// tokens and webhook secrets are never answered.
+	//
+	// Scope: `integrations:read`.
+	//
+	// Corresponds with GET /v1/issue-integrations (the `ListIssueIntegrations` operationId).
+	ListIssueIntegrations(ctx context.Context, params *ListIssueIntegrationsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateIssueIntegrationWithBody Connect GitHub or Linear
+	//
+	// Owners, admins and API keys without an inbox limit. The token is checked with the tracker
+	// before it is stored (`422 tracker_auth_failed` when the tracker refuses it,
+	// `503 tracker_unavailable` when it cannot be reached) and sealed under the master key; it is
+	// never answered. `account` is the GitHub login or the Linear organization the token belongs
+	// to.
+	//
+	// GitHub: a fine-grained personal access token limited to the repositories issues go to,
+	// with read and write access to Issues. `api_url` names a GitHub Enterprise Server's API
+	// (`https://<host>/api/v3`); without it Yuva calls `api.github.com`. The URL must be `https`
+	// and is refused when it points to a private, loopback or link-local address, as webhook URLs
+	// are, checked again on every call. Linear: a personal API key; Yuva calls `api.linear.app`.
+	//
+	// Without `webhook_secret` Yuva makes one and answers it once; paste it, with `webhook_url`,
+	// into the tracker's webhook settings (GitHub: content type `application/json`, the Issues
+	// event). Linear makes its own signing secret: send it as `webhook_secret` here or later.
+	// At most 20 integrations per workspace (`422 too_many_integrations`).
+	//
+	// Scope: `integrations:manage`.
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /v1/issue-integrations (the `CreateIssueIntegration` operationId).
+	CreateIssueIntegrationWithBody(ctx context.Context, params *CreateIssueIntegrationParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateIssueIntegration Connect GitHub or Linear
+	//
+	// Owners, admins and API keys without an inbox limit. The token is checked with the tracker
+	// before it is stored (`422 tracker_auth_failed` when the tracker refuses it,
+	// `503 tracker_unavailable` when it cannot be reached) and sealed under the master key; it is
+	// never answered. `account` is the GitHub login or the Linear organization the token belongs
+	// to.
+	//
+	// GitHub: a fine-grained personal access token limited to the repositories issues go to,
+	// with read and write access to Issues. `api_url` names a GitHub Enterprise Server's API
+	// (`https://<host>/api/v3`); without it Yuva calls `api.github.com`. The URL must be `https`
+	// and is refused when it points to a private, loopback or link-local address, as webhook URLs
+	// are, checked again on every call. Linear: a personal API key; Yuva calls `api.linear.app`.
+	//
+	// Without `webhook_secret` Yuva makes one and answers it once; paste it, with `webhook_url`,
+	// into the tracker's webhook settings (GitHub: content type `application/json`, the Issues
+	// event). Linear makes its own signing secret: send it as `webhook_secret` here or later.
+	// At most 20 integrations per workspace (`422 too_many_integrations`).
+	//
+	// Scope: `integrations:manage`.
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /v1/issue-integrations (the `CreateIssueIntegration` operationId).
+	CreateIssueIntegration(ctx context.Context, params *CreateIssueIntegrationParams, body CreateIssueIntegrationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteIssueIntegration Disconnect an issue tracker
+	//
+	// Owners, admins and API keys without an inbox limit. The token and secret are deleted, and
+	// with them every link to the integration's issues (`issue_link.deleted` for each); the
+	// progress those links set stays. Nothing changes in the tracker.
+	//
+	// Scope: `integrations:manage`.
+	//
+	// Corresponds with DELETE /v1/issue-integrations/{integrationId} (the `DeleteIssueIntegration` operationId).
+	DeleteIssueIntegration(ctx context.Context, integrationId IssueIntegrationId, params *DeleteIssueIntegrationParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetIssueIntegration Get an issue tracker integration
+	//
+	// Scope: `integrations:read`.
+	//
+	// Corresponds with GET /v1/issue-integrations/{integrationId} (the `GetIssueIntegration` operationId).
+	GetIssueIntegration(ctx context.Context, integrationId IssueIntegrationId, params *GetIssueIntegrationParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateIssueIntegrationWithBody Change an issue tracker integration
+	//
+	// Owners, admins and API keys without an inbox limit. A new `token` is checked with the
+	// tracker before it replaces the old one, as on connect. `webhook_secret` replaces the secret
+	// incoming webhooks are checked with (Linear's signing secret); `default_target: null`
+	// clears the default.
+	//
+	// Scope: `integrations:manage`.
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with PATCH /v1/issue-integrations/{integrationId} (the `UpdateIssueIntegration` operationId).
+	UpdateIssueIntegrationWithBody(ctx context.Context, integrationId IssueIntegrationId, params *UpdateIssueIntegrationParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateIssueIntegration Change an issue tracker integration
+	//
+	// Owners, admins and API keys without an inbox limit. A new `token` is checked with the
+	// tracker before it replaces the old one, as on connect. `webhook_secret` replaces the secret
+	// incoming webhooks are checked with (Linear's signing secret); `default_target: null`
+	// clears the default.
+	//
+	// Scope: `integrations:manage`.
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with PATCH /v1/issue-integrations/{integrationId} (the `UpdateIssueIntegration` operationId).
+	UpdateIssueIntegration(ctx context.Context, integrationId IssueIntegrationId, params *UpdateIssueIntegrationParams, body UpdateIssueIntegrationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// RotateIssueWebhookSecret Make a new webhook secret
+	//
+	// Owners, admins and API keys without an inbox limit. Yuva makes a new secret, answers it
+	// once and checks incoming webhooks with it alone from now on; paste it into the tracker.
+	//
+	// Scope: `integrations:manage`.
+	//
+	// Corresponds with POST /v1/issue-integrations/{integrationId}/webhook-secret (the `RotateIssueWebhookSecret` operationId).
+	RotateIssueWebhookSecret(ctx context.Context, integrationId IssueIntegrationId, params *RotateIssueWebhookSecretParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ListLabels List labels
 	//
@@ -41624,6 +42404,68 @@ func (c *Client) StatusHeartbeatFailPost(ctx context.Context, token StatusMonito
 	return c.Client.Do(req)
 }
 
+// IngestIssueWebhookWithBody Receive an issue tracker webhook
+//
+// Where GitHub and Linear report changes to issues; the address is the integration's
+// `webhook_url`. GitHub requests are checked with `X-Hub-Signature-256`
+// (`sha256=` and the hex HMAC-SHA256 of the raw body under the integration's webhook
+// secret), Linear requests with `Linear-Signature` (the hex HMAC-SHA256 of the raw body)
+// and a `webhookTimestamp` within a minute of the server's clock. A request without a valid
+// signature is refused with `401 invalid_signature` and changes nothing.
+//
+// The body is only a hint: for an issue event that may change its state (GitHub `issues`
+// `opened`, `closed`, `reopened`, `edited`, `deleted`, `transferred`; Linear `Issue` events)
+// on an issue linked in Yuva, Yuva reads the issue again with the integration's token and
+// applies what the tracker answers, so a replayed or out-of-order delivery changes nothing.
+// GitHub's `ping` and every other event are accepted and ignored. At most 1 MiB and 600
+// calls a minute per integration (`429`). An unknown integration answers `404`.
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /ingress/issues/{integrationId} (the `IngestIssueWebhook` operationId).
+func (c *Client) IngestIssueWebhookWithBody(ctx context.Context, integrationId IssueIntegrationId, params *IngestIssueWebhookParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewIngestIssueWebhookRequestWithBody(c.Server, integrationId, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// IngestIssueWebhook Receive an issue tracker webhook
+//
+// Where GitHub and Linear report changes to issues; the address is the integration's
+// `webhook_url`. GitHub requests are checked with `X-Hub-Signature-256`
+// (`sha256=` and the hex HMAC-SHA256 of the raw body under the integration's webhook
+// secret), Linear requests with `Linear-Signature` (the hex HMAC-SHA256 of the raw body)
+// and a `webhookTimestamp` within a minute of the server's clock. A request without a valid
+// signature is refused with `401 invalid_signature` and changes nothing.
+//
+// The body is only a hint: for an issue event that may change its state (GitHub `issues`
+// `opened`, `closed`, `reopened`, `edited`, `deleted`, `transferred`; Linear `Issue` events)
+// on an issue linked in Yuva, Yuva reads the issue again with the integration's token and
+// applies what the tracker answers, so a replayed or out-of-order delivery changes nothing.
+// GitHub's `ping` and every other event are accepted and ignored. At most 1 MiB and 600
+// calls a minute per integration (`429`). An unknown integration answers `404`.
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /ingress/issues/{integrationId} (the `IngestIssueWebhook` operationId).
+func (c *Client) IngestIssueWebhook(ctx context.Context, integrationId IssueIntegrationId, params *IngestIssueWebhookParams, body IngestIssueWebhookJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewIngestIssueWebhookRequest(c.Server, integrationId, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 // IngestSlackWithBody Receive Slack events
 //
 // The Slack app's Event Subscriptions request URL (`<YUVA_PUBLIC_URL>/ingress/slack`). Every
@@ -46225,6 +47067,112 @@ func (c *Client) ListConversationIncidents(ctx context.Context, conversationId C
 	return c.Client.Do(req)
 }
 
+// ListConversationIssues List the issues a feedback is linked to
+//
+// The GitHub and Linear issues linked to the conversation, oldest link first, as `issues` on
+// the conversation carries them.
+//
+// Scope: `conversations:read`.
+//
+// Corresponds with GET /v1/conversations/{conversationId}/issues (the `ListConversationIssues` operationId).
+func (c *Client) ListConversationIssues(ctx context.Context, conversationId ConversationId, params *ListConversationIssuesParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListConversationIssuesRequest(c.Server, conversationId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// LinkConversationIssueWithBody Create or link an issue for a feedback
+//
+// With `url`, links the existing issue it names; with `title`, creates an issue in `target`
+// (or the integration's `default_target`) and links it. The issue's body is `body`, then a
+// line with the conversation's address in the panel; nothing else of the conversation, and
+// no customer's name or address, goes to the tracker.
+//
+// Only `feedback` conversations link (`409 not_feedback`). A conversation takes at most 10
+// issues and an issue at most 1,000 links (`422 too_many_links`). Linking an issue the
+// conversation is already linked to changes nothing and answers `200`. The new link sets the
+// feedback's progress from the issue's state at once. `422 issue_not_found` when the tracker
+// does not know the issue or the token cannot see it, `422 tracker_auth_failed` when the
+// tracker refuses the token, `422 tracker_rejected` when it refuses the request (a pull request,
+// a target it does not take), `503 tracker_unavailable` when it cannot be reached.
+//
+// Agents with access to the inbox, owners, admins and API keys. Scopes: `issues:write` and
+// `conversations:read`.
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /v1/conversations/{conversationId}/issues (the `LinkConversationIssue` operationId).
+func (c *Client) LinkConversationIssueWithBody(ctx context.Context, conversationId ConversationId, params *LinkConversationIssueParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewLinkConversationIssueRequestWithBody(c.Server, conversationId, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// LinkConversationIssue Create or link an issue for a feedback
+//
+// With `url`, links the existing issue it names; with `title`, creates an issue in `target`
+// (or the integration's `default_target`) and links it. The issue's body is `body`, then a
+// line with the conversation's address in the panel; nothing else of the conversation, and
+// no customer's name or address, goes to the tracker.
+//
+// Only `feedback` conversations link (`409 not_feedback`). A conversation takes at most 10
+// issues and an issue at most 1,000 links (`422 too_many_links`). Linking an issue the
+// conversation is already linked to changes nothing and answers `200`. The new link sets the
+// feedback's progress from the issue's state at once. `422 issue_not_found` when the tracker
+// does not know the issue or the token cannot see it, `422 tracker_auth_failed` when the
+// tracker refuses the token, `422 tracker_rejected` when it refuses the request (a pull request,
+// a target it does not take), `503 tracker_unavailable` when it cannot be reached.
+//
+// Agents with access to the inbox, owners, admins and API keys. Scopes: `issues:write` and
+// `conversations:read`.
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /v1/conversations/{conversationId}/issues (the `LinkConversationIssue` operationId).
+func (c *Client) LinkConversationIssue(ctx context.Context, conversationId ConversationId, params *LinkConversationIssueParams, body LinkConversationIssueJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewLinkConversationIssueRequest(c.Server, conversationId, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// UnlinkConversationIssue Unlink an issue from a feedback
+//
+// The progress the issue set stays; the issue itself is not changed.
+//
+// Agents with access to the inbox, owners, admins and API keys. Scopes: `issues:write` and
+// `conversations:read`.
+//
+// Corresponds with DELETE /v1/conversations/{conversationId}/issues/{issueLinkId} (the `UnlinkConversationIssue` operationId).
+func (c *Client) UnlinkConversationIssue(ctx context.Context, conversationId ConversationId, issueLinkId IssueLinkId, params *UnlinkConversationIssueParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUnlinkConversationIssueRequest(c.Server, conversationId, issueLinkId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 // ListMessages List a conversation's messages
 //
 // Messages, notes and events, oldest first by default. With `order=desc` the newest come
@@ -47004,6 +47952,96 @@ func (c *Client) UnlinkIdeaConversation(ctx context.Context, discussionId Discus
 // Corresponds with PUT /v1/discussions/{discussionId}/conversations/{conversationId} (the `LinkIdeaConversation` operationId).
 func (c *Client) LinkIdeaConversation(ctx context.Context, discussionId DiscussionId, conversationId ConversationId, params *LinkIdeaConversationParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewLinkIdeaConversationRequest(c.Server, discussionId, conversationId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// ListIdeaIssues List the issues an idea is linked to
+//
+// The GitHub and Linear issues linked to the roadmap idea, oldest link first. A discussion
+// that is not an idea answers `404`.
+//
+// Scope: `conversations:read`.
+//
+// Corresponds with GET /v1/discussions/{discussionId}/issues (the `ListIdeaIssues` operationId).
+func (c *Client) ListIdeaIssues(ctx context.Context, discussionId DiscussionId, params *ListIdeaIssuesParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListIdeaIssuesRequest(c.Server, discussionId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// LinkIdeaIssueWithBody Create or link an issue for an idea
+//
+// As for a feedback, with the idea's address in the panel at the end of a created issue's
+// body. The idea shows the issue and its state; neither linking nor a change of the issue's
+// state moves the idea's stage or touches its linked feedback. A discussion that is not an
+// idea answers `409 not_an_idea`; a server with `YUVA_ROADMAP=off` answers `404`.
+//
+// Agents with access to the inbox, owners, admins and API keys. Scopes: `issues:write` and
+// `conversations:read`.
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /v1/discussions/{discussionId}/issues (the `LinkIdeaIssue` operationId).
+func (c *Client) LinkIdeaIssueWithBody(ctx context.Context, discussionId DiscussionId, params *LinkIdeaIssueParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewLinkIdeaIssueRequestWithBody(c.Server, discussionId, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// LinkIdeaIssue Create or link an issue for an idea
+//
+// As for a feedback, with the idea's address in the panel at the end of a created issue's
+// body. The idea shows the issue and its state; neither linking nor a change of the issue's
+// state moves the idea's stage or touches its linked feedback. A discussion that is not an
+// idea answers `409 not_an_idea`; a server with `YUVA_ROADMAP=off` answers `404`.
+//
+// Agents with access to the inbox, owners, admins and API keys. Scopes: `issues:write` and
+// `conversations:read`.
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /v1/discussions/{discussionId}/issues (the `LinkIdeaIssue` operationId).
+func (c *Client) LinkIdeaIssue(ctx context.Context, discussionId DiscussionId, params *LinkIdeaIssueParams, body LinkIdeaIssueJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewLinkIdeaIssueRequest(c.Server, discussionId, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// UnlinkIdeaIssue Unlink an issue from an idea
+//
+// The issue itself is not changed.
+//
+// Agents with access to the inbox, owners, admins and API keys. Scopes: `issues:write` and
+// `conversations:read`.
+//
+// Corresponds with DELETE /v1/discussions/{discussionId}/issues/{issueLinkId} (the `UnlinkIdeaIssue` operationId).
+func (c *Client) UnlinkIdeaIssue(ctx context.Context, discussionId DiscussionId, issueLinkId IssueLinkId, params *UnlinkIdeaIssueParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUnlinkIdeaIssueRequest(c.Server, discussionId, issueLinkId, params)
 	if err != nil {
 		return nil, err
 	}
@@ -49478,6 +50516,204 @@ func (c *Client) CreateInvite(ctx context.Context, params *CreateInviteParams, b
 // Corresponds with DELETE /v1/invites/{inviteId} (the `DeleteInvite` operationId).
 func (c *Client) DeleteInvite(ctx context.Context, inviteId InviteId, params *DeleteInviteParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewDeleteInviteRequest(c.Server, inviteId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// ListIssueIntegrations List issue tracker integrations
+//
+// The GitHub and Linear connections of the workspace, oldest first. Every member reads them;
+// tokens and webhook secrets are never answered.
+//
+// Scope: `integrations:read`.
+//
+// Corresponds with GET /v1/issue-integrations (the `ListIssueIntegrations` operationId).
+func (c *Client) ListIssueIntegrations(ctx context.Context, params *ListIssueIntegrationsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListIssueIntegrationsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// CreateIssueIntegrationWithBody Connect GitHub or Linear
+//
+// Owners, admins and API keys without an inbox limit. The token is checked with the tracker
+// before it is stored (`422 tracker_auth_failed` when the tracker refuses it,
+// `503 tracker_unavailable` when it cannot be reached) and sealed under the master key; it is
+// never answered. `account` is the GitHub login or the Linear organization the token belongs
+// to.
+//
+// GitHub: a fine-grained personal access token limited to the repositories issues go to,
+// with read and write access to Issues. `api_url` names a GitHub Enterprise Server's API
+// (`https://<host>/api/v3`); without it Yuva calls `api.github.com`. The URL must be `https`
+// and is refused when it points to a private, loopback or link-local address, as webhook URLs
+// are, checked again on every call. Linear: a personal API key; Yuva calls `api.linear.app`.
+//
+// Without `webhook_secret` Yuva makes one and answers it once; paste it, with `webhook_url`,
+// into the tracker's webhook settings (GitHub: content type `application/json`, the Issues
+// event). Linear makes its own signing secret: send it as `webhook_secret` here or later.
+// At most 20 integrations per workspace (`422 too_many_integrations`).
+//
+// Scope: `integrations:manage`.
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /v1/issue-integrations (the `CreateIssueIntegration` operationId).
+func (c *Client) CreateIssueIntegrationWithBody(ctx context.Context, params *CreateIssueIntegrationParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateIssueIntegrationRequestWithBody(c.Server, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// CreateIssueIntegration Connect GitHub or Linear
+//
+// Owners, admins and API keys without an inbox limit. The token is checked with the tracker
+// before it is stored (`422 tracker_auth_failed` when the tracker refuses it,
+// `503 tracker_unavailable` when it cannot be reached) and sealed under the master key; it is
+// never answered. `account` is the GitHub login or the Linear organization the token belongs
+// to.
+//
+// GitHub: a fine-grained personal access token limited to the repositories issues go to,
+// with read and write access to Issues. `api_url` names a GitHub Enterprise Server's API
+// (`https://<host>/api/v3`); without it Yuva calls `api.github.com`. The URL must be `https`
+// and is refused when it points to a private, loopback or link-local address, as webhook URLs
+// are, checked again on every call. Linear: a personal API key; Yuva calls `api.linear.app`.
+//
+// Without `webhook_secret` Yuva makes one and answers it once; paste it, with `webhook_url`,
+// into the tracker's webhook settings (GitHub: content type `application/json`, the Issues
+// event). Linear makes its own signing secret: send it as `webhook_secret` here or later.
+// At most 20 integrations per workspace (`422 too_many_integrations`).
+//
+// Scope: `integrations:manage`.
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /v1/issue-integrations (the `CreateIssueIntegration` operationId).
+func (c *Client) CreateIssueIntegration(ctx context.Context, params *CreateIssueIntegrationParams, body CreateIssueIntegrationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateIssueIntegrationRequest(c.Server, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// DeleteIssueIntegration Disconnect an issue tracker
+//
+// Owners, admins and API keys without an inbox limit. The token and secret are deleted, and
+// with them every link to the integration's issues (`issue_link.deleted` for each); the
+// progress those links set stays. Nothing changes in the tracker.
+//
+// Scope: `integrations:manage`.
+//
+// Corresponds with DELETE /v1/issue-integrations/{integrationId} (the `DeleteIssueIntegration` operationId).
+func (c *Client) DeleteIssueIntegration(ctx context.Context, integrationId IssueIntegrationId, params *DeleteIssueIntegrationParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteIssueIntegrationRequest(c.Server, integrationId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetIssueIntegration Get an issue tracker integration
+//
+// Scope: `integrations:read`.
+//
+// Corresponds with GET /v1/issue-integrations/{integrationId} (the `GetIssueIntegration` operationId).
+func (c *Client) GetIssueIntegration(ctx context.Context, integrationId IssueIntegrationId, params *GetIssueIntegrationParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetIssueIntegrationRequest(c.Server, integrationId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// UpdateIssueIntegrationWithBody Change an issue tracker integration
+//
+// Owners, admins and API keys without an inbox limit. A new `token` is checked with the
+// tracker before it replaces the old one, as on connect. `webhook_secret` replaces the secret
+// incoming webhooks are checked with (Linear's signing secret); `default_target: null`
+// clears the default.
+//
+// Scope: `integrations:manage`.
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with PATCH /v1/issue-integrations/{integrationId} (the `UpdateIssueIntegration` operationId).
+func (c *Client) UpdateIssueIntegrationWithBody(ctx context.Context, integrationId IssueIntegrationId, params *UpdateIssueIntegrationParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateIssueIntegrationRequestWithBody(c.Server, integrationId, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// UpdateIssueIntegration Change an issue tracker integration
+//
+// Owners, admins and API keys without an inbox limit. A new `token` is checked with the
+// tracker before it replaces the old one, as on connect. `webhook_secret` replaces the secret
+// incoming webhooks are checked with (Linear's signing secret); `default_target: null`
+// clears the default.
+//
+// Scope: `integrations:manage`.
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with PATCH /v1/issue-integrations/{integrationId} (the `UpdateIssueIntegration` operationId).
+func (c *Client) UpdateIssueIntegration(ctx context.Context, integrationId IssueIntegrationId, params *UpdateIssueIntegrationParams, body UpdateIssueIntegrationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateIssueIntegrationRequest(c.Server, integrationId, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// RotateIssueWebhookSecret Make a new webhook secret
+//
+// Owners, admins and API keys without an inbox limit. Yuva makes a new secret, answers it
+// once and checks incoming webhooks with it alone from now on; paste it into the tracker.
+//
+// Scope: `integrations:manage`.
+//
+// Corresponds with POST /v1/issue-integrations/{integrationId}/webhook-secret (the `RotateIssueWebhookSecret` operationId).
+func (c *Client) RotateIssueWebhookSecret(ctx context.Context, integrationId IssueIntegrationId, params *RotateIssueWebhookSecretParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRotateIssueWebhookSecretRequest(c.Server, integrationId, params)
 	if err != nil {
 		return nil, err
 	}
@@ -57802,6 +59038,90 @@ func NewStatusHeartbeatFailPostRequest(server string, token StatusMonitorToken) 
 	req, err := http.NewRequest(http.MethodPost, queryURL.String(), nil)
 	if err != nil {
 		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewIngestIssueWebhookRequest calls the generic IngestIssueWebhook builder with application/json body
+func NewIngestIssueWebhookRequest(server string, integrationId IssueIntegrationId, params *IngestIssueWebhookParams, body IngestIssueWebhookJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewIngestIssueWebhookRequestWithBody(server, integrationId, params, "application/json", bodyReader)
+}
+
+// NewIngestIssueWebhookRequestWithBody constructs an http.Request for the IngestIssueWebhook method, with any body, and a specified content type
+func NewIngestIssueWebhookRequestWithBody(server string, integrationId IssueIntegrationId, params *IngestIssueWebhookParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "integrationId", integrationId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/ingress/issues/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.XHubSignature256 != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "X-Hub-Signature-256", *params.XHubSignature256, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("X-Hub-Signature-256", headerParam0)
+		}
+
+		if params.XGitHubEvent != nil {
+			var headerParam1 string
+
+			headerParam1, err = runtime.StyleParamWithOptions("simple", false, "X-GitHub-Event", *params.XGitHubEvent, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("X-GitHub-Event", headerParam1)
+		}
+
+		if params.LinearSignature != nil {
+			var headerParam2 string
+
+			headerParam2, err = runtime.StyleParamWithOptions("simple", false, "Linear-Signature", *params.LinearSignature, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Linear-Signature", headerParam2)
+		}
+
 	}
 
 	return req, nil
@@ -66917,6 +68237,184 @@ func NewListConversationIncidentsRequest(server string, conversationId Conversat
 	return req, nil
 }
 
+// NewListConversationIssuesRequest constructs an http.Request for the ListConversationIssues method
+func NewListConversationIssuesRequest(server string, conversationId ConversationId, params *ListConversationIssuesParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "conversationId", conversationId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/conversations/%s/issues", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewLinkConversationIssueRequest calls the generic LinkConversationIssue builder with application/json body
+func NewLinkConversationIssueRequest(server string, conversationId ConversationId, params *LinkConversationIssueParams, body LinkConversationIssueJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewLinkConversationIssueRequestWithBody(server, conversationId, params, "application/json", bodyReader)
+}
+
+// NewLinkConversationIssueRequestWithBody constructs an http.Request for the LinkConversationIssue method, with any body, and a specified content type
+func NewLinkConversationIssueRequestWithBody(server string, conversationId ConversationId, params *LinkConversationIssueParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "conversationId", conversationId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/conversations/%s/issues", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.IdempotencyKey != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Idempotency-Key", *params.IdempotencyKey, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Idempotency-Key", headerParam0)
+		}
+
+		if params.YuvaWorkspace != nil {
+			var headerParam1 string
+
+			headerParam1, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam1)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewUnlinkConversationIssueRequest constructs an http.Request for the UnlinkConversationIssue method
+func NewUnlinkConversationIssueRequest(server string, conversationId ConversationId, issueLinkId IssueLinkId, params *UnlinkConversationIssueParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "conversationId", conversationId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "issueLinkId", issueLinkId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/conversations/%s/issues/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodDelete, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
 // NewListMessagesRequest constructs an http.Request for the ListMessages method
 func NewListMessagesRequest(server string, conversationId ConversationId, params *ListMessagesParams) (*http.Request, error) {
 	var err error
@@ -68506,6 +70004,184 @@ func NewLinkIdeaConversationRequest(server string, discussionId DiscussionId, co
 	}
 
 	req, err := http.NewRequest(http.MethodPut, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewListIdeaIssuesRequest constructs an http.Request for the ListIdeaIssues method
+func NewListIdeaIssuesRequest(server string, discussionId DiscussionId, params *ListIdeaIssuesParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "discussionId", discussionId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/discussions/%s/issues", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewLinkIdeaIssueRequest calls the generic LinkIdeaIssue builder with application/json body
+func NewLinkIdeaIssueRequest(server string, discussionId DiscussionId, params *LinkIdeaIssueParams, body LinkIdeaIssueJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewLinkIdeaIssueRequestWithBody(server, discussionId, params, "application/json", bodyReader)
+}
+
+// NewLinkIdeaIssueRequestWithBody constructs an http.Request for the LinkIdeaIssue method, with any body, and a specified content type
+func NewLinkIdeaIssueRequestWithBody(server string, discussionId DiscussionId, params *LinkIdeaIssueParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "discussionId", discussionId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/discussions/%s/issues", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.IdempotencyKey != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Idempotency-Key", *params.IdempotencyKey, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Idempotency-Key", headerParam0)
+		}
+
+		if params.YuvaWorkspace != nil {
+			var headerParam1 string
+
+			headerParam1, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam1)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewUnlinkIdeaIssueRequest constructs an http.Request for the UnlinkIdeaIssue method
+func NewUnlinkIdeaIssueRequest(server string, discussionId DiscussionId, issueLinkId IssueLinkId, params *UnlinkIdeaIssueParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "discussionId", discussionId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "issueLinkId", issueLinkId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/discussions/%s/issues/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodDelete, queryURL.String(), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -73820,6 +75496,334 @@ func NewDeleteInviteRequest(server string, inviteId InviteId, params *DeleteInvi
 			}
 
 			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewListIssueIntegrationsRequest constructs an http.Request for the ListIssueIntegrations method
+func NewListIssueIntegrationsRequest(server string, params *ListIssueIntegrationsParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/issue-integrations")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewCreateIssueIntegrationRequest calls the generic CreateIssueIntegration builder with application/json body
+func NewCreateIssueIntegrationRequest(server string, params *CreateIssueIntegrationParams, body CreateIssueIntegrationJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateIssueIntegrationRequestWithBody(server, params, "application/json", bodyReader)
+}
+
+// NewCreateIssueIntegrationRequestWithBody constructs an http.Request for the CreateIssueIntegration method, with any body, and a specified content type
+func NewCreateIssueIntegrationRequestWithBody(server string, params *CreateIssueIntegrationParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/issue-integrations")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.IdempotencyKey != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Idempotency-Key", *params.IdempotencyKey, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Idempotency-Key", headerParam0)
+		}
+
+		if params.YuvaWorkspace != nil {
+			var headerParam1 string
+
+			headerParam1, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam1)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewDeleteIssueIntegrationRequest constructs an http.Request for the DeleteIssueIntegration method
+func NewDeleteIssueIntegrationRequest(server string, integrationId IssueIntegrationId, params *DeleteIssueIntegrationParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "integrationId", integrationId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/issue-integrations/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodDelete, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewGetIssueIntegrationRequest constructs an http.Request for the GetIssueIntegration method
+func NewGetIssueIntegrationRequest(server string, integrationId IssueIntegrationId, params *GetIssueIntegrationParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "integrationId", integrationId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/issue-integrations/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewUpdateIssueIntegrationRequest calls the generic UpdateIssueIntegration builder with application/json body
+func NewUpdateIssueIntegrationRequest(server string, integrationId IssueIntegrationId, params *UpdateIssueIntegrationParams, body UpdateIssueIntegrationJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateIssueIntegrationRequestWithBody(server, integrationId, params, "application/json", bodyReader)
+}
+
+// NewUpdateIssueIntegrationRequestWithBody constructs an http.Request for the UpdateIssueIntegration method, with any body, and a specified content type
+func NewUpdateIssueIntegrationRequestWithBody(server string, integrationId IssueIntegrationId, params *UpdateIssueIntegrationParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "integrationId", integrationId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/issue-integrations/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPatch, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewRotateIssueWebhookSecretRequest constructs an http.Request for the RotateIssueWebhookSecret method
+func NewRotateIssueWebhookSecretRequest(server string, integrationId IssueIntegrationId, params *RotateIssueWebhookSecretParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "integrationId", integrationId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/issue-integrations/%s/webhook-secret", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.IdempotencyKey != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Idempotency-Key", *params.IdempotencyKey, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Idempotency-Key", headerParam0)
+		}
+
+		if params.YuvaWorkspace != nil {
+			var headerParam1 string
+
+			headerParam1, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam1)
 		}
 
 	}
@@ -85706,6 +87710,48 @@ type ClientWithResponsesInterface interface {
 	// Corresponds with POST /ingress/heartbeat/{token}/fail (the `StatusHeartbeatFailPost` operationId).
 	StatusHeartbeatFailPostWithResponse(ctx context.Context, token StatusMonitorToken, reqEditors ...RequestEditorFn) (*StatusHeartbeatFailPostResponse, error)
 
+	// IngestIssueWebhookWithBodyWithResponse Receive an issue tracker webhook
+	//
+	// Where GitHub and Linear report changes to issues; the address is the integration's
+	// `webhook_url`. GitHub requests are checked with `X-Hub-Signature-256`
+	// (`sha256=` and the hex HMAC-SHA256 of the raw body under the integration's webhook
+	// secret), Linear requests with `Linear-Signature` (the hex HMAC-SHA256 of the raw body)
+	// and a `webhookTimestamp` within a minute of the server's clock. A request without a valid
+	// signature is refused with `401 invalid_signature` and changes nothing.
+	//
+	// The body is only a hint: for an issue event that may change its state (GitHub `issues`
+	// `opened`, `closed`, `reopened`, `edited`, `deleted`, `transferred`; Linear `Issue` events)
+	// on an issue linked in Yuva, Yuva reads the issue again with the integration's token and
+	// applies what the tracker answers, so a replayed or out-of-order delivery changes nothing.
+	// GitHub's `ping` and every other event are accepted and ignored. At most 1 MiB and 600
+	// calls a minute per integration (`429`). An unknown integration answers `404`.
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /ingress/issues/{integrationId} (the `IngestIssueWebhook` operationId).
+	IngestIssueWebhookWithBodyWithResponse(ctx context.Context, integrationId IssueIntegrationId, params *IngestIssueWebhookParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*IngestIssueWebhookResponse, error)
+
+	// IngestIssueWebhookWithResponse Receive an issue tracker webhook
+	//
+	// Where GitHub and Linear report changes to issues; the address is the integration's
+	// `webhook_url`. GitHub requests are checked with `X-Hub-Signature-256`
+	// (`sha256=` and the hex HMAC-SHA256 of the raw body under the integration's webhook
+	// secret), Linear requests with `Linear-Signature` (the hex HMAC-SHA256 of the raw body)
+	// and a `webhookTimestamp` within a minute of the server's clock. A request without a valid
+	// signature is refused with `401 invalid_signature` and changes nothing.
+	//
+	// The body is only a hint: for an issue event that may change its state (GitHub `issues`
+	// `opened`, `closed`, `reopened`, `edited`, `deleted`, `transferred`; Linear `Issue` events)
+	// on an issue linked in Yuva, Yuva reads the issue again with the integration's token and
+	// applies what the tracker answers, so a replayed or out-of-order delivery changes nothing.
+	// GitHub's `ping` and every other event are accepted and ignored. At most 1 MiB and 600
+	// calls a minute per integration (`429`). An unknown integration answers `404`.
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /ingress/issues/{integrationId} (the `IngestIssueWebhook` operationId).
+	IngestIssueWebhookWithResponse(ctx context.Context, integrationId IssueIntegrationId, params *IngestIssueWebhookParams, body IngestIssueWebhookJSONRequestBody, reqEditors ...RequestEditorFn) (*IngestIssueWebhookResponse, error)
+
 	// IngestSlackWithBodyWithResponse Receive Slack events
 	//
 	// The Slack app's Event Subscriptions request URL (`<YUVA_PUBLIC_URL>/ingress/slack`). Every
@@ -88541,6 +90587,76 @@ type ClientWithResponsesInterface interface {
 	// Corresponds with GET /v1/conversations/{conversationId}/incidents (the `ListConversationIncidents` operationId).
 	ListConversationIncidentsWithResponse(ctx context.Context, conversationId ConversationId, params *ListConversationIncidentsParams, reqEditors ...RequestEditorFn) (*ListConversationIncidentsResponse, error)
 
+	// ListConversationIssuesWithResponse List the issues a feedback is linked to
+	//
+	// The GitHub and Linear issues linked to the conversation, oldest link first, as `issues` on
+	// the conversation carries them.
+	//
+	// Scope: `conversations:read`.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /v1/conversations/{conversationId}/issues (the `ListConversationIssues` operationId).
+	ListConversationIssuesWithResponse(ctx context.Context, conversationId ConversationId, params *ListConversationIssuesParams, reqEditors ...RequestEditorFn) (*ListConversationIssuesResponse, error)
+
+	// LinkConversationIssueWithBodyWithResponse Create or link an issue for a feedback
+	//
+	// With `url`, links the existing issue it names; with `title`, creates an issue in `target`
+	// (or the integration's `default_target`) and links it. The issue's body is `body`, then a
+	// line with the conversation's address in the panel; nothing else of the conversation, and
+	// no customer's name or address, goes to the tracker.
+	//
+	// Only `feedback` conversations link (`409 not_feedback`). A conversation takes at most 10
+	// issues and an issue at most 1,000 links (`422 too_many_links`). Linking an issue the
+	// conversation is already linked to changes nothing and answers `200`. The new link sets the
+	// feedback's progress from the issue's state at once. `422 issue_not_found` when the tracker
+	// does not know the issue or the token cannot see it, `422 tracker_auth_failed` when the
+	// tracker refuses the token, `422 tracker_rejected` when it refuses the request (a pull request,
+	// a target it does not take), `503 tracker_unavailable` when it cannot be reached.
+	//
+	// Agents with access to the inbox, owners, admins and API keys. Scopes: `issues:write` and
+	// `conversations:read`.
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /v1/conversations/{conversationId}/issues (the `LinkConversationIssue` operationId).
+	LinkConversationIssueWithBodyWithResponse(ctx context.Context, conversationId ConversationId, params *LinkConversationIssueParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*LinkConversationIssueResponse, error)
+
+	// LinkConversationIssueWithResponse Create or link an issue for a feedback
+	//
+	// With `url`, links the existing issue it names; with `title`, creates an issue in `target`
+	// (or the integration's `default_target`) and links it. The issue's body is `body`, then a
+	// line with the conversation's address in the panel; nothing else of the conversation, and
+	// no customer's name or address, goes to the tracker.
+	//
+	// Only `feedback` conversations link (`409 not_feedback`). A conversation takes at most 10
+	// issues and an issue at most 1,000 links (`422 too_many_links`). Linking an issue the
+	// conversation is already linked to changes nothing and answers `200`. The new link sets the
+	// feedback's progress from the issue's state at once. `422 issue_not_found` when the tracker
+	// does not know the issue or the token cannot see it, `422 tracker_auth_failed` when the
+	// tracker refuses the token, `422 tracker_rejected` when it refuses the request (a pull request,
+	// a target it does not take), `503 tracker_unavailable` when it cannot be reached.
+	//
+	// Agents with access to the inbox, owners, admins and API keys. Scopes: `issues:write` and
+	// `conversations:read`.
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /v1/conversations/{conversationId}/issues (the `LinkConversationIssue` operationId).
+	LinkConversationIssueWithResponse(ctx context.Context, conversationId ConversationId, params *LinkConversationIssueParams, body LinkConversationIssueJSONRequestBody, reqEditors ...RequestEditorFn) (*LinkConversationIssueResponse, error)
+
+	// UnlinkConversationIssueWithResponse Unlink an issue from a feedback
+	//
+	// The progress the issue set stays; the issue itself is not changed.
+	//
+	// Agents with access to the inbox, owners, admins and API keys. Scopes: `issues:write` and
+	// `conversations:read`.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with DELETE /v1/conversations/{conversationId}/issues/{issueLinkId} (the `UnlinkConversationIssue` operationId).
+	UnlinkConversationIssueWithResponse(ctx context.Context, conversationId ConversationId, issueLinkId IssueLinkId, params *UnlinkConversationIssueParams, reqEditors ...RequestEditorFn) (*UnlinkConversationIssueResponse, error)
+
 	// ListMessagesWithResponse List a conversation's messages
 	//
 	// Messages, notes and events, oldest first by default. With `order=desc` the newest come
@@ -89049,6 +91165,60 @@ type ClientWithResponsesInterface interface {
 	//
 	// Corresponds with PUT /v1/discussions/{discussionId}/conversations/{conversationId} (the `LinkIdeaConversation` operationId).
 	LinkIdeaConversationWithResponse(ctx context.Context, discussionId DiscussionId, conversationId ConversationId, params *LinkIdeaConversationParams, reqEditors ...RequestEditorFn) (*LinkIdeaConversationResponse, error)
+
+	// ListIdeaIssuesWithResponse List the issues an idea is linked to
+	//
+	// The GitHub and Linear issues linked to the roadmap idea, oldest link first. A discussion
+	// that is not an idea answers `404`.
+	//
+	// Scope: `conversations:read`.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /v1/discussions/{discussionId}/issues (the `ListIdeaIssues` operationId).
+	ListIdeaIssuesWithResponse(ctx context.Context, discussionId DiscussionId, params *ListIdeaIssuesParams, reqEditors ...RequestEditorFn) (*ListIdeaIssuesResponse, error)
+
+	// LinkIdeaIssueWithBodyWithResponse Create or link an issue for an idea
+	//
+	// As for a feedback, with the idea's address in the panel at the end of a created issue's
+	// body. The idea shows the issue and its state; neither linking nor a change of the issue's
+	// state moves the idea's stage or touches its linked feedback. A discussion that is not an
+	// idea answers `409 not_an_idea`; a server with `YUVA_ROADMAP=off` answers `404`.
+	//
+	// Agents with access to the inbox, owners, admins and API keys. Scopes: `issues:write` and
+	// `conversations:read`.
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /v1/discussions/{discussionId}/issues (the `LinkIdeaIssue` operationId).
+	LinkIdeaIssueWithBodyWithResponse(ctx context.Context, discussionId DiscussionId, params *LinkIdeaIssueParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*LinkIdeaIssueResponse, error)
+
+	// LinkIdeaIssueWithResponse Create or link an issue for an idea
+	//
+	// As for a feedback, with the idea's address in the panel at the end of a created issue's
+	// body. The idea shows the issue and its state; neither linking nor a change of the issue's
+	// state moves the idea's stage or touches its linked feedback. A discussion that is not an
+	// idea answers `409 not_an_idea`; a server with `YUVA_ROADMAP=off` answers `404`.
+	//
+	// Agents with access to the inbox, owners, admins and API keys. Scopes: `issues:write` and
+	// `conversations:read`.
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /v1/discussions/{discussionId}/issues (the `LinkIdeaIssue` operationId).
+	LinkIdeaIssueWithResponse(ctx context.Context, discussionId DiscussionId, params *LinkIdeaIssueParams, body LinkIdeaIssueJSONRequestBody, reqEditors ...RequestEditorFn) (*LinkIdeaIssueResponse, error)
+
+	// UnlinkIdeaIssueWithResponse Unlink an issue from an idea
+	//
+	// The issue itself is not changed.
+	//
+	// Agents with access to the inbox, owners, admins and API keys. Scopes: `issues:write` and
+	// `conversations:read`.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with DELETE /v1/discussions/{discussionId}/issues/{issueLinkId} (the `UnlinkIdeaIssue` operationId).
+	UnlinkIdeaIssueWithResponse(ctx context.Context, discussionId DiscussionId, issueLinkId IssueLinkId, params *UnlinkIdeaIssueParams, reqEditors ...RequestEditorFn) (*UnlinkIdeaIssueResponse, error)
 
 	// ReplyToIdeaConversationsWithBodyWithResponse Reply to the feedback linked to an idea
 	//
@@ -90611,6 +92781,132 @@ type ClientWithResponsesInterface interface {
 	//
 	// Corresponds with DELETE /v1/invites/{inviteId} (the `DeleteInvite` operationId).
 	DeleteInviteWithResponse(ctx context.Context, inviteId InviteId, params *DeleteInviteParams, reqEditors ...RequestEditorFn) (*DeleteInviteResponse, error)
+
+	// ListIssueIntegrationsWithResponse List issue tracker integrations
+	//
+	// The GitHub and Linear connections of the workspace, oldest first. Every member reads them;
+	// tokens and webhook secrets are never answered.
+	//
+	// Scope: `integrations:read`.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /v1/issue-integrations (the `ListIssueIntegrations` operationId).
+	ListIssueIntegrationsWithResponse(ctx context.Context, params *ListIssueIntegrationsParams, reqEditors ...RequestEditorFn) (*ListIssueIntegrationsResponse, error)
+
+	// CreateIssueIntegrationWithBodyWithResponse Connect GitHub or Linear
+	//
+	// Owners, admins and API keys without an inbox limit. The token is checked with the tracker
+	// before it is stored (`422 tracker_auth_failed` when the tracker refuses it,
+	// `503 tracker_unavailable` when it cannot be reached) and sealed under the master key; it is
+	// never answered. `account` is the GitHub login or the Linear organization the token belongs
+	// to.
+	//
+	// GitHub: a fine-grained personal access token limited to the repositories issues go to,
+	// with read and write access to Issues. `api_url` names a GitHub Enterprise Server's API
+	// (`https://<host>/api/v3`); without it Yuva calls `api.github.com`. The URL must be `https`
+	// and is refused when it points to a private, loopback or link-local address, as webhook URLs
+	// are, checked again on every call. Linear: a personal API key; Yuva calls `api.linear.app`.
+	//
+	// Without `webhook_secret` Yuva makes one and answers it once; paste it, with `webhook_url`,
+	// into the tracker's webhook settings (GitHub: content type `application/json`, the Issues
+	// event). Linear makes its own signing secret: send it as `webhook_secret` here or later.
+	// At most 20 integrations per workspace (`422 too_many_integrations`).
+	//
+	// Scope: `integrations:manage`.
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /v1/issue-integrations (the `CreateIssueIntegration` operationId).
+	CreateIssueIntegrationWithBodyWithResponse(ctx context.Context, params *CreateIssueIntegrationParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateIssueIntegrationResponse, error)
+
+	// CreateIssueIntegrationWithResponse Connect GitHub or Linear
+	//
+	// Owners, admins and API keys without an inbox limit. The token is checked with the tracker
+	// before it is stored (`422 tracker_auth_failed` when the tracker refuses it,
+	// `503 tracker_unavailable` when it cannot be reached) and sealed under the master key; it is
+	// never answered. `account` is the GitHub login or the Linear organization the token belongs
+	// to.
+	//
+	// GitHub: a fine-grained personal access token limited to the repositories issues go to,
+	// with read and write access to Issues. `api_url` names a GitHub Enterprise Server's API
+	// (`https://<host>/api/v3`); without it Yuva calls `api.github.com`. The URL must be `https`
+	// and is refused when it points to a private, loopback or link-local address, as webhook URLs
+	// are, checked again on every call. Linear: a personal API key; Yuva calls `api.linear.app`.
+	//
+	// Without `webhook_secret` Yuva makes one and answers it once; paste it, with `webhook_url`,
+	// into the tracker's webhook settings (GitHub: content type `application/json`, the Issues
+	// event). Linear makes its own signing secret: send it as `webhook_secret` here or later.
+	// At most 20 integrations per workspace (`422 too_many_integrations`).
+	//
+	// Scope: `integrations:manage`.
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /v1/issue-integrations (the `CreateIssueIntegration` operationId).
+	CreateIssueIntegrationWithResponse(ctx context.Context, params *CreateIssueIntegrationParams, body CreateIssueIntegrationJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateIssueIntegrationResponse, error)
+
+	// DeleteIssueIntegrationWithResponse Disconnect an issue tracker
+	//
+	// Owners, admins and API keys without an inbox limit. The token and secret are deleted, and
+	// with them every link to the integration's issues (`issue_link.deleted` for each); the
+	// progress those links set stays. Nothing changes in the tracker.
+	//
+	// Scope: `integrations:manage`.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with DELETE /v1/issue-integrations/{integrationId} (the `DeleteIssueIntegration` operationId).
+	DeleteIssueIntegrationWithResponse(ctx context.Context, integrationId IssueIntegrationId, params *DeleteIssueIntegrationParams, reqEditors ...RequestEditorFn) (*DeleteIssueIntegrationResponse, error)
+
+	// GetIssueIntegrationWithResponse Get an issue tracker integration
+	//
+	// Scope: `integrations:read`.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /v1/issue-integrations/{integrationId} (the `GetIssueIntegration` operationId).
+	GetIssueIntegrationWithResponse(ctx context.Context, integrationId IssueIntegrationId, params *GetIssueIntegrationParams, reqEditors ...RequestEditorFn) (*GetIssueIntegrationResponse, error)
+
+	// UpdateIssueIntegrationWithBodyWithResponse Change an issue tracker integration
+	//
+	// Owners, admins and API keys without an inbox limit. A new `token` is checked with the
+	// tracker before it replaces the old one, as on connect. `webhook_secret` replaces the secret
+	// incoming webhooks are checked with (Linear's signing secret); `default_target: null`
+	// clears the default.
+	//
+	// Scope: `integrations:manage`.
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PATCH /v1/issue-integrations/{integrationId} (the `UpdateIssueIntegration` operationId).
+	UpdateIssueIntegrationWithBodyWithResponse(ctx context.Context, integrationId IssueIntegrationId, params *UpdateIssueIntegrationParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateIssueIntegrationResponse, error)
+
+	// UpdateIssueIntegrationWithResponse Change an issue tracker integration
+	//
+	// Owners, admins and API keys without an inbox limit. A new `token` is checked with the
+	// tracker before it replaces the old one, as on connect. `webhook_secret` replaces the secret
+	// incoming webhooks are checked with (Linear's signing secret); `default_target: null`
+	// clears the default.
+	//
+	// Scope: `integrations:manage`.
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PATCH /v1/issue-integrations/{integrationId} (the `UpdateIssueIntegration` operationId).
+	UpdateIssueIntegrationWithResponse(ctx context.Context, integrationId IssueIntegrationId, params *UpdateIssueIntegrationParams, body UpdateIssueIntegrationJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateIssueIntegrationResponse, error)
+
+	// RotateIssueWebhookSecretWithResponse Make a new webhook secret
+	//
+	// Owners, admins and API keys without an inbox limit. Yuva makes a new secret, answers it
+	// once and checks incoming webhooks with it alone from now on; paste it into the tracker.
+	//
+	// Scope: `integrations:manage`.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /v1/issue-integrations/{integrationId}/webhook-secret (the `RotateIssueWebhookSecret` operationId).
+	RotateIssueWebhookSecretWithResponse(ctx context.Context, integrationId IssueIntegrationId, params *RotateIssueWebhookSecretParams, reqEditors ...RequestEditorFn) (*RotateIssueWebhookSecretResponse, error)
 
 	// ListLabelsWithResponse List labels
 	//
@@ -97783,6 +100079,68 @@ func (r StatusHeartbeatFailPostResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r StatusHeartbeatFailPostResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type IngestIssueWebhookResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+	// ApplicationproblemJSON413 the response for an HTTP 413 `application/problem+json` response
+	ApplicationproblemJSON413 *Problem
+	// ApplicationproblemJSON429 the response for an HTTP 429 `application/problem+json` response
+	ApplicationproblemJSON429 *Problem
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r IngestIssueWebhookResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r IngestIssueWebhookResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetApplicationproblemJSON413 returns the response for an HTTP 413 `application/problem+json` response
+func (r IngestIssueWebhookResponse) GetApplicationproblemJSON413() *Problem {
+	return r.ApplicationproblemJSON413
+}
+
+// GetApplicationproblemJSON429 returns the response for an HTTP 429 `application/problem+json` response
+func (r IngestIssueWebhookResponse) GetApplicationproblemJSON429() *Problem {
+	return r.ApplicationproblemJSON429
+}
+
+// GetBody returns the raw response body bytes
+func (r IngestIssueWebhookResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r IngestIssueWebhookResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r IngestIssueWebhookResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r IngestIssueWebhookResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -107092,6 +109450,220 @@ func (r ListConversationIncidentsResponse) ContentType() string {
 	return ""
 }
 
+type ListConversationIssuesResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *IssueLinkList
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r ListConversationIssuesResponse) GetJSON200() *IssueLinkList {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r ListConversationIssuesResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r ListConversationIssuesResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r ListConversationIssuesResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetBody returns the raw response body bytes
+func (r ListConversationIssuesResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r ListConversationIssuesResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListConversationIssuesResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ListConversationIssuesResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type LinkConversationIssueResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *IssueLink
+	// JSON201 the response for an HTTP 201 `application/json` response
+	JSON201 *IssueLink
+	// ApplicationproblemJSON400 the response for an HTTP 400 `application/problem+json` response
+	ApplicationproblemJSON400 *Problem
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+	// ApplicationproblemJSON409 the response for an HTTP 409 `application/problem+json` response
+	ApplicationproblemJSON409 *Problem
+	// ApplicationproblemJSON422 the response for an HTTP 422 `application/problem+json` response
+	ApplicationproblemJSON422 *Problem
+	// ApplicationproblemJSON503 the response for an HTTP 503 `application/problem+json` response
+	ApplicationproblemJSON503 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r LinkConversationIssueResponse) GetJSON200() *IssueLink {
+	return r.JSON200
+}
+
+// GetJSON201 returns the response for an HTTP 201 `application/json` response
+func (r LinkConversationIssueResponse) GetJSON201() *IssueLink {
+	return r.JSON201
+}
+
+// GetApplicationproblemJSON400 returns the response for an HTTP 400 `application/problem+json` response
+func (r LinkConversationIssueResponse) GetApplicationproblemJSON400() *Problem {
+	return r.ApplicationproblemJSON400
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r LinkConversationIssueResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r LinkConversationIssueResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r LinkConversationIssueResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetApplicationproblemJSON409 returns the response for an HTTP 409 `application/problem+json` response
+func (r LinkConversationIssueResponse) GetApplicationproblemJSON409() *Problem {
+	return r.ApplicationproblemJSON409
+}
+
+// GetApplicationproblemJSON422 returns the response for an HTTP 422 `application/problem+json` response
+func (r LinkConversationIssueResponse) GetApplicationproblemJSON422() *Problem {
+	return r.ApplicationproblemJSON422
+}
+
+// GetApplicationproblemJSON503 returns the response for an HTTP 503 `application/problem+json` response
+func (r LinkConversationIssueResponse) GetApplicationproblemJSON503() *Problem {
+	return r.ApplicationproblemJSON503
+}
+
+// GetBody returns the raw response body bytes
+func (r LinkConversationIssueResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r LinkConversationIssueResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r LinkConversationIssueResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r LinkConversationIssueResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type UnlinkConversationIssueResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r UnlinkConversationIssueResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r UnlinkConversationIssueResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r UnlinkConversationIssueResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetBody returns the raw response body bytes
+func (r UnlinkConversationIssueResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r UnlinkConversationIssueResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UnlinkConversationIssueResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r UnlinkConversationIssueResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type ListMessagesResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -108652,6 +111224,220 @@ func (r LinkIdeaConversationResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r LinkIdeaConversationResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type ListIdeaIssuesResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *IssueLinkList
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r ListIdeaIssuesResponse) GetJSON200() *IssueLinkList {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r ListIdeaIssuesResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r ListIdeaIssuesResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r ListIdeaIssuesResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetBody returns the raw response body bytes
+func (r ListIdeaIssuesResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r ListIdeaIssuesResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListIdeaIssuesResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ListIdeaIssuesResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type LinkIdeaIssueResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *IssueLink
+	// JSON201 the response for an HTTP 201 `application/json` response
+	JSON201 *IssueLink
+	// ApplicationproblemJSON400 the response for an HTTP 400 `application/problem+json` response
+	ApplicationproblemJSON400 *Problem
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+	// ApplicationproblemJSON409 the response for an HTTP 409 `application/problem+json` response
+	ApplicationproblemJSON409 *Problem
+	// ApplicationproblemJSON422 the response for an HTTP 422 `application/problem+json` response
+	ApplicationproblemJSON422 *Problem
+	// ApplicationproblemJSON503 the response for an HTTP 503 `application/problem+json` response
+	ApplicationproblemJSON503 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r LinkIdeaIssueResponse) GetJSON200() *IssueLink {
+	return r.JSON200
+}
+
+// GetJSON201 returns the response for an HTTP 201 `application/json` response
+func (r LinkIdeaIssueResponse) GetJSON201() *IssueLink {
+	return r.JSON201
+}
+
+// GetApplicationproblemJSON400 returns the response for an HTTP 400 `application/problem+json` response
+func (r LinkIdeaIssueResponse) GetApplicationproblemJSON400() *Problem {
+	return r.ApplicationproblemJSON400
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r LinkIdeaIssueResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r LinkIdeaIssueResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r LinkIdeaIssueResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetApplicationproblemJSON409 returns the response for an HTTP 409 `application/problem+json` response
+func (r LinkIdeaIssueResponse) GetApplicationproblemJSON409() *Problem {
+	return r.ApplicationproblemJSON409
+}
+
+// GetApplicationproblemJSON422 returns the response for an HTTP 422 `application/problem+json` response
+func (r LinkIdeaIssueResponse) GetApplicationproblemJSON422() *Problem {
+	return r.ApplicationproblemJSON422
+}
+
+// GetApplicationproblemJSON503 returns the response for an HTTP 503 `application/problem+json` response
+func (r LinkIdeaIssueResponse) GetApplicationproblemJSON503() *Problem {
+	return r.ApplicationproblemJSON503
+}
+
+// GetBody returns the raw response body bytes
+func (r LinkIdeaIssueResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r LinkIdeaIssueResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r LinkIdeaIssueResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r LinkIdeaIssueResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type UnlinkIdeaIssueResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r UnlinkIdeaIssueResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r UnlinkIdeaIssueResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r UnlinkIdeaIssueResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetBody returns the raw response body bytes
+func (r UnlinkIdeaIssueResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r UnlinkIdeaIssueResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UnlinkIdeaIssueResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r UnlinkIdeaIssueResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -113875,6 +116661,399 @@ func (r DeleteInviteResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r DeleteInviteResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type ListIssueIntegrationsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *IssueIntegrationList
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r ListIssueIntegrationsResponse) GetJSON200() *IssueIntegrationList {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r ListIssueIntegrationsResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r ListIssueIntegrationsResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetBody returns the raw response body bytes
+func (r ListIssueIntegrationsResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r ListIssueIntegrationsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListIssueIntegrationsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ListIssueIntegrationsResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type CreateIssueIntegrationResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON201 the response for an HTTP 201 `application/json` response
+	JSON201 *IssueIntegrationSecret
+	// ApplicationproblemJSON400 the response for an HTTP 400 `application/problem+json` response
+	ApplicationproblemJSON400 *Problem
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON422 the response for an HTTP 422 `application/problem+json` response
+	ApplicationproblemJSON422 *Problem
+	// ApplicationproblemJSON503 the response for an HTTP 503 `application/problem+json` response
+	ApplicationproblemJSON503 *Problem
+}
+
+// GetJSON201 returns the response for an HTTP 201 `application/json` response
+func (r CreateIssueIntegrationResponse) GetJSON201() *IssueIntegrationSecret {
+	return r.JSON201
+}
+
+// GetApplicationproblemJSON400 returns the response for an HTTP 400 `application/problem+json` response
+func (r CreateIssueIntegrationResponse) GetApplicationproblemJSON400() *Problem {
+	return r.ApplicationproblemJSON400
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r CreateIssueIntegrationResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r CreateIssueIntegrationResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON422 returns the response for an HTTP 422 `application/problem+json` response
+func (r CreateIssueIntegrationResponse) GetApplicationproblemJSON422() *Problem {
+	return r.ApplicationproblemJSON422
+}
+
+// GetApplicationproblemJSON503 returns the response for an HTTP 503 `application/problem+json` response
+func (r CreateIssueIntegrationResponse) GetApplicationproblemJSON503() *Problem {
+	return r.ApplicationproblemJSON503
+}
+
+// GetBody returns the raw response body bytes
+func (r CreateIssueIntegrationResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r CreateIssueIntegrationResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateIssueIntegrationResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r CreateIssueIntegrationResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type DeleteIssueIntegrationResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r DeleteIssueIntegrationResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r DeleteIssueIntegrationResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r DeleteIssueIntegrationResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetBody returns the raw response body bytes
+func (r DeleteIssueIntegrationResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteIssueIntegrationResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteIssueIntegrationResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r DeleteIssueIntegrationResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetIssueIntegrationResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *IssueIntegration
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetIssueIntegrationResponse) GetJSON200() *IssueIntegration {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r GetIssueIntegrationResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r GetIssueIntegrationResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r GetIssueIntegrationResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetBody returns the raw response body bytes
+func (r GetIssueIntegrationResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetIssueIntegrationResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetIssueIntegrationResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetIssueIntegrationResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type UpdateIssueIntegrationResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *IssueIntegration
+	// ApplicationproblemJSON400 the response for an HTTP 400 `application/problem+json` response
+	ApplicationproblemJSON400 *Problem
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+	// ApplicationproblemJSON422 the response for an HTTP 422 `application/problem+json` response
+	ApplicationproblemJSON422 *Problem
+	// ApplicationproblemJSON503 the response for an HTTP 503 `application/problem+json` response
+	ApplicationproblemJSON503 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r UpdateIssueIntegrationResponse) GetJSON200() *IssueIntegration {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON400 returns the response for an HTTP 400 `application/problem+json` response
+func (r UpdateIssueIntegrationResponse) GetApplicationproblemJSON400() *Problem {
+	return r.ApplicationproblemJSON400
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r UpdateIssueIntegrationResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r UpdateIssueIntegrationResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r UpdateIssueIntegrationResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetApplicationproblemJSON422 returns the response for an HTTP 422 `application/problem+json` response
+func (r UpdateIssueIntegrationResponse) GetApplicationproblemJSON422() *Problem {
+	return r.ApplicationproblemJSON422
+}
+
+// GetApplicationproblemJSON503 returns the response for an HTTP 503 `application/problem+json` response
+func (r UpdateIssueIntegrationResponse) GetApplicationproblemJSON503() *Problem {
+	return r.ApplicationproblemJSON503
+}
+
+// GetBody returns the raw response body bytes
+func (r UpdateIssueIntegrationResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateIssueIntegrationResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateIssueIntegrationResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r UpdateIssueIntegrationResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type RotateIssueWebhookSecretResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *IssueIntegrationSecret
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r RotateIssueWebhookSecretResponse) GetJSON200() *IssueIntegrationSecret {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r RotateIssueWebhookSecretResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r RotateIssueWebhookSecretResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r RotateIssueWebhookSecretResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetBody returns the raw response body bytes
+func (r RotateIssueWebhookSecretResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r RotateIssueWebhookSecretResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r RotateIssueWebhookSecretResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r RotateIssueWebhookSecretResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -127265,6 +130444,60 @@ func (c *ClientWithResponses) StatusHeartbeatFailPostWithResponse(ctx context.Co
 	return ParseStatusHeartbeatFailPostResponse(rsp)
 }
 
+// IngestIssueWebhookWithBodyWithResponse Receive an issue tracker webhook
+//
+// Where GitHub and Linear report changes to issues; the address is the integration's
+// `webhook_url`. GitHub requests are checked with `X-Hub-Signature-256`
+// (`sha256=` and the hex HMAC-SHA256 of the raw body under the integration's webhook
+// secret), Linear requests with `Linear-Signature` (the hex HMAC-SHA256 of the raw body)
+// and a `webhookTimestamp` within a minute of the server's clock. A request without a valid
+// signature is refused with `401 invalid_signature` and changes nothing.
+//
+// The body is only a hint: for an issue event that may change its state (GitHub `issues`
+// `opened`, `closed`, `reopened`, `edited`, `deleted`, `transferred`; Linear `Issue` events)
+// on an issue linked in Yuva, Yuva reads the issue again with the integration's token and
+// applies what the tracker answers, so a replayed or out-of-order delivery changes nothing.
+// GitHub's `ping` and every other event are accepted and ignored. At most 1 MiB and 600
+// calls a minute per integration (`429`). An unknown integration answers `404`.
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /ingress/issues/{integrationId} (the `IngestIssueWebhook` operationId).
+func (c *ClientWithResponses) IngestIssueWebhookWithBodyWithResponse(ctx context.Context, integrationId IssueIntegrationId, params *IngestIssueWebhookParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*IngestIssueWebhookResponse, error) {
+	rsp, err := c.IngestIssueWebhookWithBody(ctx, integrationId, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseIngestIssueWebhookResponse(rsp)
+}
+
+// IngestIssueWebhookWithResponse Receive an issue tracker webhook
+//
+// Where GitHub and Linear report changes to issues; the address is the integration's
+// `webhook_url`. GitHub requests are checked with `X-Hub-Signature-256`
+// (`sha256=` and the hex HMAC-SHA256 of the raw body under the integration's webhook
+// secret), Linear requests with `Linear-Signature` (the hex HMAC-SHA256 of the raw body)
+// and a `webhookTimestamp` within a minute of the server's clock. A request without a valid
+// signature is refused with `401 invalid_signature` and changes nothing.
+//
+// The body is only a hint: for an issue event that may change its state (GitHub `issues`
+// `opened`, `closed`, `reopened`, `edited`, `deleted`, `transferred`; Linear `Issue` events)
+// on an issue linked in Yuva, Yuva reads the issue again with the integration's token and
+// applies what the tracker answers, so a replayed or out-of-order delivery changes nothing.
+// GitHub's `ping` and every other event are accepted and ignored. At most 1 MiB and 600
+// calls a minute per integration (`429`). An unknown integration answers `404`.
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /ingress/issues/{integrationId} (the `IngestIssueWebhook` operationId).
+func (c *ClientWithResponses) IngestIssueWebhookWithResponse(ctx context.Context, integrationId IssueIntegrationId, params *IngestIssueWebhookParams, body IngestIssueWebhookJSONRequestBody, reqEditors ...RequestEditorFn) (*IngestIssueWebhookResponse, error) {
+	rsp, err := c.IngestIssueWebhook(ctx, integrationId, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseIngestIssueWebhookResponse(rsp)
+}
+
 // IngestSlackWithBodyWithResponse Receive Slack events
 //
 // The Slack app's Event Subscriptions request URL (`<YUVA_PUBLIC_URL>/ingress/slack`). Every
@@ -131264,6 +134497,100 @@ func (c *ClientWithResponses) ListConversationIncidentsWithResponse(ctx context.
 	return ParseListConversationIncidentsResponse(rsp)
 }
 
+// ListConversationIssuesWithResponse List the issues a feedback is linked to
+//
+// The GitHub and Linear issues linked to the conversation, oldest link first, as `issues` on
+// the conversation carries them.
+//
+// Scope: `conversations:read`.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /v1/conversations/{conversationId}/issues (the `ListConversationIssues` operationId).
+func (c *ClientWithResponses) ListConversationIssuesWithResponse(ctx context.Context, conversationId ConversationId, params *ListConversationIssuesParams, reqEditors ...RequestEditorFn) (*ListConversationIssuesResponse, error) {
+	rsp, err := c.ListConversationIssues(ctx, conversationId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListConversationIssuesResponse(rsp)
+}
+
+// LinkConversationIssueWithBodyWithResponse Create or link an issue for a feedback
+//
+// With `url`, links the existing issue it names; with `title`, creates an issue in `target`
+// (or the integration's `default_target`) and links it. The issue's body is `body`, then a
+// line with the conversation's address in the panel; nothing else of the conversation, and
+// no customer's name or address, goes to the tracker.
+//
+// Only `feedback` conversations link (`409 not_feedback`). A conversation takes at most 10
+// issues and an issue at most 1,000 links (`422 too_many_links`). Linking an issue the
+// conversation is already linked to changes nothing and answers `200`. The new link sets the
+// feedback's progress from the issue's state at once. `422 issue_not_found` when the tracker
+// does not know the issue or the token cannot see it, `422 tracker_auth_failed` when the
+// tracker refuses the token, `422 tracker_rejected` when it refuses the request (a pull request,
+// a target it does not take), `503 tracker_unavailable` when it cannot be reached.
+//
+// Agents with access to the inbox, owners, admins and API keys. Scopes: `issues:write` and
+// `conversations:read`.
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /v1/conversations/{conversationId}/issues (the `LinkConversationIssue` operationId).
+func (c *ClientWithResponses) LinkConversationIssueWithBodyWithResponse(ctx context.Context, conversationId ConversationId, params *LinkConversationIssueParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*LinkConversationIssueResponse, error) {
+	rsp, err := c.LinkConversationIssueWithBody(ctx, conversationId, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseLinkConversationIssueResponse(rsp)
+}
+
+// LinkConversationIssueWithResponse Create or link an issue for a feedback
+//
+// With `url`, links the existing issue it names; with `title`, creates an issue in `target`
+// (or the integration's `default_target`) and links it. The issue's body is `body`, then a
+// line with the conversation's address in the panel; nothing else of the conversation, and
+// no customer's name or address, goes to the tracker.
+//
+// Only `feedback` conversations link (`409 not_feedback`). A conversation takes at most 10
+// issues and an issue at most 1,000 links (`422 too_many_links`). Linking an issue the
+// conversation is already linked to changes nothing and answers `200`. The new link sets the
+// feedback's progress from the issue's state at once. `422 issue_not_found` when the tracker
+// does not know the issue or the token cannot see it, `422 tracker_auth_failed` when the
+// tracker refuses the token, `422 tracker_rejected` when it refuses the request (a pull request,
+// a target it does not take), `503 tracker_unavailable` when it cannot be reached.
+//
+// Agents with access to the inbox, owners, admins and API keys. Scopes: `issues:write` and
+// `conversations:read`.
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /v1/conversations/{conversationId}/issues (the `LinkConversationIssue` operationId).
+func (c *ClientWithResponses) LinkConversationIssueWithResponse(ctx context.Context, conversationId ConversationId, params *LinkConversationIssueParams, body LinkConversationIssueJSONRequestBody, reqEditors ...RequestEditorFn) (*LinkConversationIssueResponse, error) {
+	rsp, err := c.LinkConversationIssue(ctx, conversationId, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseLinkConversationIssueResponse(rsp)
+}
+
+// UnlinkConversationIssueWithResponse Unlink an issue from a feedback
+//
+// The progress the issue set stays; the issue itself is not changed.
+//
+// Agents with access to the inbox, owners, admins and API keys. Scopes: `issues:write` and
+// `conversations:read`.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with DELETE /v1/conversations/{conversationId}/issues/{issueLinkId} (the `UnlinkConversationIssue` operationId).
+func (c *ClientWithResponses) UnlinkConversationIssueWithResponse(ctx context.Context, conversationId ConversationId, issueLinkId IssueLinkId, params *UnlinkConversationIssueParams, reqEditors ...RequestEditorFn) (*UnlinkConversationIssueResponse, error) {
+	rsp, err := c.UnlinkConversationIssue(ctx, conversationId, issueLinkId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUnlinkConversationIssueResponse(rsp)
+}
+
 // ListMessagesWithResponse List a conversation's messages
 //
 // Messages, notes and events, oldest first by default. With `order=desc` the newest come
@@ -131957,6 +135284,84 @@ func (c *ClientWithResponses) LinkIdeaConversationWithResponse(ctx context.Conte
 		return nil, err
 	}
 	return ParseLinkIdeaConversationResponse(rsp)
+}
+
+// ListIdeaIssuesWithResponse List the issues an idea is linked to
+//
+// The GitHub and Linear issues linked to the roadmap idea, oldest link first. A discussion
+// that is not an idea answers `404`.
+//
+// Scope: `conversations:read`.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /v1/discussions/{discussionId}/issues (the `ListIdeaIssues` operationId).
+func (c *ClientWithResponses) ListIdeaIssuesWithResponse(ctx context.Context, discussionId DiscussionId, params *ListIdeaIssuesParams, reqEditors ...RequestEditorFn) (*ListIdeaIssuesResponse, error) {
+	rsp, err := c.ListIdeaIssues(ctx, discussionId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListIdeaIssuesResponse(rsp)
+}
+
+// LinkIdeaIssueWithBodyWithResponse Create or link an issue for an idea
+//
+// As for a feedback, with the idea's address in the panel at the end of a created issue's
+// body. The idea shows the issue and its state; neither linking nor a change of the issue's
+// state moves the idea's stage or touches its linked feedback. A discussion that is not an
+// idea answers `409 not_an_idea`; a server with `YUVA_ROADMAP=off` answers `404`.
+//
+// Agents with access to the inbox, owners, admins and API keys. Scopes: `issues:write` and
+// `conversations:read`.
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /v1/discussions/{discussionId}/issues (the `LinkIdeaIssue` operationId).
+func (c *ClientWithResponses) LinkIdeaIssueWithBodyWithResponse(ctx context.Context, discussionId DiscussionId, params *LinkIdeaIssueParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*LinkIdeaIssueResponse, error) {
+	rsp, err := c.LinkIdeaIssueWithBody(ctx, discussionId, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseLinkIdeaIssueResponse(rsp)
+}
+
+// LinkIdeaIssueWithResponse Create or link an issue for an idea
+//
+// As for a feedback, with the idea's address in the panel at the end of a created issue's
+// body. The idea shows the issue and its state; neither linking nor a change of the issue's
+// state moves the idea's stage or touches its linked feedback. A discussion that is not an
+// idea answers `409 not_an_idea`; a server with `YUVA_ROADMAP=off` answers `404`.
+//
+// Agents with access to the inbox, owners, admins and API keys. Scopes: `issues:write` and
+// `conversations:read`.
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /v1/discussions/{discussionId}/issues (the `LinkIdeaIssue` operationId).
+func (c *ClientWithResponses) LinkIdeaIssueWithResponse(ctx context.Context, discussionId DiscussionId, params *LinkIdeaIssueParams, body LinkIdeaIssueJSONRequestBody, reqEditors ...RequestEditorFn) (*LinkIdeaIssueResponse, error) {
+	rsp, err := c.LinkIdeaIssue(ctx, discussionId, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseLinkIdeaIssueResponse(rsp)
+}
+
+// UnlinkIdeaIssueWithResponse Unlink an issue from an idea
+//
+// The issue itself is not changed.
+//
+// Agents with access to the inbox, owners, admins and API keys. Scopes: `issues:write` and
+// `conversations:read`.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with DELETE /v1/discussions/{discussionId}/issues/{issueLinkId} (the `UnlinkIdeaIssue` operationId).
+func (c *ClientWithResponses) UnlinkIdeaIssueWithResponse(ctx context.Context, discussionId DiscussionId, issueLinkId IssueLinkId, params *UnlinkIdeaIssueParams, reqEditors ...RequestEditorFn) (*UnlinkIdeaIssueResponse, error) {
+	rsp, err := c.UnlinkIdeaIssue(ctx, discussionId, issueLinkId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUnlinkIdeaIssueResponse(rsp)
 }
 
 // ReplyToIdeaConversationsWithBodyWithResponse Reply to the feedback linked to an idea
@@ -134125,6 +137530,180 @@ func (c *ClientWithResponses) DeleteInviteWithResponse(ctx context.Context, invi
 		return nil, err
 	}
 	return ParseDeleteInviteResponse(rsp)
+}
+
+// ListIssueIntegrationsWithResponse List issue tracker integrations
+//
+// The GitHub and Linear connections of the workspace, oldest first. Every member reads them;
+// tokens and webhook secrets are never answered.
+//
+// Scope: `integrations:read`.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /v1/issue-integrations (the `ListIssueIntegrations` operationId).
+func (c *ClientWithResponses) ListIssueIntegrationsWithResponse(ctx context.Context, params *ListIssueIntegrationsParams, reqEditors ...RequestEditorFn) (*ListIssueIntegrationsResponse, error) {
+	rsp, err := c.ListIssueIntegrations(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListIssueIntegrationsResponse(rsp)
+}
+
+// CreateIssueIntegrationWithBodyWithResponse Connect GitHub or Linear
+//
+// Owners, admins and API keys without an inbox limit. The token is checked with the tracker
+// before it is stored (`422 tracker_auth_failed` when the tracker refuses it,
+// `503 tracker_unavailable` when it cannot be reached) and sealed under the master key; it is
+// never answered. `account` is the GitHub login or the Linear organization the token belongs
+// to.
+//
+// GitHub: a fine-grained personal access token limited to the repositories issues go to,
+// with read and write access to Issues. `api_url` names a GitHub Enterprise Server's API
+// (`https://<host>/api/v3`); without it Yuva calls `api.github.com`. The URL must be `https`
+// and is refused when it points to a private, loopback or link-local address, as webhook URLs
+// are, checked again on every call. Linear: a personal API key; Yuva calls `api.linear.app`.
+//
+// Without `webhook_secret` Yuva makes one and answers it once; paste it, with `webhook_url`,
+// into the tracker's webhook settings (GitHub: content type `application/json`, the Issues
+// event). Linear makes its own signing secret: send it as `webhook_secret` here or later.
+// At most 20 integrations per workspace (`422 too_many_integrations`).
+//
+// Scope: `integrations:manage`.
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /v1/issue-integrations (the `CreateIssueIntegration` operationId).
+func (c *ClientWithResponses) CreateIssueIntegrationWithBodyWithResponse(ctx context.Context, params *CreateIssueIntegrationParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateIssueIntegrationResponse, error) {
+	rsp, err := c.CreateIssueIntegrationWithBody(ctx, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateIssueIntegrationResponse(rsp)
+}
+
+// CreateIssueIntegrationWithResponse Connect GitHub or Linear
+//
+// Owners, admins and API keys without an inbox limit. The token is checked with the tracker
+// before it is stored (`422 tracker_auth_failed` when the tracker refuses it,
+// `503 tracker_unavailable` when it cannot be reached) and sealed under the master key; it is
+// never answered. `account` is the GitHub login or the Linear organization the token belongs
+// to.
+//
+// GitHub: a fine-grained personal access token limited to the repositories issues go to,
+// with read and write access to Issues. `api_url` names a GitHub Enterprise Server's API
+// (`https://<host>/api/v3`); without it Yuva calls `api.github.com`. The URL must be `https`
+// and is refused when it points to a private, loopback or link-local address, as webhook URLs
+// are, checked again on every call. Linear: a personal API key; Yuva calls `api.linear.app`.
+//
+// Without `webhook_secret` Yuva makes one and answers it once; paste it, with `webhook_url`,
+// into the tracker's webhook settings (GitHub: content type `application/json`, the Issues
+// event). Linear makes its own signing secret: send it as `webhook_secret` here or later.
+// At most 20 integrations per workspace (`422 too_many_integrations`).
+//
+// Scope: `integrations:manage`.
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /v1/issue-integrations (the `CreateIssueIntegration` operationId).
+func (c *ClientWithResponses) CreateIssueIntegrationWithResponse(ctx context.Context, params *CreateIssueIntegrationParams, body CreateIssueIntegrationJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateIssueIntegrationResponse, error) {
+	rsp, err := c.CreateIssueIntegration(ctx, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateIssueIntegrationResponse(rsp)
+}
+
+// DeleteIssueIntegrationWithResponse Disconnect an issue tracker
+//
+// Owners, admins and API keys without an inbox limit. The token and secret are deleted, and
+// with them every link to the integration's issues (`issue_link.deleted` for each); the
+// progress those links set stays. Nothing changes in the tracker.
+//
+// Scope: `integrations:manage`.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with DELETE /v1/issue-integrations/{integrationId} (the `DeleteIssueIntegration` operationId).
+func (c *ClientWithResponses) DeleteIssueIntegrationWithResponse(ctx context.Context, integrationId IssueIntegrationId, params *DeleteIssueIntegrationParams, reqEditors ...RequestEditorFn) (*DeleteIssueIntegrationResponse, error) {
+	rsp, err := c.DeleteIssueIntegration(ctx, integrationId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteIssueIntegrationResponse(rsp)
+}
+
+// GetIssueIntegrationWithResponse Get an issue tracker integration
+//
+// Scope: `integrations:read`.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /v1/issue-integrations/{integrationId} (the `GetIssueIntegration` operationId).
+func (c *ClientWithResponses) GetIssueIntegrationWithResponse(ctx context.Context, integrationId IssueIntegrationId, params *GetIssueIntegrationParams, reqEditors ...RequestEditorFn) (*GetIssueIntegrationResponse, error) {
+	rsp, err := c.GetIssueIntegration(ctx, integrationId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetIssueIntegrationResponse(rsp)
+}
+
+// UpdateIssueIntegrationWithBodyWithResponse Change an issue tracker integration
+//
+// Owners, admins and API keys without an inbox limit. A new `token` is checked with the
+// tracker before it replaces the old one, as on connect. `webhook_secret` replaces the secret
+// incoming webhooks are checked with (Linear's signing secret); `default_target: null`
+// clears the default.
+//
+// Scope: `integrations:manage`.
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PATCH /v1/issue-integrations/{integrationId} (the `UpdateIssueIntegration` operationId).
+func (c *ClientWithResponses) UpdateIssueIntegrationWithBodyWithResponse(ctx context.Context, integrationId IssueIntegrationId, params *UpdateIssueIntegrationParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateIssueIntegrationResponse, error) {
+	rsp, err := c.UpdateIssueIntegrationWithBody(ctx, integrationId, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateIssueIntegrationResponse(rsp)
+}
+
+// UpdateIssueIntegrationWithResponse Change an issue tracker integration
+//
+// Owners, admins and API keys without an inbox limit. A new `token` is checked with the
+// tracker before it replaces the old one, as on connect. `webhook_secret` replaces the secret
+// incoming webhooks are checked with (Linear's signing secret); `default_target: null`
+// clears the default.
+//
+// Scope: `integrations:manage`.
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PATCH /v1/issue-integrations/{integrationId} (the `UpdateIssueIntegration` operationId).
+func (c *ClientWithResponses) UpdateIssueIntegrationWithResponse(ctx context.Context, integrationId IssueIntegrationId, params *UpdateIssueIntegrationParams, body UpdateIssueIntegrationJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateIssueIntegrationResponse, error) {
+	rsp, err := c.UpdateIssueIntegration(ctx, integrationId, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateIssueIntegrationResponse(rsp)
+}
+
+// RotateIssueWebhookSecretWithResponse Make a new webhook secret
+//
+// Owners, admins and API keys without an inbox limit. Yuva makes a new secret, answers it
+// once and checks incoming webhooks with it alone from now on; paste it into the tracker.
+//
+// Scope: `integrations:manage`.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /v1/issue-integrations/{integrationId}/webhook-secret (the `RotateIssueWebhookSecret` operationId).
+func (c *ClientWithResponses) RotateIssueWebhookSecretWithResponse(ctx context.Context, integrationId IssueIntegrationId, params *RotateIssueWebhookSecretParams, reqEditors ...RequestEditorFn) (*RotateIssueWebhookSecretResponse, error) {
+	rsp, err := c.RotateIssueWebhookSecret(ctx, integrationId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRotateIssueWebhookSecretResponse(rsp)
 }
 
 // ListLabelsWithResponse List labels
@@ -141960,6 +145539,56 @@ func ParseStatusHeartbeatFailPostResponse(rsp *http.Response) (*StatusHeartbeatF
 	return response, nil
 }
 
+// ParseIngestIssueWebhookResponse parses an HTTP response from a IngestIssueWebhookWithResponse call
+func ParseIngestIssueWebhookResponse(rsp *http.Response) (*IngestIssueWebhookResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &IngestIssueWebhookResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case rsp.StatusCode == 202:
+		break // No content-type
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 413:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON413 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 429:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON429 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseIngestSlackResponse parses an HTTP response from a IngestSlackWithResponse call
 func ParseIngestSlackResponse(rsp *http.Response) (*IngestSlackResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -149289,6 +152918,178 @@ func ParseListConversationIncidentsResponse(rsp *http.Response) (*ListConversati
 	return response, nil
 }
 
+// ParseListConversationIssuesResponse parses an HTTP response from a ListConversationIssuesWithResponse call
+func ParseListConversationIssuesResponse(rsp *http.Response) (*ListConversationIssuesResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListConversationIssuesResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest IssueLinkList
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseLinkConversationIssueResponse parses an HTTP response from a LinkConversationIssueWithResponse call
+func ParseLinkConversationIssueResponse(rsp *http.Response) (*LinkConversationIssueResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &LinkConversationIssueResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest IssueLink
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
+		var dest IssueLink
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON201 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON409 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 503:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON503 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUnlinkConversationIssueResponse parses an HTTP response from a UnlinkConversationIssueWithResponse call
+func ParseUnlinkConversationIssueResponse(rsp *http.Response) (*UnlinkConversationIssueResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UnlinkConversationIssueResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case rsp.StatusCode == 204:
+		break // No content-type
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseListMessagesResponse parses an HTTP response from a ListMessagesWithResponse call
 func ParseListMessagesResponse(rsp *http.Response) (*ListMessagesResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -150516,6 +154317,178 @@ func ParseLinkIdeaConversationResponse(rsp *http.Response) (*LinkIdeaConversatio
 			return nil, err
 		}
 		response.ApplicationproblemJSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListIdeaIssuesResponse parses an HTTP response from a ListIdeaIssuesWithResponse call
+func ParseListIdeaIssuesResponse(rsp *http.Response) (*ListIdeaIssuesResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListIdeaIssuesResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest IssueLinkList
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseLinkIdeaIssueResponse parses an HTTP response from a LinkIdeaIssueWithResponse call
+func ParseLinkIdeaIssueResponse(rsp *http.Response) (*LinkIdeaIssueResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &LinkIdeaIssueResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest IssueLink
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
+		var dest IssueLink
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON201 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON409 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 503:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON503 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUnlinkIdeaIssueResponse parses an HTTP response from a UnlinkIdeaIssueWithResponse call
+func ParseUnlinkIdeaIssueResponse(rsp *http.Response) (*UnlinkIdeaIssueResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UnlinkIdeaIssueResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case rsp.StatusCode == 204:
+		break // No content-type
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
 
 	}
 
@@ -154617,6 +158590,312 @@ func ParseDeleteInviteResponse(rsp *http.Response) (*DeleteInviteResponse, error
 	switch {
 	case rsp.StatusCode == 204:
 		break // No content-type
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListIssueIntegrationsResponse parses an HTTP response from a ListIssueIntegrationsWithResponse call
+func ParseListIssueIntegrationsResponse(rsp *http.Response) (*ListIssueIntegrationsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListIssueIntegrationsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest IssueIntegrationList
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreateIssueIntegrationResponse parses an HTTP response from a CreateIssueIntegrationWithResponse call
+func ParseCreateIssueIntegrationResponse(rsp *http.Response) (*CreateIssueIntegrationResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateIssueIntegrationResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
+		var dest IssueIntegrationSecret
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON201 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 503:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON503 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteIssueIntegrationResponse parses an HTTP response from a DeleteIssueIntegrationWithResponse call
+func ParseDeleteIssueIntegrationResponse(rsp *http.Response) (*DeleteIssueIntegrationResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteIssueIntegrationResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case rsp.StatusCode == 204:
+		break // No content-type
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetIssueIntegrationResponse parses an HTTP response from a GetIssueIntegrationWithResponse call
+func ParseGetIssueIntegrationResponse(rsp *http.Response) (*GetIssueIntegrationResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetIssueIntegrationResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest IssueIntegration
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateIssueIntegrationResponse parses an HTTP response from a UpdateIssueIntegrationWithResponse call
+func ParseUpdateIssueIntegrationResponse(rsp *http.Response) (*UpdateIssueIntegrationResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateIssueIntegrationResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest IssueIntegration
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 503:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON503 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseRotateIssueWebhookSecretResponse parses an HTTP response from a RotateIssueWebhookSecretWithResponse call
+func ParseRotateIssueWebhookSecretResponse(rsp *http.Response) (*RotateIssueWebhookSecretResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &RotateIssueWebhookSecretResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest IssueIntegrationSecret
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest Problem
@@ -163897,6 +168176,21 @@ type WebhookInitiatorInterface interface {
 
 	WebhookHelpArticleUnpublished(ctx context.Context, targetURL string, params *WebhookHelpArticleUnpublishedParams, body WebhookHelpArticleUnpublishedJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// WebhookIssueLinkCreatedWithBody fires the issue_link.created webhook with any body
+	WebhookIssueLinkCreatedWithBody(ctx context.Context, targetURL string, params *WebhookIssueLinkCreatedParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	WebhookIssueLinkCreated(ctx context.Context, targetURL string, params *WebhookIssueLinkCreatedParams, body WebhookIssueLinkCreatedJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// WebhookIssueLinkDeletedWithBody fires the issue_link.deleted webhook with any body
+	WebhookIssueLinkDeletedWithBody(ctx context.Context, targetURL string, params *WebhookIssueLinkDeletedParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	WebhookIssueLinkDeleted(ctx context.Context, targetURL string, params *WebhookIssueLinkDeletedParams, body WebhookIssueLinkDeletedJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// WebhookIssueLinkUpdatedWithBody fires the issue_link.updated webhook with any body
+	WebhookIssueLinkUpdatedWithBody(ctx context.Context, targetURL string, params *WebhookIssueLinkUpdatedParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	WebhookIssueLinkUpdated(ctx context.Context, targetURL string, params *WebhookIssueLinkUpdatedParams, body WebhookIssueLinkUpdatedJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// WebhookMessageCreatedWithBody fires the message.created webhook with any body
 	WebhookMessageCreatedWithBody(ctx context.Context, targetURL string, params *WebhookMessageCreatedParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -164553,6 +168847,78 @@ func (p *WebhookInitiator) WebhookHelpArticleUnpublishedWithBody(ctx context.Con
 
 func (p *WebhookInitiator) WebhookHelpArticleUnpublished(ctx context.Context, targetURL string, params *WebhookHelpArticleUnpublishedParams, body WebhookHelpArticleUnpublishedJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewWebhookHelpArticleUnpublishedWebhookRequest(targetURL, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := p.applyWebhookEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return p.Client.Do(req)
+}
+
+func (p *WebhookInitiator) WebhookIssueLinkCreatedWithBody(ctx context.Context, targetURL string, params *WebhookIssueLinkCreatedParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewWebhookIssueLinkCreatedWebhookRequestWithBody(targetURL, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := p.applyWebhookEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return p.Client.Do(req)
+}
+
+func (p *WebhookInitiator) WebhookIssueLinkCreated(ctx context.Context, targetURL string, params *WebhookIssueLinkCreatedParams, body WebhookIssueLinkCreatedJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewWebhookIssueLinkCreatedWebhookRequest(targetURL, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := p.applyWebhookEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return p.Client.Do(req)
+}
+
+func (p *WebhookInitiator) WebhookIssueLinkDeletedWithBody(ctx context.Context, targetURL string, params *WebhookIssueLinkDeletedParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewWebhookIssueLinkDeletedWebhookRequestWithBody(targetURL, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := p.applyWebhookEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return p.Client.Do(req)
+}
+
+func (p *WebhookInitiator) WebhookIssueLinkDeleted(ctx context.Context, targetURL string, params *WebhookIssueLinkDeletedParams, body WebhookIssueLinkDeletedJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewWebhookIssueLinkDeletedWebhookRequest(targetURL, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := p.applyWebhookEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return p.Client.Do(req)
+}
+
+func (p *WebhookInitiator) WebhookIssueLinkUpdatedWithBody(ctx context.Context, targetURL string, params *WebhookIssueLinkUpdatedParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewWebhookIssueLinkUpdatedWebhookRequestWithBody(targetURL, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := p.applyWebhookEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return p.Client.Do(req)
+}
+
+func (p *WebhookInitiator) WebhookIssueLinkUpdated(ctx context.Context, targetURL string, params *WebhookIssueLinkUpdatedParams, body WebhookIssueLinkUpdatedJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewWebhookIssueLinkUpdatedWebhookRequest(targetURL, params, body)
 	if err != nil {
 		return nil, err
 	}
@@ -166352,6 +170718,189 @@ func NewWebhookHelpArticleUnpublishedWebhookRequest(targetURL string, params *We
 
 // NewWebhookHelpArticleUnpublishedWebhookRequestWithBody builds a POST request for the help.article.unpublished webhook with any body
 func NewWebhookHelpArticleUnpublishedWebhookRequestWithBody(targetURL string, params *WebhookHelpArticleUnpublishedParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+	_ = err
+
+	reqURL, err := url.Parse(targetURL)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, reqURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		var headerParam0 string
+
+		headerParam0, err = runtime.StyleParamWithOptions("simple", false, "webhook-id", params.WebhookId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+		if err != nil {
+			return nil, err
+		}
+
+		req.Header.Set("webhook-id", headerParam0)
+
+		var headerParam1 string
+
+		headerParam1, err = runtime.StyleParamWithOptions("simple", false, "webhook-timestamp", params.WebhookTimestamp, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+		if err != nil {
+			return nil, err
+		}
+
+		req.Header.Set("webhook-timestamp", headerParam1)
+
+		var headerParam2 string
+
+		headerParam2, err = runtime.StyleParamWithOptions("simple", false, "webhook-signature", params.WebhookSignature, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+		if err != nil {
+			return nil, err
+		}
+
+		req.Header.Set("webhook-signature", headerParam2)
+
+	}
+	return req, nil
+}
+
+// NewWebhookIssueLinkCreatedWebhookRequest builds a application/json POST request for the issue_link.created webhook
+func NewWebhookIssueLinkCreatedWebhookRequest(targetURL string, params *WebhookIssueLinkCreatedParams, body WebhookIssueLinkCreatedJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewWebhookIssueLinkCreatedWebhookRequestWithBody(targetURL, params, "application/json", bodyReader)
+}
+
+// NewWebhookIssueLinkCreatedWebhookRequestWithBody builds a POST request for the issue_link.created webhook with any body
+func NewWebhookIssueLinkCreatedWebhookRequestWithBody(targetURL string, params *WebhookIssueLinkCreatedParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+	_ = err
+
+	reqURL, err := url.Parse(targetURL)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, reqURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		var headerParam0 string
+
+		headerParam0, err = runtime.StyleParamWithOptions("simple", false, "webhook-id", params.WebhookId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+		if err != nil {
+			return nil, err
+		}
+
+		req.Header.Set("webhook-id", headerParam0)
+
+		var headerParam1 string
+
+		headerParam1, err = runtime.StyleParamWithOptions("simple", false, "webhook-timestamp", params.WebhookTimestamp, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+		if err != nil {
+			return nil, err
+		}
+
+		req.Header.Set("webhook-timestamp", headerParam1)
+
+		var headerParam2 string
+
+		headerParam2, err = runtime.StyleParamWithOptions("simple", false, "webhook-signature", params.WebhookSignature, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+		if err != nil {
+			return nil, err
+		}
+
+		req.Header.Set("webhook-signature", headerParam2)
+
+	}
+	return req, nil
+}
+
+// NewWebhookIssueLinkDeletedWebhookRequest builds a application/json POST request for the issue_link.deleted webhook
+func NewWebhookIssueLinkDeletedWebhookRequest(targetURL string, params *WebhookIssueLinkDeletedParams, body WebhookIssueLinkDeletedJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewWebhookIssueLinkDeletedWebhookRequestWithBody(targetURL, params, "application/json", bodyReader)
+}
+
+// NewWebhookIssueLinkDeletedWebhookRequestWithBody builds a POST request for the issue_link.deleted webhook with any body
+func NewWebhookIssueLinkDeletedWebhookRequestWithBody(targetURL string, params *WebhookIssueLinkDeletedParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+	_ = err
+
+	reqURL, err := url.Parse(targetURL)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, reqURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		var headerParam0 string
+
+		headerParam0, err = runtime.StyleParamWithOptions("simple", false, "webhook-id", params.WebhookId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+		if err != nil {
+			return nil, err
+		}
+
+		req.Header.Set("webhook-id", headerParam0)
+
+		var headerParam1 string
+
+		headerParam1, err = runtime.StyleParamWithOptions("simple", false, "webhook-timestamp", params.WebhookTimestamp, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+		if err != nil {
+			return nil, err
+		}
+
+		req.Header.Set("webhook-timestamp", headerParam1)
+
+		var headerParam2 string
+
+		headerParam2, err = runtime.StyleParamWithOptions("simple", false, "webhook-signature", params.WebhookSignature, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+		if err != nil {
+			return nil, err
+		}
+
+		req.Header.Set("webhook-signature", headerParam2)
+
+	}
+	return req, nil
+}
+
+// NewWebhookIssueLinkUpdatedWebhookRequest builds a application/json POST request for the issue_link.updated webhook
+func NewWebhookIssueLinkUpdatedWebhookRequest(targetURL string, params *WebhookIssueLinkUpdatedParams, body WebhookIssueLinkUpdatedJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewWebhookIssueLinkUpdatedWebhookRequestWithBody(targetURL, params, "application/json", bodyReader)
+}
+
+// NewWebhookIssueLinkUpdatedWebhookRequestWithBody builds a POST request for the issue_link.updated webhook with any body
+func NewWebhookIssueLinkUpdatedWebhookRequestWithBody(targetURL string, params *WebhookIssueLinkUpdatedParams, contentType string, body io.Reader) (*http.Request, error) {
 	var err error
 	_ = err
 

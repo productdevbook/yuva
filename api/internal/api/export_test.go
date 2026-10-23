@@ -91,3 +91,9 @@ func SetMaxPendingIdeas(n int) (restore func()) {
 	maxPendingIdeas = n
 	return func() { maxPendingIdeas = old }
 }
+
+func SetIssueSweepLimits(batch, perIntegration int) (restore func()) {
+	oldBatch, oldPer := issueSweepBatch, issueSweepPerIntegration
+	issueSweepBatch, issueSweepPerIntegration = batch, perIntegration
+	return func() { issueSweepBatch, issueSweepPerIntegration = oldBatch, oldPer }
+}

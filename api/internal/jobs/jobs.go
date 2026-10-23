@@ -50,6 +50,7 @@ const (
 	StatusDomainSweepInterval   = time.Minute
 	ChangelogSweepInterval      = time.Minute
 	RateLimitSweepInterval      = time.Minute
+	IssueSweepInterval          = 15 * time.Minute
 )
 
 // StatusNoticeQueue holds the status notice jobs, so a notice about an outage never waits behind a
@@ -142,6 +143,9 @@ func New(pool *pgxpool.Pool, q *store.Queries, log *slog.Logger, broadcastWorker
 		river.NewPeriodicJob(river.PeriodicInterval(RateLimitSweepInterval), func() (river.JobArgs, *river.InsertOpts) {
 			return RateLimitSweepArgs{}, nil
 		}, &river.PeriodicJobOpts{ID: "rate_limit_sweep", RunOnStart: true}),
+		river.NewPeriodicJob(river.PeriodicInterval(IssueSweepInterval), func() (river.JobArgs, *river.InsertOpts) {
+			return IssueSweepArgs{}, nil
+		}, &river.PeriodicJobOpts{ID: "issue_sweep", RunOnStart: true}),
 	}
 	if sesTenants {
 		periodic = append(periodic, river.NewPeriodicJob(river.PeriodicInterval(SESTenantStatusInterval), func() (river.JobArgs, *river.InsertOpts) {
@@ -288,6 +292,12 @@ func (StatusDomainSweepArgs) InsertOpts() river.InsertOpts {
 type ChangelogSweepArgs struct{}
 
 func (ChangelogSweepArgs) Kind() string { return "changelog_sweep" }
+
+// IssueSweepArgs is worked by the api package: it queues a read of every linked GitHub and Linear
+// issue that was not read for an hour.
+type IssueSweepArgs struct{}
+
+func (IssueSweepArgs) Kind() string { return "issue_sweep" }
 
 func (ChangelogSweepArgs) InsertOpts() river.InsertOpts {
 	return river.InsertOpts{UniqueOpts: river.UniqueOpts{ByArgs: true, ByState: []rivertype.JobState{

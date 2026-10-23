@@ -176,6 +176,9 @@ func (s *Server) listItems(ctx context.Context, p principal, rows []store.Conver
 	if err := fillIdeas(ctx, s.st.Queries, p.workspaceID, refs...); err != nil {
 		return nil, err
 	}
+	if err := fillIssues(ctx, s.st.Queries, p.workspaceID, refs...); err != nil {
+		return nil, err
+	}
 	out := make([]oas.ConversationListItem, len(rows))
 	for i, r := range rows {
 		c := bodies[i]
@@ -184,7 +187,7 @@ func (s *Server) listItems(ctx context.Context, p principal, rows []store.Conver
 			Status: c.Status, SnoozeUntil: c.SnoozeUntil, Priority: c.Priority, Spam: c.Spam, AssigneeId: c.AssigneeId, TeamId: c.TeamId, Labels: c.Labels,
 			LastMessageAt: c.LastMessageAt, LastActivityAt: c.LastActivityAt, CreatedAt: c.CreatedAt, UpdatedAt: c.UpdatedAt,
 			RelatedConversationId: c.RelatedConversationId, ClosedAt: c.ClosedAt, Rating: c.Rating, LastReadByContactAt: c.LastReadByContactAt, BroadcastId: c.BroadcastId,
-			Imported: c.Imported, HelpArticleId: c.HelpArticleId, Idea: c.Idea, Contact: contacts[r.ContactID], LastMessage: previews[r.ID], Unread: unread[r.ID], PinnedAt: pinned[r.ID],
+			Imported: c.Imported, HelpArticleId: c.HelpArticleId, Idea: c.Idea, Issues: c.Issues, Contact: contacts[r.ContactID], LastMessage: previews[r.ID], Unread: unread[r.ID], PinnedAt: pinned[r.ID],
 			TrashedAt: c.TrashedAt, TrashedBy: c.TrashedBy, DeletesAt: c.DeletesAt,
 		}
 	}
@@ -267,7 +270,10 @@ func oneConversation(ctx context.Context, q *store.Queries, c store.Conversation
 	if err := fillImportSources(ctx, q, c.WorkspaceID, &out); err != nil {
 		return out, err
 	}
-	return out, fillIdeas(ctx, q, c.WorkspaceID, &out)
+	if err := fillIdeas(ctx, q, c.WorkspaceID, &out); err != nil {
+		return out, err
+	}
+	return out, fillIssues(ctx, q, c.WorkspaceID, &out)
 }
 
 func labelSet(ctx context.Context, q *store.Queries, workspaceID uuid.UUID, in []uuid.UUID) ([]uuid.UUID, error) {
@@ -332,7 +338,7 @@ func (s *Server) recordChanges(ctx context.Context, q *store.Queries, events *ev
 	}
 	if !sameString(before.FeedbackProgress, after.FeedbackProgress) {
 		ev := oas.MessageEvent{Type: oas.EventTypeFeedbackProgress, FeedbackProgress: nullable.NewNullNullable[oas.FeedbackProgress](),
-			PreviousFeedbackProgress: (*oas.FeedbackProgress)(before.FeedbackProgress), IdeaId: ideaProgressFrom(ctx)}
+			PreviousFeedbackProgress: (*oas.FeedbackProgress)(before.FeedbackProgress), IdeaId: ideaProgressFrom(ctx), IssueLinkId: issueProgressFrom(ctx)}
 		if after.FeedbackProgress != nil {
 			ev.FeedbackProgress = nullable.NewNullableWithValue(oas.FeedbackProgress(*after.FeedbackProgress))
 		}
@@ -849,6 +855,9 @@ func (s *Server) changeConversation(ctx context.Context, q *store.Queries, event
 		return out, err
 	}
 	if err := fillIdeas(ctx, q, p.workspaceID, &out); err != nil {
+		return out, err
+	}
+	if err := fillIssues(ctx, q, p.workspaceID, &out); err != nil {
 		return out, err
 	}
 	s.scheduleRatingRequest(events, cur, updated, now)

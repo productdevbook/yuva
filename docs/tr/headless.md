@@ -287,6 +287,9 @@ Gereken yetki olmadan yapılan çağrı `403 insufficient_scope` döner.
 | `changelog:write` | Kayıt ve çeviri yazma, görsel yükleme |
 | `changelog:publish` | Değişiklik günlüğü oluşturma, değiştirme ve silme; yayındaki kayıtları yayınlama, zamanlama, yayından kaldırma ve silme. Başka hiçbir yetkiye dahil değildir: adıyla verin. |
 | `audit:read` | `GET /v1/audit-log`, [denetim günlüğü](operations.md#denetim-günlüğü). Başka hiçbir kapsama dahil değildir: adıyla verin. Yalnızca bir sahip anahtara verebilir, gelen kutularına sınırlı bir anahtar bunu tutamaz. Yalnızca anahtarı oluşturan üye hâlâ sahip olduğu sürece çalışır. `yuva api-key create` adını vermezseniz bunu eklemez. |
+| `integrations:read` | `GET /v1/issue-integrations` ve tek bir entegrasyon: [GitHub ve Linear](issue-trackers.md) bağlantıları, hiçbir zaman bir belirteç değil. |
+| `integrations:manage` | GitHub ve Linear bağlamak, değiştirmek, bağlantıyı kesmek, yeni webhook gizli değeri üretmek. Gelen kutularına sınırlı bir anahtar bunu tutamaz. |
+| `issues:write` | Geri bildirim ve fikirlerde GitHub ve Linear kayıtları oluşturmak, bağlamak ve bağlantıyı kaldırmak (`/v1/conversations/{id}/issues`, `/v1/discussions/{id}/issues`), `conversations:read` ile birlikte. |
 | `feedback:write` | `POST /v1/feedback` |
 
 ### Anahtarlar
