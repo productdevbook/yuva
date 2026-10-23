@@ -1,5 +1,6 @@
 import SwiftUI
 import YuvaAnalytics
+import UserNotifications
 import YuvaKit
 
 struct ExampleConfig {
@@ -28,8 +29,36 @@ enum ExampleRoute {
     static var name = "example.support"
 }
 
+extension Notification.Name {
+    static let exampleOpenConversation = Notification.Name("example.openConversation")
+}
+
+final class ExampleAppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate {
+    func application(
+        _ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
+    ) -> Bool {
+        UNUserNotificationCenter.current().delegate = self
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { granted, _ in
+            if granted { DispatchQueue.main.async { application.registerForRemoteNotifications() } }
+        }
+        return true
+    }
+
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        Yuva.setPushToken(deviceToken)
+    }
+
+    nonisolated func userNotificationCenter(
+        _ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse
+    ) async {
+        guard let id = Yuva.handleNotification(response.notification.request.content.userInfo) else { return }
+        await MainActor.run { NotificationCenter.default.post(name: .exampleOpenConversation, object: id) }
+    }
+}
+
 @main
 struct YuvaExampleApp: App {
+    @UIApplicationDelegateAdaptor(ExampleAppDelegate.self) private var delegate
     private let config = ExampleConfig.load()
     @State private var tab = UserDefaults.standard.string(forKey: "YuvaTab") ?? "support"
 

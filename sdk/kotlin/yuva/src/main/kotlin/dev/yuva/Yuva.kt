@@ -19,6 +19,8 @@ object Yuva {
 
     fun disableShakeToFeedback() = ShakeFeedback.disable()
 
+    fun setPushToken(token: String) = PushRegistry.set(token)
+
     fun handleNotification(data: Map<String, String>): String? =
         data["yuva_conversation_id"]
             ?: data["yuva"]?.let { raw ->

@@ -42,16 +42,28 @@ public actor YuvaClient {
     private var subscribers: [UUID: AsyncStream<YuvaEvent>.Continuation] = [:]
     private var realtimeTask: Task<Void, Never>?
     private var lastEventId: Int64 = 0
+    private let appId: String?
+    private var pushToken: String?
+    private var pushPaused = false
+    private var pushDirty = false
+    private var pushTask: Task<Void, Never>?
     public private(set) var session: YuvaSession?
 
     public init(configuration: YuvaConfiguration, urlSession: URLSession = .shared) {
         self.init(configuration: configuration, urlSession: urlSession, store: SessionStore(channelKey: configuration.channelKey))
     }
 
-    init(configuration: YuvaConfiguration, urlSession: URLSession, store: any SessionStorage) {
+    init(
+        configuration: YuvaConfiguration, urlSession: URLSession, store: any SessionStorage,
+        appId: String? = Bundle.main.bundleIdentifier
+    ) {
+        self.appId = appId
         self.configuration = configuration
         self.urlSession = urlSession
         self.store = store
+        if let pending = PushRegistry.shared.add(self) {
+            Task { await self.setPushToken(pending) }
+        }
     }
 
     @discardableResult
@@ -71,6 +83,7 @@ public actor YuvaClient {
     @discardableResult
     public func identify() async throws -> YuvaSession {
         identityEnabled = true
+        pushPaused = false
         _ = try await sessionToken(fresh: true)
         restartRealtime()
         return try await start()
@@ -80,7 +93,11 @@ public actor YuvaClient {
         await lockSession()
         stopRealtime()
         identityEnabled = false
+        pushPaused = true
+        pushTask?.cancel()
+        pushTask = nil
         let stored = store.load()
+        await deletePushDevice(stored)
         var pending = stored.pendingRevoke ?? []
         for candidate in [token, stored.token].compactMap({ $0 }) where !pending.contains(candidate) {
             pending.append(candidate)
@@ -92,6 +109,16 @@ public actor YuvaClient {
         await revoke(pending)
         unlockSession()
         if !subscribers.isEmpty { startRealtime() }
+    }
+
+    public func setPushToken(_ deviceToken: Data) {
+        setPushToken(deviceToken.map { String(format: "%02x", $0) }.joined())
+    }
+
+    public func setPushToken(_ token: String) {
+        pushToken = token
+        pushPaused = false
+        schedulePush()
     }
 
     public func conversations(
@@ -299,6 +326,49 @@ public actor YuvaClient {
             stored.visitorId = nil
         }
         store.save(stored)
+        if pushTask == nil { schedulePush() }
+    }
+
+    private func schedulePush() {
+        guard pushToken != nil, !pushPaused, appId != nil else { return }
+        if pushTask != nil {
+            pushDirty = true
+            return
+        }
+        pushTask = Task { await registerPush() }
+    }
+
+    private func registerPush() async {
+        var attempt = 0
+        while !Task.isCancelled, let token = pushToken, !pushPaused, let appId {
+            do {
+                let device: PushDevice = try await request(
+                    "POST", "client/v1/push-devices",
+                    body: Body(json: PushRegistration(platform: "ios", token: token, appId: appId)))
+                if Task.isCancelled { return }
+                var stored = store.load()
+                stored.pushDeviceId = device.id
+                store.save(stored)
+                if pushDirty {
+                    pushDirty = false
+                    attempt = 0
+                    continue
+                }
+                break
+            } catch let error as YuvaError where error.status != 0 && error.status != 429 && error.status < 500 {
+                break
+            } catch {
+                if attempt >= 8 { break }
+                try? await Task.sleep(for: .seconds(min(60.0, pow(2.0, Double(attempt))) * Double.random(in: 0.75...1.25)))
+                attempt += 1
+            }
+        }
+        if !Task.isCancelled { pushTask = nil }
+    }
+
+    private func deletePushDevice(_ stored: StoredSession) async {
+        guard let id = stored.pushDeviceId, let bearer = token ?? stored.token else { return }
+        _ = try? await raw("DELETE", "client/v1/push-devices/\(id)", query: [], body: nil, token: bearer)
     }
 
     private func dropSession() {
@@ -328,6 +398,16 @@ public actor YuvaClient {
     }
 
     struct Empty: Decodable {}
+
+    private struct PushRegistration: Encodable {
+        let platform: String
+        let token: String
+        let appId: String
+    }
+
+    private struct PushDevice: Decodable {
+        let id: String
+    }
 
     private nonisolated func url(_ path: String, query: [URLQueryItem] = []) -> URL {
         var url = configuration.serverURL.appending(path: path)

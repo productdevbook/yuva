@@ -109,6 +109,10 @@ struct ContentView: View {
         .onChange(of: userId) { _, _ in
             replaceClient(signOut: false)
         }
+        .onReceive(NotificationCenter.default.publisher(for: .exampleOpenConversation)) { note in
+            openConversationId = note.object as? String
+            screen = .conversations(nil)
+        }
         .onAppear {
             enableShake()
             let defaults = UserDefaults.standard

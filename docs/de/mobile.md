@@ -68,6 +68,31 @@ Sie sie als `openConversationId` an `YuvaConversationsView`.
 let id = Yuva.handleNotification(response.notification.request.content.userInfo)
 ```
 
+### Von Yuva gesendeter Push
+
+Statt des Webhooks kann Yuva den Antwort-Push selbst senden, wenn der `app`-Kanal APNs- und
+FCM-Zugangsdaten hat und die Push-Einstellung aktiv ist. Die App übergibt dem SDK nur ihr
+Geräte-Token; das SDK hat keine Firebase-Abhängigkeit.
+
+```swift
+func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+    Yuva.setPushToken(deviceToken)
+}
+```
+
+```kotlin
+class AppMessagingService : FirebaseMessagingService() {
+    override fun onNewToken(token: String) = Yuva.setPushToken(token)
+}
+```
+
+Das SDK registriert das Token beim Start, bei einer Token-Änderung und nach `identify()` für die
+aktuelle Sitzung und versucht es bei Netzwerkfehlern still erneut. `signOut()` entfernt das Gerät;
+danach kommt kein Push an, bis die App `setPushToken` erneut aufruft. Dieselben Aufrufe gibt es am
+Client (`yuva.setPushToken(...)`). Eine App, die `setPushToken` nie aufruft, sendet ihre Pushes
+weiter selbst. Der Push trägt `yuva_conversation_id` wie ein selbst gesendeter;
+`Yuva.handleNotification(...)` öffnet die Unterhaltung.
+
 ## 5. Newsletter-Abonnements
 
 Angemeldete Nutzer können in Ihrer App Abonnements von [Mailinglisten](lists.md) verwalten. Die

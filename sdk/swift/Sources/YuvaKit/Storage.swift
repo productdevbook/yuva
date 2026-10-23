@@ -7,6 +7,7 @@ struct StoredSession: Codable, Sendable {
     var subject: String?
     var visitorId: String?
     var pendingRevoke: [String]?
+    var pushDeviceId: String?
 }
 
 protocol SessionStorage: Sendable {

@@ -67,6 +67,30 @@ Kullanıcı bildirime dokunduğunda `Yuva.handleNotification(...)` konuşma id's
 let id = Yuva.handleNotification(response.notification.request.content.userInfo)
 ```
 
+### Yuva'nın gönderdiği push
+
+Webhook yerine, `app` kanalında APNs ve FCM kimlik bilgileri tanımlı ve push ayarı açıksa cevap
+push'unu Yuva kendisi gönderebilir. Uygulama SDK'ya yalnızca cihaz token'ını verir; SDK'nın Firebase
+bağımlılığı yoktur.
+
+```swift
+func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+    Yuva.setPushToken(deviceToken)
+}
+```
+
+```kotlin
+class AppMessagingService : FirebaseMessagingService() {
+    override fun onNewToken(token: String) = Yuva.setPushToken(token)
+}
+```
+
+SDK token'ı başlangıçta, token değiştiğinde ve `identify()` sonrasında geçerli oturum için kaydeder;
+ağ hatasında sessizce yeniden dener. `signOut()` cihazı siler; uygulama `setPushToken`'ı yeniden
+çağırana kadar cihaza push gitmez. Aynı çağrılar istemcide de vardır (`yuva.setPushToken(...)`).
+`setPushToken` hiç çağırmayan uygulama kendi push'larını göndermeye devam eder. Push, host'un
+gönderdiği gibi `yuva_conversation_id` taşır; `Yuva.handleNotification(...)` konuşmayı açar.
+
 ## 5. Bülten abonelikleri
 
 Oturum açmış kullanıcılar uygulamanızda [e-posta listesi](lists.md) aboneliklerini yönetebilir.

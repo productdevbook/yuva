@@ -228,6 +228,9 @@ data class YuvaSession(
 )
 
 @Serializable
+internal data class PushDevice(val id: String)
+
+@Serializable
 internal data class SessionResponse(
     val token: String,
     @Serializable(InstantSerializer::class) val expiresAt: Instant,

@@ -32,12 +32,16 @@ internal data class Recorded(
     val bearer: String?,
     val identityToken: String?,
     val consentText: String? = null,
+    val pushToken: String? = null,
+    val platform: String? = null,
+    val appId: String? = null,
 )
 
 internal class FakeServer : Interceptor {
     val requests = mutableListOf<Recorded>()
     @Volatile var offline = false
     @Volatile var inboxExtra = ""
+    @Volatile var failPush = false
     private var issued = 0
     private val identifiedTokens = mutableSetOf<String>()
 
@@ -52,6 +56,9 @@ internal class FakeServer : Interceptor {
             request.header("Authorization")?.removePrefix("Bearer "),
             identity,
             fields?.get("consent_text")?.jsonPrimitive?.contentOrNull,
+            fields?.get("token")?.jsonPrimitive?.contentOrNull,
+            fields?.get("platform")?.jsonPrimitive?.contentOrNull,
+            fields?.get("app_id")?.jsonPrimitive?.contentOrNull,
         )
         if (offline) throw IOException("offline")
         val path = request.url.encodedPath
@@ -64,6 +71,14 @@ internal class FakeServer : Interceptor {
                 201 to session(token, identity != null)
             }
             request.method == "GET" && path == "/client/v1/session" -> 200 to session(null, false)
+            request.method == "POST" && path == "/client/v1/push-devices" ->
+                if (failPush) {
+                    500 to ""
+                } else {
+                    val token = fields?.get("token")?.jsonPrimitive?.contentOrNull
+                    200 to """{"id":"dev-$token","platform":"android","app_id":"dev.test","created_at":"2099-01-01T00:00:00Z","updated_at":"2099-01-01T00:00:00Z"}"""
+                }
+            request.method == "DELETE" && path.startsWith("/client/v1/push-devices/") -> 204 to ""
             request.method == "GET" && path == "/client/v1/subscriptions" -> 200 to SUBSCRIPTIONS
             request.method == "PUT" && subscription ->
                 if (request.header("Authorization")?.removePrefix("Bearer ") in identifiedTokens) {
@@ -108,6 +123,7 @@ internal fun client(
     OkHttpClient.Builder().addInterceptor(server).build(),
     store,
     null,
+    "dev.test",
 )
 
 private fun saved(token: String) = StoredSession(token = token, expiresAt = Instant.now().plusSeconds(3600), subject = "u1")

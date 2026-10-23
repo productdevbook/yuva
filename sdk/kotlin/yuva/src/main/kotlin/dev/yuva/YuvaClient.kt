@@ -15,6 +15,7 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.channels.BufferOverflow
@@ -73,6 +74,7 @@ class YuvaClient internal constructor(
     httpClient: OkHttpClient,
     private val store: SessionStorage,
     private val context: Context?,
+    private val appId: String? = context?.packageName,
 ) {
     constructor(context: Context, configuration: YuvaConfiguration, httpClient: OkHttpClient = OkHttpClient()) : this(
         configuration,
@@ -88,10 +90,15 @@ class YuvaClient internal constructor(
     private val sessionLock = Mutex()
     private val shared = MutableSharedFlow<YuvaEvent>(extraBufferCapacity = 256, onBufferOverflow = BufferOverflow.DROP_OLDEST)
     private var realtime: Job? = null
+    private var pushJob: Job? = null
+    private val pushLock = Any()
 
     @Volatile private var token: String? = null
     @Volatile private var identityEnabled = true
     @Volatile private var lastEventId = 0L
+    @Volatile private var pushToken: String? = null
+    @Volatile private var pushPaused = false
+    @Volatile private var pushDirty = false
 
     @Volatile var session: YuvaSession? = null
         private set
@@ -99,6 +106,7 @@ class YuvaClient internal constructor(
     fun events(): SharedFlow<YuvaEvent> = shared.asSharedFlow()
 
     init {
+        PushRegistry.add(this)?.let(::setPushToken)
         scope.launch {
             shared.subscriptionCount.map { it > 0 }.distinctUntilChanged().collect { active ->
                 if (active) startRealtime() else stopRealtime()
@@ -116,6 +124,7 @@ class YuvaClient internal constructor(
 
     suspend fun identify(): YuvaSession {
         identityEnabled = true
+        pushPaused = false
         sessionToken(fresh = true)
         restartRealtime()
         return start()
@@ -125,7 +134,10 @@ class YuvaClient internal constructor(
         sessionLock.withLock {
             stopRealtime()
             identityEnabled = false
+            pushPaused = true
+            synchronized(pushLock) { pushJob?.cancel(); pushJob = null }
             val stored = store.load()
+            deletePushDevice(stored)
             val pending = (stored.pendingRevoke + listOfNotNull(token, stored.token)).distinct()
             token = null
             session = null
@@ -134,6 +146,12 @@ class YuvaClient internal constructor(
             revoke(pending)
         }
         if (shared.subscriptionCount.value > 0) startRealtime()
+    }
+
+    fun setPushToken(token: String) {
+        pushToken = token
+        pushPaused = false
+        schedulePush()
     }
 
     suspend fun conversations(
@@ -308,6 +326,7 @@ class YuvaClient internal constructor(
         if (token != newToken) lastEventId = 0
         token = newToken
         session = info
+        if (pushJob?.isActive != true) schedulePush()
         store.save(
             stored.copy(
                 token = newToken,
@@ -316,6 +335,59 @@ class YuvaClient internal constructor(
                 visitorId = info.visitorId ?: if (info.contact.identified) null else stored.visitorId,
             ),
         )
+    }
+
+    private fun schedulePush() = synchronized(pushLock) {
+        if (pushToken == null || pushPaused || appId.isNullOrEmpty()) return@synchronized
+        if (pushJob?.isActive == true) {
+            pushDirty = true
+            return@synchronized
+        }
+        pushJob = scope.launch { registerPush() }
+    }
+
+    private suspend fun registerPush() {
+        var attempt = 0
+        while (currentCoroutineContext().isActive) {
+            val token = pushToken ?: return
+            val app = appId ?: return
+            if (pushPaused) return
+            try {
+                val device = request<PushDevice>(
+                    "POST",
+                    "client/v1/push-devices",
+                    body = Body(mapOf("platform" to "android", "token" to token, "app_id" to app)),
+                )
+                store.save(store.load().copy(pushDeviceId = device.id))
+                if (!pushDirty) return
+                pushDirty = false
+                attempt = 0
+            } catch (error: CancellationException) {
+                throw error
+            } catch (error: YuvaException) {
+                if (error.status in 400..499 && error.status != 429) return
+                if (!pushBackoff(attempt++)) return
+            } catch (_: Exception) {
+                if (!pushBackoff(attempt++)) return
+            }
+        }
+    }
+
+    private suspend fun pushBackoff(attempt: Int): Boolean {
+        if (attempt >= 8) return false
+        delay((min(60.0, 2.0.pow(attempt)) * Random.nextDouble(0.75, 1.25) * 1000).toLong())
+        return true
+    }
+
+    private suspend fun deletePushDevice(stored: StoredSession) {
+        val id = stored.pushDeviceId ?: return
+        val bearer = token ?: stored.token ?: return
+        try {
+            send("DELETE", "client/v1/push-devices/$id", emptyList(), null, bearer)
+        } catch (error: CancellationException) {
+            throw error
+        } catch (_: Exception) {
+        }
     }
 
     private fun dropSession() {

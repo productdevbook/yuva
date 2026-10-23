@@ -20,6 +20,7 @@ internal data class StoredSession(
     val subject: String? = null,
     val visitorId: String? = null,
     val pendingRevoke: List<String> = emptyList(),
+    val pushDeviceId: String? = null,
 )
 
 internal interface SessionStorage {
@@ -40,6 +41,7 @@ internal class SessionStore(context: Context, channelKey: String) : SessionStora
             subject = prefs.getString("subject", null),
             visitorId = prefs.getString("visitor_id", null),
             pendingRevoke = prefs.getStringSet("pending_revoke", null).orEmpty().sorted(),
+            pushDeviceId = prefs.getString("push_device_id", null),
         )
         if (plain != null) save(stored)
         return stored
@@ -53,6 +55,7 @@ internal class SessionStore(context: Context, channelKey: String) : SessionStora
             .putString("subject", stored.subject)
             .putString("visitor_id", stored.visitorId)
             .putStringSet("pending_revoke", stored.pendingRevoke.toSet().ifEmpty { null })
+            .putString("push_device_id", stored.pushDeviceId)
             .apply()
     }
 

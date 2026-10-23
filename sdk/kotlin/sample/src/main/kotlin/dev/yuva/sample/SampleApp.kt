@@ -4,6 +4,9 @@ import android.app.Application
 import dev.yuva.analytics.YuvaAnalytics
 import dev.yuva.analytics.YuvaAnalyticsConfiguration
 
+// Push sent by Yuva: with Firebase set up in the app, hand the SDK the token from
+// FirebaseMessagingService.onNewToken and FirebaseMessaging.getInstance().token with
+// Yuva.setPushToken(token). The sample has no google-services.json, so it does not do this.
 class SampleApp : Application() {
     override fun onCreate() {
         super.onCreate()

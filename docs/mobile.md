@@ -66,6 +66,31 @@ When the user taps it, `Yuva.handleNotification(...)` returns the conversation i
 let id = Yuva.handleNotification(response.notification.request.content.userInfo)
 ```
 
+### Push sent by Yuva
+
+Instead of the webhook, Yuva can send the reply push itself when the `app` channel has APNs and FCM
+credentials and its push setting is on. The app only hands the SDK its device token; the SDK has no
+Firebase dependency.
+
+```swift
+func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+    Yuva.setPushToken(deviceToken)
+}
+```
+
+```kotlin
+class AppMessagingService : FirebaseMessagingService() {
+    override fun onNewToken(token: String) = Yuva.setPushToken(token)
+}
+```
+
+The SDK registers the token for the current session at start, again when the token changes and
+after `identify()`, and retries quietly when the network fails. `signOut()` removes the device, and
+no push reaches it until the app calls `setPushToken` again. The same calls exist on the client
+(`yuva.setPushToken(...)`). An app that never calls `setPushToken` keeps sending its own pushes.
+The push carries `yuva_conversation_id` like a host-sent one, so `Yuva.handleNotification(...)` opens
+the conversation.
+
 ## 5. Newsletter subscriptions
 
 Signed-in users can manage [mailing list](lists.md) subscriptions in your app. The session must be

@@ -29,6 +29,7 @@ final class FakeServer: @unchecked Sendable {
     private var offline = false
     private var identifiedTokens: Set<String> = []
     var inboxExtra = ""
+    var failPush = false
 
     var requests: [Recorded] { lock.withLock { log } }
 
@@ -48,6 +49,14 @@ final class FakeServer: @unchecked Sendable {
                 return (201, Data(session(token: "t\(issued)", identified: identified).utf8))
             case ("GET", "/client/v1/session"):
                 return (200, Data(session(token: nil, identified: false).utf8))
+            case ("POST", "/client/v1/push-devices"):
+                guard !failPush else { return (500, Data()) }
+                let token = request.body["token"] ?? ""
+                let json = #"{"id":"dev-\#(token)","platform":"ios","app_id":"\#(request.body["app_id"] ?? "")","#
+                    + #""created_at":"2099-01-01T00:00:00Z","updated_at":"2099-01-01T00:00:00Z"}"#
+                return (200, Data(json.utf8))
+            case ("DELETE", let path) where path.hasPrefix("/client/v1/push-devices/"):
+                return (204, Data())
             case ("GET", "/client/v1/subscriptions"):
                 return (200, Data(Self.subscriptions.utf8))
             case ("PUT", let path) where path.hasPrefix("/client/v1/subscriptions/"):
@@ -149,7 +158,7 @@ func makeClient(
     let configuration = YuvaConfiguration(
         serverURL: URL(string: "https://yuva.test")!, channelKey: "pk", identityToken: identity,
         maxAttachmentSize: maxAttachmentSize)
-    return YuvaClient(configuration: configuration, urlSession: StubProtocol.session(for: server), store: store)
+    return YuvaClient(configuration: configuration, urlSession: StubProtocol.session(for: server), store: store, appId: "dev.test")
 }
 
 private func savedSession(_ token: String) -> StoredSession {
