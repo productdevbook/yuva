@@ -17,6 +17,8 @@ public struct YuvaFeedbackView: View {
     @State private var sending = false
     @State private var sent = false
     @State private var failure: String?
+    @State private var attachNotice: String?
+    @State private var limits: YuvaAttachmentLimits?
     @State private var clientId = UUID().uuidString
     @State private var started: YuvaConversation?
     @State private var path: [String] = []
@@ -87,11 +89,21 @@ public struct YuvaFeedbackView: View {
     }
 
     private func offer(_ inbox: YuvaInbox) {
+        limits = inbox.attachments
+        if let limits = inbox.attachments {
+            let refusal = screenshots.lazy.compactMap(limits.refusal(for:)).first
+            screenshots.removeAll { limits.refusal(for: $0) != nil }
+            if let refusal { attachNotice = L.message(for: refusal) }
+        }
         let items = inbox.feedbackCategoryItems
         let offered = items.isEmpty ? inbox.feedbackCategories.map(\.item) : items
         guard !offered.isEmpty else { return }
         categories = offered
         if !offered.contains(where: { $0.key == category }), let first = offered.first { category = first.key }
+    }
+
+    private var showsScreenshots: Bool {
+        limits?.allowsImages != false || !screenshots.isEmpty || attachNotice != nil
     }
 
     private var needsEmail: Bool { allowEmail && knownEmail == nil }
@@ -118,24 +130,32 @@ public struct YuvaFeedbackView: View {
                     .lineLimit(4...12)
                     .accessibilityIdentifier("yuva.feedback.message")
             }
-            Section(L.t("feedback.screenshot")) {
-                ForEach(Array(screenshots.enumerated()), id: \.offset) { index, upload in
-                    if let image = PlatformImage(data: upload.data) {
-                        HStack {
-                            Image(platformImage: image).resizable().scaledToFit().frame(height: 120)
-                                .clipShape(RoundedRectangle(cornerRadius: 8))
-                            Spacer()
-                            Button(role: .destructive) {
-                                screenshots.remove(at: index)
-                            } label: {
-                                Image(systemName: "trash")
+            if showsScreenshots {
+                Section(L.t("feedback.screenshot")) {
+                    ForEach(Array(screenshots.enumerated()), id: \.offset) { index, upload in
+                        if let image = PlatformImage(data: upload.data) {
+                            HStack {
+                                Image(platformImage: image).resizable().scaledToFit().frame(height: 120)
+                                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                                Spacer()
+                                Button(role: .destructive) {
+                                    screenshots.remove(at: index)
+                                } label: {
+                                    Image(systemName: "trash")
+                                }
+                                .accessibilityLabel(L.t("feedback.removeScreenshot"))
                             }
-                            .accessibilityLabel(L.t("feedback.removeScreenshot"))
                         }
                     }
-                }
-                PhotosPicker(selection: $picked, maxSelectionCount: 10, matching: .images) {
-                    Label(L.t("feedback.chooseScreenshot"), systemImage: "photo")
+                    if limits?.allowsImages != false {
+                        PhotosPicker(selection: $picked, maxSelectionCount: 10, matching: .images) {
+                            Label(L.t("feedback.chooseScreenshot"), systemImage: "photo")
+                        }
+                    }
+                    if let attachNotice {
+                        Text(attachNotice).font(.footnote).foregroundStyle(.red)
+                            .accessibilityIdentifier("yuva.feedback.attachNotice")
+                    }
                 }
             }
             Section {
@@ -165,9 +185,13 @@ public struct YuvaFeedbackView: View {
             guard !items.isEmpty else { return }
             picked = []
             Task {
+                attachNotice = nil
                 for item in items {
-                    if let data = try? await item.loadTransferable(type: Data.self),
-                       let upload = ImageUpload.make(from: data, name: "screenshot") {
+                    guard let data = try? await item.loadTransferable(type: Data.self),
+                          let upload = ImageUpload.make(from: data, name: "screenshot") else { continue }
+                    if let refusal = limits?.refusal(for: upload) {
+                        attachNotice = L.message(for: refusal)
+                    } else {
                         screenshots.append(upload)
                     }
                 }

@@ -366,6 +366,10 @@ class YuvaClient internal constructor(
         if (body != null && body.files.any { it.data.size > configuration.maxAttachmentSize }) {
             throw YuvaException(413, "attachment_too_large", "an attachment is larger than the server allows")
         }
+        val limits = session?.inbox?.attachments
+        if (body != null && limits != null) {
+            body.files.firstNotNullOfOrNull(limits::refusal)?.let { throw it.error }
+        }
         val current = sessionToken()
         return try {
             send(method, path, query, body, current)

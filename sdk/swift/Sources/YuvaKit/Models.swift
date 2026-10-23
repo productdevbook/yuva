@@ -145,6 +145,7 @@ public struct YuvaInbox: Codable, Sendable {
     public let expectedReplyMinutes: Int?
     public let presence: YuvaPresence?
     public let status: YuvaInboxStatus?
+    public let attachments: YuvaAttachmentLimits?
     private let feedbackCategoryNames: [String]?
     private let feedbackCategoryItemList: [YuvaFeedbackCategoryItem]?
     private let askForRatingValue: Bool?
@@ -158,7 +159,7 @@ public struct YuvaInbox: Codable, Sendable {
     public var feedbackCategoryItems: [YuvaFeedbackCategoryItem] { feedbackCategoryItemList ?? [] }
 
     enum CodingKeys: String, CodingKey {
-        case id, name, branding, defaultLocale, timezone, mode, openNow, expectedReplyMinutes, presence, status
+        case id, name, branding, defaultLocale, timezone, mode, openNow, expectedReplyMinutes, presence, status, attachments
         case feedbackCategoryNames = "feedbackCategories"
         case feedbackCategoryItemList = "feedbackCategoryItems"
         case askForRatingValue = "askForRating"

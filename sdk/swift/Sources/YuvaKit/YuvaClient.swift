@@ -353,6 +353,10 @@ public actor YuvaClient {
             throw YuvaError(
                 status: 413, code: "attachment_too_large", detail: "an attachment is larger than the server allows")
         }
+        if let body, let limits = session?.inbox.attachments,
+           let refusal = body.files.lazy.compactMap(limits.refusal(for:)).first {
+            throw refusal.error
+        }
         let token = try await sessionToken()
         do {
             return try await raw(method, path, query: query, body: body, token: token)

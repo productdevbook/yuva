@@ -201,6 +201,7 @@ data class YuvaInbox(
     val expectedReplyMinutes: Int? = null,
     val presence: YuvaPresence? = null,
     val status: YuvaInboxStatus? = null,
+    @Serializable(LossyAttachmentLimitsSerializer::class) val attachments: YuvaAttachmentLimits? = null,
     @SerialName("feedback_categories") internal val feedbackCategoryNames: List<String> = emptyList(),
     val feedbackCategoryItems: List<YuvaFeedbackCategoryItem> = emptyList(),
     val askForRating: Boolean = false,

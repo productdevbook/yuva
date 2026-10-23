@@ -97,6 +97,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import dev.yuva.R
+import dev.yuva.YuvaAttachmentRefusal
 import dev.yuva.YuvaFeedbackCategory
 import dev.yuva.YuvaFeedbackState
 import dev.yuva.YuvaClient
@@ -394,6 +395,12 @@ internal fun imageUpload(context: Context, uri: Uri, name: String = "image"): Yu
 }
 
 internal fun fileSize(context: Context, size: Long): String = Formatter.formatShortFileSize(context, size)
+
+internal fun refusalMessage(context: Context, refusal: YuvaAttachmentRefusal): String = when (refusal) {
+    is YuvaAttachmentRefusal.TooLarge ->
+        context.getString(R.string.yuva_attachment_too_large, fileSize(context, refusal.maxBytes))
+    YuvaAttachmentRefusal.TypeNotAllowed -> context.getString(R.string.yuva_attachment_type_not_allowed)
+}
 
 internal fun errorMessage(error: Throwable): Int {
     if (error is IOException) return R.string.yuva_error_network

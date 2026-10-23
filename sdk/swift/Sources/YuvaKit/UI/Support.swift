@@ -17,6 +17,15 @@ enum L {
         String(format: t(key), arguments: args)
     }
 
+    static func message(for refusal: YuvaAttachmentRefusal) -> String {
+        switch refusal {
+        case .tooLarge(let maxBytes):
+            return f("attachment.tooLarge", ByteCountFormatter.string(fromByteCount: maxBytes, countStyle: .file))
+        case .typeNotAllowed:
+            return t("attachment.typeNotAllowed")
+        }
+    }
+
     static func message(for error: Error) -> String {
         if error is URLError { return t("error.network") }
         guard let error = error as? YuvaError else { return t("error.generic") }

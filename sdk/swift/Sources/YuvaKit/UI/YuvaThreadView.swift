@@ -255,6 +255,7 @@ public struct YuvaThreadView: View {
     @State private var text = ""
     @State private var picked: [PhotosPickerItem] = []
     @State private var uploads: [YuvaUpload] = []
+    @State private var attachNotice: String?
     @State private var viewing: YuvaAttachment?
     @State private var bottomY: CGFloat = 0
     @State private var viewport: CGFloat = 0
@@ -480,12 +481,21 @@ public struct YuvaThreadView: View {
                     .padding(.horizontal)
                 }
             }
+            if let attachNotice {
+                Text(attachNotice)
+                    .font(.footnote).foregroundStyle(.red).multilineTextAlignment(.center)
+                    .padding(.horizontal, 16)
+                    .accessibilityIdentifier("yuva.thread.attachNotice")
+            }
             HStack(alignment: .bottom, spacing: 8) {
-                PhotosPicker(selection: $picked, maxSelectionCount: 10, matching: .images) {
-                    Image(systemName: "plus").font(.title3.weight(.medium)).frame(width: 44, height: 44)
+                if model.inbox?.attachments?.allowsImages != false {
+                    PhotosPicker(selection: $picked, maxSelectionCount: 10, matching: .images) {
+                        Image(systemName: "plus").font(.title3.weight(.medium)).frame(width: 44, height: 44)
+                    }
+                    .glassCircle()
+                    .accessibilityLabel(L.t("thread.attach"))
+                    .accessibilityIdentifier("yuva.thread.attach")
                 }
-                .glassCircle()
-                .accessibilityLabel(L.t("thread.attach"))
                 HStack(alignment: .bottom, spacing: 4) {
                     TextField(L.t("thread.placeholder"), text: $text, axis: .vertical)
                         .lineLimit(1...5)
@@ -520,12 +530,23 @@ public struct YuvaThreadView: View {
             guard !items.isEmpty else { return }
             picked = []
             Task {
+                attachNotice = nil
                 for item in items {
-                    if let data = try? await item.loadTransferable(type: Data.self), let upload = ImageUpload.make(from: data) {
+                    guard let data = try? await item.loadTransferable(type: Data.self),
+                          let upload = ImageUpload.make(from: data) else { continue }
+                    if let refusal = model.inbox?.attachments?.refusal(for: upload) {
+                        attachNotice = L.message(for: refusal)
+                    } else {
                         uploads.append(upload)
                     }
                 }
             }
+        }
+        .onChange(of: model.inbox?.attachments) { _, limits in
+            guard let limits else { return }
+            let refusal = uploads.lazy.compactMap(limits.refusal(for:)).first
+            uploads.removeAll { limits.refusal(for: $0) != nil }
+            if let refusal { attachNotice = L.message(for: refusal) }
         }
     }
 }

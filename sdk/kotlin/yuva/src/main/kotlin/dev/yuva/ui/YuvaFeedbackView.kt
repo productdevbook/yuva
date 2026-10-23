@@ -82,6 +82,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import dev.yuva.R
 import dev.yuva.TrackOpen
+import dev.yuva.YuvaAttachmentLimits
 import dev.yuva.YuvaClient
 import dev.yuva.YuvaConversation
 import dev.yuva.YuvaEvent
@@ -122,9 +123,16 @@ fun YuvaFeedbackView(
     var viewing by remember { mutableStateOf<String?>(null) }
     var failure by remember { mutableStateOf<Int?>(null) }
     val clientId = remember { UUID.randomUUID().toString() }
+    var limits by remember { mutableStateOf<YuvaAttachmentLimits?>(null) }
+    var attachNotice by remember { mutableStateOf<String?>(null) }
     val picker = rememberLauncherForActivityResult(ActivityResultContracts.PickMultipleVisualMedia(10)) { uris ->
         scope.launch {
-            screenshots.addAll(withContext(Dispatchers.IO) { uris.mapNotNull { imageUpload(context, it, "screenshot") } })
+            attachNotice = null
+            val picked = withContext(Dispatchers.IO) { uris.mapNotNull { imageUpload(context, it, "screenshot") } }
+            picked.forEach { upload ->
+                val refusal = limits?.refusal(upload)
+                if (refusal != null) attachNotice = refusalMessage(context, refusal) else screenshots.add(upload)
+            }
         }
     }
 
@@ -134,6 +142,14 @@ fun YuvaFeedbackView(
     val shown = categories.ifEmpty { builtIns }
 
     fun offer(inbox: YuvaInbox) {
+        limits = inbox.attachments
+        inbox.attachments?.let { allowed ->
+            val refused = screenshots.mapNotNull { allowed.refusal(it) }.firstOrNull()
+            if (refused != null) {
+                screenshots.removeAll { allowed.refusal(it) != null }
+                attachNotice = refusalMessage(context, refused)
+            }
+        }
         val offered = inbox.feedbackCategoryItems.ifEmpty {
             inbox.feedbackCategories.map { c -> builtIns.first { it.key == c.value } }
         }
@@ -256,7 +272,8 @@ fun YuvaFeedbackView(
                 modifier = Modifier.fillMaxWidth().testTag("yuva.feedback.message"),
             )
             Spacer(Modifier.height(4.dp))
-            SectionLabel(stringResource(R.string.yuva_feedback_screenshot))
+            val showsScreenshots = limits?.allowsImages != false || screenshots.isNotEmpty() || attachNotice != null
+            if (showsScreenshots) SectionLabel(stringResource(R.string.yuva_feedback_screenshot))
             screenshots.forEachIndexed { index, upload ->
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     UploadImage(upload, Modifier.height(160.dp).clip(RoundedCornerShape(20.dp)))
@@ -266,14 +283,24 @@ fun YuvaFeedbackView(
                     }
                 }
             }
-            FilledTonalButton(
-                onClick = { picker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)) },
-                enabled = !sending,
-                contentPadding = PaddingValues(horizontal = 20.dp, vertical = 14.dp),
-            ) {
-                Icon(YuvaIcons.Attach, contentDescription = null, modifier = Modifier.size(ButtonDefaults.IconSize))
-                Spacer(Modifier.size(ButtonDefaults.IconSpacing))
-                Text(stringResource(R.string.yuva_feedback_choose_screenshot))
+            if (limits?.allowsImages != false) {
+                FilledTonalButton(
+                    onClick = { picker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)) },
+                    enabled = !sending,
+                    contentPadding = PaddingValues(horizontal = 20.dp, vertical = 14.dp),
+                ) {
+                    Icon(YuvaIcons.Attach, contentDescription = null, modifier = Modifier.size(ButtonDefaults.IconSize))
+                    Spacer(Modifier.size(ButtonDefaults.IconSpacing))
+                    Text(stringResource(R.string.yuva_feedback_choose_screenshot))
+                }
+            }
+            attachNotice?.let {
+                Text(
+                    it,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.padding(horizontal = 8.dp).testTag("yuva.feedback.attachNotice"),
+                )
             }
             Spacer(Modifier.height(4.dp))
             Column(verticalArrangement = Arrangement.spacedBy(3.dp)) {

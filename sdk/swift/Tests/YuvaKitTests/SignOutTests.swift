@@ -28,6 +28,7 @@ final class FakeServer: @unchecked Sendable {
     private var issued = 0
     private var offline = false
     private var identifiedTokens: Set<String> = []
+    var inboxExtra = ""
 
     var requests: [Recorded] { lock.withLock { log } }
 
@@ -75,7 +76,7 @@ final class FakeServer: @unchecked Sendable {
             {\(tokenField)"expires_at":"2099-01-01T00:00:00Z",\
             "contact":{"id":"c1","name":"Ada","identified":\(identified)},\
             "inbox":{"id":"i1","name":"Acme","branding":{},"default_locale":"en","timezone":"UTC",\
-            "mode":"live","open_now":true,"feedback_categories":[]}}
+            "mode":"live","open_now":true,"feedback_categories":[]\(inboxExtra)}}
             """
     }
 }

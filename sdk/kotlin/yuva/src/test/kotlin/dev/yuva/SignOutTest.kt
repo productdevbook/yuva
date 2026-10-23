@@ -37,6 +37,7 @@ internal data class Recorded(
 internal class FakeServer : Interceptor {
     val requests = mutableListOf<Recorded>()
     @Volatile var offline = false
+    @Volatile var inboxExtra = ""
     private var issued = 0
     private val identifiedTokens = mutableSetOf<String>()
 
@@ -87,7 +88,7 @@ internal class FakeServer : Interceptor {
         return """{$tokenField"expires_at":"2099-01-01T00:00:00Z",""" +
             """"contact":{"id":"c1","name":"Ada","identified":$identified},""" +
             """"inbox":{"id":"i1","name":"Acme","branding":{},"default_locale":"en","timezone":"UTC",""" +
-            """"mode":"live","open_now":true,"feedback_categories":[]}}"""
+            """"mode":"live","open_now":true,"feedback_categories":[]$inboxExtra}}"""
     }
 }
 

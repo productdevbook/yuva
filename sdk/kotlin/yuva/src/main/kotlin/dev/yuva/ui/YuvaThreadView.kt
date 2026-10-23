@@ -393,11 +393,23 @@ fun YuvaThreadView(
             last < info.totalItemsCount - 2 && listState.canScrollForward
         }
     }
+    var attachNotice by remember { mutableStateOf<String?>(null) }
+    val limits = state.inbox?.attachments
     val picker = rememberLauncherForActivityResult(ActivityResultContracts.PickMultipleVisualMedia(10)) { uris ->
         scope.launch {
+            attachNotice = null
             val picked = withContext(Dispatchers.IO) { uris.mapNotNull { imageUpload(context, it) } }
-            uploads.addAll(picked)
+            picked.forEach { upload ->
+                val refusal = state.inbox?.attachments?.refusal(upload)
+                if (refusal != null) attachNotice = refusalMessage(context, refusal) else uploads.add(upload)
+            }
         }
+    }
+    LaunchedEffect(limits) {
+        if (limits == null) return@LaunchedEffect
+        val refused = uploads.mapNotNull { limits.refusal(it) }.firstOrNull() ?: return@LaunchedEffect
+        uploads.removeAll { limits.refusal(it) != null }
+        attachNotice = refusalMessage(context, refused)
     }
 
     LaunchedEffect(state) { state.load() }
@@ -643,9 +655,19 @@ fun YuvaThreadView(
                 }
             }
             YuvaStatusLine(state.inbox?.status)
+            attachNotice?.let {
+                Text(
+                    it,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.error,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp).testTag("yuva.thread.attachNotice"),
+                )
+            }
             Composer(
                 text = text,
                 uploads = uploads,
+                canAttach = limits?.allowsImages != false,
                 onText = {
                     text = it
                     state.typing(it)
@@ -666,6 +688,7 @@ fun YuvaThreadView(
 private fun Composer(
     text: String,
     uploads: MutableList<YuvaUpload>,
+    canAttach: Boolean,
     onText: (String) -> Unit,
     onAttach: () -> Unit,
     onSend: () -> Unit,
@@ -675,13 +698,15 @@ private fun Composer(
         Modifier.fillMaxWidth().padding(start = 12.dp, end = 12.dp, top = 6.dp, bottom = 10.dp),
         verticalAlignment = Alignment.Bottom,
     ) {
-        FilledTonalIconButton(
-            onClick = onAttach,
-            modifier = Modifier.padding(bottom = 4.dp).size(48.dp),
-        ) {
-            Icon(Icons.Default.Add, contentDescription = stringResource(R.string.yuva_thread_attach))
+        if (canAttach) {
+            FilledTonalIconButton(
+                onClick = onAttach,
+                modifier = Modifier.padding(bottom = 4.dp).size(48.dp).testTag("yuva.thread.attach"),
+            ) {
+                Icon(Icons.Default.Add, contentDescription = stringResource(R.string.yuva_thread_attach))
+            }
+            Spacer(Modifier.size(8.dp))
         }
-        Spacer(Modifier.size(8.dp))
         Surface(
             shape = RoundedCornerShape(28.dp),
             color = MaterialTheme.colorScheme.surfaceContainerHigh,
