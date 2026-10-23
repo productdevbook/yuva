@@ -402,8 +402,8 @@ func (s *Server) ListConversations(ctx context.Context, req oas.ListConversation
 		return nil, err
 	}
 	if prm.Category != nil {
-		if !prm.Category.Valid() {
-			return nil, errValidation("category must be bug, idea, praise or other")
+		if !categoryKeyPattern.MatchString(*prm.Category) {
+			return nil, errValidation("category must be a feedback category key")
 		}
 		k, c := string(oas.ConversationKindFeedback), string(*prm.Category)
 		if arg.Kinds != nil && !slices.Contains(arg.Kinds, k) {

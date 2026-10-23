@@ -39,8 +39,23 @@ articles of a product next to the documentation on its own site (see "Help cente
 
 Feedback is a conversation that starts on the `app` or `api` channel with a `feedback` kind and
 metadata (category, app version, build, OS, OS version, device model, locale, screen, installation
-id). The categories are fixed for now (`bug`, `idea`, `praise`, `other`; a per-inbox list is planned
-in #149) and `/client/v1` returns them with the inbox so the SDKs never hard-code them. Apps send it
+id). An inbox owns its categories (`inboxes.feedback_categories`, migration 00093): 1 to 20 entries
+of `key` (`^[a-z][a-z0-9_]{0,31}$`), `names` (language tag to name) and `icon` (a lowercase Lucide
+name), in display order, always including `other`. Every inbox, existing and new, starts with `bug`,
+`idea`, `praise` and `other`. Owners, admins and keys with `inboxes:manage` replace the list with
+`PATCH /v1/inboxes/{id}` (`feedback_categories`, also on the `Inbox` body; `inbox.updated` is emitted).
+`POST /client/v1/feedback` (no category means `other`) and `POST /v1/feedback` answer `400` for a
+category the inbox does not list. A category that leaves the list moves its feedback to `other` in
+the same transaction (the stored `feedback.category` changes, so listings, filters, counts, webhooks
+and MCP all agree; re-adding the key does not bring it back). `/client/v1` returns
+`feedback_category_items`, `{key, name, icon}` for every category with `name` in the request's
+`Accept-Language` (by q-weight, else the inbox's default locale, then `en`), so the SDKs never
+hard-code names. Clients built before custom categories keep working: the legacy
+`feedback_categories` there lists only the keys among the four built-in ones, and a feedback's
+`category` on `/client/v1` is its key if built-in, else `other`; `category_key` and `category_name`
+carry the real key and its name. `/v1` and webhooks show the real key. The category is checked
+inside the insert transaction under `FOR SHARE` on the inbox row, which conflicts with the update's
+`FOR UPDATE`, so no feedback is stored under a key that has just been removed. Counts and the `category` filter work on any key. Apps send it
 with `POST /client/v1/feedback` (JSON, or multipart with screenshots); host backends whose forms
 are server-rendered send it with an API key to `POST /v1/feedback`, naming the user by their
 external id, into any inbox of the key's workspace. The conversation starts on the inbox's `api`
@@ -60,7 +75,7 @@ is called change. Decisions:
 
 - **Panel.** A Feedback entry in the rail (`/feedback`, its own shortcut, a badge with open feedback
   from the `feedback` count) opens a list with Open and Resolved tabs and category tabs with their
-  open counts (All, Bug, Idea, Praise, Other), filtered by inbox like the inbox. A row is a triage
+  open counts (All, then the inbox categories, Bug, Idea, Praise and Other by default), filtered by inbox like the inbox. A row is a triage
   line, not a chat preview: category, the first line of the text, the contact, app version, OS and
   device (or the page's title for page feedback), a mark when screenshots are attached, a mark when
   the team has answered, and the time. Opening a row shows the existing conversation view beside the

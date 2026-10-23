@@ -580,7 +580,7 @@ var mcpTools = append([]mcpTool{
 		}),
 	defineTool("list_feedback", "List feedback",
 		"Lists feedback that customers sent from apps (bug reports, ideas, praise), newest activity first. Maps to GET /v1/conversations?kind=feedback.",
-		readOnly, map[string][]any{"category": {"bug", "idea", "praise", "other"}, "status": conversationStatuses},
+		readOnly, map[string][]any{"status": conversationStatuses},
 		mcpTool{ops: []string{"ListConversations"}},
 		func(ctx context.Context, c *mcpCall, in listFeedbackIn) (mcpPage[mcpConversation], error) {
 			kinds := []oas.ConversationKind{oas.ConversationKindFeedback}

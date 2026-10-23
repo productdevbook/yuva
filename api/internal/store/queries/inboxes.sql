@@ -69,3 +69,16 @@ SELECT inbox_id FROM inbox_viewers WHERE workspace_id = @workspace_id AND viewer
 SELECT EXISTS (
     SELECT 1 FROM inbox_viewers WHERE workspace_id = @workspace_id AND inbox_id = @inbox_id AND viewer_id = @viewer_id
 ) AS access;
+
+-- name: SetInboxFeedbackCategories :one
+UPDATE inboxes SET feedback_categories = @feedback_categories, updated_at = @now
+WHERE workspace_id = @workspace_id AND id = @id
+RETURNING *;
+
+-- name: MoveFeedbackToOther :execrows
+UPDATE conversations SET feedback = feedback || '{"category": "other"}'::jsonb
+WHERE workspace_id = @workspace_id AND inbox_id = @inbox_id AND kind = 'feedback'
+  AND NOT (feedback->>'category' = ANY(@keys::text[]));
+
+-- name: ShareInboxFeedbackCategories :one
+SELECT feedback_categories FROM inboxes WHERE workspace_id = $1 AND id = $2 FOR SHARE;

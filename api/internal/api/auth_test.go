@@ -278,6 +278,7 @@ type client struct {
 	bearer    string
 	workspace string
 	origin    string
+	language  string
 }
 
 func (h *harness) client() *client {
@@ -336,6 +337,9 @@ func (c *client) do(method, path string, body any) response {
 	}
 	if c.origin != "" {
 		req.Header.Set("Origin", c.origin)
+	}
+	if c.language != "" {
+		req.Header.Set("Accept-Language", c.language)
 	}
 	res, err := c.http.Do(req)
 	if err != nil {

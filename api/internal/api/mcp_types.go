@@ -27,7 +27,7 @@ type mcpConversation struct {
 	Spam             bool                   `json:"spam"`
 	Unread           *bool                  `json:"unread,omitempty" jsonschema:"whether the calling member has unread messages here"`
 	SnoozeUntil      *time.Time             `json:"snooze_until,omitempty"`
-	FeedbackCategory string                 `json:"feedback_category,omitempty" jsonschema:"bug, idea, praise or other, for feedback"`
+	FeedbackCategory string                 `json:"feedback_category,omitempty" jsonschema:"a key of the inbox feedback categories (bug, idea, praise and other by default), for feedback"`
 	FeedbackScore    int32                  `json:"feedback_score,omitempty" jsonschema:"1 (worst) to 5 (best) when the contact scored the feedback"`
 	FeedbackProgress string                 `json:"feedback_progress,omitempty" jsonschema:"planned, in_progress, done or wont_do, for feedback whose progress a member set"`
 	IdeaID           *uuid.UUID             `json:"idea_id,omitempty" jsonschema:"the roadmap idea this feedback is linked to"`

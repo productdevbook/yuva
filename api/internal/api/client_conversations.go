@@ -140,6 +140,7 @@ func clientConversationItems(ctx context.Context, q *store.Queries, cp contactPr
 	out := make([]oas.ClientConversation, len(rows))
 	for i, r := range rows {
 		out[i] = clientConversationBody(r)
+		out[i].Feedback = clientFeedback(ctx, in, out[i].Feedback)
 		out[i].LastMessage, out[i].Unread, out[i].LastReadByMemberAt = byConv[r.ID], unread[r.ID], readAt[r.ID]
 		out[i].CanRate, out[i].Rating = ratingState(in.RatingSince, r.Kind, r.Status, r.ClosedAt, r.RatedAt, r.Rating, now)
 	}

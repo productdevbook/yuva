@@ -435,9 +435,13 @@ func (s *Server) clientInbox(ctx context.Context, q *store.Queries, in store.Inb
 			AskEmailOffline: chat.AskEmailOffline, AllowAnonymous: chat.AllowAnonymous, Discussions: clientDiscussionMode(chat),
 			AnnounceUpdates: &chat.AnnounceUpdates,
 		},
-		FeedbackCategories: feedbackCategories,
-		AskForRating:       in.AskForRating,
+		AskForRating: in.AskForRating,
 	}
+	var accept string
+	if r := requestFrom(ctx); r != nil {
+		accept = r.Header.Get("Accept-Language")
+	}
+	out.FeedbackCategories, out.FeedbackCategoryItems = clientCategories(inboxCategories(in), accept, in.DefaultLocale)
 	if out.Chat.Greeting == "" && b.Branding.Greeting != nil {
 		out.Chat.Greeting = *b.Branding.Greeting
 	}

@@ -1241,6 +1241,7 @@ type Inbox struct {
 	SenderPostalAddress  *string
 	SenderRegistration   *string
 	SenderContact        *string
+	FeedbackCategories   []byte
 }
 
 type InboxMember struct {

@@ -31,6 +31,7 @@ func inboxBody(in store.Inbox) oas.Inbox {
 		Mode: oas.InboxMode(in.Mode), ExpectedReplyMinutes: in.ExpectedReplyMinutes, AskForRating: in.AskForRating,
 		Sender: inboxSenderBody(in), CreatedAt: in.CreatedAt, UpdatedAt: in.UpdatedAt,
 	}
+	out.FeedbackCategories = inboxCategories(in)
 	_ = json.Unmarshal(in.Branding, &out.Branding)
 	_ = json.Unmarshal(in.BusinessHours, &out.BusinessHours)
 	if out.BusinessHours.Intervals == nil {
@@ -262,6 +263,11 @@ func (s *Server) UpdateInbox(ctx context.Context, req oas.UpdateInboxRequestObje
 	if err := requireManagerOrKey(p); err != nil {
 		return nil, err
 	}
+	if ok, err := canSeeInbox(ctx, s.st.Queries, p, req.InboxId); err != nil {
+		return nil, err
+	} else if !ok {
+		return nil, errInboxGone
+	}
 	b := req.Body
 	var out oas.Inbox
 	err := s.inTx(ctx, p.workspaceID, func(q *store.Queries, events *eventBatch) error {
@@ -323,6 +329,11 @@ func (s *Server) UpdateInbox(ctx context.Context, req oas.UpdateInboxRequestObje
 		}
 		if err != nil {
 			return err
+		}
+		if b.FeedbackCategories != nil {
+			if in, err = s.setFeedbackCategories(ctx, q, in, *b.FeedbackCategories); err != nil {
+				return err
+			}
 		}
 		if b.Sender != nil {
 			if in, err = s.setInboxSender(ctx, q, in, *b.Sender); err != nil {

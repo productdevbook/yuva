@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"slices"
 	"strconv"
 	"strings"
 	"uuid"
@@ -15,8 +16,6 @@ import (
 )
 
 const feedbackTextRunes = 200
-
-var feedbackCategories = []oas.FeedbackCategory{oas.Bug, oas.Idea, oas.Praise, oas.Other}
 
 var (
 	errFeedbackChannel     = problem(http.StatusForbidden, "forbidden", "feedback is sent from app and chat channels")
@@ -34,10 +33,10 @@ func feedbackFieldsOf(f oas.FeedbackFields) map[string]*string {
 	}
 }
 
-func feedbackOf(category oas.FeedbackCategory, allowEmail bool, fields map[string]*string) (oas.Feedback, error) {
+func feedbackOf(inbox store.Inbox, category oas.FeedbackCategory, allowEmail bool, fields map[string]*string) (oas.Feedback, error) {
 	out := oas.Feedback{Category: category, AllowEmail: allowEmail}
-	if !category.Valid() {
-		return out, errValidation("category must be bug, idea, praise or other")
+	if !slices.Contains(categoryKeys(inboxCategories(inbox)), category) {
+		return out, errUnknownFeedbackCategory
 	}
 	clean := map[string]*string{}
 	for name, v := range fields {
@@ -189,9 +188,13 @@ func (s *Server) CreateClientFeedback(ctx context.Context, req oas.CreateClientF
 		return nil, err
 	}
 	if category == "" {
-		category = oas.Other
+		category = feedbackFallbackCategory
 	}
-	fb, err := feedbackOf(category, allowEmail, fields)
+	inbox, err := s.st.GetInbox(ctx, store.GetInboxParams{WorkspaceID: cp.workspaceID, ID: cp.inboxID})
+	if err != nil {
+		return nil, err
+	}
+	fb, err := feedbackOf(inbox, category, allowEmail, fields)
 	if err != nil {
 		return nil, err
 	}
@@ -236,6 +239,9 @@ func (s *Server) CreateClientFeedback(ctx context.Context, req oas.CreateClientF
 		confirm       *mail.Message
 	)
 	err = s.inTx(ctx, cp.workspaceID, func(q *store.Queries, events *eventBatch) error {
+		if err := s.requireInboxCategory(ctx, q, cp.workspaceID, cp.inboxID, fb.Category); err != nil {
+			return err
+		}
 		if fb.AllowEmail && addr != nil {
 			r, err := q.SetContactTypedEmail(ctx, store.SetContactTypedEmailParams{WorkspaceID: cp.workspaceID, ID: cp.contactID, TypedEmail: addr, Now: s.now()})
 			if err != nil {
@@ -314,7 +320,11 @@ func (s *Server) CreateFeedback(ctx context.Context, req oas.CreateFeedbackReque
 	if strings.TrimSpace(b.Body) == "" {
 		return nil, errValidation("body is required")
 	}
-	fb, err := feedbackOf(b.Category, b.AllowEmail != nil && *b.AllowEmail, feedbackFieldsOf(oas.FeedbackFields{
+	inbox, err := visibleInbox(ctx, s.st.Queries, p, b.InboxId)
+	if err != nil {
+		return nil, err
+	}
+	fb, err := feedbackOf(inbox, b.Category, b.AllowEmail != nil && *b.AllowEmail, feedbackFieldsOf(oas.FeedbackFields{
 		AppVersion: b.AppVersion, Build: b.Build, Os: b.Os, OsVersion: b.OsVersion, DeviceModel: b.DeviceModel,
 		Locale: b.Locale, Screen: b.Screen, InstallationId: b.InstallationId,
 	}))
@@ -335,10 +345,6 @@ func (s *Server) CreateFeedback(ctx context.Context, req oas.CreateFeedbackReque
 		if addr, err = normalizeEmail(*b.Contact.Email); err != nil {
 			return nil, err
 		}
-	}
-	inbox, err := visibleInbox(ctx, s.st.Queries, p, b.InboxId)
-	if err != nil {
-		return nil, err
 	}
 	var (
 		out     oas.FeedbackCreated
@@ -379,6 +385,9 @@ func (s *Server) CreateFeedback(ctx context.Context, req oas.CreateFeedbackReque
 		}
 		ch, err := s.inboxAPIChannel(ctx, q, inbox)
 		if err != nil {
+			return err
+		}
+		if err := s.requireInboxCategory(ctx, q, p.workspaceID, inbox.ID, fb.Category); err != nil {
 			return err
 		}
 		mark := len(events.items)

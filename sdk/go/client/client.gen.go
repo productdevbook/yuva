@@ -2976,30 +2976,6 @@ func (e EventType) Valid() bool {
 	}
 }
 
-// Defines values for FeedbackCategory.
-const (
-	Bug    FeedbackCategory = "bug"
-	Idea   FeedbackCategory = "idea"
-	Other  FeedbackCategory = "other"
-	Praise FeedbackCategory = "praise"
-)
-
-// Valid indicates whether the value is a known member of the FeedbackCategory enum.
-func (e FeedbackCategory) Valid() bool {
-	switch e {
-	case Bug:
-		return true
-	case Idea:
-		return true
-	case Other:
-		return true
-	case Praise:
-		return true
-	default:
-		return false
-	}
-}
-
 // Defines values for FeedbackProgress.
 const (
 	FeedbackProgressDone       FeedbackProgress = "done"
@@ -10189,6 +10165,19 @@ type ClientEmailUpdate struct {
 	Email Email `json:"email"`
 }
 
+// ClientFeedbackCategory An inbox feedback category with its name in the request's language.
+type ClientFeedbackCategory struct {
+	Icon string `json:"icon"`
+
+	// Key The key of one of the inbox's feedback categories (`InboxFeedbackCategory`). Every inbox
+	// starts with `bug`, `idea`, `praise` and `other`; owners and admins change the list.
+	//
+	//
+	// Examples: bug
+	Key  FeedbackCategory `json:"key"`
+	Name string           `json:"name"`
+}
+
 // ClientFeedbackCreate defines model for ClientFeedbackCreate.
 type ClientFeedbackCreate struct {
 	AllowEmail *bool   `json:"allow_email,omitempty"`
@@ -10198,7 +10187,9 @@ type ClientFeedbackCreate struct {
 	Body  *string `json:"body,omitempty"`
 	Build *string `json:"build,omitempty"`
 
-	// Category `other` when absent.
+	// Category `other` when absent. Must be a key of the inbox's feedback categories (`400` otherwise).
+	//
+	// Examples: bug
 	Category *FeedbackCategory `json:"category,omitempty"`
 
 	// ClientId The first message's `client_id`.
@@ -10237,7 +10228,9 @@ type ClientFeedbackCreateMultipart struct {
 	Body  *string `json:"body,omitempty"`
 	Build *string `json:"build,omitempty"`
 
-	// Category `other` when absent.
+	// Category `other` when absent. Must be a key of the inbox's feedback categories (`400` otherwise).
+	//
+	// Examples: bug
 	Category *FeedbackCategory `json:"category,omitempty"`
 
 	// ClientId The first message's `client_id`.
@@ -10443,8 +10436,14 @@ type ClientInbox struct {
 	// ExpectedReplyMinutes `async` inboxes only; absent when not set.
 	ExpectedReplyMinutes *int32 `json:"expected_reply_minutes,omitempty"`
 
-	// FeedbackCategories The categories `POST /client/v1/feedback` accepts, in display order.
+	// FeedbackCategories Only the keys among `bug`, `idea`, `praise` and `other`, in display order, for clients
+	// built before custom categories. New clients read `feedback_category_items`, which lists
+	// every category `POST /client/v1/feedback` accepts (`400` for any other).
 	FeedbackCategories []FeedbackCategory `json:"feedback_categories"`
+
+	// FeedbackCategoryItems Every category of the inbox with its name in the request's language (`Accept-Language`, else
+	// the inbox's `default_locale`) and icon. Render these instead of hard-coded names.
+	FeedbackCategoryItems []ClientFeedbackCategory `json:"feedback_category_items"`
 
 	// Help Absent unless the inbox has a published help center (and on a server with
 	// `YUVA_HELP=off`); show the Help tile and the Home search only then. An `inbox.updated`
@@ -13388,9 +13387,25 @@ type Feedback struct {
 	AppVersion *string `json:"app_version,omitempty"`
 
 	// AttachmentCount Files (e.g. screenshots) attached to the contact's first message.
-	AttachmentCount int32            `json:"attachment_count"`
-	Build           *string          `json:"build,omitempty"`
-	Category        FeedbackCategory `json:"category"`
+	AttachmentCount int32   `json:"attachment_count"`
+	Build           *string `json:"build,omitempty"`
+
+	// Category The inbox category key. On `/client/v1` it is the key when it is one of `bug`, `idea`,
+	// `praise` and `other`, else `other`, so clients built before custom categories keep
+	// decoding; read `category_key` there.
+	//
+	//
+	// Examples: bug
+	Category FeedbackCategory `json:"category"`
+
+	// CategoryKey `/client/v1` only: the real category key, whatever it is.
+	//
+	// Examples: bug
+	CategoryKey *FeedbackCategory `json:"category_key,omitempty"`
+
+	// CategoryName `/client/v1` only: the category's name in the request's language (`Accept-Language`,
+	// else the inbox's `default_locale`); absent when the inbox no longer lists the key.
+	CategoryName *string `json:"category_name,omitempty"`
 
 	// DeviceModel Examples: iPhone17,1
 	DeviceModel *string `json:"device_model,omitempty"`
@@ -13424,8 +13439,11 @@ type Feedback struct {
 	Text string `json:"text"`
 }
 
-// FeedbackCategory defines model for FeedbackCategory.
-type FeedbackCategory string
+// FeedbackCategory The key of one of the inbox's feedback categories (`InboxFeedbackCategory`). Every inbox
+// starts with `bug`, `idea`, `praise` and `other`; owners and admins change the list.
+//
+// Examples: bug
+type FeedbackCategory = string
 
 // FeedbackContact defines model for FeedbackContact.
 type FeedbackContact struct {
@@ -13439,16 +13457,27 @@ type FeedbackContact struct {
 
 // FeedbackCount defines model for FeedbackCount.
 type FeedbackCount struct {
+	// Category The key of one of the inbox's feedback categories (`InboxFeedbackCategory`). Every inbox
+	// starts with `bug`, `idea`, `praise` and `other`; owners and admins change the list.
+	//
+	//
+	// Examples: bug
 	Category FeedbackCategory `json:"category"`
 	Count    int64            `json:"count"`
 }
 
 // FeedbackCreate defines model for FeedbackCreate.
 type FeedbackCreate struct {
-	AllowEmail     *bool            `json:"allow_email,omitempty"`
-	AppVersion     *string          `json:"app_version,omitempty"`
-	Body           string           `json:"body"`
-	Build          *string          `json:"build,omitempty"`
+	AllowEmail *bool   `json:"allow_email,omitempty"`
+	AppVersion *string `json:"app_version,omitempty"`
+	Body       string  `json:"body"`
+	Build      *string `json:"build,omitempty"`
+
+	// Category The key of one of the inbox's feedback categories (`InboxFeedbackCategory`). Every inbox
+	// starts with `bug`, `idea`, `praise` and `other`; owners and admins change the list.
+	//
+	//
+	// Examples: bug
 	Category       FeedbackCategory `json:"category"`
 	ClientId       *string          `json:"client_id,omitempty"`
 	Contact        FeedbackContact  `json:"contact"`
@@ -14526,8 +14555,12 @@ type Inbox struct {
 	DefaultLocale LanguageTag `json:"default_locale"`
 
 	// ExpectedReplyMinutes Shown to contacts in `async` mode; absent when not set.
-	ExpectedReplyMinutes *int32    `json:"expected_reply_minutes,omitempty"`
-	Id                   uuid.UUID `json:"id"`
+	ExpectedReplyMinutes *int32 `json:"expected_reply_minutes,omitempty"`
+
+	// FeedbackCategories The inbox's categories in display order. 1 to 20 entries with unique keys, and `other`
+	// always among them: it is where feedback of a removed category goes.
+	FeedbackCategories InboxFeedbackCategoryList `json:"feedback_categories"`
+	Id                 uuid.UUID                 `json:"id"`
 
 	// Import A migration is filling the inbox with the history of an old mailbox: while it scans,
 	// copies or syncs, and while a copy that has started is paused or needs attention. Absent
@@ -14651,6 +14684,30 @@ type InboxDeletedEvent struct {
 // InboxDeletedEventType defines model for InboxDeletedEvent.Type.
 type InboxDeletedEventType string
 
+// InboxFeedbackCategory One feedback category of an inbox. `names` maps language tags to the name shown in that
+// language; a category with no name in the reader's language shows the one in the inbox's
+// `default_locale`, then `en`, then the first one.
+type InboxFeedbackCategory struct {
+	// Icon An icon name for the panel and the SDKs to draw (lowercase Lucide names such as `bug`,
+	// `lightbulb`, `heart`, `message-circle`); a client that does not know it shows a generic
+	// tag.
+	Icon string `json:"icon"`
+
+	// Key The key of one of the inbox's feedback categories (`InboxFeedbackCategory`). Every inbox
+	// starts with `bug`, `idea`, `praise` and `other`; owners and admins change the list.
+	//
+	//
+	// Examples: bug
+	Key FeedbackCategory `json:"key"`
+
+	// Names Examples: {"en":"Bug","tr":"Hata"}
+	Names map[string]string `json:"names"`
+}
+
+// InboxFeedbackCategoryList The inbox's categories in display order. 1 to 20 entries with unique keys, and `other`
+// always among them: it is where feedback of a removed category goes.
+type InboxFeedbackCategoryList = []InboxFeedbackCategory
+
 // InboxImport A migration is filling the inbox with the history of an old mailbox: while it scans,
 // copies or syncs, and while a copy that has started is paused or needs attention. Absent
 // otherwise. Everyone who can see the inbox sees it; the migration itself, its counts and
@@ -14745,6 +14802,12 @@ type InboxUpdate struct {
 
 	// ExpectedReplyMinutes `null` clears it.
 	ExpectedReplyMinutes nullable.Nullable[int32] `json:"expected_reply_minutes,omitempty"`
+
+	// FeedbackCategories Replaces the list. Feedback of a category that is no longer listed is moved to `other`
+	// in the same request (its `feedback.category` changes; no per-conversation events are
+	// sent, the `inbox.updated` event tells clients to reload). Owners, admins and keys with
+	// `inboxes:manage`.
+	FeedbackCategories *InboxFeedbackCategoryList `json:"feedback_categories,omitempty"`
 
 	// Mode `live` shows who is available, typing and read receipts; `async` shows the expected reply
 	// time instead.
@@ -21384,8 +21447,8 @@ type ListConversationsParams struct {
 	// matched against the origin of `page.page_url`.
 	Site *string `form:"site,omitempty" json:"site,omitempty"`
 
-	// Category Only feedback of this category (implies `kind=feedback`; with a `kind` list that lacks
-	// `feedback`, `400`).
+	// Category Only feedback of this category key (implies `kind=feedback`; with a `kind` list that lacks
+	// `feedback`, `400`). Any key of the pattern is accepted: a key no inbox lists matches nothing.
 	Category *FeedbackCategory `form:"category,omitempty" json:"category,omitempty"`
 
 	// Page Only conversations sent from this documentation page (a URL; query and fragment are
@@ -29112,7 +29175,8 @@ type ClientInterface interface {
 	// CreateClientFeedbackWithBody Send feedback
 	//
 	// Starts a `feedback` conversation on the session's channel with its first message: a
-	// category, the text and what the app knows about where it was sent from (app version,
+	// category (one of the inbox's `feedback_categories`, `400` otherwise), the text and what the
+	// app knows about where it was sent from (app version,
 	// build, OS, device, locale, screen, installation id). It is answered like any other
 	// conversation and listed with the contact's conversations (`kind: feedback`).
 	//
@@ -29140,7 +29204,8 @@ type ClientInterface interface {
 	// CreateClientFeedback Send feedback
 	//
 	// Starts a `feedback` conversation on the session's channel with its first message: a
-	// category, the text and what the app knows about where it was sent from (app version,
+	// category (one of the inbox's `feedback_categories`, `400` otherwise), the text and what the
+	// app knows about where it was sent from (app version,
 	// build, OS, device, locale, screen, installation id). It is answered like any other
 	// conversation and listed with the contact's conversations (`kind: feedback`).
 	//
@@ -32882,6 +32947,8 @@ type ClientInterface interface {
 	// e-mail channel. `client_id` makes the request idempotent: the same `client_id` for the
 	// same contact answers `200` with the first conversation.
 	//
+	// `category` must be a key of the inbox's `feedback_categories` (`400` otherwise).
+	//
 	// Takes any type of body and a specified content type.
 	//
 	// Corresponds with POST /v1/feedback (the `CreateFeedback` operationId).
@@ -32902,6 +32969,8 @@ type ClientInterface interface {
 	// `allow_email: true` members' replies are e-mailed to the contact through the inbox's
 	// e-mail channel. `client_id` makes the request idempotent: the same `client_id` for the
 	// same contact answers `200` with the first conversation.
+	//
+	// `category` must be a key of the inbox's `feedback_categories` (`400` otherwise).
 	//
 	// Takes a body of the `application/json` content type.
 	//
@@ -37843,7 +37912,8 @@ func (c *Client) CreateClientDiscussionPost(ctx context.Context, discussionId Di
 // CreateClientFeedbackWithBody Send feedback
 //
 // Starts a `feedback` conversation on the session's channel with its first message: a
-// category, the text and what the app knows about where it was sent from (app version,
+// category (one of the inbox's `feedback_categories`, `400` otherwise), the text and what the
+// app knows about where it was sent from (app version,
 // build, OS, device, locale, screen, installation id). It is answered like any other
 // conversation and listed with the contact's conversations (`kind: feedback`).
 //
@@ -37881,7 +37951,8 @@ func (c *Client) CreateClientFeedbackWithBody(ctx context.Context, params *Creat
 // CreateClientFeedback Send feedback
 //
 // Starts a `feedback` conversation on the session's channel with its first message: a
-// category, the text and what the app knows about where it was sent from (app version,
+// category (one of the inbox's `feedback_categories`, `400` otherwise), the text and what the
+// app knows about where it was sent from (app version,
 // build, OS, device, locale, screen, installation id). It is answered like any other
 // conversation and listed with the contact's conversations (`kind: feedback`).
 //
@@ -44313,6 +44384,8 @@ func (c *Client) GetLatestEvent(ctx context.Context, params *GetLatestEventParam
 // e-mail channel. `client_id` makes the request idempotent: the same `client_id` for the
 // same contact answers `200` with the first conversation.
 //
+// `category` must be a key of the inbox's `feedback_categories` (`400` otherwise).
+//
 // Takes any type of body and a specified content type.
 //
 // Corresponds with POST /v1/feedback (the `CreateFeedback` operationId).
@@ -44343,6 +44416,8 @@ func (c *Client) CreateFeedbackWithBody(ctx context.Context, params *CreateFeedb
 // `allow_email: true` members' replies are e-mailed to the contact through the inbox's
 // e-mail channel. `client_id` makes the request idempotent: the same `client_id` for the
 // same contact answers `200` with the first conversation.
+//
+// `category` must be a key of the inbox's `feedback_categories` (`400` otherwise).
 //
 // Takes a body of the `application/json` content type.
 //
@@ -78055,7 +78130,8 @@ type ClientWithResponsesInterface interface {
 	// CreateClientFeedbackWithBodyWithResponse Send feedback
 	//
 	// Starts a `feedback` conversation on the session's channel with its first message: a
-	// category, the text and what the app knows about where it was sent from (app version,
+	// category (one of the inbox's `feedback_categories`, `400` otherwise), the text and what the
+	// app knows about where it was sent from (app version,
 	// build, OS, device, locale, screen, installation id). It is answered like any other
 	// conversation and listed with the contact's conversations (`kind: feedback`).
 	//
@@ -78083,7 +78159,8 @@ type ClientWithResponsesInterface interface {
 	// CreateClientFeedbackWithResponse Send feedback
 	//
 	// Starts a `feedback` conversation on the session's channel with its first message: a
-	// category, the text and what the app knows about where it was sent from (app version,
+	// category (one of the inbox's `feedback_categories`, `400` otherwise), the text and what the
+	// app knows about where it was sent from (app version,
 	// build, OS, device, locale, screen, installation id). It is answered like any other
 	// conversation and listed with the contact's conversations (`kind: feedback`).
 	//
@@ -82081,6 +82158,8 @@ type ClientWithResponsesInterface interface {
 	// e-mail channel. `client_id` makes the request idempotent: the same `client_id` for the
 	// same contact answers `200` with the first conversation.
 	//
+	// `category` must be a key of the inbox's `feedback_categories` (`400` otherwise).
+	//
 	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
 	//
 	// Corresponds with POST /v1/feedback (the `CreateFeedback` operationId).
@@ -82101,6 +82180,8 @@ type ClientWithResponsesInterface interface {
 	// `allow_email: true` members' replies are e-mailed to the contact through the inbox's
 	// e-mail channel. `client_id` makes the request idempotent: the same `client_id` for the
 	// same contact answers `200` with the first conversation.
+	//
+	// `category` must be a key of the inbox's `feedback_categories` (`400` otherwise).
 	//
 	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
 	//
@@ -115613,7 +115694,8 @@ func (c *ClientWithResponses) CreateClientDiscussionPostWithResponse(ctx context
 // CreateClientFeedbackWithBodyWithResponse Send feedback
 //
 // Starts a `feedback` conversation on the session's channel with its first message: a
-// category, the text and what the app knows about where it was sent from (app version,
+// category (one of the inbox's `feedback_categories`, `400` otherwise), the text and what the
+// app knows about where it was sent from (app version,
 // build, OS, device, locale, screen, installation id). It is answered like any other
 // conversation and listed with the contact's conversations (`kind: feedback`).
 //
@@ -115647,7 +115729,8 @@ func (c *ClientWithResponses) CreateClientFeedbackWithBodyWithResponse(ctx conte
 // CreateClientFeedbackWithResponse Send feedback
 //
 // Starts a `feedback` conversation on the session's channel with its first message: a
-// category, the text and what the app knows about where it was sent from (app version,
+// category (one of the inbox's `feedback_categories`, `400` otherwise), the text and what the
+// app knows about where it was sent from (app version,
 // build, OS, device, locale, screen, installation id). It is answered like any other
 // conversation and listed with the contact's conversations (`kind: feedback`).
 //
@@ -121259,6 +121342,8 @@ func (c *ClientWithResponses) GetLatestEventWithResponse(ctx context.Context, pa
 // e-mail channel. `client_id` makes the request idempotent: the same `client_id` for the
 // same contact answers `200` with the first conversation.
 //
+// `category` must be a key of the inbox's `feedback_categories` (`400` otherwise).
+//
 // Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
 //
 // Corresponds with POST /v1/feedback (the `CreateFeedback` operationId).
@@ -121285,6 +121370,8 @@ func (c *ClientWithResponses) CreateFeedbackWithBodyWithResponse(ctx context.Con
 // `allow_email: true` members' replies are e-mailed to the contact through the inbox's
 // e-mail channel. `client_id` makes the request idempotent: the same `client_id` for the
 // same contact answers `200` with the first conversation.
+//
+// `category` must be a key of the inbox's `feedback_categories` (`400` otherwise).
 //
 // Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
 //
