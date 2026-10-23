@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log/slog"
 	"net/http"
+	"slices"
 	"strings"
 	"time"
 	"uuid"
@@ -313,6 +314,9 @@ func (s *Server) deleteConversationBatch(ctx context.Context, workspaceID uuid.U
 			return err
 		}
 		n = len(ids)
+		if err := forgetConversations(ctx, q, workspaceID, ids); err != nil {
+			return err
+		}
 		if err := s.scrubSlackConversations(ctx, q, events, workspaceID, slackScrubDeleted, ids); err != nil {
 			return err
 		}
@@ -332,6 +336,30 @@ func (s *Server) deleteConversationBatch(ctx context.Context, workspaceID uuid.U
 	}
 	s.deleteObjects(ctx, keys)
 	return n, len(keys), nil
+}
+
+// forgetConversations deletes, before the conversations themselves, their stored events and every
+// webhook delivery, pending or kept, whose payload names one of them or one of the contacts going
+// with them, so neither the event feed, a realtime replay nor a redelivery shows them again. The
+// events go first, the order redaction locks them in: fan-out reads its event under a shared lock,
+// so the deliveries it writes are committed before they are deleted here, or never written.
+func forgetConversations(ctx context.Context, q *store.Queries, workspaceID uuid.UUID, ids []uuid.UUID, contacts ...uuid.UUID) error {
+	if len(ids) > 0 {
+		if err := q.DeleteConversationEvents(ctx, store.DeleteConversationEventsParams{WorkspaceID: workspaceID, ConversationIds: ids}); err != nil {
+			return err
+		}
+	}
+	for _, c := range contacts {
+		if err := q.DeleteEventsMentioning(ctx, store.DeleteEventsMentioningParams{WorkspaceID: workspaceID, Needle: c.String()}); err != nil {
+			return err
+		}
+	}
+	all := append(slices.Clone(ids), contacts...)
+	if len(all) == 0 {
+		return nil
+	}
+	_, err := q.DeleteDeliveriesMentioning(ctx, store.DeleteDeliveriesMentioningParams{WorkspaceID: workspaceID, Ids: all})
+	return err
 }
 
 func (s *Server) DeleteMe(ctx context.Context, req oas.DeleteMeRequestObject) (oas.DeleteMeResponseObject, error) {

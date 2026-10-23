@@ -124,5 +124,12 @@ WHERE workspace_id = @workspace_id AND EXISTS (SELECT 1 FROM unnest(@needles::te
 ORDER BY id
 FOR UPDATE;
 
+-- name: DeleteDeliveriesMentioning :execrows
+DELETE FROM webhook_deliveries d WHERE d.workspace_id = @workspace_id AND d.id IN (
+    SELECT x.id FROM webhook_deliveries x,
+        regexp_matches(x.payload, '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}', 'g') m
+    WHERE x.workspace_id = @workspace_id AND m[1]::uuid IN (SELECT unnest(@ids::uuid[]))
+);
+
 -- name: SetWebhookDeliveryPayload :exec
 UPDATE webhook_deliveries SET payload = @payload WHERE workspace_id = @workspace_id AND id = @id;

@@ -238,3 +238,9 @@ ORDER BY w.id;
 UPDATE conversations SET team_id = sqlc.narg(team_id), updated_at = @now
 WHERE workspace_id = @workspace_id AND id = @id
 RETURNING *;
+
+-- name: ListContactConversationIDsAll :many
+SELECT id FROM conversations WHERE workspace_id = @workspace_id AND contact_id = @contact_id;
+
+-- name: ListInboxConversationIDs :many
+SELECT id FROM conversations WHERE workspace_id = @workspace_id AND inbox_id = @inbox_id;

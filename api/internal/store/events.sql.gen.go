@@ -45,6 +45,20 @@ func (q *Queries) DeleteEventsBefore(ctx context.Context, arg DeleteEventsBefore
 	return result.RowsAffected(), nil
 }
 
+const deleteEventsMentioning = `-- name: DeleteEventsMentioning :exec
+DELETE FROM events WHERE workspace_id = $1 AND strpos(payload::text, $2::text) > 0
+`
+
+type DeleteEventsMentioningParams struct {
+	WorkspaceID uuid.UUID
+	Needle      string
+}
+
+func (q *Queries) DeleteEventsMentioning(ctx context.Context, arg DeleteEventsMentioningParams) error {
+	_, err := q.db.Exec(ctx, deleteEventsMentioning, arg.WorkspaceID, arg.Needle)
+	return err
+}
+
 const eventExists = `-- name: EventExists :one
 SELECT EXISTS (SELECT 1 FROM events WHERE workspace_id = $1 AND id = $2) AS found
 `

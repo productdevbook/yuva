@@ -34,6 +34,9 @@ SELECT coalesce(min(id), 0)::bigint AS id FROM events WHERE workspace_id = $1;
 DELETE FROM events WHERE workspace_id = @workspace_id AND conversation_id = ANY(@conversation_ids::uuid[])
   AND (NOT @keep_trash::bool OR type NOT IN ('conversation.trashed', 'conversation.restored'));
 
+-- name: DeleteEventsMentioning :exec
+DELETE FROM events WHERE workspace_id = @workspace_id AND strpos(payload::text, @needle::text) > 0;
+
 -- name: LockConversationEvents :many
 SELECT id, payload FROM events WHERE workspace_id = @workspace_id AND conversation_id = @conversation_id
 ORDER BY id

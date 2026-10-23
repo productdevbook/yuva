@@ -447,6 +447,35 @@ func (q *Queries) InboxChannelOfKind(ctx context.Context, arg InboxChannelOfKind
 	return i, err
 }
 
+const listContactConversationIDsAll = `-- name: ListContactConversationIDsAll :many
+SELECT id FROM conversations WHERE workspace_id = $1 AND contact_id = $2
+`
+
+type ListContactConversationIDsAllParams struct {
+	WorkspaceID uuid.UUID
+	ContactID   uuid.UUID
+}
+
+func (q *Queries) ListContactConversationIDsAll(ctx context.Context, arg ListContactConversationIDsAllParams) ([]uuid.UUID, error) {
+	rows, err := q.db.Query(ctx, listContactConversationIDsAll, arg.WorkspaceID, arg.ContactID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []uuid.UUID
+	for rows.Next() {
+		var id uuid.UUID
+		if err := rows.Scan(&id); err != nil {
+			return nil, err
+		}
+		items = append(items, id)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const listConversationLabels = `-- name: ListConversationLabels :many
 SELECT conversation_id, label_id FROM conversation_labels
 WHERE workspace_id = $1 AND conversation_id = ANY($2::uuid[])
@@ -855,6 +884,35 @@ func (q *Queries) ListExpiredTrash(ctx context.Context, arg ListExpiredTrashPara
 			return nil, err
 		}
 		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listInboxConversationIDs = `-- name: ListInboxConversationIDs :many
+SELECT id FROM conversations WHERE workspace_id = $1 AND inbox_id = $2
+`
+
+type ListInboxConversationIDsParams struct {
+	WorkspaceID uuid.UUID
+	InboxID     uuid.UUID
+}
+
+func (q *Queries) ListInboxConversationIDs(ctx context.Context, arg ListInboxConversationIDsParams) ([]uuid.UUID, error) {
+	rows, err := q.db.Query(ctx, listInboxConversationIDs, arg.WorkspaceID, arg.InboxID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []uuid.UUID
+	for rows.Next() {
+		var id uuid.UUID
+		if err := rows.Scan(&id); err != nil {
+			return nil, err
+		}
+		items = append(items, id)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, err

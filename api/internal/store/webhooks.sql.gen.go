@@ -160,6 +160,27 @@ func (q *Queries) CreateWebhookEndpoint(ctx context.Context, arg CreateWebhookEn
 	return i, err
 }
 
+const deleteDeliveriesMentioning = `-- name: DeleteDeliveriesMentioning :execrows
+DELETE FROM webhook_deliveries d WHERE d.workspace_id = $1 AND d.id IN (
+    SELECT x.id FROM webhook_deliveries x,
+        regexp_matches(x.payload, '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}', 'g') m
+    WHERE x.workspace_id = $1 AND m[1]::uuid IN (SELECT unnest($2::uuid[]))
+)
+`
+
+type DeleteDeliveriesMentioningParams struct {
+	WorkspaceID uuid.UUID
+	Ids         []uuid.UUID
+}
+
+func (q *Queries) DeleteDeliveriesMentioning(ctx context.Context, arg DeleteDeliveriesMentioningParams) (int64, error) {
+	result, err := q.db.Exec(ctx, deleteDeliveriesMentioning, arg.WorkspaceID, arg.Ids)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected(), nil
+}
+
 const deleteFinishedWebhookDeliveries = `-- name: DeleteFinishedWebhookDeliveries :execrows
 DELETE FROM webhook_deliveries WHERE workspace_id = $1 AND state <> 'pending' AND created_at < $2
 `

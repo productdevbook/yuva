@@ -664,6 +664,13 @@ func (s *Server) deleteContact(ctx context.Context, p principal, id uuid.UUID) e
 		for _, x := range externals {
 			snap.Contact.ExternalIds = append(snap.Contact.ExternalIds, oas.ExternalId{InboxId: x.InboxID, ExternalId: x.ExternalID})
 		}
+		convs, err := q.ListContactConversationIDsAll(ctx, store.ListContactConversationIDsAllParams{WorkspaceID: p.workspaceID, ContactID: id})
+		if err != nil {
+			return err
+		}
+		if err := forgetConversations(ctx, q, p.workspaceID, convs, id); err != nil {
+			return err
+		}
 		if err := s.rememberContactObjections(ctx, q, p.workspaceID, id); err != nil {
 			return err
 		}

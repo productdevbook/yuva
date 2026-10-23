@@ -153,9 +153,6 @@ func (s *Server) purgeWorkspaceTrash(ctx context.Context, ws uuid.UUID, deadline
 			for i, r := range rows {
 				ids[i] = r.ID
 			}
-			if err := q.DeleteConversationEvents(ctx, store.DeleteConversationEventsParams{WorkspaceID: ws, ConversationIds: ids}); err != nil {
-				return nil, err
-			}
 			for _, r := range rows {
 				events.add(realtime.ConversationDeleted, new(r.InboxID), new(r.ID), oas.ConversationDeleted{Id: r.ID, InboxId: r.InboxID, ContactId: r.ContactID})
 				if err := writeSystemAudit(ctx, q, ws, now, oas.AuditConversationDeleted, oas.AuditTargetConversation, r.ID, auditDetails{"inbox_id": r.InboxID}); err != nil {
