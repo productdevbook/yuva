@@ -163,6 +163,9 @@ type harness struct {
 	web     *fakeWeb
 	// firstParty holds the client ids the server treats as its member apps.
 	firstParty *sync.Map
+	// unproven leaves e-mail channels as the API creates them; otherwise every channel a test
+	// creates or changes is proven at once, as if its TXT record had been checked.
+	unproven bool
 }
 
 const (
@@ -361,7 +364,24 @@ func (c *client) do(method, path string, body any) response {
 	if len(raw) > 0 {
 		_ = json.Unmarshal(raw, &out.body)
 	}
+	if !c.h.unproven && out.status/100 == 2 && out.body["email"] != nil && out.str("id") != "" &&
+		((method == "POST" && strings.HasSuffix(path, "/channels")) || (method == "PATCH" && strings.HasPrefix(path, "/v1/channels/"))) {
+		c.h.proveChannel(out.str("id"))
+	}
 	return out
+}
+
+// proveChannel marks an e-mail channel's address proven and takes it from any other channel.
+func (h *harness) proveChannel(id string) {
+	h.t.Helper()
+	ctx := context.Background()
+	if _, err := h.st.Pool.Exec(ctx, `UPDATE email_channels SET verified_at = NULL, verified_by = NULL
+		WHERE verified_at IS NOT NULL AND channel_id <> $1 AND address = (SELECT address FROM email_channels WHERE channel_id = $1)`, id); err != nil {
+		h.t.Fatal(err)
+	}
+	if _, err := h.st.Pool.Exec(ctx, `UPDATE email_channels SET verified_at = now(), verified_by = 'dns' WHERE channel_id = $1 AND verified_at IS NULL`, id); err != nil {
+		h.t.Fatal(err)
+	}
 }
 
 func (c *client) expect(want int, method, path string, body any) response {

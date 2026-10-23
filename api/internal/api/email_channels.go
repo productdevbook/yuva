@@ -24,7 +24,7 @@ const (
 )
 
 var (
-	errEmailAddressTaken = problem(http.StatusConflict, "email_address_taken", "another channel receives mail at this address")
+	errEmailAddressTaken = problem(http.StatusConflict, "email_address_taken", "another channel of this workspace has this address")
 	errEmailRequired     = errValidation("an email channel needs email settings")
 	errEmailNotAllowed   = errValidation("email settings are only for email channels")
 	hostPattern          = regexp.MustCompile(`^[A-Za-z0-9]([A-Za-z0-9-]*[A-Za-z0-9])?(\.[A-Za-z0-9]([A-Za-z0-9-]*[A-Za-z0-9])?)*$`)
@@ -77,6 +77,9 @@ func (s *Server) emailChannelParams(workspaceID, channelID uuid.UUID, in *oas.Em
 	}
 	if local, _, _ := strings.Cut(out.Address, "@"); strings.Contains(local, catchAllLocal) && local != catchAllLocal {
 		return out, errValidation("email.address: a catch-all address is *@domain")
+	}
+	if err := s.checkChannelAddress(out.Address); err != nil {
+		return out, err
 	}
 	if in.DisplayName != nil {
 		if out.DisplayName, err = trimmed(*in.DisplayName, 0, 200, "email.display_name"); err != nil {

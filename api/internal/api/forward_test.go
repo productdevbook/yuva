@@ -142,7 +142,7 @@ func TestForward(t *testing.T) {
 	}
 
 	et.owner.expectProblem(http.StatusBadRequest, "validation_failed", "POST", fwdPath, map[string]any{"to": []string{cust}})
-	et.owner.expectProblem(http.StatusBadRequest, "validation_failed", "POST", fwdPath, map[string]any{"to": []string{other.address}})
+	et.owner.expectProblem(http.StatusBadRequest, "validation_failed", "POST", fwdPath, map[string]any{"to": []string{strings.Replace(et.address, "@", "+x@", 1)}})
 	et.owner.expectProblem(http.StatusBadRequest, "validation_failed", "POST", fwdPath, map[string]any{"to": []string{et.address}})
 	et.owner.expectProblem(http.StatusBadRequest, "validation_failed", "POST", fwdPath, map[string]any{"to": []string{"not an address"}})
 	et.owner.expectProblem(http.StatusBadRequest, "validation_failed", "POST", fwdPath, map[string]any{"to": []string{}})

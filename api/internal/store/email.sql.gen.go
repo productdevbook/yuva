@@ -146,6 +146,23 @@ func (q *Queries) CountRecentInboundEmails(ctx context.Context, arg CountRecentI
 	return count, err
 }
 
+const countWorkspaceVerificationSends = `-- name: CountWorkspaceVerificationSends :one
+SELECT coalesce(sum(verify_sends), 0)::bigint FROM email_channels
+WHERE workspace_id = $1 AND verify_window_at > $2
+`
+
+type CountWorkspaceVerificationSendsParams struct {
+	WorkspaceID uuid.UUID
+	Since       *time.Time
+}
+
+func (q *Queries) CountWorkspaceVerificationSends(ctx context.Context, arg CountWorkspaceVerificationSendsParams) (int64, error) {
+	row := q.db.QueryRow(ctx, countWorkspaceVerificationSends, arg.WorkspaceID, arg.Since)
+	var column_1 int64
+	err := row.Scan(&column_1)
+	return column_1, err
+}
+
 const createEmailChannel = `-- name: CreateEmailChannel :one
 INSERT INTO email_channels (workspace_id, channel_id, address, display_name, from_address, smtp_host, smtp_port,
                             smtp_username, smtp_password, smtp_tls, auto_reply_enabled, auto_reply_text,
@@ -157,8 +174,16 @@ ON CONFLICT (workspace_id, channel_id) DO UPDATE SET
     smtp_host = excluded.smtp_host, smtp_port = excluded.smtp_port, smtp_username = excluded.smtp_username,
     smtp_password = excluded.smtp_password, smtp_tls = excluded.smtp_tls,
     auto_reply_enabled = excluded.auto_reply_enabled, auto_reply_text = excluded.auto_reply_text,
-    auto_reply_interval_hours = excluded.auto_reply_interval_hours
-RETURNING workspace_id, channel_id, address, display_name, from_address, smtp_host, smtp_port, smtp_username, smtp_password, smtp_tls, auto_reply_enabled, auto_reply_text, auto_reply_interval_hours, broadcast_smtp_host, broadcast_smtp_port, broadcast_smtp_username, broadcast_smtp_password, broadcast_smtp_tls, broadcast_rate, dkim_selector, dkim_private_key, dkim_enabled, dkim_public_key, forward_token, ses_tenant, ses_configuration_set, smtp_aws_account, broadcast_smtp_aws_account, ses_state, ses_detail, ses_checked_at
+    auto_reply_interval_hours = excluded.auto_reply_interval_hours,
+    verified_at = CASE WHEN email_channels.address = excluded.address THEN email_channels.verified_at END,
+    verified_by = CASE WHEN email_channels.address = excluded.address THEN email_channels.verified_by END,
+    verify_problem = CASE WHEN email_channels.address = excluded.address THEN email_channels.verify_problem END,
+    verify_checked_at = CASE WHEN email_channels.address = excluded.address THEN email_channels.verify_checked_at END,
+    verify_code_hash = CASE WHEN email_channels.address = excluded.address THEN email_channels.verify_code_hash END,
+    verify_code_expires_at = CASE WHEN email_channels.address = excluded.address THEN email_channels.verify_code_expires_at END,
+    verify_message_id = CASE WHEN email_channels.address = excluded.address THEN email_channels.verify_message_id END,
+    verify_relay_message_id = CASE WHEN email_channels.address = excluded.address THEN email_channels.verify_relay_message_id END
+RETURNING workspace_id, channel_id, address, display_name, from_address, smtp_host, smtp_port, smtp_username, smtp_password, smtp_tls, auto_reply_enabled, auto_reply_text, auto_reply_interval_hours, broadcast_smtp_host, broadcast_smtp_port, broadcast_smtp_username, broadcast_smtp_password, broadcast_smtp_tls, broadcast_rate, dkim_selector, dkim_private_key, dkim_enabled, dkim_public_key, forward_token, ses_tenant, ses_configuration_set, smtp_aws_account, broadcast_smtp_aws_account, ses_state, ses_detail, ses_checked_at, verified_at, verified_by, verify_problem, verify_checked_at, verify_code_hash, verify_code_expires_at, verify_attempts, verify_message_id, verify_relay_message_id, verify_sent_at, verify_sends, verify_window_at
 `
 
 type CreateEmailChannelParams struct {
@@ -226,6 +251,18 @@ func (q *Queries) CreateEmailChannel(ctx context.Context, arg CreateEmailChannel
 		&i.SesState,
 		&i.SesDetail,
 		&i.SesCheckedAt,
+		&i.VerifiedAt,
+		&i.VerifiedBy,
+		&i.VerifyProblem,
+		&i.VerifyCheckedAt,
+		&i.VerifyCodeHash,
+		&i.VerifyCodeExpiresAt,
+		&i.VerifyAttempts,
+		&i.VerifyMessageID,
+		&i.VerifyRelayMessageID,
+		&i.VerifySentAt,
+		&i.VerifySends,
+		&i.VerifyWindowAt,
 	)
 	return i, err
 }
@@ -234,7 +271,7 @@ const createEmailChannelDkimKey = `-- name: CreateEmailChannelDkimKey :one
 UPDATE email_channels SET dkim_selector = $1, dkim_private_key = $2, dkim_public_key = $3,
     dkim_enabled = false
 WHERE workspace_id = $4 AND channel_id = $5 AND dkim_private_key IS NULL
-RETURNING workspace_id, channel_id, address, display_name, from_address, smtp_host, smtp_port, smtp_username, smtp_password, smtp_tls, auto_reply_enabled, auto_reply_text, auto_reply_interval_hours, broadcast_smtp_host, broadcast_smtp_port, broadcast_smtp_username, broadcast_smtp_password, broadcast_smtp_tls, broadcast_rate, dkim_selector, dkim_private_key, dkim_enabled, dkim_public_key, forward_token, ses_tenant, ses_configuration_set, smtp_aws_account, broadcast_smtp_aws_account, ses_state, ses_detail, ses_checked_at
+RETURNING workspace_id, channel_id, address, display_name, from_address, smtp_host, smtp_port, smtp_username, smtp_password, smtp_tls, auto_reply_enabled, auto_reply_text, auto_reply_interval_hours, broadcast_smtp_host, broadcast_smtp_port, broadcast_smtp_username, broadcast_smtp_password, broadcast_smtp_tls, broadcast_rate, dkim_selector, dkim_private_key, dkim_enabled, dkim_public_key, forward_token, ses_tenant, ses_configuration_set, smtp_aws_account, broadcast_smtp_aws_account, ses_state, ses_detail, ses_checked_at, verified_at, verified_by, verify_problem, verify_checked_at, verify_code_hash, verify_code_expires_at, verify_attempts, verify_message_id, verify_relay_message_id, verify_sent_at, verify_sends, verify_window_at
 `
 
 type CreateEmailChannelDkimKeyParams struct {
@@ -286,6 +323,18 @@ func (q *Queries) CreateEmailChannelDkimKey(ctx context.Context, arg CreateEmail
 		&i.SesState,
 		&i.SesDetail,
 		&i.SesCheckedAt,
+		&i.VerifiedAt,
+		&i.VerifiedBy,
+		&i.VerifyProblem,
+		&i.VerifyCheckedAt,
+		&i.VerifyCodeHash,
+		&i.VerifyCodeExpiresAt,
+		&i.VerifyAttempts,
+		&i.VerifyMessageID,
+		&i.VerifyRelayMessageID,
+		&i.VerifySentAt,
+		&i.VerifySends,
+		&i.VerifyWindowAt,
 	)
 	return i, err
 }
@@ -407,6 +456,23 @@ func (q *Queries) EmailSuppressionReason(ctx context.Context, arg EmailSuppressi
 	var reason string
 	err := row.Scan(&reason)
 	return reason, err
+}
+
+const failEmailVerificationCode = `-- name: FailEmailVerificationCode :exec
+UPDATE email_channels SET verify_attempts = verify_attempts + 1,
+    verify_code_hash = CASE WHEN verify_attempts + 1 >= $1::int THEN NULL ELSE verify_code_hash END
+WHERE workspace_id = $2 AND channel_id = $3
+`
+
+type FailEmailVerificationCodeParams struct {
+	MaxAttempts int32
+	WorkspaceID uuid.UUID
+	ChannelID   uuid.UUID
+}
+
+func (q *Queries) FailEmailVerificationCode(ctx context.Context, arg FailEmailVerificationCodeParams) error {
+	_, err := q.db.Exec(ctx, failEmailVerificationCode, arg.MaxAttempts, arg.WorkspaceID, arg.ChannelID)
+	return err
 }
 
 const findConversationByEmailToken = `-- name: FindConversationByEmailToken :one
@@ -560,10 +626,10 @@ func (q *Queries) FindConversationByHeaders(ctx context.Context, arg FindConvers
 }
 
 const findEmailChannelByAddress = `-- name: FindEmailChannelByAddress :one
-SELECT e.workspace_id, e.channel_id, e.address, e.display_name, e.from_address, e.smtp_host, e.smtp_port, e.smtp_username, e.smtp_password, e.smtp_tls, e.auto_reply_enabled, e.auto_reply_text, e.auto_reply_interval_hours, e.broadcast_smtp_host, e.broadcast_smtp_port, e.broadcast_smtp_username, e.broadcast_smtp_password, e.broadcast_smtp_tls, e.broadcast_rate, e.dkim_selector, e.dkim_private_key, e.dkim_enabled, e.dkim_public_key, e.forward_token, e.ses_tenant, e.ses_configuration_set, e.smtp_aws_account, e.broadcast_smtp_aws_account, e.ses_state, e.ses_detail, e.ses_checked_at, c.inbox_id, c.name AS channel_name FROM email_channels e
+SELECT e.workspace_id, e.channel_id, e.address, e.display_name, e.from_address, e.smtp_host, e.smtp_port, e.smtp_username, e.smtp_password, e.smtp_tls, e.auto_reply_enabled, e.auto_reply_text, e.auto_reply_interval_hours, e.broadcast_smtp_host, e.broadcast_smtp_port, e.broadcast_smtp_username, e.broadcast_smtp_password, e.broadcast_smtp_tls, e.broadcast_rate, e.dkim_selector, e.dkim_private_key, e.dkim_enabled, e.dkim_public_key, e.forward_token, e.ses_tenant, e.ses_configuration_set, e.smtp_aws_account, e.broadcast_smtp_aws_account, e.ses_state, e.ses_detail, e.ses_checked_at, e.verified_at, e.verified_by, e.verify_problem, e.verify_checked_at, e.verify_code_hash, e.verify_code_expires_at, e.verify_attempts, e.verify_message_id, e.verify_relay_message_id, e.verify_sent_at, e.verify_sends, e.verify_window_at, c.inbox_id, c.name AS channel_name FROM email_channels e
 JOIN channels c ON c.workspace_id = e.workspace_id AND c.id = e.channel_id
 JOIN workspaces w ON w.id = e.workspace_id
-WHERE e.address = $1 AND w.deleted_at IS NULL
+WHERE e.address = $1 AND e.verified_at IS NOT NULL AND w.deleted_at IS NULL
 `
 
 type FindEmailChannelByAddressRow struct {
@@ -598,12 +664,24 @@ type FindEmailChannelByAddressRow struct {
 	SesState                string
 	SesDetail               *string
 	SesCheckedAt            *time.Time
+	VerifiedAt              *time.Time
+	VerifiedBy              *string
+	VerifyProblem           *string
+	VerifyCheckedAt         *time.Time
+	VerifyCodeHash          []byte
+	VerifyCodeExpiresAt     *time.Time
+	VerifyAttempts          int32
+	VerifyMessageID         *string
+	VerifyRelayMessageID    *string
+	VerifySentAt            *time.Time
+	VerifySends             int32
+	VerifyWindowAt          *time.Time
 	InboxID                 uuid.UUID
 	ChannelName             string
 }
 
 // Inbound mail names only its recipient, so the channel is found before the workspace is known
-// (see "Hosting for others later" in docs/architecture.md).
+// (see "Hosting for others later" in docs/architecture.md); only a proven address routes.
 func (q *Queries) FindEmailChannelByAddress(ctx context.Context, address string) (FindEmailChannelByAddressRow, error) {
 	row := q.db.QueryRow(ctx, findEmailChannelByAddress, address)
 	var i FindEmailChannelByAddressRow
@@ -639,6 +717,18 @@ func (q *Queries) FindEmailChannelByAddress(ctx context.Context, address string)
 		&i.SesState,
 		&i.SesDetail,
 		&i.SesCheckedAt,
+		&i.VerifiedAt,
+		&i.VerifiedBy,
+		&i.VerifyProblem,
+		&i.VerifyCheckedAt,
+		&i.VerifyCodeHash,
+		&i.VerifyCodeExpiresAt,
+		&i.VerifyAttempts,
+		&i.VerifyMessageID,
+		&i.VerifyRelayMessageID,
+		&i.VerifySentAt,
+		&i.VerifySends,
+		&i.VerifyWindowAt,
 		&i.InboxID,
 		&i.ChannelName,
 	)
@@ -646,7 +736,7 @@ func (q *Queries) FindEmailChannelByAddress(ctx context.Context, address string)
 }
 
 const findEmailChannelByForwardToken = `-- name: FindEmailChannelByForwardToken :one
-SELECT e.workspace_id, e.channel_id, e.address, e.display_name, e.from_address, e.smtp_host, e.smtp_port, e.smtp_username, e.smtp_password, e.smtp_tls, e.auto_reply_enabled, e.auto_reply_text, e.auto_reply_interval_hours, e.broadcast_smtp_host, e.broadcast_smtp_port, e.broadcast_smtp_username, e.broadcast_smtp_password, e.broadcast_smtp_tls, e.broadcast_rate, e.dkim_selector, e.dkim_private_key, e.dkim_enabled, e.dkim_public_key, e.forward_token, e.ses_tenant, e.ses_configuration_set, e.smtp_aws_account, e.broadcast_smtp_aws_account, e.ses_state, e.ses_detail, e.ses_checked_at, c.inbox_id, c.name AS channel_name FROM email_channels e
+SELECT e.workspace_id, e.channel_id, e.address, e.display_name, e.from_address, e.smtp_host, e.smtp_port, e.smtp_username, e.smtp_password, e.smtp_tls, e.auto_reply_enabled, e.auto_reply_text, e.auto_reply_interval_hours, e.broadcast_smtp_host, e.broadcast_smtp_port, e.broadcast_smtp_username, e.broadcast_smtp_password, e.broadcast_smtp_tls, e.broadcast_rate, e.dkim_selector, e.dkim_private_key, e.dkim_enabled, e.dkim_public_key, e.forward_token, e.ses_tenant, e.ses_configuration_set, e.smtp_aws_account, e.broadcast_smtp_aws_account, e.ses_state, e.ses_detail, e.ses_checked_at, e.verified_at, e.verified_by, e.verify_problem, e.verify_checked_at, e.verify_code_hash, e.verify_code_expires_at, e.verify_attempts, e.verify_message_id, e.verify_relay_message_id, e.verify_sent_at, e.verify_sends, e.verify_window_at, c.inbox_id, c.name AS channel_name FROM email_channels e
 JOIN channels c ON c.workspace_id = e.workspace_id AND c.id = e.channel_id
 JOIN workspaces w ON w.id = e.workspace_id
 WHERE e.forward_token = $1 AND w.deleted_at IS NULL
@@ -684,6 +774,18 @@ type FindEmailChannelByForwardTokenRow struct {
 	SesState                string
 	SesDetail               *string
 	SesCheckedAt            *time.Time
+	VerifiedAt              *time.Time
+	VerifiedBy              *string
+	VerifyProblem           *string
+	VerifyCheckedAt         *time.Time
+	VerifyCodeHash          []byte
+	VerifyCodeExpiresAt     *time.Time
+	VerifyAttempts          int32
+	VerifyMessageID         *string
+	VerifyRelayMessageID    *string
+	VerifySentAt            *time.Time
+	VerifySends             int32
+	VerifyWindowAt          *time.Time
 	InboxID                 uuid.UUID
 	ChannelName             string
 }
@@ -724,6 +826,18 @@ func (q *Queries) FindEmailChannelByForwardToken(ctx context.Context, forwardTok
 		&i.SesState,
 		&i.SesDetail,
 		&i.SesCheckedAt,
+		&i.VerifiedAt,
+		&i.VerifiedBy,
+		&i.VerifyProblem,
+		&i.VerifyCheckedAt,
+		&i.VerifyCodeHash,
+		&i.VerifyCodeExpiresAt,
+		&i.VerifyAttempts,
+		&i.VerifyMessageID,
+		&i.VerifyRelayMessageID,
+		&i.VerifySentAt,
+		&i.VerifySends,
+		&i.VerifyWindowAt,
 		&i.InboxID,
 		&i.ChannelName,
 	)
@@ -843,7 +957,7 @@ func (q *Queries) GetContactIDByEmail(ctx context.Context, arg GetContactIDByEma
 }
 
 const getEmailChannel = `-- name: GetEmailChannel :one
-SELECT workspace_id, channel_id, address, display_name, from_address, smtp_host, smtp_port, smtp_username, smtp_password, smtp_tls, auto_reply_enabled, auto_reply_text, auto_reply_interval_hours, broadcast_smtp_host, broadcast_smtp_port, broadcast_smtp_username, broadcast_smtp_password, broadcast_smtp_tls, broadcast_rate, dkim_selector, dkim_private_key, dkim_enabled, dkim_public_key, forward_token, ses_tenant, ses_configuration_set, smtp_aws_account, broadcast_smtp_aws_account, ses_state, ses_detail, ses_checked_at FROM email_channels WHERE workspace_id = $1 AND channel_id = $2
+SELECT workspace_id, channel_id, address, display_name, from_address, smtp_host, smtp_port, smtp_username, smtp_password, smtp_tls, auto_reply_enabled, auto_reply_text, auto_reply_interval_hours, broadcast_smtp_host, broadcast_smtp_port, broadcast_smtp_username, broadcast_smtp_password, broadcast_smtp_tls, broadcast_rate, dkim_selector, dkim_private_key, dkim_enabled, dkim_public_key, forward_token, ses_tenant, ses_configuration_set, smtp_aws_account, broadcast_smtp_aws_account, ses_state, ses_detail, ses_checked_at, verified_at, verified_by, verify_problem, verify_checked_at, verify_code_hash, verify_code_expires_at, verify_attempts, verify_message_id, verify_relay_message_id, verify_sent_at, verify_sends, verify_window_at FROM email_channels WHERE workspace_id = $1 AND channel_id = $2
 `
 
 type GetEmailChannelParams struct {
@@ -886,12 +1000,24 @@ func (q *Queries) GetEmailChannel(ctx context.Context, arg GetEmailChannelParams
 		&i.SesState,
 		&i.SesDetail,
 		&i.SesCheckedAt,
+		&i.VerifiedAt,
+		&i.VerifiedBy,
+		&i.VerifyProblem,
+		&i.VerifyCheckedAt,
+		&i.VerifyCodeHash,
+		&i.VerifyCodeExpiresAt,
+		&i.VerifyAttempts,
+		&i.VerifyMessageID,
+		&i.VerifyRelayMessageID,
+		&i.VerifySentAt,
+		&i.VerifySends,
+		&i.VerifyWindowAt,
 	)
 	return i, err
 }
 
 const getIngestChannel = `-- name: GetIngestChannel :one
-SELECT e.workspace_id, e.channel_id, e.address, e.display_name, e.from_address, e.smtp_host, e.smtp_port, e.smtp_username, e.smtp_password, e.smtp_tls, e.auto_reply_enabled, e.auto_reply_text, e.auto_reply_interval_hours, e.broadcast_smtp_host, e.broadcast_smtp_port, e.broadcast_smtp_username, e.broadcast_smtp_password, e.broadcast_smtp_tls, e.broadcast_rate, e.dkim_selector, e.dkim_private_key, e.dkim_enabled, e.dkim_public_key, e.forward_token, e.ses_tenant, e.ses_configuration_set, e.smtp_aws_account, e.broadcast_smtp_aws_account, e.ses_state, e.ses_detail, e.ses_checked_at, c.inbox_id, c.name AS channel_name FROM email_channels e
+SELECT e.workspace_id, e.channel_id, e.address, e.display_name, e.from_address, e.smtp_host, e.smtp_port, e.smtp_username, e.smtp_password, e.smtp_tls, e.auto_reply_enabled, e.auto_reply_text, e.auto_reply_interval_hours, e.broadcast_smtp_host, e.broadcast_smtp_port, e.broadcast_smtp_username, e.broadcast_smtp_password, e.broadcast_smtp_tls, e.broadcast_rate, e.dkim_selector, e.dkim_private_key, e.dkim_enabled, e.dkim_public_key, e.forward_token, e.ses_tenant, e.ses_configuration_set, e.smtp_aws_account, e.broadcast_smtp_aws_account, e.ses_state, e.ses_detail, e.ses_checked_at, e.verified_at, e.verified_by, e.verify_problem, e.verify_checked_at, e.verify_code_hash, e.verify_code_expires_at, e.verify_attempts, e.verify_message_id, e.verify_relay_message_id, e.verify_sent_at, e.verify_sends, e.verify_window_at, c.inbox_id, c.name AS channel_name FROM email_channels e
 JOIN channels c ON c.workspace_id = e.workspace_id AND c.id = e.channel_id
 WHERE e.workspace_id = $1 AND e.channel_id = $2
 `
@@ -933,6 +1059,18 @@ type GetIngestChannelRow struct {
 	SesState                string
 	SesDetail               *string
 	SesCheckedAt            *time.Time
+	VerifiedAt              *time.Time
+	VerifiedBy              *string
+	VerifyProblem           *string
+	VerifyCheckedAt         *time.Time
+	VerifyCodeHash          []byte
+	VerifyCodeExpiresAt     *time.Time
+	VerifyAttempts          int32
+	VerifyMessageID         *string
+	VerifyRelayMessageID    *string
+	VerifySentAt            *time.Time
+	VerifySends             int32
+	VerifyWindowAt          *time.Time
 	InboxID                 uuid.UUID
 	ChannelName             string
 }
@@ -972,6 +1110,18 @@ func (q *Queries) GetIngestChannel(ctx context.Context, arg GetIngestChannelPara
 		&i.SesState,
 		&i.SesDetail,
 		&i.SesCheckedAt,
+		&i.VerifiedAt,
+		&i.VerifiedBy,
+		&i.VerifyProblem,
+		&i.VerifyCheckedAt,
+		&i.VerifyCodeHash,
+		&i.VerifyCodeExpiresAt,
+		&i.VerifyAttempts,
+		&i.VerifyMessageID,
+		&i.VerifyRelayMessageID,
+		&i.VerifySentAt,
+		&i.VerifySends,
+		&i.VerifyWindowAt,
 		&i.InboxID,
 		&i.ChannelName,
 	)
@@ -1022,12 +1172,19 @@ func (q *Queries) GetMessageEmail(ctx context.Context, arg GetMessageEmailParams
 }
 
 const isEmailChannelSender = `-- name: IsEmailChannelSender :one
-SELECT EXISTS (SELECT 1 FROM email_channels WHERE address = $1::text OR from_address = $1::text)
+SELECT EXISTS (
+  SELECT 1 FROM email_channels
+  WHERE workspace_id = $1 AND verified_at IS NOT NULL AND (address = $2::text OR from_address = $2::text)
+)
 `
 
-// Mail from an address the server sends from is dropped, whichever workspace it belongs to.
-func (q *Queries) IsEmailChannelSender(ctx context.Context, address string) (bool, error) {
-	row := q.db.QueryRow(ctx, isEmailChannelSender, address)
+type IsEmailChannelSenderParams struct {
+	WorkspaceID uuid.UUID
+	Address     string
+}
+
+func (q *Queries) IsEmailChannelSender(ctx context.Context, arg IsEmailChannelSenderParams) (bool, error) {
+	row := q.db.QueryRow(ctx, isEmailChannelSender, arg.WorkspaceID, arg.Address)
 	var exists bool
 	err := row.Scan(&exists)
 	return exists, err
@@ -1047,6 +1204,27 @@ func (q *Queries) IsEmailSuppressed(ctx context.Context, arg IsEmailSuppressedPa
 	var suppressed bool
 	err := row.Scan(&suppressed)
 	return suppressed, err
+}
+
+const isWorkspaceEmailAddress = `-- name: IsWorkspaceEmailAddress :one
+SELECT EXISTS (
+  SELECT 1 FROM email_channels
+  WHERE workspace_id = $1 AND verified_at IS NOT NULL
+    AND (address = ANY($2::text[]) OR from_address = $3::text)
+)
+`
+
+type IsWorkspaceEmailAddressParams struct {
+	WorkspaceID uuid.UUID
+	Addresses   []string
+	Address     string
+}
+
+func (q *Queries) IsWorkspaceEmailAddress(ctx context.Context, arg IsWorkspaceEmailAddressParams) (bool, error) {
+	row := q.db.QueryRow(ctx, isWorkspaceEmailAddress, arg.WorkspaceID, arg.Addresses, arg.Address)
+	var exists bool
+	err := row.Scan(&exists)
+	return exists, err
 }
 
 const latestContactConversation = `-- name: LatestContactConversation :one
@@ -1263,7 +1441,7 @@ func (q *Queries) ListConversationsRawKeys(ctx context.Context, arg ListConversa
 }
 
 const listEmailChannels = `-- name: ListEmailChannels :many
-SELECT workspace_id, channel_id, address, display_name, from_address, smtp_host, smtp_port, smtp_username, smtp_password, smtp_tls, auto_reply_enabled, auto_reply_text, auto_reply_interval_hours, broadcast_smtp_host, broadcast_smtp_port, broadcast_smtp_username, broadcast_smtp_password, broadcast_smtp_tls, broadcast_rate, dkim_selector, dkim_private_key, dkim_enabled, dkim_public_key, forward_token, ses_tenant, ses_configuration_set, smtp_aws_account, broadcast_smtp_aws_account, ses_state, ses_detail, ses_checked_at FROM email_channels WHERE workspace_id = $1 AND channel_id = ANY($2::uuid[])
+SELECT workspace_id, channel_id, address, display_name, from_address, smtp_host, smtp_port, smtp_username, smtp_password, smtp_tls, auto_reply_enabled, auto_reply_text, auto_reply_interval_hours, broadcast_smtp_host, broadcast_smtp_port, broadcast_smtp_username, broadcast_smtp_password, broadcast_smtp_tls, broadcast_rate, dkim_selector, dkim_private_key, dkim_enabled, dkim_public_key, forward_token, ses_tenant, ses_configuration_set, smtp_aws_account, broadcast_smtp_aws_account, ses_state, ses_detail, ses_checked_at, verified_at, verified_by, verify_problem, verify_checked_at, verify_code_hash, verify_code_expires_at, verify_attempts, verify_message_id, verify_relay_message_id, verify_sent_at, verify_sends, verify_window_at FROM email_channels WHERE workspace_id = $1 AND channel_id = ANY($2::uuid[])
 `
 
 type ListEmailChannelsParams struct {
@@ -1312,6 +1490,18 @@ func (q *Queries) ListEmailChannels(ctx context.Context, arg ListEmailChannelsPa
 			&i.SesState,
 			&i.SesDetail,
 			&i.SesCheckedAt,
+			&i.VerifiedAt,
+			&i.VerifiedBy,
+			&i.VerifyProblem,
+			&i.VerifyCheckedAt,
+			&i.VerifyCodeHash,
+			&i.VerifyCodeExpiresAt,
+			&i.VerifyAttempts,
+			&i.VerifyMessageID,
+			&i.VerifyRelayMessageID,
+			&i.VerifySentAt,
+			&i.VerifySends,
+			&i.VerifyWindowAt,
 		); err != nil {
 			return nil, err
 		}
@@ -1456,6 +1646,147 @@ func (q *Queries) ListMessageEmails(ctx context.Context, arg ListMessageEmailsPa
 	return items, nil
 }
 
+const lockEmailAddress = `-- name: LockEmailAddress :exec
+SELECT pg_advisory_xact_lock(hashtextextended('yuva_email_address:' || $1::text, 0))
+`
+
+func (q *Queries) LockEmailAddress(ctx context.Context, address string) error {
+	_, err := q.db.Exec(ctx, lockEmailAddress, address)
+	return err
+}
+
+const lockEmailChannel = `-- name: LockEmailChannel :one
+SELECT workspace_id, channel_id, address, display_name, from_address, smtp_host, smtp_port, smtp_username, smtp_password, smtp_tls, auto_reply_enabled, auto_reply_text, auto_reply_interval_hours, broadcast_smtp_host, broadcast_smtp_port, broadcast_smtp_username, broadcast_smtp_password, broadcast_smtp_tls, broadcast_rate, dkim_selector, dkim_private_key, dkim_enabled, dkim_public_key, forward_token, ses_tenant, ses_configuration_set, smtp_aws_account, broadcast_smtp_aws_account, ses_state, ses_detail, ses_checked_at, verified_at, verified_by, verify_problem, verify_checked_at, verify_code_hash, verify_code_expires_at, verify_attempts, verify_message_id, verify_relay_message_id, verify_sent_at, verify_sends, verify_window_at FROM email_channels WHERE workspace_id = $1 AND channel_id = $2 FOR UPDATE
+`
+
+type LockEmailChannelParams struct {
+	WorkspaceID uuid.UUID
+	ChannelID   uuid.UUID
+}
+
+func (q *Queries) LockEmailChannel(ctx context.Context, arg LockEmailChannelParams) (EmailChannel, error) {
+	row := q.db.QueryRow(ctx, lockEmailChannel, arg.WorkspaceID, arg.ChannelID)
+	var i EmailChannel
+	err := row.Scan(
+		&i.WorkspaceID,
+		&i.ChannelID,
+		&i.Address,
+		&i.DisplayName,
+		&i.FromAddress,
+		&i.SmtpHost,
+		&i.SmtpPort,
+		&i.SmtpUsername,
+		&i.SmtpPassword,
+		&i.SmtpTls,
+		&i.AutoReplyEnabled,
+		&i.AutoReplyText,
+		&i.AutoReplyIntervalHours,
+		&i.BroadcastSmtpHost,
+		&i.BroadcastSmtpPort,
+		&i.BroadcastSmtpUsername,
+		&i.BroadcastSmtpPassword,
+		&i.BroadcastSmtpTls,
+		&i.BroadcastRate,
+		&i.DkimSelector,
+		&i.DkimPrivateKey,
+		&i.DkimEnabled,
+		&i.DkimPublicKey,
+		&i.ForwardToken,
+		&i.SesTenant,
+		&i.SesConfigurationSet,
+		&i.SmtpAwsAccount,
+		&i.BroadcastSmtpAwsAccount,
+		&i.SesState,
+		&i.SesDetail,
+		&i.SesCheckedAt,
+		&i.VerifiedAt,
+		&i.VerifiedBy,
+		&i.VerifyProblem,
+		&i.VerifyCheckedAt,
+		&i.VerifyCodeHash,
+		&i.VerifyCodeExpiresAt,
+		&i.VerifyAttempts,
+		&i.VerifyMessageID,
+		&i.VerifyRelayMessageID,
+		&i.VerifySentAt,
+		&i.VerifySends,
+		&i.VerifyWindowAt,
+	)
+	return i, err
+}
+
+const markEmailChannelVerified = `-- name: MarkEmailChannelVerified :one
+UPDATE email_channels SET verified_at = $1, verified_by = $2, verify_problem = NULL, verify_checked_at = $1,
+    verify_code_hash = NULL, verify_code_expires_at = NULL, verify_message_id = NULL, verify_relay_message_id = NULL
+WHERE workspace_id = $3 AND channel_id = $4 AND address = $5
+RETURNING workspace_id, channel_id, address, display_name, from_address, smtp_host, smtp_port, smtp_username, smtp_password, smtp_tls, auto_reply_enabled, auto_reply_text, auto_reply_interval_hours, broadcast_smtp_host, broadcast_smtp_port, broadcast_smtp_username, broadcast_smtp_password, broadcast_smtp_tls, broadcast_rate, dkim_selector, dkim_private_key, dkim_enabled, dkim_public_key, forward_token, ses_tenant, ses_configuration_set, smtp_aws_account, broadcast_smtp_aws_account, ses_state, ses_detail, ses_checked_at, verified_at, verified_by, verify_problem, verify_checked_at, verify_code_hash, verify_code_expires_at, verify_attempts, verify_message_id, verify_relay_message_id, verify_sent_at, verify_sends, verify_window_at
+`
+
+type MarkEmailChannelVerifiedParams struct {
+	Now         *time.Time
+	Method      *string
+	WorkspaceID uuid.UUID
+	ChannelID   uuid.UUID
+	Address     string
+}
+
+func (q *Queries) MarkEmailChannelVerified(ctx context.Context, arg MarkEmailChannelVerifiedParams) (EmailChannel, error) {
+	row := q.db.QueryRow(ctx, markEmailChannelVerified,
+		arg.Now,
+		arg.Method,
+		arg.WorkspaceID,
+		arg.ChannelID,
+		arg.Address,
+	)
+	var i EmailChannel
+	err := row.Scan(
+		&i.WorkspaceID,
+		&i.ChannelID,
+		&i.Address,
+		&i.DisplayName,
+		&i.FromAddress,
+		&i.SmtpHost,
+		&i.SmtpPort,
+		&i.SmtpUsername,
+		&i.SmtpPassword,
+		&i.SmtpTls,
+		&i.AutoReplyEnabled,
+		&i.AutoReplyText,
+		&i.AutoReplyIntervalHours,
+		&i.BroadcastSmtpHost,
+		&i.BroadcastSmtpPort,
+		&i.BroadcastSmtpUsername,
+		&i.BroadcastSmtpPassword,
+		&i.BroadcastSmtpTls,
+		&i.BroadcastRate,
+		&i.DkimSelector,
+		&i.DkimPrivateKey,
+		&i.DkimEnabled,
+		&i.DkimPublicKey,
+		&i.ForwardToken,
+		&i.SesTenant,
+		&i.SesConfigurationSet,
+		&i.SmtpAwsAccount,
+		&i.BroadcastSmtpAwsAccount,
+		&i.SesState,
+		&i.SesDetail,
+		&i.SesCheckedAt,
+		&i.VerifiedAt,
+		&i.VerifiedBy,
+		&i.VerifyProblem,
+		&i.VerifyCheckedAt,
+		&i.VerifyCodeHash,
+		&i.VerifyCodeExpiresAt,
+		&i.VerifyAttempts,
+		&i.VerifyMessageID,
+		&i.VerifyRelayMessageID,
+		&i.VerifySentAt,
+		&i.VerifySends,
+		&i.VerifyWindowAt,
+	)
+	return i, err
+}
+
 const messageIDSharedBeyond = `-- name: MessageIDSharedBeyond :one
 SELECT EXISTS (
   SELECT 1 FROM message_emails e
@@ -1482,9 +1813,55 @@ func (q *Queries) MessageIDSharedBeyond(ctx context.Context, arg MessageIDShared
 	return shared, err
 }
 
+const releaseEmailAddress = `-- name: ReleaseEmailAddress :many
+UPDATE email_channels SET verified_at = NULL, verified_by = NULL, verify_problem = 'taken', verify_checked_at = $1
+WHERE address = $2 AND verified_at IS NOT NULL AND NOT (workspace_id = $3 AND channel_id = $4)
+RETURNING workspace_id, channel_id
+`
+
+type ReleaseEmailAddressParams struct {
+	Now         *time.Time
+	Address     string
+	WorkspaceID uuid.UUID
+	ChannelID   uuid.UUID
+}
+
+type ReleaseEmailAddressRow struct {
+	WorkspaceID uuid.UUID
+	ChannelID   uuid.UUID
+}
+
+// A proof takes the address from the channel that held it, in whichever workspace: the one write
+// across workspaces, keyed by the address alone like the ingress lookup (see "E-mail" in
+// docs/architecture.md).
+func (q *Queries) ReleaseEmailAddress(ctx context.Context, arg ReleaseEmailAddressParams) ([]ReleaseEmailAddressRow, error) {
+	rows, err := q.db.Query(ctx, releaseEmailAddress,
+		arg.Now,
+		arg.Address,
+		arg.WorkspaceID,
+		arg.ChannelID,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ReleaseEmailAddressRow
+	for rows.Next() {
+		var i ReleaseEmailAddressRow
+		if err := rows.Scan(&i.WorkspaceID, &i.ChannelID); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const rotateForwardToken = `-- name: RotateForwardToken :one
 UPDATE email_channels SET forward_token = DEFAULT WHERE workspace_id = $1 AND channel_id = $2
-RETURNING workspace_id, channel_id, address, display_name, from_address, smtp_host, smtp_port, smtp_username, smtp_password, smtp_tls, auto_reply_enabled, auto_reply_text, auto_reply_interval_hours, broadcast_smtp_host, broadcast_smtp_port, broadcast_smtp_username, broadcast_smtp_password, broadcast_smtp_tls, broadcast_rate, dkim_selector, dkim_private_key, dkim_enabled, dkim_public_key, forward_token, ses_tenant, ses_configuration_set, smtp_aws_account, broadcast_smtp_aws_account, ses_state, ses_detail, ses_checked_at
+RETURNING workspace_id, channel_id, address, display_name, from_address, smtp_host, smtp_port, smtp_username, smtp_password, smtp_tls, auto_reply_enabled, auto_reply_text, auto_reply_interval_hours, broadcast_smtp_host, broadcast_smtp_port, broadcast_smtp_username, broadcast_smtp_password, broadcast_smtp_tls, broadcast_rate, dkim_selector, dkim_private_key, dkim_enabled, dkim_public_key, forward_token, ses_tenant, ses_configuration_set, smtp_aws_account, broadcast_smtp_aws_account, ses_state, ses_detail, ses_checked_at, verified_at, verified_by, verify_problem, verify_checked_at, verify_code_hash, verify_code_expires_at, verify_attempts, verify_message_id, verify_relay_message_id, verify_sent_at, verify_sends, verify_window_at
 `
 
 type RotateForwardTokenParams struct {
@@ -1527,6 +1904,18 @@ func (q *Queries) RotateForwardToken(ctx context.Context, arg RotateForwardToken
 		&i.SesState,
 		&i.SesDetail,
 		&i.SesCheckedAt,
+		&i.VerifiedAt,
+		&i.VerifiedBy,
+		&i.VerifyProblem,
+		&i.VerifyCheckedAt,
+		&i.VerifyCodeHash,
+		&i.VerifyCodeExpiresAt,
+		&i.VerifyAttempts,
+		&i.VerifyMessageID,
+		&i.VerifyRelayMessageID,
+		&i.VerifySentAt,
+		&i.VerifySends,
+		&i.VerifyWindowAt,
 	)
 	return i, err
 }
@@ -1555,7 +1944,7 @@ UPDATE email_channels SET broadcast_smtp_host = $1, broadcast_smtp_port = $2,
     broadcast_smtp_username = $3, broadcast_smtp_password = $4,
     broadcast_smtp_tls = $5, broadcast_rate = $6
 WHERE workspace_id = $7 AND channel_id = $8
-RETURNING workspace_id, channel_id, address, display_name, from_address, smtp_host, smtp_port, smtp_username, smtp_password, smtp_tls, auto_reply_enabled, auto_reply_text, auto_reply_interval_hours, broadcast_smtp_host, broadcast_smtp_port, broadcast_smtp_username, broadcast_smtp_password, broadcast_smtp_tls, broadcast_rate, dkim_selector, dkim_private_key, dkim_enabled, dkim_public_key, forward_token, ses_tenant, ses_configuration_set, smtp_aws_account, broadcast_smtp_aws_account, ses_state, ses_detail, ses_checked_at
+RETURNING workspace_id, channel_id, address, display_name, from_address, smtp_host, smtp_port, smtp_username, smtp_password, smtp_tls, auto_reply_enabled, auto_reply_text, auto_reply_interval_hours, broadcast_smtp_host, broadcast_smtp_port, broadcast_smtp_username, broadcast_smtp_password, broadcast_smtp_tls, broadcast_rate, dkim_selector, dkim_private_key, dkim_enabled, dkim_public_key, forward_token, ses_tenant, ses_configuration_set, smtp_aws_account, broadcast_smtp_aws_account, ses_state, ses_detail, ses_checked_at, verified_at, verified_by, verify_problem, verify_checked_at, verify_code_hash, verify_code_expires_at, verify_attempts, verify_message_id, verify_relay_message_id, verify_sent_at, verify_sends, verify_window_at
 `
 
 type SetEmailChannelBroadcastParams struct {
@@ -1613,6 +2002,18 @@ func (q *Queries) SetEmailChannelBroadcast(ctx context.Context, arg SetEmailChan
 		&i.SesState,
 		&i.SesDetail,
 		&i.SesCheckedAt,
+		&i.VerifiedAt,
+		&i.VerifiedBy,
+		&i.VerifyProblem,
+		&i.VerifyCheckedAt,
+		&i.VerifyCodeHash,
+		&i.VerifyCodeExpiresAt,
+		&i.VerifyAttempts,
+		&i.VerifyMessageID,
+		&i.VerifyRelayMessageID,
+		&i.VerifySentAt,
+		&i.VerifySends,
+		&i.VerifyWindowAt,
 	)
 	return i, err
 }
@@ -1620,7 +2021,7 @@ func (q *Queries) SetEmailChannelBroadcast(ctx context.Context, arg SetEmailChan
 const setEmailChannelDkimEnabled = `-- name: SetEmailChannelDkimEnabled :one
 UPDATE email_channels SET dkim_enabled = $1
 WHERE workspace_id = $2 AND channel_id = $3 AND (dkim_private_key IS NOT NULL OR NOT $1)
-RETURNING workspace_id, channel_id, address, display_name, from_address, smtp_host, smtp_port, smtp_username, smtp_password, smtp_tls, auto_reply_enabled, auto_reply_text, auto_reply_interval_hours, broadcast_smtp_host, broadcast_smtp_port, broadcast_smtp_username, broadcast_smtp_password, broadcast_smtp_tls, broadcast_rate, dkim_selector, dkim_private_key, dkim_enabled, dkim_public_key, forward_token, ses_tenant, ses_configuration_set, smtp_aws_account, broadcast_smtp_aws_account, ses_state, ses_detail, ses_checked_at
+RETURNING workspace_id, channel_id, address, display_name, from_address, smtp_host, smtp_port, smtp_username, smtp_password, smtp_tls, auto_reply_enabled, auto_reply_text, auto_reply_interval_hours, broadcast_smtp_host, broadcast_smtp_port, broadcast_smtp_username, broadcast_smtp_password, broadcast_smtp_tls, broadcast_rate, dkim_selector, dkim_private_key, dkim_enabled, dkim_public_key, forward_token, ses_tenant, ses_configuration_set, smtp_aws_account, broadcast_smtp_aws_account, ses_state, ses_detail, ses_checked_at, verified_at, verified_by, verify_problem, verify_checked_at, verify_code_hash, verify_code_expires_at, verify_attempts, verify_message_id, verify_relay_message_id, verify_sent_at, verify_sends, verify_window_at
 `
 
 type SetEmailChannelDkimEnabledParams struct {
@@ -1664,6 +2065,109 @@ func (q *Queries) SetEmailChannelDkimEnabled(ctx context.Context, arg SetEmailCh
 		&i.SesState,
 		&i.SesDetail,
 		&i.SesCheckedAt,
+		&i.VerifiedAt,
+		&i.VerifiedBy,
+		&i.VerifyProblem,
+		&i.VerifyCheckedAt,
+		&i.VerifyCodeHash,
+		&i.VerifyCodeExpiresAt,
+		&i.VerifyAttempts,
+		&i.VerifyMessageID,
+		&i.VerifyRelayMessageID,
+		&i.VerifySentAt,
+		&i.VerifySends,
+		&i.VerifyWindowAt,
+	)
+	return i, err
+}
+
+const setEmailVerificationRelayID = `-- name: SetEmailVerificationRelayID :exec
+UPDATE email_channels SET verify_relay_message_id = $1
+WHERE workspace_id = $2 AND channel_id = $3 AND verify_message_id = $4
+`
+
+type SetEmailVerificationRelayIDParams struct {
+	RelayMessageID *string
+	WorkspaceID    uuid.UUID
+	ChannelID      uuid.UUID
+	MessageID      *string
+}
+
+func (q *Queries) SetEmailVerificationRelayID(ctx context.Context, arg SetEmailVerificationRelayIDParams) error {
+	_, err := q.db.Exec(ctx, setEmailVerificationRelayID,
+		arg.RelayMessageID,
+		arg.WorkspaceID,
+		arg.ChannelID,
+		arg.MessageID,
+	)
+	return err
+}
+
+const setEmailVerifyProblem = `-- name: SetEmailVerifyProblem :one
+UPDATE email_channels SET verify_problem = $1, verify_checked_at = $2
+WHERE workspace_id = $3 AND channel_id = $4 AND verified_at IS NULL
+RETURNING workspace_id, channel_id, address, display_name, from_address, smtp_host, smtp_port, smtp_username, smtp_password, smtp_tls, auto_reply_enabled, auto_reply_text, auto_reply_interval_hours, broadcast_smtp_host, broadcast_smtp_port, broadcast_smtp_username, broadcast_smtp_password, broadcast_smtp_tls, broadcast_rate, dkim_selector, dkim_private_key, dkim_enabled, dkim_public_key, forward_token, ses_tenant, ses_configuration_set, smtp_aws_account, broadcast_smtp_aws_account, ses_state, ses_detail, ses_checked_at, verified_at, verified_by, verify_problem, verify_checked_at, verify_code_hash, verify_code_expires_at, verify_attempts, verify_message_id, verify_relay_message_id, verify_sent_at, verify_sends, verify_window_at
+`
+
+type SetEmailVerifyProblemParams struct {
+	Problem     *string
+	Now         *time.Time
+	WorkspaceID uuid.UUID
+	ChannelID   uuid.UUID
+}
+
+func (q *Queries) SetEmailVerifyProblem(ctx context.Context, arg SetEmailVerifyProblemParams) (EmailChannel, error) {
+	row := q.db.QueryRow(ctx, setEmailVerifyProblem,
+		arg.Problem,
+		arg.Now,
+		arg.WorkspaceID,
+		arg.ChannelID,
+	)
+	var i EmailChannel
+	err := row.Scan(
+		&i.WorkspaceID,
+		&i.ChannelID,
+		&i.Address,
+		&i.DisplayName,
+		&i.FromAddress,
+		&i.SmtpHost,
+		&i.SmtpPort,
+		&i.SmtpUsername,
+		&i.SmtpPassword,
+		&i.SmtpTls,
+		&i.AutoReplyEnabled,
+		&i.AutoReplyText,
+		&i.AutoReplyIntervalHours,
+		&i.BroadcastSmtpHost,
+		&i.BroadcastSmtpPort,
+		&i.BroadcastSmtpUsername,
+		&i.BroadcastSmtpPassword,
+		&i.BroadcastSmtpTls,
+		&i.BroadcastRate,
+		&i.DkimSelector,
+		&i.DkimPrivateKey,
+		&i.DkimEnabled,
+		&i.DkimPublicKey,
+		&i.ForwardToken,
+		&i.SesTenant,
+		&i.SesConfigurationSet,
+		&i.SmtpAwsAccount,
+		&i.BroadcastSmtpAwsAccount,
+		&i.SesState,
+		&i.SesDetail,
+		&i.SesCheckedAt,
+		&i.VerifiedAt,
+		&i.VerifiedBy,
+		&i.VerifyProblem,
+		&i.VerifyCheckedAt,
+		&i.VerifyCodeHash,
+		&i.VerifyCodeExpiresAt,
+		&i.VerifyAttempts,
+		&i.VerifyMessageID,
+		&i.VerifyRelayMessageID,
+		&i.VerifySentAt,
+		&i.VerifySends,
+		&i.VerifyWindowAt,
 	)
 	return i, err
 }
@@ -1682,6 +2186,86 @@ type SetRelayMessageIDParams struct {
 func (q *Queries) SetRelayMessageID(ctx context.Context, arg SetRelayMessageIDParams) error {
 	_, err := q.db.Exec(ctx, setRelayMessageID, arg.RelayMessageID, arg.WorkspaceID, arg.MessageID)
 	return err
+}
+
+const startEmailVerificationCode = `-- name: StartEmailVerificationCode :one
+UPDATE email_channels SET verify_code_hash = $1, verify_code_expires_at = $2, verify_attempts = 0,
+    verify_message_id = $3, verify_relay_message_id = NULL, verify_sent_at = $4,
+    verify_sends = CASE WHEN verify_window_at > $5 THEN verify_sends + 1 ELSE 1 END,
+    verify_window_at = CASE WHEN verify_window_at > $5 THEN verify_window_at ELSE $4 END
+WHERE workspace_id = $6 AND channel_id = $7 AND address = $8 AND verified_at IS NULL
+RETURNING workspace_id, channel_id, address, display_name, from_address, smtp_host, smtp_port, smtp_username, smtp_password, smtp_tls, auto_reply_enabled, auto_reply_text, auto_reply_interval_hours, broadcast_smtp_host, broadcast_smtp_port, broadcast_smtp_username, broadcast_smtp_password, broadcast_smtp_tls, broadcast_rate, dkim_selector, dkim_private_key, dkim_enabled, dkim_public_key, forward_token, ses_tenant, ses_configuration_set, smtp_aws_account, broadcast_smtp_aws_account, ses_state, ses_detail, ses_checked_at, verified_at, verified_by, verify_problem, verify_checked_at, verify_code_hash, verify_code_expires_at, verify_attempts, verify_message_id, verify_relay_message_id, verify_sent_at, verify_sends, verify_window_at
+`
+
+type StartEmailVerificationCodeParams struct {
+	CodeHash    []byte
+	ExpiresAt   *time.Time
+	MessageID   *string
+	Now         *time.Time
+	WindowSince *time.Time
+	WorkspaceID uuid.UUID
+	ChannelID   uuid.UUID
+	Address     string
+}
+
+func (q *Queries) StartEmailVerificationCode(ctx context.Context, arg StartEmailVerificationCodeParams) (EmailChannel, error) {
+	row := q.db.QueryRow(ctx, startEmailVerificationCode,
+		arg.CodeHash,
+		arg.ExpiresAt,
+		arg.MessageID,
+		arg.Now,
+		arg.WindowSince,
+		arg.WorkspaceID,
+		arg.ChannelID,
+		arg.Address,
+	)
+	var i EmailChannel
+	err := row.Scan(
+		&i.WorkspaceID,
+		&i.ChannelID,
+		&i.Address,
+		&i.DisplayName,
+		&i.FromAddress,
+		&i.SmtpHost,
+		&i.SmtpPort,
+		&i.SmtpUsername,
+		&i.SmtpPassword,
+		&i.SmtpTls,
+		&i.AutoReplyEnabled,
+		&i.AutoReplyText,
+		&i.AutoReplyIntervalHours,
+		&i.BroadcastSmtpHost,
+		&i.BroadcastSmtpPort,
+		&i.BroadcastSmtpUsername,
+		&i.BroadcastSmtpPassword,
+		&i.BroadcastSmtpTls,
+		&i.BroadcastRate,
+		&i.DkimSelector,
+		&i.DkimPrivateKey,
+		&i.DkimEnabled,
+		&i.DkimPublicKey,
+		&i.ForwardToken,
+		&i.SesTenant,
+		&i.SesConfigurationSet,
+		&i.SmtpAwsAccount,
+		&i.BroadcastSmtpAwsAccount,
+		&i.SesState,
+		&i.SesDetail,
+		&i.SesCheckedAt,
+		&i.VerifiedAt,
+		&i.VerifiedBy,
+		&i.VerifyProblem,
+		&i.VerifyCheckedAt,
+		&i.VerifyCodeHash,
+		&i.VerifyCodeExpiresAt,
+		&i.VerifyAttempts,
+		&i.VerifyMessageID,
+		&i.VerifyRelayMessageID,
+		&i.VerifySentAt,
+		&i.VerifySends,
+		&i.VerifyWindowAt,
+	)
+	return i, err
 }
 
 const suppressConfirmations = `-- name: SuppressConfirmations :exec

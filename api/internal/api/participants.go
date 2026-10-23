@@ -30,21 +30,26 @@ var (
 	errParticipantGone  = problem(http.StatusNotFound, "not_found", "no such participant")
 )
 
-// serverAddress reports an address this server receives mail for (any channel's address, tag or
-// catch-all, any forwarding address) or sends from, in any workspace.
-func (s *Server) serverAddress(ctx context.Context, addr string) (bool, error) {
-	if s.ingress.ForwardingDomain != "" && email.Domain(addr) == s.ingress.ForwardingDomain {
+// serverAddress reports an address the workspace receives mail for (a proven channel's address,
+// tag or catch-all domain, any forwarding address) or sends from (a proven channel's
+// from_address, the server's own sender). Other workspaces' addresses never count, and neither
+// do unproven ones.
+func (s *Server) serverAddress(ctx context.Context, ws uuid.UUID, addr string) (bool, error) {
+	local, domain, _ := strings.Cut(addr, "@")
+	if s.ingress.ForwardingDomain != "" && domain == s.ingress.ForwardingDomain {
 		return true, nil
 	}
 	if slices.Contains(s.ingress.OwnAddresses, addr) {
 		return true, nil
 	}
-	if _, _, _, err := s.findEmailChannel(ctx, addr); err == nil {
-		return true, nil
-	} else if err != errIngestUnknown {
-		return false, err
+	candidates := []string{addr}
+	if base, _, tagged := strings.Cut(local, "+"); tagged {
+		candidates = append(candidates, base+"@"+domain)
 	}
-	return s.st.IsEmailChannelSender(ctx, addr)
+	if domain != "" && !s.sharedMailDomain(domain) {
+		candidates = append(candidates, catchAllLocal+"@"+domain)
+	}
+	return s.st.IsWorkspaceEmailAddress(ctx, store.IsWorkspaceEmailAddressParams{WorkspaceID: ws, Addresses: candidates, Address: addr})
 }
 
 // addParticipants keeps the To and Cc addresses of an inbound mail in c as participants with role,
@@ -71,7 +76,7 @@ func (s *Server) addParticipants(ctx context.Context, q *store.Queries, events *
 			break
 		}
 		checked++
-		ours, err := s.serverAddress(ctx, addr)
+		ours, err := s.serverAddress(ctx, c.WorkspaceID, addr)
 		if err != nil {
 			return err
 		}
@@ -170,7 +175,7 @@ func (s *Server) setCopies(ctx context.Context, q *store.Queries, c store.Conver
 			if err != nil {
 				return err
 			}
-			ours, err := s.serverAddress(ctx, r.Email)
+			ours, err := s.serverAddress(ctx, c.WorkspaceID, r.Email)
 			if err != nil {
 				return err
 			}
@@ -195,7 +200,7 @@ func (s *Server) checkCopies(ctx context.Context, q *store.Queries, ws uuid.UUID
 	}
 	var out []string
 	for _, v := range in {
-		addr, err := s.copyAddress(ctx, field, v)
+		addr, err := s.copyAddress(ctx, ws, field, v)
 		if err != nil {
 			return nil, err
 		}
@@ -216,16 +221,15 @@ func (s *Server) checkCopies(ctx context.Context, q *store.Queries, ws uuid.UUID
 	return out, nil
 }
 
-// copyAddress checks one address a caller names: valid, and not one this server receives or
-// sends mail for. Both answer alike, so the check does not tell which addresses other
-// workspaces use.
-func (s *Server) copyAddress(ctx context.Context, field, v string) (string, error) {
+// copyAddress checks one address a caller names: valid, and not one the workspace receives or
+// sends mail for. Both answer alike.
+func (s *Server) copyAddress(ctx context.Context, ws uuid.UUID, field, v string) (string, error) {
 	invalid := errValidation(field + ": " + v + " is not an e-mail address that replies can go to")
 	a, ok := email.ParseAddress(v)
 	if !ok || a.Name != "" || len(a.Email) > 320 || !strings.Contains(email.Domain(a.Email), ".") {
 		return "", invalid
 	}
-	ours, err := s.serverAddress(ctx, a.Email)
+	ours, err := s.serverAddress(ctx, ws, a.Email)
 	if err != nil {
 		return "", err
 	}
@@ -256,7 +260,7 @@ func keepCopiesAsParticipants(ctx context.Context, q *store.Queries, events *eve
 
 func (s *Server) AddConversationParticipant(ctx context.Context, req oas.AddConversationParticipantRequestObject) (oas.AddConversationParticipantResponseObject, error) {
 	p := principalFrom(ctx)
-	addr, err := s.copyAddress(ctx, "email", string(req.Body.Email))
+	addr, err := s.copyAddress(ctx, p.workspaceID, "email", string(req.Body.Email))
 	if err != nil {
 		return nil, err
 	}

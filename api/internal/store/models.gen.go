@@ -1100,6 +1100,18 @@ type EmailChannel struct {
 	SesState                string
 	SesDetail               *string
 	SesCheckedAt            *time.Time
+	VerifiedAt              *time.Time
+	VerifiedBy              *string
+	VerifyProblem           *string
+	VerifyCheckedAt         *time.Time
+	VerifyCodeHash          []byte
+	VerifyCodeExpiresAt     *time.Time
+	VerifyAttempts          int32
+	VerifyMessageID         *string
+	VerifyRelayMessageID    *string
+	VerifySentAt            *time.Time
+	VerifySends             int32
+	VerifyWindowAt          *time.Time
 }
 
 type EmailConfirmation struct {

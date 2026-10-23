@@ -3321,8 +3321,12 @@ paths:
         address and outbound SMTP account); a `chat` channel needs `chat` (at least one allowed
         origin) and gets a generated public key; an `app` channel takes `app` (optional, defaults
         apply) and gets a generated public key; `settings` are stored as given.
-        An address belongs to one channel of the whole server, because inbound mail picks its
-        channel by the recipient alone; a taken address answers `409 email_address_taken`.
+        A new e-mail channel receives mail only at its forwarding address until its address is
+        proven (`email.verification`, `POST /v1/channels/{id}/verification-code` and
+        `POST /v1/channels/{id}/verify`). Any number of workspaces may claim an address; one that
+        proved it holds it. The same address twice in this workspace answers
+        `409 email_address_taken`. A catch-all on the forwarding domain or on a public mail
+        provider (gmail.com, outlook.com, …) is refused (`400 validation_failed`).
 
         Scope: `inboxes:manage`.
       tags: [channels]
@@ -3486,6 +3490,84 @@ paths:
       responses:
         "200":
           description: The channel with its new forwarding address.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Channel"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+  /v1/channels/{channelId}/verification-code:
+    post:
+      operationId: sendEmailVerificationCode
+      summary: Mail a code that proves an e-mail channel's address
+      description: |
+        Owners, admins and API keys. Mails an 8-digit code from the server's own sender to the
+        channel's address; it is valid for an hour and for 5 tries, and a new one replaces it. The
+        mail names neither the workspace nor the inbox. Enter it with
+        `POST /v1/channels/{id}/verify`; a code mail that comes back through the channel's
+        forwarding address verifies the channel by itself. At most one a minute and 5 a day per
+        channel, 20 a day per workspace (`429 rate_limited`).
+
+        `400 validation_failed` for other kinds, a catch-all and an address on the forwarding
+        domain (prove those with the TXT record); `409 email_verified` when the address is already proven
+        by this channel.
+
+        Scope: `inboxes:manage`.
+      tags: [channels]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/ChannelId"
+      responses:
+        "202":
+          description: The channel with `email.verification.code_sent_at`.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Channel"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+        "409":
+          $ref: "#/components/responses/Problem"
+        "429":
+          $ref: "#/components/responses/Problem"
+  /v1/channels/{channelId}/verify:
+    post:
+      operationId: verifyEmailChannel
+      summary: Prove an e-mail channel's address
+      description: |
+        Owners, admins and API keys. With `code`, checks the code mailed to the address; a wrong,
+        used or expired code answers `400 verification_code_invalid`. Without it, looks the TXT
+        record `email.verification.txt_name` up now: when it holds `txt_value` the address is
+        proven, otherwise the channel stays `unverified` with `problem` saying what was found. A
+        proven address is taken from any channel that held it before, in any workspace, and is
+        recorded as `channel.address_verified`. An address already proven answers as it is.
+        `400 validation_failed` for other kinds and for a catch-all on a shared domain.
+
+        Scope: `inboxes:manage`.
+      tags: [channels]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/ChannelId"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EmailVerifyInput"
+      responses:
+        "200":
+          description: The channel after the check.
           content:
             application/json:
               schema:
@@ -5078,8 +5160,9 @@ paths:
         address bounced or complained; `suggested` ones are copied only when named in `cc`. `cc` replaces that list (`[]` copies no one) and `bcc` adds hidden
         recipients, at most 20 addresses each: they receive the mail as envelope recipients only and
         never appear in its headers. Addresses in `cc` become participants; `bcc` never does. Each
-        address must be a valid address that this server neither receives nor sends mail for
-        (`400 validation_failed`, the same answer for both); one that bounced or complained is refused with
+        address must be a valid address that this workspace neither receives nor sends mail for
+        (a proven channel address, its catch-all domain or sending address, a forwarding address or
+        the server's own sender; `400 validation_failed`, the same answer for both); one that bounced or complained is refused with
         `409 email_undeliverable`, while an unsubscribe from broadcasts does not stop a reply. The
         contact's own address is dropped from both, and an address in both stays in `cc`. `cc` and
         `bcc` are refused (`400 validation_failed`) on notes, `in` messages, drafts (send them with
@@ -5218,7 +5301,8 @@ paths:
       description: |
         The people copied on the conversation's e-mail besides its contact, oldest first, at most
         20 per conversation. The `To` and `Cc` addresses of inbound mail that are not addresses of
-        this server (any channel's address, sending address or forwarding address) are `active`
+        this workspace (a proven channel's address, catch-all domain or sending address, a
+        forwarding address, the server's own sender) are `active`
         when the mail passed DMARC (`email.dmarc` `pass`) and `suggested` otherwise, since `From`
         can be forged; automatic mail and mail that failed DMARC add no one. Addresses a member
         names in a reply's `cc` or adds here are `active`. Replies copy `active` participants by
@@ -5250,7 +5334,7 @@ paths:
       summary: Add a participant
       description: |
         Adds an address as an `active` participant, or makes a `suggested` one `active`. The
-        address must be valid and not one this server receives or sends mail for
+        address must be valid and not one this workspace receives or sends mail for
         (`400 validation_failed`, the same answer for both); a conversation holds at most 20
         (`409 participants_full`). Whoever can see the conversation may; API keys and OAuth tokens
         need `conversations:write`.
@@ -20803,6 +20887,9 @@ components:
           or its password), `apns` and `fcm` (an app channel's push credentials); never the values.
         - `channel.key_rotated`, `channel.forwarding_address_rotated`, `channel.dkim_key_deleted`:
           none. `channel.dkim_key_created`: `selector`.
+        - `channel.address_verified`: `address`, `method` (`code` or `dns`); by `system` when the
+          code came back through the forwarding address. `channel.address_lost`: `address`, by
+          `system`, when another channel proved the address later.
         - `inbox.identity_secret_rotated`: none. `inbox.deleted`: `name`.
         - `team.created`, `team.deleted`: `name`. `team.member_added`, `team.member_removed`:
           `member_id`. `team.inbox_access_granted`, `team.inbox_access_revoked`: `inbox_id`,
@@ -20885,6 +20972,8 @@ components:
         - channel.credentials_changed
         - channel.key_rotated
         - channel.forwarding_address_rotated
+        - channel.address_verified
+        - channel.address_lost
         - channel.dkim_key_created
         - channel.dkim_key_deleted
         - inbox.identity_secret_rotated
@@ -20932,7 +21021,7 @@ components:
         - automation_rule.created
         - automation_rule.updated
         - automation_rule.deleted
-      x-enum-varnames: [AuditMemberJoined, AuditMemberRoleChanged, AuditMemberRemoved, AuditMemberInboxAccessGranted, AuditMemberInboxAccessRevoked, AuditInviteCreated, AuditInviteDeleted, AuditApiKeyCreated, AuditApiKeyRevoked, AuditOAuthGrantCreated, AuditOAuthGrantRevoked, AuditWebhookCreated, AuditWebhookUpdated, AuditWebhookDeleted, AuditWebhookSecretRotated, AuditChannelCredentialsChanged, AuditChannelKeyRotated, AuditChannelForwardingAddressRotated, AuditChannelDkimKeyCreated, AuditChannelDkimKeyDeleted, AuditInboxIdentitySecretRotated, AuditInboxDeleted, AuditConversationTrashed, AuditConversationRestored, AuditConversationDeleted, AuditMessageRedacted, AuditContactDeleted, AuditContactConsentExported, AuditListConsentExported, AuditAnalyticsExportCreated, AuditWorkspaceRetentionChanged, AuditWorkspaceBotsMaySendChanged, AuditWorkspaceBroadcastsByKeysChanged, AuditWorkspaceBroadcastApprovalRequested, AuditWorkspaceBroadcastsApproved, AuditWorkspaceBroadcastsDenied, AuditWorkspaceBroadcastsSuspended, AuditWorkspaceBroadcastLimitChanged, AuditTeamCreated, AuditTeamDeleted, AuditTeamMemberAdded, AuditTeamMemberRemoved, AuditTeamInboxAccessGranted, AuditTeamInboxAccessRevoked, AuditWorkspaceSlackConnected, AuditWorkspaceSlackDisconnected, AuditMemberSlackLinked, AuditMemberSlackUnlinked, AuditSsoProviderCreated, AuditSsoProviderUpdated, AuditSsoProviderDeleted, AuditSsoSettingsChanged, AuditSsoSignedIn, AuditSsoSignInRefused, AuditSsoDomainAdded, AuditSsoDomainVerified, AuditSsoDomainDeleted, AuditSsoDomainLapsed, AuditIssueIntegrationConnected, AuditIssueIntegrationUpdated, AuditIssueIntegrationDisconnected, AuditIssueIntegrationSecretRotated, AuditAutomationRuleCreated, AuditAutomationRuleUpdated, AuditAutomationRuleDeleted]
+      x-enum-varnames: [AuditMemberJoined, AuditMemberRoleChanged, AuditMemberRemoved, AuditMemberInboxAccessGranted, AuditMemberInboxAccessRevoked, AuditInviteCreated, AuditInviteDeleted, AuditApiKeyCreated, AuditApiKeyRevoked, AuditOAuthGrantCreated, AuditOAuthGrantRevoked, AuditWebhookCreated, AuditWebhookUpdated, AuditWebhookDeleted, AuditWebhookSecretRotated, AuditChannelCredentialsChanged, AuditChannelKeyRotated, AuditChannelForwardingAddressRotated, AuditChannelAddressVerified, AuditChannelAddressLost, AuditChannelDkimKeyCreated, AuditChannelDkimKeyDeleted, AuditInboxIdentitySecretRotated, AuditInboxDeleted, AuditConversationTrashed, AuditConversationRestored, AuditConversationDeleted, AuditMessageRedacted, AuditContactDeleted, AuditContactConsentExported, AuditListConsentExported, AuditAnalyticsExportCreated, AuditWorkspaceRetentionChanged, AuditWorkspaceBotsMaySendChanged, AuditWorkspaceBroadcastsByKeysChanged, AuditWorkspaceBroadcastApprovalRequested, AuditWorkspaceBroadcastsApproved, AuditWorkspaceBroadcastsDenied, AuditWorkspaceBroadcastsSuspended, AuditWorkspaceBroadcastLimitChanged, AuditTeamCreated, AuditTeamDeleted, AuditTeamMemberAdded, AuditTeamMemberRemoved, AuditTeamInboxAccessGranted, AuditTeamInboxAccessRevoked, AuditWorkspaceSlackConnected, AuditWorkspaceSlackDisconnected, AuditMemberSlackLinked, AuditMemberSlackUnlinked, AuditSsoProviderCreated, AuditSsoProviderUpdated, AuditSsoProviderDeleted, AuditSsoSettingsChanged, AuditSsoSignedIn, AuditSsoSignInRefused, AuditSsoDomainAdded, AuditSsoDomainVerified, AuditSsoDomainDeleted, AuditSsoDomainLapsed, AuditIssueIntegrationConnected, AuditIssueIntegrationUpdated, AuditIssueIntegrationDisconnected, AuditIssueIntegrationSecretRotated, AuditAutomationRuleCreated, AuditAutomationRuleUpdated, AuditAutomationRuleDeleted]
     AuditTargetType:
       type: string
       enum: [workspace, member, invite, inbox, channel, api_key, oauth_grant, webhook, contact, list, analytics_export, conversation, message, team, sso, sso_domain, issue_integration, automation_rule]
@@ -22443,11 +22532,13 @@ components:
         address:
           $ref: "#/components/schemas/Email"
           description: |
-            The address the channel receives mail at, unique on the server. `*@example.com` makes a
-            catch-all channel (one per domain): it receives mail to every address of the domain that
-            no other channel has, and replies go out from the address the contact wrote to, so the
-            SMTP account must be allowed to send from the whole domain. `from_address` is then used
-            only for conversations that have no such address and cannot itself be a catch-all.
+            The address the channel receives mail at once it is proven (`verification`); until
+            then mail reaches the channel only at its forwarding address. `*@example.com` makes a
+            catch-all channel (one per domain, proven by the domain's TXT record): it receives mail
+            to every address of the domain that no other proven channel has, and replies go out from
+            the address the contact wrote to, so the SMTP account must be allowed to send from the
+            whole domain. `from_address` is then used only for conversations that have no such
+            address and cannot itself be a catch-all. Changing the address starts its proof over.
         display_name:
           type: string
           description: The name in `From`; the channel name when empty.
@@ -22471,6 +22562,71 @@ components:
           description: The channel's Yuva DKIM key; absent without one.
         ses:
           $ref: "#/components/schemas/EmailSes"
+        verification:
+          $ref: "#/components/schemas/EmailVerification"
+    EmailVerification:
+      type: object
+      description: |
+        Whether the channel's address is proven. Only a proven address routes mail to the channel
+        and counts as this workspace's own (dropped as a sender, never copied or kept as a
+        participant); an unproven channel still receives at its forwarding address and sends through
+        its SMTP account. Prove an exact address with a code mailed to it
+        (`POST /v1/channels/{id}/verification-code`, then `POST /v1/channels/{id}/verify` with
+        `code`; when the code mail comes back through the channel's forwarding address the channel
+        is verified by itself), or any address and every catch-all with the TXT record `txt_name`
+        holding `txt_value` (`POST /v1/channels/{id}/verify` without `code`). One record proves
+        every channel of this workspace on that domain. The workspace that proves an address last
+        holds it: the channel that held it before becomes `unverified` with problem `taken`.
+      required: [state, txt_name, txt_value, code_allowed]
+      properties:
+        state:
+          type: string
+          enum: [unverified, verified]
+          x-enum-varnames: [EmailVerificationUnverified, EmailVerificationVerified]
+        method:
+          type: string
+          description: |
+            How the address was proven: `code` (the code mailed to it), `dns` (the TXT record) or
+            `received` (the channel had received mail before proofs existed). Absent while unverified.
+          enum: [code, dns, received]
+          x-enum-varnames: [EmailVerifiedByCode, EmailVerifiedByDns, EmailVerifiedByReceived]
+        verified_at:
+          type: string
+          format: date-time
+        problem:
+          type: string
+          description: |
+            Why the last check did not verify it, or `taken` when another channel proved the
+            address later. Absent when verified.
+        checked_at:
+          type: string
+          format: date-time
+          description: When the TXT record was last looked up.
+        txt_name:
+          type: string
+          description: The TXT record name, `_yuva-mail.<domain>`.
+        txt_value:
+          type: string
+          description: The value the TXT record must hold for this workspace and domain.
+        code_allowed:
+          type: boolean
+          description: |
+            `false` for a catch-all and for an address on the forwarding domain: those are proven
+            only by the TXT record.
+        code_sent_at:
+          type: string
+          format: date-time
+          description: When the last code was mailed; absent when no code is open.
+        code_expires_at:
+          type: string
+          format: date-time
+    EmailVerifyInput:
+      type: object
+      properties:
+        code:
+          type: string
+          maxLength: 32
+          description: The code mailed to the address; absent looks the TXT record up instead.
     EmailChannelInput:
       type: object
       required: [address]
@@ -22478,11 +22634,13 @@ components:
         address:
           $ref: "#/components/schemas/Email"
           description: |
-            The address the channel receives mail at, unique on the server. `*@example.com` makes a
-            catch-all channel (one per domain): it receives mail to every address of the domain that
-            no other channel has, and replies go out from the address the contact wrote to, so the
-            SMTP account must be allowed to send from the whole domain. `from_address` is then used
-            only for conversations that have no such address and cannot itself be a catch-all.
+            The address the channel receives mail at once it is proven (`verification`); until
+            then mail reaches the channel only at its forwarding address. `*@example.com` makes a
+            catch-all channel (one per domain, proven by the domain's TXT record): it receives mail
+            to every address of the domain that no other proven channel has, and replies go out from
+            the address the contact wrote to, so the SMTP account must be allowed to send from the
+            whole domain. `from_address` is then used only for conversations that have no such
+            address and cannot itself be a catch-all. Changing the address starts its proof over.
         display_name:
           type: string
           maxLength: 200

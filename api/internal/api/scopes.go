@@ -68,6 +68,8 @@ var operationScopes = map[string][]oas.ApiKeyScope{
 	"DeleteChannel":             {oas.InboxesManage},
 	"RotateChannelPublicKey":    {oas.InboxesManage},
 	"RotateForwardingAddress":   {oas.InboxesManage},
+	"SendEmailVerificationCode": {oas.InboxesManage},
+	"VerifyEmailChannel":        {oas.InboxesManage},
 	"CheckDeliverability":       {oas.InboxesManage},
 	"CreateDkimKey":             {oas.InboxesManage},
 	"DeleteDkimKey":             {oas.InboxesManage},

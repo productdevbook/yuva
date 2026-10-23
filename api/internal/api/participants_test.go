@@ -44,9 +44,10 @@ func TestReplyCopies(t *testing.T) {
 		t.Fatalf("ingest: %d %v", r.status, r.body)
 	}
 	conv := r.str("conversation_id")
-	if got := participantEmails(t, et.owner, conv); !slices.Equal(got, []string{boss, col}) && !slices.Equal(got, []string{col, boss}) {
+	if got := participantEmails(t, et.owner, conv); len(got) != 3 || !slices.Contains(got, boss) || !slices.Contains(got, col) || !slices.Contains(got, other.address) {
 		t.Fatalf("participants %v", got)
 	}
+	et.owner.expect(http.StatusOK, "DELETE", "/v1/conversations/"+conv+"/participants/"+other.address, nil)
 	other.owner.expectProblem(http.StatusNotFound, "not_found", "GET", "/v1/conversations/"+conv+"/participants", nil)
 
 	reply := et.owner.expect(http.StatusCreated, "POST", "/v1/conversations/"+conv+"/messages", map[string]any{
@@ -121,7 +122,7 @@ func TestReplyCopies(t *testing.T) {
 
 	et.owner.expectProblem(http.StatusBadRequest, "validation_failed", "POST", post, map[string]any{"kind": "note", "body": "x", "cc": []string{col}})
 	et.owner.expectProblem(http.StatusBadRequest, "validation_failed", "POST", post, map[string]any{"kind": "message", "body": "x", "draft": true, "cc": []string{col}})
-	et.owner.expectProblem(http.StatusBadRequest, "validation_failed", "POST", post, map[string]any{"kind": "message", "body": "x", "cc": []string{other.address}})
+	et.owner.expectProblem(http.StatusBadRequest, "validation_failed", "POST", post, map[string]any{"kind": "message", "body": "x", "cc": []string{strings.Replace(et.address, "@", "+x@", 1)}})
 	et.owner.expectProblem(http.StatusBadRequest, "validation_failed", "POST", post, map[string]any{"kind": "message", "body": "x", "bcc": []string{"not an address"}})
 	many := make([]string, 21)
 	for i := range many {
@@ -279,11 +280,13 @@ func TestUnverifiedMailOnlySuggestsParticipants(t *testing.T) {
 	other.owner.expectProblem(http.StatusNotFound, "not_found", "POST", path, map[string]any{"email": friend})
 	other.owner.expectProblem(http.StatusNotFound, "not_found", "DELETE", path+"/"+mallory, nil)
 	bad := et.owner.do("POST", path, map[string]any{"email": "x@nodot"})
-	ours := et.owner.do("POST", path, map[string]any{"email": other.address})
+	ours := et.owner.do("POST", path, map[string]any{"email": et.address})
 	if bad.status != http.StatusBadRequest || ours.status != http.StatusBadRequest ||
-		strings.Replace(ours.str("detail"), other.address, "x@nodot", 1) != bad.str("detail") {
-		t.Fatalf("another workspace's address answers differently: %d %s / %d %s", bad.status, bad.raw, ours.status, ours.raw)
+		strings.Replace(ours.str("detail"), et.address, "x@nodot", 1) != bad.str("detail") {
+		t.Fatalf("the workspace's own address answers differently: %d %s / %d %s", bad.status, bad.raw, ours.status, ours.raw)
 	}
+	et.owner.expect(http.StatusOK, "POST", path, map[string]any{"email": other.address})
+	et.owner.expect(http.StatusOK, "DELETE", path+"/"+other.address, nil)
 
 	removed := et.owner.expect(http.StatusOK, "DELETE", path+"/"+mallory, nil)
 	if participantStatus(t, et.owner, conv, mallory) != "" || len(removed.body["items"].([]any)) != 0 {

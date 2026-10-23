@@ -21,6 +21,7 @@ func (s *Server) channelBody(c store.Channel, e *store.EmailChannel, chat *store
 	if e != nil {
 		out.Email = emailChannelBody(*e)
 		out.Email.Ses = s.emailSesBody(*e, t)
+		out.Email.Verification = s.emailVerificationBody(*e)
 		if addr := s.forwardingAddress(*e); addr != "" {
 			out.ForwardingAddress = &addr
 		}
@@ -55,6 +56,10 @@ func (s *Server) oneChannelBody(ctx context.Context, q *store.Queries, c store.C
 	if err != nil {
 		return oas.Channel{}, err
 	}
+	return s.oneChannelBodyWith(ctx, q, c, e)
+}
+
+func (s *Server) oneChannelBodyWith(ctx context.Context, q *store.Queries, c store.Channel, e store.EmailChannel) (oas.Channel, error) {
 	t, err := s.channelTenant(ctx, q, e)
 	if err != nil {
 		return oas.Channel{}, err

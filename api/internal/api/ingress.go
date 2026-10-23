@@ -150,9 +150,9 @@ func (s *Server) serveIngressEmail(w http.ResponseWriter, r *http.Request) {
 }
 
 // findEmailChannel returns the channel for the envelope recipient and the recipient address itself,
-// normalized: on the forwarding domain the channel whose token is the local part, else the exact
-// address, then local@ for local+tag@, then the domain's catch-all channel. forwarded reports a
-// recipient that matched a forwarding token.
+// normalized: on the forwarding domain the channel whose token is the local part, else the proven
+// exact address, then local@ for local+tag@, then the domain's proven catch-all channel (never on a
+// shared domain). forwarded reports a recipient that matched a forwarding token.
 func (s *Server) findEmailChannel(ctx context.Context, to string) (ch store.FindEmailChannelByAddressRow, addr string, forwarded bool, err error) {
 	addr = strings.ToLower(strings.Trim(strings.TrimSpace(to), "<>"))
 	local, domain, ok := strings.Cut(addr, "@")
@@ -172,7 +172,7 @@ func (s *Server) findEmailChannel(ctx context.Context, to string) (ch store.Find
 			ch, err = s.st.FindEmailChannelByAddress(ctx, base+"@"+domain)
 		}
 	}
-	if store.IsNotFound(err) && ok && local != "" && local != catchAllLocal && domain != "" {
+	if store.IsNotFound(err) && ok && local != "" && local != catchAllLocal && domain != "" && !s.sharedMailDomain(domain) {
 		ch, err = s.st.FindEmailChannelByAddress(ctx, catchAllLocal+"@"+domain)
 	}
 	if store.IsNotFound(err) {
@@ -188,7 +188,7 @@ func (s *Server) ownSender(ctx context.Context, ch store.FindEmailChannelByAddre
 	if sender == ch.Address || (ch.FromAddress != nil && sender == *ch.FromAddress) || slices.Contains(s.ingress.OwnAddresses, sender) {
 		return true, nil
 	}
-	return s.st.IsEmailChannelSender(ctx, sender)
+	return s.st.IsEmailChannelSender(ctx, store.IsEmailChannelSenderParams{WorkspaceID: ch.WorkspaceID, Address: sender})
 }
 
 func nullSender(envelopeFrom string) bool {
@@ -352,6 +352,11 @@ func (s *Server) IngestEmail(ctx context.Context, envelopeTo, envelopeFrom strin
 		return IngestResult{Status: IngestDropped}, nil
 	}
 	if forwarded {
+		if taken, err := s.takeAddressCode(ctx, ch, m); err != nil {
+			return IngestResult{}, err
+		} else if taken {
+			return IngestResult{Status: IngestDropped}, nil
+		}
 		if taken, err := s.takeForwardingConfirmation(ctx, ch, m); err != nil {
 			return IngestResult{}, err
 		} else if taken {

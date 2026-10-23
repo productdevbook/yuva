@@ -1123,6 +1123,8 @@ const (
 	AuditAutomationRuleCreated               AuditAction = "automation_rule.created"
 	AuditAutomationRuleDeleted               AuditAction = "automation_rule.deleted"
 	AuditAutomationRuleUpdated               AuditAction = "automation_rule.updated"
+	AuditChannelAddressLost                  AuditAction = "channel.address_lost"
+	AuditChannelAddressVerified              AuditAction = "channel.address_verified"
 	AuditChannelCredentialsChanged           AuditAction = "channel.credentials_changed"
 	AuditChannelDkimKeyCreated               AuditAction = "channel.dkim_key_created"
 	AuditChannelDkimKeyDeleted               AuditAction = "channel.dkim_key_deleted"
@@ -1198,6 +1200,10 @@ func (e AuditAction) Valid() bool {
 	case AuditAutomationRuleDeleted:
 		return true
 	case AuditAutomationRuleUpdated:
+		return true
+	case AuditChannelAddressLost:
+		return true
+	case AuditChannelAddressVerified:
 		return true
 	case AuditChannelCredentialsChanged:
 		return true
@@ -3509,6 +3515,45 @@ func (e EmailThemeDirection) Valid() bool {
 	case EmailDirectionLtr:
 		return true
 	case EmailDirectionRtl:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for EmailVerificationMethod.
+const (
+	EmailVerifiedByCode     EmailVerificationMethod = "code"
+	EmailVerifiedByDns      EmailVerificationMethod = "dns"
+	EmailVerifiedByReceived EmailVerificationMethod = "received"
+)
+
+// Valid indicates whether the value is a known member of the EmailVerificationMethod enum.
+func (e EmailVerificationMethod) Valid() bool {
+	switch e {
+	case EmailVerifiedByCode:
+		return true
+	case EmailVerifiedByDns:
+		return true
+	case EmailVerifiedByReceived:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for EmailVerificationState.
+const (
+	EmailVerificationUnverified EmailVerificationState = "unverified"
+	EmailVerificationVerified   EmailVerificationState = "verified"
+)
+
+// Valid indicates whether the value is a known member of the EmailVerificationState enum.
+func (e EmailVerificationState) Valid() bool {
+	switch e {
+	case EmailVerificationUnverified:
+		return true
+	case EmailVerificationVerified:
 		return true
 	default:
 		return false
@@ -9893,6 +9938,9 @@ type Attributes map[string]interface{}
 //     or its password), `apns` and `fcm` (an app channel's push credentials); never the values.
 //   - `channel.key_rotated`, `channel.forwarding_address_rotated`, `channel.dkim_key_deleted`:
 //     none. `channel.dkim_key_created`: `selector`.
+//   - `channel.address_verified`: `address`, `method` (`code` or `dns`); by `system` when the
+//     code came back through the forwarding address. `channel.address_lost`: `address`, by
+//     `system`, when another channel proved the address later.
 //   - `inbox.identity_secret_rotated`: none. `inbox.deleted`: `name`.
 //   - `team.created`, `team.deleted`: `name`. `team.member_added`, `team.member_removed`:
 //     `member_id`. `team.inbox_access_granted`, `team.inbox_access_revoked`: `inbox_id`,
@@ -10009,6 +10057,9 @@ type AuditEntry struct {
 	//   or its password), `apns` and `fcm` (an app channel's push credentials); never the values.
 	// - `channel.key_rotated`, `channel.forwarding_address_rotated`, `channel.dkim_key_deleted`:
 	//   none. `channel.dkim_key_created`: `selector`.
+	// - `channel.address_verified`: `address`, `method` (`code` or `dns`); by `system` when the
+	//   code came back through the forwarding address. `channel.address_lost`: `address`, by
+	//   `system`, when another channel proved the address later.
 	// - `inbox.identity_secret_rotated`: none. `inbox.deleted`: `name`.
 	// - `team.created`, `team.deleted`: `name`. `team.member_added`, `team.member_removed`:
 	//   `member_id`. `team.inbox_access_granted`, `team.inbox_access_revoked`: `inbox_id`,
@@ -14716,11 +14767,13 @@ type EmailButtonBlockType string
 
 // EmailChannel Settings of an `email` channel.
 type EmailChannel struct {
-	// Address The address the channel receives mail at, unique on the server. `*@example.com` makes a
-	// catch-all channel (one per domain): it receives mail to every address of the domain that
-	// no other channel has, and replies go out from the address the contact wrote to, so the
-	// SMTP account must be allowed to send from the whole domain. `from_address` is then used
-	// only for conversations that have no such address and cannot itself be a catch-all.
+	// Address The address the channel receives mail at once it is proven (`verification`); until
+	// then mail reaches the channel only at its forwarding address. `*@example.com` makes a
+	// catch-all channel (one per domain, proven by the domain's TXT record): it receives mail
+	// to every address of the domain that no other proven channel has, and replies go out from
+	// the address the contact wrote to, so the SMTP account must be allowed to send from the
+	// whole domain. `from_address` is then used only for conversations that have no such
+	// address and cannot itself be a catch-all. Changing the address starts its proof over.
 	//
 	//
 	// Examples: owner@example.com
@@ -14757,15 +14810,29 @@ type EmailChannel struct {
 
 	// Smtp The outbound SMTP account. The password is never returned.
 	Smtp *SmtpSettings `json:"smtp,omitempty"`
+
+	// Verification Whether the channel's address is proven. Only a proven address routes mail to the channel
+	// and counts as this workspace's own (dropped as a sender, never copied or kept as a
+	// participant); an unproven channel still receives at its forwarding address and sends through
+	// its SMTP account. Prove an exact address with a code mailed to it
+	// (`POST /v1/channels/{id}/verification-code`, then `POST /v1/channels/{id}/verify` with
+	// `code`; when the code mail comes back through the channel's forwarding address the channel
+	// is verified by itself), or any address and every catch-all with the TXT record `txt_name`
+	// holding `txt_value` (`POST /v1/channels/{id}/verify` without `code`). One record proves
+	// every channel of this workspace on that domain. The workspace that proves an address last
+	// holds it: the channel that held it before becomes `unverified` with problem `taken`.
+	Verification *EmailVerification `json:"verification,omitempty"`
 }
 
 // EmailChannelInput defines model for EmailChannelInput.
 type EmailChannelInput struct {
-	// Address The address the channel receives mail at, unique on the server. `*@example.com` makes a
-	// catch-all channel (one per domain): it receives mail to every address of the domain that
-	// no other channel has, and replies go out from the address the contact wrote to, so the
-	// SMTP account must be allowed to send from the whole domain. `from_address` is then used
-	// only for conversations that have no such address and cannot itself be a catch-all.
+	// Address The address the channel receives mail at once it is proven (`verification`); until
+	// then mail reaches the channel only at its forwarding address. `*@example.com` makes a
+	// catch-all channel (one per domain, proven by the domain's TXT record): it receives mail
+	// to every address of the domain that no other proven channel has, and replies go out from
+	// the address the contact wrote to, so the SMTP account must be allowed to send from the
+	// whole domain. `from_address` is then used only for conversations that have no such
+	// address and cannot itself be a catch-all. Changing the address starts its proof over.
 	//
 	//
 	// Examples: owner@example.com
@@ -15687,6 +15754,58 @@ type EmailThemeDarkColors struct {
 //
 // Examples: https://example.com/news?ref=mail
 type EmailUrl = string
+
+// EmailVerification Whether the channel's address is proven. Only a proven address routes mail to the channel
+// and counts as this workspace's own (dropped as a sender, never copied or kept as a
+// participant); an unproven channel still receives at its forwarding address and sends through
+// its SMTP account. Prove an exact address with a code mailed to it
+// (`POST /v1/channels/{id}/verification-code`, then `POST /v1/channels/{id}/verify` with
+// `code`; when the code mail comes back through the channel's forwarding address the channel
+// is verified by itself), or any address and every catch-all with the TXT record `txt_name`
+// holding `txt_value` (`POST /v1/channels/{id}/verify` without `code`). One record proves
+// every channel of this workspace on that domain. The workspace that proves an address last
+// holds it: the channel that held it before becomes `unverified` with problem `taken`.
+type EmailVerification struct {
+	// CheckedAt When the TXT record was last looked up.
+	CheckedAt *time.Time `json:"checked_at,omitempty"`
+
+	// CodeAllowed `false` for a catch-all and for an address on the forwarding domain: those are proven
+	// only by the TXT record.
+	CodeAllowed   bool       `json:"code_allowed"`
+	CodeExpiresAt *time.Time `json:"code_expires_at,omitempty"`
+
+	// CodeSentAt When the last code was mailed; absent when no code is open.
+	CodeSentAt *time.Time `json:"code_sent_at,omitempty"`
+
+	// Method How the address was proven: `code` (the code mailed to it), `dns` (the TXT record) or
+	// `received` (the channel had received mail before proofs existed). Absent while unverified.
+	Method *EmailVerificationMethod `json:"method,omitempty"`
+
+	// Problem Why the last check did not verify it, or `taken` when another channel proved the
+	// address later. Absent when verified.
+	Problem *string                `json:"problem,omitempty"`
+	State   EmailVerificationState `json:"state"`
+
+	// TxtName The TXT record name, `_yuva-mail.<domain>`.
+	TxtName string `json:"txt_name"`
+
+	// TxtValue The value the TXT record must hold for this workspace and domain.
+	TxtValue   string     `json:"txt_value"`
+	VerifiedAt *time.Time `json:"verified_at,omitempty"`
+}
+
+// EmailVerificationMethod How the address was proven: `code` (the code mailed to it), `dns` (the TXT record) or
+// `received` (the channel had received mail before proofs existed). Absent while unverified.
+type EmailVerificationMethod string
+
+// EmailVerificationState defines model for EmailVerification.State.
+type EmailVerificationState string
+
+// EmailVerifyInput defines model for EmailVerifyInput.
+type EmailVerifyInput struct {
+	// Code The code mailed to the address; absent looks the TXT record up instead.
+	Code *string `json:"code,omitempty"`
+}
 
 // EventPage defines model for EventPage.
 type EventPage struct {
@@ -25334,6 +25453,18 @@ type RotateChannelPublicKeyParams struct {
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
 
+// SendEmailVerificationCodeParams defines parameters for SendEmailVerificationCode.
+type SendEmailVerificationCodeParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// VerifyEmailChannelParams defines parameters for VerifyEmailChannel.
+type VerifyEmailChannelParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
 // ListContactsParams defines parameters for ListContacts.
 type ListContactsParams struct {
 	// Q Full-text search (Postgres `simple` configuration, `websearch` syntax).
@@ -28907,6 +29038,9 @@ type UpdateChannelJSONRequestBody = ChannelUpdate
 
 // CreateDkimKeyJSONRequestBody defines body for CreateDkimKey for application/json ContentType.
 type CreateDkimKeyJSONRequestBody = DkimKeyCreate
+
+// VerifyEmailChannelJSONRequestBody defines body for VerifyEmailChannel for application/json ContentType.
+type VerifyEmailChannelJSONRequestBody = EmailVerifyInput
 
 // CreateContactJSONRequestBody defines body for CreateContact for application/json ContentType.
 type CreateContactJSONRequestBody = ContactCreate
@@ -34001,6 +34135,12 @@ type ServerInterface interface {
 	// RotateChannelPublicKey Rotate a chat or app channel's public key
 	// (POST /v1/channels/{channelId}/public-key)
 	RotateChannelPublicKey(w http.ResponseWriter, r *http.Request, channelId ChannelId, params RotateChannelPublicKeyParams)
+	// SendEmailVerificationCode Mail a code that proves an e-mail channel's address
+	// (POST /v1/channels/{channelId}/verification-code)
+	SendEmailVerificationCode(w http.ResponseWriter, r *http.Request, channelId ChannelId, params SendEmailVerificationCodeParams)
+	// VerifyEmailChannel Prove an e-mail channel's address
+	// (POST /v1/channels/{channelId}/verify)
+	VerifyEmailChannel(w http.ResponseWriter, r *http.Request, channelId ChannelId, params VerifyEmailChannelParams)
 	// ListContacts List contacts
 	// (GET /v1/contacts)
 	ListContacts(w http.ResponseWriter, r *http.Request, params ListContactsParams)
@@ -43632,6 +43772,106 @@ func (siw *ServerInterfaceWrapper) RotateChannelPublicKey(w http.ResponseWriter,
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.RotateChannelPublicKey(w, r, channelId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// SendEmailVerificationCode operation middleware
+func (siw *ServerInterfaceWrapper) SendEmailVerificationCode(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "channelId" -------------
+	var channelId ChannelId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "channelId", r.PathValue("channelId"), &channelId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "channelId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params SendEmailVerificationCodeParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.SendEmailVerificationCode(w, r, channelId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// VerifyEmailChannel operation middleware
+func (siw *ServerInterfaceWrapper) VerifyEmailChannel(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "channelId" -------------
+	var channelId ChannelId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "channelId", r.PathValue("channelId"), &channelId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "channelId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params VerifyEmailChannelParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.VerifyEmailChannel(w, r, channelId, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -64263,6 +64503,8 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc(http.MethodPatch+" "+options.BaseURL+"/v1/channels/{channelId}", wrapper.UpdateChannel)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/channels/{channelId}/public-key", wrapper.RotateChannelPublicKey)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/channels/{channelId}/forwarding-address/rotate", wrapper.RotateForwardingAddress)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/channels/{channelId}/verification-code", wrapper.SendEmailVerificationCode)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/channels/{channelId}/verify", wrapper.VerifyEmailChannel)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/channels/{channelId}/deliverability-check", wrapper.CheckDeliverability)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/channels/{channelId}/deliverability", wrapper.GetDeliverability)
 	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/channels/{channelId}/dkim-key", wrapper.DeleteDkimKey)
@@ -82146,6 +82388,197 @@ func (response RotateChannelPublicKey403ApplicationProblemPlusJSONResponse) Visi
 type RotateChannelPublicKey404ApplicationProblemPlusJSONResponse Problem
 
 func (response RotateChannelPublicKey404ApplicationProblemPlusJSONResponse) VisitRotateChannelPublicKeyResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type SendEmailVerificationCodeRequestObject struct {
+	ChannelId ChannelId `json:"channelId"`
+	Params    SendEmailVerificationCodeParams
+}
+
+type SendEmailVerificationCodeResponseObject interface {
+	VisitSendEmailVerificationCodeResponse(w http.ResponseWriter) error
+}
+
+type SendEmailVerificationCode202JSONResponse Channel
+
+func (response SendEmailVerificationCode202JSONResponse) VisitSendEmailVerificationCodeResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(202)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type SendEmailVerificationCode400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response SendEmailVerificationCode400ApplicationProblemPlusJSONResponse) VisitSendEmailVerificationCodeResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type SendEmailVerificationCode401ApplicationProblemPlusJSONResponse Problem
+
+func (response SendEmailVerificationCode401ApplicationProblemPlusJSONResponse) VisitSendEmailVerificationCodeResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type SendEmailVerificationCode403ApplicationProblemPlusJSONResponse Problem
+
+func (response SendEmailVerificationCode403ApplicationProblemPlusJSONResponse) VisitSendEmailVerificationCodeResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type SendEmailVerificationCode404ApplicationProblemPlusJSONResponse Problem
+
+func (response SendEmailVerificationCode404ApplicationProblemPlusJSONResponse) VisitSendEmailVerificationCodeResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type SendEmailVerificationCode409ApplicationProblemPlusJSONResponse Problem
+
+func (response SendEmailVerificationCode409ApplicationProblemPlusJSONResponse) VisitSendEmailVerificationCodeResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(409)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type SendEmailVerificationCode429ApplicationProblemPlusJSONResponse Problem
+
+func (response SendEmailVerificationCode429ApplicationProblemPlusJSONResponse) VisitSendEmailVerificationCodeResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(429)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type VerifyEmailChannelRequestObject struct {
+	ChannelId ChannelId `json:"channelId"`
+	Params    VerifyEmailChannelParams
+	Body      *VerifyEmailChannelJSONRequestBody
+}
+
+type VerifyEmailChannelResponseObject interface {
+	VisitVerifyEmailChannelResponse(w http.ResponseWriter) error
+}
+
+type VerifyEmailChannel200JSONResponse Channel
+
+func (response VerifyEmailChannel200JSONResponse) VisitVerifyEmailChannelResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type VerifyEmailChannel400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response VerifyEmailChannel400ApplicationProblemPlusJSONResponse) VisitVerifyEmailChannelResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type VerifyEmailChannel401ApplicationProblemPlusJSONResponse Problem
+
+func (response VerifyEmailChannel401ApplicationProblemPlusJSONResponse) VisitVerifyEmailChannelResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type VerifyEmailChannel403ApplicationProblemPlusJSONResponse Problem
+
+func (response VerifyEmailChannel403ApplicationProblemPlusJSONResponse) VisitVerifyEmailChannelResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type VerifyEmailChannel404ApplicationProblemPlusJSONResponse Problem
+
+func (response VerifyEmailChannel404ApplicationProblemPlusJSONResponse) VisitVerifyEmailChannelResponse(w http.ResponseWriter) error {
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(response); err != nil {
@@ -109276,6 +109709,12 @@ type StrictServerInterface interface {
 	// RotateChannelPublicKey Rotate a chat or app channel's public key
 	// (POST /v1/channels/{channelId}/public-key)
 	RotateChannelPublicKey(ctx context.Context, request RotateChannelPublicKeyRequestObject) (RotateChannelPublicKeyResponseObject, error)
+	// SendEmailVerificationCode Mail a code that proves an e-mail channel's address
+	// (POST /v1/channels/{channelId}/verification-code)
+	SendEmailVerificationCode(ctx context.Context, request SendEmailVerificationCodeRequestObject) (SendEmailVerificationCodeResponseObject, error)
+	// VerifyEmailChannel Prove an e-mail channel's address
+	// (POST /v1/channels/{channelId}/verify)
+	VerifyEmailChannel(ctx context.Context, request VerifyEmailChannelRequestObject) (VerifyEmailChannelResponseObject, error)
 	// ListContacts List contacts
 	// (GET /v1/contacts)
 	ListContacts(ctx context.Context, request ListContactsRequestObject) (ListContactsResponseObject, error)
@@ -115396,6 +115835,70 @@ func (sh *strictHandler) RotateChannelPublicKey(w http.ResponseWriter, r *http.R
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
 	} else if validResponse, ok := response.(RotateChannelPublicKeyResponseObject); ok {
 		if err := validResponse.VisitRotateChannelPublicKeyResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// SendEmailVerificationCode operation middleware
+func (sh *strictHandler) SendEmailVerificationCode(w http.ResponseWriter, r *http.Request, channelId ChannelId, params SendEmailVerificationCodeParams) {
+	var request SendEmailVerificationCodeRequestObject
+
+	request.ChannelId = channelId
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.SendEmailVerificationCode(ctx, request.(SendEmailVerificationCodeRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "SendEmailVerificationCode")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(SendEmailVerificationCodeResponseObject); ok {
+		if err := validResponse.VisitSendEmailVerificationCodeResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// VerifyEmailChannel operation middleware
+func (sh *strictHandler) VerifyEmailChannel(w http.ResponseWriter, r *http.Request, channelId ChannelId, params VerifyEmailChannelParams) {
+	var request VerifyEmailChannelRequestObject
+
+	request.ChannelId = channelId
+	request.Params = params
+
+	var body VerifyEmailChannelJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		if !errors.Is(err, io.EOF) {
+			sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+			return
+		}
+	} else {
+		request.Body = &body
+	}
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.VerifyEmailChannel(ctx, request.(VerifyEmailChannelRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "VerifyEmailChannel")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(VerifyEmailChannelResponseObject); ok {
+		if err := validResponse.VisitVerifyEmailChannelResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {

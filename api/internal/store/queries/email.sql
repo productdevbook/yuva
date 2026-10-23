@@ -9,7 +9,15 @@ ON CONFLICT (workspace_id, channel_id) DO UPDATE SET
     smtp_host = excluded.smtp_host, smtp_port = excluded.smtp_port, smtp_username = excluded.smtp_username,
     smtp_password = excluded.smtp_password, smtp_tls = excluded.smtp_tls,
     auto_reply_enabled = excluded.auto_reply_enabled, auto_reply_text = excluded.auto_reply_text,
-    auto_reply_interval_hours = excluded.auto_reply_interval_hours
+    auto_reply_interval_hours = excluded.auto_reply_interval_hours,
+    verified_at = CASE WHEN email_channels.address = excluded.address THEN email_channels.verified_at END,
+    verified_by = CASE WHEN email_channels.address = excluded.address THEN email_channels.verified_by END,
+    verify_problem = CASE WHEN email_channels.address = excluded.address THEN email_channels.verify_problem END,
+    verify_checked_at = CASE WHEN email_channels.address = excluded.address THEN email_channels.verify_checked_at END,
+    verify_code_hash = CASE WHEN email_channels.address = excluded.address THEN email_channels.verify_code_hash END,
+    verify_code_expires_at = CASE WHEN email_channels.address = excluded.address THEN email_channels.verify_code_expires_at END,
+    verify_message_id = CASE WHEN email_channels.address = excluded.address THEN email_channels.verify_message_id END,
+    verify_relay_message_id = CASE WHEN email_channels.address = excluded.address THEN email_channels.verify_relay_message_id END
 RETURNING *;
 
 -- name: GetEmailChannel :one
@@ -19,12 +27,12 @@ SELECT * FROM email_channels WHERE workspace_id = $1 AND channel_id = $2;
 SELECT * FROM email_channels WHERE workspace_id = @workspace_id AND channel_id = ANY(@channel_ids::uuid[]);
 
 -- Inbound mail names only its recipient, so the channel is found before the workspace is known
--- (see "Hosting for others later" in docs/architecture.md).
+-- (see "Hosting for others later" in docs/architecture.md); only a proven address routes.
 -- name: FindEmailChannelByAddress :one
 SELECT e.*, c.inbox_id, c.name AS channel_name FROM email_channels e
 JOIN channels c ON c.workspace_id = e.workspace_id AND c.id = e.channel_id
 JOIN workspaces w ON w.id = e.workspace_id
-WHERE e.address = $1 AND w.deleted_at IS NULL;
+WHERE e.address = $1 AND e.verified_at IS NOT NULL AND w.deleted_at IS NULL;
 
 -- A forwarding address names only its token (see "Hosting for others later" in docs/architecture.md).
 -- name: FindEmailChannelByForwardToken :one
@@ -156,9 +164,64 @@ JOIN messages m ON m.workspace_id = e.workspace_id AND m.id = e.message_id
 WHERE e.workspace_id = @workspace_id AND coalesce(m.author_contact_id, c.contact_id) = @contact_id::uuid
   AND e.direction = 'in' AND (e.dmarc = 'pass') = @authenticated::bool AND e.created_at > @since;
 
--- Mail from an address the server sends from is dropped, whichever workspace it belongs to.
 -- name: IsEmailChannelSender :one
-SELECT EXISTS (SELECT 1 FROM email_channels WHERE address = @address::text OR from_address = @address::text);
+SELECT EXISTS (
+  SELECT 1 FROM email_channels
+  WHERE workspace_id = @workspace_id AND verified_at IS NOT NULL AND (address = @address::text OR from_address = @address::text)
+);
+
+-- name: IsWorkspaceEmailAddress :one
+SELECT EXISTS (
+  SELECT 1 FROM email_channels
+  WHERE workspace_id = @workspace_id AND verified_at IS NOT NULL
+    AND (address = ANY(@addresses::text[]) OR from_address = @address::text)
+);
+
+-- name: LockEmailAddress :exec
+SELECT pg_advisory_xact_lock(hashtextextended('yuva_email_address:' || @address::text, 0));
+
+-- name: LockEmailChannel :one
+SELECT * FROM email_channels WHERE workspace_id = $1 AND channel_id = $2 FOR UPDATE;
+
+-- name: CountWorkspaceVerificationSends :one
+SELECT coalesce(sum(verify_sends), 0)::bigint FROM email_channels
+WHERE workspace_id = @workspace_id AND verify_window_at > @since;
+
+-- name: StartEmailVerificationCode :one
+UPDATE email_channels SET verify_code_hash = @code_hash, verify_code_expires_at = @expires_at, verify_attempts = 0,
+    verify_message_id = @message_id, verify_relay_message_id = NULL, verify_sent_at = @now,
+    verify_sends = CASE WHEN verify_window_at > @window_since THEN verify_sends + 1 ELSE 1 END,
+    verify_window_at = CASE WHEN verify_window_at > @window_since THEN verify_window_at ELSE @now END
+WHERE workspace_id = @workspace_id AND channel_id = @channel_id AND address = @address AND verified_at IS NULL
+RETURNING *;
+
+-- name: SetEmailVerificationRelayID :exec
+UPDATE email_channels SET verify_relay_message_id = @relay_message_id
+WHERE workspace_id = @workspace_id AND channel_id = @channel_id AND verify_message_id = @message_id;
+
+-- name: FailEmailVerificationCode :exec
+UPDATE email_channels SET verify_attempts = verify_attempts + 1,
+    verify_code_hash = CASE WHEN verify_attempts + 1 >= @max_attempts::int THEN NULL ELSE verify_code_hash END
+WHERE workspace_id = @workspace_id AND channel_id = @channel_id;
+
+-- name: SetEmailVerifyProblem :one
+UPDATE email_channels SET verify_problem = @problem, verify_checked_at = @now
+WHERE workspace_id = @workspace_id AND channel_id = @channel_id AND verified_at IS NULL
+RETURNING *;
+
+-- A proof takes the address from the channel that held it, in whichever workspace: the one write
+-- across workspaces, keyed by the address alone like the ingress lookup (see "E-mail" in
+-- docs/architecture.md).
+-- name: ReleaseEmailAddress :many
+UPDATE email_channels SET verified_at = NULL, verified_by = NULL, verify_problem = 'taken', verify_checked_at = @now
+WHERE address = @address AND verified_at IS NOT NULL AND NOT (workspace_id = @workspace_id AND channel_id = @channel_id)
+RETURNING workspace_id, channel_id;
+
+-- name: MarkEmailChannelVerified :one
+UPDATE email_channels SET verified_at = @now, verified_by = @method, verify_problem = NULL, verify_checked_at = @now,
+    verify_code_hash = NULL, verify_code_expires_at = NULL, verify_message_id = NULL, verify_relay_message_id = NULL
+WHERE workspace_id = @workspace_id AND channel_id = @channel_id AND address = @address
+RETURNING *;
 
 -- name: ClaimAutoReply :one
 INSERT INTO email_auto_replies (workspace_id, channel_id, contact_id, sent_at)

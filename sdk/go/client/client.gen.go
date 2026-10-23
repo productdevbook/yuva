@@ -1121,6 +1121,8 @@ const (
 	AuditAutomationRuleCreated               AuditAction = "automation_rule.created"
 	AuditAutomationRuleDeleted               AuditAction = "automation_rule.deleted"
 	AuditAutomationRuleUpdated               AuditAction = "automation_rule.updated"
+	AuditChannelAddressLost                  AuditAction = "channel.address_lost"
+	AuditChannelAddressVerified              AuditAction = "channel.address_verified"
 	AuditChannelCredentialsChanged           AuditAction = "channel.credentials_changed"
 	AuditChannelDkimKeyCreated               AuditAction = "channel.dkim_key_created"
 	AuditChannelDkimKeyDeleted               AuditAction = "channel.dkim_key_deleted"
@@ -1196,6 +1198,10 @@ func (e AuditAction) Valid() bool {
 	case AuditAutomationRuleDeleted:
 		return true
 	case AuditAutomationRuleUpdated:
+		return true
+	case AuditChannelAddressLost:
+		return true
+	case AuditChannelAddressVerified:
 		return true
 	case AuditChannelCredentialsChanged:
 		return true
@@ -3507,6 +3513,45 @@ func (e EmailThemeDirection) Valid() bool {
 	case EmailDirectionLtr:
 		return true
 	case EmailDirectionRtl:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for EmailVerificationMethod.
+const (
+	EmailVerifiedByCode     EmailVerificationMethod = "code"
+	EmailVerifiedByDns      EmailVerificationMethod = "dns"
+	EmailVerifiedByReceived EmailVerificationMethod = "received"
+)
+
+// Valid indicates whether the value is a known member of the EmailVerificationMethod enum.
+func (e EmailVerificationMethod) Valid() bool {
+	switch e {
+	case EmailVerifiedByCode:
+		return true
+	case EmailVerifiedByDns:
+		return true
+	case EmailVerifiedByReceived:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for EmailVerificationState.
+const (
+	EmailVerificationUnverified EmailVerificationState = "unverified"
+	EmailVerificationVerified   EmailVerificationState = "verified"
+)
+
+// Valid indicates whether the value is a known member of the EmailVerificationState enum.
+func (e EmailVerificationState) Valid() bool {
+	switch e {
+	case EmailVerificationUnverified:
+		return true
+	case EmailVerificationVerified:
 		return true
 	default:
 		return false
@@ -9939,6 +9984,9 @@ type Attributes map[string]interface{}
 //     or its password), `apns` and `fcm` (an app channel's push credentials); never the values.
 //   - `channel.key_rotated`, `channel.forwarding_address_rotated`, `channel.dkim_key_deleted`:
 //     none. `channel.dkim_key_created`: `selector`.
+//   - `channel.address_verified`: `address`, `method` (`code` or `dns`); by `system` when the
+//     code came back through the forwarding address. `channel.address_lost`: `address`, by
+//     `system`, when another channel proved the address later.
 //   - `inbox.identity_secret_rotated`: none. `inbox.deleted`: `name`.
 //   - `team.created`, `team.deleted`: `name`. `team.member_added`, `team.member_removed`:
 //     `member_id`. `team.inbox_access_granted`, `team.inbox_access_revoked`: `inbox_id`,
@@ -10055,6 +10103,9 @@ type AuditEntry struct {
 	//   or its password), `apns` and `fcm` (an app channel's push credentials); never the values.
 	// - `channel.key_rotated`, `channel.forwarding_address_rotated`, `channel.dkim_key_deleted`:
 	//   none. `channel.dkim_key_created`: `selector`.
+	// - `channel.address_verified`: `address`, `method` (`code` or `dns`); by `system` when the
+	//   code came back through the forwarding address. `channel.address_lost`: `address`, by
+	//   `system`, when another channel proved the address later.
 	// - `inbox.identity_secret_rotated`: none. `inbox.deleted`: `name`.
 	// - `team.created`, `team.deleted`: `name`. `team.member_added`, `team.member_removed`:
 	//   `member_id`. `team.inbox_access_granted`, `team.inbox_access_revoked`: `inbox_id`,
@@ -14762,11 +14813,13 @@ type EmailButtonBlockType string
 
 // EmailChannel Settings of an `email` channel.
 type EmailChannel struct {
-	// Address The address the channel receives mail at, unique on the server. `*@example.com` makes a
-	// catch-all channel (one per domain): it receives mail to every address of the domain that
-	// no other channel has, and replies go out from the address the contact wrote to, so the
-	// SMTP account must be allowed to send from the whole domain. `from_address` is then used
-	// only for conversations that have no such address and cannot itself be a catch-all.
+	// Address The address the channel receives mail at once it is proven (`verification`); until
+	// then mail reaches the channel only at its forwarding address. `*@example.com` makes a
+	// catch-all channel (one per domain, proven by the domain's TXT record): it receives mail
+	// to every address of the domain that no other proven channel has, and replies go out from
+	// the address the contact wrote to, so the SMTP account must be allowed to send from the
+	// whole domain. `from_address` is then used only for conversations that have no such
+	// address and cannot itself be a catch-all. Changing the address starts its proof over.
 	//
 	//
 	// Examples: owner@example.com
@@ -14803,15 +14856,29 @@ type EmailChannel struct {
 
 	// Smtp The outbound SMTP account. The password is never returned.
 	Smtp *SmtpSettings `json:"smtp,omitempty"`
+
+	// Verification Whether the channel's address is proven. Only a proven address routes mail to the channel
+	// and counts as this workspace's own (dropped as a sender, never copied or kept as a
+	// participant); an unproven channel still receives at its forwarding address and sends through
+	// its SMTP account. Prove an exact address with a code mailed to it
+	// (`POST /v1/channels/{id}/verification-code`, then `POST /v1/channels/{id}/verify` with
+	// `code`; when the code mail comes back through the channel's forwarding address the channel
+	// is verified by itself), or any address and every catch-all with the TXT record `txt_name`
+	// holding `txt_value` (`POST /v1/channels/{id}/verify` without `code`). One record proves
+	// every channel of this workspace on that domain. The workspace that proves an address last
+	// holds it: the channel that held it before becomes `unverified` with problem `taken`.
+	Verification *EmailVerification `json:"verification,omitempty"`
 }
 
 // EmailChannelInput defines model for EmailChannelInput.
 type EmailChannelInput struct {
-	// Address The address the channel receives mail at, unique on the server. `*@example.com` makes a
-	// catch-all channel (one per domain): it receives mail to every address of the domain that
-	// no other channel has, and replies go out from the address the contact wrote to, so the
-	// SMTP account must be allowed to send from the whole domain. `from_address` is then used
-	// only for conversations that have no such address and cannot itself be a catch-all.
+	// Address The address the channel receives mail at once it is proven (`verification`); until
+	// then mail reaches the channel only at its forwarding address. `*@example.com` makes a
+	// catch-all channel (one per domain, proven by the domain's TXT record): it receives mail
+	// to every address of the domain that no other proven channel has, and replies go out from
+	// the address the contact wrote to, so the SMTP account must be allowed to send from the
+	// whole domain. `from_address` is then used only for conversations that have no such
+	// address and cannot itself be a catch-all. Changing the address starts its proof over.
 	//
 	//
 	// Examples: owner@example.com
@@ -15733,6 +15800,58 @@ type EmailThemeDarkColors struct {
 //
 // Examples: https://example.com/news?ref=mail
 type EmailUrl = string
+
+// EmailVerification Whether the channel's address is proven. Only a proven address routes mail to the channel
+// and counts as this workspace's own (dropped as a sender, never copied or kept as a
+// participant); an unproven channel still receives at its forwarding address and sends through
+// its SMTP account. Prove an exact address with a code mailed to it
+// (`POST /v1/channels/{id}/verification-code`, then `POST /v1/channels/{id}/verify` with
+// `code`; when the code mail comes back through the channel's forwarding address the channel
+// is verified by itself), or any address and every catch-all with the TXT record `txt_name`
+// holding `txt_value` (`POST /v1/channels/{id}/verify` without `code`). One record proves
+// every channel of this workspace on that domain. The workspace that proves an address last
+// holds it: the channel that held it before becomes `unverified` with problem `taken`.
+type EmailVerification struct {
+	// CheckedAt When the TXT record was last looked up.
+	CheckedAt *time.Time `json:"checked_at,omitempty"`
+
+	// CodeAllowed `false` for a catch-all and for an address on the forwarding domain: those are proven
+	// only by the TXT record.
+	CodeAllowed   bool       `json:"code_allowed"`
+	CodeExpiresAt *time.Time `json:"code_expires_at,omitempty"`
+
+	// CodeSentAt When the last code was mailed; absent when no code is open.
+	CodeSentAt *time.Time `json:"code_sent_at,omitempty"`
+
+	// Method How the address was proven: `code` (the code mailed to it), `dns` (the TXT record) or
+	// `received` (the channel had received mail before proofs existed). Absent while unverified.
+	Method *EmailVerificationMethod `json:"method,omitempty"`
+
+	// Problem Why the last check did not verify it, or `taken` when another channel proved the
+	// address later. Absent when verified.
+	Problem *string                `json:"problem,omitempty"`
+	State   EmailVerificationState `json:"state"`
+
+	// TxtName The TXT record name, `_yuva-mail.<domain>`.
+	TxtName string `json:"txt_name"`
+
+	// TxtValue The value the TXT record must hold for this workspace and domain.
+	TxtValue   string     `json:"txt_value"`
+	VerifiedAt *time.Time `json:"verified_at,omitempty"`
+}
+
+// EmailVerificationMethod How the address was proven: `code` (the code mailed to it), `dns` (the TXT record) or
+// `received` (the channel had received mail before proofs existed). Absent while unverified.
+type EmailVerificationMethod string
+
+// EmailVerificationState defines model for EmailVerification.State.
+type EmailVerificationState string
+
+// EmailVerifyInput defines model for EmailVerifyInput.
+type EmailVerifyInput struct {
+	// Code The code mailed to the address; absent looks the TXT record up instead.
+	Code *string `json:"code,omitempty"`
+}
 
 // EventPage defines model for EventPage.
 type EventPage struct {
@@ -25434,6 +25553,18 @@ type RotateChannelPublicKeyParams struct {
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
 
+// SendEmailVerificationCodeParams defines parameters for SendEmailVerificationCode.
+type SendEmailVerificationCodeParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// VerifyEmailChannelParams defines parameters for VerifyEmailChannel.
+type VerifyEmailChannelParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
 // ListContactsParams defines parameters for ListContacts.
 type ListContactsParams struct {
 	// Q Full-text search (Postgres `simple` configuration, `websearch` syntax).
@@ -29022,6 +29153,9 @@ type UpdateChannelJSONRequestBody = ChannelUpdate
 
 // CreateDkimKeyJSONRequestBody defines body for CreateDkimKey for application/json ContentType.
 type CreateDkimKeyJSONRequestBody = DkimKeyCreate
+
+// VerifyEmailChannelJSONRequestBody defines body for VerifyEmailChannel for application/json ContentType.
+type VerifyEmailChannelJSONRequestBody = EmailVerifyInput
 
 // CreateContactJSONRequestBody defines body for CreateContact for application/json ContentType.
 type CreateContactJSONRequestBody = ContactCreate
@@ -37459,6 +37593,58 @@ type ClientInterface interface {
 	// Corresponds with POST /v1/channels/{channelId}/public-key (the `RotateChannelPublicKey` operationId).
 	RotateChannelPublicKey(ctx context.Context, channelId ChannelId, params *RotateChannelPublicKeyParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// SendEmailVerificationCode Mail a code that proves an e-mail channel's address
+	//
+	// Owners, admins and API keys. Mails an 8-digit code from the server's own sender to the
+	// channel's address; it is valid for an hour and for 5 tries, and a new one replaces it. The
+	// mail names neither the workspace nor the inbox. Enter it with
+	// `POST /v1/channels/{id}/verify`; a code mail that comes back through the channel's
+	// forwarding address verifies the channel by itself. At most one a minute and 5 a day per
+	// channel, 20 a day per workspace (`429 rate_limited`).
+	//
+	// `400 validation_failed` for other kinds, a catch-all and an address on the forwarding
+	// domain (prove those with the TXT record); `409 email_verified` when the address is already proven
+	// by this channel.
+	//
+	// Scope: `inboxes:manage`.
+	//
+	// Corresponds with POST /v1/channels/{channelId}/verification-code (the `SendEmailVerificationCode` operationId).
+	SendEmailVerificationCode(ctx context.Context, channelId ChannelId, params *SendEmailVerificationCodeParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// VerifyEmailChannelWithBody Prove an e-mail channel's address
+	//
+	// Owners, admins and API keys. With `code`, checks the code mailed to the address; a wrong,
+	// used or expired code answers `400 verification_code_invalid`. Without it, looks the TXT
+	// record `email.verification.txt_name` up now: when it holds `txt_value` the address is
+	// proven, otherwise the channel stays `unverified` with `problem` saying what was found. A
+	// proven address is taken from any channel that held it before, in any workspace, and is
+	// recorded as `channel.address_verified`. An address already proven answers as it is.
+	// `400 validation_failed` for other kinds and for a catch-all on a shared domain.
+	//
+	// Scope: `inboxes:manage`.
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /v1/channels/{channelId}/verify (the `VerifyEmailChannel` operationId).
+	VerifyEmailChannelWithBody(ctx context.Context, channelId ChannelId, params *VerifyEmailChannelParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// VerifyEmailChannel Prove an e-mail channel's address
+	//
+	// Owners, admins and API keys. With `code`, checks the code mailed to the address; a wrong,
+	// used or expired code answers `400 verification_code_invalid`. Without it, looks the TXT
+	// record `email.verification.txt_name` up now: when it holds `txt_value` the address is
+	// proven, otherwise the channel stays `unverified` with `problem` saying what was found. A
+	// proven address is taken from any channel that held it before, in any workspace, and is
+	// recorded as `channel.address_verified`. An address already proven answers as it is.
+	// `400 validation_failed` for other kinds and for a catch-all on a shared domain.
+	//
+	// Scope: `inboxes:manage`.
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /v1/channels/{channelId}/verify (the `VerifyEmailChannel` operationId).
+	VerifyEmailChannel(ctx context.Context, channelId ChannelId, params *VerifyEmailChannelParams, body VerifyEmailChannelJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// ListContacts List contacts
 	//
 	// Newest first, or most recently active first with `sort=last_seen` (contacts never seen sort
@@ -38151,8 +38337,9 @@ type ClientInterface interface {
 	// address bounced or complained; `suggested` ones are copied only when named in `cc`. `cc` replaces that list (`[]` copies no one) and `bcc` adds hidden
 	// recipients, at most 20 addresses each: they receive the mail as envelope recipients only and
 	// never appear in its headers. Addresses in `cc` become participants; `bcc` never does. Each
-	// address must be a valid address that this server neither receives nor sends mail for
-	// (`400 validation_failed`, the same answer for both); one that bounced or complained is refused with
+	// address must be a valid address that this workspace neither receives nor sends mail for
+	// (a proven channel address, its catch-all domain or sending address, a forwarding address or
+	// the server's own sender; `400 validation_failed`, the same answer for both); one that bounced or complained is refused with
 	// `409 email_undeliverable`, while an unsubscribe from broadcasts does not stop a reply. The
 	// contact's own address is dropped from both, and an address in both stays in `cc`. `cc` and
 	// `bcc` are refused (`400 validation_failed`) on notes, `in` messages, drafts (send them with
@@ -38220,8 +38407,9 @@ type ClientInterface interface {
 	// address bounced or complained; `suggested` ones are copied only when named in `cc`. `cc` replaces that list (`[]` copies no one) and `bcc` adds hidden
 	// recipients, at most 20 addresses each: they receive the mail as envelope recipients only and
 	// never appear in its headers. Addresses in `cc` become participants; `bcc` never does. Each
-	// address must be a valid address that this server neither receives nor sends mail for
-	// (`400 validation_failed`, the same answer for both); one that bounced or complained is refused with
+	// address must be a valid address that this workspace neither receives nor sends mail for
+	// (a proven channel address, its catch-all domain or sending address, a forwarding address or
+	// the server's own sender; `400 validation_failed`, the same answer for both); one that bounced or complained is refused with
 	// `409 email_undeliverable`, while an unsubscribe from broadcasts does not stop a reply. The
 	// contact's own address is dropped from both, and an address in both stays in `cc`. `cc` and
 	// `bcc` are refused (`400 validation_failed`) on notes, `in` messages, drafts (send them with
@@ -38287,7 +38475,8 @@ type ClientInterface interface {
 	//
 	// The people copied on the conversation's e-mail besides its contact, oldest first, at most
 	// 20 per conversation. The `To` and `Cc` addresses of inbound mail that are not addresses of
-	// this server (any channel's address, sending address or forwarding address) are `active`
+	// this workspace (a proven channel's address, catch-all domain or sending address, a
+	// forwarding address, the server's own sender) are `active`
 	// when the mail passed DMARC (`email.dmarc` `pass`) and `suggested` otherwise, since `From`
 	// can be forged; automatic mail and mail that failed DMARC add no one. Addresses a member
 	// names in a reply's `cc` or adds here are `active`. Replies copy `active` participants by
@@ -38304,7 +38493,7 @@ type ClientInterface interface {
 	// AddConversationParticipantWithBody Add a participant
 	//
 	// Adds an address as an `active` participant, or makes a `suggested` one `active`. The
-	// address must be valid and not one this server receives or sends mail for
+	// address must be valid and not one this workspace receives or sends mail for
 	// (`400 validation_failed`, the same answer for both); a conversation holds at most 20
 	// (`409 participants_full`). Whoever can see the conversation may; API keys and OAuth tokens
 	// need `conversations:write`.
@@ -38317,7 +38506,7 @@ type ClientInterface interface {
 	// AddConversationParticipant Add a participant
 	//
 	// Adds an address as an `active` participant, or makes a `suggested` one `active`. The
-	// address must be valid and not one this server receives or sends mail for
+	// address must be valid and not one this workspace receives or sends mail for
 	// (`400 validation_failed`, the same answer for both); a conversation holds at most 20
 	// (`409 participants_full`). Whoever can see the conversation may; API keys and OAuth tokens
 	// need `conversations:write`.
@@ -40115,8 +40304,12 @@ type ClientInterface interface {
 	// address and outbound SMTP account); a `chat` channel needs `chat` (at least one allowed
 	// origin) and gets a generated public key; an `app` channel takes `app` (optional, defaults
 	// apply) and gets a generated public key; `settings` are stored as given.
-	// An address belongs to one channel of the whole server, because inbound mail picks its
-	// channel by the recipient alone; a taken address answers `409 email_address_taken`.
+	// A new e-mail channel receives mail only at its forwarding address until its address is
+	// proven (`email.verification`, `POST /v1/channels/{id}/verification-code` and
+	// `POST /v1/channels/{id}/verify`). Any number of workspaces may claim an address; one that
+	// proved it holds it. The same address twice in this workspace answers
+	// `409 email_address_taken`. A catch-all on the forwarding domain or on a public mail
+	// provider (gmail.com, outlook.com, …) is refused (`400 validation_failed`).
 	//
 	// Scope: `inboxes:manage`.
 	//
@@ -40131,8 +40324,12 @@ type ClientInterface interface {
 	// address and outbound SMTP account); a `chat` channel needs `chat` (at least one allowed
 	// origin) and gets a generated public key; an `app` channel takes `app` (optional, defaults
 	// apply) and gets a generated public key; `settings` are stored as given.
-	// An address belongs to one channel of the whole server, because inbound mail picks its
-	// channel by the recipient alone; a taken address answers `409 email_address_taken`.
+	// A new e-mail channel receives mail only at its forwarding address until its address is
+	// proven (`email.verification`, `POST /v1/channels/{id}/verification-code` and
+	// `POST /v1/channels/{id}/verify`). Any number of workspaces may claim an address; one that
+	// proved it holds it. The same address twice in this workspace answers
+	// `409 email_address_taken`. A catch-all on the forwarding domain or on a public mail
+	// provider (gmail.com, outlook.com, …) is refused (`400 validation_failed`).
 	//
 	// Scope: `inboxes:manage`.
 	//
@@ -50249,6 +50446,88 @@ func (c *Client) RotateChannelPublicKey(ctx context.Context, channelId ChannelId
 	return c.Client.Do(req)
 }
 
+// SendEmailVerificationCode Mail a code that proves an e-mail channel's address
+//
+// Owners, admins and API keys. Mails an 8-digit code from the server's own sender to the
+// channel's address; it is valid for an hour and for 5 tries, and a new one replaces it. The
+// mail names neither the workspace nor the inbox. Enter it with
+// `POST /v1/channels/{id}/verify`; a code mail that comes back through the channel's
+// forwarding address verifies the channel by itself. At most one a minute and 5 a day per
+// channel, 20 a day per workspace (`429 rate_limited`).
+//
+// `400 validation_failed` for other kinds, a catch-all and an address on the forwarding
+// domain (prove those with the TXT record); `409 email_verified` when the address is already proven
+// by this channel.
+//
+// Scope: `inboxes:manage`.
+//
+// Corresponds with POST /v1/channels/{channelId}/verification-code (the `SendEmailVerificationCode` operationId).
+func (c *Client) SendEmailVerificationCode(ctx context.Context, channelId ChannelId, params *SendEmailVerificationCodeParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSendEmailVerificationCodeRequest(c.Server, channelId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// VerifyEmailChannelWithBody Prove an e-mail channel's address
+//
+// Owners, admins and API keys. With `code`, checks the code mailed to the address; a wrong,
+// used or expired code answers `400 verification_code_invalid`. Without it, looks the TXT
+// record `email.verification.txt_name` up now: when it holds `txt_value` the address is
+// proven, otherwise the channel stays `unverified` with `problem` saying what was found. A
+// proven address is taken from any channel that held it before, in any workspace, and is
+// recorded as `channel.address_verified`. An address already proven answers as it is.
+// `400 validation_failed` for other kinds and for a catch-all on a shared domain.
+//
+// Scope: `inboxes:manage`.
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /v1/channels/{channelId}/verify (the `VerifyEmailChannel` operationId).
+func (c *Client) VerifyEmailChannelWithBody(ctx context.Context, channelId ChannelId, params *VerifyEmailChannelParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewVerifyEmailChannelRequestWithBody(c.Server, channelId, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// VerifyEmailChannel Prove an e-mail channel's address
+//
+// Owners, admins and API keys. With `code`, checks the code mailed to the address; a wrong,
+// used or expired code answers `400 verification_code_invalid`. Without it, looks the TXT
+// record `email.verification.txt_name` up now: when it holds `txt_value` the address is
+// proven, otherwise the channel stays `unverified` with `problem` saying what was found. A
+// proven address is taken from any channel that held it before, in any workspace, and is
+// recorded as `channel.address_verified`. An address already proven answers as it is.
+// `400 validation_failed` for other kinds and for a catch-all on a shared domain.
+//
+// Scope: `inboxes:manage`.
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /v1/channels/{channelId}/verify (the `VerifyEmailChannel` operationId).
+func (c *Client) VerifyEmailChannel(ctx context.Context, channelId ChannelId, params *VerifyEmailChannelParams, body VerifyEmailChannelJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewVerifyEmailChannelRequest(c.Server, channelId, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 // ListContacts List contacts
 //
 // Newest first, or most recently active first with `sort=last_seen` (contacts never seen sort
@@ -51351,8 +51630,9 @@ func (c *Client) ListMessages(ctx context.Context, conversationId ConversationId
 // address bounced or complained; `suggested` ones are copied only when named in `cc`. `cc` replaces that list (`[]` copies no one) and `bcc` adds hidden
 // recipients, at most 20 addresses each: they receive the mail as envelope recipients only and
 // never appear in its headers. Addresses in `cc` become participants; `bcc` never does. Each
-// address must be a valid address that this server neither receives nor sends mail for
-// (`400 validation_failed`, the same answer for both); one that bounced or complained is refused with
+// address must be a valid address that this workspace neither receives nor sends mail for
+// (a proven channel address, its catch-all domain or sending address, a forwarding address or
+// the server's own sender; `400 validation_failed`, the same answer for both); one that bounced or complained is refused with
 // `409 email_undeliverable`, while an unsubscribe from broadcasts does not stop a reply. The
 // contact's own address is dropped from both, and an address in both stays in `cc`. `cc` and
 // `bcc` are refused (`400 validation_failed`) on notes, `in` messages, drafts (send them with
@@ -51430,8 +51710,9 @@ func (c *Client) CreateMessageWithBody(ctx context.Context, conversationId Conve
 // address bounced or complained; `suggested` ones are copied only when named in `cc`. `cc` replaces that list (`[]` copies no one) and `bcc` adds hidden
 // recipients, at most 20 addresses each: they receive the mail as envelope recipients only and
 // never appear in its headers. Addresses in `cc` become participants; `bcc` never does. Each
-// address must be a valid address that this server neither receives nor sends mail for
-// (`400 validation_failed`, the same answer for both); one that bounced or complained is refused with
+// address must be a valid address that this workspace neither receives nor sends mail for
+// (a proven channel address, its catch-all domain or sending address, a forwarding address or
+// the server's own sender; `400 validation_failed`, the same answer for both); one that bounced or complained is refused with
 // `409 email_undeliverable`, while an unsubscribe from broadcasts does not stop a reply. The
 // contact's own address is dropped from both, and an address in both stays in `cc`. `cc` and
 // `bcc` are refused (`400 validation_failed`) on notes, `in` messages, drafts (send them with
@@ -51527,7 +51808,8 @@ func (c *Client) MoveConversation(ctx context.Context, conversationId Conversati
 //
 // The people copied on the conversation's e-mail besides its contact, oldest first, at most
 // 20 per conversation. The `To` and `Cc` addresses of inbound mail that are not addresses of
-// this server (any channel's address, sending address or forwarding address) are `active`
+// this workspace (a proven channel's address, catch-all domain or sending address, a
+// forwarding address, the server's own sender) are `active`
 // when the mail passed DMARC (`email.dmarc` `pass`) and `suggested` otherwise, since `From`
 // can be forged; automatic mail and mail that failed DMARC add no one. Addresses a member
 // names in a reply's `cc` or adds here are `active`. Replies copy `active` participants by
@@ -51554,7 +51836,7 @@ func (c *Client) ListConversationParticipants(ctx context.Context, conversationI
 // AddConversationParticipantWithBody Add a participant
 //
 // Adds an address as an `active` participant, or makes a `suggested` one `active`. The
-// address must be valid and not one this server receives or sends mail for
+// address must be valid and not one this workspace receives or sends mail for
 // (`400 validation_failed`, the same answer for both); a conversation holds at most 20
 // (`409 participants_full`). Whoever can see the conversation may; API keys and OAuth tokens
 // need `conversations:write`.
@@ -51577,7 +51859,7 @@ func (c *Client) AddConversationParticipantWithBody(ctx context.Context, convers
 // AddConversationParticipant Add a participant
 //
 // Adds an address as an `active` participant, or makes a `suggested` one `active`. The
-// address must be valid and not one this server receives or sends mail for
+// address must be valid and not one this workspace receives or sends mail for
 // (`400 validation_failed`, the same answer for both); a conversation holds at most 20
 // (`409 participants_full`). Whoever can see the conversation may; API keys and OAuth tokens
 // need `conversations:write`.
@@ -54645,8 +54927,12 @@ func (c *Client) ListChannels(ctx context.Context, inboxId InboxId, params *List
 // address and outbound SMTP account); a `chat` channel needs `chat` (at least one allowed
 // origin) and gets a generated public key; an `app` channel takes `app` (optional, defaults
 // apply) and gets a generated public key; `settings` are stored as given.
-// An address belongs to one channel of the whole server, because inbound mail picks its
-// channel by the recipient alone; a taken address answers `409 email_address_taken`.
+// A new e-mail channel receives mail only at its forwarding address until its address is
+// proven (`email.verification`, `POST /v1/channels/{id}/verification-code` and
+// `POST /v1/channels/{id}/verify`). Any number of workspaces may claim an address; one that
+// proved it holds it. The same address twice in this workspace answers
+// `409 email_address_taken`. A catch-all on the forwarding domain or on a public mail
+// provider (gmail.com, outlook.com, …) is refused (`400 validation_failed`).
 //
 // Scope: `inboxes:manage`.
 //
@@ -54671,8 +54957,12 @@ func (c *Client) CreateChannelWithBody(ctx context.Context, inboxId InboxId, par
 // address and outbound SMTP account); a `chat` channel needs `chat` (at least one allowed
 // origin) and gets a generated public key; an `app` channel takes `app` (optional, defaults
 // apply) and gets a generated public key; `settings` are stored as given.
-// An address belongs to one channel of the whole server, because inbound mail picks its
-// channel by the recipient alone; a taken address answers `409 email_address_taken`.
+// A new e-mail channel receives mail only at its forwarding address until its address is
+// proven (`email.verification`, `POST /v1/channels/{id}/verification-code` and
+// `POST /v1/channels/{id}/verify`). Any number of workspaces may claim an address; one that
+// proved it holds it. The same address twice in this workspace answers
+// `409 email_address_taken`. A catch-all on the forwarding domain or on a public mail
+// provider (gmail.com, outlook.com, …) is refused (`400 validation_failed`).
 //
 // Scope: `inboxes:manage`.
 //
@@ -71861,6 +72151,117 @@ func NewRotateChannelPublicKeyRequest(server string, channelId ChannelId, params
 			}
 
 			req.Header.Set("Yuva-Workspace", headerParam1)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewSendEmailVerificationCodeRequest constructs an http.Request for the SendEmailVerificationCode method
+func NewSendEmailVerificationCodeRequest(server string, channelId ChannelId, params *SendEmailVerificationCodeParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "channelId", channelId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/channels/%s/verification-code", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewVerifyEmailChannelRequest calls the generic VerifyEmailChannel builder with application/json body
+func NewVerifyEmailChannelRequest(server string, channelId ChannelId, params *VerifyEmailChannelParams, body VerifyEmailChannelJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewVerifyEmailChannelRequestWithBody(server, channelId, params, "application/json", bodyReader)
+}
+
+// NewVerifyEmailChannelRequestWithBody constructs an http.Request for the VerifyEmailChannel method, with any body, and a specified content type
+func NewVerifyEmailChannelRequestWithBody(server string, channelId ChannelId, params *VerifyEmailChannelParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "channelId", channelId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/channels/%s/verify", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
 		}
 
 	}
@@ -97688,6 +98089,60 @@ type ClientWithResponsesInterface interface {
 	// Corresponds with POST /v1/channels/{channelId}/public-key (the `RotateChannelPublicKey` operationId).
 	RotateChannelPublicKeyWithResponse(ctx context.Context, channelId ChannelId, params *RotateChannelPublicKeyParams, reqEditors ...RequestEditorFn) (*RotateChannelPublicKeyResponse, error)
 
+	// SendEmailVerificationCodeWithResponse Mail a code that proves an e-mail channel's address
+	//
+	// Owners, admins and API keys. Mails an 8-digit code from the server's own sender to the
+	// channel's address; it is valid for an hour and for 5 tries, and a new one replaces it. The
+	// mail names neither the workspace nor the inbox. Enter it with
+	// `POST /v1/channels/{id}/verify`; a code mail that comes back through the channel's
+	// forwarding address verifies the channel by itself. At most one a minute and 5 a day per
+	// channel, 20 a day per workspace (`429 rate_limited`).
+	//
+	// `400 validation_failed` for other kinds, a catch-all and an address on the forwarding
+	// domain (prove those with the TXT record); `409 email_verified` when the address is already proven
+	// by this channel.
+	//
+	// Scope: `inboxes:manage`.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /v1/channels/{channelId}/verification-code (the `SendEmailVerificationCode` operationId).
+	SendEmailVerificationCodeWithResponse(ctx context.Context, channelId ChannelId, params *SendEmailVerificationCodeParams, reqEditors ...RequestEditorFn) (*SendEmailVerificationCodeResponse, error)
+
+	// VerifyEmailChannelWithBodyWithResponse Prove an e-mail channel's address
+	//
+	// Owners, admins and API keys. With `code`, checks the code mailed to the address; a wrong,
+	// used or expired code answers `400 verification_code_invalid`. Without it, looks the TXT
+	// record `email.verification.txt_name` up now: when it holds `txt_value` the address is
+	// proven, otherwise the channel stays `unverified` with `problem` saying what was found. A
+	// proven address is taken from any channel that held it before, in any workspace, and is
+	// recorded as `channel.address_verified`. An address already proven answers as it is.
+	// `400 validation_failed` for other kinds and for a catch-all on a shared domain.
+	//
+	// Scope: `inboxes:manage`.
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /v1/channels/{channelId}/verify (the `VerifyEmailChannel` operationId).
+	VerifyEmailChannelWithBodyWithResponse(ctx context.Context, channelId ChannelId, params *VerifyEmailChannelParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*VerifyEmailChannelResponse, error)
+
+	// VerifyEmailChannelWithResponse Prove an e-mail channel's address
+	//
+	// Owners, admins and API keys. With `code`, checks the code mailed to the address; a wrong,
+	// used or expired code answers `400 verification_code_invalid`. Without it, looks the TXT
+	// record `email.verification.txt_name` up now: when it holds `txt_value` the address is
+	// proven, otherwise the channel stays `unverified` with `problem` saying what was found. A
+	// proven address is taken from any channel that held it before, in any workspace, and is
+	// recorded as `channel.address_verified`. An address already proven answers as it is.
+	// `400 validation_failed` for other kinds and for a catch-all on a shared domain.
+	//
+	// Scope: `inboxes:manage`.
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /v1/channels/{channelId}/verify (the `VerifyEmailChannel` operationId).
+	VerifyEmailChannelWithResponse(ctx context.Context, channelId ChannelId, params *VerifyEmailChannelParams, body VerifyEmailChannelJSONRequestBody, reqEditors ...RequestEditorFn) (*VerifyEmailChannelResponse, error)
+
 	// ListContactsWithResponse List contacts
 	//
 	// Newest first, or most recently active first with `sort=last_seen` (contacts never seen sort
@@ -98422,8 +98877,9 @@ type ClientWithResponsesInterface interface {
 	// address bounced or complained; `suggested` ones are copied only when named in `cc`. `cc` replaces that list (`[]` copies no one) and `bcc` adds hidden
 	// recipients, at most 20 addresses each: they receive the mail as envelope recipients only and
 	// never appear in its headers. Addresses in `cc` become participants; `bcc` never does. Each
-	// address must be a valid address that this server neither receives nor sends mail for
-	// (`400 validation_failed`, the same answer for both); one that bounced or complained is refused with
+	// address must be a valid address that this workspace neither receives nor sends mail for
+	// (a proven channel address, its catch-all domain or sending address, a forwarding address or
+	// the server's own sender; `400 validation_failed`, the same answer for both); one that bounced or complained is refused with
 	// `409 email_undeliverable`, while an unsubscribe from broadcasts does not stop a reply. The
 	// contact's own address is dropped from both, and an address in both stays in `cc`. `cc` and
 	// `bcc` are refused (`400 validation_failed`) on notes, `in` messages, drafts (send them with
@@ -98491,8 +98947,9 @@ type ClientWithResponsesInterface interface {
 	// address bounced or complained; `suggested` ones are copied only when named in `cc`. `cc` replaces that list (`[]` copies no one) and `bcc` adds hidden
 	// recipients, at most 20 addresses each: they receive the mail as envelope recipients only and
 	// never appear in its headers. Addresses in `cc` become participants; `bcc` never does. Each
-	// address must be a valid address that this server neither receives nor sends mail for
-	// (`400 validation_failed`, the same answer for both); one that bounced or complained is refused with
+	// address must be a valid address that this workspace neither receives nor sends mail for
+	// (a proven channel address, its catch-all domain or sending address, a forwarding address or
+	// the server's own sender; `400 validation_failed`, the same answer for both); one that bounced or complained is refused with
 	// `409 email_undeliverable`, while an unsubscribe from broadcasts does not stop a reply. The
 	// contact's own address is dropped from both, and an address in both stays in `cc`. `cc` and
 	// `bcc` are refused (`400 validation_failed`) on notes, `in` messages, drafts (send them with
@@ -98558,7 +99015,8 @@ type ClientWithResponsesInterface interface {
 	//
 	// The people copied on the conversation's e-mail besides its contact, oldest first, at most
 	// 20 per conversation. The `To` and `Cc` addresses of inbound mail that are not addresses of
-	// this server (any channel's address, sending address or forwarding address) are `active`
+	// this workspace (a proven channel's address, catch-all domain or sending address, a
+	// forwarding address, the server's own sender) are `active`
 	// when the mail passed DMARC (`email.dmarc` `pass`) and `suggested` otherwise, since `From`
 	// can be forged; automatic mail and mail that failed DMARC add no one. Addresses a member
 	// names in a reply's `cc` or adds here are `active`. Replies copy `active` participants by
@@ -98577,7 +99035,7 @@ type ClientWithResponsesInterface interface {
 	// AddConversationParticipantWithBodyWithResponse Add a participant
 	//
 	// Adds an address as an `active` participant, or makes a `suggested` one `active`. The
-	// address must be valid and not one this server receives or sends mail for
+	// address must be valid and not one this workspace receives or sends mail for
 	// (`400 validation_failed`, the same answer for both); a conversation holds at most 20
 	// (`409 participants_full`). Whoever can see the conversation may; API keys and OAuth tokens
 	// need `conversations:write`.
@@ -98590,7 +99048,7 @@ type ClientWithResponsesInterface interface {
 	// AddConversationParticipantWithResponse Add a participant
 	//
 	// Adds an address as an `active` participant, or makes a `suggested` one `active`. The
-	// address must be valid and not one this server receives or sends mail for
+	// address must be valid and not one this workspace receives or sends mail for
 	// (`400 validation_failed`, the same answer for both); a conversation holds at most 20
 	// (`409 participants_full`). Whoever can see the conversation may; API keys and OAuth tokens
 	// need `conversations:write`.
@@ -100512,8 +100970,12 @@ type ClientWithResponsesInterface interface {
 	// address and outbound SMTP account); a `chat` channel needs `chat` (at least one allowed
 	// origin) and gets a generated public key; an `app` channel takes `app` (optional, defaults
 	// apply) and gets a generated public key; `settings` are stored as given.
-	// An address belongs to one channel of the whole server, because inbound mail picks its
-	// channel by the recipient alone; a taken address answers `409 email_address_taken`.
+	// A new e-mail channel receives mail only at its forwarding address until its address is
+	// proven (`email.verification`, `POST /v1/channels/{id}/verification-code` and
+	// `POST /v1/channels/{id}/verify`). Any number of workspaces may claim an address; one that
+	// proved it holds it. The same address twice in this workspace answers
+	// `409 email_address_taken`. A catch-all on the forwarding domain or on a public mail
+	// provider (gmail.com, outlook.com, …) is refused (`400 validation_failed`).
 	//
 	// Scope: `inboxes:manage`.
 	//
@@ -100528,8 +100990,12 @@ type ClientWithResponsesInterface interface {
 	// address and outbound SMTP account); a `chat` channel needs `chat` (at least one allowed
 	// origin) and gets a generated public key; an `app` channel takes `app` (optional, defaults
 	// apply) and gets a generated public key; `settings` are stored as given.
-	// An address belongs to one channel of the whole server, because inbound mail picks its
-	// channel by the recipient alone; a taken address answers `409 email_address_taken`.
+	// A new e-mail channel receives mail only at its forwarding address until its address is
+	// proven (`email.verification`, `POST /v1/channels/{id}/verification-code` and
+	// `POST /v1/channels/{id}/verify`). Any number of workspaces may claim an address; one that
+	// proved it holds it. The same address twice in this workspace answers
+	// `409 email_address_taken`. A catch-all on the forwarding domain or on a public mail
+	// provider (gmail.com, outlook.com, …) is refused (`400 validation_failed`).
 	//
 	// Scope: `inboxes:manage`.
 	//
@@ -116588,6 +117054,158 @@ func (r RotateChannelPublicKeyResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r RotateChannelPublicKeyResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type SendEmailVerificationCodeResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON202 the response for an HTTP 202 `application/json` response
+	JSON202 *Channel
+	// ApplicationproblemJSON400 the response for an HTTP 400 `application/problem+json` response
+	ApplicationproblemJSON400 *Problem
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+	// ApplicationproblemJSON409 the response for an HTTP 409 `application/problem+json` response
+	ApplicationproblemJSON409 *Problem
+	// ApplicationproblemJSON429 the response for an HTTP 429 `application/problem+json` response
+	ApplicationproblemJSON429 *Problem
+}
+
+// GetJSON202 returns the response for an HTTP 202 `application/json` response
+func (r SendEmailVerificationCodeResponse) GetJSON202() *Channel {
+	return r.JSON202
+}
+
+// GetApplicationproblemJSON400 returns the response for an HTTP 400 `application/problem+json` response
+func (r SendEmailVerificationCodeResponse) GetApplicationproblemJSON400() *Problem {
+	return r.ApplicationproblemJSON400
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r SendEmailVerificationCodeResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r SendEmailVerificationCodeResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r SendEmailVerificationCodeResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetApplicationproblemJSON409 returns the response for an HTTP 409 `application/problem+json` response
+func (r SendEmailVerificationCodeResponse) GetApplicationproblemJSON409() *Problem {
+	return r.ApplicationproblemJSON409
+}
+
+// GetApplicationproblemJSON429 returns the response for an HTTP 429 `application/problem+json` response
+func (r SendEmailVerificationCodeResponse) GetApplicationproblemJSON429() *Problem {
+	return r.ApplicationproblemJSON429
+}
+
+// GetBody returns the raw response body bytes
+func (r SendEmailVerificationCodeResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r SendEmailVerificationCodeResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r SendEmailVerificationCodeResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r SendEmailVerificationCodeResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type VerifyEmailChannelResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *Channel
+	// ApplicationproblemJSON400 the response for an HTTP 400 `application/problem+json` response
+	ApplicationproblemJSON400 *Problem
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r VerifyEmailChannelResponse) GetJSON200() *Channel {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON400 returns the response for an HTTP 400 `application/problem+json` response
+func (r VerifyEmailChannelResponse) GetApplicationproblemJSON400() *Problem {
+	return r.ApplicationproblemJSON400
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r VerifyEmailChannelResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r VerifyEmailChannelResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r VerifyEmailChannelResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetBody returns the raw response body bytes
+func (r VerifyEmailChannelResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r VerifyEmailChannelResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r VerifyEmailChannelResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r VerifyEmailChannelResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -144703,6 +145321,78 @@ func (c *ClientWithResponses) RotateChannelPublicKeyWithResponse(ctx context.Con
 	return ParseRotateChannelPublicKeyResponse(rsp)
 }
 
+// SendEmailVerificationCodeWithResponse Mail a code that proves an e-mail channel's address
+//
+// Owners, admins and API keys. Mails an 8-digit code from the server's own sender to the
+// channel's address; it is valid for an hour and for 5 tries, and a new one replaces it. The
+// mail names neither the workspace nor the inbox. Enter it with
+// `POST /v1/channels/{id}/verify`; a code mail that comes back through the channel's
+// forwarding address verifies the channel by itself. At most one a minute and 5 a day per
+// channel, 20 a day per workspace (`429 rate_limited`).
+//
+// `400 validation_failed` for other kinds, a catch-all and an address on the forwarding
+// domain (prove those with the TXT record); `409 email_verified` when the address is already proven
+// by this channel.
+//
+// Scope: `inboxes:manage`.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /v1/channels/{channelId}/verification-code (the `SendEmailVerificationCode` operationId).
+func (c *ClientWithResponses) SendEmailVerificationCodeWithResponse(ctx context.Context, channelId ChannelId, params *SendEmailVerificationCodeParams, reqEditors ...RequestEditorFn) (*SendEmailVerificationCodeResponse, error) {
+	rsp, err := c.SendEmailVerificationCode(ctx, channelId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSendEmailVerificationCodeResponse(rsp)
+}
+
+// VerifyEmailChannelWithBodyWithResponse Prove an e-mail channel's address
+//
+// Owners, admins and API keys. With `code`, checks the code mailed to the address; a wrong,
+// used or expired code answers `400 verification_code_invalid`. Without it, looks the TXT
+// record `email.verification.txt_name` up now: when it holds `txt_value` the address is
+// proven, otherwise the channel stays `unverified` with `problem` saying what was found. A
+// proven address is taken from any channel that held it before, in any workspace, and is
+// recorded as `channel.address_verified`. An address already proven answers as it is.
+// `400 validation_failed` for other kinds and for a catch-all on a shared domain.
+//
+// Scope: `inboxes:manage`.
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /v1/channels/{channelId}/verify (the `VerifyEmailChannel` operationId).
+func (c *ClientWithResponses) VerifyEmailChannelWithBodyWithResponse(ctx context.Context, channelId ChannelId, params *VerifyEmailChannelParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*VerifyEmailChannelResponse, error) {
+	rsp, err := c.VerifyEmailChannelWithBody(ctx, channelId, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseVerifyEmailChannelResponse(rsp)
+}
+
+// VerifyEmailChannelWithResponse Prove an e-mail channel's address
+//
+// Owners, admins and API keys. With `code`, checks the code mailed to the address; a wrong,
+// used or expired code answers `400 verification_code_invalid`. Without it, looks the TXT
+// record `email.verification.txt_name` up now: when it holds `txt_value` the address is
+// proven, otherwise the channel stays `unverified` with `problem` saying what was found. A
+// proven address is taken from any channel that held it before, in any workspace, and is
+// recorded as `channel.address_verified`. An address already proven answers as it is.
+// `400 validation_failed` for other kinds and for a catch-all on a shared domain.
+//
+// Scope: `inboxes:manage`.
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /v1/channels/{channelId}/verify (the `VerifyEmailChannel` operationId).
+func (c *ClientWithResponses) VerifyEmailChannelWithResponse(ctx context.Context, channelId ChannelId, params *VerifyEmailChannelParams, body VerifyEmailChannelJSONRequestBody, reqEditors ...RequestEditorFn) (*VerifyEmailChannelResponse, error) {
+	rsp, err := c.VerifyEmailChannel(ctx, channelId, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseVerifyEmailChannelResponse(rsp)
+}
+
 // ListContactsWithResponse List contacts
 //
 // Newest first, or most recently active first with `sort=last_seen` (contacts never seen sort
@@ -145683,8 +146373,9 @@ func (c *ClientWithResponses) ListMessagesWithResponse(ctx context.Context, conv
 // address bounced or complained; `suggested` ones are copied only when named in `cc`. `cc` replaces that list (`[]` copies no one) and `bcc` adds hidden
 // recipients, at most 20 addresses each: they receive the mail as envelope recipients only and
 // never appear in its headers. Addresses in `cc` become participants; `bcc` never does. Each
-// address must be a valid address that this server neither receives nor sends mail for
-// (`400 validation_failed`, the same answer for both); one that bounced or complained is refused with
+// address must be a valid address that this workspace neither receives nor sends mail for
+// (a proven channel address, its catch-all domain or sending address, a forwarding address or
+// the server's own sender; `400 validation_failed`, the same answer for both); one that bounced or complained is refused with
 // `409 email_undeliverable`, while an unsubscribe from broadcasts does not stop a reply. The
 // contact's own address is dropped from both, and an address in both stays in `cc`. `cc` and
 // `bcc` are refused (`400 validation_failed`) on notes, `in` messages, drafts (send them with
@@ -145758,8 +146449,9 @@ func (c *ClientWithResponses) CreateMessageWithBodyWithResponse(ctx context.Cont
 // address bounced or complained; `suggested` ones are copied only when named in `cc`. `cc` replaces that list (`[]` copies no one) and `bcc` adds hidden
 // recipients, at most 20 addresses each: they receive the mail as envelope recipients only and
 // never appear in its headers. Addresses in `cc` become participants; `bcc` never does. Each
-// address must be a valid address that this server neither receives nor sends mail for
-// (`400 validation_failed`, the same answer for both); one that bounced or complained is refused with
+// address must be a valid address that this workspace neither receives nor sends mail for
+// (a proven channel address, its catch-all domain or sending address, a forwarding address or
+// the server's own sender; `400 validation_failed`, the same answer for both); one that bounced or complained is refused with
 // `409 email_undeliverable`, while an unsubscribe from broadcasts does not stop a reply. The
 // contact's own address is dropped from both, and an address in both stays in `cc`. `cc` and
 // `bcc` are refused (`400 validation_failed`) on notes, `in` messages, drafts (send them with
@@ -145843,7 +146535,8 @@ func (c *ClientWithResponses) MoveConversationWithResponse(ctx context.Context, 
 //
 // The people copied on the conversation's e-mail besides its contact, oldest first, at most
 // 20 per conversation. The `To` and `Cc` addresses of inbound mail that are not addresses of
-// this server (any channel's address, sending address or forwarding address) are `active`
+// this workspace (a proven channel's address, catch-all domain or sending address, a
+// forwarding address, the server's own sender) are `active`
 // when the mail passed DMARC (`email.dmarc` `pass`) and `suggested` otherwise, since `From`
 // can be forged; automatic mail and mail that failed DMARC add no one. Addresses a member
 // names in a reply's `cc` or adds here are `active`. Replies copy `active` participants by
@@ -145868,7 +146561,7 @@ func (c *ClientWithResponses) ListConversationParticipantsWithResponse(ctx conte
 // AddConversationParticipantWithBodyWithResponse Add a participant
 //
 // Adds an address as an `active` participant, or makes a `suggested` one `active`. The
-// address must be valid and not one this server receives or sends mail for
+// address must be valid and not one this workspace receives or sends mail for
 // (`400 validation_failed`, the same answer for both); a conversation holds at most 20
 // (`409 participants_full`). Whoever can see the conversation may; API keys and OAuth tokens
 // need `conversations:write`.
@@ -145887,7 +146580,7 @@ func (c *ClientWithResponses) AddConversationParticipantWithBodyWithResponse(ctx
 // AddConversationParticipantWithResponse Add a participant
 //
 // Adds an address as an `active` participant, or makes a `suggested` one `active`. The
-// address must be valid and not one this server receives or sends mail for
+// address must be valid and not one this workspace receives or sends mail for
 // (`400 validation_failed`, the same answer for both); a conversation holds at most 20
 // (`409 participants_full`). Whoever can see the conversation may; API keys and OAuth tokens
 // need `conversations:write`.
@@ -148571,8 +149264,12 @@ func (c *ClientWithResponses) ListChannelsWithResponse(ctx context.Context, inbo
 // address and outbound SMTP account); a `chat` channel needs `chat` (at least one allowed
 // origin) and gets a generated public key; an `app` channel takes `app` (optional, defaults
 // apply) and gets a generated public key; `settings` are stored as given.
-// An address belongs to one channel of the whole server, because inbound mail picks its
-// channel by the recipient alone; a taken address answers `409 email_address_taken`.
+// A new e-mail channel receives mail only at its forwarding address until its address is
+// proven (`email.verification`, `POST /v1/channels/{id}/verification-code` and
+// `POST /v1/channels/{id}/verify`). Any number of workspaces may claim an address; one that
+// proved it holds it. The same address twice in this workspace answers
+// `409 email_address_taken`. A catch-all on the forwarding domain or on a public mail
+// provider (gmail.com, outlook.com, …) is refused (`400 validation_failed`).
 //
 // Scope: `inboxes:manage`.
 //
@@ -148593,8 +149290,12 @@ func (c *ClientWithResponses) CreateChannelWithBodyWithResponse(ctx context.Cont
 // address and outbound SMTP account); a `chat` channel needs `chat` (at least one allowed
 // origin) and gets a generated public key; an `app` channel takes `app` (optional, defaults
 // apply) and gets a generated public key; `settings` are stored as given.
-// An address belongs to one channel of the whole server, because inbound mail picks its
-// channel by the recipient alone; a taken address answers `409 email_address_taken`.
+// A new e-mail channel receives mail only at its forwarding address until its address is
+// proven (`email.verification`, `POST /v1/channels/{id}/verification-code` and
+// `POST /v1/channels/{id}/verify`). Any number of workspaces may claim an address; one that
+// proved it holds it. The same address twice in this workspace answers
+// `409 email_address_taken`. A catch-all on the forwarding domain or on a public mail
+// provider (gmail.com, outlook.com, …) is refused (`400 validation_failed`).
 //
 // Scope: `inboxes:manage`.
 //
@@ -163815,6 +164516,128 @@ func ParseRotateChannelPublicKeyResponse(rsp *http.Response) (*RotateChannelPubl
 	}
 
 	response := &RotateChannelPublicKeyResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest Channel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseSendEmailVerificationCodeResponse parses an HTTP response from a SendEmailVerificationCodeWithResponse call
+func ParseSendEmailVerificationCodeResponse(rsp *http.Response) (*SendEmailVerificationCodeResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &SendEmailVerificationCodeResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 202:
+		var dest Channel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON202 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON409 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 429:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON429 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseVerifyEmailChannelResponse parses an HTTP response from a VerifyEmailChannelWithResponse call
+func ParseVerifyEmailChannelResponse(rsp *http.Response) (*VerifyEmailChannelResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &VerifyEmailChannelResponse{
 		Body:         bodyBytes,
 		HTTPResponse: rsp,
 	}

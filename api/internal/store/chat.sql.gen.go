@@ -790,7 +790,7 @@ func (q *Queries) HoldEmailConfirmation(ctx context.Context, arg HoldEmailConfir
 }
 
 const inboxEmailChannel = `-- name: InboxEmailChannel :one
-SELECT e.workspace_id, e.channel_id, e.address, e.display_name, e.from_address, e.smtp_host, e.smtp_port, e.smtp_username, e.smtp_password, e.smtp_tls, e.auto_reply_enabled, e.auto_reply_text, e.auto_reply_interval_hours, e.broadcast_smtp_host, e.broadcast_smtp_port, e.broadcast_smtp_username, e.broadcast_smtp_password, e.broadcast_smtp_tls, e.broadcast_rate, e.dkim_selector, e.dkim_private_key, e.dkim_enabled, e.dkim_public_key, e.forward_token, e.ses_tenant, e.ses_configuration_set, e.smtp_aws_account, e.broadcast_smtp_aws_account, e.ses_state, e.ses_detail, e.ses_checked_at FROM email_channels e
+SELECT e.workspace_id, e.channel_id, e.address, e.display_name, e.from_address, e.smtp_host, e.smtp_port, e.smtp_username, e.smtp_password, e.smtp_tls, e.auto_reply_enabled, e.auto_reply_text, e.auto_reply_interval_hours, e.broadcast_smtp_host, e.broadcast_smtp_port, e.broadcast_smtp_username, e.broadcast_smtp_password, e.broadcast_smtp_tls, e.broadcast_rate, e.dkim_selector, e.dkim_private_key, e.dkim_enabled, e.dkim_public_key, e.forward_token, e.ses_tenant, e.ses_configuration_set, e.smtp_aws_account, e.broadcast_smtp_aws_account, e.ses_state, e.ses_detail, e.ses_checked_at, e.verified_at, e.verified_by, e.verify_problem, e.verify_checked_at, e.verify_code_hash, e.verify_code_expires_at, e.verify_attempts, e.verify_message_id, e.verify_relay_message_id, e.verify_sent_at, e.verify_sends, e.verify_window_at FROM email_channels e
 JOIN channels c ON c.workspace_id = e.workspace_id AND c.id = e.channel_id
 WHERE e.workspace_id = $1 AND c.inbox_id = $2
 ORDER BY (e.address LIKE '*@%'), c.created_at, c.id
@@ -837,6 +837,18 @@ func (q *Queries) InboxEmailChannel(ctx context.Context, arg InboxEmailChannelPa
 		&i.SesState,
 		&i.SesDetail,
 		&i.SesCheckedAt,
+		&i.VerifiedAt,
+		&i.VerifiedBy,
+		&i.VerifyProblem,
+		&i.VerifyCheckedAt,
+		&i.VerifyCodeHash,
+		&i.VerifyCodeExpiresAt,
+		&i.VerifyAttempts,
+		&i.VerifyMessageID,
+		&i.VerifyRelayMessageID,
+		&i.VerifySentAt,
+		&i.VerifySends,
+		&i.VerifyWindowAt,
 	)
 	return i, err
 }

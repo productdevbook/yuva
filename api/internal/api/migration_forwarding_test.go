@@ -112,13 +112,10 @@ func TestForwardingDomainCarriesAddresses(t *testing.T) {
 		t.Fatal("a tagged channel address on the forwarding domain did not reach its channel")
 	}
 	unknown("zzzzzzzzzzzzzzzz@" + fwd)
-	catchAll := create("*@" + fwd)
-	if got := channelOf("zzzzzzzzzzzzzzzz@" + fwd); got != catchAll.str("id") {
-		t.Fatal("an unknown local part on the forwarding domain did not reach the catch-all channel")
-	}
-	if got := channelOf(external.str("forwarding_address")); got != external.str("id") {
-		t.Fatal("a forwarding token lost to the catch-all channel")
-	}
+	tm.owner.expectProblem(http.StatusBadRequest, "validation_failed", "POST", "/v1/inboxes/"+tm.inbox+"/channels", map[string]any{
+		"kind": "email", "name": "all", "email": map[string]any{"address": "*@" + fwd},
+	})
+	unknown("zzzzzzzzzzzzzzzz@" + fwd)
 }
 
 func TestMCPMigrationTools(t *testing.T) {

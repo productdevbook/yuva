@@ -256,10 +256,18 @@ func TestEmailChannelSettings(t *testing.T) {
 	o.expectProblem(http.StatusBadRequest, "validation_failed", "POST", "/v1/inboxes/"+et.inbox+"/channels", map[string]any{
 		"kind": "email", "name": "x", "email": map[string]any{"address": "d@example.com", "smtp": map[string]any{"host": "relay.example.com", "tls": "none", "username": "u"}},
 	})
-	other := newTeam(t, h)
-	other.owner.expectProblem(http.StatusConflict, "email_address_taken", "POST", "/v1/inboxes/"+other.inbox+"/channels", map[string]any{
-		"kind": "email", "name": "Taken", "email": map[string]any{"address": strings.ToUpper(et.address[:1]) + et.address[1:]},
+	o.expectProblem(http.StatusConflict, "email_address_taken", "POST", "/v1/inboxes/"+et.inbox+"/channels", map[string]any{
+		"kind": "email", "name": "Twice", "email": map[string]any{"address": strings.ToUpper(et.address[:1]) + et.address[1:]},
 	})
+	other := newTeam(t, h)
+	h.unproven = true
+	claim := other.owner.expect(http.StatusCreated, "POST", "/v1/inboxes/"+other.inbox+"/channels", map[string]any{
+		"kind": "email", "name": "Claim", "email": map[string]any{"address": strings.ToUpper(et.address[:1]) + et.address[1:]},
+	})
+	h.unproven = false
+	if v := claim.body["email"].(map[string]any)["verification"].(map[string]any); v["state"] != "unverified" {
+		t.Fatalf("another workspace's claim: %s", claim.raw)
+	}
 	other.owner.expectProblem(http.StatusNotFound, "not_found", "GET", "/v1/channels/"+et.channel, nil)
 
 	up := o.expect(http.StatusOK, "PATCH", "/v1/channels/"+et.channel, map[string]any{"email": map[string]any{
@@ -714,7 +722,11 @@ func TestCatchAllChannel(t *testing.T) {
 	}
 	exact := create(tm.owner, http.StatusCreated, tm.inbox, "sales@"+domain, nil)
 	other := newTeam(t, h)
-	create(other.owner, http.StatusConflict, other.inbox, "*@"+domain, nil)
+	h.unproven = true
+	if v := create(other.owner, http.StatusCreated, other.inbox, "*@"+domain, nil).body["email"].(map[string]any)["verification"].(map[string]any); v["state"] != "unverified" {
+		t.Fatalf("another workspace's claim of the catch-all: %v", v)
+	}
+	h.unproven = false
 	create(tm.owner, http.StatusBadRequest, tm.inbox, "a*@"+unique("x")+".example", nil)
 	create(tm.owner, http.StatusBadRequest, tm.inbox, unique("y")+"@"+unique("x")+".example", map[string]any{"from_address": "*@" + domain})
 

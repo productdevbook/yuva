@@ -37,9 +37,9 @@ var (
 	errForwardNoteFormat = errValidation("a forward's note is plain text; send body without html")
 )
 
-// forwardAddresses checks the recipients a caller names: 1 to 10 valid addresses that this server
-// neither receives nor sends mail for, without repeats.
-func (s *Server) forwardAddresses(ctx context.Context, in []oas.Email) ([]string, error) {
+// forwardAddresses checks the recipients a caller names: 1 to 10 valid addresses that the
+// workspace neither receives nor sends mail for, without repeats.
+func (s *Server) forwardAddresses(ctx context.Context, ws uuid.UUID, in []oas.Email) ([]string, error) {
 	if len(in) == 0 {
 		return nil, errValidation("to needs at least one address")
 	}
@@ -48,7 +48,7 @@ func (s *Server) forwardAddresses(ctx context.Context, in []oas.Email) ([]string
 	}
 	var out []string
 	for _, v := range in {
-		addr, err := s.copyAddress(ctx, "to", string(v))
+		addr, err := s.copyAddress(ctx, ws, "to", string(v))
 		if err != nil {
 			return nil, err
 		}
@@ -226,7 +226,7 @@ func (s *Server) ForwardConversation(ctx context.Context, req oas.ForwardConvers
 	if len([]rune(note)) > maxMessageBodyRunes {
 		return nil, errValidation("note must be at most 65536 characters")
 	}
-	to, err := s.forwardAddresses(ctx, b.To)
+	to, err := s.forwardAddresses(ctx, p.workspaceID, b.To)
 	if err != nil {
 		return nil, err
 	}
@@ -348,7 +348,7 @@ func (s *Server) sendForwardDraft(ctx context.Context, p principal, req oas.Send
 	if !ok {
 		return nil, errNothingToForward
 	}
-	to, err := s.forwardAddresses(ctx, spec.To)
+	to, err := s.forwardAddresses(ctx, p.workspaceID, spec.To)
 	if err != nil {
 		return nil, err
 	}
