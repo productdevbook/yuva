@@ -65,6 +65,10 @@ function StateBanner({ ch, tab }: { ch: Channel; tab: ChannelTab }) {
   const body =
     state === "receive" ? (
       <Trans>This channel only receives mail. Add an SMTP account under Replies so you can answer from Yuva.</Trans>
+    ) : state === "unproven" ? (
+      <Trans>This address does not receive mail yet</Trans>
+    ) : state === "taken" ? (
+      <Trans>Another workspace proved this address later</Trans>
     ) : state === "identity_missing" ? (
       <Trans>Amazon SES cannot verify the sending domain yet. Publish the DNS records, then check again.</Trans>
     ) : state === "paused" ? (
@@ -74,7 +78,7 @@ function StateBanner({ ch, tab }: { ch: Channel; tab: ChannelTab }) {
     )
   return (
     <Notice
-      tone={state === "receive" || state === "identity_missing" ? "warning" : "danger"}
+      tone={state === "receive" || state === "unproven" || state === "identity_missing" ? "warning" : "danger"}
       icon={TriangleAlertIcon}
       data-testid="channel-banner"
     >

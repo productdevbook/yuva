@@ -5,8 +5,12 @@ import type { Channel } from "@/lib/api"
 
 type SesState = NonNullable<NonNullable<Channel["email"]>["ses"]>["state"]
 
-export function channelState(ch: Channel): "ok" | "receive" | "paused" | "identity_missing" | "error" {
+export type ChannelStateName = "ok" | "receive" | "unproven" | "taken" | "paused" | "identity_missing" | "error"
+
+export function channelState(ch: Channel): ChannelStateName {
   if (ch.kind !== "email") return "ok"
+  const proof = ch.email?.verification
+  if (proof && proof.state !== "verified") return proof.problem === "taken" ? "taken" : "unproven"
   if (!ch.email?.smtp) return "receive"
   const ses: SesState | undefined = ch.email.ses?.state
   return ses === "paused" || ses === "identity_missing" || ses === "error" ? ses : "ok"
@@ -31,7 +35,8 @@ export function channelAction(ch: Channel): { tab: ChannelTab; label: React.Reac
   const state = channelState(ch)
   if (state === "identity_missing" || state === "paused" || state === "error")
     return { tab: "deliverability", label: <Trans>Fix</Trans> }
-  if (state === "receive") return { tab: "settings", label: <Trans>Fix</Trans> }
+  if (state === "receive" || state === "unproven" || state === "taken")
+    return { tab: "settings", label: <Trans>Fix</Trans> }
   if (ch.kind === "email") return { tab: "settings", label: <Trans>Settings</Trans> }
   if (ch.kind === "api") return { tab: "keys", label: <Trans>Keys</Trans> }
   return { tab: "install", label: <Trans>Install</Trans> }
@@ -48,6 +53,14 @@ export function ChannelPill({ ch }: { ch: Channel }) {
       ) : state === "receive" ? (
         <Pill tone="warning">
           <Trans>Receives only</Trans>
+        </Pill>
+      ) : state === "unproven" ? (
+        <Pill tone="warning">
+          <Trans>Unproven address</Trans>
+        </Pill>
+      ) : state === "taken" ? (
+        <Pill tone="danger">
+          <Trans>Address lost</Trans>
         </Pill>
       ) : state === "paused" ? (
         <Pill tone="danger">
