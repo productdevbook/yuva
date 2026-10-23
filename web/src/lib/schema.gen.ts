@@ -8725,6 +8725,53 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/client/v1/push-devices": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Register the device for push
+         * @description Registers this device's push token for the contact, so Yuva can push members' replies
+         *     while the app is not connected (the channel's `push.enabled`). Call it after every app
+         *     start and whenever the token changes; registering the same token again answers the same
+         *     device. A token registered by another contact of the channel moves to this one, so call it
+         *     again after signing a different user in. One contact can have many devices. Tokens that
+         *     APNs or FCM report invalid are removed. Only for `app` channels, else `403 forbidden`.
+         *     Rate limited per session.
+         */
+        post: operations["registerClientPushDevice"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/client/v1/push-devices/{pushDeviceId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Stop push to the device
+         * @description Removes one of the contact's devices, as when the user signs out. `404 not_found` when it
+         *     is not the contact's.
+         */
+        delete: operations["deleteClientPushDevice"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/client/v1/attachments/{attachmentId}": {
         parameters: {
             query?: never;
@@ -10173,7 +10220,7 @@ export interface components {
          *       `webhook.updated`: `fields` among `url`, `events`, `enabled` and `include_notes`, and `host`.
          *       `webhook.secret_rotated`: none.
          *     - `channel.credentials_changed`: `fields` among `smtp` and `broadcast_smtp` (the account
-         *       or its password; never the values).
+         *       or its password), `apns` and `fcm` (an app channel's push credentials); never the values.
          *     - `channel.key_rotated`, `channel.forwarding_address_rotated`, `channel.dkim_key_deleted`:
          *       none. `channel.dkim_key_created`: `selector`.
          *     - `inbox.identity_secret_rotated`: none. `inbox.deleted`: `name`.
@@ -14395,12 +14442,112 @@ export interface components {
             allow_anonymous: boolean;
             /** @description The platforms the app ships on, for the panel. */
             platforms: components["schemas"]["AppPlatform"][];
+            push: components["schemas"]["AppPush"];
         };
         AppChannelInput: {
             /** @description Defaults to false. */
             allow_anonymous?: boolean;
             /** @description Defaults to both. */
             platforms?: components["schemas"]["AppPlatform"][];
+            push?: components["schemas"]["AppPushInput"];
+        };
+        /**
+         * @description The APNs server the app's device tokens belong to (`sandbox` for development builds).
+         * @enum {string}
+         */
+        AppPushEnvironment: "sandbox" | "production";
+        /**
+         * @description Whether Yuva sends the reply push itself. When `enabled`, a member's or bot's reply to a
+         *     contact with no open `/client/v1/realtime` connection is pushed to the contact's devices
+         *     registered with `POST /client/v1/push-devices`, with `yuva_conversation_id` as in a
+         *     host-sent push. Off by default: hosts that send their own push after the
+         *     `message.created` webhook keep doing so. Credentials are encrypted under the server's
+         *     master key and never returned; `apns` and `fcm` say which are set.
+         */
+        AppPush: {
+            enabled: boolean;
+            /**
+             * @description The push shows the start of the reply; otherwise a fixed "new reply" line in the
+             *     contact's language.
+             */
+            show_content: boolean;
+            apns: components["schemas"]["AppPushApns"];
+            fcm: components["schemas"]["AppPushFcm"];
+            /**
+             * @description The last answer from APNs or FCM that was not about one device: a refused key, an FCM
+             *     token of another project, or an APNs token refused before any push in this environment
+             *     succeeded (often a `sandbox` token sent to `production` or the reverse).
+             */
+            last_error?: string;
+            /** Format: date-time */
+            last_error_at?: string;
+        };
+        /** @description The APNs token key (`.p8`). The key itself is never returned. */
+        AppPushApns: {
+            set: boolean;
+            key_id?: string;
+            team_id?: string;
+            /** @description The `apns-topic`; iOS devices registered with another `app_id` get no push. */
+            bundle_id?: string;
+            environment?: components["schemas"]["AppPushEnvironment"];
+        };
+        /** @description The Firebase service account. Its private key is never returned. */
+        AppPushFcm: {
+            set: boolean;
+            project_id?: string;
+            client_email?: string;
+        };
+        /** @description Absent fields keep their current value. */
+        AppPushInput: {
+            /** @description Defaults to false. Turning it on needs APNs or FCM credentials. */
+            enabled?: boolean;
+            /** @description Defaults to false. */
+            show_content?: boolean;
+            apns?: components["schemas"]["AppPushApnsInput"];
+            fcm?: components["schemas"]["AppPushFcmInput"];
+        };
+        /**
+         * @description Replaces the APNs settings. `key_id`, `team_id` and `bundle_id` are required unless
+         *     `private_key` is empty, which removes the APNs credentials.
+         */
+        AppPushApnsInput: {
+            key_id?: string;
+            team_id?: string;
+            bundle_id?: string;
+            /** @description Defaults to `production`. */
+            environment?: components["schemas"]["AppPushEnvironment"];
+            /**
+             * @description The `.p8` file's PEM text. Stored encrypted. Absent keeps the stored key (one must be
+             *     stored); empty removes the APNs credentials.
+             */
+            private_key?: string;
+        };
+        AppPushFcmInput: {
+            /**
+             * @description The service account's JSON key file, with the `cloudmessaging.messages.create`
+             *     permission. Stored encrypted. Absent keeps the stored file (one must be stored);
+             *     empty removes the FCM credentials.
+             */
+            service_account?: string;
+            /** @description Defaults to the service account's `project_id`. */
+            project_id?: string;
+        };
+        ClientPushDeviceCreate: {
+            platform: components["schemas"]["AppPlatform"];
+            /** @description The APNs device token (hex) or the FCM registration token. */
+            token: string;
+            /** @description The app's bundle id (iOS) or package name (Android). */
+            app_id: string;
+        };
+        ClientPushDevice: {
+            /** Format: uuid */
+            id: string;
+            platform: components["schemas"]["AppPlatform"];
+            app_id: string;
+            /** Format: date-time */
+            created_at: string;
+            /** Format: date-time */
+            updated_at: string;
         };
         /**
          * @description `feedback` conversations carry `feedback` metadata; everything else is `conversation`.
@@ -21929,6 +22076,7 @@ export interface components {
          */
         WebhookSignatureHeader: string;
         ContactId: string;
+        PushDeviceId: string;
         ConversationId: string;
         AttachmentId: string;
         MessageId: string;
@@ -35168,6 +35316,56 @@ export interface operations {
             401: components["responses"]["Problem"];
             403: components["responses"]["Problem"];
             429: components["responses"]["Problem"];
+        };
+    };
+    registerClientPushDevice: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ClientPushDeviceCreate"];
+            };
+        };
+        responses: {
+            /** @description The device. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClientPushDevice"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            429: components["responses"]["Problem"];
+        };
+    };
+    deleteClientPushDevice: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                pushDeviceId: components["parameters"]["PushDeviceId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Removed. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
         };
     };
     downloadClientAttachment: {
