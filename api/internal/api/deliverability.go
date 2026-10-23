@@ -221,16 +221,14 @@ func (s *Server) DeleteDkimKey(ctx context.Context, req oas.DeleteDkimKeyRequest
 	if err := requireManagerOrKey(p); err != nil {
 		return nil, err
 	}
-	c, e, err := s.visibleEmailChannel(ctx, p, req.ChannelId)
+	c, _, err := s.visibleEmailChannel(ctx, p, req.ChannelId)
 	if err != nil {
 		return nil, err
 	}
 	err = s.st.InTx(ctx, func(q *store.Queries) error {
-		if err := q.DeleteEmailChannelDkimKey(ctx, store.DeleteEmailChannelDkimKeyParams{WorkspaceID: p.workspaceID, ChannelID: c.ID}); err != nil {
+		n, err := q.DeleteEmailChannelDkimKey(ctx, store.DeleteEmailChannelDkimKeyParams{WorkspaceID: p.workspaceID, ChannelID: c.ID})
+		if err != nil || n == 0 {
 			return err
-		}
-		if len(e.DkimPrivateKey) == 0 {
-			return nil
 		}
 		return s.audit(ctx, q, p, oas.AuditChannelDkimKeyDeleted, oas.AuditTargetChannel, c.ID, nil)
 	})

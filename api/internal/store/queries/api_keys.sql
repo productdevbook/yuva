@@ -1,8 +1,8 @@
 -- name: CreateAPIKey :one
 INSERT INTO api_keys (id, workspace_id, name, prefix, secret_hash, created_by, scopes, inbox_limited, expires_at,
-                      bot_name, bot_avatar_url)
+                      bot_name, bot_avatar_url, by_operator)
 VALUES (@id, @workspace_id, @name, @prefix, @secret_hash, sqlc.narg(created_by), @scopes, @inbox_limited,
-        sqlc.narg(expires_at), sqlc.narg(bot_name), sqlc.narg(bot_avatar_url))
+        sqlc.narg(expires_at), sqlc.narg(bot_name), sqlc.narg(bot_avatar_url), @by_operator)
 RETURNING *;
 
 -- name: AddAPIKeyInbox :exec
@@ -25,8 +25,8 @@ SELECT * FROM api_keys WHERE workspace_id = $1 AND id = $2;
 SELECT * FROM api_keys WHERE workspace_id = $1 ORDER BY created_at, id;
 
 -- name: RevokeAPIKey :execrows
-UPDATE api_keys SET revoked_at = coalesce(revoked_at, @now::timestamptz)
-WHERE workspace_id = @workspace_id AND id = @id;
+UPDATE api_keys SET revoked_at = @now::timestamptz
+WHERE workspace_id = @workspace_id AND id = @id AND revoked_at IS NULL;
 
 -- name: GetActiveAPIKeyByHash :one
 SELECT k.*, w.bots_may_send, w.broadcasts_by_keys FROM api_keys k JOIN workspaces w ON w.id = k.workspace_id

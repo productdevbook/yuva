@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+	"sync"
 	"testing"
 	"time"
 	"uuid"
@@ -256,6 +257,7 @@ func TestAuditActionFamilies(t *testing.T) {
 	h := newHarnessWith(t, func(d *api.Deps) {
 		d.Ingress.ForwardingDomain = testForwardingDomain
 		d.Broadcasts.Mode = "approval"
+		d.OperatorEmails = []string{"operator@example.com"}
 	})
 	tm := newTeam(t, h)
 	ctx := context.Background()
@@ -287,6 +289,8 @@ func TestAuditActionFamilies(t *testing.T) {
 	passwords := []string{"first-" + unique("pw"), "second-" + unique("pw")}
 	tm.owner.expect(http.StatusOK, "PATCH", "/v1/channels/"+email, map[string]any{"email": map[string]any{"address": address,
 		"broadcast_smtp": map[string]any{"host": "smtp.example.com", "username": "news", "password": passwords[0], "tls": "starttls"}}})
+	tm.owner.expect(http.StatusOK, "PATCH", "/v1/channels/"+email, map[string]any{"email": map[string]any{"address": address,
+		"smtp": map[string]any{"host": "smtp.example.com", "username": "help", "password": passwords[1], "tls": "starttls"}}})
 	tm.owner.expect(http.StatusOK, "PATCH", "/v1/channels/"+email, map[string]any{"email": map[string]any{"address": address,
 		"smtp": map[string]any{"host": "smtp.example.com", "username": "help", "password": passwords[1], "tls": "starttls"}}})
 	tm.owner.expect(http.StatusOK, "POST", "/v1/channels/"+email+"/forwarding-address/rotate", nil)
@@ -323,6 +327,14 @@ func TestAuditActionFamilies(t *testing.T) {
 		t.Fatal(err)
 	}
 	if err := h.srv.OperatorApproveBroadcasts(ctx, uuid.MustParse(tm.ws), ""); err != nil {
+		t.Fatal(err)
+	}
+	for _, daily := range []int{200, 200, 0} {
+		if err := h.srv.OperatorLimitBroadcasts(ctx, uuid.MustParse(tm.ws), daily); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if err := h.srv.OperatorSuspendBroadcasts(ctx, uuid.MustParse(tm.ws), "complaints"); err != nil {
 		t.Fatal(err)
 	}
 
@@ -384,8 +396,16 @@ func TestAuditActionFamilies(t *testing.T) {
 	if d := detailsOf(check("contact.deleted", "contact", tm.contact, nil)); len(d) != 0 {
 		t.Fatalf("contact details %v", d)
 	}
-	check("contact.consent_exported", "contact", second, map[string]any{"format": "csv"})
-	check("list.consent_exported", "list", list, map[string]any{"name": "Product news", "format": "json"})
+	check("contact.consent_exported", "contact", second, map[string]any{"format": "csv", "started": true})
+	check("list.consent_exported", "list", list, map[string]any{"name": "Product news", "format": "json", "started": true})
+	if e := check("workspace.broadcasts_suspended", "workspace", tm.ws, map[string]any{"reason": "complaints", "paused_broadcasts": 0}); actorOf(e)["kind"] != "operator" {
+		t.Fatalf("suspension actor %v", actorOf(e))
+	}
+	limits := auditOf(all, "workspace.broadcast_limit_changed")
+	if len(limits) != 2 || detailsOf(limits[1])["to"] != float64(200) || detailsOf(limits[0])["from"] != float64(200) || detailsOf(limits[0])["to"] != nil ||
+		actorOf(limits[0])["kind"] != "operator" {
+		t.Fatalf("limit entries %v", limits)
+	}
 	check("analytics_export.created", "analytics_export", export, map[string]any{"property_id": prop, "kind": "daily", "format": "csv"})
 	if e := check("workspace.broadcast_approval_requested", "workspace", tm.ws, nil); actorOf(e)["id"] != ownerID {
 		t.Fatalf("approval request actor %v", actorOf(e))
@@ -414,15 +434,16 @@ func TestAuditActionFamilies(t *testing.T) {
 
 	ws := tm.owner.expect(http.StatusOK, "GET", "/v1/workspace", nil).str("name")
 	tm.owner.expect(http.StatusAccepted, "DELETE", "/v1/workspace", map[string]any{"name": ws})
-	if n := h.count("SELECT count(*) FROM audit_log WHERE workspace_id = $1 AND action = 'workspace.deleted' AND actor_kind = 'member' AND actor_id = $2", tm.ws, ownerID); n != 1 {
-		t.Fatalf("%d workspace deletions by the owner", n)
+	if n := h.count("SELECT count(*) FROM operator_notices WHERE kind = 'workspace_deleted' AND workspace_name = $1 AND email LIKE 'owner-%@example.com' AND detail = 'by an owner'", ws); n != 1 {
+		t.Fatalf("%d operator notices of the owner's deletion", n)
 	}
 	other := newTeam(t, h)
+	otherName := other.owner.expect(http.StatusOK, "GET", "/v1/workspace", nil).str("name")
 	if err := h.srv.OperatorDeleteWorkspace(ctx, uuid.MustParse(other.ws)); err != nil {
 		t.Fatal(err)
 	}
-	if n := h.count("SELECT count(*) FROM audit_log WHERE workspace_id = $1 AND action = 'workspace.deleted' AND actor_kind = 'operator' AND actor_id IS NULL", other.ws); n != 1 {
-		t.Fatalf("%d workspace deletions by the operator", n)
+	if n := h.count("SELECT count(*) FROM operator_notices WHERE kind = 'workspace_deleted' AND workspace_name = $1 AND email = '' AND detail = 'on the command line'", otherName); n != 1 {
+		t.Fatalf("%d operator notices of the operator's deletion", n)
 	}
 }
 
@@ -527,4 +548,61 @@ func TestAuditRetentionSweep(t *testing.T) {
 	if n := h.count("SELECT count(*) FROM audit_log WHERE workspace_id = $1", other.ws); n != 0 {
 		t.Fatalf("%d old entries left in the other workspace", n)
 	}
+}
+
+func TestAuditKeysBoundedRevokedOnceAndOwnedByAnOwner(t *testing.T) {
+	t.Parallel()
+	h := newHarness(t)
+	tm := newTeam(t, h)
+	ctx := context.Background()
+
+	inboxes := make([]string, 100)
+	for i := range inboxes {
+		inboxes[i] = tm.owner.expect(http.StatusCreated, "POST", "/v1/inboxes", map[string]any{"name": fmt.Sprintf("Inbox %d", i), "slug": fmt.Sprintf("inbox-%d", i)}).body["inbox"].(map[string]any)["id"].(string)
+	}
+	limited := tm.owner.expect(http.StatusCreated, "POST", "/v1/api-keys", map[string]any{
+		"name": "Wide", "inbox_ids": inboxes, "scopes": []string{"conversations:read", "conversations:write", "messages:write", "contacts:read", "inboxes:read"},
+	}).body["api_key"].(map[string]any)["id"].(string)
+	for _, e := range auditOf(auditLog(t, tm.owner, "&action=api_key.created"), "api_key.created") {
+		if targetOf(e)["id"] == limited && detailsOf(e)["inbox_count"] != float64(100) {
+			t.Fatalf("limited key details %v", detailsOf(e))
+		}
+	}
+
+	key := tm.owner.expect(http.StatusCreated, "POST", "/v1/api-keys", map[string]any{"name": "Raced", "scopes": []string{"inboxes:read"}}).body["api_key"].(map[string]any)["id"].(string)
+	var wg sync.WaitGroup
+	for range 8 {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			tm.owner.do("DELETE", "/v1/api-keys/"+key, nil)
+		}()
+	}
+	wg.Wait()
+	if n := h.count("SELECT count(*) FROM audit_log WHERE workspace_id = $1 AND action = 'api_key.revoked' AND target_id = $2", tm.ws, key); n != 1 {
+		t.Fatalf("%d revocations of one key", n)
+	}
+
+	secondEmail := unique("second") + "@example.com"
+	tm.owner.expect(http.StatusCreated, "POST", "/v1/invites", map[string]any{"email": secondEmail, "role": "owner"})
+	second := h.client()
+	second.signIn(secondEmail)
+	secondID := second.expect(http.StatusOK, "GET", "/v1/me", nil).body["memberships"].([]any)[0].(map[string]any)["member_id"].(string)
+	reader := h.client()
+	reader.bearer = second.expect(http.StatusCreated, "POST", "/v1/api-keys", map[string]any{"name": "Audit reader", "scopes": []string{"audit:read"}}).str("secret")
+	reader.expect(http.StatusOK, "GET", "/v1/audit-log", nil)
+	tm.owner.expect(http.StatusOK, "PATCH", "/v1/members/"+secondID, map[string]any{"role": "admin"})
+	reader.expectProblem(http.StatusForbidden, "forbidden", "GET", "/v1/audit-log", nil)
+	tm.owner.expect(http.StatusOK, "PATCH", "/v1/members/"+secondID, map[string]any{"role": "owner"})
+	reader.expect(http.StatusOK, "GET", "/v1/audit-log", nil)
+	tm.owner.expect(http.StatusNoContent, "DELETE", "/v1/members/"+secondID, nil)
+	reader.expectProblem(http.StatusForbidden, "forbidden", "GET", "/v1/audit-log", nil)
+
+	_, secret, err := api.CreateWorkspaceAPIKey(ctx, h.st, uuid.MustParse(tm.ws), api.APIKeySpec{Name: "Operator reader", Scopes: []string{"audit:read"}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	operator := h.client()
+	operator.bearer = secret
+	operator.expect(http.StatusOK, "GET", "/v1/audit-log", nil)
 }

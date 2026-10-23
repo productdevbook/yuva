@@ -16998,7 +16998,7 @@ components:
         - `member.removed`: `role`, and `reason` `account_deleted` when the person deleted their account.
         - `member.inbox_access_granted`, `member.inbox_access_revoked`: `inbox_id`, `inbox_name`.
         - `invite.created`: `email`, `role`. `invite.deleted`: none.
-        - `api_key.created`: `name`, `prefix`, `scopes`, `inbox_ids` when limited, `expires_at` when set.
+        - `api_key.created`: `name`, `prefix`, `scopes`, `inbox_count` when limited, `expires_at` when set.
           `api_key.revoked`: `name`, `prefix`.
         - `oauth_grant.created`: `client`, `scopes`. `oauth_grant.revoked`: `client`.
         - `webhook.created`, `webhook.deleted`: `host` (never the URL), `events`.
@@ -17009,13 +17009,20 @@ components:
         - `channel.key_rotated`, `channel.forwarding_address_rotated`, `channel.dkim_key_deleted`:
           none. `channel.dkim_key_created`: `selector`.
         - `inbox.identity_secret_rotated`: none. `inbox.deleted`: `name`.
-        - `contact.deleted`: none (no name or address is kept). `contact.consent_exported`: `format`.
-        - `list.consent_exported`: `name`, `format`.
+        - `contact.deleted`: none (no name or address is kept). `contact.consent_exported`: `format`,
+          `started` (the entry is written when the export starts streaming).
+        - `list.consent_exported`: `name`, `format`, `started`.
         - `analytics_export.created`: `property_id`, `kind`, `format`.
         - `workspace.retention_changed`: `from`, `to` (days; `null` keeps everything).
         - `workspace.broadcast_approval_requested`: none. `workspace.broadcasts_approved`,
           `workspace.broadcasts_denied`: `reason` when the operator gave one.
-        - `workspace.deleted`: none.
+          `workspace.broadcasts_suspended`: `reason`, `paused_broadcasts` (by the operator).
+          `workspace.broadcast_limit_changed`: `from`, `to` (recipients a day; `null` is no limit).
+
+        Details never make an action fail: when they would be too long, lists are replaced by
+        `<name>_count` and `truncated` is `true`.
+        A workspace's deletion is not in its log, which goes with the workspace; the operator's
+        digest names it.
 
         More actions are added over time; show an unknown one by its name.
       enum:
@@ -17049,8 +17056,9 @@ components:
         - workspace.broadcast_approval_requested
         - workspace.broadcasts_approved
         - workspace.broadcasts_denied
-        - workspace.deleted
-      x-enum-varnames: [AuditMemberJoined, AuditMemberRoleChanged, AuditMemberRemoved, AuditMemberInboxAccessGranted, AuditMemberInboxAccessRevoked, AuditInviteCreated, AuditInviteDeleted, AuditApiKeyCreated, AuditApiKeyRevoked, AuditOAuthGrantCreated, AuditOAuthGrantRevoked, AuditWebhookCreated, AuditWebhookUpdated, AuditWebhookDeleted, AuditWebhookSecretRotated, AuditChannelCredentialsChanged, AuditChannelKeyRotated, AuditChannelForwardingAddressRotated, AuditChannelDkimKeyCreated, AuditChannelDkimKeyDeleted, AuditInboxIdentitySecretRotated, AuditInboxDeleted, AuditContactDeleted, AuditContactConsentExported, AuditListConsentExported, AuditAnalyticsExportCreated, AuditWorkspaceRetentionChanged, AuditWorkspaceBroadcastApprovalRequested, AuditWorkspaceBroadcastsApproved, AuditWorkspaceBroadcastsDenied, AuditWorkspaceDeleted]
+        - workspace.broadcasts_suspended
+        - workspace.broadcast_limit_changed
+      x-enum-varnames: [AuditMemberJoined, AuditMemberRoleChanged, AuditMemberRemoved, AuditMemberInboxAccessGranted, AuditMemberInboxAccessRevoked, AuditInviteCreated, AuditInviteDeleted, AuditApiKeyCreated, AuditApiKeyRevoked, AuditOAuthGrantCreated, AuditOAuthGrantRevoked, AuditWebhookCreated, AuditWebhookUpdated, AuditWebhookDeleted, AuditWebhookSecretRotated, AuditChannelCredentialsChanged, AuditChannelKeyRotated, AuditChannelForwardingAddressRotated, AuditChannelDkimKeyCreated, AuditChannelDkimKeyDeleted, AuditInboxIdentitySecretRotated, AuditInboxDeleted, AuditContactDeleted, AuditContactConsentExported, AuditListConsentExported, AuditAnalyticsExportCreated, AuditWorkspaceRetentionChanged, AuditWorkspaceBroadcastApprovalRequested, AuditWorkspaceBroadcastsApproved, AuditWorkspaceBroadcastsDenied, AuditWorkspaceBroadcastsSuspended, AuditWorkspaceBroadcastLimitChanged]
     AuditTargetType:
       type: string
       enum: [workspace, member, invite, inbox, channel, api_key, oauth_grant, webhook, contact, list, analytics_export]

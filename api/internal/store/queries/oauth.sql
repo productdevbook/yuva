@@ -75,8 +75,8 @@ WHERE t.token_hash = $1;
 DELETE FROM oauth_tokens WHERE workspace_id = $1 AND id = $2;
 
 -- name: RevokeOAuthGrant :execrows
-UPDATE oauth_grants SET revoked_at = coalesce(revoked_at, @now::timestamptz)
-WHERE workspace_id = @workspace_id AND id = @id;
+UPDATE oauth_grants SET revoked_at = @now::timestamptz
+WHERE workspace_id = @workspace_id AND id = @id AND revoked_at IS NULL;
 
 -- name: DeleteOAuthGrantTokens :exec
 DELETE FROM oauth_tokens WHERE workspace_id = $1 AND grant_id = $2;

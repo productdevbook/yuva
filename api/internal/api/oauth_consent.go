@@ -175,7 +175,7 @@ func (s *Server) RevokeOAuthGrant(ctx context.Context, req oas.RevokeOAuthGrantR
 		if err != nil {
 			return err
 		}
-		if _, err = revokeGrant(ctx, q, p.workspaceID, g.ID, s.now()); err != nil {
+		if revoked, err := revokeGrant(ctx, q, p.workspaceID, g.ID, s.now()); err != nil || !revoked {
 			return err
 		}
 		return s.audit(ctx, q, p, oas.AuditOAuthGrantRevoked, oas.AuditTargetOAuthGrant, g.ID, auditDetails{"client": client})

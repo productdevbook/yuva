@@ -19,6 +19,23 @@ CREATE INDEX audit_log_time_idx ON audit_log (workspace_id, created_at DESC, id 
 CREATE INDEX audit_log_actor_idx ON audit_log (workspace_id, actor_id, created_at DESC) WHERE actor_id IS NOT NULL;
 CREATE INDEX audit_log_actor_member_idx ON audit_log (workspace_id, actor_member_id, created_at DESC) WHERE actor_member_id IS NOT NULL;
 CREATE INDEX audit_log_action_idx ON audit_log (workspace_id, action, created_at DESC);
+CREATE INDEX audit_log_created_idx ON audit_log (created_at);
+
+-- Keys made on the command line may hold audit:read without an owner behind them.
+ALTER TABLE api_keys ADD COLUMN by_operator boolean NOT NULL DEFAULT false;
+
+ALTER TABLE operator_notices
+    DROP CONSTRAINT operator_notices_kind_check,
+    ADD CONSTRAINT operator_notices_kind_check
+        CHECK (kind IN ('signup', 'workspace', 'broadcast_approval', 'broadcast_suspended', 'broadcast_paused', 'analytics_limit', 'analytics_dropped',
+                        'ses_tenant_paused', 'workspace_deleted'));
 
 -- +goose Down
+DELETE FROM operator_notices WHERE kind = 'workspace_deleted';
+ALTER TABLE operator_notices
+    DROP CONSTRAINT operator_notices_kind_check,
+    ADD CONSTRAINT operator_notices_kind_check
+        CHECK (kind IN ('signup', 'workspace', 'broadcast_approval', 'broadcast_suspended', 'broadcast_paused', 'analytics_limit', 'analytics_dropped',
+                        'ses_tenant_paused'));
+ALTER TABLE api_keys DROP COLUMN by_operator;
 DROP TABLE audit_log;

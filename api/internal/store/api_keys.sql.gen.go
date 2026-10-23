@@ -29,10 +29,10 @@ func (q *Queries) AddAPIKeyInbox(ctx context.Context, arg AddAPIKeyInboxParams) 
 
 const createAPIKey = `-- name: CreateAPIKey :one
 INSERT INTO api_keys (id, workspace_id, name, prefix, secret_hash, created_by, scopes, inbox_limited, expires_at,
-                      bot_name, bot_avatar_url)
+                      bot_name, bot_avatar_url, by_operator)
 VALUES ($1, $2, $3, $4, $5, $6, $7, $8,
-        $9, $10, $11)
-RETURNING id, workspace_id, name, prefix, secret_hash, created_by, created_at, last_used_at, revoked_at, scopes, inbox_limited, expires_at, bot_name, bot_avatar_url
+        $9, $10, $11, $12)
+RETURNING id, workspace_id, name, prefix, secret_hash, created_by, created_at, last_used_at, revoked_at, scopes, inbox_limited, expires_at, bot_name, bot_avatar_url, by_operator
 `
 
 type CreateAPIKeyParams struct {
@@ -47,6 +47,7 @@ type CreateAPIKeyParams struct {
 	ExpiresAt    *time.Time
 	BotName      *string
 	BotAvatarUrl *string
+	ByOperator   bool
 }
 
 func (q *Queries) CreateAPIKey(ctx context.Context, arg CreateAPIKeyParams) (ApiKey, error) {
@@ -62,6 +63,7 @@ func (q *Queries) CreateAPIKey(ctx context.Context, arg CreateAPIKeyParams) (Api
 		arg.ExpiresAt,
 		arg.BotName,
 		arg.BotAvatarUrl,
+		arg.ByOperator,
 	)
 	var i ApiKey
 	err := row.Scan(
@@ -79,12 +81,13 @@ func (q *Queries) CreateAPIKey(ctx context.Context, arg CreateAPIKeyParams) (Api
 		&i.ExpiresAt,
 		&i.BotName,
 		&i.BotAvatarUrl,
+		&i.ByOperator,
 	)
 	return i, err
 }
 
 const getAPIKey = `-- name: GetAPIKey :one
-SELECT id, workspace_id, name, prefix, secret_hash, created_by, created_at, last_used_at, revoked_at, scopes, inbox_limited, expires_at, bot_name, bot_avatar_url FROM api_keys WHERE workspace_id = $1 AND id = $2
+SELECT id, workspace_id, name, prefix, secret_hash, created_by, created_at, last_used_at, revoked_at, scopes, inbox_limited, expires_at, bot_name, bot_avatar_url, by_operator FROM api_keys WHERE workspace_id = $1 AND id = $2
 `
 
 type GetAPIKeyParams struct {
@@ -110,12 +113,13 @@ func (q *Queries) GetAPIKey(ctx context.Context, arg GetAPIKeyParams) (ApiKey, e
 		&i.ExpiresAt,
 		&i.BotName,
 		&i.BotAvatarUrl,
+		&i.ByOperator,
 	)
 	return i, err
 }
 
 const getAPIKeyByID = `-- name: GetAPIKeyByID :one
-SELECT id, workspace_id, name, prefix, secret_hash, created_by, created_at, last_used_at, revoked_at, scopes, inbox_limited, expires_at, bot_name, bot_avatar_url FROM api_keys WHERE id = $1
+SELECT id, workspace_id, name, prefix, secret_hash, created_by, created_at, last_used_at, revoked_at, scopes, inbox_limited, expires_at, bot_name, bot_avatar_url, by_operator FROM api_keys WHERE id = $1
 `
 
 func (q *Queries) GetAPIKeyByID(ctx context.Context, id uuid.UUID) (ApiKey, error) {
@@ -136,12 +140,13 @@ func (q *Queries) GetAPIKeyByID(ctx context.Context, id uuid.UUID) (ApiKey, erro
 		&i.ExpiresAt,
 		&i.BotName,
 		&i.BotAvatarUrl,
+		&i.ByOperator,
 	)
 	return i, err
 }
 
 const getActiveAPIKeyByHash = `-- name: GetActiveAPIKeyByHash :one
-SELECT k.id, k.workspace_id, k.name, k.prefix, k.secret_hash, k.created_by, k.created_at, k.last_used_at, k.revoked_at, k.scopes, k.inbox_limited, k.expires_at, k.bot_name, k.bot_avatar_url, w.bots_may_send, w.broadcasts_by_keys FROM api_keys k JOIN workspaces w ON w.id = k.workspace_id
+SELECT k.id, k.workspace_id, k.name, k.prefix, k.secret_hash, k.created_by, k.created_at, k.last_used_at, k.revoked_at, k.scopes, k.inbox_limited, k.expires_at, k.bot_name, k.bot_avatar_url, k.by_operator, w.bots_may_send, w.broadcasts_by_keys FROM api_keys k JOIN workspaces w ON w.id = k.workspace_id
 WHERE k.secret_hash = $1 AND k.revoked_at IS NULL AND w.deleted_at IS NULL
 `
 
@@ -160,6 +165,7 @@ type GetActiveAPIKeyByHashRow struct {
 	ExpiresAt        *time.Time
 	BotName          *string
 	BotAvatarUrl     *string
+	ByOperator       bool
 	BotsMaySend      bool
 	BroadcastsByKeys bool
 }
@@ -182,6 +188,7 @@ func (q *Queries) GetActiveAPIKeyByHash(ctx context.Context, secretHash []byte) 
 		&i.ExpiresAt,
 		&i.BotName,
 		&i.BotAvatarUrl,
+		&i.ByOperator,
 		&i.BotsMaySend,
 		&i.BroadcastsByKeys,
 	)
@@ -225,7 +232,7 @@ func (q *Queries) ListAPIKeyInboxes(ctx context.Context, arg ListAPIKeyInboxesPa
 }
 
 const listAPIKeys = `-- name: ListAPIKeys :many
-SELECT id, workspace_id, name, prefix, secret_hash, created_by, created_at, last_used_at, revoked_at, scopes, inbox_limited, expires_at, bot_name, bot_avatar_url FROM api_keys WHERE workspace_id = $1 ORDER BY created_at, id
+SELECT id, workspace_id, name, prefix, secret_hash, created_by, created_at, last_used_at, revoked_at, scopes, inbox_limited, expires_at, bot_name, bot_avatar_url, by_operator FROM api_keys WHERE workspace_id = $1 ORDER BY created_at, id
 `
 
 func (q *Queries) ListAPIKeys(ctx context.Context, workspaceID uuid.UUID) ([]ApiKey, error) {
@@ -252,6 +259,7 @@ func (q *Queries) ListAPIKeys(ctx context.Context, workspaceID uuid.UUID) ([]Api
 			&i.ExpiresAt,
 			&i.BotName,
 			&i.BotAvatarUrl,
+			&i.ByOperator,
 		); err != nil {
 			return nil, err
 		}
@@ -264,8 +272,8 @@ func (q *Queries) ListAPIKeys(ctx context.Context, workspaceID uuid.UUID) ([]Api
 }
 
 const revokeAPIKey = `-- name: RevokeAPIKey :execrows
-UPDATE api_keys SET revoked_at = coalesce(revoked_at, $1::timestamptz)
-WHERE workspace_id = $2 AND id = $3
+UPDATE api_keys SET revoked_at = $1::timestamptz
+WHERE workspace_id = $2 AND id = $3 AND revoked_at IS NULL
 `
 
 type RevokeAPIKeyParams struct {
@@ -308,7 +316,7 @@ func (q *Queries) TouchAPIKey(ctx context.Context, arg TouchAPIKeyParams) error 
 const updateAPIKey = `-- name: UpdateAPIKey :one
 UPDATE api_keys SET name = $1, bot_name = $2, bot_avatar_url = $3
 WHERE workspace_id = $4 AND id = $5
-RETURNING id, workspace_id, name, prefix, secret_hash, created_by, created_at, last_used_at, revoked_at, scopes, inbox_limited, expires_at, bot_name, bot_avatar_url
+RETURNING id, workspace_id, name, prefix, secret_hash, created_by, created_at, last_used_at, revoked_at, scopes, inbox_limited, expires_at, bot_name, bot_avatar_url, by_operator
 `
 
 type UpdateAPIKeyParams struct {
@@ -343,6 +351,7 @@ func (q *Queries) UpdateAPIKey(ctx context.Context, arg UpdateAPIKeyParams) (Api
 		&i.ExpiresAt,
 		&i.BotName,
 		&i.BotAvatarUrl,
+		&i.ByOperator,
 	)
 	return i, err
 }

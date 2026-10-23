@@ -3,7 +3,9 @@ package api
 import (
 	"context"
 	"encoding/json"
+	"net/http"
 	"net/url"
+	"reflect"
 	"time"
 	"uuid"
 
@@ -11,9 +13,17 @@ import (
 	"github.com/productdevbook/yuva/api/internal/store"
 )
 
-const defaultWorkspaceAuditDays = 365
+const (
+	defaultWorkspaceAuditDays = 365
+	// auditDetailsMax keeps details well inside the table's limit of 4000 characters, which jsonb's
+	// text form (with a space after every comma and colon) reaches before the encoded JSON does.
+	auditDetailsMax   = 1500
+	auditSweepBatch   = 5000
+)
 
 type auditDetails map[string]any
+
+var errAuditKeyOwnerGone = problem(http.StatusForbidden, "forbidden", "the owner who gave this key audit:read is no longer an owner")
 
 // writeAudit records an action in the workspace's audit log, in the caller's transaction. A
 // principal with neither member nor key nor grant is the operator's command line.
@@ -22,20 +32,42 @@ func writeAudit(ctx context.Context, q *store.Queries, p principal, now time.Tim
 		ID: newID(), WorkspaceID: p.workspaceID, Action: string(action), TargetType: string(target), TargetID: targetID, Now: now,
 	}
 	switch {
+	case p.isOperator():
+		arg.ActorKind = string(oas.AuditActorOperator)
 	case p.isKey():
 		arg.ActorKind, arg.ActorID = string(oas.AuditActorApiKey), new(p.keyID)
 	case p.isGrant():
 		arg.ActorKind, arg.ActorID, arg.ActorMemberID, arg.Via = string(oas.AuditActorOAuthGrant), new(p.grantID), new(p.memberID), p.viaClient()
-	case p.memberID != uuid.Nil():
-		arg.ActorKind, arg.ActorID, arg.ActorMemberID = string(oas.AuditActorMember), new(p.memberID), new(p.memberID)
 	default:
-		arg.ActorKind = string(oas.AuditActorOperator)
+		arg.ActorKind, arg.ActorID, arg.ActorMemberID = string(oas.AuditActorMember), new(p.memberID), new(p.memberID)
 	}
-	if details == nil {
-		details = auditDetails{}
-	}
-	arg.Details = mustJSON(details)
+	arg.Details = boundedDetails(details)
 	return q.AddAuditEntry(ctx, arg)
+}
+
+func (p principal) isOperator() bool { return !p.isKey() && !p.isGrant() && p.memberID == uuid.Nil() }
+
+// boundedDetails never lets an entry's size fail the action it records: lists become their
+// counts, and what is still too long is dropped, with truncated set.
+func boundedDetails(details auditDetails) []byte {
+	if details == nil {
+		return []byte("{}")
+	}
+	if b := mustJSON(details); len(b) <= auditDetailsMax {
+		return b
+	}
+	out := auditDetails{"truncated": true}
+	for k, v := range details {
+		if rv := reflect.ValueOf(v); rv.Kind() == reflect.Slice {
+			out[k+"_count"] = rv.Len()
+		} else {
+			out[k] = v
+		}
+	}
+	if b := mustJSON(out); len(b) <= auditDetailsMax {
+		return b
+	}
+	return []byte(`{"truncated": true}`)
 }
 
 func (s *Server) audit(ctx context.Context, q *store.Queries, p principal, action oas.AuditAction, target oas.AuditTargetType, targetID uuid.UUID, details auditDetails) error {
@@ -59,6 +91,13 @@ func (s *Server) ListAuditLog(ctx context.Context, req oas.ListAuditLogRequestOb
 	if p.isKey() {
 		if p.limited {
 			return nil, errForbidden
+		}
+		ok, err := s.st.APIKeyMayReadAudit(ctx, store.APIKeyMayReadAuditParams{WorkspaceID: p.workspaceID, ID: p.keyID})
+		if err != nil {
+			return nil, err
+		}
+		if !ok {
+			return nil, errAuditKeyOwnerGone
 		}
 	} else if err := requireOwner(p); err != nil {
 		return nil, err
@@ -128,17 +167,13 @@ func auditEntryBody(r store.AuditLog) (oas.AuditEntry, error) {
 	return out, nil
 }
 
-// CleanAudit deletes audit entries older than the audit period.
+// CleanAudit deletes audit entries older than the audit period, in batches across workspaces.
 func (s *Server) CleanAudit(ctx context.Context) error {
 	before := s.now().AddDate(0, 0, -s.auditDays)
-	rows, err := s.st.ListWorkspaceIDs(ctx)
-	if err != nil {
-		return err
-	}
-	for _, ws := range rows {
-		if _, err := s.st.DeleteOldAuditEntries(ctx, store.DeleteOldAuditEntriesParams{WorkspaceID: ws, Before: before}); err != nil {
+	for {
+		n, err := s.st.DeleteOldAuditEntries(ctx, store.DeleteOldAuditEntriesParams{Before: before, Lim: auditSweepBatch})
+		if err != nil || n < auditSweepBatch {
 			return err
 		}
 	}
-	return nil
 }

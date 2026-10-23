@@ -440,6 +440,7 @@ type ApiKey struct {
 	ExpiresAt    *time.Time
 	BotName      *string
 	BotAvatarUrl *string
+	ByOperator   bool
 }
 
 type ApiKeyInbox struct {

@@ -273,7 +273,7 @@ func createAPIKey(ctx context.Context, q *store.Queries, p principal, spec APIKe
 	k, err := q.CreateAPIKey(ctx, store.CreateAPIKeyParams{
 		ID: newID(), WorkspaceID: workspaceID, Name: name, Prefix: prefix,
 		SecretHash: hashSecret(secret), CreatedBy: p.memberRef(), Scopes: scopes, InboxLimited: len(inboxes) > 0,
-		ExpiresAt: spec.ExpiresAt, BotName: botName, BotAvatarUrl: avatar,
+		ExpiresAt: spec.ExpiresAt, BotName: botName, BotAvatarUrl: avatar, ByOperator: p.isOperator(),
 	})
 	if err != nil {
 		return store.ApiKey{}, "", err
@@ -285,7 +285,7 @@ func createAPIKey(ctx context.Context, q *store.Queries, p principal, spec APIKe
 	}
 	details := auditDetails{"name": k.Name, "prefix": k.Prefix, "scopes": k.Scopes}
 	if len(inboxes) > 0 {
-		details["inbox_ids"] = inboxes
+		details["inbox_count"] = len(inboxes)
 	}
 	if k.ExpiresAt != nil {
 		details["expires_at"] = k.ExpiresAt
@@ -305,11 +305,9 @@ func revokeAPIKey(ctx context.Context, q *store.Queries, p principal, id uuid.UU
 	if err != nil {
 		return k, err
 	}
-	if _, err := q.RevokeAPIKey(ctx, store.RevokeAPIKeyParams{Now: now, WorkspaceID: p.workspaceID, ID: k.ID}); err != nil {
+	n, err := q.RevokeAPIKey(ctx, store.RevokeAPIKeyParams{Now: now, WorkspaceID: p.workspaceID, ID: k.ID})
+	if err != nil || n == 0 {
 		return k, err
-	}
-	if k.RevokedAt != nil {
-		return k, nil
 	}
 	return k, writeAudit(ctx, q, p, now, oas.AuditApiKeyRevoked, oas.AuditTargetApiKey, k.ID, auditDetails{"name": k.Name, "prefix": k.Prefix})
 }

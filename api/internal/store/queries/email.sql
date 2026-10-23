@@ -235,9 +235,9 @@ UPDATE email_channels SET dkim_selector = @selector, dkim_private_key = @private
 WHERE workspace_id = @workspace_id AND channel_id = @channel_id AND dkim_private_key IS NULL
 RETURNING *;
 
--- name: DeleteEmailChannelDkimKey :exec
+-- name: DeleteEmailChannelDkimKey :execrows
 UPDATE email_channels SET dkim_selector = NULL, dkim_private_key = NULL, dkim_public_key = NULL, dkim_enabled = false
-WHERE workspace_id = @workspace_id AND channel_id = @channel_id;
+WHERE workspace_id = @workspace_id AND channel_id = @channel_id AND dkim_private_key IS NOT NULL;
 
 -- name: SetEmailChannelDkimEnabled :one
 UPDATE email_channels SET dkim_enabled = @enabled

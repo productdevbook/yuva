@@ -52,8 +52,21 @@ func (s *Server) OperatorLimitBroadcasts(ctx context.Context, ws uuid.UUID, dail
 	if daily > 0 {
 		limit = new(int32(daily))
 	}
-	_, err := s.st.SetWorkspaceBroadcastDailyLimit(ctx, store.SetWorkspaceBroadcastDailyLimitParams{ID: ws, DailyLimit: limit})
-	return err
+	return s.st.InTx(ctx, func(q *store.Queries) error {
+		if _, err := q.LockWorkspace(ctx, ws); err != nil {
+			return err
+		}
+		cur, err := q.GetWorkspace(ctx, ws)
+		if err != nil {
+			return err
+		}
+		w, err := q.SetWorkspaceBroadcastDailyLimit(ctx, store.SetWorkspaceBroadcastDailyLimitParams{ID: ws, DailyLimit: limit})
+		if err != nil || equalPtr(cur.BroadcastDailyLimit, w.BroadcastDailyLimit) {
+			return err
+		}
+		return s.audit(ctx, q, principal{workspaceID: ws}, oas.AuditWorkspaceBroadcastLimitChanged, oas.AuditTargetWorkspace, ws,
+			auditDetails{"from": cur.BroadcastDailyLimit, "to": w.BroadcastDailyLimit})
+	})
 }
 
 // BroadcastSummary is what the operator sees of a workspace's broadcasts.

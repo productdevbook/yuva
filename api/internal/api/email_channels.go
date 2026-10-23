@@ -3,6 +3,7 @@ package api
 import (
 	"bytes"
 	"context"
+	"crypto/hmac"
 	"net/http"
 	"regexp"
 	"strings"
@@ -174,10 +175,22 @@ func (s *Server) smtpAccount(field string, sm oas.SmtpSettingsInput, keep, secre
 	case *sm.Password == "":
 	case len(*sm.Password) > 1024:
 		return out, errValidation(field + ".password must be at most 1024 bytes")
+	case s.samePassword(keep, *sm.Password, secretCtx):
+		out.password = keep
 	default:
 		out.password = s.secrets.Seal([]byte(*sm.Password), secretCtx)
 	}
 	return out, nil
+}
+
+// samePassword reports a password sent again unchanged, which keeps its sealed form so the audit
+// log does not record a change.
+func (s *Server) samePassword(sealed []byte, plain string, secretCtx []byte) bool {
+	if len(sealed) == 0 {
+		return false
+	}
+	cur, err := s.secrets.Open(sealed, secretCtx)
+	return err == nil && hmac.Equal(cur, []byte(plain))
 }
 
 // emailBroadcastParams are a channel's broadcast account and pace after an update: what the input

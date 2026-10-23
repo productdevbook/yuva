@@ -634,8 +634,8 @@ func (q *Queries) MarkOAuthTokenUsed(ctx context.Context, arg MarkOAuthTokenUsed
 }
 
 const revokeOAuthGrant = `-- name: RevokeOAuthGrant :execrows
-UPDATE oauth_grants SET revoked_at = coalesce(revoked_at, $1::timestamptz)
-WHERE workspace_id = $2 AND id = $3
+UPDATE oauth_grants SET revoked_at = $1::timestamptz
+WHERE workspace_id = $2 AND id = $3 AND revoked_at IS NULL
 `
 
 type RevokeOAuthGrantParams struct {

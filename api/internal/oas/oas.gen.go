@@ -1075,9 +1075,10 @@ const (
 	AuditWebhookSecretRotated                AuditAction = "webhook.secret_rotated"
 	AuditWebhookUpdated                      AuditAction = "webhook.updated"
 	AuditWorkspaceBroadcastApprovalRequested AuditAction = "workspace.broadcast_approval_requested"
+	AuditWorkspaceBroadcastLimitChanged      AuditAction = "workspace.broadcast_limit_changed"
 	AuditWorkspaceBroadcastsApproved         AuditAction = "workspace.broadcasts_approved"
 	AuditWorkspaceBroadcastsDenied           AuditAction = "workspace.broadcasts_denied"
-	AuditWorkspaceDeleted                    AuditAction = "workspace.deleted"
+	AuditWorkspaceBroadcastsSuspended        AuditAction = "workspace.broadcasts_suspended"
 	AuditWorkspaceRetentionChanged           AuditAction = "workspace.retention_changed"
 )
 
@@ -1138,11 +1139,13 @@ func (e AuditAction) Valid() bool {
 		return true
 	case AuditWorkspaceBroadcastApprovalRequested:
 		return true
+	case AuditWorkspaceBroadcastLimitChanged:
+		return true
 	case AuditWorkspaceBroadcastsApproved:
 		return true
 	case AuditWorkspaceBroadcastsDenied:
 		return true
-	case AuditWorkspaceDeleted:
+	case AuditWorkspaceBroadcastsSuspended:
 		return true
 	case AuditWorkspaceRetentionChanged:
 		return true
@@ -8398,7 +8401,7 @@ type Attributes map[string]interface{}
 //   - `member.removed`: `role`, and `reason` `account_deleted` when the person deleted their account.
 //   - `member.inbox_access_granted`, `member.inbox_access_revoked`: `inbox_id`, `inbox_name`.
 //   - `invite.created`: `email`, `role`. `invite.deleted`: none.
-//   - `api_key.created`: `name`, `prefix`, `scopes`, `inbox_ids` when limited, `expires_at` when set.
+//   - `api_key.created`: `name`, `prefix`, `scopes`, `inbox_count` when limited, `expires_at` when set.
 //     `api_key.revoked`: `name`, `prefix`.
 //   - `oauth_grant.created`: `client`, `scopes`. `oauth_grant.revoked`: `client`.
 //   - `webhook.created`, `webhook.deleted`: `host` (never the URL), `events`.
@@ -8409,13 +8412,20 @@ type Attributes map[string]interface{}
 //   - `channel.key_rotated`, `channel.forwarding_address_rotated`, `channel.dkim_key_deleted`:
 //     none. `channel.dkim_key_created`: `selector`.
 //   - `inbox.identity_secret_rotated`: none. `inbox.deleted`: `name`.
-//   - `contact.deleted`: none (no name or address is kept). `contact.consent_exported`: `format`.
-//   - `list.consent_exported`: `name`, `format`.
+//   - `contact.deleted`: none (no name or address is kept). `contact.consent_exported`: `format`,
+//     `started` (the entry is written when the export starts streaming).
+//   - `list.consent_exported`: `name`, `format`, `started`.
 //   - `analytics_export.created`: `property_id`, `kind`, `format`.
 //   - `workspace.retention_changed`: `from`, `to` (days; `null` keeps everything).
 //   - `workspace.broadcast_approval_requested`: none. `workspace.broadcasts_approved`,
 //     `workspace.broadcasts_denied`: `reason` when the operator gave one.
-//   - `workspace.deleted`: none.
+//     `workspace.broadcasts_suspended`: `reason`, `paused_broadcasts` (by the operator).
+//     `workspace.broadcast_limit_changed`: `from`, `to` (recipients a day; `null` is no limit).
+//
+// Details never make an action fail: when they would be too long, lists are replaced by
+// `<name>_count` and `truncated` is `true`.
+// A workspace's deletion is not in its log, which goes with the workspace; the operator's
+// digest names it.
 //
 // More actions are added over time; show an unknown one by its name.
 type AuditAction string
@@ -8457,7 +8467,7 @@ type AuditEntry struct {
 	// - `member.removed`: `role`, and `reason` `account_deleted` when the person deleted their account.
 	// - `member.inbox_access_granted`, `member.inbox_access_revoked`: `inbox_id`, `inbox_name`.
 	// - `invite.created`: `email`, `role`. `invite.deleted`: none.
-	// - `api_key.created`: `name`, `prefix`, `scopes`, `inbox_ids` when limited, `expires_at` when set.
+	// - `api_key.created`: `name`, `prefix`, `scopes`, `inbox_count` when limited, `expires_at` when set.
 	//   `api_key.revoked`: `name`, `prefix`.
 	// - `oauth_grant.created`: `client`, `scopes`. `oauth_grant.revoked`: `client`.
 	// - `webhook.created`, `webhook.deleted`: `host` (never the URL), `events`.
@@ -8468,13 +8478,20 @@ type AuditEntry struct {
 	// - `channel.key_rotated`, `channel.forwarding_address_rotated`, `channel.dkim_key_deleted`:
 	//   none. `channel.dkim_key_created`: `selector`.
 	// - `inbox.identity_secret_rotated`: none. `inbox.deleted`: `name`.
-	// - `contact.deleted`: none (no name or address is kept). `contact.consent_exported`: `format`.
-	// - `list.consent_exported`: `name`, `format`.
+	// - `contact.deleted`: none (no name or address is kept). `contact.consent_exported`: `format`,
+	//   `started` (the entry is written when the export starts streaming).
+	// - `list.consent_exported`: `name`, `format`, `started`.
 	// - `analytics_export.created`: `property_id`, `kind`, `format`.
 	// - `workspace.retention_changed`: `from`, `to` (days; `null` keeps everything).
 	// - `workspace.broadcast_approval_requested`: none. `workspace.broadcasts_approved`,
 	//   `workspace.broadcasts_denied`: `reason` when the operator gave one.
-	// - `workspace.deleted`: none.
+	//   `workspace.broadcasts_suspended`: `reason`, `paused_broadcasts` (by the operator).
+	//   `workspace.broadcast_limit_changed`: `from`, `to` (recipients a day; `null` is no limit).
+	//
+	// Details never make an action fail: when they would be too long, lists are replaced by
+	// `<name>_count` and `truncated` is `true`.
+	// A workspace's deletion is not in its log, which goes with the workspace; the operator's
+	// digest names it.
 	//
 	// More actions are added over time; show an unknown one by its name.
 	Action    AuditAction `json:"action"`

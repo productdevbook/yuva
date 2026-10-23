@@ -346,9 +346,9 @@ func (q *Queries) CreateMessageEmail(ctx context.Context, arg CreateMessageEmail
 	return err
 }
 
-const deleteEmailChannelDkimKey = `-- name: DeleteEmailChannelDkimKey :exec
+const deleteEmailChannelDkimKey = `-- name: DeleteEmailChannelDkimKey :execrows
 UPDATE email_channels SET dkim_selector = NULL, dkim_private_key = NULL, dkim_public_key = NULL, dkim_enabled = false
-WHERE workspace_id = $1 AND channel_id = $2
+WHERE workspace_id = $1 AND channel_id = $2 AND dkim_private_key IS NOT NULL
 `
 
 type DeleteEmailChannelDkimKeyParams struct {
@@ -356,9 +356,12 @@ type DeleteEmailChannelDkimKeyParams struct {
 	ChannelID   uuid.UUID
 }
 
-func (q *Queries) DeleteEmailChannelDkimKey(ctx context.Context, arg DeleteEmailChannelDkimKeyParams) error {
-	_, err := q.db.Exec(ctx, deleteEmailChannelDkimKey, arg.WorkspaceID, arg.ChannelID)
-	return err
+func (q *Queries) DeleteEmailChannelDkimKey(ctx context.Context, arg DeleteEmailChannelDkimKeyParams) (int64, error) {
+	result, err := q.db.Exec(ctx, deleteEmailChannelDkimKey, arg.WorkspaceID, arg.ChannelID)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected(), nil
 }
 
 const deleteExpiredConfirmationBounces = `-- name: DeleteExpiredConfirmationBounces :execrows

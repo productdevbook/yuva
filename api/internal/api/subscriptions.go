@@ -941,7 +941,7 @@ func (s *Server) ExportListConsent(ctx context.Context, req oas.ExportListConsen
 			return nil, err
 		}
 	}
-	if err := s.audit(ctx, s.st.Queries, p, oas.AuditListConsentExported, oas.AuditTargetList, list.ID, auditDetails{"name": list.Name, "format": format}); err != nil {
+	if err := s.audit(ctx, s.st.Queries, p, oas.AuditListConsentExported, oas.AuditTargetList, list.ID, auditDetails{"name": list.Name, "format": format, "started": true}); err != nil {
 		return nil, err
 	}
 	if iys {
@@ -968,7 +968,7 @@ func (s *Server) ExportContactConsent(ctx context.Context, req oas.ExportContact
 	if err != nil {
 		return nil, err
 	}
-	if err := s.audit(ctx, s.st.Queries, p, oas.AuditContactConsentExported, oas.AuditTargetContact, req.ContactId, auditDetails{"format": format}); err != nil {
+	if err := s.audit(ctx, s.st.Queries, p, oas.AuditContactConsentExported, oas.AuditTargetContact, req.ContactId, auditDetails{"format": format, "started": true}); err != nil {
 		return nil, err
 	}
 	return consentStream{

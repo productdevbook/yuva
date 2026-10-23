@@ -22,6 +22,8 @@ const (
 	operatorNoticeKeep = time.Hour
 	noticeSignup       = "signup"
 	noticeWorkspace    = "workspace"
+	// noticeWorkspaceDeleted is the only record of a workspace's deletion that outlives it.
+	noticeWorkspaceDeleted = "workspace_deleted"
 )
 
 var countryCode = regexp.MustCompile(`^[A-Z]{2}$`)
@@ -80,6 +82,7 @@ var broadcastNoticeTitles = map[string]string{
 	noticeAnalyticsLimit:     "Analytics monthly limit reached",
 	noticeAnalyticsDropped:   "Analytics events mostly dropped",
 	noticeSESTenantPaused:    "SES tenant paused",
+	noticeWorkspaceDeleted:   "Workspace deleted",
 }
 
 func oneLine(s string) string {
@@ -121,7 +124,7 @@ func (s *Server) SendOperatorDigest(ctx context.Context) error {
 		return err
 	}
 	var items []operatorItem
-	signups, workspaces, broadcasts, analyticsNotices := 0, 0, 0, 0
+	signups, workspaces, broadcasts, analyticsNotices, deletions := 0, 0, 0, 0, 0
 	for _, n := range notices {
 		it := operatorItem{Time: n.CreatedAt.UTC().Format("2006-01-02 15:04 UTC"), Email: n.Email, Reader: n.Reader, From: n.Ip}
 		if n.Country != nil {
@@ -136,9 +139,12 @@ func (s *Server) SendOperatorDigest(ctx context.Context) error {
 			if n.Detail != nil {
 				it.Detail = oneLine(*n.Detail)
 			}
-			if n.Kind == noticeAnalyticsLimit || n.Kind == noticeAnalyticsDropped {
+			switch n.Kind {
+			case noticeAnalyticsLimit, noticeAnalyticsDropped:
 				analyticsNotices++
-			} else {
+			case noticeWorkspaceDeleted:
+				deletions++
+			default:
 				broadcasts++
 			}
 		case n.Kind == noticeWorkspace && n.WorkspaceName != nil:
@@ -154,7 +160,7 @@ func (s *Server) SendOperatorDigest(ctx context.Context) error {
 		server = u.Host
 	}
 	msg, err := mail.Render("operator_digest", "en", map[string]any{
-		"Items": items, "Signups": signups, "Workspaces": workspaces, "Broadcasts": broadcasts, "Analytics": analyticsNotices, "Server": server, "URL": s.auth.PublicURL,
+		"Items": items, "Signups": signups, "Workspaces": workspaces, "Broadcasts": broadcasts, "Analytics": analyticsNotices, "Deletions": deletions, "Server": server, "URL": s.auth.PublicURL,
 	})
 	if err != nil {
 		return err

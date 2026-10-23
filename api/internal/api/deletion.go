@@ -100,7 +100,7 @@ func (s *Server) closeWorkspace(ctx context.Context, p principal) error {
 		if _, err := q.MarkWorkspaceDeleted(ctx, store.MarkWorkspaceDeletedParams{ID: workspaceID, Now: &now}); err != nil {
 			return err
 		}
-		if err := writeAudit(ctx, q, p, now, oas.AuditWorkspaceDeleted, oas.AuditTargetWorkspace, workspaceID, nil); err != nil {
+		if err := s.noteWorkspaceDeleted(ctx, q, p); err != nil {
 			return err
 		}
 		if _, err := q.DeleteWorkspaceWebhookEndpoints(ctx, workspaceID); err != nil {
@@ -133,6 +133,27 @@ func (s *Server) closeWorkspace(ctx context.Context, p principal) error {
 		_, err = s.jobs.InsertTx(ctx, tx, WorkspaceDeleteArgs{WorkspaceID: workspaceID}, nil)
 		return err
 	})
+}
+
+// noteWorkspaceDeleted tells the operator's digest who deleted a workspace: its audit log goes
+// with it.
+func (s *Server) noteWorkspaceDeleted(ctx context.Context, q *store.Queries, p principal) error {
+	if len(s.operator) == 0 {
+		return nil
+	}
+	w, err := q.GetWorkspace(ctx, p.workspaceID)
+	if err != nil {
+		return err
+	}
+	by, detail := "", "on the command line"
+	if !p.isOperator() {
+		m, err := q.GetMember(ctx, store.GetMemberParams{WorkspaceID: p.workspaceID, ID: p.memberID})
+		if err != nil {
+			return err
+		}
+		by, detail = m.Email, "by an owner"
+	}
+	return s.noteBroadcastOperator(ctx, q, noticeWorkspaceDeleted, by, w.Name, detail)
 }
 
 // queueWorkspaceDeletions queues the deletion again for workspaces whose job was lost.

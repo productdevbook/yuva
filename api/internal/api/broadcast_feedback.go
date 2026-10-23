@@ -282,7 +282,8 @@ func (s *Server) suspendBroadcasts(ctx context.Context, ws uuid.UUID, why string
 		if byRates {
 			return s.noteBroadcastOperator(ctx, q, noticeBroadcastSuspended, "", cur.Name, why)
 		}
-		return nil
+		return s.audit(ctx, q, principal{workspaceID: ws}, oas.AuditWorkspaceBroadcastsSuspended, oas.AuditTargetWorkspace, ws,
+			auditDetails{"reason": why, "paused_broadcasts": len(running)})
 	})
 	if err != nil || !changed {
 		return err

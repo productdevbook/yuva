@@ -12,6 +12,23 @@ import (
 	"uuid"
 )
 
+const aPIKeyMayReadAudit = `-- name: APIKeyMayReadAudit :one
+SELECT (k.by_operator OR EXISTS (SELECT 1 FROM members m WHERE m.workspace_id = k.workspace_id AND m.id = k.created_by AND m.role = 'owner'))::bool AS may_read
+FROM api_keys k WHERE k.workspace_id = $1 AND k.id = $2
+`
+
+type APIKeyMayReadAuditParams struct {
+	WorkspaceID uuid.UUID
+	ID          uuid.UUID
+}
+
+func (q *Queries) APIKeyMayReadAudit(ctx context.Context, arg APIKeyMayReadAuditParams) (bool, error) {
+	row := q.db.QueryRow(ctx, aPIKeyMayReadAudit, arg.WorkspaceID, arg.ID)
+	var may_read bool
+	err := row.Scan(&may_read)
+	return may_read, err
+}
+
 const addAuditEntry = `-- name: AddAuditEntry :exec
 INSERT INTO audit_log (id, workspace_id, actor_kind, actor_id, actor_member_id, actor_name, via, action, target_type, target_id, details, created_at)
 VALUES ($1, $2, $3, $4, $5,
@@ -56,16 +73,17 @@ func (q *Queries) AddAuditEntry(ctx context.Context, arg AddAuditEntryParams) er
 }
 
 const deleteOldAuditEntries = `-- name: DeleteOldAuditEntries :execrows
-DELETE FROM audit_log WHERE workspace_id = $1 AND created_at < $2
+DELETE FROM audit_log d WHERE d.id IN (SELECT o.id FROM audit_log o WHERE o.created_at < $1 LIMIT $2)
 `
 
 type DeleteOldAuditEntriesParams struct {
-	WorkspaceID uuid.UUID
-	Before      time.Time
+	Before time.Time
+	Lim    int32
 }
 
+// Retention runs across workspaces: the same period applies to every workspace.
 func (q *Queries) DeleteOldAuditEntries(ctx context.Context, arg DeleteOldAuditEntriesParams) (int64, error) {
-	result, err := q.db.Exec(ctx, deleteOldAuditEntries, arg.WorkspaceID, arg.Before)
+	result, err := q.db.Exec(ctx, deleteOldAuditEntries, arg.Before, arg.Lim)
 	if err != nil {
 		return 0, err
 	}

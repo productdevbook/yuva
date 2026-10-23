@@ -3,6 +3,7 @@ package api
 import (
 	"context"
 	"fmt"
+	"log/slog"
 	"time"
 	"uuid"
 
@@ -44,6 +45,9 @@ func (s *Server) UpdateWorkspace(ctx context.Context, req oas.UpdateWorkspaceReq
 	}
 	var w store.Workspace
 	err := s.st.InTx(ctx, func(q *store.Queries) error {
+		if _, err := q.LockWorkspace(ctx, p.workspaceID); err != nil {
+			return err
+		}
 		var err error
 		if w, err = q.GetWorkspace(ctx, p.workspaceID); err != nil {
 			return err
@@ -126,7 +130,7 @@ func (w *retentionWorker) Work(ctx context.Context, _ *river.Job[jobs.RetentionA
 		return err
 	}
 	if err := w.s.CleanAudit(ctx); err != nil {
-		return err
+		w.s.log.ErrorContext(ctx, "audit log retention", slog.Any("error", err))
 	}
 	return w.s.ApplyRetention(ctx)
 }
