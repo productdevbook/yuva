@@ -9,6 +9,7 @@ import (
 	"mime/multipart"
 	"net/http"
 	"net/textproto"
+	"net/url"
 	"os"
 	"slices"
 	"strings"
@@ -76,7 +77,7 @@ func TestComposeMail(t *testing.T) {
 	conv := r.body["conversation"].(map[string]any)
 	msg := r.body["message"].(map[string]any)
 	convID, msgID := conv["id"].(string), msg["id"].(string)
-	if conv["contact_id"] != known || conv["subject"] != "Quarterly numbers" || conv["channel_kind"] != "email" || conv["status"] != "open" || conv["assignee_id"] != ownerID {
+	if conv["contact_id"] != known || conv["subject"] != "Quarterly numbers" || conv["channel_kind"] != "email" || conv["status"] != "pending" || conv["assignee_id"] != ownerID {
 		t.Fatalf("conversation: %v", conv)
 	}
 	em := msg["email"].(map[string]any)
@@ -98,6 +99,16 @@ func TestComposeMail(t *testing.T) {
 	var hiddenContacts int
 	if err := h.st.Pool.QueryRow(ctx, "SELECT count(*) FROM contact_emails WHERE workspace_id = $1 AND email = $2", et.ws, hidden).Scan(&hiddenContacts); err != nil || hiddenContacts != 0 {
 		t.Fatalf("a bcc address became a contact: %d %v", hiddenContacts, err)
+	}
+
+	for q, want := range map[string]bool{"ann": true, "Ann Kn": true, "ann@" + d[:4]: true, "nobody": false, "'ann": true, "an:*|b": false} {
+		found := false
+		for _, it := range et.owner.expect(http.StatusOK, "GET", "/v1/contacts?q="+url.QueryEscape(q), nil).body["items"].([]any) {
+			found = found || it.(map[string]any)["id"] == known
+		}
+		if found != want {
+			t.Fatalf("contacts?q=%q found %v", q, found)
+		}
 	}
 
 	h.sendQueued(t, et.ws, msgID)

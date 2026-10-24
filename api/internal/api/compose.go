@@ -380,6 +380,15 @@ func (s *Server) ComposeMail(ctx context.Context, req oas.ComposeMailRequestObje
 		if err != nil {
 			return err
 		}
+		if inbox.Purpose == string(oas.InboxPurposeMail) {
+			// Mail one wrote waits under Sent; the first reply reopens it into the Inbox.
+			if c, err = q.UpdateConversation(ctx, store.UpdateConversationParams{
+				WorkspaceID: c.WorkspaceID, ID: c.ID, Subject: c.Subject, Status: string(oas.ConversationStatusPending), Priority: c.Priority,
+				AssigneeID: c.AssigneeID, Spam: c.Spam, FeedbackProgress: c.FeedbackProgress, Now: now,
+			}); err != nil {
+				return err
+			}
+		}
 		body, err := conversationBody(ctx, q, c, nil)
 		if err != nil {
 			return err

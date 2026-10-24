@@ -4,7 +4,9 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"regexp"
 	"slices"
+	"strings"
 	"time"
 	"uuid"
 
@@ -205,6 +207,28 @@ func visibleContact(ctx context.Context, q *store.Queries, p principal, id uuid.
 	return nil
 }
 
+var prefixWordCut = regexp.MustCompile(`[^\p{L}\p{N}@._+-]+`)
+
+// prefixQuery matches every word of q, the last one as a prefix, so a recipient field finds
+// "alice@example.com" from "ali".
+func prefixQuery(q *string) *string {
+	if q == nil {
+		return nil
+	}
+	var terms []string
+	for _, w := range strings.Fields(strings.NewReplacer("İ", "i", "ı", "i").Replace(strings.ToLower(*q))) {
+		if w = prefixWordCut.ReplaceAllString(w, ""); w != "" {
+			terms = append(terms, "'"+w+"'")
+		}
+	}
+	if len(terms) == 0 {
+		return nil
+	}
+	terms[len(terms)-1] += ":*"
+	v := strings.Join(terms, " & ")
+	return &v
+}
+
 // agentInboxes is the set of inboxes an agent can access, nil for principals that see all.
 func agentInboxes(ctx context.Context, q *store.Queries, p principal) (map[uuid.UUID]bool, error) {
 	if p.seesAllInboxes() {
@@ -328,7 +352,7 @@ func (s *Server) ListContacts(ctx context.Context, req oas.ListContactsRequestOb
 		viewer = &id
 	}
 	arg := store.ListContactsParams{
-		WorkspaceID: p.workspaceID, ViewerID: viewer, Q: q, Kind: (*string)(prm.Kind), HasOpen: prm.HasOpen, InboxID: prm.InboxId,
+		WorkspaceID: p.workspaceID, ViewerID: viewer, Q: q, Prefix: prefixQuery(q), Kind: (*string)(prm.Kind), HasOpen: prm.HasOpen, InboxID: prm.InboxId,
 		CursorAt: at, CursorID: id, Lim: lim + 1,
 	}
 	var (

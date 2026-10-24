@@ -1343,7 +1343,8 @@ written (no `Re:`), a new `Message-ID` and no `In-Reply-To` or `References`; the
 every `To` of the stored e-mail row. A hard bounce or complaint for one recipient suppresses that
 address, and the message fails only when every `To` bounced; delivery reports keep the one-recipient
 rule above, so a report about mail with several recipients changes nothing. In a `mail` inbox the
-calling member is the assignee; keys assign no one. A draft makes only the conversation and its
+calling member is the assignee (keys assign no one) and the conversation starts `pending`, so it
+waits under Sent and the first reply reopens it into the Inbox. A draft makes only the conversation and its
 contact; it keeps its `to`, `cc`, `bcc` and subject in `composed_mails` (workspace, message, inbox,
 optional `client_id`; deleted with the message, scrubbed with the other recipient lists when a
 contact is deleted), and `sendMessage` sends exactly that mail, `cc` and `bcc` given there replacing

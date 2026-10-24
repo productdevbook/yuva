@@ -43,7 +43,8 @@ WHERE c.workspace_id = @workspace_id
    OR (c.created_by = sqlc.narg(viewer_id)::uuid
        AND NOT EXISTS (SELECT 1 FROM conversations cv WHERE cv.workspace_id = c.workspace_id AND cv.contact_id = c.id)
        AND NOT EXISTS (SELECT 1 FROM contact_external_ids x WHERE x.workspace_id = c.workspace_id AND x.contact_id = c.id))))
-  AND (sqlc.narg(q)::text IS NULL OR c.search @@ websearch_to_tsquery('simple', translate(sqlc.narg(q)::text, 'İı', 'ii')))
+  AND (sqlc.narg(q)::text IS NULL OR c.search @@ websearch_to_tsquery('simple', translate(sqlc.narg(q)::text, 'İı', 'ii'))
+       OR c.search @@ to_tsquery('simple', sqlc.narg(prefix)::text))
   AND (sqlc.narg(kind)::text IS NULL OR (sqlc.narg(kind)::text = 'known') = (
       EXISTS (SELECT 1 FROM contact_emails e WHERE e.workspace_id = c.workspace_id AND e.contact_id = c.id)
       OR EXISTS (SELECT 1 FROM contact_external_ids x WHERE x.workspace_id = c.workspace_id AND x.contact_id = c.id)))
@@ -76,7 +77,8 @@ WHERE c.workspace_id = @workspace_id
    OR (c.created_by = sqlc.narg(viewer_id)::uuid
        AND NOT EXISTS (SELECT 1 FROM conversations cv WHERE cv.workspace_id = c.workspace_id AND cv.contact_id = c.id)
        AND NOT EXISTS (SELECT 1 FROM contact_external_ids x WHERE x.workspace_id = c.workspace_id AND x.contact_id = c.id))))
-  AND (sqlc.narg(q)::text IS NULL OR c.search @@ websearch_to_tsquery('simple', translate(sqlc.narg(q)::text, 'İı', 'ii')))
+  AND (sqlc.narg(q)::text IS NULL OR c.search @@ websearch_to_tsquery('simple', translate(sqlc.narg(q)::text, 'İı', 'ii'))
+       OR c.search @@ to_tsquery('simple', sqlc.narg(prefix)::text))
   AND (sqlc.narg(kind)::text IS NULL OR (sqlc.narg(kind)::text = 'known') = (
       EXISTS (SELECT 1 FROM contact_emails e WHERE e.workspace_id = c.workspace_id AND e.contact_id = c.id)
       OR EXISTS (SELECT 1 FROM contact_external_ids x WHERE x.workspace_id = c.workspace_id AND x.contact_id = c.id)))
