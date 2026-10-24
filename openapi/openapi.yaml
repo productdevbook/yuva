@@ -1331,6 +1331,76 @@ paths:
           $ref: "#/components/responses/Problem"
         "404":
           $ref: "#/components/responses/Problem"
+  /v1/me/signatures:
+    get:
+      operationId: listMySignatures
+      summary: Your signatures
+      description: |
+        The calling member's signature in every inbox they can see: their own, or the inbox's
+        default (`Inbox.signature`) when they have none, rendered for them. Member sessions only.
+      tags: [me]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+      responses:
+        "200":
+          description: The signatures.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MemberSignatureList"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+  /v1/me/signatures/{inboxId}:
+    put:
+      operationId: setMySignature
+      summary: Set your signature for one inbox
+      description: |
+        Replaces the member's own signature for the inbox; it wins over the inbox's default. Replies
+        stored before keep the signature they were written with. Member sessions only.
+      tags: [me]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/InboxId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MemberSignatureUpdate"
+      responses:
+        "200":
+          description: The signature.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MemberSignature"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+    delete:
+      operationId: deleteMySignature
+      summary: Remove your signature for one inbox
+      description: The member signs with the inbox's default again. Member sessions only.
+      tags: [me]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/InboxId"
+      responses:
+        "204":
+          description: Removed.
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
   /v1/me/mentions:
     get:
       operationId: listMentions
@@ -2210,10 +2280,12 @@ paths:
           $ref: "#/components/responses/Problem"
     patch:
       operationId: updateMember
-      summary: Change a member's role
+      summary: Change a member's role or title
       description: |
-        Owners and admins only, with a member session. Only an owner grants or takes away the
-        `owner` role. The last owner cannot be demoted.
+        With a member session. A member may change their own `title`; changing another member's
+        `title` or anyone's `role` is for owners and admins only. Only an owner grants or takes away
+        the `owner` role. The last owner cannot be demoted. A body with neither field is
+        `400 validation_failed`.
       tags: [workspace]
       security:
         - session: []
@@ -5189,7 +5261,12 @@ paths:
         A member's reply (`message`, `out`) in a conversation that started on an `email` channel is
         e-mailed to the contact through the channel's SMTP account by a background job: the message
         is returned with `delivery.state` `queued`, and `message.updated` events report `sent` or
-        `failed`. Notes are never e-mailed. When the recipient address is undeliverable (bounced or
+        `failed`. Notes are never e-mailed. A member's e-mailed reply carries their signature for
+        the inbox (`GET /v1/me/signatures`) unless `signature` is `false`: below the reply and above
+        a quoted block at the end of the body (lines starting with `>`), after `-- ` in the text part
+        and as a `yuva-signature` block in the HTML part. It is fixed when the message or its draft
+        is stored and returned as `signature_html`; when several replies go out in one e-mail, the
+        latest signature among them is added once. When the recipient address is undeliverable (bounced or
         complained) the reply is refused with `409 email_undeliverable`; when the channel has no
         SMTP account, with `409 email_not_configured`. A catch-all channel (`*@domain`) sends from the
         address the contact wrote to; when the conversation has none and the channel has no
@@ -9095,7 +9172,8 @@ paths:
         the workspace's images would exceed the server's limit. A workspace can upload 30 images a
         minute; more are refused with `429 rate_limited` and `Retry-After`.
 
-        Owners, admins and API keys. Scope: `broadcasts:write`.
+        Every member (so agents can put an image in their signature) and API keys. Scope:
+        `broadcasts:write`.
       tags: [designs]
       parameters:
         - $ref: "#/components/parameters/IdempotencyKey"
@@ -9144,7 +9222,9 @@ paths:
         not archived uses the image, naming the articles in `used_by.help_articles` while a help
         article's draft, published copy or kept revision shows it, and the entries in
         `used_by.changelog_entries` while a What's new entry has it as its picture or shows it in a
-        draft or published text, whatever `force` says. An image that went out in a sent broadcast needs
+        draft or published text, and the inboxes and members in `used_by.inbox_signatures` and
+        `used_by.member_signatures` while an inbox's default signature or a member's own signature
+        shows it, whatever `force` says. An image that went out in a sent broadcast needs
         `force=true` (`409 image_sent` otherwise): mail already delivered then shows a broken
         image. The public URL stops working at once.
 
@@ -21512,7 +21592,7 @@ components:
           $ref: "#/components/schemas/Availability"
     Member:
       type: object
-      required: [id, person_id, email, name, role, availability, online, created_at]
+      required: [id, person_id, email, name, title, role, availability, online, created_at]
       properties:
         id:
           type: string
@@ -21524,6 +21604,11 @@ components:
           $ref: "#/components/schemas/Email"
         name:
           type: string
+        title:
+          type: string
+          maxLength: 100
+          description: |
+            The member's job title, "" when none. Signatures use it as `{{member.title}}`.
         role:
           $ref: "#/components/schemas/Role"
         availability:
@@ -21640,10 +21725,14 @@ components:
             $ref: "#/components/schemas/Member"
     MemberUpdate:
       type: object
-      required: [role]
+      minProperties: 1
       properties:
         role:
           $ref: "#/components/schemas/Role"
+        title:
+          type: string
+          maxLength: 100
+          description: The member's job title; "" removes it.
     InviteCreate:
       type: object
       required: [email, role]
@@ -22370,7 +22459,7 @@ components:
           maxLength: 500
     Inbox:
       type: object
-      required: [id, name, slug, purpose, branding, default_locale, timezone, mode, business_hours, feedback_categories, assignment_mode, ask_for_rating, sender, created_at, updated_at]
+      required: [id, name, slug, purpose, branding, default_locale, timezone, mode, business_hours, feedback_categories, assignment_mode, ask_for_rating, sender, signature, created_at, updated_at]
       properties:
         id:
           type: string
@@ -22414,6 +22503,8 @@ components:
             it off and on again starts over. Feedback is never rated.
         sender:
           $ref: "#/components/schemas/InboxSender"
+        signature:
+          $ref: "#/components/schemas/InboxSignature"
         import:
           $ref: "#/components/schemas/InboxImport"
         ses_tenant:
@@ -22548,6 +22639,55 @@ components:
         sender:
           $ref: "#/components/schemas/InboxSenderUpdate"
           description: Owners, admins and keys with `inboxes:manage`.
+        signature:
+          $ref: "#/components/schemas/InboxSignature"
+    InboxSignature:
+      type: string
+      maxLength: 4000
+      description: |
+        The inbox's default signature, Markdown, "" when none: members without their own signature
+        for the inbox (`PUT /v1/me/signatures/{inboxId}`) sign with it. `{{member.name}}` and
+        `{{member.title}}` are replaced with the author's name and title. Images are e-mail images
+        of the workspace (`/i/{token}` URLs from `POST /v1/email-images`); any other image becomes a
+        link. Only e-mailed replies carry a signature, never chat, app or API channel replies.
+    MemberSignature:
+      type: object
+      required: [inbox_id, html, text]
+      properties:
+        inbox_id:
+          type: string
+          format: uuid
+        body:
+          type: string
+          maxLength: 4000
+          description: |
+            The member's own signature for the inbox, Markdown; "" signs with nothing. Absent when
+            the member has none and signs with the inbox's default.
+        html:
+          type: string
+          description: The signature the member's e-mailed replies in the inbox carry, rendered as sanitized HTML; "" when none.
+        text:
+          type: string
+          description: The same signature as plain text; "" when none.
+    MemberSignatureList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/MemberSignature"
+    MemberSignatureUpdate:
+      type: object
+      required: [body]
+      properties:
+        body:
+          type: string
+          maxLength: 4000
+          description: |
+            Markdown with `{{member.name}}` and `{{member.title}}`; "" signs with nothing in this
+            inbox. Images are e-mail images of the workspace (`/i/{token}` URLs from
+            `POST /v1/email-images`); any other image is not refused but becomes a link.
     InboxCreated:
       type: object
       required: [inbox, identity_secret]
@@ -25583,6 +25723,12 @@ components:
         forward:
           $ref: "#/components/schemas/MessageForward"
           description: What an outgoing `forward` sent and to whom; absent for everything else.
+        signature_html:
+          type: string
+          description: |
+            The author's signature the e-mail carries below the reply, as sanitized HTML, fixed when
+            the message (or its draft) was written; absent when it carries none. `body` and `html`
+            never contain it.
         created_at:
           type: string
           format: date-time
@@ -25734,6 +25880,13 @@ components:
         draft:
           type: boolean
           description: Stores an outgoing message as a draft instead of delivering it.
+        signature:
+          type: boolean
+          description: |
+            E-mailed replies by members: add the author's signature for the inbox (their own, else
+            the inbox's `signature`); absent means `true`. `false` sends without it. Chat, app and API channel replies,
+            notes and forwards never carry one, nor do messages written by API keys or automation
+            rules. A draft keeps the signature it was stored with when it is sent.
         mentions:
           type: array
           maxItems: 50
@@ -25868,6 +26021,9 @@ components:
           maxLength: 200
         draft:
           type: boolean
+        signature:
+          type: boolean
+          description: "`false` sends an e-mailed reply without the author's signature; see `MessageCreate`."
         mentions:
           type: array
           maxItems: 50
@@ -39640,6 +39796,33 @@ components:
                 format: int32
               title:
                 type: string
+        inbox_signatures:
+          type: array
+          description: Inboxes whose default signature shows the image; absent when none do.
+          items:
+            type: object
+            required: [id, name]
+            properties:
+              id:
+                type: string
+                format: uuid
+              name:
+                type: string
+        member_signatures:
+          type: array
+          description: Members whose own signature for an inbox shows the image; absent when none do.
+          items:
+            type: object
+            required: [member_id, name, inbox_id]
+            properties:
+              member_id:
+                type: string
+                format: uuid
+              name:
+                type: string
+              inbox_id:
+                type: string
+                format: uuid
     EmailImageProblem:
       allOf:
         - $ref: "#/components/schemas/Problem"

@@ -1446,6 +1446,8 @@ type Inbox struct {
 	AssignmentMode       string
 	AssignmentCap        *int32
 	Purpose              string
+	Signature            string
+	SignatureImageIds    []uuid.UUID
 }
 
 type InboxMember struct {
@@ -1671,6 +1673,7 @@ type Member struct {
 	CreatedAt              time.Time
 	NotificationEvents     []byte
 	NotificationEmailDelay *int32
+	Title                  string
 }
 
 type MemberInboxAccess struct {
@@ -1689,6 +1692,15 @@ type MemberMention struct {
 	CreatedAt      time.Time
 	Mentions       []uuid.UUID
 	Seen           bool
+}
+
+type MemberSignature struct {
+	WorkspaceID uuid.UUID
+	MemberID    uuid.UUID
+	InboxID     uuid.UUID
+	Body        string
+	ImageIds    []uuid.UUID
+	UpdatedAt   time.Time
 }
 
 type MentionSeen struct {
@@ -1731,6 +1743,8 @@ type Message struct {
 	RedactedByApiKeyID *uuid.UUID
 	Rule               []byte
 	Forward            []byte
+	SignatureHtml      *string
+	SignatureText      *string
 }
 
 type MessageEmail struct {

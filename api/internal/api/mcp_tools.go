@@ -369,6 +369,7 @@ type draftReplyIn struct {
 	ConversationID uuid.UUID   `json:"conversation_id"`
 	Body           string      `json:"body" jsonschema:"plain text"`
 	ArticleIDs     []uuid.UUID `json:"article_ids,omitempty" jsonschema:"up to 3 published help articles to send with the reply, from search_help_articles; the body ends with their titles and links"`
+	Signature      *bool       `json:"signature,omitempty" jsonschema:"e-mailed replies carry the member's signature for the inbox; false leaves it out"`
 }
 
 type sendDraftIn struct {
@@ -379,6 +380,7 @@ type sendDraftIn struct {
 type sendReplyIn struct {
 	ConversationID uuid.UUID `json:"conversation_id"`
 	Body           string    `json:"body" jsonschema:"plain text"`
+	Signature      *bool     `json:"signature,omitempty" jsonschema:"e-mailed replies carry the member's signature for the inbox; false leaves it out"`
 	mcpCopies
 }
 
@@ -744,7 +746,7 @@ var mcpTools = append([]mcpTool{
 		"Stores a reply to the contact as a draft. Nothing is delivered: a member reviews, edits and sends it in Yuva. article_ids attaches help articles from search_help_articles as cards (up to 3). Maps to POST /v1/conversations/{id}/messages with draft: true.",
 		additive, nil, mcpTool{ops: []string{"CreateMessage"}, scopes: []oas.ApiKeyScope{oas.MessagesWrite}},
 		func(ctx context.Context, c *mcpCall, in draftReplyIn) (mcpMessage, error) {
-			b := oas.MessageCreate{Kind: oas.MessageCreateKindMessage, Direction: new(oas.Out), Body: &in.Body, Draft: boolPtr(true)}
+			b := oas.MessageCreate{Kind: oas.MessageCreateKindMessage, Direction: new(oas.Out), Body: &in.Body, Draft: boolPtr(true), Signature: in.Signature}
 			if len(in.ArticleIDs) > 0 {
 				b.ArticleIds = &in.ArticleIDs
 			}
@@ -759,7 +761,7 @@ var mcpTools = append([]mcpTool{
 			}
 			cc, bcc := in.lists()
 			return c.createMessage(ctx, in.ConversationID, oas.MessageCreate{
-				Kind: oas.MessageCreateKindMessage, Direction: new(oas.Out), Body: &in.Body, Cc: cc, Bcc: bcc,
+				Kind: oas.MessageCreateKindMessage, Direction: new(oas.Out), Body: &in.Body, Cc: cc, Bcc: bcc, Signature: in.Signature,
 			})
 		}),
 	defineTool("send_draft", "Send a draft",

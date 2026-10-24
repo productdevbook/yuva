@@ -539,7 +539,15 @@ func (s *Server) sendQueued(ctx context.Context, workspaceID uuid.UUID, msgs []m
 	if me.FullHtml != nil && len(msgs) == 1 {
 		out.HTML = *me.FullHtml
 	}
-	if blocks := batchCards(msgs); blocks != "" {
+	blocks := batchCards(msgs)
+	if sigHTML, sigText, ok := batchSignature(msgs); ok {
+		if out.HTML == "" {
+			out.Text = signedText(out.Text, sigText)
+			out.HTML = signedHTML(batchText(msgs, true), blocks, sigHTML)
+		} else {
+			out.Text, out.HTML = signedOwnHTML(out.Text, out.HTML, blocks, sigText, sigHTML)
+		}
+	} else if blocks != "" {
 		if out.HTML == "" {
 			out.HTML = email.TextToHTML(batchText(msgs, true))
 		}

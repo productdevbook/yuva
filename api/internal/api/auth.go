@@ -94,6 +94,9 @@ var operationAccess = map[string]access{
 	"UpdateNotificationSettings": accessMember,
 	"SetInboxNotifications":      accessMember,
 	"DeleteInboxNotifications":   accessMember,
+	"ListMySignatures":           accessMember,
+	"SetMySignature":             accessMember,
+	"DeleteMySignature":          accessMember,
 
 	"CreateClientSession":      accessPublic,
 	"GetClientChannel":         accessPublic,

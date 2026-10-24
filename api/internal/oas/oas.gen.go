@@ -15489,6 +15489,19 @@ type EmailImageUsage struct {
 		Number   int32     `json:"number"`
 		Title    string    `json:"title"`
 	} `json:"help_articles,omitempty"`
+
+	// InboxSignatures Inboxes whose default signature shows the image; absent when none do.
+	InboxSignatures *[]struct {
+		Id   uuid.UUID `json:"id"`
+		Name string    `json:"name"`
+	} `json:"inbox_signatures,omitempty"`
+
+	// MemberSignatures Members whose own signature for an inbox shows the image; absent when none do.
+	MemberSignatures *[]struct {
+		InboxId  uuid.UUID `json:"inbox_id"`
+		MemberId uuid.UUID `json:"member_id"`
+		Name     string    `json:"name"`
+	} `json:"member_signatures,omitempty"`
 }
 
 // EmailSectionBlock A group of blocks on its own background. Sections do not nest.
@@ -17336,6 +17349,13 @@ type Inbox struct {
 	// until the server has set it up again.
 	SesTenant *SesTenantStatus `json:"ses_tenant,omitempty"`
 
+	// Signature The inbox's default signature, Markdown, "" when none: members without their own signature
+	// for the inbox (`PUT /v1/me/signatures/{inboxId}`) sign with it. `{{member.name}}` and
+	// `{{member.title}}` are replaced with the author's name and title. Images are e-mail images
+	// of the workspace (`/i/{token}` URLs from `POST /v1/email-images`); any other image becomes a
+	// link. Only e-mailed replies carry a signature, never chat, app or API channel replies.
+	Signature InboxSignature `json:"signature"`
+
 	// Slug Examples: acme-app
 	Slug Slug `json:"slug"`
 
@@ -17525,6 +17545,9 @@ type InboxMember struct {
 	// TeamIds The teams that give the member this inbox.
 	TeamIds []uuid.UUID `json:"team_ids"`
 
+	// Title The member's job title, "" when none. Signatures use it as `{{member.title}}`.
+	Title string `json:"title"`
+
 	// Via `direct`: the member has their own grant (and may have teams' too); `team`: only through teams.
 	Via InboxAccessVia `json:"via"`
 }
@@ -17592,6 +17615,13 @@ type InboxSenderUpdate struct {
 	PostalAddress nullable.Nullable[string] `json:"postal_address,omitempty"`
 	Registration  nullable.Nullable[string] `json:"registration,omitempty"`
 }
+
+// InboxSignature The inbox's default signature, Markdown, "" when none: members without their own signature
+// for the inbox (`PUT /v1/me/signatures/{inboxId}`) sign with it. `{{member.name}}` and
+// `{{member.title}}` are replaced with the author's name and title. Images are e-mail images
+// of the workspace (`/i/{token}` URLs from `POST /v1/email-images`); any other image becomes a
+// link. Only e-mailed replies carry a signature, never chat, app or API channel replies.
+type InboxSignature = string
 
 // InboxSlaStats defines model for InboxSlaStats.
 type InboxSlaStats struct {
@@ -17693,6 +17723,13 @@ type InboxUpdate struct {
 
 	// Sender Owners, admins and keys with `inboxes:manage`.
 	Sender *InboxSenderUpdate `json:"sender,omitempty"`
+
+	// Signature The inbox's default signature, Markdown, "" when none: members without their own signature
+	// for the inbox (`PUT /v1/me/signatures/{inboxId}`) sign with it. `{{member.name}}` and
+	// `{{member.title}}` are replaced with the author's name and title. Images are e-mail images
+	// of the workspace (`/i/{token}` URLs from `POST /v1/email-images`); any other image becomes a
+	// link. Only e-mailed replies carry a signature, never chat, app or API channel replies.
+	Signature *InboxSignature `json:"signature,omitempty"`
 
 	// Slug Examples: acme-app
 	Slug     *Slug   `json:"slug,omitempty"`
@@ -18450,6 +18487,9 @@ type Member struct {
 	Online   bool      `json:"online"`
 	PersonId uuid.UUID `json:"person_id"`
 	Role     Role      `json:"role"`
+
+	// Title The member's job title, "" when none. Signatures use it as `{{member.title}}`.
+	Title string `json:"title"`
 }
 
 // MemberList defines model for MemberList.
@@ -18482,6 +18522,33 @@ type MemberPresenceEvent struct {
 // MemberPresenceEventType defines model for MemberPresenceEvent.Type.
 type MemberPresenceEventType string
 
+// MemberSignature defines model for MemberSignature.
+type MemberSignature struct {
+	// Body The member's own signature for the inbox, Markdown; "" signs with nothing. Absent when
+	// the member has none and signs with the inbox's default.
+	Body *string `json:"body,omitempty"`
+
+	// Html The signature the member's e-mailed replies in the inbox carry, rendered as sanitized HTML; "" when none.
+	Html    string    `json:"html"`
+	InboxId uuid.UUID `json:"inbox_id"`
+
+	// Text The same signature as plain text; "" when none.
+	Text string `json:"text"`
+}
+
+// MemberSignatureList defines model for MemberSignatureList.
+type MemberSignatureList struct {
+	Items []MemberSignature `json:"items"`
+}
+
+// MemberSignatureUpdate defines model for MemberSignatureUpdate.
+type MemberSignatureUpdate struct {
+	// Body Markdown with `{{member.name}}` and `{{member.title}}`; "" signs with nothing in this
+	// inbox. Images are e-mail images of the workspace (`/i/{token}` URLs from
+	// `POST /v1/email-images`); any other image is not refused but becomes a link.
+	Body string `json:"body"`
+}
+
 // MemberSlaStats defines model for MemberSlaStats.
 type MemberSlaStats struct {
 	Breached int64     `json:"breached"`
@@ -18498,7 +18565,10 @@ type MemberStats struct {
 
 // MemberUpdate defines model for MemberUpdate.
 type MemberUpdate struct {
-	Role Role `json:"role"`
+	Role *Role `json:"role,omitempty"`
+
+	// Title The member's job title; "" removes it.
+	Title *string `json:"title,omitempty"`
 }
 
 // Membership defines model for Membership.
@@ -18616,6 +18686,11 @@ type Message struct {
 
 	// SentBy Who sent a draft (`member` or `bot`); absent for messages that were never drafts.
 	SentBy *MessageAuthor `json:"sent_by,omitempty"`
+
+	// SignatureHtml The author's signature the e-mail carries below the reply, as sanitized HTML, fixed when
+	// the message (or its draft) was written; absent when it carries none. `body` and `html`
+	// never contain it.
+	SignatureHtml *string `json:"signature_html,omitempty"`
 }
 
 // MessageAuthor defines model for MessageAuthor.
@@ -18701,6 +18776,12 @@ type MessageCreate struct {
 	// body as it likes; the server does not parse `@` in the text.
 	Mentions *[]uuid.UUID `json:"mentions,omitempty"`
 
+	// Signature E-mailed replies by members: add the author's signature for the inbox (their own, else
+	// the inbox's `signature`); absent means `true`. `false` sends without it. Chat, app and API channel replies,
+	// notes and forwards never carry one, nor do messages written by API keys or automation
+	// rules. A draft keeps the signature it was stored with when it is sent.
+	Signature *bool `json:"signature,omitempty"`
+
 	// Then Changes to the conversation applied with the message; see the operation.
 	Then *ConversationUpdate `json:"then,omitempty"`
 }
@@ -18729,6 +18810,9 @@ type MessageCreateMultipart struct {
 
 	// Mentions Notes only; repeat the field once per member id.
 	Mentions *[]uuid.UUID `json:"mentions,omitempty"`
+
+	// Signature `false` sends an e-mailed reply without the author's signature; see `MessageCreate`.
+	Signature *bool `json:"signature,omitempty"`
 
 	// Then A `ConversationUpdate` as JSON.
 	Then *string `json:"then,omitempty"`
@@ -27280,6 +27364,24 @@ type SetInboxNotificationsParams struct {
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
 
+// ListMySignaturesParams defines parameters for ListMySignatures.
+type ListMySignaturesParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// DeleteMySignatureParams defines parameters for DeleteMySignature.
+type DeleteMySignatureParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// SetMySignatureParams defines parameters for SetMySignature.
+type SetMySignatureParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
 // UnlinkMySlackParams defines parameters for UnlinkMySlack.
 type UnlinkMySlackParams struct {
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
@@ -29417,6 +29519,9 @@ type FinishPasskeyRegistrationJSONRequestBody = PasskeyRegistration
 
 // CreatePushSubscriptionJSONRequestBody defines body for CreatePushSubscription for application/json ContentType.
 type CreatePushSubscriptionJSONRequestBody = PushSubscriptionCreate
+
+// SetMySignatureJSONRequestBody defines body for SetMySignature for application/json ContentType.
+type SetMySignatureJSONRequestBody = MemberSignatureUpdate
 
 // StartMySlackLinkJSONRequestBody defines body for StartMySlackLink for application/json ContentType.
 type StartMySlackLinkJSONRequestBody = SlackLinkStart
@@ -34904,6 +35009,15 @@ type ServerInterface interface {
 	// ListSessions List sign-in sessions
 	// (GET /v1/me/sessions)
 	ListSessions(w http.ResponseWriter, r *http.Request)
+	// ListMySignatures Your signatures
+	// (GET /v1/me/signatures)
+	ListMySignatures(w http.ResponseWriter, r *http.Request, params ListMySignaturesParams)
+	// DeleteMySignature Remove your signature for one inbox
+	// (DELETE /v1/me/signatures/{inboxId})
+	DeleteMySignature(w http.ResponseWriter, r *http.Request, inboxId InboxId, params DeleteMySignatureParams)
+	// SetMySignature Set your signature for one inbox
+	// (PUT /v1/me/signatures/{inboxId})
+	SetMySignature(w http.ResponseWriter, r *http.Request, inboxId InboxId, params SetMySignatureParams)
 	// UnlinkMySlack Unlink your Slack user
 	// (DELETE /v1/me/slack)
 	UnlinkMySlack(w http.ResponseWriter, r *http.Request, params UnlinkMySlackParams)
@@ -34925,7 +35039,7 @@ type ServerInterface interface {
 	// GetMember Get a member
 	// (GET /v1/members/{memberId})
 	GetMember(w http.ResponseWriter, r *http.Request, memberId MemberId, params GetMemberParams)
-	// UpdateMember Change a member's role
+	// UpdateMember Change a member's role or title
 	// (PATCH /v1/members/{memberId})
 	UpdateMember(w http.ResponseWriter, r *http.Request, memberId MemberId, params UpdateMemberParams)
 	// DeleteMessage Discard a draft
@@ -56187,6 +56301,147 @@ func (siw *ServerInterfaceWrapper) ListSessions(w http.ResponseWriter, r *http.R
 	handler.ServeHTTP(w, r)
 }
 
+// ListMySignatures operation middleware
+func (siw *ServerInterfaceWrapper) ListMySignatures(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListMySignaturesParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListMySignatures(w, r, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// DeleteMySignature operation middleware
+func (siw *ServerInterfaceWrapper) DeleteMySignature(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "inboxId" -------------
+	var inboxId InboxId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "inboxId", r.PathValue("inboxId"), &inboxId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "inboxId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params DeleteMySignatureParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.DeleteMySignature(w, r, inboxId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// SetMySignature operation middleware
+func (siw *ServerInterfaceWrapper) SetMySignature(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "inboxId" -------------
+	var inboxId InboxId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "inboxId", r.PathValue("inboxId"), &inboxId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "inboxId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params SetMySignatureParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.SetMySignature(w, r, inboxId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // UnlinkMySlack operation middleware
 func (siw *ServerInterfaceWrapper) UnlinkMySlack(w http.ResponseWriter, r *http.Request) {
 
@@ -64755,6 +65010,9 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc(http.MethodPatch+" "+options.BaseURL+"/v1/me/notifications", wrapper.UpdateNotificationSettings)
 	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/me/notifications/inboxes/{inboxId}", wrapper.DeleteInboxNotifications)
 	m.HandleFunc(http.MethodPut+" "+options.BaseURL+"/v1/me/notifications/inboxes/{inboxId}", wrapper.SetInboxNotifications)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/me/signatures", wrapper.ListMySignatures)
+	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/me/signatures/{inboxId}", wrapper.DeleteMySignature)
+	m.HandleFunc(http.MethodPut+" "+options.BaseURL+"/v1/me/signatures/{inboxId}", wrapper.SetMySignature)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/me/mentions", wrapper.ListMentions)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/me/mentions/seen", wrapper.MarkMentionsSeen)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/me/mentions/{noteId}/seen", wrapper.MarkMentionSeen)
@@ -98624,6 +98882,201 @@ func (response ListSessions403ApplicationProblemPlusJSONResponse) VisitListSessi
 	return err
 }
 
+type ListMySignaturesRequestObject struct {
+	Params ListMySignaturesParams
+}
+
+type ListMySignaturesResponseObject interface {
+	VisitListMySignaturesResponse(w http.ResponseWriter) error
+}
+
+type ListMySignatures200JSONResponse MemberSignatureList
+
+func (response ListMySignatures200JSONResponse) VisitListMySignaturesResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListMySignatures401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response ListMySignatures401ApplicationProblemPlusJSONResponse) VisitListMySignaturesResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListMySignatures403ApplicationProblemPlusJSONResponse Problem
+
+func (response ListMySignatures403ApplicationProblemPlusJSONResponse) VisitListMySignaturesResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteMySignatureRequestObject struct {
+	InboxId InboxId `json:"inboxId"`
+	Params  DeleteMySignatureParams
+}
+
+type DeleteMySignatureResponseObject interface {
+	VisitDeleteMySignatureResponse(w http.ResponseWriter) error
+}
+
+type DeleteMySignature204Response struct {
+}
+
+func (response DeleteMySignature204Response) VisitDeleteMySignatureResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
+}
+
+type DeleteMySignature401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response DeleteMySignature401ApplicationProblemPlusJSONResponse) VisitDeleteMySignatureResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteMySignature403ApplicationProblemPlusJSONResponse Problem
+
+func (response DeleteMySignature403ApplicationProblemPlusJSONResponse) VisitDeleteMySignatureResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteMySignature404ApplicationProblemPlusJSONResponse Problem
+
+func (response DeleteMySignature404ApplicationProblemPlusJSONResponse) VisitDeleteMySignatureResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type SetMySignatureRequestObject struct {
+	InboxId InboxId `json:"inboxId"`
+	Params  SetMySignatureParams
+	Body    *SetMySignatureJSONRequestBody
+}
+
+type SetMySignatureResponseObject interface {
+	VisitSetMySignatureResponse(w http.ResponseWriter) error
+}
+
+type SetMySignature200JSONResponse MemberSignature
+
+func (response SetMySignature200JSONResponse) VisitSetMySignatureResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type SetMySignature400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response SetMySignature400ApplicationProblemPlusJSONResponse) VisitSetMySignatureResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type SetMySignature401ApplicationProblemPlusJSONResponse Problem
+
+func (response SetMySignature401ApplicationProblemPlusJSONResponse) VisitSetMySignatureResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type SetMySignature403ApplicationProblemPlusJSONResponse Problem
+
+func (response SetMySignature403ApplicationProblemPlusJSONResponse) VisitSetMySignatureResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type SetMySignature404ApplicationProblemPlusJSONResponse Problem
+
+func (response SetMySignature404ApplicationProblemPlusJSONResponse) VisitSetMySignatureResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
 type UnlinkMySlackRequestObject struct {
 	Params UnlinkMySlackParams
 }
@@ -110802,6 +111255,15 @@ type StrictServerInterface interface {
 	// ListSessions List sign-in sessions
 	// (GET /v1/me/sessions)
 	ListSessions(ctx context.Context, request ListSessionsRequestObject) (ListSessionsResponseObject, error)
+	// ListMySignatures Your signatures
+	// (GET /v1/me/signatures)
+	ListMySignatures(ctx context.Context, request ListMySignaturesRequestObject) (ListMySignaturesResponseObject, error)
+	// DeleteMySignature Remove your signature for one inbox
+	// (DELETE /v1/me/signatures/{inboxId})
+	DeleteMySignature(ctx context.Context, request DeleteMySignatureRequestObject) (DeleteMySignatureResponseObject, error)
+	// SetMySignature Set your signature for one inbox
+	// (PUT /v1/me/signatures/{inboxId})
+	SetMySignature(ctx context.Context, request SetMySignatureRequestObject) (SetMySignatureResponseObject, error)
 	// UnlinkMySlack Unlink your Slack user
 	// (DELETE /v1/me/slack)
 	UnlinkMySlack(ctx context.Context, request UnlinkMySlackRequestObject) (UnlinkMySlackResponseObject, error)
@@ -110823,7 +111285,7 @@ type StrictServerInterface interface {
 	// GetMember Get a member
 	// (GET /v1/members/{memberId})
 	GetMember(ctx context.Context, request GetMemberRequestObject) (GetMemberResponseObject, error)
-	// UpdateMember Change a member's role
+	// UpdateMember Change a member's role or title
 	// (PATCH /v1/members/{memberId})
 	UpdateMember(ctx context.Context, request UpdateMemberRequestObject) (UpdateMemberResponseObject, error)
 	// DeleteMessage Discard a draft
@@ -122205,6 +122667,93 @@ func (sh *strictHandler) ListSessions(w http.ResponseWriter, r *http.Request) {
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
 	} else if validResponse, ok := response.(ListSessionsResponseObject); ok {
 		if err := validResponse.VisitListSessionsResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// ListMySignatures operation middleware
+func (sh *strictHandler) ListMySignatures(w http.ResponseWriter, r *http.Request, params ListMySignaturesParams) {
+	var request ListMySignaturesRequestObject
+
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.ListMySignatures(ctx, request.(ListMySignaturesRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "ListMySignatures")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(ListMySignaturesResponseObject); ok {
+		if err := validResponse.VisitListMySignaturesResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// DeleteMySignature operation middleware
+func (sh *strictHandler) DeleteMySignature(w http.ResponseWriter, r *http.Request, inboxId InboxId, params DeleteMySignatureParams) {
+	var request DeleteMySignatureRequestObject
+
+	request.InboxId = inboxId
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.DeleteMySignature(ctx, request.(DeleteMySignatureRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "DeleteMySignature")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(DeleteMySignatureResponseObject); ok {
+		if err := validResponse.VisitDeleteMySignatureResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// SetMySignature operation middleware
+func (sh *strictHandler) SetMySignature(w http.ResponseWriter, r *http.Request, inboxId InboxId, params SetMySignatureParams) {
+	var request SetMySignatureRequestObject
+
+	request.InboxId = inboxId
+	request.Params = params
+
+	var body SetMySignatureJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.SetMySignature(ctx, request.(SetMySignatureRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "SetMySignature")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(SetMySignatureResponseObject); ok {
+		if err := validResponse.VisitSetMySignatureResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {

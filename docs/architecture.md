@@ -1313,6 +1313,19 @@ from inbound headers would turn every rule into a way to send mail to strangers.
 errors are retried, 5xx replies fail at once. An e-mail channel can greet new conversations once
 per contact within a set interval; the greeting is a `system` message with
 `Auto-Submitted: auto-replied`.
+Signatures (Y-168): each member has an own signature per inbox (`/v1/me/signatures`, Markdown; an
+empty body means none) and an inbox has a default (`Inbox.signature`, set by owners and admins) with
+`{{member.name}}` and `{{member.title}}`, whose values are flattened to one line and have every ASCII
+punctuation mark escaped. The server adds the signature, not the composer, so its images render and
+the API and MCP get it too: when a member's reply that goes out by e-mail is created or stored as a
+draft, the effective signature (own, else the default) is rendered with hard line breaks, images
+other than the workspace's e-mail images turned into links, and stored on the message
+(`signature_html`, `signature_text`); `signature: false` leaves it off. Notes, chat, app and API
+channel replies, forwards and bot, rule and key messages carry none. The mail build adds the last
+message's signature once per batch after `-- `, before a trailing quote block in both parts; with
+the message's own HTML it goes before `</body>` and at the end of the text. Images in a signature
+count as used (cleanup and `image_in_use`), and sending one sets `sent_at`. Any member may upload an
+e-mail image for this; listing and deleting stay with owners and admins.
 Forwarding (`POST /v1/conversations/{id}/forward`): a member sends one message or the
 conversation (its latest 100 messages to and from the contact; never notes, drafts, events or other
 forwards) to 1–10 outside addresses with a note on top. It is stored as a message of the members-only

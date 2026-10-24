@@ -61,6 +61,7 @@ type messageInput struct {
 	clientID  *string
 	subject   *string
 	draft     bool
+	unsigned  bool
 	mentions  []uuid.UUID
 	articles  []uuid.UUID
 	extra     map[string]string
@@ -71,7 +72,7 @@ type messageInput struct {
 	bcc       copyList
 }
 
-var memberFormFields = []string{"kind", "direction", "body", "html", "client_id", "draft", "mentions", "article_ids", "macro_id", "then", "cc", "bcc"}
+var memberFormFields = []string{"kind", "direction", "body", "html", "client_id", "draft", "signature", "mentions", "article_ids", "macro_id", "then", "cc", "bcc"}
 
 func (in *messageInput) close() {
 	for _, f := range in.files {
@@ -294,6 +295,15 @@ func (s *Server) readMultipart(r *multipart.Reader, workspaceID uuid.UUID, field
 				in.close()
 				return nil, errValidation("draft must be true or false")
 			}
+		case "signature":
+			switch v {
+			case "true":
+			case "false":
+				in.unsigned = true
+			default:
+				in.close()
+				return nil, errValidation("signature must be true or false")
+			}
 		case "mentions":
 			id, err := uuid.Parse(strings.TrimSpace(v))
 			if err != nil {
@@ -417,6 +427,9 @@ func messageBody(m messageRow, atts []store.Attachment) oas.Message {
 	if spec, ok := forwardOf(m); ok {
 		out.Forward = &spec
 	}
+	if m.SignatureHtml != nil && m.RedactedAt == nil {
+		out.SignatureHtml = m.SignatureHtml
+	}
 	if m.DeliveryState != nil && m.DeliveryUpdatedAt != nil {
 		out.Delivery = &oas.MessageDelivery{
 			Channel: oas.MessageDeliveryChannelEmail, State: oas.MessageDeliveryState(*m.DeliveryState),
@@ -507,7 +520,7 @@ func (s *Server) CreateMessage(ctx context.Context, req oas.CreateMessageRequest
 	switch {
 	case req.JSONBody != nil:
 		b := req.JSONBody
-		in = &messageInput{kind: string(b.Kind), html: b.Html, clientID: b.ClientId, draft: b.Draft != nil && *b.Draft}
+		in = &messageInput{kind: string(b.Kind), html: b.Html, clientID: b.ClientId, draft: b.Draft != nil && *b.Draft, unsigned: b.Signature != nil && !*b.Signature}
 		if b.Direction != nil {
 			in.direction = string(*b.Direction)
 		}
@@ -655,6 +668,9 @@ func (s *Server) CreateMessage(ctx context.Context, req oas.CreateMessageRequest
 		if plan != nil {
 			queued := deliveryQueued
 			arg.DeliveryState = &queued
+		}
+		if err := s.signMessage(ctx, q, p, c, in, plan != nil, &arg); err != nil {
+			return err
 		}
 		if msg, err = q.CreateMessage(ctx, arg); err != nil {
 			return err

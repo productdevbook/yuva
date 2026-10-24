@@ -31,7 +31,7 @@ func inboxBody(in store.Inbox) oas.Inbox {
 		Id: in.ID, Name: in.Name, Slug: in.Slug, Purpose: oas.InboxPurpose(in.Purpose), DefaultLocale: in.DefaultLocale, Timezone: in.Timezone,
 		Mode: oas.InboxMode(in.Mode), ExpectedReplyMinutes: in.ExpectedReplyMinutes, AskForRating: in.AskForRating,
 		AssignmentMode: oas.AssignmentMode(in.AssignmentMode), AssignmentCap: in.AssignmentCap,
-		Sender: inboxSenderBody(in), CreatedAt: in.CreatedAt, UpdatedAt: in.UpdatedAt,
+		Sender: inboxSenderBody(in), Signature: in.Signature, CreatedAt: in.CreatedAt, UpdatedAt: in.UpdatedAt,
 	}
 	out.FeedbackCategories = inboxCategories(in)
 	_ = json.Unmarshal(in.Branding, &out.Branding)
@@ -389,6 +389,11 @@ func (s *Server) UpdateInbox(ctx context.Context, req oas.UpdateInboxRequestObje
 				return err
 			}
 		}
+		if b.Signature != nil {
+			if in, err = s.setInboxSignature(ctx, q, in, *b.Signature); err != nil {
+				return err
+			}
+		}
 		if f.purpose != cur.Purpose {
 			if err := s.audit(ctx, q, p, oas.AuditInboxPurposeChanged, oas.AuditTargetInbox, in.ID, auditDetails{"from": cur.Purpose, "to": f.purpose}); err != nil {
 				return err
@@ -533,7 +538,7 @@ func (s *Server) ListInboxMembers(ctx context.Context, req oas.ListInboxMembersR
 	}
 	members := make([]oas.Member, len(rows))
 	for i, r := range rows {
-		members[i] = memberBody(store.GetMemberRow{ID: r.ID, WorkspaceID: r.WorkspaceID, PersonID: r.PersonID, Role: r.Role, CreatedAt: r.CreatedAt, Email: r.Email, Name: r.Name})
+		members[i] = memberBody(store.GetMemberRow{ID: r.ID, WorkspaceID: r.WorkspaceID, PersonID: r.PersonID, Role: r.Role, Title: r.Title, CreatedAt: r.CreatedAt, Email: r.Email, Name: r.Name})
 	}
 	if err := s.withPresence(ctx, s.st.Queries, p.workspaceID, members); err != nil {
 		return nil, err
@@ -545,7 +550,7 @@ func (s *Server) ListInboxMembers(ctx context.Context, req oas.ListInboxMembersR
 			via = oas.InboxAccessDirect
 		}
 		out.Items[i] = oas.InboxMember{
-			Id: m.Id, PersonId: m.PersonId, Email: m.Email, Name: m.Name, Role: m.Role, Availability: m.Availability, Online: m.Online,
+			Id: m.Id, PersonId: m.PersonId, Email: m.Email, Name: m.Name, Role: m.Role, Title: m.Title, Availability: m.Availability, Online: m.Online,
 			CreatedAt: m.CreatedAt, Via: via, TeamIds: rows[i].TeamIds,
 		}
 	}

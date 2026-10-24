@@ -171,6 +171,12 @@ WHERE i.id IN (
       AND NOT EXISTS (
           SELECT 1 FROM changelog_entry_translations t
           WHERE t.workspace_id = c.workspace_id AND t.image_ids @> ARRAY[c.id])
+      AND NOT EXISTS (
+          SELECT 1 FROM member_signatures s
+          WHERE s.workspace_id = c.workspace_id AND s.image_ids @> ARRAY[c.id])
+      AND NOT EXISTS (
+          SELECT 1 FROM inboxes b
+          WHERE b.workspace_id = c.workspace_id AND b.signature_image_ids @> ARRAY[c.id])
     LIMIT $3)
 RETURNING i.storage_key
 `
@@ -772,6 +778,22 @@ SELECT pg_advisory_xact_lock(hashtextextended('yuva_email_images:' || $1::uuid::
 
 func (q *Queries) LockEmailImageQuota(ctx context.Context, workspaceID uuid.UUID) error {
 	_, err := q.db.Exec(ctx, lockEmailImageQuota, workspaceID)
+	return err
+}
+
+const markEmailImagesSent = `-- name: MarkEmailImagesSent :exec
+UPDATE email_images SET sent_at = $1::timestamptz
+WHERE workspace_id = $2 AND id = ANY($3::uuid[]) AND sent_at IS NULL
+`
+
+type MarkEmailImagesSentParams struct {
+	Now         time.Time
+	WorkspaceID uuid.UUID
+	Ids         []uuid.UUID
+}
+
+func (q *Queries) MarkEmailImagesSent(ctx context.Context, arg MarkEmailImagesSentParams) error {
+	_, err := q.db.Exec(ctx, markEmailImagesSent, arg.Now, arg.WorkspaceID, arg.Ids)
 	return err
 }
 

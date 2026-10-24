@@ -121,9 +121,6 @@ func (s *Server) storeEmailImage(ctx context.Context, q *store.Queries, p princi
 
 func (s *Server) UploadEmailImage(ctx context.Context, req oas.UploadEmailImageRequestObject) (oas.UploadEmailImageResponseObject, error) {
 	p := principalFrom(ctx)
-	if err := requireManagerOrKey(p); err != nil {
-		return nil, err
-	}
 	if err := s.rateLimit(ctx, rateCheck{"email-image-upload:" + p.workspaceID.String(), limitImageUpload}); err != nil {
 		return nil, err
 	}
@@ -235,7 +232,15 @@ func (s *Server) DeleteEmailImage(ctx context.Context, req oas.DeleteEmailImageR
 		if err != nil {
 			return err
 		}
-		if len(users) > 0 || len(articles) > 0 || len(entries) > 0 {
+		inboxSigs, err := q.ListInboxesUsingSignatureImage(ctx, store.ListInboxesUsingSignatureImageParams{WorkspaceID: p.workspaceID, ImageID: img.ID})
+		if err != nil {
+			return err
+		}
+		memberSigs, err := q.ListMemberSignaturesUsingImage(ctx, store.ListMemberSignaturesUsingImageParams{WorkspaceID: p.workspaceID, ImageID: img.ID})
+		if err != nil {
+			return err
+		}
+		if len(users) > 0 || len(articles) > 0 || len(entries) > 0 || len(inboxSigs) > 0 || len(memberSigs) > 0 {
 			designs := make([]map[string]any, len(users))
 			for i, u := range users {
 				designs[i] = map[string]any{"id": u.ID, "name": u.Name}
@@ -255,7 +260,21 @@ func (s *Server) DeleteEmailImage(ctx context.Context, req oas.DeleteEmailImageR
 				}
 				usedBy["changelog_entries"] = news
 			}
-			e := problem(http.StatusConflict, "image_in_use", "designs, help articles or What's new entries use this image; take it out of them first")
+			if len(inboxSigs) > 0 {
+				sigs := make([]map[string]any, len(inboxSigs))
+				for i, s := range inboxSigs {
+					sigs[i] = map[string]any{"id": s.ID, "name": s.Name}
+				}
+				usedBy["inbox_signatures"] = sigs
+			}
+			if len(memberSigs) > 0 {
+				sigs := make([]map[string]any, len(memberSigs))
+				for i, s := range memberSigs {
+					sigs[i] = map[string]any{"member_id": s.MemberID, "name": s.Name, "inbox_id": s.InboxID}
+				}
+				usedBy["member_signatures"] = sigs
+			}
+			e := problem(http.StatusConflict, "image_in_use", "designs, help articles, What's new entries or signatures use this image; take it out of them first")
 			e.Extra = map[string]any{"used_by": usedBy}
 			return e
 		}
@@ -370,7 +389,7 @@ func (s *Server) assetVersion() string {
 	return s.version
 }
 
-// An upload no design, help article, kept revision or sent broadcast uses is deleted after a week.
+// An upload no design, help article, kept revision, signature or sent mail uses is deleted after a week.
 func (s *Server) CleanUnusedImages(ctx context.Context) error {
 	ids, err := s.st.ListWorkspaceIDs(ctx)
 	if err != nil {

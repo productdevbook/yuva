@@ -3,11 +3,15 @@ package api
 import (
 	"context"
 	"net/http"
+	"strings"
+	"unicode/utf8"
 	"uuid"
 
 	"github.com/productdevbook/yuva/api/internal/oas"
 	"github.com/productdevbook/yuva/api/internal/store"
 )
+
+const maxMemberTitle = 100
 
 var (
 	errLastOwner  = problem(http.StatusConflict, "last_owner", "a workspace needs at least one owner")
@@ -17,7 +21,7 @@ var (
 
 func memberBody(m store.GetMemberRow) oas.Member {
 	return oas.Member{
-		Id: m.ID, PersonId: m.PersonID, Email: oas.Email(m.Email), Name: m.Name,
+		Id: m.ID, PersonId: m.PersonID, Email: oas.Email(m.Email), Name: m.Name, Title: m.Title,
 		Role: oas.Role(m.Role), CreatedAt: m.CreatedAt,
 	}
 }
@@ -90,12 +94,24 @@ func (s *Server) GetMember(ctx context.Context, req oas.GetMemberRequestObject) 
 
 func (s *Server) UpdateMember(ctx context.Context, req oas.UpdateMemberRequestObject) (oas.UpdateMemberResponseObject, error) {
 	p := principalFrom(ctx)
-	if err := requireManager(p); err != nil {
-		return nil, err
+	b := req.Body
+	if b.Role == nil && b.Title == nil {
+		return nil, errValidation("send role or title")
 	}
-	role := req.Body.Role
-	if !validRole(role) {
+	if b.Role != nil || req.MemberId != p.memberID {
+		if err := requireManager(p); err != nil {
+			return nil, err
+		}
+	}
+	if b.Role != nil && !validRole(*b.Role) {
 		return nil, errValidation("role must be owner, admin or agent")
+	}
+	var title string
+	if b.Title != nil {
+		title = strings.TrimSpace(*b.Title)
+		if utf8.RuneCountInString(title) > maxMemberTitle {
+			return nil, errValidation("title must be at most 100 characters")
+		}
 	}
 	var out store.GetMemberRow
 	err := s.st.InTx(ctx, func(q *store.Queries) error {
@@ -103,6 +119,17 @@ func (s *Server) UpdateMember(ctx context.Context, req oas.UpdateMemberRequestOb
 		if err != nil {
 			return err
 		}
+		if b.Title != nil {
+			if err := q.UpdateMemberTitle(ctx, store.UpdateMemberTitleParams{WorkspaceID: p.workspaceID, ID: target.ID, Title: title}); err != nil {
+				return err
+			}
+			target.Title = title
+		}
+		out = target
+		if b.Role == nil {
+			return nil
+		}
+		role := *b.Role
 		if (target.Role == roleOwner || role == oas.Owner) && p.role != roleOwner {
 			return errOwnerRole
 		}

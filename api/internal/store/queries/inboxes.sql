@@ -34,6 +34,11 @@ UPDATE inboxes SET name = @name, slug = @slug, purpose = @purpose, branding = @b
 WHERE workspace_id = @workspace_id AND id = @id
 RETURNING *;
 
+-- name: SetInboxSignature :one
+UPDATE inboxes SET signature = @signature, signature_image_ids = @image_ids::uuid[], updated_at = @now
+WHERE workspace_id = @workspace_id AND id = @id
+RETURNING *;
+
 -- name: SetInboxIdentitySecret :execrows
 UPDATE inboxes SET identity_secret = @identity_secret, updated_at = @now
 WHERE workspace_id = @workspace_id AND id = @id;
@@ -55,14 +60,14 @@ ON CONFLICT DO NOTHING;
 DELETE FROM inbox_members WHERE workspace_id = $1 AND inbox_id = $2 AND member_id = $3;
 
 -- name: ListInboxMembers :many
-SELECT m.id, m.workspace_id, m.person_id, m.role, m.created_at, p.email, p.name,
+SELECT m.id, m.workspace_id, m.person_id, m.role, m.title, m.created_at, p.email, p.name,
        bool_or(a.team_id IS NULL)::bool AS direct,
        coalesce(array_agg(DISTINCT a.team_id ORDER BY a.team_id) FILTER (WHERE a.team_id IS NOT NULL), '{}')::uuid[] AS team_ids
 FROM member_inbox_access a
 JOIN members m ON m.workspace_id = a.workspace_id AND m.id = a.member_id
 JOIN people p ON p.id = m.person_id
 WHERE a.workspace_id = @workspace_id AND a.inbox_id = @inbox_id
-GROUP BY m.id, m.workspace_id, m.person_id, m.role, m.created_at, p.email, p.name
+GROUP BY m.id, m.workspace_id, m.person_id, m.role, m.title, m.created_at, p.email, p.name
 ORDER BY m.created_at, m.id;
 
 -- name: ListInboxStorageKeys :many

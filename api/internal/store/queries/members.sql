@@ -4,7 +4,7 @@ ON CONFLICT (workspace_id, person_id) DO NOTHING
 RETURNING *;
 
 -- name: GetMember :one
-SELECT m.id, m.workspace_id, m.person_id, m.role, m.created_at, p.email, p.name
+SELECT m.id, m.workspace_id, m.person_id, m.role, m.created_at, p.email, p.name, m.title
 FROM members m JOIN people p ON p.id = m.person_id
 WHERE m.workspace_id = $1 AND m.id = $2;
 
@@ -19,7 +19,7 @@ SELECT EXISTS (
 ) AS member;
 
 -- name: ListMembers :many
-SELECT m.id, m.workspace_id, m.person_id, m.role, m.created_at, p.email, p.name
+SELECT m.id, m.workspace_id, m.person_id, m.role, m.created_at, p.email, p.name, m.title
 FROM members m JOIN people p ON p.id = m.person_id
 WHERE m.workspace_id = $1
 ORDER BY m.created_at, m.id;
@@ -36,6 +36,9 @@ SELECT count(*) FROM members WHERE workspace_id = $1 AND role = 'owner';
 
 -- name: UpdateMemberRole :exec
 UPDATE members SET role = $3 WHERE workspace_id = $1 AND id = $2;
+
+-- name: UpdateMemberTitle :exec
+UPDATE members SET title = @title WHERE workspace_id = @workspace_id AND id = @id;
 
 -- name: DeleteMember :exec
 DELETE FROM members WHERE workspace_id = $1 AND id = $2;

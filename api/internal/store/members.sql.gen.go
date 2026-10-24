@@ -26,7 +26,7 @@ func (q *Queries) CountOwners(ctx context.Context, workspaceID uuid.UUID) (int64
 const createMember = `-- name: CreateMember :one
 INSERT INTO members (id, workspace_id, person_id, role) VALUES ($1, $2, $3, $4)
 ON CONFLICT (workspace_id, person_id) DO NOTHING
-RETURNING id, workspace_id, person_id, role, created_at, notification_events, notification_email_delay
+RETURNING id, workspace_id, person_id, role, created_at, notification_events, notification_email_delay, title
 `
 
 type CreateMemberParams struct {
@@ -52,6 +52,7 @@ func (q *Queries) CreateMember(ctx context.Context, arg CreateMemberParams) (Mem
 		&i.CreatedAt,
 		&i.NotificationEvents,
 		&i.NotificationEmailDelay,
+		&i.Title,
 	)
 	return i, err
 }
@@ -71,7 +72,7 @@ func (q *Queries) DeleteMember(ctx context.Context, arg DeleteMemberParams) erro
 }
 
 const getMember = `-- name: GetMember :one
-SELECT m.id, m.workspace_id, m.person_id, m.role, m.created_at, p.email, p.name
+SELECT m.id, m.workspace_id, m.person_id, m.role, m.created_at, p.email, p.name, m.title
 FROM members m JOIN people p ON p.id = m.person_id
 WHERE m.workspace_id = $1 AND m.id = $2
 `
@@ -89,6 +90,7 @@ type GetMemberRow struct {
 	CreatedAt   time.Time
 	Email       string
 	Name        string
+	Title       string
 }
 
 func (q *Queries) GetMember(ctx context.Context, arg GetMemberParams) (GetMemberRow, error) {
@@ -102,12 +104,13 @@ func (q *Queries) GetMember(ctx context.Context, arg GetMemberParams) (GetMember
 		&i.CreatedAt,
 		&i.Email,
 		&i.Name,
+		&i.Title,
 	)
 	return i, err
 }
 
 const getMemberByPerson = `-- name: GetMemberByPerson :one
-SELECT m.id, m.workspace_id, m.person_id, m.role, m.created_at, m.notification_events, m.notification_email_delay FROM members m JOIN workspaces w ON w.id = m.workspace_id
+SELECT m.id, m.workspace_id, m.person_id, m.role, m.created_at, m.notification_events, m.notification_email_delay, m.title FROM members m JOIN workspaces w ON w.id = m.workspace_id
 WHERE m.workspace_id = $1 AND m.person_id = $2 AND w.deleted_at IS NULL
 `
 
@@ -127,6 +130,7 @@ func (q *Queries) GetMemberByPerson(ctx context.Context, arg GetMemberByPersonPa
 		&i.CreatedAt,
 		&i.NotificationEvents,
 		&i.NotificationEmailDelay,
+		&i.Title,
 	)
 	return i, err
 }
@@ -173,7 +177,7 @@ func (q *Queries) ListMemberPresence(ctx context.Context, arg ListMemberPresence
 }
 
 const listMembers = `-- name: ListMembers :many
-SELECT m.id, m.workspace_id, m.person_id, m.role, m.created_at, p.email, p.name
+SELECT m.id, m.workspace_id, m.person_id, m.role, m.created_at, p.email, p.name, m.title
 FROM members m JOIN people p ON p.id = m.person_id
 WHERE m.workspace_id = $1
 ORDER BY m.created_at, m.id
@@ -187,6 +191,7 @@ type ListMembersRow struct {
 	CreatedAt   time.Time
 	Email       string
 	Name        string
+	Title       string
 }
 
 func (q *Queries) ListMembers(ctx context.Context, workspaceID uuid.UUID) ([]ListMembersRow, error) {
@@ -206,6 +211,7 @@ func (q *Queries) ListMembers(ctx context.Context, workspaceID uuid.UUID) ([]Lis
 			&i.CreatedAt,
 			&i.Email,
 			&i.Name,
+			&i.Title,
 		); err != nil {
 			return nil, err
 		}
@@ -324,5 +330,20 @@ type UpdateMemberRoleParams struct {
 
 func (q *Queries) UpdateMemberRole(ctx context.Context, arg UpdateMemberRoleParams) error {
 	_, err := q.db.Exec(ctx, updateMemberRole, arg.WorkspaceID, arg.ID, arg.Role)
+	return err
+}
+
+const updateMemberTitle = `-- name: UpdateMemberTitle :exec
+UPDATE members SET title = $1 WHERE workspace_id = $2 AND id = $3
+`
+
+type UpdateMemberTitleParams struct {
+	Title       string
+	WorkspaceID uuid.UUID
+	ID          uuid.UUID
+}
+
+func (q *Queries) UpdateMemberTitle(ctx context.Context, arg UpdateMemberTitleParams) error {
+	_, err := q.db.Exec(ctx, updateMemberTitle, arg.Title, arg.WorkspaceID, arg.ID)
 	return err
 }

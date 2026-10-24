@@ -15535,6 +15535,19 @@ type EmailImageUsage struct {
 		Number   int32     `json:"number"`
 		Title    string    `json:"title"`
 	} `json:"help_articles,omitempty"`
+
+	// InboxSignatures Inboxes whose default signature shows the image; absent when none do.
+	InboxSignatures *[]struct {
+		Id   uuid.UUID `json:"id"`
+		Name string    `json:"name"`
+	} `json:"inbox_signatures,omitempty"`
+
+	// MemberSignatures Members whose own signature for an inbox shows the image; absent when none do.
+	MemberSignatures *[]struct {
+		InboxId  uuid.UUID `json:"inbox_id"`
+		MemberId uuid.UUID `json:"member_id"`
+		Name     string    `json:"name"`
+	} `json:"member_signatures,omitempty"`
 }
 
 // EmailSectionBlock A group of blocks on its own background. Sections do not nest.
@@ -17382,6 +17395,13 @@ type Inbox struct {
 	// until the server has set it up again.
 	SesTenant *SesTenantStatus `json:"ses_tenant,omitempty"`
 
+	// Signature The inbox's default signature, Markdown, "" when none: members without their own signature
+	// for the inbox (`PUT /v1/me/signatures/{inboxId}`) sign with it. `{{member.name}}` and
+	// `{{member.title}}` are replaced with the author's name and title. Images are e-mail images
+	// of the workspace (`/i/{token}` URLs from `POST /v1/email-images`); any other image becomes a
+	// link. Only e-mailed replies carry a signature, never chat, app or API channel replies.
+	Signature InboxSignature `json:"signature"`
+
 	// Slug Examples: acme-app
 	Slug Slug `json:"slug"`
 
@@ -17571,6 +17591,9 @@ type InboxMember struct {
 	// TeamIds The teams that give the member this inbox.
 	TeamIds []uuid.UUID `json:"team_ids"`
 
+	// Title The member's job title, "" when none. Signatures use it as `{{member.title}}`.
+	Title string `json:"title"`
+
 	// Via `direct`: the member has their own grant (and may have teams' too); `team`: only through teams.
 	Via InboxAccessVia `json:"via"`
 }
@@ -17638,6 +17661,13 @@ type InboxSenderUpdate struct {
 	PostalAddress nullable.Nullable[string] `json:"postal_address,omitempty"`
 	Registration  nullable.Nullable[string] `json:"registration,omitempty"`
 }
+
+// InboxSignature The inbox's default signature, Markdown, "" when none: members without their own signature
+// for the inbox (`PUT /v1/me/signatures/{inboxId}`) sign with it. `{{member.name}}` and
+// `{{member.title}}` are replaced with the author's name and title. Images are e-mail images
+// of the workspace (`/i/{token}` URLs from `POST /v1/email-images`); any other image becomes a
+// link. Only e-mailed replies carry a signature, never chat, app or API channel replies.
+type InboxSignature = string
 
 // InboxSlaStats defines model for InboxSlaStats.
 type InboxSlaStats struct {
@@ -17739,6 +17769,13 @@ type InboxUpdate struct {
 
 	// Sender Owners, admins and keys with `inboxes:manage`.
 	Sender *InboxSenderUpdate `json:"sender,omitempty"`
+
+	// Signature The inbox's default signature, Markdown, "" when none: members without their own signature
+	// for the inbox (`PUT /v1/me/signatures/{inboxId}`) sign with it. `{{member.name}}` and
+	// `{{member.title}}` are replaced with the author's name and title. Images are e-mail images
+	// of the workspace (`/i/{token}` URLs from `POST /v1/email-images`); any other image becomes a
+	// link. Only e-mailed replies carry a signature, never chat, app or API channel replies.
+	Signature *InboxSignature `json:"signature,omitempty"`
 
 	// Slug Examples: acme-app
 	Slug     *Slug   `json:"slug,omitempty"`
@@ -18496,6 +18533,9 @@ type Member struct {
 	Online   bool      `json:"online"`
 	PersonId uuid.UUID `json:"person_id"`
 	Role     Role      `json:"role"`
+
+	// Title The member's job title, "" when none. Signatures use it as `{{member.title}}`.
+	Title string `json:"title"`
 }
 
 // MemberList defines model for MemberList.
@@ -18528,6 +18568,33 @@ type MemberPresenceEvent struct {
 // MemberPresenceEventType defines model for MemberPresenceEvent.Type.
 type MemberPresenceEventType string
 
+// MemberSignature defines model for MemberSignature.
+type MemberSignature struct {
+	// Body The member's own signature for the inbox, Markdown; "" signs with nothing. Absent when
+	// the member has none and signs with the inbox's default.
+	Body *string `json:"body,omitempty"`
+
+	// Html The signature the member's e-mailed replies in the inbox carry, rendered as sanitized HTML; "" when none.
+	Html    string    `json:"html"`
+	InboxId uuid.UUID `json:"inbox_id"`
+
+	// Text The same signature as plain text; "" when none.
+	Text string `json:"text"`
+}
+
+// MemberSignatureList defines model for MemberSignatureList.
+type MemberSignatureList struct {
+	Items []MemberSignature `json:"items"`
+}
+
+// MemberSignatureUpdate defines model for MemberSignatureUpdate.
+type MemberSignatureUpdate struct {
+	// Body Markdown with `{{member.name}}` and `{{member.title}}`; "" signs with nothing in this
+	// inbox. Images are e-mail images of the workspace (`/i/{token}` URLs from
+	// `POST /v1/email-images`); any other image is not refused but becomes a link.
+	Body string `json:"body"`
+}
+
 // MemberSlaStats defines model for MemberSlaStats.
 type MemberSlaStats struct {
 	Breached int64     `json:"breached"`
@@ -18544,7 +18611,10 @@ type MemberStats struct {
 
 // MemberUpdate defines model for MemberUpdate.
 type MemberUpdate struct {
-	Role Role `json:"role"`
+	Role *Role `json:"role,omitempty"`
+
+	// Title The member's job title; "" removes it.
+	Title *string `json:"title,omitempty"`
 }
 
 // Membership defines model for Membership.
@@ -18662,6 +18732,11 @@ type Message struct {
 
 	// SentBy Who sent a draft (`member` or `bot`); absent for messages that were never drafts.
 	SentBy *MessageAuthor `json:"sent_by,omitempty"`
+
+	// SignatureHtml The author's signature the e-mail carries below the reply, as sanitized HTML, fixed when
+	// the message (or its draft) was written; absent when it carries none. `body` and `html`
+	// never contain it.
+	SignatureHtml *string `json:"signature_html,omitempty"`
 }
 
 // MessageAuthor defines model for MessageAuthor.
@@ -18747,6 +18822,12 @@ type MessageCreate struct {
 	// body as it likes; the server does not parse `@` in the text.
 	Mentions *[]uuid.UUID `json:"mentions,omitempty"`
 
+	// Signature E-mailed replies by members: add the author's signature for the inbox (their own, else
+	// the inbox's `signature`); absent means `true`. `false` sends without it. Chat, app and API channel replies,
+	// notes and forwards never carry one, nor do messages written by API keys or automation
+	// rules. A draft keeps the signature it was stored with when it is sent.
+	Signature *bool `json:"signature,omitempty"`
+
 	// Then Changes to the conversation applied with the message; see the operation.
 	Then *ConversationUpdate `json:"then,omitempty"`
 }
@@ -18775,6 +18856,9 @@ type MessageCreateMultipart struct {
 
 	// Mentions Notes only; repeat the field once per member id.
 	Mentions *[]uuid.UUID `json:"mentions,omitempty"`
+
+	// Signature `false` sends an e-mailed reply without the author's signature; see `MessageCreate`.
+	Signature *bool `json:"signature,omitempty"`
 
 	// Then A `ConversationUpdate` as JSON.
 	Then *string `json:"then,omitempty"`
@@ -27380,6 +27464,24 @@ type SetInboxNotificationsParams struct {
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
 
+// ListMySignaturesParams defines parameters for ListMySignatures.
+type ListMySignaturesParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// DeleteMySignatureParams defines parameters for DeleteMySignature.
+type DeleteMySignatureParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// SetMySignatureParams defines parameters for SetMySignature.
+type SetMySignatureParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
 // UnlinkMySlackParams defines parameters for UnlinkMySlack.
 type UnlinkMySlackParams struct {
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
@@ -29532,6 +29634,9 @@ type FinishPasskeyRegistrationJSONRequestBody = PasskeyRegistration
 
 // CreatePushSubscriptionJSONRequestBody defines body for CreatePushSubscription for application/json ContentType.
 type CreatePushSubscriptionJSONRequestBody = PushSubscriptionCreate
+
+// SetMySignatureJSONRequestBody defines body for SetMySignature for application/json ContentType.
+type SetMySignatureJSONRequestBody = MemberSignatureUpdate
 
 // StartMySlackLinkJSONRequestBody defines body for StartMySlackLink for application/json ContentType.
 type StartMySlackLinkJSONRequestBody = SlackLinkStart
@@ -38507,7 +38612,12 @@ type ClientInterface interface {
 	// A member's reply (`message`, `out`) in a conversation that started on an `email` channel is
 	// e-mailed to the contact through the channel's SMTP account by a background job: the message
 	// is returned with `delivery.state` `queued`, and `message.updated` events report `sent` or
-	// `failed`. Notes are never e-mailed. When the recipient address is undeliverable (bounced or
+	// `failed`. Notes are never e-mailed. A member's e-mailed reply carries their signature for
+	// the inbox (`GET /v1/me/signatures`) unless `signature` is `false`: below the reply and above
+	// a quoted block at the end of the body (lines starting with `>`), after `-- ` in the text part
+	// and as a `yuva-signature` block in the HTML part. It is fixed when the message or its draft
+	// is stored and returned as `signature_html`; when several replies go out in one e-mail, the
+	// latest signature among them is added once. When the recipient address is undeliverable (bounced or
 	// complained) the reply is refused with `409 email_undeliverable`; when the channel has no
 	// SMTP account, with `409 email_not_configured`. A catch-all channel (`*@domain`) sends from the
 	// address the contact wrote to; when the conversation has none and the channel has no
@@ -38577,7 +38687,12 @@ type ClientInterface interface {
 	// A member's reply (`message`, `out`) in a conversation that started on an `email` channel is
 	// e-mailed to the contact through the channel's SMTP account by a background job: the message
 	// is returned with `delivery.state` `queued`, and `message.updated` events report `sent` or
-	// `failed`. Notes are never e-mailed. When the recipient address is undeliverable (bounced or
+	// `failed`. Notes are never e-mailed. A member's e-mailed reply carries their signature for
+	// the inbox (`GET /v1/me/signatures`) unless `signature` is `false`: below the reply and above
+	// a quoted block at the end of the body (lines starting with `>`), after `-- ` in the text part
+	// and as a `yuva-signature` block in the HTML part. It is fixed when the message or its draft
+	// is stored and returned as `signature_html`; when several replies go out in one e-mail, the
+	// latest signature among them is added once. When the recipient address is undeliverable (bounced or
 	// complained) the reply is refused with `409 email_undeliverable`; when the channel has no
 	// SMTP account, with `409 email_not_configured`. A catch-all channel (`*@domain`) sends from the
 	// address the contact wrote to; when the conversation has none and the channel has no
@@ -39648,7 +39763,8 @@ type ClientInterface interface {
 	// the workspace's images would exceed the server's limit. A workspace can upload 30 images a
 	// minute; more are refused with `429 rate_limited` and `Retry-After`.
 	//
-	// Owners, admins and API keys. Scope: `broadcasts:write`.
+	// Every member (so agents can put an image in their signature) and API keys. Scope:
+	// `broadcasts:write`.
 	//
 	// Takes any type of body and a specified content type.
 	//
@@ -39661,7 +39777,9 @@ type ClientInterface interface {
 	// not archived uses the image, naming the articles in `used_by.help_articles` while a help
 	// article's draft, published copy or kept revision shows it, and the entries in
 	// `used_by.changelog_entries` while a What's new entry has it as its picture or shows it in a
-	// draft or published text, whatever `force` says. An image that went out in a sent broadcast needs
+	// draft or published text, and the inboxes and members in `used_by.inbox_signatures` and
+	// `used_by.member_signatures` while an inbox's default signature or a member's own signature
+	// shows it, whatever `force` says. An image that went out in a sent broadcast needs
 	// `force=true` (`409 image_sent` otherwise): mail already delivered then shows a broken
 	// image. The public URL stops working at once.
 	//
@@ -41609,6 +41727,41 @@ type ClientInterface interface {
 	// Corresponds with GET /v1/me/sessions (the `ListSessions` operationId).
 	ListSessions(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// ListMySignatures Your signatures
+	//
+	// The calling member's signature in every inbox they can see: their own, or the inbox's
+	// default (`Inbox.signature`) when they have none, rendered for them. Member sessions only.
+	//
+	// Corresponds with GET /v1/me/signatures (the `ListMySignatures` operationId).
+	ListMySignatures(ctx context.Context, params *ListMySignaturesParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteMySignature Remove your signature for one inbox
+	//
+	// The member signs with the inbox's default again. Member sessions only.
+	//
+	// Corresponds with DELETE /v1/me/signatures/{inboxId} (the `DeleteMySignature` operationId).
+	DeleteMySignature(ctx context.Context, inboxId InboxId, params *DeleteMySignatureParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// SetMySignatureWithBody Set your signature for one inbox
+	//
+	// Replaces the member's own signature for the inbox; it wins over the inbox's default. Replies
+	// stored before keep the signature they were written with. Member sessions only.
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with PUT /v1/me/signatures/{inboxId} (the `SetMySignature` operationId).
+	SetMySignatureWithBody(ctx context.Context, inboxId InboxId, params *SetMySignatureParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// SetMySignature Set your signature for one inbox
+	//
+	// Replaces the member's own signature for the inbox; it wins over the inbox's default. Replies
+	// stored before keep the signature they were written with. Member sessions only.
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with PUT /v1/me/signatures/{inboxId} (the `SetMySignature` operationId).
+	SetMySignature(ctx context.Context, inboxId InboxId, params *SetMySignatureParams, body SetMySignatureJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// UnlinkMySlack Unlink your Slack user
 	//
 	// Removes the link (and a pending code); writes `member.slack_unlinked` to the audit log.
@@ -41704,20 +41857,24 @@ type ClientInterface interface {
 	// Corresponds with GET /v1/members/{memberId} (the `GetMember` operationId).
 	GetMember(ctx context.Context, memberId MemberId, params *GetMemberParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	// UpdateMemberWithBody Change a member's role
+	// UpdateMemberWithBody Change a member's role or title
 	//
-	// Owners and admins only, with a member session. Only an owner grants or takes away the
-	// `owner` role. The last owner cannot be demoted.
+	// With a member session. A member may change their own `title`; changing another member's
+	// `title` or anyone's `role` is for owners and admins only. Only an owner grants or takes away
+	// the `owner` role. The last owner cannot be demoted. A body with neither field is
+	// `400 validation_failed`.
 	//
 	// Takes any type of body and a specified content type.
 	//
 	// Corresponds with PATCH /v1/members/{memberId} (the `UpdateMember` operationId).
 	UpdateMemberWithBody(ctx context.Context, memberId MemberId, params *UpdateMemberParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	// UpdateMember Change a member's role
+	// UpdateMember Change a member's role or title
 	//
-	// Owners and admins only, with a member session. Only an owner grants or takes away the
-	// `owner` role. The last owner cannot be demoted.
+	// With a member session. A member may change their own `title`; changing another member's
+	// `title` or anyone's `role` is for owners and admins only. Only an owner grants or takes away
+	// the `owner` role. The last owner cannot be demoted. A body with neither field is
+	// `400 validation_failed`.
 	//
 	// Takes a body of the `application/json` content type.
 	//
@@ -51872,7 +52029,12 @@ func (c *Client) ListMessages(ctx context.Context, conversationId ConversationId
 // A member's reply (`message`, `out`) in a conversation that started on an `email` channel is
 // e-mailed to the contact through the channel's SMTP account by a background job: the message
 // is returned with `delivery.state` `queued`, and `message.updated` events report `sent` or
-// `failed`. Notes are never e-mailed. When the recipient address is undeliverable (bounced or
+// `failed`. Notes are never e-mailed. A member's e-mailed reply carries their signature for
+// the inbox (`GET /v1/me/signatures`) unless `signature` is `false`: below the reply and above
+// a quoted block at the end of the body (lines starting with `>`), after `-- ` in the text part
+// and as a `yuva-signature` block in the HTML part. It is fixed when the message or its draft
+// is stored and returned as `signature_html`; when several replies go out in one e-mail, the
+// latest signature among them is added once. When the recipient address is undeliverable (bounced or
 // complained) the reply is refused with `409 email_undeliverable`; when the channel has no
 // SMTP account, with `409 email_not_configured`. A catch-all channel (`*@domain`) sends from the
 // address the contact wrote to; when the conversation has none and the channel has no
@@ -51952,7 +52114,12 @@ func (c *Client) CreateMessageWithBody(ctx context.Context, conversationId Conve
 // A member's reply (`message`, `out`) in a conversation that started on an `email` channel is
 // e-mailed to the contact through the channel's SMTP account by a background job: the message
 // is returned with `delivery.state` `queued`, and `message.updated` events report `sent` or
-// `failed`. Notes are never e-mailed. When the recipient address is undeliverable (bounced or
+// `failed`. Notes are never e-mailed. A member's e-mailed reply carries their signature for
+// the inbox (`GET /v1/me/signatures`) unless `signature` is `false`: below the reply and above
+// a quoted block at the end of the body (lines starting with `>`), after `-- ` in the text part
+// and as a `yuva-signature` block in the HTML part. It is fixed when the message or its draft
+// is stored and returned as `signature_html`; when several replies go out in one e-mail, the
+// latest signature among them is added once. When the recipient address is undeliverable (bounced or
 // complained) the reply is refused with `409 email_undeliverable`; when the channel has no
 // SMTP account, with `409 email_not_configured`. A catch-all channel (`*@domain`) sends from the
 // address the contact wrote to; when the conversation has none and the channel has no
@@ -53773,7 +53940,8 @@ func (c *Client) ListEmailImages(ctx context.Context, params *ListEmailImagesPar
 // the workspace's images would exceed the server's limit. A workspace can upload 30 images a
 // minute; more are refused with `429 rate_limited` and `Retry-After`.
 //
-// Owners, admins and API keys. Scope: `broadcasts:write`.
+// Every member (so agents can put an image in their signature) and API keys. Scope:
+// `broadcasts:write`.
 //
 // Takes any type of body and a specified content type.
 //
@@ -53796,7 +53964,9 @@ func (c *Client) UploadEmailImageWithBody(ctx context.Context, params *UploadEma
 // not archived uses the image, naming the articles in `used_by.help_articles` while a help
 // article's draft, published copy or kept revision shows it, and the entries in
 // `used_by.changelog_entries` while a What's new entry has it as its picture or shows it in a
-// draft or published text, whatever `force` says. An image that went out in a sent broadcast needs
+// draft or published text, and the inboxes and members in `used_by.inbox_signatures` and
+// `used_by.member_signatures` while an inbox's default signature or a member's own signature
+// shows it, whatever `force` says. An image that went out in a sent broadcast needs
 // `force=true` (`409 image_sent` otherwise): mail already delivered then shows a broken
 // image. The public URL stops working at once.
 //
@@ -57194,6 +57364,81 @@ func (c *Client) ListSessions(ctx context.Context, reqEditors ...RequestEditorFn
 	return c.Client.Do(req)
 }
 
+// ListMySignatures Your signatures
+//
+// The calling member's signature in every inbox they can see: their own, or the inbox's
+// default (`Inbox.signature`) when they have none, rendered for them. Member sessions only.
+//
+// Corresponds with GET /v1/me/signatures (the `ListMySignatures` operationId).
+func (c *Client) ListMySignatures(ctx context.Context, params *ListMySignaturesParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListMySignaturesRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// DeleteMySignature Remove your signature for one inbox
+//
+// The member signs with the inbox's default again. Member sessions only.
+//
+// Corresponds with DELETE /v1/me/signatures/{inboxId} (the `DeleteMySignature` operationId).
+func (c *Client) DeleteMySignature(ctx context.Context, inboxId InboxId, params *DeleteMySignatureParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteMySignatureRequest(c.Server, inboxId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// SetMySignatureWithBody Set your signature for one inbox
+//
+// Replaces the member's own signature for the inbox; it wins over the inbox's default. Replies
+// stored before keep the signature they were written with. Member sessions only.
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with PUT /v1/me/signatures/{inboxId} (the `SetMySignature` operationId).
+func (c *Client) SetMySignatureWithBody(ctx context.Context, inboxId InboxId, params *SetMySignatureParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSetMySignatureRequestWithBody(c.Server, inboxId, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// SetMySignature Set your signature for one inbox
+//
+// Replaces the member's own signature for the inbox; it wins over the inbox's default. Replies
+// stored before keep the signature they were written with. Member sessions only.
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with PUT /v1/me/signatures/{inboxId} (the `SetMySignature` operationId).
+func (c *Client) SetMySignature(ctx context.Context, inboxId InboxId, params *SetMySignatureParams, body SetMySignatureJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSetMySignatureRequest(c.Server, inboxId, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 // UnlinkMySlack Unlink your Slack user
 //
 // Removes the link (and a pending code); writes `member.slack_unlinked` to the audit log.
@@ -57379,10 +57624,12 @@ func (c *Client) GetMember(ctx context.Context, memberId MemberId, params *GetMe
 	return c.Client.Do(req)
 }
 
-// UpdateMemberWithBody Change a member's role
+// UpdateMemberWithBody Change a member's role or title
 //
-// Owners and admins only, with a member session. Only an owner grants or takes away the
-// `owner` role. The last owner cannot be demoted.
+// With a member session. A member may change their own `title`; changing another member's
+// `title` or anyone's `role` is for owners and admins only. Only an owner grants or takes away
+// the `owner` role. The last owner cannot be demoted. A body with neither field is
+// `400 validation_failed`.
 //
 // Takes any type of body and a specified content type.
 //
@@ -57399,10 +57646,12 @@ func (c *Client) UpdateMemberWithBody(ctx context.Context, memberId MemberId, pa
 	return c.Client.Do(req)
 }
 
-// UpdateMember Change a member's role
+// UpdateMember Change a member's role or title
 //
-// Owners and admins only, with a member session. Only an owner grants or takes away the
-// `owner` role. The last owner cannot be demoted.
+// With a member session. A member may change their own `title`; changing another member's
+// `title` or anyone's `role` is for owners and admins only. Only an owner grants or takes away
+// the `owner` role. The last owner cannot be demoted. A body with neither field is
+// `400 validation_failed`.
 //
 // Takes a body of the `application/json` content type.
 //
@@ -85635,6 +85884,159 @@ func NewListSessionsRequest(server string) (*http.Request, error) {
 	return req, nil
 }
 
+// NewListMySignaturesRequest constructs an http.Request for the ListMySignatures method
+func NewListMySignaturesRequest(server string, params *ListMySignaturesParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/me/signatures")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewDeleteMySignatureRequest constructs an http.Request for the DeleteMySignature method
+func NewDeleteMySignatureRequest(server string, inboxId InboxId, params *DeleteMySignatureParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "inboxId", inboxId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/me/signatures/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodDelete, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewSetMySignatureRequest calls the generic SetMySignature builder with application/json body
+func NewSetMySignatureRequest(server string, inboxId InboxId, params *SetMySignatureParams, body SetMySignatureJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewSetMySignatureRequestWithBody(server, inboxId, params, "application/json", bodyReader)
+}
+
+// NewSetMySignatureRequestWithBody constructs an http.Request for the SetMySignature method, with any body, and a specified content type
+func NewSetMySignatureRequestWithBody(server string, inboxId InboxId, params *SetMySignatureParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "inboxId", inboxId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/me/signatures/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPut, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
 // NewUnlinkMySlackRequest constructs an http.Request for the UnlinkMySlack method
 func NewUnlinkMySlackRequest(server string, params *UnlinkMySlackParams) (*http.Request, error) {
 	var err error
@@ -99357,7 +99759,12 @@ type ClientWithResponsesInterface interface {
 	// A member's reply (`message`, `out`) in a conversation that started on an `email` channel is
 	// e-mailed to the contact through the channel's SMTP account by a background job: the message
 	// is returned with `delivery.state` `queued`, and `message.updated` events report `sent` or
-	// `failed`. Notes are never e-mailed. When the recipient address is undeliverable (bounced or
+	// `failed`. Notes are never e-mailed. A member's e-mailed reply carries their signature for
+	// the inbox (`GET /v1/me/signatures`) unless `signature` is `false`: below the reply and above
+	// a quoted block at the end of the body (lines starting with `>`), after `-- ` in the text part
+	// and as a `yuva-signature` block in the HTML part. It is fixed when the message or its draft
+	// is stored and returned as `signature_html`; when several replies go out in one e-mail, the
+	// latest signature among them is added once. When the recipient address is undeliverable (bounced or
 	// complained) the reply is refused with `409 email_undeliverable`; when the channel has no
 	// SMTP account, with `409 email_not_configured`. A catch-all channel (`*@domain`) sends from the
 	// address the contact wrote to; when the conversation has none and the channel has no
@@ -99427,7 +99834,12 @@ type ClientWithResponsesInterface interface {
 	// A member's reply (`message`, `out`) in a conversation that started on an `email` channel is
 	// e-mailed to the contact through the channel's SMTP account by a background job: the message
 	// is returned with `delivery.state` `queued`, and `message.updated` events report `sent` or
-	// `failed`. Notes are never e-mailed. When the recipient address is undeliverable (bounced or
+	// `failed`. Notes are never e-mailed. A member's e-mailed reply carries their signature for
+	// the inbox (`GET /v1/me/signatures`) unless `signature` is `false`: below the reply and above
+	// a quoted block at the end of the body (lines starting with `>`), after `-- ` in the text part
+	// and as a `yuva-signature` block in the HTML part. It is fixed when the message or its draft
+	// is stored and returned as `signature_html`; when several replies go out in one e-mail, the
+	// latest signature among them is added once. When the recipient address is undeliverable (bounced or
 	// complained) the reply is refused with `409 email_undeliverable`; when the channel has no
 	// SMTP account, with `409 email_not_configured`. A catch-all channel (`*@domain`) sends from the
 	// address the contact wrote to; when the conversation has none and the channel has no
@@ -100570,7 +100982,8 @@ type ClientWithResponsesInterface interface {
 	// the workspace's images would exceed the server's limit. A workspace can upload 30 images a
 	// minute; more are refused with `429 rate_limited` and `Retry-After`.
 	//
-	// Owners, admins and API keys. Scope: `broadcasts:write`.
+	// Every member (so agents can put an image in their signature) and API keys. Scope:
+	// `broadcasts:write`.
 	//
 	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
 	//
@@ -100583,7 +100996,9 @@ type ClientWithResponsesInterface interface {
 	// not archived uses the image, naming the articles in `used_by.help_articles` while a help
 	// article's draft, published copy or kept revision shows it, and the entries in
 	// `used_by.changelog_entries` while a What's new entry has it as its picture or shows it in a
-	// draft or published text, whatever `force` says. An image that went out in a sent broadcast needs
+	// draft or published text, and the inboxes and members in `used_by.inbox_signatures` and
+	// `used_by.member_signatures` while an inbox's default signature or a member's own signature
+	// shows it, whatever `force` says. An image that went out in a sent broadcast needs
 	// `force=true` (`409 image_sent` otherwise): mail already delivered then shows a broken
 	// image. The public URL stops working at once.
 	//
@@ -102677,6 +103092,45 @@ type ClientWithResponsesInterface interface {
 	// Corresponds with GET /v1/me/sessions (the `ListSessions` operationId).
 	ListSessionsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*ListSessionsResponse, error)
 
+	// ListMySignaturesWithResponse Your signatures
+	//
+	// The calling member's signature in every inbox they can see: their own, or the inbox's
+	// default (`Inbox.signature`) when they have none, rendered for them. Member sessions only.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /v1/me/signatures (the `ListMySignatures` operationId).
+	ListMySignaturesWithResponse(ctx context.Context, params *ListMySignaturesParams, reqEditors ...RequestEditorFn) (*ListMySignaturesResponse, error)
+
+	// DeleteMySignatureWithResponse Remove your signature for one inbox
+	//
+	// The member signs with the inbox's default again. Member sessions only.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with DELETE /v1/me/signatures/{inboxId} (the `DeleteMySignature` operationId).
+	DeleteMySignatureWithResponse(ctx context.Context, inboxId InboxId, params *DeleteMySignatureParams, reqEditors ...RequestEditorFn) (*DeleteMySignatureResponse, error)
+
+	// SetMySignatureWithBodyWithResponse Set your signature for one inbox
+	//
+	// Replaces the member's own signature for the inbox; it wins over the inbox's default. Replies
+	// stored before keep the signature they were written with. Member sessions only.
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PUT /v1/me/signatures/{inboxId} (the `SetMySignature` operationId).
+	SetMySignatureWithBodyWithResponse(ctx context.Context, inboxId InboxId, params *SetMySignatureParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SetMySignatureResponse, error)
+
+	// SetMySignatureWithResponse Set your signature for one inbox
+	//
+	// Replaces the member's own signature for the inbox; it wins over the inbox's default. Replies
+	// stored before keep the signature they were written with. Member sessions only.
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PUT /v1/me/signatures/{inboxId} (the `SetMySignature` operationId).
+	SetMySignatureWithResponse(ctx context.Context, inboxId InboxId, params *SetMySignatureParams, body SetMySignatureJSONRequestBody, reqEditors ...RequestEditorFn) (*SetMySignatureResponse, error)
+
 	// UnlinkMySlackWithResponse Unlink your Slack user
 	//
 	// Removes the link (and a pending code); writes `member.slack_unlinked` to the audit log.
@@ -102782,20 +103236,24 @@ type ClientWithResponsesInterface interface {
 	// Corresponds with GET /v1/members/{memberId} (the `GetMember` operationId).
 	GetMemberWithResponse(ctx context.Context, memberId MemberId, params *GetMemberParams, reqEditors ...RequestEditorFn) (*GetMemberResponse, error)
 
-	// UpdateMemberWithBodyWithResponse Change a member's role
+	// UpdateMemberWithBodyWithResponse Change a member's role or title
 	//
-	// Owners and admins only, with a member session. Only an owner grants or takes away the
-	// `owner` role. The last owner cannot be demoted.
+	// With a member session. A member may change their own `title`; changing another member's
+	// `title` or anyone's `role` is for owners and admins only. Only an owner grants or takes away
+	// the `owner` role. The last owner cannot be demoted. A body with neither field is
+	// `400 validation_failed`.
 	//
 	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
 	//
 	// Corresponds with PATCH /v1/members/{memberId} (the `UpdateMember` operationId).
 	UpdateMemberWithBodyWithResponse(ctx context.Context, memberId MemberId, params *UpdateMemberParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateMemberResponse, error)
 
-	// UpdateMemberWithResponse Change a member's role
+	// UpdateMemberWithResponse Change a member's role or title
 	//
-	// Owners and admins only, with a member session. Only an owner grants or takes away the
-	// `owner` role. The last owner cannot be demoted.
+	// With a member session. A member may change their own `title`; changing another member's
+	// `title` or anyone's `role` is for owners and admins only. Only an owner grants or takes away
+	// the `owner` role. The last owner cannot be demoted. A body with neither field is
+	// `400 validation_failed`.
 	//
 	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
 	//
@@ -131058,6 +131516,185 @@ func (r ListSessionsResponse) ContentType() string {
 	return ""
 }
 
+type ListMySignaturesResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *MemberSignatureList
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r ListMySignaturesResponse) GetJSON200() *MemberSignatureList {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r ListMySignaturesResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r ListMySignaturesResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetBody returns the raw response body bytes
+func (r ListMySignaturesResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r ListMySignaturesResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListMySignaturesResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ListMySignaturesResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type DeleteMySignatureResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r DeleteMySignatureResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r DeleteMySignatureResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r DeleteMySignatureResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetBody returns the raw response body bytes
+func (r DeleteMySignatureResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteMySignatureResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteMySignatureResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r DeleteMySignatureResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type SetMySignatureResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *MemberSignature
+	// ApplicationproblemJSON400 the response for an HTTP 400 `application/problem+json` response
+	ApplicationproblemJSON400 *Problem
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r SetMySignatureResponse) GetJSON200() *MemberSignature {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON400 returns the response for an HTTP 400 `application/problem+json` response
+func (r SetMySignatureResponse) GetApplicationproblemJSON400() *Problem {
+	return r.ApplicationproblemJSON400
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r SetMySignatureResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r SetMySignatureResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r SetMySignatureResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetBody returns the raw response body bytes
+func (r SetMySignatureResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r SetMySignatureResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r SetMySignatureResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r SetMySignatureResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type UnlinkMySlackResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -147060,7 +147697,12 @@ func (c *ClientWithResponses) ListMessagesWithResponse(ctx context.Context, conv
 // A member's reply (`message`, `out`) in a conversation that started on an `email` channel is
 // e-mailed to the contact through the channel's SMTP account by a background job: the message
 // is returned with `delivery.state` `queued`, and `message.updated` events report `sent` or
-// `failed`. Notes are never e-mailed. When the recipient address is undeliverable (bounced or
+// `failed`. Notes are never e-mailed. A member's e-mailed reply carries their signature for
+// the inbox (`GET /v1/me/signatures`) unless `signature` is `false`: below the reply and above
+// a quoted block at the end of the body (lines starting with `>`), after `-- ` in the text part
+// and as a `yuva-signature` block in the HTML part. It is fixed when the message or its draft
+// is stored and returned as `signature_html`; when several replies go out in one e-mail, the
+// latest signature among them is added once. When the recipient address is undeliverable (bounced or
 // complained) the reply is refused with `409 email_undeliverable`; when the channel has no
 // SMTP account, with `409 email_not_configured`. A catch-all channel (`*@domain`) sends from the
 // address the contact wrote to; when the conversation has none and the channel has no
@@ -147136,7 +147778,12 @@ func (c *ClientWithResponses) CreateMessageWithBodyWithResponse(ctx context.Cont
 // A member's reply (`message`, `out`) in a conversation that started on an `email` channel is
 // e-mailed to the contact through the channel's SMTP account by a background job: the message
 // is returned with `delivery.state` `queued`, and `message.updated` events report `sent` or
-// `failed`. Notes are never e-mailed. When the recipient address is undeliverable (bounced or
+// `failed`. Notes are never e-mailed. A member's e-mailed reply carries their signature for
+// the inbox (`GET /v1/me/signatures`) unless `signature` is `false`: below the reply and above
+// a quoted block at the end of the body (lines starting with `>`), after `-- ` in the text part
+// and as a `yuva-signature` block in the HTML part. It is fixed when the message or its draft
+// is stored and returned as `signature_html`; when several replies go out in one e-mail, the
+// latest signature among them is added once. When the recipient address is undeliverable (bounced or
 // complained) the reply is refused with `409 email_undeliverable`; when the channel has no
 // SMTP account, with `409 email_not_configured`. A catch-all channel (`*@domain`) sends from the
 // address the contact wrote to; when the conversation has none and the channel has no
@@ -148729,7 +149376,8 @@ func (c *ClientWithResponses) ListEmailImagesWithResponse(ctx context.Context, p
 // the workspace's images would exceed the server's limit. A workspace can upload 30 images a
 // minute; more are refused with `429 rate_limited` and `Retry-After`.
 //
-// Owners, admins and API keys. Scope: `broadcasts:write`.
+// Every member (so agents can put an image in their signature) and API keys. Scope:
+// `broadcasts:write`.
 //
 // Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
 //
@@ -148748,7 +149396,9 @@ func (c *ClientWithResponses) UploadEmailImageWithBodyWithResponse(ctx context.C
 // not archived uses the image, naming the articles in `used_by.help_articles` while a help
 // article's draft, published copy or kept revision shows it, and the entries in
 // `used_by.changelog_entries` while a What's new entry has it as its picture or shows it in a
-// draft or published text, whatever `force` says. An image that went out in a sent broadcast needs
+// draft or published text, and the inboxes and members in `used_by.inbox_signatures` and
+// `used_by.member_signatures` while an inbox's default signature or a member's own signature
+// shows it, whatever `force` says. An image that went out in a sent broadcast needs
 // `force=true` (`409 image_sent` otherwise): mail already delivered then shows a broken
 // image. The public URL stops working at once.
 //
@@ -151712,6 +152362,69 @@ func (c *ClientWithResponses) ListSessionsWithResponse(ctx context.Context, reqE
 	return ParseListSessionsResponse(rsp)
 }
 
+// ListMySignaturesWithResponse Your signatures
+//
+// The calling member's signature in every inbox they can see: their own, or the inbox's
+// default (`Inbox.signature`) when they have none, rendered for them. Member sessions only.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /v1/me/signatures (the `ListMySignatures` operationId).
+func (c *ClientWithResponses) ListMySignaturesWithResponse(ctx context.Context, params *ListMySignaturesParams, reqEditors ...RequestEditorFn) (*ListMySignaturesResponse, error) {
+	rsp, err := c.ListMySignatures(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListMySignaturesResponse(rsp)
+}
+
+// DeleteMySignatureWithResponse Remove your signature for one inbox
+//
+// The member signs with the inbox's default again. Member sessions only.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with DELETE /v1/me/signatures/{inboxId} (the `DeleteMySignature` operationId).
+func (c *ClientWithResponses) DeleteMySignatureWithResponse(ctx context.Context, inboxId InboxId, params *DeleteMySignatureParams, reqEditors ...RequestEditorFn) (*DeleteMySignatureResponse, error) {
+	rsp, err := c.DeleteMySignature(ctx, inboxId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteMySignatureResponse(rsp)
+}
+
+// SetMySignatureWithBodyWithResponse Set your signature for one inbox
+//
+// Replaces the member's own signature for the inbox; it wins over the inbox's default. Replies
+// stored before keep the signature they were written with. Member sessions only.
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PUT /v1/me/signatures/{inboxId} (the `SetMySignature` operationId).
+func (c *ClientWithResponses) SetMySignatureWithBodyWithResponse(ctx context.Context, inboxId InboxId, params *SetMySignatureParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SetMySignatureResponse, error) {
+	rsp, err := c.SetMySignatureWithBody(ctx, inboxId, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSetMySignatureResponse(rsp)
+}
+
+// SetMySignatureWithResponse Set your signature for one inbox
+//
+// Replaces the member's own signature for the inbox; it wins over the inbox's default. Replies
+// stored before keep the signature they were written with. Member sessions only.
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PUT /v1/me/signatures/{inboxId} (the `SetMySignature` operationId).
+func (c *ClientWithResponses) SetMySignatureWithResponse(ctx context.Context, inboxId InboxId, params *SetMySignatureParams, body SetMySignatureJSONRequestBody, reqEditors ...RequestEditorFn) (*SetMySignatureResponse, error) {
+	rsp, err := c.SetMySignature(ctx, inboxId, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSetMySignatureResponse(rsp)
+}
+
 // UnlinkMySlackWithResponse Unlink your Slack user
 //
 // Removes the link (and a pending code); writes `member.slack_unlinked` to the audit log.
@@ -151871,10 +152584,12 @@ func (c *ClientWithResponses) GetMemberWithResponse(ctx context.Context, memberI
 	return ParseGetMemberResponse(rsp)
 }
 
-// UpdateMemberWithBodyWithResponse Change a member's role
+// UpdateMemberWithBodyWithResponse Change a member's role or title
 //
-// Owners and admins only, with a member session. Only an owner grants or takes away the
-// `owner` role. The last owner cannot be demoted.
+// With a member session. A member may change their own `title`; changing another member's
+// `title` or anyone's `role` is for owners and admins only. Only an owner grants or takes away
+// the `owner` role. The last owner cannot be demoted. A body with neither field is
+// `400 validation_failed`.
 //
 // Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
 //
@@ -151887,10 +152602,12 @@ func (c *ClientWithResponses) UpdateMemberWithBodyWithResponse(ctx context.Conte
 	return ParseUpdateMemberResponse(rsp)
 }
 
-// UpdateMemberWithResponse Change a member's role
+// UpdateMemberWithResponse Change a member's role or title
 //
-// Owners and admins only, with a member session. Only an owner grants or takes away the
-// `owner` role. The last owner cannot be demoted.
+// With a member session. A member may change their own `title`; changing another member's
+// `title` or anyone's `role` is for owners and admins only. Only an owner grants or takes away
+// the `owner` role. The last owner cannot be demoted. A body with neither field is
+// `400 validation_failed`.
 //
 // Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
 //
@@ -175910,6 +176627,143 @@ func ParseListSessionsResponse(rsp *http.Response) (*ListSessionsResponse, error
 			return nil, err
 		}
 		response.ApplicationproblemJSON403 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListMySignaturesResponse parses an HTTP response from a ListMySignaturesWithResponse call
+func ParseListMySignaturesResponse(rsp *http.Response) (*ListMySignaturesResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListMySignaturesResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest MemberSignatureList
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteMySignatureResponse parses an HTTP response from a DeleteMySignatureWithResponse call
+func ParseDeleteMySignatureResponse(rsp *http.Response) (*DeleteMySignatureResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteMySignatureResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case rsp.StatusCode == 204:
+		break // No content-type
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseSetMySignatureResponse parses an HTTP response from a SetMySignatureWithResponse call
+func ParseSetMySignatureResponse(rsp *http.Response) (*SetMySignatureResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &SetMySignatureResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest MemberSignature
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
 
 	}
 

@@ -538,6 +538,52 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/me/signatures": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Your signatures
+         * @description The calling member's signature in every inbox they can see: their own, or the inbox's
+         *     default (`Inbox.signature`) when they have none, rendered for them. Member sessions only.
+         */
+        get: operations["listMySignatures"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/me/signatures/{inboxId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Set your signature for one inbox
+         * @description Replaces the member's own signature for the inbox; it wins over the inbox's default. Replies
+         *     stored before keep the signature they were written with. Member sessions only.
+         */
+        put: operations["setMySignature"];
+        post?: never;
+        /**
+         * Remove your signature for one inbox
+         * @description The member signs with the inbox's default again. Member sessions only.
+         */
+        delete: operations["deleteMySignature"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/me/mentions": {
         parameters: {
             query?: never;
@@ -1153,9 +1199,11 @@ export interface paths {
         options?: never;
         head?: never;
         /**
-         * Change a member's role
-         * @description Owners and admins only, with a member session. Only an owner grants or takes away the
-         *     `owner` role. The last owner cannot be demoted.
+         * Change a member's role or title
+         * @description With a member session. A member may change their own `title`; changing another member's
+         *     `title` or anyone's `role` is for owners and admins only. Only an owner grants or takes away
+         *     the `owner` role. The last owner cannot be demoted. A body with neither field is
+         *     `400 validation_failed`.
          */
         patch: operations["updateMember"];
         trace?: never;
@@ -1271,7 +1319,8 @@ export interface paths {
         /**
          * Create an inbox
          * @description Owners, admins and API keys. A new identity secret is generated; it is
-         *     returned here and on rotation only, and stored encrypted.
+         *     returned here and on rotation only, and stored encrypted. `purpose` is `support` unless
+         *     given; a `mail` inbox with automatic assignment answers `409 purpose_mismatch`.
          *
          *     Scope: `inboxes:manage`.
          */
@@ -1310,7 +1359,8 @@ export interface paths {
         head?: never;
         /**
          * Update an inbox
-         * @description Owners, admins and API keys.
+         * @description Owners, admins and API keys. Changing `purpose` or setting `assignment_mode` on a `mail`
+         *     inbox can answer `409 purpose_mismatch` (see `InboxUpdate.purpose`).
          *
          *     Scope: `inboxes:manage`.
          */
@@ -1549,6 +1599,9 @@ export interface paths {
          *     without an SLA the next time it changes or gets a message, and to one with an SLA when its
          *     priority, labels or inbox change.
          *
+         *     `inbox_ids` naming a `mail` inbox answers `409 purpose_mismatch`; a policy without
+         *     `inbox_ids` never applies to `mail` inboxes.
+         *
          *     Scope: `inboxes:manage`.
          */
         post: operations["createSlaPolicy"];
@@ -1617,6 +1670,8 @@ export interface paths {
          *     conversation loses its SLA (`conversation.updated`); the time while no policy applies does
          *     not count if one applies again. Conversations it newly matches pick it up as for a new
          *     policy.
+         *
+         *     `inbox_ids` naming a `mail` inbox answers `409 purpose_mismatch`.
          *
          *     Scope: `inboxes:manage`.
          */
@@ -1769,6 +1824,9 @@ export interface paths {
          *     proved it holds it. The same address twice in this workspace answers
          *     `409 email_address_taken`. A catch-all on the forwarding domain or on a public mail
          *     provider (gmail.com, outlook.com, …) is refused (`400 validation_failed`).
+         *
+         *     A `mail` inbox takes only `email` channels: `chat`, `app` and `api` answer `409
+         *     purpose_mismatch`.
          *
          *     Scope: `inboxes:manage`.
          */
@@ -2416,7 +2474,11 @@ export interface paths {
          *
          *     `kind` limits every count to conversations of those kinds, as on `GET /v1/conversations`:
          *     the panel's Conversations view sends `kind=conversation`, its Feedback section
-         *     `kind=feedback`. Without it every kind is counted.
+         *     `kind=feedback`. Without it every kind is counted. `purpose` counts only the inboxes of
+         *     that purpose: the panel's Mail section sends `purpose=mail`.
+         *
+         *     `starred` counts the open conversations the calling member starred (`0` for API keys),
+         *     spam left out.
          *
          *     Scope: `conversations:read`.
          */
@@ -2746,6 +2808,9 @@ export interface paths {
          *     `conversation.updated` reports the new inbox; members watching the old one get
          *     `conversation.moved`.
          *
+         *     Into a `mail` inbox, a conversation whose `channel_kind` is `chat`, `app` or `api` is
+         *     refused with `409 purpose_mismatch`.
+         *
          *     Scope: `conversations:write`.
          */
         post: operations["moveConversation"];
@@ -2846,7 +2911,12 @@ export interface paths {
          *     A member's reply (`message`, `out`) in a conversation that started on an `email` channel is
          *     e-mailed to the contact through the channel's SMTP account by a background job: the message
          *     is returned with `delivery.state` `queued`, and `message.updated` events report `sent` or
-         *     `failed`. Notes are never e-mailed. When the recipient address is undeliverable (bounced or
+         *     `failed`. Notes are never e-mailed. A member's e-mailed reply carries their signature for
+         *     the inbox (`GET /v1/me/signatures`) unless `signature` is `false`: below the reply and above
+         *     a quoted block at the end of the body (lines starting with `>`), after `-- ` in the text part
+         *     and as a `yuva-signature` block in the HTML part. It is fixed when the message or its draft
+         *     is stored and returned as `signature_html`; when several replies go out in one e-mail, the
+         *     latest signature among them is added once. When the recipient address is undeliverable (bounced or
          *     complained) the reply is refused with `409 email_undeliverable`; when the channel has no
          *     SMTP account, with `409 email_not_configured`. A catch-all channel (`*@domain`) sends from the
          *     address the contact wrote to; when the conversation has none and the channel has no
@@ -3073,6 +3143,34 @@ export interface paths {
          *     removed. Member sessions only.
          */
         delete: operations["unpinConversation"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/conversations/{conversationId}/star": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Star a conversation
+         * @description Stars the conversation for the calling member; nobody else sees it. Starring a starred
+         *     conversation changes nothing. The member's own connections get a `conversation.updated`
+         *     event with `starred` when it changes; nobody else does, and no webhook is sent. Member
+         *     sessions only (`403 member_session_required` for API keys and OAuth tokens).
+         */
+        put: operations["starConversation"];
+        post?: never;
+        /**
+         * Remove a star
+         * @description Takes the calling member's star away; unstarring a conversation that is not starred
+         *     changes nothing. Events as for starring. Member sessions only.
+         */
+        delete: operations["unstarConversation"];
         options?: never;
         head?: never;
         patch?: never;
@@ -4125,6 +4223,8 @@ export interface paths {
          *     `suggestions` defaults to `moderated`. A server with `YUVA_ROADMAP=off` answers `404 roadmap_off`.
          *
          *     Owners, admins and API keys; not OAuth tokens (`403 member_session_required`). Scope: `roadmap:write`.
+         *
+         *     A `mail` inbox answers `409 purpose_mismatch`.
          */
         post: operations["createRoadmapBoard"];
         delete?: never;
@@ -5077,7 +5177,8 @@ export interface paths {
          *     the workspace's images would exceed the server's limit. A workspace can upload 30 images a
          *     minute; more are refused with `429 rate_limited` and `Retry-After`.
          *
-         *     Owners, admins and API keys. Scope: `broadcasts:write`.
+         *     Every member (so agents can put an image in their signature) and API keys. Scope:
+         *     `broadcasts:write`.
          */
         post: operations["uploadEmailImage"];
         delete?: never;
@@ -5102,7 +5203,9 @@ export interface paths {
          *     not archived uses the image, naming the articles in `used_by.help_articles` while a help
          *     article's draft, published copy or kept revision shows it, and the entries in
          *     `used_by.changelog_entries` while a What's new entry has it as its picture or shows it in a
-         *     draft or published text, whatever `force` says. An image that went out in a sent broadcast needs
+         *     draft or published text, and the inboxes and members in `used_by.inbox_signatures` and
+         *     `used_by.member_signatures` while an inbox's default signature or a member's own signature
+         *     shows it, whatever `force` says. An image that went out in a sent broadcast needs
          *     `force=true` (`409 image_sent` otherwise): mail already delivered then shows a broken
          *     image. The public URL stops working at once.
          *
@@ -6203,6 +6306,8 @@ export interface paths {
          *     for its user `contact.external_id` in `inbox_id`, which may be any inbox of the key's
          *     workspace. The conversation starts on the inbox's oldest `api` channel; an inbox without one
          *     gets an `api` channel named `API` on the first request.
+         *
+         *     A `mail` inbox has no `api` channel and answers `409 purpose_mismatch`.
          *
          *     Scope: `feedback:write`.
          *
@@ -7555,7 +7660,8 @@ export interface paths {
          *     events reach it only with `contacts:read`. `inbox.created` reaches owners,
          *     admins and API keys (an agent learns of a new inbox from `inbox_access.changed`);
          *     `inbox.deleted` reaches everyone who could see the inbox. `conversation.read` and
-         *     `conversation.pin` reach only the connections of the member who read or pinned. `typing` (a contact or another member typing) has no
+         *     `conversation.pin` reach only the connections of the member who read or pinned, and so
+         *     does the `conversation.updated` a star change sends (it carries `starred`). `typing` (a contact or another member typing) has no
          *     `id`, is not stored and is not replayed. `member.presence` (a member of the workspace opened
          *     or closed the panel or changed `availability`) reaches member sessions only, also has no
          *     `id` and is not replayed; so does `viewing` (another member opened or left a conversation),
@@ -7621,6 +7727,8 @@ export interface paths {
          *     to the inbox's.
          *
          *     Owners, admins and API keys. Scope: `status:manage`.
+         *
+         *     A `mail` inbox answers `409 purpose_mismatch`.
          */
         post: operations["createStatusPage"];
         delete?: never;
@@ -8407,6 +8515,8 @@ export interface paths {
          *     and accent colour of the public pages are the inbox's branding.
          *
          *     Owners, admins and API keys; not OAuth tokens (`403 member_session_required`). Scope: `changelog:publish`.
+         *
+         *     A `mail` inbox answers `409 purpose_mismatch`.
          */
         post: operations["createChangelog"];
         delete?: never;
@@ -8784,6 +8894,8 @@ export interface paths {
          *     same inbox, `analytics_property_id` a property of the workspace.
          *
          *     Owners, admins and API keys; not OAuth tokens (`403 member_session_required`). Scope: `help:publish`.
+         *
+         *     A `mail` inbox answers `409 purpose_mismatch`.
          */
         post: operations["createHelpCenter"];
         delete?: never;
@@ -11055,9 +11167,11 @@ export interface paths {
          * Push a state
          * @description The state of a `push` monitor, from the host's own monitoring. The body is one of, as it is:
          *
-         *     - `{"state": "major_outage", "message": "..."}`: `operational` is a success, `degraded`,
-         *       `partial_outage` and `major_outage` a failure that sets that state (the monitor's
-         *       `failure_state` is not used). `message` (at most 1,000 characters) is kept with the check.
+         *     - `{"state": "major_outage", "message": "...", "duration_ms": 182}`: `operational` is a
+         *       success, `degraded`, `partial_outage` and `major_outage` a failure that sets that state (the
+         *       monitor's `failure_state` is not used). `message` (at most 1,000 characters) is kept with the
+         *       check, and so is `duration_ms`, a response time the host measured, which the status page's
+         *       response times count when the check is a success.
          *     - An Alertmanager webhook body (`version` `4`, `status`, `alerts`): `firing` is a failure,
          *       `resolved` a success. The message is the common `summary` or `description` annotation.
          *     - A Grafana alert webhook body, of Grafana Alerting (`status` `firing`/`resolved`) or of
@@ -12309,7 +12423,8 @@ export interface components {
          *       channel's address); the workspace's owners are e-mailed too. `channel.address_proven`:
          *       `address`, by `operator`, when the server's operator vouched for the address with
          *       `yuva channel prove`.
-         *     - `inbox.identity_secret_rotated`: none. `inbox.deleted`: `name`.
+         *     - `inbox.identity_secret_rotated`: none. `inbox.deleted`: `name`. `inbox.purpose_changed`:
+         *       `from`, `to`.
          *     - `team.created`, `team.deleted`: `name`. `team.member_added`, `team.member_removed`:
          *       `member_id`. `team.inbox_access_granted`, `team.inbox_access_revoked`: `inbox_id`,
          *       `inbox_name`.
@@ -12374,7 +12489,7 @@ export interface components {
          *     More actions are added over time; show an unknown one by its name.
          * @enum {string}
          */
-        AuditAction: "member.joined" | "member.role_changed" | "member.removed" | "member.inbox_access_granted" | "member.inbox_access_revoked" | "invite.created" | "invite.deleted" | "api_key.created" | "api_key.revoked" | "oauth_grant.created" | "oauth_grant.revoked" | "webhook.created" | "webhook.updated" | "webhook.deleted" | "webhook.secret_rotated" | "channel.credentials_changed" | "channel.key_rotated" | "channel.forwarding_address_rotated" | "channel.address_verified" | "channel.address_lost" | "channel.address_proven" | "channel.dkim_key_created" | "channel.dkim_key_deleted" | "inbox.identity_secret_rotated" | "inbox.deleted" | "conversation.trashed" | "conversation.restored" | "conversation.deleted" | "message.redacted" | "contact.deleted" | "contact.consent_exported" | "list.consent_exported" | "analytics_export.created" | "workspace.retention_changed" | "workspace.bots_may_send_changed" | "workspace.broadcasts_by_keys_changed" | "workspace.broadcast_approval_requested" | "workspace.broadcasts_approved" | "workspace.broadcasts_denied" | "workspace.broadcasts_suspended" | "workspace.broadcast_limit_changed" | "team.created" | "team.deleted" | "team.member_added" | "team.member_removed" | "team.inbox_access_granted" | "team.inbox_access_revoked" | "workspace.slack_connected" | "workspace.slack_disconnected" | "member.slack_linked" | "member.slack_unlinked" | "sso.provider_created" | "sso.provider_updated" | "sso.provider_deleted" | "sso.settings_changed" | "sso.signed_in" | "sso.sign_in_refused" | "sso_domain.added" | "sso_domain.verified" | "sso_domain.deleted" | "sso_domain.lapsed" | "issue_integration.connected" | "issue_integration.updated" | "issue_integration.disconnected" | "issue_integration.secret_rotated" | "automation_rule.created" | "automation_rule.updated" | "automation_rule.deleted";
+        AuditAction: "member.joined" | "member.role_changed" | "member.removed" | "member.inbox_access_granted" | "member.inbox_access_revoked" | "invite.created" | "invite.deleted" | "api_key.created" | "api_key.revoked" | "oauth_grant.created" | "oauth_grant.revoked" | "webhook.created" | "webhook.updated" | "webhook.deleted" | "webhook.secret_rotated" | "channel.credentials_changed" | "channel.key_rotated" | "channel.forwarding_address_rotated" | "channel.address_verified" | "channel.address_lost" | "channel.address_proven" | "channel.dkim_key_created" | "channel.dkim_key_deleted" | "inbox.identity_secret_rotated" | "inbox.deleted" | "inbox.purpose_changed" | "conversation.trashed" | "conversation.restored" | "conversation.deleted" | "message.redacted" | "contact.deleted" | "contact.consent_exported" | "list.consent_exported" | "analytics_export.created" | "workspace.retention_changed" | "workspace.bots_may_send_changed" | "workspace.broadcasts_by_keys_changed" | "workspace.broadcast_approval_requested" | "workspace.broadcasts_approved" | "workspace.broadcasts_denied" | "workspace.broadcasts_suspended" | "workspace.broadcast_limit_changed" | "team.created" | "team.deleted" | "team.member_added" | "team.member_removed" | "team.inbox_access_granted" | "team.inbox_access_revoked" | "workspace.slack_connected" | "workspace.slack_disconnected" | "member.slack_linked" | "member.slack_unlinked" | "sso.provider_created" | "sso.provider_updated" | "sso.provider_deleted" | "sso.settings_changed" | "sso.signed_in" | "sso.sign_in_refused" | "sso_domain.added" | "sso_domain.verified" | "sso_domain.deleted" | "sso_domain.lapsed" | "issue_integration.connected" | "issue_integration.updated" | "issue_integration.disconnected" | "issue_integration.secret_rotated" | "automation_rule.created" | "automation_rule.updated" | "automation_rule.deleted";
         /** @enum {string} */
         AuditTargetType: "workspace" | "member" | "invite" | "inbox" | "channel" | "api_key" | "oauth_grant" | "webhook" | "contact" | "list" | "analytics_export" | "conversation" | "message" | "team" | "sso" | "sso_domain" | "issue_integration" | "automation_rule";
         AuditTarget: {
@@ -12614,6 +12729,8 @@ export interface components {
             person_id: string;
             email: components["schemas"]["Email"];
             name: string;
+            /** @description The member's job title, "" when none. Signatures use it as `{{member.title}}`. */
+            title: string;
             role: components["schemas"]["Role"];
             availability: components["schemas"]["Availability"];
             /**
@@ -12704,7 +12821,9 @@ export interface components {
             items: components["schemas"]["Member"][];
         };
         MemberUpdate: {
-            role: components["schemas"]["Role"];
+            role?: components["schemas"]["Role"];
+            /** @description The member's job title; "" removes it. */
+            title?: string;
         };
         InviteCreate: {
             email: components["schemas"]["Email"];
@@ -13112,6 +13231,19 @@ export interface components {
          */
         InboxMode: "live" | "async";
         /**
+         * @description `support` (the default, and every inbox made before purposes existed) or `mail`, a team
+         *     mailbox. A `mail` inbox has only `email` channels and the support features are off for it:
+         *     it asks no rating, sends no greeting auto-reply, assigns nothing automatically
+         *     (`assignment_mode` must stay `off`), gets no SLA targets, cannot be the inbox of a help
+         *     center, status page, roadmap board, What's new or SLA policy, and is left out of support
+         *     stats, reports and the Home support blocks. Settings that only change behaviour
+         *     (`ask_for_rating`, `expected_reply_minutes`, `business_hours`, `branding.greeting`) are kept
+         *     as stored and apply again when the inbox becomes `support`. Conversations keep their model;
+         *     the panel shows `closed` as Archived in a `mail` inbox.
+         * @enum {string}
+         */
+        InboxPurpose: "support" | "mail";
+        /**
          * @description How conversations without an assignee get one when they arrive or are reopened by the
          *     contact. `off`: they stay unassigned. `round_robin`: the eligible member of the pool who was
          *     given one longest ago (never first). `least_open`: the eligible member with the fewest
@@ -13167,6 +13299,7 @@ export interface components {
             id: string;
             name: string;
             slug: components["schemas"]["Slug"];
+            purpose: components["schemas"]["InboxPurpose"];
             branding: components["schemas"]["InboxBranding"];
             default_locale: components["schemas"]["LanguageTag"];
             /**
@@ -13194,6 +13327,7 @@ export interface components {
              */
             ask_for_rating: boolean;
             sender: components["schemas"]["InboxSender"];
+            signature: components["schemas"]["InboxSignature"];
             import?: components["schemas"]["InboxImport"];
             ses_tenant?: components["schemas"]["SesTenantStatus"];
             /** Format: date-time */
@@ -13231,6 +13365,8 @@ export interface components {
         InboxCreate: {
             name: string;
             slug: components["schemas"]["Slug"];
+            /** @description Defaults to `support`. A `mail` inbox with an `assignment_mode` other than `off` answers `409 purpose_mismatch`. */
+            purpose?: components["schemas"]["InboxPurpose"];
             branding?: components["schemas"]["InboxBranding"];
             default_locale?: components["schemas"]["LanguageTag"];
             /** @description Defaults to `UTC`. */
@@ -13248,6 +13384,16 @@ export interface components {
         InboxUpdate: {
             name?: string;
             slug?: components["schemas"]["Slug"];
+            /**
+             * @description `mail` to `support` is always allowed. `support` to `mail` answers `409
+             *     purpose_mismatch`, naming what blocks it, while the inbox has a `chat`, `app` or `api`
+             *     channel, an untrashed conversation whose `channel_kind` is not `email` (moved in, or
+             *     left by a deleted channel), a help center, status page, roadmap board or What's new, or
+             *     is named in an SLA policy's `inbox_ids`, or while `assignment_mode` is not `off` (send `assignment_mode:
+             *     off` in the same request). Teams granted the inbox do not block it. Conversations of
+             *     the inbox lose their running SLA targets at once. Audited as `inbox.purpose_changed`.
+             */
+            purpose?: components["schemas"]["InboxPurpose"];
             branding?: components["schemas"]["InboxBranding"];
             default_locale?: components["schemas"]["LanguageTag"];
             timezone?: string;
@@ -13274,6 +13420,39 @@ export interface components {
             ask_for_rating?: boolean;
             /** @description Owners, admins and keys with `inboxes:manage`. */
             sender?: components["schemas"]["InboxSenderUpdate"];
+            signature?: components["schemas"]["InboxSignature"];
+        };
+        /**
+         * @description The inbox's default signature, Markdown, "" when none: members without their own signature
+         *     for the inbox (`PUT /v1/me/signatures/{inboxId}`) sign with it. `{{member.name}}` and
+         *     `{{member.title}}` are replaced with the author's name and title. Images are e-mail images
+         *     of the workspace (`/i/{token}` URLs from `POST /v1/email-images`); any other image becomes a
+         *     link. Only e-mailed replies carry a signature, never chat, app or API channel replies.
+         */
+        InboxSignature: string;
+        MemberSignature: {
+            /** Format: uuid */
+            inbox_id: string;
+            /**
+             * @description The member's own signature for the inbox, Markdown; "" signs with nothing. Absent when
+             *     the member has none and signs with the inbox's default.
+             */
+            body?: string;
+            /** @description The signature the member's e-mailed replies in the inbox carry, rendered as sanitized HTML; "" when none. */
+            html: string;
+            /** @description The same signature as plain text; "" when none. */
+            text: string;
+        };
+        MemberSignatureList: {
+            items: components["schemas"]["MemberSignature"][];
+        };
+        MemberSignatureUpdate: {
+            /**
+             * @description Markdown with `{{member.name}}` and `{{member.title}}`; "" signs with nothing in this
+             *     inbox. Images are e-mail images of the workspace (`/i/{token}` URLs from
+             *     `POST /v1/email-images`); any other image is not refused but becomes a link.
+             */
+            body: string;
         };
         InboxCreated: {
             inbox: components["schemas"]["Inbox"];
@@ -14217,6 +14396,17 @@ export interface components {
             id: string;
             /** Format: uuid */
             inbox_id: string;
+            /** @description Read-only, the `purpose` of its inbox as it is now, so receivers of events and webhooks can tell team mail from support. */
+            inbox_purpose: components["schemas"]["InboxPurpose"];
+            /**
+             * @description Whether the calling member starred it (`PUT /v1/conversations/{id}/star`). Present
+             *     only in the caller's own reads (list items and `GET /v1/conversations/{id}` for member
+             *     sessions) and in the `conversation.updated` event a member's own star change sends to
+             *     their connections. Absent from shared events: the ordinary `conversation.updated` and
+             *     other conversation events go to everyone and leave it out, so keep the value you have
+             *     when an event omits it. Absent for API keys and in webhooks.
+             */
+            starred?: boolean;
             /** Format: uuid */
             contact_id: string;
             kind: components["schemas"]["ConversationKind"];
@@ -14779,6 +14969,11 @@ export interface components {
              * @description Assigned to any team of the calling member (`0` for API keys).
              */
             mine_teams: number;
+            /**
+             * Format: int64
+             * @description Starred by the calling member (`0` for API keys).
+             */
+            starred: number;
         };
         /** @description The Home blocks; a block the member may not see is absent. */
         Home: {
@@ -15318,6 +15513,12 @@ export interface components {
             /** @description What an outgoing `forward` sent and to whom; absent for everything else. */
             forward?: components["schemas"]["MessageForward"];
             /**
+             * @description The author's signature the e-mail carries below the reply, as sanitized HTML, fixed when
+             *     the message (or its draft) was written; absent when it carries none. `body` and `html`
+             *     never contain it.
+             */
+            signature_html?: string;
+            /**
              * Format: date-time
              * @description For a sent draft, when it was sent.
              */
@@ -15424,6 +15625,13 @@ export interface components {
             /** @description Stores an outgoing message as a draft instead of delivering it. */
             draft?: boolean;
             /**
+             * @description E-mailed replies by members: add the author's signature for the inbox (their own, else
+             *     the inbox's `signature`); absent means `true`. `false` sends without it. Chat, app and API channel replies,
+             *     notes and forwards never carry one, nor do messages written by API keys or automation
+             *     rules. A draft keeps the signature it was stored with when it is sent.
+             */
+            signature?: boolean;
+            /**
              * @description Notes only: members to notify about the note. Each must be a member of the workspace
              *     who can see the conversation's inbox (`400 validation_failed` otherwise). They get the
              *     `mentioned` notification (realtime as `message.created`, Web Push and e-mail per their
@@ -15498,6 +15706,8 @@ export interface components {
             html?: string;
             client_id?: string;
             draft?: boolean;
+            /** @description `false` sends an e-mailed reply without the author's signature; see `MessageCreate`. */
+            signature?: boolean;
             /** @description Notes only; repeat the field once per member id. */
             mentions?: string[];
             /** @description Outgoing messages only; repeat the field once per article id. */
@@ -21891,7 +22101,8 @@ export interface components {
             show_uptime: boolean;
             /**
              * @description Whether the public page and its JSON show the last 24 hours of response times of components
-             *     with an `http` or `tcp` monitor, aggregated (median per step, median and p95).
+             *     with an `http` or `tcp` monitor, or a `push` monitor that sent a `duration_ms` with a success in
+             *     that time, aggregated (median per step, median and p95).
              */
             show_response_times: boolean;
             /**
@@ -23134,6 +23345,11 @@ export interface components {
             /** @enum {string} */
             state: "operational" | "degraded" | "partial_outage" | "major_outage";
             message?: string;
+            /**
+             * Format: int32
+             * @description A response time the host measured, in milliseconds.
+             */
+            duration_ms?: number;
         };
         AlertmanagerAlert: {
             /** @enum {string} */
@@ -23247,9 +23463,10 @@ export interface components {
             response_times?: components["schemas"]["PublicStatusResponseTimes"];
         };
         /**
-         * @description The last 24 hours of the component's `http` and `tcp` checks that succeeded, aggregated; only
-         *     when the page shows response times and the component has such a monitor. Addresses, errors
-         *     and status codes of checks are never public.
+         * @description The last 24 hours of the component's `http` and `tcp` checks and `push` checks with a
+         *     `duration_ms` that succeeded, aggregated; only when the page shows response times and the
+         *     component has an `http` or `tcp` monitor or such a `push` check in that time. Addresses,
+         *     errors and status codes of checks are never public.
          */
         PublicStatusResponseTimes: {
             /**
@@ -24408,6 +24625,20 @@ export interface components {
                 /** Format: int32 */
                 number: number;
                 title: string;
+            }[];
+            /** @description Inboxes whose default signature shows the image; absent when none do. */
+            inbox_signatures?: {
+                /** Format: uuid */
+                id: string;
+                name: string;
+            }[];
+            /** @description Members whose own signature for an inbox shows the image; absent when none do. */
+            member_signatures?: {
+                /** Format: uuid */
+                member_id: string;
+                name: string;
+                /** Format: uuid */
+                inbox_id: string;
             }[];
         };
         EmailImageProblem: components["schemas"]["Problem"] & {
@@ -26176,6 +26407,8 @@ export interface components {
         Search: string;
         /** @description The `next_cursor` of the previous page. */
         Cursor: string;
+        /** @description Only conversations of inboxes with this `purpose`; without it, every inbox. */
+        InboxPurposeFilter: components["schemas"]["InboxPurpose"];
         /**
          * @description Only conversations of these kinds, e.g. `feedback` for the feedback view. Repeat the
          *     parameter (`kind=feedback&kind=conversation`) or give a comma-separated list
@@ -26900,6 +27133,90 @@ export interface operations {
         };
     };
     deleteInboxNotifications: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                inboxId: components["parameters"]["InboxId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Removed. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    listMySignatures: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The signatures. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MemberSignatureList"];
+                };
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+        };
+    };
+    setMySignature: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                inboxId: components["parameters"]["InboxId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MemberSignatureUpdate"];
+            };
+        };
+        responses: {
+            /** @description The signature. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MemberSignature"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    deleteMySignature: {
         parameters: {
             query?: never;
             header?: {
@@ -28540,6 +28857,7 @@ export interface operations {
             400: components["responses"]["Problem"];
             401: components["responses"]["Problem"];
             403: components["responses"]["Problem"];
+            409: components["responses"]["Problem"];
         };
     };
     orderSlaPolicies: {
@@ -28657,6 +28975,7 @@ export interface operations {
             401: components["responses"]["Problem"];
             403: components["responses"]["Problem"];
             404: components["responses"]["Problem"];
+            409: components["responses"]["Problem"];
         };
     };
     listAutomationRules: {
@@ -29883,6 +30202,19 @@ export interface operations {
                  *     without it, both. Member sessions only (`400 validation_failed` for API keys).
                  */
                 pinned?: boolean;
+                /** @description Only conversations of inboxes with this `purpose`; without it, every inbox. */
+                purpose?: components["parameters"]["InboxPurposeFilter"];
+                /**
+                 * @description `true` lists only the conversations the calling member starred, `false` only the
+                 *     others; without it, both. Member sessions only (`400 validation_failed` for API keys).
+                 */
+                starred?: boolean;
+                /**
+                 * @description `mine` lists only the conversations in which the calling member wrote a public
+                 *     outbound message (sent, not a draft or note), the Sent folder. Member sessions only
+                 *     (`400 validation_failed` for API keys).
+                 */
+                sent?: "mine";
                 /**
                  * @description `last_activity` (the default): most recent activity first. `sla_due`: conversations
                  *     with a running SLA target first, the earliest `sla.due_at` first (so breached ones
@@ -29968,6 +30300,8 @@ export interface operations {
                  *     (`kind=feedback,conversation`).
                  */
                 kind?: components["parameters"]["ConversationKinds"];
+                /** @description Only conversations of inboxes with this `purpose`; without it, every inbox. */
+                purpose?: components["parameters"]["InboxPurposeFilter"];
             };
             header?: {
                 /** @description The workspace to act on; see "Workspace selection". */
@@ -30725,6 +31059,58 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["ConversationPin"];
                 };
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    starConversation: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                conversationId: components["parameters"]["ConversationId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The conversation is starred. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    unstarConversation: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                conversationId: components["parameters"]["ConversationId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The conversation is not starred. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
             401: components["responses"]["Problem"];
             403: components["responses"]["Problem"];
@@ -35426,6 +35812,7 @@ export interface operations {
             401: components["responses"]["Problem"];
             403: components["responses"]["Problem"];
             404: components["responses"]["Problem"];
+            409: components["responses"]["Problem"];
         };
     };
     listIssueIntegrations: {

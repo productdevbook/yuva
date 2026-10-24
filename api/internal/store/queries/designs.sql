@@ -133,8 +133,18 @@ WHERE i.id IN (
       AND NOT EXISTS (
           SELECT 1 FROM changelog_entry_translations t
           WHERE t.workspace_id = c.workspace_id AND t.image_ids @> ARRAY[c.id])
+      AND NOT EXISTS (
+          SELECT 1 FROM member_signatures s
+          WHERE s.workspace_id = c.workspace_id AND s.image_ids @> ARRAY[c.id])
+      AND NOT EXISTS (
+          SELECT 1 FROM inboxes b
+          WHERE b.workspace_id = c.workspace_id AND b.signature_image_ids @> ARRAY[c.id])
     LIMIT @lim)
 RETURNING i.storage_key;
+
+-- name: MarkEmailImagesSent :exec
+UPDATE email_images SET sent_at = @now::timestamptz
+WHERE workspace_id = @workspace_id AND id = ANY(@ids::uuid[]) AND sent_at IS NULL;
 
 -- name: DeleteWorkspaceEmailImages :many
 DELETE FROM email_images i WHERE i.id IN (
