@@ -722,7 +722,9 @@ event); a member's own unsent new mail (`draft_of` set) also takes `to`, `cc`, `
 `409 not_a_private_draft`). A new first To becomes the conversation's contact, the subject the
 conversation's, which emits `conversation.updated`; the contact it replaces is deleted in the same
 transaction when it was created after the draft and has nothing else (name, attributes, other
-addresses, conversations, messages, notes, subscriptions, sessions, deliveries). Its stored lists
+addresses, conversations, messages, notes, subscriptions, sessions, deliveries). A draft's
+recipients are contacts like any others and are seen workspace-wide, as contacts are (Team mail);
+the draft itself, its subject, body and that it exists stay its author's. Its stored lists
 come back as `recipients` on the message in `/v1` answers only, never in events, with `bcc` empty
 for API keys other than the draft's author and for OAuth tokens. A draft is
 discarded with `DELETE /v1/messages/{id}`; both answer `409 not_a_draft` for anything else.
