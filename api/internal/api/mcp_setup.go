@@ -129,6 +129,31 @@ type updateChatChannelIn struct {
 	Greeting       *string   `json:"greeting,omitempty" jsonschema:"the new greeting; an empty string uses the inbox's greeting"`
 }
 
+type createAppChannelIn struct {
+	InboxID        uuid.UUID `json:"inbox_id"`
+	Name           string    `json:"name" jsonschema:"shown to members, such as the app's name"`
+	Platforms      *[]string `json:"platforms,omitempty" jsonschema:"ios and/or android; both when absent"`
+	AllowAnonymous *bool     `json:"allow_anonymous,omitempty" jsonschema:"users without an identity token may write; false when absent"`
+}
+
+type updateAppChannelIn struct {
+	ChannelID      uuid.UUID `json:"channel_id" jsonschema:"an app channel from list_channels or create_app_channel"`
+	Name           *string   `json:"name,omitempty" jsonschema:"the new name"`
+	Platforms      *[]string `json:"platforms,omitempty" jsonschema:"ios and/or android; replaces the current platforms"`
+	AllowAnonymous *bool     `json:"allow_anonymous,omitempty" jsonschema:"users without an identity token may write"`
+}
+
+func channelPlatforms(in *[]string) *[]oas.AppPlatform {
+	if in == nil {
+		return nil
+	}
+	out := make([]oas.AppPlatform, len(*in))
+	for i, p := range *in {
+		out[i] = oas.AppPlatform(p)
+	}
+	return &out
+}
+
 type installSnippetIn struct {
 	ChannelID uuid.UUID   `json:"channel_id" jsonschema:"a chat channel from list_channels or create_chat_channel"`
 	Framework string      `json:"framework" jsonschema:"the site's framework; html for plain HTML or anything else; the docs- values are for documentation sites, the subscribe- values for a mailing list's subscribe form"`
@@ -515,6 +540,22 @@ func (c *mcpCall) updateChatChannel(ctx context.Context, in updateChatChannelIn)
 	return channelOut(oas.Channel(res.(oas.UpdateChannel200JSONResponse))), nil
 }
 
+func (c *mcpCall) updateAppChannel(ctx context.Context, in updateAppChannelIn) (mcpChannel, error) {
+	cur, err := c.getChannel(ctx, in.ChannelID)
+	if err != nil {
+		return mcpChannel{}, err
+	}
+	if cur.App == nil {
+		return mcpChannel{}, errValidation("this tool changes app channels only; list_channels shows each channel's kind")
+	}
+	app := oas.AppChannelInput{AllowAnonymous: in.AllowAnonymous, Platforms: channelPlatforms(in.Platforms)}
+	res, err := c.s.UpdateChannel(ctx, oas.UpdateChannelRequestObject{ChannelId: in.ChannelID, Body: &oas.ChannelUpdate{Name: in.Name, App: &app}})
+	if err != nil {
+		return mcpChannel{}, err
+	}
+	return channelOut(oas.Channel(res.(oas.UpdateChannel200JSONResponse))), nil
+}
+
 var discussionModes = []any{"off", "moderated", "open"}
 
 var mcpSetupTools = []mcpTool{
@@ -572,6 +613,26 @@ var mcpSetupTools = []mcpTool{
 		mcpTool{ops: []string{"GetChannel", "UpdateChannel"}, allow: mayManage, denied: errNotManager},
 		func(ctx context.Context, c *mcpCall, in updateChatChannelIn) (mcpChannel, error) {
 			return c.updateChatChannel(ctx, in)
+		}),
+	defineTool("create_app_channel", "Create an app channel",
+		"Creates an app channel for an iOS or Android app. Returns its public key (yuva_pk_..., not a secret) for the SDK's channel_key. Owners and admins only. Maps to POST /v1/inboxes/{id}/channels with kind app.",
+		additive, map[string][]any{"platforms": {"ios", "android"}},
+		mcpTool{ops: []string{"CreateChannel"}, allow: mayManage, denied: errNotManager},
+		func(ctx context.Context, c *mcpCall, in createAppChannelIn) (mcpChannel, error) {
+			res, err := c.s.CreateChannel(ctx, oas.CreateChannelRequestObject{InboxId: in.InboxID, Body: &oas.ChannelCreate{
+				Kind: oas.ChannelKindApp, Name: in.Name, App: &oas.AppChannelInput{AllowAnonymous: in.AllowAnonymous, Platforms: channelPlatforms(in.Platforms)},
+			}})
+			if err != nil {
+				return mcpChannel{}, err
+			}
+			return channelOut(oas.Channel(res.(oas.CreateChannel201JSONResponse))), nil
+		}),
+	defineTool("update_app_channel", "Change an app channel",
+		"Renames an app channel, sets its platforms or turns anonymous users on or off; what is not given stays as it is. Owners and admins only. Maps to PATCH /v1/channels/{id}.",
+		idempotent, map[string][]any{"platforms": {"ios", "android"}},
+		mcpTool{ops: []string{"GetChannel", "UpdateChannel"}, allow: mayManage, denied: errNotManager},
+		func(ctx context.Context, c *mcpCall, in updateAppChannelIn) (mcpChannel, error) {
+			return c.updateAppChannel(ctx, in)
 		}),
 	defineTool("get_install_snippet", "Get the install code",
 		"Returns the code that adds a chat channel to a site, filled with this server's URL and the channel's public key (not a secret), the install command when one is needed, where the code goes and the guide. purpose chat is the live chat bubble; docs is page feedback and discussions under documentation pages; subscribe is a <yuva-subscribe> form for the mailing lists in list_ids (html, react, nuxt or shadcn).",

@@ -215,7 +215,7 @@ aufgelistet; ein Aufruf dennoch antwortet mit `insufficient_scope` und dem zu er
 | `assign`, `set_status`, `snooze`, `add_labels`, `remove_labels`, `move_conversation`, `bulk_update` | `conversations:write` |
 | `merge_contacts` (Inhaber, Admins, Schlüssel ohne Posteingangs-Beschränkung) | `contacts:write` |
 | `list_channels`, `get_install_snippet` (Code für `html`, `react`, `nextjs`, `nuxt`, `vue`, `astro`, `shadcn`, Dokumentationsseiten mit den `docs-`-Varianten und Anmeldeformulare mit `subscribe-html`, `subscribe-react`, `subscribe-nuxt` und `subscribe-shadcn`, die `list_ids` nehmen) | `inboxes:read` |
-| `create_inbox`, `create_chat_channel`, `update_chat_channel` (Inhaber und Admins) | `inboxes:manage` |
+| `create_inbox`, `create_chat_channel`, `update_chat_channel`, `create_app_channel`, `update_app_channel` (Inhaber und Admins) | `inboxes:manage` |
 | `list_properties`, `analytics_overview`, `analytics_query` (auch `dataset: support` und `insights`), `analytics_realtime`, `analytics_support_report`, `list_goals`, `funnel_report`, `get_analytics_snippet`, `add_annotation` | `analytics:read` |
 | `create_property`, `create_goal` (Inhaber, Admins, Keys ohne Posteingangs-Beschränkung) | `analytics:manage` |
 | `list_status_pages`, `get_status_page`, `list_monitors` | `status:read` |

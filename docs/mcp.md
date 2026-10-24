@@ -236,7 +236,7 @@ answers `insufficient_scope` with the scope to grant.
 | `assign`, `set_status`, `snooze`, `add_labels`, `remove_labels`, `move_conversation`, `bulk_update` | `conversations:write` |
 | `merge_contacts` (owners, admins, keys without an inbox limit) | `contacts:write` |
 | `list_channels`, `get_install_snippet` (code for `html`, `react`, `nextjs`, `nuxt`, `vue`, `astro`, `shadcn`, documentation sites with the `docs-` variants, and subscribe forms with `subscribe-html`, `subscribe-react`, `subscribe-nuxt` and `subscribe-shadcn`, which take `list_ids`) | `inboxes:read` |
-| `create_inbox`, `create_chat_channel`, `update_chat_channel` (owners and admins) | `inboxes:manage` |
+| `create_inbox`, `create_chat_channel`, `update_chat_channel`, `create_app_channel`, `update_app_channel` (owners and admins) | `inboxes:manage` |
 | `list_properties`, `analytics_overview`, `analytics_query` (also `dataset: support` and `insights`), `analytics_realtime`, `analytics_support_report`, `list_goals`, `funnel_report`, `get_analytics_snippet`, `add_annotation` | `analytics:read` |
 | `create_property`, `create_goal` (owners, admins, keys without an inbox limit) | `analytics:manage` |
 | `list_status_pages`, `get_status_page`, `list_monitors` | `status:read` |

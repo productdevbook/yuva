@@ -11,7 +11,7 @@ import (
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 )
 
-var setupTools = []string{"create_chat_channel", "create_inbox", "get_install_snippet", "list_channels", "update_chat_channel"}
+var setupTools = []string{"create_app_channel", "create_chat_channel", "create_inbox", "get_install_snippet", "list_channels", "update_app_channel", "update_chat_channel"}
 
 func promptText(t *testing.T, cs *mcp.ClientSession, name string, args map[string]string) string {
 	t.Helper()
@@ -156,6 +156,8 @@ func TestMCPSetupToolsGoThroughTheAPI(t *testing.T) {
 		"list_channels":       {"inbox_id": inboxID},
 		"create_chat_channel": {"inbox_id": inboxID, "name": "x", "origins": []string{"https://evil.example"}},
 		"update_chat_channel": {"channel_id": chID, "add_origins": []string{"https://evil.example"}},
+		"create_app_channel":  {"inbox_id": inboxID, "name": "x"},
+		"update_app_channel":  {"channel_id": chID, "name": "x"},
 		"get_install_snippet": {"channel_id": chID, "framework": "html"},
 	} {
 		if _, errText := callTool(t, ocs, name, args); !strings.Contains(errText, "not_found") {
@@ -181,7 +183,7 @@ func TestMCPSetupToolsNeedManageScopeAndRole(t *testing.T) {
 		if !slices.Contains(tools, "list_channels") || !slices.Contains(tools, "get_install_snippet") {
 			t.Fatalf("%s: read setup tools missing: %v", who, tools)
 		}
-		for _, name := range []string{"create_inbox", "create_chat_channel", "update_chat_channel"} {
+		for _, name := range []string{"create_inbox", "create_chat_channel", "update_chat_channel", "create_app_channel", "update_app_channel"} {
 			if slices.Contains(tools, name) {
 				t.Fatalf("%s lists %s", who, name)
 			}
@@ -214,5 +216,76 @@ func TestMCPSetupToolsNeedManageScopeAndRole(t *testing.T) {
 	sn, errText := callTool(t, cs, "get_install_snippet", map[string]any{"channel_id": ch, "framework": "shadcn", "purpose": "docs"})
 	if errText != "" || !strings.Contains(sn["install"].(string), "npx shadcn@latest add") || strs(sn["allowed_origins"])[0] != "https://example.com" {
 		t.Fatalf("shadcn docs snippet: %v %s", sn, errText)
+	}
+}
+
+func TestMCPAppChannelTools(t *testing.T) {
+	h := newHarness(t)
+	tm := newTeam(t, h)
+	manage := h.oauthToken(tm.owner, tm.ws, "Claude Code", testOrigin+"/mcp", []string{"inboxes:read", "inboxes:manage"})
+	cs := h.mcpSession(manage)
+
+	ch, errText := callTool(t, cs, "create_app_channel", map[string]any{"inbox_id": tm.inbox, "name": "Mobile", "platforms": []string{"ios"}, "allow_anonymous": true})
+	if errText != "" {
+		t.Fatal(errText)
+	}
+	if ch["kind"] != "app" || !strings.HasPrefix(ch["public_key"].(string), "yuva_pk_") || fmt.Sprint(ch["platforms"]) != "[ios]" || ch["allow_anonymous"] != true {
+		t.Fatalf("create_app_channel: %v", ch)
+	}
+	id := ch["id"].(string)
+
+	up, errText := callTool(t, cs, "update_app_channel", map[string]any{"channel_id": id, "platforms": []string{"ios", "android"}})
+	if errText != "" {
+		t.Fatal(errText)
+	}
+	if fmt.Sprint(up["platforms"]) != "[ios android]" || up["allow_anonymous"] != true || up["name"] != "Mobile" || up["public_key"] != ch["public_key"] {
+		t.Fatalf("update_app_channel: %v", up)
+	}
+	api := tm.owner.expect(http.StatusOK, "GET", "/v1/channels/"+id, nil).body["app"].(map[string]any)
+	if fmt.Sprint(api["platforms"]) != "[ios android]" || api["allow_anonymous"] != true {
+		t.Fatalf("channel in /v1: %v", api)
+	}
+
+	chat := tm.owner.expect(http.StatusCreated, "POST", "/v1/inboxes/"+tm.inbox+"/channels", map[string]any{
+		"kind": "chat", "name": "site", "chat": map[string]any{"allowed_origins": []string{"https://example.com"}},
+	}).str("id")
+	if _, errText := callTool(t, cs, "update_app_channel", map[string]any{"channel_id": chat, "name": "x"}); !strings.Contains(errText, "app channels only") {
+		t.Fatalf("update_app_channel on a chat channel: %q", errText)
+	}
+
+	mail, errText := callTool(t, cs, "create_inbox", map[string]any{"name": "Mail", "locale": "en", "mode": "async", "purpose": "mail"})
+	if errText != "" {
+		t.Fatal(errText)
+	}
+	if _, errText := callTool(t, cs, "create_app_channel", map[string]any{"inbox_id": mail["id"], "name": "App"}); !strings.Contains(errText, "purpose_mismatch") {
+		t.Fatalf("app channel in a mail inbox: %q", errText)
+	}
+
+	read := h.mcpSession(h.oauthToken(tm.owner, tm.ws, "Claude Code", testOrigin+"/mcp", []string{"inboxes:read"}))
+	for _, name := range []string{"create_app_channel", "update_app_channel"} {
+		if slices.Contains(toolNames(t, read), name) {
+			t.Fatalf("inboxes:read lists %s", name)
+		}
+	}
+	if _, errText := callTool(t, read, "update_app_channel", map[string]any{"channel_id": id, "name": "x"}); !strings.Contains(errText, "inboxes:manage") {
+		t.Fatalf("missing scope: %q", errText)
+	}
+
+	tm.owner.expect(http.StatusNoContent, "PUT", "/v1/inboxes/"+tm.inbox+"/members/"+tm.agentID, nil)
+	agent := h.mcpSession(h.oauthToken(tm.agent, tm.ws, "Claude Code", testOrigin+"/mcp", []string{"inboxes:read"}))
+	if slices.Contains(toolNames(t, agent), "create_app_channel") {
+		t.Fatal("an agent is offered create_app_channel")
+	}
+	if _, errText := callTool(t, agent, "create_app_channel", map[string]any{"inbox_id": tm.inbox, "name": "x"}); errText == "" {
+		t.Fatal("an agent created an app channel")
+	}
+
+	other := newTeam(t, h)
+	ocs := h.mcpSession(h.oauthToken(other.owner, other.ws, "Claude Code", testOrigin+"/mcp", []string{"inboxes:read", "inboxes:manage"}))
+	if _, errText := callTool(t, ocs, "create_app_channel", map[string]any{"inbox_id": tm.inbox, "name": "x"}); !strings.Contains(errText, "not_found") {
+		t.Fatalf("create from another workspace: %q", errText)
+	}
+	if _, errText := callTool(t, ocs, "update_app_channel", map[string]any{"channel_id": id, "name": "x"}); !strings.Contains(errText, "not_found") {
+		t.Fatalf("update from another workspace: %q", errText)
 	}
 }

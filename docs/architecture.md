@@ -974,7 +974,9 @@ re-checks its token every 30 seconds and ends when the token stops working. The 
   is made from the name as the panel does, with `-2`, `-3` … when taken; the identity secret is not
   returned), `create_chat_channel` (`CreateChannel` with kind `chat`; anonymous on and discussions
   `off` unless given), `update_chat_channel` (`GetChannel`, then `UpdateChannel` with the current
-  chat settings and the added and removed origins, anonymous, discussions and greeting changed) and
+  chat settings and the added and removed origins, anonymous, discussions and greeting changed),
+  `create_app_channel` (`CreateChannel` with kind `app`; platforms both and anonymous off unless given),
+  `update_app_channel` (`GetChannel`, then `UpdateChannel` with name, platforms and anonymous as given) and
   `get_install_snippet` (`GetChannel`; the code for `html`, `react`, `nextjs`, `nuxt`, `vue`,
   `astro`, `shadcn`, the `docs-` variants and the `subscribe-` variants for `html`, `react`, `nuxt` and
   `shadcn` with `list_ids` (public lists of the channel's inbox), filled with `YUVA_PUBLIC_URL` and
