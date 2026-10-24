@@ -60,6 +60,14 @@ UPDATE message_emails SET
 WHERE workspace_id = @workspace_id
   AND (to_addresses && @emails::text[] OR cc_addresses && @emails::text[] OR bcc_addresses && @emails::text[]);
 
+-- name: ScrubComposedMailAddresses :exec
+UPDATE composed_mails SET
+  to_addresses = ARRAY(SELECT a FROM unnest(to_addresses) WITH ORDINALITY u (a, i) WHERE a <> ALL(@emails::text[]) ORDER BY i),
+  cc_addresses = ARRAY(SELECT a FROM unnest(cc_addresses) WITH ORDINALITY u (a, i) WHERE a <> ALL(@emails::text[]) ORDER BY i),
+  bcc_addresses = ARRAY(SELECT a FROM unnest(bcc_addresses) WITH ORDINALITY u (a, i) WHERE a <> ALL(@emails::text[]) ORDER BY i)
+WHERE workspace_id = @workspace_id
+  AND (to_addresses && @emails::text[] OR cc_addresses && @emails::text[] OR bcc_addresses && @emails::text[]);
+
 -- name: SetMessageEmailBcc :exec
 UPDATE message_emails SET bcc_addresses = @bcc_addresses::text[] WHERE workspace_id = @workspace_id AND message_id = @message_id;
 

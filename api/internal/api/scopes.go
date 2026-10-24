@@ -143,6 +143,7 @@ var operationScopes = map[string][]oas.ApiKeyScope{
 	"UpdateMessage": {oas.MessagesWrite},
 	"DeleteMessage": {oas.MessagesWrite},
 	"SendMessage":   {oas.DraftsSend, oas.MessagesWrite},
+	"ComposeMail":   {oas.ConversationsWrite, oas.MessagesWrite, oas.ContactsWrite},
 	"RedactMessage": {oas.MessagesRedact},
 
 	"CreateLabel": {oas.LabelsWrite},

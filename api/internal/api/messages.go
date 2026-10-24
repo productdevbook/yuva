@@ -68,6 +68,7 @@ type messageInput struct {
 	files     []*upload
 	macroID   *uuid.UUID
 	then      *oas.ConversationUpdate
+	to        copyList
 	cc        copyList
 	bcc       copyList
 }
@@ -143,7 +144,7 @@ func (s *Server) validateMessage(p principal, in *messageInput) error {
 		return errValidation("cc and bcc are set when the draft is sent")
 	}
 	if len(in.cc.addrs) > maxCopies || len(in.bcc.addrs) > maxCopies {
-		return errValidation("cc and bcc can name at most 20 addresses each")
+		return errValidation("cc and bcc can name at most 50 addresses each")
 	}
 	if strings.TrimSpace(in.body) == "" && len(in.files) == 0 && len(in.articles) == 0 {
 		return errValidation("body is required unless files or articles are attached")
@@ -320,9 +321,12 @@ func (s *Server) readMultipart(r *multipart.Reader, workspaceID uuid.UUID, field
 			in.articles = append(in.articles, id)
 		case "subject":
 			in.subject = &v
-		case "cc", "bcc":
+		case "to", "cc", "bcc":
 			list := &in.cc
-			if part.FormName() == "bcc" {
+			switch part.FormName() {
+			case "to":
+				list = &in.to
+			case "bcc":
 				list = &in.bcc
 			}
 			list.set = true

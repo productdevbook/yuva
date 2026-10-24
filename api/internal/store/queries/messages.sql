@@ -341,3 +341,15 @@ ORDER BY created_at, id;
 
 -- name: SetMessageForward :exec
 UPDATE messages SET forward = @forward::jsonb WHERE workspace_id = @workspace_id AND id = @id AND kind = 'forward';
+
+-- name: GetComposedMail :one
+SELECT message_id FROM composed_mails
+WHERE workspace_id = @workspace_id AND inbox_id = @inbox_id AND client_id = @client_id;
+
+-- name: CreateComposedMail :execrows
+INSERT INTO composed_mails (workspace_id, message_id, inbox_id, client_id, to_addresses, cc_addresses, bcc_addresses, subject, created_at)
+VALUES (@workspace_id, @message_id, @inbox_id, sqlc.narg(client_id), @to_addresses::text[], @cc_addresses::text[], @bcc_addresses::text[], @subject, @created_at)
+ON CONFLICT (workspace_id, inbox_id, client_id) DO NOTHING;
+
+-- name: GetComposedDraft :one
+SELECT * FROM composed_mails WHERE workspace_id = @workspace_id AND message_id = @message_id;

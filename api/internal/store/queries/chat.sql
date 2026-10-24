@@ -285,6 +285,13 @@ WHERE e.workspace_id = $1 AND c.inbox_id = $2
 ORDER BY (e.address LIKE '*@%'), c.created_at, c.id
 LIMIT 1;
 
+-- name: InboxSendingEmailChannel :one
+SELECT e.* FROM email_channels e
+JOIN channels c ON c.workspace_id = e.workspace_id AND c.id = e.channel_id
+WHERE e.workspace_id = $1 AND c.inbox_id = $2 AND e.smtp_host <> ''
+ORDER BY (e.address LIKE '*@%'), c.created_at, c.id
+LIMIT 1;
+
 -- name: ListPersonWorkspaceIDs :many
 SELECT m.workspace_id FROM members m JOIN workspaces w ON w.id = m.workspace_id
 WHERE m.person_id = $1 AND w.deleted_at IS NULL;

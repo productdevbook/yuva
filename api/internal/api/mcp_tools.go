@@ -385,8 +385,8 @@ type sendReplyIn struct {
 }
 
 type mcpCopies struct {
-	Cc  *[]string `json:"cc,omitempty" jsonschema:"e-mail only: up to 20 addresses to copy instead of the conversation's participants; an empty list copies no one"`
-	Bcc []string  `json:"bcc,omitempty" jsonschema:"e-mail only: up to 20 hidden recipients"`
+	Cc  *[]string `json:"cc,omitempty" jsonschema:"e-mail only: up to 50 addresses to copy instead of the conversation's participants; an empty list copies no one"`
+	Bcc []string  `json:"bcc,omitempty" jsonschema:"e-mail only: up to 50 hidden recipients"`
 }
 
 func (c mcpCopies) lists() (cc, bcc *[]oas.Email) {
@@ -405,6 +405,22 @@ func (c mcpCopies) lists() (cc, bcc *[]oas.Email) {
 		bcc = &list
 	}
 	return cc, bcc
+}
+
+type composeMailIn struct {
+	InboxID   uuid.UUID  `json:"inbox_id" jsonschema:"an inbox with an e-mail channel"`
+	ChannelID *uuid.UUID `json:"channel_id,omitempty" jsonschema:"an e-mail channel of the inbox; without it the inbox's first that can send"`
+	To        []string   `json:"to" jsonschema:"1 to 50 recipients; the first is the conversation's contact"`
+	Cc        []string   `json:"cc,omitempty" jsonschema:"up to 50 addresses to copy; they become participants"`
+	Bcc       []string   `json:"bcc,omitempty" jsonschema:"up to 50 hidden recipients"`
+	Subject   string     `json:"subject"`
+	Body      string     `json:"body" jsonschema:"plain text"`
+	Signature *bool      `json:"signature,omitempty" jsonschema:"the member's signature for the inbox is added; false leaves it out"`
+}
+
+type composeMailOut struct {
+	Conversation mcpConversation `json:"conversation"`
+	Message      mcpMessage      `json:"message"`
 }
 
 type forwardIn struct {
@@ -763,6 +779,29 @@ var mcpTools = append([]mcpTool{
 			return c.createMessage(ctx, in.ConversationID, oas.MessageCreate{
 				Kind: oas.MessageCreateKindMessage, Direction: new(oas.Out), Body: &in.Body, Cc: cc, Bcc: bcc, Signature: in.Signature,
 			})
+		}),
+	defineTool("compose_mail", "Write a new e-mail",
+		"Starts a new e-mail conversation and sends its first message now to up to 50 To, Cc and Bcc recipients from the inbox's e-mail channel. The first To address becomes the conversation's contact; the other To and the Cc addresses become participants whose answers join it. Use it only when the person you work for asked to send a new mail. Maps to POST /v1/conversations/mail.",
+		delivering, nil, mcpTool{ops: []string{"ComposeMail"}, scopes: []oas.ApiKeyScope{oas.ConversationsWrite, oas.MessagesWrite, oas.ContactsWrite}, allow: mayDeliver, denied: errBotSendingDisabled},
+		func(ctx context.Context, c *mcpCall, in composeMailIn) (composeMailOut, error) {
+			cc, bcc := emailList(in.Cc), emailList(in.Bcc)
+			res, err := c.s.ComposeMail(ctx, oas.ComposeMailRequestObject{JSONBody: &oas.ComposeMail{
+				InboxId: in.InboxID, ChannelId: in.ChannelID, To: emailList(in.To), Cc: &cc, Bcc: &bcc,
+				Subject: in.Subject, Body: &in.Body, Signature: in.Signature,
+			}})
+			if err != nil {
+				return composeMailOut{}, err
+			}
+			var m oas.ComposedMail
+			switch r := res.(type) {
+			case oas.ComposeMail201JSONResponse:
+				m = oas.ComposedMail(r)
+			case oas.ComposeMail200JSONResponse:
+				m = oas.ComposedMail(r)
+			default:
+				return composeMailOut{}, errInternal
+			}
+			return composeMailOut{Conversation: conversationOut(m.Conversation), Message: messageOut(m.Message)}, nil
 		}),
 	defineTool("send_draft", "Send a draft",
 		"Delivers a draft that already exists, by e-mail or chat, so the conversation keeps one message instead of the draft and a copy. Use it when the person you work for asks to send a draft from draft_reply; never send_reply with the same text. Maps to POST /v1/messages/{id}/send.",

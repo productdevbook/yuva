@@ -757,6 +757,18 @@ type ChatVisitor struct {
 	CreatedAt   time.Time
 }
 
+type ComposedMail struct {
+	WorkspaceID  uuid.UUID
+	MessageID    uuid.UUID
+	InboxID      uuid.UUID
+	ClientID     *string
+	ToAddresses  []string
+	CcAddresses  []string
+	BccAddresses []string
+	Subject      string
+	CreatedAt    time.Time
+}
+
 type ConsentEvent struct {
 	ID             uuid.UUID
 	WorkspaceID    uuid.UUID

@@ -160,8 +160,19 @@ func (s *Server) SendMessage(ctx context.Context, req oas.SendMessageRequestObje
 	if p.deliversAsBot() && !p.botsMaySend {
 		return nil, errBotSendingDisabled
 	}
+	var cc, bcc copyList
+	if req.Body != nil {
+		cc, bcc = copiesOf(req.Body.Cc), copiesOf(req.Body.Bcc)
+	}
 	if m, err := s.st.GetMessage(ctx, store.GetMessageParams{WorkspaceID: p.workspaceID, ID: req.MessageId}); err == nil && m.Kind == string(oas.MessageKindForward) {
 		return s.sendForwardDraft(ctx, p, req)
+	} else if err == nil && m.Draft {
+		if d, err := s.st.GetComposedDraft(ctx, store.GetComposedDraftParams{WorkspaceID: p.workspaceID, MessageID: m.ID}); err == nil {
+			to, ccList, bccList := composedDraftLists(d, cc, bcc)
+			if err := s.takeComposeRecipients(ctx, p, len(to)+len(ccList)+len(bccList)); err != nil {
+				return nil, err
+			}
+		}
 	}
 	var out oas.Message
 	var inbox uuid.UUID
@@ -171,15 +182,23 @@ func (s *Server) SendMessage(ctx context.Context, req oas.SendMessageRequestObje
 			return err
 		}
 		inbox = c.InboxID
-		plan, err := s.planEmail(ctx, q, c)
+		var plan *emailPlan
+		composed, err := q.GetComposedDraft(ctx, store.GetComposedDraftParams{WorkspaceID: p.workspaceID, MessageID: req.MessageId})
+		isComposed := err == nil
+		switch {
+		case isComposed:
+			plan, err = s.composedDraftPlan(ctx, q, c, composed, cc, bcc)
+		case store.IsNotFound(err):
+			plan, err = s.planEmail(ctx, q, c)
+		}
 		if err != nil {
 			return err
 		}
-		var cc, bcc copyList
-		if req.Body != nil {
-			cc, bcc = copiesOf(req.Body.Cc), copiesOf(req.Body.Bcc)
-		}
-		if plan != nil {
+		if isComposed {
+			if err := addComposedRecipients(ctx, q, events, c, plan, s.now()); err != nil {
+				return err
+			}
+		} else if plan != nil {
 			if err := s.setCopies(ctx, q, c, plan, cc, bcc); err != nil {
 				return err
 			}

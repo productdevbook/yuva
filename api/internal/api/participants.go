@@ -15,8 +15,8 @@ import (
 )
 
 const (
-	maxParticipants      = 20
-	maxCopies            = 20
+	maxParticipants      = 100
+	maxCopies            = 50
 	maxParticipantChecks = 50
 
 	participantActive    = string(oas.Active)
@@ -26,7 +26,7 @@ const (
 )
 
 var (
-	errParticipantsFull = problem(http.StatusConflict, "participants_full", "a conversation has at most 20 participants")
+	errParticipantsFull = problem(http.StatusConflict, "participants_full", "a conversation has at most 100 participants")
 	errParticipantGone  = problem(http.StatusNotFound, "not_found", "no such participant")
 )
 
@@ -195,7 +195,7 @@ func (s *Server) setCopies(ctx context.Context, q *store.Queries, c store.Conver
 
 func (s *Server) checkCopies(ctx context.Context, q *store.Queries, ws uuid.UUID, field string, in []string, taken *[]string) ([]string, error) {
 	if len(in) > maxCopies {
-		return nil, errValidation(field + " can name at most 20 addresses")
+		return nil, errValidation(field + " can name at most 50 addresses")
 	}
 	var out []string
 	for _, v := range in {
@@ -212,12 +212,16 @@ func (s *Server) checkCopies(ctx context.Context, q *store.Queries, ws uuid.UUID
 			return nil, err
 		}
 		if suppressed {
-			return nil, problem(http.StatusConflict, "email_undeliverable", field+": "+a.Email+" bounced or complained; clear it on the contact to send again")
+			return nil, undeliverableCopy(field, a.Email)
 		}
 		*taken = append(*taken, a.Email)
 		out = append(out, a.Email)
 	}
 	return out, nil
+}
+
+func undeliverableCopy(field, addr string) *apiError {
+	return problem(http.StatusConflict, "email_undeliverable", field+": "+addr+" bounced or complained; clear it on the contact to send again")
 }
 
 // copyAddress checks one address a caller names: valid, and not one the workspace receives or
@@ -397,6 +401,9 @@ func forgetContactAddresses(ctx context.Context, q *store.Queries, ws, contactID
 		return err
 	}
 	if err := q.ScrubMessageEmailAddresses(ctx, store.ScrubMessageEmailAddressesParams{WorkspaceID: ws, Emails: emails}); err != nil {
+		return err
+	}
+	if err := q.ScrubComposedMailAddresses(ctx, store.ScrubComposedMailAddressesParams{WorkspaceID: ws, Emails: emails}); err != nil {
 		return err
 	}
 	return q.ForgetMigrationAddresses(ctx, store.ForgetMigrationAddressesParams{WorkspaceID: ws, Emails: emails})

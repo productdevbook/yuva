@@ -13009,6 +13009,66 @@ type ClientWhatsNewImage struct {
 	Width  int32  `json:"width"`
 }
 
+// ComposeMail defines model for ComposeMail.
+type ComposeMail struct {
+	// Bcc Hidden recipients, envelope only; a draft keeps them until it is sent.
+	Bcc *[]Email `json:"bcc,omitempty"`
+
+	// Body Required unless files are attached.
+	Body *string `json:"body,omitempty"`
+
+	// Cc Copied recipients; they become participants.
+	Cc *[]Email `json:"cc,omitempty"`
+
+	// ChannelId An e-mail channel of the inbox; without it the inbox's first e-mail channel with an SMTP
+	// account, an exact address before a catch-all.
+	ChannelId *uuid.UUID `json:"channel_id,omitempty"`
+
+	// ClientId Makes the request idempotent within the inbox.
+	ClientId *string `json:"client_id,omitempty"`
+
+	// Draft Stores the message as a draft instead of delivering it.
+	Draft *bool `json:"draft,omitempty"`
+
+	// Html Sanitized before it is stored.
+	Html    *string   `json:"html,omitempty"`
+	InboxId uuid.UUID `json:"inbox_id"`
+
+	// Signature `false` sends without the member's signature; see `MessageCreate`.
+	Signature *bool  `json:"signature,omitempty"`
+	Subject   string `json:"subject"`
+
+	// To The recipients; the first is the conversation's contact.
+	To []Email `json:"to"`
+}
+
+// ComposeMailMultipart defines model for ComposeMailMultipart.
+type ComposeMailMultipart struct {
+	// Bcc Repeat the field once per address.
+	Bcc  *[]Email `json:"bcc,omitempty"`
+	Body *string  `json:"body,omitempty"`
+
+	// Cc Repeat the field once per address.
+	Cc        *[]Email              `json:"cc,omitempty"`
+	ChannelId *uuid.UUID            `json:"channel_id,omitempty"`
+	ClientId  *string               `json:"client_id,omitempty"`
+	Draft     *bool                 `json:"draft,omitempty"`
+	Files     *[]openapi_types.File `json:"files,omitempty"`
+	Html      *string               `json:"html,omitempty"`
+	InboxId   uuid.UUID             `json:"inbox_id"`
+	Signature *bool                 `json:"signature,omitempty"`
+	Subject   string                `json:"subject"`
+
+	// To Repeat the field once per address.
+	To []Email `json:"to"`
+}
+
+// ComposedMail defines model for ComposedMail.
+type ComposedMail struct {
+	Conversation Conversation `json:"conversation"`
+	Message      Message      `json:"message"`
+}
+
 // ConsentEvent defines model for ConsentEvent.
 type ConsentEvent struct {
 	ApiKeyId    *uuid.UUID `json:"api_key_id,omitempty"`
@@ -26154,6 +26214,15 @@ type GetConversationCountsParams struct {
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
 
+// ComposeMailParams defines parameters for ComposeMail.
+type ComposeMailParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
 // TrashConversationParams defines parameters for TrashConversation.
 type TrashConversationParams struct {
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
@@ -29500,6 +29569,12 @@ type CreateConversationJSONRequestBody = ConversationCreate
 
 // BulkUpdateConversationsJSONRequestBody defines body for BulkUpdateConversations for application/json ContentType.
 type BulkUpdateConversationsJSONRequestBody = ConversationBulkUpdate
+
+// ComposeMailJSONRequestBody defines body for ComposeMail for application/json ContentType.
+type ComposeMailJSONRequestBody = ComposeMail
+
+// ComposeMailMultipartRequestBody defines body for ComposeMail for multipart/form-data ContentType.
+type ComposeMailMultipartRequestBody = ComposeMailMultipart
 
 // UpdateConversationJSONRequestBody defines body for UpdateConversation for application/json ContentType.
 type UpdateConversationJSONRequestBody = ConversationUpdate
@@ -38331,6 +38406,154 @@ type ClientInterface interface {
 	// Corresponds with GET /v1/conversations/counts (the `GetConversationCounts` operationId).
 	GetConversationCounts(ctx context.Context, params *GetConversationCountsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// ComposeMailWithBody Write a new e-mail to one or more recipients
+	//
+	// Starts an e-mail conversation in one step: the conversation and its first outgoing message,
+	// e-mailed through an e-mail channel of the inbox. Any inbox with an e-mail channel may be
+	// used, `support` or `mail`; the panel offers it in the Mail section.
+	//
+	// `channel_id` names the e-mail channel; without it the inbox's first e-mail channel with an
+	// SMTP account is used, an exact address before a catch-all. An inbox without one, or a
+	// channel without an SMTP account, answers `409 email_not_configured`; a catch-all channel
+	// without a `from_address` answers `409 email_no_sender`.
+	//
+	// `to` (1 to 50), `cc` and `bcc` (up to 50 each) are checked like a reply's `cc`: each must be
+	// a valid address that this workspace neither receives nor sends mail for
+	// (`400 validation_failed`, the same answer for both), and one that bounced or complained is
+	// refused with `409 email_undeliverable` naming it. Addresses are lower-cased, and one named
+	// in more than one list keeps the first of `to`, `cc`, `bcc`. The first `to` address is the
+	// conversation's contact, found by address in the workspace or created; every other `to` and
+	// every `cc` address becomes a contact when it is unknown and an `active` participant of the
+	// conversation (`GET /v1/conversations/{id}/participants`) once the mail is sent. A workspace
+	// keeps one contact per address: when that contact exists but the caller cannot see it (it
+	// has conversations only in inboxes the caller has no access to), the mail still uses it, and
+	// it becomes visible to the caller through the new conversation, as a mail from that address
+	// into the inbox would make it. `bcc` addresses are never participants or contacts and are
+	// returned on the message's `email.bcc` only in this answer and other `/v1` answers, never in
+	// events, webhooks, headers or on `/client/v1`.
+	//
+	// The mail goes `To` every `to` address, `Cc` every `cc` address and to `bcc` as envelope
+	// recipients only, with `subject` as given (no `Re:`), a new `Message-ID` and neither
+	// `In-Reply-To` nor `References`. A member's signature for the inbox is added unless
+	// `signature` is `false`, as on `createMessage`; files, the delivery state
+	// (`delivery.state` `queued`, then `message.updated`) and the attachment limits of the channel
+	// are those of a reply. At send time an address that bounced or complained meanwhile is
+	// dropped from its list. A hard bounce or complaint reported for one recipient suppresses that
+	// address; the message is marked `failed` only when every `to` address bounced.
+	//
+	// The conversation has `channel_kind` `email`, status `open`, the subject, and in a `mail`
+	// inbox the calling member as assignee (API keys assign no one). `conversation.created` and
+	// `message.created` are emitted as for `createConversation` followed by `createMessage`.
+	//
+	// Answers from any participant join the conversation under the rules for participants: mail
+	// that passes DMARC from an `active` participant's address and names the thread. Replies use
+	// `createMessage`: without `cc` a reply copies the conversation's `active` participants
+	// ("Reply all"); `cc: []` sends to the contact alone ("Reply"), and a `cc` list chooses who is
+	// copied.
+	//
+	// `draft: true` stores the message as a draft (`draft.created` instead of `message.created`)
+	// with the conversation and its contact only: no participants and no contacts for the other
+	// addresses until it is sent, so deleting the draft leaves nothing of them. Its `to`, `cc`,
+	// `bcc` and `subject` are kept with it, `bcc` out of events and `/client/v1` as for sent mail;
+	// nothing is delivered until `POST /v1/messages/{id}/send`, which sends exactly this mail:
+	// every `to` in `To`, the `cc`, the `bcc` as envelope recipients only, the subject without
+	// `Re:` and no `In-Reply-To`. `cc` or `bcc` given there replace the kept lists. Deleting a
+	// contact removes its addresses from the kept lists too.
+	//
+	// A repeated `client_id` in the same inbox returns the conversation and message stored with
+	// it with `200` instead of writing them again, before any rate limit, so a retry costs
+	// nothing.
+	//
+	// Send `multipart/form-data` to attach files: the fields of `ComposeMail` as form fields
+	// (repeat `to`, `cc` and `bcc` once per address) and up to 10 `files` parts, under the limits
+	// `createMessage` describes for the chosen channel.
+	//
+	// A member or key composes at most 60 mails a minute, and new mail sent by one member or key
+	// goes to at most 300 recipients an hour (`to`, `cc` and `bcc` together, counted when the mail
+	// or its draft is sent); beyond either the answer is `429 rate_limited`. Members need access
+	// to the inbox (`404` otherwise). API keys and OAuth tokens need `conversations:write`,
+	// `messages:write` and `contacts:write`, and the workspace's `bots_may_send` unless it is a
+	// draft (`403 bot_sending_disabled`).
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /v1/conversations/mail (the `ComposeMail` operationId).
+	ComposeMailWithBody(ctx context.Context, params *ComposeMailParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ComposeMail Write a new e-mail to one or more recipients
+	//
+	// Starts an e-mail conversation in one step: the conversation and its first outgoing message,
+	// e-mailed through an e-mail channel of the inbox. Any inbox with an e-mail channel may be
+	// used, `support` or `mail`; the panel offers it in the Mail section.
+	//
+	// `channel_id` names the e-mail channel; without it the inbox's first e-mail channel with an
+	// SMTP account is used, an exact address before a catch-all. An inbox without one, or a
+	// channel without an SMTP account, answers `409 email_not_configured`; a catch-all channel
+	// without a `from_address` answers `409 email_no_sender`.
+	//
+	// `to` (1 to 50), `cc` and `bcc` (up to 50 each) are checked like a reply's `cc`: each must be
+	// a valid address that this workspace neither receives nor sends mail for
+	// (`400 validation_failed`, the same answer for both), and one that bounced or complained is
+	// refused with `409 email_undeliverable` naming it. Addresses are lower-cased, and one named
+	// in more than one list keeps the first of `to`, `cc`, `bcc`. The first `to` address is the
+	// conversation's contact, found by address in the workspace or created; every other `to` and
+	// every `cc` address becomes a contact when it is unknown and an `active` participant of the
+	// conversation (`GET /v1/conversations/{id}/participants`) once the mail is sent. A workspace
+	// keeps one contact per address: when that contact exists but the caller cannot see it (it
+	// has conversations only in inboxes the caller has no access to), the mail still uses it, and
+	// it becomes visible to the caller through the new conversation, as a mail from that address
+	// into the inbox would make it. `bcc` addresses are never participants or contacts and are
+	// returned on the message's `email.bcc` only in this answer and other `/v1` answers, never in
+	// events, webhooks, headers or on `/client/v1`.
+	//
+	// The mail goes `To` every `to` address, `Cc` every `cc` address and to `bcc` as envelope
+	// recipients only, with `subject` as given (no `Re:`), a new `Message-ID` and neither
+	// `In-Reply-To` nor `References`. A member's signature for the inbox is added unless
+	// `signature` is `false`, as on `createMessage`; files, the delivery state
+	// (`delivery.state` `queued`, then `message.updated`) and the attachment limits of the channel
+	// are those of a reply. At send time an address that bounced or complained meanwhile is
+	// dropped from its list. A hard bounce or complaint reported for one recipient suppresses that
+	// address; the message is marked `failed` only when every `to` address bounced.
+	//
+	// The conversation has `channel_kind` `email`, status `open`, the subject, and in a `mail`
+	// inbox the calling member as assignee (API keys assign no one). `conversation.created` and
+	// `message.created` are emitted as for `createConversation` followed by `createMessage`.
+	//
+	// Answers from any participant join the conversation under the rules for participants: mail
+	// that passes DMARC from an `active` participant's address and names the thread. Replies use
+	// `createMessage`: without `cc` a reply copies the conversation's `active` participants
+	// ("Reply all"); `cc: []` sends to the contact alone ("Reply"), and a `cc` list chooses who is
+	// copied.
+	//
+	// `draft: true` stores the message as a draft (`draft.created` instead of `message.created`)
+	// with the conversation and its contact only: no participants and no contacts for the other
+	// addresses until it is sent, so deleting the draft leaves nothing of them. Its `to`, `cc`,
+	// `bcc` and `subject` are kept with it, `bcc` out of events and `/client/v1` as for sent mail;
+	// nothing is delivered until `POST /v1/messages/{id}/send`, which sends exactly this mail:
+	// every `to` in `To`, the `cc`, the `bcc` as envelope recipients only, the subject without
+	// `Re:` and no `In-Reply-To`. `cc` or `bcc` given there replace the kept lists. Deleting a
+	// contact removes its addresses from the kept lists too.
+	//
+	// A repeated `client_id` in the same inbox returns the conversation and message stored with
+	// it with `200` instead of writing them again, before any rate limit, so a retry costs
+	// nothing.
+	//
+	// Send `multipart/form-data` to attach files: the fields of `ComposeMail` as form fields
+	// (repeat `to`, `cc` and `bcc` once per address) and up to 10 `files` parts, under the limits
+	// `createMessage` describes for the chosen channel.
+	//
+	// A member or key composes at most 60 mails a minute, and new mail sent by one member or key
+	// goes to at most 300 recipients an hour (`to`, `cc` and `bcc` together, counted when the mail
+	// or its draft is sent); beyond either the answer is `429 rate_limited`. Members need access
+	// to the inbox (`404` otherwise). API keys and OAuth tokens need `conversations:write`,
+	// `messages:write` and `contacts:write`, and the workspace's `bots_may_send` unless it is a
+	// draft (`403 bot_sending_disabled`).
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /v1/conversations/mail (the `ComposeMail` operationId).
+	ComposeMail(ctx context.Context, params *ComposeMailParams, body ComposeMailJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// TrashConversation Move a conversation to the trash
 	//
 	// Sets `trashed_at` and `trashed_by`. From then on the conversation is left out of every
@@ -38681,7 +38904,7 @@ type ClientInterface interface {
 	// An e-mailed reply goes `To` the contact and, unless `cc` is sent, `Cc` the conversation's
 	// `active` participants (`GET /v1/conversations/{id}/participants`), leaving out those whose
 	// address bounced or complained; `suggested` ones are copied only when named in `cc`. `cc` replaces that list (`[]` copies no one) and `bcc` adds hidden
-	// recipients, at most 20 addresses each: they receive the mail as envelope recipients only and
+	// recipients, at most 50 addresses each: they receive the mail as envelope recipients only and
 	// never appear in its headers. Addresses in `cc` become participants; `bcc` never does. Each
 	// address must be a valid address that this workspace neither receives nor sends mail for
 	// (a channel address of this workspace, its catch-all domain or sending address, a forwarding address or
@@ -38692,6 +38915,10 @@ type ClientInterface interface {
 	// `POST /v1/messages/{id}/send`) and replies that are not e-mailed. `bcc` is returned on the
 	// message's `email` to members and keys only in answers to `/v1` requests, never in events,
 	// webhooks or on `/client/v1`.
+	//
+	// "Reply" and "Reply all" are the same call: `cc: []` answers the contact alone, no `cc`
+	// copies every `active` participant, and a `cc` list chooses who is copied. A conversation
+	// started with `composeMail` has its other `to` and its `cc` recipients as participants.
 	//
 	// `macro_id` applies a macro's actions and `then` applies a `ConversationUpdate`, in the same
 	// transaction as the message: when either is refused (an assignee of `then` without access
@@ -38756,7 +38983,7 @@ type ClientInterface interface {
 	// An e-mailed reply goes `To` the contact and, unless `cc` is sent, `Cc` the conversation's
 	// `active` participants (`GET /v1/conversations/{id}/participants`), leaving out those whose
 	// address bounced or complained; `suggested` ones are copied only when named in `cc`. `cc` replaces that list (`[]` copies no one) and `bcc` adds hidden
-	// recipients, at most 20 addresses each: they receive the mail as envelope recipients only and
+	// recipients, at most 50 addresses each: they receive the mail as envelope recipients only and
 	// never appear in its headers. Addresses in `cc` become participants; `bcc` never does. Each
 	// address must be a valid address that this workspace neither receives nor sends mail for
 	// (a channel address of this workspace, its catch-all domain or sending address, a forwarding address or
@@ -38767,6 +38994,10 @@ type ClientInterface interface {
 	// `POST /v1/messages/{id}/send`) and replies that are not e-mailed. `bcc` is returned on the
 	// message's `email` to members and keys only in answers to `/v1` requests, never in events,
 	// webhooks or on `/client/v1`.
+	//
+	// "Reply" and "Reply all" are the same call: `cc: []` answers the contact alone, no `cc`
+	// copies every `active` participant, and a `cc` list chooses who is copied. A conversation
+	// started with `composeMail` has its other `to` and its `cc` recipients as participants.
 	//
 	// `macro_id` applies a macro's actions and `then` applies a `ConversationUpdate`, in the same
 	// transaction as the message: when either is refused (an assignee of `then` without access
@@ -38831,7 +39062,7 @@ type ClientInterface interface {
 	// ListConversationParticipants List a conversation's participants
 	//
 	// The people copied on the conversation's e-mail besides its contact, oldest first, at most
-	// 20 per conversation. The `To` and `Cc` addresses of inbound mail that are not addresses of
+	// 100 per conversation. The `To` and `Cc` addresses of inbound mail that are not addresses of
 	// this workspace (a channel's address, catch-all domain or sending address, a
 	// forwarding address, the server's own sender) are `active`
 	// when the mail passed DMARC (`email.dmarc` `pass`) and `suggested` otherwise, since `From`
@@ -38851,7 +39082,7 @@ type ClientInterface interface {
 	//
 	// Adds an address as an `active` participant, or makes a `suggested` one `active`. The
 	// address must be valid and not one this workspace receives or sends mail for
-	// (`400 validation_failed`, the same answer for both); a conversation holds at most 20
+	// (`400 validation_failed`, the same answer for both); a conversation holds at most 100
 	// (`409 participants_full`). Whoever can see the conversation may; API keys and OAuth tokens
 	// need `conversations:write`.
 	//
@@ -38864,7 +39095,7 @@ type ClientInterface interface {
 	//
 	// Adds an address as an `active` participant, or makes a `suggested` one `active`. The
 	// address must be valid and not one this workspace receives or sends mail for
-	// (`400 validation_failed`, the same answer for both); a conversation holds at most 20
+	// (`400 validation_failed`, the same answer for both); a conversation holds at most 100
 	// (`409 participants_full`). Whoever can see the conversation may; API keys and OAuth tokens
 	// need `conversations:write`.
 	//
@@ -42028,7 +42259,14 @@ type ClientInterface interface {
 	// sent it, the author stays the draft's author, and `message.created` is emitted (an e-mail
 	// conversation e-mails it, as in `createMessage`). Anything that is not a draft answers
 	// `409 not_a_draft`. `cc` and `bcc` follow the rules of `createMessage`; without them the
-	// e-mail copies the conversation's participants. A `forward` draft goes to its `forward.to`
+	// e-mail copies the conversation's participants. A draft written with `composeMail` goes out
+	// as that mail: `To` every `to` it was written with, `Cc` its `cc` and its `bcc` as envelope
+	// recipients only, with its subject (no `Re:`) and no `In-Reply-To`; `cc` and `bcc` given here
+	// replace those lists (at most 50 each). Every address is checked again, so one that bounced
+	// or complained since answers `409 email_undeliverable`, and a draft whose every `to` was
+	// erased with its contact answers `409 no_recipient`. Its recipients count against the 300
+	// recipients an hour of new mail (`429 rate_limited`). The other `to` and the `cc` become
+	// contacts and participants when it is sent. A `forward` draft goes to its `forward.to`
 	// under the rules and limits of `forwardConversation` and takes neither `cc` nor `bcc`.
 	//
 	// Members always may. An API key needs `drafts:send` and `messages:write`, and the
@@ -42045,7 +42283,14 @@ type ClientInterface interface {
 	// sent it, the author stays the draft's author, and `message.created` is emitted (an e-mail
 	// conversation e-mails it, as in `createMessage`). Anything that is not a draft answers
 	// `409 not_a_draft`. `cc` and `bcc` follow the rules of `createMessage`; without them the
-	// e-mail copies the conversation's participants. A `forward` draft goes to its `forward.to`
+	// e-mail copies the conversation's participants. A draft written with `composeMail` goes out
+	// as that mail: `To` every `to` it was written with, `Cc` its `cc` and its `bcc` as envelope
+	// recipients only, with its subject (no `Re:`) and no `In-Reply-To`; `cc` and `bcc` given here
+	// replace those lists (at most 50 each). Every address is checked again, so one that bounced
+	// or complained since answers `409 email_undeliverable`, and a draft whose every `to` was
+	// erased with its contact answers `409 no_recipient`. Its recipients count against the 300
+	// recipients an hour of new mail (`429 rate_limited`). The other `to` and the `cc` become
+	// contacts and participants when it is sent. A `forward` draft goes to its `forward.to`
 	// under the rules and limits of `forwardConversation` and takes neither `cc` nor `bcc`.
 	//
 	// Members always may. An API key needs `drafts:send` and `messages:write`, and the
@@ -51608,6 +51853,174 @@ func (c *Client) GetConversationCounts(ctx context.Context, params *GetConversat
 	return c.Client.Do(req)
 }
 
+// ComposeMailWithBody Write a new e-mail to one or more recipients
+//
+// Starts an e-mail conversation in one step: the conversation and its first outgoing message,
+// e-mailed through an e-mail channel of the inbox. Any inbox with an e-mail channel may be
+// used, `support` or `mail`; the panel offers it in the Mail section.
+//
+// `channel_id` names the e-mail channel; without it the inbox's first e-mail channel with an
+// SMTP account is used, an exact address before a catch-all. An inbox without one, or a
+// channel without an SMTP account, answers `409 email_not_configured`; a catch-all channel
+// without a `from_address` answers `409 email_no_sender`.
+//
+// `to` (1 to 50), `cc` and `bcc` (up to 50 each) are checked like a reply's `cc`: each must be
+// a valid address that this workspace neither receives nor sends mail for
+// (`400 validation_failed`, the same answer for both), and one that bounced or complained is
+// refused with `409 email_undeliverable` naming it. Addresses are lower-cased, and one named
+// in more than one list keeps the first of `to`, `cc`, `bcc`. The first `to` address is the
+// conversation's contact, found by address in the workspace or created; every other `to` and
+// every `cc` address becomes a contact when it is unknown and an `active` participant of the
+// conversation (`GET /v1/conversations/{id}/participants`) once the mail is sent. A workspace
+// keeps one contact per address: when that contact exists but the caller cannot see it (it
+// has conversations only in inboxes the caller has no access to), the mail still uses it, and
+// it becomes visible to the caller through the new conversation, as a mail from that address
+// into the inbox would make it. `bcc` addresses are never participants or contacts and are
+// returned on the message's `email.bcc` only in this answer and other `/v1` answers, never in
+// events, webhooks, headers or on `/client/v1`.
+//
+// The mail goes `To` every `to` address, `Cc` every `cc` address and to `bcc` as envelope
+// recipients only, with `subject` as given (no `Re:`), a new `Message-ID` and neither
+// `In-Reply-To` nor `References`. A member's signature for the inbox is added unless
+// `signature` is `false`, as on `createMessage`; files, the delivery state
+// (`delivery.state` `queued`, then `message.updated`) and the attachment limits of the channel
+// are those of a reply. At send time an address that bounced or complained meanwhile is
+// dropped from its list. A hard bounce or complaint reported for one recipient suppresses that
+// address; the message is marked `failed` only when every `to` address bounced.
+//
+// The conversation has `channel_kind` `email`, status `open`, the subject, and in a `mail`
+// inbox the calling member as assignee (API keys assign no one). `conversation.created` and
+// `message.created` are emitted as for `createConversation` followed by `createMessage`.
+//
+// Answers from any participant join the conversation under the rules for participants: mail
+// that passes DMARC from an `active` participant's address and names the thread. Replies use
+// `createMessage`: without `cc` a reply copies the conversation's `active` participants
+// ("Reply all"); `cc: []` sends to the contact alone ("Reply"), and a `cc` list chooses who is
+// copied.
+//
+// `draft: true` stores the message as a draft (`draft.created` instead of `message.created`)
+// with the conversation and its contact only: no participants and no contacts for the other
+// addresses until it is sent, so deleting the draft leaves nothing of them. Its `to`, `cc`,
+// `bcc` and `subject` are kept with it, `bcc` out of events and `/client/v1` as for sent mail;
+// nothing is delivered until `POST /v1/messages/{id}/send`, which sends exactly this mail:
+// every `to` in `To`, the `cc`, the `bcc` as envelope recipients only, the subject without
+// `Re:` and no `In-Reply-To`. `cc` or `bcc` given there replace the kept lists. Deleting a
+// contact removes its addresses from the kept lists too.
+//
+// A repeated `client_id` in the same inbox returns the conversation and message stored with
+// it with `200` instead of writing them again, before any rate limit, so a retry costs
+// nothing.
+//
+// Send `multipart/form-data` to attach files: the fields of `ComposeMail` as form fields
+// (repeat `to`, `cc` and `bcc` once per address) and up to 10 `files` parts, under the limits
+// `createMessage` describes for the chosen channel.
+//
+// A member or key composes at most 60 mails a minute, and new mail sent by one member or key
+// goes to at most 300 recipients an hour (`to`, `cc` and `bcc` together, counted when the mail
+// or its draft is sent); beyond either the answer is `429 rate_limited`. Members need access
+// to the inbox (`404` otherwise). API keys and OAuth tokens need `conversations:write`,
+// `messages:write` and `contacts:write`, and the workspace's `bots_may_send` unless it is a
+// draft (`403 bot_sending_disabled`).
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /v1/conversations/mail (the `ComposeMail` operationId).
+func (c *Client) ComposeMailWithBody(ctx context.Context, params *ComposeMailParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewComposeMailRequestWithBody(c.Server, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// ComposeMail Write a new e-mail to one or more recipients
+//
+// Starts an e-mail conversation in one step: the conversation and its first outgoing message,
+// e-mailed through an e-mail channel of the inbox. Any inbox with an e-mail channel may be
+// used, `support` or `mail`; the panel offers it in the Mail section.
+//
+// `channel_id` names the e-mail channel; without it the inbox's first e-mail channel with an
+// SMTP account is used, an exact address before a catch-all. An inbox without one, or a
+// channel without an SMTP account, answers `409 email_not_configured`; a catch-all channel
+// without a `from_address` answers `409 email_no_sender`.
+//
+// `to` (1 to 50), `cc` and `bcc` (up to 50 each) are checked like a reply's `cc`: each must be
+// a valid address that this workspace neither receives nor sends mail for
+// (`400 validation_failed`, the same answer for both), and one that bounced or complained is
+// refused with `409 email_undeliverable` naming it. Addresses are lower-cased, and one named
+// in more than one list keeps the first of `to`, `cc`, `bcc`. The first `to` address is the
+// conversation's contact, found by address in the workspace or created; every other `to` and
+// every `cc` address becomes a contact when it is unknown and an `active` participant of the
+// conversation (`GET /v1/conversations/{id}/participants`) once the mail is sent. A workspace
+// keeps one contact per address: when that contact exists but the caller cannot see it (it
+// has conversations only in inboxes the caller has no access to), the mail still uses it, and
+// it becomes visible to the caller through the new conversation, as a mail from that address
+// into the inbox would make it. `bcc` addresses are never participants or contacts and are
+// returned on the message's `email.bcc` only in this answer and other `/v1` answers, never in
+// events, webhooks, headers or on `/client/v1`.
+//
+// The mail goes `To` every `to` address, `Cc` every `cc` address and to `bcc` as envelope
+// recipients only, with `subject` as given (no `Re:`), a new `Message-ID` and neither
+// `In-Reply-To` nor `References`. A member's signature for the inbox is added unless
+// `signature` is `false`, as on `createMessage`; files, the delivery state
+// (`delivery.state` `queued`, then `message.updated`) and the attachment limits of the channel
+// are those of a reply. At send time an address that bounced or complained meanwhile is
+// dropped from its list. A hard bounce or complaint reported for one recipient suppresses that
+// address; the message is marked `failed` only when every `to` address bounced.
+//
+// The conversation has `channel_kind` `email`, status `open`, the subject, and in a `mail`
+// inbox the calling member as assignee (API keys assign no one). `conversation.created` and
+// `message.created` are emitted as for `createConversation` followed by `createMessage`.
+//
+// Answers from any participant join the conversation under the rules for participants: mail
+// that passes DMARC from an `active` participant's address and names the thread. Replies use
+// `createMessage`: without `cc` a reply copies the conversation's `active` participants
+// ("Reply all"); `cc: []` sends to the contact alone ("Reply"), and a `cc` list chooses who is
+// copied.
+//
+// `draft: true` stores the message as a draft (`draft.created` instead of `message.created`)
+// with the conversation and its contact only: no participants and no contacts for the other
+// addresses until it is sent, so deleting the draft leaves nothing of them. Its `to`, `cc`,
+// `bcc` and `subject` are kept with it, `bcc` out of events and `/client/v1` as for sent mail;
+// nothing is delivered until `POST /v1/messages/{id}/send`, which sends exactly this mail:
+// every `to` in `To`, the `cc`, the `bcc` as envelope recipients only, the subject without
+// `Re:` and no `In-Reply-To`. `cc` or `bcc` given there replace the kept lists. Deleting a
+// contact removes its addresses from the kept lists too.
+//
+// A repeated `client_id` in the same inbox returns the conversation and message stored with
+// it with `200` instead of writing them again, before any rate limit, so a retry costs
+// nothing.
+//
+// Send `multipart/form-data` to attach files: the fields of `ComposeMail` as form fields
+// (repeat `to`, `cc` and `bcc` once per address) and up to 10 `files` parts, under the limits
+// `createMessage` describes for the chosen channel.
+//
+// A member or key composes at most 60 mails a minute, and new mail sent by one member or key
+// goes to at most 300 recipients an hour (`to`, `cc` and `bcc` together, counted when the mail
+// or its draft is sent); beyond either the answer is `429 rate_limited`. Members need access
+// to the inbox (`404` otherwise). API keys and OAuth tokens need `conversations:write`,
+// `messages:write` and `contacts:write`, and the workspace's `bots_may_send` unless it is a
+// draft (`403 bot_sending_disabled`).
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /v1/conversations/mail (the `ComposeMail` operationId).
+func (c *Client) ComposeMail(ctx context.Context, params *ComposeMailParams, body ComposeMailJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewComposeMailRequest(c.Server, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 // TrashConversation Move a conversation to the trash
 //
 // Sets `trashed_at` and `trashed_by`. From then on the conversation is left out of every
@@ -52098,7 +52511,7 @@ func (c *Client) ListMessages(ctx context.Context, conversationId ConversationId
 // An e-mailed reply goes `To` the contact and, unless `cc` is sent, `Cc` the conversation's
 // `active` participants (`GET /v1/conversations/{id}/participants`), leaving out those whose
 // address bounced or complained; `suggested` ones are copied only when named in `cc`. `cc` replaces that list (`[]` copies no one) and `bcc` adds hidden
-// recipients, at most 20 addresses each: they receive the mail as envelope recipients only and
+// recipients, at most 50 addresses each: they receive the mail as envelope recipients only and
 // never appear in its headers. Addresses in `cc` become participants; `bcc` never does. Each
 // address must be a valid address that this workspace neither receives nor sends mail for
 // (a channel address of this workspace, its catch-all domain or sending address, a forwarding address or
@@ -52109,6 +52522,10 @@ func (c *Client) ListMessages(ctx context.Context, conversationId ConversationId
 // `POST /v1/messages/{id}/send`) and replies that are not e-mailed. `bcc` is returned on the
 // message's `email` to members and keys only in answers to `/v1` requests, never in events,
 // webhooks or on `/client/v1`.
+//
+// "Reply" and "Reply all" are the same call: `cc: []` answers the contact alone, no `cc`
+// copies every `active` participant, and a `cc` list chooses who is copied. A conversation
+// started with `composeMail` has its other `to` and its `cc` recipients as participants.
 //
 // `macro_id` applies a macro's actions and `then` applies a `ConversationUpdate`, in the same
 // transaction as the message: when either is refused (an assignee of `then` without access
@@ -52183,7 +52600,7 @@ func (c *Client) CreateMessageWithBody(ctx context.Context, conversationId Conve
 // An e-mailed reply goes `To` the contact and, unless `cc` is sent, `Cc` the conversation's
 // `active` participants (`GET /v1/conversations/{id}/participants`), leaving out those whose
 // address bounced or complained; `suggested` ones are copied only when named in `cc`. `cc` replaces that list (`[]` copies no one) and `bcc` adds hidden
-// recipients, at most 20 addresses each: they receive the mail as envelope recipients only and
+// recipients, at most 50 addresses each: they receive the mail as envelope recipients only and
 // never appear in its headers. Addresses in `cc` become participants; `bcc` never does. Each
 // address must be a valid address that this workspace neither receives nor sends mail for
 // (a channel address of this workspace, its catch-all domain or sending address, a forwarding address or
@@ -52194,6 +52611,10 @@ func (c *Client) CreateMessageWithBody(ctx context.Context, conversationId Conve
 // `POST /v1/messages/{id}/send`) and replies that are not e-mailed. `bcc` is returned on the
 // message's `email` to members and keys only in answers to `/v1` requests, never in events,
 // webhooks or on `/client/v1`.
+//
+// "Reply" and "Reply all" are the same call: `cc: []` answers the contact alone, no `cc`
+// copies every `active` participant, and a `cc` list chooses who is copied. A conversation
+// started with `composeMail` has its other `to` and its `cc` recipients as participants.
 //
 // `macro_id` applies a macro's actions and `then` applies a `ConversationUpdate`, in the same
 // transaction as the message: when either is refused (an assignee of `then` without access
@@ -52288,7 +52709,7 @@ func (c *Client) MoveConversation(ctx context.Context, conversationId Conversati
 // ListConversationParticipants List a conversation's participants
 //
 // The people copied on the conversation's e-mail besides its contact, oldest first, at most
-// 20 per conversation. The `To` and `Cc` addresses of inbound mail that are not addresses of
+// 100 per conversation. The `To` and `Cc` addresses of inbound mail that are not addresses of
 // this workspace (a channel's address, catch-all domain or sending address, a
 // forwarding address, the server's own sender) are `active`
 // when the mail passed DMARC (`email.dmarc` `pass`) and `suggested` otherwise, since `From`
@@ -52318,7 +52739,7 @@ func (c *Client) ListConversationParticipants(ctx context.Context, conversationI
 //
 // Adds an address as an `active` participant, or makes a `suggested` one `active`. The
 // address must be valid and not one this workspace receives or sends mail for
-// (`400 validation_failed`, the same answer for both); a conversation holds at most 20
+// (`400 validation_failed`, the same answer for both); a conversation holds at most 100
 // (`409 participants_full`). Whoever can see the conversation may; API keys and OAuth tokens
 // need `conversations:write`.
 //
@@ -52341,7 +52762,7 @@ func (c *Client) AddConversationParticipantWithBody(ctx context.Context, convers
 //
 // Adds an address as an `active` participant, or makes a `suggested` one `active`. The
 // address must be valid and not one this workspace receives or sends mail for
-// (`400 validation_failed`, the same answer for both); a conversation holds at most 20
+// (`400 validation_failed`, the same answer for both); a conversation holds at most 100
 // (`409 participants_full`). Whoever can see the conversation may; API keys and OAuth tokens
 // need `conversations:write`.
 //
@@ -57875,7 +58296,14 @@ func (c *Client) RedactMessage(ctx context.Context, messageId MessageId, params 
 // sent it, the author stays the draft's author, and `message.created` is emitted (an e-mail
 // conversation e-mails it, as in `createMessage`). Anything that is not a draft answers
 // `409 not_a_draft`. `cc` and `bcc` follow the rules of `createMessage`; without them the
-// e-mail copies the conversation's participants. A `forward` draft goes to its `forward.to`
+// e-mail copies the conversation's participants. A draft written with `composeMail` goes out
+// as that mail: `To` every `to` it was written with, `Cc` its `cc` and its `bcc` as envelope
+// recipients only, with its subject (no `Re:`) and no `In-Reply-To`; `cc` and `bcc` given here
+// replace those lists (at most 50 each). Every address is checked again, so one that bounced
+// or complained since answers `409 email_undeliverable`, and a draft whose every `to` was
+// erased with its contact answers `409 no_recipient`. Its recipients count against the 300
+// recipients an hour of new mail (`429 rate_limited`). The other `to` and the `cc` become
+// contacts and participants when it is sent. A `forward` draft goes to its `forward.to`
 // under the rules and limits of `forwardConversation` and takes neither `cc` nor `bcc`.
 //
 // Members always may. An API key needs `drafts:send` and `messages:write`, and the
@@ -57902,7 +58330,14 @@ func (c *Client) SendMessageWithBody(ctx context.Context, messageId MessageId, p
 // sent it, the author stays the draft's author, and `message.created` is emitted (an e-mail
 // conversation e-mails it, as in `createMessage`). Anything that is not a draft answers
 // `409 not_a_draft`. `cc` and `bcc` follow the rules of `createMessage`; without them the
-// e-mail copies the conversation's participants. A `forward` draft goes to its `forward.to`
+// e-mail copies the conversation's participants. A draft written with `composeMail` goes out
+// as that mail: `To` every `to` it was written with, `Cc` its `cc` and its `bcc` as envelope
+// recipients only, with its subject (no `Re:`) and no `In-Reply-To`; `cc` and `bcc` given here
+// replace those lists (at most 50 each). Every address is checked again, so one that bounced
+// or complained since answers `409 email_undeliverable`, and a draft whose every `to` was
+// erased with its contact answers `409 no_recipient`. Its recipients count against the 300
+// recipients an hour of new mail (`429 rate_limited`). The other `to` and the `cc` become
+// contacts and participants when it is sent. A `forward` draft goes to its `forward.to`
 // under the rules and limits of `forwardConversation` and takes neither `cc` nor `bcc`.
 //
 // Members always may. An API key needs `drafts:send` and `messages:write`, and the
@@ -74672,6 +75107,72 @@ func NewGetConversationCountsRequest(server string, params *GetConversationCount
 			}
 
 			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewComposeMailRequest calls the generic ComposeMail builder with application/json body
+func NewComposeMailRequest(server string, params *ComposeMailParams, body ComposeMailJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewComposeMailRequestWithBody(server, params, "application/json", bodyReader)
+}
+
+// NewComposeMailRequestWithBody constructs an http.Request for the ComposeMail method, with any body, and a specified content type
+func NewComposeMailRequestWithBody(server string, params *ComposeMailParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/conversations/mail")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.IdempotencyKey != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Idempotency-Key", *params.IdempotencyKey, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Idempotency-Key", headerParam0)
+		}
+
+		if params.YuvaWorkspace != nil {
+			var headerParam1 string
+
+			headerParam1, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam1)
 		}
 
 	}
@@ -99466,6 +99967,154 @@ type ClientWithResponsesInterface interface {
 	// Corresponds with GET /v1/conversations/counts (the `GetConversationCounts` operationId).
 	GetConversationCountsWithResponse(ctx context.Context, params *GetConversationCountsParams, reqEditors ...RequestEditorFn) (*GetConversationCountsResponse, error)
 
+	// ComposeMailWithBodyWithResponse Write a new e-mail to one or more recipients
+	//
+	// Starts an e-mail conversation in one step: the conversation and its first outgoing message,
+	// e-mailed through an e-mail channel of the inbox. Any inbox with an e-mail channel may be
+	// used, `support` or `mail`; the panel offers it in the Mail section.
+	//
+	// `channel_id` names the e-mail channel; without it the inbox's first e-mail channel with an
+	// SMTP account is used, an exact address before a catch-all. An inbox without one, or a
+	// channel without an SMTP account, answers `409 email_not_configured`; a catch-all channel
+	// without a `from_address` answers `409 email_no_sender`.
+	//
+	// `to` (1 to 50), `cc` and `bcc` (up to 50 each) are checked like a reply's `cc`: each must be
+	// a valid address that this workspace neither receives nor sends mail for
+	// (`400 validation_failed`, the same answer for both), and one that bounced or complained is
+	// refused with `409 email_undeliverable` naming it. Addresses are lower-cased, and one named
+	// in more than one list keeps the first of `to`, `cc`, `bcc`. The first `to` address is the
+	// conversation's contact, found by address in the workspace or created; every other `to` and
+	// every `cc` address becomes a contact when it is unknown and an `active` participant of the
+	// conversation (`GET /v1/conversations/{id}/participants`) once the mail is sent. A workspace
+	// keeps one contact per address: when that contact exists but the caller cannot see it (it
+	// has conversations only in inboxes the caller has no access to), the mail still uses it, and
+	// it becomes visible to the caller through the new conversation, as a mail from that address
+	// into the inbox would make it. `bcc` addresses are never participants or contacts and are
+	// returned on the message's `email.bcc` only in this answer and other `/v1` answers, never in
+	// events, webhooks, headers or on `/client/v1`.
+	//
+	// The mail goes `To` every `to` address, `Cc` every `cc` address and to `bcc` as envelope
+	// recipients only, with `subject` as given (no `Re:`), a new `Message-ID` and neither
+	// `In-Reply-To` nor `References`. A member's signature for the inbox is added unless
+	// `signature` is `false`, as on `createMessage`; files, the delivery state
+	// (`delivery.state` `queued`, then `message.updated`) and the attachment limits of the channel
+	// are those of a reply. At send time an address that bounced or complained meanwhile is
+	// dropped from its list. A hard bounce or complaint reported for one recipient suppresses that
+	// address; the message is marked `failed` only when every `to` address bounced.
+	//
+	// The conversation has `channel_kind` `email`, status `open`, the subject, and in a `mail`
+	// inbox the calling member as assignee (API keys assign no one). `conversation.created` and
+	// `message.created` are emitted as for `createConversation` followed by `createMessage`.
+	//
+	// Answers from any participant join the conversation under the rules for participants: mail
+	// that passes DMARC from an `active` participant's address and names the thread. Replies use
+	// `createMessage`: without `cc` a reply copies the conversation's `active` participants
+	// ("Reply all"); `cc: []` sends to the contact alone ("Reply"), and a `cc` list chooses who is
+	// copied.
+	//
+	// `draft: true` stores the message as a draft (`draft.created` instead of `message.created`)
+	// with the conversation and its contact only: no participants and no contacts for the other
+	// addresses until it is sent, so deleting the draft leaves nothing of them. Its `to`, `cc`,
+	// `bcc` and `subject` are kept with it, `bcc` out of events and `/client/v1` as for sent mail;
+	// nothing is delivered until `POST /v1/messages/{id}/send`, which sends exactly this mail:
+	// every `to` in `To`, the `cc`, the `bcc` as envelope recipients only, the subject without
+	// `Re:` and no `In-Reply-To`. `cc` or `bcc` given there replace the kept lists. Deleting a
+	// contact removes its addresses from the kept lists too.
+	//
+	// A repeated `client_id` in the same inbox returns the conversation and message stored with
+	// it with `200` instead of writing them again, before any rate limit, so a retry costs
+	// nothing.
+	//
+	// Send `multipart/form-data` to attach files: the fields of `ComposeMail` as form fields
+	// (repeat `to`, `cc` and `bcc` once per address) and up to 10 `files` parts, under the limits
+	// `createMessage` describes for the chosen channel.
+	//
+	// A member or key composes at most 60 mails a minute, and new mail sent by one member or key
+	// goes to at most 300 recipients an hour (`to`, `cc` and `bcc` together, counted when the mail
+	// or its draft is sent); beyond either the answer is `429 rate_limited`. Members need access
+	// to the inbox (`404` otherwise). API keys and OAuth tokens need `conversations:write`,
+	// `messages:write` and `contacts:write`, and the workspace's `bots_may_send` unless it is a
+	// draft (`403 bot_sending_disabled`).
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /v1/conversations/mail (the `ComposeMail` operationId).
+	ComposeMailWithBodyWithResponse(ctx context.Context, params *ComposeMailParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ComposeMailResponse, error)
+
+	// ComposeMailWithResponse Write a new e-mail to one or more recipients
+	//
+	// Starts an e-mail conversation in one step: the conversation and its first outgoing message,
+	// e-mailed through an e-mail channel of the inbox. Any inbox with an e-mail channel may be
+	// used, `support` or `mail`; the panel offers it in the Mail section.
+	//
+	// `channel_id` names the e-mail channel; without it the inbox's first e-mail channel with an
+	// SMTP account is used, an exact address before a catch-all. An inbox without one, or a
+	// channel without an SMTP account, answers `409 email_not_configured`; a catch-all channel
+	// without a `from_address` answers `409 email_no_sender`.
+	//
+	// `to` (1 to 50), `cc` and `bcc` (up to 50 each) are checked like a reply's `cc`: each must be
+	// a valid address that this workspace neither receives nor sends mail for
+	// (`400 validation_failed`, the same answer for both), and one that bounced or complained is
+	// refused with `409 email_undeliverable` naming it. Addresses are lower-cased, and one named
+	// in more than one list keeps the first of `to`, `cc`, `bcc`. The first `to` address is the
+	// conversation's contact, found by address in the workspace or created; every other `to` and
+	// every `cc` address becomes a contact when it is unknown and an `active` participant of the
+	// conversation (`GET /v1/conversations/{id}/participants`) once the mail is sent. A workspace
+	// keeps one contact per address: when that contact exists but the caller cannot see it (it
+	// has conversations only in inboxes the caller has no access to), the mail still uses it, and
+	// it becomes visible to the caller through the new conversation, as a mail from that address
+	// into the inbox would make it. `bcc` addresses are never participants or contacts and are
+	// returned on the message's `email.bcc` only in this answer and other `/v1` answers, never in
+	// events, webhooks, headers or on `/client/v1`.
+	//
+	// The mail goes `To` every `to` address, `Cc` every `cc` address and to `bcc` as envelope
+	// recipients only, with `subject` as given (no `Re:`), a new `Message-ID` and neither
+	// `In-Reply-To` nor `References`. A member's signature for the inbox is added unless
+	// `signature` is `false`, as on `createMessage`; files, the delivery state
+	// (`delivery.state` `queued`, then `message.updated`) and the attachment limits of the channel
+	// are those of a reply. At send time an address that bounced or complained meanwhile is
+	// dropped from its list. A hard bounce or complaint reported for one recipient suppresses that
+	// address; the message is marked `failed` only when every `to` address bounced.
+	//
+	// The conversation has `channel_kind` `email`, status `open`, the subject, and in a `mail`
+	// inbox the calling member as assignee (API keys assign no one). `conversation.created` and
+	// `message.created` are emitted as for `createConversation` followed by `createMessage`.
+	//
+	// Answers from any participant join the conversation under the rules for participants: mail
+	// that passes DMARC from an `active` participant's address and names the thread. Replies use
+	// `createMessage`: without `cc` a reply copies the conversation's `active` participants
+	// ("Reply all"); `cc: []` sends to the contact alone ("Reply"), and a `cc` list chooses who is
+	// copied.
+	//
+	// `draft: true` stores the message as a draft (`draft.created` instead of `message.created`)
+	// with the conversation and its contact only: no participants and no contacts for the other
+	// addresses until it is sent, so deleting the draft leaves nothing of them. Its `to`, `cc`,
+	// `bcc` and `subject` are kept with it, `bcc` out of events and `/client/v1` as for sent mail;
+	// nothing is delivered until `POST /v1/messages/{id}/send`, which sends exactly this mail:
+	// every `to` in `To`, the `cc`, the `bcc` as envelope recipients only, the subject without
+	// `Re:` and no `In-Reply-To`. `cc` or `bcc` given there replace the kept lists. Deleting a
+	// contact removes its addresses from the kept lists too.
+	//
+	// A repeated `client_id` in the same inbox returns the conversation and message stored with
+	// it with `200` instead of writing them again, before any rate limit, so a retry costs
+	// nothing.
+	//
+	// Send `multipart/form-data` to attach files: the fields of `ComposeMail` as form fields
+	// (repeat `to`, `cc` and `bcc` once per address) and up to 10 `files` parts, under the limits
+	// `createMessage` describes for the chosen channel.
+	//
+	// A member or key composes at most 60 mails a minute, and new mail sent by one member or key
+	// goes to at most 300 recipients an hour (`to`, `cc` and `bcc` together, counted when the mail
+	// or its draft is sent); beyond either the answer is `429 rate_limited`. Members need access
+	// to the inbox (`404` otherwise). API keys and OAuth tokens need `conversations:write`,
+	// `messages:write` and `contacts:write`, and the workspace's `bots_may_send` unless it is a
+	// draft (`403 bot_sending_disabled`).
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /v1/conversations/mail (the `ComposeMail` operationId).
+	ComposeMailWithResponse(ctx context.Context, params *ComposeMailParams, body ComposeMailJSONRequestBody, reqEditors ...RequestEditorFn) (*ComposeMailResponse, error)
+
 	// TrashConversationWithResponse Move a conversation to the trash
 	//
 	// Sets `trashed_at` and `trashed_by`. From then on the conversation is left out of every
@@ -99828,7 +100477,7 @@ type ClientWithResponsesInterface interface {
 	// An e-mailed reply goes `To` the contact and, unless `cc` is sent, `Cc` the conversation's
 	// `active` participants (`GET /v1/conversations/{id}/participants`), leaving out those whose
 	// address bounced or complained; `suggested` ones are copied only when named in `cc`. `cc` replaces that list (`[]` copies no one) and `bcc` adds hidden
-	// recipients, at most 20 addresses each: they receive the mail as envelope recipients only and
+	// recipients, at most 50 addresses each: they receive the mail as envelope recipients only and
 	// never appear in its headers. Addresses in `cc` become participants; `bcc` never does. Each
 	// address must be a valid address that this workspace neither receives nor sends mail for
 	// (a channel address of this workspace, its catch-all domain or sending address, a forwarding address or
@@ -99839,6 +100488,10 @@ type ClientWithResponsesInterface interface {
 	// `POST /v1/messages/{id}/send`) and replies that are not e-mailed. `bcc` is returned on the
 	// message's `email` to members and keys only in answers to `/v1` requests, never in events,
 	// webhooks or on `/client/v1`.
+	//
+	// "Reply" and "Reply all" are the same call: `cc: []` answers the contact alone, no `cc`
+	// copies every `active` participant, and a `cc` list chooses who is copied. A conversation
+	// started with `composeMail` has its other `to` and its `cc` recipients as participants.
 	//
 	// `macro_id` applies a macro's actions and `then` applies a `ConversationUpdate`, in the same
 	// transaction as the message: when either is refused (an assignee of `then` without access
@@ -99903,7 +100556,7 @@ type ClientWithResponsesInterface interface {
 	// An e-mailed reply goes `To` the contact and, unless `cc` is sent, `Cc` the conversation's
 	// `active` participants (`GET /v1/conversations/{id}/participants`), leaving out those whose
 	// address bounced or complained; `suggested` ones are copied only when named in `cc`. `cc` replaces that list (`[]` copies no one) and `bcc` adds hidden
-	// recipients, at most 20 addresses each: they receive the mail as envelope recipients only and
+	// recipients, at most 50 addresses each: they receive the mail as envelope recipients only and
 	// never appear in its headers. Addresses in `cc` become participants; `bcc` never does. Each
 	// address must be a valid address that this workspace neither receives nor sends mail for
 	// (a channel address of this workspace, its catch-all domain or sending address, a forwarding address or
@@ -99914,6 +100567,10 @@ type ClientWithResponsesInterface interface {
 	// `POST /v1/messages/{id}/send`) and replies that are not e-mailed. `bcc` is returned on the
 	// message's `email` to members and keys only in answers to `/v1` requests, never in events,
 	// webhooks or on `/client/v1`.
+	//
+	// "Reply" and "Reply all" are the same call: `cc: []` answers the contact alone, no `cc`
+	// copies every `active` participant, and a `cc` list chooses who is copied. A conversation
+	// started with `composeMail` has its other `to` and its `cc` recipients as participants.
 	//
 	// `macro_id` applies a macro's actions and `then` applies a `ConversationUpdate`, in the same
 	// transaction as the message: when either is refused (an assignee of `then` without access
@@ -99978,7 +100635,7 @@ type ClientWithResponsesInterface interface {
 	// ListConversationParticipantsWithResponse List a conversation's participants
 	//
 	// The people copied on the conversation's e-mail besides its contact, oldest first, at most
-	// 20 per conversation. The `To` and `Cc` addresses of inbound mail that are not addresses of
+	// 100 per conversation. The `To` and `Cc` addresses of inbound mail that are not addresses of
 	// this workspace (a channel's address, catch-all domain or sending address, a
 	// forwarding address, the server's own sender) are `active`
 	// when the mail passed DMARC (`email.dmarc` `pass`) and `suggested` otherwise, since `From`
@@ -100000,7 +100657,7 @@ type ClientWithResponsesInterface interface {
 	//
 	// Adds an address as an `active` participant, or makes a `suggested` one `active`. The
 	// address must be valid and not one this workspace receives or sends mail for
-	// (`400 validation_failed`, the same answer for both); a conversation holds at most 20
+	// (`400 validation_failed`, the same answer for both); a conversation holds at most 100
 	// (`409 participants_full`). Whoever can see the conversation may; API keys and OAuth tokens
 	// need `conversations:write`.
 	//
@@ -100013,7 +100670,7 @@ type ClientWithResponsesInterface interface {
 	//
 	// Adds an address as an `active` participant, or makes a `suggested` one `active`. The
 	// address must be valid and not one this workspace receives or sends mail for
-	// (`400 validation_failed`, the same answer for both); a conversation holds at most 20
+	// (`400 validation_failed`, the same answer for both); a conversation holds at most 100
 	// (`409 participants_full`). Whoever can see the conversation may; API keys and OAuth tokens
 	// need `conversations:write`.
 	//
@@ -103415,7 +104072,14 @@ type ClientWithResponsesInterface interface {
 	// sent it, the author stays the draft's author, and `message.created` is emitted (an e-mail
 	// conversation e-mails it, as in `createMessage`). Anything that is not a draft answers
 	// `409 not_a_draft`. `cc` and `bcc` follow the rules of `createMessage`; without them the
-	// e-mail copies the conversation's participants. A `forward` draft goes to its `forward.to`
+	// e-mail copies the conversation's participants. A draft written with `composeMail` goes out
+	// as that mail: `To` every `to` it was written with, `Cc` its `cc` and its `bcc` as envelope
+	// recipients only, with its subject (no `Re:`) and no `In-Reply-To`; `cc` and `bcc` given here
+	// replace those lists (at most 50 each). Every address is checked again, so one that bounced
+	// or complained since answers `409 email_undeliverable`, and a draft whose every `to` was
+	// erased with its contact answers `409 no_recipient`. Its recipients count against the 300
+	// recipients an hour of new mail (`429 rate_limited`). The other `to` and the `cc` become
+	// contacts and participants when it is sent. A `forward` draft goes to its `forward.to`
 	// under the rules and limits of `forwardConversation` and takes neither `cc` nor `bcc`.
 	//
 	// Members always may. An API key needs `drafts:send` and `messages:write`, and the
@@ -103432,7 +104096,14 @@ type ClientWithResponsesInterface interface {
 	// sent it, the author stays the draft's author, and `message.created` is emitted (an e-mail
 	// conversation e-mails it, as in `createMessage`). Anything that is not a draft answers
 	// `409 not_a_draft`. `cc` and `bcc` follow the rules of `createMessage`; without them the
-	// e-mail copies the conversation's participants. A `forward` draft goes to its `forward.to`
+	// e-mail copies the conversation's participants. A draft written with `composeMail` goes out
+	// as that mail: `To` every `to` it was written with, `Cc` its `cc` and its `bcc` as envelope
+	// recipients only, with its subject (no `Re:`) and no `In-Reply-To`; `cc` and `bcc` given here
+	// replace those lists (at most 50 each). Every address is checked again, so one that bounced
+	// or complained since answers `409 email_undeliverable`, and a draft whose every `to` was
+	// erased with its contact answers `409 no_recipient`. Its recipients count against the 300
+	// recipients an hour of new mail (`429 rate_limited`). The other `to` and the `cc` become
+	// contacts and participants when it is sent. A `forward` draft goes to its `forward.to`
 	// under the rules and limits of `forwardConversation` and takes neither `cc` nor `bcc`.
 	//
 	// Members always may. An API key needs `drafts:send` and `messages:write`, and the
@@ -119659,6 +120330,110 @@ func (r GetConversationCountsResponse) ContentType() string {
 	return ""
 }
 
+type ComposeMailResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *ComposedMail
+	// JSON201 the response for an HTTP 201 `application/json` response
+	JSON201 *ComposedMail
+	// ApplicationproblemJSON400 the response for an HTTP 400 `application/problem+json` response
+	ApplicationproblemJSON400 *Problem
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+	// ApplicationproblemJSON409 the response for an HTTP 409 `application/problem+json` response
+	ApplicationproblemJSON409 *Problem
+	// ApplicationproblemJSON413 the response for an HTTP 413 `application/problem+json` response
+	ApplicationproblemJSON413 *Problem
+	// ApplicationproblemJSON415 the response for an HTTP 415 `application/problem+json` response
+	ApplicationproblemJSON415 *Problem
+	// ApplicationproblemJSON429 the response for an HTTP 429 `application/problem+json` response
+	ApplicationproblemJSON429 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r ComposeMailResponse) GetJSON200() *ComposedMail {
+	return r.JSON200
+}
+
+// GetJSON201 returns the response for an HTTP 201 `application/json` response
+func (r ComposeMailResponse) GetJSON201() *ComposedMail {
+	return r.JSON201
+}
+
+// GetApplicationproblemJSON400 returns the response for an HTTP 400 `application/problem+json` response
+func (r ComposeMailResponse) GetApplicationproblemJSON400() *Problem {
+	return r.ApplicationproblemJSON400
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r ComposeMailResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r ComposeMailResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r ComposeMailResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetApplicationproblemJSON409 returns the response for an HTTP 409 `application/problem+json` response
+func (r ComposeMailResponse) GetApplicationproblemJSON409() *Problem {
+	return r.ApplicationproblemJSON409
+}
+
+// GetApplicationproblemJSON413 returns the response for an HTTP 413 `application/problem+json` response
+func (r ComposeMailResponse) GetApplicationproblemJSON413() *Problem {
+	return r.ApplicationproblemJSON413
+}
+
+// GetApplicationproblemJSON415 returns the response for an HTTP 415 `application/problem+json` response
+func (r ComposeMailResponse) GetApplicationproblemJSON415() *Problem {
+	return r.ApplicationproblemJSON415
+}
+
+// GetApplicationproblemJSON429 returns the response for an HTTP 429 `application/problem+json` response
+func (r ComposeMailResponse) GetApplicationproblemJSON429() *Problem {
+	return r.ApplicationproblemJSON429
+}
+
+// GetBody returns the raw response body bytes
+func (r ComposeMailResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r ComposeMailResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ComposeMailResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ComposeMailResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type TrashConversationResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -132628,6 +133403,8 @@ type SendMessageResponse struct {
 	ApplicationproblemJSON404 *Problem
 	// ApplicationproblemJSON409 the response for an HTTP 409 `application/problem+json` response
 	ApplicationproblemJSON409 *Problem
+	// ApplicationproblemJSON429 the response for an HTTP 429 `application/problem+json` response
+	ApplicationproblemJSON429 *Problem
 }
 
 // GetJSON200 returns the response for an HTTP 200 `application/json` response
@@ -132658,6 +133435,11 @@ func (r SendMessageResponse) GetApplicationproblemJSON404() *Problem {
 // GetApplicationproblemJSON409 returns the response for an HTTP 409 `application/problem+json` response
 func (r SendMessageResponse) GetApplicationproblemJSON409() *Problem {
 	return r.ApplicationproblemJSON409
+}
+
+// GetApplicationproblemJSON429 returns the response for an HTTP 429 `application/problem+json` response
+func (r SendMessageResponse) GetApplicationproblemJSON429() *Problem {
+	return r.ApplicationproblemJSON429
 }
 
 // GetBody returns the raw response body bytes
@@ -147320,6 +148102,166 @@ func (c *ClientWithResponses) GetConversationCountsWithResponse(ctx context.Cont
 	return ParseGetConversationCountsResponse(rsp)
 }
 
+// ComposeMailWithBodyWithResponse Write a new e-mail to one or more recipients
+//
+// Starts an e-mail conversation in one step: the conversation and its first outgoing message,
+// e-mailed through an e-mail channel of the inbox. Any inbox with an e-mail channel may be
+// used, `support` or `mail`; the panel offers it in the Mail section.
+//
+// `channel_id` names the e-mail channel; without it the inbox's first e-mail channel with an
+// SMTP account is used, an exact address before a catch-all. An inbox without one, or a
+// channel without an SMTP account, answers `409 email_not_configured`; a catch-all channel
+// without a `from_address` answers `409 email_no_sender`.
+//
+// `to` (1 to 50), `cc` and `bcc` (up to 50 each) are checked like a reply's `cc`: each must be
+// a valid address that this workspace neither receives nor sends mail for
+// (`400 validation_failed`, the same answer for both), and one that bounced or complained is
+// refused with `409 email_undeliverable` naming it. Addresses are lower-cased, and one named
+// in more than one list keeps the first of `to`, `cc`, `bcc`. The first `to` address is the
+// conversation's contact, found by address in the workspace or created; every other `to` and
+// every `cc` address becomes a contact when it is unknown and an `active` participant of the
+// conversation (`GET /v1/conversations/{id}/participants`) once the mail is sent. A workspace
+// keeps one contact per address: when that contact exists but the caller cannot see it (it
+// has conversations only in inboxes the caller has no access to), the mail still uses it, and
+// it becomes visible to the caller through the new conversation, as a mail from that address
+// into the inbox would make it. `bcc` addresses are never participants or contacts and are
+// returned on the message's `email.bcc` only in this answer and other `/v1` answers, never in
+// events, webhooks, headers or on `/client/v1`.
+//
+// The mail goes `To` every `to` address, `Cc` every `cc` address and to `bcc` as envelope
+// recipients only, with `subject` as given (no `Re:`), a new `Message-ID` and neither
+// `In-Reply-To` nor `References`. A member's signature for the inbox is added unless
+// `signature` is `false`, as on `createMessage`; files, the delivery state
+// (`delivery.state` `queued`, then `message.updated`) and the attachment limits of the channel
+// are those of a reply. At send time an address that bounced or complained meanwhile is
+// dropped from its list. A hard bounce or complaint reported for one recipient suppresses that
+// address; the message is marked `failed` only when every `to` address bounced.
+//
+// The conversation has `channel_kind` `email`, status `open`, the subject, and in a `mail`
+// inbox the calling member as assignee (API keys assign no one). `conversation.created` and
+// `message.created` are emitted as for `createConversation` followed by `createMessage`.
+//
+// Answers from any participant join the conversation under the rules for participants: mail
+// that passes DMARC from an `active` participant's address and names the thread. Replies use
+// `createMessage`: without `cc` a reply copies the conversation's `active` participants
+// ("Reply all"); `cc: []` sends to the contact alone ("Reply"), and a `cc` list chooses who is
+// copied.
+//
+// `draft: true` stores the message as a draft (`draft.created` instead of `message.created`)
+// with the conversation and its contact only: no participants and no contacts for the other
+// addresses until it is sent, so deleting the draft leaves nothing of them. Its `to`, `cc`,
+// `bcc` and `subject` are kept with it, `bcc` out of events and `/client/v1` as for sent mail;
+// nothing is delivered until `POST /v1/messages/{id}/send`, which sends exactly this mail:
+// every `to` in `To`, the `cc`, the `bcc` as envelope recipients only, the subject without
+// `Re:` and no `In-Reply-To`. `cc` or `bcc` given there replace the kept lists. Deleting a
+// contact removes its addresses from the kept lists too.
+//
+// A repeated `client_id` in the same inbox returns the conversation and message stored with
+// it with `200` instead of writing them again, before any rate limit, so a retry costs
+// nothing.
+//
+// Send `multipart/form-data` to attach files: the fields of `ComposeMail` as form fields
+// (repeat `to`, `cc` and `bcc` once per address) and up to 10 `files` parts, under the limits
+// `createMessage` describes for the chosen channel.
+//
+// A member or key composes at most 60 mails a minute, and new mail sent by one member or key
+// goes to at most 300 recipients an hour (`to`, `cc` and `bcc` together, counted when the mail
+// or its draft is sent); beyond either the answer is `429 rate_limited`. Members need access
+// to the inbox (`404` otherwise). API keys and OAuth tokens need `conversations:write`,
+// `messages:write` and `contacts:write`, and the workspace's `bots_may_send` unless it is a
+// draft (`403 bot_sending_disabled`).
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /v1/conversations/mail (the `ComposeMail` operationId).
+func (c *ClientWithResponses) ComposeMailWithBodyWithResponse(ctx context.Context, params *ComposeMailParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ComposeMailResponse, error) {
+	rsp, err := c.ComposeMailWithBody(ctx, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseComposeMailResponse(rsp)
+}
+
+// ComposeMailWithResponse Write a new e-mail to one or more recipients
+//
+// Starts an e-mail conversation in one step: the conversation and its first outgoing message,
+// e-mailed through an e-mail channel of the inbox. Any inbox with an e-mail channel may be
+// used, `support` or `mail`; the panel offers it in the Mail section.
+//
+// `channel_id` names the e-mail channel; without it the inbox's first e-mail channel with an
+// SMTP account is used, an exact address before a catch-all. An inbox without one, or a
+// channel without an SMTP account, answers `409 email_not_configured`; a catch-all channel
+// without a `from_address` answers `409 email_no_sender`.
+//
+// `to` (1 to 50), `cc` and `bcc` (up to 50 each) are checked like a reply's `cc`: each must be
+// a valid address that this workspace neither receives nor sends mail for
+// (`400 validation_failed`, the same answer for both), and one that bounced or complained is
+// refused with `409 email_undeliverable` naming it. Addresses are lower-cased, and one named
+// in more than one list keeps the first of `to`, `cc`, `bcc`. The first `to` address is the
+// conversation's contact, found by address in the workspace or created; every other `to` and
+// every `cc` address becomes a contact when it is unknown and an `active` participant of the
+// conversation (`GET /v1/conversations/{id}/participants`) once the mail is sent. A workspace
+// keeps one contact per address: when that contact exists but the caller cannot see it (it
+// has conversations only in inboxes the caller has no access to), the mail still uses it, and
+// it becomes visible to the caller through the new conversation, as a mail from that address
+// into the inbox would make it. `bcc` addresses are never participants or contacts and are
+// returned on the message's `email.bcc` only in this answer and other `/v1` answers, never in
+// events, webhooks, headers or on `/client/v1`.
+//
+// The mail goes `To` every `to` address, `Cc` every `cc` address and to `bcc` as envelope
+// recipients only, with `subject` as given (no `Re:`), a new `Message-ID` and neither
+// `In-Reply-To` nor `References`. A member's signature for the inbox is added unless
+// `signature` is `false`, as on `createMessage`; files, the delivery state
+// (`delivery.state` `queued`, then `message.updated`) and the attachment limits of the channel
+// are those of a reply. At send time an address that bounced or complained meanwhile is
+// dropped from its list. A hard bounce or complaint reported for one recipient suppresses that
+// address; the message is marked `failed` only when every `to` address bounced.
+//
+// The conversation has `channel_kind` `email`, status `open`, the subject, and in a `mail`
+// inbox the calling member as assignee (API keys assign no one). `conversation.created` and
+// `message.created` are emitted as for `createConversation` followed by `createMessage`.
+//
+// Answers from any participant join the conversation under the rules for participants: mail
+// that passes DMARC from an `active` participant's address and names the thread. Replies use
+// `createMessage`: without `cc` a reply copies the conversation's `active` participants
+// ("Reply all"); `cc: []` sends to the contact alone ("Reply"), and a `cc` list chooses who is
+// copied.
+//
+// `draft: true` stores the message as a draft (`draft.created` instead of `message.created`)
+// with the conversation and its contact only: no participants and no contacts for the other
+// addresses until it is sent, so deleting the draft leaves nothing of them. Its `to`, `cc`,
+// `bcc` and `subject` are kept with it, `bcc` out of events and `/client/v1` as for sent mail;
+// nothing is delivered until `POST /v1/messages/{id}/send`, which sends exactly this mail:
+// every `to` in `To`, the `cc`, the `bcc` as envelope recipients only, the subject without
+// `Re:` and no `In-Reply-To`. `cc` or `bcc` given there replace the kept lists. Deleting a
+// contact removes its addresses from the kept lists too.
+//
+// A repeated `client_id` in the same inbox returns the conversation and message stored with
+// it with `200` instead of writing them again, before any rate limit, so a retry costs
+// nothing.
+//
+// Send `multipart/form-data` to attach files: the fields of `ComposeMail` as form fields
+// (repeat `to`, `cc` and `bcc` once per address) and up to 10 `files` parts, under the limits
+// `createMessage` describes for the chosen channel.
+//
+// A member or key composes at most 60 mails a minute, and new mail sent by one member or key
+// goes to at most 300 recipients an hour (`to`, `cc` and `bcc` together, counted when the mail
+// or its draft is sent); beyond either the answer is `429 rate_limited`. Members need access
+// to the inbox (`404` otherwise). API keys and OAuth tokens need `conversations:write`,
+// `messages:write` and `contacts:write`, and the workspace's `bots_may_send` unless it is a
+// draft (`403 bot_sending_disabled`).
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /v1/conversations/mail (the `ComposeMail` operationId).
+func (c *ClientWithResponses) ComposeMailWithResponse(ctx context.Context, params *ComposeMailParams, body ComposeMailJSONRequestBody, reqEditors ...RequestEditorFn) (*ComposeMailResponse, error) {
+	rsp, err := c.ComposeMail(ctx, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseComposeMailResponse(rsp)
+}
+
 // TrashConversationWithResponse Move a conversation to the trash
 //
 // Sets `trashed_at` and `trashed_by`. From then on the conversation is left out of every
@@ -147766,7 +148708,7 @@ func (c *ClientWithResponses) ListMessagesWithResponse(ctx context.Context, conv
 // An e-mailed reply goes `To` the contact and, unless `cc` is sent, `Cc` the conversation's
 // `active` participants (`GET /v1/conversations/{id}/participants`), leaving out those whose
 // address bounced or complained; `suggested` ones are copied only when named in `cc`. `cc` replaces that list (`[]` copies no one) and `bcc` adds hidden
-// recipients, at most 20 addresses each: they receive the mail as envelope recipients only and
+// recipients, at most 50 addresses each: they receive the mail as envelope recipients only and
 // never appear in its headers. Addresses in `cc` become participants; `bcc` never does. Each
 // address must be a valid address that this workspace neither receives nor sends mail for
 // (a channel address of this workspace, its catch-all domain or sending address, a forwarding address or
@@ -147777,6 +148719,10 @@ func (c *ClientWithResponses) ListMessagesWithResponse(ctx context.Context, conv
 // `POST /v1/messages/{id}/send`) and replies that are not e-mailed. `bcc` is returned on the
 // message's `email` to members and keys only in answers to `/v1` requests, never in events,
 // webhooks or on `/client/v1`.
+//
+// "Reply" and "Reply all" are the same call: `cc: []` answers the contact alone, no `cc`
+// copies every `active` participant, and a `cc` list chooses who is copied. A conversation
+// started with `composeMail` has its other `to` and its `cc` recipients as participants.
 //
 // `macro_id` applies a macro's actions and `then` applies a `ConversationUpdate`, in the same
 // transaction as the message: when either is refused (an assignee of `then` without access
@@ -147847,7 +148793,7 @@ func (c *ClientWithResponses) CreateMessageWithBodyWithResponse(ctx context.Cont
 // An e-mailed reply goes `To` the contact and, unless `cc` is sent, `Cc` the conversation's
 // `active` participants (`GET /v1/conversations/{id}/participants`), leaving out those whose
 // address bounced or complained; `suggested` ones are copied only when named in `cc`. `cc` replaces that list (`[]` copies no one) and `bcc` adds hidden
-// recipients, at most 20 addresses each: they receive the mail as envelope recipients only and
+// recipients, at most 50 addresses each: they receive the mail as envelope recipients only and
 // never appear in its headers. Addresses in `cc` become participants; `bcc` never does. Each
 // address must be a valid address that this workspace neither receives nor sends mail for
 // (a channel address of this workspace, its catch-all domain or sending address, a forwarding address or
@@ -147858,6 +148804,10 @@ func (c *ClientWithResponses) CreateMessageWithBodyWithResponse(ctx context.Cont
 // `POST /v1/messages/{id}/send`) and replies that are not e-mailed. `bcc` is returned on the
 // message's `email` to members and keys only in answers to `/v1` requests, never in events,
 // webhooks or on `/client/v1`.
+//
+// "Reply" and "Reply all" are the same call: `cc: []` answers the contact alone, no `cc`
+// copies every `active` participant, and a `cc` list chooses who is copied. A conversation
+// started with `composeMail` has its other `to` and its `cc` recipients as participants.
 //
 // `macro_id` applies a macro's actions and `then` applies a `ConversationUpdate`, in the same
 // transaction as the message: when either is refused (an assignee of `then` without access
@@ -147940,7 +148890,7 @@ func (c *ClientWithResponses) MoveConversationWithResponse(ctx context.Context, 
 // ListConversationParticipantsWithResponse List a conversation's participants
 //
 // The people copied on the conversation's e-mail besides its contact, oldest first, at most
-// 20 per conversation. The `To` and `Cc` addresses of inbound mail that are not addresses of
+// 100 per conversation. The `To` and `Cc` addresses of inbound mail that are not addresses of
 // this workspace (a channel's address, catch-all domain or sending address, a
 // forwarding address, the server's own sender) are `active`
 // when the mail passed DMARC (`email.dmarc` `pass`) and `suggested` otherwise, since `From`
@@ -147968,7 +148918,7 @@ func (c *ClientWithResponses) ListConversationParticipantsWithResponse(ctx conte
 //
 // Adds an address as an `active` participant, or makes a `suggested` one `active`. The
 // address must be valid and not one this workspace receives or sends mail for
-// (`400 validation_failed`, the same answer for both); a conversation holds at most 20
+// (`400 validation_failed`, the same answer for both); a conversation holds at most 100
 // (`409 participants_full`). Whoever can see the conversation may; API keys and OAuth tokens
 // need `conversations:write`.
 //
@@ -147987,7 +148937,7 @@ func (c *ClientWithResponses) AddConversationParticipantWithBodyWithResponse(ctx
 //
 // Adds an address as an `active` participant, or makes a `suggested` one `active`. The
 // address must be valid and not one this workspace receives or sends mail for
-// (`400 validation_failed`, the same answer for both); a conversation holds at most 20
+// (`400 validation_failed`, the same answer for both); a conversation holds at most 100
 // (`409 participants_full`). Whoever can see the conversation may; API keys and OAuth tokens
 // need `conversations:write`.
 //
@@ -152811,7 +153761,14 @@ func (c *ClientWithResponses) RedactMessageWithResponse(ctx context.Context, mes
 // sent it, the author stays the draft's author, and `message.created` is emitted (an e-mail
 // conversation e-mails it, as in `createMessage`). Anything that is not a draft answers
 // `409 not_a_draft`. `cc` and `bcc` follow the rules of `createMessage`; without them the
-// e-mail copies the conversation's participants. A `forward` draft goes to its `forward.to`
+// e-mail copies the conversation's participants. A draft written with `composeMail` goes out
+// as that mail: `To` every `to` it was written with, `Cc` its `cc` and its `bcc` as envelope
+// recipients only, with its subject (no `Re:`) and no `In-Reply-To`; `cc` and `bcc` given here
+// replace those lists (at most 50 each). Every address is checked again, so one that bounced
+// or complained since answers `409 email_undeliverable`, and a draft whose every `to` was
+// erased with its contact answers `409 no_recipient`. Its recipients count against the 300
+// recipients an hour of new mail (`429 rate_limited`). The other `to` and the `cc` become
+// contacts and participants when it is sent. A `forward` draft goes to its `forward.to`
 // under the rules and limits of `forwardConversation` and takes neither `cc` nor `bcc`.
 //
 // Members always may. An API key needs `drafts:send` and `messages:write`, and the
@@ -152834,7 +153791,14 @@ func (c *ClientWithResponses) SendMessageWithBodyWithResponse(ctx context.Contex
 // sent it, the author stays the draft's author, and `message.created` is emitted (an e-mail
 // conversation e-mails it, as in `createMessage`). Anything that is not a draft answers
 // `409 not_a_draft`. `cc` and `bcc` follow the rules of `createMessage`; without them the
-// e-mail copies the conversation's participants. A `forward` draft goes to its `forward.to`
+// e-mail copies the conversation's participants. A draft written with `composeMail` goes out
+// as that mail: `To` every `to` it was written with, `Cc` its `cc` and its `bcc` as envelope
+// recipients only, with its subject (no `Re:`) and no `In-Reply-To`; `cc` and `bcc` given here
+// replace those lists (at most 50 each). Every address is checked again, so one that bounced
+// or complained since answers `409 email_undeliverable`, and a draft whose every `to` was
+// erased with its contact answers `409 no_recipient`. Its recipients count against the 300
+// recipients an hour of new mail (`429 rate_limited`). The other `to` and the `cc` become
+// contacts and participants when it is sent. A `forward` draft goes to its `forward.to`
 // under the rules and limits of `forwardConversation` and takes neither `cc` nor `bcc`.
 //
 // Members always may. An API key needs `drafts:send` and `messages:write`, and the
@@ -167311,6 +168275,95 @@ func ParseGetConversationCountsResponse(rsp *http.Response) (*GetConversationCou
 	return response, nil
 }
 
+// ParseComposeMailResponse parses an HTTP response from a ComposeMailWithResponse call
+func ParseComposeMailResponse(rsp *http.Response) (*ComposeMailResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ComposeMailResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ComposedMail
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
+		var dest ComposedMail
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON201 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON409 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 413:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON413 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 415:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON415 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 429:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON429 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseTrashConversationResponse parses an HTTP response from a TrashConversationWithResponse call
 func ParseTrashConversationResponse(rsp *http.Response) (*TrashConversationResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -177569,6 +178622,13 @@ func ParseSendMessageResponse(rsp *http.Response) (*SendMessageResponse, error) 
 			return nil, err
 		}
 		response.ApplicationproblemJSON409 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 429:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON429 = &dest
 
 	}
 

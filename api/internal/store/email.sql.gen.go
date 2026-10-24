@@ -2452,3 +2452,32 @@ func (q *Queries) SuppressEmail(ctx context.Context, arg SuppressEmailParams) er
 	)
 	return err
 }
+
+const suppressedEmails = `-- name: SuppressedEmails :many
+SELECT email FROM email_suppressions WHERE workspace_id = $1 AND email = ANY($2::text[]) AND scope = 'all'
+`
+
+type SuppressedEmailsParams struct {
+	WorkspaceID uuid.UUID
+	Emails      []string
+}
+
+func (q *Queries) SuppressedEmails(ctx context.Context, arg SuppressedEmailsParams) ([]string, error) {
+	rows, err := q.db.Query(ctx, suppressedEmails, arg.WorkspaceID, arg.Emails)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []string
+	for rows.Next() {
+		var email string
+		if err := rows.Scan(&email); err != nil {
+			return nil, err
+		}
+		items = append(items, email)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}

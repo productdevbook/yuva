@@ -1138,7 +1138,7 @@ Inbound:
    Participants: the `To` and `Cc` of inbound mail (and the `cc` of members' replies) are kept as
    `conversation_participants` rows (workspace, conversation, lowercased address, role `cc`, status,
    first seen; the contact is found by address when there is one, else the row is a bare address),
-   at most 20 per conversation. Never kept: the sender, the conversation contact's own addresses,
+   at most 100 per conversation. Never kept: the sender, the conversation contact's own addresses,
    any forwarding address, `YUVA_SMTP_FROM`, and the same workspace's channel addresses (with tags),
    catch-all domains (not shared ones) and `from_address`, proven or not: proof decides routing and
    other workspaces, never what a workspace counts as its own. Other workspaces' addresses are
@@ -1294,7 +1294,7 @@ conversation's active participants unless the reply names its own `cc` (`[]` cop
 as a header, `Subject` `Re: …`, and `In-Reply-To` and
 `References` keep the thread. A reply (`createMessage`, `sendMessage` for a draft, MCP
 `send_reply` and `send_draft`, so members, keys with send rights and assistants while sending is
-allowed) may set `cc` and `bcc`, at most 20 addresses each. Each address is validated, may not be
+allowed) may set `cc` and `bcc`, at most 50 addresses each. Each address is validated, may not be
 an address of this server (answered like an invalid address), and is refused with `409 email_undeliverable` when it has a suppression
 of scope `all` (a hard bounce, or a complaint about transactional mail); a broadcast-only
 suppression (a complaint about or unsubscribe from a broadcast) does not stop a reply, since the
@@ -1326,6 +1326,32 @@ message's signature once per batch after `-- `, before a trailing quote block in
 the message's own HTML it goes before `</body>` and at the end of the text. Images in a signature
 count as used (cleanup and `image_in_use`), and sending one sets `sent_at`. Any member may upload an
 e-mail image for this; listing and deleting stay with owners and admins.
+New mail (Y-166, `POST /v1/conversations/mail`, MCP `compose_mail`): a member, or a key or token
+with `conversations:write`, `messages:write`, `contacts:write` and send rights, starts an e-mail
+conversation and its first message in one step, through the named e-mail channel of the inbox or its
+first with an SMTP account (`409 email_not_configured` without one), in a `support` or `mail` inbox.
+`to` (1 to 50), `cc` and `bcc` (up to 50 each) are checked like a reply's `cc`, suppressions in one
+query; an address in several lists keeps the first of `to`, `cc`, `bcc`. The first `to` is the
+contact, found by address or created. The workspace keeps one contact per address: a contact the
+caller cannot see (its conversations are in inboxes the caller has no access to) is used all the
+same and becomes visible to the caller through the new conversation, exactly as a mail from that
+address into the inbox would make it. When the mail is sent, the other `to` and every `cc` become
+contacts when unknown and active participants, so their answers join under the participant rules;
+`bcc` is never a participant or contact and stays out of events, headers and `/client/v1` as on a
+reply. The mail goes `To` every `to`, `Cc` the `cc`, `Bcc` as envelope only, with the subject as
+written (no `Re:`), a new `Message-ID` and no `In-Reply-To` or `References`; the sender delivers to
+every `To` of the stored e-mail row. A hard bounce or complaint for one recipient suppresses that
+address, and the message fails only when every `To` bounced; delivery reports keep the one-recipient
+rule above, so a report about mail with several recipients changes nothing. In a `mail` inbox the
+calling member is the assignee; keys assign no one. A draft makes only the conversation and its
+contact; it keeps its `to`, `cc`, `bcc` and subject in `composed_mails` (workspace, message, inbox,
+optional `client_id`; deleted with the message, scrubbed with the other recipient lists when a
+contact is deleted), and `sendMessage` sends exactly that mail, `cc` and `bcc` given there replacing
+the kept lists, every address checked again, and `409 no_recipient` when no `to` is left. A repeated
+`client_id` in the inbox answers `200` with the stored conversation and message before any limit
+(unique in `composed_mails`, since messages have no index for it across conversations). Per member or
+key: at most 60 composed mails a minute, and at most 300 recipients an hour of sent new mail, counted
+when the mail or its draft is sent (`429`).
 Forwarding (`POST /v1/conversations/{id}/forward`): a member sends one message or the
 conversation (its latest 100 messages to and from the contact; never notes, drafts, events or other
 forwards) to 1–10 outside addresses with a note on top. It is stored as a message of the members-only
@@ -1388,7 +1414,7 @@ complaints arrive at `/ingress/ses` through SNS: the SNS signature is checked ag
 certificate, only topics listed in `YUVA_SES_TOPIC_ARNS` are accepted, a subscription is confirmed
 only on an `sns.<region>.amazonaws.com` URL, a notification whose `Timestamp` is more than an hour
 old (or ahead) is refused as a replay, and a notification counts only for a message we sent
-and for its recipients (`To`, `Cc` and `Bcc`; only a `To` recipient fails the message). Suppressions have a scope: a hard bounce or a complaint about a reply
+and for its recipients (`To`, `Cc` and `Bcc`; the message fails only when every `To` recipient bounced). Suppressions have a scope: a hard bounce or a complaint about a reply
 stops all mail to the address; a complaint about a broadcast stops broadcasts only (see Broadcasts).
 Undeliverable addresses are shown on the
 contact, replies to them are refused until a member clears them.

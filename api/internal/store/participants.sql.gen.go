@@ -372,6 +372,25 @@ func (q *Queries) PromoteSuggestedToForwarded(ctx context.Context, arg PromoteSu
 	return result.RowsAffected(), nil
 }
 
+const scrubComposedMailAddresses = `-- name: ScrubComposedMailAddresses :exec
+UPDATE composed_mails SET
+  to_addresses = ARRAY(SELECT a FROM unnest(to_addresses) WITH ORDINALITY u (a, i) WHERE a <> ALL($1::text[]) ORDER BY i),
+  cc_addresses = ARRAY(SELECT a FROM unnest(cc_addresses) WITH ORDINALITY u (a, i) WHERE a <> ALL($1::text[]) ORDER BY i),
+  bcc_addresses = ARRAY(SELECT a FROM unnest(bcc_addresses) WITH ORDINALITY u (a, i) WHERE a <> ALL($1::text[]) ORDER BY i)
+WHERE workspace_id = $2
+  AND (to_addresses && $1::text[] OR cc_addresses && $1::text[] OR bcc_addresses && $1::text[])
+`
+
+type ScrubComposedMailAddressesParams struct {
+	Emails      []string
+	WorkspaceID uuid.UUID
+}
+
+func (q *Queries) ScrubComposedMailAddresses(ctx context.Context, arg ScrubComposedMailAddressesParams) error {
+	_, err := q.db.Exec(ctx, scrubComposedMailAddresses, arg.Emails, arg.WorkspaceID)
+	return err
+}
+
 const scrubForwardRecipients = `-- name: ScrubForwardRecipients :exec
 UPDATE messages SET forward = jsonb_set(forward, '{to}', coalesce((
     SELECT jsonb_agg(t ORDER BY i) FROM jsonb_array_elements_text(forward->'to') WITH ORDINALITY u (t, i)

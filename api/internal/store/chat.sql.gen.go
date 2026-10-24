@@ -851,6 +851,68 @@ func (q *Queries) InboxEmailChannel(ctx context.Context, arg InboxEmailChannelPa
 	return i, err
 }
 
+const inboxSendingEmailChannel = `-- name: InboxSendingEmailChannel :one
+SELECT e.workspace_id, e.channel_id, e.address, e.display_name, e.from_address, e.smtp_host, e.smtp_port, e.smtp_username, e.smtp_password, e.smtp_tls, e.auto_reply_enabled, e.auto_reply_text, e.auto_reply_interval_hours, e.broadcast_smtp_host, e.broadcast_smtp_port, e.broadcast_smtp_username, e.broadcast_smtp_password, e.broadcast_smtp_tls, e.broadcast_rate, e.dkim_selector, e.dkim_private_key, e.dkim_enabled, e.dkim_public_key, e.forward_token, e.ses_tenant, e.ses_configuration_set, e.smtp_aws_account, e.broadcast_smtp_aws_account, e.ses_state, e.ses_detail, e.ses_checked_at, e.verified_at, e.verified_by, e.verify_problem, e.verify_checked_at, e.verify_code_hash, e.verify_code_expires_at, e.verify_attempts, e.verify_message_id, e.verify_relay_message_id, e.verify_sent_at FROM email_channels e
+JOIN channels c ON c.workspace_id = e.workspace_id AND c.id = e.channel_id
+WHERE e.workspace_id = $1 AND c.inbox_id = $2 AND e.smtp_host <> ''
+ORDER BY (e.address LIKE '*@%'), c.created_at, c.id
+LIMIT 1
+`
+
+type InboxSendingEmailChannelParams struct {
+	WorkspaceID uuid.UUID
+	InboxID     uuid.UUID
+}
+
+func (q *Queries) InboxSendingEmailChannel(ctx context.Context, arg InboxSendingEmailChannelParams) (EmailChannel, error) {
+	row := q.db.QueryRow(ctx, inboxSendingEmailChannel, arg.WorkspaceID, arg.InboxID)
+	var i EmailChannel
+	err := row.Scan(
+		&i.WorkspaceID,
+		&i.ChannelID,
+		&i.Address,
+		&i.DisplayName,
+		&i.FromAddress,
+		&i.SmtpHost,
+		&i.SmtpPort,
+		&i.SmtpUsername,
+		&i.SmtpPassword,
+		&i.SmtpTls,
+		&i.AutoReplyEnabled,
+		&i.AutoReplyText,
+		&i.AutoReplyIntervalHours,
+		&i.BroadcastSmtpHost,
+		&i.BroadcastSmtpPort,
+		&i.BroadcastSmtpUsername,
+		&i.BroadcastSmtpPassword,
+		&i.BroadcastSmtpTls,
+		&i.BroadcastRate,
+		&i.DkimSelector,
+		&i.DkimPrivateKey,
+		&i.DkimEnabled,
+		&i.DkimPublicKey,
+		&i.ForwardToken,
+		&i.SesTenant,
+		&i.SesConfigurationSet,
+		&i.SmtpAwsAccount,
+		&i.BroadcastSmtpAwsAccount,
+		&i.SesState,
+		&i.SesDetail,
+		&i.SesCheckedAt,
+		&i.VerifiedAt,
+		&i.VerifiedBy,
+		&i.VerifyProblem,
+		&i.VerifyCheckedAt,
+		&i.VerifyCodeHash,
+		&i.VerifyCodeExpiresAt,
+		&i.VerifyAttempts,
+		&i.VerifyMessageID,
+		&i.VerifyRelayMessageID,
+		&i.VerifySentAt,
+	)
+	return i, err
+}
+
 const latestEmailConfirmation = `-- name: LatestEmailConfirmation :one
 SELECT email, expires_at, bounced_at, confirmed_at, held_at FROM email_confirmations
 WHERE workspace_id = $1 AND contact_id = $2

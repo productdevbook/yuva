@@ -195,6 +195,22 @@ Sunucunun yönetmediği kendi SES hesabınızla tenant'ı kendiniz yazın: kanal
 e-postalara başlık olarak ekler ve AWS'de hiçbir şeyi denetlemez. Sunucu gelen kutusunun tenant'ını yönettiği
 sürece yok sayılırlar.
 
+## Yeni e-posta yazma
+
+`POST /v1/conversations/mail` (MCP `compose_mail`) bir gelen kutusunun e-posta kanalından yeni bir
+e-posta yazar ve konuşmasını tek adımda açar. E-posta en çok 50 adrese `To` olarak, en çok 50 adrese
+`Cc` ve 50 adrese `Bcc` olarak, verdiğiniz konuyla (`Re:` olmadan) gider. İlk `To` adresi konuşmanın
+kişisi olur; diğer `To` ve `Cc` adresleri e-posta gönderildiğinde katılımcı olur, böylece yanıtları
+konuşmaya katılır. `Bcc` alıcıları e-postayı alır ama e-postada hiç görünmez. `draft: true` ile
+e-posta taslak olarak saklanır ve `POST /v1/messages/{id}/send` ile yazıldığı gibi gönderilir. Bir
+üye veya anahtar dakikada en çok 60 yeni e-posta yazar ve saatte en çok 300 alıcıya ulaşır. API
+anahtarlarının `conversations:write`, `messages:write` ve `contacts:write` izinleri olmalıdır.
+
+Sonraki yanıtlar kimin kopyalanacağını seçer: `cc` içermeyen bir yanıt kişiye gider ve her etkin
+katılımcıyı kopyalar (Tümünü yanıtla); `cc: []` yalnızca kişiye gider (Yanıtla); bir `cc` listesi tam
+olarak o adresleri kopyalar. Birkaç `To` adresinden biri geri dönerse yalnızca o adres teslim
+edilemez olarak işaretlenir.
+
 ## Geri dönen e-postalar
 
 Bir geri dönme (bounce) ya da şikâyet, mesajı başarısız ve adresi teslim edilemez olarak işaretler;
@@ -244,8 +260,8 @@ yuva channel create-email --workspace Example --inbox support --name "Everything
 |---|---|
 | Kanal | Zarf alıcısına göre seçilir, yalnızca kanıtlanmış bir adres üzerinden: önce kanalın yönlendirme adresi, sonra kanıtlanmış kesin adres (`local+tag@domain` bulunamazsa kanıtlanmış `local@domain`'e düşer), sonra alan adının kanıtlanmış catch-all'ı. Bilinmeyen ve kanıtlanmamış adresler reddedilir. |
 | Zincirleme | `In-Reply-To` ve `References` ile; diğer her şey yeni konuşma başlatır. Bir yanıt konuşmayı yeniden açar. |
-| Cc ve katılımcılar | Bir e-postanın çalışma alanına ait olmayan `To` ve `Cc` adresleri konuşmanın katılımcıları olur (en çok 20). Yalnızca e-posta DMARC'tan geçtiyse (bunun için `YUVA_INGRESS_AUTHSERV_ID` gerekir) etkin olurlar; aksi hâlde önerilir, üyelere gösterilir ama asla kopyalanmaz. Üyeler katılımcı ekleyip çıkarabilir. Etkin bir katılımcının DMARC'tan geçen yanıtı konuşmaya onun mesajı olarak eklenir; zinciri yanıtlayan başka biri, bu konuşmaya bağlı yeni bir konuşma başlatır. DMARC'tan geçemeyen veya otomatik e-posta kimseyi eklemez. Çalışma alanının kendi adresleri; kişinin adresleri, gönderen, çalışma alanının her kanal adresi (kanıtlanmış olsun olmasın), catch-all alan adları, yönlendirme adresleri ve sunucunun göndericisidir; başka bir çalışma alanının adresi sıradan bir adrestir. |
-| Yanıtlar | `To` kişiye, `Cc` etkin katılımcılara gider; otomatik e-postalar (karşılama, kurallar) kimseyi kopyalamaz. Her yanıt `Cc`'yi değiştirebilir ve `Bcc` ekleyebilir (her biri 20 adres); `Bcc` alıcıları e-postayı alır ama e-postada hiç görünmez ve onları yalnızca üyeler görür. Geri dönen veya şikâyet edilen bir adres reddedilir ya da katılımcıysa atlanır; toplu gönderimlerden abonelikten çıkmak yanıtları durdurmaz. |
+| Cc ve katılımcılar | Bir e-postanın çalışma alanına ait olmayan `To` ve `Cc` adresleri konuşmanın katılımcıları olur (en çok 100). Yalnızca e-posta DMARC'tan geçtiyse (bunun için `YUVA_INGRESS_AUTHSERV_ID` gerekir) etkin olurlar; aksi hâlde önerilir, üyelere gösterilir ama asla kopyalanmaz. Üyeler katılımcı ekleyip çıkarabilir. Etkin bir katılımcının DMARC'tan geçen yanıtı konuşmaya onun mesajı olarak eklenir; zinciri yanıtlayan başka biri, bu konuşmaya bağlı yeni bir konuşma başlatır. DMARC'tan geçemeyen veya otomatik e-posta kimseyi eklemez. Çalışma alanının kendi adresleri; kişinin adresleri, gönderen, çalışma alanının her kanal adresi (kanıtlanmış olsun olmasın), catch-all alan adları, yönlendirme adresleri ve sunucunun göndericisidir; başka bir çalışma alanının adresi sıradan bir adrestir. |
+| Yanıtlar | `To` kişiye, `Cc` etkin katılımcılara gider; otomatik e-postalar (karşılama, kurallar) kimseyi kopyalamaz. Her yanıt `Cc`'yi değiştirebilir ve `Bcc` ekleyebilir (her biri 50 adres); `Bcc` alıcıları e-postayı alır ama e-postada hiç görünmez ve onları yalnızca üyeler görür. Geri dönen veya şikâyet edilen bir adres reddedilir ya da katılımcıysa atlanır; toplu gönderimlerden abonelikten çıkmak yanıtları durdurmaz. |
 | İletme | Bir üye tek bir mesajı veya tüm konuşmayı (mesajlarını; notları ve taslakları asla, dosyalarını 20 MiB'a kadar isteğe bağlı olarak) üstüne kendi notunu ekleyerek en çok 10 dış adrese iletebilir. İleti gelen kutusunun e-posta kanalından üyenin adıyla, `Reply-To` kanal adresi ve `Fwd: …` konusuyla gider; yalnızca üyelere gösterilir, kişiye asla. Kişinin adresi, konuşmada zaten kopyada olan adresler, Yuva'nın kendi adresleri ve geri dönen veya şikâyet edilen adresler reddedilir; bir üye saatte en çok 20 kez iletir (çalışma alanı başına 200). İletiye DMARC'tan geçen bir yanıt konuşmaya yalnızca üyelerin göreceği şekilde eklenir ve göndereni yanıtlarda kopyalanmayan iletilmiş bir katılımcı yapar; ondan gelen diğer e-postalar yeni konuşma başlatır. Bir yanıt yalnızca iletiyi gönderen üyeye ve atanan kişiye bildirilir. Asistanlar yalnızca göndermelerine izin verilen yerde iletir; aksi hâlde taslak bırakır. |
 | Otomatik e-posta | Otomatik yanıtlar, toplu e-postalar ve teslim raporları saklanır, asla yanıtlanmaz. Alıcı kanalın kendi adresinden, sunucunun göndericisinden ya da aynı çalışma alanının herhangi bir kanal adresinden (kanıtlanmış olsun olmasın) gelen e-posta atılır; başka bir çalışma alanının adresleri e-postayı asla atmaz. |
 | DMARC | Yalnızca `YUVA_INGRESS_AUTHSERV_ID` ile, en üstteki `Authentication-Results` bu authserv-id'yi taşıyorsa ondan kullanılır. Bu kimliği taşıyan birden çok başlık, göndericinin birini eklediğini gösterir: aralarındaki bir `fail` sayılır, bir `pass` sayılmaz. Başlık RFC 8601'in dediği gibi okunur: yalnızca her yöntemin bildirdiği sonuç sayılır, bir adresin ya da gerekçenin içindeki metin asla; ayrıştırılamayan bir başlık `unknown` olur. Bir `pass` yalnızca tek From adresi olan mesajda sayılır. DMARC'tan geçemeyen yeni bir konuşma spam olarak işaretlenir; geçemeyen bir yanıt yeni konuşma başlatır. [Yuva'ya taşınırken](migrate.md) eski posta kutunuzdan okunan e-posta her zaman `unknown` olur. |

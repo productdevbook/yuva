@@ -2458,6 +2458,91 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/conversations/mail": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Write a new e-mail to one or more recipients
+         * @description Starts an e-mail conversation in one step: the conversation and its first outgoing message,
+         *     e-mailed through an e-mail channel of the inbox. Any inbox with an e-mail channel may be
+         *     used, `support` or `mail`; the panel offers it in the Mail section.
+         *
+         *     `channel_id` names the e-mail channel; without it the inbox's first e-mail channel with an
+         *     SMTP account is used, an exact address before a catch-all. An inbox without one, or a
+         *     channel without an SMTP account, answers `409 email_not_configured`; a catch-all channel
+         *     without a `from_address` answers `409 email_no_sender`.
+         *
+         *     `to` (1 to 50), `cc` and `bcc` (up to 50 each) are checked like a reply's `cc`: each must be
+         *     a valid address that this workspace neither receives nor sends mail for
+         *     (`400 validation_failed`, the same answer for both), and one that bounced or complained is
+         *     refused with `409 email_undeliverable` naming it. Addresses are lower-cased, and one named
+         *     in more than one list keeps the first of `to`, `cc`, `bcc`. The first `to` address is the
+         *     conversation's contact, found by address in the workspace or created; every other `to` and
+         *     every `cc` address becomes a contact when it is unknown and an `active` participant of the
+         *     conversation (`GET /v1/conversations/{id}/participants`) once the mail is sent. A workspace
+         *     keeps one contact per address: when that contact exists but the caller cannot see it (it
+         *     has conversations only in inboxes the caller has no access to), the mail still uses it, and
+         *     it becomes visible to the caller through the new conversation, as a mail from that address
+         *     into the inbox would make it. `bcc` addresses are never participants or contacts and are
+         *     returned on the message's `email.bcc` only in this answer and other `/v1` answers, never in
+         *     events, webhooks, headers or on `/client/v1`.
+         *
+         *     The mail goes `To` every `to` address, `Cc` every `cc` address and to `bcc` as envelope
+         *     recipients only, with `subject` as given (no `Re:`), a new `Message-ID` and neither
+         *     `In-Reply-To` nor `References`. A member's signature for the inbox is added unless
+         *     `signature` is `false`, as on `createMessage`; files, the delivery state
+         *     (`delivery.state` `queued`, then `message.updated`) and the attachment limits of the channel
+         *     are those of a reply. At send time an address that bounced or complained meanwhile is
+         *     dropped from its list. A hard bounce or complaint reported for one recipient suppresses that
+         *     address; the message is marked `failed` only when every `to` address bounced.
+         *
+         *     The conversation has `channel_kind` `email`, status `open`, the subject, and in a `mail`
+         *     inbox the calling member as assignee (API keys assign no one). `conversation.created` and
+         *     `message.created` are emitted as for `createConversation` followed by `createMessage`.
+         *
+         *     Answers from any participant join the conversation under the rules for participants: mail
+         *     that passes DMARC from an `active` participant's address and names the thread. Replies use
+         *     `createMessage`: without `cc` a reply copies the conversation's `active` participants
+         *     ("Reply all"); `cc: []` sends to the contact alone ("Reply"), and a `cc` list chooses who is
+         *     copied.
+         *
+         *     `draft: true` stores the message as a draft (`draft.created` instead of `message.created`)
+         *     with the conversation and its contact only: no participants and no contacts for the other
+         *     addresses until it is sent, so deleting the draft leaves nothing of them. Its `to`, `cc`,
+         *     `bcc` and `subject` are kept with it, `bcc` out of events and `/client/v1` as for sent mail;
+         *     nothing is delivered until `POST /v1/messages/{id}/send`, which sends exactly this mail:
+         *     every `to` in `To`, the `cc`, the `bcc` as envelope recipients only, the subject without
+         *     `Re:` and no `In-Reply-To`. `cc` or `bcc` given there replace the kept lists. Deleting a
+         *     contact removes its addresses from the kept lists too.
+         *
+         *     A repeated `client_id` in the same inbox returns the conversation and message stored with
+         *     it with `200` instead of writing them again, before any rate limit, so a retry costs
+         *     nothing.
+         *
+         *     Send `multipart/form-data` to attach files: the fields of `ComposeMail` as form fields
+         *     (repeat `to`, `cc` and `bcc` once per address) and up to 10 `files` parts, under the limits
+         *     `createMessage` describes for the chosen channel.
+         *
+         *     A member or key composes at most 60 mails a minute, and new mail sent by one member or key
+         *     goes to at most 300 recipients an hour (`to`, `cc` and `bcc` together, counted when the mail
+         *     or its draft is sent); beyond either the answer is `429 rate_limited`. Members need access
+         *     to the inbox (`404` otherwise). API keys and OAuth tokens need `conversations:write`,
+         *     `messages:write` and `contacts:write`, and the workspace's `bots_may_send` unless it is a
+         *     draft (`403 bot_sending_disabled`).
+         */
+        post: operations["composeMail"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/conversations/counts": {
         parameters: {
             query?: never;
@@ -2925,7 +3010,7 @@ export interface paths {
          *     An e-mailed reply goes `To` the contact and, unless `cc` is sent, `Cc` the conversation's
          *     `active` participants (`GET /v1/conversations/{id}/participants`), leaving out those whose
          *     address bounced or complained; `suggested` ones are copied only when named in `cc`. `cc` replaces that list (`[]` copies no one) and `bcc` adds hidden
-         *     recipients, at most 20 addresses each: they receive the mail as envelope recipients only and
+         *     recipients, at most 50 addresses each: they receive the mail as envelope recipients only and
          *     never appear in its headers. Addresses in `cc` become participants; `bcc` never does. Each
          *     address must be a valid address that this workspace neither receives nor sends mail for
          *     (a channel address of this workspace, its catch-all domain or sending address, a forwarding address or
@@ -2936,6 +3021,10 @@ export interface paths {
          *     `POST /v1/messages/{id}/send`) and replies that are not e-mailed. `bcc` is returned on the
          *     message's `email` to members and keys only in answers to `/v1` requests, never in events,
          *     webhooks or on `/client/v1`.
+         *
+         *     "Reply" and "Reply all" are the same call: `cc: []` answers the contact alone, no `cc`
+         *     copies every `active` participant, and a `cc` list chooses who is copied. A conversation
+         *     started with `composeMail` has its other `to` and its `cc` recipients as participants.
          *
          *     `macro_id` applies a macro's actions and `then` applies a `ConversationUpdate`, in the same
          *     transaction as the message: when either is refused (an assignee of `then` without access
@@ -3020,7 +3109,7 @@ export interface paths {
         /**
          * List a conversation's participants
          * @description The people copied on the conversation's e-mail besides its contact, oldest first, at most
-         *     20 per conversation. The `To` and `Cc` addresses of inbound mail that are not addresses of
+         *     100 per conversation. The `To` and `Cc` addresses of inbound mail that are not addresses of
          *     this workspace (a channel's address, catch-all domain or sending address, a
          *     forwarding address, the server's own sender) are `active`
          *     when the mail passed DMARC (`email.dmarc` `pass`) and `suggested` otherwise, since `From`
@@ -3039,7 +3128,7 @@ export interface paths {
          * Add a participant
          * @description Adds an address as an `active` participant, or makes a `suggested` one `active`. The
          *     address must be valid and not one this workspace receives or sends mail for
-         *     (`400 validation_failed`, the same answer for both); a conversation holds at most 20
+         *     (`400 validation_failed`, the same answer for both); a conversation holds at most 100
          *     (`409 participants_full`). Whoever can see the conversation may; API keys and OAuth tokens
          *     need `conversations:write`.
          */
@@ -3388,7 +3477,14 @@ export interface paths {
          *     sent it, the author stays the draft's author, and `message.created` is emitted (an e-mail
          *     conversation e-mails it, as in `createMessage`). Anything that is not a draft answers
          *     `409 not_a_draft`. `cc` and `bcc` follow the rules of `createMessage`; without them the
-         *     e-mail copies the conversation's participants. A `forward` draft goes to its `forward.to`
+         *     e-mail copies the conversation's participants. A draft written with `composeMail` goes out
+         *     as that mail: `To` every `to` it was written with, `Cc` its `cc` and its `bcc` as envelope
+         *     recipients only, with its subject (no `Re:`) and no `In-Reply-To`; `cc` and `bcc` given here
+         *     replace those lists (at most 50 each). Every address is checked again, so one that bounced
+         *     or complained since answers `409 email_undeliverable`, and a draft whose every `to` was
+         *     erased with its contact answers `409 no_recipient`. Its recipients count against the 300
+         *     recipients an hour of new mail (`429 rate_limited`). The other `to` and the `cc` become
+         *     contacts and participants when it is sent. A `forward` draft goes to its `forward.to`
          *     under the rules and limits of `forwardConversation` and takes neither `cc` nor `bcc`.
          *
          *     Members always may. An API key needs `drafts:send` and `messages:write`, and the
@@ -15703,6 +15799,56 @@ export interface components {
             cc?: components["schemas"]["Email"][];
             /** @description E-mailed replies only, hidden recipients. See `createMessage`. */
             bcc?: components["schemas"]["Email"][];
+        };
+        ComposeMail: {
+            /** Format: uuid */
+            inbox_id: string;
+            /**
+             * Format: uuid
+             * @description An e-mail channel of the inbox; without it the inbox's first e-mail channel with an SMTP
+             *     account, an exact address before a catch-all.
+             */
+            channel_id?: string;
+            /** @description The recipients; the first is the conversation's contact. */
+            to: components["schemas"]["Email"][];
+            /** @description Copied recipients; they become participants. */
+            cc?: components["schemas"]["Email"][];
+            /** @description Hidden recipients, envelope only; a draft keeps them until it is sent. */
+            bcc?: components["schemas"]["Email"][];
+            subject: string;
+            /** @description Required unless files are attached. */
+            body?: string;
+            /** @description Sanitized before it is stored. */
+            html?: string;
+            /** @description `false` sends without the member's signature; see `MessageCreate`. */
+            signature?: boolean;
+            /** @description Stores the message as a draft instead of delivering it. */
+            draft?: boolean;
+            /** @description Makes the request idempotent within the inbox. */
+            client_id?: string;
+        };
+        ComposeMailMultipart: {
+            /** Format: uuid */
+            inbox_id: string;
+            /** Format: uuid */
+            channel_id?: string;
+            /** @description Repeat the field once per address. */
+            to: components["schemas"]["Email"][];
+            /** @description Repeat the field once per address. */
+            cc?: components["schemas"]["Email"][];
+            /** @description Repeat the field once per address. */
+            bcc?: components["schemas"]["Email"][];
+            subject: string;
+            body?: string;
+            html?: string;
+            signature?: boolean;
+            draft?: boolean;
+            client_id?: string;
+            files?: string[];
+        };
+        ComposedMail: {
+            conversation: components["schemas"]["Conversation"];
+            message: components["schemas"]["Message"];
         };
         MessageCreateMultipart: {
             /** @enum {string} */
@@ -30297,6 +30443,53 @@ export interface operations {
             404: components["responses"]["Problem"];
         };
     };
+    composeMail: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Makes a retried request return the first response; see "Idempotency". */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ComposeMail"];
+                "multipart/form-data": components["schemas"]["ComposeMailMultipart"];
+            };
+        };
+        responses: {
+            /** @description The conversation and message stored earlier with this `client_id`. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ComposedMail"];
+                };
+            };
+            /** @description The new conversation and its first message. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ComposedMail"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+            409: components["responses"]["Problem"];
+            413: components["responses"]["Problem"];
+            415: components["responses"]["Problem"];
+            429: components["responses"]["Problem"];
+        };
+    };
     getConversationCounts: {
         parameters: {
             query?: {
@@ -31450,6 +31643,7 @@ export interface operations {
             403: components["responses"]["Problem"];
             404: components["responses"]["Problem"];
             409: components["responses"]["Problem"];
+            429: components["responses"]["Problem"];
         };
     };
     redactMessage: {

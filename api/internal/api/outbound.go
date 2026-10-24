@@ -467,33 +467,35 @@ func (s *Server) sendQueued(ctx context.Context, workspaceID uuid.UUID, msgs []m
 	if len(me.ToAddresses) == 0 {
 		return "", &email.PermanentError{Err: errors.New("no recipient")}
 	}
-	to := me.ToAddresses[0]
-	suppressed, err := s.st.IsEmailSuppressed(ctx, store.IsEmailSuppressedParams{WorkspaceID: workspaceID, Email: to})
+	suppressed, err := s.st.SuppressedEmails(ctx, store.SuppressedEmailsParams{
+		WorkspaceID: workspaceID, Emails: slices.Concat(me.ToAddresses, me.CcAddresses, me.BccAddresses),
+	})
 	if err != nil {
 		return "", err
 	}
-	if suppressed {
-		return "", &email.PermanentError{Err: errors.New("the recipient address is undeliverable")}
-	}
-	rcpts := []string{to}
-	var cc []email.Address
-	for i, list := range [][]string{me.CcAddresses, me.BccAddresses} {
+	var (
+		rcpts      []string
+		to, alsoTo []email.Address
+		cc         []email.Address
+	)
+	for i, list := range [][]string{me.ToAddresses, me.CcAddresses, me.BccAddresses} {
 		for _, addr := range list {
-			if slices.Contains(rcpts, addr) {
-				continue
-			}
-			suppressed, err := s.st.IsEmailSuppressed(ctx, store.IsEmailSuppressedParams{WorkspaceID: workspaceID, Email: addr})
-			if err != nil {
-				return "", err
-			}
-			if suppressed {
+			if slices.Contains(rcpts, addr) || slices.Contains(suppressed, addr) {
 				continue
 			}
 			rcpts = append(rcpts, addr)
-			if i == 0 {
+			switch {
+			case i == 0 && len(to) == 0:
+				to = append(to, email.Address{Email: addr})
+			case i == 0:
+				alsoTo = append(alsoTo, email.Address{Email: addr})
+			case i == 1:
 				cc = append(cc, email.Address{Email: addr})
 			}
 		}
+	}
+	if len(to) == 0 {
+		return "", &email.PermanentError{Err: errors.New("the recipient address is undeliverable")}
 	}
 	cfg, err := s.channelSMTP(workspaceID, ch)
 	if err != nil {
@@ -503,9 +505,10 @@ func (s *Server) sendQueued(ctx context.Context, workspaceID uuid.UUID, msgs []m
 	if err != nil {
 		return "", err
 	}
-	toName := ""
-	if names, err := s.st.ListContactSummaries(ctx, store.ListContactSummariesParams{WorkspaceID: workspaceID, Ids: []uuid.UUID{conv.ContactID}}); err == nil && len(names) == 1 {
-		toName = names[0].Name
+	if to[0].Email == me.ToAddresses[0] {
+		if names, err := s.st.ListContactSummaries(ctx, store.ListContactSummariesParams{WorkspaceID: workspaceID, Ids: []uuid.UUID{conv.ContactID}}); err == nil && len(names) == 1 {
+			to[0].Name = names[0].Name
+		}
 	}
 	channelName := ch.DisplayName
 	if channelName == "" {
@@ -524,7 +527,8 @@ func (s *Server) sendQueued(ctx context.Context, workspaceID uuid.UUID, msgs []m
 	out := email.Outgoing{
 		From:          email.Address{Name: fromName, Email: me.FromAddress},
 		ReplyTo:       email.Address{Name: channelName, Email: replyTo},
-		To:            email.Address{Name: toName, Email: to},
+		To:            to[0],
+		AlsoTo:        alsoTo,
 		Cc:            cc,
 		Subject:       me.Subject,
 		MessageID:     me.HeaderMessageID,

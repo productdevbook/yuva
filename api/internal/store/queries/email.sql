@@ -233,6 +233,9 @@ ON CONFLICT (workspace_id, email) DO UPDATE SET reason = excluded.reason, detail
 -- name: IsEmailSuppressed :one
 SELECT EXISTS (SELECT 1 FROM email_suppressions WHERE workspace_id = $1 AND email = $2 AND scope = 'all') AS suppressed;
 
+-- name: SuppressedEmails :many
+SELECT email FROM email_suppressions WHERE workspace_id = @workspace_id AND email = ANY(@emails::text[]) AND scope = 'all';
+
 -- Stops only confirmation mails; any other suppression replaces it, and a complaint is never turned back into a bounce.
 -- name: SuppressConfirmations :exec
 INSERT INTO email_suppressions (workspace_id, email, reason, detail, scope, created_at)

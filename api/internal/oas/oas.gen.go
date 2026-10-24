@@ -12963,6 +12963,66 @@ type ClientWhatsNewImage struct {
 	Width  int32  `json:"width"`
 }
 
+// ComposeMail defines model for ComposeMail.
+type ComposeMail struct {
+	// Bcc Hidden recipients, envelope only; a draft keeps them until it is sent.
+	Bcc *[]Email `json:"bcc,omitempty"`
+
+	// Body Required unless files are attached.
+	Body *string `json:"body,omitempty"`
+
+	// Cc Copied recipients; they become participants.
+	Cc *[]Email `json:"cc,omitempty"`
+
+	// ChannelId An e-mail channel of the inbox; without it the inbox's first e-mail channel with an SMTP
+	// account, an exact address before a catch-all.
+	ChannelId *uuid.UUID `json:"channel_id,omitempty"`
+
+	// ClientId Makes the request idempotent within the inbox.
+	ClientId *string `json:"client_id,omitempty"`
+
+	// Draft Stores the message as a draft instead of delivering it.
+	Draft *bool `json:"draft,omitempty"`
+
+	// Html Sanitized before it is stored.
+	Html    *string   `json:"html,omitempty"`
+	InboxId uuid.UUID `json:"inbox_id"`
+
+	// Signature `false` sends without the member's signature; see `MessageCreate`.
+	Signature *bool  `json:"signature,omitempty"`
+	Subject   string `json:"subject"`
+
+	// To The recipients; the first is the conversation's contact.
+	To []Email `json:"to"`
+}
+
+// ComposeMailMultipart defines model for ComposeMailMultipart.
+type ComposeMailMultipart struct {
+	// Bcc Repeat the field once per address.
+	Bcc  *[]Email `json:"bcc,omitempty"`
+	Body *string  `json:"body,omitempty"`
+
+	// Cc Repeat the field once per address.
+	Cc        *[]Email              `json:"cc,omitempty"`
+	ChannelId *uuid.UUID            `json:"channel_id,omitempty"`
+	ClientId  *string               `json:"client_id,omitempty"`
+	Draft     *bool                 `json:"draft,omitempty"`
+	Files     *[]openapi_types.File `json:"files,omitempty"`
+	Html      *string               `json:"html,omitempty"`
+	InboxId   uuid.UUID             `json:"inbox_id"`
+	Signature *bool                 `json:"signature,omitempty"`
+	Subject   string                `json:"subject"`
+
+	// To Repeat the field once per address.
+	To []Email `json:"to"`
+}
+
+// ComposedMail defines model for ComposedMail.
+type ComposedMail struct {
+	Conversation Conversation `json:"conversation"`
+	Message      Message      `json:"message"`
+}
+
 // ConsentEvent defines model for ConsentEvent.
 type ConsentEvent struct {
 	ApiKeyId    *uuid.UUID `json:"api_key_id,omitempty"`
@@ -26054,6 +26114,15 @@ type GetConversationCountsParams struct {
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
 
+// ComposeMailParams defines parameters for ComposeMail.
+type ComposeMailParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
 // TrashConversationParams defines parameters for TrashConversation.
 type TrashConversationParams struct {
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
@@ -29385,6 +29454,12 @@ type CreateConversationJSONRequestBody = ConversationCreate
 
 // BulkUpdateConversationsJSONRequestBody defines body for BulkUpdateConversations for application/json ContentType.
 type BulkUpdateConversationsJSONRequestBody = ConversationBulkUpdate
+
+// ComposeMailJSONRequestBody defines body for ComposeMail for application/json ContentType.
+type ComposeMailJSONRequestBody = ComposeMail
+
+// ComposeMailMultipartRequestBody defines body for ComposeMail for multipart/form-data ContentType.
+type ComposeMailMultipartRequestBody = ComposeMailMultipart
 
 // UpdateConversationJSONRequestBody defines body for UpdateConversation for application/json ContentType.
 type UpdateConversationJSONRequestBody = ConversationUpdate
@@ -34533,6 +34608,9 @@ type ServerInterface interface {
 	// GetConversationCounts Count open conversations
 	// (GET /v1/conversations/counts)
 	GetConversationCounts(w http.ResponseWriter, r *http.Request, params GetConversationCountsParams)
+	// ComposeMail Write a new e-mail to one or more recipients
+	// (POST /v1/conversations/mail)
+	ComposeMail(w http.ResponseWriter, r *http.Request, params ComposeMailParams)
 	// TrashConversation Move a conversation to the trash
 	// (DELETE /v1/conversations/{conversationId})
 	TrashConversation(w http.ResponseWriter, r *http.Request, conversationId ConversationId, params TrashConversationParams)
@@ -45877,6 +45955,66 @@ func (siw *ServerInterfaceWrapper) GetConversationCounts(w http.ResponseWriter, 
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.GetConversationCounts(w, r, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ComposeMail operation middleware
+func (siw *ServerInterfaceWrapper) ComposeMail(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ComposeMailParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ComposeMail(w, r, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -65168,6 +65306,7 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/contacts/{contactId}/consent", wrapper.ExportContactConsent)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/conversations", wrapper.ListConversations)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/conversations", wrapper.CreateConversation)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/conversations/mail", wrapper.ComposeMail)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/conversations/counts", wrapper.GetConversationCounts)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/home", wrapper.GetHome)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/stats", wrapper.GetStats)
@@ -84836,6 +84975,158 @@ func (response GetConversationCounts403ApplicationProblemPlusJSONResponse) Visit
 	return err
 }
 
+type ComposeMailRequestObject struct {
+	Params        ComposeMailParams
+	JSONBody      *ComposeMailJSONRequestBody
+	MultipartBody *multipart.Reader
+}
+
+type ComposeMailResponseObject interface {
+	VisitComposeMailResponse(w http.ResponseWriter) error
+}
+
+type ComposeMail200JSONResponse ComposedMail
+
+func (response ComposeMail200JSONResponse) VisitComposeMailResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ComposeMail201JSONResponse ComposedMail
+
+func (response ComposeMail201JSONResponse) VisitComposeMailResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(201)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ComposeMail400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response ComposeMail400ApplicationProblemPlusJSONResponse) VisitComposeMailResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ComposeMail401ApplicationProblemPlusJSONResponse Problem
+
+func (response ComposeMail401ApplicationProblemPlusJSONResponse) VisitComposeMailResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ComposeMail403ApplicationProblemPlusJSONResponse Problem
+
+func (response ComposeMail403ApplicationProblemPlusJSONResponse) VisitComposeMailResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ComposeMail404ApplicationProblemPlusJSONResponse Problem
+
+func (response ComposeMail404ApplicationProblemPlusJSONResponse) VisitComposeMailResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ComposeMail409ApplicationProblemPlusJSONResponse Problem
+
+func (response ComposeMail409ApplicationProblemPlusJSONResponse) VisitComposeMailResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(409)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ComposeMail413ApplicationProblemPlusJSONResponse Problem
+
+func (response ComposeMail413ApplicationProblemPlusJSONResponse) VisitComposeMailResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(413)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ComposeMail415ApplicationProblemPlusJSONResponse Problem
+
+func (response ComposeMail415ApplicationProblemPlusJSONResponse) VisitComposeMailResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(415)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ComposeMail429ApplicationProblemPlusJSONResponse Problem
+
+func (response ComposeMail429ApplicationProblemPlusJSONResponse) VisitComposeMailResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(429)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
 type TrashConversationRequestObject struct {
 	ConversationId ConversationId `json:"conversationId"`
 	Params         TrashConversationParams
@@ -100252,6 +100543,20 @@ func (response SendMessage409ApplicationProblemPlusJSONResponse) VisitSendMessag
 	return err
 }
 
+type SendMessage429ApplicationProblemPlusJSONResponse Problem
+
+func (response SendMessage429ApplicationProblemPlusJSONResponse) VisitSendMessageResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(429)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
 type ListMigrationsRequestObject struct {
 	Params ListMigrationsParams
 }
@@ -110779,6 +111084,9 @@ type StrictServerInterface interface {
 	// GetConversationCounts Count open conversations
 	// (GET /v1/conversations/counts)
 	GetConversationCounts(ctx context.Context, request GetConversationCountsRequestObject) (GetConversationCountsResponseObject, error)
+	// ComposeMail Write a new e-mail to one or more recipients
+	// (POST /v1/conversations/mail)
+	ComposeMail(ctx context.Context, request ComposeMailRequestObject) (ComposeMailResponseObject, error)
 	// TrashConversation Move a conversation to the trash
 	// (DELETE /v1/conversations/{conversationId})
 	TrashConversation(ctx context.Context, request TrashConversationRequestObject) (TrashConversationResponseObject, error)
@@ -117517,6 +117825,50 @@ func (sh *strictHandler) GetConversationCounts(w http.ResponseWriter, r *http.Re
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
 	} else if validResponse, ok := response.(GetConversationCountsResponseObject); ok {
 		if err := validResponse.VisitGetConversationCountsResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// ComposeMail operation middleware
+func (sh *strictHandler) ComposeMail(w http.ResponseWriter, r *http.Request, params ComposeMailParams) {
+	var request ComposeMailRequestObject
+
+	request.Params = params
+	if strings.HasPrefix(r.Header.Get("Content-Type"), "application/json") {
+
+		var body ComposeMailJSONRequestBody
+		if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+			sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+			return
+		}
+		request.JSONBody = &body
+
+	}
+	if strings.HasPrefix(r.Header.Get("Content-Type"), "multipart/form-data") {
+		if reader, err := r.MultipartReader(); err != nil {
+			sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode multipart body: %w", err))
+			return
+		} else {
+			request.MultipartBody = reader
+		}
+	}
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.ComposeMail(ctx, request.(ComposeMailRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "ComposeMail")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(ComposeMailResponseObject); ok {
+		if err := validResponse.VisitComposeMailResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {

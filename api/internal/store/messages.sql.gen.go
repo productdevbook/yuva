@@ -302,6 +302,42 @@ func (q *Queries) CreateAttachment(ctx context.Context, arg CreateAttachmentPara
 	return i, err
 }
 
+const createComposedMail = `-- name: CreateComposedMail :execrows
+INSERT INTO composed_mails (workspace_id, message_id, inbox_id, client_id, to_addresses, cc_addresses, bcc_addresses, subject, created_at)
+VALUES ($1, $2, $3, $4, $5::text[], $6::text[], $7::text[], $8, $9)
+ON CONFLICT (workspace_id, inbox_id, client_id) DO NOTHING
+`
+
+type CreateComposedMailParams struct {
+	WorkspaceID  uuid.UUID
+	MessageID    uuid.UUID
+	InboxID      uuid.UUID
+	ClientID     *string
+	ToAddresses  []string
+	CcAddresses  []string
+	BccAddresses []string
+	Subject      string
+	CreatedAt    time.Time
+}
+
+func (q *Queries) CreateComposedMail(ctx context.Context, arg CreateComposedMailParams) (int64, error) {
+	result, err := q.db.Exec(ctx, createComposedMail,
+		arg.WorkspaceID,
+		arg.MessageID,
+		arg.InboxID,
+		arg.ClientID,
+		arg.ToAddresses,
+		arg.CcAddresses,
+		arg.BccAddresses,
+		arg.Subject,
+		arg.CreatedAt,
+	)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected(), nil
+}
+
 const createMessage = `-- name: CreateMessage :one
 WITH m AS (
     INSERT INTO messages (id, workspace_id, conversation_id, kind, direction, author_type, author_member_id,
@@ -578,6 +614,50 @@ func (q *Queries) GetAttachment(ctx context.Context, arg GetAttachmentParams) (G
 		&i.TrashedAt,
 	)
 	return i, err
+}
+
+const getComposedDraft = `-- name: GetComposedDraft :one
+SELECT workspace_id, message_id, inbox_id, client_id, to_addresses, cc_addresses, bcc_addresses, subject, created_at FROM composed_mails WHERE workspace_id = $1 AND message_id = $2
+`
+
+type GetComposedDraftParams struct {
+	WorkspaceID uuid.UUID
+	MessageID   uuid.UUID
+}
+
+func (q *Queries) GetComposedDraft(ctx context.Context, arg GetComposedDraftParams) (ComposedMail, error) {
+	row := q.db.QueryRow(ctx, getComposedDraft, arg.WorkspaceID, arg.MessageID)
+	var i ComposedMail
+	err := row.Scan(
+		&i.WorkspaceID,
+		&i.MessageID,
+		&i.InboxID,
+		&i.ClientID,
+		&i.ToAddresses,
+		&i.CcAddresses,
+		&i.BccAddresses,
+		&i.Subject,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
+const getComposedMail = `-- name: GetComposedMail :one
+SELECT message_id FROM composed_mails
+WHERE workspace_id = $1 AND inbox_id = $2 AND client_id = $3
+`
+
+type GetComposedMailParams struct {
+	WorkspaceID uuid.UUID
+	InboxID     uuid.UUID
+	ClientID    *string
+}
+
+func (q *Queries) GetComposedMail(ctx context.Context, arg GetComposedMailParams) (uuid.UUID, error) {
+	row := q.db.QueryRow(ctx, getComposedMail, arg.WorkspaceID, arg.InboxID, arg.ClientID)
+	var message_id uuid.UUID
+	err := row.Scan(&message_id)
+	return message_id, err
 }
 
 const getLatestMessagePosition = `-- name: GetLatestMessagePosition :one

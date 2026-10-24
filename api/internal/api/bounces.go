@@ -124,6 +124,20 @@ func (s *Server) applyDSN(ctx context.Context, ch store.FindEmailChannelByAddres
 	return IngestResult{Status: IngestBounce, ConversationID: &sent.ConversationID, MessageID: &sent.MessageID}, true, nil
 }
 
+// everyToBounced tells whether a bounce fails the message: only when no To address got it, so one
+// bad address among several To or a Cc only suppresses that address.
+func everyToBounced(to []string, recipients []bounced) bool {
+	if len(to) == 0 {
+		return false
+	}
+	for _, addr := range to {
+		if !slices.ContainsFunc(recipients, func(r bounced) bool { return r.email == addr }) {
+			return false
+		}
+	}
+	return true
+}
+
 func soleRecipient(sent store.FindOutboundEmailByHeaderRow) string {
 	if sent.Shared || len(sent.ToAddresses) != 1 || len(sent.CcAddresses) != 0 || len(sent.BccAddresses) != 0 {
 		return ""
@@ -343,7 +357,7 @@ func (s *Server) applySES(ctx context.Context, payload string) error {
 		s.log.InfoContext(ctx, "ses notification names no recipient of the message", slog.String("message_id", id))
 		return nil
 	}
-	failMessage = failMessage && slices.ContainsFunc(recipients, func(r bounced) bool { return slices.Contains(row.ToAddresses, r.email) })
+	failMessage = failMessage && everyToBounced(row.ToAddresses, recipients)
 	return s.recordBounce(ctx, row.WorkspaceID, &row.MessageID, recipients, failMessage)
 }
 

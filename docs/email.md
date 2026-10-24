@@ -185,6 +185,21 @@ and, if you use one, `ses.configuration_set` on the channel (letters, digits, `-
 Yuva adds them as headers on mail through SES and checks nothing in AWS. They are ignored while the
 server manages the inbox's tenant.
 
+## Writing new mail
+
+`POST /v1/conversations/mail` (MCP `compose_mail`) writes a new e-mail from an inbox's e-mail channel
+and opens its conversation in one step. It goes `To` up to 50 addresses, with up to 50 in `Cc` and 50
+in `Bcc`, under the subject you give (no `Re:`). The first `To` address becomes the conversation's
+contact; the other `To` and the `Cc` addresses become participants when the mail is sent, so their
+answers join the conversation. `Bcc` recipients get the mail but never appear in it. With
+`draft: true` the mail is kept as a draft and sent as written with `POST /v1/messages/{id}/send`.
+A member or key writes at most 60 new mails a minute and reaches at most 300 recipients an hour. API
+keys need `conversations:write`, `messages:write` and `contacts:write`.
+
+Later replies choose who is copied: a reply without `cc` goes to the contact and copies every active
+participant (Reply all); `cc: []` goes to the contact alone (Reply); a `cc` list copies exactly
+those addresses. A bounce for one of several `To` addresses marks only that address undeliverable.
+
 ## Bounces
 
 A bounce or complaint marks the message failed and the address undeliverable; replies to it are
@@ -232,8 +247,8 @@ yuva channel create-email --workspace Example --inbox support --name "Everything
 |---|---|
 | Channel | Chosen by the envelope recipient, only through a proven address: the channel's forwarding address, then the proven exact address (`local+tag@domain` falls back to a proven `local@domain`), then the domain's proven catch-all. Unknown and unproven addresses are rejected. |
 | Threading | By `In-Reply-To` and `References`; anything else starts a new conversation. A reply reopens the conversation. |
-| Cc and participants | The `To` and `Cc` addresses of a mail that are not the workspace's own become the conversation's participants (at most 20). They are active only when the mail passed DMARC (which needs `YUVA_INGRESS_AUTHSERV_ID`); otherwise they are suggested, shown to members but never copied. A member can add or remove participants. An active participant's reply that passes DMARC joins the conversation as their message; anyone else who answers the thread starts a new conversation that links to it. Mail that fails DMARC or is automatic adds no one. The workspace's own addresses are the contact's addresses, the sender, every channel address of the workspace (proven or not), its catch-all domains, forwarding addresses and the server's sender; another workspace's address is an ordinary address. |
-| Replies | Go `To` the contact and `Cc` the active participants; automatic mail (greetings, rules) copies no one. Each reply can replace the `Cc` and add `Bcc` (20 addresses each); `Bcc` recipients get the mail but never appear in it, and only members see them. An address that bounced or complained is refused or, as a participant, left out; an unsubscribe from broadcasts does not stop replies. |
+| Cc and participants | The `To` and `Cc` addresses of a mail that are not the workspace's own become the conversation's participants (at most 100). They are active only when the mail passed DMARC (which needs `YUVA_INGRESS_AUTHSERV_ID`); otherwise they are suggested, shown to members but never copied. A member can add or remove participants. An active participant's reply that passes DMARC joins the conversation as their message; anyone else who answers the thread starts a new conversation that links to it. Mail that fails DMARC or is automatic adds no one. The workspace's own addresses are the contact's addresses, the sender, every channel address of the workspace (proven or not), its catch-all domains, forwarding addresses and the server's sender; another workspace's address is an ordinary address. |
+| Replies | Go `To` the contact and `Cc` the active participants; automatic mail (greetings, rules) copies no one. Each reply can replace the `Cc` and add `Bcc` (50 addresses each); `Bcc` recipients get the mail but never appear in it, and only members see them. An address that bounced or complained is refused or, as a participant, left out; an unsubscribe from broadcasts does not stop replies. |
 | Forwarding | A member can forward one message or the whole conversation (its messages, never notes or drafts, with or without their files up to 20 MiB) to up to 10 outside addresses with a note on top. It goes from the inbox's e-mail channel with the member's name, `Reply-To` the channel address and the subject `Fwd: …`, and is shown to members only, never to the contact. The contact's address, addresses already copied on the conversation, Yuva's own addresses and addresses that bounced or complained are refused, and a member forwards at most 20 times an hour (200 per workspace). An answer to the forward that passes DMARC joins the conversation for members only and makes its sender a forwarded participant, who is not copied on replies; any other mail from them starts a new conversation. Only the member who forwarded and the assignee are notified of an answer. Assistants forward only where they may send; otherwise they leave a draft. |
 | Automatic mail | Auto-replies, bulk mail and delivery reports are stored, never answered. Mail from the receiving channel's own address, from the server's sender or from any channel address of the same workspace (proven or not) is dropped; another workspace's addresses never drop mail. |
 | DMARC | Used only with `YUVA_INGRESS_AUTHSERV_ID`, from the topmost `Authentication-Results` when it carries that authserv-id. Several headers carrying it mean the sender added one: a `fail` among them counts, a `pass` does not. The header is read as RFC 8601 says: only the result each method states counts, never text inside an address or a reason, and a header that does not parse is `unknown`. A `pass` counts only for a message with one From address. A failing new conversation is marked spam; a failing reply starts a new one. Mail read from your old mailbox while you [move to Yuva](migrate.md) is always `unknown`. |

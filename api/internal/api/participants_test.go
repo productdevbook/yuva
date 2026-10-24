@@ -124,7 +124,7 @@ func TestReplyCopies(t *testing.T) {
 	et.owner.expectProblem(http.StatusBadRequest, "validation_failed", "POST", post, map[string]any{"kind": "message", "body": "x", "draft": true, "cc": []string{col}})
 	et.owner.expectProblem(http.StatusBadRequest, "validation_failed", "POST", post, map[string]any{"kind": "message", "body": "x", "cc": []string{strings.Replace(et.address, "@", "+x@", 1)}})
 	et.owner.expectProblem(http.StatusBadRequest, "validation_failed", "POST", post, map[string]any{"kind": "message", "body": "x", "bcc": []string{"not an address"}})
-	many := make([]string, 21)
+	many := make([]string, 51)
 	for i := range many {
 		many[i] = unique("m") + "@" + d
 	}
@@ -293,7 +293,7 @@ func TestUnverifiedMailOnlySuggestsParticipants(t *testing.T) {
 		t.Fatalf("remove: %s", removed.raw)
 	}
 	et.owner.expectProblem(http.StatusNotFound, "not_found", "DELETE", path+"/"+mallory, nil)
-	for i := 0; i < 20; i++ {
+	for i := 0; i < 100; i++ {
 		et.owner.expect(http.StatusOK, "POST", path, map[string]any{"email": unique("p") + "@" + d})
 	}
 	et.owner.expectProblem(http.StatusConflict, "participants_full", "POST", path, map[string]any{"email": friend})
