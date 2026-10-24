@@ -370,6 +370,28 @@ LIMIT @max_rows;
 -- name: ListConversationsStorageKeys :many
 SELECT storage_key FROM attachments WHERE workspace_id = @workspace_id AND conversation_id = ANY(@ids::uuid[]);
 
+-- name: SetComposedConversation :one
+UPDATE conversations SET subject = @subject, contact_id = @contact_id, updated_at = @now
+WHERE workspace_id = @workspace_id AND id = @id
+RETURNING *;
+
+-- name: DeleteDraftContact :execrows
+DELETE FROM contacts c
+WHERE c.workspace_id = @workspace_id AND c.id = @id AND c.created_at >= @since
+  AND c.name = '' AND c.attributes = '{}'::jsonb AND NOT c.blocked AND c.created_by IS NULL
+  AND (SELECT count(*) FROM contact_emails x WHERE x.workspace_id = c.workspace_id AND x.contact_id = c.id) <= 1
+  AND NOT EXISTS (SELECT 1 FROM conversations x WHERE x.workspace_id = c.workspace_id AND x.contact_id = c.id)
+  AND NOT EXISTS (SELECT 1 FROM messages x WHERE x.workspace_id = c.workspace_id AND x.author_contact_id = c.id)
+  AND NOT EXISTS (SELECT 1 FROM contact_external_ids x WHERE x.workspace_id = c.workspace_id AND x.contact_id = c.id)
+  AND NOT EXISTS (SELECT 1 FROM contact_notes x WHERE x.workspace_id = c.workspace_id AND x.contact_id = c.id)
+  AND NOT EXISTS (SELECT 1 FROM list_subscriptions x WHERE x.workspace_id = c.workspace_id AND x.contact_id = c.id)
+  AND NOT EXISTS (SELECT 1 FROM chat_visitors x WHERE x.workspace_id = c.workspace_id AND x.contact_id = c.id)
+  AND NOT EXISTS (SELECT 1 FROM contact_sessions x WHERE x.workspace_id = c.workspace_id AND x.contact_id = c.id)
+  AND NOT EXISTS (SELECT 1 FROM push_devices x WHERE x.workspace_id = c.workspace_id AND x.contact_id = c.id)
+  AND NOT EXISTS (SELECT 1 FROM broadcast_deliveries x WHERE x.workspace_id = c.workspace_id AND x.contact_id = c.id)
+  AND NOT EXISTS (SELECT 1 FROM email_confirmations x WHERE x.workspace_id = c.workspace_id AND x.contact_id = c.id)
+  AND NOT EXISTS (SELECT 1 FROM discussion_posts x WHERE x.workspace_id = c.workspace_id AND x.author_contact_id = c.id);
+
 -- name: ListDraftConversationIDs :many
 SELECT id FROM conversations WHERE workspace_id = @workspace_id AND draft_of = @member_id ORDER BY id;
 

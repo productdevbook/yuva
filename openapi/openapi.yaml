@@ -6354,8 +6354,8 @@ paths:
       operationId: updateMessage
       summary: Edit a draft
       description: |
-        Changes a draft's text, or with `send_at` (member sessions only) schedules it or moves its
-        time; emits `draft.updated`. It works while the draft is scheduled. Anything that is not a
+        Changes a draft's text, a new mail draft's `to`, `cc`, `bcc` and `subject`, or with
+        `send_at` (member sessions only) schedules it or moves its time; emits `draft.updated`. It works while the draft is scheduled. Anything that is not a
         draft answers `409 not_a_draft`; another member's draft answers `404`.
 
         Scope: `messages:write`.
@@ -25216,6 +25216,12 @@ components:
               type: string
               format: date-time
               description: When the calling member pinned it; absent when they did not, and for API keys.
+            scheduled_at:
+              type: string
+              format: date-time
+              description: |
+                With `scheduled=mine`: when the caller's earliest scheduled message in it goes.
+                Absent otherwise.
     ConversationPage:
       type: object
       required: [items]
@@ -25305,10 +25311,13 @@ components:
       enum: [bot, assistant, member]
     DraftItem:
       type: object
-      required: [draft, conversation]
+      required: [draft, conversation, composed]
       properties:
         draft:
           $ref: "#/components/schemas/Message"
+        composed:
+          type: boolean
+          description: A new mail draft (`POST /v1/conversations/mail`) rather than a reply draft.
         conversation:
           $ref: "#/components/schemas/ConversationSummary"
     DraftPage:
@@ -26343,6 +26352,8 @@ components:
           description: When a scheduled draft is sent; absent for drafts that are not scheduled and for sent messages.
         send_error:
           $ref: "#/components/schemas/MessageSendError"
+        recipients:
+          $ref: "#/components/schemas/DraftRecipients"
         sent_by:
           $ref: "#/components/schemas/MessageAuthor"
           description: Who sent a draft (`member` or `bot`); absent for messages that were never drafts.
@@ -26394,6 +26405,27 @@ components:
           type: string
           format: date-time
           description: For a sent draft, when it was sent.
+    DraftRecipients:
+      type: object
+      description: |
+        The To, Cc and Bcc a new mail draft (`POST /v1/conversations/mail` with `draft: true`) is
+        stored with, changed with `PATCH /v1/messages/{id}`. Only on composed drafts, and only in
+        answers to `/v1` requests: never in events or webhooks. `bcc` is empty for API keys other
+        than the one that wrote the draft and for OAuth tokens.
+      required: [to, cc, bcc]
+      properties:
+        to:
+          type: array
+          items:
+            $ref: "#/components/schemas/Email"
+        cc:
+          type: array
+          items:
+            $ref: "#/components/schemas/Email"
+        bcc:
+          type: array
+          items:
+            $ref: "#/components/schemas/Email"
     MessageSendError:
       type: object
       description: |
@@ -26700,7 +26732,7 @@ components:
           description: |
             Member sessions only: schedule the draft instead of sending it now, at least 1 minute
             and at most 366 days ahead (`400 invalid_send_at`); `cc`, `bcc` and `from_address` are
-            kept for then.
+            kept for then. For a new mail draft `cc` and `bcc` replace its stored `recipients`.
     ComposeMail:
       type: object
       required: [inbox_id, to, subject]
@@ -26921,6 +26953,33 @@ components:
           description: |
             Member sessions only: schedule the draft or move its time, at least 1 minute and at
             most 366 days ahead (`400 invalid_send_at`). See `sendMessage`.
+        to:
+          type: array
+          minItems: 1
+          maxItems: 50
+          description: |
+            A member's own unsent new mail only (`400 validation_failed` for a reply draft,
+            `409 not_a_private_draft` for a key's new mail): replaces the recipients; the first is
+            the conversation's contact. Checked as in `composeMail`.
+          items:
+            $ref: "#/components/schemas/Email"
+        cc:
+          type: array
+          maxItems: 50
+          description: New mail drafts only; replaces the stored Cc.
+          items:
+            $ref: "#/components/schemas/Email"
+        bcc:
+          type: array
+          maxItems: 50
+          description: New mail drafts only; replaces the stored Bcc.
+          items:
+            $ref: "#/components/schemas/Email"
+        subject:
+          type: string
+          minLength: 1
+          maxLength: 500
+          description: New mail drafts only; also the conversation's subject.
     MessagePage:
       type: object
       required: [items]

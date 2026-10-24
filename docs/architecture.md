@@ -683,13 +683,22 @@ cascades as a backstop). The first send clears
 `draft_of` and emits `conversation.created` before `message.created`, so rules and webhooks see it
 then.
 A draft can be edited (`PATCH /v1/messages/{id}`, also while scheduled; no audit row or timeline
-event) and discarded (`DELETE /v1/messages/{id}`); both answer `409 not_a_draft` for anything else.
+event); a member's own unsent new mail (`draft_of` set) also takes `to`, `cc`, `bcc` and
+`subject` there, checked as in `composeMail` (a key's new mail draft answers
+`409 not_a_private_draft`). A new first To becomes the conversation's contact, the subject the
+conversation's, which emits `conversation.updated`; the contact it replaces is deleted in the same
+transaction when it was created after the draft and has nothing else (name, attributes, other
+addresses, conversations, messages, notes, subscriptions, sessions, deliveries). Its stored lists
+come back as `recipients` on the message in `/v1` answers only, never in events, with `bcc` empty
+for API keys other than the draft's author and for OAuth tokens. A draft is
+discarded with `DELETE /v1/messages/{id}`; both answer `409 not_a_draft` for anything else.
 `POST /v1/messages/{id}/send` delivers it: the message becomes a normal outgoing message with the
 send time as its time, `sent_by` the member who sent it, and the draft author kept as author.
 Events: `draft.created`, `draft.updated`, `draft.deleted` on realtime and as webhook types an
 endpoint subscribes to; sending emits the usual `message.created`.
 `GET /v1/drafts` lists the drafts waiting in the conversations the caller can see, newest first,
-each with a conversation summary (id, inbox, subject, status, contact), filtered by `inbox_id`,
+each with a conversation summary (id, inbox, subject, status, contact) and `composed` (a new
+mail draft rather than a reply draft), filtered by `inbox_id`,
 `conversation_id`, `mine=true` (the caller's own), `scheduled=true|false` and `author`: `bot`
 (written with a key), `assistant` (a member through an OAuth client, `via` set) or `member` (the
 panel); `total` counts the matches over all pages for a badge. Keys and tokens call it with
@@ -702,10 +711,14 @@ panel); `total` counts the matches over all pages for a badge. Keys and tokens c
 message, a new mail or `POST /v1/messages/{id}/send`. A scheduled message is the member's own draft
 with `scheduled_at` and `scheduled_by`; the Cc, Bcc and `from_address` given for its send are kept
 with it (`scheduled_cc`, `scheduled_bcc`, `scheduled_from`, scrubbed with the contact's other
-addresses) and checked again when it goes. `PATCH` with `send_at` moves it,
+addresses) and checked again when it goes. A new mail draft keeps no Cc or Bcc override: those
+given with `send_at` replace its stored lists, so `recipients` always shows what goes. A new mail's
+hourly recipient budget is charged from the lists read under the draft's row lock in the send
+transaction, so a concurrent edit cannot grow a send past it. `PATCH` with `send_at` moves it,
 `DELETE /v1/messages/{id}/schedule` cancels it (it stays a draft), deleting the message discards it.
 Scheduling and moving emit `draft.updated` to the author; no audit. The conversation filter
-`scheduled=mine` lists the conversations holding the caller's scheduled messages, soonest first.
+`scheduled=mine` lists the conversations holding the caller's scheduled messages, soonest first,
+each with `scheduled_at`, the earliest.
 Each schedule inserts, in its transaction, a River job `scheduled_send {workspace_id, message_id,
 send_at}` at `send_at`. The worker locks the message row and sends only while it is still a draft
 whose `scheduled_at` equals the job's `send_at`, through the same path as `POST .../send`, as

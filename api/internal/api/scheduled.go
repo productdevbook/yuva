@@ -125,6 +125,18 @@ func (s *Server) scheduleLocked(ctx context.Context, q *store.Queries, events *e
 			}
 		}
 	}
+	if cc.set || bcc.set {
+		d, err := q.GetComposedDraft(ctx, store.GetComposedDraftParams{WorkspaceID: p.workspaceID, MessageID: id})
+		if err != nil && !store.IsNotFound(err) {
+			return messageRow{}, err
+		}
+		if err == nil {
+			if err := s.keepComposedCopies(ctx, q, p, d, cc, bcc); err != nil {
+				return messageRow{}, err
+			}
+			cc, bcc = copyList{}, copyList{}
+		}
+	}
 	m, err := q.ScheduleDraft(ctx, store.ScheduleDraftParams{
 		WorkspaceID: p.workspaceID, ID: id, SendAt: sendAt, MemberID: p.memberID,
 		Cc: copyAddrs(cc), Bcc: copyAddrs(bcc), FromAddress: from,
@@ -134,6 +146,26 @@ func (s *Server) scheduleLocked(ctx context.Context, q *store.Queries, events *e
 	}
 	queueScheduledSend(events, p.workspaceID, id, sendAt)
 	return messageRow(m), nil
+}
+
+// keepComposedCopies writes the Cc and Bcc given for a new mail's scheduled send into its stored
+// lists, so its recipients always show what goes.
+func (s *Server) keepComposedCopies(ctx context.Context, q *store.Queries, p principal, d store.ComposedMail, cc, bcc copyList) error {
+	ccList, bccList := d.CcAddresses, d.BccAddresses
+	if cc.set {
+		ccList = cc.addrs
+	}
+	if bcc.set {
+		bccList = bcc.addrs
+	}
+	to, ccList, bccList, err := s.composeRecipients(ctx, q, p.workspaceID, d.ToAddresses, ccList, bccList)
+	if err != nil {
+		return err
+	}
+	_, err = q.UpdateComposedDraft(ctx, store.UpdateComposedDraftParams{
+		WorkspaceID: p.workspaceID, MessageID: d.MessageID, ToAddresses: to, CcAddresses: nonNil(ccList), BccAddresses: nonNil(bccList), Subject: d.Subject,
+	})
+	return err
 }
 
 func (s *Server) scheduleDraft(ctx context.Context, p principal, id uuid.UUID, at time.Time, cc, bcc copyList, from *string) (oas.SendMessageResponseObject, error) {
@@ -167,6 +199,11 @@ func (s *Server) scheduleDraft(ctx context.Context, p principal, id uuid.UUID, a
 		}
 		out = messageBody(m, atts[id])
 		events.conversation(realtime.DraftUpdated, c, out)
+		msgs := []oas.Message{out}
+		if _, err := attachRecipients(ctx, q, p, msgs); err != nil {
+			return err
+		}
+		out = msgs[0]
 		return nil
 	})
 	if err != nil {
@@ -193,14 +230,19 @@ func (s *Server) UnscheduleMessage(ctx context.Context, req oas.UnscheduleMessag
 		}
 		if cur.ScheduledAt == nil {
 			out = messageBody(messageRow(cur), atts[cur.ID])
-			return nil
+		} else {
+			m, err := q.UnscheduleDraft(ctx, store.UnscheduleDraftParams{WorkspaceID: p.workspaceID, ID: cur.ID})
+			if err != nil {
+				return err
+			}
+			out = messageBody(messageRow(m), atts[cur.ID])
+			events.conversation(realtime.DraftUpdated, c, out)
 		}
-		m, err := q.UnscheduleDraft(ctx, store.UnscheduleDraftParams{WorkspaceID: p.workspaceID, ID: cur.ID})
-		if err != nil {
+		msgs := []oas.Message{out}
+		if _, err := attachRecipients(ctx, q, p, msgs); err != nil {
 			return err
 		}
-		out = messageBody(messageRow(m), atts[cur.ID])
-		events.conversation(realtime.DraftUpdated, c, out)
+		out = msgs[0]
 		return nil
 	})
 	if err != nil {

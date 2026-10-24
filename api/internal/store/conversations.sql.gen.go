@@ -373,6 +373,38 @@ func (q *Queries) DeleteConversations(ctx context.Context, arg DeleteConversatio
 	return result.RowsAffected(), nil
 }
 
+const deleteDraftContact = `-- name: DeleteDraftContact :execrows
+DELETE FROM contacts c
+WHERE c.workspace_id = $1 AND c.id = $2 AND c.created_at >= $3
+  AND c.name = '' AND c.attributes = '{}'::jsonb AND NOT c.blocked AND c.created_by IS NULL
+  AND (SELECT count(*) FROM contact_emails x WHERE x.workspace_id = c.workspace_id AND x.contact_id = c.id) <= 1
+  AND NOT EXISTS (SELECT 1 FROM conversations x WHERE x.workspace_id = c.workspace_id AND x.contact_id = c.id)
+  AND NOT EXISTS (SELECT 1 FROM messages x WHERE x.workspace_id = c.workspace_id AND x.author_contact_id = c.id)
+  AND NOT EXISTS (SELECT 1 FROM contact_external_ids x WHERE x.workspace_id = c.workspace_id AND x.contact_id = c.id)
+  AND NOT EXISTS (SELECT 1 FROM contact_notes x WHERE x.workspace_id = c.workspace_id AND x.contact_id = c.id)
+  AND NOT EXISTS (SELECT 1 FROM list_subscriptions x WHERE x.workspace_id = c.workspace_id AND x.contact_id = c.id)
+  AND NOT EXISTS (SELECT 1 FROM chat_visitors x WHERE x.workspace_id = c.workspace_id AND x.contact_id = c.id)
+  AND NOT EXISTS (SELECT 1 FROM contact_sessions x WHERE x.workspace_id = c.workspace_id AND x.contact_id = c.id)
+  AND NOT EXISTS (SELECT 1 FROM push_devices x WHERE x.workspace_id = c.workspace_id AND x.contact_id = c.id)
+  AND NOT EXISTS (SELECT 1 FROM broadcast_deliveries x WHERE x.workspace_id = c.workspace_id AND x.contact_id = c.id)
+  AND NOT EXISTS (SELECT 1 FROM email_confirmations x WHERE x.workspace_id = c.workspace_id AND x.contact_id = c.id)
+  AND NOT EXISTS (SELECT 1 FROM discussion_posts x WHERE x.workspace_id = c.workspace_id AND x.author_contact_id = c.id)
+`
+
+type DeleteDraftContactParams struct {
+	WorkspaceID uuid.UUID
+	ID          uuid.UUID
+	Since       time.Time
+}
+
+func (q *Queries) DeleteDraftContact(ctx context.Context, arg DeleteDraftContactParams) (int64, error) {
+	result, err := q.db.Exec(ctx, deleteDraftContact, arg.WorkspaceID, arg.ID, arg.Since)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected(), nil
+}
+
 const getConversation = `-- name: GetConversation :one
 SELECT id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id, trashed_at, trashed_by_member_id, trashed_by_api_key_id, push_through, push_sent_at, team_id, fields, sla_due_at, snooze_rule_id, assign_waiting_since, assign_after_rules, draft_of FROM conversations WHERE workspace_id = $1 AND id = $2
 `
@@ -1600,6 +1632,82 @@ func (q *Queries) RestoreConversation(ctx context.Context, arg RestoreConversati
 		arg.WorkspaceID,
 		arg.ID,
 		arg.At,
+	)
+	var i Conversation
+	err := row.Scan(
+		&i.ID,
+		&i.WorkspaceID,
+		&i.InboxID,
+		&i.ContactID,
+		&i.ChannelID,
+		&i.Subject,
+		&i.Status,
+		&i.SnoozeUntil,
+		&i.Priority,
+		&i.AssigneeID,
+		&i.LastMessageAt,
+		&i.LastActivityAt,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.Spam,
+		&i.EmailToken,
+		&i.RelatedConversationID,
+		&i.ContinuityThrough,
+		&i.ContinuitySentAt,
+		&i.Kind,
+		&i.Feedback,
+		&i.EmailAddress,
+		&i.ClosedAt,
+		&i.Rating,
+		&i.RatingComment,
+		&i.RatedAt,
+		&i.RatingRequestedAt,
+		&i.LastReadByContactAt,
+		&i.PageUrl,
+		&i.PageTitle,
+		&i.ChannelKind,
+		&i.BroadcastID,
+		&i.MigrationID,
+		&i.ImportedAt,
+		&i.FeedbackProgress,
+		&i.HelpArticleID,
+		&i.TrashedAt,
+		&i.TrashedByMemberID,
+		&i.TrashedByApiKeyID,
+		&i.PushThrough,
+		&i.PushSentAt,
+		&i.TeamID,
+		&i.Fields,
+		&i.SlaDueAt,
+		&i.SnoozeRuleID,
+		&i.AssignWaitingSince,
+		&i.AssignAfterRules,
+		&i.DraftOf,
+	)
+	return i, err
+}
+
+const setComposedConversation = `-- name: SetComposedConversation :one
+UPDATE conversations SET subject = $1, contact_id = $2, updated_at = $3
+WHERE workspace_id = $4 AND id = $5
+RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id, trashed_at, trashed_by_member_id, trashed_by_api_key_id, push_through, push_sent_at, team_id, fields, sla_due_at, snooze_rule_id, assign_waiting_since, assign_after_rules, draft_of
+`
+
+type SetComposedConversationParams struct {
+	Subject     string
+	ContactID   uuid.UUID
+	Now         time.Time
+	WorkspaceID uuid.UUID
+	ID          uuid.UUID
+}
+
+func (q *Queries) SetComposedConversation(ctx context.Context, arg SetComposedConversationParams) (Conversation, error) {
+	row := q.db.QueryRow(ctx, setComposedConversation,
+		arg.Subject,
+		arg.ContactID,
+		arg.Now,
+		arg.WorkspaceID,
+		arg.ID,
 	)
 	var i Conversation
 	err := row.Scan(

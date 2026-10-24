@@ -374,6 +374,15 @@ ON CONFLICT (workspace_id, inbox_id, client_id) DO NOTHING;
 -- name: GetComposedDraft :one
 SELECT * FROM composed_mails WHERE workspace_id = @workspace_id AND message_id = @message_id;
 
+-- name: ListComposedMails :many
+SELECT * FROM composed_mails WHERE workspace_id = @workspace_id AND message_id = ANY(@message_ids::uuid[]);
+
+-- name: UpdateComposedDraft :one
+UPDATE composed_mails SET to_addresses = @to_addresses::text[], cc_addresses = @cc_addresses::text[],
+    bcc_addresses = @bcc_addresses::text[], subject = @subject
+WHERE workspace_id = @workspace_id AND message_id = @message_id
+RETURNING *;
+
 -- name: ScheduleDraft :one
 WITH m AS (
     UPDATE messages SET scheduled_at = @send_at::timestamptz, scheduled_by = @member_id::uuid,

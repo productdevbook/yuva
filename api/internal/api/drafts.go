@@ -91,6 +91,15 @@ func (s *Server) UpdateMessage(ctx context.Context, req oas.UpdateMessageRequest
 			return nil, err
 		}
 	}
+	var subject *string
+	if b.Subject != nil {
+		v, err := trimmed(*b.Subject, 1, 500, "subject")
+		if err != nil {
+			return nil, err
+		}
+		subject = &v
+	}
+	recomposed := b.To != nil || b.Cc != nil || b.Bcc != nil || subject != nil
 	var out oas.Message
 	err := s.inTx(ctx, p.workspaceID, func(q *store.Queries, events *eventBatch) error {
 		c, err := lockDraft(ctx, q, p, req.MessageId)
@@ -100,6 +109,19 @@ func (s *Server) UpdateMessage(ctx context.Context, req oas.UpdateMessageRequest
 		cur, err := q.GetMessage(ctx, store.GetMessageParams{WorkspaceID: p.workspaceID, ID: req.MessageId})
 		if err != nil {
 			return err
+		}
+		composed, err := q.GetComposedDraft(ctx, store.GetComposedDraftParams{WorkspaceID: p.workspaceID, MessageID: cur.ID})
+		isComposed := err == nil
+		if err != nil && !store.IsNotFound(err) {
+			return err
+		}
+		if recomposed {
+			if !isComposed {
+				return errNotComposed
+			}
+			if composed, err = s.recompose(ctx, q, events, p, c, composed, b, subject); err != nil {
+				return err
+			}
 		}
 		body, html := cur.Body, cur.Html
 		if b.Body != nil {
@@ -149,12 +171,133 @@ func (s *Server) UpdateMessage(ctx context.Context, req oas.UpdateMessageRequest
 		}
 		out = messageBody(row, atts[cur.ID])
 		events.conversation(realtime.DraftUpdated, c, out)
+		if isComposed {
+			out = withRecipients(out, p, composed.ToAddresses, composed.CcAddresses, composed.BccAddresses)
+		}
 		return nil
 	})
 	if err != nil {
 		return nil, err
 	}
 	return oas.UpdateMessage200JSONResponse(out), nil
+}
+
+var (
+	errNotComposed     = errValidation("to, cc, bcc and subject change only a new mail draft")
+	errNotPrivateDraft = problem(http.StatusConflict, "not_a_private_draft", "to, cc, bcc and subject change only a member's own unsent new mail; a key's new mail keeps the recipients it was written with")
+)
+
+func emailStrings(in *[]oas.Email) []string {
+	out := []string{}
+	for _, e := range *in {
+		out = append(out, string(e))
+	}
+	return out
+}
+
+func (s *Server) recompose(ctx context.Context, q *store.Queries, events *eventBatch, p principal, c store.Conversation, d store.ComposedMail, b *oas.MessageUpdate, subject *string) (store.ComposedMail, error) {
+	if c.DraftOf == nil || p.isKey() || *c.DraftOf != p.memberID {
+		return d, errNotPrivateDraft
+	}
+	to, cc, bcc := d.ToAddresses, d.CcAddresses, d.BccAddresses
+	if b.To != nil {
+		to = emailStrings(b.To)
+	}
+	if b.Cc != nil {
+		cc = emailStrings(b.Cc)
+	}
+	if b.Bcc != nil {
+		bcc = emailStrings(b.Bcc)
+	}
+	to, cc, bcc, err := s.composeRecipients(ctx, q, p.workspaceID, to, cc, bcc)
+	if err != nil {
+		return d, err
+	}
+	if len(to) == 0 {
+		return d, errValidation("to needs at least one address")
+	}
+	firstChanged := len(d.ToAddresses) == 0 || d.ToAddresses[0] != to[0]
+	subj := d.Subject
+	if subject != nil {
+		subj = *subject
+	}
+	if d, err = q.UpdateComposedDraft(ctx, store.UpdateComposedDraftParams{
+		WorkspaceID: p.workspaceID, MessageID: d.MessageID, ToAddresses: to, CcAddresses: nonNil(cc), BccAddresses: nonNil(bcc), Subject: subj,
+	}); err != nil {
+		return d, err
+	}
+	now := s.now()
+	contactID := c.ContactID
+	if firstChanged {
+		if contactID, err = contactByAddress(ctx, q, p.workspaceID, to[0], now); err != nil {
+			return d, err
+		}
+	}
+	if contactID == c.ContactID && subj == c.Subject {
+		return d, nil
+	}
+	prev := c.ContactID
+	if c, err = q.SetComposedConversation(ctx, store.SetComposedConversationParams{WorkspaceID: p.workspaceID, ID: c.ID, Subject: subj, ContactID: contactID, Now: now}); err != nil {
+		return d, err
+	}
+	if prev != contactID {
+		if _, err := q.DeleteDraftContact(ctx, store.DeleteDraftContactParams{WorkspaceID: p.workspaceID, ID: prev, Since: c.CreatedAt}); err != nil {
+			return d, err
+		}
+	}
+	body, err := oneConversation(ctx, q, c)
+	if err != nil {
+		return d, err
+	}
+	events.conversation(realtime.ConversationUpdated, c, body)
+	return d, nil
+}
+
+func seesDraftBcc(p principal, m oas.Message) bool {
+	if p.isKey() {
+		return m.Author.ApiKeyId != nil && *m.Author.ApiKeyId == p.keyID
+	}
+	return !p.isGrant()
+}
+
+func withRecipients(m oas.Message, p principal, to, cc, bcc []string) oas.Message {
+	if !m.Draft {
+		return m
+	}
+	r := oas.DraftRecipients{To: emailList(to), Cc: emailList(cc), Bcc: []oas.Email{}}
+	if seesDraftBcc(p, m) {
+		r.Bcc = emailList(bcc)
+	}
+	m.Recipients = &r
+	return m
+}
+
+func attachRecipients(ctx context.Context, q *store.Queries, p principal, msgs []oas.Message) (map[uuid.UUID]bool, error) {
+	var ids []uuid.UUID
+	for _, m := range msgs {
+		if m.Draft {
+			ids = append(ids, m.Id)
+		}
+	}
+	out := map[uuid.UUID]bool{}
+	if len(ids) == 0 {
+		return out, nil
+	}
+	rows, err := q.ListComposedMails(ctx, store.ListComposedMailsParams{WorkspaceID: p.workspaceID, MessageIds: ids})
+	if err != nil {
+		return nil, err
+	}
+	byID := make(map[uuid.UUID]store.ComposedMail, len(rows))
+	for _, r := range rows {
+		byID[r.MessageID] = r
+	}
+	for i, m := range msgs {
+		if d, ok := byID[m.Id]; ok {
+			msgs[i] = withRecipients(m, p, d.ToAddresses, d.CcAddresses, d.BccAddresses)
+			out[m.Id] = true
+		}
+	}
+	return out, nil
 }
 
 func (s *Server) DeleteMessage(ctx context.Context, req oas.DeleteMessageRequestObject) (oas.DeleteMessageResponseObject, error) {
@@ -236,15 +379,11 @@ func (s *Server) SendMessage(ctx context.Context, req oas.SendMessageRequestObje
 		}
 		return s.sendForwardDraft(ctx, p, req)
 	} else if err == nil && m.Draft {
-		if d, err := s.st.GetComposedDraft(ctx, store.GetComposedDraftParams{WorkspaceID: p.workspaceID, MessageID: m.ID}); err == nil {
+		if _, err := s.st.GetComposedDraft(ctx, store.GetComposedDraftParams{WorkspaceID: p.workspaceID, MessageID: m.ID}); err == nil {
 			if from != nil {
 				if err := s.checkDraftFrom(ctx, p, m.ConversationID, *from); err != nil {
 					return nil, err
 				}
-			}
-			to, ccList, bccList := composedDraftLists(d, cc, bcc)
-			if err := s.takeComposeRecipients(ctx, p, len(to)+len(ccList)+len(bccList)); err != nil {
-				return nil, err
 			}
 		}
 	}
@@ -269,6 +408,9 @@ func (s *Server) SendMessage(ctx context.Context, req oas.SendMessageRequestObje
 			return err
 		}
 		if isComposed {
+			if err := s.takeComposeRecipients(ctx, p, len(plan.toAll)+len(plan.cc)+len(plan.bcc)); err != nil {
+				return err
+			}
 			if err := addComposedRecipients(ctx, q, events, c, plan, s.now()); err != nil {
 				return err
 			}
@@ -406,8 +548,16 @@ func (s *Server) ListDrafts(ctx context.Context, req oas.ListDraftsRequestObject
 		return nil, err
 	}
 	items := make([]oas.DraftItem, len(rows))
+	msgs := make([]oas.Message, len(rows))
 	for i, r := range rows {
-		items[i] = oas.DraftItem{Draft: messageBody(messageRow(r), atts[r.ID]), Conversation: convs[r.ConversationID]}
+		msgs[i] = messageBody(messageRow(r), atts[r.ID])
+	}
+	composed, err := attachRecipients(ctx, s.st.Queries, p, msgs)
+	if err != nil {
+		return nil, err
+	}
+	for i, r := range rows {
+		items[i] = oas.DraftItem{Draft: msgs[i], Conversation: convs[r.ConversationID], Composed: composed[r.ID]}
 	}
 	return oas.ListDrafts200JSONResponse{Items: items, NextCursor: next, Total: total}, nil
 }

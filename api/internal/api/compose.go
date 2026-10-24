@@ -218,7 +218,11 @@ func (s *Server) composedMail(ctx context.Context, q *store.Queries, p principal
 	if err != nil {
 		return oas.ComposedMail{}, err
 	}
-	return oas.ComposedMail{Conversation: conv, Message: withBcc(withEmail(messageBody(messageRow(m), atts[m.ID]), emails[m.ID]), emails[m.ID])}, nil
+	msgs := []oas.Message{withBcc(withEmail(messageBody(messageRow(m), atts[m.ID]), emails[m.ID]), emails[m.ID])}
+	if _, err := attachRecipients(ctx, q, p, msgs); err != nil {
+		return oas.ComposedMail{}, err
+	}
+	return oas.ComposedMail{Conversation: conv, Message: msgs[0]}, nil
 }
 
 // repeatedCompose is the stored answer for a client_id already used in the inbox, or nil.
@@ -467,10 +471,11 @@ func (s *Server) ComposeMail(ctx context.Context, req oas.ComposeMailRequestObje
 			atts = append(atts, a)
 			total += f.size
 		}
-		n, err := q.CreateComposedMail(ctx, store.CreateComposedMailParams{
+		composed := store.CreateComposedMailParams{
 			WorkspaceID: p.workspaceID, MessageID: msg.ID, InboxID: inbox.ID, ClientID: in.clientID,
 			ToAddresses: to, CcAddresses: nonNil(cc), BccAddresses: nonNil(bcc), Subject: subject, CreatedAt: now,
-		})
+		}
+		n, err := q.CreateComposedMail(ctx, composed)
 		if err != nil {
 			return err
 		}
@@ -504,7 +509,7 @@ func (s *Server) ComposeMail(ctx context.Context, req oas.ComposeMailRequestObje
 		if out.Conversation, err = oneConversation(ctx, q, c); err != nil {
 			return err
 		}
-		out.Message = withBcc(withEmail(messageBody(msg, atts), summary), summary)
+		out.Message = withRecipients(withBcc(withEmail(messageBody(msg, atts), summary), summary), p, composed.ToAddresses, composed.CcAddresses, composed.BccAddresses)
 		return nil
 	})
 	if err != nil {

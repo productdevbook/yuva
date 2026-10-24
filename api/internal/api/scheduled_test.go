@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/url"
+	"slices"
 	"strconv"
 	"strings"
 	"sync"
@@ -511,6 +512,12 @@ func TestScheduledCopiesAndCursor(t *testing.T) {
 	if len(got) != 2 || got[0] != convs[1] || got[1] != convs[2] || next == "" {
 		t.Fatalf("first page %v next %q", got, next)
 	}
+	if first, _ := time.Parse(time.RFC3339, pageItems(r)[0]["scheduled_at"].(string)); !first.Equal(h.clock.Now().Add(time.Hour).Truncate(time.Second)) {
+		t.Fatalf("scheduled_at %v", first)
+	}
+	if _, ok := itemByID(listItems(et.owner, ""), convs[0])["scheduled_at"]; ok {
+		t.Fatal("scheduled_at without scheduled=mine")
+	}
 	r = page(et.owner, "/v1/conversations?scheduled=mine&limit=2&cursor="+url.QueryEscape(next))
 	if items := pageItems(r); len(items) != 1 || items[0]["id"] != convs[0] {
 		t.Fatalf("second page %v", items)
@@ -540,4 +547,258 @@ func TestHiddenConversationOnClientAPI(t *testing.T) {
 	ct.agent.expect(http.StatusOK, "PATCH", "/v1/conversations/"+conv, map[string]any{"status": "pending"})
 	ct.agent.expect(http.StatusNoContent, "POST", "/v1/conversations/"+conv+"/typing", map[string]any{"typing": true})
 	ws.quiet(500*time.Millisecond, "presence")
+}
+
+func TestComposedDraftRecipients(t *testing.T) {
+	t.Parallel()
+	h := newHarness(t)
+	et := newEmailTeam(t, h, false)
+	a, b, c, d := "success+a@simulator.amazonses.com", "success+b@simulator.amazonses.com", "success+c@simulator.amazonses.com", "success+d@simulator.amazonses.com"
+	recipients := func(m map[string]any) map[string]any {
+		r, _ := m["recipients"].(map[string]any)
+		return r
+	}
+	list := func(r map[string]any, k string) []string {
+		var out []string
+		for _, v := range r[k].([]any) {
+			out = append(out, v.(string))
+		}
+		return out
+	}
+	r := et.owner.expect(http.StatusCreated, "POST", "/v1/conversations/mail", map[string]any{
+		"inbox_id": et.inbox, "to": []string{a}, "cc": []string{b}, "bcc": []string{c}, "subject": "First subject", "body": "Draft", "draft": true,
+	})
+	conv := r.body["conversation"].(map[string]any)["id"].(string)
+	msg := r.body["message"].(map[string]any)
+	id := msg["id"].(string)
+	if rc := recipients(msg); rc == nil || !slices.Equal(list(rc, "to"), []string{a}) || !slices.Equal(list(rc, "cc"), []string{b}) || !slices.Equal(list(rc, "bcc"), []string{c}) {
+		t.Fatalf("compose answer recipients %v", msg["recipients"])
+	}
+	reply := et.owner.expect(http.StatusCreated, "POST", "/v1/conversations/"+et.conversation(et.owner)+"/messages", map[string]any{"kind": "message", "body": "reply draft", "draft": true}).str("id")
+	for _, it := range page(et.owner, "/v1/drafts").body["items"].([]any) {
+		item := it.(map[string]any)
+		dr := item["draft"].(map[string]any)
+		switch dr["id"] {
+		case id:
+			if item["composed"] != true || recipients(dr) == nil {
+				t.Fatalf("composed draft item %v", item)
+			}
+		case reply:
+			if item["composed"] != false || recipients(dr) != nil {
+				t.Fatalf("reply draft item %v", item)
+			}
+		}
+	}
+	for _, m := range messages(et.owner, conv) {
+		if m["id"] == id && recipients(m) == nil {
+			t.Fatal("the message list has no recipients for the composed draft")
+		}
+	}
+	raw := et.owner.expect(http.StatusOK, "GET", "/v1/events?after=0&limit=500", nil).raw
+	if strings.Contains(string(raw), "recipients") || strings.Contains(string(raw), c) {
+		t.Fatal("an event carries the draft's recipients")
+	}
+
+	et.owner.expectProblem(http.StatusBadRequest, "validation_failed", "PATCH", "/v1/messages/"+reply, map[string]any{"subject": "Nope"})
+	et.owner.expectProblem(http.StatusBadRequest, "validation_failed", "PATCH", "/v1/messages/"+id, map[string]any{"cc": []string{"not an address"}})
+	et.owner.expectProblem(http.StatusBadRequest, "validation_failed", "PATCH", "/v1/messages/"+id, map[string]any{"to": []string{}})
+	et.owner.expectProblem(http.StatusBadRequest, "validation_failed", "PATCH", "/v1/messages/"+id, map[string]any{"subject": " "})
+	many := make([]string, 51)
+	for i := range many {
+		many[i] = "success+" + strconv.Itoa(i) + "@simulator.amazonses.com"
+	}
+	et.owner.expectProblem(http.StatusBadRequest, "validation_failed", "PATCH", "/v1/messages/"+id, map[string]any{"bcc": many})
+	et.agent.expectProblem(http.StatusNotFound, "not_found", "PATCH", "/v1/messages/"+id, map[string]any{"subject": "Taken"})
+
+	p := et.owner.expect(http.StatusOK, "PATCH", "/v1/messages/"+id, map[string]any{"to": []string{strings.ToUpper(d), a}, "bcc": []string{}, "subject": "  New subject "})
+	if rc := recipients(p.body); !slices.Equal(list(rc, "to"), []string{d, a}) || !slices.Equal(list(rc, "cc"), []string{b}) || len(list(rc, "bcc")) != 0 {
+		t.Fatalf("after the edit %v", p.body["recipients"])
+	}
+	cv := et.owner.expect(http.StatusOK, "GET", "/v1/conversations/"+conv, nil)
+	if cv.str("subject") != "New subject" {
+		t.Fatalf("conversation subject %q", cv.str("subject"))
+	}
+	if cv.str("contact_id") == r.body["conversation"].(map[string]any)["contact_id"] {
+		t.Fatal("the conversation's contact did not follow the first To")
+	}
+
+	et.owner.expect(http.StatusOK, "POST", "/v1/messages/"+id+"/send", map[string]any{})
+	h.sendQueued(t, et.ws, id)
+	_, parsed := h.smtp.last(t)
+	if parsed.Header.Get("Subject") != "New subject" || !strings.Contains(parsed.Header.Get("To"), d) || !strings.Contains(parsed.Header.Get("Cc"), b) {
+		t.Fatalf("sent %v", parsed.Header)
+	}
+	et.owner.expectProblem(http.StatusConflict, "not_a_draft", "PATCH", "/v1/messages/"+id, map[string]any{"to": []string{a}})
+	for _, m := range messages(et.owner, conv) {
+		if m["id"] == id && recipients(m) != nil {
+			t.Fatal("a sent message still shows draft recipients")
+		}
+	}
+}
+
+func addrs(prefix string, n int) []string {
+	out := make([]string, n)
+	for i := range out {
+		out[i] = "success+" + prefix + strconv.Itoa(i) + "@simulator.amazonses.com"
+	}
+	return out
+}
+
+func recipientList(m map[string]any, k string) []string {
+	r, _ := m["recipients"].(map[string]any)
+	var out []string
+	if r == nil {
+		return nil
+	}
+	for _, v := range r[k].([]any) {
+		out = append(out, v.(string))
+	}
+	return out
+}
+
+func TestScheduledComposedDraftKeepsCopiesInItsLists(t *testing.T) {
+	t.Parallel()
+	h := newHarness(t)
+	et := newEmailTeam(t, h, false)
+	ctx := context.Background()
+	a, b, c, d := "success+a@simulator.amazonses.com", "success+b@simulator.amazonses.com", "success+c@simulator.amazonses.com", "success+d@simulator.amazonses.com"
+	id := et.owner.expect(http.StatusCreated, "POST", "/v1/conversations/mail", map[string]any{
+		"inbox_id": et.inbox, "to": []string{a}, "cc": []string{b}, "subject": "Later mail", "body": "Draft", "draft": true,
+	}).body["message"].(map[string]any)["id"].(string)
+	at := h.clock.Now().Add(time.Hour).UTC().Format(time.RFC3339)
+	r := et.owner.expect(http.StatusOK, "POST", "/v1/messages/"+id+"/send", map[string]any{"send_at": at, "cc": []string{strings.ToUpper(c), a}, "bcc": []string{d}})
+	if !slices.Equal(recipientList(r.body, "cc"), []string{c}) || !slices.Equal(recipientList(r.body, "bcc"), []string{d}) || !slices.Equal(recipientList(r.body, "to"), []string{a}) {
+		t.Fatalf("schedule answer recipients %v", r.body["recipients"])
+	}
+	var override int
+	if err := h.st.Pool.QueryRow(ctx, "SELECT count(*) FROM messages WHERE workspace_id = $1 AND id = $2 AND (scheduled_cc IS NOT NULL OR scheduled_bcc IS NOT NULL)",
+		uuid.MustParse(et.ws), uuid.MustParse(id)).Scan(&override); err != nil || override != 0 {
+		t.Fatalf("a composed draft keeps a copy override: %d %v", override, err)
+	}
+	u := et.owner.expect(http.StatusOK, "DELETE", "/v1/messages/"+id+"/schedule", nil)
+	if !slices.Equal(recipientList(u.body, "cc"), []string{c}) {
+		t.Fatalf("unschedule answer recipients %v", u.body["recipients"])
+	}
+	et.owner.expect(http.StatusOK, "POST", "/v1/messages/"+id+"/send", map[string]any{"send_at": at})
+	if p := et.owner.expect(http.StatusOK, "PATCH", "/v1/messages/"+id, map[string]any{"cc": []string{b}}); !slices.Equal(recipientList(p.body, "cc"), []string{b}) {
+		t.Fatalf("after the edit %v", p.body["recipients"])
+	}
+	h.clock.Advance(time.Hour)
+	if err := h.srv.SendScheduled(ctx, h.scheduledJob(t, et.ws, id), false); err != nil {
+		t.Fatal(err)
+	}
+	h.sendQueued(t, et.ws, id)
+	sent, parsed := h.smtp.last(t)
+	if got := parsed.Header.Get("Cc"); !strings.Contains(got, b) || strings.Contains(got, c) {
+		t.Fatalf("sent Cc %q", got)
+	}
+	if !slices.Contains(sent.to, d) {
+		t.Fatalf("the Bcc kept with the schedule was dropped: %v", sent.to)
+	}
+}
+
+func TestComposedDraftToEditsLeaveNoContacts(t *testing.T) {
+	t.Parallel()
+	h := newHarness(t)
+	et := newEmailTeam(t, h, false)
+	et.owner.expect(http.StatusNoContent, "PUT", "/v1/inboxes/"+et.inbox+"/members/"+et.agentID, nil)
+	ctx := context.Background()
+	known := "success+known@simulator.amazonses.com"
+	et.owner.expect(http.StatusCreated, "POST", "/v1/conversations/mail", map[string]any{"inbox_id": et.inbox, "to": []string{known}, "subject": "Earlier", "body": "Hi"})
+	contactIDs := func() []string {
+		var out []string
+		for _, it := range page(et.owner, "/v1/contacts?limit=100").body["items"].([]any) {
+			out = append(out, it.(map[string]any)["id"].(string))
+		}
+		return out
+	}
+	before := contactIDs()
+	r := et.agent.expect(http.StatusCreated, "POST", "/v1/conversations/mail", map[string]any{
+		"inbox_id": et.inbox, "to": []string{"success+one@simulator.amazonses.com"}, "subject": "Private", "body": "Draft", "draft": true,
+	})
+	conv := r.body["conversation"].(map[string]any)["id"].(string)
+	id := r.body["message"].(map[string]any)["id"].(string)
+	for _, to := range []string{"success+two@simulator.amazonses.com", known, "success+three@simulator.amazonses.com"} {
+		et.agent.expect(http.StatusOK, "PATCH", "/v1/messages/"+id, map[string]any{"to": []string{to}})
+	}
+	contact := et.agent.expect(http.StatusOK, "GET", "/v1/conversations/"+conv, nil).str("contact_id")
+	et.agent.expect(http.StatusOK, "PATCH", "/v1/messages/"+id, map[string]any{"cc": []string{"success+copy@simulator.amazonses.com"}})
+	if got := et.agent.expect(http.StatusOK, "GET", "/v1/conversations/"+conv, nil).str("contact_id"); got != contact {
+		t.Fatalf("a cc edit changed the contact: %s, was %s", got, contact)
+	}
+	after := contactIDs()
+	if len(after) != len(before)+1 || !has(after, contact) {
+		t.Fatalf("contacts after three To edits: %d, before %d", len(after), len(before))
+	}
+	for _, id := range before {
+		if !has(after, id) {
+			t.Fatalf("an earlier contact %s was deleted", id)
+		}
+	}
+	var n int
+	if err := h.st.Pool.QueryRow(ctx, "SELECT count(*) FROM contact_emails WHERE workspace_id = $1 AND email = ANY($2)",
+		uuid.MustParse(et.ws), []string{"success+one@simulator.amazonses.com", "success+two@simulator.amazonses.com"}).Scan(&n); err != nil || n != 0 {
+		t.Fatalf("%d contacts of replaced To addresses are left: %v", n, err)
+	}
+}
+
+func TestKeyComposedDraftRecipients(t *testing.T) {
+	t.Parallel()
+	h := newHarness(t)
+	et := newEmailTeam(t, h, false)
+	key := et.apiKey(h)
+	other := et.apiKey(h)
+	hidden := "success+hidden@simulator.amazonses.com"
+	id := key.expect(http.StatusCreated, "POST", "/v1/conversations/mail", map[string]any{
+		"inbox_id": et.inbox, "to": []string{"success+to@simulator.amazonses.com"}, "bcc": []string{hidden}, "subject": "From the bot", "body": "Draft", "draft": true,
+	}).body["message"].(map[string]any)["id"].(string)
+	key.expectProblem(http.StatusConflict, "not_a_private_draft", "PATCH", "/v1/messages/"+id, map[string]any{"subject": "Changed"})
+	et.owner.expectProblem(http.StatusConflict, "not_a_private_draft", "PATCH", "/v1/messages/"+id, map[string]any{"to": []string{"success+x@simulator.amazonses.com"}})
+	key.expect(http.StatusOK, "PATCH", "/v1/messages/"+id, map[string]any{"body": "Edited"})
+	bccFor := func(c *client) []string {
+		for _, it := range page(c, "/v1/drafts").body["items"].([]any) {
+			item := it.(map[string]any)
+			if dr := item["draft"].(map[string]any); dr["id"] == id {
+				if item["composed"] != true || dr["recipients"] == nil {
+					t.Fatalf("key draft item %v", item)
+				}
+				return recipientList(dr, "bcc")
+			}
+		}
+		t.Fatal("the key's draft is not listed")
+		return nil
+	}
+	if got := bccFor(key); !slices.Equal(got, []string{hidden}) {
+		t.Fatalf("the authoring key sees bcc %v", got)
+	}
+	if got := bccFor(et.owner); !slices.Equal(got, []string{hidden}) {
+		t.Fatalf("a member session sees bcc %v", got)
+	}
+	if got := bccFor(other); len(got) != 0 {
+		t.Fatalf("another key sees bcc %v", got)
+	}
+}
+
+func TestComposedDraftRecipientBudget(t *testing.T) {
+	t.Parallel()
+	h := newHarness(t)
+	et := newEmailTeam(t, h, false)
+	compose := func(to []string) string {
+		return et.owner.expect(http.StatusCreated, "POST", "/v1/conversations/mail", map[string]any{
+			"inbox_id": et.inbox, "to": to, "subject": unique("Many"), "body": "Draft", "draft": true,
+		}).body["message"].(map[string]any)["id"].(string)
+	}
+	grown := compose(addrs("a", 1))
+	et.owner.expect(http.StatusOK, "PATCH", "/v1/messages/"+grown, map[string]any{"to": addrs("b", 50), "cc": addrs("c", 50), "bcc": addrs("d", 50)})
+	full := compose(addrs("e", 50))
+	et.owner.expect(http.StatusOK, "PATCH", "/v1/messages/"+full, map[string]any{"cc": addrs("f", 50), "bcc": addrs("g", 50)})
+	et.owner.expect(http.StatusOK, "POST", "/v1/messages/"+grown+"/send", map[string]any{})
+	et.owner.expect(http.StatusOK, "POST", "/v1/messages/"+full+"/send", map[string]any{})
+	last := compose(addrs("h", 1))
+	if r := et.owner.do("POST", "/v1/messages/"+last+"/send", map[string]any{}); r.status != http.StatusTooManyRequests {
+		t.Fatalf("a send past the hourly recipient budget: %d %s", r.status, r.raw)
+	}
+	if got := draftIDs(et.owner, ""); !has(got, last) {
+		t.Fatal("the refused send did not stay a draft")
+	}
 }

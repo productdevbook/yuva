@@ -13939,6 +13939,10 @@ type ConversationListItem struct {
 	// only to this conversation's contact. Absent otherwise or when that conversation is gone.
 	RelatedConversationId *uuid.UUID `json:"related_conversation_id,omitempty"`
 
+	// ScheduledAt With `scheduled=mine`: when the caller's earliest scheduled message in it goes.
+	// Absent otherwise.
+	ScheduledAt *time.Time `json:"scheduled_at,omitempty"`
+
 	// Sla The SLA policy that applies and its targets; absent when none does.
 	Sla         *ConversationSla `json:"sla,omitempty"`
 	SnoozeUntil *time.Time       `json:"snooze_until,omitempty"`
@@ -14945,6 +14949,9 @@ type DraftEventType string
 
 // DraftItem defines model for DraftItem.
 type DraftItem struct {
+	// Composed A new mail draft (`POST /v1/conversations/mail`) rather than a reply draft.
+	Composed bool `json:"composed"`
+
 	// Conversation Enough of a conversation to show where an item belongs.
 	Conversation ConversationSummary `json:"conversation"`
 	Draft        Message             `json:"draft"`
@@ -14959,6 +14966,16 @@ type DraftPage struct {
 
 	// Total Drafts matching the filters over all pages.
 	Total int64 `json:"total"`
+}
+
+// DraftRecipients The To, Cc and Bcc a new mail draft (`POST /v1/conversations/mail` with `draft: true`) is
+// stored with, changed with `PATCH /v1/messages/{id}`. Only on composed drafts, and only in
+// answers to `/v1` requests: never in events or webhooks. `bcc` is empty for API keys other
+// than the one that wrote the draft and for OAuth tokens.
+type DraftRecipients struct {
+	Bcc []Email `json:"bcc"`
+	Cc  []Email `json:"cc"`
+	To  []Email `json:"to"`
 }
 
 // Email Examples: owner@example.com
@@ -18981,6 +18998,12 @@ type Message struct {
 	// Mentions Members a note mentions (notes only; absent when it mentions nobody).
 	Mentions *[]uuid.UUID `json:"mentions,omitempty"`
 
+	// Recipients The To, Cc and Bcc a new mail draft (`POST /v1/conversations/mail` with `draft: true`) is
+	// stored with, changed with `PATCH /v1/messages/{id}`. Only on composed drafts, and only in
+	// answers to `/v1` requests: never in events or webhooks. `bcc` is empty for API keys other
+	// than the one that wrote the draft and for OAuth tokens.
+	Recipients *DraftRecipients `json:"recipients,omitempty"`
+
 	// RedactedAt When its content was removed (`POST /v1/messages/{id}/redact`); absent otherwise. A
 	// redacted message has an empty `body` and no `html`, attachments, cards or mentions;
 	// show it as "Removed by" `redacted_by` at this time.
@@ -19379,7 +19402,7 @@ type MessageSend struct {
 
 	// SendAt Member sessions only: schedule the draft instead of sending it now, at least 1 minute
 	// and at most 366 days ahead (`400 invalid_send_at`); `cc`, `bcc` and `from_address` are
-	// kept for then.
+	// kept for then. For a new mail draft `cc` and `bcc` replace its stored `recipients`.
 	SendAt *time.Time `json:"send_at,omitempty"`
 }
 
@@ -19395,7 +19418,12 @@ type MessageSendError struct {
 
 // MessageUpdate Only the fields sent change.
 type MessageUpdate struct {
-	Body *string `json:"body,omitempty"`
+	// Bcc New mail drafts only; replaces the stored Bcc.
+	Bcc  *[]Email `json:"bcc,omitempty"`
+	Body *string  `json:"body,omitempty"`
+
+	// Cc New mail drafts only; replaces the stored Cc.
+	Cc *[]Email `json:"cc,omitempty"`
 
 	// Html Sanitized before it is stored; `null` removes it.
 	Html nullable.Nullable[string] `json:"html,omitempty"`
@@ -19403,6 +19431,14 @@ type MessageUpdate struct {
 	// SendAt Member sessions only: schedule the draft or move its time, at least 1 minute and at
 	// most 366 days ahead (`400 invalid_send_at`). See `sendMessage`.
 	SendAt *time.Time `json:"send_at,omitempty"`
+
+	// Subject New mail drafts only; also the conversation's subject.
+	Subject *string `json:"subject,omitempty"`
+
+	// To A member's own unsent new mail only (`400 validation_failed` for a reply draft,
+	// `409 not_a_private_draft` for a key's new mail): replaces the recipients; the first is
+	// the conversation's contact. Checked as in `composeMail`.
+	To *[]Email `json:"to,omitempty"`
 }
 
 // MessageUpdatedEvent A message changed, e.g. its e-mail delivery state. `message.redacted`: its content was
@@ -22817,6 +22853,10 @@ type StatusIncidentConversation struct {
 	// thread the mail named. That mail never joins the other conversation and replies here go
 	// only to this conversation's contact. Absent otherwise or when that conversation is gone.
 	RelatedConversationId *uuid.UUID `json:"related_conversation_id,omitempty"`
+
+	// ScheduledAt With `scheduled=mine`: when the caller's earliest scheduled message in it goes.
+	// Absent otherwise.
+	ScheduledAt *time.Time `json:"scheduled_at,omitempty"`
 
 	// Sla The SLA policy that applies and its targets; absent when none does.
 	Sla         *ConversationSla `json:"sla,omitempty"`
@@ -42710,8 +42750,8 @@ type ClientInterface interface {
 
 	// UpdateMessageWithBody Edit a draft
 	//
-	// Changes a draft's text, or with `send_at` (member sessions only) schedules it or moves its
-	// time; emits `draft.updated`. It works while the draft is scheduled. Anything that is not a
+	// Changes a draft's text, a new mail draft's `to`, `cc`, `bcc` and `subject`, or with
+	// `send_at` (member sessions only) schedules it or moves its time; emits `draft.updated`. It works while the draft is scheduled. Anything that is not a
 	// draft answers `409 not_a_draft`; another member's draft answers `404`.
 	//
 	// Scope: `messages:write`.
@@ -42723,8 +42763,8 @@ type ClientInterface interface {
 
 	// UpdateMessage Edit a draft
 	//
-	// Changes a draft's text, or with `send_at` (member sessions only) schedules it or moves its
-	// time; emits `draft.updated`. It works while the draft is scheduled. Anything that is not a
+	// Changes a draft's text, a new mail draft's `to`, `cc`, `bcc` and `subject`, or with
+	// `send_at` (member sessions only) schedules it or moves its time; emits `draft.updated`. It works while the draft is scheduled. Anything that is not a
 	// draft answers `409 not_a_draft`; another member's draft answers `404`.
 	//
 	// Scope: `messages:write`.
@@ -59082,8 +59122,8 @@ func (c *Client) DeleteMessage(ctx context.Context, messageId MessageId, params 
 
 // UpdateMessageWithBody Edit a draft
 //
-// Changes a draft's text, or with `send_at` (member sessions only) schedules it or moves its
-// time; emits `draft.updated`. It works while the draft is scheduled. Anything that is not a
+// Changes a draft's text, a new mail draft's `to`, `cc`, `bcc` and `subject`, or with
+// `send_at` (member sessions only) schedules it or moves its time; emits `draft.updated`. It works while the draft is scheduled. Anything that is not a
 // draft answers `409 not_a_draft`; another member's draft answers `404`.
 //
 // Scope: `messages:write`.
@@ -59105,8 +59145,8 @@ func (c *Client) UpdateMessageWithBody(ctx context.Context, messageId MessageId,
 
 // UpdateMessage Edit a draft
 //
-// Changes a draft's text, or with `send_at` (member sessions only) schedules it or moves its
-// time; emits `draft.updated`. It works while the draft is scheduled. Anything that is not a
+// Changes a draft's text, a new mail draft's `to`, `cc`, `bcc` and `subject`, or with
+// `send_at` (member sessions only) schedules it or moves its time; emits `draft.updated`. It works while the draft is scheduled. Anything that is not a
 // draft answers `409 not_a_draft`; another member's draft answers `404`.
 //
 // Scope: `messages:write`.
@@ -105647,8 +105687,8 @@ type ClientWithResponsesInterface interface {
 
 	// UpdateMessageWithBodyWithResponse Edit a draft
 	//
-	// Changes a draft's text, or with `send_at` (member sessions only) schedules it or moves its
-	// time; emits `draft.updated`. It works while the draft is scheduled. Anything that is not a
+	// Changes a draft's text, a new mail draft's `to`, `cc`, `bcc` and `subject`, or with
+	// `send_at` (member sessions only) schedules it or moves its time; emits `draft.updated`. It works while the draft is scheduled. Anything that is not a
 	// draft answers `409 not_a_draft`; another member's draft answers `404`.
 	//
 	// Scope: `messages:write`.
@@ -105660,8 +105700,8 @@ type ClientWithResponsesInterface interface {
 
 	// UpdateMessageWithResponse Edit a draft
 	//
-	// Changes a draft's text, or with `send_at` (member sessions only) schedules it or moves its
-	// time; emits `draft.updated`. It works while the draft is scheduled. Anything that is not a
+	// Changes a draft's text, a new mail draft's `to`, `cc`, `bcc` and `subject`, or with
+	// `send_at` (member sessions only) schedules it or moves its time; emits `draft.updated`. It works while the draft is scheduled. Anything that is not a
 	// draft answers `409 not_a_draft`; another member's draft answers `404`.
 	//
 	// Scope: `messages:write`.
@@ -156166,8 +156206,8 @@ func (c *ClientWithResponses) DeleteMessageWithResponse(ctx context.Context, mes
 
 // UpdateMessageWithBodyWithResponse Edit a draft
 //
-// Changes a draft's text, or with `send_at` (member sessions only) schedules it or moves its
-// time; emits `draft.updated`. It works while the draft is scheduled. Anything that is not a
+// Changes a draft's text, a new mail draft's `to`, `cc`, `bcc` and `subject`, or with
+// `send_at` (member sessions only) schedules it or moves its time; emits `draft.updated`. It works while the draft is scheduled. Anything that is not a
 // draft answers `409 not_a_draft`; another member's draft answers `404`.
 //
 // Scope: `messages:write`.
@@ -156185,8 +156225,8 @@ func (c *ClientWithResponses) UpdateMessageWithBodyWithResponse(ctx context.Cont
 
 // UpdateMessageWithResponse Edit a draft
 //
-// Changes a draft's text, or with `send_at` (member sessions only) schedules it or moves its
-// time; emits `draft.updated`. It works while the draft is scheduled. Anything that is not a
+// Changes a draft's text, a new mail draft's `to`, `cc`, `bcc` and `subject`, or with
+// `send_at` (member sessions only) schedules it or moves its time; emits `draft.updated`. It works while the draft is scheduled. Anything that is not a
 // draft answers `409 not_a_draft`; another member's draft answers `404`.
 //
 // Scope: `messages:write`.

@@ -556,6 +556,9 @@ func (s *Server) ListMessages(ctx context.Context, req oas.ListMessagesRequestOb
 	for i, r := range rows {
 		out.Items[i] = withBcc(withEmail(messageBody(messageRow(r), atts[r.ID]), emails[r.ID]), emails[r.ID])
 	}
+	if _, err := attachRecipients(ctx, s.st.Queries, p, out.Items); err != nil {
+		return nil, err
+	}
 	return out, nil
 }
 

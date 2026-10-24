@@ -467,6 +467,11 @@ func (s *Server) ListConversations(ctx context.Context, req oas.ListConversation
 	if err != nil {
 		return nil, err
 	}
+	if arg.ScheduledBy != nil {
+		for i := range items {
+			items[i].ScheduledAt = rows[i].NextScheduledAt
+		}
+	}
 	return oas.ListConversations200JSONResponse{Items: items, NextCursor: next}, nil
 }
 

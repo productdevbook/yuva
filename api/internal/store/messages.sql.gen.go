@@ -1102,6 +1102,45 @@ func (q *Queries) ListAttachmentsOfMessage(ctx context.Context, arg ListAttachme
 	return items, nil
 }
 
+const listComposedMails = `-- name: ListComposedMails :many
+SELECT workspace_id, message_id, inbox_id, client_id, to_addresses, cc_addresses, bcc_addresses, subject, created_at FROM composed_mails WHERE workspace_id = $1 AND message_id = ANY($2::uuid[])
+`
+
+type ListComposedMailsParams struct {
+	WorkspaceID uuid.UUID
+	MessageIds  []uuid.UUID
+}
+
+func (q *Queries) ListComposedMails(ctx context.Context, arg ListComposedMailsParams) ([]ComposedMail, error) {
+	rows, err := q.db.Query(ctx, listComposedMails, arg.WorkspaceID, arg.MessageIds)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ComposedMail
+	for rows.Next() {
+		var i ComposedMail
+		if err := rows.Scan(
+			&i.WorkspaceID,
+			&i.MessageID,
+			&i.InboxID,
+			&i.ClientID,
+			&i.ToAddresses,
+			&i.CcAddresses,
+			&i.BccAddresses,
+			&i.Subject,
+			&i.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const listConversationSummaries = `-- name: ListConversationSummaries :many
 SELECT id, inbox_id, subject, status, contact_id FROM conversations
 WHERE workspace_id = $1 AND id = ANY($2::uuid[])
@@ -2689,6 +2728,46 @@ func (q *Queries) UnscheduleDraft(ctx context.Context, arg UnscheduleDraftParams
 		&i.BotName,
 		&i.BotAvatarUrl,
 		&i.SentByBotName,
+	)
+	return i, err
+}
+
+const updateComposedDraft = `-- name: UpdateComposedDraft :one
+UPDATE composed_mails SET to_addresses = $1::text[], cc_addresses = $2::text[],
+    bcc_addresses = $3::text[], subject = $4
+WHERE workspace_id = $5 AND message_id = $6
+RETURNING workspace_id, message_id, inbox_id, client_id, to_addresses, cc_addresses, bcc_addresses, subject, created_at
+`
+
+type UpdateComposedDraftParams struct {
+	ToAddresses  []string
+	CcAddresses  []string
+	BccAddresses []string
+	Subject      string
+	WorkspaceID  uuid.UUID
+	MessageID    uuid.UUID
+}
+
+func (q *Queries) UpdateComposedDraft(ctx context.Context, arg UpdateComposedDraftParams) (ComposedMail, error) {
+	row := q.db.QueryRow(ctx, updateComposedDraft,
+		arg.ToAddresses,
+		arg.CcAddresses,
+		arg.BccAddresses,
+		arg.Subject,
+		arg.WorkspaceID,
+		arg.MessageID,
+	)
+	var i ComposedMail
+	err := row.Scan(
+		&i.WorkspaceID,
+		&i.MessageID,
+		&i.InboxID,
+		&i.ClientID,
+		&i.ToAddresses,
+		&i.CcAddresses,
+		&i.BccAddresses,
+		&i.Subject,
+		&i.CreatedAt,
 	)
 	return i, err
 }
