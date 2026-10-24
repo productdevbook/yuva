@@ -1,7 +1,7 @@
 ---
 title: "Yuva 0.1.0: ekipler, raporlar, tek oturum açma ve beş yeni destek sisteminden aktarım"
 description: "Yuva 0.1.0 atama ve yanıt süresi hedefleri olan ekipler, Raporlar, Slack ve sorun takipçisi bağlantıları, Yuva'nın kendisinin gönderdiği push, üyeler için tek oturum açma ve beş destek sisteminden daha geçmiş aktarımı getiriyor. Yükseltirken ilgilenmeniz gereken dört değişiklik de var."
-draft: true
+date: 2026-10-24
 author: productdevbook
 ---
 

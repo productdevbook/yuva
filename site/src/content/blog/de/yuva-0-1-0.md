@@ -1,7 +1,7 @@
 ---
 title: "Yuva 0.1.0: Teams, Berichte, Single Sign-on und fünf weitere Help Desks"
 description: "Yuva 0.1.0 bringt Teams mit Zuweisung und Reaktionszielen, Berichte, Slack- und Issue-Tracker-Verknüpfungen, von Yuva selbst gesendete Push-Nachrichten, Single Sign-on für Mitglieder und Verlaufsimporte aus fünf weiteren Help Desks. Vier Änderungen müssen Sie beim Update beachten."
-draft: true
+date: 2026-10-24
 author: productdevbook
 ---
 
