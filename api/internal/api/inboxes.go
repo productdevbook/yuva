@@ -549,12 +549,20 @@ func (s *Server) UpdateInbox(ctx context.Context, req oas.UpdateInboxRequestObje
 
 func (s *Server) DeleteInbox(ctx context.Context, req oas.DeleteInboxRequestObject) (oas.DeleteInboxResponseObject, error) {
 	p := principalFrom(ctx)
-	if _, _, err := manageInbox(ctx, s.st.Queries, p, req.InboxId); err != nil {
+	target, _, err := manageInbox(ctx, s.st.Queries, p, req.InboxId)
+	if err != nil {
 		return nil, err
 	}
 	var keys []string
 	var pages []uuid.UUID
-	err := s.inTx(ctx, p.workspaceID, func(q *store.Queries, events *eventBatch) error {
+	err = s.inTx(ctx, p.workspaceID, func(q *store.Queries, events *eventBatch) error {
+		if target.OwnerMemberID != nil {
+			parts, err := s.dropMailboxMigrations(ctx, q, p, req.InboxId)
+			if err != nil {
+				return err
+			}
+			keys = append(keys, parts...)
+		}
 		in, err := q.LockInbox(ctx, store.LockInboxParams{WorkspaceID: p.workspaceID, ID: req.InboxId})
 		if store.IsNotFound(err) {
 			return errInboxGone

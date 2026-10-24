@@ -615,7 +615,12 @@ func (s *Server) migrationProgress(ctx context.Context, m store.Migration) {
 			Id: f.ID, Imported: int64(f.Imported), Duplicate: int64(f.Duplicate), Skipped: int64(f.Skipped), Failed: int64(f.Failed), Bytes: f.Bytes,
 		})
 	}
-	s.signal(ctx, realtime.Event{Type: eventMigrationProgress, WorkspaceID: m.WorkspaceID, Data: mustJSON(out)})
+	personal, err := migrationEventInbox(ctx, s.st.Queries, m)
+	if err != nil {
+		s.log.WarnContext(ctx, "migration progress", slog.Any("error", err))
+		return
+	}
+	s.signal(ctx, realtime.Event{Type: eventMigrationProgress, WorkspaceID: m.WorkspaceID, InboxID: personal, Data: mustJSON(out)})
 }
 
 // RunMigrationWatchdog queues a job for every scanning, copying, syncing or removing migration

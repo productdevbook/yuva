@@ -168,7 +168,115 @@ func visibleMigration(ctx context.Context, q *store.Queries, p principal, id uui
 	if store.IsNotFound(err) {
 		return m, errMigrationGone
 	}
-	return m, err
+	if err != nil {
+		return m, err
+	}
+	if err := mayManageMigration(ctx, q, p, m); err != nil {
+		return store.Migration{}, err
+	}
+	return m, nil
+}
+
+// personalTarget is the personal mailbox a migration writes to, nil for a shared inbox or none.
+func personalTarget(ctx context.Context, q *store.Queries, workspaceID uuid.UUID, inboxID *uuid.UUID) (*store.Inbox, error) {
+	if inboxID == nil {
+		return nil, nil
+	}
+	in, err := q.GetInbox(ctx, store.GetInboxParams{WorkspaceID: workspaceID, ID: *inboxID})
+	if store.IsNotFound(err) {
+		return nil, nil
+	}
+	if err != nil || in.OwnerMemberID == nil {
+		return nil, err
+	}
+	return &in, nil
+}
+
+// migrationEventInbox puts a personal mailbox on its migrations' events, so they reach its readers only.
+func migrationEventInbox(ctx context.Context, q *store.Queries, m store.Migration) (*uuid.UUID, error) {
+	in, err := personalTarget(ctx, q, m.WorkspaceID, m.InboxID)
+	if in == nil || err != nil {
+		return nil, err
+	}
+	return &in.ID, nil
+}
+
+// mayManageMigration keeps a migration into a personal mailbox to the managers who read it.
+func mayManageMigration(ctx context.Context, q *store.Queries, p principal, m store.Migration) error {
+	if err := requireMigrationManager(p); err != nil {
+		return err
+	}
+	in, err := personalTarget(ctx, q, p.workspaceID, m.InboxID)
+	if err != nil {
+		return err
+	}
+	if in != nil && !canReadPersonal(p, *in) {
+		return errMigrationGone
+	}
+	return nil
+}
+
+// dropMailboxMigrations deletes the migrations into a personal mailbox that is being deleted, which
+// would otherwise lose their target and reach every migration manager.
+func (s *Server) dropMailboxMigrations(ctx context.Context, q *store.Queries, p principal, inboxID uuid.UUID) ([]string, error) {
+	rows, err := q.LockInboxMigrations(ctx, store.LockInboxMigrationsParams{WorkspaceID: p.workspaceID, InboxID: &inboxID})
+	if err != nil {
+		return nil, err
+	}
+	var keys []string
+	for _, m := range rows {
+		if slices.Contains(runningMigrationStates, m.State) {
+			return nil, errMigrationState("a migration into this mailbox is scanning, copying, syncing or removing history; pause or cancel it first")
+		}
+		parts, err := q.ListMigrationUploadParts(ctx, store.ListMigrationUploadPartsParams{WorkspaceID: p.workspaceID, MigrationID: m.ID})
+		if err != nil {
+			return nil, err
+		}
+		for _, r := range parts {
+			keys = append(keys, r.StorageKey)
+		}
+		if _, err := q.DeleteMigration(ctx, store.DeleteMigrationParams{WorkspaceID: p.workspaceID, ID: m.ID}); err != nil {
+			return nil, err
+		}
+		if _, err := s.migrationAudit(ctx, q, p, m.ID, "deleted", map[string]any{"state": m.State, "reason": "inbox_deleted"}); err != nil {
+			return nil, err
+		}
+	}
+	return keys, nil
+}
+
+// personalMigrationScope keeps a migration into a personal mailbox writing to that mailbox only, and
+// a migration that started elsewhere out of personal mailboxes.
+func personalMigrationScope(ctx context.Context, q *store.Queries, p principal, from, to *uuid.UUID, opts oas.MigrationOptions) error {
+	target, err := personalTarget(ctx, q, p.workspaceID, to)
+	if err != nil {
+		return err
+	}
+	if from != nil && !sameID(from, to) {
+		prev, err := personalTarget(ctx, q, p.workspaceID, from)
+		if err != nil {
+			return err
+		}
+		if prev != nil {
+			return errPersonalMailbox("a migration into a personal mailbox stays in that mailbox")
+		}
+	}
+	if opts.Inboxes == nil {
+		return nil
+	}
+	for _, ib := range *opts.Inboxes {
+		if target != nil && ib.InboxId == target.ID {
+			continue
+		}
+		in, err := personalTarget(ctx, q, p.workspaceID, &ib.InboxId)
+		if err != nil {
+			return err
+		}
+		if target != nil || in != nil {
+			return errPersonalMailbox("a migration into a personal mailbox writes to that mailbox only")
+		}
+	}
+	return nil
 }
 
 func defaultMigrationOptions() oas.MigrationOptions {
@@ -436,7 +544,11 @@ func (s *Server) migrationEvent(ctx context.Context, q *store.Queries, events *e
 	if previous != nil {
 		data.PreviousState = new(oas.MigrationState(*previous))
 	}
-	events.add(eventMigrationUpdated, nil, nil, data)
+	personal, err := migrationEventInbox(ctx, q, m)
+	if err != nil {
+		return err
+	}
+	events.add(eventMigrationUpdated, personal, nil, data)
 	if m.InboxID == nil || (previous != nil && *previous == m.State) || (!importState(m.State) && (previous == nil || !importState(*previous))) {
 		return nil
 	}
@@ -486,6 +598,11 @@ func migrationTarget(ctx context.Context, q *store.Queries, p principal, inboxID
 			return nil, nil, errChannelGone
 		}
 		if err != nil {
+			return nil, nil, err
+		}
+		if _, err := visibleInbox(ctx, q, p, ch.InboxID); err == errInboxGone {
+			return nil, nil, errChannelGone
+		} else if err != nil {
 			return nil, nil, err
 		}
 		if inboxID != nil && *inboxID != ch.InboxID {
@@ -797,7 +914,9 @@ func (s *Server) ListMigrations(ctx context.Context, req oas.ListMigrationsReque
 	if states == nil {
 		states = []string{}
 	}
-	rows, err := s.st.ListMigrations(ctx, store.ListMigrationsParams{WorkspaceID: p.workspaceID, States: states, CursorAt: at, CursorID: id, Lim: lim + 1})
+	rows, err := s.st.ListMigrations(ctx, store.ListMigrationsParams{
+		WorkspaceID: p.workspaceID, States: states, ViewerID: p.viewerID(), CursorAt: at, CursorID: id, Lim: lim + 1,
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -872,6 +991,9 @@ func (s *Server) CreateMigration(ctx context.Context, req oas.CreateMigrationReq
 		}
 		opts, _, err := applyMigrationOptions(ctx, q, p, defaultMigrationOptions(), b.Options)
 		if err != nil {
+			return err
+		}
+		if err := personalMigrationScope(ctx, q, p, nil, inbox, opts); err != nil {
 			return err
 		}
 		var follows *uuid.UUID
@@ -972,6 +1094,9 @@ func (s *Server) UpdateMigration(ctx context.Context, req oas.UpdateMigrationReq
 		}
 		opts, readChanged, err := applyMigrationOptions(ctx, q, p, migrationOptions(cur.Options), b.Options)
 		if err != nil {
+			return err
+		}
+		if err := personalMigrationScope(ctx, q, p, cur.InboxID, inboxID, opts); err != nil {
 			return err
 		}
 		follows := cur.FollowsMigrationID

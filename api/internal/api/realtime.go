@@ -404,7 +404,15 @@ func (f *eventFilter) allows(ctx context.Context, q *store.Queries, e realtime.E
 	case eventTeamCreated, eventTeamUpdated, eventTeamDeleted:
 		return f.teamEventVisible(e)
 	case eventMigrationUpdated, eventMigrationProgress, eventMigrationForwardingConfirmation:
-		return requireMigrationManager(f.p) == nil && requireScope(f.p, oas.MigrationsManage) == nil, nil
+		if requireMigrationManager(f.p) != nil || requireScope(f.p, oas.MigrationsManage) != nil {
+			return false, nil
+		}
+		if e.InboxID == nil {
+			return true, nil
+		}
+		f.hidden.p = f.p
+		hidden, err := f.hidden.hidden(ctx, q, *e.InboxID)
+		return !hidden, err
 	case realtime.Typing:
 		var ty oas.Typing
 		if err := json.Unmarshal(e.Data, &ty); err != nil {

@@ -518,6 +518,9 @@ func (s *Server) deletePerson(ctx context.Context, person store.Person, byOperat
 				return err
 			}
 		}
+		if _, err := q.ReleaseDeletedWorkspaceMailboxes(ctx, person.ID); err != nil {
+			return err
+		}
 		_, err = q.DeletePerson(ctx, person.ID)
 		return err
 	})

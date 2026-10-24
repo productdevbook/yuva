@@ -195,6 +195,9 @@ func (s *Server) StartHelpImport(ctx context.Context, req oas.StartHelpImportReq
 			if err != nil {
 				return err
 			}
+			if err := mayManageMigration(ctx, q, p, m); err != nil {
+				return errMigrationGone
+			}
 			if m.Source != helpImportSourceZendesk {
 				return errHelpImportKind
 			}

@@ -12,13 +12,20 @@ SELECT * FROM migrations WHERE workspace_id = $1 AND id = $2;
 SELECT * FROM migrations WHERE workspace_id = $1 AND id = $2 FOR UPDATE;
 
 -- name: ListMigrations :many
-SELECT * FROM migrations
-WHERE workspace_id = @workspace_id
-  AND (cardinality(@states::text[]) = 0 OR state = ANY(@states::text[]))
+SELECT m.* FROM migrations m
+LEFT JOIN inboxes i ON i.workspace_id = m.workspace_id AND i.id = m.inbox_id
+WHERE m.workspace_id = @workspace_id
+  AND (cardinality(@states::text[]) = 0 OR m.state = ANY(@states::text[]))
+  AND (i.owner_member_id IS NULL OR EXISTS (
+          SELECT 1 FROM inbox_viewers iv
+          WHERE iv.workspace_id = m.workspace_id AND iv.inbox_id = m.inbox_id AND iv.viewer_id = @viewer_id))
   AND (sqlc.narg(cursor_at)::timestamptz IS NULL
-       OR (created_at, id) < (sqlc.narg(cursor_at)::timestamptz, sqlc.narg(cursor_id)::uuid))
-ORDER BY created_at DESC, id DESC
+       OR (m.created_at, m.id) < (sqlc.narg(cursor_at)::timestamptz, sqlc.narg(cursor_id)::uuid))
+ORDER BY m.created_at DESC, m.id DESC
 LIMIT @lim;
+
+-- name: LockInboxMigrations :many
+SELECT id, state FROM migrations WHERE workspace_id = @workspace_id AND inbox_id = @inbox_id ORDER BY id FOR UPDATE;
 
 -- name: UpdateMigration :one
 UPDATE migrations SET preset = @preset, source_address = @source_address, inbox_id = sqlc.narg(inbox_id),

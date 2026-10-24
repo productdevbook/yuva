@@ -2852,7 +2852,8 @@ paths:
 
         A personal mailbox is deleted by its owner, whatever their role, or by an owner or admin,
         who delete it without reading it; API keys and other members get `404`. Audited as
-        `inbox.deleted`.
+        `inbox.deleted`. Its migrations are deleted with it; while one is scanning, copying,
+        syncing or removing history the delete answers `409 migration_state`.
 
         Scope: `inboxes:manage`.
       tags: [inboxes]
@@ -10232,7 +10233,8 @@ paths:
       operationId: listMigrations
       summary: List migrations
       description: |
-        Newest first. `state` may be repeated.
+        Newest first. `state` may be repeated. A migration into a personal mailbox is listed only
+        to those who read that mailbox.
 
         Owners, admins and API keys without an inbox limit. Scope: `migrations:manage`.
       tags: [migrations]
@@ -10286,7 +10288,10 @@ paths:
 
         `inbox_id` and `channel_id` name where the history goes: an inbox and one of its e-mail
         channels whose address is the mailbox address (`400 validation_failed` otherwise). Both can
-        be set later; a channel names its inbox.
+        be set later; a channel names its inbox. A personal mailbox (`owner_member_id`) is a target
+        for its owner only (`404` for everyone else); such a migration writes to that mailbox alone
+        (`options.inboxes` naming another personal mailbox, or another inbox from it, answers `409
+        personal_mailbox`), and it and its events reach only those who read the mailbox.
 
         A source this server does not offer answers `422 hosted_limit` (the operator's
         `YUVA_MIGRATION_SOURCES`); `microsoft` answers `409 provider_not_configured` when the
@@ -10392,7 +10397,8 @@ paths:
       summary: A migration
       description: |
         State, options, counts, the actions allowed now and, while credentials are stored, their
-        kind and server (never the password).
+        kind and server (never the password). A migration into a personal mailbox answers `404` to
+        everyone who does not read that mailbox, here and on every action below.
 
         Owners, admins and API keys without an inbox limit. Scope: `migrations:manage`.
       tags: [migrations]
@@ -10420,6 +10426,8 @@ paths:
         rule, originals, team addresses, people and labels. Only in `draft`, `connected` and
         `ready` (`409 migration_state`); `source_address` and `preset` only in `draft`. Any change
         sends a `ready` migration back to `connected`: scan again for a dry run of the new choice.
+        A migration into a personal mailbox keeps that target (`409 personal_mailbox`); a personal
+        mailbox the caller does not read answers `404`.
 
         Owners, admins and API keys without an inbox limit. Scope: `migrations:manage`.
       tags: [migrations]

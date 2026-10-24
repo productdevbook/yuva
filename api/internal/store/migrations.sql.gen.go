@@ -2463,18 +2463,23 @@ func (q *Queries) ListMigrationUploadTotals(ctx context.Context, arg ListMigrati
 }
 
 const listMigrations = `-- name: ListMigrations :many
-SELECT id, workspace_id, source, preset, source_address, inbox_id, channel_id, state, state_reason, waiting_until, options, estimate, counts, throttle, checkpoint, live_from, verified_at, verified_route, forwarding_confirmation, lease_until, lease_job_id, created_by_member_id, created_by_api_key_id, created_via, created_at, updated_at, started_at, finished_at, credentials_deleted_at, synced_at, quiet_since, probe_sent_at, probe_synced_at, upload, follows_migration_id, source_state FROM migrations
-WHERE workspace_id = $1
-  AND (cardinality($2::text[]) = 0 OR state = ANY($2::text[]))
-  AND ($3::timestamptz IS NULL
-       OR (created_at, id) < ($3::timestamptz, $4::uuid))
-ORDER BY created_at DESC, id DESC
-LIMIT $5
+SELECT m.id, m.workspace_id, m.source, m.preset, m.source_address, m.inbox_id, m.channel_id, m.state, m.state_reason, m.waiting_until, m.options, m.estimate, m.counts, m.throttle, m.checkpoint, m.live_from, m.verified_at, m.verified_route, m.forwarding_confirmation, m.lease_until, m.lease_job_id, m.created_by_member_id, m.created_by_api_key_id, m.created_via, m.created_at, m.updated_at, m.started_at, m.finished_at, m.credentials_deleted_at, m.synced_at, m.quiet_since, m.probe_sent_at, m.probe_synced_at, m.upload, m.follows_migration_id, m.source_state FROM migrations m
+LEFT JOIN inboxes i ON i.workspace_id = m.workspace_id AND i.id = m.inbox_id
+WHERE m.workspace_id = $1
+  AND (cardinality($2::text[]) = 0 OR m.state = ANY($2::text[]))
+  AND (i.owner_member_id IS NULL OR EXISTS (
+          SELECT 1 FROM inbox_viewers iv
+          WHERE iv.workspace_id = m.workspace_id AND iv.inbox_id = m.inbox_id AND iv.viewer_id = $3))
+  AND ($4::timestamptz IS NULL
+       OR (m.created_at, m.id) < ($4::timestamptz, $5::uuid))
+ORDER BY m.created_at DESC, m.id DESC
+LIMIT $6
 `
 
 type ListMigrationsParams struct {
 	WorkspaceID uuid.UUID
 	States      []string
+	ViewerID    uuid.UUID
 	CursorAt    *time.Time
 	CursorID    *uuid.UUID
 	Lim         int32
@@ -2484,6 +2489,7 @@ func (q *Queries) ListMigrations(ctx context.Context, arg ListMigrationsParams) 
 	rows, err := q.db.Query(ctx, listMigrations,
 		arg.WorkspaceID,
 		arg.States,
+		arg.ViewerID,
 		arg.CursorAt,
 		arg.CursorID,
 		arg.Lim,
@@ -2712,6 +2718,40 @@ func (q *Queries) ListWorkspaceMigrationUploadKeys(ctx context.Context, workspac
 			return nil, err
 		}
 		items = append(items, storage_key)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const lockInboxMigrations = `-- name: LockInboxMigrations :many
+SELECT id, state FROM migrations WHERE workspace_id = $1 AND inbox_id = $2 ORDER BY id FOR UPDATE
+`
+
+type LockInboxMigrationsParams struct {
+	WorkspaceID uuid.UUID
+	InboxID     *uuid.UUID
+}
+
+type LockInboxMigrationsRow struct {
+	ID    uuid.UUID
+	State string
+}
+
+func (q *Queries) LockInboxMigrations(ctx context.Context, arg LockInboxMigrationsParams) ([]LockInboxMigrationsRow, error) {
+	rows, err := q.db.Query(ctx, lockInboxMigrations, arg.WorkspaceID, arg.InboxID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []LockInboxMigrationsRow
+	for rows.Next() {
+		var i LockInboxMigrationsRow
+		if err := rows.Scan(&i.ID, &i.State); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, err

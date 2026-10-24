@@ -183,6 +183,7 @@ func (s *Server) takeForwardingConfirmation(ctx context.Context, ch store.FindEm
 	taken := false
 	var body oas.MigrationForwardingConfirmation
 	var migrationID uuid.UUID
+	var personal *uuid.UUID
 	err := s.inTx(ctx, ch.WorkspaceID, func(q *store.Queries, events *eventBatch) error {
 		cur, err := q.FindForwardingMigration(ctx, store.FindForwardingMigrationParams{WorkspaceID: ch.WorkspaceID, ChannelID: &ch.ChannelID})
 		if store.IsNotFound(err) {
@@ -199,12 +200,15 @@ func (s *Server) takeForwardingConfirmation(ctx context.Context, ch store.FindEm
 			return err
 		}
 		taken, migrationID, body = true, m.ID, *readForwardingConfirmation(m.ForwardingConfirmation)
+		if personal, err = migrationEventInbox(ctx, q, m); err != nil {
+			return err
+		}
 		return s.migrationEvent(ctx, q, events, m, &cur.State)
 	})
 	if err != nil || !taken {
 		return false, err
 	}
-	s.signal(ctx, realtime.Event{Type: eventMigrationForwardingConfirmation, WorkspaceID: ch.WorkspaceID,
+	s.signal(ctx, realtime.Event{Type: eventMigrationForwardingConfirmation, WorkspaceID: ch.WorkspaceID, InboxID: personal,
 		Data: mustJSON(oas.MigrationForwardingConfirmationData{MigrationId: migrationID, Confirmation: body})})
 	return true, nil
 }

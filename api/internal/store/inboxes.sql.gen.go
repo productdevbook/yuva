@@ -703,6 +703,21 @@ func (q *Queries) MoveFeedbackToOther(ctx context.Context, arg MoveFeedbackToOth
 	return result.RowsAffected(), nil
 }
 
+const releaseDeletedWorkspaceMailboxes = `-- name: ReleaseDeletedWorkspaceMailboxes :execrows
+UPDATE inboxes i SET owner_member_id = NULL
+FROM members m JOIN workspaces w ON w.id = m.workspace_id
+WHERE m.person_id = $1 AND w.deleted_at IS NOT NULL
+  AND i.workspace_id = m.workspace_id AND i.owner_member_id = m.id
+`
+
+func (q *Queries) ReleaseDeletedWorkspaceMailboxes(ctx context.Context, personID uuid.UUID) (int64, error) {
+	result, err := q.db.Exec(ctx, releaseDeletedWorkspaceMailboxes, personID)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected(), nil
+}
+
 const revokeInboxAccess = `-- name: RevokeInboxAccess :execrows
 DELETE FROM inbox_members WHERE workspace_id = $1 AND inbox_id = $2 AND member_id = $3
 `

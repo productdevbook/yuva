@@ -41249,7 +41249,8 @@ type ClientInterface interface {
 	//
 	// A personal mailbox is deleted by its owner, whatever their role, or by an owner or admin,
 	// who delete it without reading it; API keys and other members get `404`. Audited as
-	// `inbox.deleted`.
+	// `inbox.deleted`. Its migrations are deleted with it; while one is scanning, copying,
+	// syncing or removing history the delete answers `409 migration_state`.
 	//
 	// Scope: `inboxes:manage`.
 	//
@@ -42860,7 +42861,8 @@ type ClientInterface interface {
 
 	// ListMigrations List migrations
 	//
-	// Newest first. `state` may be repeated.
+	// Newest first. `state` may be repeated. A migration into a personal mailbox is listed only
+	// to those who read that mailbox.
 	//
 	// Owners, admins and API keys without an inbox limit. Scope: `migrations:manage`.
 	//
@@ -42889,7 +42891,10 @@ type ClientInterface interface {
 	//
 	// `inbox_id` and `channel_id` name where the history goes: an inbox and one of its e-mail
 	// channels whose address is the mailbox address (`400 validation_failed` otherwise). Both can
-	// be set later; a channel names its inbox.
+	// be set later; a channel names its inbox. A personal mailbox (`owner_member_id`) is a target
+	// for its owner only (`404` for everyone else); such a migration writes to that mailbox alone
+	// (`options.inboxes` naming another personal mailbox, or another inbox from it, answers `409
+	// personal_mailbox`), and it and its events reach only those who read the mailbox.
 	//
 	// A source this server does not offer answers `422 hosted_limit` (the operator's
 	// `YUVA_MIGRATION_SOURCES`); `microsoft` answers `409 provider_not_configured` when the
@@ -42926,7 +42931,10 @@ type ClientInterface interface {
 	//
 	// `inbox_id` and `channel_id` name where the history goes: an inbox and one of its e-mail
 	// channels whose address is the mailbox address (`400 validation_failed` otherwise). Both can
-	// be set later; a channel names its inbox.
+	// be set later; a channel names its inbox. A personal mailbox (`owner_member_id`) is a target
+	// for its owner only (`404` for everyone else); such a migration writes to that mailbox alone
+	// (`options.inboxes` naming another personal mailbox, or another inbox from it, answers `409
+	// personal_mailbox`), and it and its events reach only those who read the mailbox.
 	//
 	// A source this server does not offer answers `422 hosted_limit` (the operator's
 	// `YUVA_MIGRATION_SOURCES`); `microsoft` answers `409 provider_not_configured` when the
@@ -43003,7 +43011,8 @@ type ClientInterface interface {
 	// GetMigration A migration
 	//
 	// State, options, counts, the actions allowed now and, while credentials are stored, their
-	// kind and server (never the password).
+	// kind and server (never the password). A migration into a personal mailbox answers `404` to
+	// everyone who does not read that mailbox, here and on every action below.
 	//
 	// Owners, admins and API keys without an inbox limit. Scope: `migrations:manage`.
 	//
@@ -43016,6 +43025,8 @@ type ClientInterface interface {
 	// rule, originals, team addresses, people and labels. Only in `draft`, `connected` and
 	// `ready` (`409 migration_state`); `source_address` and `preset` only in `draft`. Any change
 	// sends a `ready` migration back to `connected`: scan again for a dry run of the new choice.
+	// A migration into a personal mailbox keeps that target (`409 personal_mailbox`); a personal
+	// mailbox the caller does not read answers `404`.
 	//
 	// Owners, admins and API keys without an inbox limit. Scope: `migrations:manage`.
 	//
@@ -43030,6 +43041,8 @@ type ClientInterface interface {
 	// rule, originals, team addresses, people and labels. Only in `draft`, `connected` and
 	// `ready` (`409 migration_state`); `source_address` and `preset` only in `draft`. Any change
 	// sends a `ready` migration back to `connected`: scan again for a dry run of the new choice.
+	// A migration into a personal mailbox keeps that target (`409 personal_mailbox`); a personal
+	// mailbox the caller does not read answers `404`.
 	//
 	// Owners, admins and API keys without an inbox limit. Scope: `migrations:manage`.
 	//
@@ -56432,7 +56445,8 @@ func (c *Client) CreateInbox(ctx context.Context, params *CreateInboxParams, bod
 //
 // A personal mailbox is deleted by its owner, whatever their role, or by an owner or admin,
 // who delete it without reading it; API keys and other members get `404`. Audited as
-// `inbox.deleted`.
+// `inbox.deleted`. Its migrations are deleted with it; while one is scanning, copying,
+// syncing or removing history the delete answers `409 migration_state`.
 //
 // Scope: `inboxes:manage`.
 //
@@ -59283,7 +59297,8 @@ func (c *Client) SendMessage(ctx context.Context, messageId MessageId, params *S
 
 // ListMigrations List migrations
 //
-// Newest first. `state` may be repeated.
+// Newest first. `state` may be repeated. A migration into a personal mailbox is listed only
+// to those who read that mailbox.
 //
 // Owners, admins and API keys without an inbox limit. Scope: `migrations:manage`.
 //
@@ -59322,7 +59337,10 @@ func (c *Client) ListMigrations(ctx context.Context, params *ListMigrationsParam
 //
 // `inbox_id` and `channel_id` name where the history goes: an inbox and one of its e-mail
 // channels whose address is the mailbox address (`400 validation_failed` otherwise). Both can
-// be set later; a channel names its inbox.
+// be set later; a channel names its inbox. A personal mailbox (`owner_member_id`) is a target
+// for its owner only (`404` for everyone else); such a migration writes to that mailbox alone
+// (`options.inboxes` naming another personal mailbox, or another inbox from it, answers `409
+// personal_mailbox`), and it and its events reach only those who read the mailbox.
 //
 // A source this server does not offer answers `422 hosted_limit` (the operator's
 // `YUVA_MIGRATION_SOURCES`); `microsoft` answers `409 provider_not_configured` when the
@@ -59369,7 +59387,10 @@ func (c *Client) CreateMigrationWithBody(ctx context.Context, params *CreateMigr
 //
 // `inbox_id` and `channel_id` name where the history goes: an inbox and one of its e-mail
 // channels whose address is the mailbox address (`400 validation_failed` otherwise). Both can
-// be set later; a channel names its inbox.
+// be set later; a channel names its inbox. A personal mailbox (`owner_member_id`) is a target
+// for its owner only (`404` for everyone else); such a migration writes to that mailbox alone
+// (`options.inboxes` naming another personal mailbox, or another inbox from it, answers `409
+// personal_mailbox`), and it and its events reach only those who read the mailbox.
 //
 // A source this server does not offer answers `422 hosted_limit` (the operator's
 // `YUVA_MIGRATION_SOURCES`); `microsoft` answers `409 provider_not_configured` when the
@@ -59496,7 +59517,8 @@ func (c *Client) DeleteMigration(ctx context.Context, migrationId MigrationId, p
 // GetMigration A migration
 //
 // State, options, counts, the actions allowed now and, while credentials are stored, their
-// kind and server (never the password).
+// kind and server (never the password). A migration into a personal mailbox answers `404` to
+// everyone who does not read that mailbox, here and on every action below.
 //
 // Owners, admins and API keys without an inbox limit. Scope: `migrations:manage`.
 //
@@ -59519,6 +59541,8 @@ func (c *Client) GetMigration(ctx context.Context, migrationId MigrationId, para
 // rule, originals, team addresses, people and labels. Only in `draft`, `connected` and
 // `ready` (`409 migration_state`); `source_address` and `preset` only in `draft`. Any change
 // sends a `ready` migration back to `connected`: scan again for a dry run of the new choice.
+// A migration into a personal mailbox keeps that target (`409 personal_mailbox`); a personal
+// mailbox the caller does not read answers `404`.
 //
 // Owners, admins and API keys without an inbox limit. Scope: `migrations:manage`.
 //
@@ -59543,6 +59567,8 @@ func (c *Client) UpdateMigrationWithBody(ctx context.Context, migrationId Migrat
 // rule, originals, team addresses, people and labels. Only in `draft`, `connected` and
 // `ready` (`409 migration_state`); `source_address` and `preset` only in `draft`. Any change
 // sends a `ready` migration back to `connected`: scan again for a dry run of the new choice.
+// A migration into a personal mailbox keeps that target (`409 personal_mailbox`); a personal
+// mailbox the caller does not read answers `404`.
 //
 // Owners, admins and API keys without an inbox limit. Scope: `migrations:manage`.
 //
@@ -103998,7 +104024,8 @@ type ClientWithResponsesInterface interface {
 	//
 	// A personal mailbox is deleted by its owner, whatever their role, or by an owner or admin,
 	// who delete it without reading it; API keys and other members get `404`. Audited as
-	// `inbox.deleted`.
+	// `inbox.deleted`. Its migrations are deleted with it; while one is scanning, copying,
+	// syncing or removing history the delete answers `409 migration_state`.
 	//
 	// Scope: `inboxes:manage`.
 	//
@@ -105735,7 +105762,8 @@ type ClientWithResponsesInterface interface {
 
 	// ListMigrationsWithResponse List migrations
 	//
-	// Newest first. `state` may be repeated.
+	// Newest first. `state` may be repeated. A migration into a personal mailbox is listed only
+	// to those who read that mailbox.
 	//
 	// Owners, admins and API keys without an inbox limit. Scope: `migrations:manage`.
 	//
@@ -105766,7 +105794,10 @@ type ClientWithResponsesInterface interface {
 	//
 	// `inbox_id` and `channel_id` name where the history goes: an inbox and one of its e-mail
 	// channels whose address is the mailbox address (`400 validation_failed` otherwise). Both can
-	// be set later; a channel names its inbox.
+	// be set later; a channel names its inbox. A personal mailbox (`owner_member_id`) is a target
+	// for its owner only (`404` for everyone else); such a migration writes to that mailbox alone
+	// (`options.inboxes` naming another personal mailbox, or another inbox from it, answers `409
+	// personal_mailbox`), and it and its events reach only those who read the mailbox.
 	//
 	// A source this server does not offer answers `422 hosted_limit` (the operator's
 	// `YUVA_MIGRATION_SOURCES`); `microsoft` answers `409 provider_not_configured` when the
@@ -105803,7 +105834,10 @@ type ClientWithResponsesInterface interface {
 	//
 	// `inbox_id` and `channel_id` name where the history goes: an inbox and one of its e-mail
 	// channels whose address is the mailbox address (`400 validation_failed` otherwise). Both can
-	// be set later; a channel names its inbox.
+	// be set later; a channel names its inbox. A personal mailbox (`owner_member_id`) is a target
+	// for its owner only (`404` for everyone else); such a migration writes to that mailbox alone
+	// (`options.inboxes` naming another personal mailbox, or another inbox from it, answers `409
+	// personal_mailbox`), and it and its events reach only those who read the mailbox.
 	//
 	// A source this server does not offer answers `422 hosted_limit` (the operator's
 	// `YUVA_MIGRATION_SOURCES`); `microsoft` answers `409 provider_not_configured` when the
@@ -105884,7 +105918,8 @@ type ClientWithResponsesInterface interface {
 	// GetMigrationWithResponse A migration
 	//
 	// State, options, counts, the actions allowed now and, while credentials are stored, their
-	// kind and server (never the password).
+	// kind and server (never the password). A migration into a personal mailbox answers `404` to
+	// everyone who does not read that mailbox, here and on every action below.
 	//
 	// Owners, admins and API keys without an inbox limit. Scope: `migrations:manage`.
 	//
@@ -105899,6 +105934,8 @@ type ClientWithResponsesInterface interface {
 	// rule, originals, team addresses, people and labels. Only in `draft`, `connected` and
 	// `ready` (`409 migration_state`); `source_address` and `preset` only in `draft`. Any change
 	// sends a `ready` migration back to `connected`: scan again for a dry run of the new choice.
+	// A migration into a personal mailbox keeps that target (`409 personal_mailbox`); a personal
+	// mailbox the caller does not read answers `404`.
 	//
 	// Owners, admins and API keys without an inbox limit. Scope: `migrations:manage`.
 	//
@@ -105913,6 +105950,8 @@ type ClientWithResponsesInterface interface {
 	// rule, originals, team addresses, people and labels. Only in `draft`, `connected` and
 	// `ready` (`409 migration_state`); `source_address` and `preset` only in `draft`. Any change
 	// sends a `ready` migration back to `connected`: scan again for a dry run of the new choice.
+	// A migration into a personal mailbox keeps that target (`409 personal_mailbox`); a personal
+	// mailbox the caller does not read answers `404`.
 	//
 	// Owners, admins and API keys without an inbox limit. Scope: `migrations:manage`.
 	//
@@ -153792,7 +153831,8 @@ func (c *ClientWithResponses) CreateInboxWithResponse(ctx context.Context, param
 //
 // A personal mailbox is deleted by its owner, whatever their role, or by an owner or admin,
 // who delete it without reading it; API keys and other members get `404`. Audited as
-// `inbox.deleted`.
+// `inbox.deleted`. Its migrations are deleted with it; while one is scanning, copying,
+// syncing or removing history the delete answers `409 migration_state`.
 //
 // Scope: `inboxes:manage`.
 //
@@ -156273,7 +156313,8 @@ func (c *ClientWithResponses) SendMessageWithResponse(ctx context.Context, messa
 
 // ListMigrationsWithResponse List migrations
 //
-// Newest first. `state` may be repeated.
+// Newest first. `state` may be repeated. A migration into a personal mailbox is listed only
+// to those who read that mailbox.
 //
 // Owners, admins and API keys without an inbox limit. Scope: `migrations:manage`.
 //
@@ -156310,7 +156351,10 @@ func (c *ClientWithResponses) ListMigrationsWithResponse(ctx context.Context, pa
 //
 // `inbox_id` and `channel_id` name where the history goes: an inbox and one of its e-mail
 // channels whose address is the mailbox address (`400 validation_failed` otherwise). Both can
-// be set later; a channel names its inbox.
+// be set later; a channel names its inbox. A personal mailbox (`owner_member_id`) is a target
+// for its owner only (`404` for everyone else); such a migration writes to that mailbox alone
+// (`options.inboxes` naming another personal mailbox, or another inbox from it, answers `409
+// personal_mailbox`), and it and its events reach only those who read the mailbox.
 //
 // A source this server does not offer answers `422 hosted_limit` (the operator's
 // `YUVA_MIGRATION_SOURCES`); `microsoft` answers `409 provider_not_configured` when the
@@ -156353,7 +156397,10 @@ func (c *ClientWithResponses) CreateMigrationWithBodyWithResponse(ctx context.Co
 //
 // `inbox_id` and `channel_id` name where the history goes: an inbox and one of its e-mail
 // channels whose address is the mailbox address (`400 validation_failed` otherwise). Both can
-// be set later; a channel names its inbox.
+// be set later; a channel names its inbox. A personal mailbox (`owner_member_id`) is a target
+// for its owner only (`404` for everyone else); such a migration writes to that mailbox alone
+// (`options.inboxes` naming another personal mailbox, or another inbox from it, answers `409
+// personal_mailbox`), and it and its events reach only those who read the mailbox.
 //
 // A source this server does not offer answers `422 hosted_limit` (the operator's
 // `YUVA_MIGRATION_SOURCES`); `microsoft` answers `409 provider_not_configured` when the
@@ -156464,7 +156511,8 @@ func (c *ClientWithResponses) DeleteMigrationWithResponse(ctx context.Context, m
 // GetMigrationWithResponse A migration
 //
 // State, options, counts, the actions allowed now and, while credentials are stored, their
-// kind and server (never the password).
+// kind and server (never the password). A migration into a personal mailbox answers `404` to
+// everyone who does not read that mailbox, here and on every action below.
 //
 // Owners, admins and API keys without an inbox limit. Scope: `migrations:manage`.
 //
@@ -156485,6 +156533,8 @@ func (c *ClientWithResponses) GetMigrationWithResponse(ctx context.Context, migr
 // rule, originals, team addresses, people and labels. Only in `draft`, `connected` and
 // `ready` (`409 migration_state`); `source_address` and `preset` only in `draft`. Any change
 // sends a `ready` migration back to `connected`: scan again for a dry run of the new choice.
+// A migration into a personal mailbox keeps that target (`409 personal_mailbox`); a personal
+// mailbox the caller does not read answers `404`.
 //
 // Owners, admins and API keys without an inbox limit. Scope: `migrations:manage`.
 //
@@ -156505,6 +156555,8 @@ func (c *ClientWithResponses) UpdateMigrationWithBodyWithResponse(ctx context.Co
 // rule, originals, team addresses, people and labels. Only in `draft`, `connected` and
 // `ready` (`409 migration_state`); `source_address` and `preset` only in `draft`. Any change
 // sends a `ready` migration back to `connected`: scan again for a dry run of the new choice.
+// A migration into a personal mailbox keeps that target (`409 personal_mailbox`); a personal
+// mailbox the caller does not read answers `404`.
 //
 // Owners, admins and API keys without an inbox limit. Scope: `migrations:manage`.
 //

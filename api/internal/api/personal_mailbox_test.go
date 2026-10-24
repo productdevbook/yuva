@@ -1,6 +1,7 @@
 package api_test
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"slices"
@@ -9,11 +10,17 @@ import (
 	"time"
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
+	"uuid"
+
+	"github.com/productdevbook/yuva/api/internal/api"
 )
 
 func TestPersonalMailboxReadOnlyByItsOwner(t *testing.T) {
 	t.Parallel()
-	h := privateHarness(t)
+	h := newHarnessWith(t, func(d *api.Deps) {
+		d.Webhooks.AllowPrivate = true
+		d.Migrations = api.MigrationSettings{AllowPrivate: true, TestTimeout: 5 * time.Second}
+	})
 	tm := newTeam(t, h)
 	mailOwner, mailOwnerID := tm.newAgent()
 	adminEmail := unique("admin") + "@example.com"
@@ -160,6 +167,63 @@ func TestPersonalMailboxReadOnlyByItsOwner(t *testing.T) {
 		}
 	}
 
+	adminID := memberships(admin)[0].(map[string]any)["member_id"].(string)
+	adminBox := admin.expect(http.StatusCreated, "POST", "/v1/inboxes", map[string]any{"name": "Admin mail", "slug": unique("adminmail"), "owner_member_id": adminID}).body["inbox"].(map[string]any)["id"].(string)
+	adminAddress := unique("adm") + "@example.com"
+	adminChannel := admin.expect(http.StatusCreated, "POST", "/v1/inboxes/"+adminBox+"/channels", map[string]any{
+		"kind": "email", "name": "Admin mail", "email": map[string]any{"address": adminAddress},
+	}).str("id")
+	tm.owner.expectProblem(http.StatusNotFound, "not_found", "POST", "/v1/migrations", map[string]any{"preset": "gmail", "source_address": adminAddress, "inbox_id": adminBox})
+	tm.owner.expectProblem(http.StatusNotFound, "not_found", "POST", "/v1/migrations", map[string]any{"preset": "gmail", "source_address": adminAddress, "channel_id": adminChannel})
+	mig := admin.expect(http.StatusCreated, "POST", "/v1/migrations", map[string]any{"preset": "gmail", "source_address": adminAddress, "channel_id": adminChannel}).str("id")
+	sharedMig := tm.owner.expect(http.StatusCreated, "POST", "/v1/migrations", map[string]any{"preset": "gmail", "source_address": unique("shared") + "@example.com", "inbox_id": tm.inbox}).str("id")
+	reached := func(c *client, method, path string, body any) bool { return c.do(method, path, body).status != http.StatusNotFound }
+	migrationSurfaces := []struct {
+		name string
+		sees func(c *client) bool
+	}{
+		{"get", func(c *client) bool { return ok(c, "GET", "/v1/migrations/"+mig, nil) }},
+		{"list", func(c *client) bool { return has(c, "/v1/migrations?limit=100", mig) }},
+		{"folders", func(c *client) bool { return ok(c, "GET", "/v1/migrations/"+mig+"/folders", nil) }},
+		{"errors", func(c *client) bool { return ok(c, "GET", "/v1/migrations/"+mig+"/errors", nil) }},
+		{"preview", func(c *client) bool { return reached(c, "GET", "/v1/migrations/"+mig+"/preview", nil) }},
+		{"events", func(c *client) bool { return has(c, "/v1/events?after=0&limit=500", mig) }},
+		{"update", func(c *client) bool {
+			return ok(c, "PATCH", "/v1/migrations/"+mig, map[string]any{"options": map[string]any{"close_after_days": 7}})
+		}},
+		{"start", func(c *client) bool { return reached(c, "POST", "/v1/migrations/"+mig+"/start", nil) }},
+		{"finish", func(c *client) bool { return reached(c, "POST", "/v1/migrations/"+mig+"/finish", map[string]any{}) }},
+		{"remove history", func(c *client) bool { return reached(c, "POST", "/v1/migrations/"+mig+"/remove-history", map[string]any{}) }},
+	}
+	for _, v := range []struct {
+		name   string
+		c      *client
+		reader bool
+	}{{"mailbox owner (admin)", admin, true}, {"workspace owner", tm.owner, false}, {"api key", key, false}} {
+		for _, s := range migrationSurfaces {
+			if got := s.sees(v.c); got != v.reader {
+				t.Errorf("migration %s, %s: sees %v, want %v", s.name, v.name, got, v.reader)
+			}
+		}
+		if !has(v.c, "/v1/migrations?limit=100", sharedMig) {
+			t.Errorf("%s does not list the shared migration", v.name)
+		}
+	}
+	admin.expectProblem(http.StatusConflict, "personal_mailbox", "PATCH", "/v1/migrations/"+mig, map[string]any{"inbox_id": tm.inbox})
+	admin.expectProblem(http.StatusConflict, "personal_mailbox", "PATCH", "/v1/migrations/"+mig, map[string]any{"inbox_id": nil})
+	tm.owner.expectProblem(http.StatusNotFound, "not_found", "PATCH", "/v1/migrations/"+sharedMig, map[string]any{"inbox_id": adminBox})
+	tm.owner.expectProblem(http.StatusNotFound, "not_found", "PATCH", "/v1/migrations/"+sharedMig, map[string]any{"channel_id": adminChannel})
+	admin.expectProblem(http.StatusConflict, "personal_mailbox", "PATCH", "/v1/migrations/"+sharedMig, map[string]any{
+		"options": map[string]any{"inboxes": []map[string]any{{"folder": "Personal", "inbox_id": adminBox}}},
+	})
+	tm.owner.expectProblem(http.StatusNotFound, "not_found", "DELETE", "/v1/migrations/"+mig, nil)
+	admin.expect(http.StatusNoContent, "DELETE", "/v1/migrations/"+mig, nil)
+	left := admin.expect(http.StatusCreated, "POST", "/v1/migrations", map[string]any{"preset": "gmail", "source_address": adminAddress, "channel_id": adminChannel}).str("id")
+	admin.expect(http.StatusNoContent, "DELETE", "/v1/inboxes/"+adminBox, nil)
+	if n := h.count("SELECT count(*) FROM migrations WHERE workspace_id = $1 AND id = $2", tm.ws, left); n != 0 {
+		t.Fatal("a migration into a deleted personal mailbox outlived it")
+	}
+
 	ownerID := tm.ownerMemberID(t)
 	mailOwner.expectProblem(http.StatusBadRequest, "validation_failed", "POST", "/v1/conversations/"+conv+"/messages", map[string]any{"kind": "note", "body": "look", "mentions": []string{ownerID}})
 
@@ -193,4 +257,43 @@ func TestPersonalMailboxReadOnlyByItsOwner(t *testing.T) {
 		t.Fatalf("%d audit entries for the mailbox, want 2", n)
 	}
 	tm.owner.expect(http.StatusNoContent, "DELETE", "/v1/members/"+mailOwnerID, nil)
+}
+
+func TestPersonalMailboxOwnersLeaveDeletedWorkspace(t *testing.T) {
+	t.Parallel()
+	h := newHarness(t)
+	ctx := context.Background()
+	tm := newTeam(t, h)
+	second, secondID := tm.newAgent()
+	for _, m := range []struct {
+		c  *client
+		id string
+	}{{tm.agent, tm.agentID}, {second, secondID}} {
+		m.c.expect(http.StatusCreated, "POST", "/v1/inboxes", map[string]any{"name": "Mine", "slug": unique("mine"), "owner_member_id": m.id})
+	}
+	name := tm.owner.expect(http.StatusOK, "GET", "/v1/workspace", nil).str("name")
+	tm.owner.expect(http.StatusAccepted, "DELETE", "/v1/workspace", map[string]any{"name": name})
+
+	agentEmail := personEmail(tm.agent)
+	tm.agent.workspace = ""
+	tm.agent.expect(http.StatusNoContent, "DELETE", "/v1/me", map[string]any{"email": agentEmail})
+	if _, err := h.srv.OperatorDeletePerson(ctx, personEmail(second)); err != nil {
+		t.Fatal(err)
+	}
+	if n := h.count("SELECT count(*) FROM inboxes WHERE workspace_id = $1 AND owner_member_id IS NOT NULL", tm.ws); n != 0 {
+		t.Fatalf("%d personal mailboxes keep a deleted owner", n)
+	}
+	wsID := uuid.MustParse(tm.ws)
+	for range 10 {
+		p, err := h.srv.PurgeWorkspace(ctx, wsID, time.Minute)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if p.Done {
+			break
+		}
+	}
+	if n := h.count("SELECT count(*) FROM inboxes WHERE workspace_id = $1", tm.ws); n != 0 {
+		t.Fatalf("%d inboxes left after the purge", n)
+	}
 }

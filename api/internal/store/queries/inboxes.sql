@@ -110,6 +110,12 @@ WHERE workspace_id = @workspace_id AND id = ANY(@ids::uuid[]) AND owner_member_i
 -- name: ListMemberPersonalInboxIDs :many
 SELECT id FROM inboxes WHERE workspace_id = @workspace_id AND owner_member_id = @member_id ORDER BY id;
 
+-- name: ReleaseDeletedWorkspaceMailboxes :execrows
+UPDATE inboxes i SET owner_member_id = NULL
+FROM members m JOIN workspaces w ON w.id = m.workspace_id
+WHERE m.person_id = @person_id AND w.deleted_at IS NOT NULL
+  AND i.workspace_id = m.workspace_id AND i.owner_member_id = m.id;
+
 -- name: ListInboxMailboxes :many
 SELECT i.id,
        coalesce((SELECT array_agg(e.address ORDER BY e.address) FROM channels ch
