@@ -557,6 +557,10 @@ msgid "{n, plural, one {# recipient a day} other {# recipients a day}}"
 msgstr "{n, plural, one {# primatelj dnevno} few {# primatelja dnevno} other {# primatelja dnevno}}"
 
 #: src/features/setup/SetupHub.tsx
+msgid "{n, plural, one {# team mailbox} other {# team mailboxes}}"
+msgstr "{n, plural, one {# timski poštanski sandučić} few {# timska poštanska sandučića} other {# timskih poštanskih sandučića}}"
+
+#: src/features/setup/SetupHub.tsx
 msgid "{n, plural, one {# website chat} other {# website chats}}"
 msgstr "{n, plural, one {# chat na web-mjestu} few {# chata na web-mjestu} other {# chatova na web-mjestu}}"
 
@@ -1500,6 +1504,10 @@ msgstr "Isključeno pravilo se nikad ne izvodi. Pravila se izvode redoslijedom s
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "A secret is set. Paste a new one to replace it."
 msgstr "A secret is set. Paste a new one to replace it."
+
+#: src/features/setup/SetupHub.tsx
+msgid "A shared mailbox like hello@ or billing@ for your team"
+msgstr "Zajednički poštanski sandučić poput hello@ ili billing@ za vaš tim"
 
 #: src/components/common/PurposeChoice.tsx
 msgid "A shared mailbox like hello@ or billing@, kept out of support views and stats."
@@ -3350,6 +3358,10 @@ msgstr "Ime bota"
 msgid "Bot name (optional)"
 msgstr "Ime bota (neobavezno)"
 
+#: src/components/common/FocusChoice.tsx
+msgid "Both"
+msgstr "Oboje"
+
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Both records were found. Yuva checks them once a day; keep them in place."
 msgstr "Oba su zapisa pronađena. Yuva ih provjerava jednom dnevno; ostavite ih na mjestu."
@@ -3835,6 +3847,10 @@ msgstr "Chat"
 #: src/features/docs/InstallDialog.tsx
 msgid "Chat channel"
 msgstr "Chat kanal"
+
+#: src/components/common/FocusChoice.tsx
+msgid "Chat, e-mail and in-app support for customers"
+msgstr "Podrška za korisnike putem chata, e-pošte i unutar aplikacije"
 
 #: src/features/broadcasts/ReviewPanel.tsx
 #: src/features/settings/channels/ChannelPage.tsx
@@ -4624,6 +4640,7 @@ msgstr "sadrži"
 msgid "Content"
 msgstr "Sadržaj"
 
+#: src/app/FocusQuestion.tsx
 #: src/features/broadcasts/Import.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 #: src/features/migrations/ChooseStep.tsx
@@ -5180,6 +5197,10 @@ msgstr "Koliko dana prije isteka provjera ne uspijeva. Kod 0 provjerava se samo 
 #: src/features/status/SettingsTab.tsx
 msgid "Days of history"
 msgstr "Dana povijesti"
+
+#: src/app/FocusQuestion.tsx
+msgid "Decide later"
+msgstr "Odluči kasnije"
 
 #: src/features/docs/PagesTab.tsx
 #: src/features/setup/InstallStep.tsx
@@ -11956,6 +11977,10 @@ msgstr "Samo ja"
 msgid "Only owners and admins can change it."
 msgstr "Samo vlasnici i administratori mogu to promijeniti."
 
+#: src/features/settings/workspace/FocusForm.tsx
+msgid "Only owners and admins can change this."
+msgstr "Ovo mogu promijeniti samo vlasnici i administratori."
+
 #: src/features/settings/workspace/RetentionForm.tsx
 msgid "Only owners can change this."
 msgstr "Samo vlasnici to mogu promijeniti."
@@ -14866,6 +14891,7 @@ msgstr "Subota"
 #: src/features/settings/slack/SlackPage.tsx
 #: src/features/settings/teams/TeamDialog.tsx
 #: src/features/settings/ui.tsx
+#: src/features/settings/workspace/FocusForm.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/IncidentDetail.tsx
@@ -14938,6 +14964,7 @@ msgstr "Spremi popis kao prikaz"
 #: src/features/settings/signature/SignaturePage.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/webhooks/sections.tsx
+#: src/features/settings/workspace/FocusForm.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/status/SettingsTab.tsx
 msgid "Saved"
@@ -15732,6 +15759,10 @@ msgstr "Postavi Yuvu"
 msgid "Sets {cname} to {downState} while it is down"
 msgstr "Postavlja {cname} na „{downState}” dok je nedostupan"
 
+#: src/features/settings/workspace/FocusForm.tsx
+msgid "Sets what you see first: the Setup cards, the sidebar and the page Yuva opens on."
+msgstr "Određuje što prvo vidite: kartice postavljanja, bočnu traku i stranicu na kojoj se Yuva otvara."
+
 #: src/features/settings/channels/email/Ses.tsx
 msgid "Setting up the inbox’s Amazon SES tenant…"
 msgstr "Postavljanje Amazon SES zakupca pretinca…"
@@ -15795,6 +15826,10 @@ msgstr "SHA-256 otisak certifikata koji je poslužitelj poslao"
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "Shared"
 msgstr "Dijeljeno"
+
+#: src/components/common/FocusChoice.tsx
+msgid "Shared mailboxes for your team"
+msgstr "Zajednički poštanski sandučići za vaš tim"
 
 #: src/components/common/text.ts
 msgid "Shipped"
@@ -16908,6 +16943,7 @@ msgid "Sunday"
 msgstr "Nedjelja"
 
 #: src/app/Sidebar.tsx
+#: src/components/common/FocusChoice.tsx
 #: src/components/common/PurposeChoice.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Support"
@@ -16924,6 +16960,10 @@ msgstr "Adresa podrške"
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Support bot"
 msgstr "Bot podrške"
+
+#: src/components/common/FocusChoice.tsx
+msgid "Support for customers and shared mailboxes for your team"
+msgstr "Podrška za korisnike i zajednički poštanski sandučići za vaš tim"
 
 #: src/features/status/SettingsTab.tsx
 msgid "Support link"
@@ -17047,8 +17087,10 @@ msgstr "Tim promijenjen"
 msgid "Team ID"
 msgstr "ID tima"
 
+#: src/components/common/FocusChoice.tsx
 #: src/components/common/PurposeChoice.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/setup/SetupHub.tsx
 msgid "Team mail"
 msgstr "Timska pošta"
 
@@ -18710,6 +18752,10 @@ msgstr "Ograničenje migracija ovog poslužitelja je doseglo. Pričekajte da jed
 msgid "This server's limit was reached"
 msgstr "Ograničenje ovog poslužitelja je dosegnuto"
 
+#: src/app/FocusQuestion.tsx
+msgid "This sets what you see first. You can change it later in the workspace settings."
+msgstr "Ovo određuje što prvo vidite. Možete to kasnije promijeniti u postavkama radnog prostora."
+
 #: src/features/account/ConnectPage.tsx
 msgid "This site cannot connect"
 msgstr "Ovo web-mjesto se ne može povezati"
@@ -20133,6 +20179,10 @@ msgstr "Što je pošlo po zlu i što si rekao ljudima"
 msgid "What will go out"
 msgstr "Što će otići"
 
+#: src/app/FocusQuestion.tsx
+msgid "What will you use Yuva for?"
+msgstr "Za što ćete koristiti Yuvu?"
+
 #: src/features/settings/SettingsColumn.tsx
 msgid "What you write often"
 msgstr "Što često pišete"
@@ -20144,6 +20194,11 @@ msgstr "What your e-mailed replies end with"
 #: src/features/settings/signature/SignaturePage.tsx
 msgid "What your e-mailed replies end with, per inbox. Chat replies and notes carry none."
 msgstr "What your e-mailed replies end with, per inbox. Chat replies and notes carry none."
+
+#: src/components/common/FocusChoice.tsx
+#: src/features/settings/workspace/FocusForm.tsx
+msgid "What Yuva is for"
+msgstr "Za što služi Yuva"
 
 #: src/app/Palette.tsx
 #: src/app/Rail.tsx
@@ -20898,6 +20953,10 @@ msgstr "Vaša adresa podrške"
 #: src/features/migrations/MapStep.tsx
 msgid "Your team"
 msgstr "Vaš tim"
+
+#: src/features/setup/SetupHub.tsx
+msgid "Your team shares mailboxes like hello@ or billing@, kept out of support views and stats."
+msgstr "Vaš tim dijeli poštanske sandučiće poput hello@ ili billing@, odvojene od prikaza i statistike podrške."
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Your time zone, {zone}. That is {utc} UTC."

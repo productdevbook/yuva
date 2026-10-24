@@ -84,8 +84,14 @@ function Loading() {
 }
 
 function IndexPage() {
-  const { canManage } = useSession()
+  const { canManage, mailFirst } = useSession()
+  if (mailFirst) return <Navigate to="/mail" replace />
   return canManage ? <HomePage /> : <ChatsPage />
+}
+
+function HomeRoute() {
+  const { canManage } = useSession()
+  return canManage ? <HomePage /> : <Navigate to="/" replace />
 }
 
 export function AppRoutes() {
@@ -106,6 +112,7 @@ export function AppRoutes() {
       <Route element={<Gate />}>
         <Route path="workspaces/new" element={<NewWorkspacePage />} />
         <Route path="setup" element={<SetupPage flow="hub" />} />
+        <Route path="setup/mail" element={<SetupPage flow="mail" />} />
         <Route path="setup/new" element={<SetupPage flow="new" />} />
         <Route path="setup/new/pick" element={<SetupPage flow="pick" />} />
         <Route path="setup/new/add/email/replies" element={<SetupPage flow="replies" />} />
@@ -154,6 +161,7 @@ export function AppRoutes() {
         />
         <Route element={<Layout />}>
           <Route index element={<IndexPage />} />
+          <Route path="home" element={<HomeRoute />} />
           <Route path="conversations" element={<ChatsPage />} />
           <Route path="conversations/:conversationId" element={<ChatsPage />} />
           <Route path="mail" element={<MailPage />} />

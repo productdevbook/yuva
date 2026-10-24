@@ -557,6 +557,10 @@ msgid "{n, plural, one {# recipient a day} other {# recipients a day}}"
 msgstr "{n, plural, one {# παραλήπτης την ημέρα} other {# παραλήπτες την ημέρα}}"
 
 #: src/features/setup/SetupHub.tsx
+msgid "{n, plural, one {# team mailbox} other {# team mailboxes}}"
+msgstr "{n, plural, one {# γραμματοκιβώτιο ομάδας} other {# γραμματοκιβώτια ομάδας}}"
+
+#: src/features/setup/SetupHub.tsx
 msgid "{n, plural, one {# website chat} other {# website chats}}"
 msgstr "{n, plural, one {# συνομιλία ιστότοπου} other {# συνομιλίες ιστότοπου}}"
 
@@ -1500,6 +1504,10 @@ msgstr "Ένας κανόνας που είναι ανενεργός δεν εκ
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "A secret is set. Paste a new one to replace it."
 msgstr "A secret is set. Paste a new one to replace it."
+
+#: src/features/setup/SetupHub.tsx
+msgid "A shared mailbox like hello@ or billing@ for your team"
+msgstr "Ένα κοινό γραμματοκιβώτιο όπως hello@ ή billing@ για την ομάδα σας"
 
 #: src/components/common/PurposeChoice.tsx
 msgid "A shared mailbox like hello@ or billing@, kept out of support views and stats."
@@ -3350,6 +3358,10 @@ msgstr "Όνομα του bot"
 msgid "Bot name (optional)"
 msgstr "Όνομα του bot (προαιρετικά)"
 
+#: src/components/common/FocusChoice.tsx
+msgid "Both"
+msgstr "Και τα δύο"
+
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Both records were found. Yuva checks them once a day; keep them in place."
 msgstr "Βρέθηκαν και οι δύο εγγραφές. Το Yuva τις ελέγχει μία φορά την ημέρα· αφήστε τις στη θέση τους."
@@ -3835,6 +3847,10 @@ msgstr "Συνομιλία"
 #: src/features/docs/InstallDialog.tsx
 msgid "Chat channel"
 msgstr "Κανάλι συνομιλίας"
+
+#: src/components/common/FocusChoice.tsx
+msgid "Chat, e-mail and in-app support for customers"
+msgstr "Υποστήριξη πελατών μέσω συνομιλίας, e-mail και μέσα στην εφαρμογή"
 
 #: src/features/broadcasts/ReviewPanel.tsx
 #: src/features/settings/channels/ChannelPage.tsx
@@ -4624,6 +4640,7 @@ msgstr "περιέχει"
 msgid "Content"
 msgstr "Περιεχόμενο"
 
+#: src/app/FocusQuestion.tsx
 #: src/features/broadcasts/Import.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 #: src/features/migrations/ChooseStep.tsx
@@ -5180,6 +5197,10 @@ msgstr "Πόσες ημέρες πριν από τη λήξη αποτυγχάν
 #: src/features/status/SettingsTab.tsx
 msgid "Days of history"
 msgstr "Ημέρες ιστορικού"
+
+#: src/app/FocusQuestion.tsx
+msgid "Decide later"
+msgstr "Θα αποφασίσω αργότερα"
 
 #: src/features/docs/PagesTab.tsx
 #: src/features/setup/InstallStep.tsx
@@ -11956,6 +11977,10 @@ msgstr "Μόνο εγώ"
 msgid "Only owners and admins can change it."
 msgstr "Μόνο οι κάτοχοι και οι διαχειριστές μπορούν να το αλλάξουν."
 
+#: src/features/settings/workspace/FocusForm.tsx
+msgid "Only owners and admins can change this."
+msgstr "Μόνο οι ιδιοκτήτες και οι διαχειριστές μπορούν να το αλλάξουν."
+
 #: src/features/settings/workspace/RetentionForm.tsx
 msgid "Only owners can change this."
 msgstr "Μόνο οι ιδιοκτήτες μπορούν να το αλλάξουν."
@@ -14866,6 +14891,7 @@ msgstr "Σάββατο"
 #: src/features/settings/slack/SlackPage.tsx
 #: src/features/settings/teams/TeamDialog.tsx
 #: src/features/settings/ui.tsx
+#: src/features/settings/workspace/FocusForm.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/IncidentDetail.tsx
@@ -14938,6 +14964,7 @@ msgstr "Αποθήκευση της λίστας ως προβολή"
 #: src/features/settings/signature/SignaturePage.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/webhooks/sections.tsx
+#: src/features/settings/workspace/FocusForm.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/status/SettingsTab.tsx
 msgid "Saved"
@@ -15732,6 +15759,10 @@ msgstr "Ρύθμιση του Yuva"
 msgid "Sets {cname} to {downState} while it is down"
 msgstr "Ορίζει το {cname} σε «{downState}» όσο είναι εκτός λειτουργίας"
 
+#: src/features/settings/workspace/FocusForm.tsx
+msgid "Sets what you see first: the Setup cards, the sidebar and the page Yuva opens on."
+msgstr "Ορίζει τι βλέπετε πρώτα: τις κάρτες ρύθμισης, την πλαϊνή στήλη και τη σελίδα που ανοίγει το Yuva."
+
 #: src/features/settings/channels/email/Ses.tsx
 msgid "Setting up the inbox’s Amazon SES tenant…"
 msgstr "Ρύθμιση του μισθωτή Amazon SES των εισερχομένων…"
@@ -15795,6 +15826,10 @@ msgstr "Αποτύπωμα SHA-256 του πιστοποιητικού που έ
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "Shared"
 msgstr "Κοινόχρηστη"
+
+#: src/components/common/FocusChoice.tsx
+msgid "Shared mailboxes for your team"
+msgstr "Κοινά γραμματοκιβώτια για την ομάδα σας"
 
 #: src/components/common/text.ts
 msgid "Shipped"
@@ -16908,6 +16943,7 @@ msgid "Sunday"
 msgstr "Κυριακή"
 
 #: src/app/Sidebar.tsx
+#: src/components/common/FocusChoice.tsx
 #: src/components/common/PurposeChoice.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Support"
@@ -16924,6 +16960,10 @@ msgstr "Διεύθυνση υποστήριξης"
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Support bot"
 msgstr "Bot υποστήριξης"
+
+#: src/components/common/FocusChoice.tsx
+msgid "Support for customers and shared mailboxes for your team"
+msgstr "Υποστήριξη για πελάτες και κοινά γραμματοκιβώτια για την ομάδα σας"
 
 #: src/features/status/SettingsTab.tsx
 msgid "Support link"
@@ -17047,8 +17087,10 @@ msgstr "Η ομάδα άλλαξε"
 msgid "Team ID"
 msgstr "Αναγνωριστικό ομάδας"
 
+#: src/components/common/FocusChoice.tsx
 #: src/components/common/PurposeChoice.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/setup/SetupHub.tsx
 msgid "Team mail"
 msgstr "Ομαδική αλληλογραφία"
 
@@ -18710,6 +18752,10 @@ msgstr "Το όριο μεταφορών αυτού του διακομιστή 
 msgid "This server's limit was reached"
 msgstr "Το όριο αυτού του διακομιστή επιτεύχθηκε"
 
+#: src/app/FocusQuestion.tsx
+msgid "This sets what you see first. You can change it later in the workspace settings."
+msgstr "Αυτό ορίζει τι βλέπετε πρώτα. Μπορείτε να το αλλάξετε αργότερα στις ρυθμίσεις του χώρου εργασίας."
+
 #: src/features/account/ConnectPage.tsx
 msgid "This site cannot connect"
 msgstr "Αυτός ο ιστότοπος δεν μπορεί να συνδεθεί"
@@ -20133,6 +20179,10 @@ msgstr "Τι πήγε στραβά και τι είπατε στους ανθρ�
 msgid "What will go out"
 msgstr "Τι θα φύγει"
 
+#: src/app/FocusQuestion.tsx
+msgid "What will you use Yuva for?"
+msgstr "Σε τι θα χρησιμοποιήσετε το Yuva;"
+
 #: src/features/settings/SettingsColumn.tsx
 msgid "What you write often"
 msgstr "Ό,τι γράφετε συχνά"
@@ -20144,6 +20194,11 @@ msgstr "What your e-mailed replies end with"
 #: src/features/settings/signature/SignaturePage.tsx
 msgid "What your e-mailed replies end with, per inbox. Chat replies and notes carry none."
 msgstr "What your e-mailed replies end with, per inbox. Chat replies and notes carry none."
+
+#: src/components/common/FocusChoice.tsx
+#: src/features/settings/workspace/FocusForm.tsx
+msgid "What Yuva is for"
+msgstr "Σε τι χρησιμεύει το Yuva"
 
 #: src/app/Palette.tsx
 #: src/app/Rail.tsx
@@ -20898,6 +20953,10 @@ msgstr "Η διεύθυνση υποστήριξής σας"
 #: src/features/migrations/MapStep.tsx
 msgid "Your team"
 msgstr "Η ομάδα σας"
+
+#: src/features/setup/SetupHub.tsx
+msgid "Your team shares mailboxes like hello@ or billing@, kept out of support views and stats."
+msgstr "Η ομάδα σας μοιράζεται γραμματοκιβώτια όπως hello@ ή billing@, εκτός των προβολών και των στατιστικών υποστήριξης."
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Your time zone, {zone}. That is {utc} UTC."

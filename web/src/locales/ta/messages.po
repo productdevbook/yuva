@@ -557,6 +557,10 @@ msgid "{n, plural, one {# recipient a day} other {# recipients a day}}"
 msgstr "{n, plural, one {தினமும் # பெறுநர்} other {தினமும் # பெறுநர்கள்}}"
 
 #: src/features/setup/SetupHub.tsx
+msgid "{n, plural, one {# team mailbox} other {# team mailboxes}}"
+msgstr "{n, plural, one {# குழு அஞ்சல் பெட்டி} other {# குழு அஞ்சல் பெட்டிகள்}}"
+
+#: src/features/setup/SetupHub.tsx
 msgid "{n, plural, one {# website chat} other {# website chats}}"
 msgstr "{n, plural, one {# இணையதள அரட்டை} other {# இணையதள அரட்டைகள்}}"
 
@@ -1500,6 +1504,10 @@ msgstr "அணைக்கப்பட்ட விதி ஒருபோது�
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "A secret is set. Paste a new one to replace it."
 msgstr "A secret is set. Paste a new one to replace it."
+
+#: src/features/setup/SetupHub.tsx
+msgid "A shared mailbox like hello@ or billing@ for your team"
+msgstr "உங்கள் குழுவுக்கு hello@ அல்லது billing@ போன்ற பகிரப்பட்ட அஞ்சல் பெட்டி"
 
 #: src/components/common/PurposeChoice.tsx
 msgid "A shared mailbox like hello@ or billing@, kept out of support views and stats."
@@ -3350,6 +3358,10 @@ msgstr "பாட் பெயர்"
 msgid "Bot name (optional)"
 msgstr "பாட் பெயர் (விருப்பம்)"
 
+#: src/components/common/FocusChoice.tsx
+msgid "Both"
+msgstr "இரண்டும்"
+
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Both records were found. Yuva checks them once a day; keep them in place."
 msgstr "இரண்டு பதிவுகளும் கிடைத்தன. Yuva அவற்றை நாளுக்கு ஒருமுறை சரிபார்க்கும்; அவற்றை அப்படியே வைத்திருங்கள்."
@@ -3835,6 +3847,10 @@ msgstr "அரட்டை"
 #: src/features/docs/InstallDialog.tsx
 msgid "Chat channel"
 msgstr "அரட்டை சேனல்"
+
+#: src/components/common/FocusChoice.tsx
+msgid "Chat, e-mail and in-app support for customers"
+msgstr "வாடிக்கையாளர்களுக்கான அரட்டை, மின்னஞ்சல் மற்றும் செயலிக்குள் ஆதரவு"
 
 #: src/features/broadcasts/ReviewPanel.tsx
 #: src/features/settings/channels/ChannelPage.tsx
@@ -4624,6 +4640,7 @@ msgstr "கொண்டுள்ளது"
 msgid "Content"
 msgstr "உள்ளடக்கம்"
 
+#: src/app/FocusQuestion.tsx
 #: src/features/broadcasts/Import.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 #: src/features/migrations/ChooseStep.tsx
@@ -5180,6 +5197,10 @@ msgstr "காலாவதிக்கு எத்தனை நாட்கள�
 #: src/features/status/SettingsTab.tsx
 msgid "Days of history"
 msgstr "வரலாற்று நாட்கள்"
+
+#: src/app/FocusQuestion.tsx
+msgid "Decide later"
+msgstr "பின்னர் முடிவு செய்கிறேன்"
 
 #: src/features/docs/PagesTab.tsx
 #: src/features/setup/InstallStep.tsx
@@ -11956,6 +11977,10 @@ msgstr "நான் மட்டும்"
 msgid "Only owners and admins can change it."
 msgstr "உரிமையாளர்களும் நிர்வாகிகளும் மட்டுமே இதை மாற்ற முடியும்."
 
+#: src/features/settings/workspace/FocusForm.tsx
+msgid "Only owners and admins can change this."
+msgstr "இதை உரிமையாளர்களும் நிர்வாகிகளும் மட்டுமே மாற்ற முடியும்."
+
 #: src/features/settings/workspace/RetentionForm.tsx
 msgid "Only owners can change this."
 msgstr "உரிமையாளர்கள் மட்டுமே இதை மாற்ற முடியும்."
@@ -14866,6 +14891,7 @@ msgstr "சனிக்கிழமை"
 #: src/features/settings/slack/SlackPage.tsx
 #: src/features/settings/teams/TeamDialog.tsx
 #: src/features/settings/ui.tsx
+#: src/features/settings/workspace/FocusForm.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/IncidentDetail.tsx
@@ -14938,6 +14964,7 @@ msgstr "பட்டியலைக் காட்சியாகச் சே�
 #: src/features/settings/signature/SignaturePage.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/webhooks/sections.tsx
+#: src/features/settings/workspace/FocusForm.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/status/SettingsTab.tsx
 msgid "Saved"
@@ -15732,6 +15759,10 @@ msgstr "Yuva-வை அமை"
 msgid "Sets {cname} to {downState} while it is down"
 msgstr "செயலிழந்திருக்கும் போது {cname} ஐ “{downState}” ஆக அமைக்கிறது"
 
+#: src/features/settings/workspace/FocusForm.tsx
+msgid "Sets what you see first: the Setup cards, the sidebar and the page Yuva opens on."
+msgstr "நீங்கள் முதலில் எதைப் பார்க்கிறீர்கள் என்பதை அமைக்கிறது: அமைப்பு அட்டைகள், பக்கப்பட்டி மற்றும் Yuva திறக்கும் பக்கம்."
+
 #: src/features/settings/channels/email/Ses.tsx
 msgid "Setting up the inbox’s Amazon SES tenant…"
 msgstr "இன்பாக்ஸின் Amazon SES டெனன்ட்டை அமைக்கிறது…"
@@ -15795,6 +15826,10 @@ msgstr "சேவையகம் அனுப்பிய சான்றித�
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "Shared"
 msgstr "பகிரப்பட்டது"
+
+#: src/components/common/FocusChoice.tsx
+msgid "Shared mailboxes for your team"
+msgstr "உங்கள் குழுவுக்கான பகிரப்பட்ட அஞ்சல் பெட்டிகள்"
 
 #: src/components/common/text.ts
 msgid "Shipped"
@@ -16908,6 +16943,7 @@ msgid "Sunday"
 msgstr "ஞாயிற்றுக்கிழமை"
 
 #: src/app/Sidebar.tsx
+#: src/components/common/FocusChoice.tsx
 #: src/components/common/PurposeChoice.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Support"
@@ -16924,6 +16960,10 @@ msgstr "ஆதரவு முகவரி"
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Support bot"
 msgstr "ஆதரவு பாட்"
+
+#: src/components/common/FocusChoice.tsx
+msgid "Support for customers and shared mailboxes for your team"
+msgstr "வாடிக்கையாளர்களுக்கான ஆதரவு மற்றும் உங்கள் குழுவுக்கான பகிரப்பட்ட அஞ்சல் பெட்டிகள்"
 
 #: src/features/status/SettingsTab.tsx
 msgid "Support link"
@@ -17047,8 +17087,10 @@ msgstr "குழு மாற்றப்பட்டது"
 msgid "Team ID"
 msgstr "குழு ஐடி"
 
+#: src/components/common/FocusChoice.tsx
 #: src/components/common/PurposeChoice.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/setup/SetupHub.tsx
 msgid "Team mail"
 msgstr "குழு அஞ்சல்"
 
@@ -18710,6 +18752,10 @@ msgstr "இந்தச் சேவையகத்தின் இடம்ப�
 msgid "This server's limit was reached"
 msgstr "இந்தச் சேவையகத்தின் வரம்பு எட்டப்பட்டது"
 
+#: src/app/FocusQuestion.tsx
+msgid "This sets what you see first. You can change it later in the workspace settings."
+msgstr "இது நீங்கள் முதலில் எதைப் பார்க்கிறீர்கள் என்பதை அமைக்கிறது. பணியிட அமைப்புகளில் பின்னர் மாற்றலாம்."
+
 #: src/features/account/ConnectPage.tsx
 msgid "This site cannot connect"
 msgstr "இந்தத் தளத்தால் இணைய முடியாது"
@@ -20133,6 +20179,10 @@ msgstr "என்ன தவறியது, மக்களிடம் நீ�
 msgid "What will go out"
 msgstr "செல்லவிருப்பது"
 
+#: src/app/FocusQuestion.tsx
+msgid "What will you use Yuva for?"
+msgstr "Yuva-வை எதற்காகப் பயன்படுத்துவீர்கள்?"
+
 #: src/features/settings/SettingsColumn.tsx
 msgid "What you write often"
 msgstr "நீங்கள் அடிக்கடி எழுதுவது"
@@ -20144,6 +20194,11 @@ msgstr "What your e-mailed replies end with"
 #: src/features/settings/signature/SignaturePage.tsx
 msgid "What your e-mailed replies end with, per inbox. Chat replies and notes carry none."
 msgstr "What your e-mailed replies end with, per inbox. Chat replies and notes carry none."
+
+#: src/components/common/FocusChoice.tsx
+#: src/features/settings/workspace/FocusForm.tsx
+msgid "What Yuva is for"
+msgstr "Yuva எதற்காக"
 
 #: src/app/Palette.tsx
 #: src/app/Rail.tsx
@@ -20898,6 +20953,10 @@ msgstr "உங்கள் ஆதரவு முகவரி"
 #: src/features/migrations/MapStep.tsx
 msgid "Your team"
 msgstr "உங்கள் குழு"
+
+#: src/features/setup/SetupHub.tsx
+msgid "Your team shares mailboxes like hello@ or billing@, kept out of support views and stats."
+msgstr "உங்கள் குழு hello@ அல்லது billing@ போன்ற அஞ்சல் பெட்டிகளைப் பகிர்கிறது; அவை ஆதரவுக் காட்சிகள் மற்றும் புள்ளிவிவரங்களுக்கு வெளியே இருக்கும்."
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Your time zone, {zone}. That is {utc} UTC."

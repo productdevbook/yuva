@@ -557,6 +557,10 @@ msgid "{n, plural, one {# recipient a day} other {# recipients a day}}"
 msgstr "{n, plural, other {ผู้รับ # คนต่อวัน}}"
 
 #: src/features/setup/SetupHub.tsx
+msgid "{n, plural, one {# team mailbox} other {# team mailboxes}}"
+msgstr "{n, plural, other {กล่องจดหมายทีม # กล่อง}}"
+
+#: src/features/setup/SetupHub.tsx
 msgid "{n, plural, one {# website chat} other {# website chats}}"
 msgstr "{n, plural, other {# แชตบนเว็บไซต์}}"
 
@@ -1500,6 +1504,10 @@ msgstr "กฎที่ปิดอยู่จะไม่ทำงานเล
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "A secret is set. Paste a new one to replace it."
 msgstr "A secret is set. Paste a new one to replace it."
+
+#: src/features/setup/SetupHub.tsx
+msgid "A shared mailbox like hello@ or billing@ for your team"
+msgstr "กล่องจดหมายที่ใช้ร่วมกัน เช่น hello@ หรือ billing@ สำหรับทีมของคุณ"
 
 #: src/components/common/PurposeChoice.tsx
 msgid "A shared mailbox like hello@ or billing@, kept out of support views and stats."
@@ -3350,6 +3358,10 @@ msgstr "ชื่อบอท"
 msgid "Bot name (optional)"
 msgstr "ชื่อบอท (ไม่บังคับ)"
 
+#: src/components/common/FocusChoice.tsx
+msgid "Both"
+msgstr "ทั้งสองอย่าง"
+
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Both records were found. Yuva checks them once a day; keep them in place."
 msgstr "พบเรคคอร์ดทั้งสองรายการ Yuva ตรวจสอบวันละครั้ง โปรดคงไว้"
@@ -3835,6 +3847,10 @@ msgstr "แชต"
 #: src/features/docs/InstallDialog.tsx
 msgid "Chat channel"
 msgstr "ช่องทางแชท"
+
+#: src/components/common/FocusChoice.tsx
+msgid "Chat, e-mail and in-app support for customers"
+msgstr "การสนับสนุนลูกค้าทางแชท อีเมล และภายในแอป"
 
 #: src/features/broadcasts/ReviewPanel.tsx
 #: src/features/settings/channels/ChannelPage.tsx
@@ -4624,6 +4640,7 @@ msgstr "มีคำว่า"
 msgid "Content"
 msgstr "เนื้อหา"
 
+#: src/app/FocusQuestion.tsx
 #: src/features/broadcasts/Import.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 #: src/features/migrations/ChooseStep.tsx
@@ -5180,6 +5197,10 @@ msgstr "จำนวนวันก่อนหมดอายุที่กา
 #: src/features/status/SettingsTab.tsx
 msgid "Days of history"
 msgstr "จำนวนวันของประวัติ"
+
+#: src/app/FocusQuestion.tsx
+msgid "Decide later"
+msgstr "ตัดสินใจภายหลัง"
 
 #: src/features/docs/PagesTab.tsx
 #: src/features/setup/InstallStep.tsx
@@ -11956,6 +11977,10 @@ msgstr "เฉพาะฉัน"
 msgid "Only owners and admins can change it."
 msgstr "เฉพาะเจ้าของและผู้ดูแลเท่านั้นที่เปลี่ยนได้"
 
+#: src/features/settings/workspace/FocusForm.tsx
+msgid "Only owners and admins can change this."
+msgstr "เฉพาะเจ้าของและผู้ดูแลระบบเท่านั้นที่เปลี่ยนสิ่งนี้ได้"
+
 #: src/features/settings/workspace/RetentionForm.tsx
 msgid "Only owners can change this."
 msgstr "เฉพาะเจ้าของเท่านั้นที่เปลี่ยนได้"
@@ -14866,6 +14891,7 @@ msgstr "วันเสาร์"
 #: src/features/settings/slack/SlackPage.tsx
 #: src/features/settings/teams/TeamDialog.tsx
 #: src/features/settings/ui.tsx
+#: src/features/settings/workspace/FocusForm.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/IncidentDetail.tsx
@@ -14938,6 +14964,7 @@ msgstr "บันทึกรายการเป็นมุมมอง"
 #: src/features/settings/signature/SignaturePage.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/webhooks/sections.tsx
+#: src/features/settings/workspace/FocusForm.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/status/SettingsTab.tsx
 msgid "Saved"
@@ -15732,6 +15759,10 @@ msgstr "ตั้งค่า Yuva"
 msgid "Sets {cname} to {downState} while it is down"
 msgstr "ตั้งค่า {cname} เป็น “{downState}” ขณะที่ล่ม"
 
+#: src/features/settings/workspace/FocusForm.tsx
+msgid "Sets what you see first: the Setup cards, the sidebar and the page Yuva opens on."
+msgstr "กำหนดสิ่งที่คุณเห็นก่อน ได้แก่ การ์ดตั้งค่า แถบด้านข้าง และหน้าที่ Yuva เปิดขึ้น"
+
 #: src/features/settings/channels/email/Ses.tsx
 msgid "Setting up the inbox’s Amazon SES tenant…"
 msgstr "กำลังตั้งค่า tenant Amazon SES ของกล่องข้อความ…"
@@ -15795,6 +15826,10 @@ msgstr "ลายนิ้วมือ SHA-256 ของใบรับรอง
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "Shared"
 msgstr "ใช้ร่วมกัน"
+
+#: src/components/common/FocusChoice.tsx
+msgid "Shared mailboxes for your team"
+msgstr "กล่องจดหมายที่ใช้ร่วมกันสำหรับทีมของคุณ"
 
 #: src/components/common/text.ts
 msgid "Shipped"
@@ -16908,6 +16943,7 @@ msgid "Sunday"
 msgstr "วันอาทิตย์"
 
 #: src/app/Sidebar.tsx
+#: src/components/common/FocusChoice.tsx
 #: src/components/common/PurposeChoice.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Support"
@@ -16924,6 +16960,10 @@ msgstr "ที่อยู่ฝ่ายสนับสนุน"
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Support bot"
 msgstr "บอทฝ่ายสนับสนุน"
+
+#: src/components/common/FocusChoice.tsx
+msgid "Support for customers and shared mailboxes for your team"
+msgstr "การสนับสนุนลูกค้าและกล่องจดหมายที่ใช้ร่วมกันสำหรับทีมของคุณ"
 
 #: src/features/status/SettingsTab.tsx
 msgid "Support link"
@@ -17047,8 +17087,10 @@ msgstr "เปลี่ยนทีมแล้ว"
 msgid "Team ID"
 msgstr "รหัสทีม"
 
+#: src/components/common/FocusChoice.tsx
 #: src/components/common/PurposeChoice.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/setup/SetupHub.tsx
 msgid "Team mail"
 msgstr "อีเมลของทีม"
 
@@ -18710,6 +18752,10 @@ msgstr "ถึงขีดจำกัดการย้ายของเซิ
 msgid "This server's limit was reached"
 msgstr "ถึงขีดจำกัดของเซิร์ฟเวอร์นี้แล้ว"
 
+#: src/app/FocusQuestion.tsx
+msgid "This sets what you see first. You can change it later in the workspace settings."
+msgstr "ตัวเลือกนี้กำหนดสิ่งที่คุณเห็นก่อน คุณเปลี่ยนได้ภายหลังในการตั้งค่าพื้นที่ทำงาน"
+
 #: src/features/account/ConnectPage.tsx
 msgid "This site cannot connect"
 msgstr "ไซต์นี้เชื่อมต่อไม่ได้"
@@ -20133,6 +20179,10 @@ msgstr "สิ่งที่เกิดขึ้นและสิ่งที
 msgid "What will go out"
 msgstr "สิ่งที่จะส่งออกไป"
 
+#: src/app/FocusQuestion.tsx
+msgid "What will you use Yuva for?"
+msgstr "คุณจะใช้ Yuva เพื่ออะไร"
+
 #: src/features/settings/SettingsColumn.tsx
 msgid "What you write often"
 msgstr "สิ่งที่คุณเขียนบ่อย"
@@ -20144,6 +20194,11 @@ msgstr "What your e-mailed replies end with"
 #: src/features/settings/signature/SignaturePage.tsx
 msgid "What your e-mailed replies end with, per inbox. Chat replies and notes carry none."
 msgstr "What your e-mailed replies end with, per inbox. Chat replies and notes carry none."
+
+#: src/components/common/FocusChoice.tsx
+#: src/features/settings/workspace/FocusForm.tsx
+msgid "What Yuva is for"
+msgstr "Yuva ใช้ทำอะไร"
 
 #: src/app/Palette.tsx
 #: src/app/Rail.tsx
@@ -20898,6 +20953,10 @@ msgstr "ที่อยู่ฝ่ายสนับสนุนของคุ
 #: src/features/migrations/MapStep.tsx
 msgid "Your team"
 msgstr "ทีมของคุณ"
+
+#: src/features/setup/SetupHub.tsx
+msgid "Your team shares mailboxes like hello@ or billing@, kept out of support views and stats."
+msgstr "ทีมของคุณใช้กล่องจดหมายร่วมกัน เช่น hello@ หรือ billing@ ซึ่งไม่รวมอยู่ในมุมมองและสถิติของฝ่ายสนับสนุน"
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Your time zone, {zone}. That is {utc} UTC."

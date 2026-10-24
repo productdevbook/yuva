@@ -1,6 +1,6 @@
 import { Trans, useLingui } from "@lingui/react/macro"
 import { ArrowRightIcon } from "lucide-react"
-import { useMemo } from "react"
+import { useEffect, useMemo } from "react"
 import { useLocation, useNavigate } from "react-router"
 
 import { StepHeader } from "@/components/common"
@@ -16,7 +16,7 @@ import { type SetupKind, type SetupState } from "@/features/setup/setup"
 import { SetupLayout } from "@/features/setup/SetupLayout"
 import { timeZones } from "@/lib/utils"
 
-export function NameStep({ kind }: { kind?: SetupKind }) {
+export function NameStep({ kind, mail: forMail }: { kind?: SetupKind; mail?: boolean }) {
   const { t, i18n } = useLingui()
   const navigate = useNavigate()
   const state = (useLocation().state ?? {}) as SetupState
@@ -24,6 +24,9 @@ export function NameStep({ kind }: { kind?: SetupKind }) {
   const leave = useLeaveSetup()
   const { name, locale, zone } = draft
   const mail = draft.purpose === "mail"
+  useEffect(() => {
+    if (forMail) patch({ purpose: "mail" })
+  }, [forMail, patch])
   const zones = useMemo(() => timeZones(), [])
   const langs = LANGS.includes(locale) ? LANGS : [locale, ...LANGS]
   const next = mail ? "/setup/new/add/email" : kind ? `/setup/new/add/${kind}` : "/setup/new/pick"

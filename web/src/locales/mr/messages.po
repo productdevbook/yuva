@@ -557,6 +557,10 @@ msgid "{n, plural, one {# recipient a day} other {# recipients a day}}"
 msgstr "{n, plural, one {दररोज # प्राप्तकर्ता} other {दररोज # प्राप्तकर्ते}}"
 
 #: src/features/setup/SetupHub.tsx
+msgid "{n, plural, one {# team mailbox} other {# team mailboxes}}"
+msgstr "{n, plural, one {# टीम मेलबॉक्स} other {# टीम मेलबॉक्स}}"
+
+#: src/features/setup/SetupHub.tsx
 msgid "{n, plural, one {# website chat} other {# website chats}}"
 msgstr "{n, plural, one {# वेबसाइट चॅट} other {# वेबसाइट चॅट}}"
 
@@ -1500,6 +1504,10 @@ msgstr "बंद असलेला नियम कधीच चालत न�
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "A secret is set. Paste a new one to replace it."
 msgstr "A secret is set. Paste a new one to replace it."
+
+#: src/features/setup/SetupHub.tsx
+msgid "A shared mailbox like hello@ or billing@ for your team"
+msgstr "तुमच्या टीमसाठी hello@ किंवा billing@ सारखा सामायिक मेलबॉक्स"
 
 #: src/components/common/PurposeChoice.tsx
 msgid "A shared mailbox like hello@ or billing@, kept out of support views and stats."
@@ -3350,6 +3358,10 @@ msgstr "बॉटचे नाव"
 msgid "Bot name (optional)"
 msgstr "बॉटचे नाव (ऐच्छिक)"
 
+#: src/components/common/FocusChoice.tsx
+msgid "Both"
+msgstr "दोन्ही"
+
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Both records were found. Yuva checks them once a day; keep them in place."
 msgstr "दोन्ही रेकॉर्ड सापडले. Yuva ते दिवसातून एकदा तपासतो; ते जसे आहेत तसे ठेवा."
@@ -3835,6 +3847,10 @@ msgstr "चॅट"
 #: src/features/docs/InstallDialog.tsx
 msgid "Chat channel"
 msgstr "चॅट चॅनेल"
+
+#: src/components/common/FocusChoice.tsx
+msgid "Chat, e-mail and in-app support for customers"
+msgstr "ग्राहकांसाठी चॅट, ई-मेल आणि अॅपमधील सपोर्ट"
 
 #: src/features/broadcasts/ReviewPanel.tsx
 #: src/features/settings/channels/ChannelPage.tsx
@@ -4624,6 +4640,7 @@ msgstr "यात आहे"
 msgid "Content"
 msgstr "मजकूर"
 
+#: src/app/FocusQuestion.tsx
 #: src/features/broadcasts/Import.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 #: src/features/migrations/ChooseStep.tsx
@@ -5180,6 +5197,10 @@ msgstr "मुदत संपण्याच्या किती दिवस
 #: src/features/status/SettingsTab.tsx
 msgid "Days of history"
 msgstr "इतिहासाचे दिवस"
+
+#: src/app/FocusQuestion.tsx
+msgid "Decide later"
+msgstr "नंतर ठरवा"
 
 #: src/features/docs/PagesTab.tsx
 #: src/features/setup/InstallStep.tsx
@@ -11956,6 +11977,10 @@ msgstr "फक्त मी"
 msgid "Only owners and admins can change it."
 msgstr "फक्त मालक आणि अ‍ॅडमिन हे बदलू शकतात."
 
+#: src/features/settings/workspace/FocusForm.tsx
+msgid "Only owners and admins can change this."
+msgstr "हे फक्त मालक आणि अॅडमिन बदलू शकतात."
+
 #: src/features/settings/workspace/RetentionForm.tsx
 msgid "Only owners can change this."
 msgstr "फक्त ओनर हे बदलू शकतात."
@@ -14866,6 +14891,7 @@ msgstr "शनिवार"
 #: src/features/settings/slack/SlackPage.tsx
 #: src/features/settings/teams/TeamDialog.tsx
 #: src/features/settings/ui.tsx
+#: src/features/settings/workspace/FocusForm.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/IncidentDetail.tsx
@@ -14938,6 +14964,7 @@ msgstr "यादी व्ह्यू म्हणून जतन करा"
 #: src/features/settings/signature/SignaturePage.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/webhooks/sections.tsx
+#: src/features/settings/workspace/FocusForm.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/status/SettingsTab.tsx
 msgid "Saved"
@@ -15732,6 +15759,10 @@ msgstr "Yuva सेट अप करा"
 msgid "Sets {cname} to {downState} while it is down"
 msgstr "बंद असताना {cname} ला “{downState}” वर सेट करतो"
 
+#: src/features/settings/workspace/FocusForm.tsx
+msgid "Sets what you see first: the Setup cards, the sidebar and the page Yuva opens on."
+msgstr "तुम्हाला आधी काय दिसेल ते ठरवते: सेटअप कार्ड, साइडबार आणि Yuva ज्या पानावर उघडते ते पान."
+
 #: src/features/settings/channels/email/Ses.tsx
 msgid "Setting up the inbox’s Amazon SES tenant…"
 msgstr "इनबॉक्सचा Amazon SES टेनंट सेट अप होत आहे…"
@@ -15795,6 +15826,10 @@ msgstr "सर्व्हरने पाठवलेल्या सर्ट�
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "Shared"
 msgstr "सामायिक"
+
+#: src/components/common/FocusChoice.tsx
+msgid "Shared mailboxes for your team"
+msgstr "तुमच्या टीमसाठी सामायिक मेलबॉक्स"
 
 #: src/components/common/text.ts
 msgid "Shipped"
@@ -16908,6 +16943,7 @@ msgid "Sunday"
 msgstr "रविवार"
 
 #: src/app/Sidebar.tsx
+#: src/components/common/FocusChoice.tsx
 #: src/components/common/PurposeChoice.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Support"
@@ -16924,6 +16960,10 @@ msgstr "सपोर्ट पत्ता"
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Support bot"
 msgstr "सपोर्ट बॉट"
+
+#: src/components/common/FocusChoice.tsx
+msgid "Support for customers and shared mailboxes for your team"
+msgstr "ग्राहकांसाठी सपोर्ट आणि तुमच्या टीमसाठी सामायिक मेलबॉक्स"
 
 #: src/features/status/SettingsTab.tsx
 msgid "Support link"
@@ -17047,8 +17087,10 @@ msgstr "टीम बदलली"
 msgid "Team ID"
 msgstr "टीम आयडी"
 
+#: src/components/common/FocusChoice.tsx
 #: src/components/common/PurposeChoice.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/setup/SetupHub.tsx
 msgid "Team mail"
 msgstr "टीम मेल"
 
@@ -18710,6 +18752,10 @@ msgstr "या सर्व्हरची मायग्रेशनची म
 msgid "This server's limit was reached"
 msgstr "या सर्व्हरची मर्यादा गाठली"
 
+#: src/app/FocusQuestion.tsx
+msgid "This sets what you see first. You can change it later in the workspace settings."
+msgstr "हे तुम्हाला आधी काय दिसेल ते ठरवते. तुम्ही हे नंतर वर्कस्पेस सेटिंग्जमध्ये बदलू शकता."
+
 #: src/features/account/ConnectPage.tsx
 msgid "This site cannot connect"
 msgstr "ही साइट कनेक्ट होऊ शकत नाही"
@@ -20133,6 +20179,10 @@ msgstr "काय चुकले आणि तुम्ही लोकां�
 msgid "What will go out"
 msgstr "काय जाईल"
 
+#: src/app/FocusQuestion.tsx
+msgid "What will you use Yuva for?"
+msgstr "तुम्ही Yuva कशासाठी वापराल?"
+
 #: src/features/settings/SettingsColumn.tsx
 msgid "What you write often"
 msgstr "तुम्ही अनेकदा काय लिहिता"
@@ -20144,6 +20194,11 @@ msgstr "What your e-mailed replies end with"
 #: src/features/settings/signature/SignaturePage.tsx
 msgid "What your e-mailed replies end with, per inbox. Chat replies and notes carry none."
 msgstr "What your e-mailed replies end with, per inbox. Chat replies and notes carry none."
+
+#: src/components/common/FocusChoice.tsx
+#: src/features/settings/workspace/FocusForm.tsx
+msgid "What Yuva is for"
+msgstr "Yuva कशासाठी आहे"
 
 #: src/app/Palette.tsx
 #: src/app/Rail.tsx
@@ -20898,6 +20953,10 @@ msgstr "तुमचा सपोर्ट पत्ता"
 #: src/features/migrations/MapStep.tsx
 msgid "Your team"
 msgstr "तुमची टीम"
+
+#: src/features/setup/SetupHub.tsx
+msgid "Your team shares mailboxes like hello@ or billing@, kept out of support views and stats."
+msgstr "तुमची टीम hello@ किंवा billing@ सारखे मेलबॉक्स सामायिक करते; ते सपोर्ट व्ह्यू आणि आकडेवारीच्या बाहेर राहतात."
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Your time zone, {zone}. That is {utc} UTC."

@@ -55,9 +55,9 @@ function ViewRow({
   onDrop: (id: string) => void
   onMove: (id: string, by: -1 | 1) => void
 }) {
-  const { canManage } = useSession()
+  const { apart } = useSession()
   const { setOpenMobile } = useSidebar()
-  const to = { pathname: inboxRoot(canManage), search: viewSearch(view.id, view.filters) }
+  const to = { pathname: inboxRoot(apart), search: viewSearch(view.id, view.filters) }
   return (
     <SidebarMenuItem
       draggable={writable}
@@ -103,7 +103,7 @@ export function ViewsGroup() {
   const errorText = useErrorText()
   const { pathname } = useLocation()
   const [params] = useSearchParams()
-  const { canManage } = useSession()
+  const { canManage, apart } = useSession()
   const { workspaceId: ws } = useSession()
   const teams = useTeams().data ?? []
   const mine = useMyTeams()
@@ -180,7 +180,7 @@ export function ViewsGroup() {
 
   const strangers = canManage ? teams.filter((x) => !mine.some((m) => m.id === x.id)) : []
   if (sections.length === 0 && strangers.length === 0) return null
-  const activeId = isChats(pathname, canManage) ? params.get("view") : null
+  const activeId = isChats(pathname, apart) ? params.get("view") : null
   return (
     <SidebarGroup
       className="px-3 py-1 group-data-[collapsible=icon]:hidden"

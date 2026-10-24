@@ -119,12 +119,12 @@ function Phone({ children }: { children: React.ReactNode }) {
 export function Layout() {
   const phone = useIsPhone()
   const { pathname } = useLocation()
-  const { canManage } = useSession()
+  const { apart } = useSession()
   const section = useSection()
-  useMentionsView(pathname, canManage)
+  useMentionsView(pathname, apart)
   if (!phone) {
     const frame =
-      isChats(pathname, canManage) ||
+      isChats(pathname, apart) ||
       pathname === "/feedback" ||
       pathname.startsWith("/feedback/") ||
       section === "mail" ||

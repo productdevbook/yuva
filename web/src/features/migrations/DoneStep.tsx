@@ -27,7 +27,7 @@ export function DoneStep({ m, preset }: { m: Migration; preset: MigrationPreset 
   const { t, i18n } = useLingui()
   const num = useNumber()
   const navigate = useNavigate()
-  const { canManage } = useSession()
+  const { apart } = useSession()
   const [, setInbox] = useInboxFilter()
   const guide = useGuides()[m.preset]
   const ask = useMigrationConfirms(m)
@@ -46,7 +46,7 @@ export function DoneStep({ m, preset }: { m: Migration; preset: MigrationPreset 
   const fileDeletedAt = m.upload?.deleted_at ? formatDateTime(m.upload.deleted_at, i18n.locale) : ""
   const openInbox = () => {
     if (m.inbox_id) setInbox(m.inbox_id)
-    navigate(inboxRoot(canManage))
+    navigate(inboxRoot(apart))
   }
   return (
     <WizardLayout step="done" m={m} preset={preset}>

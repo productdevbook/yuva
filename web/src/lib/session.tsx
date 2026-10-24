@@ -50,6 +50,9 @@ type Session = {
   workspaceId: string
   canManage: boolean
   isOwner: boolean
+  mailFirst: boolean
+  apart: boolean
+  homePath: string
   switchWorkspace: (id: string, to?: string) => void
 }
 
@@ -93,6 +96,9 @@ export function SessionProvider({
       workspaceId: membership.workspace.id,
       canManage: membership.role === "owner" || membership.role === "admin",
       isOwner: membership.role === "owner",
+      mailFirst: membership.workspace.focus === "mail",
+      apart: membership.role === "owner" || membership.role === "admin" || membership.workspace.focus === "mail",
+      homePath: membership.workspace.focus === "mail" ? "/home" : "/",
       switchWorkspace: onSwitch,
     }),
     [me, membership, onSwitch]

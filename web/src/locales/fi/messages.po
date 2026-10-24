@@ -557,6 +557,10 @@ msgid "{n, plural, one {# recipient a day} other {# recipients a day}}"
 msgstr "{n, plural, one {# vastaanottaja päivässä} other {# vastaanottajaa päivässä}}"
 
 #: src/features/setup/SetupHub.tsx
+msgid "{n, plural, one {# team mailbox} other {# team mailboxes}}"
+msgstr "{n, plural, one {# tiimin postilaatikko} other {# tiimin postilaatikkoa}}"
+
+#: src/features/setup/SetupHub.tsx
 msgid "{n, plural, one {# website chat} other {# website chats}}"
 msgstr "{n, plural, one {# verkkosivuston chat} other {# verkkosivuston chattia}}"
 
@@ -1500,6 +1504,10 @@ msgstr "Pois päältä oleva sääntö ei koskaan suoriteta. Säännöt suoritet
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "A secret is set. Paste a new one to replace it."
 msgstr "A secret is set. Paste a new one to replace it."
+
+#: src/features/setup/SetupHub.tsx
+msgid "A shared mailbox like hello@ or billing@ for your team"
+msgstr "Jaettu postilaatikko, kuten hello@ tai billing@, tiimillesi"
 
 #: src/components/common/PurposeChoice.tsx
 msgid "A shared mailbox like hello@ or billing@, kept out of support views and stats."
@@ -3350,6 +3358,10 @@ msgstr "Botin nimi"
 msgid "Bot name (optional)"
 msgstr "Botin nimi (valinnainen)"
 
+#: src/components/common/FocusChoice.tsx
+msgid "Both"
+msgstr "Molemmat"
+
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Both records were found. Yuva checks them once a day; keep them in place."
 msgstr "Molemmat tietueet löytyivät. Yuva tarkistaa ne kerran päivässä; jätä ne paikoilleen."
@@ -3835,6 +3847,10 @@ msgstr "Chat"
 #: src/features/docs/InstallDialog.tsx
 msgid "Chat channel"
 msgstr "Chat-kanava"
+
+#: src/components/common/FocusChoice.tsx
+msgid "Chat, e-mail and in-app support for customers"
+msgstr "Chat-, sähköposti- ja sovelluksen sisäinen tuki asiakkaille"
 
 #: src/features/broadcasts/ReviewPanel.tsx
 #: src/features/settings/channels/ChannelPage.tsx
@@ -4624,6 +4640,7 @@ msgstr "sisältää"
 msgid "Content"
 msgstr "Sisältö"
 
+#: src/app/FocusQuestion.tsx
 #: src/features/broadcasts/Import.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 #: src/features/migrations/ChooseStep.tsx
@@ -5180,6 +5197,10 @@ msgstr "Montako päivää ennen vanhenemista tarkistus epäonnistuu. Arvo 0 tark
 #: src/features/status/SettingsTab.tsx
 msgid "Days of history"
 msgstr "Historian päivät"
+
+#: src/app/FocusQuestion.tsx
+msgid "Decide later"
+msgstr "Päätä myöhemmin"
 
 #: src/features/docs/PagesTab.tsx
 #: src/features/setup/InstallStep.tsx
@@ -11956,6 +11977,10 @@ msgstr "Vain minä"
 msgid "Only owners and admins can change it."
 msgstr "Vain omistajat ja ylläpitäjät voivat muuttaa sen."
 
+#: src/features/settings/workspace/FocusForm.tsx
+msgid "Only owners and admins can change this."
+msgstr "Vain omistajat ja ylläpitäjät voivat muuttaa tätä."
+
 #: src/features/settings/workspace/RetentionForm.tsx
 msgid "Only owners can change this."
 msgstr "Vain omistajat voivat muuttaa tätä."
@@ -14866,6 +14891,7 @@ msgstr "Lauantai"
 #: src/features/settings/slack/SlackPage.tsx
 #: src/features/settings/teams/TeamDialog.tsx
 #: src/features/settings/ui.tsx
+#: src/features/settings/workspace/FocusForm.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/IncidentDetail.tsx
@@ -14938,6 +14964,7 @@ msgstr "Tallenna lista näkymäksi"
 #: src/features/settings/signature/SignaturePage.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/webhooks/sections.tsx
+#: src/features/settings/workspace/FocusForm.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/status/SettingsTab.tsx
 msgid "Saved"
@@ -15732,6 +15759,10 @@ msgstr "Määritä Yuva"
 msgid "Sets {cname} to {downState} while it is down"
 msgstr "Asettaa komponentin {cname} tilaan {downState}, kun se on alhaalla"
 
+#: src/features/settings/workspace/FocusForm.tsx
+msgid "Sets what you see first: the Setup cards, the sidebar and the page Yuva opens on."
+msgstr "Määrittää, mitä näet ensin: käyttöönottokortit, sivupalkin ja sivun, jolle Yuva avautuu."
+
 #: src/features/settings/channels/email/Ses.tsx
 msgid "Setting up the inbox’s Amazon SES tenant…"
 msgstr "Määritetään postilaatikon Amazon SES -tenanttia …"
@@ -15795,6 +15826,10 @@ msgstr "Palvelimen lähettämän varmenteen SHA-256-sormenjälki"
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "Shared"
 msgstr "Jaettu"
+
+#: src/components/common/FocusChoice.tsx
+msgid "Shared mailboxes for your team"
+msgstr "Jaetut postilaatikot tiimillesi"
 
 #: src/components/common/text.ts
 msgid "Shipped"
@@ -16908,6 +16943,7 @@ msgid "Sunday"
 msgstr "Sunnuntai"
 
 #: src/app/Sidebar.tsx
+#: src/components/common/FocusChoice.tsx
 #: src/components/common/PurposeChoice.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Support"
@@ -16924,6 +16960,10 @@ msgstr "Tukiosoite"
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Support bot"
 msgstr "Tukibotti"
+
+#: src/components/common/FocusChoice.tsx
+msgid "Support for customers and shared mailboxes for your team"
+msgstr "Tuki asiakkaille ja jaetut postilaatikot tiimillesi"
 
 #: src/features/status/SettingsTab.tsx
 msgid "Support link"
@@ -17047,8 +17087,10 @@ msgstr "Tiimi vaihdettu"
 msgid "Team ID"
 msgstr "Tiimin tunnus"
 
+#: src/components/common/FocusChoice.tsx
 #: src/components/common/PurposeChoice.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/setup/SetupHub.tsx
 msgid "Team mail"
 msgstr "Tiimin posti"
 
@@ -18710,6 +18752,10 @@ msgstr "Tämän palvelimen siirtoraja on saavutettu. Odota, kunnes käynnissä o
 msgid "This server's limit was reached"
 msgstr "Tämän palvelimen raja saavutettiin"
 
+#: src/app/FocusQuestion.tsx
+msgid "This sets what you see first. You can change it later in the workspace settings."
+msgstr "Tämä määrittää, mitä näet ensin. Voit muuttaa sitä myöhemmin työtilan asetuksissa."
+
 #: src/features/account/ConnectPage.tsx
 msgid "This site cannot connect"
 msgstr "Tämä sivusto ei voi yhdistää"
@@ -20133,6 +20179,10 @@ msgstr "Mikä meni pieleen ja mitä kerroit ihmisille"
 msgid "What will go out"
 msgstr "Mitä lähtee"
 
+#: src/app/FocusQuestion.tsx
+msgid "What will you use Yuva for?"
+msgstr "Mihin käytät Yuvaa?"
+
 #: src/features/settings/SettingsColumn.tsx
 msgid "What you write often"
 msgstr "Mitä kirjoitat usein"
@@ -20144,6 +20194,11 @@ msgstr "What your e-mailed replies end with"
 #: src/features/settings/signature/SignaturePage.tsx
 msgid "What your e-mailed replies end with, per inbox. Chat replies and notes carry none."
 msgstr "What your e-mailed replies end with, per inbox. Chat replies and notes carry none."
+
+#: src/components/common/FocusChoice.tsx
+#: src/features/settings/workspace/FocusForm.tsx
+msgid "What Yuva is for"
+msgstr "Mihin Yuvaa käytetään"
 
 #: src/app/Palette.tsx
 #: src/app/Rail.tsx
@@ -20898,6 +20953,10 @@ msgstr "Tukiosoitteesi"
 #: src/features/migrations/MapStep.tsx
 msgid "Your team"
 msgstr "Tiimisi"
+
+#: src/features/setup/SetupHub.tsx
+msgid "Your team shares mailboxes like hello@ or billing@, kept out of support views and stats."
+msgstr "Tiimisi jakaa postilaatikoita kuten hello@ tai billing@, erillään tukinäkymistä ja tilastoista."
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Your time zone, {zone}. That is {utc} UTC."

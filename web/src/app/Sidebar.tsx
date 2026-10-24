@@ -249,6 +249,7 @@ export type NavRow = {
 export type NavGroup = { title?: string; rows: NavRow[] }
 
 export function useNavGroups(): NavGroup[] {
+  const { mailFirst } = useSession()
   const { t } = useLingui()
   const entries = useEntries()
   const children: Partial<Record<Section, Child[]>> = {
@@ -281,7 +282,11 @@ export function useNavGroups(): NavGroup[] {
     children: children.settings,
   })
   const groups: { title?: string; keys: Section[] }[] = [
-    { keys: ["home", "conversations", "mail", "mentions", "assistants"] },
+    {
+      keys: mailFirst
+        ? ["home", "mail", "conversations", "mentions", "assistants"]
+        : ["home", "conversations", "mail", "mentions", "assistants"],
+    },
     { title: t`Customers`, keys: ["contacts", "feedback", "knowledge"] },
     {
       title: t({ message: "Publish", context: "sidebar group" }),

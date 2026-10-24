@@ -11,16 +11,16 @@ export function useShell() {
   return useContext(ShellContext)
 }
 
-export function inboxRoot(manager: boolean) {
-  return manager ? "/conversations" : "/"
+export function inboxRoot(apart: boolean) {
+  return apart ? "/conversations" : "/"
 }
 
-export function isInboxRoot(pathname: string, manager: boolean) {
-  return pathname === "/conversations" || (!manager && pathname === "/")
+export function isInboxRoot(pathname: string, apart: boolean) {
+  return pathname === "/conversations" || (!apart && pathname === "/")
 }
 
-export function isChats(pathname: string, manager: boolean) {
-  return isInboxRoot(pathname, manager) || pathname.startsWith("/conversations/")
+export function isChats(pathname: string, apart: boolean) {
+  return isInboxRoot(pathname, apart) || pathname.startsWith("/conversations/")
 }
 
 export type Section =
@@ -59,14 +59,14 @@ const routed = [
   "settings",
 ] as const
 
-export function sectionOf(pathname: string, view: Section, manager: boolean): Section {
-  if (manager && pathname === "/") return "home"
+export function sectionOf(pathname: string, view: Section, apart: boolean, manager: boolean): Section {
+  if (manager && (pathname === "/home" || (apart && pathname === "/"))) return "home"
   // The server answers /status/{slug} with the public page, so the panel keeps a status page under /status-pages.
   if (pathname.startsWith("/status-pages/") || pathname.startsWith("/incidents") || pathname.startsWith("/monitors"))
     return "status"
   const routedSection = routed.find((s) => pathname === `/${s}` || pathname.startsWith(`/${s}/`))
   if (routedSection) return routedSection
-  return isInboxRoot(pathname, manager) && view === "mentions" ? "conversations" : view
+  return isInboxRoot(pathname, apart) && view === "mentions" ? "conversations" : view
 }
 
 const fullPage: Section[] = ["team", "reports", "docs", "broadcasts", "status", "updates", "analytics", "settings"]
@@ -78,6 +78,7 @@ export function isFullPage(section: Section) {
 export function isSectionHome(pathname: string) {
   return (
     pathname === "/" ||
+    pathname === "/home" ||
     pathname === "/conversations" ||
     pathname === "/broadcasts/lists" ||
     routed.some((s) => pathname === `/${s}`)

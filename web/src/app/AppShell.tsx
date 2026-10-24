@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react"
 import { Outlet, useLocation, useNavigate } from "react-router"
 
 import { ConnectionBanner } from "@/app/ConnectionBanner"
+import { FocusQuestion } from "@/app/FocusQuestion"
 import { Palette } from "@/app/Palette"
 import { useGo } from "@/app/Rail"
 import { inboxRoot, isChats, ShellContext } from "@/app/shell"
@@ -26,7 +27,7 @@ function Title() {
 }
 
 export function AppShell() {
-  const { workspaceId, membership, canManage } = useSession()
+  const { workspaceId, membership, canManage, apart } = useSession()
   const navigate = useNavigate()
   const [shortcuts, setShortcuts] = useState(false)
   const [palette, setPalette] = useState(false)
@@ -42,7 +43,7 @@ export function AppShell() {
   )
 
   const { pathname } = useLocation()
-  const chats = isChats(pathname, canManage)
+  const chats = isChats(pathname, apart)
   const go = useGo()
   const analytics = useAnalyticsVisible()
   useHotkeys({
@@ -57,7 +58,7 @@ export function AppShell() {
       if (subscribers) return subscribers.focus()
       const mail = pathname.startsWith("/mail") && document.querySelector<HTMLInputElement>("[data-testid=mail-search]")
       if (mail) return mail.focus()
-      if (!chats && !pathname.startsWith("/feedback")) navigate(inboxRoot(canManage))
+      if (!chats && !pathname.startsWith("/feedback")) navigate(inboxRoot(apart))
       focusListSearch()
     },
     [SHORTCUTS.home]: () => canManage && go("home"),
@@ -101,6 +102,7 @@ export function AppShell() {
       </div>
       <Palette open={palette} onOpenChange={setPalette} />
       <ShortcutSheet open={shortcuts} onOpenChange={setShortcuts} home={canManage} />
+      <FocusQuestion key={workspaceId} />
       <RequiredFieldsHost />
       <Toaster />
       <ConnectionBanner />

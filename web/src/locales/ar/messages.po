@@ -557,6 +557,10 @@ msgid "{n, plural, one {# recipient a day} other {# recipients a day}}"
 msgstr "{n, plural, zero {# مستلم في اليوم} one {مستلم واحد في اليوم} two {مستلمان في اليوم} few {# مستلمين في اليوم} many {# مستلمًا في اليوم} other {# مستلم في اليوم}}"
 
 #: src/features/setup/SetupHub.tsx
+msgid "{n, plural, one {# team mailbox} other {# team mailboxes}}"
+msgstr "{n, plural, zero {# صندوق بريد للفريق} one {صندوق بريد واحد للفريق} two {صندوقا بريد للفريق} few {# صناديق بريد للفريق} many {# صندوق بريد للفريق} other {# صندوق بريد للفريق}}"
+
+#: src/features/setup/SetupHub.tsx
 msgid "{n, plural, one {# website chat} other {# website chats}}"
 msgstr "{n, plural, zero {# دردشة موقع} one {دردشة موقع واحدة} two {دردشتا موقع} few {# دردشات موقع} many {# دردشة موقع} other {# دردشة موقع}}"
 
@@ -1500,6 +1504,10 @@ msgstr "القاعدة المعطّلة لا تعمل أبدًا. تعمل ال�
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "A secret is set. Paste a new one to replace it."
 msgstr "A secret is set. Paste a new one to replace it."
+
+#: src/features/setup/SetupHub.tsx
+msgid "A shared mailbox like hello@ or billing@ for your team"
+msgstr "صندوق بريد مشترك مثل hello@ أو billing@ لفريقك"
 
 #: src/components/common/PurposeChoice.tsx
 msgid "A shared mailbox like hello@ or billing@, kept out of support views and stats."
@@ -3350,6 +3358,10 @@ msgstr "اسم الروبوت"
 msgid "Bot name (optional)"
 msgstr "اسم الروبوت (اختياري)"
 
+#: src/components/common/FocusChoice.tsx
+msgid "Both"
+msgstr "كلاهما"
+
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Both records were found. Yuva checks them once a day; keep them in place."
 msgstr "تم العثور على السجلين. يفحصهما Yuva مرة في اليوم؛ أبقهما في مكانهما."
@@ -3835,6 +3847,10 @@ msgstr "دردشة"
 #: src/features/docs/InstallDialog.tsx
 msgid "Chat channel"
 msgstr "قناة الدردشة"
+
+#: src/components/common/FocusChoice.tsx
+msgid "Chat, e-mail and in-app support for customers"
+msgstr "دعم العملاء عبر الدردشة والبريد الإلكتروني وداخل التطبيق"
 
 #: src/features/broadcasts/ReviewPanel.tsx
 #: src/features/settings/channels/ChannelPage.tsx
@@ -4624,6 +4640,7 @@ msgstr "يحتوي على"
 msgid "Content"
 msgstr "المحتوى"
 
+#: src/app/FocusQuestion.tsx
 #: src/features/broadcasts/Import.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 #: src/features/migrations/ChooseStep.tsx
@@ -5180,6 +5197,10 @@ msgstr "عدد الأيام قبل انتهاء الصلاحية الذي يفش
 #: src/features/status/SettingsTab.tsx
 msgid "Days of history"
 msgstr "أيام السجل"
+
+#: src/app/FocusQuestion.tsx
+msgid "Decide later"
+msgstr "أقرر لاحقًا"
 
 #: src/features/docs/PagesTab.tsx
 #: src/features/setup/InstallStep.tsx
@@ -11956,6 +11977,10 @@ msgstr "أنا فقط"
 msgid "Only owners and admins can change it."
 msgstr "لا يمكن تغييره إلا للمالكين والمشرفين."
 
+#: src/features/settings/workspace/FocusForm.tsx
+msgid "Only owners and admins can change this."
+msgstr "يمكن للمالكين والمشرفين فقط تغيير هذا."
+
 #: src/features/settings/workspace/RetentionForm.tsx
 msgid "Only owners can change this."
 msgstr "يمكن للمالكين فقط تغيير هذا."
@@ -14866,6 +14891,7 @@ msgstr "السبت"
 #: src/features/settings/slack/SlackPage.tsx
 #: src/features/settings/teams/TeamDialog.tsx
 #: src/features/settings/ui.tsx
+#: src/features/settings/workspace/FocusForm.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/IncidentDetail.tsx
@@ -14938,6 +14964,7 @@ msgstr "حفظ القائمة كعرض"
 #: src/features/settings/signature/SignaturePage.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/webhooks/sections.tsx
+#: src/features/settings/workspace/FocusForm.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/status/SettingsTab.tsx
 msgid "Saved"
@@ -15732,6 +15759,10 @@ msgstr "إعداد Yuva"
 msgid "Sets {cname} to {downState} while it is down"
 msgstr "يضبط {cname} على «{downState}» أثناء توقفه"
 
+#: src/features/settings/workspace/FocusForm.tsx
+msgid "Sets what you see first: the Setup cards, the sidebar and the page Yuva opens on."
+msgstr "يحدد ما تراه أولًا: بطاقات الإعداد والشريط الجانبي والصفحة التي يفتح عليها Yuva."
+
 #: src/features/settings/channels/email/Ses.tsx
 msgid "Setting up the inbox’s Amazon SES tenant…"
 msgstr "جارٍ إعداد مستأجر Amazon SES لصندوق الوارد…"
@@ -15795,6 +15826,10 @@ msgstr "بصمة SHA-256 للشهادة التي أرسلها الخادم"
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "Shared"
 msgstr "مشترك"
+
+#: src/components/common/FocusChoice.tsx
+msgid "Shared mailboxes for your team"
+msgstr "صناديق بريد مشتركة لفريقك"
 
 #: src/components/common/text.ts
 msgid "Shipped"
@@ -16908,6 +16943,7 @@ msgid "Sunday"
 msgstr "الأحد"
 
 #: src/app/Sidebar.tsx
+#: src/components/common/FocusChoice.tsx
 #: src/components/common/PurposeChoice.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Support"
@@ -16924,6 +16960,10 @@ msgstr "عنوان الدعم"
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Support bot"
 msgstr "روبوت الدعم"
+
+#: src/components/common/FocusChoice.tsx
+msgid "Support for customers and shared mailboxes for your team"
+msgstr "دعم للعملاء وصناديق بريد مشتركة لفريقك"
 
 #: src/features/status/SettingsTab.tsx
 msgid "Support link"
@@ -17047,8 +17087,10 @@ msgstr "تغيّر الفريق"
 msgid "Team ID"
 msgstr "معرّف الفريق"
 
+#: src/components/common/FocusChoice.tsx
 #: src/components/common/PurposeChoice.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/setup/SetupHub.tsx
 msgid "Team mail"
 msgstr "بريد الفريق"
 
@@ -18710,6 +18752,10 @@ msgstr "بلغ هذا الخادم حد عمليات النقل. انتظر حت
 msgid "This server's limit was reached"
 msgstr "بلغ هذا الخادم حده"
 
+#: src/app/FocusQuestion.tsx
+msgid "This sets what you see first. You can change it later in the workspace settings."
+msgstr "هذا يحدد ما تراه أولًا. يمكنك تغييره لاحقًا من إعدادات مساحة العمل."
+
 #: src/features/account/ConnectPage.tsx
 msgid "This site cannot connect"
 msgstr "لا يستطيع هذا الموقع الاتصال"
@@ -20133,6 +20179,10 @@ msgstr "ما الذي حدث وما أخبرت به الناس"
 msgid "What will go out"
 msgstr "ما سيُرسل"
 
+#: src/app/FocusQuestion.tsx
+msgid "What will you use Yuva for?"
+msgstr "ما الذي ستستخدم Yuva من أجله؟"
+
 #: src/features/settings/SettingsColumn.tsx
 msgid "What you write often"
 msgstr "ما تكتبه كثيرًا"
@@ -20144,6 +20194,11 @@ msgstr "What your e-mailed replies end with"
 #: src/features/settings/signature/SignaturePage.tsx
 msgid "What your e-mailed replies end with, per inbox. Chat replies and notes carry none."
 msgstr "What your e-mailed replies end with, per inbox. Chat replies and notes carry none."
+
+#: src/components/common/FocusChoice.tsx
+#: src/features/settings/workspace/FocusForm.tsx
+msgid "What Yuva is for"
+msgstr "الغرض من Yuva"
 
 #: src/app/Palette.tsx
 #: src/app/Rail.tsx
@@ -20898,6 +20953,10 @@ msgstr "عنوان دعمك"
 #: src/features/migrations/MapStep.tsx
 msgid "Your team"
 msgstr "فريقك"
+
+#: src/features/setup/SetupHub.tsx
+msgid "Your team shares mailboxes like hello@ or billing@, kept out of support views and stats."
+msgstr "يشارك فريقك صناديق بريد مثل hello@ أو billing@، بعيدًا عن عروض الدعم وإحصاءاته."
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Your time zone, {zone}. That is {utc} UTC."

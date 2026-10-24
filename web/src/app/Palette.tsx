@@ -35,7 +35,7 @@ function useItems(open: boolean): Item[] {
   const text = useEnumText()
   const navigate = useNavigate()
   const { pathname } = useLocation()
-  const { canManage, isOwner } = useSession()
+  const { canManage, isOwner, apart, homePath } = useSession()
   const analytics = useAnalyticsVisible()
   const { openShortcuts } = useShell()
   const inboxList = useInboxes().data
@@ -123,11 +123,11 @@ function useItems(open: boolean): Item[] {
       label: t`Search conversations`,
       keys: [SHORTCUTS.search],
       run: () => {
-        if (!isChats(pathname, canManage)) navigate(inboxRoot(canManage))
+        if (!isChats(pathname, apart)) navigate(inboxRoot(apart))
         focusListSearch()
       },
     })
-    if (canManage) go(t`Home`, "/", keyLabel(SHORTCUTS.home))
+    if (canManage) go(t`Home`, homePath, keyLabel(SHORTCUTS.home))
     if (inboxList?.some((i) => i.purpose === "mail")) go(t`Mail`, "/mail", keyLabel(SHORTCUTS.mail))
     if (pathname.startsWith("/mail"))
       list.push({ group: t`Mail`, label: t`Write a new mail`, keys: [MAIL_KEYS.compose], run: openCompose })
@@ -184,6 +184,8 @@ function useItems(open: boolean): Item[] {
     openShortcuts,
     setFilter,
     canManage,
+    apart,
+    homePath,
     isOwner,
     analytics,
     pathname,
@@ -213,7 +215,7 @@ function PaletteBody({ open, onOpenChange }: PaletteProps) {
   const { t } = useLingui()
   const navigate = useNavigate()
   const { pathname } = useLocation()
-  const { canManage } = useSession()
+  const { apart } = useSession()
   const [q, setQ] = useState("")
   const all = useItems(open)
   const groups = useMemo(() => {
@@ -284,7 +286,7 @@ function PaletteBody({ open, onOpenChange }: PaletteProps) {
                   label: "",
                   run: () => {
                     setListQuery(search)
-                    if (!isChats(pathname, canManage)) navigate(inboxRoot(canManage))
+                    if (!isChats(pathname, apart)) navigate(inboxRoot(apart))
                   },
                 })
               }

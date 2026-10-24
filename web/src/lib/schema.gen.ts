@@ -584,6 +584,94 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/me/addresses": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Your own e-mail addresses
+         * @description The addresses the calling member added to send mail from, verified or waiting for their
+         *     code, oldest first. A verified address lists in `usable_channel_ids` the e-mail channels of
+         *     inboxes the member can see that may send from it. Member sessions only.
+         */
+        get: operations["listMyAddresses"];
+        put?: never;
+        /**
+         * Add an address of your own, or mail its code again
+         * @description Mails a 6-digit code from the server's own sender to `address`, valid for 10 minutes and 5
+         *     tries; enter it with `POST /v1/me/addresses/{id}/verify`. When a channel of the workspace
+         *     catches all mail to the address's domain (`*@domain`), no code is mailed, since it would land
+         *     in a shared inbox: the answer has `verification: approval` and an owner or admin approves the
+         *     address with `POST /v1/members/{memberId}/addresses/{memberAddressId}/approve`. The mail names neither the
+         *     workspace nor the member. Posting an address the member added and has not verified yet
+         *     mails a new code, which replaces the old one. At most one code a minute per address, 10 an
+         *     hour per member and 5 a day to one address across the server (`429 rate_limited`), and at
+         *     most 10 addresses per member (`409 limit_reached`). A new address is recorded as
+         *     `member_address.added`.
+         *
+         *     `409 address_taken` when the address is a channel address or sending address of this
+         *     workspace, an address a channel on this server receives mail at, the server's own sender or
+         *     a forwarding address, or another member of the workspace verified it; another member's
+         *     unverified claim blocks nobody and is replaced. `409 address_verified` when the member
+         *     verified it already. `400 validation_failed` for anything that is not a plain address
+         *     without a display name whose local part is a dot-atom. Member sessions only.
+         */
+        post: operations["addMyAddress"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/me/addresses/{memberAddressId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Remove one of your addresses
+         * @description Removes the address (`member_address.removed`). Mail queued from it fails instead of going
+         *     out from another address. Another member's address is `404`. Member sessions only.
+         */
+        delete: operations["deleteMyAddress"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/me/addresses/{memberAddressId}/verify": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Verify one of your addresses
+         * @description Checks the code mailed to the address. A wrong, used or expired code answers
+         *     `400 verification_code_invalid`; after 5 wrong tries the code is spent and a new one must be
+         *     requested. An address waiting for approval has no code and answers the same. `409 address_taken` when the address became a channel or sending address of the
+         *     workspace, a channel on this server receives mail at it, or another member verified it
+         *     meanwhile. Recorded as `member_address.verified`. A verified address answers as it is.
+         *     Another member's address is `404`. Member sessions only.
+         */
+        post: operations["verifyMyAddress"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/me/mentions": {
         parameters: {
             query?: never;
@@ -1206,6 +1294,52 @@ export interface paths {
          *     `400 validation_failed`.
          */
         patch: operations["updateMember"];
+        trace?: never;
+    };
+    "/v1/members/{memberId}/addresses": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * A member's own e-mail addresses
+         * @description The addresses the member added to send mail from, as `GET /v1/me/addresses` lists them for
+         *     the member, so an owner or admin can approve those with `verification: approval`. Owners and
+         *     admins only, with a member session.
+         */
+        get: operations["listMemberAddresses"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/members/{memberId}/addresses/{memberAddressId}/approve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Approve a member's address
+         * @description Verifies an address waiting for approval (`verification: approval`), recorded as
+         *     `member_address.verified` with `by: approval`. An approved address answers as it is.
+         *     `409 approval_not_needed` for an address verified by code; `409 address_taken` as for
+         *     `POST /v1/me/addresses/{memberAddressId}/verify`. Owners and admins only, with a member
+         *     session.
+         */
+        post: operations["approveMemberAddress"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/v1/invites": {
@@ -2501,6 +2635,8 @@ export interface paths {
          *     are those of a reply. At send time an address that bounced or complained meanwhile is
          *     dropped from its list. A hard bounce or complaint reported for one recipient suppresses that
          *     address; the message is marked `failed` only when every `to` address bounced.
+         *     `from_address` sends it from one of the calling member's own addresses usable for the channel,
+         *     under the rules of `createMessage` (`409 from_not_allowed`); a draft takes it when it is sent.
          *
          *     The conversation has `channel_kind` `email`, status `open`, the subject, and in a `mail`
          *     inbox the calling member as assignee (API keys assign no one). `conversation.created` and
@@ -3022,6 +3158,21 @@ export interface paths {
          *     message's `email` to members and keys only in answers to `/v1` requests, never in events,
          *     webhooks or on `/client/v1`.
          *
+         *     In a `mail` inbox a member's e-mailed reply goes `From` the channel's sending address with
+         *     the name `<member name> (<channel name>)` (the channel name alone when the member has no
+         *     name); messages of API keys and rules keep the channel's name, and `support` inboxes always
+         *     send with the channel's name. `from_address` sends it instead from one of the calling
+         *     member's own verified addresses (`GET /v1/me/addresses`): `From` the member's name and that
+         *     address, `Reply-To` the channel's address, so answers come back to the conversation. The
+         *     address must be usable for the conversation's channel (`MemberAddress.usable_channel_ids`);
+         *     otherwise `409 from_not_allowed` says why (not verified, another domain than the channel's
+         *     sending address, or no passing deliverability check). It is checked again when the mail is
+         *     sent: when the address was removed or the check no longer passes, the message fails
+         *     (`delivery.state` `failed`) instead of going out from another address. API keys and
+         *     connected apps other than Yuva's own get `400 validation_failed` for it, and so do notes,
+         *     `in` messages, drafts (send them with `POST /v1/messages/{id}/send` and `from_address`) and
+         *     replies that are not e-mailed.
+         *
          *     "Reply" and "Reply all" are the same call: `cc: []` answers the contact alone, no `cc`
          *     copies every `active` participant, and a `cc` list chooses who is copied. A conversation
          *     started with `composeMail` has its other `to` and its `cc` recipients as participants.
@@ -3485,7 +3636,9 @@ export interface paths {
          *     erased with its contact answers `409 no_recipient`. Its recipients count against the 300
          *     recipients an hour of new mail (`429 rate_limited`). The other `to` and the `cc` become
          *     contacts and participants when it is sent. A `forward` draft goes to its `forward.to`
-         *     under the rules and limits of `forwardConversation` and takes neither `cc` nor `bcc`.
+         *     under the rules and limits of `forwardConversation` and takes neither `cc`, `bcc` nor
+         *     `from_address`. `from_address` sends the mail from one of the member's own addresses, as on
+         *     `createMessage`.
          *
          *     Members always may. An API key needs `drafts:send` and `messages:write`, and the
          *     workspace's `bots_may_send` (`403 bot_sending_disabled`).
@@ -12449,9 +12602,18 @@ export interface components {
              */
             bots_may_send: boolean;
             broadcasts: components["schemas"]["WorkspaceBroadcasts"];
+            focus?: components["schemas"]["WorkspaceFocus"];
             /** Format: date-time */
             created_at: string;
         };
+        /**
+         * @description What the workspace is for, as its owner answered: `support` (support inboxes), `mail`
+         *     (team mail inboxes) or `both`. The panel orders the setup cards and the rail by it. Absent
+         *     until it is set: a new workspace has not been asked yet. Workspaces made before it existed
+         *     start as `both` when they have a `mail` inbox, else `support`.
+         * @enum {string}
+         */
+        WorkspaceFocus: "support" | "mail" | "both";
         WorkspaceCreate: {
             name: string;
         };
@@ -12466,6 +12628,8 @@ export interface components {
             bots_may_send?: boolean;
             /** @description Whether API keys and OAuth tokens with `broadcasts:send` may schedule and resume broadcasts. Owners and admins, with a member session. */
             broadcasts_by_keys?: boolean;
+            /** @description Owners and admins, with a member session. It cannot be cleared once set. */
+            focus?: components["schemas"]["WorkspaceFocus"];
         };
         /**
          * @description - `member`: a member with a session.
@@ -12535,6 +12699,7 @@ export interface components {
          *     - `workspace.retention_changed`: `from`, `to` (days; `null` keeps everything).
          *     - `workspace.bots_may_send_changed`, `workspace.broadcasts_by_keys_changed`: `from`, `to`
          *       (booleans).
+         *     - `workspace.focus_changed`: `from` (`null` when it was not set), `to`.
          *     - `workspace.broadcast_approval_requested`: none. `workspace.broadcasts_approved`,
          *       `workspace.broadcasts_denied`: `reason` when the operator gave one.
          *       `workspace.broadcasts_suspended`: `reason`, `paused_broadcasts` (by the operator).
@@ -12542,6 +12707,9 @@ export interface components {
          *     - `workspace.slack_connected`: `team_id`, `team_name`; `workspace.slack_disconnected`:
          *       `team_id`, and `reason` `uninstalled` (by `system`) when Slack reported the app removed.
          *     - `member.slack_linked`: `slack_user_id`; `member.slack_unlinked`: `slack_user_id`.
+         *     - `member_address.added`, `member_address.verified`, `member_address.removed`: `address`;
+         *       the target is the member whose own address it is; `member_address.verified` adds
+         *       `by: approval` when an owner or admin approved it.
          *     - `sso.provider_created`, `sso.provider_updated`: `protocol`, and for OpenID Connect
          *       `issuer_host` and for an update `fields` among `issuer`, `client_id`, `client_secret`,
          *       `scopes`, `groups_claim` and `allowed_groups` (never the secret); for SAML `entity_id`,
@@ -12585,7 +12753,7 @@ export interface components {
          *     More actions are added over time; show an unknown one by its name.
          * @enum {string}
          */
-        AuditAction: "member.joined" | "member.role_changed" | "member.removed" | "member.inbox_access_granted" | "member.inbox_access_revoked" | "invite.created" | "invite.deleted" | "api_key.created" | "api_key.revoked" | "oauth_grant.created" | "oauth_grant.revoked" | "webhook.created" | "webhook.updated" | "webhook.deleted" | "webhook.secret_rotated" | "channel.credentials_changed" | "channel.key_rotated" | "channel.forwarding_address_rotated" | "channel.address_verified" | "channel.address_lost" | "channel.address_proven" | "channel.dkim_key_created" | "channel.dkim_key_deleted" | "inbox.identity_secret_rotated" | "inbox.deleted" | "inbox.purpose_changed" | "conversation.trashed" | "conversation.restored" | "conversation.deleted" | "message.redacted" | "contact.deleted" | "contact.consent_exported" | "list.consent_exported" | "analytics_export.created" | "workspace.retention_changed" | "workspace.bots_may_send_changed" | "workspace.broadcasts_by_keys_changed" | "workspace.broadcast_approval_requested" | "workspace.broadcasts_approved" | "workspace.broadcasts_denied" | "workspace.broadcasts_suspended" | "workspace.broadcast_limit_changed" | "team.created" | "team.deleted" | "team.member_added" | "team.member_removed" | "team.inbox_access_granted" | "team.inbox_access_revoked" | "workspace.slack_connected" | "workspace.slack_disconnected" | "member.slack_linked" | "member.slack_unlinked" | "sso.provider_created" | "sso.provider_updated" | "sso.provider_deleted" | "sso.settings_changed" | "sso.signed_in" | "sso.sign_in_refused" | "sso_domain.added" | "sso_domain.verified" | "sso_domain.deleted" | "sso_domain.lapsed" | "issue_integration.connected" | "issue_integration.updated" | "issue_integration.disconnected" | "issue_integration.secret_rotated" | "automation_rule.created" | "automation_rule.updated" | "automation_rule.deleted";
+        AuditAction: "member.joined" | "member.role_changed" | "member.removed" | "member.inbox_access_granted" | "member.inbox_access_revoked" | "invite.created" | "invite.deleted" | "api_key.created" | "api_key.revoked" | "oauth_grant.created" | "oauth_grant.revoked" | "webhook.created" | "webhook.updated" | "webhook.deleted" | "webhook.secret_rotated" | "channel.credentials_changed" | "channel.key_rotated" | "channel.forwarding_address_rotated" | "channel.address_verified" | "channel.address_lost" | "channel.address_proven" | "channel.dkim_key_created" | "channel.dkim_key_deleted" | "inbox.identity_secret_rotated" | "inbox.deleted" | "inbox.purpose_changed" | "conversation.trashed" | "conversation.restored" | "conversation.deleted" | "message.redacted" | "contact.deleted" | "contact.consent_exported" | "list.consent_exported" | "analytics_export.created" | "workspace.retention_changed" | "workspace.bots_may_send_changed" | "workspace.broadcasts_by_keys_changed" | "workspace.focus_changed" | "workspace.broadcast_approval_requested" | "workspace.broadcasts_approved" | "workspace.broadcasts_denied" | "workspace.broadcasts_suspended" | "workspace.broadcast_limit_changed" | "team.created" | "team.deleted" | "team.member_added" | "team.member_removed" | "team.inbox_access_granted" | "team.inbox_access_revoked" | "workspace.slack_connected" | "workspace.slack_disconnected" | "member.slack_linked" | "member.slack_unlinked" | "sso.provider_created" | "sso.provider_updated" | "sso.provider_deleted" | "sso.settings_changed" | "sso.signed_in" | "sso.sign_in_refused" | "sso_domain.added" | "sso_domain.verified" | "sso_domain.deleted" | "sso_domain.lapsed" | "issue_integration.connected" | "issue_integration.updated" | "issue_integration.disconnected" | "issue_integration.secret_rotated" | "automation_rule.created" | "automation_rule.updated" | "automation_rule.deleted" | "member_address.added" | "member_address.verified" | "member_address.removed";
         /** @enum {string} */
         AuditTargetType: "workspace" | "member" | "invite" | "inbox" | "channel" | "api_key" | "oauth_grant" | "webhook" | "contact" | "list" | "analytics_export" | "conversation" | "message" | "team" | "sso" | "sso_domain" | "issue_integration" | "automation_rule";
         AuditTarget: {
@@ -13541,6 +13709,60 @@ export interface components {
         };
         MemberSignatureList: {
             items: components["schemas"]["MemberSignature"][];
+        };
+        MemberAddress: {
+            /** Format: uuid */
+            id: string;
+            address: components["schemas"]["Email"];
+            verification: components["schemas"]["MemberAddressVerification"];
+            verified: boolean;
+            /** Format: date-time */
+            verified_at?: string;
+            /**
+             * Format: date-time
+             * @description Unverified addresses only, while their code is valid.
+             */
+            code_sent_at?: string;
+            /**
+             * Format: date-time
+             * @description Unverified addresses only, while their code is valid.
+             */
+            code_expires_at?: string;
+            /**
+             * @description The e-mail channels, of inboxes the member can see, whose mail may go `From` this
+             *     address (`from_address` on `createMessage`, `sendMessage` and `composeMail`): the
+             *     address is verified, its domain is the domain of the channel's sending address
+             *     (`from_address`, else its address), the channel has an SMTP account, and the channel's
+             *     latest deliverability check (`GET /v1/channels/{id}/deliverability`) for that domain is
+             *     `received` with a passing DKIM signature aligned with it and DMARC `pass`, started at most
+             *     30 days ago and after the channel's address, sending address or SMTP account last
+             *     changed. Empty for an unverified address.
+             */
+            usable_channel_ids: string[];
+            /** Format: date-time */
+            created_at: string;
+        };
+        /**
+         * @description How the address is verified. `code`: the member enters the code mailed to it.
+         *     `approval`: a channel of the workspace catches all mail to the address's domain, so a mailed
+         *     code would land in a shared inbox; no code is sent and an owner or admin approves the address
+         *     with `POST /v1/members/{memberId}/addresses/{memberAddressId}/approve`.
+         * @enum {string}
+         */
+        MemberAddressVerification: "code" | "approval";
+        MemberAddressList: {
+            items: components["schemas"]["MemberAddress"][];
+        };
+        MemberAddressCreate: {
+            /**
+             * @description A plain address without a display name, its local part a dot-atom: no quoted local
+             *     part, spaces, commas or second `@`.
+             */
+            address: string;
+        };
+        MemberAddressVerify: {
+            /** @description The 6-digit code from the mail. */
+            code: string;
         };
         MemberSignatureUpdate: {
             /**
@@ -15386,7 +15608,8 @@ export interface components {
         HomeSetup: {
             /**
              * @description One item per part of the setup hub, in this order: `chat` (live chat channels),
-             *     `email` (e-mail channels), `app` (app channels), `docs` (chat channels that
+             *     `email` (e-mail channels), `mail` (team mail inboxes, purpose `mail`, with at least one
+             *     e-mail channel), `app` (app channels), `docs` (chat channels that
              *     documentation pages have used: ratings, feedback or discussions), `analytics`
              *     (properties; only when the server collects analytics) and `newsletter` (mailing
              *     lists that are not archived). An item is `done` when its `count` is above zero.
@@ -15395,7 +15618,7 @@ export interface components {
         };
         HomeSetupItem: {
             /** @enum {string} */
-            id: "chat" | "email" | "app" | "docs" | "analytics" | "newsletter";
+            id: "chat" | "email" | "mail" | "app" | "docs" | "analytics" | "newsletter";
             done: boolean;
             /** Format: int64 */
             count: number;
@@ -15762,6 +15985,12 @@ export interface components {
             cc?: components["schemas"]["Email"][];
             /** @description E-mailed replies only, hidden recipients. See `createMessage`. */
             bcc?: components["schemas"]["Email"][];
+            /**
+             * @description Member sessions only: send the e-mail `From` one of the member's verified addresses
+             *     usable for the channel (`GET /v1/me/addresses`) instead of the channel's address. See
+             *     `createMessage`.
+             */
+            from_address?: components["schemas"]["Email"];
         };
         ConversationForward: {
             to: components["schemas"]["Email"][];
@@ -15799,6 +16028,12 @@ export interface components {
             cc?: components["schemas"]["Email"][];
             /** @description E-mailed replies only, hidden recipients. See `createMessage`. */
             bcc?: components["schemas"]["Email"][];
+            /**
+             * @description Member sessions only: send the e-mail `From` one of the member's verified addresses
+             *     usable for the channel (`GET /v1/me/addresses`) instead of the channel's address. See
+             *     `createMessage`.
+             */
+            from_address?: components["schemas"]["Email"];
         };
         ComposeMail: {
             /** Format: uuid */
@@ -15826,6 +16061,12 @@ export interface components {
             draft?: boolean;
             /** @description Makes the request idempotent within the inbox. */
             client_id?: string;
+            /**
+             * @description Member sessions only: send the e-mail `From` one of the member's verified addresses
+             *     usable for the channel (`GET /v1/me/addresses`) instead of the channel's address. See
+             *     `createMessage`.
+             */
+            from_address?: components["schemas"]["Email"];
         };
         ComposeMailMultipart: {
             /** Format: uuid */
@@ -15844,6 +16085,7 @@ export interface components {
             signature?: boolean;
             draft?: boolean;
             client_id?: string;
+            from_address?: components["schemas"]["Email"];
             files?: string[];
         };
         ComposedMail: {
@@ -15872,6 +16114,7 @@ export interface components {
             cc?: string[];
             /** @description Repeat the field once per address. */
             bcc?: components["schemas"]["Email"][];
+            from_address?: components["schemas"]["Email"];
             files?: string[];
         };
         /** @description Only the fields sent change. */
@@ -26491,6 +26734,7 @@ export interface components {
         ApiKeyId: string;
         OAuthRequestId: string;
         OAuthGrantId: string;
+        MemberAddressId: string;
         PasskeyId: string;
         PushSubscriptionId: string;
         InboxId: string;
@@ -27394,6 +27638,123 @@ export interface operations {
             404: components["responses"]["Problem"];
         };
     };
+    listMyAddresses: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The addresses. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MemberAddressList"];
+                };
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+        };
+    };
+    addMyAddress: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MemberAddressCreate"];
+            };
+        };
+        responses: {
+            /** @description The address, with `code_sent_at` when a code was mailed. */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MemberAddress"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            409: components["responses"]["Problem"];
+            429: components["responses"]["Problem"];
+        };
+    };
+    deleteMyAddress: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                memberAddressId: components["parameters"]["MemberAddressId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Removed. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    verifyMyAddress: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                memberAddressId: components["parameters"]["MemberAddressId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MemberAddressVerify"];
+            };
+        };
+        responses: {
+            /** @description The verified address. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MemberAddress"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+            409: components["responses"]["Problem"];
+        };
+    };
     listMentions: {
         parameters: {
             query?: {
@@ -28236,6 +28597,64 @@ export interface operations {
                 };
             };
             400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+            409: components["responses"]["Problem"];
+        };
+    };
+    listMemberAddresses: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                memberId: components["parameters"]["MemberId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The addresses. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MemberAddressList"];
+                };
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    approveMemberAddress: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                memberId: components["parameters"]["MemberId"];
+                memberAddressId: components["parameters"]["MemberAddressId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The approved address. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MemberAddress"];
+                };
+            };
             401: components["responses"]["Problem"];
             403: components["responses"]["Problem"];
             404: components["responses"]["Problem"];

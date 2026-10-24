@@ -557,6 +557,10 @@ msgid "{n, plural, one {# recipient a day} other {# recipients a day}}"
 msgstr "{n, plural, other {# penerima sehari}}"
 
 #: src/features/setup/SetupHub.tsx
+msgid "{n, plural, one {# team mailbox} other {# team mailboxes}}"
+msgstr "{n, plural, other {# peti mel pasukan}}"
+
+#: src/features/setup/SetupHub.tsx
 msgid "{n, plural, one {# website chat} other {# website chats}}"
 msgstr "{n, plural, other {# sembang tapak web}}"
 
@@ -1500,6 +1504,10 @@ msgstr "Peraturan yang dimatikan tidak pernah dijalankan. Peraturan dijalankan m
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "A secret is set. Paste a new one to replace it."
 msgstr "A secret is set. Paste a new one to replace it."
+
+#: src/features/setup/SetupHub.tsx
+msgid "A shared mailbox like hello@ or billing@ for your team"
+msgstr "Peti mel kongsi seperti hello@ atau billing@ untuk pasukan anda"
 
 #: src/components/common/PurposeChoice.tsx
 msgid "A shared mailbox like hello@ or billing@, kept out of support views and stats."
@@ -3350,6 +3358,10 @@ msgstr "Nama bot"
 msgid "Bot name (optional)"
 msgstr "Nama bot (pilihan)"
 
+#: src/components/common/FocusChoice.tsx
+msgid "Both"
+msgstr "Kedua-duanya"
+
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Both records were found. Yuva checks them once a day; keep them in place."
 msgstr "Kedua-dua rekod ditemui. Yuva menyemaknya sekali sehari; biarkan di tempatnya."
@@ -3835,6 +3847,10 @@ msgstr "Sembang"
 #: src/features/docs/InstallDialog.tsx
 msgid "Chat channel"
 msgstr "Saluran sembang"
+
+#: src/components/common/FocusChoice.tsx
+msgid "Chat, e-mail and in-app support for customers"
+msgstr "Sokongan sembang, e-mel dan dalam apl untuk pelanggan"
 
 #: src/features/broadcasts/ReviewPanel.tsx
 #: src/features/settings/channels/ChannelPage.tsx
@@ -4624,6 +4640,7 @@ msgstr "mengandungi"
 msgid "Content"
 msgstr "Kandungan"
 
+#: src/app/FocusQuestion.tsx
 #: src/features/broadcasts/Import.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 #: src/features/migrations/ChooseStep.tsx
@@ -5180,6 +5197,10 @@ msgstr "Berapa hari sebelum tamat tempoh semakan gagal. Dengan 0, hanya semak sa
 #: src/features/status/SettingsTab.tsx
 msgid "Days of history"
 msgstr "Hari sejarah"
+
+#: src/app/FocusQuestion.tsx
+msgid "Decide later"
+msgstr "Putuskan kemudian"
 
 #: src/features/docs/PagesTab.tsx
 #: src/features/setup/InstallStep.tsx
@@ -11956,6 +11977,10 @@ msgstr "Saya sahaja"
 msgid "Only owners and admins can change it."
 msgstr "Hanya pemilik dan pentadbir boleh mengubahnya."
 
+#: src/features/settings/workspace/FocusForm.tsx
+msgid "Only owners and admins can change this."
+msgstr "Hanya pemilik dan pentadbir boleh menukar ini."
+
 #: src/features/settings/workspace/RetentionForm.tsx
 msgid "Only owners can change this."
 msgstr "Hanya pemilik boleh mengubah ini."
@@ -14866,6 +14891,7 @@ msgstr "Sabtu"
 #: src/features/settings/slack/SlackPage.tsx
 #: src/features/settings/teams/TeamDialog.tsx
 #: src/features/settings/ui.tsx
+#: src/features/settings/workspace/FocusForm.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/IncidentDetail.tsx
@@ -14938,6 +14964,7 @@ msgstr "Simpan senarai sebagai paparan"
 #: src/features/settings/signature/SignaturePage.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/webhooks/sections.tsx
+#: src/features/settings/workspace/FocusForm.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/status/SettingsTab.tsx
 msgid "Saved"
@@ -15732,6 +15759,10 @@ msgstr "Sediakan Yuva"
 msgid "Sets {cname} to {downState} while it is down"
 msgstr "Menetapkan {cname} kepada “{downState}” semasa terhenti"
 
+#: src/features/settings/workspace/FocusForm.tsx
+msgid "Sets what you see first: the Setup cards, the sidebar and the page Yuva opens on."
+msgstr "Menentukan apa yang anda lihat dahulu: kad persediaan, bar sisi dan halaman tempat Yuva dibuka."
+
 #: src/features/settings/channels/email/Ses.tsx
 msgid "Setting up the inbox’s Amazon SES tenant…"
 msgstr "Menyediakan penyewa Amazon SES peti masuk…"
@@ -15795,6 +15826,10 @@ msgstr "Cap jari SHA-256 sijil yang dihantar pelayan"
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "Shared"
 msgstr "Dikongsi"
+
+#: src/components/common/FocusChoice.tsx
+msgid "Shared mailboxes for your team"
+msgstr "Peti mel kongsi untuk pasukan anda"
 
 #: src/components/common/text.ts
 msgid "Shipped"
@@ -16908,6 +16943,7 @@ msgid "Sunday"
 msgstr "Ahad"
 
 #: src/app/Sidebar.tsx
+#: src/components/common/FocusChoice.tsx
 #: src/components/common/PurposeChoice.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Support"
@@ -16924,6 +16960,10 @@ msgstr "Alamat sokongan"
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Support bot"
 msgstr "Bot sokongan"
+
+#: src/components/common/FocusChoice.tsx
+msgid "Support for customers and shared mailboxes for your team"
+msgstr "Sokongan untuk pelanggan dan peti mel kongsi untuk pasukan anda"
 
 #: src/features/status/SettingsTab.tsx
 msgid "Support link"
@@ -17047,8 +17087,10 @@ msgstr "Pasukan diubah"
 msgid "Team ID"
 msgstr "ID pasukan"
 
+#: src/components/common/FocusChoice.tsx
 #: src/components/common/PurposeChoice.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/setup/SetupHub.tsx
 msgid "Team mail"
 msgstr "Mel pasukan"
 
@@ -18710,6 +18752,10 @@ msgstr "Had pemindahan pelayan ini telah dicapai. Tunggu sehingga satu yang berj
 msgid "This server's limit was reached"
 msgstr "Had pelayan ini telah dicapai"
 
+#: src/app/FocusQuestion.tsx
+msgid "This sets what you see first. You can change it later in the workspace settings."
+msgstr "Ini menentukan apa yang anda lihat dahulu. Anda boleh menukarnya kemudian dalam tetapan ruang kerja."
+
 #: src/features/account/ConnectPage.tsx
 msgid "This site cannot connect"
 msgstr "Tapak ini tidak dapat bersambung"
@@ -20133,6 +20179,10 @@ msgstr "Apa yang tidak kena dan apa yang anda beritahu orang"
 msgid "What will go out"
 msgstr "Apa yang akan keluar"
 
+#: src/app/FocusQuestion.tsx
+msgid "What will you use Yuva for?"
+msgstr "Untuk apa anda akan menggunakan Yuva?"
+
 #: src/features/settings/SettingsColumn.tsx
 msgid "What you write often"
 msgstr "Apa yang sering anda tulis"
@@ -20144,6 +20194,11 @@ msgstr "What your e-mailed replies end with"
 #: src/features/settings/signature/SignaturePage.tsx
 msgid "What your e-mailed replies end with, per inbox. Chat replies and notes carry none."
 msgstr "What your e-mailed replies end with, per inbox. Chat replies and notes carry none."
+
+#: src/components/common/FocusChoice.tsx
+#: src/features/settings/workspace/FocusForm.tsx
+msgid "What Yuva is for"
+msgstr "Untuk apa Yuva"
 
 #: src/app/Palette.tsx
 #: src/app/Rail.tsx
@@ -20898,6 +20953,10 @@ msgstr "Alamat sokongan anda"
 #: src/features/migrations/MapStep.tsx
 msgid "Your team"
 msgstr "Pasukan anda"
+
+#: src/features/setup/SetupHub.tsx
+msgid "Your team shares mailboxes like hello@ or billing@, kept out of support views and stats."
+msgstr "Pasukan anda berkongsi peti mel seperti hello@ atau billing@, diasingkan daripada paparan dan statistik sokongan."
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Your time zone, {zone}. That is {utc} UTC."

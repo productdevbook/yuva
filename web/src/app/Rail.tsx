@@ -54,9 +54,22 @@ export function useEntries(): Entry[] {
   const analytics = useAnalyticsVisible()
   const mail = useMailInboxes().length > 0
   const mailUnread = useMailUnread()
-  const { canManage } = useSession()
+  const { canManage, mailFirst } = useSession()
+  const mailEntry: Entry[] = mail
+    ? [
+        {
+          key: "mail",
+          label: t`Mail`,
+          icon: MailIcon,
+          shortcut: SHORTCUTS.mail,
+          badge: mailUnread,
+          badgeLabel: t`Mail, ${mailUnread} unread`,
+        },
+      ]
+    : []
   const entries: Entry[] = [
     ...(canManage ? [{ key: "home" as const, label: t`Home`, icon: HouseIcon, shortcut: SHORTCUTS.home }] : []),
+    ...(mailFirst ? mailEntry : []),
     {
       key: "conversations",
       label: t`Conversations`,
@@ -65,18 +78,7 @@ export function useEntries(): Entry[] {
       badge: unread,
       badgeLabel: t`Conversations, ${unread} unread`,
     },
-    ...(mail
-      ? [
-          {
-            key: "mail" as const,
-            label: t`Mail`,
-            icon: MailIcon,
-            shortcut: SHORTCUTS.mail,
-            badge: mailUnread,
-            badgeLabel: t`Mail, ${mailUnread} unread`,
-          },
-        ]
-      : []),
+    ...(mailFirst ? [] : mailEntry),
     {
       key: "mentions",
       label: t`Mentions`,
@@ -116,23 +118,24 @@ export function useEntries(): Entry[] {
 }
 
 export function useSection() {
-  return sectionOf(useLocation().pathname, useRailView(), useSession().canManage)
+  const { apart, canManage } = useSession()
+  return sectionOf(useLocation().pathname, useRailView(), apart, canManage)
 }
 
 export function useGo() {
   const navigate = useNavigate()
   const { pathname, search } = useLocation()
   const section = useSection()
-  const { canManage } = useSession()
+  const { apart, homePath } = useSession()
   return (key: Section) => {
     if (key === "home") {
-      if (pathname !== "/") navigate("/")
+      if (pathname !== homePath) navigate(homePath)
     } else if (key === "mentions") {
       setRailView(key)
       if (pathname !== "/mentions") navigate("/mentions")
     } else if (key === "conversations" || key === "assistants") {
       setRailView(key)
-      if (!isChats(pathname, canManage) || search) navigate(inboxRoot(canManage))
+      if (!isChats(pathname, apart) || search) navigate(inboxRoot(apart))
     } else if (section !== key || (isFullPage(key) && pathname !== `/${key}`)) {
       navigate(`/${key}`)
     }

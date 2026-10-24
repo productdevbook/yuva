@@ -26,7 +26,7 @@ import {
   ProductTag,
 } from "@/features/settings/ui"
 import { hubTarget, useHubPlaces, useHubText } from "@/features/setup/SetupHub"
-import type { SetupState } from "@/features/setup/setup"
+import { orderByFocus, type SetupState } from "@/features/setup/setup"
 import { incidentLink, statusLink } from "@/features/status/queries"
 import { useStatusText } from "@/features/status/text"
 import { useNow } from "@/hooks/use-now"
@@ -930,6 +930,7 @@ function LastBroadcast({ broadcasts }: { broadcasts: NonNullable<Home["broadcast
 
 function Setup({ setup }: { setup: NonNullable<Home["setup"]> }) {
   const { t, i18n } = useLingui()
+  const { homePath, membership } = useSession()
   const text = useHubText()
   const places = useHubPlaces()
   const count = setup.items.length
@@ -960,11 +961,11 @@ function Setup({ setup }: { setup: NonNullable<Home["setup"]> }) {
         <span className="rounded-full bg-success" style={{ width: `${count ? (done / count) * 100 : 0}%` }} />
       </span>
       <ul data-testid="home-setup">
-        {setup.items.map((item) => (
+        {orderByFocus(setup.items, membership.workspace.focus).map((item) => (
           <li key={item.id}>
             <Link
               to={hubTarget(item, places)}
-              state={item.done ? undefined : ({ back: "/" } satisfies SetupState)}
+              state={item.done ? undefined : ({ back: homePath } satisfies SetupState)}
               className="flex items-center gap-2.5 px-4 py-[7px] transition-colors hover:bg-surface"
               data-testid={`home-setup-${item.id}`}
             >
@@ -989,7 +990,8 @@ function Setup({ setup }: { setup: NonNullable<Home["setup"]> }) {
 
 export function HomePage() {
   const { t } = useLingui()
-  const { me } = useSession()
+  const { me, membership } = useSession()
+  const mailOnly = membership.workspace.focus === "mail"
   const [days] = usePeriod()
   const [inboxId] = useInboxFilter()
   const home = useHome(true, { days, inboxId })
@@ -1001,14 +1003,14 @@ export function HomePage() {
   const hour = new Date(useNow(60_000)).getHours()
   const greeting =
     hour < 12 ? t`Good morning, ${first}` : hour < 18 ? t`Good afternoon, ${first}` : t`Good evening, ${first}`
-  const needs = h ? h.inbox.waiting + mentions : 0
+  const needs = h && !mailOnly ? h.inbox.waiting + mentions : 0
   return (
     <Page testId="home">
       <PageHeader
         back={false}
         title={product ?? greeting}
         description={
-          !h ? undefined : needs > 0 ? (
+          !h || mailOnly ? undefined : needs > 0 ? (
             <Plural value={needs} one="# thing needs you today." other="# things need you today." />
           ) : (
             <Trans>Nothing needs you today.</Trans>
@@ -1016,6 +1018,7 @@ export function HomePage() {
         }
         action={
           h &&
+          !mailOnly &&
           h.status_pages.length > 0 && (
             <Button className={headButton.primary} render={<Link to="/status" />} data-testid="home-status-update">
               <Trans>Post status update</Trans>
@@ -1036,14 +1039,29 @@ export function HomePage() {
           </div>
         )
       ) : (
-        <HomeBlocks h={h} product={product} />
+        <HomeBlocks h={h} product={product} mailOnly={mailOnly} />
       )}
     </Page>
   )
 }
 
-function HomeBlocks({ h, product }: { h: Home; product?: string }) {
+function HomeBlocks({ h, product, mailOnly }: { h: Home; product?: string; mailOnly: boolean }) {
   const waiting = waitingOf(h)
+  if (mailOnly)
+    return (
+      <>
+        {h.analytics && <Sites properties={h.analytics.properties} />}
+        <div className="grid grid-cols-2 items-start gap-4 max-lg:grid-cols-1">
+          <ComingUp upcoming={h.upcoming.filter((u) => u.kind === "broadcast")} />
+          {(h.broadcasts || h.setup) && (
+            <div className="flex min-w-0 flex-col gap-4">
+              {h.broadcasts && <LastBroadcast broadcasts={h.broadcasts} />}
+              {h.setup && <Setup setup={h.setup} />}
+            </div>
+          )}
+        </div>
+      </>
+    )
   return (
     <>
       <PeriodBar h={h} product={product} />

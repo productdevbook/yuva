@@ -130,7 +130,7 @@ function BackButton({ onBack }: { onBack?: () => void }) {
 export function ChatView(props: Props) {
   const errorText = useErrorText()
   const navigate = useNavigate()
-  const { canManage } = useSession()
+  const { apart } = useSession()
   const conversation = useConversation(props.id)
   const c = conversation.data
   const contact = useContact(c?.contact_id)
@@ -165,7 +165,7 @@ export function ChatView(props: Props) {
         )}
         <EmptyState icon={SearchXIcon} title={<Trans>This conversation is not available</Trans>}>
           <p>{errorText(conversation.error ?? new ApiError(404))}</p>
-          <Button variant="outline" size="sm" className="mt-4" render={<Link to={inboxRoot(canManage)} />}>
+          <Button variant="outline" size="sm" className="mt-4" render={<Link to={inboxRoot(apart)} />}>
             <Trans>Back to the list</Trans>
           </Button>
         </EmptyState>
@@ -173,9 +173,7 @@ export function ChatView(props: Props) {
     )
   }
   if (c.inbox_purpose === "mail")
-    return (
-      <MailThread id={c.id} onBack={props.onBack} onLeave={props.onBack ?? (() => navigate(inboxRoot(canManage)))} />
-    )
+    return <MailThread id={c.id} onBack={props.onBack} onLeave={props.onBack ?? (() => navigate(inboxRoot(apart)))} />
   return <Loaded {...props} c={c} contact={contact.data} channel={known ?? fetched} />
 }
 
@@ -191,7 +189,7 @@ function Loaded({
   const { t } = useLingui()
   const text = useEnumText()
   const errorText = useErrorText()
-  const { membership, canManage } = useSession()
+  const { membership, canManage, apart } = useSession()
   const me = membership.member_id
   const members = useMemberMap()
   const labels = useLabels().data ?? []
@@ -439,7 +437,7 @@ function Loaded({
   const markUnread = () => {
     marked.current = lastId ?? null
     listActions.markUnread(c.id)
-    navigate(c.kind === "feedback" ? "/feedback" : inboxRoot(canManage))
+    navigate(c.kind === "feedback" ? "/feedback" : inboxRoot(apart))
   }
   const openFind = () => {
     setFinding(true)

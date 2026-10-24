@@ -262,9 +262,9 @@ export function ChatsPage({ section = "conversations" }: { section?: "conversati
   const { pathname, search } = useLocation()
   const phone = useIsPhone()
   const [panel, setPanel] = usePanel()
-  const { canManage } = useSession()
+  const { apart } = useSession()
   const rail = useRailView()
-  const back = section === "feedback" ? "/feedback" : rail === "mentions" ? "/mentions" : inboxRoot(canManage)
+  const back = section === "feedback" ? "/feedback" : rail === "mentions" ? "/mentions" : inboxRoot(apart)
   const id = conversationId ?? null
   useViewing(id ?? undefined)
 

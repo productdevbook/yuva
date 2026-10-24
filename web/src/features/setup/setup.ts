@@ -1,4 +1,4 @@
-import type { HomeSetupItem } from "@/lib/api"
+import type { HomeSetupItem, WorkspaceFocus } from "@/lib/api"
 
 export type SetupKind = "chat" | "email" | "app" | "docs"
 export const SETUP_KINDS: SetupKind[] = ["chat", "email", "app", "docs"]
@@ -17,9 +17,20 @@ export function stepNumber(stage: SetupStage, trimmed: boolean) {
 }
 
 export type HubId = HomeSetupItem["id"]
-export const HUB_IDS: HubId[] = ["chat", "email", "app", "docs", "analytics", "newsletter"]
+export const HUB_IDS: HubId[] = ["chat", "email", "mail", "app", "docs", "analytics", "newsletter"]
+
+export function orderByFocus(items: HomeSetupItem[], focus: WorkspaceFocus | undefined) {
+  const rest = (...ids: HubId[]) => items.filter((i) => !ids.includes(i.id))
+  const mail = items.find((i) => i.id === "mail")
+  const email = items.find((i) => i.id === "email")
+  if (!mail) return items
+  if (focus === "support") return [...rest("mail"), mail]
+  if (focus === "mail") return [mail, ...(email ? [email] : []), ...rest("mail", "email")]
+  return items
+}
 
 export function startPath(id: HubId) {
+  if (id === "mail") return "/setup/mail"
   if (id === "analytics") return "/setup/analytics"
   if (id === "newsletter") return "/setup/newsletter"
   return `/setup/start/${id}`

@@ -1,6 +1,6 @@
 import { plural } from "@lingui/core/macro"
 import { Trans, useLingui } from "@lingui/react/macro"
-import { BookOpenTextIcon, ChartLineIcon, CheckIcon, ChevronRightIcon, MegaphoneIcon } from "lucide-react"
+import { BookOpenTextIcon, ChartLineIcon, CheckIcon, ChevronRightIcon, InboxIcon, MegaphoneIcon } from "lucide-react"
 import { useState } from "react"
 import { Link, Navigate, useLocation } from "react-router"
 
@@ -10,8 +10,8 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { PropertyCard } from "@/features/home/PropertyCard"
 import { useHome } from "@/features/home/queries"
 import { useKindText } from "@/features/setup/ChannelStep"
-import { DEFAULT_COLOR, KindPreview, PreviewCaption, SubscribeMock } from "@/features/setup/previews"
-import { startPath, type HubId, type SetupState } from "@/features/setup/setup"
+import { DEFAULT_COLOR, KindPreview, MailMock, PreviewCaption, SubscribeMock } from "@/features/setup/previews"
+import { orderByFocus, startPath, type HubId, type SetupState } from "@/features/setup/setup"
 import { SetupLayout } from "@/features/setup/SetupLayout"
 import type { HomeSetupItem } from "@/lib/api"
 import { useSession } from "@/lib/session"
@@ -25,6 +25,7 @@ export function useHubText() {
     title: {
       chat: kinds.chat.title,
       email: kinds.email.title,
+      mail: t`Team mail`,
       app: kinds.app.title,
       docs: kinds.docs.title,
       analytics: t`Analytics`,
@@ -33,6 +34,7 @@ export function useHubText() {
     hint: {
       chat: kinds.chat.hint,
       email: kinds.email.hint,
+      mail: t`A shared mailbox like hello@ or billing@ for your team`,
       app: kinds.app.hint,
       docs: kinds.docs.hint,
       analytics: t`Visitors of your website or app, without cookies`,
@@ -42,6 +44,7 @@ export function useHubText() {
       ({
         chat: plural(n, { one: "# website chat", other: "# website chats" }),
         email: plural(n, { one: "# e-mail address", other: "# e-mail addresses" }),
+        mail: plural(n, { one: "# team mailbox", other: "# team mailboxes" }),
         app: plural(n, { one: "# app", other: "# apps" }),
         docs: plural(n, { one: "# documentation site", other: "# documentation sites" }),
         analytics: plural(n, { one: "# website or app", other: "# websites and apps" }),
@@ -59,6 +62,7 @@ export function useHubPlaces(): Record<HubId, string> {
   return {
     chat: settingsOf("chat"),
     email: settingsOf("email"),
+    mail: "/mail",
     app: settingsOf("app"),
     docs: "/docs",
     analytics: "/analytics",
@@ -74,6 +78,7 @@ function HubIcon({ id }: { id: HubId }) {
   if (id === "docs") return <BookOpenTextIcon />
   if (id === "analytics") return <ChartLineIcon />
   if (id === "newsletter") return <MegaphoneIcon />
+  if (id === "mail") return <InboxIcon />
   return <ChannelIcon kind={id} />
 }
 
@@ -86,6 +91,7 @@ function HubPreview({ id }: { id: HubId }) {
   const caption = {
     chat: <Trans>Visitors write from any page of your site; you answer here, live.</Trans>,
     email: <Trans>Customers keep writing to the address they know.</Trans>,
+    mail: <Trans>Your team shares mailboxes like hello@ or billing@, kept out of support views and stats.</Trans>,
     app: <Trans>People write from inside your app, signed in as themselves.</Trans>,
     docs: <Trans>Readers rate each page, send feedback and discuss it in public; you answer and moderate here.</Trans>,
     analytics: <Trans>Every website and app shows its visitors on Home and in Analytics.</Trans>,
@@ -97,6 +103,8 @@ function HubPreview({ id }: { id: HubId }) {
         <PropertyCard example name={t`${name} website`} host="www.example.com" />
       ) : id === "newsletter" ? (
         <SubscribeMock name={t`${name} news`} color={color} />
+      ) : id === "mail" ? (
+        <MailMock name={name} to="hello@example.com" />
       ) : (
         <KindPreview kind={id} name={name} color={color} host="www.example.com" />
       )}
@@ -106,14 +114,14 @@ function HubPreview({ id }: { id: HubId }) {
 }
 
 export function SetupHub() {
-  const { canManage } = useSession()
+  const { canManage, membership } = useSession()
   const state = (useLocation().state ?? {}) as SetupState
   const home = useHome(canManage)
   const text = useHubText()
   const places = useHubPlaces()
   const [focus, setFocus] = useState<HubId>("chat")
   if (!canManage) return <Navigate to="/" replace />
-  const items = home.data?.setup?.items
+  const items = home.data?.setup && orderByFocus(home.data.setup.items, membership.workspace.focus)
   const left = items?.filter((i) => !i.done).length ?? 0
   return (
     <SetupLayout
