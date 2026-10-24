@@ -132,6 +132,7 @@ SELECT count(*) FROM contact_emails WHERE workspace_id = $1 AND contact_id = $2;
 -- name: ListContactConversations :many
 SELECT c.* FROM conversations c
 WHERE c.workspace_id = @workspace_id AND c.inbox_id = @inbox_id AND c.contact_id = @contact_id AND c.trashed_at IS NULL
+  AND conversation_visible_to(c.draft_of, NULL)
   AND (sqlc.narg(kinds)::text[] IS NULL OR c.kind = ANY(sqlc.narg(kinds)::text[]))
   AND (sqlc.narg(cursor_at)::timestamptz IS NULL
        OR (coalesce(c.last_message_at, c.created_at), c.id) < (sqlc.narg(cursor_at)::timestamptz, sqlc.narg(cursor_id)::uuid))
@@ -139,7 +140,8 @@ ORDER BY coalesce(c.last_message_at, c.created_at) DESC, c.id DESC
 LIMIT @lim;
 
 -- name: ListContactConversationIDs :many
-SELECT id, status, feedback_progress FROM conversations WHERE workspace_id = $1 AND inbox_id = $2 AND contact_id = $3 AND trashed_at IS NULL;
+SELECT id, status, feedback_progress FROM conversations WHERE workspace_id = $1 AND inbox_id = $2 AND contact_id = $3 AND trashed_at IS NULL
+  AND conversation_visible_to(draft_of, NULL);
 
 -- name: ListUnreadForContact :many
 SELECT c.id FROM conversations c
@@ -163,7 +165,7 @@ GROUP BY r.conversation_id;
 SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
        m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
        m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions, m.imported_at, m.imported_author, m.help_cards,
-       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text,
+       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error,
        coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
        coalesce(sk.bot_name, sk.name, '')::text AS sent_by_bot_name
 FROM messages m
@@ -179,7 +181,7 @@ LIMIT @lim;
 SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
        m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
        m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions, m.imported_at, m.imported_author, m.help_cards,
-       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text,
+       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error,
        coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
        coalesce(sk.bot_name, sk.name, '')::text AS sent_by_bot_name
 FROM messages m

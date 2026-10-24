@@ -1,0 +1,4 @@
+{{template "heading" "Ihre geplante Nachricht wurde nicht gesendet"}}
+<p style="margin:0 0 16px 0;">Ihre geplante Nachricht in <strong>{{.Inbox}}</strong>{{if .Subject}} in „{{.Subject}}“{{end}} konnte nicht gesendet werden: {{.Reason}}. Sie bleibt als Entwurf erhalten; korrigieren Sie sie und senden oder planen Sie sie erneut.</p>
+{{template "button" (button .URL "Unterhaltung öffnen")}}
+{{define "scheduled_failed.footer"}}Sie erhalten diese E-Mail, weil Sie die Nachricht geplant haben. <a href="{{.SettingsURL}}" target="_blank" style="color:#71717a;text-decoration:underline;">Wählen Sie, welche E-Mails Sie erhalten</a>{{end}}

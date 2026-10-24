@@ -1,0 +1,4 @@
+{{template "heading" "Your scheduled message was not sent"}}
+<p style="margin:0 0 16px 0;">Your scheduled message in <strong>{{.Inbox}}</strong>{{if .Subject}} in “{{.Subject}}”{{end}} could not be sent: {{.Reason}}. It is kept as a draft; fix it and send or schedule it again.</p>
+{{template "button" (button .URL "Open the conversation")}}
+{{define "scheduled_failed.footer"}}You get this e-mail because you scheduled the message. <a href="{{.SettingsURL}}" target="_blank" style="color:#71717a;text-decoration:underline;">Choose which e-mails you get</a>{{end}}

@@ -351,6 +351,28 @@ func (s *Server) deleteConversationBatch(ctx context.Context, workspaceID uuid.U
 	return n, len(keys), nil
 }
 
+func (s *Server) deleteMemberDrafts(ctx context.Context, tx pgx.Tx, q *store.Queries, workspaceID, memberID uuid.UUID) error {
+	ids, err := q.ListDraftConversationIDs(ctx, store.ListDraftConversationIDsParams{WorkspaceID: workspaceID, MemberID: &memberID})
+	if err != nil || len(ids) == 0 {
+		return err
+	}
+	if err := forgetConversations(ctx, q, workspaceID, ids); err != nil {
+		return err
+	}
+	keys, err := q.ListConversationsStorageKeys(ctx, store.ListConversationsStorageKeysParams{WorkspaceID: workspaceID, Ids: ids})
+	if err != nil {
+		return err
+	}
+	raw, err := q.ListConversationsRawKeys(ctx, store.ListConversationsRawKeysParams{WorkspaceID: workspaceID, Ids: ids})
+	if err != nil {
+		return err
+	}
+	if _, err := q.DeleteConversations(ctx, store.DeleteConversationsParams{WorkspaceID: workspaceID, Ids: ids}); err != nil {
+		return err
+	}
+	return s.deleteStoredTx(ctx, tx, workspaceID, append(keys, raw...))
+}
+
 // forgetConversations deletes, before the conversations themselves, their stored events and
 // webhook deliveries, so neither the event feed, a realtime replay nor a redelivery shows them
 // again. The conversations are locked first, in id order and after the contact or inbox that owns
@@ -433,7 +455,7 @@ func (s *Server) OperatorDeletePerson(ctx context.Context, email string) (store.
 // author. Each workspace's audit log records the member's removal, by the person or the operator.
 func (s *Server) deletePerson(ctx context.Context, person store.Person, byOperator bool) error {
 	var workspaces []uuid.UUID
-	err := s.st.InTx(ctx, func(q *store.Queries) error {
+	err := s.st.InTxRaw(ctx, func(tx pgx.Tx, q *store.Queries) error {
 		if _, err := q.LockPersonWorkspaces(ctx, person.ID); err != nil {
 			return err
 		}
@@ -477,6 +499,9 @@ func (s *Server) deletePerson(ctx context.Context, person store.Person, byOperat
 				return err
 			}
 			if err := q.ClearMacroAssignee(ctx, store.ClearMacroAssigneeParams{WorkspaceID: m.WorkspaceID, MemberID: m.MemberID.String()}); err != nil {
+				return err
+			}
+			if err := s.deleteMemberDrafts(ctx, tx, q, m.WorkspaceID, m.MemberID); err != nil {
 				return err
 			}
 		}

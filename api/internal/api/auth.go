@@ -67,6 +67,7 @@ var operationAccess = map[string]access{
 	"CreateWorkspace":           accessPerson,
 
 	"MarkConversationRead":   accessMember,
+	"UnscheduleMessage":      accessMember,
 	"MarkConversationUnread": accessMember,
 	"PinConversation":        accessMember,
 	"UnpinConversation":      accessMember,

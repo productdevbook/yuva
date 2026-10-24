@@ -74,7 +74,7 @@ const holdForRules = `-- name: HoldForRules :one
 UPDATE conversations SET assign_waiting_since = coalesce(assign_waiting_since, $1::timestamptz), assign_after_rules = true
 WHERE workspace_id = $2 AND id = $3 AND assignee_id IS NULL AND status = 'open' AND NOT spam AND trashed_at IS NULL
   AND NOT assign_after_rules
-RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id, trashed_at, trashed_by_member_id, trashed_by_api_key_id, push_through, push_sent_at, team_id, fields, sla_due_at, snooze_rule_id, assign_waiting_since, assign_after_rules
+RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id, trashed_at, trashed_by_member_id, trashed_by_api_key_id, push_through, push_sent_at, team_id, fields, sla_due_at, snooze_rule_id, assign_waiting_since, assign_after_rules, draft_of
 `
 
 type HoldForRulesParams struct {
@@ -134,6 +134,7 @@ func (q *Queries) HoldForRules(ctx context.Context, arg HoldForRulesParams) (Con
 		&i.SnoozeRuleID,
 		&i.AssignWaitingSince,
 		&i.AssignAfterRules,
+		&i.DraftOf,
 	)
 	return i, err
 }
@@ -320,7 +321,7 @@ func (q *Queries) ReleaseForRules(ctx context.Context, arg ReleaseForRulesParams
 const startAssignWaiting = `-- name: StartAssignWaiting :one
 UPDATE conversations SET assign_waiting_since = $1::timestamptz
 WHERE workspace_id = $2 AND id = $3 AND assign_waiting_since IS NULL
-RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id, trashed_at, trashed_by_member_id, trashed_by_api_key_id, push_through, push_sent_at, team_id, fields, sla_due_at, snooze_rule_id, assign_waiting_since, assign_after_rules
+RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id, trashed_at, trashed_by_member_id, trashed_by_api_key_id, push_through, push_sent_at, team_id, fields, sla_due_at, snooze_rule_id, assign_waiting_since, assign_after_rules, draft_of
 `
 
 type StartAssignWaitingParams struct {
@@ -380,6 +381,7 @@ func (q *Queries) StartAssignWaiting(ctx context.Context, arg StartAssignWaiting
 		&i.SnoozeRuleID,
 		&i.AssignWaitingSince,
 		&i.AssignAfterRules,
+		&i.DraftOf,
 	)
 	return i, err
 }

@@ -501,9 +501,11 @@ func (s *Server) ListWebhookAttempts(ctx context.Context, req oas.ListWebhookAtt
 // recorded the contact's external ids (a merged anonymous visitor does not).
 func webhookSource(e pendingEvent) bool {
 	switch e.typ {
+	case realtime.DraftCreated, realtime.DraftUpdated, realtime.DraftDeleted:
+		_, member := memberDraftAuthor(e.typ, e.data)
+		return !member
 	case realtime.ConversationCreated, realtime.ConversationUpdated, realtime.MessageCreated, realtime.MessageRedacted, realtime.ContactUpdated,
 		realtime.ConversationTrashed, realtime.ConversationRestored, realtime.ConversationDeleted,
-		realtime.DraftCreated, realtime.DraftUpdated, realtime.DraftDeleted,
 		eventDiscussionCreated, eventDiscussionPostCreated, eventDiscussionAnswered, eventDiscussionUpdated, eventDiscussionStageChanged,
 		eventSubscriptionCreated, eventSubscriptionUpdated, eventBroadcastUpdated, eventAnalyticsAlert,
 		statusEventComponent, statusEventCreated, statusEventUpdated, statusEventResolved, statusEventMonitorDown, statusEventMonitorUp,
@@ -523,7 +525,7 @@ func webhookSource(e pendingEvent) bool {
 func (s *Server) queueWebhooks(ctx context.Context, tx pgx.Tx, q *store.Queries, workspaceID uuid.UUID, items []pendingEvent, ids []int64) error {
 	var jobs []river.InsertManyParams
 	for i, e := range items {
-		if webhookSource(e) {
+		if e.onlyMember == nil && webhookSource(e) {
 			jobs = append(jobs, river.InsertManyParams{Args: WebhookFanoutArgs{WorkspaceID: workspaceID, EventID: ids[i], Deleted: e.deleted}})
 		}
 	}

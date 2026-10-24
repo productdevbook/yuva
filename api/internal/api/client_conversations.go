@@ -109,7 +109,7 @@ func clientConversationOrTrashed(ctx context.Context, q *store.Queries, cp conta
 	} else {
 		c, err = q.GetConversation(ctx, store.GetConversationParams{WorkspaceID: cp.workspaceID, ID: id})
 	}
-	if store.IsNotFound(err) || (err == nil && (c.InboxID != cp.inboxID || c.ContactID != cp.contactID)) {
+	if store.IsNotFound(err) || (err == nil && (c.InboxID != cp.inboxID || c.ContactID != cp.contactID || c.DraftOf != nil)) {
 		return c, errConversationGone
 	}
 	return c, err
@@ -584,6 +584,9 @@ func (s *Server) CreateClientMessage(ctx context.Context, req oas.CreateClientMe
 				return err
 			}
 			if !store.IsNotFound(err) {
+				return err
+			}
+			if in.clientID, err = freeClientID(ctx, q, cp.workspaceID, c.ID, in.clientID); err != nil {
 				return err
 			}
 		}

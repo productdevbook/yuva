@@ -575,17 +575,19 @@ tags:
         direction `in`, see `forwardConversation`). Only the member who sent that forward and the
         conversation's assignee are candidates, while they can see the inbox; never the inbox's
         other members, Slack, automations or SLA.
+      - `scheduled_send_failed`: a message the member scheduled could not be sent and stays a
+        draft with `send_error`. Only that member is the candidate; the e-mail is sent at once.
 
       Never notified: the member who caused it (their own assignment), conversations marked spam,
       a member whose open panel reports that it is showing that conversation (the `viewing` frame
       on `/v1/realtime`), and, while the member's `availability` is `away`, everything except
-      `message_in_my_conversation`, `assigned_to_me`, `mentioned`, `forward_answer` and the SLA
-      events of conversations assigned to them.
+      `message_in_my_conversation`, `assigned_to_me`, `mentioned`, `forward_answer`,
+      `scheduled_send_failed` and the SLA events of conversations assigned to them.
 
       Defaults by role (`defaults` in `NotificationSettings`): push for everything except, for
       agents, `new_async_conversation` and `message_in_unassigned_conversation`; e-mail only for
-      `message_in_my_conversation`, `assigned_to_me`, `mentioned`, `sla_breached` and
-      `forward_answer`, for every role.
+      `message_in_my_conversation`, `assigned_to_me`, `mentioned`, `sla_breached`,
+      `forward_answer` and `scheduled_send_failed`, for every role.
 
       E-mail fallback: when an event with `email: true` is still unread after
       `email_delay_minutes` (15 by default), one e-mail lists the conversation's unread contact
@@ -4724,6 +4726,16 @@ paths:
             type: string
             enum: [mine]
             x-enum-varnames: [ListConversationsSentMine]
+        - name: scheduled
+          in: query
+          description: |
+            `mine` lists only the conversations holding a message the calling member scheduled, the
+            Scheduled folder, ordered by the earliest `scheduled_at` among them (not with
+            `sort=sla_due`). Member sessions only (`400 validation_failed` for API keys).
+          schema:
+            type: string
+            enum: [mine]
+            x-enum-varnames: [ListConversationsScheduledMine]
         - name: sort
           in: query
           description: |
@@ -4849,7 +4861,13 @@ paths:
         nothing is delivered until `POST /v1/messages/{id}/send`, which sends exactly this mail:
         every `to` in `To`, the `cc`, the `bcc` as envelope recipients only, the subject without
         `Re:` and no `In-Reply-To`. `cc` or `bcc` given there replace the kept lists. Deleting a
-        contact removes its addresses from the kept lists too.
+        contact removes its addresses from the kept lists too. A member's draft is private to
+        them, and so is the conversation it made: it is not listed, counted, found or readable for
+        anyone else (`404`), and no `conversation.created` is emitted, until the draft is sent;
+        sending emits `conversation.created` before `message.created`.
+
+        `send_at` (member sessions only) stores the mail as a draft that is sent at that time, as
+        `POST /v1/messages/{id}/send` with `send_at` describes.
 
         A repeated `client_id` in the same inbox returns the conversation and message stored with
         it with `200` instead of writing them again, before any rate limit, so a retry costs
@@ -5542,7 +5560,12 @@ paths:
         `draft: true` stores an outgoing message as a draft: nothing is delivered, and
         `draft.created` is emitted instead of `message.created`. Edit it with
         `PATCH /v1/messages/{id}`, discard it with `DELETE /v1/messages/{id}` and deliver it with
-        `POST /v1/messages/{id}/send`. A draft cannot be a note or an `in` message.
+        `POST /v1/messages/{id}/send`. A draft cannot be a note or an `in` message. A member's
+        draft is seen only by its author; one written with an API key by every member who sees the
+        conversation.
+
+        `send_at` (member sessions only) stores the message as a draft that is sent at that time,
+        with its `cc`, `bcc` and `from_address` kept for then; see `POST /v1/messages/{id}/send`.
 
         Send `multipart/form-data` to attach files: the fields of `MessageCreate` as form fields
         and up to 10 `files` parts. Each file must be within the conversation's channel's limits
@@ -6163,6 +6186,14 @@ paths:
         the panel. The page carries `total`, the number of drafts matching the filters over all
         pages, for a badge.
 
+        A draft written by a member (in the panel or through a connected app) is private: only
+        its author sees it, here, in the message list, in `draft.*` events and in MCP; anyone else
+        gets `404`. Drafts written with an API key (author `bot`) are seen by every member who
+        sees the conversation.
+
+        `conversation_id` and `mine=true` find the caller's own draft of a reply to restore it on
+        any device; `scheduled` keeps only scheduled (`true`) or unscheduled (`false`) drafts.
+
         Scope: `conversations:read`.
 
         Realtime: `draft.created`, `draft.updated` and `draft.deleted` carry the draft; a sent
@@ -6182,6 +6213,22 @@ paths:
           in: query
           schema:
             $ref: "#/components/schemas/DraftAuthorKind"
+        - name: conversation_id
+          in: query
+          description: Only drafts in this conversation.
+          schema:
+            type: string
+            format: uuid
+        - name: mine
+          in: query
+          description: "`true`: only drafts the calling member wrote (none for API keys)."
+          schema:
+            type: boolean
+        - name: scheduled
+          in: query
+          description: "`true`: only drafts scheduled to be sent (`scheduled_at` set); `false`: only those that are not."
+          schema:
+            type: boolean
         - $ref: "#/components/parameters/Cursor"
         - $ref: "#/components/parameters/Limit"
       responses:
@@ -6248,8 +6295,9 @@ paths:
       operationId: updateMessage
       summary: Edit a draft
       description: |
-        Changes a draft's text; emits `draft.updated`. Anything that is not a draft answers
-        `409 not_a_draft`.
+        Changes a draft's text, or with `send_at` (member sessions only) schedules it or moves its
+        time; emits `draft.updated`. It works while the draft is scheduled. Anything that is not a
+        draft answers `409 not_a_draft`; another member's draft answers `404`.
 
         Scope: `messages:write`.
       tags: [messages]
@@ -6283,8 +6331,9 @@ paths:
       operationId: deleteMessage
       summary: Discard a draft
       description: |
-        Deletes a draft with its attachments; emits `draft.deleted`. Anything that is not a draft
-        answers `409 not_a_draft`.
+        Deletes a draft with its attachments; emits `draft.deleted`. A scheduled draft is not sent.
+        Anything that is not a draft answers `409 not_a_draft`; another member's draft answers
+        `404`.
 
         Scope: `messages:write`.
       tags: [messages]
@@ -6323,8 +6372,22 @@ paths:
         `from_address`. `from_address` sends the mail from one of the member's own addresses, as on
         `createMessage`.
 
-        Members always may. An API key needs `drafts:send` and `messages:write`, and the
+        Members always may, their own drafts and those written with an API key (another member's
+        draft answers `404`). An API key needs `drafts:send` and `messages:write`, and the
         workspace's `bots_may_send` (`403 bot_sending_disabled`).
+
+        `send_at` (member sessions only; API keys and connected apps `400`) schedules instead of
+        sending: the member's own draft keeps the `cc`, `bcc` and `from_address` given here, gets
+        `scheduled_at` and goes at that time (at least 1 minute and at most 366 days ahead, else
+        `400 invalid_send_at`), exactly once, as if the member sent it then: signature, sender,
+        recipients and the checks above are applied at that moment. It emits `draft.updated` now
+        and `message.created` when it goes. Until then it can be edited
+        (`PATCH /v1/messages/{id}`, also to move `send_at`), turned back into a plain draft
+        (`DELETE /v1/messages/{id}/schedule`) or discarded. When it cannot go (the member left the
+        workspace or lost the inbox, the address or recipients were refused, or a temporary error
+        persisted) it stays a draft with `send_error`, loses `scheduled_at`, and the member gets
+        the `scheduled_send_failed` notification. A draft written with an API key cannot be
+        scheduled (`400 validation_failed`).
       tags: [messages]
       parameters:
         - $ref: "#/components/parameters/IdempotencyKey"
@@ -6354,6 +6417,38 @@ paths:
         "409":
           $ref: "#/components/responses/Problem"
         "429":
+          $ref: "#/components/responses/Problem"
+  /v1/messages/{messageId}/schedule:
+    delete:
+      operationId: unscheduleMessage
+      summary: Cancel a scheduled send
+      description: |
+        Turns a scheduled draft back into a plain draft (`scheduled_at`, and the `cc`, `bcc` and
+        `from_address` kept for the send, removed); emits `draft.updated`. A draft that is not
+        scheduled is returned as it is. Anything that is not a draft answers `409 not_a_draft`;
+        another member's draft answers `404`.
+
+        Member sessions only.
+      tags: [messages]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/MessageId"
+      responses:
+        "200":
+          description: The draft.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Message"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+        "409":
           $ref: "#/components/responses/Problem"
   /v1/messages/{messageId}/redact:
     post:
@@ -19735,7 +19830,8 @@ webhooks:
       operationId: webhookDraftCreated
       summary: A draft was written
       description: |
-        A bot or a member stored an outgoing message as a draft; nothing was delivered.
+        A bot stored an outgoing message as a draft; nothing was delivered. Members' drafts are
+        private and never sent to webhooks.
       tags: [webhooks]
       security: []
       parameters:
@@ -22550,7 +22646,7 @@ components:
           description: An e-mail when it is still unread after `email_delay_minutes`.
     NotificationEvents:
       type: object
-      required: [new_live_conversation, new_async_conversation, message_in_my_conversation, message_in_unassigned_conversation, assigned_to_me, mentioned, sla_warning, sla_breached, forward_answer]
+      required: [new_live_conversation, new_async_conversation, message_in_my_conversation, message_in_unassigned_conversation, assigned_to_me, mentioned, sla_warning, sla_breached, forward_answer, scheduled_send_failed]
       properties:
         new_live_conversation:
           $ref: "#/components/schemas/NotificationChannels"
@@ -22569,6 +22665,8 @@ components:
         sla_breached:
           $ref: "#/components/schemas/NotificationChannels"
         forward_answer:
+          $ref: "#/components/schemas/NotificationChannels"
+        scheduled_send_failed:
           $ref: "#/components/schemas/NotificationChannels"
     NotificationEventsUpdate:
       type: object
@@ -22591,6 +22689,8 @@ components:
         sla_breached:
           $ref: "#/components/schemas/NotificationChannels"
         forward_answer:
+          $ref: "#/components/schemas/NotificationChannels"
+        scheduled_send_failed:
           $ref: "#/components/schemas/NotificationChannels"
     NotificationSettings:
       type: object
@@ -22650,7 +22750,7 @@ components:
         event:
           type: string
           description: What caused it (see the `notifications` tag), or `test`.
-          enum: [new_live_conversation, new_async_conversation, message_in_my_conversation, message_in_unassigned_conversation, assigned_to_me, mentioned, sla_warning, sla_breached, forward_answer, test]
+          enum: [new_live_conversation, new_async_conversation, message_in_my_conversation, message_in_unassigned_conversation, assigned_to_me, mentioned, sla_warning, sla_breached, forward_answer, scheduled_send_failed, test]
         title:
           type: string
           description: The inbox name and the contact's name.
@@ -26126,7 +26226,14 @@ components:
           description: |
             An outgoing message that is not delivered until it is sent
             (`POST /v1/messages/{id}/send`). Drafts are shown only on `/v1`: never to contacts,
-            never e-mailed, notified, counted as unread, previewed or found by search.
+            never e-mailed, notified, counted as unread, previewed or found by search. A member's
+            draft is shown only to its author.
+        scheduled_at:
+          type: string
+          format: date-time
+          description: When a scheduled draft is sent; absent for drafts that are not scheduled and for sent messages.
+        send_error:
+          $ref: "#/components/schemas/MessageSendError"
         sent_by:
           $ref: "#/components/schemas/MessageAuthor"
           description: Who sent a draft (`member` or `bot`); absent for messages that were never drafts.
@@ -26178,6 +26285,19 @@ components:
           type: string
           format: date-time
           description: For a sent draft, when it was sent.
+    MessageSendError:
+      type: object
+      description: |
+        Why a scheduled draft could not be sent; shown to its author. Absent otherwise, and cleared
+        when the draft is scheduled again or sent.
+      required: [code, detail]
+      properties:
+        code:
+          type: string
+          description: The problem code the send answered (e.g. `from_not_allowed`, `no_recipient`, `member_inactive`).
+          examples: [from_not_allowed]
+        detail:
+          type: string
     MessageRedactedBy:
       type: object
       description: The member or API key that removed a message's content; empty when it is gone.
@@ -26385,6 +26505,12 @@ components:
             Member sessions only: send the e-mail `From` one of the member's verified addresses
             usable for the channel (`GET /v1/me/addresses`) instead of the channel's address. See
             `createMessage`.
+        send_at:
+          type: string
+          format: date-time
+          description: |
+            Member sessions only: store as a draft and send it at this time, at least 1 minute and
+            at most 366 days ahead (`400 invalid_send_at`). See `sendMessage`.
     ConversationForward:
       type: object
       required: [to]
@@ -26459,6 +26585,13 @@ components:
             Member sessions only: send the e-mail `From` one of the member's verified addresses
             usable for the channel (`GET /v1/me/addresses`) instead of the channel's address. See
             `createMessage`.
+        send_at:
+          type: string
+          format: date-time
+          description: |
+            Member sessions only: schedule the draft instead of sending it now, at least 1 minute
+            and at most 366 days ahead (`400 invalid_send_at`); `cc`, `bcc` and `from_address` are
+            kept for then.
     ComposeMail:
       type: object
       required: [inbox_id, to, subject]
@@ -26521,6 +26654,12 @@ components:
             Member sessions only: send the e-mail `From` one of the member's verified addresses
             usable for the channel (`GET /v1/me/addresses`) instead of the channel's address. See
             `createMessage`.
+        send_at:
+          type: string
+          format: date-time
+          description: |
+            Member sessions only: store as a draft and send it at this time, at least 1 minute and
+            at most 366 days ahead (`400 invalid_send_at`). See `sendMessage`.
     ComposeMailMultipart:
       type: object
       required: [inbox_id, to, subject]
@@ -26570,6 +26709,9 @@ components:
           maxLength: 200
         from_address:
           $ref: "#/components/schemas/Email"
+        send_at:
+          type: string
+          format: date-time
         files:
           type: array
           maxItems: 10
@@ -26644,6 +26786,9 @@ components:
             $ref: "#/components/schemas/Email"
         from_address:
           $ref: "#/components/schemas/Email"
+        send_at:
+          type: string
+          format: date-time
         files:
           type: array
           maxItems: 10
@@ -26661,6 +26806,12 @@ components:
           type: [string, "null"]
           maxLength: 262144
           description: Sanitized before it is stored; `null` removes it.
+        send_at:
+          type: string
+          format: date-time
+          description: |
+            Member sessions only: schedule the draft or move its time, at least 1 minute and at
+            most 366 days ahead (`400 invalid_send_at`). See `sendMessage`.
     MessagePage:
       type: object
       required: [items]
@@ -28902,7 +29053,7 @@ components:
       type: object
       description: |
         A draft was written, edited or discarded (`data` is the draft as it was). Sending a draft
-        emits `message.created`.
+        emits `message.created`. A member's draft's events reach only that member's connections.
       required: [id, type, workspace_id, inbox_id, conversation_id, created_at, data]
       properties:
         id:

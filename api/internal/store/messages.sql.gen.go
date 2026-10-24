@@ -45,7 +45,7 @@ func (q *Queries) CallerDraftInConversation(ctx context.Context, arg CallerDraft
 const clearConversationSubject = `-- name: ClearConversationSubject :one
 UPDATE conversations SET subject = '', updated_at = $1::timestamptz
 WHERE workspace_id = $2 AND id = $3
-RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id, trashed_at, trashed_by_member_id, trashed_by_api_key_id, push_through, push_sent_at, team_id, fields, sla_due_at, snooze_rule_id, assign_waiting_since, assign_after_rules
+RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id, trashed_at, trashed_by_member_id, trashed_by_api_key_id, push_through, push_sent_at, team_id, fields, sla_due_at, snooze_rule_id, assign_waiting_since, assign_after_rules, draft_of
 `
 
 type ClearConversationSubjectParams struct {
@@ -105,6 +105,7 @@ func (q *Queries) ClearConversationSubject(ctx context.Context, arg ClearConvers
 		&i.SnoozeRuleID,
 		&i.AssignWaitingSince,
 		&i.AssignAfterRules,
+		&i.DraftOf,
 	)
 	return i, err
 }
@@ -128,7 +129,7 @@ func (q *Queries) ClearEmailSubjects(ctx context.Context, arg ClearEmailSubjects
 const clearFeedbackText = `-- name: ClearFeedbackText :one
 UPDATE conversations SET feedback = feedback || '{"text": "", "attachment_count": 0}'::jsonb, updated_at = $1::timestamptz
 WHERE workspace_id = $2 AND id = $3 AND kind = 'feedback'
-RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id, trashed_at, trashed_by_member_id, trashed_by_api_key_id, push_through, push_sent_at, team_id, fields, sla_due_at, snooze_rule_id, assign_waiting_since, assign_after_rules
+RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id, trashed_at, trashed_by_member_id, trashed_by_api_key_id, push_through, push_sent_at, team_id, fields, sla_due_at, snooze_rule_id, assign_waiting_since, assign_after_rules, draft_of
 `
 
 type ClearFeedbackTextParams struct {
@@ -188,8 +189,26 @@ func (q *Queries) ClearFeedbackText(ctx context.Context, arg ClearFeedbackTextPa
 		&i.SnoozeRuleID,
 		&i.AssignWaitingSince,
 		&i.AssignAfterRules,
+		&i.DraftOf,
 	)
 	return i, err
+}
+
+const clientIDTaken = `-- name: ClientIDTaken :one
+SELECT EXISTS (SELECT 1 FROM messages WHERE workspace_id = $1 AND conversation_id = $2 AND client_id = $3) AS taken
+`
+
+type ClientIDTakenParams struct {
+	WorkspaceID    uuid.UUID
+	ConversationID uuid.UUID
+	ClientID       *string
+}
+
+func (q *Queries) ClientIDTaken(ctx context.Context, arg ClientIDTakenParams) (bool, error) {
+	row := q.db.QueryRow(ctx, clientIDTaken, arg.WorkspaceID, arg.ConversationID, arg.ClientID)
+	var taken bool
+	err := row.Scan(&taken)
+	return taken, err
 }
 
 const countDrafts = `-- name: CountDrafts :one
@@ -199,19 +218,28 @@ WHERE m.workspace_id = $1 AND m.draft AND c.trashed_at IS NULL
   AND ($2::bool OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = $3))
-  AND ($4::uuid IS NULL OR c.inbox_id = $4::uuid)
-  AND ($5::text IS NULL
-       OR ($5::text = 'bot' AND m.author_type = 'bot')
-       OR ($5::text = 'assistant' AND m.author_type = 'member' AND m.via IS NOT NULL)
-       OR ($5::text = 'member' AND m.author_type = 'member' AND m.via IS NULL))
+  AND draft_visible_to(m.draft, m.author_type, m.author_member_id, $4::uuid)
+  AND conversation_visible_to(c.draft_of, $4::uuid)
+  AND ($5::uuid IS NULL OR c.inbox_id = $5::uuid)
+  AND ($6::uuid IS NULL OR m.conversation_id = $6::uuid)
+  AND (NOT $7::bool OR (m.author_type = 'member' AND m.author_member_id = $4::uuid))
+  AND ($8::bool IS NULL OR (m.scheduled_at IS NOT NULL) = $8::bool)
+  AND ($9::text IS NULL
+       OR ($9::text = 'bot' AND m.author_type = 'bot')
+       OR ($9::text = 'assistant' AND m.author_type = 'member' AND m.via IS NOT NULL)
+       OR ($9::text = 'member' AND m.author_type = 'member' AND m.via IS NULL))
 `
 
 type CountDraftsParams struct {
-	WorkspaceID uuid.UUID
-	AllInboxes  bool
-	ViewerID    uuid.UUID
-	InboxID     *uuid.UUID
-	AuthorKind  *string
+	WorkspaceID    uuid.UUID
+	AllInboxes     bool
+	ViewerID       uuid.UUID
+	ViewerMemberID *uuid.UUID
+	InboxID        *uuid.UUID
+	ConversationID *uuid.UUID
+	Mine           bool
+	Scheduled      *bool
+	AuthorKind     *string
 }
 
 func (q *Queries) CountDrafts(ctx context.Context, arg CountDraftsParams) (int64, error) {
@@ -219,7 +247,11 @@ func (q *Queries) CountDrafts(ctx context.Context, arg CountDraftsParams) (int64
 		arg.WorkspaceID,
 		arg.AllInboxes,
 		arg.ViewerID,
+		arg.ViewerMemberID,
 		arg.InboxID,
+		arg.ConversationID,
+		arg.Mine,
+		arg.Scheduled,
 		arg.AuthorKind,
 	)
 	var count int64
@@ -351,14 +383,14 @@ WITH m AS (
             $17, coalesce($18::uuid[], '{}'), $19::jsonb, $20::jsonb,
             $21::jsonb, $22, $23)
     ON CONFLICT (workspace_id, conversation_id, client_id) DO NOTHING
-    RETURNING id, workspace_id, conversation_id, kind, direction, author_type, author_member_id, author_contact_id, body, html, client_id, event, search, created_at, delivery_state, delivery_error, delivery_updated_at, author_api_key_id, draft, sent_by_member_id, sent_by_api_key_id, via, sent_via, mentions, imported_at, imported_author, help_cards, redacted_at, redacted_by_member_id, redacted_by_api_key_id, rule, forward, signature_html, signature_text),
+    RETURNING id, workspace_id, conversation_id, kind, direction, author_type, author_member_id, author_contact_id, body, html, client_id, event, search, created_at, delivery_state, delivery_error, delivery_updated_at, author_api_key_id, draft, sent_by_member_id, sent_by_api_key_id, via, sent_via, mentions, imported_at, imported_author, help_cards, redacted_at, redacted_by_member_id, redacted_by_api_key_id, rule, forward, signature_html, signature_text, scheduled_at, scheduled_by, scheduled_cc, scheduled_bcc, scheduled_from, send_error),
 seen AS (
     UPDATE contacts SET last_active_at = greatest(coalesce(contacts.last_active_at, m.created_at), m.created_at)
     FROM m WHERE contacts.workspace_id = m.workspace_id AND contacts.id = m.author_contact_id)
 SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
        m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
        m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions, m.imported_at, m.imported_author, m.help_cards,
-       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text,
+       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error,
        coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
        coalesce(sk.bot_name, sk.name, '')::text AS sent_by_bot_name
 FROM m
@@ -426,6 +458,8 @@ type CreateMessageRow struct {
 	Forward            []byte
 	SignatureHtml      *string
 	SignatureText      *string
+	ScheduledAt        *time.Time
+	SendError          []byte
 	BotName            string
 	BotAvatarUrl       string
 	SentByBotName      string
@@ -492,6 +526,8 @@ func (q *Queries) CreateMessage(ctx context.Context, arg CreateMessageParams) (C
 		&i.Forward,
 		&i.SignatureHtml,
 		&i.SignatureText,
+		&i.ScheduledAt,
+		&i.SendError,
 		&i.BotName,
 		&i.BotAvatarUrl,
 		&i.SentByBotName,
@@ -571,12 +607,16 @@ func (q *Queries) DropEmailQuotes(ctx context.Context, arg DropEmailQuotesParams
 const getAttachment = `-- name: GetAttachment :one
 SELECT a.id, a.workspace_id, a.conversation_id, a.message_id, a.storage_key, a.filename, a.content_type, a.size_bytes, a.created_at, a.content_id, a.inline, c.inbox_id, c.trashed_at FROM attachments a
 JOIN conversations c ON c.workspace_id = a.workspace_id AND c.id = a.conversation_id
+LEFT JOIN messages m ON m.workspace_id = a.workspace_id AND m.id = a.message_id
 WHERE a.workspace_id = $1 AND a.id = $2
+  AND conversation_visible_to(c.draft_of, $3::uuid)
+  AND (m.id IS NULL OR draft_visible_to(m.draft, m.author_type, m.author_member_id, $3::uuid))
 `
 
 type GetAttachmentParams struct {
-	WorkspaceID uuid.UUID
-	ID          uuid.UUID
+	WorkspaceID    uuid.UUID
+	ID             uuid.UUID
+	ViewerMemberID *uuid.UUID
 }
 
 type GetAttachmentRow struct {
@@ -596,7 +636,7 @@ type GetAttachmentRow struct {
 }
 
 func (q *Queries) GetAttachment(ctx context.Context, arg GetAttachmentParams) (GetAttachmentRow, error) {
-	row := q.db.QueryRow(ctx, getAttachment, arg.WorkspaceID, arg.ID)
+	row := q.db.QueryRow(ctx, getAttachment, arg.WorkspaceID, arg.ID, arg.ViewerMemberID)
 	var i GetAttachmentRow
 	err := row.Scan(
 		&i.ID,
@@ -711,7 +751,7 @@ const getMessage = `-- name: GetMessage :one
 SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
        m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
        m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions, m.imported_at, m.imported_author, m.help_cards,
-       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text,
+       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error,
        coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
        coalesce(sk.bot_name, sk.name, '')::text AS sent_by_bot_name
 FROM messages m
@@ -759,6 +799,8 @@ type GetMessageRow struct {
 	Forward            []byte
 	SignatureHtml      *string
 	SignatureText      *string
+	ScheduledAt        *time.Time
+	SendError          []byte
 	BotName            string
 	BotAvatarUrl       string
 	SentByBotName      string
@@ -801,6 +843,8 @@ func (q *Queries) GetMessage(ctx context.Context, arg GetMessageParams) (GetMess
 		&i.Forward,
 		&i.SignatureHtml,
 		&i.SignatureText,
+		&i.ScheduledAt,
+		&i.SendError,
 		&i.BotName,
 		&i.BotAvatarUrl,
 		&i.SentByBotName,
@@ -812,19 +856,21 @@ const getMessageByClientID = `-- name: GetMessageByClientID :one
 SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
        m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
        m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions, m.imported_at, m.imported_author, m.help_cards,
-       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text,
+       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error,
        coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
        coalesce(sk.bot_name, sk.name, '')::text AS sent_by_bot_name
 FROM messages m
 LEFT JOIN api_keys ak ON ak.workspace_id = m.workspace_id AND ak.id = m.author_api_key_id
 LEFT JOIN api_keys sk ON sk.workspace_id = m.workspace_id AND sk.id = m.sent_by_api_key_id
 WHERE m.workspace_id = $1 AND m.conversation_id = $2 AND m.client_id = $3
+  AND draft_visible_to(m.draft, m.author_type, m.author_member_id, $4::uuid)
 `
 
 type GetMessageByClientIDParams struct {
 	WorkspaceID    uuid.UUID
 	ConversationID uuid.UUID
 	ClientID       *string
+	ViewerMemberID *uuid.UUID
 }
 
 type GetMessageByClientIDRow struct {
@@ -861,13 +907,20 @@ type GetMessageByClientIDRow struct {
 	Forward            []byte
 	SignatureHtml      *string
 	SignatureText      *string
+	ScheduledAt        *time.Time
+	SendError          []byte
 	BotName            string
 	BotAvatarUrl       string
 	SentByBotName      string
 }
 
 func (q *Queries) GetMessageByClientID(ctx context.Context, arg GetMessageByClientIDParams) (GetMessageByClientIDRow, error) {
-	row := q.db.QueryRow(ctx, getMessageByClientID, arg.WorkspaceID, arg.ConversationID, arg.ClientID)
+	row := q.db.QueryRow(ctx, getMessageByClientID,
+		arg.WorkspaceID,
+		arg.ConversationID,
+		arg.ClientID,
+		arg.ViewerMemberID,
+	)
 	var i GetMessageByClientIDRow
 	err := row.Scan(
 		&i.ID,
@@ -903,6 +956,8 @@ func (q *Queries) GetMessageByClientID(ctx context.Context, arg GetMessageByClie
 		&i.Forward,
 		&i.SignatureHtml,
 		&i.SignatureText,
+		&i.ScheduledAt,
+		&i.SendError,
 		&i.BotName,
 		&i.BotAvatarUrl,
 		&i.SentByBotName,
@@ -929,6 +984,37 @@ func (q *Queries) GetMessagePosition(ctx context.Context, arg GetMessagePosition
 	row := q.db.QueryRow(ctx, getMessagePosition, arg.WorkspaceID, arg.ConversationID, arg.ID)
 	var i GetMessagePositionRow
 	err := row.Scan(&i.ID, &i.CreatedAt)
+	return i, err
+}
+
+const getScheduledSend = `-- name: GetScheduledSend :one
+SELECT scheduled_at, scheduled_by, scheduled_cc, scheduled_bcc, scheduled_from FROM messages
+WHERE workspace_id = $1 AND id = $2
+`
+
+type GetScheduledSendParams struct {
+	WorkspaceID uuid.UUID
+	ID          uuid.UUID
+}
+
+type GetScheduledSendRow struct {
+	ScheduledAt   *time.Time
+	ScheduledBy   *uuid.UUID
+	ScheduledCc   []string
+	ScheduledBcc  []string
+	ScheduledFrom *string
+}
+
+func (q *Queries) GetScheduledSend(ctx context.Context, arg GetScheduledSendParams) (GetScheduledSendRow, error) {
+	row := q.db.QueryRow(ctx, getScheduledSend, arg.WorkspaceID, arg.ID)
+	var i GetScheduledSendRow
+	err := row.Scan(
+		&i.ScheduledAt,
+		&i.ScheduledBy,
+		&i.ScheduledCc,
+		&i.ScheduledBcc,
+		&i.ScheduledFrom,
+	)
 	return i, err
 }
 
@@ -1064,7 +1150,7 @@ const listDrafts = `-- name: ListDrafts :many
 SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
        m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
        m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions, m.imported_at, m.imported_author, m.help_cards,
-       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text,
+       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error,
        coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
        coalesce(sk.bot_name, sk.name, '')::text AS sent_by_bot_name
 FROM messages m
@@ -1075,26 +1161,35 @@ WHERE m.workspace_id = $1 AND m.draft AND c.trashed_at IS NULL
   AND ($2::bool OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = $3))
-  AND ($4::uuid IS NULL OR c.inbox_id = $4::uuid)
-  AND ($5::text IS NULL
-       OR ($5::text = 'bot' AND m.author_type = 'bot')
-       OR ($5::text = 'assistant' AND m.author_type = 'member' AND m.via IS NOT NULL)
-       OR ($5::text = 'member' AND m.author_type = 'member' AND m.via IS NULL))
-  AND ($6::timestamptz IS NULL
-       OR (m.created_at, m.id) < ($6::timestamptz, $7::uuid))
+  AND draft_visible_to(m.draft, m.author_type, m.author_member_id, $4::uuid)
+  AND conversation_visible_to(c.draft_of, $4::uuid)
+  AND ($5::uuid IS NULL OR c.inbox_id = $5::uuid)
+  AND ($6::uuid IS NULL OR m.conversation_id = $6::uuid)
+  AND (NOT $7::bool OR (m.author_type = 'member' AND m.author_member_id = $4::uuid))
+  AND ($8::bool IS NULL OR (m.scheduled_at IS NOT NULL) = $8::bool)
+  AND ($9::text IS NULL
+       OR ($9::text = 'bot' AND m.author_type = 'bot')
+       OR ($9::text = 'assistant' AND m.author_type = 'member' AND m.via IS NOT NULL)
+       OR ($9::text = 'member' AND m.author_type = 'member' AND m.via IS NULL))
+  AND ($10::timestamptz IS NULL
+       OR (m.created_at, m.id) < ($10::timestamptz, $11::uuid))
 ORDER BY m.created_at DESC, m.id DESC
-LIMIT $8
+LIMIT $12
 `
 
 type ListDraftsParams struct {
-	WorkspaceID uuid.UUID
-	AllInboxes  bool
-	ViewerID    uuid.UUID
-	InboxID     *uuid.UUID
-	AuthorKind  *string
-	CursorAt    *time.Time
-	CursorID    *uuid.UUID
-	Lim         int32
+	WorkspaceID    uuid.UUID
+	AllInboxes     bool
+	ViewerID       uuid.UUID
+	ViewerMemberID *uuid.UUID
+	InboxID        *uuid.UUID
+	ConversationID *uuid.UUID
+	Mine           bool
+	Scheduled      *bool
+	AuthorKind     *string
+	CursorAt       *time.Time
+	CursorID       *uuid.UUID
+	Lim            int32
 }
 
 type ListDraftsRow struct {
@@ -1131,6 +1226,8 @@ type ListDraftsRow struct {
 	Forward            []byte
 	SignatureHtml      *string
 	SignatureText      *string
+	ScheduledAt        *time.Time
+	SendError          []byte
 	BotName            string
 	BotAvatarUrl       string
 	SentByBotName      string
@@ -1141,7 +1238,11 @@ func (q *Queries) ListDrafts(ctx context.Context, arg ListDraftsParams) ([]ListD
 		arg.WorkspaceID,
 		arg.AllInboxes,
 		arg.ViewerID,
+		arg.ViewerMemberID,
 		arg.InboxID,
+		arg.ConversationID,
+		arg.Mine,
+		arg.Scheduled,
 		arg.AuthorKind,
 		arg.CursorAt,
 		arg.CursorID,
@@ -1188,6 +1289,8 @@ func (q *Queries) ListDrafts(ctx context.Context, arg ListDraftsParams) ([]ListD
 			&i.Forward,
 			&i.SignatureHtml,
 			&i.SignatureText,
+			&i.ScheduledAt,
+			&i.SendError,
 			&i.BotName,
 			&i.BotAvatarUrl,
 			&i.SentByBotName,
@@ -1389,22 +1492,24 @@ const listMessages = `-- name: ListMessages :many
 SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
        m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
        m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions, m.imported_at, m.imported_author, m.help_cards,
-       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text,
+       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error,
        coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
        coalesce(sk.bot_name, sk.name, '')::text AS sent_by_bot_name
 FROM messages m
 LEFT JOIN api_keys ak ON ak.workspace_id = m.workspace_id AND ak.id = m.author_api_key_id
 LEFT JOIN api_keys sk ON sk.workspace_id = m.workspace_id AND sk.id = m.sent_by_api_key_id
 WHERE m.workspace_id = $1 AND m.conversation_id = $2
-  AND ($3::timestamptz IS NULL
-       OR (m.created_at, m.id) > ($3::timestamptz, $4::uuid))
+  AND draft_visible_to(m.draft, m.author_type, m.author_member_id, $3::uuid)
+  AND ($4::timestamptz IS NULL
+       OR (m.created_at, m.id) > ($4::timestamptz, $5::uuid))
 ORDER BY m.created_at, m.id
-LIMIT $5
+LIMIT $6
 `
 
 type ListMessagesParams struct {
 	WorkspaceID    uuid.UUID
 	ConversationID uuid.UUID
+	ViewerMemberID *uuid.UUID
 	CursorAt       *time.Time
 	CursorID       *uuid.UUID
 	Lim            int32
@@ -1444,6 +1549,8 @@ type ListMessagesRow struct {
 	Forward            []byte
 	SignatureHtml      *string
 	SignatureText      *string
+	ScheduledAt        *time.Time
+	SendError          []byte
 	BotName            string
 	BotAvatarUrl       string
 	SentByBotName      string
@@ -1453,6 +1560,7 @@ func (q *Queries) ListMessages(ctx context.Context, arg ListMessagesParams) ([]L
 	rows, err := q.db.Query(ctx, listMessages,
 		arg.WorkspaceID,
 		arg.ConversationID,
+		arg.ViewerMemberID,
 		arg.CursorAt,
 		arg.CursorID,
 		arg.Lim,
@@ -1498,6 +1606,8 @@ func (q *Queries) ListMessages(ctx context.Context, arg ListMessagesParams) ([]L
 			&i.Forward,
 			&i.SignatureHtml,
 			&i.SignatureText,
+			&i.ScheduledAt,
+			&i.SendError,
 			&i.BotName,
 			&i.BotAvatarUrl,
 			&i.SentByBotName,
@@ -1516,22 +1626,24 @@ const listMessagesDesc = `-- name: ListMessagesDesc :many
 SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
        m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
        m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions, m.imported_at, m.imported_author, m.help_cards,
-       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text,
+       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error,
        coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
        coalesce(sk.bot_name, sk.name, '')::text AS sent_by_bot_name
 FROM messages m
 LEFT JOIN api_keys ak ON ak.workspace_id = m.workspace_id AND ak.id = m.author_api_key_id
 LEFT JOIN api_keys sk ON sk.workspace_id = m.workspace_id AND sk.id = m.sent_by_api_key_id
 WHERE m.workspace_id = $1 AND m.conversation_id = $2
-  AND ($3::timestamptz IS NULL
-       OR (m.created_at, m.id) < ($3::timestamptz, $4::uuid))
+  AND draft_visible_to(m.draft, m.author_type, m.author_member_id, $3::uuid)
+  AND ($4::timestamptz IS NULL
+       OR (m.created_at, m.id) < ($4::timestamptz, $5::uuid))
 ORDER BY m.created_at DESC, m.id DESC
-LIMIT $5
+LIMIT $6
 `
 
 type ListMessagesDescParams struct {
 	WorkspaceID    uuid.UUID
 	ConversationID uuid.UUID
+	ViewerMemberID *uuid.UUID
 	CursorAt       *time.Time
 	CursorID       *uuid.UUID
 	Lim            int32
@@ -1571,6 +1683,8 @@ type ListMessagesDescRow struct {
 	Forward            []byte
 	SignatureHtml      *string
 	SignatureText      *string
+	ScheduledAt        *time.Time
+	SendError          []byte
 	BotName            string
 	BotAvatarUrl       string
 	SentByBotName      string
@@ -1580,6 +1694,7 @@ func (q *Queries) ListMessagesDesc(ctx context.Context, arg ListMessagesDescPara
 	rows, err := q.db.Query(ctx, listMessagesDesc,
 		arg.WorkspaceID,
 		arg.ConversationID,
+		arg.ViewerMemberID,
 		arg.CursorAt,
 		arg.CursorID,
 		arg.Lim,
@@ -1625,6 +1740,8 @@ func (q *Queries) ListMessagesDesc(ctx context.Context, arg ListMessagesDescPara
 			&i.Forward,
 			&i.SignatureHtml,
 			&i.SignatureText,
+			&i.ScheduledAt,
+			&i.SendError,
 			&i.BotName,
 			&i.BotAvatarUrl,
 			&i.SentByBotName,
@@ -1640,7 +1757,7 @@ func (q *Queries) ListMessagesDesc(ctx context.Context, arg ListMessagesDescPara
 }
 
 const lockMessage = `-- name: LockMessage :one
-SELECT id, conversation_id, draft FROM messages WHERE workspace_id = $1 AND id = $2 FOR UPDATE
+SELECT id, conversation_id, draft, scheduled_at FROM messages WHERE workspace_id = $1 AND id = $2 FOR UPDATE
 `
 
 type LockMessageParams struct {
@@ -1652,12 +1769,18 @@ type LockMessageRow struct {
 	ID             uuid.UUID
 	ConversationID uuid.UUID
 	Draft          bool
+	ScheduledAt    *time.Time
 }
 
 func (q *Queries) LockMessage(ctx context.Context, arg LockMessageParams) (LockMessageRow, error) {
 	row := q.db.QueryRow(ctx, lockMessage, arg.WorkspaceID, arg.ID)
 	var i LockMessageRow
-	err := row.Scan(&i.ID, &i.ConversationID, &i.Draft)
+	err := row.Scan(
+		&i.ID,
+		&i.ConversationID,
+		&i.Draft,
+		&i.ScheduledAt,
+	)
 	return i, err
 }
 
@@ -1798,11 +1921,11 @@ WITH m AS (
         delivery_error = CASE WHEN delivery_state = 'queued' THEN 'removed before it was sent' ELSE delivery_error END,
         delivery_updated_at = CASE WHEN delivery_state = 'queued' THEN $1::timestamptz ELSE delivery_updated_at END
     WHERE messages.workspace_id = $4 AND messages.id = $5 AND messages.redacted_at IS NULL
-    RETURNING id, workspace_id, conversation_id, kind, direction, author_type, author_member_id, author_contact_id, body, html, client_id, event, search, created_at, delivery_state, delivery_error, delivery_updated_at, author_api_key_id, draft, sent_by_member_id, sent_by_api_key_id, via, sent_via, mentions, imported_at, imported_author, help_cards, redacted_at, redacted_by_member_id, redacted_by_api_key_id, rule, forward, signature_html, signature_text)
+    RETURNING id, workspace_id, conversation_id, kind, direction, author_type, author_member_id, author_contact_id, body, html, client_id, event, search, created_at, delivery_state, delivery_error, delivery_updated_at, author_api_key_id, draft, sent_by_member_id, sent_by_api_key_id, via, sent_via, mentions, imported_at, imported_author, help_cards, redacted_at, redacted_by_member_id, redacted_by_api_key_id, rule, forward, signature_html, signature_text, scheduled_at, scheduled_by, scheduled_cc, scheduled_bcc, scheduled_from, send_error)
 SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
        m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
        m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions, m.imported_at, m.imported_author, m.help_cards,
-       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text,
+       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error,
        coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
        coalesce(sk.bot_name, sk.name, '')::text AS sent_by_bot_name
 FROM m
@@ -1852,6 +1975,8 @@ type RedactMessageRow struct {
 	Forward            []byte
 	SignatureHtml      *string
 	SignatureText      *string
+	ScheduledAt        *time.Time
+	SendError          []byte
 	BotName            string
 	BotAvatarUrl       string
 	SentByBotName      string
@@ -1900,6 +2025,8 @@ func (q *Queries) RedactMessage(ctx context.Context, arg RedactMessageParams) (R
 		&i.Forward,
 		&i.SignatureHtml,
 		&i.SignatureText,
+		&i.ScheduledAt,
+		&i.SendError,
 		&i.BotName,
 		&i.BotAvatarUrl,
 		&i.SentByBotName,
@@ -1940,19 +2067,278 @@ func (q *Queries) RedactMessageEmail(ctx context.Context, arg RedactMessageEmail
 	return items, nil
 }
 
+const rescheduleDraft = `-- name: RescheduleDraft :one
+WITH m AS (
+    UPDATE messages SET scheduled_at = $1::timestamptz, scheduled_by = $2::uuid, send_error = NULL
+    WHERE messages.workspace_id = $3 AND messages.id = $4 AND draft
+    RETURNING id, workspace_id, conversation_id, kind, direction, author_type, author_member_id, author_contact_id, body, html, client_id, event, search, created_at, delivery_state, delivery_error, delivery_updated_at, author_api_key_id, draft, sent_by_member_id, sent_by_api_key_id, via, sent_via, mentions, imported_at, imported_author, help_cards, redacted_at, redacted_by_member_id, redacted_by_api_key_id, rule, forward, signature_html, signature_text, scheduled_at, scheduled_by, scheduled_cc, scheduled_bcc, scheduled_from, send_error)
+SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
+       m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
+       m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions, m.imported_at, m.imported_author, m.help_cards,
+       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error,
+       coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
+       coalesce(sk.bot_name, sk.name, '')::text AS sent_by_bot_name
+FROM m
+LEFT JOIN api_keys ak ON ak.workspace_id = m.workspace_id AND ak.id = m.author_api_key_id
+LEFT JOIN api_keys sk ON sk.workspace_id = m.workspace_id AND sk.id = m.sent_by_api_key_id
+`
+
+type RescheduleDraftParams struct {
+	SendAt      time.Time
+	MemberID    uuid.UUID
+	WorkspaceID uuid.UUID
+	ID          uuid.UUID
+}
+
+type RescheduleDraftRow struct {
+	ID                 uuid.UUID
+	WorkspaceID        uuid.UUID
+	ConversationID     uuid.UUID
+	Kind               string
+	Direction          *string
+	AuthorType         string
+	AuthorMemberID     *uuid.UUID
+	AuthorContactID    *uuid.UUID
+	Body               string
+	Html               *string
+	ClientID           *string
+	Event              []byte
+	CreatedAt          time.Time
+	DeliveryState      *string
+	DeliveryError      *string
+	DeliveryUpdatedAt  *time.Time
+	AuthorApiKeyID     *uuid.UUID
+	Draft              bool
+	SentByMemberID     *uuid.UUID
+	SentByApiKeyID     *uuid.UUID
+	Via                *string
+	SentVia            *string
+	Mentions           []uuid.UUID
+	ImportedAt         *time.Time
+	ImportedAuthor     []byte
+	HelpCards          []byte
+	RedactedAt         *time.Time
+	RedactedByMemberID *uuid.UUID
+	RedactedByApiKeyID *uuid.UUID
+	Rule               []byte
+	Forward            []byte
+	SignatureHtml      *string
+	SignatureText      *string
+	ScheduledAt        *time.Time
+	SendError          []byte
+	BotName            string
+	BotAvatarUrl       string
+	SentByBotName      string
+}
+
+func (q *Queries) RescheduleDraft(ctx context.Context, arg RescheduleDraftParams) (RescheduleDraftRow, error) {
+	row := q.db.QueryRow(ctx, rescheduleDraft,
+		arg.SendAt,
+		arg.MemberID,
+		arg.WorkspaceID,
+		arg.ID,
+	)
+	var i RescheduleDraftRow
+	err := row.Scan(
+		&i.ID,
+		&i.WorkspaceID,
+		&i.ConversationID,
+		&i.Kind,
+		&i.Direction,
+		&i.AuthorType,
+		&i.AuthorMemberID,
+		&i.AuthorContactID,
+		&i.Body,
+		&i.Html,
+		&i.ClientID,
+		&i.Event,
+		&i.CreatedAt,
+		&i.DeliveryState,
+		&i.DeliveryError,
+		&i.DeliveryUpdatedAt,
+		&i.AuthorApiKeyID,
+		&i.Draft,
+		&i.SentByMemberID,
+		&i.SentByApiKeyID,
+		&i.Via,
+		&i.SentVia,
+		&i.Mentions,
+		&i.ImportedAt,
+		&i.ImportedAuthor,
+		&i.HelpCards,
+		&i.RedactedAt,
+		&i.RedactedByMemberID,
+		&i.RedactedByApiKeyID,
+		&i.Rule,
+		&i.Forward,
+		&i.SignatureHtml,
+		&i.SignatureText,
+		&i.ScheduledAt,
+		&i.SendError,
+		&i.BotName,
+		&i.BotAvatarUrl,
+		&i.SentByBotName,
+	)
+	return i, err
+}
+
+const scheduleDraft = `-- name: ScheduleDraft :one
+WITH m AS (
+    UPDATE messages SET scheduled_at = $1::timestamptz, scheduled_by = $2::uuid,
+        scheduled_cc = $3::text[], scheduled_bcc = $4::text[], scheduled_from = $5::text,
+        send_error = NULL
+    WHERE messages.workspace_id = $6 AND messages.id = $7 AND draft
+    RETURNING id, workspace_id, conversation_id, kind, direction, author_type, author_member_id, author_contact_id, body, html, client_id, event, search, created_at, delivery_state, delivery_error, delivery_updated_at, author_api_key_id, draft, sent_by_member_id, sent_by_api_key_id, via, sent_via, mentions, imported_at, imported_author, help_cards, redacted_at, redacted_by_member_id, redacted_by_api_key_id, rule, forward, signature_html, signature_text, scheduled_at, scheduled_by, scheduled_cc, scheduled_bcc, scheduled_from, send_error)
+SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
+       m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
+       m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions, m.imported_at, m.imported_author, m.help_cards,
+       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error,
+       coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
+       coalesce(sk.bot_name, sk.name, '')::text AS sent_by_bot_name
+FROM m
+LEFT JOIN api_keys ak ON ak.workspace_id = m.workspace_id AND ak.id = m.author_api_key_id
+LEFT JOIN api_keys sk ON sk.workspace_id = m.workspace_id AND sk.id = m.sent_by_api_key_id
+`
+
+type ScheduleDraftParams struct {
+	SendAt      time.Time
+	MemberID    uuid.UUID
+	Cc          []string
+	Bcc         []string
+	FromAddress *string
+	WorkspaceID uuid.UUID
+	ID          uuid.UUID
+}
+
+type ScheduleDraftRow struct {
+	ID                 uuid.UUID
+	WorkspaceID        uuid.UUID
+	ConversationID     uuid.UUID
+	Kind               string
+	Direction          *string
+	AuthorType         string
+	AuthorMemberID     *uuid.UUID
+	AuthorContactID    *uuid.UUID
+	Body               string
+	Html               *string
+	ClientID           *string
+	Event              []byte
+	CreatedAt          time.Time
+	DeliveryState      *string
+	DeliveryError      *string
+	DeliveryUpdatedAt  *time.Time
+	AuthorApiKeyID     *uuid.UUID
+	Draft              bool
+	SentByMemberID     *uuid.UUID
+	SentByApiKeyID     *uuid.UUID
+	Via                *string
+	SentVia            *string
+	Mentions           []uuid.UUID
+	ImportedAt         *time.Time
+	ImportedAuthor     []byte
+	HelpCards          []byte
+	RedactedAt         *time.Time
+	RedactedByMemberID *uuid.UUID
+	RedactedByApiKeyID *uuid.UUID
+	Rule               []byte
+	Forward            []byte
+	SignatureHtml      *string
+	SignatureText      *string
+	ScheduledAt        *time.Time
+	SendError          []byte
+	BotName            string
+	BotAvatarUrl       string
+	SentByBotName      string
+}
+
+func (q *Queries) ScheduleDraft(ctx context.Context, arg ScheduleDraftParams) (ScheduleDraftRow, error) {
+	row := q.db.QueryRow(ctx, scheduleDraft,
+		arg.SendAt,
+		arg.MemberID,
+		arg.Cc,
+		arg.Bcc,
+		arg.FromAddress,
+		arg.WorkspaceID,
+		arg.ID,
+	)
+	var i ScheduleDraftRow
+	err := row.Scan(
+		&i.ID,
+		&i.WorkspaceID,
+		&i.ConversationID,
+		&i.Kind,
+		&i.Direction,
+		&i.AuthorType,
+		&i.AuthorMemberID,
+		&i.AuthorContactID,
+		&i.Body,
+		&i.Html,
+		&i.ClientID,
+		&i.Event,
+		&i.CreatedAt,
+		&i.DeliveryState,
+		&i.DeliveryError,
+		&i.DeliveryUpdatedAt,
+		&i.AuthorApiKeyID,
+		&i.Draft,
+		&i.SentByMemberID,
+		&i.SentByApiKeyID,
+		&i.Via,
+		&i.SentVia,
+		&i.Mentions,
+		&i.ImportedAt,
+		&i.ImportedAuthor,
+		&i.HelpCards,
+		&i.RedactedAt,
+		&i.RedactedByMemberID,
+		&i.RedactedByApiKeyID,
+		&i.Rule,
+		&i.Forward,
+		&i.SignatureHtml,
+		&i.SignatureText,
+		&i.ScheduledAt,
+		&i.SendError,
+		&i.BotName,
+		&i.BotAvatarUrl,
+		&i.SentByBotName,
+	)
+	return i, err
+}
+
+const scrubScheduledCopies = `-- name: ScrubScheduledCopies :exec
+UPDATE messages SET
+  scheduled_cc = CASE WHEN scheduled_cc IS NULL THEN NULL
+      ELSE ARRAY(SELECT a FROM unnest(scheduled_cc) WITH ORDINALITY u (a, i) WHERE a <> ALL($1::text[]) ORDER BY i) END,
+  scheduled_bcc = CASE WHEN scheduled_bcc IS NULL THEN NULL
+      ELSE ARRAY(SELECT a FROM unnest(scheduled_bcc) WITH ORDINALITY u (a, i) WHERE a <> ALL($1::text[]) ORDER BY i) END
+WHERE workspace_id = $2 AND scheduled_at IS NOT NULL
+  AND (scheduled_cc && $1::text[] OR scheduled_bcc && $1::text[])
+`
+
+type ScrubScheduledCopiesParams struct {
+	Emails      []string
+	WorkspaceID uuid.UUID
+}
+
+func (q *Queries) ScrubScheduledCopies(ctx context.Context, arg ScrubScheduledCopiesParams) error {
+	_, err := q.db.Exec(ctx, scrubScheduledCopies, arg.Emails, arg.WorkspaceID)
+	return err
+}
+
 const sendDraft = `-- name: SendDraft :one
 WITH m AS (
     UPDATE messages SET draft = false, created_at = $1::timestamptz,
         sent_by_member_id = $2, sent_by_api_key_id = $3,
         sent_via = $4,
         delivery_state = $5,
-        delivery_updated_at = CASE WHEN $5::text IS NULL THEN NULL ELSE $1::timestamptz END
+        delivery_updated_at = CASE WHEN $5::text IS NULL THEN NULL ELSE $1::timestamptz END,
+        scheduled_at = NULL, scheduled_by = NULL, scheduled_cc = NULL, scheduled_bcc = NULL, scheduled_from = NULL, send_error = NULL
     WHERE messages.workspace_id = $6 AND messages.id = $7 AND draft
-    RETURNING id, workspace_id, conversation_id, kind, direction, author_type, author_member_id, author_contact_id, body, html, client_id, event, search, created_at, delivery_state, delivery_error, delivery_updated_at, author_api_key_id, draft, sent_by_member_id, sent_by_api_key_id, via, sent_via, mentions, imported_at, imported_author, help_cards, redacted_at, redacted_by_member_id, redacted_by_api_key_id, rule, forward, signature_html, signature_text)
+    RETURNING id, workspace_id, conversation_id, kind, direction, author_type, author_member_id, author_contact_id, body, html, client_id, event, search, created_at, delivery_state, delivery_error, delivery_updated_at, author_api_key_id, draft, sent_by_member_id, sent_by_api_key_id, via, sent_via, mentions, imported_at, imported_author, help_cards, redacted_at, redacted_by_member_id, redacted_by_api_key_id, rule, forward, signature_html, signature_text, scheduled_at, scheduled_by, scheduled_cc, scheduled_bcc, scheduled_from, send_error)
 SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
        m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
        m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions, m.imported_at, m.imported_author, m.help_cards,
-       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text,
+       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error,
        coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
        coalesce(sk.bot_name, sk.name, '')::text AS sent_by_bot_name
 FROM m
@@ -2004,6 +2390,8 @@ type SendDraftRow struct {
 	Forward            []byte
 	SignatureHtml      *string
 	SignatureText      *string
+	ScheduledAt        *time.Time
+	SendError          []byte
 	BotName            string
 	BotAvatarUrl       string
 	SentByBotName      string
@@ -2054,6 +2442,8 @@ func (q *Queries) SendDraft(ctx context.Context, arg SendDraftParams) (SendDraft
 		&i.Forward,
 		&i.SignatureHtml,
 		&i.SignatureText,
+		&i.ScheduledAt,
+		&i.SendError,
 		&i.BotName,
 		&i.BotAvatarUrl,
 		&i.SentByBotName,
@@ -2065,11 +2455,11 @@ const setMessageDelivery = `-- name: SetMessageDelivery :one
 WITH m AS (
     UPDATE messages SET delivery_state = $1::text, delivery_error = $2, delivery_updated_at = $3::timestamptz
     WHERE messages.workspace_id = $4 AND messages.id = $5
-    RETURNING id, workspace_id, conversation_id, kind, direction, author_type, author_member_id, author_contact_id, body, html, client_id, event, search, created_at, delivery_state, delivery_error, delivery_updated_at, author_api_key_id, draft, sent_by_member_id, sent_by_api_key_id, via, sent_via, mentions, imported_at, imported_author, help_cards, redacted_at, redacted_by_member_id, redacted_by_api_key_id, rule, forward, signature_html, signature_text)
+    RETURNING id, workspace_id, conversation_id, kind, direction, author_type, author_member_id, author_contact_id, body, html, client_id, event, search, created_at, delivery_state, delivery_error, delivery_updated_at, author_api_key_id, draft, sent_by_member_id, sent_by_api_key_id, via, sent_via, mentions, imported_at, imported_author, help_cards, redacted_at, redacted_by_member_id, redacted_by_api_key_id, rule, forward, signature_html, signature_text, scheduled_at, scheduled_by, scheduled_cc, scheduled_bcc, scheduled_from, send_error)
 SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
        m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
        m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions, m.imported_at, m.imported_author, m.help_cards,
-       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text,
+       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error,
        coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
        coalesce(sk.bot_name, sk.name, '')::text AS sent_by_bot_name
 FROM m
@@ -2119,6 +2509,8 @@ type SetMessageDeliveryRow struct {
 	Forward            []byte
 	SignatureHtml      *string
 	SignatureText      *string
+	ScheduledAt        *time.Time
+	SendError          []byte
 	BotName            string
 	BotAvatarUrl       string
 	SentByBotName      string
@@ -2167,6 +2559,8 @@ func (q *Queries) SetMessageDelivery(ctx context.Context, arg SetMessageDelivery
 		&i.Forward,
 		&i.SignatureHtml,
 		&i.SignatureText,
+		&i.ScheduledAt,
+		&i.SendError,
 		&i.BotName,
 		&i.BotAvatarUrl,
 		&i.SentByBotName,
@@ -2189,15 +2583,125 @@ func (q *Queries) SetMessageForward(ctx context.Context, arg SetMessageForwardPa
 	return err
 }
 
+const unscheduleDraft = `-- name: UnscheduleDraft :one
+WITH m AS (
+    UPDATE messages SET scheduled_at = NULL, scheduled_by = NULL, scheduled_cc = NULL, scheduled_bcc = NULL, scheduled_from = NULL,
+        send_error = $1::jsonb
+    WHERE messages.workspace_id = $2 AND messages.id = $3 AND draft
+    RETURNING id, workspace_id, conversation_id, kind, direction, author_type, author_member_id, author_contact_id, body, html, client_id, event, search, created_at, delivery_state, delivery_error, delivery_updated_at, author_api_key_id, draft, sent_by_member_id, sent_by_api_key_id, via, sent_via, mentions, imported_at, imported_author, help_cards, redacted_at, redacted_by_member_id, redacted_by_api_key_id, rule, forward, signature_html, signature_text, scheduled_at, scheduled_by, scheduled_cc, scheduled_bcc, scheduled_from, send_error)
+SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
+       m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
+       m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions, m.imported_at, m.imported_author, m.help_cards,
+       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error,
+       coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
+       coalesce(sk.bot_name, sk.name, '')::text AS sent_by_bot_name
+FROM m
+LEFT JOIN api_keys ak ON ak.workspace_id = m.workspace_id AND ak.id = m.author_api_key_id
+LEFT JOIN api_keys sk ON sk.workspace_id = m.workspace_id AND sk.id = m.sent_by_api_key_id
+`
+
+type UnscheduleDraftParams struct {
+	SendError   []byte
+	WorkspaceID uuid.UUID
+	ID          uuid.UUID
+}
+
+type UnscheduleDraftRow struct {
+	ID                 uuid.UUID
+	WorkspaceID        uuid.UUID
+	ConversationID     uuid.UUID
+	Kind               string
+	Direction          *string
+	AuthorType         string
+	AuthorMemberID     *uuid.UUID
+	AuthorContactID    *uuid.UUID
+	Body               string
+	Html               *string
+	ClientID           *string
+	Event              []byte
+	CreatedAt          time.Time
+	DeliveryState      *string
+	DeliveryError      *string
+	DeliveryUpdatedAt  *time.Time
+	AuthorApiKeyID     *uuid.UUID
+	Draft              bool
+	SentByMemberID     *uuid.UUID
+	SentByApiKeyID     *uuid.UUID
+	Via                *string
+	SentVia            *string
+	Mentions           []uuid.UUID
+	ImportedAt         *time.Time
+	ImportedAuthor     []byte
+	HelpCards          []byte
+	RedactedAt         *time.Time
+	RedactedByMemberID *uuid.UUID
+	RedactedByApiKeyID *uuid.UUID
+	Rule               []byte
+	Forward            []byte
+	SignatureHtml      *string
+	SignatureText      *string
+	ScheduledAt        *time.Time
+	SendError          []byte
+	BotName            string
+	BotAvatarUrl       string
+	SentByBotName      string
+}
+
+func (q *Queries) UnscheduleDraft(ctx context.Context, arg UnscheduleDraftParams) (UnscheduleDraftRow, error) {
+	row := q.db.QueryRow(ctx, unscheduleDraft, arg.SendError, arg.WorkspaceID, arg.ID)
+	var i UnscheduleDraftRow
+	err := row.Scan(
+		&i.ID,
+		&i.WorkspaceID,
+		&i.ConversationID,
+		&i.Kind,
+		&i.Direction,
+		&i.AuthorType,
+		&i.AuthorMemberID,
+		&i.AuthorContactID,
+		&i.Body,
+		&i.Html,
+		&i.ClientID,
+		&i.Event,
+		&i.CreatedAt,
+		&i.DeliveryState,
+		&i.DeliveryError,
+		&i.DeliveryUpdatedAt,
+		&i.AuthorApiKeyID,
+		&i.Draft,
+		&i.SentByMemberID,
+		&i.SentByApiKeyID,
+		&i.Via,
+		&i.SentVia,
+		&i.Mentions,
+		&i.ImportedAt,
+		&i.ImportedAuthor,
+		&i.HelpCards,
+		&i.RedactedAt,
+		&i.RedactedByMemberID,
+		&i.RedactedByApiKeyID,
+		&i.Rule,
+		&i.Forward,
+		&i.SignatureHtml,
+		&i.SignatureText,
+		&i.ScheduledAt,
+		&i.SendError,
+		&i.BotName,
+		&i.BotAvatarUrl,
+		&i.SentByBotName,
+	)
+	return i, err
+}
+
 const updateDraft = `-- name: UpdateDraft :one
 WITH m AS (
     UPDATE messages SET body = $1, html = $2
     WHERE messages.workspace_id = $3 AND messages.id = $4 AND draft
-    RETURNING id, workspace_id, conversation_id, kind, direction, author_type, author_member_id, author_contact_id, body, html, client_id, event, search, created_at, delivery_state, delivery_error, delivery_updated_at, author_api_key_id, draft, sent_by_member_id, sent_by_api_key_id, via, sent_via, mentions, imported_at, imported_author, help_cards, redacted_at, redacted_by_member_id, redacted_by_api_key_id, rule, forward, signature_html, signature_text)
+    RETURNING id, workspace_id, conversation_id, kind, direction, author_type, author_member_id, author_contact_id, body, html, client_id, event, search, created_at, delivery_state, delivery_error, delivery_updated_at, author_api_key_id, draft, sent_by_member_id, sent_by_api_key_id, via, sent_via, mentions, imported_at, imported_author, help_cards, redacted_at, redacted_by_member_id, redacted_by_api_key_id, rule, forward, signature_html, signature_text, scheduled_at, scheduled_by, scheduled_cc, scheduled_bcc, scheduled_from, send_error)
 SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
        m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
        m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions, m.imported_at, m.imported_author, m.help_cards,
-       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text,
+       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error,
        coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
        coalesce(sk.bot_name, sk.name, '')::text AS sent_by_bot_name
 FROM m
@@ -2246,6 +2750,8 @@ type UpdateDraftRow struct {
 	Forward            []byte
 	SignatureHtml      *string
 	SignatureText      *string
+	ScheduledAt        *time.Time
+	SendError          []byte
 	BotName            string
 	BotAvatarUrl       string
 	SentByBotName      string
@@ -2293,6 +2799,8 @@ func (q *Queries) UpdateDraft(ctx context.Context, arg UpdateDraftParams) (Updat
 		&i.Forward,
 		&i.SignatureHtml,
 		&i.SignatureText,
+		&i.ScheduledAt,
+		&i.SendError,
 		&i.BotName,
 		&i.BotAvatarUrl,
 		&i.SentByBotName,

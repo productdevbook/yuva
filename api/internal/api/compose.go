@@ -25,7 +25,7 @@ var (
 	composeRecipientsBudget = fmt.Sprintf("new mail goes to at most %d recipients an hour per member or key", limitComposeRecipients.n)
 )
 
-var composeFormFields = []string{"inbox_id", "channel_id", "to", "cc", "bcc", "subject", "body", "html", "signature", "draft", "client_id", "from_address"}
+var composeFormFields = []string{"inbox_id", "channel_id", "to", "cc", "bcc", "subject", "body", "html", "signature", "draft", "client_id", "from_address", "send_at"}
 
 // composeChannel is the e-mail channel a new mail of the inbox goes out through: the one named, or
 // the inbox's first with an SMTP account, an exact address before a catch-all.
@@ -269,6 +269,7 @@ func (s *Server) ComposeMail(ctx context.Context, req oas.ComposeMailRequestObje
 		}
 		in.to, in.cc, in.bcc = copiesOf(&b.To), copiesOf(b.Cc), copiesOf(b.Bcc)
 		in.from = (*string)(b.FromAddress)
+		in.sendAt, in.undrafted = b.SendAt, b.Draft != nil && !*b.Draft
 		inboxID, channelID = b.InboxId, b.ChannelId
 	case req.MultipartBody != nil:
 		if in, err = s.readMultipart(req.MultipartBody, p.workspaceID, composeFormFields, s.serverLimits()); err != nil {
@@ -386,6 +387,15 @@ func (s *Server) ComposeMail(ctx context.Context, req oas.ComposeMailRequestObje
 		if err != nil {
 			return err
 		}
+		authorType, _, _ := authorFor(p)
+		private := in.draft && authorType == string(oas.AuthorTypeMember)
+		if private {
+			author := p.memberID
+			if err := q.SetConversationDraftOf(ctx, store.SetConversationDraftOfParams{WorkspaceID: p.workspaceID, ID: c.ID, DraftOf: &author}); err != nil {
+				return err
+			}
+			c.DraftOf = &author
+		}
 		if inbox.Purpose == string(oas.InboxPurposeMail) {
 			// Mail one wrote waits under Sent; the first reply reopens it into the Inbox.
 			if c, err = q.UpdateConversation(ctx, store.UpdateConversationParams{
@@ -468,6 +478,11 @@ func (s *Server) ComposeMail(ctx context.Context, req oas.ComposeMailRequestObje
 			return errComposeRepeated
 		}
 		if in.draft {
+			if in.sendAt != nil {
+				if msg, err = s.scheduleLocked(ctx, q, events, p, c, msg.Kind, msg.ID, *in.sendAt, copyList{}, copyList{}, in.from); err != nil {
+					return err
+				}
+			}
 			events.conversation(realtime.DraftCreated, c, messageBody(msg, atts))
 		} else {
 			if err := q.TouchConversation(ctx, store.TouchConversationParams{WorkspaceID: p.workspaceID, ID: c.ID, Now: now, IsMessage: true}); err != nil {

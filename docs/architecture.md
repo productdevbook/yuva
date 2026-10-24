@@ -658,21 +658,64 @@ panel, the widget, the SDKs and webhook payloads. Outgoing e-mail from a bot use
 address with the bot's name as display name. Rows written by keys before this have author `system`
 and stay so.
 
-**Drafts.** An outgoing message can be a draft (`draft: true` on create). A draft is visible only on
-`/v1` and to members: never on `/client/v1`, never e-mailed, never a notification, unread count,
-preview, first response, usage or search hit. It can be edited (`PATCH /v1/messages/{id}`) and
-discarded (`DELETE /v1/messages/{id}`); both answer `409 not_a_draft` for anything else.
+**Drafts.** An outgoing message can be a draft (`draft: true` on create). A draft is only on `/v1`:
+never on `/client/v1`, never e-mailed, never a notification, unread count, preview, first response,
+usage or search hit. A draft written by a key (`author.type` `bot`) is visible to the members who see
+its conversation and to keys, so a member can review it. A member's draft, written in the panel or
+through an OAuth client (`via` set), is private to that member: for everyone else, members and keys,
+it is not in `GET /v1/drafts` or the message list, `PATCH`/`DELETE /v1/messages/{id}` and
+`POST .../send` answer 404, and its `draft.*` events reach no one else and no webhook. It stays
+private when its author leaves the workspace (it keys on `author_type = 'member'`). The SQL
+functions `draft_visible_to(draft, author_type, author_member_id, viewer)` and
+`conversation_visible_to(draft_of, viewer)` (migration 00134) hold the rule once; every query that
+lists messages, drafts or conversations calls them with the viewer's member id (null for a key),
+and later rules (delegates of a personal mailbox) add their own conditions next to them.
+A conversation a member's new mail draft creates (`POST /v1/conversations/mail` with `draft: true`)
+carries `draft_of` = that member and is hidden from list, counts, search, home and `GET` (404) for
+everyone else, and from the contact on `/client/v1`. While `draft_of` is set, every event about it
+(stored events and typing signals) carries `only_member` = the author, taken from the conversation
+in hand where the event is built (`eventBatch.conversation`, `typing`): realtime, `/v1/events` and
+MCP subscriptions deliver it only to the author, `/client/v1` realtime to no one, and it queues no
+webhook, rule or notification. Discarding its draft deletes the conversation in the same
+transaction (`conversation.deleted` to the author only); removing the author, or deleting their
+account, deletes their hidden conversations with their stored files (the `draft_of` foreign key
+cascades as a backstop). The first send clears
+`draft_of` and emits `conversation.created` before `message.created`, so rules and webhooks see it
+then.
+A draft can be edited (`PATCH /v1/messages/{id}`, also while scheduled; no audit row or timeline
+event) and discarded (`DELETE /v1/messages/{id}`); both answer `409 not_a_draft` for anything else.
 `POST /v1/messages/{id}/send` delivers it: the message becomes a normal outgoing message with the
 send time as its time, `sent_by` the member who sent it, and the draft author kept as author.
 Events: `draft.created`, `draft.updated`, `draft.deleted` on realtime and as webhook types an
 endpoint subscribes to; sending emits the usual `message.created`.
 `GET /v1/drafts` lists the drafts waiting in the conversations the caller can see, newest first,
-each with a conversation summary (id, inbox, subject, status, contact), filtered by `inbox_id` and
-by `author`: `bot` (written with a key), `assistant` (a member through an OAuth client, `via` set)
-or `member` (the panel); `total` counts the matches over all pages for a badge. Keys and tokens call
-it with `conversations:read`. A client keeps it current from the draft events above and
-`message.created` (a sent draft keeps its id), plus `conversation.updated`, `conversation.moved` and
+each with a conversation summary (id, inbox, subject, status, contact), filtered by `inbox_id`,
+`conversation_id`, `mine=true` (the caller's own), `scheduled=true|false` and `author`: `bot`
+(written with a key), `assistant` (a member through an OAuth client, `via` set) or `member` (the
+panel); `total` counts the matches over all pages for a badge. Keys and tokens call it with
+`conversations:read`. A client keeps it current from the draft events above and `message.created`
+(a sent draft keeps its id), plus `conversation.updated`, `conversation.moved` and
 `inbox_access.changed`.
+
+**Send later.** A member session (keys and tokens get 400; MCP has no tool for it) passes `send_at`
+(RFC 3339, at least 1 minute and at most 366 days ahead, else `400 invalid_send_at`) on a new
+message, a new mail or `POST /v1/messages/{id}/send`. A scheduled message is the member's own draft
+with `scheduled_at` and `scheduled_by`; the Cc, Bcc and `from_address` given for its send are kept
+with it (`scheduled_cc`, `scheduled_bcc`, `scheduled_from`, scrubbed with the contact's other
+addresses) and checked again when it goes. `PATCH` with `send_at` moves it,
+`DELETE /v1/messages/{id}/schedule` cancels it (it stays a draft), deleting the message discards it.
+Scheduling and moving emit `draft.updated` to the author; no audit. The conversation filter
+`scheduled=mine` lists the conversations holding the caller's scheduled messages, soonest first.
+Each schedule inserts, in its transaction, a River job `scheduled_send {workspace_id, message_id,
+send_at}` at `send_at`. The worker locks the message row and sends only while it is still a draft
+whose `scheduled_at` equals the job's `send_at`, through the same path as `POST .../send`, as
+`scheduled_by`, clearing `scheduled_at` in that transaction; a moved, cancelled, discarded or sent
+message and a second worker on the same job send nothing. A permanent refusal (`member_inactive`,
+`inbox_access_lost`, `conversation_trashed`, `conversation_unavailable`, `from_not_allowed`,
+`no_recipient`, any 4xx) leaves a plain draft with `send_error`
+(`code`, `detail`), clears `scheduled_at` and notifies the author (`scheduled_send_failed`, push and
+e-mail on by default); 429, 5xx and other errors retry with River's backoff and count as permanent on
+the last attempt. Undo send needs nothing on the server.
 
 The workspace setting `bots_may_send` (off for new workspaces; on after the upgrade for workspaces
 that had an active key, so their integrations keep working) decides whether keys deliver at all.

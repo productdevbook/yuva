@@ -474,6 +474,9 @@ func (f *clientFilter) currentInboxFrame(ctx context.Context) ([]any, error) {
 }
 
 func (f *clientFilter) transform(ctx context.Context, e realtime.Event) ([]any, error) {
+	if e.OnlyMember != nil {
+		return nil, nil
+	}
 	ownConv := false
 	if e.ConversationID != nil {
 		_, ownConv = f.convs[*e.ConversationID]

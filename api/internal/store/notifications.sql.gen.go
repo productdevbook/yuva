@@ -133,6 +133,40 @@ func (q *Queries) GetNotificationEmail(ctx context.Context, arg GetNotificationE
 	return i, err
 }
 
+const getNotificationMember = `-- name: GetNotificationMember :one
+SELECT m.id, m.role, m.person_id, m.notification_events, p.email, p.locale
+FROM members m JOIN people p ON p.id = m.person_id
+WHERE m.workspace_id = $1 AND m.id = $2
+`
+
+type GetNotificationMemberParams struct {
+	WorkspaceID uuid.UUID
+	ID          uuid.UUID
+}
+
+type GetNotificationMemberRow struct {
+	ID                 uuid.UUID
+	Role               string
+	PersonID           uuid.UUID
+	NotificationEvents []byte
+	Email              string
+	Locale             string
+}
+
+func (q *Queries) GetNotificationMember(ctx context.Context, arg GetNotificationMemberParams) (GetNotificationMemberRow, error) {
+	row := q.db.QueryRow(ctx, getNotificationMember, arg.WorkspaceID, arg.ID)
+	var i GetNotificationMemberRow
+	err := row.Scan(
+		&i.ID,
+		&i.Role,
+		&i.PersonID,
+		&i.NotificationEvents,
+		&i.Email,
+		&i.Locale,
+	)
+	return i, err
+}
+
 const getPushSubscription = `-- name: GetPushSubscription :one
 SELECT id, person_id, session_id, endpoint, p256dh, auth, user_agent, created_at, updated_at, last_success_at, last_failure_at, last_error FROM push_subscriptions WHERE person_id = $1 AND id = $2
 `

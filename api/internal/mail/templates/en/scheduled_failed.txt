@@ -1,0 +1,7 @@
+{{.Inbox}}: your scheduled message could not be sent
+
+Your scheduled message{{if .Subject}} in "{{.Subject}}"{{end}} could not be sent: {{.Reason}}. It is kept as a draft; fix it and send or schedule it again.
+
+Open the conversation: {{.URL}}
+
+You get this e-mail because you scheduled the message. Choose which e-mails you get: {{.SettingsURL}}

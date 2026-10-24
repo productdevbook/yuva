@@ -427,7 +427,7 @@ func (s *Server) ListConversations(ctx context.Context, req oas.ListConversation
 	if err != nil {
 		return nil, err
 	}
-	if arg.BySla {
+	if arg.BySla || arg.ScheduledBy != nil {
 		arg.CursorDue, arg.CursorAt, arg.CursorID, err = decodeSLACursor(prm.Cursor)
 	} else {
 		arg.CursorAt, arg.CursorID, err = decodeCursor(prm.Cursor)
@@ -443,14 +443,21 @@ func (s *Server) ListConversations(ctx context.Context, req oas.ListConversation
 	var next *string
 	if len(rows) > int(lim) {
 		rows = rows[:lim]
-		last := rows[lim-1]
+		last := rows[lim-1].Conversation
 		c := encodeCursor(last.LastActivityAt, last.ID)
-		if arg.BySla {
+		switch {
+		case arg.ScheduledBy != nil:
+			c = encodeSLACursor(rows[lim-1].NextScheduledAt, last.LastActivityAt, last.ID)
+		case arg.BySla:
 			c = encodeSLACursor(last.SlaDueAt, last.LastActivityAt, last.ID)
 		}
 		next = &c
 	}
-	items, err := s.listItems(ctx, p, rows)
+	convs := make([]store.Conversation, len(rows))
+	for i, r := range rows {
+		convs[i] = r.Conversation
+	}
+	items, err := s.listItems(ctx, p, convs)
 	if err != nil {
 		return nil, err
 	}
@@ -471,7 +478,7 @@ func (s *Server) conversationFilter(ctx context.Context, q *store.Queries, p pri
 		return none, onParam("sort", errValidation("sort must be last_activity or sla_due"))
 	}
 	arg := store.ListConversationsParams{
-		WorkspaceID: p.workspaceID, AllInboxes: p.seesAllInboxes(), ViewerID: p.viewerID(),
+		WorkspaceID: p.workspaceID, AllInboxes: p.seesAllInboxes(), ViewerID: p.viewerID(), ViewerMemberID: p.memberRef(),
 		InboxID: prm.InboxId, ContactID: prm.ContactId, BroadcastID: prm.BroadcastId, LabelID: prm.LabelId, Q: pos, QNot: neg,
 		Spam: prm.Spam, Trashed: prm.Trashed != nil && *prm.Trashed,
 		BySla: prm.Sort != nil && *prm.Sort == oas.ListConversationsSortSlaDue, SlaNow: s.now(),
@@ -569,6 +576,18 @@ func (s *Server) conversationFilter(ctx context.Context, q *store.Queries, p pri
 		}
 		arg.SentBy = &p.memberID
 	}
+	if prm.Scheduled != nil {
+		if *prm.Scheduled != oas.ListConversationsScheduledMine {
+			return none, onParam("scheduled", errValidation("scheduled must be mine"))
+		}
+		if p.memberRef() == nil {
+			return none, onParam("scheduled", errValidation("scheduled=mine needs a member session"))
+		}
+		if arg.BySla {
+			return none, onParam("scheduled", errValidation("scheduled=mine lists by the next scheduled send and takes no sort=sla_due"))
+		}
+		arg.ScheduledBy = &p.memberID
+	}
 	if arg.Statuses, err = enumList(prm.Status, "status must be open, pending, snoozed or closed"); err != nil {
 		return none, onParam("status", err)
 	}
@@ -644,22 +663,22 @@ func (s *Server) GetConversationCounts(ctx context.Context, req oas.GetConversat
 	if !p.isKey() {
 		member = &p.memberID
 	}
-	rows, err := s.st.CountOpenConversations(ctx, store.CountOpenConversationsParams{WorkspaceID: p.workspaceID, AllInboxes: p.seesAllInboxes(), ViewerID: p.viewerID(), Kinds: kinds, Purpose: purpose})
+	rows, err := s.st.CountOpenConversations(ctx, store.CountOpenConversationsParams{WorkspaceID: p.workspaceID, AllInboxes: p.seesAllInboxes(), ViewerID: p.viewerID(), ViewerMemberID: p.memberRef(), Kinds: kinds, Purpose: purpose})
 	if err != nil {
 		return nil, err
 	}
-	byLabel, err := s.st.CountOpenConversationsByLabel(ctx, store.CountOpenConversationsByLabelParams{WorkspaceID: p.workspaceID, AllInboxes: p.seesAllInboxes(), ViewerID: p.viewerID(), Kinds: kinds, Purpose: purpose})
+	byLabel, err := s.st.CountOpenConversationsByLabel(ctx, store.CountOpenConversationsByLabelParams{WorkspaceID: p.workspaceID, AllInboxes: p.seesAllInboxes(), ViewerID: p.viewerID(), ViewerMemberID: p.memberRef(), Kinds: kinds, Purpose: purpose})
 	if err != nil {
 		return nil, err
 	}
-	feedback, err := s.st.CountOpenFeedback(ctx, store.CountOpenFeedbackParams{WorkspaceID: p.workspaceID, AllInboxes: p.seesAllInboxes(), ViewerID: p.viewerID(), Kinds: kinds, Purpose: purpose})
+	feedback, err := s.st.CountOpenFeedback(ctx, store.CountOpenFeedbackParams{WorkspaceID: p.workspaceID, AllInboxes: p.seesAllInboxes(), ViewerID: p.viewerID(), ViewerMemberID: p.memberRef(), Kinds: kinds, Purpose: purpose})
 	if err != nil {
 		return nil, err
 	}
 	var starred int64
 	if member != nil {
 		if starred, err = s.st.CountStarredConversations(ctx, store.CountStarredConversationsParams{
-			WorkspaceID: p.workspaceID, MemberID: *member, AllInboxes: p.seesAllInboxes(), ViewerID: p.viewerID(), Kinds: kinds, Purpose: purpose,
+			WorkspaceID: p.workspaceID, MemberID: *member, AllInboxes: p.seesAllInboxes(), ViewerID: p.viewerID(), ViewerMemberID: p.memberRef(), Kinds: kinds, Purpose: purpose,
 		}); err != nil {
 			return nil, err
 		}

@@ -363,15 +363,17 @@ LEFT JOIN conversations cv ON cv.workspace_id = c.workspace_id AND cv.contact_id
   AND ($1::bool OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = cv.workspace_id AND iv.inbox_id = cv.inbox_id AND iv.viewer_id = $2::uuid))
-WHERE c.workspace_id = $3 AND c.id = ANY($4::uuid[])
+  AND conversation_visible_to(cv.draft_of, $3::uuid)
+WHERE c.workspace_id = $4 AND c.id = ANY($5::uuid[])
 GROUP BY c.id, c.last_active_at
 `
 
 type ListContactActivityParams struct {
-	AllInboxes  bool
-	ViewerID    uuid.UUID
-	WorkspaceID uuid.UUID
-	Ids         []uuid.UUID
+	AllInboxes     bool
+	ViewerID       uuid.UUID
+	ViewerMemberID *uuid.UUID
+	WorkspaceID    uuid.UUID
+	Ids            []uuid.UUID
 }
 
 type ListContactActivityRow struct {
@@ -386,6 +388,7 @@ func (q *Queries) ListContactActivity(ctx context.Context, arg ListContactActivi
 	rows, err := q.db.Query(ctx, listContactActivity,
 		arg.AllInboxes,
 		arg.ViewerID,
+		arg.ViewerMemberID,
 		arg.WorkspaceID,
 		arg.Ids,
 	)

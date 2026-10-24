@@ -14,6 +14,15 @@ import (
 
 var errNotADraft = problem(http.StatusConflict, "not_a_draft", "the message is not a draft")
 
+// draftHidden mirrors draft_visible_to in SQL: a member's draft is seen only by its author.
+func draftHidden(p principal, m store.GetMessageRow) bool {
+	if !m.Draft || m.AuthorType != string(oas.AuthorTypeMember) {
+		return false
+	}
+	viewer := p.memberRef()
+	return viewer == nil || m.AuthorMemberID == nil || *m.AuthorMemberID != *viewer
+}
+
 // dispatchOutgoing hands a delivered outgoing message to e-mail (plan) or, for a member's reply in
 // a chat that continues by e-mail, to continuity.
 func (s *Server) dispatchOutgoing(ctx context.Context, q *store.Queries, events *eventBatch, p principal, c store.Conversation, plan *emailPlan, msg messageRow, now time.Time) (*store.ListMessageEmailsRow, error) {
@@ -46,6 +55,9 @@ func lockDraft(ctx context.Context, q *store.Queries, p principal, id uuid.UUID)
 	if err != nil {
 		return store.Conversation{}, err
 	}
+	if draftHidden(p, m) {
+		return store.Conversation{}, errMessageGone
+	}
 	c, err := visibleConversation(ctx, q, p, m.ConversationID, true)
 	if err == errConversationGone {
 		return c, errMessageGone
@@ -63,12 +75,22 @@ func lockDraft(ctx context.Context, q *store.Queries, p principal, id uuid.UUID)
 	if !lm.Draft {
 		return c, errNotADraft
 	}
+	if at, ok := ctx.Value(scheduledSendKey).(time.Time); ok && (lm.ScheduledAt == nil || !lm.ScheduledAt.Equal(at)) {
+		return c, errScheduleStale
+	}
 	return c, nil
 }
 
 func (s *Server) UpdateMessage(ctx context.Context, req oas.UpdateMessageRequestObject) (oas.UpdateMessageResponseObject, error) {
 	p := principalFrom(ctx)
 	b := req.Body
+	var sendAt time.Time
+	if b.SendAt != nil {
+		var err error
+		if sendAt, err = s.checkSendAt(p, *b.SendAt); err != nil {
+			return nil, err
+		}
+	}
 	var out oas.Message
 	err := s.inTx(ctx, p.workspaceID, func(q *store.Queries, events *eventBatch) error {
 		c, err := lockDraft(ctx, q, p, req.MessageId)
@@ -113,7 +135,19 @@ func (s *Server) UpdateMessage(ctx context.Context, req oas.UpdateMessageRequest
 		if err != nil {
 			return err
 		}
-		out = messageBody(messageRow(m), atts[cur.ID])
+		row := messageRow(m)
+		if b.SendAt != nil {
+			if err := ownDraft(p, cur); err != nil {
+				return err
+			}
+			r, err := q.RescheduleDraft(ctx, store.RescheduleDraftParams{WorkspaceID: p.workspaceID, ID: cur.ID, SendAt: sendAt, MemberID: p.memberID})
+			if err != nil {
+				return err
+			}
+			row = messageRow(r)
+			queueScheduledSend(events, p.workspaceID, cur.ID, sendAt)
+		}
+		out = messageBody(row, atts[cur.ID])
 		events.conversation(realtime.DraftUpdated, c, out)
 		return nil
 	})
@@ -129,6 +163,10 @@ func (s *Server) DeleteMessage(ctx context.Context, req oas.DeleteMessageRequest
 	err := s.inTx(ctx, p.workspaceID, func(q *store.Queries, events *eventBatch) error {
 		c, err := lockDraft(ctx, q, p, req.MessageId)
 		if err != nil {
+			return err
+		}
+		if c.DraftOf != nil {
+			keys, err = s.deleteDraftConversation(ctx, q, events, c)
 			return err
 		}
 		m, err := q.GetMessage(ctx, store.GetMessageParams{WorkspaceID: p.workspaceID, ID: req.MessageId})
@@ -155,6 +193,26 @@ func (s *Server) DeleteMessage(ctx context.Context, req oas.DeleteMessageRequest
 	return oas.DeleteMessage204Response{}, nil
 }
 
+func (s *Server) deleteDraftConversation(ctx context.Context, q *store.Queries, events *eventBatch, c store.Conversation) ([]string, error) {
+	ids := []uuid.UUID{c.ID}
+	if err := forgetConversations(ctx, q, c.WorkspaceID, ids); err != nil {
+		return nil, err
+	}
+	keys, err := q.ListConversationsStorageKeys(ctx, store.ListConversationsStorageKeysParams{WorkspaceID: c.WorkspaceID, Ids: ids})
+	if err != nil {
+		return nil, err
+	}
+	raw, err := q.ListConversationsRawKeys(ctx, store.ListConversationsRawKeysParams{WorkspaceID: c.WorkspaceID, Ids: ids})
+	if err != nil {
+		return nil, err
+	}
+	if _, err := q.DeleteConversations(ctx, store.DeleteConversationsParams{WorkspaceID: c.WorkspaceID, Ids: ids}); err != nil {
+		return nil, err
+	}
+	events.addFor(realtime.ConversationDeleted, &c.InboxID, &c.ID, c.DraftOf, oas.ConversationDeleted{Id: c.ID, InboxId: c.InboxID, ContactId: c.ContactID})
+	return append(keys, raw...), nil
+}
+
 func (s *Server) SendMessage(ctx context.Context, req oas.SendMessageRequestObject) (oas.SendMessageResponseObject, error) {
 	p := principalFrom(ctx)
 	if p.deliversAsBot() && !p.botsMaySend {
@@ -168,6 +226,9 @@ func (s *Server) SendMessage(ctx context.Context, req oas.SendMessageRequestObje
 	}
 	if from != nil && (p.isKey() || p.deliversAsBot()) {
 		return nil, errFromNotMember
+	}
+	if req.Body != nil && req.Body.SendAt != nil {
+		return s.scheduleDraft(ctx, p, req.MessageId, *req.Body.SendAt, cc, bcc, from)
 	}
 	if m, err := s.st.GetMessage(ctx, store.GetMessageParams{WorkspaceID: p.workspaceID, ID: req.MessageId}); err == nil && m.Kind == string(oas.MessageKindForward) {
 		if from != nil {
@@ -242,6 +303,9 @@ func (s *Server) SendMessage(ctx context.Context, req oas.SendMessageRequestObje
 			return err
 		}
 		msg := messageRow(sent)
+		if c, err = revealDraftConversation(ctx, q, events, c); err != nil {
+			return err
+		}
 		summary, err := s.dispatchOutgoing(ctx, q, events, p, c, plan, msg, now)
 		if err != nil {
 			return err
@@ -306,15 +370,18 @@ func (s *Server) ListDrafts(ctx context.Context, req oas.ListDraftsRequestObject
 			return nil, err
 		}
 	}
+	mine := prm.Mine != nil && *prm.Mine
 	rows, err := s.st.ListDrafts(ctx, store.ListDraftsParams{
-		WorkspaceID: p.workspaceID, AllInboxes: p.seesAllInboxes(), ViewerID: p.viewerID(),
-		InboxID: prm.InboxId, AuthorKind: kind, CursorAt: at, CursorID: cid, Lim: lim + 1,
+		WorkspaceID: p.workspaceID, AllInboxes: p.seesAllInboxes(), ViewerID: p.viewerID(), ViewerMemberID: p.memberRef(),
+		InboxID: prm.InboxId, ConversationID: prm.ConversationId, Mine: mine, Scheduled: prm.Scheduled,
+		AuthorKind: kind, CursorAt: at, CursorID: cid, Lim: lim + 1,
 	})
 	if err != nil {
 		return nil, err
 	}
 	total, err := s.st.CountDrafts(ctx, store.CountDraftsParams{
-		WorkspaceID: p.workspaceID, AllInboxes: p.seesAllInboxes(), ViewerID: p.viewerID(), InboxID: prm.InboxId, AuthorKind: kind,
+		WorkspaceID: p.workspaceID, AllInboxes: p.seesAllInboxes(), ViewerID: p.viewerID(), ViewerMemberID: p.memberRef(),
+		InboxID: prm.InboxId, ConversationID: prm.ConversationId, Mine: mine, Scheduled: prm.Scheduled, AuthorKind: kind,
 	})
 	if err != nil {
 		return nil, err

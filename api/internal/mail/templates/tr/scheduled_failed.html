@@ -1,0 +1,4 @@
+{{template "heading" "Zamanlanmış mesajınız gönderilmedi"}}
+<p style="margin:0 0 16px 0;"><strong>{{.Inbox}}</strong> gelen kutusunda{{if .Subject}} “{{.Subject}}” konusundaki{{end}} zamanlanmış mesajınız gönderilemedi: {{.Reason}}. Taslak olarak saklandı; düzeltip yeniden gönderin veya zamanlayın.</p>
+{{template "button" (button .URL "Konuşmayı açın")}}
+{{define "scheduled_failed.footer"}}Bu e-postayı, mesajı siz zamanladığınız için alıyorsunuz. <a href="{{.SettingsURL}}" target="_blank" style="color:#71717a;text-decoration:underline;">Hangi e-postaları alacağınızı seçin</a>{{end}}

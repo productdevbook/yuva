@@ -22,6 +22,6 @@ func (s *Server) SetMemberTyping(ctx context.Context, req oas.SetMemberTypingReq
 	memberID, name := p.memberID, m.Name
 	data := oas.Typing{ConversationId: c.ID, Typing: typing, Author: oas.TypingAuthor{Type: oas.TypingAuthorTypeMember, MemberId: &memberID, Name: &name}}
 	inbox, conv := c.InboxID, c.ID
-	s.signal(ctx, realtime.Event{Type: realtime.Typing, WorkspaceID: p.workspaceID, InboxID: &inbox, ConversationID: &conv, Data: mustJSON(data)})
+	s.signal(ctx, realtime.Event{Type: realtime.Typing, WorkspaceID: p.workspaceID, InboxID: &inbox, ConversationID: &conv, Data: mustJSON(data), OnlyMember: c.DraftOf})
 	return oas.SetMemberTyping204Response{}, nil
 }

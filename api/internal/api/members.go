@@ -7,6 +7,7 @@ import (
 	"unicode/utf8"
 	"uuid"
 
+	"github.com/jackc/pgx/v5"
 	"github.com/productdevbook/yuva/api/internal/oas"
 	"github.com/productdevbook/yuva/api/internal/store"
 )
@@ -165,7 +166,7 @@ func (s *Server) RemoveMember(ctx context.Context, req oas.RemoveMemberRequestOb
 	if err := requireManager(p); err != nil {
 		return nil, err
 	}
-	err := s.st.InTx(ctx, func(q *store.Queries) error {
+	err := s.st.InTxRaw(ctx, func(tx pgx.Tx, q *store.Queries) error {
 		target, err := lockedMember(ctx, q, p, req.MemberId)
 		if err != nil {
 			return err
@@ -177,6 +178,9 @@ func (s *Server) RemoveMember(ctx context.Context, req oas.RemoveMemberRequestOb
 			if err := ensureAnotherOwner(ctx, q, p); err != nil {
 				return err
 			}
+		}
+		if err := s.deleteMemberDrafts(ctx, tx, q, p.workspaceID, target.ID); err != nil {
+			return err
 		}
 		if err := q.DeleteMember(ctx, store.DeleteMemberParams{WorkspaceID: p.workspaceID, ID: target.ID}); err != nil {
 			return err

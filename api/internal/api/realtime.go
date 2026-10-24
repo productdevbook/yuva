@@ -295,6 +295,16 @@ func (f *eventFilter) allows(ctx context.Context, q *store.Queries, e realtime.E
 		}
 		return f.p.seesAllInboxes(), nil
 	}
+	if e.OnlyMember != nil {
+		if m := f.p.memberRef(); m == nil || *m != *e.OnlyMember {
+			return false, nil
+		}
+	}
+	if author, ok := memberDraftAuthor(e.Type, e.Data); ok {
+		if m := f.p.memberRef(); m == nil || *m != author {
+			return false, nil
+		}
+	}
 	switch e.Type {
 	case realtime.PresenceHint, realtime.ChannelUpdated, realtime.StatusHint:
 		return false, nil

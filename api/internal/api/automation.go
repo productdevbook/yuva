@@ -142,7 +142,7 @@ func (s *Server) queueAutomations(ctx context.Context, tx pgx.Tx, q *store.Queri
 	)
 	for i, e := range ev.items {
 		trigger, msg, ok := automationTriggerOf(e)
-		if !ok || e.noRules {
+		if !ok || e.noRules || e.onlyMember != nil {
 			continue
 		}
 		if !loaded {

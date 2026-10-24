@@ -361,7 +361,7 @@ func (s *Server) ListContactParticipations(ctx context.Context, req oas.ListCont
 		return nil, err
 	}
 	rows, err := s.st.ListContactParticipations(ctx, store.ListContactParticipationsParams{
-		WorkspaceID: p.workspaceID, ContactID: req.ContactId, AllInboxes: p.seesAllInboxes(), ViewerID: p.viewerID(),
+		WorkspaceID: p.workspaceID, ContactID: req.ContactId, AllInboxes: p.seesAllInboxes(), ViewerID: p.viewerID(), ViewerMemberID: p.memberRef(),
 		CursorAt: at, CursorID: id, Lim: lim + 1,
 	})
 	if err != nil {
@@ -404,6 +404,9 @@ func forgetContactAddresses(ctx context.Context, q *store.Queries, ws, contactID
 		return err
 	}
 	if err := q.ScrubComposedMailAddresses(ctx, store.ScrubComposedMailAddressesParams{WorkspaceID: ws, Emails: emails}); err != nil {
+		return err
+	}
+	if err := q.ScrubScheduledCopies(ctx, store.ScrubScheduledCopiesParams{WorkspaceID: ws, Emails: emails}); err != nil {
 		return err
 	}
 	return q.ForgetMigrationAddresses(ctx, store.ForgetMigrationAddressesParams{WorkspaceID: ws, Emails: emails})

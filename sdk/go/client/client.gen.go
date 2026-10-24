@@ -5976,6 +5976,7 @@ const (
 	MessageInUnassignedConversation PushNotificationEvent = "message_in_unassigned_conversation"
 	NewAsyncConversation            PushNotificationEvent = "new_async_conversation"
 	NewLiveConversation             PushNotificationEvent = "new_live_conversation"
+	ScheduledSendFailed             PushNotificationEvent = "scheduled_send_failed"
 	SlaBreached                     PushNotificationEvent = "sla_breached"
 	SlaWarning                      PushNotificationEvent = "sla_warning"
 	Test                            PushNotificationEvent = "test"
@@ -5997,6 +5998,8 @@ func (e PushNotificationEvent) Valid() bool {
 	case NewAsyncConversation:
 		return true
 	case NewLiveConversation:
+		return true
+	case ScheduledSendFailed:
 		return true
 	case SlaBreached:
 		return true
@@ -7884,6 +7887,21 @@ const (
 func (e ListConversationsParamsSent) Valid() bool {
 	switch e {
 	case ListConversationsSentMine:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ListConversationsParamsScheduled.
+const (
+	ListConversationsScheduledMine ListConversationsParamsScheduled = "mine"
+)
+
+// Valid indicates whether the value is a known member of the ListConversationsParamsScheduled enum.
+func (e ListConversationsParamsScheduled) Valid() bool {
+	switch e {
+	case ListConversationsScheduledMine:
 		return true
 	default:
 		return false
@@ -13072,6 +13090,10 @@ type ComposeMail struct {
 	Html    *string   `json:"html,omitempty"`
 	InboxId uuid.UUID `json:"inbox_id"`
 
+	// SendAt Member sessions only: store as a draft and send it at this time, at least 1 minute and
+	// at most 366 days ahead (`400 invalid_send_at`). See `sendMessage`.
+	SendAt *time.Time `json:"send_at,omitempty"`
+
 	// Signature `false` sends without the member's signature; see `MessageCreate`.
 	Signature *bool  `json:"signature,omitempty"`
 	Subject   string `json:"subject"`
@@ -13094,11 +13116,12 @@ type ComposeMailMultipart struct {
 	Files     *[]openapi_types.File `json:"files,omitempty"`
 
 	// FromAddress Examples: owner@example.com
-	FromAddress *Email    `json:"from_address,omitempty"`
-	Html        *string   `json:"html,omitempty"`
-	InboxId     uuid.UUID `json:"inbox_id"`
-	Signature   *bool     `json:"signature,omitempty"`
-	Subject     string    `json:"subject"`
+	FromAddress *Email     `json:"from_address,omitempty"`
+	Html        *string    `json:"html,omitempty"`
+	InboxId     uuid.UUID  `json:"inbox_id"`
+	SendAt      *time.Time `json:"send_at,omitempty"`
+	Signature   *bool      `json:"signature,omitempty"`
+	Subject     string     `json:"subject"`
 
 	// To Repeat the field once per address.
 	To []Email `json:"to"`
@@ -14894,7 +14917,7 @@ type DocsTotals struct {
 type DraftAuthorKind string
 
 // DraftEvent A draft was written, edited or discarded (`data` is the draft as it was). Sending a draft
-// emits `message.created`.
+// emits `message.created`. A member's draft's events reach only that member's connections.
 type DraftEvent struct {
 	ConversationId uuid.UUID      `json:"conversation_id"`
 	CreatedAt      time.Time      `json:"created_at"`
@@ -18878,7 +18901,8 @@ type Message struct {
 
 	// Draft An outgoing message that is not delivered until it is sent
 	// (`POST /v1/messages/{id}/send`). Drafts are shown only on `/v1`: never to contacts,
-	// never e-mailed, notified, counted as unread, previewed or found by search.
+	// never e-mailed, notified, counted as unread, previewed or found by search. A member's
+	// draft is shown only to its author.
 	Draft bool `json:"draft"`
 
 	// Email Set on messages that came or went by e-mail. `body` and `html` of the message show the new
@@ -18921,6 +18945,13 @@ type Message struct {
 	// Rule The automation rule that wrote it (author `system`): its notes, replies and the timeline
 	// events of its changes. Absent for everything else.
 	Rule *AutomationRuleRef `json:"rule,omitempty"`
+
+	// ScheduledAt When a scheduled draft is sent; absent for drafts that are not scheduled and for sent messages.
+	ScheduledAt *time.Time `json:"scheduled_at,omitempty"`
+
+	// SendError Why a scheduled draft could not be sent; shown to its author. Absent otherwise, and cleared
+	// when the draft is scheduled again or sent.
+	SendError *MessageSendError `json:"send_error,omitempty"`
 
 	// SentBy Who sent a draft (`member` or `bot`); absent for messages that were never drafts.
 	SentBy *MessageAuthor `json:"sent_by,omitempty"`
@@ -19019,6 +19050,10 @@ type MessageCreate struct {
 	// body as it likes; the server does not parse `@` in the text.
 	Mentions *[]uuid.UUID `json:"mentions,omitempty"`
 
+	// SendAt Member sessions only: store as a draft and send it at this time, at least 1 minute and
+	// at most 366 days ahead (`400 invalid_send_at`). See `sendMessage`.
+	SendAt *time.Time `json:"send_at,omitempty"`
+
 	// Signature E-mailed replies by members: add the author's signature for the inbox (their own, else
 	// the inbox's `signature`); absent means `true`. `false` sends without it. Chat, app and API channel replies,
 	// notes and forwards never carry one, nor do messages written by API keys or automation
@@ -19056,6 +19091,7 @@ type MessageCreateMultipart struct {
 
 	// Mentions Notes only; repeat the field once per member id.
 	Mentions *[]uuid.UUID `json:"mentions,omitempty"`
+	SendAt   *time.Time   `json:"send_at,omitempty"`
 
 	// Signature `false` sends an e-mailed reply without the author's signature; see `MessageCreate`.
 	Signature *bool `json:"signature,omitempty"`
@@ -19293,6 +19329,21 @@ type MessageSend struct {
 	// usable for the channel (`GET /v1/me/addresses`) instead of the channel's address. See
 	// `createMessage`.
 	FromAddress *Email `json:"from_address,omitempty"`
+
+	// SendAt Member sessions only: schedule the draft instead of sending it now, at least 1 minute
+	// and at most 366 days ahead (`400 invalid_send_at`); `cc`, `bcc` and `from_address` are
+	// kept for then.
+	SendAt *time.Time `json:"send_at,omitempty"`
+}
+
+// MessageSendError Why a scheduled draft could not be sent; shown to its author. Absent otherwise, and cleared
+// when the draft is scheduled again or sent.
+type MessageSendError struct {
+	// Code The problem code the send answered (e.g. `from_not_allowed`, `no_recipient`, `member_inactive`).
+	//
+	// Examples: from_not_allowed
+	Code   string `json:"code"`
+	Detail string `json:"detail"`
 }
 
 // MessageUpdate Only the fields sent change.
@@ -19301,6 +19352,10 @@ type MessageUpdate struct {
 
 	// Html Sanitized before it is stored; `null` removes it.
 	Html nullable.Nullable[string] `json:"html,omitempty"`
+
+	// SendAt Member sessions only: schedule the draft or move its time, at least 1 minute and at
+	// most 366 days ahead (`400 invalid_send_at`). See `sendMessage`.
+	SendAt *time.Time `json:"send_at,omitempty"`
 }
 
 // MessageUpdatedEvent A message changed, e.g. its e-mail delivery state. `message.redacted`: its content was
@@ -20569,6 +20624,7 @@ type NotificationEvents struct {
 	MessageInUnassignedConversation NotificationChannels `json:"message_in_unassigned_conversation"`
 	NewAsyncConversation            NotificationChannels `json:"new_async_conversation"`
 	NewLiveConversation             NotificationChannels `json:"new_live_conversation"`
+	ScheduledSendFailed             NotificationChannels `json:"scheduled_send_failed"`
 	SlaBreached                     NotificationChannels `json:"sla_breached"`
 	SlaWarning                      NotificationChannels `json:"sla_warning"`
 }
@@ -20582,6 +20638,7 @@ type NotificationEventsUpdate struct {
 	MessageInUnassignedConversation *NotificationChannels `json:"message_in_unassigned_conversation,omitempty"`
 	NewAsyncConversation            *NotificationChannels `json:"new_async_conversation,omitempty"`
 	NewLiveConversation             *NotificationChannels `json:"new_live_conversation,omitempty"`
+	ScheduledSendFailed             *NotificationChannels `json:"scheduled_send_failed,omitempty"`
 	SlaBreached                     *NotificationChannels `json:"sla_breached,omitempty"`
 	SlaWarning                      *NotificationChannels `json:"sla_warning,omitempty"`
 }
@@ -26260,6 +26317,11 @@ type ListConversationsParams struct {
 	// (`400 validation_failed` for API keys).
 	Sent *ListConversationsParamsSent `form:"sent,omitempty" json:"sent,omitempty"`
 
+	// Scheduled `mine` lists only the conversations holding a message the calling member scheduled, the
+	// Scheduled folder, ordered by the earliest `scheduled_at` among them (not with
+	// `sort=sla_due`). Member sessions only (`400 validation_failed` for API keys).
+	Scheduled *ListConversationsParamsScheduled `form:"scheduled,omitempty" json:"scheduled,omitempty"`
+
 	// Sort `last_activity` (the default): most recent activity first. `sla_due`: conversations
 	// with a running SLA target first, the earliest `sla.due_at` first (so breached ones
 	// lead), then the others by most recent activity. A cursor continues only the order it
@@ -26291,6 +26353,9 @@ type ListConversationsParamsIdea string
 
 // ListConversationsParamsSent defines parameters for ListConversations.
 type ListConversationsParamsSent string
+
+// ListConversationsParamsScheduled defines parameters for ListConversations.
+type ListConversationsParamsScheduled string
 
 // ListConversationsParamsSort defines parameters for ListConversations.
 type ListConversationsParamsSort string
@@ -26826,6 +26891,15 @@ type ListDraftsParams struct {
 	// InboxId Only drafts in this inbox. An inbox the caller cannot see answers `404`.
 	InboxId *uuid.UUID       `form:"inbox_id,omitempty" json:"inbox_id,omitempty"`
 	Author  *DraftAuthorKind `form:"author,omitempty" json:"author,omitempty"`
+
+	// ConversationId Only drafts in this conversation.
+	ConversationId *uuid.UUID `form:"conversation_id,omitempty" json:"conversation_id,omitempty"`
+
+	// Mine `true`: only drafts the calling member wrote (none for API keys).
+	Mine *bool `form:"mine,omitempty" json:"mine,omitempty"`
+
+	// Scheduled `true`: only drafts scheduled to be sent (`scheduled_at` set); `false`: only those that are not.
+	Scheduled *bool `form:"scheduled,omitempty" json:"scheduled,omitempty"`
 
 	// Cursor The `next_cursor` of the previous page.
 	Cursor *Cursor `form:"cursor,omitempty" json:"cursor,omitempty"`
@@ -27835,6 +27909,12 @@ type RedactMessageParams struct {
 	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// UnscheduleMessageParams defines parameters for UnscheduleMessage.
+type UnscheduleMessageParams struct {
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
@@ -38615,7 +38695,13 @@ type ClientInterface interface {
 	// nothing is delivered until `POST /v1/messages/{id}/send`, which sends exactly this mail:
 	// every `to` in `To`, the `cc`, the `bcc` as envelope recipients only, the subject without
 	// `Re:` and no `In-Reply-To`. `cc` or `bcc` given there replace the kept lists. Deleting a
-	// contact removes its addresses from the kept lists too.
+	// contact removes its addresses from the kept lists too. A member's draft is private to
+	// them, and so is the conversation it made: it is not listed, counted, found or readable for
+	// anyone else (`404`), and no `conversation.created` is emitted, until the draft is sent;
+	// sending emits `conversation.created` before `message.created`.
+	//
+	// `send_at` (member sessions only) stores the mail as a draft that is sent at that time, as
+	// `POST /v1/messages/{id}/send` with `send_at` describes.
 	//
 	// A repeated `client_id` in the same inbox returns the conversation and message stored with
 	// it with `200` instead of writing them again, before any rate limit, so a retry costs
@@ -38691,7 +38777,13 @@ type ClientInterface interface {
 	// nothing is delivered until `POST /v1/messages/{id}/send`, which sends exactly this mail:
 	// every `to` in `To`, the `cc`, the `bcc` as envelope recipients only, the subject without
 	// `Re:` and no `In-Reply-To`. `cc` or `bcc` given there replace the kept lists. Deleting a
-	// contact removes its addresses from the kept lists too.
+	// contact removes its addresses from the kept lists too. A member's draft is private to
+	// them, and so is the conversation it made: it is not listed, counted, found or readable for
+	// anyone else (`404`), and no `conversation.created` is emitted, until the draft is sent;
+	// sending emits `conversation.created` before `message.created`.
+	//
+	// `send_at` (member sessions only) stores the mail as a draft that is sent at that time, as
+	// `POST /v1/messages/{id}/send` with `send_at` describes.
 	//
 	// A repeated `client_id` in the same inbox returns the conversation and message stored with
 	// it with `200` instead of writing them again, before any rate limit, so a retry costs
@@ -39029,7 +39121,12 @@ type ClientInterface interface {
 	// `draft: true` stores an outgoing message as a draft: nothing is delivered, and
 	// `draft.created` is emitted instead of `message.created`. Edit it with
 	// `PATCH /v1/messages/{id}`, discard it with `DELETE /v1/messages/{id}` and deliver it with
-	// `POST /v1/messages/{id}/send`. A draft cannot be a note or an `in` message.
+	// `POST /v1/messages/{id}/send`. A draft cannot be a note or an `in` message. A member's
+	// draft is seen only by its author; one written with an API key by every member who sees the
+	// conversation.
+	//
+	// `send_at` (member sessions only) stores the message as a draft that is sent at that time,
+	// with its `cc`, `bcc` and `from_address` kept for then; see `POST /v1/messages/{id}/send`.
 	//
 	// Send `multipart/form-data` to attach files: the fields of `MessageCreate` as form fields
 	// and up to 10 `files` parts. Each file must be within the conversation's channel's limits
@@ -39123,7 +39220,12 @@ type ClientInterface interface {
 	// `draft: true` stores an outgoing message as a draft: nothing is delivered, and
 	// `draft.created` is emitted instead of `message.created`. Edit it with
 	// `PATCH /v1/messages/{id}`, discard it with `DELETE /v1/messages/{id}` and deliver it with
-	// `POST /v1/messages/{id}/send`. A draft cannot be a note or an `in` message.
+	// `POST /v1/messages/{id}/send`. A draft cannot be a note or an `in` message. A member's
+	// draft is seen only by its author; one written with an API key by every member who sees the
+	// conversation.
+	//
+	// `send_at` (member sessions only) stores the message as a draft that is sent at that time,
+	// with its `cc`, `bcc` and `from_address` kept for then; see `POST /v1/messages/{id}/send`.
 	//
 	// Send `multipart/form-data` to attach files: the fields of `MessageCreate` as form fields
 	// and up to 10 `files` parts. Each file must be within the conversation's channel's limits
@@ -40002,6 +40104,14 @@ type ClientInterface interface {
 	// keys), by assistants (members through an OAuth client, `author.via` set) or by members in
 	// the panel. The page carries `total`, the number of drafts matching the filters over all
 	// pages, for a badge.
+	//
+	// A draft written by a member (in the panel or through a connected app) is private: only
+	// its author sees it, here, in the message list, in `draft.*` events and in MCP; anyone else
+	// gets `404`. Drafts written with an API key (author `bot`) are seen by every member who
+	// sees the conversation.
+	//
+	// `conversation_id` and `mine=true` find the caller's own draft of a reply to restore it on
+	// any device; `scheduled` keeps only scheduled (`true`) or unscheduled (`false`) drafts.
 	//
 	// Scope: `conversations:read`.
 	//
@@ -42473,8 +42583,9 @@ type ClientInterface interface {
 
 	// DeleteMessage Discard a draft
 	//
-	// Deletes a draft with its attachments; emits `draft.deleted`. Anything that is not a draft
-	// answers `409 not_a_draft`.
+	// Deletes a draft with its attachments; emits `draft.deleted`. A scheduled draft is not sent.
+	// Anything that is not a draft answers `409 not_a_draft`; another member's draft answers
+	// `404`.
 	//
 	// Scope: `messages:write`.
 	//
@@ -42483,8 +42594,9 @@ type ClientInterface interface {
 
 	// UpdateMessageWithBody Edit a draft
 	//
-	// Changes a draft's text; emits `draft.updated`. Anything that is not a draft answers
-	// `409 not_a_draft`.
+	// Changes a draft's text, or with `send_at` (member sessions only) schedules it or moves its
+	// time; emits `draft.updated`. It works while the draft is scheduled. Anything that is not a
+	// draft answers `409 not_a_draft`; another member's draft answers `404`.
 	//
 	// Scope: `messages:write`.
 	//
@@ -42495,8 +42607,9 @@ type ClientInterface interface {
 
 	// UpdateMessage Edit a draft
 	//
-	// Changes a draft's text; emits `draft.updated`. Anything that is not a draft answers
-	// `409 not_a_draft`.
+	// Changes a draft's text, or with `send_at` (member sessions only) schedules it or moves its
+	// time; emits `draft.updated`. It works while the draft is scheduled. Anything that is not a
+	// draft answers `409 not_a_draft`; another member's draft answers `404`.
 	//
 	// Scope: `messages:write`.
 	//
@@ -42557,6 +42670,18 @@ type ClientInterface interface {
 	// Corresponds with POST /v1/messages/{messageId}/redact (the `RedactMessage` operationId).
 	RedactMessage(ctx context.Context, messageId MessageId, params *RedactMessageParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// UnscheduleMessage Cancel a scheduled send
+	//
+	// Turns a scheduled draft back into a plain draft (`scheduled_at`, and the `cc`, `bcc` and
+	// `from_address` kept for the send, removed); emits `draft.updated`. A draft that is not
+	// scheduled is returned as it is. Anything that is not a draft answers `409 not_a_draft`;
+	// another member's draft answers `404`.
+	//
+	// Member sessions only.
+	//
+	// Corresponds with DELETE /v1/messages/{messageId}/schedule (the `UnscheduleMessage` operationId).
+	UnscheduleMessage(ctx context.Context, messageId MessageId, params *UnscheduleMessageParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// SendMessageWithBody Send a draft
 	//
 	// Delivers a draft like a new outgoing message: its time becomes now, `sent_by` names who
@@ -42575,8 +42700,22 @@ type ClientInterface interface {
 	// `from_address`. `from_address` sends the mail from one of the member's own addresses, as on
 	// `createMessage`.
 	//
-	// Members always may. An API key needs `drafts:send` and `messages:write`, and the
+	// Members always may, their own drafts and those written with an API key (another member's
+	// draft answers `404`). An API key needs `drafts:send` and `messages:write`, and the
 	// workspace's `bots_may_send` (`403 bot_sending_disabled`).
+	//
+	// `send_at` (member sessions only; API keys and connected apps `400`) schedules instead of
+	// sending: the member's own draft keeps the `cc`, `bcc` and `from_address` given here, gets
+	// `scheduled_at` and goes at that time (at least 1 minute and at most 366 days ahead, else
+	// `400 invalid_send_at`), exactly once, as if the member sent it then: signature, sender,
+	// recipients and the checks above are applied at that moment. It emits `draft.updated` now
+	// and `message.created` when it goes. Until then it can be edited
+	// (`PATCH /v1/messages/{id}`, also to move `send_at`), turned back into a plain draft
+	// (`DELETE /v1/messages/{id}/schedule`) or discarded. When it cannot go (the member left the
+	// workspace or lost the inbox, the address or recipients were refused, or a temporary error
+	// persisted) it stays a draft with `send_error`, loses `scheduled_at`, and the member gets
+	// the `scheduled_send_failed` notification. A draft written with an API key cannot be
+	// scheduled (`400 validation_failed`).
 	//
 	// Takes any type of body and a specified content type.
 	//
@@ -42601,8 +42740,22 @@ type ClientInterface interface {
 	// `from_address`. `from_address` sends the mail from one of the member's own addresses, as on
 	// `createMessage`.
 	//
-	// Members always may. An API key needs `drafts:send` and `messages:write`, and the
+	// Members always may, their own drafts and those written with an API key (another member's
+	// draft answers `404`). An API key needs `drafts:send` and `messages:write`, and the
 	// workspace's `bots_may_send` (`403 bot_sending_disabled`).
+	//
+	// `send_at` (member sessions only; API keys and connected apps `400`) schedules instead of
+	// sending: the member's own draft keeps the `cc`, `bcc` and `from_address` given here, gets
+	// `scheduled_at` and goes at that time (at least 1 minute and at most 366 days ahead, else
+	// `400 invalid_send_at`), exactly once, as if the member sent it then: signature, sender,
+	// recipients and the checks above are applied at that moment. It emits `draft.updated` now
+	// and `message.created` when it goes. Until then it can be edited
+	// (`PATCH /v1/messages/{id}`, also to move `send_at`), turned back into a plain draft
+	// (`DELETE /v1/messages/{id}/schedule`) or discarded. When it cannot go (the member left the
+	// workspace or lost the inbox, the address or recipients were refused, or a temporary error
+	// persisted) it stays a draft with `send_error`, loses `scheduled_at`, and the member gets
+	// the `scheduled_send_failed` notification. A draft written with an API key cannot be
+	// scheduled (`400 validation_failed`).
 	//
 	// Takes a body of the `application/json` content type.
 	//
@@ -52215,7 +52368,13 @@ func (c *Client) GetConversationCounts(ctx context.Context, params *GetConversat
 // nothing is delivered until `POST /v1/messages/{id}/send`, which sends exactly this mail:
 // every `to` in `To`, the `cc`, the `bcc` as envelope recipients only, the subject without
 // `Re:` and no `In-Reply-To`. `cc` or `bcc` given there replace the kept lists. Deleting a
-// contact removes its addresses from the kept lists too.
+// contact removes its addresses from the kept lists too. A member's draft is private to
+// them, and so is the conversation it made: it is not listed, counted, found or readable for
+// anyone else (`404`), and no `conversation.created` is emitted, until the draft is sent;
+// sending emits `conversation.created` before `message.created`.
+//
+// `send_at` (member sessions only) stores the mail as a draft that is sent at that time, as
+// `POST /v1/messages/{id}/send` with `send_at` describes.
 //
 // A repeated `client_id` in the same inbox returns the conversation and message stored with
 // it with `200` instead of writing them again, before any rate limit, so a retry costs
@@ -52301,7 +52460,13 @@ func (c *Client) ComposeMailWithBody(ctx context.Context, params *ComposeMailPar
 // nothing is delivered until `POST /v1/messages/{id}/send`, which sends exactly this mail:
 // every `to` in `To`, the `cc`, the `bcc` as envelope recipients only, the subject without
 // `Re:` and no `In-Reply-To`. `cc` or `bcc` given there replace the kept lists. Deleting a
-// contact removes its addresses from the kept lists too.
+// contact removes its addresses from the kept lists too. A member's draft is private to
+// them, and so is the conversation it made: it is not listed, counted, found or readable for
+// anyone else (`404`), and no `conversation.created` is emitted, until the draft is sent;
+// sending emits `conversation.created` before `message.created`.
+//
+// `send_at` (member sessions only) stores the mail as a draft that is sent at that time, as
+// `POST /v1/messages/{id}/send` with `send_at` describes.
 //
 // A repeated `client_id` in the same inbox returns the conversation and message stored with
 // it with `200` instead of writing them again, before any rate limit, so a retry costs
@@ -52789,7 +52954,12 @@ func (c *Client) ListMessages(ctx context.Context, conversationId ConversationId
 // `draft: true` stores an outgoing message as a draft: nothing is delivered, and
 // `draft.created` is emitted instead of `message.created`. Edit it with
 // `PATCH /v1/messages/{id}`, discard it with `DELETE /v1/messages/{id}` and deliver it with
-// `POST /v1/messages/{id}/send`. A draft cannot be a note or an `in` message.
+// `POST /v1/messages/{id}/send`. A draft cannot be a note or an `in` message. A member's
+// draft is seen only by its author; one written with an API key by every member who sees the
+// conversation.
+//
+// `send_at` (member sessions only) stores the message as a draft that is sent at that time,
+// with its `cc`, `bcc` and `from_address` kept for then; see `POST /v1/messages/{id}/send`.
 //
 // Send `multipart/form-data` to attach files: the fields of `MessageCreate` as form fields
 // and up to 10 `files` parts. Each file must be within the conversation's channel's limits
@@ -52893,7 +53063,12 @@ func (c *Client) CreateMessageWithBody(ctx context.Context, conversationId Conve
 // `draft: true` stores an outgoing message as a draft: nothing is delivered, and
 // `draft.created` is emitted instead of `message.created`. Edit it with
 // `PATCH /v1/messages/{id}`, discard it with `DELETE /v1/messages/{id}` and deliver it with
-// `POST /v1/messages/{id}/send`. A draft cannot be a note or an `in` message.
+// `POST /v1/messages/{id}/send`. A draft cannot be a note or an `in` message. A member's
+// draft is seen only by its author; one written with an API key by every member who sees the
+// conversation.
+//
+// `send_at` (member sessions only) stores the message as a draft that is sent at that time,
+// with its `cc`, `bcc` and `from_address` kept for then; see `POST /v1/messages/{id}/send`.
 //
 // Send `multipart/form-data` to attach files: the fields of `MessageCreate` as form fields
 // and up to 10 `files` parts. Each file must be within the conversation's channel's limits
@@ -54352,6 +54527,14 @@ func (c *Client) GetDocsSummary(ctx context.Context, params *GetDocsSummaryParam
 // keys), by assistants (members through an OAuth client, `author.via` set) or by members in
 // the panel. The page carries `total`, the number of drafts matching the filters over all
 // pages, for a badge.
+//
+// A draft written by a member (in the panel or through a connected app) is private: only
+// its author sees it, here, in the message list, in `draft.*` events and in MCP; anyone else
+// gets `404`. Drafts written with an API key (author `bot`) are seen by every member who
+// sees the conversation.
+//
+// `conversation_id` and `mine=true` find the caller's own draft of a reply to restore it on
+// any device; `scheduled` keeps only scheduled (`true`) or unscheduled (`false`) drafts.
 //
 // Scope: `conversations:read`.
 //
@@ -58683,8 +58866,9 @@ func (c *Client) ApproveMemberAddress(ctx context.Context, memberId MemberId, me
 
 // DeleteMessage Discard a draft
 //
-// Deletes a draft with its attachments; emits `draft.deleted`. Anything that is not a draft
-// answers `409 not_a_draft`.
+// Deletes a draft with its attachments; emits `draft.deleted`. A scheduled draft is not sent.
+// Anything that is not a draft answers `409 not_a_draft`; another member's draft answers
+// `404`.
 //
 // Scope: `messages:write`.
 //
@@ -58703,8 +58887,9 @@ func (c *Client) DeleteMessage(ctx context.Context, messageId MessageId, params 
 
 // UpdateMessageWithBody Edit a draft
 //
-// Changes a draft's text; emits `draft.updated`. Anything that is not a draft answers
-// `409 not_a_draft`.
+// Changes a draft's text, or with `send_at` (member sessions only) schedules it or moves its
+// time; emits `draft.updated`. It works while the draft is scheduled. Anything that is not a
+// draft answers `409 not_a_draft`; another member's draft answers `404`.
 //
 // Scope: `messages:write`.
 //
@@ -58725,8 +58910,9 @@ func (c *Client) UpdateMessageWithBody(ctx context.Context, messageId MessageId,
 
 // UpdateMessage Edit a draft
 //
-// Changes a draft's text; emits `draft.updated`. Anything that is not a draft answers
-// `409 not_a_draft`.
+// Changes a draft's text, or with `send_at` (member sessions only) schedules it or moves its
+// time; emits `draft.updated`. It works while the draft is scheduled. Anything that is not a
+// draft answers `409 not_a_draft`; another member's draft answers `404`.
 //
 // Scope: `messages:write`.
 //
@@ -58827,6 +59013,28 @@ func (c *Client) RedactMessage(ctx context.Context, messageId MessageId, params 
 	return c.Client.Do(req)
 }
 
+// UnscheduleMessage Cancel a scheduled send
+//
+// Turns a scheduled draft back into a plain draft (`scheduled_at`, and the `cc`, `bcc` and
+// `from_address` kept for the send, removed); emits `draft.updated`. A draft that is not
+// scheduled is returned as it is. Anything that is not a draft answers `409 not_a_draft`;
+// another member's draft answers `404`.
+//
+// Member sessions only.
+//
+// Corresponds with DELETE /v1/messages/{messageId}/schedule (the `UnscheduleMessage` operationId).
+func (c *Client) UnscheduleMessage(ctx context.Context, messageId MessageId, params *UnscheduleMessageParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUnscheduleMessageRequest(c.Server, messageId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 // SendMessageWithBody Send a draft
 //
 // Delivers a draft like a new outgoing message: its time becomes now, `sent_by` names who
@@ -58845,8 +59053,22 @@ func (c *Client) RedactMessage(ctx context.Context, messageId MessageId, params 
 // `from_address`. `from_address` sends the mail from one of the member's own addresses, as on
 // `createMessage`.
 //
-// Members always may. An API key needs `drafts:send` and `messages:write`, and the
+// Members always may, their own drafts and those written with an API key (another member's
+// draft answers `404`). An API key needs `drafts:send` and `messages:write`, and the
 // workspace's `bots_may_send` (`403 bot_sending_disabled`).
+//
+// `send_at` (member sessions only; API keys and connected apps `400`) schedules instead of
+// sending: the member's own draft keeps the `cc`, `bcc` and `from_address` given here, gets
+// `scheduled_at` and goes at that time (at least 1 minute and at most 366 days ahead, else
+// `400 invalid_send_at`), exactly once, as if the member sent it then: signature, sender,
+// recipients and the checks above are applied at that moment. It emits `draft.updated` now
+// and `message.created` when it goes. Until then it can be edited
+// (`PATCH /v1/messages/{id}`, also to move `send_at`), turned back into a plain draft
+// (`DELETE /v1/messages/{id}/schedule`) or discarded. When it cannot go (the member left the
+// workspace or lost the inbox, the address or recipients were refused, or a temporary error
+// persisted) it stays a draft with `send_error`, loses `scheduled_at`, and the member gets
+// the `scheduled_send_failed` notification. A draft written with an API key cannot be
+// scheduled (`400 validation_failed`).
 //
 // Takes any type of body and a specified content type.
 //
@@ -58881,8 +59103,22 @@ func (c *Client) SendMessageWithBody(ctx context.Context, messageId MessageId, p
 // `from_address`. `from_address` sends the mail from one of the member's own addresses, as on
 // `createMessage`.
 //
-// Members always may. An API key needs `drafts:send` and `messages:write`, and the
+// Members always may, their own drafts and those written with an API key (another member's
+// draft answers `404`). An API key needs `drafts:send` and `messages:write`, and the
 // workspace's `bots_may_send` (`403 bot_sending_disabled`).
+//
+// `send_at` (member sessions only; API keys and connected apps `400`) schedules instead of
+// sending: the member's own draft keeps the `cc`, `bcc` and `from_address` given here, gets
+// `scheduled_at` and goes at that time (at least 1 minute and at most 366 days ahead, else
+// `400 invalid_send_at`), exactly once, as if the member sent it then: signature, sender,
+// recipients and the checks above are applied at that moment. It emits `draft.updated` now
+// and `message.created` when it goes. Until then it can be edited
+// (`PATCH /v1/messages/{id}`, also to move `send_at`), turned back into a plain draft
+// (`DELETE /v1/messages/{id}/schedule`) or discarded. When it cannot go (the member left the
+// workspace or lost the inbox, the address or recipients were refused, or a temporary error
+// persisted) it stays a draft with `send_error`, loses `scheduled_at`, and the member gets
+// the `scheduled_send_failed` notification. A draft written with an API key cannot be
+// scheduled (`400 validation_failed`).
 //
 // Takes a body of the `application/json` content type.
 //
@@ -75353,6 +75589,18 @@ func NewListConversationsRequest(server string, params *ListConversationsParams)
 
 		}
 
+		if params.Scheduled != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "scheduled", *params.Scheduled, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
 		if params.Sort != nil {
 
 			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "sort", *params.Sort, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
@@ -79459,6 +79707,42 @@ func NewListDraftsRequest(server string, params *ListDraftsParams) (*http.Reques
 		if params.Author != nil {
 
 			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "author", *params.Author, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.ConversationId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "conversation_id", *params.ConversationId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "uuid"}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Mine != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "mine", *params.Mine, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "boolean", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Scheduled != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "scheduled", *params.Scheduled, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "boolean", Format: ""}); err != nil {
 				return nil, err
 			} else {
 				for _, qp := range strings.Split(queryFrag, "&") {
@@ -88132,6 +88416,55 @@ func NewRedactMessageRequest(server string, messageId MessageId, params *RedactM
 			}
 
 			req.Header.Set("Yuva-Workspace", headerParam1)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewUnscheduleMessageRequest constructs an http.Request for the UnscheduleMessage method
+func NewUnscheduleMessageRequest(server string, messageId MessageId, params *UnscheduleMessageParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "messageId", messageId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/messages/%s/schedule", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodDelete, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
 		}
 
 	}
@@ -100875,7 +101208,13 @@ type ClientWithResponsesInterface interface {
 	// nothing is delivered until `POST /v1/messages/{id}/send`, which sends exactly this mail:
 	// every `to` in `To`, the `cc`, the `bcc` as envelope recipients only, the subject without
 	// `Re:` and no `In-Reply-To`. `cc` or `bcc` given there replace the kept lists. Deleting a
-	// contact removes its addresses from the kept lists too.
+	// contact removes its addresses from the kept lists too. A member's draft is private to
+	// them, and so is the conversation it made: it is not listed, counted, found or readable for
+	// anyone else (`404`), and no `conversation.created` is emitted, until the draft is sent;
+	// sending emits `conversation.created` before `message.created`.
+	//
+	// `send_at` (member sessions only) stores the mail as a draft that is sent at that time, as
+	// `POST /v1/messages/{id}/send` with `send_at` describes.
 	//
 	// A repeated `client_id` in the same inbox returns the conversation and message stored with
 	// it with `200` instead of writing them again, before any rate limit, so a retry costs
@@ -100951,7 +101290,13 @@ type ClientWithResponsesInterface interface {
 	// nothing is delivered until `POST /v1/messages/{id}/send`, which sends exactly this mail:
 	// every `to` in `To`, the `cc`, the `bcc` as envelope recipients only, the subject without
 	// `Re:` and no `In-Reply-To`. `cc` or `bcc` given there replace the kept lists. Deleting a
-	// contact removes its addresses from the kept lists too.
+	// contact removes its addresses from the kept lists too. A member's draft is private to
+	// them, and so is the conversation it made: it is not listed, counted, found or readable for
+	// anyone else (`404`), and no `conversation.created` is emitted, until the draft is sent;
+	// sending emits `conversation.created` before `message.created`.
+	//
+	// `send_at` (member sessions only) stores the mail as a draft that is sent at that time, as
+	// `POST /v1/messages/{id}/send` with `send_at` describes.
 	//
 	// A repeated `client_id` in the same inbox returns the conversation and message stored with
 	// it with `200` instead of writing them again, before any rate limit, so a retry costs
@@ -101301,7 +101646,12 @@ type ClientWithResponsesInterface interface {
 	// `draft: true` stores an outgoing message as a draft: nothing is delivered, and
 	// `draft.created` is emitted instead of `message.created`. Edit it with
 	// `PATCH /v1/messages/{id}`, discard it with `DELETE /v1/messages/{id}` and deliver it with
-	// `POST /v1/messages/{id}/send`. A draft cannot be a note or an `in` message.
+	// `POST /v1/messages/{id}/send`. A draft cannot be a note or an `in` message. A member's
+	// draft is seen only by its author; one written with an API key by every member who sees the
+	// conversation.
+	//
+	// `send_at` (member sessions only) stores the message as a draft that is sent at that time,
+	// with its `cc`, `bcc` and `from_address` kept for then; see `POST /v1/messages/{id}/send`.
 	//
 	// Send `multipart/form-data` to attach files: the fields of `MessageCreate` as form fields
 	// and up to 10 `files` parts. Each file must be within the conversation's channel's limits
@@ -101395,7 +101745,12 @@ type ClientWithResponsesInterface interface {
 	// `draft: true` stores an outgoing message as a draft: nothing is delivered, and
 	// `draft.created` is emitted instead of `message.created`. Edit it with
 	// `PATCH /v1/messages/{id}`, discard it with `DELETE /v1/messages/{id}` and deliver it with
-	// `POST /v1/messages/{id}/send`. A draft cannot be a note or an `in` message.
+	// `POST /v1/messages/{id}/send`. A draft cannot be a note or an `in` message. A member's
+	// draft is seen only by its author; one written with an API key by every member who sees the
+	// conversation.
+	//
+	// `send_at` (member sessions only) stores the message as a draft that is sent at that time,
+	// with its `cc`, `bcc` and `from_address` kept for then; see `POST /v1/messages/{id}/send`.
 	//
 	// Send `multipart/form-data` to attach files: the fields of `MessageCreate` as form fields
 	// and up to 10 `files` parts. Each file must be within the conversation's channel's limits
@@ -102332,6 +102687,14 @@ type ClientWithResponsesInterface interface {
 	// keys), by assistants (members through an OAuth client, `author.via` set) or by members in
 	// the panel. The page carries `total`, the number of drafts matching the filters over all
 	// pages, for a badge.
+	//
+	// A draft written by a member (in the panel or through a connected app) is private: only
+	// its author sees it, here, in the message list, in `draft.*` events and in MCP; anyone else
+	// gets `404`. Drafts written with an API key (author `bot`) are seen by every member who
+	// sees the conversation.
+	//
+	// `conversation_id` and `mine=true` find the caller's own draft of a reply to restore it on
+	// any device; `scheduled` keeps only scheduled (`true`) or unscheduled (`false`) drafts.
 	//
 	// Scope: `conversations:read`.
 	//
@@ -104985,8 +105348,9 @@ type ClientWithResponsesInterface interface {
 
 	// DeleteMessageWithResponse Discard a draft
 	//
-	// Deletes a draft with its attachments; emits `draft.deleted`. Anything that is not a draft
-	// answers `409 not_a_draft`.
+	// Deletes a draft with its attachments; emits `draft.deleted`. A scheduled draft is not sent.
+	// Anything that is not a draft answers `409 not_a_draft`; another member's draft answers
+	// `404`.
 	//
 	// Scope: `messages:write`.
 	//
@@ -104997,8 +105361,9 @@ type ClientWithResponsesInterface interface {
 
 	// UpdateMessageWithBodyWithResponse Edit a draft
 	//
-	// Changes a draft's text; emits `draft.updated`. Anything that is not a draft answers
-	// `409 not_a_draft`.
+	// Changes a draft's text, or with `send_at` (member sessions only) schedules it or moves its
+	// time; emits `draft.updated`. It works while the draft is scheduled. Anything that is not a
+	// draft answers `409 not_a_draft`; another member's draft answers `404`.
 	//
 	// Scope: `messages:write`.
 	//
@@ -105009,8 +105374,9 @@ type ClientWithResponsesInterface interface {
 
 	// UpdateMessageWithResponse Edit a draft
 	//
-	// Changes a draft's text; emits `draft.updated`. Anything that is not a draft answers
-	// `409 not_a_draft`.
+	// Changes a draft's text, or with `send_at` (member sessions only) schedules it or moves its
+	// time; emits `draft.updated`. It works while the draft is scheduled. Anything that is not a
+	// draft answers `409 not_a_draft`; another member's draft answers `404`.
 	//
 	// Scope: `messages:write`.
 	//
@@ -105077,6 +105443,20 @@ type ClientWithResponsesInterface interface {
 	// Corresponds with POST /v1/messages/{messageId}/redact (the `RedactMessage` operationId).
 	RedactMessageWithResponse(ctx context.Context, messageId MessageId, params *RedactMessageParams, reqEditors ...RequestEditorFn) (*RedactMessageResponse, error)
 
+	// UnscheduleMessageWithResponse Cancel a scheduled send
+	//
+	// Turns a scheduled draft back into a plain draft (`scheduled_at`, and the `cc`, `bcc` and
+	// `from_address` kept for the send, removed); emits `draft.updated`. A draft that is not
+	// scheduled is returned as it is. Anything that is not a draft answers `409 not_a_draft`;
+	// another member's draft answers `404`.
+	//
+	// Member sessions only.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with DELETE /v1/messages/{messageId}/schedule (the `UnscheduleMessage` operationId).
+	UnscheduleMessageWithResponse(ctx context.Context, messageId MessageId, params *UnscheduleMessageParams, reqEditors ...RequestEditorFn) (*UnscheduleMessageResponse, error)
+
 	// SendMessageWithBodyWithResponse Send a draft
 	//
 	// Delivers a draft like a new outgoing message: its time becomes now, `sent_by` names who
@@ -105095,8 +105475,22 @@ type ClientWithResponsesInterface interface {
 	// `from_address`. `from_address` sends the mail from one of the member's own addresses, as on
 	// `createMessage`.
 	//
-	// Members always may. An API key needs `drafts:send` and `messages:write`, and the
+	// Members always may, their own drafts and those written with an API key (another member's
+	// draft answers `404`). An API key needs `drafts:send` and `messages:write`, and the
 	// workspace's `bots_may_send` (`403 bot_sending_disabled`).
+	//
+	// `send_at` (member sessions only; API keys and connected apps `400`) schedules instead of
+	// sending: the member's own draft keeps the `cc`, `bcc` and `from_address` given here, gets
+	// `scheduled_at` and goes at that time (at least 1 minute and at most 366 days ahead, else
+	// `400 invalid_send_at`), exactly once, as if the member sent it then: signature, sender,
+	// recipients and the checks above are applied at that moment. It emits `draft.updated` now
+	// and `message.created` when it goes. Until then it can be edited
+	// (`PATCH /v1/messages/{id}`, also to move `send_at`), turned back into a plain draft
+	// (`DELETE /v1/messages/{id}/schedule`) or discarded. When it cannot go (the member left the
+	// workspace or lost the inbox, the address or recipients were refused, or a temporary error
+	// persisted) it stays a draft with `send_error`, loses `scheduled_at`, and the member gets
+	// the `scheduled_send_failed` notification. A draft written with an API key cannot be
+	// scheduled (`400 validation_failed`).
 	//
 	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
 	//
@@ -105121,8 +105515,22 @@ type ClientWithResponsesInterface interface {
 	// `from_address`. `from_address` sends the mail from one of the member's own addresses, as on
 	// `createMessage`.
 	//
-	// Members always may. An API key needs `drafts:send` and `messages:write`, and the
+	// Members always may, their own drafts and those written with an API key (another member's
+	// draft answers `404`). An API key needs `drafts:send` and `messages:write`, and the
 	// workspace's `bots_may_send` (`403 bot_sending_disabled`).
+	//
+	// `send_at` (member sessions only; API keys and connected apps `400`) schedules instead of
+	// sending: the member's own draft keeps the `cc`, `bcc` and `from_address` given here, gets
+	// `scheduled_at` and goes at that time (at least 1 minute and at most 366 days ahead, else
+	// `400 invalid_send_at`), exactly once, as if the member sent it then: signature, sender,
+	// recipients and the checks above are applied at that moment. It emits `draft.updated` now
+	// and `message.created` when it goes. Until then it can be edited
+	// (`PATCH /v1/messages/{id}`, also to move `send_at`), turned back into a plain draft
+	// (`DELETE /v1/messages/{id}/schedule`) or discarded. When it cannot go (the member left the
+	// workspace or lost the inbox, the address or recipients were refused, or a temporary error
+	// persisted) it stays a draft with `send_error`, loses `scheduled_at`, and the member gets
+	// the `scheduled_send_failed` notification. A draft written with an API key cannot be
+	// scheduled (`400 validation_failed`).
 	//
 	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
 	//
@@ -134796,6 +135204,82 @@ func (r RedactMessageResponse) ContentType() string {
 	return ""
 }
 
+type UnscheduleMessageResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *Message
+	// ApplicationproblemJSON400 the response for an HTTP 400 `application/problem+json` response
+	ApplicationproblemJSON400 *Problem
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+	// ApplicationproblemJSON409 the response for an HTTP 409 `application/problem+json` response
+	ApplicationproblemJSON409 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r UnscheduleMessageResponse) GetJSON200() *Message {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON400 returns the response for an HTTP 400 `application/problem+json` response
+func (r UnscheduleMessageResponse) GetApplicationproblemJSON400() *Problem {
+	return r.ApplicationproblemJSON400
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r UnscheduleMessageResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r UnscheduleMessageResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r UnscheduleMessageResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetApplicationproblemJSON409 returns the response for an HTTP 409 `application/problem+json` response
+func (r UnscheduleMessageResponse) GetApplicationproblemJSON409() *Problem {
+	return r.ApplicationproblemJSON409
+}
+
+// GetBody returns the raw response body bytes
+func (r UnscheduleMessageResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r UnscheduleMessageResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UnscheduleMessageResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r UnscheduleMessageResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type SendMessageResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -149564,7 +150048,13 @@ func (c *ClientWithResponses) GetConversationCountsWithResponse(ctx context.Cont
 // nothing is delivered until `POST /v1/messages/{id}/send`, which sends exactly this mail:
 // every `to` in `To`, the `cc`, the `bcc` as envelope recipients only, the subject without
 // `Re:` and no `In-Reply-To`. `cc` or `bcc` given there replace the kept lists. Deleting a
-// contact removes its addresses from the kept lists too.
+// contact removes its addresses from the kept lists too. A member's draft is private to
+// them, and so is the conversation it made: it is not listed, counted, found or readable for
+// anyone else (`404`), and no `conversation.created` is emitted, until the draft is sent;
+// sending emits `conversation.created` before `message.created`.
+//
+// `send_at` (member sessions only) stores the mail as a draft that is sent at that time, as
+// `POST /v1/messages/{id}/send` with `send_at` describes.
 //
 // A repeated `client_id` in the same inbox returns the conversation and message stored with
 // it with `200` instead of writing them again, before any rate limit, so a retry costs
@@ -149646,7 +150136,13 @@ func (c *ClientWithResponses) ComposeMailWithBodyWithResponse(ctx context.Contex
 // nothing is delivered until `POST /v1/messages/{id}/send`, which sends exactly this mail:
 // every `to` in `To`, the `cc`, the `bcc` as envelope recipients only, the subject without
 // `Re:` and no `In-Reply-To`. `cc` or `bcc` given there replace the kept lists. Deleting a
-// contact removes its addresses from the kept lists too.
+// contact removes its addresses from the kept lists too. A member's draft is private to
+// them, and so is the conversation it made: it is not listed, counted, found or readable for
+// anyone else (`404`), and no `conversation.created` is emitted, until the draft is sent;
+// sending emits `conversation.created` before `message.created`.
+//
+// `send_at` (member sessions only) stores the mail as a draft that is sent at that time, as
+// `POST /v1/messages/{id}/send` with `send_at` describes.
 //
 // A repeated `client_id` in the same inbox returns the conversation and message stored with
 // it with `200` instead of writing them again, before any rate limit, so a retry costs
@@ -150086,7 +150582,12 @@ func (c *ClientWithResponses) ListMessagesWithResponse(ctx context.Context, conv
 // `draft: true` stores an outgoing message as a draft: nothing is delivered, and
 // `draft.created` is emitted instead of `message.created`. Edit it with
 // `PATCH /v1/messages/{id}`, discard it with `DELETE /v1/messages/{id}` and deliver it with
-// `POST /v1/messages/{id}/send`. A draft cannot be a note or an `in` message.
+// `POST /v1/messages/{id}/send`. A draft cannot be a note or an `in` message. A member's
+// draft is seen only by its author; one written with an API key by every member who sees the
+// conversation.
+//
+// `send_at` (member sessions only) stores the message as a draft that is sent at that time,
+// with its `cc`, `bcc` and `from_address` kept for then; see `POST /v1/messages/{id}/send`.
 //
 // Send `multipart/form-data` to attach files: the fields of `MessageCreate` as form fields
 // and up to 10 `files` parts. Each file must be within the conversation's channel's limits
@@ -150186,7 +150687,12 @@ func (c *ClientWithResponses) CreateMessageWithBodyWithResponse(ctx context.Cont
 // `draft: true` stores an outgoing message as a draft: nothing is delivered, and
 // `draft.created` is emitted instead of `message.created`. Edit it with
 // `PATCH /v1/messages/{id}`, discard it with `DELETE /v1/messages/{id}` and deliver it with
-// `POST /v1/messages/{id}/send`. A draft cannot be a note or an `in` message.
+// `POST /v1/messages/{id}/send`. A draft cannot be a note or an `in` message. A member's
+// draft is seen only by its author; one written with an API key by every member who sees the
+// conversation.
+//
+// `send_at` (member sessions only) stores the message as a draft that is sent at that time,
+// with its `cc`, `bcc` and `from_address` kept for then; see `POST /v1/messages/{id}/send`.
 //
 // Send `multipart/form-data` to attach files: the fields of `MessageCreate` as form fields
 // and up to 10 `files` parts. Each file must be within the conversation's channel's limits
@@ -151471,6 +151977,14 @@ func (c *ClientWithResponses) GetDocsSummaryWithResponse(ctx context.Context, pa
 // keys), by assistants (members through an OAuth client, `author.via` set) or by members in
 // the panel. The page carries `total`, the number of drafts matching the filters over all
 // pages, for a badge.
+//
+// A draft written by a member (in the panel or through a connected app) is private: only
+// its author sees it, here, in the message list, in `draft.*` events and in MCP; anyone else
+// gets `404`. Drafts written with an API key (author `bot`) are seen by every member who
+// sees the conversation.
+//
+// `conversation_id` and `mine=true` find the caller's own draft of a reply to restore it on
+// any device; `scheduled` keeps only scheduled (`true`) or unscheduled (`false`) drafts.
 //
 // Scope: `conversations:read`.
 //
@@ -155240,8 +155754,9 @@ func (c *ClientWithResponses) ApproveMemberAddressWithResponse(ctx context.Conte
 
 // DeleteMessageWithResponse Discard a draft
 //
-// Deletes a draft with its attachments; emits `draft.deleted`. Anything that is not a draft
-// answers `409 not_a_draft`.
+// Deletes a draft with its attachments; emits `draft.deleted`. A scheduled draft is not sent.
+// Anything that is not a draft answers `409 not_a_draft`; another member's draft answers
+// `404`.
 //
 // Scope: `messages:write`.
 //
@@ -155258,8 +155773,9 @@ func (c *ClientWithResponses) DeleteMessageWithResponse(ctx context.Context, mes
 
 // UpdateMessageWithBodyWithResponse Edit a draft
 //
-// Changes a draft's text; emits `draft.updated`. Anything that is not a draft answers
-// `409 not_a_draft`.
+// Changes a draft's text, or with `send_at` (member sessions only) schedules it or moves its
+// time; emits `draft.updated`. It works while the draft is scheduled. Anything that is not a
+// draft answers `409 not_a_draft`; another member's draft answers `404`.
 //
 // Scope: `messages:write`.
 //
@@ -155276,8 +155792,9 @@ func (c *ClientWithResponses) UpdateMessageWithBodyWithResponse(ctx context.Cont
 
 // UpdateMessageWithResponse Edit a draft
 //
-// Changes a draft's text; emits `draft.updated`. Anything that is not a draft answers
-// `409 not_a_draft`.
+// Changes a draft's text, or with `send_at` (member sessions only) schedules it or moves its
+// time; emits `draft.updated`. It works while the draft is scheduled. Anything that is not a
+// draft answers `409 not_a_draft`; another member's draft answers `404`.
 //
 // Scope: `messages:write`.
 //
@@ -155368,6 +155885,26 @@ func (c *ClientWithResponses) RedactMessageWithResponse(ctx context.Context, mes
 	return ParseRedactMessageResponse(rsp)
 }
 
+// UnscheduleMessageWithResponse Cancel a scheduled send
+//
+// Turns a scheduled draft back into a plain draft (`scheduled_at`, and the `cc`, `bcc` and
+// `from_address` kept for the send, removed); emits `draft.updated`. A draft that is not
+// scheduled is returned as it is. Anything that is not a draft answers `409 not_a_draft`;
+// another member's draft answers `404`.
+//
+// Member sessions only.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with DELETE /v1/messages/{messageId}/schedule (the `UnscheduleMessage` operationId).
+func (c *ClientWithResponses) UnscheduleMessageWithResponse(ctx context.Context, messageId MessageId, params *UnscheduleMessageParams, reqEditors ...RequestEditorFn) (*UnscheduleMessageResponse, error) {
+	rsp, err := c.UnscheduleMessage(ctx, messageId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUnscheduleMessageResponse(rsp)
+}
+
 // SendMessageWithBodyWithResponse Send a draft
 //
 // Delivers a draft like a new outgoing message: its time becomes now, `sent_by` names who
@@ -155386,8 +155923,22 @@ func (c *ClientWithResponses) RedactMessageWithResponse(ctx context.Context, mes
 // `from_address`. `from_address` sends the mail from one of the member's own addresses, as on
 // `createMessage`.
 //
-// Members always may. An API key needs `drafts:send` and `messages:write`, and the
+// Members always may, their own drafts and those written with an API key (another member's
+// draft answers `404`). An API key needs `drafts:send` and `messages:write`, and the
 // workspace's `bots_may_send` (`403 bot_sending_disabled`).
+//
+// `send_at` (member sessions only; API keys and connected apps `400`) schedules instead of
+// sending: the member's own draft keeps the `cc`, `bcc` and `from_address` given here, gets
+// `scheduled_at` and goes at that time (at least 1 minute and at most 366 days ahead, else
+// `400 invalid_send_at`), exactly once, as if the member sent it then: signature, sender,
+// recipients and the checks above are applied at that moment. It emits `draft.updated` now
+// and `message.created` when it goes. Until then it can be edited
+// (`PATCH /v1/messages/{id}`, also to move `send_at`), turned back into a plain draft
+// (`DELETE /v1/messages/{id}/schedule`) or discarded. When it cannot go (the member left the
+// workspace or lost the inbox, the address or recipients were refused, or a temporary error
+// persisted) it stays a draft with `send_error`, loses `scheduled_at`, and the member gets
+// the `scheduled_send_failed` notification. A draft written with an API key cannot be
+// scheduled (`400 validation_failed`).
 //
 // Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
 //
@@ -155418,8 +155969,22 @@ func (c *ClientWithResponses) SendMessageWithBodyWithResponse(ctx context.Contex
 // `from_address`. `from_address` sends the mail from one of the member's own addresses, as on
 // `createMessage`.
 //
-// Members always may. An API key needs `drafts:send` and `messages:write`, and the
+// Members always may, their own drafts and those written with an API key (another member's
+// draft answers `404`). An API key needs `drafts:send` and `messages:write`, and the
 // workspace's `bots_may_send` (`403 bot_sending_disabled`).
+//
+// `send_at` (member sessions only; API keys and connected apps `400`) schedules instead of
+// sending: the member's own draft keeps the `cc`, `bcc` and `from_address` given here, gets
+// `scheduled_at` and goes at that time (at least 1 minute and at most 366 days ahead, else
+// `400 invalid_send_at`), exactly once, as if the member sent it then: signature, sender,
+// recipients and the checks above are applied at that moment. It emits `draft.updated` now
+// and `message.created` when it goes. Until then it can be edited
+// (`PATCH /v1/messages/{id}`, also to move `send_at`), turned back into a plain draft
+// (`DELETE /v1/messages/{id}/schedule`) or discarded. When it cannot go (the member left the
+// workspace or lost the inbox, the address or recipients were refused, or a temporary error
+// persisted) it stays a draft with `send_error`, loses `scheduled_at`, and the member gets
+// the `scheduled_send_failed` notification. A draft written with an API key cannot be
+// scheduled (`400 validation_failed`).
 //
 // Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
 //
@@ -180456,6 +181021,67 @@ func ParseRedactMessageResponse(rsp *http.Response) (*RedactMessageResponse, err
 			return nil, err
 		}
 		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON409 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUnscheduleMessageResponse parses an HTTP response from a UnscheduleMessageWithResponse call
+func ParseUnscheduleMessageResponse(rsp *http.Response) (*UnscheduleMessageResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UnscheduleMessageResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest Message
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON400 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest Problem

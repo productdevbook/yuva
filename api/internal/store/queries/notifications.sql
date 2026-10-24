@@ -32,6 +32,11 @@ WHERE m.workspace_id = @workspace_id
       WHERE im.workspace_id = m.workspace_id AND im.inbox_id = @inbox_id AND im.member_id = m.id))
 ORDER BY m.id;
 
+-- name: GetNotificationMember :one
+SELECT m.id, m.role, m.person_id, m.notification_events, p.email, p.locale
+FROM members m JOIN people p ON p.id = m.person_id
+WHERE m.workspace_id = @workspace_id AND m.id = @id;
+
 -- name: SetConnectionViewing :exec
 UPDATE realtime_connections SET viewing_conversation_id = sqlc.narg(conversation_id), seen_at = @now
 WHERE workspace_id = @workspace_id AND id = @id;

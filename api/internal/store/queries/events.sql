@@ -2,8 +2,8 @@
 SELECT pg_advisory_xact_lock(hashtextextended('yuva_events:' || sqlc.arg(workspace_id)::uuid::text, 0));
 
 -- name: InsertEvent :one
-INSERT INTO events (workspace_id, type, inbox_id, conversation_id, contact_id, payload)
-VALUES (@workspace_id, @type, sqlc.narg(inbox_id), sqlc.narg(conversation_id), sqlc.narg(contact_id), @payload)
+INSERT INTO events (workspace_id, type, inbox_id, conversation_id, contact_id, payload, only_member)
+VALUES (@workspace_id, @type, sqlc.narg(inbox_id), sqlc.narg(conversation_id), sqlc.narg(contact_id), @payload, sqlc.narg(only_member))
 RETURNING id;
 
 -- name: NotifyEvent :exec

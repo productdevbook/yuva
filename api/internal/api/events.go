@@ -24,6 +24,8 @@ type pendingEvent struct {
 	deleted        *deletedContact
 	// noRules marks an event a rule caused later, such as the end of a snooze it set.
 	noRules bool
+	// onlyMember: the conversation is still this member's draft; no one else, no webhook, rule or notification.
+	onlyMember *uuid.UUID
 }
 
 type boardRef struct{ ws, inbox, board uuid.UUID }
@@ -57,11 +59,15 @@ func (b *eventBatch) jobOnce(args river.JobArgs, opts *river.InsertOpts) {
 }
 
 func (b *eventBatch) add(typ string, inboxID, conversationID *uuid.UUID, data any) {
+	b.addFor(typ, inboxID, conversationID, nil, data)
+}
+
+func (b *eventBatch) addFor(typ string, inboxID, conversationID, onlyMember *uuid.UUID, data any) {
 	if b.quiet {
 		return
 	}
 	raw := mustJSON(data)
-	b.items = append(b.items, pendingEvent{typ: typ, inboxID: inboxID, conversationID: conversationID, contactID: eventContact(typ, data, raw), data: raw})
+	b.items = append(b.items, pendingEvent{typ: typ, inboxID: inboxID, conversationID: conversationID, contactID: eventContact(typ, data, raw), data: raw, onlyMember: onlyMember})
 }
 
 // eventContact is the contact an event is about: the contact of a contact event, the author of a
@@ -90,12 +96,12 @@ func (b *eventBatch) conversationAt(i int, typ string, c store.Conversation, dat
 	}
 	inbox, conv := c.InboxID, c.ID
 	raw := mustJSON(data)
-	b.items = slices.Insert(b.items, i, pendingEvent{typ: typ, inboxID: &inbox, conversationID: &conv, contactID: eventContact(typ, data, raw), data: raw})
+	b.items = slices.Insert(b.items, i, pendingEvent{typ: typ, inboxID: &inbox, conversationID: &conv, contactID: eventContact(typ, data, raw), data: raw, onlyMember: c.DraftOf})
 }
 
 func (b *eventBatch) conversation(typ string, c store.Conversation, data any) {
 	inbox, conv := c.InboxID, c.ID
-	b.add(typ, &inbox, &conv, data)
+	b.addFor(typ, &inbox, &conv, c.DraftOf, data)
 }
 
 // inTx writes the queued events last, so the per-workspace event lock is the final lock a
@@ -154,6 +160,7 @@ func writeEvents(ctx context.Context, q *store.Queries, workspaceID uuid.UUID, i
 	for i, e := range items {
 		id, err := q.InsertEvent(ctx, store.InsertEventParams{
 			WorkspaceID: workspaceID, Type: e.typ, InboxID: e.inboxID, ConversationID: e.conversationID, ContactID: e.contactID, Payload: e.data,
+			OnlyMember: e.onlyMember,
 		})
 		if err != nil {
 			return nil, err

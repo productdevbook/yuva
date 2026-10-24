@@ -120,6 +120,7 @@ LEFT JOIN conversations cv ON cv.workspace_id = c.workspace_id AND cv.contact_id
   AND (@all_inboxes::bool OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = cv.workspace_id AND iv.inbox_id = cv.inbox_id AND iv.viewer_id = @viewer_id::uuid))
+  AND conversation_visible_to(cv.draft_of, sqlc.narg(viewer_member_id)::uuid)
 WHERE c.workspace_id = @workspace_id AND c.id = ANY(@ids::uuid[])
 GROUP BY c.id, c.last_active_at;
 

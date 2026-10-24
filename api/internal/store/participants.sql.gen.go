@@ -204,21 +204,23 @@ WHERE cv.contact_id <> $2 AND cv.trashed_at IS NULL
   AND ($3::bool OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = cv.workspace_id AND iv.inbox_id = cv.inbox_id AND iv.viewer_id = $4::uuid))
-  AND ($5::timestamptz IS NULL
-       OR (cv.created_at, cv.id) < ($5::timestamptz, $6::uuid))
+  AND conversation_visible_to(cv.draft_of, $5::uuid)
+  AND ($6::timestamptz IS NULL
+       OR (cv.created_at, cv.id) < ($6::timestamptz, $7::uuid))
 GROUP BY cv.id
 ORDER BY cv.created_at DESC, cv.id DESC
-LIMIT $7
+LIMIT $8
 `
 
 type ListContactParticipationsParams struct {
-	WorkspaceID uuid.UUID
-	ContactID   uuid.UUID
-	AllInboxes  bool
-	ViewerID    uuid.UUID
-	CursorAt    *time.Time
-	CursorID    *uuid.UUID
-	Lim         int32
+	WorkspaceID    uuid.UUID
+	ContactID      uuid.UUID
+	AllInboxes     bool
+	ViewerID       uuid.UUID
+	ViewerMemberID *uuid.UUID
+	CursorAt       *time.Time
+	CursorID       *uuid.UUID
+	Lim            int32
 }
 
 type ListContactParticipationsRow struct {
@@ -236,6 +238,7 @@ func (q *Queries) ListContactParticipations(ctx context.Context, arg ListContact
 		arg.ContactID,
 		arg.AllInboxes,
 		arg.ViewerID,
+		arg.ViewerMemberID,
 		arg.CursorAt,
 		arg.CursorID,
 		arg.Lim,

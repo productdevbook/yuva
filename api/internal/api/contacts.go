@@ -403,7 +403,7 @@ func (s *Server) withActivity(ctx context.Context, p principal, items []oas.Cont
 		ids[i] = c.Id
 	}
 	rows, err := s.st.ListContactActivity(ctx, store.ListContactActivityParams{
-		WorkspaceID: p.workspaceID, Ids: ids, AllInboxes: p.seesAllInboxes(), ViewerID: p.viewerID(),
+		WorkspaceID: p.workspaceID, Ids: ids, AllInboxes: p.seesAllInboxes(), ViewerID: p.viewerID(), ViewerMemberID: p.memberRef(),
 	})
 	if err != nil {
 		return err

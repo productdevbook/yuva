@@ -64,12 +64,14 @@ type Event struct {
 	ConversationID *uuid.UUID      `json:"conversation_id,omitempty"`
 	CreatedAt      time.Time       `json:"created_at"`
 	Data           json.RawMessage `json:"data"`
+	// OnlyMember limits the event to one member: its conversation is still that member's draft.
+	OnlyMember *uuid.UUID `json:"-"`
 }
 
 func FromRow(e store.Event) Event {
 	return Event{
 		ID: e.ID, Type: e.Type, WorkspaceID: e.WorkspaceID, InboxID: e.InboxID, ConversationID: e.ConversationID,
-		CreatedAt: e.CreatedAt, Data: e.Payload,
+		CreatedAt: e.CreatedAt, Data: e.Payload, OnlyMember: e.OnlyMember,
 	}
 }
 
@@ -82,10 +84,11 @@ type signal struct {
 	ConversationID *uuid.UUID      `json:"c,omitempty"`
 	CreatedAt      time.Time       `json:"at"`
 	Data           json.RawMessage `json:"d,omitempty"`
+	OnlyMember     *uuid.UUID      `json:"o,omitempty"`
 }
 
 func SignalPayload(e Event) (string, error) {
-	b, err := json.Marshal(signal{Type: e.Type, WorkspaceID: e.WorkspaceID, InboxID: e.InboxID, ConversationID: e.ConversationID, CreatedAt: e.CreatedAt, Data: e.Data})
+	b, err := json.Marshal(signal{Type: e.Type, WorkspaceID: e.WorkspaceID, InboxID: e.InboxID, ConversationID: e.ConversationID, CreatedAt: e.CreatedAt, Data: e.Data, OnlyMember: e.OnlyMember})
 	return string(b), err
 }
 
@@ -94,7 +97,7 @@ func parseSignal(p string) (Event, error) {
 	if err := json.Unmarshal([]byte(p), &s); err != nil {
 		return Event{}, err
 	}
-	return Event{Type: s.Type, WorkspaceID: s.WorkspaceID, InboxID: s.InboxID, ConversationID: s.ConversationID, CreatedAt: s.CreatedAt, Data: s.Data}, nil
+	return Event{Type: s.Type, WorkspaceID: s.WorkspaceID, InboxID: s.InboxID, ConversationID: s.ConversationID, CreatedAt: s.CreatedAt, Data: s.Data, OnlyMember: s.OnlyMember}, nil
 }
 
 type Subscription struct {

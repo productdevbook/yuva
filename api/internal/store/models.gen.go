@@ -899,6 +899,7 @@ type Conversation struct {
 	SnoozeRuleID          *uuid.UUID
 	AssignWaitingSince    *time.Time
 	AssignAfterRules      bool
+	DraftOf               *uuid.UUID
 }
 
 type ConversationLabel struct {
@@ -1224,6 +1225,7 @@ type Event struct {
 	Payload        []byte
 	CreatedAt      time.Time
 	ContactID      *uuid.UUID
+	OnlyMember     *uuid.UUID
 }
 
 type HelpArticle struct {
@@ -1772,6 +1774,12 @@ type Message struct {
 	Forward            []byte
 	SignatureHtml      *string
 	SignatureText      *string
+	ScheduledAt        *time.Time
+	ScheduledBy        *uuid.UUID
+	ScheduledCc        []string
+	ScheduledBcc       []string
+	ScheduledFrom      *string
+	SendError          []byte
 }
 
 type MessageEmail struct {

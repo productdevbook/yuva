@@ -1035,6 +1035,7 @@ func (q *Queries) ListChatChannels(ctx context.Context, arg ListChatChannelsPara
 
 const listContactConversationIDs = `-- name: ListContactConversationIDs :many
 SELECT id, status, feedback_progress FROM conversations WHERE workspace_id = $1 AND inbox_id = $2 AND contact_id = $3 AND trashed_at IS NULL
+  AND conversation_visible_to(draft_of, NULL)
 `
 
 type ListContactConversationIDsParams struct {
@@ -1070,8 +1071,9 @@ func (q *Queries) ListContactConversationIDs(ctx context.Context, arg ListContac
 }
 
 const listContactConversations = `-- name: ListContactConversations :many
-SELECT c.id, c.workspace_id, c.inbox_id, c.contact_id, c.channel_id, c.subject, c.status, c.snooze_until, c.priority, c.assignee_id, c.last_message_at, c.last_activity_at, c.created_at, c.updated_at, c.spam, c.email_token, c.related_conversation_id, c.continuity_through, c.continuity_sent_at, c.kind, c.feedback, c.email_address, c.closed_at, c.rating, c.rating_comment, c.rated_at, c.rating_requested_at, c.last_read_by_contact_at, c.page_url, c.page_title, c.channel_kind, c.broadcast_id, c.migration_id, c.imported_at, c.feedback_progress, c.help_article_id, c.trashed_at, c.trashed_by_member_id, c.trashed_by_api_key_id, c.push_through, c.push_sent_at, c.team_id, c.fields, c.sla_due_at, c.snooze_rule_id, c.assign_waiting_since, c.assign_after_rules FROM conversations c
+SELECT c.id, c.workspace_id, c.inbox_id, c.contact_id, c.channel_id, c.subject, c.status, c.snooze_until, c.priority, c.assignee_id, c.last_message_at, c.last_activity_at, c.created_at, c.updated_at, c.spam, c.email_token, c.related_conversation_id, c.continuity_through, c.continuity_sent_at, c.kind, c.feedback, c.email_address, c.closed_at, c.rating, c.rating_comment, c.rated_at, c.rating_requested_at, c.last_read_by_contact_at, c.page_url, c.page_title, c.channel_kind, c.broadcast_id, c.migration_id, c.imported_at, c.feedback_progress, c.help_article_id, c.trashed_at, c.trashed_by_member_id, c.trashed_by_api_key_id, c.push_through, c.push_sent_at, c.team_id, c.fields, c.sla_due_at, c.snooze_rule_id, c.assign_waiting_since, c.assign_after_rules, c.draft_of FROM conversations c
 WHERE c.workspace_id = $1 AND c.inbox_id = $2 AND c.contact_id = $3 AND c.trashed_at IS NULL
+  AND conversation_visible_to(c.draft_of, NULL)
   AND ($4::text[] IS NULL OR c.kind = ANY($4::text[]))
   AND ($5::timestamptz IS NULL
        OR (coalesce(c.last_message_at, c.created_at), c.id) < ($5::timestamptz, $6::uuid))
@@ -1154,6 +1156,7 @@ func (q *Queries) ListContactConversations(ctx context.Context, arg ListContactC
 			&i.SnoozeRuleID,
 			&i.AssignWaitingSince,
 			&i.AssignAfterRules,
+			&i.DraftOf,
 		); err != nil {
 			return nil, err
 		}
@@ -1413,7 +1416,7 @@ const listPublicMessages = `-- name: ListPublicMessages :many
 SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
        m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
        m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions, m.imported_at, m.imported_author, m.help_cards,
-       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text,
+       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error,
        coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
        coalesce(sk.bot_name, sk.name, '')::text AS sent_by_bot_name
 FROM messages m
@@ -1468,6 +1471,8 @@ type ListPublicMessagesRow struct {
 	Forward            []byte
 	SignatureHtml      *string
 	SignatureText      *string
+	ScheduledAt        *time.Time
+	SendError          []byte
 	BotName            string
 	BotAvatarUrl       string
 	SentByBotName      string
@@ -1522,6 +1527,8 @@ func (q *Queries) ListPublicMessages(ctx context.Context, arg ListPublicMessages
 			&i.Forward,
 			&i.SignatureHtml,
 			&i.SignatureText,
+			&i.ScheduledAt,
+			&i.SendError,
 			&i.BotName,
 			&i.BotAvatarUrl,
 			&i.SentByBotName,
@@ -1540,7 +1547,7 @@ const listPublicMessagesDesc = `-- name: ListPublicMessagesDesc :many
 SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
        m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
        m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions, m.imported_at, m.imported_author, m.help_cards,
-       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text,
+       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error,
        coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
        coalesce(sk.bot_name, sk.name, '')::text AS sent_by_bot_name
 FROM messages m
@@ -1595,6 +1602,8 @@ type ListPublicMessagesDescRow struct {
 	Forward            []byte
 	SignatureHtml      *string
 	SignatureText      *string
+	ScheduledAt        *time.Time
+	SendError          []byte
 	BotName            string
 	BotAvatarUrl       string
 	SentByBotName      string
@@ -1649,6 +1658,8 @@ func (q *Queries) ListPublicMessagesDesc(ctx context.Context, arg ListPublicMess
 			&i.Forward,
 			&i.SignatureHtml,
 			&i.SignatureText,
+			&i.ScheduledAt,
+			&i.SendError,
 			&i.BotName,
 			&i.BotAvatarUrl,
 			&i.SentByBotName,
@@ -1782,7 +1793,7 @@ const moveContactConversations = `-- name: MoveContactConversations :many
 WITH moved AS (
     UPDATE conversations SET contact_id = $1, updated_at = $2
     WHERE conversations.workspace_id = $3 AND conversations.contact_id = $4
-    RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id, trashed_at, trashed_by_member_id, trashed_by_api_key_id, push_through, push_sent_at, team_id, fields, sla_due_at, snooze_rule_id, assign_waiting_since, assign_after_rules),
+    RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id, trashed_at, trashed_by_member_id, trashed_by_api_key_id, push_through, push_sent_at, team_id, fields, sla_due_at, snooze_rule_id, assign_waiting_since, assign_after_rules, draft_of),
 seen AS (
     UPDATE contacts t SET last_active_at = greatest(t.last_active_at, f.last_active_at)
     FROM contacts f
@@ -1791,7 +1802,7 @@ seen AS (
 notes AS (
     UPDATE contact_notes SET contact_id = $1
     WHERE contact_notes.workspace_id = $3 AND contact_notes.contact_id = $4)
-SELECT id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id, trashed_at, trashed_by_member_id, trashed_by_api_key_id, push_through, push_sent_at, team_id, fields, sla_due_at, snooze_rule_id, assign_waiting_since, assign_after_rules FROM moved
+SELECT id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id, trashed_at, trashed_by_member_id, trashed_by_api_key_id, push_through, push_sent_at, team_id, fields, sla_due_at, snooze_rule_id, assign_waiting_since, assign_after_rules, draft_of FROM moved
 `
 
 type MoveContactConversationsParams struct {
@@ -1849,6 +1860,7 @@ type MoveContactConversationsRow struct {
 	SnoozeRuleID          *uuid.UUID
 	AssignWaitingSince    *time.Time
 	AssignAfterRules      bool
+	DraftOf               *uuid.UUID
 }
 
 func (q *Queries) MoveContactConversations(ctx context.Context, arg MoveContactConversationsParams) ([]MoveContactConversationsRow, error) {
@@ -1913,6 +1925,7 @@ func (q *Queries) MoveContactConversations(ctx context.Context, arg MoveContactC
 			&i.SnoozeRuleID,
 			&i.AssignWaitingSince,
 			&i.AssignAfterRules,
+			&i.DraftOf,
 		); err != nil {
 			return nil, err
 		}
@@ -2211,7 +2224,7 @@ const setConversationContactRead = `-- name: SetConversationContactRead :one
 UPDATE conversations SET last_read_by_contact_at = $1
 WHERE workspace_id = $2 AND id = $3
   AND (last_read_by_contact_at IS NULL OR last_read_by_contact_at < $1)
-RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id, trashed_at, trashed_by_member_id, trashed_by_api_key_id, push_through, push_sent_at, team_id, fields, sla_due_at, snooze_rule_id, assign_waiting_since, assign_after_rules
+RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id, trashed_at, trashed_by_member_id, trashed_by_api_key_id, push_through, push_sent_at, team_id, fields, sla_due_at, snooze_rule_id, assign_waiting_since, assign_after_rules, draft_of
 `
 
 type SetConversationContactReadParams struct {
@@ -2271,6 +2284,7 @@ func (q *Queries) SetConversationContactRead(ctx context.Context, arg SetConvers
 		&i.SnoozeRuleID,
 		&i.AssignWaitingSince,
 		&i.AssignAfterRules,
+		&i.DraftOf,
 	)
 	return i, err
 }

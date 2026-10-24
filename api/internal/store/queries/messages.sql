@@ -18,7 +18,7 @@ seen AS (
 SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
        m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
        m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions, m.imported_at, m.imported_author, m.help_cards,
-       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text,
+       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error,
        coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
        coalesce(sk.bot_name, sk.name, '')::text AS sent_by_bot_name
 FROM m
@@ -29,25 +29,30 @@ LEFT JOIN api_keys sk ON sk.workspace_id = m.workspace_id AND sk.id = m.sent_by_
 SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
        m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
        m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions, m.imported_at, m.imported_author, m.help_cards,
-       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text,
+       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error,
        coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
        coalesce(sk.bot_name, sk.name, '')::text AS sent_by_bot_name
 FROM messages m
 LEFT JOIN api_keys ak ON ak.workspace_id = m.workspace_id AND ak.id = m.author_api_key_id
 LEFT JOIN api_keys sk ON sk.workspace_id = m.workspace_id AND sk.id = m.sent_by_api_key_id
-WHERE m.workspace_id = $1 AND m.conversation_id = $2 AND m.client_id = $3;
+WHERE m.workspace_id = @workspace_id AND m.conversation_id = @conversation_id AND m.client_id = @client_id
+  AND draft_visible_to(m.draft, m.author_type, m.author_member_id, sqlc.narg(viewer_member_id)::uuid);
+
+-- name: ClientIDTaken :one
+SELECT EXISTS (SELECT 1 FROM messages WHERE workspace_id = @workspace_id AND conversation_id = @conversation_id AND client_id = @client_id) AS taken;
 
 -- name: ListMessages :many
 SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
        m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
        m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions, m.imported_at, m.imported_author, m.help_cards,
-       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text,
+       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error,
        coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
        coalesce(sk.bot_name, sk.name, '')::text AS sent_by_bot_name
 FROM messages m
 LEFT JOIN api_keys ak ON ak.workspace_id = m.workspace_id AND ak.id = m.author_api_key_id
 LEFT JOIN api_keys sk ON sk.workspace_id = m.workspace_id AND sk.id = m.sent_by_api_key_id
 WHERE m.workspace_id = @workspace_id AND m.conversation_id = @conversation_id
+  AND draft_visible_to(m.draft, m.author_type, m.author_member_id, sqlc.narg(viewer_member_id)::uuid)
   AND (sqlc.narg(cursor_at)::timestamptz IS NULL
        OR (m.created_at, m.id) > (sqlc.narg(cursor_at)::timestamptz, sqlc.narg(cursor_id)::uuid))
 ORDER BY m.created_at, m.id
@@ -57,13 +62,14 @@ LIMIT @lim;
 SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
        m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
        m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions, m.imported_at, m.imported_author, m.help_cards,
-       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text,
+       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error,
        coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
        coalesce(sk.bot_name, sk.name, '')::text AS sent_by_bot_name
 FROM messages m
 LEFT JOIN api_keys ak ON ak.workspace_id = m.workspace_id AND ak.id = m.author_api_key_id
 LEFT JOIN api_keys sk ON sk.workspace_id = m.workspace_id AND sk.id = m.sent_by_api_key_id
 WHERE m.workspace_id = @workspace_id AND m.conversation_id = @conversation_id
+  AND draft_visible_to(m.draft, m.author_type, m.author_member_id, sqlc.narg(viewer_member_id)::uuid)
   AND (sqlc.narg(cursor_at)::timestamptz IS NULL
        OR (m.created_at, m.id) < (sqlc.narg(cursor_at)::timestamptz, sqlc.narg(cursor_id)::uuid))
 ORDER BY m.created_at DESC, m.id DESC
@@ -92,13 +98,16 @@ ORDER BY message_id, created_at, id;
 -- name: GetAttachment :one
 SELECT a.*, c.inbox_id, c.trashed_at FROM attachments a
 JOIN conversations c ON c.workspace_id = a.workspace_id AND c.id = a.conversation_id
-WHERE a.workspace_id = $1 AND a.id = $2;
+LEFT JOIN messages m ON m.workspace_id = a.workspace_id AND m.id = a.message_id
+WHERE a.workspace_id = @workspace_id AND a.id = @id
+  AND conversation_visible_to(c.draft_of, sqlc.narg(viewer_member_id)::uuid)
+  AND (m.id IS NULL OR draft_visible_to(m.draft, m.author_type, m.author_member_id, sqlc.narg(viewer_member_id)::uuid));
 
 -- name: GetMessage :one
 SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
        m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
        m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions, m.imported_at, m.imported_author, m.help_cards,
-       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text,
+       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error,
        coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
        coalesce(sk.bot_name, sk.name, '')::text AS sent_by_bot_name
 FROM messages m
@@ -107,7 +116,7 @@ LEFT JOIN api_keys sk ON sk.workspace_id = m.workspace_id AND sk.id = m.sent_by_
 WHERE m.workspace_id = $1 AND m.id = $2;
 
 -- name: LockMessage :one
-SELECT id, conversation_id, draft FROM messages WHERE workspace_id = $1 AND id = $2 FOR UPDATE;
+SELECT id, conversation_id, draft, scheduled_at FROM messages WHERE workspace_id = $1 AND id = $2 FOR UPDATE;
 
 -- name: SetMessageDelivery :one
 WITH m AS (
@@ -117,7 +126,7 @@ WITH m AS (
 SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
        m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
        m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions, m.imported_at, m.imported_author, m.help_cards,
-       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text,
+       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error,
        coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
        coalesce(sk.bot_name, sk.name, '')::text AS sent_by_bot_name
 FROM m
@@ -132,7 +141,7 @@ WITH m AS (
 SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
        m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
        m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions, m.imported_at, m.imported_author, m.help_cards,
-       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text,
+       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error,
        coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
        coalesce(sk.bot_name, sk.name, '')::text AS sent_by_bot_name
 FROM m
@@ -145,13 +154,14 @@ WITH m AS (
         sent_by_member_id = sqlc.narg(sent_by_member_id), sent_by_api_key_id = sqlc.narg(sent_by_api_key_id),
         sent_via = sqlc.narg(sent_via),
         delivery_state = sqlc.narg(delivery_state),
-        delivery_updated_at = CASE WHEN sqlc.narg(delivery_state)::text IS NULL THEN NULL ELSE @now::timestamptz END
+        delivery_updated_at = CASE WHEN sqlc.narg(delivery_state)::text IS NULL THEN NULL ELSE @now::timestamptz END,
+        scheduled_at = NULL, scheduled_by = NULL, scheduled_cc = NULL, scheduled_bcc = NULL, scheduled_from = NULL, send_error = NULL
     WHERE messages.workspace_id = @workspace_id AND messages.id = @id AND draft
     RETURNING *)
 SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
        m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
        m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions, m.imported_at, m.imported_author, m.help_cards,
-       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text,
+       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error,
        coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
        coalesce(sk.bot_name, sk.name, '')::text AS sent_by_bot_name
 FROM m
@@ -176,7 +186,7 @@ LIMIT 1;
 SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
        m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
        m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions, m.imported_at, m.imported_author, m.help_cards,
-       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text,
+       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error,
        coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
        coalesce(sk.bot_name, sk.name, '')::text AS sent_by_bot_name
 FROM messages m
@@ -187,7 +197,12 @@ WHERE m.workspace_id = @workspace_id AND m.draft AND c.trashed_at IS NULL
   AND (@all_inboxes::bool OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = @viewer_id))
+  AND draft_visible_to(m.draft, m.author_type, m.author_member_id, sqlc.narg(viewer_member_id)::uuid)
+  AND conversation_visible_to(c.draft_of, sqlc.narg(viewer_member_id)::uuid)
   AND (sqlc.narg(inbox_id)::uuid IS NULL OR c.inbox_id = sqlc.narg(inbox_id)::uuid)
+  AND (sqlc.narg(conversation_id)::uuid IS NULL OR m.conversation_id = sqlc.narg(conversation_id)::uuid)
+  AND (NOT @mine::bool OR (m.author_type = 'member' AND m.author_member_id = sqlc.narg(viewer_member_id)::uuid))
+  AND (sqlc.narg(scheduled)::bool IS NULL OR (m.scheduled_at IS NOT NULL) = sqlc.narg(scheduled)::bool)
   AND (sqlc.narg(author_kind)::text IS NULL
        OR (sqlc.narg(author_kind)::text = 'bot' AND m.author_type = 'bot')
        OR (sqlc.narg(author_kind)::text = 'assistant' AND m.author_type = 'member' AND m.via IS NOT NULL)
@@ -204,7 +219,12 @@ WHERE m.workspace_id = @workspace_id AND m.draft AND c.trashed_at IS NULL
   AND (@all_inboxes::bool OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = @viewer_id))
+  AND draft_visible_to(m.draft, m.author_type, m.author_member_id, sqlc.narg(viewer_member_id)::uuid)
+  AND conversation_visible_to(c.draft_of, sqlc.narg(viewer_member_id)::uuid)
   AND (sqlc.narg(inbox_id)::uuid IS NULL OR c.inbox_id = sqlc.narg(inbox_id)::uuid)
+  AND (sqlc.narg(conversation_id)::uuid IS NULL OR m.conversation_id = sqlc.narg(conversation_id)::uuid)
+  AND (NOT @mine::bool OR (m.author_type = 'member' AND m.author_member_id = sqlc.narg(viewer_member_id)::uuid))
+  AND (sqlc.narg(scheduled)::bool IS NULL OR (m.scheduled_at IS NOT NULL) = sqlc.narg(scheduled)::bool)
   AND (sqlc.narg(author_kind)::text IS NULL
        OR (sqlc.narg(author_kind)::text = 'bot' AND m.author_type = 'bot')
        OR (sqlc.narg(author_kind)::text = 'assistant' AND m.author_type = 'member' AND m.via IS NOT NULL)
@@ -274,7 +294,7 @@ WITH m AS (
 SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
        m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
        m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions, m.imported_at, m.imported_author, m.help_cards,
-       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text,
+       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error,
        coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
        coalesce(sk.bot_name, sk.name, '')::text AS sent_by_bot_name
 FROM m
@@ -353,3 +373,64 @@ ON CONFLICT (workspace_id, inbox_id, client_id) DO NOTHING;
 
 -- name: GetComposedDraft :one
 SELECT * FROM composed_mails WHERE workspace_id = @workspace_id AND message_id = @message_id;
+
+-- name: ScheduleDraft :one
+WITH m AS (
+    UPDATE messages SET scheduled_at = @send_at::timestamptz, scheduled_by = @member_id::uuid,
+        scheduled_cc = sqlc.narg(cc)::text[], scheduled_bcc = sqlc.narg(bcc)::text[], scheduled_from = sqlc.narg(from_address)::text,
+        send_error = NULL
+    WHERE messages.workspace_id = @workspace_id AND messages.id = @id AND draft
+    RETURNING *)
+SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
+       m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
+       m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions, m.imported_at, m.imported_author, m.help_cards,
+       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error,
+       coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
+       coalesce(sk.bot_name, sk.name, '')::text AS sent_by_bot_name
+FROM m
+LEFT JOIN api_keys ak ON ak.workspace_id = m.workspace_id AND ak.id = m.author_api_key_id
+LEFT JOIN api_keys sk ON sk.workspace_id = m.workspace_id AND sk.id = m.sent_by_api_key_id;
+
+-- name: RescheduleDraft :one
+WITH m AS (
+    UPDATE messages SET scheduled_at = @send_at::timestamptz, scheduled_by = @member_id::uuid, send_error = NULL
+    WHERE messages.workspace_id = @workspace_id AND messages.id = @id AND draft
+    RETURNING *)
+SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
+       m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
+       m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions, m.imported_at, m.imported_author, m.help_cards,
+       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error,
+       coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
+       coalesce(sk.bot_name, sk.name, '')::text AS sent_by_bot_name
+FROM m
+LEFT JOIN api_keys ak ON ak.workspace_id = m.workspace_id AND ak.id = m.author_api_key_id
+LEFT JOIN api_keys sk ON sk.workspace_id = m.workspace_id AND sk.id = m.sent_by_api_key_id;
+
+-- name: UnscheduleDraft :one
+WITH m AS (
+    UPDATE messages SET scheduled_at = NULL, scheduled_by = NULL, scheduled_cc = NULL, scheduled_bcc = NULL, scheduled_from = NULL,
+        send_error = sqlc.narg(send_error)::jsonb
+    WHERE messages.workspace_id = @workspace_id AND messages.id = @id AND draft
+    RETURNING *)
+SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
+       m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
+       m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions, m.imported_at, m.imported_author, m.help_cards,
+       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error,
+       coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
+       coalesce(sk.bot_name, sk.name, '')::text AS sent_by_bot_name
+FROM m
+LEFT JOIN api_keys ak ON ak.workspace_id = m.workspace_id AND ak.id = m.author_api_key_id
+LEFT JOIN api_keys sk ON sk.workspace_id = m.workspace_id AND sk.id = m.sent_by_api_key_id;
+
+-- name: GetScheduledSend :one
+SELECT scheduled_at, scheduled_by, scheduled_cc, scheduled_bcc, scheduled_from FROM messages
+WHERE workspace_id = @workspace_id AND id = @id;
+
+-- name: ScrubScheduledCopies :exec
+UPDATE messages SET
+  scheduled_cc = CASE WHEN scheduled_cc IS NULL THEN NULL
+      ELSE ARRAY(SELECT a FROM unnest(scheduled_cc) WITH ORDINALITY u (a, i) WHERE a <> ALL(@emails::text[]) ORDER BY i) END,
+  scheduled_bcc = CASE WHEN scheduled_bcc IS NULL THEN NULL
+      ELSE ARRAY(SELECT a FROM unnest(scheduled_bcc) WITH ORDINALITY u (a, i) WHERE a <> ALL(@emails::text[]) ORDER BY i) END
+WHERE workspace_id = @workspace_id AND scheduled_at IS NOT NULL
+  AND (scheduled_cc && @emails::text[] OR scheduled_bcc && @emails::text[]);

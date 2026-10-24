@@ -61,6 +61,9 @@ func (s *Server) RedactMessage(ctx context.Context, req oas.RedactMessageRequest
 		if err != nil {
 			return err
 		}
+		if draftHidden(p, m) {
+			return errMessageGone
+		}
 		c, err := visibleConversation(ctx, q, p, m.ConversationID, true)
 		if errors.Is(err, errConversationGone) {
 			return errMessageGone

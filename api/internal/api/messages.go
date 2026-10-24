@@ -12,6 +12,7 @@ import (
 	"path"
 	"slices"
 	"strings"
+	"time"
 	"unicode"
 	"uuid"
 
@@ -72,9 +73,11 @@ type messageInput struct {
 	cc        copyList
 	bcc       copyList
 	from      *string
+	sendAt    *time.Time
+	undrafted bool
 }
 
-var memberFormFields = []string{"kind", "direction", "body", "html", "client_id", "draft", "signature", "mentions", "article_ids", "macro_id", "then", "cc", "bcc", "from_address"}
+var memberFormFields = []string{"kind", "direction", "body", "html", "client_id", "draft", "signature", "mentions", "article_ids", "macro_id", "then", "cc", "bcc", "from_address", "send_at"}
 
 func (in *messageInput) close() {
 	for _, f := range in.files {
@@ -84,6 +87,16 @@ func (in *messageInput) close() {
 }
 
 func (s *Server) validateMessage(p principal, in *messageInput) error {
+	if in.sendAt != nil {
+		if in.undrafted {
+			return errValidation("a message with send_at is kept as a draft until it goes")
+		}
+		at, err := s.checkSendAt(p, *in.sendAt)
+		if err != nil {
+			return err
+		}
+		in.sendAt, in.draft = &at, true
+	}
 	switch in.kind {
 	case string(oas.MessageKindMessage):
 		if in.direction == "" {
@@ -141,14 +154,18 @@ func (s *Server) validateMessage(p principal, in *messageInput) error {
 	if in.hasCopies() && (in.kind != string(oas.MessageKindMessage) || in.direction != string(oas.Out)) {
 		return errCopiesNotEmailed
 	}
-	if in.hasCopies() && in.draft {
+	if in.sendAt != nil && (in.kind != string(oas.MessageKindMessage) || in.direction != string(oas.Out)) {
+		return errValidation("only an outgoing message can be scheduled")
+	}
+	scheduled := in.sendAt != nil
+	if in.hasCopies() && in.draft && !scheduled {
 		return errValidation("cc and bcc are set when the draft is sent")
 	}
 	if in.from != nil {
 		if p.isKey() || p.deliversAsBot() {
 			return errFromNotMember
 		}
-		if in.kind != string(oas.MessageKindMessage) || in.direction != string(oas.Out) || in.draft {
+		if in.kind != string(oas.MessageKindMessage) || in.direction != string(oas.Out) || (in.draft && !scheduled) {
 			return errFromNotEmailed
 		}
 	}
@@ -301,6 +318,7 @@ func (s *Server) readMultipart(r *multipart.Reader, workspaceID uuid.UUID, field
 			case "true":
 				in.draft = true
 			case "false":
+				in.undrafted = true
 			default:
 				in.close()
 				return nil, errValidation("draft must be true or false")
@@ -334,6 +352,13 @@ func (s *Server) readMultipart(r *multipart.Reader, workspaceID uuid.UUID, field
 			if v = strings.TrimSpace(v); v != "" {
 				in.from = &v
 			}
+		case "send_at":
+			at, err := time.Parse(time.RFC3339Nano, strings.TrimSpace(v))
+			if err != nil {
+				in.close()
+				return nil, errInvalidSendAt
+			}
+			in.sendAt = &at
 		case "to", "cc", "bcc":
 			list := &in.cc
 			switch part.FormName() {
@@ -447,6 +472,13 @@ func messageBody(m messageRow, atts []store.Attachment) oas.Message {
 	if m.SignatureHtml != nil && m.RedactedAt == nil {
 		out.SignatureHtml = m.SignatureHtml
 	}
+	out.ScheduledAt = m.ScheduledAt
+	if len(m.SendError) > 0 {
+		var e oas.MessageSendError
+		if json.Unmarshal(m.SendError, &e) == nil {
+			out.SendError = &e
+		}
+	}
 	if m.DeliveryState != nil && m.DeliveryUpdatedAt != nil {
 		out.Delivery = &oas.MessageDelivery{
 			Channel: oas.MessageDeliveryChannelEmail, State: oas.MessageDeliveryState(*m.DeliveryState),
@@ -486,12 +518,12 @@ func (s *Server) ListMessages(ctx context.Context, req oas.ListMessagesRequestOb
 	switch order := req.Params.Order; {
 	case order == nil || *order == oas.ListMessagesParamsOrderAsc:
 		rows, err = s.st.ListMessages(ctx, store.ListMessagesParams{
-			WorkspaceID: p.workspaceID, ConversationID: c.ID, CursorAt: at, CursorID: id, Lim: lim + 1,
+			WorkspaceID: p.workspaceID, ConversationID: c.ID, CursorAt: at, CursorID: id, Lim: lim + 1, ViewerMemberID: p.memberRef(),
 		})
 	case *order == oas.ListMessagesParamsOrderDesc:
 		var desc []store.ListMessagesDescRow
 		desc, err = s.st.ListMessagesDesc(ctx, store.ListMessagesDescParams{
-			WorkspaceID: p.workspaceID, ConversationID: c.ID, CursorAt: at, CursorID: id, Lim: lim + 1,
+			WorkspaceID: p.workspaceID, ConversationID: c.ID, CursorAt: at, CursorID: id, Lim: lim + 1, ViewerMemberID: p.memberRef(),
 		})
 		for _, r := range desc {
 			rows = append(rows, store.ListMessagesRow(r))
@@ -553,6 +585,7 @@ func (s *Server) CreateMessage(ctx context.Context, req oas.CreateMessageRequest
 		in.macroID, in.then = b.MacroId, b.Then
 		in.cc, in.bcc = copiesOf(b.Cc), copiesOf(b.Bcc)
 		in.from = (*string)(b.FromAddress)
+		in.sendAt, in.undrafted = b.SendAt, b.Draft != nil && !*b.Draft
 	case req.MultipartBody != nil:
 		limits, err := s.channelLimits(ctx, s.st.Queries, p.workspaceID, conv.ChannelID)
 		if err != nil {
@@ -571,6 +604,11 @@ func (s *Server) CreateMessage(ctx context.Context, req oas.CreateMessageRequest
 	defer in.close()
 	if err := s.validateMessage(p, in); err != nil {
 		return nil, err
+	}
+	if in.sendAt != nil {
+		if err := s.cleanCopies(ctx, p.workspaceID, &in.cc, &in.bcc); err != nil {
+			return nil, err
+		}
 	}
 	if in.macroID != nil || in.then != nil {
 		if in.draft {
@@ -608,7 +646,7 @@ func (s *Server) CreateMessage(ctx context.Context, req oas.CreateMessageRequest
 		}
 		inbox = c.InboxID
 		if in.clientID != nil {
-			prev, err := q.GetMessageByClientID(ctx, store.GetMessageByClientIDParams{WorkspaceID: p.workspaceID, ConversationID: c.ID, ClientID: in.clientID})
+			prev, err := q.GetMessageByClientID(ctx, store.GetMessageByClientIDParams{WorkspaceID: p.workspaceID, ConversationID: c.ID, ClientID: in.clientID, ViewerMemberID: p.memberRef()})
 			if err == nil {
 				msg, created = messageRow(prev), false
 				m, err := messageAttachments(ctx, q, p.workspaceID, []uuid.UUID{prev.ID})
@@ -621,6 +659,9 @@ func (s *Server) CreateMessage(ctx context.Context, req oas.CreateMessageRequest
 				return err
 			}
 			if !store.IsNotFound(err) {
+				return err
+			}
+			if in.clientID, err = freeClientID(ctx, q, p.workspaceID, c.ID, in.clientID); err != nil {
 				return err
 			}
 		}
@@ -651,10 +692,10 @@ func (s *Server) CreateMessage(ctx context.Context, req oas.CreateMessageRequest
 				}
 			}
 		}
-		if plan == nil && in.hasCopies() {
+		if plan == nil && in.hasCopies() && in.sendAt == nil {
 			return errCopiesNotEmailed
 		}
-		if plan == nil && in.from != nil {
+		if plan == nil && in.from != nil && in.sendAt == nil {
 			return errFromNotEmailed
 		}
 		for _, id := range in.mentions {
@@ -720,8 +761,18 @@ func (s *Server) CreateMessage(ctx context.Context, req oas.CreateMessageRequest
 			total += f.size
 		}
 		if in.draft {
+			if in.sendAt != nil {
+				if msg, err = s.scheduleLocked(ctx, q, events, p, c, msg.Kind, msg.ID, *in.sendAt, in.cc, in.bcc, in.from); err != nil {
+					return err
+				}
+			}
 			events.conversation(realtime.DraftCreated, c, messageBody(msg, atts))
 			return nil
+		}
+		if deliver {
+			if c, err = revealDraftConversation(ctx, q, events, c); err != nil {
+				return err
+			}
 		}
 		if err := q.TouchConversation(ctx, store.TouchConversationParams{
 			WorkspaceID: p.workspaceID, ID: c.ID, Now: now, IsMessage: in.kind == string(oas.MessageKindMessage),
@@ -756,7 +807,7 @@ func (s *Server) CreateMessage(ctx context.Context, req oas.CreateMessageRequest
 
 func (s *Server) DownloadAttachment(ctx context.Context, req oas.DownloadAttachmentRequestObject) (oas.DownloadAttachmentResponseObject, error) {
 	p := principalFrom(ctx)
-	a, err := s.st.GetAttachment(ctx, store.GetAttachmentParams{WorkspaceID: p.workspaceID, ID: req.AttachmentId})
+	a, err := s.st.GetAttachment(ctx, store.GetAttachmentParams{WorkspaceID: p.workspaceID, ID: req.AttachmentId, ViewerMemberID: p.memberRef()})
 	if store.IsNotFound(err) {
 		return nil, errAttachmentGone
 	}

@@ -8,6 +8,7 @@ WITH open AS (
       AND (@all_inboxes::bool OR EXISTS (
           SELECT 1 FROM inbox_viewers iv
           WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = @viewer_id::uuid))
+      AND conversation_visible_to(c.draft_of, sqlc.narg(viewer_member_id)::uuid)
 ), waiting AS (
     SELECT o.id, o.inbox_id, o.subject, o.contact_id, o.channel_kind, w.since
     FROM open o
@@ -45,6 +46,7 @@ ORDER BY o.since, o.id;
 SELECT i.id AS inbox_id, c.assignee_id, coalesce(c.kind = 'feedback', false)::bool AS feedback, count(c.id) AS n
 FROM inboxes i
 LEFT JOIN conversations c ON c.workspace_id = i.workspace_id AND c.inbox_id = i.id AND c.status = 'open' AND NOT c.spam AND c.trashed_at IS NULL
+    AND conversation_visible_to(c.draft_of, sqlc.narg(viewer_member_id)::uuid)
 WHERE i.workspace_id = @workspace_id AND i.purpose = 'support'
   AND (sqlc.narg(inbox_id)::uuid IS NULL OR i.id = sqlc.narg(inbox_id)::uuid)
   AND (@all_inboxes::bool OR EXISTS (
@@ -63,6 +65,7 @@ WHERE c.workspace_id = @workspace_id AND c.last_activity_at >= @since::timestamp
   AND (@all_inboxes::bool OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = @viewer_id::uuid))
+  AND conversation_visible_to(c.draft_of, sqlc.narg(viewer_member_id)::uuid)
 GROUP BY 1, 2;
 
 -- name: HomeRatingsByDay :many

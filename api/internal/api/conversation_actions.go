@@ -214,7 +214,7 @@ func (s *Server) MoveConversation(ctx context.Context, req oas.MoveConversationR
 			return err
 		}
 		from := cur.InboxID
-		events.add(realtime.ConversationMoved, &from, &moved.ID, oas.ConversationMoved{Id: moved.ID, InboxId: target.ID, PreviousInboxId: from})
+		events.addFor(realtime.ConversationMoved, &from, &moved.ID, moved.DraftOf, oas.ConversationMoved{Id: moved.ID, InboxId: target.ID, PreviousInboxId: from})
 		events.conversation(realtime.ConversationUpdated, moved, out)
 		if err := s.writeEvent(ctx, q, events, p, moved, oas.MessageEvent{Type: oas.Moved, InboxId: &target.ID, PreviousInboxId: &from}, now); err != nil {
 			return err

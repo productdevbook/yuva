@@ -33,11 +33,18 @@ UPDATE conversations SET
 WHERE workspace_id = @workspace_id AND id = @id;
 
 -- name: ListConversations :many
-SELECT c.* FROM conversations c
+SELECT sqlc.embed(c), sched.at AS next_scheduled_at FROM conversations c
+LEFT JOIN LATERAL (
+    SELECT sm.scheduled_at AS at FROM messages sm
+    WHERE sqlc.narg(scheduled_by)::uuid IS NOT NULL AND sm.workspace_id = c.workspace_id
+      AND sm.scheduled_by = sqlc.narg(scheduled_by)::uuid AND sm.conversation_id = c.id AND sm.scheduled_at IS NOT NULL
+    ORDER BY sm.scheduled_at LIMIT 1) sched ON true
 WHERE c.workspace_id = @workspace_id
   AND (@all_inboxes::bool OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = @viewer_id))
+  AND conversation_visible_to(c.draft_of, sqlc.narg(viewer_member_id)::uuid)
+  AND (sqlc.narg(scheduled_by)::uuid IS NULL OR sched.at IS NOT NULL)
   AND (sqlc.narg(inbox_id)::uuid IS NULL OR c.inbox_id = sqlc.narg(inbox_id)::uuid)
   AND (sqlc.narg(contact_id)::uuid IS NULL OR c.contact_id = sqlc.narg(contact_id)::uuid)
   AND (sqlc.narg(broadcast_id)::uuid IS NULL OR c.broadcast_id = sqlc.narg(broadcast_id)::uuid)
@@ -114,13 +121,16 @@ WHERE c.workspace_id = @workspace_id
                 OR (s.resolution_target_s IS NOT NULL AND s.resolution_met_at IS NOT NULL) THEN 'met'
             ELSE 'on_track' END) = ANY (sqlc.narg(sla_states)::text[])))
   AND (sqlc.narg(cursor_at)::timestamptz IS NULL OR CASE
+      WHEN sqlc.narg(scheduled_by)::uuid IS NOT NULL THEN sched.at > sqlc.narg(cursor_due)::timestamptz
+          OR (sched.at = sqlc.narg(cursor_due)::timestamptz
+              AND (c.last_activity_at, c.id) < (sqlc.narg(cursor_at)::timestamptz, sqlc.narg(cursor_id)::uuid))
       WHEN NOT @by_sla::bool THEN (c.last_activity_at, c.id) < (sqlc.narg(cursor_at)::timestamptz, sqlc.narg(cursor_id)::uuid)
       WHEN sqlc.narg(cursor_due)::timestamptz IS NULL THEN c.sla_due_at IS NULL
           AND (c.last_activity_at, c.id) < (sqlc.narg(cursor_at)::timestamptz, sqlc.narg(cursor_id)::uuid)
       ELSE c.sla_due_at IS NULL OR c.sla_due_at > sqlc.narg(cursor_due)::timestamptz
           OR (c.sla_due_at = sqlc.narg(cursor_due)::timestamptz
               AND (c.last_activity_at, c.id) < (sqlc.narg(cursor_at)::timestamptz, sqlc.narg(cursor_id)::uuid)) END)
-ORDER BY CASE WHEN @by_sla::bool THEN c.sla_due_at END ASC NULLS LAST, c.last_activity_at DESC, c.id DESC
+ORDER BY CASE WHEN @by_sla::bool THEN c.sla_due_at END ASC NULLS LAST, sched.at ASC NULLS LAST, c.last_activity_at DESC, c.id DESC
 LIMIT @lim;
 
 -- name: ListConversationLabels :many
@@ -153,6 +163,7 @@ WHERE c.workspace_id = @workspace_id AND c.status = 'open' AND c.trashed_at IS N
   AND (@all_inboxes::bool OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = @viewer_id::uuid))
+  AND conversation_visible_to(c.draft_of, sqlc.narg(viewer_member_id)::uuid)
   AND (sqlc.narg(kinds)::text[] IS NULL OR c.kind = ANY(sqlc.narg(kinds)::text[]))
   AND (sqlc.narg(purpose)::text IS NULL OR EXISTS (
       SELECT 1 FROM inboxes pi
@@ -167,6 +178,7 @@ WHERE c.workspace_id = @workspace_id AND c.status = 'open' AND c.trashed_at IS N
   AND (@all_inboxes::bool OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = @viewer_id::uuid))
+  AND conversation_visible_to(c.draft_of, sqlc.narg(viewer_member_id)::uuid)
   AND (sqlc.narg(kinds)::text[] IS NULL OR c.kind = ANY(sqlc.narg(kinds)::text[]))
   AND (sqlc.narg(purpose)::text IS NULL OR EXISTS (
       SELECT 1 FROM inboxes pi
@@ -181,6 +193,7 @@ WHERE c.workspace_id = @workspace_id AND c.status = 'open' AND c.trashed_at IS N
   AND (@all_inboxes::bool OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = @viewer_id::uuid))
+  AND conversation_visible_to(c.draft_of, sqlc.narg(viewer_member_id)::uuid)
   AND (sqlc.narg(kinds)::text[] IS NULL OR c.kind = ANY(sqlc.narg(kinds)::text[]))
   AND (sqlc.narg(purpose)::text IS NULL OR EXISTS (
       SELECT 1 FROM inboxes pi
@@ -195,6 +208,7 @@ WHERE c.workspace_id = @workspace_id AND c.status = 'open' AND c.trashed_at IS N
   AND (@all_inboxes::bool OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = @viewer_id::uuid))
+  AND conversation_visible_to(c.draft_of, sqlc.narg(viewer_member_id)::uuid)
   AND (sqlc.narg(kinds)::text[] IS NULL OR c.kind = ANY(sqlc.narg(kinds)::text[]))
   AND (sqlc.narg(purpose)::text IS NULL OR EXISTS (
       SELECT 1 FROM inboxes pi
@@ -218,6 +232,9 @@ LIMIT @max_rows;
 
 -- name: ListConversationsStorageKeys :many
 SELECT storage_key FROM attachments WHERE workspace_id = @workspace_id AND conversation_id = ANY(@ids::uuid[]);
+
+-- name: ListDraftConversationIDs :many
+SELECT id FROM conversations WHERE workspace_id = @workspace_id AND draft_of = @member_id ORDER BY id;
 
 -- name: DeleteConversations :execrows
 DELETE FROM conversations WHERE workspace_id = @workspace_id AND id = ANY(@ids::uuid[]);
@@ -287,3 +304,6 @@ WHERE c.workspace_id = @workspace_id AND c.id = ANY(@conversation_ids::uuid[])
       JOIN messages m ON m.workspace_id = a.workspace_id AND m.id = a.message_id
       WHERE a.workspace_id = c.workspace_id AND a.conversation_id = c.id AND NOT a.inline
         AND NOT m.draft AND m.redacted_at IS NULL AND (@include_notes::bool OR m.kind <> 'note'));
+
+-- name: SetConversationDraftOf :exec
+UPDATE conversations SET draft_of = sqlc.narg(draft_of)::uuid WHERE workspace_id = @workspace_id AND id = @id;

@@ -5978,6 +5978,7 @@ const (
 	MessageInUnassignedConversation PushNotificationEvent = "message_in_unassigned_conversation"
 	NewAsyncConversation            PushNotificationEvent = "new_async_conversation"
 	NewLiveConversation             PushNotificationEvent = "new_live_conversation"
+	ScheduledSendFailed             PushNotificationEvent = "scheduled_send_failed"
 	SlaBreached                     PushNotificationEvent = "sla_breached"
 	SlaWarning                      PushNotificationEvent = "sla_warning"
 	Test                            PushNotificationEvent = "test"
@@ -5999,6 +6000,8 @@ func (e PushNotificationEvent) Valid() bool {
 	case NewAsyncConversation:
 		return true
 	case NewLiveConversation:
+		return true
+	case ScheduledSendFailed:
 		return true
 	case SlaBreached:
 		return true
@@ -7838,6 +7841,21 @@ const (
 func (e ListConversationsParamsSent) Valid() bool {
 	switch e {
 	case ListConversationsSentMine:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ListConversationsParamsScheduled.
+const (
+	ListConversationsScheduledMine ListConversationsParamsScheduled = "mine"
+)
+
+// Valid indicates whether the value is a known member of the ListConversationsParamsScheduled enum.
+func (e ListConversationsParamsScheduled) Valid() bool {
+	switch e {
+	case ListConversationsScheduledMine:
 		return true
 	default:
 		return false
@@ -13026,6 +13044,10 @@ type ComposeMail struct {
 	Html    *string   `json:"html,omitempty"`
 	InboxId uuid.UUID `json:"inbox_id"`
 
+	// SendAt Member sessions only: store as a draft and send it at this time, at least 1 minute and
+	// at most 366 days ahead (`400 invalid_send_at`). See `sendMessage`.
+	SendAt *time.Time `json:"send_at,omitempty"`
+
 	// Signature `false` sends without the member's signature; see `MessageCreate`.
 	Signature *bool  `json:"signature,omitempty"`
 	Subject   string `json:"subject"`
@@ -13048,11 +13070,12 @@ type ComposeMailMultipart struct {
 	Files     *[]openapi_types.File `json:"files,omitempty"`
 
 	// FromAddress Examples: owner@example.com
-	FromAddress *Email    `json:"from_address,omitempty"`
-	Html        *string   `json:"html,omitempty"`
-	InboxId     uuid.UUID `json:"inbox_id"`
-	Signature   *bool     `json:"signature,omitempty"`
-	Subject     string    `json:"subject"`
+	FromAddress *Email     `json:"from_address,omitempty"`
+	Html        *string    `json:"html,omitempty"`
+	InboxId     uuid.UUID  `json:"inbox_id"`
+	SendAt      *time.Time `json:"send_at,omitempty"`
+	Signature   *bool      `json:"signature,omitempty"`
+	Subject     string     `json:"subject"`
 
 	// To Repeat the field once per address.
 	To []Email `json:"to"`
@@ -14848,7 +14871,7 @@ type DocsTotals struct {
 type DraftAuthorKind string
 
 // DraftEvent A draft was written, edited or discarded (`data` is the draft as it was). Sending a draft
-// emits `message.created`.
+// emits `message.created`. A member's draft's events reach only that member's connections.
 type DraftEvent struct {
 	ConversationId uuid.UUID      `json:"conversation_id"`
 	CreatedAt      time.Time      `json:"created_at"`
@@ -18832,7 +18855,8 @@ type Message struct {
 
 	// Draft An outgoing message that is not delivered until it is sent
 	// (`POST /v1/messages/{id}/send`). Drafts are shown only on `/v1`: never to contacts,
-	// never e-mailed, notified, counted as unread, previewed or found by search.
+	// never e-mailed, notified, counted as unread, previewed or found by search. A member's
+	// draft is shown only to its author.
 	Draft bool `json:"draft"`
 
 	// Email Set on messages that came or went by e-mail. `body` and `html` of the message show the new
@@ -18875,6 +18899,13 @@ type Message struct {
 	// Rule The automation rule that wrote it (author `system`): its notes, replies and the timeline
 	// events of its changes. Absent for everything else.
 	Rule *AutomationRuleRef `json:"rule,omitempty"`
+
+	// ScheduledAt When a scheduled draft is sent; absent for drafts that are not scheduled and for sent messages.
+	ScheduledAt *time.Time `json:"scheduled_at,omitempty"`
+
+	// SendError Why a scheduled draft could not be sent; shown to its author. Absent otherwise, and cleared
+	// when the draft is scheduled again or sent.
+	SendError *MessageSendError `json:"send_error,omitempty"`
 
 	// SentBy Who sent a draft (`member` or `bot`); absent for messages that were never drafts.
 	SentBy *MessageAuthor `json:"sent_by,omitempty"`
@@ -18973,6 +19004,10 @@ type MessageCreate struct {
 	// body as it likes; the server does not parse `@` in the text.
 	Mentions *[]uuid.UUID `json:"mentions,omitempty"`
 
+	// SendAt Member sessions only: store as a draft and send it at this time, at least 1 minute and
+	// at most 366 days ahead (`400 invalid_send_at`). See `sendMessage`.
+	SendAt *time.Time `json:"send_at,omitempty"`
+
 	// Signature E-mailed replies by members: add the author's signature for the inbox (their own, else
 	// the inbox's `signature`); absent means `true`. `false` sends without it. Chat, app and API channel replies,
 	// notes and forwards never carry one, nor do messages written by API keys or automation
@@ -19010,6 +19045,7 @@ type MessageCreateMultipart struct {
 
 	// Mentions Notes only; repeat the field once per member id.
 	Mentions *[]uuid.UUID `json:"mentions,omitempty"`
+	SendAt   *time.Time   `json:"send_at,omitempty"`
 
 	// Signature `false` sends an e-mailed reply without the author's signature; see `MessageCreate`.
 	Signature *bool `json:"signature,omitempty"`
@@ -19247,6 +19283,21 @@ type MessageSend struct {
 	// usable for the channel (`GET /v1/me/addresses`) instead of the channel's address. See
 	// `createMessage`.
 	FromAddress *Email `json:"from_address,omitempty"`
+
+	// SendAt Member sessions only: schedule the draft instead of sending it now, at least 1 minute
+	// and at most 366 days ahead (`400 invalid_send_at`); `cc`, `bcc` and `from_address` are
+	// kept for then.
+	SendAt *time.Time `json:"send_at,omitempty"`
+}
+
+// MessageSendError Why a scheduled draft could not be sent; shown to its author. Absent otherwise, and cleared
+// when the draft is scheduled again or sent.
+type MessageSendError struct {
+	// Code The problem code the send answered (e.g. `from_not_allowed`, `no_recipient`, `member_inactive`).
+	//
+	// Examples: from_not_allowed
+	Code   string `json:"code"`
+	Detail string `json:"detail"`
 }
 
 // MessageUpdate Only the fields sent change.
@@ -19255,6 +19306,10 @@ type MessageUpdate struct {
 
 	// Html Sanitized before it is stored; `null` removes it.
 	Html nullable.Nullable[string] `json:"html,omitempty"`
+
+	// SendAt Member sessions only: schedule the draft or move its time, at least 1 minute and at
+	// most 366 days ahead (`400 invalid_send_at`). See `sendMessage`.
+	SendAt *time.Time `json:"send_at,omitempty"`
 }
 
 // MessageUpdatedEvent A message changed, e.g. its e-mail delivery state. `message.redacted`: its content was
@@ -20523,6 +20578,7 @@ type NotificationEvents struct {
 	MessageInUnassignedConversation NotificationChannels `json:"message_in_unassigned_conversation"`
 	NewAsyncConversation            NotificationChannels `json:"new_async_conversation"`
 	NewLiveConversation             NotificationChannels `json:"new_live_conversation"`
+	ScheduledSendFailed             NotificationChannels `json:"scheduled_send_failed"`
 	SlaBreached                     NotificationChannels `json:"sla_breached"`
 	SlaWarning                      NotificationChannels `json:"sla_warning"`
 }
@@ -20536,6 +20592,7 @@ type NotificationEventsUpdate struct {
 	MessageInUnassignedConversation *NotificationChannels `json:"message_in_unassigned_conversation,omitempty"`
 	NewAsyncConversation            *NotificationChannels `json:"new_async_conversation,omitempty"`
 	NewLiveConversation             *NotificationChannels `json:"new_live_conversation,omitempty"`
+	ScheduledSendFailed             *NotificationChannels `json:"scheduled_send_failed,omitempty"`
 	SlaBreached                     *NotificationChannels `json:"sla_breached,omitempty"`
 	SlaWarning                      *NotificationChannels `json:"sla_warning,omitempty"`
 }
@@ -26160,6 +26217,11 @@ type ListConversationsParams struct {
 	// (`400 validation_failed` for API keys).
 	Sent *ListConversationsParamsSent `form:"sent,omitempty" json:"sent,omitempty"`
 
+	// Scheduled `mine` lists only the conversations holding a message the calling member scheduled, the
+	// Scheduled folder, ordered by the earliest `scheduled_at` among them (not with
+	// `sort=sla_due`). Member sessions only (`400 validation_failed` for API keys).
+	Scheduled *ListConversationsParamsScheduled `form:"scheduled,omitempty" json:"scheduled,omitempty"`
+
 	// Sort `last_activity` (the default): most recent activity first. `sla_due`: conversations
 	// with a running SLA target first, the earliest `sla.due_at` first (so breached ones
 	// lead), then the others by most recent activity. A cursor continues only the order it
@@ -26191,6 +26253,9 @@ type ListConversationsParamsIdea string
 
 // ListConversationsParamsSent defines parameters for ListConversations.
 type ListConversationsParamsSent string
+
+// ListConversationsParamsScheduled defines parameters for ListConversations.
+type ListConversationsParamsScheduled string
 
 // ListConversationsParamsSort defines parameters for ListConversations.
 type ListConversationsParamsSort string
@@ -26726,6 +26791,15 @@ type ListDraftsParams struct {
 	// InboxId Only drafts in this inbox. An inbox the caller cannot see answers `404`.
 	InboxId *uuid.UUID       `form:"inbox_id,omitempty" json:"inbox_id,omitempty"`
 	Author  *DraftAuthorKind `form:"author,omitempty" json:"author,omitempty"`
+
+	// ConversationId Only drafts in this conversation.
+	ConversationId *uuid.UUID `form:"conversation_id,omitempty" json:"conversation_id,omitempty"`
+
+	// Mine `true`: only drafts the calling member wrote (none for API keys).
+	Mine *bool `form:"mine,omitempty" json:"mine,omitempty"`
+
+	// Scheduled `true`: only drafts scheduled to be sent (`scheduled_at` set); `false`: only those that are not.
+	Scheduled *bool `form:"scheduled,omitempty" json:"scheduled,omitempty"`
 
 	// Cursor The `next_cursor` of the previous page.
 	Cursor *Cursor `form:"cursor,omitempty" json:"cursor,omitempty"`
@@ -27735,6 +27809,12 @@ type RedactMessageParams struct {
 	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// UnscheduleMessageParams defines parameters for UnscheduleMessage.
+type UnscheduleMessageParams struct {
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
@@ -35363,6 +35443,9 @@ type ServerInterface interface {
 	// RedactMessage Remove a message's content
 	// (POST /v1/messages/{messageId}/redact)
 	RedactMessage(w http.ResponseWriter, r *http.Request, messageId MessageId, params RedactMessageParams)
+	// UnscheduleMessage Cancel a scheduled send
+	// (DELETE /v1/messages/{messageId}/schedule)
+	UnscheduleMessage(w http.ResponseWriter, r *http.Request, messageId MessageId, params UnscheduleMessageParams)
 	// SendMessage Send a draft
 	// (POST /v1/messages/{messageId}/send)
 	SendMessage(w http.ResponseWriter, r *http.Request, messageId MessageId, params SendMessageParams)
@@ -45853,6 +45936,19 @@ func (siw *ServerInterfaceWrapper) ListConversations(w http.ResponseWriter, r *h
 		return
 	}
 
+	// ------------- Optional query parameter "scheduled" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "scheduled", r.URL.Query(), &params.Scheduled, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "scheduled"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "scheduled", Err: err})
+		}
+		return
+	}
+
 	// ------------- Optional query parameter "sort" -------------
 
 	err = runtime.BindQueryParameterWithOptions("form", true, false, "sort", r.URL.Query(), &params.Sort, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
@@ -49745,6 +49841,45 @@ func (siw *ServerInterfaceWrapper) ListDrafts(w http.ResponseWriter, r *http.Req
 			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "author"})
 		} else {
 			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "author", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "conversation_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "conversation_id", r.URL.Query(), &params.ConversationId, runtime.BindQueryParameterOptions{Type: "string", Format: "uuid"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "conversation_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "conversation_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "mine" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "mine", r.URL.Query(), &params.Mine, runtime.BindQueryParameterOptions{Type: "boolean", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "mine"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "mine", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "scheduled" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "scheduled", r.URL.Query(), &params.Scheduled, runtime.BindQueryParameterOptions{Type: "boolean", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "scheduled"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "scheduled", Err: err})
 		}
 		return
 	}
@@ -57727,6 +57862,56 @@ func (siw *ServerInterfaceWrapper) RedactMessage(w http.ResponseWriter, r *http.
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.RedactMessage(w, r, messageId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UnscheduleMessage operation middleware
+func (siw *ServerInterfaceWrapper) UnscheduleMessage(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "messageId" -------------
+	var messageId MessageId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "messageId", r.PathValue("messageId"), &messageId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "messageId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params UnscheduleMessageParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UnscheduleMessage(w, r, messageId, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -65811,6 +65996,7 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/messages/{messageId}", wrapper.DeleteMessage)
 	m.HandleFunc(http.MethodPatch+" "+options.BaseURL+"/v1/messages/{messageId}", wrapper.UpdateMessage)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/messages/{messageId}/send", wrapper.SendMessage)
+	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/messages/{messageId}/schedule", wrapper.UnscheduleMessage)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/messages/{messageId}/redact", wrapper.RedactMessage)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/messages/{messageId}/email", wrapper.GetMessageEmail)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/messages/{messageId}/raw", wrapper.DownloadMessageRaw)
@@ -101370,6 +101556,101 @@ func (response RedactMessage409ApplicationProblemPlusJSONResponse) VisitRedactMe
 	return err
 }
 
+type UnscheduleMessageRequestObject struct {
+	MessageId MessageId `json:"messageId"`
+	Params    UnscheduleMessageParams
+}
+
+type UnscheduleMessageResponseObject interface {
+	VisitUnscheduleMessageResponse(w http.ResponseWriter) error
+}
+
+type UnscheduleMessage200JSONResponse Message
+
+func (response UnscheduleMessage200JSONResponse) VisitUnscheduleMessageResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UnscheduleMessage400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response UnscheduleMessage400ApplicationProblemPlusJSONResponse) VisitUnscheduleMessageResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UnscheduleMessage401ApplicationProblemPlusJSONResponse Problem
+
+func (response UnscheduleMessage401ApplicationProblemPlusJSONResponse) VisitUnscheduleMessageResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UnscheduleMessage403ApplicationProblemPlusJSONResponse Problem
+
+func (response UnscheduleMessage403ApplicationProblemPlusJSONResponse) VisitUnscheduleMessageResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UnscheduleMessage404ApplicationProblemPlusJSONResponse Problem
+
+func (response UnscheduleMessage404ApplicationProblemPlusJSONResponse) VisitUnscheduleMessageResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UnscheduleMessage409ApplicationProblemPlusJSONResponse Problem
+
+func (response UnscheduleMessage409ApplicationProblemPlusJSONResponse) VisitUnscheduleMessageResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(409)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
 type SendMessageRequestObject struct {
 	MessageId MessageId `json:"messageId"`
 	Params    SendMessageParams
@@ -112607,6 +112888,9 @@ type StrictServerInterface interface {
 	// RedactMessage Remove a message's content
 	// (POST /v1/messages/{messageId}/redact)
 	RedactMessage(ctx context.Context, request RedactMessageRequestObject) (RedactMessageResponseObject, error)
+	// UnscheduleMessage Cancel a scheduled send
+	// (DELETE /v1/messages/{messageId}/schedule)
+	UnscheduleMessage(ctx context.Context, request UnscheduleMessageRequestObject) (UnscheduleMessageResponseObject, error)
 	// SendMessage Send a draft
 	// (POST /v1/messages/{messageId}/send)
 	SendMessage(ctx context.Context, request SendMessageRequestObject) (SendMessageResponseObject, error)
@@ -124654,6 +124938,33 @@ func (sh *strictHandler) RedactMessage(w http.ResponseWriter, r *http.Request, m
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
 	} else if validResponse, ok := response.(RedactMessageResponseObject); ok {
 		if err := validResponse.VisitRedactMessageResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// UnscheduleMessage operation middleware
+func (sh *strictHandler) UnscheduleMessage(w http.ResponseWriter, r *http.Request, messageId MessageId, params UnscheduleMessageParams) {
+	var request UnscheduleMessageRequestObject
+
+	request.MessageId = messageId
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.UnscheduleMessage(ctx, request.(UnscheduleMessageRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "UnscheduleMessage")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(UnscheduleMessageResponseObject); ok {
+		if err := validResponse.VisitUnscheduleMessageResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {

@@ -334,6 +334,9 @@ func (s *Server) sendForwardDraft(ctx context.Context, p principal, req oas.Send
 	if err != nil {
 		return nil, err
 	}
+	if draftHidden(p, cur) {
+		return nil, errMessageGone
+	}
 	c, err := visibleConversation(ctx, s.st.Queries, p, cur.ConversationID, false)
 	if err == errConversationGone {
 		return nil, errMessageGone
@@ -392,6 +395,9 @@ func (s *Server) sendForwardDraft(ctx context.Context, p principal, req oas.Send
 		}
 		sent, err := q.SendDraft(ctx, arg)
 		if err != nil {
+			return err
+		}
+		if c, err = revealDraftConversation(ctx, q, events, c); err != nil {
 			return err
 		}
 		out, err = s.deliverForward(ctx, q, events, p, c, plan, messageRow(sent), now)

@@ -47,6 +47,7 @@ func roleNotificationDefaults(role string) oas.NotificationEvents {
 		SlaWarning:                      oas.NotificationChannels{Push: true},
 		SlaBreached:                     oas.NotificationChannels{Push: true, Email: true},
 		ForwardAnswer:                   oas.NotificationChannels{Push: true, Email: true},
+		ScheduledSendFailed:             oas.NotificationChannels{Push: true, Email: true},
 	}
 }
 
@@ -65,6 +66,7 @@ func applyNotificationEvents(base oas.NotificationEvents, u oas.NotificationEven
 	set(&base.SlaWarning, u.SlaWarning)
 	set(&base.SlaBreached, u.SlaBreached)
 	set(&base.ForwardAnswer, u.ForwardAnswer)
+	set(&base.ScheduledSendFailed, u.ScheduledSendFailed)
 	return base
 }
 
@@ -85,13 +87,14 @@ func mergeNotificationUpdates(base, u oas.NotificationEventsUpdate) oas.Notifica
 		SlaWarning:                      pick(base.SlaWarning, u.SlaWarning),
 		SlaBreached:                     pick(base.SlaBreached, u.SlaBreached),
 		ForwardAnswer:                   pick(base.ForwardAnswer, u.ForwardAnswer),
+		ScheduledSendFailed:             pick(base.ScheduledSendFailed, u.ScheduledSendFailed),
 	}
 }
 
 func emptyNotificationUpdate(u oas.NotificationEventsUpdate) bool {
 	return u.NewLiveConversation == nil && u.NewAsyncConversation == nil && u.MessageInMyConversation == nil &&
 		u.MessageInUnassignedConversation == nil && u.AssignedToMe == nil && u.Mentioned == nil && u.SlaWarning == nil && u.SlaBreached == nil &&
-		u.ForwardAnswer == nil
+		u.ForwardAnswer == nil && u.ScheduledSendFailed == nil
 }
 
 func notificationChannelsFor(e oas.NotificationEvents, ev notificationEvent) oas.NotificationChannels {
@@ -114,6 +117,8 @@ func notificationChannelsFor(e oas.NotificationEvents, ev notificationEvent) oas
 		return e.SlaBreached
 	case oas.ForwardAnswer:
 		return e.ForwardAnswer
+	case oas.ScheduledSendFailed:
+		return e.ScheduledSendFailed
 	}
 	return oas.NotificationChannels{}
 }
@@ -287,7 +292,7 @@ func notifiable(e pendingEvent) bool {
 func (s *Server) queueNotifications(ctx context.Context, tx pgx.Tx, workspaceID uuid.UUID, items []pendingEvent) error {
 	var jobs []river.InsertManyParams
 	for _, e := range items {
-		if !notifiable(e) {
+		if e.onlyMember != nil || !notifiable(e) {
 			continue
 		}
 		var m struct {

@@ -210,16 +210,16 @@ func TestListDrafts(t *testing.T) {
 		return out
 	}
 	r := page(tm.owner, "/v1/drafts")
-	if got := ids(r); !slices.Equal(got, []string{inBilling, byMember, byAssistant, bot}) || r.body["total"] != float64(4) {
+	if got := ids(r); !slices.Equal(got, []string{inBilling, byAssistant, bot}) || r.body["total"] != float64(3) {
 		t.Fatalf("owner's drafts: %s", r.raw)
 	}
-	it := pageItems(r)[2]
+	it := pageItems(r)[1]
 	d, cv := it["draft"].(map[string]any), it["conversation"].(map[string]any)
 	if d["draft"] != true || d["body"] != "an assistant's draft" || d["author"].(map[string]any)["via"] != "Claude Code" ||
 		cv["id"] != conv || cv["inbox_id"] != tm.inbox || cv["contact"].(map[string]any)["id"] != tm.contact {
 		t.Fatalf("draft item: %v", it)
 	}
-	for kind, want := range map[string][]string{"bot": {bot}, "assistant": {byAssistant}, "member": {inBilling, byMember}} {
+	for kind, want := range map[string][]string{"bot": {bot}, "assistant": {byAssistant}, "member": {inBilling}} {
 		if r := page(tm.owner, "/v1/drafts?author="+kind); !slices.Equal(ids(r), want) || r.body["total"] != float64(len(want)) {
 			t.Fatalf("author=%s: %s", kind, r.raw)
 		}
@@ -227,13 +227,13 @@ func TestListDrafts(t *testing.T) {
 	if got := ids(page(tm.owner, "/v1/drafts?inbox_id="+billing)); !slices.Equal(got, []string{inBilling}) {
 		t.Fatalf("inbox filter: %v", got)
 	}
-	r = page(tm.owner, "/v1/drafts?limit=3")
-	if r = page(tm.owner, "/v1/drafts?limit=3&cursor="+r.str("next_cursor")); !slices.Equal(ids(r), []string{bot}) {
+	r = page(tm.owner, "/v1/drafts?limit=2")
+	if r = page(tm.owner, "/v1/drafts?limit=2&cursor="+r.str("next_cursor")); !slices.Equal(ids(r), []string{bot}) {
 		t.Fatalf("second page: %s", r.raw)
 	}
 	tm.owner.expectProblem(http.StatusBadRequest, "validation_failed", "GET", "/v1/drafts?author=robot", nil)
 
-	if r := page(tm.agent, "/v1/drafts"); !slices.Equal(ids(r), []string{byMember, byAssistant, bot}) || r.body["total"] != float64(3) {
+	if r := page(tm.agent, "/v1/drafts"); !slices.Equal(ids(r), []string{byMember, bot}) || r.body["total"] != float64(2) {
 		t.Fatalf("agent's drafts: %s", r.raw)
 	}
 	tm.agent.expectProblem(http.StatusNotFound, "not_found", "GET", "/v1/drafts?inbox_id="+billing, nil)
@@ -252,7 +252,8 @@ func TestListDrafts(t *testing.T) {
 	intruder.workspace = tm.ws
 	intruder.expectProblem(http.StatusForbidden, "not_a_member", "GET", "/v1/drafts", nil)
 
-	tm.owner.expect(http.StatusOK, "POST", "/v1/messages/"+byMember+"/send", nil)
+	tm.owner.expectProblem(http.StatusNotFound, "not_found", "POST", "/v1/messages/"+byMember+"/send", nil)
+	tm.agent.expect(http.StatusOK, "POST", "/v1/messages/"+byMember+"/send", nil)
 	tm.owner.expect(http.StatusNoContent, "DELETE", "/v1/messages/"+bot, nil)
 	if r := page(tm.owner, "/v1/drafts"); !slices.Equal(ids(r), []string{inBilling, byAssistant}) || r.body["total"] != float64(2) {
 		t.Fatalf("after sending and discarding: %s", r.raw)

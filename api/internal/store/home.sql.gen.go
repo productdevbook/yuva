@@ -22,17 +22,19 @@ WHERE c.workspace_id = $2 AND c.last_activity_at >= $3::timestamptz
   AND ($6::bool OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = $7::uuid))
+  AND conversation_visible_to(c.draft_of, $8::uuid)
 GROUP BY 1, 2
 `
 
 type HomeConversationsByDayParams struct {
-	Timezone    string
-	WorkspaceID uuid.UUID
-	Since       time.Time
-	Until       time.Time
-	InboxID     *uuid.UUID
-	AllInboxes  bool
-	ViewerID    uuid.UUID
+	Timezone       string
+	WorkspaceID    uuid.UUID
+	Since          time.Time
+	Until          time.Time
+	InboxID        *uuid.UUID
+	AllInboxes     bool
+	ViewerID       uuid.UUID
+	ViewerMemberID *uuid.UUID
 }
 
 type HomeConversationsByDayRow struct {
@@ -50,6 +52,7 @@ func (q *Queries) HomeConversationsByDay(ctx context.Context, arg HomeConversati
 		arg.InboxID,
 		arg.AllInboxes,
 		arg.ViewerID,
+		arg.ViewerMemberID,
 	)
 	if err != nil {
 		return nil, err
@@ -139,6 +142,7 @@ WITH open AS (
       AND ($3::bool OR EXISTS (
           SELECT 1 FROM inbox_viewers iv
           WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = $4::uuid))
+      AND conversation_visible_to(c.draft_of, $5::uuid)
 ), waiting AS (
     SELECT o.id, o.inbox_id, o.subject, o.contact_id, o.channel_kind, w.since
     FROM open o
@@ -152,7 +156,7 @@ WITH open AS (
     ) w
     WHERE w.since IS NOT NULL
 ), oldest AS (
-    SELECT id, inbox_id, subject, contact_id, channel_kind, since FROM waiting ORDER BY since, id LIMIT $5
+    SELECT id, inbox_id, subject, contact_id, channel_kind, since FROM waiting ORDER BY since, id LIMIT $6
 )
 SELECT n.open, n.unassigned, n.waiting, o.id AS oldest_id, o.inbox_id AS oldest_inbox_id, o.subject AS oldest_subject,
     o.channel_kind AS oldest_channel_kind, o.since AS oldest_since, coalesce(pv.body, '')::text AS oldest_preview,
@@ -174,11 +178,12 @@ ORDER BY o.since, o.id
 `
 
 type HomeInboxParams struct {
-	WorkspaceID  uuid.UUID
-	InboxID      *uuid.UUID
-	AllInboxes   bool
-	ViewerID     uuid.UUID
-	WaitingLimit int32
+	WorkspaceID    uuid.UUID
+	InboxID        *uuid.UUID
+	AllInboxes     bool
+	ViewerID       uuid.UUID
+	ViewerMemberID *uuid.UUID
+	WaitingLimit   int32
 }
 
 type HomeInboxRow struct {
@@ -202,6 +207,7 @@ func (q *Queries) HomeInbox(ctx context.Context, arg HomeInboxParams) ([]HomeInb
 		arg.InboxID,
 		arg.AllInboxes,
 		arg.ViewerID,
+		arg.ViewerMemberID,
 		arg.WaitingLimit,
 	)
 	if err != nil {
@@ -307,20 +313,22 @@ const homeOpenLoad = `-- name: HomeOpenLoad :many
 SELECT i.id AS inbox_id, c.assignee_id, coalesce(c.kind = 'feedback', false)::bool AS feedback, count(c.id) AS n
 FROM inboxes i
 LEFT JOIN conversations c ON c.workspace_id = i.workspace_id AND c.inbox_id = i.id AND c.status = 'open' AND NOT c.spam AND c.trashed_at IS NULL
-WHERE i.workspace_id = $1 AND i.purpose = 'support'
-  AND ($2::uuid IS NULL OR i.id = $2::uuid)
-  AND ($3::bool OR EXISTS (
+    AND conversation_visible_to(c.draft_of, $1::uuid)
+WHERE i.workspace_id = $2 AND i.purpose = 'support'
+  AND ($3::uuid IS NULL OR i.id = $3::uuid)
+  AND ($4::bool OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
-      WHERE iv.workspace_id = i.workspace_id AND iv.inbox_id = i.id AND iv.viewer_id = $4::uuid))
+      WHERE iv.workspace_id = i.workspace_id AND iv.inbox_id = i.id AND iv.viewer_id = $5::uuid))
 GROUP BY i.id, c.assignee_id, 3
 ORDER BY i.name, i.id
 `
 
 type HomeOpenLoadParams struct {
-	WorkspaceID uuid.UUID
-	InboxID     *uuid.UUID
-	AllInboxes  bool
-	ViewerID    uuid.UUID
+	ViewerMemberID *uuid.UUID
+	WorkspaceID    uuid.UUID
+	InboxID        *uuid.UUID
+	AllInboxes     bool
+	ViewerID       uuid.UUID
 }
 
 type HomeOpenLoadRow struct {
@@ -332,6 +340,7 @@ type HomeOpenLoadRow struct {
 
 func (q *Queries) HomeOpenLoad(ctx context.Context, arg HomeOpenLoadParams) ([]HomeOpenLoadRow, error) {
 	rows, err := q.db.Query(ctx, homeOpenLoad,
+		arg.ViewerMemberID,
 		arg.WorkspaceID,
 		arg.InboxID,
 		arg.AllInboxes,

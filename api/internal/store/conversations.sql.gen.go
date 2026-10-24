@@ -35,19 +35,21 @@ WHERE c.workspace_id = $1 AND c.status = 'open' AND c.trashed_at IS NULL
   AND ($2::bool OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = $3::uuid))
-  AND ($4::text[] IS NULL OR c.kind = ANY($4::text[]))
-  AND ($5::text IS NULL OR EXISTS (
+  AND conversation_visible_to(c.draft_of, $4::uuid)
+  AND ($5::text[] IS NULL OR c.kind = ANY($5::text[]))
+  AND ($6::text IS NULL OR EXISTS (
       SELECT 1 FROM inboxes pi
-      WHERE pi.workspace_id = c.workspace_id AND pi.id = c.inbox_id AND pi.purpose = $5::text))
+      WHERE pi.workspace_id = c.workspace_id AND pi.id = c.inbox_id AND pi.purpose = $6::text))
 GROUP BY 1, 2, 3, 4
 `
 
 type CountOpenConversationsParams struct {
-	WorkspaceID uuid.UUID
-	AllInboxes  bool
-	ViewerID    uuid.UUID
-	Kinds       []string
-	Purpose     *string
+	WorkspaceID    uuid.UUID
+	AllInboxes     bool
+	ViewerID       uuid.UUID
+	ViewerMemberID *uuid.UUID
+	Kinds          []string
+	Purpose        *string
 }
 
 type CountOpenConversationsRow struct {
@@ -63,6 +65,7 @@ func (q *Queries) CountOpenConversations(ctx context.Context, arg CountOpenConve
 		arg.WorkspaceID,
 		arg.AllInboxes,
 		arg.ViewerID,
+		arg.ViewerMemberID,
 		arg.Kinds,
 		arg.Purpose,
 	)
@@ -98,20 +101,22 @@ WHERE c.workspace_id = $1 AND c.status = 'open' AND c.trashed_at IS NULL AND NOT
   AND ($2::bool OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = $3::uuid))
-  AND ($4::text[] IS NULL OR c.kind = ANY($4::text[]))
-  AND ($5::text IS NULL OR EXISTS (
+  AND conversation_visible_to(c.draft_of, $4::uuid)
+  AND ($5::text[] IS NULL OR c.kind = ANY($5::text[]))
+  AND ($6::text IS NULL OR EXISTS (
       SELECT 1 FROM inboxes pi
-      WHERE pi.workspace_id = c.workspace_id AND pi.id = c.inbox_id AND pi.purpose = $5::text))
+      WHERE pi.workspace_id = c.workspace_id AND pi.id = c.inbox_id AND pi.purpose = $6::text))
 GROUP BY cl.label_id
 ORDER BY cl.label_id
 `
 
 type CountOpenConversationsByLabelParams struct {
-	WorkspaceID uuid.UUID
-	AllInboxes  bool
-	ViewerID    uuid.UUID
-	Kinds       []string
-	Purpose     *string
+	WorkspaceID    uuid.UUID
+	AllInboxes     bool
+	ViewerID       uuid.UUID
+	ViewerMemberID *uuid.UUID
+	Kinds          []string
+	Purpose        *string
 }
 
 type CountOpenConversationsByLabelRow struct {
@@ -124,6 +129,7 @@ func (q *Queries) CountOpenConversationsByLabel(ctx context.Context, arg CountOp
 		arg.WorkspaceID,
 		arg.AllInboxes,
 		arg.ViewerID,
+		arg.ViewerMemberID,
 		arg.Kinds,
 		arg.Purpose,
 	)
@@ -152,20 +158,22 @@ WHERE c.workspace_id = $1 AND c.status = 'open' AND c.trashed_at IS NULL AND NOT
   AND ($2::bool OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = $3::uuid))
-  AND ($4::text[] IS NULL OR c.kind = ANY($4::text[]))
-  AND ($5::text IS NULL OR EXISTS (
+  AND conversation_visible_to(c.draft_of, $4::uuid)
+  AND ($5::text[] IS NULL OR c.kind = ANY($5::text[]))
+  AND ($6::text IS NULL OR EXISTS (
       SELECT 1 FROM inboxes pi
-      WHERE pi.workspace_id = c.workspace_id AND pi.id = c.inbox_id AND pi.purpose = $5::text))
+      WHERE pi.workspace_id = c.workspace_id AND pi.id = c.inbox_id AND pi.purpose = $6::text))
 GROUP BY 1
 ORDER BY 1
 `
 
 type CountOpenFeedbackParams struct {
-	WorkspaceID uuid.UUID
-	AllInboxes  bool
-	ViewerID    uuid.UUID
-	Kinds       []string
-	Purpose     *string
+	WorkspaceID    uuid.UUID
+	AllInboxes     bool
+	ViewerID       uuid.UUID
+	ViewerMemberID *uuid.UUID
+	Kinds          []string
+	Purpose        *string
 }
 
 type CountOpenFeedbackRow struct {
@@ -178,6 +186,7 @@ func (q *Queries) CountOpenFeedback(ctx context.Context, arg CountOpenFeedbackPa
 		arg.WorkspaceID,
 		arg.AllInboxes,
 		arg.ViewerID,
+		arg.ViewerMemberID,
 		arg.Kinds,
 		arg.Purpose,
 	)
@@ -206,19 +215,21 @@ WHERE c.workspace_id = $2 AND c.status = 'open' AND c.trashed_at IS NULL AND NOT
   AND ($3::bool OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = $4::uuid))
-  AND ($5::text[] IS NULL OR c.kind = ANY($5::text[]))
-  AND ($6::text IS NULL OR EXISTS (
+  AND conversation_visible_to(c.draft_of, $5::uuid)
+  AND ($6::text[] IS NULL OR c.kind = ANY($6::text[]))
+  AND ($7::text IS NULL OR EXISTS (
       SELECT 1 FROM inboxes pi
-      WHERE pi.workspace_id = c.workspace_id AND pi.id = c.inbox_id AND pi.purpose = $6::text))
+      WHERE pi.workspace_id = c.workspace_id AND pi.id = c.inbox_id AND pi.purpose = $7::text))
 `
 
 type CountStarredConversationsParams struct {
-	MemberID    uuid.UUID
-	WorkspaceID uuid.UUID
-	AllInboxes  bool
-	ViewerID    uuid.UUID
-	Kinds       []string
-	Purpose     *string
+	MemberID       uuid.UUID
+	WorkspaceID    uuid.UUID
+	AllInboxes     bool
+	ViewerID       uuid.UUID
+	ViewerMemberID *uuid.UUID
+	Kinds          []string
+	Purpose        *string
 }
 
 func (q *Queries) CountStarredConversations(ctx context.Context, arg CountStarredConversationsParams) (int64, error) {
@@ -227,6 +238,7 @@ func (q *Queries) CountStarredConversations(ctx context.Context, arg CountStarre
 		arg.WorkspaceID,
 		arg.AllInboxes,
 		arg.ViewerID,
+		arg.ViewerMemberID,
 		arg.Kinds,
 		arg.Purpose,
 	)
@@ -245,7 +257,7 @@ VALUES ($1, $2, $3, $4, $5, $6, $7,
         $15, $16, $17,
         (SELECT ch.kind FROM channels ch WHERE ch.workspace_id = $2 AND ch.id = $5),
         $18, $18, $18)
-RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id, trashed_at, trashed_by_member_id, trashed_by_api_key_id, push_through, push_sent_at, team_id, fields, sla_due_at, snooze_rule_id, assign_waiting_since, assign_after_rules
+RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id, trashed_at, trashed_by_member_id, trashed_by_api_key_id, push_through, push_sent_at, team_id, fields, sla_due_at, snooze_rule_id, assign_waiting_since, assign_after_rules, draft_of
 `
 
 type CreateConversationParams struct {
@@ -339,6 +351,7 @@ func (q *Queries) CreateConversation(ctx context.Context, arg CreateConversation
 		&i.SnoozeRuleID,
 		&i.AssignWaitingSince,
 		&i.AssignAfterRules,
+		&i.DraftOf,
 	)
 	return i, err
 }
@@ -361,7 +374,7 @@ func (q *Queries) DeleteConversations(ctx context.Context, arg DeleteConversatio
 }
 
 const getConversation = `-- name: GetConversation :one
-SELECT id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id, trashed_at, trashed_by_member_id, trashed_by_api_key_id, push_through, push_sent_at, team_id, fields, sla_due_at, snooze_rule_id, assign_waiting_since, assign_after_rules FROM conversations WHERE workspace_id = $1 AND id = $2
+SELECT id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id, trashed_at, trashed_by_member_id, trashed_by_api_key_id, push_through, push_sent_at, team_id, fields, sla_due_at, snooze_rule_id, assign_waiting_since, assign_after_rules, draft_of FROM conversations WHERE workspace_id = $1 AND id = $2
 `
 
 type GetConversationParams struct {
@@ -420,6 +433,7 @@ func (q *Queries) GetConversation(ctx context.Context, arg GetConversationParams
 		&i.SnoozeRuleID,
 		&i.AssignWaitingSince,
 		&i.AssignAfterRules,
+		&i.DraftOf,
 	)
 	return i, err
 }
@@ -619,142 +633,161 @@ func (q *Queries) ListConversationPreviews(ctx context.Context, arg ListConversa
 }
 
 const listConversations = `-- name: ListConversations :many
-SELECT c.id, c.workspace_id, c.inbox_id, c.contact_id, c.channel_id, c.subject, c.status, c.snooze_until, c.priority, c.assignee_id, c.last_message_at, c.last_activity_at, c.created_at, c.updated_at, c.spam, c.email_token, c.related_conversation_id, c.continuity_through, c.continuity_sent_at, c.kind, c.feedback, c.email_address, c.closed_at, c.rating, c.rating_comment, c.rated_at, c.rating_requested_at, c.last_read_by_contact_at, c.page_url, c.page_title, c.channel_kind, c.broadcast_id, c.migration_id, c.imported_at, c.feedback_progress, c.help_article_id, c.trashed_at, c.trashed_by_member_id, c.trashed_by_api_key_id, c.push_through, c.push_sent_at, c.team_id, c.fields, c.sla_due_at, c.snooze_rule_id, c.assign_waiting_since, c.assign_after_rules FROM conversations c
-WHERE c.workspace_id = $1
-  AND ($2::bool OR EXISTS (
+SELECT c.id, c.workspace_id, c.inbox_id, c.contact_id, c.channel_id, c.subject, c.status, c.snooze_until, c.priority, c.assignee_id, c.last_message_at, c.last_activity_at, c.created_at, c.updated_at, c.spam, c.email_token, c.related_conversation_id, c.continuity_through, c.continuity_sent_at, c.kind, c.feedback, c.email_address, c.closed_at, c.rating, c.rating_comment, c.rated_at, c.rating_requested_at, c.last_read_by_contact_at, c.page_url, c.page_title, c.channel_kind, c.broadcast_id, c.migration_id, c.imported_at, c.feedback_progress, c.help_article_id, c.trashed_at, c.trashed_by_member_id, c.trashed_by_api_key_id, c.push_through, c.push_sent_at, c.team_id, c.fields, c.sla_due_at, c.snooze_rule_id, c.assign_waiting_since, c.assign_after_rules, c.draft_of, sched.at AS next_scheduled_at FROM conversations c
+LEFT JOIN LATERAL (
+    SELECT sm.scheduled_at AS at FROM messages sm
+    WHERE $1::uuid IS NOT NULL AND sm.workspace_id = c.workspace_id
+      AND sm.scheduled_by = $1::uuid AND sm.conversation_id = c.id AND sm.scheduled_at IS NOT NULL
+    ORDER BY sm.scheduled_at LIMIT 1) sched ON true
+WHERE c.workspace_id = $2
+  AND ($3::bool OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
-      WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = $3))
-  AND ($4::uuid IS NULL OR c.inbox_id = $4::uuid)
-  AND ($5::uuid IS NULL OR c.contact_id = $5::uuid)
-  AND ($6::uuid IS NULL OR c.broadcast_id = $6::uuid)
-  AND ($7::bool IS NULL OR c.spam = $7::bool)
-  AND (c.trashed_at IS NOT NULL) = $8::bool
-  AND ($9::text[] IS NULL OR c.kind = ANY($9::text[]))
-  AND ($10::text[] IS NULL OR c.channel_kind = ANY($10::text[]))
-  AND ($11::text IS NULL OR left(c.page_url, length($11::text) + 1) = $11::text || '/')
-  AND ($12::text IS NULL OR c.feedback->>'category' = $12::text)
-  AND ($13::text IS NULL OR c.page_url = $13::text)
-  AND ($14::text[] IS NULL OR c.status = ANY($14::text[]))
-  AND ($15::uuid IS NULL OR EXISTS (
+      WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = $4))
+  AND conversation_visible_to(c.draft_of, $5::uuid)
+  AND ($1::uuid IS NULL OR sched.at IS NOT NULL)
+  AND ($6::uuid IS NULL OR c.inbox_id = $6::uuid)
+  AND ($7::uuid IS NULL OR c.contact_id = $7::uuid)
+  AND ($8::uuid IS NULL OR c.broadcast_id = $8::uuid)
+  AND ($9::bool IS NULL OR c.spam = $9::bool)
+  AND (c.trashed_at IS NOT NULL) = $10::bool
+  AND ($11::text[] IS NULL OR c.kind = ANY($11::text[]))
+  AND ($12::text[] IS NULL OR c.channel_kind = ANY($12::text[]))
+  AND ($13::text IS NULL OR left(c.page_url, length($13::text) + 1) = $13::text || '/')
+  AND ($14::text IS NULL OR c.feedback->>'category' = $14::text)
+  AND ($15::text IS NULL OR c.page_url = $15::text)
+  AND ($16::text[] IS NULL OR c.status = ANY($16::text[]))
+  AND ($17::uuid IS NULL OR EXISTS (
       SELECT 1 FROM roadmap_idea_conversations ri
-      WHERE ri.workspace_id = c.workspace_id AND ri.conversation_id = c.id AND ri.idea_id = $15::uuid))
-  AND (NOT $16::bool OR (c.kind = 'feedback' AND NOT EXISTS (
+      WHERE ri.workspace_id = c.workspace_id AND ri.conversation_id = c.id AND ri.idea_id = $17::uuid))
+  AND (NOT $18::bool OR (c.kind = 'feedback' AND NOT EXISTS (
       SELECT 1 FROM roadmap_idea_conversations ri
       WHERE ri.workspace_id = c.workspace_id AND ri.conversation_id = c.id)))
-  AND (NOT $17::bool OR c.assignee_id IS NULL)
-  AND ($18::uuid IS NULL OR c.assignee_id = $18::uuid)
-  AND ($19::uuid IS NULL OR c.team_id = $19::uuid)
-  AND ($20::uuid IS NULL OR c.team_id IN (
+  AND (NOT $19::bool OR c.assignee_id IS NULL)
+  AND ($20::uuid IS NULL OR c.assignee_id = $20::uuid)
+  AND ($21::uuid IS NULL OR c.team_id = $21::uuid)
+  AND ($22::uuid IS NULL OR c.team_id IN (
       SELECT tm.team_id FROM team_members tm
-      WHERE tm.workspace_id = c.workspace_id AND tm.member_id = $20::uuid))
-  AND ($21::uuid IS NULL OR EXISTS (
+      WHERE tm.workspace_id = c.workspace_id AND tm.member_id = $22::uuid))
+  AND ($23::uuid IS NULL OR EXISTS (
       SELECT 1 FROM conversation_labels cl
-      WHERE cl.workspace_id = c.workspace_id AND cl.conversation_id = c.id AND cl.label_id = $21::uuid))
-  AND ($22::jsonb IS NULL OR c.fields @> $22::jsonb)
-  AND ($23::bool IS NULL OR $23::bool = EXISTS (
+      WHERE cl.workspace_id = c.workspace_id AND cl.conversation_id = c.id AND cl.label_id = $23::uuid))
+  AND ($24::jsonb IS NULL OR c.fields @> $24::jsonb)
+  AND ($25::bool IS NULL OR $25::bool = EXISTS (
       SELECT 1 FROM conversation_member_states s
       WHERE s.workspace_id = c.workspace_id AND s.conversation_id = c.id
-        AND s.member_id = $24::uuid AND s.pinned_at IS NOT NULL))
-  AND ($25::text IS NULL OR EXISTS (
+        AND s.member_id = $26::uuid AND s.pinned_at IS NOT NULL))
+  AND ($27::text IS NULL OR EXISTS (
       SELECT 1 FROM inboxes pi
-      WHERE pi.workspace_id = c.workspace_id AND pi.id = c.inbox_id AND pi.purpose = $25::text))
-  AND ($26::bool IS NULL OR $26::bool = EXISTS (
+      WHERE pi.workspace_id = c.workspace_id AND pi.id = c.inbox_id AND pi.purpose = $27::text))
+  AND ($28::bool IS NULL OR $28::bool = EXISTS (
       SELECT 1 FROM conversation_stars st
-      WHERE st.workspace_id = c.workspace_id AND st.conversation_id = c.id AND st.member_id = $27::uuid))
-  AND ($28::uuid IS NULL OR EXISTS (
+      WHERE st.workspace_id = c.workspace_id AND st.conversation_id = c.id AND st.member_id = $29::uuid))
+  AND ($30::uuid IS NULL OR EXISTS (
       SELECT 1 FROM messages sm
       WHERE sm.workspace_id = c.workspace_id AND sm.conversation_id = c.id AND sm.kind = 'message' AND sm.direction = 'out'
-        AND NOT sm.draft AND (sm.author_member_id = $28::uuid OR sm.sent_by_member_id = $28::uuid)))
-  AND ($29::text IS NULL OR (
-      to_tsvector('simple', translate(c.subject, 'İı', 'ii')) @@ websearch_to_tsquery('simple', translate($29::text, 'İı', 'ii'))
+        AND NOT sm.draft AND (sm.author_member_id = $30::uuid OR sm.sent_by_member_id = $30::uuid)))
+  AND ($31::text IS NULL OR (
+      to_tsvector('simple', translate(c.subject, 'İı', 'ii')) @@ websearch_to_tsquery('simple', translate($31::text, 'İı', 'ii'))
       OR EXISTS (
           SELECT 1 FROM messages m
           WHERE m.workspace_id = c.workspace_id AND m.conversation_id = c.id AND NOT m.draft
-            AND m.search @@ websearch_to_tsquery('simple', translate($29::text, 'İı', 'ii')))
+            AND m.search @@ websearch_to_tsquery('simple', translate($31::text, 'İı', 'ii')))
       OR EXISTS (
           SELECT 1 FROM contacts ct
           WHERE ct.workspace_id = c.workspace_id AND ct.id = c.contact_id
-            AND ct.search @@ websearch_to_tsquery('simple', translate($29::text, 'İı', 'ii')))))
-  AND ($30::text IS NULL OR NOT (
-      to_tsvector('simple', translate(c.subject, 'İı', 'ii')) @@ websearch_to_tsquery('simple', translate($30::text, 'İı', 'ii'))
+            AND ct.search @@ websearch_to_tsquery('simple', translate($31::text, 'İı', 'ii')))))
+  AND ($32::text IS NULL OR NOT (
+      to_tsvector('simple', translate(c.subject, 'İı', 'ii')) @@ websearch_to_tsquery('simple', translate($32::text, 'İı', 'ii'))
       OR EXISTS (
           SELECT 1 FROM messages m
           WHERE m.workspace_id = c.workspace_id AND m.conversation_id = c.id AND NOT m.draft
-            AND m.search @@ websearch_to_tsquery('simple', translate($30::text, 'İı', 'ii')))
+            AND m.search @@ websearch_to_tsquery('simple', translate($32::text, 'İı', 'ii')))
       OR EXISTS (
           SELECT 1 FROM contacts ct
           WHERE ct.workspace_id = c.workspace_id AND ct.id = c.contact_id
-            AND ct.search @@ websearch_to_tsquery('simple', translate($30::text, 'İı', 'ii')))))
-  AND ($31::text[] IS NULL OR EXISTS (
+            AND ct.search @@ websearch_to_tsquery('simple', translate($32::text, 'İı', 'ii')))))
+  AND ($33::text[] IS NULL OR EXISTS (
       SELECT 1 FROM conversation_sla s
       WHERE s.workspace_id = c.workspace_id AND s.conversation_id = c.id AND s.dropped_at IS NULL
         AND (CASE
-            WHEN c.sla_due_at IS NOT NULL AND c.sla_due_at <= $32::timestamptz THEN 'breached'
+            WHEN c.sla_due_at IS NOT NULL AND c.sla_due_at <= $34::timestamptz THEN 'breached'
             WHEN c.sla_due_at IS NOT NULL AND s.warn_minutes > 0
-                AND c.sla_due_at - s.warn_minutes * interval '1 minute' <= $32::timestamptz THEN 'due_soon'
+                AND c.sla_due_at - s.warn_minutes * interval '1 minute' <= $34::timestamptz THEN 'due_soon'
             WHEN c.sla_due_at IS NOT NULL THEN 'on_track'
             WHEN s.paused_at IS NOT NULL THEN 'paused'
             WHEN s.first_reply_breached_at IS NOT NULL OR s.next_reply_breached_at IS NOT NULL OR s.resolution_breached_at IS NOT NULL THEN 'breached'
             WHEN (s.first_reply_target_s IS NOT NULL AND s.first_reply_met_at IS NOT NULL)
                 OR (s.next_reply_target_s IS NOT NULL AND s.next_reply_met_at IS NOT NULL)
                 OR (s.resolution_target_s IS NOT NULL AND s.resolution_met_at IS NOT NULL) THEN 'met'
-            ELSE 'on_track' END) = ANY ($31::text[])))
-  AND ($33::timestamptz IS NULL OR CASE
-      WHEN NOT $34::bool THEN (c.last_activity_at, c.id) < ($33::timestamptz, $35::uuid)
+            ELSE 'on_track' END) = ANY ($33::text[])))
+  AND ($35::timestamptz IS NULL OR CASE
+      WHEN $1::uuid IS NOT NULL THEN sched.at > $36::timestamptz
+          OR (sched.at = $36::timestamptz
+              AND (c.last_activity_at, c.id) < ($35::timestamptz, $37::uuid))
+      WHEN NOT $38::bool THEN (c.last_activity_at, c.id) < ($35::timestamptz, $37::uuid)
       WHEN $36::timestamptz IS NULL THEN c.sla_due_at IS NULL
-          AND (c.last_activity_at, c.id) < ($33::timestamptz, $35::uuid)
+          AND (c.last_activity_at, c.id) < ($35::timestamptz, $37::uuid)
       ELSE c.sla_due_at IS NULL OR c.sla_due_at > $36::timestamptz
           OR (c.sla_due_at = $36::timestamptz
-              AND (c.last_activity_at, c.id) < ($33::timestamptz, $35::uuid)) END)
-ORDER BY CASE WHEN $34::bool THEN c.sla_due_at END ASC NULLS LAST, c.last_activity_at DESC, c.id DESC
-LIMIT $37
+              AND (c.last_activity_at, c.id) < ($35::timestamptz, $37::uuid)) END)
+ORDER BY CASE WHEN $38::bool THEN c.sla_due_at END ASC NULLS LAST, sched.at ASC NULLS LAST, c.last_activity_at DESC, c.id DESC
+LIMIT $39
 `
 
 type ListConversationsParams struct {
-	WorkspaceID  uuid.UUID
-	AllInboxes   bool
-	ViewerID     uuid.UUID
-	InboxID      *uuid.UUID
-	ContactID    *uuid.UUID
-	BroadcastID  *uuid.UUID
-	Spam         *bool
-	Trashed      bool
-	Kinds        []string
-	ChannelKinds []string
-	Site         *string
-	Category     *string
-	Page         *string
-	Statuses     []string
-	IdeaID       *uuid.UUID
-	NoIdea       bool
-	Unassigned   bool
-	AssigneeID   *uuid.UUID
-	TeamID       *uuid.UUID
-	TeamsOf      *uuid.UUID
-	LabelID      *uuid.UUID
-	Fields       []byte
-	Pinned       *bool
-	PinnedBy     *uuid.UUID
-	Purpose      *string
-	Starred      *bool
-	StarredBy    *uuid.UUID
-	SentBy       *uuid.UUID
-	Q            *string
-	QNot         *string
-	SlaStates    []string
-	SlaNow       time.Time
-	CursorAt     *time.Time
-	BySla        bool
-	CursorID     *uuid.UUID
-	CursorDue    *time.Time
-	Lim          int32
+	ScheduledBy    *uuid.UUID
+	WorkspaceID    uuid.UUID
+	AllInboxes     bool
+	ViewerID       uuid.UUID
+	ViewerMemberID *uuid.UUID
+	InboxID        *uuid.UUID
+	ContactID      *uuid.UUID
+	BroadcastID    *uuid.UUID
+	Spam           *bool
+	Trashed        bool
+	Kinds          []string
+	ChannelKinds   []string
+	Site           *string
+	Category       *string
+	Page           *string
+	Statuses       []string
+	IdeaID         *uuid.UUID
+	NoIdea         bool
+	Unassigned     bool
+	AssigneeID     *uuid.UUID
+	TeamID         *uuid.UUID
+	TeamsOf        *uuid.UUID
+	LabelID        *uuid.UUID
+	Fields         []byte
+	Pinned         *bool
+	PinnedBy       *uuid.UUID
+	Purpose        *string
+	Starred        *bool
+	StarredBy      *uuid.UUID
+	SentBy         *uuid.UUID
+	Q              *string
+	QNot           *string
+	SlaStates      []string
+	SlaNow         time.Time
+	CursorAt       *time.Time
+	CursorDue      *time.Time
+	CursorID       *uuid.UUID
+	BySla          bool
+	Lim            int32
 }
 
-func (q *Queries) ListConversations(ctx context.Context, arg ListConversationsParams) ([]Conversation, error) {
+type ListConversationsRow struct {
+	Conversation    Conversation
+	NextScheduledAt *time.Time
+}
+
+func (q *Queries) ListConversations(ctx context.Context, arg ListConversationsParams) ([]ListConversationsRow, error) {
 	rows, err := q.db.Query(ctx, listConversations,
+		arg.ScheduledBy,
 		arg.WorkspaceID,
 		arg.AllInboxes,
 		arg.ViewerID,
+		arg.ViewerMemberID,
 		arg.InboxID,
 		arg.ContactID,
 		arg.BroadcastID,
@@ -785,66 +818,68 @@ func (q *Queries) ListConversations(ctx context.Context, arg ListConversationsPa
 		arg.SlaStates,
 		arg.SlaNow,
 		arg.CursorAt,
-		arg.BySla,
-		arg.CursorID,
 		arg.CursorDue,
+		arg.CursorID,
+		arg.BySla,
 		arg.Lim,
 	)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []Conversation
+	var items []ListConversationsRow
 	for rows.Next() {
-		var i Conversation
+		var i ListConversationsRow
 		if err := rows.Scan(
-			&i.ID,
-			&i.WorkspaceID,
-			&i.InboxID,
-			&i.ContactID,
-			&i.ChannelID,
-			&i.Subject,
-			&i.Status,
-			&i.SnoozeUntil,
-			&i.Priority,
-			&i.AssigneeID,
-			&i.LastMessageAt,
-			&i.LastActivityAt,
-			&i.CreatedAt,
-			&i.UpdatedAt,
-			&i.Spam,
-			&i.EmailToken,
-			&i.RelatedConversationID,
-			&i.ContinuityThrough,
-			&i.ContinuitySentAt,
-			&i.Kind,
-			&i.Feedback,
-			&i.EmailAddress,
-			&i.ClosedAt,
-			&i.Rating,
-			&i.RatingComment,
-			&i.RatedAt,
-			&i.RatingRequestedAt,
-			&i.LastReadByContactAt,
-			&i.PageUrl,
-			&i.PageTitle,
-			&i.ChannelKind,
-			&i.BroadcastID,
-			&i.MigrationID,
-			&i.ImportedAt,
-			&i.FeedbackProgress,
-			&i.HelpArticleID,
-			&i.TrashedAt,
-			&i.TrashedByMemberID,
-			&i.TrashedByApiKeyID,
-			&i.PushThrough,
-			&i.PushSentAt,
-			&i.TeamID,
-			&i.Fields,
-			&i.SlaDueAt,
-			&i.SnoozeRuleID,
-			&i.AssignWaitingSince,
-			&i.AssignAfterRules,
+			&i.Conversation.ID,
+			&i.Conversation.WorkspaceID,
+			&i.Conversation.InboxID,
+			&i.Conversation.ContactID,
+			&i.Conversation.ChannelID,
+			&i.Conversation.Subject,
+			&i.Conversation.Status,
+			&i.Conversation.SnoozeUntil,
+			&i.Conversation.Priority,
+			&i.Conversation.AssigneeID,
+			&i.Conversation.LastMessageAt,
+			&i.Conversation.LastActivityAt,
+			&i.Conversation.CreatedAt,
+			&i.Conversation.UpdatedAt,
+			&i.Conversation.Spam,
+			&i.Conversation.EmailToken,
+			&i.Conversation.RelatedConversationID,
+			&i.Conversation.ContinuityThrough,
+			&i.Conversation.ContinuitySentAt,
+			&i.Conversation.Kind,
+			&i.Conversation.Feedback,
+			&i.Conversation.EmailAddress,
+			&i.Conversation.ClosedAt,
+			&i.Conversation.Rating,
+			&i.Conversation.RatingComment,
+			&i.Conversation.RatedAt,
+			&i.Conversation.RatingRequestedAt,
+			&i.Conversation.LastReadByContactAt,
+			&i.Conversation.PageUrl,
+			&i.Conversation.PageTitle,
+			&i.Conversation.ChannelKind,
+			&i.Conversation.BroadcastID,
+			&i.Conversation.MigrationID,
+			&i.Conversation.ImportedAt,
+			&i.Conversation.FeedbackProgress,
+			&i.Conversation.HelpArticleID,
+			&i.Conversation.TrashedAt,
+			&i.Conversation.TrashedByMemberID,
+			&i.Conversation.TrashedByApiKeyID,
+			&i.Conversation.PushThrough,
+			&i.Conversation.PushSentAt,
+			&i.Conversation.TeamID,
+			&i.Conversation.Fields,
+			&i.Conversation.SlaDueAt,
+			&i.Conversation.SnoozeRuleID,
+			&i.Conversation.AssignWaitingSince,
+			&i.Conversation.AssignAfterRules,
+			&i.Conversation.DraftOf,
+			&i.NextScheduledAt,
 		); err != nil {
 			return nil, err
 		}
@@ -903,6 +938,35 @@ type ListConversationsWithAttachmentsParams struct {
 
 func (q *Queries) ListConversationsWithAttachments(ctx context.Context, arg ListConversationsWithAttachmentsParams) ([]uuid.UUID, error) {
 	rows, err := q.db.Query(ctx, listConversationsWithAttachments, arg.WorkspaceID, arg.ConversationIds, arg.IncludeNotes)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []uuid.UUID
+	for rows.Next() {
+		var id uuid.UUID
+		if err := rows.Scan(&id); err != nil {
+			return nil, err
+		}
+		items = append(items, id)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listDraftConversationIDs = `-- name: ListDraftConversationIDs :many
+SELECT id FROM conversations WHERE workspace_id = $1 AND draft_of = $2 ORDER BY id
+`
+
+type ListDraftConversationIDsParams struct {
+	WorkspaceID uuid.UUID
+	MemberID    *uuid.UUID
+}
+
+func (q *Queries) ListDraftConversationIDs(ctx context.Context, arg ListDraftConversationIDsParams) ([]uuid.UUID, error) {
+	rows, err := q.db.Query(ctx, listDraftConversationIDs, arg.WorkspaceID, arg.MemberID)
 	if err != nil {
 		return nil, err
 	}
@@ -1053,7 +1117,7 @@ func (q *Queries) ListWorkspacesWithExpiredTrash(ctx context.Context, at *time.T
 }
 
 const lockConversation = `-- name: LockConversation :one
-SELECT id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id, trashed_at, trashed_by_member_id, trashed_by_api_key_id, push_through, push_sent_at, team_id, fields, sla_due_at, snooze_rule_id, assign_waiting_since, assign_after_rules FROM conversations WHERE workspace_id = $1 AND id = $2 FOR UPDATE
+SELECT id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id, trashed_at, trashed_by_member_id, trashed_by_api_key_id, push_through, push_sent_at, team_id, fields, sla_due_at, snooze_rule_id, assign_waiting_since, assign_after_rules, draft_of FROM conversations WHERE workspace_id = $1 AND id = $2 FOR UPDATE
 `
 
 type LockConversationParams struct {
@@ -1112,6 +1176,7 @@ func (q *Queries) LockConversation(ctx context.Context, arg LockConversationPara
 		&i.SnoozeRuleID,
 		&i.AssignWaitingSince,
 		&i.AssignAfterRules,
+		&i.DraftOf,
 	)
 	return i, err
 }
@@ -1150,7 +1215,7 @@ UPDATE conversations SET inbox_id = $1, channel_id = $2, assignee_id = $3,
     team_id = $4, updated_at = $5,
     assign_waiting_since = CASE WHEN $3::uuid IS NOT NULL THEN NULL ELSE assign_waiting_since END
 WHERE workspace_id = $6 AND id = $7
-RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id, trashed_at, trashed_by_member_id, trashed_by_api_key_id, push_through, push_sent_at, team_id, fields, sla_due_at, snooze_rule_id, assign_waiting_since, assign_after_rules
+RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id, trashed_at, trashed_by_member_id, trashed_by_api_key_id, push_through, push_sent_at, team_id, fields, sla_due_at, snooze_rule_id, assign_waiting_since, assign_after_rules, draft_of
 `
 
 type MoveConversationParams struct {
@@ -1222,6 +1287,7 @@ func (q *Queries) MoveConversation(ctx context.Context, arg MoveConversationPara
 		&i.SnoozeRuleID,
 		&i.AssignWaitingSince,
 		&i.AssignAfterRules,
+		&i.DraftOf,
 	)
 	return i, err
 }
@@ -1244,7 +1310,7 @@ func (q *Queries) RemoveConversationLabel(ctx context.Context, arg RemoveConvers
 const restoreConversation = `-- name: RestoreConversation :one
 UPDATE conversations SET trashed_at = NULL, trashed_by_member_id = NULL, trashed_by_api_key_id = NULL, updated_at = $1
 WHERE workspace_id = $2 AND id = $3 AND trashed_at > coalesce($4::timestamptz, clock_timestamp()) - interval '720 hours'
-RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id, trashed_at, trashed_by_member_id, trashed_by_api_key_id, push_through, push_sent_at, team_id, fields, sla_due_at, snooze_rule_id, assign_waiting_since, assign_after_rules
+RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id, trashed_at, trashed_by_member_id, trashed_by_api_key_id, push_through, push_sent_at, team_id, fields, sla_due_at, snooze_rule_id, assign_waiting_since, assign_after_rules, draft_of
 `
 
 type RestoreConversationParams struct {
@@ -1310,14 +1376,30 @@ func (q *Queries) RestoreConversation(ctx context.Context, arg RestoreConversati
 		&i.SnoozeRuleID,
 		&i.AssignWaitingSince,
 		&i.AssignAfterRules,
+		&i.DraftOf,
 	)
 	return i, err
+}
+
+const setConversationDraftOf = `-- name: SetConversationDraftOf :exec
+UPDATE conversations SET draft_of = $1::uuid WHERE workspace_id = $2 AND id = $3
+`
+
+type SetConversationDraftOfParams struct {
+	DraftOf     *uuid.UUID
+	WorkspaceID uuid.UUID
+	ID          uuid.UUID
+}
+
+func (q *Queries) SetConversationDraftOf(ctx context.Context, arg SetConversationDraftOfParams) error {
+	_, err := q.db.Exec(ctx, setConversationDraftOf, arg.DraftOf, arg.WorkspaceID, arg.ID)
+	return err
 }
 
 const setConversationTeam = `-- name: SetConversationTeam :one
 UPDATE conversations SET team_id = $1, updated_at = $2
 WHERE workspace_id = $3 AND id = $4
-RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id, trashed_at, trashed_by_member_id, trashed_by_api_key_id, push_through, push_sent_at, team_id, fields, sla_due_at, snooze_rule_id, assign_waiting_since, assign_after_rules
+RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id, trashed_at, trashed_by_member_id, trashed_by_api_key_id, push_through, push_sent_at, team_id, fields, sla_due_at, snooze_rule_id, assign_waiting_since, assign_after_rules, draft_of
 `
 
 type SetConversationTeamParams struct {
@@ -1383,6 +1465,7 @@ func (q *Queries) SetConversationTeam(ctx context.Context, arg SetConversationTe
 		&i.SnoozeRuleID,
 		&i.AssignWaitingSince,
 		&i.AssignAfterRules,
+		&i.DraftOf,
 	)
 	return i, err
 }
@@ -1392,7 +1475,7 @@ UPDATE conversations c SET feedback = c.feedback || jsonb_build_object(
     'text', $1::text,
     'attachment_count', (SELECT count(*) FROM attachments a WHERE a.workspace_id = c.workspace_id AND a.message_id = $2::uuid))
 WHERE c.workspace_id = $3 AND c.id = $4 AND c.kind = 'feedback'
-RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id, trashed_at, trashed_by_member_id, trashed_by_api_key_id, push_through, push_sent_at, team_id, fields, sla_due_at, snooze_rule_id, assign_waiting_since, assign_after_rules
+RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id, trashed_at, trashed_by_member_id, trashed_by_api_key_id, push_through, push_sent_at, team_id, fields, sla_due_at, snooze_rule_id, assign_waiting_since, assign_after_rules, draft_of
 `
 
 type SetFeedbackFirstMessageParams struct {
@@ -1458,6 +1541,7 @@ func (q *Queries) SetFeedbackFirstMessage(ctx context.Context, arg SetFeedbackFi
 		&i.SnoozeRuleID,
 		&i.AssignWaitingSince,
 		&i.AssignAfterRules,
+		&i.DraftOf,
 	)
 	return i, err
 }
@@ -1491,7 +1575,7 @@ const trashConversation = `-- name: TrashConversation :one
 UPDATE conversations SET trashed_at = coalesce($1::timestamptz, clock_timestamp()), trashed_by_member_id = $2, trashed_by_api_key_id = $3, updated_at = $4::timestamptz,
     assign_waiting_since = NULL, assign_after_rules = false
 WHERE workspace_id = $5 AND id = $6 AND trashed_at IS NULL
-RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id, trashed_at, trashed_by_member_id, trashed_by_api_key_id, push_through, push_sent_at, team_id, fields, sla_due_at, snooze_rule_id, assign_waiting_since, assign_after_rules
+RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id, trashed_at, trashed_by_member_id, trashed_by_api_key_id, push_through, push_sent_at, team_id, fields, sla_due_at, snooze_rule_id, assign_waiting_since, assign_after_rules, draft_of
 `
 
 type TrashConversationParams struct {
@@ -1562,6 +1646,7 @@ func (q *Queries) TrashConversation(ctx context.Context, arg TrashConversationPa
 		&i.SnoozeRuleID,
 		&i.AssignWaitingSince,
 		&i.AssignAfterRules,
+		&i.DraftOf,
 	)
 	return i, err
 }
@@ -1573,7 +1658,7 @@ UPDATE conversations SET subject = $1, status = $2, snooze_until = $3,
     assign_waiting_since = CASE WHEN $2 <> 'open' OR $5::uuid IS NOT NULL OR $6::bool THEN NULL ELSE assign_waiting_since END,
     assign_after_rules = assign_after_rules AND $2 = 'open' AND $5::uuid IS NULL AND NOT $6::bool
 WHERE workspace_id = $9 AND id = $10
-RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id, trashed_at, trashed_by_member_id, trashed_by_api_key_id, push_through, push_sent_at, team_id, fields, sla_due_at, snooze_rule_id, assign_waiting_since, assign_after_rules
+RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id, trashed_at, trashed_by_member_id, trashed_by_api_key_id, push_through, push_sent_at, team_id, fields, sla_due_at, snooze_rule_id, assign_waiting_since, assign_after_rules, draft_of
 `
 
 type UpdateConversationParams struct {
@@ -1651,6 +1736,7 @@ func (q *Queries) UpdateConversation(ctx context.Context, arg UpdateConversation
 		&i.SnoozeRuleID,
 		&i.AssignWaitingSince,
 		&i.AssignAfterRules,
+		&i.DraftOf,
 	)
 	return i, err
 }

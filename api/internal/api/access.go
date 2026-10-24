@@ -97,6 +97,9 @@ func visibleConversationOrTrashed(ctx context.Context, q *store.Queries, p princ
 	if err != nil {
 		return c, err
 	}
+	if conversationHidden(p, c) {
+		return c, errConversationGone
+	}
 	ok, err := canSeeInbox(ctx, q, p, c.InboxID)
 	if err != nil {
 		return c, err
@@ -105,6 +108,16 @@ func visibleConversationOrTrashed(ctx context.Context, q *store.Queries, p princ
 		return c, errConversationGone
 	}
 	return c, nil
+}
+
+// conversationHidden matches conversation_visible_to in SQL: a conversation a member's new mail
+// draft made is theirs alone until it goes.
+func conversationHidden(p principal, c store.Conversation) bool {
+	if c.DraftOf == nil {
+		return false
+	}
+	m := p.memberRef()
+	return m == nil || *m != *c.DraftOf
 }
 
 func memberHasInbox(ctx context.Context, q *store.Queries, workspaceID, inboxID, memberID uuid.UUID) (bool, error) {

@@ -89,7 +89,7 @@ func (q *Queries) FirstEventID(ctx context.Context, workspaceID uuid.UUID) (int6
 }
 
 const getEvent = `-- name: GetEvent :one
-SELECT id, workspace_id, type, inbox_id, conversation_id, payload, created_at, contact_id FROM events WHERE workspace_id = $1 AND id = $2
+SELECT id, workspace_id, type, inbox_id, conversation_id, payload, created_at, contact_id, only_member FROM events WHERE workspace_id = $1 AND id = $2
 `
 
 type GetEventParams struct {
@@ -109,13 +109,14 @@ func (q *Queries) GetEvent(ctx context.Context, arg GetEventParams) (Event, erro
 		&i.Payload,
 		&i.CreatedAt,
 		&i.ContactID,
+		&i.OnlyMember,
 	)
 	return i, err
 }
 
 const insertEvent = `-- name: InsertEvent :one
-INSERT INTO events (workspace_id, type, inbox_id, conversation_id, contact_id, payload)
-VALUES ($1, $2, $3, $4, $5, $6)
+INSERT INTO events (workspace_id, type, inbox_id, conversation_id, contact_id, payload, only_member)
+VALUES ($1, $2, $3, $4, $5, $6, $7)
 RETURNING id
 `
 
@@ -126,6 +127,7 @@ type InsertEventParams struct {
 	ConversationID *uuid.UUID
 	ContactID      *uuid.UUID
 	Payload        []byte
+	OnlyMember     *uuid.UUID
 }
 
 func (q *Queries) InsertEvent(ctx context.Context, arg InsertEventParams) (int64, error) {
@@ -136,6 +138,7 @@ func (q *Queries) InsertEvent(ctx context.Context, arg InsertEventParams) (int64
 		arg.ConversationID,
 		arg.ContactID,
 		arg.Payload,
+		arg.OnlyMember,
 	)
 	var id int64
 	err := row.Scan(&id)
@@ -154,7 +157,7 @@ func (q *Queries) LastEventID(ctx context.Context, workspaceID uuid.UUID) (int64
 }
 
 const listEventsAfter = `-- name: ListEventsAfter :many
-SELECT id, workspace_id, type, inbox_id, conversation_id, payload, created_at, contact_id FROM events WHERE workspace_id = $1 AND id > $2 ORDER BY id LIMIT $3
+SELECT id, workspace_id, type, inbox_id, conversation_id, payload, created_at, contact_id, only_member FROM events WHERE workspace_id = $1 AND id > $2 ORDER BY id LIMIT $3
 `
 
 type ListEventsAfterParams struct {
@@ -181,6 +184,7 @@ func (q *Queries) ListEventsAfter(ctx context.Context, arg ListEventsAfterParams
 			&i.Payload,
 			&i.CreatedAt,
 			&i.ContactID,
+			&i.OnlyMember,
 		); err != nil {
 			return nil, err
 		}
@@ -229,7 +233,7 @@ func (q *Queries) LockConversationEvents(ctx context.Context, arg LockConversati
 }
 
 const lockEventShared = `-- name: LockEventShared :one
-SELECT id, workspace_id, type, inbox_id, conversation_id, payload, created_at, contact_id FROM events WHERE workspace_id = $1 AND id = $2 FOR SHARE
+SELECT id, workspace_id, type, inbox_id, conversation_id, payload, created_at, contact_id, only_member FROM events WHERE workspace_id = $1 AND id = $2 FOR SHARE
 `
 
 type LockEventSharedParams struct {
@@ -251,6 +255,7 @@ func (q *Queries) LockEventShared(ctx context.Context, arg LockEventSharedParams
 		&i.Payload,
 		&i.CreatedAt,
 		&i.ContactID,
+		&i.OnlyMember,
 	)
 	return i, err
 }

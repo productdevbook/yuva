@@ -97,6 +97,7 @@ WHERE cv.contact_id <> @contact_id AND cv.trashed_at IS NULL
   AND (@all_inboxes::bool OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = cv.workspace_id AND iv.inbox_id = cv.inbox_id AND iv.viewer_id = @viewer_id::uuid))
+  AND conversation_visible_to(cv.draft_of, sqlc.narg(viewer_member_id)::uuid)
   AND (sqlc.narg(cursor_at)::timestamptz IS NULL
        OR (cv.created_at, cv.id) < (sqlc.narg(cursor_at)::timestamptz, sqlc.narg(cursor_id)::uuid))
 GROUP BY cv.id

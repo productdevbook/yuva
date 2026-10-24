@@ -117,7 +117,7 @@ func (s *Server) homeScope(ctx context.Context, p principal, prm oas.GetHomePara
 
 func (s *Server) homeInbox(ctx context.Context, sc homeScope) (oas.HomeInbox, error) {
 	p := sc.p
-	rows, err := s.st.HomeInbox(ctx, store.HomeInboxParams{WorkspaceID: p.workspaceID, InboxID: sc.inbox, AllInboxes: p.seesAllInboxes(), ViewerID: p.viewerID(), WaitingLimit: homeWaitingShown})
+	rows, err := s.st.HomeInbox(ctx, store.HomeInboxParams{WorkspaceID: p.workspaceID, InboxID: sc.inbox, AllInboxes: p.seesAllInboxes(), ViewerID: p.viewerID(), ViewerMemberID: p.memberRef(), WaitingLimit: homeWaitingShown})
 	if err != nil {
 		return oas.HomeInbox{}, err
 	}
@@ -149,7 +149,7 @@ func (s *Server) homeInbox(ctx context.Context, sc homeScope) (oas.HomeInbox, er
 
 func (s *Server) homeOpenLoad(ctx context.Context, sc homeScope, out *oas.GetHome200JSONResponse) (map[uuid.UUID]*oas.HomeProduct, error) {
 	p := sc.p
-	rows, err := s.st.HomeOpenLoad(ctx, store.HomeOpenLoadParams{WorkspaceID: p.workspaceID, InboxID: sc.inbox, AllInboxes: p.seesAllInboxes(), ViewerID: p.viewerID()})
+	rows, err := s.st.HomeOpenLoad(ctx, store.HomeOpenLoadParams{WorkspaceID: p.workspaceID, InboxID: sc.inbox, AllInboxes: p.seesAllInboxes(), ViewerID: p.viewerID(), ViewerMemberID: p.memberRef()})
 	if err != nil {
 		return nil, err
 	}
@@ -198,7 +198,7 @@ func (s *Server) homeActivity(ctx context.Context, sc homeScope, products map[uu
 		return nil
 	}
 	conversations, err := s.st.HomeConversationsByDay(ctx, store.HomeConversationsByDayParams{
-		Timezone: sc.tz, WorkspaceID: p.workspaceID, Since: sc.prevSince, Until: sc.now, InboxID: sc.inbox, AllInboxes: p.seesAllInboxes(), ViewerID: p.viewerID(),
+		Timezone: sc.tz, WorkspaceID: p.workspaceID, Since: sc.prevSince, Until: sc.now, InboxID: sc.inbox, AllInboxes: p.seesAllInboxes(), ViewerID: p.viewerID(), ViewerMemberID: p.memberRef(),
 	})
 	if err != nil {
 		return out, err
