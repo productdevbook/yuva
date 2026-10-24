@@ -15,6 +15,7 @@ import { Input } from "@/components/ui/input"
 import { ColorPicker, PRODUCT_COLORS } from "@/features/settings/inboxes/colors"
 import { Field } from "@/features/settings/ui"
 import { useInboxDraft } from "@/features/setup/draft"
+import { MailboxOwnerChoice } from "@/components/common/MailboxOwnerChoice"
 import { PurposeChoice } from "@/components/common/PurposeChoice"
 import type { InboxPurpose } from "@/lib/api"
 import { cn } from "@/lib/utils"
@@ -27,6 +28,7 @@ export function AddProductDialog({ onClose }: { onClose: () => void }) {
   const [color, setColor] = useState(PRODUCT_COLORS[5])
   const [mode, setMode] = useState<"live" | "async">("live")
   const [purpose, setPurpose] = useState<InboxPurpose>("support")
+  const [owner, setOwner] = useState<string | undefined>(undefined)
   const modes: { value: "live" | "async"; title: React.ReactNode; hint: React.ReactNode }[] = [
     {
       value: "live",
@@ -46,8 +48,8 @@ export function AddProductDialog({ onClose }: { onClose: () => void }) {
           className="flex flex-col gap-5"
           onSubmit={(e) => {
             e.preventDefault()
-            if (!name.trim()) return
-            patch({ name: name.trim(), color, mode, purpose })
+            if (!name.trim() || (purpose === "mail" && owner === "")) return
+            patch({ name: name.trim(), color, mode, purpose, ownerMemberId: purpose === "mail" ? owner : undefined })
             navigate(purpose === "mail" ? "/setup/new/add/email" : "/setup/new/pick", { state: { back: "/settings" } })
           }}
         >
@@ -73,7 +75,14 @@ export function AddProductDialog({ onClose }: { onClose: () => void }) {
           <Field label={<Trans>Colour</Trans>}>
             <ColorPicker value={color} onChange={setColor} />
           </Field>
-          <PurposeChoice value={purpose} onChange={setPurpose} />
+          <PurposeChoice
+            value={purpose}
+            onChange={(p) => {
+              setPurpose(p)
+              setOwner(undefined)
+            }}
+          />
+          {purpose === "mail" && <MailboxOwnerChoice value={owner} onChange={setOwner} />}
           {purpose === "support" && (
             <Field label={<Trans>How do you answer?</Trans>}>
               <div className="flex flex-col gap-2" role="radiogroup">
@@ -100,7 +109,11 @@ export function AddProductDialog({ onClose }: { onClose: () => void }) {
             <Button type="button" variant="outline" onClick={onClose}>
               <Trans>Cancel</Trans>
             </Button>
-            <Button type="submit" disabled={!name.trim()} data-testid="add-product-create">
+            <Button
+              type="submit"
+              disabled={!name.trim() || (purpose === "mail" && owner === "")}
+              data-testid="add-product-create"
+            >
               <Trans>Create and add a channel</Trans>
             </Button>
           </DialogFooter>

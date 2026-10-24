@@ -4,6 +4,7 @@ import { useMemo } from "react"
 import { api, unwrap, type Channel, type CustomFieldObject, type Inbox } from "@/lib/api"
 import { keys } from "@/lib/keys"
 import type { LiveContext } from "@/lib/live"
+import { readsMailbox } from "@/lib/mailbox"
 import { useSession } from "@/lib/session"
 
 export function useLiveContext(): LiveContext {
@@ -30,13 +31,31 @@ export function isSupport(inbox: Inbox) {
   return inbox.purpose !== "mail"
 }
 
-export function useInboxes() {
+function readable(items: Inbox[]) {
+  return items.filter(readsMailbox)
+}
+
+export function useAllInboxes() {
   const { workspaceId: ws } = useSession()
   return useQuery({
     queryKey: keys.inboxes(ws),
     queryFn: () => unwrap(api.GET("/v1/inboxes")).then((r) => r.items),
     staleTime: 60_000,
   })
+}
+
+export function useInboxes() {
+  const { workspaceId: ws } = useSession()
+  return useQuery({
+    queryKey: keys.inboxes(ws),
+    queryFn: () => unwrap(api.GET("/v1/inboxes")).then((r) => r.items),
+    staleTime: 60_000,
+    select: readable,
+  })
+}
+
+export function useLockedMailboxes() {
+  return (useAllInboxes().data ?? []).filter((i) => !readsMailbox(i))
 }
 
 export function useInboxMembers(inboxId: string | undefined) {

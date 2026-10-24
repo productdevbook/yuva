@@ -254,6 +254,10 @@ msgstr "{attention, plural, one {# kanal ilgi bekliyor} other {# kanal ilgi bekl
 msgid "{author, select, bot {No drafts by bots} assistant {No drafts by assistants} member {No drafts by members} other {No drafts by this author}}"
 msgstr "{author, select, bot {Botlardan taslak yok} assistant {Asistanlardan taslak yok} member {Üyelerden taslak yok} other {Bu yazardan taslak yok}}"
 
+#: src/features/mail/MailThread.tsx
+msgid "{author} on behalf of {ownerName}"
+msgstr "{author}, {ownerName} adına"
+
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/mail/MailThread.tsx
 msgid "{author}, sent by {by}"
@@ -667,6 +671,10 @@ msgstr "{name} yazıyor…"
 #: src/features/setup/SetupHub.tsx
 msgid "{name} news"
 msgstr "{name} haberleri"
+
+#: src/features/team/RemoveMemberDialog.tsx
+msgid "{name} owns personal mailboxes. Decide what happens to each: delete it with everything in it, or hand it to another member. You do not read them either way."
+msgstr "{name} kişisel posta kutularına sahip. Her biri için ne olacağına karar verin: içindekilerle birlikte silin ya da başka bir üyeye devredin. Her iki durumda da bunları siz okumazsınız."
 
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "{name} receives mail at this address. Here is what you set up."
@@ -1398,6 +1406,10 @@ msgstr "E-posta listesi bir gelen kutusunun adıyla, onun e-posta kanalı üzeri
 msgid "A mailing list with subscribe forms, for your broadcasts"
 msgstr "Bültenleriniz için abonelik formlu bir e-posta listesi"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "a member"
+msgstr "bir üye"
+
 #: src/components/common/AssignmentFields.tsx
 msgid "A member is eligible while they have access to the product (owners and admins only with a grant), have the panel or an app open, are set to Auto availability, the product is inside its business hours and they are under the limit. When nobody is eligible the conversation waits and goes to the first teammate who becomes available."
 msgstr "Bir üye, ürüne erişimi olduğunda (yönetici ve sahipler yalnızca yetki verilmişse), panel veya bir uygulama açıkken, uygunluğu Otomatik iken, ürün çalışma saatleri içindeyken ve sınırın altındayken uygundur. Kimse uygun değilse konuşma bekler ve uygun olan ilk takım arkadaşına verilir."
@@ -1672,8 +1684,14 @@ msgstr "Kabul edilen yanıt"
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/app/AppSections.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/settings/ProductsPage.tsx
 msgid "Access"
 msgstr "Erişim"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Access of {person}"
+msgstr "{person} için erişim"
 
 #: src/features/migrations/DoneStep.tsx
 msgid "Access to {provider}"
@@ -1736,6 +1754,7 @@ msgstr "Etkinlik"
 #: src/features/conversation/Participants.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/addresses/AddressesPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Add"
@@ -1781,6 +1800,10 @@ msgstr "Dil ekle"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Add a link"
 msgstr "Bağlantı ekle"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Add a member"
+msgstr "Üye ekle"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Add a monitor"
@@ -2079,6 +2102,10 @@ msgstr "Adres doğrulama"
 msgid "Address verified"
 msgstr "Adres doğrulandı"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Addresses"
+msgstr "Adresler"
+
 #: src/features/team/MemberAddresses.tsx
 msgid "Addresses {name} added to send mail from. Those waiting for approval need an owner or admin."
 msgstr "{name} kişisinin mail göndermek için eklediği adresler. Onay bekleyenler için bir sahip ya da yönetici gerekir."
@@ -2205,9 +2232,9 @@ msgstr "Hepsi okundu olarak işaretlendi"
 msgid "All monitors"
 msgstr "Tüm monitörler"
 
-#: src/features/settings/inboxes/InboxSecurity.tsx
-msgid "All of its conversations, messages and attachments are deleted with it. Webhooks and API keys limited to it stop working."
-msgstr "Tüm konuşmaları, mesajları ve ekleri onunla birlikte silinir. Yalnızca ona bağlı webhook'lar ve API anahtarları çalışmaz."
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "All of its conversations, messages and attachments are deleted with it. This cannot be undone."
+msgstr "İçindeki tüm konuşmalar, iletiler ve ekler onunla birlikte silinir. Bu geri alınamaz."
 
 #: src/features/migrations/UploadStep.tsx
 msgid "All parts arrived. Reading the file…"
@@ -3641,6 +3668,7 @@ msgstr "Kampanya adı"
 #: src/features/settings/AddProductDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/sso/SsoPage.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
@@ -3651,6 +3679,7 @@ msgstr "Kampanya adı"
 #: src/features/status/IncidentDetail.tsx
 #: src/features/status/IncidentDialog.tsx
 #: src/features/status/MonitorDialog.tsx
+#: src/features/team/RemoveMemberDialog.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Cancel"
 msgstr "Vazgeç"
@@ -4824,6 +4853,7 @@ msgstr "konuşma"
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/DoneStep.tsx
 #: src/features/migrations/ReviewStep.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/webhooks/events.tsx
 msgid "Conversations"
 msgstr "Konuşmalar"
@@ -5136,6 +5166,10 @@ msgstr "Bu TXT kaydını DNS sağlayıcınızda oluşturun, sonra Doğrula'ya ba
 msgid "Create workspace"
 msgstr "Çalışma alanı oluştur"
 
+#: src/features/mail/MailPage.tsx
+msgid "Create your own mailbox"
+msgstr "Kendi posta kutunuzu oluşturun"
+
 #: src/features/auth/CreateWorkspace.tsx
 msgid "Create your workspace"
 msgstr "Çalışma alanınızı oluşturun"
@@ -5338,6 +5372,11 @@ msgstr "Varsayılan: {fallback}"
 msgid "Degraded performance"
 msgstr "Düşük performans"
 
+#: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Delegates"
+msgstr "Vekiller"
+
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListSettings.tsx
@@ -5349,6 +5388,7 @@ msgstr "Düşük performans"
 #: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 #: src/features/settings/macros/MacrosPage.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -5356,6 +5396,7 @@ msgstr "Düşük performans"
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
 #: src/features/status/SettingsTab.tsx
+#: src/features/team/RemoveMemberDialog.tsx
 msgid "Delete"
 msgstr "Sil"
 
@@ -5378,7 +5419,7 @@ msgstr "Sil ({removeKey})"
 msgid "Delete {0}?"
 msgstr "{0} silinsin mi?"
 
-#: src/features/settings/inboxes/InboxSecurity.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Delete {name}?"
@@ -5416,6 +5457,10 @@ msgstr "Anahtarı sil"
 #: src/features/broadcasts/ListSettings.tsx
 msgid "Delete list"
 msgstr "Listeyi sil"
+
+#: src/features/settings/inboxes/InboxSecurity.tsx
+msgid "Delete mailbox"
+msgstr "Posta kutusunu sil"
 
 #: src/features/status/MonitorsPage.tsx
 msgid "Delete monitor"
@@ -5510,6 +5555,10 @@ msgstr "Bu DKIM anahtarı silinsin mi?"
 msgid "Delete this macro?"
 msgstr "Bu makro silinsin mi?"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Delete this mailbox"
+msgstr "Bu posta kutusunu sil"
+
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Delete this migration?"
 msgstr "Bu taşıma silinsin mi?"
@@ -5521,10 +5570,6 @@ msgstr "Bu notu sil"
 #: src/features/contact/ContactNotes.tsx
 msgid "Delete this note?"
 msgstr "Bu not silinsin mi?"
-
-#: src/features/settings/inboxes/InboxSecurity.tsx
-msgid "Delete this product"
-msgstr "Bu ürünü sil"
 
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Delete this subscription?"
@@ -5592,6 +5637,7 @@ msgstr "Silinmiş gelen kutusu"
 
 #: src/components/common/DiscussionAuthor.tsx
 #: src/features/inbox/SidePanels.tsx
+#: src/features/mail/MailThread.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
@@ -5613,6 +5659,10 @@ msgstr "{name} otomasyon kuralını sildi"
 #: src/features/settings/audit/sentence.ts
 msgid "Deleted the inbox {name}"
 msgstr "{name} gelen kutusunu sildi"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted the personal mailbox {name} of {who} when they left"
+msgstr "{who} ayrılırken kişisel posta kutusu {name} silindi"
 
 #: src/features/settings/audit/sentence.ts
 msgid "Deleted the team {team}"
@@ -6655,6 +6705,10 @@ msgstr "Listelerdeki herkes. Koşullar yalnızca özellikleri hepsine uyan kişi
 msgid "Everyone who has written to your products"
 msgstr "Ürünlerinize yazan herkes"
 
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Everyone with access to the inbox reads it."
+msgstr "Gelen kutusuna erişimi olan herkes okur."
+
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Everyone's posts are published at once, except those of authors you marked as spam."
 msgstr "Herkesin gönderisi hemen yayımlanır; spam olarak işaretlediğiniz yazarlarınki hariç."
@@ -7580,9 +7634,29 @@ msgstr "Üye grupları ve kapsadıkları gelen kutuları"
 msgid "Growth"
 msgstr "Büyüme"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Hand over"
+msgstr "Devret"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Hand over {name}"
+msgstr "{name} kutusunu devret"
+
+#: src/features/team/RemoveMemberDialog.tsx
+msgid "Hand over to"
+msgstr "Şuna devret"
+
 #: src/features/settings/automation/text.ts
 msgid "Hand to automatic assignment"
 msgstr "Otomatik atamaya ver"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Handed over"
+msgstr "Devredildi"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Handed the personal mailbox {inbox} to {next}"
+msgstr "Kişisel posta kutusu {inbox}, {next} üyesine devredildi"
 
 #: src/features/conversation/actions.ts
 msgid "Handed to {name}"
@@ -7809,6 +7883,7 @@ msgstr "Ana makine adı ve sertifika"
 msgid "hours"
 msgstr "saat"
 
+#: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/ProductsPage.tsx
 msgid "Hours"
 msgstr "Çalışma saatleri"
@@ -8999,6 +9074,10 @@ msgid "Legal name"
 msgstr "Yasal unvan"
 
 #: src/features/settings/audit/sentence.ts
+msgid "Let {who} into the personal mailbox {inbox}"
+msgstr "{who} kişisel posta kutusu {inbox} için yetkilendirildi"
+
+#: src/features/settings/audit/sentence.ts
 msgid "Let assistants and keys send messages to customers"
 msgstr "Asistanların ve anahtarların müşterilere mesaj göndermesine izin verildi"
 
@@ -9446,6 +9525,10 @@ msgstr "E-postalar, {address} adresini alan “{channelName}” e-posta kanalın
 msgid "Mail is not signed with a key of the sender’s own domain, which Gmail and Yahoo expect."
 msgstr "E-postalar gönderenin kendi alan adının anahtarıyla imzalanmıyor; Gmail ve Yahoo bunu bekler."
 
+#: src/features/settings/SettingsColumn.tsx
+msgid "Mail only you read"
+msgstr "Yalnızca sizin okuduğunuz posta"
+
 #: src/features/settings/addresses/AddressesPage.tsx
 msgid "Mail queued from it fails instead of going out from another address."
 msgstr "Bu adresten kuyruğa alınan mail, başka bir adresten çıkmak yerine başarısız olur."
@@ -9752,6 +9835,7 @@ msgstr "bugünkü medyan"
 msgid "median, first message to closed"
 msgstr "medyan, ilk mesajdan kapanışa"
 
+#: src/components/common/MailboxOwnerChoice.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
@@ -9778,6 +9862,10 @@ msgstr "Üyeler ve davetler"
 #: src/features/conversation/messages/Thread.tsx
 msgid "Members only"
 msgstr "Yalnızca üyelere"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Members you let into this mailbox. They can read it, or read and send mail on your behalf. They never change its settings, filters or migrations."
+msgstr "Bu posta kutusuna aldığınız üyeler. Kutuyu okuyabilir ya da sizin adınıza okuyup gönderebilirler. Ayarlarını, süzgeçlerini ya da taşımalarını asla değiştiremezler."
 
 #: src/features/conversation/composer/MentionMenu.tsx
 msgid "Mention a teammate"
@@ -10308,6 +10396,7 @@ msgstr "Görünümlerim"
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/fields/FieldDialog.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/macros/MacroDialog.tsx
@@ -10389,6 +10478,10 @@ msgstr "Kapatılabilmesi için “{name}” gerekli"
 #: src/features/broadcasts/ListParts.tsx
 msgid "Needs a sender"
 msgstr "Gönderen gerekli"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Needs an owner"
+msgstr "Sahip gerekiyor"
 
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/text.ts
@@ -10604,6 +10697,10 @@ msgstr "Yeni makro"
 msgid "New mail"
 msgstr "Yeni posta"
 
+#: src/features/mail/MailPage.tsx
+msgid "New mailbox"
+msgstr "Yeni posta kutusu"
+
 #: src/features/setup/previews.tsx
 #: src/lib/alerts.ts
 msgid "New message"
@@ -10625,6 +10722,14 @@ msgstr "Yeni taşıma"
 msgid "New monitor"
 msgstr "Yeni monitör"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "New owner"
+msgstr "Yeni sahip"
+
+#: src/features/team/RemoveMemberDialog.tsx
+msgid "New owner of {boxName}"
+msgstr "{boxName} kutusunun yeni sahibi"
+
 #: src/features/status/StatusPages.tsx
 msgid "New page"
 msgstr "Yeni sayfa"
@@ -10632,6 +10737,10 @@ msgstr "Yeni sayfa"
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "New password"
 msgstr "Yeni parola"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "New personal mailbox"
+msgstr "Yeni kişisel posta kutusu"
 
 #: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -11202,6 +11311,11 @@ msgstr "Eşleşen başka kişi yok."
 msgid "No other conversations."
 msgstr "Başka konuşma yok."
 
+#: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "No owner"
+msgstr "Sahibi yok"
+
 #: src/features/docs/PagesTab.tsx
 msgid "No pages yet"
 msgstr "Henüz sayfa yok"
@@ -11398,6 +11512,14 @@ msgstr "Bu gelen kutusunu henüz başka kimse göremiyor."
 #: src/features/conversation/Participants.tsx
 msgid "Nobody else is copied. Replies go to the contact only."
 msgstr "Başka kimse Cc'de değil. Yanıtlar yalnızca kişiye gider."
+
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Nobody else reads it unless you let them. Owners and admins see only that it exists."
+msgstr "Siz izin vermedikçe kimse okuyamaz. Sahipler ve yöneticiler yalnızca var olduğunu görür."
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Nobody else reads this mailbox."
+msgstr "Bu posta kutusunu başka kimse okumuyor."
 
 #: src/features/inbox/SidePanels.tsx
 msgid "Nobody has mentioned you yet"
@@ -12179,6 +12301,10 @@ msgstr "Yalnızca Slack hesabınız bundan farklı bir adres kullanıyorsa. İst
 msgid "Only in the app"
 msgstr "Yalnızca uygulamada"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Only its owner reads it. You can rename it or delete it."
+msgstr "Yalnızca sahibi okur. Adını değiştirebilir ya da silebilirsiniz."
+
 #: src/features/migrations/parts.tsx
 msgid "Only mail since {date}"
 msgstr "Yalnızca {date} sonrasındaki e-postalar"
@@ -12220,9 +12346,17 @@ msgstr "Şimdilik yalnızca al"
 msgid "Only receives"
 msgstr "Yalnızca alır"
 
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Only that member reads it. You see only that it exists."
+msgstr "Yalnızca o üye okur. Siz yalnızca var olduğunu görürsünüz."
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Only the exact domain is claimed, not its subdomains. Add eu.example.com on its own if people use such addresses."
 msgstr "Yalnızca tam alan adı sahiplenilir, alt alan adları değil. Kişiler eu.example.com gibi adresler kullanıyorsa onu ayrıca ekleyin."
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Only the owner of a personal mailbox manages its settings."
+msgstr "Kişisel bir posta kutusunun ayarlarını yalnızca sahibi yönetir."
 
 #: src/components/common/text.ts
 msgid "Only the person can subscribe again, by confirming a mail."
@@ -12232,6 +12366,10 @@ msgstr "Yalnızca kişinin kendisi, bir e-postayı onaylayarak yeniden abone ola
 #: src/features/settings/automation/ActionRow.tsx
 msgid "Only the team sees this"
 msgstr "Yalnızca ekip görür"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Only their owners read them. You see what they hold, never what is in them."
+msgstr "Yalnızca sahipleri okur. İçinde ne olduğunu değil, ne barındırdığını görürsünüz."
 
 #: src/features/broadcasts/Report.tsx
 msgid "Only those who replied"
@@ -13089,6 +13227,31 @@ msgstr "Kişi"
 msgid "Personal"
 msgstr "Kişisel"
 
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Personal (only you)"
+msgstr "Kişisel (yalnızca siz)"
+
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Personal for {who}"
+msgstr "{who} için kişisel"
+
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Personal for a member"
+msgstr "Bir üye için kişisel"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Personal mailbox"
+msgstr "Kişisel posta kutusu"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Personal mailbox of {owner}"
+msgstr "{owner} üyesinin kişisel posta kutusu"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Personal mailboxes"
+msgstr "Kişisel posta kutuları"
+
 #: src/features/settings/automation/ActionRow.tsx
 msgid "Pick a canned reply"
 msgstr "Hazır bir yanıt seçin"
@@ -13145,7 +13308,10 @@ msgstr "Bir alan seçin"
 msgid "Pick a mail"
 msgstr "Bir e-posta seçin"
 
+#: src/components/common/MailboxOwnerChoice.tsx
 #: src/features/settings/automation/ActionRow.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/team/RemoveMemberDialog.tsx
 msgid "Pick a member"
 msgstr "Bir üye seçin"
 
@@ -13883,9 +14049,22 @@ msgstr "Kendi sitenizdeki dokümantasyon sayfalarından gelen puanlar, sorular v
 msgid "Read"
 msgstr "Okundu"
 
+#: src/features/mail/MailPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/settings/ProductsPage.tsx
+msgctxt "mailbox access"
+msgid "Read"
+msgstr "Okuma"
+
 #: src/components/common/text.ts
 msgid "Read analytics properties and their numbers"
 msgstr "Analitik mülklerini ve rakamlarını okuma"
+
+#: src/features/mail/MailPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/settings/ProductsPage.tsx
+msgid "Read and send"
+msgstr "Okuma ve gönderme"
 
 #: src/features/migrations/text.ts
 msgid "Read as a Google Takeout file: Gmail's labels and threads come with it."
@@ -14184,6 +14363,7 @@ msgstr "Uzak görseller, postayı açtığınızı gönderene bildirebilir."
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/OwnDomainCard.tsx
@@ -14229,12 +14409,14 @@ msgid "Remove {lang}"
 msgstr "{lang} dilini kaldır"
 
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/team/RemoveMemberDialog.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Remove {name}"
 msgstr "{name} adlı üyeyi çıkar"
 
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/sso/SsoPage.tsx
+#: src/features/team/RemoveMemberDialog.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Remove {name}?"
 msgstr "{name} kaldırılsın mı?"
@@ -14242,6 +14424,10 @@ msgstr "{name} kaldırılsın mı?"
 #: src/features/migrations/MapStep.tsx
 msgid "Remove {sender}"
 msgstr "{sender} adresini kaldır"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Remove {who}?"
+msgstr "{who} çıkarılsın mı?"
 
 #: src/features/settings/automation/ActionRow.tsx
 msgid "Remove action"
@@ -14436,6 +14622,7 @@ msgstr "Aktarılan geçmiş kaldırılıyor"
 msgid "Removing imported history…"
 msgstr "Aktarılan geçmiş kaldırılıyor…"
 
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Rename"
 msgstr "Yeniden adlandır"
@@ -14443,6 +14630,10 @@ msgstr "Yeniden adlandır"
 #: src/features/status/ComponentDialogs.tsx
 msgid "Rename group"
 msgstr "Grubu yeniden adlandır"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Rename the mailbox"
+msgstr "Posta kutusunun adını değiştir"
 
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -15136,6 +15327,7 @@ msgstr "Cumartesi"
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/macros/MacroDialog.tsx
@@ -15217,6 +15409,7 @@ msgstr "Listeyi görünüm olarak kaydet"
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/chat/ChatSections.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/profile/ProfileForm.tsx
 #: src/features/settings/signature/SignaturePage.tsx
@@ -15847,6 +16040,10 @@ msgstr "Gönderim çoktan başladı. Bunun yerine duraklatın ya da iptal edin."
 msgid "Sending kept failing, so Yuva gave up."
 msgstr "Gönderim hep başarısız oldu, bu yüzden Yuva vazgeçti."
 
+#: src/components/common/OnBehalf.tsx
+msgid "Sending on behalf of {name}"
+msgstr "{name} adına gönderiliyor"
+
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Sending pace"
@@ -16176,6 +16373,14 @@ msgstr "Paylaşılan"
 #: src/components/common/FocusChoice.tsx
 msgid "Shared mailboxes for your team"
 msgstr "Ekibiniz için ortak posta kutuları"
+
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Shared with the team"
+msgstr "Ekiple paylaşılan"
+
+#: src/features/mail/MailPage.tsx
+msgid "Shared with you"
+msgstr "Sizinle paylaşılan"
 
 #: src/components/common/text.ts
 msgid "Shipped"
@@ -16656,6 +16861,10 @@ msgstr "Site adı"
 #: src/features/setup/SetupLayout.tsx
 msgid "Sites"
 msgstr "Siteler"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Size"
+msgstr "Boyut"
 
 #: src/features/setup/email/EmailTestStep.tsx
 msgid "Skip for now"
@@ -17452,6 +17661,7 @@ msgstr "Ekip kimliği"
 
 #: src/components/common/FocusChoice.tsx
 #: src/components/common/PurposeChoice.tsx
+#: src/features/mail/MailPage.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/setup/SetupHub.tsx
 msgid "Team mail"
@@ -18147,6 +18357,10 @@ msgstr "Bakım tamamlandı. Her şey eskisi gibi çalışıyor."
 msgid "The mbox file is compressed inside the zip. Unzip the Takeout archive and upload the .mbox file."
 msgstr "mbox dosyası zip içinde sıkıştırılmış. Takeout arşivini zip'ten çıkarın ve .mbox dosyasını yükleyin."
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "The member you pick becomes its owner and reads it from then on. You still do not read it."
+msgstr "Seçtiğiniz üye sahibi olur ve bundan sonra onu okur. Siz yine okumazsınız."
+
 #: src/features/migrations/text.ts
 msgid "The message could not be read"
 msgstr "Mesaj okunamadı"
@@ -18206,6 +18420,10 @@ msgstr "Diğer gelen kutusunun e-posta kanalı yok, bu yüzden bu e-posta konuş
 #: src/features/fields/BulkFailures.tsx
 msgid "The others were closed. Open one to fill in what it needs, then close it."
 msgstr "Diğerleri kapatıldı. Gerekenleri doldurmak için birini açın, sonra kapatın."
+
+#: src/components/common/OnBehalf.tsx
+msgid "the owner"
+msgstr "sahip"
 
 #: src/features/status/Notices.tsx
 msgid "The page already sent 10 notices in the last hour"
@@ -18274,6 +18492,10 @@ msgstr "kişi izin verilen gruplardan hiçbirinde değil"
 #: src/features/settings/audit/sentence.ts
 msgid "the person is not a member of this workspace"
 msgstr "kişi bu çalışma alanının üyesi değil"
+
+#: src/features/settings/audit/sentence.ts
+msgid "The personal mailbox {inbox} lost its owner {who}"
+msgstr "Kişisel posta kutusu {inbox} sahibini kaybetti: {who}"
 
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "The policy is none: receivers only report. Move to quarantine once all your mail passes."
@@ -18707,6 +18929,10 @@ msgstr "Bu listeden artık e-posta almaz ve aboneliğini ekibin sonlandırdığ�
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "They signed up on our website and confirmed their address."
 msgstr "Sitemizde kaydolup adreslerini onayladılar."
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "They stop reading this mailbox at once."
+msgstr "Bu posta kutusunu hemen okumayı bırakırlar."
 
 #: src/features/migrations/text.ts
 msgid "This {provider} account's plan has no API access, which Yuva reads through."
@@ -19347,6 +19573,10 @@ msgid "Too many workspaces were created from your network today. Try again tomor
 msgstr "Bugün ağınızdan çok fazla çalışma alanı oluşturuldu. Yarın yeniden deneyin."
 
 #: src/features/settings/audit/sentence.ts
+msgid "Took {who}'s access to the personal mailbox {inbox} away"
+msgstr "{who} üyesinin kişisel posta kutusu {inbox} erişimi kaldırıldı"
+
+#: src/features/settings/audit/sentence.ts
 msgid "Took away the access of {person} to {inbox}"
 msgstr "{person} kişisinin {inbox} erişimini kaldırdı"
 
@@ -19496,7 +19726,7 @@ msgstr "TXT kaydı"
 msgid "Type"
 msgstr "Tür"
 
-#: src/features/settings/inboxes/InboxSecurity.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 msgid "Type {name} to confirm"
 msgstr "Onaylamak için {name} yazın"
 
@@ -20514,6 +20744,10 @@ msgstr "Her sütunda ne var"
 msgid "What happened"
 msgstr "Neler oldu"
 
+#: src/features/team/RemoveMemberDialog.tsx
+msgid "What happens to {boxName}"
+msgstr "{boxName} için ne olacak"
+
 #: src/features/broadcasts/Composer.tsx
 msgid "What is new in October"
 msgstr "Ekim'de neler yeni"
@@ -20810,6 +21044,10 @@ msgstr "Kimler burada"
 msgid "Who is it for?"
 msgstr "Kimin için?"
 
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Who reads it?"
+msgstr "Kim okuyor?"
+
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "Who sends, and what about?"
 msgstr "Kim gönderiyor, ne hakkında?"
@@ -21092,6 +21330,10 @@ msgid "You can leave this page: the conversation will wait for you in your conve
 msgstr "Bu sayfadan ayrılabilirsiniz: konuşma, konuşma listenizde sizi bekleyecek."
 
 #: src/features/mail/MailThread.tsx
+msgid "You can read this mailbox but not change it. Its owner can let you send from it."
+msgstr "Bu posta kutusunu okuyabilirsiniz ama değiştiremezsiniz. Sahibi size gönderme izni verebilir."
+
+#: src/features/mail/MailThread.tsx
 msgid "You can restore it from the Trash for 30 days, then it is deleted for good with its messages and files."
 msgstr "30 gün boyunca çöp kutusundan geri alabilirsiniz; ardından iletileri ve dosyalarıyla birlikte kalıcı olarak silinir."
 
@@ -21173,8 +21415,8 @@ msgid "You have unsaved changes to {what}."
 msgstr "{what} için kaydedilmemiş değişiklikleriniz var."
 
 #: src/features/auth/DeleteAccountButton.tsx
-msgid "You leave every workspace and lose your sign-ins, passkeys and notifications. Messages you wrote stay in their conversations, shown as from a deleted member. This cannot be undone."
-msgstr "Tüm çalışma alanlarından ayrılırsınız; oturumlarınız, geçiş anahtarlarınız ve bildirimleriniz silinir. Yazdığınız mesajlar konuşmalarında kalır ve silinmiş bir üyeden gelmiş gibi görünür. Bu geri alınamaz."
+msgid "You leave every workspace and lose your sign-ins, passkeys and notifications. Messages you wrote stay in their conversations, shown as from a deleted member. Your personal mailboxes stay with the workspace, unread, until an owner or admin hands them to someone or deletes them. This cannot be undone."
+msgstr "Tüm çalışma alanlarından ayrılırsınız; oturum açma yöntemlerinizi, geçiş anahtarlarınızı ve bildirimlerinizi kaybedersiniz. Yazdığınız iletiler konuşmalarında kalır, silinmiş bir üyeden gelmiş gibi görünür. Kişisel posta kutularınız, bir sahip ya da yönetici onları birine devredene veya silene kadar okunmadan çalışma alanında kalır. Bu geri alınamaz."
 
 #: src/features/account/AccountPage.tsx
 msgid "You replied"
@@ -21302,6 +21544,10 @@ msgstr "Posta sağlayıcınızın veya kendi SMTP sunucunuz"
 msgid "Your mailbox"
 msgstr "Posta kutunuz"
 
+#: src/features/mail/MailPage.tsx
+msgid "Your mailboxes"
+msgstr "Posta kutularınız"
+
 #: src/features/migrations/text.ts
 msgid "Your Microsoft 365 organization lets only an admin consent to apps. Send your admin the link below; once they accept, sign in again."
 msgstr "Microsoft 365 kuruluşunuzda uygulamalara yalnızca bir yönetici onay verebiliyor. Aşağıdaki bağlantıyı yöneticinize gönderin; onayladığında yeniden oturum açın."
@@ -21420,6 +21666,10 @@ msgstr "Çalışma alanı adınız, kapalı konuşmaların ne kadar saklandığ�
 #: src/features/account/AccountPage.tsx
 msgid "Your Yuva account"
 msgstr "Yuva hesabınız"
+
+#: src/features/settings/ProductsPage.tsx
+msgid "Yours"
+msgstr "Sizin"
 
 #: src/features/auth/AuthLayout.tsx
 msgid "Yuva {version}"

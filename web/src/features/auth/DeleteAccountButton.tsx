@@ -55,7 +55,8 @@ export function DeleteAccountButton({
           description ?? (
             <Trans>
               You leave every workspace and lose your sign-ins, passkeys and notifications. Messages you wrote stay in
-              their conversations, shown as from a deleted member. This cannot be undone.
+              their conversations, shown as from a deleted member. Your personal mailboxes stay with the workspace,
+              unread, until an owner or admin hands them to someone or deletes them. This cannot be undone.
             </Trans>
           )
         }

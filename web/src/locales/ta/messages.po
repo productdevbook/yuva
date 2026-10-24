@@ -254,6 +254,10 @@ msgstr "{attention, plural, one {# சேனலுக்கு கவனம் �
 msgid "{author, select, bot {No drafts by bots} assistant {No drafts by assistants} member {No drafts by members} other {No drafts by this author}}"
 msgstr "{author, select, bot {பாட்களின் வரைவுகள் இல்லை} assistant {உதவியாளர்களின் வரைவுகள் இல்லை} member {உறுப்பினர்களின் வரைவுகள் இல்லை} other {இந்த எழுத்தாளரின் வரைவுகள் இல்லை}}"
 
+#: src/features/mail/MailThread.tsx
+msgid "{author} on behalf of {ownerName}"
+msgstr "{ownerName} சார்பாக {author}"
+
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/mail/MailThread.tsx
 msgid "{author}, sent by {by}"
@@ -667,6 +671,10 @@ msgstr "{name} தட்டச்சு செய்கிறார்…"
 #: src/features/setup/SetupHub.tsx
 msgid "{name} news"
 msgstr "{name} செய்திகள்"
+
+#: src/features/team/RemoveMemberDialog.tsx
+msgid "{name} owns personal mailboxes. Decide what happens to each: delete it with everything in it, or hand it to another member. You do not read them either way."
+msgstr "{name}-க்கு தனிப்பட்ட அஞ்சல் பெட்டிகள் உள்ளன. ஒவ்வொன்றையும் என்ன செய்வது என்று முடிவு செய்யுங்கள்: உள்ளடக்கத்துடன் நீக்கலாம் அல்லது வேறு உறுப்பினரிடம் ஒப்படைக்கலாம். இரண்டிலும் நீங்கள் அவற்றைப் படிக்க மாட்டீர்கள்."
 
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "{name} receives mail at this address. Here is what you set up."
@@ -1398,6 +1406,10 @@ msgstr "அஞ்சல் பட்டியல் இன்பாக்ஸி�
 msgid "A mailing list with subscribe forms, for your broadcasts"
 msgstr "உங்கள் ஒளிபரப்புகளுக்கான சந்தா படிவங்களுடன் கூடிய அஞ்சல் பட்டியல்"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "a member"
+msgstr "ஓர் உறுப்பினர்"
+
 #: src/components/common/AssignmentFields.tsx
 msgid "A member is eligible while they have access to the product (owners and admins only with a grant), have the panel or an app open, are set to Auto availability, the product is inside its business hours and they are under the limit. When nobody is eligible the conversation waits and goes to the first teammate who becomes available."
 msgstr "உறுப்பினருக்கு தயாரிப்புக்கான அணுகல் இருந்தால் (உரிமையாளர்கள், நிர்வாகிகள் அனுமதியுடன் மட்டும்), பேனல் அல்லது செயலி திறந்திருந்தால், கிடைக்கும் நிலை தானியங்கி என்றால், தயாரிப்பு வேலை நேரத்திற்குள் இருந்தால், உறுப்பினர் வரம்புக்குக் கீழ் இருந்தால் தகுதியானவர். யாரும் தகுதியில்லையெனில் உரையாடல் காத்திருந்து முதலில் கிடைக்கும் சக ஊழியருக்குச் செல்லும்."
@@ -1672,8 +1684,14 @@ msgstr "ஏற்கப்பட்ட பதில்"
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/app/AppSections.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/settings/ProductsPage.tsx
 msgid "Access"
 msgstr "அணுகல்"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Access of {person}"
+msgstr "{person} அணுகல்"
 
 #: src/features/migrations/DoneStep.tsx
 msgid "Access to {provider}"
@@ -1736,6 +1754,7 @@ msgstr "செயல்பாடு"
 #: src/features/conversation/Participants.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/addresses/AddressesPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Add"
@@ -1781,6 +1800,10 @@ msgstr "மொழியைச் சேர்"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Add a link"
 msgstr "இணைப்பைச் சேர்"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Add a member"
+msgstr "உறுப்பினரைச் சேர்"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Add a monitor"
@@ -2079,6 +2102,10 @@ msgstr "முகவரி நிரூபணம்"
 msgid "Address verified"
 msgstr "முகவரி சரிபார்க்கப்பட்டது"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Addresses"
+msgstr "முகவரிகள்"
+
 #: src/features/team/MemberAddresses.tsx
 msgid "Addresses {name} added to send mail from. Those waiting for approval need an owner or admin."
 msgstr "அஞ்சல் அனுப்ப {name} சேர்த்த முகவரிகள். ஒப்புதலுக்குக் காத்திருப்பவற்றுக்கு உரிமையாளர் அல்லது நிர்வாகி தேவை."
@@ -2205,9 +2232,9 @@ msgstr "அனைத்தும் படித்ததாகக் குற�
 msgid "All monitors"
 msgstr "அனைத்து கண்காணிப்புகள்"
 
-#: src/features/settings/inboxes/InboxSecurity.tsx
-msgid "All of its conversations, messages and attachments are deleted with it. Webhooks and API keys limited to it stop working."
-msgstr "அதன் அனைத்து உரையாடல்கள், செய்திகள், இணைப்புகள் அதனுடன் நீக்கப்படும். அதற்கு வரம்பிடப்பட்ட வெப்ஹூக்குகளும் API விசைகளும் செயல்படாது."
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "All of its conversations, messages and attachments are deleted with it. This cannot be undone."
+msgstr "அதன் அனைத்து உரையாடல்கள், செய்திகள், இணைப்புகள் அதனுடன் நீக்கப்படும். இதை மாற்ற முடியாது."
 
 #: src/features/migrations/UploadStep.tsx
 msgid "All parts arrived. Reading the file…"
@@ -3641,6 +3668,7 @@ msgstr "பிரசாரப் பெயர்"
 #: src/features/settings/AddProductDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/sso/SsoPage.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
@@ -3651,6 +3679,7 @@ msgstr "பிரசாரப் பெயர்"
 #: src/features/status/IncidentDetail.tsx
 #: src/features/status/IncidentDialog.tsx
 #: src/features/status/MonitorDialog.tsx
+#: src/features/team/RemoveMemberDialog.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Cancel"
 msgstr "ரத்துசெய்"
@@ -4824,6 +4853,7 @@ msgstr "உரையாடல்கள்"
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/DoneStep.tsx
 #: src/features/migrations/ReviewStep.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/webhooks/events.tsx
 msgid "Conversations"
 msgstr "உரையாடல்கள்"
@@ -5136,6 +5166,10 @@ msgstr "Create this TXT record at your DNS provider, then press Verify. It can t
 msgid "Create workspace"
 msgstr "பணியிடத்தை உருவாக்கு"
 
+#: src/features/mail/MailPage.tsx
+msgid "Create your own mailbox"
+msgstr "உங்கள் சொந்த அஞ்சல் பெட்டியை உருவாக்குங்கள்"
+
 #: src/features/auth/CreateWorkspace.tsx
 msgid "Create your workspace"
 msgstr "உங்கள் பணியிடத்தை உருவாக்குங்கள்"
@@ -5338,6 +5372,11 @@ msgstr "இயல்புநிலை: {fallback}"
 msgid "Degraded performance"
 msgstr "குறைந்த செயல்திறன்"
 
+#: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Delegates"
+msgstr "பிரதிநிதிகள்"
+
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListSettings.tsx
@@ -5349,6 +5388,7 @@ msgstr "குறைந்த செயல்திறன்"
 #: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 #: src/features/settings/macros/MacrosPage.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -5356,6 +5396,7 @@ msgstr "குறைந்த செயல்திறன்"
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
 #: src/features/status/SettingsTab.tsx
+#: src/features/team/RemoveMemberDialog.tsx
 msgid "Delete"
 msgstr "நீக்கு"
 
@@ -5378,7 +5419,7 @@ msgstr "நீக்கு ({removeKey})"
 msgid "Delete {0}?"
 msgstr "{0}-ஐ நீக்கவா?"
 
-#: src/features/settings/inboxes/InboxSecurity.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Delete {name}?"
@@ -5416,6 +5457,10 @@ msgstr "விசையை நீக்கு"
 #: src/features/broadcasts/ListSettings.tsx
 msgid "Delete list"
 msgstr "பட்டியலை நீக்கு"
+
+#: src/features/settings/inboxes/InboxSecurity.tsx
+msgid "Delete mailbox"
+msgstr "அஞ்சல் பெட்டியை நீக்கு"
 
 #: src/features/status/MonitorsPage.tsx
 msgid "Delete monitor"
@@ -5510,6 +5555,10 @@ msgstr "இந்த DKIM விசையை நீக்கவா?"
 msgid "Delete this macro?"
 msgstr "இந்த மேக்ரோவை நீக்கவா?"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Delete this mailbox"
+msgstr "இந்த அஞ்சல் பெட்டியை நீக்கு"
+
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Delete this migration?"
 msgstr "இந்த இடம்பெயர்வை நீக்கவா?"
@@ -5521,10 +5570,6 @@ msgstr "இந்தக் குறிப்பை நீக்கு"
 #: src/features/contact/ContactNotes.tsx
 msgid "Delete this note?"
 msgstr "இந்தக் குறிப்பை நீக்கவா?"
-
-#: src/features/settings/inboxes/InboxSecurity.tsx
-msgid "Delete this product"
-msgstr "இந்த தயாரிப்பை நீக்கு"
 
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Delete this subscription?"
@@ -5592,6 +5637,7 @@ msgstr "நீக்கப்பட்ட இன்பாக்ஸ்"
 
 #: src/components/common/DiscussionAuthor.tsx
 #: src/features/inbox/SidePanels.tsx
+#: src/features/mail/MailThread.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
@@ -5613,6 +5659,10 @@ msgstr "தானியங்கி விதி {name} ஐ நீக்கி�
 #: src/features/settings/audit/sentence.ts
 msgid "Deleted the inbox {name}"
 msgstr "இன்பாக்ஸ் {name}-ஐ நீக்கினார்"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted the personal mailbox {name} of {who} when they left"
+msgstr "{who} வெளியேறியபோது அவரது தனிப்பட்ட அஞ்சல் பெட்டி {name} நீக்கப்பட்டது"
 
 #: src/features/settings/audit/sentence.ts
 msgid "Deleted the team {team}"
@@ -6655,6 +6705,10 @@ msgstr "பட்டியல்களில் உள்ள அனைவரு�
 msgid "Everyone who has written to your products"
 msgstr "உங்கள் தயாரிப்புகளுக்கு எழுதிய அனைவரும்"
 
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Everyone with access to the inbox reads it."
+msgstr "இன்பாக்ஸை அணுகக்கூடிய அனைவரும் இதைப் படிக்கிறார்கள்."
+
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Everyone's posts are published at once, except those of authors you marked as spam."
 msgstr "ஸ்பேம் எனக் குறித்த ஆசிரியர்களைத் தவிர, அனைவரின் இடுகைகளும் உடனே வெளியிடப்படும்."
@@ -7580,9 +7634,29 @@ msgstr "உறுப்பினர் குழுக்களும் அவ�
 msgid "Growth"
 msgstr "வளர்ச்சி"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Hand over"
+msgstr "ஒப்படை"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Hand over {name}"
+msgstr "{name}-ஐ ஒப்படை"
+
+#: src/features/team/RemoveMemberDialog.tsx
+msgid "Hand over to"
+msgstr "ஒப்படைக்க"
+
 #: src/features/settings/automation/text.ts
 msgid "Hand to automatic assignment"
 msgstr "தானியங்கி ஒதுக்கீட்டிடம் ஒப்படை"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Handed over"
+msgstr "ஒப்படைக்கப்பட்டது"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Handed the personal mailbox {inbox} to {next}"
+msgstr "தனிப்பட்ட அஞ்சல் பெட்டி {inbox} {next}-இடம் ஒப்படைக்கப்பட்டது"
 
 #: src/features/conversation/actions.ts
 msgid "Handed to {name}"
@@ -7809,6 +7883,7 @@ msgstr "ஹோஸ்ட் பெயரும் சான்றிதழும�
 msgid "hours"
 msgstr "மணிநேரம்"
 
+#: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/ProductsPage.tsx
 msgid "Hours"
 msgstr "நேரம்"
@@ -8999,6 +9074,10 @@ msgid "Legal name"
 msgstr "சட்டப்பூர்வப் பெயர்"
 
 #: src/features/settings/audit/sentence.ts
+msgid "Let {who} into the personal mailbox {inbox}"
+msgstr "{who}-க்கு தனிப்பட்ட அஞ்சல் பெட்டி {inbox} அணுகல் வழங்கப்பட்டது"
+
+#: src/features/settings/audit/sentence.ts
 msgid "Let assistants and keys send messages to customers"
 msgstr "உதவியாளர்களும் விசைகளும் வாடிக்கையாளர்களுக்குச் செய்தி அனுப்ப அனுமதிக்கப்பட்டது"
 
@@ -9446,6 +9525,10 @@ msgstr "அஞ்சல் {address}-ஐப் பெறும் “{channelNam
 msgid "Mail is not signed with a key of the sender’s own domain, which Gmail and Yahoo expect."
 msgstr "அஞ்சல் அனுப்புநரின் சொந்த டொமைனின் விசையால் கையொப்பமிடப்படவில்லை; Gmail மற்றும் Yahoo இதை எதிர்பார்க்கின்றன."
 
+#: src/features/settings/SettingsColumn.tsx
+msgid "Mail only you read"
+msgstr "நீங்கள் மட்டும் படிக்கும் அஞ்சல்"
+
 #: src/features/settings/addresses/AddressesPage.tsx
 msgid "Mail queued from it fails instead of going out from another address."
 msgstr "இந்த முகவரியிலிருந்து வரிசையில் உள்ள அஞ்சல் வேறு முகவரியிலிருந்து செல்லாமல் தோல்வியடையும்."
@@ -9752,6 +9835,7 @@ msgstr "இன்றைய இடைநிலை"
 msgid "median, first message to closed"
 msgstr "இடைநிலை, முதல் செய்தி முதல் மூடும் வரை"
 
+#: src/components/common/MailboxOwnerChoice.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
@@ -9778,6 +9862,10 @@ msgstr "உறுப்பினர்கள் மற்றும் அழை�
 #: src/features/conversation/messages/Thread.tsx
 msgid "Members only"
 msgstr "உறுப்பினர்களுக்கு மட்டும்"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Members you let into this mailbox. They can read it, or read and send mail on your behalf. They never change its settings, filters or migrations."
+msgstr "இந்த அஞ்சல் பெட்டிக்குள் நீங்கள் அனுமதிக்கும் உறுப்பினர்கள். அவர்கள் படிக்கலாம், அல்லது படித்து உங்கள் சார்பாக அனுப்பலாம். அதன் அமைப்புகள், வடிப்பான்கள், இடமாற்றங்களை அவர்கள் ஒருபோதும் மாற்றுவதில்லை."
 
 #: src/features/conversation/composer/MentionMenu.tsx
 msgid "Mention a teammate"
@@ -10308,6 +10396,7 @@ msgstr "என் காட்சிகள்"
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/fields/FieldDialog.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/macros/MacroDialog.tsx
@@ -10389,6 +10478,10 @@ msgstr "மூட “{name}” தேவை"
 #: src/features/broadcasts/ListParts.tsx
 msgid "Needs a sender"
 msgstr "அனுப்புநர் தேவை"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Needs an owner"
+msgstr "உரிமையாளர் தேவை"
 
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/text.ts
@@ -10604,6 +10697,10 @@ msgstr "புதிய மேக்ரோ"
 msgid "New mail"
 msgstr "புதிய மின்னஞ்சல்"
 
+#: src/features/mail/MailPage.tsx
+msgid "New mailbox"
+msgstr "புதிய அஞ்சல் பெட்டி"
+
 #: src/features/setup/previews.tsx
 #: src/lib/alerts.ts
 msgid "New message"
@@ -10625,6 +10722,14 @@ msgstr "புதிய இடம்பெயர்வு"
 msgid "New monitor"
 msgstr "புதிய கண்காணிப்பு"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "New owner"
+msgstr "புதிய உரிமையாளர்"
+
+#: src/features/team/RemoveMemberDialog.tsx
+msgid "New owner of {boxName}"
+msgstr "{boxName}-இன் புதிய உரிமையாளர்"
+
 #: src/features/status/StatusPages.tsx
 msgid "New page"
 msgstr "புதிய பக்கம்"
@@ -10632,6 +10737,10 @@ msgstr "புதிய பக்கம்"
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "New password"
 msgstr "புதிய கடவுச்சொல்"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "New personal mailbox"
+msgstr "புதிய தனிப்பட்ட அஞ்சல் பெட்டி"
 
 #: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -11202,6 +11311,11 @@ msgstr "வேறு தொடர்பு பொருந்தவில்ல�
 msgid "No other conversations."
 msgstr "வேறு உரையாடல்கள் இல்லை."
 
+#: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "No owner"
+msgstr "உரிமையாளர் இல்லை"
+
 #: src/features/docs/PagesTab.tsx
 msgid "No pages yet"
 msgstr "இன்னும் பக்கங்கள் இல்லை"
@@ -11398,6 +11512,14 @@ msgstr "வேறு யாரும் இன்னும் இந்த இ�
 #: src/features/conversation/Participants.tsx
 msgid "Nobody else is copied. Replies go to the contact only."
 msgstr "வேறு யாரும் நகலில் இல்லை. பதில்கள் தொடர்புக்கு மட்டும் செல்லும்."
+
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Nobody else reads it unless you let them. Owners and admins see only that it exists."
+msgstr "நீங்கள் அனுமதிக்காவிட்டால் வேறு யாரும் படிக்க மாட்டார்கள். உரிமையாளர்களும் நிர்வாகிகளும் அது இருப்பதை மட்டும் காண்பார்கள்."
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Nobody else reads this mailbox."
+msgstr "இந்த அஞ்சல் பெட்டியை வேறு யாரும் படிப்பதில்லை."
 
 #: src/features/inbox/SidePanels.tsx
 msgid "Nobody has mentioned you yet"
@@ -12179,6 +12301,10 @@ msgstr "Only if your Slack account uses another address than this one. Optional.
 msgid "Only in the app"
 msgstr "ஆப்பில் மட்டும்"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Only its owner reads it. You can rename it or delete it."
+msgstr "இதன் உரிமையாளர் மட்டுமே படிப்பார். பெயரை மாற்றலாம் அல்லது நீக்கலாம்."
+
 #: src/features/migrations/parts.tsx
 msgid "Only mail since {date}"
 msgstr "{date}-க்குப் பிறகான அஞ்சல் மட்டும்"
@@ -12220,9 +12346,17 @@ msgstr "இப்போதைக்குப் பெறுவது மட்�
 msgid "Only receives"
 msgstr "பெறுவது மட்டும்"
 
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Only that member reads it. You see only that it exists."
+msgstr "அந்த உறுப்பினர் மட்டுமே படிப்பார். அது இருப்பதை மட்டுமே நீங்கள் காண்பீர்கள்."
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Only the exact domain is claimed, not its subdomains. Add eu.example.com on its own if people use such addresses."
 msgstr "Only the exact domain is claimed, not its subdomains. Add eu.example.com on its own if people use such addresses."
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Only the owner of a personal mailbox manages its settings."
+msgstr "தனிப்பட்ட அஞ்சல் பெட்டியின் அமைப்புகளை அதன் உரிமையாளர் மட்டுமே நிர்வகிப்பார்."
 
 #: src/components/common/text.ts
 msgid "Only the person can subscribe again, by confirming a mail."
@@ -12232,6 +12366,10 @@ msgstr "நபர் மட்டுமே மீண்டும் சந்த
 #: src/features/settings/automation/ActionRow.tsx
 msgid "Only the team sees this"
 msgstr "குழு மட்டுமே இதைப் பார்க்கும்"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Only their owners read them. You see what they hold, never what is in them."
+msgstr "அவற்றின் உரிமையாளர்கள் மட்டுமே படிப்பார்கள். அவற்றில் எவ்வளவு உள்ளது என்பதைக் காண்பீர்கள், என்ன உள்ளது என்பதை அல்ல."
 
 #: src/features/broadcasts/Report.tsx
 msgid "Only those who replied"
@@ -13089,6 +13227,31 @@ msgstr "நபர்"
 msgid "Personal"
 msgstr "தனிப்பட்டது"
 
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Personal (only you)"
+msgstr "தனிப்பட்டது (நீங்கள் மட்டும்)"
+
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Personal for {who}"
+msgstr "{who}-க்கான தனிப்பட்டது"
+
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Personal for a member"
+msgstr "ஓர் உறுப்பினருக்கான தனிப்பட்டது"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Personal mailbox"
+msgstr "தனிப்பட்ட அஞ்சல் பெட்டி"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Personal mailbox of {owner}"
+msgstr "{owner}-இன் தனிப்பட்ட அஞ்சல் பெட்டி"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Personal mailboxes"
+msgstr "தனிப்பட்ட அஞ்சல் பெட்டிகள்"
+
 #: src/features/settings/automation/ActionRow.tsx
 msgid "Pick a canned reply"
 msgstr "ஒரு தயார் பதிலைத் தேர்ந்தெடுக்கவும்"
@@ -13145,7 +13308,10 @@ msgstr "ஒரு புலத்தைத் தேர்ந்தெடுக�
 msgid "Pick a mail"
 msgstr "ஓர் அஞ்சலைத் தேர்ந்தெடுக்கவும்"
 
+#: src/components/common/MailboxOwnerChoice.tsx
 #: src/features/settings/automation/ActionRow.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/team/RemoveMemberDialog.tsx
 msgid "Pick a member"
 msgstr "ஓர் உறுப்பினரைத் தேர்ந்தெடுக்கவும்"
 
@@ -13883,9 +14049,22 @@ msgstr "உங்கள் சொந்த தளத்தின் ஆவணப
 msgid "Read"
 msgstr "படி"
 
+#: src/features/mail/MailPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/settings/ProductsPage.tsx
+msgctxt "mailbox access"
+msgid "Read"
+msgstr "படித்தல்"
+
 #: src/components/common/text.ts
 msgid "Read analytics properties and their numbers"
 msgstr "பகுப்பாய்வு சொத்துகளையும் அவற்றின் எண்களையும் படி"
+
+#: src/features/mail/MailPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/settings/ProductsPage.tsx
+msgid "Read and send"
+msgstr "படித்தல் மற்றும் அனுப்புதல்"
 
 #: src/features/migrations/text.ts
 msgid "Read as a Google Takeout file: Gmail's labels and threads come with it."
@@ -14184,6 +14363,7 @@ msgstr "தொலைநிலைப் படங்கள் நீங்கள�
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/OwnDomainCard.tsx
@@ -14229,12 +14409,14 @@ msgid "Remove {lang}"
 msgstr "{lang}-ஐ அகற்று"
 
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/team/RemoveMemberDialog.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Remove {name}"
 msgstr "{name}-ஐ அகற்று"
 
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/sso/SsoPage.tsx
+#: src/features/team/RemoveMemberDialog.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Remove {name}?"
 msgstr "{name} ஐ நீக்கவா?"
@@ -14242,6 +14424,10 @@ msgstr "{name} ஐ நீக்கவா?"
 #: src/features/migrations/MapStep.tsx
 msgid "Remove {sender}"
 msgstr "{sender}-ஐ அகற்று"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Remove {who}?"
+msgstr "{who}-ஐ நீக்கவா?"
 
 #: src/features/settings/automation/ActionRow.tsx
 msgid "Remove action"
@@ -14436,6 +14622,7 @@ msgstr "இறக்குமதி செய்த வரலாற்றை அ
 msgid "Removing imported history…"
 msgstr "இறக்குமதி செய்த வரலாற்றை அகற்றுகிறது…"
 
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Rename"
 msgstr "பெயர் மாற்று"
@@ -14443,6 +14630,10 @@ msgstr "பெயர் மாற்று"
 #: src/features/status/ComponentDialogs.tsx
 msgid "Rename group"
 msgstr "குழுவின் பெயரை மாற்று"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Rename the mailbox"
+msgstr "அஞ்சல் பெட்டியின் பெயரை மாற்று"
 
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -15136,6 +15327,7 @@ msgstr "சனிக்கிழமை"
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/macros/MacroDialog.tsx
@@ -15217,6 +15409,7 @@ msgstr "பட்டியலைக் காட்சியாகச் சே�
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/chat/ChatSections.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/profile/ProfileForm.tsx
 #: src/features/settings/signature/SignaturePage.tsx
@@ -15847,6 +16040,10 @@ msgstr "அனுப்புதல் ஏற்கெனவே தொடங்�
 msgid "Sending kept failing, so Yuva gave up."
 msgstr "அனுப்புதல் தொடர்ந்து தோல்வியடைந்ததால் Yuva முயற்சியைக் கைவிட்டது."
 
+#: src/components/common/OnBehalf.tsx
+msgid "Sending on behalf of {name}"
+msgstr "{name} சார்பாக அனுப்புகிறது"
+
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Sending pace"
@@ -16176,6 +16373,14 @@ msgstr "பகிரப்பட்டது"
 #: src/components/common/FocusChoice.tsx
 msgid "Shared mailboxes for your team"
 msgstr "உங்கள் குழுவுக்கான பகிரப்பட்ட அஞ்சல் பெட்டிகள்"
+
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Shared with the team"
+msgstr "குழுவுடன் பகிரப்பட்டது"
+
+#: src/features/mail/MailPage.tsx
+msgid "Shared with you"
+msgstr "உங்களுடன் பகிரப்பட்டது"
 
 #: src/components/common/text.ts
 msgid "Shipped"
@@ -16656,6 +16861,10 @@ msgstr "தளப் பெயர்"
 #: src/features/setup/SetupLayout.tsx
 msgid "Sites"
 msgstr "தளங்கள்"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Size"
+msgstr "அளவு"
 
 #: src/features/setup/email/EmailTestStep.tsx
 msgid "Skip for now"
@@ -17452,6 +17661,7 @@ msgstr "குழு ஐடி"
 
 #: src/components/common/FocusChoice.tsx
 #: src/components/common/PurposeChoice.tsx
+#: src/features/mail/MailPage.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/setup/SetupHub.tsx
 msgid "Team mail"
@@ -18147,6 +18357,10 @@ msgstr "பராமரிப்பு முடிந்தது. எல்ல
 msgid "The mbox file is compressed inside the zip. Unzip the Takeout archive and upload the .mbox file."
 msgstr "mbox கோப்பு zip-க்குள் சுருக்கப்பட்டுள்ளது. Takeout காப்பகத்தை அன்சிப் செய்து .mbox கோப்பைப் பதிவேற்றுங்கள்."
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "The member you pick becomes its owner and reads it from then on. You still do not read it."
+msgstr "நீங்கள் தேர்ந்தெடுக்கும் உறுப்பினர் உரிமையாளராகி இனி அதைப் படிப்பார். நீங்கள் இன்னும் படிக்க மாட்டீர்கள்."
+
 #: src/features/migrations/text.ts
 msgid "The message could not be read"
 msgstr "செய்தியைப் படிக்க முடியவில்லை"
@@ -18206,6 +18420,10 @@ msgstr "மற்ற இன்பாக்ஸுக்கு மின்னஞ�
 #: src/features/fields/BulkFailures.tsx
 msgid "The others were closed. Open one to fill in what it needs, then close it."
 msgstr "மற்றவை மூடப்பட்டன. ஒன்றைத் திறந்து தேவையானதை நிரப்பி, பிறகு மூடுங்கள்."
+
+#: src/components/common/OnBehalf.tsx
+msgid "the owner"
+msgstr "உரிமையாளர்"
 
 #: src/features/status/Notices.tsx
 msgid "The page already sent 10 notices in the last hour"
@@ -18274,6 +18492,10 @@ msgstr "அந்த நபர் அனுமதிக்கப்பட்ட 
 #: src/features/settings/audit/sentence.ts
 msgid "the person is not a member of this workspace"
 msgstr "அந்த நபர் இந்தப் பணியிடத்தின் உறுப்பினர் அல்ல"
+
+#: src/features/settings/audit/sentence.ts
+msgid "The personal mailbox {inbox} lost its owner {who}"
+msgstr "தனிப்பட்ட அஞ்சல் பெட்டி {inbox} தன் உரிமையாளர் {who}-ஐ இழந்தது"
 
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "The policy is none: receivers only report. Move to quarantine once all your mail passes."
@@ -18707,6 +18929,10 @@ msgstr "அவர்களுக்கு இந்தப் பட்டிய�
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "They signed up on our website and confirmed their address."
 msgstr "அவர்கள் எங்கள் இணையதளத்தில் பதிவு செய்து முகவரியை உறுதிப்படுத்தினர்."
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "They stop reading this mailbox at once."
+msgstr "அவர்கள் உடனே இந்த அஞ்சல் பெட்டியைப் படிப்பதை நிறுத்துகிறார்கள்."
 
 #: src/features/migrations/text.ts
 msgid "This {provider} account's plan has no API access, which Yuva reads through."
@@ -19347,6 +19573,10 @@ msgid "Too many workspaces were created from your network today. Try again tomor
 msgstr "இன்று உங்கள் நெட்வொர்க்கிலிருந்து மிக அதிகப் பணியிடங்கள் உருவாக்கப்பட்டன. நாளை மீண்டும் முயலுங்கள்."
 
 #: src/features/settings/audit/sentence.ts
+msgid "Took {who}'s access to the personal mailbox {inbox} away"
+msgstr "தனிப்பட்ட அஞ்சல் பெட்டி {inbox}-க்கான {who} அணுகல் திரும்பப் பெறப்பட்டது"
+
+#: src/features/settings/audit/sentence.ts
 msgid "Took away the access of {person} to {inbox}"
 msgstr "{person}-இன் {inbox} அணுகலைத் திரும்பப் பெற்றார்"
 
@@ -19496,7 +19726,7 @@ msgstr "TXT பதிவு"
 msgid "Type"
 msgstr "வகை"
 
-#: src/features/settings/inboxes/InboxSecurity.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 msgid "Type {name} to confirm"
 msgstr "உறுதிப்படுத்த {name} என்று உள்ளிடுங்கள்"
 
@@ -20514,6 +20744,10 @@ msgstr "ஒவ்வொரு நெடுவரிசையும் கொண�
 msgid "What happened"
 msgstr "என்ன நடந்தது"
 
+#: src/features/team/RemoveMemberDialog.tsx
+msgid "What happens to {boxName}"
+msgstr "{boxName}-க்கு என்ன ஆகும்"
+
 #: src/features/broadcasts/Composer.tsx
 msgid "What is new in October"
 msgstr "அக்டோபரில் புதியது என்ன"
@@ -20810,6 +21044,10 @@ msgstr "யார் இங்கே இருக்கிறார்கள்"
 msgid "Who is it for?"
 msgstr "இது யாருக்கு?"
 
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Who reads it?"
+msgstr "யார் படிக்கிறார்கள்?"
+
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "Who sends, and what about?"
 msgstr "யார் அனுப்புகிறார், எதைப் பற்றி?"
@@ -21092,6 +21330,10 @@ msgid "You can leave this page: the conversation will wait for you in your conve
 msgstr "இந்தப் பக்கத்தை விட்டுச் செல்லலாம்: உரையாடல் உங்கள் உரையாடல் பட்டியலில் உங்களுக்காகக் காத்திருக்கும்."
 
 #: src/features/mail/MailThread.tsx
+msgid "You can read this mailbox but not change it. Its owner can let you send from it."
+msgstr "இந்த அஞ்சல் பெட்டியைப் படிக்கலாம், மாற்ற முடியாது. இதிலிருந்து அனுப்ப உரிமையாளர் அனுமதிக்கலாம்."
+
+#: src/features/mail/MailThread.tsx
 msgid "You can restore it from the Trash for 30 days, then it is deleted for good with its messages and files."
 msgstr "30 நாள்கள் வரை குப்பையிலிருந்து மீட்டமைக்கலாம், பிறகு செய்திகள், கோப்புகளுடன் நிரந்தரமாக நீக்கப்படும்."
 
@@ -21173,8 +21415,8 @@ msgid "You have unsaved changes to {what}."
 msgstr "{what}-இல் உங்களுக்குச் சேமிக்கப்படாத மாற்றங்கள் உள்ளன."
 
 #: src/features/auth/DeleteAccountButton.tsx
-msgid "You leave every workspace and lose your sign-ins, passkeys and notifications. Messages you wrote stay in their conversations, shown as from a deleted member. This cannot be undone."
-msgstr "நீங்கள் ஒவ்வொரு பணியிடத்தையும் விட்டு விலகி, உங்கள் உள்நுழைவுகள், பாஸ்கீகள், அறிவிப்புகளை இழப்பீர்கள். நீங்கள் எழுதிய செய்திகள் அவற்றின் உரையாடல்களில் இருக்கும், நீக்கப்பட்ட உறுப்பினரிடமிருந்து எனக் காட்டப்படும். இதை மீட்க முடியாது."
+msgid "You leave every workspace and lose your sign-ins, passkeys and notifications. Messages you wrote stay in their conversations, shown as from a deleted member. Your personal mailboxes stay with the workspace, unread, until an owner or admin hands them to someone or deletes them. This cannot be undone."
+msgstr "அனைத்துப் பணியிடங்களிலிருந்தும் வெளியேறி, உள்நுழைவுகள், கடவுச்சாவிகள், அறிவிப்புகளை இழக்கிறீர்கள். நீங்கள் எழுதிய செய்திகள் உரையாடல்களில் நீக்கப்பட்ட உறுப்பினரிடமிருந்து வந்ததாகக் காட்டப்படும். உங்கள் தனிப்பட்ட அஞ்சல் பெட்டிகள் ஓர் உரிமையாளர் அல்லது நிர்வாகி ஒப்படைக்கும் அல்லது நீக்கும் வரை படிக்கப்படாமல் பணியிடத்தில் இருக்கும். இதை மாற்ற முடியாது."
 
 #: src/features/account/AccountPage.tsx
 msgid "You replied"
@@ -21302,6 +21544,10 @@ msgstr "உங்கள் அஞ்சல் வழங்குநரின் 
 msgid "Your mailbox"
 msgstr "உங்கள் அஞ்சல்பெட்டி"
 
+#: src/features/mail/MailPage.tsx
+msgid "Your mailboxes"
+msgstr "உங்கள் அஞ்சல் பெட்டிகள்"
+
 #: src/features/migrations/text.ts
 msgid "Your Microsoft 365 organization lets only an admin consent to apps. Send your admin the link below; once they accept, sign in again."
 msgstr "உங்கள் Microsoft 365 நிறுவனம் நிர்வாகியை மட்டுமே ஆப்களுக்கு ஒப்புதல் அளிக்க விடுகிறது. கீழே உள்ள இணைப்பை உங்கள் நிர்வாகிக்கு அனுப்புங்கள்; அவர் ஏற்றதும் மீண்டும் உள்நுழையுங்கள்."
@@ -21420,6 +21666,10 @@ msgstr "உங்கள் பணியிடத்தின் பெயர்,
 #: src/features/account/AccountPage.tsx
 msgid "Your Yuva account"
 msgstr "உங்கள் Yuva கணக்கு"
+
+#: src/features/settings/ProductsPage.tsx
+msgid "Yours"
+msgstr "உங்களுடையது"
 
 #: src/features/auth/AuthLayout.tsx
 msgid "Yuva {version}"

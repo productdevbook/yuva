@@ -752,6 +752,7 @@ export function applyEvent(qc: QueryClient, ctx: LiveContext, event: LiveEvent) 
     }
     case "inbox_access.changed":
       void qc.invalidateQueries({ queryKey: keys.inboxMembers(ctx.ws, event.data.inbox_id) })
+      void qc.invalidateQueries({ queryKey: keys.delegates(ctx.ws, event.data.inbox_id) })
       knowMember(qc, ctx.ws, event.data.member_id)
       void qc.invalidateQueries({ queryKey: keys.teams(ctx.ws) })
       if (event.data.member_id === ctx.memberId) {

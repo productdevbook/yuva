@@ -25,7 +25,16 @@ export function SetupPage({ flow }: { flow?: Flow }) {
   const { canManage } = useSession()
   const { inboxId: param, channelId, kind, listId } = useParams()
   const inboxId = flow === "pick" || flow === "add" ? "new" : flow === "replies" ? (param ?? "new") : param
-  if (!canManage) return <Navigate to="/" replace />
+  const personal =
+    flow === "mail" ||
+    flow === "replies" ||
+    flow === "wait" ||
+    flow === "test" ||
+    flow === "done" ||
+    (flow === "new" && kind === undefined) ||
+    (flow === "add" && kind === "email") ||
+    (flow === undefined && !!inboxId && (kind === "email" || !!channelId))
+  if (!canManage && !personal) return <Navigate to="/" replace />
   if (flow === "hub") return <SetupHub />
   if (flow === "mail") return <NameStep mail />
   if (flow === "newsletter")

@@ -6,6 +6,7 @@ import { useNavigate } from "react-router"
 import { Kbd, toast } from "@/components/common"
 import { AddressChips } from "@/components/common/AddressChips"
 import { FromPicker, sendingAddress, useOwnSenders } from "@/components/common/FromPicker"
+import { OnBehalfNote } from "@/components/common/OnBehalf"
 import { formatWhen, SendLaterMenu } from "@/components/common/SendLater"
 import { alt, mod } from "@/components/common/ShortcutSheet"
 import { SignatureHtml } from "@/components/common/SignatureHtml"
@@ -22,6 +23,7 @@ import { useMySignatures } from "@/features/settings/signature/queries"
 import { useLatest } from "@/hooks/use-latest"
 import { useIsPhone } from "@/hooks/use-media-query"
 import { api, ApiError, unwrap, type DraftItem } from "@/lib/api"
+import { writesMailbox } from "@/lib/mailbox"
 import { cn, newId } from "@/lib/utils"
 import { useChannelMap, useInboxes } from "@/lib/workspace"
 
@@ -131,7 +133,7 @@ export function Compose({ box, onClose, draft }: { box: string; onClose: () => v
   const reopened = !!draft
   const options = useMemo(() => {
     const withEmail = new Set([...channels.values()].filter((c) => c.kind === "email").map((c) => c.inbox_id))
-    const usable = (inboxes ?? []).filter((i) => withEmail.has(i.id))
+    const usable = (inboxes ?? []).filter((i) => withEmail.has(i.id) && writesMailbox(i))
     return [...usable.filter((i) => i.purpose === "mail"), ...usable.filter((i) => i.purpose !== "mail")]
   }, [inboxes, channels])
   const [picked, setPicked] = useState<string | undefined>(draft?.conversation.inbox_id)
@@ -434,6 +436,7 @@ export function Compose({ box, onClose, draft }: { box: string; onClose: () => v
               testId="compose-send-as"
             />
           </div>
+          <OnBehalfNote inboxId={inboxId} />
         </Row>
         <>
           <Row label={<Trans>To</Trans>}>

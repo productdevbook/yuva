@@ -254,6 +254,10 @@ msgstr "{attention, plural, one {# ચેનલ પર ધ્યાન આપવ
 msgid "{author, select, bot {No drafts by bots} assistant {No drafts by assistants} member {No drafts by members} other {No drafts by this author}}"
 msgstr "{author, select, bot {બૉટના કોઈ ડ્રાફ્ટ નથી} assistant {આસિસ્ટન્ટના કોઈ ડ્રાફ્ટ નથી} member {સભ્યોના કોઈ ડ્રાફ્ટ નથી} other {આ લેખકના કોઈ ડ્રાફ્ટ નથી}}"
 
+#: src/features/mail/MailThread.tsx
+msgid "{author} on behalf of {ownerName}"
+msgstr "{ownerName} વતી {author}"
+
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/mail/MailThread.tsx
 msgid "{author}, sent by {by}"
@@ -667,6 +671,10 @@ msgstr "{name} ટાઇપ કરી રહ્યા છે…"
 #: src/features/setup/SetupHub.tsx
 msgid "{name} news"
 msgstr "{name} સમાચાર"
+
+#: src/features/team/RemoveMemberDialog.tsx
+msgid "{name} owns personal mailboxes. Decide what happens to each: delete it with everything in it, or hand it to another member. You do not read them either way."
+msgstr "{name} પાસે અંગત મેઇલબોક્સ છે. દરેક માટે નક્કી કરો: સામગ્રી સાથે કાઢી નાખો અથવા બીજા સભ્યને સોંપો. બંનેમાં તમે તે વાંચતા નથી."
 
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "{name} receives mail at this address. Here is what you set up."
@@ -1398,6 +1406,10 @@ msgstr "મેઇલિંગ લિસ્ટ ઇનબૉક્સના ના
 msgid "A mailing list with subscribe forms, for your broadcasts"
 msgstr "તમારાં બ્રૉડકાસ્ટ માટે સબ્સ્ક્રાઇબ ફૉર્મ સાથેનું મેઇલિંગ લિસ્ટ"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "a member"
+msgstr "એક સભ્ય"
+
 #: src/components/common/AssignmentFields.tsx
 msgid "A member is eligible while they have access to the product (owners and admins only with a grant), have the panel or an app open, are set to Auto availability, the product is inside its business hours and they are under the limit. When nobody is eligible the conversation waits and goes to the first teammate who becomes available."
 msgstr "સભ્ય ત્યારે પાત્ર છે જ્યારે તેને ઉત્પાદનની ઍક્સેસ હોય (માલિકો અને એડમિન ફક્ત મંજૂરી સાથે), પેનલ અથવા ઍપ ખુલ્લી હોય, ઉપલબ્ધતા ઓટો હોય, ઉત્પાદન કામના સમયમાં હોય અને સભ્ય મર્યાદાથી નીચે હોય. કોઈ પાત્ર ન હોય તો વાતચીત રાહ જુએ છે અને પહેલા ઉપલબ્ધ સાથીને મળે છે."
@@ -1672,8 +1684,14 @@ msgstr "સ્વીકૃત જવાબ"
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/app/AppSections.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/settings/ProductsPage.tsx
 msgid "Access"
 msgstr "ઍક્સેસ"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Access of {person}"
+msgstr "{person}ની ઍક્સેસ"
 
 #: src/features/migrations/DoneStep.tsx
 msgid "Access to {provider}"
@@ -1736,6 +1754,7 @@ msgstr "પ્રવૃત્તિ"
 #: src/features/conversation/Participants.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/addresses/AddressesPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Add"
@@ -1781,6 +1800,10 @@ msgstr "ભાષા ઉમેરો"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Add a link"
 msgstr "લિંક ઉમેરો"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Add a member"
+msgstr "સભ્ય ઉમેરો"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Add a monitor"
@@ -2079,6 +2102,10 @@ msgstr "સરનામાનો પુરાવો"
 msgid "Address verified"
 msgstr "સરનામું ચકાસાયું"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Addresses"
+msgstr "સરનામાં"
+
 #: src/features/team/MemberAddresses.tsx
 msgid "Addresses {name} added to send mail from. Those waiting for approval need an owner or admin."
 msgstr "મેઇલ મોકલવા માટે {name} એ ઉમેરેલા સરનામાં. મંજૂરીની રાહ જોતા સરનામાં માટે માલિક અથવા એડમિન જોઈએ."
@@ -2205,9 +2232,9 @@ msgstr "બધું વાંચેલું તરીકે ચિહ્નિ
 msgid "All monitors"
 msgstr "બધા મોનિટર"
 
-#: src/features/settings/inboxes/InboxSecurity.tsx
-msgid "All of its conversations, messages and attachments are deleted with it. Webhooks and API keys limited to it stop working."
-msgstr "તેની બધી વાતચીત, સંદેશા અને જોડાણો તેની સાથે કાઢી નંખાય છે. તેના સુધી મર્યાદિત વેબહૂક અને API કી કામ કરવાનું બંધ કરે છે."
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "All of its conversations, messages and attachments are deleted with it. This cannot be undone."
+msgstr "તેની બધી વાતચીતો, સંદેશાઓ અને જોડાણો તેની સાથે કાઢી નંખાય છે. આ પાછું લઈ શકાતું નથી."
 
 #: src/features/migrations/UploadStep.tsx
 msgid "All parts arrived. Reading the file…"
@@ -3641,6 +3668,7 @@ msgstr "કૅમ્પેઇનનું નામ"
 #: src/features/settings/AddProductDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/sso/SsoPage.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
@@ -3651,6 +3679,7 @@ msgstr "કૅમ્પેઇનનું નામ"
 #: src/features/status/IncidentDetail.tsx
 #: src/features/status/IncidentDialog.tsx
 #: src/features/status/MonitorDialog.tsx
+#: src/features/team/RemoveMemberDialog.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Cancel"
 msgstr "રદ કરો"
@@ -4824,6 +4853,7 @@ msgstr "વાતચીતો"
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/DoneStep.tsx
 #: src/features/migrations/ReviewStep.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/webhooks/events.tsx
 msgid "Conversations"
 msgstr "વાતચીતો"
@@ -5136,6 +5166,10 @@ msgstr "Create this TXT record at your DNS provider, then press Verify. It can t
 msgid "Create workspace"
 msgstr "વર્કસ્પેસ બનાવો"
 
+#: src/features/mail/MailPage.tsx
+msgid "Create your own mailbox"
+msgstr "તમારું પોતાનું મેઇલબોક્સ બનાવો"
+
 #: src/features/auth/CreateWorkspace.tsx
 msgid "Create your workspace"
 msgstr "તમારું વર્કસ્પેસ બનાવો"
@@ -5338,6 +5372,11 @@ msgstr "ડિફૉલ્ટ: {fallback}"
 msgid "Degraded performance"
 msgstr "ઘટેલું પ્રદર્શન"
 
+#: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Delegates"
+msgstr "પ્રતિનિધિઓ"
+
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListSettings.tsx
@@ -5349,6 +5388,7 @@ msgstr "ઘટેલું પ્રદર્શન"
 #: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 #: src/features/settings/macros/MacrosPage.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -5356,6 +5396,7 @@ msgstr "ઘટેલું પ્રદર્શન"
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
 #: src/features/status/SettingsTab.tsx
+#: src/features/team/RemoveMemberDialog.tsx
 msgid "Delete"
 msgstr "કાઢી નાખો"
 
@@ -5378,7 +5419,7 @@ msgstr "કાઢી નાખો ({removeKey})"
 msgid "Delete {0}?"
 msgstr "{0} કાઢી નાખવું છે?"
 
-#: src/features/settings/inboxes/InboxSecurity.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Delete {name}?"
@@ -5416,6 +5457,10 @@ msgstr "કી કાઢી નાખો"
 #: src/features/broadcasts/ListSettings.tsx
 msgid "Delete list"
 msgstr "લિસ્ટ કાઢી નાખો"
+
+#: src/features/settings/inboxes/InboxSecurity.tsx
+msgid "Delete mailbox"
+msgstr "મેઇલબોક્સ કાઢી નાખો"
 
 #: src/features/status/MonitorsPage.tsx
 msgid "Delete monitor"
@@ -5510,6 +5555,10 @@ msgstr "આ DKIM કી કાઢી નાખવી છે?"
 msgid "Delete this macro?"
 msgstr "આ મેક્રો કાઢી નાખવો?"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Delete this mailbox"
+msgstr "આ મેઇલબોક્સ કાઢી નાખો"
+
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Delete this migration?"
 msgstr "આ માઇગ્રેશન કાઢી નાખવું છે?"
@@ -5521,10 +5570,6 @@ msgstr "આ નોંધ કાઢી નાખો"
 #: src/features/contact/ContactNotes.tsx
 msgid "Delete this note?"
 msgstr "આ નોંધ કાઢી નાખવી છે?"
-
-#: src/features/settings/inboxes/InboxSecurity.tsx
-msgid "Delete this product"
-msgstr "આ પ્રોડક્ટ કાઢી નાખો"
 
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Delete this subscription?"
@@ -5592,6 +5637,7 @@ msgstr "કાઢી નાખેલું ઇનબૉક્સ"
 
 #: src/components/common/DiscussionAuthor.tsx
 #: src/features/inbox/SidePanels.tsx
+#: src/features/mail/MailThread.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
@@ -5613,6 +5659,10 @@ msgstr "ઓટોમેશન નિયમ {name} કાઢી નાખ્ય�
 #: src/features/settings/audit/sentence.ts
 msgid "Deleted the inbox {name}"
 msgstr "ઇનબૉક્સ {name} કાઢી નાખ્યું"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted the personal mailbox {name} of {who} when they left"
+msgstr "{who} ગયા ત્યારે તેમનું અંગત મેઇલબોક્સ {name} કાઢી નાખ્યું"
 
 #: src/features/settings/audit/sentence.ts
 msgid "Deleted the team {team}"
@@ -6655,6 +6705,10 @@ msgstr "લિસ્ટ પરના દરેક. શરતો ફક્ત એ
 msgid "Everyone who has written to your products"
 msgstr "જેમણે તમારા પ્રોડક્ટને લખ્યું છે તે બધા"
 
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Everyone with access to the inbox reads it."
+msgstr "ઇનબોક્સની ઍક્સેસ ધરાવતા બધા તેને વાંચે છે."
+
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Everyone's posts are published at once, except those of authors you marked as spam."
 msgstr "દરેકની પોસ્ટ તરત પ્રકાશિત થાય છે, તમે સ્પામ તરીકે ચિહ્નિત કરેલા લેખકો સિવાય."
@@ -7580,9 +7634,29 @@ msgstr "સભ્યોના જૂથ અને તેઓ સંભાળત�
 msgid "Growth"
 msgstr "વૃદ્ધિ"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Hand over"
+msgstr "સોંપો"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Hand over {name}"
+msgstr "{name} સોંપો"
+
+#: src/features/team/RemoveMemberDialog.tsx
+msgid "Hand over to"
+msgstr "સોંપો:"
+
 #: src/features/settings/automation/text.ts
 msgid "Hand to automatic assignment"
 msgstr "સ્વચાલિત સોંપણીને સોંપો"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Handed over"
+msgstr "સોંપાયું"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Handed the personal mailbox {inbox} to {next}"
+msgstr "અંગત મેઇલબોક્સ {inbox} {next}ને સોંપાયું"
 
 #: src/features/conversation/actions.ts
 msgid "Handed to {name}"
@@ -7809,6 +7883,7 @@ msgstr "હોસ્ટનેમ અને પ્રમાણપત્ર"
 msgid "hours"
 msgstr "કલાક"
 
+#: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/ProductsPage.tsx
 msgid "Hours"
 msgstr "સમય"
@@ -8999,6 +9074,10 @@ msgid "Legal name"
 msgstr "કાનૂની નામ"
 
 #: src/features/settings/audit/sentence.ts
+msgid "Let {who} into the personal mailbox {inbox}"
+msgstr "{who}ને અંગત મેઇલબોક્સ {inbox}ની ઍક્સેસ આપી"
+
+#: src/features/settings/audit/sentence.ts
 msgid "Let assistants and keys send messages to customers"
 msgstr "આસિસ્ટન્ટ અને કીને ગ્રાહકોને સંદેશા મોકલવાની મંજૂરી આપી"
 
@@ -9446,6 +9525,10 @@ msgstr "મેઇલ ઇમેઇલ ચૅનલ “{channelName}” માં 
 msgid "Mail is not signed with a key of the sender’s own domain, which Gmail and Yahoo expect."
 msgstr "મેઇલ પર મોકલનારના પોતાના ડોમેનની કી વડે સહી થયેલી નથી, જે Gmail અને Yahoo અપેક્ષા રાખે છે."
 
+#: src/features/settings/SettingsColumn.tsx
+msgid "Mail only you read"
+msgstr "ફક્ત તમે વાંચો છો તે મેઇલ"
+
 #: src/features/settings/addresses/AddressesPage.tsx
 msgid "Mail queued from it fails instead of going out from another address."
 msgstr "આ સરનામાંથી કતારમાં રહેલો મેઇલ બીજા સરનામાંથી જવાને બદલે નિષ્ફળ જાય છે."
@@ -9752,6 +9835,7 @@ msgstr "આજનું મધ્યસ્થ"
 msgid "median, first message to closed"
 msgstr "મધ્યક, પહેલા સંદેશથી બંધ થવા સુધી"
 
+#: src/components/common/MailboxOwnerChoice.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
@@ -9778,6 +9862,10 @@ msgstr "સભ્યો અને આમંત્રણો"
 #: src/features/conversation/messages/Thread.tsx
 msgid "Members only"
 msgstr "ફક્ત સભ્યો માટે"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Members you let into this mailbox. They can read it, or read and send mail on your behalf. They never change its settings, filters or migrations."
+msgstr "આ મેઇલબોક્સમાં તમે આવવા દો છો તે સભ્યો. તેઓ વાંચી શકે છે, અથવા વાંચીને તમારા વતી મોકલી શકે છે. તેની સેટિંગ્સ, ફિલ્ટર્સ કે સ્થળાંતર તેઓ ક્યારેય બદલતા નથી."
 
 #: src/features/conversation/composer/MentionMenu.tsx
 msgid "Mention a teammate"
@@ -10308,6 +10396,7 @@ msgstr "મારા વ્યૂ"
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/fields/FieldDialog.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/macros/MacroDialog.tsx
@@ -10389,6 +10478,10 @@ msgstr "બંધ કરવા માટે “{name}” જરૂરી છે"
 #: src/features/broadcasts/ListParts.tsx
 msgid "Needs a sender"
 msgstr "મોકલનાર જોઈએ"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Needs an owner"
+msgstr "માલિકની જરૂર છે"
 
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/text.ts
@@ -10604,6 +10697,10 @@ msgstr "નવો મેક્રો"
 msgid "New mail"
 msgstr "નવો મેઇલ"
 
+#: src/features/mail/MailPage.tsx
+msgid "New mailbox"
+msgstr "નવું મેઇલબોક્સ"
+
 #: src/features/setup/previews.tsx
 #: src/lib/alerts.ts
 msgid "New message"
@@ -10625,6 +10722,14 @@ msgstr "નવું માઇગ્રેશન"
 msgid "New monitor"
 msgstr "નવું મોનિટર"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "New owner"
+msgstr "નવા માલિક"
+
+#: src/features/team/RemoveMemberDialog.tsx
+msgid "New owner of {boxName}"
+msgstr "{boxName}ના નવા માલિક"
+
 #: src/features/status/StatusPages.tsx
 msgid "New page"
 msgstr "નવું પેજ"
@@ -10632,6 +10737,10 @@ msgstr "નવું પેજ"
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "New password"
 msgstr "નવો પાસવર્ડ"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "New personal mailbox"
+msgstr "નવું અંગત મેઇલબોક્સ"
 
 #: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -11202,6 +11311,11 @@ msgstr "બીજો કોઈ સંપર્ક મેળ ખાતો નથ�
 msgid "No other conversations."
 msgstr "બીજી કોઈ વાતચીત નથી."
 
+#: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "No owner"
+msgstr "કોઈ માલિક નથી"
+
 #: src/features/docs/PagesTab.tsx
 msgid "No pages yet"
 msgstr "હજી કોઈ પેજ નથી"
@@ -11398,6 +11512,14 @@ msgstr "બીજું કોઈ હજી આ ઇનબૉક્સ જોઈ 
 #: src/features/conversation/Participants.tsx
 msgid "Nobody else is copied. Replies go to the contact only."
 msgstr "બીજું કોઈ કૉપિમાં નથી. જવાબો ફક્ત સંપર્કને જાય છે."
+
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Nobody else reads it unless you let them. Owners and admins see only that it exists."
+msgstr "તમે મંજૂરી ન આપો ત્યાં સુધી બીજું કોઈ તેને વાંચતું નથી. માલિકો અને એડમિન ફક્ત તે છે એટલું જુએ છે."
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Nobody else reads this mailbox."
+msgstr "આ મેઇલબોક્સ બીજું કોઈ વાંચતું નથી."
 
 #: src/features/inbox/SidePanels.tsx
 msgid "Nobody has mentioned you yet"
@@ -12179,6 +12301,10 @@ msgstr "Only if your Slack account uses another address than this one. Optional.
 msgid "Only in the app"
 msgstr "ફક્ત ઍપમાં"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Only its owner reads it. You can rename it or delete it."
+msgstr "ફક્ત તેના માલિક તેને વાંચે છે. તમે તેનું નામ બદલી કે કાઢી શકો છો."
+
 #: src/features/migrations/parts.tsx
 msgid "Only mail since {date}"
 msgstr "ફક્ત {date} પછીનો મેઇલ"
@@ -12220,9 +12346,17 @@ msgstr "હમણાં ફક્ત મેળવો"
 msgid "Only receives"
 msgstr "ફક્ત મેળવે છે"
 
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Only that member reads it. You see only that it exists."
+msgstr "ફક્ત તે સભ્ય તેને વાંચે છે. તમે ફક્ત તે છે એટલું જુઓ છો."
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Only the exact domain is claimed, not its subdomains. Add eu.example.com on its own if people use such addresses."
 msgstr "Only the exact domain is claimed, not its subdomains. Add eu.example.com on its own if people use such addresses."
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Only the owner of a personal mailbox manages its settings."
+msgstr "અંગત મેઇલબોક્સની સેટિંગ્સ ફક્ત તેના માલિક સંભાળે છે."
 
 #: src/components/common/text.ts
 msgid "Only the person can subscribe again, by confirming a mail."
@@ -12232,6 +12366,10 @@ msgstr "ફક્ત વ્યક્તિ ફરી સબ્સ્ક્રા
 #: src/features/settings/automation/ActionRow.tsx
 msgid "Only the team sees this"
 msgstr "ફક્ત ટીમ આ જુએ છે"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Only their owners read them. You see what they hold, never what is in them."
+msgstr "તેમને ફક્ત તેમના માલિકો વાંચે છે. તમે તેમાં કેટલું છે તે જુઓ છો, શું છે તે નહીં."
 
 #: src/features/broadcasts/Report.tsx
 msgid "Only those who replied"
@@ -13089,6 +13227,31 @@ msgstr "વ્યક્તિ"
 msgid "Personal"
 msgstr "અંગત"
 
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Personal (only you)"
+msgstr "અંગત (ફક્ત તમે)"
+
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Personal for {who}"
+msgstr "{who} માટે અંગત"
+
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Personal for a member"
+msgstr "એક સભ્ય માટે અંગત"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Personal mailbox"
+msgstr "અંગત મેઇલબોક્સ"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Personal mailbox of {owner}"
+msgstr "{owner}નું અંગત મેઇલબોક્સ"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Personal mailboxes"
+msgstr "અંગત મેઇલબોક્સ"
+
 #: src/features/settings/automation/ActionRow.tsx
 msgid "Pick a canned reply"
 msgstr "તૈયાર જવાબ પસંદ કરો"
@@ -13145,7 +13308,10 @@ msgstr "ફીલ્ડ પસંદ કરો"
 msgid "Pick a mail"
 msgstr "એક મેલ પસંદ કરો"
 
+#: src/components/common/MailboxOwnerChoice.tsx
 #: src/features/settings/automation/ActionRow.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/team/RemoveMemberDialog.tsx
 msgid "Pick a member"
 msgstr "સભ્ય પસંદ કરો"
 
@@ -13883,9 +14049,22 @@ msgstr "તમારી પોતાની સાઇટના દસ્તાવ
 msgid "Read"
 msgstr "વાંચો"
 
+#: src/features/mail/MailPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/settings/ProductsPage.tsx
+msgctxt "mailbox access"
+msgid "Read"
+msgstr "વાંચવું"
+
 #: src/components/common/text.ts
 msgid "Read analytics properties and their numbers"
 msgstr "ઍનાલિટિક્સ પ્રૉપર્ટી અને તેમના આંકડા વાંચો"
+
+#: src/features/mail/MailPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/settings/ProductsPage.tsx
+msgid "Read and send"
+msgstr "વાંચવું અને મોકલવું"
 
 #: src/features/migrations/text.ts
 msgid "Read as a Google Takeout file: Gmail's labels and threads come with it."
@@ -14184,6 +14363,7 @@ msgstr "રિમોટ ઇમેજ મોકલનારને જણાવી
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/OwnDomainCard.tsx
@@ -14229,12 +14409,14 @@ msgid "Remove {lang}"
 msgstr "{lang} દૂર કરો"
 
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/team/RemoveMemberDialog.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Remove {name}"
 msgstr "{name} દૂર કરો"
 
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/sso/SsoPage.tsx
+#: src/features/team/RemoveMemberDialog.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Remove {name}?"
 msgstr "{name} ને દૂર કરવા છે?"
@@ -14242,6 +14424,10 @@ msgstr "{name} ને દૂર કરવા છે?"
 #: src/features/migrations/MapStep.tsx
 msgid "Remove {sender}"
 msgstr "{sender} દૂર કરો"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Remove {who}?"
+msgstr "{who}ને દૂર કરવા?"
 
 #: src/features/settings/automation/ActionRow.tsx
 msgid "Remove action"
@@ -14436,6 +14622,7 @@ msgstr "આયાત કરેલો ઇતિહાસ દૂર થઈ રહ�
 msgid "Removing imported history…"
 msgstr "આયાત કરેલો ઇતિહાસ દૂર થઈ રહ્યો છે…"
 
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Rename"
 msgstr "નામ બદલો"
@@ -14443,6 +14630,10 @@ msgstr "નામ બદલો"
 #: src/features/status/ComponentDialogs.tsx
 msgid "Rename group"
 msgstr "જૂથનું નામ બદલો"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Rename the mailbox"
+msgstr "મેઇલબોક્સનું નામ બદલો"
 
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -15136,6 +15327,7 @@ msgstr "શનિવાર"
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/macros/MacroDialog.tsx
@@ -15217,6 +15409,7 @@ msgstr "યાદીને વ્યૂ તરીકે સાચવો"
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/chat/ChatSections.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/profile/ProfileForm.tsx
 #: src/features/settings/signature/SignaturePage.tsx
@@ -15847,6 +16040,10 @@ msgstr "મોકલવાનું પહેલેથી શરૂ થઈ ગ�
 msgid "Sending kept failing, so Yuva gave up."
 msgstr "મોકલવાનું વારંવાર નિષ્ફળ ગયું, તેથી Yuva એ પ્રયાસ છોડી દીધો."
 
+#: src/components/common/OnBehalf.tsx
+msgid "Sending on behalf of {name}"
+msgstr "{name} વતી મોકલી રહ્યા છે"
+
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Sending pace"
@@ -16176,6 +16373,14 @@ msgstr "શેર કરેલ"
 #: src/components/common/FocusChoice.tsx
 msgid "Shared mailboxes for your team"
 msgstr "તમારી ટીમ માટે શેર કરેલા મેલબોક્સ"
+
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Shared with the team"
+msgstr "ટીમ સાથે શેર કરેલું"
+
+#: src/features/mail/MailPage.tsx
+msgid "Shared with you"
+msgstr "તમારી સાથે શેર કરેલા"
 
 #: src/components/common/text.ts
 msgid "Shipped"
@@ -16656,6 +16861,10 @@ msgstr "સાઇટનું નામ"
 #: src/features/setup/SetupLayout.tsx
 msgid "Sites"
 msgstr "સાઇટ્સ"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Size"
+msgstr "કદ"
 
 #: src/features/setup/email/EmailTestStep.tsx
 msgid "Skip for now"
@@ -17452,6 +17661,7 @@ msgstr "ટીમ ID"
 
 #: src/components/common/FocusChoice.tsx
 #: src/components/common/PurposeChoice.tsx
+#: src/features/mail/MailPage.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/setup/SetupHub.tsx
 msgid "Team mail"
@@ -18147,6 +18357,10 @@ msgstr "જાળવણી પૂર્ણ થઈ. બધું પહેલા�
 msgid "The mbox file is compressed inside the zip. Unzip the Takeout archive and upload the .mbox file."
 msgstr "mbox ફાઇલ ઝિપની અંદર સંકુચિત છે. Takeout આર્કાઇવ અનઝિપ કરો અને .mbox ફાઇલ અપલોડ કરો."
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "The member you pick becomes its owner and reads it from then on. You still do not read it."
+msgstr "તમે પસંદ કરેલા સભ્ય માલિક બને છે અને હવેથી તેને વાંચે છે. તમે હજી પણ વાંચતા નથી."
+
 #: src/features/migrations/text.ts
 msgid "The message could not be read"
 msgstr "સંદેશ વાંચી શકાયો નહીં"
@@ -18206,6 +18420,10 @@ msgstr "બીજા ઇનબૉક્સમાં ઇમેઇલ ચૅનલ
 #: src/features/fields/BulkFailures.tsx
 msgid "The others were closed. Open one to fill in what it needs, then close it."
 msgstr "બાકીની બંધ થઈ ગઈ. એક ખોલો, જે જોઈએ તે ભરો અને પછી બંધ કરો."
+
+#: src/components/common/OnBehalf.tsx
+msgid "the owner"
+msgstr "માલિક"
 
 #: src/features/status/Notices.tsx
 msgid "The page already sent 10 notices in the last hour"
@@ -18274,6 +18492,10 @@ msgstr "વ્યક્તિ કોઈ મંજૂર જૂથમાં ન�
 #: src/features/settings/audit/sentence.ts
 msgid "the person is not a member of this workspace"
 msgstr "વ્યક્તિ આ વર્કસ્પેસની સભ્ય નથી"
+
+#: src/features/settings/audit/sentence.ts
+msgid "The personal mailbox {inbox} lost its owner {who}"
+msgstr "અંગત મેઇલબોક્સ {inbox}એ તેના માલિક {who}ને ગુમાવ્યા"
 
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "The policy is none: receivers only report. Move to quarantine once all your mail passes."
@@ -18707,6 +18929,10 @@ msgstr "તેમને આ લિસ્ટમાંથી વધુ મેઇ�
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "They signed up on our website and confirmed their address."
 msgstr "તેમણે અમારી વેબસાઇટ પર સાઇન અપ કર્યું અને તેમના સરનામાની પુષ્ટિ કરી."
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "They stop reading this mailbox at once."
+msgstr "તેઓ આ મેઇલબોક્સ વાંચવાનું તરત બંધ કરે છે."
 
 #: src/features/migrations/text.ts
 msgid "This {provider} account's plan has no API access, which Yuva reads through."
@@ -19347,6 +19573,10 @@ msgid "Too many workspaces were created from your network today. Try again tomor
 msgstr "આજે તમારા નેટવર્કથી ઘણાં વર્કસ્પેસ બનાવાયાં. કાલે ફરી પ્રયાસ કરો."
 
 #: src/features/settings/audit/sentence.ts
+msgid "Took {who}'s access to the personal mailbox {inbox} away"
+msgstr "અંગત મેઇલબોક્સ {inbox} પરથી {who}ની ઍક્સેસ પાછી ખેંચી"
+
+#: src/features/settings/audit/sentence.ts
 msgid "Took away the access of {person} to {inbox}"
 msgstr "{person} ની {inbox} ની ઍક્સેસ પાછી ખેંચી"
 
@@ -19496,7 +19726,7 @@ msgstr "TXT રેકોર્ડ"
 msgid "Type"
 msgstr "પ્રકાર"
 
-#: src/features/settings/inboxes/InboxSecurity.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 msgid "Type {name} to confirm"
 msgstr "પુષ્ટિ માટે {name} લખો"
 
@@ -20514,6 +20744,10 @@ msgstr "દરેક કૉલમ શું ધરાવે છે"
 msgid "What happened"
 msgstr "શું થયું"
 
+#: src/features/team/RemoveMemberDialog.tsx
+msgid "What happens to {boxName}"
+msgstr "{boxName}નું શું થશે"
+
 #: src/features/broadcasts/Composer.tsx
 msgid "What is new in October"
 msgstr "ઑક્ટોબરમાં નવું શું છે"
@@ -20810,6 +21044,10 @@ msgstr "અહીં કોણ છે"
 msgid "Who is it for?"
 msgstr "તે કોના માટે છે?"
 
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Who reads it?"
+msgstr "કોણ વાંચે છે?"
+
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "Who sends, and what about?"
 msgstr "કોણ મોકલે છે, અને શેના વિશે?"
@@ -21092,6 +21330,10 @@ msgid "You can leave this page: the conversation will wait for you in your conve
 msgstr "તમે આ પેજ છોડી શકો છો: વાતચીત તમારા વાતચીત લિસ્ટમાં તમારી રાહ જોશે."
 
 #: src/features/mail/MailThread.tsx
+msgid "You can read this mailbox but not change it. Its owner can let you send from it."
+msgstr "તમે આ મેઇલબોક્સ વાંચી શકો છો પણ બદલી શકતા નથી. તેના માલિક તમને તેમાંથી મોકલવા દઈ શકે છે."
+
+#: src/features/mail/MailThread.tsx
 msgid "You can restore it from the Trash for 30 days, then it is deleted for good with its messages and files."
 msgstr "તમે 30 દિવસ સુધી કચરાપેટીમાંથી તેને પાછી લાવી શકો છો, પછી તે સંદેશા અને ફાઇલો સાથે કાયમ માટે કાઢી નખાય છે."
 
@@ -21173,8 +21415,8 @@ msgid "You have unsaved changes to {what}."
 msgstr "{what} માં તમારા સાચવ્યા વગરના ફેરફારો છે."
 
 #: src/features/auth/DeleteAccountButton.tsx
-msgid "You leave every workspace and lose your sign-ins, passkeys and notifications. Messages you wrote stay in their conversations, shown as from a deleted member. This cannot be undone."
-msgstr "તમે દરેક વર્કસ્પેસ છોડો છો અને તમારાં સાઇન-ઇન, પાસકી અને સૂચનાઓ ગુમાવો છો. તમે લખેલા સંદેશા તેમની વાતચીતોમાં રહે છે, કાઢી નાખેલા સભ્યના તરીકે દેખાય છે. આ પૂર્વવત્ થઈ શકતું નથી."
+msgid "You leave every workspace and lose your sign-ins, passkeys and notifications. Messages you wrote stay in their conversations, shown as from a deleted member. Your personal mailboxes stay with the workspace, unread, until an owner or admin hands them to someone or deletes them. This cannot be undone."
+msgstr "તમે બધી વર્કસ્પેસ છોડો છો અને સાઇન-ઇન, પાસકી અને સૂચનાઓ ગુમાવો છો. તમે લખેલા સંદેશા વાતચીતોમાં રહે છે, કાઢી નાખેલા સભ્ય તરફથી હોય તેમ બતાવાય છે. તમારા અંગત મેઇલબોક્સ માલિક કે એડમિન તેમને સોંપે અથવા કાઢી નાખે ત્યાં સુધી વાંચ્યા વિના વર્કસ્પેસમાં રહે છે. આ પાછું લઈ શકાતું નથી."
 
 #: src/features/account/AccountPage.tsx
 msgid "You replied"
@@ -21302,6 +21544,10 @@ msgstr "તમારા મેઇલ પ્રદાતાનો કે તમ�
 msgid "Your mailbox"
 msgstr "તમારું મેઇલબૉક્સ"
 
+#: src/features/mail/MailPage.tsx
+msgid "Your mailboxes"
+msgstr "તમારા મેઇલબોક્સ"
+
 #: src/features/migrations/text.ts
 msgid "Your Microsoft 365 organization lets only an admin consent to apps. Send your admin the link below; once they accept, sign in again."
 msgstr "તમારી Microsoft 365 સંસ્થા ફક્ત ઍડમિનને ઍપને સંમતિ આપવા દે છે. તમારા ઍડમિનને નીચેની લિંક મોકલો; તેઓ સ્વીકારે પછી ફરી સાઇન ઇન કરો."
@@ -21420,6 +21666,10 @@ msgstr "તમારા વર્કસ્પેસનું નામ, બં�
 #: src/features/account/AccountPage.tsx
 msgid "Your Yuva account"
 msgstr "તમારું Yuva ખાતું"
+
+#: src/features/settings/ProductsPage.tsx
+msgid "Yours"
+msgstr "તમારું"
 
 #: src/features/auth/AuthLayout.tsx
 msgid "Yuva {version}"

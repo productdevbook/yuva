@@ -254,6 +254,10 @@ msgstr "{attention, plural, one {ערוץ # דורש תשומת לב} two {# ע�
 msgid "{author, select, bot {No drafts by bots} assistant {No drafts by assistants} member {No drafts by members} other {No drafts by this author}}"
 msgstr "{author, select, bot {אין טיוטות מבוטים} assistant {אין טיוטות מעוזרים} member {אין טיוטות מחברי צוות} other {אין טיוטות מהכותב הזה}}"
 
+#: src/features/mail/MailThread.tsx
+msgid "{author} on behalf of {ownerName}"
+msgstr "{author} מטעם {ownerName}"
+
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/mail/MailThread.tsx
 msgid "{author}, sent by {by}"
@@ -667,6 +671,10 @@ msgstr "{name} מקליד/ה…"
 #: src/features/setup/SetupHub.tsx
 msgid "{name} news"
 msgstr "החדשות של {name}"
+
+#: src/features/team/RemoveMemberDialog.tsx
+msgid "{name} owns personal mailboxes. Decide what happens to each: delete it with everything in it, or hand it to another member. You do not read them either way."
+msgstr "ל-{name} יש תיבות דואר אישיות. החליטו מה יקרה לכל אחת: למחוק עם כל תוכנה או להעביר לחבר אחר. בשני המקרים אינכם קוראים אותן."
 
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "{name} receives mail at this address. Here is what you set up."
@@ -1398,6 +1406,10 @@ msgstr "רשימת תפוצה שולחת בשם של תיבת דואר, דרך �
 msgid "A mailing list with subscribe forms, for your broadcasts"
 msgstr "רשימת תפוצה עם טפסי הרשמה, לשליחות ההמוניות שלך"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "a member"
+msgstr "חבר"
+
 #: src/components/common/AssignmentFields.tsx
 msgid "A member is eligible while they have access to the product (owners and admins only with a grant), have the panel or an app open, are set to Auto availability, the product is inside its business hours and they are under the limit. When nobody is eligible the conversation waits and goes to the first teammate who becomes available."
 msgstr "חבר זכאי אם יש לו גישה למוצר (בעלים ומנהלים רק עם הרשאה), הלוח או אפליקציה פתוחים, הזמינות שלו אוטומטית, המוצר בתוך שעות הפעילות והחבר מתחת למגבלה. אם אף אחד לא זכאי, השיחה ממתינה ועוברת לעמית הראשון שיתפנה."
@@ -1672,8 +1684,14 @@ msgstr "תשובה מאושרת"
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/app/AppSections.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/settings/ProductsPage.tsx
 msgid "Access"
 msgstr "גישה"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Access of {person}"
+msgstr "גישה של {person}"
 
 #: src/features/migrations/DoneStep.tsx
 msgid "Access to {provider}"
@@ -1736,6 +1754,7 @@ msgstr "פעילות"
 #: src/features/conversation/Participants.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/addresses/AddressesPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Add"
@@ -1781,6 +1800,10 @@ msgstr "הוספת שפה"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Add a link"
 msgstr "הוספת קישור"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Add a member"
+msgstr "הוספת חבר"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Add a monitor"
@@ -2079,6 +2102,10 @@ msgstr "הוכחת הכתובת"
 msgid "Address verified"
 msgstr "הכתובת אומתה"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Addresses"
+msgstr "כתובות"
+
 #: src/features/team/MemberAddresses.tsx
 msgid "Addresses {name} added to send mail from. Those waiting for approval need an owner or admin."
 msgstr "כתובות ש-{name} הוסיף/ה לשליחת דואר. כתובות שממתינות לאישור דורשות בעלים או מנהל."
@@ -2205,9 +2232,9 @@ msgstr "הכול סומן כנקרא"
 msgid "All monitors"
 msgstr "כל המוניטורים"
 
-#: src/features/settings/inboxes/InboxSecurity.tsx
-msgid "All of its conversations, messages and attachments are deleted with it. Webhooks and API keys limited to it stop working."
-msgstr "כל השיחות, ההודעות והקבצים המצורפים שלו נמחקים יחד איתו. Webhooks ומפתחות API המוגבלים אליו מפסיקים לעבוד."
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "All of its conversations, messages and attachments are deleted with it. This cannot be undone."
+msgstr "כל השיחות, ההודעות והקבצים המצורפים נמחקים יחד איתה. אי אפשר לבטל."
 
 #: src/features/migrations/UploadStep.tsx
 msgid "All parts arrived. Reading the file…"
@@ -3641,6 +3668,7 @@ msgstr "שם הקמפיין"
 #: src/features/settings/AddProductDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/sso/SsoPage.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
@@ -3651,6 +3679,7 @@ msgstr "שם הקמפיין"
 #: src/features/status/IncidentDetail.tsx
 #: src/features/status/IncidentDialog.tsx
 #: src/features/status/MonitorDialog.tsx
+#: src/features/team/RemoveMemberDialog.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Cancel"
 msgstr "ביטול"
@@ -4824,6 +4853,7 @@ msgstr "שיחות"
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/DoneStep.tsx
 #: src/features/migrations/ReviewStep.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/webhooks/events.tsx
 msgid "Conversations"
 msgstr "שיחות"
@@ -5136,6 +5166,10 @@ msgstr "Create this TXT record at your DNS provider, then press Verify. It can t
 msgid "Create workspace"
 msgstr "יצירת סביבת עבודה"
 
+#: src/features/mail/MailPage.tsx
+msgid "Create your own mailbox"
+msgstr "צרו תיבה משלכם"
+
 #: src/features/auth/CreateWorkspace.tsx
 msgid "Create your workspace"
 msgstr "צור את סביבת העבודה שלך"
@@ -5338,6 +5372,11 @@ msgstr "ברירת מחדל: {fallback}"
 msgid "Degraded performance"
 msgstr "ביצועים מופחתים"
 
+#: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Delegates"
+msgstr "נציגים"
+
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListSettings.tsx
@@ -5349,6 +5388,7 @@ msgstr "ביצועים מופחתים"
 #: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 #: src/features/settings/macros/MacrosPage.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -5356,6 +5396,7 @@ msgstr "ביצועים מופחתים"
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
 #: src/features/status/SettingsTab.tsx
+#: src/features/team/RemoveMemberDialog.tsx
 msgid "Delete"
 msgstr "מחיקה"
 
@@ -5378,7 +5419,7 @@ msgstr "מחיקה ({removeKey})"
 msgid "Delete {0}?"
 msgstr "למחוק את {0}?"
 
-#: src/features/settings/inboxes/InboxSecurity.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Delete {name}?"
@@ -5416,6 +5457,10 @@ msgstr "מחיקת מפתח"
 #: src/features/broadcasts/ListSettings.tsx
 msgid "Delete list"
 msgstr "מחיקת רשימה"
+
+#: src/features/settings/inboxes/InboxSecurity.tsx
+msgid "Delete mailbox"
+msgstr "מחיקת התיבה"
 
 #: src/features/status/MonitorsPage.tsx
 msgid "Delete monitor"
@@ -5510,6 +5555,10 @@ msgstr "למחוק את מפתח ה-DKIM הזה?"
 msgid "Delete this macro?"
 msgstr "למחוק את המאקרו הזה?"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Delete this mailbox"
+msgstr "מחיקת התיבה הזו"
+
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Delete this migration?"
 msgstr "למחוק את ההעברה הזאת?"
@@ -5521,10 +5570,6 @@ msgstr "מחיקת ההערה הזאת"
 #: src/features/contact/ContactNotes.tsx
 msgid "Delete this note?"
 msgstr "למחוק את ההערה הזאת?"
-
-#: src/features/settings/inboxes/InboxSecurity.tsx
-msgid "Delete this product"
-msgstr "מחיקת המוצר הזה"
 
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Delete this subscription?"
@@ -5592,6 +5637,7 @@ msgstr "תיבת דואר שנמחקה"
 
 #: src/components/common/DiscussionAuthor.tsx
 #: src/features/inbox/SidePanels.tsx
+#: src/features/mail/MailThread.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
@@ -5613,6 +5659,10 @@ msgstr "מחק את כלל האוטומציה {name}"
 #: src/features/settings/audit/sentence.ts
 msgid "Deleted the inbox {name}"
 msgstr "מחק/ה את תיבת הדואר {name}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted the personal mailbox {name} of {who} when they left"
+msgstr "תיבת הדואר האישית {name} של {who} נמחקה עם עזיבתו"
 
 #: src/features/settings/audit/sentence.ts
 msgid "Deleted the team {team}"
@@ -6655,6 +6705,10 @@ msgstr "כל מי שברשימות. תנאים משאירים רק אנשי קש
 msgid "Everyone who has written to your products"
 msgstr "כל מי שכתב למוצרים שלך"
 
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Everyone with access to the inbox reads it."
+msgstr "כל מי שיש לו גישה לתיבה קורא אותה."
+
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Everyone's posts are published at once, except those of authors you marked as spam."
 msgstr "הפוסטים של כולם מתפרסמים מיד, חוץ מאלה של כותבים שסימנת כספאם."
@@ -7580,9 +7634,29 @@ msgstr "קבוצות חברים ותיבות הדואר שהן מכסות"
 msgid "Growth"
 msgstr "צמיחה"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Hand over"
+msgstr "העברה"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Hand over {name}"
+msgstr "העברת {name}"
+
+#: src/features/team/RemoveMemberDialog.tsx
+msgid "Hand over to"
+msgstr "העברה אל"
+
 #: src/features/settings/automation/text.ts
 msgid "Hand to automatic assignment"
 msgstr "העבר להקצאה אוטומטית"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Handed over"
+msgstr "הועברה"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Handed the personal mailbox {inbox} to {next}"
+msgstr "תיבת הדואר האישית {inbox} הועברה אל {next}"
 
 #: src/features/conversation/actions.ts
 msgid "Handed to {name}"
@@ -7809,6 +7883,7 @@ msgstr "שם מארח ואישור"
 msgid "hours"
 msgstr "שעות"
 
+#: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/ProductsPage.tsx
 msgid "Hours"
 msgstr "שעות פעילות"
@@ -8999,6 +9074,10 @@ msgid "Legal name"
 msgstr "שם משפטי"
 
 #: src/features/settings/audit/sentence.ts
+msgid "Let {who} into the personal mailbox {inbox}"
+msgstr "{who} קיבל גישה לתיבת הדואר האישית {inbox}"
+
+#: src/features/settings/audit/sentence.ts
 msgid "Let assistants and keys send messages to customers"
 msgstr "הותר לעוזרים ולמפתחות לשלוח הודעות ללקוחות"
 
@@ -9446,6 +9525,10 @@ msgstr "הדואר נכנס לערוץ האימייל „{channelName}”, שמ�
 msgid "Mail is not signed with a key of the sender’s own domain, which Gmail and Yahoo expect."
 msgstr "הדואר אינו חתום במפתח של הדומיין של השולח, כפי ש-Gmail ו-Yahoo מצפים."
 
+#: src/features/settings/SettingsColumn.tsx
+msgid "Mail only you read"
+msgstr "דואר שרק אתם קוראים"
+
 #: src/features/settings/addresses/AddressesPage.tsx
 msgid "Mail queued from it fails instead of going out from another address."
 msgstr "דואר שממתין בתור מכתובת זו ייכשל במקום לצאת מכתובת אחרת."
@@ -9752,6 +9835,7 @@ msgstr "חציון היום"
 msgid "median, first message to closed"
 msgstr "חציון, מההודעה הראשונה ועד הסגירה"
 
+#: src/components/common/MailboxOwnerChoice.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
@@ -9778,6 +9862,10 @@ msgstr "חברים והזמנות"
 #: src/features/conversation/messages/Thread.tsx
 msgid "Members only"
 msgstr "לחברי הצוות בלבד"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Members you let into this mailbox. They can read it, or read and send mail on your behalf. They never change its settings, filters or migrations."
+msgstr "חברים שאתם מכניסים לתיבה הזו. הם יכולים לקרוא אותה, או לקרוא ולשלוח בשמכם. הם אינם משנים את ההגדרות, המסננים או ההעברות שלה."
 
 #: src/features/conversation/composer/MentionMenu.tsx
 msgid "Mention a teammate"
@@ -10308,6 +10396,7 @@ msgstr "התצוגות שלי"
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/fields/FieldDialog.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/macros/MacroDialog.tsx
@@ -10389,6 +10478,10 @@ msgstr "נדרש «{name}» כדי שאפשר יהיה לסגור"
 #: src/features/broadcasts/ListParts.tsx
 msgid "Needs a sender"
 msgstr "דורש שולח"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Needs an owner"
+msgstr "דרוש בעלים"
 
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/text.ts
@@ -10604,6 +10697,10 @@ msgstr "מאקרו חדש"
 msgid "New mail"
 msgstr "מכתב חדש"
 
+#: src/features/mail/MailPage.tsx
+msgid "New mailbox"
+msgstr "תיבה חדשה"
+
 #: src/features/setup/previews.tsx
 #: src/lib/alerts.ts
 msgid "New message"
@@ -10625,6 +10722,14 @@ msgstr "העברה חדשה"
 msgid "New monitor"
 msgstr "מוניטור חדש"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "New owner"
+msgstr "בעלים חדש"
+
+#: src/features/team/RemoveMemberDialog.tsx
+msgid "New owner of {boxName}"
+msgstr "בעלים חדש של {boxName}"
+
 #: src/features/status/StatusPages.tsx
 msgid "New page"
 msgstr "דף חדש"
@@ -10632,6 +10737,10 @@ msgstr "דף חדש"
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "New password"
 msgstr "סיסמה חדשה"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "New personal mailbox"
+msgstr "תיבה אישית חדשה"
 
 #: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -11202,6 +11311,11 @@ msgstr "אף איש קשר אחר לא מתאים."
 msgid "No other conversations."
 msgstr "אין שיחות אחרות."
 
+#: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "No owner"
+msgstr "ללא בעלים"
+
 #: src/features/docs/PagesTab.tsx
 msgid "No pages yet"
 msgstr "עדיין אין דפים"
@@ -11398,6 +11512,14 @@ msgstr "אף אחד אחר עדיין לא יכול לראות את תיבת ה�
 #: src/features/conversation/Participants.tsx
 msgid "Nobody else is copied. Replies go to the contact only."
 msgstr "אף אחד אחר אינו בעותק. תשובות נשלחות רק לאיש הקשר."
+
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Nobody else reads it unless you let them. Owners and admins see only that it exists."
+msgstr "אף אחד אחר לא קורא אותה אלא אם תאפשרו. בעלים ומנהלים רואים רק שהיא קיימת."
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Nobody else reads this mailbox."
+msgstr "אף אחד אחר לא קורא את התיבה הזו."
 
 #: src/features/inbox/SidePanels.tsx
 msgid "Nobody has mentioned you yet"
@@ -12179,6 +12301,10 @@ msgstr "Only if your Slack account uses another address than this one. Optional.
 msgid "Only in the app"
 msgstr "באפליקציה בלבד"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Only its owner reads it. You can rename it or delete it."
+msgstr "רק הבעלים שלה קורא אותה. אפשר לשנות את שמה או למחוק אותה."
+
 #: src/features/migrations/parts.tsx
 msgid "Only mail since {date}"
 msgstr "רק דואר מאז {date}"
@@ -12220,9 +12346,17 @@ msgstr "רק לקבל לעת עתה"
 msgid "Only receives"
 msgstr "רק מקבל"
 
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Only that member reads it. You see only that it exists."
+msgstr "רק אותו חבר קורא אותה. אתם רואים רק שהיא קיימת."
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Only the exact domain is claimed, not its subdomains. Add eu.example.com on its own if people use such addresses."
 msgstr "Only the exact domain is claimed, not its subdomains. Add eu.example.com on its own if people use such addresses."
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Only the owner of a personal mailbox manages its settings."
+msgstr "רק הבעלים של תיבה אישית מנהל את הגדרותיה."
 
 #: src/components/common/text.ts
 msgid "Only the person can subscribe again, by confirming a mail."
@@ -12232,6 +12366,10 @@ msgstr "רק האדם יכול להירשם שוב, באישור אימייל."
 #: src/features/settings/automation/ActionRow.tsx
 msgid "Only the team sees this"
 msgstr "רק הצוות רואה את זה"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Only their owners read them. You see what they hold, never what is in them."
+msgstr "רק הבעלים שלהן קוראים אותן. אתם רואים מה הן מחזיקות, אף פעם לא מה בתוכן."
 
 #: src/features/broadcasts/Report.tsx
 msgid "Only those who replied"
@@ -13089,6 +13227,31 @@ msgstr "אדם"
 msgid "Personal"
 msgstr "אישי"
 
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Personal (only you)"
+msgstr "אישית (רק אתם)"
+
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Personal for {who}"
+msgstr "אישית עבור {who}"
+
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Personal for a member"
+msgstr "אישית עבור חבר"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Personal mailbox"
+msgstr "תיבה אישית"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Personal mailbox of {owner}"
+msgstr "התיבה האישית של {owner}"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Personal mailboxes"
+msgstr "תיבות אישיות"
+
 #: src/features/settings/automation/ActionRow.tsx
 msgid "Pick a canned reply"
 msgstr "בחרו תשובה מוכנה"
@@ -13145,7 +13308,10 @@ msgstr "בחרו שדה"
 msgid "Pick a mail"
 msgstr "בחרו מייל"
 
+#: src/components/common/MailboxOwnerChoice.tsx
 #: src/features/settings/automation/ActionRow.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/team/RemoveMemberDialog.tsx
 msgid "Pick a member"
 msgstr "בחרו חבר"
 
@@ -13883,9 +14049,22 @@ msgstr "דירוגים, שאלות ודיונים מדפי התיעוד באתר
 msgid "Read"
 msgstr "קריאה"
 
+#: src/features/mail/MailPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/settings/ProductsPage.tsx
+msgctxt "mailbox access"
+msgid "Read"
+msgstr "קריאה"
+
 #: src/components/common/text.ts
 msgid "Read analytics properties and their numbers"
 msgstr "קריאת נכסי אנליטיקה והמספרים שלהם"
+
+#: src/features/mail/MailPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/settings/ProductsPage.tsx
+msgid "Read and send"
+msgstr "קריאה ושליחה"
 
 #: src/features/migrations/text.ts
 msgid "Read as a Google Takeout file: Gmail's labels and threads come with it."
@@ -14184,6 +14363,7 @@ msgstr "תמונות מרוחקות יכולות לומר לשולח שפתחת 
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/OwnDomainCard.tsx
@@ -14229,12 +14409,14 @@ msgid "Remove {lang}"
 msgstr "הסרת {lang}"
 
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/team/RemoveMemberDialog.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Remove {name}"
 msgstr "הסרת {name}"
 
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/sso/SsoPage.tsx
+#: src/features/team/RemoveMemberDialog.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Remove {name}?"
 msgstr "להסיר את {name}?"
@@ -14242,6 +14424,10 @@ msgstr "להסיר את {name}?"
 #: src/features/migrations/MapStep.tsx
 msgid "Remove {sender}"
 msgstr "הסרת {sender}"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Remove {who}?"
+msgstr "להסיר את {who}?"
 
 #: src/features/settings/automation/ActionRow.tsx
 msgid "Remove action"
@@ -14436,6 +14622,7 @@ msgstr "מסיר היסטוריה מיובאת"
 msgid "Removing imported history…"
 msgstr "מסיר היסטוריה מיובאת…"
 
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Rename"
 msgstr "שינוי שם"
@@ -14443,6 +14630,10 @@ msgstr "שינוי שם"
 #: src/features/status/ComponentDialogs.tsx
 msgid "Rename group"
 msgstr "שינוי שם הקבוצה"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Rename the mailbox"
+msgstr "שינוי שם התיבה"
 
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -15136,6 +15327,7 @@ msgstr "יום שבת"
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/macros/MacroDialog.tsx
@@ -15217,6 +15409,7 @@ msgstr "שמירת הרשימה כתצוגה"
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/chat/ChatSections.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/profile/ProfileForm.tsx
 #: src/features/settings/signature/SignaturePage.tsx
@@ -15847,6 +16040,10 @@ msgstr "השליחה כבר התחילה. השהה או בטל אותה במקו
 msgid "Sending kept failing, so Yuva gave up."
 msgstr "השליחה המשיכה להיכשל, ולכן Yuva ויתרה."
 
+#: src/components/common/OnBehalf.tsx
+msgid "Sending on behalf of {name}"
+msgstr "שולח מטעם {name}"
+
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Sending pace"
@@ -16176,6 +16373,14 @@ msgstr "משותף"
 #: src/components/common/FocusChoice.tsx
 msgid "Shared mailboxes for your team"
 msgstr "תיבות דואר משותפות לצוות שלכם"
+
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Shared with the team"
+msgstr "משותפת עם הצוות"
+
+#: src/features/mail/MailPage.tsx
+msgid "Shared with you"
+msgstr "משותפות איתכם"
 
 #: src/components/common/text.ts
 msgid "Shipped"
@@ -16656,6 +16861,10 @@ msgstr "שם האתר"
 #: src/features/setup/SetupLayout.tsx
 msgid "Sites"
 msgstr "אתרים"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Size"
+msgstr "גודל"
 
 #: src/features/setup/email/EmailTestStep.tsx
 msgid "Skip for now"
@@ -17452,6 +17661,7 @@ msgstr "מזהה צוות"
 
 #: src/components/common/FocusChoice.tsx
 #: src/components/common/PurposeChoice.tsx
+#: src/features/mail/MailPage.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/setup/SetupHub.tsx
 msgid "Team mail"
@@ -18147,6 +18357,10 @@ msgstr "התחזוקה הסתיימה. הכול פועל כמו קודם."
 msgid "The mbox file is compressed inside the zip. Unzip the Takeout archive and upload the .mbox file."
 msgstr "קובץ ה-mbox דחוס בתוך ה-zip. פתח את דחיסת ארכיון Takeout והעלה את קובץ ה-mbox."
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "The member you pick becomes its owner and reads it from then on. You still do not read it."
+msgstr "החבר שתבחרו הופך לבעלים וקורא אותה מעתה. אתם עדיין לא קוראים אותה."
+
 #: src/features/migrations/text.ts
 msgid "The message could not be read"
 msgstr "לא ניתן היה לקרוא את ההודעה"
@@ -18206,6 +18420,10 @@ msgstr "לתיבת הדואר האחרת אין ערוץ אימייל, ולכן 
 #: src/features/fields/BulkFailures.tsx
 msgid "The others were closed. Open one to fill in what it needs, then close it."
 msgstr "האחרות נסגרו. פתחו אחת, מלאו את מה שחסר וסגרו אותה."
+
+#: src/components/common/OnBehalf.tsx
+msgid "the owner"
+msgstr "הבעלים"
 
 #: src/features/status/Notices.tsx
 msgid "The page already sent 10 notices in the last hour"
@@ -18274,6 +18492,10 @@ msgstr "האדם אינו שייך לאף אחת מהקבוצות המותרות
 #: src/features/settings/audit/sentence.ts
 msgid "the person is not a member of this workspace"
 msgstr "האדם אינו חבר בסביבת עבודה זו"
+
+#: src/features/settings/audit/sentence.ts
+msgid "The personal mailbox {inbox} lost its owner {who}"
+msgstr "לתיבה האישית {inbox} אין יותר בעלים: {who}"
 
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "The policy is none: receivers only report. Move to quarantine once all your mail passes."
@@ -18707,6 +18929,10 @@ msgstr "הם לא יקבלו עוד דואר מהרשימה הזאת, ונרשם
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "They signed up on our website and confirmed their address."
 msgstr "הם נרשמו באתר שלנו ואישרו את הכתובת שלהם."
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "They stop reading this mailbox at once."
+msgstr "הם מפסיקים לקרוא את התיבה הזו מיד."
 
 #: src/features/migrations/text.ts
 msgid "This {provider} account's plan has no API access, which Yuva reads through."
@@ -19347,6 +19573,10 @@ msgid "Too many workspaces were created from your network today. Try again tomor
 msgstr "נוצרו יותר מדי סביבות עבודה מהרשת שלך היום. נסה שוב מחר."
 
 #: src/features/settings/audit/sentence.ts
+msgid "Took {who}'s access to the personal mailbox {inbox} away"
+msgstr "הגישה של {who} לתיבה האישית {inbox} בוטלה"
+
+#: src/features/settings/audit/sentence.ts
 msgid "Took away the access of {person} to {inbox}"
 msgstr "שלל/ה מ-{person} את הגישה אל {inbox}"
 
@@ -19496,7 +19726,7 @@ msgstr "רשומת TXT"
 msgid "Type"
 msgstr "סוג"
 
-#: src/features/settings/inboxes/InboxSecurity.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 msgid "Type {name} to confirm"
 msgstr "הקלידו {name} לאישור"
 
@@ -20514,6 +20744,10 @@ msgstr "מה כל עמודה מכילה"
 msgid "What happened"
 msgstr "מה קרה"
 
+#: src/features/team/RemoveMemberDialog.tsx
+msgid "What happens to {boxName}"
+msgstr "מה יקרה ל-{boxName}"
+
 #: src/features/broadcasts/Composer.tsx
 msgid "What is new in October"
 msgstr "מה חדש באוקטובר"
@@ -20810,6 +21044,10 @@ msgstr "מי כאן"
 msgid "Who is it for?"
 msgstr "למי זה?"
 
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Who reads it?"
+msgstr "מי קורא אותה?"
+
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "Who sends, and what about?"
 msgstr "מי שולח, ועל מה?"
@@ -21092,6 +21330,10 @@ msgid "You can leave this page: the conversation will wait for you in your conve
 msgstr "אפשר לעזוב את הדף הזה: השיחה תחכה לך ברשימת השיחות שלך."
 
 #: src/features/mail/MailThread.tsx
+msgid "You can read this mailbox but not change it. Its owner can let you send from it."
+msgstr "אפשר לקרוא את התיבה הזו אבל לא לשנות אותה. הבעלים יכול לאפשר לכם לשלוח ממנה."
+
+#: src/features/mail/MailThread.tsx
 msgid "You can restore it from the Trash for 30 days, then it is deleted for good with its messages and files."
 msgstr "אפשר לשחזר אותו מהפח במשך 30 יום, ואז הוא נמחק לצמיתות עם ההודעות והקבצים שלו."
 
@@ -21173,8 +21415,8 @@ msgid "You have unsaved changes to {what}."
 msgstr "יש לכם שינויים שלא נשמרו ב-{what}."
 
 #: src/features/auth/DeleteAccountButton.tsx
-msgid "You leave every workspace and lose your sign-ins, passkeys and notifications. Messages you wrote stay in their conversations, shown as from a deleted member. This cannot be undone."
-msgstr "אתה עוזב את כל סביבות העבודה ומאבד את הכניסות, מפתחות הגישה וההתראות שלך. הודעות שכתבת נשארות בשיחות שלהן, ומוצגות כאילו מחבר צוות שנמחק. אי אפשר לבטל זאת."
+msgid "You leave every workspace and lose your sign-ins, passkeys and notifications. Messages you wrote stay in their conversations, shown as from a deleted member. Your personal mailboxes stay with the workspace, unread, until an owner or admin hands them to someone or deletes them. This cannot be undone."
+msgstr "אתם עוזבים את כל סביבות העבודה ומאבדים כניסות, מפתחות גישה והתראות. הודעות שכתבתם נשארות בשיחות, כאילו מחבר שנמחק. התיבות האישיות שלכם נשארות בסביבת העבודה, ללא קריאה, עד שבעלים או מנהל יעבירו אותן למישהו או ימחקו אותן. אי אפשר לבטל."
 
 #: src/features/account/AccountPage.tsx
 msgid "You replied"
@@ -21302,6 +21544,10 @@ msgstr "ספק הדואר שלך או שרת ה-SMTP שלך"
 msgid "Your mailbox"
 msgstr "תיבת הדואר שלך"
 
+#: src/features/mail/MailPage.tsx
+msgid "Your mailboxes"
+msgstr "התיבות שלכם"
+
 #: src/features/migrations/text.ts
 msgid "Your Microsoft 365 organization lets only an admin consent to apps. Send your admin the link below; once they accept, sign in again."
 msgstr "ארגון ה-Microsoft 365 שלך מאפשר רק למנהל להסכים לאפליקציות. שלח למנהל שלך את הקישור שלמטה; אחרי שיאשר, היכנס שוב."
@@ -21420,6 +21666,10 @@ msgstr "שם סביבת העבודה, כמה זמן נשמרות שיחות סג
 #: src/features/account/AccountPage.tsx
 msgid "Your Yuva account"
 msgstr "חשבון Yuva שלך"
+
+#: src/features/settings/ProductsPage.tsx
+msgid "Yours"
+msgstr "שלכם"
 
 #: src/features/auth/AuthLayout.tsx
 msgid "Yuva {version}"

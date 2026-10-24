@@ -254,6 +254,10 @@ msgstr "{attention, plural, other {#件のチャネルに対応が必要です}}
 msgid "{author, select, bot {No drafts by bots} assistant {No drafts by assistants} member {No drafts by members} other {No drafts by this author}}"
 msgstr "{author, select, bot {ボットのドラフトはありません} assistant {アシスタントのドラフトはありません} member {メンバーのドラフトはありません} other {この作成者のドラフトはありません}}"
 
+#: src/features/mail/MailThread.tsx
+msgid "{author} on behalf of {ownerName}"
+msgstr "{ownerName}の代理で{author}"
+
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/mail/MailThread.tsx
 msgid "{author}, sent by {by}"
@@ -667,6 +671,10 @@ msgstr "{name} が入力中…"
 #: src/features/setup/SetupHub.tsx
 msgid "{name} news"
 msgstr "{name} のニュース"
+
+#: src/features/team/RemoveMemberDialog.tsx
+msgid "{name} owns personal mailboxes. Decide what happens to each: delete it with everything in it, or hand it to another member. You do not read them either way."
+msgstr "{name}は個人用メールボックスを持っています。それぞれについて、中身ごと削除するか、別のメンバーに引き継ぐかを決めてください。どちらの場合も、あなたは読みません。"
 
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "{name} receives mail at this address. Here is what you set up."
@@ -1398,6 +1406,10 @@ msgstr "メーリングリストは、受信トレイの名前でメールチャ
 msgid "A mailing list with subscribe forms, for your broadcasts"
 msgstr "一斉配信用の登録フォーム付きメーリングリスト"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "a member"
+msgstr "メンバー"
+
 #: src/components/common/AssignmentFields.tsx
 msgid "A member is eligible while they have access to the product (owners and admins only with a grant), have the panel or an app open, are set to Auto availability, the product is inside its business hours and they are under the limit. When nobody is eligible the conversation waits and goes to the first teammate who becomes available."
 msgstr "メンバーが対象になるのは、プロダクトへのアクセス権があり（オーナーと管理者は付与された場合のみ）、パネルまたはアプリを開いていて、可用性が自動で、プロダクトが営業時間内にあり、上限未満のときです。誰も対象でなければ会話は待機し、最初に空いたチームメイトに割り当てられます。"
@@ -1672,8 +1684,14 @@ msgstr "承認済みの回答"
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/app/AppSections.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/settings/ProductsPage.tsx
 msgid "Access"
 msgstr "アクセス"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Access of {person}"
+msgstr "{person}のアクセス"
 
 #: src/features/migrations/DoneStep.tsx
 msgid "Access to {provider}"
@@ -1736,6 +1754,7 @@ msgstr "アクティビティ"
 #: src/features/conversation/Participants.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/addresses/AddressesPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Add"
@@ -1781,6 +1800,10 @@ msgstr "言語を追加"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Add a link"
 msgstr "リンクを追加"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Add a member"
+msgstr "メンバーを追加"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Add a monitor"
@@ -2079,6 +2102,10 @@ msgstr "アドレスの証明"
 msgid "Address verified"
 msgstr "アドレスを確認しました"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Addresses"
+msgstr "アドレス"
+
 #: src/features/team/MemberAddresses.tsx
 msgid "Addresses {name} added to send mail from. Those waiting for approval need an owner or admin."
 msgstr "{name} さんがメール送信用に追加したアドレスです。承認待ちのものはオーナーまたは管理者の承認が必要です。"
@@ -2205,9 +2232,9 @@ msgstr "すべて既読にしました"
 msgid "All monitors"
 msgstr "すべてのモニター"
 
-#: src/features/settings/inboxes/InboxSecurity.tsx
-msgid "All of its conversations, messages and attachments are deleted with it. Webhooks and API keys limited to it stop working."
-msgstr "会話、メッセージ、添付ファイルもすべて一緒に削除されます。この製品に限定された Webhook と API キーは動作しなくなります。"
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "All of its conversations, messages and attachments are deleted with it. This cannot be undone."
+msgstr "その会話、メッセージ、添付ファイルもすべて一緒に削除されます。元に戻せません。"
 
 #: src/features/migrations/UploadStep.tsx
 msgid "All parts arrived. Reading the file…"
@@ -3641,6 +3668,7 @@ msgstr "キャンペーン名"
 #: src/features/settings/AddProductDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/sso/SsoPage.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
@@ -3651,6 +3679,7 @@ msgstr "キャンペーン名"
 #: src/features/status/IncidentDetail.tsx
 #: src/features/status/IncidentDialog.tsx
 #: src/features/status/MonitorDialog.tsx
+#: src/features/team/RemoveMemberDialog.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Cancel"
 msgstr "キャンセル"
@@ -4824,6 +4853,7 @@ msgstr "会話"
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/DoneStep.tsx
 #: src/features/migrations/ReviewStep.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/webhooks/events.tsx
 msgid "Conversations"
 msgstr "会話"
@@ -5136,6 +5166,10 @@ msgstr "Create this TXT record at your DNS provider, then press Verify. It can t
 msgid "Create workspace"
 msgstr "ワークスペースを作成"
 
+#: src/features/mail/MailPage.tsx
+msgid "Create your own mailbox"
+msgstr "自分のメールボックスを作成"
+
 #: src/features/auth/CreateWorkspace.tsx
 msgid "Create your workspace"
 msgstr "ワークスペースを作成"
@@ -5338,6 +5372,11 @@ msgstr "デフォルト: {fallback}"
 msgid "Degraded performance"
 msgstr "パフォーマンス低下"
 
+#: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Delegates"
+msgstr "代理人"
+
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListSettings.tsx
@@ -5349,6 +5388,7 @@ msgstr "パフォーマンス低下"
 #: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 #: src/features/settings/macros/MacrosPage.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -5356,6 +5396,7 @@ msgstr "パフォーマンス低下"
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
 #: src/features/status/SettingsTab.tsx
+#: src/features/team/RemoveMemberDialog.tsx
 msgid "Delete"
 msgstr "削除"
 
@@ -5378,7 +5419,7 @@ msgstr "削除 ({removeKey})"
 msgid "Delete {0}?"
 msgstr "{0} を削除しますか?"
 
-#: src/features/settings/inboxes/InboxSecurity.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Delete {name}?"
@@ -5416,6 +5457,10 @@ msgstr "キーを削除"
 #: src/features/broadcasts/ListSettings.tsx
 msgid "Delete list"
 msgstr "リストを削除"
+
+#: src/features/settings/inboxes/InboxSecurity.tsx
+msgid "Delete mailbox"
+msgstr "メールボックスを削除"
 
 #: src/features/status/MonitorsPage.tsx
 msgid "Delete monitor"
@@ -5510,6 +5555,10 @@ msgstr "この DKIM キーを削除しますか?"
 msgid "Delete this macro?"
 msgstr "このマクロを削除しますか？"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Delete this mailbox"
+msgstr "このメールボックスを削除"
+
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Delete this migration?"
 msgstr "この移行を削除しますか?"
@@ -5521,10 +5570,6 @@ msgstr "このメモを削除"
 #: src/features/contact/ContactNotes.tsx
 msgid "Delete this note?"
 msgstr "このメモを削除しますか?"
-
-#: src/features/settings/inboxes/InboxSecurity.tsx
-msgid "Delete this product"
-msgstr "この製品を削除"
 
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Delete this subscription?"
@@ -5592,6 +5637,7 @@ msgstr "削除された受信トレイ"
 
 #: src/components/common/DiscussionAuthor.tsx
 #: src/features/inbox/SidePanels.tsx
+#: src/features/mail/MailThread.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
@@ -5613,6 +5659,10 @@ msgstr "オートメーションルール {name} を削除しました"
 #: src/features/settings/audit/sentence.ts
 msgid "Deleted the inbox {name}"
 msgstr "受信トレイ {name} を削除しました"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted the personal mailbox {name} of {who} when they left"
+msgstr "{who}の退出に伴い、個人用メールボックス{name}を削除しました"
 
 #: src/features/settings/audit/sentence.ts
 msgid "Deleted the team {team}"
@@ -6655,6 +6705,10 @@ msgstr "リストの全員。条件を付けると、すべての条件に属性
 msgid "Everyone who has written to your products"
 msgstr "製品に連絡したすべての人"
 
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Everyone with access to the inbox reads it."
+msgstr "受信トレイにアクセスできる全員が読めます。"
+
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Everyone's posts are published at once, except those of authors you marked as spam."
 msgstr "スパムとして記録した投稿者を除き、全員の投稿がすぐに公開されます。"
@@ -7580,9 +7634,29 @@ msgstr "メンバーのグループと、その対象の受信トレイ"
 msgid "Growth"
 msgstr "成長"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Hand over"
+msgstr "引き継ぐ"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Hand over {name}"
+msgstr "{name}を引き継ぐ"
+
+#: src/features/team/RemoveMemberDialog.tsx
+msgid "Hand over to"
+msgstr "引き継ぎ先"
+
 #: src/features/settings/automation/text.ts
 msgid "Hand to automatic assignment"
 msgstr "自動割り当てに任せる"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Handed over"
+msgstr "引き継ぎました"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Handed the personal mailbox {inbox} to {next}"
+msgstr "個人用メールボックス{inbox}を{next}に引き継ぎました"
 
 #: src/features/conversation/actions.ts
 msgid "Handed to {name}"
@@ -7809,6 +7883,7 @@ msgstr "ホスト名と証明書"
 msgid "hours"
 msgstr "時間"
 
+#: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/ProductsPage.tsx
 msgid "Hours"
 msgstr "営業時間"
@@ -8999,6 +9074,10 @@ msgid "Legal name"
 msgstr "正式名称"
 
 #: src/features/settings/audit/sentence.ts
+msgid "Let {who} into the personal mailbox {inbox}"
+msgstr "{who}に個人用メールボックス{inbox}へのアクセスを付与しました"
+
+#: src/features/settings/audit/sentence.ts
 msgid "Let assistants and keys send messages to customers"
 msgstr "アシスタントとキーによるお客様へのメッセージ送信を許可しました"
 
@@ -9446,6 +9525,10 @@ msgstr "メールは、{address} を受信するメールチャネル「{channel
 msgid "Mail is not signed with a key of the sender’s own domain, which Gmail and Yahoo expect."
 msgstr "メールに送信元ドメイン自身の鍵による署名がありません。Gmail と Yahoo はこの署名を求めています。"
 
+#: src/features/settings/SettingsColumn.tsx
+msgid "Mail only you read"
+msgstr "あなただけが読むメール"
+
 #: src/features/settings/addresses/AddressesPage.tsx
 msgid "Mail queued from it fails instead of going out from another address."
 msgstr "このアドレスで送信待ちのメールは、別のアドレスから送られず失敗します。"
@@ -9752,6 +9835,7 @@ msgstr "今日の中央値"
 msgid "median, first message to closed"
 msgstr "中央値、最初のメッセージからクローズまで"
 
+#: src/components/common/MailboxOwnerChoice.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
@@ -9778,6 +9862,10 @@ msgstr "メンバーと招待"
 #: src/features/conversation/messages/Thread.tsx
 msgid "Members only"
 msgstr "メンバー限定"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Members you let into this mailbox. They can read it, or read and send mail on your behalf. They never change its settings, filters or migrations."
+msgstr "このメールボックスに入れるメンバーです。読むだけ、または読んであなたの代理で送信できます。設定、フィルタ、移行は変更できません。"
 
 #: src/features/conversation/composer/MentionMenu.tsx
 msgid "Mention a teammate"
@@ -10308,6 +10396,7 @@ msgstr "自分のビュー"
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/fields/FieldDialog.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/macros/MacroDialog.tsx
@@ -10389,6 +10478,10 @@ msgstr "閉じるには「{name}」が必要です"
 #: src/features/broadcasts/ListParts.tsx
 msgid "Needs a sender"
 msgstr "送信元が必要"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Needs an owner"
+msgstr "オーナーが必要です"
 
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/text.ts
@@ -10604,6 +10697,10 @@ msgstr "新しいマクロ"
 msgid "New mail"
 msgstr "新規メール"
 
+#: src/features/mail/MailPage.tsx
+msgid "New mailbox"
+msgstr "新しいメールボックス"
+
 #: src/features/setup/previews.tsx
 #: src/lib/alerts.ts
 msgid "New message"
@@ -10625,6 +10722,14 @@ msgstr "新しい移行"
 msgid "New monitor"
 msgstr "新しいモニター"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "New owner"
+msgstr "新しいオーナー"
+
+#: src/features/team/RemoveMemberDialog.tsx
+msgid "New owner of {boxName}"
+msgstr "{boxName}の新しいオーナー"
+
 #: src/features/status/StatusPages.tsx
 msgid "New page"
 msgstr "新しいページ"
@@ -10632,6 +10737,10 @@ msgstr "新しいページ"
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "New password"
 msgstr "新しいパスワード"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "New personal mailbox"
+msgstr "新しい個人用メールボックス"
 
 #: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -11202,6 +11311,11 @@ msgstr "一致する他の連絡先はありません。"
 msgid "No other conversations."
 msgstr "ほかの会話はありません。"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "No owner"
+msgstr "オーナーなし"
+
 #: src/features/docs/PagesTab.tsx
 msgid "No pages yet"
 msgstr "ページはまだありません"
@@ -11398,6 +11512,14 @@ msgstr "この受信トレイを見られる人は、まだ他にいません。
 #: src/features/conversation/Participants.tsx
 msgid "Nobody else is copied. Replies go to the contact only."
 msgstr "ほかに Cc の人はいません。返信は連絡先だけに届きます。"
+
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Nobody else reads it unless you let them. Owners and admins see only that it exists."
+msgstr "許可しない限り、他の誰も読めません。オーナーと管理者には存在のみが見えます。"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Nobody else reads this mailbox."
+msgstr "このメールボックスを読む人は他にいません。"
 
 #: src/features/inbox/SidePanels.tsx
 msgid "Nobody has mentioned you yet"
@@ -12179,6 +12301,10 @@ msgstr "Only if your Slack account uses another address than this one. Optional.
 msgid "Only in the app"
 msgstr "アプリ内のみ"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Only its owner reads it. You can rename it or delete it."
+msgstr "読めるのはオーナーだけです。名前の変更や削除はできます。"
+
 #: src/features/migrations/parts.tsx
 msgid "Only mail since {date}"
 msgstr "{date} 以降のメールのみ"
@@ -12220,9 +12346,17 @@ msgstr "今は受信のみ"
 msgid "Only receives"
 msgstr "受信のみ"
 
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Only that member reads it. You see only that it exists."
+msgstr "そのメンバーだけが読めます。あなたには存在のみが見えます。"
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Only the exact domain is claimed, not its subdomains. Add eu.example.com on its own if people use such addresses."
 msgstr "Only the exact domain is claimed, not its subdomains. Add eu.example.com on its own if people use such addresses."
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Only the owner of a personal mailbox manages its settings."
+msgstr "個人用メールボックスの設定を管理できるのはそのオーナーだけです。"
 
 #: src/components/common/text.ts
 msgid "Only the person can subscribe again, by confirming a mail."
@@ -12232,6 +12366,10 @@ msgstr "本人が、メールを確認して再登録する場合のみ可能で
 #: src/features/settings/automation/ActionRow.tsx
 msgid "Only the team sees this"
 msgstr "チームのみ閲覧可"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Only their owners read them. You see what they hold, never what is in them."
+msgstr "読めるのはそれぞれのオーナーだけです。中身は見えず、保存されている量だけが見えます。"
 
 #: src/features/broadcasts/Report.tsx
 msgid "Only those who replied"
@@ -13089,6 +13227,31 @@ msgstr "人物"
 msgid "Personal"
 msgstr "個人用"
 
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Personal (only you)"
+msgstr "個人用(自分だけ)"
+
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Personal for {who}"
+msgstr "{who}用の個人用"
+
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Personal for a member"
+msgstr "メンバー用の個人用"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Personal mailbox"
+msgstr "個人用メールボックス"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Personal mailbox of {owner}"
+msgstr "{owner}の個人用メールボックス"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Personal mailboxes"
+msgstr "個人用メールボックス"
+
 #: src/features/settings/automation/ActionRow.tsx
 msgid "Pick a canned reply"
 msgstr "定型返信を選択"
@@ -13145,7 +13308,10 @@ msgstr "フィールドを選択"
 msgid "Pick a mail"
 msgstr "メールを選んでください"
 
+#: src/components/common/MailboxOwnerChoice.tsx
 #: src/features/settings/automation/ActionRow.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/team/RemoveMemberDialog.tsx
 msgid "Pick a member"
 msgstr "メンバーを選択"
 
@@ -13883,9 +14049,22 @@ msgstr "自分のサイトのドキュメントページに寄せられた評価
 msgid "Read"
 msgstr "既読"
 
+#: src/features/mail/MailPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/settings/ProductsPage.tsx
+msgctxt "mailbox access"
+msgid "Read"
+msgstr "閲覧"
+
 #: src/components/common/text.ts
 msgid "Read analytics properties and their numbers"
 msgstr "アナリティクスプロパティとその数値を読み取り"
+
+#: src/features/mail/MailPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/settings/ProductsPage.tsx
+msgid "Read and send"
+msgstr "閲覧と送信"
 
 #: src/features/migrations/text.ts
 msgid "Read as a Google Takeout file: Gmail's labels and threads come with it."
@@ -14184,6 +14363,7 @@ msgstr "リモート画像により、メールを開いたことが送信者に
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/OwnDomainCard.tsx
@@ -14229,12 +14409,14 @@ msgid "Remove {lang}"
 msgstr "{lang} を削除"
 
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/team/RemoveMemberDialog.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Remove {name}"
 msgstr "{name} を削除"
 
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/sso/SsoPage.tsx
+#: src/features/team/RemoveMemberDialog.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Remove {name}?"
 msgstr "{name} を削除しますか?"
@@ -14242,6 +14424,10 @@ msgstr "{name} を削除しますか?"
 #: src/features/migrations/MapStep.tsx
 msgid "Remove {sender}"
 msgstr "{sender} を削除"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Remove {who}?"
+msgstr "{who}を削除しますか?"
 
 #: src/features/settings/automation/ActionRow.tsx
 msgid "Remove action"
@@ -14436,6 +14622,7 @@ msgstr "インポートした履歴を削除中"
 msgid "Removing imported history…"
 msgstr "インポートした履歴を削除中…"
 
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Rename"
 msgstr "名前を変更"
@@ -14443,6 +14630,10 @@ msgstr "名前を変更"
 #: src/features/status/ComponentDialogs.tsx
 msgid "Rename group"
 msgstr "グループ名を変更"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Rename the mailbox"
+msgstr "メールボックスの名前を変更"
 
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -15136,6 +15327,7 @@ msgstr "土曜日"
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/macros/MacroDialog.tsx
@@ -15217,6 +15409,7 @@ msgstr "リストをビューとして保存"
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/chat/ChatSections.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/profile/ProfileForm.tsx
 #: src/features/settings/signature/SignaturePage.tsx
@@ -15847,6 +16040,10 @@ msgstr "送信はすでに開始されています。代わりに一時停止ま
 msgid "Sending kept failing, so Yuva gave up."
 msgstr "送信が失敗し続けたため、Yuva は中止しました。"
 
+#: src/components/common/OnBehalf.tsx
+msgid "Sending on behalf of {name}"
+msgstr "{name}の代理で送信"
+
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Sending pace"
@@ -16176,6 +16373,14 @@ msgstr "共有"
 #: src/components/common/FocusChoice.tsx
 msgid "Shared mailboxes for your team"
 msgstr "チームで共有するメールボックス"
+
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Shared with the team"
+msgstr "チームと共有"
+
+#: src/features/mail/MailPage.tsx
+msgid "Shared with you"
+msgstr "共有されたもの"
 
 #: src/components/common/text.ts
 msgid "Shipped"
@@ -16656,6 +16861,10 @@ msgstr "サイト名"
 #: src/features/setup/SetupLayout.tsx
 msgid "Sites"
 msgstr "サイト"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Size"
+msgstr "サイズ"
 
 #: src/features/setup/email/EmailTestStep.tsx
 msgid "Skip for now"
@@ -17452,6 +17661,7 @@ msgstr "チーム ID"
 
 #: src/components/common/FocusChoice.tsx
 #: src/components/common/PurposeChoice.tsx
+#: src/features/mail/MailPage.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/setup/SetupHub.tsx
 msgid "Team mail"
@@ -18147,6 +18357,10 @@ msgstr "メンテナンスが完了しました。すべて元どおり動作し
 msgid "The mbox file is compressed inside the zip. Unzip the Takeout archive and upload the .mbox file."
 msgstr "mbox ファイルは zip 内で圧縮されています。Takeout のアーカイブを展開して、.mbox ファイルをアップロードしてください。"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "The member you pick becomes its owner and reads it from then on. You still do not read it."
+msgstr "選んだメンバーがオーナーになり、以後そのメンバーが読みます。あなたは引き続き読みません。"
+
 #: src/features/migrations/text.ts
 msgid "The message could not be read"
 msgstr "メッセージを読み取れませんでした"
@@ -18206,6 +18420,10 @@ msgstr "もう一方の受信トレイにはメールチャネルがないため
 #: src/features/fields/BulkFailures.tsx
 msgid "The others were closed. Open one to fill in what it needs, then close it."
 msgstr "残りは閉じました。1件を開いて必要な項目を入力し、閉じてください。"
+
+#: src/components/common/OnBehalf.tsx
+msgid "the owner"
+msgstr "オーナー"
 
 #: src/features/status/Notices.tsx
 msgid "The page already sent 10 notices in the last hour"
@@ -18274,6 +18492,10 @@ msgstr "許可されたグループのいずれにも属していません"
 #: src/features/settings/audit/sentence.ts
 msgid "the person is not a member of this workspace"
 msgstr "このワークスペースのメンバーではありません"
+
+#: src/features/settings/audit/sentence.ts
+msgid "The personal mailbox {inbox} lost its owner {who}"
+msgstr "個人用メールボックス{inbox}のオーナー{who}がいなくなりました"
 
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "The policy is none: receivers only report. Move to quarantine once all your mail passes."
@@ -18707,6 +18929,10 @@ msgstr "このリストのメールは届かなくなり、チームが配信停
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "They signed up on our website and confirmed their address."
 msgstr "当社のウェブサイトで登録し、アドレスを確認しました。"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "They stop reading this mailbox at once."
+msgstr "このメールボックスはすぐに読めなくなります。"
 
 #: src/features/migrations/text.ts
 msgid "This {provider} account's plan has no API access, which Yuva reads through."
@@ -19347,6 +19573,10 @@ msgid "Too many workspaces were created from your network today. Try again tomor
 msgstr "今日、あなたのネットワークから作成されたワークスペースが多すぎます。明日もう一度お試しください。"
 
 #: src/features/settings/audit/sentence.ts
+msgid "Took {who}'s access to the personal mailbox {inbox} away"
+msgstr "{who}の個人用メールボックス{inbox}へのアクセスを取り消しました"
+
+#: src/features/settings/audit/sentence.ts
 msgid "Took away the access of {person} to {inbox}"
 msgstr "{person} の {inbox} へのアクセスを取り消しました"
 
@@ -19496,7 +19726,7 @@ msgstr "TXT レコード"
 msgid "Type"
 msgstr "種類"
 
-#: src/features/settings/inboxes/InboxSecurity.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 msgid "Type {name} to confirm"
 msgstr "確認のため {name} と入力してください"
 
@@ -20514,6 +20744,10 @@ msgstr "各列の内容"
 msgid "What happened"
 msgstr "起きたこと"
 
+#: src/features/team/RemoveMemberDialog.tsx
+msgid "What happens to {boxName}"
+msgstr "{boxName}はどうなるか"
+
 #: src/features/broadcasts/Composer.tsx
 msgid "What is new in October"
 msgstr "10 月の新着情報"
@@ -20810,6 +21044,10 @@ msgstr "ここにいる人"
 msgid "Who is it for?"
 msgstr "誰向けですか?"
 
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Who reads it?"
+msgstr "誰が読みますか?"
+
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "Who sends, and what about?"
 msgstr "誰が送信し、何についてですか?"
@@ -21092,6 +21330,10 @@ msgid "You can leave this page: the conversation will wait for you in your conve
 msgstr "このページを離れてもかまいません。会話は会話リストで待っています。"
 
 #: src/features/mail/MailThread.tsx
+msgid "You can read this mailbox but not change it. Its owner can let you send from it."
+msgstr "このメールボックスは読めますが、変更はできません。オーナーが送信を許可できます。"
+
+#: src/features/mail/MailThread.tsx
 msgid "You can restore it from the Trash for 30 days, then it is deleted for good with its messages and files."
 msgstr "30 日間はゴミ箱から復元できます。その後、メッセージやファイルとともに完全に削除されます。"
 
@@ -21173,8 +21415,8 @@ msgid "You have unsaved changes to {what}."
 msgstr "{what} に未保存の変更があります。"
 
 #: src/features/auth/DeleteAccountButton.tsx
-msgid "You leave every workspace and lose your sign-ins, passkeys and notifications. Messages you wrote stay in their conversations, shown as from a deleted member. This cannot be undone."
-msgstr "すべてのワークスペースから退出し、サインイン、パスキー、通知が失われます。あなたが書いたメッセージは会話に残り、削除されたメンバーからのものとして表示されます。この操作は元に戻せません。"
+msgid "You leave every workspace and lose your sign-ins, passkeys and notifications. Messages you wrote stay in their conversations, shown as from a deleted member. Your personal mailboxes stay with the workspace, unread, until an owner or admin hands them to someone or deletes them. This cannot be undone."
+msgstr "すべてのワークスペースから退出し、サインイン、パスキー、通知を失います。あなたが書いたメッセージは会話に残り、削除されたメンバーからのものとして表示されます。個人用メールボックスは、オーナーまたは管理者が引き継ぐか削除するまで、未読のままワークスペースに残ります。元に戻せません。"
 
 #: src/features/account/AccountPage.tsx
 msgid "You replied"
@@ -21302,6 +21544,10 @@ msgstr "メールプロバイダーまたは自分の SMTP サーバー"
 msgid "Your mailbox"
 msgstr "あなたのメールボックス"
 
+#: src/features/mail/MailPage.tsx
+msgid "Your mailboxes"
+msgstr "あなたのメールボックス"
+
 #: src/features/migrations/text.ts
 msgid "Your Microsoft 365 organization lets only an admin consent to apps. Send your admin the link below; once they accept, sign in again."
 msgstr "Microsoft 365 組織では、アプリへの同意は管理者のみが行えます。下のリンクを管理者に送り、承認されたらもう一度サインインしてください。"
@@ -21420,6 +21666,10 @@ msgstr "ワークスペース名、クローズした会話を保持する期間
 #: src/features/account/AccountPage.tsx
 msgid "Your Yuva account"
 msgstr "あなたの Yuva アカウント"
+
+#: src/features/settings/ProductsPage.tsx
+msgid "Yours"
+msgstr "あなたの"
 
 #: src/features/auth/AuthLayout.tsx
 msgid "Yuva {version}"

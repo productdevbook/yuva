@@ -3,7 +3,7 @@ import { useLingui } from "@lingui/react/macro"
 
 import { useEnumText } from "@/components/common/text"
 import type { AuditAction, AuditEntry } from "@/lib/api"
-import { useInboxes, useMemberMap, useTeams } from "@/lib/workspace"
+import { useAllInboxes, useMemberMap, useTeams } from "@/lib/workspace"
 
 export type AuditGroup = "people" | "access" | "signin" | "webhooks" | "mail" | "data" | "workspace"
 
@@ -56,6 +56,11 @@ export const AUDIT_GROUPS: Record<AuditGroup, AuditAction[]> = {
     "channel.dkim_key_deleted",
     "inbox.identity_secret_rotated",
     "inbox.deleted",
+    "mailbox.delegate_granted",
+    "mailbox.delegate_revoked",
+    "mailbox.handed_over",
+    "mailbox.deleted_on_leave",
+    "mailbox.orphaned",
   ],
   data: [
     "conversation.trashed",
@@ -105,7 +110,7 @@ export function useAuditSentence() {
   const { t } = useLingui()
   const text = useEnumText()
   const members = useMemberMap()
-  const inboxes = useInboxes().data
+  const inboxes = useAllInboxes().data
   const teams = useTeams().data
   const dash = "–"
   return (e: AuditEntry): string => {
@@ -115,7 +120,7 @@ export function useAuditSentence() {
     const roleOf = (v: unknown) => text.role[v as keyof typeof text.role] ?? str(v) ?? dash
     const name = str(d.name) ?? dash
     const host = str(d.host) ?? dash
-    const inbox = str(d.inbox_name) ?? inboxes?.find((i) => i.id === d.inbox_id)?.name ?? dash
+    const inbox = str(d.inbox_name) ?? inboxes?.find((i) => i.id === d.inbox_id || i.id === e.target.id)?.name ?? dash
     const team = str(d.name) ?? teams?.find((x) => x.id === e.target.id)?.name ?? dash
     const teamMember = members.get(str(d.member_id) ?? "")
     const who = teamMember ? teamMember.name || teamMember.email : t`a former member`
@@ -230,6 +235,19 @@ export function useAuditSentence() {
         return t`Rotated the identity secret of an inbox`
       case "inbox.deleted":
         return t`Deleted the inbox ${name}`
+      case "mailbox.delegate_granted":
+        return t`Let ${who} into the personal mailbox ${inbox}`
+      case "mailbox.delegate_revoked":
+        return t`Took ${who}'s access to the personal mailbox ${inbox} away`
+      case "mailbox.handed_over": {
+        const to = members.get(str(d.to_member_id) ?? "")
+        const next = to ? to.name || to.email : t`a former member`
+        return t`Handed the personal mailbox ${inbox} to ${next}`
+      }
+      case "mailbox.deleted_on_leave":
+        return t`Deleted the personal mailbox ${name} of ${who} when they left`
+      case "mailbox.orphaned":
+        return t`The personal mailbox ${inbox} lost its owner ${who}`
       case "conversation.trashed":
         return t`Moved a conversation to the Trash`
       case "conversation.restored":

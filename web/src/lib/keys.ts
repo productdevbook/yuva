@@ -91,6 +91,7 @@ export const keys = {
   oauthGrants: (ws: string) => ["ws", ws, "oauth-grants"] as const,
   inboxes: (ws: string) => ["ws", ws, "inboxes"] as const,
   inboxMembers: (ws: string, inbox: string) => ["ws", ws, "inbox-members", inbox] as const,
+  delegates: (ws: string, inbox: string) => ["ws", ws, "delegates", inbox] as const,
   channels: (ws: string, inbox: string) => ["ws", ws, "channels", inbox] as const,
   channel: (ws: string, id: string) => ["ws", ws, "channel", id] as const,
   deliverability: (ws: string, channel: string) => ["ws", ws, "deliverability", channel] as const,

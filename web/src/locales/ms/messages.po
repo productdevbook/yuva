@@ -254,6 +254,10 @@ msgstr "{attention, plural, other {# saluran memerlukan perhatian}}"
 msgid "{author, select, bot {No drafts by bots} assistant {No drafts by assistants} member {No drafts by members} other {No drafts by this author}}"
 msgstr "{author, select, bot {Tiada draf daripada bot} assistant {Tiada draf daripada pembantu} member {Tiada draf daripada ahli} other {Tiada draf daripada penulis ini}}"
 
+#: src/features/mail/MailThread.tsx
+msgid "{author} on behalf of {ownerName}"
+msgstr "{author} bagi pihak {ownerName}"
+
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/mail/MailThread.tsx
 msgid "{author}, sent by {by}"
@@ -667,6 +671,10 @@ msgstr "{name} sedang menaip…"
 #: src/features/setup/SetupHub.tsx
 msgid "{name} news"
 msgstr "Berita {name}"
+
+#: src/features/team/RemoveMemberDialog.tsx
+msgid "{name} owns personal mailboxes. Decide what happens to each: delete it with everything in it, or hand it to another member. You do not read them either way."
+msgstr "{name} mempunyai peti mel peribadi. Tentukan nasib setiap satu: padam bersama isinya atau serahkan kepada ahli lain. Dalam kedua-dua kes anda tidak membacanya."
 
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "{name} receives mail at this address. Here is what you set up."
@@ -1398,6 +1406,10 @@ msgstr "Senarai mel menghantar atas nama peti masuk, melalui saluran e-melnya. S
 msgid "A mailing list with subscribe forms, for your broadcasts"
 msgstr "Senarai mel dengan borang langganan, untuk siaran anda"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "a member"
+msgstr "seorang ahli"
+
 #: src/components/common/AssignmentFields.tsx
 msgid "A member is eligible while they have access to the product (owners and admins only with a grant), have the panel or an app open, are set to Auto availability, the product is inside its business hours and they are under the limit. When nobody is eligible the conversation waits and goes to the first teammate who becomes available."
 msgstr "Ahli layak jika ada akses kepada produk (pemilik dan pentadbir hanya dengan kebenaran), panel atau apl terbuka, ketersediaan Auto, produk berada dalam waktu bekerja dan ahli di bawah had. Jika tiada yang layak, perbualan menunggu dan diberikan kepada rakan sekerja pertama yang tersedia."
@@ -1672,8 +1684,14 @@ msgstr "Jawapan yang diterima"
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/app/AppSections.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/settings/ProductsPage.tsx
 msgid "Access"
 msgstr "Akses"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Access of {person}"
+msgstr "Akses {person}"
 
 #: src/features/migrations/DoneStep.tsx
 msgid "Access to {provider}"
@@ -1736,6 +1754,7 @@ msgstr "Aktiviti"
 #: src/features/conversation/Participants.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/addresses/AddressesPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Add"
@@ -1781,6 +1800,10 @@ msgstr "Tambah bahasa"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Add a link"
 msgstr "Tambah pautan"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Add a member"
+msgstr "Tambah ahli"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Add a monitor"
@@ -2079,6 +2102,10 @@ msgstr "Bukti alamat"
 msgid "Address verified"
 msgstr "Alamat disahkan"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Addresses"
+msgstr "Alamat"
+
 #: src/features/team/MemberAddresses.tsx
 msgid "Addresses {name} added to send mail from. Those waiting for approval need an owner or admin."
 msgstr "Alamat yang ditambah oleh {name} untuk menghantar e-mel. Yang menunggu kelulusan memerlukan pemilik atau pentadbir."
@@ -2205,9 +2232,9 @@ msgstr "Semua ditanda sebagai dibaca"
 msgid "All monitors"
 msgstr "Semua monitor"
 
-#: src/features/settings/inboxes/InboxSecurity.tsx
-msgid "All of its conversations, messages and attachments are deleted with it. Webhooks and API keys limited to it stop working."
-msgstr "Semua perbualan, mesej dan lampirannya dipadam bersamanya. Webhook dan kunci API yang dihadkan kepadanya berhenti berfungsi."
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "All of its conversations, messages and attachments are deleted with it. This cannot be undone."
+msgstr "Semua perbualan, mesej dan lampirannya turut dipadam. Ini tidak boleh dibuat asal."
 
 #: src/features/migrations/UploadStep.tsx
 msgid "All parts arrived. Reading the file…"
@@ -3641,6 +3668,7 @@ msgstr "Nama kempen"
 #: src/features/settings/AddProductDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/sso/SsoPage.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
@@ -3651,6 +3679,7 @@ msgstr "Nama kempen"
 #: src/features/status/IncidentDetail.tsx
 #: src/features/status/IncidentDialog.tsx
 #: src/features/status/MonitorDialog.tsx
+#: src/features/team/RemoveMemberDialog.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Cancel"
 msgstr "Batal"
@@ -4824,6 +4853,7 @@ msgstr "perbualan"
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/DoneStep.tsx
 #: src/features/migrations/ReviewStep.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/webhooks/events.tsx
 msgid "Conversations"
 msgstr "Perbualan"
@@ -5136,6 +5166,10 @@ msgstr "Create this TXT record at your DNS provider, then press Verify. It can t
 msgid "Create workspace"
 msgstr "Cipta ruang kerja"
 
+#: src/features/mail/MailPage.tsx
+msgid "Create your own mailbox"
+msgstr "Cipta peti mel anda sendiri"
+
 #: src/features/auth/CreateWorkspace.tsx
 msgid "Create your workspace"
 msgstr "Cipta ruang kerja anda"
@@ -5338,6 +5372,11 @@ msgstr "Lalai: {fallback}"
 msgid "Degraded performance"
 msgstr "Prestasi merosot"
 
+#: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Delegates"
+msgstr "Wakil"
+
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListSettings.tsx
@@ -5349,6 +5388,7 @@ msgstr "Prestasi merosot"
 #: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 #: src/features/settings/macros/MacrosPage.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -5356,6 +5396,7 @@ msgstr "Prestasi merosot"
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
 #: src/features/status/SettingsTab.tsx
+#: src/features/team/RemoveMemberDialog.tsx
 msgid "Delete"
 msgstr "Padam"
 
@@ -5378,7 +5419,7 @@ msgstr "Padam ({removeKey})"
 msgid "Delete {0}?"
 msgstr "Padam {0}?"
 
-#: src/features/settings/inboxes/InboxSecurity.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Delete {name}?"
@@ -5416,6 +5457,10 @@ msgstr "Padam kunci"
 #: src/features/broadcasts/ListSettings.tsx
 msgid "Delete list"
 msgstr "Padam senarai"
+
+#: src/features/settings/inboxes/InboxSecurity.tsx
+msgid "Delete mailbox"
+msgstr "Padam peti mel"
 
 #: src/features/status/MonitorsPage.tsx
 msgid "Delete monitor"
@@ -5510,6 +5555,10 @@ msgstr "Padam kunci DKIM ini?"
 msgid "Delete this macro?"
 msgstr "Padam makro ini?"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Delete this mailbox"
+msgstr "Padam peti mel ini"
+
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Delete this migration?"
 msgstr "Padam pemindahan ini?"
@@ -5521,10 +5570,6 @@ msgstr "Padam nota ini"
 #: src/features/contact/ContactNotes.tsx
 msgid "Delete this note?"
 msgstr "Padam nota ini?"
-
-#: src/features/settings/inboxes/InboxSecurity.tsx
-msgid "Delete this product"
-msgstr "Padam produk ini"
 
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Delete this subscription?"
@@ -5592,6 +5637,7 @@ msgstr "Peti masuk dipadam"
 
 #: src/components/common/DiscussionAuthor.tsx
 #: src/features/inbox/SidePanels.tsx
+#: src/features/mail/MailThread.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
@@ -5613,6 +5659,10 @@ msgstr "Memadam peraturan automasi {name}"
 #: src/features/settings/audit/sentence.ts
 msgid "Deleted the inbox {name}"
 msgstr "Memadam peti masuk {name}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted the personal mailbox {name} of {who} when they left"
+msgstr "Peti mel peribadi {name} milik {who} dipadam semasa beliau pergi"
 
 #: src/features/settings/audit/sentence.ts
 msgid "Deleted the team {team}"
@@ -6655,6 +6705,10 @@ msgstr "Semua orang dalam senarai. Syarat hanya mengekalkan kenalan yang atribut
 msgid "Everyone who has written to your products"
 msgstr "Semua orang yang pernah menulis kepada produk anda"
 
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Everyone with access to the inbox reads it."
+msgstr "Dibaca oleh semua yang mempunyai akses kepada peti masuk."
+
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Everyone's posts are published at once, except those of authors you marked as spam."
 msgstr "Siaran semua orang diterbitkan serta-merta, kecuali siaran penulis yang anda tanda sebagai spam."
@@ -7580,9 +7634,29 @@ msgstr "Kumpulan ahli dan peti masuk yang diliputi"
 msgid "Growth"
 msgstr "Pertumbuhan"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Hand over"
+msgstr "Serahkan"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Hand over {name}"
+msgstr "Serahkan {name}"
+
+#: src/features/team/RemoveMemberDialog.tsx
+msgid "Hand over to"
+msgstr "Serahkan kepada"
+
 #: src/features/settings/automation/text.ts
 msgid "Hand to automatic assignment"
 msgstr "Serahkan kepada tugasan automatik"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Handed over"
+msgstr "Diserahkan"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Handed the personal mailbox {inbox} to {next}"
+msgstr "Peti mel peribadi {inbox} diserahkan kepada {next}"
 
 #: src/features/conversation/actions.ts
 msgid "Handed to {name}"
@@ -7809,6 +7883,7 @@ msgstr "Nama hos dan sijil"
 msgid "hours"
 msgstr "jam"
 
+#: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/ProductsPage.tsx
 msgid "Hours"
 msgstr "Waktu"
@@ -8999,6 +9074,10 @@ msgid "Legal name"
 msgstr "Nama sah"
 
 #: src/features/settings/audit/sentence.ts
+msgid "Let {who} into the personal mailbox {inbox}"
+msgstr "{who} diberi akses kepada peti mel peribadi {inbox}"
+
+#: src/features/settings/audit/sentence.ts
 msgid "Let assistants and keys send messages to customers"
 msgstr "Membenarkan pembantu dan kunci menghantar mesej kepada pelanggan"
 
@@ -9446,6 +9525,10 @@ msgstr "Mel masuk ke saluran e-mel “{channelName}”, yang menerima {address}.
 msgid "Mail is not signed with a key of the sender’s own domain, which Gmail and Yahoo expect."
 msgstr "Mel tidak ditandatangani dengan kunci domain pengirim sendiri, seperti yang dijangka oleh Gmail dan Yahoo."
 
+#: src/features/settings/SettingsColumn.tsx
+msgid "Mail only you read"
+msgstr "Mel yang hanya anda baca"
+
 #: src/features/settings/addresses/AddressesPage.tsx
 msgid "Mail queued from it fails instead of going out from another address."
 msgstr "E-mel dalam baris gilir dari alamat ini gagal, bukannya keluar dari alamat lain."
@@ -9752,6 +9835,7 @@ msgstr "median hari ini"
 msgid "median, first message to closed"
 msgstr "median, dari mesej pertama hingga ditutup"
 
+#: src/components/common/MailboxOwnerChoice.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
@@ -9778,6 +9862,10 @@ msgstr "Ahli dan jemputan"
 #: src/features/conversation/messages/Thread.tsx
 msgid "Members only"
 msgstr "Untuk ahli sahaja"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Members you let into this mailbox. They can read it, or read and send mail on your behalf. They never change its settings, filters or migrations."
+msgstr "Ahli yang anda benarkan masuk ke peti mel ini. Mereka boleh membacanya, atau membaca dan menghantar bagi pihak anda. Mereka tidak pernah mengubah tetapan, penapis atau migrasinya."
 
 #: src/features/conversation/composer/MentionMenu.tsx
 msgid "Mention a teammate"
@@ -10308,6 +10396,7 @@ msgstr "Paparan saya"
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/fields/FieldDialog.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/macros/MacroDialog.tsx
@@ -10389,6 +10478,10 @@ msgstr "“{name}” diperlukan sebelum ia boleh ditutup"
 #: src/features/broadcasts/ListParts.tsx
 msgid "Needs a sender"
 msgstr "Memerlukan penghantar"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Needs an owner"
+msgstr "Perlukan pemilik"
 
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/text.ts
@@ -10604,6 +10697,10 @@ msgstr "Makro baharu"
 msgid "New mail"
 msgstr "Mel baharu"
 
+#: src/features/mail/MailPage.tsx
+msgid "New mailbox"
+msgstr "Peti mel baharu"
+
 #: src/features/setup/previews.tsx
 #: src/lib/alerts.ts
 msgid "New message"
@@ -10625,6 +10722,14 @@ msgstr "Pemindahan baharu"
 msgid "New monitor"
 msgstr "Monitor baharu"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "New owner"
+msgstr "Pemilik baharu"
+
+#: src/features/team/RemoveMemberDialog.tsx
+msgid "New owner of {boxName}"
+msgstr "Pemilik baharu {boxName}"
+
 #: src/features/status/StatusPages.tsx
 msgid "New page"
 msgstr "Halaman baharu"
@@ -10632,6 +10737,10 @@ msgstr "Halaman baharu"
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "New password"
 msgstr "Kata laluan baharu"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "New personal mailbox"
+msgstr "Peti mel peribadi baharu"
 
 #: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -11202,6 +11311,11 @@ msgstr "Tiada kenalan lain yang sepadan."
 msgid "No other conversations."
 msgstr "Tiada perbualan lain."
 
+#: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "No owner"
+msgstr "Tiada pemilik"
+
 #: src/features/docs/PagesTab.tsx
 msgid "No pages yet"
 msgstr "Belum ada halaman"
@@ -11398,6 +11512,14 @@ msgstr "Belum ada orang lain boleh melihat peti masuk ini."
 #: src/features/conversation/Participants.tsx
 msgid "Nobody else is copied. Replies go to the contact only."
 msgstr "Tiada orang lain dalam Cc. Balasan hanya dihantar kepada kenalan."
+
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Nobody else reads it unless you let them. Owners and admins see only that it exists."
+msgstr "Tiada orang lain membacanya melainkan anda benarkan. Pemilik dan pentadbir hanya melihat bahawa ia wujud."
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Nobody else reads this mailbox."
+msgstr "Tiada orang lain membaca peti mel ini."
 
 #: src/features/inbox/SidePanels.tsx
 msgid "Nobody has mentioned you yet"
@@ -12179,6 +12301,10 @@ msgstr "Only if your Slack account uses another address than this one. Optional.
 msgid "Only in the app"
 msgstr "Dalam apl sahaja"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Only its owner reads it. You can rename it or delete it."
+msgstr "Hanya pemiliknya membacanya. Anda boleh menamakan semula atau memadamnya."
+
 #: src/features/migrations/parts.tsx
 msgid "Only mail since {date}"
 msgstr "Hanya mel sejak {date}"
@@ -12220,9 +12346,17 @@ msgstr "Hanya terima buat masa ini"
 msgid "Only receives"
 msgstr "Hanya menerima"
 
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Only that member reads it. You see only that it exists."
+msgstr "Hanya ahli itu membacanya. Anda hanya melihat bahawa ia wujud."
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Only the exact domain is claimed, not its subdomains. Add eu.example.com on its own if people use such addresses."
 msgstr "Only the exact domain is claimed, not its subdomains. Add eu.example.com on its own if people use such addresses."
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Only the owner of a personal mailbox manages its settings."
+msgstr "Hanya pemilik peti mel peribadi menguruskan tetapannya."
 
 #: src/components/common/text.ts
 msgid "Only the person can subscribe again, by confirming a mail."
@@ -12232,6 +12366,10 @@ msgstr "Hanya orang itu boleh melanggan semula, dengan mengesahkan mel."
 #: src/features/settings/automation/ActionRow.tsx
 msgid "Only the team sees this"
 msgstr "Hanya pasukan melihat ini"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Only their owners read them. You see what they hold, never what is in them."
+msgstr "Hanya pemiliknya membaca. Anda melihat berapa isinya, bukan apa isinya."
 
 #: src/features/broadcasts/Report.tsx
 msgid "Only those who replied"
@@ -13089,6 +13227,31 @@ msgstr "Orang"
 msgid "Personal"
 msgstr "Peribadi"
 
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Personal (only you)"
+msgstr "Peribadi (hanya anda)"
+
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Personal for {who}"
+msgstr "Peribadi untuk {who}"
+
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Personal for a member"
+msgstr "Peribadi untuk seorang ahli"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Personal mailbox"
+msgstr "Peti mel peribadi"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Personal mailbox of {owner}"
+msgstr "Peti mel peribadi {owner}"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Personal mailboxes"
+msgstr "Peti mel peribadi"
+
 #: src/features/settings/automation/ActionRow.tsx
 msgid "Pick a canned reply"
 msgstr "Pilih balasan tersimpan"
@@ -13145,7 +13308,10 @@ msgstr "Pilih medan"
 msgid "Pick a mail"
 msgstr "Pilih mel"
 
+#: src/components/common/MailboxOwnerChoice.tsx
 #: src/features/settings/automation/ActionRow.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/team/RemoveMemberDialog.tsx
 msgid "Pick a member"
 msgstr "Pilih ahli"
 
@@ -13883,9 +14049,22 @@ msgstr "Penilaian, soalan dan perbincangan daripada halaman dokumentasi pada tap
 msgid "Read"
 msgstr "Baca"
 
+#: src/features/mail/MailPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/settings/ProductsPage.tsx
+msgctxt "mailbox access"
+msgid "Read"
+msgstr "Baca"
+
 #: src/components/common/text.ts
 msgid "Read analytics properties and their numbers"
 msgstr "Baca properti analitik dan angkanya"
+
+#: src/features/mail/MailPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/settings/ProductsPage.tsx
+msgid "Read and send"
+msgstr "Baca dan hantar"
 
 #: src/features/migrations/text.ts
 msgid "Read as a Google Takeout file: Gmail's labels and threads come with it."
@@ -14184,6 +14363,7 @@ msgstr "Imej jauh boleh memberitahu penghantar bahawa anda membuka mel."
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/OwnDomainCard.tsx
@@ -14229,12 +14409,14 @@ msgid "Remove {lang}"
 msgstr "Alih keluar {lang}"
 
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/team/RemoveMemberDialog.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Remove {name}"
 msgstr "Alih keluar {name}"
 
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/sso/SsoPage.tsx
+#: src/features/team/RemoveMemberDialog.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Remove {name}?"
 msgstr "Alih keluar {name}?"
@@ -14242,6 +14424,10 @@ msgstr "Alih keluar {name}?"
 #: src/features/migrations/MapStep.tsx
 msgid "Remove {sender}"
 msgstr "Alih keluar {sender}"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Remove {who}?"
+msgstr "Keluarkan {who}?"
 
 #: src/features/settings/automation/ActionRow.tsx
 msgid "Remove action"
@@ -14436,6 +14622,7 @@ msgstr "Mengalih keluar sejarah diimport"
 msgid "Removing imported history…"
 msgstr "Mengalih keluar sejarah diimport…"
 
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Rename"
 msgstr "Namakan semula"
@@ -14443,6 +14630,10 @@ msgstr "Namakan semula"
 #: src/features/status/ComponentDialogs.tsx
 msgid "Rename group"
 msgstr "Namakan semula kumpulan"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Rename the mailbox"
+msgstr "Namakan semula peti mel"
 
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -15136,6 +15327,7 @@ msgstr "Sabtu"
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/macros/MacroDialog.tsx
@@ -15217,6 +15409,7 @@ msgstr "Simpan senarai sebagai paparan"
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/chat/ChatSections.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/profile/ProfileForm.tsx
 #: src/features/settings/signature/SignaturePage.tsx
@@ -15847,6 +16040,10 @@ msgstr "Penghantaran sudah bermula. Jeda atau batalkannya sebaliknya."
 msgid "Sending kept failing, so Yuva gave up."
 msgstr "Penghantaran terus gagal, jadi Yuva berputus asa."
 
+#: src/components/common/OnBehalf.tsx
+msgid "Sending on behalf of {name}"
+msgstr "Menghantar bagi pihak {name}"
+
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Sending pace"
@@ -16176,6 +16373,14 @@ msgstr "Dikongsi"
 #: src/components/common/FocusChoice.tsx
 msgid "Shared mailboxes for your team"
 msgstr "Peti mel kongsi untuk pasukan anda"
+
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Shared with the team"
+msgstr "Dikongsi dengan pasukan"
+
+#: src/features/mail/MailPage.tsx
+msgid "Shared with you"
+msgstr "Dikongsi dengan anda"
 
 #: src/components/common/text.ts
 msgid "Shipped"
@@ -16656,6 +16861,10 @@ msgstr "Nama tapak"
 #: src/features/setup/SetupLayout.tsx
 msgid "Sites"
 msgstr "Tapak"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Size"
+msgstr "Saiz"
 
 #: src/features/setup/email/EmailTestStep.tsx
 msgid "Skip for now"
@@ -17452,6 +17661,7 @@ msgstr "ID pasukan"
 
 #: src/components/common/FocusChoice.tsx
 #: src/components/common/PurposeChoice.tsx
+#: src/features/mail/MailPage.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/setup/SetupHub.tsx
 msgid "Team mail"
@@ -18147,6 +18357,10 @@ msgstr "Penyelenggaraan selesai. Semuanya berfungsi seperti sebelum ini."
 msgid "The mbox file is compressed inside the zip. Unzip the Takeout archive and upload the .mbox file."
 msgstr "Fail mbox dimampatkan dalam zip. Nyahzip arkib Takeout dan muat naik fail .mbox."
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "The member you pick becomes its owner and reads it from then on. You still do not read it."
+msgstr "Ahli yang anda pilih menjadi pemilik dan membacanya mulai sekarang. Anda masih tidak membacanya."
+
 #: src/features/migrations/text.ts
 msgid "The message could not be read"
 msgstr "Mesej tidak dapat dibaca"
@@ -18206,6 +18420,10 @@ msgstr "Peti masuk lain tiada saluran e-mel, jadi perbualan e-mel ini tidak bole
 #: src/features/fields/BulkFailures.tsx
 msgid "The others were closed. Open one to fill in what it needs, then close it."
 msgstr "Yang lain telah ditutup. Buka satu, isi apa yang perlu, kemudian tutupkannya."
+
+#: src/components/common/OnBehalf.tsx
+msgid "the owner"
+msgstr "pemilik"
 
 #: src/features/status/Notices.tsx
 msgid "The page already sent 10 notices in the last hour"
@@ -18274,6 +18492,10 @@ msgstr "orang itu tiada dalam mana-mana kumpulan yang dibenarkan"
 #: src/features/settings/audit/sentence.ts
 msgid "the person is not a member of this workspace"
 msgstr "orang itu bukan ahli ruang kerja ini"
+
+#: src/features/settings/audit/sentence.ts
+msgid "The personal mailbox {inbox} lost its owner {who}"
+msgstr "Peti mel peribadi {inbox} kehilangan pemiliknya, {who}"
 
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "The policy is none: receivers only report. Move to quarantine once all your mail passes."
@@ -18707,6 +18929,10 @@ msgstr "Mereka tidak lagi mendapat mel daripada senarai ini, dan direkodkan baha
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "They signed up on our website and confirmed their address."
 msgstr "Mereka mendaftar di tapak web kami dan mengesahkan alamat mereka."
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "They stop reading this mailbox at once."
+msgstr "Mereka berhenti membaca peti mel ini serta-merta."
 
 #: src/features/migrations/text.ts
 msgid "This {provider} account's plan has no API access, which Yuva reads through."
@@ -19347,6 +19573,10 @@ msgid "Too many workspaces were created from your network today. Try again tomor
 msgstr "Terlalu banyak ruang kerja dicipta daripada rangkaian anda hari ini. Cuba lagi esok."
 
 #: src/features/settings/audit/sentence.ts
+msgid "Took {who}'s access to the personal mailbox {inbox} away"
+msgstr "Akses {who} kepada peti mel peribadi {inbox} ditarik balik"
+
+#: src/features/settings/audit/sentence.ts
 msgid "Took away the access of {person} to {inbox}"
 msgstr "Membatalkan akses {person} ke {inbox}"
 
@@ -19496,7 +19726,7 @@ msgstr "Rekod TXT"
 msgid "Type"
 msgstr "Jenis"
 
-#: src/features/settings/inboxes/InboxSecurity.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 msgid "Type {name} to confirm"
 msgstr "Taip {name} untuk mengesahkan"
 
@@ -20514,6 +20744,10 @@ msgstr "Apa yang dipegang setiap lajur"
 msgid "What happened"
 msgstr "Apa yang berlaku"
 
+#: src/features/team/RemoveMemberDialog.tsx
+msgid "What happens to {boxName}"
+msgstr "Apa yang berlaku kepada {boxName}"
+
 #: src/features/broadcasts/Composer.tsx
 msgid "What is new in October"
 msgstr "Apa yang baharu pada Oktober"
@@ -20810,6 +21044,10 @@ msgstr "Siapa di sini"
 msgid "Who is it for?"
 msgstr "Untuk siapa?"
 
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Who reads it?"
+msgstr "Siapa yang membacanya?"
+
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "Who sends, and what about?"
 msgstr "Siapa yang menghantar, dan tentang apa?"
@@ -21092,6 +21330,10 @@ msgid "You can leave this page: the conversation will wait for you in your conve
 msgstr "Anda boleh meninggalkan halaman ini: perbualan akan menunggu anda dalam senarai perbualan anda."
 
 #: src/features/mail/MailThread.tsx
+msgid "You can read this mailbox but not change it. Its owner can let you send from it."
+msgstr "Anda boleh membaca peti mel ini tetapi tidak mengubahnya. Pemiliknya boleh membenarkan anda menghantar daripadanya."
+
+#: src/features/mail/MailThread.tsx
 msgid "You can restore it from the Trash for 30 days, then it is deleted for good with its messages and files."
 msgstr "Anda boleh memulihkannya daripada Sampah selama 30 hari, kemudian ia dipadam terus bersama mesej dan failnya."
 
@@ -21173,8 +21415,8 @@ msgid "You have unsaved changes to {what}."
 msgstr "Anda mempunyai perubahan yang belum disimpan pada {what}."
 
 #: src/features/auth/DeleteAccountButton.tsx
-msgid "You leave every workspace and lose your sign-ins, passkeys and notifications. Messages you wrote stay in their conversations, shown as from a deleted member. This cannot be undone."
-msgstr "Anda keluar daripada setiap ruang kerja dan kehilangan log masuk, kunci laluan dan pemberitahuan anda. Mesej yang anda tulis kekal dalam perbualannya, ditunjukkan sebagai daripada ahli yang dipadam. Ini tidak boleh dibuat asal."
+msgid "You leave every workspace and lose your sign-ins, passkeys and notifications. Messages you wrote stay in their conversations, shown as from a deleted member. Your personal mailboxes stay with the workspace, unread, until an owner or admin hands them to someone or deletes them. This cannot be undone."
+msgstr "Anda keluar dari semua ruang kerja dan kehilangan log masuk, kunci laluan dan pemberitahuan. Mesej yang anda tulis kekal dalam perbualannya, dipaparkan sebagai daripada ahli yang dipadam. Peti mel peribadi anda kekal dalam ruang kerja, belum dibaca, sehingga pemilik atau pentadbir menyerahkan atau memadamnya. Ini tidak boleh dibuat asal."
 
 #: src/features/account/AccountPage.tsx
 msgid "You replied"
@@ -21302,6 +21544,10 @@ msgstr "Penyedia mel anda atau pelayan SMTP anda sendiri"
 msgid "Your mailbox"
 msgstr "Peti mel anda"
 
+#: src/features/mail/MailPage.tsx
+msgid "Your mailboxes"
+msgstr "Peti mel anda"
+
 #: src/features/migrations/text.ts
 msgid "Your Microsoft 365 organization lets only an admin consent to apps. Send your admin the link below; once they accept, sign in again."
 msgstr "Organisasi Microsoft 365 anda hanya membenarkan pentadbir bersetuju dengan apl. Hantar pautan di bawah kepada pentadbir anda; setelah mereka menerima, log masuk semula."
@@ -21420,6 +21666,10 @@ msgstr "Nama ruang kerja anda, berapa lama perbualan tertutup disimpan, dan siap
 #: src/features/account/AccountPage.tsx
 msgid "Your Yuva account"
 msgstr "Akaun Yuva anda"
+
+#: src/features/settings/ProductsPage.tsx
+msgid "Yours"
+msgstr "Milik anda"
 
 #: src/features/auth/AuthLayout.tsx
 msgid "Yuva {version}"

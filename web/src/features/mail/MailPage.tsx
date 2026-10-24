@@ -1,5 +1,5 @@
 import { Trans, useLingui } from "@lingui/react/macro"
-import { CheckIcon, ChevronDownIcon, FilterIcon, MailIcon, MailOpenIcon, PenSquareIcon } from "lucide-react"
+import { CheckIcon, ChevronDownIcon, FilterIcon, MailIcon, MailOpenIcon, PenSquareIcon, PlusIcon } from "lucide-react"
 import { useCallback, useEffect, useState } from "react"
 import { useDefaultLayout } from "react-resizable-panels"
 import { Link, Navigate, useLocation, useNavigate } from "react-router"
@@ -10,7 +10,9 @@ import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
+  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
@@ -33,7 +35,7 @@ import { MailList } from "@/features/mail/MailList"
 import { MailThread } from "@/features/mail/MailThread"
 import { useMailCounts } from "@/features/mail/queries"
 import { useHotkeys } from "@/hooks/use-hotkeys"
-import type { DraftItem } from "@/lib/api"
+import type { DraftItem, Inbox } from "@/lib/api"
 import { useIsPhone } from "@/hooks/use-media-query"
 import { useViewing } from "@/lib/realtime"
 import { useSession } from "@/lib/session"
@@ -58,6 +60,33 @@ function BoxPicker({ box, folder }: { box: string; folder: Folder }) {
   const inboxes = useMailInboxes()
   const name = box === "all" ? t`All mail` : (inboxes.find((i) => i.id === box)?.name ?? t`All mail`)
   const pick = (id: string) => navigate(mailPath(id, folder))
+  const own = inboxes.filter((i) => i.mailbox?.access === "owner")
+  const shared = inboxes.filter((i) => i.mailbox && i.mailbox.access !== "owner")
+  const team = inboxes.filter((i) => !i.mailbox)
+  const grouped = own.length + shared.length > 0
+  const option = (i: Inbox) => (
+    <DropdownMenuItem key={i.id} onClick={() => pick(i.id)} data-testid="mail-box-option">
+      <span className="min-w-0 flex-1 truncate">{i.name}</span>
+      {i.mailbox?.access === "read" && (
+        <span className="text-caption text-faint">
+          <Trans context="mailbox access">Read</Trans>
+        </span>
+      )}
+      {i.mailbox?.access === "send" && (
+        <span className="text-caption text-faint">
+          <Trans>Read and send</Trans>
+        </span>
+      )}
+      <CheckIcon className={cn("size-3.5", box !== i.id && "invisible")} />
+    </DropdownMenuItem>
+  )
+  const group = (title: React.ReactNode, items: Inbox[], testId: string) =>
+    items.length > 0 && (
+      <DropdownMenuGroup data-testid={testId}>
+        {grouped && <DropdownMenuLabel>{title}</DropdownMenuLabel>}
+        {items.map(option)}
+      </DropdownMenuGroup>
+    )
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
@@ -77,12 +106,16 @@ function BoxPicker({ box, folder }: { box: string; folder: Folder }) {
           <CheckIcon className={cn("size-3.5", box !== "all" && "invisible")} />
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        {inboxes.map((i) => (
-          <DropdownMenuItem key={i.id} onClick={() => pick(i.id)} data-testid="mail-box-option">
-            <span className="min-w-0 flex-1 truncate">{i.name}</span>
-            <CheckIcon className={cn("size-3.5", box !== i.id && "invisible")} />
-          </DropdownMenuItem>
-        ))}
+        {group(<Trans>Your mailboxes</Trans>, own, "mail-box-own")}
+        {group(<Trans>Shared with you</Trans>, shared, "mail-box-delegated")}
+        {group(<Trans>Team mail</Trans>, team, "mail-box-team")}
+        <DropdownMenuSeparator />
+        <DropdownMenuItem render={<Link to="/setup/mail" state={{ back: "/mail" }} />} data-testid="mail-box-new">
+          <PlusIcon className="size-3.5" />
+          <span className="flex-1">
+            <Trans>New mailbox</Trans>
+          </span>
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   )
@@ -157,11 +190,15 @@ function NoMailInboxes() {
             A team mail inbox keeps the mail of a shared address, like hello@ or billing@, away from customer support.
           </Trans>
         </p>
-        {canManage && (
-          <Button variant="outline" size="sm" className="mt-4" render={<Link to="/setup/new" />}>
-            <Trans>Add an inbox</Trans>
-          </Button>
-        )}
+        <Button
+          variant="outline"
+          size="sm"
+          className="mt-4"
+          render={<Link to={canManage ? "/setup/new" : "/setup/mail"} state={{ back: "/mail" }} />}
+          data-testid="mail-none-add"
+        >
+          {canManage ? <Trans>Add an inbox</Trans> : <Trans>Create your own mailbox</Trans>}
+        </Button>
       </EmptyState>
     </main>
   )

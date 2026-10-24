@@ -20,13 +20,15 @@ import {
   channelTabLink,
   needsAttention,
 } from "@/features/settings/channels/ChannelState"
+import { PersonalMailboxes } from "@/features/settings/inboxes/Mailbox"
 import { useInboxChannels } from "@/features/settings/SettingsColumn"
 import { Card, CardHead, headButton, HeadLink, Page, PageHeader, PageTabs } from "@/features/settings/ui"
 import { useTab } from "@/features/settings/useTab"
 import type { BusinessHours, Channel, Inbox, Weekday } from "@/lib/api"
 import { useSession } from "@/lib/session"
 import { cn } from "@/lib/utils"
-import { useInboxMembers } from "@/lib/workspace"
+import { managesInbox } from "@/lib/mailbox"
+import { useInboxMembers, useLockedMailboxes } from "@/lib/workspace"
 
 function language(tag: string, locale: string) {
   try {
@@ -117,6 +119,7 @@ function ProductCard({ inbox, channels }: { inbox: Inbox; channels?: Channel[] }
   const text = useEnumText()
   const { canManage } = useSession()
   const hours = useHours()
+  const personal = !!inbox.mailbox
   const members = useInboxMembers(inbox.id).data
   const reply = inbox.expected_reply_minutes
   const within = reply !== undefined ? formatDuration(reply * 60, i18n.locale) : ""
@@ -139,14 +142,16 @@ function ProductCard({ inbox, channels }: { inbox: Inbox; channels?: Channel[] }
             )}
           </span>
         </div>
-        <Button
-          variant="outline"
-          className={headButton.secondary}
-          render={<Link to={`/settings/inboxes/${inbox.id}`} />}
-          data-testid="product-settings"
-        >
-          <Trans>Settings</Trans>
-        </Button>
+        {managesInbox(inbox, true) && (
+          <Button
+            variant="outline"
+            className={headButton.secondary}
+            render={<Link to={`/settings/inboxes/${inbox.id}`} />}
+            data-testid="product-settings"
+          >
+            <Trans>Settings</Trans>
+          </Button>
+        )}
       </div>
       <dl className="grid grid-cols-2 gap-x-4 gap-y-2.5 px-[18px] pt-3.5 pb-3">
         <Fact label={<Trans>Language</Trans>}>{language(inbox.default_locale, i18n.locale)}</Fact>
@@ -154,10 +159,24 @@ function ProductCard({ inbox, channels }: { inbox: Inbox; channels?: Channel[] }
           {scheduled && <span aria-hidden className="size-2 shrink-0 rounded-full bg-success" />}
           <span className="truncate">{hours(inbox.business_hours)}</span>
         </Fact>
-        <Fact label={<Trans>Members</Trans>}>{members ? members.length : "–"}</Fact>
-        <Fact label={<Trans>Ratings</Trans>}>
-          {inbox.ask_for_rating ? <Trans>asked after closing</Trans> : <Trans>off</Trans>}
-        </Fact>
+        {personal ? (
+          <Fact label={<Trans>Access</Trans>}>
+            {inbox.mailbox?.access === "owner" ? (
+              <Trans>Yours</Trans>
+            ) : inbox.mailbox?.access === "send" ? (
+              <Trans>Read and send</Trans>
+            ) : (
+              <Trans context="mailbox access">Read</Trans>
+            )}
+          </Fact>
+        ) : (
+          <Fact label={<Trans>Members</Trans>}>{members ? members.length : "–"}</Fact>
+        )}
+        {!personal && (
+          <Fact label={<Trans>Ratings</Trans>}>
+            {inbox.ask_for_rating ? <Trans>asked after closing</Trans> : <Trans>off</Trans>}
+          </Fact>
+        )}
       </dl>
       <div className="mt-auto flex flex-col gap-2 border-t bg-surface/50 px-[18px] py-3.5">
         {channels === undefined ? (
@@ -195,7 +214,7 @@ function ChannelGroup({ inbox, channels, only }: { inbox: Inbox; channels?: Chan
     <Card flush data-testid="channel-group">
       <CardHead
         action={
-          canManage && (
+          managesInbox(inbox, canManage) && (
             <HeadLink to={`/settings/inboxes/${inbox.id}`} testId="channel-group-settings">
               <Trans>Product settings</Trans>
             </HeadLink>
@@ -233,7 +252,7 @@ function ChannelGroup({ inbox, channels, only }: { inbox: Inbox; channels?: Chan
                   </span>
                 </div>
                 <ChannelPill ch={ch} />
-                {canManage && (
+                {managesInbox(inbox, canManage) && (
                   <Button
                     variant="outline"
                     className="h-[30px] rounded-lg border-input px-2.5 font-normal"
@@ -261,6 +280,7 @@ export function ProductsHome() {
   const view = params.get("view") === "channels" ? "channels" : "products"
   const { tab, to } = useTab(["all", "attention"] as const, "all")
   const all = useInboxChannels()
+  const locked = useLockedMailboxes()
   const inboxes = all.filter(({ inbox }) => !inboxId || inbox.id === inboxId)
   const loaded = inboxes.every((x) => x.channels !== undefined)
   const everyChannel = inboxes.flatMap((x) => x.channels ?? [])
@@ -317,7 +337,7 @@ export function ProductsHome() {
         }
       />
       <SettingsStrip current={view} />
-      {inboxes.length === 0 ? (
+      {inboxes.length === 0 && locked.length === 0 ? (
         <EmptyBox
           title={<Trans>No products yet</Trans>}
           testId="products-empty"
@@ -369,6 +389,7 @@ export function ProductsHome() {
               <ProductCard key={inbox.id} inbox={inbox} channels={channels} />
             ))}
           </ul>
+          {!inboxId && <PersonalMailboxes items={locked} />}
         </>
       )}
       {adding === "product" && <AddProductDialog onClose={() => setAdding(null)} />}

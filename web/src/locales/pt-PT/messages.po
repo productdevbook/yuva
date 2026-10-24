@@ -254,6 +254,10 @@ msgstr "{attention, plural, one {# canal precisa de atenção} other {# canais p
 msgid "{author, select, bot {No drafts by bots} assistant {No drafts by assistants} member {No drafts by members} other {No drafts by this author}}"
 msgstr "{author, select, bot {Nenhum rascunho de bots} assistant {Nenhum rascunho de assistentes} member {Nenhum rascunho de membros} other {Nenhum rascunho deste autor}}"
 
+#: src/features/mail/MailThread.tsx
+msgid "{author} on behalf of {ownerName}"
+msgstr "{author} em nome de {ownerName}"
+
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/mail/MailThread.tsx
 msgid "{author}, sent by {by}"
@@ -667,6 +671,10 @@ msgstr "{name} está digitando…"
 #: src/features/setup/SetupHub.tsx
 msgid "{name} news"
 msgstr "Novidades de {name}"
+
+#: src/features/team/RemoveMemberDialog.tsx
+msgid "{name} owns personal mailboxes. Decide what happens to each: delete it with everything in it, or hand it to another member. You do not read them either way."
+msgstr "{name} tem caixas pessoais. Decida o que acontece com cada uma: excluir com todo o conteúdo ou transferir para outro membro. Em nenhum caso o utilizador as lê."
 
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "{name} receives mail at this address. Here is what you set up."
@@ -1398,6 +1406,10 @@ msgstr "Uma lista de e-mails envia em nome de uma caixa, pelo canal de e-mail de
 msgid "A mailing list with subscribe forms, for your broadcasts"
 msgstr "Uma lista de e-mails com formulários de subscrição, para seus envios"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "a member"
+msgstr "um membro"
+
 #: src/components/common/AssignmentFields.tsx
 msgid "A member is eligible while they have access to the product (owners and admins only with a grant), have the panel or an app open, are set to Auto availability, the product is inside its business hours and they are under the limit. When nobody is eligible the conversation waits and goes to the first teammate who becomes available."
 msgstr "Um membro é elegível se tem acesso ao produto (proprietários e administradores só com permissão), tem o painel ou uma app aberta, disponibilidade Auto, o produto está dentro do horário e está abaixo do limite. Se ninguém for elegível, a conversa aguarda e vai para o primeiro colega que ficar disponível."
@@ -1672,8 +1684,14 @@ msgstr "Resposta aceita"
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/app/AppSections.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/settings/ProductsPage.tsx
 msgid "Access"
 msgstr "Acesso"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Access of {person}"
+msgstr "Acesso de {person}"
 
 #: src/features/migrations/DoneStep.tsx
 msgid "Access to {provider}"
@@ -1736,6 +1754,7 @@ msgstr "Atividade"
 #: src/features/conversation/Participants.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/addresses/AddressesPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Add"
@@ -1781,6 +1800,10 @@ msgstr "Adicionar idioma"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Add a link"
 msgstr "Adicionar um link"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Add a member"
+msgstr "Adicionar um membro"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Add a monitor"
@@ -2079,6 +2102,10 @@ msgstr "Comprovação do endereço"
 msgid "Address verified"
 msgstr "Endereço verificado"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Addresses"
+msgstr "Endereços"
+
 #: src/features/team/MemberAddresses.tsx
 msgid "Addresses {name} added to send mail from. Those waiting for approval need an owner or admin."
 msgstr "Endereços que {name} adicionou para enviar e-mails. Os que aguardam aprovação precisam de um proprietário ou administrador."
@@ -2205,9 +2232,9 @@ msgstr "Tudo marcado como lido"
 msgid "All monitors"
 msgstr "Todos os monitores"
 
-#: src/features/settings/inboxes/InboxSecurity.tsx
-msgid "All of its conversations, messages and attachments are deleted with it. Webhooks and API keys limited to it stop working."
-msgstr "Todas as conversas, mensagens e anexos são eliminados com ele. Os webhooks e as chaves de API limitados a este produto deixam de funcionar."
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "All of its conversations, messages and attachments are deleted with it. This cannot be undone."
+msgstr "Todas as conversas, mensagens e anexos são excluídos junto. Isso não pode ser desfeito."
 
 #: src/features/migrations/UploadStep.tsx
 msgid "All parts arrived. Reading the file…"
@@ -3641,6 +3668,7 @@ msgstr "Nome da campanha"
 #: src/features/settings/AddProductDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/sso/SsoPage.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
@@ -3651,6 +3679,7 @@ msgstr "Nome da campanha"
 #: src/features/status/IncidentDetail.tsx
 #: src/features/status/IncidentDialog.tsx
 #: src/features/status/MonitorDialog.tsx
+#: src/features/team/RemoveMemberDialog.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Cancel"
 msgstr "Cancelar"
@@ -4824,6 +4853,7 @@ msgstr "conversas"
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/DoneStep.tsx
 #: src/features/migrations/ReviewStep.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/webhooks/events.tsx
 msgid "Conversations"
 msgstr "Conversas"
@@ -5136,6 +5166,10 @@ msgstr "Create this TXT record at your DNS provider, then press Verify. It can t
 msgid "Create workspace"
 msgstr "Criar espaço de trabalho"
 
+#: src/features/mail/MailPage.tsx
+msgid "Create your own mailbox"
+msgstr "Crie sua própria caixa"
+
 #: src/features/auth/CreateWorkspace.tsx
 msgid "Create your workspace"
 msgstr "Crie seu espaço de trabalho"
@@ -5338,6 +5372,11 @@ msgstr "Padrão: {fallback}"
 msgid "Degraded performance"
 msgstr "Desempenho degradado"
 
+#: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Delegates"
+msgstr "Delegados"
+
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListSettings.tsx
@@ -5349,6 +5388,7 @@ msgstr "Desempenho degradado"
 #: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 #: src/features/settings/macros/MacrosPage.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -5356,6 +5396,7 @@ msgstr "Desempenho degradado"
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
 #: src/features/status/SettingsTab.tsx
+#: src/features/team/RemoveMemberDialog.tsx
 msgid "Delete"
 msgstr "Eliminar"
 
@@ -5378,7 +5419,7 @@ msgstr "Excluir ({removeKey})"
 msgid "Delete {0}?"
 msgstr "Eliminar {0}?"
 
-#: src/features/settings/inboxes/InboxSecurity.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Delete {name}?"
@@ -5416,6 +5457,10 @@ msgstr "Eliminar chave"
 #: src/features/broadcasts/ListSettings.tsx
 msgid "Delete list"
 msgstr "Eliminar lista"
+
+#: src/features/settings/inboxes/InboxSecurity.tsx
+msgid "Delete mailbox"
+msgstr "Excluir caixa"
 
 #: src/features/status/MonitorsPage.tsx
 msgid "Delete monitor"
@@ -5510,6 +5555,10 @@ msgstr "Eliminar esta chave DKIM?"
 msgid "Delete this macro?"
 msgstr "Eliminar esta macro?"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Delete this mailbox"
+msgstr "Excluir esta caixa"
+
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Delete this migration?"
 msgstr "Eliminar esta migração?"
@@ -5521,10 +5570,6 @@ msgstr "Eliminar esta nota"
 #: src/features/contact/ContactNotes.tsx
 msgid "Delete this note?"
 msgstr "Eliminar esta nota?"
-
-#: src/features/settings/inboxes/InboxSecurity.tsx
-msgid "Delete this product"
-msgstr "Eliminar este produto"
 
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Delete this subscription?"
@@ -5592,6 +5637,7 @@ msgstr "Caixa eliminada"
 
 #: src/components/common/DiscussionAuthor.tsx
 #: src/features/inbox/SidePanels.tsx
+#: src/features/mail/MailThread.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
@@ -5613,6 +5659,10 @@ msgstr "Eliminou a regra de automatização {name}"
 #: src/features/settings/audit/sentence.ts
 msgid "Deleted the inbox {name}"
 msgstr "Eliminou a caixa de entrada {name}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted the personal mailbox {name} of {who} when they left"
+msgstr "Caixa pessoal {name} de {who} excluída na saída"
 
 #: src/features/settings/audit/sentence.ts
 msgid "Deleted the team {team}"
@@ -6655,6 +6705,10 @@ msgstr "Todas as pessoas das listas. As condições mantêm só os contactos cuj
 msgid "Everyone who has written to your products"
 msgstr "Todas as pessoas que escreveram aos seus produtos"
 
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Everyone with access to the inbox reads it."
+msgstr "Todos com acesso à caixa a leem."
+
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Everyone's posts are published at once, except those of authors you marked as spam."
 msgstr "As publicações de todos são publicadas na hora, exceto as de autores que você marcou como spam."
@@ -7580,9 +7634,29 @@ msgstr "Grupos de membros e as caixas que cobrem"
 msgid "Growth"
 msgstr "Crescimento"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Hand over"
+msgstr "Transferir"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Hand over {name}"
+msgstr "Transferir {name}"
+
+#: src/features/team/RemoveMemberDialog.tsx
+msgid "Hand over to"
+msgstr "Transferir para"
+
 #: src/features/settings/automation/text.ts
 msgid "Hand to automatic assignment"
 msgstr "Passar para a atribuição automática"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Handed over"
+msgstr "Transferida"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Handed the personal mailbox {inbox} to {next}"
+msgstr "Caixa pessoal {inbox} transferida para {next}"
 
 #: src/features/conversation/actions.ts
 msgid "Handed to {name}"
@@ -7809,6 +7883,7 @@ msgstr "Nome do host e certificado"
 msgid "hours"
 msgstr "horas"
 
+#: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/ProductsPage.tsx
 msgid "Hours"
 msgstr "Horário"
@@ -8999,6 +9074,10 @@ msgid "Legal name"
 msgstr "Razão social"
 
 #: src/features/settings/audit/sentence.ts
+msgid "Let {who} into the personal mailbox {inbox}"
+msgstr "{who} ganhou acesso à caixa pessoal {inbox}"
+
+#: src/features/settings/audit/sentence.ts
 msgid "Let assistants and keys send messages to customers"
 msgstr "Permitiu que assistentes e chaves enviem mensagens a clientes"
 
@@ -9446,6 +9525,10 @@ msgstr "O e-mail vai para o canal de e-mail “{channelName}”, que recebe {add
 msgid "Mail is not signed with a key of the sender’s own domain, which Gmail and Yahoo expect."
 msgstr "O e-mail não está assinado com uma chave do domínio do próprio remetente, como o Gmail e o Yahoo esperam."
 
+#: src/features/settings/SettingsColumn.tsx
+msgid "Mail only you read"
+msgstr "E-mails que só o utilizador lê"
+
 #: src/features/settings/addresses/AddressesPage.tsx
 msgid "Mail queued from it fails instead of going out from another address."
 msgstr "O e-mail em fila deste endereço falha em vez de sair de outro endereço."
@@ -9752,6 +9835,7 @@ msgstr "mediana de hoje"
 msgid "median, first message to closed"
 msgstr "mediana, da primeira mensagem ao fecho"
 
+#: src/components/common/MailboxOwnerChoice.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
@@ -9778,6 +9862,10 @@ msgstr "Membros e convites"
 #: src/features/conversation/messages/Thread.tsx
 msgid "Members only"
 msgstr "Apenas para membros"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Members you let into this mailbox. They can read it, or read and send mail on your behalf. They never change its settings, filters or migrations."
+msgstr "Membros que o utilizador deixa entrar nesta caixa. Podem lê-la, ou lê-la e enviar em seu nome. Nunca alteram suas configurações, filtros ou migrações."
 
 #: src/features/conversation/composer/MentionMenu.tsx
 msgid "Mention a teammate"
@@ -10308,6 +10396,7 @@ msgstr "As minhas vistas"
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/fields/FieldDialog.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/macros/MacroDialog.tsx
@@ -10389,6 +10478,10 @@ msgstr "Precisa de «{name}» antes de poder ser fechada"
 #: src/features/broadcasts/ListParts.tsx
 msgid "Needs a sender"
 msgstr "Precisa de um remetente"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Needs an owner"
+msgstr "Precisa de um proprietário"
 
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/text.ts
@@ -10604,6 +10697,10 @@ msgstr "Nova macro"
 msgid "New mail"
 msgstr "Novo correio"
 
+#: src/features/mail/MailPage.tsx
+msgid "New mailbox"
+msgstr "Nova caixa"
+
 #: src/features/setup/previews.tsx
 #: src/lib/alerts.ts
 msgid "New message"
@@ -10625,6 +10722,14 @@ msgstr "Nova migração"
 msgid "New monitor"
 msgstr "Novo monitor"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "New owner"
+msgstr "Novo proprietário"
+
+#: src/features/team/RemoveMemberDialog.tsx
+msgid "New owner of {boxName}"
+msgstr "Novo proprietário de {boxName}"
+
 #: src/features/status/StatusPages.tsx
 msgid "New page"
 msgstr "Nova página"
@@ -10632,6 +10737,10 @@ msgstr "Nova página"
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "New password"
 msgstr "Nova palavra-passe"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "New personal mailbox"
+msgstr "Nova caixa pessoal"
 
 #: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -11202,6 +11311,11 @@ msgstr "Nenhum outro contacto corresponde."
 msgid "No other conversations."
 msgstr "Nenhuma outra conversa."
 
+#: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "No owner"
+msgstr "Sem proprietário"
+
 #: src/features/docs/PagesTab.tsx
 msgid "No pages yet"
 msgstr "Ainda não há páginas"
@@ -11398,6 +11512,14 @@ msgstr "Ninguém mais pode ver esta caixa ainda."
 #: src/features/conversation/Participants.tsx
 msgid "Nobody else is copied. Replies go to the contact only."
 msgstr "Mais ninguém está em cópia. As respostas vão só para o contacto."
+
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Nobody else reads it unless you let them. Owners and admins see only that it exists."
+msgstr "Mais ninguém a lê se o utilizador não permitir. Proprietários e administradores só veem que ela existe."
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Nobody else reads this mailbox."
+msgstr "Mais ninguém lê esta caixa."
 
 #: src/features/inbox/SidePanels.tsx
 msgid "Nobody has mentioned you yet"
@@ -12179,6 +12301,10 @@ msgstr "Only if your Slack account uses another address than this one. Optional.
 msgid "Only in the app"
 msgstr "Só no app"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Only its owner reads it. You can rename it or delete it."
+msgstr "Só o proprietário a lê. O utilizador pode renomeá-la ou excluí-la."
+
 #: src/features/migrations/parts.tsx
 msgid "Only mail since {date}"
 msgstr "Só e-mail desde {date}"
@@ -12220,9 +12346,17 @@ msgstr "Só receber por enquanto"
 msgid "Only receives"
 msgstr "Só recebe"
 
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Only that member reads it. You see only that it exists."
+msgstr "Só esse membro a lê. O utilizador só vê que ela existe."
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Only the exact domain is claimed, not its subdomains. Add eu.example.com on its own if people use such addresses."
 msgstr "Only the exact domain is claimed, not its subdomains. Add eu.example.com on its own if people use such addresses."
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Only the owner of a personal mailbox manages its settings."
+msgstr "Só o proprietário de uma caixa pessoal gerencia suas configurações."
 
 #: src/components/common/text.ts
 msgid "Only the person can subscribe again, by confirming a mail."
@@ -12232,6 +12366,10 @@ msgstr "Só a própria pessoa pode se subscrever de novo, confirmando um e-mail.
 #: src/features/settings/automation/ActionRow.tsx
 msgid "Only the team sees this"
 msgstr "Só a equipa vê isto"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Only their owners read them. You see what they hold, never what is in them."
+msgstr "Só os proprietários as leem. O utilizador vê o que elas guardam, nunca o que há dentro."
 
 #: src/features/broadcasts/Report.tsx
 msgid "Only those who replied"
@@ -13089,6 +13227,31 @@ msgstr "Pessoa"
 msgid "Personal"
 msgstr "Pessoal"
 
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Personal (only you)"
+msgstr "Pessoal (só o utilizador)"
+
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Personal for {who}"
+msgstr "Pessoal para {who}"
+
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Personal for a member"
+msgstr "Pessoal para um membro"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Personal mailbox"
+msgstr "Caixa pessoal"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Personal mailbox of {owner}"
+msgstr "Caixa pessoal de {owner}"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Personal mailboxes"
+msgstr "Caixas pessoais"
+
 #: src/features/settings/automation/ActionRow.tsx
 msgid "Pick a canned reply"
 msgstr "Escolha uma resposta predefinida"
@@ -13145,7 +13308,10 @@ msgstr "Escolha um campo"
 msgid "Pick a mail"
 msgstr "Escolha um e-mail"
 
+#: src/components/common/MailboxOwnerChoice.tsx
 #: src/features/settings/automation/ActionRow.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/team/RemoveMemberDialog.tsx
 msgid "Pick a member"
 msgstr "Escolha um membro"
 
@@ -13883,9 +14049,22 @@ msgstr "Avaliações, perguntas e discussões das páginas de documentação do 
 msgid "Read"
 msgstr "Ler"
 
+#: src/features/mail/MailPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/settings/ProductsPage.tsx
+msgctxt "mailbox access"
+msgid "Read"
+msgstr "Leitura"
+
 #: src/components/common/text.ts
 msgid "Read analytics properties and their numbers"
 msgstr "Ler propriedades de analytics e seus números"
+
+#: src/features/mail/MailPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/settings/ProductsPage.tsx
+msgid "Read and send"
+msgstr "Leitura e envio"
 
 #: src/features/migrations/text.ts
 msgid "Read as a Google Takeout file: Gmail's labels and threads come with it."
@@ -14184,6 +14363,7 @@ msgstr "Imagens remotas podem avisar o remetente de que você abriu o e-mail."
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/OwnDomainCard.tsx
@@ -14229,12 +14409,14 @@ msgid "Remove {lang}"
 msgstr "Remover {lang}"
 
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/team/RemoveMemberDialog.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Remove {name}"
 msgstr "Remover {name}"
 
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/sso/SsoPage.tsx
+#: src/features/team/RemoveMemberDialog.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Remove {name}?"
 msgstr "Remover {name}?"
@@ -14242,6 +14424,10 @@ msgstr "Remover {name}?"
 #: src/features/migrations/MapStep.tsx
 msgid "Remove {sender}"
 msgstr "Remover {sender}"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Remove {who}?"
+msgstr "Remover {who}?"
 
 #: src/features/settings/automation/ActionRow.tsx
 msgid "Remove action"
@@ -14436,6 +14622,7 @@ msgstr "A remover o histórico importado"
 msgid "Removing imported history…"
 msgstr "A remover o histórico importado…"
 
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Rename"
 msgstr "Renomear"
@@ -14443,6 +14630,10 @@ msgstr "Renomear"
 #: src/features/status/ComponentDialogs.tsx
 msgid "Rename group"
 msgstr "Renomear grupo"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Rename the mailbox"
+msgstr "Renomear a caixa"
 
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -15136,6 +15327,7 @@ msgstr "Sábado"
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/macros/MacroDialog.tsx
@@ -15217,6 +15409,7 @@ msgstr "Guardar a lista como vista"
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/chat/ChatSections.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/profile/ProfileForm.tsx
 #: src/features/settings/signature/SignaturePage.tsx
@@ -15847,6 +16040,10 @@ msgstr "O envio já começou. Pause ou cancele em vez disso."
 msgid "Sending kept failing, so Yuva gave up."
 msgstr "O envio continuou a falhar, por isso o Yuva desistiu."
 
+#: src/components/common/OnBehalf.tsx
+msgid "Sending on behalf of {name}"
+msgstr "Enviando em nome de {name}"
+
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Sending pace"
@@ -16176,6 +16373,14 @@ msgstr "Partilhada"
 #: src/components/common/FocusChoice.tsx
 msgid "Shared mailboxes for your team"
 msgstr "Caixas de correio partilhadas para a sua equipa"
+
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Shared with the team"
+msgstr "Compartilhada com a equipe"
+
+#: src/features/mail/MailPage.tsx
+msgid "Shared with you"
+msgstr "Compartilhadas com o utilizador"
 
 #: src/components/common/text.ts
 msgid "Shipped"
@@ -16656,6 +16861,10 @@ msgstr "Nome do site"
 #: src/features/setup/SetupLayout.tsx
 msgid "Sites"
 msgstr "Sites"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Size"
+msgstr "Tamanho"
 
 #: src/features/setup/email/EmailTestStep.tsx
 msgid "Skip for now"
@@ -17452,6 +17661,7 @@ msgstr "ID da equipa"
 
 #: src/components/common/FocusChoice.tsx
 #: src/components/common/PurposeChoice.tsx
+#: src/features/mail/MailPage.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/setup/SetupHub.tsx
 msgid "Team mail"
@@ -18147,6 +18357,10 @@ msgstr "A manutenção foi concluída. Tudo funciona como antes."
 msgid "The mbox file is compressed inside the zip. Unzip the Takeout archive and upload the .mbox file."
 msgstr "O ficheiro mbox está comprimido dentro do zip. Descomprima o ficheiro do Takeout e envie o ficheiro .mbox."
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "The member you pick becomes its owner and reads it from then on. You still do not read it."
+msgstr "O membro escolhido vira o proprietário e a lê daí em diante. O utilizador continua sem lê-la."
+
 #: src/features/migrations/text.ts
 msgid "The message could not be read"
 msgstr "Não foi possível ler a mensagem"
@@ -18206,6 +18420,10 @@ msgstr "A outra caixa não tem canal de e-mail, então esta conversa de e-mail n
 #: src/features/fields/BulkFailures.tsx
 msgid "The others were closed. Open one to fill in what it needs, then close it."
 msgstr "As outras foram fechadas. Abra uma para preencher o que lhe falta e depois feche-a."
+
+#: src/components/common/OnBehalf.tsx
+msgid "the owner"
+msgstr "o proprietário"
 
 #: src/features/status/Notices.tsx
 msgid "The page already sent 10 notices in the last hour"
@@ -18274,6 +18492,10 @@ msgstr "a pessoa não está em nenhum dos grupos permitidos"
 #: src/features/settings/audit/sentence.ts
 msgid "the person is not a member of this workspace"
 msgstr "a pessoa não é membro deste espaço de trabalho"
+
+#: src/features/settings/audit/sentence.ts
+msgid "The personal mailbox {inbox} lost its owner {who}"
+msgstr "A caixa pessoal {inbox} perdeu o proprietário {who}"
 
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "The policy is none: receivers only report. Move to quarantine once all your mail passes."
@@ -18707,6 +18929,10 @@ msgstr "Eles não recebem mais e-mails desta lista, e fica registrado que a equi
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "They signed up on our website and confirmed their address."
 msgstr "Eles se cadastraram no nosso site e confirmaram o endereço."
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "They stop reading this mailbox at once."
+msgstr "Eles param de ler esta caixa na hora."
 
 #: src/features/migrations/text.ts
 msgid "This {provider} account's plan has no API access, which Yuva reads through."
@@ -19347,6 +19573,10 @@ msgid "Too many workspaces were created from your network today. Try again tomor
 msgstr "Espaços de trabalho demais foram criados a partir da sua rede hoje. Tente de novo amanhã."
 
 #: src/features/settings/audit/sentence.ts
+msgid "Took {who}'s access to the personal mailbox {inbox} away"
+msgstr "Acesso de {who} à caixa pessoal {inbox} removido"
+
+#: src/features/settings/audit/sentence.ts
 msgid "Took away the access of {person} to {inbox}"
 msgstr "Retirou o acesso de {person} a {inbox}"
 
@@ -19496,7 +19726,7 @@ msgstr "Registro TXT"
 msgid "Type"
 msgstr "Tipo"
 
-#: src/features/settings/inboxes/InboxSecurity.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 msgid "Type {name} to confirm"
 msgstr "Escreva {name} para confirmar"
 
@@ -20514,6 +20744,10 @@ msgstr "O que cada coluna contém"
 msgid "What happened"
 msgstr "O que aconteceu"
 
+#: src/features/team/RemoveMemberDialog.tsx
+msgid "What happens to {boxName}"
+msgstr "O que acontece com {boxName}"
+
 #: src/features/broadcasts/Composer.tsx
 msgid "What is new in October"
 msgstr "Novidades de outubro"
@@ -20810,6 +21044,10 @@ msgstr "Quem está aqui"
 msgid "Who is it for?"
 msgstr "Para quem é?"
 
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Who reads it?"
+msgstr "Quem a lê?"
+
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "Who sends, and what about?"
 msgstr "Quem envia, e sobre o quê?"
@@ -21092,6 +21330,10 @@ msgid "You can leave this page: the conversation will wait for you in your conve
 msgstr "Você pode sair desta página: a conversa vai esperar por você na sua lista de conversas."
 
 #: src/features/mail/MailThread.tsx
+msgid "You can read this mailbox but not change it. Its owner can let you send from it."
+msgstr "O utilizador pode ler esta caixa, mas não alterá-la. O proprietário pode deixar o utilizador enviar dela."
+
+#: src/features/mail/MailThread.tsx
 msgid "You can restore it from the Trash for 30 days, then it is deleted for good with its messages and files."
 msgstr "Pode restaurá-lo do lixo durante 30 dias; depois é eliminado de vez com as mensagens e os ficheiros."
 
@@ -21173,8 +21415,8 @@ msgid "You have unsaved changes to {what}."
 msgstr "Tem alterações não guardadas em {what}."
 
 #: src/features/auth/DeleteAccountButton.tsx
-msgid "You leave every workspace and lose your sign-ins, passkeys and notifications. Messages you wrote stay in their conversations, shown as from a deleted member. This cannot be undone."
-msgstr "Você sai de todos os espaços de trabalho e perde seus logins, passkeys e notificações. As mensagens que você escreveu permanecem nas conversas, mostradas como de um membro eliminado. Isso não pode ser desfeito."
+msgid "You leave every workspace and lose your sign-ins, passkeys and notifications. Messages you wrote stay in their conversations, shown as from a deleted member. Your personal mailboxes stay with the workspace, unread, until an owner or admin hands them to someone or deletes them. This cannot be undone."
+msgstr "O utilizador sai de todos os espaços de trabalho e perde logins, passkeys e notificações. As mensagens que o utilizador escreveu ficam nas conversas, mostradas como de um membro excluído. Suas caixas pessoais ficam no espaço de trabalho, sem leitura, até um proprietário ou administrador transferi-las ou excluí-las. Isso não pode ser desfeito."
 
 #: src/features/account/AccountPage.tsx
 msgid "You replied"
@@ -21302,6 +21544,10 @@ msgstr "O de seu fornecedor de e-mail ou seu próprio servidor SMTP"
 msgid "Your mailbox"
 msgstr "Sua caixa de correio"
 
+#: src/features/mail/MailPage.tsx
+msgid "Your mailboxes"
+msgstr "Suas caixas"
+
 #: src/features/migrations/text.ts
 msgid "Your Microsoft 365 organization lets only an admin consent to apps. Send your admin the link below; once they accept, sign in again."
 msgstr "Sua organização do Microsoft 365 só permite que um administrador consinta com apps. Envie o link abaixo ao seu administrador; depois que ele aceitar, inicie sessão de novo."
@@ -21420,6 +21666,10 @@ msgstr "O nome do seu espaço de trabalho, durante quanto tempo as conversas fec
 #: src/features/account/AccountPage.tsx
 msgid "Your Yuva account"
 msgstr "Sua conta do Yuva"
+
+#: src/features/settings/ProductsPage.tsx
+msgid "Yours"
+msgstr "Sua"
 
 #: src/features/auth/AuthLayout.tsx
 msgid "Yuva {version}"

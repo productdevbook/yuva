@@ -7,6 +7,7 @@ import {
   BuildingIcon,
   CircleDotIcon,
   KeyRoundIcon,
+  LockIcon,
   MessageSquareIcon,
   PaletteIcon,
   AtSignIcon,
@@ -41,6 +42,7 @@ import {
   useCustomFields,
   useInboxes,
   useLabels,
+  useLockedMailboxes,
   useMacros,
   useMembers,
   useSlaPolicies,
@@ -127,6 +129,7 @@ export function SettingsColumn() {
   const text = useEnumText()
   const { me, membership, canManage, isOwner, workspaceId: ws } = useSession()
   const inboxes = useInboxChannels()
+  const lockedMailboxes = useLockedMailboxes()
   const members = useMembers().data
   const canned = useCannedReplies().data
   const labels = useLabels().data
@@ -197,12 +200,30 @@ export function SettingsColumn() {
             />
           </NavRow>
         ))}
-        {canManage && (
+        {lockedMailboxes.map((inbox) => (
+          <NavRow key={inbox.id} to={`/settings/inboxes/${inbox.id}`} testId="locked-inbox-row">
+            <RowIcon>
+              <LockIcon />
+            </RowIcon>
+            <RowText
+              title={inbox.name}
+              detail={inbox.mailbox?.orphaned ? <Trans>No owner</Trans> : <Trans>Personal mailbox</Trans>}
+            />
+          </NavRow>
+        ))}
+        {canManage ? (
           <NavRow to="/setup/new" state={{ back: "/settings" }} testId="add-inbox">
             <RowIcon>
               <PlusIcon />
             </RowIcon>
             <RowText title={<Trans>Add an inbox</Trans>} detail={<Trans>One per product or brand</Trans>} />
+          </NavRow>
+        ) : (
+          <NavRow to="/setup/mail" state={{ back: "/settings" }} testId="add-mailbox">
+            <RowIcon>
+              <PlusIcon />
+            </RowIcon>
+            <RowText title={<Trans>New personal mailbox</Trans>} detail={<Trans>Mail only you read</Trans>} />
           </NavRow>
         )}
       </Group>

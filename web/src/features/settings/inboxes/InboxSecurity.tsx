@@ -1,15 +1,14 @@
 import { Trans } from "@lingui/react/macro"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useMutation } from "@tanstack/react-query"
 import { useState } from "react"
 import { useNavigate } from "react-router"
 
-import { ErrorLine, SecretDialog, TypeToConfirmDialog, useConfirm } from "@/components/common"
+import { ErrorLine, SecretDialog, useConfirm } from "@/components/common"
 import { Button } from "@/components/ui/button"
 import { useInboxOutlet } from "@/features/settings/inboxes/InboxPage"
+import { DeleteMailboxDialog } from "@/features/settings/inboxes/Mailbox"
 import { Block, BlockRow } from "@/features/settings/ui"
 import { api, unwrap } from "@/lib/api"
-import { keys } from "@/lib/keys"
-import { useSession } from "@/lib/session"
 
 export function IdentitySecretRow() {
   const { inbox } = useInboxOutlet()
@@ -60,23 +59,15 @@ export function IdentitySecretRow() {
 }
 
 export function DeleteProduct() {
-  const qc = useQueryClient()
   const navigate = useNavigate()
   const { inbox } = useInboxOutlet()
-  const { workspaceId: ws } = useSession()
   const [open, setOpen] = useState(false)
-  const remove = useMutation({
-    mutationFn: () => unwrap(api.DELETE("/v1/inboxes/{inboxId}", { params: { path: { inboxId: inbox.id } } })),
-    onSuccess: () => {
-      void qc.invalidateQueries({ queryKey: keys.inboxes(ws) })
-      navigate("/settings")
-    },
-  })
   const name = inbox.name
+  const personal = !!inbox.mailbox
   return (
     <Block
       tone="danger"
-      title={<Trans>Delete product</Trans>}
+      title={personal ? <Trans>Delete mailbox</Trans> : <Trans>Delete product</Trans>}
       description={<Trans>Deletes its channels, conversations, messages and attachments. This cannot be undone.</Trans>}
       footer={
         <Button variant="destructive" size="sm" onClick={() => setOpen(true)} data-testid="delete-product">
@@ -84,23 +75,7 @@ export function DeleteProduct() {
         </Button>
       }
     >
-      <TypeToConfirmDialog
-        open={open}
-        onOpenChange={setOpen}
-        title={<Trans>Delete {name}?</Trans>}
-        description={
-          <Trans>
-            All of its conversations, messages and attachments are deleted with it. Webhooks and API keys limited to it
-            stop working.
-          </Trans>
-        }
-        label={<Trans>Type {name} to confirm</Trans>}
-        expected={name}
-        confirm={<Trans>Delete this product</Trans>}
-        pending={remove.isPending}
-        error={<ErrorLine error={remove.error} />}
-        onConfirm={() => remove.mutate()}
-      />
+      <DeleteMailboxDialog inbox={inbox} open={open} onOpenChange={setOpen} onDeleted={() => navigate("/settings")} />
     </Block>
   )
 }

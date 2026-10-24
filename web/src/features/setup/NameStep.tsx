@@ -9,11 +9,13 @@ import { Input } from "@/components/ui/input"
 import { languageName } from "@/features/contact/ContactDetails"
 import { LANGS } from "@/features/settings/inboxes/InboxPage"
 import { ChoiceSelect, Field } from "@/features/settings/ui"
+import { MailboxOwnerChoice } from "@/components/common/MailboxOwnerChoice"
 import { PurposeChoice } from "@/components/common/PurposeChoice"
 import { useInboxDraft, useLeaveSetup } from "@/features/setup/draft"
 import { ChatMock, DEFAULT_COLOR, PreviewCaption } from "@/features/setup/previews"
 import { type SetupKind, type SetupState } from "@/features/setup/setup"
 import { SetupLayout } from "@/features/setup/SetupLayout"
+import { useSession } from "@/lib/session"
 import { timeZones } from "@/lib/utils"
 
 export function NameStep({ kind, mail: forMail }: { kind?: SetupKind; mail?: boolean }) {
@@ -23,10 +25,13 @@ export function NameStep({ kind, mail: forMail }: { kind?: SetupKind; mail?: boo
   const [draft, patch] = useInboxDraft()
   const leave = useLeaveSetup()
   const { name, locale, zone } = draft
+  const { canManage, membership } = useSession()
   const mail = draft.purpose === "mail"
+  const pending = mail && draft.ownerMemberId === ""
   useEffect(() => {
-    if (forMail) patch({ purpose: "mail" })
-  }, [forMail, patch])
+    if (forMail || !canManage)
+      patch({ purpose: "mail", ownerMemberId: draft.ownerMemberId ?? (canManage ? undefined : membership.member_id) })
+  }, [forMail, canManage, membership.member_id, draft.ownerMemberId, patch])
   const zones = useMemo(() => timeZones(), [])
   const langs = LANGS.includes(locale) ? LANGS : [locale, ...LANGS]
   const next = mail ? "/setup/new/add/email" : kind ? `/setup/new/add/${kind}` : "/setup/new/pick"
@@ -52,7 +57,7 @@ export function NameStep({ kind, mail: forMail }: { kind?: SetupKind; mail?: boo
         className="flex flex-col gap-6"
         onSubmit={(e) => {
           e.preventDefault()
-          if (name.trim()) navigate(next, { state })
+          if (name.trim() && !pending) navigate(next, { state })
         }}
       >
         <Field label={<Trans>Product name</Trans>} htmlFor="setup-name">
@@ -68,7 +73,19 @@ export function NameStep({ kind, mail: forMail }: { kind?: SetupKind; mail?: boo
             data-testid="setup-name"
           />
         </Field>
-        <PurposeChoice value={draft.purpose ?? "support"} onChange={(purpose) => patch({ purpose })} />
+        {canManage && (
+          <PurposeChoice
+            value={draft.purpose ?? "support"}
+            onChange={(purpose) => patch({ purpose, ownerMemberId: undefined })}
+          />
+        )}
+        {mail && (
+          <MailboxOwnerChoice
+            key={draft.purpose}
+            value={draft.ownerMemberId}
+            onChange={(ownerMemberId) => patch({ ownerMemberId })}
+          />
+        )}
         <div className="grid gap-5 sm:grid-cols-2">
           <Field label={<Trans>Language</Trans>} htmlFor="setup-locale" hint={<Trans>For automatic messages</Trans>}>
             <ChoiceSelect
@@ -98,7 +115,7 @@ export function NameStep({ kind, mail: forMail }: { kind?: SetupKind; mail?: boo
         <Button
           type="submit"
           size="lg"
-          disabled={!name.trim()}
+          disabled={!name.trim() || pending}
           className="self-start"
           data-testid="setup-name-continue"
         >

@@ -254,6 +254,10 @@ msgstr "{attention, plural, other {# 個頻道需要處理}}"
 msgid "{author, select, bot {No drafts by bots} assistant {No drafts by assistants} member {No drafts by members} other {No drafts by this author}}"
 msgstr "{author, select, bot {沒有機器人的草稿} assistant {沒有助手的草稿} member {沒有成員的草稿} other {沒有此作者的草稿}}"
 
+#: src/features/mail/MailThread.tsx
+msgid "{author} on behalf of {ownerName}"
+msgstr "{author}代表{ownerName}"
+
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/mail/MailThread.tsx
 msgid "{author}, sent by {by}"
@@ -667,6 +671,10 @@ msgstr "{name} 正在輸入…"
 #: src/features/setup/SetupHub.tsx
 msgid "{name} news"
 msgstr "{name} 動態"
+
+#: src/features/team/RemoveMemberDialog.tsx
+msgid "{name} owns personal mailboxes. Decide what happens to each: delete it with everything in it, or hand it to another member. You do not read them either way."
+msgstr "{name}擁有個人信箱。請決定每個信箱的去向:連同內容一併刪除,或交給其他成員。無論哪種,你都不會閱讀它們。"
 
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "{name} receives mail at this address. Here is what you set up."
@@ -1398,6 +1406,10 @@ msgstr "郵件列表以收件匣的名義,透過其郵件頻道傳送。請先�
 msgid "A mailing list with subscribe forms, for your broadcasts"
 msgstr "帶訂閱表單的郵件列表,用於你的群發"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "a member"
+msgstr "成員"
+
 #: src/components/common/AssignmentFields.tsx
 msgid "A member is eligible while they have access to the product (owners and admins only with a grant), have the panel or an app open, are set to Auto availability, the product is inside its business hours and they are under the limit. When nobody is eligible the conversation waits and goes to the first teammate who becomes available."
 msgstr "成員符合資格的條件是：可存取該產品（擁有者與管理員須獲授權）、已開啟面板或應用程式、可用狀態為自動、產品在營業時間內，且未達上限。若無人符合，對話會等待，並交給第一位有空的同事。"
@@ -1672,8 +1684,14 @@ msgstr "被採納的回答"
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/app/AppSections.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/settings/ProductsPage.tsx
 msgid "Access"
 msgstr "存取許可權"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Access of {person}"
+msgstr "{person}的存取權限"
 
 #: src/features/migrations/DoneStep.tsx
 msgid "Access to {provider}"
@@ -1736,6 +1754,7 @@ msgstr "活動"
 #: src/features/conversation/Participants.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/addresses/AddressesPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Add"
@@ -1781,6 +1800,10 @@ msgstr "新增語言"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Add a link"
 msgstr "新增連結"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Add a member"
+msgstr "新增成員"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Add a monitor"
@@ -2079,6 +2102,10 @@ msgstr "位址驗證"
 msgid "Address verified"
 msgstr "地址已驗證"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Addresses"
+msgstr "地址"
+
 #: src/features/team/MemberAddresses.tsx
 msgid "Addresses {name} added to send mail from. Those waiting for approval need an owner or admin."
 msgstr "{name} 為寄送郵件新增的地址。等待核准的地址需要擁有者或管理員處理。"
@@ -2205,9 +2232,9 @@ msgstr "已全部標為已讀"
 msgid "All monitors"
 msgstr "所有監控"
 
-#: src/features/settings/inboxes/InboxSecurity.tsx
-msgid "All of its conversations, messages and attachments are deleted with it. Webhooks and API keys limited to it stop working."
-msgstr "它的所有對話、訊息和附件會一併刪除。限定於它的 Webhook 和 API 金鑰將停止運作。"
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "All of its conversations, messages and attachments are deleted with it. This cannot be undone."
+msgstr "其中的所有對話、訊息和附件將一併刪除。此操作無法復原。"
 
 #: src/features/migrations/UploadStep.tsx
 msgid "All parts arrived. Reading the file…"
@@ -3641,6 +3668,7 @@ msgstr "活動名稱"
 #: src/features/settings/AddProductDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/sso/SsoPage.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
@@ -3651,6 +3679,7 @@ msgstr "活動名稱"
 #: src/features/status/IncidentDetail.tsx
 #: src/features/status/IncidentDialog.tsx
 #: src/features/status/MonitorDialog.tsx
+#: src/features/team/RemoveMemberDialog.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Cancel"
 msgstr "取消"
@@ -4824,6 +4853,7 @@ msgstr "對話"
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/DoneStep.tsx
 #: src/features/migrations/ReviewStep.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/webhooks/events.tsx
 msgid "Conversations"
 msgstr "對話"
@@ -5136,6 +5166,10 @@ msgstr "Create this TXT record at your DNS provider, then press Verify. It can t
 msgid "Create workspace"
 msgstr "建立工作區"
 
+#: src/features/mail/MailPage.tsx
+msgid "Create your own mailbox"
+msgstr "建立你自己的信箱"
+
 #: src/features/auth/CreateWorkspace.tsx
 msgid "Create your workspace"
 msgstr "建立你的工作區"
@@ -5338,6 +5372,11 @@ msgstr "預設:{fallback}"
 msgid "Degraded performance"
 msgstr "效能降低"
 
+#: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Delegates"
+msgstr "代理人"
+
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListSettings.tsx
@@ -5349,6 +5388,7 @@ msgstr "效能降低"
 #: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 #: src/features/settings/macros/MacrosPage.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -5356,6 +5396,7 @@ msgstr "效能降低"
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
 #: src/features/status/SettingsTab.tsx
+#: src/features/team/RemoveMemberDialog.tsx
 msgid "Delete"
 msgstr "刪除"
 
@@ -5378,7 +5419,7 @@ msgstr "刪除 ({removeKey})"
 msgid "Delete {0}?"
 msgstr "刪除 {0}?"
 
-#: src/features/settings/inboxes/InboxSecurity.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Delete {name}?"
@@ -5416,6 +5457,10 @@ msgstr "刪除金鑰"
 #: src/features/broadcasts/ListSettings.tsx
 msgid "Delete list"
 msgstr "刪除列表"
+
+#: src/features/settings/inboxes/InboxSecurity.tsx
+msgid "Delete mailbox"
+msgstr "刪除信箱"
 
 #: src/features/status/MonitorsPage.tsx
 msgid "Delete monitor"
@@ -5510,6 +5555,10 @@ msgstr "刪除此 DKIM 金鑰?"
 msgid "Delete this macro?"
 msgstr "刪除這個巨集？"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Delete this mailbox"
+msgstr "刪除此信箱"
+
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Delete this migration?"
 msgstr "刪除此遷移?"
@@ -5521,10 +5570,6 @@ msgstr "刪除此備註"
 #: src/features/contact/ContactNotes.tsx
 msgid "Delete this note?"
 msgstr "刪除此備註?"
-
-#: src/features/settings/inboxes/InboxSecurity.tsx
-msgid "Delete this product"
-msgstr "刪除此產品"
 
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Delete this subscription?"
@@ -5592,6 +5637,7 @@ msgstr "已刪除的收件匣"
 
 #: src/components/common/DiscussionAuthor.tsx
 #: src/features/inbox/SidePanels.tsx
+#: src/features/mail/MailThread.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
@@ -5613,6 +5659,10 @@ msgstr "刪除了自動化規則 {name}"
 #: src/features/settings/audit/sentence.ts
 msgid "Deleted the inbox {name}"
 msgstr "刪除了收件匣 {name}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted the personal mailbox {name} of {who} when they left"
+msgstr "{who}離開時刪除了個人信箱{name}"
 
 #: src/features/settings/audit/sentence.ts
 msgid "Deleted the team {team}"
@@ -6655,6 +6705,10 @@ msgstr "列表中的所有人。設定條件後,只保留屬性符合全部條�
 msgid "Everyone who has written to your products"
 msgstr "所有聯絡過你的產品的人"
 
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Everyone with access to the inbox reads it."
+msgstr "所有能存取該收件匣的人都能閱讀。"
+
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Everyone's posts are published at once, except those of authors you marked as spam."
 msgstr "所有人的帖子都會立即釋出,但你標記為垃圾的作者除外。"
@@ -7580,9 +7634,29 @@ msgstr "成員群組及其負責的收件匣"
 msgid "Growth"
 msgstr "增長"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Hand over"
+msgstr "移交"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Hand over {name}"
+msgstr "移交{name}"
+
+#: src/features/team/RemoveMemberDialog.tsx
+msgid "Hand over to"
+msgstr "移交給"
+
 #: src/features/settings/automation/text.ts
 msgid "Hand to automatic assignment"
 msgstr "交給自動指派"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Handed over"
+msgstr "已移交"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Handed the personal mailbox {inbox} to {next}"
+msgstr "已將個人信箱{inbox}移交給{next}"
 
 #: src/features/conversation/actions.ts
 msgid "Handed to {name}"
@@ -7809,6 +7883,7 @@ msgstr "主機名稱和憑證"
 msgid "hours"
 msgstr "小時"
 
+#: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/ProductsPage.tsx
 msgid "Hours"
 msgstr "營業時間"
@@ -8999,6 +9074,10 @@ msgid "Legal name"
 msgstr "法定名稱"
 
 #: src/features/settings/audit/sentence.ts
+msgid "Let {who} into the personal mailbox {inbox}"
+msgstr "已授予{who}存取個人信箱{inbox}的權限"
+
+#: src/features/settings/audit/sentence.ts
 msgid "Let assistants and keys send messages to customers"
 msgstr "允許助理和金鑰向客戶傳送訊息"
 
@@ -9446,6 +9525,10 @@ msgstr "郵件會進入接收 {address} 的郵件頻道「{channelName}」。"
 msgid "Mail is not signed with a key of the sender’s own domain, which Gmail and Yahoo expect."
 msgstr "郵件未使用寄件者自有網域的金鑰簽署,而 Gmail 和 Yahoo 要求這麼做。"
 
+#: src/features/settings/SettingsColumn.tsx
+msgid "Mail only you read"
+msgstr "只有你閱讀的郵件"
+
 #: src/features/settings/addresses/AddressesPage.tsx
 msgid "Mail queued from it fails instead of going out from another address."
 msgstr "從此地址排隊的郵件會失敗，而不會從其他地址寄出。"
@@ -9752,6 +9835,7 @@ msgstr "今日中位數"
 msgid "median, first message to closed"
 msgstr "中位數，從第一則訊息到關閉"
 
+#: src/components/common/MailboxOwnerChoice.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
@@ -9778,6 +9862,10 @@ msgstr "成員和邀請"
 #: src/features/conversation/messages/Thread.tsx
 msgid "Members only"
 msgstr "僅成員可見"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Members you let into this mailbox. They can read it, or read and send mail on your behalf. They never change its settings, filters or migrations."
+msgstr "你允許進入此信箱的成員。他們可以閱讀,或閱讀並代表你寄送。他們永遠不能變更其設定、篩選器或遷移。"
 
 #: src/features/conversation/composer/MentionMenu.tsx
 msgid "Mention a teammate"
@@ -10308,6 +10396,7 @@ msgstr "我的檢視"
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/fields/FieldDialog.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/macros/MacroDialog.tsx
@@ -10389,6 +10478,10 @@ msgstr "需要「{name}」才能關閉"
 #: src/features/broadcasts/ListParts.tsx
 msgid "Needs a sender"
 msgstr "需要發件人"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Needs an owner"
+msgstr "需要擁有者"
 
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/text.ts
@@ -10604,6 +10697,10 @@ msgstr "新增巨集"
 msgid "New mail"
 msgstr "新郵件"
 
+#: src/features/mail/MailPage.tsx
+msgid "New mailbox"
+msgstr "新信箱"
+
 #: src/features/setup/previews.tsx
 #: src/lib/alerts.ts
 msgid "New message"
@@ -10625,6 +10722,14 @@ msgstr "新建遷移"
 msgid "New monitor"
 msgstr "新增監控"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "New owner"
+msgstr "新擁有者"
+
+#: src/features/team/RemoveMemberDialog.tsx
+msgid "New owner of {boxName}"
+msgstr "{boxName}的新擁有者"
+
 #: src/features/status/StatusPages.tsx
 msgid "New page"
 msgstr "新頁面"
@@ -10632,6 +10737,10 @@ msgstr "新頁面"
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "New password"
 msgstr "新密碼"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "New personal mailbox"
+msgstr "新個人信箱"
 
 #: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -11202,6 +11311,11 @@ msgstr "沒有其他匹配的聯絡人。"
 msgid "No other conversations."
 msgstr "沒有其他對話。"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "No owner"
+msgstr "無擁有者"
+
 #: src/features/docs/PagesTab.tsx
 msgid "No pages yet"
 msgstr "還沒有頁面"
@@ -11398,6 +11512,14 @@ msgstr "還沒有其他人能看到此收件匣。"
 #: src/features/conversation/Participants.tsx
 msgid "Nobody else is copied. Replies go to the contact only."
 msgstr "沒有其他人在副本中。回覆只會寄給聯絡人。"
+
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Nobody else reads it unless you let them. Owners and admins see only that it exists."
+msgstr "除非你允許,否則沒有其他人能閱讀。擁有者和管理員只能看到它存在。"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Nobody else reads this mailbox."
+msgstr "沒有其他人閱讀此信箱。"
 
 #: src/features/inbox/SidePanels.tsx
 msgid "Nobody has mentioned you yet"
@@ -12179,6 +12301,10 @@ msgstr "Only if your Slack account uses another address than this one. Optional.
 msgid "Only in the app"
 msgstr "僅在應用程式中"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Only its owner reads it. You can rename it or delete it."
+msgstr "只有其擁有者能閱讀。你可以重新命名或刪除它。"
+
 #: src/features/migrations/parts.tsx
 msgid "Only mail since {date}"
 msgstr "僅 {date} 以來的郵件"
@@ -12220,9 +12346,17 @@ msgstr "暫時只接收"
 msgid "Only receives"
 msgstr "僅接收"
 
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Only that member reads it. You see only that it exists."
+msgstr "只有該成員能閱讀。你只能看到它存在。"
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Only the exact domain is claimed, not its subdomains. Add eu.example.com on its own if people use such addresses."
 msgstr "Only the exact domain is claimed, not its subdomains. Add eu.example.com on its own if people use such addresses."
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Only the owner of a personal mailbox manages its settings."
+msgstr "只有個人信箱的擁有者能管理其設定。"
 
 #: src/components/common/text.ts
 msgid "Only the person can subscribe again, by confirming a mail."
@@ -12232,6 +12366,10 @@ msgstr "只有本人可以透過確認郵件重新訂閱。"
 #: src/features/settings/automation/ActionRow.tsx
 msgid "Only the team sees this"
 msgstr "僅團隊可見"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Only their owners read them. You see what they hold, never what is in them."
+msgstr "只有各自的擁有者能閱讀。你能看到其中存放了多少,但看不到內容。"
 
 #: src/features/broadcasts/Report.tsx
 msgid "Only those who replied"
@@ -13089,6 +13227,31 @@ msgstr "人員"
 msgid "Personal"
 msgstr "個人"
 
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Personal (only you)"
+msgstr "個人(僅你)"
+
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Personal for {who}"
+msgstr "{who}的個人信箱"
+
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Personal for a member"
+msgstr "成員的個人信箱"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Personal mailbox"
+msgstr "個人信箱"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Personal mailbox of {owner}"
+msgstr "{owner}的個人信箱"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Personal mailboxes"
+msgstr "個人信箱"
+
 #: src/features/settings/automation/ActionRow.tsx
 msgid "Pick a canned reply"
 msgstr "選擇一則快速回覆"
@@ -13145,7 +13308,10 @@ msgstr "選擇一個欄位"
 msgid "Pick a mail"
 msgstr "選擇一封郵件"
 
+#: src/components/common/MailboxOwnerChoice.tsx
 #: src/features/settings/automation/ActionRow.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/team/RemoveMemberDialog.tsx
 msgid "Pick a member"
 msgstr "選擇一位成員"
 
@@ -13883,9 +14049,22 @@ msgstr "來自你自己網站文件頁面的評分、問題與討論"
 msgid "Read"
 msgstr "讀取"
 
+#: src/features/mail/MailPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/settings/ProductsPage.tsx
+msgctxt "mailbox access"
+msgid "Read"
+msgstr "閱讀"
+
 #: src/components/common/text.ts
 msgid "Read analytics properties and their numbers"
 msgstr "讀取分析屬性及其資料"
+
+#: src/features/mail/MailPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/settings/ProductsPage.tsx
+msgid "Read and send"
+msgstr "閱讀和寄送"
 
 #: src/features/migrations/text.ts
 msgid "Read as a Google Takeout file: Gmail's labels and threads come with it."
@@ -14184,6 +14363,7 @@ msgstr "遠端圖片可能會讓發件人知道你已開啟郵件。"
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/OwnDomainCard.tsx
@@ -14229,12 +14409,14 @@ msgid "Remove {lang}"
 msgstr "移除 {lang}"
 
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/team/RemoveMemberDialog.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Remove {name}"
 msgstr "移除 {name}"
 
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/sso/SsoPage.tsx
+#: src/features/team/RemoveMemberDialog.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Remove {name}?"
 msgstr "移除 {name}？"
@@ -14242,6 +14424,10 @@ msgstr "移除 {name}？"
 #: src/features/migrations/MapStep.tsx
 msgid "Remove {sender}"
 msgstr "移除 {sender}"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Remove {who}?"
+msgstr "移除{who}?"
 
 #: src/features/settings/automation/ActionRow.tsx
 msgid "Remove action"
@@ -14436,6 +14622,7 @@ msgstr "正在移除匯入的歷史記錄"
 msgid "Removing imported history…"
 msgstr "正在移除匯入的歷史記錄…"
 
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Rename"
 msgstr "重新命名"
@@ -14443,6 +14630,10 @@ msgstr "重新命名"
 #: src/features/status/ComponentDialogs.tsx
 msgid "Rename group"
 msgstr "重新命名群組"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Rename the mailbox"
+msgstr "重新命名信箱"
 
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -15136,6 +15327,7 @@ msgstr "星期六"
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/macros/MacroDialog.tsx
@@ -15217,6 +15409,7 @@ msgstr "將清單儲存為檢視"
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/chat/ChatSections.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/profile/ProfileForm.tsx
 #: src/features/settings/signature/SignaturePage.tsx
@@ -15847,6 +16040,10 @@ msgstr "傳送已經開始。請改為暫停或取消。"
 msgid "Sending kept failing, so Yuva gave up."
 msgstr "傳送一再失敗，Yuva 已放棄。"
 
+#: src/components/common/OnBehalf.tsx
+msgid "Sending on behalf of {name}"
+msgstr "正在代表{name}寄送"
+
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Sending pace"
@@ -16176,6 +16373,14 @@ msgstr "共用"
 #: src/components/common/FocusChoice.tsx
 msgid "Shared mailboxes for your team"
 msgstr "為你的團隊準備的共用信箱"
+
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Shared with the team"
+msgstr "與團隊共用"
+
+#: src/features/mail/MailPage.tsx
+msgid "Shared with you"
+msgstr "與你共用"
 
 #: src/components/common/text.ts
 msgid "Shipped"
@@ -16656,6 +16861,10 @@ msgstr "站點名稱"
 #: src/features/setup/SetupLayout.tsx
 msgid "Sites"
 msgstr "站點"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Size"
+msgstr "大小"
 
 #: src/features/setup/email/EmailTestStep.tsx
 msgid "Skip for now"
@@ -17452,6 +17661,7 @@ msgstr "團隊 ID"
 
 #: src/components/common/FocusChoice.tsx
 #: src/components/common/PurposeChoice.tsx
+#: src/features/mail/MailPage.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/setup/SetupHub.tsx
 msgid "Team mail"
@@ -18147,6 +18357,10 @@ msgstr "維護已完成。一切恢復如初。"
 msgid "The mbox file is compressed inside the zip. Unzip the Takeout archive and upload the .mbox file."
 msgstr "mbox 檔案在 zip 內是壓縮的。請解壓 Takeout 壓縮包並上傳 .mbox 檔案。"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "The member you pick becomes its owner and reads it from then on. You still do not read it."
+msgstr "你選擇的成員成為擁有者,並從此閱讀它。你仍然不閱讀。"
+
 #: src/features/migrations/text.ts
 msgid "The message could not be read"
 msgstr "無法讀取該訊息"
@@ -18206,6 +18420,10 @@ msgstr "另一個收件匣沒有郵件頻道,因此此郵件對話無法移到�
 #: src/features/fields/BulkFailures.tsx
 msgid "The others were closed. Open one to fill in what it needs, then close it."
 msgstr "其餘的已關閉。請開啟其中一個，填好所需內容後再關閉。"
+
+#: src/components/common/OnBehalf.tsx
+msgid "the owner"
+msgstr "擁有者"
 
 #: src/features/status/Notices.tsx
 msgid "The page already sent 10 notices in the last hour"
@@ -18274,6 +18492,10 @@ msgstr "此人不在任何允許的群組中"
 #: src/features/settings/audit/sentence.ts
 msgid "the person is not a member of this workspace"
 msgstr "此人不是此工作區的成員"
+
+#: src/features/settings/audit/sentence.ts
+msgid "The personal mailbox {inbox} lost its owner {who}"
+msgstr "個人信箱{inbox}失去了擁有者{who}"
 
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "The policy is none: receivers only report. Move to quarantine once all your mail passes."
@@ -18707,6 +18929,10 @@ msgstr "他們不會再收到此列表的郵件,並且會記錄為團隊將其�
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "They signed up on our website and confirmed their address."
 msgstr "他們在我們的網站上註冊並確認了地址。"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "They stop reading this mailbox at once."
+msgstr "他們會立即停止閱讀此信箱。"
 
 #: src/features/migrations/text.ts
 msgid "This {provider} account's plan has no API access, which Yuva reads through."
@@ -19347,6 +19573,10 @@ msgid "Too many workspaces were created from your network today. Try again tomor
 msgstr "今天從你的網路建立的工作區過多。請明天再試。"
 
 #: src/features/settings/audit/sentence.ts
+msgid "Took {who}'s access to the personal mailbox {inbox} away"
+msgstr "已收回{who}對個人信箱{inbox}的存取權限"
+
+#: src/features/settings/audit/sentence.ts
 msgid "Took away the access of {person} to {inbox}"
 msgstr "撤銷了 {person} 對 {inbox} 的存取權限"
 
@@ -19496,7 +19726,7 @@ msgstr "TXT 記錄"
 msgid "Type"
 msgstr "類型"
 
-#: src/features/settings/inboxes/InboxSecurity.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 msgid "Type {name} to confirm"
 msgstr "輸入 {name} 以確認"
 
@@ -20514,6 +20744,10 @@ msgstr "每列包含什麼"
 msgid "What happened"
 msgstr "發生了什麼"
 
+#: src/features/team/RemoveMemberDialog.tsx
+msgid "What happens to {boxName}"
+msgstr "{boxName}會怎樣"
+
 #: src/features/broadcasts/Composer.tsx
 msgid "What is new in October"
 msgstr "十月的新動態"
@@ -20810,6 +21044,10 @@ msgstr "誰在這裡"
 msgid "Who is it for?"
 msgstr "它面向誰?"
 
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Who reads it?"
+msgstr "誰來閱讀?"
+
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "Who sends, and what about?"
 msgstr "誰傳送,關於什麼?"
@@ -21092,6 +21330,10 @@ msgid "You can leave this page: the conversation will wait for you in your conve
 msgstr "你可以離開此頁面:對話會在你的對話列表中等你。"
 
 #: src/features/mail/MailThread.tsx
+msgid "You can read this mailbox but not change it. Its owner can let you send from it."
+msgstr "你可以閱讀此信箱,但不能變更。其擁有者可以允許你從中寄送。"
+
+#: src/features/mail/MailThread.tsx
 msgid "You can restore it from the Trash for 30 days, then it is deleted for good with its messages and files."
 msgstr "30 天內可以從垃圾箱還原，之後會連同訊息與檔案永久刪除。"
 
@@ -21173,8 +21415,8 @@ msgid "You have unsaved changes to {what}."
 msgstr "{what} 有未儲存的變更。"
 
 #: src/features/auth/DeleteAccountButton.tsx
-msgid "You leave every workspace and lose your sign-ins, passkeys and notifications. Messages you wrote stay in their conversations, shown as from a deleted member. This cannot be undone."
-msgstr "你將退出所有工作區,並失去你的登入、通行金鑰和通知。你寫的訊息會保留在其對話中,顯示為已刪除成員傳送。此操作無法撤銷。"
+msgid "You leave every workspace and lose your sign-ins, passkeys and notifications. Messages you wrote stay in their conversations, shown as from a deleted member. Your personal mailboxes stay with the workspace, unread, until an owner or admin hands them to someone or deletes them. This cannot be undone."
+msgstr "你將離開所有工作區,並失去登入方式、密碼金鑰和通知。你寫的訊息會留在對話中,顯示為已刪除成員所寫。你的個人信箱會以未讀狀態留在工作區,直到擁有者或管理員將其移交或刪除。此操作無法復原。"
 
 #: src/features/account/AccountPage.tsx
 msgid "You replied"
@@ -21302,6 +21544,10 @@ msgstr "你的郵件供應商或你自己的 SMTP 伺服器"
 msgid "Your mailbox"
 msgstr "你的信箱"
 
+#: src/features/mail/MailPage.tsx
+msgid "Your mailboxes"
+msgstr "你的信箱"
+
 #: src/features/migrations/text.ts
 msgid "Your Microsoft 365 organization lets only an admin consent to apps. Send your admin the link below; once they accept, sign in again."
 msgstr "你的 Microsoft 365 組織只允許管理員同意應用程式。請把下面的連結發給你的管理員;他們接受後,請重新登入。"
@@ -21420,6 +21666,10 @@ msgstr "工作區名稱、已關閉對話的保留時長，以及誰可以傳送
 #: src/features/account/AccountPage.tsx
 msgid "Your Yuva account"
 msgstr "你的 Yuva 帳號"
+
+#: src/features/settings/ProductsPage.tsx
+msgid "Yours"
+msgstr "你的"
 
 #: src/features/auth/AuthLayout.tsx
 msgid "Yuva {version}"

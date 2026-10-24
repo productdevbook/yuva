@@ -254,6 +254,10 @@ msgstr "{attention, plural, one {# csatorna figyelmet igényel} other {# csatorn
 msgid "{author, select, bot {No drafts by bots} assistant {No drafts by assistants} member {No drafts by members} other {No drafts by this author}}"
 msgstr "{author, select, bot {Nincs botoktól származó piszkozat} assistant {Nincs asszisztensektől származó piszkozat} member {Nincs tagoktól származó piszkozat} other {Nincs ettől a szerzőtől származó piszkozat}}"
 
+#: src/features/mail/MailThread.tsx
+msgid "{author} on behalf of {ownerName}"
+msgstr "{author} {ownerName} nevében"
+
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/mail/MailThread.tsx
 msgid "{author}, sent by {by}"
@@ -667,6 +671,10 @@ msgstr "{name} gépel…"
 #: src/features/setup/SetupHub.tsx
 msgid "{name} news"
 msgstr "{name} hírei"
+
+#: src/features/team/RemoveMemberDialog.tsx
+msgid "{name} owns personal mailboxes. Decide what happens to each: delete it with everything in it, or hand it to another member. You do not read them either way."
+msgstr "{name} személyes postafiókokkal rendelkezik. Döntsön mindegyikről: törlés a teljes tartalommal, vagy átadás egy másik tagnak. Egyik esetben sem Ön olvassa őket."
 
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "{name} receives mail at this address. Here is what you set up."
@@ -1398,6 +1406,10 @@ msgstr "A levelezési lista a postafiók nevében küld, az e-mail-csatornáján
 msgid "A mailing list with subscribe forms, for your broadcasts"
 msgstr "Levelezési lista feliratkozási űrlapokkal a tömeges leveleidhez"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "a member"
+msgstr "egy tag"
+
 #: src/components/common/AssignmentFields.tsx
 msgid "A member is eligible while they have access to the product (owners and admins only with a grant), have the panel or an app open, are set to Auto availability, the product is inside its business hours and they are under the limit. When nobody is eligible the conversation waits and goes to the first teammate who becomes available."
 msgstr "Egy tag akkor alkalmas, ha hozzáfér a termékhez (tulajdonosok és adminok csak kapott hozzáféréssel), nyitva van a panel vagy egy app, az elérhetősége Auto, a termék a nyitvatartáson belül van, és a tag a korlát alatt van. Ha senki sem alkalmas, a beszélgetés vár, és az első felszabaduló kollégához kerül."
@@ -1672,8 +1684,14 @@ msgstr "Elfogadott válasz"
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/app/AppSections.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/settings/ProductsPage.tsx
 msgid "Access"
 msgstr "Hozzáférés"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Access of {person}"
+msgstr "{person} hozzáférése"
 
 #: src/features/migrations/DoneStep.tsx
 msgid "Access to {provider}"
@@ -1736,6 +1754,7 @@ msgstr "Aktivitás"
 #: src/features/conversation/Participants.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/addresses/AddressesPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Add"
@@ -1781,6 +1800,10 @@ msgstr "Nyelv hozzáadása"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Add a link"
 msgstr "Hivatkozás hozzáadása"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Add a member"
+msgstr "Tag hozzáadása"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Add a monitor"
@@ -2079,6 +2102,10 @@ msgstr "A cím igazolása"
 msgid "Address verified"
 msgstr "A cím ellenőrizve"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Addresses"
+msgstr "Címek"
+
 #: src/features/team/MemberAddresses.tsx
 msgid "Addresses {name} added to send mail from. Those waiting for approval need an owner or admin."
 msgstr "{name} által levélküldéshez hozzáadott címek. A jóváhagyásra várókhoz tulajdonos vagy adminisztrátor kell."
@@ -2205,9 +2232,9 @@ msgstr "Minden olvasottnak jelölve"
 msgid "All monitors"
 msgstr "Összes figyelő"
 
-#: src/features/settings/inboxes/InboxSecurity.tsx
-msgid "All of its conversations, messages and attachments are deleted with it. Webhooks and API keys limited to it stop working."
-msgstr "Minden beszélgetése, üzenete és melléklete törlődik vele együtt. A rá korlátozott webhookok és API-kulcsok leállnak."
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "All of its conversations, messages and attachments are deleted with it. This cannot be undone."
+msgstr "Az összes beszélgetése, üzenete és melléklete is törlődik vele. Ez nem vonható vissza."
 
 #: src/features/migrations/UploadStep.tsx
 msgid "All parts arrived. Reading the file…"
@@ -3641,6 +3668,7 @@ msgstr "Kampány neve"
 #: src/features/settings/AddProductDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/sso/SsoPage.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
@@ -3651,6 +3679,7 @@ msgstr "Kampány neve"
 #: src/features/status/IncidentDetail.tsx
 #: src/features/status/IncidentDialog.tsx
 #: src/features/status/MonitorDialog.tsx
+#: src/features/team/RemoveMemberDialog.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Cancel"
 msgstr "Mégse"
@@ -4824,6 +4853,7 @@ msgstr "beszélgetés"
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/DoneStep.tsx
 #: src/features/migrations/ReviewStep.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/webhooks/events.tsx
 msgid "Conversations"
 msgstr "Beszélgetések"
@@ -5136,6 +5166,10 @@ msgstr "Create this TXT record at your DNS provider, then press Verify. It can t
 msgid "Create workspace"
 msgstr "Munkaterület létrehozása"
 
+#: src/features/mail/MailPage.tsx
+msgid "Create your own mailbox"
+msgstr "Hozza létre saját postafiókját"
+
 #: src/features/auth/CreateWorkspace.tsx
 msgid "Create your workspace"
 msgstr "Hozd létre a munkaterületed"
@@ -5338,6 +5372,11 @@ msgstr "Alapértelmezett: {fallback}"
 msgid "Degraded performance"
 msgstr "Csökkent teljesítmény"
 
+#: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Delegates"
+msgstr "Meghatalmazottak"
+
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListSettings.tsx
@@ -5349,6 +5388,7 @@ msgstr "Csökkent teljesítmény"
 #: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 #: src/features/settings/macros/MacrosPage.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -5356,6 +5396,7 @@ msgstr "Csökkent teljesítmény"
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
 #: src/features/status/SettingsTab.tsx
+#: src/features/team/RemoveMemberDialog.tsx
 msgid "Delete"
 msgstr "Törlés"
 
@@ -5378,7 +5419,7 @@ msgstr "Törlés ({removeKey})"
 msgid "Delete {0}?"
 msgstr "Törlöd ezt: {0}?"
 
-#: src/features/settings/inboxes/InboxSecurity.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Delete {name}?"
@@ -5416,6 +5457,10 @@ msgstr "Kulcs törlése"
 #: src/features/broadcasts/ListSettings.tsx
 msgid "Delete list"
 msgstr "Lista törlése"
+
+#: src/features/settings/inboxes/InboxSecurity.tsx
+msgid "Delete mailbox"
+msgstr "Postafiók törlése"
 
 #: src/features/status/MonitorsPage.tsx
 msgid "Delete monitor"
@@ -5510,6 +5555,10 @@ msgstr "Törlöd ezt a DKIM-kulcsot?"
 msgid "Delete this macro?"
 msgstr "Törlöd ezt a makrót?"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Delete this mailbox"
+msgstr "Postafiók törlése"
+
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Delete this migration?"
 msgstr "Törlöd ezt az átvitelt?"
@@ -5521,10 +5570,6 @@ msgstr "Megjegyzés törlése"
 #: src/features/contact/ContactNotes.tsx
 msgid "Delete this note?"
 msgstr "Törlöd ezt a megjegyzést?"
-
-#: src/features/settings/inboxes/InboxSecurity.tsx
-msgid "Delete this product"
-msgstr "A termék törlése"
 
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Delete this subscription?"
@@ -5592,6 +5637,7 @@ msgstr "Törölt postafiók"
 
 #: src/components/common/DiscussionAuthor.tsx
 #: src/features/inbox/SidePanels.tsx
+#: src/features/mail/MailThread.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
@@ -5613,6 +5659,10 @@ msgstr "Törölte a(z) {name} automatizálási szabályt"
 #: src/features/settings/audit/sentence.ts
 msgid "Deleted the inbox {name}"
 msgstr "Törölte a(z) {name} postaládát"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted the personal mailbox {name} of {who} when they left"
+msgstr "{who} személyes postafiókja ({name}) törölve a távozásakor"
 
 #: src/features/settings/audit/sentence.ts
 msgid "Deleted the team {team}"
@@ -6655,6 +6705,10 @@ msgstr "Mindenki a listákon. A feltételek csak azokat a kontaktokat tartják m
 msgid "Everyone who has written to your products"
 msgstr "Mindenki, aki írt a termékeidnek"
 
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Everyone with access to the inbox reads it."
+msgstr "Mindenki olvassa, aki hozzáfér a beérkezett üzenetekhez."
+
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Everyone's posts are published at once, except those of authors you marked as spam."
 msgstr "Mindenki bejegyzései azonnal megjelennek, kivéve azokét a szerzőkét, akiket spamnek jelöltél."
@@ -7580,9 +7634,29 @@ msgstr "Tagok csoportjai és az általuk lefedett postafiókok"
 msgid "Growth"
 msgstr "Növekedés"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Hand over"
+msgstr "Átadás"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Hand over {name}"
+msgstr "{name} átadása"
+
+#: src/features/team/RemoveMemberDialog.tsx
+msgid "Hand over to"
+msgstr "Átadás neki"
+
 #: src/features/settings/automation/text.ts
 msgid "Hand to automatic assignment"
 msgstr "Átadás az automatikus hozzárendelésnek"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Handed over"
+msgstr "Átadva"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Handed the personal mailbox {inbox} to {next}"
+msgstr "A(z) {inbox} személyes postafiók átadva: {next}"
 
 #: src/features/conversation/actions.ts
 msgid "Handed to {name}"
@@ -7809,6 +7883,7 @@ msgstr "Gazdagépnév és tanúsítvány"
 msgid "hours"
 msgstr "óra"
 
+#: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/ProductsPage.tsx
 msgid "Hours"
 msgstr "Nyitvatartás"
@@ -8999,6 +9074,10 @@ msgid "Legal name"
 msgstr "Jogi név"
 
 #: src/features/settings/audit/sentence.ts
+msgid "Let {who} into the personal mailbox {inbox}"
+msgstr "{who} hozzáférést kapott a(z) {inbox} személyes postafiókhoz"
+
+#: src/features/settings/audit/sentence.ts
 msgid "Let assistants and keys send messages to customers"
 msgstr "Engedélyezte, hogy az asszisztensek és a kulcsok üzenetet küldjenek az ügyfeleknek"
 
@@ -9446,6 +9525,10 @@ msgstr "A levelek a(z) „{channelName}” e-mail-csatornába kerülnek, amely a
 msgid "Mail is not signed with a key of the sender’s own domain, which Gmail and Yahoo expect."
 msgstr "A levelet nem a feladó saját tartományának kulcsa írja alá, pedig a Gmail és a Yahoo ezt várja el."
 
+#: src/features/settings/SettingsColumn.tsx
+msgid "Mail only you read"
+msgstr "Levelek, amelyeket csak Ön olvas"
+
 #: src/features/settings/addresses/AddressesPage.tsx
 msgid "Mail queued from it fails instead of going out from another address."
 msgstr "Az erről a címről sorban álló levél hibával leáll ahelyett, hogy másik címről menne ki."
@@ -9752,6 +9835,7 @@ msgstr "mai medián"
 msgid "median, first message to closed"
 msgstr "medián, az első üzenettől a lezárásig"
 
+#: src/components/common/MailboxOwnerChoice.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
@@ -9778,6 +9862,10 @@ msgstr "Tagok és meghívók"
 #: src/features/conversation/messages/Thread.tsx
 msgid "Members only"
 msgstr "Csak tagoknak"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Members you let into this mailbox. They can read it, or read and send mail on your behalf. They never change its settings, filters or migrations."
+msgstr "Tagok, akiket beenged ebbe a postafiókba. Olvashatják, vagy olvashatják és az Ön nevében küldhetnek. Beállításait, szűrőit és migrációit soha nem módosítják."
 
 #: src/features/conversation/composer/MentionMenu.tsx
 msgid "Mention a teammate"
@@ -10308,6 +10396,7 @@ msgstr "Saját nézeteim"
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/fields/FieldDialog.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/macros/MacroDialog.tsx
@@ -10389,6 +10478,10 @@ msgstr "A lezáráshoz kell a(z) „{name}”"
 #: src/features/broadcasts/ListParts.tsx
 msgid "Needs a sender"
 msgstr "Feladó kell"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Needs an owner"
+msgstr "Tulajdonos szükséges"
 
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/text.ts
@@ -10604,6 +10697,10 @@ msgstr "Új makró"
 msgid "New mail"
 msgstr "Új levél"
 
+#: src/features/mail/MailPage.tsx
+msgid "New mailbox"
+msgstr "Új postafiók"
+
 #: src/features/setup/previews.tsx
 #: src/lib/alerts.ts
 msgid "New message"
@@ -10625,6 +10722,14 @@ msgstr "Új átvitel"
 msgid "New monitor"
 msgstr "Új figyelő"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "New owner"
+msgstr "Új tulajdonos"
+
+#: src/features/team/RemoveMemberDialog.tsx
+msgid "New owner of {boxName}"
+msgstr "{boxName} új tulajdonosa"
+
 #: src/features/status/StatusPages.tsx
 msgid "New page"
 msgstr "Új oldal"
@@ -10632,6 +10737,10 @@ msgstr "Új oldal"
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "New password"
 msgstr "Új jelszó"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "New personal mailbox"
+msgstr "Új személyes postafiók"
 
 #: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -11202,6 +11311,11 @@ msgstr "Egyetlen másik kontakt sem egyezik."
 msgid "No other conversations."
 msgstr "Nincs más beszélgetés."
 
+#: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "No owner"
+msgstr "Nincs tulajdonos"
+
 #: src/features/docs/PagesTab.tsx
 msgid "No pages yet"
 msgstr "Még nincsenek oldalak"
@@ -11398,6 +11512,14 @@ msgstr "Ezt a postafiókot még senki más nem látja."
 #: src/features/conversation/Participants.tsx
 msgid "Nobody else is copied. Replies go to the contact only."
 msgstr "Senki más nincs másolatban. A válaszok csak a kapcsolathoz mennek."
+
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Nobody else reads it unless you let them. Owners and admins see only that it exists."
+msgstr "Senki más nem olvassa, hacsak Ön nem engedi. A tulajdonosok és az adminisztrátorok csak azt látják, hogy létezik."
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Nobody else reads this mailbox."
+msgstr "Ezt a postafiókot senki más nem olvassa."
 
 #: src/features/inbox/SidePanels.tsx
 msgid "Nobody has mentioned you yet"
@@ -12179,6 +12301,10 @@ msgstr "Only if your Slack account uses another address than this one. Optional.
 msgid "Only in the app"
 msgstr "Csak az alkalmazásban"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Only its owner reads it. You can rename it or delete it."
+msgstr "Csak a tulajdonosa olvassa. Átnevezheti vagy törölheti."
+
 #: src/features/migrations/parts.tsx
 msgid "Only mail since {date}"
 msgstr "Csak a(z) {date} óta érkezett levelek"
@@ -12220,9 +12346,17 @@ msgstr "Egyelőre csak fogadás"
 msgid "Only receives"
 msgstr "Csak fogad"
 
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Only that member reads it. You see only that it exists."
+msgstr "Csak az a tag olvassa. Ön csak azt látja, hogy létezik."
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Only the exact domain is claimed, not its subdomains. Add eu.example.com on its own if people use such addresses."
 msgstr "Only the exact domain is claimed, not its subdomains. Add eu.example.com on its own if people use such addresses."
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Only the owner of a personal mailbox manages its settings."
+msgstr "A személyes postafiók beállításait csak a tulajdonosa kezeli."
 
 #: src/components/common/text.ts
 msgid "Only the person can subscribe again, by confirming a mail."
@@ -12232,6 +12366,10 @@ msgstr "Csak maga a személy iratkozhat fel újra, egy levél megerősítéséve
 #: src/features/settings/automation/ActionRow.tsx
 msgid "Only the team sees this"
 msgstr "Ezt csak a csapat látja"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Only their owners read them. You see what they hold, never what is in them."
+msgstr "Csak a tulajdonosaik olvassák. Azt látja, mennyi van bennük, azt nem, hogy mi."
 
 #: src/features/broadcasts/Report.tsx
 msgid "Only those who replied"
@@ -13089,6 +13227,31 @@ msgstr "Személy"
 msgid "Personal"
 msgstr "Személyes"
 
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Personal (only you)"
+msgstr "Személyes (csak Ön)"
+
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Personal for {who}"
+msgstr "Személyes: {who}"
+
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Personal for a member"
+msgstr "Személyes egy tagnak"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Personal mailbox"
+msgstr "Személyes postafiók"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Personal mailbox of {owner}"
+msgstr "{owner} személyes postafiókja"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Personal mailboxes"
+msgstr "Személyes postafiókok"
+
 #: src/features/settings/automation/ActionRow.tsx
 msgid "Pick a canned reply"
 msgstr "Válasszon mentett választ"
@@ -13145,7 +13308,10 @@ msgstr "Válasszon mezőt"
 msgid "Pick a mail"
 msgstr "Válassz egy levelet"
 
+#: src/components/common/MailboxOwnerChoice.tsx
 #: src/features/settings/automation/ActionRow.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/team/RemoveMemberDialog.tsx
 msgid "Pick a member"
 msgstr "Válasszon tagot"
 
@@ -13883,9 +14049,22 @@ msgstr "Értékelések, kérdések és viták a saját webhelyed dokumentációs
 msgid "Read"
 msgstr "Olvasás"
 
+#: src/features/mail/MailPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/settings/ProductsPage.tsx
+msgctxt "mailbox access"
+msgid "Read"
+msgstr "Olvasás"
+
 #: src/components/common/text.ts
 msgid "Read analytics properties and their numbers"
 msgstr "Analitikai tulajdonságok és számaik olvasása"
+
+#: src/features/mail/MailPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/settings/ProductsPage.tsx
+msgid "Read and send"
+msgstr "Olvasás és küldés"
 
 #: src/features/migrations/text.ts
 msgid "Read as a Google Takeout file: Gmail's labels and threads come with it."
@@ -14184,6 +14363,7 @@ msgstr "A távoli képek elárulhatják a feladónak, hogy megnyitottad a levele
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/OwnDomainCard.tsx
@@ -14229,12 +14409,14 @@ msgid "Remove {lang}"
 msgstr "{lang} eltávolítása"
 
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/team/RemoveMemberDialog.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Remove {name}"
 msgstr "{name} eltávolítása"
 
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/sso/SsoPage.tsx
+#: src/features/team/RemoveMemberDialog.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Remove {name}?"
 msgstr "Eltávolítod: {name}?"
@@ -14242,6 +14424,10 @@ msgstr "Eltávolítod: {name}?"
 #: src/features/migrations/MapStep.tsx
 msgid "Remove {sender}"
 msgstr "{sender} eltávolítása"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Remove {who}?"
+msgstr "Eltávolítja: {who}?"
 
 #: src/features/settings/automation/ActionRow.tsx
 msgid "Remove action"
@@ -14436,6 +14622,7 @@ msgstr "Importált előzmények eltávolítása"
 msgid "Removing imported history…"
 msgstr "Importált előzmények eltávolítása…"
 
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Rename"
 msgstr "Átnevezés"
@@ -14443,6 +14630,10 @@ msgstr "Átnevezés"
 #: src/features/status/ComponentDialogs.tsx
 msgid "Rename group"
 msgstr "Csoport átnevezése"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Rename the mailbox"
+msgstr "Postafiók átnevezése"
 
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -15136,6 +15327,7 @@ msgstr "Szombat"
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/macros/MacroDialog.tsx
@@ -15217,6 +15409,7 @@ msgstr "A lista mentése nézetként"
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/chat/ChatSections.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/profile/ProfileForm.tsx
 #: src/features/settings/signature/SignaturePage.tsx
@@ -15847,6 +16040,10 @@ msgstr "A küldés már elkezdődött. Inkább szüneteltesd vagy szakítsd meg.
 msgid "Sending kept failing, so Yuva gave up."
 msgstr "A küldés újra és újra meghiúsult, ezért a Yuva feladta."
 
+#: src/components/common/OnBehalf.tsx
+msgid "Sending on behalf of {name}"
+msgstr "Küldés {name} nevében"
+
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Sending pace"
@@ -16176,6 +16373,14 @@ msgstr "Megosztott"
 #: src/components/common/FocusChoice.tsx
 msgid "Shared mailboxes for your team"
 msgstr "Közös postaládák a csapatának"
+
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Shared with the team"
+msgstr "Megosztva a csapattal"
+
+#: src/features/mail/MailPage.tsx
+msgid "Shared with you"
+msgstr "Önnel megosztva"
 
 #: src/components/common/text.ts
 msgid "Shipped"
@@ -16656,6 +16861,10 @@ msgstr "Webhely neve"
 #: src/features/setup/SetupLayout.tsx
 msgid "Sites"
 msgstr "Webhelyek"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Size"
+msgstr "Méret"
 
 #: src/features/setup/email/EmailTestStep.tsx
 msgid "Skip for now"
@@ -17452,6 +17661,7 @@ msgstr "Csapatazonosító"
 
 #: src/components/common/FocusChoice.tsx
 #: src/components/common/PurposeChoice.tsx
+#: src/features/mail/MailPage.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/setup/SetupHub.tsx
 msgid "Team mail"
@@ -18147,6 +18357,10 @@ msgstr "A karbantartás befejeződött. Minden a régi módon működik."
 msgid "The mbox file is compressed inside the zip. Unzip the Takeout archive and upload the .mbox file."
 msgstr "Az mbox-fájl tömörítve van a zipben. Csomagold ki a Takeout-archívumot, és töltsd fel a .mbox fájlt."
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "The member you pick becomes its owner and reads it from then on. You still do not read it."
+msgstr "A kiválasztott tag lesz a tulajdonosa, és ettől kezdve ő olvassa. Ön továbbra sem olvassa."
+
 #: src/features/migrations/text.ts
 msgid "The message could not be read"
 msgstr "Az üzenetet nem lehetett elolvasni"
@@ -18206,6 +18420,10 @@ msgstr "A másik postafióknak nincs e-mail-csatornája, így ez az e-mail-besz�
 #: src/features/fields/BulkFailures.tsx
 msgid "The others were closed. Open one to fill in what it needs, then close it."
 msgstr "A többi lezárult. Nyisson meg egyet, töltse ki, ami hiányzik, majd zárja le."
+
+#: src/components/common/OnBehalf.tsx
+msgid "the owner"
+msgstr "a tulajdonos"
 
 #: src/features/status/Notices.tsx
 msgid "The page already sent 10 notices in the last hour"
@@ -18274,6 +18492,10 @@ msgstr "a személy egyetlen engedélyezett csoportnak sem tagja"
 #: src/features/settings/audit/sentence.ts
 msgid "the person is not a member of this workspace"
 msgstr "a személy nem tagja ennek a munkaterületnek"
+
+#: src/features/settings/audit/sentence.ts
+msgid "The personal mailbox {inbox} lost its owner {who}"
+msgstr "A(z) {inbox} személyes postafióknak elveszett a tulajdonosa: {who}"
 
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "The policy is none: receivers only report. Move to quarantine once all your mail passes."
@@ -18707,6 +18929,10 @@ msgstr "Többé nem kapnak levelet erről a listáról, és rögzítésre kerül
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "They signed up on our website and confirmed their address."
 msgstr "Feliratkoztak a webhelyünkön, és megerősítették a címüket."
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "They stop reading this mailbox at once."
+msgstr "Azonnal abbahagyják a postafiók olvasását."
 
 #: src/features/migrations/text.ts
 msgid "This {provider} account's plan has no API access, which Yuva reads through."
@@ -19347,6 +19573,10 @@ msgid "Too many workspaces were created from your network today. Try again tomor
 msgstr "A hálózatodról ma túl sok munkaterületet hoztak létre. Próbáld újra holnap."
 
 #: src/features/settings/audit/sentence.ts
+msgid "Took {who}'s access to the personal mailbox {inbox} away"
+msgstr "{who} hozzáférése a(z) {inbox} személyes postafiókhoz visszavonva"
+
+#: src/features/settings/audit/sentence.ts
 msgid "Took away the access of {person} to {inbox}"
 msgstr "Visszavonta {person} hozzáférését ehhez: {inbox}"
 
@@ -19496,7 +19726,7 @@ msgstr "TXT-rekord"
 msgid "Type"
 msgstr "Típus"
 
-#: src/features/settings/inboxes/InboxSecurity.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 msgid "Type {name} to confirm"
 msgstr "A megerősítéshez írd be: {name}"
 
@@ -20514,6 +20744,10 @@ msgstr "Mit tartalmaz az egyes oszlop"
 msgid "What happened"
 msgstr "Mi történt"
 
+#: src/features/team/RemoveMemberDialog.tsx
+msgid "What happens to {boxName}"
+msgstr "Mi lesz a(z) {boxName} postafiókkal"
+
 #: src/features/broadcasts/Composer.tsx
 msgid "What is new in October"
 msgstr "Mi újság októberben"
@@ -20810,6 +21044,10 @@ msgstr "Ki van itt"
 msgid "Who is it for?"
 msgstr "Kinek szól?"
 
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Who reads it?"
+msgstr "Ki olvassa?"
+
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "Who sends, and what about?"
 msgstr "Ki küld, és miről?"
@@ -21092,6 +21330,10 @@ msgid "You can leave this page: the conversation will wait for you in your conve
 msgstr "Elhagyhatod ezt az oldalt: a beszélgetés a beszélgetéslistádon vár rád."
 
 #: src/features/mail/MailThread.tsx
+msgid "You can read this mailbox but not change it. Its owner can let you send from it."
+msgstr "Olvashatja ezt a postafiókot, de nem módosíthatja. A tulajdonosa engedélyezheti, hogy küldjön belőle."
+
+#: src/features/mail/MailThread.tsx
 msgid "You can restore it from the Trash for 30 days, then it is deleted for good with its messages and files."
 msgstr "30 napig visszaállíthatod a kukából, utána végleg törlődik az üzeneteivel és fájljaival együtt."
 
@@ -21173,8 +21415,8 @@ msgid "You have unsaved changes to {what}."
 msgstr "Nem mentett módosításaid vannak itt: {what}."
 
 #: src/features/auth/DeleteAccountButton.tsx
-msgid "You leave every workspace and lose your sign-ins, passkeys and notifications. Messages you wrote stay in their conversations, shown as from a deleted member. This cannot be undone."
-msgstr "Elhagyod az összes munkaterületet, és elveszíted a bejelentkezéseidet, hozzáférési kulcsaidat és értesítéseidet. Az általad írt üzenetek a beszélgetéseikben maradnak, törölt tagtól származóként megjelenítve. Ez nem vonható vissza."
+msgid "You leave every workspace and lose your sign-ins, passkeys and notifications. Messages you wrote stay in their conversations, shown as from a deleted member. Your personal mailboxes stay with the workspace, unread, until an owner or admin hands them to someone or deletes them. This cannot be undone."
+msgstr "Kilép minden munkaterületről, és elveszíti a bejelentkezéseit, hozzáférési kulcsait és értesítéseit. Az Ön által írt üzenetek a beszélgetésekben maradnak, törölt tagtól származóként megjelenítve. A személyes postafiókjai olvasatlanul a munkaterületen maradnak, amíg egy tulajdonos vagy adminisztrátor át nem adja vagy nem törli őket. Ez nem vonható vissza."
 
 #: src/features/account/AccountPage.tsx
 msgid "You replied"
@@ -21302,6 +21544,10 @@ msgstr "A levelezőszolgáltatód vagy a saját SMTP-szervered"
 msgid "Your mailbox"
 msgstr "A postafiókod"
 
+#: src/features/mail/MailPage.tsx
+msgid "Your mailboxes"
+msgstr "Postafiókjai"
+
 #: src/features/migrations/text.ts
 msgid "Your Microsoft 365 organization lets only an admin consent to apps. Send your admin the link below; once they accept, sign in again."
 msgstr "A Microsoft 365-szervezeted csak adminnak engedi az alkalmazások jóváhagyását. Küldd el az adminodnak az alábbi linket; amint elfogadja, jelentkezz be újra."
@@ -21420,6 +21666,10 @@ msgstr "A munkaterület neve, mennyi ideig őrizzük a lezárt beszélgetéseket
 #: src/features/account/AccountPage.tsx
 msgid "Your Yuva account"
 msgstr "A Yuva-fiókod"
+
+#: src/features/settings/ProductsPage.tsx
+msgid "Yours"
+msgstr "Az Öné"
 
 #: src/features/auth/AuthLayout.tsx
 msgid "Yuva {version}"

@@ -24,6 +24,7 @@ import {
   type ReplyChoice,
 } from "@/features/conversation/composer/CannedMenu"
 import { FromPicker, sendingAddress, useOwnSenders } from "@/components/common/FromPicker"
+import { OnBehalfNote } from "@/components/common/OnBehalf"
 import { SignatureHtml } from "@/components/common/SignatureHtml"
 import { useMySignatures } from "@/features/settings/signature/queries"
 import { Recipients } from "@/features/conversation/composer/Recipients"
@@ -604,6 +605,7 @@ export const ReplyBox = forwardRef<
           />
         </div>
       )}
+      {!note && <OnBehalfNote inboxId={c.inbox_id} />}
       {blocked && (
         <p
           className="mx-3 my-2 rounded-lg bg-destructive/6 px-3 py-2.5 text-small text-destructive"

@@ -35,13 +35,14 @@ import {
   StatTile,
 } from "@/features/settings/ui"
 import { MemberAddresses } from "@/features/team/MemberAddresses"
+import { RemoveMemberDialog } from "@/features/team/RemoveMemberDialog"
 import { useIsPhone } from "@/hooks/use-media-query"
 import { locales } from "@/i18n"
-import { api, unwrap, type Invite, type Locale, type Member, type Role } from "@/lib/api"
+import { api, ApiError, unwrap, type Invite, type Locale, type Member, type Role } from "@/lib/api"
 import { keys } from "@/lib/keys"
 import { useSession } from "@/lib/session"
 import { cn } from "@/lib/utils"
-import { useInboxes, useMembers } from "@/lib/workspace"
+import { useAllInboxes, useInboxes, useMembers } from "@/lib/workspace"
 
 type Presence = "here" | "away" | "offline"
 
@@ -338,6 +339,8 @@ function MemberDetail({ member: m, load, products }: Detail) {
   const stats = useStats(inboxId).data
   const open = useConversations({ assignee: m.id, status: ["open"], purpose: "support" })
   const [asking, setAsking] = useState(false)
+  const [handling, setHandling] = useState(false)
+  const owned = (useAllInboxes().data ?? []).filter((i) => i.owner_member_id === m.id)
   const isOwner = membership.role === "owner"
   const you = m.id === membership.member_id
   const name = m.name || m.email
@@ -356,6 +359,13 @@ function MemberDetail({ member: m, load, products }: Detail) {
     onSuccess: () => {
       void refresh()
       navigate("/team", { replace: true })
+    },
+    onError: (e) => {
+      if (e instanceof ApiError && e.code === "personal_mailbox") {
+        void qc.invalidateQueries({ queryKey: keys.inboxes(ws) })
+        setAsking(false)
+        setHandling(true)
+      }
     },
   })
   const roleNote = you
@@ -481,7 +491,7 @@ function MemberDetail({ member: m, load, products }: Detail) {
               size="sm"
               className="text-destructive"
               disabled={!removable}
-              onClick={() => setAsking(true)}
+              onClick={() => (owned.length > 0 ? setHandling(true) : setAsking(true))}
               aria-label={t`Remove ${name}`}
             >
               <Trans>Remove</Trans>
@@ -489,6 +499,19 @@ function MemberDetail({ member: m, load, products }: Detail) {
           )}
           <ErrorLine error={remove.error} className="basis-full" />
         </div>
+      )}
+      {handling && owned.length > 0 && (
+        <RemoveMemberDialog
+          member={m}
+          mailboxes={owned}
+          onClose={() => setHandling(false)}
+          onRemoved={() => {
+            setHandling(false)
+            void refresh()
+            void qc.invalidateQueries({ queryKey: keys.inboxes(ws) })
+            navigate("/team", { replace: true })
+          }}
+        />
       )}
     </div>
   )

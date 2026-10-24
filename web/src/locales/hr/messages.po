@@ -254,6 +254,10 @@ msgstr "{attention, plural, one {# kanal treba pažnju} few {# kanala trebaju pa
 msgid "{author, select, bot {No drafts by bots} assistant {No drafts by assistants} member {No drafts by members} other {No drafts by this author}}"
 msgstr "{author, select, bot {Nema skica od botova} assistant {Nema skica od asistenata} member {Nema skica od članova} other {Nema skica od ovog autora}}"
 
+#: src/features/mail/MailThread.tsx
+msgid "{author} on behalf of {ownerName}"
+msgstr "{author} u ime korisnika {ownerName}"
+
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/mail/MailThread.tsx
 msgid "{author}, sent by {by}"
@@ -667,6 +671,10 @@ msgstr "{name} tipka…"
 #: src/features/setup/SetupHub.tsx
 msgid "{name} news"
 msgstr "Novosti {name}"
+
+#: src/features/team/RemoveMemberDialog.tsx
+msgid "{name} owns personal mailboxes. Decide what happens to each: delete it with everything in it, or hand it to another member. You do not read them either way."
+msgstr "{name} ima osobne poštanske sandučiće. Odlučite o svakom: izbrišite ga sa svim sadržajem ili ga predajte drugom članu. U oba slučaja ih ne čitate vi."
 
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "{name} receives mail at this address. Here is what you set up."
@@ -1398,6 +1406,10 @@ msgstr "Popis e-pošte šalje u ime pretinca, preko njegova e-poštnog kanala. P
 msgid "A mailing list with subscribe forms, for your broadcasts"
 msgstr "Popis e-pošte s obrascima za pretplatu, za vaše masovne poruke"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "a member"
+msgstr "član"
+
 #: src/components/common/AssignmentFields.tsx
 msgid "A member is eligible while they have access to the product (owners and admins only with a grant), have the panel or an app open, are set to Auto availability, the product is inside its business hours and they are under the limit. When nobody is eligible the conversation waits and goes to the first teammate who becomes available."
 msgstr "Član je prikladan ako ima pristup proizvodu (vlasnici i administratori samo uz dodijeljen pristup), ima otvoren panel ili aplikaciju, dostupnost Auto, proizvod je unutar radnog vremena i član je ispod ograničenja. Ako nitko nije prikladan, razgovor čeka i dobiva ga prvi koji postane slobodan."
@@ -1672,8 +1684,14 @@ msgstr "Prihvaćen odgovor"
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/app/AppSections.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/settings/ProductsPage.tsx
 msgid "Access"
 msgstr "Pristup"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Access of {person}"
+msgstr "Pristup: {person}"
 
 #: src/features/migrations/DoneStep.tsx
 msgid "Access to {provider}"
@@ -1736,6 +1754,7 @@ msgstr "Aktivnost"
 #: src/features/conversation/Participants.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/addresses/AddressesPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Add"
@@ -1781,6 +1800,10 @@ msgstr "Dodaj jezik"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Add a link"
 msgstr "Dodaj poveznicu"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Add a member"
+msgstr "Dodaj člana"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Add a monitor"
@@ -2079,6 +2102,10 @@ msgstr "Potvrda adrese"
 msgid "Address verified"
 msgstr "Adresa je potvrđena"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Addresses"
+msgstr "Adrese"
+
 #: src/features/team/MemberAddresses.tsx
 msgid "Addresses {name} added to send mail from. Those waiting for approval need an owner or admin."
 msgstr "Adrese koje je {name} dodao/la za slanje pošte. Onima koje čekaju odobrenje treba vlasnik ili administrator."
@@ -2205,9 +2232,9 @@ msgstr "Sve označeno kao pročitano"
 msgid "All monitors"
 msgstr "Svi monitori"
 
-#: src/features/settings/inboxes/InboxSecurity.tsx
-msgid "All of its conversations, messages and attachments are deleted with it. Webhooks and API keys limited to it stop working."
-msgstr "Svi njegovi razgovori, poruke i privitci brišu se s njim. Webhookovi i API ključevi ograničeni na njega prestaju raditi."
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "All of its conversations, messages and attachments are deleted with it. This cannot be undone."
+msgstr "Svi njegovi razgovori, poruke i privici brišu se s njim. To se ne može poništiti."
 
 #: src/features/migrations/UploadStep.tsx
 msgid "All parts arrived. Reading the file…"
@@ -3641,6 +3668,7 @@ msgstr "Naziv kampanje"
 #: src/features/settings/AddProductDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/sso/SsoPage.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
@@ -3651,6 +3679,7 @@ msgstr "Naziv kampanje"
 #: src/features/status/IncidentDetail.tsx
 #: src/features/status/IncidentDialog.tsx
 #: src/features/status/MonitorDialog.tsx
+#: src/features/team/RemoveMemberDialog.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Cancel"
 msgstr "Odustani"
@@ -4824,6 +4853,7 @@ msgstr "razgovora"
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/DoneStep.tsx
 #: src/features/migrations/ReviewStep.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/webhooks/events.tsx
 msgid "Conversations"
 msgstr "Razgovori"
@@ -5136,6 +5166,10 @@ msgstr "Create this TXT record at your DNS provider, then press Verify. It can t
 msgid "Create workspace"
 msgstr "Izradi radni prostor"
 
+#: src/features/mail/MailPage.tsx
+msgid "Create your own mailbox"
+msgstr "Izradite vlastiti sandučić"
+
 #: src/features/auth/CreateWorkspace.tsx
 msgid "Create your workspace"
 msgstr "Izradite svoj radni prostor"
@@ -5338,6 +5372,11 @@ msgstr "Zadano: {fallback}"
 msgid "Degraded performance"
 msgstr "Smanjena učinkovitost"
 
+#: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Delegates"
+msgstr "Opunomoćenici"
+
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListSettings.tsx
@@ -5349,6 +5388,7 @@ msgstr "Smanjena učinkovitost"
 #: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 #: src/features/settings/macros/MacrosPage.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -5356,6 +5396,7 @@ msgstr "Smanjena učinkovitost"
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
 #: src/features/status/SettingsTab.tsx
+#: src/features/team/RemoveMemberDialog.tsx
 msgid "Delete"
 msgstr "Izbriši"
 
@@ -5378,7 +5419,7 @@ msgstr "Izbriši ({removeKey})"
 msgid "Delete {0}?"
 msgstr "Izbrisati {0}?"
 
-#: src/features/settings/inboxes/InboxSecurity.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Delete {name}?"
@@ -5416,6 +5457,10 @@ msgstr "Izbriši ključ"
 #: src/features/broadcasts/ListSettings.tsx
 msgid "Delete list"
 msgstr "Izbriši popis"
+
+#: src/features/settings/inboxes/InboxSecurity.tsx
+msgid "Delete mailbox"
+msgstr "Izbriši sandučić"
 
 #: src/features/status/MonitorsPage.tsx
 msgid "Delete monitor"
@@ -5510,6 +5555,10 @@ msgstr "Izbrisati ovaj DKIM ključ?"
 msgid "Delete this macro?"
 msgstr "Izbrisati ovaj makro?"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Delete this mailbox"
+msgstr "Izbriši ovaj sandučić"
+
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Delete this migration?"
 msgstr "Izbrisati ovu migraciju?"
@@ -5521,10 +5570,6 @@ msgstr "Izbriši ovu bilješku"
 #: src/features/contact/ContactNotes.tsx
 msgid "Delete this note?"
 msgstr "Izbrisati ovu bilješku?"
-
-#: src/features/settings/inboxes/InboxSecurity.tsx
-msgid "Delete this product"
-msgstr "Izbriši ovaj proizvod"
 
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Delete this subscription?"
@@ -5592,6 +5637,7 @@ msgstr "Izbrisani pretinac"
 
 #: src/components/common/DiscussionAuthor.tsx
 #: src/features/inbox/SidePanels.tsx
+#: src/features/mail/MailThread.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
@@ -5613,6 +5659,10 @@ msgstr "Izbrisao/la pravilo automatizacije {name}"
 #: src/features/settings/audit/sentence.ts
 msgid "Deleted the inbox {name}"
 msgstr "Izbrisao/la sandučić {name}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted the personal mailbox {name} of {who} when they left"
+msgstr "Osobni sandučić {name} člana {who} izbrisan je pri odlasku"
 
 #: src/features/settings/audit/sentence.ts
 msgid "Deleted the team {team}"
@@ -6655,6 +6705,10 @@ msgstr "Svi na popisima. Uvjeti zadržavaju samo kontakte čiji se atributi podu
 msgid "Everyone who has written to your products"
 msgstr "Svi koji su pisali vašim proizvodima"
 
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Everyone with access to the inbox reads it."
+msgstr "Čitaju ga svi koji imaju pristup pristigloj pošti."
+
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Everyone's posts are published at once, except those of authors you marked as spam."
 msgstr "Objave svih objavljuju se odmah, osim objava autora koje ste označili kao neželjenu poštu."
@@ -7580,9 +7634,29 @@ msgstr "Grupe članova i pretinaci koje pokrivaju"
 msgid "Growth"
 msgstr "Rast"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Hand over"
+msgstr "Predaj"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Hand over {name}"
+msgstr "Predaj {name}"
+
+#: src/features/team/RemoveMemberDialog.tsx
+msgid "Hand over to"
+msgstr "Predaj članu"
+
 #: src/features/settings/automation/text.ts
 msgid "Hand to automatic assignment"
 msgstr "Predaj automatskom dodjeljivanju"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Handed over"
+msgstr "Predano"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Handed the personal mailbox {inbox} to {next}"
+msgstr "Osobni sandučić {inbox} predan je članu {next}"
 
 #: src/features/conversation/actions.ts
 msgid "Handed to {name}"
@@ -7809,6 +7883,7 @@ msgstr "Naziv hosta i certifikat"
 msgid "hours"
 msgstr "sati"
 
+#: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/ProductsPage.tsx
 msgid "Hours"
 msgstr "Radno vrijeme"
@@ -8999,6 +9074,10 @@ msgid "Legal name"
 msgstr "Pravni naziv"
 
 #: src/features/settings/audit/sentence.ts
+msgid "Let {who} into the personal mailbox {inbox}"
+msgstr "{who} je dobio pristup osobnom sandučiću {inbox}"
+
+#: src/features/settings/audit/sentence.ts
 msgid "Let assistants and keys send messages to customers"
 msgstr "Asistentima i ključevima dopušteno slanje poruka klijentima"
 
@@ -9446,6 +9525,10 @@ msgstr "Pošta ide u e-poštni kanal „{channelName}” koji prima {address}."
 msgid "Mail is not signed with a key of the sender’s own domain, which Gmail and Yahoo expect."
 msgstr "Pošta nije potpisana ključem vlastite domene pošiljatelja, što Gmail i Yahoo očekuju."
 
+#: src/features/settings/SettingsColumn.tsx
+msgid "Mail only you read"
+msgstr "Pošta koju čitate samo vi"
+
 #: src/features/settings/addresses/AddressesPage.tsx
 msgid "Mail queued from it fails instead of going out from another address."
 msgstr "Pošta u redu čekanja s ove adrese neće poći s druge adrese, nego će propasti."
@@ -9752,6 +9835,7 @@ msgstr "medijan danas"
 msgid "median, first message to closed"
 msgstr "medijan, od prve poruke do zatvaranja"
 
+#: src/components/common/MailboxOwnerChoice.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
@@ -9778,6 +9862,10 @@ msgstr "Članovi i pozivnice"
 #: src/features/conversation/messages/Thread.tsx
 msgid "Members only"
 msgstr "Samo za članove"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Members you let into this mailbox. They can read it, or read and send mail on your behalf. They never change its settings, filters or migrations."
+msgstr "Članovi koje puštate u ovaj sandučić. Mogu ga čitati ili čitati i slati u vaše ime. Nikad ne mijenjaju njegove postavke, filtre ni migracije."
 
 #: src/features/conversation/composer/MentionMenu.tsx
 msgid "Mention a teammate"
@@ -10308,6 +10396,7 @@ msgstr "Moji prikazi"
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/fields/FieldDialog.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/macros/MacroDialog.tsx
@@ -10389,6 +10478,10 @@ msgstr "Za zatvaranje je potrebno „{name}”"
 #: src/features/broadcasts/ListParts.tsx
 msgid "Needs a sender"
 msgstr "Treba pošiljatelja"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Needs an owner"
+msgstr "Treba vlasnika"
 
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/text.ts
@@ -10604,6 +10697,10 @@ msgstr "Novi makro"
 msgid "New mail"
 msgstr "Nova poruka"
 
+#: src/features/mail/MailPage.tsx
+msgid "New mailbox"
+msgstr "Novi sandučić"
+
 #: src/features/setup/previews.tsx
 #: src/lib/alerts.ts
 msgid "New message"
@@ -10625,6 +10722,14 @@ msgstr "Nova migracija"
 msgid "New monitor"
 msgstr "Novi monitor"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "New owner"
+msgstr "Novi vlasnik"
+
+#: src/features/team/RemoveMemberDialog.tsx
+msgid "New owner of {boxName}"
+msgstr "Novi vlasnik sandučića {boxName}"
+
 #: src/features/status/StatusPages.tsx
 msgid "New page"
 msgstr "Nova stranica"
@@ -10632,6 +10737,10 @@ msgstr "Nova stranica"
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "New password"
 msgstr "Nova lozinka"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "New personal mailbox"
+msgstr "Novi osobni sandučić"
 
 #: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -11202,6 +11311,11 @@ msgstr "Nijedan drugi kontakt ne odgovara."
 msgid "No other conversations."
 msgstr "Nema drugih razgovora."
 
+#: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "No owner"
+msgstr "Nema vlasnika"
+
 #: src/features/docs/PagesTab.tsx
 msgid "No pages yet"
 msgstr "Još nema stranica"
@@ -11398,6 +11512,14 @@ msgstr "Nitko drugi još ne vidi ovaj pretinac."
 #: src/features/conversation/Participants.tsx
 msgid "Nobody else is copied. Replies go to the contact only."
 msgstr "Nitko drugi nije u kopiji. Odgovori idu samo kontaktu."
+
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Nobody else reads it unless you let them. Owners and admins see only that it exists."
+msgstr "Nitko drugi ga ne čita ako ne dopustite. Vlasnici i administratori vide samo da postoji."
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Nobody else reads this mailbox."
+msgstr "Nitko drugi ne čita ovaj sandučić."
 
 #: src/features/inbox/SidePanels.tsx
 msgid "Nobody has mentioned you yet"
@@ -12179,6 +12301,10 @@ msgstr "Only if your Slack account uses another address than this one. Optional.
 msgid "Only in the app"
 msgstr "Samo u aplikaciji"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Only its owner reads it. You can rename it or delete it."
+msgstr "Čita ga samo vlasnik. Možete ga preimenovati ili izbrisati."
+
 #: src/features/migrations/parts.tsx
 msgid "Only mail since {date}"
 msgstr "Samo pošta od {date}"
@@ -12220,9 +12346,17 @@ msgstr "Za sada samo primaj"
 msgid "Only receives"
 msgstr "Samo prima"
 
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Only that member reads it. You see only that it exists."
+msgstr "Čita ga samo taj član. Vi vidite samo da postoji."
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Only the exact domain is claimed, not its subdomains. Add eu.example.com on its own if people use such addresses."
 msgstr "Only the exact domain is claimed, not its subdomains. Add eu.example.com on its own if people use such addresses."
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Only the owner of a personal mailbox manages its settings."
+msgstr "Postavkama osobnog sandučića upravlja samo njegov vlasnik."
 
 #: src/components/common/text.ts
 msgid "Only the person can subscribe again, by confirming a mail."
@@ -12232,6 +12366,10 @@ msgstr "Samo osoba sama može se ponovno pretplatiti, potvrdom poruke."
 #: src/features/settings/automation/ActionRow.tsx
 msgid "Only the team sees this"
 msgstr "Ovo vidi samo tim"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Only their owners read them. You see what they hold, never what is in them."
+msgstr "Čitaju ih samo njihovi vlasnici. Vidite koliko sadrže, nikad što."
 
 #: src/features/broadcasts/Report.tsx
 msgid "Only those who replied"
@@ -13089,6 +13227,31 @@ msgstr "Osoba"
 msgid "Personal"
 msgstr "Osobno"
 
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Personal (only you)"
+msgstr "Osobni (samo vi)"
+
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Personal for {who}"
+msgstr "Osobni za: {who}"
+
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Personal for a member"
+msgstr "Osobni za člana"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Personal mailbox"
+msgstr "Osobni sandučić"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Personal mailbox of {owner}"
+msgstr "Osobni sandučić: {owner}"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Personal mailboxes"
+msgstr "Osobni sandučići"
+
 #: src/features/settings/automation/ActionRow.tsx
 msgid "Pick a canned reply"
 msgstr "Odaberite gotov odgovor"
@@ -13145,7 +13308,10 @@ msgstr "Odaberite polje"
 msgid "Pick a mail"
 msgstr "Odaberite poruku"
 
+#: src/components/common/MailboxOwnerChoice.tsx
 #: src/features/settings/automation/ActionRow.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/team/RemoveMemberDialog.tsx
 msgid "Pick a member"
 msgstr "Odaberite člana"
 
@@ -13883,9 +14049,22 @@ msgstr "Ocjene, pitanja i rasprave sa stranica dokumentacije na tvom vlastitom w
 msgid "Read"
 msgstr "Čitaj"
 
+#: src/features/mail/MailPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/settings/ProductsPage.tsx
+msgctxt "mailbox access"
+msgid "Read"
+msgstr "Čitanje"
+
 #: src/components/common/text.ts
 msgid "Read analytics properties and their numbers"
 msgstr "Čitaj analitička svojstva i njihove brojke"
+
+#: src/features/mail/MailPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/settings/ProductsPage.tsx
+msgid "Read and send"
+msgstr "Čitanje i slanje"
 
 #: src/features/migrations/text.ts
 msgid "Read as a Google Takeout file: Gmail's labels and threads come with it."
@@ -14184,6 +14363,7 @@ msgstr "Udaljene slike mogu pošiljatelju reći da ste otvorili poruku."
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/OwnDomainCard.tsx
@@ -14229,12 +14409,14 @@ msgid "Remove {lang}"
 msgstr "Ukloni {lang}"
 
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/team/RemoveMemberDialog.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Remove {name}"
 msgstr "Ukloni {name}"
 
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/sso/SsoPage.tsx
+#: src/features/team/RemoveMemberDialog.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Remove {name}?"
 msgstr "Ukloniti korisnika {name}?"
@@ -14242,6 +14424,10 @@ msgstr "Ukloniti korisnika {name}?"
 #: src/features/migrations/MapStep.tsx
 msgid "Remove {sender}"
 msgstr "Ukloni {sender}"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Remove {who}?"
+msgstr "Ukloniti: {who}?"
 
 #: src/features/settings/automation/ActionRow.tsx
 msgid "Remove action"
@@ -14436,6 +14622,7 @@ msgstr "Uklanjanje uvezene povijesti"
 msgid "Removing imported history…"
 msgstr "Uklanjanje uvezene povijesti…"
 
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Rename"
 msgstr "Preimenuj"
@@ -14443,6 +14630,10 @@ msgstr "Preimenuj"
 #: src/features/status/ComponentDialogs.tsx
 msgid "Rename group"
 msgstr "Preimenuj grupu"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Rename the mailbox"
+msgstr "Preimenuj sandučić"
 
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -15136,6 +15327,7 @@ msgstr "Subota"
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/macros/MacroDialog.tsx
@@ -15217,6 +15409,7 @@ msgstr "Spremi popis kao prikaz"
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/chat/ChatSections.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/profile/ProfileForm.tsx
 #: src/features/settings/signature/SignaturePage.tsx
@@ -15847,6 +16040,10 @@ msgstr "Slanje je već počelo. Umjesto toga ga pauzirajte ili otkažite."
 msgid "Sending kept failing, so Yuva gave up."
 msgstr "Slanje je stalno propadalo pa je Yuva odustala."
 
+#: src/components/common/OnBehalf.tsx
+msgid "Sending on behalf of {name}"
+msgstr "Slanje u ime: {name}"
+
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Sending pace"
@@ -16176,6 +16373,14 @@ msgstr "Dijeljeno"
 #: src/components/common/FocusChoice.tsx
 msgid "Shared mailboxes for your team"
 msgstr "Zajednički poštanski sandučići za vaš tim"
+
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Shared with the team"
+msgstr "Dijeljeno s timom"
+
+#: src/features/mail/MailPage.tsx
+msgid "Shared with you"
+msgstr "Podijeljeno s vama"
 
 #: src/components/common/text.ts
 msgid "Shipped"
@@ -16656,6 +16861,10 @@ msgstr "Naziv web-mjesta"
 #: src/features/setup/SetupLayout.tsx
 msgid "Sites"
 msgstr "Web-mjesta"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Size"
+msgstr "Veličina"
 
 #: src/features/setup/email/EmailTestStep.tsx
 msgid "Skip for now"
@@ -17452,6 +17661,7 @@ msgstr "ID tima"
 
 #: src/components/common/FocusChoice.tsx
 #: src/components/common/PurposeChoice.tsx
+#: src/features/mail/MailPage.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/setup/SetupHub.tsx
 msgid "Team mail"
@@ -18147,6 +18357,10 @@ msgstr "Održavanje je završeno. Sve radi kao i prije."
 msgid "The mbox file is compressed inside the zip. Unzip the Takeout archive and upload the .mbox file."
 msgstr "mbox datoteka je komprimirana unutar zipa. Raspakirajte Takeout arhivu i učitajte .mbox datoteku."
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "The member you pick becomes its owner and reads it from then on. You still do not read it."
+msgstr "Odabrani član postaje vlasnik i od sada ga čita. Vi ga i dalje ne čitate."
+
 #: src/features/migrations/text.ts
 msgid "The message could not be read"
 msgstr "Poruka se nije mogla pročitati"
@@ -18206,6 +18420,10 @@ msgstr "Drugi pretinac nema e-poštni kanal pa se ovaj e-poštni razgovor ne mo�
 #: src/features/fields/BulkFailures.tsx
 msgid "The others were closed. Open one to fill in what it needs, then close it."
 msgstr "Ostali su zatvoreni. Otvorite jedan, ispunite što treba i zatvorite ga."
+
+#: src/components/common/OnBehalf.tsx
+msgid "the owner"
+msgstr "vlasnik"
 
 #: src/features/status/Notices.tsx
 msgid "The page already sent 10 notices in the last hour"
@@ -18274,6 +18492,10 @@ msgstr "osoba nije ni u jednoj od dopuštenih grupa"
 #: src/features/settings/audit/sentence.ts
 msgid "the person is not a member of this workspace"
 msgstr "osoba nije član ovog radnog prostora"
+
+#: src/features/settings/audit/sentence.ts
+msgid "The personal mailbox {inbox} lost its owner {who}"
+msgstr "Osobni sandučić {inbox} izgubio je vlasnika: {who}"
 
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "The policy is none: receivers only report. Move to quarantine once all your mail passes."
@@ -18707,6 +18929,10 @@ msgstr "Više ne dobivaju poštu s ovog popisa i bilježi se da ih je tim odjavi
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "They signed up on our website and confirmed their address."
 msgstr "Registrirali su se na našem web-mjestu i potvrdili svoju adresu."
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "They stop reading this mailbox at once."
+msgstr "Odmah prestaju čitati ovaj sandučić."
 
 #: src/features/migrations/text.ts
 msgid "This {provider} account's plan has no API access, which Yuva reads through."
@@ -19347,6 +19573,10 @@ msgid "Too many workspaces were created from your network today. Try again tomor
 msgstr "S vaše mreže danas je izrađeno previše radnih prostora. Pokušajte ponovno sutra."
 
 #: src/features/settings/audit/sentence.ts
+msgid "Took {who}'s access to the personal mailbox {inbox} away"
+msgstr "Pristup ({who}) osobnom sandučiću {inbox} opozvan je"
+
+#: src/features/settings/audit/sentence.ts
 msgid "Took away the access of {person} to {inbox}"
 msgstr "Korisniku {person} oduzeo/la pristup za {inbox}"
 
@@ -19496,7 +19726,7 @@ msgstr "TXT zapis"
 msgid "Type"
 msgstr "Vrsta"
 
-#: src/features/settings/inboxes/InboxSecurity.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 msgid "Type {name} to confirm"
 msgstr "Za potvrdu upišite {name}"
 
@@ -20514,6 +20744,10 @@ msgstr "Što svaki stupac sadrži"
 msgid "What happened"
 msgstr "Što se dogodilo"
 
+#: src/features/team/RemoveMemberDialog.tsx
+msgid "What happens to {boxName}"
+msgstr "Što će biti sa sandučićem {boxName}"
+
 #: src/features/broadcasts/Composer.tsx
 msgid "What is new in October"
 msgstr "Što je novo u listopadu"
@@ -20810,6 +21044,10 @@ msgstr "Tko je ovdje"
 msgid "Who is it for?"
 msgstr "Za koga je?"
 
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Who reads it?"
+msgstr "Tko ga čita?"
+
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "Who sends, and what about?"
 msgstr "Tko šalje i o čemu?"
@@ -21092,6 +21330,10 @@ msgid "You can leave this page: the conversation will wait for you in your conve
 msgstr "Ovu stranicu možete napustiti: razgovor će vas čekati na vašem popisu razgovora."
 
 #: src/features/mail/MailThread.tsx
+msgid "You can read this mailbox but not change it. Its owner can let you send from it."
+msgstr "Ovaj sandučić možete čitati, ali ne i mijenjati. Vlasnik vam može dopustiti slanje iz njega."
+
+#: src/features/mail/MailThread.tsx
 msgid "You can restore it from the Trash for 30 days, then it is deleted for good with its messages and files."
 msgstr "Možete je vratiti iz smeća 30 dana, nakon toga trajno se briše s porukama i datotekama."
 
@@ -21173,8 +21415,8 @@ msgid "You have unsaved changes to {what}."
 msgstr "Imate nespremljene promjene u {what}."
 
 #: src/features/auth/DeleteAccountButton.tsx
-msgid "You leave every workspace and lose your sign-ins, passkeys and notifications. Messages you wrote stay in their conversations, shown as from a deleted member. This cannot be undone."
-msgstr "Napuštate sve radne prostore i gubite prijave, pristupne ključeve i obavijesti. Poruke koje ste napisali ostaju u svojim razgovorima, prikazane kao od izbrisanog člana. Ovo se ne može poništiti."
+msgid "You leave every workspace and lose your sign-ins, passkeys and notifications. Messages you wrote stay in their conversations, shown as from a deleted member. Your personal mailboxes stay with the workspace, unread, until an owner or admin hands them to someone or deletes them. This cannot be undone."
+msgstr "Napuštate sve radne prostore i gubite prijave, pristupne ključeve i obavijesti. Poruke koje ste napisali ostaju u razgovorima, prikazane kao od izbrisanog člana. Vaši osobni sandučići ostaju u radnom prostoru, nepročitani, dok ih vlasnik ili administrator ne preda ili izbriše. To se ne može poništiti."
 
 #: src/features/account/AccountPage.tsx
 msgid "You replied"
@@ -21302,6 +21544,10 @@ msgstr "SMTP poslužitelj vašeg pružatelja pošte ili vaš vlastiti"
 msgid "Your mailbox"
 msgstr "Vaš pretinac"
 
+#: src/features/mail/MailPage.tsx
+msgid "Your mailboxes"
+msgstr "Vaši sandučići"
+
 #: src/features/migrations/text.ts
 msgid "Your Microsoft 365 organization lets only an admin consent to apps. Send your admin the link below; once they accept, sign in again."
 msgstr "Vaša organizacija Microsoft 365 dopušta samo administratoru da odobrava aplikacije. Pošaljite administratoru donju poveznicu; kad je prihvati, prijavite se ponovno."
@@ -21420,6 +21666,10 @@ msgstr "Naziv vašeg radnog prostora, koliko se dugo čuvaju zatvoreni razgovori
 #: src/features/account/AccountPage.tsx
 msgid "Your Yuva account"
 msgstr "Vaš Yuva račun"
+
+#: src/features/settings/ProductsPage.tsx
+msgid "Yours"
+msgstr "Vaš"
 
 #: src/features/auth/AuthLayout.tsx
 msgid "Yuva {version}"

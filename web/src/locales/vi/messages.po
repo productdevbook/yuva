@@ -254,6 +254,10 @@ msgstr "{attention, plural, other {# kênh cần chú ý}}"
 msgid "{author, select, bot {No drafts by bots} assistant {No drafts by assistants} member {No drafts by members} other {No drafts by this author}}"
 msgstr "{author, select, bot {Không có bản nháp từ bot} assistant {Không có bản nháp từ trợ lý} member {Không có bản nháp từ thành viên} other {Không có bản nháp từ tác giả này}}"
 
+#: src/features/mail/MailThread.tsx
+msgid "{author} on behalf of {ownerName}"
+msgstr "{author} thay mặt {ownerName}"
+
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/mail/MailThread.tsx
 msgid "{author}, sent by {by}"
@@ -667,6 +671,10 @@ msgstr "{name} đang gõ…"
 #: src/features/setup/SetupHub.tsx
 msgid "{name} news"
 msgstr "{name} đã trả lời trước bạn."
+
+#: src/features/team/RemoveMemberDialog.tsx
+msgid "{name} owns personal mailboxes. Decide what happens to each: delete it with everything in it, or hand it to another member. You do not read them either way."
+msgstr "{name} có hộp thư cá nhân. Hãy quyết định số phận từng hộp: xóa cùng nội dung hoặc chuyển cho thành viên khác. Dù thế nào bạn cũng không đọc chúng."
 
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "{name} receives mail at this address. Here is what you set up."
@@ -1398,6 +1406,10 @@ msgstr "Danh sách gửi thư gửi với tên của một hộp thư, qua kênh
 msgid "A mailing list with subscribe forms, for your broadcasts"
 msgstr "Danh sách gửi thư có biểu mẫu đăng ký, cho thư hàng loạt của bạn"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "a member"
+msgstr "một thành viên"
+
 #: src/components/common/AssignmentFields.tsx
 msgid "A member is eligible while they have access to the product (owners and admins only with a grant), have the panel or an app open, are set to Auto availability, the product is inside its business hours and they are under the limit. When nobody is eligible the conversation waits and goes to the first teammate who becomes available."
 msgstr "Một thành viên đủ điều kiện khi có quyền truy cập sản phẩm (chủ sở hữu và quản trị viên chỉ khi được cấp quyền), đang mở bảng điều khiển hoặc ứng dụng, trạng thái sẵn sàng là Tự động, sản phẩm trong giờ làm việc và thành viên dưới giới hạn. Nếu không ai đủ điều kiện, cuộc trò chuyện chờ và chuyển cho đồng nghiệp đầu tiên rảnh."
@@ -1672,8 +1684,14 @@ msgstr "Câu trả lời được chấp nhận"
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/app/AppSections.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/settings/ProductsPage.tsx
 msgid "Access"
 msgstr "Quyền truy cập"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Access of {person}"
+msgstr "Quyền truy cập của {person}"
 
 #: src/features/migrations/DoneStep.tsx
 msgid "Access to {provider}"
@@ -1736,6 +1754,7 @@ msgstr "Hoạt động"
 #: src/features/conversation/Participants.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/addresses/AddressesPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Add"
@@ -1781,6 +1800,10 @@ msgstr "Thêm ngôn ngữ"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Add a link"
 msgstr "Thêm liên kết"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Add a member"
+msgstr "Thêm thành viên"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Add a monitor"
@@ -2079,6 +2102,10 @@ msgstr "Chứng minh địa chỉ"
 msgid "Address verified"
 msgstr "Đã xác minh địa chỉ"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Addresses"
+msgstr "Địa chỉ"
+
 #: src/features/team/MemberAddresses.tsx
 msgid "Addresses {name} added to send mail from. Those waiting for approval need an owner or admin."
 msgstr "Các địa chỉ {name} đã thêm để gửi thư. Địa chỉ chờ duyệt cần chủ sở hữu hoặc quản trị viên."
@@ -2205,9 +2232,9 @@ msgstr "Đã đánh dấu tất cả là đã đọc"
 msgid "All monitors"
 msgstr "Tất cả trình giám sát"
 
-#: src/features/settings/inboxes/InboxSecurity.tsx
-msgid "All of its conversations, messages and attachments are deleted with it. Webhooks and API keys limited to it stop working."
-msgstr "Mọi cuộc trò chuyện, tin nhắn và tệp đính kèm của nó sẽ bị xóa theo. Webhook và khóa API giới hạn cho nó sẽ ngừng hoạt động."
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "All of its conversations, messages and attachments are deleted with it. This cannot be undone."
+msgstr "Mọi cuộc trò chuyện, tin nhắn và tệp đính kèm bị xóa theo. Không thể hoàn tác."
 
 #: src/features/migrations/UploadStep.tsx
 msgid "All parts arrived. Reading the file…"
@@ -3641,6 +3668,7 @@ msgstr "Tên chiến dịch"
 #: src/features/settings/AddProductDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/sso/SsoPage.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
@@ -3651,6 +3679,7 @@ msgstr "Tên chiến dịch"
 #: src/features/status/IncidentDetail.tsx
 #: src/features/status/IncidentDialog.tsx
 #: src/features/status/MonitorDialog.tsx
+#: src/features/team/RemoveMemberDialog.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Cancel"
 msgstr "Hủy"
@@ -4824,6 +4853,7 @@ msgstr "cuộc trò chuyện"
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/DoneStep.tsx
 #: src/features/migrations/ReviewStep.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/webhooks/events.tsx
 msgid "Conversations"
 msgstr "Cuộc trò chuyện"
@@ -5136,6 +5166,10 @@ msgstr "Create this TXT record at your DNS provider, then press Verify. It can t
 msgid "Create workspace"
 msgstr "Tạo không gian làm việc"
 
+#: src/features/mail/MailPage.tsx
+msgid "Create your own mailbox"
+msgstr "Tạo hộp thư của riêng bạn"
+
 #: src/features/auth/CreateWorkspace.tsx
 msgid "Create your workspace"
 msgstr "Tạo không gian làm việc của bạn"
@@ -5338,6 +5372,11 @@ msgstr "Mặc định: {fallback}"
 msgid "Degraded performance"
 msgstr "Hiệu năng giảm"
 
+#: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Delegates"
+msgstr "Người được ủy quyền"
+
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListSettings.tsx
@@ -5349,6 +5388,7 @@ msgstr "Hiệu năng giảm"
 #: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 #: src/features/settings/macros/MacrosPage.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -5356,6 +5396,7 @@ msgstr "Hiệu năng giảm"
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
 #: src/features/status/SettingsTab.tsx
+#: src/features/team/RemoveMemberDialog.tsx
 msgid "Delete"
 msgstr "Xóa"
 
@@ -5378,7 +5419,7 @@ msgstr "Xóa ({removeKey})"
 msgid "Delete {0}?"
 msgstr "Xóa {0}?"
 
-#: src/features/settings/inboxes/InboxSecurity.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Delete {name}?"
@@ -5416,6 +5457,10 @@ msgstr "Xóa khóa"
 #: src/features/broadcasts/ListSettings.tsx
 msgid "Delete list"
 msgstr "Xóa danh sách"
+
+#: src/features/settings/inboxes/InboxSecurity.tsx
+msgid "Delete mailbox"
+msgstr "Xóa hộp thư"
 
 #: src/features/status/MonitorsPage.tsx
 msgid "Delete monitor"
@@ -5510,6 +5555,10 @@ msgstr "Xóa khóa DKIM này?"
 msgid "Delete this macro?"
 msgstr "Xóa macro này?"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Delete this mailbox"
+msgstr "Xóa hộp thư này"
+
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Delete this migration?"
 msgstr "Xóa lần di chuyển này?"
@@ -5521,10 +5570,6 @@ msgstr "Xóa ghi chú này"
 #: src/features/contact/ContactNotes.tsx
 msgid "Delete this note?"
 msgstr "Xóa ghi chú này?"
-
-#: src/features/settings/inboxes/InboxSecurity.tsx
-msgid "Delete this product"
-msgstr "Xóa sản phẩm này"
 
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Delete this subscription?"
@@ -5592,6 +5637,7 @@ msgstr "Hộp thư đã xóa"
 
 #: src/components/common/DiscussionAuthor.tsx
 #: src/features/inbox/SidePanels.tsx
+#: src/features/mail/MailThread.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
@@ -5613,6 +5659,10 @@ msgstr "Đã xóa quy tắc tự động hóa {name}"
 #: src/features/settings/audit/sentence.ts
 msgid "Deleted the inbox {name}"
 msgstr "Đã xóa hộp thư đến {name}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted the personal mailbox {name} of {who} when they left"
+msgstr "Đã xóa hộp thư cá nhân {name} của {who} khi họ rời đi"
 
 #: src/features/settings/audit/sentence.ts
 msgid "Deleted the team {team}"
@@ -6655,6 +6705,10 @@ msgstr "Mọi người trong các danh sách. Điều kiện chỉ giữ các li
 msgid "Everyone who has written to your products"
 msgstr "Tất cả những ai đã liên hệ với sản phẩm của bạn"
 
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Everyone with access to the inbox reads it."
+msgstr "Mọi người có quyền truy cập hộp thư đến đều đọc được."
+
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Everyone's posts are published at once, except those of authors you marked as spam."
 msgstr "Bài đăng của mọi người được đăng ngay, trừ bài của những tác giả bạn đã đánh dấu là thư rác."
@@ -7580,9 +7634,29 @@ msgstr "Các nhóm thành viên và hộp thư họ phụ trách"
 msgid "Growth"
 msgstr "Tăng trưởng"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Hand over"
+msgstr "Chuyển giao"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Hand over {name}"
+msgstr "Chuyển giao {name}"
+
+#: src/features/team/RemoveMemberDialog.tsx
+msgid "Hand over to"
+msgstr "Chuyển giao cho"
+
 #: src/features/settings/automation/text.ts
 msgid "Hand to automatic assignment"
 msgstr "Chuyển cho giao việc tự động"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Handed over"
+msgstr "Đã chuyển giao"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Handed the personal mailbox {inbox} to {next}"
+msgstr "Đã chuyển hộp thư cá nhân {inbox} cho {next}"
 
 #: src/features/conversation/actions.ts
 msgid "Handed to {name}"
@@ -7809,6 +7883,7 @@ msgstr "Tên máy chủ và chứng chỉ"
 msgid "hours"
 msgstr "giờ"
 
+#: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/ProductsPage.tsx
 msgid "Hours"
 msgstr "Giờ làm việc"
@@ -8999,6 +9074,10 @@ msgid "Legal name"
 msgstr "Tên pháp lý"
 
 #: src/features/settings/audit/sentence.ts
+msgid "Let {who} into the personal mailbox {inbox}"
+msgstr "Đã cấp cho {who} quyền vào hộp thư cá nhân {inbox}"
+
+#: src/features/settings/audit/sentence.ts
 msgid "Let assistants and keys send messages to customers"
 msgstr "Cho phép trợ lý và khóa gửi tin nhắn cho khách hàng"
 
@@ -9446,6 +9525,10 @@ msgstr "Thư đi vào kênh email “{channelName}”, kênh nhận {address}."
 msgid "Mail is not signed with a key of the sender’s own domain, which Gmail and Yahoo expect."
 msgstr "Thư chưa được ký bằng khóa của chính tên miền người gửi, điều mà Gmail và Yahoo yêu cầu."
 
+#: src/features/settings/SettingsColumn.tsx
+msgid "Mail only you read"
+msgstr "Thư chỉ bạn đọc"
+
 #: src/features/settings/addresses/AddressesPage.tsx
 msgid "Mail queued from it fails instead of going out from another address."
 msgstr "Thư đang chờ gửi từ địa chỉ này sẽ thất bại thay vì đi ra từ địa chỉ khác."
@@ -9752,6 +9835,7 @@ msgstr "trung vị hôm nay"
 msgid "median, first message to closed"
 msgstr "trung vị, từ tin nhắn đầu tiên đến khi đóng"
 
+#: src/components/common/MailboxOwnerChoice.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
@@ -9778,6 +9862,10 @@ msgstr "Thành viên và lời mời"
 #: src/features/conversation/messages/Thread.tsx
 msgid "Members only"
 msgstr "Chỉ dành cho thành viên"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Members you let into this mailbox. They can read it, or read and send mail on your behalf. They never change its settings, filters or migrations."
+msgstr "Các thành viên bạn cho vào hộp thư này. Họ có thể đọc, hoặc đọc và gửi thay bạn. Họ không bao giờ đổi cài đặt, bộ lọc hay việc di chuyển của hộp thư."
 
 #: src/features/conversation/composer/MentionMenu.tsx
 msgid "Mention a teammate"
@@ -10308,6 +10396,7 @@ msgstr "Chế độ xem của tôi"
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/fields/FieldDialog.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/macros/MacroDialog.tsx
@@ -10389,6 +10478,10 @@ msgstr "Cần “{name}” trước khi có thể đóng"
 #: src/features/broadcasts/ListParts.tsx
 msgid "Needs a sender"
 msgstr "Cần người gửi"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Needs an owner"
+msgstr "Cần chủ sở hữu"
 
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/text.ts
@@ -10604,6 +10697,10 @@ msgstr "Macro mới"
 msgid "New mail"
 msgstr "Thư mới"
 
+#: src/features/mail/MailPage.tsx
+msgid "New mailbox"
+msgstr "Hộp thư mới"
+
 #: src/features/setup/previews.tsx
 #: src/lib/alerts.ts
 msgid "New message"
@@ -10625,6 +10722,14 @@ msgstr "Lần di chuyển mới"
 msgid "New monitor"
 msgstr "Trình giám sát mới"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "New owner"
+msgstr "Chủ sở hữu mới"
+
+#: src/features/team/RemoveMemberDialog.tsx
+msgid "New owner of {boxName}"
+msgstr "Chủ sở hữu mới của {boxName}"
+
 #: src/features/status/StatusPages.tsx
 msgid "New page"
 msgstr "Trang mới"
@@ -10632,6 +10737,10 @@ msgstr "Trang mới"
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "New password"
 msgstr "Mật khẩu mới"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "New personal mailbox"
+msgstr "Hộp thư cá nhân mới"
 
 #: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -11202,6 +11311,11 @@ msgstr "Không có liên hệ nào khác khớp."
 msgid "No other conversations."
 msgstr "Không có cuộc trò chuyện nào khác."
 
+#: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "No owner"
+msgstr "Không có chủ sở hữu"
+
 #: src/features/docs/PagesTab.tsx
 msgid "No pages yet"
 msgstr "Chưa có trang"
@@ -11398,6 +11512,14 @@ msgstr "Chưa ai khác thấy hộp thư này."
 #: src/features/conversation/Participants.tsx
 msgid "Nobody else is copied. Replies go to the contact only."
 msgstr "Không có ai khác trong Cc. Phản hồi chỉ gửi cho liên hệ."
+
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Nobody else reads it unless you let them. Owners and admins see only that it exists."
+msgstr "Không ai khác đọc được nếu bạn không cho phép. Chủ sở hữu và quản trị viên chỉ thấy nó tồn tại."
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Nobody else reads this mailbox."
+msgstr "Không ai khác đọc hộp thư này."
 
 #: src/features/inbox/SidePanels.tsx
 msgid "Nobody has mentioned you yet"
@@ -12179,6 +12301,10 @@ msgstr "Only if your Slack account uses another address than this one. Optional.
 msgid "Only in the app"
 msgstr "Chỉ trong ứng dụng"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Only its owner reads it. You can rename it or delete it."
+msgstr "Chỉ chủ sở hữu đọc được. Bạn có thể đổi tên hoặc xóa nó."
+
 #: src/features/migrations/parts.tsx
 msgid "Only mail since {date}"
 msgstr "Chỉ thư từ {date}"
@@ -12220,9 +12346,17 @@ msgstr "Tạm thời chỉ nhận"
 msgid "Only receives"
 msgstr "Chỉ nhận"
 
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Only that member reads it. You see only that it exists."
+msgstr "Chỉ thành viên đó đọc được. Bạn chỉ thấy nó tồn tại."
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Only the exact domain is claimed, not its subdomains. Add eu.example.com on its own if people use such addresses."
 msgstr "Only the exact domain is claimed, not its subdomains. Add eu.example.com on its own if people use such addresses."
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Only the owner of a personal mailbox manages its settings."
+msgstr "Chỉ chủ sở hữu hộp thư cá nhân quản lý cài đặt của nó."
 
 #: src/components/common/text.ts
 msgid "Only the person can subscribe again, by confirming a mail."
@@ -12232,6 +12366,10 @@ msgstr "Chỉ chính người đó mới đăng ký lại được, bằng cách
 #: src/features/settings/automation/ActionRow.tsx
 msgid "Only the team sees this"
 msgstr "Chỉ nhóm thấy mục này"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Only their owners read them. You see what they hold, never what is in them."
+msgstr "Chỉ chủ sở hữu của từng hộp đọc được. Bạn thấy dung lượng, không thấy nội dung."
 
 #: src/features/broadcasts/Report.tsx
 msgid "Only those who replied"
@@ -13089,6 +13227,31 @@ msgstr "Người"
 msgid "Personal"
 msgstr "Cá nhân"
 
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Personal (only you)"
+msgstr "Cá nhân (chỉ bạn)"
+
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Personal for {who}"
+msgstr "Cá nhân cho {who}"
+
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Personal for a member"
+msgstr "Cá nhân cho một thành viên"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Personal mailbox"
+msgstr "Hộp thư cá nhân"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Personal mailbox of {owner}"
+msgstr "Hộp thư cá nhân của {owner}"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Personal mailboxes"
+msgstr "Hộp thư cá nhân"
+
 #: src/features/settings/automation/ActionRow.tsx
 msgid "Pick a canned reply"
 msgstr "Chọn một câu trả lời soạn sẵn"
@@ -13145,7 +13308,10 @@ msgstr "Chọn một trường"
 msgid "Pick a mail"
 msgstr "Chọn một thư"
 
+#: src/components/common/MailboxOwnerChoice.tsx
 #: src/features/settings/automation/ActionRow.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/team/RemoveMemberDialog.tsx
 msgid "Pick a member"
 msgstr "Chọn một thành viên"
 
@@ -13883,9 +14049,22 @@ msgstr "Đánh giá, câu hỏi và thảo luận từ các trang tài liệu tr
 msgid "Read"
 msgstr "Đọc"
 
+#: src/features/mail/MailPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/settings/ProductsPage.tsx
+msgctxt "mailbox access"
+msgid "Read"
+msgstr "Đọc"
+
 #: src/components/common/text.ts
 msgid "Read analytics properties and their numbers"
 msgstr "Đọc thuộc tính phân tích và số liệu của chúng"
+
+#: src/features/mail/MailPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/settings/ProductsPage.tsx
+msgid "Read and send"
+msgstr "Đọc và gửi"
 
 #: src/features/migrations/text.ts
 msgid "Read as a Google Takeout file: Gmail's labels and threads come with it."
@@ -14184,6 +14363,7 @@ msgstr "Hình ảnh từ xa có thể cho người gửi biết bạn đã mở 
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/OwnDomainCard.tsx
@@ -14229,12 +14409,14 @@ msgid "Remove {lang}"
 msgstr "Gỡ {lang}"
 
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/team/RemoveMemberDialog.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Remove {name}"
 msgstr "Gỡ {name}"
 
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/sso/SsoPage.tsx
+#: src/features/team/RemoveMemberDialog.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Remove {name}?"
 msgstr "Xóa {name}?"
@@ -14242,6 +14424,10 @@ msgstr "Xóa {name}?"
 #: src/features/migrations/MapStep.tsx
 msgid "Remove {sender}"
 msgstr "Gỡ {sender}"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Remove {who}?"
+msgstr "Xóa {who}?"
 
 #: src/features/settings/automation/ActionRow.tsx
 msgid "Remove action"
@@ -14436,6 +14622,7 @@ msgstr "Đang xóa lịch sử đã nhập"
 msgid "Removing imported history…"
 msgstr "Đang xóa lịch sử đã nhập…"
 
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Rename"
 msgstr "Đổi tên"
@@ -14443,6 +14630,10 @@ msgstr "Đổi tên"
 #: src/features/status/ComponentDialogs.tsx
 msgid "Rename group"
 msgstr "Đổi tên nhóm"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Rename the mailbox"
+msgstr "Đổi tên hộp thư"
 
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -15136,6 +15327,7 @@ msgstr "Thứ Bảy"
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/macros/MacroDialog.tsx
@@ -15217,6 +15409,7 @@ msgstr "Lưu danh sách thành chế độ xem"
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/chat/ChatSections.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/profile/ProfileForm.tsx
 #: src/features/settings/signature/SignaturePage.tsx
@@ -15847,6 +16040,10 @@ msgstr "Việc gửi đã bắt đầu. Hãy tạm dừng hoặc hủy thay vào
 msgid "Sending kept failing, so Yuva gave up."
 msgstr "Việc gửi liên tục thất bại nên Yuva đã bỏ cuộc."
 
+#: src/components/common/OnBehalf.tsx
+msgid "Sending on behalf of {name}"
+msgstr "Đang gửi thay mặt {name}"
+
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Sending pace"
@@ -16176,6 +16373,14 @@ msgstr "Dùng chung"
 #: src/components/common/FocusChoice.tsx
 msgid "Shared mailboxes for your team"
 msgstr "Hộp thư dùng chung cho nhóm của bạn"
+
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Shared with the team"
+msgstr "Chia sẻ với nhóm"
+
+#: src/features/mail/MailPage.tsx
+msgid "Shared with you"
+msgstr "Chia sẻ với bạn"
 
 #: src/components/common/text.ts
 msgid "Shipped"
@@ -16656,6 +16861,10 @@ msgstr "Tên trang web"
 #: src/features/setup/SetupLayout.tsx
 msgid "Sites"
 msgstr "Trang web"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Size"
+msgstr "Kích thước"
 
 #: src/features/setup/email/EmailTestStep.tsx
 msgid "Skip for now"
@@ -17452,6 +17661,7 @@ msgstr "ID nhóm"
 
 #: src/components/common/FocusChoice.tsx
 #: src/components/common/PurposeChoice.tsx
+#: src/features/mail/MailPage.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/setup/SetupHub.tsx
 msgid "Team mail"
@@ -18147,6 +18357,10 @@ msgstr "Đã bảo trì xong. Mọi thứ hoạt động như trước."
 msgid "The mbox file is compressed inside the zip. Unzip the Takeout archive and upload the .mbox file."
 msgstr "Tệp mbox bị nén bên trong tệp zip. Hãy giải nén kho lưu trữ Takeout và tải lên tệp .mbox."
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "The member you pick becomes its owner and reads it from then on. You still do not read it."
+msgstr "Thành viên bạn chọn trở thành chủ sở hữu và đọc nó từ giờ. Bạn vẫn không đọc."
+
 #: src/features/migrations/text.ts
 msgid "The message could not be read"
 msgstr "Không thể đọc tin nhắn"
@@ -18206,6 +18420,10 @@ msgstr "Hộp thư kia không có kênh email, nên cuộc trò chuyện email n
 #: src/features/fields/BulkFailures.tsx
 msgid "The others were closed. Open one to fill in what it needs, then close it."
 msgstr "Các cuộc còn lại đã được đóng. Hãy mở một cuộc, điền những gì còn thiếu rồi đóng."
+
+#: src/components/common/OnBehalf.tsx
+msgid "the owner"
+msgstr "chủ sở hữu"
 
 #: src/features/status/Notices.tsx
 msgid "The page already sent 10 notices in the last hour"
@@ -18274,6 +18492,10 @@ msgstr "người này không thuộc nhóm nào được phép"
 #: src/features/settings/audit/sentence.ts
 msgid "the person is not a member of this workspace"
 msgstr "người này không phải thành viên của không gian làm việc này"
+
+#: src/features/settings/audit/sentence.ts
+msgid "The personal mailbox {inbox} lost its owner {who}"
+msgstr "Hộp thư cá nhân {inbox} mất chủ sở hữu {who}"
 
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "The policy is none: receivers only report. Move to quarantine once all your mail passes."
@@ -18707,6 +18929,10 @@ msgstr "Họ không nhận thêm thư từ danh sách này, và việc nhóm đ�
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "They signed up on our website and confirmed their address."
 msgstr "Họ đã đăng ký trên trang web của chúng tôi và xác nhận địa chỉ."
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "They stop reading this mailbox at once."
+msgstr "Họ ngừng đọc hộp thư này ngay lập tức."
 
 #: src/features/migrations/text.ts
 msgid "This {provider} account's plan has no API access, which Yuva reads through."
@@ -19347,6 +19573,10 @@ msgid "Too many workspaces were created from your network today. Try again tomor
 msgstr "Hôm nay đã có quá nhiều không gian làm việc được tạo từ mạng của bạn. Hãy thử lại vào ngày mai."
 
 #: src/features/settings/audit/sentence.ts
+msgid "Took {who}'s access to the personal mailbox {inbox} away"
+msgstr "Đã thu hồi quyền của {who} với hộp thư cá nhân {inbox}"
+
+#: src/features/settings/audit/sentence.ts
 msgid "Took away the access of {person} to {inbox}"
 msgstr "Đã thu hồi quyền truy cập {inbox} của {person}"
 
@@ -19496,7 +19726,7 @@ msgstr "Bản ghi TXT"
 msgid "Type"
 msgstr "Loại"
 
-#: src/features/settings/inboxes/InboxSecurity.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 msgid "Type {name} to confirm"
 msgstr "Nhập {name} để xác nhận"
 
@@ -20514,6 +20744,10 @@ msgstr "Mỗi cột chứa gì"
 msgid "What happened"
 msgstr "Đã xảy ra gì"
 
+#: src/features/team/RemoveMemberDialog.tsx
+msgid "What happens to {boxName}"
+msgstr "Điều gì xảy ra với {boxName}"
+
 #: src/features/broadcasts/Composer.tsx
 msgid "What is new in October"
 msgstr "Có gì mới trong tháng Mười"
@@ -20810,6 +21044,10 @@ msgstr "Ai đang ở đây"
 msgid "Who is it for?"
 msgstr "Dành cho ai?"
 
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Who reads it?"
+msgstr "Ai đọc?"
+
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "Who sends, and what about?"
 msgstr "Ai gửi, và về chuyện gì?"
@@ -21092,6 +21330,10 @@ msgid "You can leave this page: the conversation will wait for you in your conve
 msgstr "Bạn có thể rời trang này: cuộc trò chuyện sẽ chờ bạn trong danh sách cuộc trò chuyện."
 
 #: src/features/mail/MailThread.tsx
+msgid "You can read this mailbox but not change it. Its owner can let you send from it."
+msgstr "Bạn có thể đọc hộp thư này nhưng không thể thay đổi. Chủ sở hữu có thể cho phép bạn gửi từ đó."
+
+#: src/features/mail/MailThread.tsx
 msgid "You can restore it from the Trash for 30 days, then it is deleted for good with its messages and files."
 msgstr "Bạn có thể khôi phục từ Thùng rác trong 30 ngày, sau đó thư bị xóa vĩnh viễn cùng tin nhắn và tệp."
 
@@ -21173,8 +21415,8 @@ msgid "You have unsaved changes to {what}."
 msgstr "Bạn có thay đổi chưa lưu ở {what}."
 
 #: src/features/auth/DeleteAccountButton.tsx
-msgid "You leave every workspace and lose your sign-ins, passkeys and notifications. Messages you wrote stay in their conversations, shown as from a deleted member. This cannot be undone."
-msgstr "Bạn rời mọi không gian làm việc và mất các đăng nhập, khóa truy cập và thông báo. Tin nhắn bạn đã viết vẫn ở trong các cuộc trò chuyện, hiển thị như từ một thành viên đã xóa. Không thể hoàn tác."
+msgid "You leave every workspace and lose your sign-ins, passkeys and notifications. Messages you wrote stay in their conversations, shown as from a deleted member. Your personal mailboxes stay with the workspace, unread, until an owner or admin hands them to someone or deletes them. This cannot be undone."
+msgstr "Bạn rời mọi không gian làm việc và mất đăng nhập, khóa truy cập và thông báo. Tin nhắn bạn viết vẫn ở trong cuộc trò chuyện, hiển thị như của thành viên đã xóa. Hộp thư cá nhân của bạn ở lại không gian làm việc, chưa đọc, cho đến khi chủ sở hữu hoặc quản trị viên chuyển giao hoặc xóa. Không thể hoàn tác."
 
 #: src/features/account/AccountPage.tsx
 msgid "You replied"
@@ -21302,6 +21544,10 @@ msgstr "Nhà cung cấp thư của bạn hoặc máy chủ SMTP của chính b�
 msgid "Your mailbox"
 msgstr "Hộp thư của bạn"
 
+#: src/features/mail/MailPage.tsx
+msgid "Your mailboxes"
+msgstr "Hộp thư của bạn"
+
 #: src/features/migrations/text.ts
 msgid "Your Microsoft 365 organization lets only an admin consent to apps. Send your admin the link below; once they accept, sign in again."
 msgstr "Tổ chức Microsoft 365 của bạn chỉ cho phép quản trị viên đồng ý với ứng dụng. Hãy gửi liên kết bên dưới cho quản trị viên; khi họ chấp nhận, hãy đăng nhập lại."
@@ -21420,6 +21666,10 @@ msgstr "Tên không gian làm việc của bạn, thời gian lưu các cuộc t
 #: src/features/account/AccountPage.tsx
 msgid "Your Yuva account"
 msgstr "Tài khoản Yuva của bạn"
+
+#: src/features/settings/ProductsPage.tsx
+msgid "Yours"
+msgstr "Của bạn"
 
 #: src/features/auth/AuthLayout.tsx
 msgid "Yuva {version}"

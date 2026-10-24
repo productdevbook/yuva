@@ -254,6 +254,10 @@ msgstr "{attention, plural, other {채널 #개에 확인이 필요합니다}}"
 msgid "{author, select, bot {No drafts by bots} assistant {No drafts by assistants} member {No drafts by members} other {No drafts by this author}}"
 msgstr "{author, select, bot {봇의 초안 없음} assistant {어시스턴트의 초안 없음} member {멤버의 초안 없음} other {이 작성자의 초안 없음}}"
 
+#: src/features/mail/MailThread.tsx
+msgid "{author} on behalf of {ownerName}"
+msgstr "{ownerName} 대신 {author}"
+
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/mail/MailThread.tsx
 msgid "{author}, sent by {by}"
@@ -667,6 +671,10 @@ msgstr "{name}님이 입력 중…"
 #: src/features/setup/SetupHub.tsx
 msgid "{name} news"
 msgstr "{name} 소식"
+
+#: src/features/team/RemoveMemberDialog.tsx
+msgid "{name} owns personal mailboxes. Decide what happens to each: delete it with everything in it, or hand it to another member. You do not read them either way."
+msgstr "{name}님에게 개인 메일함이 있습니다. 각각 내용과 함께 삭제할지 다른 멤버에게 넘길지 정하세요. 어느 쪽이든 직접 읽지는 않습니다."
 
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "{name} receives mail at this address. Here is what you set up."
@@ -1398,6 +1406,10 @@ msgstr "메일링 리스트는 받은 편지함의 이름으로 이메일 채널
 msgid "A mailing list with subscribe forms, for your broadcasts"
 msgstr "일괄 발송을 위한 구독 양식이 있는 메일링 리스트"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "a member"
+msgstr "멤버"
+
 #: src/components/common/AssignmentFields.tsx
 msgid "A member is eligible while they have access to the product (owners and admins only with a grant), have the panel or an app open, are set to Auto availability, the product is inside its business hours and they are under the limit. When nobody is eligible the conversation waits and goes to the first teammate who becomes available."
 msgstr "멤버는 제품에 접근 권한이 있고(소유자와 관리자는 권한이 부여된 경우만), 패널이나 앱이 열려 있고, 가용성이 자동이며, 제품이 영업시간 안에 있고, 한도 미만일 때 대상이 됩니다. 아무도 대상이 아니면 대화는 대기하다가 처음 가능해진 팀원에게 배정됩니다."
@@ -1672,8 +1684,14 @@ msgstr "채택된 답변"
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/app/AppSections.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/settings/ProductsPage.tsx
 msgid "Access"
 msgstr "접근"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Access of {person}"
+msgstr "{person}의 접근 권한"
 
 #: src/features/migrations/DoneStep.tsx
 msgid "Access to {provider}"
@@ -1736,6 +1754,7 @@ msgstr "활동"
 #: src/features/conversation/Participants.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/addresses/AddressesPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Add"
@@ -1781,6 +1800,10 @@ msgstr "언어 추가"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Add a link"
 msgstr "링크 추가"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Add a member"
+msgstr "멤버 추가"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Add a monitor"
@@ -2079,6 +2102,10 @@ msgstr "주소 증명"
 msgid "Address verified"
 msgstr "주소를 확인했습니다"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Addresses"
+msgstr "주소"
+
 #: src/features/team/MemberAddresses.tsx
 msgid "Addresses {name} added to send mail from. Those waiting for approval need an owner or admin."
 msgstr "{name}님이 메일 발송용으로 추가한 주소입니다. 승인을 기다리는 주소는 소유자나 관리자가 필요합니다."
@@ -2205,9 +2232,9 @@ msgstr "모두 읽음으로 표시했습니다"
 msgid "All monitors"
 msgstr "모든 모니터"
 
-#: src/features/settings/inboxes/InboxSecurity.tsx
-msgid "All of its conversations, messages and attachments are deleted with it. Webhooks and API keys limited to it stop working."
-msgstr "대화, 메시지, 첨부 파일이 모두 함께 삭제됩니다. 이 제품으로 제한된 웹훅과 API 키는 작동하지 않게 됩니다."
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "All of its conversations, messages and attachments are deleted with it. This cannot be undone."
+msgstr "대화, 메시지, 첨부 파일이 모두 함께 삭제됩니다. 되돌릴 수 없습니다."
 
 #: src/features/migrations/UploadStep.tsx
 msgid "All parts arrived. Reading the file…"
@@ -3641,6 +3668,7 @@ msgstr "캠페인 이름"
 #: src/features/settings/AddProductDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/sso/SsoPage.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
@@ -3651,6 +3679,7 @@ msgstr "캠페인 이름"
 #: src/features/status/IncidentDetail.tsx
 #: src/features/status/IncidentDialog.tsx
 #: src/features/status/MonitorDialog.tsx
+#: src/features/team/RemoveMemberDialog.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Cancel"
 msgstr "취소"
@@ -4824,6 +4853,7 @@ msgstr "대화"
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/DoneStep.tsx
 #: src/features/migrations/ReviewStep.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/webhooks/events.tsx
 msgid "Conversations"
 msgstr "대화"
@@ -5136,6 +5166,10 @@ msgstr "Create this TXT record at your DNS provider, then press Verify. It can t
 msgid "Create workspace"
 msgstr "워크스페이스 만들기"
 
+#: src/features/mail/MailPage.tsx
+msgid "Create your own mailbox"
+msgstr "내 메일함 만들기"
+
 #: src/features/auth/CreateWorkspace.tsx
 msgid "Create your workspace"
 msgstr "워크스페이스 만들기"
@@ -5338,6 +5372,11 @@ msgstr "기본값: {fallback}"
 msgid "Degraded performance"
 msgstr "성능 저하"
 
+#: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Delegates"
+msgstr "대리인"
+
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListSettings.tsx
@@ -5349,6 +5388,7 @@ msgstr "성능 저하"
 #: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 #: src/features/settings/macros/MacrosPage.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -5356,6 +5396,7 @@ msgstr "성능 저하"
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
 #: src/features/status/SettingsTab.tsx
+#: src/features/team/RemoveMemberDialog.tsx
 msgid "Delete"
 msgstr "삭제"
 
@@ -5378,7 +5419,7 @@ msgstr "삭제 ({removeKey})"
 msgid "Delete {0}?"
 msgstr "{0}을(를) 삭제할까요?"
 
-#: src/features/settings/inboxes/InboxSecurity.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Delete {name}?"
@@ -5416,6 +5457,10 @@ msgstr "키 삭제"
 #: src/features/broadcasts/ListSettings.tsx
 msgid "Delete list"
 msgstr "리스트 삭제"
+
+#: src/features/settings/inboxes/InboxSecurity.tsx
+msgid "Delete mailbox"
+msgstr "메일함 삭제"
 
 #: src/features/status/MonitorsPage.tsx
 msgid "Delete monitor"
@@ -5510,6 +5555,10 @@ msgstr "이 DKIM 키를 삭제할까요?"
 msgid "Delete this macro?"
 msgstr "이 매크로를 삭제할까요?"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Delete this mailbox"
+msgstr "이 메일함 삭제"
+
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Delete this migration?"
 msgstr "이 이전을 삭제할까요?"
@@ -5521,10 +5570,6 @@ msgstr "이 메모 삭제"
 #: src/features/contact/ContactNotes.tsx
 msgid "Delete this note?"
 msgstr "이 메모를 삭제할까요?"
-
-#: src/features/settings/inboxes/InboxSecurity.tsx
-msgid "Delete this product"
-msgstr "이 제품 삭제"
 
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Delete this subscription?"
@@ -5592,6 +5637,7 @@ msgstr "삭제된 받은 편지함"
 
 #: src/components/common/DiscussionAuthor.tsx
 #: src/features/inbox/SidePanels.tsx
+#: src/features/mail/MailThread.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
@@ -5613,6 +5659,10 @@ msgstr "자동화 규칙 {name}을(를) 삭제했습니다"
 #: src/features/settings/audit/sentence.ts
 msgid "Deleted the inbox {name}"
 msgstr "받은편지함 {name}을(를) 삭제했습니다"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted the personal mailbox {name} of {who} when they left"
+msgstr "{who}님이 나가면서 개인 메일함 {name}을(를) 삭제함"
 
 #: src/features/settings/audit/sentence.ts
 msgid "Deleted the team {team}"
@@ -6655,6 +6705,10 @@ msgstr "리스트의 모든 사람. 조건을 걸면 모든 조건에 속성이 
 msgid "Everyone who has written to your products"
 msgstr "제품에 문의한 모든 사람"
 
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Everyone with access to the inbox reads it."
+msgstr "받은편지함에 접근할 수 있는 모든 사람이 읽습니다."
+
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Everyone's posts are published at once, except those of authors you marked as spam."
 msgstr "스팸으로 표시한 작성자를 제외하고 모두의 게시물이 즉시 게시됩니다."
@@ -7580,9 +7634,29 @@ msgstr "멤버 그룹과 담당하는 받은 편지함"
 msgid "Growth"
 msgstr "성장"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Hand over"
+msgstr "넘기기"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Hand over {name}"
+msgstr "{name} 넘기기"
+
+#: src/features/team/RemoveMemberDialog.tsx
+msgid "Hand over to"
+msgstr "넘길 대상"
+
 #: src/features/settings/automation/text.ts
 msgid "Hand to automatic assignment"
 msgstr "자동 배정에 넘기기"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Handed over"
+msgstr "넘김"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Handed the personal mailbox {inbox} to {next}"
+msgstr "개인 메일함 {inbox}을(를) {next}님에게 넘김"
 
 #: src/features/conversation/actions.ts
 msgid "Handed to {name}"
@@ -7809,6 +7883,7 @@ msgstr "호스트 이름 및 인증서"
 msgid "hours"
 msgstr "시간"
 
+#: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/ProductsPage.tsx
 msgid "Hours"
 msgstr "운영 시간"
@@ -8999,6 +9074,10 @@ msgid "Legal name"
 msgstr "법적 이름"
 
 #: src/features/settings/audit/sentence.ts
+msgid "Let {who} into the personal mailbox {inbox}"
+msgstr "{who}님에게 개인 메일함 {inbox} 접근 권한을 부여함"
+
+#: src/features/settings/audit/sentence.ts
 msgid "Let assistants and keys send messages to customers"
 msgstr "어시스턴트와 키가 고객에게 메시지를 보내도록 허용했습니다"
 
@@ -9446,6 +9525,10 @@ msgstr "메일은 {address}을(를) 받는 이메일 채널 \"{channelName}\"로
 msgid "Mail is not signed with a key of the sender’s own domain, which Gmail and Yahoo expect."
 msgstr "Gmail과 Yahoo에서 요구하는 발신자 자체 도메인 키로 메일이 서명되지 않았습니다."
 
+#: src/features/settings/SettingsColumn.tsx
+msgid "Mail only you read"
+msgstr "나만 읽는 메일"
+
 #: src/features/settings/addresses/AddressesPage.tsx
 msgid "Mail queued from it fails instead of going out from another address."
 msgstr "이 주소로 대기 중인 메일은 다른 주소로 나가지 않고 실패합니다."
@@ -9752,6 +9835,7 @@ msgstr "오늘 중앙값"
 msgid "median, first message to closed"
 msgstr "중앙값, 첫 메시지부터 종료까지"
 
+#: src/components/common/MailboxOwnerChoice.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
@@ -9778,6 +9862,10 @@ msgstr "멤버 및 초대"
 #: src/features/conversation/messages/Thread.tsx
 msgid "Members only"
 msgstr "멤버 전용"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Members you let into this mailbox. They can read it, or read and send mail on your behalf. They never change its settings, filters or migrations."
+msgstr "이 메일함에 들여보낸 멤버입니다. 읽거나, 읽고 내 대신 보낼 수 있습니다. 설정, 필터, 이전은 바꿀 수 없습니다."
 
 #: src/features/conversation/composer/MentionMenu.tsx
 msgid "Mention a teammate"
@@ -10308,6 +10396,7 @@ msgstr "내 보기"
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/fields/FieldDialog.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/macros/MacroDialog.tsx
@@ -10389,6 +10478,10 @@ msgstr "닫으려면 “{name}”이(가) 필요합니다"
 #: src/features/broadcasts/ListParts.tsx
 msgid "Needs a sender"
 msgstr "발신자 필요"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Needs an owner"
+msgstr "소유자가 필요함"
 
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/text.ts
@@ -10604,6 +10697,10 @@ msgstr "새 매크로"
 msgid "New mail"
 msgstr "새 메일"
 
+#: src/features/mail/MailPage.tsx
+msgid "New mailbox"
+msgstr "새 메일함"
+
 #: src/features/setup/previews.tsx
 #: src/lib/alerts.ts
 msgid "New message"
@@ -10625,6 +10722,14 @@ msgstr "새 이전"
 msgid "New monitor"
 msgstr "새 모니터"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "New owner"
+msgstr "새 소유자"
+
+#: src/features/team/RemoveMemberDialog.tsx
+msgid "New owner of {boxName}"
+msgstr "{boxName}의 새 소유자"
+
 #: src/features/status/StatusPages.tsx
 msgid "New page"
 msgstr "새 페이지"
@@ -10632,6 +10737,10 @@ msgstr "새 페이지"
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "New password"
 msgstr "새 비밀번호"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "New personal mailbox"
+msgstr "새 개인 메일함"
 
 #: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -11202,6 +11311,11 @@ msgstr "일치하는 다른 연락처가 없습니다."
 msgid "No other conversations."
 msgstr "다른 대화가 없습니다."
 
+#: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "No owner"
+msgstr "소유자 없음"
+
 #: src/features/docs/PagesTab.tsx
 msgid "No pages yet"
 msgstr "아직 페이지가 없습니다"
@@ -11398,6 +11512,14 @@ msgstr "아직 이 받은 편지함을 볼 수 있는 사람이 없습니다."
 #: src/features/conversation/Participants.tsx
 msgid "Nobody else is copied. Replies go to the contact only."
 msgstr "참조에 다른 사람이 없습니다. 답장은 연락처에게만 갑니다."
+
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Nobody else reads it unless you let them. Owners and admins see only that it exists."
+msgstr "허용하지 않는 한 아무도 읽지 못합니다. 소유자와 관리자에게는 존재 여부만 보입니다."
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Nobody else reads this mailbox."
+msgstr "이 메일함을 읽는 사람은 아무도 없습니다."
 
 #: src/features/inbox/SidePanels.tsx
 msgid "Nobody has mentioned you yet"
@@ -12179,6 +12301,10 @@ msgstr "Only if your Slack account uses another address than this one. Optional.
 msgid "Only in the app"
 msgstr "앱에서만"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Only its owner reads it. You can rename it or delete it."
+msgstr "소유자만 읽습니다. 이름을 바꾸거나 삭제할 수 있습니다."
+
 #: src/features/migrations/parts.tsx
 msgid "Only mail since {date}"
 msgstr "{date} 이후 메일만"
@@ -12220,9 +12346,17 @@ msgstr "지금은 수신만"
 msgid "Only receives"
 msgstr "수신만"
 
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Only that member reads it. You see only that it exists."
+msgstr "그 멤버만 읽습니다. 존재 여부만 보입니다."
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Only the exact domain is claimed, not its subdomains. Add eu.example.com on its own if people use such addresses."
 msgstr "Only the exact domain is claimed, not its subdomains. Add eu.example.com on its own if people use such addresses."
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Only the owner of a personal mailbox manages its settings."
+msgstr "개인 메일함의 설정은 소유자만 관리합니다."
 
 #: src/components/common/text.ts
 msgid "Only the person can subscribe again, by confirming a mail."
@@ -12232,6 +12366,10 @@ msgstr "본인만 메일을 확인해 다시 구독할 수 있습니다."
 #: src/features/settings/automation/ActionRow.tsx
 msgid "Only the team sees this"
 msgstr "팀만 볼 수 있음"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Only their owners read them. You see what they hold, never what is in them."
+msgstr "소유자만 읽습니다. 무엇이 들어 있는지는 보이지 않고 보관량만 보입니다."
 
 #: src/features/broadcasts/Report.tsx
 msgid "Only those who replied"
@@ -13089,6 +13227,31 @@ msgstr "사람"
 msgid "Personal"
 msgstr "개인"
 
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Personal (only you)"
+msgstr "개인용(나만)"
+
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Personal for {who}"
+msgstr "{who}님용 개인"
+
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Personal for a member"
+msgstr "멤버용 개인"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Personal mailbox"
+msgstr "개인 메일함"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Personal mailbox of {owner}"
+msgstr "{owner}님의 개인 메일함"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Personal mailboxes"
+msgstr "개인 메일함"
+
 #: src/features/settings/automation/ActionRow.tsx
 msgid "Pick a canned reply"
 msgstr "저장된 답장 선택"
@@ -13145,7 +13308,10 @@ msgstr "필드 선택"
 msgid "Pick a mail"
 msgstr "메일을 선택하세요"
 
+#: src/components/common/MailboxOwnerChoice.tsx
 #: src/features/settings/automation/ActionRow.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/team/RemoveMemberDialog.tsx
 msgid "Pick a member"
 msgstr "멤버 선택"
 
@@ -13883,9 +14049,22 @@ msgstr "내 사이트의 문서 페이지에서 온 평가, 질문, 토론"
 msgid "Read"
 msgstr "읽기"
 
+#: src/features/mail/MailPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/settings/ProductsPage.tsx
+msgctxt "mailbox access"
+msgid "Read"
+msgstr "읽기"
+
 #: src/components/common/text.ts
 msgid "Read analytics properties and their numbers"
 msgstr "분석 속성과 그 수치 읽기"
+
+#: src/features/mail/MailPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/settings/ProductsPage.tsx
+msgid "Read and send"
+msgstr "읽기 및 보내기"
 
 #: src/features/migrations/text.ts
 msgid "Read as a Google Takeout file: Gmail's labels and threads come with it."
@@ -14184,6 +14363,7 @@ msgstr "원격 이미지는 보낸 사람에게 메일을 열었음을 알릴 �
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/OwnDomainCard.tsx
@@ -14229,12 +14409,14 @@ msgid "Remove {lang}"
 msgstr "{lang} 제거"
 
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/team/RemoveMemberDialog.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Remove {name}"
 msgstr "{name} 제거"
 
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/sso/SsoPage.tsx
+#: src/features/team/RemoveMemberDialog.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Remove {name}?"
 msgstr "{name}님을 제거할까요?"
@@ -14242,6 +14424,10 @@ msgstr "{name}님을 제거할까요?"
 #: src/features/migrations/MapStep.tsx
 msgid "Remove {sender}"
 msgstr "{sender} 제거"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Remove {who}?"
+msgstr "{who}님을 제거할까요?"
 
 #: src/features/settings/automation/ActionRow.tsx
 msgid "Remove action"
@@ -14436,6 +14622,7 @@ msgstr "가져온 기록 제거 중"
 msgid "Removing imported history…"
 msgstr "가져온 기록 제거 중…"
 
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Rename"
 msgstr "이름 바꾸기"
@@ -14443,6 +14630,10 @@ msgstr "이름 바꾸기"
 #: src/features/status/ComponentDialogs.tsx
 msgid "Rename group"
 msgstr "그룹 이름 바꾸기"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Rename the mailbox"
+msgstr "메일함 이름 바꾸기"
 
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -15136,6 +15327,7 @@ msgstr "토요일"
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/macros/MacroDialog.tsx
@@ -15217,6 +15409,7 @@ msgstr "목록을 보기로 저장"
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/chat/ChatSections.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/profile/ProfileForm.tsx
 #: src/features/settings/signature/SignaturePage.tsx
@@ -15847,6 +16040,10 @@ msgstr "발송이 이미 시작되었습니다. 대신 일시 중지하거나 �
 msgid "Sending kept failing, so Yuva gave up."
 msgstr "전송이 계속 실패하여 Yuva가 포기했습니다."
 
+#: src/components/common/OnBehalf.tsx
+msgid "Sending on behalf of {name}"
+msgstr "{name}님 대신 보내는 중"
+
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Sending pace"
@@ -16176,6 +16373,14 @@ msgstr "공유"
 #: src/components/common/FocusChoice.tsx
 msgid "Shared mailboxes for your team"
 msgstr "팀을 위한 공유 메일함"
+
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Shared with the team"
+msgstr "팀과 공유"
+
+#: src/features/mail/MailPage.tsx
+msgid "Shared with you"
+msgstr "나와 공유됨"
 
 #: src/components/common/text.ts
 msgid "Shipped"
@@ -16656,6 +16861,10 @@ msgstr "사이트 이름"
 #: src/features/setup/SetupLayout.tsx
 msgid "Sites"
 msgstr "사이트"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Size"
+msgstr "크기"
 
 #: src/features/setup/email/EmailTestStep.tsx
 msgid "Skip for now"
@@ -17452,6 +17661,7 @@ msgstr "팀 ID"
 
 #: src/components/common/FocusChoice.tsx
 #: src/components/common/PurposeChoice.tsx
+#: src/features/mail/MailPage.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/setup/SetupHub.tsx
 msgid "Team mail"
@@ -18147,6 +18357,10 @@ msgstr "점검이 완료되었습니다. 모든 것이 이전처럼 작동합니
 msgid "The mbox file is compressed inside the zip. Unzip the Takeout archive and upload the .mbox file."
 msgstr "mbox 파일이 zip 안에서 압축되어 있습니다. Takeout 아카이브의 압축을 풀고 .mbox 파일을 업로드하세요."
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "The member you pick becomes its owner and reads it from then on. You still do not read it."
+msgstr "선택한 멤버가 소유자가 되어 이후 직접 읽습니다. 나는 계속 읽지 않습니다."
+
 #: src/features/migrations/text.ts
 msgid "The message could not be read"
 msgstr "메시지를 읽을 수 없습니다"
@@ -18206,6 +18420,10 @@ msgstr "다른 받은 편지함에 이메일 채널이 없어 이 이메일 대�
 #: src/features/fields/BulkFailures.tsx
 msgid "The others were closed. Open one to fill in what it needs, then close it."
 msgstr "나머지는 닫혔습니다. 하나를 열어 필요한 항목을 채운 뒤 닫으세요."
+
+#: src/components/common/OnBehalf.tsx
+msgid "the owner"
+msgstr "소유자"
 
 #: src/features/status/Notices.tsx
 msgid "The page already sent 10 notices in the last hour"
@@ -18274,6 +18492,10 @@ msgstr "허용된 그룹에 속해 있지 않습니다"
 #: src/features/settings/audit/sentence.ts
 msgid "the person is not a member of this workspace"
 msgstr "이 워크스페이스의 멤버가 아닙니다"
+
+#: src/features/settings/audit/sentence.ts
+msgid "The personal mailbox {inbox} lost its owner {who}"
+msgstr "개인 메일함 {inbox}의 소유자 {who}님이 사라짐"
 
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "The policy is none: receivers only report. Move to quarantine once all your mail passes."
@@ -18707,6 +18929,10 @@ msgstr "이 리스트의 메일을 더 이상 받지 않으며, 팀이 구독을
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "They signed up on our website and confirmed their address."
 msgstr "우리 웹사이트에서 가입하고 주소를 확인했습니다."
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "They stop reading this mailbox at once."
+msgstr "이 메일함을 즉시 읽을 수 없게 됩니다."
 
 #: src/features/migrations/text.ts
 msgid "This {provider} account's plan has no API access, which Yuva reads through."
@@ -19347,6 +19573,10 @@ msgid "Too many workspaces were created from your network today. Try again tomor
 msgstr "오늘 내 네트워크에서 만들어진 워크스페이스가 너무 많습니다. 내일 다시 시도하세요."
 
 #: src/features/settings/audit/sentence.ts
+msgid "Took {who}'s access to the personal mailbox {inbox} away"
+msgstr "{who}님의 개인 메일함 {inbox} 접근 권한을 회수함"
+
+#: src/features/settings/audit/sentence.ts
 msgid "Took away the access of {person} to {inbox}"
 msgstr "{person} 님의 {inbox} 접근 권한을 회수했습니다"
 
@@ -19496,7 +19726,7 @@ msgstr "TXT 레코드"
 msgid "Type"
 msgstr "유형"
 
-#: src/features/settings/inboxes/InboxSecurity.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 msgid "Type {name} to confirm"
 msgstr "확인하려면 {name}을(를) 입력하세요"
 
@@ -20514,6 +20744,10 @@ msgstr "각 열에 들어 있는 것"
 msgid "What happened"
 msgstr "일어난 일"
 
+#: src/features/team/RemoveMemberDialog.tsx
+msgid "What happens to {boxName}"
+msgstr "{boxName}은(는) 어떻게 되나요"
+
 #: src/features/broadcasts/Composer.tsx
 msgid "What is new in October"
 msgstr "10월의 새 소식"
@@ -20810,6 +21044,10 @@ msgstr "여기 있는 사람"
 msgid "Who is it for?"
 msgstr "누구를 위한 것인가요?"
 
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Who reads it?"
+msgstr "누가 읽나요?"
+
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "Who sends, and what about?"
 msgstr "누가 보내며 무엇에 대한 것인가요?"
@@ -21092,6 +21330,10 @@ msgid "You can leave this page: the conversation will wait for you in your conve
 msgstr "이 페이지를 떠나도 됩니다. 대화는 대화 목록에서 기다립니다."
 
 #: src/features/mail/MailThread.tsx
+msgid "You can read this mailbox but not change it. Its owner can let you send from it."
+msgstr "이 메일함은 읽을 수 있지만 바꿀 수는 없습니다. 소유자가 보내기를 허용할 수 있습니다."
+
+#: src/features/mail/MailThread.tsx
 msgid "You can restore it from the Trash for 30 days, then it is deleted for good with its messages and files."
 msgstr "30일 동안 휴지통에서 복원할 수 있으며, 그 후 메시지와 파일과 함께 영구 삭제됩니다."
 
@@ -21173,8 +21415,8 @@ msgid "You have unsaved changes to {what}."
 msgstr "{what}에 저장하지 않은 변경 사항이 있습니다."
 
 #: src/features/auth/DeleteAccountButton.tsx
-msgid "You leave every workspace and lose your sign-ins, passkeys and notifications. Messages you wrote stay in their conversations, shown as from a deleted member. This cannot be undone."
-msgstr "모든 워크스페이스에서 나가며 로그인, 패스키, 알림을 잃습니다. 내가 쓴 메시지는 대화에 남고 삭제된 멤버가 쓴 것으로 표시됩니다. 이 작업은 되돌릴 수 없습니다."
+msgid "You leave every workspace and lose your sign-ins, passkeys and notifications. Messages you wrote stay in their conversations, shown as from a deleted member. Your personal mailboxes stay with the workspace, unread, until an owner or admin hands them to someone or deletes them. This cannot be undone."
+msgstr "모든 워크스페이스에서 나가고 로그인, 패스키, 알림을 잃습니다. 작성한 메시지는 대화에 남고 삭제된 멤버가 쓴 것으로 표시됩니다. 개인 메일함은 소유자나 관리자가 넘기거나 삭제할 때까지 읽지 않은 채 워크스페이스에 남습니다. 되돌릴 수 없습니다."
 
 #: src/features/account/AccountPage.tsx
 msgid "You replied"
@@ -21302,6 +21544,10 @@ msgstr "메일 제공업체 또는 내 SMTP 서버"
 msgid "Your mailbox"
 msgstr "내 메일함"
 
+#: src/features/mail/MailPage.tsx
+msgid "Your mailboxes"
+msgstr "내 메일함"
+
 #: src/features/migrations/text.ts
 msgid "Your Microsoft 365 organization lets only an admin consent to apps. Send your admin the link below; once they accept, sign in again."
 msgstr "Microsoft 365 조직에서는 관리자만 앱에 동의할 수 있습니다. 아래 링크를 관리자에게 보내고, 수락하면 다시 로그인하세요."
@@ -21420,6 +21666,10 @@ msgstr "워크스페이스 이름, 종료된 대화를 보관하는 기간, 대�
 #: src/features/account/AccountPage.tsx
 msgid "Your Yuva account"
 msgstr "내 Yuva 계정"
+
+#: src/features/settings/ProductsPage.tsx
+msgid "Yours"
+msgstr "내 것"
 
 #: src/features/auth/AuthLayout.tsx
 msgid "Yuva {version}"

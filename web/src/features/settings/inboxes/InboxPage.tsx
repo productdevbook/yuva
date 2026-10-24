@@ -24,6 +24,7 @@ import {
 } from "@/features/settings/inboxes/FeedbackCategories"
 import { ColorPicker } from "@/features/settings/inboxes/colors"
 import { DeleteProduct, IdentitySecretRow } from "@/features/settings/inboxes/InboxSecurity"
+import { DelegatesTab, LockedMailbox } from "@/features/settings/inboxes/Mailbox"
 import { useInbox, useSaveInbox } from "@/features/settings/inboxes/queries"
 import { Block, BlockRow, PageHeader, PageTabs, StatusTag } from "@/features/settings/ui"
 import { useTab } from "@/features/settings/useTab"
@@ -40,6 +41,7 @@ import {
   type Weekday,
 } from "@/lib/api"
 import { keys } from "@/lib/keys"
+import { managesInbox, readsMailbox } from "@/lib/mailbox"
 import { useSession } from "@/lib/session"
 import { cn, timeZones } from "@/lib/utils"
 import { useInboxMembers, useMembers, useTeams } from "@/lib/workspace"
@@ -233,7 +235,7 @@ function ChatTab({ d, set, inbox, locked }: Form) {
   return (
     <div className={cn("grid items-start gap-4", !mail && "lg:grid-cols-[minmax(0,1fr)_320px]")}>
       <div className={cn("flex flex-col gap-4", mail && "max-w-[860px]")}>
-        <PurposeBlock d={d} set={set} locked={locked} />
+        {!inbox.mailbox && <PurposeBlock d={d} set={set} locked={locked} />}
         <Block
           title={mail ? <Trans>Name and look</Trans> : <Trans>What the customer sees</Trans>}
           description={
@@ -579,7 +581,7 @@ function HoursTab({ d, set, locked, inbox }: Form) {
           </div>
         </Block>
       )}
-      <WhoCanReply inbox={inbox} />
+      {!inbox.mailbox && <WhoCanReply inbox={inbox} />}
     </div>
   )
 }
@@ -794,7 +796,7 @@ function MailTab({ d, set, inbox, locked }: Form) {
   )
 }
 
-function DeveloperTab({ d, set }: Form) {
+function DeveloperTab({ d, set, inbox }: Form) {
   const bad = problems(d)
   return (
     <div className="flex max-w-[860px] flex-col gap-4">
@@ -821,14 +823,18 @@ function DeveloperTab({ d, set }: Form) {
             </p>
           )}
         </BlockRow>
-        <BlockRow label={<Trans>Webhooks for this product</Trans>}>
-          <div>
-            <Button variant="outline" size="sm" render={<Link to="webhooks" />}>
-              <Trans>Manage</Trans>
-            </Button>
-          </div>
-        </BlockRow>
-        <IdentitySecretRow />
+        {!inbox.mailbox && (
+          <>
+            <BlockRow label={<Trans>Webhooks for this product</Trans>}>
+              <div>
+                <Button variant="outline" size="sm" render={<Link to="webhooks" />}>
+                  <Trans>Manage</Trans>
+                </Button>
+              </div>
+            </BlockRow>
+            <IdentitySecretRow />
+          </>
+        )}
       </Block>
       <DeleteProduct />
     </div>
@@ -847,8 +853,10 @@ function Editor({ inbox }: { inbox: Inbox }) {
   const { t } = useLingui()
   const text = useEnumText()
   const errorText = useErrorText()
-  const { workspaceId: ws, canManage } = useSession()
-  const { tab, to } = useTab(["chat", "hours", "mail", "developer"] as const, "chat")
+  const { workspaceId: ws, canManage: manager } = useSession()
+  const canManage = managesInbox(inbox, manager)
+  const personal = !!inbox.mailbox
+  const { tab, to } = useTab(["chat", "hours", "mail", "delegates", "developer"] as const, "chat")
   const [d, setD] = useState(() => draftOf(inbox))
   const save = useSaveInbox(inbox)
   const channels = useQuery({
@@ -871,8 +879,16 @@ function Editor({ inbox }: { inbox: Inbox }) {
       label: d.purpose === "mail" ? t({ message: "General", context: "inbox settings tab" }) : t`Chat`,
       testId: "product-tab-chat",
     },
-    { key: "hours", to: to("hours"), label: t`Hours & team`, testId: "product-tab-hours" },
+    {
+      key: "hours",
+      to: to("hours"),
+      label: personal ? t`Hours` : t`Hours & team`,
+      testId: "product-tab-hours",
+    },
     { key: "mail", to: to("mail"), label: t`E-mail`, testId: "product-tab-mail" },
+    ...(personal
+      ? [{ key: "delegates", to: to("delegates"), label: t`Delegates`, testId: "product-tab-delegates" }]
+      : []),
     ...(canManage
       ? [{ key: "developer", to: to("developer"), label: t`Developers`, testId: "product-tab-developer" }]
       : []),
@@ -891,7 +907,8 @@ function Editor({ inbox }: { inbox: Inbox }) {
           <span className="flex flex-wrap items-center gap-x-2 gap-y-1.5">
             <span>
               {domain && <>{domain} · </>}
-              {inbox.purpose === "mail" ? t`Team mail` : text.mode[inbox.mode]} · {inbox.timezone}
+              {personal ? t`Personal mailbox` : inbox.purpose === "mail" ? t`Team mail` : text.mode[inbox.mode]} ·{" "}
+              {inbox.timezone}
             </span>
             {(channels.data ?? []).map((ch) => (
               <Link
@@ -911,6 +928,7 @@ function Editor({ inbox }: { inbox: Inbox }) {
       {tab === "chat" && <ChatTab {...form} />}
       {tab === "hours" && <HoursTab {...form} />}
       {tab === "mail" && <MailTab {...form} />}
+      {tab === "delegates" && personal && <DelegatesTab inbox={inbox} />}
       {tab === "developer" && canManage && <DeveloperTab {...form} />}
       {dirty && canManage && (
         <SaveBar
@@ -937,8 +955,31 @@ function Editor({ inbox }: { inbox: Inbox }) {
   )
 }
 
+function MailboxPage({ inbox }: { inbox: Inbox }) {
+  const { t } = useLingui()
+  if (!readsMailbox(inbox))
+    return (
+      <>
+        <PageHeader back={{ to: "/settings", label: t`Products` }} title={inbox.name} />
+        <ul className="max-w-[860px]">
+          <LockedMailbox inbox={inbox} />
+        </ul>
+      </>
+    )
+  if (inbox.mailbox?.access !== "owner" && inbox.mailbox)
+    return (
+      <>
+        <PageHeader back={{ to: "/settings", label: t`Products` }} title={inbox.name} />
+        <Notice>
+          <Trans>Only the owner of a personal mailbox manages its settings.</Trans>
+        </Notice>
+      </>
+    )
+  return <Editor inbox={inbox} />
+}
+
 export function InboxPage() {
-  return <InboxProvider>{(inbox) => <Editor key={inbox.id} inbox={inbox} />}</InboxProvider>
+  return <InboxProvider>{(inbox) => <MailboxPage key={inbox.id} inbox={inbox} />}</InboxProvider>
 }
 
 export function InboxWebhooks({ children }: { children: React.ReactNode }) {

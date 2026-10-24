@@ -18,7 +18,7 @@ import {
 } from "lucide-react"
 import { useEffect, useMemo, useRef, useState } from "react"
 
-import { EmptyState, Kbd, toast, useContactName } from "@/components/common"
+import { EmptyState, Kbd, Notice, toast, useContactName } from "@/components/common"
 import { MAIL_KEYS } from "@/components/common/ShortcutSheet"
 import { formatDateTime, useErrorText } from "@/components/common/text"
 import { useConfirm } from "@/components/common/ConfirmDialog"
@@ -67,6 +67,7 @@ import { useStar } from "@/features/mail/queries"
 import { useHotkeys } from "@/hooks/use-hotkeys"
 import { useMediaQuery } from "@/hooks/use-media-query"
 import { ApiError, isGone, rawMessageUrl, type Contact, type Conversation, type Message } from "@/lib/api"
+import { writesMailbox } from "@/lib/mailbox"
 import { useSession } from "@/lib/session"
 import { cn } from "@/lib/utils"
 import { useChannelMap, useInboxes, useLabels, useMemberMap } from "@/lib/workspace"
@@ -160,7 +161,15 @@ function MailCard({
   const by = useAuthorName({ ...m, author: m.sent_by ?? m.author }, ctx)
   const out = m.direction === "out"
   const e = m.email
-  const name = out ? (m.sent_by ? t`${author}, sent by ${by}` : author) : contactName
+  const owner = m.on_behalf_of_member_id ? ctx.members.get(m.on_behalf_of_member_id) : undefined
+  const ownerName = owner ? owner.name || owner.email : t`Deleted member`
+  const name = !out
+    ? contactName
+    : m.on_behalf_of_member_id
+      ? t`${author} on behalf of ${ownerName}`
+      : m.sent_by
+        ? t`${author}, sent by ${by}`
+        : author
   const date = formatDateTime(m.created_at, i18n.locale)
   const snippet = m.body.replace(/\s+/g, " ").trim()
   if (!open) {
@@ -198,7 +207,7 @@ function MailCard({
           aria-expanded
           title={t`Collapse`}
         >
-          <span className="min-w-0 flex-1 truncate">
+          <span className="min-w-0 flex-1 truncate phone:whitespace-normal phone:break-words">
             <span className="text-body font-semibold" data-testid="mail-from-name">
               {name}
             </span>
@@ -337,6 +346,7 @@ function Loaded({ c, contact, onBack, onLeave, openDraft }: Props & { c: Convers
   const labels = useLabels().data ?? []
   const inboxes = useInboxes().data ?? []
   const inbox = inboxes.find((i) => i.id === c.inbox_id)
+  const write = writesMailbox(inbox)
   const channel = useChannelMap().get(c.channel_id ?? "")
   const messages = useMessages(c.id)
   const contactName = useContactName()
@@ -475,9 +485,9 @@ function Loaded({ c, contact, onBack, onLeave, openDraft }: Props & { c: Convers
     toast(t`Marked as unread`, () => listActions.markRead(c.id))
     onLeave()
   }
-  const toggleStar = () => star([c.id], !starred)
+  const toggleStar = () => write && star([c.id], !starred)
   const replyTo = (all: boolean) => {
-    reply.current?.replyAll(all)
+    if (write) reply.current?.replyAll(all)
   }
   const editDraft = (m: Message) => reply.current?.edit(m)
   const cancelSchedule = (m: Message) =>
@@ -505,23 +515,23 @@ function Loaded({ c, contact, onBack, onLeave, openDraft }: Props & { c: Convers
     trashed
       ? {
           [MAIL_KEYS.quoted]: () => setExpandQuoted((x) => !x),
-          [MAIL_KEYS.restore]: () => canManage && restore(),
+          [MAIL_KEYS.restore]: () => write && canManage && restore(),
           [MAIL_KEYS.expand]: () => setAllOpen((x) => !x),
         }
       : {
           [MAIL_KEYS.reply]: () => replyTo(false),
           [MAIL_KEYS.replyAll]: () => replyTo(true),
-          [MAIL_KEYS.note]: () => reply.current?.focus("note"),
-          [MAIL_KEYS.attach]: () => reply.current?.attach(),
-          [MAIL_KEYS.archive]: archive,
-          [MAIL_KEYS.trash]: () => canManage && trash(),
+          [MAIL_KEYS.note]: () => write && reply.current?.focus("note"),
+          [MAIL_KEYS.attach]: () => write && reply.current?.attach(),
+          [MAIL_KEYS.archive]: () => write && archive(),
+          [MAIL_KEYS.trash]: () => write && canManage && trash(),
           [MAIL_KEYS.star]: toggleStar,
           [MAIL_KEYS.unread]: markUnread,
-          [MAIL_KEYS.snooze]: () => setSnoozing(true),
-          [MAIL_KEYS.filter]: () => latestFilterable && setFiltering(latestFilterable.id),
+          [MAIL_KEYS.snooze]: () => write && setSnoozing(true),
+          [MAIL_KEYS.filter]: () => write && latestFilterable && setFiltering(latestFilterable.id),
           [MAIL_KEYS.quoted]: () => setExpandQuoted((x) => !x),
           [MAIL_KEYS.expand]: () => setAllOpen((x) => !x),
-          ...cardKeys,
+          ...(write ? cardKeys : {}),
         }
   )
 
@@ -542,9 +552,10 @@ function Loaded({ c, contact, onBack, onLeave, openDraft }: Props & { c: Convers
           </h2>
           <button
             type="button"
+            disabled={!write}
             onClick={toggleStar}
             className={cn(
-              "grid size-8 shrink-0 place-items-center rounded-md outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring",
+              "grid size-8 shrink-0 place-items-center rounded-md outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none",
               starred ? "text-warning" : "text-faint"
             )}
             aria-pressed={starred}
@@ -569,19 +580,21 @@ function Loaded({ c, contact, onBack, onLeave, openDraft }: Props & { c: Convers
           )}
           {!trashed && (
             <>
-              <Button
-                variant="outline"
-                className={btn}
-                onClick={archive}
-                title={archived ? t`Move to the Inbox (E)` : t`Archive (E)`}
-                data-testid="mail-archive"
-              >
-                {archived ? <InboxIcon /> : <ArchiveIcon />}
-                <span className="phone:sr-only">
-                  {archived ? <Trans>Move to the Inbox</Trans> : <Trans>Archive</Trans>}
-                </span>
-              </Button>
-              <MailSnooze actions={actions} open={snoozing} onOpenChange={setSnoozing} />
+              {write && (
+                <Button
+                  variant="outline"
+                  className={btn}
+                  onClick={archive}
+                  title={archived ? t`Move to the Inbox (E)` : t`Archive (E)`}
+                  data-testid="mail-archive"
+                >
+                  {archived ? <InboxIcon /> : <ArchiveIcon />}
+                  <span className="phone:sr-only">
+                    {archived ? <Trans>Move to the Inbox</Trans> : <Trans>Archive</Trans>}
+                  </span>
+                </Button>
+              )}
+              {write && <MailSnooze actions={actions} open={snoozing} onOpenChange={setSnoozing} />}
               <Button
                 variant="outline"
                 className={btn}
@@ -594,7 +607,7 @@ function Loaded({ c, contact, onBack, onLeave, openDraft }: Props & { c: Convers
                   <Trans>Mark as unread</Trans>
                 </span>
               </Button>
-              {canManage && (
+              {write && canManage && (
                 <Button
                   variant="outline"
                   className={cn(btn, "text-destructive")}
@@ -686,7 +699,14 @@ function Loaded({ c, contact, onBack, onLeave, openDraft }: Props & { c: Convers
           ))}
         </div>
       </div>
-      {!trashed && (
+      {!trashed && !write && (
+        <div className="shrink-0 border-t bg-background px-4 py-3 phone:px-2">
+          <Notice className="mx-auto max-w-[880px]" data-testid="mail-read-only">
+            <Trans>You can read this mailbox but not change it. Its owner can let you send from it.</Trans>
+          </Notice>
+        </div>
+      )}
+      {!trashed && write && (
         <div className="shrink-0 border-t bg-background px-4 pt-2 pb-3 phone:px-2 phone:pb-[max(0.5rem,env(safe-area-inset-bottom))]">
           <div className="mx-auto flex max-w-[880px] flex-col gap-2">
             <div className="flex items-center gap-1.5" data-testid="mail-reply-modes">

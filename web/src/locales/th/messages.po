@@ -254,6 +254,10 @@ msgstr "{attention, plural, other {ช่องทาง # ช่องต้อ
 msgid "{author, select, bot {No drafts by bots} assistant {No drafts by assistants} member {No drafts by members} other {No drafts by this author}}"
 msgstr "{author, select, bot {ไม่มีฉบับร่างจากบอท} assistant {ไม่มีฉบับร่างจากผู้ช่วย} member {ไม่มีฉบับร่างจากสมาชิก} other {ไม่มีฉบับร่างจากผู้เขียนนี้}}"
 
+#: src/features/mail/MailThread.tsx
+msgid "{author} on behalf of {ownerName}"
+msgstr "{author} ในนามของ {ownerName}"
+
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/mail/MailThread.tsx
 msgid "{author}, sent by {by}"
@@ -667,6 +671,10 @@ msgstr "{name} กำลังพิมพ์…"
 #: src/features/setup/SetupHub.tsx
 msgid "{name} news"
 msgstr "{name} ตอบกลับไปก่อนคุณแล้ว"
+
+#: src/features/team/RemoveMemberDialog.tsx
+msgid "{name} owns personal mailboxes. Decide what happens to each: delete it with everything in it, or hand it to another member. You do not read them either way."
+msgstr "{name} มีกล่องจดหมายส่วนตัว ตัดสินใจสำหรับแต่ละกล่อง: ลบพร้อมเนื้อหาทั้งหมด หรือส่งต่อให้สมาชิกคนอื่น ไม่ว่าแบบใดคุณก็ไม่ได้อ่านกล่องเหล่านั้น"
 
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "{name} receives mail at this address. Here is what you set up."
@@ -1398,6 +1406,10 @@ msgstr "รายชื่อผู้รับจดหมายส่งใน
 msgid "A mailing list with subscribe forms, for your broadcasts"
 msgstr "รายชื่อผู้รับจดหมายพร้อมแบบฟอร์มสมัครรับ สำหรับบรอดคาสต์ของคุณ"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "a member"
+msgstr "สมาชิก"
+
 #: src/components/common/AssignmentFields.tsx
 msgid "A member is eligible while they have access to the product (owners and admins only with a grant), have the panel or an app open, are set to Auto availability, the product is inside its business hours and they are under the limit. When nobody is eligible the conversation waits and goes to the first teammate who becomes available."
 msgstr "สมาชิกมีสิทธิ์เมื่อมีสิทธิ์เข้าถึงผลิตภัณฑ์ (เจ้าของและผู้ดูแลเฉพาะเมื่อได้รับสิทธิ์), เปิดแผงควบคุมหรือแอปอยู่, สถานะพร้อมเป็นอัตโนมัติ, ผลิตภัณฑ์อยู่ในเวลาทำการ และสมาชิกยังต่ำกว่าขีดจำกัด หากไม่มีใครมีสิทธิ์ การสนทนาจะรอและส่งให้เพื่อนร่วมทีมคนแรกที่ว่าง"
@@ -1672,8 +1684,14 @@ msgstr "คำตอบที่ยอมรับ"
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/app/AppSections.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/settings/ProductsPage.tsx
 msgid "Access"
 msgstr "การเข้าถึง"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Access of {person}"
+msgstr "สิทธิ์เข้าถึงของ {person}"
 
 #: src/features/migrations/DoneStep.tsx
 msgid "Access to {provider}"
@@ -1736,6 +1754,7 @@ msgstr "กิจกรรม"
 #: src/features/conversation/Participants.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/addresses/AddressesPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Add"
@@ -1781,6 +1800,10 @@ msgstr "เพิ่มภาษา"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Add a link"
 msgstr "เพิ่มลิงก์"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Add a member"
+msgstr "เพิ่มสมาชิก"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Add a monitor"
@@ -2079,6 +2102,10 @@ msgstr "การพิสูจน์ที่อยู่"
 msgid "Address verified"
 msgstr "ยืนยันที่อยู่แล้ว"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Addresses"
+msgstr "ที่อยู่"
+
 #: src/features/team/MemberAddresses.tsx
 msgid "Addresses {name} added to send mail from. Those waiting for approval need an owner or admin."
 msgstr "ที่อยู่ที่ {name} เพิ่มไว้เพื่อส่งอีเมล ที่อยู่ที่รออนุมัติต้องให้เจ้าของหรือผู้ดูแลอนุมัติ"
@@ -2205,9 +2232,9 @@ msgstr "ทำเครื่องหมายว่าอ่านแล้ว
 msgid "All monitors"
 msgstr "มอนิเตอร์ทั้งหมด"
 
-#: src/features/settings/inboxes/InboxSecurity.tsx
-msgid "All of its conversations, messages and attachments are deleted with it. Webhooks and API keys limited to it stop working."
-msgstr "การสนทนา ข้อความ และไฟล์แนบทั้งหมดจะถูกลบไปพร้อมกัน เว็บฮุกและคีย์ API ที่จำกัดไว้กับผลิตภัณฑ์นี้จะหยุดทำงาน"
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "All of its conversations, messages and attachments are deleted with it. This cannot be undone."
+msgstr "การสนทนา ข้อความ และไฟล์แนบทั้งหมดจะถูกลบไปด้วย ย้อนกลับไม่ได้"
 
 #: src/features/migrations/UploadStep.tsx
 msgid "All parts arrived. Reading the file…"
@@ -3641,6 +3668,7 @@ msgstr "ชื่อแคมเปญ"
 #: src/features/settings/AddProductDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/sso/SsoPage.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
@@ -3651,6 +3679,7 @@ msgstr "ชื่อแคมเปญ"
 #: src/features/status/IncidentDetail.tsx
 #: src/features/status/IncidentDialog.tsx
 #: src/features/status/MonitorDialog.tsx
+#: src/features/team/RemoveMemberDialog.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Cancel"
 msgstr "ยกเลิก"
@@ -4824,6 +4853,7 @@ msgstr "การสนทนา"
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/DoneStep.tsx
 #: src/features/migrations/ReviewStep.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/webhooks/events.tsx
 msgid "Conversations"
 msgstr "การสนทนา"
@@ -5136,6 +5166,10 @@ msgstr "Create this TXT record at your DNS provider, then press Verify. It can t
 msgid "Create workspace"
 msgstr "สร้างพื้นที่ทำงาน"
 
+#: src/features/mail/MailPage.tsx
+msgid "Create your own mailbox"
+msgstr "สร้างกล่องจดหมายของคุณเอง"
+
 #: src/features/auth/CreateWorkspace.tsx
 msgid "Create your workspace"
 msgstr "สร้างพื้นที่ทำงานของคุณ"
@@ -5338,6 +5372,11 @@ msgstr "ค่าเริ่มต้น: {fallback}"
 msgid "Degraded performance"
 msgstr "ประสิทธิภาพลดลง"
 
+#: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Delegates"
+msgstr "ผู้รับมอบสิทธิ์"
+
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListSettings.tsx
@@ -5349,6 +5388,7 @@ msgstr "ประสิทธิภาพลดลง"
 #: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 #: src/features/settings/macros/MacrosPage.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -5356,6 +5396,7 @@ msgstr "ประสิทธิภาพลดลง"
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
 #: src/features/status/SettingsTab.tsx
+#: src/features/team/RemoveMemberDialog.tsx
 msgid "Delete"
 msgstr "ลบ"
 
@@ -5378,7 +5419,7 @@ msgstr "ลบ ({removeKey})"
 msgid "Delete {0}?"
 msgstr "ลบ {0} ไหม"
 
-#: src/features/settings/inboxes/InboxSecurity.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Delete {name}?"
@@ -5416,6 +5457,10 @@ msgstr "ลบคีย์"
 #: src/features/broadcasts/ListSettings.tsx
 msgid "Delete list"
 msgstr "ลบรายชื่อ"
+
+#: src/features/settings/inboxes/InboxSecurity.tsx
+msgid "Delete mailbox"
+msgstr "ลบกล่องจดหมาย"
 
 #: src/features/status/MonitorsPage.tsx
 msgid "Delete monitor"
@@ -5510,6 +5555,10 @@ msgstr "ลบคีย์ DKIM นี้ไหม"
 msgid "Delete this macro?"
 msgstr "ลบมาโครนี้ไหม"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Delete this mailbox"
+msgstr "ลบกล่องจดหมายนี้"
+
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Delete this migration?"
 msgstr "ลบการย้ายนี้ไหม"
@@ -5521,10 +5570,6 @@ msgstr "ลบบันทึกนี้"
 #: src/features/contact/ContactNotes.tsx
 msgid "Delete this note?"
 msgstr "ลบบันทึกนี้ไหม"
-
-#: src/features/settings/inboxes/InboxSecurity.tsx
-msgid "Delete this product"
-msgstr "ลบผลิตภัณฑ์นี้"
 
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Delete this subscription?"
@@ -5592,6 +5637,7 @@ msgstr "กล่องข้อความที่ลบแล้ว"
 
 #: src/components/common/DiscussionAuthor.tsx
 #: src/features/inbox/SidePanels.tsx
+#: src/features/mail/MailThread.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
@@ -5613,6 +5659,10 @@ msgstr "ลบกฎระบบอัตโนมัติ {name}"
 #: src/features/settings/audit/sentence.ts
 msgid "Deleted the inbox {name}"
 msgstr "ลบกล่องจดหมาย {name}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted the personal mailbox {name} of {who} when they left"
+msgstr "ลบกล่องจดหมายส่วนตัว {name} ของ {who} เมื่อออกจากทีม"
 
 #: src/features/settings/audit/sentence.ts
 msgid "Deleted the team {team}"
@@ -6655,6 +6705,10 @@ msgstr "ทุกคนในรายชื่อ เงื่อนไขจ�
 msgid "Everyone who has written to your products"
 msgstr "ทุกคนที่เคยเขียนถึงผลิตภัณฑ์ของคุณ"
 
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Everyone with access to the inbox reads it."
+msgstr "ทุกคนที่เข้าถึงกล่องขาเข้าได้จะอ่านได้"
+
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Everyone's posts are published at once, except those of authors you marked as spam."
 msgstr "โพสต์ของทุกคนเผยแพร่ทันที ยกเว้นของผู้เขียนที่คุณทำเครื่องหมายว่าเป็นสแปม"
@@ -7580,9 +7634,29 @@ msgstr "กลุ่มสมาชิกและกล่องข้อคว
 msgid "Growth"
 msgstr "การเติบโต"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Hand over"
+msgstr "ส่งต่อ"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Hand over {name}"
+msgstr "ส่งต่อ {name}"
+
+#: src/features/team/RemoveMemberDialog.tsx
+msgid "Hand over to"
+msgstr "ส่งต่อให้"
+
 #: src/features/settings/automation/text.ts
 msgid "Hand to automatic assignment"
 msgstr "ส่งให้การมอบหมายอัตโนมัติ"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Handed over"
+msgstr "ส่งต่อแล้ว"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Handed the personal mailbox {inbox} to {next}"
+msgstr "ส่งต่อกล่องจดหมายส่วนตัว {inbox} ให้ {next}"
 
 #: src/features/conversation/actions.ts
 msgid "Handed to {name}"
@@ -7809,6 +7883,7 @@ msgstr "ชื่อโฮสต์และใบรับรอง"
 msgid "hours"
 msgstr "ชั่วโมง"
 
+#: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/ProductsPage.tsx
 msgid "Hours"
 msgstr "เวลาทำการ"
@@ -8999,6 +9074,10 @@ msgid "Legal name"
 msgstr "ชื่อตามกฎหมาย"
 
 #: src/features/settings/audit/sentence.ts
+msgid "Let {who} into the personal mailbox {inbox}"
+msgstr "ให้สิทธิ์ {who} เข้าถึงกล่องจดหมายส่วนตัว {inbox}"
+
+#: src/features/settings/audit/sentence.ts
 msgid "Let assistants and keys send messages to customers"
 msgstr "อนุญาตให้ผู้ช่วยและคีย์ส่งข้อความถึงลูกค้า"
 
@@ -9446,6 +9525,10 @@ msgstr "อีเมลเข้าช่องทางอีเมล “{chan
 msgid "Mail is not signed with a key of the sender’s own domain, which Gmail and Yahoo expect."
 msgstr "อีเมลไม่ได้ลงนามด้วยคีย์ของโดเมนผู้ส่งเอง ซึ่ง Gmail และ Yahoo คาดหวังให้มี"
 
+#: src/features/settings/SettingsColumn.tsx
+msgid "Mail only you read"
+msgstr "จดหมายที่คุณอ่านคนเดียว"
+
 #: src/features/settings/addresses/AddressesPage.tsx
 msgid "Mail queued from it fails instead of going out from another address."
 msgstr "อีเมลที่รอคิวจากที่อยู่นี้จะล้มเหลว แทนที่จะส่งออกจากที่อยู่อื่น"
@@ -9752,6 +9835,7 @@ msgstr "ค่ามัธยฐานวันนี้"
 msgid "median, first message to closed"
 msgstr "ค่ามัธยฐาน ตั้งแต่ข้อความแรกจนปิด"
 
+#: src/components/common/MailboxOwnerChoice.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
@@ -9778,6 +9862,10 @@ msgstr "สมาชิกและคำเชิญ"
 #: src/features/conversation/messages/Thread.tsx
 msgid "Members only"
 msgstr "เฉพาะสมาชิก"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Members you let into this mailbox. They can read it, or read and send mail on your behalf. They never change its settings, filters or migrations."
+msgstr "สมาชิกที่คุณให้เข้ากล่องจดหมายนี้ อ่านได้ หรืออ่านและส่งแทนคุณได้ แต่ไม่เปลี่ยนการตั้งค่า ตัวกรอง หรือการย้ายข้อมูลของกล่องนี้"
 
 #: src/features/conversation/composer/MentionMenu.tsx
 msgid "Mention a teammate"
@@ -10308,6 +10396,7 @@ msgstr "มุมมองของฉัน"
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/fields/FieldDialog.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/macros/MacroDialog.tsx
@@ -10389,6 +10478,10 @@ msgstr "ต้องมี “{name}” จึงจะปิดได้"
 #: src/features/broadcasts/ListParts.tsx
 msgid "Needs a sender"
 msgstr "ต้องมีผู้ส่ง"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Needs an owner"
+msgstr "ต้องมีเจ้าของ"
 
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/text.ts
@@ -10604,6 +10697,10 @@ msgstr "มาโครใหม่"
 msgid "New mail"
 msgstr "เมลใหม่"
 
+#: src/features/mail/MailPage.tsx
+msgid "New mailbox"
+msgstr "กล่องจดหมายใหม่"
+
 #: src/features/setup/previews.tsx
 #: src/lib/alerts.ts
 msgid "New message"
@@ -10625,6 +10722,14 @@ msgstr "การย้ายใหม่"
 msgid "New monitor"
 msgstr "มอนิเตอร์ใหม่"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "New owner"
+msgstr "เจ้าของใหม่"
+
+#: src/features/team/RemoveMemberDialog.tsx
+msgid "New owner of {boxName}"
+msgstr "เจ้าของใหม่ของ {boxName}"
+
 #: src/features/status/StatusPages.tsx
 msgid "New page"
 msgstr "หน้าใหม่"
@@ -10632,6 +10737,10 @@ msgstr "หน้าใหม่"
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "New password"
 msgstr "รหัสผ่านใหม่"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "New personal mailbox"
+msgstr "กล่องจดหมายส่วนตัวใหม่"
 
 #: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -11202,6 +11311,11 @@ msgstr "ไม่มีผู้ติดต่ออื่นที่ตรง
 msgid "No other conversations."
 msgstr "ไม่มีการสนทนาอื่น"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "No owner"
+msgstr "ไม่มีเจ้าของ"
+
 #: src/features/docs/PagesTab.tsx
 msgid "No pages yet"
 msgstr "ยังไม่มีหน้า"
@@ -11398,6 +11512,14 @@ msgstr "ยังไม่มีใครอื่นเห็นกล่อง
 #: src/features/conversation/Participants.tsx
 msgid "Nobody else is copied. Replies go to the contact only."
 msgstr "ไม่มีใครอื่นอยู่ในสำเนา คำตอบจะส่งถึงผู้ติดต่อเท่านั้น"
+
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Nobody else reads it unless you let them. Owners and admins see only that it exists."
+msgstr "ไม่มีใครอ่านได้นอกจากคุณอนุญาต เจ้าของและผู้ดูแลเห็นเพียงว่ามีอยู่"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Nobody else reads this mailbox."
+msgstr "ไม่มีใครอื่นอ่านกล่องจดหมายนี้"
 
 #: src/features/inbox/SidePanels.tsx
 msgid "Nobody has mentioned you yet"
@@ -12179,6 +12301,10 @@ msgstr "Only if your Slack account uses another address than this one. Optional.
 msgid "Only in the app"
 msgstr "เฉพาะในแอป"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Only its owner reads it. You can rename it or delete it."
+msgstr "เฉพาะเจ้าของเท่านั้นที่อ่านได้ คุณเปลี่ยนชื่อหรือลบได้"
+
 #: src/features/migrations/parts.tsx
 msgid "Only mail since {date}"
 msgstr "เฉพาะอีเมลตั้งแต่ {date}"
@@ -12220,9 +12346,17 @@ msgstr "รับอย่างเดียวไปก่อน"
 msgid "Only receives"
 msgstr "รับอย่างเดียว"
 
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Only that member reads it. You see only that it exists."
+msgstr "เฉพาะสมาชิกคนนั้นที่อ่านได้ คุณเห็นเพียงว่ามีอยู่"
+
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Only the exact domain is claimed, not its subdomains. Add eu.example.com on its own if people use such addresses."
 msgstr "Only the exact domain is claimed, not its subdomains. Add eu.example.com on its own if people use such addresses."
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Only the owner of a personal mailbox manages its settings."
+msgstr "เฉพาะเจ้าของกล่องจดหมายส่วนตัวที่จัดการการตั้งค่าได้"
 
 #: src/components/common/text.ts
 msgid "Only the person can subscribe again, by confirming a mail."
@@ -12232,6 +12366,10 @@ msgstr "เฉพาะบุคคลนั้นที่สมัครรั
 #: src/features/settings/automation/ActionRow.tsx
 msgid "Only the team sees this"
 msgstr "เฉพาะทีมที่เห็น"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Only their owners read them. You see what they hold, never what is in them."
+msgstr "เฉพาะเจ้าของแต่ละกล่องที่อ่านได้ คุณเห็นว่ามีเท่าไร ไม่เห็นว่าเป็นอะไร"
 
 #: src/features/broadcasts/Report.tsx
 msgid "Only those who replied"
@@ -13089,6 +13227,31 @@ msgstr "บุคคล"
 msgid "Personal"
 msgstr "ส่วนตัว"
 
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Personal (only you)"
+msgstr "ส่วนตัว (เฉพาะคุณ)"
+
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Personal for {who}"
+msgstr "ส่วนตัวสำหรับ {who}"
+
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Personal for a member"
+msgstr "ส่วนตัวสำหรับสมาชิก"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Personal mailbox"
+msgstr "กล่องจดหมายส่วนตัว"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Personal mailbox of {owner}"
+msgstr "กล่องจดหมายส่วนตัวของ {owner}"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Personal mailboxes"
+msgstr "กล่องจดหมายส่วนตัว"
+
 #: src/features/settings/automation/ActionRow.tsx
 msgid "Pick a canned reply"
 msgstr "เลือกคำตอบสำเร็จรูป"
@@ -13145,7 +13308,10 @@ msgstr "เลือกช่อง"
 msgid "Pick a mail"
 msgstr "เลือกอีเมล"
 
+#: src/components/common/MailboxOwnerChoice.tsx
 #: src/features/settings/automation/ActionRow.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/team/RemoveMemberDialog.tsx
 msgid "Pick a member"
 msgstr "เลือกสมาชิก"
 
@@ -13883,9 +14049,22 @@ msgstr "คะแนน คำถาม และกระทู้จากห�
 msgid "Read"
 msgstr "อ่าน"
 
+#: src/features/mail/MailPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/settings/ProductsPage.tsx
+msgctxt "mailbox access"
+msgid "Read"
+msgstr "อ่าน"
+
 #: src/components/common/text.ts
 msgid "Read analytics properties and their numbers"
 msgstr "อ่านพร็อพเพอร์ตีการวิเคราะห์และตัวเลขของพร็อพเพอร์ตี"
+
+#: src/features/mail/MailPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
+#: src/features/settings/ProductsPage.tsx
+msgid "Read and send"
+msgstr "อ่านและส่ง"
 
 #: src/features/migrations/text.ts
 msgid "Read as a Google Takeout file: Gmail's labels and threads come with it."
@@ -14184,6 +14363,7 @@ msgstr "รูปภาพระยะไกลอาจบอกผู้ส่
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/OwnDomainCard.tsx
@@ -14229,12 +14409,14 @@ msgid "Remove {lang}"
 msgstr "นำ {lang} ออก"
 
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/team/RemoveMemberDialog.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Remove {name}"
 msgstr "นำ {name} ออก"
 
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/sso/SsoPage.tsx
+#: src/features/team/RemoveMemberDialog.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Remove {name}?"
 msgstr "ลบ {name} หรือไม่"
@@ -14242,6 +14424,10 @@ msgstr "ลบ {name} หรือไม่"
 #: src/features/migrations/MapStep.tsx
 msgid "Remove {sender}"
 msgstr "นำ {sender} ออก"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Remove {who}?"
+msgstr "นำ {who} ออก?"
 
 #: src/features/settings/automation/ActionRow.tsx
 msgid "Remove action"
@@ -14436,6 +14622,7 @@ msgstr "กำลังลบประวัติที่นำเข้า"
 msgid "Removing imported history…"
 msgstr "กำลังลบประวัติที่นำเข้า…"
 
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Rename"
 msgstr "เปลี่ยนชื่อ"
@@ -14443,6 +14630,10 @@ msgstr "เปลี่ยนชื่อ"
 #: src/features/status/ComponentDialogs.tsx
 msgid "Rename group"
 msgstr "เปลี่ยนชื่อกลุ่ม"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Rename the mailbox"
+msgstr "เปลี่ยนชื่อกล่องจดหมาย"
 
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -15136,6 +15327,7 @@ msgstr "วันเสาร์"
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/macros/MacroDialog.tsx
@@ -15217,6 +15409,7 @@ msgstr "บันทึกรายการเป็นมุมมอง"
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/chat/ChatSections.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/profile/ProfileForm.tsx
 #: src/features/settings/signature/SignaturePage.tsx
@@ -15847,6 +16040,10 @@ msgstr "การส่งเริ่มแล้ว หยุดชั่ว�
 msgid "Sending kept failing, so Yuva gave up."
 msgstr "การส่งล้มเหลวซ้ำ ๆ Yuva จึงยอมแพ้"
 
+#: src/components/common/OnBehalf.tsx
+msgid "Sending on behalf of {name}"
+msgstr "กำลังส่งในนามของ {name}"
+
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Sending pace"
@@ -16176,6 +16373,14 @@ msgstr "ใช้ร่วมกัน"
 #: src/components/common/FocusChoice.tsx
 msgid "Shared mailboxes for your team"
 msgstr "กล่องจดหมายที่ใช้ร่วมกันสำหรับทีมของคุณ"
+
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Shared with the team"
+msgstr "แชร์กับทีม"
+
+#: src/features/mail/MailPage.tsx
+msgid "Shared with you"
+msgstr "แชร์กับคุณ"
 
 #: src/components/common/text.ts
 msgid "Shipped"
@@ -16656,6 +16861,10 @@ msgstr "ชื่อไซต์"
 #: src/features/setup/SetupLayout.tsx
 msgid "Sites"
 msgstr "ไซต์"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "Size"
+msgstr "ขนาด"
 
 #: src/features/setup/email/EmailTestStep.tsx
 msgid "Skip for now"
@@ -17452,6 +17661,7 @@ msgstr "รหัสทีม"
 
 #: src/components/common/FocusChoice.tsx
 #: src/components/common/PurposeChoice.tsx
+#: src/features/mail/MailPage.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/setup/SetupHub.tsx
 msgid "Team mail"
@@ -18147,6 +18357,10 @@ msgstr "การบำรุงรักษาเสร็จสิ้นแล
 msgid "The mbox file is compressed inside the zip. Unzip the Takeout archive and upload the .mbox file."
 msgstr "ไฟล์ mbox ถูกบีบอัดอยู่ภายใน zip แตกไฟล์เก็บถาวร Takeout แล้วอัปโหลดไฟล์ .mbox"
 
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "The member you pick becomes its owner and reads it from then on. You still do not read it."
+msgstr "สมาชิกที่คุณเลือกจะเป็นเจ้าของและอ่านกล่องนี้จากนี้ไป คุณยังคงไม่ได้อ่าน"
+
 #: src/features/migrations/text.ts
 msgid "The message could not be read"
 msgstr "อ่านข้อความไม่ได้"
@@ -18206,6 +18420,10 @@ msgstr "กล่องข้อความอีกกล่องไม่ม
 #: src/features/fields/BulkFailures.tsx
 msgid "The others were closed. Open one to fill in what it needs, then close it."
 msgstr "รายการที่เหลือถูกปิดแล้ว เปิดหนึ่งรายการ กรอกสิ่งที่ต้องใช้ แล้วปิด"
+
+#: src/components/common/OnBehalf.tsx
+msgid "the owner"
+msgstr "เจ้าของ"
 
 #: src/features/status/Notices.tsx
 msgid "The page already sent 10 notices in the last hour"
@@ -18274,6 +18492,10 @@ msgstr "บุคคลนี้ไม่ได้อยู่ในกลุ่
 #: src/features/settings/audit/sentence.ts
 msgid "the person is not a member of this workspace"
 msgstr "บุคคลนี้ไม่ได้เป็นสมาชิกของเวิร์กสเปซนี้"
+
+#: src/features/settings/audit/sentence.ts
+msgid "The personal mailbox {inbox} lost its owner {who}"
+msgstr "กล่องจดหมายส่วนตัว {inbox} ไม่มีเจ้าของแล้ว ({who})"
 
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "The policy is none: receivers only report. Move to quarantine once all your mail passes."
@@ -18707,6 +18929,10 @@ msgstr "พวกเขาไม่ได้รับอีเมลจากร
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "They signed up on our website and confirmed their address."
 msgstr "พวกเขาสมัครบนเว็บไซต์ของเราและยืนยันที่อยู่แล้ว"
+
+#: src/features/settings/inboxes/Mailbox.tsx
+msgid "They stop reading this mailbox at once."
+msgstr "พวกเขาจะหยุดอ่านกล่องจดหมายนี้ทันที"
 
 #: src/features/migrations/text.ts
 msgid "This {provider} account's plan has no API access, which Yuva reads through."
@@ -19347,6 +19573,10 @@ msgid "Too many workspaces were created from your network today. Try again tomor
 msgstr "วันนี้มีการสร้างพื้นที่ทำงานจากเครือข่ายของคุณมากเกินไป ลองอีกครั้งพรุ่งนี้"
 
 #: src/features/settings/audit/sentence.ts
+msgid "Took {who}'s access to the personal mailbox {inbox} away"
+msgstr "เพิกถอนสิทธิ์ของ {who} ต่อกล่องจดหมายส่วนตัว {inbox}"
+
+#: src/features/settings/audit/sentence.ts
 msgid "Took away the access of {person} to {inbox}"
 msgstr "เพิกถอนสิทธิ์เข้าถึง {inbox} ของ {person}"
 
@@ -19496,7 +19726,7 @@ msgstr "เรคคอร์ด TXT"
 msgid "Type"
 msgstr "ประเภท"
 
-#: src/features/settings/inboxes/InboxSecurity.tsx
+#: src/features/settings/inboxes/Mailbox.tsx
 msgid "Type {name} to confirm"
 msgstr "พิมพ์ {name} เพื่อยืนยัน"
 
@@ -20514,6 +20744,10 @@ msgstr "แต่ละคอลัมน์มีอะไร"
 msgid "What happened"
 msgstr "เกิดอะไรขึ้น"
 
+#: src/features/team/RemoveMemberDialog.tsx
+msgid "What happens to {boxName}"
+msgstr "{boxName} จะเป็นอย่างไร"
+
 #: src/features/broadcasts/Composer.tsx
 msgid "What is new in October"
 msgstr "มีอะไรใหม่ในเดือนตุลาคม"
@@ -20810,6 +21044,10 @@ msgstr "ใครอยู่ที่นี่"
 msgid "Who is it for?"
 msgstr "สำหรับใคร"
 
+#: src/components/common/MailboxOwnerChoice.tsx
+msgid "Who reads it?"
+msgstr "ใครอ่าน?"
+
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "Who sends, and what about?"
 msgstr "ใครส่ง และเกี่ยวกับอะไร"
@@ -21092,6 +21330,10 @@ msgid "You can leave this page: the conversation will wait for you in your conve
 msgstr "คุณออกจากหน้านี้ได้ การสนทนาจะรอคุณอยู่ในรายการการสนทนา"
 
 #: src/features/mail/MailThread.tsx
+msgid "You can read this mailbox but not change it. Its owner can let you send from it."
+msgstr "คุณอ่านกล่องจดหมายนี้ได้แต่แก้ไขไม่ได้ เจ้าของอนุญาตให้คุณส่งจากกล่องนี้ได้"
+
+#: src/features/mail/MailThread.tsx
 msgid "You can restore it from the Trash for 30 days, then it is deleted for good with its messages and files."
 msgstr "คุณกู้คืนจากถังขยะได้ภายใน 30 วัน หลังจากนั้นจะถูกลบถาวรพร้อมข้อความและไฟล์"
 
@@ -21173,8 +21415,8 @@ msgid "You have unsaved changes to {what}."
 msgstr "คุณมีการเปลี่ยนแปลงที่ยังไม่บันทึกใน {what}"
 
 #: src/features/auth/DeleteAccountButton.tsx
-msgid "You leave every workspace and lose your sign-ins, passkeys and notifications. Messages you wrote stay in their conversations, shown as from a deleted member. This cannot be undone."
-msgstr "คุณออกจากทุกพื้นที่ทำงานและสูญเสียการลงชื่อเข้าใช้ พาสคีย์ และการแจ้งเตือน ข้อความที่คุณเขียนยังอยู่ในการสนทนา โดยแสดงเป็นของสมาชิกที่ถูกลบ ไม่สามารถยกเลิกได้"
+msgid "You leave every workspace and lose your sign-ins, passkeys and notifications. Messages you wrote stay in their conversations, shown as from a deleted member. Your personal mailboxes stay with the workspace, unread, until an owner or admin hands them to someone or deletes them. This cannot be undone."
+msgstr "คุณจะออกจากพื้นที่ทำงานทั้งหมดและสูญเสียการลงชื่อเข้าใช้ พาสคีย์ และการแจ้งเตือน ข้อความที่คุณเขียนจะอยู่ในการสนทนาเดิม แสดงเป็นของสมาชิกที่ถูกลบ กล่องจดหมายส่วนตัวของคุณจะอยู่ในพื้นที่ทำงานโดยไม่มีใครอ่าน จนกว่าเจ้าของหรือผู้ดูแลจะส่งต่อหรือลบ ย้อนกลับไม่ได้"
 
 #: src/features/account/AccountPage.tsx
 msgid "You replied"
@@ -21302,6 +21544,10 @@ msgstr "ผู้ให้บริการอีเมลของคุณห
 msgid "Your mailbox"
 msgstr "กล่องจดหมายของคุณ"
 
+#: src/features/mail/MailPage.tsx
+msgid "Your mailboxes"
+msgstr "กล่องจดหมายของคุณ"
+
 #: src/features/migrations/text.ts
 msgid "Your Microsoft 365 organization lets only an admin consent to apps. Send your admin the link below; once they accept, sign in again."
 msgstr "องค์กร Microsoft 365 ของคุณอนุญาตให้เฉพาะผู้ดูแลยินยอมให้แอป ส่งลิงก์ด้านล่างให้ผู้ดูแล เมื่อพวกเขายอมรับ ให้ลงชื่อเข้าใช้อีกครั้ง"
@@ -21420,6 +21666,10 @@ msgstr "ชื่อพื้นที่ทำงานของคุณ ร�
 #: src/features/account/AccountPage.tsx
 msgid "Your Yuva account"
 msgstr "บัญชี Yuva ของคุณ"
+
+#: src/features/settings/ProductsPage.tsx
+msgid "Yours"
+msgstr "ของคุณ"
 
 #: src/features/auth/AuthLayout.tsx
 msgid "Yuva {version}"

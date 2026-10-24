@@ -17,6 +17,7 @@ export type InboxDraft = {
   color?: string
   mode?: "live" | "async"
   purpose?: InboxPurpose
+  ownerMemberId?: string
   inboxId?: string
   kind?: SetupKind
 }
@@ -73,6 +74,7 @@ export function useEnsureInbox() {
       mode: d.mode ?? ("async" as const),
       ask_for_rating: false,
       ...(d.purpose === "mail" ? { purpose: "mail" as const } : {}),
+      ...(d.purpose === "mail" && d.ownerMemberId ? { owner_member_id: d.ownerMemberId } : {}),
       ...(d.color ? { branding: { color: d.color } } : {}),
       default_locale: d.locale,
       timezone: zones.includes(d.zone) ? d.zone : browserTimeZone(),
