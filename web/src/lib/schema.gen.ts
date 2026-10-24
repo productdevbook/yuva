@@ -3671,8 +3671,8 @@ export interface paths {
         head?: never;
         /**
          * Edit a draft
-         * @description Changes a draft's text, or with `send_at` (member sessions only) schedules it or moves its
-         *     time; emits `draft.updated`. It works while the draft is scheduled. Anything that is not a
+         * @description Changes a draft's text, a new mail draft's `to`, `cc`, `bcc` and `subject`, or with
+         *     `send_at` (member sessions only) schedules it or moves its time; emits `draft.updated`. It works while the draft is scheduled. Anything that is not a
          *     draft answers `409 not_a_draft`; another member's draft answers `404`.
          *
          *     Scope: `messages:write`.
@@ -15162,6 +15162,12 @@ export interface components {
              * @description When the calling member pinned it; absent when they did not, and for API keys.
              */
             pinned_at?: string;
+            /**
+             * Format: date-time
+             * @description With `scheduled=mine`: when the caller's earliest scheduled message in it goes.
+             *     Absent otherwise.
+             */
+            scheduled_at?: string;
         };
         ConversationPage: {
             items: components["schemas"]["ConversationListItem"][];
@@ -15223,6 +15229,8 @@ export interface components {
         DraftAuthorKind: "bot" | "assistant" | "member";
         DraftItem: {
             draft: components["schemas"]["Message"];
+            /** @description A new mail draft (`POST /v1/conversations/mail`) rather than a reply draft. */
+            composed: boolean;
             conversation: components["schemas"]["ConversationSummary"];
         };
         DraftPage: {
@@ -15966,6 +15974,7 @@ export interface components {
              */
             scheduled_at?: string;
             send_error?: components["schemas"]["MessageSendError"];
+            recipients?: components["schemas"]["DraftRecipients"];
             /** @description Who sent a draft (`member` or `bot`); absent for messages that were never drafts. */
             sent_by?: components["schemas"]["MessageAuthor"];
             /** @description Members a note mentions (notes only; absent when it mentions nobody). */
@@ -16007,6 +16016,17 @@ export interface components {
              * @description For a sent draft, when it was sent.
              */
             created_at: string;
+        };
+        /**
+         * @description The To, Cc and Bcc a new mail draft (`POST /v1/conversations/mail` with `draft: true`) is
+         *     stored with, changed with `PATCH /v1/messages/{id}`. Only on composed drafts, and only in
+         *     answers to `/v1` requests: never in events or webhooks. `bcc` is empty for API keys other
+         *     than the one that wrote the draft and for OAuth tokens.
+         */
+        DraftRecipients: {
+            to: components["schemas"]["Email"][];
+            cc: components["schemas"]["Email"][];
+            bcc: components["schemas"]["Email"][];
         };
         /**
          * @description Why a scheduled draft could not be sent; shown to its author. Absent otherwise, and cleared
@@ -16215,7 +16235,7 @@ export interface components {
              * Format: date-time
              * @description Member sessions only: schedule the draft instead of sending it now, at least 1 minute
              *     and at most 366 days ahead (`400 invalid_send_at`); `cc`, `bcc` and `from_address` are
-             *     kept for then.
+             *     kept for then. For a new mail draft `cc` and `bcc` replace its stored `recipients`.
              */
             send_at?: string;
         };
@@ -16322,6 +16342,18 @@ export interface components {
              *     most 366 days ahead (`400 invalid_send_at`). See `sendMessage`.
              */
             send_at?: string;
+            /**
+             * @description A member's own unsent new mail only (`400 validation_failed` for a reply draft,
+             *     `409 not_a_private_draft` for a key's new mail): replaces the recipients; the first is
+             *     the conversation's contact. Checked as in `composeMail`.
+             */
+            to?: components["schemas"]["Email"][];
+            /** @description New mail drafts only; replaces the stored Cc. */
+            cc?: components["schemas"]["Email"][];
+            /** @description New mail drafts only; replaces the stored Bcc. */
+            bcc?: components["schemas"]["Email"][];
+            /** @description New mail drafts only; also the conversation's subject. */
+            subject?: string;
         };
         MessagePage: {
             items: components["schemas"]["Message"][];
