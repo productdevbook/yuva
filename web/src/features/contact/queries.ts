@@ -1,6 +1,6 @@
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
-import { api, unwrap, type ContactUpdate, type ConversationCreate } from "@/lib/api"
+import { api, unwrap, type ContactBulkFailure, type ContactUpdate, type ConversationCreate } from "@/lib/api"
 import { keys } from "@/lib/keys"
 import { applyEvent } from "@/lib/live"
 import { useSession } from "@/lib/session"
@@ -195,5 +195,57 @@ export function useContactVisits(id: string) {
     getNextPageParam: (last) => last.next_cursor,
     staleTime: 60_000,
     retry: false,
+  })
+}
+
+export function useContactDeletionPreview(id: string, enabled: boolean) {
+  const { workspaceId: ws } = useSession()
+  return useQuery({
+    queryKey: [...keys.contact(ws, id), "deletion-preview"],
+    queryFn: () =>
+      unwrap(api.GET("/v1/contacts/{contactId}/deletion-preview", { params: { path: { contactId: id } } })),
+    enabled,
+    gcTime: 0,
+  })
+}
+
+function useRefreshAfterContactDelete() {
+  const qc = useQueryClient()
+  const { workspaceId: ws } = useSession()
+  return () => {
+    void qc.invalidateQueries({ queryKey: keys.contactSearch(ws) })
+    void qc.invalidateQueries({ queryKey: keys.conversationLists(ws) })
+    void qc.invalidateQueries({ queryKey: keys.counts(ws) })
+  }
+}
+
+export function useDeleteContact(id: string) {
+  const qc = useQueryClient()
+  const { workspaceId: ws } = useSession()
+  const refresh = useRefreshAfterContactDelete()
+  return useMutation({
+    mutationFn: () => unwrap(api.DELETE("/v1/contacts/{contactId}", { params: { path: { contactId: id } } })),
+    onSuccess: () => {
+      qc.removeQueries({ queryKey: keys.contact(ws, id) })
+      refresh()
+    },
+  })
+}
+
+export function useDeleteContacts() {
+  const refresh = useRefreshAfterContactDelete()
+  return useMutation({
+    mutationFn: async (ids: string[]) => {
+      let deleted = 0
+      const failed: ContactBulkFailure[] = []
+      for (let at = 0; at < ids.length; at += 100) {
+        const chunk = ids.slice(at, at + 100)
+        const r = await unwrap(api.POST("/v1/contacts/delete", { body: { ids: chunk, confirm_count: chunk.length } }))
+        deleted += r.deleted
+        failed.push(...r.failed)
+      }
+      return { deleted, failed }
+    },
+    onSettled: refresh,
   })
 }

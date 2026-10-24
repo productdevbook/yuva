@@ -2432,6 +2432,35 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/contacts/delete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Delete several contacts
+         * @description Deletes up to 100 contacts, each exactly as `DELETE /v1/contacts/{contactId}` does: with
+         *     all their conversations, messages and attachments in every inbox, personal mailboxes
+         *     included (it is the data subject's deletion), in its own transaction. Repeated ids count
+         *     once; `confirm_count` must equal the number of different ids, else nothing is deleted and
+         *     the answer is `409 count_changed` with that number in `count`. A contact that does not
+         *     exist (or is of another workspace) is listed in `failed` with `404 not_found`. Emits
+         *     `contact.deleted` for each; the audit log records `contact.deleted` for each, with no name
+         *     or address. Cannot be undone. Not offered through MCP.
+         *
+         *     Owners, admins and API keys not limited to inboxes. Scope: `contacts:write`.
+         */
+        post: operations["deleteContacts"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/contacts/{contactId}": {
         parameters: {
             query?: never;
@@ -2463,6 +2492,33 @@ export interface paths {
          *     Scope: `contacts:write`.
          */
         patch: operations["updateContact"];
+        trace?: never;
+    };
+    "/v1/contacts/{contactId}/deletion-preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * What deleting a contact takes with it
+         * @description For the confirmation before `DELETE /v1/contacts/{contactId}`: how many of the contact's
+         *     conversations the caller can see (trashed ones included where the caller sees the trash, as
+         *     `trashed=true` lists it), and whether conversations in personal mailboxes the caller does
+         *     not read, or in their trash, go too. Nothing else
+         *     about those is shown.
+         *
+         *     Owners, admins and API keys not limited to inboxes. Scope: `contacts:read` and
+         *     `conversations:read`.
+         */
+        get: operations["getContactDeletionPreview"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/v1/contacts/{contactId}/merge": {
@@ -3066,6 +3122,7 @@ export interface paths {
          *     `snoozed`), an assignee (`null` unassigns), labels to add and labels to remove. Each
          *     conversation is changed in its own transaction, records the same `event` messages and
          *     emits the same events and webhooks as `PATCH /v1/conversations/{conversationId}`.
+         *     `spam` flags or unflags them as spam (the Spam view's "Not spam").
          *     A conversation the caller cannot see (or of another workspace) is listed in `failed`
          *     with `not_found`; one whose inbox the new assignee cannot access with
          *     `validation_failed`; one that would close without a required custom field with
@@ -3088,6 +3145,77 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/conversations/delete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Delete conversations in the trash for good
+         * @description Deletes up to 100 conversations from the trash for good, each exactly as the 30-day trash
+         *     purge does: with their messages, attachments, raw e-mails and remaining events in one
+         *     transaction, and their stored files through the retried `storage_delete` job. Emits
+         *     `conversation.deleted` for each. Cannot be undone.
+         *
+         *     A conversation that is not in the trash is listed in `failed` with `409 not_trashed`; one
+         *     the caller cannot see (or of another workspace) with `404 not_found`. Personal mailboxes:
+         *     only their owner deletes from them, whatever the owner's role, through a member session or
+         *     the owner's own OAuth token; owners, admins and keys do not see them (`not_found`), and
+         *     delegates get `403 forbidden`. In every other inbox only owners and admins, and keys and
+         *     tokens with `conversations:delete` delete; an agent's conversation there fails with `403
+         *     forbidden`. Repeated ids count once.
+         *
+         *     The audit log records one `conversations.deleted` with the count, never the ids, subjects
+         *     or content.
+         *
+         *     Scope: `conversations:delete`.
+         */
+        post: operations["deleteConversations"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/conversations/trash/empty": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Empty the trash
+         * @description Deletes for good every conversation in the trash the caller may delete (as `POST
+         *     /v1/conversations/delete` decides: owners, admins and keys the trash of the inboxes they
+         *     see but personal mailboxes, a mailbox's owner its own mailbox's trash). `confirm_count` is
+         *     the number of those conversations the person confirmed; when the trash holds another
+         *     number now, nothing happens and the answer is `409 count_changed` with the current number
+         *     in `count`. Otherwise the request records exactly those conversations, and one job deletes
+         *     them in batches, each as the 30-day purge does; the answer is `202` with the count. The job
+         *     never deletes more than was confirmed: conversations moved to the trash after the request
+         *     are not deleted, ones restored before the job reaches them stay (also when trashed
+         *     again), and before each run the
+         *     caller is checked again, so after a lost role, key, grant or mailbox the rest stays.
+         *
+         *     When the job is done, the audit log records one `trash.emptied` by the caller with the
+         *     number deleted, never ids, subjects or content.
+         *
+         *     Scope: `conversations:delete`.
+         */
+        post: operations["emptyTrash"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/conversations/{conversationId}": {
         parameters: {
             query?: never;
@@ -3097,8 +3225,9 @@ export interface paths {
         };
         /**
          * Get a conversation
-         * @description A conversation in the trash answers `404` except to those who may see the trash (owners,
-         *     admins, keys and tokens with `conversations:delete`), who get it with `trashed_at`.
+         * @description A conversation in the trash answers `404` except to those who see that trash (owners,
+         *     admins, keys and tokens with `conversations:delete` outside personal mailboxes; a personal
+         *     mailbox's owner in it), who get it with `trashed_at`.
          *
          *     Scope: `conversations:read`.
          */
@@ -3157,7 +3286,8 @@ export interface paths {
          * @description Clears `trashed_at` and `trashed_by`; the conversation is where it was, with its status,
          *     assignee and labels. A conversation whose 30 days are over answers `409 trash_expired`
          *     until the retention job deletes it. Restoring a conversation that is not in the trash
-         *     answers it unchanged. Who may, as for `DELETE`. Emits `conversation.restored`; the audit
+         *     answers it unchanged. Who may, as for `DELETE`, and besides a personal mailbox's owner
+         *     whatever their role, who alone restores in it (others `403 forbidden` or `404`). Emits `conversation.restored`; the audit
          *     log records `conversation.restored`.
          *
          *     Scope: `conversations:delete`.
@@ -13170,6 +13300,9 @@ export interface components {
          *       `inbox_name`.
          *     - `conversation.trashed`, `conversation.restored`: `inbox_id`. `conversation.deleted`:
          *       `inbox_id`, by `system` (never the subject or content).
+         *     - `conversations.deleted` (`POST /v1/conversations/delete`): `count`, the conversations
+         *       deleted for good. `trash.emptied` (`POST /v1/conversations/trash/empty`, written when
+         *       its job is done): `count`. The target is the workspace; never ids, subjects or content.
          *     - `message.redacted`: `conversation_id`, `inbox_id`, `kind` (`message` or `note`),
          *       `files` (attachments and raw e-mails removed); never the removed content.
          *     - `contact.deleted`: none (no name or address is kept). `contact.consent_exported`: `format`,
@@ -13233,9 +13366,12 @@ export interface components {
          *     More actions are added over time; show an unknown one by its name.
          * @enum {string}
          */
-        AuditAction: "member.joined" | "member.role_changed" | "member.removed" | "member.inbox_access_granted" | "member.inbox_access_revoked" | "invite.created" | "invite.deleted" | "api_key.created" | "api_key.revoked" | "oauth_grant.created" | "oauth_grant.revoked" | "webhook.created" | "webhook.updated" | "webhook.deleted" | "webhook.secret_rotated" | "channel.credentials_changed" | "channel.key_rotated" | "channel.forwarding_address_rotated" | "channel.address_verified" | "channel.address_lost" | "channel.address_proven" | "channel.dkim_key_created" | "channel.dkim_key_deleted" | "inbox.identity_secret_rotated" | "inbox.created" | "inbox.deleted" | "inbox.purpose_changed" | "mailbox.delegate_granted" | "mailbox.delegate_revoked" | "mailbox.handed_over" | "mailbox.deleted_on_leave" | "mailbox.orphaned" | "conversation.trashed" | "conversation.restored" | "conversation.deleted" | "message.redacted" | "contact.deleted" | "contact.consent_exported" | "list.consent_exported" | "analytics_export.created" | "workspace.retention_changed" | "workspace.bots_may_send_changed" | "workspace.broadcasts_by_keys_changed" | "workspace.focus_changed" | "workspace.broadcast_approval_requested" | "workspace.broadcasts_approved" | "workspace.broadcasts_denied" | "workspace.broadcasts_suspended" | "workspace.broadcast_limit_changed" | "team.created" | "team.deleted" | "team.member_added" | "team.member_removed" | "team.inbox_access_granted" | "team.inbox_access_revoked" | "workspace.slack_connected" | "workspace.slack_disconnected" | "member.slack_linked" | "member.slack_unlinked" | "sso.provider_created" | "sso.provider_updated" | "sso.provider_deleted" | "sso.settings_changed" | "sso.signed_in" | "sso.sign_in_refused" | "sso_domain.added" | "sso_domain.verified" | "sso_domain.deleted" | "sso_domain.lapsed" | "issue_integration.connected" | "issue_integration.updated" | "issue_integration.disconnected" | "issue_integration.secret_rotated" | "automation_rule.created" | "automation_rule.updated" | "automation_rule.deleted" | "member_address.added" | "member_address.verified" | "member_address.removed";
-        /** @enum {string} */
-        AuditTargetType: "workspace" | "member" | "invite" | "inbox" | "channel" | "api_key" | "oauth_grant" | "webhook" | "contact" | "list" | "analytics_export" | "conversation" | "message" | "team" | "sso" | "sso_domain" | "issue_integration" | "automation_rule" | "mailbox";
+        AuditAction: "member.joined" | "member.role_changed" | "member.removed" | "member.inbox_access_granted" | "member.inbox_access_revoked" | "invite.created" | "invite.deleted" | "api_key.created" | "api_key.revoked" | "oauth_grant.created" | "oauth_grant.revoked" | "webhook.created" | "webhook.updated" | "webhook.deleted" | "webhook.secret_rotated" | "channel.credentials_changed" | "channel.key_rotated" | "channel.forwarding_address_rotated" | "channel.address_verified" | "channel.address_lost" | "channel.address_proven" | "channel.dkim_key_created" | "channel.dkim_key_deleted" | "inbox.identity_secret_rotated" | "inbox.created" | "inbox.deleted" | "inbox.purpose_changed" | "mailbox.delegate_granted" | "mailbox.delegate_revoked" | "mailbox.handed_over" | "mailbox.deleted_on_leave" | "mailbox.orphaned" | "conversation.trashed" | "conversation.restored" | "conversation.deleted" | "conversations.deleted" | "trash.emptied" | "message.redacted" | "contact.deleted" | "contact.consent_exported" | "list.consent_exported" | "analytics_export.created" | "workspace.retention_changed" | "workspace.bots_may_send_changed" | "workspace.broadcasts_by_keys_changed" | "workspace.focus_changed" | "workspace.broadcast_approval_requested" | "workspace.broadcasts_approved" | "workspace.broadcasts_denied" | "workspace.broadcasts_suspended" | "workspace.broadcast_limit_changed" | "team.created" | "team.deleted" | "team.member_added" | "team.member_removed" | "team.inbox_access_granted" | "team.inbox_access_revoked" | "workspace.slack_connected" | "workspace.slack_disconnected" | "member.slack_linked" | "member.slack_unlinked" | "sso.provider_created" | "sso.provider_updated" | "sso.provider_deleted" | "sso.settings_changed" | "sso.signed_in" | "sso.sign_in_refused" | "sso_domain.added" | "sso_domain.verified" | "sso_domain.deleted" | "sso_domain.lapsed" | "issue_integration.connected" | "issue_integration.updated" | "issue_integration.disconnected" | "issue_integration.secret_rotated" | "automation_rule.created" | "automation_rule.updated" | "automation_rule.deleted" | "member_address.added" | "member_address.verified" | "member_address.removed";
+        /**
+         * @description `conversations` and `trash` name the workspace's conversations and its trash; their id is the workspace's.
+         * @enum {string}
+         */
+        AuditTargetType: "workspace" | "member" | "invite" | "inbox" | "channel" | "api_key" | "oauth_grant" | "webhook" | "contact" | "list" | "analytics_export" | "conversation" | "conversations" | "trash" | "message" | "team" | "sso" | "sso_domain" | "issue_integration" | "automation_rule" | "mailbox";
         AuditTarget: {
             type: components["schemas"]["AuditTargetType"];
             /**
@@ -13598,8 +13734,8 @@ export interface components {
          *       message e-mail and raw source; list labels and canned replies.
          *     - `conversations:write`: create, update (status, assignee, snooze, priority, labels), move
          *       and bulk-update conversations.
-         *     - `conversations:delete`: move conversations to the trash, restore them, and list the
-         *       trash. For owners and admins: never offered to agents' tokens. Never implied: a key made
+         *     - `conversations:delete`: move conversations to the trash, restore them, list the trash,
+         *       delete conversations in it for good and empty it. For owners and admins: never offered to agents' tokens. Never implied: a key made
          *       without naming its scopes does not hold it.
          *     - `messages:write`: outgoing and incoming messages, drafts: create, edit, discard; for
          *       OAuth tokens also replies to reader threads and their accepted answer. Forwarding a
@@ -15524,6 +15660,8 @@ export interface components {
              *     other changes. Owners, admins and keys and tokens with `conversations:delete`.
              */
             trashed?: boolean;
+            /** @description Flag (`true`) or unflag (`false`) as spam, as `PATCH` does. */
+            spam?: boolean;
         };
         ConversationBulkFailure: {
             /** Format: uuid */
@@ -15606,6 +15744,71 @@ export interface components {
             ids: components["schemas"]["BulkIds"];
             /** @enum {string} */
             action: "hide" | "unhide" | "spam" | "delete";
+        };
+        ConversationDelete: {
+            ids: string[];
+        };
+        ConversationDeleteResult: {
+            /**
+             * Format: int32
+             * @description How many conversations were deleted.
+             */
+            deleted: number;
+            failed: components["schemas"]["ConversationBulkFailure"][];
+        };
+        TrashEmpty: {
+            /**
+             * Format: int64
+             * @description The number of conversations in the trash the person confirmed.
+             */
+            confirm_count: number;
+        };
+        TrashEmptyResult: {
+            /**
+             * Format: int64
+             * @description How many conversations the job will delete.
+             */
+            count: number;
+        };
+        ContactDelete: {
+            ids: string[];
+            /**
+             * Format: int32
+             * @description The number of different contacts the person confirmed.
+             */
+            confirm_count: number;
+        };
+        ContactBulkFailure: {
+            /** Format: uuid */
+            id: string;
+            /**
+             * Format: int32
+             * @description The HTTP status the single delete would have answered.
+             */
+            status: number;
+            code: string;
+            detail?: string;
+        };
+        ContactDeleteResult: {
+            /**
+             * Format: int32
+             * @description How many contacts were deleted.
+             */
+            deleted: number;
+            failed: components["schemas"]["ContactBulkFailure"][];
+        };
+        ContactDeletionPreview: {
+            /**
+             * Format: int64
+             * @description The contact's conversations the caller can see; they are deleted with the contact.
+             */
+            conversation_count: number;
+            /**
+             * @description `true` when the contact also has conversations in personal mailboxes the caller does not
+             *     read, or in the trash of personal mailboxes the caller reads as a delegate; they are
+             *     deleted too.
+             */
+            has_hidden_conversations: boolean;
         };
         ConversationMove: {
             /** Format: uuid */
@@ -15909,6 +16112,13 @@ export interface components {
         };
         /** @description Open conversations in the inboxes the caller can see. */
         ConversationCounts: {
+            /**
+             * Format: int64
+             * @description Conversations in the trash the caller sees (as `trashed=true` lists them), whatever
+             *     `kind` or `purpose`: the number `POST /v1/conversations/trash/empty` takes as
+             *     `confirm_count`. `0` for callers who see no trash.
+             */
+            trash: number;
             /**
              * Format: int64
              * @description Open feedback conversations (included in the other counts too).
@@ -27292,6 +27502,11 @@ export interface components {
             sso_workspace_id?: string;
             /** @description `personal_mailbox` on removing a member: the member's personal mailboxes. */
             inbox_ids?: string[];
+            /**
+             * Format: int64
+             * @description `count_changed` only: the number as it is now (for contacts, the different ids sent).
+             */
+            count?: number;
             detail?: string;
         };
         SlackConnection: {
@@ -31201,6 +31416,39 @@ export interface operations {
             404: components["responses"]["Problem"];
         };
     };
+    deleteContacts: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Makes a retried request return the first response; see "Idempotency". */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ContactDelete"];
+            };
+        };
+        responses: {
+            /** @description How many contacts were deleted and which were refused. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContactDeleteResult"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            409: components["responses"]["Problem"];
+        };
+    };
     getContact: {
         parameters: {
             query?: never;
@@ -31287,6 +31535,34 @@ export interface operations {
             403: components["responses"]["Problem"];
             404: components["responses"]["Problem"];
             409: components["responses"]["Problem"];
+        };
+    };
+    getContactDeletionPreview: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                contactId: components["parameters"]["ContactId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The preview. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContactDeletionPreview"];
+                };
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
         };
     };
     mergeContact: {
@@ -31630,8 +31906,12 @@ export interface operations {
                 /**
                  * @description `true` lists only the conversations in the trash (the Trash view), which every other
                  *     list, count and search leaves out. Owners and admins, and keys and tokens with
-                 *     `conversations:delete`; agents get `403 forbidden`. `false` or absent lists what is not
-                 *     in the trash.
+                 *     `conversations:delete`, see the trash of the inboxes they see but personal mailboxes;
+                 *     the trash of a personal mailbox is shown only to its owner, whatever their role
+                 *     (session or the owner's own token). Delegates never see it. An agent sees only the
+                 *     trash of their own personal mailboxes, and gets `403 forbidden` without one only by
+                 *     their token lacking `conversations:delete`. `false` or absent lists what is not in the
+                 *     trash.
                  */
                 trashed?: boolean;
                 /**
@@ -32064,6 +32344,71 @@ export interface operations {
             400: components["responses"]["Problem"];
             401: components["responses"]["Problem"];
             403: components["responses"]["Problem"];
+        };
+    };
+    deleteConversations: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Makes a retried request return the first response; see "Idempotency". */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ConversationDelete"];
+            };
+        };
+        responses: {
+            /** @description How many conversations were deleted and which were refused. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConversationDeleteResult"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+        };
+    };
+    emptyTrash: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Makes a retried request return the first response; see "Idempotency". */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TrashEmpty"];
+            };
+        };
+        responses: {
+            /** @description The deletion is queued. */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TrashEmptyResult"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            409: components["responses"]["Problem"];
         };
     };
     getConversation: {

@@ -31,6 +31,11 @@ msgstr "(ไม่มีหัวเรื่อง)"
 msgid "{0, plural, one {# attachment} other {# attachments}}"
 msgstr "{0, plural, other {ไฟล์แนบ # ไฟล์}}"
 
+#. placeholder {0}: p.conversation_count
+#: src/features/contact/DeleteContactDialog.tsx
+msgid "{0, plural, one {# conversation is deleted with it} other {# conversations are deleted with it}}"
+msgstr "{0, plural, other {การสนทนา # รายการจะถูกลบไปด้วย}}"
+
 #. placeholder {0}: f.messages
 #. placeholder {0}: l.conversations
 #. placeholder {0}: load.get(m.id) ?? 0
@@ -108,6 +113,16 @@ msgstr "{0} ดี"
 #: src/components/common/AddressChips.tsx
 msgid "{0} is not an e-mail address"
 msgstr "{0} ไม่ใช่ที่อยู่อีเมล"
+
+#. placeholder {0}: done.length
+#: src/features/inbox/ChatList.tsx
+msgid "{0} marked as not spam"
+msgstr "ทำเครื่องหมาย {0} รายการว่าไม่ใช่สแปมแล้ว"
+
+#. placeholder {0}: done.length
+#: src/features/inbox/ChatList.tsx
+msgid "{0} marked as spam"
+msgstr "ทำเครื่องหมาย {0} รายการว่าเป็นสแปมแล้ว"
 
 #. placeholder {0}: items.length
 #: src/features/inbox/ChatList.tsx
@@ -346,6 +361,10 @@ msgstr "{count} เหตุการณ์"
 msgid "{count} imported conversations that nobody wrote in since are deleted with their messages and files. Conversations your team wrote in stay. Nothing changes in {address}."
 msgstr "การสนทนาที่นำเข้ามา {count} รายการซึ่งไม่มีใครเขียนต่อหลังจากนั้นจะถูกลบพร้อมข้อความและไฟล์ ส่วนการสนทนาที่ทีมของคุณเคยเขียนจะยังอยู่ ไม่มีอะไรเปลี่ยนแปลงใน {address}"
 
+#: src/features/conversation/TrashBulk.tsx
+msgid "{count} in the Trash across your inboxes. They are deleted for good after 30 days."
+msgstr "มี {count} รายการในถังขยะ รวมทุกกล่องจดหมายของคุณ จะถูกลบถาวรหลังจาก 30 วัน"
+
 #: src/features/migrations/ChooseStep.tsx
 msgid "{count} messages"
 msgstr "{count} ข้อความ"
@@ -383,6 +402,10 @@ msgstr "{days, plural, other {ค่ามัธยฐาน # วันที�
 #: src/features/conversation/ConversationStatus.tsx
 msgid "{days, plural, one {Waiting for # day} other {Waiting for # days}}"
 msgstr "{days, plural, other {รอมา # วัน}}"
+
+#: src/components/common/BulkReport.tsx
+msgid "{deleted} deleted"
+msgstr "ลบ {deleted} รายการแล้ว"
 
 #: src/features/broadcasts/Import.tsx
 msgid "{done} of {total} rows"
@@ -650,6 +673,10 @@ msgstr "{name} เชื่อมต่อจากคลาวด์ของ�
 #: src/features/migrations/CopyStep.tsx
 msgid "{name} copied"
 msgstr "คัดลอก {name} แล้ว"
+
+#: src/features/contact/DeleteContactDialog.tsx
+msgid "{name} deleted"
+msgstr "ลบ {name} แล้ว"
 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "{name} docs"
@@ -2365,6 +2392,10 @@ msgstr "Also called audience or identifier."
 msgid "Also called reply URL. HTTP-POST binding."
 msgstr "Also called reply URL. HTTP-POST binding."
 
+#: src/features/contact/DeleteContactDialog.tsx
+msgid "Also conversations in mailboxes you cannot read"
+msgstr "รวมถึงการสนทนาในกล่องจดหมายที่คุณอ่านไม่ได้"
+
 #: src/features/settings/profile/ProfileForm.tsx
 msgid "Also for sign-in and notification e-mails"
 msgstr "ใช้กับอีเมลลงชื่อเข้าใช้และการแจ้งเตือนด้วย"
@@ -3666,6 +3697,7 @@ msgstr "ชื่อแคมเปญ"
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactNotes.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/contact/DeleteContactDialog.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
@@ -4884,6 +4916,10 @@ msgstr "คัดลอกการสนทนาแล้ว"
 msgid "Conversations from every product"
 msgstr "การสนทนาจากทุกผลิตภัณฑ์"
 
+#: src/features/contact/DeleteContactDialog.tsx
+msgid "Conversations in mailboxes you cannot read are deleted with it"
+msgstr "การสนทนาในกล่องจดหมายที่คุณอ่านไม่ได้จะถูกลบไปด้วย"
+
 #: src/features/migrations/DoneStep.tsx
 msgid "Conversations nobody wrote in after the import are deleted. Nothing changed in {address}."
 msgstr "การสนทนาที่ไม่มีใครเขียนต่อหลังการนำเข้าจะถูกลบ ไม่มีอะไรเปลี่ยนแปลงใน {address}"
@@ -5397,6 +5433,7 @@ msgstr "ผู้รับมอบสิทธิ์"
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
+#: src/features/contact/ContactBulk.tsx
 #: src/features/contact/ContactNotes.tsx
 #: src/features/docs/discussions/Bulk.tsx
 #: src/features/inbox/ChatList.tsx
@@ -5436,6 +5473,7 @@ msgstr "ลบ ({removeKey})"
 msgid "Delete {0}?"
 msgstr "ลบ {0} ไหม"
 
+#: src/features/contact/DeleteContactDialog.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -5454,6 +5492,11 @@ msgstr "ลบหลังจาก (วัน)"
 msgid "Delete component"
 msgstr "ลบส่วนประกอบ"
 
+#: src/features/contact/ContactDetail.tsx
+#: src/features/contact/DeleteContactDialog.tsx
+msgid "Delete contact"
+msgstr "ลบผู้ติดต่อ"
+
 #: src/features/broadcasts/Composer.tsx
 #: src/features/status/IncidentDetail.tsx
 msgid "Delete draft"
@@ -5462,6 +5505,22 @@ msgstr "ลบฉบับร่าง"
 #: src/features/status/IncidentDetail.tsx
 msgid "Delete draft ({removeKey})"
 msgstr "ลบฉบับร่าง ({removeKey})"
+
+#: src/features/conversation/TrashBulk.tsx
+msgid "Delete for good"
+msgstr "ลบถาวร"
+
+#. placeholder {0}: MAIL_KEYS.deleteForever
+#. placeholder {0}: SHORTCUTS.deleteForever
+#: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
+msgid "Delete for good ({0})"
+msgstr "ลบถาวร ({0})"
+
+#: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
+msgid "Delete forever"
+msgstr "ลบถาวร"
 
 #: src/features/status/ComponentsTab.tsx
 msgid "Delete group"
@@ -5552,6 +5611,26 @@ msgstr "ลบกฎ {name} หรือไม่"
 msgid "Delete the selected block"
 msgstr "ลบบล็อกที่เลือก"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Delete the selected contacts"
+msgstr "ลบผู้ติดต่อที่เลือก"
+
+#: src/features/contact/ContactBulk.tsx
+msgid "Delete the selected contacts ({n})?"
+msgstr "ลบผู้ติดต่อที่เลือก ({n}) หรือไม่"
+
+#: src/features/contact/ContactBulk.tsx
+msgid "Delete the selected contacts (Del)"
+msgstr "ลบผู้ติดต่อที่เลือก (Del)"
+
+#: src/features/conversation/TrashBulk.tsx
+msgid "Delete the selected conversations ({n}) for good?"
+msgstr "ลบการสนทนาที่เลือก ({n}) ถาวรหรือไม่"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Delete the selected conversations for good, in the Trash"
+msgstr "ลบการสนทนาที่เลือกในถังขยะถาวร"
+
 #: src/features/docs/discussions/Bulk.tsx
 msgid "Delete the selected discussions ({n})?"
 msgstr "ลบการสนทนาที่เลือก ({n}) ไหม"
@@ -5559,6 +5638,10 @@ msgstr "ลบการสนทนาที่เลือก ({n}) ไหม"
 #: src/features/broadcasts/BroadcastBulk.tsx
 msgid "Delete the selected drafts ({n})?"
 msgstr "ลบฉบับร่างที่เลือก ({n}) ไหม"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Delete the selected mails for good, in the Trash"
+msgstr "ลบอีเมลที่เลือกในถังขยะถาวร"
 
 #: src/features/broadcasts/SubscriberBulk.tsx
 msgid "Delete the selected subscriptions ({n})?"
@@ -6484,6 +6567,19 @@ msgstr "อีโมจิ"
 msgid "Empty in the first rows"
 msgstr "ว่างในไม่กี่แถวแรก"
 
+#: src/features/conversation/TrashBulk.tsx
+msgid "Empty the Trash"
+msgstr "ล้างถังขยะ"
+
+#: src/features/conversation/TrashBulk.tsx
+msgid "Empty the Trash?"
+msgstr "ล้างถังขยะหรือไม่"
+
+#. placeholder {0}: r.count
+#: src/features/conversation/TrashBulk.tsx
+msgid "Emptying the Trash: {0} are being deleted"
+msgstr "กำลังล้างถังขยะ: กำลังลบ {0} รายการ"
+
 #: src/features/settings/automation/RuleDialog.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "Enabled"
@@ -6642,6 +6738,10 @@ msgstr "ทุกการสนทนา"
 #: src/features/settings/sla/SlaPage.tsx
 msgid "Every conversation"
 msgstr "ทุกการสนทนา"
+
+#: src/features/conversation/TrashBulk.tsx
+msgid "Every conversation in the Trash that you may delete ({count}) is deleted at once with its messages and files, in conversation and mail inboxes alike. This cannot be undone."
+msgstr "ทุกการสนทนาในถังขยะที่คุณลบได้ ({count}) จะถูกลบทันทีพร้อมข้อความและไฟล์ ทั้งในกล่องการสนทนาและกล่องอีเมล ไม่สามารถยกเลิกได้"
 
 #: src/features/migrations/MapStep.tsx
 msgid "Every imported conversation is closed."
@@ -8585,6 +8685,10 @@ msgstr "จะหายไปจากทีมและลูกค้า ค�
 msgid "It goes into <0>~/.codex/config.toml</0>, which the Codex CLI and IDE extension share."
 msgstr "จะอยู่ใน <0>~/.codex/config.toml</0> ซึ่ง Codex CLI และส่วนขยาย IDE ใช้ร่วมกัน"
 
+#: src/features/contact/DeleteContactDialog.tsx
+msgid "It has no conversations"
+msgstr "ไม่มีการสนทนา"
+
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "It is added for you in the current project. Add <0>--scope user</0> for every project, or <1>--scope project</1> to share it in <2>.mcp.json</2>."
 msgstr "เพิ่มให้คุณในโปรเจกต์ปัจจุบัน เพิ่ม <0>--scope user</0> สำหรับทุกโปรเจกต์ หรือ <1>--scope project</1> เพื่อแชร์ใน <2>.mcp.json</2>"
@@ -8596,6 +8700,10 @@ msgstr "ไม่มีแล้ว หรือคุณไม่มีสิ�
 #: src/features/docs/discussions/parts.tsx
 msgid "It is hidden with every other post of its author still waiting for approval, and their later posts always wait for a member."
 msgstr "ถูกซ่อนพร้อมโพสต์อื่นทั้งหมดของผู้เขียนที่ยังรออนุมัติ และโพสต์ถัดไปของเขาจะรอสมาชิกเสมอ"
+
+#: src/components/common/BulkReport.tsx
+msgid "It is not in the Trash any more"
+msgstr "ไม่อยู่ในถังขยะอีกต่อไป"
 
 #: src/features/settings/labels/LabelsPage.tsx
 msgid "It is removed from every conversation."
@@ -9781,6 +9889,10 @@ msgstr "ทำเครื่องหมายว่ายังไม่อ่
 msgid "Mark or unmark as spam"
 msgstr "ทำเครื่องหมายหรือยกเลิกเครื่องหมายสแปม"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Mark the selected conversations as not spam, in Spam"
+msgstr "ทำเครื่องหมายการสนทนาที่เลือกในสแปมว่าไม่ใช่สแปม"
+
 #: src/features/docs/discussions/Bulk.tsx
 msgid "Mark the selected discussions as spam ({n})?"
 msgstr "ทำเครื่องหมายการสนทนาที่เลือก ({n}) เป็นสแปมไหม"
@@ -10277,6 +10389,10 @@ msgid "Move through the broadcasts"
 msgstr "เลื่อนดูบรอดคาสต์"
 
 #: src/components/common/ShortcutSheet.tsx
+msgid "Move through the contacts"
+msgstr "เลื่อนดูผู้ติดต่อ"
+
+#: src/components/common/ShortcutSheet.tsx
 msgid "Move through the designs"
 msgstr "เลื่อนดูดีไซน์"
 
@@ -10344,6 +10460,11 @@ msgstr "ย้ายไปยังขั้นก่อนหน้าหรื
 #: src/features/settings/automation/text.ts
 msgid "Move to the Trash"
 msgstr "ย้ายไปที่ถังขยะ"
+
+#. placeholder {0}: SHORTCUTS.trash
+#: src/features/inbox/ChatList.tsx
+msgid "Move to the Trash ({0})"
+msgstr "ย้ายไปที่ถังขยะ ({0})"
 
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
@@ -11441,6 +11562,10 @@ msgstr "ไม่มีบัญชี SMTP"
 msgid "No SMTP account"
 msgstr "ไม่มีบัญชี SMTP"
 
+#: src/features/inbox/ChatList.tsx
+msgid "No spam here."
+msgstr "ไม่มีสแปมที่นี่"
+
 #: src/features/status/LinkIncidentDialog.tsx
 msgid "No status page yet. Create one under Status first."
 msgstr "ยังไม่มีหน้าสถานะ สร้างหนึ่งหน้าที่สถานะก่อน"
@@ -11796,8 +11921,14 @@ msgstr "ยังไม่ลงนาม"
 
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/ConversationMenu.tsx
+#: src/features/inbox/ChatList.tsx
 msgid "Not spam"
 msgstr "ไม่ใช่สแปม"
+
+#. placeholder {0}: SHORTCUTS.spam
+#: src/features/inbox/ChatList.tsx
+msgid "Not spam ({0})"
+msgstr "ไม่ใช่สแปม ({0})"
 
 #: src/features/contact/ContactsPage.tsx
 msgid "Not the same"
@@ -12642,6 +12773,7 @@ msgstr "เปิดบทความหรือคอลเลกชัน"
 msgid "Open the broadcast"
 msgstr "เปิดบรอดคาสต์"
 
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Open the contact"
 msgstr "เปิดผู้ติดต่อ"
@@ -15773,6 +15905,10 @@ msgid "Select mails (X)"
 msgstr "เลือกอีเมล (X)"
 
 #: src/components/common/ShortcutSheet.tsx
+msgid "Select the contact under the cursor"
+msgstr "เลือกผู้ติดต่อใต้เคอร์เซอร์"
+
+#: src/components/common/ShortcutSheet.tsx
 msgid "Select the conversation under the cursor"
 msgstr "เลือกการสนทนาใต้เคอร์เซอร์"
 
@@ -17187,6 +17323,7 @@ msgstr "แหล่งที่มา"
 #: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
+#: src/features/inbox/ChatList.tsx
 #: src/features/migrations/parts.tsx
 msgid "Spam"
 msgstr "สแปม"
@@ -17983,6 +18120,14 @@ msgstr "ลบผู้ติดต่อแล้ว"
 #: src/features/settings/automation/text.ts
 msgid "The contact writes a message"
 msgstr "ผู้ติดต่อเขียนข้อความ"
+
+#: src/features/contact/DeleteContactDialog.tsx
+msgid "The contact, their notes and everything they wrote are deleted for good. This cannot be undone."
+msgstr "ผู้ติดต่อ บันทึกของผู้ติดต่อ และทุกสิ่งที่เขียนจะถูกลบถาวร ไม่สามารถยกเลิกได้"
+
+#: src/features/contact/ContactBulk.tsx
+msgid "The contacts, their conversations, notes and files are deleted for good. This cannot be undone."
+msgstr "ผู้ติดต่อ การสนทนา บันทึก และไฟล์ของผู้ติดต่อจะถูกลบถาวร ไม่สามารถยกเลิกได้"
 
 #: src/features/conversation/messages/Thread.tsx
 msgid "The conversation"
@@ -18844,6 +18989,14 @@ msgstr "The tracker refused the request. Check the target and your permissions."
 msgid "The tracker refused the token. Check that it is valid and has access to issues."
 msgstr "The tracker refused the token. Check that it is valid and has access to issues."
 
+#: src/features/conversation/TrashBulk.tsx
+msgid "The Trash changed. It now holds {count}."
+msgstr "ถังขยะเปลี่ยนไป ตอนนี้มี {count} รายการ"
+
+#: src/features/conversation/TrashBulk.tsx
+msgid "The Trash is empty"
+msgstr "ถังขยะว่างเปล่า"
+
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "The Trash is empty."
@@ -18977,6 +19130,10 @@ msgstr "กฎเหล่านี้ใช้กับแบบฟอร์ม
 #: src/features/broadcasts/AddSubscriberDialog.tsx
 msgid "They already agreed"
 msgstr "พวกเขายินยอมแล้ว"
+
+#: src/features/conversation/TrashBulk.tsx
+msgid "They are deleted at once with their messages and files. This cannot be undone, and nobody can restore them."
+msgstr "จะถูกลบทันทีพร้อมข้อความและไฟล์ ไม่สามารถยกเลิกได้ และไม่มีใครกู้คืนได้"
 
 #: src/features/docs/discussions/Bulk.tsx
 msgid "They are hidden with every other post of their authors still waiting for approval, and the authors’ later posts always wait for a member."
@@ -19976,6 +20133,7 @@ msgstr "ปลดล็อกแล้ว"
 #: src/app/TeamMenu.tsx
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/TestSend.tsx
+#: src/features/contact/ContactBulk.tsx
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactsColumn.tsx

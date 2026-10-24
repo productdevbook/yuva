@@ -31,6 +31,11 @@ msgstr "(ei aihetta)"
 msgid "{0, plural, one {# attachment} other {# attachments}}"
 msgstr "{0, plural, one {# liite} other {# liitettä}}"
 
+#. placeholder {0}: p.conversation_count
+#: src/features/contact/DeleteContactDialog.tsx
+msgid "{0, plural, one {# conversation is deleted with it} other {# conversations are deleted with it}}"
+msgstr "{0, plural, one {# keskustelu poistetaan sen mukana} other {# keskustelua poistetaan sen mukana}}"
+
 #. placeholder {0}: f.messages
 #. placeholder {0}: l.conversations
 #. placeholder {0}: load.get(m.id) ?? 0
@@ -108,6 +113,16 @@ msgstr "{0} hyvää"
 #: src/components/common/AddressChips.tsx
 msgid "{0} is not an e-mail address"
 msgstr "{0} ei ole sähköpostiosoite"
+
+#. placeholder {0}: done.length
+#: src/features/inbox/ChatList.tsx
+msgid "{0} marked as not spam"
+msgstr "{0} merkitty ei-roskapostiksi"
+
+#. placeholder {0}: done.length
+#: src/features/inbox/ChatList.tsx
+msgid "{0} marked as spam"
+msgstr "{0} merkitty roskapostiksi"
 
 #. placeholder {0}: items.length
 #: src/features/inbox/ChatList.tsx
@@ -346,6 +361,10 @@ msgstr "{count} tapahtumaa"
 msgid "{count} imported conversations that nobody wrote in since are deleted with their messages and files. Conversations your team wrote in stay. Nothing changes in {address}."
 msgstr "{count} tuotua keskustelua, joihin kukaan ei ole sen jälkeen kirjoittanut, poistetaan viesteineen ja tiedostoineen. Keskustelut, joihin tiimisi on kirjoittanut, säilyvät. Osoitteessa {address} ei muutu mikään."
 
+#: src/features/conversation/TrashBulk.tsx
+msgid "{count} in the Trash across your inboxes. They are deleted for good after 30 days."
+msgstr "Roskakorissa {count} kaikissa postilaatikoissasi. Ne poistetaan pysyvästi 30 päivän kuluttua."
+
 #: src/features/migrations/ChooseStep.tsx
 msgid "{count} messages"
 msgstr "{count} viestiä"
@@ -383,6 +402,10 @@ msgstr "{days, plural, one {mediaani, viimeiset # päivä} other {mediaani, viim
 #: src/features/conversation/ConversationStatus.tsx
 msgid "{days, plural, one {Waiting for # day} other {Waiting for # days}}"
 msgstr "{days, plural, one {Odottanut # päivän} other {Odottanut # päivää}}"
+
+#: src/components/common/BulkReport.tsx
+msgid "{deleted} deleted"
+msgstr "{deleted} poistettu"
 
 #: src/features/broadcasts/Import.tsx
 msgid "{done} of {total} rows"
@@ -650,6 +673,10 @@ msgstr "{name} yhdistää toimittajansa pilvestä, joten se tarvitsee tämän pa
 #: src/features/migrations/CopyStep.tsx
 msgid "{name} copied"
 msgstr "{name} kopioitu"
+
+#: src/features/contact/DeleteContactDialog.tsx
+msgid "{name} deleted"
+msgstr "{name} poistettu"
 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "{name} docs"
@@ -2365,6 +2392,10 @@ msgstr "Also called audience or identifier."
 msgid "Also called reply URL. HTTP-POST binding."
 msgstr "Also called reply URL. HTTP-POST binding."
 
+#: src/features/contact/DeleteContactDialog.tsx
+msgid "Also conversations in mailboxes you cannot read"
+msgstr "Myös keskustelut postilaatikoissa, joita et voi lukea"
+
 #: src/features/settings/profile/ProfileForm.tsx
 msgid "Also for sign-in and notification e-mails"
 msgstr "Myös kirjautumis- ja ilmoitussähköposteihin"
@@ -3666,6 +3697,7 @@ msgstr "Kampanjan nimi"
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactNotes.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/contact/DeleteContactDialog.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
@@ -4884,6 +4916,10 @@ msgstr "Keskustelut kopioitu"
 msgid "Conversations from every product"
 msgstr "Keskustelut kaikista tuotteista"
 
+#: src/features/contact/DeleteContactDialog.tsx
+msgid "Conversations in mailboxes you cannot read are deleted with it"
+msgstr "Keskustelut postilaatikoissa, joita et voi lukea, poistetaan myös"
+
 #: src/features/migrations/DoneStep.tsx
 msgid "Conversations nobody wrote in after the import are deleted. Nothing changed in {address}."
 msgstr "Keskustelut, joihin kukaan ei kirjoittanut tuonnin jälkeen, poistetaan. Osoitteessa {address} ei muuttunut mikään."
@@ -5397,6 +5433,7 @@ msgstr "Edustajat"
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
+#: src/features/contact/ContactBulk.tsx
 #: src/features/contact/ContactNotes.tsx
 #: src/features/docs/discussions/Bulk.tsx
 #: src/features/inbox/ChatList.tsx
@@ -5436,6 +5473,7 @@ msgstr "Poista ({removeKey})"
 msgid "Delete {0}?"
 msgstr "Poistetaanko {0}?"
 
+#: src/features/contact/DeleteContactDialog.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -5454,6 +5492,11 @@ msgstr "Poista (päivän) jälkeen"
 msgid "Delete component"
 msgstr "Poista komponentti"
 
+#: src/features/contact/ContactDetail.tsx
+#: src/features/contact/DeleteContactDialog.tsx
+msgid "Delete contact"
+msgstr "Poista yhteystieto"
+
 #: src/features/broadcasts/Composer.tsx
 #: src/features/status/IncidentDetail.tsx
 msgid "Delete draft"
@@ -5462,6 +5505,22 @@ msgstr "Poista luonnos"
 #: src/features/status/IncidentDetail.tsx
 msgid "Delete draft ({removeKey})"
 msgstr "Poista luonnos ({removeKey})"
+
+#: src/features/conversation/TrashBulk.tsx
+msgid "Delete for good"
+msgstr "Poista pysyvästi"
+
+#. placeholder {0}: MAIL_KEYS.deleteForever
+#. placeholder {0}: SHORTCUTS.deleteForever
+#: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
+msgid "Delete for good ({0})"
+msgstr "Poista pysyvästi ({0})"
+
+#: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
+msgid "Delete forever"
+msgstr "Poista pysyvästi"
 
 #: src/features/status/ComponentsTab.tsx
 msgid "Delete group"
@@ -5552,6 +5611,26 @@ msgstr "Poistetaanko sääntö {name}?"
 msgid "Delete the selected block"
 msgstr "Poista valittu lohko"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Delete the selected contacts"
+msgstr "Poista valitut yhteystiedot"
+
+#: src/features/contact/ContactBulk.tsx
+msgid "Delete the selected contacts ({n})?"
+msgstr "Poistetaanko valitut yhteystiedot ({n})?"
+
+#: src/features/contact/ContactBulk.tsx
+msgid "Delete the selected contacts (Del)"
+msgstr "Poista valitut yhteystiedot (Del)"
+
+#: src/features/conversation/TrashBulk.tsx
+msgid "Delete the selected conversations ({n}) for good?"
+msgstr "Poistetaanko valitut keskustelut ({n}) pysyvästi?"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Delete the selected conversations for good, in the Trash"
+msgstr "Poista roskakorin valitut keskustelut pysyvästi"
+
 #: src/features/docs/discussions/Bulk.tsx
 msgid "Delete the selected discussions ({n})?"
 msgstr "Poistetaanko valitut keskustelut ({n})?"
@@ -5559,6 +5638,10 @@ msgstr "Poistetaanko valitut keskustelut ({n})?"
 #: src/features/broadcasts/BroadcastBulk.tsx
 msgid "Delete the selected drafts ({n})?"
 msgstr "Poistetaanko valitut luonnokset ({n})?"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Delete the selected mails for good, in the Trash"
+msgstr "Poista roskakorin valitut viestit pysyvästi"
 
 #: src/features/broadcasts/SubscriberBulk.tsx
 msgid "Delete the selected subscriptions ({n})?"
@@ -6484,6 +6567,19 @@ msgstr "Emoji"
 msgid "Empty in the first rows"
 msgstr "Tyhjä ensimmäisillä riveillä"
 
+#: src/features/conversation/TrashBulk.tsx
+msgid "Empty the Trash"
+msgstr "Tyhjennä roskakori"
+
+#: src/features/conversation/TrashBulk.tsx
+msgid "Empty the Trash?"
+msgstr "Tyhjennetäänkö roskakori?"
+
+#. placeholder {0}: r.count
+#: src/features/conversation/TrashBulk.tsx
+msgid "Emptying the Trash: {0} are being deleted"
+msgstr "Roskakoria tyhjennetään: {0} poistetaan"
+
 #: src/features/settings/automation/RuleDialog.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "Enabled"
@@ -6642,6 +6738,10 @@ msgstr "jokainen keskustelu"
 #: src/features/settings/sla/SlaPage.tsx
 msgid "Every conversation"
 msgstr "Jokainen keskustelu"
+
+#: src/features/conversation/TrashBulk.tsx
+msgid "Every conversation in the Trash that you may delete ({count}) is deleted at once with its messages and files, in conversation and mail inboxes alike. This cannot be undone."
+msgstr "Jokainen roskakorin keskustelu, jonka saat poistaa ({count}), poistetaan heti viesteineen ja tiedostoineen sekä keskustelu- että sähköpostilaatikoista. Tätä ei voi perua."
 
 #: src/features/migrations/MapStep.tsx
 msgid "Every imported conversation is closed."
@@ -8585,6 +8685,10 @@ msgstr "Se katoaa tiimiltäsi ja asiakkaalta. Voit palauttaa sen roskakorista 30
 msgid "It goes into <0>~/.codex/config.toml</0>, which the Codex CLI and IDE extension share."
 msgstr "Se menee tiedostoon <0>~/.codex/config.toml</0>, jota Codex CLI ja IDE-laajennus käyttävät yhdessä."
 
+#: src/features/contact/DeleteContactDialog.tsx
+msgid "It has no conversations"
+msgstr "Sillä ei ole keskusteluja"
+
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "It is added for you in the current project. Add <0>--scope user</0> for every project, or <1>--scope project</1> to share it in <2>.mcp.json</2>."
 msgstr "Se lisätään sinulle nykyiseen projektiin. Lisää <0>--scope user</0> jokaiselle projektille tai <1>--scope project</1> jakaaksesi sen tiedostossa <2>.mcp.json</2>."
@@ -8596,6 +8700,10 @@ msgstr "Sitä ei enää ole, tai et voi nähdä sitä"
 #: src/features/docs/discussions/parts.tsx
 msgid "It is hidden with every other post of its author still waiting for approval, and their later posts always wait for a member."
 msgstr "Se piilotetaan yhdessä kaikkien muiden hyväksyntää odottavien tekijänsä viestien kanssa, ja hänen myöhemmät viestinsä odottavat aina jäsentä."
+
+#: src/components/common/BulkReport.tsx
+msgid "It is not in the Trash any more"
+msgstr "Se ei ole enää roskakorissa"
 
 #: src/features/settings/labels/LabelsPage.tsx
 msgid "It is removed from every conversation."
@@ -9781,6 +9889,10 @@ msgstr "Merkitse lukemattomaksi ja palaa listaan"
 msgid "Mark or unmark as spam"
 msgstr "Merkitse roskapostiksi tai poista merkintä"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Mark the selected conversations as not spam, in Spam"
+msgstr "Merkitse Roskaposti-näkymän valitut keskustelut ei-roskapostiksi"
+
 #: src/features/docs/discussions/Bulk.tsx
 msgid "Mark the selected discussions as spam ({n})?"
 msgstr "Merkitäänkö valitut keskustelut roskapostiksi ({n})?"
@@ -10277,6 +10389,10 @@ msgid "Move through the broadcasts"
 msgstr "Liiku joukkolähetysten läpi"
 
 #: src/components/common/ShortcutSheet.tsx
+msgid "Move through the contacts"
+msgstr "Liiku yhteystietojen välillä"
+
+#: src/components/common/ShortcutSheet.tsx
 msgid "Move through the designs"
 msgstr "Selaa ulkoasuja"
 
@@ -10344,6 +10460,11 @@ msgstr "Siirrä edelliseen tai seuraavaan vaiheeseen"
 #: src/features/settings/automation/text.ts
 msgid "Move to the Trash"
 msgstr "Siirrä roskakoriin"
+
+#. placeholder {0}: SHORTCUTS.trash
+#: src/features/inbox/ChatList.tsx
+msgid "Move to the Trash ({0})"
+msgstr "Siirrä roskakoriin ({0})"
 
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
@@ -11441,6 +11562,10 @@ msgstr "ei SMTP-tiliä"
 msgid "No SMTP account"
 msgstr "Ei SMTP-tiliä"
 
+#: src/features/inbox/ChatList.tsx
+msgid "No spam here."
+msgstr "Täällä ei ole roskapostia."
+
 #: src/features/status/LinkIncidentDialog.tsx
 msgid "No status page yet. Create one under Status first."
 msgstr "Tilasivua ei ole vielä. Luo ensin sellainen kohdassa Tila."
@@ -11796,8 +11921,14 @@ msgstr "Ei vielä allekirjoita"
 
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/ConversationMenu.tsx
+#: src/features/inbox/ChatList.tsx
 msgid "Not spam"
 msgstr "Ei roskapostia"
+
+#. placeholder {0}: SHORTCUTS.spam
+#: src/features/inbox/ChatList.tsx
+msgid "Not spam ({0})"
+msgstr "Ei roskapostia ({0})"
 
 #: src/features/contact/ContactsPage.tsx
 msgid "Not the same"
@@ -12642,6 +12773,7 @@ msgstr "Avaa artikkeli tai kokoelma"
 msgid "Open the broadcast"
 msgstr "Avaa joukkolähetys"
 
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Open the contact"
 msgstr "Avaa kontakti"
@@ -15773,6 +15905,10 @@ msgid "Select mails (X)"
 msgstr "Valitse viestejä (X)"
 
 #: src/components/common/ShortcutSheet.tsx
+msgid "Select the contact under the cursor"
+msgstr "Valitse kohdistimen alla oleva yhteystieto"
+
+#: src/components/common/ShortcutSheet.tsx
 msgid "Select the conversation under the cursor"
 msgstr "Valitse osoittimen kohdalla oleva keskustelu"
 
@@ -17187,6 +17323,7 @@ msgstr "Lähteet"
 #: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
+#: src/features/inbox/ChatList.tsx
 #: src/features/migrations/parts.tsx
 msgid "Spam"
 msgstr "Roskaposti"
@@ -17983,6 +18120,14 @@ msgstr "Kontakti poistettiin"
 #: src/features/settings/automation/text.ts
 msgid "The contact writes a message"
 msgstr "Yhteystieto kirjoittaa viestin"
+
+#: src/features/contact/DeleteContactDialog.tsx
+msgid "The contact, their notes and everything they wrote are deleted for good. This cannot be undone."
+msgstr "Yhteystieto, sen muistiinpanot ja kaikki, mitä se kirjoitti, poistetaan pysyvästi. Tätä ei voi perua."
+
+#: src/features/contact/ContactBulk.tsx
+msgid "The contacts, their conversations, notes and files are deleted for good. This cannot be undone."
+msgstr "Yhteystiedot, niiden keskustelut, muistiinpanot ja tiedostot poistetaan pysyvästi. Tätä ei voi perua."
 
 #: src/features/conversation/messages/Thread.tsx
 msgid "The conversation"
@@ -18844,6 +18989,14 @@ msgstr "The tracker refused the request. Check the target and your permissions."
 msgid "The tracker refused the token. Check that it is valid and has access to issues."
 msgstr "The tracker refused the token. Check that it is valid and has access to issues."
 
+#: src/features/conversation/TrashBulk.tsx
+msgid "The Trash changed. It now holds {count}."
+msgstr "Roskakori muuttui. Siinä on nyt {count}."
+
+#: src/features/conversation/TrashBulk.tsx
+msgid "The Trash is empty"
+msgstr "Roskakori on tyhjä"
+
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "The Trash is empty."
@@ -18977,6 +19130,10 @@ msgstr "Nämä säännöt koskevat tilauslomaketta. Voit muuttaa niitä milloin 
 #: src/features/broadcasts/AddSubscriberDialog.tsx
 msgid "They already agreed"
 msgstr "He ovat jo suostuneet"
+
+#: src/features/conversation/TrashBulk.tsx
+msgid "They are deleted at once with their messages and files. This cannot be undone, and nobody can restore them."
+msgstr "Ne poistetaan heti viesteineen ja tiedostoineen. Tätä ei voi perua, eikä kukaan voi palauttaa niitä."
 
 #: src/features/docs/discussions/Bulk.tsx
 msgid "They are hidden with every other post of their authors still waiting for approval, and the authors’ later posts always wait for a member."
@@ -19976,6 +20133,7 @@ msgstr "Lukitus avattu"
 #: src/app/TeamMenu.tsx
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/TestSend.tsx
+#: src/features/contact/ContactBulk.tsx
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactsColumn.tsx

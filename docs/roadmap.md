@@ -685,7 +685,7 @@ Accept: each run reports pass with evidence; each failure becomes its own backlo
 
 ## M39 — Bulk actions
 
-Status: planned; items Y-198 to Y-200 in `backlog.md`. Independent of team mail; runs alongside it.
+Status: done; items Y-198 to Y-200 in `backlog.md`. Independent of team mail; ran alongside it.
 
 - Deleting conversations for good and emptying the Trash, deleting contacts from the panel, and
   selecting many in the content lists.

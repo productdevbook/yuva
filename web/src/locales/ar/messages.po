@@ -31,6 +31,11 @@ msgstr "(بلا موضوع)"
 msgid "{0, plural, one {# attachment} other {# attachments}}"
 msgstr "{0, plural, zero {# مرفق} one {مرفق واحد} two {مرفقان} few {# مرفقات} many {# مرفقًا} other {# مرفق}}"
 
+#. placeholder {0}: p.conversation_count
+#: src/features/contact/DeleteContactDialog.tsx
+msgid "{0, plural, one {# conversation is deleted with it} other {# conversations are deleted with it}}"
+msgstr "{0, plural, zero {لا محادثات تُحذف معها} one {تُحذف محادثة واحدة معها} two {تُحذف محادثتان معها} few {تُحذف # محادثات معها} many {تُحذف # محادثة معها} other {تُحذف # محادثة معها}}"
+
 #. placeholder {0}: f.messages
 #. placeholder {0}: l.conversations
 #. placeholder {0}: load.get(m.id) ?? 0
@@ -108,6 +113,16 @@ msgstr "{0} جيدة"
 #: src/components/common/AddressChips.tsx
 msgid "{0} is not an e-mail address"
 msgstr "{0} ليس عنوان بريد إلكتروني"
+
+#. placeholder {0}: done.length
+#: src/features/inbox/ChatList.tsx
+msgid "{0} marked as not spam"
+msgstr "تم وضع علامة «ليس رسالة غير مرغوبة» على {0}"
+
+#. placeholder {0}: done.length
+#: src/features/inbox/ChatList.tsx
+msgid "{0} marked as spam"
+msgstr "تم وضع علامة «رسالة غير مرغوبة» على {0}"
 
 #. placeholder {0}: items.length
 #: src/features/inbox/ChatList.tsx
@@ -346,6 +361,10 @@ msgstr "{count} أحداث"
 msgid "{count} imported conversations that nobody wrote in since are deleted with their messages and files. Conversations your team wrote in stay. Nothing changes in {address}."
 msgstr "{count} محادثة مستورَدة لم يكتب فيها أحد منذ ذلك الحين ستُحذف مع رسائلها وملفاتها. تبقى المحادثات التي كتب فيها فريقك. لا يتغير شيء في {address}."
 
+#: src/features/conversation/TrashBulk.tsx
+msgid "{count} in the Trash across your inboxes. They are deleted for good after 30 days."
+msgstr "{count} في المهملات عبر جميع صناديقك. تُحذف نهائيًا بعد 30 يومًا."
+
 #: src/features/migrations/ChooseStep.tsx
 msgid "{count} messages"
 msgstr "{count} رسالة"
@@ -383,6 +402,10 @@ msgstr "{days, plural, zero {الوسيط، آخر # يوم} one {الوسيط،
 #: src/features/conversation/ConversationStatus.tsx
 msgid "{days, plural, one {Waiting for # day} other {Waiting for # days}}"
 msgstr "{days, plural, zero {في الانتظار منذ # يوم} one {في الانتظار منذ يوم} two {في الانتظار منذ يومين} few {في الانتظار منذ # أيام} many {في الانتظار منذ # يومًا} other {في الانتظار منذ # يوم}}"
+
+#: src/components/common/BulkReport.tsx
+msgid "{deleted} deleted"
+msgstr "تم حذف {deleted}"
 
 #: src/features/broadcasts/Import.tsx
 msgid "{done} of {total} rows"
@@ -650,6 +673,10 @@ msgstr "يتصل {name} من سحابة مزوّده، لذا يحتاج إلى 
 #: src/features/migrations/CopyStep.tsx
 msgid "{name} copied"
 msgstr "تم نسخ {name}"
+
+#: src/features/contact/DeleteContactDialog.tsx
+msgid "{name} deleted"
+msgstr "تم حذف {name}"
 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "{name} docs"
@@ -2365,6 +2392,10 @@ msgstr "Also called audience or identifier."
 msgid "Also called reply URL. HTTP-POST binding."
 msgstr "Also called reply URL. HTTP-POST binding."
 
+#: src/features/contact/DeleteContactDialog.tsx
+msgid "Also conversations in mailboxes you cannot read"
+msgstr "وكذلك المحادثات في صناديق البريد التي لا يمكنك قراءتها"
+
 #: src/features/settings/profile/ProfileForm.tsx
 msgid "Also for sign-in and notification e-mails"
 msgstr "للدخول ورسائل الإشعارات أيضًا"
@@ -3666,6 +3697,7 @@ msgstr "اسم الحملة"
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactNotes.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/contact/DeleteContactDialog.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
@@ -4884,6 +4916,10 @@ msgstr "تم نسخ المحادثات"
 msgid "Conversations from every product"
 msgstr "المحادثات من كل المنتجات"
 
+#: src/features/contact/DeleteContactDialog.tsx
+msgid "Conversations in mailboxes you cannot read are deleted with it"
+msgstr "تُحذف أيضًا المحادثات في صناديق البريد التي لا يمكنك قراءتها"
+
 #: src/features/migrations/DoneStep.tsx
 msgid "Conversations nobody wrote in after the import are deleted. Nothing changed in {address}."
 msgstr "تُحذف المحادثات التي لم يكتب فيها أحد بعد الاستيراد. لم يتغير شيء في {address}."
@@ -5397,6 +5433,7 @@ msgstr "المفوَّضون"
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
+#: src/features/contact/ContactBulk.tsx
 #: src/features/contact/ContactNotes.tsx
 #: src/features/docs/discussions/Bulk.tsx
 #: src/features/inbox/ChatList.tsx
@@ -5436,6 +5473,7 @@ msgstr "حذف ({removeKey})"
 msgid "Delete {0}?"
 msgstr "حذف {0}؟"
 
+#: src/features/contact/DeleteContactDialog.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -5454,6 +5492,11 @@ msgstr "الحذف بعد (أيام)"
 msgid "Delete component"
 msgstr "حذف المكوّن"
 
+#: src/features/contact/ContactDetail.tsx
+#: src/features/contact/DeleteContactDialog.tsx
+msgid "Delete contact"
+msgstr "حذف جهة الاتصال"
+
 #: src/features/broadcasts/Composer.tsx
 #: src/features/status/IncidentDetail.tsx
 msgid "Delete draft"
@@ -5462,6 +5505,22 @@ msgstr "حذف المسودة"
 #: src/features/status/IncidentDetail.tsx
 msgid "Delete draft ({removeKey})"
 msgstr "حذف المسودة ({removeKey})"
+
+#: src/features/conversation/TrashBulk.tsx
+msgid "Delete for good"
+msgstr "حذف نهائي"
+
+#. placeholder {0}: MAIL_KEYS.deleteForever
+#. placeholder {0}: SHORTCUTS.deleteForever
+#: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
+msgid "Delete for good ({0})"
+msgstr "حذف نهائي ({0})"
+
+#: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
+msgid "Delete forever"
+msgstr "حذف نهائي"
 
 #: src/features/status/ComponentsTab.tsx
 msgid "Delete group"
@@ -5552,6 +5611,26 @@ msgstr "حذف القاعدة {name}؟"
 msgid "Delete the selected block"
 msgstr "حذف الكتلة المحددة"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Delete the selected contacts"
+msgstr "حذف جهات الاتصال المحددة"
+
+#: src/features/contact/ContactBulk.tsx
+msgid "Delete the selected contacts ({n})?"
+msgstr "حذف جهات الاتصال المحددة ({n})؟"
+
+#: src/features/contact/ContactBulk.tsx
+msgid "Delete the selected contacts (Del)"
+msgstr "حذف جهات الاتصال المحددة (Del)"
+
+#: src/features/conversation/TrashBulk.tsx
+msgid "Delete the selected conversations ({n}) for good?"
+msgstr "حذف المحادثات المحددة ({n}) نهائيًا؟"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Delete the selected conversations for good, in the Trash"
+msgstr "حذف المحادثات المحددة في المهملات نهائيًا"
+
 #: src/features/docs/discussions/Bulk.tsx
 msgid "Delete the selected discussions ({n})?"
 msgstr "حذف المناقشات المحددة ({n})؟"
@@ -5559,6 +5638,10 @@ msgstr "حذف المناقشات المحددة ({n})؟"
 #: src/features/broadcasts/BroadcastBulk.tsx
 msgid "Delete the selected drafts ({n})?"
 msgstr "حذف المسودات المحددة ({n})؟"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Delete the selected mails for good, in the Trash"
+msgstr "حذف الرسائل المحددة في المهملات نهائيًا"
 
 #: src/features/broadcasts/SubscriberBulk.tsx
 msgid "Delete the selected subscriptions ({n})?"
@@ -6484,6 +6567,19 @@ msgstr "رمز تعبيري"
 msgid "Empty in the first rows"
 msgstr "فارغ في الصفوف الأولى"
 
+#: src/features/conversation/TrashBulk.tsx
+msgid "Empty the Trash"
+msgstr "إفراغ المهملات"
+
+#: src/features/conversation/TrashBulk.tsx
+msgid "Empty the Trash?"
+msgstr "إفراغ المهملات؟"
+
+#. placeholder {0}: r.count
+#: src/features/conversation/TrashBulk.tsx
+msgid "Emptying the Trash: {0} are being deleted"
+msgstr "جارٍ إفراغ المهملات: يتم حذف {0}"
+
 #: src/features/settings/automation/RuleDialog.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "Enabled"
@@ -6642,6 +6738,10 @@ msgstr "كل محادثة"
 #: src/features/settings/sla/SlaPage.tsx
 msgid "Every conversation"
 msgstr "كل محادثة"
+
+#: src/features/conversation/TrashBulk.tsx
+msgid "Every conversation in the Trash that you may delete ({count}) is deleted at once with its messages and files, in conversation and mail inboxes alike. This cannot be undone."
+msgstr "كل محادثة في المهملات يحق لك حذفها ({count}) تُحذف فورًا مع رسائلها وملفاتها، في صناديق المحادثات وصناديق البريد على حد سواء. لا يمكن التراجع عن ذلك."
 
 #: src/features/migrations/MapStep.tsx
 msgid "Every imported conversation is closed."
@@ -8585,6 +8685,10 @@ msgstr "تختفي عن فريقك وعن العميل. يمكنك استعاد�
 msgid "It goes into <0>~/.codex/config.toml</0>, which the Codex CLI and IDE extension share."
 msgstr "يُضاف إلى <0>~/.codex/config.toml</0>، الذي يشاركه Codex CLI وإضافة IDE."
 
+#: src/features/contact/DeleteContactDialog.tsx
+msgid "It has no conversations"
+msgstr "ليس لديها محادثات"
+
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "It is added for you in the current project. Add <0>--scope user</0> for every project, or <1>--scope project</1> to share it in <2>.mcp.json</2>."
 msgstr "يُضاف لك في المشروع الحالي. أضف <0>--scope user</0> لكل المشاريع، أو <1>--scope project</1> لمشاركته في <2>.mcp.json</2>."
@@ -8596,6 +8700,10 @@ msgstr "لم يعد موجودًا أو لا يمكنك رؤيته"
 #: src/features/docs/discussions/parts.tsx
 msgid "It is hidden with every other post of its author still waiting for approval, and their later posts always wait for a member."
 msgstr "يُخفى مع كل منشورات كاتبه الأخرى التي لا تزال بانتظار الموافقة، وتنتظر منشوراته اللاحقة دائمًا أحد الأعضاء."
+
+#: src/components/common/BulkReport.tsx
+msgid "It is not in the Trash any more"
+msgstr "لم تعد في المهملات"
 
 #: src/features/settings/labels/LabelsPage.tsx
 msgid "It is removed from every conversation."
@@ -9781,6 +9889,10 @@ msgstr "تمييز كغير مقروء والعودة إلى القائمة"
 msgid "Mark or unmark as spam"
 msgstr "تمييز كرسالة غير مرغوبة أو إلغاء التمييز"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Mark the selected conversations as not spam, in Spam"
+msgstr "وضع علامة «ليس رسالة غير مرغوبة» على المحادثات المحددة في الرسائل غير المرغوبة"
+
 #: src/features/docs/discussions/Bulk.tsx
 msgid "Mark the selected discussions as spam ({n})?"
 msgstr "وضع علامة سبام على المناقشات المحددة ({n})؟"
@@ -10277,6 +10389,10 @@ msgid "Move through the broadcasts"
 msgstr "التنقل بين الرسائل الجماعية"
 
 #: src/components/common/ShortcutSheet.tsx
+msgid "Move through the contacts"
+msgstr "التنقل بين جهات الاتصال"
+
+#: src/components/common/ShortcutSheet.tsx
 msgid "Move through the designs"
 msgstr "التنقل بين التصاميم"
 
@@ -10344,6 +10460,11 @@ msgstr "النقل إلى المرحلة السابقة أو التالية"
 #: src/features/settings/automation/text.ts
 msgid "Move to the Trash"
 msgstr "نقل إلى المهملات"
+
+#. placeholder {0}: SHORTCUTS.trash
+#: src/features/inbox/ChatList.tsx
+msgid "Move to the Trash ({0})"
+msgstr "نقل إلى المهملات ({0})"
 
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
@@ -11441,6 +11562,10 @@ msgstr "بلا حساب SMTP"
 msgid "No SMTP account"
 msgstr "بلا حساب SMTP"
 
+#: src/features/inbox/ChatList.tsx
+msgid "No spam here."
+msgstr "لا توجد رسائل غير مرغوبة هنا."
+
 #: src/features/status/LinkIncidentDialog.tsx
 msgid "No status page yet. Create one under Status first."
 msgstr "لا توجد صفحة حالة بعد. أنشئ واحدة أولًا ضمن «الحالة»."
@@ -11796,8 +11921,14 @@ msgstr "لا يوقّع بعد"
 
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/ConversationMenu.tsx
+#: src/features/inbox/ChatList.tsx
 msgid "Not spam"
 msgstr "ليس رسالة غير مرغوبة"
+
+#. placeholder {0}: SHORTCUTS.spam
+#: src/features/inbox/ChatList.tsx
+msgid "Not spam ({0})"
+msgstr "ليس رسالة غير مرغوبة ({0})"
 
 #: src/features/contact/ContactsPage.tsx
 msgid "Not the same"
@@ -12642,6 +12773,7 @@ msgstr "فتح المقالة أو المجموعة"
 msgid "Open the broadcast"
 msgstr "فتح الرسالة الجماعية"
 
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Open the contact"
 msgstr "فتح جهة الاتصال"
@@ -15773,6 +15905,10 @@ msgid "Select mails (X)"
 msgstr "تحديد رسائل (X)"
 
 #: src/components/common/ShortcutSheet.tsx
+msgid "Select the contact under the cursor"
+msgstr "تحديد جهة الاتصال تحت المؤشر"
+
+#: src/components/common/ShortcutSheet.tsx
 msgid "Select the conversation under the cursor"
 msgstr "حدّد المحادثة تحت المؤشر"
 
@@ -17187,6 +17323,7 @@ msgstr "المصادر"
 #: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
+#: src/features/inbox/ChatList.tsx
 #: src/features/migrations/parts.tsx
 msgid "Spam"
 msgstr "رسائل غير مرغوبة"
@@ -17983,6 +18120,14 @@ msgstr "حُذفت جهة الاتصال"
 #: src/features/settings/automation/text.ts
 msgid "The contact writes a message"
 msgstr "تكتب جهة الاتصال رسالة"
+
+#: src/features/contact/DeleteContactDialog.tsx
+msgid "The contact, their notes and everything they wrote are deleted for good. This cannot be undone."
+msgstr "تُحذف جهة الاتصال وملاحظاتها وكل ما كتبته نهائيًا. لا يمكن التراجع عن ذلك."
+
+#: src/features/contact/ContactBulk.tsx
+msgid "The contacts, their conversations, notes and files are deleted for good. This cannot be undone."
+msgstr "تُحذف جهات الاتصال ومحادثاتها وملاحظاتها وملفاتها نهائيًا. لا يمكن التراجع عن ذلك."
 
 #: src/features/conversation/messages/Thread.tsx
 msgid "The conversation"
@@ -18844,6 +18989,14 @@ msgstr "The tracker refused the request. Check the target and your permissions."
 msgid "The tracker refused the token. Check that it is valid and has access to issues."
 msgstr "The tracker refused the token. Check that it is valid and has access to issues."
 
+#: src/features/conversation/TrashBulk.tsx
+msgid "The Trash changed. It now holds {count}."
+msgstr "تغيّرت المهملات. تحتوي الآن على {count}."
+
+#: src/features/conversation/TrashBulk.tsx
+msgid "The Trash is empty"
+msgstr "المهملات فارغة"
+
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "The Trash is empty."
@@ -18977,6 +19130,10 @@ msgstr "تسري هذه القواعد على نموذج الاشتراك. يم�
 #: src/features/broadcasts/AddSubscriberDialog.tsx
 msgid "They already agreed"
 msgstr "وافقوا بالفعل"
+
+#: src/features/conversation/TrashBulk.tsx
+msgid "They are deleted at once with their messages and files. This cannot be undone, and nobody can restore them."
+msgstr "تُحذف فورًا مع رسائلها وملفاتها. لا يمكن التراجع عن ذلك ولا يمكن لأحد استعادتها."
 
 #: src/features/docs/discussions/Bulk.tsx
 msgid "They are hidden with every other post of their authors still waiting for approval, and the authors’ later posts always wait for a member."
@@ -19976,6 +20133,7 @@ msgstr "فُتح القفل"
 #: src/app/TeamMenu.tsx
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/TestSend.tsx
+#: src/features/contact/ContactBulk.tsx
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactsColumn.tsx

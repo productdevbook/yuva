@@ -31,6 +31,11 @@ msgstr "(không có chủ đề)"
 msgid "{0, plural, one {# attachment} other {# attachments}}"
 msgstr "{0, plural, other {# tệp đính kèm}}"
 
+#. placeholder {0}: p.conversation_count
+#: src/features/contact/DeleteContactDialog.tsx
+msgid "{0, plural, one {# conversation is deleted with it} other {# conversations are deleted with it}}"
+msgstr "{0, plural, other {# cuộc trò chuyện sẽ bị xóa cùng}}"
+
 #. placeholder {0}: f.messages
 #. placeholder {0}: l.conversations
 #. placeholder {0}: load.get(m.id) ?? 0
@@ -108,6 +113,16 @@ msgstr "{0} tốt"
 #: src/components/common/AddressChips.tsx
 msgid "{0} is not an e-mail address"
 msgstr "{0} không phải là địa chỉ email"
+
+#. placeholder {0}: done.length
+#: src/features/inbox/ChatList.tsx
+msgid "{0} marked as not spam"
+msgstr "Đã đánh dấu {0} là không phải thư rác"
+
+#. placeholder {0}: done.length
+#: src/features/inbox/ChatList.tsx
+msgid "{0} marked as spam"
+msgstr "Đã đánh dấu {0} là thư rác"
 
 #. placeholder {0}: items.length
 #: src/features/inbox/ChatList.tsx
@@ -346,6 +361,10 @@ msgstr "{count} sự kiện"
 msgid "{count} imported conversations that nobody wrote in since are deleted with their messages and files. Conversations your team wrote in stay. Nothing changes in {address}."
 msgstr "{count} cuộc trò chuyện đã nhập mà từ đó chưa ai viết thêm sẽ bị xóa cùng tin nhắn và tệp của chúng. Các cuộc trò chuyện mà nhóm của bạn đã viết sẽ được giữ lại. Không có gì thay đổi trong {address}."
 
+#: src/features/conversation/TrashBulk.tsx
+msgid "{count} in the Trash across your inboxes. They are deleted for good after 30 days."
+msgstr "{count} trong Thùng rác, tính trên mọi hộp thư của bạn. Chúng bị xóa vĩnh viễn sau 30 ngày."
+
 #: src/features/migrations/ChooseStep.tsx
 msgid "{count} messages"
 msgstr "{count} tin nhắn"
@@ -383,6 +402,10 @@ msgstr "{days, plural, other {trung vị, # ngày qua}}"
 #: src/features/conversation/ConversationStatus.tsx
 msgid "{days, plural, one {Waiting for # day} other {Waiting for # days}}"
 msgstr "{days, plural, other {Đã chờ # ngày}}"
+
+#: src/components/common/BulkReport.tsx
+msgid "{deleted} deleted"
+msgstr "Đã xóa {deleted}"
 
 #: src/features/broadcasts/Import.tsx
 msgid "{done} of {total} rows"
@@ -650,6 +673,10 @@ msgstr "{name} kết nối từ đám mây của nhà cung cấp, nên cần má
 #: src/features/migrations/CopyStep.tsx
 msgid "{name} copied"
 msgstr "Đã sao chép {name}"
+
+#: src/features/contact/DeleteContactDialog.tsx
+msgid "{name} deleted"
+msgstr "Đã xóa {name}"
 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "{name} docs"
@@ -2365,6 +2392,10 @@ msgstr "Also called audience or identifier."
 msgid "Also called reply URL. HTTP-POST binding."
 msgstr "Also called reply URL. HTTP-POST binding."
 
+#: src/features/contact/DeleteContactDialog.tsx
+msgid "Also conversations in mailboxes you cannot read"
+msgstr "Cùng các cuộc trò chuyện trong hộp thư bạn không đọc được"
+
 #: src/features/settings/profile/ProfileForm.tsx
 msgid "Also for sign-in and notification e-mails"
 msgstr "Cũng dùng cho email đăng nhập và thông báo"
@@ -3666,6 +3697,7 @@ msgstr "Tên chiến dịch"
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactNotes.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/contact/DeleteContactDialog.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
@@ -4884,6 +4916,10 @@ msgstr "Đã sao chép cuộc trò chuyện"
 msgid "Conversations from every product"
 msgstr "Cuộc trò chuyện từ mọi sản phẩm"
 
+#: src/features/contact/DeleteContactDialog.tsx
+msgid "Conversations in mailboxes you cannot read are deleted with it"
+msgstr "Các cuộc trò chuyện trong hộp thư bạn không đọc được cũng bị xóa"
+
 #: src/features/migrations/DoneStep.tsx
 msgid "Conversations nobody wrote in after the import are deleted. Nothing changed in {address}."
 msgstr "Các cuộc trò chuyện chưa ai viết thêm sau khi nhập sẽ bị xóa. Không có gì thay đổi trong {address}."
@@ -5397,6 +5433,7 @@ msgstr "Người được ủy quyền"
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
+#: src/features/contact/ContactBulk.tsx
 #: src/features/contact/ContactNotes.tsx
 #: src/features/docs/discussions/Bulk.tsx
 #: src/features/inbox/ChatList.tsx
@@ -5436,6 +5473,7 @@ msgstr "Xóa ({removeKey})"
 msgid "Delete {0}?"
 msgstr "Xóa {0}?"
 
+#: src/features/contact/DeleteContactDialog.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -5454,6 +5492,11 @@ msgstr "Xóa sau (ngày)"
 msgid "Delete component"
 msgstr "Xóa thành phần"
 
+#: src/features/contact/ContactDetail.tsx
+#: src/features/contact/DeleteContactDialog.tsx
+msgid "Delete contact"
+msgstr "Xóa liên hệ"
+
 #: src/features/broadcasts/Composer.tsx
 #: src/features/status/IncidentDetail.tsx
 msgid "Delete draft"
@@ -5462,6 +5505,22 @@ msgstr "Xóa bản nháp"
 #: src/features/status/IncidentDetail.tsx
 msgid "Delete draft ({removeKey})"
 msgstr "Xóa bản nháp ({removeKey})"
+
+#: src/features/conversation/TrashBulk.tsx
+msgid "Delete for good"
+msgstr "Xóa vĩnh viễn"
+
+#. placeholder {0}: MAIL_KEYS.deleteForever
+#. placeholder {0}: SHORTCUTS.deleteForever
+#: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
+msgid "Delete for good ({0})"
+msgstr "Xóa vĩnh viễn ({0})"
+
+#: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
+msgid "Delete forever"
+msgstr "Xóa vĩnh viễn"
 
 #: src/features/status/ComponentsTab.tsx
 msgid "Delete group"
@@ -5552,6 +5611,26 @@ msgstr "Xóa quy tắc {name}?"
 msgid "Delete the selected block"
 msgstr "Xóa khối đã chọn"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Delete the selected contacts"
+msgstr "Xóa các liên hệ đã chọn"
+
+#: src/features/contact/ContactBulk.tsx
+msgid "Delete the selected contacts ({n})?"
+msgstr "Xóa các liên hệ đã chọn ({n})?"
+
+#: src/features/contact/ContactBulk.tsx
+msgid "Delete the selected contacts (Del)"
+msgstr "Xóa các liên hệ đã chọn (Del)"
+
+#: src/features/conversation/TrashBulk.tsx
+msgid "Delete the selected conversations ({n}) for good?"
+msgstr "Xóa vĩnh viễn các cuộc trò chuyện đã chọn ({n})?"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Delete the selected conversations for good, in the Trash"
+msgstr "Xóa vĩnh viễn các cuộc trò chuyện đã chọn trong Thùng rác"
+
 #: src/features/docs/discussions/Bulk.tsx
 msgid "Delete the selected discussions ({n})?"
 msgstr "Xóa các cuộc thảo luận đã chọn ({n})?"
@@ -5559,6 +5638,10 @@ msgstr "Xóa các cuộc thảo luận đã chọn ({n})?"
 #: src/features/broadcasts/BroadcastBulk.tsx
 msgid "Delete the selected drafts ({n})?"
 msgstr "Xóa các bản nháp đã chọn ({n})?"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Delete the selected mails for good, in the Trash"
+msgstr "Xóa vĩnh viễn các thư đã chọn trong Thùng rác"
 
 #: src/features/broadcasts/SubscriberBulk.tsx
 msgid "Delete the selected subscriptions ({n})?"
@@ -6484,6 +6567,19 @@ msgstr "Emoji"
 msgid "Empty in the first rows"
 msgstr "Trống ở các dòng đầu"
 
+#: src/features/conversation/TrashBulk.tsx
+msgid "Empty the Trash"
+msgstr "Dọn sạch Thùng rác"
+
+#: src/features/conversation/TrashBulk.tsx
+msgid "Empty the Trash?"
+msgstr "Dọn sạch Thùng rác?"
+
+#. placeholder {0}: r.count
+#: src/features/conversation/TrashBulk.tsx
+msgid "Emptying the Trash: {0} are being deleted"
+msgstr "Đang dọn sạch Thùng rác: đang xóa {0}"
+
 #: src/features/settings/automation/RuleDialog.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "Enabled"
@@ -6642,6 +6738,10 @@ msgstr "mọi cuộc trò chuyện"
 #: src/features/settings/sla/SlaPage.tsx
 msgid "Every conversation"
 msgstr "Mọi cuộc trò chuyện"
+
+#: src/features/conversation/TrashBulk.tsx
+msgid "Every conversation in the Trash that you may delete ({count}) is deleted at once with its messages and files, in conversation and mail inboxes alike. This cannot be undone."
+msgstr "Mọi cuộc trò chuyện trong Thùng rác mà bạn được phép xóa ({count}) bị xóa ngay cùng tin nhắn và tệp, ở cả hộp thư trò chuyện lẫn hộp thư email. Không thể hoàn tác."
 
 #: src/features/migrations/MapStep.tsx
 msgid "Every imported conversation is closed."
@@ -8585,6 +8685,10 @@ msgstr "Cuộc trò chuyện sẽ biến mất với nhóm của bạn và với
 msgid "It goes into <0>~/.codex/config.toml</0>, which the Codex CLI and IDE extension share."
 msgstr "Nó được ghi vào <0>~/.codex/config.toml</0>, tệp mà Codex CLI và tiện ích IDE dùng chung."
 
+#: src/features/contact/DeleteContactDialog.tsx
+msgid "It has no conversations"
+msgstr "Không có cuộc trò chuyện nào"
+
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "It is added for you in the current project. Add <0>--scope user</0> for every project, or <1>--scope project</1> to share it in <2>.mcp.json</2>."
 msgstr "Nó được thêm cho bạn trong dự án hiện tại. Thêm <0>--scope user</0> cho mọi dự án, hoặc <1>--scope project</1> để chia sẻ trong <2>.mcp.json</2>."
@@ -8596,6 +8700,10 @@ msgstr "Mục này không còn nữa, hoặc bạn không xem được"
 #: src/features/docs/discussions/parts.tsx
 msgid "It is hidden with every other post of its author still waiting for approval, and their later posts always wait for a member."
 msgstr "Nó bị ẩn cùng mọi bài khác của tác giả đang chờ duyệt, và các bài sau của họ luôn chờ một thành viên."
+
+#: src/components/common/BulkReport.tsx
+msgid "It is not in the Trash any more"
+msgstr "Không còn trong Thùng rác"
 
 #: src/features/settings/labels/LabelsPage.tsx
 msgid "It is removed from every conversation."
@@ -9781,6 +9889,10 @@ msgstr "Đánh dấu là chưa đọc và quay lại danh sách"
 msgid "Mark or unmark as spam"
 msgstr "Đánh dấu hoặc bỏ đánh dấu là thư rác"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Mark the selected conversations as not spam, in Spam"
+msgstr "Đánh dấu các cuộc trò chuyện đã chọn trong Thư rác là không phải thư rác"
+
 #: src/features/docs/discussions/Bulk.tsx
 msgid "Mark the selected discussions as spam ({n})?"
 msgstr "Đánh dấu các cuộc thảo luận đã chọn là spam ({n})?"
@@ -10277,6 +10389,10 @@ msgid "Move through the broadcasts"
 msgstr "Di chuyển giữa các thư hàng loạt"
 
 #: src/components/common/ShortcutSheet.tsx
+msgid "Move through the contacts"
+msgstr "Di chuyển qua các liên hệ"
+
+#: src/components/common/ShortcutSheet.tsx
 msgid "Move through the designs"
 msgstr "Di chuyển giữa các thiết kế"
 
@@ -10344,6 +10460,11 @@ msgstr "Chuyển sang giai đoạn trước hoặc sau"
 #: src/features/settings/automation/text.ts
 msgid "Move to the Trash"
 msgstr "Chuyển vào Thùng rác"
+
+#. placeholder {0}: SHORTCUTS.trash
+#: src/features/inbox/ChatList.tsx
+msgid "Move to the Trash ({0})"
+msgstr "Chuyển vào Thùng rác ({0})"
 
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
@@ -11441,6 +11562,10 @@ msgstr "không có tài khoản SMTP"
 msgid "No SMTP account"
 msgstr "Không có tài khoản SMTP"
 
+#: src/features/inbox/ChatList.tsx
+msgid "No spam here."
+msgstr "Không có thư rác ở đây."
+
 #: src/features/status/LinkIncidentDialog.tsx
 msgid "No status page yet. Create one under Status first."
 msgstr "Chưa có trang trạng thái. Hãy tạo một trang trong Trạng thái trước."
@@ -11796,8 +11921,14 @@ msgstr "Chưa ký"
 
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/ConversationMenu.tsx
+#: src/features/inbox/ChatList.tsx
 msgid "Not spam"
 msgstr "Không phải thư rác"
+
+#. placeholder {0}: SHORTCUTS.spam
+#: src/features/inbox/ChatList.tsx
+msgid "Not spam ({0})"
+msgstr "Không phải thư rác ({0})"
 
 #: src/features/contact/ContactsPage.tsx
 msgid "Not the same"
@@ -12642,6 +12773,7 @@ msgstr "Mở bài viết hoặc bộ sưu tập"
 msgid "Open the broadcast"
 msgstr "Mở thư hàng loạt"
 
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Open the contact"
 msgstr "Mở liên hệ"
@@ -15773,6 +15905,10 @@ msgid "Select mails (X)"
 msgstr "Chọn thư (X)"
 
 #: src/components/common/ShortcutSheet.tsx
+msgid "Select the contact under the cursor"
+msgstr "Chọn liên hệ dưới con trỏ"
+
+#: src/components/common/ShortcutSheet.tsx
 msgid "Select the conversation under the cursor"
 msgstr "Chọn cuộc trò chuyện dưới con trỏ"
 
@@ -17187,6 +17323,7 @@ msgstr "Nguồn"
 #: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
+#: src/features/inbox/ChatList.tsx
 #: src/features/migrations/parts.tsx
 msgid "Spam"
 msgstr "Thư rác"
@@ -17983,6 +18120,14 @@ msgstr "Liên hệ đã bị xóa"
 #: src/features/settings/automation/text.ts
 msgid "The contact writes a message"
 msgstr "Người liên hệ viết một tin nhắn"
+
+#: src/features/contact/DeleteContactDialog.tsx
+msgid "The contact, their notes and everything they wrote are deleted for good. This cannot be undone."
+msgstr "Liên hệ, ghi chú của họ và mọi thứ họ đã viết bị xóa vĩnh viễn. Không thể hoàn tác."
+
+#: src/features/contact/ContactBulk.tsx
+msgid "The contacts, their conversations, notes and files are deleted for good. This cannot be undone."
+msgstr "Các liên hệ cùng cuộc trò chuyện, ghi chú và tệp của họ bị xóa vĩnh viễn. Không thể hoàn tác."
 
 #: src/features/conversation/messages/Thread.tsx
 msgid "The conversation"
@@ -18844,6 +18989,14 @@ msgstr "The tracker refused the request. Check the target and your permissions."
 msgid "The tracker refused the token. Check that it is valid and has access to issues."
 msgstr "The tracker refused the token. Check that it is valid and has access to issues."
 
+#: src/features/conversation/TrashBulk.tsx
+msgid "The Trash changed. It now holds {count}."
+msgstr "Thùng rác đã thay đổi. Giờ có {count}."
+
+#: src/features/conversation/TrashBulk.tsx
+msgid "The Trash is empty"
+msgstr "Thùng rác trống"
+
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "The Trash is empty."
@@ -18977,6 +19130,10 @@ msgstr "Các quy tắc này áp dụng cho biểu mẫu đăng ký. Bạn có th
 #: src/features/broadcasts/AddSubscriberDialog.tsx
 msgid "They already agreed"
 msgstr "Họ đã đồng ý rồi"
+
+#: src/features/conversation/TrashBulk.tsx
+msgid "They are deleted at once with their messages and files. This cannot be undone, and nobody can restore them."
+msgstr "Chúng bị xóa ngay cùng tin nhắn và tệp. Không thể hoàn tác và không ai khôi phục được."
 
 #: src/features/docs/discussions/Bulk.tsx
 msgid "They are hidden with every other post of their authors still waiting for approval, and the authors’ later posts always wait for a member."
@@ -19976,6 +20133,7 @@ msgstr "Đã mở khóa"
 #: src/app/TeamMenu.tsx
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/TestSend.tsx
+#: src/features/contact/ContactBulk.tsx
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactsColumn.tsx

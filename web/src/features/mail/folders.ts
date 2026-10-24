@@ -41,8 +41,7 @@ export function useMailInboxes() {
 }
 
 export function useFolders(): Folder[] {
-  const { canManage } = useSession()
-  return canManage ? FOLDERS : FOLDERS.filter((f) => f !== "trash")
+  return FOLDERS
 }
 
 export function useFolderLabels(): Record<Folder, string> {

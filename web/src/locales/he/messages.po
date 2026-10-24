@@ -31,6 +31,11 @@ msgstr "(ללא נושא)"
 msgid "{0, plural, one {# attachment} other {# attachments}}"
 msgstr "{0, plural, one {קובץ מצורף #} two {# קבצים מצורפים} other {# קבצים מצורפים}}"
 
+#. placeholder {0}: p.conversation_count
+#: src/features/contact/DeleteContactDialog.tsx
+msgid "{0, plural, one {# conversation is deleted with it} other {# conversations are deleted with it}}"
+msgstr "{0, plural, one {שיחה אחת תימחק איתו} two {# שיחות יימחקו איתו} other {# שיחות יימחקו איתו}}"
+
 #. placeholder {0}: f.messages
 #. placeholder {0}: l.conversations
 #. placeholder {0}: load.get(m.id) ?? 0
@@ -108,6 +113,16 @@ msgstr "{0} טובות"
 #: src/components/common/AddressChips.tsx
 msgid "{0} is not an e-mail address"
 msgstr "{0} אינה כתובת אימייל"
+
+#. placeholder {0}: done.length
+#: src/features/inbox/ChatList.tsx
+msgid "{0} marked as not spam"
+msgstr "{0} סומנו כלא ספאם"
+
+#. placeholder {0}: done.length
+#: src/features/inbox/ChatList.tsx
+msgid "{0} marked as spam"
+msgstr "{0} סומנו כספאם"
 
 #. placeholder {0}: items.length
 #: src/features/inbox/ChatList.tsx
@@ -346,6 +361,10 @@ msgstr "{count} אירועים"
 msgid "{count} imported conversations that nobody wrote in since are deleted with their messages and files. Conversations your team wrote in stay. Nothing changes in {address}."
 msgstr "{count} שיחות מיובאות שאיש לא כתב בהן מאז יימחקו יחד עם ההודעות והקבצים שלהן. שיחות שהצוות שלך כתב בהן יישארו. דבר לא משתנה ב-{address}."
 
+#: src/features/conversation/TrashBulk.tsx
+msgid "{count} in the Trash across your inboxes. They are deleted for good after 30 days."
+msgstr "{count} בפח, בכל תיבות הדואר שלך. הן יימחקו לצמיתות אחרי 30 יום."
+
 #: src/features/migrations/ChooseStep.tsx
 msgid "{count} messages"
 msgstr "{count} הודעות"
@@ -383,6 +402,10 @@ msgstr "{days, plural, one {חציון, היום האחרון} two {חציון, 
 #: src/features/conversation/ConversationStatus.tsx
 msgid "{days, plural, one {Waiting for # day} other {Waiting for # days}}"
 msgstr "{days, plural, one {ממתין יום #} two {ממתין # ימים} other {ממתין # ימים}}"
+
+#: src/components/common/BulkReport.tsx
+msgid "{deleted} deleted"
+msgstr "{deleted} נמחקו"
 
 #: src/features/broadcasts/Import.tsx
 msgid "{done} of {total} rows"
@@ -650,6 +673,10 @@ msgstr "{name} מתחבר מהענן של הספק שלו, ולכן הוא צר�
 #: src/features/migrations/CopyStep.tsx
 msgid "{name} copied"
 msgstr "{name} הועתק"
+
+#: src/features/contact/DeleteContactDialog.tsx
+msgid "{name} deleted"
+msgstr "{name} נמחק"
 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "{name} docs"
@@ -2365,6 +2392,10 @@ msgstr "Also called audience or identifier."
 msgid "Also called reply URL. HTTP-POST binding."
 msgstr "Also called reply URL. HTTP-POST binding."
 
+#: src/features/contact/DeleteContactDialog.tsx
+msgid "Also conversations in mailboxes you cannot read"
+msgstr "וגם שיחות בתיבות דואר שאין לך גישה לקרוא"
+
 #: src/features/settings/profile/ProfileForm.tsx
 msgid "Also for sign-in and notification e-mails"
 msgstr "גם להתחברות ולאימיילים של התראות"
@@ -3666,6 +3697,7 @@ msgstr "שם הקמפיין"
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactNotes.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/contact/DeleteContactDialog.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
@@ -4884,6 +4916,10 @@ msgstr "שיחות הועתקו"
 msgid "Conversations from every product"
 msgstr "שיחות מכל המוצרים"
 
+#: src/features/contact/DeleteContactDialog.tsx
+msgid "Conversations in mailboxes you cannot read are deleted with it"
+msgstr "שיחות בתיבות דואר שאין לך גישה לקרוא יימחקו גם הן"
+
 #: src/features/migrations/DoneStep.tsx
 msgid "Conversations nobody wrote in after the import are deleted. Nothing changed in {address}."
 msgstr "שיחות שאיש לא כתב בהן אחרי הייבוא נמחקות. דבר לא השתנה ב-{address}."
@@ -5397,6 +5433,7 @@ msgstr "נציגים"
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
+#: src/features/contact/ContactBulk.tsx
 #: src/features/contact/ContactNotes.tsx
 #: src/features/docs/discussions/Bulk.tsx
 #: src/features/inbox/ChatList.tsx
@@ -5436,6 +5473,7 @@ msgstr "מחיקה ({removeKey})"
 msgid "Delete {0}?"
 msgstr "למחוק את {0}?"
 
+#: src/features/contact/DeleteContactDialog.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -5454,6 +5492,11 @@ msgstr "מחיקה אחרי (ימים)"
 msgid "Delete component"
 msgstr "מחיקת הרכיב"
 
+#: src/features/contact/ContactDetail.tsx
+#: src/features/contact/DeleteContactDialog.tsx
+msgid "Delete contact"
+msgstr "מחיקת איש קשר"
+
 #: src/features/broadcasts/Composer.tsx
 #: src/features/status/IncidentDetail.tsx
 msgid "Delete draft"
@@ -5462,6 +5505,22 @@ msgstr "מחיקת טיוטה"
 #: src/features/status/IncidentDetail.tsx
 msgid "Delete draft ({removeKey})"
 msgstr "מחיקת הטיוטה ({removeKey})"
+
+#: src/features/conversation/TrashBulk.tsx
+msgid "Delete for good"
+msgstr "מחיקה לצמיתות"
+
+#. placeholder {0}: MAIL_KEYS.deleteForever
+#. placeholder {0}: SHORTCUTS.deleteForever
+#: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
+msgid "Delete for good ({0})"
+msgstr "מחיקה לצמיתות ({0})"
+
+#: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
+msgid "Delete forever"
+msgstr "מחיקה לצמיתות"
 
 #: src/features/status/ComponentsTab.tsx
 msgid "Delete group"
@@ -5552,6 +5611,26 @@ msgstr "למחוק את הכלל {name}?"
 msgid "Delete the selected block"
 msgstr "מחיקת הבלוק שנבחר"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Delete the selected contacts"
+msgstr "מחיקת אנשי הקשר שנבחרו"
+
+#: src/features/contact/ContactBulk.tsx
+msgid "Delete the selected contacts ({n})?"
+msgstr "למחוק את אנשי הקשר שנבחרו ({n})?"
+
+#: src/features/contact/ContactBulk.tsx
+msgid "Delete the selected contacts (Del)"
+msgstr "מחיקת אנשי הקשר שנבחרו (Del)"
+
+#: src/features/conversation/TrashBulk.tsx
+msgid "Delete the selected conversations ({n}) for good?"
+msgstr "למחוק לצמיתות את השיחות שנבחרו ({n})?"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Delete the selected conversations for good, in the Trash"
+msgstr "מחיקה לצמיתות של השיחות שנבחרו בפח"
+
 #: src/features/docs/discussions/Bulk.tsx
 msgid "Delete the selected discussions ({n})?"
 msgstr "למחוק את הדיונים שנבחרו ({n})?"
@@ -5559,6 +5638,10 @@ msgstr "למחוק את הדיונים שנבחרו ({n})?"
 #: src/features/broadcasts/BroadcastBulk.tsx
 msgid "Delete the selected drafts ({n})?"
 msgstr "למחוק את הטיוטות שנבחרו ({n})?"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Delete the selected mails for good, in the Trash"
+msgstr "מחיקה לצמיתות של ההודעות שנבחרו בפח"
 
 #: src/features/broadcasts/SubscriberBulk.tsx
 msgid "Delete the selected subscriptions ({n})?"
@@ -6484,6 +6567,19 @@ msgstr "אמוג׳י"
 msgid "Empty in the first rows"
 msgstr "ריק בשורות הראשונות"
 
+#: src/features/conversation/TrashBulk.tsx
+msgid "Empty the Trash"
+msgstr "ריקון הפח"
+
+#: src/features/conversation/TrashBulk.tsx
+msgid "Empty the Trash?"
+msgstr "לרוקן את הפח?"
+
+#. placeholder {0}: r.count
+#: src/features/conversation/TrashBulk.tsx
+msgid "Emptying the Trash: {0} are being deleted"
+msgstr "הפח מתרוקן: {0} נמחקות"
+
 #: src/features/settings/automation/RuleDialog.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "Enabled"
@@ -6642,6 +6738,10 @@ msgstr "כל שיחה"
 #: src/features/settings/sla/SlaPage.tsx
 msgid "Every conversation"
 msgstr "כל שיחה"
+
+#: src/features/conversation/TrashBulk.tsx
+msgid "Every conversation in the Trash that you may delete ({count}) is deleted at once with its messages and files, in conversation and mail inboxes alike. This cannot be undone."
+msgstr "כל שיחה בפח שמותר לך למחוק ({count}) נמחקת מיד עם ההודעות והקבצים שלה, בתיבות שיחות ובתיבות דואר כאחד. אי אפשר לבטל זאת."
 
 #: src/features/migrations/MapStep.tsx
 msgid "Every imported conversation is closed."
@@ -8585,6 +8685,10 @@ msgstr "היא תיעלם מהצוות שלכם ומהלקוח. אפשר לשח�
 msgid "It goes into <0>~/.codex/config.toml</0>, which the Codex CLI and IDE extension share."
 msgstr "הוא נכנס ל-<0>~/.codex/config.toml</0>, שנמצא בשימוש משותף של Codex CLI והרחבת ה-IDE."
 
+#: src/features/contact/DeleteContactDialog.tsx
+msgid "It has no conversations"
+msgstr "אין לו שיחות"
+
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "It is added for you in the current project. Add <0>--scope user</0> for every project, or <1>--scope project</1> to share it in <2>.mcp.json</2>."
 msgstr "הוא מתווסף בשבילך בפרויקט הנוכחי. הוסף <0>--scope user</0> לכל הפרויקטים, או <1>--scope project</1> כדי לשתף אותו ב-<2>.mcp.json</2>."
@@ -8596,6 +8700,10 @@ msgstr "הוא כבר לא קיים, או שאין לך הרשאה לראות א
 #: src/features/docs/discussions/parts.tsx
 msgid "It is hidden with every other post of its author still waiting for approval, and their later posts always wait for a member."
 msgstr "הוא מוסתר יחד עם כל שאר הפוסטים של כותבו שעדיין ממתינים לאישור, והפוסטים המאוחרים שלו תמיד ממתינים לחבר צוות."
+
+#: src/components/common/BulkReport.tsx
+msgid "It is not in the Trash any more"
+msgstr "היא כבר לא בפח"
 
 #: src/features/settings/labels/LabelsPage.tsx
 msgid "It is removed from every conversation."
@@ -9781,6 +9889,10 @@ msgstr "סימון כלא נקרא וחזרה לרשימה"
 msgid "Mark or unmark as spam"
 msgstr "סימון כספאם או ביטול הסימון"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Mark the selected conversations as not spam, in Spam"
+msgstr "סימון השיחות שנבחרו בספאם כלא ספאם"
+
 #: src/features/docs/discussions/Bulk.tsx
 msgid "Mark the selected discussions as spam ({n})?"
 msgstr "לסמן את הדיונים שנבחרו ({n}) כספאם?"
@@ -10277,6 +10389,10 @@ msgid "Move through the broadcasts"
 msgstr "מעבר בין השליחות ההמוניות"
 
 #: src/components/common/ShortcutSheet.tsx
+msgid "Move through the contacts"
+msgstr "מעבר בין אנשי הקשר"
+
+#: src/components/common/ShortcutSheet.tsx
 msgid "Move through the designs"
 msgstr "מעבר בין העיצובים"
 
@@ -10344,6 +10460,11 @@ msgstr "העברה לשלב הקודם או הבא"
 #: src/features/settings/automation/text.ts
 msgid "Move to the Trash"
 msgstr "העברה לפח"
+
+#. placeholder {0}: SHORTCUTS.trash
+#: src/features/inbox/ChatList.tsx
+msgid "Move to the Trash ({0})"
+msgstr "העברה לפח ({0})"
 
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
@@ -11441,6 +11562,10 @@ msgstr "ללא חשבון SMTP"
 msgid "No SMTP account"
 msgstr "ללא חשבון SMTP"
 
+#: src/features/inbox/ChatList.tsx
+msgid "No spam here."
+msgstr "אין כאן ספאם."
+
 #: src/features/status/LinkIncidentDialog.tsx
 msgid "No status page yet. Create one under Status first."
 msgstr "אין עדיין דף סטטוס. צרו אחד קודם בסעיף סטטוס."
@@ -11796,8 +11921,14 @@ msgstr "עדיין לא חותם"
 
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/ConversationMenu.tsx
+#: src/features/inbox/ChatList.tsx
 msgid "Not spam"
 msgstr "לא ספאם"
+
+#. placeholder {0}: SHORTCUTS.spam
+#: src/features/inbox/ChatList.tsx
+msgid "Not spam ({0})"
+msgstr "לא ספאם ({0})"
 
 #: src/features/contact/ContactsPage.tsx
 msgid "Not the same"
@@ -12642,6 +12773,7 @@ msgstr "פתיחת המאמר או האוסף"
 msgid "Open the broadcast"
 msgstr "פתיחת השליחה ההמונית"
 
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Open the contact"
 msgstr "פתיחת איש הקשר"
@@ -15773,6 +15905,10 @@ msgid "Select mails (X)"
 msgstr "בחירת מיילים (X)"
 
 #: src/components/common/ShortcutSheet.tsx
+msgid "Select the contact under the cursor"
+msgstr "בחירת איש הקשר שמתחת לסמן"
+
+#: src/components/common/ShortcutSheet.tsx
 msgid "Select the conversation under the cursor"
 msgstr "בחרו את השיחה שמתחת לסמן"
 
@@ -17187,6 +17323,7 @@ msgstr "מקורות"
 #: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
+#: src/features/inbox/ChatList.tsx
 #: src/features/migrations/parts.tsx
 msgid "Spam"
 msgstr "ספאם"
@@ -17983,6 +18120,14 @@ msgstr "איש הקשר נמחק"
 #: src/features/settings/automation/text.ts
 msgid "The contact writes a message"
 msgstr "איש הקשר כותב הודעה"
+
+#: src/features/contact/DeleteContactDialog.tsx
+msgid "The contact, their notes and everything they wrote are deleted for good. This cannot be undone."
+msgstr "איש הקשר, ההערות שלו וכל מה שכתב יימחקו לצמיתות. אי אפשר לבטל זאת."
+
+#: src/features/contact/ContactBulk.tsx
+msgid "The contacts, their conversations, notes and files are deleted for good. This cannot be undone."
+msgstr "אנשי הקשר, השיחות, ההערות והקבצים שלהם יימחקו לצמיתות. אי אפשר לבטל זאת."
 
 #: src/features/conversation/messages/Thread.tsx
 msgid "The conversation"
@@ -18844,6 +18989,14 @@ msgstr "The tracker refused the request. Check the target and your permissions."
 msgid "The tracker refused the token. Check that it is valid and has access to issues."
 msgstr "The tracker refused the token. Check that it is valid and has access to issues."
 
+#: src/features/conversation/TrashBulk.tsx
+msgid "The Trash changed. It now holds {count}."
+msgstr "הפח השתנה. כעת יש בו {count}."
+
+#: src/features/conversation/TrashBulk.tsx
+msgid "The Trash is empty"
+msgstr "הפח ריק"
+
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "The Trash is empty."
@@ -18977,6 +19130,10 @@ msgstr "הכללים האלה חלים על טופס ההרשמה. אפשר לש
 #: src/features/broadcasts/AddSubscriberDialog.tsx
 msgid "They already agreed"
 msgstr "הם כבר הסכימו"
+
+#: src/features/conversation/TrashBulk.tsx
+msgid "They are deleted at once with their messages and files. This cannot be undone, and nobody can restore them."
+msgstr "הן נמחקות מיד עם ההודעות והקבצים שלהן. אי אפשר לבטל זאת ואיש לא יוכל לשחזר אותן."
 
 #: src/features/docs/discussions/Bulk.tsx
 msgid "They are hidden with every other post of their authors still waiting for approval, and the authors’ later posts always wait for a member."
@@ -19976,6 +20133,7 @@ msgstr "הנעילה בוטלה"
 #: src/app/TeamMenu.tsx
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/TestSend.tsx
+#: src/features/contact/ContactBulk.tsx
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactsColumn.tsx

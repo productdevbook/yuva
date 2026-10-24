@@ -60,6 +60,7 @@ export const SHORTCUTS = {
   linkSelected: "I",
   trash: "#",
   restore: "Z",
+  deleteForever: "Delete",
   saveView: "V",
 } as const
 
@@ -72,6 +73,7 @@ export const MAIL_KEYS = {
   archive: "e",
   trash: "#",
   restore: "Z",
+  deleteForever: "Delete",
   star: "s",
   unread: "u",
   snooze: "b",
@@ -340,6 +342,8 @@ export function ShortcutSheet({
         [k(SHORTCUTS.linkSelected), t`Link the selected conversations to an incident`],
         [k(SHORTCUTS.trash), t`Move the selected conversations to the Trash`],
         [k(SHORTCUTS.restore), t`Restore the selected conversations, in the Trash`],
+        [["Del"], t`Delete the selected conversations for good, in the Trash`],
+        [k(SHORTCUTS.spam), t`Mark the selected conversations as not spam, in Spam`],
         [k(SHORTCUTS.saveView), t`Save the list as a view`],
         [["Alt", "↑", "↓"], t`Reorder the selected view in the sidebar`],
         [["Esc"], t`Clear the selection`],
@@ -356,6 +360,7 @@ export function ShortcutSheet({
         [k(MAIL_KEYS.archive), t`Archive, or move back to the Inbox`],
         [k(MAIL_KEYS.trash), t`Move to the Trash`],
         [k(MAIL_KEYS.restore), t`Restore from the Trash`],
+        [["Del"], t`Delete the selected mails for good, in the Trash`],
         [k(MAIL_KEYS.star), t`Star or unstar`],
         [k(MAIL_KEYS.snooze), t`Snooze`],
         [k(MAIL_KEYS.filter), t`Filter messages like the latest mail`],
@@ -426,6 +431,16 @@ export function ShortcutSheet({
         [k(BROADCAST_KEYS.deliveries), t`Recipients`],
         [k(BROADCAST_KEYS.summary), t`Broadcast`],
         [k(BROADCAST_KEYS.pace), t`Change pace`],
+      ],
+    },
+    {
+      title: t`Contacts`,
+      items: [
+        [["↑", "↓"], t`Move through the contacts`],
+        [["↵"], t`Open the contact`],
+        [k(SHORTCUTS.select), t`Select the contact under the cursor`],
+        [["Del"], t`Delete the selected contacts`],
+        [["Esc"], t`Clear the selection`],
       ],
     },
     {

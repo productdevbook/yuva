@@ -28,6 +28,7 @@ function Reason({ failure }: { failure: BulkFailure }) {
   const names = usedBy(failure)
   if (failure.code === "image_in_use") return <Trans>In use by {names}</Trans>
   if (failure.code === "not_found") return <Trans>It is gone, or you cannot see it</Trans>
+  if (failure.code === "not_trashed") return <Trans>It is not in the Trash any more</Trans>
   if (failure.code === "forbidden") return <Trans>You may not do this</Trans>
   return <>{failure.detail ?? failure.code}</>
 }
@@ -42,6 +43,10 @@ export function useBulkReport() {
     const changed = result.succeeded.length
     if (changed > 0) toast(t`${changed} changed`, undo)
     if (result.failed.length > 0) setReport({ failures: result.failed, name })
+  }
+  const showDeleted = (deleted: number, failures: BulkFailure[], name: (id: string) => string) => {
+    if (deleted > 0) toast(t`${deleted} deleted`)
+    if (failures.length > 0) setReport({ failures, name })
   }
   const dialog = (
     <Dialog open={report !== null} onOpenChange={(o) => !o && setReport(null)}>
@@ -72,5 +77,5 @@ export function useBulkReport() {
       </DialogContent>
     </Dialog>
   )
-  return [show, dialog] as const
+  return [show, dialog, showDeleted] as const
 }

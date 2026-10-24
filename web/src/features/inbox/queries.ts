@@ -4,6 +4,7 @@ import { patchConversation } from "@/features/conversation/queries"
 import {
   api,
   unwrap,
+  type ConversationBulkFailure,
   type ConversationBulkUpdate,
   type ConversationKind,
   type ConversationListItem,
@@ -68,6 +69,41 @@ export function useBulkUpdateConversations() {
         for (const c of data.updated) void qc.invalidateQueries({ queryKey: keys.messages(live.ws, c.id) })
       }
     },
+  })
+}
+
+function useRefreshAfterDelete() {
+  const qc = useQueryClient()
+  const { workspaceId: ws } = useSession()
+  return () => {
+    void qc.invalidateQueries({ queryKey: keys.conversationLists(ws) })
+    void qc.invalidateQueries({ queryKey: keys.counts(ws) })
+  }
+}
+
+export function useDeleteConversations() {
+  const refresh = useRefreshAfterDelete()
+  return useMutation({
+    mutationFn: async (ids: string[]) => {
+      let deleted = 0
+      const failed: ConversationBulkFailure[] = []
+      for (let at = 0; at < ids.length; at += 100) {
+        const r = await unwrap(api.POST("/v1/conversations/delete", { body: { ids: ids.slice(at, at + 100) } }))
+        deleted += r.deleted
+        failed.push(...r.failed)
+      }
+      return { deleted, failed }
+    },
+    onSettled: refresh,
+  })
+}
+
+export function useEmptyTrash() {
+  const refresh = useRefreshAfterDelete()
+  return useMutation({
+    mutationFn: (confirmCount: number) =>
+      unwrap(api.POST("/v1/conversations/trash/empty", { body: { confirm_count: confirmCount } })),
+    onSettled: refresh,
   })
 }
 

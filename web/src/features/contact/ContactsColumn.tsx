@@ -5,6 +5,7 @@ import { Link, useMatch, useNavigate, useSearchParams } from "react-router"
 
 import { ContactAvatar, ErrorLine, InboxBadges } from "@/components/common"
 import { PaneEmpty } from "@/components/common/Column"
+import { RowCheck, SelectToggle } from "@/components/common/Selection"
 import { formatDateTime, formatShort } from "@/components/common/text"
 import { Button } from "@/components/ui/button"
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "@/components/ui/input-group"
@@ -12,27 +13,49 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { useContactDirectory, type DirectoryFilter } from "@/features/contact/queries"
 import { InboxPicker } from "@/features/inbox/InboxPicker"
 import { ListHead, UnderlineTabs } from "@/features/inbox/ListHead"
+import { ContactBulkBar } from "@/features/contact/ContactBulk"
 import { ContactsPage } from "@/features/contact/ContactsPage"
 import { contactName } from "@/features/contact/Section"
 import { useIsPhone } from "@/hooks/use-media-query"
 import { useDebounced } from "@/hooks/use-debounced"
 import { useHotkeys } from "@/hooks/use-hotkeys"
+import { useSelection } from "@/hooks/use-selection"
+import { useSession } from "@/lib/session"
 import { useInboxes } from "@/lib/workspace"
 import { useResetState } from "@/hooks/use-reset-state"
 import type { Contact } from "@/lib/api"
 import { cn } from "@/lib/utils"
 
-function Row({ c, current, cursor }: { c: Contact; current: boolean; cursor: boolean }) {
+function Row({
+  c,
+  current,
+  cursor,
+  check,
+}: {
+  c: Contact
+  current: boolean
+  cursor: boolean
+  check?: { checked: boolean; onToggle: (range: boolean) => void }
+}) {
   const { t, i18n } = useLingui()
   const name = contactName(c, t`Unnamed contact`)
   const known = c.emails.length > 0 || c.external_ids.length > 0
   const last = c.activity?.last_conversation_at
   return (
-    <li>
+    <li className="flex items-start border-b">
+      {check && <RowCheck className="mt-3.5 ms-4" checked={check.checked} name={name} onToggle={check.onToggle} />}
       <Link
         to={`/contacts/${c.id}`}
+        onClick={
+          check
+            ? (e) => {
+                e.preventDefault()
+                check.onToggle(e.shiftKey)
+              }
+            : undefined
+        }
         className={cn(
-          "flex items-start gap-3 border-b px-4 py-3 outline-none transition-colors hover:bg-muted/60 focus-visible:bg-muted/60",
+          "min-w-0 flex-1 flex items-start gap-3 px-4 py-3 outline-none transition-colors hover:bg-muted/60 focus-visible:bg-muted/60",
           current && "bg-muted hover:bg-muted",
           cursor && "shadow-[inset_3px_0_0_var(--brand)] rtl:shadow-[inset_-3px_0_0_var(--brand)]"
         )}
@@ -95,6 +118,11 @@ export function ContactsColumn() {
   const items = directory.data?.pages.flatMap((p) => p.items) ?? []
   const [cursor, setCursor] = useResetState(-1, `${filter} ${query} ${inboxId}`)
   const list = useRef<HTMLUListElement>(null)
+  const { canManage } = useSession()
+  const selection = useSelection(
+    items.map((c) => c.id),
+    `${filter} ${query} ${inboxId}`
+  )
 
   useHotkeys({
     j: () => setCursor((i) => Math.min(items.length - 1, i + 1)),
@@ -102,6 +130,15 @@ export function ContactsColumn() {
     ArrowDown: () => setCursor((i) => Math.min(items.length - 1, i + 1)),
     ArrowUp: () => setCursor((i) => Math.max(0, i - 1)),
     Enter: () => cursor >= 0 && items[cursor] && navigate(`/contacts/${items[cursor].id}`),
+    ...(canManage
+      ? {
+          x: () => {
+            const id = items[cursor]?.id
+            if (id) selection.toggle(id)
+            else selection.start()
+          },
+        }
+      : {}),
   })
   useEffect(() => {
     if (cursor >= 0)
@@ -176,7 +213,9 @@ export function ContactsColumn() {
             )
           }
         />
+        {canManage && items.length > 0 && !selection.selecting && <SelectToggle selection={selection} />}
       </div>
+      {canManage && <ContactBulkBar items={items} selection={selection} />}
       <div className="min-h-0 flex-1 overflow-y-auto pb-4">
         {directory.isPending ? (
           <div className="flex flex-col gap-2 p-2">
@@ -198,7 +237,17 @@ export function ContactsColumn() {
         ) : (
           <ul ref={list} className="flex flex-col">
             {items.map((c, i) => (
-              <Row key={c.id} c={c} current={c.id === currentId} cursor={i === cursor} />
+              <Row
+                key={c.id}
+                c={c}
+                current={c.id === currentId}
+                cursor={i === cursor}
+                check={
+                  canManage && selection.selecting
+                    ? { checked: selection.has(c.id), onToggle: (range) => selection.toggle(c.id, range) }
+                    : undefined
+                }
+              />
             ))}
           </ul>
         )}

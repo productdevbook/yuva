@@ -23,6 +23,7 @@ import {
   useContactConversations,
   type ConversationFilter,
 } from "@/features/contact/ContactDetails"
+import { DeleteContactDialog } from "@/features/contact/DeleteContactDialog"
 import { MergeContactDialog } from "@/features/contact/MergeContactDialog"
 import { useContact, useContactSummary, useContactVisits, useUpdateContact } from "@/features/contact/queries"
 import { contactName } from "@/features/contact/Section"
@@ -98,6 +99,7 @@ export function ContactDetail({
   const visits = useContactVisits(id)
   const noteCount = useNoteCount(id)
   const [merging, setMerging] = useState(false)
+  const [deleting, setDeleting] = useState(false)
   const [starting, setStarting] = useState(false)
   const c = contact.data
   const fmt = new Intl.NumberFormat(i18n.locale)
@@ -303,6 +305,11 @@ export function ContactDetail({
               <DropdownMenuItem onClick={toggleBlock} data-testid="contact-block">
                 {blocked ? <Trans>Unblock contact</Trans> : <Trans>Block contact</Trans>}
               </DropdownMenuItem>
+              {canManage && (
+                <DropdownMenuItem variant="destructive" onClick={() => setDeleting(true)} data-testid="contact-delete">
+                  <Trans>Delete contact</Trans>
+                </DropdownMenuItem>
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
@@ -379,6 +386,7 @@ export function ContactDetail({
       )}
 
       {canManage && <MergeContactDialog target={c} open={merging} onOpenChange={setMerging} />}
+      {canManage && <DeleteContactDialog contact={c} name={name} open={deleting} onOpenChange={setDeleting} />}
       <NewConversationDialog
         contact={c}
         open={starting}

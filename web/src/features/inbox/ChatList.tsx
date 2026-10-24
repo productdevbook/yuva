@@ -67,6 +67,7 @@ import { NewConversationDialog } from "@/features/contact/ContactDetails"
 import { ContactSearch } from "@/features/contact/ContactSearch"
 import { useDraftText } from "@/features/conversation/actions"
 import { TrashLine } from "@/features/conversation/Trash"
+import { TrashStrip, useTrashTools } from "@/features/conversation/TrashBulk"
 import { useLiveIds } from "@/features/conversation/liveness"
 import { Ticks } from "@/features/conversation/messages/MessageActions"
 import { currentRating, RatingMark } from "@/features/conversation/rating"
@@ -100,14 +101,14 @@ import { useTyping } from "@/lib/typing"
 import { cn } from "@/lib/utils"
 import { useChannelMap, useLabels, useMemberMap, useMyTeams, useTeams } from "@/lib/workspace"
 
-export type Chip = "waiting" | "all" | "mine" | "teams" | "unassigned" | "snoozed" | "done" | "trash"
+export type Chip = "waiting" | "all" | "mine" | "teams" | "unassigned" | "snoozed" | "done" | "spam" | "trash"
 export const PAGE_CHIPS: Chip[] = ["waiting", "all", "mine", "teams", "unassigned", "snoozed", "done"]
 
 export function useChips(): Chip[] {
   const { canManage } = useSession()
   const inTeam = useMyTeams().length > 0
   const chips = inTeam ? PAGE_CHIPS : PAGE_CHIPS.filter((c) => c !== "teams")
-  return canManage ? [...chips, "trash"] : chips
+  return canManage ? [...chips, "spam", "trash"] : [...chips, "spam"]
 }
 
 const chipFilters: Record<Chip, ConversationFilters> = {
@@ -118,6 +119,7 @@ const chipFilters: Record<Chip, ConversationFilters> = {
   unassigned: { status: ["open"], assignee: "unassigned" },
   snoozed: { status: ["snoozed"] },
   done: { status: ["closed"] },
+  spam: { spam: true },
   trash: { trashed: true, kind: undefined },
 }
 
@@ -147,6 +149,7 @@ export function useChipLabels(): Record<Chip, string> {
     unassigned: t`Unassigned`,
     snoozed: t`Snoozed`,
     done: t`Closed`,
+    spam: t`Spam`,
     trash: t`Trash`,
   }
 }
@@ -946,6 +949,7 @@ export function ChatList({
     unassigned: <Trans>Every open conversation has someone.</Trans>,
     snoozed: <Trans>Nothing is snoozed.</Trans>,
     done: <Trans>Nothing is closed yet.</Trans>,
+    spam: <Trans>No spam here.</Trans>,
     trash: <Trans>The Trash is empty.</Trans>,
   }
   const filtered = !!q || narrowed || unreadOnly
@@ -1033,6 +1037,8 @@ export function ChatList({
       }
     )
   const inTrash = view.base ? !!view.base.trashed : chip === "trash"
+  const inSpam = view.base ? !!view.base.spam && !view.base.trashed : chip === "spam"
+  const trashTools = useTrashTools()
   const setTrashed = async (ids: string[], trashed: boolean) => {
     const done: string[] = []
     try {
@@ -1074,9 +1080,34 @@ export function ChatList({
       stopSelecting()
     })
   }
+  const setSpam = (ids: string[], spam: boolean) =>
+    bulk.mutate(
+      { conversation_ids: ids.slice(0, 100), spam },
+      {
+        onSuccess: (r) => {
+          const done = r.updated.map((c) => c.id)
+          if (done.length === 0) return
+          toast(spam ? t`${done.length} marked as spam` : t`${done.length} marked as not spam`, () =>
+            bulk.mutate({ conversation_ids: done, spam: !spam }, { onError: failed })
+          )
+          stopSelecting()
+        },
+        onError: failed,
+      }
+    )
+  const notSpamChosen = () => chosen.length > 0 && setSpam([...chosen], false)
+  const deleteChosen = () =>
+    trashTools.deleteForever([...chosen], (id) => chosenRows.find((c) => c.id === id)?.subject || id, stopSelecting)
   useHotkeys(
-    selecting && canManage && chosen.length > 0
-      ? { [inTrash ? SHORTCUTS.restore : SHORTCUTS.trash]: inTrash ? restoreChosen : trashChosen }
+    selecting && chosen.length > 0
+      ? {
+          ...(canManage && !inSpam
+            ? { [inTrash ? SHORTCUTS.restore : SHORTCUTS.trash]: inTrash ? restoreChosen : trashChosen }
+            : {}),
+          ...(canManage && inSpam ? { [SHORTCUTS.trash]: trashChosen } : {}),
+          ...(inSpam ? { [SHORTCUTS.spam]: notSpamChosen } : {}),
+          ...(canManage && inTrash ? { [SHORTCUTS.deleteForever]: deleteChosen } : {}),
+        }
       : {},
     active
   )
@@ -1152,15 +1183,54 @@ export function ChatList({
         {none ? <Trans>Pick conversations</Trans> : <Trans>Selected: {picked}</Trans>}
       </span>
       {inTrash ? (
-        <Button
-          variant="outline"
-          className={look.btnSm}
-          disabled={none || bulk.isPending}
-          onClick={restoreChosen}
-          data-testid="restore-selected"
-        >
-          <Trans>Restore</Trans>
-        </Button>
+        <>
+          <Button
+            variant="outline"
+            className={look.btnSm}
+            disabled={none || bulk.isPending}
+            onClick={restoreChosen}
+            data-testid="restore-selected"
+          >
+            <Trans>Restore</Trans>
+          </Button>
+          {canManage && (
+            <Button
+              variant="outline"
+              className={cn(look.btnSm, "text-destructive")}
+              disabled={none || trashTools.pending}
+              onClick={deleteChosen}
+              title={t`Delete for good (${SHORTCUTS.deleteForever})`}
+              data-testid="delete-forever-selected"
+            >
+              <Trans>Delete forever</Trans>
+            </Button>
+          )}
+        </>
+      ) : inSpam ? (
+        <>
+          <Button
+            variant="outline"
+            className={look.btnSm}
+            disabled={none || bulk.isPending}
+            onClick={notSpamChosen}
+            title={t`Not spam (${SHORTCUTS.spam})`}
+            data-testid="not-spam-selected"
+          >
+            <Trans>Not spam</Trans>
+          </Button>
+          {canManage && (
+            <Button
+              variant="outline"
+              className={cn(look.btnSm, "text-destructive")}
+              disabled={none || bulk.isPending}
+              onClick={trashChosen}
+              title={t`Move to the Trash (${SHORTCUTS.trash})`}
+              data-testid="trash-selected"
+            >
+              <Trans>Move to the Trash</Trans>
+            </Button>
+          )}
+        </>
       ) : (
         <>
           <Button
@@ -1353,6 +1423,8 @@ export function ChatList({
       {selecting ? selection : chips}
       <AwayBanner />
       {!view.id && chip === "waiting" && <CleanupBanner inboxId={inboxId} />}
+      {inTrash && canManage && <TrashStrip onEmpty={(n) => trashTools.emptyTrash(n)} busy={trashTools.pending} />}
+      {trashTools.dialogs}
       <ImportBanner />
       <div ref={scroller} className="min-h-0 flex-1 overflow-y-auto border-t" data-testid="list">
         {list.isPending ? (

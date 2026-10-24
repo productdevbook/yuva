@@ -31,6 +31,11 @@ msgstr "(fără subiect)"
 msgid "{0, plural, one {# attachment} other {# attachments}}"
 msgstr "{0, plural, one {# atașament} few {# atașamente} other {# de atașamente}}"
 
+#. placeholder {0}: p.conversation_count
+#: src/features/contact/DeleteContactDialog.tsx
+msgid "{0, plural, one {# conversation is deleted with it} other {# conversations are deleted with it}}"
+msgstr "{0, plural, one {# conversație este ștearsă împreună cu el} few {# conversații sunt șterse împreună cu el} other {# de conversații sunt șterse împreună cu el}}"
+
 #. placeholder {0}: f.messages
 #. placeholder {0}: l.conversations
 #. placeholder {0}: load.get(m.id) ?? 0
@@ -108,6 +113,16 @@ msgstr "{0} bune"
 #: src/components/common/AddressChips.tsx
 msgid "{0} is not an e-mail address"
 msgstr "{0} nu este o adresă de e-mail"
+
+#. placeholder {0}: done.length
+#: src/features/inbox/ChatList.tsx
+msgid "{0} marked as not spam"
+msgstr "{0} marcate ca nu este spam"
+
+#. placeholder {0}: done.length
+#: src/features/inbox/ChatList.tsx
+msgid "{0} marked as spam"
+msgstr "{0} marcate ca spam"
 
 #. placeholder {0}: items.length
 #: src/features/inbox/ChatList.tsx
@@ -346,6 +361,10 @@ msgstr "{count} evenimente"
 msgid "{count} imported conversations that nobody wrote in since are deleted with their messages and files. Conversations your team wrote in stay. Nothing changes in {address}."
 msgstr "{count} conversații importate în care nimeni nu a mai scris de atunci sunt șterse împreună cu mesajele și fișierele lor. Conversațiile în care a scris echipa ta rămân. Nimic nu se schimbă în {address}."
 
+#: src/features/conversation/TrashBulk.tsx
+msgid "{count} in the Trash across your inboxes. They are deleted for good after 30 days."
+msgstr "{count} în coș, în toate căsuțele dvs. Sunt șterse definitiv după 30 de zile."
+
 #: src/features/migrations/ChooseStep.tsx
 msgid "{count} messages"
 msgstr "{count} mesaje"
@@ -383,6 +402,10 @@ msgstr "{days, plural, one {mediană, ultima zi} few {mediană, ultimele # zile}
 #: src/features/conversation/ConversationStatus.tsx
 msgid "{days, plural, one {Waiting for # day} other {Waiting for # days}}"
 msgstr "{days, plural, one {Așteaptă de # zi} few {Așteaptă de # zile} other {Așteaptă de # de zile}}"
+
+#: src/components/common/BulkReport.tsx
+msgid "{deleted} deleted"
+msgstr "{deleted} șterse"
 
 #: src/features/broadcasts/Import.tsx
 msgid "{done} of {total} rows"
@@ -650,6 +673,10 @@ msgstr "{name} se conectează din cloudul furnizorului său, deci are nevoie de 
 #: src/features/migrations/CopyStep.tsx
 msgid "{name} copied"
 msgstr "{name} copiat"
+
+#: src/features/contact/DeleteContactDialog.tsx
+msgid "{name} deleted"
+msgstr "{name} șters"
 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "{name} docs"
@@ -2365,6 +2392,10 @@ msgstr "Also called audience or identifier."
 msgid "Also called reply URL. HTTP-POST binding."
 msgstr "Also called reply URL. HTTP-POST binding."
 
+#: src/features/contact/DeleteContactDialog.tsx
+msgid "Also conversations in mailboxes you cannot read"
+msgstr "Și conversațiile din căsuțele pe care nu le puteți citi"
+
 #: src/features/settings/profile/ProfileForm.tsx
 msgid "Also for sign-in and notification e-mails"
 msgstr "Și pentru e-mailurile de conectare și de notificare"
@@ -3666,6 +3697,7 @@ msgstr "Nume campanie"
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactNotes.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/contact/DeleteContactDialog.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
@@ -4884,6 +4916,10 @@ msgstr "Conversații copiate"
 msgid "Conversations from every product"
 msgstr "Conversații din toate produsele"
 
+#: src/features/contact/DeleteContactDialog.tsx
+msgid "Conversations in mailboxes you cannot read are deleted with it"
+msgstr "Conversațiile din căsuțele pe care nu le puteți citi sunt șterse și ele"
+
 #: src/features/migrations/DoneStep.tsx
 msgid "Conversations nobody wrote in after the import are deleted. Nothing changed in {address}."
 msgstr "Conversațiile în care nimeni nu a scris după import sunt șterse. Nimic nu s-a schimbat în {address}."
@@ -5397,6 +5433,7 @@ msgstr "Delegați"
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
+#: src/features/contact/ContactBulk.tsx
 #: src/features/contact/ContactNotes.tsx
 #: src/features/docs/discussions/Bulk.tsx
 #: src/features/inbox/ChatList.tsx
@@ -5436,6 +5473,7 @@ msgstr "Șterge ({removeKey})"
 msgid "Delete {0}?"
 msgstr "Ștergi {0}?"
 
+#: src/features/contact/DeleteContactDialog.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -5454,6 +5492,11 @@ msgstr "Șterge după (zile)"
 msgid "Delete component"
 msgstr "Șterge componenta"
 
+#: src/features/contact/ContactDetail.tsx
+#: src/features/contact/DeleteContactDialog.tsx
+msgid "Delete contact"
+msgstr "Șterge contactul"
+
 #: src/features/broadcasts/Composer.tsx
 #: src/features/status/IncidentDetail.tsx
 msgid "Delete draft"
@@ -5462,6 +5505,22 @@ msgstr "Șterge ciorna"
 #: src/features/status/IncidentDetail.tsx
 msgid "Delete draft ({removeKey})"
 msgstr "Șterge ciorna ({removeKey})"
+
+#: src/features/conversation/TrashBulk.tsx
+msgid "Delete for good"
+msgstr "Șterge definitiv"
+
+#. placeholder {0}: MAIL_KEYS.deleteForever
+#. placeholder {0}: SHORTCUTS.deleteForever
+#: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
+msgid "Delete for good ({0})"
+msgstr "Șterge definitiv ({0})"
+
+#: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
+msgid "Delete forever"
+msgstr "Șterge definitiv"
 
 #: src/features/status/ComponentsTab.tsx
 msgid "Delete group"
@@ -5552,6 +5611,26 @@ msgstr "Ștergi regula {name}?"
 msgid "Delete the selected block"
 msgstr "Șterge blocul selectat"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Delete the selected contacts"
+msgstr "Șterge contactele selectate"
+
+#: src/features/contact/ContactBulk.tsx
+msgid "Delete the selected contacts ({n})?"
+msgstr "Ștergeți contactele selectate ({n})?"
+
+#: src/features/contact/ContactBulk.tsx
+msgid "Delete the selected contacts (Del)"
+msgstr "Șterge contactele selectate (Del)"
+
+#: src/features/conversation/TrashBulk.tsx
+msgid "Delete the selected conversations ({n}) for good?"
+msgstr "Ștergeți definitiv conversațiile selectate ({n})?"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Delete the selected conversations for good, in the Trash"
+msgstr "Șterge definitiv conversațiile selectate din coș"
+
 #: src/features/docs/discussions/Bulk.tsx
 msgid "Delete the selected discussions ({n})?"
 msgstr "Ștergi discuțiile selectate ({n})?"
@@ -5559,6 +5638,10 @@ msgstr "Ștergi discuțiile selectate ({n})?"
 #: src/features/broadcasts/BroadcastBulk.tsx
 msgid "Delete the selected drafts ({n})?"
 msgstr "Ștergi ciornele selectate ({n})?"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Delete the selected mails for good, in the Trash"
+msgstr "Șterge definitiv e-mailurile selectate din coș"
 
 #: src/features/broadcasts/SubscriberBulk.tsx
 msgid "Delete the selected subscriptions ({n})?"
@@ -6484,6 +6567,19 @@ msgstr "Emoji"
 msgid "Empty in the first rows"
 msgstr "Gol în primele rânduri"
 
+#: src/features/conversation/TrashBulk.tsx
+msgid "Empty the Trash"
+msgstr "Golește coșul"
+
+#: src/features/conversation/TrashBulk.tsx
+msgid "Empty the Trash?"
+msgstr "Goliți coșul?"
+
+#. placeholder {0}: r.count
+#: src/features/conversation/TrashBulk.tsx
+msgid "Emptying the Trash: {0} are being deleted"
+msgstr "Se golește coșul: se șterg {0}"
+
 #: src/features/settings/automation/RuleDialog.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "Enabled"
@@ -6642,6 +6738,10 @@ msgstr "orice conversație"
 #: src/features/settings/sla/SlaPage.tsx
 msgid "Every conversation"
 msgstr "Orice conversație"
+
+#: src/features/conversation/TrashBulk.tsx
+msgid "Every conversation in the Trash that you may delete ({count}) is deleted at once with its messages and files, in conversation and mail inboxes alike. This cannot be undone."
+msgstr "Fiecare conversație din coș pe care o puteți șterge ({count}) este ștearsă imediat cu mesajele și fișierele ei, atât în căsuțele de conversații, cât și în cele de e-mail. Acțiunea nu poate fi anulată."
 
 #: src/features/migrations/MapStep.tsx
 msgid "Every imported conversation is closed."
@@ -8585,6 +8685,10 @@ msgstr "Dispare pentru echipa ta și pentru client. O poți restaura din coș ti
 msgid "It goes into <0>~/.codex/config.toml</0>, which the Codex CLI and IDE extension share."
 msgstr "Intră în <0>~/.codex/config.toml</0>, pe care îl împart Codex CLI și extensia IDE."
 
+#: src/features/contact/DeleteContactDialog.tsx
+msgid "It has no conversations"
+msgstr "Nu are conversații"
+
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "It is added for you in the current project. Add <0>--scope user</0> for every project, or <1>--scope project</1> to share it in <2>.mcp.json</2>."
 msgstr "Este adăugat pentru tine în proiectul curent. Adaugă <0>--scope user</0> pentru fiecare proiect sau <1>--scope project</1> ca să îl partajezi în <2>.mcp.json</2>."
@@ -8596,6 +8700,10 @@ msgstr "Nu mai există sau nu o poți vedea"
 #: src/features/docs/discussions/parts.tsx
 msgid "It is hidden with every other post of its author still waiting for approval, and their later posts always wait for a member."
 msgstr "Este ascunsă împreună cu orice altă postare a autorului ei care așteaptă aprobarea, iar postările lui ulterioare așteaptă întotdeauna un membru."
+
+#: src/components/common/BulkReport.tsx
+msgid "It is not in the Trash any more"
+msgstr "Nu mai este în coș"
 
 #: src/features/settings/labels/LabelsPage.tsx
 msgid "It is removed from every conversation."
@@ -9781,6 +9889,10 @@ msgstr "Marchează ca necitit și revino la listă"
 msgid "Mark or unmark as spam"
 msgstr "Marchează sau demarchează ca spam"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Mark the selected conversations as not spam, in Spam"
+msgstr "Marchează conversațiile selectate din Spam ca nu este spam"
+
 #: src/features/docs/discussions/Bulk.tsx
 msgid "Mark the selected discussions as spam ({n})?"
 msgstr "Marchezi ca spam discuțiile selectate ({n})?"
@@ -10277,6 +10389,10 @@ msgid "Move through the broadcasts"
 msgstr "Navighează prin mesajele în masă"
 
 #: src/components/common/ShortcutSheet.tsx
+msgid "Move through the contacts"
+msgstr "Parcurge contactele"
+
+#: src/components/common/ShortcutSheet.tsx
 msgid "Move through the designs"
 msgstr "Navighează prin designuri"
 
@@ -10344,6 +10460,11 @@ msgstr "Mută la etapa anterioară sau următoare"
 #: src/features/settings/automation/text.ts
 msgid "Move to the Trash"
 msgstr "Mută în coș"
+
+#. placeholder {0}: SHORTCUTS.trash
+#: src/features/inbox/ChatList.tsx
+msgid "Move to the Trash ({0})"
+msgstr "Mută în coș ({0})"
 
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
@@ -11441,6 +11562,10 @@ msgstr "fără cont SMTP"
 msgid "No SMTP account"
 msgstr "Fără cont SMTP"
 
+#: src/features/inbox/ChatList.tsx
+msgid "No spam here."
+msgstr "Nu este spam aici."
+
 #: src/features/status/LinkIncidentDialog.tsx
 msgid "No status page yet. Create one under Status first."
 msgstr "Nu există încă nicio pagină de stare. Creează mai întâi una la Stare."
@@ -11796,8 +11921,14 @@ msgstr "Încă nu semnează"
 
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/ConversationMenu.tsx
+#: src/features/inbox/ChatList.tsx
 msgid "Not spam"
 msgstr "Nu este spam"
+
+#. placeholder {0}: SHORTCUTS.spam
+#: src/features/inbox/ChatList.tsx
+msgid "Not spam ({0})"
+msgstr "Nu este spam ({0})"
 
 #: src/features/contact/ContactsPage.tsx
 msgid "Not the same"
@@ -12642,6 +12773,7 @@ msgstr "Deschide articolul sau colecția"
 msgid "Open the broadcast"
 msgstr "Deschide mesajul în masă"
 
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Open the contact"
 msgstr "Deschide contactul"
@@ -15773,6 +15905,10 @@ msgid "Select mails (X)"
 msgstr "Selectează e-mailuri (X)"
 
 #: src/components/common/ShortcutSheet.tsx
+msgid "Select the contact under the cursor"
+msgstr "Selectează contactul de sub cursor"
+
+#: src/components/common/ShortcutSheet.tsx
 msgid "Select the conversation under the cursor"
 msgstr "Selectează conversația de sub cursor"
 
@@ -17187,6 +17323,7 @@ msgstr "Surse"
 #: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
+#: src/features/inbox/ChatList.tsx
 #: src/features/migrations/parts.tsx
 msgid "Spam"
 msgstr "Spam"
@@ -17983,6 +18120,14 @@ msgstr "Contactul a fost șters"
 #: src/features/settings/automation/text.ts
 msgid "The contact writes a message"
 msgstr "Contactul scrie un mesaj"
+
+#: src/features/contact/DeleteContactDialog.tsx
+msgid "The contact, their notes and everything they wrote are deleted for good. This cannot be undone."
+msgstr "Contactul, notele lui și tot ce a scris sunt șterse definitiv. Acțiunea nu poate fi anulată."
+
+#: src/features/contact/ContactBulk.tsx
+msgid "The contacts, their conversations, notes and files are deleted for good. This cannot be undone."
+msgstr "Contactele, conversațiile, notele și fișierele lor sunt șterse definitiv. Acțiunea nu poate fi anulată."
 
 #: src/features/conversation/messages/Thread.tsx
 msgid "The conversation"
@@ -18844,6 +18989,14 @@ msgstr "The tracker refused the request. Check the target and your permissions."
 msgid "The tracker refused the token. Check that it is valid and has access to issues."
 msgstr "The tracker refused the token. Check that it is valid and has access to issues."
 
+#: src/features/conversation/TrashBulk.tsx
+msgid "The Trash changed. It now holds {count}."
+msgstr "Coșul s-a schimbat. Acum conține {count}."
+
+#: src/features/conversation/TrashBulk.tsx
+msgid "The Trash is empty"
+msgstr "Coșul este gol"
+
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "The Trash is empty."
@@ -18977,6 +19130,10 @@ msgstr "Aceste reguli se aplică formularului de abonare. Le poți schimba oric�
 #: src/features/broadcasts/AddSubscriberDialog.tsx
 msgid "They already agreed"
 msgstr "Au fost deja de acord"
+
+#: src/features/conversation/TrashBulk.tsx
+msgid "They are deleted at once with their messages and files. This cannot be undone, and nobody can restore them."
+msgstr "Sunt șterse imediat cu mesajele și fișierele lor. Acțiunea nu poate fi anulată și nimeni nu le poate restaura."
 
 #: src/features/docs/discussions/Bulk.tsx
 msgid "They are hidden with every other post of their authors still waiting for approval, and the authors’ later posts always wait for a member."
@@ -19976,6 +20133,7 @@ msgstr "Deblocat"
 #: src/app/TeamMenu.tsx
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/TestSend.tsx
+#: src/features/contact/ContactBulk.tsx
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactsColumn.tsx

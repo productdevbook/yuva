@@ -31,6 +31,11 @@ msgstr "(χωρίς θέμα)"
 msgid "{0, plural, one {# attachment} other {# attachments}}"
 msgstr "{0, plural, one {# συνημμένο} other {# συνημμένα}}"
 
+#. placeholder {0}: p.conversation_count
+#: src/features/contact/DeleteContactDialog.tsx
+msgid "{0, plural, one {# conversation is deleted with it} other {# conversations are deleted with it}}"
+msgstr "{0, plural, one {# συνομιλία διαγράφεται μαζί της} other {# συνομιλίες διαγράφονται μαζί της}}"
+
 #. placeholder {0}: f.messages
 #. placeholder {0}: l.conversations
 #. placeholder {0}: load.get(m.id) ?? 0
@@ -108,6 +113,16 @@ msgstr "{0} καλές"
 #: src/components/common/AddressChips.tsx
 msgid "{0} is not an e-mail address"
 msgstr "Το {0} δεν είναι διεύθυνση e-mail"
+
+#. placeholder {0}: done.length
+#: src/features/inbox/ChatList.tsx
+msgid "{0} marked as not spam"
+msgstr "{0} επισημάνθηκαν ως όχι spam"
+
+#. placeholder {0}: done.length
+#: src/features/inbox/ChatList.tsx
+msgid "{0} marked as spam"
+msgstr "{0} επισημάνθηκαν ως spam"
 
 #. placeholder {0}: items.length
 #: src/features/inbox/ChatList.tsx
@@ -346,6 +361,10 @@ msgstr "{count} συμβάντα"
 msgid "{count} imported conversations that nobody wrote in since are deleted with their messages and files. Conversations your team wrote in stay. Nothing changes in {address}."
 msgstr "Οι {count} εισαγμένες συνομιλίες στις οποίες δεν έχει γράψει κανείς έκτοτε διαγράφονται μαζί με τα μηνύματα και τα αρχεία τους. Οι συνομιλίες στις οποίες έγραψε η ομάδα σας παραμένουν. Τίποτα δεν αλλάζει στο {address}."
 
+#: src/features/conversation/TrashBulk.tsx
+msgid "{count} in the Trash across your inboxes. They are deleted for good after 30 days."
+msgstr "{count} στον Κάδο, σε όλα τα εισερχόμενά σας. Διαγράφονται οριστικά μετά από 30 ημέρες."
+
 #: src/features/migrations/ChooseStep.tsx
 msgid "{count} messages"
 msgstr "Μηνύματα: {count}"
@@ -383,6 +402,10 @@ msgstr "{days, plural, one {διάμεσος, τελευταία # ημέρα} o
 #: src/features/conversation/ConversationStatus.tsx
 msgid "{days, plural, one {Waiting for # day} other {Waiting for # days}}"
 msgstr "{days, plural, one {Αναμονή # ημέρα} other {Αναμονή # ημέρες}}"
+
+#: src/components/common/BulkReport.tsx
+msgid "{deleted} deleted"
+msgstr "{deleted} διαγράφηκαν"
 
 #: src/features/broadcasts/Import.tsx
 msgid "{done} of {total} rows"
@@ -650,6 +673,10 @@ msgstr "Το {name} συνδέεται από το cloud του προμηθευ
 #: src/features/migrations/CopyStep.tsx
 msgid "{name} copied"
 msgstr "Αντιγράφηκε: {name}"
+
+#: src/features/contact/DeleteContactDialog.tsx
+msgid "{name} deleted"
+msgstr "Διαγράφηκε: {name}"
 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "{name} docs"
@@ -2365,6 +2392,10 @@ msgstr "Also called audience or identifier."
 msgid "Also called reply URL. HTTP-POST binding."
 msgstr "Also called reply URL. HTTP-POST binding."
 
+#: src/features/contact/DeleteContactDialog.tsx
+msgid "Also conversations in mailboxes you cannot read"
+msgstr "Επίσης συνομιλίες σε γραμματοκιβώτια που δεν μπορείτε να διαβάσετε"
+
 #: src/features/settings/profile/ProfileForm.tsx
 msgid "Also for sign-in and notification e-mails"
 msgstr "Και για τα e-mail σύνδεσης και ειδοποιήσεων"
@@ -3666,6 +3697,7 @@ msgstr "Όνομα καμπάνιας"
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactNotes.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/contact/DeleteContactDialog.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
@@ -4884,6 +4916,10 @@ msgstr "Οι συνομιλίες αντιγράφηκαν"
 msgid "Conversations from every product"
 msgstr "Συνομιλίες από όλα τα προϊόντα"
 
+#: src/features/contact/DeleteContactDialog.tsx
+msgid "Conversations in mailboxes you cannot read are deleted with it"
+msgstr "Διαγράφονται επίσης συνομιλίες σε γραμματοκιβώτια που δεν μπορείτε να διαβάσετε"
+
 #: src/features/migrations/DoneStep.tsx
 msgid "Conversations nobody wrote in after the import are deleted. Nothing changed in {address}."
 msgstr "Οι συνομιλίες στις οποίες δεν έγραψε κανείς μετά την εισαγωγή διαγράφονται. Τίποτα δεν άλλαξε στο {address}."
@@ -5397,6 +5433,7 @@ msgstr "Εντεταλμένοι"
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
+#: src/features/contact/ContactBulk.tsx
 #: src/features/contact/ContactNotes.tsx
 #: src/features/docs/discussions/Bulk.tsx
 #: src/features/inbox/ChatList.tsx
@@ -5436,6 +5473,7 @@ msgstr "Διαγραφή ({removeKey})"
 msgid "Delete {0}?"
 msgstr "Διαγραφή του {0};"
 
+#: src/features/contact/DeleteContactDialog.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -5454,6 +5492,11 @@ msgstr "Διαγραφή μετά από (ημέρες)"
 msgid "Delete component"
 msgstr "Διαγραφή στοιχείου"
 
+#: src/features/contact/ContactDetail.tsx
+#: src/features/contact/DeleteContactDialog.tsx
+msgid "Delete contact"
+msgstr "Διαγραφή επαφής"
+
 #: src/features/broadcasts/Composer.tsx
 #: src/features/status/IncidentDetail.tsx
 msgid "Delete draft"
@@ -5462,6 +5505,22 @@ msgstr "Διαγραφή πρόχειρου"
 #: src/features/status/IncidentDetail.tsx
 msgid "Delete draft ({removeKey})"
 msgstr "Διαγραφή πρόχειρου ({removeKey})"
+
+#: src/features/conversation/TrashBulk.tsx
+msgid "Delete for good"
+msgstr "Οριστική διαγραφή"
+
+#. placeholder {0}: MAIL_KEYS.deleteForever
+#. placeholder {0}: SHORTCUTS.deleteForever
+#: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
+msgid "Delete for good ({0})"
+msgstr "Οριστική διαγραφή ({0})"
+
+#: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
+msgid "Delete forever"
+msgstr "Οριστική διαγραφή"
 
 #: src/features/status/ComponentsTab.tsx
 msgid "Delete group"
@@ -5552,6 +5611,26 @@ msgstr "Διαγραφή του κανόνα {name};"
 msgid "Delete the selected block"
 msgstr "Διαγραφή του επιλεγμένου μπλοκ"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Delete the selected contacts"
+msgstr "Διαγραφή των επιλεγμένων επαφών"
+
+#: src/features/contact/ContactBulk.tsx
+msgid "Delete the selected contacts ({n})?"
+msgstr "Διαγραφή των επιλεγμένων επαφών ({n});"
+
+#: src/features/contact/ContactBulk.tsx
+msgid "Delete the selected contacts (Del)"
+msgstr "Διαγραφή των επιλεγμένων επαφών (Del)"
+
+#: src/features/conversation/TrashBulk.tsx
+msgid "Delete the selected conversations ({n}) for good?"
+msgstr "Οριστική διαγραφή των επιλεγμένων συνομιλιών ({n});"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Delete the selected conversations for good, in the Trash"
+msgstr "Οριστική διαγραφή των επιλεγμένων συνομιλιών στον Κάδο"
+
 #: src/features/docs/discussions/Bulk.tsx
 msgid "Delete the selected discussions ({n})?"
 msgstr "Διαγραφή των επιλεγμένων συζητήσεων ({n});"
@@ -5559,6 +5638,10 @@ msgstr "Διαγραφή των επιλεγμένων συζητήσεων ({n}
 #: src/features/broadcasts/BroadcastBulk.tsx
 msgid "Delete the selected drafts ({n})?"
 msgstr "Διαγραφή των επιλεγμένων πρόχειρων ({n});"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Delete the selected mails for good, in the Trash"
+msgstr "Οριστική διαγραφή των επιλεγμένων μηνυμάτων στον Κάδο"
 
 #: src/features/broadcasts/SubscriberBulk.tsx
 msgid "Delete the selected subscriptions ({n})?"
@@ -6484,6 +6567,19 @@ msgstr "Emoji"
 msgid "Empty in the first rows"
 msgstr "Κενό στις πρώτες γραμμές"
 
+#: src/features/conversation/TrashBulk.tsx
+msgid "Empty the Trash"
+msgstr "Άδειασμα του Κάδου"
+
+#: src/features/conversation/TrashBulk.tsx
+msgid "Empty the Trash?"
+msgstr "Άδειασμα του Κάδου;"
+
+#. placeholder {0}: r.count
+#: src/features/conversation/TrashBulk.tsx
+msgid "Emptying the Trash: {0} are being deleted"
+msgstr "Άδειασμα του Κάδου: διαγράφονται {0}"
+
 #: src/features/settings/automation/RuleDialog.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "Enabled"
@@ -6642,6 +6738,10 @@ msgstr "κάθε συνομιλία"
 #: src/features/settings/sla/SlaPage.tsx
 msgid "Every conversation"
 msgstr "Κάθε συνομιλία"
+
+#: src/features/conversation/TrashBulk.tsx
+msgid "Every conversation in the Trash that you may delete ({count}) is deleted at once with its messages and files, in conversation and mail inboxes alike. This cannot be undone."
+msgstr "Κάθε συνομιλία στον Κάδο που μπορείτε να διαγράψετε ({count}) διαγράφεται αμέσως με τα μηνύματα και τα αρχεία της, τόσο σε γραμματοκιβώτια συνομιλιών όσο και email. Αυτό δεν αναιρείται."
 
 #: src/features/migrations/MapStep.tsx
 msgid "Every imported conversation is closed."
@@ -8585,6 +8685,10 @@ msgstr "Εξαφανίζεται για την ομάδα σας και για �
 msgid "It goes into <0>~/.codex/config.toml</0>, which the Codex CLI and IDE extension share."
 msgstr "Μπαίνει στο <0>~/.codex/config.toml</0>, που μοιράζονται το Codex CLI και η επέκταση IDE."
 
+#: src/features/contact/DeleteContactDialog.tsx
+msgid "It has no conversations"
+msgstr "Δεν έχει συνομιλίες"
+
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "It is added for you in the current project. Add <0>--scope user</0> for every project, or <1>--scope project</1> to share it in <2>.mcp.json</2>."
 msgstr "Προστίθεται για εσάς στο τρέχον έργο. Προσθέστε <0>--scope user</0> για κάθε έργο ή <1>--scope project</1> για να το μοιραστείτε στο <2>.mcp.json</2>."
@@ -8596,6 +8700,10 @@ msgstr "Δεν υπάρχει πια ή δεν μπορείτε να το δεί
 #: src/features/docs/discussions/parts.tsx
 msgid "It is hidden with every other post of its author still waiting for approval, and their later posts always wait for a member."
 msgstr "Κρύβεται μαζί με κάθε άλλη ανάρτηση του συντάκτη της που περιμένει έγκριση, και οι μεταγενέστερες αναρτήσεις του περιμένουν πάντα ένα μέλος."
+
+#: src/components/common/BulkReport.tsx
+msgid "It is not in the Trash any more"
+msgstr "Δεν βρίσκεται πια στον Κάδο"
 
 #: src/features/settings/labels/LabelsPage.tsx
 msgid "It is removed from every conversation."
@@ -9781,6 +9889,10 @@ msgstr "Σήμανση ως μη αναγνωσμένο και επιστροφ�
 msgid "Mark or unmark as spam"
 msgstr "Σήμανση ή αφαίρεση σήμανσης spam"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Mark the selected conversations as not spam, in Spam"
+msgstr "Επισήμανση των επιλεγμένων συνομιλιών στο Spam ως όχι spam"
+
 #: src/features/docs/discussions/Bulk.tsx
 msgid "Mark the selected discussions as spam ({n})?"
 msgstr "Σήμανση των επιλεγμένων συζητήσεων ως ανεπιθύμητων ({n});"
@@ -10277,6 +10389,10 @@ msgid "Move through the broadcasts"
 msgstr "Μετακίνηση στις μαζικές αποστολές"
 
 #: src/components/common/ShortcutSheet.tsx
+msgid "Move through the contacts"
+msgstr "Μετακίνηση στις επαφές"
+
+#: src/components/common/ShortcutSheet.tsx
 msgid "Move through the designs"
 msgstr "Μετακίνηση στα σχέδια"
 
@@ -10344,6 +10460,11 @@ msgstr "Μετακίνηση στο προηγούμενο ή στο επόμε�
 #: src/features/settings/automation/text.ts
 msgid "Move to the Trash"
 msgstr "Μεταφορά στον Κάδο"
+
+#. placeholder {0}: SHORTCUTS.trash
+#: src/features/inbox/ChatList.tsx
+msgid "Move to the Trash ({0})"
+msgstr "Μεταφορά στον Κάδο ({0})"
 
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
@@ -11441,6 +11562,10 @@ msgstr "χωρίς λογαριασμό SMTP"
 msgid "No SMTP account"
 msgstr "Χωρίς λογαριασμό SMTP"
 
+#: src/features/inbox/ChatList.tsx
+msgid "No spam here."
+msgstr "Δεν υπάρχει spam εδώ."
+
 #: src/features/status/LinkIncidentDialog.tsx
 msgid "No status page yet. Create one under Status first."
 msgstr "Δεν υπάρχει ακόμη σελίδα κατάστασης. Δημιουργήστε πρώτα μία στην ενότητα Κατάσταση."
@@ -11796,8 +11921,14 @@ msgstr "Δεν υπογράφει ακόμη"
 
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/ConversationMenu.tsx
+#: src/features/inbox/ChatList.tsx
 msgid "Not spam"
 msgstr "Όχι spam"
+
+#. placeholder {0}: SHORTCUTS.spam
+#: src/features/inbox/ChatList.tsx
+msgid "Not spam ({0})"
+msgstr "Όχι spam ({0})"
 
 #: src/features/contact/ContactsPage.tsx
 msgid "Not the same"
@@ -12642,6 +12773,7 @@ msgstr "Άνοιγμα του άρθρου ή της συλλογής"
 msgid "Open the broadcast"
 msgstr "Άνοιγμα της μαζικής αποστολής"
 
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Open the contact"
 msgstr "Άνοιγμα της επαφής"
@@ -15773,6 +15905,10 @@ msgid "Select mails (X)"
 msgstr "Επιλογή e-mail (X)"
 
 #: src/components/common/ShortcutSheet.tsx
+msgid "Select the contact under the cursor"
+msgstr "Επιλογή της επαφής κάτω από τον δρομέα"
+
+#: src/components/common/ShortcutSheet.tsx
 msgid "Select the conversation under the cursor"
 msgstr "Επιλογή της συνομιλίας κάτω από τον δρομέα"
 
@@ -17187,6 +17323,7 @@ msgstr "Πηγές"
 #: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
+#: src/features/inbox/ChatList.tsx
 #: src/features/migrations/parts.tsx
 msgid "Spam"
 msgstr "Spam"
@@ -17983,6 +18120,14 @@ msgstr "Η επαφή διαγράφηκε"
 #: src/features/settings/automation/text.ts
 msgid "The contact writes a message"
 msgstr "Η επαφή γράφει ένα μήνυμα"
+
+#: src/features/contact/DeleteContactDialog.tsx
+msgid "The contact, their notes and everything they wrote are deleted for good. This cannot be undone."
+msgstr "Η επαφή, οι σημειώσεις της και ό,τι έγραψε διαγράφονται οριστικά. Αυτό δεν αναιρείται."
+
+#: src/features/contact/ContactBulk.tsx
+msgid "The contacts, their conversations, notes and files are deleted for good. This cannot be undone."
+msgstr "Οι επαφές, οι συνομιλίες, οι σημειώσεις και τα αρχεία τους διαγράφονται οριστικά. Αυτό δεν αναιρείται."
 
 #: src/features/conversation/messages/Thread.tsx
 msgid "The conversation"
@@ -18844,6 +18989,14 @@ msgstr "The tracker refused the request. Check the target and your permissions."
 msgid "The tracker refused the token. Check that it is valid and has access to issues."
 msgstr "The tracker refused the token. Check that it is valid and has access to issues."
 
+#: src/features/conversation/TrashBulk.tsx
+msgid "The Trash changed. It now holds {count}."
+msgstr "Ο Κάδος άλλαξε. Τώρα περιέχει {count}."
+
+#: src/features/conversation/TrashBulk.tsx
+msgid "The Trash is empty"
+msgstr "Ο Κάδος είναι άδειος"
+
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "The Trash is empty."
@@ -18977,6 +19130,10 @@ msgstr "Αυτοί οι κανόνες ισχύουν για τη φόρμα σ�
 #: src/features/broadcasts/AddSubscriberDialog.tsx
 msgid "They already agreed"
 msgstr "Έχουν ήδη συναινέσει"
+
+#: src/features/conversation/TrashBulk.tsx
+msgid "They are deleted at once with their messages and files. This cannot be undone, and nobody can restore them."
+msgstr "Διαγράφονται αμέσως με τα μηνύματα και τα αρχεία τους. Αυτό δεν αναιρείται και κανείς δεν μπορεί να τις επαναφέρει."
 
 #: src/features/docs/discussions/Bulk.tsx
 msgid "They are hidden with every other post of their authors still waiting for approval, and the authors’ later posts always wait for a member."
@@ -19976,6 +20133,7 @@ msgstr "Ξεκλειδώθηκε"
 #: src/app/TeamMenu.tsx
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/TestSend.tsx
+#: src/features/contact/ContactBulk.tsx
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactsColumn.tsx

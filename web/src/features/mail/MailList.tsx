@@ -17,6 +17,7 @@ import { MAIL_KEYS, SHORTCUTS } from "@/components/common/ShortcutSheet"
 import { formatWhen } from "@/components/common/SendLater"
 import { formatShort, useErrorText, usePreviewText } from "@/components/common/text"
 import { useConfirm } from "@/components/common/ConfirmDialog"
+import { TrashStrip, useTrashTools } from "@/features/conversation/TrashBulk"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -301,6 +302,7 @@ export function MailList({
   const picked = chosen.length
   const none = picked === 0
   const inTrash = folder === "trash"
+  const trashTools = useTrashTools()
 
   const restoreStatus = (prev: ConversationListItem[]) => {
     for (const g of statusGroups(prev))
@@ -403,6 +405,9 @@ export function MailList({
     })
   }
 
+  const deleteChosen = () =>
+    trashTools.deleteForever([...chosen], (id) => chosenRows.find((c) => c.id === id)?.subject || id, stopSelecting)
+
   const listKeys: Record<string, () => void> = {
     [MAIL_KEYS.select]: () => {
       const id = cursorId ?? currentId
@@ -413,7 +418,7 @@ export function MailList({
   const selectionKeys: Record<string, () => void> =
     selecting && !none
       ? inTrash
-        ? { [MAIL_KEYS.restore]: restoreChosen }
+        ? { [MAIL_KEYS.restore]: restoreChosen, [MAIL_KEYS.deleteForever]: deleteChosen }
         : {
             [MAIL_KEYS.archive]: folder === "archive" ? inboxChosen : archiveChosen,
             [MAIL_KEYS.star]: starChosen,
@@ -481,16 +486,28 @@ export function MailList({
         {none ? <Trans>Pick mails</Trans> : <Trans>Selected: {picked}</Trans>}
       </span>
       {inTrash ? (
-        <Button
-          variant="outline"
-          className={look.btnSm}
-          disabled={none || bulk.isPending}
-          onClick={restoreChosen}
-          title={t`Restore (Z)`}
-          data-testid="restore-selected"
-        >
-          <Trans>Restore</Trans>
-        </Button>
+        <>
+          <Button
+            variant="outline"
+            className={look.btnSm}
+            disabled={none || bulk.isPending}
+            onClick={restoreChosen}
+            title={t`Restore (Z)`}
+            data-testid="restore-selected"
+          >
+            <Trans>Restore</Trans>
+          </Button>
+          <Button
+            variant="outline"
+            className={cn(look.btnSm, "text-destructive")}
+            disabled={none || trashTools.pending}
+            onClick={deleteChosen}
+            title={t`Delete for good (${MAIL_KEYS.deleteForever})`}
+            data-testid="delete-forever-selected"
+          >
+            <Trans>Delete forever</Trans>
+          </Button>
+        </>
       ) : (
         <>
           {folder === "archive" ? (
@@ -613,6 +630,7 @@ export function MailList({
         <SearchError error={list.error} className="w-full" />
       </div>
       {selecting && selection}
+      {inTrash && <TrashStrip onEmpty={(n) => trashTools.emptyTrash(n)} busy={trashTools.pending} />}
       <div ref={scroller} className="min-h-0 flex-1 overflow-y-auto border-t" data-testid="list">
         {list.isPending ? (
           <div className="grid gap-1 p-3">
@@ -653,6 +671,7 @@ export function MailList({
         <ErrorLine error={isSearchError(list.error) ? null : list.error} className="px-4 py-2" />
       </div>
       {confirmDialog}
+      {trashTools.dialogs}
     </nav>
   )
 }

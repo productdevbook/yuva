@@ -24,6 +24,8 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Skeleton } from "@/components/ui/skeleton"
+import { RowCheck, SelectToggle } from "@/components/common/Selection"
+import { ContactBulkBar } from "@/features/contact/ContactBulk"
 import { ContactDetail } from "@/features/contact/ContactDetail"
 import { MergeContactDialog } from "@/features/contact/MergeContactDialog"
 import { useContactDirectory, useCreateContact } from "@/features/contact/queries"
@@ -34,6 +36,7 @@ import { ProductTag } from "@/features/inbox/ProductTag"
 import { headButton, Page, PageHeader, PageTabs } from "@/features/settings/ui"
 import { useDebounced } from "@/hooks/use-debounced"
 import { useHotkeys } from "@/hooks/use-hotkeys"
+import { useSelection } from "@/hooks/use-selection"
 import type { Contact } from "@/lib/api"
 import { useSession } from "@/lib/session"
 import { cn } from "@/lib/utils"
@@ -182,16 +185,38 @@ function Pill({ tone, children }: { tone: "danger" | "warn"; children: React.Rea
   )
 }
 
-function Row({ c, current, cursor, search }: { c: Contact; current: boolean; cursor: boolean; search: string }) {
+function Row({
+  c,
+  current,
+  cursor,
+  search,
+  check,
+}: {
+  c: Contact
+  current: boolean
+  cursor: boolean
+  search: string
+  check?: { checked: boolean; onToggle: (range: boolean) => void }
+}) {
   const { t, i18n } = useLingui()
   const name = contactName(c, t`Unnamed contact`)
   const sub = c.emails[0] && c.emails[0] !== name ? c.emails[0] : (c.external_ids[0]?.external_id ?? "")
   const seen = c.activity?.last_seen_at
   return (
-    <li className="border-t">
+    <li className="flex items-center border-t">
+      {check && <RowCheck className="ms-4" checked={check.checked} name={name} onToggle={check.onToggle} />}
       <Link
         to={`/contacts/${c.id}${search}`}
+        onClick={
+          check
+            ? (e) => {
+                e.preventDefault()
+                check.onToggle(e.shiftKey)
+              }
+            : undefined
+        }
         className={cn(
+          "min-w-0 flex-1",
           GRID,
           "py-2.5 outline-none transition-colors hover:bg-surface focus-visible:bg-surface",
           current && "bg-surface shadow-[inset_2px_0_0_var(--brand)] rtl:shadow-[inset_-2px_0_0_var(--brand)]",
@@ -377,6 +402,7 @@ function AddContactDialog({ open, onOpenChange }: { open: boolean; onOpenChange:
 
 export function ContactsPage({ contactId }: { contactId?: string }) {
   const { t, i18n } = useLingui()
+  const { canManage } = useSession()
   const navigate = useNavigate()
   const [params, setParams] = useSearchParams()
   const tabParam = params.get("tab")
@@ -415,6 +441,10 @@ export function ContactsPage({ contactId }: { contactId?: string }) {
   const pairs = useDuplicates(all, dismissed)
   const [cursor, setCursor] = useState(-1)
   const [adding, setAdding] = useState(false)
+  const selection = useSelection(
+    items.map((c) => c.id),
+    `${tab}|${query}|${inboxId}|${country}|${blockedOnly}|${undeliverableOnly}`
+  )
   const list = useRef<HTMLUListElement>(null)
   const search = useRef<HTMLInputElement>(null)
   const listParams = new URLSearchParams(params)
@@ -471,6 +501,15 @@ export function ContactsPage({ contactId }: { contactId?: string }) {
           ArrowUp: () => setCursor((i) => Math.max(0, i - 1)),
           Enter: () => cursor >= 0 && items[cursor] && navigate(`/contacts/${items[cursor].id}${suffix}`),
           "/": () => search.current?.focus(),
+          ...(canManage
+            ? {
+                x: () => {
+                  const id = items[cursor]?.id ?? shown
+                  if (id) selection.toggle(id)
+                  else selection.start()
+                },
+              }
+            : {}),
         }
   )
   useEffect(() => {
@@ -636,6 +675,7 @@ export function ContactsPage({ contactId }: { contactId?: string }) {
       <span className="ms-auto text-caption text-faint tabular-nums" data-testid="contacts-count">
         {directory.hasNextPage ? <Trans>People so far: {shownCount}</Trans> : <Trans>People: {shownCount}</Trans>}
       </span>
+      {canManage && items.length > 0 && !selection.selecting && <SelectToggle selection={selection} />}
     </div>
   )
 
@@ -678,7 +718,18 @@ export function ContactsPage({ contactId }: { contactId?: string }) {
       ) : (
         <ul ref={list} className="flex flex-col">
           {items.map((c, i) => (
-            <Row key={c.id} c={c} current={c.id === shown} cursor={i === cursor} search={suffix} />
+            <Row
+              key={c.id}
+              c={c}
+              current={c.id === shown}
+              cursor={i === cursor}
+              search={suffix}
+              check={
+                canManage && selection.selecting
+                  ? { checked: selection.has(c.id), onToggle: (range) => selection.toggle(c.id, range) }
+                  : undefined
+              }
+            />
           ))}
         </ul>
       )}
@@ -714,6 +765,7 @@ export function ContactsPage({ contactId }: { contactId?: string }) {
         <div className="grid grid-cols-[minmax(0,1fr)_400px] items-start gap-6 max-xl:grid-cols-[minmax(0,1fr)_360px]">
           <div className="flex min-w-0 flex-col gap-3">
             {toolbar}
+            {canManage && <ContactBulkBar items={items} selection={selection} />}
             {table}
           </div>
           {shown && (

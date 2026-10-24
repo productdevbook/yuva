@@ -31,6 +31,11 @@ msgstr "(தலைப்பு இல்லை)"
 msgid "{0, plural, one {# attachment} other {# attachments}}"
 msgstr "{0, plural, one {# இணைப்பு} other {# இணைப்புகள்}}"
 
+#. placeholder {0}: p.conversation_count
+#: src/features/contact/DeleteContactDialog.tsx
+msgid "{0, plural, one {# conversation is deleted with it} other {# conversations are deleted with it}}"
+msgstr "{0, plural, one {# உரையாடலும் இதனுடன் நீக்கப்படும்} other {# உரையாடல்களும் இதனுடன் நீக்கப்படும்}}"
+
 #. placeholder {0}: f.messages
 #. placeholder {0}: l.conversations
 #. placeholder {0}: load.get(m.id) ?? 0
@@ -108,6 +113,16 @@ msgstr "{0} நல்லவை"
 #: src/components/common/AddressChips.tsx
 msgid "{0} is not an e-mail address"
 msgstr "{0} மின்னஞ்சல் முகவரி அல்ல"
+
+#. placeholder {0}: done.length
+#: src/features/inbox/ChatList.tsx
+msgid "{0} marked as not spam"
+msgstr "{0} ஸ்பேம் அல்ல என்று குறிக்கப்பட்டன"
+
+#. placeholder {0}: done.length
+#: src/features/inbox/ChatList.tsx
+msgid "{0} marked as spam"
+msgstr "{0} ஸ்பேம் என்று குறிக்கப்பட்டன"
 
 #. placeholder {0}: items.length
 #: src/features/inbox/ChatList.tsx
@@ -346,6 +361,10 @@ msgstr "{count} நிகழ்வுகள்"
 msgid "{count} imported conversations that nobody wrote in since are deleted with their messages and files. Conversations your team wrote in stay. Nothing changes in {address}."
 msgstr "இறக்குமதி செய்யப்பட்ட {count} உரையாடல்களில் அதன் பிறகு யாரும் எழுதவில்லை; அவை செய்திகள், கோப்புகளுடன் நீக்கப்படும். உங்கள் குழு எழுதிய உரையாடல்கள் இருக்கும். {address}-இல் எதுவும் மாறாது."
 
+#: src/features/conversation/TrashBulk.tsx
+msgid "{count} in the Trash across your inboxes. They are deleted for good after 30 days."
+msgstr "உங்கள் எல்லா இன்பாக்ஸ்களிலும் சேர்த்து குப்பையில் {count} உள்ளன. 30 நாட்களுக்குப் பிறகு அவை நிரந்தரமாக நீக்கப்படும்."
+
 #: src/features/migrations/ChooseStep.tsx
 msgid "{count} messages"
 msgstr "{count} செய்திகள்"
@@ -383,6 +402,10 @@ msgstr "{days, plural, one {இடைநிலை, கடந்த # நாள�
 #: src/features/conversation/ConversationStatus.tsx
 msgid "{days, plural, one {Waiting for # day} other {Waiting for # days}}"
 msgstr "{days, plural, one {# நாளாகக் காத்திருக்கிறது} other {# நாட்களாகக் காத்திருக்கிறது}}"
+
+#: src/components/common/BulkReport.tsx
+msgid "{deleted} deleted"
+msgstr "{deleted} நீக்கப்பட்டன"
 
 #: src/features/broadcasts/Import.tsx
 msgid "{done} of {total} rows"
@@ -650,6 +673,10 @@ msgstr "{name} தன் விற்பனையாளரின் கிளவ
 #: src/features/migrations/CopyStep.tsx
 msgid "{name} copied"
 msgstr "{name} நகலெடுக்கப்பட்டது"
+
+#: src/features/contact/DeleteContactDialog.tsx
+msgid "{name} deleted"
+msgstr "{name} நீக்கப்பட்டது"
 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "{name} docs"
@@ -2365,6 +2392,10 @@ msgstr "Also called audience or identifier."
 msgid "Also called reply URL. HTTP-POST binding."
 msgstr "Also called reply URL. HTTP-POST binding."
 
+#: src/features/contact/DeleteContactDialog.tsx
+msgid "Also conversations in mailboxes you cannot read"
+msgstr "மேலும் நீங்கள் படிக்க முடியாத அஞ்சல் பெட்டிகளில் உள்ள உரையாடல்களும்"
+
 #: src/features/settings/profile/ProfileForm.tsx
 msgid "Also for sign-in and notification e-mails"
 msgstr "உள்நுழைவு மற்றும் அறிவிப்பு மின்னஞ்சல்களுக்கும்"
@@ -3666,6 +3697,7 @@ msgstr "பிரசாரப் பெயர்"
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactNotes.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/contact/DeleteContactDialog.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
@@ -4884,6 +4916,10 @@ msgstr "உரையாடல்கள் நகலெடுக்கப்ப�
 msgid "Conversations from every product"
 msgstr "எல்லா தயாரிப்புகளின் உரையாடல்கள்"
 
+#: src/features/contact/DeleteContactDialog.tsx
+msgid "Conversations in mailboxes you cannot read are deleted with it"
+msgstr "நீங்கள் படிக்க முடியாத அஞ்சல் பெட்டிகளில் உள்ள உரையாடல்களும் நீக்கப்படும்"
+
 #: src/features/migrations/DoneStep.tsx
 msgid "Conversations nobody wrote in after the import are deleted. Nothing changed in {address}."
 msgstr "இறக்குமதிக்குப் பிறகு யாரும் எழுதாத உரையாடல்கள் நீக்கப்படும். {address}-இல் எதுவும் மாறவில்லை."
@@ -5397,6 +5433,7 @@ msgstr "பிரதிநிதிகள்"
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
+#: src/features/contact/ContactBulk.tsx
 #: src/features/contact/ContactNotes.tsx
 #: src/features/docs/discussions/Bulk.tsx
 #: src/features/inbox/ChatList.tsx
@@ -5436,6 +5473,7 @@ msgstr "நீக்கு ({removeKey})"
 msgid "Delete {0}?"
 msgstr "{0}-ஐ நீக்கவா?"
 
+#: src/features/contact/DeleteContactDialog.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -5454,6 +5492,11 @@ msgstr "இத்தனை நாட்களுக்குப் பிறக�
 msgid "Delete component"
 msgstr "கூறை நீக்கு"
 
+#: src/features/contact/ContactDetail.tsx
+#: src/features/contact/DeleteContactDialog.tsx
+msgid "Delete contact"
+msgstr "தொடர்பை நீக்கு"
+
 #: src/features/broadcasts/Composer.tsx
 #: src/features/status/IncidentDetail.tsx
 msgid "Delete draft"
@@ -5462,6 +5505,22 @@ msgstr "வரைவை நீக்கு"
 #: src/features/status/IncidentDetail.tsx
 msgid "Delete draft ({removeKey})"
 msgstr "வரைவை நீக்கு ({removeKey})"
+
+#: src/features/conversation/TrashBulk.tsx
+msgid "Delete for good"
+msgstr "நிரந்தரமாக நீக்கு"
+
+#. placeholder {0}: MAIL_KEYS.deleteForever
+#. placeholder {0}: SHORTCUTS.deleteForever
+#: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
+msgid "Delete for good ({0})"
+msgstr "நிரந்தரமாக நீக்கு ({0})"
+
+#: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
+msgid "Delete forever"
+msgstr "நிரந்தரமாக நீக்கு"
 
 #: src/features/status/ComponentsTab.tsx
 msgid "Delete group"
@@ -5552,6 +5611,26 @@ msgstr "விதி {name} ஐ நீக்கவா?"
 msgid "Delete the selected block"
 msgstr "தேர்ந்தெடுத்த தொகுதியை நீக்கு"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Delete the selected contacts"
+msgstr "தேர்ந்தெடுத்த தொடர்புகளை நீக்கு"
+
+#: src/features/contact/ContactBulk.tsx
+msgid "Delete the selected contacts ({n})?"
+msgstr "தேர்ந்தெடுத்த தொடர்புகளை ({n}) நீக்கவா?"
+
+#: src/features/contact/ContactBulk.tsx
+msgid "Delete the selected contacts (Del)"
+msgstr "தேர்ந்தெடுத்த தொடர்புகளை நீக்கு (Del)"
+
+#: src/features/conversation/TrashBulk.tsx
+msgid "Delete the selected conversations ({n}) for good?"
+msgstr "தேர்ந்தெடுத்த உரையாடல்களை ({n}) நிரந்தரமாக நீக்கவா?"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Delete the selected conversations for good, in the Trash"
+msgstr "குப்பையில் தேர்ந்தெடுத்த உரையாடல்களை நிரந்தரமாக நீக்கு"
+
 #: src/features/docs/discussions/Bulk.tsx
 msgid "Delete the selected discussions ({n})?"
 msgstr "தேர்ந்தெடுத்த விவாதங்களை ({n}) நீக்கவா?"
@@ -5559,6 +5638,10 @@ msgstr "தேர்ந்தெடுத்த விவாதங்களை (
 #: src/features/broadcasts/BroadcastBulk.tsx
 msgid "Delete the selected drafts ({n})?"
 msgstr "தேர்ந்தெடுத்த வரைவுகளை ({n}) நீக்கவா?"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Delete the selected mails for good, in the Trash"
+msgstr "குப்பையில் தேர்ந்தெடுத்த மின்னஞ்சல்களை நிரந்தரமாக நீக்கு"
 
 #: src/features/broadcasts/SubscriberBulk.tsx
 msgid "Delete the selected subscriptions ({n})?"
@@ -6484,6 +6567,19 @@ msgstr "ஈமோஜி"
 msgid "Empty in the first rows"
 msgstr "முதல் வரிசைகளில் காலி"
 
+#: src/features/conversation/TrashBulk.tsx
+msgid "Empty the Trash"
+msgstr "குப்பையைக் காலி செய்"
+
+#: src/features/conversation/TrashBulk.tsx
+msgid "Empty the Trash?"
+msgstr "குப்பையைக் காலி செய்யவா?"
+
+#. placeholder {0}: r.count
+#: src/features/conversation/TrashBulk.tsx
+msgid "Emptying the Trash: {0} are being deleted"
+msgstr "குப்பை காலியாகிறது: {0} நீக்கப்படுகின்றன"
+
 #: src/features/settings/automation/RuleDialog.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "Enabled"
@@ -6642,6 +6738,10 @@ msgstr "ஒவ்வொரு உரையாடலும்"
 #: src/features/settings/sla/SlaPage.tsx
 msgid "Every conversation"
 msgstr "ஒவ்வொரு உரையாடலும்"
+
+#: src/features/conversation/TrashBulk.tsx
+msgid "Every conversation in the Trash that you may delete ({count}) is deleted at once with its messages and files, in conversation and mail inboxes alike. This cannot be undone."
+msgstr "நீங்கள் நீக்கக்கூடிய குப்பையில் உள்ள ஒவ்வொரு உரையாடலும் ({count}) செய்திகள், கோப்புகளுடன் உடனே நீக்கப்படும்; உரையாடல், அஞ்சல் பெட்டிகள் இரண்டிலும். இதைத் திரும்பப் பெற முடியாது."
 
 #: src/features/migrations/MapStep.tsx
 msgid "Every imported conversation is closed."
@@ -8585,6 +8685,10 @@ msgstr "இது உங்கள் குழுவுக்கும் வா
 msgid "It goes into <0>~/.codex/config.toml</0>, which the Codex CLI and IDE extension share."
 msgstr "இது <0>~/.codex/config.toml</0>-இல் போகும்; அதை Codex CLI-உம் IDE நீட்டிப்பும் பகிர்கின்றன."
 
+#: src/features/contact/DeleteContactDialog.tsx
+msgid "It has no conversations"
+msgstr "இதற்கு உரையாடல்கள் எதுவும் இல்லை"
+
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "It is added for you in the current project. Add <0>--scope user</0> for every project, or <1>--scope project</1> to share it in <2>.mcp.json</2>."
 msgstr "இது நடப்புத் திட்டத்தில் உங்களுக்காகச் சேர்க்கப்படும். ஒவ்வொரு திட்டத்துக்கும் <0>--scope user</0>, அல்லது <2>.mcp.json</2>-இல் பகிர <1>--scope project</1> சேர்க்கவும்."
@@ -8596,6 +8700,10 @@ msgstr "அது இனி இல்லை, அல்லது உங்கள�
 #: src/features/docs/discussions/parts.tsx
 msgid "It is hidden with every other post of its author still waiting for approval, and their later posts always wait for a member."
 msgstr "அதன் ஆசிரியரின் ஒப்புதலுக்காகக் காத்திருக்கும் மற்ற அனைத்து இடுகைகளுடனும் இது மறைக்கப்படும்; அவர்களின் பிந்தைய இடுகைகள் எப்போதும் உறுப்பினருக்காகக் காத்திருக்கும்."
+
+#: src/components/common/BulkReport.tsx
+msgid "It is not in the Trash any more"
+msgstr "இது இனி குப்பையில் இல்லை"
 
 #: src/features/settings/labels/LabelsPage.tsx
 msgid "It is removed from every conversation."
@@ -9781,6 +9889,10 @@ msgstr "படிக்காததாகக் குறித்துப் �
 msgid "Mark or unmark as spam"
 msgstr "ஸ்பேம் எனக் குறி அல்லது குறியை நீக்கு"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Mark the selected conversations as not spam, in Spam"
+msgstr "ஸ்பேமில் தேர்ந்தெடுத்த உரையாடல்களை ஸ்பேம் அல்ல என்று குறி"
+
 #: src/features/docs/discussions/Bulk.tsx
 msgid "Mark the selected discussions as spam ({n})?"
 msgstr "தேர்ந்தெடுத்த விவாதங்களை ({n}) ஸ்பேம் எனக் குறிக்கவா?"
@@ -10277,6 +10389,10 @@ msgid "Move through the broadcasts"
 msgstr "ஒளிபரப்புகளில் நகருங்கள்"
 
 #: src/components/common/ShortcutSheet.tsx
+msgid "Move through the contacts"
+msgstr "தொடர்புகளுக்கிடையே நகர்"
+
+#: src/components/common/ShortcutSheet.tsx
 msgid "Move through the designs"
 msgstr "வடிவமைப்புகளுக்கிடையே செல்"
 
@@ -10344,6 +10460,11 @@ msgstr "முந்தைய அல்லது அடுத்த கட்ட
 #: src/features/settings/automation/text.ts
 msgid "Move to the Trash"
 msgstr "குப்பைக்கு நகர்த்து"
+
+#. placeholder {0}: SHORTCUTS.trash
+#: src/features/inbox/ChatList.tsx
+msgid "Move to the Trash ({0})"
+msgstr "குப்பைக்கு நகர்த்து ({0})"
 
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
@@ -11441,6 +11562,10 @@ msgstr "SMTP கணக்கு இல்லை"
 msgid "No SMTP account"
 msgstr "SMTP கணக்கு இல்லை"
 
+#: src/features/inbox/ChatList.tsx
+msgid "No spam here."
+msgstr "இங்கே ஸ்பேம் இல்லை."
+
 #: src/features/status/LinkIncidentDialog.tsx
 msgid "No status page yet. Create one under Status first."
 msgstr "இன்னும் நிலைப் பக்கம் இல்லை. முதலில் நிலை பகுதியில் ஒன்றை உருவாக்குங்கள்."
@@ -11796,8 +11921,14 @@ msgstr "இன்னும் கையொப்பமிடவில்லை"
 
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/ConversationMenu.tsx
+#: src/features/inbox/ChatList.tsx
 msgid "Not spam"
 msgstr "ஸ்பேம் அல்ல"
+
+#. placeholder {0}: SHORTCUTS.spam
+#: src/features/inbox/ChatList.tsx
+msgid "Not spam ({0})"
+msgstr "ஸ்பேம் அல்ல ({0})"
 
 #: src/features/contact/ContactsPage.tsx
 msgid "Not the same"
@@ -12642,6 +12773,7 @@ msgstr "கட்டுரை அல்லது தொகுப்பைத் 
 msgid "Open the broadcast"
 msgstr "ஒளிபரப்பைத் திற"
 
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Open the contact"
 msgstr "தொடர்பைத் திற"
@@ -15773,6 +15905,10 @@ msgid "Select mails (X)"
 msgstr "அஞ்சல்களைத் தேர்ந்தெடு (X)"
 
 #: src/components/common/ShortcutSheet.tsx
+msgid "Select the contact under the cursor"
+msgstr "கர்சருக்குக் கீழுள்ள தொடர்பைத் தேர்ந்தெடு"
+
+#: src/components/common/ShortcutSheet.tsx
 msgid "Select the conversation under the cursor"
 msgstr "கர்சருக்குக் கீழுள்ள உரையாடலைத் தேர்ந்தெடு"
 
@@ -17187,6 +17323,7 @@ msgstr "மூலங்கள்"
 #: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
+#: src/features/inbox/ChatList.tsx
 #: src/features/migrations/parts.tsx
 msgid "Spam"
 msgstr "ஸ்பேம்"
@@ -17983,6 +18120,14 @@ msgstr "தொடர்பு நீக்கப்பட்டது"
 #: src/features/settings/automation/text.ts
 msgid "The contact writes a message"
 msgstr "தொடர்பு ஒரு செய்தி எழுதுகிறது"
+
+#: src/features/contact/DeleteContactDialog.tsx
+msgid "The contact, their notes and everything they wrote are deleted for good. This cannot be undone."
+msgstr "தொடர்பு, அவரது குறிப்புகள், அவர் எழுதிய அனைத்தும் நிரந்தரமாக நீக்கப்படும். இதைத் திரும்பப் பெற முடியாது."
+
+#: src/features/contact/ContactBulk.tsx
+msgid "The contacts, their conversations, notes and files are deleted for good. This cannot be undone."
+msgstr "தொடர்புகள், அவர்களது உரையாடல்கள், குறிப்புகள், கோப்புகள் நிரந்தரமாக நீக்கப்படும். இதைத் திரும்பப் பெற முடியாது."
 
 #: src/features/conversation/messages/Thread.tsx
 msgid "The conversation"
@@ -18844,6 +18989,14 @@ msgstr "The tracker refused the request. Check the target and your permissions."
 msgid "The tracker refused the token. Check that it is valid and has access to issues."
 msgstr "The tracker refused the token. Check that it is valid and has access to issues."
 
+#: src/features/conversation/TrashBulk.tsx
+msgid "The Trash changed. It now holds {count}."
+msgstr "குப்பை மாறிவிட்டது. இப்போது அதில் {count} உள்ளன."
+
+#: src/features/conversation/TrashBulk.tsx
+msgid "The Trash is empty"
+msgstr "குப்பை காலியாக உள்ளது"
+
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "The Trash is empty."
@@ -18977,6 +19130,10 @@ msgstr "இந்த விதிகள் சந்தா படிவத்த
 #: src/features/broadcasts/AddSubscriberDialog.tsx
 msgid "They already agreed"
 msgstr "அவர்கள் ஏற்கெனவே ஒப்புக்கொண்டனர்"
+
+#: src/features/conversation/TrashBulk.tsx
+msgid "They are deleted at once with their messages and files. This cannot be undone, and nobody can restore them."
+msgstr "அவை செய்திகள், கோப்புகளுடன் உடனே நீக்கப்படும். இதைத் திரும்பப் பெற முடியாது; யாராலும் அவற்றை மீட்டெடுக்க முடியாது."
 
 #: src/features/docs/discussions/Bulk.tsx
 msgid "They are hidden with every other post of their authors still waiting for approval, and the authors’ later posts always wait for a member."
@@ -19976,6 +20133,7 @@ msgstr "திறக்கப்பட்டது"
 #: src/app/TeamMenu.tsx
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/TestSend.tsx
+#: src/features/contact/ContactBulk.tsx
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactsColumn.tsx
